@@ -2,7 +2,7 @@ import {
   CreateProductAction,
   CreateProductDispatch,
   CreateProductState,
-} from './types';
+} from '../types';
 
 const initialCreateProductState: CreateProductState = {
   // page 1
@@ -20,22 +20,33 @@ const initialCreateProductState: CreateProductState = {
   description: '',
   isDescriptionValid: false,
   isDescriptionFocused: false,
-  // page 1 -> price, currency, availability, quantity
+  // page 1 -> price, currency, availability
   price: '',
   isPriceValid: false,
   isPriceFocused: false,
   currency: 'CAD',
   availability: 'In Stock',
-  quantity: 0,
+  // page 1 -> quantity
+  quantity: '',
+  isQuantityFocused: false,
+  isQuantityValid: false,
   // page 1 -> weight
-  weight: 0,
+  weight: '',
+  isWeightFocused: false,
+  isWeightValid: false,
   weightUnit: 'g',
   // page 1 -> dimension
-  dimensionHeight: 0,
+  dimensionHeight: '',
+  isDimensionHeightFocused: false,
+  isDimensionHeightValid: false,
   dimensionHeightUnit: 'cm',
-  dimensionWidth: 0,
+  dimensionWidth: '',
+  isDimensionWidthFocused: false,
+  isDimensionWidthValid: false,
   dimensionWidthUnit: 'cm',
-  dimensionLength: 0,
+  dimensionLength: '',
+  isDimensionLengthFocused: false,
+  isDimensionLengthValid: false,
   dimensionLengthUnit: 'cm',
   // page 1 -> additional comments
   additionalComments: '',
@@ -108,7 +119,7 @@ const initialCreateProductState: CreateProductState = {
   storageCacheCapacity: 0,
   storageCacheCapacityUnit: 'MB',
   storageFormFactor: 'M.2 2280',
-  storageInterface: 'PCIe 3.0 x4',
+  storageInterface: 'M.2',
 
   // page 2 -> specifications -> psu
   psuWattage: 0,
@@ -123,21 +134,21 @@ const initialCreateProductState: CreateProductState = {
   caseType: 'Mid Tower',
   caseSidePanel: 'Solid',
 
-  // page 2 -> specifications -> monitor
-  monitorSize: 0,
-  monitorResolutionHorizontal: 0,
-  monitorResolutionVertical: 0,
-  monitorRefreshRate: 0,
-  monitorPanelType: 'IPS',
-  monitorResponseTime: 0,
-  monitorAspectRatio: '',
-  isMonitorAspectRatioFocused: false,
-  isMonitorAspectRatioValid: false,
+  // page 2 -> specifications -> display
+  displaySize: 0,
+  displayResolutionHorizontal: 0,
+  displayResolutionVertical: 0,
+  displayRefreshRate: 0,
+  displayPanelType: 'IPS',
+  displayResponseTime: 0,
+  displayAspectRatio: '',
+  isDisplayAspectRatioFocused: false,
+  isDisplayAspectRatioValid: false,
 
   // page 2 -> specifications -> keyboard
   keyboardBacklight: 'RGB',
   keyboardInterface: 'USB',
-  keyboardLayout: 'ISO',
+  keyboardLayout: 'QWERTY',
   keyboardSwitch: 'Cherry MX Red',
 
   // page 2 -> specifications -> mouse
@@ -218,10 +229,10 @@ const initialCreateProductState: CreateProductState = {
   accessoryType: '',
   isAccessoryTypeFocused: false,
   isAccessoryTypeValid: false,
-  accessoryFieldsUserDefined: new Map<number, [string, string]>(),
-  areAccessoryFieldsUserDefinedFocused: new Map<number, [boolean, boolean]>(),
-  areAccessoryFieldsUserDefinedValid: new Map<number, [boolean, boolean]>(),
-  accessoryFieldUserDefinedCurrentIdx: 0,
+  accessoryFieldsAdditional: new Map<number, [string, string]>(),
+  areAccessoryFieldsAdditionalFocused: new Map<number, [boolean, boolean]>(),
+  areAccessoryFieldsAdditionalValid: new Map<number, [boolean, boolean]>(),
+  currentlySelectedAdditionalFieldIndex: 0,
 
   // page 3
   imgFormDataArray: [],
@@ -261,16 +272,27 @@ const createProductAction: CreateProductAction = {
   setIsPriceFocused: 'setIsPriceFocused',
   setCurrency: 'setCurrency',
   setAvailability: 'setAvailability',
+  // page 1 -> quantity
   setQuantity: 'setQuantity',
+  setIsQuantityValid: 'setIsQuantityValid',
+  setIsQuantityFocused: 'setIsQuantityFocused',
   // page 1 -> weight
   setWeight: 'setWeight',
+  setIsWeightValid: 'setIsWeightValid',
+  setIsWeightFocused: 'setIsWeightFocused',
   setWeightUnit: 'setWeightUnit',
   // page 1 -> dimensions
   setDimensionLength: 'setDimensionLength',
+  setIsDimensionLengthValid: 'setIsDimensionLengthValid',
+  setIsDimensionLengthFocused: 'setIsDimensionLengthFocused',
   setDimensionLengthUnit: 'setDimensionLengthUnit',
   setDimensionWidth: 'setDimensionWidth',
+  setIsDimensionWidthValid: 'setIsDimensionWidthValid',
+  setIsDimensionWidthFocused: 'setIsDimensionWidthFocused',
   setDimensionWidthUnit: 'setDimensionWidthUnit',
   setDimensionHeight: 'setDimensionHeight',
+  setIsDimensionHeightValid: 'setIsDimensionHeightValid',
+  setIsDimensionHeightFocused: 'setIsDimensionHeightFocused',
   setDimensionHeightUnit: 'setDimensionHeightUnit',
   // page 1 -> additional comments
   setAdditionalComments: 'setAdditionalComments',
@@ -359,16 +381,16 @@ const createProductAction: CreateProductAction = {
   setCaseType: 'setCaseType',
   setCaseSidePanel: 'setCaseSidePanel',
 
-  // page 2 -> specifications -> monitor
-  setMonitorSize: 'setMonitorSize',
-  setMonitorResolutionHorizontal: 'setMonitorResolutionHorizontal',
-  setMonitorResolutionVertical: 'setMonitorResolutionVertical',
-  setMonitorRefreshRate: 'setMonitorRefreshRate',
-  setMonitorPanelType: 'setMonitorPanelType',
-  setMonitorResponseTime: 'setMonitorResponseTime',
-  setMonitorAspectRatio: 'setMonitorAspectRatio',
-  setIsMonitorAspectRatioValid: 'setIsMonitorAspectRatioValid',
-  setIsMonitorAspectRatioFocused: 'setIsMonitorAspectRatioFocused',
+  // page 2 -> specifications -> display
+  setDisplaySize: 'setDisplaySize',
+  setDisplayResolutionHorizontal: 'setDisplayResolutionHorizontal',
+  setDisplayResolutionVertical: 'setDisplayResolutionVertical',
+  setDisplayRefreshRate: 'setDisplayRefreshRate',
+  setDisplayPanelType: 'setDisplayPanelType',
+  setDisplayResponseTime: 'setDisplayResponseTime',
+  setDisplayAspectRatio: 'setDisplayAspectRatio',
+  setIsDisplayAspectRatioValid: 'setIsDisplayAspectRatioValid',
+  setIsDisplayAspectRatioFocused: 'setIsDisplayAspectRatioFocused',
 
   // page 2 -> specifications -> keyboard
   setKeyboardSwitch: 'setKeyboardSwitch',
@@ -455,13 +477,12 @@ const createProductAction: CreateProductAction = {
   setIsAccessoryColorValid: 'setIsAccessoryColorValid',
   setIsAccessoryColorFocused: 'setIsAccessoryColorFocused',
   setAccessoryInterface: 'setAccessoryInterface',
-  setAccessoryFieldsUserDefined: 'setAccessoryFieldsUserDefined',
-  setAreAccessoryFieldsUserDefinedFocused:
-    'setAreAccessoryFieldsUserDefinedFocused',
-  setAreAccessoryFieldsUserDefinedValid:
-    'setAreAccessoryFieldsUserDefinedValid',
-  setAccessoryFieldUserDefinedCurrentIdx:
-    'setAccessoryFieldUserDefinedCurrentIdx',
+  setAccessoryFieldsAdditional: 'setAccessoryFieldsAdditional',
+  setAreAccessoryFieldsAdditionalFocused:
+    'setAreAccessoryFieldsAdditionalFocused',
+  setAreAccessoryFieldsAdditionalValid: 'setAreAccessoryFieldsAdditionalValid',
+  setCurrentlySelectedAdditionalFieldIndex:
+    'setCurrentlySelectedAdditionalFieldIndex',
 
   // page 3
   setImgFormDataArray: 'setImgFormDataArray',
@@ -571,10 +592,21 @@ function createProductReducer(
         availability: action.payload,
       };
 
+    // page 1 -> quantity
     case createProductAction.setQuantity:
       return {
         ...state,
         quantity: action.payload,
+      };
+    case createProductAction.setIsQuantityValid:
+      return {
+        ...state,
+        isQuantityValid: action.payload,
+      };
+    case createProductAction.setIsQuantityFocused:
+      return {
+        ...state,
+        isQuantityFocused: action.payload,
       };
 
     // page 1 -> weight
@@ -583,6 +615,16 @@ function createProductReducer(
         ...state,
         weight: action.payload,
       };
+    case createProductAction.setIsWeightValid:
+      return {
+        ...state,
+        isWeightValid: action.payload,
+      };
+    case createProductAction.setIsWeightFocused:
+      return {
+        ...state,
+        isWeightFocused: action.payload,
+      };
     case createProductAction.setWeightUnit:
       return {
         ...state,
@@ -590,30 +632,66 @@ function createProductReducer(
       };
 
     // page 1 -> dimension
+
+    // page 1 -> dimension -> height
     case createProductAction.setDimensionHeight:
       return {
         ...state,
         dimensionHeight: action.payload,
+      };
+    case createProductAction.setIsDimensionHeightValid:
+      return {
+        ...state,
+        isDimensionHeightValid: action.payload,
+      };
+    case createProductAction.setIsDimensionHeightFocused:
+      return {
+        ...state,
+        isDimensionHeightFocused: action.payload,
       };
     case createProductAction.setDimensionHeightUnit:
       return {
         ...state,
         dimensionHeightUnit: action.payload,
       };
+
+    // page 1 -> dimension -> width
     case createProductAction.setDimensionWidth:
       return {
         ...state,
         dimensionWidth: action.payload,
+      };
+    case createProductAction.setIsDimensionWidthValid:
+      return {
+        ...state,
+        isDimensionWidthValid: action.payload,
+      };
+    case createProductAction.setIsDimensionWidthFocused:
+      return {
+        ...state,
+        isDimensionWidthFocused: action.payload,
       };
     case createProductAction.setDimensionWidthUnit:
       return {
         ...state,
         dimensionWidthUnit: action.payload,
       };
+
+    // page 1 -> dimension -> length
     case createProductAction.setDimensionLength:
       return {
         ...state,
         dimensionLength: action.payload,
+      };
+    case createProductAction.setIsDimensionLengthValid:
+      return {
+        ...state,
+        isDimensionLengthValid: action.payload,
+      };
+    case createProductAction.setIsDimensionLengthFocused:
+      return {
+        ...state,
+        isDimensionLengthFocused: action.payload,
       };
     case createProductAction.setDimensionLengthUnit:
       return {
@@ -976,51 +1054,51 @@ function createProductReducer(
         caseSidePanel: action.payload,
       };
 
-    // page 2 -> specifications -> monitor
-    case createProductAction.setMonitorSize:
+    // page 2 -> specifications -> display
+    case createProductAction.setDisplaySize:
       return {
         ...state,
-        monitorSize: action.payload,
+        displaySize: action.payload,
       };
-    case createProductAction.setMonitorResolutionHorizontal:
+    case createProductAction.setDisplayResolutionHorizontal:
       return {
         ...state,
-        monitorResolutionHorizontal: action.payload,
+        displayResolutionHorizontal: action.payload,
       };
-    case createProductAction.setMonitorResolutionVertical:
+    case createProductAction.setDisplayResolutionVertical:
       return {
         ...state,
-        monitorResolutionVertical: action.payload,
+        displayResolutionVertical: action.payload,
       };
-    case createProductAction.setMonitorRefreshRate:
+    case createProductAction.setDisplayRefreshRate:
       return {
         ...state,
-        monitorRefreshRate: action.payload,
+        displayRefreshRate: action.payload,
       };
-    case createProductAction.setMonitorPanelType:
+    case createProductAction.setDisplayPanelType:
       return {
         ...state,
-        monitorPanelType: action.payload,
+        displayPanelType: action.payload,
       };
-    case createProductAction.setMonitorResponseTime:
+    case createProductAction.setDisplayResponseTime:
       return {
         ...state,
-        monitorResponseTime: action.payload,
+        displayResponseTime: action.payload,
       };
-    case createProductAction.setMonitorAspectRatio:
+    case createProductAction.setDisplayAspectRatio:
       return {
         ...state,
-        monitorAspectRatio: action.payload,
+        displayAspectRatio: action.payload,
       };
-    case createProductAction.setIsMonitorAspectRatioFocused:
+    case createProductAction.setIsDisplayAspectRatioFocused:
       return {
         ...state,
-        isMonitorAspectRatioFocused: action.payload,
+        isDisplayAspectRatioFocused: action.payload,
       };
-    case createProductAction.setIsMonitorAspectRatioValid:
+    case createProductAction.setIsDisplayAspectRatioValid:
       return {
         ...state,
-        isMonitorAspectRatioValid: action.payload,
+        isDisplayAspectRatioValid: action.payload,
       };
 
     // page 2 -> specifications -> keyboard
@@ -1386,60 +1464,60 @@ function createProductReducer(
         ...state,
         accessoryInterface: action.payload,
       };
-    case createProductAction.setAccessoryFieldsUserDefined: {
+    case createProductAction.setAccessoryFieldsAdditional: {
       const { operation } = action.payload;
 
       switch (operation) {
         case 'add': {
-          const accessoryFieldsUserDefinedClone = structuredClone(
-            state.accessoryFieldsUserDefined
+          const accessoryFieldsAdditionalClone = structuredClone(
+            state.accessoryFieldsAdditional
           );
 
           const { data } = action.payload;
-          const prevSize = accessoryFieldsUserDefinedClone.size;
-          accessoryFieldsUserDefinedClone.set(prevSize, data);
+          const prevSize = accessoryFieldsAdditionalClone.size;
+          accessoryFieldsAdditionalClone.set(prevSize, data);
 
           return {
             ...state,
-            accessoryFieldsUserDefined: accessoryFieldsUserDefinedClone,
+            accessoryFieldsAdditional: accessoryFieldsAdditionalClone,
           };
         }
         case 'remove': {
-          const accessoryFieldsUserDefinedClone = structuredClone(
-            state.accessoryFieldsUserDefined
+          const accessoryFieldsAdditionalClone = structuredClone(
+            state.accessoryFieldsAdditional
           );
 
           const { index } = action.payload;
-          accessoryFieldsUserDefinedClone.delete(index);
+          accessoryFieldsAdditionalClone.delete(index);
 
           // resets the indices because the indices are used as keys
-          const filteredAccessoryFieldsUserDefined = new Map<
+          const filteredAccessoryFieldsAdditional = new Map<
             number,
             [string, string]
           >();
-          Array.from(accessoryFieldsUserDefinedClone).forEach(
-            (mapIdxKeyVal, keyValIdx) => {
+          Array.from(accessoryFieldsAdditionalClone).forEach(
+            (mapIdxKeyVal, arrayIdx) => {
               const [_mapIdx, keyVal] = mapIdxKeyVal as [
                 number,
                 [string, string]
               ];
 
-              filteredAccessoryFieldsUserDefined.set(keyValIdx, keyVal);
+              filteredAccessoryFieldsAdditional.set(arrayIdx, keyVal);
             }
           );
 
           return {
             ...state,
-            accessoryFieldsUserDefined: filteredAccessoryFieldsUserDefined,
+            accessoryFieldsAdditional: filteredAccessoryFieldsAdditional,
           };
         }
         case 'update': {
-          const accessoryFieldsUserDefinedClone = structuredClone(
-            state.accessoryFieldsUserDefined
+          const accessoryFieldsAdditionalClone = structuredClone(
+            state.accessoryFieldsAdditional
           );
 
           const { data, index, kind } = action.payload;
-          const prevKeyVal = accessoryFieldsUserDefinedClone.get(index);
+          const prevKeyVal = accessoryFieldsAdditionalClone.get(index);
 
           if (!prevKeyVal) {
             return state;
@@ -1447,78 +1525,75 @@ function createProductReducer(
 
           const [prevKey, prevValue] = prevKeyVal;
           kind === 'key'
-            ? accessoryFieldsUserDefinedClone.set(index, [data, prevValue])
-            : accessoryFieldsUserDefinedClone.set(index, [prevKey, data]);
+            ? accessoryFieldsAdditionalClone.set(index, [data, prevValue])
+            : accessoryFieldsAdditionalClone.set(index, [prevKey, data]);
 
           return {
             ...state,
-            accessoryFieldsUserDefined: accessoryFieldsUserDefinedClone,
+            accessoryFieldsAdditional: accessoryFieldsAdditionalClone,
           };
         }
         default:
           return state;
       }
     }
-    case createProductAction.setAreAccessoryFieldsUserDefinedFocused: {
+    case createProductAction.setAreAccessoryFieldsAdditionalFocused: {
       const { operation } = action.payload;
 
       switch (operation) {
         case 'add': {
-          const areAccessoryFieldsUserDefinedFocusedClone = structuredClone(
-            state.areAccessoryFieldsUserDefinedFocused
+          const areAccessoryFieldsAdditionalFocusedClone = structuredClone(
+            state.areAccessoryFieldsAdditionalFocused
           );
 
           const { data } = action.payload;
-          const prevSize = areAccessoryFieldsUserDefinedFocusedClone.size;
-          areAccessoryFieldsUserDefinedFocusedClone.set(prevSize, data);
+          const prevSize = areAccessoryFieldsAdditionalFocusedClone.size;
+          areAccessoryFieldsAdditionalFocusedClone.set(prevSize, data);
 
           return {
             ...state,
-            areAccessoryFieldsUserDefinedFocused:
-              areAccessoryFieldsUserDefinedFocusedClone,
+            areAccessoryFieldsAdditionalFocused:
+              areAccessoryFieldsAdditionalFocusedClone,
           };
         }
         case 'remove': {
-          const areAccessoryFieldsUserDefinedFocusedClone = structuredClone(
-            state.areAccessoryFieldsUserDefinedFocused
+          const areAccessoryFieldsAdditionalFocusedClone = structuredClone(
+            state.areAccessoryFieldsAdditionalFocused
           );
 
           const { index } = action.payload;
-          areAccessoryFieldsUserDefinedFocusedClone.delete(index);
+          areAccessoryFieldsAdditionalFocusedClone.delete(index);
 
           // resets the indices because the indices are used as keys
-          const filteredAreAccessoryFieldsUserDefinedFocused = new Map<
+          const filteredAreAccessoryFieldsAdditionalFocused = new Map<
             number,
             [boolean, boolean]
           >();
-          Array.from(areAccessoryFieldsUserDefinedFocusedClone).forEach(
-            (mapIdxKeyVal, keyValIdx) => {
+          Array.from(areAccessoryFieldsAdditionalFocusedClone).forEach(
+            (mapIdxKeyVal, arrayIdx) => {
               const [_mapIdx, keyVal] = mapIdxKeyVal as [
                 number,
                 [boolean, boolean]
               ];
 
-              filteredAreAccessoryFieldsUserDefinedFocused.set(
-                keyValIdx,
-                keyVal
-              );
+              filteredAreAccessoryFieldsAdditionalFocused.set(arrayIdx, keyVal);
             }
           );
 
           return {
             ...state,
-            areAccessoryFieldsUserDefinedFocused:
-              filteredAreAccessoryFieldsUserDefinedFocused,
+            areAccessoryFieldsAdditionalFocused:
+              filteredAreAccessoryFieldsAdditionalFocused,
           };
         }
         case 'update': {
-          const areAccessoryFieldsUserDefinedFocusedClone = structuredClone(
-            state.areAccessoryFieldsUserDefinedFocused
+          const areAccessoryFieldsAdditionalFocusedClone = structuredClone(
+            state.areAccessoryFieldsAdditionalFocused
           );
 
           const { data, index, kind } = action.payload;
           const prevKeyVal =
-            areAccessoryFieldsUserDefinedFocusedClone.get(index);
+            areAccessoryFieldsAdditionalFocusedClone.get(index);
 
           if (!prevKeyVal) {
             return state;
@@ -1526,81 +1601,81 @@ function createProductReducer(
 
           const [prevKey, prevValue] = prevKeyVal;
           kind === 'key'
-            ? areAccessoryFieldsUserDefinedFocusedClone.set(index, [
+            ? areAccessoryFieldsAdditionalFocusedClone.set(index, [
                 data,
                 prevValue,
               ])
-            : areAccessoryFieldsUserDefinedFocusedClone.set(index, [
+            : areAccessoryFieldsAdditionalFocusedClone.set(index, [
                 prevKey,
                 data,
               ]);
 
           return {
             ...state,
-            areAccessoryFieldsUserDefinedFocused:
-              areAccessoryFieldsUserDefinedFocusedClone,
+            areAccessoryFieldsAdditionalFocused:
+              areAccessoryFieldsAdditionalFocusedClone,
           };
         }
         default:
           return state;
       }
     }
-    case createProductAction.setAreAccessoryFieldsUserDefinedValid: {
+    case createProductAction.setAreAccessoryFieldsAdditionalValid: {
       const { operation } = action.payload;
 
       switch (operation) {
         case 'add': {
-          const areAccessoryFieldsUserDefinedValidClone = structuredClone(
-            state.areAccessoryFieldsUserDefinedValid
+          const areAccessoryFieldsAdditionalValidClone = structuredClone(
+            state.areAccessoryFieldsAdditionalValid
           );
 
           const { data } = action.payload;
-          const prevSize = areAccessoryFieldsUserDefinedValidClone.size;
-          areAccessoryFieldsUserDefinedValidClone.set(prevSize, data);
+          const prevSize = areAccessoryFieldsAdditionalValidClone.size;
+          areAccessoryFieldsAdditionalValidClone.set(prevSize, data);
 
           return {
             ...state,
-            areAccessoryFieldsUserDefinedValid:
-              areAccessoryFieldsUserDefinedValidClone,
+            areAccessoryFieldsAdditionalValid:
+              areAccessoryFieldsAdditionalValidClone,
           };
         }
         case 'remove': {
-          const areAccessoryFieldsUserDefinedValidClone = structuredClone(
-            state.areAccessoryFieldsUserDefinedValid
+          const areAccessoryFieldsAdditionalValidClone = structuredClone(
+            state.areAccessoryFieldsAdditionalValid
           );
 
           const { index } = action.payload;
-          areAccessoryFieldsUserDefinedValidClone.delete(index);
+          areAccessoryFieldsAdditionalValidClone.delete(index);
 
           // resets the indices because the indices are used as keys
-          const filteredAreAccessoryFieldsUserDefinedValid = new Map<
+          const filteredAreAccessoryFieldsAdditionalValid = new Map<
             number,
             [boolean, boolean]
           >();
-          Array.from(areAccessoryFieldsUserDefinedValidClone).forEach(
-            (mapIdxKeyVal, keyValIdx) => {
+          Array.from(areAccessoryFieldsAdditionalValidClone).forEach(
+            (mapIdxKeyVal, arrayIdx) => {
               const [_mapIdx, keyVal] = mapIdxKeyVal as [
                 number,
                 [boolean, boolean]
               ];
 
-              filteredAreAccessoryFieldsUserDefinedValid.set(keyValIdx, keyVal);
+              filteredAreAccessoryFieldsAdditionalValid.set(arrayIdx, keyVal);
             }
           );
 
           return {
             ...state,
-            areAccessoryFieldsUserDefinedValid:
-              filteredAreAccessoryFieldsUserDefinedValid,
+            areAccessoryFieldsAdditionalValid:
+              filteredAreAccessoryFieldsAdditionalValid,
           };
         }
         case 'update': {
-          const areAccessoryFieldsUserDefinedValidClone = structuredClone(
-            state.areAccessoryFieldsUserDefinedValid
+          const areAccessoryFieldsAdditionalValidClone = structuredClone(
+            state.areAccessoryFieldsAdditionalValid
           );
 
           const { data, index, kind } = action.payload;
-          const prevKeyVal = areAccessoryFieldsUserDefinedValidClone.get(index);
+          const prevKeyVal = areAccessoryFieldsAdditionalValidClone.get(index);
 
           if (!prevKeyVal) {
             return state;
@@ -1608,29 +1683,29 @@ function createProductReducer(
 
           const [prevKey, prevValue] = prevKeyVal;
           kind === 'key'
-            ? areAccessoryFieldsUserDefinedValidClone.set(index, [
+            ? areAccessoryFieldsAdditionalValidClone.set(index, [
                 data,
                 prevValue,
               ])
-            : areAccessoryFieldsUserDefinedValidClone.set(index, [
+            : areAccessoryFieldsAdditionalValidClone.set(index, [
                 prevKey,
                 data,
               ]);
 
           return {
             ...state,
-            areAccessoryFieldsUserDefinedValid:
-              areAccessoryFieldsUserDefinedValidClone,
+            areAccessoryFieldsAdditionalValid:
+              areAccessoryFieldsAdditionalValidClone,
           };
         }
         default:
           return state;
       }
     }
-    case createProductAction.setAccessoryFieldUserDefinedCurrentIdx:
+    case createProductAction.setCurrentlySelectedAdditionalFieldIndex:
       return {
         ...state,
-        accessoryFieldUserDefinedCurrentIdx: action.payload,
+        currentlySelectedAdditionalFieldIndex: action.payload,
       };
 
     // page 3

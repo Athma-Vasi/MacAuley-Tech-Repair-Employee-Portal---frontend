@@ -1,6 +1,6 @@
-import { Action, Currency, SetStepsInErrorPayload, User } from '../../../types';
-import { ActionsDashboard } from '../../../types/actions.types';
-import { ProductCategory } from '../../dashboard/types';
+import { Action, Currency, SetStepsInErrorPayload, User } from '../../types';
+import { ActionsDashboard } from '../../types/actions.types';
+import { ProductCategory } from '../dashboard/types';
 
 type DesktopComputerSpecifications = {
   cpu: CpuSpecifications;
@@ -10,7 +10,7 @@ type DesktopComputerSpecifications = {
   storage: StorageSpecifications;
   psu: PsuSpecifications;
   case: CaseSpecifications;
-  monitor: MonitorSpecifications;
+  display: DisplaySpecifications;
   keyboard: KeyboardSpecifications;
   mouse: MouseSpecifications;
   speaker: SpeakerSpecifications;
@@ -21,7 +21,7 @@ type LaptopSpecifications = {
   gpu: GpuSpecifications;
   ram: RamSpecifications;
   storage: StorageSpecifications;
-  display: MonitorSpecifications;
+  display: DisplaySpecifications;
 };
 
 type MemoryUnit = 'KB' | 'MB' | 'GB' | 'TB';
@@ -81,27 +81,25 @@ type RamSpecifications = {
   timing: string; // 16-18-18-38, etc.
 };
 
-type StorageType =
-  | 'SSD'
-  | 'HDD'
-  | 'SSHD'
-  | 'NVMe SSD'
-  | 'SATA SSD'
-  | 'M.2 SSD'
-  | 'Other';
+type StorageType = 'SSD' | 'HDD' | 'SSHD' | 'Other';
 type StorageFormFactor =
   | '2.5"'
+  | '3.5"'
   | 'M.2 2280'
   | 'M.2 22110'
   | 'M.2 2242'
   | 'M.2 2230'
+  | 'mSATA'
+  | 'U.2'
   | 'Other';
 type StorageInterface =
   | 'SATA III'
-  | 'PCIe 3.0 x4'
-  | 'PCIe 4.0 x4'
-  | 'PCIe 3.0 x2'
-  | 'PCIe 3.0 x1'
+  | 'NVMe'
+  | 'PCIe'
+  | 'U.2'
+  | 'SATA-Express'
+  | 'M.2'
+  | 'mSATA'
   | 'Other';
 type StorageSpecifications = {
   storageType: StorageType; // SSD, HDD, etc.
@@ -114,14 +112,12 @@ type StorageSpecifications = {
 };
 
 type PsuEfficiency =
+  | '80+'
   | '80+ Bronze'
+  | '80+ Silver'
   | '80+ Gold'
   | '80+ Platinum'
-  | '80+ Titanium'
-  | '80+ Silver'
-  | '80+'
-  | '80+ White'
-  | '80+ Standard';
+  | '80+ Titanium';
 type PsuModularity = 'Full' | 'Semi' | 'None' | 'Other';
 type PsuFormFactor = 'ATX' | 'SFX' | 'SFX-L' | 'TFX' | 'Flex ATX' | 'Other';
 type PsuSpecifications = {
@@ -146,14 +142,14 @@ type CaseSpecifications = {
   sidePanel: CaseSidePanel; // windowed or not
 };
 
-type MonitorPanelType = 'IPS' | 'TN' | 'VA' | 'OLED' | 'QLED' | 'Other';
+type DisplayPanelType = 'IPS' | 'TN' | 'VA' | 'OLED' | 'QLED' | 'Other';
 
-type MonitorSpecifications = {
+type DisplaySpecifications = {
   size: number; // 24", 27", etc.
   horizontalResolution: number;
   verticalResolution: number;
   refreshRate: number; // 144 Hz, 165 Hz, etc.
-  panelType: MonitorPanelType; // IPS, TN, etc.
+  panelType: DisplayPanelType; // IPS, TN, etc.
   responseTime: number; // 1 ms, 4 ms, etc.
   aspectRatio: string; // 16:9, 21:9, etc.
 };
@@ -167,9 +163,17 @@ type KeyboardSwitch =
   | 'Cherry MX Clear'
   | 'Membrane'
   | 'Other';
-type KeyboardLayout = 'ANSI' | 'ISO' | 'Other';
+type KeyboardLayout =
+  | 'QWERTY'
+  | 'HHKB'
+  | 'Dvorak'
+  | 'Colemak'
+  | 'Workman'
+  | 'CARPALX'
+  | 'NORMAN'
+  | 'Other';
 type KeyboardBacklight = 'RGB' | 'Single Color' | 'None';
-type PeripheralsInterface = 'USB' | 'Bluetooth' | 'Other';
+type PeripheralsInterface = 'USB' | 'Bluetooth' | 'PS/2' | 'Other';
 type KeyboardSpecifications = {
   switch: KeyboardSwitch; // Cherry MX Red, Cherry MX Blue, etc.
   layout: KeyboardLayout; // ANSI, ISO, etc.
@@ -187,7 +191,13 @@ type MouseSpecifications = {
 };
 
 type HeadphoneType = 'Over-ear' | 'On-ear' | 'In-ear' | 'Other';
-type HeadphoneInterface = 'USB' | 'Bluetooth' | '3.5 mm' | '2.5 mm' | 'Other';
+type HeadphoneInterface =
+  | 'USB'
+  | 'Bluetooth'
+  | '3.5 mm'
+  | '2.5 mm'
+  | 'MMCX'
+  | 'Other';
 type HeadphoneSpecifications = {
   headphoneType: HeadphoneType; // Over-ear, On-ear, etc.
   driver: number; // 50 mm, 53 mm, etc.
@@ -198,7 +208,14 @@ type HeadphoneSpecifications = {
 };
 
 type SpeakerType = '2.0' | '2.1' | '3.1' | '4.1' | '5.1' | '7.1' | 'Other';
-type SpeakerInterface = HeadphoneInterface;
+type SpeakerInterface =
+  | 'USB'
+  | 'Bluetooth'
+  | '3.5 mm'
+  | '2.5 mm'
+  | 'RCA'
+  | 'TRS'
+  | 'Other';
 type SpeakerSpecifications = {
   speakerType: SpeakerType; // 2.0, 2.1, etc.
   totalWattage: number; // 10 W, 20 W, etc.
@@ -240,7 +257,7 @@ type Specifications = {
   storage?: StorageSpecifications;
   psu?: PsuSpecifications;
   case?: CaseSpecifications;
-  monitor?: MonitorSpecifications;
+  display?: DisplaySpecifications;
   keyboard?: KeyboardSpecifications;
   mouse?: MouseSpecifications;
   headphone?: HeadphoneSpecifications;
@@ -328,16 +345,26 @@ type CreateProductState = {
   isPriceFocused: boolean;
   currency: Currency;
   availability: ProductAvailability;
-  quantity: number;
+  quantity: string;
+  isQuantityValid: boolean;
+  isQuantityFocused: boolean;
   // page 1 -> weight
-  weight: number;
+  weight: string;
+  isWeightValid: boolean;
+  isWeightFocused: boolean;
   weightUnit: WeightUnit;
   // page 1 -> dimensions
-  dimensionLength: number;
+  dimensionLength: string;
+  isDimensionLengthValid: boolean;
+  isDimensionLengthFocused: boolean;
   dimensionLengthUnit: DimensionUnit;
-  dimensionWidth: number;
+  dimensionWidth: string;
+  isDimensionWidthValid: boolean;
+  isDimensionWidthFocused: boolean;
   dimensionWidthUnit: DimensionUnit;
-  dimensionHeight: number;
+  dimensionHeight: string;
+  isDimensionHeightValid: boolean;
+  isDimensionHeightFocused: boolean;
   dimensionHeightUnit: DimensionUnit;
   // page 1 -> additional comments
   additionalComments: string;
@@ -429,16 +456,16 @@ type CreateProductState = {
   isCaseColorFocused: boolean;
   caseSidePanel: CaseSidePanel;
 
-  // page 2 -> specifications -> monitor
-  monitorSize: number; // inches
-  monitorResolutionHorizontal: number;
-  monitorResolutionVertical: number;
-  monitorRefreshRate: number;
-  monitorPanelType: MonitorPanelType;
-  monitorResponseTime: number;
-  monitorAspectRatio: string;
-  isMonitorAspectRatioValid: boolean;
-  isMonitorAspectRatioFocused: boolean;
+  // page 2 -> specifications -> display
+  displaySize: number; // inches
+  displayResolutionHorizontal: number;
+  displayResolutionVertical: number;
+  displayRefreshRate: number;
+  displayPanelType: DisplayPanelType;
+  displayResponseTime: number;
+  displayAspectRatio: string;
+  isDisplayAspectRatioValid: boolean;
+  isDisplayAspectRatioFocused: boolean;
 
   // page 2 -> specifications -> keyboard
   keyboardSwitch: KeyboardSwitch;
@@ -524,15 +551,15 @@ type CreateProductState = {
   isAccessoryColorValid: boolean;
   isAccessoryColorFocused: boolean;
   accessoryInterface: PeripheralsInterface;
-  accessoryFieldsUserDefined: Map<number, [string, string]>; // Map<index, [key, value]>
-  areAccessoryFieldsUserDefinedValid: Map<number, [boolean, boolean]>; // Map<index, [isKeyValid, isValueValid]>
-  areAccessoryFieldsUserDefinedFocused: Map<number, [boolean, boolean]>; // Map<index, [isKeyFocused, isValueFocused]>
-  accessoryFieldUserDefinedCurrentIdx: number; // currently updating idx
+  accessoryFieldsAdditional: Map<number, [string, string]>; // Map<index, [field, value]>
+  areAccessoryFieldsAdditionalValid: Map<number, [boolean, boolean]>; // Map<index, [isFieldValid, isValueValid]>
+  areAccessoryFieldsAdditionalFocused: Map<number, [boolean, boolean]>; // Map<index, [isFieldFocused, isValueFocused]>
 
   // page 3
   imgFormDataArray: FormData[];
   areImagesValid: boolean;
 
+  currentlySelectedAdditionalFieldIndex: number; // currently updating idx
   triggerFormSubmit: boolean;
   currentStepperPosition: number;
   stepsInError: Set<number>;
@@ -560,22 +587,33 @@ type CreateProductAction = {
   setDescription: 'setDescription';
   setIsDescriptionValid: 'setIsDescriptionValid';
   setIsDescriptionFocused: 'setIsDescriptionFocused';
-  // page 1 -> price, currency, availability, quantity
+  // page 1 -> price, currency, availability
   setPrice: 'setPrice';
   setIsPriceValid: 'setIsPriceValid';
   setIsPriceFocused: 'setIsPriceFocused';
   setCurrency: 'setCurrency';
   setAvailability: 'setAvailability';
+  // page 1 -> quantity
   setQuantity: 'setQuantity';
+  setIsQuantityValid: 'setIsQuantityValid';
+  setIsQuantityFocused: 'setIsQuantityFocused';
   // page 1 -> weight
   setWeight: 'setWeight';
+  setIsWeightValid: 'setIsWeightValid';
+  setIsWeightFocused: 'setIsWeightFocused';
   setWeightUnit: 'setWeightUnit';
   // page 1 -> dimensions
   setDimensionLength: 'setDimensionLength';
+  setIsDimensionLengthValid: 'setIsDimensionLengthValid';
+  setIsDimensionLengthFocused: 'setIsDimensionLengthFocused';
   setDimensionLengthUnit: 'setDimensionLengthUnit';
   setDimensionWidth: 'setDimensionWidth';
+  setIsDimensionWidthValid: 'setIsDimensionWidthValid';
+  setIsDimensionWidthFocused: 'setIsDimensionWidthFocused';
   setDimensionWidthUnit: 'setDimensionWidthUnit';
   setDimensionHeight: 'setDimensionHeight';
+  setIsDimensionHeightValid: 'setIsDimensionHeightValid';
+  setIsDimensionHeightFocused: 'setIsDimensionHeightFocused';
   setDimensionHeightUnit: 'setDimensionHeightUnit';
   // page 1 -> additional comments
   setAdditionalComments: 'setAdditionalComments';
@@ -664,16 +702,16 @@ type CreateProductAction = {
   setIsCaseColorFocused: 'setIsCaseColorFocused';
   setCaseSidePanel: 'setCaseSidePanel';
 
-  // page 2 -> specifications -> monitor
-  setMonitorSize: 'setMonitorSize';
-  setMonitorResolutionHorizontal: 'setMonitorResolutionHorizontal';
-  setMonitorResolutionVertical: 'setMonitorResolutionVertical';
-  setMonitorRefreshRate: 'setMonitorRefreshRate';
-  setMonitorPanelType: 'setMonitorPanelType';
-  setMonitorResponseTime: 'setMonitorResponseTime';
-  setMonitorAspectRatio: 'setMonitorAspectRatio';
-  setIsMonitorAspectRatioValid: 'setIsMonitorAspectRatioValid';
-  setIsMonitorAspectRatioFocused: 'setIsMonitorAspectRatioFocused';
+  // page 2 -> specifications -> display
+  setDisplaySize: 'setDisplaySize';
+  setDisplayResolutionHorizontal: 'setDisplayResolutionHorizontal';
+  setDisplayResolutionVertical: 'setDisplayResolutionVertical';
+  setDisplayRefreshRate: 'setDisplayRefreshRate';
+  setDisplayPanelType: 'setDisplayPanelType';
+  setDisplayResponseTime: 'setDisplayResponseTime';
+  setDisplayAspectRatio: 'setDisplayAspectRatio';
+  setIsDisplayAspectRatioValid: 'setIsDisplayAspectRatioValid';
+  setIsDisplayAspectRatioFocused: 'setIsDisplayAspectRatioFocused';
 
   // page 2 -> specifications -> keyboard
   setKeyboardSwitch: 'setKeyboardSwitch';
@@ -759,10 +797,10 @@ type CreateProductAction = {
   setIsAccessoryColorValid: 'setIsAccessoryColorValid';
   setIsAccessoryColorFocused: 'setIsAccessoryColorFocused';
   setAccessoryInterface: 'setAccessoryInterface';
-  setAccessoryFieldsUserDefined: 'setAccessoryFieldsUserDefined';
-  setAreAccessoryFieldsUserDefinedValid: 'setAreAccessoryFieldsUserDefinedValid';
-  setAreAccessoryFieldsUserDefinedFocused: 'setAreAccessoryFieldsUserDefinedFocused';
-  setAccessoryFieldUserDefinedCurrentIdx: 'setAccessoryFieldUserDefinedCurrentIdx';
+  setAccessoryFieldsAdditional: 'setAccessoryFieldsAdditional';
+  setAreAccessoryFieldsAdditionalValid: 'setAreAccessoryFieldsAdditionalValid';
+  setAreAccessoryFieldsAdditionalFocused: 'setAreAccessoryFieldsAdditionalFocused';
+  setCurrentlySelectedAdditionalFieldIndex: 'setCurrentlySelectedAdditionalFieldIndex';
 
   // page 3
   setImgFormDataArray: 'setImgFormDataArray';
@@ -780,7 +818,7 @@ type CreateProductAction = {
   setLoadingMessage: 'setLoadingMessage';
 };
 
-type UserDefinedFieldsPayload =
+type AdditionalFieldsPayload =
   | {
       operation: 'add';
       data: [string, string];
@@ -796,7 +834,7 @@ type UserDefinedFieldsPayload =
       data: string;
     };
 
-type UserDefinedFieldsValidFocusedPayload =
+type AdditionalFieldsValidFocusedPayload =
   | {
       operation: 'add';
       data: [boolean, boolean];
@@ -867,11 +905,23 @@ type CreateProductDispatch =
     }
   | {
       type: CreateProductAction['setQuantity'];
-      payload: number;
+      payload: string;
+    }
+  | {
+      type:
+        | CreateProductAction['setIsQuantityValid']
+        | CreateProductAction['setIsQuantityFocused'];
+      payload: boolean;
     }
   | {
       type: CreateProductAction['setWeight'];
-      payload: number;
+      payload: string;
+    }
+  | {
+      type:
+        | CreateProductAction['setIsWeightValid']
+        | CreateProductAction['setIsWeightFocused'];
+      payload: boolean;
     }
   | {
       type: CreateProductAction['setWeightUnit'];
@@ -879,7 +929,13 @@ type CreateProductDispatch =
     }
   | {
       type: CreateProductAction['setDimensionLength'];
-      payload: number;
+      payload: string;
+    }
+  | {
+      type:
+        | CreateProductAction['setIsDimensionLengthFocused']
+        | CreateProductAction['setIsDimensionLengthValid'];
+      payload: boolean;
     }
   | {
       type: CreateProductAction['setDimensionLengthUnit'];
@@ -887,7 +943,13 @@ type CreateProductDispatch =
     }
   | {
       type: CreateProductAction['setDimensionWidth'];
-      payload: number;
+      payload: string;
+    }
+  | {
+      type:
+        | CreateProductAction['setIsDimensionWidthValid']
+        | CreateProductAction['setIsDimensionWidthFocused'];
+      payload: boolean;
     }
   | {
       type: CreateProductAction['setDimensionWidthUnit'];
@@ -895,7 +957,13 @@ type CreateProductDispatch =
     }
   | {
       type: CreateProductAction['setDimensionHeight'];
-      payload: number;
+      payload: string;
+    }
+  | {
+      type:
+        | CreateProductAction['setIsDimensionHeightValid']
+        | CreateProductAction['setIsDimensionHeightFocused'];
+      payload: boolean;
     }
   | {
       type: CreateProductAction['setDimensionHeightUnit'];
@@ -1152,39 +1220,39 @@ type CreateProductDispatch =
       type: CreateProductAction['setCaseSidePanel'];
       payload: CaseSidePanel;
     }
-  // specifications -> monitor
+  // specifications -> display
   | {
-      type: CreateProductAction['setMonitorSize'];
+      type: CreateProductAction['setDisplaySize'];
       payload: number;
     }
   | {
-      type: CreateProductAction['setMonitorResolutionHorizontal'];
+      type: CreateProductAction['setDisplayResolutionHorizontal'];
       payload: number;
     }
   | {
-      type: CreateProductAction['setMonitorResolutionVertical'];
+      type: CreateProductAction['setDisplayResolutionVertical'];
       payload: number;
     }
   | {
-      type: CreateProductAction['setMonitorRefreshRate'];
+      type: CreateProductAction['setDisplayRefreshRate'];
       payload: number;
     }
   | {
-      type: CreateProductAction['setMonitorPanelType'];
-      payload: MonitorPanelType;
+      type: CreateProductAction['setDisplayPanelType'];
+      payload: DisplayPanelType;
     }
   | {
-      type: CreateProductAction['setMonitorResponseTime'];
+      type: CreateProductAction['setDisplayResponseTime'];
       payload: number;
     }
   | {
-      type: CreateProductAction['setMonitorAspectRatio'];
+      type: CreateProductAction['setDisplayAspectRatio'];
       payload: string;
     }
   | {
       type:
-        | CreateProductAction['setIsMonitorAspectRatioValid']
-        | CreateProductAction['setIsMonitorAspectRatioFocused'];
+        | CreateProductAction['setIsDisplayAspectRatioValid']
+        | CreateProductAction['setIsDisplayAspectRatioFocused'];
       payload: boolean;
     }
   // specifications -> keyboard
@@ -1453,17 +1521,17 @@ type CreateProductDispatch =
       payload: PeripheralsInterface;
     }
   | {
-      type: CreateProductAction['setAccessoryFieldsUserDefined'];
-      payload: UserDefinedFieldsPayload;
+      type: CreateProductAction['setAccessoryFieldsAdditional'];
+      payload: AdditionalFieldsPayload;
     }
   | {
       type:
-        | CreateProductAction['setAreAccessoryFieldsUserDefinedValid']
-        | CreateProductAction['setAreAccessoryFieldsUserDefinedFocused'];
-      payload: UserDefinedFieldsValidFocusedPayload;
+        | CreateProductAction['setAreAccessoryFieldsAdditionalValid']
+        | CreateProductAction['setAreAccessoryFieldsAdditionalFocused'];
+      payload: AdditionalFieldsValidFocusedPayload;
     }
   | {
-      type: CreateProductAction['setAccessoryFieldUserDefinedCurrentIdx'];
+      type: CreateProductAction['setCurrentlySelectedAdditionalFieldIndex'];
       payload: number;
     }
   // page 3
@@ -1514,6 +1582,8 @@ export type {
   CreateProductState,
   DesktopComputerSpecifications,
   DimensionUnit,
+  DisplayPanelType,
+  DisplaySpecifications,
   GpuSpecifications,
   HeadphoneInterface,
   HeadphoneSpecifications,
@@ -1526,8 +1596,6 @@ export type {
   MemoryType,
   MemoryUnit,
   MobileOs,
-  MonitorPanelType,
-  MonitorSpecifications,
   MotherboardFormFactor,
   MotherboardSpecifications,
   MouseSensor,

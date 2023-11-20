@@ -650,7 +650,7 @@ function App() {
           <Route path="dashboard">
             <Route index element={dashboardElement} />
             <Route path="product">
-              <Route index element={displayProductsElement} />
+              <Route index element={createProductElement} />
               <Route path="create" element={createProductElement} />
               <Route path="display" element={displayProductsElement} />
             </Route>

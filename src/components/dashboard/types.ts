@@ -108,23 +108,25 @@ type Year =
 type DaysInMonthsInYears = Map<Year, Map<Month, string[]>>;
 
 type ProductCategory =
-  | 'Desktop Computers'
-  | 'Laptops'
+  | 'Accessories'
   | 'Central Processing Units (CPUs)'
-  | 'Graphics Processing Units (GPUs)'
-  | 'Motherboards'
-  | 'Memory (RAM)'
-  | 'Storage'
-  | 'Power Supplies'
   | 'Computer Cases'
-  | 'Monitors'
-  | 'Keyboards'
-  | 'Mice'
+  | 'Desktop Computers'
+  | 'Graphics Processing Units (GPUs)'
   | 'Headphones'
-  | 'Speakers'
+  | 'Keyboards'
+  | 'Laptops'
+  | 'Memory (RAM)'
+  | 'Mice'
+  | 'Microphones'
+  | 'Displays'
+  | 'Motherboards'
+  | 'Power Supplies'
   | 'Smartphones'
+  | 'Speakers'
+  | 'Storage'
   | 'Tablets'
-  | 'Accessories';
+  | 'Webcams';
 
 type RepairCategory =
   | 'Computer Components'

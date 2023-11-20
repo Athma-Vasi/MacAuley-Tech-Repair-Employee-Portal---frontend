@@ -78,7 +78,7 @@ const productCategoryCaseFields = new Set([
   'caseSidePanel',
 ]);
 
-const productCategoryMonitorFields = new Set([
+const productCategoryDisplayFields = new Set([
   'monitorSize',
   'monitorHorizontalResolution',
   'monitorVerticalResolution',
@@ -154,6 +154,22 @@ const productCategoryAccessoryFields = new Set([
   'accessoryInterface',
 ]);
 
+const productCategoryWebcamFields = new Set([
+  'webcamResolution',
+  'webcamInterface',
+  'webcamMicrophone',
+  'webcamFrameRate',
+  'webcamColor',
+]);
+
+const productCategoryMicrophoneFields = new Set([
+  'microphoneType',
+  'microphonePolarPattern',
+  'microphoneFrequencyResponse',
+  'microphoneColor',
+  'microphoneInterface',
+]);
+
 const productCategoryDesktopComputerFields = new Set([
   ...productCategoryCpuFields,
   ...productCategoryGpuFields,
@@ -162,7 +178,7 @@ const productCategoryDesktopComputerFields = new Set([
   ...productCategoryStorageFields,
   ...productCategoryPsuFields,
   ...productCategoryCaseFields,
-  ...productCategoryMonitorFields,
+  ...productCategoryDisplayFields,
   ...productCategoryKeyboardFields,
   ...productCategoryMouseFields,
   ...productCategorySpeakerFields,
@@ -173,27 +189,29 @@ const productCategoryLaptopFields = new Set([
   ...productCategoryGpuFields,
   ...productCategoryRamFields,
   ...productCategoryStorageFields,
-  ...productCategoryMonitorFields,
+  ...productCategoryDisplayFields,
 ]);
 
 const PRODUCT_CATEGORY_FIELDS_OBJ: Record<ProductCategory, Set<string>> = {
   'Central Processing Units (CPUs)': productCategoryCpuFields,
-  'Graphics Processing Units (GPUs)': productCategoryGpuFields,
-  Motherboards: productCategoryMotherboardFields,
-  'Memory (RAM)': productCategoryRamFields,
-  Storage: productCategoryStorageFields,
-  'Power Supplies': productCategoryPsuFields,
   'Computer Cases': productCategoryCaseFields,
-  Monitors: productCategoryMonitorFields,
-  Keyboards: productCategoryKeyboardFields,
-  Mice: productCategoryMouseFields,
-  Headphones: productCategoryHeadphoneFields,
-  Speakers: productCategorySpeakerFields,
-  Smartphones: productCategorySmartphoneFields,
-  Tablets: productCategoryTabletFields,
-  Accessories: productCategoryAccessoryFields,
   'Desktop Computers': productCategoryDesktopComputerFields,
+  'Graphics Processing Units (GPUs)': productCategoryGpuFields,
+  'Memory (RAM)': productCategoryRamFields,
+  'Power Supplies': productCategoryPsuFields,
+  Accessories: productCategoryAccessoryFields,
+  Displays: productCategoryDisplayFields,
+  Headphones: productCategoryHeadphoneFields,
+  Keyboards: productCategoryKeyboardFields,
   Laptops: productCategoryLaptopFields,
+  Mice: productCategoryMouseFields,
+  Microphones: productCategoryMicrophoneFields,
+  Motherboards: productCategoryMotherboardFields,
+  Smartphones: productCategorySmartphoneFields,
+  Speakers: productCategorySpeakerFields,
+  Storage: productCategoryStorageFields,
+  Tablets: productCategoryTabletFields,
+  Webcams: productCategoryWebcamFields,
 };
 
 export { PRODUCT_CATEGORY_FIELDS_OBJ, QUERY_LIMIT_PER_PAGE_SELECT_DATA };

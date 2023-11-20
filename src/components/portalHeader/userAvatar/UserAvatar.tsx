@@ -146,10 +146,6 @@ function UserAvatar() {
         }
 
         authDispatch({
-          type: authAction.setAccessToken,
-          payload: '',
-        });
-        authDispatch({
           type: authAction.setIsLoggedIn,
           payload: false,
         });
@@ -162,6 +158,8 @@ function UserAvatar() {
           type: userAvatarAction.setSuccessMessage,
           payload: 'Successfully logged out!',
         });
+
+        navigate('/');
       } catch (error: any) {
         if (!isMounted || error.name === 'AbortError') {
           return;

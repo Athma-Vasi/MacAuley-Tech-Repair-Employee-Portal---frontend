@@ -27,6 +27,7 @@ import {
   CaseSidePanel,
   CaseType,
   DimensionUnit,
+  DisplayPanelType,
   HeadphoneInterface,
   HeadphoneType,
   KeyboardBacklight,
@@ -35,7 +36,6 @@ import {
   MemoryType,
   MemoryUnit,
   MobileOs,
-  MonitorPanelType,
   MotherboardFormFactor,
   MouseSensor,
   PeripheralsInterface,
@@ -48,7 +48,7 @@ import {
   StorageInterface,
   StorageType,
   WeightUnit,
-} from './create/types';
+} from './types';
 
 /**
  * - /^[^"'\s\\]{1,75}$/;
@@ -68,6 +68,35 @@ const OBJECT_KEY_REGEX = /^[^"'\s\\]{1,75}$/;
  */
 const USER_DEFINED_VALUE_REGEX =
   /^(?!^\s*$)[a-zA-Z0-9!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~\w\s]{2,2000}$/i;
+
+/**
+ * - /^[0-9]{1,6}$/
+ * - [0-9] matches any digit between 0 and 9.
+ * - {1,6} matches the preceding token between 1 and 6 times.
+ * - ^ and $ ensure that the entire string matches the regex.
+ * - ex: 123456
+ */
+const PRODUCT_QUANTITY_REGEX = /^[0-9]{1,6}$/;
+
+/**
+ * - /^(?!^$|^0*$)[0-9]{1,6}(\.[0-9]{1,2})?$/
+ * - (?!^$|^0*$): Negative lookahead assertion to ensure that the entire string is not empty (^$) or consists entirely of zeroes (^0*$).
+ * - [0-9]{1,6}: Matches one to six digits for the integral part of the weight.
+ * - (\.[0-9]{1,2})?: This part is in a capturing group and is optional (?). It allows for an optional decimal point followed by one or two digits, representing the decimal part of the weight.
+ * - ^ and $ ensure that the entire string matches the regex.
+ * - ex: 123456.78 or 123456 or 123456.
+ */
+const PRODUCT_WEIGHT_REGEX = /^(?!^$|^0*$)[0-9]{1,6}(\.[0-9]{1,2})?$/;
+
+/**
+ * - /^(?!^$|^0*$)[0-9]{1,3}(\.[0-9]{1,2})?$/
+ * - (?!^$|^0*$): Negative lookahead assertion to ensure that the entire string is not empty (^$) or consists entirely of zeroes (^0*$).
+ * - [0-9]{1,3}: Matches one to three digits for the integral part of the length, width, or height.
+ * - (\.[0-9]{1,2})?: This part is in a capturing group and is optional (?). It allows for an optional decimal point followed by one or two digits, representing the decimal part of the length, width, or height.
+ * - ^ and $ ensure that the entire string matches the regex.
+ * - ex: 123.45 or 123 or 123.
+ */
+const PRODUCT_DIMENSIONS_REGEX = /^(?!^$|^0*$)[0-9]{1,3}(\.[0-9]{1,2})?$/;
 
 /**
  * - /^[a-zA-Z0-9- ]{2,30}$/;
@@ -207,38 +236,33 @@ const RAM_MEMORY_TYPE_DATA: MemoryType[] = [
   'DDR5',
 ];
 
-const STORAGE_TYPE_DATA: StorageType[] = [
-  'HDD',
-  'SSD',
-  'SSHD',
-  'NVMe SSD',
-  'SATA SSD',
-  'M.2 SSD',
-  'Other',
-];
+const STORAGE_TYPE_DATA: StorageType[] = ['HDD', 'SSD', 'SSHD', 'Other'];
 
 const STORAGE_FORM_FACTOR_DATA: StorageFormFactor[] = [
   '2.5"',
+  '3.5"',
   'M.2 2280',
   'M.2 22110',
   'M.2 2242',
   'M.2 2230',
+  'mSATA',
+  'U.2',
   'Other',
 ];
 
 const STORAGE_INTERFACE_DATA: StorageInterface[] = [
   'SATA III',
-  'PCIe 3.0 x4',
-  'PCIe 4.0 x4',
-  'PCIe 3.0 x2',
-  'PCIe 3.0 x1',
+  'M.2',
+  'NVMe',
+  'PCIe',
+  'SATA-Express',
+  'U.2',
+  'mSATA',
   'Other',
 ];
 
 const PSU_EFFICIENCY_RATING_DATA: PsuEfficiency[] = [
   '80+',
-  '80+ Standard',
-  '80+ White',
   '80+ Bronze',
   '80+ Silver',
   '80+ Gold',
@@ -269,7 +293,7 @@ const CASE_TYPE_DATA: CaseType[] = [
 
 const CASE_SIDE_PANEL_DATA: CaseSidePanel[] = ['Windowed', 'Solid'];
 
-const MONITOR_PANEL_TYPE_DATA: MonitorPanelType[] = [
+const DISPLAY_PANEL_TYPE_DATA: DisplayPanelType[] = [
   'IPS',
   'TN',
   'VA',
@@ -289,7 +313,16 @@ const KEYBOARD_SWITCH_DATA: KeyboardSwitch[] = [
   'Other',
 ];
 
-const KEYBOARD_LAYOUT_DATA: KeyboardLayout[] = ['ANSI', 'ISO', 'Other'];
+const KEYBOARD_LAYOUT_DATA: KeyboardLayout[] = [
+  'QWERTY',
+  'CARPALX',
+  'Colemak',
+  'Dvorak',
+  'HHKB',
+  'NORMAN',
+  'Workman',
+  'Other',
+];
 
 const KEYBOARD_BACKLIGHT_DATA: KeyboardBacklight[] = [
   'RGB',
@@ -300,6 +333,7 @@ const KEYBOARD_BACKLIGHT_DATA: KeyboardBacklight[] = [
 const PERIPHERALS_INTERFACE_DATA: PeripheralsInterface[] = [
   'USB',
   'Bluetooth',
+  'PS/2',
   'Other',
 ];
 
@@ -322,6 +356,7 @@ const HEADPHONE_INTERFACE_DATA: HeadphoneInterface[] = [
   '2.5 mm',
   'USB',
   'Bluetooth',
+  'MMCX',
   'Other',
 ];
 
@@ -340,6 +375,8 @@ const SPEAKER_INTERFACE_DATA: SpeakerInterface[] = [
   '2.5 mm',
   'USB',
   'Bluetooth',
+  'RCA',
+  'TRS',
   'Other',
 ];
 
@@ -842,51 +879,51 @@ const PRODUCTS_QUERY_DATA: ComponentQueryData[] = [
     selectData: CASE_SIDE_PANEL_DATA,
   },
 
-  // page 2 -> monitor
+  // page 2 -> display
   {
-    label: 'Monitor Size (in)',
-    value: 'monitorSize',
+    label: 'Display Size (in)',
+    value: 'displaySize',
     inputKind: 'numberInput',
     regex: FLOAT_REGEX,
     regexValidationFn: returnFloatAmountValidationText,
   },
   {
-    label: 'Monitor Horizontal Resolution',
-    value: 'monitorHorizontalResolution',
+    label: 'Display Horizontal Resolution',
+    value: 'displayHorizontalResolution',
     inputKind: 'numberInput',
     regex: INTEGER_REGEX,
     regexValidationFn: returnIntegerValidationText,
   },
   {
-    label: 'Monitor Vertical Resolution',
-    value: 'monitorVerticalResolution',
+    label: 'Display Vertical Resolution',
+    value: 'displayVerticalResolution',
     inputKind: 'numberInput',
     regex: INTEGER_REGEX,
     regexValidationFn: returnIntegerValidationText,
   },
   {
-    label: 'Monitor Refresh Rate (Hz)',
-    value: 'monitorRefreshRate',
+    label: 'Display Refresh Rate (Hz)',
+    value: 'displayRefreshRate',
     inputKind: 'numberInput',
     regex: INTEGER_REGEX,
     regexValidationFn: returnIntegerValidationText,
   },
   {
-    label: 'Monitor Panel Type',
-    value: 'monitorPanelType',
+    label: 'Display Panel Type',
+    value: 'displayPanelType',
     inputKind: 'selectInput',
-    selectData: MONITOR_PANEL_TYPE_DATA,
+    selectData: DISPLAY_PANEL_TYPE_DATA,
   },
   {
-    label: 'Monitor Response Time (ms)',
-    value: 'monitorResponseTime',
+    label: 'Display Response Time (ms)',
+    value: 'displayResponseTime',
     inputKind: 'numberInput',
     regex: FLOAT_REGEX,
     regexValidationFn: returnFloatAmountValidationText,
   },
   {
-    label: 'Monitor Aspect Ratio',
-    value: 'monitorAspectRatio',
+    label: 'Display Aspect Ratio',
+    value: 'displayAspectRatio',
     inputKind: 'textInput',
     regex: DISPLAY_ASPECT_RATIO_REGEX,
     regexValidationFn: returnColorVariantValidationText,
@@ -1233,6 +1270,7 @@ export {
   CREATE_PRODUCT_MAX_STEPPER_POSITION,
   DIMENSION_UNIT_SELECT_INPUT_DATA,
   DISPLAY_ASPECT_RATIO_REGEX,
+  DISPLAY_PANEL_TYPE_DATA,
   FREQUENCY_RESPONSE_REGEX,
   GPU_CHIPSET_REGEX,
   HEADPHONE_INTERFACE_DATA,
@@ -1243,7 +1281,6 @@ export {
   MEMORY_UNIT_SELECT_INPUT_DATA,
   MOBILE_CAMERA_REGEX,
   MOBILE_OS_DATA,
-  MONITOR_PANEL_TYPE_DATA,
   MOTHERBOARD_CHIPSET_REGEX,
   MOTHERBOARD_FORM_FACTOR_DATA,
   MOTHERBOARD_MEMORY_TYPE_DATA,
@@ -1252,6 +1289,9 @@ export {
   OBJECT_KEY_REGEX,
   PERIPHERALS_INTERFACE_DATA,
   PRODUCT_AVAILABILITY_DATA,
+  PRODUCT_DIMENSIONS_REGEX,
+  PRODUCT_QUANTITY_REGEX,
+  PRODUCT_WEIGHT_REGEX,
   PRODUCTS_QUERY_DATA,
   PRODUCTS_RESOURCE_PATHS,
   PSU_EFFICIENCY_RATING_DATA,

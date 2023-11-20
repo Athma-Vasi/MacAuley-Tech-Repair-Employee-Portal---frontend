@@ -775,7 +775,7 @@ function returnUnitsRevenueTuple({
         categoryType === 'Motherboards' ||
         categoryType === 'Headphones' ||
         categoryType === 'Speakers' ||
-        categoryType === 'Monitors' ||
+        categoryType === 'Displays' ||
         categoryType === 'Power Supplies'
       ? returnRandomUnits() + 5
       : categoryType === 'Accessories'
@@ -794,7 +794,7 @@ function returnUnitsRevenueTuple({
       : categoryType === 'Motherboards' ||
         categoryType === 'Headphones' ||
         categoryType === 'Speakers' ||
-        categoryType === 'Monitors' ||
+        categoryType === 'Displays' ||
         categoryType === 'Power Supplies'
       ? units * Math.round(Math.random() * (700 - 150) + 150) // spread between 150 and 700
       : categoryType === 'Keyboards' ||

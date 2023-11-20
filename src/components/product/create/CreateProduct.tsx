@@ -1,4 +1,4 @@
-import { Group, NumberInput, Stack, Title, Tooltip } from '@mantine/core';
+import { Group, NumberInput, Stack, Text, Title, Tooltip } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { InvalidTokenError } from 'jwt-decode';
 import { ChangeEvent, MouseEvent, useEffect, useReducer } from 'react';
@@ -6,6 +6,7 @@ import { useErrorBoundary } from 'react-error-boundary';
 import { TbPlus, TbTrash, TbUpload } from 'react-icons/tb';
 import { useNavigate } from 'react-router-dom';
 
+import { COLORS_SWATCHES } from '../../../constants/data';
 import {
   GRAMMAR_TEXTAREA_INPUT_REGEX,
   MONEY_REGEX,
@@ -32,11 +33,14 @@ import {
   returnGrammarValidationText,
   returnMobileCameraResolutionValidationText,
   returnObjectKeyValidationText,
+  returnProductDimensionsValidationText,
+  returnProductQuantityValidationText,
+  returnProductWeightValidationText,
   returnRamTimingValidationText,
   returnSerialIdValidationText,
   returnSocketChipsetValidationText,
   returnThemeColors,
-  returnUserDefinedValueValidationText,
+  returnUserDefinedFieldValueValidationText,
   urlBuilder,
 } from '../../../utils';
 import { CURRENCY_DATA } from '../../benefits/constants';
@@ -65,6 +69,7 @@ import {
   CREATE_PRODUCT_MAX_STEPPER_POSITION,
   DIMENSION_UNIT_SELECT_INPUT_DATA,
   DISPLAY_ASPECT_RATIO_REGEX,
+  DISPLAY_PANEL_TYPE_DATA,
   FREQUENCY_RESPONSE_REGEX,
   GPU_CHIPSET_REGEX,
   HEADPHONE_INTERFACE_DATA,
@@ -75,7 +80,6 @@ import {
   MEMORY_UNIT_SELECT_INPUT_DATA,
   MOBILE_CAMERA_REGEX,
   MOBILE_OS_DATA,
-  MONITOR_PANEL_TYPE_DATA,
   MOTHERBOARD_CHIPSET_REGEX,
   MOTHERBOARD_FORM_FACTOR_DATA,
   MOTHERBOARD_MEMORY_TYPE_DATA,
@@ -84,6 +88,9 @@ import {
   OBJECT_KEY_REGEX,
   PERIPHERALS_INTERFACE_DATA,
   PRODUCT_AVAILABILITY_DATA,
+  PRODUCT_DIMENSIONS_REGEX,
+  PRODUCT_QUANTITY_REGEX,
+  PRODUCT_WEIGHT_REGEX,
   PSU_EFFICIENCY_RATING_DATA,
   PSU_FORM_FACTOR_DATA,
   PSU_MODULARITY_DATA,
@@ -100,14 +107,10 @@ import {
   WEIGHT_UNIT_SELECT_INPUT_DATA,
 } from '../constants';
 import {
-  createProductAction,
-  createProductReducer,
-  initialCreateProductState,
-} from './state';
-import {
   CaseSidePanel,
   CaseType,
   DimensionUnit,
+  DisplayPanelType,
   HeadphoneInterface,
   HeadphoneType,
   KeyboardBacklight,
@@ -116,7 +119,6 @@ import {
   MemoryType,
   MemoryUnit,
   MobileOs,
-  MonitorPanelType,
   MotherboardFormFactor,
   MouseSensor,
   PeripheralsInterface,
@@ -131,8 +133,12 @@ import {
   StorageInterface,
   StorageType,
   WeightUnit,
-} from './types';
-import { COLORS_SWATCHES } from '../../../constants/data';
+} from '../types';
+import {
+  createProductAction,
+  createProductReducer,
+  initialCreateProductState,
+} from './state';
 
 function CreateProduct() {
   const [createProductState, createProductDispatch] = useReducer(
@@ -174,22 +180,33 @@ function CreateProduct() {
     description,
     isDescriptionValid,
     isDescriptionFocused,
-    // page 1 -> price, currency, availability, quantity
+    // page 1 -> price, currency, availability
     price,
     isPriceValid,
     isPriceFocused,
     currency,
     availability,
+    // page 1 -> quantity
     quantity,
+    isQuantityFocused,
+    isQuantityValid,
     // page 1 -> weight
     weight,
+    isWeightFocused,
+    isWeightValid,
     weightUnit,
     // page 1 -> dimensions
     dimensionLength,
+    isDimensionLengthFocused,
+    isDimensionLengthValid,
     dimensionLengthUnit,
     dimensionWidth,
+    isDimensionWidthFocused,
+    isDimensionWidthValid,
     dimensionWidthUnit,
     dimensionHeight,
+    isDimensionHeightFocused,
+    isDimensionHeightValid,
     dimensionHeightUnit,
     // page 1 -> additional comments
     additionalComments,
@@ -278,16 +295,16 @@ function CreateProduct() {
     isCaseColorValid,
     caseSidePanel,
 
-    // page 2 -> specifications -> monitor
-    monitorSize,
-    monitorResolutionHorizontal,
-    monitorResolutionVertical,
-    monitorRefreshRate,
-    monitorPanelType,
-    monitorResponseTime,
-    monitorAspectRatio,
-    isMonitorAspectRatioValid,
-    isMonitorAspectRatioFocused,
+    // page 2 -> specifications -> display
+    displaySize,
+    displayResolutionHorizontal,
+    displayResolutionVertical,
+    displayRefreshRate,
+    displayPanelType,
+    displayResponseTime,
+    displayAspectRatio,
+    isDisplayAspectRatioValid,
+    isDisplayAspectRatioFocused,
 
     // page 2 -> specifications -> keyboard
     keyboardSwitch,
@@ -373,10 +390,10 @@ function CreateProduct() {
     isAccessoryColorFocused,
     isAccessoryColorValid,
     accessoryInterface,
-    accessoryFieldsUserDefined,
-    areAccessoryFieldsUserDefinedFocused,
-    areAccessoryFieldsUserDefinedValid,
-    accessoryFieldUserDefinedCurrentIdx,
+    accessoryFieldsAdditional,
+    areAccessoryFieldsAdditionalFocused,
+    areAccessoryFieldsAdditionalValid,
+    currentlySelectedAdditionalFieldIndex,
 
     // page 3
     imgFormDataArray,
@@ -629,15 +646,15 @@ function CreateProduct() {
             caseSidePanel,
           };
 
-          // request body -> page 2 -> specifications -> monitor
-          const monitorRequestBody = {
-            monitorSize,
-            monitorHorizontalResolution: monitorResolutionHorizontal,
-            monitorVerticalResolution: monitorResolutionVertical,
-            monitorRefreshRate,
-            monitorPanelType,
-            monitorResponseTime,
-            monitorAspectRatio,
+          // request body -> page 2 -> specifications -> display
+          const displayRequestBody = {
+            displaySize,
+            displayHorizontalResolution: displayResolutionHorizontal,
+            displayVerticalResolution: displayResolutionVertical,
+            displayRefreshRate,
+            displayPanelType,
+            displayResponseTime,
+            displayAspectRatio,
           };
 
           // request body -> page 2 -> specifications -> keyboard
@@ -707,10 +724,22 @@ function CreateProduct() {
           };
 
           // request body -> page 2 -> specifications -> accessory
+          const accessoryFieldsAdditionalRequestBody = Array.from(
+            accessoryFieldsAdditional
+          ).reduce((acc, [key, tuple]) => {
+            const [field, value] = tuple;
+            acc[field] = value;
+
+            return acc;
+          }, Object.create(null));
+
           const accessoryRequestBody = {
             accessoryType,
             accessoryColor,
             accessoryInterface,
+            userDefinedFields: {
+              ...accessoryFieldsAdditionalRequestBody,
+            },
           };
 
           // request body -> page 2 -> desktop computer
@@ -722,7 +751,7 @@ function CreateProduct() {
             storage: storageRequestBody,
             psu: psuRequestBody,
             case: caseRequestBody,
-            monitor: monitorRequestBody,
+            display: displayRequestBody,
             keyboard: keyboardRequestBody,
             mouse: mouseRequestBody,
             speaker: speakerRequestBody,
@@ -732,7 +761,7 @@ function CreateProduct() {
           const laptopRequestBody = {
             cpu: cpuRequestBody,
             gpu: gpuRequestBody,
-            display: monitorRequestBody,
+            display: displayRequestBody,
             ram: ramRequestBody,
             storage: storageRequestBody,
           };
@@ -758,8 +787,8 @@ function CreateProduct() {
               ? { ram: ramRequestBody }
               : productCategory === 'Mice'
               ? { mouse: mouseRequestBody }
-              : productCategory === 'Monitors'
-              ? { monitor: monitorRequestBody }
+              : productCategory === 'Displays'
+              ? { display: displayRequestBody }
               : productCategory === 'Motherboards'
               ? { motherboard: motherboardRequestBody }
               : productCategory === 'Power Supplies'
@@ -945,6 +974,56 @@ function CreateProduct() {
     });
   }, [price]);
 
+  // validate quantity on every change
+  useEffect(() => {
+    const isValid = PRODUCT_QUANTITY_REGEX.test(quantity);
+
+    createProductDispatch({
+      type: createProductAction.setIsQuantityValid,
+      payload: isValid,
+    });
+  }, [quantity]);
+
+  // validate weight on every change
+  useEffect(() => {
+    const isValid = PRODUCT_WEIGHT_REGEX.test(weight);
+
+    createProductDispatch({
+      type: createProductAction.setIsWeightValid,
+      payload: isValid,
+    });
+  }, [weight]);
+
+  // validate dimension length on every change
+  useEffect(() => {
+    const isValid = PRODUCT_DIMENSIONS_REGEX.test(dimensionLength);
+
+    createProductDispatch({
+      type: createProductAction.setIsDimensionLengthValid,
+      payload: isValid,
+    });
+  }, [dimensionLength]);
+
+  // validate dimension width on every change
+  useEffect(() => {
+    const isValid = PRODUCT_DIMENSIONS_REGEX.test(dimensionWidth);
+
+    createProductDispatch({
+      type: createProductAction.setIsDimensionWidthValid,
+      payload: isValid,
+    });
+  }, [dimensionWidth]);
+
+  // validate dimension height on every change
+  useEffect(() => {
+    const isValid = PRODUCT_DIMENSIONS_REGEX.test(dimensionHeight);
+
+    createProductDispatch({
+      type: createProductAction.setIsDimensionHeightValid,
+      payload: isValid,
+    });
+  }, [dimensionHeight]);
+
   // insert comma if currency is EUR
   useEffect(() => {
     // if currency is EUR, replace decimal with comma and remove leading zeros
@@ -1051,15 +1130,15 @@ function CreateProduct() {
     });
   }, [caseColor]);
 
-  // validate monitor aspect ratio on every change
+  // validate display aspect ratio on every change
   useEffect(() => {
-    const isValid = DISPLAY_ASPECT_RATIO_REGEX.test(monitorAspectRatio);
+    const isValid = DISPLAY_ASPECT_RATIO_REGEX.test(displayAspectRatio);
 
     createProductDispatch({
-      type: createProductAction.setIsMonitorAspectRatioValid,
+      type: createProductAction.setIsDisplayAspectRatioValid,
       payload: isValid,
     });
-  }, [monitorAspectRatio]);
+  }, [displayAspectRatio]);
 
   // validate mouse color variant on every change
   useEffect(() => {
@@ -1175,38 +1254,38 @@ function CreateProduct() {
 
   // accessory -> validate user defined accessory fields  on every change
   useEffect(() => {
-    const currentlyUpdatingAccessoryFieldUserDefined =
-      accessoryFieldsUserDefined.get(accessoryFieldUserDefinedCurrentIdx);
-    if (!currentlyUpdatingAccessoryFieldUserDefined) {
+    const currentlyUpdatingAccessoryFieldAdditional =
+      accessoryFieldsAdditional.get(currentlySelectedAdditionalFieldIndex);
+    if (!currentlyUpdatingAccessoryFieldAdditional) {
       return;
     }
 
-    const [key, value] = currentlyUpdatingAccessoryFieldUserDefined;
+    const [key, value] = currentlyUpdatingAccessoryFieldAdditional;
 
     const isKeyValid = OBJECT_KEY_REGEX.test(key);
 
     console.log('isKeyValid', isKeyValid);
     createProductDispatch({
-      type: createProductAction.setAreAccessoryFieldsUserDefinedValid,
+      type: createProductAction.setAreAccessoryFieldsAdditionalValid,
       payload: {
         operation: 'update',
         data: isKeyValid,
-        index: accessoryFieldUserDefinedCurrentIdx,
+        index: currentlySelectedAdditionalFieldIndex,
         kind: 'key',
       },
     });
 
     const isValueValid = USER_DEFINED_VALUE_REGEX.test(value);
     createProductDispatch({
-      type: createProductAction.setAreAccessoryFieldsUserDefinedValid,
+      type: createProductAction.setAreAccessoryFieldsAdditionalValid,
       payload: {
         operation: 'update',
         data: isValueValid,
-        index: accessoryFieldUserDefinedCurrentIdx,
+        index: currentlySelectedAdditionalFieldIndex,
         kind: 'value',
       },
     });
-  }, [accessoryFieldUserDefinedCurrentIdx, accessoryFieldsUserDefined]);
+  }, [currentlySelectedAdditionalFieldIndex, accessoryFieldsAdditional]);
 
   // accessory -> validate accessory type on every change
   useEffect(() => {
@@ -1309,13 +1388,13 @@ function CreateProduct() {
 
     const isCaseSpecificationInError = !caseColor;
 
-    const areMonitorSpecificationsInError =
-      !monitorSize ||
-      !monitorResolutionHorizontal ||
-      !monitorResolutionVertical ||
-      !monitorRefreshRate ||
-      !monitorResponseTime ||
-      !isMonitorAspectRatioValid;
+    const areDisplaySpecificationsInError =
+      !displaySize ||
+      !displayResolutionHorizontal ||
+      !displayResolutionVertical ||
+      !displayRefreshRate ||
+      !displayResponseTime ||
+      !isDisplayAspectRatioValid;
 
     const areMouseSpecificationsInError =
       !mouseDpi || !mouseButtons || !isMouseColorValid;
@@ -1364,7 +1443,7 @@ function CreateProduct() {
       areStorageSpecificationsInError ||
       isPsuSpecificationInError ||
       isCaseSpecificationInError ||
-      areMonitorSpecificationsInError ||
+      areDisplaySpecificationsInError ||
       areMouseSpecificationsInError ||
       areSpeakerSpecificationsInError;
 
@@ -1373,7 +1452,7 @@ function CreateProduct() {
       areGpuSpecificationsInError ||
       areRamSpecificationsInError ||
       areStorageSpecificationsInError ||
-      areMonitorSpecificationsInError;
+      areDisplaySpecificationsInError;
 
     const arePage2InputsInError =
       productCategory === 'Accessories'
@@ -1396,8 +1475,8 @@ function CreateProduct() {
         ? areRamSpecificationsInError
         : productCategory === 'Mice'
         ? areMouseSpecificationsInError
-        : productCategory === 'Monitors'
-        ? areMonitorSpecificationsInError
+        : productCategory === 'Displays'
+        ? areDisplaySpecificationsInError
         : productCategory === 'Motherboards'
         ? areMotherboardSpecificationsInError
         : productCategory === 'Power Supplies'
@@ -1437,7 +1516,7 @@ function CreateProduct() {
     isGpuChipsetValid,
     isHeadphoneColorValid,
     isHeadphoneFrequencyResponseValid,
-    isMonitorAspectRatioValid,
+    isDisplayAspectRatioValid,
     isMotherboardChipsetValid,
     isMotherboardSocketValid,
     isMouseColorValid,
@@ -1451,11 +1530,11 @@ function CreateProduct() {
     isTabletCameraValid,
     isTabletChipsetValid,
     isTabletColorValid,
-    monitorRefreshRate,
-    monitorResolutionHorizontal,
-    monitorResolutionVertical,
-    monitorResponseTime,
-    monitorSize,
+    displayRefreshRate,
+    displayResolutionHorizontal,
+    displayResolutionVertical,
+    displayResponseTime,
+    displaySize,
     motherboardM2Slots,
     motherboardMemoryMaxCapacity,
     motherboardMemorySlots,
@@ -1761,52 +1840,103 @@ function CreateProduct() {
 
   // page 1 -> quantity
 
-  // page 1 -> quantity -> number input element
-  const createdQuantityNumberInput = (
-    <NumberInput
-      label="Quantity"
-      max={99999}
-      min={1}
-      onChange={(value: number) => {
+  // page 1 -> quantity -> accessible text input elements
+  const [quantityInputErrorText, quantityInputValidText] =
+    AccessibleErrorValidTextElements({
+      inputElementKind: 'quantity',
+      inputText: quantity,
+      isInputTextFocused: isQuantityFocused,
+      isValidInputText: isQuantityValid,
+      regexValidationText: returnProductQuantityValidationText({
+        content: quantity,
+        contentKind: 'quantity',
+      }),
+    });
+
+  // page 1 -> quantity -> text input element creator
+  const [createdQuantityTextInput] = returnAccessibleTextInputElements([
+    {
+      description: {
+        error: quantityInputErrorText,
+        valid: quantityInputValidText,
+      },
+      inputText: quantity,
+      isValidInputText: isQuantityValid,
+      label: 'Quantity',
+      onBlur: () => {
+        createProductDispatch({
+          type: createProductAction.setIsQuantityFocused,
+          payload: false,
+        });
+      },
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
         createProductDispatch({
           type: createProductAction.setQuantity,
-          payload: value,
+          payload: event.currentTarget.value,
         });
-      }}
-      required
-      startValue={1}
-      step={1}
-      type="number"
-      value={quantity}
-      w={330}
-      withAsterisk
-    />
-  );
+      },
+      onFocus: () => {
+        createProductDispatch({
+          type: createProductAction.setIsQuantityFocused,
+          payload: true,
+        });
+      },
+      placeholder: 'Enter product quantity',
+      required: true,
+      semanticName: 'quantity',
+    },
+  ]);
 
   // page 1 -> weight
 
-  // page 1 -> weight -> number input element
-  const createdWeightNumberInput = (
-    <NumberInput
-      label="Weight"
-      max={99999}
-      min={1}
-      onChange={(value: number) => {
+  // page 1 -> weight -> accessible text input elements
+  const [weightInputErrorText, weightInputValidText] =
+    AccessibleErrorValidTextElements({
+      inputElementKind: 'weight',
+      inputText: weight,
+      isInputTextFocused: isWeightFocused,
+      isValidInputText: isWeightValid,
+      regexValidationText: returnProductWeightValidationText({
+        content: weight,
+        contentKind: 'weight',
+      }),
+    });
+
+  // page 1 -> weight -> text input element creator
+  const [createdWeightTextInput] = returnAccessibleTextInputElements([
+    {
+      description: {
+        error: weightInputErrorText,
+        valid: weightInputValidText,
+      },
+      inputText: weight,
+      isValidInputText: isWeightValid,
+      label: 'Weight',
+      onBlur: () => {
+        createProductDispatch({
+          type: createProductAction.setIsWeightFocused,
+          payload: false,
+        });
+      },
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
         createProductDispatch({
           type: createProductAction.setWeight,
-          payload: value,
+          payload: event.currentTarget.value,
         });
-      }}
-      precision={2}
-      required
-      startValue={0}
-      step={0.01}
-      type="number"
-      value={weight}
-      w={330}
-      withAsterisk
-    />
-  );
+      },
+      onFocus: () => {
+        createProductDispatch({
+          type: createProductAction.setIsWeightFocused,
+          payload: true,
+        });
+      },
+      placeholder: 'Enter product weight',
+      required: true,
+      semanticName: 'weight',
+    },
+  ]);
+
+  // page 1 -> weight unit
 
   // page 1 -> weight -> weight unit select input
   const [createdWeightUnitSelectInput] = returnAccessibleSelectInputElements([
@@ -1827,28 +1957,54 @@ function CreateProduct() {
 
   // page 1 -> dimensions
 
-  // page 1 -> dimensions -> length number input element
-  const createdDimensionLengthNumberInput = (
-    <NumberInput
-      label="Length"
-      max={99999}
-      min={1}
-      onChange={(value: number) => {
+  // page 1 -> dimensions -> length
+
+  // page 1 -> dimensions -> length -> accessible text input elements
+  const [dimensionLengthInputErrorText, dimensionLengthInputValidText] =
+    AccessibleErrorValidTextElements({
+      inputElementKind: 'dimension length',
+      inputText: dimensionLength,
+      isInputTextFocused: isDimensionLengthFocused,
+      isValidInputText: isDimensionLengthValid,
+      regexValidationText: returnProductDimensionsValidationText({
+        content: dimensionLength,
+        contentKind: 'dimension length',
+      }),
+    });
+
+  // page 1 -> dimensions -> length -> text input element creator
+  const [createdDimensionLengthTextInput] = returnAccessibleTextInputElements([
+    {
+      description: {
+        error: dimensionLengthInputErrorText,
+        valid: dimensionLengthInputValidText,
+      },
+      inputText: dimensionLength,
+      isValidInputText: isDimensionLengthValid,
+      label: 'Length',
+      onBlur: () => {
+        createProductDispatch({
+          type: createProductAction.setIsDimensionLengthFocused,
+          payload: false,
+        });
+      },
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
         createProductDispatch({
           type: createProductAction.setDimensionLength,
-          payload: value,
+          payload: event.currentTarget.value,
         });
-      }}
-      precision={2}
-      required
-      startValue={0}
-      step={0.01}
-      type="number"
-      value={dimensionLength}
-      w={330}
-      withAsterisk
-    />
-  );
+      },
+      onFocus: () => {
+        createProductDispatch({
+          type: createProductAction.setIsDimensionLengthFocused,
+          payload: true,
+        });
+      },
+      placeholder: 'Enter product length',
+      required: true,
+      semanticName: 'dimension length',
+    },
+  ]);
 
   // page 1 -> dimensions -> length unit select input
   const [createdDimensionLengthUnitSelectInput] =
@@ -1868,28 +2024,54 @@ function CreateProduct() {
       },
     ]);
 
-  // page 1 -> dimensions -> width number input element
-  const createdDimensionWidthNumberInput = (
-    <NumberInput
-      label="Width"
-      max={99999}
-      min={1}
-      onChange={(value: number) => {
+  // page 1 -> dimensions -> width
+
+  // page 1 -> dimensions -> width -> accessible text input elements
+  const [dimensionWidthInputErrorText, dimensionWidthInputValidText] =
+    AccessibleErrorValidTextElements({
+      inputElementKind: 'dimension width',
+      inputText: dimensionWidth,
+      isInputTextFocused: isDimensionWidthFocused,
+      isValidInputText: isDimensionWidthValid,
+      regexValidationText: returnProductDimensionsValidationText({
+        content: dimensionWidth,
+        contentKind: 'dimension width',
+      }),
+    });
+
+  // page 1 -> dimensions -> width -> text input element creator
+  const [createdDimensionWidthTextInput] = returnAccessibleTextInputElements([
+    {
+      description: {
+        error: dimensionWidthInputErrorText,
+        valid: dimensionWidthInputValidText,
+      },
+      inputText: dimensionWidth,
+      isValidInputText: isDimensionWidthValid,
+      label: 'Width',
+      onBlur: () => {
+        createProductDispatch({
+          type: createProductAction.setIsDimensionWidthFocused,
+          payload: false,
+        });
+      },
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
         createProductDispatch({
           type: createProductAction.setDimensionWidth,
-          payload: value,
+          payload: event.currentTarget.value,
         });
-      }}
-      precision={2}
-      required
-      startValue={0}
-      step={0.01}
-      type="number"
-      value={dimensionWidth}
-      w={330}
-      withAsterisk
-    />
-  );
+      },
+      onFocus: () => {
+        createProductDispatch({
+          type: createProductAction.setIsDimensionWidthFocused,
+          payload: true,
+        });
+      },
+      placeholder: 'Enter product width',
+      required: true,
+      semanticName: 'dimension width',
+    },
+  ]);
 
   // page 1 -> dimensions -> width unit select input
   const [createdDimensionWidthUnitSelectInput] =
@@ -1909,28 +2091,54 @@ function CreateProduct() {
       },
     ]);
 
-  // page 1 -> dimensions -> height number input element
-  const createdDimensionHeightNumberInput = (
-    <NumberInput
-      label="Height"
-      max={99999}
-      min={1}
-      onChange={(value: number) => {
+  // page 1 -> dimensions -> height
+
+  // page 1 -> dimensions -> height -> accessible text input elements
+  const [dimensionHeightInputErrorText, dimensionHeightInputValidText] =
+    AccessibleErrorValidTextElements({
+      inputElementKind: 'dimension height',
+      inputText: dimensionHeight,
+      isInputTextFocused: isDimensionHeightFocused,
+      isValidInputText: isDimensionHeightValid,
+      regexValidationText: returnProductDimensionsValidationText({
+        content: dimensionHeight,
+        contentKind: 'dimension height',
+      }),
+    });
+
+  // page 1 -> dimensions -> height -> text input element creator
+  const [createdDimensionHeightTextInput] = returnAccessibleTextInputElements([
+    {
+      description: {
+        error: dimensionHeightInputErrorText,
+        valid: dimensionHeightInputValidText,
+      },
+      inputText: dimensionHeight,
+      isValidInputText: isDimensionHeightValid,
+      label: 'Height',
+      onBlur: () => {
+        createProductDispatch({
+          type: createProductAction.setIsDimensionHeightFocused,
+          payload: false,
+        });
+      },
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
         createProductDispatch({
           type: createProductAction.setDimensionHeight,
-          payload: value,
+          payload: event.currentTarget.value,
         });
-      }}
-      precision={2}
-      required
-      startValue={0}
-      step={0.01}
-      type="number"
-      value={dimensionHeight}
-      w={330}
-      withAsterisk
-    />
-  );
+      },
+      onFocus: () => {
+        createProductDispatch({
+          type: createProductAction.setIsDimensionHeightFocused,
+          payload: true,
+        });
+      },
+      placeholder: 'Enter product height',
+      required: true,
+      semanticName: 'dimension height',
+    },
+  ]);
 
   // page 1 -> dimensions -> height unit select input
   const [createdDimensionHeightUnitSelectInput] =
@@ -3373,19 +3581,19 @@ function CreateProduct() {
     ]
   );
 
-  // page 2 -> specifications -> monitor
+  // page 2 -> specifications -> display
 
-  // page 2 -> specifications -> monitor -> monitor size
+  // page 2 -> specifications -> display -> display size
 
-  // page 2 -> specifications -> monitor -> monitor size -> number input element
-  const createdMonitorSizeNumberInput = (
+  // page 2 -> specifications -> display -> display size -> number input element
+  const createdDisplaySizeNumberInput = (
     <NumberInput
-      label="Monitor Size (inches)"
+      label="Display Size (inches)"
       max={99}
       min={1}
       onChange={(value: number) => {
         createProductDispatch({
-          type: createProductAction.setMonitorSize,
+          type: createProductAction.setDisplaySize,
           payload: value,
         });
       }}
@@ -3393,25 +3601,25 @@ function CreateProduct() {
       startValue={1}
       step={1}
       type="number"
-      value={monitorSize}
+      value={displaySize}
       w={330}
       withAsterisk
     />
   );
 
-  // page 2 -> specifications -> monitor -> monitor resolution
+  // page 2 -> specifications -> display -> display resolution
 
-  // page 2 -> specifications -> monitor -> monitor resolution -> horizontal
+  // page 2 -> specifications -> display -> display resolution -> horizontal
 
-  // page 2 -> specifications -> monitor -> monitor resolution -> horizontal -> number input element
-  const createdMonitorResolutionHorizontalNumberInput = (
+  // page 2 -> specifications -> display -> display resolution -> horizontal -> number input element
+  const createdDisplayResolutionHorizontalNumberInput = (
     <NumberInput
-      label="Monitor Resolution Horizontal"
+      label="Display Resolution Horizontal"
       max={99999}
       min={1}
       onChange={(value: number) => {
         createProductDispatch({
-          type: createProductAction.setMonitorResolutionHorizontal,
+          type: createProductAction.setDisplayResolutionHorizontal,
           payload: value,
         });
       }}
@@ -3419,23 +3627,23 @@ function CreateProduct() {
       startValue={1}
       step={1}
       type="number"
-      value={monitorResolutionHorizontal}
+      value={displayResolutionHorizontal}
       w={330}
       withAsterisk
     />
   );
 
-  // page 2 -> specifications -> monitor -> monitor resolution -> vertical
+  // page 2 -> specifications -> display -> display resolution -> vertical
 
-  // page 2 -> specifications -> monitor -> monitor resolution -> vertical -> number input element
-  const createdMonitorResolutionVerticalNumberInput = (
+  // page 2 -> specifications -> display -> display resolution -> vertical -> number input element
+  const createdDisplayResolutionVerticalNumberInput = (
     <NumberInput
-      label="Monitor Resolution Vertical"
+      label="Display Resolution Vertical"
       max={99999}
       min={1}
       onChange={(value: number) => {
         createProductDispatch({
-          type: createProductAction.setMonitorResolutionVertical,
+          type: createProductAction.setDisplayResolutionVertical,
           payload: value,
         });
       }}
@@ -3443,23 +3651,23 @@ function CreateProduct() {
       startValue={1}
       step={1}
       type="number"
-      value={monitorResolutionVertical}
+      value={displayResolutionVertical}
       w={330}
       withAsterisk
     />
   );
 
-  // page 2 -> specifications -> monitor -> monitor refresh rate
+  // page 2 -> specifications -> display -> display refresh rate
 
-  // page 2 -> specifications -> monitor -> monitor refresh rate -> number input element
-  const createdMonitorRefreshRateNumberInput = (
+  // page 2 -> specifications -> display -> display refresh rate -> number input element
+  const createdDisplayRefreshRateNumberInput = (
     <NumberInput
-      label="Monitor Refresh Rate (Hz)"
+      label="Display Refresh Rate (Hz)"
       max={999}
       min={1}
       onChange={(value: number) => {
         createProductDispatch({
-          type: createProductAction.setMonitorRefreshRate,
+          type: createProductAction.setDisplayRefreshRate,
           payload: value,
         });
       }}
@@ -3467,43 +3675,43 @@ function CreateProduct() {
       startValue={1}
       step={1}
       type="number"
-      value={monitorRefreshRate}
+      value={displayRefreshRate}
       w={330}
       withAsterisk
     />
   );
 
-  // page 2 -> specifications -> monitor -> monitor panel type
+  // page 2 -> specifications -> display -> display panel type
 
-  // page 2 -> specifications -> monitor -> monitor panel type -> select input element
-  const [createdMonitorPanelTypeSelectInput] =
+  // page 2 -> specifications -> display -> display panel type -> select input element
+  const [createdDisplayPanelTypeSelectInput] =
     returnAccessibleSelectInputElements([
       {
-        data: MONITOR_PANEL_TYPE_DATA,
+        data: DISPLAY_PANEL_TYPE_DATA,
         description: '',
-        label: 'Monitor Panel Type',
+        label: 'Display Panel Type',
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           createProductDispatch({
-            type: createProductAction.setMonitorPanelType,
-            payload: event.currentTarget.value as MonitorPanelType,
+            type: createProductAction.setDisplayPanelType,
+            payload: event.currentTarget.value as DisplayPanelType,
           });
         },
-        value: monitorPanelType,
+        value: displayPanelType,
         required: true,
       },
     ]);
 
-  // page 2 -> specifications -> monitor -> monitor response time
+  // page 2 -> specifications -> display -> display response time
 
-  // page 2 -> specifications -> monitor -> monitor response time -> number input element
-  const createdMonitorResponseTimeNumberInput = (
+  // page 2 -> specifications -> display -> display response time -> number input element
+  const createdDisplayResponseTimeNumberInput = (
     <NumberInput
-      label="Monitor Response Time (ms)"
+      label="Display Response Time (ms)"
       max={99}
       min={0}
       onChange={(value: number) => {
         createProductDispatch({
-          type: createProductAction.setMonitorResponseTime,
+          type: createProductAction.setDisplayResponseTime,
           payload: value,
         });
       }}
@@ -3512,63 +3720,63 @@ function CreateProduct() {
       startValue={0}
       step={0.1}
       type="number"
-      value={monitorResponseTime}
+      value={displayResponseTime}
       w={330}
       withAsterisk
     />
   );
 
-  // page 2 -> specifications -> monitor -> monitor aspect ratio
+  // page 2 -> specifications -> display -> display aspect ratio
 
-  // page 2 -> specifications -> monitor -> monitor aspect ratio -> accessible screen reader text elements
-  const [monitorAspectRatioInputErrorText, monitorAspectRatioInputValidText] =
+  // page 2 -> specifications -> display -> display aspect ratio -> accessible screen reader text elements
+  const [displayAspectRatioInputErrorText, displayAspectRatioInputValidText] =
     AccessibleErrorValidTextElements({
-      inputElementKind: 'monitor aspect ratio',
-      inputText: monitorAspectRatio,
-      isInputTextFocused: isMonitorAspectRatioFocused,
-      isValidInputText: isMonitorAspectRatioValid,
+      inputElementKind: 'display aspect ratio',
+      inputText: displayAspectRatio,
+      isInputTextFocused: isDisplayAspectRatioFocused,
+      isValidInputText: isDisplayAspectRatioValid,
       regexValidationText: returnDisplayAspectRatioValidationText({
-        content: monitorAspectRatio,
-        contentKind: 'monitor aspect ratio',
+        content: displayAspectRatio,
+        contentKind: 'display aspect ratio',
         maxLength: 5,
         minLength: 3,
       }),
     });
 
-  // page 2 -> specifications -> monitor -> monitor aspect ratio -> text input element creator
-  const [createdMonitorAspectRatioTextInput] =
+  // page 2 -> specifications -> display -> display aspect ratio -> text input element creator
+  const [createdDisplayAspectRatioTextInput] =
     returnAccessibleTextInputElements([
       {
         description: {
-          error: monitorAspectRatioInputErrorText,
-          valid: monitorAspectRatioInputValidText,
+          error: displayAspectRatioInputErrorText,
+          valid: displayAspectRatioInputValidText,
         },
-        inputText: monitorAspectRatio,
-        isValidInputText: isMonitorAspectRatioValid,
-        label: 'Monitor Aspect Ratio',
+        inputText: displayAspectRatio,
+        isValidInputText: isDisplayAspectRatioValid,
+        label: 'Display Aspect Ratio',
         maxLength: 5,
         minLength: 3,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setIsMonitorAspectRatioFocused,
+            type: createProductAction.setIsDisplayAspectRatioFocused,
             payload: false,
           });
         },
         onChange: (event: ChangeEvent<HTMLInputElement>) => {
           createProductDispatch({
-            type: createProductAction.setMonitorAspectRatio,
+            type: createProductAction.setDisplayAspectRatio,
             payload: event.currentTarget.value,
           });
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setIsMonitorAspectRatioFocused,
+            type: createProductAction.setIsDisplayAspectRatioFocused,
             payload: true,
           });
         },
         placeholder: '00:00 or 0:0',
         required: true,
-        semanticName: 'monitor aspect ratio',
+        semanticName: 'display aspect ratio',
       },
     ]);
 
@@ -4993,16 +5201,16 @@ function CreateProduct() {
     ]);
 
   // page 2 -> specifications -> accessory -> add new field button
-  const [createdAddAccessoryFieldsUserDefinedButton] =
+  const [createdAddAccessoryFieldsAdditionalButton] =
     returnAccessibleButtonElements([
       {
         buttonLabel: 'Add',
-        semanticDescription: 'Add new custom field and value',
+        semanticDescription: 'Add new additional field and value',
         semanticName: 'Add new field',
         leftIcon: <TbPlus />,
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
           createProductDispatch({
-            type: createProductAction.setAccessoryFieldsUserDefined,
+            type: createProductAction.setAccessoryFieldsAdditional,
             payload: {
               operation: 'add',
               data: ['', ''],
@@ -5010,7 +5218,7 @@ function CreateProduct() {
           });
 
           createProductDispatch({
-            type: createProductAction.setAreAccessoryFieldsUserDefinedFocused,
+            type: createProductAction.setAreAccessoryFieldsAdditionalFocused,
             payload: {
               operation: 'add',
               data: [false, false],
@@ -5018,7 +5226,7 @@ function CreateProduct() {
           });
 
           createProductDispatch({
-            type: createProductAction.setAreAccessoryFieldsUserDefinedValid,
+            type: createProductAction.setAreAccessoryFieldsAdditionalValid,
             payload: {
               operation: 'add',
               data: [false, false],
@@ -5032,89 +5240,89 @@ function CreateProduct() {
 
   // page 2 -> specifications -> accessory -> accessory fields user defined -> accessible screen reader text elements
 
-  // page 2 -> specifications -> accessory -> accessory fields user defined -> accessible screen reader text elements -> field name
-  const accessoryFieldsUserDefinedKeysErrorValidTextElements: [
+  // page 2 -> specifications -> accessory -> accessory fields user defined -> accessible screen reader text elements -> field names
+  const accessoryFieldsAdditionalKeysErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(accessoryFieldsUserDefined).map((keyFieldValue, idx) => {
+  ][] = Array.from(accessoryFieldsAdditional).map((keyFieldValue, idx) => {
     const [_mapKey, [field, _value]] = keyFieldValue;
 
     const [
-      accessoryFieldsUserDefinedKeysInputErrorText,
-      accessoryFieldsUserDefinedKeysInputValidText,
+      accessoryFieldsAdditionalKeysInputErrorText,
+      accessoryFieldsAdditionalKeysInputValidText,
     ] = AccessibleErrorValidTextElements({
-      inputElementKind: `custom field name ${idx + 1}`,
+      inputElementKind: `additional field name ${idx + 1}`,
       inputText: field,
       isInputTextFocused:
-        areAccessoryFieldsUserDefinedFocused.get(idx)?.[0] ?? false,
+        areAccessoryFieldsAdditionalFocused.get(idx)?.[0] ?? false,
       isValidInputText:
-        areAccessoryFieldsUserDefinedValid.get(idx)?.[0] ?? false,
+        areAccessoryFieldsAdditionalValid.get(idx)?.[0] ?? false,
       regexValidationText: returnObjectKeyValidationText({
         content: field,
-        contentKind: `custom field name ${idx + 1}`,
+        contentKind: `additional field name ${idx + 1}`,
         maxLength: 75,
         minLength: 1,
       }),
     });
 
     return [
-      accessoryFieldsUserDefinedKeysInputErrorText,
-      accessoryFieldsUserDefinedKeysInputValidText,
+      accessoryFieldsAdditionalKeysInputErrorText,
+      accessoryFieldsAdditionalKeysInputValidText,
     ];
   });
 
-  // page 2 -> specifications -> accessory -> accessory fields user defined -> accessible screen reader text elements -> field value
-  const accessoryFieldsUserDefinedValuesErrorValidTextElements: [
+  // page 2 -> specifications -> accessory -> accessory fields user defined -> accessible screen reader text elements -> field values
+  const accessoryFieldsAdditionalValuesErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(accessoryFieldsUserDefined).map((keyFieldValue, idx) => {
+  ][] = Array.from(accessoryFieldsAdditional).map((keyFieldValue, idx) => {
     const [_mapKey, [_field, value]] = keyFieldValue;
 
     const [
-      accessoryFieldsUserDefinedValuesInputErrorText,
-      accessoryFieldsUserDefinedValuesInputValidText,
+      accessoryFieldsAdditionalValuesInputErrorText,
+      accessoryFieldsAdditionalValuesInputValidText,
     ] = AccessibleErrorValidTextElements({
-      inputElementKind: `custom field value ${idx + 1}`,
+      inputElementKind: `additional field value ${idx + 1}`,
       inputText: value,
       isInputTextFocused:
-        areAccessoryFieldsUserDefinedFocused.get(idx)?.[1] ?? false,
+        areAccessoryFieldsAdditionalFocused.get(idx)?.[1] ?? false,
       isValidInputText:
-        areAccessoryFieldsUserDefinedValid.get(idx)?.[1] ?? false,
-      regexValidationText: returnUserDefinedValueValidationText({
+        areAccessoryFieldsAdditionalValid.get(idx)?.[1] ?? false,
+      regexValidationText: returnUserDefinedFieldValueValidationText({
         content: value,
-        contentKind: `custom field value ${idx + 1}`,
+        contentKind: `additional field value ${idx + 1}`,
         maxLength: 2000,
         minLength: 2,
       }),
     });
 
     return [
-      accessoryFieldsUserDefinedValuesInputErrorText,
-      accessoryFieldsUserDefinedValuesInputValidText,
+      accessoryFieldsAdditionalValuesInputErrorText,
+      accessoryFieldsAdditionalValuesInputValidText,
     ];
   });
 
   // page 2 -> specifications -> accessory -> accessory fields user defined -> text area input element creator
-  const createdAccessoryFieldsUserDefinedTextInputElements = Array.from(
-    accessoryFieldsUserDefined
+  const createdAccessoryFieldsAdditionalTextInputElements = Array.from(
+    accessoryFieldsAdditional
   ).map((keyFieldValue, idx) => {
     const [_mapKey, [field, value]] = keyFieldValue;
 
-    const accessoryFieldsUserDefinedKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const accessoryFieldsAdditionalKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
-          error: accessoryFieldsUserDefinedKeysErrorValidTextElements[idx][0],
-          valid: accessoryFieldsUserDefinedKeysErrorValidTextElements[idx][1],
+          error: accessoryFieldsAdditionalKeysErrorValidTextElements[idx][0],
+          valid: accessoryFieldsAdditionalKeysErrorValidTextElements[idx][1],
         },
         inputText: field,
         isValidInputText:
-          areAccessoryFieldsUserDefinedValid.get(idx)?.[0] ?? false,
-        label: `Custom field name ${idx + 1}`,
+          areAccessoryFieldsAdditionalValid.get(idx)?.[0] ?? false,
+        label: `Name ${idx + 1}`,
         maxLength: 75,
         minLength: 1,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreAccessoryFieldsUserDefinedFocused,
+            type: createProductAction.setAreAccessoryFieldsAdditionalFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -5125,7 +5333,7 @@ function CreateProduct() {
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setAccessoryFieldsUserDefined,
+            type: createProductAction.setAccessoryFieldsAdditional,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -5135,13 +5343,13 @@ function CreateProduct() {
           });
 
           createProductDispatch({
-            type: createProductAction.setAccessoryFieldUserDefinedCurrentIdx,
+            type: createProductAction.setCurrentlySelectedAdditionalFieldIndex,
             payload: idx,
           });
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreAccessoryFieldsUserDefinedFocused,
+            type: createProductAction.setAreAccessoryFieldsAdditionalFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -5150,26 +5358,26 @@ function CreateProduct() {
             },
           });
         },
-        placeholder: 'Enter custom field name',
+        placeholder: 'Enter additional field name',
         required: true,
-        semanticName: `custom field name ${idx + 1}`,
+        semanticName: `additional field name ${idx + 1}`,
       };
 
-    const accessoryFieldsUserDefinedValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const accessoryFieldsAdditionalValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
-          error: accessoryFieldsUserDefinedValuesErrorValidTextElements[idx][0],
-          valid: accessoryFieldsUserDefinedValuesErrorValidTextElements[idx][1],
+          error: accessoryFieldsAdditionalValuesErrorValidTextElements[idx][0],
+          valid: accessoryFieldsAdditionalValuesErrorValidTextElements[idx][1],
         },
         inputText: value,
         isValidInputText:
-          areAccessoryFieldsUserDefinedValid.get(idx)?.[1] ?? false,
-        label: `Custom field value ${idx + 1}`,
+          areAccessoryFieldsAdditionalValid.get(idx)?.[1] ?? false,
+        label: `Value ${idx + 1}`,
         maxLength: 2000,
         minLength: 2,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreAccessoryFieldsUserDefinedFocused,
+            type: createProductAction.setAreAccessoryFieldsAdditionalFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -5180,7 +5388,7 @@ function CreateProduct() {
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setAccessoryFieldsUserDefined,
+            type: createProductAction.setAccessoryFieldsAdditional,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -5190,13 +5398,13 @@ function CreateProduct() {
           });
 
           createProductDispatch({
-            type: createProductAction.setAccessoryFieldUserDefinedCurrentIdx,
+            type: createProductAction.setCurrentlySelectedAdditionalFieldIndex,
             payload: idx,
           });
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreAccessoryFieldsUserDefinedFocused,
+            type: createProductAction.setAreAccessoryFieldsAdditionalFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -5205,17 +5413,17 @@ function CreateProduct() {
             },
           });
         },
-        placeholder: 'Enter custom field value',
+        placeholder: 'Enter additional field value',
         required: true,
-        semanticName: `custom field value ${idx + 1}`,
+        semanticName: `additional field value ${idx + 1}`,
       };
 
     const [
-      createdAccessoryFieldsUserDefinedKeysTextAreaInput,
-      createdAccessoryFieldsUserDefinedValuesTextAreaInput,
+      createdAccessoryFieldsAdditionalKeysTextAreaInput,
+      createdAccessoryFieldsAdditionalValuesTextAreaInput,
     ] = returnAccessibleTextAreaInputElements([
-      accessoryFieldsUserDefinedKeysTextInputCreatorInfo,
-      accessoryFieldsUserDefinedValuesTextInputCreatorInfo,
+      accessoryFieldsAdditionalKeysTextInputCreatorInfo,
+      accessoryFieldsAdditionalValuesTextInputCreatorInfo,
     ]);
 
     const [createdDeleteButton] = returnAccessibleButtonElements([
@@ -5223,7 +5431,7 @@ function CreateProduct() {
         buttonLabel: 'Delete',
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
           createProductDispatch({
-            type: createProductAction.setAccessoryFieldsUserDefined,
+            type: createProductAction.setAccessoryFieldsAdditional,
             payload: {
               operation: 'remove',
               index: idx,
@@ -5231,7 +5439,7 @@ function CreateProduct() {
           });
 
           createProductDispatch({
-            type: createProductAction.setAreAccessoryFieldsUserDefinedFocused,
+            type: createProductAction.setAreAccessoryFieldsAdditionalFocused,
             payload: {
               operation: 'remove',
               index: idx,
@@ -5239,7 +5447,7 @@ function CreateProduct() {
           });
 
           createProductDispatch({
-            type: createProductAction.setAreAccessoryFieldsUserDefinedValid,
+            type: createProductAction.setAreAccessoryFieldsAdditionalValid,
             payload: {
               operation: 'remove',
               index: idx,
@@ -5247,33 +5455,36 @@ function CreateProduct() {
           });
 
           createProductDispatch({
-            type: createProductAction.setAccessoryFieldUserDefinedCurrentIdx,
+            type: createProductAction.setCurrentlySelectedAdditionalFieldIndex,
             payload: -1,
           });
         },
         leftIcon: <TbTrash />,
-        semanticDescription: `Delete custom field ${idx + 1}`,
+        semanticDescription: `Delete additional field ${idx + 1}`,
         semanticName: 'Delete field and value',
       },
     ]);
 
     const displayDeleteButton = (
-      <Tooltip label={`Delete custom field ${idx + 1}`}>
+      <Tooltip label={`Delete additional field ${idx + 1}`}>
         <Group>{createdDeleteButton}</Group>
       </Tooltip>
     );
 
     return (
       <Stack
-        key={`accessoryFieldsUserDefined-${idx}`}
+        key={`accessoryFieldsAdditional-${idx}`}
         pt={padding}
         style={{ borderTop: borderColor }}
         w="100%"
       >
-        <Group position="right">{displayDeleteButton}</Group>
         <Group position="apart">
-          {createdAccessoryFieldsUserDefinedKeysTextAreaInput}
-          {createdAccessoryFieldsUserDefinedValuesTextAreaInput}
+          <Text size="md" weight={600}>{`Additional field ${idx + 1}`}</Text>
+          {displayDeleteButton}
+        </Group>
+        <Group position="apart">
+          {createdAccessoryFieldsAdditionalKeysTextAreaInput}
+          {createdAccessoryFieldsAdditionalValuesTextAreaInput}
         </Group>
       </Stack>
     );
@@ -5328,14 +5539,14 @@ function CreateProduct() {
       {createdModelTextInput}
       {createdPriceTextInput}
       {createdCurrencySelectInput}
-      {createdQuantityNumberInput}
-      {createdWeightNumberInput}
+      {createdQuantityTextInput}
+      {createdWeightTextInput}
       {createdWeightUnitSelectInput}
-      {createdDimensionLengthNumberInput}
+      {createdDimensionLengthTextInput}
       {createdDimensionLengthUnitSelectInput}
-      {createdDimensionHeightNumberInput}
+      {createdDimensionHeightTextInput}
       {createdDimensionHeightUnitSelectInput}
-      {createdDimensionWidthNumberInput}
+      {createdDimensionWidthTextInput}
       {createdDimensionWidthUnitSelectInput}
       {createdAvailabilitySelectInput}
       {createdDescriptionTextAreaInput}
@@ -5460,19 +5671,19 @@ function CreateProduct() {
     </FormLayoutWrapper>
   );
 
-  // input display -> page 2 -> specifications -> monitor
-  const displayMonitorSpecificationsInputs = (
+  // input display -> page 2 -> specifications -> display
+  const displayDisplaySpecificationsInputs = (
     <FormLayoutWrapper>
       <Group w="100%">
-        <Title order={4}>Monitor Specifications</Title>
+        <Title order={4}>Display Specifications</Title>
       </Group>
-      {createdMonitorSizeNumberInput}
-      {createdMonitorResolutionHorizontalNumberInput}
-      {createdMonitorResolutionVerticalNumberInput}
-      {createdMonitorRefreshRateNumberInput}
-      {createdMonitorPanelTypeSelectInput}
-      {createdMonitorResponseTimeNumberInput}
-      {createdMonitorAspectRatioTextInput}
+      {createdDisplaySizeNumberInput}
+      {createdDisplayResolutionHorizontalNumberInput}
+      {createdDisplayResolutionVerticalNumberInput}
+      {createdDisplayRefreshRateNumberInput}
+      {createdDisplayPanelTypeSelectInput}
+      {createdDisplayResponseTimeNumberInput}
+      {createdDisplayAspectRatioTextInput}
     </FormLayoutWrapper>
   );
 
@@ -5575,9 +5786,9 @@ function CreateProduct() {
   // input display -> page 2 -> specifications -> accessory
 
   // input display -> page 2 -> specifications -> accessory -> add new button
-  const displayAccessoryFieldsUserDefinedButton = (
+  const displayAccessoryFieldsAdditionalButton = (
     <Tooltip label="Add new accessory field and value">
-      <Group>{createdAddAccessoryFieldsUserDefinedButton}</Group>
+      <Group>{createdAddAccessoryFieldsAdditionalButton}</Group>
     </Tooltip>
   );
 
@@ -5585,12 +5796,12 @@ function CreateProduct() {
     <FormLayoutWrapper>
       <Group w="100%" position="apart">
         <Title order={4}>Accessory Specifications</Title>
-        {displayAccessoryFieldsUserDefinedButton}
+        {displayAccessoryFieldsAdditionalButton}
       </Group>
       {createdAccessoryTypeTextInput}
       {createdAccessoryColorTextInput}
       {createdAccessoryInterfaceSelectInput}
-      {createdAccessoryFieldsUserDefinedTextInputElements}
+      {createdAccessoryFieldsAdditionalTextInputElements}
     </FormLayoutWrapper>
   );
 
@@ -5604,7 +5815,7 @@ function CreateProduct() {
       {displayStorageSpecificationsInputs}
       {displayPowerSupplySpecificationsInputs}
       {displayComputerCaseSpecificationsInputs}
-      {displayMonitorSpecificationsInputs}
+      {displayDisplaySpecificationsInputs}
       {displayKeyboardSpecificationsInputs}
       {displayMouseSpecificationsInputs}
       {displaySpeakerSpecificationsInputs}
@@ -5616,7 +5827,7 @@ function CreateProduct() {
     <>
       {displayCpuSpecificationsInputs}
       {displayGpuSpecificationsInputs}
-      {displayMonitorSpecificationsInputs}
+      {displayDisplaySpecificationsInputs}
       {displayRamSpecificationsInputs}
       {displayStorageSpecificationsInputs}
     </>
@@ -5645,8 +5856,8 @@ function CreateProduct() {
         ? displayRamSpecificationsInputs
         : productCategory === 'Mice'
         ? displayMouseSpecificationsInputs
-        : productCategory === 'Monitors'
-        ? displayMonitorSpecificationsInputs
+        : productCategory === 'Displays'
+        ? displayDisplaySpecificationsInputs
         : productCategory === 'Motherboards'
         ? displayMotherboardSpecificationsInputs
         : productCategory === 'Power Supplies'
@@ -5701,17 +5912,17 @@ function CreateProduct() {
       {
         inputName: 'Quantity',
         inputValue: quantity,
-        isInputValueValid: quantity !== 0,
+        isInputValueValid: isQuantityValid,
       },
       {
         inputName: 'Weight',
         inputValue: weight,
-        isInputValueValid: weight !== 0,
+        isInputValueValid: isWeightValid,
       },
       {
         inputName: 'Dimension Length',
         inputValue: dimensionLength,
-        isInputValueValid: dimensionLength !== 0,
+        isInputValueValid: isDimensionLengthValid,
       },
       {
         inputName: 'Dimension Length Unit',
@@ -5720,7 +5931,7 @@ function CreateProduct() {
       {
         inputName: 'Dimension Height',
         inputValue: dimensionHeight,
-        isInputValueValid: dimensionHeight !== 0,
+        isInputValueValid: isDimensionHeightValid,
       },
       {
         inputName: 'Dimension Height Unit',
@@ -5729,7 +5940,7 @@ function CreateProduct() {
       {
         inputName: 'Dimension Width',
         inputValue: dimensionWidth,
-        isInputValueValid: dimensionWidth !== 0,
+        isInputValueValid: isDimensionWidthValid,
       },
       {
         inputName: 'Dimension Width Unit',
@@ -6020,42 +6231,42 @@ function CreateProduct() {
     ],
   };
 
-  // form review object -> page 2 -> specifications -> monitor
-  const page2MonitorFormReviewObject: FormReviewObject = {
-    'Monitor Specifications': [
+  // form review object -> page 2 -> specifications -> display
+  const page2DisplayFormReviewObject: FormReviewObject = {
+    'Display Specifications': [
       {
-        inputName: 'Monitor Size',
-        inputValue: monitorSize,
-        isInputValueValid: monitorSize !== 0,
+        inputName: 'Display Size',
+        inputValue: displaySize,
+        isInputValueValid: displaySize !== 0,
       },
       {
-        inputName: 'Monitor Resolution Horizontal',
-        inputValue: monitorResolutionHorizontal,
-        isInputValueValid: monitorResolutionHorizontal !== 0,
+        inputName: 'Display Resolution Horizontal',
+        inputValue: displayResolutionHorizontal,
+        isInputValueValid: displayResolutionHorizontal !== 0,
       },
       {
-        inputName: 'Monitor Resolution Vertical',
-        inputValue: monitorResolutionVertical,
-        isInputValueValid: monitorResolutionVertical !== 0,
+        inputName: 'Display Resolution Vertical',
+        inputValue: displayResolutionVertical,
+        isInputValueValid: displayResolutionVertical !== 0,
       },
       {
-        inputName: 'Monitor Refresh Rate',
-        inputValue: monitorRefreshRate,
-        isInputValueValid: monitorRefreshRate !== 0,
+        inputName: 'Display Refresh Rate',
+        inputValue: displayRefreshRate,
+        isInputValueValid: displayRefreshRate !== 0,
       },
       {
-        inputName: 'Monitor Panel Type',
-        inputValue: monitorPanelType,
+        inputName: 'Display Panel Type',
+        inputValue: displayPanelType,
       },
       {
-        inputName: 'Monitor Response Time',
-        inputValue: monitorResponseTime,
-        isInputValueValid: monitorResponseTime !== 0,
+        inputName: 'Display Response Time',
+        inputValue: displayResponseTime,
+        isInputValueValid: displayResponseTime !== 0,
       },
       {
-        inputName: 'Monitor Aspect Ratio',
-        inputValue: monitorAspectRatio,
-        isInputValueValid: isMonitorAspectRatioValid,
+        inputName: 'Display Aspect Ratio',
+        inputValue: displayAspectRatio,
+        isInputValueValid: isDisplayAspectRatioValid,
       },
     ],
   };
@@ -6321,7 +6532,7 @@ function CreateProduct() {
     ...page2StorageFormReviewObject,
     ...page2PowerSupplyFormReviewObject,
     ...page2ComputerCaseFormReviewObject,
-    ...page2MonitorFormReviewObject,
+    ...page2DisplayFormReviewObject,
     ...page2KeyboardFormReviewObject,
     ...page2MouseFormReviewObject,
     ...page2SpeakerFormReviewObject,
@@ -6367,8 +6578,8 @@ function CreateProduct() {
       ? page2RamFormReviewObject
       : productCategory === 'Mice'
       ? page2MouseFormReviewObject
-      : productCategory === 'Monitors'
-      ? page2MonitorFormReviewObject
+      : productCategory === 'Displays'
+      ? page2DisplayFormReviewObject
       : productCategory === 'Motherboards'
       ? page2MotherboardFormReviewObject
       : productCategory === 'Power Supplies'

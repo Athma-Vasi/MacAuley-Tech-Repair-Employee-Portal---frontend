@@ -29,32 +29,34 @@ const MONTHS: Month[] = [
 ];
 
 const PRODUCT_CATEGORIES: ProductCategory[] = [
-  'Desktop Computers',
-  'Laptops',
-  'Central Processing Units (CPUs)',
-  'Graphics Processing Units (GPUs)',
-  'Motherboards',
-  'Memory (RAM)',
-  'Storage',
-  'Power Supplies',
-  'Computer Cases',
-  'Monitors',
-  'Keyboards',
-  'Mice',
-  'Headphones',
-  'Speakers',
-  'Smartphones',
-  'Tablets',
   'Accessories',
+  'Central Processing Units (CPUs)',
+  'Computer Cases',
+  'Desktop Computers',
+  'Graphics Processing Units (GPUs)',
+  'Headphones',
+  'Keyboards',
+  'Laptops',
+  'Memory (RAM)',
+  'Mice',
+  'Microphones',
+  'Displays',
+  'Motherboards',
+  'Power Supplies',
+  'Smartphones',
+  'Speakers',
+  'Storage',
+  'Tablets',
+  'Webcams',
 ];
 
 const REPAIR_CATEGORIES: RepairCategory[] = [
+  'Accessories',
+  'Audio/Video',
   'Computer Components',
-  'Peripherals',
   'Electronics',
   'Mobile Devices',
-  'Audio/Video',
-  'Accessories',
+  'Peripherals',
 ];
 
 const CALENDAR_VIEW_TABS_DATA: DashboardCalendarView[] = [

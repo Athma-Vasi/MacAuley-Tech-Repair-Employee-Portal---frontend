@@ -741,10 +741,6 @@ function returnFloatAmountValidationText({
       afterSeparatorAmount?.length < 3 ?? false,
       'Must be between 0 and 2 digits after the separator.',
     ],
-    // [
-    //   numberLengthRegex.test(content),
-    //   'Must be between 1 and 6 digits before the separator, and 0 to 2 digits after the separator.',
-    // ],
   ];
 
   const validationText = amountRegexTupleArr
@@ -1032,6 +1028,133 @@ function returnBrandNameValidationText({
     : '';
 }
 
+function returnProductQuantityValidationText({
+  content,
+  contentKind,
+  maxLength = 6,
+  minLength = 1,
+}: RegexValidationProps): string {
+  // /^[0-9]{1,6}$/
+  const productQuantityLengthRegex = new RegExp(
+    `^(?=.{${minLength},${maxLength}}$)`
+  );
+  const productQuantityCharacterRegex = /^[0-9]+$/;
+
+  const productQuantityRegexTupleArr: [boolean, string][] = [
+    [
+      productQuantityLengthRegex.test(content),
+      `Must be between ${minLength} and ${maxLength} characters.`,
+    ],
+    [
+      productQuantityCharacterRegex.test(content),
+      'Must only contain whole numbers.',
+    ],
+  ];
+
+  const validationText = productQuantityRegexTupleArr
+    .filter(([isValidRegex, _]: [boolean, string]) => !isValidRegex)
+    .map(([_, validationText]) => validationText)
+    .join(' ');
+
+  return validationText
+    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${contentKind.slice(
+        1
+      )}. ${validationText}`
+    : '';
+}
+
+function returnProductWeightValidationText({
+  content,
+  contentKind,
+  maxLength = 9,
+  minLength = 1,
+}: RegexValidationProps): string {
+  // /^(?!^$|^0*$)[0-9]{1,6}(\.[0-9]{1,2})?$/
+  const productWeightLengthRegex = new RegExp(
+    `^(?=.{${minLength},${maxLength}}$)`
+  );
+  const productWeightNotEmptyOrAllZeroesRegex = /^(?!^$|^0*$)/;
+  const productWeightCharacterRegex = /^[0-9.]+$/;
+  // test for 23. or 0.
+  const productWeightSingleDecimalRegex = /^[0-9]+[.]{1}$/;
+
+  const productWeightRegexTupleArr: [boolean, string][] = [
+    [
+      productWeightLengthRegex.test(content),
+      `Must be between ${minLength} and ${maxLength} characters.`,
+    ],
+    [
+      productWeightNotEmptyOrAllZeroesRegex.test(content),
+      'Must not be empty or all zeroes.',
+    ],
+    [
+      productWeightCharacterRegex.test(content),
+      'Must only contain numbers and periods.',
+    ],
+    [
+      !productWeightSingleDecimalRegex.test(content),
+      'Must not end with a decimal.',
+    ],
+  ];
+
+  const validationText = productWeightRegexTupleArr
+    .filter(([isValidRegex, _]: [boolean, string]) => !isValidRegex)
+    .map(([_, validationText]) => validationText)
+    .join(' ');
+
+  return validationText
+    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${contentKind.slice(
+        1
+      )}. ${validationText}`
+    : '';
+}
+
+function returnProductDimensionsValidationText({
+  content,
+  contentKind,
+  maxLength = 6,
+  minLength = 1,
+}: RegexValidationProps): string {
+  // /^(?!^$|^0*$)[0-9]{1,3}(\.[0-9]{1,2})?$/
+  const productDimensionsLengthRegex = new RegExp(
+    `^(?=.{${minLength},${maxLength}}$)`
+  );
+  const productDimensionsNotEmptyOrAllZeroesRegex = /^(?!^$|^0*$)/;
+  const productDimensionsCharacterRegex = /^[0-9.]+$/;
+  // test for 23. or 0.
+  const productDimensionsSingleDecimalRegex = /^[0-9]+[.]{1}$/;
+
+  const productDimensionsRegexTupleArr: [boolean, string][] = [
+    [
+      productDimensionsLengthRegex.test(content),
+      `Must be between ${minLength} and ${maxLength} characters.`,
+    ],
+    [
+      productDimensionsNotEmptyOrAllZeroesRegex.test(content),
+      'Must not be empty or all zeroes.',
+    ],
+    [
+      productDimensionsCharacterRegex.test(content),
+      'Must only contain numbers and periods.',
+    ],
+    [
+      !productDimensionsSingleDecimalRegex.test(content),
+      'Must not end with a decimal.',
+    ],
+  ];
+
+  const validationText = productDimensionsRegexTupleArr
+    .filter(([isValidRegex, _]: [boolean, string]) => !isValidRegex)
+    .map(([_, validationText]) => validationText)
+    .join(' ');
+
+  return validationText
+    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${contentKind.slice(
+        1
+      )}. ${validationText}`
+    : '';
+}
+
 function returnSocketChipsetValidationText({
   content,
   contentKind,
@@ -1277,7 +1400,7 @@ function returnObjectKeyValidationText({
     : '';
 }
 
-function returnUserDefinedValueValidationText({
+function returnUserDefinedFieldValueValidationText({
   content,
   contentKind,
   maxLength = 75,
@@ -2070,6 +2193,9 @@ export {
   returnPostalCodeValidationText,
   returnPrinterMakeModelValidationText,
   returnPrinterSerialNumberValidationText,
+  returnProductDimensionsValidationText,
+  returnProductQuantityValidationText,
+  returnProductWeightValidationText,
   returnRamTimingValidationText,
   returnSerialIdValidationText,
   returnSliderMarks,
@@ -2079,7 +2205,7 @@ export {
   returnTimeRemaining,
   returnToFixedFloat,
   returnUrlValidationText,
-  returnUserDefinedValueValidationText,
+  returnUserDefinedFieldValueValidationText,
   returnUsernameRegexValidationText,
   shuffleArray,
   splitCamelCase,
