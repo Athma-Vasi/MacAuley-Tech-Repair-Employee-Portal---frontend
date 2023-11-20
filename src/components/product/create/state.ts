@@ -252,7 +252,9 @@ const initialCreateProductState: CreateProductState = {
   speakerInterface: 'USB',
 
   // page 2 -> specifications -> smartphone
-  smartphoneBatteryCapacity: 0,
+  smartphoneBatteryCapacity: '',
+  isSmartphoneBatteryCapacityFocused: false,
+  isSmartphoneBatteryCapacityValid: false,
   smartphoneCamera: '',
   isSmartphoneCameraFocused: false,
   isSmartphoneCameraValid: false,
@@ -262,16 +264,28 @@ const initialCreateProductState: CreateProductState = {
   smartphoneColor: '',
   isSmartphoneColorFocused: false,
   isSmartphoneColorValid: false,
-  smartphoneDisplay: 0,
-  smartphoneResolutionHorizontal: 0,
-  smartphoneResolutionVertical: 0,
+  smartphoneDisplay: '',
+  isSmartphoneDisplayFocused: false,
+  isSmartphoneDisplayValid: false,
+  smartphoneResolutionHorizontal: '',
+  isSmartphoneResolutionHorizontalFocused: false,
+  isSmartphoneResolutionHorizontalValid: false,
+  smartphoneResolutionVertical: '',
+  isSmartphoneResolutionVerticalFocused: false,
+  isSmartphoneResolutionVerticalValid: false,
   smartphoneOs: 'iOS',
-  smartphoneRamCapacity: 0,
+  smartphoneRamCapacity: '',
+  isSmartphoneRamCapacityFocused: false,
+  isSmartphoneRamCapacityValid: false,
   smartphoneRamCapacityUnit: 'GB',
-  smartphoneStorageCapacity: 0,
+  smartphoneStorageCapacity: '',
+  isSmartphoneStorageCapacityFocused: false,
+  isSmartphoneStorageCapacityValid: false,
 
   // page 2 -> specifications -> tablet
-  tabletBatteryCapacity: 0,
+  tabletBatteryCapacity: '',
+  isTabletBatteryCapacityFocused: false,
+  isTabletBatteryCapacityValid: false,
   tabletCamera: '',
   isTabletCameraFocused: false,
   isTabletCameraValid: false,
@@ -281,13 +295,23 @@ const initialCreateProductState: CreateProductState = {
   tabletColor: '',
   isTabletColorFocused: false,
   isTabletColorValid: false,
-  tabletDisplay: 0,
-  tabletResolutionHorizontal: 0,
-  tabletResolutionVertical: 0,
+  tabletDisplay: '',
+  isTabletDisplayFocused: false,
+  isTabletDisplayValid: false,
+  tabletResolutionHorizontal: '',
+  isTabletResolutionHorizontalFocused: false,
+  isTabletResolutionHorizontalValid: false,
+  tabletResolutionVertical: '',
+  isTabletResolutionVerticalFocused: false,
+  isTabletResolutionVerticalValid: false,
   tabletOs: 'iOS',
-  tabletRamCapacity: 0,
+  tabletRamCapacity: '',
+  isTabletRamCapacityFocused: false,
+  isTabletRamCapacityValid: false,
   tabletRamCapacityUnit: 'GB',
-  tabletStorageCapacity: 0,
+  tabletStorageCapacity: '',
+  isTabletStorageCapacityFocused: false,
+  isTabletStorageCapacityValid: false,
 
   // page 2 -> specifications -> accessories
   accessoryColor: '',
@@ -578,12 +602,30 @@ const createProductAction: CreateProductAction = {
   setIsSmartphoneChipsetValid: 'setIsSmartphoneChipsetValid',
   setIsSmartphoneChipsetFocused: 'setIsSmartphoneChipsetFocused',
   setSmartphoneDisplay: 'setSmartphoneDisplay',
+  setIsSmartphoneDisplayValid: 'setIsSmartphoneDisplayValid',
+  setIsSmartphoneDisplayFocused: 'setIsSmartphoneDisplayFocused',
   setSmartphoneResolutionHorizontal: 'setSmartphoneResolutionHorizontal',
+  setIsSmartphoneResolutionHorizontalValid:
+    'setIsSmartphoneResolutionHorizontalValid',
+  setIsSmartphoneResolutionHorizontalFocused:
+    'setIsSmartphoneResolutionHorizontalFocused',
   setSmartphoneResolutionVertical: 'setSmartphoneResolutionVertical',
+  setIsSmartphoneResolutionVerticalValid:
+    'setIsSmartphoneResolutionVerticalValid',
+  setIsSmartphoneResolutionVerticalFocused:
+    'setIsSmartphoneResolutionVerticalFocused',
   setSmartphoneRamCapacity: 'setSmartphoneRamCapacity',
+  setIsSmartphoneRamCapacityValid: 'setIsSmartphoneRamCapacityValid',
+  setIsSmartphoneRamCapacityFocused: 'setIsSmartphoneRamCapacityFocused',
   setSmartphoneRamCapacityUnit: 'setSmartphoneRamCapacityUnit',
   setSmartphoneStorageCapacity: 'setSmartphoneStorageCapacity',
+  setIsSmartphoneStorageCapacityValid: 'setIsSmartphoneStorageCapacityValid',
+  setIsSmartphoneStorageCapacityFocused:
+    'setIsSmartphoneStorageCapacityFocused',
   setSmartphoneBatteryCapacity: 'setSmartphoneBatteryCapacity',
+  setIsSmartphoneBatteryCapacityValid: 'setIsSmartphoneBatteryCapacityValid',
+  setIsSmartphoneBatteryCapacityFocused:
+    'setIsSmartphoneBatteryCapacityFocused',
   setSmartphoneCamera: 'setSmartphoneCamera',
   setIsSmartphoneCameraValid: 'setIsSmartphoneCameraValid',
   setIsSmartphoneCameraFocused: 'setIsSmartphoneCameraFocused',
@@ -597,12 +639,25 @@ const createProductAction: CreateProductAction = {
   setIsTabletChipsetValid: 'setIsTabletChipsetValid',
   setIsTabletChipsetFocused: 'setIsTabletChipsetFocused',
   setTabletDisplay: 'setTabletDisplay',
+  setIsTabletDisplayValid: 'setIsTabletDisplayValid',
+  setIsTabletDisplayFocused: 'setIsTabletDisplayFocused',
   setTabletResolutionHorizontal: 'setTabletResolutionHorizontal',
+  setIsTabletResolutionHorizontalValid: 'setIsTabletResolutionHorizontalValid',
+  setIsTabletResolutionHorizontalFocused:
+    'setIsTabletResolutionHorizontalFocused',
   setTabletResolutionVertical: 'setTabletResolutionVertical',
+  setIsTabletResolutionVerticalValid: 'setIsTabletResolutionVerticalValid',
+  setIsTabletResolutionVerticalFocused: 'setIsTabletResolutionVerticalFocused',
   setTabletRamCapacity: 'setTabletRamCapacity',
+  setIsTabletRamCapacityValid: 'setIsTabletRamCapacityValid',
+  setIsTabletRamCapacityFocused: 'setIsTabletRamCapacityFocused',
   setTabletRamCapacityUnit: 'setTabletRamCapacityUnit',
   setTabletStorageCapacity: 'setTabletStorageCapacity',
+  setIsTabletStorageCapacityValid: 'setIsTabletStorageCapacityValid',
+  setIsTabletStorageCapacityFocused: 'setIsTabletStorageCapacityFocused',
   setTabletBatteryCapacity: 'setTabletBatteryCapacity',
+  setIsTabletBatteryCapacityValid: 'setIsTabletBatteryCapacityValid',
+  setIsTabletBatteryCapacityFocused: 'setIsTabletBatteryCapacityFocused',
   setTabletCamera: 'setTabletCamera',
   setIsTabletCameraValid: 'setIsTabletCameraValid',
   setIsTabletCameraFocused: 'setIsTabletCameraFocused',
@@ -1869,11 +1924,15 @@ function createProductReducer(
       };
 
     // page 2 -> specifications -> smartphone
+
+    // page 2 -> specifications -> smartphone -> os
     case createProductAction.setSmartphoneOs:
       return {
         ...state,
         smartphoneOs: action.payload,
       };
+
+    // page 2 -> specifications -> smartphone -> chipset
     case createProductAction.setSmartphoneChipset:
       return {
         ...state,
@@ -1889,41 +1948,117 @@ function createProductReducer(
         ...state,
         isSmartphoneChipsetValid: action.payload,
       };
+
+    // page 2 -> specifications -> smartphone -> display
     case createProductAction.setSmartphoneDisplay:
       return {
         ...state,
         smartphoneDisplay: action.payload,
       };
+    case createProductAction.setIsSmartphoneDisplayFocused:
+      return {
+        ...state,
+        isSmartphoneDisplayFocused: action.payload,
+      };
+    case createProductAction.setIsSmartphoneDisplayValid:
+      return {
+        ...state,
+        isSmartphoneDisplayValid: action.payload,
+      };
+
+    // page 2 -> specifications -> smartphone -> resolution
+
+    // page 2 -> specifications -> smartphone -> resolution -> horizontal
     case createProductAction.setSmartphoneResolutionHorizontal:
       return {
         ...state,
         smartphoneResolutionHorizontal: action.payload,
       };
+    case createProductAction.setIsSmartphoneResolutionHorizontalFocused:
+      return {
+        ...state,
+        isSmartphoneResolutionHorizontalFocused: action.payload,
+      };
+    case createProductAction.setIsSmartphoneResolutionHorizontalValid:
+      return {
+        ...state,
+        isSmartphoneResolutionHorizontalValid: action.payload,
+      };
+
+    // page 2 -> specifications -> smartphone -> resolution -> vertical
     case createProductAction.setSmartphoneResolutionVertical:
       return {
         ...state,
         smartphoneResolutionVertical: action.payload,
       };
+    case createProductAction.setIsSmartphoneResolutionVerticalFocused:
+      return {
+        ...state,
+        isSmartphoneResolutionVerticalFocused: action.payload,
+      };
+    case createProductAction.setIsSmartphoneResolutionVerticalValid:
+      return {
+        ...state,
+        isSmartphoneResolutionVerticalValid: action.payload,
+      };
+
+    // page 2 -> specifications -> smartphone -> ram
     case createProductAction.setSmartphoneRamCapacity:
       return {
         ...state,
         smartphoneRamCapacity: action.payload,
+      };
+    case createProductAction.setIsSmartphoneRamCapacityFocused:
+      return {
+        ...state,
+        isSmartphoneRamCapacityFocused: action.payload,
+      };
+    case createProductAction.setIsSmartphoneRamCapacityValid:
+      return {
+        ...state,
+        isSmartphoneRamCapacityValid: action.payload,
       };
     case createProductAction.setSmartphoneRamCapacityUnit:
       return {
         ...state,
         smartphoneRamCapacityUnit: action.payload,
       };
+
+    // page 2 -> specifications -> smartphone -> storage
     case createProductAction.setSmartphoneStorageCapacity:
       return {
         ...state,
         smartphoneStorageCapacity: action.payload,
       };
+    case createProductAction.setIsSmartphoneStorageCapacityFocused:
+      return {
+        ...state,
+        isSmartphoneStorageCapacityFocused: action.payload,
+      };
+    case createProductAction.setIsSmartphoneStorageCapacityValid:
+      return {
+        ...state,
+        isSmartphoneStorageCapacityValid: action.payload,
+      };
+
+    // page 2 -> specifications -> smartphone -> battery
     case createProductAction.setSmartphoneBatteryCapacity:
       return {
         ...state,
         smartphoneBatteryCapacity: action.payload,
       };
+    case createProductAction.setIsSmartphoneBatteryCapacityFocused:
+      return {
+        ...state,
+        isSmartphoneBatteryCapacityFocused: action.payload,
+      };
+    case createProductAction.setIsSmartphoneBatteryCapacityValid:
+      return {
+        ...state,
+        isSmartphoneBatteryCapacityValid: action.payload,
+      };
+
+    // page 2 -> specifications -> smartphone -> camera
     case createProductAction.setSmartphoneCamera:
       return {
         ...state,
@@ -1939,6 +2074,8 @@ function createProductReducer(
         ...state,
         isSmartphoneCameraValid: action.payload,
       };
+
+    // page 2 -> specifications -> smartphone -> color
     case createProductAction.setSmartphoneColor:
       return {
         ...state,
@@ -1956,11 +2093,15 @@ function createProductReducer(
       };
 
     // page 2 -> specifications -> tablet
+
+    // page 2 -> specifications -> tablet -> os
     case createProductAction.setTabletOs:
       return {
         ...state,
         tabletOs: action.payload,
       };
+
+    // page 2 -> specifications -> tablet -> chipset
     case createProductAction.setTabletChipset:
       return {
         ...state,
@@ -1976,41 +2117,117 @@ function createProductReducer(
         ...state,
         isTabletChipsetValid: action.payload,
       };
+
+    // page 2 -> specifications -> tablet -> display
     case createProductAction.setTabletDisplay:
       return {
         ...state,
         tabletDisplay: action.payload,
       };
+    case createProductAction.setIsTabletDisplayFocused:
+      return {
+        ...state,
+        isTabletDisplayFocused: action.payload,
+      };
+    case createProductAction.setIsTabletDisplayValid:
+      return {
+        ...state,
+        isTabletDisplayValid: action.payload,
+      };
+
+    // page 2 -> specifications -> tablet -> resolution
+
+    // page 2 -> specifications -> tablet -> resolution -> horizontal
     case createProductAction.setTabletResolutionHorizontal:
       return {
         ...state,
         tabletResolutionHorizontal: action.payload,
       };
+    case createProductAction.setIsTabletResolutionHorizontalFocused:
+      return {
+        ...state,
+        isTabletResolutionHorizontalFocused: action.payload,
+      };
+    case createProductAction.setIsTabletResolutionHorizontalValid:
+      return {
+        ...state,
+        isTabletResolutionHorizontalValid: action.payload,
+      };
+
+    // page 2 -> specifications -> tablet -> resolution -> vertical
     case createProductAction.setTabletResolutionVertical:
       return {
         ...state,
         tabletResolutionVertical: action.payload,
       };
+    case createProductAction.setIsTabletResolutionVerticalFocused:
+      return {
+        ...state,
+        isTabletResolutionVerticalFocused: action.payload,
+      };
+    case createProductAction.setIsTabletResolutionVerticalValid:
+      return {
+        ...state,
+        isTabletResolutionVerticalValid: action.payload,
+      };
+
+    // page 2 -> specifications -> tablet -> ram
     case createProductAction.setTabletRamCapacity:
       return {
         ...state,
         tabletRamCapacity: action.payload,
+      };
+    case createProductAction.setIsTabletRamCapacityFocused:
+      return {
+        ...state,
+        isTabletRamCapacityFocused: action.payload,
+      };
+    case createProductAction.setIsTabletRamCapacityValid:
+      return {
+        ...state,
+        isTabletRamCapacityValid: action.payload,
       };
     case createProductAction.setTabletRamCapacityUnit:
       return {
         ...state,
         tabletRamCapacityUnit: action.payload,
       };
+
+    // page 2 -> specifications -> tablet -> storage
     case createProductAction.setTabletStorageCapacity:
       return {
         ...state,
         tabletStorageCapacity: action.payload,
       };
+    case createProductAction.setIsTabletStorageCapacityFocused:
+      return {
+        ...state,
+        isTabletStorageCapacityFocused: action.payload,
+      };
+    case createProductAction.setIsTabletStorageCapacityValid:
+      return {
+        ...state,
+        isTabletStorageCapacityValid: action.payload,
+      };
+
+    // page 2 -> specifications -> tablet -> battery
     case createProductAction.setTabletBatteryCapacity:
       return {
         ...state,
         tabletBatteryCapacity: action.payload,
       };
+    case createProductAction.setIsTabletBatteryCapacityFocused:
+      return {
+        ...state,
+        isTabletBatteryCapacityFocused: action.payload,
+      };
+    case createProductAction.setIsTabletBatteryCapacityValid:
+      return {
+        ...state,
+        isTabletBatteryCapacityValid: action.payload,
+      };
+
+    // page 2 -> specifications -> tablet -> camera
     case createProductAction.setTabletCamera:
       return {
         ...state,
@@ -2026,6 +2243,8 @@ function createProductReducer(
         ...state,
         isTabletCameraValid: action.payload,
       };
+
+    // page 2 -> specifications -> tablet -> color
     case createProductAction.setTabletColor:
       return {
         ...state,
@@ -2035,6 +2254,11 @@ function createProductReducer(
       return {
         ...state,
         isTabletColorFocused: action.payload,
+      };
+    case createProductAction.setIsTabletColorValid:
+      return {
+        ...state,
+        isTabletColorValid: action.payload,
       };
 
     // page 2 -> specifications -> accessory

@@ -421,42 +421,66 @@ function CreateProduct() {
     speakerInterface,
 
     // page 2 -> specifications -> smartphone
-    smartphoneOs,
-    smartphoneChipset,
-    isSmartphoneChipsetValid,
-    isSmartphoneChipsetFocused,
-    smartphoneDisplay,
-    smartphoneResolutionHorizontal,
-    smartphoneResolutionVertical,
-    smartphoneRamCapacity,
-    smartphoneRamCapacityUnit,
-    smartphoneStorageCapacity,
     smartphoneBatteryCapacity,
+    isSmartphoneBatteryCapacityFocused,
+    isSmartphoneBatteryCapacityValid,
     smartphoneCamera,
     isSmartphoneCameraFocused,
     isSmartphoneCameraValid,
+    smartphoneChipset,
+    isSmartphoneChipsetFocused,
+    isSmartphoneChipsetValid,
     smartphoneColor,
     isSmartphoneColorFocused,
     isSmartphoneColorValid,
+    smartphoneDisplay,
+    isSmartphoneDisplayFocused,
+    isSmartphoneDisplayValid,
+    smartphoneResolutionHorizontal,
+    isSmartphoneResolutionHorizontalFocused,
+    isSmartphoneResolutionHorizontalValid,
+    smartphoneResolutionVertical,
+    isSmartphoneResolutionVerticalFocused,
+    isSmartphoneResolutionVerticalValid,
+    smartphoneOs,
+    smartphoneRamCapacity,
+    isSmartphoneRamCapacityFocused,
+    isSmartphoneRamCapacityValid,
+    smartphoneRamCapacityUnit,
+    smartphoneStorageCapacity,
+    isSmartphoneStorageCapacityFocused,
+    isSmartphoneStorageCapacityValid,
 
     // page 2 -> specifications -> tablet
-    tabletOs,
-    tabletChipset,
-    isTabletChipsetValid,
-    isTabletChipsetFocused,
-    tabletDisplay,
-    tabletResolutionHorizontal,
-    tabletResolutionVertical,
-    tabletRamCapacity,
-    tabletRamCapacityUnit,
-    tabletStorageCapacity,
     tabletBatteryCapacity,
+    isTabletBatteryCapacityFocused,
+    isTabletBatteryCapacityValid,
     tabletCamera,
     isTabletCameraFocused,
     isTabletCameraValid,
+    tabletChipset,
+    isTabletChipsetFocused,
+    isTabletChipsetValid,
     tabletColor,
     isTabletColorFocused,
     isTabletColorValid,
+    tabletDisplay,
+    isTabletDisplayFocused,
+    isTabletDisplayValid,
+    tabletResolutionHorizontal,
+    isTabletResolutionHorizontalFocused,
+    isTabletResolutionHorizontalValid,
+    tabletResolutionVertical,
+    isTabletResolutionVerticalFocused,
+    isTabletResolutionVerticalValid,
+    tabletOs,
+    tabletRamCapacity,
+    isTabletRamCapacityFocused,
+    isTabletRamCapacityValid,
+    tabletRamCapacityUnit,
+    tabletStorageCapacity,
+    isTabletStorageCapacityFocused,
+    isTabletStorageCapacityValid,
 
     // page 2 -> specifications -> accessory
     accessoryType,
@@ -1616,6 +1640,66 @@ function CreateProduct() {
     });
   }, [smartphoneChipset]);
 
+  // validate smartphone display on every change
+  useEffect(() => {
+    const isValid = PRODUCT_DIMENSIONS_REGEX.test(smartphoneDisplay);
+
+    createProductDispatch({
+      type: createProductAction.setIsSmartphoneDisplayValid,
+      payload: isValid,
+    });
+  }, [smartphoneDisplay]);
+
+  // validate smartphone horizontal resolution on every change
+  useEffect(() => {
+    const isValid = LARGE_INTEGER_REGEX.test(smartphoneResolutionHorizontal);
+
+    createProductDispatch({
+      type: createProductAction.setIsSmartphoneResolutionHorizontalValid,
+      payload: isValid,
+    });
+  }, [smartphoneResolutionHorizontal]);
+
+  // validate smartphone vertical resolution on every change
+  useEffect(() => {
+    const isValid = LARGE_INTEGER_REGEX.test(smartphoneResolutionVertical);
+
+    createProductDispatch({
+      type: createProductAction.setIsSmartphoneResolutionVerticalValid,
+      payload: isValid,
+    });
+  }, [smartphoneResolutionVertical]);
+
+  // validate smartphone RAM capacity on every change
+  useEffect(() => {
+    const isValid = MEDIUM_INTEGER_REGEX.test(smartphoneRamCapacity);
+
+    createProductDispatch({
+      type: createProductAction.setIsSmartphoneRamCapacityValid,
+      payload: isValid,
+    });
+  }, [smartphoneRamCapacity]);
+
+  // validate smartphone storage capacity on every change
+  useEffect(() => {
+    const isValid = MEDIUM_INTEGER_REGEX.test(smartphoneStorageCapacity);
+
+    createProductDispatch({
+      type: createProductAction.setIsSmartphoneStorageCapacityValid,
+      payload: isValid,
+    });
+  }, [smartphoneStorageCapacity]);
+
+  // validate smartphone battery capacity on every change
+  useEffect(() => {
+    const isValid = LARGE_INTEGER_REGEX.test(smartphoneBatteryCapacity);
+
+    createProductDispatch({
+      type: createProductAction.setIsSmartphoneBatteryCapacityValid,
+      payload: isValid,
+    });
+  }, [smartphoneBatteryCapacity]);
+
   // validate smartphone camera on every change
   useEffect(() => {
     const isValid = MOBILE_CAMERA_REGEX.test(smartphoneCamera);
@@ -1645,6 +1729,66 @@ function CreateProduct() {
       payload: isValid,
     });
   }, [tabletChipset]);
+
+  // validate tablet display on every change
+  useEffect(() => {
+    const isValid = PRODUCT_DIMENSIONS_REGEX.test(tabletDisplay);
+
+    createProductDispatch({
+      type: createProductAction.setIsTabletDisplayValid,
+      payload: isValid,
+    });
+  }, [tabletDisplay]);
+
+  // validate tablet horizontal resolution on every change
+  useEffect(() => {
+    const isValid = LARGE_INTEGER_REGEX.test(tabletResolutionHorizontal);
+
+    createProductDispatch({
+      type: createProductAction.setIsTabletResolutionHorizontalValid,
+      payload: isValid,
+    });
+  }, [tabletResolutionHorizontal]);
+
+  // validate tablet vertical resolution on every change
+  useEffect(() => {
+    const isValid = LARGE_INTEGER_REGEX.test(tabletResolutionVertical);
+
+    createProductDispatch({
+      type: createProductAction.setIsTabletResolutionVerticalValid,
+      payload: isValid,
+    });
+  }, [tabletResolutionVertical]);
+
+  // validate tablet RAM capacity on every change
+  useEffect(() => {
+    const isValid = MEDIUM_INTEGER_REGEX.test(tabletRamCapacity);
+
+    createProductDispatch({
+      type: createProductAction.setIsTabletRamCapacityValid,
+      payload: isValid,
+    });
+  }, [tabletRamCapacity]);
+
+  // validate tablet storage capacity on every change
+  useEffect(() => {
+    const isValid = MEDIUM_INTEGER_REGEX.test(tabletStorageCapacity);
+
+    createProductDispatch({
+      type: createProductAction.setIsTabletStorageCapacityValid,
+      payload: isValid,
+    });
+  }, [tabletStorageCapacity]);
+
+  // validate tablet battery capacity on every change
+  useEffect(() => {
+    const isValid = LARGE_INTEGER_REGEX.test(tabletBatteryCapacity);
+
+    createProductDispatch({
+      type: createProductAction.setIsTabletBatteryCapacityValid,
+      payload: isValid,
+    });
+  }, [tabletBatteryCapacity]);
 
   // validate tablet camera on every change
   useEffect(() => {
@@ -5758,101 +5902,212 @@ function CreateProduct() {
 
   // page 2 -> specifications -> smartphone -> smartphone display
 
-  // page 2 -> specifications -> smartphone -> smartphone display -> number input element
-  const createdSmartphoneDisplayNumberInput = (
-    <NumberInput
-      label="Smartphone Display (inches)"
-      max={99}
-      min={1}
-      onChange={(value: number) => {
-        createProductDispatch({
-          type: createProductAction.setSmartphoneDisplay,
-          payload: value,
-        });
-      }}
-      required
-      startValue={1}
-      step={0.1}
-      type="number"
-      value={smartphoneDisplay}
-      w={330}
-      withAsterisk
-    />
+  // page 2 -> specifications -> smartphone -> smartphone display -> screenreader accessible text input elements
+  const [smartphoneDisplayInputErrorText, smartphoneDisplayInputValidText] =
+    AccessibleErrorValidTextElements({
+      inputElementKind: 'smartphone display',
+      inputText: smartphoneDisplay,
+      isInputTextFocused: isSmartphoneDisplayFocused,
+      isValidInputText: isSmartphoneDisplayValid,
+      regexValidationText: returnProductDimensionsValidationText({
+        content: smartphoneDisplay,
+        contentKind: 'smartphone display',
+      }),
+    });
+
+  // page 2 -> specifications -> smartphone -> smartphone display -> text input element creator
+  const [createdSmartphoneDisplayTextInput] = returnAccessibleTextInputElements(
+    [
+      {
+        description: {
+          error: smartphoneDisplayInputErrorText,
+          valid: smartphoneDisplayInputValidText,
+        },
+        inputText: smartphoneDisplay,
+        isValidInputText: isSmartphoneDisplayValid,
+        label: 'Smartphone Display (inches)',
+        onBlur: () => {
+          createProductDispatch({
+            type: createProductAction.setIsSmartphoneDisplayFocused,
+            payload: false,
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLInputElement>) => {
+          createProductDispatch({
+            type: createProductAction.setSmartphoneDisplay,
+            payload: event.currentTarget.value,
+          });
+        },
+        onFocus: () => {
+          createProductDispatch({
+            type: createProductAction.setIsSmartphoneDisplayFocused,
+            payload: true,
+          });
+        },
+        placeholder: 'Format: 000.00',
+        required: true,
+        semanticName: 'smartphone display',
+      },
+    ]
   );
 
   // page 2 -> specifications -> smartphone -> smartphone resolution
 
   // page 2 -> specifications -> smartphone -> smartphone resolution -> horizontal
 
-  // page 2 -> specifications -> smartphone -> smartphone resolution -> horizontal -> number input element
-  const createdSmartphoneResolutionHorizontalNumberInput = (
-    <NumberInput
-      label="Smartphone Resolution Horizontal"
-      max={9999}
-      min={1}
-      onChange={(value: number) => {
-        createProductDispatch({
-          type: createProductAction.setSmartphoneResolutionHorizontal,
-          payload: value,
-        });
-      }}
-      required
-      startValue={1}
-      step={1}
-      type="number"
-      value={smartphoneResolutionHorizontal}
-      w={330}
-      withAsterisk
-    />
-  );
+  // page 2 -> specifications -> smartphone -> smartphone resolution -> horizontal -> screenreader accessible text input elements
+  const [
+    smartphoneResolutionHorizontalInputErrorText,
+    smartphoneResolutionHorizontalInputValidText,
+  ] = AccessibleErrorValidTextElements({
+    inputElementKind: 'smartphone resolution horizontal',
+    inputText: smartphoneResolutionHorizontal,
+    isInputTextFocused: isSmartphoneResolutionHorizontalFocused,
+    isValidInputText: isSmartphoneResolutionHorizontalValid,
+    regexValidationText: returnLargeIntegerValidationText({
+      content: smartphoneResolutionHorizontal,
+      contentKind: 'smartphone resolution horizontal',
+    }),
+  });
+
+  // page 2 -> specifications -> smartphone -> smartphone resolution -> horizontal -> text input element creator
+  const [createdSmartphoneResolutionHorizontalTextInput] =
+    returnAccessibleTextInputElements([
+      {
+        description: {
+          error: smartphoneResolutionHorizontalInputErrorText,
+          valid: smartphoneResolutionHorizontalInputValidText,
+        },
+        inputText: smartphoneResolutionHorizontal,
+        isValidInputText: isSmartphoneResolutionHorizontalValid,
+        label: 'Smartphone Resolution Horizontal (pixels)',
+        onBlur: () => {
+          createProductDispatch({
+            type: createProductAction.setIsSmartphoneResolutionHorizontalFocused,
+            payload: false,
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLInputElement>) => {
+          createProductDispatch({
+            type: createProductAction.setSmartphoneResolutionHorizontal,
+            payload: event.currentTarget.value,
+          });
+        },
+        onFocus: () => {
+          createProductDispatch({
+            type: createProductAction.setIsSmartphoneResolutionHorizontalFocused,
+            payload: true,
+          });
+        },
+        placeholder: 'Format: 000000',
+        required: true,
+        semanticName: 'smartphone resolution horizontal',
+      },
+    ]);
 
   // page 2 -> specifications -> smartphone -> smartphone resolution -> vertical
 
-  // page 2 -> specifications -> smartphone -> smartphone resolution -> vertical -> number input element
-  const createdSmartphoneResolutionVerticalNumberInput = (
-    <NumberInput
-      label="Smartphone Resolution Vertical"
-      max={9999}
-      min={1}
-      onChange={(value: number) => {
-        createProductDispatch({
-          type: createProductAction.setSmartphoneResolutionVertical,
-          payload: value,
-        });
-      }}
-      required
-      startValue={1}
-      step={1}
-      type="number"
-      value={smartphoneResolutionVertical}
-      w={330}
-      withAsterisk
-    />
-  );
+  // page 2 -> specifications -> smartphone -> smartphone resolution -> vertical -> screenreader accessible text input elements
+  const [
+    smartphoneResolutionVerticalInputErrorText,
+    smartphoneResolutionVerticalInputValidText,
+  ] = AccessibleErrorValidTextElements({
+    inputElementKind: 'smartphone resolution vertical',
+    inputText: smartphoneResolutionVertical,
+    isInputTextFocused: isSmartphoneResolutionVerticalFocused,
+    isValidInputText: isSmartphoneResolutionVerticalValid,
+    regexValidationText: returnLargeIntegerValidationText({
+      content: smartphoneResolutionVertical,
+      contentKind: 'smartphone resolution vertical',
+    }),
+  });
+
+  // page 2 -> specifications -> smartphone -> smartphone resolution -> vertical -> text input element creator
+  const [createdSmartphoneResolutionVerticalTextInput] =
+    returnAccessibleTextInputElements([
+      {
+        description: {
+          error: smartphoneResolutionVerticalInputErrorText,
+          valid: smartphoneResolutionVerticalInputValidText,
+        },
+        inputText: smartphoneResolutionVertical,
+        isValidInputText: isSmartphoneResolutionVerticalValid,
+        label: 'Smartphone Resolution Vertical (pixels)',
+        onBlur: () => {
+          createProductDispatch({
+            type: createProductAction.setIsSmartphoneResolutionVerticalFocused,
+            payload: false,
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLInputElement>) => {
+          createProductDispatch({
+            type: createProductAction.setSmartphoneResolutionVertical,
+            payload: event.currentTarget.value,
+          });
+        },
+        onFocus: () => {
+          createProductDispatch({
+            type: createProductAction.setIsSmartphoneResolutionVerticalFocused,
+            payload: true,
+          });
+        },
+        placeholder: 'Format: 000000',
+        required: true,
+        semanticName: 'smartphone resolution vertical',
+      },
+    ]);
 
   // page 2 -> specifications -> smartphone -> smartphone ram capacity
 
-  // page 2 -> specifications -> smartphone -> smartphone ram capacity -> number input element
-  const createdSmartphoneRamCapacityNumberInput = (
-    <NumberInput
-      label="Smartphone RAM Capacity"
-      max={1024}
-      min={1}
-      onChange={(value: number) => {
-        createProductDispatch({
-          type: createProductAction.setSmartphoneRamCapacity,
-          payload: value,
-        });
-      }}
-      required
-      startValue={1}
-      step={1}
-      type="number"
-      value={smartphoneRamCapacity}
-      w={330}
-      withAsterisk
-    />
-  );
+  // page 2 -> specifications -> smartphone -> smartphone ram capacity -> screenreader accessible text input elements
+  const [
+    smartphoneRamCapacityInputErrorText,
+    smartphoneRamCapacityInputValidText,
+  ] = AccessibleErrorValidTextElements({
+    inputElementKind: 'smartphone ram capacity',
+    inputText: smartphoneRamCapacity,
+    isInputTextFocused: isSmartphoneRamCapacityFocused,
+    isValidInputText: isSmartphoneRamCapacityValid,
+    regexValidationText: returnMediumIntegerValidationText({
+      content: smartphoneRamCapacity,
+      contentKind: 'smartphone ram capacity',
+    }),
+  });
+
+  // page 2 -> specifications -> smartphone -> smartphone ram capacity -> text input element creator
+  const [createdSmartphoneRamCapacityTextInput] =
+    returnAccessibleTextInputElements([
+      {
+        description: {
+          error: smartphoneRamCapacityInputErrorText,
+          valid: smartphoneRamCapacityInputValidText,
+        },
+        inputText: smartphoneRamCapacity,
+        isValidInputText: isSmartphoneRamCapacityValid,
+        label: 'Smartphone RAM Capacity (GB)',
+        onBlur: () => {
+          createProductDispatch({
+            type: createProductAction.setIsSmartphoneRamCapacityFocused,
+            payload: false,
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLInputElement>) => {
+          createProductDispatch({
+            type: createProductAction.setSmartphoneRamCapacity,
+            payload: event.currentTarget.value,
+          });
+        },
+        onFocus: () => {
+          createProductDispatch({
+            type: createProductAction.setIsSmartphoneRamCapacityFocused,
+            payload: true,
+          });
+        },
+        placeholder: 'Format: 0000',
+        required: true,
+        semanticName: 'smartphone ram capacity',
+      },
+    ]);
 
   // page 2 -> specifications -> smartphone -> smartphone ram capacity unit
 
@@ -5876,51 +6131,107 @@ function CreateProduct() {
 
   // page 2 -> specifications -> smartphone -> smartphone storage capacity
 
-  // page 2 -> specifications -> smartphone -> smartphone storage capacity -> number input element
-  const createdSmartphoneStorageCapacityNumberInput = (
-    <NumberInput
-      label="Smartphone Storage Capacity (GB)"
-      max={8192}
-      min={1}
-      onChange={(value: number) => {
-        createProductDispatch({
-          type: createProductAction.setSmartphoneStorageCapacity,
-          payload: value,
-        });
-      }}
-      required
-      startValue={1}
-      step={1}
-      type="number"
-      value={smartphoneStorageCapacity}
-      w={330}
-      withAsterisk
-    />
-  );
+  // page 2 -> specifications -> smartphone -> smartphone storage capacity -> screenreader accessible text input elements
+  const [
+    smartphoneStorageCapacityInputErrorText,
+    smartphoneStorageCapacityInputValidText,
+  ] = AccessibleErrorValidTextElements({
+    inputElementKind: 'smartphone storage capacity',
+    inputText: smartphoneStorageCapacity,
+    isInputTextFocused: isSmartphoneStorageCapacityFocused,
+    isValidInputText: isSmartphoneStorageCapacityValid,
+    regexValidationText: returnMediumIntegerValidationText({
+      content: smartphoneStorageCapacity,
+      contentKind: 'smartphone storage capacity',
+    }),
+  });
+
+  // page 2 -> specifications -> smartphone -> smartphone storage capacity -> text input element creator
+  const [createdSmartphoneStorageCapacityTextInput] =
+    returnAccessibleTextInputElements([
+      {
+        description: {
+          error: smartphoneStorageCapacityInputErrorText,
+          valid: smartphoneStorageCapacityInputValidText,
+        },
+        inputText: smartphoneStorageCapacity,
+        isValidInputText: isSmartphoneStorageCapacityValid,
+        label: 'Smartphone Storage Capacity (GB)',
+        onBlur: () => {
+          createProductDispatch({
+            type: createProductAction.setIsSmartphoneStorageCapacityFocused,
+            payload: false,
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLInputElement>) => {
+          createProductDispatch({
+            type: createProductAction.setSmartphoneStorageCapacity,
+            payload: event.currentTarget.value,
+          });
+        },
+        onFocus: () => {
+          createProductDispatch({
+            type: createProductAction.setIsSmartphoneStorageCapacityFocused,
+            payload: true,
+          });
+        },
+        placeholder: 'Format: 0000',
+        required: true,
+        semanticName: 'smartphone storage capacity',
+      },
+    ]);
 
   // page 2 -> specifications -> smartphone -> smartphone battery capacity
 
-  // page 2 -> specifications -> smartphone -> smartphone battery capacity -> number input element
-  const createdSmartphoneBatteryCapacityNumberInput = (
-    <NumberInput
-      label="Smartphone Battery Capacity (mAh)"
-      max={99999}
-      min={1}
-      onChange={(value: number) => {
-        createProductDispatch({
-          type: createProductAction.setSmartphoneBatteryCapacity,
-          payload: value,
-        });
-      }}
-      required
-      startValue={1}
-      step={1}
-      type="number"
-      value={smartphoneBatteryCapacity}
-      w={330}
-      withAsterisk
-    />
-  );
+  // page 2 -> specifications -> smartphone -> smartphone battery capacity -> screenreader accessible text input elements
+  const [
+    smartphoneBatteryCapacityInputErrorText,
+    smartphoneBatteryCapacityInputValidText,
+  ] = AccessibleErrorValidTextElements({
+    inputElementKind: 'smartphone battery capacity',
+    inputText: smartphoneBatteryCapacity,
+    isInputTextFocused: isSmartphoneBatteryCapacityFocused,
+    isValidInputText: isSmartphoneBatteryCapacityValid,
+    regexValidationText: returnLargeIntegerValidationText({
+      content: smartphoneBatteryCapacity,
+      contentKind: 'smartphone battery capacity',
+    }),
+  });
+
+  // page 2 -> specifications -> smartphone -> smartphone battery capacity -> text input element creator
+  const [createdSmartphoneBatteryCapacityTextInput] =
+    returnAccessibleTextInputElements([
+      {
+        description: {
+          error: smartphoneBatteryCapacityInputErrorText,
+          valid: smartphoneBatteryCapacityInputValidText,
+        },
+        inputText: smartphoneBatteryCapacity,
+        isValidInputText: isSmartphoneBatteryCapacityValid,
+        label: 'Smartphone Battery Capacity (mAh)',
+        onBlur: () => {
+          createProductDispatch({
+            type: createProductAction.setIsSmartphoneBatteryCapacityFocused,
+            payload: false,
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLInputElement>) => {
+          createProductDispatch({
+            type: createProductAction.setSmartphoneBatteryCapacity,
+            payload: event.currentTarget.value,
+          });
+        },
+        onFocus: () => {
+          createProductDispatch({
+            type: createProductAction.setIsSmartphoneBatteryCapacityFocused,
+            payload: true,
+          });
+        },
+        placeholder: 'Format: 000000',
+        required: true,
+        semanticName: 'smartphone battery capacity',
+      },
+    ]);
 
   // page 2 -> specifications -> smartphone -> smartphone camera
 
@@ -5934,7 +6245,7 @@ function CreateProduct() {
       regexValidationText: returnMobileCameraResolutionValidationText({
         content: smartphoneCamera,
         contentKind: 'smartphone camera',
-        maxLength: 72,
+        maxLength: 84,
         minLength: 4,
       }),
     });
@@ -5949,7 +6260,7 @@ function CreateProduct() {
       inputText: smartphoneCamera,
       isValidInputText: isSmartphoneCameraValid,
       label: 'Smartphone Camera',
-      maxLength: 72,
+      maxLength: 84,
       minLength: 4,
       onBlur: () => {
         createProductDispatch({
@@ -6104,100 +6415,208 @@ function CreateProduct() {
 
   // page 2 -> specifications -> tablet -> tablet display
 
-  // page 2 -> specifications -> tablet -> tablet display -> number input element
-  const createdTabletDisplayNumberInput = (
-    <NumberInput
-      label="Tablet Display (inches)"
-      max={99}
-      min={1}
-      onChange={(value: number) => {
+  // page 2 -> specifications -> tablet -> tablet display -> screenreader accessible text input elements
+  const [tabletDisplayInputErrorText, tabletDisplayInputValidText] =
+    AccessibleErrorValidTextElements({
+      inputElementKind: 'tablet display',
+      inputText: tabletDisplay,
+      isInputTextFocused: isTabletDisplayFocused,
+      isValidInputText: isTabletDisplayValid,
+      regexValidationText: returnProductDimensionsValidationText({
+        content: tabletDisplay,
+        contentKind: 'tablet display',
+      }),
+    });
+
+  // page 2 -> specifications -> tablet -> tablet display -> text input element creator
+  const [createdTabletDisplayTextInput] = returnAccessibleTextInputElements([
+    {
+      description: {
+        error: tabletDisplayInputErrorText,
+        valid: tabletDisplayInputValidText,
+      },
+      inputText: tabletDisplay,
+      isValidInputText: isTabletDisplayValid,
+      label: 'Tablet Display (inches)',
+      onBlur: () => {
+        createProductDispatch({
+          type: createProductAction.setIsTabletDisplayFocused,
+          payload: false,
+        });
+      },
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
         createProductDispatch({
           type: createProductAction.setTabletDisplay,
-          payload: value,
+          payload: event.currentTarget.value,
         });
-      }}
-      required
-      startValue={1}
-      step={0.1}
-      type="number"
-      value={tabletDisplay}
-      w={330}
-      withAsterisk
-    />
-  );
+      },
+      onFocus: () => {
+        createProductDispatch({
+          type: createProductAction.setIsTabletDisplayFocused,
+          payload: true,
+        });
+      },
+      placeholder: 'Format: 000.00',
+      required: true,
+      semanticName: 'tablet display',
+    },
+  ]);
 
   // page 2 -> specifications -> tablet -> tablet resolution
 
   // page 2 -> specifications -> tablet -> tablet resolution -> horizontal
 
-  // page 2 -> specifications -> tablet -> tablet resolution -> horizontal -> number input element
-  const createdTabletResolutionHorizontalNumberInput = (
-    <NumberInput
-      label="Tablet Resolution Horizontal"
-      max={9999}
-      min={1}
-      onChange={(value: number) => {
-        createProductDispatch({
-          type: createProductAction.setTabletResolutionHorizontal,
-          payload: value,
-        });
-      }}
-      required
-      startValue={1}
-      step={1}
-      type="number"
-      value={tabletResolutionHorizontal}
-      w={330}
-      withAsterisk
-    />
-  );
+  // page 2 -> specifications -> tablet -> tablet resolution -> horizontal -> screenreader accessible text input elements
+  const [
+    tabletResolutionHorizontalInputErrorText,
+    tabletResolutionHorizontalInputValidText,
+  ] = AccessibleErrorValidTextElements({
+    inputElementKind: 'tablet resolution horizontal',
+    inputText: tabletResolutionHorizontal,
+    isInputTextFocused: isTabletResolutionHorizontalFocused,
+    isValidInputText: isTabletResolutionHorizontalValid,
+    regexValidationText: returnLargeIntegerValidationText({
+      content: tabletResolutionHorizontal,
+      contentKind: 'tablet resolution horizontal',
+    }),
+  });
+
+  // page 2 -> specifications -> tablet -> tablet resolution -> horizontal -> text input element creator
+  const [createdTabletResolutionHorizontalTextInput] =
+    returnAccessibleTextInputElements([
+      {
+        description: {
+          error: tabletResolutionHorizontalInputErrorText,
+          valid: tabletResolutionHorizontalInputValidText,
+        },
+        inputText: tabletResolutionHorizontal,
+        isValidInputText: isTabletResolutionHorizontalValid,
+        label: 'Tablet Resolution Horizontal (pixels)',
+        onBlur: () => {
+          createProductDispatch({
+            type: createProductAction.setIsTabletResolutionHorizontalFocused,
+            payload: false,
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLInputElement>) => {
+          createProductDispatch({
+            type: createProductAction.setTabletResolutionHorizontal,
+            payload: event.currentTarget.value,
+          });
+        },
+        onFocus: () => {
+          createProductDispatch({
+            type: createProductAction.setIsTabletResolutionHorizontalFocused,
+            payload: true,
+          });
+        },
+        placeholder: 'Format: 000000',
+        required: true,
+        semanticName: 'tablet resolution horizontal',
+      },
+    ]);
 
   // page 2 -> specifications -> tablet -> tablet resolution -> vertical
 
-  // page 2 -> specifications -> tablet -> tablet resolution -> vertical -> number input element
-  const createdTabletResolutionVerticalNumberInput = (
-    <NumberInput
-      label="Tablet Resolution Vertical"
-      max={9999}
-      min={1}
-      onChange={(value: number) => {
-        createProductDispatch({
-          type: createProductAction.setTabletResolutionVertical,
-          payload: value,
-        });
-      }}
-      required
-      startValue={1}
-      step={1}
-      type="number"
-      value={tabletResolutionVertical}
-      w={330}
-      withAsterisk
-    />
-  );
+  // page 2 -> specifications -> tablet -> tablet resolution -> vertical -> screenreader accessible text input elements
+  const [
+    tabletResolutionVerticalInputErrorText,
+    tabletResolutionVerticalInputValidText,
+  ] = AccessibleErrorValidTextElements({
+    inputElementKind: 'tablet resolution vertical',
+    inputText: tabletResolutionVertical,
+    isInputTextFocused: isTabletResolutionVerticalFocused,
+    isValidInputText: isTabletResolutionVerticalValid,
+    regexValidationText: returnLargeIntegerValidationText({
+      content: tabletResolutionVertical,
+      contentKind: 'tablet resolution vertical',
+    }),
+  });
+
+  // page 2 -> specifications -> tablet -> tablet resolution -> vertical -> text input element creator
+  const [createdTabletResolutionVerticalTextInput] =
+    returnAccessibleTextInputElements([
+      {
+        description: {
+          error: tabletResolutionVerticalInputErrorText,
+          valid: tabletResolutionVerticalInputValidText,
+        },
+        inputText: tabletResolutionVertical,
+        isValidInputText: isTabletResolutionVerticalValid,
+        label: 'Tablet Resolution Vertical (pixels)',
+        onBlur: () => {
+          createProductDispatch({
+            type: createProductAction.setIsTabletResolutionVerticalFocused,
+            payload: false,
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLInputElement>) => {
+          createProductDispatch({
+            type: createProductAction.setTabletResolutionVertical,
+            payload: event.currentTarget.value,
+          });
+        },
+        onFocus: () => {
+          createProductDispatch({
+            type: createProductAction.setIsTabletResolutionVerticalFocused,
+            payload: true,
+          });
+        },
+        placeholder: 'Format: 000000',
+        required: true,
+        semanticName: 'tablet resolution vertical',
+      },
+    ]);
 
   // page 2 -> specifications -> tablet -> tablet ram capacity
 
-  // page 2 -> specifications -> tablet -> tablet ram capacity -> number input element
-  const createdTabletRamCapacityNumberInput = (
-    <NumberInput
-      label="Tablet RAM Capacity"
-      max={1024}
-      min={1}
-      onChange={(value: number) => {
-        createProductDispatch({
-          type: createProductAction.setTabletRamCapacity,
-          payload: value,
-        });
-      }}
-      required
-      startValue={1}
-      step={1}
-      type="number"
-      value={tabletRamCapacity}
-      w={330}
-      withAsterisk
-    />
+  // page 2 -> specifications -> tablet -> tablet ram capacity -> screenreader accessible text input elements
+  const [tabletRamCapacityInputErrorText, tabletRamCapacityInputValidText] =
+    AccessibleErrorValidTextElements({
+      inputElementKind: 'tablet ram capacity',
+      inputText: tabletRamCapacity,
+      isInputTextFocused: isTabletRamCapacityFocused,
+      isValidInputText: isTabletRamCapacityValid,
+      regexValidationText: returnMediumIntegerValidationText({
+        content: tabletRamCapacity,
+        contentKind: 'tablet ram capacity',
+      }),
+    });
+
+  // page 2 -> specifications -> tablet -> tablet ram capacity -> text input element creator
+  const [createdTabletRamCapacityTextInput] = returnAccessibleTextInputElements(
+    [
+      {
+        description: {
+          error: tabletRamCapacityInputErrorText,
+          valid: tabletRamCapacityInputValidText,
+        },
+        inputText: tabletRamCapacity,
+        isValidInputText: isTabletRamCapacityValid,
+        label: 'Tablet RAM Capacity (GB)',
+        onBlur: () => {
+          createProductDispatch({
+            type: createProductAction.setIsTabletRamCapacityFocused,
+            payload: false,
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLInputElement>) => {
+          createProductDispatch({
+            type: createProductAction.setTabletRamCapacity,
+            payload: event.currentTarget.value,
+          });
+        },
+        onFocus: () => {
+          createProductDispatch({
+            type: createProductAction.setIsTabletRamCapacityFocused,
+            payload: true,
+          });
+        },
+        placeholder: 'Format: 0000',
+        required: true,
+        semanticName: 'tablet ram capacity',
+      },
+    ]
   );
 
   // page 2 -> specifications -> tablet -> tablet ram capacity unit
@@ -6222,51 +6641,107 @@ function CreateProduct() {
 
   // page 2 -> specifications -> tablet -> tablet storage capacity
 
-  // page 2 -> specifications -> tablet -> tablet storage capacity -> number input element
-  const createdTabletStorageCapacityNumberInput = (
-    <NumberInput
-      label="Tablet Storage Capacity (GB)"
-      max={8192}
-      min={1}
-      onChange={(value: number) => {
-        createProductDispatch({
-          type: createProductAction.setTabletStorageCapacity,
-          payload: value,
-        });
-      }}
-      required
-      startValue={1}
-      step={1}
-      type="number"
-      value={tabletStorageCapacity}
-      w={330}
-      withAsterisk
-    />
-  );
+  // page 2 -> specifications -> tablet -> tablet storage capacity -> screenreader accessible text input elements
+  const [
+    tabletStorageCapacityInputErrorText,
+    tabletStorageCapacityInputValidText,
+  ] = AccessibleErrorValidTextElements({
+    inputElementKind: 'tablet storage capacity',
+    inputText: tabletStorageCapacity,
+    isInputTextFocused: isTabletStorageCapacityFocused,
+    isValidInputText: isTabletStorageCapacityValid,
+    regexValidationText: returnMediumIntegerValidationText({
+      content: tabletStorageCapacity,
+      contentKind: 'tablet storage capacity',
+    }),
+  });
+
+  // page 2 -> specifications -> tablet -> tablet storage capacity -> text input element creator
+  const [createdTabletStorageCapacityTextInput] =
+    returnAccessibleTextInputElements([
+      {
+        description: {
+          error: tabletStorageCapacityInputErrorText,
+          valid: tabletStorageCapacityInputValidText,
+        },
+        inputText: tabletStorageCapacity,
+        isValidInputText: isTabletStorageCapacityValid,
+        label: 'Tablet Storage Capacity (GB)',
+        onBlur: () => {
+          createProductDispatch({
+            type: createProductAction.setIsTabletStorageCapacityFocused,
+            payload: false,
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLInputElement>) => {
+          createProductDispatch({
+            type: createProductAction.setTabletStorageCapacity,
+            payload: event.currentTarget.value,
+          });
+        },
+        onFocus: () => {
+          createProductDispatch({
+            type: createProductAction.setIsTabletStorageCapacityFocused,
+            payload: true,
+          });
+        },
+        placeholder: 'Format: 0000',
+        required: true,
+        semanticName: 'tablet storage capacity',
+      },
+    ]);
 
   // page 2 -> specifications -> tablet -> tablet battery capacity
 
-  // page 2 -> specifications -> tablet -> tablet battery capacity -> number input element
-  const createdTabletBatteryCapacityNumberInput = (
-    <NumberInput
-      label="Tablet Battery Capacity (mAh)"
-      max={99999}
-      min={1}
-      onChange={(value: number) => {
-        createProductDispatch({
-          type: createProductAction.setTabletBatteryCapacity,
-          payload: value,
-        });
-      }}
-      required
-      startValue={1}
-      step={1}
-      type="number"
-      value={tabletBatteryCapacity}
-      w={330}
-      withAsterisk
-    />
-  );
+  // page 2 -> specifications -> tablet -> tablet battery capacity -> screenreader accessible text input elements
+  const [
+    tabletBatteryCapacityInputErrorText,
+    tabletBatteryCapacityInputValidText,
+  ] = AccessibleErrorValidTextElements({
+    inputElementKind: 'tablet battery capacity',
+    inputText: tabletBatteryCapacity,
+    isInputTextFocused: isTabletBatteryCapacityFocused,
+    isValidInputText: isTabletBatteryCapacityValid,
+    regexValidationText: returnLargeIntegerValidationText({
+      content: tabletBatteryCapacity,
+      contentKind: 'tablet battery capacity',
+    }),
+  });
+
+  // page 2 -> specifications -> tablet -> tablet battery capacity -> text input element creator
+  const [createdTabletBatteryCapacityTextInput] =
+    returnAccessibleTextInputElements([
+      {
+        description: {
+          error: tabletBatteryCapacityInputErrorText,
+          valid: tabletBatteryCapacityInputValidText,
+        },
+        inputText: tabletBatteryCapacity,
+        isValidInputText: isTabletBatteryCapacityValid,
+        label: 'Tablet Battery Capacity (mAh)',
+        onBlur: () => {
+          createProductDispatch({
+            type: createProductAction.setIsTabletBatteryCapacityFocused,
+            payload: false,
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLInputElement>) => {
+          createProductDispatch({
+            type: createProductAction.setTabletBatteryCapacity,
+            payload: event.currentTarget.value,
+          });
+        },
+        onFocus: () => {
+          createProductDispatch({
+            type: createProductAction.setIsTabletBatteryCapacityFocused,
+            payload: true,
+          });
+        },
+        placeholder: 'Format: 000000',
+        required: true,
+        semanticName: 'tablet battery capacity',
+      },
+    ]);
 
   // page 2 -> specifications -> tablet -> tablet camera
 
@@ -6280,7 +6755,7 @@ function CreateProduct() {
       regexValidationText: returnMobileCameraResolutionValidationText({
         content: tabletCamera,
         contentKind: 'tablet camera',
-        maxLength: 72,
+        maxLength: 84,
         minLength: 4,
       }),
     });
@@ -6295,7 +6770,7 @@ function CreateProduct() {
       inputText: tabletCamera,
       isValidInputText: isTabletCameraValid,
       label: 'Tablet Camera',
-      maxLength: 72,
+      maxLength: 84,
       minLength: 4,
       onBlur: () => {
         createProductDispatch({
@@ -7053,14 +7528,14 @@ function CreateProduct() {
       </Group>
       {createdSmartphoneOsSelectInput}
       {createdSmartphoneChipsetTextInput}
-      {createdSmartphoneDisplayNumberInput}
-      {createdSmartphoneResolutionHorizontalNumberInput}
-      {createdSmartphoneResolutionVerticalNumberInput}
+      {createdSmartphoneDisplayTextInput}
+      {createdSmartphoneResolutionHorizontalTextInput}
+      {createdSmartphoneResolutionVerticalTextInput}
       {createdSmartphoneColorTextInput}
-      {createdSmartphoneRamCapacityNumberInput}
+      {createdSmartphoneRamCapacityTextInput}
       {createdSmartphoneRamCapacityUnitSelectInput}
-      {createdSmartphoneStorageCapacityNumberInput}
-      {createdSmartphoneBatteryCapacityNumberInput}
+      {createdSmartphoneStorageCapacityTextInput}
+      {createdSmartphoneBatteryCapacityTextInput}
       {createdSmartphoneCameraTextInput}
     </FormLayoutWrapper>
   );
@@ -7073,14 +7548,14 @@ function CreateProduct() {
       </Group>
       {createdTabletOsSelectInput}
       {createdTabletChipsetTextInput}
-      {createdTabletDisplayNumberInput}
-      {createdTabletResolutionHorizontalNumberInput}
-      {createdTabletResolutionVerticalNumberInput}
+      {createdTabletDisplayTextInput}
+      {createdTabletResolutionHorizontalTextInput}
+      {createdTabletResolutionVerticalTextInput}
       {createdTabletColorTextInput}
-      {createdTabletRamCapacityNumberInput}
+      {createdTabletRamCapacityTextInput}
       {createdTabletRamCapacityUnitSelectInput}
-      {createdTabletStorageCapacityNumberInput}
-      {createdTabletBatteryCapacityNumberInput}
+      {createdTabletStorageCapacityTextInput}
+      {createdTabletBatteryCapacityTextInput}
       {createdTabletCameraTextInput}
     </FormLayoutWrapper>
   );
@@ -7706,22 +8181,22 @@ function CreateProduct() {
       {
         inputName: 'Smartphone Display',
         inputValue: smartphoneDisplay,
-        isInputValueValid: smartphoneDisplay !== 0,
+        isInputValueValid: isSmartphoneDisplayValid,
       },
       {
         inputName: 'Smartphone Resolution Horizontal',
         inputValue: smartphoneResolutionHorizontal,
-        isInputValueValid: smartphoneResolutionHorizontal !== 0,
+        isInputValueValid: isSmartphoneResolutionHorizontalValid,
       },
       {
         inputName: 'Smartphone Resolution Vertical',
         inputValue: smartphoneResolutionVertical,
-        isInputValueValid: smartphoneResolutionVertical !== 0,
+        isInputValueValid: isSmartphoneResolutionVerticalValid,
       },
       {
         inputName: 'Smartphone RAM Capacity',
         inputValue: smartphoneRamCapacity,
-        isInputValueValid: smartphoneRamCapacity !== 0,
+        isInputValueValid: isSmartphoneRamCapacityValid,
       },
       {
         inputName: 'Smartphone RAM Capacity Unit',
@@ -7730,12 +8205,12 @@ function CreateProduct() {
       {
         inputName: 'Smartphone Storage Capacity',
         inputValue: smartphoneStorageCapacity,
-        isInputValueValid: smartphoneStorageCapacity !== 0,
+        isInputValueValid: isSmartphoneStorageCapacityValid,
       },
       {
         inputName: 'Smartphone Battery Capacity',
         inputValue: smartphoneBatteryCapacity,
-        isInputValueValid: smartphoneBatteryCapacity !== 0,
+        isInputValueValid: isSmartphoneBatteryCapacityValid,
       },
       {
         inputName: 'Smartphone Camera',
@@ -7765,22 +8240,22 @@ function CreateProduct() {
       {
         inputName: 'Tablet Display',
         inputValue: tabletDisplay,
-        isInputValueValid: tabletDisplay !== 0,
+        isInputValueValid: isTabletDisplayValid,
       },
       {
         inputName: 'Tablet Resolution Horizontal',
         inputValue: tabletResolutionHorizontal,
-        isInputValueValid: tabletResolutionHorizontal !== 0,
+        isInputValueValid: isTabletResolutionHorizontalValid,
       },
       {
         inputName: 'Tablet Resolution Vertical',
         inputValue: tabletResolutionVertical,
-        isInputValueValid: tabletResolutionVertical !== 0,
+        isInputValueValid: isTabletResolutionVerticalValid,
       },
       {
         inputName: 'Tablet RAM Capacity',
         inputValue: tabletRamCapacity,
-        isInputValueValid: tabletRamCapacity !== 0,
+        isInputValueValid: isTabletRamCapacityValid,
       },
       {
         inputName: 'Tablet RAM Capacity Unit',
@@ -7789,12 +8264,12 @@ function CreateProduct() {
       {
         inputName: 'Tablet Storage Capacity',
         inputValue: tabletStorageCapacity,
-        isInputValueValid: tabletStorageCapacity !== 0,
+        isInputValueValid: isTabletStorageCapacityValid,
       },
       {
         inputName: 'Tablet Battery Capacity',
         inputValue: tabletBatteryCapacity,
-        isInputValueValid: tabletBatteryCapacity !== 0,
+        isInputValueValid: isTabletBatteryCapacityValid,
       },
       {
         inputName: 'Tablet Camera',

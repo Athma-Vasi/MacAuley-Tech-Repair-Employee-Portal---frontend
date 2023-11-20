@@ -578,13 +578,25 @@ type CreateProductState = {
   smartphoneChipset: string;
   isSmartphoneChipsetValid: boolean;
   isSmartphoneChipsetFocused: boolean;
-  smartphoneDisplay: number;
-  smartphoneResolutionHorizontal: number;
-  smartphoneResolutionVertical: number;
-  smartphoneRamCapacity: number;
+  smartphoneDisplay: string;
+  isSmartphoneDisplayValid: boolean;
+  isSmartphoneDisplayFocused: boolean;
+  smartphoneResolutionHorizontal: string;
+  isSmartphoneResolutionHorizontalValid: boolean;
+  isSmartphoneResolutionHorizontalFocused: boolean;
+  smartphoneResolutionVertical: string;
+  isSmartphoneResolutionVerticalValid: boolean;
+  isSmartphoneResolutionVerticalFocused: boolean;
+  smartphoneRamCapacity: string;
+  isSmartphoneRamCapacityValid: boolean;
+  isSmartphoneRamCapacityFocused: boolean;
   smartphoneRamCapacityUnit: MemoryUnit;
-  smartphoneStorageCapacity: number; // GB
-  smartphoneBatteryCapacity: number; // mAh
+  smartphoneStorageCapacity: string; // GB
+  isSmartphoneStorageCapacityValid: boolean;
+  isSmartphoneStorageCapacityFocused: boolean;
+  smartphoneBatteryCapacity: string; // mAh
+  isSmartphoneBatteryCapacityValid: boolean;
+  isSmartphoneBatteryCapacityFocused: boolean;
   smartphoneCamera: string; // 108 MP, 64 MP, etc.
   isSmartphoneCameraValid: boolean;
   isSmartphoneCameraFocused: boolean;
@@ -597,13 +609,25 @@ type CreateProductState = {
   tabletChipset: string;
   isTabletChipsetValid: boolean;
   isTabletChipsetFocused: boolean;
-  tabletDisplay: number;
-  tabletResolutionHorizontal: number;
-  tabletResolutionVertical: number;
-  tabletRamCapacity: number;
+  tabletDisplay: string;
+  isTabletDisplayValid: boolean;
+  isTabletDisplayFocused: boolean;
+  tabletResolutionHorizontal: string;
+  isTabletResolutionHorizontalValid: boolean;
+  isTabletResolutionHorizontalFocused: boolean;
+  tabletResolutionVertical: string;
+  isTabletResolutionVerticalValid: boolean;
+  isTabletResolutionVerticalFocused: boolean;
+  tabletRamCapacity: string;
+  isTabletRamCapacityValid: boolean;
+  isTabletRamCapacityFocused: boolean;
   tabletRamCapacityUnit: MemoryUnit;
-  tabletStorageCapacity: number; // GB
-  tabletBatteryCapacity: number; // mAh
+  tabletStorageCapacity: string; // GB
+  isTabletStorageCapacityValid: boolean;
+  isTabletStorageCapacityFocused: boolean;
+  tabletBatteryCapacity: string; // mAh
+  isTabletBatteryCapacityValid: boolean;
+  isTabletBatteryCapacityFocused: boolean;
   tabletCamera: string; // 108 MP, 64 MP, etc.
   isTabletCameraValid: boolean;
   isTabletCameraFocused: boolean;
@@ -893,12 +917,24 @@ type CreateProductAction = {
   setIsSmartphoneChipsetValid: 'setIsSmartphoneChipsetValid';
   setIsSmartphoneChipsetFocused: 'setIsSmartphoneChipsetFocused';
   setSmartphoneDisplay: 'setSmartphoneDisplay';
+  setIsSmartphoneDisplayValid: 'setIsSmartphoneDisplayValid';
+  setIsSmartphoneDisplayFocused: 'setIsSmartphoneDisplayFocused';
   setSmartphoneResolutionHorizontal: 'setSmartphoneResolutionHorizontal';
+  setIsSmartphoneResolutionHorizontalValid: 'setIsSmartphoneResolutionHorizontalValid';
+  setIsSmartphoneResolutionHorizontalFocused: 'setIsSmartphoneResolutionHorizontalFocused';
   setSmartphoneResolutionVertical: 'setSmartphoneResolutionVertical';
+  setIsSmartphoneResolutionVerticalValid: 'setIsSmartphoneResolutionVerticalValid';
+  setIsSmartphoneResolutionVerticalFocused: 'setIsSmartphoneResolutionVerticalFocused';
   setSmartphoneRamCapacity: 'setSmartphoneRamCapacity';
+  setIsSmartphoneRamCapacityValid: 'setIsSmartphoneRamCapacityValid';
+  setIsSmartphoneRamCapacityFocused: 'setIsSmartphoneRamCapacityFocused';
   setSmartphoneRamCapacityUnit: 'setSmartphoneRamCapacityUnit';
   setSmartphoneStorageCapacity: 'setSmartphoneStorageCapacity';
+  setIsSmartphoneStorageCapacityValid: 'setIsSmartphoneStorageCapacityValid';
+  setIsSmartphoneStorageCapacityFocused: 'setIsSmartphoneStorageCapacityFocused';
   setSmartphoneBatteryCapacity: 'setSmartphoneBatteryCapacity';
+  setIsSmartphoneBatteryCapacityValid: 'setIsSmartphoneBatteryCapacityValid';
+  setIsSmartphoneBatteryCapacityFocused: 'setIsSmartphoneBatteryCapacityFocused';
   setSmartphoneCamera: 'setSmartphoneCamera';
   setIsSmartphoneCameraValid: 'setIsSmartphoneCameraValid';
   setIsSmartphoneCameraFocused: 'setIsSmartphoneCameraFocused';
@@ -912,12 +948,24 @@ type CreateProductAction = {
   setIsTabletChipsetValid: 'setIsTabletChipsetValid';
   setIsTabletChipsetFocused: 'setIsTabletChipsetFocused';
   setTabletDisplay: 'setTabletDisplay';
+  setIsTabletDisplayValid: 'setIsTabletDisplayValid';
+  setIsTabletDisplayFocused: 'setIsTabletDisplayFocused';
   setTabletResolutionHorizontal: 'setTabletResolutionHorizontal';
+  setIsTabletResolutionHorizontalValid: 'setIsTabletResolutionHorizontalValid';
+  setIsTabletResolutionHorizontalFocused: 'setIsTabletResolutionHorizontalFocused';
   setTabletResolutionVertical: 'setTabletResolutionVertical';
+  setIsTabletResolutionVerticalValid: 'setIsTabletResolutionVerticalValid';
+  setIsTabletResolutionVerticalFocused: 'setIsTabletResolutionVerticalFocused';
   setTabletRamCapacity: 'setTabletRamCapacity';
+  setIsTabletRamCapacityValid: 'setIsTabletRamCapacityValid';
+  setIsTabletRamCapacityFocused: 'setIsTabletRamCapacityFocused';
   setTabletRamCapacityUnit: 'setTabletRamCapacityUnit';
   setTabletStorageCapacity: 'setTabletStorageCapacity';
+  setIsTabletStorageCapacityValid: 'setIsTabletStorageCapacityValid';
+  setIsTabletStorageCapacityFocused: 'setIsTabletStorageCapacityFocused';
   setTabletBatteryCapacity: 'setTabletBatteryCapacity';
+  setIsTabletBatteryCapacityValid: 'setIsTabletBatteryCapacityValid';
+  setIsTabletBatteryCapacityFocused: 'setIsTabletBatteryCapacityFocused';
   setTabletCamera: 'setTabletCamera';
   setIsTabletCameraValid: 'setIsTabletCameraValid';
   setIsTabletCameraFocused: 'setIsTabletCameraFocused';
@@ -1718,19 +1766,43 @@ type CreateProductDispatch =
     }
   | {
       type: CreateProductAction['setSmartphoneDisplay'];
-      payload: number;
+      payload: string;
+    }
+  | {
+      type:
+        | CreateProductAction['setIsSmartphoneDisplayValid']
+        | CreateProductAction['setIsSmartphoneDisplayFocused'];
+      payload: boolean;
     }
   | {
       type: CreateProductAction['setSmartphoneResolutionHorizontal'];
-      payload: number;
+      payload: string;
+    }
+  | {
+      type:
+        | CreateProductAction['setIsSmartphoneResolutionHorizontalValid']
+        | CreateProductAction['setIsSmartphoneResolutionHorizontalFocused'];
+      payload: boolean;
     }
   | {
       type: CreateProductAction['setSmartphoneResolutionVertical'];
-      payload: number;
+      payload: string;
+    }
+  | {
+      type:
+        | CreateProductAction['setIsSmartphoneResolutionVerticalValid']
+        | CreateProductAction['setIsSmartphoneResolutionVerticalFocused'];
+      payload: boolean;
     }
   | {
       type: CreateProductAction['setSmartphoneRamCapacity'];
-      payload: number;
+      payload: string;
+    }
+  | {
+      type:
+        | CreateProductAction['setIsSmartphoneRamCapacityValid']
+        | CreateProductAction['setIsSmartphoneRamCapacityFocused'];
+      payload: boolean;
     }
   | {
       type: CreateProductAction['setSmartphoneRamCapacityUnit'];
@@ -1738,11 +1810,23 @@ type CreateProductDispatch =
     }
   | {
       type: CreateProductAction['setSmartphoneStorageCapacity'];
-      payload: number;
+      payload: string;
+    }
+  | {
+      type:
+        | CreateProductAction['setIsSmartphoneStorageCapacityValid']
+        | CreateProductAction['setIsSmartphoneStorageCapacityFocused'];
+      payload: boolean;
     }
   | {
       type: CreateProductAction['setSmartphoneBatteryCapacity'];
-      payload: number;
+      payload: string;
+    }
+  | {
+      type:
+        | CreateProductAction['setIsSmartphoneBatteryCapacityValid']
+        | CreateProductAction['setIsSmartphoneBatteryCapacityFocused'];
+      payload: boolean;
     }
   | {
       type: CreateProductAction['setSmartphoneCamera'];
@@ -1781,19 +1865,43 @@ type CreateProductDispatch =
     }
   | {
       type: CreateProductAction['setTabletDisplay'];
-      payload: number;
+      payload: string;
+    }
+  | {
+      type:
+        | CreateProductAction['setIsTabletDisplayValid']
+        | CreateProductAction['setIsTabletDisplayFocused'];
+      payload: boolean;
     }
   | {
       type: CreateProductAction['setTabletResolutionHorizontal'];
-      payload: number;
+      payload: string;
+    }
+  | {
+      type:
+        | CreateProductAction['setIsTabletResolutionHorizontalValid']
+        | CreateProductAction['setIsTabletResolutionHorizontalFocused'];
+      payload: boolean;
     }
   | {
       type: CreateProductAction['setTabletResolutionVertical'];
-      payload: number;
+      payload: string;
+    }
+  | {
+      type:
+        | CreateProductAction['setIsTabletResolutionVerticalValid']
+        | CreateProductAction['setIsTabletResolutionVerticalFocused'];
+      payload: boolean;
     }
   | {
       type: CreateProductAction['setTabletRamCapacity'];
-      payload: number;
+      payload: string;
+    }
+  | {
+      type:
+        | CreateProductAction['setIsTabletRamCapacityValid']
+        | CreateProductAction['setIsTabletRamCapacityFocused'];
+      payload: boolean;
     }
   | {
       type: CreateProductAction['setTabletRamCapacityUnit'];
@@ -1801,11 +1909,23 @@ type CreateProductDispatch =
     }
   | {
       type: CreateProductAction['setTabletStorageCapacity'];
-      payload: number;
+      payload: string;
+    }
+  | {
+      type:
+        | CreateProductAction['setIsTabletStorageCapacityValid']
+        | CreateProductAction['setIsTabletStorageCapacityFocused'];
+      payload: boolean;
     }
   | {
       type: CreateProductAction['setTabletBatteryCapacity'];
-      payload: number;
+      payload: string;
+    }
+  | {
+      type:
+        | CreateProductAction['setIsTabletBatteryCapacityValid']
+        | CreateProductAction['setIsTabletBatteryCapacityFocused'];
+      payload: boolean;
     }
   | {
       type: CreateProductAction['setTabletCamera'];

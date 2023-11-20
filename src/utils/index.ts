@@ -1515,7 +1515,7 @@ function returnFrequencyResponseValidationText({
 function returnMobileCameraResolutionValidationText({
   content,
   contentKind,
-  maxLength = 72,
+  maxLength = 84,
   minLength = 4,
 }: RegexValidationProps): string {
   // /^([0-9]{1,3} MP)(?:, ([0-9]{1,3} MP)){1,12}$/
@@ -1523,7 +1523,7 @@ function returnMobileCameraResolutionValidationText({
     `^(?=.{${minLength},${maxLength}}$)`
   );
   const mobileCameraResolutionCharacterRegex =
-    /^([0-9]{1,3} MP)(?:, ([0-9]{1,3} MP)){1,12}$/;
+    /^([0-9]{1,3} MP)(?:, ([0-9]{1,3} MP)){0,12}$/;
 
   const mobileCameraResolutionRegexTupleArr: [boolean, string][] = [
     [
@@ -1532,7 +1532,7 @@ function returnMobileCameraResolutionValidationText({
     ],
     [
       mobileCameraResolutionCharacterRegex.test(content),
-      'Must be a valid mobile camera resolution in the format 0 MP, 00 MP, 000 MP',
+      'Must be a valid mobile camera resolution in the format 0 MP, 00 MP, 000 MP, etc.',
     ],
   ];
 

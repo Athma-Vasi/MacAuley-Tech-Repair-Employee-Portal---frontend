@@ -222,7 +222,7 @@ const TABLET_CHIPSET_REGEX = CPU_SOCKET_REGEX;
  * - ex: '12 MP, 12 MP, 12 MP' or '12 MP'
  */
 
-const MOBILE_CAMERA_REGEX = /^([0-9]{1,3} MP)(?:, ([0-9]{1,3} MP)){1,12}$/;
+const MOBILE_CAMERA_REGEX = /^([0-9]{1,3} MP)(?:, ([0-9]{1,3} MP)){0,12}$/;
 
 const ACCESSORY_TYPE_REGEX = BRAND_REGEX;
 
@@ -1175,8 +1175,8 @@ const PRODUCTS_QUERY_DATA: ComponentQueryData[] = [
     label: 'Smartphone Battery (mAh)',
     value: 'smartphoneBattery',
     inputKind: 'numberInput',
-    regex: MEDIUM_INTEGER_REGEX,
-    regexValidationFn: returnMediumIntegerValidationText,
+    regex: LARGE_INTEGER_REGEX,
+    regexValidationFn: returnLargeIntegerValidationText,
   },
   {
     label: 'Smartphone Camera',
@@ -1252,8 +1252,8 @@ const PRODUCTS_QUERY_DATA: ComponentQueryData[] = [
     label: 'Tablet Battery (mAh)',
     value: 'tabletBattery',
     inputKind: 'numberInput',
-    regex: MEDIUM_INTEGER_REGEX,
-    regexValidationFn: returnMediumIntegerValidationText,
+    regex: LARGE_INTEGER_REGEX,
+    regexValidationFn: returnLargeIntegerValidationText,
   },
   {
     label: 'Tablet Camera',
