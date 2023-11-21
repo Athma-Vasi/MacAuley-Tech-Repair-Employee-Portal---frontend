@@ -1,10 +1,16 @@
-import { Group, NumberInput, Stack, Text, Title, Tooltip } from '@mantine/core';
+import { Group, Stack, Text, Title, Tooltip } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { InvalidTokenError } from 'jwt-decode';
-import { ChangeEvent, MouseEvent, useEffect, useReducer } from 'react';
+import {
+  ChangeEvent,
+  MouseEvent,
+  useEffect,
+  useReducer,
+  useState,
+} from 'react';
 import { useErrorBoundary } from 'react-error-boundary';
 import { TbPlus, TbTrash, TbUpload } from 'react-icons/tb';
-import { useNavigate } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 
 import { COLORS_SWATCHES } from '../../../constants/data';
 import {
@@ -16,7 +22,6 @@ import { globalAction } from '../../../context/globalProvider/state';
 import { useGlobalState, useWrapFetch } from '../../../hooks';
 import {
   AccessibleErrorValidTextElements,
-  AccessibleErrorValidTextElementsForDynamicInputs,
   returnAccessibleButtonElements,
   returnAccessibleSelectInputElements,
   returnAccessibleTextAreaInputElements,
@@ -27,31 +32,33 @@ import {
   logState,
   returnBrandNameValidationText,
   returnColorVariantValidationText,
+  returnCpuFrequencyValidationText,
   returnDisplayAspectRatioValidationText,
   returnFloatAmountValidationText,
+  returnFormReviewObjectsFromUserDefinedFields,
   returnFrequencyResponseValidationText,
   returnGrammarValidationText,
+  returnLargeIntegerValidationText,
+  returnMediumIntegerValidationText,
   returnMobileCameraResolutionValidationText,
   returnObjectKeyValidationText,
-  returnProductDimensionsValidationText,
-  returnLargeIntegerValidationText,
-  returnProductWeightValidationText,
+  returnDimensionsValidationText,
+  returnWeightValidationText,
   returnRamTimingValidationText,
+  returnRamVoltageValidationText,
   returnSerialIdValidationText,
+  returnSmallIntegerValidationText,
   returnSocketChipsetValidationText,
   returnThemeColors,
   returnUserDefinedFieldValueValidationText,
   urlBuilder,
-  returnCpuFrequencyValidationText,
-  returnSmallIntegerValidationText,
-  returnMediumIntegerValidationText,
-  returnRamVoltageValidationText,
 } from '../../../utils';
 import { CURRENCY_DATA } from '../../benefits/constants';
 import { PRODUCT_CATEGORIES } from '../../dashboard/constants';
 import { ProductCategory } from '../../dashboard/types';
 import FormReviewPage, {
   FormReviewObject,
+  FormReviewObjectArray,
 } from '../../formReviewPage/FormReviewPage';
 import { ImageUpload } from '../../imageUpload';
 import { NotificationModal } from '../../notificationModal';
@@ -66,6 +73,7 @@ import {
   CASE_SIDE_PANEL_DATA,
   CASE_TYPE_DATA,
   COLOR_VARIANT_REGEX,
+  CPU_FREQUENCY_REGEX,
   CPU_SOCKET_REGEX,
   CREATE_PRODUCT_DESCRIPTION_OBJECTS,
   CREATE_PRODUCT_MAX_IMG_AMOUNT,
@@ -81,7 +89,12 @@ import {
   KEYBOARD_BACKLIGHT_DATA,
   KEYBOARD_LAYOUT_DATA,
   KEYBOARD_SWITCH_DATA,
+  LARGE_INTEGER_REGEX,
+  MEDIUM_INTEGER_REGEX,
   MEMORY_UNIT_SELECT_INPUT_DATA,
+  MICROPHONE_INTERFACE_DATA,
+  MICROPHONE_POLAR_PATTERN_DATA,
+  MICROPHONE_TYPE_DATA,
   MOBILE_CAMERA_REGEX,
   MOBILE_OS_DATA,
   MOTHERBOARD_CHIPSET_REGEX,
@@ -92,14 +105,15 @@ import {
   OBJECT_KEY_REGEX,
   PERIPHERALS_INTERFACE_DATA,
   PRODUCT_AVAILABILITY_DATA,
-  PRODUCT_DIMENSIONS_REGEX,
-  LARGE_INTEGER_REGEX,
-  PRODUCT_WEIGHT_REGEX,
+  DIMENSIONS_REGEX,
+  WEIGHT_REGEX,
   PSU_EFFICIENCY_RATING_DATA,
   PSU_FORM_FACTOR_DATA,
   PSU_MODULARITY_DATA,
   RAM_MEMORY_TYPE_DATA,
   RAM_TIMING_REGEX,
+  RAM_VOLTAGE_REGEX,
+  SMALL_INTEGER_REGEX,
   SMARTPHONE_CHIPSET_REGEX,
   SPEAKER_INTERFACE_DATA,
   SPEAKER_TYPE_DATA,
@@ -108,18 +122,11 @@ import {
   STORAGE_TYPE_DATA,
   TABLET_CHIPSET_REGEX,
   USER_DEFINED_VALUE_REGEX,
-  WEIGHT_UNIT_SELECT_INPUT_DATA,
-  CPU_FREQUENCY_REGEX,
-  SMALL_INTEGER_REGEX,
-  MEDIUM_INTEGER_REGEX,
-  RAM_VOLTAGE_REGEX,
-  WEBCAM_RESOLUTION_DATA,
-  WEBCAM_MICROPHONE_DATA,
-  WEBCAM_INTERFACE_DATA,
   WEBCAM_FRAME_RATE_DATA,
-  MICROPHONE_TYPE_DATA,
-  MICROPHONE_INTERFACE_DATA,
-  MICROPHONE_POLAR_PATTERN_DATA,
+  WEBCAM_INTERFACE_DATA,
+  WEBCAM_MICROPHONE_DATA,
+  WEBCAM_RESOLUTION_DATA,
+  WEIGHT_UNIT_SELECT_INPUT_DATA,
 } from '../constants';
 import {
   CaseSidePanel,
@@ -140,7 +147,7 @@ import {
   MotherboardFormFactor,
   MouseSensor,
   PeripheralsInterface,
-  ProductAvailability,
+  MerchandiseAvailability,
   ProductDocument,
   PsuEfficiency,
   PsuFormFactor,
@@ -155,7 +162,7 @@ import {
   WebcamMicrophone,
   WebcamResolution,
   WeightUnit,
-} from '../types';
+} from './types';
 import {
   createProductAction,
   createProductReducer,
@@ -163,6 +170,10 @@ import {
 } from './state';
 
 function CreateProduct() {
+  //
+  const [selectProductCategoryState, selectProductCategoryDispatch] =
+    useState<ProductCategory>('Accessories');
+  //
   const [createProductState, createProductDispatch] = useReducer(
     createProductReducer,
     initialCreateProductState
@@ -264,6 +275,9 @@ function CreateProduct() {
     cpuWattage,
     isCpuWattageFocused,
     isCpuWattageValid,
+    cpuFieldsAdditional,
+    areCpuFieldsAdditionalFocused,
+    areCpuFieldsAdditionalValid,
 
     // page 2 -> specifications -> gpu
     gpuChipset,
@@ -282,6 +296,9 @@ function CreateProduct() {
     gpuTdp,
     isGpuTdpFocused,
     isGpuTdpValid,
+    gpuFieldsAdditional,
+    areGpuFieldsAdditionalFocused,
+    areGpuFieldsAdditionalValid,
 
     // page 2 -> specifications -> motherboard
     motherboardSocket,
@@ -314,6 +331,9 @@ function CreateProduct() {
     motherboardPcie5Slots,
     isMotherboardPcie5SlotsFocused,
     isMotherboardPcie5SlotsValid,
+    motherboardFieldsAdditional,
+    areMotherboardFieldsAdditionalFocused,
+    areMotherboardFieldsAdditionalValid,
 
     // page 2 -> specifications -> ram
     ramDataRate,
@@ -336,6 +356,9 @@ function CreateProduct() {
     ramTiming,
     isRamTimingFocused,
     isRamTimingValid,
+    ramFieldsAdditional,
+    areRamFieldsAdditionalFocused,
+    areRamFieldsAdditionalValid,
 
     // page 2 -> specifications -> storage
     storageType,
@@ -349,6 +372,9 @@ function CreateProduct() {
     storageCacheCapacityUnit,
     storageFormFactor,
     storageInterface,
+    storageFieldsAdditional,
+    areStorageFieldsAdditionalFocused,
+    areStorageFieldsAdditionalValid,
 
     // page 2 -> specifications -> psu
     psuWattage,
@@ -357,6 +383,9 @@ function CreateProduct() {
     psuEfficiency,
     psuModularity,
     psuFormFactor,
+    psuFieldsAdditional,
+    arePsuFieldsAdditionalFocused,
+    arePsuFieldsAdditionalValid,
 
     // page 2 -> specifications -> case
     caseType,
@@ -364,6 +393,9 @@ function CreateProduct() {
     isCaseColorFocused,
     isCaseColorValid,
     caseSidePanel,
+    caseFieldsAdditional,
+    areCaseFieldsAdditionalFocused,
+    areCaseFieldsAdditionalValid,
 
     // page 2 -> specifications -> display
     displaySize,
@@ -385,12 +417,18 @@ function CreateProduct() {
     displayAspectRatio,
     isDisplayAspectRatioFocused,
     isDisplayAspectRatioValid,
+    displayFieldsAdditional,
+    areDisplayFieldsAdditionalFocused,
+    areDisplayFieldsAdditionalValid,
 
     // page 2 -> specifications -> keyboard
     keyboardSwitch,
     keyboardLayout,
     keyboardBacklight,
     keyboardInterface,
+    keyboardFieldsAdditional,
+    areKeyboardFieldsAdditionalFocused,
+    areKeyboardFieldsAdditionalValid,
 
     // page 2 -> specifications -> mouse
     mouseSensor,
@@ -404,6 +442,9 @@ function CreateProduct() {
     isMouseColorFocused,
     isMouseColorValid,
     mouseInterface,
+    mouseFieldsAdditional,
+    areMouseFieldsAdditionalFocused,
+    areMouseFieldsAdditionalValid,
 
     // page 2 -> specifications -> headphone
     headphoneType,
@@ -420,6 +461,9 @@ function CreateProduct() {
     isHeadphoneImpedanceFocused,
     isHeadphoneImpedanceValid,
     headphoneInterface,
+    headphoneFieldsAdditional,
+    areHeadphoneFieldsAdditionalFocused,
+    areHeadphoneFieldsAdditionalValid,
 
     // page 2 -> specifications -> speaker
     speakerType,
@@ -433,6 +477,9 @@ function CreateProduct() {
     isSpeakerTotalWattageFocused,
     isSpeakerTotalWattageValid,
     speakerInterface,
+    speakerFieldsAdditional,
+    areSpeakerFieldsAdditionalFocused,
+    areSpeakerFieldsAdditionalValid,
 
     // page 2 -> specifications -> smartphone
     smartphoneBatteryCapacity,
@@ -464,6 +511,9 @@ function CreateProduct() {
     smartphoneStorageCapacity,
     isSmartphoneStorageCapacityFocused,
     isSmartphoneStorageCapacityValid,
+    smartphoneFieldsAdditional,
+    areSmartphoneFieldsAdditionalFocused,
+    areSmartphoneFieldsAdditionalValid,
 
     // page 2 -> specifications -> tablet
     tabletBatteryCapacity,
@@ -495,6 +545,9 @@ function CreateProduct() {
     tabletStorageCapacity,
     isTabletStorageCapacityFocused,
     isTabletStorageCapacityValid,
+    tabletFieldsAdditional,
+    areTabletFieldsAdditionalFocused,
+    areTabletFieldsAdditionalValid,
 
     // page 2 -> specifications -> accessory
     accessoryType,
@@ -517,6 +570,9 @@ function CreateProduct() {
     webcamInterface,
     webcamMicrophone,
     webcamResolution,
+    webcamFieldsAdditional,
+    areWebcamFieldsAdditionalFocused,
+    areWebcamFieldsAdditionalValid,
 
     // page 2 -> specifications -> microphone
     microphoneColor,
@@ -528,6 +584,9 @@ function CreateProduct() {
     microphoneFrequencyResponse,
     isMicrophoneFrequencyResponseFocused,
     isMicrophoneFrequencyResponseValid,
+    microphoneFieldsAdditional,
+    areMicrophoneFieldsAdditionalFocused,
+    areMicrophoneFieldsAdditionalValid,
 
     // page 3
     imgFormDataArray,
@@ -1060,15 +1119,11 @@ function CreateProduct() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [triggerFormSubmit]);
 
-  useEffect(() => {
-    logState({
-      state: createProductState,
-      groupLabel: 'Create Product State',
-      isStringify: true,
-    });
-  }, [createProductState]);
+  // page 1
 
-  // validate brand on every change
+  // page 1 -> validations
+
+  // page 1 -> brand
   useEffect(() => {
     const isValid = BRAND_REGEX.test(brand);
 
@@ -1078,7 +1133,7 @@ function CreateProduct() {
     });
   }, [brand]);
 
-  // validate model on every change
+  // page 1 -> model
   useEffect(() => {
     const isValid = SERIAL_ID_REGEX.test(model);
 
@@ -1088,7 +1143,7 @@ function CreateProduct() {
     });
   }, [model]);
 
-  // validate description on every change
+  // page 1 -> description
   useEffect(() => {
     const isValid = GRAMMAR_TEXTAREA_INPUT_REGEX.test(description);
 
@@ -1098,7 +1153,7 @@ function CreateProduct() {
     });
   }, [description]);
 
-  // validate price on every change
+  // page 1 -> price
   useEffect(() => {
     const isValid = MONEY_REGEX.test(price);
 
@@ -1108,7 +1163,7 @@ function CreateProduct() {
     });
   }, [price]);
 
-  // validate quantity on every change
+  // page 1 -> quantity
   useEffect(() => {
     const isValid = LARGE_INTEGER_REGEX.test(quantity);
 
@@ -1118,9 +1173,9 @@ function CreateProduct() {
     });
   }, [quantity]);
 
-  // validate weight on every change
+  // page 1 -> weight
   useEffect(() => {
-    const isValid = PRODUCT_WEIGHT_REGEX.test(weight);
+    const isValid = WEIGHT_REGEX.test(weight);
 
     createProductDispatch({
       type: createProductAction.setIsWeightValid,
@@ -1128,9 +1183,9 @@ function CreateProduct() {
     });
   }, [weight]);
 
-  // validate dimension length on every change
+  // page 1 -> dimension length
   useEffect(() => {
-    const isValid = PRODUCT_DIMENSIONS_REGEX.test(dimensionLength);
+    const isValid = DIMENSIONS_REGEX.test(dimensionLength);
 
     createProductDispatch({
       type: createProductAction.setIsDimensionLengthValid,
@@ -1138,9 +1193,9 @@ function CreateProduct() {
     });
   }, [dimensionLength]);
 
-  // validate dimension width on every change
+  // page 1 -> dimension width
   useEffect(() => {
-    const isValid = PRODUCT_DIMENSIONS_REGEX.test(dimensionWidth);
+    const isValid = DIMENSIONS_REGEX.test(dimensionWidth);
 
     createProductDispatch({
       type: createProductAction.setIsDimensionWidthValid,
@@ -1148,9 +1203,9 @@ function CreateProduct() {
     });
   }, [dimensionWidth]);
 
-  // validate dimension height on every change
+  // page 1 -> dimension height
   useEffect(() => {
-    const isValid = PRODUCT_DIMENSIONS_REGEX.test(dimensionHeight);
+    const isValid = DIMENSIONS_REGEX.test(dimensionHeight);
 
     createProductDispatch({
       type: createProductAction.setIsDimensionHeightValid,
@@ -1184,7 +1239,7 @@ function CreateProduct() {
     }
   }, [currency, price]);
 
-  // validate additional comments on every change
+  // page 1 -> additional comments
   useEffect(() => {
     const isValid = GRAMMAR_TEXTAREA_INPUT_REGEX.test(additionalComments);
 
@@ -1194,7 +1249,11 @@ function CreateProduct() {
     });
   }, [additionalComments]);
 
-  // validate CPU socket on every change
+  // page 2
+
+  // page 2 -> cpu
+
+  // page 2 -> cpu -> socket
   useEffect(() => {
     const isValid = CPU_SOCKET_REGEX.test(cpuSocket);
 
@@ -1204,7 +1263,7 @@ function CreateProduct() {
     });
   }, [cpuSocket]);
 
-  // validate CPU frequency on every change
+  // page 2 -> cpu -> frequency
   useEffect(() => {
     const isValid = CPU_FREQUENCY_REGEX.test(cpuFrequency);
 
@@ -1214,7 +1273,7 @@ function CreateProduct() {
     });
   }, [cpuFrequency]);
 
-  // validate CPU cores on every change
+  // page 2 -> cpu -> cores
   useEffect(() => {
     const isValid = SMALL_INTEGER_REGEX.test(cpuCores);
 
@@ -1224,7 +1283,7 @@ function CreateProduct() {
     });
   }, [cpuCores]);
 
-  // validate CPU L1 cache capacity on every change
+  // page 2 -> cpu -> L1 cache capacity
   useEffect(() => {
     const isValid = MEDIUM_INTEGER_REGEX.test(cpuL1CacheCapacity);
 
@@ -1234,7 +1293,7 @@ function CreateProduct() {
     });
   }, [cpuL1CacheCapacity]);
 
-  // validate CPU L2 cache capacity on every change
+  // page 2 -> cpu -> L2 cache capacity
   useEffect(() => {
     const isValid = MEDIUM_INTEGER_REGEX.test(cpuL2CacheCapacity);
 
@@ -1244,7 +1303,7 @@ function CreateProduct() {
     });
   }, [cpuL2CacheCapacity]);
 
-  // validate CPU L3 cache capacity on every change
+  // page 2 -> cpu -> L3 cache capacity
   useEffect(() => {
     const isValid = MEDIUM_INTEGER_REGEX.test(cpuL3CacheCapacity);
 
@@ -1254,7 +1313,7 @@ function CreateProduct() {
     });
   }, [cpuL3CacheCapacity]);
 
-  // validate CPU wattage on every change
+  // page 2 -> cpu -> wattage
   useEffect(() => {
     const isValid = MEDIUM_INTEGER_REGEX.test(cpuWattage);
 
@@ -1264,7 +1323,44 @@ function CreateProduct() {
     });
   }, [cpuWattage]);
 
-  // validate GPU chipset on every change
+  // page 2 -> cpu -> additional fields
+  useEffect(() => {
+    const currentlyUpdatingCpuFieldAdditional = cpuFieldsAdditional.get(
+      currentlySelectedAdditionalFieldIndex
+    );
+
+    if (!currentlyUpdatingCpuFieldAdditional) {
+      return;
+    }
+
+    const [key, value] = currentlyUpdatingCpuFieldAdditional;
+
+    const isKeyValid = OBJECT_KEY_REGEX.test(key);
+    createProductDispatch({
+      type: createProductAction.setAreCpuFieldsAdditionalValid,
+      payload: {
+        operation: 'update',
+        data: isKeyValid,
+        index: currentlySelectedAdditionalFieldIndex,
+        kind: 'key',
+      },
+    });
+
+    const isValueValid = USER_DEFINED_VALUE_REGEX.test(value);
+    createProductDispatch({
+      type: createProductAction.setAreCpuFieldsAdditionalValid,
+      payload: {
+        operation: 'update',
+        data: isValueValid,
+        index: currentlySelectedAdditionalFieldIndex,
+        kind: 'value',
+      },
+    });
+  }, [currentlySelectedAdditionalFieldIndex, cpuFieldsAdditional]);
+
+  // page 2 -> gpu
+
+  // page 2 -> gpu -> chipset
   useEffect(() => {
     const isValid = GPU_CHIPSET_REGEX.test(gpuChipset);
 
@@ -1274,7 +1370,7 @@ function CreateProduct() {
     });
   }, [gpuChipset]);
 
-  // validate GPU memory capacity on every change
+  // page 2 -> gpu -> memory capacity
   useEffect(() => {
     const isValid = SMALL_INTEGER_REGEX.test(gpuMemoryCapacity);
 
@@ -1284,7 +1380,7 @@ function CreateProduct() {
     });
   }, [gpuMemoryCapacity]);
 
-  // validate GPU core clock on every change
+  // page 2 -> gpu -> core clock
   useEffect(() => {
     const isValid = MEDIUM_INTEGER_REGEX.test(gpuCoreClock);
 
@@ -1294,7 +1390,7 @@ function CreateProduct() {
     });
   }, [gpuCoreClock]);
 
-  // validate GPU boost clock on every change
+  // page 2 -> gpu -> boost clock
   useEffect(() => {
     const isValid = MEDIUM_INTEGER_REGEX.test(gpuBoostClock);
 
@@ -1304,7 +1400,7 @@ function CreateProduct() {
     });
   }, [gpuBoostClock]);
 
-  // validate GPU TDP on every change
+  // page 2 -> gpu -> tdp
   useEffect(() => {
     const isValid = MEDIUM_INTEGER_REGEX.test(gpuTdp);
 
@@ -1314,7 +1410,44 @@ function CreateProduct() {
     });
   }, [gpuTdp]);
 
-  // validate motherboard socket on every change
+  // page 2 -> gpu -> additional fields
+  useEffect(() => {
+    const currentlyUpdatingGpuFieldAdditional = gpuFieldsAdditional.get(
+      currentlySelectedAdditionalFieldIndex
+    );
+
+    if (!currentlyUpdatingGpuFieldAdditional) {
+      return;
+    }
+
+    const [key, value] = currentlyUpdatingGpuFieldAdditional;
+
+    const isKeyValid = OBJECT_KEY_REGEX.test(key);
+    createProductDispatch({
+      type: createProductAction.setAreGpuFieldsAdditionalValid,
+      payload: {
+        operation: 'update',
+        data: isKeyValid,
+        index: currentlySelectedAdditionalFieldIndex,
+        kind: 'key',
+      },
+    });
+
+    const isValueValid = USER_DEFINED_VALUE_REGEX.test(value);
+    createProductDispatch({
+      type: createProductAction.setAreGpuFieldsAdditionalValid,
+      payload: {
+        operation: 'update',
+        data: isValueValid,
+        index: currentlySelectedAdditionalFieldIndex,
+        kind: 'value',
+      },
+    });
+  }, [currentlySelectedAdditionalFieldIndex, gpuFieldsAdditional]);
+
+  // page 2 -> motherboard
+
+  // page 2 -> motherboard -> socket
   useEffect(() => {
     const isValid = MOTHERBOARD_SOCKET_REGEX.test(motherboardSocket);
 
@@ -1324,7 +1457,7 @@ function CreateProduct() {
     });
   }, [motherboardSocket]);
 
-  // validate motherboard chipset on every change
+  // page 2 -> motherboard -> chipset
   useEffect(() => {
     const isValid = MOTHERBOARD_CHIPSET_REGEX.test(motherboardChipset);
 
@@ -1334,7 +1467,7 @@ function CreateProduct() {
     });
   }, [motherboardChipset]);
 
-  // validate motherboard memory max capacity on every change
+  // page 2 -> motherboard -> memory max capacity
   useEffect(() => {
     const isValid = MEDIUM_INTEGER_REGEX.test(motherboardMemoryMaxCapacity);
 
@@ -1344,7 +1477,7 @@ function CreateProduct() {
     });
   }, [motherboardMemoryMaxCapacity]);
 
-  // validate motherboard memory slots on every change
+  // page 2 -> motherboard -> memory slots
   useEffect(() => {
     const isValid = SMALL_INTEGER_REGEX.test(motherboardMemorySlots);
 
@@ -1354,7 +1487,7 @@ function CreateProduct() {
     });
   }, [motherboardMemorySlots]);
 
-  // validate motherboard sata ports on every change
+  // page 2 -> motherboard -> sata ports
   useEffect(() => {
     const isValid = SMALL_INTEGER_REGEX.test(motherboardSataPorts);
 
@@ -1364,7 +1497,7 @@ function CreateProduct() {
     });
   }, [motherboardSataPorts]);
 
-  // validate motherboard m2 slots on every change
+  // page 2 -> motherboard -> m2 slots
   useEffect(() => {
     const isValid = SMALL_INTEGER_REGEX.test(motherboardM2Slots);
 
@@ -1374,7 +1507,7 @@ function CreateProduct() {
     });
   }, [motherboardM2Slots]);
 
-  // validate motherboard pcie3 slots on every change
+  // page 2 -> motherboard -> pcie3 slots
   useEffect(() => {
     const isValid = SMALL_INTEGER_REGEX.test(motherboardPcie3Slots);
 
@@ -1384,7 +1517,7 @@ function CreateProduct() {
     });
   }, [motherboardPcie3Slots]);
 
-  // validate motherboard pcie4 slots on every change
+  // page 2 -> motherboard -> pcie4 slots
   useEffect(() => {
     const isValid = SMALL_INTEGER_REGEX.test(motherboardPcie4Slots);
 
@@ -1394,7 +1527,7 @@ function CreateProduct() {
     });
   }, [motherboardPcie4Slots]);
 
-  // validate motherboard pcie5 slots on every change
+  // page 2 -> motherboard -> pcie5 slots
   useEffect(() => {
     const isValid = SMALL_INTEGER_REGEX.test(motherboardPcie5Slots);
 
@@ -1404,7 +1537,43 @@ function CreateProduct() {
     });
   }, [motherboardPcie5Slots]);
 
-  // validate RAM data rate on every change
+  // page 2 -> motherboard -> additional fields
+  useEffect(() => {
+    const currentlyUpdatingMotherboardFieldAdditional =
+      motherboardFieldsAdditional.get(currentlySelectedAdditionalFieldIndex);
+
+    if (!currentlyUpdatingMotherboardFieldAdditional) {
+      return;
+    }
+
+    const [key, value] = currentlyUpdatingMotherboardFieldAdditional;
+
+    const isKeyValid = OBJECT_KEY_REGEX.test(key);
+    createProductDispatch({
+      type: createProductAction.setAreMotherboardFieldsAdditionalValid,
+      payload: {
+        operation: 'update',
+        data: isKeyValid,
+        index: currentlySelectedAdditionalFieldIndex,
+        kind: 'key',
+      },
+    });
+
+    const isValueValid = USER_DEFINED_VALUE_REGEX.test(value);
+    createProductDispatch({
+      type: createProductAction.setAreMotherboardFieldsAdditionalValid,
+      payload: {
+        operation: 'update',
+        data: isValueValid,
+        index: currentlySelectedAdditionalFieldIndex,
+        kind: 'value',
+      },
+    });
+  }, [currentlySelectedAdditionalFieldIndex, motherboardFieldsAdditional]);
+
+  // page 2 -> ram
+
+  // page 2 -> ram -> data rate
   useEffect(() => {
     const isValid = MEDIUM_INTEGER_REGEX.test(ramDataRate);
 
@@ -1414,7 +1583,7 @@ function CreateProduct() {
     });
   }, [ramDataRate]);
 
-  // validate RAM modules quantity on every change
+  // page 2 -> ram -> modules quantity
   useEffect(() => {
     const isValid = SMALL_INTEGER_REGEX.test(ramModulesQuantity);
 
@@ -1424,7 +1593,7 @@ function CreateProduct() {
     });
   }, [ramModulesQuantity]);
 
-  // validate RAM modules capacity on every change
+  // page 2 -> ram -> modules capacity
   useEffect(() => {
     const isValid = MEDIUM_INTEGER_REGEX.test(ramModulesCapacity);
 
@@ -1434,7 +1603,7 @@ function CreateProduct() {
     });
   }, [ramModulesCapacity]);
 
-  // validate RAM voltage on every change
+  // page 2 -> ram -> voltage
   useEffect(() => {
     const isValid = RAM_VOLTAGE_REGEX.test(ramVoltage);
 
@@ -1444,7 +1613,7 @@ function CreateProduct() {
     });
   }, [ramVoltage]);
 
-  // validate ram color variant on every change
+  // page 2 -> ram -> color variant
   useEffect(() => {
     const isValid = COLOR_VARIANT_REGEX.test(ramColor);
 
@@ -1454,7 +1623,7 @@ function CreateProduct() {
     });
   }, [ramColor]);
 
-  // validate RAM timing on every change
+  // page 2 -> ram -> timing
   useEffect(() => {
     const isValid = RAM_TIMING_REGEX.test(ramTiming);
 
@@ -1464,7 +1633,44 @@ function CreateProduct() {
     });
   }, [ramTiming]);
 
-  // validate storage capacity on every change
+  // page 2 -> ram -> additional fields
+  useEffect(() => {
+    const currentlyUpdatingRamFieldAdditional = ramFieldsAdditional.get(
+      currentlySelectedAdditionalFieldIndex
+    );
+
+    if (!currentlyUpdatingRamFieldAdditional) {
+      return;
+    }
+
+    const [key, value] = currentlyUpdatingRamFieldAdditional;
+
+    const isKeyValid = OBJECT_KEY_REGEX.test(key);
+    createProductDispatch({
+      type: createProductAction.setAreRamFieldsAdditionalValid,
+      payload: {
+        operation: 'update',
+        data: isKeyValid,
+        index: currentlySelectedAdditionalFieldIndex,
+        kind: 'key',
+      },
+    });
+
+    const isValueValid = USER_DEFINED_VALUE_REGEX.test(value);
+    createProductDispatch({
+      type: createProductAction.setAreRamFieldsAdditionalValid,
+      payload: {
+        operation: 'update',
+        data: isValueValid,
+        index: currentlySelectedAdditionalFieldIndex,
+        kind: 'value',
+      },
+    });
+  }, [currentlySelectedAdditionalFieldIndex, ramFieldsAdditional]);
+
+  // page 2 -> storage
+
+  // page 2 -> storage -> capacity
   useEffect(() => {
     const isValid = MEDIUM_INTEGER_REGEX.test(storageCapacity);
 
@@ -1474,7 +1680,7 @@ function CreateProduct() {
     });
   }, [storageCapacity]);
 
-  // validate storage cache capacity on every change
+  // page 2 -> storage -> cache capacity
   useEffect(() => {
     const isValid = MEDIUM_INTEGER_REGEX.test(storageCacheCapacity);
 
@@ -1484,7 +1690,44 @@ function CreateProduct() {
     });
   }, [storageCacheCapacity]);
 
-  // validate PSU wattage on every change
+  // page 2 -> storage -> additional fields
+  useEffect(() => {
+    const currentlyUpdatingStorageFieldAdditional = storageFieldsAdditional.get(
+      currentlySelectedAdditionalFieldIndex
+    );
+
+    if (!currentlyUpdatingStorageFieldAdditional) {
+      return;
+    }
+
+    const [key, value] = currentlyUpdatingStorageFieldAdditional;
+
+    const isKeyValid = OBJECT_KEY_REGEX.test(key);
+    createProductDispatch({
+      type: createProductAction.setAreStorageFieldsAdditionalValid,
+      payload: {
+        operation: 'update',
+        data: isKeyValid,
+        index: currentlySelectedAdditionalFieldIndex,
+        kind: 'key',
+      },
+    });
+
+    const isValueValid = USER_DEFINED_VALUE_REGEX.test(value);
+    createProductDispatch({
+      type: createProductAction.setAreStorageFieldsAdditionalValid,
+      payload: {
+        operation: 'update',
+        data: isValueValid,
+        index: currentlySelectedAdditionalFieldIndex,
+        kind: 'value',
+      },
+    });
+  }, [currentlySelectedAdditionalFieldIndex, storageFieldsAdditional]);
+
+  // page 2 -> psu
+
+  // page 2 -> psu -> wattage
   useEffect(() => {
     const isValid = MEDIUM_INTEGER_REGEX.test(psuWattage);
 
@@ -1494,7 +1737,44 @@ function CreateProduct() {
     });
   }, [psuWattage]);
 
-  // validate case color variant on every change
+  // page 2 -> psu -> additional fields
+  useEffect(() => {
+    const currentlyUpdatingPsuFieldAdditional = psuFieldsAdditional.get(
+      currentlySelectedAdditionalFieldIndex
+    );
+
+    if (!currentlyUpdatingPsuFieldAdditional) {
+      return;
+    }
+
+    const [key, value] = currentlyUpdatingPsuFieldAdditional;
+
+    const isKeyValid = OBJECT_KEY_REGEX.test(key);
+    createProductDispatch({
+      type: createProductAction.setArePsuFieldsAdditionalValid,
+      payload: {
+        operation: 'update',
+        data: isKeyValid,
+        index: currentlySelectedAdditionalFieldIndex,
+        kind: 'key',
+      },
+    });
+
+    const isValueValid = USER_DEFINED_VALUE_REGEX.test(value);
+    createProductDispatch({
+      type: createProductAction.setArePsuFieldsAdditionalValid,
+      payload: {
+        operation: 'update',
+        data: isValueValid,
+        index: currentlySelectedAdditionalFieldIndex,
+        kind: 'value',
+      },
+    });
+  }, [currentlySelectedAdditionalFieldIndex, psuFieldsAdditional]);
+
+  // page 2 -> case
+
+  // page 2 -> case -> color
   useEffect(() => {
     const isValid = COLOR_VARIANT_REGEX.test(caseColor);
 
@@ -1504,9 +1784,46 @@ function CreateProduct() {
     });
   }, [caseColor]);
 
-  // validate display size on every change
+  // page 2 -> case -> additional fields
   useEffect(() => {
-    const isValid = PRODUCT_DIMENSIONS_REGEX.test(displaySize);
+    const currentlyUpdatingCaseFieldAdditional = caseFieldsAdditional.get(
+      currentlySelectedAdditionalFieldIndex
+    );
+
+    if (!currentlyUpdatingCaseFieldAdditional) {
+      return;
+    }
+
+    const [key, value] = currentlyUpdatingCaseFieldAdditional;
+
+    const isKeyValid = OBJECT_KEY_REGEX.test(key);
+    createProductDispatch({
+      type: createProductAction.setAreCaseFieldsAdditionalValid,
+      payload: {
+        operation: 'update',
+        data: isKeyValid,
+        index: currentlySelectedAdditionalFieldIndex,
+        kind: 'key',
+      },
+    });
+
+    const isValueValid = USER_DEFINED_VALUE_REGEX.test(value);
+    createProductDispatch({
+      type: createProductAction.setAreCaseFieldsAdditionalValid,
+      payload: {
+        operation: 'update',
+        data: isValueValid,
+        index: currentlySelectedAdditionalFieldIndex,
+        kind: 'value',
+      },
+    });
+  }, [currentlySelectedAdditionalFieldIndex, caseFieldsAdditional]);
+
+  // page 2 -> display
+
+  // page 2 -> display -> size
+  useEffect(() => {
+    const isValid = DIMENSIONS_REGEX.test(displaySize);
 
     createProductDispatch({
       type: createProductAction.setIsDisplaySizeValid,
@@ -1514,7 +1831,7 @@ function CreateProduct() {
     });
   }, [displaySize]);
 
-  // validate display horizontal resolution on every change
+  // page 2 -> display -> horizontal resolution
   useEffect(() => {
     const isValid = LARGE_INTEGER_REGEX.test(displayResolutionHorizontal);
 
@@ -1524,7 +1841,7 @@ function CreateProduct() {
     });
   }, [displayResolutionHorizontal]);
 
-  // validate display vertical resolution on every change
+  // page 2 -> display -> vertical resolution
   useEffect(() => {
     const isValid = LARGE_INTEGER_REGEX.test(displayResolutionVertical);
 
@@ -1534,7 +1851,7 @@ function CreateProduct() {
     });
   }, [displayResolutionVertical]);
 
-  // validate display refresh rate on every change
+  // page 2 -> display -> refresh rate
   useEffect(() => {
     const isValid = MEDIUM_INTEGER_REGEX.test(displayRefreshRate);
 
@@ -1544,9 +1861,9 @@ function CreateProduct() {
     });
   }, [displayRefreshRate]);
 
-  // validate display response time on every change
+  // page 2 -> display -> response time
   useEffect(() => {
-    const isValid = PRODUCT_DIMENSIONS_REGEX.test(displayResponseTime);
+    const isValid = DIMENSIONS_REGEX.test(displayResponseTime);
 
     createProductDispatch({
       type: createProductAction.setIsDisplayResponseTimeValid,
@@ -1554,7 +1871,7 @@ function CreateProduct() {
     });
   }, [displayResponseTime]);
 
-  // validate display aspect ratio on every change
+  // page 2 -> display -> aspect ratio
   useEffect(() => {
     const isValid = DISPLAY_ASPECT_RATIO_REGEX.test(displayAspectRatio);
 
@@ -1564,7 +1881,80 @@ function CreateProduct() {
     });
   }, [displayAspectRatio]);
 
-  // validate mouse DPI on every change
+  // page 2 -> display -> additional fields
+  useEffect(() => {
+    const currentlyUpdatingDisplayFieldAdditional = displayFieldsAdditional.get(
+      currentlySelectedAdditionalFieldIndex
+    );
+
+    if (!currentlyUpdatingDisplayFieldAdditional) {
+      return;
+    }
+
+    const [key, value] = currentlyUpdatingDisplayFieldAdditional;
+
+    const isKeyValid = OBJECT_KEY_REGEX.test(key);
+    createProductDispatch({
+      type: createProductAction.setAreDisplayFieldsAdditionalValid,
+      payload: {
+        operation: 'update',
+        data: isKeyValid,
+        index: currentlySelectedAdditionalFieldIndex,
+        kind: 'key',
+      },
+    });
+
+    const isValueValid = USER_DEFINED_VALUE_REGEX.test(value);
+    createProductDispatch({
+      type: createProductAction.setAreDisplayFieldsAdditionalValid,
+      payload: {
+        operation: 'update',
+        data: isValueValid,
+        index: currentlySelectedAdditionalFieldIndex,
+        kind: 'value',
+      },
+    });
+  }, [currentlySelectedAdditionalFieldIndex, displayFieldsAdditional]);
+
+  // page 2 -> keyboard
+
+  // page 2 -> keyboard -> additional fields
+  useEffect(() => {
+    const currentlyUpdatingKeyboardFieldAdditional =
+      keyboardFieldsAdditional.get(currentlySelectedAdditionalFieldIndex);
+
+    if (!currentlyUpdatingKeyboardFieldAdditional) {
+      return;
+    }
+
+    const [key, value] = currentlyUpdatingKeyboardFieldAdditional;
+
+    const isKeyValid = OBJECT_KEY_REGEX.test(key);
+    createProductDispatch({
+      type: createProductAction.setAreKeyboardFieldsAdditionalValid,
+      payload: {
+        operation: 'update',
+        data: isKeyValid,
+        index: currentlySelectedAdditionalFieldIndex,
+        kind: 'key',
+      },
+    });
+
+    const isValueValid = USER_DEFINED_VALUE_REGEX.test(value);
+    createProductDispatch({
+      type: createProductAction.setAreKeyboardFieldsAdditionalValid,
+      payload: {
+        operation: 'update',
+        data: isValueValid,
+        index: currentlySelectedAdditionalFieldIndex,
+        kind: 'value',
+      },
+    });
+  }, [currentlySelectedAdditionalFieldIndex, keyboardFieldsAdditional]);
+
+  // page 2 -> mouse
+
+  // page 2 -> mouse -> dpi
   useEffect(() => {
     const isValid = LARGE_INTEGER_REGEX.test(mouseDpi);
 
@@ -1574,7 +1964,7 @@ function CreateProduct() {
     });
   }, [mouseDpi]);
 
-  // validate mouse buttons on every change
+  // page 2 -> mouse -> buttons
   useEffect(() => {
     const isValid = SMALL_INTEGER_REGEX.test(mouseButtons);
 
@@ -1584,7 +1974,7 @@ function CreateProduct() {
     });
   }, [mouseButtons]);
 
-  // validate mouse color variant on every change
+  // page 2 -> mouse -> color variant
   useEffect(() => {
     const isValid = COLOR_VARIANT_REGEX.test(mouseColor);
 
@@ -1594,7 +1984,44 @@ function CreateProduct() {
     });
   }, [mouseColor]);
 
-  // validate headphone driver on every change
+  // page 2 -> mouse -> additional fields
+  useEffect(() => {
+    const currentlyUpdatingMouseFieldAdditional = mouseFieldsAdditional.get(
+      currentlySelectedAdditionalFieldIndex
+    );
+
+    if (!currentlyUpdatingMouseFieldAdditional) {
+      return;
+    }
+
+    const [key, value] = currentlyUpdatingMouseFieldAdditional;
+
+    const isKeyValid = OBJECT_KEY_REGEX.test(key);
+    createProductDispatch({
+      type: createProductAction.setAreMouseFieldsAdditionalValid,
+      payload: {
+        operation: 'update',
+        data: isKeyValid,
+        index: currentlySelectedAdditionalFieldIndex,
+        kind: 'key',
+      },
+    });
+
+    const isValueValid = USER_DEFINED_VALUE_REGEX.test(value);
+    createProductDispatch({
+      type: createProductAction.setAreMouseFieldsAdditionalValid,
+      payload: {
+        operation: 'update',
+        data: isValueValid,
+        index: currentlySelectedAdditionalFieldIndex,
+        kind: 'value',
+      },
+    });
+  }, [currentlySelectedAdditionalFieldIndex, mouseFieldsAdditional]);
+
+  // page 2 -> headphone
+
+  // page 2 -> headphone -> driver
   useEffect(() => {
     const isValid = SMALL_INTEGER_REGEX.test(headphoneDriver);
 
@@ -1604,7 +2031,7 @@ function CreateProduct() {
     });
   }, [headphoneDriver]);
 
-  // validate headphone frequency response on every change
+  // page 2 -> headphone -> frequency response
   useEffect(() => {
     const isValid = FREQUENCY_RESPONSE_REGEX.test(headphoneFrequencyResponse);
 
@@ -1614,7 +2041,7 @@ function CreateProduct() {
     });
   }, [headphoneFrequencyResponse]);
 
-  // validate headphone impedance on every change
+  // page 2 -> headphone -> impedance
   useEffect(() => {
     const isValid = MEDIUM_INTEGER_REGEX.test(headphoneImpedance);
 
@@ -1624,7 +2051,7 @@ function CreateProduct() {
     });
   }, [headphoneImpedance]);
 
-  // validate headphone color variant on every change
+  // page 2 -> headphone -> color
   useEffect(() => {
     const isValid = COLOR_VARIANT_REGEX.test(headphoneColor);
 
@@ -1634,7 +2061,43 @@ function CreateProduct() {
     });
   }, [headphoneColor]);
 
-  // validate speaker total wattage on every change
+  // page 2 -> headphone -> additional fields
+  useEffect(() => {
+    const currentlyUpdatingHeadphoneFieldAdditional =
+      headphoneFieldsAdditional.get(currentlySelectedAdditionalFieldIndex);
+
+    if (!currentlyUpdatingHeadphoneFieldAdditional) {
+      return;
+    }
+
+    const [key, value] = currentlyUpdatingHeadphoneFieldAdditional;
+
+    const isKeyValid = OBJECT_KEY_REGEX.test(key);
+    createProductDispatch({
+      type: createProductAction.setAreHeadphoneFieldsAdditionalValid,
+      payload: {
+        operation: 'update',
+        data: isKeyValid,
+        index: currentlySelectedAdditionalFieldIndex,
+        kind: 'key',
+      },
+    });
+
+    const isValueValid = USER_DEFINED_VALUE_REGEX.test(value);
+    createProductDispatch({
+      type: createProductAction.setAreHeadphoneFieldsAdditionalValid,
+      payload: {
+        operation: 'update',
+        data: isValueValid,
+        index: currentlySelectedAdditionalFieldIndex,
+        kind: 'value',
+      },
+    });
+  }, [currentlySelectedAdditionalFieldIndex, headphoneFieldsAdditional]);
+
+  // page 2 -> speaker
+
+  // page 2 -> speaker -> total wattage
   useEffect(() => {
     const isValid = MEDIUM_INTEGER_REGEX.test(speakerTotalWattage);
 
@@ -1644,7 +2107,7 @@ function CreateProduct() {
     });
   }, [speakerTotalWattage]);
 
-  // validate speaker frequency response on every change
+  // page 2 -> speaker -> frequency response
   useEffect(() => {
     const isValid = FREQUENCY_RESPONSE_REGEX.test(speakerFrequencyResponse);
 
@@ -1654,7 +2117,7 @@ function CreateProduct() {
     });
   }, [speakerFrequencyResponse]);
 
-  // validate speaker color variant on every change
+  // page 2 -> speaker -> color
   useEffect(() => {
     const isValid = COLOR_VARIANT_REGEX.test(speakerColor);
 
@@ -1664,7 +2127,44 @@ function CreateProduct() {
     });
   }, [speakerColor]);
 
-  // validate smartphone chipset on every change
+  // page 2 -> speaker -> additional fields
+  useEffect(() => {
+    const currentlyUpdatingSpeakerFieldAdditional = speakerFieldsAdditional.get(
+      currentlySelectedAdditionalFieldIndex
+    );
+
+    if (!currentlyUpdatingSpeakerFieldAdditional) {
+      return;
+    }
+
+    const [key, value] = currentlyUpdatingSpeakerFieldAdditional;
+
+    const isKeyValid = OBJECT_KEY_REGEX.test(key);
+    createProductDispatch({
+      type: createProductAction.setAreSpeakerFieldsAdditionalValid,
+      payload: {
+        operation: 'update',
+        data: isKeyValid,
+        index: currentlySelectedAdditionalFieldIndex,
+        kind: 'key',
+      },
+    });
+
+    const isValueValid = USER_DEFINED_VALUE_REGEX.test(value);
+    createProductDispatch({
+      type: createProductAction.setAreSpeakerFieldsAdditionalValid,
+      payload: {
+        operation: 'update',
+        data: isValueValid,
+        index: currentlySelectedAdditionalFieldIndex,
+        kind: 'value',
+      },
+    });
+  }, [currentlySelectedAdditionalFieldIndex, speakerFieldsAdditional]);
+
+  // page 2 -> smartphone
+
+  // page 2 -> smartphone -> chipset
   useEffect(() => {
     const isValid = SMARTPHONE_CHIPSET_REGEX.test(smartphoneChipset);
 
@@ -1674,9 +2174,9 @@ function CreateProduct() {
     });
   }, [smartphoneChipset]);
 
-  // validate smartphone display on every change
+  // page 2 -> smartphone -> display
   useEffect(() => {
-    const isValid = PRODUCT_DIMENSIONS_REGEX.test(smartphoneDisplay);
+    const isValid = DIMENSIONS_REGEX.test(smartphoneDisplay);
 
     createProductDispatch({
       type: createProductAction.setIsSmartphoneDisplayValid,
@@ -1684,7 +2184,7 @@ function CreateProduct() {
     });
   }, [smartphoneDisplay]);
 
-  // validate smartphone horizontal resolution on every change
+  // page 2 -> smartphone -> horizontal resolution
   useEffect(() => {
     const isValid = LARGE_INTEGER_REGEX.test(smartphoneResolutionHorizontal);
 
@@ -1694,7 +2194,7 @@ function CreateProduct() {
     });
   }, [smartphoneResolutionHorizontal]);
 
-  // validate smartphone vertical resolution on every change
+  // page 2 -> smartphone -> vertical resolution
   useEffect(() => {
     const isValid = LARGE_INTEGER_REGEX.test(smartphoneResolutionVertical);
 
@@ -1704,7 +2204,7 @@ function CreateProduct() {
     });
   }, [smartphoneResolutionVertical]);
 
-  // validate smartphone RAM capacity on every change
+  // page 2 -> smartphone -> RAM capacity
   useEffect(() => {
     const isValid = MEDIUM_INTEGER_REGEX.test(smartphoneRamCapacity);
 
@@ -1714,7 +2214,7 @@ function CreateProduct() {
     });
   }, [smartphoneRamCapacity]);
 
-  // validate smartphone storage capacity on every change
+  // page 2 -> smartphone -> storage capacity
   useEffect(() => {
     const isValid = MEDIUM_INTEGER_REGEX.test(smartphoneStorageCapacity);
 
@@ -1724,7 +2224,7 @@ function CreateProduct() {
     });
   }, [smartphoneStorageCapacity]);
 
-  // validate smartphone battery capacity on every change
+  // page 2 -> smartphone -> battery capacity
   useEffect(() => {
     const isValid = LARGE_INTEGER_REGEX.test(smartphoneBatteryCapacity);
 
@@ -1734,7 +2234,7 @@ function CreateProduct() {
     });
   }, [smartphoneBatteryCapacity]);
 
-  // validate smartphone camera on every change
+  // page 2 -> smartphone -> camera
   useEffect(() => {
     const isValid = MOBILE_CAMERA_REGEX.test(smartphoneCamera);
 
@@ -1744,7 +2244,7 @@ function CreateProduct() {
     });
   }, [smartphoneCamera]);
 
-  // validate smartphone color variant on every change
+  // page 2 -> smartphone -> color variant
   useEffect(() => {
     const isValid = COLOR_VARIANT_REGEX.test(smartphoneColor);
 
@@ -1754,7 +2254,43 @@ function CreateProduct() {
     });
   }, [smartphoneColor]);
 
-  // validate tablet chipset on every change
+  // page 2 -> smartphone -> additional fields
+  useEffect(() => {
+    const currentlyUpdatingSmartphoneFieldAdditional =
+      smartphoneFieldsAdditional.get(currentlySelectedAdditionalFieldIndex);
+
+    if (!currentlyUpdatingSmartphoneFieldAdditional) {
+      return;
+    }
+
+    const [key, value] = currentlyUpdatingSmartphoneFieldAdditional;
+
+    const isKeyValid = OBJECT_KEY_REGEX.test(key);
+    createProductDispatch({
+      type: createProductAction.setAreSmartphoneFieldsAdditionalValid,
+      payload: {
+        operation: 'update',
+        data: isKeyValid,
+        index: currentlySelectedAdditionalFieldIndex,
+        kind: 'key',
+      },
+    });
+
+    const isValueValid = USER_DEFINED_VALUE_REGEX.test(value);
+    createProductDispatch({
+      type: createProductAction.setAreSmartphoneFieldsAdditionalValid,
+      payload: {
+        operation: 'update',
+        data: isValueValid,
+        index: currentlySelectedAdditionalFieldIndex,
+        kind: 'value',
+      },
+    });
+  }, [currentlySelectedAdditionalFieldIndex, smartphoneFieldsAdditional]);
+
+  // page 2 -> tablet
+
+  // page 2 -> tablet -> chipset
   useEffect(() => {
     const isValid = TABLET_CHIPSET_REGEX.test(tabletChipset);
 
@@ -1764,9 +2300,9 @@ function CreateProduct() {
     });
   }, [tabletChipset]);
 
-  // validate tablet display on every change
+  // page 2 -> tablet -> display
   useEffect(() => {
-    const isValid = PRODUCT_DIMENSIONS_REGEX.test(tabletDisplay);
+    const isValid = DIMENSIONS_REGEX.test(tabletDisplay);
 
     createProductDispatch({
       type: createProductAction.setIsTabletDisplayValid,
@@ -1774,7 +2310,7 @@ function CreateProduct() {
     });
   }, [tabletDisplay]);
 
-  // validate tablet horizontal resolution on every change
+  // page 2 -> tablet -> horizontal resolution
   useEffect(() => {
     const isValid = LARGE_INTEGER_REGEX.test(tabletResolutionHorizontal);
 
@@ -1784,7 +2320,7 @@ function CreateProduct() {
     });
   }, [tabletResolutionHorizontal]);
 
-  // validate tablet vertical resolution on every change
+  // page 2 -> tablet -> vertical resolution
   useEffect(() => {
     const isValid = LARGE_INTEGER_REGEX.test(tabletResolutionVertical);
 
@@ -1794,7 +2330,7 @@ function CreateProduct() {
     });
   }, [tabletResolutionVertical]);
 
-  // validate tablet RAM capacity on every change
+  // page 2 -> tablet -> RAM capacity
   useEffect(() => {
     const isValid = MEDIUM_INTEGER_REGEX.test(tabletRamCapacity);
 
@@ -1804,7 +2340,7 @@ function CreateProduct() {
     });
   }, [tabletRamCapacity]);
 
-  // validate tablet storage capacity on every change
+  // page 2 -> tablet -> storage capacity
   useEffect(() => {
     const isValid = MEDIUM_INTEGER_REGEX.test(tabletStorageCapacity);
 
@@ -1814,7 +2350,7 @@ function CreateProduct() {
     });
   }, [tabletStorageCapacity]);
 
-  // validate tablet battery capacity on every change
+  // page 2 -> tablet -> battery capacity
   useEffect(() => {
     const isValid = LARGE_INTEGER_REGEX.test(tabletBatteryCapacity);
 
@@ -1824,7 +2360,7 @@ function CreateProduct() {
     });
   }, [tabletBatteryCapacity]);
 
-  // validate tablet camera on every change
+  // page 2 -> tablet -> camera
   useEffect(() => {
     const isValid = MOBILE_CAMERA_REGEX.test(tabletCamera);
 
@@ -1834,7 +2370,7 @@ function CreateProduct() {
     });
   }, [tabletCamera]);
 
-  // validate tablet color variant on every change
+  // page 2 -> tablet -> color variant
   useEffect(() => {
     const isValid = COLOR_VARIANT_REGEX.test(tabletColor);
 
@@ -1844,9 +2380,64 @@ function CreateProduct() {
     });
   }, [tabletColor]);
 
-  // accessory
+  // page 2 -> tablet -> additional fields
+  useEffect(() => {
+    const currentlyUpdatingTabletFieldAdditional = tabletFieldsAdditional.get(
+      currentlySelectedAdditionalFieldIndex
+    );
 
-  // accessory -> validate user defined accessory fields  on every change
+    if (!currentlyUpdatingTabletFieldAdditional) {
+      return;
+    }
+
+    const [key, value] = currentlyUpdatingTabletFieldAdditional;
+
+    const isKeyValid = OBJECT_KEY_REGEX.test(key);
+    createProductDispatch({
+      type: createProductAction.setAreTabletFieldsAdditionalValid,
+      payload: {
+        operation: 'update',
+        data: isKeyValid,
+        index: currentlySelectedAdditionalFieldIndex,
+        kind: 'key',
+      },
+    });
+
+    const isValueValid = USER_DEFINED_VALUE_REGEX.test(value);
+    createProductDispatch({
+      type: createProductAction.setAreTabletFieldsAdditionalValid,
+      payload: {
+        operation: 'update',
+        data: isValueValid,
+        index: currentlySelectedAdditionalFieldIndex,
+        kind: 'value',
+      },
+    });
+  }, [currentlySelectedAdditionalFieldIndex, tabletFieldsAdditional]);
+
+  // page 2 -> accessory
+
+  // page 2 -> accessory -> type
+  useEffect(() => {
+    const isValid = ACCESSORY_TYPE_REGEX.test(accessoryType);
+
+    createProductDispatch({
+      type: createProductAction.setIsAccessoryTypeValid,
+      payload: isValid,
+    });
+  }, [accessoryType]);
+
+  // page 2 -> accessory -> color variant
+  useEffect(() => {
+    const isValid = COLOR_VARIANT_REGEX.test(accessoryColor);
+
+    createProductDispatch({
+      type: createProductAction.setIsAccessoryColorValid,
+      payload: isValid,
+    });
+  }, [accessoryColor]);
+
+  // page 2 -> accessory -> additional fields
   useEffect(() => {
     const currentlyUpdatingAccessoryFieldAdditional =
       accessoryFieldsAdditional.get(currentlySelectedAdditionalFieldIndex);
@@ -1855,10 +2446,8 @@ function CreateProduct() {
     }
 
     const [key, value] = currentlyUpdatingAccessoryFieldAdditional;
-
     const isKeyValid = OBJECT_KEY_REGEX.test(key);
 
-    console.log('isKeyValid', isKeyValid);
     createProductDispatch({
       type: createProductAction.setAreAccessoryFieldsAdditionalValid,
       payload: {
@@ -1881,27 +2470,9 @@ function CreateProduct() {
     });
   }, [currentlySelectedAdditionalFieldIndex, accessoryFieldsAdditional]);
 
-  // accessory -> validate accessory type on every change
-  useEffect(() => {
-    const isValid = ACCESSORY_TYPE_REGEX.test(accessoryType);
+  // page 2 -> webcam
 
-    createProductDispatch({
-      type: createProductAction.setIsAccessoryTypeValid,
-      payload: isValid,
-    });
-  }, [accessoryType]);
-
-  // validate accessory color variant on every change
-  useEffect(() => {
-    const isValid = COLOR_VARIANT_REGEX.test(accessoryColor);
-
-    createProductDispatch({
-      type: createProductAction.setIsAccessoryColorValid,
-      payload: isValid,
-    });
-  }, [accessoryColor]);
-
-  // validate webcam color variant on every change
+  // page 2 -> webcam -> color variant
   useEffect(() => {
     const isValid = COLOR_VARIANT_REGEX.test(webcamColor);
 
@@ -1911,7 +2482,44 @@ function CreateProduct() {
     });
   }, [webcamColor]);
 
-  // validate microphone color variant on every change
+  // page 2 -> webcam -> additional fields
+  useEffect(() => {
+    const currentlyUpdatingWebcamFieldAdditional = webcamFieldsAdditional.get(
+      currentlySelectedAdditionalFieldIndex
+    );
+
+    if (!currentlyUpdatingWebcamFieldAdditional) {
+      return;
+    }
+
+    const [key, value] = currentlyUpdatingWebcamFieldAdditional;
+
+    const isKeyValid = OBJECT_KEY_REGEX.test(key);
+    createProductDispatch({
+      type: createProductAction.setAreWebcamFieldsAdditionalValid,
+      payload: {
+        operation: 'update',
+        data: isKeyValid,
+        index: currentlySelectedAdditionalFieldIndex,
+        kind: 'key',
+      },
+    });
+
+    const isValueValid = USER_DEFINED_VALUE_REGEX.test(value);
+    createProductDispatch({
+      type: createProductAction.setAreWebcamFieldsAdditionalValid,
+      payload: {
+        operation: 'update',
+        data: isValueValid,
+        index: currentlySelectedAdditionalFieldIndex,
+        kind: 'value',
+      },
+    });
+  }, [currentlySelectedAdditionalFieldIndex, webcamFieldsAdditional]);
+
+  // page 2 -> microphone
+
+  // page 2 -> microphone -> color variant
   useEffect(() => {
     const isValid = COLOR_VARIANT_REGEX.test(microphoneColor);
 
@@ -1921,7 +2529,7 @@ function CreateProduct() {
     });
   }, [microphoneColor]);
 
-  // validate microphone frequency response on every change
+  // page 2 -> microphone -> frequency response
   useEffect(() => {
     const isValid = FREQUENCY_RESPONSE_REGEX.test(microphoneFrequencyResponse);
 
@@ -1930,6 +2538,40 @@ function CreateProduct() {
       payload: isValid,
     });
   }, [microphoneFrequencyResponse]);
+
+  // page 2 -> microphone -> additional fields
+  useEffect(() => {
+    const currentlyUpdatingMicrophoneFieldAdditional =
+      microphoneFieldsAdditional.get(currentlySelectedAdditionalFieldIndex);
+
+    if (!currentlyUpdatingMicrophoneFieldAdditional) {
+      return;
+    }
+
+    const [key, value] = currentlyUpdatingMicrophoneFieldAdditional;
+
+    const isKeyValid = OBJECT_KEY_REGEX.test(key);
+    createProductDispatch({
+      type: createProductAction.setAreMicrophoneFieldsAdditionalValid,
+      payload: {
+        operation: 'update',
+        data: isKeyValid,
+        index: currentlySelectedAdditionalFieldIndex,
+        kind: 'key',
+      },
+    });
+
+    const isValueValid = USER_DEFINED_VALUE_REGEX.test(value);
+    createProductDispatch({
+      type: createProductAction.setAreMicrophoneFieldsAdditionalValid,
+      payload: {
+        operation: 'update',
+        data: isValueValid,
+        index: currentlySelectedAdditionalFieldIndex,
+        kind: 'value',
+      },
+    });
+  }, [currentlySelectedAdditionalFieldIndex, microphoneFieldsAdditional]);
 
   // update stepper wrapper state on every page 1 input validation change
   useEffect(() => {
@@ -2466,7 +3108,7 @@ function CreateProduct() {
       onChange: (event: ChangeEvent<HTMLSelectElement>) => {
         createProductDispatch({
           type: createProductAction.setAvailability,
-          payload: event.currentTarget.value as ProductAvailability,
+          payload: event.currentTarget.value as MerchandiseAvailability,
         });
       },
       value: availability,
@@ -2532,7 +3174,7 @@ function CreateProduct() {
       inputText: weight,
       isInputTextFocused: isWeightFocused,
       isValidInputText: isWeightValid,
-      regexValidationText: returnProductWeightValidationText({
+      regexValidationText: returnWeightValidationText({
         content: weight,
         contentKind: 'weight',
       }),
@@ -2602,7 +3244,7 @@ function CreateProduct() {
       inputText: dimensionLength,
       isInputTextFocused: isDimensionLengthFocused,
       isValidInputText: isDimensionLengthValid,
-      regexValidationText: returnProductDimensionsValidationText({
+      regexValidationText: returnDimensionsValidationText({
         content: dimensionLength,
         contentKind: 'dimension length',
       }),
@@ -2669,7 +3311,7 @@ function CreateProduct() {
       inputText: dimensionWidth,
       isInputTextFocused: isDimensionWidthFocused,
       isValidInputText: isDimensionWidthValid,
-      regexValidationText: returnProductDimensionsValidationText({
+      regexValidationText: returnDimensionsValidationText({
         content: dimensionWidth,
         contentKind: 'dimension width',
       }),
@@ -2736,7 +3378,7 @@ function CreateProduct() {
       inputText: dimensionHeight,
       isInputTextFocused: isDimensionHeightFocused,
       isValidInputText: isDimensionHeightValid,
-      regexValidationText: returnProductDimensionsValidationText({
+      regexValidationText: returnDimensionsValidationText({
         content: dimensionHeight,
         contentKind: 'dimension height',
       }),
@@ -3283,6 +3925,297 @@ function CreateProduct() {
     },
   ]);
 
+  // page 2 -> specifications -> cpu -> add new field button
+  const [createdAddCpuFieldsAdditionalButton] = returnAccessibleButtonElements([
+    {
+      buttonLabel: 'Add',
+      semanticDescription: 'Add new additional field',
+      semanticName: 'Add new field',
+      leftIcon: <TbPlus />,
+      buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
+        createProductDispatch({
+          type: createProductAction.setCpuFieldsAdditional,
+          payload: {
+            operation: 'add',
+            data: ['', ''],
+          },
+        });
+
+        createProductDispatch({
+          type: createProductAction.setAreCpuFieldsAdditionalFocused,
+          payload: {
+            operation: 'add',
+            data: [false, false],
+          },
+        });
+
+        createProductDispatch({
+          type: createProductAction.setAreCpuFieldsAdditionalValid,
+          payload: {
+            operation: 'add',
+            data: [false, false],
+          },
+        });
+      },
+    },
+  ]);
+
+  // page 2 -> specifications -> cpu -> cpu fields user defined
+
+  // page 2 -> specifications -> cpu -> cpu fields user defined -> accessible screen reader text elements
+
+  // page 2 -> specifications -> cpu -> cpu fields user defined -> accessible screen reader text elements -> field names
+
+  // returns an array of tuples containing the error and valid text elements for each field name
+  const cpuFieldsAdditionalKeysErrorValidTextElements: [
+    JSX.Element,
+    JSX.Element
+  ][] = Array.from(cpuFieldsAdditional).map((keyFieldValue) => {
+    const [mapKey, [field, _value]] = keyFieldValue;
+
+    // screenreader accessible error/valid text elements that are consumed by the text input element creator
+    const [
+      cpuFieldsAdditionalKeysInputErrorText,
+      cpuFieldsAdditionalKeysInputValidText,
+    ] = AccessibleErrorValidTextElements({
+      inputElementKind: `additional field name ${mapKey + 1}`,
+      inputText: field,
+      isInputTextFocused:
+        areCpuFieldsAdditionalFocused.get(mapKey)?.[0] ?? false,
+      isValidInputText: areCpuFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+      regexValidationText: returnObjectKeyValidationText({
+        content: field,
+        contentKind: `additional field name ${mapKey + 1}`,
+        maxLength: 75,
+        minLength: 1,
+      }),
+    });
+
+    return [
+      cpuFieldsAdditionalKeysInputErrorText,
+      cpuFieldsAdditionalKeysInputValidText,
+    ];
+  });
+
+  // page 2 -> specifications -> cpu -> cpu fields user defined -> accessible screen reader text elements -> field values
+
+  // returns an array of tuples containing the error and valid text elements for each field value
+  const cpuFieldsAdditionalValuesErrorValidTextElements: [
+    JSX.Element,
+    JSX.Element
+  ][] = Array.from(cpuFieldsAdditional).map((keyFieldValue) => {
+    const [mapKey, [_field, value]] = keyFieldValue;
+
+    // screenreader accessible error/valid text elements that are consumed by the text input element creator
+    const [
+      cpuFieldsAdditionalValuesInputErrorText,
+      cpuFieldsAdditionalValuesInputValidText,
+    ] = AccessibleErrorValidTextElements({
+      inputElementKind: `additional field value ${mapKey + 1}`,
+      inputText: value,
+      isInputTextFocused:
+        areCpuFieldsAdditionalFocused.get(mapKey)?.[1] ?? false,
+      isValidInputText: areCpuFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+      regexValidationText: returnUserDefinedFieldValueValidationText({
+        content: value,
+        contentKind: `additional field value ${mapKey + 1}`,
+        maxLength: 2000,
+        minLength: 2,
+      }),
+    });
+
+    return [
+      cpuFieldsAdditionalValuesInputErrorText,
+      cpuFieldsAdditionalValuesInputValidText,
+    ];
+  });
+
+  // page 2 -> specifications -> cpu -> cpu fields user defined -> text area input element creator
+  const createdCpuFieldsAdditionalTextInputElements = Array.from(
+    cpuFieldsAdditional
+  ).map((keyFieldValue) => {
+    const [mapKey, [field, value]] = keyFieldValue;
+
+    const cpuFieldsAdditionalKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+      {
+        description: {
+          error: cpuFieldsAdditionalKeysErrorValidTextElements[mapKey][0],
+          valid: cpuFieldsAdditionalKeysErrorValidTextElements[mapKey][1],
+        },
+        inputText: field,
+        isValidInputText: areCpuFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+        label: `Name ${mapKey + 1}`,
+        maxLength: 75,
+        minLength: 1,
+        onBlur: () => {
+          createProductDispatch({
+            type: createProductAction.setAreCpuFieldsAdditionalFocused,
+            payload: {
+              operation: 'update',
+              data: false,
+              index: mapKey,
+              kind: 'key',
+            },
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
+          createProductDispatch({
+            type: createProductAction.setCpuFieldsAdditional,
+            payload: {
+              operation: 'update',
+              data: event.currentTarget.value,
+              index: mapKey,
+              kind: 'key',
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setCurrentlySelectedAdditionalFieldIndex,
+            payload: mapKey,
+          });
+        },
+        onFocus: () => {
+          createProductDispatch({
+            type: createProductAction.setAreCpuFieldsAdditionalFocused,
+            payload: {
+              operation: 'update',
+              data: true,
+              index: mapKey,
+              kind: 'key',
+            },
+          });
+        },
+        placeholder: 'Enter additional field name',
+        required: true,
+        semanticName: `additional field name ${mapKey + 1}`,
+      };
+
+    const cpuFieldsAdditionalValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+      {
+        description: {
+          error: cpuFieldsAdditionalValuesErrorValidTextElements[mapKey][0],
+          valid: cpuFieldsAdditionalValuesErrorValidTextElements[mapKey][1],
+        },
+        inputText: value,
+        isValidInputText: areCpuFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+        label: `Value ${mapKey + 1}`,
+        maxLength: 2000,
+        minLength: 2,
+        onBlur: () => {
+          createProductDispatch({
+            type: createProductAction.setAreCpuFieldsAdditionalFocused,
+            payload: {
+              operation: 'update',
+              data: false,
+              index: mapKey,
+              kind: 'value',
+            },
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
+          createProductDispatch({
+            type: createProductAction.setCpuFieldsAdditional,
+            payload: {
+              operation: 'update',
+              data: event.currentTarget.value,
+              index: mapKey,
+              kind: 'value',
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setCurrentlySelectedAdditionalFieldIndex,
+            payload: mapKey,
+          });
+        },
+        onFocus: () => {
+          createProductDispatch({
+            type: createProductAction.setAreCpuFieldsAdditionalFocused,
+            payload: {
+              operation: 'update',
+              data: true,
+              index: mapKey,
+              kind: 'value',
+            },
+          });
+        },
+        placeholder: 'Enter additional field value',
+        required: true,
+        semanticName: `additional field value ${mapKey + 1}`,
+      };
+
+    const [
+      createdCpuFieldsAdditionalKeysTextAreaInput,
+      createdCpuFieldsAdditionalValuesTextAreaInput,
+    ] = returnAccessibleTextAreaInputElements([
+      cpuFieldsAdditionalKeysTextInputCreatorInfo,
+      cpuFieldsAdditionalValuesTextInputCreatorInfo,
+    ]);
+
+    const [createdDeleteButton] = returnAccessibleButtonElements([
+      {
+        buttonLabel: 'Delete',
+        buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
+          createProductDispatch({
+            type: createProductAction.setCpuFieldsAdditional,
+            payload: {
+              operation: 'remove',
+              index: mapKey,
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setAreCpuFieldsAdditionalFocused,
+            payload: {
+              operation: 'remove',
+              index: mapKey,
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setAreCpuFieldsAdditionalValid,
+            payload: {
+              operation: 'remove',
+              index: mapKey,
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setCurrentlySelectedAdditionalFieldIndex,
+            payload: -1,
+          });
+        },
+        leftIcon: <TbTrash />,
+        semanticDescription: `Delete additional field ${mapKey + 1}`,
+        semanticName: 'Delete field and value',
+      },
+    ]);
+
+    const displayDeleteButton = (
+      <Tooltip label={`Delete additional field ${mapKey + 1}`}>
+        <Group>{createdDeleteButton}</Group>
+      </Tooltip>
+    );
+
+    return (
+      <Stack
+        key={`cpuFieldsAdditional-${mapKey}`}
+        pt={padding}
+        style={{ borderTop: borderColor }}
+        w="100%"
+      >
+        <Group position="apart">
+          <Text size="md" weight={600}>{`Additional field ${mapKey + 1}`}</Text>
+          {displayDeleteButton}
+        </Group>
+        <Group position="apart">
+          {createdCpuFieldsAdditionalKeysTextAreaInput}
+          {createdCpuFieldsAdditionalValuesTextAreaInput}
+        </Group>
+      </Stack>
+    );
+  });
+
   // page 2 -> specifications -> gpu
 
   // page 2 -> specifications -> gpu -> gpu chipset
@@ -3555,6 +4488,297 @@ function CreateProduct() {
       semanticName: 'gpu wattage',
     },
   ]);
+
+  // page 2 -> specifications -> gpu -> add new field button
+  const [createdAddGpuFieldsAdditionalButton] = returnAccessibleButtonElements([
+    {
+      buttonLabel: 'Add',
+      semanticDescription: 'Add new additional field',
+      semanticName: 'Add new field',
+      leftIcon: <TbPlus />,
+      buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
+        createProductDispatch({
+          type: createProductAction.setGpuFieldsAdditional,
+          payload: {
+            operation: 'add',
+            data: ['', ''],
+          },
+        });
+
+        createProductDispatch({
+          type: createProductAction.setAreGpuFieldsAdditionalFocused,
+          payload: {
+            operation: 'add',
+            data: [false, false],
+          },
+        });
+
+        createProductDispatch({
+          type: createProductAction.setAreGpuFieldsAdditionalValid,
+          payload: {
+            operation: 'add',
+            data: [false, false],
+          },
+        });
+      },
+    },
+  ]);
+
+  // page 2 -> specifications -> gpu -> gpu fields user defined
+
+  // page 2 -> specifications -> gpu -> gpu fields user defined -> accessible screen reader text elements
+
+  // page 2 -> specifications -> gpu -> gpu fields user defined -> accessible screen reader text elements -> field names
+
+  // returns an array of tuples containing the error and valid text elements for each field name
+  const gpuFieldsAdditionalKeysErrorValidTextElements: [
+    JSX.Element,
+    JSX.Element
+  ][] = Array.from(gpuFieldsAdditional).map((keyFieldValue) => {
+    const [mapKey, [field, _value]] = keyFieldValue;
+
+    // screenreader accessible error/valid text elements that are consumed by the text input element creator
+    const [
+      gpuFieldsAdditionalKeysInputErrorText,
+      gpuFieldsAdditionalKeysInputValidText,
+    ] = AccessibleErrorValidTextElements({
+      inputElementKind: `additional field name ${mapKey + 1}`,
+      inputText: field,
+      isInputTextFocused:
+        areGpuFieldsAdditionalFocused.get(mapKey)?.[0] ?? false,
+      isValidInputText: areGpuFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+      regexValidationText: returnObjectKeyValidationText({
+        content: field,
+        contentKind: `additional field name ${mapKey + 1}`,
+        maxLength: 75,
+        minLength: 1,
+      }),
+    });
+
+    return [
+      gpuFieldsAdditionalKeysInputErrorText,
+      gpuFieldsAdditionalKeysInputValidText,
+    ];
+  });
+
+  // page 2 -> specifications -> gpu -> gpu fields user defined -> accessible screen reader text elements -> field values
+
+  // returns an array of tuples containing the error and valid text elements for each field value
+  const gpuFieldsAdditionalValuesErrorValidTextElements: [
+    JSX.Element,
+    JSX.Element
+  ][] = Array.from(gpuFieldsAdditional).map((keyFieldValue) => {
+    const [mapKey, [_field, value]] = keyFieldValue;
+
+    // screenreader accessible error/valid text elements that are consumed by the text input element creator
+    const [
+      gpuFieldsAdditionalValuesInputErrorText,
+      gpuFieldsAdditionalValuesInputValidText,
+    ] = AccessibleErrorValidTextElements({
+      inputElementKind: `additional field value ${mapKey + 1}`,
+      inputText: value,
+      isInputTextFocused:
+        areGpuFieldsAdditionalFocused.get(mapKey)?.[1] ?? false,
+      isValidInputText: areGpuFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+      regexValidationText: returnUserDefinedFieldValueValidationText({
+        content: value,
+        contentKind: `additional field value ${mapKey + 1}`,
+        maxLength: 2000,
+        minLength: 2,
+      }),
+    });
+
+    return [
+      gpuFieldsAdditionalValuesInputErrorText,
+      gpuFieldsAdditionalValuesInputValidText,
+    ];
+  });
+
+  // page 2 -> specifications -> gpu -> gpu fields user defined -> text area input element creator
+  const createdGpuFieldsAdditionalTextInputElements = Array.from(
+    gpuFieldsAdditional
+  ).map((keyFieldValue) => {
+    const [mapKey, [field, value]] = keyFieldValue;
+
+    const gpuFieldsAdditionalKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+      {
+        description: {
+          error: gpuFieldsAdditionalKeysErrorValidTextElements[mapKey][0],
+          valid: gpuFieldsAdditionalKeysErrorValidTextElements[mapKey][1],
+        },
+        inputText: field,
+        isValidInputText: areGpuFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+        label: `Name ${mapKey + 1}`,
+        maxLength: 75,
+        minLength: 1,
+        onBlur: () => {
+          createProductDispatch({
+            type: createProductAction.setAreGpuFieldsAdditionalFocused,
+            payload: {
+              operation: 'update',
+              data: false,
+              index: mapKey,
+              kind: 'key',
+            },
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
+          createProductDispatch({
+            type: createProductAction.setGpuFieldsAdditional,
+            payload: {
+              operation: 'update',
+              data: event.currentTarget.value,
+              index: mapKey,
+              kind: 'key',
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setCurrentlySelectedAdditionalFieldIndex,
+            payload: mapKey,
+          });
+        },
+        onFocus: () => {
+          createProductDispatch({
+            type: createProductAction.setAreGpuFieldsAdditionalFocused,
+            payload: {
+              operation: 'update',
+              data: true,
+              index: mapKey,
+              kind: 'key',
+            },
+          });
+        },
+        placeholder: 'Enter additional field name',
+        required: true,
+        semanticName: `additional field name ${mapKey + 1}`,
+      };
+
+    const gpuFieldsAdditionalValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+      {
+        description: {
+          error: gpuFieldsAdditionalValuesErrorValidTextElements[mapKey][0],
+          valid: gpuFieldsAdditionalValuesErrorValidTextElements[mapKey][1],
+        },
+        inputText: value,
+        isValidInputText: areGpuFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+        label: `Value ${mapKey + 1}`,
+        maxLength: 2000,
+        minLength: 2,
+        onBlur: () => {
+          createProductDispatch({
+            type: createProductAction.setAreGpuFieldsAdditionalFocused,
+            payload: {
+              operation: 'update',
+              data: false,
+              index: mapKey,
+              kind: 'value',
+            },
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
+          createProductDispatch({
+            type: createProductAction.setGpuFieldsAdditional,
+            payload: {
+              operation: 'update',
+              data: event.currentTarget.value,
+              index: mapKey,
+              kind: 'value',
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setCurrentlySelectedAdditionalFieldIndex,
+            payload: mapKey,
+          });
+        },
+        onFocus: () => {
+          createProductDispatch({
+            type: createProductAction.setAreGpuFieldsAdditionalFocused,
+            payload: {
+              operation: 'update',
+              data: true,
+              index: mapKey,
+              kind: 'value',
+            },
+          });
+        },
+        placeholder: 'Enter additional field value',
+        required: true,
+        semanticName: `additional field value ${mapKey + 1}`,
+      };
+
+    const [
+      createdGpuFieldsAdditionalKeysTextAreaInput,
+      createdGpuFieldsAdditionalValuesTextAreaInput,
+    ] = returnAccessibleTextAreaInputElements([
+      gpuFieldsAdditionalKeysTextInputCreatorInfo,
+      gpuFieldsAdditionalValuesTextInputCreatorInfo,
+    ]);
+
+    const [createdDeleteButton] = returnAccessibleButtonElements([
+      {
+        buttonLabel: 'Delete',
+        buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
+          createProductDispatch({
+            type: createProductAction.setGpuFieldsAdditional,
+            payload: {
+              operation: 'remove',
+              index: mapKey,
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setAreGpuFieldsAdditionalFocused,
+            payload: {
+              operation: 'remove',
+              index: mapKey,
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setAreGpuFieldsAdditionalValid,
+            payload: {
+              operation: 'remove',
+              index: mapKey,
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setCurrentlySelectedAdditionalFieldIndex,
+            payload: -1,
+          });
+        },
+        leftIcon: <TbTrash />,
+        semanticDescription: `Delete additional field ${mapKey + 1}`,
+        semanticName: 'Delete field and value',
+      },
+    ]);
+
+    const displayDeleteButton = (
+      <Tooltip label={`Delete additional field ${mapKey + 1}`}>
+        <Group>{createdDeleteButton}</Group>
+      </Tooltip>
+    );
+
+    return (
+      <Stack
+        key={`gpuFieldsAdditional-${mapKey}`}
+        pt={padding}
+        style={{ borderTop: borderColor }}
+        w="100%"
+      >
+        <Group position="apart">
+          <Text size="md" weight={600}>{`Additional field ${mapKey + 1}`}</Text>
+          {displayDeleteButton}
+        </Group>
+        <Group position="apart">
+          {createdGpuFieldsAdditionalKeysTextAreaInput}
+          {createdGpuFieldsAdditionalValuesTextAreaInput}
+        </Group>
+      </Stack>
+    );
+  });
 
   // page 2 -> specifications -> motherboard
 
@@ -4089,6 +5313,306 @@ function CreateProduct() {
       },
     ]);
 
+  // page 2 -> specifications -> motherboard -> add new field button
+  const [createdAddMotherboardFieldsAdditionalButton] =
+    returnAccessibleButtonElements([
+      {
+        buttonLabel: 'Add',
+        semanticDescription: 'Add new additional field',
+        semanticName: 'Add new field',
+        leftIcon: <TbPlus />,
+        buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
+          createProductDispatch({
+            type: createProductAction.setMotherboardFieldsAdditional,
+            payload: {
+              operation: 'add',
+              data: ['', ''],
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setAreMotherboardFieldsAdditionalFocused,
+            payload: {
+              operation: 'add',
+              data: [false, false],
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setAreMotherboardFieldsAdditionalValid,
+            payload: {
+              operation: 'add',
+              data: [false, false],
+            },
+          });
+        },
+      },
+    ]);
+
+  // page 2 -> specifications -> motherboard -> motherboard fields user defined
+
+  // page 2 -> specifications -> motherboard -> motherboard fields user defined -> accessible screen reader text elements
+
+  // page 2 -> specifications -> motherboard -> motherboard fields user defined -> accessible screen reader text elements -> field names
+
+  // returns an array of tuples containing the error and valid text elements for each field name
+  const motherboardFieldsAdditionalKeysErrorValidTextElements: [
+    JSX.Element,
+    JSX.Element
+  ][] = Array.from(motherboardFieldsAdditional).map((keyFieldValue) => {
+    const [mapKey, [field, _value]] = keyFieldValue;
+
+    // screenreader accessible error/valid text elements that are consumed by the text input element creator
+    const [
+      motherboardFieldsAdditionalKeysInputErrorText,
+      motherboardFieldsAdditionalKeysInputValidText,
+    ] = AccessibleErrorValidTextElements({
+      inputElementKind: `additional field name ${mapKey + 1}`,
+      inputText: field,
+      isInputTextFocused:
+        areMotherboardFieldsAdditionalFocused.get(mapKey)?.[0] ?? false,
+      isValidInputText:
+        areMotherboardFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+      regexValidationText: returnObjectKeyValidationText({
+        content: field,
+        contentKind: `additional field name ${mapKey + 1}`,
+        maxLength: 75,
+        minLength: 1,
+      }),
+    });
+
+    return [
+      motherboardFieldsAdditionalKeysInputErrorText,
+      motherboardFieldsAdditionalKeysInputValidText,
+    ];
+  });
+
+  // page 2 -> specifications -> motherboard -> motherboard fields user defined -> accessible screen reader text elements -> field values
+
+  // returns an array of tuples containing the error and valid text elements for each field value
+  const motherboardFieldsAdditionalValuesErrorValidTextElements: [
+    JSX.Element,
+    JSX.Element
+  ][] = Array.from(motherboardFieldsAdditional).map((keyFieldValue) => {
+    const [mapKey, [_field, value]] = keyFieldValue;
+
+    // screenreader accessible error/valid text elements that are consumed by the text input element creator
+    const [
+      motherboardFieldsAdditionalValuesInputErrorText,
+      motherboardFieldsAdditionalValuesInputValidText,
+    ] = AccessibleErrorValidTextElements({
+      inputElementKind: `additional field value ${mapKey + 1}`,
+      inputText: value,
+      isInputTextFocused:
+        areMotherboardFieldsAdditionalFocused.get(mapKey)?.[1] ?? false,
+      isValidInputText:
+        areMotherboardFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+      regexValidationText: returnUserDefinedFieldValueValidationText({
+        content: value,
+        contentKind: `additional field value ${mapKey + 1}`,
+        maxLength: 2000,
+        minLength: 2,
+      }),
+    });
+
+    return [
+      motherboardFieldsAdditionalValuesInputErrorText,
+      motherboardFieldsAdditionalValuesInputValidText,
+    ];
+  });
+
+  // page 2 -> specifications -> motherboard -> motherboard fields user defined -> text area input element creator
+  const createdMotherboardFieldsAdditionalTextInputElements = Array.from(
+    motherboardFieldsAdditional
+  ).map((keyFieldValue) => {
+    const [mapKey, [field, value]] = keyFieldValue;
+
+    const motherboardFieldsAdditionalKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+      {
+        description: {
+          error:
+            motherboardFieldsAdditionalKeysErrorValidTextElements[mapKey][0],
+          valid:
+            motherboardFieldsAdditionalKeysErrorValidTextElements[mapKey][1],
+        },
+        inputText: field,
+        isValidInputText:
+          areMotherboardFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+        label: `Name ${mapKey + 1}`,
+        maxLength: 75,
+        minLength: 1,
+        onBlur: () => {
+          createProductDispatch({
+            type: createProductAction.setAreMotherboardFieldsAdditionalFocused,
+            payload: {
+              operation: 'update',
+              data: false,
+              index: mapKey,
+              kind: 'key',
+            },
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
+          createProductDispatch({
+            type: createProductAction.setMotherboardFieldsAdditional,
+            payload: {
+              operation: 'update',
+              data: event.currentTarget.value,
+              index: mapKey,
+              kind: 'key',
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setCurrentlySelectedAdditionalFieldIndex,
+            payload: mapKey,
+          });
+        },
+        onFocus: () => {
+          createProductDispatch({
+            type: createProductAction.setAreMotherboardFieldsAdditionalFocused,
+            payload: {
+              operation: 'update',
+              data: true,
+              index: mapKey,
+              kind: 'key',
+            },
+          });
+        },
+        placeholder: 'Enter additional field name',
+        required: true,
+        semanticName: `additional field name ${mapKey + 1}`,
+      };
+
+    const motherboardFieldsAdditionalValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+      {
+        description: {
+          error:
+            motherboardFieldsAdditionalValuesErrorValidTextElements[mapKey][0],
+          valid:
+            motherboardFieldsAdditionalValuesErrorValidTextElements[mapKey][1],
+        },
+        inputText: value,
+        isValidInputText:
+          areMotherboardFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+        label: `Value ${mapKey + 1}`,
+        maxLength: 2000,
+        minLength: 2,
+        onBlur: () => {
+          createProductDispatch({
+            type: createProductAction.setAreMotherboardFieldsAdditionalFocused,
+            payload: {
+              operation: 'update',
+              data: false,
+              index: mapKey,
+              kind: 'value',
+            },
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
+          createProductDispatch({
+            type: createProductAction.setMotherboardFieldsAdditional,
+            payload: {
+              operation: 'update',
+              data: event.currentTarget.value,
+              index: mapKey,
+              kind: 'value',
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setCurrentlySelectedAdditionalFieldIndex,
+            payload: mapKey,
+          });
+        },
+        onFocus: () => {
+          createProductDispatch({
+            type: createProductAction.setAreMotherboardFieldsAdditionalFocused,
+            payload: {
+              operation: 'update',
+              data: true,
+              index: mapKey,
+              kind: 'value',
+            },
+          });
+        },
+        placeholder: 'Enter additional field value',
+        required: true,
+        semanticName: `additional field value ${mapKey + 1}`,
+      };
+
+    const [
+      createdMotherboardFieldsAdditionalKeysTextAreaInput,
+      createdMotherboardFieldsAdditionalValuesTextAreaInput,
+    ] = returnAccessibleTextAreaInputElements([
+      motherboardFieldsAdditionalKeysTextInputCreatorInfo,
+      motherboardFieldsAdditionalValuesTextInputCreatorInfo,
+    ]);
+
+    const [createdDeleteButton] = returnAccessibleButtonElements([
+      {
+        buttonLabel: 'Delete',
+        buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
+          createProductDispatch({
+            type: createProductAction.setMotherboardFieldsAdditional,
+            payload: {
+              operation: 'remove',
+              index: mapKey,
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setAreMotherboardFieldsAdditionalFocused,
+            payload: {
+              operation: 'remove',
+              index: mapKey,
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setAreMotherboardFieldsAdditionalValid,
+            payload: {
+              operation: 'remove',
+              index: mapKey,
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setCurrentlySelectedAdditionalFieldIndex,
+            payload: -1,
+          });
+        },
+        leftIcon: <TbTrash />,
+        semanticDescription: `Delete additional field ${mapKey + 1}`,
+        semanticName: 'Delete field and value',
+      },
+    ]);
+
+    const displayDeleteButton = (
+      <Tooltip label={`Delete additional field ${mapKey + 1}`}>
+        <Group>{createdDeleteButton}</Group>
+      </Tooltip>
+    );
+
+    return (
+      <Stack
+        key={`motherboardFieldsAdditional-${mapKey}`}
+        pt={padding}
+        style={{ borderTop: borderColor }}
+        w="100%"
+      >
+        <Group position="apart">
+          <Text size="md" weight={600}>{`Additional field ${mapKey + 1}`}</Text>
+          {displayDeleteButton}
+        </Group>
+        <Group position="apart">
+          {createdMotherboardFieldsAdditionalKeysTextAreaInput}
+          {createdMotherboardFieldsAdditionalValuesTextAreaInput}
+        </Group>
+      </Stack>
+    );
+  });
+
   // page 2 -> specifications -> ram
 
   // page 2 -> specifications -> ram -> ram data rate
@@ -4428,11 +5952,302 @@ function CreateProduct() {
           payload: true,
         });
       },
-      placeholder: '00-00-00-00 or 0-0-0-0',
+      placeholder: 'Format: 00-00-00-00 or 0-0-0-0',
       required: true,
       semanticName: 'ram timing',
     },
   ]);
+
+  // page 2 -> specifications -> ram -> add new field button
+  const [createdAddRamFieldsAdditionalButton] = returnAccessibleButtonElements([
+    {
+      buttonLabel: 'Add',
+      semanticDescription: 'Add new additional field',
+      semanticName: 'Add new field',
+      leftIcon: <TbPlus />,
+      buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
+        createProductDispatch({
+          type: createProductAction.setRamFieldsAdditional,
+          payload: {
+            operation: 'add',
+            data: ['', ''],
+          },
+        });
+
+        createProductDispatch({
+          type: createProductAction.setAreRamFieldsAdditionalFocused,
+          payload: {
+            operation: 'add',
+            data: [false, false],
+          },
+        });
+
+        createProductDispatch({
+          type: createProductAction.setAreRamFieldsAdditionalValid,
+          payload: {
+            operation: 'add',
+            data: [false, false],
+          },
+        });
+      },
+    },
+  ]);
+
+  // page 2 -> specifications -> ram -> ram fields user defined
+
+  // page 2 -> specifications -> ram -> ram fields user defined -> accessible screen reader text elements
+
+  // page 2 -> specifications -> ram -> ram fields user defined -> accessible screen reader text elements -> field names
+
+  // returns an array of tuples containing the error and valid text elements for each field name
+  const ramFieldsAdditionalKeysErrorValidTextElements: [
+    JSX.Element,
+    JSX.Element
+  ][] = Array.from(ramFieldsAdditional).map((keyFieldValue) => {
+    const [mapKey, [field, _value]] = keyFieldValue;
+
+    // screenreader accessible error/valid text elements that are consumed by the text input element creator
+    const [
+      ramFieldsAdditionalKeysInputErrorText,
+      ramFieldsAdditionalKeysInputValidText,
+    ] = AccessibleErrorValidTextElements({
+      inputElementKind: `additional field name ${mapKey + 1}`,
+      inputText: field,
+      isInputTextFocused:
+        areRamFieldsAdditionalFocused.get(mapKey)?.[0] ?? false,
+      isValidInputText: areRamFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+      regexValidationText: returnObjectKeyValidationText({
+        content: field,
+        contentKind: `additional field name ${mapKey + 1}`,
+        maxLength: 75,
+        minLength: 1,
+      }),
+    });
+
+    return [
+      ramFieldsAdditionalKeysInputErrorText,
+      ramFieldsAdditionalKeysInputValidText,
+    ];
+  });
+
+  // page 2 -> specifications -> ram -> ram fields user defined -> accessible screen reader text elements -> field values
+
+  // returns an array of tuples containing the error and valid text elements for each field value
+  const ramFieldsAdditionalValuesErrorValidTextElements: [
+    JSX.Element,
+    JSX.Element
+  ][] = Array.from(ramFieldsAdditional).map((keyFieldValue) => {
+    const [mapKey, [_field, value]] = keyFieldValue;
+
+    // screenreader accessible error/valid text elements that are consumed by the text input element creator
+    const [
+      ramFieldsAdditionalValuesInputErrorText,
+      ramFieldsAdditionalValuesInputValidText,
+    ] = AccessibleErrorValidTextElements({
+      inputElementKind: `additional field value ${mapKey + 1}`,
+      inputText: value,
+      isInputTextFocused:
+        areRamFieldsAdditionalFocused.get(mapKey)?.[1] ?? false,
+      isValidInputText: areRamFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+      regexValidationText: returnUserDefinedFieldValueValidationText({
+        content: value,
+        contentKind: `additional field value ${mapKey + 1}`,
+        maxLength: 2000,
+        minLength: 2,
+      }),
+    });
+
+    return [
+      ramFieldsAdditionalValuesInputErrorText,
+      ramFieldsAdditionalValuesInputValidText,
+    ];
+  });
+
+  // page 2 -> specifications -> ram -> ram fields user defined -> text area input element creator
+  const createdRamFieldsAdditionalTextInputElements = Array.from(
+    ramFieldsAdditional
+  ).map((keyFieldValue) => {
+    const [mapKey, [field, value]] = keyFieldValue;
+
+    const ramFieldsAdditionalKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+      {
+        description: {
+          error: ramFieldsAdditionalKeysErrorValidTextElements[mapKey][0],
+          valid: ramFieldsAdditionalKeysErrorValidTextElements[mapKey][1],
+        },
+        inputText: field,
+        isValidInputText: areRamFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+        label: `Name ${mapKey + 1}`,
+        maxLength: 75,
+        minLength: 1,
+        onBlur: () => {
+          createProductDispatch({
+            type: createProductAction.setAreRamFieldsAdditionalFocused,
+            payload: {
+              operation: 'update',
+              data: false,
+              index: mapKey,
+              kind: 'key',
+            },
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
+          createProductDispatch({
+            type: createProductAction.setRamFieldsAdditional,
+            payload: {
+              operation: 'update',
+              data: event.currentTarget.value,
+              index: mapKey,
+              kind: 'key',
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setCurrentlySelectedAdditionalFieldIndex,
+            payload: mapKey,
+          });
+        },
+        onFocus: () => {
+          createProductDispatch({
+            type: createProductAction.setAreRamFieldsAdditionalFocused,
+            payload: {
+              operation: 'update',
+              data: true,
+              index: mapKey,
+              kind: 'key',
+            },
+          });
+        },
+        placeholder: 'Enter additional field name',
+        required: true,
+        semanticName: `additional field name ${mapKey + 1}`,
+      };
+
+    const ramFieldsAdditionalValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+      {
+        description: {
+          error: ramFieldsAdditionalValuesErrorValidTextElements[mapKey][0],
+          valid: ramFieldsAdditionalValuesErrorValidTextElements[mapKey][1],
+        },
+        inputText: value,
+        isValidInputText: areRamFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+        label: `Value ${mapKey + 1}`,
+        maxLength: 2000,
+        minLength: 2,
+        onBlur: () => {
+          createProductDispatch({
+            type: createProductAction.setAreRamFieldsAdditionalFocused,
+            payload: {
+              operation: 'update',
+              data: false,
+              index: mapKey,
+              kind: 'value',
+            },
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
+          createProductDispatch({
+            type: createProductAction.setRamFieldsAdditional,
+            payload: {
+              operation: 'update',
+              data: event.currentTarget.value,
+              index: mapKey,
+              kind: 'value',
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setCurrentlySelectedAdditionalFieldIndex,
+            payload: mapKey,
+          });
+        },
+        onFocus: () => {
+          createProductDispatch({
+            type: createProductAction.setAreRamFieldsAdditionalFocused,
+            payload: {
+              operation: 'update',
+              data: true,
+              index: mapKey,
+              kind: 'value',
+            },
+          });
+        },
+        placeholder: 'Enter additional field value',
+        required: true,
+        semanticName: `additional field value ${mapKey + 1}`,
+      };
+
+    const [
+      createdRamFieldsAdditionalKeysTextAreaInput,
+      createdRamFieldsAdditionalValuesTextAreaInput,
+    ] = returnAccessibleTextAreaInputElements([
+      ramFieldsAdditionalKeysTextInputCreatorInfo,
+      ramFieldsAdditionalValuesTextInputCreatorInfo,
+    ]);
+
+    const [createdDeleteButton] = returnAccessibleButtonElements([
+      {
+        buttonLabel: 'Delete',
+        buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
+          createProductDispatch({
+            type: createProductAction.setRamFieldsAdditional,
+            payload: {
+              operation: 'remove',
+              index: mapKey,
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setAreRamFieldsAdditionalFocused,
+            payload: {
+              operation: 'remove',
+              index: mapKey,
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setAreRamFieldsAdditionalValid,
+            payload: {
+              operation: 'remove',
+              index: mapKey,
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setCurrentlySelectedAdditionalFieldIndex,
+            payload: -1,
+          });
+        },
+        leftIcon: <TbTrash />,
+        semanticDescription: `Delete additional field ${mapKey + 1}`,
+        semanticName: 'Delete field and value',
+      },
+    ]);
+
+    const displayDeleteButton = (
+      <Tooltip label={`Delete additional field ${mapKey + 1}`}>
+        <Group>{createdDeleteButton}</Group>
+      </Tooltip>
+    );
+
+    return (
+      <Stack
+        key={`ramFieldsAdditional-${mapKey}`}
+        pt={padding}
+        style={{ borderTop: borderColor }}
+        w="100%"
+      >
+        <Group position="apart">
+          <Text size="md" weight={600}>{`Additional field ${mapKey + 1}`}</Text>
+          {displayDeleteButton}
+        </Group>
+        <Group position="apart">
+          {createdRamFieldsAdditionalKeysTextAreaInput}
+          {createdRamFieldsAdditionalValuesTextAreaInput}
+        </Group>
+      </Stack>
+    );
+  });
 
   // page 2 -> specifications -> storage
 
@@ -4636,6 +6451,302 @@ function CreateProduct() {
       },
     ]);
 
+  // page 2 -> specifications -> storage -> add new field button
+  const [createdAddStorageFieldsAdditionalButton] =
+    returnAccessibleButtonElements([
+      {
+        buttonLabel: 'Add',
+        semanticDescription: 'Add new additional field',
+        semanticName: 'Add new field',
+        leftIcon: <TbPlus />,
+        buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
+          createProductDispatch({
+            type: createProductAction.setStorageFieldsAdditional,
+            payload: {
+              operation: 'add',
+              data: ['', ''],
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setAreStorageFieldsAdditionalFocused,
+            payload: {
+              operation: 'add',
+              data: [false, false],
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setAreStorageFieldsAdditionalValid,
+            payload: {
+              operation: 'add',
+              data: [false, false],
+            },
+          });
+        },
+      },
+    ]);
+
+  // page 2 -> specifications -> storage -> storage fields user defined
+
+  // page 2 -> specifications -> storage -> storage fields user defined -> accessible screen reader text elements
+
+  // page 2 -> specifications -> storage -> storage fields user defined -> accessible screen reader text elements -> field names
+
+  // returns an array of tuples containing the error and valid text elements for each field name
+  const storageFieldsAdditionalKeysErrorValidTextElements: [
+    JSX.Element,
+    JSX.Element
+  ][] = Array.from(storageFieldsAdditional).map((keyFieldValue) => {
+    const [mapKey, [field, _value]] = keyFieldValue;
+
+    // screenreader accessible error/valid text elements that are consumed by the text input element creator
+    const [
+      storageFieldsAdditionalKeysInputErrorText,
+      storageFieldsAdditionalKeysInputValidText,
+    ] = AccessibleErrorValidTextElements({
+      inputElementKind: `additional field name ${mapKey + 1}`,
+      inputText: field,
+      isInputTextFocused:
+        areStorageFieldsAdditionalFocused.get(mapKey)?.[0] ?? false,
+      isValidInputText:
+        areStorageFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+      regexValidationText: returnObjectKeyValidationText({
+        content: field,
+        contentKind: `additional field name ${mapKey + 1}`,
+        maxLength: 75,
+        minLength: 1,
+      }),
+    });
+
+    return [
+      storageFieldsAdditionalKeysInputErrorText,
+      storageFieldsAdditionalKeysInputValidText,
+    ];
+  });
+
+  // page 2 -> specifications -> storage -> storage fields user defined -> accessible screen reader text elements -> field values
+
+  // returns an array of tuples containing the error and valid text elements for each field value
+  const storageFieldsAdditionalValuesErrorValidTextElements: [
+    JSX.Element,
+    JSX.Element
+  ][] = Array.from(storageFieldsAdditional).map((keyFieldValue) => {
+    const [mapKey, [_field, value]] = keyFieldValue;
+
+    // screenreader accessible error/valid text elements that are consumed by the text input element creator
+    const [
+      storageFieldsAdditionalValuesInputErrorText,
+      storageFieldsAdditionalValuesInputValidText,
+    ] = AccessibleErrorValidTextElements({
+      inputElementKind: `additional field value ${mapKey + 1}`,
+      inputText: value,
+      isInputTextFocused:
+        areStorageFieldsAdditionalFocused.get(mapKey)?.[1] ?? false,
+      isValidInputText:
+        areStorageFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+      regexValidationText: returnUserDefinedFieldValueValidationText({
+        content: value,
+        contentKind: `additional field value ${mapKey + 1}`,
+        maxLength: 2000,
+        minLength: 2,
+      }),
+    });
+
+    return [
+      storageFieldsAdditionalValuesInputErrorText,
+      storageFieldsAdditionalValuesInputValidText,
+    ];
+  });
+
+  // page 2 -> specifications -> storage -> storage fields user defined -> text area input element creator
+  const createdStorageFieldsAdditionalTextInputElements = Array.from(
+    storageFieldsAdditional
+  ).map((keyFieldValue) => {
+    const [mapKey, [field, value]] = keyFieldValue;
+
+    const storageFieldsAdditionalKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+      {
+        description: {
+          error: storageFieldsAdditionalKeysErrorValidTextElements[mapKey][0],
+          valid: storageFieldsAdditionalKeysErrorValidTextElements[mapKey][1],
+        },
+        inputText: field,
+        isValidInputText:
+          areStorageFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+        label: `Name ${mapKey + 1}`,
+        maxLength: 75,
+        minLength: 1,
+        onBlur: () => {
+          createProductDispatch({
+            type: createProductAction.setAreStorageFieldsAdditionalFocused,
+            payload: {
+              operation: 'update',
+              data: false,
+              index: mapKey,
+              kind: 'key',
+            },
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
+          createProductDispatch({
+            type: createProductAction.setStorageFieldsAdditional,
+            payload: {
+              operation: 'update',
+              data: event.currentTarget.value,
+              index: mapKey,
+              kind: 'key',
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setCurrentlySelectedAdditionalFieldIndex,
+            payload: mapKey,
+          });
+        },
+        onFocus: () => {
+          createProductDispatch({
+            type: createProductAction.setAreStorageFieldsAdditionalFocused,
+            payload: {
+              operation: 'update',
+              data: true,
+              index: mapKey,
+              kind: 'key',
+            },
+          });
+        },
+        placeholder: 'Enter additional field name',
+        required: true,
+        semanticName: `additional field name ${mapKey + 1}`,
+      };
+
+    const storageFieldsAdditionalValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+      {
+        description: {
+          error: storageFieldsAdditionalValuesErrorValidTextElements[mapKey][0],
+          valid: storageFieldsAdditionalValuesErrorValidTextElements[mapKey][1],
+        },
+        inputText: value,
+        isValidInputText:
+          areStorageFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+        label: `Value ${mapKey + 1}`,
+        maxLength: 2000,
+        minLength: 2,
+        onBlur: () => {
+          createProductDispatch({
+            type: createProductAction.setAreStorageFieldsAdditionalFocused,
+            payload: {
+              operation: 'update',
+              data: false,
+              index: mapKey,
+              kind: 'value',
+            },
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
+          createProductDispatch({
+            type: createProductAction.setStorageFieldsAdditional,
+            payload: {
+              operation: 'update',
+              data: event.currentTarget.value,
+              index: mapKey,
+              kind: 'value',
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setCurrentlySelectedAdditionalFieldIndex,
+            payload: mapKey,
+          });
+        },
+        onFocus: () => {
+          createProductDispatch({
+            type: createProductAction.setAreStorageFieldsAdditionalFocused,
+            payload: {
+              operation: 'update',
+              data: true,
+              index: mapKey,
+              kind: 'value',
+            },
+          });
+        },
+        placeholder: 'Enter additional field value',
+        required: true,
+        semanticName: `additional field value ${mapKey + 1}`,
+      };
+
+    const [
+      createdStorageFieldsAdditionalKeysTextAreaInput,
+      createdStorageFieldsAdditionalValuesTextAreaInput,
+    ] = returnAccessibleTextAreaInputElements([
+      storageFieldsAdditionalKeysTextInputCreatorInfo,
+      storageFieldsAdditionalValuesTextInputCreatorInfo,
+    ]);
+
+    const [createdDeleteButton] = returnAccessibleButtonElements([
+      {
+        buttonLabel: 'Delete',
+        buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
+          createProductDispatch({
+            type: createProductAction.setStorageFieldsAdditional,
+            payload: {
+              operation: 'remove',
+              index: mapKey,
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setAreStorageFieldsAdditionalFocused,
+            payload: {
+              operation: 'remove',
+              index: mapKey,
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setAreStorageFieldsAdditionalValid,
+            payload: {
+              operation: 'remove',
+              index: mapKey,
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setCurrentlySelectedAdditionalFieldIndex,
+            payload: -1,
+          });
+        },
+        leftIcon: <TbTrash />,
+        semanticDescription: `Delete additional field ${mapKey + 1}`,
+        semanticName: 'Delete field and value',
+      },
+    ]);
+
+    const displayDeleteButton = (
+      <Tooltip label={`Delete additional field ${mapKey + 1}`}>
+        <Group>{createdDeleteButton}</Group>
+      </Tooltip>
+    );
+
+    return (
+      <Stack
+        key={`storageFieldsAdditional-${mapKey}`}
+        pt={padding}
+        style={{ borderTop: borderColor }}
+        w="100%"
+      >
+        <Group position="apart">
+          <Text size="md" weight={600}>{`Additional field ${mapKey + 1}`}</Text>
+          {displayDeleteButton}
+        </Group>
+        <Group position="apart">
+          {createdStorageFieldsAdditionalKeysTextAreaInput}
+          {createdStorageFieldsAdditionalValuesTextAreaInput}
+        </Group>
+      </Stack>
+    );
+  });
+
   // page 2 -> specifications -> psu
 
   // page 2 -> specifications -> psu -> psu wattage
@@ -4749,6 +6860,297 @@ function CreateProduct() {
     ]
   );
 
+  // page 2 -> specifications -> psu -> add new field button
+  const [createdAddPsuFieldsAdditionalButton] = returnAccessibleButtonElements([
+    {
+      buttonLabel: 'Add',
+      semanticDescription: 'Add new additional field',
+      semanticName: 'Add new field',
+      leftIcon: <TbPlus />,
+      buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
+        createProductDispatch({
+          type: createProductAction.setPsuFieldsAdditional,
+          payload: {
+            operation: 'add',
+            data: ['', ''],
+          },
+        });
+
+        createProductDispatch({
+          type: createProductAction.setArePsuFieldsAdditionalFocused,
+          payload: {
+            operation: 'add',
+            data: [false, false],
+          },
+        });
+
+        createProductDispatch({
+          type: createProductAction.setArePsuFieldsAdditionalValid,
+          payload: {
+            operation: 'add',
+            data: [false, false],
+          },
+        });
+      },
+    },
+  ]);
+
+  // page 2 -> specifications -> psu -> psu fields user defined
+
+  // page 2 -> specifications -> psu -> psu fields user defined -> accessible screen reader text elements
+
+  // page 2 -> specifications -> psu -> psu fields user defined -> accessible screen reader text elements -> field names
+
+  // returns an array of tuples containing the error and valid text elements for each field name
+  const psuFieldsAdditionalKeysErrorValidTextElements: [
+    JSX.Element,
+    JSX.Element
+  ][] = Array.from(psuFieldsAdditional).map((keyFieldValue) => {
+    const [mapKey, [field, _value]] = keyFieldValue;
+
+    // screenreader accessible error/valid text elements that are consumed by the text input element creator
+    const [
+      psuFieldsAdditionalKeysInputErrorText,
+      psuFieldsAdditionalKeysInputValidText,
+    ] = AccessibleErrorValidTextElements({
+      inputElementKind: `additional field name ${mapKey + 1}`,
+      inputText: field,
+      isInputTextFocused:
+        arePsuFieldsAdditionalFocused.get(mapKey)?.[0] ?? false,
+      isValidInputText: arePsuFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+      regexValidationText: returnObjectKeyValidationText({
+        content: field,
+        contentKind: `additional field name ${mapKey + 1}`,
+        maxLength: 75,
+        minLength: 1,
+      }),
+    });
+
+    return [
+      psuFieldsAdditionalKeysInputErrorText,
+      psuFieldsAdditionalKeysInputValidText,
+    ];
+  });
+
+  // page 2 -> specifications -> psu -> psu fields user defined -> accessible screen reader text elements -> field values
+
+  // returns an array of tuples containing the error and valid text elements for each field value
+  const psuFieldsAdditionalValuesErrorValidTextElements: [
+    JSX.Element,
+    JSX.Element
+  ][] = Array.from(psuFieldsAdditional).map((keyFieldValue) => {
+    const [mapKey, [_field, value]] = keyFieldValue;
+
+    // screenreader accessible error/valid text elements that are consumed by the text input element creator
+    const [
+      psuFieldsAdditionalValuesInputErrorText,
+      psuFieldsAdditionalValuesInputValidText,
+    ] = AccessibleErrorValidTextElements({
+      inputElementKind: `additional field value ${mapKey + 1}`,
+      inputText: value,
+      isInputTextFocused:
+        arePsuFieldsAdditionalFocused.get(mapKey)?.[1] ?? false,
+      isValidInputText: arePsuFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+      regexValidationText: returnUserDefinedFieldValueValidationText({
+        content: value,
+        contentKind: `additional field value ${mapKey + 1}`,
+        maxLength: 2000,
+        minLength: 2,
+      }),
+    });
+
+    return [
+      psuFieldsAdditionalValuesInputErrorText,
+      psuFieldsAdditionalValuesInputValidText,
+    ];
+  });
+
+  // page 2 -> specifications -> psu -> psu fields user defined -> text area input element creator
+  const createdPsuFieldsAdditionalTextInputElements = Array.from(
+    psuFieldsAdditional
+  ).map((keyFieldValue) => {
+    const [mapKey, [field, value]] = keyFieldValue;
+
+    const psuFieldsAdditionalKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+      {
+        description: {
+          error: psuFieldsAdditionalKeysErrorValidTextElements[mapKey][0],
+          valid: psuFieldsAdditionalKeysErrorValidTextElements[mapKey][1],
+        },
+        inputText: field,
+        isValidInputText: arePsuFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+        label: `Name ${mapKey + 1}`,
+        maxLength: 75,
+        minLength: 1,
+        onBlur: () => {
+          createProductDispatch({
+            type: createProductAction.setArePsuFieldsAdditionalFocused,
+            payload: {
+              operation: 'update',
+              data: false,
+              index: mapKey,
+              kind: 'key',
+            },
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
+          createProductDispatch({
+            type: createProductAction.setPsuFieldsAdditional,
+            payload: {
+              operation: 'update',
+              data: event.currentTarget.value,
+              index: mapKey,
+              kind: 'key',
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setCurrentlySelectedAdditionalFieldIndex,
+            payload: mapKey,
+          });
+        },
+        onFocus: () => {
+          createProductDispatch({
+            type: createProductAction.setArePsuFieldsAdditionalFocused,
+            payload: {
+              operation: 'update',
+              data: true,
+              index: mapKey,
+              kind: 'key',
+            },
+          });
+        },
+        placeholder: 'Enter additional field name',
+        required: true,
+        semanticName: `additional field name ${mapKey + 1}`,
+      };
+
+    const psuFieldsAdditionalValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+      {
+        description: {
+          error: psuFieldsAdditionalValuesErrorValidTextElements[mapKey][0],
+          valid: psuFieldsAdditionalValuesErrorValidTextElements[mapKey][1],
+        },
+        inputText: value,
+        isValidInputText: arePsuFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+        label: `Value ${mapKey + 1}`,
+        maxLength: 2000,
+        minLength: 2,
+        onBlur: () => {
+          createProductDispatch({
+            type: createProductAction.setArePsuFieldsAdditionalFocused,
+            payload: {
+              operation: 'update',
+              data: false,
+              index: mapKey,
+              kind: 'value',
+            },
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
+          createProductDispatch({
+            type: createProductAction.setPsuFieldsAdditional,
+            payload: {
+              operation: 'update',
+              data: event.currentTarget.value,
+              index: mapKey,
+              kind: 'value',
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setCurrentlySelectedAdditionalFieldIndex,
+            payload: mapKey,
+          });
+        },
+        onFocus: () => {
+          createProductDispatch({
+            type: createProductAction.setArePsuFieldsAdditionalFocused,
+            payload: {
+              operation: 'update',
+              data: true,
+              index: mapKey,
+              kind: 'value',
+            },
+          });
+        },
+        placeholder: 'Enter additional field value',
+        required: true,
+        semanticName: `additional field value ${mapKey + 1}`,
+      };
+
+    const [
+      createdPsuFieldsAdditionalKeysTextAreaInput,
+      createdPsuFieldsAdditionalValuesTextAreaInput,
+    ] = returnAccessibleTextAreaInputElements([
+      psuFieldsAdditionalKeysTextInputCreatorInfo,
+      psuFieldsAdditionalValuesTextInputCreatorInfo,
+    ]);
+
+    const [createdDeleteButton] = returnAccessibleButtonElements([
+      {
+        buttonLabel: 'Delete',
+        buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
+          createProductDispatch({
+            type: createProductAction.setPsuFieldsAdditional,
+            payload: {
+              operation: 'remove',
+              index: mapKey,
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setArePsuFieldsAdditionalFocused,
+            payload: {
+              operation: 'remove',
+              index: mapKey,
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setArePsuFieldsAdditionalValid,
+            payload: {
+              operation: 'remove',
+              index: mapKey,
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setCurrentlySelectedAdditionalFieldIndex,
+            payload: -1,
+          });
+        },
+        leftIcon: <TbTrash />,
+        semanticDescription: `Delete additional field ${mapKey + 1}`,
+        semanticName: 'Delete field and value',
+      },
+    ]);
+
+    const displayDeleteButton = (
+      <Tooltip label={`Delete additional field ${mapKey + 1}`}>
+        <Group>{createdDeleteButton}</Group>
+      </Tooltip>
+    );
+
+    return (
+      <Stack
+        key={`psuFieldsAdditional-${mapKey}`}
+        pt={padding}
+        style={{ borderTop: borderColor }}
+        w="100%"
+      >
+        <Group position="apart">
+          <Text size="md" weight={600}>{`Additional field ${mapKey + 1}`}</Text>
+          {displayDeleteButton}
+        </Group>
+        <Group position="apart">
+          {createdPsuFieldsAdditionalKeysTextAreaInput}
+          {createdPsuFieldsAdditionalValuesTextAreaInput}
+        </Group>
+      </Stack>
+    );
+  });
+
   // page 2 -> specifications -> case
 
   // page 2 -> specifications -> case -> case type
@@ -4844,6 +7246,301 @@ function CreateProduct() {
     ]
   );
 
+  // page 2 -> specifications -> case -> add new field button
+  const [createdAddCaseFieldsAdditionalButton] = returnAccessibleButtonElements(
+    [
+      {
+        buttonLabel: 'Add',
+        semanticDescription: 'Add new additional field',
+        semanticName: 'Add new field',
+        leftIcon: <TbPlus />,
+        buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
+          createProductDispatch({
+            type: createProductAction.setCaseFieldsAdditional,
+            payload: {
+              operation: 'add',
+              data: ['', ''],
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setAreCaseFieldsAdditionalFocused,
+            payload: {
+              operation: 'add',
+              data: [false, false],
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setAreCaseFieldsAdditionalValid,
+            payload: {
+              operation: 'add',
+              data: [false, false],
+            },
+          });
+        },
+      },
+    ]
+  );
+
+  // page 2 -> specifications -> case -> case fields user defined
+
+  // page 2 -> specifications -> case -> case fields user defined -> accessible screen reader text elements
+
+  // page 2 -> specifications -> case -> case fields user defined -> accessible screen reader text elements -> field names
+
+  // returns an array of tuples containing the error and valid text elements for each field name
+  const caseFieldsAdditionalKeysErrorValidTextElements: [
+    JSX.Element,
+    JSX.Element
+  ][] = Array.from(caseFieldsAdditional).map((keyFieldValue) => {
+    const [mapKey, [field, _value]] = keyFieldValue;
+
+    // screenreader accessible error/valid text elements that are consumed by the text input element creator
+    const [
+      caseFieldsAdditionalKeysInputErrorText,
+      caseFieldsAdditionalKeysInputValidText,
+    ] = AccessibleErrorValidTextElements({
+      inputElementKind: `additional field name ${mapKey + 1}`,
+      inputText: field,
+      isInputTextFocused:
+        areCaseFieldsAdditionalFocused.get(mapKey)?.[0] ?? false,
+      isValidInputText: areCaseFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+      regexValidationText: returnObjectKeyValidationText({
+        content: field,
+        contentKind: `additional field name ${mapKey + 1}`,
+        maxLength: 75,
+        minLength: 1,
+      }),
+    });
+
+    return [
+      caseFieldsAdditionalKeysInputErrorText,
+      caseFieldsAdditionalKeysInputValidText,
+    ];
+  });
+
+  // page 2 -> specifications -> case -> case fields user defined -> accessible screen reader text elements -> field values
+
+  // returns an array of tuples containing the error and valid text elements for each field value
+  const caseFieldsAdditionalValuesErrorValidTextElements: [
+    JSX.Element,
+    JSX.Element
+  ][] = Array.from(caseFieldsAdditional).map((keyFieldValue) => {
+    const [mapKey, [_field, value]] = keyFieldValue;
+
+    // screenreader accessible error/valid text elements that are consumed by the text input element creator
+    const [
+      caseFieldsAdditionalValuesInputErrorText,
+      caseFieldsAdditionalValuesInputValidText,
+    ] = AccessibleErrorValidTextElements({
+      inputElementKind: `additional field value ${mapKey + 1}`,
+      inputText: value,
+      isInputTextFocused:
+        areCaseFieldsAdditionalFocused.get(mapKey)?.[1] ?? false,
+      isValidInputText: areCaseFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+      regexValidationText: returnUserDefinedFieldValueValidationText({
+        content: value,
+        contentKind: `additional field value ${mapKey + 1}`,
+        maxLength: 2000,
+        minLength: 2,
+      }),
+    });
+
+    return [
+      caseFieldsAdditionalValuesInputErrorText,
+      caseFieldsAdditionalValuesInputValidText,
+    ];
+  });
+
+  // page 2 -> specifications -> case -> case fields user defined -> text area input element creator
+  const createdCaseFieldsAdditionalTextInputElements = Array.from(
+    caseFieldsAdditional
+  ).map((keyFieldValue) => {
+    const [mapKey, [field, value]] = keyFieldValue;
+
+    const caseFieldsAdditionalKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+      {
+        description: {
+          error: caseFieldsAdditionalKeysErrorValidTextElements[mapKey][0],
+          valid: caseFieldsAdditionalKeysErrorValidTextElements[mapKey][1],
+        },
+        inputText: field,
+        isValidInputText:
+          areCaseFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+        label: `Name ${mapKey + 1}`,
+        maxLength: 75,
+        minLength: 1,
+        onBlur: () => {
+          createProductDispatch({
+            type: createProductAction.setAreCaseFieldsAdditionalFocused,
+            payload: {
+              operation: 'update',
+              data: false,
+              index: mapKey,
+              kind: 'key',
+            },
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
+          createProductDispatch({
+            type: createProductAction.setCaseFieldsAdditional,
+            payload: {
+              operation: 'update',
+              data: event.currentTarget.value,
+              index: mapKey,
+              kind: 'key',
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setCurrentlySelectedAdditionalFieldIndex,
+            payload: mapKey,
+          });
+        },
+        onFocus: () => {
+          createProductDispatch({
+            type: createProductAction.setAreCaseFieldsAdditionalFocused,
+            payload: {
+              operation: 'update',
+              data: true,
+              index: mapKey,
+              kind: 'key',
+            },
+          });
+        },
+        placeholder: 'Enter additional field name',
+        required: true,
+        semanticName: `additional field name ${mapKey + 1}`,
+      };
+
+    const caseFieldsAdditionalValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+      {
+        description: {
+          error: caseFieldsAdditionalValuesErrorValidTextElements[mapKey][0],
+          valid: caseFieldsAdditionalValuesErrorValidTextElements[mapKey][1],
+        },
+        inputText: value,
+        isValidInputText:
+          areCaseFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+        label: `Value ${mapKey + 1}`,
+        maxLength: 2000,
+        minLength: 2,
+        onBlur: () => {
+          createProductDispatch({
+            type: createProductAction.setAreCaseFieldsAdditionalFocused,
+            payload: {
+              operation: 'update',
+              data: false,
+              index: mapKey,
+              kind: 'value',
+            },
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
+          createProductDispatch({
+            type: createProductAction.setCaseFieldsAdditional,
+            payload: {
+              operation: 'update',
+              data: event.currentTarget.value,
+              index: mapKey,
+              kind: 'value',
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setCurrentlySelectedAdditionalFieldIndex,
+            payload: mapKey,
+          });
+        },
+        onFocus: () => {
+          createProductDispatch({
+            type: createProductAction.setAreCaseFieldsAdditionalFocused,
+            payload: {
+              operation: 'update',
+              data: true,
+              index: mapKey,
+              kind: 'value',
+            },
+          });
+        },
+        placeholder: 'Enter additional field value',
+        required: true,
+        semanticName: `additional field value ${mapKey + 1}`,
+      };
+
+    const [
+      createdCaseFieldsAdditionalKeysTextAreaInput,
+      createdCaseFieldsAdditionalValuesTextAreaInput,
+    ] = returnAccessibleTextAreaInputElements([
+      caseFieldsAdditionalKeysTextInputCreatorInfo,
+      caseFieldsAdditionalValuesTextInputCreatorInfo,
+    ]);
+
+    const [createdDeleteButton] = returnAccessibleButtonElements([
+      {
+        buttonLabel: 'Delete',
+        buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
+          createProductDispatch({
+            type: createProductAction.setCaseFieldsAdditional,
+            payload: {
+              operation: 'remove',
+              index: mapKey,
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setAreCaseFieldsAdditionalFocused,
+            payload: {
+              operation: 'remove',
+              index: mapKey,
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setAreCaseFieldsAdditionalValid,
+            payload: {
+              operation: 'remove',
+              index: mapKey,
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setCurrentlySelectedAdditionalFieldIndex,
+            payload: -1,
+          });
+        },
+        leftIcon: <TbTrash />,
+        semanticDescription: `Delete additional field ${mapKey + 1}`,
+        semanticName: 'Delete field and value',
+      },
+    ]);
+
+    const displayDeleteButton = (
+      <Tooltip label={`Delete additional field ${mapKey + 1}`}>
+        <Group>{createdDeleteButton}</Group>
+      </Tooltip>
+    );
+
+    return (
+      <Stack
+        key={`caseFieldsAdditional-${mapKey}`}
+        pt={padding}
+        style={{ borderTop: borderColor }}
+        w="100%"
+      >
+        <Group position="apart">
+          <Text size="md" weight={600}>{`Additional field ${mapKey + 1}`}</Text>
+          {displayDeleteButton}
+        </Group>
+        <Group position="apart">
+          {createdCaseFieldsAdditionalKeysTextAreaInput}
+          {createdCaseFieldsAdditionalValuesTextAreaInput}
+        </Group>
+      </Stack>
+    );
+  });
+
   // page 2 -> specifications -> display
 
   // page 2 -> specifications -> display -> display size
@@ -4855,7 +7552,7 @@ function CreateProduct() {
       inputText: displaySize,
       isInputTextFocused: isDisplaySizeFocused,
       isValidInputText: isDisplaySizeValid,
-      regexValidationText: returnProductDimensionsValidationText({
+      regexValidationText: returnDimensionsValidationText({
         content: displaySize,
         contentKind: 'display size',
       }),
@@ -5080,7 +7777,7 @@ function CreateProduct() {
       inputText: displayResponseTime,
       isInputTextFocused: isDisplayResponseTimeFocused,
       isValidInputText: isDisplayResponseTimeValid,
-      regexValidationText: returnProductDimensionsValidationText({
+      regexValidationText: returnDimensionsValidationText({
         content: displayResponseTime,
         contentKind: 'display response time',
       }),
@@ -5175,6 +7872,302 @@ function CreateProduct() {
       },
     ]);
 
+  // page 2 -> specifications -> display -> add new field button
+  const [createdAddDisplayFieldsAdditionalButton] =
+    returnAccessibleButtonElements([
+      {
+        buttonLabel: 'Add',
+        semanticDescription: 'Add new additional field',
+        semanticName: 'Add new field',
+        leftIcon: <TbPlus />,
+        buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
+          createProductDispatch({
+            type: createProductAction.setDisplayFieldsAdditional,
+            payload: {
+              operation: 'add',
+              data: ['', ''],
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setAreDisplayFieldsAdditionalFocused,
+            payload: {
+              operation: 'add',
+              data: [false, false],
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setAreDisplayFieldsAdditionalValid,
+            payload: {
+              operation: 'add',
+              data: [false, false],
+            },
+          });
+        },
+      },
+    ]);
+
+  // page 2 -> specifications -> display -> display fields user defined
+
+  // page 2 -> specifications -> display -> display fields user defined -> accessible screen reader text elements
+
+  // page 2 -> specifications -> display -> display fields user defined -> accessible screen reader text elements -> field names
+
+  // returns an array of tuples containing the error and valid text elements for each field name
+  const displayFieldsAdditionalKeysErrorValidTextElements: [
+    JSX.Element,
+    JSX.Element
+  ][] = Array.from(displayFieldsAdditional).map((keyFieldValue) => {
+    const [mapKey, [field, _value]] = keyFieldValue;
+
+    // screenreader accessible error/valid text elements that are consumed by the text input element creator
+    const [
+      displayFieldsAdditionalKeysInputErrorText,
+      displayFieldsAdditionalKeysInputValidText,
+    ] = AccessibleErrorValidTextElements({
+      inputElementKind: `additional field name ${mapKey + 1}`,
+      inputText: field,
+      isInputTextFocused:
+        areDisplayFieldsAdditionalFocused.get(mapKey)?.[0] ?? false,
+      isValidInputText:
+        areDisplayFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+      regexValidationText: returnObjectKeyValidationText({
+        content: field,
+        contentKind: `additional field name ${mapKey + 1}`,
+        maxLength: 75,
+        minLength: 1,
+      }),
+    });
+
+    return [
+      displayFieldsAdditionalKeysInputErrorText,
+      displayFieldsAdditionalKeysInputValidText,
+    ];
+  });
+
+  // page 2 -> specifications -> display -> display fields user defined -> accessible screen reader text elements -> field values
+
+  // returns an array of tuples containing the error and valid text elements for each field value
+  const displayFieldsAdditionalValuesErrorValidTextElements: [
+    JSX.Element,
+    JSX.Element
+  ][] = Array.from(displayFieldsAdditional).map((keyFieldValue) => {
+    const [mapKey, [_field, value]] = keyFieldValue;
+
+    // screenreader accessible error/valid text elements that are consumed by the text input element creator
+    const [
+      displayFieldsAdditionalValuesInputErrorText,
+      displayFieldsAdditionalValuesInputValidText,
+    ] = AccessibleErrorValidTextElements({
+      inputElementKind: `additional field value ${mapKey + 1}`,
+      inputText: value,
+      isInputTextFocused:
+        areDisplayFieldsAdditionalFocused.get(mapKey)?.[1] ?? false,
+      isValidInputText:
+        areDisplayFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+      regexValidationText: returnUserDefinedFieldValueValidationText({
+        content: value,
+        contentKind: `additional field value ${mapKey + 1}`,
+        maxLength: 2000,
+        minLength: 2,
+      }),
+    });
+
+    return [
+      displayFieldsAdditionalValuesInputErrorText,
+      displayFieldsAdditionalValuesInputValidText,
+    ];
+  });
+
+  // page 2 -> specifications -> display -> display fields user defined -> text area input element creator
+  const createdDisplayFieldsAdditionalTextInputElements = Array.from(
+    displayFieldsAdditional
+  ).map((keyFieldValue) => {
+    const [mapKey, [field, value]] = keyFieldValue;
+
+    const displayFieldsAdditionalKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+      {
+        description: {
+          error: displayFieldsAdditionalKeysErrorValidTextElements[mapKey][0],
+          valid: displayFieldsAdditionalKeysErrorValidTextElements[mapKey][1],
+        },
+        inputText: field,
+        isValidInputText:
+          areDisplayFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+        label: `Name ${mapKey + 1}`,
+        maxLength: 75,
+        minLength: 1,
+        onBlur: () => {
+          createProductDispatch({
+            type: createProductAction.setAreDisplayFieldsAdditionalFocused,
+            payload: {
+              operation: 'update',
+              data: false,
+              index: mapKey,
+              kind: 'key',
+            },
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
+          createProductDispatch({
+            type: createProductAction.setDisplayFieldsAdditional,
+            payload: {
+              operation: 'update',
+              data: event.currentTarget.value,
+              index: mapKey,
+              kind: 'key',
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setCurrentlySelectedAdditionalFieldIndex,
+            payload: mapKey,
+          });
+        },
+        onFocus: () => {
+          createProductDispatch({
+            type: createProductAction.setAreDisplayFieldsAdditionalFocused,
+            payload: {
+              operation: 'update',
+              data: true,
+              index: mapKey,
+              kind: 'key',
+            },
+          });
+        },
+        placeholder: 'Enter additional field name',
+        required: true,
+        semanticName: `additional field name ${mapKey + 1}`,
+      };
+
+    const displayFieldsAdditionalValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+      {
+        description: {
+          error: displayFieldsAdditionalValuesErrorValidTextElements[mapKey][0],
+          valid: displayFieldsAdditionalValuesErrorValidTextElements[mapKey][1],
+        },
+        inputText: value,
+        isValidInputText:
+          areDisplayFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+        label: `Value ${mapKey + 1}`,
+        maxLength: 2000,
+        minLength: 2,
+        onBlur: () => {
+          createProductDispatch({
+            type: createProductAction.setAreDisplayFieldsAdditionalFocused,
+            payload: {
+              operation: 'update',
+              data: false,
+              index: mapKey,
+              kind: 'value',
+            },
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
+          createProductDispatch({
+            type: createProductAction.setDisplayFieldsAdditional,
+            payload: {
+              operation: 'update',
+              data: event.currentTarget.value,
+              index: mapKey,
+              kind: 'value',
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setCurrentlySelectedAdditionalFieldIndex,
+            payload: mapKey,
+          });
+        },
+        onFocus: () => {
+          createProductDispatch({
+            type: createProductAction.setAreDisplayFieldsAdditionalFocused,
+            payload: {
+              operation: 'update',
+              data: true,
+              index: mapKey,
+              kind: 'value',
+            },
+          });
+        },
+        placeholder: 'Enter additional field value',
+        required: true,
+        semanticName: `additional field value ${mapKey + 1}`,
+      };
+
+    const [
+      createdDisplayFieldsAdditionalKeysTextAreaInput,
+      createdDisplayFieldsAdditionalValuesTextAreaInput,
+    ] = returnAccessibleTextAreaInputElements([
+      displayFieldsAdditionalKeysTextInputCreatorInfo,
+      displayFieldsAdditionalValuesTextInputCreatorInfo,
+    ]);
+
+    const [createdDeleteButton] = returnAccessibleButtonElements([
+      {
+        buttonLabel: 'Delete',
+        buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
+          createProductDispatch({
+            type: createProductAction.setDisplayFieldsAdditional,
+            payload: {
+              operation: 'remove',
+              index: mapKey,
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setAreDisplayFieldsAdditionalFocused,
+            payload: {
+              operation: 'remove',
+              index: mapKey,
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setAreDisplayFieldsAdditionalValid,
+            payload: {
+              operation: 'remove',
+              index: mapKey,
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setCurrentlySelectedAdditionalFieldIndex,
+            payload: -1,
+          });
+        },
+        leftIcon: <TbTrash />,
+        semanticDescription: `Delete additional field ${mapKey + 1}`,
+        semanticName: 'Delete field and value',
+      },
+    ]);
+
+    const displayDeleteButton = (
+      <Tooltip label={`Delete additional field ${mapKey + 1}`}>
+        <Group>{createdDeleteButton}</Group>
+      </Tooltip>
+    );
+
+    return (
+      <Stack
+        key={`displayFieldsAdditional-${mapKey}`}
+        pt={padding}
+        style={{ borderTop: borderColor }}
+        w="100%"
+      >
+        <Group position="apart">
+          <Text size="md" weight={600}>{`Additional field ${mapKey + 1}`}</Text>
+          {displayDeleteButton}
+        </Group>
+        <Group position="apart">
+          {createdDisplayFieldsAdditionalKeysTextAreaInput}
+          {createdDisplayFieldsAdditionalValuesTextAreaInput}
+        </Group>
+      </Stack>
+    );
+  });
+
   // page 2 -> specifications -> keyboard
 
   // page 2 -> specifications -> keyboard -> keyboard switch
@@ -5256,6 +8249,304 @@ function CreateProduct() {
         required: true,
       },
     ]);
+
+  // page 2 -> specifications -> keyboard -> add new field button
+  const [createdAddKeyboardFieldsAdditionalButton] =
+    returnAccessibleButtonElements([
+      {
+        buttonLabel: 'Add',
+        semanticDescription: 'Add new additional field',
+        semanticName: 'Add new field',
+        leftIcon: <TbPlus />,
+        buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
+          createProductDispatch({
+            type: createProductAction.setKeyboardFieldsAdditional,
+            payload: {
+              operation: 'add',
+              data: ['', ''],
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setAreKeyboardFieldsAdditionalFocused,
+            payload: {
+              operation: 'add',
+              data: [false, false],
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setAreKeyboardFieldsAdditionalValid,
+            payload: {
+              operation: 'add',
+              data: [false, false],
+            },
+          });
+        },
+      },
+    ]);
+
+  // page 2 -> specifications -> keyboard -> keyboard fields user defined
+
+  // page 2 -> specifications -> keyboard -> keyboard fields user defined -> accessible screen reader text elements
+
+  // page 2 -> specifications -> keyboard -> keyboard fields user defined -> accessible screen reader text elements -> field names
+
+  // returns an array of tuples containing the error and valid text elements for each field name
+  const keyboardFieldsAdditionalKeysErrorValidTextElements: [
+    JSX.Element,
+    JSX.Element
+  ][] = Array.from(keyboardFieldsAdditional).map((keyFieldValue) => {
+    const [mapKey, [field, _value]] = keyFieldValue;
+
+    // screenreader accessible error/valid text elements that are consumed by the text input element creator
+    const [
+      keyboardFieldsAdditionalKeysInputErrorText,
+      keyboardFieldsAdditionalKeysInputValidText,
+    ] = AccessibleErrorValidTextElements({
+      inputElementKind: `additional field name ${mapKey + 1}`,
+      inputText: field,
+      isInputTextFocused:
+        areKeyboardFieldsAdditionalFocused.get(mapKey)?.[0] ?? false,
+      isValidInputText:
+        areKeyboardFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+      regexValidationText: returnObjectKeyValidationText({
+        content: field,
+        contentKind: `additional field name ${mapKey + 1}`,
+        maxLength: 75,
+        minLength: 1,
+      }),
+    });
+
+    return [
+      keyboardFieldsAdditionalKeysInputErrorText,
+      keyboardFieldsAdditionalKeysInputValidText,
+    ];
+  });
+
+  // page 2 -> specifications -> keyboard -> keyboard fields user defined -> accessible screen reader text elements -> field values
+
+  // returns an array of tuples containing the error and valid text elements for each field value
+  const keyboardFieldsAdditionalValuesErrorValidTextElements: [
+    JSX.Element,
+    JSX.Element
+  ][] = Array.from(keyboardFieldsAdditional).map((keyFieldValue) => {
+    const [mapKey, [_field, value]] = keyFieldValue;
+
+    // screenreader accessible error/valid text elements that are consumed by the text input element creator
+    const [
+      keyboardFieldsAdditionalValuesInputErrorText,
+      keyboardFieldsAdditionalValuesInputValidText,
+    ] = AccessibleErrorValidTextElements({
+      inputElementKind: `additional field value ${mapKey + 1}`,
+      inputText: value,
+      isInputTextFocused:
+        areKeyboardFieldsAdditionalFocused.get(mapKey)?.[1] ?? false,
+      isValidInputText:
+        areKeyboardFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+      regexValidationText: returnUserDefinedFieldValueValidationText({
+        content: value,
+        contentKind: `additional field value ${mapKey + 1}`,
+        maxLength: 2000,
+        minLength: 2,
+      }),
+    });
+
+    return [
+      keyboardFieldsAdditionalValuesInputErrorText,
+      keyboardFieldsAdditionalValuesInputValidText,
+    ];
+  });
+
+  // page 2 -> specifications -> keyboard -> keyboard fields user defined -> text area input element creator
+  const createdKeyboardFieldsAdditionalTextInputElements = Array.from(
+    keyboardFieldsAdditional
+  ).map((keyFieldValue) => {
+    const [mapKey, [field, value]] = keyFieldValue;
+
+    const keyboardFieldsAdditionalKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+      {
+        description: {
+          error: keyboardFieldsAdditionalKeysErrorValidTextElements[mapKey][0],
+          valid: keyboardFieldsAdditionalKeysErrorValidTextElements[mapKey][1],
+        },
+        inputText: field,
+        isValidInputText:
+          areKeyboardFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+        label: `Name ${mapKey + 1}`,
+        maxLength: 75,
+        minLength: 1,
+        onBlur: () => {
+          createProductDispatch({
+            type: createProductAction.setAreKeyboardFieldsAdditionalFocused,
+            payload: {
+              operation: 'update',
+              data: false,
+              index: mapKey,
+              kind: 'key',
+            },
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
+          createProductDispatch({
+            type: createProductAction.setKeyboardFieldsAdditional,
+            payload: {
+              operation: 'update',
+              data: event.currentTarget.value,
+              index: mapKey,
+              kind: 'key',
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setCurrentlySelectedAdditionalFieldIndex,
+            payload: mapKey,
+          });
+        },
+        onFocus: () => {
+          createProductDispatch({
+            type: createProductAction.setAreKeyboardFieldsAdditionalFocused,
+            payload: {
+              operation: 'update',
+              data: true,
+              index: mapKey,
+              kind: 'key',
+            },
+          });
+        },
+        placeholder: 'Enter additional field name',
+        required: true,
+        semanticName: `additional field name ${mapKey + 1}`,
+      };
+
+    const keyboardFieldsAdditionalValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+      {
+        description: {
+          error:
+            keyboardFieldsAdditionalValuesErrorValidTextElements[mapKey][0],
+          valid:
+            keyboardFieldsAdditionalValuesErrorValidTextElements[mapKey][1],
+        },
+        inputText: value,
+        isValidInputText:
+          areKeyboardFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+        label: `Value ${mapKey + 1}`,
+        maxLength: 2000,
+        minLength: 2,
+        onBlur: () => {
+          createProductDispatch({
+            type: createProductAction.setAreKeyboardFieldsAdditionalFocused,
+            payload: {
+              operation: 'update',
+              data: false,
+              index: mapKey,
+              kind: 'value',
+            },
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
+          createProductDispatch({
+            type: createProductAction.setKeyboardFieldsAdditional,
+            payload: {
+              operation: 'update',
+              data: event.currentTarget.value,
+              index: mapKey,
+              kind: 'value',
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setCurrentlySelectedAdditionalFieldIndex,
+            payload: mapKey,
+          });
+        },
+        onFocus: () => {
+          createProductDispatch({
+            type: createProductAction.setAreKeyboardFieldsAdditionalFocused,
+            payload: {
+              operation: 'update',
+              data: true,
+              index: mapKey,
+              kind: 'value',
+            },
+          });
+        },
+        placeholder: 'Enter additional field value',
+        required: true,
+        semanticName: `additional field value ${mapKey + 1}`,
+      };
+
+    const [
+      createdKeyboardFieldsAdditionalKeysTextAreaInput,
+      createdKeyboardFieldsAdditionalValuesTextAreaInput,
+    ] = returnAccessibleTextAreaInputElements([
+      keyboardFieldsAdditionalKeysTextInputCreatorInfo,
+      keyboardFieldsAdditionalValuesTextInputCreatorInfo,
+    ]);
+
+    const [createdDeleteButton] = returnAccessibleButtonElements([
+      {
+        buttonLabel: 'Delete',
+        buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
+          createProductDispatch({
+            type: createProductAction.setKeyboardFieldsAdditional,
+            payload: {
+              operation: 'remove',
+              index: mapKey,
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setAreKeyboardFieldsAdditionalFocused,
+            payload: {
+              operation: 'remove',
+              index: mapKey,
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setAreKeyboardFieldsAdditionalValid,
+            payload: {
+              operation: 'remove',
+              index: mapKey,
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setCurrentlySelectedAdditionalFieldIndex,
+            payload: -1,
+          });
+        },
+        leftIcon: <TbTrash />,
+        semanticDescription: `Delete additional field ${mapKey + 1}`,
+        semanticName: 'Delete field and value',
+      },
+    ]);
+
+    const displayDeleteButton = (
+      <Tooltip label={`Delete additional field ${mapKey + 1}`}>
+        <Group>{createdDeleteButton}</Group>
+      </Tooltip>
+    );
+
+    return (
+      <Stack
+        key={`keyboardFieldsAdditional-${mapKey}`}
+        pt={padding}
+        style={{ borderTop: borderColor }}
+        w="100%"
+      >
+        <Group position="apart">
+          <Text size="md" weight={600}>{`Additional field ${mapKey + 1}`}</Text>
+          {displayDeleteButton}
+        </Group>
+        <Group position="apart">
+          {createdKeyboardFieldsAdditionalKeysTextAreaInput}
+          {createdKeyboardFieldsAdditionalValuesTextAreaInput}
+        </Group>
+      </Stack>
+    );
+  });
 
   // page 2 -> specifications -> mouse
 
@@ -5448,6 +8739,300 @@ function CreateProduct() {
         required: true,
       },
     ]);
+
+  // page 2 -> specifications -> mouse -> add new field button
+  const [createdAddMouseFieldsAdditionalButton] =
+    returnAccessibleButtonElements([
+      {
+        buttonLabel: 'Add',
+        semanticDescription: 'Add new additional field',
+        semanticName: 'Add new field',
+        leftIcon: <TbPlus />,
+        buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
+          createProductDispatch({
+            type: createProductAction.setMouseFieldsAdditional,
+            payload: {
+              operation: 'add',
+              data: ['', ''],
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setAreMouseFieldsAdditionalFocused,
+            payload: {
+              operation: 'add',
+              data: [false, false],
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setAreMouseFieldsAdditionalValid,
+            payload: {
+              operation: 'add',
+              data: [false, false],
+            },
+          });
+        },
+      },
+    ]);
+
+  // page 2 -> specifications -> mouse -> mouse fields user defined
+
+  // page 2 -> specifications -> mouse -> mouse fields user defined -> accessible screen reader text elements
+
+  // page 2 -> specifications -> mouse -> mouse fields user defined -> accessible screen reader text elements -> field names
+
+  // returns an array of tuples containing the error and valid text elements for each field name
+  const mouseFieldsAdditionalKeysErrorValidTextElements: [
+    JSX.Element,
+    JSX.Element
+  ][] = Array.from(mouseFieldsAdditional).map((keyFieldValue) => {
+    const [mapKey, [field, _value]] = keyFieldValue;
+
+    // screenreader accessible error/valid text elements that are consumed by the text input element creator
+    const [
+      mouseFieldsAdditionalKeysInputErrorText,
+      mouseFieldsAdditionalKeysInputValidText,
+    ] = AccessibleErrorValidTextElements({
+      inputElementKind: `additional field name ${mapKey + 1}`,
+      inputText: field,
+      isInputTextFocused:
+        areMouseFieldsAdditionalFocused.get(mapKey)?.[0] ?? false,
+      isValidInputText: areMouseFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+      regexValidationText: returnObjectKeyValidationText({
+        content: field,
+        contentKind: `additional field name ${mapKey + 1}`,
+        maxLength: 75,
+        minLength: 1,
+      }),
+    });
+
+    return [
+      mouseFieldsAdditionalKeysInputErrorText,
+      mouseFieldsAdditionalKeysInputValidText,
+    ];
+  });
+
+  // page 2 -> specifications -> mouse -> mouse fields user defined -> accessible screen reader text elements -> field values
+
+  // returns an array of tuples containing the error and valid text elements for each field value
+  const mouseFieldsAdditionalValuesErrorValidTextElements: [
+    JSX.Element,
+    JSX.Element
+  ][] = Array.from(mouseFieldsAdditional).map((keyFieldValue) => {
+    const [mapKey, [_field, value]] = keyFieldValue;
+
+    // screenreader accessible error/valid text elements that are consumed by the text input element creator
+    const [
+      mouseFieldsAdditionalValuesInputErrorText,
+      mouseFieldsAdditionalValuesInputValidText,
+    ] = AccessibleErrorValidTextElements({
+      inputElementKind: `additional field value ${mapKey + 1}`,
+      inputText: value,
+      isInputTextFocused:
+        areMouseFieldsAdditionalFocused.get(mapKey)?.[1] ?? false,
+      isValidInputText: areMouseFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+      regexValidationText: returnUserDefinedFieldValueValidationText({
+        content: value,
+        contentKind: `additional field value ${mapKey + 1}`,
+        maxLength: 2000,
+        minLength: 2,
+      }),
+    });
+
+    return [
+      mouseFieldsAdditionalValuesInputErrorText,
+      mouseFieldsAdditionalValuesInputValidText,
+    ];
+  });
+
+  // page 2 -> specifications -> mouse -> mouse fields user defined -> text area input element creator
+  const createdMouseFieldsAdditionalTextInputElements = Array.from(
+    mouseFieldsAdditional
+  ).map((keyFieldValue) => {
+    const [mapKey, [field, value]] = keyFieldValue;
+
+    const mouseFieldsAdditionalKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+      {
+        description: {
+          error: mouseFieldsAdditionalKeysErrorValidTextElements[mapKey][0],
+          valid: mouseFieldsAdditionalKeysErrorValidTextElements[mapKey][1],
+        },
+        inputText: field,
+        isValidInputText:
+          areMouseFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+        label: `Name ${mapKey + 1}`,
+        maxLength: 75,
+        minLength: 1,
+        onBlur: () => {
+          createProductDispatch({
+            type: createProductAction.setAreMouseFieldsAdditionalFocused,
+            payload: {
+              operation: 'update',
+              data: false,
+              index: mapKey,
+              kind: 'key',
+            },
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
+          createProductDispatch({
+            type: createProductAction.setMouseFieldsAdditional,
+            payload: {
+              operation: 'update',
+              data: event.currentTarget.value,
+              index: mapKey,
+              kind: 'key',
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setCurrentlySelectedAdditionalFieldIndex,
+            payload: mapKey,
+          });
+        },
+        onFocus: () => {
+          createProductDispatch({
+            type: createProductAction.setAreMouseFieldsAdditionalFocused,
+            payload: {
+              operation: 'update',
+              data: true,
+              index: mapKey,
+              kind: 'key',
+            },
+          });
+        },
+        placeholder: 'Enter additional field name',
+        required: true,
+        semanticName: `additional field name ${mapKey + 1}`,
+      };
+
+    const mouseFieldsAdditionalValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+      {
+        description: {
+          error: mouseFieldsAdditionalValuesErrorValidTextElements[mapKey][0],
+          valid: mouseFieldsAdditionalValuesErrorValidTextElements[mapKey][1],
+        },
+        inputText: value,
+        isValidInputText:
+          areMouseFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+        label: `Value ${mapKey + 1}`,
+        maxLength: 2000,
+        minLength: 2,
+        onBlur: () => {
+          createProductDispatch({
+            type: createProductAction.setAreMouseFieldsAdditionalFocused,
+            payload: {
+              operation: 'update',
+              data: false,
+              index: mapKey,
+              kind: 'value',
+            },
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
+          createProductDispatch({
+            type: createProductAction.setMouseFieldsAdditional,
+            payload: {
+              operation: 'update',
+              data: event.currentTarget.value,
+              index: mapKey,
+              kind: 'value',
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setCurrentlySelectedAdditionalFieldIndex,
+            payload: mapKey,
+          });
+        },
+        onFocus: () => {
+          createProductDispatch({
+            type: createProductAction.setAreMouseFieldsAdditionalFocused,
+            payload: {
+              operation: 'update',
+              data: true,
+              index: mapKey,
+              kind: 'value',
+            },
+          });
+        },
+        placeholder: 'Enter additional field value',
+        required: true,
+        semanticName: `additional field value ${mapKey + 1}`,
+      };
+
+    const [
+      createdMouseFieldsAdditionalKeysTextAreaInput,
+      createdMouseFieldsAdditionalValuesTextAreaInput,
+    ] = returnAccessibleTextAreaInputElements([
+      mouseFieldsAdditionalKeysTextInputCreatorInfo,
+      mouseFieldsAdditionalValuesTextInputCreatorInfo,
+    ]);
+
+    const [createdDeleteButton] = returnAccessibleButtonElements([
+      {
+        buttonLabel: 'Delete',
+        buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
+          createProductDispatch({
+            type: createProductAction.setMouseFieldsAdditional,
+            payload: {
+              operation: 'remove',
+              index: mapKey,
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setAreMouseFieldsAdditionalFocused,
+            payload: {
+              operation: 'remove',
+              index: mapKey,
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setAreMouseFieldsAdditionalValid,
+            payload: {
+              operation: 'remove',
+              index: mapKey,
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setCurrentlySelectedAdditionalFieldIndex,
+            payload: -1,
+          });
+        },
+        leftIcon: <TbTrash />,
+        semanticDescription: `Delete additional field ${mapKey + 1}`,
+        semanticName: 'Delete field and value',
+      },
+    ]);
+
+    const displayDeleteButton = (
+      <Tooltip label={`Delete additional field ${mapKey + 1}`}>
+        <Group>{createdDeleteButton}</Group>
+      </Tooltip>
+    );
+
+    return (
+      <Stack
+        key={`mouseFieldsAdditional-${mapKey}`}
+        pt={padding}
+        style={{ borderTop: borderColor }}
+        w="100%"
+      >
+        <Group position="apart">
+          <Text size="md" weight={600}>{`Additional field ${mapKey + 1}`}</Text>
+          {displayDeleteButton}
+        </Group>
+        <Group position="apart">
+          {createdMouseFieldsAdditionalKeysTextAreaInput}
+          {createdMouseFieldsAdditionalValuesTextAreaInput}
+        </Group>
+      </Stack>
+    );
+  });
 
   // page 2 -> specifications -> headphone
 
@@ -5700,6 +9285,304 @@ function CreateProduct() {
       },
     ]);
 
+  // page 2 -> specifications -> headphone -> add new field button
+  const [createdAddHeadphoneFieldsAdditionalButton] =
+    returnAccessibleButtonElements([
+      {
+        buttonLabel: 'Add',
+        semanticDescription: 'Add new additional field',
+        semanticName: 'Add new field',
+        leftIcon: <TbPlus />,
+        buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
+          createProductDispatch({
+            type: createProductAction.setHeadphoneFieldsAdditional,
+            payload: {
+              operation: 'add',
+              data: ['', ''],
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setAreHeadphoneFieldsAdditionalFocused,
+            payload: {
+              operation: 'add',
+              data: [false, false],
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setAreHeadphoneFieldsAdditionalValid,
+            payload: {
+              operation: 'add',
+              data: [false, false],
+            },
+          });
+        },
+      },
+    ]);
+
+  // page 2 -> specifications -> headphone -> headphone fields user defined
+
+  // page 2 -> specifications -> headphone -> headphone fields user defined -> accessible screen reader text elements
+
+  // page 2 -> specifications -> headphone -> headphone fields user defined -> accessible screen reader text elements -> field names
+
+  // returns an array of tuples containing the error and valid text elements for each field name
+  const headphoneFieldsAdditionalKeysErrorValidTextElements: [
+    JSX.Element,
+    JSX.Element
+  ][] = Array.from(headphoneFieldsAdditional).map((keyFieldValue) => {
+    const [mapKey, [field, _value]] = keyFieldValue;
+
+    // screenreader accessible error/valid text elements that are consumed by the text input element creator
+    const [
+      headphoneFieldsAdditionalKeysInputErrorText,
+      headphoneFieldsAdditionalKeysInputValidText,
+    ] = AccessibleErrorValidTextElements({
+      inputElementKind: `additional field name ${mapKey + 1}`,
+      inputText: field,
+      isInputTextFocused:
+        areHeadphoneFieldsAdditionalFocused.get(mapKey)?.[0] ?? false,
+      isValidInputText:
+        areHeadphoneFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+      regexValidationText: returnObjectKeyValidationText({
+        content: field,
+        contentKind: `additional field name ${mapKey + 1}`,
+        maxLength: 75,
+        minLength: 1,
+      }),
+    });
+
+    return [
+      headphoneFieldsAdditionalKeysInputErrorText,
+      headphoneFieldsAdditionalKeysInputValidText,
+    ];
+  });
+
+  // page 2 -> specifications -> headphone -> headphone fields user defined -> accessible screen reader text elements -> field values
+
+  // returns an array of tuples containing the error and valid text elements for each field value
+  const headphoneFieldsAdditionalValuesErrorValidTextElements: [
+    JSX.Element,
+    JSX.Element
+  ][] = Array.from(headphoneFieldsAdditional).map((keyFieldValue) => {
+    const [mapKey, [_field, value]] = keyFieldValue;
+
+    // screenreader accessible error/valid text elements that are consumed by the text input element creator
+    const [
+      headphoneFieldsAdditionalValuesInputErrorText,
+      headphoneFieldsAdditionalValuesInputValidText,
+    ] = AccessibleErrorValidTextElements({
+      inputElementKind: `additional field value ${mapKey + 1}`,
+      inputText: value,
+      isInputTextFocused:
+        areHeadphoneFieldsAdditionalFocused.get(mapKey)?.[1] ?? false,
+      isValidInputText:
+        areHeadphoneFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+      regexValidationText: returnUserDefinedFieldValueValidationText({
+        content: value,
+        contentKind: `additional field value ${mapKey + 1}`,
+        maxLength: 2000,
+        minLength: 2,
+      }),
+    });
+
+    return [
+      headphoneFieldsAdditionalValuesInputErrorText,
+      headphoneFieldsAdditionalValuesInputValidText,
+    ];
+  });
+
+  // page 2 -> specifications -> headphone -> headphone fields user defined -> text area input element creator
+  const createdHeadphoneFieldsAdditionalTextInputElements = Array.from(
+    headphoneFieldsAdditional
+  ).map((keyFieldValue) => {
+    const [mapKey, [field, value]] = keyFieldValue;
+
+    const headphoneFieldsAdditionalKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+      {
+        description: {
+          error: headphoneFieldsAdditionalKeysErrorValidTextElements[mapKey][0],
+          valid: headphoneFieldsAdditionalKeysErrorValidTextElements[mapKey][1],
+        },
+        inputText: field,
+        isValidInputText:
+          areHeadphoneFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+        label: `Name ${mapKey + 1}`,
+        maxLength: 75,
+        minLength: 1,
+        onBlur: () => {
+          createProductDispatch({
+            type: createProductAction.setAreHeadphoneFieldsAdditionalFocused,
+            payload: {
+              operation: 'update',
+              data: false,
+              index: mapKey,
+              kind: 'key',
+            },
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
+          createProductDispatch({
+            type: createProductAction.setHeadphoneFieldsAdditional,
+            payload: {
+              operation: 'update',
+              data: event.currentTarget.value,
+              index: mapKey,
+              kind: 'key',
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setCurrentlySelectedAdditionalFieldIndex,
+            payload: mapKey,
+          });
+        },
+        onFocus: () => {
+          createProductDispatch({
+            type: createProductAction.setAreHeadphoneFieldsAdditionalFocused,
+            payload: {
+              operation: 'update',
+              data: true,
+              index: mapKey,
+              kind: 'key',
+            },
+          });
+        },
+        placeholder: 'Enter additional field name',
+        required: true,
+        semanticName: `additional field name ${mapKey + 1}`,
+      };
+
+    const headphoneFieldsAdditionalValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+      {
+        description: {
+          error:
+            headphoneFieldsAdditionalValuesErrorValidTextElements[mapKey][0],
+          valid:
+            headphoneFieldsAdditionalValuesErrorValidTextElements[mapKey][1],
+        },
+        inputText: value,
+        isValidInputText:
+          areHeadphoneFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+        label: `Value ${mapKey + 1}`,
+        maxLength: 2000,
+        minLength: 2,
+        onBlur: () => {
+          createProductDispatch({
+            type: createProductAction.setAreHeadphoneFieldsAdditionalFocused,
+            payload: {
+              operation: 'update',
+              data: false,
+              index: mapKey,
+              kind: 'value',
+            },
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
+          createProductDispatch({
+            type: createProductAction.setHeadphoneFieldsAdditional,
+            payload: {
+              operation: 'update',
+              data: event.currentTarget.value,
+              index: mapKey,
+              kind: 'value',
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setCurrentlySelectedAdditionalFieldIndex,
+            payload: mapKey,
+          });
+        },
+        onFocus: () => {
+          createProductDispatch({
+            type: createProductAction.setAreHeadphoneFieldsAdditionalFocused,
+            payload: {
+              operation: 'update',
+              data: true,
+              index: mapKey,
+              kind: 'value',
+            },
+          });
+        },
+        placeholder: 'Enter additional field value',
+        required: true,
+        semanticName: `additional field value ${mapKey + 1}`,
+      };
+
+    const [
+      createdHeadphoneFieldsAdditionalKeysTextAreaInput,
+      createdHeadphoneFieldsAdditionalValuesTextAreaInput,
+    ] = returnAccessibleTextAreaInputElements([
+      headphoneFieldsAdditionalKeysTextInputCreatorInfo,
+      headphoneFieldsAdditionalValuesTextInputCreatorInfo,
+    ]);
+
+    const [createdDeleteButton] = returnAccessibleButtonElements([
+      {
+        buttonLabel: 'Delete',
+        buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
+          createProductDispatch({
+            type: createProductAction.setHeadphoneFieldsAdditional,
+            payload: {
+              operation: 'remove',
+              index: mapKey,
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setAreHeadphoneFieldsAdditionalFocused,
+            payload: {
+              operation: 'remove',
+              index: mapKey,
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setAreHeadphoneFieldsAdditionalValid,
+            payload: {
+              operation: 'remove',
+              index: mapKey,
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setCurrentlySelectedAdditionalFieldIndex,
+            payload: -1,
+          });
+        },
+        leftIcon: <TbTrash />,
+        semanticDescription: `Delete additional field ${mapKey + 1}`,
+        semanticName: 'Delete field and value',
+      },
+    ]);
+
+    const displayDeleteButton = (
+      <Tooltip label={`Delete additional field ${mapKey + 1}`}>
+        <Group>{createdDeleteButton}</Group>
+      </Tooltip>
+    );
+
+    return (
+      <Stack
+        key={`headphoneFieldsAdditional-${mapKey}`}
+        pt={padding}
+        style={{ borderTop: borderColor }}
+        w="100%"
+      >
+        <Group position="apart">
+          <Text size="md" weight={600}>{`Additional field ${mapKey + 1}`}</Text>
+          {displayDeleteButton}
+        </Group>
+        <Group position="apart">
+          {createdHeadphoneFieldsAdditionalKeysTextAreaInput}
+          {createdHeadphoneFieldsAdditionalValuesTextAreaInput}
+        </Group>
+      </Stack>
+    );
+  });
+
   // page 2 -> specifications -> speaker
 
   // page 2 -> specifications -> speaker -> speaker type
@@ -5900,6 +9783,302 @@ function CreateProduct() {
       },
     ]);
 
+  // page 2 -> specifications -> speaker -> add new field button
+  const [createdAddSpeakerFieldsAdditionalButton] =
+    returnAccessibleButtonElements([
+      {
+        buttonLabel: 'Add',
+        semanticDescription: 'Add new additional field',
+        semanticName: 'Add new field',
+        leftIcon: <TbPlus />,
+        buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
+          createProductDispatch({
+            type: createProductAction.setSpeakerFieldsAdditional,
+            payload: {
+              operation: 'add',
+              data: ['', ''],
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setAreSpeakerFieldsAdditionalFocused,
+            payload: {
+              operation: 'add',
+              data: [false, false],
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setAreSpeakerFieldsAdditionalValid,
+            payload: {
+              operation: 'add',
+              data: [false, false],
+            },
+          });
+        },
+      },
+    ]);
+
+  // page 2 -> specifications -> speaker -> speaker fields user defined
+
+  // page 2 -> specifications -> speaker -> speaker fields user defined -> accessible screen reader text elements
+
+  // page 2 -> specifications -> speaker -> speaker fields user defined -> accessible screen reader text elements -> field names
+
+  // returns an array of tuples containing the error and valid text elements for each field name
+  const speakerFieldsAdditionalKeysErrorValidTextElements: [
+    JSX.Element,
+    JSX.Element
+  ][] = Array.from(speakerFieldsAdditional).map((keyFieldValue) => {
+    const [mapKey, [field, _value]] = keyFieldValue;
+
+    // screenreader accessible error/valid text elements that are consumed by the text input element creator
+    const [
+      speakerFieldsAdditionalKeysInputErrorText,
+      speakerFieldsAdditionalKeysInputValidText,
+    ] = AccessibleErrorValidTextElements({
+      inputElementKind: `additional field name ${mapKey + 1}`,
+      inputText: field,
+      isInputTextFocused:
+        areSpeakerFieldsAdditionalFocused.get(mapKey)?.[0] ?? false,
+      isValidInputText:
+        areSpeakerFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+      regexValidationText: returnObjectKeyValidationText({
+        content: field,
+        contentKind: `additional field name ${mapKey + 1}`,
+        maxLength: 75,
+        minLength: 1,
+      }),
+    });
+
+    return [
+      speakerFieldsAdditionalKeysInputErrorText,
+      speakerFieldsAdditionalKeysInputValidText,
+    ];
+  });
+
+  // page 2 -> specifications -> speaker -> speaker fields user defined -> accessible screen reader text elements -> field values
+
+  // returns an array of tuples containing the error and valid text elements for each field value
+  const speakerFieldsAdditionalValuesErrorValidTextElements: [
+    JSX.Element,
+    JSX.Element
+  ][] = Array.from(speakerFieldsAdditional).map((keyFieldValue) => {
+    const [mapKey, [_field, value]] = keyFieldValue;
+
+    // screenreader accessible error/valid text elements that are consumed by the text input element creator
+    const [
+      speakerFieldsAdditionalValuesInputErrorText,
+      speakerFieldsAdditionalValuesInputValidText,
+    ] = AccessibleErrorValidTextElements({
+      inputElementKind: `additional field value ${mapKey + 1}`,
+      inputText: value,
+      isInputTextFocused:
+        areSpeakerFieldsAdditionalFocused.get(mapKey)?.[1] ?? false,
+      isValidInputText:
+        areSpeakerFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+      regexValidationText: returnUserDefinedFieldValueValidationText({
+        content: value,
+        contentKind: `additional field value ${mapKey + 1}`,
+        maxLength: 2000,
+        minLength: 2,
+      }),
+    });
+
+    return [
+      speakerFieldsAdditionalValuesInputErrorText,
+      speakerFieldsAdditionalValuesInputValidText,
+    ];
+  });
+
+  // page 2 -> specifications -> speaker -> speaker fields user defined -> text area input element creator
+  const createdSpeakerFieldsAdditionalTextInputElements = Array.from(
+    speakerFieldsAdditional
+  ).map((keyFieldValue) => {
+    const [mapKey, [field, value]] = keyFieldValue;
+
+    const speakerFieldsAdditionalKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+      {
+        description: {
+          error: speakerFieldsAdditionalKeysErrorValidTextElements[mapKey][0],
+          valid: speakerFieldsAdditionalKeysErrorValidTextElements[mapKey][1],
+        },
+        inputText: field,
+        isValidInputText:
+          areSpeakerFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+        label: `Name ${mapKey + 1}`,
+        maxLength: 75,
+        minLength: 1,
+        onBlur: () => {
+          createProductDispatch({
+            type: createProductAction.setAreSpeakerFieldsAdditionalFocused,
+            payload: {
+              operation: 'update',
+              data: false,
+              index: mapKey,
+              kind: 'key',
+            },
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
+          createProductDispatch({
+            type: createProductAction.setSpeakerFieldsAdditional,
+            payload: {
+              operation: 'update',
+              data: event.currentTarget.value,
+              index: mapKey,
+              kind: 'key',
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setCurrentlySelectedAdditionalFieldIndex,
+            payload: mapKey,
+          });
+        },
+        onFocus: () => {
+          createProductDispatch({
+            type: createProductAction.setAreSpeakerFieldsAdditionalFocused,
+            payload: {
+              operation: 'update',
+              data: true,
+              index: mapKey,
+              kind: 'key',
+            },
+          });
+        },
+        placeholder: 'Enter additional field name',
+        required: true,
+        semanticName: `additional field name ${mapKey + 1}`,
+      };
+
+    const speakerFieldsAdditionalValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+      {
+        description: {
+          error: speakerFieldsAdditionalValuesErrorValidTextElements[mapKey][0],
+          valid: speakerFieldsAdditionalValuesErrorValidTextElements[mapKey][1],
+        },
+        inputText: value,
+        isValidInputText:
+          areSpeakerFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+        label: `Value ${mapKey + 1}`,
+        maxLength: 2000,
+        minLength: 2,
+        onBlur: () => {
+          createProductDispatch({
+            type: createProductAction.setAreSpeakerFieldsAdditionalFocused,
+            payload: {
+              operation: 'update',
+              data: false,
+              index: mapKey,
+              kind: 'value',
+            },
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
+          createProductDispatch({
+            type: createProductAction.setSpeakerFieldsAdditional,
+            payload: {
+              operation: 'update',
+              data: event.currentTarget.value,
+              index: mapKey,
+              kind: 'value',
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setCurrentlySelectedAdditionalFieldIndex,
+            payload: mapKey,
+          });
+        },
+        onFocus: () => {
+          createProductDispatch({
+            type: createProductAction.setAreSpeakerFieldsAdditionalFocused,
+            payload: {
+              operation: 'update',
+              data: true,
+              index: mapKey,
+              kind: 'value',
+            },
+          });
+        },
+        placeholder: 'Enter additional field value',
+        required: true,
+        semanticName: `additional field value ${mapKey + 1}`,
+      };
+
+    const [
+      createdSpeakerFieldsAdditionalKeysTextAreaInput,
+      createdSpeakerFieldsAdditionalValuesTextAreaInput,
+    ] = returnAccessibleTextAreaInputElements([
+      speakerFieldsAdditionalKeysTextInputCreatorInfo,
+      speakerFieldsAdditionalValuesTextInputCreatorInfo,
+    ]);
+
+    const [createdDeleteButton] = returnAccessibleButtonElements([
+      {
+        buttonLabel: 'Delete',
+        buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
+          createProductDispatch({
+            type: createProductAction.setSpeakerFieldsAdditional,
+            payload: {
+              operation: 'remove',
+              index: mapKey,
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setAreSpeakerFieldsAdditionalFocused,
+            payload: {
+              operation: 'remove',
+              index: mapKey,
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setAreSpeakerFieldsAdditionalValid,
+            payload: {
+              operation: 'remove',
+              index: mapKey,
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setCurrentlySelectedAdditionalFieldIndex,
+            payload: -1,
+          });
+        },
+        leftIcon: <TbTrash />,
+        semanticDescription: `Delete additional field ${mapKey + 1}`,
+        semanticName: 'Delete field and value',
+      },
+    ]);
+
+    const displayDeleteButton = (
+      <Tooltip label={`Delete additional field ${mapKey + 1}`}>
+        <Group>{createdDeleteButton}</Group>
+      </Tooltip>
+    );
+
+    return (
+      <Stack
+        key={`speakerFieldsAdditional-${mapKey}`}
+        pt={padding}
+        style={{ borderTop: borderColor }}
+        w="100%"
+      >
+        <Group position="apart">
+          <Text size="md" weight={600}>{`Additional field ${mapKey + 1}`}</Text>
+          {displayDeleteButton}
+        </Group>
+        <Group position="apart">
+          {createdSpeakerFieldsAdditionalKeysTextAreaInput}
+          {createdSpeakerFieldsAdditionalValuesTextAreaInput}
+        </Group>
+      </Stack>
+    );
+  });
+
   // page 2 -> specifications -> smartphone
 
   // page 2 -> specifications -> smartphone -> smartphone os
@@ -5985,7 +10164,7 @@ function CreateProduct() {
       inputText: smartphoneDisplay,
       isInputTextFocused: isSmartphoneDisplayFocused,
       isValidInputText: isSmartphoneDisplayValid,
-      regexValidationText: returnProductDimensionsValidationText({
+      regexValidationText: returnDimensionsValidationText({
         content: smartphoneDisplay,
         contentKind: 'smartphone display',
       }),
@@ -6415,6 +10594,306 @@ function CreateProduct() {
     },
   ]);
 
+  // page 2 -> specifications -> smartphone -> add new field button
+  const [createdAddSmartphoneFieldsAdditionalButton] =
+    returnAccessibleButtonElements([
+      {
+        buttonLabel: 'Add',
+        semanticDescription: 'Add new additional field',
+        semanticName: 'Add new field',
+        leftIcon: <TbPlus />,
+        buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
+          createProductDispatch({
+            type: createProductAction.setSmartphoneFieldsAdditional,
+            payload: {
+              operation: 'add',
+              data: ['', ''],
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setAreSmartphoneFieldsAdditionalFocused,
+            payload: {
+              operation: 'add',
+              data: [false, false],
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setAreSmartphoneFieldsAdditionalValid,
+            payload: {
+              operation: 'add',
+              data: [false, false],
+            },
+          });
+        },
+      },
+    ]);
+
+  // page 2 -> specifications -> smartphone -> smartphone fields user defined
+
+  // page 2 -> specifications -> smartphone -> smartphone fields user defined -> accessible screen reader text elements
+
+  // page 2 -> specifications -> smartphone -> smartphone fields user defined -> accessible screen reader text elements -> field names
+
+  // returns an array of tuples containing the error and valid text elements for each field name
+  const smartphoneFieldsAdditionalKeysErrorValidTextElements: [
+    JSX.Element,
+    JSX.Element
+  ][] = Array.from(smartphoneFieldsAdditional).map((keyFieldValue) => {
+    const [mapKey, [field, _value]] = keyFieldValue;
+
+    // screenreader accessible error/valid text elements that are consumed by the text input element creator
+    const [
+      smartphoneFieldsAdditionalKeysInputErrorText,
+      smartphoneFieldsAdditionalKeysInputValidText,
+    ] = AccessibleErrorValidTextElements({
+      inputElementKind: `additional field name ${mapKey + 1}`,
+      inputText: field,
+      isInputTextFocused:
+        areSmartphoneFieldsAdditionalFocused.get(mapKey)?.[0] ?? false,
+      isValidInputText:
+        areSmartphoneFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+      regexValidationText: returnObjectKeyValidationText({
+        content: field,
+        contentKind: `additional field name ${mapKey + 1}`,
+        maxLength: 75,
+        minLength: 1,
+      }),
+    });
+
+    return [
+      smartphoneFieldsAdditionalKeysInputErrorText,
+      smartphoneFieldsAdditionalKeysInputValidText,
+    ];
+  });
+
+  // page 2 -> specifications -> smartphone -> smartphone fields user defined -> accessible screen reader text elements -> field values
+
+  // returns an array of tuples containing the error and valid text elements for each field value
+  const smartphoneFieldsAdditionalValuesErrorValidTextElements: [
+    JSX.Element,
+    JSX.Element
+  ][] = Array.from(smartphoneFieldsAdditional).map((keyFieldValue) => {
+    const [mapKey, [_field, value]] = keyFieldValue;
+
+    // screenreader accessible error/valid text elements that are consumed by the text input element creator
+    const [
+      smartphoneFieldsAdditionalValuesInputErrorText,
+      smartphoneFieldsAdditionalValuesInputValidText,
+    ] = AccessibleErrorValidTextElements({
+      inputElementKind: `additional field value ${mapKey + 1}`,
+      inputText: value,
+      isInputTextFocused:
+        areSmartphoneFieldsAdditionalFocused.get(mapKey)?.[1] ?? false,
+      isValidInputText:
+        areSmartphoneFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+      regexValidationText: returnUserDefinedFieldValueValidationText({
+        content: value,
+        contentKind: `additional field value ${mapKey + 1}`,
+        maxLength: 2000,
+        minLength: 2,
+      }),
+    });
+
+    return [
+      smartphoneFieldsAdditionalValuesInputErrorText,
+      smartphoneFieldsAdditionalValuesInputValidText,
+    ];
+  });
+
+  // page 2 -> specifications -> smartphone -> smartphone fields user defined -> text area input element creator
+  const createdSmartphoneFieldsAdditionalTextInputElements = Array.from(
+    smartphoneFieldsAdditional
+  ).map((keyFieldValue) => {
+    const [mapKey, [field, value]] = keyFieldValue;
+
+    const smartphoneFieldsAdditionalKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+      {
+        description: {
+          error:
+            smartphoneFieldsAdditionalKeysErrorValidTextElements[mapKey][0],
+          valid:
+            smartphoneFieldsAdditionalKeysErrorValidTextElements[mapKey][1],
+        },
+        inputText: field,
+        isValidInputText:
+          areSmartphoneFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+        label: `Name ${mapKey + 1}`,
+        maxLength: 75,
+        minLength: 1,
+        onBlur: () => {
+          createProductDispatch({
+            type: createProductAction.setAreSmartphoneFieldsAdditionalFocused,
+            payload: {
+              operation: 'update',
+              data: false,
+              index: mapKey,
+              kind: 'key',
+            },
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
+          createProductDispatch({
+            type: createProductAction.setSmartphoneFieldsAdditional,
+            payload: {
+              operation: 'update',
+              data: event.currentTarget.value,
+              index: mapKey,
+              kind: 'key',
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setCurrentlySelectedAdditionalFieldIndex,
+            payload: mapKey,
+          });
+        },
+        onFocus: () => {
+          createProductDispatch({
+            type: createProductAction.setAreSmartphoneFieldsAdditionalFocused,
+            payload: {
+              operation: 'update',
+              data: true,
+              index: mapKey,
+              kind: 'key',
+            },
+          });
+        },
+        placeholder: 'Enter additional field name',
+        required: true,
+        semanticName: `additional field name ${mapKey + 1}`,
+      };
+
+    const smartphoneFieldsAdditionalValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+      {
+        description: {
+          error:
+            smartphoneFieldsAdditionalValuesErrorValidTextElements[mapKey][0],
+          valid:
+            smartphoneFieldsAdditionalValuesErrorValidTextElements[mapKey][1],
+        },
+        inputText: value,
+        isValidInputText:
+          areSmartphoneFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+        label: `Value ${mapKey + 1}`,
+        maxLength: 2000,
+        minLength: 2,
+        onBlur: () => {
+          createProductDispatch({
+            type: createProductAction.setAreSmartphoneFieldsAdditionalFocused,
+            payload: {
+              operation: 'update',
+              data: false,
+              index: mapKey,
+              kind: 'value',
+            },
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
+          createProductDispatch({
+            type: createProductAction.setSmartphoneFieldsAdditional,
+            payload: {
+              operation: 'update',
+              data: event.currentTarget.value,
+              index: mapKey,
+              kind: 'value',
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setCurrentlySelectedAdditionalFieldIndex,
+            payload: mapKey,
+          });
+        },
+        onFocus: () => {
+          createProductDispatch({
+            type: createProductAction.setAreSmartphoneFieldsAdditionalFocused,
+            payload: {
+              operation: 'update',
+              data: true,
+              index: mapKey,
+              kind: 'value',
+            },
+          });
+        },
+        placeholder: 'Enter additional field value',
+        required: true,
+        semanticName: `additional field value ${mapKey + 1}`,
+      };
+
+    const [
+      createdSmartphoneFieldsAdditionalKeysTextAreaInput,
+      createdSmartphoneFieldsAdditionalValuesTextAreaInput,
+    ] = returnAccessibleTextAreaInputElements([
+      smartphoneFieldsAdditionalKeysTextInputCreatorInfo,
+      smartphoneFieldsAdditionalValuesTextInputCreatorInfo,
+    ]);
+
+    const [createdDeleteButton] = returnAccessibleButtonElements([
+      {
+        buttonLabel: 'Delete',
+        buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
+          createProductDispatch({
+            type: createProductAction.setSmartphoneFieldsAdditional,
+            payload: {
+              operation: 'remove',
+              index: mapKey,
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setAreSmartphoneFieldsAdditionalFocused,
+            payload: {
+              operation: 'remove',
+              index: mapKey,
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setAreSmartphoneFieldsAdditionalValid,
+            payload: {
+              operation: 'remove',
+              index: mapKey,
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setCurrentlySelectedAdditionalFieldIndex,
+            payload: -1,
+          });
+        },
+        leftIcon: <TbTrash />,
+        semanticDescription: `Delete additional field ${mapKey + 1}`,
+        semanticName: 'Delete field and value',
+      },
+    ]);
+
+    const displayDeleteButton = (
+      <Tooltip label={`Delete additional field ${mapKey + 1}`}>
+        <Group>{createdDeleteButton}</Group>
+      </Tooltip>
+    );
+
+    return (
+      <Stack
+        key={`smartphoneFieldsAdditional-${mapKey}`}
+        pt={padding}
+        style={{ borderTop: borderColor }}
+        w="100%"
+      >
+        <Group position="apart">
+          <Text size="md" weight={600}>{`Additional field ${mapKey + 1}`}</Text>
+          {displayDeleteButton}
+        </Group>
+        <Group position="apart">
+          {createdSmartphoneFieldsAdditionalKeysTextAreaInput}
+          {createdSmartphoneFieldsAdditionalValuesTextAreaInput}
+        </Group>
+      </Stack>
+    );
+  });
+
   // page 2 -> specifications -> tablet
 
   // page 2 -> specifications -> tablet -> tablet os
@@ -6498,7 +10977,7 @@ function CreateProduct() {
       inputText: tabletDisplay,
       isInputTextFocused: isTabletDisplayFocused,
       isValidInputText: isTabletDisplayValid,
-      regexValidationText: returnProductDimensionsValidationText({
+      regexValidationText: returnDimensionsValidationText({
         content: tabletDisplay,
         contentKind: 'tablet display',
       }),
@@ -6925,6 +11404,302 @@ function CreateProduct() {
     },
   ]);
 
+  // page 2 -> specifications -> tablet -> add new field button
+  const [createdAddTabletFieldsAdditionalButton] =
+    returnAccessibleButtonElements([
+      {
+        buttonLabel: 'Add',
+        semanticDescription: 'Add new additional field',
+        semanticName: 'Add new field',
+        leftIcon: <TbPlus />,
+        buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
+          createProductDispatch({
+            type: createProductAction.setTabletFieldsAdditional,
+            payload: {
+              operation: 'add',
+              data: ['', ''],
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setAreTabletFieldsAdditionalFocused,
+            payload: {
+              operation: 'add',
+              data: [false, false],
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setAreTabletFieldsAdditionalValid,
+            payload: {
+              operation: 'add',
+              data: [false, false],
+            },
+          });
+        },
+      },
+    ]);
+
+  // page 2 -> specifications -> tablet -> tablet fields user defined
+
+  // page 2 -> specifications -> tablet -> tablet fields user defined -> accessible screen reader text elements
+
+  // page 2 -> specifications -> tablet -> tablet fields user defined -> accessible screen reader text elements -> field names
+
+  // returns an array of tuples containing the error and valid text elements for each field name
+  const tabletFieldsAdditionalKeysErrorValidTextElements: [
+    JSX.Element,
+    JSX.Element
+  ][] = Array.from(tabletFieldsAdditional).map((keyFieldValue) => {
+    const [mapKey, [field, _value]] = keyFieldValue;
+
+    // screenreader accessible error/valid text elements that are consumed by the text input element creator
+    const [
+      tabletFieldsAdditionalKeysInputErrorText,
+      tabletFieldsAdditionalKeysInputValidText,
+    ] = AccessibleErrorValidTextElements({
+      inputElementKind: `additional field name ${mapKey + 1}`,
+      inputText: field,
+      isInputTextFocused:
+        areTabletFieldsAdditionalFocused.get(mapKey)?.[0] ?? false,
+      isValidInputText:
+        areTabletFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+      regexValidationText: returnObjectKeyValidationText({
+        content: field,
+        contentKind: `additional field name ${mapKey + 1}`,
+        maxLength: 75,
+        minLength: 1,
+      }),
+    });
+
+    return [
+      tabletFieldsAdditionalKeysInputErrorText,
+      tabletFieldsAdditionalKeysInputValidText,
+    ];
+  });
+
+  // page 2 -> specifications -> tablet -> tablet fields user defined -> accessible screen reader text elements -> field values
+
+  // returns an array of tuples containing the error and valid text elements for each field value
+  const tabletFieldsAdditionalValuesErrorValidTextElements: [
+    JSX.Element,
+    JSX.Element
+  ][] = Array.from(tabletFieldsAdditional).map((keyFieldValue) => {
+    const [mapKey, [_field, value]] = keyFieldValue;
+
+    // screenreader accessible error/valid text elements that are consumed by the text input element creator
+    const [
+      tabletFieldsAdditionalValuesInputErrorText,
+      tabletFieldsAdditionalValuesInputValidText,
+    ] = AccessibleErrorValidTextElements({
+      inputElementKind: `additional field value ${mapKey + 1}`,
+      inputText: value,
+      isInputTextFocused:
+        areTabletFieldsAdditionalFocused.get(mapKey)?.[1] ?? false,
+      isValidInputText:
+        areTabletFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+      regexValidationText: returnUserDefinedFieldValueValidationText({
+        content: value,
+        contentKind: `additional field value ${mapKey + 1}`,
+        maxLength: 2000,
+        minLength: 2,
+      }),
+    });
+
+    return [
+      tabletFieldsAdditionalValuesInputErrorText,
+      tabletFieldsAdditionalValuesInputValidText,
+    ];
+  });
+
+  // page 2 -> specifications -> tablet -> tablet fields user defined -> text area input element creator
+  const createdTabletFieldsAdditionalTextInputElements = Array.from(
+    tabletFieldsAdditional
+  ).map((keyFieldValue) => {
+    const [mapKey, [field, value]] = keyFieldValue;
+
+    const tabletFieldsAdditionalKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+      {
+        description: {
+          error: tabletFieldsAdditionalKeysErrorValidTextElements[mapKey][0],
+          valid: tabletFieldsAdditionalKeysErrorValidTextElements[mapKey][1],
+        },
+        inputText: field,
+        isValidInputText:
+          areTabletFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+        label: `Name ${mapKey + 1}`,
+        maxLength: 75,
+        minLength: 1,
+        onBlur: () => {
+          createProductDispatch({
+            type: createProductAction.setAreTabletFieldsAdditionalFocused,
+            payload: {
+              operation: 'update',
+              data: false,
+              index: mapKey,
+              kind: 'key',
+            },
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
+          createProductDispatch({
+            type: createProductAction.setTabletFieldsAdditional,
+            payload: {
+              operation: 'update',
+              data: event.currentTarget.value,
+              index: mapKey,
+              kind: 'key',
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setCurrentlySelectedAdditionalFieldIndex,
+            payload: mapKey,
+          });
+        },
+        onFocus: () => {
+          createProductDispatch({
+            type: createProductAction.setAreTabletFieldsAdditionalFocused,
+            payload: {
+              operation: 'update',
+              data: true,
+              index: mapKey,
+              kind: 'key',
+            },
+          });
+        },
+        placeholder: 'Enter additional field name',
+        required: true,
+        semanticName: `additional field name ${mapKey + 1}`,
+      };
+
+    const tabletFieldsAdditionalValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+      {
+        description: {
+          error: tabletFieldsAdditionalValuesErrorValidTextElements[mapKey][0],
+          valid: tabletFieldsAdditionalValuesErrorValidTextElements[mapKey][1],
+        },
+        inputText: value,
+        isValidInputText:
+          areTabletFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+        label: `Value ${mapKey + 1}`,
+        maxLength: 2000,
+        minLength: 2,
+        onBlur: () => {
+          createProductDispatch({
+            type: createProductAction.setAreTabletFieldsAdditionalFocused,
+            payload: {
+              operation: 'update',
+              data: false,
+              index: mapKey,
+              kind: 'value',
+            },
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
+          createProductDispatch({
+            type: createProductAction.setTabletFieldsAdditional,
+            payload: {
+              operation: 'update',
+              data: event.currentTarget.value,
+              index: mapKey,
+              kind: 'value',
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setCurrentlySelectedAdditionalFieldIndex,
+            payload: mapKey,
+          });
+        },
+        onFocus: () => {
+          createProductDispatch({
+            type: createProductAction.setAreTabletFieldsAdditionalFocused,
+            payload: {
+              operation: 'update',
+              data: true,
+              index: mapKey,
+              kind: 'value',
+            },
+          });
+        },
+        placeholder: 'Enter additional field value',
+        required: true,
+        semanticName: `additional field value ${mapKey + 1}`,
+      };
+
+    const [
+      createdTabletFieldsAdditionalKeysTextAreaInput,
+      createdTabletFieldsAdditionalValuesTextAreaInput,
+    ] = returnAccessibleTextAreaInputElements([
+      tabletFieldsAdditionalKeysTextInputCreatorInfo,
+      tabletFieldsAdditionalValuesTextInputCreatorInfo,
+    ]);
+
+    const [createdDeleteButton] = returnAccessibleButtonElements([
+      {
+        buttonLabel: 'Delete',
+        buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
+          createProductDispatch({
+            type: createProductAction.setTabletFieldsAdditional,
+            payload: {
+              operation: 'remove',
+              index: mapKey,
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setAreTabletFieldsAdditionalFocused,
+            payload: {
+              operation: 'remove',
+              index: mapKey,
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setAreTabletFieldsAdditionalValid,
+            payload: {
+              operation: 'remove',
+              index: mapKey,
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setCurrentlySelectedAdditionalFieldIndex,
+            payload: -1,
+          });
+        },
+        leftIcon: <TbTrash />,
+        semanticDescription: `Delete additional field ${mapKey + 1}`,
+        semanticName: 'Delete field and value',
+      },
+    ]);
+
+    const displayDeleteButton = (
+      <Tooltip label={`Delete additional field ${mapKey + 1}`}>
+        <Group>{createdDeleteButton}</Group>
+      </Tooltip>
+    );
+
+    return (
+      <Stack
+        key={`tabletFieldsAdditional-${mapKey}`}
+        pt={padding}
+        style={{ borderTop: borderColor }}
+        w="100%"
+      >
+        <Group position="apart">
+          <Text size="md" weight={600}>{`Additional field ${mapKey + 1}`}</Text>
+          {displayDeleteButton}
+        </Group>
+        <Group position="apart">
+          {createdTabletFieldsAdditionalKeysTextAreaInput}
+          {createdTabletFieldsAdditionalValuesTextAreaInput}
+        </Group>
+      </Stack>
+    );
+  });
+
   // page 2 -> specifications -> accessory
 
   // page 2 -> specifications -> accessory -> accessory type
@@ -7058,7 +11833,7 @@ function CreateProduct() {
     returnAccessibleButtonElements([
       {
         buttonLabel: 'Add',
-        semanticDescription: 'Add new additional field and value',
+        semanticDescription: 'Add new additional field',
         semanticName: 'Add new field',
         leftIcon: <TbPlus />,
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
@@ -7094,25 +11869,28 @@ function CreateProduct() {
   // page 2 -> specifications -> accessory -> accessory fields user defined -> accessible screen reader text elements
 
   // page 2 -> specifications -> accessory -> accessory fields user defined -> accessible screen reader text elements -> field names
+
+  // returns an array of tuples containing the error and valid text elements for each field name
   const accessoryFieldsAdditionalKeysErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(accessoryFieldsAdditional).map((keyFieldValue, idx) => {
-    const [_mapKey, [field, _value]] = keyFieldValue;
+  ][] = Array.from(accessoryFieldsAdditional).map((keyFieldValue) => {
+    const [mapKey, [field, _value]] = keyFieldValue;
 
+    // screenreader accessible error/valid text elements that are consumed by the text input element creator
     const [
       accessoryFieldsAdditionalKeysInputErrorText,
       accessoryFieldsAdditionalKeysInputValidText,
     ] = AccessibleErrorValidTextElements({
-      inputElementKind: `additional field name ${idx + 1}`,
+      inputElementKind: `additional field name ${mapKey + 1}`,
       inputText: field,
       isInputTextFocused:
-        areAccessoryFieldsAdditionalFocused.get(idx)?.[0] ?? false,
+        areAccessoryFieldsAdditionalFocused.get(mapKey)?.[0] ?? false,
       isValidInputText:
-        areAccessoryFieldsAdditionalValid.get(idx)?.[0] ?? false,
+        areAccessoryFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
       regexValidationText: returnObjectKeyValidationText({
         content: field,
-        contentKind: `additional field name ${idx + 1}`,
+        contentKind: `additional field name ${mapKey + 1}`,
         maxLength: 75,
         minLength: 1,
       }),
@@ -7125,25 +11903,28 @@ function CreateProduct() {
   });
 
   // page 2 -> specifications -> accessory -> accessory fields user defined -> accessible screen reader text elements -> field values
+
+  // returns an array of tuples containing the error and valid text elements for each field value
   const accessoryFieldsAdditionalValuesErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(accessoryFieldsAdditional).map((keyFieldValue, idx) => {
-    const [_mapKey, [_field, value]] = keyFieldValue;
+  ][] = Array.from(accessoryFieldsAdditional).map((keyFieldValue) => {
+    const [mapKey, [_field, value]] = keyFieldValue;
 
+    // screenreader accessible error/valid text elements that are consumed by the text input element creator
     const [
       accessoryFieldsAdditionalValuesInputErrorText,
       accessoryFieldsAdditionalValuesInputValidText,
     ] = AccessibleErrorValidTextElements({
-      inputElementKind: `additional field value ${idx + 1}`,
+      inputElementKind: `additional field value ${mapKey + 1}`,
       inputText: value,
       isInputTextFocused:
-        areAccessoryFieldsAdditionalFocused.get(idx)?.[1] ?? false,
+        areAccessoryFieldsAdditionalFocused.get(mapKey)?.[1] ?? false,
       isValidInputText:
-        areAccessoryFieldsAdditionalValid.get(idx)?.[1] ?? false,
+        areAccessoryFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
       regexValidationText: returnUserDefinedFieldValueValidationText({
         content: value,
-        contentKind: `additional field value ${idx + 1}`,
+        contentKind: `additional field value ${mapKey + 1}`,
         maxLength: 2000,
         minLength: 2,
       }),
@@ -7158,19 +11939,19 @@ function CreateProduct() {
   // page 2 -> specifications -> accessory -> accessory fields user defined -> text area input element creator
   const createdAccessoryFieldsAdditionalTextInputElements = Array.from(
     accessoryFieldsAdditional
-  ).map((keyFieldValue, idx) => {
-    const [_mapKey, [field, value]] = keyFieldValue;
+  ).map((keyFieldValue) => {
+    const [mapKey, [field, value]] = keyFieldValue;
 
     const accessoryFieldsAdditionalKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
-          error: accessoryFieldsAdditionalKeysErrorValidTextElements[idx][0],
-          valid: accessoryFieldsAdditionalKeysErrorValidTextElements[idx][1],
+          error: accessoryFieldsAdditionalKeysErrorValidTextElements[mapKey][0],
+          valid: accessoryFieldsAdditionalKeysErrorValidTextElements[mapKey][1],
         },
         inputText: field,
         isValidInputText:
-          areAccessoryFieldsAdditionalValid.get(idx)?.[0] ?? false,
-        label: `Name ${idx + 1}`,
+          areAccessoryFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+        label: `Name ${mapKey + 1}`,
         maxLength: 75,
         minLength: 1,
         onBlur: () => {
@@ -7179,7 +11960,7 @@ function CreateProduct() {
             payload: {
               operation: 'update',
               data: false,
-              index: idx,
+              index: mapKey,
               kind: 'key',
             },
           });
@@ -7190,14 +11971,14 @@ function CreateProduct() {
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
-              index: idx,
+              index: mapKey,
               kind: 'key',
             },
           });
 
           createProductDispatch({
             type: createProductAction.setCurrentlySelectedAdditionalFieldIndex,
-            payload: idx,
+            payload: mapKey,
           });
         },
         onFocus: () => {
@@ -7206,26 +11987,28 @@ function CreateProduct() {
             payload: {
               operation: 'update',
               data: true,
-              index: idx,
+              index: mapKey,
               kind: 'key',
             },
           });
         },
         placeholder: 'Enter additional field name',
         required: true,
-        semanticName: `additional field name ${idx + 1}`,
+        semanticName: `additional field name ${mapKey + 1}`,
       };
 
     const accessoryFieldsAdditionalValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
-          error: accessoryFieldsAdditionalValuesErrorValidTextElements[idx][0],
-          valid: accessoryFieldsAdditionalValuesErrorValidTextElements[idx][1],
+          error:
+            accessoryFieldsAdditionalValuesErrorValidTextElements[mapKey][0],
+          valid:
+            accessoryFieldsAdditionalValuesErrorValidTextElements[mapKey][1],
         },
         inputText: value,
         isValidInputText:
-          areAccessoryFieldsAdditionalValid.get(idx)?.[1] ?? false,
-        label: `Value ${idx + 1}`,
+          areAccessoryFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+        label: `Value ${mapKey + 1}`,
         maxLength: 2000,
         minLength: 2,
         onBlur: () => {
@@ -7234,7 +12017,7 @@ function CreateProduct() {
             payload: {
               operation: 'update',
               data: false,
-              index: idx,
+              index: mapKey,
               kind: 'value',
             },
           });
@@ -7245,14 +12028,14 @@ function CreateProduct() {
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
-              index: idx,
+              index: mapKey,
               kind: 'value',
             },
           });
 
           createProductDispatch({
             type: createProductAction.setCurrentlySelectedAdditionalFieldIndex,
-            payload: idx,
+            payload: mapKey,
           });
         },
         onFocus: () => {
@@ -7261,14 +12044,14 @@ function CreateProduct() {
             payload: {
               operation: 'update',
               data: true,
-              index: idx,
+              index: mapKey,
               kind: 'value',
             },
           });
         },
         placeholder: 'Enter additional field value',
         required: true,
-        semanticName: `additional field value ${idx + 1}`,
+        semanticName: `additional field value ${mapKey + 1}`,
       };
 
     const [
@@ -7287,7 +12070,7 @@ function CreateProduct() {
             type: createProductAction.setAccessoryFieldsAdditional,
             payload: {
               operation: 'remove',
-              index: idx,
+              index: mapKey,
             },
           });
 
@@ -7295,7 +12078,7 @@ function CreateProduct() {
             type: createProductAction.setAreAccessoryFieldsAdditionalFocused,
             payload: {
               operation: 'remove',
-              index: idx,
+              index: mapKey,
             },
           });
 
@@ -7303,7 +12086,7 @@ function CreateProduct() {
             type: createProductAction.setAreAccessoryFieldsAdditionalValid,
             payload: {
               operation: 'remove',
-              index: idx,
+              index: mapKey,
             },
           });
 
@@ -7313,26 +12096,26 @@ function CreateProduct() {
           });
         },
         leftIcon: <TbTrash />,
-        semanticDescription: `Delete additional field ${idx + 1}`,
+        semanticDescription: `Delete additional field ${mapKey + 1}`,
         semanticName: 'Delete field and value',
       },
     ]);
 
     const displayDeleteButton = (
-      <Tooltip label={`Delete additional field ${idx + 1}`}>
+      <Tooltip label={`Delete additional field ${mapKey + 1}`}>
         <Group>{createdDeleteButton}</Group>
       </Tooltip>
     );
 
     return (
       <Stack
-        key={`accessoryFieldsAdditional-${idx}`}
+        key={`accessoryFieldsAdditional-${mapKey}`}
         pt={padding}
         style={{ borderTop: borderColor }}
         w="100%"
       >
         <Group position="apart">
-          <Text size="md" weight={600}>{`Additional field ${idx + 1}`}</Text>
+          <Text size="md" weight={600}>{`Additional field ${mapKey + 1}`}</Text>
           {displayDeleteButton}
         </Group>
         <Group position="apart">
@@ -7473,6 +12256,302 @@ function CreateProduct() {
         required: true,
       },
     ]);
+
+  // page 2 -> specifications -> webcam -> add new field button
+  const [createdAddWebcamFieldsAdditionalButton] =
+    returnAccessibleButtonElements([
+      {
+        buttonLabel: 'Add',
+        semanticDescription: 'Add new additional field',
+        semanticName: 'Add new field',
+        leftIcon: <TbPlus />,
+        buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
+          createProductDispatch({
+            type: createProductAction.setWebcamFieldsAdditional,
+            payload: {
+              operation: 'add',
+              data: ['', ''],
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setAreWebcamFieldsAdditionalFocused,
+            payload: {
+              operation: 'add',
+              data: [false, false],
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setAreWebcamFieldsAdditionalValid,
+            payload: {
+              operation: 'add',
+              data: [false, false],
+            },
+          });
+        },
+      },
+    ]);
+
+  // page 2 -> specifications -> webcam -> webcam fields user defined
+
+  // page 2 -> specifications -> webcam -> webcam fields user defined -> accessible screen reader text elements
+
+  // page 2 -> specifications -> webcam -> webcam fields user defined -> accessible screen reader text elements -> field names
+
+  // returns an array of tuples containing the error and valid text elements for each field name
+  const webcamFieldsAdditionalKeysErrorValidTextElements: [
+    JSX.Element,
+    JSX.Element
+  ][] = Array.from(webcamFieldsAdditional).map((keyFieldValue) => {
+    const [mapKey, [field, _value]] = keyFieldValue;
+
+    // screenreader accessible error/valid text elements that are consumed by the text input element creator
+    const [
+      webcamFieldsAdditionalKeysInputErrorText,
+      webcamFieldsAdditionalKeysInputValidText,
+    ] = AccessibleErrorValidTextElements({
+      inputElementKind: `additional field name ${mapKey + 1}`,
+      inputText: field,
+      isInputTextFocused:
+        areWebcamFieldsAdditionalFocused.get(mapKey)?.[0] ?? false,
+      isValidInputText:
+        areWebcamFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+      regexValidationText: returnObjectKeyValidationText({
+        content: field,
+        contentKind: `additional field name ${mapKey + 1}`,
+        maxLength: 75,
+        minLength: 1,
+      }),
+    });
+
+    return [
+      webcamFieldsAdditionalKeysInputErrorText,
+      webcamFieldsAdditionalKeysInputValidText,
+    ];
+  });
+
+  // page 2 -> specifications -> webcam -> webcam fields user defined -> accessible screen reader text elements -> field values
+
+  // returns an array of tuples containing the error and valid text elements for each field value
+  const webcamFieldsAdditionalValuesErrorValidTextElements: [
+    JSX.Element,
+    JSX.Element
+  ][] = Array.from(webcamFieldsAdditional).map((keyFieldValue) => {
+    const [mapKey, [_field, value]] = keyFieldValue;
+
+    // screenreader accessible error/valid text elements that are consumed by the text input element creator
+    const [
+      webcamFieldsAdditionalValuesInputErrorText,
+      webcamFieldsAdditionalValuesInputValidText,
+    ] = AccessibleErrorValidTextElements({
+      inputElementKind: `additional field value ${mapKey + 1}`,
+      inputText: value,
+      isInputTextFocused:
+        areWebcamFieldsAdditionalFocused.get(mapKey)?.[1] ?? false,
+      isValidInputText:
+        areWebcamFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+      regexValidationText: returnUserDefinedFieldValueValidationText({
+        content: value,
+        contentKind: `additional field value ${mapKey + 1}`,
+        maxLength: 2000,
+        minLength: 2,
+      }),
+    });
+
+    return [
+      webcamFieldsAdditionalValuesInputErrorText,
+      webcamFieldsAdditionalValuesInputValidText,
+    ];
+  });
+
+  // page 2 -> specifications -> webcam -> webcam fields user defined -> text area input element creator
+  const createdWebcamFieldsAdditionalTextInputElements = Array.from(
+    webcamFieldsAdditional
+  ).map((keyFieldValue) => {
+    const [mapKey, [field, value]] = keyFieldValue;
+
+    const webcamFieldsAdditionalKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+      {
+        description: {
+          error: webcamFieldsAdditionalKeysErrorValidTextElements[mapKey][0],
+          valid: webcamFieldsAdditionalKeysErrorValidTextElements[mapKey][1],
+        },
+        inputText: field,
+        isValidInputText:
+          areWebcamFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+        label: `Name ${mapKey + 1}`,
+        maxLength: 75,
+        minLength: 1,
+        onBlur: () => {
+          createProductDispatch({
+            type: createProductAction.setAreWebcamFieldsAdditionalFocused,
+            payload: {
+              operation: 'update',
+              data: false,
+              index: mapKey,
+              kind: 'key',
+            },
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
+          createProductDispatch({
+            type: createProductAction.setWebcamFieldsAdditional,
+            payload: {
+              operation: 'update',
+              data: event.currentTarget.value,
+              index: mapKey,
+              kind: 'key',
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setCurrentlySelectedAdditionalFieldIndex,
+            payload: mapKey,
+          });
+        },
+        onFocus: () => {
+          createProductDispatch({
+            type: createProductAction.setAreWebcamFieldsAdditionalFocused,
+            payload: {
+              operation: 'update',
+              data: true,
+              index: mapKey,
+              kind: 'key',
+            },
+          });
+        },
+        placeholder: 'Enter additional field name',
+        required: true,
+        semanticName: `additional field name ${mapKey + 1}`,
+      };
+
+    const webcamFieldsAdditionalValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+      {
+        description: {
+          error: webcamFieldsAdditionalValuesErrorValidTextElements[mapKey][0],
+          valid: webcamFieldsAdditionalValuesErrorValidTextElements[mapKey][1],
+        },
+        inputText: value,
+        isValidInputText:
+          areWebcamFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+        label: `Value ${mapKey + 1}`,
+        maxLength: 2000,
+        minLength: 2,
+        onBlur: () => {
+          createProductDispatch({
+            type: createProductAction.setAreWebcamFieldsAdditionalFocused,
+            payload: {
+              operation: 'update',
+              data: false,
+              index: mapKey,
+              kind: 'value',
+            },
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
+          createProductDispatch({
+            type: createProductAction.setWebcamFieldsAdditional,
+            payload: {
+              operation: 'update',
+              data: event.currentTarget.value,
+              index: mapKey,
+              kind: 'value',
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setCurrentlySelectedAdditionalFieldIndex,
+            payload: mapKey,
+          });
+        },
+        onFocus: () => {
+          createProductDispatch({
+            type: createProductAction.setAreWebcamFieldsAdditionalFocused,
+            payload: {
+              operation: 'update',
+              data: true,
+              index: mapKey,
+              kind: 'value',
+            },
+          });
+        },
+        placeholder: 'Enter additional field value',
+        required: true,
+        semanticName: `additional field value ${mapKey + 1}`,
+      };
+
+    const [
+      createdWebcamFieldsAdditionalKeysTextAreaInput,
+      createdWebcamFieldsAdditionalValuesTextAreaInput,
+    ] = returnAccessibleTextAreaInputElements([
+      webcamFieldsAdditionalKeysTextInputCreatorInfo,
+      webcamFieldsAdditionalValuesTextInputCreatorInfo,
+    ]);
+
+    const [createdDeleteButton] = returnAccessibleButtonElements([
+      {
+        buttonLabel: 'Delete',
+        buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
+          createProductDispatch({
+            type: createProductAction.setWebcamFieldsAdditional,
+            payload: {
+              operation: 'remove',
+              index: mapKey,
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setAreWebcamFieldsAdditionalFocused,
+            payload: {
+              operation: 'remove',
+              index: mapKey,
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setAreWebcamFieldsAdditionalValid,
+            payload: {
+              operation: 'remove',
+              index: mapKey,
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setCurrentlySelectedAdditionalFieldIndex,
+            payload: -1,
+          });
+        },
+        leftIcon: <TbTrash />,
+        semanticDescription: `Delete additional field ${mapKey + 1}`,
+        semanticName: 'Delete field and value',
+      },
+    ]);
+
+    const displayDeleteButton = (
+      <Tooltip label={`Delete additional field ${mapKey + 1}`}>
+        <Group>{createdDeleteButton}</Group>
+      </Tooltip>
+    );
+
+    return (
+      <Stack
+        key={`webcamFieldsAdditional-${mapKey}`}
+        pt={padding}
+        style={{ borderTop: borderColor }}
+        w="100%"
+      >
+        <Group position="apart">
+          <Text size="md" weight={600}>{`Additional field ${mapKey + 1}`}</Text>
+          {displayDeleteButton}
+        </Group>
+        <Group position="apart">
+          {createdWebcamFieldsAdditionalKeysTextAreaInput}
+          {createdWebcamFieldsAdditionalValuesTextAreaInput}
+        </Group>
+      </Stack>
+    );
+  });
 
   // page 2 -> specifications -> microphone
 
@@ -7637,6 +12716,306 @@ function CreateProduct() {
       },
     ]);
 
+  // page 2 -> specifications -> microphone -> add new field button
+  const [createdAddMicrophoneFieldsAdditionalButton] =
+    returnAccessibleButtonElements([
+      {
+        buttonLabel: 'Add',
+        semanticDescription: 'Add new additional field',
+        semanticName: 'Add new field',
+        leftIcon: <TbPlus />,
+        buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
+          createProductDispatch({
+            type: createProductAction.setMicrophoneFieldsAdditional,
+            payload: {
+              operation: 'add',
+              data: ['', ''],
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setAreMicrophoneFieldsAdditionalFocused,
+            payload: {
+              operation: 'add',
+              data: [false, false],
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setAreMicrophoneFieldsAdditionalValid,
+            payload: {
+              operation: 'add',
+              data: [false, false],
+            },
+          });
+        },
+      },
+    ]);
+
+  // page 2 -> specifications -> microphone -> microphone fields user defined
+
+  // page 2 -> specifications -> microphone -> microphone fields user defined -> accessible screen reader text elements
+
+  // page 2 -> specifications -> microphone -> microphone fields user defined -> accessible screen reader text elements -> field names
+
+  // returns an array of tuples containing the error and valid text elements for each field name
+  const microphoneFieldsAdditionalKeysErrorValidTextElements: [
+    JSX.Element,
+    JSX.Element
+  ][] = Array.from(microphoneFieldsAdditional).map((keyFieldValue) => {
+    const [mapKey, [field, _value]] = keyFieldValue;
+
+    // screenreader accessible error/valid text elements that are consumed by the text input element creator
+    const [
+      microphoneFieldsAdditionalKeysInputErrorText,
+      microphoneFieldsAdditionalKeysInputValidText,
+    ] = AccessibleErrorValidTextElements({
+      inputElementKind: `additional field name ${mapKey + 1}`,
+      inputText: field,
+      isInputTextFocused:
+        areMicrophoneFieldsAdditionalFocused.get(mapKey)?.[0] ?? false,
+      isValidInputText:
+        areMicrophoneFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+      regexValidationText: returnObjectKeyValidationText({
+        content: field,
+        contentKind: `additional field name ${mapKey + 1}`,
+        maxLength: 75,
+        minLength: 1,
+      }),
+    });
+
+    return [
+      microphoneFieldsAdditionalKeysInputErrorText,
+      microphoneFieldsAdditionalKeysInputValidText,
+    ];
+  });
+
+  // page 2 -> specifications -> microphone -> microphone fields user defined -> accessible screen reader text elements -> field values
+
+  // returns an array of tuples containing the error and valid text elements for each field value
+  const microphoneFieldsAdditionalValuesErrorValidTextElements: [
+    JSX.Element,
+    JSX.Element
+  ][] = Array.from(microphoneFieldsAdditional).map((keyFieldValue) => {
+    const [mapKey, [_field, value]] = keyFieldValue;
+
+    // screenreader accessible error/valid text elements that are consumed by the text input element creator
+    const [
+      microphoneFieldsAdditionalValuesInputErrorText,
+      microphoneFieldsAdditionalValuesInputValidText,
+    ] = AccessibleErrorValidTextElements({
+      inputElementKind: `additional field value ${mapKey + 1}`,
+      inputText: value,
+      isInputTextFocused:
+        areMicrophoneFieldsAdditionalFocused.get(mapKey)?.[1] ?? false,
+      isValidInputText:
+        areMicrophoneFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+      regexValidationText: returnUserDefinedFieldValueValidationText({
+        content: value,
+        contentKind: `additional field value ${mapKey + 1}`,
+        maxLength: 2000,
+        minLength: 2,
+      }),
+    });
+
+    return [
+      microphoneFieldsAdditionalValuesInputErrorText,
+      microphoneFieldsAdditionalValuesInputValidText,
+    ];
+  });
+
+  // page 2 -> specifications -> microphone -> microphone fields user defined -> text area input element creator
+  const createdMicrophoneFieldsAdditionalTextInputElements = Array.from(
+    microphoneFieldsAdditional
+  ).map((keyFieldValue) => {
+    const [mapKey, [field, value]] = keyFieldValue;
+
+    const microphoneFieldsAdditionalKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+      {
+        description: {
+          error:
+            microphoneFieldsAdditionalKeysErrorValidTextElements[mapKey][0],
+          valid:
+            microphoneFieldsAdditionalKeysErrorValidTextElements[mapKey][1],
+        },
+        inputText: field,
+        isValidInputText:
+          areMicrophoneFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+        label: `Name ${mapKey + 1}`,
+        maxLength: 75,
+        minLength: 1,
+        onBlur: () => {
+          createProductDispatch({
+            type: createProductAction.setAreMicrophoneFieldsAdditionalFocused,
+            payload: {
+              operation: 'update',
+              data: false,
+              index: mapKey,
+              kind: 'key',
+            },
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
+          createProductDispatch({
+            type: createProductAction.setMicrophoneFieldsAdditional,
+            payload: {
+              operation: 'update',
+              data: event.currentTarget.value,
+              index: mapKey,
+              kind: 'key',
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setCurrentlySelectedAdditionalFieldIndex,
+            payload: mapKey,
+          });
+        },
+        onFocus: () => {
+          createProductDispatch({
+            type: createProductAction.setAreMicrophoneFieldsAdditionalFocused,
+            payload: {
+              operation: 'update',
+              data: true,
+              index: mapKey,
+              kind: 'key',
+            },
+          });
+        },
+        placeholder: 'Enter additional field name',
+        required: true,
+        semanticName: `additional field name ${mapKey + 1}`,
+      };
+
+    const microphoneFieldsAdditionalValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+      {
+        description: {
+          error:
+            microphoneFieldsAdditionalValuesErrorValidTextElements[mapKey][0],
+          valid:
+            microphoneFieldsAdditionalValuesErrorValidTextElements[mapKey][1],
+        },
+        inputText: value,
+        isValidInputText:
+          areMicrophoneFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+        label: `Value ${mapKey + 1}`,
+        maxLength: 2000,
+        minLength: 2,
+        onBlur: () => {
+          createProductDispatch({
+            type: createProductAction.setAreMicrophoneFieldsAdditionalFocused,
+            payload: {
+              operation: 'update',
+              data: false,
+              index: mapKey,
+              kind: 'value',
+            },
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
+          createProductDispatch({
+            type: createProductAction.setMicrophoneFieldsAdditional,
+            payload: {
+              operation: 'update',
+              data: event.currentTarget.value,
+              index: mapKey,
+              kind: 'value',
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setCurrentlySelectedAdditionalFieldIndex,
+            payload: mapKey,
+          });
+        },
+        onFocus: () => {
+          createProductDispatch({
+            type: createProductAction.setAreMicrophoneFieldsAdditionalFocused,
+            payload: {
+              operation: 'update',
+              data: true,
+              index: mapKey,
+              kind: 'value',
+            },
+          });
+        },
+        placeholder: 'Enter additional field value',
+        required: true,
+        semanticName: `additional field value ${mapKey + 1}`,
+      };
+
+    const [
+      createdMicrophoneFieldsAdditionalKeysTextAreaInput,
+      createdMicrophoneFieldsAdditionalValuesTextAreaInput,
+    ] = returnAccessibleTextAreaInputElements([
+      microphoneFieldsAdditionalKeysTextInputCreatorInfo,
+      microphoneFieldsAdditionalValuesTextInputCreatorInfo,
+    ]);
+
+    const [createdDeleteButton] = returnAccessibleButtonElements([
+      {
+        buttonLabel: 'Delete',
+        buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
+          createProductDispatch({
+            type: createProductAction.setMicrophoneFieldsAdditional,
+            payload: {
+              operation: 'remove',
+              index: mapKey,
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setAreMicrophoneFieldsAdditionalFocused,
+            payload: {
+              operation: 'remove',
+              index: mapKey,
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setAreMicrophoneFieldsAdditionalValid,
+            payload: {
+              operation: 'remove',
+              index: mapKey,
+            },
+          });
+
+          createProductDispatch({
+            type: createProductAction.setCurrentlySelectedAdditionalFieldIndex,
+            payload: -1,
+          });
+        },
+        leftIcon: <TbTrash />,
+        semanticDescription: `Delete additional field ${mapKey + 1}`,
+        semanticName: 'Delete field and value',
+      },
+    ]);
+
+    const displayDeleteButton = (
+      <Tooltip label={`Delete additional field ${mapKey + 1}`}>
+        <Group>{createdDeleteButton}</Group>
+      </Tooltip>
+    );
+
+    return (
+      <Stack
+        key={`microphoneFieldsAdditional-${mapKey}`}
+        pt={padding}
+        style={{ borderTop: borderColor }}
+        w="100%"
+      >
+        <Group position="apart">
+          <Text size="md" weight={600}>{`Additional field ${mapKey + 1}`}</Text>
+          {displayDeleteButton}
+        </Group>
+        <Group position="apart">
+          {createdMicrophoneFieldsAdditionalKeysTextAreaInput}
+          {createdMicrophoneFieldsAdditionalValuesTextAreaInput}
+        </Group>
+      </Stack>
+    );
+  });
+
   // page 4
 
   // page 4 -> submit button
@@ -7678,7 +13057,7 @@ function CreateProduct() {
   // │ Input Display                                                │
   // ╰──────────────────────────────────────────────────────────────╯
 
-  // input display -> page 1
+  // page 1
 
   const displayCreateProductFormPage1 = (
     <FormLayoutWrapper>
@@ -7701,15 +13080,25 @@ function CreateProduct() {
     </FormLayoutWrapper>
   );
 
-  // input display -> page 2
+  // page 2
 
-  // input display -> page 2 -> specifications
+  // page 2 -> specifications
 
-  // input display -> page 2 -> specifications -> central processing unit
+  // page 2 -> specifications -> cpu
+
+  // page 2 -> specifications -> cpu -> add new button
+  const displayCpuFieldsAdditionalButton = (
+    <Tooltip label={`Add new additional field ${cpuFieldsAdditional.size + 1}`}>
+      <Group>{createdAddCpuFieldsAdditionalButton}</Group>
+    </Tooltip>
+  );
+
+  // page 2 -> specifications -> cpu -> display
   const displayCpuSpecificationsInputs = (
-    <FormLayoutWrapper>
-      <Group w="100%">
+    <Group w="100%">
+      <Group w="100%" position="apart">
         <Title order={4}>CPU Specifications</Title>
+        {displayCpuFieldsAdditionalButton}
       </Group>
       {createdCpuSocketTextInput}
       {createdCpuWattageTextInput}
@@ -7721,14 +13110,25 @@ function CreateProduct() {
       {createdCpuL2CacheCapacityUnitSelectInput}
       {createdCpuL3CacheCapacityTextInput}
       {createdCpuL3CacheCapacityUnitSelectInput}
-    </FormLayoutWrapper>
+      {createdCpuFieldsAdditionalTextInputElements}
+    </Group>
   );
 
-  // input display -> page 2 -> specifications -> gpu chipset
+  // page 2 -> specifications -> gpu chipset
+
+  // page 2 -> specifications -> gpu -> add new button
+  const displayGpuFieldsAdditionalButton = (
+    <Tooltip label={`Add new additional field ${gpuFieldsAdditional.size + 1}`}>
+      <Group>{createdAddGpuFieldsAdditionalButton}</Group>
+    </Tooltip>
+  );
+
+  // page 2 -> specifications -> gpu -> display
   const displayGpuSpecificationsInputs = (
-    <FormLayoutWrapper>
-      <Group w="100%">
+    <Group w="100%">
+      <Group w="100%" position="apart">
         <Title order={4}>GPU Specifications</Title>
+        {displayGpuFieldsAdditionalButton}
       </Group>
       {createdGpuChipsetTextInput}
       {createdGpuMemoryCapacityTextInput}
@@ -7736,14 +13136,27 @@ function CreateProduct() {
       {createdGpuWattageTextInput}
       {createdGpuCoreClockTextInput}
       {createdGpuBoostClockTextInput}
-    </FormLayoutWrapper>
+      {createdGpuFieldsAdditionalTextInputElements}
+    </Group>
   );
 
-  // input display -> page 2 -> specifications -> motherboard
+  // page 2 -> specifications -> motherboard
+
+  // page 2 -> specifications -> motherboard -> add new button
+  const displayMotherboardFieldsAdditionalButton = (
+    <Tooltip
+      label={`Add new additional field ${motherboardFieldsAdditional.size + 1}`}
+    >
+      <Group>{createdAddMotherboardFieldsAdditionalButton}</Group>
+    </Tooltip>
+  );
+
+  // page 2 -> specifications -> motherboard -> display
   const displayMotherboardSpecificationsInputs = (
-    <FormLayoutWrapper>
-      <Group w="100%">
+    <Group w="100%">
+      <Group w="100%" position="apart">
         <Title order={4}>Motherboard Specifications</Title>
+        {displayMotherboardFieldsAdditionalButton}
       </Group>
       {createdMotherboardSocketTextInput}
       {createdMotherboardChipsetTextInput}
@@ -7757,14 +13170,25 @@ function CreateProduct() {
       {createdMotherboardPcie3SlotsTextInput}
       {createdMotherboardPcie4SlotsTextInput}
       {createdMotherboardPcie5SlotsTextInput}
-    </FormLayoutWrapper>
+      {createdMotherboardFieldsAdditionalTextInputElements}
+    </Group>
   );
 
-  // input display -> page 2 -> specifications -> ram
+  // page 2 -> specifications -> ram
+
+  // page 2 -> specifications -> ram -> add new button
+  const displayRamFieldsAdditionalButton = (
+    <Tooltip label={`Add new additional field ${ramFieldsAdditional.size + 1}`}>
+      <Group>{createdAddRamFieldsAdditionalButton}</Group>
+    </Tooltip>
+  );
+
+  // page 2 -> specifications -> ram -> display
   const displayRamSpecificationsInputs = (
-    <FormLayoutWrapper>
-      <Group w="100%">
+    <Group w="100%">
+      <Group w="100%" position="apart">
         <Title order={4}>Memory (RAM) Specifications</Title>
+        {displayRamFieldsAdditionalButton}
       </Group>
       {createdRamDataRateTextInput}
       {createdRamModulesQuantityTextInput}
@@ -7774,14 +13198,27 @@ function CreateProduct() {
       {createdRamColorTextInput}
       {createdRamVoltageTextInput}
       {createdRamTimingTextInput}
-    </FormLayoutWrapper>
+      {createdRamFieldsAdditionalTextInputElements}
+    </Group>
   );
 
-  // input display -> page 2 -> specifications -> storage
+  // page 2 -> specifications -> storage
+
+  // page 2 -> specifications -> storage -> add new button
+  const displayStorageFieldsAdditionalButton = (
+    <Tooltip
+      label={`Add new additional field ${storageFieldsAdditional.size + 1}`}
+    >
+      <Group>{createdAddStorageFieldsAdditionalButton}</Group>
+    </Tooltip>
+  );
+
+  // page 2 -> specifications -> storage -> display
   const displayStorageSpecificationsInputs = (
-    <FormLayoutWrapper>
-      <Group w="100%">
+    <Group w="100%">
+      <Group w="100%" position="apart">
         <Title order={4}>Storage Specifications</Title>
+        {displayStorageFieldsAdditionalButton}
       </Group>
       {createdStorageTypeSelectInput}
       {createdStorageInterfaceSelectInput}
@@ -7790,39 +13227,76 @@ function CreateProduct() {
       {createdStorageCacheCapacityTextInput}
       {createdStorageCacheCapacityUnitSelectInput}
       {createdStorageFormFactorSelectInput}
-    </FormLayoutWrapper>
+      {createdStorageFieldsAdditionalTextInputElements}
+    </Group>
   );
 
-  // input display -> page 2 -> specifications -> power supply
+  // page 2 -> specifications -> power supply
+
+  // page 2 -> specifications -> power supply -> add new button
+  const displayPsuFieldsAdditionalButton = (
+    <Tooltip label={`Add new additional field ${psuFieldsAdditional.size + 1}`}>
+      <Group>{createdAddPsuFieldsAdditionalButton}</Group>
+    </Tooltip>
+  );
+
+  // page 2 -> specifications -> power supply -> display
   const displayPowerSupplySpecificationsInputs = (
-    <FormLayoutWrapper>
-      <Group w="100%">
+    <Group w="100%">
+      <Group w="100%" position="apart">
         <Title order={4}>Power Supply Unit (PSU) Specifications</Title>
+        {displayPsuFieldsAdditionalButton}
       </Group>
       {createdPsuWattageTextInput}
       {createdPsuEfficiencyRatingSelectInput}
       {createdPsuFormFactorSelectInput}
       {createdPsuModularitySelectInput}
-    </FormLayoutWrapper>
+      {createdPsuFieldsAdditionalTextInputElements}
+    </Group>
   );
 
-  // input display -> page 2 -> specifications -> computer case
+  // page 2 -> specifications -> computer case
+
+  // page 2 -> specifications -> computer case -> add new button
+  const displayCaseFieldsAdditionalButton = (
+    <Tooltip
+      label={`Add new additional field ${caseFieldsAdditional.size + 1}`}
+    >
+      <Group>{createdAddCaseFieldsAdditionalButton}</Group>
+    </Tooltip>
+  );
+
+  // page 2 -> specifications -> computer case -> display
   const displayComputerCaseSpecificationsInputs = (
-    <FormLayoutWrapper>
-      <Group w="100%">
+    <Group w="100%">
+      <Group w="100%" position="apart">
         <Title order={4}>Case Specifications</Title>
+        {displayCaseFieldsAdditionalButton}
       </Group>
       {createdCaseTypeSelectInput}
       {createdCaseColorTextInput}
       {createdCaseSidePanelSelectInput}
-    </FormLayoutWrapper>
+      {createdCaseFieldsAdditionalTextInputElements}
+    </Group>
   );
 
-  // input display -> page 2 -> specifications -> display
+  // page 2 -> specifications -> display
+
+  // page 2 -> specifications -> display -> add new button
+  const displayDisplayFieldsAdditionalButton = (
+    <Tooltip
+      label={`Add new additional field ${displayFieldsAdditional.size + 1}`}
+    >
+      <Group>{createdAddDisplayFieldsAdditionalButton}</Group>
+    </Tooltip>
+  );
+
+  // page 2 -> specifications -> display -> display
   const displayDisplaySpecificationsInputs = (
-    <FormLayoutWrapper>
-      <Group w="100%">
+    <Group w="100%">
+      <Group w="100%" position="apart">
         <Title order={4}>Display Specifications</Title>
+        {displayDisplayFieldsAdditionalButton}
       </Group>
       {createdDisplaySizeTextInput}
       {createdDisplayResolutionHorizontalTextInput}
@@ -7831,41 +13305,80 @@ function CreateProduct() {
       {createdDisplayPanelTypeSelectInput}
       {createdDisplayResponseTimeTextInput}
       {createdDisplayAspectRatioTextInput}
-    </FormLayoutWrapper>
+      {createdDisplayFieldsAdditionalTextInputElements}
+    </Group>
   );
 
-  // input display -> page 2 -> specifications -> keyboard
+  // page 2 -> specifications -> keyboard
+
+  // page 2 -> specifications -> keyboard -> add new button
+  const displayKeyboardFieldsAdditionalButton = (
+    <Tooltip
+      label={`Add new additional field ${keyboardFieldsAdditional.size + 1}`}
+    >
+      <Group>{createdAddKeyboardFieldsAdditionalButton}</Group>
+    </Tooltip>
+  );
+
+  // page 2 -> specifications -> keyboard -> display
   const displayKeyboardSpecificationsInputs = (
-    <FormLayoutWrapper>
-      <Group w="100%">
+    <Group w="100%">
+      <Group w="100%" position="apart">
         <Title order={4}>Keyboard Specifications</Title>
+        {displayKeyboardFieldsAdditionalButton}
       </Group>
       {createdKeyboardSwitchSelectInput}
       {createdKeyboardLayoutSelectInput}
       {createdKeyboardBacklightSelectInput}
       {createdKeyboardInterfaceSelectInput}
-    </FormLayoutWrapper>
+      {createdKeyboardFieldsAdditionalTextInputElements}
+    </Group>
   );
 
-  // input display -> page 2 -> specifications -> mouse
+  // page 2 -> specifications -> mouse
+
+  // page 2 -> specifications -> mouse -> add new button
+  const displayMouseFieldsAdditionalButton = (
+    <Tooltip
+      label={`Add new additional field ${mouseFieldsAdditional.size + 1}`}
+    >
+      <Group>{createdAddMouseFieldsAdditionalButton}</Group>
+    </Tooltip>
+  );
+
+  // page 2 -> specifications -> mouse -> display
   const displayMouseSpecificationsInputs = (
-    <FormLayoutWrapper>
-      <Group w="100%">
+    <Group w="100%">
+      <Group w="100%" position="apart">
         <Title order={4}>Mouse Specifications</Title>
+        {displayMouseFieldsAdditionalButton}
       </Group>
       {createdMouseSensorSelectInput}
       {createdMouseDpiTextInput}
       {createdMouseButtonsTextInput}
       {createdMouseColorTextInput}
       {createdMouseInterfaceSelectInput}
-    </FormLayoutWrapper>
+      {createdMouseFieldsAdditionalTextInputElements}
+    </Group>
   );
 
-  // input display -> page 2 -> specifications -> headphone
+  // page 2 -> specifications -> headphone
+
+  // page 2 -> specifications -> headphone -> add new button
+  const displayHeadphoneFieldsAdditionalButton = (
+    <Tooltip
+      label={`Add new additional field ${headphoneFieldsAdditional.size + 1}`}
+    >
+      <Group>{createdAddHeadphoneFieldsAdditionalButton}</Group>
+    </Tooltip>
+  );
+
+  // page 2 -> specifications -> headphone -> display
   const displayHeadphoneSpecificationsInputs = (
-    <FormLayoutWrapper>
-      <Group w="100%">
+    <Group w="100%">
+      <Group w="100%" position="apart">
         <Title order={4}>Headphone Specifications</Title>
+        {displayHeadphoneFieldsAdditionalButton}
       </Group>
       {createdHeadphoneTypeSelectInput}
       {createdHeadphoneDriverTextInput}
@@ -7873,28 +13386,54 @@ function CreateProduct() {
       {createdHeadphoneImpedanceTextInput}
       {createdHeadphoneColorTextInput}
       {createdHeadphoneInterfaceSelectInput}
-    </FormLayoutWrapper>
+      {createdHeadphoneFieldsAdditionalTextInputElements}
+    </Group>
   );
 
-  // input display -> page 2 -> specifications -> speaker
+  // page 2 -> specifications -> speaker
+
+  // page 2 -> specifications -> speaker -> add new button
+  const displaySpeakerFieldsAdditionalButton = (
+    <Tooltip
+      label={`Add new additional field ${speakerFieldsAdditional.size + 1}`}
+    >
+      <Group>{createdAddSpeakerFieldsAdditionalButton}</Group>
+    </Tooltip>
+  );
+
+  // page 2 -> specifications -> speaker -> display
   const displaySpeakerSpecificationsInputs = (
-    <FormLayoutWrapper>
-      <Group w="100%">
+    <Group w="100%">
+      <Group w="100%" position="apart">
         <Title order={4}>Speaker Specifications</Title>
+        {displaySpeakerFieldsAdditionalButton}
       </Group>
       {createdSpeakerTypeSelectInput}
       {createdSpeakerTotalWattageTextInput}
       {createdSpeakerFrequencyResponseTextInput}
       {createdSpeakerColorTextInput}
       {createdSpeakerInterfaceSelectInput}
-    </FormLayoutWrapper>
+      {createdSpeakerFieldsAdditionalTextInputElements}
+    </Group>
   );
 
-  // input display -> page 2 -> specifications -> smartphone
+  // page 2 -> specifications -> smartphone
+
+  // page 2 -> specifications -> smartphone -> add new button
+  const displaySmartphoneFieldsAdditionalButton = (
+    <Tooltip
+      label={`Add new additional field ${smartphoneFieldsAdditional.size + 1}`}
+    >
+      <Group>{createdAddSmartphoneFieldsAdditionalButton}</Group>
+    </Tooltip>
+  );
+
+  // page 2 -> specifications -> smartphone -> display
   const displaySmartphoneSpecificationsInputs = (
-    <FormLayoutWrapper>
-      <Group w="100%">
+    <Group w="100%">
+      <Group w="100%" position="apart">
         <Title order={4}>Smartphone Specifications</Title>
+        {displaySmartphoneFieldsAdditionalButton}
       </Group>
       {createdSmartphoneOsSelectInput}
       {createdSmartphoneChipsetTextInput}
@@ -7907,14 +13446,27 @@ function CreateProduct() {
       {createdSmartphoneStorageCapacityTextInput}
       {createdSmartphoneBatteryCapacityTextInput}
       {createdSmartphoneCameraTextInput}
-    </FormLayoutWrapper>
+      {createdSmartphoneFieldsAdditionalTextInputElements}
+    </Group>
   );
 
-  // input display -> page 2 -> specifications -> tablet
+  // page 2 -> specifications -> tablet
+
+  // page 2 -> specifications -> tablet -> add new button
+  const displayTabletFieldsAdditionalButton = (
+    <Tooltip
+      label={`Add new additional field ${tabletFieldsAdditional.size + 1}`}
+    >
+      <Group>{createdAddTabletFieldsAdditionalButton}</Group>
+    </Tooltip>
+  );
+
+  // page 2 -> specifications -> tablet -> display
   const displayTabletSpecificationsInputs = (
-    <FormLayoutWrapper>
-      <Group w="100%">
+    <Group w="100%">
+      <Group w="100%" position="apart">
         <Title order={4}>Tablet Specifications</Title>
+        {displayTabletFieldsAdditionalButton}
       </Group>
       {createdTabletOsSelectInput}
       {createdTabletChipsetTextInput}
@@ -7927,20 +13479,24 @@ function CreateProduct() {
       {createdTabletStorageCapacityTextInput}
       {createdTabletBatteryCapacityTextInput}
       {createdTabletCameraTextInput}
-    </FormLayoutWrapper>
+      {createdTabletFieldsAdditionalTextInputElements}
+    </Group>
   );
 
-  // input display -> page 2 -> specifications -> accessory
+  // page 2 -> specifications -> accessory
 
-  // input display -> page 2 -> specifications -> accessory -> add new button
+  // page 2 -> specifications -> accessory -> add new button
   const displayAccessoryFieldsAdditionalButton = (
-    <Tooltip label="Add new accessory field and value">
+    <Tooltip
+      label={`Add new additional field ${accessoryFieldsAdditional.size + 1}`}
+    >
       <Group>{createdAddAccessoryFieldsAdditionalButton}</Group>
     </Tooltip>
   );
 
+  // page 2 -> specifications -> accessory -> display
   const displayAccessorySpecificationsInputs = (
-    <FormLayoutWrapper>
+    <Group w="100%">
       <Group w="100%" position="apart">
         <Title order={4}>Accessory Specifications</Title>
         {displayAccessoryFieldsAdditionalButton}
@@ -7949,10 +13505,10 @@ function CreateProduct() {
       {createdAccessoryColorTextInput}
       {createdAccessoryInterfaceSelectInput}
       {createdAccessoryFieldsAdditionalTextInputElements}
-    </FormLayoutWrapper>
+    </Group>
   );
 
-  // input display -> page 2 -> specifications -> desktop computers
+  // page 2 -> specifications -> desktop computers
   const displayDesktopComputersSpecificationsInputs = (
     <>
       {displayCpuSpecificationsInputs}
@@ -7969,7 +13525,7 @@ function CreateProduct() {
     </>
   );
 
-  // input display -> page 2 -> specifications -> laptop computers
+  // page 2 -> specifications -> laptop computers
   const displayLaptopComputersSpecificationsInputs = (
     <>
       {displayCpuSpecificationsInputs}
@@ -7980,37 +13536,65 @@ function CreateProduct() {
     </>
   );
 
-  // input display -> page 2 -> specifications -> webcams
+  // page 2 -> specifications -> webcams
+
+  // page 2 -> specifications -> webcams -> add new button
+  const displayWebcamFieldsAdditionalButton = (
+    <Tooltip
+      label={`Add new additional field ${webcamFieldsAdditional.size + 1}`}
+    >
+      <Group>{createdAddWebcamFieldsAdditionalButton}</Group>
+    </Tooltip>
+  );
+
+  // page 2 -> specifications -> webcams -> display
   const displayWebcamSpecificationsInputs = (
-    <FormLayoutWrapper>
-      <Group w="100%">
+    <Group w="100%">
+      <Group w="100%" position="apart">
         <Title order={4}>Webcam Specifications</Title>
+        {displayWebcamFieldsAdditionalButton}
       </Group>
       {createdWebcamResolutionSelectInput}
       {createdWebcamColorTextInput}
       {createdWebcamMicrophoneSelectInput}
       {createdWebcamInterfaceSelectInput}
       {createdWebcamFrameRateSelectInput}
-    </FormLayoutWrapper>
+      {createdWebcamFieldsAdditionalTextInputElements}
+    </Group>
   );
 
-  // input display -> page 2 -> specifications -> microphones
+  // page 2 -> specifications -> microphones
+
+  // page 2 -> specifications -> microphones -> add new button
+  const displayMicrophoneFieldsAdditionalButton = (
+    <Tooltip
+      label={`Add new additional field ${microphoneFieldsAdditional.size + 1}`}
+    >
+      <Group>{createdAddMicrophoneFieldsAdditionalButton}</Group>
+    </Tooltip>
+  );
+
+  // page 2 -> specifications -> microphones -> display
   const displayMicrophoneSpecificationsInputs = (
-    <FormLayoutWrapper>
-      <Group w="100%">
+    <Group w="100%">
+      <Group w="100%" position="apart">
         <Title order={4}>Microphone Specifications</Title>
+        {displayMicrophoneFieldsAdditionalButton}
       </Group>
       {createdMicrophoneTypeSelectInput}
       {createdMicrophoneColorTextInput}
       {createdMicrophoneInterfaceSelectInput}
       {createdMicrophonePolarPatternSelectInput}
       {createdMicrophoneFrequencyResponseTextInput}
-    </FormLayoutWrapper>
+      {createdMicrophoneFieldsAdditionalTextInputElements}
+    </Group>
   );
 
   const displayCreateProductFormPage2 = (
     <FormLayoutWrapper>
-      <Group py={padding}>{createdProductCategorySelectInput}</Group>
+      <Group py={padding} style={{ borderBottom: borderColor }}>
+        {createdProductCategorySelectInput}
+      </Group>
       {productCategory === 'Accessories'
         ? displayAccessorySpecificationsInputs
         : productCategory === 'Central Processing Units (CPUs)'
@@ -8055,8 +13639,8 @@ function CreateProduct() {
   // │ Form Review Objects                                          │
   // ╰──────────────────────────────────────────────────────────────╯
 
-  // form review object -> page 1
-  const page1FormReviewObject: FormReviewObject = {
+  // page 1
+  const page1FormReviewObject: FormReviewObjectArray = {
     'Product Details': [
       {
         inputName: 'Brand',
@@ -8133,12 +13717,21 @@ function CreateProduct() {
     ],
   };
 
-  // form review object -> page 2
+  // page 2
 
-  // form review object -> page 2 -> specifications
+  // page 2 -> specifications
 
-  // form review object -> page 2 -> specifications -> central processing unit
-  const page2CpuFormReviewObject: FormReviewObject = {
+  // page 2 -> specifications -> cpu
+
+  // page 2 -> specifications -> cpu -> cpu fields user defined -> form review objs
+  const cpuFieldsAdditionalFormReviewObjects =
+    returnFormReviewObjectsFromUserDefinedFields({
+      additionalFields: cpuFieldsAdditional,
+      areAdditionalFieldsValid: areCpuFieldsAdditionalValid,
+    });
+
+  // page 2 -> specifications -> cpu -> cpu fields hardcoded -> form review objs
+  const page2CpuFormReviewObject: FormReviewObjectArray = {
     'CPU Specifications': [
       {
         inputName: 'CPU Socket',
@@ -8187,11 +13780,20 @@ function CreateProduct() {
         inputValue: cpuWattage,
         isInputValueValid: isCpuWattageValid,
       },
+      ...cpuFieldsAdditionalFormReviewObjects,
     ],
   };
 
-  // form review object -> page 2 -> specifications -> gpu chipset
-  const page2GpuFormReviewObject: FormReviewObject = {
+  // page 2 -> specifications -> gpu chipset
+
+  // page 2 -> specifications -> gpu -> gpu fields user defined -> form review objs
+  const gpuFieldsAdditionalFormReviewObjects =
+    returnFormReviewObjectsFromUserDefinedFields({
+      additionalFields: gpuFieldsAdditional,
+      areAdditionalFieldsValid: areGpuFieldsAdditionalValid,
+    });
+
+  const page2GpuFormReviewObject: FormReviewObjectArray = {
     'GPU Specifications': [
       {
         inputName: 'GPU Chipset',
@@ -8222,11 +13824,20 @@ function CreateProduct() {
         inputValue: gpuTdp,
         isInputValueValid: isGpuTdpValid,
       },
+      ...gpuFieldsAdditionalFormReviewObjects,
     ],
   };
 
-  // form review object -> page 2 -> specifications -> motherboard
-  const page2MotherboardFormReviewObject: FormReviewObject = {
+  // page 2 -> specifications -> motherboard
+
+  // page 2 -> specifications -> motherboard -> motherboard fields user defined -> form review objs
+  const motherboardFieldsAdditionalFormReviewObjects =
+    returnFormReviewObjectsFromUserDefinedFields({
+      additionalFields: motherboardFieldsAdditional,
+      areAdditionalFieldsValid: areMotherboardFieldsAdditionalValid,
+    });
+
+  const page2MotherboardFormReviewObject: FormReviewObjectArray = {
     'Motherboard Specifications': [
       {
         inputName: 'Motherboard Socket',
@@ -8287,11 +13898,20 @@ function CreateProduct() {
           ? isMotherboardPcie5SlotsValid
           : true,
       },
+      ...motherboardFieldsAdditionalFormReviewObjects,
     ],
   };
 
-  // form review object -> page 2 -> specifications -> ram
-  const page2RamFormReviewObject: FormReviewObject = {
+  // page 2 -> specifications -> ram
+
+  // page 2 -> specifications -> ram -> ram fields user defined -> form review objs
+  const ramFieldsAdditionalFormReviewObjects =
+    returnFormReviewObjectsFromUserDefinedFields({
+      additionalFields: ramFieldsAdditional,
+      areAdditionalFieldsValid: areRamFieldsAdditionalValid,
+    });
+
+  const page2RamFormReviewObject: FormReviewObjectArray = {
     'Memory (RAM) Specifications': [
       {
         inputName: 'RAM Data Rate',
@@ -8331,11 +13951,20 @@ function CreateProduct() {
         inputValue: ramTiming,
         isInputValueValid: isRamTimingValid,
       },
+      ...ramFieldsAdditionalFormReviewObjects,
     ],
   };
 
-  // form review object -> page 2 -> specifications -> storage
-  const page2StorageFormReviewObject: FormReviewObject = {
+  // page 2 -> specifications -> storage
+
+  // page 2 -> specifications -> storage -> storage fields user defined -> form review objs
+  const storageFieldsAdditionalFormReviewObjects =
+    returnFormReviewObjectsFromUserDefinedFields({
+      additionalFields: storageFieldsAdditional,
+      areAdditionalFieldsValid: areStorageFieldsAdditionalValid,
+    });
+
+  const page2StorageFormReviewObject: FormReviewObjectArray = {
     'Storage Specifications': [
       {
         inputName: 'Storage Type',
@@ -8367,11 +13996,20 @@ function CreateProduct() {
         inputName: 'Storage Interface',
         inputValue: storageInterface,
       },
+      ...storageFieldsAdditionalFormReviewObjects,
     ],
   };
 
-  // form review object -> page 2 -> specifications -> power supply
-  const page2PowerSupplyFormReviewObject: FormReviewObject = {
+  // page 2 -> specifications -> power supply
+
+  // page 2 -> specifications -> power supply -> power supply fields user defined -> form review objs
+  const psuFieldsAdditionalFormReviewObjects =
+    returnFormReviewObjectsFromUserDefinedFields({
+      additionalFields: psuFieldsAdditional,
+      areAdditionalFieldsValid: arePsuFieldsAdditionalValid,
+    });
+
+  const page2PowerSupplyFormReviewObject: FormReviewObjectArray = {
     'Power Supply Unit (PSU) Specifications': [
       {
         inputName: 'PSU Wattage',
@@ -8390,11 +14028,20 @@ function CreateProduct() {
         inputName: 'PSU Modularity',
         inputValue: psuModularity,
       },
+      ...psuFieldsAdditionalFormReviewObjects,
     ],
   };
 
-  // form review object -> page 2 -> specifications -> computer case
-  const page2ComputerCaseFormReviewObject: FormReviewObject = {
+  // page 2 -> specifications -> computer case
+
+  // page 2 -> specifications -> computer case -> computer case fields user defined -> form review objs
+  const caseFieldsAdditionalFormReviewObjects =
+    returnFormReviewObjectsFromUserDefinedFields({
+      additionalFields: caseFieldsAdditional,
+      areAdditionalFieldsValid: areCaseFieldsAdditionalValid,
+    });
+
+  const page2ComputerCaseFormReviewObject: FormReviewObjectArray = {
     'Case Specifications': [
       {
         inputName: 'Case Type',
@@ -8409,11 +14056,20 @@ function CreateProduct() {
         inputName: 'Case Side Panel',
         inputValue: caseSidePanel,
       },
+      ...caseFieldsAdditionalFormReviewObjects,
     ],
   };
 
-  // form review object -> page 2 -> specifications -> display
-  const page2DisplayFormReviewObject: FormReviewObject = {
+  // page 2 -> specifications -> display
+
+  // page 2 -> specifications -> display -> display fields user defined -> form review objs
+  const displayFieldsAdditionalFormReviewObjects =
+    returnFormReviewObjectsFromUserDefinedFields({
+      additionalFields: displayFieldsAdditional,
+      areAdditionalFieldsValid: areDisplayFieldsAdditionalValid,
+    });
+
+  const page2DisplayFormReviewObject: FormReviewObjectArray = {
     'Display Specifications': [
       {
         inputName: 'Display Size',
@@ -8449,11 +14105,20 @@ function CreateProduct() {
         inputValue: displayAspectRatio,
         isInputValueValid: isDisplayAspectRatioValid,
       },
+      ...displayFieldsAdditionalFormReviewObjects,
     ],
   };
 
-  // form review object -> page 2 -> specifications -> keyboard
-  const page2KeyboardFormReviewObject: FormReviewObject = {
+  // page 2 -> specifications -> keyboard
+
+  // page 2 -> specifications -> keyboard -> keyboard fields user defined -> form review objs
+  const keyboardFieldsAdditionalFormReviewObjects =
+    returnFormReviewObjectsFromUserDefinedFields({
+      additionalFields: keyboardFieldsAdditional,
+      areAdditionalFieldsValid: areKeyboardFieldsAdditionalValid,
+    });
+
+  const page2KeyboardFormReviewObject: FormReviewObjectArray = {
     'Keyboard Specifications': [
       {
         inputName: 'Keyboard Switch',
@@ -8471,11 +14136,20 @@ function CreateProduct() {
         inputName: 'Keyboard Interface',
         inputValue: keyboardInterface,
       },
+      ...keyboardFieldsAdditionalFormReviewObjects,
     ],
   };
 
-  // form review object -> page 2 -> specifications -> mouse
-  const page2MouseFormReviewObject: FormReviewObject = {
+  // page 2 -> specifications -> mouse
+
+  // page 2 -> specifications -> mouse -> mouse fields user defined -> form review objs
+  const mouseFieldsAdditionalFormReviewObjects =
+    returnFormReviewObjectsFromUserDefinedFields({
+      additionalFields: mouseFieldsAdditional,
+      areAdditionalFieldsValid: areMouseFieldsAdditionalValid,
+    });
+
+  const page2MouseFormReviewObject: FormReviewObjectArray = {
     'Mouse Specifications': [
       {
         inputName: 'Mouse Sensor',
@@ -8500,11 +14174,20 @@ function CreateProduct() {
         inputName: 'Mouse Interface',
         inputValue: mouseInterface,
       },
+      ...mouseFieldsAdditionalFormReviewObjects,
     ],
   };
 
-  // form review object -> page 2 -> specifications -> headphone
-  const page2HeadphoneFormReviewObject: FormReviewObject = {
+  // page 2 -> specifications -> headphone
+
+  // page 2 -> specifications -> headphone -> headphone fields user defined -> form review objs
+  const headphoneFieldsAdditionalFormReviewObjects =
+    returnFormReviewObjectsFromUserDefinedFields({
+      additionalFields: headphoneFieldsAdditional,
+      areAdditionalFieldsValid: areHeadphoneFieldsAdditionalValid,
+    });
+
+  const page2HeadphoneFormReviewObject: FormReviewObjectArray = {
     'Headphone Specifications': [
       {
         inputName: 'Headphone Type',
@@ -8534,11 +14217,20 @@ function CreateProduct() {
         inputName: 'Headphone Interface',
         inputValue: headphoneInterface,
       },
+      ...headphoneFieldsAdditionalFormReviewObjects,
     ],
   };
 
-  // form review object -> page 2 -> specifications -> speaker
-  const page2SpeakerFormReviewObject: FormReviewObject = {
+  // page 2 -> specifications -> speaker
+
+  // page 2 -> specifications -> speaker -> speaker fields user defined -> form review objs
+  const speakerFieldsAdditionalFormReviewObjects =
+    returnFormReviewObjectsFromUserDefinedFields({
+      additionalFields: speakerFieldsAdditional,
+      areAdditionalFieldsValid: areSpeakerFieldsAdditionalValid,
+    });
+
+  const page2SpeakerFormReviewObject: FormReviewObjectArray = {
     'Speaker Specifications': [
       {
         inputName: 'Speaker Type',
@@ -8563,11 +14255,19 @@ function CreateProduct() {
         inputName: 'Speaker Interface',
         inputValue: speakerInterface,
       },
+      ...speakerFieldsAdditionalFormReviewObjects,
     ],
   };
 
-  // form review object -> page 2 -> specifications -> smartphone
-  const page2SmartphoneFormReviewObject: FormReviewObject = {
+  // page 2 -> specifications -> smartphone
+
+  // page 2 -> specifications -> smartphone -> smartphone fields user defined -> form review objs
+  const smartphoneFieldsAdditionalFormReviewObjects =
+    returnFormReviewObjectsFromUserDefinedFields({
+      additionalFields: smartphoneFieldsAdditional,
+      areAdditionalFieldsValid: areSmartphoneFieldsAdditionalValid,
+    });
+  const page2SmartphoneFormReviewObject: FormReviewObjectArray = {
     'Smartphone Specifications': [
       {
         inputName: 'Smartphone OS',
@@ -8622,11 +14322,20 @@ function CreateProduct() {
         inputValue: smartphoneColor,
         isInputValueValid: isSmartphoneColorValid,
       },
+      ...smartphoneFieldsAdditionalFormReviewObjects,
     ],
   };
 
-  // form review object -> page 2 -> specifications -> tablet
-  const page2TabletFormReviewObject: FormReviewObject = {
+  // page 2 -> specifications -> tablet
+
+  // page 2 -> specifications -> tablet -> tablet fields user defined -> form review objs
+  const tabletFieldsAdditionalFormReviewObjects =
+    returnFormReviewObjectsFromUserDefinedFields({
+      additionalFields: tabletFieldsAdditional,
+      areAdditionalFieldsValid: areTabletFieldsAdditionalValid,
+    });
+
+  const page2TabletFormReviewObject: FormReviewObjectArray = {
     'Tablet Specifications': [
       {
         inputName: 'Tablet OS',
@@ -8681,11 +14390,20 @@ function CreateProduct() {
         inputValue: tabletColor,
         isInputValueValid: isTabletColorValid,
       },
+      ...tabletFieldsAdditionalFormReviewObjects,
     ],
   };
 
-  // form review object -> page 2 -> specifications -> accessory
-  const page2AccessoryFormReviewObject: FormReviewObject = {
+  // page 2 -> specifications -> accessory
+
+  // page 2 -> specifications -> accessory -> accessory fields user defined -> form review objs
+  const accessoryFieldsAdditionalFormReviewObjects =
+    returnFormReviewObjectsFromUserDefinedFields({
+      additionalFields: accessoryFieldsAdditional,
+      areAdditionalFieldsValid: areAccessoryFieldsAdditionalValid,
+    });
+
+  const page2AccessoryFormReviewObject: FormReviewObjectArray = {
     'Accessory Specifications': [
       {
         inputName: 'Accessory Type',
@@ -8701,11 +14419,20 @@ function CreateProduct() {
         inputName: 'Accessory Interface',
         inputValue: accessoryInterface,
       },
+      ...accessoryFieldsAdditionalFormReviewObjects,
     ],
   };
 
-  // form review object -> page 2 -> specifications -> webcams
-  const page2WebcamFormReviewObject: FormReviewObject = {
+  // page 2 -> specifications -> webcams
+
+  // page 2 -> specifications -> webcams -> webcam fields user defined -> form review objs
+  const webcamFieldsAdditionalFormReviewObjects =
+    returnFormReviewObjectsFromUserDefinedFields({
+      additionalFields: webcamFieldsAdditional,
+      areAdditionalFieldsValid: areWebcamFieldsAdditionalValid,
+    });
+
+  const page2WebcamFormReviewObject: FormReviewObjectArray = {
     'Webcam Specifications': [
       {
         inputName: 'Webcam Resolution',
@@ -8728,11 +14455,20 @@ function CreateProduct() {
         inputName: 'Webcam Frame Rate',
         inputValue: webcamFrameRate,
       },
+      ...webcamFieldsAdditionalFormReviewObjects,
     ],
   };
 
-  // form review object -> page 2 -> specifications -> microphones
-  const page2MicrophoneFormReviewObject: FormReviewObject = {
+  // page 2 -> specifications -> microphones
+
+  // page 2 -> specifications -> microphones -> microphone fields user defined -> form review objs
+  const microphoneFieldsAdditionalFormReviewObjects =
+    returnFormReviewObjectsFromUserDefinedFields({
+      additionalFields: microphoneFieldsAdditional,
+      areAdditionalFieldsValid: areMicrophoneFieldsAdditionalValid,
+    });
+
+  const page2MicrophoneFormReviewObject: FormReviewObjectArray = {
     'Microphone Specifications': [
       {
         inputName: 'Microphone Type',
@@ -8756,11 +14492,12 @@ function CreateProduct() {
         inputValue: microphoneFrequencyResponse,
         isInputValueValid: isMicrophoneFrequencyResponseValid,
       },
+      ...microphoneFieldsAdditionalFormReviewObjects,
     ],
   };
 
-  // form review object -> page 2 -> specifications -> desktop computers
-  const page2DesktopComputerFormReviewObject: FormReviewObject = {
+  // page 2 -> specifications -> desktop computers
+  const page2DesktopComputerFormReviewObject: FormReviewObjectArray = {
     ...page2CpuFormReviewObject,
     ...page2GpuFormReviewObject,
     ...page2MotherboardFormReviewObject,
@@ -8774,15 +14511,15 @@ function CreateProduct() {
     ...page2SpeakerFormReviewObject,
   };
 
-  // form review object -> page 2 -> specifications -> laptop computers
-  const page2LaptopComputerFormReviewObject: FormReviewObject = {
+  // page 2 -> specifications -> laptop computers
+  const page2LaptopComputerFormReviewObject: FormReviewObjectArray = {
     ...page2CpuFormReviewObject,
     ...page2GpuFormReviewObject,
     ...page2RamFormReviewObject,
     ...page2StorageFormReviewObject,
   };
 
-  const page3ImageUploadsFormReviewObject: FormReviewObject = {
+  const page3ImageUploadsFormReviewObject: FormReviewObjectArray = {
     'Upload Images': [
       {
         inputName: 'Images',
@@ -8792,7 +14529,7 @@ function CreateProduct() {
     ],
   };
 
-  const CREATE_PRODUCT_FORM_REVIEW_OBJECTS: FormReviewObject = {
+  const CREATE_PRODUCT_FORM_REVIEW_OBJECTS: FormReviewObjectArray = {
     ...page1FormReviewObject,
     ...(productCategory === 'Accessories'
       ? page2AccessoryFormReviewObject
@@ -8904,6 +14641,40 @@ function CreateProduct() {
   );
 
   return displayCreateProductComponent;
+
+  //
+  //
+  //
+  //
+  //
+  //
+
+  // // product category select input
+  // const [createdProductCategorySelectInput] =
+  //   returnAccessibleSelectInputElements([
+  //     {
+  //       data: PRODUCT_CATEGORIES,
+  //       description: '',
+  //       label: 'Product Category',
+  //       onChange: (event: React.ChangeEvent<HTMLSelectElement>) => {
+  //         selectProductCategoryDispatch(
+  //           event.currentTarget.value as ProductCategory
+  //         );
+  //         navigate(
+  //           `/home/dashboard/product/create/${event.currentTarget.value}`
+  //         );
+  //       },
+  //       value: productCategory,
+  //       required: true,
+  //     },
+  //   ]);
+
+  // return (
+  //   <Stack w="100%">
+  //     {createdProductCategorySelectInput}
+  //     <Outlet />
+  //   </Stack>
+  // );
 }
 
 export default CreateProduct;

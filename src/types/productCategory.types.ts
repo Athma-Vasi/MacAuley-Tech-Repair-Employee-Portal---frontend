@@ -31,7 +31,7 @@ type ProductCategory =
   | 'Tablets'
   | 'Webcams';
 
-type ProductAvailability =
+type MerchandiseAvailability =
   | 'In Stock'
   | 'Out of Stock'
   | 'Pre-order'
@@ -168,7 +168,7 @@ export type {
   MotherboardFormFactor,
   MouseSensor,
   PeripheralsInterface,
-  ProductAvailability,
+  MerchandiseAvailability,
   ProductCategory,
   ProductReview,
   ProductServerResponse,

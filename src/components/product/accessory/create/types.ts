@@ -1,11 +1,15 @@
-import { Currency } from '../../../../types';
+import { Currency, SetStepsInErrorPayload } from '../../../../types';
 import {
   DimensionUnit,
   PeripheralsInterface,
-  ProductAvailability,
+  MerchandiseAvailability,
   ProductReview,
   WeightUnit,
 } from '../../../../types/productCategory.types';
+import {
+  AdditionalFieldsPayload,
+  AdditionalFieldsValidFocusedPayload,
+} from '../../create/types';
 
 type AccessorySchema = {
   userId: string;
@@ -17,7 +21,7 @@ type AccessorySchema = {
   description: string;
   price: Number;
   currency: Currency;
-  availability: ProductAvailability;
+  availability: MerchandiseAvailability;
   quantity: number;
   weight: number;
   weightUnit: WeightUnit;
@@ -69,17 +73,27 @@ type CreateAccessoryState = {
   isPriceValid: boolean;
   isPriceFocused: boolean;
   currency: Currency;
-  availability: ProductAvailability;
-  quantity: number;
+  availability: MerchandiseAvailability;
+  quantity: string;
+  isQuantityValid: boolean;
+  isQuantityFocused: boolean;
   // page 1 -> weight
-  weight: number;
+  weight: string;
+  isWeightValid: boolean;
+  isWeightFocused: boolean;
   weightUnit: WeightUnit;
   // page 1 -> dimensions
-  dimensionLength: number;
+  dimensionLength: string;
+  isDimensionLengthValid: boolean;
+  isDimensionLengthFocused: boolean;
   dimensionLengthUnit: DimensionUnit;
-  dimensionWidth: number;
+  dimensionWidth: string;
+  isDimensionWidthValid: boolean;
+  isDimensionWidthFocused: boolean;
   dimensionWidthUnit: DimensionUnit;
-  dimensionHeight: number;
+  dimensionHeight: string;
+  isDimensionHeightValid: boolean;
+  isDimensionHeightFocused: boolean;
   dimensionHeightUnit: DimensionUnit;
   // page 1 -> additional comments
   additionalComments: string;
@@ -96,15 +110,16 @@ type CreateAccessoryState = {
   isAccessoryColorValid: boolean;
   isAccessoryColorFocused: boolean;
   accessoryInterface: PeripheralsInterface;
-  accessoryFieldsAdditional: Map<number, [string, string]>; // Map<index, [field, value]>
-  areAccessoryFieldsAdditionalValid: Map<number, [boolean, boolean]>; // Map<index, [isFieldValid, isValueValid]>
-  areAccessoryFieldsAdditionalFocused: Map<number, [boolean, boolean]>; // Map<index, [isFieldFocused, isValueFocused]>
+  accessoryFieldsAdditional: Map<number, [string, string]>; // Map<index, [key, value]>
+  areAccessoryFieldsAdditionalValid: Map<number, [boolean, boolean]>; // Map<index, [isKeyValid, isValueValid]>
+  areAccessoryFieldsAdditionalFocused: Map<number, [boolean, boolean]>; // Map<index, [isKeyFocused, isValueFocused]>
+  currentlySelectedAdditionalFieldIndex: number; // currently updating idx
 
   // page 3
   imgFormDataArray: FormData[];
   areImagesValid: boolean;
 
-  currentlySelectedAdditionalFieldIndex: number; // currently updating idx
+  // misc.
   triggerFormSubmit: boolean;
   currentStepperPosition: number;
   stepsInError: Set<number>;
@@ -113,10 +128,283 @@ type CreateAccessoryState = {
   submitMessage: string;
   isSuccessful: boolean;
   successMessage: string;
-  isLoading: boolean;
-  loadingMessage: string;
 };
 
-type CreateAccessoryAction = {};
+type CreateAccessoryAction = {
+  // page 1
+  // page 1 -> brand
+  setBrand: 'setBrand';
+  setIsBrandValid: 'setIsBrandValid';
+  setIsBrandFocused: 'setIsBrandFocused';
+  // page 1 -> model, product category
+  setModel: 'setModel';
+  setIsModelValid: 'setIsModelValid';
+  setIsModelFocused: 'setIsModelFocused';
+  // page 1 -> description
+  setDescription: 'setDescription';
+  setIsDescriptionValid: 'setIsDescriptionValid';
+  setIsDescriptionFocused: 'setIsDescriptionFocused';
+  // page 1 -> price, currency, availability
+  setPrice: 'setPrice';
+  setIsPriceValid: 'setIsPriceValid';
+  setIsPriceFocused: 'setIsPriceFocused';
+  setCurrency: 'setCurrency';
+  setAvailability: 'setAvailability';
+  // page 1 -> quantity
+  setQuantity: 'setQuantity';
+  setIsQuantityValid: 'setIsQuantityValid';
+  setIsQuantityFocused: 'setIsQuantityFocused';
+  // page 1 -> weight
+  setWeight: 'setWeight';
+  setIsWeightValid: 'setIsWeightValid';
+  setIsWeightFocused: 'setIsWeightFocused';
+  setWeightUnit: 'setWeightUnit';
+  // page 1 -> dimensions
+  setDimensionLength: 'setDimensionLength';
+  setIsDimensionLengthValid: 'setIsDimensionLengthValid';
+  setIsDimensionLengthFocused: 'setIsDimensionLengthFocused';
+  setDimensionLengthUnit: 'setDimensionLengthUnit';
+  setDimensionWidth: 'setDimensionWidth';
+  setIsDimensionWidthValid: 'setIsDimensionWidthValid';
+  setIsDimensionWidthFocused: 'setIsDimensionWidthFocused';
+  setDimensionWidthUnit: 'setDimensionWidthUnit';
+  setDimensionHeight: 'setDimensionHeight';
+  setIsDimensionHeightValid: 'setIsDimensionHeightValid';
+  setIsDimensionHeightFocused: 'setIsDimensionHeightFocused';
+  setDimensionHeightUnit: 'setDimensionHeightUnit';
+  // page 1 -> additional comments
+  setAdditionalComments: 'setAdditionalComments';
+  setIsAdditionalCommentsValid: 'setIsAdditionalCommentsValid';
+  setIsAdditionalCommentsFocused: 'setIsAdditionalCommentsFocused';
 
-type CreateAccessoryDispatch = {};
+  // page 2 -> specifications -> accessory
+  setAccessoryType: 'setAccessoryType';
+  setIsAccessoryTypeValid: 'setIsAccessoryTypeValid';
+  setIsAccessoryTypeFocused: 'setIsAccessoryTypeFocused';
+  setAccessoryColor: 'setAccessoryColor';
+  setIsAccessoryColorValid: 'setIsAccessoryColorValid';
+  setIsAccessoryColorFocused: 'setIsAccessoryColorFocused';
+  setAccessoryInterface: 'setAccessoryInterface';
+  setAccessoryFieldsAdditional: 'setAccessoryFieldsAdditional';
+  setAreAccessoryFieldsAdditionalValid: 'setAreAccessoryFieldsAdditionalValid';
+  setAreAccessoryFieldsAdditionalFocused: 'setAreAccessoryFieldsAdditionalFocused';
+  setCurrentlySelectedAdditionalFieldIndex: 'setCurrentlySelectedAdditionalFieldIndex';
+
+  // page 3
+  setImgFormDataArray: 'setImgFormDataArray';
+  setAreImagesValid: 'setAreImagesValid';
+
+  setTriggerFormSubmit: 'setTriggerFormSubmit';
+  setCurrentStepperPosition: 'setCurrentStepperPosition';
+  setStepsInError: 'setStepsInError';
+
+  setIsSubmitting: 'setIsSubmitting';
+  setSubmitMessage: 'setSubmitMessage';
+  setIsSuccessful: 'setIsSuccessful';
+  setSuccessMessage: 'setSuccessMessage';
+};
+
+type CreateAccessoryDispatch =
+  | {
+      type: CreateAccessoryAction['setBrand'];
+      payload: string;
+    }
+  | {
+      type:
+        | CreateAccessoryAction['setIsBrandValid']
+        | CreateAccessoryAction['setIsBrandFocused'];
+      payload: boolean;
+    }
+  | {
+      type: CreateAccessoryAction['setModel'];
+      payload: string;
+    }
+  | {
+      type:
+        | CreateAccessoryAction['setIsModelValid']
+        | CreateAccessoryAction['setIsModelFocused'];
+      payload: boolean;
+    }
+  | {
+      type: CreateAccessoryAction['setDescription'];
+      payload: string;
+    }
+  | {
+      type:
+        | CreateAccessoryAction['setIsDescriptionValid']
+        | CreateAccessoryAction['setIsDescriptionFocused'];
+      payload: boolean;
+    }
+  | {
+      type: CreateAccessoryAction['setPrice'];
+      payload: string;
+    }
+  | {
+      type:
+        | CreateAccessoryAction['setIsPriceValid']
+        | CreateAccessoryAction['setIsPriceFocused'];
+      payload: boolean;
+    }
+  | {
+      type: CreateAccessoryAction['setCurrency'];
+      payload: Currency;
+    }
+  | {
+      type: CreateAccessoryAction['setAvailability'];
+      payload: MerchandiseAvailability;
+    }
+  | {
+      type: CreateAccessoryAction['setQuantity'];
+      payload: string;
+    }
+  | {
+      type:
+        | CreateAccessoryAction['setIsQuantityValid']
+        | CreateAccessoryAction['setIsQuantityFocused'];
+      payload: boolean;
+    }
+  | {
+      type: CreateAccessoryAction['setWeight'];
+      payload: string;
+    }
+  | {
+      type:
+        | CreateAccessoryAction['setIsWeightValid']
+        | CreateAccessoryAction['setIsWeightFocused'];
+      payload: boolean;
+    }
+  | {
+      type: CreateAccessoryAction['setWeightUnit'];
+      payload: WeightUnit;
+    }
+  | {
+      type: CreateAccessoryAction['setDimensionLength'];
+      payload: string;
+    }
+  | {
+      type:
+        | CreateAccessoryAction['setIsDimensionLengthFocused']
+        | CreateAccessoryAction['setIsDimensionLengthValid'];
+      payload: boolean;
+    }
+  | {
+      type: CreateAccessoryAction['setDimensionLengthUnit'];
+      payload: DimensionUnit;
+    }
+  | {
+      type: CreateAccessoryAction['setDimensionWidth'];
+      payload: string;
+    }
+  | {
+      type:
+        | CreateAccessoryAction['setIsDimensionWidthValid']
+        | CreateAccessoryAction['setIsDimensionWidthFocused'];
+      payload: boolean;
+    }
+  | {
+      type: CreateAccessoryAction['setDimensionWidthUnit'];
+      payload: DimensionUnit;
+    }
+  | {
+      type: CreateAccessoryAction['setDimensionHeight'];
+      payload: string;
+    }
+  | {
+      type:
+        | CreateAccessoryAction['setIsDimensionHeightValid']
+        | CreateAccessoryAction['setIsDimensionHeightFocused'];
+      payload: boolean;
+    }
+  | {
+      type: CreateAccessoryAction['setDimensionHeightUnit'];
+      payload: DimensionUnit;
+    }
+  | {
+      type: CreateAccessoryAction['setAdditionalComments'];
+      payload: string;
+    }
+  | {
+      type:
+        | CreateAccessoryAction['setIsAdditionalCommentsValid']
+        | CreateAccessoryAction['setIsAdditionalCommentsFocused'];
+      payload: boolean;
+    } // specifications -> accessory
+  | {
+      type: CreateAccessoryAction['setAccessoryType'];
+      payload: string;
+    }
+  | {
+      type:
+        | CreateAccessoryAction['setIsAccessoryTypeValid']
+        | CreateAccessoryAction['setIsAccessoryTypeFocused'];
+      payload: boolean;
+    }
+  | {
+      type: CreateAccessoryAction['setAccessoryColor'];
+      payload: string;
+    }
+  | {
+      type:
+        | CreateAccessoryAction['setIsAccessoryColorValid']
+        | CreateAccessoryAction['setIsAccessoryColorFocused'];
+      payload: boolean;
+    }
+  | {
+      type: CreateAccessoryAction['setAccessoryInterface'];
+      payload: PeripheralsInterface;
+    }
+  | {
+      type: CreateAccessoryAction['setAccessoryFieldsAdditional'];
+      payload: AdditionalFieldsPayload;
+    }
+  | {
+      type:
+        | CreateAccessoryAction['setAreAccessoryFieldsAdditionalValid']
+        | CreateAccessoryAction['setAreAccessoryFieldsAdditionalFocused'];
+      payload: AdditionalFieldsValidFocusedPayload;
+    } // page 3
+  | {
+      type: CreateAccessoryAction['setCurrentlySelectedAdditionalFieldIndex'];
+      payload: number;
+    }
+  | {
+      type: CreateAccessoryAction['setImgFormDataArray'];
+      payload: FormData[];
+    }
+  | {
+      type: CreateAccessoryAction['setAreImagesValid'];
+      payload: boolean;
+    }
+  //
+  | {
+      type: CreateAccessoryAction['setTriggerFormSubmit'];
+      payload: boolean;
+    }
+  | {
+      type: CreateAccessoryAction['setCurrentStepperPosition'];
+      payload: number;
+    }
+  | {
+      type: CreateAccessoryAction['setStepsInError'];
+      payload: SetStepsInErrorPayload;
+    }
+  | {
+      type:
+        | CreateAccessoryAction['setIsSubmitting']
+        | CreateAccessoryAction['setIsSuccessful'];
+      payload: boolean;
+    }
+  | {
+      type:
+        | CreateAccessoryAction['setSubmitMessage']
+        | CreateAccessoryAction['setSuccessMessage'];
+      payload: string;
+    };
+
+export type {
+  AccessoryDocument,
+  AccessorySchema,
+  CreateAccessoryAction,
+  CreateAccessoryDispatch,
+  CreateAccessoryState,
+};

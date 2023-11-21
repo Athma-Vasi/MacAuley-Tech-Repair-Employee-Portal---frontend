@@ -41,7 +41,7 @@ import {
   urlBuilder,
 } from '../../../utils';
 import FormReviewPage, {
-  FormReviewObject,
+  FormReviewObjectArray,
 } from '../../formReviewPage/FormReviewPage';
 import { NotificationModal } from '../../notificationModal';
 import {
@@ -915,7 +915,7 @@ function CreateBenefit() {
     </FormLayoutWrapper>
   );
 
-  const CREATE_BENEFIT_REVIEW_OBJECT: FormReviewObject = {
+  const CREATE_BENEFIT_REVIEW_OBJECT: FormReviewObjectArray = {
     'Plan Details': [
       {
         inputName: 'Benefit Username',

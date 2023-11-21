@@ -42,7 +42,7 @@ import {
 } from '../../../utils';
 import { CURRENCY_DATA } from '../../benefits/constants';
 import FormReviewPage, {
-  FormReviewObject,
+  FormReviewObjectArray,
 } from '../../formReviewPage/FormReviewPage';
 import { ImageUpload } from '../../imageUpload';
 import { NotificationModal } from '../../notificationModal';
@@ -833,7 +833,7 @@ function CreateExpenseClaim() {
       </Tooltip>
     ) : null;
 
-  const EXPENSE_CLAIM_REVIEW_OBJECT: FormReviewObject = {
+  const EXPENSE_CLAIM_REVIEW_OBJECT: FormReviewObjectArray = {
     'Expense Details': [
       {
         inputName: 'Expense Claim Kind',

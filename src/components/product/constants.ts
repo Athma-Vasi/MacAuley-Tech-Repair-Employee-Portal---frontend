@@ -19,8 +19,8 @@ import {
   returnIntegerValidationText,
   returnLargeIntegerValidationText,
   returnMediumIntegerValidationText,
-  returnProductDimensionsValidationText,
-  returnProductWeightValidationText,
+  returnDimensionsValidationText,
+  returnWeightValidationText,
   returnRamTimingValidationText,
   returnRamVoltageValidationText,
   returnSerialIdValidationText,
@@ -63,7 +63,7 @@ import {
   WebcamMicrophone,
   WebcamResolution,
   WeightUnit,
-} from './types';
+} from './create/types';
 
 /**
  * - /^[^"'\s\\]{1,75}$/;
@@ -92,7 +92,7 @@ const USER_DEFINED_VALUE_REGEX =
  * - ^ and $ ensure that the entire string matches the regex.
  * - ex: 123456.78 or 123456
  */
-const PRODUCT_WEIGHT_REGEX = /^(?!^$|^0*$)[0-9]{1,6}(\.[0-9]{1,2})?$/;
+const WEIGHT_REGEX = /^(?!^$|^0*$)[0-9]{1,6}(\.[0-9]{1,2})?$/;
 
 /**
  * - /^(?!^$|^0*$)[0-9]{1,3}(\.[0-9]{1,2})?$/
@@ -103,8 +103,7 @@ const PRODUCT_WEIGHT_REGEX = /^(?!^$|^0*$)[0-9]{1,6}(\.[0-9]{1,2})?$/;
  * - ^ and $ ensure that the entire string matches the regex.
  * - ex: 123.45 or 123
  */
-const PRODUCT_DIMENSIONS_REGEX =
-  /^(?!^$|^0*$)(?!^0*\.?0*$)[0-9]{1,3}(\.[0-9]{1,2})?$/;
+const DIMENSIONS_REGEX = /^(?!^$|^0*$)(?!^0*\.?0*$)[0-9]{1,3}(\.[0-9]{1,2})?$/;
 
 /**
  * - /^(?!^$|^0*$)[0-9]{1,2}(\.[0-9]{1,2})?$/
@@ -591,8 +590,8 @@ const PRODUCTS_QUERY_DATA: ComponentQueryData[] = [
     label: 'Weight',
     value: 'weight',
     inputKind: 'numberInput',
-    regex: PRODUCT_WEIGHT_REGEX,
-    regexValidationFn: returnProductWeightValidationText,
+    regex: WEIGHT_REGEX,
+    regexValidationFn: returnWeightValidationText,
   },
   {
     label: 'Weight Unit',
@@ -604,8 +603,8 @@ const PRODUCTS_QUERY_DATA: ComponentQueryData[] = [
     label: 'Length',
     value: 'length',
     inputKind: 'numberInput',
-    regex: PRODUCT_DIMENSIONS_REGEX,
-    regexValidationFn: returnProductDimensionsValidationText,
+    regex: DIMENSIONS_REGEX,
+    regexValidationFn: returnDimensionsValidationText,
   },
   {
     label: 'Length Unit',
@@ -617,8 +616,8 @@ const PRODUCTS_QUERY_DATA: ComponentQueryData[] = [
     label: 'Width',
     value: 'width',
     inputKind: 'numberInput',
-    regex: PRODUCT_DIMENSIONS_REGEX,
-    regexValidationFn: returnProductDimensionsValidationText,
+    regex: DIMENSIONS_REGEX,
+    regexValidationFn: returnDimensionsValidationText,
   },
   {
     label: 'Width Unit',
@@ -630,8 +629,8 @@ const PRODUCTS_QUERY_DATA: ComponentQueryData[] = [
     label: 'Height',
     value: 'height',
     inputKind: 'numberInput',
-    regex: PRODUCT_DIMENSIONS_REGEX,
-    regexValidationFn: returnProductDimensionsValidationText,
+    regex: DIMENSIONS_REGEX,
+    regexValidationFn: returnDimensionsValidationText,
   },
   {
     label: 'Height Unit',
@@ -987,8 +986,8 @@ const PRODUCTS_QUERY_DATA: ComponentQueryData[] = [
     label: 'Display Size (in)',
     value: 'displaySize',
     inputKind: 'numberInput',
-    regex: PRODUCT_DIMENSIONS_REGEX,
-    regexValidationFn: returnProductDimensionsValidationText,
+    regex: DIMENSIONS_REGEX,
+    regexValidationFn: returnDimensionsValidationText,
   },
   {
     label: 'Display Horizontal Resolution',
@@ -1021,8 +1020,8 @@ const PRODUCTS_QUERY_DATA: ComponentQueryData[] = [
     label: 'Display Response Time (ms)',
     value: 'displayResponseTime',
     inputKind: 'numberInput',
-    regex: PRODUCT_DIMENSIONS_REGEX,
-    regexValidationFn: returnProductDimensionsValidationText,
+    regex: DIMENSIONS_REGEX,
+    regexValidationFn: returnDimensionsValidationText,
   },
   {
     label: 'Display Aspect Ratio',
@@ -1188,8 +1187,8 @@ const PRODUCTS_QUERY_DATA: ComponentQueryData[] = [
     label: 'Smartphone Display (in)',
     value: 'smartphoneDisplay',
     inputKind: 'numberInput',
-    regex: PRODUCT_DIMENSIONS_REGEX,
-    regexValidationFn: returnProductDimensionsValidationText,
+    regex: DIMENSIONS_REGEX,
+    regexValidationFn: returnDimensionsValidationText,
   },
   {
     label: 'Smartphone Horizontal Resolution',
@@ -1265,8 +1264,8 @@ const PRODUCTS_QUERY_DATA: ComponentQueryData[] = [
     label: 'Tablet Display (in)',
     value: 'tabletDisplay',
     inputKind: 'numberInput',
-    regex: PRODUCT_DIMENSIONS_REGEX,
-    regexValidationFn: returnProductDimensionsValidationText,
+    regex: DIMENSIONS_REGEX,
+    regexValidationFn: returnDimensionsValidationText,
   },
   {
     label: 'Tablet Horizontal Resolution',
@@ -1458,8 +1457,8 @@ export {
   OBJECT_KEY_REGEX,
   PERIPHERALS_INTERFACE_DATA,
   PRODUCT_AVAILABILITY_DATA,
-  PRODUCT_DIMENSIONS_REGEX,
-  PRODUCT_WEIGHT_REGEX,
+  DIMENSIONS_REGEX,
+  WEIGHT_REGEX,
   PRODUCTS_QUERY_DATA,
   PRODUCTS_RESOURCE_PATHS,
   PSU_EFFICIENCY_RATING_DATA,

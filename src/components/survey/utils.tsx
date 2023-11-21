@@ -1,7 +1,7 @@
 import { Group, Stack } from '@mantine/core';
 
 import { addFieldsToObject, splitCamelCase } from '../../utils';
-import { FormReviewObject } from '../formReviewPage/FormReviewPage';
+import { FormReviewObjectArray } from '../formReviewPage/FormReviewPage';
 import { SurveyQuestions } from './create/types';
 import { SurveyResponseInput, SurveyResponseKind } from './types';
 
@@ -115,7 +115,7 @@ function setSurveyQuestions({
 }
 
 type CreateSurveyFormReviewObjectInput = {
-  initialFormReviewObject: FormReviewObject;
+  initialFormReviewObject: FormReviewObjectArray;
   questions: string[];
   areValidQuestions: boolean[];
   responseKinds: string[];
@@ -134,14 +134,18 @@ function createSurveyFormReviewObject({
   responseInputHtml,
   responseDataOptionsArray,
   areResponseDataOptionsValid,
-}: CreateSurveyFormReviewObjectInput): FormReviewObject {
+}: CreateSurveyFormReviewObjectInput): FormReviewObjectArray {
   // only add to form review object if there are questions
   if (questions.length === 1 && questions[0] === '') {
     return initialFormReviewObject;
   }
 
   const formReviewObject = questions.reduce(
-    (formReviewObjectAcc: FormReviewObject, question: string, questionIdx) => {
+    (
+      formReviewObjectAcc: FormReviewObjectArray,
+      question: string,
+      questionIdx
+    ) => {
       // create question field in form review object
       const modifiedQuestion = `Question ${questionIdx + 1}`;
       formReviewObjectAcc[modifiedQuestion] = [];

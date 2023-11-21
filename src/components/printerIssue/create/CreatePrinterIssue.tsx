@@ -50,7 +50,7 @@ import {
   urlBuilder,
 } from '../../../utils';
 import FormReviewPage, {
-  FormReviewObject,
+  FormReviewObjectArray,
 } from '../../formReviewPage/FormReviewPage';
 import { NotificationModal } from '../../notificationModal';
 import {
@@ -1003,7 +1003,7 @@ function CreatePrinterIssue() {
     </FormLayoutWrapper>
   );
 
-  const PRINTER_ISSUE_REVIEW_OBJECT: FormReviewObject = {
+  const PRINTER_ISSUE_REVIEW_OBJECT: FormReviewObjectArray = {
     'Personal and Contact Details': [
       {
         inputName: 'Title',

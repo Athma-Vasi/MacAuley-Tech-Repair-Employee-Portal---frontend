@@ -35,7 +35,7 @@ import {
   urlBuilder,
 } from '../../../utils';
 import FormReviewPage, {
-  FormReviewObject,
+  FormReviewObjectArray,
 } from '../../formReviewPage/FormReviewPage';
 import { NotificationModal } from '../../notificationModal';
 import {
@@ -709,7 +709,7 @@ function RequestResource() {
     </FormLayoutWrapper>
   );
 
-  const REQUEST_RESOURCE_REVIEW_OBJECT: FormReviewObject = {
+  const REQUEST_RESOURCE_REVIEW_OBJECT: FormReviewObjectArray = {
     'Resource Details': [
       {
         inputName: 'Department',

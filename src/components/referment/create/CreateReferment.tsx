@@ -50,7 +50,7 @@ import {
   urlBuilder,
 } from '../../../utils';
 import FormReviewPage, {
-  FormReviewObject,
+  FormReviewObjectArray,
 } from '../../formReviewPage/FormReviewPage';
 import { NotificationModal } from '../../notificationModal';
 import {
@@ -1055,7 +1055,7 @@ function CreateReferment() {
     </FormLayoutWrapper>
   );
 
-  const REFERMENT_REVIEW_OBJECT: FormReviewObject = {
+  const REFERMENT_REVIEW_OBJECT: FormReviewObjectArray = {
     'Candidate Details': [
       {
         inputName: 'Candidate Name',

@@ -37,7 +37,7 @@ import {
   urlBuilder,
 } from '../../../utils';
 import FormReviewPage, {
-  FormReviewObject,
+  FormReviewObjectArray,
 } from '../../formReviewPage/FormReviewPage';
 import { NotificationModal } from '../../notificationModal';
 import {
@@ -811,7 +811,7 @@ function CreateAnnouncement() {
     </FormLayoutWrapper>
   );
 
-  const CREATE_ANNOUNCEMENT_REVIEW_OBJECT: FormReviewObject = {
+  const CREATE_ANNOUNCEMENT_REVIEW_OBJECT: FormReviewObjectArray = {
     'Announcement Details': [
       {
         inputName: 'Article Title',

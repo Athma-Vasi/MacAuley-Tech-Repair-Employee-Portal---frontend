@@ -1,7 +1,7 @@
-import { FormReviewObject } from '../../formReviewPage/FormReviewPage';
+import { FormReviewObjectArray } from '../../formReviewPage/FormReviewPage';
 
 type CreateAnnouncementFormReviewObjectInput = {
-  initialAnnouncementFormReviewObject: FormReviewObject;
+  initialAnnouncementFormReviewObject: FormReviewObjectArray;
   article: string[];
   areValidArticleParagraphs: boolean[];
 };
@@ -15,7 +15,7 @@ function createAnnouncementFormReviewObject({
 }: CreateAnnouncementFormReviewObjectInput) {
   const formReviewObject = article.reduce(
     (
-      formReviewObjectAcc: FormReviewObject,
+      formReviewObjectAcc: FormReviewObjectArray,
       articleParagraph: string,
       paragraphIdx
     ) => {

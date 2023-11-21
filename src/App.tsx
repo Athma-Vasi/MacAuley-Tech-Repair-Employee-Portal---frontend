@@ -30,12 +30,19 @@ const DisplayResponsiveChart = lazy(
   () => import('./components/dashboard/DisplayResponsiveChart')
 );
 
-// dashboard -> create product
+// dashboard -> product
+
+// dashboard -> product -> create
 const CreateProduct = lazy(
   () => import('./components/product/create/CreateProduct')
 );
 
-// dashboard -> display products
+// dashboard -> product -> create -> accessory
+const CreateAccessory = lazy(
+  () => import('./components/product/accessory/create/CreateAccessory')
+);
+
+// dashboard -> product -> display
 const DisplayProducts = lazy(
   () => import('./components/product/DisplayProducts')
 );
@@ -226,6 +233,17 @@ function App() {
     <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
       <Suspense fallback={<div>Generic Loading message...</div>}>
         <CreateProduct />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // @desc   products page with accessory outlet
+  // @route  /home/product/create/accessory
+  // @access private
+  const createAccessoryElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>}>
+        <CreateAccessory />
       </Suspense>
     </ErrorBoundary>
   );

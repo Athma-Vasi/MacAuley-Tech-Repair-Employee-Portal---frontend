@@ -30,7 +30,7 @@ import {
   urlBuilder,
 } from '../../../utils';
 import FormReviewPage, {
-  FormReviewObject,
+  FormReviewObjectArray,
 } from '../../formReviewPage/FormReviewPage';
 import { NotificationModal } from '../../notificationModal';
 import {
@@ -1053,7 +1053,7 @@ function EventCreator() {
     </FormLayoutWrapper>
   );
 
-  const EVENT_CREATOR_REVIEW_OBJECT: FormReviewObject = {
+  const EVENT_CREATOR_REVIEW_OBJECT: FormReviewObjectArray = {
     'Event Date and Time': [
       {
         inputName: 'Event Title',

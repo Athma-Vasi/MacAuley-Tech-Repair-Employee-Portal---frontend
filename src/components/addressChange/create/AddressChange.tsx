@@ -45,7 +45,7 @@ import {
   urlBuilder,
 } from '../../../utils';
 import FormReviewPage, {
-  FormReviewObject,
+  FormReviewObjectArray,
 } from '../../formReviewPage/FormReviewPage';
 import { NotificationModal } from '../../notificationModal';
 import {
@@ -746,7 +746,7 @@ function AddressChange() {
       acknowledgementCheckboxCreatorInfo,
     ]);
 
-  const ADDRESS_CHANGE_REVIEW_OBJECT: FormReviewObject = {
+  const ADDRESS_CHANGE_REVIEW_OBJECT: FormReviewObjectArray = {
     'Contact Details': [
       {
         inputName: 'Personal Contact Number',

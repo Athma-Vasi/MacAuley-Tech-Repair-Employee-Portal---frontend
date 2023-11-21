@@ -1,6 +1,6 @@
-import { Action, Currency, SetStepsInErrorPayload, User } from '../../types';
-import { ActionsDashboard } from '../../types/actions.types';
-import { ProductCategory } from '../dashboard/types';
+import { Action, Currency, SetStepsInErrorPayload, User } from '../../../types';
+import { ActionsDashboard } from '../../../types/actions.types';
+import { ProductCategory } from '../../dashboard/types';
 
 type DesktopComputerSpecifications = {
   cpu: CpuSpecifications;
@@ -298,12 +298,56 @@ type ProductReview = {
   review: string;
 };
 
-type ProductAvailability =
+type MerchandiseAvailability =
   | 'In Stock'
   | 'Out of Stock'
   | 'Pre-order'
   | 'Discontinued'
   | 'Other';
+
+// /**
+//  * @description used to keep track of the currently selected additional field index for each product category.
+//  * - consumed in the validation useEffect to
+//  */
+// type CurrentlySelectedAdditionalFieldObj = {
+//   Accessories: number;
+//   'Central Processing Units (CPUs)': number;
+//   'Computer Cases': number;
+//   'Desktop Computers': {
+//     cpu: number;
+//     gpu: number;
+//     motherboard: number;
+//     ram: number;
+//     storage: number;
+//     psu: number;
+//     case: number;
+//     display: number;
+//     keyboard: number;
+//     mouse: number;
+//     speaker: number;
+//   };
+//   'Graphics Processing Units (GPUs)': number;
+//   Headphones: number;
+//   Keyboards: number;
+//   Laptops: {
+//     cpu: number;
+//     gpu: number;
+//     ram: number;
+//     storage: number;
+//     display: number;
+//   };
+//   'Memory(RAM)': number;
+//   Mice: number;
+//   Microphones: number;
+//   Displays: number;
+//   Motherboards: number;
+//   'Power Supplies': number;
+//   Smartphones: number;
+//   Speakers: number;
+//   Storage: number;
+//   Tablets: number;
+//   Webcams: number;
+// };
 
 type ProductSchema = {
   userId: string;
@@ -317,7 +361,7 @@ type ProductSchema = {
   description: string;
   price: string;
   currency: Currency;
-  availability: ProductAvailability;
+  availability: MerchandiseAvailability;
   quantity: number;
   weight: number;
   weightUnit: WeightUnit;
@@ -365,7 +409,7 @@ type CreateProductState = {
   isPriceValid: boolean;
   isPriceFocused: boolean;
   currency: Currency;
-  availability: ProductAvailability;
+  availability: MerchandiseAvailability;
   quantity: string;
   isQuantityValid: boolean;
   isQuantityFocused: boolean;
@@ -424,6 +468,9 @@ type CreateProductState = {
   cpuWattage: string;
   isCpuWattageValid: boolean;
   isCpuWattageFocused: boolean;
+  cpuFieldsAdditional: Map<number, [string, string]>; // Map<index, [name, value]>
+  areCpuFieldsAdditionalValid: Map<number, [boolean, boolean]>; // Map<index, [isNameValid, isValueValid]>
+  areCpuFieldsAdditionalFocused: Map<number, [boolean, boolean]>; // Map<index, [isNameFocused, isValueFocused]>
 
   // page 2 -> specifications -> gpu
   gpuChipset: string;
@@ -442,6 +489,9 @@ type CreateProductState = {
   gpuTdp: string;
   isGpuTdpValid: boolean;
   isGpuTdpFocused: boolean;
+  gpuFieldsAdditional: Map<number, [string, string]>; // Map<index, [name, value]>
+  areGpuFieldsAdditionalValid: Map<number, [boolean, boolean]>; // Map<index, [isNameValid, isValueValid]>
+  areGpuFieldsAdditionalFocused: Map<number, [boolean, boolean]>; // Map<index, [isNameFocused, isValueFocused]>
 
   // page 2 -> specifications -> motherboard
   motherboardSocket: string;
@@ -474,6 +524,9 @@ type CreateProductState = {
   motherboardPcie5Slots: string;
   isMotherboardPcie5SlotsValid: boolean;
   isMotherboardPcie5SlotsFocused: boolean;
+  motherboardFieldsAdditional: Map<number, [string, string]>; // Map<index, [name, value]>
+  areMotherboardFieldsAdditionalValid: Map<number, [boolean, boolean]>; // Map<index, [isNameValid, isValueValid]>
+  areMotherboardFieldsAdditionalFocused: Map<number, [boolean, boolean]>; // Map<index, [isNameFocused, isValueFocused]>
 
   // page 2 -> specifications -> ram
   ramDataRate: string;
@@ -496,6 +549,9 @@ type CreateProductState = {
   ramTiming: string;
   isRamTimingValid: boolean;
   isRamTimingFocused: boolean;
+  ramFieldsAdditional: Map<number, [string, string]>; // Map<index, [name, value]>
+  areRamFieldsAdditionalValid: Map<number, [boolean, boolean]>; // Map<index, [isNameValid, isValueValid]>
+  areRamFieldsAdditionalFocused: Map<number, [boolean, boolean]>; // Map<index, [isNameFocused, isValueFocused]>
 
   // page 2 -> specifications -> storage
   storageType: StorageType;
@@ -509,6 +565,9 @@ type CreateProductState = {
   storageCacheCapacityUnit: MemoryUnit;
   storageFormFactor: StorageFormFactor;
   storageInterface: StorageInterface;
+  storageFieldsAdditional: Map<number, [string, string]>; // Map<index, [name, value]>
+  areStorageFieldsAdditionalValid: Map<number, [boolean, boolean]>; // Map<index, [isNameValid, isValueValid]>
+  areStorageFieldsAdditionalFocused: Map<number, [boolean, boolean]>; // Map<index, [isNameFocused, isValueFocused]>
 
   // page 2 -> specifications -> psu
   psuWattage: string;
@@ -517,6 +576,9 @@ type CreateProductState = {
   psuEfficiency: PsuEfficiency;
   psuFormFactor: PsuFormFactor;
   psuModularity: PsuModularity;
+  psuFieldsAdditional: Map<number, [string, string]>; // Map<index, [name, value]>
+  arePsuFieldsAdditionalValid: Map<number, [boolean, boolean]>; // Map<index, [isNameValid, isValueValid]>
+  arePsuFieldsAdditionalFocused: Map<number, [boolean, boolean]>; // Map<index, [isNameFocused, isValueFocused]>
 
   // page 2 -> specifications -> case
   caseType: CaseType;
@@ -524,6 +586,9 @@ type CreateProductState = {
   isCaseColorValid: boolean;
   isCaseColorFocused: boolean;
   caseSidePanel: CaseSidePanel;
+  caseFieldsAdditional: Map<number, [string, string]>; // Map<index, [name, value]>
+  areCaseFieldsAdditionalValid: Map<number, [boolean, boolean]>; // Map<index, [isNameValid, isValueValid]>
+  areCaseFieldsAdditionalFocused: Map<number, [boolean, boolean]>; // Map<index, [isNameFocused, isValueFocused]>
 
   // page 2 -> specifications -> display
   displaySize: string; // inches
@@ -545,12 +610,18 @@ type CreateProductState = {
   displayAspectRatio: string;
   isDisplayAspectRatioValid: boolean;
   isDisplayAspectRatioFocused: boolean;
+  displayFieldsAdditional: Map<number, [string, string]>; // Map<index, [name, value]>
+  areDisplayFieldsAdditionalValid: Map<number, [boolean, boolean]>; // Map<index, [isNameValid, isValueValid]>
+  areDisplayFieldsAdditionalFocused: Map<number, [boolean, boolean]>; // Map<index, [isNameFocused, isValueFocused]>
 
   // page 2 -> specifications -> keyboard
   keyboardSwitch: KeyboardSwitch;
   keyboardLayout: KeyboardLayout;
   keyboardBacklight: KeyboardBacklight;
   keyboardInterface: PeripheralsInterface;
+  keyboardFieldsAdditional: Map<number, [string, string]>; // Map<index, [name, value]>
+  areKeyboardFieldsAdditionalValid: Map<number, [boolean, boolean]>; // Map<index, [isNameValid, isValueValid]>
+  areKeyboardFieldsAdditionalFocused: Map<number, [boolean, boolean]>; // Map<index, [isNameFocused, isValueFocused]>
 
   // page 2 -> specifications -> mouse
   mouseSensor: MouseSensor;
@@ -564,6 +635,9 @@ type CreateProductState = {
   isMouseColorValid: boolean;
   isMouseColorFocused: boolean;
   mouseInterface: PeripheralsInterface;
+  mouseFieldsAdditional: Map<number, [string, string]>; // Map<index, [name, value]>
+  areMouseFieldsAdditionalValid: Map<number, [boolean, boolean]>; // Map<index, [isNameValid, isValueValid]>
+  areMouseFieldsAdditionalFocused: Map<number, [boolean, boolean]>; // Map<index, [isNameFocused, isValueFocused]>
 
   // page 2 -> specifications -> headphone
   headphoneType: HeadphoneType;
@@ -580,6 +654,9 @@ type CreateProductState = {
   isHeadphoneColorValid: boolean;
   isHeadphoneColorFocused: boolean;
   headphoneInterface: HeadphoneInterface;
+  headphoneFieldsAdditional: Map<number, [string, string]>; // Map<index, [name, value]>
+  areHeadphoneFieldsAdditionalValid: Map<number, [boolean, boolean]>; // Map<index, [isNameValid, isValueValid]>
+  areHeadphoneFieldsAdditionalFocused: Map<number, [boolean, boolean]>; // Map<index, [isNameFocused, isValueFocused]>
 
   // page 2 -> specifications -> speaker
   speakerType: SpeakerType;
@@ -593,6 +670,9 @@ type CreateProductState = {
   isSpeakerColorValid: boolean;
   isSpeakerColorFocused: boolean;
   speakerInterface: SpeakerInterface;
+  speakerFieldsAdditional: Map<number, [string, string]>; // Map<index, [name, value]>
+  areSpeakerFieldsAdditionalValid: Map<number, [boolean, boolean]>; // Map<index, [isNameValid, isValueValid]>
+  areSpeakerFieldsAdditionalFocused: Map<number, [boolean, boolean]>; // Map<index, [isNameFocused, isValueFocused]>
 
   // page 2 -> specifications -> smartphone
   smartphoneOs: MobileOs;
@@ -624,6 +704,9 @@ type CreateProductState = {
   smartphoneColor: string;
   isSmartphoneColorValid: boolean;
   isSmartphoneColorFocused: boolean;
+  smartphoneFieldsAdditional: Map<number, [string, string]>; // Map<index, [name, value]>
+  areSmartphoneFieldsAdditionalValid: Map<number, [boolean, boolean]>; // Map<index, [isNameValid, isValueValid]>
+  areSmartphoneFieldsAdditionalFocused: Map<number, [boolean, boolean]>; // Map<index, [isNameFocused, isValueFocused]>
 
   // page 2 -> specifications -> tablet
   tabletOs: MobileOs;
@@ -655,6 +738,9 @@ type CreateProductState = {
   tabletColor: string;
   isTabletColorValid: boolean;
   isTabletColorFocused: boolean;
+  tabletFieldsAdditional: Map<number, [string, string]>; // Map<index, [name, value]>
+  areTabletFieldsAdditionalValid: Map<number, [boolean, boolean]>; // Map<index, [isNameValid, isValueValid]>
+  areTabletFieldsAdditionalFocused: Map<number, [boolean, boolean]>; // Map<index, [isNameFocused, isValueFocused]>
 
   // page 2 -> specifications -> accessory
   accessoryType: string;
@@ -664,9 +750,9 @@ type CreateProductState = {
   isAccessoryColorValid: boolean;
   isAccessoryColorFocused: boolean;
   accessoryInterface: PeripheralsInterface;
-  accessoryFieldsAdditional: Map<number, [string, string]>; // Map<index, [field, value]>
-  areAccessoryFieldsAdditionalValid: Map<number, [boolean, boolean]>; // Map<index, [isFieldValid, isValueValid]>
-  areAccessoryFieldsAdditionalFocused: Map<number, [boolean, boolean]>; // Map<index, [isFieldFocused, isValueFocused]>
+  accessoryFieldsAdditional: Map<number, [string, string]>; // Map<index, [name, value]>
+  areAccessoryFieldsAdditionalValid: Map<number, [boolean, boolean]>; // Map<index, [isNameValid, isValueValid]>
+  areAccessoryFieldsAdditionalFocused: Map<number, [boolean, boolean]>; // Map<index, [isNameFocused, isValueFocused]>
 
   // page 2 -> specifications -> webcam
   webcamResolution: WebcamResolution;
@@ -676,6 +762,9 @@ type CreateProductState = {
   webcamColor: string;
   isWebcamColorValid: boolean;
   isWebcamColorFocused: boolean;
+  webcamFieldsAdditional: Map<number, [string, string]>; // Map<index, [name, value]>
+  areWebcamFieldsAdditionalValid: Map<number, [boolean, boolean]>; // Map<index, [isNameValid, isValueValid]>
+  areWebcamFieldsAdditionalFocused: Map<number, [boolean, boolean]>; // Map<index, [isNameFocused, isValueFocused]>
 
   // page 2 -> specifications -> microphone
   microphoneType: MicrophoneType;
@@ -687,6 +776,9 @@ type CreateProductState = {
   microphoneFrequencyResponse: string;
   isMicrophoneFrequencyResponseValid: boolean;
   isMicrophoneFrequencyResponseFocused: boolean;
+  microphoneFieldsAdditional: Map<number, [string, string]>; // Map<index, [name, value]>
+  areMicrophoneFieldsAdditionalValid: Map<number, [boolean, boolean]>; // Map<index, [isNameValid, isValueValid]>
+  areMicrophoneFieldsAdditionalFocused: Map<number, [boolean, boolean]>; // Map<index, [isNameFocused, isValueFocused]>
 
   // page 3
   imgFormDataArray: FormData[];
@@ -782,6 +874,9 @@ type CreateProductAction = {
   setCpuWattage: 'setCpuWattage';
   setIsCpuWattageValid: 'setIsCpuWattageValid';
   setIsCpuWattageFocused: 'setIsCpuWattageFocused';
+  setCpuFieldsAdditional: 'setCpuFieldsAdditional';
+  setAreCpuFieldsAdditionalValid: 'setAreCpuFieldsAdditionalValid';
+  setAreCpuFieldsAdditionalFocused: 'setAreCpuFieldsAdditionalFocused';
 
   // page 2 -> specifications -> gpu
   setGpuChipset: 'setGpuChipset';
@@ -800,6 +895,9 @@ type CreateProductAction = {
   setGpuTdp: 'setGpuTdp';
   setIsGpuTdpValid: 'setIsGpuTdpValid';
   setIsGpuTdpFocused: 'setIsGpuTdpFocused';
+  setGpuFieldsAdditional: 'setGpuFieldsAdditional';
+  setAreGpuFieldsAdditionalValid: 'setAreGpuFieldsAdditionalValid';
+  setAreGpuFieldsAdditionalFocused: 'setAreGpuFieldsAdditionalFocused';
 
   // page 2 -> specifications -> motherboard
   setMotherboardSocket: 'setMotherboardSocket';
@@ -832,6 +930,9 @@ type CreateProductAction = {
   setMotherboardPcie5Slots: 'setMotherboardPcie5Slots';
   setIsMotherboardPcie5SlotsValid: 'setIsMotherboardPcie5SlotsValid';
   setIsMotherboardPcie5SlotsFocused: 'setIsMotherboardPcie5SlotsFocused';
+  setMotherboardFieldsAdditional: 'setMotherboardFieldsAdditional';
+  setAreMotherboardFieldsAdditionalValid: 'setAreMotherboardFieldsAdditionalValid';
+  setAreMotherboardFieldsAdditionalFocused: 'setAreMotherboardFieldsAdditionalFocused';
 
   // page 2 -> specifications -> ram
   setRamDataRate: 'setRamDataRate';
@@ -854,6 +955,9 @@ type CreateProductAction = {
   setRamTiming: 'setRamTiming';
   setIsRamTimingValid: 'setIsRamTimingValid';
   setIsRamTimingFocused: 'setIsRamTimingFocused';
+  setRamFieldsAdditional: 'setRamFieldsAdditional';
+  setAreRamFieldsAdditionalValid: 'setAreRamFieldsAdditionalValid';
+  setAreRamFieldsAdditionalFocused: 'setAreRamFieldsAdditionalFocused';
 
   // page 2 -> specifications -> storage
   setStorageType: 'setStorageType';
@@ -867,6 +971,9 @@ type CreateProductAction = {
   setStorageCacheCapacityUnit: 'setStorageCacheCapacityUnit';
   setStorageFormFactor: 'setStorageFormFactor';
   setStorageInterface: 'setStorageInterface';
+  setStorageFieldsAdditional: 'setStorageFieldsAdditional';
+  setAreStorageFieldsAdditionalValid: 'setAreStorageFieldsAdditionalValid';
+  setAreStorageFieldsAdditionalFocused: 'setAreStorageFieldsAdditionalFocused';
 
   // page 2 -> specifications -> psu
   setPsuWattage: 'setPsuWattage';
@@ -875,6 +982,9 @@ type CreateProductAction = {
   setPsuEfficiency: 'setPsuEfficiency';
   setPsuFormFactor: 'setPsuFormFactor';
   setPsuModularity: 'setPsuModularity';
+  setPsuFieldsAdditional: 'setPsuFieldsAdditional';
+  setArePsuFieldsAdditionalValid: 'setArePsuFieldsAdditionalValid';
+  setArePsuFieldsAdditionalFocused: 'setArePsuFieldsAdditionalFocused';
 
   // page 2 -> specifications -> case
   setCaseType: 'setCaseType';
@@ -882,6 +992,9 @@ type CreateProductAction = {
   setIsCaseColorValid: 'setIsCaseColorValid';
   setIsCaseColorFocused: 'setIsCaseColorFocused';
   setCaseSidePanel: 'setCaseSidePanel';
+  setCaseFieldsAdditional: 'setCaseFieldsAdditional';
+  setAreCaseFieldsAdditionalValid: 'setAreCaseFieldsAdditionalValid';
+  setAreCaseFieldsAdditionalFocused: 'setAreCaseFieldsAdditionalFocused';
 
   // page 2 -> specifications -> display
   setDisplaySize: 'setDisplaySize';
@@ -903,12 +1016,18 @@ type CreateProductAction = {
   setDisplayAspectRatio: 'setDisplayAspectRatio';
   setIsDisplayAspectRatioValid: 'setIsDisplayAspectRatioValid';
   setIsDisplayAspectRatioFocused: 'setIsDisplayAspectRatioFocused';
+  setDisplayFieldsAdditional: 'setDisplayFieldsAdditional';
+  setAreDisplayFieldsAdditionalValid: 'setAreDisplayFieldsAdditionalValid';
+  setAreDisplayFieldsAdditionalFocused: 'setAreDisplayFieldsAdditionalFocused';
 
   // page 2 -> specifications -> keyboard
   setKeyboardSwitch: 'setKeyboardSwitch';
   setKeyboardLayout: 'setKeyboardLayout';
   setKeyboardBacklight: 'setKeyboardBacklight';
   setKeyboardInterface: 'setKeyboardInterface';
+  setKeyboardFieldsAdditional: 'setKeyboardFieldsAdditional';
+  setAreKeyboardFieldsAdditionalValid: 'setAreKeyboardFieldsAdditionalValid';
+  setAreKeyboardFieldsAdditionalFocused: 'setAreKeyboardFieldsAdditionalFocused';
 
   // page 2 -> specifications -> mouse
   setMouseSensor: 'setMouseSensor';
@@ -922,6 +1041,9 @@ type CreateProductAction = {
   setIsMouseColorValid: 'setIsMouseColorValid';
   setIsMouseColorFocused: 'setIsMouseColorFocused';
   setMouseInterface: 'setMouseInterface';
+  setMouseFieldsAdditional: 'setMouseFieldsAdditional';
+  setAreMouseFieldsAdditionalValid: 'setAreMouseFieldsAdditionalValid';
+  setAreMouseFieldsAdditionalFocused: 'setAreMouseFieldsAdditionalFocused';
 
   // page 2 -> specifications -> headphone
   setHeadphoneType: 'setHeadphoneType';
@@ -938,6 +1060,9 @@ type CreateProductAction = {
   setIsHeadphoneColorValid: 'setIsHeadphoneColorValid';
   setIsHeadphoneColorFocused: 'setIsHeadphoneColorFocused';
   setHeadphoneInterface: 'setHeadphoneInterface';
+  setHeadphoneFieldsAdditional: 'setHeadphoneFieldsAdditional';
+  setAreHeadphoneFieldsAdditionalValid: 'setAreHeadphoneFieldsAdditionalValid';
+  setAreHeadphoneFieldsAdditionalFocused: 'setAreHeadphoneFieldsAdditionalFocused';
 
   // page 2 -> specifications -> speaker
   setSpeakerType: 'setSpeakerType';
@@ -951,6 +1076,9 @@ type CreateProductAction = {
   setIsSpeakerColorValid: 'setIsSpeakerColorValid';
   setIsSpeakerColorFocused: 'setIsSpeakerColorFocused';
   setSpeakerInterface: 'setSpeakerInterface';
+  setSpeakerFieldsAdditional: 'setSpeakerFieldsAdditional';
+  setAreSpeakerFieldsAdditionalValid: 'setAreSpeakerFieldsAdditionalValid';
+  setAreSpeakerFieldsAdditionalFocused: 'setAreSpeakerFieldsAdditionalFocused';
 
   // page 2 -> specifications -> smartphone
   setSmartphoneOs: 'setSmartphoneOs';
@@ -982,6 +1110,9 @@ type CreateProductAction = {
   setSmartphoneColor: 'setSmartphoneColor';
   setIsSmartphoneColorValid: 'setIsSmartphoneColorValid';
   setIsSmartphoneColorFocused: 'setIsSmartphoneColorFocused';
+  setSmartphoneFieldsAdditional: 'setSmartphoneFieldsAdditional';
+  setAreSmartphoneFieldsAdditionalValid: 'setAreSmartphoneFieldsAdditionalValid';
+  setAreSmartphoneFieldsAdditionalFocused: 'setAreSmartphoneFieldsAdditionalFocused';
 
   // page 2 -> specifications -> tablet
   setTabletOs: 'setTabletOs';
@@ -1013,6 +1144,9 @@ type CreateProductAction = {
   setTabletColor: 'setTabletColor';
   setIsTabletColorValid: 'setIsTabletColorValid';
   setIsTabletColorFocused: 'setIsTabletColorFocused';
+  setTabletFieldsAdditional: 'setTabletFieldsAdditional';
+  setAreTabletFieldsAdditionalValid: 'setAreTabletFieldsAdditionalValid';
+  setAreTabletFieldsAdditionalFocused: 'setAreTabletFieldsAdditionalFocused';
 
   // page 2 -> specifications -> accessory
   setAccessoryType: 'setAccessoryType';
@@ -1025,7 +1159,6 @@ type CreateProductAction = {
   setAccessoryFieldsAdditional: 'setAccessoryFieldsAdditional';
   setAreAccessoryFieldsAdditionalValid: 'setAreAccessoryFieldsAdditionalValid';
   setAreAccessoryFieldsAdditionalFocused: 'setAreAccessoryFieldsAdditionalFocused';
-  setCurrentlySelectedAdditionalFieldIndex: 'setCurrentlySelectedAdditionalFieldIndex';
 
   // page 2 -> specifications -> webcam
   setWebcamResolution: 'setWebcamResolution';
@@ -1035,6 +1168,9 @@ type CreateProductAction = {
   setWebcamColor: 'setWebcamColor';
   setIsWebcamColorValid: 'setIsWebcamColorValid';
   setIsWebcamColorFocused: 'setIsWebcamColorFocused';
+  setWebcamFieldsAdditional: 'setWebcamFieldsAdditional';
+  setAreWebcamFieldsAdditionalValid: 'setAreWebcamFieldsAdditionalValid';
+  setAreWebcamFieldsAdditionalFocused: 'setAreWebcamFieldsAdditionalFocused';
 
   // page 2 -> specifications -> microphone
   setMicrophoneType: 'setMicrophoneType';
@@ -1046,11 +1182,16 @@ type CreateProductAction = {
   setMicrophoneFrequencyResponse: 'setMicrophoneFrequencyResponse';
   setIsMicrophoneFrequencyResponseValid: 'setIsMicrophoneFrequencyResponseValid';
   setIsMicrophoneFrequencyResponseFocused: 'setIsMicrophoneFrequencyResponseFocused';
+  setMicrophoneFieldsAdditional: 'setMicrophoneFieldsAdditional';
+  setAreMicrophoneFieldsAdditionalValid: 'setAreMicrophoneFieldsAdditionalValid';
+  setAreMicrophoneFieldsAdditionalFocused: 'setAreMicrophoneFieldsAdditionalFocused';
 
   // page 3
   setImgFormDataArray: 'setImgFormDataArray';
   setAreImagesValid: 'setAreImagesValid';
 
+  // misc.
+  setCurrentlySelectedAdditionalFieldIndex: 'setCurrentlySelectedAdditionalFieldIndex';
   setTriggerFormSubmit: 'setTriggerFormSubmit';
   setCurrentStepperPosition: 'setCurrentStepperPosition';
   setStepsInError: 'setStepsInError';
@@ -1146,7 +1287,7 @@ type CreateProductDispatch =
     }
   | {
       type: CreateProductAction['setAvailability'];
-      payload: ProductAvailability;
+      payload: MerchandiseAvailability;
     }
   | {
       type: CreateProductAction['setQuantity'];
@@ -1291,6 +1432,16 @@ type CreateProductDispatch =
         | CreateProductAction['setIsCpuWattageFocused'];
       payload: boolean;
     }
+  | {
+      type: CreateProductAction['setCpuFieldsAdditional'];
+      payload: AdditionalFieldsPayload;
+    }
+  | {
+      type:
+        | CreateProductAction['setAreCpuFieldsAdditionalValid']
+        | CreateProductAction['setAreCpuFieldsAdditionalFocused'];
+      payload: AdditionalFieldsValidFocusedPayload;
+    }
   // specifications -> gpu
   | {
       type: CreateProductAction['setGpuChipset'];
@@ -1345,6 +1496,16 @@ type CreateProductDispatch =
         | CreateProductAction['setIsGpuTdpValid']
         | CreateProductAction['setIsGpuTdpFocused'];
       payload: boolean;
+    }
+  | {
+      type: CreateProductAction['setGpuFieldsAdditional'];
+      payload: AdditionalFieldsPayload;
+    }
+  | {
+      type:
+        | CreateProductAction['setAreGpuFieldsAdditionalValid']
+        | CreateProductAction['setAreGpuFieldsAdditionalFocused'];
+      payload: AdditionalFieldsValidFocusedPayload;
     }
   // specifications -> motherboard
   | {
@@ -1449,6 +1610,16 @@ type CreateProductDispatch =
         | CreateProductAction['setIsMotherboardPcie5SlotsFocused'];
       payload: boolean;
     }
+  | {
+      type: CreateProductAction['setMotherboardFieldsAdditional'];
+      payload: AdditionalFieldsPayload;
+    }
+  | {
+      type:
+        | CreateProductAction['setAreMotherboardFieldsAdditionalValid']
+        | CreateProductAction['setAreMotherboardFieldsAdditionalFocused'];
+      payload: AdditionalFieldsValidFocusedPayload;
+    }
   // specifications -> ram
   | {
       type: CreateProductAction['setRamDataRate'];
@@ -1518,6 +1689,16 @@ type CreateProductDispatch =
         | CreateProductAction['setIsRamTimingFocused'];
       payload: boolean;
     }
+  | {
+      type: CreateProductAction['setRamFieldsAdditional'];
+      payload: AdditionalFieldsPayload;
+    }
+  | {
+      type:
+        | CreateProductAction['setAreRamFieldsAdditionalValid']
+        | CreateProductAction['setAreRamFieldsAdditionalFocused'];
+      payload: AdditionalFieldsValidFocusedPayload;
+    }
   // specifications -> storage
   | {
       type: CreateProductAction['setStorageType'];
@@ -1559,6 +1740,16 @@ type CreateProductDispatch =
       type: CreateProductAction['setStorageInterface'];
       payload: StorageInterface;
     }
+  | {
+      type: CreateProductAction['setStorageFieldsAdditional'];
+      payload: AdditionalFieldsPayload;
+    }
+  | {
+      type:
+        | CreateProductAction['setAreStorageFieldsAdditionalValid']
+        | CreateProductAction['setAreStorageFieldsAdditionalFocused'];
+      payload: AdditionalFieldsValidFocusedPayload;
+    }
   // specifications -> psu
   | {
       type: CreateProductAction['setPsuWattage'];
@@ -1582,6 +1773,16 @@ type CreateProductDispatch =
       type: CreateProductAction['setPsuModularity'];
       payload: PsuModularity;
     }
+  | {
+      type: CreateProductAction['setPsuFieldsAdditional'];
+      payload: AdditionalFieldsPayload;
+    }
+  | {
+      type:
+        | CreateProductAction['setArePsuFieldsAdditionalValid']
+        | CreateProductAction['setArePsuFieldsAdditionalFocused'];
+      payload: AdditionalFieldsValidFocusedPayload;
+    }
   // specifications -> case
   | {
       type: CreateProductAction['setCaseType'];
@@ -1600,6 +1801,16 @@ type CreateProductDispatch =
   | {
       type: CreateProductAction['setCaseSidePanel'];
       payload: CaseSidePanel;
+    }
+  | {
+      type: CreateProductAction['setCaseFieldsAdditional'];
+      payload: AdditionalFieldsPayload;
+    }
+  | {
+      type:
+        | CreateProductAction['setAreCaseFieldsAdditionalValid']
+        | CreateProductAction['setAreCaseFieldsAdditionalFocused'];
+      payload: AdditionalFieldsValidFocusedPayload;
     }
   // specifications -> display
   | {
@@ -1666,6 +1877,16 @@ type CreateProductDispatch =
         | CreateProductAction['setIsDisplayAspectRatioFocused'];
       payload: boolean;
     }
+  | {
+      type: CreateProductAction['setDisplayFieldsAdditional'];
+      payload: AdditionalFieldsPayload;
+    }
+  | {
+      type:
+        | CreateProductAction['setAreDisplayFieldsAdditionalValid']
+        | CreateProductAction['setAreDisplayFieldsAdditionalFocused'];
+      payload: AdditionalFieldsValidFocusedPayload;
+    }
   // specifications -> keyboard
   | {
       type: CreateProductAction['setKeyboardSwitch'];
@@ -1682,6 +1903,16 @@ type CreateProductDispatch =
   | {
       type: CreateProductAction['setKeyboardInterface'];
       payload: PeripheralsInterface;
+    }
+  | {
+      type: CreateProductAction['setKeyboardFieldsAdditional'];
+      payload: AdditionalFieldsPayload;
+    }
+  | {
+      type:
+        | CreateProductAction['setAreKeyboardFieldsAdditionalValid']
+        | CreateProductAction['setAreKeyboardFieldsAdditionalFocused'];
+      payload: AdditionalFieldsValidFocusedPayload;
     }
   // specifications -> mouse
   | {
@@ -1721,6 +1952,16 @@ type CreateProductDispatch =
   | {
       type: CreateProductAction['setMouseInterface'];
       payload: PeripheralsInterface;
+    }
+  | {
+      type: CreateProductAction['setMouseFieldsAdditional'];
+      payload: AdditionalFieldsPayload;
+    }
+  | {
+      type:
+        | CreateProductAction['setAreMouseFieldsAdditionalValid']
+        | CreateProductAction['setAreMouseFieldsAdditionalFocused'];
+      payload: AdditionalFieldsValidFocusedPayload;
     }
   // specifications -> headphone
   | {
@@ -1771,6 +2012,16 @@ type CreateProductDispatch =
       type: CreateProductAction['setHeadphoneInterface'];
       payload: HeadphoneInterface;
     }
+  | {
+      type: CreateProductAction['setHeadphoneFieldsAdditional'];
+      payload: AdditionalFieldsPayload;
+    }
+  | {
+      type:
+        | CreateProductAction['setAreHeadphoneFieldsAdditionalValid']
+        | CreateProductAction['setAreHeadphoneFieldsAdditionalFocused'];
+      payload: AdditionalFieldsValidFocusedPayload;
+    }
   // specifications -> speaker
   | {
       type: CreateProductAction['setSpeakerType'];
@@ -1809,6 +2060,16 @@ type CreateProductDispatch =
   | {
       type: CreateProductAction['setSpeakerInterface'];
       payload: SpeakerInterface;
+    }
+  | {
+      type: CreateProductAction['setSpeakerFieldsAdditional'];
+      payload: AdditionalFieldsPayload;
+    }
+  | {
+      type:
+        | CreateProductAction['setAreSpeakerFieldsAdditionalValid']
+        | CreateProductAction['setAreSpeakerFieldsAdditionalFocused'];
+      payload: AdditionalFieldsValidFocusedPayload;
     }
   // specifications -> smartphone
   | {
@@ -1909,6 +2170,16 @@ type CreateProductDispatch =
         | CreateProductAction['setIsSmartphoneColorFocused'];
       payload: boolean;
     }
+  | {
+      type: CreateProductAction['setSmartphoneFieldsAdditional'];
+      payload: AdditionalFieldsPayload;
+    }
+  | {
+      type:
+        | CreateProductAction['setAreSmartphoneFieldsAdditionalValid']
+        | CreateProductAction['setAreSmartphoneFieldsAdditionalFocused'];
+      payload: AdditionalFieldsValidFocusedPayload;
+    }
   // specifications -> tablet
   | {
       type: CreateProductAction['setTabletOs'];
@@ -2008,6 +2279,16 @@ type CreateProductDispatch =
         | CreateProductAction['setIsTabletColorFocused'];
       payload: boolean;
     }
+  | {
+      type: CreateProductAction['setTabletFieldsAdditional'];
+      payload: AdditionalFieldsPayload;
+    }
+  | {
+      type:
+        | CreateProductAction['setAreTabletFieldsAdditionalValid']
+        | CreateProductAction['setAreTabletFieldsAdditionalFocused'];
+      payload: AdditionalFieldsValidFocusedPayload;
+    }
   // specifications -> accessory
   | {
       type: CreateProductAction['setAccessoryType'];
@@ -2070,6 +2351,16 @@ type CreateProductDispatch =
         | CreateProductAction['setIsWebcamColorFocused'];
       payload: boolean;
     }
+  | {
+      type: CreateProductAction['setWebcamFieldsAdditional'];
+      payload: AdditionalFieldsPayload;
+    }
+  | {
+      type:
+        | CreateProductAction['setAreWebcamFieldsAdditionalValid']
+        | CreateProductAction['setAreWebcamFieldsAdditionalFocused'];
+      payload: AdditionalFieldsValidFocusedPayload;
+    }
   // specifications -> microphone
   | {
       type: CreateProductAction['setMicrophoneType'];
@@ -2102,6 +2393,16 @@ type CreateProductDispatch =
         | CreateProductAction['setIsMicrophoneFrequencyResponseValid']
         | CreateProductAction['setIsMicrophoneFrequencyResponseFocused'];
       payload: boolean;
+    }
+  | {
+      type: CreateProductAction['setMicrophoneFieldsAdditional'];
+      payload: AdditionalFieldsPayload;
+    }
+  | {
+      type:
+        | CreateProductAction['setAreMicrophoneFieldsAdditionalValid']
+        | CreateProductAction['setAreMicrophoneFieldsAdditionalFocused'];
+      payload: AdditionalFieldsValidFocusedPayload;
     }
   // page 3
   | {
@@ -2146,6 +2447,8 @@ type CreateProductDispatch =
 
 export type {
   AccessorySpecifications,
+  AdditionalFieldsPayload,
+  AdditionalFieldsValidFocusedPayload,
   CaseSidePanel,
   CaseSpecifications,
   CaseType,
@@ -2168,6 +2471,7 @@ export type {
   LaptopSpecifications,
   MemoryType,
   MemoryUnit,
+  MerchandiseAvailability,
   MicrophoneInterface,
   MicrophonePolarPattern,
   MicrophoneType,
@@ -2177,7 +2481,6 @@ export type {
   MouseSensor,
   MouseSpecifications,
   PeripheralsInterface,
-  ProductAvailability,
   ProductDocument,
   ProductReview,
   ProductSchema,

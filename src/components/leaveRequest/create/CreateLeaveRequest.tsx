@@ -30,7 +30,7 @@ import {
   urlBuilder,
 } from '../../../utils';
 import FormReviewPage, {
-  FormReviewObject,
+  FormReviewObjectArray,
 } from '../../formReviewPage/FormReviewPage';
 import { NotificationModal } from '../../notificationModal';
 import {
@@ -689,7 +689,7 @@ function CreateLeaveRequest() {
     </FormLayoutWrapper>
   );
 
-  const LEAVE_REQUEST_REVIEW_OBJECT: FormReviewObject = {
+  const LEAVE_REQUEST_REVIEW_OBJECT: FormReviewObjectArray = {
     'Leave request details': [
       {
         inputName: 'Leave start date',

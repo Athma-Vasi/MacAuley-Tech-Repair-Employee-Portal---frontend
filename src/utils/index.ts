@@ -2,6 +2,7 @@ import html2canvas from 'html2canvas';
 import jwtDecode from 'jwt-decode';
 import { v4 as uuidv4 } from 'uuid';
 
+import { FormReviewObject } from '../components/formReviewPage/FormReviewPage';
 import { DecodedToken } from '../components/login/types';
 import { ColorsSwatches } from '../constants/data';
 import { ThemeObject } from '../context/globalProvider/types';
@@ -1028,7 +1029,7 @@ function returnBrandNameValidationText({
     : '';
 }
 
-function returnProductWeightValidationText({
+function returnWeightValidationText({
   content,
   contentKind,
   maxLength = 9,
@@ -1041,7 +1042,7 @@ function returnProductWeightValidationText({
   const productWeightZeroValue = Number(content) === 0;
   const productWeightCharacterRegex = /^[0-9.]+$/;
   const productDimensionsSextupleDigitBeforeDecimal = content.includes('.')
-    ? content.split('.')[0].length === 3
+    ? content.split('.')[0].length < 7
     : Number(content) < 1_000_000;
   // test for 23. or 0.
   const productDimensionsSextupleDecimal = content.includes('.')
@@ -1077,7 +1078,7 @@ function returnProductWeightValidationText({
     : '';
 }
 
-function returnProductDimensionsValidationText({
+function returnDimensionsValidationText({
   content,
   contentKind,
   maxLength = 6,
@@ -1087,13 +1088,13 @@ function returnProductDimensionsValidationText({
   const productDimensionsLengthRegex = new RegExp(
     `^(?=.{${minLength},${maxLength}}$)`
   );
-  const productDimensionsZeroValue = Number(content) === 0;
   const productDimensionsCharacterRegex = /^[0-9.]+$/;
-  const productDimensionsSingleDigitBeforeDecimal = content.includes('.')
-    ? content.split('.')[0].length === 3
+  const productDimensionsZeroValue = Number(content) === 0;
+  const productDimensionsTripleDigitBeforeDecimal = content.includes('.')
+    ? content.split('.')[0].length < 4
     : Number(content) < 1000;
   // test for 23. or 0.
-  const productDimensionsSingleDecimalRegex = content.includes('.')
+  const productDimensionsTripleDecimalRegex = content.includes('.')
     ? content.at(-1) === '.'
     : false;
 
@@ -1102,16 +1103,17 @@ function returnProductDimensionsValidationText({
       productDimensionsLengthRegex.test(content),
       `Must be between ${minLength} and ${maxLength} characters.`,
     ],
-    [!productDimensionsZeroValue, 'Must not be empty or have zero value.'],
     [
       productDimensionsCharacterRegex.test(content),
       'Must only contain numbers and periods.',
     ],
+
+    [!productDimensionsZeroValue, 'Must not be empty or have zero value.'],
     [
-      productDimensionsSingleDigitBeforeDecimal,
+      productDimensionsTripleDigitBeforeDecimal,
       'Must only have 3 digits before decimal.',
     ],
-    [!productDimensionsSingleDecimalRegex, 'Must not end with a decimal.'],
+    [!productDimensionsTripleDecimalRegex, 'Must not end with a decimal.'],
   ];
 
   const validationText = productDimensionsRegexTupleArr
@@ -1301,11 +1303,12 @@ function returnRamVoltageValidationText({
   const ramVoltageZeroValue = Number(content) === 0;
   const ramVoltageSingleDigitBeforeDecimal = content.includes('.')
     ? content.split('.')[0].length === 1
-    : Number(content) < 2;
+    : false;
   // test for 23. or 0.
   const ramVoltageSingleDecimal = content.includes('.')
     ? content.at(-1) === '.'
     : false;
+  const ramVoltageLessThan2 = Number(content) < 2;
 
   const ramVoltageRegexTupleArr: [boolean, string][] = [
     [
@@ -1319,9 +1322,10 @@ function returnRamVoltageValidationText({
     [!ramVoltageZeroValue, 'Must not be empty or have zero value.'],
     [
       ramVoltageSingleDigitBeforeDecimal,
-      'Must only have a single digit (< 2) before the decimal.',
+      'Must only have a single digit before the decimal.',
     ],
     [!ramVoltageSingleDecimal, 'Must not end with a decimal.'],
+    [ramVoltageLessThan2, 'Must be less than 2 V.'],
   ];
 
   const validationText = ramVoltageRegexTupleArr
@@ -2334,6 +2338,37 @@ function returnToFixedFloat(num: number, precision = 4): number {
   return Number(num.toFixed(precision));
 }
 
+function returnFormReviewObjectsFromUserDefinedFields({
+  additionalFields,
+  areAdditionalFieldsValid,
+}: {
+  additionalFields: Map<number, [string, string]>;
+  areAdditionalFieldsValid: Map<number, [boolean, boolean]>;
+}): FormReviewObject[] {
+  return Array.from(additionalFields).reduce<FormReviewObject[]>(
+    (formReviewObjAcc, tuple) => {
+      const [index, [key, value]] = tuple;
+
+      const keyFormReviewObject: FormReviewObject = {
+        inputName: `Additional field ${index + 1}: key`,
+        inputValue: key,
+        isInputValueValid: areAdditionalFieldsValid.get(index)?.[0] ?? true,
+      };
+      formReviewObjAcc.push(keyFormReviewObject);
+
+      const valueFormReviewObject: FormReviewObject = {
+        inputName: `Additional field ${index + 1}: value`,
+        inputValue: value,
+        isInputValueValid: areAdditionalFieldsValid.get(index)?.[1] ?? true,
+      };
+      formReviewObjAcc.push(valueFormReviewObject);
+
+      return formReviewObjAcc;
+    },
+    []
+  );
+}
+
 export {
   addCommaSeparator,
   addFieldsToObject,
@@ -2362,6 +2397,7 @@ export {
   returnEmailValidationText,
   returnFilenameValidationText,
   returnFloatAmountValidationText,
+  returnFormReviewObjectsFromUserDefinedFields,
   returnFrequencyResponseValidationText,
   returnGrammarValidationText,
   returnImageValidationText,
@@ -2377,8 +2413,8 @@ export {
   returnPostalCodeValidationText,
   returnPrinterMakeModelValidationText,
   returnPrinterSerialNumberValidationText,
-  returnProductDimensionsValidationText,
-  returnProductWeightValidationText,
+  returnDimensionsValidationText,
+  returnWeightValidationText,
   returnRamTimingValidationText,
   returnRamVoltageValidationText,
   returnSerialIdValidationText,

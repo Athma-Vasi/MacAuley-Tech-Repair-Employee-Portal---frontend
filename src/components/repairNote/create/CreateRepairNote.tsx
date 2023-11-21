@@ -12,7 +12,7 @@ import { returnAccessibleButtonElements } from '../../../jsxCreators';
 import { ResourceRequestServerResponse } from '../../../types';
 import { replaceLastCommaWithAnd, urlBuilder } from '../../../utils';
 import FormReviewPage, {
-  FormReviewObject,
+  FormReviewObjectArray,
 } from '../../formReviewPage/FormReviewPage';
 import { NotificationModal } from '../../notificationModal';
 import { StepperWrapper } from '../../wrappers';
@@ -307,7 +307,7 @@ function CreateRepairNote() {
 
   /** ------------- begin input display ------------- */
 
-  const REPAIR_NOTE_REVIEW_OBJECT: FormReviewObject = {
+  const REPAIR_NOTE_REVIEW_OBJECT: FormReviewObjectArray = {
     // customer info page
     'Customer Information': [
       {

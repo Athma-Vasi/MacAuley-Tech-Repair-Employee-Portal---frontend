@@ -99,12 +99,13 @@ function AccessibleErrorValidTextElements({
   isInputTextFocused,
   regexValidationText,
 }: AccessibleErrorValidTextElemProps): [React.JSX.Element, React.JSX.Element] {
-  const { colors } = useMantineTheme();
   const {
-    globalState: {
-      themeObject: { colorScheme, primaryShade },
-    },
+    globalState: { themeObject },
   } = useGlobalState();
+
+  const {
+    generalColors: { redColorShade, greenColorShade },
+  } = returnThemeColors({ themeObject, colorsSwatches: COLORS_SWATCHES });
 
   const errorTextElement = (
     <Text
@@ -121,14 +122,7 @@ function AccessibleErrorValidTextElements({
       <Grid columns={14}>
         <Grid.Col span={2}>
           <Group position="center">
-            <TbExclamationCircle
-              color={
-                colorScheme === 'light'
-                  ? colors.red[primaryShade.light]
-                  : colors.red[primaryShade.dark]
-              }
-              size={22}
-            />
+            <TbExclamationCircle color={redColorShade} size={22} />
           </Group>
         </Grid.Col>
         <Grid.Col span={12}>
@@ -149,25 +143,14 @@ function AccessibleErrorValidTextElements({
             ? 'block'
             : 'none',
       }}
-      color={
-        colorScheme === 'light'
-          ? colors.green[primaryShade.light]
-          : colors.green[primaryShade.dark]
-      }
+      color={greenColorShade}
       w="100%"
       aria-live="polite"
     >
       <Grid columns={14}>
         <Grid.Col span={2}>
           <Group position="center">
-            <TbCheck
-              color={
-                colorScheme === 'light'
-                  ? colors.green[primaryShade.light]
-                  : colors.green[primaryShade.dark]
-              }
-              size={22}
-            />
+            <TbCheck color={greenColorShade} size={22} />
           </Group>
         </Grid.Col>
         <Grid.Col span={12}>

@@ -32,7 +32,7 @@ import {
 } from '../../../utils';
 import { CURRENCY_DATA } from '../../benefits/constants';
 import FormReviewPage, {
-  FormReviewObject,
+  FormReviewObjectArray,
 } from '../../formReviewPage/FormReviewPage';
 import { NotificationModal } from '../../notificationModal';
 import { RepairNoteDocument, RepairStatus } from '../../repairNote/types';
@@ -606,7 +606,7 @@ function EditRepairNote({
       </Tooltip>
     ) : null;
 
-  const EDIT_REPAIR_NOTE_REVIEW_OBJECT: FormReviewObject = {
+  const EDIT_REPAIR_NOTE_REVIEW_OBJECT: FormReviewObjectArray = {
     'Repair Note Details': [
       {
         inputName: 'Repair Notes',

@@ -29,7 +29,7 @@ import {
   urlBuilder,
 } from '../../../utils';
 import FormReviewPage, {
-  FormReviewObject,
+  FormReviewObjectArray,
 } from '../../formReviewPage/FormReviewPage';
 import { NotificationModal } from '../../notificationModal';
 import {
@@ -538,7 +538,7 @@ function CreateEndorsement() {
     </FormLayoutWrapper>
   );
 
-  const CREATE_ENDORSEMENT_REVIEW_OBJECT: FormReviewObject = {
+  const CREATE_ENDORSEMENT_REVIEW_OBJECT: FormReviewObjectArray = {
     'Employee Endorsement': [
       {
         inputName: 'Endorsement Title',

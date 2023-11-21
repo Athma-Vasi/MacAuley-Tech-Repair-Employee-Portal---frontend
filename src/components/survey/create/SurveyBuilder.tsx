@@ -34,7 +34,7 @@ import {
   urlBuilder,
 } from '../../../utils';
 import FormReviewPage, {
-  FormReviewObject,
+  FormReviewObjectArray,
 } from '../../formReviewPage/FormReviewPage';
 import { NotificationModal } from '../../notificationModal';
 import {
@@ -1457,7 +1457,7 @@ function SurveyBuilder() {
     </FormLayoutWrapper>
   );
 
-  const SURVEY_BUILDER_REVIEW_OBJECT: FormReviewObject = {
+  const SURVEY_BUILDER_REVIEW_OBJECT: FormReviewObjectArray = {
     'Survey Details': [
       {
         inputName: 'Survey Title',

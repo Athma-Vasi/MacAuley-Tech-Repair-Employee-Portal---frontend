@@ -6,17 +6,19 @@ import { useGlobalState } from '../../hooks';
 import { returnAccessibleButtonElements } from '../../jsxCreators';
 import { returnThemeColors, splitCamelCase } from '../../utils';
 
-type FormReviewObject = Record<
+type FormReviewObject = {
+  inputName: string;
+  inputValue?: string | number | boolean;
+  isInputValueValid?: boolean;
+};
+
+type FormReviewObjectArray = Record<
   string, // page name
-  Array<{
-    inputName: string;
-    inputValue?: string | number | boolean;
-    isInputValueValid?: boolean;
-  }>
+  Array<FormReviewObject>
 >;
 
 type FormReviewPageProps = {
-  formReviewObject: FormReviewObject;
+  formReviewObject: FormReviewObjectArray;
   formName?: string;
 };
 
@@ -128,4 +130,4 @@ function FormReviewPage({
 }
 
 export default FormReviewPage;
-export type { FormReviewObject };
+export type { FormReviewObject, FormReviewObjectArray };

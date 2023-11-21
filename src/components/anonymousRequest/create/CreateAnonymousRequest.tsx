@@ -41,7 +41,7 @@ import {
   urlBuilder,
 } from '../../../utils';
 import FormReviewPage, {
-  FormReviewObject,
+  FormReviewObjectArray,
 } from '../../formReviewPage/FormReviewPage';
 import { NotificationModal } from '../../notificationModal';
 import {
@@ -735,7 +735,7 @@ function CreateAnonymousRequest() {
     </FormLayoutWrapper>
   );
 
-  const ANONYMOUS_REQUEST_REVIEW_OBJECT: FormReviewObject = {
+  const ANONYMOUS_REQUEST_REVIEW_OBJECT: FormReviewObjectArray = {
     'Anonymous Request': [
       {
         inputName: 'Title',
