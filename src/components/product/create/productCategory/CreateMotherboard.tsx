@@ -320,8 +320,8 @@ function CreateMotherboard({
   // ╚═════════════════════════════════════════════════════════════════╝
   useEffect(() => {
     // select inputs are not included as they always have a default value
-    // (required) inputs with empty string count as error
-    // (optional) inputs with empty string count as valid
+    // required inputs with empty string count as error
+    // optional inputs with empty string count as valid
 
     const areMotherboardInputsHardcodedInError =
       !isMotherboardChipsetValid ||
@@ -1275,4 +1275,4 @@ function CreateMotherboard({
   return displayMotherboardSpecificationsInputs;
 }
 
-export default MotherboardSpecificationsInputs;
+export default CreateMotherboard;

@@ -220,7 +220,8 @@ function CreateGpu({
   // ╚═════════════════════════════════════════════════════════════════╝
   useEffect(() => {
     // select inputs are not included as they always have a default value
-    // (required) inputs with empty string count as error
+    // required inputs with empty string count as error
+    // optional inputs with empty string count as valid
 
     const areGpuInputsHardcodedInError =
       !isGpuChipsetValid ||
