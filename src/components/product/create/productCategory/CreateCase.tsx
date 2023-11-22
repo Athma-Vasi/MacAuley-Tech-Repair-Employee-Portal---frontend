@@ -6,71 +6,66 @@ import {
   Title,
   Tooltip,
 } from '@mantine/core';
-import { ChangeEvent, MouseEvent, useEffect } from 'react';
-import { TbPlus, TbTrash } from 'react-icons/tb';
-
 import {
-  AccessibleErrorValidTextElements,
-  returnAccessibleButtonElements,
+  CaseType,
+  CaseSidePanel,
+  CreateProductAction,
+  CreateProductDispatch,
+} from '../types';
+import { ChangeEvent, useEffect, MouseEvent } from 'react';
+import {
+  CASE_SIDE_PANEL_DATA,
+  CASE_TYPE_DATA,
+  COLOR_VARIANT_REGEX,
+  OBJECT_KEY_REGEX,
+  USER_DEFINED_VALUE_REGEX,
+} from '../../constants';
+import { TbPlus, TbTrash } from 'react-icons/tb';
+import {
   returnAccessibleSelectInputElements,
-  returnAccessibleTextAreaInputElements,
+  AccessibleErrorValidTextElements,
   returnAccessibleTextInputElements,
+  returnAccessibleButtonElements,
+  returnAccessibleTextAreaInputElements,
 } from '../../../../jsxCreators';
 import {
-  returnBrandNameValidationText,
   returnColorVariantValidationText,
   returnObjectKeyValidationText,
   returnUserDefinedFieldValueValidationText,
 } from '../../../../utils';
 import { AccessibleTextAreaInputCreatorInfo } from '../../../wrappers';
-import {
-  ACCESSORY_TYPE_REGEX,
-  COLOR_VARIANT_REGEX,
-  OBJECT_KEY_REGEX,
-  PERIPHERALS_INTERFACE_DATA,
-  USER_DEFINED_VALUE_REGEX,
-} from '../../constants';
-import {
-  CreateProductAction,
-  CreateProductDispatch,
-  PeripheralsInterface,
-} from '../types';
 
-type CreateAccessoryProps = {
-  accessoryColor: string;
-  accessoryFieldsAdditional: Map<number, [string, string]>;
-  accessoryInterface: PeripheralsInterface;
-  accessoryType: string;
-  areAccessoryFieldsAdditionalFocused: Map<number, [boolean, boolean]>;
-  areAccessoryFieldsAdditionalValid: Map<number, [boolean, boolean]>;
+type CreateCaseProps = {
+  areCaseFieldsAdditionalFocused: Map<number, [boolean, boolean]>;
+  areCaseFieldsAdditionalValid: Map<number, [boolean, boolean]>;
   borderColor: string;
+  caseColor: string;
+  caseFieldsAdditional: Map<number, [string, string]>;
+  caseSidePanel: CaseSidePanel;
+  caseType: CaseType;
   createProductAction: CreateProductAction;
   createProductDispatch: React.Dispatch<CreateProductDispatch>;
   currentlySelectedAdditionalFieldIndex: number;
-  isAccessoryColorFocused: boolean;
-  isAccessoryColorValid: boolean;
-  isAccessoryTypeFocused: boolean;
-  isAccessoryTypeValid: boolean;
+  isCaseColorFocused: boolean;
+  isCaseColorValid: boolean;
   padding: MantineNumberSize;
 };
 
-function CreateAccessory({
-  accessoryColor,
-  accessoryFieldsAdditional,
-  accessoryInterface,
-  accessoryType,
-  areAccessoryFieldsAdditionalFocused,
-  areAccessoryFieldsAdditionalValid,
+function CreateCase({
+  areCaseFieldsAdditionalFocused,
+  areCaseFieldsAdditionalValid,
   borderColor,
+  caseColor,
+  caseFieldsAdditional,
+  caseSidePanel,
+  caseType,
   createProductAction,
   createProductDispatch,
   currentlySelectedAdditionalFieldIndex,
-  isAccessoryColorFocused,
-  isAccessoryColorValid,
-  isAccessoryTypeFocused,
-  isAccessoryTypeValid,
+  isCaseColorFocused,
+  isCaseColorValid,
   padding,
-}: CreateAccessoryProps) {
+}: CreateCaseProps) {
   // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
   //  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
   //    VALIDATION USE EFFECTS
@@ -78,53 +73,38 @@ function CreateAccessory({
   // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    ACCESSORY TYPE
+  //    CASE COLOR
   // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
-    const isValid = ACCESSORY_TYPE_REGEX.test(accessoryType);
+    const isValid = COLOR_VARIANT_REGEX.test(caseColor);
 
     createProductDispatch({
-      type: createProductAction.setIsAccessoryTypeValid,
+      type: createProductAction.setIsCaseColorValid,
       payload: isValid,
     });
   }, [
-    accessoryType,
-    createProductAction.setIsAccessoryTypeValid,
+    caseColor,
+    createProductAction.setIsCaseColorValid,
     createProductDispatch,
   ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    ACCESSORY COLOR
+  //    CASE FIELDS ADDITIONAL
   // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
-    const isValid = COLOR_VARIANT_REGEX.test(accessoryColor);
+    const currentlyUpdatingCaseFieldAdditional = caseFieldsAdditional.get(
+      currentlySelectedAdditionalFieldIndex
+    );
 
-    createProductDispatch({
-      type: createProductAction.setIsAccessoryColorValid,
-      payload: isValid,
-    });
-  }, [
-    accessoryColor,
-    createProductAction.setIsAccessoryColorValid,
-    createProductDispatch,
-  ]);
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    ACCESSORY ADDITIONAL FIELDS
-  // ╰─────────────────────────────────────────────────────────────────╯
-  useEffect(() => {
-    const currentlyUpdatingAccessoryFieldAdditional =
-      accessoryFieldsAdditional.get(currentlySelectedAdditionalFieldIndex);
-
-    if (!currentlyUpdatingAccessoryFieldAdditional) {
+    if (!currentlyUpdatingCaseFieldAdditional) {
       return;
     }
 
-    const [key, value] = currentlyUpdatingAccessoryFieldAdditional;
-    const isKeyValid = OBJECT_KEY_REGEX.test(key);
+    const [key, value] = currentlyUpdatingCaseFieldAdditional;
 
+    const isKeyValid = OBJECT_KEY_REGEX.test(key);
     createProductDispatch({
-      type: createProductAction.setAreAccessoryFieldsAdditionalValid,
+      type: createProductAction.setAreCaseFieldsAdditionalValid,
       payload: {
         operation: 'update',
         data: isKeyValid,
@@ -135,7 +115,7 @@ function CreateAccessory({
 
     const isValueValid = USER_DEFINED_VALUE_REGEX.test(value);
     createProductDispatch({
-      type: createProductAction.setAreAccessoryFieldsAdditionalValid,
+      type: createProductAction.setAreCaseFieldsAdditionalValid,
       payload: {
         operation: 'update',
         data: isValueValid,
@@ -145,43 +125,34 @@ function CreateAccessory({
     });
   }, [
     currentlySelectedAdditionalFieldIndex,
-    accessoryFieldsAdditional,
+    caseFieldsAdditional,
     createProductDispatch,
-    createProductAction.setAreAccessoryFieldsAdditionalValid,
+    createProductAction.setAreCaseFieldsAdditionalValid,
   ]);
 
   // ╔═════════════════════════════════════════════════════════════════╗
   //   STEPPER STATE UPDATE
   // ╚═════════════════════════════════════════════════════════════════╝
-
   useEffect(() => {
-    // select inputs are not included as they always have a default value
-    // inputs with value: 0 count as error
-
-    const areAccessoryInputsHardcodedInError =
-      !isAccessoryTypeValid || !isAccessoryColorValid;
-
-    const areAccessoryInputsUserDefinedInError = Array.from(
-      areAccessoryFieldsAdditionalValid
+    const areCaseFieldsAdditionalInError = Array.from(
+      areCaseFieldsAdditionalValid
     ).some(([_key, value]) => !value);
 
-    const areAccessoryInputsInError =
-      areAccessoryInputsHardcodedInError ||
-      areAccessoryInputsUserDefinedInError;
+    const areCaseInputsInError =
+      !isCaseColorValid || areCaseFieldsAdditionalInError;
 
     createProductDispatch({
       type: createProductAction.setStepsInError,
       payload: {
-        kind: areAccessoryInputsInError ? 'add' : 'delete',
+        kind: areCaseInputsInError ? 'add' : 'delete',
         step: 1,
       },
     });
   }, [
-    areAccessoryFieldsAdditionalValid,
+    areCaseFieldsAdditionalValid,
     createProductAction.setStepsInError,
     createProductDispatch,
-    isAccessoryColorValid,
-    isAccessoryTypeValid,
+    isCaseColorValid,
   ]);
 
   // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
@@ -191,146 +162,109 @@ function CreateAccessory({
   // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    ACCESSORY TYPE
+  //    CASE TYPE
   // ╰─────────────────────────────────────────────────────────────────╯
-
-  // screenreader accessible error/valid text elements
-  const [accessoryTypeInputErrorText, accessoryTypeInputValidText] =
-    AccessibleErrorValidTextElements({
-      inputElementKind: 'accessory type',
-      inputText: accessoryType,
-      isInputTextFocused: isAccessoryTypeFocused,
-      isValidInputText: isAccessoryTypeValid,
-      regexValidationText: returnBrandNameValidationText({
-        content: accessoryType,
-        contentKind: 'accessory type',
-        maxLength: 30,
-        minLength: 2,
-      }),
-    });
-
-  // text input element creator
-  const [createdAccessoryTypeTextInput] = returnAccessibleTextInputElements([
+  const [createdCaseTypeSelectInput] = returnAccessibleSelectInputElements([
     {
-      description: {
-        error: accessoryTypeInputErrorText,
-        valid: accessoryTypeInputValidText,
-      },
-      inputText: accessoryType,
-      isValidInputText: isAccessoryTypeValid,
-      label: 'Accessory Type',
-      maxLength: 30,
-      minLength: 2,
-      onBlur: () => {
+      data: CASE_TYPE_DATA,
+      description: '',
+      label: 'Case Type',
+      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
         createProductDispatch({
-          type: createProductAction.setIsAccessoryTypeFocused,
-          payload: false,
+          type: createProductAction.setCaseType,
+          payload: event.currentTarget.value as CaseType,
         });
       },
-      onChange: (event: ChangeEvent<HTMLInputElement>) => {
-        createProductDispatch({
-          type: createProductAction.setAccessoryType,
-          payload: event.currentTarget.value,
-        });
-      },
-      onFocus: () => {
-        createProductDispatch({
-          type: createProductAction.setIsAccessoryTypeFocused,
-          payload: true,
-        });
-      },
-      placeholder: 'Enter accessory type',
+      value: caseType,
       required: true,
-      semanticName: 'accessory type',
     },
   ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    ACCESSORY COLOR
+  //    CASE COLOR
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // screenreader accessible error/valid text elements
-  const [accessoryColorInputErrorText, accessoryColorInputValidText] =
+  const [caseColorInputErrorText, caseColorInputValidText] =
     AccessibleErrorValidTextElements({
-      inputElementKind: 'accessory color',
-      inputText: accessoryColor,
-      isInputTextFocused: isAccessoryColorFocused,
-      isValidInputText: isAccessoryColorValid,
+      inputElementKind: 'case color',
+      inputText: caseColor,
+      isInputTextFocused: isCaseColorFocused,
+      isValidInputText: isCaseColorValid,
       regexValidationText: returnColorVariantValidationText({
-        content: accessoryColor,
-        contentKind: 'accessory color',
+        content: caseColor,
+        contentKind: 'case color',
         maxLength: 30,
         minLength: 2,
       }),
     });
 
   // text input element creator
-  const [createdAccessoryColorTextInput] = returnAccessibleTextInputElements([
+  const [createdCaseColorTextInput] = returnAccessibleTextInputElements([
     {
       description: {
-        error: accessoryColorInputErrorText,
-        valid: accessoryColorInputValidText,
+        error: caseColorInputErrorText,
+        valid: caseColorInputValidText,
       },
-      inputText: accessoryColor,
-      isValidInputText: isAccessoryColorValid,
-      label: 'Accessory Color',
+      inputText: caseColor,
+      isValidInputText: isCaseColorValid,
+      label: 'Case Color',
       maxLength: 30,
       minLength: 2,
       onBlur: () => {
         createProductDispatch({
-          type: createProductAction.setIsAccessoryColorFocused,
+          type: createProductAction.setIsCaseColorFocused,
           payload: false,
         });
       },
       onChange: (event: ChangeEvent<HTMLInputElement>) => {
         createProductDispatch({
-          type: createProductAction.setAccessoryColor,
+          type: createProductAction.setCaseColor,
           payload: event.currentTarget.value,
         });
       },
       onFocus: () => {
         createProductDispatch({
-          type: createProductAction.setIsAccessoryColorFocused,
+          type: createProductAction.setIsCaseColorFocused,
           payload: true,
         });
       },
-      placeholder: 'Enter accessory color',
+      placeholder: 'Enter case color',
       required: true,
-      semanticName: 'accessory color',
+      semanticName: 'case color',
     },
   ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    ACCESSORY INTERFACE
+  //    CASE SIDE PANEL
   // ╰─────────────────────────────────────────────────────────────────╯
-
-  // select input element creator
-  const [createdAccessoryInterfaceSelectInput] =
-    returnAccessibleSelectInputElements([
+  const [createdCaseSidePanelSelectInput] = returnAccessibleSelectInputElements(
+    [
       {
-        data: PERIPHERALS_INTERFACE_DATA,
-        description: '',
-        label: 'Accessory Interface',
+        data: CASE_SIDE_PANEL_DATA,
+        description: 'Select case side panel',
+        label: 'Case Side Panel',
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           createProductDispatch({
-            type: createProductAction.setAccessoryInterface,
-            payload: event.currentTarget.value as PeripheralsInterface,
+            type: createProductAction.setCaseSidePanel,
+            payload: event.currentTarget.value as CaseSidePanel,
           });
         },
-        value: accessoryInterface,
+        value: caseSidePanel,
         required: true,
       },
-    ]);
+    ]
+  );
 
   // ╔═════════════════════════════════════════════════════════════════╗
-  //   ACCESSORY ADDITIONAL FIELDS
+  //   CASE ADDITIONAL FIELDS
   // ╚═════════════════════════════════════════════════════════════════╝
 
   // ╭─────────────────────────────────────────────────────────────────╮
   //    ADD ADDITIONAL FIELD BUTTON
   // ╰─────────────────────────────────────────────────────────────────╯
-  const [createdAddAccessoryFieldsAdditionalButton] =
-    returnAccessibleButtonElements([
+  const [createdAddCaseFieldsAdditionalButton] = returnAccessibleButtonElements(
+    [
       {
         buttonLabel: 'Add',
         semanticDescription: 'Add new additional field',
@@ -338,7 +272,7 @@ function CreateAccessory({
         leftIcon: <TbPlus />,
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
           createProductDispatch({
-            type: createProductAction.setAccessoryFieldsAdditional,
+            type: createProductAction.setCaseFieldsAdditional,
             payload: {
               operation: 'add',
               data: ['', ''],
@@ -346,7 +280,7 @@ function CreateAccessory({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreAccessoryFieldsAdditionalFocused,
+            type: createProductAction.setAreCaseFieldsAdditionalFocused,
             payload: {
               operation: 'add',
               data: [false, false],
@@ -354,7 +288,7 @@ function CreateAccessory({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreAccessoryFieldsAdditionalValid,
+            type: createProductAction.setAreCaseFieldsAdditionalValid,
             payload: {
               operation: 'add',
               data: [false, false],
@@ -362,30 +296,30 @@ function CreateAccessory({
           });
         },
       },
-    ]);
+    ]
+  );
 
   // ╭─────────────────────────────────────────────────────────────────╮
   //    ERROR/VALID ELEMENTS TUPLE => FIELD NAMES
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // returns an array of tuples containing the error and valid text elements for each field name
-  const accessoryFieldsAdditionalKeysErrorValidTextElements: [
+  const caseFieldsAdditionalKeysErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(accessoryFieldsAdditional).map((keyFieldValue) => {
+  ][] = Array.from(caseFieldsAdditional).map((keyFieldValue) => {
     const [mapKey, [field, _value]] = keyFieldValue;
 
     // screenreader accessible error/valid text elements that are consumed by the text input element creator
     const [
-      accessoryFieldsAdditionalKeysInputErrorText,
-      accessoryFieldsAdditionalKeysInputValidText,
+      caseFieldsAdditionalKeysInputErrorText,
+      caseFieldsAdditionalKeysInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field name ${mapKey + 1}`,
       inputText: field,
       isInputTextFocused:
-        areAccessoryFieldsAdditionalFocused.get(mapKey)?.[0] ?? false,
-      isValidInputText:
-        areAccessoryFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+        areCaseFieldsAdditionalFocused.get(mapKey)?.[0] ?? false,
+      isValidInputText: areCaseFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
       regexValidationText: returnObjectKeyValidationText({
         content: field,
         contentKind: `additional field name ${mapKey + 1}`,
@@ -395,8 +329,8 @@ function CreateAccessory({
     });
 
     return [
-      accessoryFieldsAdditionalKeysInputErrorText,
-      accessoryFieldsAdditionalKeysInputValidText,
+      caseFieldsAdditionalKeysInputErrorText,
+      caseFieldsAdditionalKeysInputValidText,
     ];
   });
 
@@ -405,23 +339,22 @@ function CreateAccessory({
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // returns an array of tuples containing the error and valid text elements for each field value
-  const accessoryFieldsAdditionalValuesErrorValidTextElements: [
+  const caseFieldsAdditionalValuesErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(accessoryFieldsAdditional).map((keyFieldValue) => {
+  ][] = Array.from(caseFieldsAdditional).map((keyFieldValue) => {
     const [mapKey, [_field, value]] = keyFieldValue;
 
     // screenreader accessible error/valid text elements that are consumed by the text input element creator
     const [
-      accessoryFieldsAdditionalValuesInputErrorText,
-      accessoryFieldsAdditionalValuesInputValidText,
+      caseFieldsAdditionalValuesInputErrorText,
+      caseFieldsAdditionalValuesInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field value ${mapKey + 1}`,
       inputText: value,
       isInputTextFocused:
-        areAccessoryFieldsAdditionalFocused.get(mapKey)?.[1] ?? false,
-      isValidInputText:
-        areAccessoryFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+        areCaseFieldsAdditionalFocused.get(mapKey)?.[1] ?? false,
+      isValidInputText: areCaseFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
       regexValidationText: returnUserDefinedFieldValueValidationText({
         content: value,
         contentKind: `additional field value ${mapKey + 1}`,
@@ -431,37 +364,37 @@ function CreateAccessory({
     });
 
     return [
-      accessoryFieldsAdditionalValuesInputErrorText,
-      accessoryFieldsAdditionalValuesInputValidText,
+      caseFieldsAdditionalValuesInputErrorText,
+      caseFieldsAdditionalValuesInputValidText,
     ];
   });
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    TEXT INPUT ELEMENTS
+  //    ADDITIONAL FIELDS TEXT INPUT ELEMENTS
   // ╰─────────────────────────────────────────────────────────────────╯
-  const createdAccessoryFieldsAdditionalTextInputElements = Array.from(
-    accessoryFieldsAdditional
+  const createdCaseFieldsAdditionalTextInputElements = Array.from(
+    caseFieldsAdditional
   ).map((keyFieldValue) => {
     const [mapKey, [field, value]] = keyFieldValue;
 
     // ╭─────────────────────────────────────────────────────────────────╮
     //    TEXT INPUT ELEMENTS => FIELD NAME
     // ╰─────────────────────────────────────────────────────────────────╯
-    const accessoryFieldsAdditionalKeyTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const caseFieldsAdditionalKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
-          error: accessoryFieldsAdditionalKeysErrorValidTextElements[mapKey][0],
-          valid: accessoryFieldsAdditionalKeysErrorValidTextElements[mapKey][1],
+          error: caseFieldsAdditionalKeysErrorValidTextElements[mapKey][0],
+          valid: caseFieldsAdditionalKeysErrorValidTextElements[mapKey][1],
         },
         inputText: field,
         isValidInputText:
-          areAccessoryFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+          areCaseFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
         label: `Name ${mapKey + 1}`,
         maxLength: 75,
         minLength: 1,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreAccessoryFieldsAdditionalFocused,
+            type: createProductAction.setAreCaseFieldsAdditionalFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -472,7 +405,7 @@ function CreateAccessory({
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setAccessoryFieldsAdditional,
+            type: createProductAction.setCaseFieldsAdditional,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -488,7 +421,7 @@ function CreateAccessory({
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreAccessoryFieldsAdditionalFocused,
+            type: createProductAction.setAreCaseFieldsAdditionalFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -505,23 +438,21 @@ function CreateAccessory({
     // ╭─────────────────────────────────────────────────────────────────╮
     //    TEXT INPUT ELEMENTS => FIELD VALUE
     // ╰─────────────────────────────────────────────────────────────────╯
-    const accessoryFieldsAdditionalValueTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const caseFieldsAdditionalValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
-          error:
-            accessoryFieldsAdditionalValuesErrorValidTextElements[mapKey][0],
-          valid:
-            accessoryFieldsAdditionalValuesErrorValidTextElements[mapKey][1],
+          error: caseFieldsAdditionalValuesErrorValidTextElements[mapKey][0],
+          valid: caseFieldsAdditionalValuesErrorValidTextElements[mapKey][1],
         },
         inputText: value,
         isValidInputText:
-          areAccessoryFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+          areCaseFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
         label: `Value ${mapKey + 1}`,
         maxLength: 2000,
         minLength: 2,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreAccessoryFieldsAdditionalFocused,
+            type: createProductAction.setAreCaseFieldsAdditionalFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -532,7 +463,7 @@ function CreateAccessory({
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setAccessoryFieldsAdditional,
+            type: createProductAction.setCaseFieldsAdditional,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -548,7 +479,7 @@ function CreateAccessory({
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreAccessoryFieldsAdditionalFocused,
+            type: createProductAction.setAreCaseFieldsAdditionalFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -563,11 +494,11 @@ function CreateAccessory({
       };
 
     const [
-      createdAccessoryFieldsAdditionalKeyTextAreaInput,
-      createdAccessoryFieldsAdditionalValueTextAreaInput,
+      createdCaseFieldsAdditionalKeysTextAreaInput,
+      createdCaseFieldsAdditionalValuesTextAreaInput,
     ] = returnAccessibleTextAreaInputElements([
-      accessoryFieldsAdditionalKeyTextInputCreatorInfo,
-      accessoryFieldsAdditionalValueTextInputCreatorInfo,
+      caseFieldsAdditionalKeysTextInputCreatorInfo,
+      caseFieldsAdditionalValuesTextInputCreatorInfo,
     ]);
 
     // ╭─────────────────────────────────────────────────────────────────╮
@@ -578,7 +509,7 @@ function CreateAccessory({
         buttonLabel: 'Delete',
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
           createProductDispatch({
-            type: createProductAction.setAccessoryFieldsAdditional,
+            type: createProductAction.setCaseFieldsAdditional,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -586,7 +517,7 @@ function CreateAccessory({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreAccessoryFieldsAdditionalFocused,
+            type: createProductAction.setAreCaseFieldsAdditionalFocused,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -594,7 +525,7 @@ function CreateAccessory({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreAccessoryFieldsAdditionalValid,
+            type: createProductAction.setAreCaseFieldsAdditionalValid,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -619,16 +550,16 @@ function CreateAccessory({
     );
 
     return (
-      <Stack key={`accessoryFieldsAdditional-${mapKey}`} pt={padding} w="100%">
+      <Stack key={`caseFieldsAdditional-${mapKey}`} pt={padding} w="100%">
         <Group position="apart">
-          <Text size="md" weight={600}>{`Additional Accessory field ${
+          <Text size="md" weight={600}>{`Additional Case field ${
             mapKey + 1
           }`}</Text>
           {displayDeleteButton}
         </Group>
         <Group position="apart">
-          {createdAccessoryFieldsAdditionalKeyTextAreaInput}
-          {createdAccessoryFieldsAdditionalValueTextAreaInput}
+          {createdCaseFieldsAdditionalKeysTextAreaInput}
+          {createdCaseFieldsAdditionalValuesTextAreaInput}
         </Group>
       </Stack>
     );
@@ -640,15 +571,15 @@ function CreateAccessory({
   //  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
   // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 
-  const displayAccessoryFieldsAdditionalButton = (
+  const displayCaseFieldsAdditionalButton = (
     <Tooltip
-      label={`Add new additional field ${accessoryFieldsAdditional.size + 1}`}
+      label={`Add new additional field ${caseFieldsAdditional.size + 1}`}
     >
-      <Group>{createdAddAccessoryFieldsAdditionalButton}</Group>
+      <Group>{createdAddCaseFieldsAdditionalButton}</Group>
     </Tooltip>
   );
 
-  const displayAccessorySpecificationsInputs = (
+  const displayComputerCaseSpecificationsInputs = (
     <Group
       py={padding}
       position="apart"
@@ -656,17 +587,17 @@ function CreateAccessory({
       w="100%"
     >
       <Group w="100%" position="apart">
-        <Title order={4}>Accessory Specifications</Title>
-        {displayAccessoryFieldsAdditionalButton}
+        <Title order={4}>Case Specifications</Title>
+        {displayCaseFieldsAdditionalButton}
       </Group>
-      {createdAccessoryTypeTextInput}
-      {createdAccessoryColorTextInput}
-      {createdAccessoryInterfaceSelectInput}
-      {createdAccessoryFieldsAdditionalTextInputElements}
+      {createdCaseTypeSelectInput}
+      {createdCaseColorTextInput}
+      {createdCaseSidePanelSelectInput}
+      {createdCaseFieldsAdditionalTextInputElements}
     </Group>
   );
 
-  return displayAccessorySpecificationsInputs;
+  return displayComputerCaseSpecificationsInputs;
 }
 
-export default CreateAccessory;
+export default CreateCase;

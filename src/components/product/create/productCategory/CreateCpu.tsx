@@ -266,7 +266,7 @@ function CreateCpu({
   ]);
 
   // ╔═════════════════════════════════════════════════════════════════╗
-  //   STEPPER WRAPPER STATE UPDATE
+  //   STEPPER STATE UPDATE
   // ╚═════════════════════════════════════════════════════════════════╝
   useEffect(() => {
     const areCpuFieldsAdditionalInError = Array.from(
@@ -592,7 +592,6 @@ function CreateCpu({
   // ╭─────────────────────────────────────────────────────────────────╮
   //    CPU L2 CACHE CAPACITY UNIT
   // ╰─────────────────────────────────────────────────────────────────╯
-
   const [createdCpuL2CacheCapacityUnitSelectInput] =
     returnAccessibleSelectInputElements([
       {
@@ -665,7 +664,6 @@ function CreateCpu({
   // ╭─────────────────────────────────────────────────────────────────╮
   //    CPU L3 CACHE CAPACITY UNIT
   // ╰─────────────────────────────────────────────────────────────────╯
-
   const [createdCpuL3CacheCapacityUnitSelectInput] =
     returnAccessibleSelectInputElements([
       {
@@ -741,7 +739,6 @@ function CreateCpu({
   // ╭─────────────────────────────────────────────────────────────────╮
   //    ADD ADDITIONAL FIELD BUTTON
   // ╰─────────────────────────────────────────────────────────────────╯
-
   const [createdAddCpuFieldsAdditionalButton] = returnAccessibleButtonElements([
     {
       buttonLabel: 'Add',
@@ -777,7 +774,7 @@ function CreateCpu({
   ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    SCREENREADER ACCESSIBLE TEXT INPUT ELEMENTS => FIELD NAMES
+  //    ERROR/VALID ELEMENTS TUPLE => FIELD NAMES
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // returns an array of tuples containing the error and valid text elements for each field name
@@ -812,7 +809,7 @@ function CreateCpu({
   });
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    SCREENREADER ACCESSIBLE TEXT INPUT ELEMENTS => FIELD VALUES
+  //    ERROR/VALID ELEMENTS TUPLE => FIELD VALUES
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // returns an array of tuples containing the error and valid text elements for each field value
@@ -849,7 +846,6 @@ function CreateCpu({
   // ╭─────────────────────────────────────────────────────────────────╮
   //    TEXT INPUT ELEMENTS
   // ╰─────────────────────────────────────────────────────────────────╯
-
   const createdCpuFieldsAdditionalTextInputElements = Array.from(
     cpuFieldsAdditional
   ).map((keyFieldValue) => {
@@ -858,7 +854,6 @@ function CreateCpu({
     // ╭─────────────────────────────────────────────────────────────────╮
     //    TEXT INPUT ELEMENTS => FIELD NAME
     // ╰─────────────────────────────────────────────────────────────────╯
-
     const cpuFieldsAdditionalKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
@@ -916,7 +911,6 @@ function CreateCpu({
     // ╭─────────────────────────────────────────────────────────────────╮
     //    TEXT INPUT ELEMENTS => FIELD VALUE
     // ╰─────────────────────────────────────────────────────────────────╯
-
     const cpuFieldsAdditionalValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
@@ -982,7 +976,6 @@ function CreateCpu({
     // ╭─────────────────────────────────────────────────────────────────╮
     //    DELETE FIELD BUTTON
     // ╰─────────────────────────────────────────────────────────────────╯
-
     const [createdDeleteButton] = returnAccessibleButtonElements([
       {
         buttonLabel: 'Delete',
