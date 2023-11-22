@@ -77,7 +77,9 @@ function CreateAccessory({
   //  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
   // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 
-  // type
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    ACCESSORY TYPE
+  // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
     const isValid = ACCESSORY_TYPE_REGEX.test(accessoryType);
 
@@ -91,7 +93,9 @@ function CreateAccessory({
     createProductDispatch,
   ]);
 
-  // color
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    ACCESSORY COLOR
+  // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
     const isValid = COLOR_VARIANT_REGEX.test(accessoryColor);
 
@@ -105,7 +109,9 @@ function CreateAccessory({
     createProductDispatch,
   ]);
 
-  // additional fields
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    ACCESSORY ADDITIONAL FIELDS
+  // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
     const currentlyUpdatingAccessoryFieldAdditional =
       accessoryFieldsAdditional.get(currentlySelectedAdditionalFieldIndex);
@@ -316,11 +322,14 @@ function CreateAccessory({
       },
     ]);
 
+  // ╔═════════════════════════════════════════════════════════════════╗
+  //   ADDITIONAL FIELDS
+  // ╚═════════════════════════════════════════════════════════════════╝
+
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    ADDITIONAL FIELDS
+  //    ADD ADDITIONAL FIELD BUTTON
   // ╰─────────────────────────────────────────────────────────────────╯
 
-  // add new additional field button
   const [createdAddAccessoryFieldsAdditionalButton] =
     returnAccessibleButtonElements([
       {
@@ -356,6 +365,10 @@ function CreateAccessory({
       },
     ]);
 
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    SCREENREADER ACCESSIBLE TEXT INPUT ELEMENTS => FIELD NAMES
+  // ╰─────────────────────────────────────────────────────────────────╯
+
   // returns an array of tuples containing the error and valid text elements for each field name
   const accessoryFieldsAdditionalKeysErrorValidTextElements: [
     JSX.Element,
@@ -387,6 +400,10 @@ function CreateAccessory({
       accessoryFieldsAdditionalKeysInputValidText,
     ];
   });
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    SCREENREADER ACCESSIBLE TEXT INPUT ELEMENTS => FIELD VALUES
+  // ╰─────────────────────────────────────────────────────────────────╯
 
   // returns an array of tuples containing the error and valid text elements for each field value
   const accessoryFieldsAdditionalValuesErrorValidTextElements: [
@@ -420,13 +437,20 @@ function CreateAccessory({
     ];
   });
 
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    TEXT INPUT ELEMENTS
+  // ╰─────────────────────────────────────────────────────────────────╯
+
   // text input element creator
   const createdAccessoryFieldsAdditionalTextInputElements = Array.from(
     accessoryFieldsAdditional
   ).map((keyFieldValue) => {
     const [mapKey, [field, value]] = keyFieldValue;
 
-    const accessoryFieldsAdditionalKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    // ╭─────────────────────────────────────────────────────────────────╮
+    //    TEXT INPUT ELEMENTS => FIELD NAME
+    // ╰─────────────────────────────────────────────────────────────────╯
+    const accessoryFieldsAdditionalKeyTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
           error: accessoryFieldsAdditionalKeysErrorValidTextElements[mapKey][0],
@@ -481,7 +505,10 @@ function CreateAccessory({
         semanticName: `additional field name ${mapKey + 1}`,
       };
 
-    const accessoryFieldsAdditionalValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    // ╭─────────────────────────────────────────────────────────────────╮
+    //    TEXT INPUT ELEMENTS => FIELD VALUE
+    // ╰─────────────────────────────────────────────────────────────────╯
+    const accessoryFieldsAdditionalValueTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
           error:
@@ -539,12 +566,16 @@ function CreateAccessory({
       };
 
     const [
-      createdAccessoryFieldsAdditionalKeysTextAreaInput,
-      createdAccessoryFieldsAdditionalValuesTextAreaInput,
+      createdAccessoryFieldsAdditionalKeyTextAreaInput,
+      createdAccessoryFieldsAdditionalValueTextAreaInput,
     ] = returnAccessibleTextAreaInputElements([
-      accessoryFieldsAdditionalKeysTextInputCreatorInfo,
-      accessoryFieldsAdditionalValuesTextInputCreatorInfo,
+      accessoryFieldsAdditionalKeyTextInputCreatorInfo,
+      accessoryFieldsAdditionalValueTextInputCreatorInfo,
     ]);
+
+    // ╭─────────────────────────────────────────────────────────────────╮
+    //    DELETE FIELD BUTTON
+    // ╰─────────────────────────────────────────────────────────────────╯
 
     const [createdDeleteButton] = returnAccessibleButtonElements([
       {
@@ -600,8 +631,8 @@ function CreateAccessory({
           {displayDeleteButton}
         </Group>
         <Group position="apart">
-          {createdAccessoryFieldsAdditionalKeysTextAreaInput}
-          {createdAccessoryFieldsAdditionalValuesTextAreaInput}
+          {createdAccessoryFieldsAdditionalKeyTextAreaInput}
+          {createdAccessoryFieldsAdditionalValueTextAreaInput}
         </Group>
       </Stack>
     );
