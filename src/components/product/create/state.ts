@@ -5733,11 +5733,11 @@ function createProductReducer(
           const { index } = action.payload;
           accessoryFieldsAdditionalClone.delete(index);
 
-          // resets the indices because the indices are used as keys
           const filteredAccessoryFieldsAdditional = new Map<
             number,
             [string, string]
           >();
+
           Array.from(accessoryFieldsAdditionalClone).forEach(
             (mapIdxKeyVal, arrayIdx) => {
               const [_mapIdx, keyVal] = mapIdxKeyVal as [

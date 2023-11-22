@@ -1204,37 +1204,43 @@ type CreateProductAction = {
   setLoadingMessage: 'setLoadingMessage';
 };
 
+type AdditionalFieldsAdd = {
+  operation: 'add';
+  data: [string, string];
+};
+type AdditionalFieldsRemove = {
+  operation: 'remove';
+  index: number;
+};
+type AdditionalFieldsUpdate = {
+  operation: 'update';
+  kind: 'key' | 'value';
+  index: number;
+  data: string;
+};
 type AdditionalFieldsPayload =
-  | {
-      operation: 'add';
-      data: [string, string];
-    }
-  | {
-      operation: 'remove';
-      index: number;
-    }
-  | {
-      operation: 'update';
-      kind: 'key' | 'value';
-      index: number;
-      data: string;
-    };
+  | AdditionalFieldsAdd
+  | AdditionalFieldsRemove
+  | AdditionalFieldsUpdate;
 
+type AdditionalFieldsValidFocusedAdd = {
+  operation: 'add';
+  data: [boolean, boolean];
+};
+type AdditionalFieldsValidFocusedRemove = {
+  operation: 'remove';
+  index: number;
+};
+type AdditionalFieldsValidFocusedUpdate = {
+  operation: 'update';
+  kind: 'key' | 'value';
+  index: number;
+  data: boolean;
+};
 type AdditionalFieldsValidFocusedPayload =
-  | {
-      operation: 'add';
-      data: [boolean, boolean];
-    }
-  | {
-      operation: 'remove';
-      index: number;
-    }
-  | {
-      operation: 'update';
-      kind: 'key' | 'value';
-      index: number;
-      data: boolean;
-    };
+  | AdditionalFieldsValidFocusedAdd
+  | AdditionalFieldsValidFocusedRemove
+  | AdditionalFieldsValidFocusedUpdate;
 
 type CreateProductDispatch =
   | {
@@ -2447,8 +2453,14 @@ type CreateProductDispatch =
 
 export type {
   AccessorySpecifications,
+  AdditionalFieldsAdd,
   AdditionalFieldsPayload,
+  AdditionalFieldsRemove,
+  AdditionalFieldsUpdate,
+  AdditionalFieldsValidFocusedAdd,
   AdditionalFieldsValidFocusedPayload,
+  AdditionalFieldsValidFocusedRemove,
+  AdditionalFieldsValidFocusedUpdate,
   CaseSidePanel,
   CaseSpecifications,
   CaseType,

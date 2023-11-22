@@ -1381,12 +1381,12 @@ function returnColorVariantValidationText({
   maxLength = 30,
   minLength = 2,
 }: RegexValidationProps): string {
-  // /^[a-zA-Z0-9\s-]{2,30}$/
+  // /^[a-zA-Z0-9#()%,.\s-]{2,30}$/
 
   const colorVariantLengthRegex = new RegExp(
     `^(?=.{${minLength},${maxLength}}$)`
   );
-  const colorVariantCharacterRegex = /^[a-zA-Z0-9\s-]+$/;
+  const colorVariantCharacterRegex = /^[a-zA-Z0-9#()%,.\s-]+$/;
 
   const colorVariantRegexTupleArr: [boolean, string][] = [
     [

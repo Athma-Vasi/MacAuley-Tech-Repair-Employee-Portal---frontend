@@ -10,7 +10,7 @@ import {
 } from 'react';
 import { useErrorBoundary } from 'react-error-boundary';
 import { TbPlus, TbTrash, TbUpload } from 'react-icons/tb';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import { COLORS_SWATCHES } from '../../../constants/data';
 import {
@@ -29,10 +29,10 @@ import {
 } from '../../../jsxCreators';
 import { Currency, ResourceRequestServerResponse } from '../../../types';
 import {
-  logState,
   returnBrandNameValidationText,
   returnColorVariantValidationText,
   returnCpuFrequencyValidationText,
+  returnDimensionsValidationText,
   returnDisplayAspectRatioValidationText,
   returnFloatAmountValidationText,
   returnFormReviewObjectsFromUserDefinedFields,
@@ -42,8 +42,6 @@ import {
   returnMediumIntegerValidationText,
   returnMobileCameraResolutionValidationText,
   returnObjectKeyValidationText,
-  returnDimensionsValidationText,
-  returnWeightValidationText,
   returnRamTimingValidationText,
   returnRamVoltageValidationText,
   returnSerialIdValidationText,
@@ -51,13 +49,13 @@ import {
   returnSocketChipsetValidationText,
   returnThemeColors,
   returnUserDefinedFieldValueValidationText,
+  returnWeightValidationText,
   urlBuilder,
 } from '../../../utils';
 import { CURRENCY_DATA } from '../../benefits/constants';
 import { PRODUCT_CATEGORIES } from '../../dashboard/constants';
 import { ProductCategory } from '../../dashboard/types';
 import FormReviewPage, {
-  FormReviewObject,
   FormReviewObjectArray,
 } from '../../formReviewPage/FormReviewPage';
 import { ImageUpload } from '../../imageUpload';
@@ -80,6 +78,7 @@ import {
   CREATE_PRODUCT_MAX_IMG_SIZE,
   CREATE_PRODUCT_MAX_STEPPER_POSITION,
   DIMENSION_UNIT_SELECT_INPUT_DATA,
+  DIMENSIONS_REGEX,
   DISPLAY_ASPECT_RATIO_REGEX,
   DISPLAY_PANEL_TYPE_DATA,
   FREQUENCY_RESPONSE_REGEX,
@@ -105,8 +104,6 @@ import {
   OBJECT_KEY_REGEX,
   PERIPHERALS_INTERFACE_DATA,
   PRODUCT_AVAILABILITY_DATA,
-  DIMENSIONS_REGEX,
-  WEIGHT_REGEX,
   PSU_EFFICIENCY_RATING_DATA,
   PSU_FORM_FACTOR_DATA,
   PSU_MODULARITY_DATA,
@@ -126,8 +123,11 @@ import {
   WEBCAM_INTERFACE_DATA,
   WEBCAM_MICROPHONE_DATA,
   WEBCAM_RESOLUTION_DATA,
+  WEIGHT_REGEX,
   WEIGHT_UNIT_SELECT_INPUT_DATA,
 } from '../constants';
+import { createProductReducer } from './reducers';
+import { createProductAction, initialCreateProductState } from './state';
 import {
   CaseSidePanel,
   CaseType,
@@ -140,6 +140,7 @@ import {
   KeyboardSwitch,
   MemoryType,
   MemoryUnit,
+  MerchandiseAvailability,
   MicrophoneInterface,
   MicrophonePolarPattern,
   MicrophoneType,
@@ -147,7 +148,6 @@ import {
   MotherboardFormFactor,
   MouseSensor,
   PeripheralsInterface,
-  MerchandiseAvailability,
   ProductDocument,
   PsuEfficiency,
   PsuFormFactor,
@@ -163,17 +163,8 @@ import {
   WebcamResolution,
   WeightUnit,
 } from './types';
-import {
-  createProductAction,
-  createProductReducer,
-  initialCreateProductState,
-} from './state';
 
 function CreateProduct() {
-  //
-  const [selectProductCategoryState, selectProductCategoryDispatch] =
-    useState<ProductCategory>('Accessories');
-  //
   const [createProductState, createProductDispatch] = useReducer(
     createProductReducer,
     initialCreateProductState
@@ -3499,6 +3490,7 @@ function CreateProduct() {
       {
         data: PRODUCT_CATEGORIES,
         description: '',
+        describedBy: 'Select a product category for your product.',
         label: 'Product Category',
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           createProductDispatch({
@@ -4198,14 +4190,11 @@ function CreateProduct() {
     );
 
     return (
-      <Stack
-        key={`cpuFieldsAdditional-${mapKey}`}
-        pt={padding}
-        style={{ borderTop: borderColor }}
-        w="100%"
-      >
+      <Stack key={`cpuFieldsAdditional-${mapKey}`} pt={padding} w="100%">
         <Group position="apart">
-          <Text size="md" weight={600}>{`Additional field ${mapKey + 1}`}</Text>
+          <Text size="md" weight={600}>{`Additional Cpu field ${
+            mapKey + 1
+          }`}</Text>
           {displayDeleteButton}
         </Group>
         <Group position="apart">
@@ -4762,14 +4751,11 @@ function CreateProduct() {
     );
 
     return (
-      <Stack
-        key={`gpuFieldsAdditional-${mapKey}`}
-        pt={padding}
-        style={{ borderTop: borderColor }}
-        w="100%"
-      >
+      <Stack key={`gpuFieldsAdditional-${mapKey}`} pt={padding} w="100%">
         <Group position="apart">
-          <Text size="md" weight={600}>{`Additional field ${mapKey + 1}`}</Text>
+          <Text size="md" weight={600}>{`Additional Gpu field ${
+            mapKey + 1
+          }`}</Text>
           {displayDeleteButton}
         </Group>
         <Group position="apart">
@@ -5598,11 +5584,12 @@ function CreateProduct() {
       <Stack
         key={`motherboardFieldsAdditional-${mapKey}`}
         pt={padding}
-        style={{ borderTop: borderColor }}
         w="100%"
       >
         <Group position="apart">
-          <Text size="md" weight={600}>{`Additional field ${mapKey + 1}`}</Text>
+          <Text size="md" weight={600}>{`Additional Motherboard field ${
+            mapKey + 1
+          }`}</Text>
           {displayDeleteButton}
         </Group>
         <Group position="apart">
@@ -6231,14 +6218,11 @@ function CreateProduct() {
     );
 
     return (
-      <Stack
-        key={`ramFieldsAdditional-${mapKey}`}
-        pt={padding}
-        style={{ borderTop: borderColor }}
-        w="100%"
-      >
+      <Stack key={`ramFieldsAdditional-${mapKey}`} pt={padding} w="100%">
         <Group position="apart">
-          <Text size="md" weight={600}>{`Additional field ${mapKey + 1}`}</Text>
+          <Text size="md" weight={600}>{`Additional Ram field ${
+            mapKey + 1
+          }`}</Text>
           {displayDeleteButton}
         </Group>
         <Group position="apart">
@@ -6729,14 +6713,11 @@ function CreateProduct() {
     );
 
     return (
-      <Stack
-        key={`storageFieldsAdditional-${mapKey}`}
-        pt={padding}
-        style={{ borderTop: borderColor }}
-        w="100%"
-      >
+      <Stack key={`storageFieldsAdditional-${mapKey}`} pt={padding} w="100%">
         <Group position="apart">
-          <Text size="md" weight={600}>{`Additional field ${mapKey + 1}`}</Text>
+          <Text size="md" weight={600}>{`Additional Storage field ${
+            mapKey + 1
+          }`}</Text>
           {displayDeleteButton}
         </Group>
         <Group position="apart">
@@ -7133,14 +7114,11 @@ function CreateProduct() {
     );
 
     return (
-      <Stack
-        key={`psuFieldsAdditional-${mapKey}`}
-        pt={padding}
-        style={{ borderTop: borderColor }}
-        w="100%"
-      >
+      <Stack key={`psuFieldsAdditional-${mapKey}`} pt={padding} w="100%">
         <Group position="apart">
-          <Text size="md" weight={600}>{`Additional field ${mapKey + 1}`}</Text>
+          <Text size="md" weight={600}>{`Additional Psu field ${
+            mapKey + 1
+          }`}</Text>
           {displayDeleteButton}
         </Group>
         <Group position="apart">
@@ -7523,14 +7501,11 @@ function CreateProduct() {
     );
 
     return (
-      <Stack
-        key={`caseFieldsAdditional-${mapKey}`}
-        pt={padding}
-        style={{ borderTop: borderColor }}
-        w="100%"
-      >
+      <Stack key={`caseFieldsAdditional-${mapKey}`} pt={padding} w="100%">
         <Group position="apart">
-          <Text size="md" weight={600}>{`Additional field ${mapKey + 1}`}</Text>
+          <Text size="md" weight={600}>{`Additional Case field ${
+            mapKey + 1
+          }`}</Text>
           {displayDeleteButton}
         </Group>
         <Group position="apart">
@@ -8150,14 +8125,11 @@ function CreateProduct() {
     );
 
     return (
-      <Stack
-        key={`displayFieldsAdditional-${mapKey}`}
-        pt={padding}
-        style={{ borderTop: borderColor }}
-        w="100%"
-      >
+      <Stack key={`displayFieldsAdditional-${mapKey}`} pt={padding} w="100%">
         <Group position="apart">
-          <Text size="md" weight={600}>{`Additional field ${mapKey + 1}`}</Text>
+          <Text size="md" weight={600}>{`Additional Display field ${
+            mapKey + 1
+          }`}</Text>
           {displayDeleteButton}
         </Group>
         <Group position="apart">
@@ -8530,14 +8502,11 @@ function CreateProduct() {
     );
 
     return (
-      <Stack
-        key={`keyboardFieldsAdditional-${mapKey}`}
-        pt={padding}
-        style={{ borderTop: borderColor }}
-        w="100%"
-      >
+      <Stack key={`keyboardFieldsAdditional-${mapKey}`} pt={padding} w="100%">
         <Group position="apart">
-          <Text size="md" weight={600}>{`Additional field ${mapKey + 1}`}</Text>
+          <Text size="md" weight={600}>{`Additional Keyboard field ${
+            mapKey + 1
+          }`}</Text>
           {displayDeleteButton}
         </Group>
         <Group position="apart">
@@ -9016,14 +8985,11 @@ function CreateProduct() {
     );
 
     return (
-      <Stack
-        key={`mouseFieldsAdditional-${mapKey}`}
-        pt={padding}
-        style={{ borderTop: borderColor }}
-        w="100%"
-      >
+      <Stack key={`mouseFieldsAdditional-${mapKey}`} pt={padding} w="100%">
         <Group position="apart">
-          <Text size="md" weight={600}>{`Additional field ${mapKey + 1}`}</Text>
+          <Text size="md" weight={600}>{`Additional Mouse field ${
+            mapKey + 1
+          }`}</Text>
           {displayDeleteButton}
         </Group>
         <Group position="apart">
@@ -9565,14 +9531,11 @@ function CreateProduct() {
     );
 
     return (
-      <Stack
-        key={`headphoneFieldsAdditional-${mapKey}`}
-        pt={padding}
-        style={{ borderTop: borderColor }}
-        w="100%"
-      >
+      <Stack key={`headphoneFieldsAdditional-${mapKey}`} pt={padding} w="100%">
         <Group position="apart">
-          <Text size="md" weight={600}>{`Additional field ${mapKey + 1}`}</Text>
+          <Text size="md" weight={600}>{`Additional Headphone field ${
+            mapKey + 1
+          }`}</Text>
           {displayDeleteButton}
         </Group>
         <Group position="apart">
@@ -10061,14 +10024,11 @@ function CreateProduct() {
     );
 
     return (
-      <Stack
-        key={`speakerFieldsAdditional-${mapKey}`}
-        pt={padding}
-        style={{ borderTop: borderColor }}
-        w="100%"
-      >
+      <Stack key={`speakerFieldsAdditional-${mapKey}`} pt={padding} w="100%">
         <Group position="apart">
-          <Text size="md" weight={600}>{`Additional field ${mapKey + 1}`}</Text>
+          <Text size="md" weight={600}>{`Additional Speaker field ${
+            mapKey + 1
+          }`}</Text>
           {displayDeleteButton}
         </Group>
         <Group position="apart">
@@ -10876,14 +10836,11 @@ function CreateProduct() {
     );
 
     return (
-      <Stack
-        key={`smartphoneFieldsAdditional-${mapKey}`}
-        pt={padding}
-        style={{ borderTop: borderColor }}
-        w="100%"
-      >
+      <Stack key={`smartphoneFieldsAdditional-${mapKey}`} pt={padding} w="100%">
         <Group position="apart">
-          <Text size="md" weight={600}>{`Additional field ${mapKey + 1}`}</Text>
+          <Text size="md" weight={600}>{`Additional Smartphone field ${
+            mapKey + 1
+          }`}</Text>
           {displayDeleteButton}
         </Group>
         <Group position="apart">
@@ -11682,14 +11639,11 @@ function CreateProduct() {
     );
 
     return (
-      <Stack
-        key={`tabletFieldsAdditional-${mapKey}`}
-        pt={padding}
-        style={{ borderTop: borderColor }}
-        w="100%"
-      >
+      <Stack key={`tabletFieldsAdditional-${mapKey}`} pt={padding} w="100%">
         <Group position="apart">
-          <Text size="md" weight={600}>{`Additional field ${mapKey + 1}`}</Text>
+          <Text size="md" weight={600}>{`Additional Tablet field ${
+            mapKey + 1
+          }`}</Text>
           {displayDeleteButton}
         </Group>
         <Group position="apart">
@@ -12108,14 +12062,11 @@ function CreateProduct() {
     );
 
     return (
-      <Stack
-        key={`accessoryFieldsAdditional-${mapKey}`}
-        pt={padding}
-        style={{ borderTop: borderColor }}
-        w="100%"
-      >
+      <Stack key={`accessoryFieldsAdditional-${mapKey}`} pt={padding} w="100%">
         <Group position="apart">
-          <Text size="md" weight={600}>{`Additional field ${mapKey + 1}`}</Text>
+          <Text size="md" weight={600}>{`Additional Accessory field ${
+            mapKey + 1
+          }`}</Text>
           {displayDeleteButton}
         </Group>
         <Group position="apart">
@@ -12535,14 +12486,11 @@ function CreateProduct() {
     );
 
     return (
-      <Stack
-        key={`webcamFieldsAdditional-${mapKey}`}
-        pt={padding}
-        style={{ borderTop: borderColor }}
-        w="100%"
-      >
+      <Stack key={`webcamFieldsAdditional-${mapKey}`} pt={padding} w="100%">
         <Group position="apart">
-          <Text size="md" weight={600}>{`Additional field ${mapKey + 1}`}</Text>
+          <Text size="md" weight={600}>{`Additional Webcam field ${
+            mapKey + 1
+          }`}</Text>
           {displayDeleteButton}
         </Group>
         <Group position="apart">
@@ -12998,14 +12946,11 @@ function CreateProduct() {
     );
 
     return (
-      <Stack
-        key={`microphoneFieldsAdditional-${mapKey}`}
-        pt={padding}
-        style={{ borderTop: borderColor }}
-        w="100%"
-      >
+      <Stack key={`microphoneFieldsAdditional-${mapKey}`} pt={padding} w="100%">
         <Group position="apart">
-          <Text size="md" weight={600}>{`Additional field ${mapKey + 1}`}</Text>
+          <Text size="md" weight={600}>{`Additional Microphone field ${
+            mapKey + 1
+          }`}</Text>
           {displayDeleteButton}
         </Group>
         <Group position="apart">
@@ -13095,8 +13040,13 @@ function CreateProduct() {
 
   // page 2 -> specifications -> cpu -> display
   const displayCpuSpecificationsInputs = (
-    <Group w="100%">
-      <Group w="100%" position="apart">
+    <Group
+      py={padding}
+      position="apart"
+      style={{ borderBottom: borderColor }}
+      w="100%"
+    >
+      <Group position="apart" w="100%">
         <Title order={4}>CPU Specifications</Title>
         {displayCpuFieldsAdditionalButton}
       </Group>
@@ -13125,7 +13075,12 @@ function CreateProduct() {
 
   // page 2 -> specifications -> gpu -> display
   const displayGpuSpecificationsInputs = (
-    <Group w="100%">
+    <Group
+      py={padding}
+      position="apart"
+      style={{ borderBottom: borderColor }}
+      w="100%"
+    >
       <Group w="100%" position="apart">
         <Title order={4}>GPU Specifications</Title>
         {displayGpuFieldsAdditionalButton}
@@ -13153,7 +13108,12 @@ function CreateProduct() {
 
   // page 2 -> specifications -> motherboard -> display
   const displayMotherboardSpecificationsInputs = (
-    <Group w="100%">
+    <Group
+      py={padding}
+      position="apart"
+      style={{ borderBottom: borderColor }}
+      w="100%"
+    >
       <Group w="100%" position="apart">
         <Title order={4}>Motherboard Specifications</Title>
         {displayMotherboardFieldsAdditionalButton}
@@ -13185,7 +13145,12 @@ function CreateProduct() {
 
   // page 2 -> specifications -> ram -> display
   const displayRamSpecificationsInputs = (
-    <Group w="100%">
+    <Group
+      py={padding}
+      position="apart"
+      style={{ borderBottom: borderColor }}
+      w="100%"
+    >
       <Group w="100%" position="apart">
         <Title order={4}>Memory (RAM) Specifications</Title>
         {displayRamFieldsAdditionalButton}
@@ -13215,7 +13180,12 @@ function CreateProduct() {
 
   // page 2 -> specifications -> storage -> display
   const displayStorageSpecificationsInputs = (
-    <Group w="100%">
+    <Group
+      py={padding}
+      position="apart"
+      style={{ borderBottom: borderColor }}
+      w="100%"
+    >
       <Group w="100%" position="apart">
         <Title order={4}>Storage Specifications</Title>
         {displayStorageFieldsAdditionalButton}
@@ -13242,7 +13212,12 @@ function CreateProduct() {
 
   // page 2 -> specifications -> power supply -> display
   const displayPowerSupplySpecificationsInputs = (
-    <Group w="100%">
+    <Group
+      py={padding}
+      position="apart"
+      style={{ borderBottom: borderColor }}
+      w="100%"
+    >
       <Group w="100%" position="apart">
         <Title order={4}>Power Supply Unit (PSU) Specifications</Title>
         {displayPsuFieldsAdditionalButton}
@@ -13268,7 +13243,12 @@ function CreateProduct() {
 
   // page 2 -> specifications -> computer case -> display
   const displayComputerCaseSpecificationsInputs = (
-    <Group w="100%">
+    <Group
+      py={padding}
+      position="apart"
+      style={{ borderBottom: borderColor }}
+      w="100%"
+    >
       <Group w="100%" position="apart">
         <Title order={4}>Case Specifications</Title>
         {displayCaseFieldsAdditionalButton}
@@ -13293,7 +13273,12 @@ function CreateProduct() {
 
   // page 2 -> specifications -> display -> display
   const displayDisplaySpecificationsInputs = (
-    <Group w="100%">
+    <Group
+      py={padding}
+      position="apart"
+      style={{ borderBottom: borderColor }}
+      w="100%"
+    >
       <Group w="100%" position="apart">
         <Title order={4}>Display Specifications</Title>
         {displayDisplayFieldsAdditionalButton}
@@ -13322,7 +13307,12 @@ function CreateProduct() {
 
   // page 2 -> specifications -> keyboard -> display
   const displayKeyboardSpecificationsInputs = (
-    <Group w="100%">
+    <Group
+      py={padding}
+      position="apart"
+      style={{ borderBottom: borderColor }}
+      w="100%"
+    >
       <Group w="100%" position="apart">
         <Title order={4}>Keyboard Specifications</Title>
         {displayKeyboardFieldsAdditionalButton}
@@ -13348,7 +13338,12 @@ function CreateProduct() {
 
   // page 2 -> specifications -> mouse -> display
   const displayMouseSpecificationsInputs = (
-    <Group w="100%">
+    <Group
+      py={padding}
+      position="apart"
+      style={{ borderBottom: borderColor }}
+      w="100%"
+    >
       <Group w="100%" position="apart">
         <Title order={4}>Mouse Specifications</Title>
         {displayMouseFieldsAdditionalButton}
@@ -13375,7 +13370,12 @@ function CreateProduct() {
 
   // page 2 -> specifications -> headphone -> display
   const displayHeadphoneSpecificationsInputs = (
-    <Group w="100%">
+    <Group
+      py={padding}
+      position="apart"
+      style={{ borderBottom: borderColor }}
+      w="100%"
+    >
       <Group w="100%" position="apart">
         <Title order={4}>Headphone Specifications</Title>
         {displayHeadphoneFieldsAdditionalButton}
@@ -13403,7 +13403,12 @@ function CreateProduct() {
 
   // page 2 -> specifications -> speaker -> display
   const displaySpeakerSpecificationsInputs = (
-    <Group w="100%">
+    <Group
+      py={padding}
+      position="apart"
+      style={{ borderBottom: borderColor }}
+      w="100%"
+    >
       <Group w="100%" position="apart">
         <Title order={4}>Speaker Specifications</Title>
         {displaySpeakerFieldsAdditionalButton}
@@ -13430,7 +13435,12 @@ function CreateProduct() {
 
   // page 2 -> specifications -> smartphone -> display
   const displaySmartphoneSpecificationsInputs = (
-    <Group w="100%">
+    <Group
+      py={padding}
+      position="apart"
+      style={{ borderBottom: borderColor }}
+      w="100%"
+    >
       <Group w="100%" position="apart">
         <Title order={4}>Smartphone Specifications</Title>
         {displaySmartphoneFieldsAdditionalButton}
@@ -13463,7 +13473,12 @@ function CreateProduct() {
 
   // page 2 -> specifications -> tablet -> display
   const displayTabletSpecificationsInputs = (
-    <Group w="100%">
+    <Group
+      py={padding}
+      position="apart"
+      style={{ borderBottom: borderColor }}
+      w="100%"
+    >
       <Group w="100%" position="apart">
         <Title order={4}>Tablet Specifications</Title>
         {displayTabletFieldsAdditionalButton}
@@ -13496,7 +13511,12 @@ function CreateProduct() {
 
   // page 2 -> specifications -> accessory -> display
   const displayAccessorySpecificationsInputs = (
-    <Group w="100%">
+    <Group
+      py={padding}
+      position="apart"
+      style={{ borderBottom: borderColor }}
+      w="100%"
+    >
       <Group w="100%" position="apart">
         <Title order={4}>Accessory Specifications</Title>
         {displayAccessoryFieldsAdditionalButton}
@@ -13510,7 +13530,7 @@ function CreateProduct() {
 
   // page 2 -> specifications -> desktop computers
   const displayDesktopComputersSpecificationsInputs = (
-    <>
+    <Stack w="100%">
       {displayCpuSpecificationsInputs}
       {displayGpuSpecificationsInputs}
       {displayMotherboardSpecificationsInputs}
@@ -13522,18 +13542,18 @@ function CreateProduct() {
       {displayKeyboardSpecificationsInputs}
       {displayMouseSpecificationsInputs}
       {displaySpeakerSpecificationsInputs}
-    </>
+    </Stack>
   );
 
   // page 2 -> specifications -> laptop computers
   const displayLaptopComputersSpecificationsInputs = (
-    <>
+    <Stack w="100%">
       {displayCpuSpecificationsInputs}
       {displayGpuSpecificationsInputs}
       {displayDisplaySpecificationsInputs}
       {displayRamSpecificationsInputs}
       {displayStorageSpecificationsInputs}
-    </>
+    </Stack>
   );
 
   // page 2 -> specifications -> webcams
@@ -13549,7 +13569,12 @@ function CreateProduct() {
 
   // page 2 -> specifications -> webcams -> display
   const displayWebcamSpecificationsInputs = (
-    <Group w="100%">
+    <Group
+      py={padding}
+      position="apart"
+      style={{ borderBottom: borderColor }}
+      w="100%"
+    >
       <Group w="100%" position="apart">
         <Title order={4}>Webcam Specifications</Title>
         {displayWebcamFieldsAdditionalButton}
@@ -13576,7 +13601,12 @@ function CreateProduct() {
 
   // page 2 -> specifications -> microphones -> display
   const displayMicrophoneSpecificationsInputs = (
-    <Group w="100%">
+    <Group
+      py={padding}
+      position="apart"
+      style={{ borderBottom: borderColor }}
+      w="100%"
+    >
       <Group w="100%" position="apart">
         <Title order={4}>Microphone Specifications</Title>
         {displayMicrophoneFieldsAdditionalButton}
@@ -13592,7 +13622,12 @@ function CreateProduct() {
 
   const displayCreateProductFormPage2 = (
     <FormLayoutWrapper>
-      <Group py={padding} style={{ borderBottom: borderColor }}>
+      <Group
+        position="apart"
+        py={padding}
+        style={{ borderBottom: borderColor }}
+        w="100%"
+      >
         {createdProductCategorySelectInput}
       </Group>
       {productCategory === 'Accessories'

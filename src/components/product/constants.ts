@@ -184,12 +184,13 @@ const MOTHERBOARD_CHIPSET_REGEX = CPU_SOCKET_REGEX;
 const RAM_TIMING_REGEX = /^[0-9]{1,2}-[0-9]{1,2}-[0-9]{1,2}-[0-9]{1,2}$/;
 
 /**
- * - /^[a-zA-Z0-9\s-]{2,30}$/;
- * - [a-zA-Z0-9\s-] matches any character between a-z, A-Z, 0-9, whitespace and -.
+ * - /^[a-zA-Z0-9#()%,.\s-]{2,30}$/
+ * - [a-zA-Z0-9#()%,.\s-] matches any character between a-z, A-Z, 0-9, #, (, ), %, ,, ., whitespace and -.
  * - {2,30} matches between 2 and 30 of the preceding token.
  * - ^ and $ ensure that the entire string matches the regex.
+ * - ex: #e0e0e0 or hsl(0, 0%, 88%) or rgb(224, 224, 224) or rgba(224, 224, 224, 0.5) or hsla(0, 0%, 88%, 0.5)
  */
-const COLOR_VARIANT_REGEX = /^[a-zA-Z0-9\s-]{2,30}$/;
+const COLOR_VARIANT_REGEX = /^[a-zA-Z0-9#()%,.\s-]{2,30}$/;
 
 /**
  * - /^[0-9]{1,2}:[0-9]{1,2}$/
