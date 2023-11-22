@@ -219,6 +219,9 @@ function CreateGpu({
   //   STEPPER STATE UPDATE
   // ╚═════════════════════════════════════════════════════════════════╝
   useEffect(() => {
+    // select inputs are not included as they always have a default value
+    // inputs with value: 0 count as error
+
     const areGpuInputsHardcodedInError =
       !isGpuChipsetValid ||
       !isGpuMemoryCapacityValid ||

@@ -269,6 +269,9 @@ function CreateCpu({
   //   STEPPER STATE UPDATE
   // ╚═════════════════════════════════════════════════════════════════╝
   useEffect(() => {
+    // select inputs are not included as they always have a default value
+    // inputs with value: 0 count as error
+
     const areCpuFieldsAdditionalInError = Array.from(
       areCpuFieldsAdditionalValid
     ).some(([_key, value]) => !value);

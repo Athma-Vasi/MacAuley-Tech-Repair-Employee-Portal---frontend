@@ -14,59 +14,58 @@ import {
   returnAccessibleButtonElements,
   returnAccessibleSelectInputElements,
   returnAccessibleTextAreaInputElements,
-  returnAccessibleTextInputElements,
 } from '../../../../jsxCreators';
 import {
-  returnColorVariantValidationText,
   returnObjectKeyValidationText,
   returnUserDefinedFieldValueValidationText,
 } from '../../../../utils';
 import { AccessibleTextAreaInputCreatorInfo } from '../../../wrappers';
 import {
-  CASE_SIDE_PANEL_DATA,
-  CASE_TYPE_DATA,
-  COLOR_VARIANT_REGEX,
+  KEYBOARD_BACKLIGHT_DATA,
+  KEYBOARD_LAYOUT_DATA,
+  KEYBOARD_SWITCH_DATA,
   OBJECT_KEY_REGEX,
+  PERIPHERALS_INTERFACE_DATA,
   USER_DEFINED_VALUE_REGEX,
 } from '../../constants';
 import {
-  CaseSidePanel,
-  CaseType,
   CreateProductAction,
   CreateProductDispatch,
+  KeyboardBacklight,
+  KeyboardLayout,
+  KeyboardSwitch,
+  PeripheralsInterface,
 } from '../types';
 
-type CreateCaseProps = {
-  areCaseFieldsAdditionalFocused: Map<number, [boolean, boolean]>;
-  areCaseFieldsAdditionalValid: Map<number, [boolean, boolean]>;
+type CreateKeyboardsProps = {
+  areKeyboardFieldsAdditionalFocused: Map<number, [boolean, boolean]>;
+  areKeyboardFieldsAdditionalValid: Map<number, [boolean, boolean]>;
   borderColor: string;
-  caseColor: string;
-  caseFieldsAdditional: Map<number, [string, string]>;
-  caseSidePanel: CaseSidePanel;
-  caseType: CaseType;
   createProductAction: CreateProductAction;
   createProductDispatch: React.Dispatch<CreateProductDispatch>;
   currentlySelectedAdditionalFieldIndex: number;
-  isCaseColorFocused: boolean;
-  isCaseColorValid: boolean;
+  keyboardBacklight: KeyboardBacklight;
+  keyboardFieldsAdditional: Map<number, [string, string]>;
+  keyboardInterface: PeripheralsInterface;
+  keyboardLayout: KeyboardLayout;
+  keyboardSwitch: KeyboardSwitch;
   padding: MantineNumberSize;
 };
 
-function CreateCase({
-  areCaseFieldsAdditionalFocused,
-  areCaseFieldsAdditionalValid,
+function CreateKeyboards({
+  areKeyboardFieldsAdditionalFocused,
+  areKeyboardFieldsAdditionalValid,
   borderColor,
-  caseColor,
-  caseFieldsAdditional,
-  caseSidePanel,
-  caseType,
   createProductAction,
   createProductDispatch,
   currentlySelectedAdditionalFieldIndex,
-  isCaseColorFocused,
-  isCaseColorValid,
+  keyboardBacklight,
+  keyboardFieldsAdditional,
+  keyboardInterface,
+  keyboardLayout,
+  keyboardSwitch,
   padding,
-}: CreateCaseProps) {
+}: CreateKeyboardsProps) {
   // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
   //  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
   //    VALIDATION USE EFFECTS
@@ -74,38 +73,21 @@ function CreateCase({
   // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    CASE COLOR
+  //    KEYBOARD ADDITIONAL FIELDS
   // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
-    const isValid = COLOR_VARIANT_REGEX.test(caseColor);
+    const currentlyUpdatingKeyboardFieldAdditional =
+      keyboardFieldsAdditional.get(currentlySelectedAdditionalFieldIndex);
 
-    createProductDispatch({
-      type: createProductAction.setIsCaseColorValid,
-      payload: isValid,
-    });
-  }, [
-    caseColor,
-    createProductAction.setIsCaseColorValid,
-    createProductDispatch,
-  ]);
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    CASE FIELDS ADDITIONAL
-  // ╰─────────────────────────────────────────────────────────────────╯
-  useEffect(() => {
-    const currentlyUpdatingCaseFieldAdditional = caseFieldsAdditional.get(
-      currentlySelectedAdditionalFieldIndex
-    );
-
-    if (!currentlyUpdatingCaseFieldAdditional) {
+    if (!currentlyUpdatingKeyboardFieldAdditional) {
       return;
     }
 
-    const [key, value] = currentlyUpdatingCaseFieldAdditional;
+    const [key, value] = currentlyUpdatingKeyboardFieldAdditional;
 
     const isKeyValid = OBJECT_KEY_REGEX.test(key);
     createProductDispatch({
-      type: createProductAction.setAreCaseFieldsAdditionalValid,
+      type: createProductAction.setAreKeyboardFieldsAdditionalValid,
       payload: {
         operation: 'update',
         data: isKeyValid,
@@ -116,7 +98,7 @@ function CreateCase({
 
     const isValueValid = USER_DEFINED_VALUE_REGEX.test(value);
     createProductDispatch({
-      type: createProductAction.setAreCaseFieldsAdditionalValid,
+      type: createProductAction.setAreKeyboardFieldsAdditionalValid,
       payload: {
         operation: 'update',
         data: isValueValid,
@@ -125,10 +107,10 @@ function CreateCase({
       },
     });
   }, [
-    currentlySelectedAdditionalFieldIndex,
-    caseFieldsAdditional,
+    createProductAction.setAreKeyboardFieldsAdditionalValid,
     createProductDispatch,
-    createProductAction.setAreCaseFieldsAdditionalValid,
+    currentlySelectedAdditionalFieldIndex,
+    keyboardFieldsAdditional,
   ]);
 
   // ╔═════════════════════════════════════════════════════════════════╗
@@ -138,25 +120,25 @@ function CreateCase({
     // select inputs are not included as they always have a default value
     // inputs with value: 0 count as error
 
-    const areCaseFieldsAdditionalInError = Array.from(
-      areCaseFieldsAdditionalValid
+    const areKeyboardInputsUserDefinedInError = Array.from(
+      areKeyboardFieldsAdditionalValid
     ).some(([_key, value]) => !value);
-
-    const areCaseInputsInError =
-      !isCaseColorValid || areCaseFieldsAdditionalInError;
 
     createProductDispatch({
       type: createProductAction.setStepsInError,
       payload: {
-        kind: areCaseInputsInError ? 'add' : 'delete',
+        kind: areKeyboardInputsUserDefinedInError ? 'add' : 'delete',
         step: 1,
       },
     });
   }, [
-    areCaseFieldsAdditionalValid,
+    areKeyboardFieldsAdditionalValid,
     createProductAction.setStepsInError,
     createProductDispatch,
-    isCaseColorValid,
+    keyboardBacklight,
+    keyboardInterface,
+    keyboardLayout,
+    keyboardSwitch,
   ]);
 
   // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
@@ -166,109 +148,94 @@ function CreateCase({
   // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    CASE TYPE
+  //    KEYBOARD SWITCH
   // ╰─────────────────────────────────────────────────────────────────╯
-  const [createdCaseTypeSelectInput] = returnAccessibleSelectInputElements([
-    {
-      data: CASE_TYPE_DATA,
-      description: '',
-      label: 'Case Type',
-      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-        createProductDispatch({
-          type: createProductAction.setCaseType,
-          payload: event.currentTarget.value as CaseType,
-        });
-      },
-      value: caseType,
-      required: true,
-    },
-  ]);
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    CASE COLOR
-  // ╰─────────────────────────────────────────────────────────────────╯
-
-  // screenreader accessible error/valid text elements
-  const [caseColorInputErrorText, caseColorInputValidText] =
-    AccessibleErrorValidTextElements({
-      inputElementKind: 'case color',
-      inputText: caseColor,
-      isInputTextFocused: isCaseColorFocused,
-      isValidInputText: isCaseColorValid,
-      regexValidationText: returnColorVariantValidationText({
-        content: caseColor,
-        contentKind: 'case color',
-        maxLength: 30,
-        minLength: 2,
-      }),
-    });
-
-  // text input element creator
-  const [createdCaseColorTextInput] = returnAccessibleTextInputElements([
-    {
-      description: {
-        error: caseColorInputErrorText,
-        valid: caseColorInputValidText,
-      },
-      inputText: caseColor,
-      isValidInputText: isCaseColorValid,
-      label: 'Case Color',
-      maxLength: 30,
-      minLength: 2,
-      onBlur: () => {
-        createProductDispatch({
-          type: createProductAction.setIsCaseColorFocused,
-          payload: false,
-        });
-      },
-      onChange: (event: ChangeEvent<HTMLInputElement>) => {
-        createProductDispatch({
-          type: createProductAction.setCaseColor,
-          payload: event.currentTarget.value,
-        });
-      },
-      onFocus: () => {
-        createProductDispatch({
-          type: createProductAction.setIsCaseColorFocused,
-          payload: true,
-        });
-      },
-      placeholder: 'Enter case color',
-      required: true,
-      semanticName: 'case color',
-    },
-  ]);
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    CASE SIDE PANEL
-  // ╰─────────────────────────────────────────────────────────────────╯
-  const [createdCaseSidePanelSelectInput] = returnAccessibleSelectInputElements(
-    [
+  const [createdKeyboardSwitchSelectInput] =
+    returnAccessibleSelectInputElements([
       {
-        data: CASE_SIDE_PANEL_DATA,
-        description: 'Select case side panel',
-        label: 'Case Side Panel',
+        data: KEYBOARD_SWITCH_DATA,
+        description: '',
+        label: 'Keyboard Switch',
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           createProductDispatch({
-            type: createProductAction.setCaseSidePanel,
-            payload: event.currentTarget.value as CaseSidePanel,
+            type: createProductAction.setKeyboardSwitch,
+            payload: event.currentTarget.value as KeyboardSwitch,
           });
         },
-        value: caseSidePanel,
+        value: keyboardSwitch,
         required: true,
       },
-    ]
-  );
+    ]);
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    KEYBOARD LAYOUT
+  // ╰─────────────────────────────────────────────────────────────────╯
+  const [createdKeyboardLayoutSelectInput] =
+    returnAccessibleSelectInputElements([
+      {
+        data: KEYBOARD_LAYOUT_DATA,
+        description: '',
+        label: 'Keyboard Layout',
+        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+          createProductDispatch({
+            type: createProductAction.setKeyboardLayout,
+            payload: event.currentTarget.value as KeyboardLayout,
+          });
+        },
+        value: keyboardLayout,
+        required: true,
+      },
+    ]);
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    KEYBOARD BACKLIGHT
+  // ╰─────────────────────────────────────────────────────────────────╯
+  const [createdKeyboardBacklightSelectInput] =
+    returnAccessibleSelectInputElements([
+      {
+        data: KEYBOARD_BACKLIGHT_DATA,
+        description: '',
+        label: 'Keyboard Backlight',
+        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+          createProductDispatch({
+            type: createProductAction.setKeyboardBacklight,
+            payload: event.currentTarget.value as KeyboardBacklight,
+          });
+        },
+        value: keyboardBacklight,
+        required: true,
+      },
+    ]);
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    KEYBOARD INTERFACE
+  // ╰─────────────────────────────────────────────────────────────────╯
+  const [createdKeyboardInterfaceSelectInput] =
+    returnAccessibleSelectInputElements([
+      {
+        data: PERIPHERALS_INTERFACE_DATA,
+        description: '',
+        label: 'Keyboard Interface',
+        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+          createProductDispatch({
+            type: createProductAction.setKeyboardInterface,
+            payload: event.currentTarget.value as PeripheralsInterface,
+          });
+        },
+        value: keyboardInterface,
+        required: true,
+      },
+    ]);
 
   // ╔═════════════════════════════════════════════════════════════════╗
-  //   CASE ADDITIONAL FIELDS
+  //   KEYBOARD ADDITIONAL FIELDS
   // ╚═════════════════════════════════════════════════════════════════╝
 
   // ╭─────────────────────────────────────────────────────────────────╮
   //    ADD ADDITIONAL FIELD BUTTON
   // ╰─────────────────────────────────────────────────────────────────╯
-  const [createdAddCaseFieldsAdditionalButton] = returnAccessibleButtonElements(
-    [
+  const [createdAddKeyboardFieldsAdditionalButton] =
+    returnAccessibleButtonElements([
       {
         buttonLabel: 'Add',
         semanticDescription: 'Add new additional field',
@@ -276,7 +243,7 @@ function CreateCase({
         leftIcon: <TbPlus />,
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
           createProductDispatch({
-            type: createProductAction.setCaseFieldsAdditional,
+            type: createProductAction.setKeyboardFieldsAdditional,
             payload: {
               operation: 'add',
               data: ['', ''],
@@ -284,7 +251,7 @@ function CreateCase({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreCaseFieldsAdditionalFocused,
+            type: createProductAction.setAreKeyboardFieldsAdditionalFocused,
             payload: {
               operation: 'add',
               data: [false, false],
@@ -292,7 +259,7 @@ function CreateCase({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreCaseFieldsAdditionalValid,
+            type: createProductAction.setAreKeyboardFieldsAdditionalValid,
             payload: {
               operation: 'add',
               data: [false, false],
@@ -300,30 +267,30 @@ function CreateCase({
           });
         },
       },
-    ]
-  );
+    ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
   //    ERROR/VALID ELEMENTS TUPLE => FIELD NAMES
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // returns an array of tuples containing the error and valid text elements for each field name
-  const caseFieldsAdditionalKeysErrorValidTextElements: [
+  const keyboardFieldsAdditionalKeysErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(caseFieldsAdditional).map((keyFieldValue) => {
+  ][] = Array.from(keyboardFieldsAdditional).map((keyFieldValue) => {
     const [mapKey, [field, _value]] = keyFieldValue;
 
     // screenreader accessible error/valid text elements that are consumed by the text input element creator
     const [
-      caseFieldsAdditionalKeysInputErrorText,
-      caseFieldsAdditionalKeysInputValidText,
+      keyboardFieldsAdditionalKeysInputErrorText,
+      keyboardFieldsAdditionalKeysInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field name ${mapKey + 1}`,
       inputText: field,
       isInputTextFocused:
-        areCaseFieldsAdditionalFocused.get(mapKey)?.[0] ?? false,
-      isValidInputText: areCaseFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+        areKeyboardFieldsAdditionalFocused.get(mapKey)?.[0] ?? false,
+      isValidInputText:
+        areKeyboardFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
       regexValidationText: returnObjectKeyValidationText({
         content: field,
         contentKind: `additional field name ${mapKey + 1}`,
@@ -333,8 +300,8 @@ function CreateCase({
     });
 
     return [
-      caseFieldsAdditionalKeysInputErrorText,
-      caseFieldsAdditionalKeysInputValidText,
+      keyboardFieldsAdditionalKeysInputErrorText,
+      keyboardFieldsAdditionalKeysInputValidText,
     ];
   });
 
@@ -343,22 +310,23 @@ function CreateCase({
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // returns an array of tuples containing the error and valid text elements for each field value
-  const caseFieldsAdditionalValuesErrorValidTextElements: [
+  const keyboardFieldsAdditionalValuesErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(caseFieldsAdditional).map((keyFieldValue) => {
+  ][] = Array.from(keyboardFieldsAdditional).map((keyFieldValue) => {
     const [mapKey, [_field, value]] = keyFieldValue;
 
     // screenreader accessible error/valid text elements that are consumed by the text input element creator
     const [
-      caseFieldsAdditionalValuesInputErrorText,
-      caseFieldsAdditionalValuesInputValidText,
+      keyboardFieldsAdditionalValuesInputErrorText,
+      keyboardFieldsAdditionalValuesInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field value ${mapKey + 1}`,
       inputText: value,
       isInputTextFocused:
-        areCaseFieldsAdditionalFocused.get(mapKey)?.[1] ?? false,
-      isValidInputText: areCaseFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+        areKeyboardFieldsAdditionalFocused.get(mapKey)?.[1] ?? false,
+      isValidInputText:
+        areKeyboardFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
       regexValidationText: returnUserDefinedFieldValueValidationText({
         content: value,
         contentKind: `additional field value ${mapKey + 1}`,
@@ -368,34 +336,34 @@ function CreateCase({
     });
 
     return [
-      caseFieldsAdditionalValuesInputErrorText,
-      caseFieldsAdditionalValuesInputValidText,
+      keyboardFieldsAdditionalValuesInputErrorText,
+      keyboardFieldsAdditionalValuesInputValidText,
     ];
   });
 
-  const createdCaseFieldsAdditionalTextInputElements = Array.from(
-    caseFieldsAdditional
+  const createdKeyboardFieldsAdditionalTextInputElements = Array.from(
+    keyboardFieldsAdditional
   ).map((keyFieldValue) => {
     const [mapKey, [field, value]] = keyFieldValue;
 
     // ╭─────────────────────────────────────────────────────────────────╮
     //    ADDITIONAL FIELD TEXT INPUT => FIELD NAME
     // ╰─────────────────────────────────────────────────────────────────╯
-    const caseFieldsAdditionalKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const keyboardFieldsAdditionalKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
-          error: caseFieldsAdditionalKeysErrorValidTextElements[mapKey][0],
-          valid: caseFieldsAdditionalKeysErrorValidTextElements[mapKey][1],
+          error: keyboardFieldsAdditionalKeysErrorValidTextElements[mapKey][0],
+          valid: keyboardFieldsAdditionalKeysErrorValidTextElements[mapKey][1],
         },
         inputText: field,
         isValidInputText:
-          areCaseFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+          areKeyboardFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
         label: `Name ${mapKey + 1}`,
         maxLength: 75,
         minLength: 1,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreCaseFieldsAdditionalFocused,
+            type: createProductAction.setAreKeyboardFieldsAdditionalFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -406,7 +374,7 @@ function CreateCase({
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setCaseFieldsAdditional,
+            type: createProductAction.setKeyboardFieldsAdditional,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -422,7 +390,7 @@ function CreateCase({
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreCaseFieldsAdditionalFocused,
+            type: createProductAction.setAreKeyboardFieldsAdditionalFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -439,21 +407,23 @@ function CreateCase({
     // ╭─────────────────────────────────────────────────────────────────╮
     //    ADDITIONAL FIELD TEXT INPUT => FIELD VALUE
     // ╰─────────────────────────────────────────────────────────────────╯
-    const caseFieldsAdditionalValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const keyboardFieldsAdditionalValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
-          error: caseFieldsAdditionalValuesErrorValidTextElements[mapKey][0],
-          valid: caseFieldsAdditionalValuesErrorValidTextElements[mapKey][1],
+          error:
+            keyboardFieldsAdditionalValuesErrorValidTextElements[mapKey][0],
+          valid:
+            keyboardFieldsAdditionalValuesErrorValidTextElements[mapKey][1],
         },
         inputText: value,
         isValidInputText:
-          areCaseFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+          areKeyboardFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
         label: `Value ${mapKey + 1}`,
         maxLength: 2000,
         minLength: 2,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreCaseFieldsAdditionalFocused,
+            type: createProductAction.setAreKeyboardFieldsAdditionalFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -464,7 +434,7 @@ function CreateCase({
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setCaseFieldsAdditional,
+            type: createProductAction.setKeyboardFieldsAdditional,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -480,7 +450,7 @@ function CreateCase({
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreCaseFieldsAdditionalFocused,
+            type: createProductAction.setAreKeyboardFieldsAdditionalFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -495,11 +465,11 @@ function CreateCase({
       };
 
     const [
-      createdCaseFieldsAdditionalKeysTextAreaInput,
-      createdCaseFieldsAdditionalValuesTextAreaInput,
+      createdKeyboardFieldsAdditionalKeysTextAreaInput,
+      createdKeyboardFieldsAdditionalValuesTextAreaInput,
     ] = returnAccessibleTextAreaInputElements([
-      caseFieldsAdditionalKeysTextInputCreatorInfo,
-      caseFieldsAdditionalValuesTextInputCreatorInfo,
+      keyboardFieldsAdditionalKeysTextInputCreatorInfo,
+      keyboardFieldsAdditionalValuesTextInputCreatorInfo,
     ]);
 
     // ╭─────────────────────────────────────────────────────────────────╮
@@ -510,7 +480,7 @@ function CreateCase({
         buttonLabel: 'Delete',
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
           createProductDispatch({
-            type: createProductAction.setCaseFieldsAdditional,
+            type: createProductAction.setKeyboardFieldsAdditional,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -518,7 +488,7 @@ function CreateCase({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreCaseFieldsAdditionalFocused,
+            type: createProductAction.setAreKeyboardFieldsAdditionalFocused,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -526,7 +496,7 @@ function CreateCase({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreCaseFieldsAdditionalValid,
+            type: createProductAction.setAreKeyboardFieldsAdditionalValid,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -551,16 +521,16 @@ function CreateCase({
     );
 
     return (
-      <Stack key={`caseFieldsAdditional-${mapKey}`} pt={padding} w="100%">
+      <Stack key={`keyboardFieldsAdditional-${mapKey}`} pt={padding} w="100%">
         <Group position="apart">
-          <Text size="md" weight={600}>{`Additional Case field ${
+          <Text size="md" weight={600}>{`Additional Keyboard field ${
             mapKey + 1
           }`}</Text>
           {displayDeleteButton}
         </Group>
         <Group position="apart">
-          {createdCaseFieldsAdditionalKeysTextAreaInput}
-          {createdCaseFieldsAdditionalValuesTextAreaInput}
+          {createdKeyboardFieldsAdditionalKeysTextAreaInput}
+          {createdKeyboardFieldsAdditionalValuesTextAreaInput}
         </Group>
       </Stack>
     );
@@ -572,15 +542,15 @@ function CreateCase({
   //  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
   // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 
-  const displayCaseFieldsAdditionalButton = (
+  const displayKeyboardFieldsAdditionalButton = (
     <Tooltip
-      label={`Add new additional field ${caseFieldsAdditional.size + 1}`}
+      label={`Add new additional field ${keyboardFieldsAdditional.size + 1}`}
     >
-      <Group>{createdAddCaseFieldsAdditionalButton}</Group>
+      <Group>{createdAddKeyboardFieldsAdditionalButton}</Group>
     </Tooltip>
   );
 
-  const displayComputerCaseSpecificationsInputs = (
+  const displayKeyboardSpecificationsInputs = (
     <Group
       py={padding}
       position="apart"
@@ -588,17 +558,18 @@ function CreateCase({
       w="100%"
     >
       <Group w="100%" position="apart">
-        <Title order={4}>Case Specifications</Title>
-        {displayCaseFieldsAdditionalButton}
+        <Title order={4}>Keyboard Specifications</Title>
+        {displayKeyboardFieldsAdditionalButton}
       </Group>
-      {createdCaseTypeSelectInput}
-      {createdCaseColorTextInput}
-      {createdCaseSidePanelSelectInput}
-      {createdCaseFieldsAdditionalTextInputElements}
+      {createdKeyboardSwitchSelectInput}
+      {createdKeyboardLayoutSelectInput}
+      {createdKeyboardBacklightSelectInput}
+      {createdKeyboardInterfaceSelectInput}
+      {createdKeyboardFieldsAdditionalTextInputElements}
     </Group>
   );
 
-  return displayComputerCaseSpecificationsInputs;
+  return displayKeyboardSpecificationsInputs;
 }
 
-export default CreateCase;
+export default CreateKeyboards;
