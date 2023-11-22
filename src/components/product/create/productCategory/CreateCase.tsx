@@ -6,27 +6,15 @@ import {
   Title,
   Tooltip,
 } from '@mantine/core';
-import {
-  CaseType,
-  CaseSidePanel,
-  CreateProductAction,
-  CreateProductDispatch,
-} from '../types';
-import { ChangeEvent, useEffect, MouseEvent } from 'react';
-import {
-  CASE_SIDE_PANEL_DATA,
-  CASE_TYPE_DATA,
-  COLOR_VARIANT_REGEX,
-  OBJECT_KEY_REGEX,
-  USER_DEFINED_VALUE_REGEX,
-} from '../../constants';
+import { ChangeEvent, MouseEvent, useEffect } from 'react';
 import { TbPlus, TbTrash } from 'react-icons/tb';
+
 import {
-  returnAccessibleSelectInputElements,
   AccessibleErrorValidTextElements,
-  returnAccessibleTextInputElements,
   returnAccessibleButtonElements,
+  returnAccessibleSelectInputElements,
   returnAccessibleTextAreaInputElements,
+  returnAccessibleTextInputElements,
 } from '../../../../jsxCreators';
 import {
   returnColorVariantValidationText,
@@ -34,6 +22,19 @@ import {
   returnUserDefinedFieldValueValidationText,
 } from '../../../../utils';
 import { AccessibleTextAreaInputCreatorInfo } from '../../../wrappers';
+import {
+  CASE_SIDE_PANEL_DATA,
+  CASE_TYPE_DATA,
+  COLOR_VARIANT_REGEX,
+  OBJECT_KEY_REGEX,
+  USER_DEFINED_VALUE_REGEX,
+} from '../../constants';
+import {
+  CaseSidePanel,
+  CaseType,
+  CreateProductAction,
+  CreateProductDispatch,
+} from '../types';
 
 type CreateCaseProps = {
   areCaseFieldsAdditionalFocused: Map<number, [boolean, boolean]>;
@@ -369,16 +370,13 @@ function CreateCase({
     ];
   });
 
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    ADDITIONAL FIELDS TEXT INPUT ELEMENTS
-  // ╰─────────────────────────────────────────────────────────────────╯
   const createdCaseFieldsAdditionalTextInputElements = Array.from(
     caseFieldsAdditional
   ).map((keyFieldValue) => {
     const [mapKey, [field, value]] = keyFieldValue;
 
     // ╭─────────────────────────────────────────────────────────────────╮
-    //    TEXT INPUT ELEMENTS => FIELD NAME
+    //    ADDITIONAL FIELD TEXT INPUT => FIELD NAME
     // ╰─────────────────────────────────────────────────────────────────╯
     const caseFieldsAdditionalKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
@@ -436,7 +434,7 @@ function CreateCase({
       };
 
     // ╭─────────────────────────────────────────────────────────────────╮
-    //    TEXT INPUT ELEMENTS => FIELD VALUE
+    //    ADDITIONAL FIELD TEXT INPUT => FIELD VALUE
     // ╰─────────────────────────────────────────────────────────────────╯
     const caseFieldsAdditionalValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {

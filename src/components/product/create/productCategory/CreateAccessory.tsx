@@ -436,16 +436,13 @@ function CreateAccessory({
     ];
   });
 
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    TEXT INPUT ELEMENTS
-  // ╰─────────────────────────────────────────────────────────────────╯
   const createdAccessoryFieldsAdditionalTextInputElements = Array.from(
     accessoryFieldsAdditional
   ).map((keyFieldValue) => {
     const [mapKey, [field, value]] = keyFieldValue;
 
     // ╭─────────────────────────────────────────────────────────────────╮
-    //    TEXT INPUT ELEMENTS => FIELD NAME
+    //    ADDITIONAL FIELD TEXT INPUT => FIELD NAME
     // ╰─────────────────────────────────────────────────────────────────╯
     const accessoryFieldsAdditionalKeyTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
@@ -503,7 +500,7 @@ function CreateAccessory({
       };
 
     // ╭─────────────────────────────────────────────────────────────────╮
-    //    TEXT INPUT ELEMENTS => FIELD VALUE
+    //    ADDITIONAL FIELD TEXT INPUT => FIELD VALUE
     // ╰─────────────────────────────────────────────────────────────────╯
     const accessoryFieldsAdditionalValueTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
