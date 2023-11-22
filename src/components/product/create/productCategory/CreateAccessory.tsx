@@ -37,21 +37,21 @@ import {
 } from '../types';
 
 type CreateAccessoryProps = {
-  accessoryType: string;
-  isAccessoryTypeValid: boolean;
-  isAccessoryTypeFocused: boolean;
   accessoryColor: string;
-  isAccessoryColorValid: boolean;
-  isAccessoryColorFocused: boolean;
+  accessoryFieldsAdditional: Map<number, [string, string]>;
   accessoryInterface: PeripheralsInterface;
-  accessoryFieldsAdditional: Map<number, [string, string]>; // Map<index, [name, value]>
-  areAccessoryFieldsAdditionalValid: Map<number, [boolean, boolean]>; // Map<index, [isNameValid, isValueValid]>
-  areAccessoryFieldsAdditionalFocused: Map<number, [boolean, boolean]>; // Map<index, [isNameFocused, isValueFocused]>
+  accessoryType: string;
+  areAccessoryFieldsAdditionalFocused: Map<number, [boolean, boolean]>;
+  areAccessoryFieldsAdditionalValid: Map<number, [boolean, boolean]>;
+  borderColor: string;
   createProductAction: CreateProductAction;
   createProductDispatch: React.Dispatch<CreateProductDispatch>;
   currentlySelectedAdditionalFieldIndex: number;
+  isAccessoryColorFocused: boolean;
+  isAccessoryColorValid: boolean;
+  isAccessoryTypeFocused: boolean;
+  isAccessoryTypeValid: boolean;
   padding: MantineNumberSize;
-  borderColor: string;
 };
 
 function CreateAccessory({
@@ -323,7 +323,7 @@ function CreateAccessory({
     ]);
 
   // ╔═════════════════════════════════════════════════════════════════╗
-  //   ADDITIONAL FIELDS
+  //   ACCESSORY ADDITIONAL FIELDS
   // ╚═════════════════════════════════════════════════════════════════╝
 
   // ╭─────────────────────────────────────────────────────────────────╮
@@ -441,7 +441,6 @@ function CreateAccessory({
   //    TEXT INPUT ELEMENTS
   // ╰─────────────────────────────────────────────────────────────────╯
 
-  // text input element creator
   const createdAccessoryFieldsAdditionalTextInputElements = Array.from(
     accessoryFieldsAdditional
   ).map((keyFieldValue) => {
@@ -450,6 +449,7 @@ function CreateAccessory({
     // ╭─────────────────────────────────────────────────────────────────╮
     //    TEXT INPUT ELEMENTS => FIELD NAME
     // ╰─────────────────────────────────────────────────────────────────╯
+
     const accessoryFieldsAdditionalKeyTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
@@ -508,6 +508,7 @@ function CreateAccessory({
     // ╭─────────────────────────────────────────────────────────────────╮
     //    TEXT INPUT ELEMENTS => FIELD VALUE
     // ╰─────────────────────────────────────────────────────────────────╯
+
     const accessoryFieldsAdditionalValueTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
