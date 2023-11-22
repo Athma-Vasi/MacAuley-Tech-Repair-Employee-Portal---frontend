@@ -17,80 +17,94 @@ import {
   returnAccessibleTextInputElements,
 } from '../../../../jsxCreators';
 import {
+  returnColorVariantValidationText,
   returnMediumIntegerValidationText,
   returnObjectKeyValidationText,
+  returnRamTimingValidationText,
+  returnRamVoltageValidationText,
   returnSmallIntegerValidationText,
-  returnSocketChipsetValidationText,
   returnUserDefinedFieldValueValidationText,
 } from '../../../../utils';
 import { AccessibleTextAreaInputCreatorInfo } from '../../../wrappers';
 import {
-  GPU_CHIPSET_REGEX,
+  COLOR_VARIANT_REGEX,
   MEDIUM_INTEGER_REGEX,
   MEMORY_UNIT_SELECT_INPUT_DATA,
   OBJECT_KEY_REGEX,
+  RAM_MEMORY_TYPE_DATA,
+  RAM_TIMING_REGEX,
+  RAM_VOLTAGE_REGEX,
   SMALL_INTEGER_REGEX,
   USER_DEFINED_VALUE_REGEX,
 } from '../../constants';
 import {
   CreateProductAction,
   CreateProductDispatch,
+  MemoryType,
   MemoryUnit,
 } from '../types';
 
-type CreateGpuProps = {
-  areGpuFieldsAdditionalFocused: Map<number, [boolean, boolean]>;
-  areGpuFieldsAdditionalValid: Map<number, [boolean, boolean]>;
+type CreateRamProps = {
+  areRamFieldsAdditionalFocused: Map<number, [boolean, boolean]>;
+  areRamFieldsAdditionalValid: Map<number, [boolean, boolean]>;
   borderColor: string;
   createProductAction: CreateProductAction;
   createProductDispatch: React.Dispatch<CreateProductDispatch>;
   currentlySelectedAdditionalFieldIndex: number;
-  gpuBoostClock: string;
-  gpuChipset: string;
-  gpuCoreClock: string;
-  gpuFieldsAdditional: Map<number, [string, string]>;
-  gpuMemoryCapacity: string;
-  gpuMemoryCapacityUnit: MemoryUnit;
-  gpuTdp: string;
-  isGpuBoostClockFocused: boolean;
-  isGpuBoostClockValid: boolean;
-  isGpuChipsetFocused: boolean;
-  isGpuChipsetValid: boolean;
-  isGpuCoreClockFocused: boolean;
-  isGpuCoreClockValid: boolean;
-  isGpuMemoryCapacityFocused: boolean;
-  isGpuMemoryCapacityValid: boolean;
-  isGpuTdpFocused: boolean;
-  isGpuTdpValid: boolean;
+  isRamColorFocused: boolean;
+  isRamColorValid: boolean;
+  isRamDataRateFocused: boolean;
+  isRamDataRateValid: boolean;
+  isRamModulesCapacityFocused: boolean;
+  isRamModulesCapacityValid: boolean;
+  isRamModulesQuantityFocused: boolean;
+  isRamModulesQuantityValid: boolean;
+  isRamTimingFocused: boolean;
+  isRamTimingValid: boolean;
+  isRamVoltageFocused: boolean;
+  isRamVoltageValid: boolean;
   padding: MantineNumberSize;
+  ramColor: string;
+  ramDataRate: string;
+  ramFieldsAdditional: Map<number, [string, string]>;
+  ramModulesCapacity: string;
+  ramModulesCapacityUnit: MemoryUnit;
+  ramModulesQuantity: string;
+  ramTiming: string;
+  ramType: MemoryType;
+  ramVoltage: string;
 };
 
-function CreateGpu({
-  areGpuFieldsAdditionalFocused,
-  areGpuFieldsAdditionalValid,
+function CreateRam({
+  areRamFieldsAdditionalFocused,
+  areRamFieldsAdditionalValid,
   borderColor,
   createProductAction,
   createProductDispatch,
   currentlySelectedAdditionalFieldIndex,
-  gpuBoostClock,
-  gpuChipset,
-  gpuCoreClock,
-  gpuFieldsAdditional,
-  gpuMemoryCapacity,
-  gpuMemoryCapacityUnit,
-  gpuTdp,
-  isGpuBoostClockFocused,
-  isGpuBoostClockValid,
-  isGpuChipsetFocused,
-  isGpuChipsetValid,
-  isGpuCoreClockFocused,
-  isGpuCoreClockValid,
-  isGpuMemoryCapacityFocused,
-  isGpuMemoryCapacityValid,
-  isGpuTdpFocused,
-  isGpuTdpValid,
+  isRamColorFocused,
+  isRamColorValid,
+  isRamDataRateFocused,
+  isRamDataRateValid,
+  isRamModulesCapacityFocused,
+  isRamModulesCapacityValid,
+  isRamModulesQuantityFocused,
+  isRamModulesQuantityValid,
+  isRamTimingFocused,
+  isRamTimingValid,
+  isRamVoltageFocused,
+  isRamVoltageValid,
   padding,
-}: CreateGpuProps) {
+  ramColor,
+  ramDataRate,
+  ramFieldsAdditional,
+  ramModulesCapacity,
+  ramModulesCapacityUnit,
+  ramModulesQuantity,
+  ramTiming,
+  ramType,
+  ramVoltage,
+}: CreateRamProps) {
   // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
   //  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
   //    VALIDATION USE EFFECTS
@@ -98,98 +112,114 @@ function CreateGpu({
   // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    GPU CHIPSET
+  //    RAM DATA RATE
   // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
-    const isValid = GPU_CHIPSET_REGEX.test(gpuChipset);
+    const isValid = MEDIUM_INTEGER_REGEX.test(ramDataRate);
 
     createProductDispatch({
-      type: createProductAction.setIsGpuChipsetValid,
+      type: createProductAction.setIsRamDataRateValid,
       payload: isValid,
     });
   }, [
-    createProductAction.setIsGpuChipsetValid,
+    createProductAction.setIsRamDataRateValid,
     createProductDispatch,
-    gpuChipset,
+    ramDataRate,
   ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    GPU MEMORY CAPACITY
+  //    RAM MODULES QUANTITY
   // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
-    const isValid = SMALL_INTEGER_REGEX.test(gpuMemoryCapacity);
+    const isValid = SMALL_INTEGER_REGEX.test(ramModulesQuantity);
 
     createProductDispatch({
-      type: createProductAction.setIsGpuMemoryCapacityValid,
+      type: createProductAction.setIsRamModulesQuantityValid,
       payload: isValid,
     });
   }, [
-    createProductAction.setIsGpuMemoryCapacityValid,
+    createProductAction.setIsRamModulesQuantityValid,
     createProductDispatch,
-    gpuMemoryCapacity,
+    ramModulesQuantity,
   ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    GPU CORE CLOCK
+  //    RAM MODULES CAPACITY
   // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
-    const isValid = MEDIUM_INTEGER_REGEX.test(gpuCoreClock);
+    const isValid = MEDIUM_INTEGER_REGEX.test(ramModulesCapacity);
 
     createProductDispatch({
-      type: createProductAction.setIsGpuCoreClockValid,
+      type: createProductAction.setIsRamModulesCapacityValid,
       payload: isValid,
     });
   }, [
-    createProductAction.setIsGpuCoreClockValid,
+    createProductAction.setIsRamModulesCapacityValid,
     createProductDispatch,
-    gpuCoreClock,
+    ramModulesCapacity,
   ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    GPU BOOST CLOCK
+  //    RAM VOLTAGE
   // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
-    const isValid = MEDIUM_INTEGER_REGEX.test(gpuBoostClock);
+    const isValid = RAM_VOLTAGE_REGEX.test(ramVoltage);
 
     createProductDispatch({
-      type: createProductAction.setIsGpuBoostClockValid,
+      type: createProductAction.setIsRamVoltageValid,
       payload: isValid,
     });
   }, [
-    createProductAction.setIsGpuBoostClockValid,
+    createProductAction.setIsRamVoltageValid,
     createProductDispatch,
-    gpuBoostClock,
+    ramVoltage,
   ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    GPU TDP
+  //    RAM COLOR
   // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
-    const isValid = MEDIUM_INTEGER_REGEX.test(gpuTdp);
+    const isValid = COLOR_VARIANT_REGEX.test(ramColor);
 
     createProductDispatch({
-      type: createProductAction.setIsGpuTdpValid,
+      type: createProductAction.setIsRamColorValid,
       payload: isValid,
     });
-  }, [createProductAction.setIsGpuTdpValid, createProductDispatch, gpuTdp]);
+  }, [createProductAction.setIsRamColorValid, createProductDispatch, ramColor]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    GPU FIELDS ADDITIONAL
+  //    RAM TIMING
   // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
-    const currentlyUpdatingGpuFieldAdditional = gpuFieldsAdditional.get(
+    const isValid = RAM_TIMING_REGEX.test(ramTiming);
+
+    createProductDispatch({
+      type: createProductAction.setIsRamTimingValid,
+      payload: isValid,
+    });
+  }, [
+    createProductAction.setIsRamTimingValid,
+    createProductDispatch,
+    ramTiming,
+  ]);
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    RAM FIELDS ADDITIONAL
+  // ╰─────────────────────────────────────────────────────────────────╯
+  useEffect(() => {
+    const currentlyUpdatingRamFieldAdditional = ramFieldsAdditional.get(
       currentlySelectedAdditionalFieldIndex
     );
 
-    if (!currentlyUpdatingGpuFieldAdditional) {
+    if (!currentlyUpdatingRamFieldAdditional) {
       return;
     }
 
-    const [key, value] = currentlyUpdatingGpuFieldAdditional;
+    const [key, value] = currentlyUpdatingRamFieldAdditional;
 
     const isKeyValid = OBJECT_KEY_REGEX.test(key);
     createProductDispatch({
-      type: createProductAction.setAreGpuFieldsAdditionalValid,
+      type: createProductAction.setAreRamFieldsAdditionalValid,
       payload: {
         operation: 'update',
         data: isKeyValid,
@@ -200,7 +230,7 @@ function CreateGpu({
 
     const isValueValid = USER_DEFINED_VALUE_REGEX.test(value);
     createProductDispatch({
-      type: createProductAction.setAreGpuFieldsAdditionalValid,
+      type: createProductAction.setAreRamFieldsAdditionalValid,
       payload: {
         operation: 'update',
         data: isValueValid,
@@ -209,10 +239,10 @@ function CreateGpu({
       },
     });
   }, [
-    createProductAction.setAreGpuFieldsAdditionalValid,
+    createProductAction.setAreRamFieldsAdditionalValid,
     createProductDispatch,
     currentlySelectedAdditionalFieldIndex,
-    gpuFieldsAdditional,
+    ramFieldsAdditional,
   ]);
 
   // ╔═════════════════════════════════════════════════════════════════╗
@@ -222,36 +252,38 @@ function CreateGpu({
     // select inputs are not included as they always have a default value
     // (required) inputs with empty string count as error
 
-    const areGpuInputsHardcodedInError =
-      !isGpuChipsetValid ||
-      !isGpuMemoryCapacityValid ||
-      !isGpuCoreClockValid ||
-      !isGpuBoostClockValid ||
-      !isGpuTdpValid;
+    const areRamInputsHardcodedInError =
+      !isRamDataRateValid ||
+      !isRamModulesQuantityValid ||
+      !isRamModulesCapacityValid ||
+      !isRamVoltageValid ||
+      !isRamColorValid ||
+      !isRamTimingValid;
 
-    const areGpuInputsUserDefinedInError = Array.from(
-      areGpuFieldsAdditionalValid
+    const areRamInputsUserDefinedInError = Array.from(
+      areRamFieldsAdditionalValid
     ).some(([_key, value]) => !value);
 
-    const areGpuInputsInError =
-      areGpuInputsHardcodedInError || areGpuInputsUserDefinedInError;
+    const areRamInputsInError =
+      areRamInputsHardcodedInError || areRamInputsUserDefinedInError;
 
     createProductDispatch({
       type: createProductAction.setStepsInError,
       payload: {
-        kind: areGpuInputsInError ? 'add' : 'delete',
+        kind: areRamInputsInError ? 'add' : 'delete',
         step: 1,
       },
     });
   }, [
-    areGpuFieldsAdditionalValid,
+    areRamFieldsAdditionalValid,
     createProductAction.setStepsInError,
     createProductDispatch,
-    isGpuBoostClockValid,
-    isGpuChipsetValid,
-    isGpuCoreClockValid,
-    isGpuMemoryCapacityValid,
-    isGpuTdpValid,
+    isRamColorValid,
+    isRamDataRateValid,
+    isRamModulesCapacityValid,
+    isRamModulesQuantityValid,
+    isRamTimingValid,
+    isRamVoltageValid,
   ]);
 
   // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
@@ -261,294 +293,368 @@ function CreateGpu({
   // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    GPU CHIPSET
+  //    RAM DATA RATE
   // ╰─────────────────────────────────────────────────────────────────╯
 
-  // screenreader accessible error/valid text elements
-  const [gpuChipsetInputErrorText, gpuChipsetInputValidText] =
+  // screenreader accessible text input elements
+  const [ramDataRateInputErrorText, ramDataRateInputValidText] =
     AccessibleErrorValidTextElements({
-      inputElementKind: 'gpu chipset',
-      inputText: gpuChipset,
-      isInputTextFocused: isGpuChipsetFocused,
-      isValidInputText: isGpuChipsetValid,
-      regexValidationText: returnSocketChipsetValidationText({
-        content: gpuChipset,
-        contentKind: 'gpu chipset',
+      inputElementKind: 'ram data rate',
+      inputText: ramDataRate,
+      isInputTextFocused: isRamDataRateFocused,
+      isValidInputText: isRamDataRateValid,
+      regexValidationText: returnMediumIntegerValidationText({
+        content: ramDataRate,
+        contentKind: 'ram data rate',
+      }),
+    });
+
+  // text input element creator
+  const [createdRamDataRateTextInput] = returnAccessibleTextInputElements([
+    {
+      description: {
+        error: ramDataRateInputErrorText,
+        valid: ramDataRateInputValidText,
+      },
+      inputText: ramDataRate,
+      isValidInputText: isRamDataRateValid,
+      label: 'RAM Data Rate (MT/s)',
+      onBlur: () => {
+        createProductDispatch({
+          type: createProductAction.setIsRamDataRateFocused,
+          payload: false,
+        });
+      },
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
+        createProductDispatch({
+          type: createProductAction.setRamDataRate,
+          payload: event.currentTarget.value,
+        });
+      },
+      onFocus: () => {
+        createProductDispatch({
+          type: createProductAction.setIsRamDataRateFocused,
+          payload: true,
+        });
+      },
+      placeholder: 'Format: 0000',
+      required: true,
+      semanticName: 'ram data rate',
+    },
+  ]);
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    RAM MODULES QUANTITY
+  // ╰─────────────────────────────────────────────────────────────────╯
+
+  // screenreader accessible text input elements
+  const [ramModulesQuantityInputErrorText, ramModulesQuantityInputValidText] =
+    AccessibleErrorValidTextElements({
+      inputElementKind: 'ram modules quantity',
+      inputText: ramModulesQuantity,
+      isInputTextFocused: isRamModulesQuantityFocused,
+      isValidInputText: isRamModulesQuantityValid,
+      regexValidationText: returnSmallIntegerValidationText({
+        content: ramModulesQuantity,
+        contentKind: 'ram modules quantity',
+      }),
+    });
+
+  // text input element creator
+  const [createdRamModulesQuantityTextInput] =
+    returnAccessibleTextInputElements([
+      {
+        description: {
+          error: ramModulesQuantityInputErrorText,
+          valid: ramModulesQuantityInputValidText,
+        },
+        inputText: ramModulesQuantity,
+        isValidInputText: isRamModulesQuantityValid,
+        label: 'RAM Modules Quantity',
+        onBlur: () => {
+          createProductDispatch({
+            type: createProductAction.setIsRamModulesQuantityFocused,
+            payload: false,
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLInputElement>) => {
+          createProductDispatch({
+            type: createProductAction.setRamModulesQuantity,
+            payload: event.currentTarget.value,
+          });
+        },
+        onFocus: () => {
+          createProductDispatch({
+            type: createProductAction.setIsRamModulesQuantityFocused,
+            payload: true,
+          });
+        },
+        placeholder: 'Format: 00',
+        required: true,
+        semanticName: 'ram modules quantity',
+      },
+    ]);
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    RAM MODULES CAPACITY
+  // ╰─────────────────────────────────────────────────────────────────╯
+
+  // screenreader accessible text input elements
+  const [ramModulesCapacityInputErrorText, ramModulesCapacityInputValidText] =
+    AccessibleErrorValidTextElements({
+      inputElementKind: 'ram modules capacity',
+      inputText: ramModulesCapacity,
+      isInputTextFocused: isRamModulesCapacityFocused,
+      isValidInputText: isRamModulesCapacityValid,
+      regexValidationText: returnMediumIntegerValidationText({
+        content: ramModulesCapacity,
+        contentKind: 'ram modules capacity',
+      }),
+    });
+
+  // text input element creator
+  const [createdRamModulesCapacityTextInput] =
+    returnAccessibleTextInputElements([
+      {
+        description: {
+          error: ramModulesCapacityInputErrorText,
+          valid: ramModulesCapacityInputValidText,
+        },
+        inputText: ramModulesCapacity,
+        isValidInputText: isRamModulesCapacityValid,
+        label: 'RAM Modules Capacity',
+        onBlur: () => {
+          createProductDispatch({
+            type: createProductAction.setIsRamModulesCapacityFocused,
+            payload: false,
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLInputElement>) => {
+          createProductDispatch({
+            type: createProductAction.setRamModulesCapacity,
+            payload: event.currentTarget.value,
+          });
+        },
+        onFocus: () => {
+          createProductDispatch({
+            type: createProductAction.setIsRamModulesCapacityFocused,
+            payload: true,
+          });
+        },
+        placeholder: 'Format: 0000',
+        required: true,
+        semanticName: 'ram modules capacity',
+      },
+    ]);
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    RAM MODULES CAPACITY UNIT
+  // ╰─────────────────────────────────────────────────────────────────╯
+  const [createdRamModulesCapacityUnitSelectInput] =
+    returnAccessibleSelectInputElements([
+      {
+        data: MEMORY_UNIT_SELECT_INPUT_DATA,
+        description: '',
+        label: 'RAM Modules Capacity Unit',
+        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+          createProductDispatch({
+            type: createProductAction.setRamModulesCapacityUnit,
+            payload: event.currentTarget.value as MemoryUnit,
+          });
+        },
+        value: ramModulesCapacityUnit,
+        required: true,
+      },
+    ]);
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    RAM TYPE
+  // ╰─────────────────────────────────────────────────────────────────╯
+  const [createdRamTypeSelectInput] = returnAccessibleSelectInputElements([
+    {
+      data: RAM_MEMORY_TYPE_DATA,
+      description: '',
+      label: 'RAM Type',
+      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+        createProductDispatch({
+          type: createProductAction.setRamType,
+          payload: event.currentTarget.value as MemoryType,
+        });
+      },
+      value: ramType,
+      required: true,
+    },
+  ]);
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    RAM COLOR
+  // ╰─────────────────────────────────────────────────────────────────╯
+
+  // screenreader accessible text input elements
+  const [ramColorInputErrorText, ramColorInputValidText] =
+    AccessibleErrorValidTextElements({
+      inputElementKind: 'ram color',
+      inputText: ramColor,
+      isInputTextFocused: isRamColorFocused,
+      isValidInputText: isRamColorValid,
+      regexValidationText: returnColorVariantValidationText({
+        content: ramColor,
+        contentKind: 'ram color',
         maxLength: 30,
         minLength: 2,
       }),
     });
 
   // text input element creator
-  const [createdGpuChipsetTextInput] = returnAccessibleTextInputElements([
+  const [createdRamColorTextInput] = returnAccessibleTextInputElements([
     {
       description: {
-        error: gpuChipsetInputErrorText,
-        valid: gpuChipsetInputValidText,
+        error: ramColorInputErrorText,
+        valid: ramColorInputValidText,
       },
-      inputText: gpuChipset,
-      isValidInputText: isGpuChipsetValid,
-      label: 'GPU Chipset',
+      inputText: ramColor,
+      isValidInputText: isRamColorValid,
+      label: 'RAM Color',
       maxLength: 30,
       minLength: 2,
       onBlur: () => {
         createProductDispatch({
-          type: createProductAction.setIsGpuChipsetFocused,
+          type: createProductAction.setIsRamColorFocused,
           payload: false,
         });
       },
       onChange: (event: ChangeEvent<HTMLInputElement>) => {
         createProductDispatch({
-          type: createProductAction.setGpuChipset,
+          type: createProductAction.setRamColor,
           payload: event.currentTarget.value,
         });
       },
       onFocus: () => {
         createProductDispatch({
-          type: createProductAction.setIsGpuChipsetFocused,
+          type: createProductAction.setIsRamColorFocused,
           payload: true,
         });
       },
-      placeholder: 'Enter GPU chipset',
+      placeholder: 'Enter RAM color',
       required: true,
-      semanticName: 'gpu chipset',
+      semanticName: 'ram color',
     },
   ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    GPU MEMORY CAPACITY
+  //    RAM VOLTAGE
   // ╰─────────────────────────────────────────────────────────────────╯
 
-  // screenreader accessible error/valid text elements
-  const [gpuMemoryCapacityInputErrorText, gpuMemoryCapacityInputValidText] =
+  // screenreader accessible text input elements
+  const [ramVoltageInputErrorText, ramVoltageInputValidText] =
     AccessibleErrorValidTextElements({
-      inputElementKind: 'gpu memory capacity',
-      inputText: gpuMemoryCapacity,
-      isInputTextFocused: isGpuMemoryCapacityFocused,
-      isValidInputText: isGpuMemoryCapacityValid,
-      regexValidationText: returnSmallIntegerValidationText({
-        content: gpuMemoryCapacity,
-        contentKind: 'gpu memory capacity',
+      inputElementKind: 'ram voltage',
+      inputText: ramVoltage,
+      isInputTextFocused: isRamVoltageFocused,
+      isValidInputText: isRamVoltageValid,
+      regexValidationText: returnRamVoltageValidationText({
+        content: ramVoltage,
+        contentKind: 'ram voltage',
       }),
     });
 
   // text input element creator
-  const [createdGpuMemoryCapacityTextInput] = returnAccessibleTextInputElements(
-    [
-      {
-        description: {
-          error: gpuMemoryCapacityInputErrorText,
-          valid: gpuMemoryCapacityInputValidText,
-        },
-        inputText: gpuMemoryCapacity,
-        isValidInputText: isGpuMemoryCapacityValid,
-        label: 'GPU Memory Capacity (GB)',
-        onBlur: () => {
-          createProductDispatch({
-            type: createProductAction.setIsGpuMemoryCapacityFocused,
-            payload: false,
-          });
-        },
-        onChange: (event: ChangeEvent<HTMLInputElement>) => {
-          createProductDispatch({
-            type: createProductAction.setGpuMemoryCapacity,
-            payload: event.currentTarget.value,
-          });
-        },
-        onFocus: () => {
-          createProductDispatch({
-            type: createProductAction.setIsGpuMemoryCapacityFocused,
-            payload: true,
-          });
-        },
-        placeholder: 'Format: 00',
-        required: true,
-        semanticName: 'gpu memory capacity',
-      },
-    ]
-  );
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    GPU MEMORY CAPACITY UNIT
-  // ╰─────────────────────────────────────────────────────────────────╯
-  const [createdGpuMemoryCapacityUnitSelectInput] =
-    returnAccessibleSelectInputElements([
-      {
-        data: MEMORY_UNIT_SELECT_INPUT_DATA,
-        description: '',
-        label: 'GPU Memory Capacity Unit',
-        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-          createProductDispatch({
-            type: createProductAction.setGpuMemoryCapacityUnit,
-            payload: event.currentTarget.value as MemoryUnit,
-          });
-        },
-        value: gpuMemoryCapacityUnit,
-        required: true,
-      },
-    ]);
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    GPU CORE CLOCK
-  // ╰─────────────────────────────────────────────────────────────────╯
-
-  // screenreader accessible error/valid text elements
-  const [gpuCoreClockInputErrorText, gpuCoreClockInputValidText] =
-    AccessibleErrorValidTextElements({
-      inputElementKind: 'gpu core clock',
-      inputText: gpuCoreClock,
-      isInputTextFocused: isGpuCoreClockFocused,
-      isValidInputText: isGpuCoreClockValid,
-      regexValidationText: returnMediumIntegerValidationText({
-        content: gpuCoreClock,
-        contentKind: 'gpu core clock',
-      }),
-    });
-
-  // text input element creator
-  const [createdGpuCoreClockTextInput] = returnAccessibleTextInputElements([
+  const [createdRamVoltageTextInput] = returnAccessibleTextInputElements([
     {
       description: {
-        error: gpuCoreClockInputErrorText,
-        valid: gpuCoreClockInputValidText,
+        error: ramVoltageInputErrorText,
+        valid: ramVoltageInputValidText,
       },
-      inputText: gpuCoreClock,
-      isValidInputText: isGpuCoreClockValid,
-      label: 'GPU Core Clock (MHz)',
+      inputText: ramVoltage,
+      isValidInputText: isRamVoltageValid,
+      label: 'RAM Voltage (V)',
       onBlur: () => {
         createProductDispatch({
-          type: createProductAction.setIsGpuCoreClockFocused,
+          type: createProductAction.setIsRamVoltageFocused,
           payload: false,
         });
       },
       onChange: (event: ChangeEvent<HTMLInputElement>) => {
         createProductDispatch({
-          type: createProductAction.setGpuCoreClock,
+          type: createProductAction.setRamVoltage,
           payload: event.currentTarget.value,
         });
       },
       onFocus: () => {
         createProductDispatch({
-          type: createProductAction.setIsGpuCoreClockFocused,
+          type: createProductAction.setIsRamVoltageFocused,
           payload: true,
         });
       },
-      placeholder: 'Format: 0000',
+      placeholder: 'Format: 0.00',
       required: true,
-      semanticName: 'gpu core clock',
+      semanticName: 'ram voltage',
     },
   ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    GPU BOOST CLOCK
+  //    RAM TIMING
   // ╰─────────────────────────────────────────────────────────────────╯
 
-  // screenreader accessible error/valid text elements
-  const [gpuBoostClockInputErrorText, gpuBoostClockInputValidText] =
+  // screenreader accessible text input elements
+  const [ramTimingInputErrorText, ramTimingInputValidText] =
     AccessibleErrorValidTextElements({
-      inputElementKind: 'gpu boost clock',
-      inputText: gpuBoostClock,
-      isInputTextFocused: isGpuBoostClockFocused,
-      isValidInputText: isGpuBoostClockValid,
-      regexValidationText: returnMediumIntegerValidationText({
-        content: gpuBoostClock,
-        contentKind: 'gpu boost clock',
+      inputElementKind: 'ram timing',
+      inputText: ramTiming,
+      isInputTextFocused: isRamTimingFocused,
+      isValidInputText: isRamTimingValid,
+      regexValidationText: returnRamTimingValidationText({
+        content: ramTiming,
+        contentKind: 'ram timing',
+        maxLength: 14,
+        minLength: 7,
       }),
     });
 
   // text input element creator
-  const [createdGpuBoostClockTextInput] = returnAccessibleTextInputElements([
+  const [createdRamTimingTextInput] = returnAccessibleTextInputElements([
     {
       description: {
-        error: gpuBoostClockInputErrorText,
-        valid: gpuBoostClockInputValidText,
+        error: ramTimingInputErrorText,
+        valid: ramTimingInputValidText,
       },
-      inputText: gpuBoostClock,
-      isValidInputText: isGpuBoostClockValid,
-      label: 'GPU Boost Clock (MHz)',
+      inputText: ramTiming,
+      isValidInputText: isRamTimingValid,
+      label: 'RAM Timing',
+      maxLength: 14,
+      minLength: 7,
       onBlur: () => {
         createProductDispatch({
-          type: createProductAction.setIsGpuBoostClockFocused,
+          type: createProductAction.setIsRamTimingFocused,
           payload: false,
         });
       },
       onChange: (event: ChangeEvent<HTMLInputElement>) => {
         createProductDispatch({
-          type: createProductAction.setGpuBoostClock,
+          type: createProductAction.setRamTiming,
           payload: event.currentTarget.value,
         });
       },
       onFocus: () => {
         createProductDispatch({
-          type: createProductAction.setIsGpuBoostClockFocused,
+          type: createProductAction.setIsRamTimingFocused,
           payload: true,
         });
       },
-      placeholder: 'Format: 0000',
+      placeholder: 'Format: 00-00-00-00 or 0-0-0-0',
       required: true,
-      semanticName: 'gpu boost clock',
-    },
-  ]);
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    GPU TDP
-  // ╰─────────────────────────────────────────────────────────────────╯
-
-  // screenreader accessible error/valid text elements
-  const [gpuTdpInputErrorText, gpuTdpInputValidText] =
-    AccessibleErrorValidTextElements({
-      inputElementKind: 'gpu wattage',
-      inputText: gpuTdp,
-      isInputTextFocused: isGpuTdpFocused,
-      isValidInputText: isGpuTdpValid,
-      regexValidationText: returnMediumIntegerValidationText({
-        content: gpuTdp,
-        contentKind: 'gpu wattage',
-      }),
-    });
-
-  // text input element creator
-  const [createdGpuWattageTextInput] = returnAccessibleTextInputElements([
-    {
-      description: {
-        error: gpuTdpInputErrorText,
-        valid: gpuTdpInputValidText,
-      },
-      inputText: gpuTdp,
-      isValidInputText: isGpuTdpValid,
-      label: 'GPU Wattage (W)',
-      onBlur: () => {
-        createProductDispatch({
-          type: createProductAction.setIsGpuTdpFocused,
-          payload: false,
-        });
-      },
-      onChange: (event: ChangeEvent<HTMLInputElement>) => {
-        createProductDispatch({
-          type: createProductAction.setGpuTdp,
-          payload: event.currentTarget.value,
-        });
-      },
-      onFocus: () => {
-        createProductDispatch({
-          type: createProductAction.setIsGpuTdpFocused,
-          payload: true,
-        });
-      },
-      placeholder: 'Format: 0000',
-      required: true,
-      semanticName: 'gpu wattage',
+      semanticName: 'ram timing',
     },
   ]);
 
   // ╔═════════════════════════════════════════════════════════════════╗
-  //   GPU ADDITIONAL FIELDS
+  //   RAM ADDITIONAL FIELDS
   // ╚═════════════════════════════════════════════════════════════════╝
 
   // ╭─────────────────────────────────────────────────────────────────╮
   //    ADD ADDITIONAL FIELD BUTTON
   // ╰─────────────────────────────────────────────────────────────────╯
-  const [createdAddGpuFieldsAdditionalButton] = returnAccessibleButtonElements([
+  const [createdAddRamFieldsAdditionalButton] = returnAccessibleButtonElements([
     {
       buttonLabel: 'Add',
       semanticDescription: 'Add new additional field',
@@ -556,7 +662,7 @@ function CreateGpu({
       leftIcon: <TbPlus />,
       buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
         createProductDispatch({
-          type: createProductAction.setGpuFieldsAdditional,
+          type: createProductAction.setRamFieldsAdditional,
           payload: {
             operation: 'add',
             data: ['', ''],
@@ -564,7 +670,7 @@ function CreateGpu({
         });
 
         createProductDispatch({
-          type: createProductAction.setAreGpuFieldsAdditionalFocused,
+          type: createProductAction.setAreRamFieldsAdditionalFocused,
           payload: {
             operation: 'add',
             data: [false, false],
@@ -572,7 +678,7 @@ function CreateGpu({
         });
 
         createProductDispatch({
-          type: createProductAction.setAreGpuFieldsAdditionalValid,
+          type: createProductAction.setAreRamFieldsAdditionalValid,
           payload: {
             operation: 'add',
             data: [false, false],
@@ -587,22 +693,22 @@ function CreateGpu({
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // returns an array of tuples containing the error and valid text elements for each field name
-  const gpuFieldsAdditionalKeysErrorValidTextElements: [
+  const ramFieldsAdditionalKeysErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(gpuFieldsAdditional).map((keyFieldValue) => {
+  ][] = Array.from(ramFieldsAdditional).map((keyFieldValue) => {
     const [mapKey, [field, _value]] = keyFieldValue;
 
     // screenreader accessible error/valid text elements that are consumed by the text input element creator
     const [
-      gpuFieldsAdditionalKeysInputErrorText,
-      gpuFieldsAdditionalKeysInputValidText,
+      ramFieldsAdditionalKeysInputErrorText,
+      ramFieldsAdditionalKeysInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field name ${mapKey + 1}`,
       inputText: field,
       isInputTextFocused:
-        areGpuFieldsAdditionalFocused.get(mapKey)?.[0] ?? false,
-      isValidInputText: areGpuFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+        areRamFieldsAdditionalFocused.get(mapKey)?.[0] ?? false,
+      isValidInputText: areRamFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
       regexValidationText: returnObjectKeyValidationText({
         content: field,
         contentKind: `additional field name ${mapKey + 1}`,
@@ -612,8 +718,8 @@ function CreateGpu({
     });
 
     return [
-      gpuFieldsAdditionalKeysInputErrorText,
-      gpuFieldsAdditionalKeysInputValidText,
+      ramFieldsAdditionalKeysInputErrorText,
+      ramFieldsAdditionalKeysInputValidText,
     ];
   });
 
@@ -622,22 +728,22 @@ function CreateGpu({
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // returns an array of tuples containing the error and valid text elements for each field value
-  const gpuFieldsAdditionalValuesErrorValidTextElements: [
+  const ramFieldsAdditionalValuesErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(gpuFieldsAdditional).map((keyFieldValue) => {
+  ][] = Array.from(ramFieldsAdditional).map((keyFieldValue) => {
     const [mapKey, [_field, value]] = keyFieldValue;
 
     // screenreader accessible error/valid text elements that are consumed by the text input element creator
     const [
-      gpuFieldsAdditionalValuesInputErrorText,
-      gpuFieldsAdditionalValuesInputValidText,
+      ramFieldsAdditionalValuesInputErrorText,
+      ramFieldsAdditionalValuesInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field value ${mapKey + 1}`,
       inputText: value,
       isInputTextFocused:
-        areGpuFieldsAdditionalFocused.get(mapKey)?.[1] ?? false,
-      isValidInputText: areGpuFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+        areRamFieldsAdditionalFocused.get(mapKey)?.[1] ?? false,
+      isValidInputText: areRamFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
       regexValidationText: returnUserDefinedFieldValueValidationText({
         content: value,
         contentKind: `additional field value ${mapKey + 1}`,
@@ -647,33 +753,33 @@ function CreateGpu({
     });
 
     return [
-      gpuFieldsAdditionalValuesInputErrorText,
-      gpuFieldsAdditionalValuesInputValidText,
+      ramFieldsAdditionalValuesInputErrorText,
+      ramFieldsAdditionalValuesInputValidText,
     ];
   });
 
-  const createdGpuFieldsAdditionalTextInputElements = Array.from(
-    gpuFieldsAdditional
+  const createdRamFieldsAdditionalTextInputElements = Array.from(
+    ramFieldsAdditional
   ).map((keyFieldValue) => {
     const [mapKey, [field, value]] = keyFieldValue;
 
     // ╭─────────────────────────────────────────────────────────────────╮
     //    ADDITIONAL FIELD TEXT INPUT => FIELD NAME
     // ╰─────────────────────────────────────────────────────────────────╯
-    const gpuFieldsAdditionalKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const ramFieldsAdditionalKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
-          error: gpuFieldsAdditionalKeysErrorValidTextElements[mapKey][0],
-          valid: gpuFieldsAdditionalKeysErrorValidTextElements[mapKey][1],
+          error: ramFieldsAdditionalKeysErrorValidTextElements[mapKey][0],
+          valid: ramFieldsAdditionalKeysErrorValidTextElements[mapKey][1],
         },
         inputText: field,
-        isValidInputText: areGpuFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+        isValidInputText: areRamFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
         label: `Name ${mapKey + 1}`,
         maxLength: 75,
         minLength: 1,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreGpuFieldsAdditionalFocused,
+            type: createProductAction.setAreRamFieldsAdditionalFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -684,7 +790,7 @@ function CreateGpu({
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setGpuFieldsAdditional,
+            type: createProductAction.setRamFieldsAdditional,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -700,7 +806,7 @@ function CreateGpu({
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreGpuFieldsAdditionalFocused,
+            type: createProductAction.setAreRamFieldsAdditionalFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -717,20 +823,20 @@ function CreateGpu({
     // ╭─────────────────────────────────────────────────────────────────╮
     //    ADDITIONAL FIELD TEXT INPUT => FIELD VALUE
     // ╰─────────────────────────────────────────────────────────────────╯
-    const gpuFieldsAdditionalValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const ramFieldsAdditionalValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
-          error: gpuFieldsAdditionalValuesErrorValidTextElements[mapKey][0],
-          valid: gpuFieldsAdditionalValuesErrorValidTextElements[mapKey][1],
+          error: ramFieldsAdditionalValuesErrorValidTextElements[mapKey][0],
+          valid: ramFieldsAdditionalValuesErrorValidTextElements[mapKey][1],
         },
         inputText: value,
-        isValidInputText: areGpuFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+        isValidInputText: areRamFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
         label: `Value ${mapKey + 1}`,
         maxLength: 2000,
         minLength: 2,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreGpuFieldsAdditionalFocused,
+            type: createProductAction.setAreRamFieldsAdditionalFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -741,7 +847,7 @@ function CreateGpu({
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setGpuFieldsAdditional,
+            type: createProductAction.setRamFieldsAdditional,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -757,7 +863,7 @@ function CreateGpu({
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreGpuFieldsAdditionalFocused,
+            type: createProductAction.setAreRamFieldsAdditionalFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -772,11 +878,11 @@ function CreateGpu({
       };
 
     const [
-      createdGpuFieldsAdditionalKeysTextAreaInput,
-      createdGpuFieldsAdditionalValuesTextAreaInput,
+      createdRamFieldsAdditionalKeysTextAreaInput,
+      createdRamFieldsAdditionalValuesTextAreaInput,
     ] = returnAccessibleTextAreaInputElements([
-      gpuFieldsAdditionalKeysTextInputCreatorInfo,
-      gpuFieldsAdditionalValuesTextInputCreatorInfo,
+      ramFieldsAdditionalKeysTextInputCreatorInfo,
+      ramFieldsAdditionalValuesTextInputCreatorInfo,
     ]);
 
     // ╭─────────────────────────────────────────────────────────────────╮
@@ -787,7 +893,7 @@ function CreateGpu({
         buttonLabel: 'Delete',
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
           createProductDispatch({
-            type: createProductAction.setGpuFieldsAdditional,
+            type: createProductAction.setRamFieldsAdditional,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -795,7 +901,7 @@ function CreateGpu({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreGpuFieldsAdditionalFocused,
+            type: createProductAction.setAreRamFieldsAdditionalFocused,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -803,7 +909,7 @@ function CreateGpu({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreGpuFieldsAdditionalValid,
+            type: createProductAction.setAreRamFieldsAdditionalValid,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -828,16 +934,16 @@ function CreateGpu({
     );
 
     return (
-      <Stack key={`gpuFieldsAdditional-${mapKey}`} pt={padding} w="100%">
+      <Stack key={`ramFieldsAdditional-${mapKey}`} pt={padding} w="100%">
         <Group position="apart">
-          <Text size="md" weight={600}>{`Additional Gpu field ${
+          <Text size="md" weight={600}>{`Additional Ram field ${
             mapKey + 1
           }`}</Text>
           {displayDeleteButton}
         </Group>
         <Group position="apart">
-          {createdGpuFieldsAdditionalKeysTextAreaInput}
-          {createdGpuFieldsAdditionalValuesTextAreaInput}
+          {createdRamFieldsAdditionalKeysTextAreaInput}
+          {createdRamFieldsAdditionalValuesTextAreaInput}
         </Group>
       </Stack>
     );
@@ -849,13 +955,13 @@ function CreateGpu({
   //  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
   // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 
-  const displayGpuFieldsAdditionalButton = (
-    <Tooltip label={`Add new additional field ${gpuFieldsAdditional.size + 1}`}>
-      <Group>{createdAddGpuFieldsAdditionalButton}</Group>
+  const displayRamFieldsAdditionalButton = (
+    <Tooltip label={`Add new additional field ${ramFieldsAdditional.size + 1}`}>
+      <Group>{createdAddRamFieldsAdditionalButton}</Group>
     </Tooltip>
   );
 
-  const displayGpuSpecificationsInputs = (
+  const displayRamSpecificationsInputs = (
     <Group
       py={padding}
       position="apart"
@@ -863,20 +969,22 @@ function CreateGpu({
       w="100%"
     >
       <Group w="100%" position="apart">
-        <Title order={4}>GPU Specifications</Title>
-        {displayGpuFieldsAdditionalButton}
+        <Title order={4}>Memory (RAM) Specifications</Title>
+        {displayRamFieldsAdditionalButton}
       </Group>
-      {createdGpuChipsetTextInput}
-      {createdGpuMemoryCapacityTextInput}
-      {createdGpuMemoryCapacityUnitSelectInput}
-      {createdGpuWattageTextInput}
-      {createdGpuCoreClockTextInput}
-      {createdGpuBoostClockTextInput}
-      {createdGpuFieldsAdditionalTextInputElements}
+      {createdRamDataRateTextInput}
+      {createdRamModulesQuantityTextInput}
+      {createdRamModulesCapacityTextInput}
+      {createdRamModulesCapacityUnitSelectInput}
+      {createdRamTypeSelectInput}
+      {createdRamColorTextInput}
+      {createdRamVoltageTextInput}
+      {createdRamTimingTextInput}
+      {createdRamFieldsAdditionalTextInputElements}
     </Group>
   );
 
-  return displayGpuSpecificationsInputs;
+  return displayRamSpecificationsInputs;
 }
 
-export default CreateGpu;
+export default CreateRam;

@@ -2601,7 +2601,7 @@ function CreateProduct() {
   // update stepper wrapper state on every page 2 input validation change
   useEffect(() => {
     // select inputs are not included as they always have a default value
-    // inputs with value: 0 count as error
+    // (required) inputs with empty string count as error
 
     const areCpuSpecificationsInError =
       !isCpuSocketValid ||
