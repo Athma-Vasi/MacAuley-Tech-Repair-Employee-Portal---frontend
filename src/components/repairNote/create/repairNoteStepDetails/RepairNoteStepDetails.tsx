@@ -1,10 +1,3 @@
-import {
-  faDollarSign,
-  faEuro,
-  faJpy,
-  faPoundSign,
-  faYen,
-} from '@fortawesome/free-solid-svg-icons';
 import { useMantineTheme } from '@mantine/core';
 import { ChangeEvent, useEffect } from 'react';
 import {
@@ -38,8 +31,8 @@ import {
   logState,
   replaceLastCommaWithAnd,
   returnDateNearFutureValidationText,
-  returnNoteTextValidationText,
   returnFloatAmountValidationText,
+  returnNoteTextValidationText,
 } from '../../../../utils';
 import { CURRENCY_DATA } from '../../../benefits/constants';
 import {

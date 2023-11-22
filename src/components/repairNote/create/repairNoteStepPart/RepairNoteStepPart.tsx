@@ -7,6 +7,7 @@ import {
   NOTE_TEXT_REGEX,
   SERIAL_ID_REGEX,
 } from '../../../../constants/regex';
+import { useGlobalState } from '../../../../hooks';
 import {
   AccessibleErrorValidTextElements,
   returnAccessibleDateTimeElements,
@@ -28,7 +29,6 @@ import {
   FormLayoutWrapper,
 } from '../../../wrappers';
 import { RepairNoteStepPartProps } from './types';
-import { useGlobalState } from '../../../../hooks';
 
 function RepairNoteStepPart(parentState: RepairNoteStepPartProps) {
   const {

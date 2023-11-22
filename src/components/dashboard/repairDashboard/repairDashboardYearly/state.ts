@@ -34,30 +34,33 @@ function setLineChartYAxisVariable_RepairDashboardYearly(
   };
 }
 
-type RepairDashboardYearlyStateUpdateMap = Map<
-  RepairDashboardYearlyAction[keyof RepairDashboardYearlyAction],
-  (
-    state: RepairDashboardYearlyState,
-    action: RepairDashboardYearlyDispatch
-  ) => RepairDashboardYearlyState
->;
+// const repairDashboardYearlyReducerMap = new Map<
+//   RepairDashboardYearlyAction[keyof RepairDashboardYearlyAction],
+//   (
+//     state: RepairDashboardYearlyState,
+//     action: RepairDashboardYearlyDispatch
+//   ) => RepairDashboardYearlyState
+// >([
+//   [
+//     repairDashboardYearlyAction.setBarChartYAxisVariable,
+//     setBarChartYAxisVariable_RepairDashboardYearly,
+//   ],
+//   [
+//     repairDashboardYearlyAction.setLineChartYAxisVariable,
+//     setLineChartYAxisVariable_RepairDashboardYearly,
+//   ],
+// ]);
 
-const repairDashboardYearlyReducerMap = new Map<
+const repairDashboardYearlyReducerObj: Record<
   RepairDashboardYearlyAction[keyof RepairDashboardYearlyAction],
   (
     state: RepairDashboardYearlyState,
     action: RepairDashboardYearlyDispatch
   ) => RepairDashboardYearlyState
->([
-  [
-    repairDashboardYearlyAction.setBarChartYAxisVariable,
-    setBarChartYAxisVariable_RepairDashboardYearly,
-  ],
-  [
-    repairDashboardYearlyAction.setLineChartYAxisVariable,
-    setLineChartYAxisVariable_RepairDashboardYearly,
-  ],
-]);
+> = {
+  setBarChartYAxisVariable: setBarChartYAxisVariable_RepairDashboardYearly,
+  setLineChartYAxisVariable: setLineChartYAxisVariable_RepairDashboardYearly,
+};
 
 // function repairDashboardYearlyReducer(
 //   state: RepairDashboardYearlyState,
@@ -85,7 +88,9 @@ function repairDashboardYearlyReducer(
   state: RepairDashboardYearlyState,
   action: RepairDashboardYearlyDispatch
 ): RepairDashboardYearlyState {
-  const reducer = repairDashboardYearlyReducerMap.get(action.type);
+  // const reducer = repairDashboardYearlyReducerMap.get(action.type);
+  // return reducer ? reducer(state, action) : state;
+  const reducer = repairDashboardYearlyReducerObj[action.type];
   return reducer ? reducer(state, action) : state;
 }
 
