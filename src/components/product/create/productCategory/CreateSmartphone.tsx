@@ -17,113 +17,114 @@ import {
   returnAccessibleTextInputElements,
 } from '../../../../jsxCreators';
 import {
+  returnColorVariantValidationText,
+  returnDimensionsValidationText,
+  returnLargeIntegerValidationText,
   returnMediumIntegerValidationText,
+  returnMobileCameraResolutionValidationText,
   returnObjectKeyValidationText,
-  returnSmallIntegerValidationText,
   returnSocketChipsetValidationText,
   returnUserDefinedFieldValueValidationText,
 } from '../../../../utils';
 import { AccessibleTextAreaInputCreatorInfo } from '../../../wrappers';
 import {
+  COLOR_VARIANT_REGEX,
+  DIMENSIONS_REGEX,
+  LARGE_INTEGER_REGEX,
   MEDIUM_INTEGER_REGEX,
   MEMORY_UNIT_SELECT_INPUT_DATA,
-  MOTHERBOARD_CHIPSET_REGEX,
-  MOTHERBOARD_FORM_FACTOR_DATA,
-  MOTHERBOARD_MEMORY_TYPE_DATA,
-  MOTHERBOARD_SOCKET_REGEX,
+  MOBILE_CAMERA_REGEX,
+  MOBILE_OS_DATA,
   OBJECT_KEY_REGEX,
-  SMALL_INTEGER_REGEX,
+  SMARTPHONE_CHIPSET_REGEX,
   USER_DEFINED_VALUE_REGEX,
 } from '../../constants';
 import {
   CreateProductAction,
   CreateProductDispatch,
-  MemoryType,
   MemoryUnit,
-  MotherboardFormFactor,
+  MobileOs,
 } from '../types';
 
-type CreateMotherboardProps = {
-  areMotherboardFieldsAdditionalFocused: Map<number, [boolean, boolean]>;
-  areMotherboardFieldsAdditionalValid: Map<number, [boolean, boolean]>;
+type CreateSmartphoneProps = {
+  areSmartphoneFieldsAdditionalFocused: Map<number, [boolean, boolean]>;
+  areSmartphoneFieldsAdditionalValid: Map<number, [boolean, boolean]>;
   borderColor: string;
   createProductAction: CreateProductAction;
   createProductDispatch: React.Dispatch<CreateProductDispatch>;
   currentlySelectedAdditionalFieldIndex: number;
-  isMotherboardChipsetFocused: boolean;
-  isMotherboardChipsetValid: boolean;
-  isMotherboardM2SlotsFocused: boolean;
-  isMotherboardM2SlotsValid: boolean;
-  isMotherboardMemoryMaxCapacityFocused: boolean;
-  isMotherboardMemoryMaxCapacityValid: boolean;
-  isMotherboardMemorySlotsFocused: boolean;
-  isMotherboardMemorySlotsValid: boolean;
-  isMotherboardPcie3SlotsFocused: boolean;
-  isMotherboardPcie3SlotsValid: boolean;
-  isMotherboardPcie4SlotsFocused: boolean;
-  isMotherboardPcie4SlotsValid: boolean;
-  isMotherboardPcie5SlotsFocused: boolean;
-  isMotherboardPcie5SlotsValid: boolean;
-  isMotherboardSataPortsFocused: boolean;
-  isMotherboardSataPortsValid: boolean;
-  isMotherboardSocketFocused: boolean;
-  isMotherboardSocketValid: boolean;
-  motherboardChipset: string;
-  motherboardFieldsAdditional: Map<number, [string, string]>;
-  motherboardFormFactor: MotherboardFormFactor;
-  motherboardM2Slots: string;
-  motherboardMemoryMaxCapacity: string;
-  motherboardMemoryMaxCapacityUnit: MemoryUnit;
-  motherboardMemorySlots: string;
-  motherboardMemoryType: MemoryType;
-  motherboardPcie3Slots: string;
-  motherboardPcie4Slots: string;
-  motherboardPcie5Slots: string;
-  motherboardSataPorts: string;
-  motherboardSocket: string;
+  isSmartphoneBatteryCapacityFocused: boolean;
+  isSmartphoneBatteryCapacityValid: boolean;
+  isSmartphoneCameraFocused: boolean;
+  isSmartphoneCameraValid: boolean;
+  isSmartphoneChipsetFocused: boolean;
+  isSmartphoneChipsetValid: boolean;
+  isSmartphoneColorFocused: boolean;
+  isSmartphoneColorValid: boolean;
+  isSmartphoneDisplayFocused: boolean;
+  isSmartphoneDisplayValid: boolean;
+  isSmartphoneRamCapacityFocused: boolean;
+  isSmartphoneRamCapacityValid: boolean;
+  isSmartphoneResolutionHorizontalFocused: boolean;
+  isSmartphoneResolutionHorizontalValid: boolean;
+  isSmartphoneResolutionVerticalFocused: boolean;
+  isSmartphoneResolutionVerticalValid: boolean;
+  isSmartphoneStorageCapacityFocused: boolean;
+  isSmartphoneStorageCapacityValid: boolean;
   padding: MantineNumberSize;
+  smartphoneBatteryCapacity: string; // mAh
+  smartphoneCamera: string; // 108 MP, 64 MP, etc.
+  smartphoneChipset: string;
+  smartphoneColor: string;
+  smartphoneDisplay: string;
+  smartphoneFieldsAdditional: Map<number, [string, string]>;
+  smartphoneOs: MobileOs;
+  smartphoneRamCapacity: string;
+  smartphoneRamCapacityUnit: MemoryUnit;
+  smartphoneResolutionHorizontal: string;
+  smartphoneResolutionVertical: string;
+  smartphoneStorageCapacity: string; // GB
 };
 
-function CreateMotherboard({
-  areMotherboardFieldsAdditionalFocused,
-  areMotherboardFieldsAdditionalValid,
+function CreateSmartphone({
+  areSmartphoneFieldsAdditionalFocused,
+  areSmartphoneFieldsAdditionalValid,
   borderColor,
   createProductAction,
   createProductDispatch,
   currentlySelectedAdditionalFieldIndex,
-  isMotherboardChipsetFocused,
-  isMotherboardChipsetValid,
-  isMotherboardM2SlotsFocused,
-  isMotherboardM2SlotsValid,
-  isMotherboardMemoryMaxCapacityFocused,
-  isMotherboardMemoryMaxCapacityValid,
-  isMotherboardMemorySlotsFocused,
-  isMotherboardMemorySlotsValid,
-  isMotherboardPcie3SlotsFocused,
-  isMotherboardPcie3SlotsValid,
-  isMotherboardPcie4SlotsFocused,
-  isMotherboardPcie4SlotsValid,
-  isMotherboardPcie5SlotsFocused,
-  isMotherboardPcie5SlotsValid,
-  isMotherboardSataPortsFocused,
-  isMotherboardSataPortsValid,
-  isMotherboardSocketFocused,
-  isMotherboardSocketValid,
-  motherboardChipset,
-  motherboardFieldsAdditional,
-  motherboardFormFactor,
-  motherboardM2Slots,
-  motherboardMemoryMaxCapacity,
-  motherboardMemoryMaxCapacityUnit,
-  motherboardMemorySlots,
-  motherboardMemoryType,
-  motherboardPcie3Slots,
-  motherboardPcie4Slots,
-  motherboardPcie5Slots,
-  motherboardSataPorts,
-  motherboardSocket,
+  isSmartphoneBatteryCapacityFocused,
+  isSmartphoneBatteryCapacityValid,
+  isSmartphoneCameraFocused,
+  isSmartphoneCameraValid,
+  isSmartphoneChipsetFocused,
+  isSmartphoneChipsetValid,
+  isSmartphoneColorFocused,
+  isSmartphoneColorValid,
+  isSmartphoneDisplayFocused,
+  isSmartphoneDisplayValid,
+  isSmartphoneRamCapacityFocused,
+  isSmartphoneRamCapacityValid,
+  isSmartphoneResolutionHorizontalFocused,
+  isSmartphoneResolutionHorizontalValid,
+  isSmartphoneResolutionVerticalFocused,
+  isSmartphoneResolutionVerticalValid,
+  isSmartphoneStorageCapacityFocused,
+  isSmartphoneStorageCapacityValid,
   padding,
-}: CreateMotherboardProps) {
+  smartphoneBatteryCapacity,
+  smartphoneCamera,
+  smartphoneChipset,
+  smartphoneColor,
+  smartphoneDisplay,
+  smartphoneFieldsAdditional,
+  smartphoneOs,
+  smartphoneRamCapacity,
+  smartphoneRamCapacityUnit,
+  smartphoneResolutionHorizontal,
+  smartphoneResolutionVertical,
+  smartphoneStorageCapacity,
+}: CreateSmartphoneProps) {
   // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
   //  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
   //    VALIDATION USE EFFECTS
@@ -131,165 +132,165 @@ function CreateMotherboard({
   // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    MOTHERBOARD SOCKET
+  //    SMARTPHONE CHIPSET
   // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
-    const isValid = MOTHERBOARD_SOCKET_REGEX.test(motherboardSocket);
+    const isValid = SMARTPHONE_CHIPSET_REGEX.test(smartphoneChipset);
 
     createProductDispatch({
-      type: createProductAction.setIsMotherboardSocketValid,
+      type: createProductAction.setIsSmartphoneChipsetValid,
       payload: isValid,
     });
   }, [
-    createProductAction.setIsMotherboardSocketValid,
+    createProductAction.setIsSmartphoneChipsetValid,
     createProductDispatch,
-    motherboardSocket,
+    smartphoneChipset,
   ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    MOTHERBOARD CHIPSET
+  //    SMARTPHONE DISPLAY
   // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
-    const isValid = MOTHERBOARD_CHIPSET_REGEX.test(motherboardChipset);
+    const isValid = DIMENSIONS_REGEX.test(smartphoneDisplay);
 
     createProductDispatch({
-      type: createProductAction.setIsMotherboardChipsetValid,
+      type: createProductAction.setIsSmartphoneDisplayValid,
       payload: isValid,
     });
   }, [
-    createProductAction.setIsMotherboardChipsetValid,
+    createProductAction.setIsSmartphoneDisplayValid,
     createProductDispatch,
-    motherboardChipset,
+    smartphoneDisplay,
   ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    MOTHERBOARD MEMORY MAX CAPACITY
+  //    SMARTPHONE RESOLUTION HORIZONTAL
   // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
-    const isValid = MEDIUM_INTEGER_REGEX.test(motherboardMemoryMaxCapacity);
+    const isValid = LARGE_INTEGER_REGEX.test(smartphoneResolutionHorizontal);
 
     createProductDispatch({
-      type: createProductAction.setIsMotherboardMemoryMaxCapacityValid,
+      type: createProductAction.setIsSmartphoneResolutionHorizontalValid,
       payload: isValid,
     });
   }, [
-    createProductAction.setIsMotherboardMemoryMaxCapacityValid,
+    createProductAction.setIsSmartphoneResolutionHorizontalValid,
     createProductDispatch,
-    motherboardMemoryMaxCapacity,
+    smartphoneResolutionHorizontal,
   ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    MOTHERBOARD MEMORY SLOTS
+  //    SMARTPHONE RESOLUTION VERTICAL
   // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
-    const isValid = SMALL_INTEGER_REGEX.test(motherboardMemorySlots);
+    const isValid = LARGE_INTEGER_REGEX.test(smartphoneResolutionVertical);
 
     createProductDispatch({
-      type: createProductAction.setIsMotherboardMemorySlotsValid,
+      type: createProductAction.setIsSmartphoneResolutionVerticalValid,
       payload: isValid,
     });
   }, [
-    createProductAction.setIsMotherboardMemorySlotsValid,
+    createProductAction.setIsSmartphoneResolutionVerticalValid,
     createProductDispatch,
-    motherboardMemorySlots,
+    smartphoneResolutionVertical,
   ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    MOTHERBOARD SATA PORTS
+  //    SMARTPHONE RAM CAPACITY
   // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
-    const isValid = SMALL_INTEGER_REGEX.test(motherboardSataPorts);
+    const isValid = MEDIUM_INTEGER_REGEX.test(smartphoneRamCapacity);
 
     createProductDispatch({
-      type: createProductAction.setIsMotherboardSataPortsValid,
+      type: createProductAction.setIsSmartphoneRamCapacityValid,
       payload: isValid,
     });
   }, [
-    createProductAction.setIsMotherboardSataPortsValid,
+    createProductAction.setIsSmartphoneRamCapacityValid,
     createProductDispatch,
-    motherboardSataPorts,
+    smartphoneRamCapacity,
   ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    MOTHERBOARD M2 SLOTS
+  //    SMARTPHONE STORAGE CAPACITY
   // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
-    const isValid = SMALL_INTEGER_REGEX.test(motherboardM2Slots);
+    const isValid = MEDIUM_INTEGER_REGEX.test(smartphoneStorageCapacity);
 
     createProductDispatch({
-      type: createProductAction.setIsMotherboardM2SlotsValid,
+      type: createProductAction.setIsSmartphoneStorageCapacityValid,
       payload: isValid,
     });
   }, [
-    createProductAction.setIsMotherboardM2SlotsValid,
+    createProductAction.setIsSmartphoneStorageCapacityValid,
     createProductDispatch,
-    motherboardM2Slots,
+    smartphoneStorageCapacity,
   ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    MOTHERBOARD PCIE3 SLOTS
+  //    SMARTPHONE BATTERY CAPACITY
   // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
-    const isValid = SMALL_INTEGER_REGEX.test(motherboardPcie3Slots);
+    const isValid = LARGE_INTEGER_REGEX.test(smartphoneBatteryCapacity);
 
     createProductDispatch({
-      type: createProductAction.setIsMotherboardPcie3SlotsValid,
+      type: createProductAction.setIsSmartphoneBatteryCapacityValid,
       payload: isValid,
     });
   }, [
-    createProductAction.setIsMotherboardPcie3SlotsValid,
+    createProductAction.setIsSmartphoneBatteryCapacityValid,
     createProductDispatch,
-    motherboardPcie3Slots,
+    smartphoneBatteryCapacity,
   ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    MOTHERBOARD PCIE4 SLOTS
+  //    SMARTPHONE CAMERA
   // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
-    const isValid = SMALL_INTEGER_REGEX.test(motherboardPcie4Slots);
+    const isValid = MOBILE_CAMERA_REGEX.test(smartphoneCamera);
 
     createProductDispatch({
-      type: createProductAction.setIsMotherboardPcie4SlotsValid,
+      type: createProductAction.setIsSmartphoneCameraValid,
       payload: isValid,
     });
   }, [
-    createProductAction.setIsMotherboardPcie4SlotsValid,
+    createProductAction.setIsSmartphoneCameraValid,
     createProductDispatch,
-    motherboardPcie4Slots,
+    smartphoneCamera,
   ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    MOTHERBOARD PCIE5 SLOTS
+  //    SMARTPHONE COLOR
   // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
-    const isValid = SMALL_INTEGER_REGEX.test(motherboardPcie5Slots);
+    const isValid = COLOR_VARIANT_REGEX.test(smartphoneColor);
 
     createProductDispatch({
-      type: createProductAction.setIsMotherboardPcie5SlotsValid,
+      type: createProductAction.setIsSmartphoneColorValid,
       payload: isValid,
     });
   }, [
-    createProductAction.setIsMotherboardPcie5SlotsValid,
+    createProductAction.setIsSmartphoneColorValid,
     createProductDispatch,
-    motherboardPcie5Slots,
+    smartphoneColor,
   ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    MOTHERBOARD ADDITIONAL FIELDS
+  //    SMARTPHONE ADDITIONAL FIELDS
   // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
-    const currentlyUpdatingMotherboardFieldAdditional =
-      motherboardFieldsAdditional.get(currentlySelectedAdditionalFieldIndex);
+    const currentlyUpdatingSmartphoneFieldAdditional =
+      smartphoneFieldsAdditional.get(currentlySelectedAdditionalFieldIndex);
 
-    if (!currentlyUpdatingMotherboardFieldAdditional) {
+    if (!currentlyUpdatingSmartphoneFieldAdditional) {
       return;
     }
 
-    const [key, value] = currentlyUpdatingMotherboardFieldAdditional;
+    const [key, value] = currentlyUpdatingSmartphoneFieldAdditional;
 
     const isKeyValid = OBJECT_KEY_REGEX.test(key);
     createProductDispatch({
-      type: createProductAction.setAreMotherboardFieldsAdditionalValid,
+      type: createProductAction.setAreSmartphoneFieldsAdditionalValid,
       payload: {
         operation: 'update',
         data: isKeyValid,
@@ -300,7 +301,7 @@ function CreateMotherboard({
 
     const isValueValid = USER_DEFINED_VALUE_REGEX.test(value);
     createProductDispatch({
-      type: createProductAction.setAreMotherboardFieldsAdditionalValid,
+      type: createProductAction.setAreSmartphoneFieldsAdditionalValid,
       payload: {
         operation: 'update',
         data: isValueValid,
@@ -309,10 +310,10 @@ function CreateMotherboard({
       },
     });
   }, [
-    createProductAction.setAreMotherboardFieldsAdditionalValid,
+    createProductAction.setAreSmartphoneFieldsAdditionalValid,
     createProductDispatch,
     currentlySelectedAdditionalFieldIndex,
-    motherboardFieldsAdditional,
+    smartphoneFieldsAdditional,
   ]);
 
   // ╔═════════════════════════════════════════════════════════════════╗
@@ -323,43 +324,45 @@ function CreateMotherboard({
     // optional inputs with empty string count as valid
     // select inputs are not included as they always have a default value
 
-    const areMotherboardInputsHardcodedInError =
-      !isMotherboardChipsetValid ||
-      isMotherboardM2SlotsValid ||
-      !isMotherboardMemoryMaxCapacityValid ||
-      !isMotherboardMemorySlotsValid ||
-      !isMotherboardPcie3SlotsValid ||
-      !isMotherboardPcie4SlotsValid ||
-      !isMotherboardSataPortsValid ||
-      !isMotherboardSocketValid;
+    const areSmartphoneHardcodedInputsInError =
+      !isSmartphoneChipsetValid ||
+      !isSmartphoneDisplayValid ||
+      !isSmartphoneResolutionHorizontalValid ||
+      !isSmartphoneResolutionVerticalValid ||
+      !isSmartphoneRamCapacityValid ||
+      !isSmartphoneStorageCapacityValid ||
+      !isSmartphoneBatteryCapacityValid ||
+      !isSmartphoneCameraValid ||
+      !isSmartphoneColorValid;
 
-    const areMotherboardInputsUserDefinedInError = Array.from(
-      areMotherboardFieldsAdditionalValid
+    const areSmartphoneFieldsAdditionalInError = Array.from(
+      areSmartphoneFieldsAdditionalValid
     ).some(([_key, value]) => !value);
 
-    const areMotherboardInputsInError =
-      areMotherboardInputsHardcodedInError ||
-      areMotherboardInputsUserDefinedInError;
+    const areSmartphoneInputsInError =
+      areSmartphoneHardcodedInputsInError ||
+      areSmartphoneFieldsAdditionalInError;
 
     createProductDispatch({
       type: createProductAction.setStepsInError,
       payload: {
-        kind: areMotherboardInputsInError ? 'add' : 'delete',
+        kind: areSmartphoneInputsInError ? 'add' : 'delete',
         step: 1,
       },
     });
   }, [
-    areMotherboardFieldsAdditionalValid,
+    areSmartphoneFieldsAdditionalValid,
     createProductAction.setStepsInError,
     createProductDispatch,
-    isMotherboardChipsetValid,
-    isMotherboardM2SlotsValid,
-    isMotherboardMemoryMaxCapacityValid,
-    isMotherboardMemorySlotsValid,
-    isMotherboardPcie3SlotsValid,
-    isMotherboardPcie4SlotsValid,
-    isMotherboardSataPortsValid,
-    isMotherboardSocketValid,
+    isSmartphoneBatteryCapacityValid,
+    isSmartphoneCameraValid,
+    isSmartphoneChipsetValid,
+    isSmartphoneColorValid,
+    isSmartphoneDisplayValid,
+    isSmartphoneRamCapacityValid,
+    isSmartphoneResolutionHorizontalValid,
+    isSmartphoneResolutionVerticalValid,
+    isSmartphoneStorageCapacityValid,
   ]);
 
   // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
@@ -369,562 +372,538 @@ function CreateMotherboard({
   // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    MOTHERBOARD SOCKET
+  //    SMARTPHONE OS
+  // ╰─────────────────────────────────────────────────────────────────╯
+  const [createdSmartphoneOsSelectInput] = returnAccessibleSelectInputElements([
+    {
+      data: MOBILE_OS_DATA,
+      description: '',
+      label: 'Smartphone OS',
+      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+        createProductDispatch({
+          type: createProductAction.setSmartphoneOs,
+          payload: event.currentTarget.value as MobileOs,
+        });
+      },
+      value: smartphoneOs,
+      required: true,
+    },
+  ]);
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    SMARTPHONE CHIPSET
   // ╰─────────────────────────────────────────────────────────────────╯
 
-  // screenreader accessible text input elements
-  const [motherboardSocketInputErrorText, motherboardSocketInputValidText] =
+  // screenreader error/valid text elements
+  const [smartphoneChipsetInputErrorText, smartphoneChipsetInputValidText] =
     AccessibleErrorValidTextElements({
-      inputElementKind: 'motherboard socket',
-      inputText: motherboardSocket,
-      isInputTextFocused: isMotherboardSocketFocused,
-      isValidInputText: isMotherboardSocketValid,
+      inputElementKind: 'smartphone chipset',
+      inputText: smartphoneChipset,
+      isInputTextFocused: isSmartphoneChipsetFocused,
+      isValidInputText: isSmartphoneChipsetValid,
       regexValidationText: returnSocketChipsetValidationText({
-        content: motherboardSocket,
-        contentKind: 'motherboard socket',
+        content: smartphoneChipset,
+        contentKind: 'smartphone chipset',
         maxLength: 30,
         minLength: 2,
       }),
     });
 
   // accessible text input element creator
-  const [createdMotherboardSocketTextInput] = returnAccessibleTextInputElements(
+  const [createdSmartphoneChipsetTextInput] = returnAccessibleTextInputElements(
     [
       {
         description: {
-          error: motherboardSocketInputErrorText,
-          valid: motherboardSocketInputValidText,
+          error: smartphoneChipsetInputErrorText,
+          valid: smartphoneChipsetInputValidText,
         },
-        inputText: motherboardSocket,
-        isValidInputText: isMotherboardSocketValid,
-        label: 'Motherboard Socket',
+        inputText: smartphoneChipset,
+        isValidInputText: isSmartphoneChipsetValid,
+        label: 'Smartphone Chipset',
         maxLength: 30,
         minLength: 2,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setIsMotherboardSocketFocused,
+            type: createProductAction.setIsSmartphoneChipsetFocused,
             payload: false,
           });
         },
         onChange: (event: ChangeEvent<HTMLInputElement>) => {
           createProductDispatch({
-            type: createProductAction.setMotherboardSocket,
+            type: createProductAction.setSmartphoneChipset,
             payload: event.currentTarget.value,
           });
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setIsMotherboardSocketFocused,
+            type: createProductAction.setIsSmartphoneChipsetFocused,
             payload: true,
           });
         },
-        placeholder: 'Enter motherboard socket',
+        placeholder: 'Enter smartphone chipset',
         required: true,
-        semanticName: 'motherboard socket',
+        semanticName: 'smartphone chipset',
       },
     ]
   );
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    MOTHERBOARD CHIPSET
+  //    SMARTPHONE DISPLAY
   // ╰─────────────────────────────────────────────────────────────────╯
 
-  // screenreader accessible text input elements
-  const [motherboardChipsetInputErrorText, motherboardChipsetInputValidText] =
+  // screenreader error/valid text elements
+  const [smartphoneDisplayInputErrorText, smartphoneDisplayInputValidText] =
     AccessibleErrorValidTextElements({
-      inputElementKind: 'motherboard chipset',
-      inputText: motherboardChipset,
-      isInputTextFocused: isMotherboardChipsetFocused,
-      isValidInputText: isMotherboardChipsetValid,
-      regexValidationText: returnSocketChipsetValidationText({
-        content: motherboardChipset,
-        contentKind: 'motherboard chipset',
-        maxLength: 30,
-        minLength: 2,
+      inputElementKind: 'smartphone display',
+      inputText: smartphoneDisplay,
+      isInputTextFocused: isSmartphoneDisplayFocused,
+      isValidInputText: isSmartphoneDisplayValid,
+      regexValidationText: returnDimensionsValidationText({
+        content: smartphoneDisplay,
+        contentKind: 'smartphone display',
       }),
     });
 
   // accessible text input element creator
-  const [createdMotherboardChipsetTextInput] =
-    returnAccessibleTextInputElements([
+  const [createdSmartphoneDisplayTextInput] = returnAccessibleTextInputElements(
+    [
       {
         description: {
-          error: motherboardChipsetInputErrorText,
-          valid: motherboardChipsetInputValidText,
+          error: smartphoneDisplayInputErrorText,
+          valid: smartphoneDisplayInputValidText,
         },
-        inputText: motherboardChipset,
-        isValidInputText: isMotherboardChipsetValid,
-        label: 'Motherboard Chipset',
-        maxLength: 30,
-        minLength: 2,
+        inputText: smartphoneDisplay,
+        isValidInputText: isSmartphoneDisplayValid,
+        label: 'Smartphone Display (inches)',
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setIsMotherboardChipsetFocused,
+            type: createProductAction.setIsSmartphoneDisplayFocused,
             payload: false,
           });
         },
         onChange: (event: ChangeEvent<HTMLInputElement>) => {
           createProductDispatch({
-            type: createProductAction.setMotherboardChipset,
+            type: createProductAction.setSmartphoneDisplay,
             payload: event.currentTarget.value,
           });
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setIsMotherboardChipsetFocused,
+            type: createProductAction.setIsSmartphoneDisplayFocused,
             payload: true,
           });
         },
-        placeholder: 'Enter motherboard chipset',
+        placeholder: 'Format: 000.00',
         required: true,
-        semanticName: 'motherboard chipset',
+        semanticName: 'smartphone display',
       },
-    ]);
+    ]
+  );
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    MOTHERBOARD FORM FACTOR
-  // ╰─────────────────────────────────────────────────────────────────╯
-  const [createdMotherboardFormFactorSelectInput] =
-    returnAccessibleSelectInputElements([
-      {
-        data: MOTHERBOARD_FORM_FACTOR_DATA,
-        description: '',
-        label: 'Motherboard Form Factor',
-        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-          createProductDispatch({
-            type: createProductAction.setMotherboardFormFactor,
-            payload: event.currentTarget.value as MotherboardFormFactor,
-          });
-        },
-        value: motherboardFormFactor,
-        required: true,
-      },
-    ]);
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    MOTHERBOARD MEMORY MAX CAPACITY
+  //    SMARTPHONE RESOLUTION HORIZONTAL
   // ╰─────────────────────────────────────────────────────────────────╯
 
-  // screenreader accessible text input elements
+  // screenreader error/valid text elements
   const [
-    motherboardMemoryMaxCapacityInputErrorText,
-    motherboardMemoryMaxCapacityInputValidText,
+    smartphoneResolutionHorizontalInputErrorText,
+    smartphoneResolutionHorizontalInputValidText,
   ] = AccessibleErrorValidTextElements({
-    inputElementKind: 'motherboard memory max capacity',
-    inputText: motherboardMemoryMaxCapacity,
-    isInputTextFocused: isMotherboardMemoryMaxCapacityFocused,
-    isValidInputText: isMotherboardMemoryMaxCapacityValid,
-    regexValidationText: returnMediumIntegerValidationText({
-      content: motherboardMemoryMaxCapacity,
-      contentKind: 'motherboard memory max capacity',
+    inputElementKind: 'smartphone resolution horizontal',
+    inputText: smartphoneResolutionHorizontal,
+    isInputTextFocused: isSmartphoneResolutionHorizontalFocused,
+    isValidInputText: isSmartphoneResolutionHorizontalValid,
+    regexValidationText: returnLargeIntegerValidationText({
+      content: smartphoneResolutionHorizontal,
+      contentKind: 'smartphone resolution horizontal',
     }),
   });
 
   // accessible text input element creator
-  const [createdMotherboardMemoryMaxCapacityTextInput] =
+  const [createdSmartphoneResolutionHorizontalTextInput] =
     returnAccessibleTextInputElements([
       {
         description: {
-          error: motherboardMemoryMaxCapacityInputErrorText,
-          valid: motherboardMemoryMaxCapacityInputValidText,
+          error: smartphoneResolutionHorizontalInputErrorText,
+          valid: smartphoneResolutionHorizontalInputValidText,
         },
-        inputText: motherboardMemoryMaxCapacity,
-        isValidInputText: isMotherboardMemoryMaxCapacityValid,
-        label: 'Motherboard Memory Max Capacity',
+        inputText: smartphoneResolutionHorizontal,
+        isValidInputText: isSmartphoneResolutionHorizontalValid,
+        label: 'Smartphone Resolution Horizontal (pixels)',
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setIsMotherboardMemoryMaxCapacityFocused,
+            type: createProductAction.setIsSmartphoneResolutionHorizontalFocused,
             payload: false,
           });
         },
         onChange: (event: ChangeEvent<HTMLInputElement>) => {
           createProductDispatch({
-            type: createProductAction.setMotherboardMemoryMaxCapacity,
+            type: createProductAction.setSmartphoneResolutionHorizontal,
             payload: event.currentTarget.value,
           });
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setIsMotherboardMemoryMaxCapacityFocused,
+            type: createProductAction.setIsSmartphoneResolutionHorizontalFocused,
+            payload: true,
+          });
+        },
+        placeholder: 'Format: 000000',
+        required: true,
+        semanticName: 'smartphone resolution horizontal',
+      },
+    ]);
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    SMARTPHONE RESOLUTION VERTICAL
+  // ╰─────────────────────────────────────────────────────────────────╯
+
+  // screenreader error/valid text elements
+  const [
+    smartphoneResolutionVerticalInputErrorText,
+    smartphoneResolutionVerticalInputValidText,
+  ] = AccessibleErrorValidTextElements({
+    inputElementKind: 'smartphone resolution vertical',
+    inputText: smartphoneResolutionVertical,
+    isInputTextFocused: isSmartphoneResolutionVerticalFocused,
+    isValidInputText: isSmartphoneResolutionVerticalValid,
+    regexValidationText: returnLargeIntegerValidationText({
+      content: smartphoneResolutionVertical,
+      contentKind: 'smartphone resolution vertical',
+    }),
+  });
+
+  // accessible text input element creator
+  const [createdSmartphoneResolutionVerticalTextInput] =
+    returnAccessibleTextInputElements([
+      {
+        description: {
+          error: smartphoneResolutionVerticalInputErrorText,
+          valid: smartphoneResolutionVerticalInputValidText,
+        },
+        inputText: smartphoneResolutionVertical,
+        isValidInputText: isSmartphoneResolutionVerticalValid,
+        label: 'Smartphone Resolution Vertical (pixels)',
+        onBlur: () => {
+          createProductDispatch({
+            type: createProductAction.setIsSmartphoneResolutionVerticalFocused,
+            payload: false,
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLInputElement>) => {
+          createProductDispatch({
+            type: createProductAction.setSmartphoneResolutionVertical,
+            payload: event.currentTarget.value,
+          });
+        },
+        onFocus: () => {
+          createProductDispatch({
+            type: createProductAction.setIsSmartphoneResolutionVerticalFocused,
+            payload: true,
+          });
+        },
+        placeholder: 'Format: 000000',
+        required: true,
+        semanticName: 'smartphone resolution vertical',
+      },
+    ]);
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    SMARTPHONE RAM CAPACITY
+  // ╰─────────────────────────────────────────────────────────────────╯
+
+  // screenreader error/valid text elements
+  const [
+    smartphoneRamCapacityInputErrorText,
+    smartphoneRamCapacityInputValidText,
+  ] = AccessibleErrorValidTextElements({
+    inputElementKind: 'smartphone ram capacity',
+    inputText: smartphoneRamCapacity,
+    isInputTextFocused: isSmartphoneRamCapacityFocused,
+    isValidInputText: isSmartphoneRamCapacityValid,
+    regexValidationText: returnMediumIntegerValidationText({
+      content: smartphoneRamCapacity,
+      contentKind: 'smartphone ram capacity',
+    }),
+  });
+
+  // accessible text input element creator
+  const [createdSmartphoneRamCapacityTextInput] =
+    returnAccessibleTextInputElements([
+      {
+        description: {
+          error: smartphoneRamCapacityInputErrorText,
+          valid: smartphoneRamCapacityInputValidText,
+        },
+        inputText: smartphoneRamCapacity,
+        isValidInputText: isSmartphoneRamCapacityValid,
+        label: 'Smartphone RAM Capacity (GB)',
+        onBlur: () => {
+          createProductDispatch({
+            type: createProductAction.setIsSmartphoneRamCapacityFocused,
+            payload: false,
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLInputElement>) => {
+          createProductDispatch({
+            type: createProductAction.setSmartphoneRamCapacity,
+            payload: event.currentTarget.value,
+          });
+        },
+        onFocus: () => {
+          createProductDispatch({
+            type: createProductAction.setIsSmartphoneRamCapacityFocused,
             payload: true,
           });
         },
         placeholder: 'Format: 0000',
         required: true,
-        semanticName: 'motherboard memory max capacity',
+        semanticName: 'smartphone ram capacity',
       },
     ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    MOTHERBOARD MEMORY MAX CAPACITY UNIT
+  //    SMARTPHONE RAM CAPACITY UNIT
   // ╰─────────────────────────────────────────────────────────────────╯
-  const [createdMotherboardMemoryMaxCapacityUnitSelectInput] =
+  const [createdSmartphoneRamCapacityUnitSelectInput] =
     returnAccessibleSelectInputElements([
       {
         data: MEMORY_UNIT_SELECT_INPUT_DATA,
         description: '',
-        label: 'Motherboard Memory Max Capacity Unit',
+        label: 'Smartphone RAM Capacity Unit',
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           createProductDispatch({
-            type: createProductAction.setMotherboardMemoryMaxCapacityUnit,
+            type: createProductAction.setSmartphoneRamCapacityUnit,
             payload: event.currentTarget.value as MemoryUnit,
           });
         },
-        value: motherboardMemoryMaxCapacityUnit,
+        value: smartphoneRamCapacityUnit,
         required: true,
       },
     ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    MOTHERBOARD MEMORY SLOTS
+  //    SMARTPHONE STORAGE CAPACITY
   // ╰─────────────────────────────────────────────────────────────────╯
-
-  // screenreader accessible text input elements
   const [
-    motherboardMemorySlotsInputErrorText,
-    motherboardMemorySlotsInputValidText,
+    smartphoneStorageCapacityInputErrorText,
+    smartphoneStorageCapacityInputValidText,
   ] = AccessibleErrorValidTextElements({
-    inputElementKind: 'motherboard memory slots',
-    inputText: motherboardMemorySlots,
-    isInputTextFocused: isMotherboardMemorySlotsFocused,
-    isValidInputText: isMotherboardMemorySlotsValid,
-    regexValidationText: returnSmallIntegerValidationText({
-      content: motherboardMemorySlots,
-      contentKind: 'motherboard memory slots',
+    inputElementKind: 'smartphone storage capacity',
+    inputText: smartphoneStorageCapacity,
+    isInputTextFocused: isSmartphoneStorageCapacityFocused,
+    isValidInputText: isSmartphoneStorageCapacityValid,
+    regexValidationText: returnMediumIntegerValidationText({
+      content: smartphoneStorageCapacity,
+      contentKind: 'smartphone storage capacity',
     }),
   });
 
   // accessible text input element creator
-  const [createdMotherboardMemorySlotsTextInput] =
+  const [createdSmartphoneStorageCapacityTextInput] =
     returnAccessibleTextInputElements([
       {
         description: {
-          error: motherboardMemorySlotsInputErrorText,
-          valid: motherboardMemorySlotsInputValidText,
+          error: smartphoneStorageCapacityInputErrorText,
+          valid: smartphoneStorageCapacityInputValidText,
         },
-        inputText: motherboardMemorySlots,
-        isValidInputText: isMotherboardMemorySlotsValid,
-        label: 'Motherboard Memory Slots',
+        inputText: smartphoneStorageCapacity,
+        isValidInputText: isSmartphoneStorageCapacityValid,
+        label: 'Smartphone Storage Capacity (GB)',
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setIsMotherboardMemorySlotsFocused,
+            type: createProductAction.setIsSmartphoneStorageCapacityFocused,
             payload: false,
           });
         },
         onChange: (event: ChangeEvent<HTMLInputElement>) => {
           createProductDispatch({
-            type: createProductAction.setMotherboardMemorySlots,
+            type: createProductAction.setSmartphoneStorageCapacity,
             payload: event.currentTarget.value,
           });
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setIsMotherboardMemorySlotsFocused,
+            type: createProductAction.setIsSmartphoneStorageCapacityFocused,
             payload: true,
           });
         },
-        placeholder: 'Format: 00',
+        placeholder: 'Format: 0000',
         required: true,
-        semanticName: 'motherboard memory slots',
+        semanticName: 'smartphone storage capacity',
       },
     ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    MOTHERBOARD MEMORY TYPE
-  // ╰─────────────────────────────────────────────────────────────────╯
-  const [createdMotherboardMemoryTypeSelectInput] =
-    returnAccessibleSelectInputElements([
-      {
-        data: MOTHERBOARD_MEMORY_TYPE_DATA,
-        description: '',
-        label: 'Motherboard Memory Type',
-        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-          createProductDispatch({
-            type: createProductAction.setMotherboardMemoryType,
-            payload: event.currentTarget.value as MemoryType,
-          });
-        },
-        value: motherboardMemoryType,
-        required: true,
-      },
-    ]);
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    MOTHERBOARD SATA PORTS
+  //    SMARTPHONE BATTERY CAPACITY
   // ╰─────────────────────────────────────────────────────────────────╯
 
-  // screenreader accessible text input elements
+  // screenreader error/valid text elements
   const [
-    motherboardSataPortsInputErrorText,
-    motherboardSataPortsInputValidText,
+    smartphoneBatteryCapacityInputErrorText,
+    smartphoneBatteryCapacityInputValidText,
   ] = AccessibleErrorValidTextElements({
-    inputElementKind: 'motherboard sata ports',
-    inputText: motherboardSataPorts,
-    isInputTextFocused: isMotherboardSataPortsFocused,
-    isValidInputText: isMotherboardSataPortsValid,
-    regexValidationText: returnSmallIntegerValidationText({
-      content: motherboardSataPorts,
-      contentKind: 'motherboard sata ports',
+    inputElementKind: 'smartphone battery capacity',
+    inputText: smartphoneBatteryCapacity,
+    isInputTextFocused: isSmartphoneBatteryCapacityFocused,
+    isValidInputText: isSmartphoneBatteryCapacityValid,
+    regexValidationText: returnLargeIntegerValidationText({
+      content: smartphoneBatteryCapacity,
+      contentKind: 'smartphone battery capacity',
     }),
   });
 
   // accessible text input element creator
-  const [createdMotherboardSataPortsTextInput] =
+  const [createdSmartphoneBatteryCapacityTextInput] =
     returnAccessibleTextInputElements([
       {
         description: {
-          error: motherboardSataPortsInputErrorText,
-          valid: motherboardSataPortsInputValidText,
+          error: smartphoneBatteryCapacityInputErrorText,
+          valid: smartphoneBatteryCapacityInputValidText,
         },
-        inputText: motherboardSataPorts,
-        isValidInputText: isMotherboardSataPortsValid,
-        label: 'Motherboard SATA Ports',
+        inputText: smartphoneBatteryCapacity,
+        isValidInputText: isSmartphoneBatteryCapacityValid,
+        label: 'Smartphone Battery Capacity (mAh)',
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setIsMotherboardSataPortsFocused,
+            type: createProductAction.setIsSmartphoneBatteryCapacityFocused,
             payload: false,
           });
         },
         onChange: (event: ChangeEvent<HTMLInputElement>) => {
           createProductDispatch({
-            type: createProductAction.setMotherboardSataPorts,
+            type: createProductAction.setSmartphoneBatteryCapacity,
             payload: event.currentTarget.value,
           });
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setIsMotherboardSataPortsFocused,
+            type: createProductAction.setIsSmartphoneBatteryCapacityFocused,
             payload: true,
           });
         },
-        placeholder: 'Format: 00',
+        placeholder: 'Format: 000000',
         required: true,
-        semanticName: 'motherboard sata ports',
+        semanticName: 'smartphone battery capacity',
       },
     ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    MOTHERBOARD M2 SLOTS
+  //    SMARTPHONE CAMERA
   // ╰─────────────────────────────────────────────────────────────────╯
-
-  // screenreader accessible text input elements
-  const [motherboardM2SlotsInputErrorText, motherboardM2SlotsInputValidText] =
+  const [smartphoneCameraInputErrorText, smartphoneCameraInputValidText] =
     AccessibleErrorValidTextElements({
-      inputElementKind: 'motherboard m2 slots',
-      inputText: motherboardM2Slots,
-      isInputTextFocused: isMotherboardM2SlotsFocused,
-      isValidInputText: isMotherboardM2SlotsValid,
-      regexValidationText: returnSmallIntegerValidationText({
-        content: motherboardM2Slots,
-        contentKind: 'motherboard m2 slots',
+      inputElementKind: 'smartphone camera',
+      inputText: smartphoneCamera,
+      isInputTextFocused: isSmartphoneCameraFocused,
+      isValidInputText: isSmartphoneCameraValid,
+      regexValidationText: returnMobileCameraResolutionValidationText({
+        content: smartphoneCamera,
+        contentKind: 'smartphone camera',
+        maxLength: 84,
+        minLength: 4,
       }),
     });
 
   // accessible text input element creator
-  const [createdMotherboardM2SlotsTextInput] =
-    returnAccessibleTextInputElements([
-      {
-        description: {
-          error: motherboardM2SlotsInputErrorText,
-          valid: motherboardM2SlotsInputValidText,
-        },
-        inputText: motherboardM2Slots,
-        isValidInputText: isMotherboardM2SlotsValid,
-        label: 'Motherboard M.2 Slots',
-        onBlur: () => {
-          createProductDispatch({
-            type: createProductAction.setIsMotherboardM2SlotsFocused,
-            payload: false,
-          });
-        },
-        onChange: (event: ChangeEvent<HTMLInputElement>) => {
-          createProductDispatch({
-            type: createProductAction.setMotherboardM2Slots,
-            payload: event.currentTarget.value,
-          });
-        },
-        onFocus: () => {
-          createProductDispatch({
-            type: createProductAction.setIsMotherboardM2SlotsFocused,
-            payload: true,
-          });
-        },
-        placeholder: 'Format: 00',
-        required: true,
-        semanticName: 'motherboard m2 slots',
+  const [createdSmartphoneCameraTextInput] = returnAccessibleTextInputElements([
+    {
+      description: {
+        error: smartphoneCameraInputErrorText,
+        valid: smartphoneCameraInputValidText,
       },
-    ]);
+      inputText: smartphoneCamera,
+      isValidInputText: isSmartphoneCameraValid,
+      label: 'Smartphone Camera',
+      maxLength: 84,
+      minLength: 4,
+      onBlur: () => {
+        createProductDispatch({
+          type: createProductAction.setIsSmartphoneCameraFocused,
+          payload: false,
+        });
+      },
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
+        createProductDispatch({
+          type: createProductAction.setSmartphoneCamera,
+          payload: event.currentTarget.value,
+        });
+      },
+      onFocus: () => {
+        createProductDispatch({
+          type: createProductAction.setIsSmartphoneCameraFocused,
+          payload: true,
+        });
+      },
+      placeholder: 'Enter smartphone camera',
+      required: true,
+      semanticName: 'smartphone camera',
+    },
+  ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    MOTHERBOARD PCIE3 SLOTS
+  //    SMARTPHONE COLOR
   // ╰─────────────────────────────────────────────────────────────────╯
 
-  // screenreader accessible text input elements
-  const [
-    motherboardPcie3SlotsInputErrorText,
-    motherboardPcie3SlotsInputValidText,
-  ] = AccessibleErrorValidTextElements({
-    inputElementKind: 'motherboard pcie3 slots',
-    inputText: motherboardPcie3Slots,
-    isInputTextFocused: isMotherboardPcie3SlotsFocused,
-    isValidInputText: isMotherboardPcie3SlotsValid,
-    regexValidationText: returnSmallIntegerValidationText({
-      content: motherboardPcie3Slots,
-      contentKind: 'motherboard pcie3 slots',
-    }),
-  });
+  // screenreader error/valid text elements
+  const [smartphoneColorInputErrorText, smartphoneColorInputValidText] =
+    AccessibleErrorValidTextElements({
+      inputElementKind: 'smartphone color',
+      inputText: smartphoneColor,
+      isInputTextFocused: isSmartphoneColorFocused,
+      isValidInputText: isSmartphoneColorValid,
+      regexValidationText: returnColorVariantValidationText({
+        content: smartphoneColor,
+        contentKind: 'smartphone color',
+        maxLength: 30,
+        minLength: 2,
+      }),
+    });
 
   // accessible text input element creator
-  const [createdMotherboardPcie3SlotsTextInput] =
-    returnAccessibleTextInputElements([
-      {
-        description: {
-          error: motherboardPcie3SlotsInputErrorText,
-          valid: motherboardPcie3SlotsInputValidText,
-        },
-        inputText: motherboardPcie3Slots,
-        isValidInputText: isMotherboardPcie3SlotsValid,
-        label: 'Motherboard PCIe3 Slots',
-        onBlur: () => {
-          createProductDispatch({
-            type: createProductAction.setIsMotherboardPcie3SlotsFocused,
-            payload: false,
-          });
-        },
-        onChange: (event: ChangeEvent<HTMLInputElement>) => {
-          createProductDispatch({
-            type: createProductAction.setMotherboardPcie3Slots,
-            payload: event.currentTarget.value,
-          });
-        },
-        onFocus: () => {
-          createProductDispatch({
-            type: createProductAction.setIsMotherboardPcie3SlotsFocused,
-            payload: true,
-          });
-        },
-        placeholder: 'Format: 00',
-        required: true,
-        semanticName: 'motherboard pcie3 slots',
+  const [createdSmartphoneColorTextInput] = returnAccessibleTextInputElements([
+    {
+      description: {
+        error: smartphoneColorInputErrorText,
+        valid: smartphoneColorInputValidText,
       },
-    ]);
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    MOTHERBOARD PCIE4 SLOTS
-  // ╰─────────────────────────────────────────────────────────────────╯
-
-  // screenreader accessible text input elements
-  const [
-    motherboardPcie4SlotsInputErrorText,
-    motherboardPcie4SlotsInputValidText,
-  ] = AccessibleErrorValidTextElements({
-    inputElementKind: 'motherboard pcie4 slots',
-    inputText: motherboardPcie4Slots,
-    isInputTextFocused: isMotherboardPcie4SlotsFocused,
-    isValidInputText: isMotherboardPcie4SlotsValid,
-    regexValidationText: returnSmallIntegerValidationText({
-      content: motherboardPcie4Slots,
-      contentKind: 'motherboard pcie4 slots',
-    }),
-  });
-
-  // accessible text input element creator
-  const [createdMotherboardPcie4SlotsTextInput] =
-    returnAccessibleTextInputElements([
-      {
-        description: {
-          error: motherboardPcie4SlotsInputErrorText,
-          valid: motherboardPcie4SlotsInputValidText,
-        },
-        inputText: motherboardPcie4Slots,
-        isValidInputText: isMotherboardPcie4SlotsValid,
-        label: 'Motherboard PCIe4 Slots',
-        onBlur: () => {
-          createProductDispatch({
-            type: createProductAction.setIsMotherboardPcie4SlotsFocused,
-            payload: false,
-          });
-        },
-        onChange: (event: ChangeEvent<HTMLInputElement>) => {
-          createProductDispatch({
-            type: createProductAction.setMotherboardPcie4Slots,
-            payload: event.currentTarget.value,
-          });
-        },
-        onFocus: () => {
-          createProductDispatch({
-            type: createProductAction.setIsMotherboardPcie4SlotsFocused,
-            payload: true,
-          });
-        },
-        placeholder: 'Format: 00',
-        required: true,
-        semanticName: 'motherboard pcie4 slots',
+      inputText: smartphoneColor,
+      isValidInputText: isSmartphoneColorValid,
+      label: 'Smartphone Color',
+      maxLength: 30,
+      minLength: 2,
+      onBlur: () => {
+        createProductDispatch({
+          type: createProductAction.setIsSmartphoneColorFocused,
+          payload: false,
+        });
       },
-    ]);
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    MOTHERBOARD PCIE5 SLOTS
-  // ╰─────────────────────────────────────────────────────────────────╯
-
-  // screenreader accessible text input elements
-  const [
-    motherboardPcie5SlotsInputErrorText,
-    motherboardPcie5SlotsInputValidText,
-  ] = AccessibleErrorValidTextElements({
-    inputElementKind: 'motherboard pcie5 slots',
-    inputText: motherboardPcie5Slots,
-    isInputTextFocused: isMotherboardPcie5SlotsFocused,
-    isValidInputText: isMotherboardPcie5SlotsValid,
-    regexValidationText: returnSmallIntegerValidationText({
-      content: motherboardPcie5Slots,
-      contentKind: 'motherboard pcie5 slots',
-    }),
-  });
-
-  // accessible text input element creator
-  const [createdMotherboardPcie5SlotsTextInput] =
-    returnAccessibleTextInputElements([
-      {
-        description: {
-          error: motherboardPcie5SlotsInputErrorText,
-          valid: motherboardPcie5SlotsInputValidText,
-        },
-        inputText: motherboardPcie5Slots,
-        isValidInputText: isMotherboardPcie5SlotsValid,
-        label: 'Motherboard PCIe5 Slots',
-        onBlur: () => {
-          createProductDispatch({
-            type: createProductAction.setIsMotherboardPcie5SlotsFocused,
-            payload: false,
-          });
-        },
-        onChange: (event: ChangeEvent<HTMLInputElement>) => {
-          createProductDispatch({
-            type: createProductAction.setMotherboardPcie5Slots,
-            payload: event.currentTarget.value,
-          });
-        },
-        onFocus: () => {
-          createProductDispatch({
-            type: createProductAction.setIsMotherboardPcie5SlotsFocused,
-            payload: true,
-          });
-        },
-        placeholder: '(Optional) Format: 00',
-        required: false,
-        semanticName: 'motherboard pcie5 slots',
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
+        createProductDispatch({
+          type: createProductAction.setSmartphoneColor,
+          payload: event.currentTarget.value,
+        });
       },
-    ]);
+      onFocus: () => {
+        createProductDispatch({
+          type: createProductAction.setIsSmartphoneColorFocused,
+          payload: true,
+        });
+      },
+      placeholder: 'Enter smartphone color',
+      required: true,
+      semanticName: 'smartphone color',
+    },
+  ]);
 
   // ╔═════════════════════════════════════════════════════════════════╗
-  //   MOTHERBOARD ADDITIONAL FIELDS
+  //   SMARTPHONE ADDITIONAL FIELDS
   // ╚═════════════════════════════════════════════════════════════════╝
 
   // ╭─────────────────────────────────────────────────────────────────╮
   //    ADD ADDITIONAL FIELD BUTTON
   // ╰─────────────────────────────────────────────────────────────────╯
-  const [createdAddMotherboardFieldsAdditionalButton] =
+  const [createdAddSmartphoneFieldsAdditionalButton] =
     returnAccessibleButtonElements([
       {
         buttonLabel: 'Add',
@@ -933,7 +912,7 @@ function CreateMotherboard({
         leftIcon: <TbPlus />,
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
           createProductDispatch({
-            type: createProductAction.setMotherboardFieldsAdditional,
+            type: createProductAction.setSmartphoneFieldsAdditional,
             payload: {
               operation: 'add',
               data: ['', ''],
@@ -941,7 +920,7 @@ function CreateMotherboard({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreMotherboardFieldsAdditionalFocused,
+            type: createProductAction.setAreSmartphoneFieldsAdditionalFocused,
             payload: {
               operation: 'add',
               data: [false, false],
@@ -949,7 +928,7 @@ function CreateMotherboard({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreMotherboardFieldsAdditionalValid,
+            type: createProductAction.setAreSmartphoneFieldsAdditionalValid,
             payload: {
               operation: 'add',
               data: [false, false],
@@ -964,23 +943,23 @@ function CreateMotherboard({
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // returns an array of tuples containing the error and valid text elements for each field name
-  const motherboardFieldsAdditionalKeysErrorValidTextElements: [
+  const smartphoneFieldsAdditionalKeysErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(motherboardFieldsAdditional).map((keyFieldValue) => {
+  ][] = Array.from(smartphoneFieldsAdditional).map((keyFieldValue) => {
     const [mapKey, [field, _value]] = keyFieldValue;
 
     // screenreader error/valid text elements that are consumed by the text input element creator
     const [
-      motherboardFieldsAdditionalKeysInputErrorText,
-      motherboardFieldsAdditionalKeysInputValidText,
+      smartphoneFieldsAdditionalKeysInputErrorText,
+      smartphoneFieldsAdditionalKeysInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field name ${mapKey + 1}`,
       inputText: field,
       isInputTextFocused:
-        areMotherboardFieldsAdditionalFocused.get(mapKey)?.[0] ?? false,
+        areSmartphoneFieldsAdditionalFocused.get(mapKey)?.[0] ?? false,
       isValidInputText:
-        areMotherboardFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+        areSmartphoneFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
       regexValidationText: returnObjectKeyValidationText({
         content: field,
         contentKind: `additional field name ${mapKey + 1}`,
@@ -990,32 +969,33 @@ function CreateMotherboard({
     });
 
     return [
-      motherboardFieldsAdditionalKeysInputErrorText,
-      motherboardFieldsAdditionalKeysInputValidText,
+      smartphoneFieldsAdditionalKeysInputErrorText,
+      smartphoneFieldsAdditionalKeysInputValidText,
     ];
   });
 
   // ╭─────────────────────────────────────────────────────────────────╮
   //    ERROR/VALID ELEMENTS TUPLE => FIELD VALUES
   // ╰─────────────────────────────────────────────────────────────────╯
+
   // returns an array of tuples containing the error and valid text elements for each field value
-  const motherboardFieldsAdditionalValuesErrorValidTextElements: [
+  const smartphoneFieldsAdditionalValuesErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(motherboardFieldsAdditional).map((keyFieldValue) => {
+  ][] = Array.from(smartphoneFieldsAdditional).map((keyFieldValue) => {
     const [mapKey, [_field, value]] = keyFieldValue;
 
     // screenreader error/valid text elements that are consumed by the text input element creator
     const [
-      motherboardFieldsAdditionalValuesInputErrorText,
-      motherboardFieldsAdditionalValuesInputValidText,
+      smartphoneFieldsAdditionalValuesInputErrorText,
+      smartphoneFieldsAdditionalValuesInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field value ${mapKey + 1}`,
       inputText: value,
       isInputTextFocused:
-        areMotherboardFieldsAdditionalFocused.get(mapKey)?.[1] ?? false,
+        areSmartphoneFieldsAdditionalFocused.get(mapKey)?.[1] ?? false,
       isValidInputText:
-        areMotherboardFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+        areSmartphoneFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
       regexValidationText: returnUserDefinedFieldValueValidationText({
         content: value,
         contentKind: `additional field value ${mapKey + 1}`,
@@ -1025,36 +1005,36 @@ function CreateMotherboard({
     });
 
     return [
-      motherboardFieldsAdditionalValuesInputErrorText,
-      motherboardFieldsAdditionalValuesInputValidText,
+      smartphoneFieldsAdditionalValuesInputErrorText,
+      smartphoneFieldsAdditionalValuesInputValidText,
     ];
   });
 
-  const createdMotherboardFieldsAdditionalTextInputElements = Array.from(
-    motherboardFieldsAdditional
+  const createdSmartphoneFieldsAdditionalTextInputElements = Array.from(
+    smartphoneFieldsAdditional
   ).map((keyFieldValue) => {
     const [mapKey, [field, value]] = keyFieldValue;
 
     // ╭─────────────────────────────────────────────────────────────────╮
     //    ADDITIONAL FIELD TEXT INPUT => FIELD NAME
     // ╰─────────────────────────────────────────────────────────────────╯
-    const motherboardFieldsAdditionalKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const smartphoneFieldsAdditionalKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
           error:
-            motherboardFieldsAdditionalKeysErrorValidTextElements[mapKey][0],
+            smartphoneFieldsAdditionalKeysErrorValidTextElements[mapKey][0],
           valid:
-            motherboardFieldsAdditionalKeysErrorValidTextElements[mapKey][1],
+            smartphoneFieldsAdditionalKeysErrorValidTextElements[mapKey][1],
         },
         inputText: field,
         isValidInputText:
-          areMotherboardFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+          areSmartphoneFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
         label: `Name ${mapKey + 1}`,
         maxLength: 75,
         minLength: 1,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreMotherboardFieldsAdditionalFocused,
+            type: createProductAction.setAreSmartphoneFieldsAdditionalFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -1065,7 +1045,7 @@ function CreateMotherboard({
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setMotherboardFieldsAdditional,
+            type: createProductAction.setSmartphoneFieldsAdditional,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -1081,7 +1061,7 @@ function CreateMotherboard({
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreMotherboardFieldsAdditionalFocused,
+            type: createProductAction.setAreSmartphoneFieldsAdditionalFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -1098,23 +1078,23 @@ function CreateMotherboard({
     // ╭─────────────────────────────────────────────────────────────────╮
     //    ADDITIONAL FIELD TEXT INPUT => FIELD VALUE
     // ╰─────────────────────────────────────────────────────────────────╯
-    const motherboardFieldsAdditionalValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const smartphoneFieldsAdditionalValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
           error:
-            motherboardFieldsAdditionalValuesErrorValidTextElements[mapKey][0],
+            smartphoneFieldsAdditionalValuesErrorValidTextElements[mapKey][0],
           valid:
-            motherboardFieldsAdditionalValuesErrorValidTextElements[mapKey][1],
+            smartphoneFieldsAdditionalValuesErrorValidTextElements[mapKey][1],
         },
         inputText: value,
         isValidInputText:
-          areMotherboardFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+          areSmartphoneFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
         label: `Value ${mapKey + 1}`,
         maxLength: 2000,
         minLength: 2,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreMotherboardFieldsAdditionalFocused,
+            type: createProductAction.setAreSmartphoneFieldsAdditionalFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -1125,7 +1105,7 @@ function CreateMotherboard({
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setMotherboardFieldsAdditional,
+            type: createProductAction.setSmartphoneFieldsAdditional,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -1141,7 +1121,7 @@ function CreateMotherboard({
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreMotherboardFieldsAdditionalFocused,
+            type: createProductAction.setAreSmartphoneFieldsAdditionalFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -1156,11 +1136,11 @@ function CreateMotherboard({
       };
 
     const [
-      createdMotherboardFieldsAdditionalKeysTextAreaInput,
-      createdMotherboardFieldsAdditionalValuesTextAreaInput,
+      createdSmartphoneFieldsAdditionalKeysTextAreaInput,
+      createdSmartphoneFieldsAdditionalValuesTextAreaInput,
     ] = returnAccessibleTextAreaInputElements([
-      motherboardFieldsAdditionalKeysTextInputCreatorInfo,
-      motherboardFieldsAdditionalValuesTextInputCreatorInfo,
+      smartphoneFieldsAdditionalKeysTextInputCreatorInfo,
+      smartphoneFieldsAdditionalValuesTextInputCreatorInfo,
     ]);
 
     // ╭─────────────────────────────────────────────────────────────────╮
@@ -1171,7 +1151,7 @@ function CreateMotherboard({
         buttonLabel: 'Delete',
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
           createProductDispatch({
-            type: createProductAction.setMotherboardFieldsAdditional,
+            type: createProductAction.setSmartphoneFieldsAdditional,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -1179,7 +1159,7 @@ function CreateMotherboard({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreMotherboardFieldsAdditionalFocused,
+            type: createProductAction.setAreSmartphoneFieldsAdditionalFocused,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -1187,7 +1167,7 @@ function CreateMotherboard({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreMotherboardFieldsAdditionalValid,
+            type: createProductAction.setAreSmartphoneFieldsAdditionalValid,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -1212,20 +1192,16 @@ function CreateMotherboard({
     );
 
     return (
-      <Stack
-        key={`motherboardFieldsAdditional-${mapKey}`}
-        pt={padding}
-        w="100%"
-      >
+      <Stack key={`smartphoneFieldsAdditional-${mapKey}`} pt={padding} w="100%">
         <Group position="apart">
-          <Text size="md" weight={600}>{`Additional Motherboard field ${
+          <Text size="md" weight={600}>{`Additional Smartphone field ${
             mapKey + 1
           }`}</Text>
           {displayDeleteButton}
         </Group>
         <Group position="apart">
-          {createdMotherboardFieldsAdditionalKeysTextAreaInput}
-          {createdMotherboardFieldsAdditionalValuesTextAreaInput}
+          {createdSmartphoneFieldsAdditionalKeysTextAreaInput}
+          {createdSmartphoneFieldsAdditionalValuesTextAreaInput}
         </Group>
       </Stack>
     );
@@ -1237,15 +1213,15 @@ function CreateMotherboard({
   //  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
   // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 
-  const displayMotherboardFieldsAdditionalButton = (
+  const displaySmartphoneFieldsAdditionalButton = (
     <Tooltip
-      label={`Add new additional field ${motherboardFieldsAdditional.size + 1}`}
+      label={`Add new additional field ${smartphoneFieldsAdditional.size + 1}`}
     >
-      <Group>{createdAddMotherboardFieldsAdditionalButton}</Group>
+      <Group>{createdAddSmartphoneFieldsAdditionalButton}</Group>
     </Tooltip>
   );
 
-  const displayMotherboardSpecificationsInputs = (
+  const displaySmartphoneSpecificationsInputs = (
     <Group
       py={padding}
       position="apart"
@@ -1253,26 +1229,25 @@ function CreateMotherboard({
       w="100%"
     >
       <Group w="100%" position="apart">
-        <Title order={4}>Motherboard Specifications</Title>
-        {displayMotherboardFieldsAdditionalButton}
+        <Title order={4}>Smartphone Specifications</Title>
+        {displaySmartphoneFieldsAdditionalButton}
       </Group>
-      {createdMotherboardSocketTextInput}
-      {createdMotherboardChipsetTextInput}
-      {createdMotherboardFormFactorSelectInput}
-      {createdMotherboardMemoryMaxCapacityTextInput}
-      {createdMotherboardMemoryMaxCapacityUnitSelectInput}
-      {createdMotherboardMemorySlotsTextInput}
-      {createdMotherboardMemoryTypeSelectInput}
-      {createdMotherboardSataPortsTextInput}
-      {createdMotherboardM2SlotsTextInput}
-      {createdMotherboardPcie3SlotsTextInput}
-      {createdMotherboardPcie4SlotsTextInput}
-      {createdMotherboardPcie5SlotsTextInput}
-      {createdMotherboardFieldsAdditionalTextInputElements}
+      {createdSmartphoneOsSelectInput}
+      {createdSmartphoneChipsetTextInput}
+      {createdSmartphoneDisplayTextInput}
+      {createdSmartphoneResolutionHorizontalTextInput}
+      {createdSmartphoneResolutionVerticalTextInput}
+      {createdSmartphoneColorTextInput}
+      {createdSmartphoneRamCapacityTextInput}
+      {createdSmartphoneRamCapacityUnitSelectInput}
+      {createdSmartphoneStorageCapacityTextInput}
+      {createdSmartphoneBatteryCapacityTextInput}
+      {createdSmartphoneCameraTextInput}
+      {createdSmartphoneFieldsAdditionalTextInputElements}
     </Group>
   );
 
-  return displayMotherboardSpecificationsInputs;
+  return displaySmartphoneSpecificationsInputs;
 }
 
-export default CreateMotherboard;
+export default CreateSmartphone;

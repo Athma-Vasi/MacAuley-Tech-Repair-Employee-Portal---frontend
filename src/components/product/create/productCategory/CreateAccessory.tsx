@@ -155,9 +155,9 @@ function CreateAccessory({
   // ╚═════════════════════════════════════════════════════════════════╝
 
   useEffect(() => {
-    // select inputs are not included as they always have a default value
     // required inputs with empty string count as error
     // optional inputs with empty string count as valid
+    // select inputs are not included as they always have a default value
 
     const areAccessoryInputsHardcodedInError =
       !isAccessoryTypeValid || !isAccessoryColorValid;
@@ -195,7 +195,7 @@ function CreateAccessory({
   //    ACCESSORY TYPE
   // ╰─────────────────────────────────────────────────────────────────╯
 
-  // screenreader accessible error/valid text elements
+  // screenreader error/valid text elements
   const [accessoryTypeInputErrorText, accessoryTypeInputValidText] =
     AccessibleErrorValidTextElements({
       inputElementKind: 'accessory type',
@@ -210,7 +210,7 @@ function CreateAccessory({
       }),
     });
 
-  // text input element creator
+  // accessible text input element creator
   const [createdAccessoryTypeTextInput] = returnAccessibleTextInputElements([
     {
       description: {
@@ -250,7 +250,7 @@ function CreateAccessory({
   //    ACCESSORY COLOR
   // ╰─────────────────────────────────────────────────────────────────╯
 
-  // screenreader accessible error/valid text elements
+  // screenreader error/valid text elements
   const [accessoryColorInputErrorText, accessoryColorInputValidText] =
     AccessibleErrorValidTextElements({
       inputElementKind: 'accessory color',
@@ -265,7 +265,7 @@ function CreateAccessory({
       }),
     });
 
-  // text input element creator
+  // accessible text input element creator
   const [createdAccessoryColorTextInput] = returnAccessibleTextInputElements([
     {
       description: {
@@ -376,7 +376,7 @@ function CreateAccessory({
   ][] = Array.from(accessoryFieldsAdditional).map((keyFieldValue) => {
     const [mapKey, [field, _value]] = keyFieldValue;
 
-    // screenreader accessible error/valid text elements that are consumed by the text input element creator
+    // screenreader error/valid text elements that are consumed by the text input element creator
     const [
       accessoryFieldsAdditionalKeysInputErrorText,
       accessoryFieldsAdditionalKeysInputValidText,
@@ -412,7 +412,7 @@ function CreateAccessory({
   ][] = Array.from(accessoryFieldsAdditional).map((keyFieldValue) => {
     const [mapKey, [_field, value]] = keyFieldValue;
 
-    // screenreader accessible error/valid text elements that are consumed by the text input element creator
+    // screenreader error/valid text elements that are consumed by the text input element creator
     const [
       accessoryFieldsAdditionalValuesInputErrorText,
       accessoryFieldsAdditionalValuesInputValidText,

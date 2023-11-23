@@ -206,9 +206,9 @@ function CreateHeadphone({
   //   STEPPER STATE UPDATE
   // ╚═════════════════════════════════════════════════════════════════╝
   useEffect(() => {
-    // select inputs are not included as they always have a default value
     // required inputs with empty string count as error
     // optional inputs with empty string count as valid
+    // select inputs are not included as they always have a default value
 
     const areHeadphoneInputsHardcodedInError =
       !isHeadphoneDriverValid ||
@@ -272,7 +272,7 @@ function CreateHeadphone({
   //    HEADPHONE DRIVER
   // ╰─────────────────────────────────────────────────────────────────╯
 
-  // screenreader accessible error/valid text elements
+  // screenreader error/valid text elements
   const [headphoneDriverInputErrorText, headphoneDriverInputValidText] =
     AccessibleErrorValidTextElements({
       inputElementKind: 'headphone driver',
@@ -285,7 +285,7 @@ function CreateHeadphone({
       }),
     });
 
-  // text input element creator
+  // accessible text input element creator
   const [createdHeadphoneDriverTextInput] = returnAccessibleTextInputElements([
     {
       description: {
@@ -323,7 +323,7 @@ function CreateHeadphone({
   //    HEADPHONE FREQUENCY RESPONSE
   // ╰─────────────────────────────────────────────────────────────────╯
 
-  // screenreader accessible error/valid text elements
+  // screenreader error/valid text elements
   const [
     headphoneFrequencyResponseInputErrorText,
     headphoneFrequencyResponseInputValidText,
@@ -340,7 +340,7 @@ function CreateHeadphone({
     }),
   });
 
-  // text input element creator
+  // accessible text input element creator
   const [createdHeadphoneFrequencyResponseTextInput] =
     returnAccessibleTextInputElements([
       {
@@ -381,7 +381,7 @@ function CreateHeadphone({
   //    HEADPHONE IMPEDANCE
   // ╰─────────────────────────────────────────────────────────────────╯
 
-  // screenreader accessible error/valid text elements
+  // screenreader error/valid text elements
   const [headphoneImpedanceInputErrorText, headphoneImpedanceInputValidText] =
     AccessibleErrorValidTextElements({
       inputElementKind: 'headphone impedance',
@@ -394,7 +394,7 @@ function CreateHeadphone({
       }),
     });
 
-  // text input element creator
+  // accessible text input element creator
   const [createdHeadphoneImpedanceTextInput] =
     returnAccessibleTextInputElements([
       {
@@ -433,7 +433,7 @@ function CreateHeadphone({
   //    HEADPHONE COLOR
   // ╰─────────────────────────────────────────────────────────────────╯
 
-  // screenreader accessible error/valid text elements
+  // screenreader error/valid text elements
   const [headphoneColorInputErrorText, headphoneColorInputValidText] =
     AccessibleErrorValidTextElements({
       inputElementKind: 'headphone color',
@@ -448,7 +448,7 @@ function CreateHeadphone({
       }),
     });
 
-  // text input element creator
+  // accessible text input element creator
   const [createdHeadphoneColorTextInput] = returnAccessibleTextInputElements([
     {
       description: {
@@ -557,7 +557,7 @@ function CreateHeadphone({
   ][] = Array.from(headphoneFieldsAdditional).map((keyFieldValue) => {
     const [mapKey, [field, _value]] = keyFieldValue;
 
-    // screenreader accessible error/valid text elements that are consumed by the text input element creator
+    // screenreader error/valid text elements that are consumed by the text input element creator
     const [
       headphoneFieldsAdditionalKeysInputErrorText,
       headphoneFieldsAdditionalKeysInputValidText,
@@ -593,7 +593,7 @@ function CreateHeadphone({
   ][] = Array.from(headphoneFieldsAdditional).map((keyFieldValue) => {
     const [mapKey, [_field, value]] = keyFieldValue;
 
-    // screenreader accessible error/valid text elements that are consumed by the text input element creator
+    // screenreader error/valid text elements that are consumed by the text input element creator
     const [
       headphoneFieldsAdditionalValuesInputErrorText,
       headphoneFieldsAdditionalValuesInputValidText,

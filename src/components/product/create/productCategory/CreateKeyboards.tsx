@@ -117,9 +117,9 @@ function CreateKeyboards({
   //   STEPPER STATE UPDATE
   // ╚═════════════════════════════════════════════════════════════════╝
   useEffect(() => {
-    // select inputs are not included as they always have a default value
     // required inputs with empty string count as error
     // optional inputs with empty string count as valid
+    // select inputs are not included as they always have a default value
 
     const areKeyboardInputsUserDefinedInError = Array.from(
       areKeyboardFieldsAdditionalValid
@@ -281,7 +281,7 @@ function CreateKeyboards({
   ][] = Array.from(keyboardFieldsAdditional).map((keyFieldValue) => {
     const [mapKey, [field, _value]] = keyFieldValue;
 
-    // screenreader accessible error/valid text elements that are consumed by the text input element creator
+    // screenreader error/valid text elements that are consumed by the text input element creator
     const [
       keyboardFieldsAdditionalKeysInputErrorText,
       keyboardFieldsAdditionalKeysInputValidText,
@@ -317,7 +317,7 @@ function CreateKeyboards({
   ][] = Array.from(keyboardFieldsAdditional).map((keyFieldValue) => {
     const [mapKey, [_field, value]] = keyFieldValue;
 
-    // screenreader accessible error/valid text elements that are consumed by the text input element creator
+    // screenreader error/valid text elements that are consumed by the text input element creator
     const [
       keyboardFieldsAdditionalValuesInputErrorText,
       keyboardFieldsAdditionalValuesInputValidText,

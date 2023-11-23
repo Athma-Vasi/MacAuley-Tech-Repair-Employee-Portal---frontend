@@ -179,9 +179,9 @@ function CreateMouse({
   //   STEPPER STATE UPDATE
   // ╚═════════════════════════════════════════════════════════════════╝
   useEffect(() => {
-    // select inputs are not included as they always have a default value
     // required inputs with empty string count as error
     // optional inputs with empty string count as valid
+    // select inputs are not included as they always have a default value
 
     const areMouseInputsHardcodedInError =
       !isMouseButtonsValid || !isMouseColorValid || !isMouseDpiValid;
@@ -240,7 +240,7 @@ function CreateMouse({
   //    MOUSE DPI
   // ╰─────────────────────────────────────────────────────────────────╯
 
-  // screenreader accessible error/valid text elements
+  // screenreader error/valid text elements
   const [mouseDpiInputErrorText, mouseDpiInputValidText] =
     AccessibleErrorValidTextElements({
       inputElementKind: 'mouse dpi',
@@ -253,7 +253,7 @@ function CreateMouse({
       }),
     });
 
-  // text input element creator
+  // accessible text input element creator
   const [createdMouseDpiTextInput] = returnAccessibleTextInputElements([
     {
       description: {
@@ -291,7 +291,7 @@ function CreateMouse({
   //    MOUSE BUTTONS
   // ╰─────────────────────────────────────────────────────────────────╯
 
-  // screenreader accessible error/valid text elements
+  // screenreader error/valid text elements
   const [mouseButtonsInputErrorText, mouseButtonsInputValidText] =
     AccessibleErrorValidTextElements({
       inputElementKind: 'mouse buttons quantity',
@@ -304,7 +304,7 @@ function CreateMouse({
       }),
     });
 
-  // text input element creator
+  // accessible text input element creator
   const [createdMouseButtonsTextInput] = returnAccessibleTextInputElements([
     {
       description: {
@@ -342,7 +342,7 @@ function CreateMouse({
   //    MOUSE COLOR
   // ╰─────────────────────────────────────────────────────────────────╯
 
-  // screenreader accessible error/valid text elements
+  // screenreader error/valid text elements
   const [mouseColorInputErrorText, mouseColorInputValidText] =
     AccessibleErrorValidTextElements({
       inputElementKind: 'mouse color',
@@ -357,7 +357,7 @@ function CreateMouse({
       }),
     });
 
-  // text input element creator
+  // accessible text input element creator
   const [createdMouseColorTextInput] = returnAccessibleTextInputElements([
     {
       description: {
@@ -466,7 +466,7 @@ function CreateMouse({
   ][] = Array.from(mouseFieldsAdditional).map((keyFieldValue) => {
     const [mapKey, [field, _value]] = keyFieldValue;
 
-    // screenreader accessible error/valid text elements that are consumed by the text input element creator
+    // screenreader error/valid text elements that are consumed by the text input element creator
     const [
       mouseFieldsAdditionalKeysInputErrorText,
       mouseFieldsAdditionalKeysInputValidText,
@@ -501,7 +501,7 @@ function CreateMouse({
   ][] = Array.from(mouseFieldsAdditional).map((keyFieldValue) => {
     const [mapKey, [_field, value]] = keyFieldValue;
 
-    // screenreader accessible error/valid text elements that are consumed by the text input element creator
+    // screenreader error/valid text elements that are consumed by the text input element creator
     const [
       mouseFieldsAdditionalValuesInputErrorText,
       mouseFieldsAdditionalValuesInputValidText,

@@ -269,9 +269,9 @@ function CreateCpu({
   //   STEPPER STATE UPDATE
   // ╚═════════════════════════════════════════════════════════════════╝
   useEffect(() => {
-    // select inputs are not included as they always have a default value
     // required inputs with empty string count as error
     // optional inputs with empty string count as valid
+    // select inputs are not included as they always have a default value
 
     const areCpuFieldsAdditionalInError = Array.from(
       areCpuFieldsAdditionalValid
@@ -331,7 +331,7 @@ function CreateCpu({
       }),
     });
 
-  // text input element creator
+  // accessible text input element creator
   const [createdCpuSocketTextInput] = returnAccessibleTextInputElements([
     {
       description: {
@@ -384,7 +384,7 @@ function CreateCpu({
       }),
     });
 
-  // text input element creator
+  // accessible text input element creator
   const [createdCpuFrequencyTextInput] = returnAccessibleTextInputElements([
     {
       description: {
@@ -435,7 +435,7 @@ function CreateCpu({
       }),
     });
 
-  // text input element creator
+  // accessible text input element creator
   const [createdCpuCoresTextInput] = returnAccessibleTextInputElements([
     {
       description: {
@@ -486,7 +486,7 @@ function CreateCpu({
       }),
     });
 
-  // text input element creator
+  // accessible text input element creator
   const [createdCpuL1CacheCapacityTextInput] =
     returnAccessibleTextInputElements([
       {
@@ -558,7 +558,7 @@ function CreateCpu({
       }),
     });
 
-  // text input element creator
+  // accessible text input element creator
   const [createdCpuL2CacheCapacityTextInput] =
     returnAccessibleTextInputElements([
       {
@@ -630,7 +630,7 @@ function CreateCpu({
       }),
     });
 
-  // text input element creator
+  // accessible text input element creator
   const [createdCpuL3CacheCapacityTextInput] =
     returnAccessibleTextInputElements([
       {
@@ -702,7 +702,7 @@ function CreateCpu({
       }),
     });
 
-  // text input element creator
+  // accessible text input element creator
   const [createdCpuWattageTextInput] = returnAccessibleTextInputElements([
     {
       description: {
@@ -788,7 +788,7 @@ function CreateCpu({
   ][] = Array.from(cpuFieldsAdditional).map((keyFieldValue) => {
     const [mapKey, [field, _value]] = keyFieldValue;
 
-    // screenreader accessible error/valid text elements that are consumed by the text input element creator
+    // screenreader error/valid text elements that are consumed by the text input element creator
     const [
       cpuFieldsAdditionalKeysInputErrorText,
       cpuFieldsAdditionalKeysInputValidText,
@@ -823,7 +823,7 @@ function CreateCpu({
   ][] = Array.from(cpuFieldsAdditional).map((keyFieldValue) => {
     const [mapKey, [_field, value]] = keyFieldValue;
 
-    // screenreader accessible error/valid text elements that are consumed by the text input element creator
+    // screenreader error/valid text elements that are consumed by the text input element creator
     const [
       cpuFieldsAdditionalValuesInputErrorText,
       cpuFieldsAdditionalValuesInputValidText,

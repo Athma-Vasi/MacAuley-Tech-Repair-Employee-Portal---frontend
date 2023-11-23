@@ -247,9 +247,9 @@ function CreateDisplay({
   //   STEPPER STATE UPDATE
   // ╚═════════════════════════════════════════════════════════════════╝
   useEffect(() => {
-    // select inputs are not included as they always have a default value
     // required inputs with empty string count as error
     // optional inputs with empty string count as valid
+    // select inputs are not included as they always have a default value
 
     const areDisplayInputsHardcodedInError =
       !isDisplayAspectRatioValid ||
@@ -295,7 +295,7 @@ function CreateDisplay({
   //    DISPLAY SIZE
   // ╰─────────────────────────────────────────────────────────────────╯
 
-  // screenreader accessible error/valid text elements
+  // screenreader error/valid text elements
   const [displaySizeInputErrorText, displaySizeInputValidText] =
     AccessibleErrorValidTextElements({
       inputElementKind: 'display size',
@@ -308,7 +308,7 @@ function CreateDisplay({
       }),
     });
 
-  // text input element creator
+  // accessible text input element creator
   const [createdDisplaySizeTextInput] = returnAccessibleTextInputElements([
     {
       description: {
@@ -346,7 +346,7 @@ function CreateDisplay({
   //    DISPLAY RESOLUTION HORIZONTAL
   // ╰─────────────────────────────────────────────────────────────────╯
 
-  // screenreader accessible error/valid text elements
+  // screenreader error/valid text elements
   const [
     displayResolutionHorizontalInputErrorText,
     displayResolutionHorizontalInputValidText,
@@ -361,7 +361,7 @@ function CreateDisplay({
     }),
   });
 
-  // text input element creator
+  // accessible text input element creator
   const [createdDisplayResolutionHorizontalTextInput] =
     returnAccessibleTextInputElements([
       {
@@ -400,7 +400,7 @@ function CreateDisplay({
   //    DISPLAY RESOLUTION VERTICAL
   // ╰─────────────────────────────────────────────────────────────────╯
 
-  // screenreader accessible error/valid text elements
+  // screenreader error/valid text elements
   const [
     displayResolutionVerticalInputErrorText,
     displayResolutionVerticalInputValidText,
@@ -415,7 +415,7 @@ function CreateDisplay({
     }),
   });
 
-  // text input element creator
+  // accessible text input element creator
   const [createdDisplayResolutionVerticalTextInput] =
     returnAccessibleTextInputElements([
       {
@@ -454,7 +454,7 @@ function CreateDisplay({
   //    DISPLAY REFRESH RATE
   // ╰─────────────────────────────────────────────────────────────────╯
 
-  // screenreader accessible error/valid text elements
+  // screenreader error/valid text elements
   const [displayRefreshRateInputErrorText, displayRefreshRateInputValidText] =
     AccessibleErrorValidTextElements({
       inputElementKind: 'display refresh rate',
@@ -467,7 +467,7 @@ function CreateDisplay({
       }),
     });
 
-  // text input element creator
+  // accessible text input element creator
   const [createdDisplayRefreshRateTextInput] =
     returnAccessibleTextInputElements([
       {
@@ -526,7 +526,7 @@ function CreateDisplay({
   //    DISPLAY RESPONSE TIME
   // ╰─────────────────────────────────────────────────────────────────╯
 
-  // screenreader accessible error/valid text elements
+  // screenreader error/valid text elements
   const [displayResponseTimeInputErrorText, displayResponseTimeInputValidText] =
     AccessibleErrorValidTextElements({
       inputElementKind: 'display response time',
@@ -539,7 +539,7 @@ function CreateDisplay({
       }),
     });
 
-  // text input element creator
+  // accessible text input element creator
   const [createdDisplayResponseTimeTextInput] =
     returnAccessibleTextInputElements([
       {
@@ -578,7 +578,7 @@ function CreateDisplay({
   //    DISPLAY ASPECT RATIO
   // ╰─────────────────────────────────────────────────────────────────╯
 
-  // screenreader accessible error/valid text elements
+  // screenreader error/valid text elements
   const [displayAspectRatioInputErrorText, displayAspectRatioInputValidText] =
     AccessibleErrorValidTextElements({
       inputElementKind: 'display aspect ratio',
@@ -593,7 +593,7 @@ function CreateDisplay({
       }),
     });
 
-  // text input element creator
+  // accessible text input element creator
   const [createdDisplayAspectRatioTextInput] =
     returnAccessibleTextInputElements([
       {
@@ -683,7 +683,7 @@ function CreateDisplay({
   ][] = Array.from(displayFieldsAdditional).map((keyFieldValue) => {
     const [mapKey, [field, _value]] = keyFieldValue;
 
-    // screenreader accessible error/valid text elements that are consumed by the text input element creator
+    // screenreader error/valid text elements that are consumed by the text input element creator
     const [
       displayFieldsAdditionalKeysInputErrorText,
       displayFieldsAdditionalKeysInputValidText,
@@ -718,7 +718,7 @@ function CreateDisplay({
   ][] = Array.from(displayFieldsAdditional).map((keyFieldValue) => {
     const [mapKey, [_field, value]] = keyFieldValue;
 
-    // screenreader accessible error/valid text elements that are consumed by the text input element creator
+    // screenreader error/valid text elements that are consumed by the text input element creator
     const [
       displayFieldsAdditionalValuesInputErrorText,
       displayFieldsAdditionalValuesInputValidText,

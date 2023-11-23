@@ -135,9 +135,9 @@ function CreateCase({
   //   STEPPER STATE UPDATE
   // ╚═════════════════════════════════════════════════════════════════╝
   useEffect(() => {
-    // select inputs are not included as they always have a default value
     // required inputs with empty string count as error
     // optional inputs with empty string count as valid
+    // select inputs are not included as they always have a default value
 
     const areCaseFieldsAdditionalInError = Array.from(
       areCaseFieldsAdditionalValid
@@ -189,7 +189,7 @@ function CreateCase({
   //    CASE COLOR
   // ╰─────────────────────────────────────────────────────────────────╯
 
-  // screenreader accessible error/valid text elements
+  // screenreader error/valid text elements
   const [caseColorInputErrorText, caseColorInputValidText] =
     AccessibleErrorValidTextElements({
       inputElementKind: 'case color',
@@ -204,7 +204,7 @@ function CreateCase({
       }),
     });
 
-  // text input element creator
+  // accessible text input element creator
   const [createdCaseColorTextInput] = returnAccessibleTextInputElements([
     {
       description: {
@@ -315,7 +315,7 @@ function CreateCase({
   ][] = Array.from(caseFieldsAdditional).map((keyFieldValue) => {
     const [mapKey, [field, _value]] = keyFieldValue;
 
-    // screenreader accessible error/valid text elements that are consumed by the text input element creator
+    // screenreader error/valid text elements that are consumed by the text input element creator
     const [
       caseFieldsAdditionalKeysInputErrorText,
       caseFieldsAdditionalKeysInputValidText,
@@ -350,7 +350,7 @@ function CreateCase({
   ][] = Array.from(caseFieldsAdditional).map((keyFieldValue) => {
     const [mapKey, [_field, value]] = keyFieldValue;
 
-    // screenreader accessible error/valid text elements that are consumed by the text input element creator
+    // screenreader error/valid text elements that are consumed by the text input element creator
     const [
       caseFieldsAdditionalValuesInputErrorText,
       caseFieldsAdditionalValuesInputValidText,

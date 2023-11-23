@@ -139,9 +139,9 @@ function CreatePsu({
   //   STEPPER STATE UPDATE
   // ╚═════════════════════════════════════════════════════════════════╝
   useEffect(() => {
-    // select inputs are not included as they always have a default value
     // required inputs with empty string count as error
     // optional inputs with empty string count as valid
+    // select inputs are not included as they always have a default value
 
     const arePsuInputsUserDefinedInError = Array.from(
       arePsuFieldsAdditionalValid
@@ -154,7 +154,7 @@ function CreatePsu({
       type: createProductAction.setStepsInError,
       payload: {
         kind: arePsuInputsInError ? 'add' : 'delete',
-        step: 5,
+        step: 1,
       },
     });
   }, [
@@ -175,7 +175,7 @@ function CreatePsu({
   //    PSU WATTAGE
   // ╰─────────────────────────────────────────────────────────────────╯
 
-  // screenreader accessible error/valid text elements
+  // screenreader error/valid text elements
   const [psuWattageInputErrorText, psuWattageInputValidText] =
     AccessibleErrorValidTextElements({
       inputElementKind: 'psu wattage',
@@ -188,7 +188,7 @@ function CreatePsu({
       }),
     });
 
-  // text input element creator
+  // accessible text input element creator
   const [createdPsuWattageTextInput] = returnAccessibleTextInputElements([
     {
       description: {
@@ -336,7 +336,7 @@ function CreatePsu({
   ][] = Array.from(psuFieldsAdditional).map((keyFieldValue) => {
     const [mapKey, [field, _value]] = keyFieldValue;
 
-    // screenreader accessible error/valid text elements that are consumed by the text input element creator
+    // screenreader error/valid text elements that are consumed by the text input element creator
     const [
       psuFieldsAdditionalKeysInputErrorText,
       psuFieldsAdditionalKeysInputValidText,
@@ -371,7 +371,7 @@ function CreatePsu({
   ][] = Array.from(psuFieldsAdditional).map((keyFieldValue) => {
     const [mapKey, [_field, value]] = keyFieldValue;
 
-    // screenreader accessible error/valid text elements that are consumed by the text input element creator
+    // screenreader error/valid text elements that are consumed by the text input element creator
     const [
       psuFieldsAdditionalValuesInputErrorText,
       psuFieldsAdditionalValuesInputValidText,
@@ -395,7 +395,6 @@ function CreatePsu({
     ];
   });
 
-  // page 2 -> specifications -> psu -> psu fields user defined -> text area input element creator
   const createdPsuFieldsAdditionalTextInputElements = Array.from(
     psuFieldsAdditional
   ).map((keyFieldValue) => {

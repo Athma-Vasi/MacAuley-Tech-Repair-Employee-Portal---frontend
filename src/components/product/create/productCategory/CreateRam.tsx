@@ -249,9 +249,9 @@ function CreateRam({
   //   STEPPER STATE UPDATE
   // ╚═════════════════════════════════════════════════════════════════╝
   useEffect(() => {
-    // select inputs are not included as they always have a default value
     // required inputs with empty string count as error
     // optional inputs with empty string count as valid
+    // select inputs are not included as they always have a default value
 
     const areRamInputsHardcodedInError =
       !isRamDataRateValid ||
@@ -310,7 +310,7 @@ function CreateRam({
       }),
     });
 
-  // text input element creator
+  // accessible text input element creator
   const [createdRamDataRateTextInput] = returnAccessibleTextInputElements([
     {
       description: {
@@ -361,7 +361,7 @@ function CreateRam({
       }),
     });
 
-  // text input element creator
+  // accessible text input element creator
   const [createdRamModulesQuantityTextInput] =
     returnAccessibleTextInputElements([
       {
@@ -413,7 +413,7 @@ function CreateRam({
       }),
     });
 
-  // text input element creator
+  // accessible text input element creator
   const [createdRamModulesCapacityTextInput] =
     returnAccessibleTextInputElements([
       {
@@ -506,7 +506,7 @@ function CreateRam({
       }),
     });
 
-  // text input element creator
+  // accessible text input element creator
   const [createdRamColorTextInput] = returnAccessibleTextInputElements([
     {
       description: {
@@ -559,7 +559,7 @@ function CreateRam({
       }),
     });
 
-  // text input element creator
+  // accessible text input element creator
   const [createdRamVoltageTextInput] = returnAccessibleTextInputElements([
     {
       description: {
@@ -612,7 +612,7 @@ function CreateRam({
       }),
     });
 
-  // text input element creator
+  // accessible text input element creator
   const [createdRamTimingTextInput] = returnAccessibleTextInputElements([
     {
       description: {
@@ -700,7 +700,7 @@ function CreateRam({
   ][] = Array.from(ramFieldsAdditional).map((keyFieldValue) => {
     const [mapKey, [field, _value]] = keyFieldValue;
 
-    // screenreader accessible error/valid text elements that are consumed by the text input element creator
+    // screenreader error/valid text elements that are consumed by the text input element creator
     const [
       ramFieldsAdditionalKeysInputErrorText,
       ramFieldsAdditionalKeysInputValidText,
@@ -735,7 +735,7 @@ function CreateRam({
   ][] = Array.from(ramFieldsAdditional).map((keyFieldValue) => {
     const [mapKey, [_field, value]] = keyFieldValue;
 
-    // screenreader accessible error/valid text elements that are consumed by the text input element creator
+    // screenreader error/valid text elements that are consumed by the text input element creator
     const [
       ramFieldsAdditionalValuesInputErrorText,
       ramFieldsAdditionalValuesInputValidText,

@@ -161,9 +161,9 @@ function CreateMicrophone({
   //   STEPPER STATE UPDATE
   // ╚═════════════════════════════════════════════════════════════════╝
   useEffect(() => {
-    // select inputs are not included as they always have a default value
     // required inputs with empty string count as error
     // optional inputs with empty string count as valid
+    // select inputs are not included as they always have a default value
 
     const areMicrophoneInputsHardcodedInError =
       !isMicrophoneColorValid || !isMicrophoneFrequencyResponseValid;
@@ -224,7 +224,7 @@ function CreateMicrophone({
   //    MICROPHONE COLOR
   // ╰─────────────────────────────────────────────────────────────────╯
 
-  // screenreader accessible error/valid text elements
+  // screenreader error/valid text elements
   const [microphoneColorInputErrorText, microphoneColorInputValidText] =
     AccessibleErrorValidTextElements({
       inputElementKind: 'microphone color',
@@ -237,7 +237,7 @@ function CreateMicrophone({
       }),
     });
 
-  // text input element creator
+  // accessible text input element creator
   const [createdMicrophoneColorTextInput] = returnAccessibleTextInputElements([
     {
       description: {
@@ -315,7 +315,7 @@ function CreateMicrophone({
   //    MICROPHONE FREQUENCY RESPONSE
   // ╰─────────────────────────────────────────────────────────────────╯
 
-  // screenreader accessible error/valid text elements
+  // screenreader error/valid text elements
   const [
     microphoneFrequencyResponseInputErrorText,
     microphoneFrequencyResponseInputValidText,
@@ -330,7 +330,7 @@ function CreateMicrophone({
     }),
   });
 
-  // text input element creator
+  // accessible text input element creator
   const [createdMicrophoneFrequencyResponseTextInput] =
     returnAccessibleTextInputElements([
       {
@@ -418,7 +418,7 @@ function CreateMicrophone({
   ][] = Array.from(microphoneFieldsAdditional).map((keyFieldValue) => {
     const [mapKey, [field, _value]] = keyFieldValue;
 
-    // screenreader accessible error/valid text elements that are consumed by the text input element creator
+    // screenreader error/valid text elements that are consumed by the text input element creator
     const [
       microphoneFieldsAdditionalKeysInputErrorText,
       microphoneFieldsAdditionalKeysInputValidText,
@@ -454,7 +454,7 @@ function CreateMicrophone({
   ][] = Array.from(microphoneFieldsAdditional).map((keyFieldValue) => {
     const [mapKey, [_field, value]] = keyFieldValue;
 
-    // screenreader accessible error/valid text elements that are consumed by the text input element creator
+    // screenreader error/valid text elements that are consumed by the text input element creator
     const [
       microphoneFieldsAdditionalValuesInputErrorText,
       microphoneFieldsAdditionalValuesInputValidText,

@@ -694,9 +694,9 @@ function CreateAccessory() {
 
   // update stepper wrapper state on every page 2 input validation change
   useEffect(() => {
-    // select inputs are not included as they always have a default value
     // required inputs with empty string count as error
     // optional inputs with empty string count as valid
+    // select inputs are not included as they always have a default value
 
     const arePage2HardcodedInputsInError =
       !isAccessoryTypeValid || !isAccessoryColorValid;
