@@ -377,7 +377,7 @@ function CreateMicrophone({
     returnAccessibleButtonElements([
       {
         buttonLabel: 'Add',
-        semanticDescription: 'Add new additional field',
+        semanticDescription: 'Add new additional Headphone field',
         semanticName: 'Add new field',
         leftIcon: <TbPlus />,
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
@@ -654,13 +654,13 @@ function CreateMicrophone({
           });
         },
         leftIcon: <TbTrash />,
-        semanticDescription: `Delete additional field ${mapKey + 1}`,
+        semanticDescription: `Delete additional Microphone field ${mapKey + 1}`,
         semanticName: 'Delete field and value',
       },
     ]);
 
     const displayDeleteButton = (
-      <Tooltip label={`Delete additional field ${mapKey + 1}`}>
+      <Tooltip label={`Delete additional Microphone field ${mapKey + 1}`}>
         <Group>{createdDeleteButton}</Group>
       </Tooltip>
     );
@@ -693,7 +693,7 @@ function CreateMicrophone({
 
   const displayMicrophoneFieldsAdditionalMapButton = (
     <Tooltip
-      label={`Add new additional field ${
+      label={`Add additional Microphone field ${
         microphoneFieldsAdditionalMap.size + 1
       }`}
     >

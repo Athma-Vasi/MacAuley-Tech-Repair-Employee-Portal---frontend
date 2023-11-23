@@ -318,7 +318,7 @@ function CreateWebcam({
     returnAccessibleButtonElements([
       {
         buttonLabel: 'Add',
-        semanticDescription: 'Add new additional field',
+        semanticDescription: 'Add new additional Webcam field',
         semanticName: 'Add new field',
         leftIcon: <TbPlus />,
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
@@ -589,13 +589,13 @@ function CreateWebcam({
           });
         },
         leftIcon: <TbTrash />,
-        semanticDescription: `Delete additional field ${mapKey + 1}`,
+        semanticDescription: `Delete additional Webcam field ${mapKey + 1}`,
         semanticName: 'Delete field and value',
       },
     ]);
 
     const displayDeleteButton = (
-      <Tooltip label={`Delete additional field ${mapKey + 1}`}>
+      <Tooltip label={`Delete additional Webcam field ${mapKey + 1}`}>
         <Group>{createdDeleteButton}</Group>
       </Tooltip>
     );
@@ -624,7 +624,9 @@ function CreateWebcam({
 
   const displayWebcamFieldsAdditionalMapButton = (
     <Tooltip
-      label={`Add new additional field ${webcamFieldsAdditionalMap.size + 1}`}
+      label={`Add additional Webcam field ${
+        webcamFieldsAdditionalMap.size + 1
+      }`}
     >
       <Group>{createdAddWebcamFieldsAdditionalMapButton}</Group>
     </Tooltip>

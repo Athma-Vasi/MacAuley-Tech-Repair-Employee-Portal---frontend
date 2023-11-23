@@ -239,7 +239,7 @@ function CreateKeyboard({
     returnAccessibleButtonElements([
       {
         buttonLabel: 'Add',
-        semanticDescription: 'Add new additional field',
+        semanticDescription: 'Add new additional Keyboard field',
         semanticName: 'Add new field',
         leftIcon: <TbPlus />,
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
@@ -512,13 +512,13 @@ function CreateKeyboard({
           });
         },
         leftIcon: <TbTrash />,
-        semanticDescription: `Delete additional field ${mapKey + 1}`,
+        semanticDescription: `Delete additional Keyboard field ${mapKey + 1}`,
         semanticName: 'Delete field and value',
       },
     ]);
 
     const displayDeleteButton = (
-      <Tooltip label={`Delete additional field ${mapKey + 1}`}>
+      <Tooltip label={`Delete additional Keyboard field ${mapKey + 1}`}>
         <Group>{createdDeleteButton}</Group>
       </Tooltip>
     );
@@ -551,7 +551,9 @@ function CreateKeyboard({
 
   const displayKeyboardFieldsAdditionalMapButton = (
     <Tooltip
-      label={`Add new additional field ${keyboardFieldsAdditionalMap.size + 1}`}
+      label={`Add additional Keyboard field ${
+        keyboardFieldsAdditionalMap.size + 1
+      }`}
     >
       <Group>{createdAddKeyboardFieldsAdditionalMapButton}</Group>
     </Tooltip>

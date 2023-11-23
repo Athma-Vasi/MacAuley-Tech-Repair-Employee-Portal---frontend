@@ -334,7 +334,7 @@ function CreateAccessory({
     returnAccessibleButtonElements([
       {
         buttonLabel: 'Add',
-        semanticDescription: 'Add new additional field',
+        semanticDescription: 'Add new additional Accessory field',
         semanticName: 'Add new field',
         leftIcon: <TbPlus />,
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
@@ -607,13 +607,13 @@ function CreateAccessory({
           });
         },
         leftIcon: <TbTrash />,
-        semanticDescription: `Delete additional field ${mapKey + 1}`,
+        semanticDescription: `Delete additional Accessory field ${mapKey + 1}`,
         semanticName: 'Delete field and value',
       },
     ]);
 
     const displayDeleteButton = (
-      <Tooltip label={`Delete additional field ${mapKey + 1}`}>
+      <Tooltip label={`Delete additional Accessory field ${mapKey + 1}`}>
         <Group>{createdDeleteButton}</Group>
       </Tooltip>
     );
@@ -646,7 +646,7 @@ function CreateAccessory({
 
   const displayAccessoryFieldsAdditionalMapButton = (
     <Tooltip
-      label={`Add new additional field ${
+      label={`Add additional Accessory field ${
         accessoryFieldsAdditionalMap.size + 1
       }`}
     >

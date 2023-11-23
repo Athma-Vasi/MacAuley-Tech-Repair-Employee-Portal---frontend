@@ -902,7 +902,7 @@ function CreateTablet({
     returnAccessibleButtonElements([
       {
         buttonLabel: 'Add',
-        semanticDescription: 'Add new additional field',
+        semanticDescription: 'Add new additional Tablet field',
         semanticName: 'Add new field',
         leftIcon: <TbPlus />,
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
@@ -1173,13 +1173,13 @@ function CreateTablet({
           });
         },
         leftIcon: <TbTrash />,
-        semanticDescription: `Delete additional field ${mapKey + 1}`,
+        semanticDescription: `Delete additional Tablet field ${mapKey + 1}`,
         semanticName: 'Delete field and value',
       },
     ]);
 
     const displayDeleteButton = (
-      <Tooltip label={`Delete additional field ${mapKey + 1}`}>
+      <Tooltip label={`Delete additional Tablet field ${mapKey + 1}`}>
         <Group>{createdDeleteButton}</Group>
       </Tooltip>
     );
@@ -1208,7 +1208,9 @@ function CreateTablet({
 
   const displayTabletFieldsAdditionalMapButton = (
     <Tooltip
-      label={`Add new additional field ${tabletFieldsAdditionalMap.size + 1}`}
+      label={`Add additional Tablet field ${
+        tabletFieldsAdditionalMap.size + 1
+      }`}
     >
       <Group>{createdAddTabletFieldsAdditionalMapButton}</Group>
     </Tooltip>

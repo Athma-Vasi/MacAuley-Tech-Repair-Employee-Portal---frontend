@@ -272,7 +272,7 @@ function CreateCase({
     returnAccessibleButtonElements([
       {
         buttonLabel: 'Add',
-        semanticDescription: 'Add new additional field',
+        semanticDescription: 'Add new additional Case field',
         semanticName: 'Add new field',
         leftIcon: <TbPlus />,
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
@@ -541,13 +541,13 @@ function CreateCase({
           });
         },
         leftIcon: <TbTrash />,
-        semanticDescription: `Delete additional field ${mapKey + 1}`,
+        semanticDescription: `Delete additional Case field ${mapKey + 1}`,
         semanticName: 'Delete field and value',
       },
     ]);
 
     const displayDeleteButton = (
-      <Tooltip label={`Delete additional field ${mapKey + 1}`}>
+      <Tooltip label={`Delete additional Case field ${mapKey + 1}`}>
         <Group>{createdDeleteButton}</Group>
       </Tooltip>
     );
@@ -576,7 +576,7 @@ function CreateCase({
 
   const displayCaseFieldsAdditionalMapButton = (
     <Tooltip
-      label={`Add new additional field ${caseFieldsAdditionalMap.size + 1}`}
+      label={`Add additional Case field ${caseFieldsAdditionalMap.size + 1}`}
     >
       <Group>{createdAddCaseFieldsAdditionalMapButton}</Group>
     </Tooltip>

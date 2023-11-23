@@ -295,7 +295,7 @@ function CreatePsu({
     returnAccessibleButtonElements([
       {
         buttonLabel: 'Add',
-        semanticDescription: 'Add new additional field',
+        semanticDescription: 'Add new additional PSU field',
         semanticName: 'Add new field',
         leftIcon: <TbPlus />,
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
@@ -564,13 +564,13 @@ function CreatePsu({
           });
         },
         leftIcon: <TbTrash />,
-        semanticDescription: `Delete additional field ${mapKey + 1}`,
+        semanticDescription: `Delete additional PSU field ${mapKey + 1}`,
         semanticName: 'Delete field and value',
       },
     ]);
 
     const displayDeleteButton = (
-      <Tooltip label={`Delete additional field ${mapKey + 1}`}>
+      <Tooltip label={`Delete additional PSU field ${mapKey + 1}`}>
         <Group>{createdDeleteButton}</Group>
       </Tooltip>
     );
@@ -578,7 +578,7 @@ function CreatePsu({
     return (
       <Stack key={`psuFieldsAdditionalMap-${mapKey}`} pt={padding} w="100%">
         <Group position="apart">
-          <Text size="md" weight={600}>{`Additional Psu field ${
+          <Text size="md" weight={600}>{`Additional PSU field ${
             mapKey + 1
           }`}</Text>
           {displayDeleteButton}
@@ -599,7 +599,7 @@ function CreatePsu({
 
   const displayPsuFieldsAdditionalMapButton = (
     <Tooltip
-      label={`Add new additional field ${psuFieldsAdditionalMap.size + 1}`}
+      label={`Add additional PSU field ${psuFieldsAdditionalMap.size + 1}`}
     >
       <Group>{createdAddPsuFieldsAdditionalMapButton}</Group>
     </Tooltip>

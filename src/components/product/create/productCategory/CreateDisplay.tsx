@@ -640,7 +640,7 @@ function CreateDisplay({
     returnAccessibleButtonElements([
       {
         buttonLabel: 'Add',
-        semanticDescription: 'Add new additional field',
+        semanticDescription: 'Add new additional Display field',
         semanticName: 'Add new field',
         leftIcon: <TbPlus />,
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
@@ -912,13 +912,13 @@ function CreateDisplay({
           });
         },
         leftIcon: <TbTrash />,
-        semanticDescription: `Delete additional field ${mapKey + 1}`,
+        semanticDescription: `Delete additional Display field ${mapKey + 1}`,
         semanticName: 'Delete field and value',
       },
     ]);
 
     const displayDeleteButton = (
-      <Tooltip label={`Delete additional field ${mapKey + 1}`}>
+      <Tooltip label={`Delete additional Display field ${mapKey + 1}`}>
         <Group>{createdDeleteButton}</Group>
       </Tooltip>
     );
@@ -947,7 +947,9 @@ function CreateDisplay({
 
   const displayDisplayFieldsAdditionalMapButton = (
     <Tooltip
-      label={`Add new additional field ${displayFieldsAdditionalMap.size + 1}`}
+      label={`Add additional Display field ${
+        displayFieldsAdditionalMap.size + 1
+      }`}
     >
       <Group>{createdAddDisplayFieldsAdditionalMapButton}</Group>
     </Tooltip>

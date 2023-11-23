@@ -436,7 +436,7 @@ function CreateSpeaker({
     returnAccessibleButtonElements([
       {
         buttonLabel: 'Add',
-        semanticDescription: 'Add new additional field',
+        semanticDescription: 'Add new additional Speaker field',
         semanticName: 'Add new field',
         leftIcon: <TbPlus />,
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
@@ -709,13 +709,13 @@ function CreateSpeaker({
           });
         },
         leftIcon: <TbTrash />,
-        semanticDescription: `Delete additional field ${mapKey + 1}`,
+        semanticDescription: `Delete additional Speaker field ${mapKey + 1}`,
         semanticName: 'Delete field and value',
       },
     ]);
 
     const displayDeleteButton = (
-      <Tooltip label={`Delete additional field ${mapKey + 1}`}>
+      <Tooltip label={`Delete additional Speaker field ${mapKey + 1}`}>
         <Group>{createdDeleteButton}</Group>
       </Tooltip>
     );
@@ -744,7 +744,9 @@ function CreateSpeaker({
 
   const displaySpeakerFieldsAdditionalMapButton = (
     <Tooltip
-      label={`Add new additional field ${speakerFieldsAdditionalMap.size + 1}`}
+      label={`Add additional Speaker field ${
+        speakerFieldsAdditionalMap.size + 1
+      }`}
     >
       <Group>{createdAddSpeakerFieldsAdditionalMapButton}</Group>
     </Tooltip>

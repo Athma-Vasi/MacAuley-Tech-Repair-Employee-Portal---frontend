@@ -82,6 +82,7 @@ import {
   WeightUnit,
 } from './types';
 import CreateDesktopComputer from './productCategory/CreateDesktopComputer';
+import CreateLaptop from './productCategory/CreateLaptop';
 
 function CreateProduct() {
   const [createProductState, createProductDispatch] = useReducer(
@@ -2008,6 +2009,7 @@ function CreateProduct() {
       />
     ) : productCategory === 'Desktop Computers' ? (
       <CreateDesktopComputer
+        // case
         areCaseFieldsAdditionalMapFocused={areCaseFieldsAdditionalMapFocused}
         areCaseFieldsAdditionalMapValid={areCaseFieldsAdditionalMapValid}
         caseColor={caseColor}
@@ -2016,6 +2018,7 @@ function CreateProduct() {
         caseType={caseType}
         isCaseColorFocused={isCaseColorFocused}
         isCaseColorValid={isCaseColorValid}
+        // cpu
         isCpuWattageValid={isCpuWattageValid}
         isCpuWattageFocused={isCpuWattageFocused}
         isCpuSocketValid={isCpuSocketValid}
@@ -2046,6 +2049,7 @@ function CreateProduct() {
         areDisplayFieldsAdditionalMapFocused={
           areDisplayFieldsAdditionalMapFocused
         }
+        // display
         areDisplayFieldsAdditionalMapValid={areDisplayFieldsAdditionalMapValid}
         displayAspectRatio={displayAspectRatio}
         displayFieldsAdditionalMap={displayFieldsAdditionalMap}
@@ -2069,6 +2073,7 @@ function CreateProduct() {
         isDisplayResponseTimeValid={isDisplayResponseTimeValid}
         isDisplaySizeFocused={isDisplaySizeFocused}
         isDisplaySizeValid={isDisplaySizeValid}
+        // gpu
         areGpuFieldsAdditionalMapFocused={areGpuFieldsAdditionalMapFocused}
         areGpuFieldsAdditionalMapValid={areGpuFieldsAdditionalMapValid}
         gpuBoostClock={gpuBoostClock}
@@ -2088,6 +2093,7 @@ function CreateProduct() {
         isGpuMemoryCapacityValid={isGpuMemoryCapacityValid}
         isGpuTdpFocused={isGpuTdpFocused}
         isGpuTdpValid={isGpuTdpValid}
+        // keyboard
         areKeyboardFieldsAdditionalMapFocused={
           areKeyboardFieldsAdditionalMapFocused
         }
@@ -2099,6 +2105,7 @@ function CreateProduct() {
         keyboardInterface={keyboardInterface}
         keyboardLayout={keyboardLayout}
         keyboardSwitch={keyboardSwitch}
+        // motherboard
         areMotherboardFieldsAdditionalMapFocused={
           areMotherboardFieldsAdditionalMapFocused
         }
@@ -2140,6 +2147,7 @@ function CreateProduct() {
         motherboardPcie5Slots={motherboardPcie5Slots}
         motherboardSataPorts={motherboardSataPorts}
         motherboardSocket={motherboardSocket}
+        // mouse
         areMouseFieldsAdditionalMapFocused={areMouseFieldsAdditionalMapFocused}
         areMouseFieldsAdditionalMapValid={areMouseFieldsAdditionalMapValid}
         isMouseButtonsFocused={isMouseButtonsFocused}
@@ -2154,6 +2162,7 @@ function CreateProduct() {
         mouseFieldsAdditionalMap={mouseFieldsAdditionalMap}
         mouseInterface={mouseInterface}
         mouseSensor={mouseSensor}
+        // psu
         arePsuFieldsAdditionalMapFocused={arePsuFieldsAdditionalMapFocused}
         arePsuFieldsAdditionalMapValid={arePsuFieldsAdditionalMapValid}
         isPsuWattageFocused={isPsuWattageFocused}
@@ -2163,6 +2172,7 @@ function CreateProduct() {
         psuFormFactor={psuFormFactor}
         psuModularity={psuModularity}
         psuWattage={psuWattage}
+        // ram
         areRamFieldsAdditionalMapFocused={areRamFieldsAdditionalMapFocused}
         areRamFieldsAdditionalMapValid={areRamFieldsAdditionalMapValid}
         isRamColorFocused={isRamColorFocused}
@@ -2186,6 +2196,7 @@ function CreateProduct() {
         ramTiming={ramTiming}
         ramType={ramType}
         ramVoltage={ramVoltage}
+        // speaker
         areSpeakerFieldsAdditionalMapFocused={
           areSpeakerFieldsAdditionalMapFocused
         }
@@ -2202,6 +2213,7 @@ function CreateProduct() {
         speakerInterface={speakerInterface}
         speakerTotalWattage={speakerTotalWattage}
         speakerType={speakerType}
+        // storage
         areStorageFieldsAdditionalMapFocused={
           areStorageFieldsAdditionalMapFocused
         }
@@ -2218,6 +2230,7 @@ function CreateProduct() {
         storageFormFactor={storageFormFactor}
         storageInterface={storageInterface}
         storageType={storageType}
+        // misc.
         borderColor={borderColor}
         createProductAction={createProductAction}
         createProductDispatch={createProductDispatch}
@@ -2346,7 +2359,132 @@ function CreateProduct() {
         padding={padding}
       />
     ) : productCategory === 'Laptops' ? (
-      <Text>Laptops</Text>
+      <CreateLaptop
+        // cpu
+        isCpuWattageValid={isCpuWattageValid}
+        isCpuWattageFocused={isCpuWattageFocused}
+        isCpuSocketValid={isCpuSocketValid}
+        isCpuSocketFocused={isCpuSocketFocused}
+        isCpuL3CacheCapacityValid={isCpuL3CacheCapacityValid}
+        isCpuL3CacheCapacityFocused={isCpuL3CacheCapacityFocused}
+        isCpuL2CacheCapacityValid={isCpuL2CacheCapacityValid}
+        isCpuL2CacheCapacityFocused={isCpuL2CacheCapacityFocused}
+        isCpuL1CacheCapacityValid={isCpuL1CacheCapacityValid}
+        isCpuL1CacheCapacityFocused={isCpuL1CacheCapacityFocused}
+        isCpuFrequencyValid={isCpuFrequencyValid}
+        isCpuFrequencyFocused={isCpuFrequencyFocused}
+        isCpuCoresValid={isCpuCoresValid}
+        isCpuCoresFocused={isCpuCoresFocused}
+        cpuWattage={cpuWattage}
+        cpuSocket={cpuSocket}
+        cpuL3CacheCapacityUnit={cpuL3CacheCapacityUnit}
+        cpuL3CacheCapacity={cpuL3CacheCapacity}
+        cpuL2CacheCapacityUnit={cpuL2CacheCapacityUnit}
+        cpuL2CacheCapacity={cpuL2CacheCapacity}
+        cpuL1CacheCapacityUnit={cpuL1CacheCapacityUnit}
+        cpuL1CacheCapacity={cpuL1CacheCapacity}
+        cpuFrequency={cpuFrequency}
+        cpuFieldsAdditionalMap={cpuFieldsAdditionalMap}
+        cpuCores={cpuCores}
+        areCpuFieldsAdditionalMapValid={areCpuFieldsAdditionalMapValid}
+        areCpuFieldsAdditionalMapFocused={areCpuFieldsAdditionalMapFocused}
+        areDisplayFieldsAdditionalMapFocused={
+          areDisplayFieldsAdditionalMapFocused
+        }
+        // display
+        areDisplayFieldsAdditionalMapValid={areDisplayFieldsAdditionalMapValid}
+        displayAspectRatio={displayAspectRatio}
+        displayFieldsAdditionalMap={displayFieldsAdditionalMap}
+        displayPanelType={displayPanelType}
+        displayRefreshRate={displayRefreshRate}
+        displayResolutionHorizontal={displayResolutionHorizontal}
+        displayResolutionVertical={displayResolutionVertical}
+        displayResponseTime={displayResponseTime}
+        displaySize={displaySize}
+        isDisplayAspectRatioFocused={isDisplayAspectRatioFocused}
+        isDisplayAspectRatioValid={isDisplayAspectRatioValid}
+        isDisplayRefreshRateFocused={isDisplayRefreshRateFocused}
+        isDisplayRefreshRateValid={isDisplayRefreshRateValid}
+        isDisplayResolutionHorizontalFocused={
+          isDisplayResolutionHorizontalFocused
+        }
+        isDisplayResolutionHorizontalValid={isDisplayResolutionHorizontalValid}
+        isDisplayResolutionVerticalFocused={isDisplayResolutionVerticalFocused}
+        isDisplayResolutionVerticalValid={isDisplayResolutionVerticalValid}
+        isDisplayResponseTimeFocused={isDisplayResponseTimeFocused}
+        isDisplayResponseTimeValid={isDisplayResponseTimeValid}
+        isDisplaySizeFocused={isDisplaySizeFocused}
+        isDisplaySizeValid={isDisplaySizeValid}
+        // gpu
+        areGpuFieldsAdditionalMapFocused={areGpuFieldsAdditionalMapFocused}
+        areGpuFieldsAdditionalMapValid={areGpuFieldsAdditionalMapValid}
+        gpuBoostClock={gpuBoostClock}
+        gpuChipset={gpuChipset}
+        gpuCoreClock={gpuCoreClock}
+        gpuFieldsAdditionalMap={gpuFieldsAdditionalMap}
+        gpuMemoryCapacity={gpuMemoryCapacity}
+        gpuMemoryCapacityUnit={gpuMemoryCapacityUnit}
+        gpuTdp={gpuTdp}
+        isGpuBoostClockFocused={isGpuBoostClockFocused}
+        isGpuBoostClockValid={isGpuBoostClockValid}
+        isGpuChipsetFocused={isGpuChipsetFocused}
+        isGpuChipsetValid={isGpuChipsetValid}
+        isGpuCoreClockFocused={isGpuCoreClockFocused}
+        isGpuCoreClockValid={isGpuCoreClockValid}
+        isGpuMemoryCapacityFocused={isGpuMemoryCapacityFocused}
+        isGpuMemoryCapacityValid={isGpuMemoryCapacityValid}
+        isGpuTdpFocused={isGpuTdpFocused}
+        isGpuTdpValid={isGpuTdpValid}
+        // ram
+        areRamFieldsAdditionalMapFocused={areRamFieldsAdditionalMapFocused}
+        areRamFieldsAdditionalMapValid={areRamFieldsAdditionalMapValid}
+        isRamColorFocused={isRamColorFocused}
+        isRamColorValid={isRamColorValid}
+        isRamDataRateFocused={isRamDataRateFocused}
+        isRamDataRateValid={isRamDataRateValid}
+        isRamModulesCapacityFocused={isRamModulesCapacityFocused}
+        isRamModulesCapacityValid={isRamModulesCapacityValid}
+        isRamModulesQuantityFocused={isRamModulesQuantityFocused}
+        isRamModulesQuantityValid={isRamModulesQuantityValid}
+        isRamTimingFocused={isRamTimingFocused}
+        isRamTimingValid={isRamTimingValid}
+        isRamVoltageFocused={isRamVoltageFocused}
+        isRamVoltageValid={isRamVoltageValid}
+        ramColor={ramColor}
+        ramDataRate={ramDataRate}
+        ramFieldsAdditionalMap={ramFieldsAdditionalMap}
+        ramModulesCapacity={ramModulesCapacity}
+        ramModulesCapacityUnit={ramModulesCapacityUnit}
+        ramModulesQuantity={ramModulesQuantity}
+        ramTiming={ramTiming}
+        ramType={ramType}
+        ramVoltage={ramVoltage}
+        // storage
+        areStorageFieldsAdditionalMapFocused={
+          areStorageFieldsAdditionalMapFocused
+        }
+        areStorageFieldsAdditionalMapValid={areStorageFieldsAdditionalMapValid}
+        isStorageCacheCapacityFocused={isStorageCacheCapacityFocused}
+        isStorageCacheCapacityValid={isStorageCacheCapacityValid}
+        isStorageCapacityFocused={isStorageCapacityFocused}
+        isStorageCapacityValid={isStorageCapacityValid}
+        storageCacheCapacity={storageCacheCapacity}
+        storageCacheCapacityUnit={storageCacheCapacityUnit}
+        storageCapacity={storageCapacity}
+        storageCapacityUnit={storageCapacityUnit}
+        storageFieldsAdditionalMap={storageFieldsAdditionalMap}
+        storageFormFactor={storageFormFactor}
+        storageInterface={storageInterface}
+        storageType={storageType}
+        // misc.
+        borderColor={borderColor}
+        createProductAction={createProductAction}
+        createProductDispatch={createProductDispatch}
+        currentlySelectedAdditionalFieldIndex={
+          currentlySelectedAdditionalFieldIndex
+        }
+        padding={padding}
+      />
     ) : productCategory === 'Memory (RAM)' ? (
       <CreateRam
         areRamFieldsAdditionalMapFocused={areRamFieldsAdditionalMapFocused}

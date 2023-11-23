@@ -515,7 +515,7 @@ function CreateHeadphone({
     returnAccessibleButtonElements([
       {
         buttonLabel: 'Add',
-        semanticDescription: 'Add new additional field',
+        semanticDescription: 'Add new additional Headphone field',
         semanticName: 'Add new field',
         leftIcon: <TbPlus />,
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
@@ -788,13 +788,13 @@ function CreateHeadphone({
           });
         },
         leftIcon: <TbTrash />,
-        semanticDescription: `Delete additional field ${mapKey + 1}`,
+        semanticDescription: `Delete additional Headphone field ${mapKey + 1}`,
         semanticName: 'Delete field and value',
       },
     ]);
 
     const displayDeleteButton = (
-      <Tooltip label={`Delete additional field ${mapKey + 1}`}>
+      <Tooltip label={`Delete additional Headphone field ${mapKey + 1}`}>
         <Group>{createdDeleteButton}</Group>
       </Tooltip>
     );
@@ -827,7 +827,7 @@ function CreateHeadphone({
 
   const displayHeadphoneFieldsAdditionalMapButton = (
     <Tooltip
-      label={`Add new additional field ${
+      label={`Add additional Headphone field ${
         headphoneFieldsAdditionalMap.size + 1
       }`}
     >

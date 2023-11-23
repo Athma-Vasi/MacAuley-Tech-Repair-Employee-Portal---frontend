@@ -928,7 +928,7 @@ function CreateMotherboard({
     returnAccessibleButtonElements([
       {
         buttonLabel: 'Add',
-        semanticDescription: 'Add new additional field',
+        semanticDescription: 'Add new additional Motherboard field',
         semanticName: 'Add new field',
         leftIcon: <TbPlus />,
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
@@ -1204,13 +1204,15 @@ function CreateMotherboard({
           });
         },
         leftIcon: <TbTrash />,
-        semanticDescription: `Delete additional field ${mapKey + 1}`,
+        semanticDescription: `Delete additional Motherboard field ${
+          mapKey + 1
+        }`,
         semanticName: 'Delete field and value',
       },
     ]);
 
     const displayDeleteButton = (
-      <Tooltip label={`Delete additional field ${mapKey + 1}`}>
+      <Tooltip label={`Delete additional Motherboard field ${mapKey + 1}`}>
         <Group>{createdDeleteButton}</Group>
       </Tooltip>
     );
@@ -1243,7 +1245,7 @@ function CreateMotherboard({
 
   const displayMotherboardFieldsAdditionalMapButton = (
     <Tooltip
-      label={`Add new additional field ${
+      label={`Add additional Motherboard field ${
         motherboardFieldsAdditionalMap.size + 1
       }`}
     >

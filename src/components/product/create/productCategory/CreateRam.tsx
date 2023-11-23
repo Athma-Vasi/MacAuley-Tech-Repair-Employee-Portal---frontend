@@ -659,7 +659,7 @@ function CreateRam({
     returnAccessibleButtonElements([
       {
         buttonLabel: 'Add',
-        semanticDescription: 'Add new additional field',
+        semanticDescription: 'Add new additional RAM field',
         semanticName: 'Add new field',
         leftIcon: <TbPlus />,
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
@@ -928,13 +928,13 @@ function CreateRam({
           });
         },
         leftIcon: <TbTrash />,
-        semanticDescription: `Delete additional field ${mapKey + 1}`,
+        semanticDescription: `Delete additional RAM field ${mapKey + 1}`,
         semanticName: 'Delete field and value',
       },
     ]);
 
     const displayDeleteButton = (
-      <Tooltip label={`Delete additional field ${mapKey + 1}`}>
+      <Tooltip label={`Delete additional RAM field ${mapKey + 1}`}>
         <Group>{createdDeleteButton}</Group>
       </Tooltip>
     );
@@ -942,7 +942,7 @@ function CreateRam({
     return (
       <Stack key={`ramFieldsAdditionalMap-${mapKey}`} pt={padding} w="100%">
         <Group position="apart">
-          <Text size="md" weight={600}>{`Additional Ram field ${
+          <Text size="md" weight={600}>{`Additional RAM field ${
             mapKey + 1
           }`}</Text>
           {displayDeleteButton}
@@ -963,7 +963,7 @@ function CreateRam({
 
   const displayRamFieldsAdditionalMapButton = (
     <Tooltip
-      label={`Add new additional field ${ramFieldsAdditionalMap.size + 1}`}
+      label={`Add additional RAM field ${ramFieldsAdditionalMap.size + 1}`}
     >
       <Group>{createdAddRamFieldsAdditionalMapButton}</Group>
     </Tooltip>

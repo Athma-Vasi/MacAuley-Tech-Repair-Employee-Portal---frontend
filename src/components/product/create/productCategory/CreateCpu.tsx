@@ -747,7 +747,7 @@ function CreateCpu({
     returnAccessibleButtonElements([
       {
         buttonLabel: 'Add',
-        semanticDescription: 'Add new additional field',
+        semanticDescription: 'Add new additional CPU field',
         semanticName: 'Add new field',
         leftIcon: <TbPlus />,
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
@@ -1016,13 +1016,13 @@ function CreateCpu({
           });
         },
         leftIcon: <TbTrash />,
-        semanticDescription: `Delete additional field ${mapKey + 1}`,
+        semanticDescription: `Delete additional CPU field ${mapKey + 1}`,
         semanticName: 'Delete field and value',
       },
     ]);
 
     const displayDeleteButton = (
-      <Tooltip label={`Delete additional field ${mapKey + 1}`}>
+      <Tooltip label={`Delete additional CPU field ${mapKey + 1}`}>
         <Group>{createdDeleteButton}</Group>
       </Tooltip>
     );
@@ -1030,7 +1030,7 @@ function CreateCpu({
     return (
       <Stack key={`cpuFieldsAdditionalMap-${mapKey}`} pt={padding} w="100%">
         <Group position="apart">
-          <Text size="md" weight={600}>{`Additional Cpu field ${
+          <Text size="md" weight={600}>{`Additional CPU field ${
             mapKey + 1
           }`}</Text>
           {displayDeleteButton}
@@ -1051,7 +1051,7 @@ function CreateCpu({
 
   const displayCpuFieldsAdditionalMapButton = (
     <Tooltip
-      label={`Add new additional field ${cpuFieldsAdditionalMap.size + 1}`}
+      label={`Add additional CPU field ${cpuFieldsAdditionalMap.size + 1}`}
     >
       <Group>{createdAddCpuFieldsAdditionalMapButton}</Group>
     </Tooltip>

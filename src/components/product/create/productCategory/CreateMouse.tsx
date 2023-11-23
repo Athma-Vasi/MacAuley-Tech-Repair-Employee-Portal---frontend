@@ -424,7 +424,7 @@ function CreateMouse({
     returnAccessibleButtonElements([
       {
         buttonLabel: 'Add',
-        semanticDescription: 'Add new additional field',
+        semanticDescription: 'Add new additional Mouse field',
         semanticName: 'Add new field',
         leftIcon: <TbPlus />,
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
@@ -695,13 +695,13 @@ function CreateMouse({
           });
         },
         leftIcon: <TbTrash />,
-        semanticDescription: `Delete additional field ${mapKey + 1}`,
+        semanticDescription: `Delete additional Mouse field ${mapKey + 1}`,
         semanticName: 'Delete field and value',
       },
     ]);
 
     const displayDeleteButton = (
-      <Tooltip label={`Delete additional field ${mapKey + 1}`}>
+      <Tooltip label={`Delete additional Mouse field ${mapKey + 1}`}>
         <Group>{createdDeleteButton}</Group>
       </Tooltip>
     );
@@ -730,7 +730,7 @@ function CreateMouse({
 
   const displayMouseFieldsAdditionalMapButton = (
     <Tooltip
-      label={`Add new additional field ${mouseFieldsAdditionalMap.size + 1}`}
+      label={`Add additional Mouse field ${mouseFieldsAdditionalMap.size + 1}`}
     >
       <Group>{createdAddMouseFieldsAdditionalMapButton}</Group>
     </Tooltip>
