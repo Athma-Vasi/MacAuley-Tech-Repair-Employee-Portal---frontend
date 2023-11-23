@@ -324,7 +324,7 @@ function CreateSmartphone({
     // optional inputs with empty string count as valid
     // select inputs are not included as they always have a default value
 
-    const areSmartphoneHardcodedInputsInError =
+    const areSmartphoneHardcodedRequiredInputsInError =
       !isSmartphoneChipsetValid ||
       !isSmartphoneDisplayValid ||
       !isSmartphoneResolutionHorizontalValid ||
@@ -340,7 +340,7 @@ function CreateSmartphone({
     ).some(([_key, value]) => !value);
 
     const areSmartphoneInputsInError =
-      areSmartphoneHardcodedInputsInError ||
+      areSmartphoneHardcodedRequiredInputsInError ||
       areSmartphoneFieldsAdditionalMapInError;
 
     createProductDispatch({

@@ -18,71 +18,63 @@ import {
 } from '../../../../jsxCreators';
 import {
   returnColorVariantValidationText,
-  returnFrequencyResponseValidationText,
-  returnMediumIntegerValidationText,
   returnObjectKeyValidationText,
   returnUserDefinedFieldValueValidationText,
 } from '../../../../utils';
 import { AccessibleTextAreaInputCreatorInfo } from '../../../wrappers';
 import {
   COLOR_VARIANT_REGEX,
-  FREQUENCY_RESPONSE_REGEX,
-  MEDIUM_INTEGER_REGEX,
   OBJECT_KEY_REGEX,
-  SPEAKER_INTERFACE_DATA,
-  SPEAKER_TYPE_DATA,
   USER_DEFINED_VALUE_REGEX,
+  WEBCAM_FRAME_RATE_DATA,
+  WEBCAM_INTERFACE_DATA,
+  WEBCAM_MICROPHONE_DATA,
+  WEBCAM_RESOLUTION_DATA,
 } from '../../constants';
 import {
   CreateProductAction,
   CreateProductDispatch,
-  SpeakerInterface,
-  SpeakerType,
+  WebcamFrameRate,
+  WebcamInterface,
+  WebcamMicrophone,
+  WebcamResolution,
 } from '../types';
 
-type CreateSpeakerProps = {
-  areSpeakerFieldsAdditionalMapFocused: Map<number, [boolean, boolean]>;
-  areSpeakerFieldsAdditionalMapValid: Map<number, [boolean, boolean]>;
+type CreateWebcamProps = {
+  areWebcamFieldsAdditionalMapFocused: Map<number, [boolean, boolean]>;
+  areWebcamFieldsAdditionalMapValid: Map<number, [boolean, boolean]>;
   borderColor: string;
   createProductAction: CreateProductAction;
   createProductDispatch: React.Dispatch<CreateProductDispatch>;
   currentlySelectedAdditionalFieldIndex: number;
-  isSpeakerColorFocused: boolean;
-  isSpeakerColorValid: boolean;
-  isSpeakerFrequencyResponseFocused: boolean;
-  isSpeakerFrequencyResponseValid: boolean;
-  isSpeakerTotalWattageFocused: boolean;
-  isSpeakerTotalWattageValid: boolean;
+  isWebcamColorFocused: boolean;
+  isWebcamColorValid: boolean;
   padding: MantineNumberSize;
-  speakerColor: string;
-  speakerFieldsAdditionalMap: Map<number, [string, string]>;
-  speakerFrequencyResponse: string;
-  speakerInterface: SpeakerInterface;
-  speakerTotalWattage: string;
-  speakerType: SpeakerType;
+  webcamColor: string;
+  webcamFieldsAdditionalMap: Map<number, [string, string]>;
+  webcamFrameRate: WebcamFrameRate;
+  webcamInterface: WebcamInterface;
+  webcamMicrophone: WebcamMicrophone;
+  webcamResolution: WebcamResolution;
 };
 
-function CreateSpeaker({
-  areSpeakerFieldsAdditionalMapFocused,
-  areSpeakerFieldsAdditionalMapValid,
+function CreateWebcam({
+  areWebcamFieldsAdditionalMapFocused,
+  areWebcamFieldsAdditionalMapValid,
   borderColor,
   createProductAction,
   createProductDispatch,
   currentlySelectedAdditionalFieldIndex,
-  isSpeakerColorFocused,
-  isSpeakerColorValid,
-  isSpeakerFrequencyResponseFocused,
-  isSpeakerFrequencyResponseValid,
-  isSpeakerTotalWattageFocused,
-  isSpeakerTotalWattageValid,
+  isWebcamColorFocused,
+  isWebcamColorValid,
   padding,
-  speakerColor,
-  speakerFieldsAdditionalMap,
-  speakerFrequencyResponse,
-  speakerInterface,
-  speakerTotalWattage,
-  speakerType,
-}: CreateSpeakerProps) {
+  webcamColor,
+  webcamFieldsAdditionalMap,
+  webcamFrameRate,
+  webcamInterface,
+  webcamMicrophone,
+  webcamResolution,
+}: CreateWebcamProps) {
   // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
   //  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
   //    VALIDATION USE EFFECTS
@@ -90,69 +82,37 @@ function CreateSpeaker({
   // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    SPEAKER TOTAL WATTAGE
+  //    WEBCAM COLOR
   // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
-    const isValid = MEDIUM_INTEGER_REGEX.test(speakerTotalWattage);
+    const isValid = COLOR_VARIANT_REGEX.test(webcamColor);
 
     createProductDispatch({
-      type: createProductAction.setIsSpeakerTotalWattageValid,
+      type: createProductAction.setIsWebcamColorValid,
       payload: isValid,
     });
   }, [
-    createProductAction.setIsSpeakerTotalWattageValid,
+    createProductAction.setIsWebcamColorValid,
     createProductDispatch,
-    speakerTotalWattage,
+    webcamColor,
   ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    SPEAKER FREQUENCY RESPONSE
+  //    WEBCAM ADDITIONAL FIELDS
   // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
-    const isValid = FREQUENCY_RESPONSE_REGEX.test(speakerFrequencyResponse);
+    const currentlyUpdatingWebcamFieldAdditional =
+      webcamFieldsAdditionalMap.get(currentlySelectedAdditionalFieldIndex);
 
-    createProductDispatch({
-      type: createProductAction.setIsSpeakerFrequencyResponseValid,
-      payload: isValid,
-    });
-  }, [
-    createProductAction.setIsSpeakerFrequencyResponseValid,
-    createProductDispatch,
-    speakerFrequencyResponse,
-  ]);
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    SPEAKER COLOR
-  // ╰─────────────────────────────────────────────────────────────────╯
-  useEffect(() => {
-    const isValid = COLOR_VARIANT_REGEX.test(speakerColor);
-
-    createProductDispatch({
-      type: createProductAction.setIsSpeakerColorValid,
-      payload: isValid,
-    });
-  }, [
-    createProductAction.setIsSpeakerColorValid,
-    createProductDispatch,
-    speakerColor,
-  ]);
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    SPEAKER ADDITIONAL FIELDS
-  // ╰─────────────────────────────────────────────────────────────────╯
-  useEffect(() => {
-    const currentlyUpdatingSpeakerFieldAdditional =
-      speakerFieldsAdditionalMap.get(currentlySelectedAdditionalFieldIndex);
-
-    if (!currentlyUpdatingSpeakerFieldAdditional) {
+    if (!currentlyUpdatingWebcamFieldAdditional) {
       return;
     }
 
-    const [key, value] = currentlyUpdatingSpeakerFieldAdditional;
+    const [key, value] = currentlyUpdatingWebcamFieldAdditional;
 
     const isKeyValid = OBJECT_KEY_REGEX.test(key);
     createProductDispatch({
-      type: createProductAction.setAreSpeakerFieldsAdditionalMapValid,
+      type: createProductAction.setAreWebcamFieldsAdditionalMapValid,
       payload: {
         operation: 'update',
         data: isKeyValid,
@@ -163,7 +123,7 @@ function CreateSpeaker({
 
     const isValueValid = USER_DEFINED_VALUE_REGEX.test(value);
     createProductDispatch({
-      type: createProductAction.setAreSpeakerFieldsAdditionalMapValid,
+      type: createProductAction.setAreWebcamFieldsAdditionalMapValid,
       payload: {
         operation: 'update',
         data: isValueValid,
@@ -172,10 +132,10 @@ function CreateSpeaker({
       },
     });
   }, [
-    createProductAction.setAreSpeakerFieldsAdditionalMapValid,
+    createProductAction.setAreWebcamFieldsAdditionalMapValid,
     createProductDispatch,
     currentlySelectedAdditionalFieldIndex,
-    speakerFieldsAdditionalMap,
+    webcamFieldsAdditionalMap,
   ]);
 
   // ╔═════════════════════════════════════════════════════════════════╗
@@ -186,33 +146,28 @@ function CreateSpeaker({
     // optional inputs with empty string count as valid
     // select inputs are not included as they always have a default value
 
-    const areSpeakerHardcodedRequiredInputsInError =
-      !isSpeakerTotalWattageValid ||
-      !isSpeakerFrequencyResponseValid ||
-      !isSpeakerColorValid;
+    const areWebcamHardcodedRequiredInputsInError = !isWebcamColorValid;
 
-    const areSpeakerFieldsAdditionalMapInError = Array.from(
-      areSpeakerFieldsAdditionalMapValid
+    const areWebcamFieldsAdditionalMapInError = Array.from(
+      areWebcamFieldsAdditionalMapValid
     ).some(([_key, value]) => !value);
 
-    const areSpeakerInputsInError =
-      areSpeakerHardcodedRequiredInputsInError ||
-      areSpeakerFieldsAdditionalMapInError;
+    const areWebcamInputsInError =
+      areWebcamHardcodedRequiredInputsInError ||
+      areWebcamFieldsAdditionalMapInError;
 
     createProductDispatch({
       type: createProductAction.setStepsInError,
       payload: {
-        kind: areSpeakerInputsInError ? 'add' : 'delete',
+        kind: areWebcamInputsInError ? 'add' : 'delete',
         step: 1,
       },
     });
   }, [
-    areSpeakerFieldsAdditionalMapValid,
+    areWebcamFieldsAdditionalMapValid,
     createProductAction.setStepsInError,
     createProductDispatch,
-    isSpeakerColorValid,
-    isSpeakerFrequencyResponseValid,
-    isSpeakerTotalWattageValid,
+    isWebcamColorValid,
   ]);
 
   // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
@@ -222,217 +177,144 @@ function CreateSpeaker({
   // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    SPEAKER TYPE
+  //    WEBCAM RESOLUTION
   // ╰─────────────────────────────────────────────────────────────────╯
-  const [createdSpeakerTypeSelectInput] = returnAccessibleSelectInputElements([
-    {
-      data: SPEAKER_TYPE_DATA,
-      description: '',
-      label: 'Speaker Type',
-      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-        createProductDispatch({
-          type: createProductAction.setSpeakerType,
-          payload: event.currentTarget.value as SpeakerType,
-        });
-      },
-      value: speakerType,
-      required: true,
-    },
-  ]);
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    SPEAKER TOTAL WATTAGE
-  // ╰─────────────────────────────────────────────────────────────────╯
-
-  // error/valid text elements
-  const [speakerTotalWattageInputErrorText, speakerTotalWattageInputValidText] =
-    AccessibleErrorValidTextElements({
-      inputElementKind: 'speaker total wattage',
-      inputText: speakerTotalWattage,
-      isInputTextFocused: isSpeakerTotalWattageFocused,
-      isValidInputText: isSpeakerTotalWattageValid,
-      regexValidationText: returnMediumIntegerValidationText({
-        content: speakerTotalWattage,
-        contentKind: 'speaker total wattage',
-      }),
-    });
-
-  // screenreader accessible text input element
-  const [createdSpeakerTotalWattageTextInput] =
-    returnAccessibleTextInputElements([
+  const [createdWebcamResolutionSelectInput] =
+    returnAccessibleSelectInputElements([
       {
-        description: {
-          error: speakerTotalWattageInputErrorText,
-          valid: speakerTotalWattageInputValidText,
-        },
-        inputText: speakerTotalWattage,
-        isValidInputText: isSpeakerTotalWattageValid,
-        label: 'Speaker Total Wattage (W)',
-        onBlur: () => {
+        data: WEBCAM_RESOLUTION_DATA,
+        description: '',
+        label: 'Webcam Resolution',
+        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           createProductDispatch({
-            type: createProductAction.setIsSpeakerTotalWattageFocused,
-            payload: false,
+            type: createProductAction.setWebcamResolution,
+            payload: event.currentTarget.value as WebcamResolution,
           });
         },
-        onChange: (event: ChangeEvent<HTMLInputElement>) => {
-          createProductDispatch({
-            type: createProductAction.setSpeakerTotalWattage,
-            payload: event.currentTarget.value,
-          });
-        },
-        onFocus: () => {
-          createProductDispatch({
-            type: createProductAction.setIsSpeakerTotalWattageFocused,
-            payload: true,
-          });
-        },
-        placeholder: 'Format: 0000',
+        value: webcamResolution,
         required: true,
-        semanticName: 'speaker total wattage',
       },
     ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    SPEAKER FREQUENCY RESPONSE
+  //    WEBCAM COLOR
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // error/valid text elements
-  const [
-    speakerFrequencyResponseInputErrorText,
-    speakerFrequencyResponseInputValidText,
-  ] = AccessibleErrorValidTextElements({
-    inputElementKind: 'speaker frequency response',
-    inputText: speakerFrequencyResponse,
-    isInputTextFocused: isSpeakerFrequencyResponseFocused,
-    isValidInputText: isSpeakerFrequencyResponseValid,
-    regexValidationText: returnFrequencyResponseValidationText({
-      content: speakerFrequencyResponse,
-      contentKind: 'speaker frequency response',
-      maxLength: 14,
-      minLength: 8,
-    }),
-  });
-
-  // screenreader accessible text input element
-  const [createdSpeakerFrequencyResponseTextInput] =
-    returnAccessibleTextInputElements([
-      {
-        description: {
-          error: speakerFrequencyResponseInputErrorText,
-          valid: speakerFrequencyResponseInputValidText,
-        },
-        inputText: speakerFrequencyResponse,
-        isValidInputText: isSpeakerFrequencyResponseValid,
-        label: 'Speaker Frequency Response',
-        maxLength: 14,
-        minLength: 8,
-        onBlur: () => {
-          createProductDispatch({
-            type: createProductAction.setIsSpeakerFrequencyResponseFocused,
-            payload: false,
-          });
-        },
-        onChange: (event: ChangeEvent<HTMLInputElement>) => {
-          createProductDispatch({
-            type: createProductAction.setSpeakerFrequencyResponse,
-            payload: event.currentTarget.value,
-          });
-        },
-        onFocus: () => {
-          createProductDispatch({
-            type: createProductAction.setIsSpeakerFrequencyResponseFocused,
-            payload: true,
-          });
-        },
-        placeholder: '00 Hz - 00 kHz or 0Hz-0kHz',
-        required: true,
-        semanticName: 'speaker frequency response',
-      },
-    ]);
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    SPEAKER COLOR
-  // ╰─────────────────────────────────────────────────────────────────╯
-
-  // error/valid text elements
-  const [speakerColorInputErrorText, speakerColorInputValidText] =
+  const [webcamColorInputErrorText, webcamColorInputValidText] =
     AccessibleErrorValidTextElements({
-      inputElementKind: 'speaker color',
-      inputText: speakerColor,
-      isInputTextFocused: isSpeakerColorFocused,
-      isValidInputText: isSpeakerColorValid,
+      inputElementKind: 'webcam color',
+      inputText: webcamColor,
+      isInputTextFocused: isWebcamColorFocused,
+      isValidInputText: isWebcamColorValid,
       regexValidationText: returnColorVariantValidationText({
-        content: speakerColor,
-        contentKind: 'speaker color',
-        maxLength: 30,
-        minLength: 2,
+        content: webcamColor,
+        contentKind: 'webcam color',
       }),
     });
 
-  // screenreader accessible text input element
-  const [createdSpeakerColorTextInput] = returnAccessibleTextInputElements([
+  // accessible text input element
+  const [createdWebcamColorTextInput] = returnAccessibleTextInputElements([
     {
       description: {
-        error: speakerColorInputErrorText,
-        valid: speakerColorInputValidText,
+        error: webcamColorInputErrorText,
+        valid: webcamColorInputValidText,
       },
-      inputText: speakerColor,
-      isValidInputText: isSpeakerColorValid,
-      label: 'Speaker Color',
-      maxLength: 30,
-      minLength: 2,
+      inputText: webcamColor,
+      isValidInputText: isWebcamColorValid,
+      label: 'Webcam Color',
       onBlur: () => {
         createProductDispatch({
-          type: createProductAction.setIsSpeakerColorFocused,
+          type: createProductAction.setIsWebcamColorFocused,
           payload: false,
         });
       },
       onChange: (event: ChangeEvent<HTMLInputElement>) => {
         createProductDispatch({
-          type: createProductAction.setSpeakerColor,
+          type: createProductAction.setWebcamColor,
           payload: event.currentTarget.value,
         });
       },
       onFocus: () => {
         createProductDispatch({
-          type: createProductAction.setIsSpeakerColorFocused,
+          type: createProductAction.setIsWebcamColorFocused,
           payload: true,
         });
       },
-      placeholder: 'Enter speaker color',
+      placeholder: 'Enter webcam color',
       required: true,
-      semanticName: 'speaker color',
+      semanticName: 'webcam color',
     },
   ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    SPEAKER INTERFACE
+  //    WEBCAM MICROPHONE
   // ╰─────────────────────────────────────────────────────────────────╯
-  const [createdSpeakerInterfaceSelectInput] =
+  const [createdWebcamMicrophoneSelectInput] =
     returnAccessibleSelectInputElements([
       {
-        data: SPEAKER_INTERFACE_DATA,
+        data: WEBCAM_MICROPHONE_DATA,
         description: '',
-        label: 'Speaker Interface',
+        label: 'Webcam Microphone',
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           createProductDispatch({
-            type: createProductAction.setSpeakerInterface,
-            payload: event.currentTarget.value as SpeakerInterface,
+            type: createProductAction.setWebcamMicrophone,
+            payload: event.currentTarget.value as WebcamMicrophone,
           });
         },
-        value: speakerInterface,
+        value: webcamMicrophone,
+        required: true,
+      },
+    ]);
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    WEBCAM INTERFACE
+  // ╰─────────────────────────────────────────────────────────────────╯
+  const [createdWebcamInterfaceSelectInput] =
+    returnAccessibleSelectInputElements([
+      {
+        data: WEBCAM_INTERFACE_DATA,
+        description: '',
+        label: 'Webcam Interface',
+        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+          createProductDispatch({
+            type: createProductAction.setWebcamInterface,
+            payload: event.currentTarget.value as WebcamInterface,
+          });
+        },
+        value: webcamInterface,
+        required: true,
+      },
+    ]);
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    WEBCAM FRAME RATE
+  // ╰─────────────────────────────────────────────────────────────────╯
+  const [createdWebcamFrameRateSelectInput] =
+    returnAccessibleSelectInputElements([
+      {
+        data: WEBCAM_FRAME_RATE_DATA,
+        description: '',
+        label: 'Webcam Frame Rate',
+        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+          createProductDispatch({
+            type: createProductAction.setWebcamFrameRate,
+            payload: event.currentTarget.value as WebcamFrameRate,
+          });
+        },
+        value: webcamFrameRate,
         required: true,
       },
     ]);
 
   // ╔═════════════════════════════════════════════════════════════════╗
-  //   SPEAKER ADDITIONAL FIELDS
+  //   WEBCAM ADDITIONAL FIELDS
   // ╚═════════════════════════════════════════════════════════════════╝
 
   // ╭─────────────────────────────────────────────────────────────────╮
   //    ADD ADDITIONAL FIELD BUTTON
   // ╰─────────────────────────────────────────────────────────────────╯
-  const [createdAddSpeakerFieldsAdditionalMapButton] =
+  const [createdAddWebcamFieldsAdditionalMapButton] =
     returnAccessibleButtonElements([
       {
         buttonLabel: 'Add',
@@ -441,7 +323,7 @@ function CreateSpeaker({
         leftIcon: <TbPlus />,
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
           createProductDispatch({
-            type: createProductAction.setSpeakerFieldsAdditionalMap,
+            type: createProductAction.setWebcamFieldsAdditionalMap,
             payload: {
               operation: 'add',
               data: ['', ''],
@@ -449,7 +331,7 @@ function CreateSpeaker({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreSpeakerFieldsAdditionalMapFocused,
+            type: createProductAction.setAreWebcamFieldsAdditionalMapFocused,
             payload: {
               operation: 'add',
               data: [false, false],
@@ -457,7 +339,7 @@ function CreateSpeaker({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreSpeakerFieldsAdditionalMapValid,
+            type: createProductAction.setAreWebcamFieldsAdditionalMapValid,
             payload: {
               operation: 'add',
               data: [false, false],
@@ -472,23 +354,23 @@ function CreateSpeaker({
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // returns an array of tuples containing the error and valid text elements for each field name
-  const speakerFieldsAdditionalMapKeysErrorValidTextElements: [
+  const webcamFieldsAdditionalMapKeysErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(speakerFieldsAdditionalMap).map((keyFieldValue) => {
+  ][] = Array.from(webcamFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [field, _value]] = keyFieldValue;
 
     // screenreader accessible error/valid text elements that are consumed by the text input element creator
     const [
-      speakerFieldsAdditionalMapKeysInputErrorText,
-      speakerFieldsAdditionalMapKeysInputValidText,
+      webcamFieldsAdditionalMapKeysInputErrorText,
+      webcamFieldsAdditionalMapKeysInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field name ${mapKey + 1}`,
       inputText: field,
       isInputTextFocused:
-        areSpeakerFieldsAdditionalMapFocused.get(mapKey)?.[0] ?? false,
+        areWebcamFieldsAdditionalMapFocused.get(mapKey)?.[0] ?? false,
       isValidInputText:
-        areSpeakerFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
+        areWebcamFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
       regexValidationText: returnObjectKeyValidationText({
         content: field,
         contentKind: `additional field name ${mapKey + 1}`,
@@ -498,8 +380,8 @@ function CreateSpeaker({
     });
 
     return [
-      speakerFieldsAdditionalMapKeysInputErrorText,
-      speakerFieldsAdditionalMapKeysInputValidText,
+      webcamFieldsAdditionalMapKeysInputErrorText,
+      webcamFieldsAdditionalMapKeysInputValidText,
     ];
   });
 
@@ -508,23 +390,23 @@ function CreateSpeaker({
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // returns an array of tuples containing the error and valid text elements for each field value
-  const speakerFieldsAdditionalMapValuesErrorValidTextElements: [
+  const webcamFieldsAdditionalMapValuesErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(speakerFieldsAdditionalMap).map((keyFieldValue) => {
+  ][] = Array.from(webcamFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [_field, value]] = keyFieldValue;
 
     // screenreader accessible error/valid text elements that are consumed by the text input element creator
     const [
-      speakerFieldsAdditionalMapValuesInputErrorText,
-      speakerFieldsAdditionalMapValuesInputValidText,
+      webcamFieldsAdditionalMapValuesInputErrorText,
+      webcamFieldsAdditionalMapValuesInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field value ${mapKey + 1}`,
       inputText: value,
       isInputTextFocused:
-        areSpeakerFieldsAdditionalMapFocused.get(mapKey)?.[1] ?? false,
+        areWebcamFieldsAdditionalMapFocused.get(mapKey)?.[1] ?? false,
       isValidInputText:
-        areSpeakerFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
+        areWebcamFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
       regexValidationText: returnUserDefinedFieldValueValidationText({
         content: value,
         contentKind: `additional field value ${mapKey + 1}`,
@@ -534,36 +416,34 @@ function CreateSpeaker({
     });
 
     return [
-      speakerFieldsAdditionalMapValuesInputErrorText,
-      speakerFieldsAdditionalMapValuesInputValidText,
+      webcamFieldsAdditionalMapValuesInputErrorText,
+      webcamFieldsAdditionalMapValuesInputValidText,
     ];
   });
 
-  const createdSpeakerFieldsAdditionalMapTextInputElements = Array.from(
-    speakerFieldsAdditionalMap
+  const createdWebcamFieldsAdditionalMapTextInputElements = Array.from(
+    webcamFieldsAdditionalMap
   ).map((keyFieldValue) => {
     const [mapKey, [field, value]] = keyFieldValue;
 
     // ╭─────────────────────────────────────────────────────────────────╮
     //    ADDITIONAL FIELD ACCESSIBLE TEXT INPUT => FIELD NAME
     // ╰─────────────────────────────────────────────────────────────────╯
-    const speakerFieldsAdditionalMapKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const webcamFieldsAdditionalMapKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
-          error:
-            speakerFieldsAdditionalMapKeysErrorValidTextElements[mapKey][0],
-          valid:
-            speakerFieldsAdditionalMapKeysErrorValidTextElements[mapKey][1],
+          error: webcamFieldsAdditionalMapKeysErrorValidTextElements[mapKey][0],
+          valid: webcamFieldsAdditionalMapKeysErrorValidTextElements[mapKey][1],
         },
         inputText: field,
         isValidInputText:
-          areSpeakerFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
+          areWebcamFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
         label: `Name ${mapKey + 1}`,
         maxLength: 75,
         minLength: 1,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreSpeakerFieldsAdditionalMapFocused,
+            type: createProductAction.setAreWebcamFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -574,7 +454,7 @@ function CreateSpeaker({
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setSpeakerFieldsAdditionalMap,
+            type: createProductAction.setWebcamFieldsAdditionalMap,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -590,7 +470,7 @@ function CreateSpeaker({
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreSpeakerFieldsAdditionalMapFocused,
+            type: createProductAction.setAreWebcamFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -607,23 +487,23 @@ function CreateSpeaker({
     // ╭─────────────────────────────────────────────────────────────────╮
     //    ADDITIONAL FIELD ACCESSIBLE TEXT INPUT => FIELD VALUE
     // ╰─────────────────────────────────────────────────────────────────╯
-    const speakerFieldsAdditionalMapValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const webcamFieldsAdditionalMapValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
           error:
-            speakerFieldsAdditionalMapValuesErrorValidTextElements[mapKey][0],
+            webcamFieldsAdditionalMapValuesErrorValidTextElements[mapKey][0],
           valid:
-            speakerFieldsAdditionalMapValuesErrorValidTextElements[mapKey][1],
+            webcamFieldsAdditionalMapValuesErrorValidTextElements[mapKey][1],
         },
         inputText: value,
         isValidInputText:
-          areSpeakerFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
+          areWebcamFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
         label: `Value ${mapKey + 1}`,
         maxLength: 2000,
         minLength: 2,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreSpeakerFieldsAdditionalMapFocused,
+            type: createProductAction.setAreWebcamFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -634,7 +514,7 @@ function CreateSpeaker({
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setSpeakerFieldsAdditionalMap,
+            type: createProductAction.setWebcamFieldsAdditionalMap,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -650,7 +530,7 @@ function CreateSpeaker({
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreSpeakerFieldsAdditionalMapFocused,
+            type: createProductAction.setAreWebcamFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -665,11 +545,11 @@ function CreateSpeaker({
       };
 
     const [
-      createdSpeakerFieldsAdditionalMapKeysTextAreaInput,
-      createdSpeakerFieldsAdditionalMapValuesTextAreaInput,
+      createdWebcamFieldsAdditionalMapKeysTextAreaInput,
+      createdWebcamFieldsAdditionalMapValuesTextAreaInput,
     ] = returnAccessibleTextAreaInputElements([
-      speakerFieldsAdditionalMapKeysTextInputCreatorInfo,
-      speakerFieldsAdditionalMapValuesTextInputCreatorInfo,
+      webcamFieldsAdditionalMapKeysTextInputCreatorInfo,
+      webcamFieldsAdditionalMapValuesTextInputCreatorInfo,
     ]);
 
     // ╭─────────────────────────────────────────────────────────────────╮
@@ -680,7 +560,7 @@ function CreateSpeaker({
         buttonLabel: 'Delete',
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
           createProductDispatch({
-            type: createProductAction.setSpeakerFieldsAdditionalMap,
+            type: createProductAction.setWebcamFieldsAdditionalMap,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -688,7 +568,7 @@ function CreateSpeaker({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreSpeakerFieldsAdditionalMapFocused,
+            type: createProductAction.setAreWebcamFieldsAdditionalMapFocused,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -696,7 +576,7 @@ function CreateSpeaker({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreSpeakerFieldsAdditionalMapValid,
+            type: createProductAction.setAreWebcamFieldsAdditionalMapValid,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -721,16 +601,16 @@ function CreateSpeaker({
     );
 
     return (
-      <Stack key={`speakerFieldsAdditionalMap-${mapKey}`} pt={padding} w="100%">
+      <Stack key={`webcamFieldsAdditionalMap-${mapKey}`} pt={padding} w="100%">
         <Group position="apart">
-          <Text size="md" weight={600}>{`Additional Speaker field ${
+          <Text size="md" weight={600}>{`Additional Webcam field ${
             mapKey + 1
           }`}</Text>
           {displayDeleteButton}
         </Group>
         <Group position="apart">
-          {createdSpeakerFieldsAdditionalMapKeysTextAreaInput}
-          {createdSpeakerFieldsAdditionalMapValuesTextAreaInput}
+          {createdWebcamFieldsAdditionalMapKeysTextAreaInput}
+          {createdWebcamFieldsAdditionalMapValuesTextAreaInput}
         </Group>
       </Stack>
     );
@@ -742,15 +622,15 @@ function CreateSpeaker({
   //  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
   // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
-  const displaySpeakerFieldsAdditionalMapButton = (
+  const displayWebcamFieldsAdditionalMapButton = (
     <Tooltip
-      label={`Add new additional field ${speakerFieldsAdditionalMap.size + 1}`}
+      label={`Add new additional field ${webcamFieldsAdditionalMap.size + 1}`}
     >
-      <Group>{createdAddSpeakerFieldsAdditionalMapButton}</Group>
+      <Group>{createdAddWebcamFieldsAdditionalMapButton}</Group>
     </Tooltip>
   );
 
-  const displaySpeakerSpecificationsInputs = (
+  const displayWebcamSpecificationsInputs = (
     <Group
       py={padding}
       position="apart"
@@ -758,19 +638,19 @@ function CreateSpeaker({
       w="100%"
     >
       <Group w="100%" position="apart">
-        <Title order={4}>Speaker Specifications</Title>
-        {displaySpeakerFieldsAdditionalMapButton}
+        <Title order={4}>Webcam Specifications</Title>
+        {displayWebcamFieldsAdditionalMapButton}
       </Group>
-      {createdSpeakerTypeSelectInput}
-      {createdSpeakerTotalWattageTextInput}
-      {createdSpeakerFrequencyResponseTextInput}
-      {createdSpeakerColorTextInput}
-      {createdSpeakerInterfaceSelectInput}
-      {createdSpeakerFieldsAdditionalMapTextInputElements}
+      {createdWebcamResolutionSelectInput}
+      {createdWebcamColorTextInput}
+      {createdWebcamMicrophoneSelectInput}
+      {createdWebcamInterfaceSelectInput}
+      {createdWebcamFrameRateSelectInput}
+      {createdWebcamFieldsAdditionalMapTextInputElements}
     </Group>
   );
 
-  return displaySpeakerSpecificationsInputs;
+  return displayWebcamSpecificationsInputs;
 }
 
-export default CreateSpeaker;
+export default CreateWebcam;

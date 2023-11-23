@@ -170,7 +170,7 @@ function CreateStorage({
     // optional inputs with empty string count as valid
     // select inputs are not included as they always have a default value
 
-    const areStorageHardcodedInputsInError =
+    const areStorageHardcodedRequiredInputsInError =
       !isStorageCapacityValid || !isStorageCacheCapacityValid;
 
     const areStorageFieldsAdditionalMapInError = Array.from(
@@ -178,7 +178,8 @@ function CreateStorage({
     ).some(([_key, value]) => !value);
 
     const areStorageInputsInError =
-      areStorageHardcodedInputsInError || areStorageFieldsAdditionalMapInError;
+      areStorageHardcodedRequiredInputsInError ||
+      areStorageFieldsAdditionalMapInError;
 
     createProductDispatch({
       type: createProductAction.setStepsInError,

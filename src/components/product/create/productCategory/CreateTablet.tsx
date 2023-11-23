@@ -324,7 +324,7 @@ function CreateTablet({
     // optional inputs with empty string count as valid
     // select inputs are not included as they always have a default value
 
-    const areTabletHardcodedInputsInError =
+    const areTabletHardcodedRequiredInputsInError =
       !isTabletChipsetValid ||
       !isTabletDisplayValid ||
       !isTabletResolutionHorizontalValid ||
@@ -340,7 +340,8 @@ function CreateTablet({
     ).some(([_key, value]) => !value);
 
     const areTabletInputsInError =
-      areTabletHardcodedInputsInError || areTabletFieldsAdditionalMapInError;
+      areTabletHardcodedRequiredInputsInError ||
+      areTabletFieldsAdditionalMapInError;
 
     createProductDispatch({
       type: createProductAction.setStepsInError,

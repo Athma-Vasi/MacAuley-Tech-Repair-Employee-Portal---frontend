@@ -698,7 +698,7 @@ function CreateAccessory() {
     // optional inputs with empty string count as valid
     // select inputs are not included as they always have a default value
 
-    const arePage2HardcodedInputsInError =
+    const arePage2HardcodedRequiredInputsInError =
       !isAccessoryTypeValid || !isAccessoryColorValid;
 
     const arePage2UserDefinedFieldsInError = Array.from(
@@ -706,7 +706,8 @@ function CreateAccessory() {
     ).some(([_key, value]) => !value);
 
     const arePage2InputsInError =
-      arePage2HardcodedInputsInError || arePage2UserDefinedFieldsInError;
+      arePage2HardcodedRequiredInputsInError ||
+      arePage2UserDefinedFieldsInError;
 
     createAccessoryDispatch({
       type: createAccessoryAction.setStepsInError,
