@@ -272,7 +272,7 @@ function CreateHeadphone({
   //    HEADPHONE DRIVER
   // ╰─────────────────────────────────────────────────────────────────╯
 
-  // screenreader error/valid text elements
+  // error/valid text elements
   const [headphoneDriverInputErrorText, headphoneDriverInputValidText] =
     AccessibleErrorValidTextElements({
       inputElementKind: 'headphone driver',
@@ -285,7 +285,7 @@ function CreateHeadphone({
       }),
     });
 
-  // accessible text input element creator
+  // screenreader accessible text input element
   const [createdHeadphoneDriverTextInput] = returnAccessibleTextInputElements([
     {
       description: {
@@ -323,7 +323,7 @@ function CreateHeadphone({
   //    HEADPHONE FREQUENCY RESPONSE
   // ╰─────────────────────────────────────────────────────────────────╯
 
-  // screenreader error/valid text elements
+  // error/valid text elements
   const [
     headphoneFrequencyResponseInputErrorText,
     headphoneFrequencyResponseInputValidText,
@@ -340,7 +340,7 @@ function CreateHeadphone({
     }),
   });
 
-  // accessible text input element creator
+  // screenreader accessible text input element
   const [createdHeadphoneFrequencyResponseTextInput] =
     returnAccessibleTextInputElements([
       {
@@ -381,7 +381,7 @@ function CreateHeadphone({
   //    HEADPHONE IMPEDANCE
   // ╰─────────────────────────────────────────────────────────────────╯
 
-  // screenreader error/valid text elements
+  // error/valid text elements
   const [headphoneImpedanceInputErrorText, headphoneImpedanceInputValidText] =
     AccessibleErrorValidTextElements({
       inputElementKind: 'headphone impedance',
@@ -394,7 +394,7 @@ function CreateHeadphone({
       }),
     });
 
-  // accessible text input element creator
+  // screenreader accessible text input element
   const [createdHeadphoneImpedanceTextInput] =
     returnAccessibleTextInputElements([
       {
@@ -433,7 +433,7 @@ function CreateHeadphone({
   //    HEADPHONE COLOR
   // ╰─────────────────────────────────────────────────────────────────╯
 
-  // screenreader error/valid text elements
+  // error/valid text elements
   const [headphoneColorInputErrorText, headphoneColorInputValidText] =
     AccessibleErrorValidTextElements({
       inputElementKind: 'headphone color',
@@ -448,7 +448,7 @@ function CreateHeadphone({
       }),
     });
 
-  // accessible text input element creator
+  // screenreader accessible text input element
   const [createdHeadphoneColorTextInput] = returnAccessibleTextInputElements([
     {
       description: {
@@ -547,7 +547,7 @@ function CreateHeadphone({
     ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    SCREENREADER ERROR/VALID ELEMENTS TUPLE => FIELD NAMES
+  //    ERROR/VALID ELEMENTS TUPLE => FIELD NAMES
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // returns an array of tuples containing the error and valid text elements for each field name
@@ -557,7 +557,7 @@ function CreateHeadphone({
   ][] = Array.from(headphoneFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [field, _value]] = keyFieldValue;
 
-    // screenreader error/valid text elements that are consumed by the text input element creator
+    // error/valid text elements that are consumed by the text input element creator
     const [
       headphoneFieldsAdditionalMapKeysInputErrorText,
       headphoneFieldsAdditionalMapKeysInputValidText,
@@ -583,7 +583,7 @@ function CreateHeadphone({
   });
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    SCREENREADER ERROR/VALID ELEMENTS TUPLE => FIELD VALUES
+  //    ERROR/VALID ELEMENTS TUPLE => FIELD VALUES
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // returns an array of tuples containing the error and valid text elements for each field value
@@ -593,7 +593,7 @@ function CreateHeadphone({
   ][] = Array.from(headphoneFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [_field, value]] = keyFieldValue;
 
-    // screenreader error/valid text elements that are consumed by the text input element creator
+    // error/valid text elements that are consumed by the text input element creator
     const [
       headphoneFieldsAdditionalMapValuesInputErrorText,
       headphoneFieldsAdditionalMapValuesInputValidText,
@@ -624,7 +624,7 @@ function CreateHeadphone({
     const [mapKey, [field, value]] = keyFieldValue;
 
     // ╭─────────────────────────────────────────────────────────────────╮
-    //    ADDITIONAL FIELD TEXT INPUT => FIELD NAME
+    //    ADDITIONAL FIELD ACCESSIBLE TEXT INPUT => FIELD NAME
     // ╰─────────────────────────────────────────────────────────────────╯
     const headphoneFieldsAdditionalMapKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
@@ -684,7 +684,7 @@ function CreateHeadphone({
       };
 
     // ╭─────────────────────────────────────────────────────────────────╮
-    //    ADDITIONAL FIELD TEXT INPUT => FIELD VALUE
+    //    ADDITIONAL FIELD ACCESSIBLE TEXT INPUT => FIELD VALUE
     // ╰─────────────────────────────────────────────────────────────────╯
     const headphoneFieldsAdditionalMapValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {

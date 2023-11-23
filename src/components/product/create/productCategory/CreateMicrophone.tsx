@@ -225,7 +225,7 @@ function CreateMicrophone({
   //    MICROPHONE COLOR
   // ╰─────────────────────────────────────────────────────────────────╯
 
-  // screenreader error/valid text elements
+  // error/valid text elements
   const [microphoneColorInputErrorText, microphoneColorInputValidText] =
     AccessibleErrorValidTextElements({
       inputElementKind: 'microphone color',
@@ -238,7 +238,7 @@ function CreateMicrophone({
       }),
     });
 
-  // accessible text input element creator
+  // screenreader accessible text input element
   const [createdMicrophoneColorTextInput] = returnAccessibleTextInputElements([
     {
       description: {
@@ -316,7 +316,7 @@ function CreateMicrophone({
   //    MICROPHONE FREQUENCY RESPONSE
   // ╰─────────────────────────────────────────────────────────────────╯
 
-  // screenreader error/valid text elements
+  // error/valid text elements
   const [
     microphoneFrequencyResponseInputErrorText,
     microphoneFrequencyResponseInputValidText,
@@ -331,7 +331,7 @@ function CreateMicrophone({
     }),
   });
 
-  // accessible text input element creator
+  // screenreader accessible text input element
   const [createdMicrophoneFrequencyResponseTextInput] =
     returnAccessibleTextInputElements([
       {
@@ -409,7 +409,7 @@ function CreateMicrophone({
     ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    SCREENREADER ERROR/VALID ELEMENTS TUPLE => FIELD NAMES
+  //    ERROR/VALID ELEMENTS TUPLE => FIELD NAMES
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // returns an array of tuples containing the error and valid text elements for each field name
@@ -419,7 +419,7 @@ function CreateMicrophone({
   ][] = Array.from(microphoneFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [field, _value]] = keyFieldValue;
 
-    // screenreader error/valid text elements that are consumed by the text input element creator
+    // error/valid text elements that are consumed by the text input element creator
     const [
       microphoneFieldsAdditionalMapKeysInputErrorText,
       microphoneFieldsAdditionalMapKeysInputValidText,
@@ -445,7 +445,7 @@ function CreateMicrophone({
   });
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    SCREENREADER ERROR/VALID ELEMENTS TUPLE => FIELD VALUES
+  //    ERROR/VALID ELEMENTS TUPLE => FIELD VALUES
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // returns an array of tuples containing the error and valid text elements for each field value
@@ -455,7 +455,7 @@ function CreateMicrophone({
   ][] = Array.from(microphoneFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [_field, value]] = keyFieldValue;
 
-    // screenreader error/valid text elements that are consumed by the text input element creator
+    // error/valid text elements that are consumed by the text input element creator
     const [
       microphoneFieldsAdditionalMapValuesInputErrorText,
       microphoneFieldsAdditionalMapValuesInputValidText,
@@ -486,7 +486,7 @@ function CreateMicrophone({
     const [mapKey, [field, value]] = keyFieldValue;
 
     // ╭─────────────────────────────────────────────────────────────────╮
-    //    ADDITIONAL FIELD TEXT INPUT => FIELD NAME
+    //    ADDITIONAL FIELD ACCESSIBLE TEXT INPUT => FIELD NAME
     // ╰─────────────────────────────────────────────────────────────────╯
     const microphoneFieldsAdditionalMapKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
@@ -546,7 +546,7 @@ function CreateMicrophone({
       };
 
     // ╭─────────────────────────────────────────────────────────────────╮
-    //    ADDITIONAL FIELD TEXT INPUT => FIELD VALUE
+    //    ADDITIONAL FIELD ACCESSIBLE TEXT INPUT => FIELD VALUE
     // ╰─────────────────────────────────────────────────────────────────╯
     const microphoneFieldsAdditionalMapValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {

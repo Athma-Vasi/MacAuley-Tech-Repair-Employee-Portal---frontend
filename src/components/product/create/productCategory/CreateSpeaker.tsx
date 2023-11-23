@@ -243,7 +243,7 @@ function CreateSpeaker({
   //    SPEAKER TOTAL WATTAGE
   // ╰─────────────────────────────────────────────────────────────────╯
 
-  // screenreader error/valid text elements
+  // error/valid text elements
   const [speakerTotalWattageInputErrorText, speakerTotalWattageInputValidText] =
     AccessibleErrorValidTextElements({
       inputElementKind: 'speaker total wattage',
@@ -256,7 +256,7 @@ function CreateSpeaker({
       }),
     });
 
-  // accessible text input element creator
+  // screenreader accessible text input element
   const [createdSpeakerTotalWattageTextInput] =
     returnAccessibleTextInputElements([
       {
@@ -295,7 +295,7 @@ function CreateSpeaker({
   //    SPEAKER FREQUENCY RESPONSE
   // ╰─────────────────────────────────────────────────────────────────╯
 
-  // screenreader error/valid text elements
+  // error/valid text elements
   const [
     speakerFrequencyResponseInputErrorText,
     speakerFrequencyResponseInputValidText,
@@ -312,7 +312,7 @@ function CreateSpeaker({
     }),
   });
 
-  // accessible text input element creator
+  // screenreader accessible text input element
   const [createdSpeakerFrequencyResponseTextInput] =
     returnAccessibleTextInputElements([
       {
@@ -353,7 +353,7 @@ function CreateSpeaker({
   //    SPEAKER COLOR
   // ╰─────────────────────────────────────────────────────────────────╯
 
-  // screenreader error/valid text elements
+  // error/valid text elements
   const [speakerColorInputErrorText, speakerColorInputValidText] =
     AccessibleErrorValidTextElements({
       inputElementKind: 'speaker color',
@@ -368,7 +368,7 @@ function CreateSpeaker({
       }),
     });
 
-  // accessible text input element creator
+  // screenreader accessible text input element
   const [createdSpeakerColorTextInput] = returnAccessibleTextInputElements([
     {
       description: {
@@ -467,7 +467,7 @@ function CreateSpeaker({
     ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    SCREENREADER ERROR/VALID ELEMENTS TUPLE => FIELD NAMES
+  //    ERROR/VALID ELEMENTS TUPLE => FIELD NAMES
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // returns an array of tuples containing the error and valid text elements for each field name
@@ -503,7 +503,7 @@ function CreateSpeaker({
   });
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    SCREENREADER ERROR/VALID ELEMENTS TUPLE => FIELD VALUES
+  //    ERROR/VALID ELEMENTS TUPLE => FIELD VALUES
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // returns an array of tuples containing the error and valid text elements for each field value
@@ -544,7 +544,7 @@ function CreateSpeaker({
     const [mapKey, [field, value]] = keyFieldValue;
 
     // ╭─────────────────────────────────────────────────────────────────╮
-    //    ADDITIONAL FIELD TEXT INPUT => FIELD NAME
+    //    ADDITIONAL FIELD ACCESSIBLE TEXT INPUT => FIELD NAME
     // ╰─────────────────────────────────────────────────────────────────╯
     const speakerFieldsAdditionalMapKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
@@ -604,7 +604,7 @@ function CreateSpeaker({
       };
 
     // ╭─────────────────────────────────────────────────────────────────╮
-    //    ADDITIONAL FIELD TEXT INPUT => FIELD VALUE
+    //    ADDITIONAL FIELD ACCESSIBLE TEXT INPUT => FIELD VALUE
     // ╰─────────────────────────────────────────────────────────────────╯
     const speakerFieldsAdditionalMapValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {

@@ -195,7 +195,7 @@ function CreateAccessory({
   //    ACCESSORY TYPE
   // ╰─────────────────────────────────────────────────────────────────╯
 
-  // screenreader error/valid text elements
+  // error/valid text elements
   const [accessoryTypeInputErrorText, accessoryTypeInputValidText] =
     AccessibleErrorValidTextElements({
       inputElementKind: 'accessory type',
@@ -210,7 +210,7 @@ function CreateAccessory({
       }),
     });
 
-  // accessible text input element creator
+  // screenreader accessible text input element
   const [createdAccessoryTypeTextInput] = returnAccessibleTextInputElements([
     {
       description: {
@@ -250,7 +250,7 @@ function CreateAccessory({
   //    ACCESSORY COLOR
   // ╰─────────────────────────────────────────────────────────────────╯
 
-  // screenreader error/valid text elements
+  // error/valid text elements
   const [accessoryColorInputErrorText, accessoryColorInputValidText] =
     AccessibleErrorValidTextElements({
       inputElementKind: 'accessory color',
@@ -265,7 +265,7 @@ function CreateAccessory({
       }),
     });
 
-  // accessible text input element creator
+  // screenreader accessible text input element
   const [createdAccessoryColorTextInput] = returnAccessibleTextInputElements([
     {
       description: {
@@ -366,7 +366,7 @@ function CreateAccessory({
     ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    SCREENREADER ERROR/VALID ELEMENTS TUPLE => FIELD NAMES
+  //    ERROR/VALID ELEMENTS TUPLE => FIELD NAMES
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // returns an array of tuples containing the error and valid text elements for each field name
@@ -376,7 +376,7 @@ function CreateAccessory({
   ][] = Array.from(accessoryFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [field, _value]] = keyFieldValue;
 
-    // screenreader error/valid text elements that are consumed by the text input element creator
+    // error/valid text elements that are consumed by the text input element creator
     const [
       accessoryFieldsAdditionalMapKeysInputErrorText,
       accessoryFieldsAdditionalMapKeysInputValidText,
@@ -402,7 +402,7 @@ function CreateAccessory({
   });
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    SCREENREADER ERROR/VALID ELEMENTS TUPLE => FIELD VALUES
+  //    ERROR/VALID ELEMENTS TUPLE => FIELD VALUES
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // returns an array of tuples containing the error and valid text elements for each field value
@@ -412,7 +412,7 @@ function CreateAccessory({
   ][] = Array.from(accessoryFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [_field, value]] = keyFieldValue;
 
-    // screenreader error/valid text elements that are consumed by the text input element creator
+    // error/valid text elements that are consumed by the text input element creator
     const [
       accessoryFieldsAdditionalMapValuesInputErrorText,
       accessoryFieldsAdditionalMapValuesInputValidText,
@@ -443,7 +443,7 @@ function CreateAccessory({
     const [mapKey, [field, value]] = keyFieldValue;
 
     // ╭─────────────────────────────────────────────────────────────────╮
-    //    ADDITIONAL FIELD TEXT INPUT => FIELD NAME
+    //    ADDITIONAL FIELD ACCESSIBLE TEXT INPUT => FIELD NAME
     // ╰─────────────────────────────────────────────────────────────────╯
     const accessoryFieldsAdditionalMapKeyTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
@@ -503,7 +503,7 @@ function CreateAccessory({
       };
 
     // ╭─────────────────────────────────────────────────────────────────╮
-    //    ADDITIONAL FIELD TEXT INPUT => FIELD VALUE
+    //    ADDITIONAL FIELD ACCESSIBLE TEXT INPUT => FIELD VALUE
     // ╰─────────────────────────────────────────────────────────────────╯
     const accessoryFieldsAdditionalMapValueTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {

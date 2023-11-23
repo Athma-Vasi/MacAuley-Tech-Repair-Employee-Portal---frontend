@@ -331,7 +331,7 @@ function CreateCpu({
       }),
     });
 
-  // accessible text input element creator
+  // screenreader accessible text input element
   const [createdCpuSocketTextInput] = returnAccessibleTextInputElements([
     {
       description: {
@@ -384,7 +384,7 @@ function CreateCpu({
       }),
     });
 
-  // accessible text input element creator
+  // screenreader accessible text input element
   const [createdCpuFrequencyTextInput] = returnAccessibleTextInputElements([
     {
       description: {
@@ -435,7 +435,7 @@ function CreateCpu({
       }),
     });
 
-  // accessible text input element creator
+  // screenreader accessible text input element
   const [createdCpuCoresTextInput] = returnAccessibleTextInputElements([
     {
       description: {
@@ -486,7 +486,7 @@ function CreateCpu({
       }),
     });
 
-  // accessible text input element creator
+  // screenreader accessible text input element
   const [createdCpuL1CacheCapacityTextInput] =
     returnAccessibleTextInputElements([
       {
@@ -558,7 +558,7 @@ function CreateCpu({
       }),
     });
 
-  // accessible text input element creator
+  // screenreader accessible text input element
   const [createdCpuL2CacheCapacityTextInput] =
     returnAccessibleTextInputElements([
       {
@@ -630,7 +630,7 @@ function CreateCpu({
       }),
     });
 
-  // accessible text input element creator
+  // screenreader accessible text input element
   const [createdCpuL3CacheCapacityTextInput] =
     returnAccessibleTextInputElements([
       {
@@ -702,7 +702,7 @@ function CreateCpu({
       }),
     });
 
-  // accessible text input element creator
+  // screenreader accessible text input element
   const [createdCpuWattageTextInput] = returnAccessibleTextInputElements([
     {
       description: {
@@ -779,7 +779,7 @@ function CreateCpu({
     ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    SCREENREADER ERROR/VALID ELEMENTS TUPLE => FIELD NAMES
+  //    ERROR/VALID ELEMENTS TUPLE => FIELD NAMES
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // returns an array of tuples containing the error and valid text elements for each field name
@@ -789,7 +789,7 @@ function CreateCpu({
   ][] = Array.from(cpuFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [field, _value]] = keyFieldValue;
 
-    // screenreader error/valid text elements that are consumed by the text input element creator
+    // error/valid text elements that are consumed by the text input element creator
     const [
       cpuFieldsAdditionalMapKeysInputErrorText,
       cpuFieldsAdditionalMapKeysInputValidText,
@@ -815,7 +815,7 @@ function CreateCpu({
   });
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    SCREENREADER ERROR/VALID ELEMENTS TUPLE => FIELD VALUES
+  //    ERROR/VALID ELEMENTS TUPLE => FIELD VALUES
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // returns an array of tuples containing the error and valid text elements for each field value
@@ -825,7 +825,7 @@ function CreateCpu({
   ][] = Array.from(cpuFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [_field, value]] = keyFieldValue;
 
-    // screenreader error/valid text elements that are consumed by the text input element creator
+    // error/valid text elements that are consumed by the text input element creator
     const [
       cpuFieldsAdditionalMapValuesInputErrorText,
       cpuFieldsAdditionalMapValuesInputValidText,
@@ -856,7 +856,7 @@ function CreateCpu({
     const [mapKey, [field, value]] = keyFieldValue;
 
     // ╭─────────────────────────────────────────────────────────────────╮
-    //    ADDITIONAL FIELD TEXT INPUT => FIELD NAME
+    //    ADDITIONAL FIELD ACCESSIBLE TEXT INPUT => FIELD NAME
     // ╰─────────────────────────────────────────────────────────────────╯
     const cpuFieldsAdditionalMapKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
@@ -914,7 +914,7 @@ function CreateCpu({
       };
 
     // ╭─────────────────────────────────────────────────────────────────╮
-    //    ADDITIONAL FIELD TEXT INPUT => FIELD VALUE
+    //    ADDITIONAL FIELD ACCESSIBLE TEXT INPUT => FIELD VALUE
     // ╰─────────────────────────────────────────────────────────────────╯
     const cpuFieldsAdditionalMapValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {

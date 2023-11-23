@@ -189,7 +189,7 @@ function CreateCase({
   //    CASE COLOR
   // ╰─────────────────────────────────────────────────────────────────╯
 
-  // screenreader error/valid text elements
+  // error/valid text elements
   const [caseColorInputErrorText, caseColorInputValidText] =
     AccessibleErrorValidTextElements({
       inputElementKind: 'case color',
@@ -204,7 +204,7 @@ function CreateCase({
       }),
     });
 
-  // accessible text input element creator
+  // screenreader accessible text input element
   const [createdCaseColorTextInput] = returnAccessibleTextInputElements([
     {
       description: {
@@ -304,7 +304,7 @@ function CreateCase({
     ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    SCREENREADER ERROR/VALID ELEMENTS TUPLE => FIELD NAMES
+  //    ERROR/VALID ELEMENTS TUPLE => FIELD NAMES
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // returns an array of tuples containing the error and valid text elements for each field name
@@ -314,7 +314,7 @@ function CreateCase({
   ][] = Array.from(caseFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [field, _value]] = keyFieldValue;
 
-    // screenreader error/valid text elements that are consumed by the text input element creator
+    // error/valid text elements that are consumed by the text input element creator
     const [
       caseFieldsAdditionalMapKeysInputErrorText,
       caseFieldsAdditionalMapKeysInputValidText,
@@ -340,7 +340,7 @@ function CreateCase({
   });
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    SCREENREADER ERROR/VALID ELEMENTS TUPLE => FIELD VALUES
+  //    ERROR/VALID ELEMENTS TUPLE => FIELD VALUES
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // returns an array of tuples containing the error and valid text elements for each field value
@@ -350,7 +350,7 @@ function CreateCase({
   ][] = Array.from(caseFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [_field, value]] = keyFieldValue;
 
-    // screenreader error/valid text elements that are consumed by the text input element creator
+    // error/valid text elements that are consumed by the text input element creator
     const [
       caseFieldsAdditionalMapValuesInputErrorText,
       caseFieldsAdditionalMapValuesInputValidText,
@@ -381,7 +381,7 @@ function CreateCase({
     const [mapKey, [field, value]] = keyFieldValue;
 
     // ╭─────────────────────────────────────────────────────────────────╮
-    //    ADDITIONAL FIELD TEXT INPUT => FIELD NAME
+    //    ADDITIONAL FIELD ACCESSIBLE TEXT INPUT => FIELD NAME
     // ╰─────────────────────────────────────────────────────────────────╯
     const caseFieldsAdditionalMapKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
@@ -439,7 +439,7 @@ function CreateCase({
       };
 
     // ╭─────────────────────────────────────────────────────────────────╮
-    //    ADDITIONAL FIELD TEXT INPUT => FIELD VALUE
+    //    ADDITIONAL FIELD ACCESSIBLE TEXT INPUT => FIELD VALUE
     // ╰─────────────────────────────────────────────────────────────────╯
     const caseFieldsAdditionalMapValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {

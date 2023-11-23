@@ -265,7 +265,7 @@ function CreateGpu({
   //    GPU CHIPSET
   // ╰─────────────────────────────────────────────────────────────────╯
 
-  // screenreader error/valid text elements
+  // error/valid text elements
   const [gpuChipsetInputErrorText, gpuChipsetInputValidText] =
     AccessibleErrorValidTextElements({
       inputElementKind: 'gpu chipset',
@@ -280,7 +280,7 @@ function CreateGpu({
       }),
     });
 
-  // accessible text input element creator
+  // screenreader accessible text input element
   const [createdGpuChipsetTextInput] = returnAccessibleTextInputElements([
     {
       description: {
@@ -320,7 +320,7 @@ function CreateGpu({
   //    GPU MEMORY CAPACITY
   // ╰─────────────────────────────────────────────────────────────────╯
 
-  // screenreader error/valid text elements
+  // error/valid text elements
   const [gpuMemoryCapacityInputErrorText, gpuMemoryCapacityInputValidText] =
     AccessibleErrorValidTextElements({
       inputElementKind: 'gpu memory capacity',
@@ -333,7 +333,7 @@ function CreateGpu({
       }),
     });
 
-  // accessible text input element creator
+  // screenreader accessible text input element
   const [createdGpuMemoryCapacityTextInput] = returnAccessibleTextInputElements(
     [
       {
@@ -393,7 +393,7 @@ function CreateGpu({
   //    GPU CORE CLOCK
   // ╰─────────────────────────────────────────────────────────────────╯
 
-  // screenreader error/valid text elements
+  // error/valid text elements
   const [gpuCoreClockInputErrorText, gpuCoreClockInputValidText] =
     AccessibleErrorValidTextElements({
       inputElementKind: 'gpu core clock',
@@ -406,7 +406,7 @@ function CreateGpu({
       }),
     });
 
-  // accessible text input element creator
+  // screenreader accessible text input element
   const [createdGpuCoreClockTextInput] = returnAccessibleTextInputElements([
     {
       description: {
@@ -444,7 +444,7 @@ function CreateGpu({
   //    GPU BOOST CLOCK
   // ╰─────────────────────────────────────────────────────────────────╯
 
-  // screenreader error/valid text elements
+  // error/valid text elements
   const [gpuBoostClockInputErrorText, gpuBoostClockInputValidText] =
     AccessibleErrorValidTextElements({
       inputElementKind: 'gpu boost clock',
@@ -457,7 +457,7 @@ function CreateGpu({
       }),
     });
 
-  // accessible text input element creator
+  // screenreader accessible text input element
   const [createdGpuBoostClockTextInput] = returnAccessibleTextInputElements([
     {
       description: {
@@ -495,7 +495,7 @@ function CreateGpu({
   //    GPU TDP
   // ╰─────────────────────────────────────────────────────────────────╯
 
-  // screenreader error/valid text elements
+  // error/valid text elements
   const [gpuTdpInputErrorText, gpuTdpInputValidText] =
     AccessibleErrorValidTextElements({
       inputElementKind: 'gpu wattage',
@@ -508,7 +508,7 @@ function CreateGpu({
       }),
     });
 
-  // accessible text input element creator
+  // screenreader accessible text input element
   const [createdGpuWattageTextInput] = returnAccessibleTextInputElements([
     {
       description: {
@@ -585,7 +585,7 @@ function CreateGpu({
     ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    SCREENREADER ERROR/VALID ELEMENTS TUPLE => FIELD NAMES
+  //    ERROR/VALID ELEMENTS TUPLE => FIELD NAMES
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // returns an array of tuples containing the error and valid text elements for each field name
@@ -595,7 +595,7 @@ function CreateGpu({
   ][] = Array.from(gpuFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [field, _value]] = keyFieldValue;
 
-    // screenreader error/valid text elements that are consumed by the text input element creator
+    // error/valid text elements that are consumed by the text input element creator
     const [
       gpuFieldsAdditionalMapKeysInputErrorText,
       gpuFieldsAdditionalMapKeysInputValidText,
@@ -621,7 +621,7 @@ function CreateGpu({
   });
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    SCREENREADER ERROR/VALID ELEMENTS TUPLE => FIELD VALUES
+  //    ERROR/VALID ELEMENTS TUPLE => FIELD VALUES
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // returns an array of tuples containing the error and valid text elements for each field value
@@ -631,7 +631,7 @@ function CreateGpu({
   ][] = Array.from(gpuFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [_field, value]] = keyFieldValue;
 
-    // screenreader error/valid text elements that are consumed by the text input element creator
+    // error/valid text elements that are consumed by the text input element creator
     const [
       gpuFieldsAdditionalMapValuesInputErrorText,
       gpuFieldsAdditionalMapValuesInputValidText,
@@ -662,7 +662,7 @@ function CreateGpu({
     const [mapKey, [field, value]] = keyFieldValue;
 
     // ╭─────────────────────────────────────────────────────────────────╮
-    //    ADDITIONAL FIELD TEXT INPUT => FIELD NAME
+    //    ADDITIONAL FIELD ACCESSIBLE TEXT INPUT => FIELD NAME
     // ╰─────────────────────────────────────────────────────────────────╯
     const gpuFieldsAdditionalMapKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
@@ -720,7 +720,7 @@ function CreateGpu({
       };
 
     // ╭─────────────────────────────────────────────────────────────────╮
-    //    ADDITIONAL FIELD TEXT INPUT => FIELD VALUE
+    //    ADDITIONAL FIELD ACCESSIBLE TEXT INPUT => FIELD VALUE
     // ╰─────────────────────────────────────────────────────────────────╯
     const gpuFieldsAdditionalMapValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {

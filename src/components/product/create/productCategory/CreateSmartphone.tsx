@@ -394,7 +394,7 @@ function CreateSmartphone({
   //    SMARTPHONE CHIPSET
   // ╰─────────────────────────────────────────────────────────────────╯
 
-  // screenreader error/valid text elements
+  // error/valid text elements
   const [smartphoneChipsetInputErrorText, smartphoneChipsetInputValidText] =
     AccessibleErrorValidTextElements({
       inputElementKind: 'smartphone chipset',
@@ -409,7 +409,7 @@ function CreateSmartphone({
       }),
     });
 
-  // accessible text input element creator
+  // screenreader accessible text input element
   const [createdSmartphoneChipsetTextInput] = returnAccessibleTextInputElements(
     [
       {
@@ -451,7 +451,7 @@ function CreateSmartphone({
   //    SMARTPHONE DISPLAY
   // ╰─────────────────────────────────────────────────────────────────╯
 
-  // screenreader error/valid text elements
+  // error/valid text elements
   const [smartphoneDisplayInputErrorText, smartphoneDisplayInputValidText] =
     AccessibleErrorValidTextElements({
       inputElementKind: 'smartphone display',
@@ -464,7 +464,7 @@ function CreateSmartphone({
       }),
     });
 
-  // accessible text input element creator
+  // screenreader accessible text input element
   const [createdSmartphoneDisplayTextInput] = returnAccessibleTextInputElements(
     [
       {
@@ -504,7 +504,7 @@ function CreateSmartphone({
   //    SMARTPHONE RESOLUTION HORIZONTAL
   // ╰─────────────────────────────────────────────────────────────────╯
 
-  // screenreader error/valid text elements
+  // error/valid text elements
   const [
     smartphoneResolutionHorizontalInputErrorText,
     smartphoneResolutionHorizontalInputValidText,
@@ -519,7 +519,7 @@ function CreateSmartphone({
     }),
   });
 
-  // accessible text input element creator
+  // screenreader accessible text input element
   const [createdSmartphoneResolutionHorizontalTextInput] =
     returnAccessibleTextInputElements([
       {
@@ -558,7 +558,7 @@ function CreateSmartphone({
   //    SMARTPHONE RESOLUTION VERTICAL
   // ╰─────────────────────────────────────────────────────────────────╯
 
-  // screenreader error/valid text elements
+  // error/valid text elements
   const [
     smartphoneResolutionVerticalInputErrorText,
     smartphoneResolutionVerticalInputValidText,
@@ -573,7 +573,7 @@ function CreateSmartphone({
     }),
   });
 
-  // accessible text input element creator
+  // screenreader accessible text input element
   const [createdSmartphoneResolutionVerticalTextInput] =
     returnAccessibleTextInputElements([
       {
@@ -612,7 +612,7 @@ function CreateSmartphone({
   //    SMARTPHONE RAM CAPACITY
   // ╰─────────────────────────────────────────────────────────────────╯
 
-  // screenreader error/valid text elements
+  // error/valid text elements
   const [
     smartphoneRamCapacityInputErrorText,
     smartphoneRamCapacityInputValidText,
@@ -627,7 +627,7 @@ function CreateSmartphone({
     }),
   });
 
-  // accessible text input element creator
+  // screenreader accessible text input element
   const [createdSmartphoneRamCapacityTextInput] =
     returnAccessibleTextInputElements([
       {
@@ -699,7 +699,7 @@ function CreateSmartphone({
     }),
   });
 
-  // accessible text input element creator
+  // screenreader accessible text input element
   const [createdSmartphoneStorageCapacityTextInput] =
     returnAccessibleTextInputElements([
       {
@@ -738,7 +738,7 @@ function CreateSmartphone({
   //    SMARTPHONE BATTERY CAPACITY
   // ╰─────────────────────────────────────────────────────────────────╯
 
-  // screenreader error/valid text elements
+  // error/valid text elements
   const [
     smartphoneBatteryCapacityInputErrorText,
     smartphoneBatteryCapacityInputValidText,
@@ -753,7 +753,7 @@ function CreateSmartphone({
     }),
   });
 
-  // accessible text input element creator
+  // screenreader accessible text input element
   const [createdSmartphoneBatteryCapacityTextInput] =
     returnAccessibleTextInputElements([
       {
@@ -805,7 +805,7 @@ function CreateSmartphone({
       }),
     });
 
-  // accessible text input element creator
+  // screenreader accessible text input element
   const [createdSmartphoneCameraTextInput] = returnAccessibleTextInputElements([
     {
       description: {
@@ -845,7 +845,7 @@ function CreateSmartphone({
   //    SMARTPHONE COLOR
   // ╰─────────────────────────────────────────────────────────────────╯
 
-  // screenreader error/valid text elements
+  // error/valid text elements
   const [smartphoneColorInputErrorText, smartphoneColorInputValidText] =
     AccessibleErrorValidTextElements({
       inputElementKind: 'smartphone color',
@@ -860,7 +860,7 @@ function CreateSmartphone({
       }),
     });
 
-  // accessible text input element creator
+  // screenreader accessible text input element
   const [createdSmartphoneColorTextInput] = returnAccessibleTextInputElements([
     {
       description: {
@@ -939,7 +939,7 @@ function CreateSmartphone({
     ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    SCREENREADER ERROR/VALID ELEMENTS TUPLE => FIELD NAMES
+  //    ERROR/VALID ELEMENTS TUPLE => FIELD NAMES
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // returns an array of tuples containing the error and valid text elements for each field name
@@ -949,7 +949,7 @@ function CreateSmartphone({
   ][] = Array.from(smartphoneFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [field, _value]] = keyFieldValue;
 
-    // screenreader error/valid text elements that are consumed by the text input element creator
+    // error/valid text elements that are consumed by the text input element creator
     const [
       smartphoneFieldsAdditionalMapKeysInputErrorText,
       smartphoneFieldsAdditionalMapKeysInputValidText,
@@ -975,7 +975,7 @@ function CreateSmartphone({
   });
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    SCREENREADER ERROR/VALID ELEMENTS TUPLE => FIELD VALUES
+  //    ERROR/VALID ELEMENTS TUPLE => FIELD VALUES
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // returns an array of tuples containing the error and valid text elements for each field value
@@ -985,7 +985,7 @@ function CreateSmartphone({
   ][] = Array.from(smartphoneFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [_field, value]] = keyFieldValue;
 
-    // screenreader error/valid text elements that are consumed by the text input element creator
+    // error/valid text elements that are consumed by the text input element creator
     const [
       smartphoneFieldsAdditionalMapValuesInputErrorText,
       smartphoneFieldsAdditionalMapValuesInputValidText,
@@ -1016,7 +1016,7 @@ function CreateSmartphone({
     const [mapKey, [field, value]] = keyFieldValue;
 
     // ╭─────────────────────────────────────────────────────────────────╮
-    //    ADDITIONAL FIELD TEXT INPUT => FIELD NAME
+    //    ADDITIONAL FIELD ACCESSIBLE TEXT INPUT => FIELD NAME
     // ╰─────────────────────────────────────────────────────────────────╯
     const smartphoneFieldsAdditionalMapKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
@@ -1076,7 +1076,7 @@ function CreateSmartphone({
       };
 
     // ╭─────────────────────────────────────────────────────────────────╮
-    //    ADDITIONAL FIELD TEXT INPUT => FIELD VALUE
+    //    ADDITIONAL FIELD ACCESSIBLE TEXT INPUT => FIELD VALUE
     // ╰─────────────────────────────────────────────────────────────────╯
     const smartphoneFieldsAdditionalMapValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {

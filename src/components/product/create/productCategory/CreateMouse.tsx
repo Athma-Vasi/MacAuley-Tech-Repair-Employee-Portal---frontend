@@ -240,7 +240,7 @@ function CreateMouse({
   //    MOUSE DPI
   // ╰─────────────────────────────────────────────────────────────────╯
 
-  // screenreader error/valid text elements
+  // error/valid text elements
   const [mouseDpiInputErrorText, mouseDpiInputValidText] =
     AccessibleErrorValidTextElements({
       inputElementKind: 'mouse dpi',
@@ -253,7 +253,7 @@ function CreateMouse({
       }),
     });
 
-  // accessible text input element creator
+  // screenreader accessible text input element
   const [createdMouseDpiTextInput] = returnAccessibleTextInputElements([
     {
       description: {
@@ -291,7 +291,7 @@ function CreateMouse({
   //    MOUSE BUTTONS
   // ╰─────────────────────────────────────────────────────────────────╯
 
-  // screenreader error/valid text elements
+  // error/valid text elements
   const [mouseButtonsInputErrorText, mouseButtonsInputValidText] =
     AccessibleErrorValidTextElements({
       inputElementKind: 'mouse buttons quantity',
@@ -304,7 +304,7 @@ function CreateMouse({
       }),
     });
 
-  // accessible text input element creator
+  // screenreader accessible text input element
   const [createdMouseButtonsTextInput] = returnAccessibleTextInputElements([
     {
       description: {
@@ -342,7 +342,7 @@ function CreateMouse({
   //    MOUSE COLOR
   // ╰─────────────────────────────────────────────────────────────────╯
 
-  // screenreader error/valid text elements
+  // error/valid text elements
   const [mouseColorInputErrorText, mouseColorInputValidText] =
     AccessibleErrorValidTextElements({
       inputElementKind: 'mouse color',
@@ -357,7 +357,7 @@ function CreateMouse({
       }),
     });
 
-  // accessible text input element creator
+  // screenreader accessible text input element
   const [createdMouseColorTextInput] = returnAccessibleTextInputElements([
     {
       description: {
@@ -456,7 +456,7 @@ function CreateMouse({
     ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    SCREENREADER ERROR/VALID ELEMENTS TUPLE => FIELD NAMES
+  //    ERROR/VALID ELEMENTS TUPLE => FIELD NAMES
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // returns an array of tuples containing the error and valid text elements for each field name
@@ -466,7 +466,7 @@ function CreateMouse({
   ][] = Array.from(mouseFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [field, _value]] = keyFieldValue;
 
-    // screenreader error/valid text elements that are consumed by the text input element creator
+    // error/valid text elements that are consumed by the text input element creator
     const [
       mouseFieldsAdditionalMapKeysInputErrorText,
       mouseFieldsAdditionalMapKeysInputValidText,
@@ -492,7 +492,7 @@ function CreateMouse({
   });
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    SCREENREADER ERROR/VALID ELEMENTS TUPLE => FIELD VALUES
+  //    ERROR/VALID ELEMENTS TUPLE => FIELD VALUES
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // returns an array of tuples containing the error and valid text elements for each field value
@@ -502,7 +502,7 @@ function CreateMouse({
   ][] = Array.from(mouseFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [_field, value]] = keyFieldValue;
 
-    // screenreader error/valid text elements that are consumed by the text input element creator
+    // error/valid text elements that are consumed by the text input element creator
     const [
       mouseFieldsAdditionalMapValuesInputErrorText,
       mouseFieldsAdditionalMapValuesInputValidText,
@@ -533,7 +533,7 @@ function CreateMouse({
     const [mapKey, [field, value]] = keyFieldValue;
 
     // ╭─────────────────────────────────────────────────────────────────╮
-    //    ADDITIONAL FIELD TEXT INPUT => FIELD NAME
+    //    ADDITIONAL FIELD ACCESSIBLE TEXT INPUT => FIELD NAME
     // ╰─────────────────────────────────────────────────────────────────╯
     const mouseFieldsAdditionalMapKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
@@ -591,7 +591,7 @@ function CreateMouse({
       };
 
     // ╭─────────────────────────────────────────────────────────────────╮
-    //    ADDITIONAL FIELD TEXT INPUT => FIELD VALUE
+    //    ADDITIONAL FIELD ACCESSIBLE TEXT INPUT => FIELD VALUE
     // ╰─────────────────────────────────────────────────────────────────╯
     const mouseFieldsAdditionalMapValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {

@@ -175,7 +175,7 @@ function CreatePsu({
   //    PSU WATTAGE
   // ╰─────────────────────────────────────────────────────────────────╯
 
-  // screenreader error/valid text elements
+  // error/valid text elements
   const [psuWattageInputErrorText, psuWattageInputValidText] =
     AccessibleErrorValidTextElements({
       inputElementKind: 'psu wattage',
@@ -188,7 +188,7 @@ function CreatePsu({
       }),
     });
 
-  // accessible text input element creator
+  // screenreader accessible text input element
   const [createdPsuWattageTextInput] = returnAccessibleTextInputElements([
     {
       description: {
@@ -327,7 +327,7 @@ function CreatePsu({
     ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    SCREENREADER ERROR/VALID ELEMENTS TUPLE => FIELD NAMES
+  //    ERROR/VALID ELEMENTS TUPLE => FIELD NAMES
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // returns an array of tuples containing the error and valid text elements for each field name
@@ -337,7 +337,7 @@ function CreatePsu({
   ][] = Array.from(psuFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [field, _value]] = keyFieldValue;
 
-    // screenreader error/valid text elements that are consumed by the text input element creator
+    // error/valid text elements that are consumed by the text input element creator
     const [
       psuFieldsAdditionalMapKeysInputErrorText,
       psuFieldsAdditionalMapKeysInputValidText,
@@ -363,7 +363,7 @@ function CreatePsu({
   });
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    SCREENREADER ERROR/VALID ELEMENTS TUPLE => FIELD VALUES
+  //    ERROR/VALID ELEMENTS TUPLE => FIELD VALUES
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // returns an array of tuples containing the error and valid text elements for each field value
@@ -373,7 +373,7 @@ function CreatePsu({
   ][] = Array.from(psuFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [_field, value]] = keyFieldValue;
 
-    // screenreader error/valid text elements that are consumed by the text input element creator
+    // error/valid text elements that are consumed by the text input element creator
     const [
       psuFieldsAdditionalMapValuesInputErrorText,
       psuFieldsAdditionalMapValuesInputValidText,
@@ -404,7 +404,7 @@ function CreatePsu({
     const [mapKey, [field, value]] = keyFieldValue;
 
     // ╭─────────────────────────────────────────────────────────────────╮
-    //    ADDITIONAL FIELD TEXT INPUT => FIELD NAME
+    //    ADDITIONAL FIELD ACCESSIBLE TEXT INPUT => FIELD NAME
     // ╰─────────────────────────────────────────────────────────────────╯
     const psuFieldsAdditionalMapKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
@@ -462,7 +462,7 @@ function CreatePsu({
       };
 
     // ╭─────────────────────────────────────────────────────────────────╮
-    //    ADDITIONAL FIELD TEXT INPUT => FIELD VALUE
+    //    ADDITIONAL FIELD ACCESSIBLE TEXT INPUT => FIELD VALUE
     // ╰─────────────────────────────────────────────────────────────────╯
     const psuFieldsAdditionalMapValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {

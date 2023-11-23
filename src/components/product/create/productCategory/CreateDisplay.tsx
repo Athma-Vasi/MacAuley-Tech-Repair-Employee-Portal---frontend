@@ -294,7 +294,7 @@ function CreateDisplay({
   //    DISPLAY SIZE
   // ╰─────────────────────────────────────────────────────────────────╯
 
-  // screenreader error/valid text elements
+  // error/valid text elements
   const [displaySizeInputErrorText, displaySizeInputValidText] =
     AccessibleErrorValidTextElements({
       inputElementKind: 'display size',
@@ -307,7 +307,7 @@ function CreateDisplay({
       }),
     });
 
-  // accessible text input element creator
+  // screenreader accessible text input element
   const [createdDisplaySizeTextInput] = returnAccessibleTextInputElements([
     {
       description: {
@@ -345,7 +345,7 @@ function CreateDisplay({
   //    DISPLAY RESOLUTION HORIZONTAL
   // ╰─────────────────────────────────────────────────────────────────╯
 
-  // screenreader error/valid text elements
+  // error/valid text elements
   const [
     displayResolutionHorizontalInputErrorText,
     displayResolutionHorizontalInputValidText,
@@ -360,7 +360,7 @@ function CreateDisplay({
     }),
   });
 
-  // accessible text input element creator
+  // screenreader accessible text input element
   const [createdDisplayResolutionHorizontalTextInput] =
     returnAccessibleTextInputElements([
       {
@@ -399,7 +399,7 @@ function CreateDisplay({
   //    DISPLAY RESOLUTION VERTICAL
   // ╰─────────────────────────────────────────────────────────────────╯
 
-  // screenreader error/valid text elements
+  // error/valid text elements
   const [
     displayResolutionVerticalInputErrorText,
     displayResolutionVerticalInputValidText,
@@ -414,7 +414,7 @@ function CreateDisplay({
     }),
   });
 
-  // accessible text input element creator
+  // screenreader accessible text input element
   const [createdDisplayResolutionVerticalTextInput] =
     returnAccessibleTextInputElements([
       {
@@ -453,7 +453,7 @@ function CreateDisplay({
   //    DISPLAY REFRESH RATE
   // ╰─────────────────────────────────────────────────────────────────╯
 
-  // screenreader error/valid text elements
+  // error/valid text elements
   const [displayRefreshRateInputErrorText, displayRefreshRateInputValidText] =
     AccessibleErrorValidTextElements({
       inputElementKind: 'display refresh rate',
@@ -466,7 +466,7 @@ function CreateDisplay({
       }),
     });
 
-  // accessible text input element creator
+  // screenreader accessible text input element
   const [createdDisplayRefreshRateTextInput] =
     returnAccessibleTextInputElements([
       {
@@ -525,7 +525,7 @@ function CreateDisplay({
   //    DISPLAY RESPONSE TIME
   // ╰─────────────────────────────────────────────────────────────────╯
 
-  // screenreader error/valid text elements
+  // error/valid text elements
   const [displayResponseTimeInputErrorText, displayResponseTimeInputValidText] =
     AccessibleErrorValidTextElements({
       inputElementKind: 'display response time',
@@ -538,7 +538,7 @@ function CreateDisplay({
       }),
     });
 
-  // accessible text input element creator
+  // screenreader accessible text input element
   const [createdDisplayResponseTimeTextInput] =
     returnAccessibleTextInputElements([
       {
@@ -577,7 +577,7 @@ function CreateDisplay({
   //    DISPLAY ASPECT RATIO
   // ╰─────────────────────────────────────────────────────────────────╯
 
-  // screenreader error/valid text elements
+  // error/valid text elements
   const [displayAspectRatioInputErrorText, displayAspectRatioInputValidText] =
     AccessibleErrorValidTextElements({
       inputElementKind: 'display aspect ratio',
@@ -592,7 +592,7 @@ function CreateDisplay({
       }),
     });
 
-  // accessible text input element creator
+  // screenreader accessible text input element
   const [createdDisplayAspectRatioTextInput] =
     returnAccessibleTextInputElements([
       {
@@ -672,7 +672,7 @@ function CreateDisplay({
     ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    SCREENREADER ERROR/VALID ELEMENTS TUPLE => FIELD NAMES
+  //    ERROR/VALID ELEMENTS TUPLE => FIELD NAMES
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // returns an array of tuples containing the error and valid text elements for each field name
@@ -682,7 +682,7 @@ function CreateDisplay({
   ][] = Array.from(displayFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [field, _value]] = keyFieldValue;
 
-    // screenreader error/valid text elements that are consumed by the text input element creator
+    // error/valid text elements that are consumed by the text input element creator
     const [
       displayFieldsAdditionalMapKeysInputErrorText,
       displayFieldsAdditionalMapKeysInputValidText,
@@ -708,7 +708,7 @@ function CreateDisplay({
   });
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    SCREENREADER ERROR/VALID ELEMENTS TUPLE => FIELD VALUES
+  //    ERROR/VALID ELEMENTS TUPLE => FIELD VALUES
   // ╰─────────────────────────────────────────────────────────────────╯
   // returns an array of tuples containing the error and valid text elements for each field value
   const displayFieldsAdditionalMapValuesErrorValidTextElements: [
@@ -717,7 +717,7 @@ function CreateDisplay({
   ][] = Array.from(displayFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [_field, value]] = keyFieldValue;
 
-    // screenreader error/valid text elements that are consumed by the text input element creator
+    // error/valid text elements that are consumed by the text input element creator
     const [
       displayFieldsAdditionalMapValuesInputErrorText,
       displayFieldsAdditionalMapValuesInputValidText,
@@ -748,7 +748,7 @@ function CreateDisplay({
     const [mapKey, [field, value]] = keyFieldValue;
 
     // ╭─────────────────────────────────────────────────────────────────╮
-    //    ADDITIONAL FIELD TEXT INPUT => FIELD NAME
+    //    ADDITIONAL FIELD ACCESSIBLE TEXT INPUT => FIELD NAME
     // ╰─────────────────────────────────────────────────────────────────╯
     const displayFieldsAdditionalMapKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
@@ -808,7 +808,7 @@ function CreateDisplay({
       };
 
     // ╭─────────────────────────────────────────────────────────────────╮
-    //    ADDITIONAL FIELD TEXT INPUT => FIELD VALUE
+    //    ADDITIONAL FIELD ACCESSIBLE TEXT INPUT => FIELD VALUE
     // ╰─────────────────────────────────────────────────────────────────╯
     const displayFieldsAdditionalMapValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
