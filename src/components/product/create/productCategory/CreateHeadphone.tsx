@@ -43,15 +43,15 @@ import {
 } from '../types';
 
 type CreateHeadphoneProps = {
-  areHeadphoneFieldsAdditionalFocused: Map<number, [boolean, boolean]>;
-  areHeadphoneFieldsAdditionalValid: Map<number, [boolean, boolean]>;
+  areHeadphoneFieldsAdditionalMapFocused: Map<number, [boolean, boolean]>;
+  areHeadphoneFieldsAdditionalMapValid: Map<number, [boolean, boolean]>;
   borderColor: string;
   createProductAction: CreateProductAction;
   createProductDispatch: React.Dispatch<CreateProductDispatch>;
   currentlySelectedAdditionalFieldIndex: number;
   headphoneColor: string;
   headphoneDriver: string;
-  headphoneFieldsAdditional: Map<number, [string, string]>;
+  headphoneFieldsAdditionalMap: Map<number, [string, string]>;
   headphoneFrequencyResponse: string;
   headphoneImpedance: string;
   headphoneInterface: HeadphoneInterface;
@@ -68,15 +68,15 @@ type CreateHeadphoneProps = {
 };
 
 function CreateHeadphone({
-  areHeadphoneFieldsAdditionalFocused,
-  areHeadphoneFieldsAdditionalValid,
+  areHeadphoneFieldsAdditionalMapFocused,
+  areHeadphoneFieldsAdditionalMapValid,
   borderColor,
   createProductAction,
   createProductDispatch,
   currentlySelectedAdditionalFieldIndex,
   headphoneColor,
   headphoneDriver,
-  headphoneFieldsAdditional,
+  headphoneFieldsAdditionalMap,
   headphoneFrequencyResponse,
   headphoneImpedance,
   headphoneInterface,
@@ -91,11 +91,11 @@ function CreateHeadphone({
   isHeadphoneImpedanceValid,
   padding,
 }: CreateHeadphoneProps) {
-  // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
   //  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
   //    VALIDATION USE EFFECTS
   //  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
-  // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+  // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
   // ╭─────────────────────────────────────────────────────────────────╮
   //    HEADPHONE DRIVER
@@ -166,7 +166,7 @@ function CreateHeadphone({
   // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
     const currentlyUpdatingHeadphoneFieldAdditional =
-      headphoneFieldsAdditional.get(currentlySelectedAdditionalFieldIndex);
+      headphoneFieldsAdditionalMap.get(currentlySelectedAdditionalFieldIndex);
 
     if (!currentlyUpdatingHeadphoneFieldAdditional) {
       return;
@@ -176,7 +176,7 @@ function CreateHeadphone({
 
     const isKeyValid = OBJECT_KEY_REGEX.test(key);
     createProductDispatch({
-      type: createProductAction.setAreHeadphoneFieldsAdditionalValid,
+      type: createProductAction.setAreHeadphoneFieldsAdditionalMapValid,
       payload: {
         operation: 'update',
         data: isKeyValid,
@@ -187,7 +187,7 @@ function CreateHeadphone({
 
     const isValueValid = USER_DEFINED_VALUE_REGEX.test(value);
     createProductDispatch({
-      type: createProductAction.setAreHeadphoneFieldsAdditionalValid,
+      type: createProductAction.setAreHeadphoneFieldsAdditionalMapValid,
       payload: {
         operation: 'update',
         data: isValueValid,
@@ -196,10 +196,10 @@ function CreateHeadphone({
       },
     });
   }, [
-    createProductAction.setAreHeadphoneFieldsAdditionalValid,
+    createProductAction.setAreHeadphoneFieldsAdditionalMapValid,
     createProductDispatch,
     currentlySelectedAdditionalFieldIndex,
-    headphoneFieldsAdditional,
+    headphoneFieldsAdditionalMap,
   ]);
 
   // ╔═════════════════════════════════════════════════════════════════╗
@@ -217,7 +217,7 @@ function CreateHeadphone({
       !isHeadphoneColorValid;
 
     const areHeadphoneInputsUserDefinedInError = Array.from(
-      areHeadphoneFieldsAdditionalValid
+      areHeadphoneFieldsAdditionalMapValid
     ).some(([_key, value]) => !value);
 
     const areHeadphoneInputsInError =
@@ -232,7 +232,7 @@ function CreateHeadphone({
       },
     });
   }, [
-    areHeadphoneFieldsAdditionalValid,
+    areHeadphoneFieldsAdditionalMapValid,
     createProductAction.setStepsInError,
     createProductDispatch,
     isHeadphoneColorValid,
@@ -241,11 +241,11 @@ function CreateHeadphone({
     isHeadphoneImpedanceValid,
   ]);
 
-  // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
   //  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
   //    INPUT CREATION
   //  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
-  // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+  // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
   // ╭─────────────────────────────────────────────────────────────────╮
   //    HEADPHONE TYPE
@@ -511,7 +511,7 @@ function CreateHeadphone({
   // ╭─────────────────────────────────────────────────────────────────╮
   //    ADD ADDITIONAL FIELD BUTTON
   // ╰─────────────────────────────────────────────────────────────────╯
-  const [createdAddHeadphoneFieldsAdditionalButton] =
+  const [createdAddHeadphoneFieldsAdditionalMapButton] =
     returnAccessibleButtonElements([
       {
         buttonLabel: 'Add',
@@ -520,7 +520,7 @@ function CreateHeadphone({
         leftIcon: <TbPlus />,
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
           createProductDispatch({
-            type: createProductAction.setHeadphoneFieldsAdditional,
+            type: createProductAction.setHeadphoneFieldsAdditionalMap,
             payload: {
               operation: 'add',
               data: ['', ''],
@@ -528,7 +528,7 @@ function CreateHeadphone({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreHeadphoneFieldsAdditionalFocused,
+            type: createProductAction.setAreHeadphoneFieldsAdditionalMapFocused,
             payload: {
               operation: 'add',
               data: [false, false],
@@ -536,7 +536,7 @@ function CreateHeadphone({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreHeadphoneFieldsAdditionalValid,
+            type: createProductAction.setAreHeadphoneFieldsAdditionalMapValid,
             payload: {
               operation: 'add',
               data: [false, false],
@@ -547,27 +547,27 @@ function CreateHeadphone({
     ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    ERROR/VALID ELEMENTS TUPLE => FIELD NAMES
+  //    SCREENREADER ERROR/VALID ELEMENTS TUPLE => FIELD NAMES
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // returns an array of tuples containing the error and valid text elements for each field name
-  const headphoneFieldsAdditionalKeysErrorValidTextElements: [
+  const headphoneFieldsAdditionalMapKeysErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(headphoneFieldsAdditional).map((keyFieldValue) => {
+  ][] = Array.from(headphoneFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [field, _value]] = keyFieldValue;
 
     // screenreader error/valid text elements that are consumed by the text input element creator
     const [
-      headphoneFieldsAdditionalKeysInputErrorText,
-      headphoneFieldsAdditionalKeysInputValidText,
+      headphoneFieldsAdditionalMapKeysInputErrorText,
+      headphoneFieldsAdditionalMapKeysInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field name ${mapKey + 1}`,
       inputText: field,
       isInputTextFocused:
-        areHeadphoneFieldsAdditionalFocused.get(mapKey)?.[0] ?? false,
+        areHeadphoneFieldsAdditionalMapFocused.get(mapKey)?.[0] ?? false,
       isValidInputText:
-        areHeadphoneFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+        areHeadphoneFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
       regexValidationText: returnObjectKeyValidationText({
         content: field,
         contentKind: `additional field name ${mapKey + 1}`,
@@ -577,33 +577,33 @@ function CreateHeadphone({
     });
 
     return [
-      headphoneFieldsAdditionalKeysInputErrorText,
-      headphoneFieldsAdditionalKeysInputValidText,
+      headphoneFieldsAdditionalMapKeysInputErrorText,
+      headphoneFieldsAdditionalMapKeysInputValidText,
     ];
   });
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    ERROR/VALID ELEMENTS TUPLE => FIELD VALUES
+  //    SCREENREADER ERROR/VALID ELEMENTS TUPLE => FIELD VALUES
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // returns an array of tuples containing the error and valid text elements for each field value
-  const headphoneFieldsAdditionalValuesErrorValidTextElements: [
+  const headphoneFieldsAdditionalMapValuesErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(headphoneFieldsAdditional).map((keyFieldValue) => {
+  ][] = Array.from(headphoneFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [_field, value]] = keyFieldValue;
 
     // screenreader error/valid text elements that are consumed by the text input element creator
     const [
-      headphoneFieldsAdditionalValuesInputErrorText,
-      headphoneFieldsAdditionalValuesInputValidText,
+      headphoneFieldsAdditionalMapValuesInputErrorText,
+      headphoneFieldsAdditionalMapValuesInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field value ${mapKey + 1}`,
       inputText: value,
       isInputTextFocused:
-        areHeadphoneFieldsAdditionalFocused.get(mapKey)?.[1] ?? false,
+        areHeadphoneFieldsAdditionalMapFocused.get(mapKey)?.[1] ?? false,
       isValidInputText:
-        areHeadphoneFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+        areHeadphoneFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
       regexValidationText: returnUserDefinedFieldValueValidationText({
         content: value,
         contentKind: `additional field value ${mapKey + 1}`,
@@ -613,34 +613,36 @@ function CreateHeadphone({
     });
 
     return [
-      headphoneFieldsAdditionalValuesInputErrorText,
-      headphoneFieldsAdditionalValuesInputValidText,
+      headphoneFieldsAdditionalMapValuesInputErrorText,
+      headphoneFieldsAdditionalMapValuesInputValidText,
     ];
   });
 
-  const createdHeadphoneFieldsAdditionalTextInputElements = Array.from(
-    headphoneFieldsAdditional
+  const createdHeadphoneFieldsAdditionalMapTextInputElements = Array.from(
+    headphoneFieldsAdditionalMap
   ).map((keyFieldValue) => {
     const [mapKey, [field, value]] = keyFieldValue;
 
     // ╭─────────────────────────────────────────────────────────────────╮
     //    ADDITIONAL FIELD TEXT INPUT => FIELD NAME
     // ╰─────────────────────────────────────────────────────────────────╯
-    const headphoneFieldsAdditionalKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const headphoneFieldsAdditionalMapKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
-          error: headphoneFieldsAdditionalKeysErrorValidTextElements[mapKey][0],
-          valid: headphoneFieldsAdditionalKeysErrorValidTextElements[mapKey][1],
+          error:
+            headphoneFieldsAdditionalMapKeysErrorValidTextElements[mapKey][0],
+          valid:
+            headphoneFieldsAdditionalMapKeysErrorValidTextElements[mapKey][1],
         },
         inputText: field,
         isValidInputText:
-          areHeadphoneFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+          areHeadphoneFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
         label: `Name ${mapKey + 1}`,
         maxLength: 75,
         minLength: 1,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreHeadphoneFieldsAdditionalFocused,
+            type: createProductAction.setAreHeadphoneFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -651,7 +653,7 @@ function CreateHeadphone({
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setHeadphoneFieldsAdditional,
+            type: createProductAction.setHeadphoneFieldsAdditionalMap,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -667,7 +669,7 @@ function CreateHeadphone({
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreHeadphoneFieldsAdditionalFocused,
+            type: createProductAction.setAreHeadphoneFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -684,23 +686,23 @@ function CreateHeadphone({
     // ╭─────────────────────────────────────────────────────────────────╮
     //    ADDITIONAL FIELD TEXT INPUT => FIELD VALUE
     // ╰─────────────────────────────────────────────────────────────────╯
-    const headphoneFieldsAdditionalValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const headphoneFieldsAdditionalMapValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
           error:
-            headphoneFieldsAdditionalValuesErrorValidTextElements[mapKey][0],
+            headphoneFieldsAdditionalMapValuesErrorValidTextElements[mapKey][0],
           valid:
-            headphoneFieldsAdditionalValuesErrorValidTextElements[mapKey][1],
+            headphoneFieldsAdditionalMapValuesErrorValidTextElements[mapKey][1],
         },
         inputText: value,
         isValidInputText:
-          areHeadphoneFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+          areHeadphoneFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
         label: `Value ${mapKey + 1}`,
         maxLength: 2000,
         minLength: 2,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreHeadphoneFieldsAdditionalFocused,
+            type: createProductAction.setAreHeadphoneFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -711,7 +713,7 @@ function CreateHeadphone({
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setHeadphoneFieldsAdditional,
+            type: createProductAction.setHeadphoneFieldsAdditionalMap,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -727,7 +729,7 @@ function CreateHeadphone({
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreHeadphoneFieldsAdditionalFocused,
+            type: createProductAction.setAreHeadphoneFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -742,11 +744,11 @@ function CreateHeadphone({
       };
 
     const [
-      createdHeadphoneFieldsAdditionalKeysTextAreaInput,
-      createdHeadphoneFieldsAdditionalValuesTextAreaInput,
+      createdHeadphoneFieldsAdditionalMapKeysTextAreaInput,
+      createdHeadphoneFieldsAdditionalMapValuesTextAreaInput,
     ] = returnAccessibleTextAreaInputElements([
-      headphoneFieldsAdditionalKeysTextInputCreatorInfo,
-      headphoneFieldsAdditionalValuesTextInputCreatorInfo,
+      headphoneFieldsAdditionalMapKeysTextInputCreatorInfo,
+      headphoneFieldsAdditionalMapValuesTextInputCreatorInfo,
     ]);
 
     // ╭─────────────────────────────────────────────────────────────────╮
@@ -757,7 +759,7 @@ function CreateHeadphone({
         buttonLabel: 'Delete',
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
           createProductDispatch({
-            type: createProductAction.setHeadphoneFieldsAdditional,
+            type: createProductAction.setHeadphoneFieldsAdditionalMap,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -765,7 +767,7 @@ function CreateHeadphone({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreHeadphoneFieldsAdditionalFocused,
+            type: createProductAction.setAreHeadphoneFieldsAdditionalMapFocused,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -773,7 +775,7 @@ function CreateHeadphone({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreHeadphoneFieldsAdditionalValid,
+            type: createProductAction.setAreHeadphoneFieldsAdditionalMapValid,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -798,7 +800,11 @@ function CreateHeadphone({
     );
 
     return (
-      <Stack key={`headphoneFieldsAdditional-${mapKey}`} pt={padding} w="100%">
+      <Stack
+        key={`headphoneFieldsAdditionalMap-${mapKey}`}
+        pt={padding}
+        w="100%"
+      >
         <Group position="apart">
           <Text size="md" weight={600}>{`Additional Headphone field ${
             mapKey + 1
@@ -806,24 +812,26 @@ function CreateHeadphone({
           {displayDeleteButton}
         </Group>
         <Group position="apart">
-          {createdHeadphoneFieldsAdditionalKeysTextAreaInput}
-          {createdHeadphoneFieldsAdditionalValuesTextAreaInput}
+          {createdHeadphoneFieldsAdditionalMapKeysTextAreaInput}
+          {createdHeadphoneFieldsAdditionalMapValuesTextAreaInput}
         </Group>
       </Stack>
     );
   });
 
-  // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
   //  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
   //    INPUT DISPLAY
   //  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
-  // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+  // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
-  const displayHeadphoneFieldsAdditionalButton = (
+  const displayHeadphoneFieldsAdditionalMapButton = (
     <Tooltip
-      label={`Add new additional field ${headphoneFieldsAdditional.size + 1}`}
+      label={`Add new additional field ${
+        headphoneFieldsAdditionalMap.size + 1
+      }`}
     >
-      <Group>{createdAddHeadphoneFieldsAdditionalButton}</Group>
+      <Group>{createdAddHeadphoneFieldsAdditionalMapButton}</Group>
     </Tooltip>
   );
 
@@ -836,7 +844,7 @@ function CreateHeadphone({
     >
       <Group w="100%" position="apart">
         <Title order={4}>Headphone Specifications</Title>
-        {displayHeadphoneFieldsAdditionalButton}
+        {displayHeadphoneFieldsAdditionalMapButton}
       </Group>
       {createdHeadphoneTypeSelectInput}
       {createdHeadphoneDriverTextInput}
@@ -844,7 +852,7 @@ function CreateHeadphone({
       {createdHeadphoneImpedanceTextInput}
       {createdHeadphoneColorTextInput}
       {createdHeadphoneInterfaceSelectInput}
-      {createdHeadphoneFieldsAdditionalTextInputElements}
+      {createdHeadphoneFieldsAdditionalMapTextInputElements}
     </Group>
   );
 

@@ -266,9 +266,9 @@ function CreateProduct() {
     cpuWattage,
     isCpuWattageFocused,
     isCpuWattageValid,
-    cpuFieldsAdditional,
-    areCpuFieldsAdditionalFocused,
-    areCpuFieldsAdditionalValid,
+    cpuFieldsAdditionalMap,
+    areCpuFieldsAdditionalMapFocused,
+    areCpuFieldsAdditionalMapValid,
 
     // page 2 -> specifications -> gpu
     gpuChipset,
@@ -287,9 +287,9 @@ function CreateProduct() {
     gpuTdp,
     isGpuTdpFocused,
     isGpuTdpValid,
-    gpuFieldsAdditional,
-    areGpuFieldsAdditionalFocused,
-    areGpuFieldsAdditionalValid,
+    gpuFieldsAdditionalMap,
+    areGpuFieldsAdditionalMapFocused,
+    areGpuFieldsAdditionalMapValid,
 
     // page 2 -> specifications -> motherboard
     motherboardSocket,
@@ -322,9 +322,9 @@ function CreateProduct() {
     motherboardPcie5Slots,
     isMotherboardPcie5SlotsFocused,
     isMotherboardPcie5SlotsValid,
-    motherboardFieldsAdditional,
-    areMotherboardFieldsAdditionalFocused,
-    areMotherboardFieldsAdditionalValid,
+    motherboardFieldsAdditionalMap,
+    areMotherboardFieldsAdditionalMapFocused,
+    areMotherboardFieldsAdditionalMapValid,
 
     // page 2 -> specifications -> ram
     ramDataRate,
@@ -347,9 +347,9 @@ function CreateProduct() {
     ramTiming,
     isRamTimingFocused,
     isRamTimingValid,
-    ramFieldsAdditional,
-    areRamFieldsAdditionalFocused,
-    areRamFieldsAdditionalValid,
+    ramFieldsAdditionalMap,
+    areRamFieldsAdditionalMapFocused,
+    areRamFieldsAdditionalMapValid,
 
     // page 2 -> specifications -> storage
     storageType,
@@ -363,9 +363,9 @@ function CreateProduct() {
     storageCacheCapacityUnit,
     storageFormFactor,
     storageInterface,
-    storageFieldsAdditional,
-    areStorageFieldsAdditionalFocused,
-    areStorageFieldsAdditionalValid,
+    storageFieldsAdditionalMap,
+    areStorageFieldsAdditionalMapFocused,
+    areStorageFieldsAdditionalMapValid,
 
     // page 2 -> specifications -> psu
     psuWattage,
@@ -374,9 +374,9 @@ function CreateProduct() {
     psuEfficiency,
     psuModularity,
     psuFormFactor,
-    psuFieldsAdditional,
-    arePsuFieldsAdditionalFocused,
-    arePsuFieldsAdditionalValid,
+    psuFieldsAdditionalMap,
+    arePsuFieldsAdditionalMapFocused,
+    arePsuFieldsAdditionalMapValid,
 
     // page 2 -> specifications -> case
     caseType,
@@ -384,9 +384,9 @@ function CreateProduct() {
     isCaseColorFocused,
     isCaseColorValid,
     caseSidePanel,
-    caseFieldsAdditional,
-    areCaseFieldsAdditionalFocused,
-    areCaseFieldsAdditionalValid,
+    caseFieldsAdditionalMap,
+    areCaseFieldsAdditionalMapFocused,
+    areCaseFieldsAdditionalMapValid,
 
     // page 2 -> specifications -> display
     displaySize,
@@ -408,18 +408,18 @@ function CreateProduct() {
     displayAspectRatio,
     isDisplayAspectRatioFocused,
     isDisplayAspectRatioValid,
-    displayFieldsAdditional,
-    areDisplayFieldsAdditionalFocused,
-    areDisplayFieldsAdditionalValid,
+    displayFieldsAdditionalMap,
+    areDisplayFieldsAdditionalMapFocused,
+    areDisplayFieldsAdditionalMapValid,
 
     // page 2 -> specifications -> keyboard
     keyboardSwitch,
     keyboardLayout,
     keyboardBacklight,
     keyboardInterface,
-    keyboardFieldsAdditional,
-    areKeyboardFieldsAdditionalFocused,
-    areKeyboardFieldsAdditionalValid,
+    keyboardFieldsAdditionalMap,
+    areKeyboardFieldsAdditionalMapFocused,
+    areKeyboardFieldsAdditionalMapValid,
 
     // page 2 -> specifications -> mouse
     mouseSensor,
@@ -433,9 +433,9 @@ function CreateProduct() {
     isMouseColorFocused,
     isMouseColorValid,
     mouseInterface,
-    mouseFieldsAdditional,
-    areMouseFieldsAdditionalFocused,
-    areMouseFieldsAdditionalValid,
+    mouseFieldsAdditionalMap,
+    areMouseFieldsAdditionalMapFocused,
+    areMouseFieldsAdditionalMapValid,
 
     // page 2 -> specifications -> headphone
     headphoneType,
@@ -452,9 +452,9 @@ function CreateProduct() {
     isHeadphoneImpedanceFocused,
     isHeadphoneImpedanceValid,
     headphoneInterface,
-    headphoneFieldsAdditional,
-    areHeadphoneFieldsAdditionalFocused,
-    areHeadphoneFieldsAdditionalValid,
+    headphoneFieldsAdditionalMap,
+    areHeadphoneFieldsAdditionalMapFocused,
+    areHeadphoneFieldsAdditionalMapValid,
 
     // page 2 -> specifications -> speaker
     speakerType,
@@ -468,9 +468,9 @@ function CreateProduct() {
     isSpeakerTotalWattageFocused,
     isSpeakerTotalWattageValid,
     speakerInterface,
-    speakerFieldsAdditional,
-    areSpeakerFieldsAdditionalFocused,
-    areSpeakerFieldsAdditionalValid,
+    speakerFieldsAdditionalMap,
+    areSpeakerFieldsAdditionalMapFocused,
+    areSpeakerFieldsAdditionalMapValid,
 
     // page 2 -> specifications -> smartphone
     smartphoneBatteryCapacity,
@@ -502,9 +502,9 @@ function CreateProduct() {
     smartphoneStorageCapacity,
     isSmartphoneStorageCapacityFocused,
     isSmartphoneStorageCapacityValid,
-    smartphoneFieldsAdditional,
-    areSmartphoneFieldsAdditionalFocused,
-    areSmartphoneFieldsAdditionalValid,
+    smartphoneFieldsAdditionalMap,
+    areSmartphoneFieldsAdditionalMapFocused,
+    areSmartphoneFieldsAdditionalMapValid,
 
     // page 2 -> specifications -> tablet
     tabletBatteryCapacity,
@@ -536,9 +536,9 @@ function CreateProduct() {
     tabletStorageCapacity,
     isTabletStorageCapacityFocused,
     isTabletStorageCapacityValid,
-    tabletFieldsAdditional,
-    areTabletFieldsAdditionalFocused,
-    areTabletFieldsAdditionalValid,
+    tabletFieldsAdditionalMap,
+    areTabletFieldsAdditionalMapFocused,
+    areTabletFieldsAdditionalMapValid,
 
     // page 2 -> specifications -> accessory
     accessoryType,
@@ -548,9 +548,9 @@ function CreateProduct() {
     isAccessoryColorFocused,
     isAccessoryColorValid,
     accessoryInterface,
-    accessoryFieldsAdditional,
-    areAccessoryFieldsAdditionalFocused,
-    areAccessoryFieldsAdditionalValid,
+    accessoryFieldsAdditionalMap,
+    areAccessoryFieldsAdditionalMapFocused,
+    areAccessoryFieldsAdditionalMapValid,
     currentlySelectedAdditionalFieldIndex,
 
     // page 2 -> specifications -> webcam
@@ -561,9 +561,9 @@ function CreateProduct() {
     webcamInterface,
     webcamMicrophone,
     webcamResolution,
-    webcamFieldsAdditional,
-    areWebcamFieldsAdditionalFocused,
-    areWebcamFieldsAdditionalValid,
+    webcamFieldsAdditionalMap,
+    areWebcamFieldsAdditionalMapFocused,
+    areWebcamFieldsAdditionalMapValid,
 
     // page 2 -> specifications -> microphone
     microphoneColor,
@@ -575,9 +575,9 @@ function CreateProduct() {
     microphoneFrequencyResponse,
     isMicrophoneFrequencyResponseFocused,
     isMicrophoneFrequencyResponseValid,
-    microphoneFieldsAdditional,
-    areMicrophoneFieldsAdditionalFocused,
-    areMicrophoneFieldsAdditionalValid,
+    microphoneFieldsAdditionalMap,
+    areMicrophoneFieldsAdditionalMapFocused,
+    areMicrophoneFieldsAdditionalMapValid,
 
     // page 3
     imgFormDataArray,
@@ -908,8 +908,8 @@ function CreateProduct() {
           };
 
           // request body -> page 2 -> specifications -> accessory
-          const accessoryFieldsAdditionalRequestBody = Array.from(
-            accessoryFieldsAdditional
+          const accessoryFieldsAdditionalMapRequestBody = Array.from(
+            accessoryFieldsAdditionalMap
           ).reduce((acc, [key, tuple]) => {
             const [field, value] = tuple;
             acc[field] = value;
@@ -922,7 +922,7 @@ function CreateProduct() {
             accessoryColor,
             accessoryInterface,
             userDefinedFields: {
-              ...accessoryFieldsAdditionalRequestBody,
+              ...accessoryFieldsAdditionalMapRequestBody,
             },
           };
 
@@ -1316,7 +1316,7 @@ function CreateProduct() {
 
   // page 2 -> cpu -> additional fields
   useEffect(() => {
-    const currentlyUpdatingCpuFieldAdditional = cpuFieldsAdditional.get(
+    const currentlyUpdatingCpuFieldAdditional = cpuFieldsAdditionalMap.get(
       currentlySelectedAdditionalFieldIndex
     );
 
@@ -1328,7 +1328,7 @@ function CreateProduct() {
 
     const isKeyValid = OBJECT_KEY_REGEX.test(key);
     createProductDispatch({
-      type: createProductAction.setAreCpuFieldsAdditionalValid,
+      type: createProductAction.setAreCpuFieldsAdditionalMapValid,
       payload: {
         operation: 'update',
         data: isKeyValid,
@@ -1339,7 +1339,7 @@ function CreateProduct() {
 
     const isValueValid = USER_DEFINED_VALUE_REGEX.test(value);
     createProductDispatch({
-      type: createProductAction.setAreCpuFieldsAdditionalValid,
+      type: createProductAction.setAreCpuFieldsAdditionalMapValid,
       payload: {
         operation: 'update',
         data: isValueValid,
@@ -1347,7 +1347,7 @@ function CreateProduct() {
         kind: 'value',
       },
     });
-  }, [currentlySelectedAdditionalFieldIndex, cpuFieldsAdditional]);
+  }, [currentlySelectedAdditionalFieldIndex, cpuFieldsAdditionalMap]);
 
   // page 2 -> gpu
 
@@ -1403,7 +1403,7 @@ function CreateProduct() {
 
   // page 2 -> gpu -> additional fields
   useEffect(() => {
-    const currentlyUpdatingGpuFieldAdditional = gpuFieldsAdditional.get(
+    const currentlyUpdatingGpuFieldAdditional = gpuFieldsAdditionalMap.get(
       currentlySelectedAdditionalFieldIndex
     );
 
@@ -1415,7 +1415,7 @@ function CreateProduct() {
 
     const isKeyValid = OBJECT_KEY_REGEX.test(key);
     createProductDispatch({
-      type: createProductAction.setAreGpuFieldsAdditionalValid,
+      type: createProductAction.setAreGpuFieldsAdditionalMapValid,
       payload: {
         operation: 'update',
         data: isKeyValid,
@@ -1426,7 +1426,7 @@ function CreateProduct() {
 
     const isValueValid = USER_DEFINED_VALUE_REGEX.test(value);
     createProductDispatch({
-      type: createProductAction.setAreGpuFieldsAdditionalValid,
+      type: createProductAction.setAreGpuFieldsAdditionalMapValid,
       payload: {
         operation: 'update',
         data: isValueValid,
@@ -1434,7 +1434,7 @@ function CreateProduct() {
         kind: 'value',
       },
     });
-  }, [currentlySelectedAdditionalFieldIndex, gpuFieldsAdditional]);
+  }, [currentlySelectedAdditionalFieldIndex, gpuFieldsAdditionalMap]);
 
   // page 2 -> motherboard
 
@@ -1531,7 +1531,7 @@ function CreateProduct() {
   // page 2 -> motherboard -> additional fields
   useEffect(() => {
     const currentlyUpdatingMotherboardFieldAdditional =
-      motherboardFieldsAdditional.get(currentlySelectedAdditionalFieldIndex);
+      motherboardFieldsAdditionalMap.get(currentlySelectedAdditionalFieldIndex);
 
     if (!currentlyUpdatingMotherboardFieldAdditional) {
       return;
@@ -1541,7 +1541,7 @@ function CreateProduct() {
 
     const isKeyValid = OBJECT_KEY_REGEX.test(key);
     createProductDispatch({
-      type: createProductAction.setAreMotherboardFieldsAdditionalValid,
+      type: createProductAction.setAreMotherboardFieldsAdditionalMapValid,
       payload: {
         operation: 'update',
         data: isKeyValid,
@@ -1552,7 +1552,7 @@ function CreateProduct() {
 
     const isValueValid = USER_DEFINED_VALUE_REGEX.test(value);
     createProductDispatch({
-      type: createProductAction.setAreMotherboardFieldsAdditionalValid,
+      type: createProductAction.setAreMotherboardFieldsAdditionalMapValid,
       payload: {
         operation: 'update',
         data: isValueValid,
@@ -1560,7 +1560,7 @@ function CreateProduct() {
         kind: 'value',
       },
     });
-  }, [currentlySelectedAdditionalFieldIndex, motherboardFieldsAdditional]);
+  }, [currentlySelectedAdditionalFieldIndex, motherboardFieldsAdditionalMap]);
 
   // page 2 -> ram
 
@@ -1626,7 +1626,7 @@ function CreateProduct() {
 
   // page 2 -> ram -> additional fields
   useEffect(() => {
-    const currentlyUpdatingRamFieldAdditional = ramFieldsAdditional.get(
+    const currentlyUpdatingRamFieldAdditional = ramFieldsAdditionalMap.get(
       currentlySelectedAdditionalFieldIndex
     );
 
@@ -1638,7 +1638,7 @@ function CreateProduct() {
 
     const isKeyValid = OBJECT_KEY_REGEX.test(key);
     createProductDispatch({
-      type: createProductAction.setAreRamFieldsAdditionalValid,
+      type: createProductAction.setAreRamFieldsAdditionalMapValid,
       payload: {
         operation: 'update',
         data: isKeyValid,
@@ -1649,7 +1649,7 @@ function CreateProduct() {
 
     const isValueValid = USER_DEFINED_VALUE_REGEX.test(value);
     createProductDispatch({
-      type: createProductAction.setAreRamFieldsAdditionalValid,
+      type: createProductAction.setAreRamFieldsAdditionalMapValid,
       payload: {
         operation: 'update',
         data: isValueValid,
@@ -1657,7 +1657,7 @@ function CreateProduct() {
         kind: 'value',
       },
     });
-  }, [currentlySelectedAdditionalFieldIndex, ramFieldsAdditional]);
+  }, [currentlySelectedAdditionalFieldIndex, ramFieldsAdditionalMap]);
 
   // page 2 -> storage
 
@@ -1683,9 +1683,8 @@ function CreateProduct() {
 
   // page 2 -> storage -> additional fields
   useEffect(() => {
-    const currentlyUpdatingStorageFieldAdditional = storageFieldsAdditional.get(
-      currentlySelectedAdditionalFieldIndex
-    );
+    const currentlyUpdatingStorageFieldAdditional =
+      storageFieldsAdditionalMap.get(currentlySelectedAdditionalFieldIndex);
 
     if (!currentlyUpdatingStorageFieldAdditional) {
       return;
@@ -1695,7 +1694,7 @@ function CreateProduct() {
 
     const isKeyValid = OBJECT_KEY_REGEX.test(key);
     createProductDispatch({
-      type: createProductAction.setAreStorageFieldsAdditionalValid,
+      type: createProductAction.setAreStorageFieldsAdditionalMapValid,
       payload: {
         operation: 'update',
         data: isKeyValid,
@@ -1706,7 +1705,7 @@ function CreateProduct() {
 
     const isValueValid = USER_DEFINED_VALUE_REGEX.test(value);
     createProductDispatch({
-      type: createProductAction.setAreStorageFieldsAdditionalValid,
+      type: createProductAction.setAreStorageFieldsAdditionalMapValid,
       payload: {
         operation: 'update',
         data: isValueValid,
@@ -1714,7 +1713,7 @@ function CreateProduct() {
         kind: 'value',
       },
     });
-  }, [currentlySelectedAdditionalFieldIndex, storageFieldsAdditional]);
+  }, [currentlySelectedAdditionalFieldIndex, storageFieldsAdditionalMap]);
 
   // page 2 -> psu
 
@@ -1730,7 +1729,7 @@ function CreateProduct() {
 
   // page 2 -> psu -> additional fields
   useEffect(() => {
-    const currentlyUpdatingPsuFieldAdditional = psuFieldsAdditional.get(
+    const currentlyUpdatingPsuFieldAdditional = psuFieldsAdditionalMap.get(
       currentlySelectedAdditionalFieldIndex
     );
 
@@ -1742,7 +1741,7 @@ function CreateProduct() {
 
     const isKeyValid = OBJECT_KEY_REGEX.test(key);
     createProductDispatch({
-      type: createProductAction.setArePsuFieldsAdditionalValid,
+      type: createProductAction.setArePsuFieldsAdditionalMapValid,
       payload: {
         operation: 'update',
         data: isKeyValid,
@@ -1753,7 +1752,7 @@ function CreateProduct() {
 
     const isValueValid = USER_DEFINED_VALUE_REGEX.test(value);
     createProductDispatch({
-      type: createProductAction.setArePsuFieldsAdditionalValid,
+      type: createProductAction.setArePsuFieldsAdditionalMapValid,
       payload: {
         operation: 'update',
         data: isValueValid,
@@ -1761,7 +1760,7 @@ function CreateProduct() {
         kind: 'value',
       },
     });
-  }, [currentlySelectedAdditionalFieldIndex, psuFieldsAdditional]);
+  }, [currentlySelectedAdditionalFieldIndex, psuFieldsAdditionalMap]);
 
   // page 2 -> case
 
@@ -1777,7 +1776,7 @@ function CreateProduct() {
 
   // page 2 -> case -> additional fields
   useEffect(() => {
-    const currentlyUpdatingCaseFieldAdditional = caseFieldsAdditional.get(
+    const currentlyUpdatingCaseFieldAdditional = caseFieldsAdditionalMap.get(
       currentlySelectedAdditionalFieldIndex
     );
 
@@ -1789,7 +1788,7 @@ function CreateProduct() {
 
     const isKeyValid = OBJECT_KEY_REGEX.test(key);
     createProductDispatch({
-      type: createProductAction.setAreCaseFieldsAdditionalValid,
+      type: createProductAction.setAreCaseFieldsAdditionalMapValid,
       payload: {
         operation: 'update',
         data: isKeyValid,
@@ -1800,7 +1799,7 @@ function CreateProduct() {
 
     const isValueValid = USER_DEFINED_VALUE_REGEX.test(value);
     createProductDispatch({
-      type: createProductAction.setAreCaseFieldsAdditionalValid,
+      type: createProductAction.setAreCaseFieldsAdditionalMapValid,
       payload: {
         operation: 'update',
         data: isValueValid,
@@ -1808,7 +1807,7 @@ function CreateProduct() {
         kind: 'value',
       },
     });
-  }, [currentlySelectedAdditionalFieldIndex, caseFieldsAdditional]);
+  }, [currentlySelectedAdditionalFieldIndex, caseFieldsAdditionalMap]);
 
   // page 2 -> display
 
@@ -1874,9 +1873,8 @@ function CreateProduct() {
 
   // page 2 -> display -> additional fields
   useEffect(() => {
-    const currentlyUpdatingDisplayFieldAdditional = displayFieldsAdditional.get(
-      currentlySelectedAdditionalFieldIndex
-    );
+    const currentlyUpdatingDisplayFieldAdditional =
+      displayFieldsAdditionalMap.get(currentlySelectedAdditionalFieldIndex);
 
     if (!currentlyUpdatingDisplayFieldAdditional) {
       return;
@@ -1886,7 +1884,7 @@ function CreateProduct() {
 
     const isKeyValid = OBJECT_KEY_REGEX.test(key);
     createProductDispatch({
-      type: createProductAction.setAreDisplayFieldsAdditionalValid,
+      type: createProductAction.setAreDisplayFieldsAdditionalMapValid,
       payload: {
         operation: 'update',
         data: isKeyValid,
@@ -1897,7 +1895,7 @@ function CreateProduct() {
 
     const isValueValid = USER_DEFINED_VALUE_REGEX.test(value);
     createProductDispatch({
-      type: createProductAction.setAreDisplayFieldsAdditionalValid,
+      type: createProductAction.setAreDisplayFieldsAdditionalMapValid,
       payload: {
         operation: 'update',
         data: isValueValid,
@@ -1905,14 +1903,14 @@ function CreateProduct() {
         kind: 'value',
       },
     });
-  }, [currentlySelectedAdditionalFieldIndex, displayFieldsAdditional]);
+  }, [currentlySelectedAdditionalFieldIndex, displayFieldsAdditionalMap]);
 
   // page 2 -> keyboard
 
   // page 2 -> keyboard -> additional fields
   useEffect(() => {
     const currentlyUpdatingKeyboardFieldAdditional =
-      keyboardFieldsAdditional.get(currentlySelectedAdditionalFieldIndex);
+      keyboardFieldsAdditionalMap.get(currentlySelectedAdditionalFieldIndex);
 
     if (!currentlyUpdatingKeyboardFieldAdditional) {
       return;
@@ -1922,7 +1920,7 @@ function CreateProduct() {
 
     const isKeyValid = OBJECT_KEY_REGEX.test(key);
     createProductDispatch({
-      type: createProductAction.setAreKeyboardFieldsAdditionalValid,
+      type: createProductAction.setAreKeyboardFieldsAdditionalMapValid,
       payload: {
         operation: 'update',
         data: isKeyValid,
@@ -1933,7 +1931,7 @@ function CreateProduct() {
 
     const isValueValid = USER_DEFINED_VALUE_REGEX.test(value);
     createProductDispatch({
-      type: createProductAction.setAreKeyboardFieldsAdditionalValid,
+      type: createProductAction.setAreKeyboardFieldsAdditionalMapValid,
       payload: {
         operation: 'update',
         data: isValueValid,
@@ -1941,7 +1939,7 @@ function CreateProduct() {
         kind: 'value',
       },
     });
-  }, [currentlySelectedAdditionalFieldIndex, keyboardFieldsAdditional]);
+  }, [currentlySelectedAdditionalFieldIndex, keyboardFieldsAdditionalMap]);
 
   // page 2 -> mouse
 
@@ -1977,7 +1975,7 @@ function CreateProduct() {
 
   // page 2 -> mouse -> additional fields
   useEffect(() => {
-    const currentlyUpdatingMouseFieldAdditional = mouseFieldsAdditional.get(
+    const currentlyUpdatingMouseFieldAdditional = mouseFieldsAdditionalMap.get(
       currentlySelectedAdditionalFieldIndex
     );
 
@@ -1989,7 +1987,7 @@ function CreateProduct() {
 
     const isKeyValid = OBJECT_KEY_REGEX.test(key);
     createProductDispatch({
-      type: createProductAction.setAreMouseFieldsAdditionalValid,
+      type: createProductAction.setAreMouseFieldsAdditionalMapValid,
       payload: {
         operation: 'update',
         data: isKeyValid,
@@ -2000,7 +1998,7 @@ function CreateProduct() {
 
     const isValueValid = USER_DEFINED_VALUE_REGEX.test(value);
     createProductDispatch({
-      type: createProductAction.setAreMouseFieldsAdditionalValid,
+      type: createProductAction.setAreMouseFieldsAdditionalMapValid,
       payload: {
         operation: 'update',
         data: isValueValid,
@@ -2008,7 +2006,7 @@ function CreateProduct() {
         kind: 'value',
       },
     });
-  }, [currentlySelectedAdditionalFieldIndex, mouseFieldsAdditional]);
+  }, [currentlySelectedAdditionalFieldIndex, mouseFieldsAdditionalMap]);
 
   // page 2 -> headphone
 
@@ -2055,7 +2053,7 @@ function CreateProduct() {
   // page 2 -> headphone -> additional fields
   useEffect(() => {
     const currentlyUpdatingHeadphoneFieldAdditional =
-      headphoneFieldsAdditional.get(currentlySelectedAdditionalFieldIndex);
+      headphoneFieldsAdditionalMap.get(currentlySelectedAdditionalFieldIndex);
 
     if (!currentlyUpdatingHeadphoneFieldAdditional) {
       return;
@@ -2065,7 +2063,7 @@ function CreateProduct() {
 
     const isKeyValid = OBJECT_KEY_REGEX.test(key);
     createProductDispatch({
-      type: createProductAction.setAreHeadphoneFieldsAdditionalValid,
+      type: createProductAction.setAreHeadphoneFieldsAdditionalMapValid,
       payload: {
         operation: 'update',
         data: isKeyValid,
@@ -2076,7 +2074,7 @@ function CreateProduct() {
 
     const isValueValid = USER_DEFINED_VALUE_REGEX.test(value);
     createProductDispatch({
-      type: createProductAction.setAreHeadphoneFieldsAdditionalValid,
+      type: createProductAction.setAreHeadphoneFieldsAdditionalMapValid,
       payload: {
         operation: 'update',
         data: isValueValid,
@@ -2084,7 +2082,7 @@ function CreateProduct() {
         kind: 'value',
       },
     });
-  }, [currentlySelectedAdditionalFieldIndex, headphoneFieldsAdditional]);
+  }, [currentlySelectedAdditionalFieldIndex, headphoneFieldsAdditionalMap]);
 
   // page 2 -> speaker
 
@@ -2120,9 +2118,8 @@ function CreateProduct() {
 
   // page 2 -> speaker -> additional fields
   useEffect(() => {
-    const currentlyUpdatingSpeakerFieldAdditional = speakerFieldsAdditional.get(
-      currentlySelectedAdditionalFieldIndex
-    );
+    const currentlyUpdatingSpeakerFieldAdditional =
+      speakerFieldsAdditionalMap.get(currentlySelectedAdditionalFieldIndex);
 
     if (!currentlyUpdatingSpeakerFieldAdditional) {
       return;
@@ -2132,7 +2129,7 @@ function CreateProduct() {
 
     const isKeyValid = OBJECT_KEY_REGEX.test(key);
     createProductDispatch({
-      type: createProductAction.setAreSpeakerFieldsAdditionalValid,
+      type: createProductAction.setAreSpeakerFieldsAdditionalMapValid,
       payload: {
         operation: 'update',
         data: isKeyValid,
@@ -2143,7 +2140,7 @@ function CreateProduct() {
 
     const isValueValid = USER_DEFINED_VALUE_REGEX.test(value);
     createProductDispatch({
-      type: createProductAction.setAreSpeakerFieldsAdditionalValid,
+      type: createProductAction.setAreSpeakerFieldsAdditionalMapValid,
       payload: {
         operation: 'update',
         data: isValueValid,
@@ -2151,7 +2148,7 @@ function CreateProduct() {
         kind: 'value',
       },
     });
-  }, [currentlySelectedAdditionalFieldIndex, speakerFieldsAdditional]);
+  }, [currentlySelectedAdditionalFieldIndex, speakerFieldsAdditionalMap]);
 
   // page 2 -> smartphone
 
@@ -2248,7 +2245,7 @@ function CreateProduct() {
   // page 2 -> smartphone -> additional fields
   useEffect(() => {
     const currentlyUpdatingSmartphoneFieldAdditional =
-      smartphoneFieldsAdditional.get(currentlySelectedAdditionalFieldIndex);
+      smartphoneFieldsAdditionalMap.get(currentlySelectedAdditionalFieldIndex);
 
     if (!currentlyUpdatingSmartphoneFieldAdditional) {
       return;
@@ -2258,7 +2255,7 @@ function CreateProduct() {
 
     const isKeyValid = OBJECT_KEY_REGEX.test(key);
     createProductDispatch({
-      type: createProductAction.setAreSmartphoneFieldsAdditionalValid,
+      type: createProductAction.setAreSmartphoneFieldsAdditionalMapValid,
       payload: {
         operation: 'update',
         data: isKeyValid,
@@ -2269,7 +2266,7 @@ function CreateProduct() {
 
     const isValueValid = USER_DEFINED_VALUE_REGEX.test(value);
     createProductDispatch({
-      type: createProductAction.setAreSmartphoneFieldsAdditionalValid,
+      type: createProductAction.setAreSmartphoneFieldsAdditionalMapValid,
       payload: {
         operation: 'update',
         data: isValueValid,
@@ -2277,7 +2274,7 @@ function CreateProduct() {
         kind: 'value',
       },
     });
-  }, [currentlySelectedAdditionalFieldIndex, smartphoneFieldsAdditional]);
+  }, [currentlySelectedAdditionalFieldIndex, smartphoneFieldsAdditionalMap]);
 
   // page 2 -> tablet
 
@@ -2373,9 +2370,8 @@ function CreateProduct() {
 
   // page 2 -> tablet -> additional fields
   useEffect(() => {
-    const currentlyUpdatingTabletFieldAdditional = tabletFieldsAdditional.get(
-      currentlySelectedAdditionalFieldIndex
-    );
+    const currentlyUpdatingTabletFieldAdditional =
+      tabletFieldsAdditionalMap.get(currentlySelectedAdditionalFieldIndex);
 
     if (!currentlyUpdatingTabletFieldAdditional) {
       return;
@@ -2385,7 +2381,7 @@ function CreateProduct() {
 
     const isKeyValid = OBJECT_KEY_REGEX.test(key);
     createProductDispatch({
-      type: createProductAction.setAreTabletFieldsAdditionalValid,
+      type: createProductAction.setAreTabletFieldsAdditionalMapValid,
       payload: {
         operation: 'update',
         data: isKeyValid,
@@ -2396,7 +2392,7 @@ function CreateProduct() {
 
     const isValueValid = USER_DEFINED_VALUE_REGEX.test(value);
     createProductDispatch({
-      type: createProductAction.setAreTabletFieldsAdditionalValid,
+      type: createProductAction.setAreTabletFieldsAdditionalMapValid,
       payload: {
         operation: 'update',
         data: isValueValid,
@@ -2404,7 +2400,7 @@ function CreateProduct() {
         kind: 'value',
       },
     });
-  }, [currentlySelectedAdditionalFieldIndex, tabletFieldsAdditional]);
+  }, [currentlySelectedAdditionalFieldIndex, tabletFieldsAdditionalMap]);
 
   // page 2 -> accessory
 
@@ -2431,7 +2427,7 @@ function CreateProduct() {
   // page 2 -> accessory -> additional fields
   useEffect(() => {
     const currentlyUpdatingAccessoryFieldAdditional =
-      accessoryFieldsAdditional.get(currentlySelectedAdditionalFieldIndex);
+      accessoryFieldsAdditionalMap.get(currentlySelectedAdditionalFieldIndex);
     if (!currentlyUpdatingAccessoryFieldAdditional) {
       return;
     }
@@ -2440,7 +2436,7 @@ function CreateProduct() {
     const isKeyValid = OBJECT_KEY_REGEX.test(key);
 
     createProductDispatch({
-      type: createProductAction.setAreAccessoryFieldsAdditionalValid,
+      type: createProductAction.setAreAccessoryFieldsAdditionalMapValid,
       payload: {
         operation: 'update',
         data: isKeyValid,
@@ -2451,7 +2447,7 @@ function CreateProduct() {
 
     const isValueValid = USER_DEFINED_VALUE_REGEX.test(value);
     createProductDispatch({
-      type: createProductAction.setAreAccessoryFieldsAdditionalValid,
+      type: createProductAction.setAreAccessoryFieldsAdditionalMapValid,
       payload: {
         operation: 'update',
         data: isValueValid,
@@ -2459,7 +2455,7 @@ function CreateProduct() {
         kind: 'value',
       },
     });
-  }, [currentlySelectedAdditionalFieldIndex, accessoryFieldsAdditional]);
+  }, [currentlySelectedAdditionalFieldIndex, accessoryFieldsAdditionalMap]);
 
   // page 2 -> webcam
 
@@ -2475,9 +2471,8 @@ function CreateProduct() {
 
   // page 2 -> webcam -> additional fields
   useEffect(() => {
-    const currentlyUpdatingWebcamFieldAdditional = webcamFieldsAdditional.get(
-      currentlySelectedAdditionalFieldIndex
-    );
+    const currentlyUpdatingWebcamFieldAdditional =
+      webcamFieldsAdditionalMap.get(currentlySelectedAdditionalFieldIndex);
 
     if (!currentlyUpdatingWebcamFieldAdditional) {
       return;
@@ -2487,7 +2482,7 @@ function CreateProduct() {
 
     const isKeyValid = OBJECT_KEY_REGEX.test(key);
     createProductDispatch({
-      type: createProductAction.setAreWebcamFieldsAdditionalValid,
+      type: createProductAction.setAreWebcamFieldsAdditionalMapValid,
       payload: {
         operation: 'update',
         data: isKeyValid,
@@ -2498,7 +2493,7 @@ function CreateProduct() {
 
     const isValueValid = USER_DEFINED_VALUE_REGEX.test(value);
     createProductDispatch({
-      type: createProductAction.setAreWebcamFieldsAdditionalValid,
+      type: createProductAction.setAreWebcamFieldsAdditionalMapValid,
       payload: {
         operation: 'update',
         data: isValueValid,
@@ -2506,7 +2501,7 @@ function CreateProduct() {
         kind: 'value',
       },
     });
-  }, [currentlySelectedAdditionalFieldIndex, webcamFieldsAdditional]);
+  }, [currentlySelectedAdditionalFieldIndex, webcamFieldsAdditionalMap]);
 
   // page 2 -> microphone
 
@@ -2533,7 +2528,7 @@ function CreateProduct() {
   // page 2 -> microphone -> additional fields
   useEffect(() => {
     const currentlyUpdatingMicrophoneFieldAdditional =
-      microphoneFieldsAdditional.get(currentlySelectedAdditionalFieldIndex);
+      microphoneFieldsAdditionalMap.get(currentlySelectedAdditionalFieldIndex);
 
     if (!currentlyUpdatingMicrophoneFieldAdditional) {
       return;
@@ -2543,7 +2538,7 @@ function CreateProduct() {
 
     const isKeyValid = OBJECT_KEY_REGEX.test(key);
     createProductDispatch({
-      type: createProductAction.setAreMicrophoneFieldsAdditionalValid,
+      type: createProductAction.setAreMicrophoneFieldsAdditionalMapValid,
       payload: {
         operation: 'update',
         data: isKeyValid,
@@ -2554,7 +2549,7 @@ function CreateProduct() {
 
     const isValueValid = USER_DEFINED_VALUE_REGEX.test(value);
     createProductDispatch({
-      type: createProductAction.setAreMicrophoneFieldsAdditionalValid,
+      type: createProductAction.setAreMicrophoneFieldsAdditionalMapValid,
       payload: {
         operation: 'update',
         data: isValueValid,
@@ -2562,7 +2557,7 @@ function CreateProduct() {
         kind: 'value',
       },
     });
-  }, [currentlySelectedAdditionalFieldIndex, microphoneFieldsAdditional]);
+  }, [currentlySelectedAdditionalFieldIndex, microphoneFieldsAdditionalMap]);
 
   // update stepper wrapper state on every page 1 input validation change
   useEffect(() => {
@@ -3919,39 +3914,40 @@ function CreateProduct() {
   ]);
 
   // page 2 -> specifications -> cpu -> add new field button
-  const [createdAddCpuFieldsAdditionalButton] = returnAccessibleButtonElements([
-    {
-      buttonLabel: 'Add',
-      semanticDescription: 'Add new additional field',
-      semanticName: 'Add new field',
-      leftIcon: <TbPlus />,
-      buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
-        createProductDispatch({
-          type: createProductAction.setCpuFieldsAdditional,
-          payload: {
-            operation: 'add',
-            data: ['', ''],
-          },
-        });
+  const [createdAddCpuFieldsAdditionalMapButton] =
+    returnAccessibleButtonElements([
+      {
+        buttonLabel: 'Add',
+        semanticDescription: 'Add new additional field',
+        semanticName: 'Add new field',
+        leftIcon: <TbPlus />,
+        buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
+          createProductDispatch({
+            type: createProductAction.setCpuFieldsAdditionalMap,
+            payload: {
+              operation: 'add',
+              data: ['', ''],
+            },
+          });
 
-        createProductDispatch({
-          type: createProductAction.setAreCpuFieldsAdditionalFocused,
-          payload: {
-            operation: 'add',
-            data: [false, false],
-          },
-        });
+          createProductDispatch({
+            type: createProductAction.setAreCpuFieldsAdditionalMapFocused,
+            payload: {
+              operation: 'add',
+              data: [false, false],
+            },
+          });
 
-        createProductDispatch({
-          type: createProductAction.setAreCpuFieldsAdditionalValid,
-          payload: {
-            operation: 'add',
-            data: [false, false],
-          },
-        });
+          createProductDispatch({
+            type: createProductAction.setAreCpuFieldsAdditionalMapValid,
+            payload: {
+              operation: 'add',
+              data: [false, false],
+            },
+          });
+        },
       },
-    },
-  ]);
+    ]);
 
   // page 2 -> specifications -> cpu -> cpu fields user defined
 
@@ -3960,22 +3956,23 @@ function CreateProduct() {
   // page 2 -> specifications -> cpu -> cpu fields user defined -> accessible screen reader text elements -> field names
 
   // returns an array of tuples containing the error and valid text elements for each field name
-  const cpuFieldsAdditionalKeysErrorValidTextElements: [
+  const cpuFieldsAdditionalMapKeysErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(cpuFieldsAdditional).map((keyFieldValue) => {
+  ][] = Array.from(cpuFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [field, _value]] = keyFieldValue;
 
     // screenreader accessible error/valid text elements that are consumed by the text input element creator
     const [
-      cpuFieldsAdditionalKeysInputErrorText,
-      cpuFieldsAdditionalKeysInputValidText,
+      cpuFieldsAdditionalMapKeysInputErrorText,
+      cpuFieldsAdditionalMapKeysInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field name ${mapKey + 1}`,
       inputText: field,
       isInputTextFocused:
-        areCpuFieldsAdditionalFocused.get(mapKey)?.[0] ?? false,
-      isValidInputText: areCpuFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+        areCpuFieldsAdditionalMapFocused.get(mapKey)?.[0] ?? false,
+      isValidInputText:
+        areCpuFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
       regexValidationText: returnObjectKeyValidationText({
         content: field,
         contentKind: `additional field name ${mapKey + 1}`,
@@ -3985,30 +3982,31 @@ function CreateProduct() {
     });
 
     return [
-      cpuFieldsAdditionalKeysInputErrorText,
-      cpuFieldsAdditionalKeysInputValidText,
+      cpuFieldsAdditionalMapKeysInputErrorText,
+      cpuFieldsAdditionalMapKeysInputValidText,
     ];
   });
 
   // page 2 -> specifications -> cpu -> cpu fields user defined -> accessible screen reader text elements -> field values
 
   // returns an array of tuples containing the error and valid text elements for each field value
-  const cpuFieldsAdditionalValuesErrorValidTextElements: [
+  const cpuFieldsAdditionalMapValuesErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(cpuFieldsAdditional).map((keyFieldValue) => {
+  ][] = Array.from(cpuFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [_field, value]] = keyFieldValue;
 
     // screenreader accessible error/valid text elements that are consumed by the text input element creator
     const [
-      cpuFieldsAdditionalValuesInputErrorText,
-      cpuFieldsAdditionalValuesInputValidText,
+      cpuFieldsAdditionalMapValuesInputErrorText,
+      cpuFieldsAdditionalMapValuesInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field value ${mapKey + 1}`,
       inputText: value,
       isInputTextFocused:
-        areCpuFieldsAdditionalFocused.get(mapKey)?.[1] ?? false,
-      isValidInputText: areCpuFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+        areCpuFieldsAdditionalMapFocused.get(mapKey)?.[1] ?? false,
+      isValidInputText:
+        areCpuFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
       regexValidationText: returnUserDefinedFieldValueValidationText({
         content: value,
         contentKind: `additional field value ${mapKey + 1}`,
@@ -4018,31 +4016,32 @@ function CreateProduct() {
     });
 
     return [
-      cpuFieldsAdditionalValuesInputErrorText,
-      cpuFieldsAdditionalValuesInputValidText,
+      cpuFieldsAdditionalMapValuesInputErrorText,
+      cpuFieldsAdditionalMapValuesInputValidText,
     ];
   });
 
   // page 2 -> specifications -> cpu -> cpu fields user defined -> text area input element creator
-  const createdCpuFieldsAdditionalTextInputElements = Array.from(
-    cpuFieldsAdditional
+  const createdCpuFieldsAdditionalMapTextInputElements = Array.from(
+    cpuFieldsAdditionalMap
   ).map((keyFieldValue) => {
     const [mapKey, [field, value]] = keyFieldValue;
 
-    const cpuFieldsAdditionalKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const cpuFieldsAdditionalMapKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
-          error: cpuFieldsAdditionalKeysErrorValidTextElements[mapKey][0],
-          valid: cpuFieldsAdditionalKeysErrorValidTextElements[mapKey][1],
+          error: cpuFieldsAdditionalMapKeysErrorValidTextElements[mapKey][0],
+          valid: cpuFieldsAdditionalMapKeysErrorValidTextElements[mapKey][1],
         },
         inputText: field,
-        isValidInputText: areCpuFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+        isValidInputText:
+          areCpuFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
         label: `Name ${mapKey + 1}`,
         maxLength: 75,
         minLength: 1,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreCpuFieldsAdditionalFocused,
+            type: createProductAction.setAreCpuFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -4053,7 +4052,7 @@ function CreateProduct() {
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setCpuFieldsAdditional,
+            type: createProductAction.setCpuFieldsAdditionalMap,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -4069,7 +4068,7 @@ function CreateProduct() {
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreCpuFieldsAdditionalFocused,
+            type: createProductAction.setAreCpuFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -4083,20 +4082,21 @@ function CreateProduct() {
         semanticName: `additional field name ${mapKey + 1}`,
       };
 
-    const cpuFieldsAdditionalValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const cpuFieldsAdditionalMapValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
-          error: cpuFieldsAdditionalValuesErrorValidTextElements[mapKey][0],
-          valid: cpuFieldsAdditionalValuesErrorValidTextElements[mapKey][1],
+          error: cpuFieldsAdditionalMapValuesErrorValidTextElements[mapKey][0],
+          valid: cpuFieldsAdditionalMapValuesErrorValidTextElements[mapKey][1],
         },
         inputText: value,
-        isValidInputText: areCpuFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+        isValidInputText:
+          areCpuFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
         label: `Value ${mapKey + 1}`,
         maxLength: 2000,
         minLength: 2,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreCpuFieldsAdditionalFocused,
+            type: createProductAction.setAreCpuFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -4107,7 +4107,7 @@ function CreateProduct() {
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setCpuFieldsAdditional,
+            type: createProductAction.setCpuFieldsAdditionalMap,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -4123,7 +4123,7 @@ function CreateProduct() {
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreCpuFieldsAdditionalFocused,
+            type: createProductAction.setAreCpuFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -4138,11 +4138,11 @@ function CreateProduct() {
       };
 
     const [
-      createdCpuFieldsAdditionalKeysTextAreaInput,
-      createdCpuFieldsAdditionalValuesTextAreaInput,
+      createdCpuFieldsAdditionalMapKeysTextAreaInput,
+      createdCpuFieldsAdditionalMapValuesTextAreaInput,
     ] = returnAccessibleTextAreaInputElements([
-      cpuFieldsAdditionalKeysTextInputCreatorInfo,
-      cpuFieldsAdditionalValuesTextInputCreatorInfo,
+      cpuFieldsAdditionalMapKeysTextInputCreatorInfo,
+      cpuFieldsAdditionalMapValuesTextInputCreatorInfo,
     ]);
 
     const [createdDeleteButton] = returnAccessibleButtonElements([
@@ -4150,7 +4150,7 @@ function CreateProduct() {
         buttonLabel: 'Delete',
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
           createProductDispatch({
-            type: createProductAction.setCpuFieldsAdditional,
+            type: createProductAction.setCpuFieldsAdditionalMap,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -4158,7 +4158,7 @@ function CreateProduct() {
           });
 
           createProductDispatch({
-            type: createProductAction.setAreCpuFieldsAdditionalFocused,
+            type: createProductAction.setAreCpuFieldsAdditionalMapFocused,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -4166,7 +4166,7 @@ function CreateProduct() {
           });
 
           createProductDispatch({
-            type: createProductAction.setAreCpuFieldsAdditionalValid,
+            type: createProductAction.setAreCpuFieldsAdditionalMapValid,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -4191,7 +4191,7 @@ function CreateProduct() {
     );
 
     return (
-      <Stack key={`cpuFieldsAdditional-${mapKey}`} pt={padding} w="100%">
+      <Stack key={`cpuFieldsAdditionalMap-${mapKey}`} pt={padding} w="100%">
         <Group position="apart">
           <Text size="md" weight={600}>{`Additional Cpu field ${
             mapKey + 1
@@ -4199,8 +4199,8 @@ function CreateProduct() {
           {displayDeleteButton}
         </Group>
         <Group position="apart">
-          {createdCpuFieldsAdditionalKeysTextAreaInput}
-          {createdCpuFieldsAdditionalValuesTextAreaInput}
+          {createdCpuFieldsAdditionalMapKeysTextAreaInput}
+          {createdCpuFieldsAdditionalMapValuesTextAreaInput}
         </Group>
       </Stack>
     );
@@ -4480,39 +4480,40 @@ function CreateProduct() {
   ]);
 
   // page 2 -> specifications -> gpu -> add new field button
-  const [createdAddGpuFieldsAdditionalButton] = returnAccessibleButtonElements([
-    {
-      buttonLabel: 'Add',
-      semanticDescription: 'Add new additional field',
-      semanticName: 'Add new field',
-      leftIcon: <TbPlus />,
-      buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
-        createProductDispatch({
-          type: createProductAction.setGpuFieldsAdditional,
-          payload: {
-            operation: 'add',
-            data: ['', ''],
-          },
-        });
+  const [createdAddGpuFieldsAdditionalMapButton] =
+    returnAccessibleButtonElements([
+      {
+        buttonLabel: 'Add',
+        semanticDescription: 'Add new additional field',
+        semanticName: 'Add new field',
+        leftIcon: <TbPlus />,
+        buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
+          createProductDispatch({
+            type: createProductAction.setGpuFieldsAdditionalMap,
+            payload: {
+              operation: 'add',
+              data: ['', ''],
+            },
+          });
 
-        createProductDispatch({
-          type: createProductAction.setAreGpuFieldsAdditionalFocused,
-          payload: {
-            operation: 'add',
-            data: [false, false],
-          },
-        });
+          createProductDispatch({
+            type: createProductAction.setAreGpuFieldsAdditionalMapFocused,
+            payload: {
+              operation: 'add',
+              data: [false, false],
+            },
+          });
 
-        createProductDispatch({
-          type: createProductAction.setAreGpuFieldsAdditionalValid,
-          payload: {
-            operation: 'add',
-            data: [false, false],
-          },
-        });
+          createProductDispatch({
+            type: createProductAction.setAreGpuFieldsAdditionalMapValid,
+            payload: {
+              operation: 'add',
+              data: [false, false],
+            },
+          });
+        },
       },
-    },
-  ]);
+    ]);
 
   // page 2 -> specifications -> gpu -> gpu fields user defined
 
@@ -4521,22 +4522,23 @@ function CreateProduct() {
   // page 2 -> specifications -> gpu -> gpu fields user defined -> accessible screen reader text elements -> field names
 
   // returns an array of tuples containing the error and valid text elements for each field name
-  const gpuFieldsAdditionalKeysErrorValidTextElements: [
+  const gpuFieldsAdditionalMapKeysErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(gpuFieldsAdditional).map((keyFieldValue) => {
+  ][] = Array.from(gpuFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [field, _value]] = keyFieldValue;
 
     // screenreader accessible error/valid text elements that are consumed by the text input element creator
     const [
-      gpuFieldsAdditionalKeysInputErrorText,
-      gpuFieldsAdditionalKeysInputValidText,
+      gpuFieldsAdditionalMapKeysInputErrorText,
+      gpuFieldsAdditionalMapKeysInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field name ${mapKey + 1}`,
       inputText: field,
       isInputTextFocused:
-        areGpuFieldsAdditionalFocused.get(mapKey)?.[0] ?? false,
-      isValidInputText: areGpuFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+        areGpuFieldsAdditionalMapFocused.get(mapKey)?.[0] ?? false,
+      isValidInputText:
+        areGpuFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
       regexValidationText: returnObjectKeyValidationText({
         content: field,
         contentKind: `additional field name ${mapKey + 1}`,
@@ -4546,30 +4548,31 @@ function CreateProduct() {
     });
 
     return [
-      gpuFieldsAdditionalKeysInputErrorText,
-      gpuFieldsAdditionalKeysInputValidText,
+      gpuFieldsAdditionalMapKeysInputErrorText,
+      gpuFieldsAdditionalMapKeysInputValidText,
     ];
   });
 
   // page 2 -> specifications -> gpu -> gpu fields user defined -> accessible screen reader text elements -> field values
 
   // returns an array of tuples containing the error and valid text elements for each field value
-  const gpuFieldsAdditionalValuesErrorValidTextElements: [
+  const gpuFieldsAdditionalMapValuesErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(gpuFieldsAdditional).map((keyFieldValue) => {
+  ][] = Array.from(gpuFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [_field, value]] = keyFieldValue;
 
     // screenreader accessible error/valid text elements that are consumed by the text input element creator
     const [
-      gpuFieldsAdditionalValuesInputErrorText,
-      gpuFieldsAdditionalValuesInputValidText,
+      gpuFieldsAdditionalMapValuesInputErrorText,
+      gpuFieldsAdditionalMapValuesInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field value ${mapKey + 1}`,
       inputText: value,
       isInputTextFocused:
-        areGpuFieldsAdditionalFocused.get(mapKey)?.[1] ?? false,
-      isValidInputText: areGpuFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+        areGpuFieldsAdditionalMapFocused.get(mapKey)?.[1] ?? false,
+      isValidInputText:
+        areGpuFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
       regexValidationText: returnUserDefinedFieldValueValidationText({
         content: value,
         contentKind: `additional field value ${mapKey + 1}`,
@@ -4579,31 +4582,32 @@ function CreateProduct() {
     });
 
     return [
-      gpuFieldsAdditionalValuesInputErrorText,
-      gpuFieldsAdditionalValuesInputValidText,
+      gpuFieldsAdditionalMapValuesInputErrorText,
+      gpuFieldsAdditionalMapValuesInputValidText,
     ];
   });
 
   // page 2 -> specifications -> gpu -> gpu fields user defined -> text area input element creator
-  const createdGpuFieldsAdditionalTextInputElements = Array.from(
-    gpuFieldsAdditional
+  const createdGpuFieldsAdditionalMapTextInputElements = Array.from(
+    gpuFieldsAdditionalMap
   ).map((keyFieldValue) => {
     const [mapKey, [field, value]] = keyFieldValue;
 
-    const gpuFieldsAdditionalKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const gpuFieldsAdditionalMapKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
-          error: gpuFieldsAdditionalKeysErrorValidTextElements[mapKey][0],
-          valid: gpuFieldsAdditionalKeysErrorValidTextElements[mapKey][1],
+          error: gpuFieldsAdditionalMapKeysErrorValidTextElements[mapKey][0],
+          valid: gpuFieldsAdditionalMapKeysErrorValidTextElements[mapKey][1],
         },
         inputText: field,
-        isValidInputText: areGpuFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+        isValidInputText:
+          areGpuFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
         label: `Name ${mapKey + 1}`,
         maxLength: 75,
         minLength: 1,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreGpuFieldsAdditionalFocused,
+            type: createProductAction.setAreGpuFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -4614,7 +4618,7 @@ function CreateProduct() {
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setGpuFieldsAdditional,
+            type: createProductAction.setGpuFieldsAdditionalMap,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -4630,7 +4634,7 @@ function CreateProduct() {
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreGpuFieldsAdditionalFocused,
+            type: createProductAction.setAreGpuFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -4644,20 +4648,21 @@ function CreateProduct() {
         semanticName: `additional field name ${mapKey + 1}`,
       };
 
-    const gpuFieldsAdditionalValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const gpuFieldsAdditionalMapValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
-          error: gpuFieldsAdditionalValuesErrorValidTextElements[mapKey][0],
-          valid: gpuFieldsAdditionalValuesErrorValidTextElements[mapKey][1],
+          error: gpuFieldsAdditionalMapValuesErrorValidTextElements[mapKey][0],
+          valid: gpuFieldsAdditionalMapValuesErrorValidTextElements[mapKey][1],
         },
         inputText: value,
-        isValidInputText: areGpuFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+        isValidInputText:
+          areGpuFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
         label: `Value ${mapKey + 1}`,
         maxLength: 2000,
         minLength: 2,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreGpuFieldsAdditionalFocused,
+            type: createProductAction.setAreGpuFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -4668,7 +4673,7 @@ function CreateProduct() {
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setGpuFieldsAdditional,
+            type: createProductAction.setGpuFieldsAdditionalMap,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -4684,7 +4689,7 @@ function CreateProduct() {
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreGpuFieldsAdditionalFocused,
+            type: createProductAction.setAreGpuFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -4699,11 +4704,11 @@ function CreateProduct() {
       };
 
     const [
-      createdGpuFieldsAdditionalKeysTextAreaInput,
-      createdGpuFieldsAdditionalValuesTextAreaInput,
+      createdGpuFieldsAdditionalMapKeysTextAreaInput,
+      createdGpuFieldsAdditionalMapValuesTextAreaInput,
     ] = returnAccessibleTextAreaInputElements([
-      gpuFieldsAdditionalKeysTextInputCreatorInfo,
-      gpuFieldsAdditionalValuesTextInputCreatorInfo,
+      gpuFieldsAdditionalMapKeysTextInputCreatorInfo,
+      gpuFieldsAdditionalMapValuesTextInputCreatorInfo,
     ]);
 
     const [createdDeleteButton] = returnAccessibleButtonElements([
@@ -4711,7 +4716,7 @@ function CreateProduct() {
         buttonLabel: 'Delete',
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
           createProductDispatch({
-            type: createProductAction.setGpuFieldsAdditional,
+            type: createProductAction.setGpuFieldsAdditionalMap,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -4719,7 +4724,7 @@ function CreateProduct() {
           });
 
           createProductDispatch({
-            type: createProductAction.setAreGpuFieldsAdditionalFocused,
+            type: createProductAction.setAreGpuFieldsAdditionalMapFocused,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -4727,7 +4732,7 @@ function CreateProduct() {
           });
 
           createProductDispatch({
-            type: createProductAction.setAreGpuFieldsAdditionalValid,
+            type: createProductAction.setAreGpuFieldsAdditionalMapValid,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -4752,7 +4757,7 @@ function CreateProduct() {
     );
 
     return (
-      <Stack key={`gpuFieldsAdditional-${mapKey}`} pt={padding} w="100%">
+      <Stack key={`gpuFieldsAdditionalMap-${mapKey}`} pt={padding} w="100%">
         <Group position="apart">
           <Text size="md" weight={600}>{`Additional Gpu field ${
             mapKey + 1
@@ -4760,8 +4765,8 @@ function CreateProduct() {
           {displayDeleteButton}
         </Group>
         <Group position="apart">
-          {createdGpuFieldsAdditionalKeysTextAreaInput}
-          {createdGpuFieldsAdditionalValuesTextAreaInput}
+          {createdGpuFieldsAdditionalMapKeysTextAreaInput}
+          {createdGpuFieldsAdditionalMapValuesTextAreaInput}
         </Group>
       </Stack>
     );
@@ -5301,7 +5306,7 @@ function CreateProduct() {
     ]);
 
   // page 2 -> specifications -> motherboard -> add new field button
-  const [createdAddMotherboardFieldsAdditionalButton] =
+  const [createdAddMotherboardFieldsAdditionalMapButton] =
     returnAccessibleButtonElements([
       {
         buttonLabel: 'Add',
@@ -5310,7 +5315,7 @@ function CreateProduct() {
         leftIcon: <TbPlus />,
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
           createProductDispatch({
-            type: createProductAction.setMotherboardFieldsAdditional,
+            type: createProductAction.setMotherboardFieldsAdditionalMap,
             payload: {
               operation: 'add',
               data: ['', ''],
@@ -5318,7 +5323,7 @@ function CreateProduct() {
           });
 
           createProductDispatch({
-            type: createProductAction.setAreMotherboardFieldsAdditionalFocused,
+            type: createProductAction.setAreMotherboardFieldsAdditionalMapFocused,
             payload: {
               operation: 'add',
               data: [false, false],
@@ -5326,7 +5331,7 @@ function CreateProduct() {
           });
 
           createProductDispatch({
-            type: createProductAction.setAreMotherboardFieldsAdditionalValid,
+            type: createProductAction.setAreMotherboardFieldsAdditionalMapValid,
             payload: {
               operation: 'add',
               data: [false, false],
@@ -5343,23 +5348,23 @@ function CreateProduct() {
   // page 2 -> specifications -> motherboard -> motherboard fields user defined -> accessible screen reader text elements -> field names
 
   // returns an array of tuples containing the error and valid text elements for each field name
-  const motherboardFieldsAdditionalKeysErrorValidTextElements: [
+  const motherboardFieldsAdditionalMapKeysErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(motherboardFieldsAdditional).map((keyFieldValue) => {
+  ][] = Array.from(motherboardFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [field, _value]] = keyFieldValue;
 
     // screenreader accessible error/valid text elements that are consumed by the text input element creator
     const [
-      motherboardFieldsAdditionalKeysInputErrorText,
-      motherboardFieldsAdditionalKeysInputValidText,
+      motherboardFieldsAdditionalMapKeysInputErrorText,
+      motherboardFieldsAdditionalMapKeysInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field name ${mapKey + 1}`,
       inputText: field,
       isInputTextFocused:
-        areMotherboardFieldsAdditionalFocused.get(mapKey)?.[0] ?? false,
+        areMotherboardFieldsAdditionalMapFocused.get(mapKey)?.[0] ?? false,
       isValidInputText:
-        areMotherboardFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+        areMotherboardFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
       regexValidationText: returnObjectKeyValidationText({
         content: field,
         contentKind: `additional field name ${mapKey + 1}`,
@@ -5369,31 +5374,31 @@ function CreateProduct() {
     });
 
     return [
-      motherboardFieldsAdditionalKeysInputErrorText,
-      motherboardFieldsAdditionalKeysInputValidText,
+      motherboardFieldsAdditionalMapKeysInputErrorText,
+      motherboardFieldsAdditionalMapKeysInputValidText,
     ];
   });
 
   // page 2 -> specifications -> motherboard -> motherboard fields user defined -> accessible screen reader text elements -> field values
 
   // returns an array of tuples containing the error and valid text elements for each field value
-  const motherboardFieldsAdditionalValuesErrorValidTextElements: [
+  const motherboardFieldsAdditionalMapValuesErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(motherboardFieldsAdditional).map((keyFieldValue) => {
+  ][] = Array.from(motherboardFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [_field, value]] = keyFieldValue;
 
     // screenreader accessible error/valid text elements that are consumed by the text input element creator
     const [
-      motherboardFieldsAdditionalValuesInputErrorText,
-      motherboardFieldsAdditionalValuesInputValidText,
+      motherboardFieldsAdditionalMapValuesInputErrorText,
+      motherboardFieldsAdditionalMapValuesInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field value ${mapKey + 1}`,
       inputText: value,
       isInputTextFocused:
-        areMotherboardFieldsAdditionalFocused.get(mapKey)?.[1] ?? false,
+        areMotherboardFieldsAdditionalMapFocused.get(mapKey)?.[1] ?? false,
       isValidInputText:
-        areMotherboardFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+        areMotherboardFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
       regexValidationText: returnUserDefinedFieldValueValidationText({
         content: value,
         contentKind: `additional field value ${mapKey + 1}`,
@@ -5403,34 +5408,34 @@ function CreateProduct() {
     });
 
     return [
-      motherboardFieldsAdditionalValuesInputErrorText,
-      motherboardFieldsAdditionalValuesInputValidText,
+      motherboardFieldsAdditionalMapValuesInputErrorText,
+      motherboardFieldsAdditionalMapValuesInputValidText,
     ];
   });
 
   // page 2 -> specifications -> motherboard -> motherboard fields user defined -> text area input element creator
-  const createdMotherboardFieldsAdditionalTextInputElements = Array.from(
-    motherboardFieldsAdditional
+  const createdMotherboardFieldsAdditionalMapTextInputElements = Array.from(
+    motherboardFieldsAdditionalMap
   ).map((keyFieldValue) => {
     const [mapKey, [field, value]] = keyFieldValue;
 
-    const motherboardFieldsAdditionalKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const motherboardFieldsAdditionalMapKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
           error:
-            motherboardFieldsAdditionalKeysErrorValidTextElements[mapKey][0],
+            motherboardFieldsAdditionalMapKeysErrorValidTextElements[mapKey][0],
           valid:
-            motherboardFieldsAdditionalKeysErrorValidTextElements[mapKey][1],
+            motherboardFieldsAdditionalMapKeysErrorValidTextElements[mapKey][1],
         },
         inputText: field,
         isValidInputText:
-          areMotherboardFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+          areMotherboardFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
         label: `Name ${mapKey + 1}`,
         maxLength: 75,
         minLength: 1,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreMotherboardFieldsAdditionalFocused,
+            type: createProductAction.setAreMotherboardFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -5441,7 +5446,7 @@ function CreateProduct() {
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setMotherboardFieldsAdditional,
+            type: createProductAction.setMotherboardFieldsAdditionalMap,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -5457,7 +5462,7 @@ function CreateProduct() {
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreMotherboardFieldsAdditionalFocused,
+            type: createProductAction.setAreMotherboardFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -5471,23 +5476,27 @@ function CreateProduct() {
         semanticName: `additional field name ${mapKey + 1}`,
       };
 
-    const motherboardFieldsAdditionalValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const motherboardFieldsAdditionalMapValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
           error:
-            motherboardFieldsAdditionalValuesErrorValidTextElements[mapKey][0],
+            motherboardFieldsAdditionalMapValuesErrorValidTextElements[
+              mapKey
+            ][0],
           valid:
-            motherboardFieldsAdditionalValuesErrorValidTextElements[mapKey][1],
+            motherboardFieldsAdditionalMapValuesErrorValidTextElements[
+              mapKey
+            ][1],
         },
         inputText: value,
         isValidInputText:
-          areMotherboardFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+          areMotherboardFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
         label: `Value ${mapKey + 1}`,
         maxLength: 2000,
         minLength: 2,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreMotherboardFieldsAdditionalFocused,
+            type: createProductAction.setAreMotherboardFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -5498,7 +5507,7 @@ function CreateProduct() {
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setMotherboardFieldsAdditional,
+            type: createProductAction.setMotherboardFieldsAdditionalMap,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -5514,7 +5523,7 @@ function CreateProduct() {
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreMotherboardFieldsAdditionalFocused,
+            type: createProductAction.setAreMotherboardFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -5529,11 +5538,11 @@ function CreateProduct() {
       };
 
     const [
-      createdMotherboardFieldsAdditionalKeysTextAreaInput,
-      createdMotherboardFieldsAdditionalValuesTextAreaInput,
+      createdMotherboardFieldsAdditionalMapKeysTextAreaInput,
+      createdMotherboardFieldsAdditionalMapValuesTextAreaInput,
     ] = returnAccessibleTextAreaInputElements([
-      motherboardFieldsAdditionalKeysTextInputCreatorInfo,
-      motherboardFieldsAdditionalValuesTextInputCreatorInfo,
+      motherboardFieldsAdditionalMapKeysTextInputCreatorInfo,
+      motherboardFieldsAdditionalMapValuesTextInputCreatorInfo,
     ]);
 
     const [createdDeleteButton] = returnAccessibleButtonElements([
@@ -5541,7 +5550,7 @@ function CreateProduct() {
         buttonLabel: 'Delete',
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
           createProductDispatch({
-            type: createProductAction.setMotherboardFieldsAdditional,
+            type: createProductAction.setMotherboardFieldsAdditionalMap,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -5549,7 +5558,7 @@ function CreateProduct() {
           });
 
           createProductDispatch({
-            type: createProductAction.setAreMotherboardFieldsAdditionalFocused,
+            type: createProductAction.setAreMotherboardFieldsAdditionalMapFocused,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -5557,7 +5566,7 @@ function CreateProduct() {
           });
 
           createProductDispatch({
-            type: createProductAction.setAreMotherboardFieldsAdditionalValid,
+            type: createProductAction.setAreMotherboardFieldsAdditionalMapValid,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -5583,7 +5592,7 @@ function CreateProduct() {
 
     return (
       <Stack
-        key={`motherboardFieldsAdditional-${mapKey}`}
+        key={`motherboardFieldsAdditionalMap-${mapKey}`}
         pt={padding}
         w="100%"
       >
@@ -5594,8 +5603,8 @@ function CreateProduct() {
           {displayDeleteButton}
         </Group>
         <Group position="apart">
-          {createdMotherboardFieldsAdditionalKeysTextAreaInput}
-          {createdMotherboardFieldsAdditionalValuesTextAreaInput}
+          {createdMotherboardFieldsAdditionalMapKeysTextAreaInput}
+          {createdMotherboardFieldsAdditionalMapValuesTextAreaInput}
         </Group>
       </Stack>
     );
@@ -5947,39 +5956,40 @@ function CreateProduct() {
   ]);
 
   // page 2 -> specifications -> ram -> add new field button
-  const [createdAddRamFieldsAdditionalButton] = returnAccessibleButtonElements([
-    {
-      buttonLabel: 'Add',
-      semanticDescription: 'Add new additional field',
-      semanticName: 'Add new field',
-      leftIcon: <TbPlus />,
-      buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
-        createProductDispatch({
-          type: createProductAction.setRamFieldsAdditional,
-          payload: {
-            operation: 'add',
-            data: ['', ''],
-          },
-        });
+  const [createdAddRamFieldsAdditionalMapButton] =
+    returnAccessibleButtonElements([
+      {
+        buttonLabel: 'Add',
+        semanticDescription: 'Add new additional field',
+        semanticName: 'Add new field',
+        leftIcon: <TbPlus />,
+        buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
+          createProductDispatch({
+            type: createProductAction.setRamFieldsAdditionalMap,
+            payload: {
+              operation: 'add',
+              data: ['', ''],
+            },
+          });
 
-        createProductDispatch({
-          type: createProductAction.setAreRamFieldsAdditionalFocused,
-          payload: {
-            operation: 'add',
-            data: [false, false],
-          },
-        });
+          createProductDispatch({
+            type: createProductAction.setAreRamFieldsAdditionalMapFocused,
+            payload: {
+              operation: 'add',
+              data: [false, false],
+            },
+          });
 
-        createProductDispatch({
-          type: createProductAction.setAreRamFieldsAdditionalValid,
-          payload: {
-            operation: 'add',
-            data: [false, false],
-          },
-        });
+          createProductDispatch({
+            type: createProductAction.setAreRamFieldsAdditionalMapValid,
+            payload: {
+              operation: 'add',
+              data: [false, false],
+            },
+          });
+        },
       },
-    },
-  ]);
+    ]);
 
   // page 2 -> specifications -> ram -> ram fields user defined
 
@@ -5988,22 +5998,23 @@ function CreateProduct() {
   // page 2 -> specifications -> ram -> ram fields user defined -> accessible screen reader text elements -> field names
 
   // returns an array of tuples containing the error and valid text elements for each field name
-  const ramFieldsAdditionalKeysErrorValidTextElements: [
+  const ramFieldsAdditionalMapKeysErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(ramFieldsAdditional).map((keyFieldValue) => {
+  ][] = Array.from(ramFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [field, _value]] = keyFieldValue;
 
     // screenreader accessible error/valid text elements that are consumed by the text input element creator
     const [
-      ramFieldsAdditionalKeysInputErrorText,
-      ramFieldsAdditionalKeysInputValidText,
+      ramFieldsAdditionalMapKeysInputErrorText,
+      ramFieldsAdditionalMapKeysInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field name ${mapKey + 1}`,
       inputText: field,
       isInputTextFocused:
-        areRamFieldsAdditionalFocused.get(mapKey)?.[0] ?? false,
-      isValidInputText: areRamFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+        areRamFieldsAdditionalMapFocused.get(mapKey)?.[0] ?? false,
+      isValidInputText:
+        areRamFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
       regexValidationText: returnObjectKeyValidationText({
         content: field,
         contentKind: `additional field name ${mapKey + 1}`,
@@ -6013,30 +6024,31 @@ function CreateProduct() {
     });
 
     return [
-      ramFieldsAdditionalKeysInputErrorText,
-      ramFieldsAdditionalKeysInputValidText,
+      ramFieldsAdditionalMapKeysInputErrorText,
+      ramFieldsAdditionalMapKeysInputValidText,
     ];
   });
 
   // page 2 -> specifications -> ram -> ram fields user defined -> accessible screen reader text elements -> field values
 
   // returns an array of tuples containing the error and valid text elements for each field value
-  const ramFieldsAdditionalValuesErrorValidTextElements: [
+  const ramFieldsAdditionalMapValuesErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(ramFieldsAdditional).map((keyFieldValue) => {
+  ][] = Array.from(ramFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [_field, value]] = keyFieldValue;
 
     // screenreader accessible error/valid text elements that are consumed by the text input element creator
     const [
-      ramFieldsAdditionalValuesInputErrorText,
-      ramFieldsAdditionalValuesInputValidText,
+      ramFieldsAdditionalMapValuesInputErrorText,
+      ramFieldsAdditionalMapValuesInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field value ${mapKey + 1}`,
       inputText: value,
       isInputTextFocused:
-        areRamFieldsAdditionalFocused.get(mapKey)?.[1] ?? false,
-      isValidInputText: areRamFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+        areRamFieldsAdditionalMapFocused.get(mapKey)?.[1] ?? false,
+      isValidInputText:
+        areRamFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
       regexValidationText: returnUserDefinedFieldValueValidationText({
         content: value,
         contentKind: `additional field value ${mapKey + 1}`,
@@ -6046,31 +6058,32 @@ function CreateProduct() {
     });
 
     return [
-      ramFieldsAdditionalValuesInputErrorText,
-      ramFieldsAdditionalValuesInputValidText,
+      ramFieldsAdditionalMapValuesInputErrorText,
+      ramFieldsAdditionalMapValuesInputValidText,
     ];
   });
 
   // page 2 -> specifications -> ram -> ram fields user defined -> text area input element creator
-  const createdRamFieldsAdditionalTextInputElements = Array.from(
-    ramFieldsAdditional
+  const createdRamFieldsAdditionalMapTextInputElements = Array.from(
+    ramFieldsAdditionalMap
   ).map((keyFieldValue) => {
     const [mapKey, [field, value]] = keyFieldValue;
 
-    const ramFieldsAdditionalKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const ramFieldsAdditionalMapKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
-          error: ramFieldsAdditionalKeysErrorValidTextElements[mapKey][0],
-          valid: ramFieldsAdditionalKeysErrorValidTextElements[mapKey][1],
+          error: ramFieldsAdditionalMapKeysErrorValidTextElements[mapKey][0],
+          valid: ramFieldsAdditionalMapKeysErrorValidTextElements[mapKey][1],
         },
         inputText: field,
-        isValidInputText: areRamFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+        isValidInputText:
+          areRamFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
         label: `Name ${mapKey + 1}`,
         maxLength: 75,
         minLength: 1,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreRamFieldsAdditionalFocused,
+            type: createProductAction.setAreRamFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -6081,7 +6094,7 @@ function CreateProduct() {
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setRamFieldsAdditional,
+            type: createProductAction.setRamFieldsAdditionalMap,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -6097,7 +6110,7 @@ function CreateProduct() {
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreRamFieldsAdditionalFocused,
+            type: createProductAction.setAreRamFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -6111,20 +6124,21 @@ function CreateProduct() {
         semanticName: `additional field name ${mapKey + 1}`,
       };
 
-    const ramFieldsAdditionalValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const ramFieldsAdditionalMapValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
-          error: ramFieldsAdditionalValuesErrorValidTextElements[mapKey][0],
-          valid: ramFieldsAdditionalValuesErrorValidTextElements[mapKey][1],
+          error: ramFieldsAdditionalMapValuesErrorValidTextElements[mapKey][0],
+          valid: ramFieldsAdditionalMapValuesErrorValidTextElements[mapKey][1],
         },
         inputText: value,
-        isValidInputText: areRamFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+        isValidInputText:
+          areRamFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
         label: `Value ${mapKey + 1}`,
         maxLength: 2000,
         minLength: 2,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreRamFieldsAdditionalFocused,
+            type: createProductAction.setAreRamFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -6135,7 +6149,7 @@ function CreateProduct() {
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setRamFieldsAdditional,
+            type: createProductAction.setRamFieldsAdditionalMap,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -6151,7 +6165,7 @@ function CreateProduct() {
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreRamFieldsAdditionalFocused,
+            type: createProductAction.setAreRamFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -6166,11 +6180,11 @@ function CreateProduct() {
       };
 
     const [
-      createdRamFieldsAdditionalKeysTextAreaInput,
-      createdRamFieldsAdditionalValuesTextAreaInput,
+      createdRamFieldsAdditionalMapKeysTextAreaInput,
+      createdRamFieldsAdditionalMapValuesTextAreaInput,
     ] = returnAccessibleTextAreaInputElements([
-      ramFieldsAdditionalKeysTextInputCreatorInfo,
-      ramFieldsAdditionalValuesTextInputCreatorInfo,
+      ramFieldsAdditionalMapKeysTextInputCreatorInfo,
+      ramFieldsAdditionalMapValuesTextInputCreatorInfo,
     ]);
 
     const [createdDeleteButton] = returnAccessibleButtonElements([
@@ -6178,7 +6192,7 @@ function CreateProduct() {
         buttonLabel: 'Delete',
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
           createProductDispatch({
-            type: createProductAction.setRamFieldsAdditional,
+            type: createProductAction.setRamFieldsAdditionalMap,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -6186,7 +6200,7 @@ function CreateProduct() {
           });
 
           createProductDispatch({
-            type: createProductAction.setAreRamFieldsAdditionalFocused,
+            type: createProductAction.setAreRamFieldsAdditionalMapFocused,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -6194,7 +6208,7 @@ function CreateProduct() {
           });
 
           createProductDispatch({
-            type: createProductAction.setAreRamFieldsAdditionalValid,
+            type: createProductAction.setAreRamFieldsAdditionalMapValid,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -6219,7 +6233,7 @@ function CreateProduct() {
     );
 
     return (
-      <Stack key={`ramFieldsAdditional-${mapKey}`} pt={padding} w="100%">
+      <Stack key={`ramFieldsAdditionalMap-${mapKey}`} pt={padding} w="100%">
         <Group position="apart">
           <Text size="md" weight={600}>{`Additional Ram field ${
             mapKey + 1
@@ -6227,8 +6241,8 @@ function CreateProduct() {
           {displayDeleteButton}
         </Group>
         <Group position="apart">
-          {createdRamFieldsAdditionalKeysTextAreaInput}
-          {createdRamFieldsAdditionalValuesTextAreaInput}
+          {createdRamFieldsAdditionalMapKeysTextAreaInput}
+          {createdRamFieldsAdditionalMapValuesTextAreaInput}
         </Group>
       </Stack>
     );
@@ -6437,7 +6451,7 @@ function CreateProduct() {
     ]);
 
   // page 2 -> specifications -> storage -> add new field button
-  const [createdAddStorageFieldsAdditionalButton] =
+  const [createdAddStorageFieldsAdditionalMapButton] =
     returnAccessibleButtonElements([
       {
         buttonLabel: 'Add',
@@ -6446,7 +6460,7 @@ function CreateProduct() {
         leftIcon: <TbPlus />,
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
           createProductDispatch({
-            type: createProductAction.setStorageFieldsAdditional,
+            type: createProductAction.setStorageFieldsAdditionalMap,
             payload: {
               operation: 'add',
               data: ['', ''],
@@ -6454,7 +6468,7 @@ function CreateProduct() {
           });
 
           createProductDispatch({
-            type: createProductAction.setAreStorageFieldsAdditionalFocused,
+            type: createProductAction.setAreStorageFieldsAdditionalMapFocused,
             payload: {
               operation: 'add',
               data: [false, false],
@@ -6462,7 +6476,7 @@ function CreateProduct() {
           });
 
           createProductDispatch({
-            type: createProductAction.setAreStorageFieldsAdditionalValid,
+            type: createProductAction.setAreStorageFieldsAdditionalMapValid,
             payload: {
               operation: 'add',
               data: [false, false],
@@ -6479,23 +6493,23 @@ function CreateProduct() {
   // page 2 -> specifications -> storage -> storage fields user defined -> accessible screen reader text elements -> field names
 
   // returns an array of tuples containing the error and valid text elements for each field name
-  const storageFieldsAdditionalKeysErrorValidTextElements: [
+  const storageFieldsAdditionalMapKeysErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(storageFieldsAdditional).map((keyFieldValue) => {
+  ][] = Array.from(storageFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [field, _value]] = keyFieldValue;
 
     // screenreader accessible error/valid text elements that are consumed by the text input element creator
     const [
-      storageFieldsAdditionalKeysInputErrorText,
-      storageFieldsAdditionalKeysInputValidText,
+      storageFieldsAdditionalMapKeysInputErrorText,
+      storageFieldsAdditionalMapKeysInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field name ${mapKey + 1}`,
       inputText: field,
       isInputTextFocused:
-        areStorageFieldsAdditionalFocused.get(mapKey)?.[0] ?? false,
+        areStorageFieldsAdditionalMapFocused.get(mapKey)?.[0] ?? false,
       isValidInputText:
-        areStorageFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+        areStorageFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
       regexValidationText: returnObjectKeyValidationText({
         content: field,
         contentKind: `additional field name ${mapKey + 1}`,
@@ -6505,31 +6519,31 @@ function CreateProduct() {
     });
 
     return [
-      storageFieldsAdditionalKeysInputErrorText,
-      storageFieldsAdditionalKeysInputValidText,
+      storageFieldsAdditionalMapKeysInputErrorText,
+      storageFieldsAdditionalMapKeysInputValidText,
     ];
   });
 
   // page 2 -> specifications -> storage -> storage fields user defined -> accessible screen reader text elements -> field values
 
   // returns an array of tuples containing the error and valid text elements for each field value
-  const storageFieldsAdditionalValuesErrorValidTextElements: [
+  const storageFieldsAdditionalMapValuesErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(storageFieldsAdditional).map((keyFieldValue) => {
+  ][] = Array.from(storageFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [_field, value]] = keyFieldValue;
 
     // screenreader accessible error/valid text elements that are consumed by the text input element creator
     const [
-      storageFieldsAdditionalValuesInputErrorText,
-      storageFieldsAdditionalValuesInputValidText,
+      storageFieldsAdditionalMapValuesInputErrorText,
+      storageFieldsAdditionalMapValuesInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field value ${mapKey + 1}`,
       inputText: value,
       isInputTextFocused:
-        areStorageFieldsAdditionalFocused.get(mapKey)?.[1] ?? false,
+        areStorageFieldsAdditionalMapFocused.get(mapKey)?.[1] ?? false,
       isValidInputText:
-        areStorageFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+        areStorageFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
       regexValidationText: returnUserDefinedFieldValueValidationText({
         content: value,
         contentKind: `additional field value ${mapKey + 1}`,
@@ -6539,32 +6553,34 @@ function CreateProduct() {
     });
 
     return [
-      storageFieldsAdditionalValuesInputErrorText,
-      storageFieldsAdditionalValuesInputValidText,
+      storageFieldsAdditionalMapValuesInputErrorText,
+      storageFieldsAdditionalMapValuesInputValidText,
     ];
   });
 
   // page 2 -> specifications -> storage -> storage fields user defined -> text area input element creator
-  const createdStorageFieldsAdditionalTextInputElements = Array.from(
-    storageFieldsAdditional
+  const createdStorageFieldsAdditionalMapTextInputElements = Array.from(
+    storageFieldsAdditionalMap
   ).map((keyFieldValue) => {
     const [mapKey, [field, value]] = keyFieldValue;
 
-    const storageFieldsAdditionalKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const storageFieldsAdditionalMapKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
-          error: storageFieldsAdditionalKeysErrorValidTextElements[mapKey][0],
-          valid: storageFieldsAdditionalKeysErrorValidTextElements[mapKey][1],
+          error:
+            storageFieldsAdditionalMapKeysErrorValidTextElements[mapKey][0],
+          valid:
+            storageFieldsAdditionalMapKeysErrorValidTextElements[mapKey][1],
         },
         inputText: field,
         isValidInputText:
-          areStorageFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+          areStorageFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
         label: `Name ${mapKey + 1}`,
         maxLength: 75,
         minLength: 1,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreStorageFieldsAdditionalFocused,
+            type: createProductAction.setAreStorageFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -6575,7 +6591,7 @@ function CreateProduct() {
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setStorageFieldsAdditional,
+            type: createProductAction.setStorageFieldsAdditionalMap,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -6591,7 +6607,7 @@ function CreateProduct() {
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreStorageFieldsAdditionalFocused,
+            type: createProductAction.setAreStorageFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -6605,21 +6621,23 @@ function CreateProduct() {
         semanticName: `additional field name ${mapKey + 1}`,
       };
 
-    const storageFieldsAdditionalValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const storageFieldsAdditionalMapValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
-          error: storageFieldsAdditionalValuesErrorValidTextElements[mapKey][0],
-          valid: storageFieldsAdditionalValuesErrorValidTextElements[mapKey][1],
+          error:
+            storageFieldsAdditionalMapValuesErrorValidTextElements[mapKey][0],
+          valid:
+            storageFieldsAdditionalMapValuesErrorValidTextElements[mapKey][1],
         },
         inputText: value,
         isValidInputText:
-          areStorageFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+          areStorageFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
         label: `Value ${mapKey + 1}`,
         maxLength: 2000,
         minLength: 2,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreStorageFieldsAdditionalFocused,
+            type: createProductAction.setAreStorageFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -6630,7 +6648,7 @@ function CreateProduct() {
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setStorageFieldsAdditional,
+            type: createProductAction.setStorageFieldsAdditionalMap,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -6646,7 +6664,7 @@ function CreateProduct() {
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreStorageFieldsAdditionalFocused,
+            type: createProductAction.setAreStorageFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -6661,11 +6679,11 @@ function CreateProduct() {
       };
 
     const [
-      createdStorageFieldsAdditionalKeysTextAreaInput,
-      createdStorageFieldsAdditionalValuesTextAreaInput,
+      createdStorageFieldsAdditionalMapKeysTextAreaInput,
+      createdStorageFieldsAdditionalMapValuesTextAreaInput,
     ] = returnAccessibleTextAreaInputElements([
-      storageFieldsAdditionalKeysTextInputCreatorInfo,
-      storageFieldsAdditionalValuesTextInputCreatorInfo,
+      storageFieldsAdditionalMapKeysTextInputCreatorInfo,
+      storageFieldsAdditionalMapValuesTextInputCreatorInfo,
     ]);
 
     const [createdDeleteButton] = returnAccessibleButtonElements([
@@ -6673,7 +6691,7 @@ function CreateProduct() {
         buttonLabel: 'Delete',
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
           createProductDispatch({
-            type: createProductAction.setStorageFieldsAdditional,
+            type: createProductAction.setStorageFieldsAdditionalMap,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -6681,7 +6699,7 @@ function CreateProduct() {
           });
 
           createProductDispatch({
-            type: createProductAction.setAreStorageFieldsAdditionalFocused,
+            type: createProductAction.setAreStorageFieldsAdditionalMapFocused,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -6689,7 +6707,7 @@ function CreateProduct() {
           });
 
           createProductDispatch({
-            type: createProductAction.setAreStorageFieldsAdditionalValid,
+            type: createProductAction.setAreStorageFieldsAdditionalMapValid,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -6714,7 +6732,7 @@ function CreateProduct() {
     );
 
     return (
-      <Stack key={`storageFieldsAdditional-${mapKey}`} pt={padding} w="100%">
+      <Stack key={`storageFieldsAdditionalMap-${mapKey}`} pt={padding} w="100%">
         <Group position="apart">
           <Text size="md" weight={600}>{`Additional Storage field ${
             mapKey + 1
@@ -6722,8 +6740,8 @@ function CreateProduct() {
           {displayDeleteButton}
         </Group>
         <Group position="apart">
-          {createdStorageFieldsAdditionalKeysTextAreaInput}
-          {createdStorageFieldsAdditionalValuesTextAreaInput}
+          {createdStorageFieldsAdditionalMapKeysTextAreaInput}
+          {createdStorageFieldsAdditionalMapValuesTextAreaInput}
         </Group>
       </Stack>
     );
@@ -6843,39 +6861,40 @@ function CreateProduct() {
   );
 
   // page 2 -> specifications -> psu -> add new field button
-  const [createdAddPsuFieldsAdditionalButton] = returnAccessibleButtonElements([
-    {
-      buttonLabel: 'Add',
-      semanticDescription: 'Add new additional field',
-      semanticName: 'Add new field',
-      leftIcon: <TbPlus />,
-      buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
-        createProductDispatch({
-          type: createProductAction.setPsuFieldsAdditional,
-          payload: {
-            operation: 'add',
-            data: ['', ''],
-          },
-        });
+  const [createdAddPsuFieldsAdditionalMapButton] =
+    returnAccessibleButtonElements([
+      {
+        buttonLabel: 'Add',
+        semanticDescription: 'Add new additional field',
+        semanticName: 'Add new field',
+        leftIcon: <TbPlus />,
+        buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
+          createProductDispatch({
+            type: createProductAction.setPsuFieldsAdditionalMap,
+            payload: {
+              operation: 'add',
+              data: ['', ''],
+            },
+          });
 
-        createProductDispatch({
-          type: createProductAction.setArePsuFieldsAdditionalFocused,
-          payload: {
-            operation: 'add',
-            data: [false, false],
-          },
-        });
+          createProductDispatch({
+            type: createProductAction.setArePsuFieldsAdditionalMapFocused,
+            payload: {
+              operation: 'add',
+              data: [false, false],
+            },
+          });
 
-        createProductDispatch({
-          type: createProductAction.setArePsuFieldsAdditionalValid,
-          payload: {
-            operation: 'add',
-            data: [false, false],
-          },
-        });
+          createProductDispatch({
+            type: createProductAction.setArePsuFieldsAdditionalMapValid,
+            payload: {
+              operation: 'add',
+              data: [false, false],
+            },
+          });
+        },
       },
-    },
-  ]);
+    ]);
 
   // page 2 -> specifications -> psu -> psu fields user defined
 
@@ -6884,22 +6903,23 @@ function CreateProduct() {
   // page 2 -> specifications -> psu -> psu fields user defined -> accessible screen reader text elements -> field names
 
   // returns an array of tuples containing the error and valid text elements for each field name
-  const psuFieldsAdditionalKeysErrorValidTextElements: [
+  const psuFieldsAdditionalMapKeysErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(psuFieldsAdditional).map((keyFieldValue) => {
+  ][] = Array.from(psuFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [field, _value]] = keyFieldValue;
 
     // screenreader accessible error/valid text elements that are consumed by the text input element creator
     const [
-      psuFieldsAdditionalKeysInputErrorText,
-      psuFieldsAdditionalKeysInputValidText,
+      psuFieldsAdditionalMapKeysInputErrorText,
+      psuFieldsAdditionalMapKeysInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field name ${mapKey + 1}`,
       inputText: field,
       isInputTextFocused:
-        arePsuFieldsAdditionalFocused.get(mapKey)?.[0] ?? false,
-      isValidInputText: arePsuFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+        arePsuFieldsAdditionalMapFocused.get(mapKey)?.[0] ?? false,
+      isValidInputText:
+        arePsuFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
       regexValidationText: returnObjectKeyValidationText({
         content: field,
         contentKind: `additional field name ${mapKey + 1}`,
@@ -6909,30 +6929,31 @@ function CreateProduct() {
     });
 
     return [
-      psuFieldsAdditionalKeysInputErrorText,
-      psuFieldsAdditionalKeysInputValidText,
+      psuFieldsAdditionalMapKeysInputErrorText,
+      psuFieldsAdditionalMapKeysInputValidText,
     ];
   });
 
   // page 2 -> specifications -> psu -> psu fields user defined -> accessible screen reader text elements -> field values
 
   // returns an array of tuples containing the error and valid text elements for each field value
-  const psuFieldsAdditionalValuesErrorValidTextElements: [
+  const psuFieldsAdditionalMapValuesErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(psuFieldsAdditional).map((keyFieldValue) => {
+  ][] = Array.from(psuFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [_field, value]] = keyFieldValue;
 
     // screenreader accessible error/valid text elements that are consumed by the text input element creator
     const [
-      psuFieldsAdditionalValuesInputErrorText,
-      psuFieldsAdditionalValuesInputValidText,
+      psuFieldsAdditionalMapValuesInputErrorText,
+      psuFieldsAdditionalMapValuesInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field value ${mapKey + 1}`,
       inputText: value,
       isInputTextFocused:
-        arePsuFieldsAdditionalFocused.get(mapKey)?.[1] ?? false,
-      isValidInputText: arePsuFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+        arePsuFieldsAdditionalMapFocused.get(mapKey)?.[1] ?? false,
+      isValidInputText:
+        arePsuFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
       regexValidationText: returnUserDefinedFieldValueValidationText({
         content: value,
         contentKind: `additional field value ${mapKey + 1}`,
@@ -6942,31 +6963,32 @@ function CreateProduct() {
     });
 
     return [
-      psuFieldsAdditionalValuesInputErrorText,
-      psuFieldsAdditionalValuesInputValidText,
+      psuFieldsAdditionalMapValuesInputErrorText,
+      psuFieldsAdditionalMapValuesInputValidText,
     ];
   });
 
   // page 2 -> specifications -> psu -> psu fields user defined -> text area input element creator
-  const createdPsuFieldsAdditionalTextInputElements = Array.from(
-    psuFieldsAdditional
+  const createdPsuFieldsAdditionalMapTextInputElements = Array.from(
+    psuFieldsAdditionalMap
   ).map((keyFieldValue) => {
     const [mapKey, [field, value]] = keyFieldValue;
 
-    const psuFieldsAdditionalKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const psuFieldsAdditionalMapKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
-          error: psuFieldsAdditionalKeysErrorValidTextElements[mapKey][0],
-          valid: psuFieldsAdditionalKeysErrorValidTextElements[mapKey][1],
+          error: psuFieldsAdditionalMapKeysErrorValidTextElements[mapKey][0],
+          valid: psuFieldsAdditionalMapKeysErrorValidTextElements[mapKey][1],
         },
         inputText: field,
-        isValidInputText: arePsuFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+        isValidInputText:
+          arePsuFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
         label: `Name ${mapKey + 1}`,
         maxLength: 75,
         minLength: 1,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setArePsuFieldsAdditionalFocused,
+            type: createProductAction.setArePsuFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -6977,7 +6999,7 @@ function CreateProduct() {
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setPsuFieldsAdditional,
+            type: createProductAction.setPsuFieldsAdditionalMap,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -6993,7 +7015,7 @@ function CreateProduct() {
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setArePsuFieldsAdditionalFocused,
+            type: createProductAction.setArePsuFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -7007,20 +7029,21 @@ function CreateProduct() {
         semanticName: `additional field name ${mapKey + 1}`,
       };
 
-    const psuFieldsAdditionalValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const psuFieldsAdditionalMapValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
-          error: psuFieldsAdditionalValuesErrorValidTextElements[mapKey][0],
-          valid: psuFieldsAdditionalValuesErrorValidTextElements[mapKey][1],
+          error: psuFieldsAdditionalMapValuesErrorValidTextElements[mapKey][0],
+          valid: psuFieldsAdditionalMapValuesErrorValidTextElements[mapKey][1],
         },
         inputText: value,
-        isValidInputText: arePsuFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+        isValidInputText:
+          arePsuFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
         label: `Value ${mapKey + 1}`,
         maxLength: 2000,
         minLength: 2,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setArePsuFieldsAdditionalFocused,
+            type: createProductAction.setArePsuFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -7031,7 +7054,7 @@ function CreateProduct() {
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setPsuFieldsAdditional,
+            type: createProductAction.setPsuFieldsAdditionalMap,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -7047,7 +7070,7 @@ function CreateProduct() {
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setArePsuFieldsAdditionalFocused,
+            type: createProductAction.setArePsuFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -7062,11 +7085,11 @@ function CreateProduct() {
       };
 
     const [
-      createdPsuFieldsAdditionalKeysTextAreaInput,
-      createdPsuFieldsAdditionalValuesTextAreaInput,
+      createdPsuFieldsAdditionalMapKeysTextAreaInput,
+      createdPsuFieldsAdditionalMapValuesTextAreaInput,
     ] = returnAccessibleTextAreaInputElements([
-      psuFieldsAdditionalKeysTextInputCreatorInfo,
-      psuFieldsAdditionalValuesTextInputCreatorInfo,
+      psuFieldsAdditionalMapKeysTextInputCreatorInfo,
+      psuFieldsAdditionalMapValuesTextInputCreatorInfo,
     ]);
 
     const [createdDeleteButton] = returnAccessibleButtonElements([
@@ -7074,7 +7097,7 @@ function CreateProduct() {
         buttonLabel: 'Delete',
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
           createProductDispatch({
-            type: createProductAction.setPsuFieldsAdditional,
+            type: createProductAction.setPsuFieldsAdditionalMap,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -7082,7 +7105,7 @@ function CreateProduct() {
           });
 
           createProductDispatch({
-            type: createProductAction.setArePsuFieldsAdditionalFocused,
+            type: createProductAction.setArePsuFieldsAdditionalMapFocused,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -7090,7 +7113,7 @@ function CreateProduct() {
           });
 
           createProductDispatch({
-            type: createProductAction.setArePsuFieldsAdditionalValid,
+            type: createProductAction.setArePsuFieldsAdditionalMapValid,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -7115,7 +7138,7 @@ function CreateProduct() {
     );
 
     return (
-      <Stack key={`psuFieldsAdditional-${mapKey}`} pt={padding} w="100%">
+      <Stack key={`psuFieldsAdditionalMap-${mapKey}`} pt={padding} w="100%">
         <Group position="apart">
           <Text size="md" weight={600}>{`Additional Psu field ${
             mapKey + 1
@@ -7123,8 +7146,8 @@ function CreateProduct() {
           {displayDeleteButton}
         </Group>
         <Group position="apart">
-          {createdPsuFieldsAdditionalKeysTextAreaInput}
-          {createdPsuFieldsAdditionalValuesTextAreaInput}
+          {createdPsuFieldsAdditionalMapKeysTextAreaInput}
+          {createdPsuFieldsAdditionalMapValuesTextAreaInput}
         </Group>
       </Stack>
     );
@@ -7226,8 +7249,8 @@ function CreateProduct() {
   );
 
   // page 2 -> specifications -> case -> add new field button
-  const [createdAddCaseFieldsAdditionalButton] = returnAccessibleButtonElements(
-    [
+  const [createdAddCaseFieldsAdditionalMapButton] =
+    returnAccessibleButtonElements([
       {
         buttonLabel: 'Add',
         semanticDescription: 'Add new additional field',
@@ -7235,7 +7258,7 @@ function CreateProduct() {
         leftIcon: <TbPlus />,
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
           createProductDispatch({
-            type: createProductAction.setCaseFieldsAdditional,
+            type: createProductAction.setCaseFieldsAdditionalMap,
             payload: {
               operation: 'add',
               data: ['', ''],
@@ -7243,7 +7266,7 @@ function CreateProduct() {
           });
 
           createProductDispatch({
-            type: createProductAction.setAreCaseFieldsAdditionalFocused,
+            type: createProductAction.setAreCaseFieldsAdditionalMapFocused,
             payload: {
               operation: 'add',
               data: [false, false],
@@ -7251,7 +7274,7 @@ function CreateProduct() {
           });
 
           createProductDispatch({
-            type: createProductAction.setAreCaseFieldsAdditionalValid,
+            type: createProductAction.setAreCaseFieldsAdditionalMapValid,
             payload: {
               operation: 'add',
               data: [false, false],
@@ -7259,8 +7282,7 @@ function CreateProduct() {
           });
         },
       },
-    ]
-  );
+    ]);
 
   // page 2 -> specifications -> case -> case fields user defined
 
@@ -7269,22 +7291,23 @@ function CreateProduct() {
   // page 2 -> specifications -> case -> case fields user defined -> accessible screen reader text elements -> field names
 
   // returns an array of tuples containing the error and valid text elements for each field name
-  const caseFieldsAdditionalKeysErrorValidTextElements: [
+  const caseFieldsAdditionalMapKeysErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(caseFieldsAdditional).map((keyFieldValue) => {
+  ][] = Array.from(caseFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [field, _value]] = keyFieldValue;
 
     // screenreader accessible error/valid text elements that are consumed by the text input element creator
     const [
-      caseFieldsAdditionalKeysInputErrorText,
-      caseFieldsAdditionalKeysInputValidText,
+      caseFieldsAdditionalMapKeysInputErrorText,
+      caseFieldsAdditionalMapKeysInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field name ${mapKey + 1}`,
       inputText: field,
       isInputTextFocused:
-        areCaseFieldsAdditionalFocused.get(mapKey)?.[0] ?? false,
-      isValidInputText: areCaseFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+        areCaseFieldsAdditionalMapFocused.get(mapKey)?.[0] ?? false,
+      isValidInputText:
+        areCaseFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
       regexValidationText: returnObjectKeyValidationText({
         content: field,
         contentKind: `additional field name ${mapKey + 1}`,
@@ -7294,30 +7317,31 @@ function CreateProduct() {
     });
 
     return [
-      caseFieldsAdditionalKeysInputErrorText,
-      caseFieldsAdditionalKeysInputValidText,
+      caseFieldsAdditionalMapKeysInputErrorText,
+      caseFieldsAdditionalMapKeysInputValidText,
     ];
   });
 
   // page 2 -> specifications -> case -> case fields user defined -> accessible screen reader text elements -> field values
 
   // returns an array of tuples containing the error and valid text elements for each field value
-  const caseFieldsAdditionalValuesErrorValidTextElements: [
+  const caseFieldsAdditionalMapValuesErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(caseFieldsAdditional).map((keyFieldValue) => {
+  ][] = Array.from(caseFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [_field, value]] = keyFieldValue;
 
     // screenreader accessible error/valid text elements that are consumed by the text input element creator
     const [
-      caseFieldsAdditionalValuesInputErrorText,
-      caseFieldsAdditionalValuesInputValidText,
+      caseFieldsAdditionalMapValuesInputErrorText,
+      caseFieldsAdditionalMapValuesInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field value ${mapKey + 1}`,
       inputText: value,
       isInputTextFocused:
-        areCaseFieldsAdditionalFocused.get(mapKey)?.[1] ?? false,
-      isValidInputText: areCaseFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+        areCaseFieldsAdditionalMapFocused.get(mapKey)?.[1] ?? false,
+      isValidInputText:
+        areCaseFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
       regexValidationText: returnUserDefinedFieldValueValidationText({
         content: value,
         contentKind: `additional field value ${mapKey + 1}`,
@@ -7327,32 +7351,32 @@ function CreateProduct() {
     });
 
     return [
-      caseFieldsAdditionalValuesInputErrorText,
-      caseFieldsAdditionalValuesInputValidText,
+      caseFieldsAdditionalMapValuesInputErrorText,
+      caseFieldsAdditionalMapValuesInputValidText,
     ];
   });
 
   // page 2 -> specifications -> case -> case fields user defined -> text area input element creator
-  const createdCaseFieldsAdditionalTextInputElements = Array.from(
-    caseFieldsAdditional
+  const createdCaseFieldsAdditionalMapTextInputElements = Array.from(
+    caseFieldsAdditionalMap
   ).map((keyFieldValue) => {
     const [mapKey, [field, value]] = keyFieldValue;
 
-    const caseFieldsAdditionalKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const caseFieldsAdditionalMapKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
-          error: caseFieldsAdditionalKeysErrorValidTextElements[mapKey][0],
-          valid: caseFieldsAdditionalKeysErrorValidTextElements[mapKey][1],
+          error: caseFieldsAdditionalMapKeysErrorValidTextElements[mapKey][0],
+          valid: caseFieldsAdditionalMapKeysErrorValidTextElements[mapKey][1],
         },
         inputText: field,
         isValidInputText:
-          areCaseFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+          areCaseFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
         label: `Name ${mapKey + 1}`,
         maxLength: 75,
         minLength: 1,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreCaseFieldsAdditionalFocused,
+            type: createProductAction.setAreCaseFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -7363,7 +7387,7 @@ function CreateProduct() {
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setCaseFieldsAdditional,
+            type: createProductAction.setCaseFieldsAdditionalMap,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -7379,7 +7403,7 @@ function CreateProduct() {
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreCaseFieldsAdditionalFocused,
+            type: createProductAction.setAreCaseFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -7393,21 +7417,21 @@ function CreateProduct() {
         semanticName: `additional field name ${mapKey + 1}`,
       };
 
-    const caseFieldsAdditionalValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const caseFieldsAdditionalMapValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
-          error: caseFieldsAdditionalValuesErrorValidTextElements[mapKey][0],
-          valid: caseFieldsAdditionalValuesErrorValidTextElements[mapKey][1],
+          error: caseFieldsAdditionalMapValuesErrorValidTextElements[mapKey][0],
+          valid: caseFieldsAdditionalMapValuesErrorValidTextElements[mapKey][1],
         },
         inputText: value,
         isValidInputText:
-          areCaseFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+          areCaseFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
         label: `Value ${mapKey + 1}`,
         maxLength: 2000,
         minLength: 2,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreCaseFieldsAdditionalFocused,
+            type: createProductAction.setAreCaseFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -7418,7 +7442,7 @@ function CreateProduct() {
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setCaseFieldsAdditional,
+            type: createProductAction.setCaseFieldsAdditionalMap,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -7434,7 +7458,7 @@ function CreateProduct() {
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreCaseFieldsAdditionalFocused,
+            type: createProductAction.setAreCaseFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -7449,11 +7473,11 @@ function CreateProduct() {
       };
 
     const [
-      createdCaseFieldsAdditionalKeysTextAreaInput,
-      createdCaseFieldsAdditionalValuesTextAreaInput,
+      createdCaseFieldsAdditionalMapKeysTextAreaInput,
+      createdCaseFieldsAdditionalMapValuesTextAreaInput,
     ] = returnAccessibleTextAreaInputElements([
-      caseFieldsAdditionalKeysTextInputCreatorInfo,
-      caseFieldsAdditionalValuesTextInputCreatorInfo,
+      caseFieldsAdditionalMapKeysTextInputCreatorInfo,
+      caseFieldsAdditionalMapValuesTextInputCreatorInfo,
     ]);
 
     const [createdDeleteButton] = returnAccessibleButtonElements([
@@ -7461,7 +7485,7 @@ function CreateProduct() {
         buttonLabel: 'Delete',
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
           createProductDispatch({
-            type: createProductAction.setCaseFieldsAdditional,
+            type: createProductAction.setCaseFieldsAdditionalMap,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -7469,7 +7493,7 @@ function CreateProduct() {
           });
 
           createProductDispatch({
-            type: createProductAction.setAreCaseFieldsAdditionalFocused,
+            type: createProductAction.setAreCaseFieldsAdditionalMapFocused,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -7477,7 +7501,7 @@ function CreateProduct() {
           });
 
           createProductDispatch({
-            type: createProductAction.setAreCaseFieldsAdditionalValid,
+            type: createProductAction.setAreCaseFieldsAdditionalMapValid,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -7502,7 +7526,7 @@ function CreateProduct() {
     );
 
     return (
-      <Stack key={`caseFieldsAdditional-${mapKey}`} pt={padding} w="100%">
+      <Stack key={`caseFieldsAdditionalMap-${mapKey}`} pt={padding} w="100%">
         <Group position="apart">
           <Text size="md" weight={600}>{`Additional Case field ${
             mapKey + 1
@@ -7510,8 +7534,8 @@ function CreateProduct() {
           {displayDeleteButton}
         </Group>
         <Group position="apart">
-          {createdCaseFieldsAdditionalKeysTextAreaInput}
-          {createdCaseFieldsAdditionalValuesTextAreaInput}
+          {createdCaseFieldsAdditionalMapKeysTextAreaInput}
+          {createdCaseFieldsAdditionalMapValuesTextAreaInput}
         </Group>
       </Stack>
     );
@@ -7849,7 +7873,7 @@ function CreateProduct() {
     ]);
 
   // page 2 -> specifications -> display -> add new field button
-  const [createdAddDisplayFieldsAdditionalButton] =
+  const [createdAddDisplayFieldsAdditionalMapButton] =
     returnAccessibleButtonElements([
       {
         buttonLabel: 'Add',
@@ -7858,7 +7882,7 @@ function CreateProduct() {
         leftIcon: <TbPlus />,
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
           createProductDispatch({
-            type: createProductAction.setDisplayFieldsAdditional,
+            type: createProductAction.setDisplayFieldsAdditionalMap,
             payload: {
               operation: 'add',
               data: ['', ''],
@@ -7866,7 +7890,7 @@ function CreateProduct() {
           });
 
           createProductDispatch({
-            type: createProductAction.setAreDisplayFieldsAdditionalFocused,
+            type: createProductAction.setAreDisplayFieldsAdditionalMapFocused,
             payload: {
               operation: 'add',
               data: [false, false],
@@ -7874,7 +7898,7 @@ function CreateProduct() {
           });
 
           createProductDispatch({
-            type: createProductAction.setAreDisplayFieldsAdditionalValid,
+            type: createProductAction.setAreDisplayFieldsAdditionalMapValid,
             payload: {
               operation: 'add',
               data: [false, false],
@@ -7891,23 +7915,23 @@ function CreateProduct() {
   // page 2 -> specifications -> display -> display fields user defined -> accessible screen reader text elements -> field names
 
   // returns an array of tuples containing the error and valid text elements for each field name
-  const displayFieldsAdditionalKeysErrorValidTextElements: [
+  const displayFieldsAdditionalMapKeysErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(displayFieldsAdditional).map((keyFieldValue) => {
+  ][] = Array.from(displayFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [field, _value]] = keyFieldValue;
 
     // screenreader accessible error/valid text elements that are consumed by the text input element creator
     const [
-      displayFieldsAdditionalKeysInputErrorText,
-      displayFieldsAdditionalKeysInputValidText,
+      displayFieldsAdditionalMapKeysInputErrorText,
+      displayFieldsAdditionalMapKeysInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field name ${mapKey + 1}`,
       inputText: field,
       isInputTextFocused:
-        areDisplayFieldsAdditionalFocused.get(mapKey)?.[0] ?? false,
+        areDisplayFieldsAdditionalMapFocused.get(mapKey)?.[0] ?? false,
       isValidInputText:
-        areDisplayFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+        areDisplayFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
       regexValidationText: returnObjectKeyValidationText({
         content: field,
         contentKind: `additional field name ${mapKey + 1}`,
@@ -7917,31 +7941,31 @@ function CreateProduct() {
     });
 
     return [
-      displayFieldsAdditionalKeysInputErrorText,
-      displayFieldsAdditionalKeysInputValidText,
+      displayFieldsAdditionalMapKeysInputErrorText,
+      displayFieldsAdditionalMapKeysInputValidText,
     ];
   });
 
   // page 2 -> specifications -> display -> display fields user defined -> accessible screen reader text elements -> field values
 
   // returns an array of tuples containing the error and valid text elements for each field value
-  const displayFieldsAdditionalValuesErrorValidTextElements: [
+  const displayFieldsAdditionalMapValuesErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(displayFieldsAdditional).map((keyFieldValue) => {
+  ][] = Array.from(displayFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [_field, value]] = keyFieldValue;
 
     // screenreader accessible error/valid text elements that are consumed by the text input element creator
     const [
-      displayFieldsAdditionalValuesInputErrorText,
-      displayFieldsAdditionalValuesInputValidText,
+      displayFieldsAdditionalMapValuesInputErrorText,
+      displayFieldsAdditionalMapValuesInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field value ${mapKey + 1}`,
       inputText: value,
       isInputTextFocused:
-        areDisplayFieldsAdditionalFocused.get(mapKey)?.[1] ?? false,
+        areDisplayFieldsAdditionalMapFocused.get(mapKey)?.[1] ?? false,
       isValidInputText:
-        areDisplayFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+        areDisplayFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
       regexValidationText: returnUserDefinedFieldValueValidationText({
         content: value,
         contentKind: `additional field value ${mapKey + 1}`,
@@ -7951,32 +7975,34 @@ function CreateProduct() {
     });
 
     return [
-      displayFieldsAdditionalValuesInputErrorText,
-      displayFieldsAdditionalValuesInputValidText,
+      displayFieldsAdditionalMapValuesInputErrorText,
+      displayFieldsAdditionalMapValuesInputValidText,
     ];
   });
 
   // page 2 -> specifications -> display -> display fields user defined -> text area input element creator
-  const createdDisplayFieldsAdditionalTextInputElements = Array.from(
-    displayFieldsAdditional
+  const createdDisplayFieldsAdditionalMapTextInputElements = Array.from(
+    displayFieldsAdditionalMap
   ).map((keyFieldValue) => {
     const [mapKey, [field, value]] = keyFieldValue;
 
-    const displayFieldsAdditionalKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const displayFieldsAdditionalMapKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
-          error: displayFieldsAdditionalKeysErrorValidTextElements[mapKey][0],
-          valid: displayFieldsAdditionalKeysErrorValidTextElements[mapKey][1],
+          error:
+            displayFieldsAdditionalMapKeysErrorValidTextElements[mapKey][0],
+          valid:
+            displayFieldsAdditionalMapKeysErrorValidTextElements[mapKey][1],
         },
         inputText: field,
         isValidInputText:
-          areDisplayFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+          areDisplayFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
         label: `Name ${mapKey + 1}`,
         maxLength: 75,
         minLength: 1,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreDisplayFieldsAdditionalFocused,
+            type: createProductAction.setAreDisplayFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -7987,7 +8013,7 @@ function CreateProduct() {
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setDisplayFieldsAdditional,
+            type: createProductAction.setDisplayFieldsAdditionalMap,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -8003,7 +8029,7 @@ function CreateProduct() {
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreDisplayFieldsAdditionalFocused,
+            type: createProductAction.setAreDisplayFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -8017,21 +8043,23 @@ function CreateProduct() {
         semanticName: `additional field name ${mapKey + 1}`,
       };
 
-    const displayFieldsAdditionalValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const displayFieldsAdditionalMapValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
-          error: displayFieldsAdditionalValuesErrorValidTextElements[mapKey][0],
-          valid: displayFieldsAdditionalValuesErrorValidTextElements[mapKey][1],
+          error:
+            displayFieldsAdditionalMapValuesErrorValidTextElements[mapKey][0],
+          valid:
+            displayFieldsAdditionalMapValuesErrorValidTextElements[mapKey][1],
         },
         inputText: value,
         isValidInputText:
-          areDisplayFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+          areDisplayFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
         label: `Value ${mapKey + 1}`,
         maxLength: 2000,
         minLength: 2,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreDisplayFieldsAdditionalFocused,
+            type: createProductAction.setAreDisplayFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -8042,7 +8070,7 @@ function CreateProduct() {
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setDisplayFieldsAdditional,
+            type: createProductAction.setDisplayFieldsAdditionalMap,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -8058,7 +8086,7 @@ function CreateProduct() {
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreDisplayFieldsAdditionalFocused,
+            type: createProductAction.setAreDisplayFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -8073,11 +8101,11 @@ function CreateProduct() {
       };
 
     const [
-      createdDisplayFieldsAdditionalKeysTextAreaInput,
-      createdDisplayFieldsAdditionalValuesTextAreaInput,
+      createdDisplayFieldsAdditionalMapKeysTextAreaInput,
+      createdDisplayFieldsAdditionalMapValuesTextAreaInput,
     ] = returnAccessibleTextAreaInputElements([
-      displayFieldsAdditionalKeysTextInputCreatorInfo,
-      displayFieldsAdditionalValuesTextInputCreatorInfo,
+      displayFieldsAdditionalMapKeysTextInputCreatorInfo,
+      displayFieldsAdditionalMapValuesTextInputCreatorInfo,
     ]);
 
     const [createdDeleteButton] = returnAccessibleButtonElements([
@@ -8085,7 +8113,7 @@ function CreateProduct() {
         buttonLabel: 'Delete',
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
           createProductDispatch({
-            type: createProductAction.setDisplayFieldsAdditional,
+            type: createProductAction.setDisplayFieldsAdditionalMap,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -8093,7 +8121,7 @@ function CreateProduct() {
           });
 
           createProductDispatch({
-            type: createProductAction.setAreDisplayFieldsAdditionalFocused,
+            type: createProductAction.setAreDisplayFieldsAdditionalMapFocused,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -8101,7 +8129,7 @@ function CreateProduct() {
           });
 
           createProductDispatch({
-            type: createProductAction.setAreDisplayFieldsAdditionalValid,
+            type: createProductAction.setAreDisplayFieldsAdditionalMapValid,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -8126,7 +8154,7 @@ function CreateProduct() {
     );
 
     return (
-      <Stack key={`displayFieldsAdditional-${mapKey}`} pt={padding} w="100%">
+      <Stack key={`displayFieldsAdditionalMap-${mapKey}`} pt={padding} w="100%">
         <Group position="apart">
           <Text size="md" weight={600}>{`Additional Display field ${
             mapKey + 1
@@ -8134,8 +8162,8 @@ function CreateProduct() {
           {displayDeleteButton}
         </Group>
         <Group position="apart">
-          {createdDisplayFieldsAdditionalKeysTextAreaInput}
-          {createdDisplayFieldsAdditionalValuesTextAreaInput}
+          {createdDisplayFieldsAdditionalMapKeysTextAreaInput}
+          {createdDisplayFieldsAdditionalMapValuesTextAreaInput}
         </Group>
       </Stack>
     );
@@ -8224,7 +8252,7 @@ function CreateProduct() {
     ]);
 
   // page 2 -> specifications -> keyboard -> add new field button
-  const [createdAddKeyboardFieldsAdditionalButton] =
+  const [createdAddKeyboardFieldsAdditionalMapButton] =
     returnAccessibleButtonElements([
       {
         buttonLabel: 'Add',
@@ -8233,7 +8261,7 @@ function CreateProduct() {
         leftIcon: <TbPlus />,
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
           createProductDispatch({
-            type: createProductAction.setKeyboardFieldsAdditional,
+            type: createProductAction.setKeyboardFieldsAdditionalMap,
             payload: {
               operation: 'add',
               data: ['', ''],
@@ -8241,7 +8269,7 @@ function CreateProduct() {
           });
 
           createProductDispatch({
-            type: createProductAction.setAreKeyboardFieldsAdditionalFocused,
+            type: createProductAction.setAreKeyboardFieldsAdditionalMapFocused,
             payload: {
               operation: 'add',
               data: [false, false],
@@ -8249,7 +8277,7 @@ function CreateProduct() {
           });
 
           createProductDispatch({
-            type: createProductAction.setAreKeyboardFieldsAdditionalValid,
+            type: createProductAction.setAreKeyboardFieldsAdditionalMapValid,
             payload: {
               operation: 'add',
               data: [false, false],
@@ -8266,23 +8294,23 @@ function CreateProduct() {
   // page 2 -> specifications -> keyboard -> keyboard fields user defined -> accessible screen reader text elements -> field names
 
   // returns an array of tuples containing the error and valid text elements for each field name
-  const keyboardFieldsAdditionalKeysErrorValidTextElements: [
+  const keyboardFieldsAdditionalMapKeysErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(keyboardFieldsAdditional).map((keyFieldValue) => {
+  ][] = Array.from(keyboardFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [field, _value]] = keyFieldValue;
 
     // screenreader accessible error/valid text elements that are consumed by the text input element creator
     const [
-      keyboardFieldsAdditionalKeysInputErrorText,
-      keyboardFieldsAdditionalKeysInputValidText,
+      keyboardFieldsAdditionalMapKeysInputErrorText,
+      keyboardFieldsAdditionalMapKeysInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field name ${mapKey + 1}`,
       inputText: field,
       isInputTextFocused:
-        areKeyboardFieldsAdditionalFocused.get(mapKey)?.[0] ?? false,
+        areKeyboardFieldsAdditionalMapFocused.get(mapKey)?.[0] ?? false,
       isValidInputText:
-        areKeyboardFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+        areKeyboardFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
       regexValidationText: returnObjectKeyValidationText({
         content: field,
         contentKind: `additional field name ${mapKey + 1}`,
@@ -8292,31 +8320,31 @@ function CreateProduct() {
     });
 
     return [
-      keyboardFieldsAdditionalKeysInputErrorText,
-      keyboardFieldsAdditionalKeysInputValidText,
+      keyboardFieldsAdditionalMapKeysInputErrorText,
+      keyboardFieldsAdditionalMapKeysInputValidText,
     ];
   });
 
   // page 2 -> specifications -> keyboard -> keyboard fields user defined -> accessible screen reader text elements -> field values
 
   // returns an array of tuples containing the error and valid text elements for each field value
-  const keyboardFieldsAdditionalValuesErrorValidTextElements: [
+  const keyboardFieldsAdditionalMapValuesErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(keyboardFieldsAdditional).map((keyFieldValue) => {
+  ][] = Array.from(keyboardFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [_field, value]] = keyFieldValue;
 
     // screenreader accessible error/valid text elements that are consumed by the text input element creator
     const [
-      keyboardFieldsAdditionalValuesInputErrorText,
-      keyboardFieldsAdditionalValuesInputValidText,
+      keyboardFieldsAdditionalMapValuesInputErrorText,
+      keyboardFieldsAdditionalMapValuesInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field value ${mapKey + 1}`,
       inputText: value,
       isInputTextFocused:
-        areKeyboardFieldsAdditionalFocused.get(mapKey)?.[1] ?? false,
+        areKeyboardFieldsAdditionalMapFocused.get(mapKey)?.[1] ?? false,
       isValidInputText:
-        areKeyboardFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+        areKeyboardFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
       regexValidationText: returnUserDefinedFieldValueValidationText({
         content: value,
         contentKind: `additional field value ${mapKey + 1}`,
@@ -8326,32 +8354,34 @@ function CreateProduct() {
     });
 
     return [
-      keyboardFieldsAdditionalValuesInputErrorText,
-      keyboardFieldsAdditionalValuesInputValidText,
+      keyboardFieldsAdditionalMapValuesInputErrorText,
+      keyboardFieldsAdditionalMapValuesInputValidText,
     ];
   });
 
   // page 2 -> specifications -> keyboard -> keyboard fields user defined -> text area input element creator
-  const createdKeyboardFieldsAdditionalTextInputElements = Array.from(
-    keyboardFieldsAdditional
+  const createdKeyboardFieldsAdditionalMapTextInputElements = Array.from(
+    keyboardFieldsAdditionalMap
   ).map((keyFieldValue) => {
     const [mapKey, [field, value]] = keyFieldValue;
 
-    const keyboardFieldsAdditionalKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const keyboardFieldsAdditionalMapKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
-          error: keyboardFieldsAdditionalKeysErrorValidTextElements[mapKey][0],
-          valid: keyboardFieldsAdditionalKeysErrorValidTextElements[mapKey][1],
+          error:
+            keyboardFieldsAdditionalMapKeysErrorValidTextElements[mapKey][0],
+          valid:
+            keyboardFieldsAdditionalMapKeysErrorValidTextElements[mapKey][1],
         },
         inputText: field,
         isValidInputText:
-          areKeyboardFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+          areKeyboardFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
         label: `Name ${mapKey + 1}`,
         maxLength: 75,
         minLength: 1,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreKeyboardFieldsAdditionalFocused,
+            type: createProductAction.setAreKeyboardFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -8362,7 +8392,7 @@ function CreateProduct() {
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setKeyboardFieldsAdditional,
+            type: createProductAction.setKeyboardFieldsAdditionalMap,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -8378,7 +8408,7 @@ function CreateProduct() {
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreKeyboardFieldsAdditionalFocused,
+            type: createProductAction.setAreKeyboardFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -8392,23 +8422,23 @@ function CreateProduct() {
         semanticName: `additional field name ${mapKey + 1}`,
       };
 
-    const keyboardFieldsAdditionalValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const keyboardFieldsAdditionalMapValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
           error:
-            keyboardFieldsAdditionalValuesErrorValidTextElements[mapKey][0],
+            keyboardFieldsAdditionalMapValuesErrorValidTextElements[mapKey][0],
           valid:
-            keyboardFieldsAdditionalValuesErrorValidTextElements[mapKey][1],
+            keyboardFieldsAdditionalMapValuesErrorValidTextElements[mapKey][1],
         },
         inputText: value,
         isValidInputText:
-          areKeyboardFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+          areKeyboardFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
         label: `Value ${mapKey + 1}`,
         maxLength: 2000,
         minLength: 2,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreKeyboardFieldsAdditionalFocused,
+            type: createProductAction.setAreKeyboardFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -8419,7 +8449,7 @@ function CreateProduct() {
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setKeyboardFieldsAdditional,
+            type: createProductAction.setKeyboardFieldsAdditionalMap,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -8435,7 +8465,7 @@ function CreateProduct() {
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreKeyboardFieldsAdditionalFocused,
+            type: createProductAction.setAreKeyboardFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -8450,11 +8480,11 @@ function CreateProduct() {
       };
 
     const [
-      createdKeyboardFieldsAdditionalKeysTextAreaInput,
-      createdKeyboardFieldsAdditionalValuesTextAreaInput,
+      createdKeyboardFieldsAdditionalMapKeysTextAreaInput,
+      createdKeyboardFieldsAdditionalMapValuesTextAreaInput,
     ] = returnAccessibleTextAreaInputElements([
-      keyboardFieldsAdditionalKeysTextInputCreatorInfo,
-      keyboardFieldsAdditionalValuesTextInputCreatorInfo,
+      keyboardFieldsAdditionalMapKeysTextInputCreatorInfo,
+      keyboardFieldsAdditionalMapValuesTextInputCreatorInfo,
     ]);
 
     const [createdDeleteButton] = returnAccessibleButtonElements([
@@ -8462,7 +8492,7 @@ function CreateProduct() {
         buttonLabel: 'Delete',
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
           createProductDispatch({
-            type: createProductAction.setKeyboardFieldsAdditional,
+            type: createProductAction.setKeyboardFieldsAdditionalMap,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -8470,7 +8500,7 @@ function CreateProduct() {
           });
 
           createProductDispatch({
-            type: createProductAction.setAreKeyboardFieldsAdditionalFocused,
+            type: createProductAction.setAreKeyboardFieldsAdditionalMapFocused,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -8478,7 +8508,7 @@ function CreateProduct() {
           });
 
           createProductDispatch({
-            type: createProductAction.setAreKeyboardFieldsAdditionalValid,
+            type: createProductAction.setAreKeyboardFieldsAdditionalMapValid,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -8503,7 +8533,11 @@ function CreateProduct() {
     );
 
     return (
-      <Stack key={`keyboardFieldsAdditional-${mapKey}`} pt={padding} w="100%">
+      <Stack
+        key={`keyboardFieldsAdditionalMap-${mapKey}`}
+        pt={padding}
+        w="100%"
+      >
         <Group position="apart">
           <Text size="md" weight={600}>{`Additional Keyboard field ${
             mapKey + 1
@@ -8511,8 +8545,8 @@ function CreateProduct() {
           {displayDeleteButton}
         </Group>
         <Group position="apart">
-          {createdKeyboardFieldsAdditionalKeysTextAreaInput}
-          {createdKeyboardFieldsAdditionalValuesTextAreaInput}
+          {createdKeyboardFieldsAdditionalMapKeysTextAreaInput}
+          {createdKeyboardFieldsAdditionalMapValuesTextAreaInput}
         </Group>
       </Stack>
     );
@@ -8711,7 +8745,7 @@ function CreateProduct() {
     ]);
 
   // page 2 -> specifications -> mouse -> add new field button
-  const [createdAddMouseFieldsAdditionalButton] =
+  const [createdAddMouseFieldsAdditionalMapButton] =
     returnAccessibleButtonElements([
       {
         buttonLabel: 'Add',
@@ -8720,7 +8754,7 @@ function CreateProduct() {
         leftIcon: <TbPlus />,
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
           createProductDispatch({
-            type: createProductAction.setMouseFieldsAdditional,
+            type: createProductAction.setMouseFieldsAdditionalMap,
             payload: {
               operation: 'add',
               data: ['', ''],
@@ -8728,7 +8762,7 @@ function CreateProduct() {
           });
 
           createProductDispatch({
-            type: createProductAction.setAreMouseFieldsAdditionalFocused,
+            type: createProductAction.setAreMouseFieldsAdditionalMapFocused,
             payload: {
               operation: 'add',
               data: [false, false],
@@ -8736,7 +8770,7 @@ function CreateProduct() {
           });
 
           createProductDispatch({
-            type: createProductAction.setAreMouseFieldsAdditionalValid,
+            type: createProductAction.setAreMouseFieldsAdditionalMapValid,
             payload: {
               operation: 'add',
               data: [false, false],
@@ -8753,22 +8787,23 @@ function CreateProduct() {
   // page 2 -> specifications -> mouse -> mouse fields user defined -> accessible screen reader text elements -> field names
 
   // returns an array of tuples containing the error and valid text elements for each field name
-  const mouseFieldsAdditionalKeysErrorValidTextElements: [
+  const mouseFieldsAdditionalMapKeysErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(mouseFieldsAdditional).map((keyFieldValue) => {
+  ][] = Array.from(mouseFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [field, _value]] = keyFieldValue;
 
     // screenreader accessible error/valid text elements that are consumed by the text input element creator
     const [
-      mouseFieldsAdditionalKeysInputErrorText,
-      mouseFieldsAdditionalKeysInputValidText,
+      mouseFieldsAdditionalMapKeysInputErrorText,
+      mouseFieldsAdditionalMapKeysInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field name ${mapKey + 1}`,
       inputText: field,
       isInputTextFocused:
-        areMouseFieldsAdditionalFocused.get(mapKey)?.[0] ?? false,
-      isValidInputText: areMouseFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+        areMouseFieldsAdditionalMapFocused.get(mapKey)?.[0] ?? false,
+      isValidInputText:
+        areMouseFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
       regexValidationText: returnObjectKeyValidationText({
         content: field,
         contentKind: `additional field name ${mapKey + 1}`,
@@ -8778,30 +8813,31 @@ function CreateProduct() {
     });
 
     return [
-      mouseFieldsAdditionalKeysInputErrorText,
-      mouseFieldsAdditionalKeysInputValidText,
+      mouseFieldsAdditionalMapKeysInputErrorText,
+      mouseFieldsAdditionalMapKeysInputValidText,
     ];
   });
 
   // page 2 -> specifications -> mouse -> mouse fields user defined -> accessible screen reader text elements -> field values
 
   // returns an array of tuples containing the error and valid text elements for each field value
-  const mouseFieldsAdditionalValuesErrorValidTextElements: [
+  const mouseFieldsAdditionalMapValuesErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(mouseFieldsAdditional).map((keyFieldValue) => {
+  ][] = Array.from(mouseFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [_field, value]] = keyFieldValue;
 
     // screenreader accessible error/valid text elements that are consumed by the text input element creator
     const [
-      mouseFieldsAdditionalValuesInputErrorText,
-      mouseFieldsAdditionalValuesInputValidText,
+      mouseFieldsAdditionalMapValuesInputErrorText,
+      mouseFieldsAdditionalMapValuesInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field value ${mapKey + 1}`,
       inputText: value,
       isInputTextFocused:
-        areMouseFieldsAdditionalFocused.get(mapKey)?.[1] ?? false,
-      isValidInputText: areMouseFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+        areMouseFieldsAdditionalMapFocused.get(mapKey)?.[1] ?? false,
+      isValidInputText:
+        areMouseFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
       regexValidationText: returnUserDefinedFieldValueValidationText({
         content: value,
         contentKind: `additional field value ${mapKey + 1}`,
@@ -8811,32 +8847,32 @@ function CreateProduct() {
     });
 
     return [
-      mouseFieldsAdditionalValuesInputErrorText,
-      mouseFieldsAdditionalValuesInputValidText,
+      mouseFieldsAdditionalMapValuesInputErrorText,
+      mouseFieldsAdditionalMapValuesInputValidText,
     ];
   });
 
   // page 2 -> specifications -> mouse -> mouse fields user defined -> text area input element creator
-  const createdMouseFieldsAdditionalTextInputElements = Array.from(
-    mouseFieldsAdditional
+  const createdMouseFieldsAdditionalMapTextInputElements = Array.from(
+    mouseFieldsAdditionalMap
   ).map((keyFieldValue) => {
     const [mapKey, [field, value]] = keyFieldValue;
 
-    const mouseFieldsAdditionalKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const mouseFieldsAdditionalMapKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
-          error: mouseFieldsAdditionalKeysErrorValidTextElements[mapKey][0],
-          valid: mouseFieldsAdditionalKeysErrorValidTextElements[mapKey][1],
+          error: mouseFieldsAdditionalMapKeysErrorValidTextElements[mapKey][0],
+          valid: mouseFieldsAdditionalMapKeysErrorValidTextElements[mapKey][1],
         },
         inputText: field,
         isValidInputText:
-          areMouseFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+          areMouseFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
         label: `Name ${mapKey + 1}`,
         maxLength: 75,
         minLength: 1,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreMouseFieldsAdditionalFocused,
+            type: createProductAction.setAreMouseFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -8847,7 +8883,7 @@ function CreateProduct() {
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setMouseFieldsAdditional,
+            type: createProductAction.setMouseFieldsAdditionalMap,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -8863,7 +8899,7 @@ function CreateProduct() {
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreMouseFieldsAdditionalFocused,
+            type: createProductAction.setAreMouseFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -8877,21 +8913,23 @@ function CreateProduct() {
         semanticName: `additional field name ${mapKey + 1}`,
       };
 
-    const mouseFieldsAdditionalValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const mouseFieldsAdditionalMapValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
-          error: mouseFieldsAdditionalValuesErrorValidTextElements[mapKey][0],
-          valid: mouseFieldsAdditionalValuesErrorValidTextElements[mapKey][1],
+          error:
+            mouseFieldsAdditionalMapValuesErrorValidTextElements[mapKey][0],
+          valid:
+            mouseFieldsAdditionalMapValuesErrorValidTextElements[mapKey][1],
         },
         inputText: value,
         isValidInputText:
-          areMouseFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+          areMouseFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
         label: `Value ${mapKey + 1}`,
         maxLength: 2000,
         minLength: 2,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreMouseFieldsAdditionalFocused,
+            type: createProductAction.setAreMouseFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -8902,7 +8940,7 @@ function CreateProduct() {
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setMouseFieldsAdditional,
+            type: createProductAction.setMouseFieldsAdditionalMap,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -8918,7 +8956,7 @@ function CreateProduct() {
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreMouseFieldsAdditionalFocused,
+            type: createProductAction.setAreMouseFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -8933,11 +8971,11 @@ function CreateProduct() {
       };
 
     const [
-      createdMouseFieldsAdditionalKeysTextAreaInput,
-      createdMouseFieldsAdditionalValuesTextAreaInput,
+      createdMouseFieldsAdditionalMapKeysTextAreaInput,
+      createdMouseFieldsAdditionalMapValuesTextAreaInput,
     ] = returnAccessibleTextAreaInputElements([
-      mouseFieldsAdditionalKeysTextInputCreatorInfo,
-      mouseFieldsAdditionalValuesTextInputCreatorInfo,
+      mouseFieldsAdditionalMapKeysTextInputCreatorInfo,
+      mouseFieldsAdditionalMapValuesTextInputCreatorInfo,
     ]);
 
     const [createdDeleteButton] = returnAccessibleButtonElements([
@@ -8945,7 +8983,7 @@ function CreateProduct() {
         buttonLabel: 'Delete',
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
           createProductDispatch({
-            type: createProductAction.setMouseFieldsAdditional,
+            type: createProductAction.setMouseFieldsAdditionalMap,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -8953,7 +8991,7 @@ function CreateProduct() {
           });
 
           createProductDispatch({
-            type: createProductAction.setAreMouseFieldsAdditionalFocused,
+            type: createProductAction.setAreMouseFieldsAdditionalMapFocused,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -8961,7 +8999,7 @@ function CreateProduct() {
           });
 
           createProductDispatch({
-            type: createProductAction.setAreMouseFieldsAdditionalValid,
+            type: createProductAction.setAreMouseFieldsAdditionalMapValid,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -8986,7 +9024,7 @@ function CreateProduct() {
     );
 
     return (
-      <Stack key={`mouseFieldsAdditional-${mapKey}`} pt={padding} w="100%">
+      <Stack key={`mouseFieldsAdditionalMap-${mapKey}`} pt={padding} w="100%">
         <Group position="apart">
           <Text size="md" weight={600}>{`Additional Mouse field ${
             mapKey + 1
@@ -8994,8 +9032,8 @@ function CreateProduct() {
           {displayDeleteButton}
         </Group>
         <Group position="apart">
-          {createdMouseFieldsAdditionalKeysTextAreaInput}
-          {createdMouseFieldsAdditionalValuesTextAreaInput}
+          {createdMouseFieldsAdditionalMapKeysTextAreaInput}
+          {createdMouseFieldsAdditionalMapValuesTextAreaInput}
         </Group>
       </Stack>
     );
@@ -9253,7 +9291,7 @@ function CreateProduct() {
     ]);
 
   // page 2 -> specifications -> headphone -> add new field button
-  const [createdAddHeadphoneFieldsAdditionalButton] =
+  const [createdAddHeadphoneFieldsAdditionalMapButton] =
     returnAccessibleButtonElements([
       {
         buttonLabel: 'Add',
@@ -9262,7 +9300,7 @@ function CreateProduct() {
         leftIcon: <TbPlus />,
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
           createProductDispatch({
-            type: createProductAction.setHeadphoneFieldsAdditional,
+            type: createProductAction.setHeadphoneFieldsAdditionalMap,
             payload: {
               operation: 'add',
               data: ['', ''],
@@ -9270,7 +9308,7 @@ function CreateProduct() {
           });
 
           createProductDispatch({
-            type: createProductAction.setAreHeadphoneFieldsAdditionalFocused,
+            type: createProductAction.setAreHeadphoneFieldsAdditionalMapFocused,
             payload: {
               operation: 'add',
               data: [false, false],
@@ -9278,7 +9316,7 @@ function CreateProduct() {
           });
 
           createProductDispatch({
-            type: createProductAction.setAreHeadphoneFieldsAdditionalValid,
+            type: createProductAction.setAreHeadphoneFieldsAdditionalMapValid,
             payload: {
               operation: 'add',
               data: [false, false],
@@ -9295,23 +9333,23 @@ function CreateProduct() {
   // page 2 -> specifications -> headphone -> headphone fields user defined -> accessible screen reader text elements -> field names
 
   // returns an array of tuples containing the error and valid text elements for each field name
-  const headphoneFieldsAdditionalKeysErrorValidTextElements: [
+  const headphoneFieldsAdditionalMapKeysErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(headphoneFieldsAdditional).map((keyFieldValue) => {
+  ][] = Array.from(headphoneFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [field, _value]] = keyFieldValue;
 
     // screenreader accessible error/valid text elements that are consumed by the text input element creator
     const [
-      headphoneFieldsAdditionalKeysInputErrorText,
-      headphoneFieldsAdditionalKeysInputValidText,
+      headphoneFieldsAdditionalMapKeysInputErrorText,
+      headphoneFieldsAdditionalMapKeysInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field name ${mapKey + 1}`,
       inputText: field,
       isInputTextFocused:
-        areHeadphoneFieldsAdditionalFocused.get(mapKey)?.[0] ?? false,
+        areHeadphoneFieldsAdditionalMapFocused.get(mapKey)?.[0] ?? false,
       isValidInputText:
-        areHeadphoneFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+        areHeadphoneFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
       regexValidationText: returnObjectKeyValidationText({
         content: field,
         contentKind: `additional field name ${mapKey + 1}`,
@@ -9321,31 +9359,31 @@ function CreateProduct() {
     });
 
     return [
-      headphoneFieldsAdditionalKeysInputErrorText,
-      headphoneFieldsAdditionalKeysInputValidText,
+      headphoneFieldsAdditionalMapKeysInputErrorText,
+      headphoneFieldsAdditionalMapKeysInputValidText,
     ];
   });
 
   // page 2 -> specifications -> headphone -> headphone fields user defined -> accessible screen reader text elements -> field values
 
   // returns an array of tuples containing the error and valid text elements for each field value
-  const headphoneFieldsAdditionalValuesErrorValidTextElements: [
+  const headphoneFieldsAdditionalMapValuesErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(headphoneFieldsAdditional).map((keyFieldValue) => {
+  ][] = Array.from(headphoneFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [_field, value]] = keyFieldValue;
 
     // screenreader accessible error/valid text elements that are consumed by the text input element creator
     const [
-      headphoneFieldsAdditionalValuesInputErrorText,
-      headphoneFieldsAdditionalValuesInputValidText,
+      headphoneFieldsAdditionalMapValuesInputErrorText,
+      headphoneFieldsAdditionalMapValuesInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field value ${mapKey + 1}`,
       inputText: value,
       isInputTextFocused:
-        areHeadphoneFieldsAdditionalFocused.get(mapKey)?.[1] ?? false,
+        areHeadphoneFieldsAdditionalMapFocused.get(mapKey)?.[1] ?? false,
       isValidInputText:
-        areHeadphoneFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+        areHeadphoneFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
       regexValidationText: returnUserDefinedFieldValueValidationText({
         content: value,
         contentKind: `additional field value ${mapKey + 1}`,
@@ -9355,32 +9393,34 @@ function CreateProduct() {
     });
 
     return [
-      headphoneFieldsAdditionalValuesInputErrorText,
-      headphoneFieldsAdditionalValuesInputValidText,
+      headphoneFieldsAdditionalMapValuesInputErrorText,
+      headphoneFieldsAdditionalMapValuesInputValidText,
     ];
   });
 
   // page 2 -> specifications -> headphone -> headphone fields user defined -> text area input element creator
-  const createdHeadphoneFieldsAdditionalTextInputElements = Array.from(
-    headphoneFieldsAdditional
+  const createdHeadphoneFieldsAdditionalMapTextInputElements = Array.from(
+    headphoneFieldsAdditionalMap
   ).map((keyFieldValue) => {
     const [mapKey, [field, value]] = keyFieldValue;
 
-    const headphoneFieldsAdditionalKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const headphoneFieldsAdditionalMapKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
-          error: headphoneFieldsAdditionalKeysErrorValidTextElements[mapKey][0],
-          valid: headphoneFieldsAdditionalKeysErrorValidTextElements[mapKey][1],
+          error:
+            headphoneFieldsAdditionalMapKeysErrorValidTextElements[mapKey][0],
+          valid:
+            headphoneFieldsAdditionalMapKeysErrorValidTextElements[mapKey][1],
         },
         inputText: field,
         isValidInputText:
-          areHeadphoneFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+          areHeadphoneFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
         label: `Name ${mapKey + 1}`,
         maxLength: 75,
         minLength: 1,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreHeadphoneFieldsAdditionalFocused,
+            type: createProductAction.setAreHeadphoneFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -9391,7 +9431,7 @@ function CreateProduct() {
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setHeadphoneFieldsAdditional,
+            type: createProductAction.setHeadphoneFieldsAdditionalMap,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -9407,7 +9447,7 @@ function CreateProduct() {
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreHeadphoneFieldsAdditionalFocused,
+            type: createProductAction.setAreHeadphoneFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -9421,23 +9461,23 @@ function CreateProduct() {
         semanticName: `additional field name ${mapKey + 1}`,
       };
 
-    const headphoneFieldsAdditionalValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const headphoneFieldsAdditionalMapValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
           error:
-            headphoneFieldsAdditionalValuesErrorValidTextElements[mapKey][0],
+            headphoneFieldsAdditionalMapValuesErrorValidTextElements[mapKey][0],
           valid:
-            headphoneFieldsAdditionalValuesErrorValidTextElements[mapKey][1],
+            headphoneFieldsAdditionalMapValuesErrorValidTextElements[mapKey][1],
         },
         inputText: value,
         isValidInputText:
-          areHeadphoneFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+          areHeadphoneFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
         label: `Value ${mapKey + 1}`,
         maxLength: 2000,
         minLength: 2,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreHeadphoneFieldsAdditionalFocused,
+            type: createProductAction.setAreHeadphoneFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -9448,7 +9488,7 @@ function CreateProduct() {
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setHeadphoneFieldsAdditional,
+            type: createProductAction.setHeadphoneFieldsAdditionalMap,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -9464,7 +9504,7 @@ function CreateProduct() {
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreHeadphoneFieldsAdditionalFocused,
+            type: createProductAction.setAreHeadphoneFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -9479,11 +9519,11 @@ function CreateProduct() {
       };
 
     const [
-      createdHeadphoneFieldsAdditionalKeysTextAreaInput,
-      createdHeadphoneFieldsAdditionalValuesTextAreaInput,
+      createdHeadphoneFieldsAdditionalMapKeysTextAreaInput,
+      createdHeadphoneFieldsAdditionalMapValuesTextAreaInput,
     ] = returnAccessibleTextAreaInputElements([
-      headphoneFieldsAdditionalKeysTextInputCreatorInfo,
-      headphoneFieldsAdditionalValuesTextInputCreatorInfo,
+      headphoneFieldsAdditionalMapKeysTextInputCreatorInfo,
+      headphoneFieldsAdditionalMapValuesTextInputCreatorInfo,
     ]);
 
     const [createdDeleteButton] = returnAccessibleButtonElements([
@@ -9491,7 +9531,7 @@ function CreateProduct() {
         buttonLabel: 'Delete',
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
           createProductDispatch({
-            type: createProductAction.setHeadphoneFieldsAdditional,
+            type: createProductAction.setHeadphoneFieldsAdditionalMap,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -9499,7 +9539,7 @@ function CreateProduct() {
           });
 
           createProductDispatch({
-            type: createProductAction.setAreHeadphoneFieldsAdditionalFocused,
+            type: createProductAction.setAreHeadphoneFieldsAdditionalMapFocused,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -9507,7 +9547,7 @@ function CreateProduct() {
           });
 
           createProductDispatch({
-            type: createProductAction.setAreHeadphoneFieldsAdditionalValid,
+            type: createProductAction.setAreHeadphoneFieldsAdditionalMapValid,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -9532,7 +9572,11 @@ function CreateProduct() {
     );
 
     return (
-      <Stack key={`headphoneFieldsAdditional-${mapKey}`} pt={padding} w="100%">
+      <Stack
+        key={`headphoneFieldsAdditionalMap-${mapKey}`}
+        pt={padding}
+        w="100%"
+      >
         <Group position="apart">
           <Text size="md" weight={600}>{`Additional Headphone field ${
             mapKey + 1
@@ -9540,8 +9584,8 @@ function CreateProduct() {
           {displayDeleteButton}
         </Group>
         <Group position="apart">
-          {createdHeadphoneFieldsAdditionalKeysTextAreaInput}
-          {createdHeadphoneFieldsAdditionalValuesTextAreaInput}
+          {createdHeadphoneFieldsAdditionalMapKeysTextAreaInput}
+          {createdHeadphoneFieldsAdditionalMapValuesTextAreaInput}
         </Group>
       </Stack>
     );
@@ -9748,7 +9792,7 @@ function CreateProduct() {
     ]);
 
   // page 2 -> specifications -> speaker -> add new field button
-  const [createdAddSpeakerFieldsAdditionalButton] =
+  const [createdAddSpeakerFieldsAdditionalMapButton] =
     returnAccessibleButtonElements([
       {
         buttonLabel: 'Add',
@@ -9757,7 +9801,7 @@ function CreateProduct() {
         leftIcon: <TbPlus />,
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
           createProductDispatch({
-            type: createProductAction.setSpeakerFieldsAdditional,
+            type: createProductAction.setSpeakerFieldsAdditionalMap,
             payload: {
               operation: 'add',
               data: ['', ''],
@@ -9765,7 +9809,7 @@ function CreateProduct() {
           });
 
           createProductDispatch({
-            type: createProductAction.setAreSpeakerFieldsAdditionalFocused,
+            type: createProductAction.setAreSpeakerFieldsAdditionalMapFocused,
             payload: {
               operation: 'add',
               data: [false, false],
@@ -9773,7 +9817,7 @@ function CreateProduct() {
           });
 
           createProductDispatch({
-            type: createProductAction.setAreSpeakerFieldsAdditionalValid,
+            type: createProductAction.setAreSpeakerFieldsAdditionalMapValid,
             payload: {
               operation: 'add',
               data: [false, false],
@@ -9790,23 +9834,23 @@ function CreateProduct() {
   // page 2 -> specifications -> speaker -> speaker fields user defined -> accessible screen reader text elements -> field names
 
   // returns an array of tuples containing the error and valid text elements for each field name
-  const speakerFieldsAdditionalKeysErrorValidTextElements: [
+  const speakerFieldsAdditionalMapKeysErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(speakerFieldsAdditional).map((keyFieldValue) => {
+  ][] = Array.from(speakerFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [field, _value]] = keyFieldValue;
 
     // screenreader accessible error/valid text elements that are consumed by the text input element creator
     const [
-      speakerFieldsAdditionalKeysInputErrorText,
-      speakerFieldsAdditionalKeysInputValidText,
+      speakerFieldsAdditionalMapKeysInputErrorText,
+      speakerFieldsAdditionalMapKeysInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field name ${mapKey + 1}`,
       inputText: field,
       isInputTextFocused:
-        areSpeakerFieldsAdditionalFocused.get(mapKey)?.[0] ?? false,
+        areSpeakerFieldsAdditionalMapFocused.get(mapKey)?.[0] ?? false,
       isValidInputText:
-        areSpeakerFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+        areSpeakerFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
       regexValidationText: returnObjectKeyValidationText({
         content: field,
         contentKind: `additional field name ${mapKey + 1}`,
@@ -9816,31 +9860,31 @@ function CreateProduct() {
     });
 
     return [
-      speakerFieldsAdditionalKeysInputErrorText,
-      speakerFieldsAdditionalKeysInputValidText,
+      speakerFieldsAdditionalMapKeysInputErrorText,
+      speakerFieldsAdditionalMapKeysInputValidText,
     ];
   });
 
   // page 2 -> specifications -> speaker -> speaker fields user defined -> accessible screen reader text elements -> field values
 
   // returns an array of tuples containing the error and valid text elements for each field value
-  const speakerFieldsAdditionalValuesErrorValidTextElements: [
+  const speakerFieldsAdditionalMapValuesErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(speakerFieldsAdditional).map((keyFieldValue) => {
+  ][] = Array.from(speakerFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [_field, value]] = keyFieldValue;
 
     // screenreader accessible error/valid text elements that are consumed by the text input element creator
     const [
-      speakerFieldsAdditionalValuesInputErrorText,
-      speakerFieldsAdditionalValuesInputValidText,
+      speakerFieldsAdditionalMapValuesInputErrorText,
+      speakerFieldsAdditionalMapValuesInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field value ${mapKey + 1}`,
       inputText: value,
       isInputTextFocused:
-        areSpeakerFieldsAdditionalFocused.get(mapKey)?.[1] ?? false,
+        areSpeakerFieldsAdditionalMapFocused.get(mapKey)?.[1] ?? false,
       isValidInputText:
-        areSpeakerFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+        areSpeakerFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
       regexValidationText: returnUserDefinedFieldValueValidationText({
         content: value,
         contentKind: `additional field value ${mapKey + 1}`,
@@ -9850,32 +9894,34 @@ function CreateProduct() {
     });
 
     return [
-      speakerFieldsAdditionalValuesInputErrorText,
-      speakerFieldsAdditionalValuesInputValidText,
+      speakerFieldsAdditionalMapValuesInputErrorText,
+      speakerFieldsAdditionalMapValuesInputValidText,
     ];
   });
 
   // page 2 -> specifications -> speaker -> speaker fields user defined -> text area input element creator
-  const createdSpeakerFieldsAdditionalTextInputElements = Array.from(
-    speakerFieldsAdditional
+  const createdSpeakerFieldsAdditionalMapTextInputElements = Array.from(
+    speakerFieldsAdditionalMap
   ).map((keyFieldValue) => {
     const [mapKey, [field, value]] = keyFieldValue;
 
-    const speakerFieldsAdditionalKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const speakerFieldsAdditionalMapKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
-          error: speakerFieldsAdditionalKeysErrorValidTextElements[mapKey][0],
-          valid: speakerFieldsAdditionalKeysErrorValidTextElements[mapKey][1],
+          error:
+            speakerFieldsAdditionalMapKeysErrorValidTextElements[mapKey][0],
+          valid:
+            speakerFieldsAdditionalMapKeysErrorValidTextElements[mapKey][1],
         },
         inputText: field,
         isValidInputText:
-          areSpeakerFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+          areSpeakerFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
         label: `Name ${mapKey + 1}`,
         maxLength: 75,
         minLength: 1,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreSpeakerFieldsAdditionalFocused,
+            type: createProductAction.setAreSpeakerFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -9886,7 +9932,7 @@ function CreateProduct() {
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setSpeakerFieldsAdditional,
+            type: createProductAction.setSpeakerFieldsAdditionalMap,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -9902,7 +9948,7 @@ function CreateProduct() {
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreSpeakerFieldsAdditionalFocused,
+            type: createProductAction.setAreSpeakerFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -9916,21 +9962,23 @@ function CreateProduct() {
         semanticName: `additional field name ${mapKey + 1}`,
       };
 
-    const speakerFieldsAdditionalValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const speakerFieldsAdditionalMapValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
-          error: speakerFieldsAdditionalValuesErrorValidTextElements[mapKey][0],
-          valid: speakerFieldsAdditionalValuesErrorValidTextElements[mapKey][1],
+          error:
+            speakerFieldsAdditionalMapValuesErrorValidTextElements[mapKey][0],
+          valid:
+            speakerFieldsAdditionalMapValuesErrorValidTextElements[mapKey][1],
         },
         inputText: value,
         isValidInputText:
-          areSpeakerFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+          areSpeakerFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
         label: `Value ${mapKey + 1}`,
         maxLength: 2000,
         minLength: 2,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreSpeakerFieldsAdditionalFocused,
+            type: createProductAction.setAreSpeakerFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -9941,7 +9989,7 @@ function CreateProduct() {
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setSpeakerFieldsAdditional,
+            type: createProductAction.setSpeakerFieldsAdditionalMap,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -9957,7 +10005,7 @@ function CreateProduct() {
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreSpeakerFieldsAdditionalFocused,
+            type: createProductAction.setAreSpeakerFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -9972,11 +10020,11 @@ function CreateProduct() {
       };
 
     const [
-      createdSpeakerFieldsAdditionalKeysTextAreaInput,
-      createdSpeakerFieldsAdditionalValuesTextAreaInput,
+      createdSpeakerFieldsAdditionalMapKeysTextAreaInput,
+      createdSpeakerFieldsAdditionalMapValuesTextAreaInput,
     ] = returnAccessibleTextAreaInputElements([
-      speakerFieldsAdditionalKeysTextInputCreatorInfo,
-      speakerFieldsAdditionalValuesTextInputCreatorInfo,
+      speakerFieldsAdditionalMapKeysTextInputCreatorInfo,
+      speakerFieldsAdditionalMapValuesTextInputCreatorInfo,
     ]);
 
     const [createdDeleteButton] = returnAccessibleButtonElements([
@@ -9984,7 +10032,7 @@ function CreateProduct() {
         buttonLabel: 'Delete',
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
           createProductDispatch({
-            type: createProductAction.setSpeakerFieldsAdditional,
+            type: createProductAction.setSpeakerFieldsAdditionalMap,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -9992,7 +10040,7 @@ function CreateProduct() {
           });
 
           createProductDispatch({
-            type: createProductAction.setAreSpeakerFieldsAdditionalFocused,
+            type: createProductAction.setAreSpeakerFieldsAdditionalMapFocused,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -10000,7 +10048,7 @@ function CreateProduct() {
           });
 
           createProductDispatch({
-            type: createProductAction.setAreSpeakerFieldsAdditionalValid,
+            type: createProductAction.setAreSpeakerFieldsAdditionalMapValid,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -10025,7 +10073,7 @@ function CreateProduct() {
     );
 
     return (
-      <Stack key={`speakerFieldsAdditional-${mapKey}`} pt={padding} w="100%">
+      <Stack key={`speakerFieldsAdditionalMap-${mapKey}`} pt={padding} w="100%">
         <Group position="apart">
           <Text size="md" weight={600}>{`Additional Speaker field ${
             mapKey + 1
@@ -10033,8 +10081,8 @@ function CreateProduct() {
           {displayDeleteButton}
         </Group>
         <Group position="apart">
-          {createdSpeakerFieldsAdditionalKeysTextAreaInput}
-          {createdSpeakerFieldsAdditionalValuesTextAreaInput}
+          {createdSpeakerFieldsAdditionalMapKeysTextAreaInput}
+          {createdSpeakerFieldsAdditionalMapValuesTextAreaInput}
         </Group>
       </Stack>
     );
@@ -10556,7 +10604,7 @@ function CreateProduct() {
   ]);
 
   // page 2 -> specifications -> smartphone -> add new field button
-  const [createdAddSmartphoneFieldsAdditionalButton] =
+  const [createdAddSmartphoneFieldsAdditionalMapButton] =
     returnAccessibleButtonElements([
       {
         buttonLabel: 'Add',
@@ -10565,7 +10613,7 @@ function CreateProduct() {
         leftIcon: <TbPlus />,
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
           createProductDispatch({
-            type: createProductAction.setSmartphoneFieldsAdditional,
+            type: createProductAction.setSmartphoneFieldsAdditionalMap,
             payload: {
               operation: 'add',
               data: ['', ''],
@@ -10573,7 +10621,7 @@ function CreateProduct() {
           });
 
           createProductDispatch({
-            type: createProductAction.setAreSmartphoneFieldsAdditionalFocused,
+            type: createProductAction.setAreSmartphoneFieldsAdditionalMapFocused,
             payload: {
               operation: 'add',
               data: [false, false],
@@ -10581,7 +10629,7 @@ function CreateProduct() {
           });
 
           createProductDispatch({
-            type: createProductAction.setAreSmartphoneFieldsAdditionalValid,
+            type: createProductAction.setAreSmartphoneFieldsAdditionalMapValid,
             payload: {
               operation: 'add',
               data: [false, false],
@@ -10598,23 +10646,23 @@ function CreateProduct() {
   // page 2 -> specifications -> smartphone -> smartphone fields user defined -> accessible screen reader text elements -> field names
 
   // returns an array of tuples containing the error and valid text elements for each field name
-  const smartphoneFieldsAdditionalKeysErrorValidTextElements: [
+  const smartphoneFieldsAdditionalMapKeysErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(smartphoneFieldsAdditional).map((keyFieldValue) => {
+  ][] = Array.from(smartphoneFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [field, _value]] = keyFieldValue;
 
     // screenreader accessible error/valid text elements that are consumed by the text input element creator
     const [
-      smartphoneFieldsAdditionalKeysInputErrorText,
-      smartphoneFieldsAdditionalKeysInputValidText,
+      smartphoneFieldsAdditionalMapKeysInputErrorText,
+      smartphoneFieldsAdditionalMapKeysInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field name ${mapKey + 1}`,
       inputText: field,
       isInputTextFocused:
-        areSmartphoneFieldsAdditionalFocused.get(mapKey)?.[0] ?? false,
+        areSmartphoneFieldsAdditionalMapFocused.get(mapKey)?.[0] ?? false,
       isValidInputText:
-        areSmartphoneFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+        areSmartphoneFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
       regexValidationText: returnObjectKeyValidationText({
         content: field,
         contentKind: `additional field name ${mapKey + 1}`,
@@ -10624,31 +10672,31 @@ function CreateProduct() {
     });
 
     return [
-      smartphoneFieldsAdditionalKeysInputErrorText,
-      smartphoneFieldsAdditionalKeysInputValidText,
+      smartphoneFieldsAdditionalMapKeysInputErrorText,
+      smartphoneFieldsAdditionalMapKeysInputValidText,
     ];
   });
 
   // page 2 -> specifications -> smartphone -> smartphone fields user defined -> accessible screen reader text elements -> field values
 
   // returns an array of tuples containing the error and valid text elements for each field value
-  const smartphoneFieldsAdditionalValuesErrorValidTextElements: [
+  const smartphoneFieldsAdditionalMapValuesErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(smartphoneFieldsAdditional).map((keyFieldValue) => {
+  ][] = Array.from(smartphoneFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [_field, value]] = keyFieldValue;
 
     // screenreader accessible error/valid text elements that are consumed by the text input element creator
     const [
-      smartphoneFieldsAdditionalValuesInputErrorText,
-      smartphoneFieldsAdditionalValuesInputValidText,
+      smartphoneFieldsAdditionalMapValuesInputErrorText,
+      smartphoneFieldsAdditionalMapValuesInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field value ${mapKey + 1}`,
       inputText: value,
       isInputTextFocused:
-        areSmartphoneFieldsAdditionalFocused.get(mapKey)?.[1] ?? false,
+        areSmartphoneFieldsAdditionalMapFocused.get(mapKey)?.[1] ?? false,
       isValidInputText:
-        areSmartphoneFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+        areSmartphoneFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
       regexValidationText: returnUserDefinedFieldValueValidationText({
         content: value,
         contentKind: `additional field value ${mapKey + 1}`,
@@ -10658,34 +10706,34 @@ function CreateProduct() {
     });
 
     return [
-      smartphoneFieldsAdditionalValuesInputErrorText,
-      smartphoneFieldsAdditionalValuesInputValidText,
+      smartphoneFieldsAdditionalMapValuesInputErrorText,
+      smartphoneFieldsAdditionalMapValuesInputValidText,
     ];
   });
 
   // page 2 -> specifications -> smartphone -> smartphone fields user defined -> text area input element creator
-  const createdSmartphoneFieldsAdditionalTextInputElements = Array.from(
-    smartphoneFieldsAdditional
+  const createdSmartphoneFieldsAdditionalMapTextInputElements = Array.from(
+    smartphoneFieldsAdditionalMap
   ).map((keyFieldValue) => {
     const [mapKey, [field, value]] = keyFieldValue;
 
-    const smartphoneFieldsAdditionalKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const smartphoneFieldsAdditionalMapKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
           error:
-            smartphoneFieldsAdditionalKeysErrorValidTextElements[mapKey][0],
+            smartphoneFieldsAdditionalMapKeysErrorValidTextElements[mapKey][0],
           valid:
-            smartphoneFieldsAdditionalKeysErrorValidTextElements[mapKey][1],
+            smartphoneFieldsAdditionalMapKeysErrorValidTextElements[mapKey][1],
         },
         inputText: field,
         isValidInputText:
-          areSmartphoneFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+          areSmartphoneFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
         label: `Name ${mapKey + 1}`,
         maxLength: 75,
         minLength: 1,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreSmartphoneFieldsAdditionalFocused,
+            type: createProductAction.setAreSmartphoneFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -10696,7 +10744,7 @@ function CreateProduct() {
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setSmartphoneFieldsAdditional,
+            type: createProductAction.setSmartphoneFieldsAdditionalMap,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -10712,7 +10760,7 @@ function CreateProduct() {
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreSmartphoneFieldsAdditionalFocused,
+            type: createProductAction.setAreSmartphoneFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -10726,23 +10774,27 @@ function CreateProduct() {
         semanticName: `additional field name ${mapKey + 1}`,
       };
 
-    const smartphoneFieldsAdditionalValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const smartphoneFieldsAdditionalMapValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
           error:
-            smartphoneFieldsAdditionalValuesErrorValidTextElements[mapKey][0],
+            smartphoneFieldsAdditionalMapValuesErrorValidTextElements[
+              mapKey
+            ][0],
           valid:
-            smartphoneFieldsAdditionalValuesErrorValidTextElements[mapKey][1],
+            smartphoneFieldsAdditionalMapValuesErrorValidTextElements[
+              mapKey
+            ][1],
         },
         inputText: value,
         isValidInputText:
-          areSmartphoneFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+          areSmartphoneFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
         label: `Value ${mapKey + 1}`,
         maxLength: 2000,
         minLength: 2,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreSmartphoneFieldsAdditionalFocused,
+            type: createProductAction.setAreSmartphoneFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -10753,7 +10805,7 @@ function CreateProduct() {
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setSmartphoneFieldsAdditional,
+            type: createProductAction.setSmartphoneFieldsAdditionalMap,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -10769,7 +10821,7 @@ function CreateProduct() {
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreSmartphoneFieldsAdditionalFocused,
+            type: createProductAction.setAreSmartphoneFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -10784,11 +10836,11 @@ function CreateProduct() {
       };
 
     const [
-      createdSmartphoneFieldsAdditionalKeysTextAreaInput,
-      createdSmartphoneFieldsAdditionalValuesTextAreaInput,
+      createdSmartphoneFieldsAdditionalMapKeysTextAreaInput,
+      createdSmartphoneFieldsAdditionalMapValuesTextAreaInput,
     ] = returnAccessibleTextAreaInputElements([
-      smartphoneFieldsAdditionalKeysTextInputCreatorInfo,
-      smartphoneFieldsAdditionalValuesTextInputCreatorInfo,
+      smartphoneFieldsAdditionalMapKeysTextInputCreatorInfo,
+      smartphoneFieldsAdditionalMapValuesTextInputCreatorInfo,
     ]);
 
     const [createdDeleteButton] = returnAccessibleButtonElements([
@@ -10796,7 +10848,7 @@ function CreateProduct() {
         buttonLabel: 'Delete',
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
           createProductDispatch({
-            type: createProductAction.setSmartphoneFieldsAdditional,
+            type: createProductAction.setSmartphoneFieldsAdditionalMap,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -10804,7 +10856,7 @@ function CreateProduct() {
           });
 
           createProductDispatch({
-            type: createProductAction.setAreSmartphoneFieldsAdditionalFocused,
+            type: createProductAction.setAreSmartphoneFieldsAdditionalMapFocused,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -10812,7 +10864,7 @@ function CreateProduct() {
           });
 
           createProductDispatch({
-            type: createProductAction.setAreSmartphoneFieldsAdditionalValid,
+            type: createProductAction.setAreSmartphoneFieldsAdditionalMapValid,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -10837,7 +10889,11 @@ function CreateProduct() {
     );
 
     return (
-      <Stack key={`smartphoneFieldsAdditional-${mapKey}`} pt={padding} w="100%">
+      <Stack
+        key={`smartphoneFieldsAdditionalMap-${mapKey}`}
+        pt={padding}
+        w="100%"
+      >
         <Group position="apart">
           <Text size="md" weight={600}>{`Additional Smartphone field ${
             mapKey + 1
@@ -10845,8 +10901,8 @@ function CreateProduct() {
           {displayDeleteButton}
         </Group>
         <Group position="apart">
-          {createdSmartphoneFieldsAdditionalKeysTextAreaInput}
-          {createdSmartphoneFieldsAdditionalValuesTextAreaInput}
+          {createdSmartphoneFieldsAdditionalMapKeysTextAreaInput}
+          {createdSmartphoneFieldsAdditionalMapValuesTextAreaInput}
         </Group>
       </Stack>
     );
@@ -11363,7 +11419,7 @@ function CreateProduct() {
   ]);
 
   // page 2 -> specifications -> tablet -> add new field button
-  const [createdAddTabletFieldsAdditionalButton] =
+  const [createdAddTabletFieldsAdditionalMapButton] =
     returnAccessibleButtonElements([
       {
         buttonLabel: 'Add',
@@ -11372,7 +11428,7 @@ function CreateProduct() {
         leftIcon: <TbPlus />,
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
           createProductDispatch({
-            type: createProductAction.setTabletFieldsAdditional,
+            type: createProductAction.setTabletFieldsAdditionalMap,
             payload: {
               operation: 'add',
               data: ['', ''],
@@ -11380,7 +11436,7 @@ function CreateProduct() {
           });
 
           createProductDispatch({
-            type: createProductAction.setAreTabletFieldsAdditionalFocused,
+            type: createProductAction.setAreTabletFieldsAdditionalMapFocused,
             payload: {
               operation: 'add',
               data: [false, false],
@@ -11388,7 +11444,7 @@ function CreateProduct() {
           });
 
           createProductDispatch({
-            type: createProductAction.setAreTabletFieldsAdditionalValid,
+            type: createProductAction.setAreTabletFieldsAdditionalMapValid,
             payload: {
               operation: 'add',
               data: [false, false],
@@ -11405,23 +11461,23 @@ function CreateProduct() {
   // page 2 -> specifications -> tablet -> tablet fields user defined -> accessible screen reader text elements -> field names
 
   // returns an array of tuples containing the error and valid text elements for each field name
-  const tabletFieldsAdditionalKeysErrorValidTextElements: [
+  const tabletFieldsAdditionalMapKeysErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(tabletFieldsAdditional).map((keyFieldValue) => {
+  ][] = Array.from(tabletFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [field, _value]] = keyFieldValue;
 
     // screenreader accessible error/valid text elements that are consumed by the text input element creator
     const [
-      tabletFieldsAdditionalKeysInputErrorText,
-      tabletFieldsAdditionalKeysInputValidText,
+      tabletFieldsAdditionalMapKeysInputErrorText,
+      tabletFieldsAdditionalMapKeysInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field name ${mapKey + 1}`,
       inputText: field,
       isInputTextFocused:
-        areTabletFieldsAdditionalFocused.get(mapKey)?.[0] ?? false,
+        areTabletFieldsAdditionalMapFocused.get(mapKey)?.[0] ?? false,
       isValidInputText:
-        areTabletFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+        areTabletFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
       regexValidationText: returnObjectKeyValidationText({
         content: field,
         contentKind: `additional field name ${mapKey + 1}`,
@@ -11431,31 +11487,31 @@ function CreateProduct() {
     });
 
     return [
-      tabletFieldsAdditionalKeysInputErrorText,
-      tabletFieldsAdditionalKeysInputValidText,
+      tabletFieldsAdditionalMapKeysInputErrorText,
+      tabletFieldsAdditionalMapKeysInputValidText,
     ];
   });
 
   // page 2 -> specifications -> tablet -> tablet fields user defined -> accessible screen reader text elements -> field values
 
   // returns an array of tuples containing the error and valid text elements for each field value
-  const tabletFieldsAdditionalValuesErrorValidTextElements: [
+  const tabletFieldsAdditionalMapValuesErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(tabletFieldsAdditional).map((keyFieldValue) => {
+  ][] = Array.from(tabletFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [_field, value]] = keyFieldValue;
 
     // screenreader accessible error/valid text elements that are consumed by the text input element creator
     const [
-      tabletFieldsAdditionalValuesInputErrorText,
-      tabletFieldsAdditionalValuesInputValidText,
+      tabletFieldsAdditionalMapValuesInputErrorText,
+      tabletFieldsAdditionalMapValuesInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field value ${mapKey + 1}`,
       inputText: value,
       isInputTextFocused:
-        areTabletFieldsAdditionalFocused.get(mapKey)?.[1] ?? false,
+        areTabletFieldsAdditionalMapFocused.get(mapKey)?.[1] ?? false,
       isValidInputText:
-        areTabletFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+        areTabletFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
       regexValidationText: returnUserDefinedFieldValueValidationText({
         content: value,
         contentKind: `additional field value ${mapKey + 1}`,
@@ -11465,32 +11521,32 @@ function CreateProduct() {
     });
 
     return [
-      tabletFieldsAdditionalValuesInputErrorText,
-      tabletFieldsAdditionalValuesInputValidText,
+      tabletFieldsAdditionalMapValuesInputErrorText,
+      tabletFieldsAdditionalMapValuesInputValidText,
     ];
   });
 
   // page 2 -> specifications -> tablet -> tablet fields user defined -> text area input element creator
-  const createdTabletFieldsAdditionalTextInputElements = Array.from(
-    tabletFieldsAdditional
+  const createdTabletFieldsAdditionalMapTextInputElements = Array.from(
+    tabletFieldsAdditionalMap
   ).map((keyFieldValue) => {
     const [mapKey, [field, value]] = keyFieldValue;
 
-    const tabletFieldsAdditionalKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const tabletFieldsAdditionalMapKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
-          error: tabletFieldsAdditionalKeysErrorValidTextElements[mapKey][0],
-          valid: tabletFieldsAdditionalKeysErrorValidTextElements[mapKey][1],
+          error: tabletFieldsAdditionalMapKeysErrorValidTextElements[mapKey][0],
+          valid: tabletFieldsAdditionalMapKeysErrorValidTextElements[mapKey][1],
         },
         inputText: field,
         isValidInputText:
-          areTabletFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+          areTabletFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
         label: `Name ${mapKey + 1}`,
         maxLength: 75,
         minLength: 1,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreTabletFieldsAdditionalFocused,
+            type: createProductAction.setAreTabletFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -11501,7 +11557,7 @@ function CreateProduct() {
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setTabletFieldsAdditional,
+            type: createProductAction.setTabletFieldsAdditionalMap,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -11517,7 +11573,7 @@ function CreateProduct() {
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreTabletFieldsAdditionalFocused,
+            type: createProductAction.setAreTabletFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -11531,21 +11587,23 @@ function CreateProduct() {
         semanticName: `additional field name ${mapKey + 1}`,
       };
 
-    const tabletFieldsAdditionalValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const tabletFieldsAdditionalMapValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
-          error: tabletFieldsAdditionalValuesErrorValidTextElements[mapKey][0],
-          valid: tabletFieldsAdditionalValuesErrorValidTextElements[mapKey][1],
+          error:
+            tabletFieldsAdditionalMapValuesErrorValidTextElements[mapKey][0],
+          valid:
+            tabletFieldsAdditionalMapValuesErrorValidTextElements[mapKey][1],
         },
         inputText: value,
         isValidInputText:
-          areTabletFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+          areTabletFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
         label: `Value ${mapKey + 1}`,
         maxLength: 2000,
         minLength: 2,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreTabletFieldsAdditionalFocused,
+            type: createProductAction.setAreTabletFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -11556,7 +11614,7 @@ function CreateProduct() {
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setTabletFieldsAdditional,
+            type: createProductAction.setTabletFieldsAdditionalMap,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -11572,7 +11630,7 @@ function CreateProduct() {
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreTabletFieldsAdditionalFocused,
+            type: createProductAction.setAreTabletFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -11587,11 +11645,11 @@ function CreateProduct() {
       };
 
     const [
-      createdTabletFieldsAdditionalKeysTextAreaInput,
-      createdTabletFieldsAdditionalValuesTextAreaInput,
+      createdTabletFieldsAdditionalMapKeysTextAreaInput,
+      createdTabletFieldsAdditionalMapValuesTextAreaInput,
     ] = returnAccessibleTextAreaInputElements([
-      tabletFieldsAdditionalKeysTextInputCreatorInfo,
-      tabletFieldsAdditionalValuesTextInputCreatorInfo,
+      tabletFieldsAdditionalMapKeysTextInputCreatorInfo,
+      tabletFieldsAdditionalMapValuesTextInputCreatorInfo,
     ]);
 
     const [createdDeleteButton] = returnAccessibleButtonElements([
@@ -11599,7 +11657,7 @@ function CreateProduct() {
         buttonLabel: 'Delete',
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
           createProductDispatch({
-            type: createProductAction.setTabletFieldsAdditional,
+            type: createProductAction.setTabletFieldsAdditionalMap,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -11607,7 +11665,7 @@ function CreateProduct() {
           });
 
           createProductDispatch({
-            type: createProductAction.setAreTabletFieldsAdditionalFocused,
+            type: createProductAction.setAreTabletFieldsAdditionalMapFocused,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -11615,7 +11673,7 @@ function CreateProduct() {
           });
 
           createProductDispatch({
-            type: createProductAction.setAreTabletFieldsAdditionalValid,
+            type: createProductAction.setAreTabletFieldsAdditionalMapValid,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -11640,7 +11698,7 @@ function CreateProduct() {
     );
 
     return (
-      <Stack key={`tabletFieldsAdditional-${mapKey}`} pt={padding} w="100%">
+      <Stack key={`tabletFieldsAdditionalMap-${mapKey}`} pt={padding} w="100%">
         <Group position="apart">
           <Text size="md" weight={600}>{`Additional Tablet field ${
             mapKey + 1
@@ -11648,8 +11706,8 @@ function CreateProduct() {
           {displayDeleteButton}
         </Group>
         <Group position="apart">
-          {createdTabletFieldsAdditionalKeysTextAreaInput}
-          {createdTabletFieldsAdditionalValuesTextAreaInput}
+          {createdTabletFieldsAdditionalMapKeysTextAreaInput}
+          {createdTabletFieldsAdditionalMapValuesTextAreaInput}
         </Group>
       </Stack>
     );
@@ -11784,7 +11842,7 @@ function CreateProduct() {
     ]);
 
   // page 2 -> specifications -> accessory -> add new field button
-  const [createdAddAccessoryFieldsAdditionalButton] =
+  const [createdAddAccessoryFieldsAdditionalMapButton] =
     returnAccessibleButtonElements([
       {
         buttonLabel: 'Add',
@@ -11793,7 +11851,7 @@ function CreateProduct() {
         leftIcon: <TbPlus />,
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
           createProductDispatch({
-            type: createProductAction.setAccessoryFieldsAdditional,
+            type: createProductAction.setAccessoryFieldsAdditionalMap,
             payload: {
               operation: 'add',
               data: ['', ''],
@@ -11801,7 +11859,7 @@ function CreateProduct() {
           });
 
           createProductDispatch({
-            type: createProductAction.setAreAccessoryFieldsAdditionalFocused,
+            type: createProductAction.setAreAccessoryFieldsAdditionalMapFocused,
             payload: {
               operation: 'add',
               data: [false, false],
@@ -11809,7 +11867,7 @@ function CreateProduct() {
           });
 
           createProductDispatch({
-            type: createProductAction.setAreAccessoryFieldsAdditionalValid,
+            type: createProductAction.setAreAccessoryFieldsAdditionalMapValid,
             payload: {
               operation: 'add',
               data: [false, false],
@@ -11826,23 +11884,23 @@ function CreateProduct() {
   // page 2 -> specifications -> accessory -> accessory fields user defined -> accessible screen reader text elements -> field names
 
   // returns an array of tuples containing the error and valid text elements for each field name
-  const accessoryFieldsAdditionalKeysErrorValidTextElements: [
+  const accessoryFieldsAdditionalMapKeysErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(accessoryFieldsAdditional).map((keyFieldValue) => {
+  ][] = Array.from(accessoryFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [field, _value]] = keyFieldValue;
 
     // screenreader accessible error/valid text elements that are consumed by the text input element creator
     const [
-      accessoryFieldsAdditionalKeysInputErrorText,
-      accessoryFieldsAdditionalKeysInputValidText,
+      accessoryFieldsAdditionalMapKeysInputErrorText,
+      accessoryFieldsAdditionalMapKeysInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field name ${mapKey + 1}`,
       inputText: field,
       isInputTextFocused:
-        areAccessoryFieldsAdditionalFocused.get(mapKey)?.[0] ?? false,
+        areAccessoryFieldsAdditionalMapFocused.get(mapKey)?.[0] ?? false,
       isValidInputText:
-        areAccessoryFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+        areAccessoryFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
       regexValidationText: returnObjectKeyValidationText({
         content: field,
         contentKind: `additional field name ${mapKey + 1}`,
@@ -11852,31 +11910,31 @@ function CreateProduct() {
     });
 
     return [
-      accessoryFieldsAdditionalKeysInputErrorText,
-      accessoryFieldsAdditionalKeysInputValidText,
+      accessoryFieldsAdditionalMapKeysInputErrorText,
+      accessoryFieldsAdditionalMapKeysInputValidText,
     ];
   });
 
   // page 2 -> specifications -> accessory -> accessory fields user defined -> accessible screen reader text elements -> field values
 
   // returns an array of tuples containing the error and valid text elements for each field value
-  const accessoryFieldsAdditionalValuesErrorValidTextElements: [
+  const accessoryFieldsAdditionalMapValuesErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(accessoryFieldsAdditional).map((keyFieldValue) => {
+  ][] = Array.from(accessoryFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [_field, value]] = keyFieldValue;
 
     // screenreader accessible error/valid text elements that are consumed by the text input element creator
     const [
-      accessoryFieldsAdditionalValuesInputErrorText,
-      accessoryFieldsAdditionalValuesInputValidText,
+      accessoryFieldsAdditionalMapValuesInputErrorText,
+      accessoryFieldsAdditionalMapValuesInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field value ${mapKey + 1}`,
       inputText: value,
       isInputTextFocused:
-        areAccessoryFieldsAdditionalFocused.get(mapKey)?.[1] ?? false,
+        areAccessoryFieldsAdditionalMapFocused.get(mapKey)?.[1] ?? false,
       isValidInputText:
-        areAccessoryFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+        areAccessoryFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
       regexValidationText: returnUserDefinedFieldValueValidationText({
         content: value,
         contentKind: `additional field value ${mapKey + 1}`,
@@ -11886,32 +11944,34 @@ function CreateProduct() {
     });
 
     return [
-      accessoryFieldsAdditionalValuesInputErrorText,
-      accessoryFieldsAdditionalValuesInputValidText,
+      accessoryFieldsAdditionalMapValuesInputErrorText,
+      accessoryFieldsAdditionalMapValuesInputValidText,
     ];
   });
 
   // page 2 -> specifications -> accessory -> accessory fields user defined -> text area input element creator
-  const createdAccessoryFieldsAdditionalTextInputElements = Array.from(
-    accessoryFieldsAdditional
+  const createdAccessoryFieldsAdditionalMapTextInputElements = Array.from(
+    accessoryFieldsAdditionalMap
   ).map((keyFieldValue) => {
     const [mapKey, [field, value]] = keyFieldValue;
 
-    const accessoryFieldsAdditionalKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const accessoryFieldsAdditionalMapKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
-          error: accessoryFieldsAdditionalKeysErrorValidTextElements[mapKey][0],
-          valid: accessoryFieldsAdditionalKeysErrorValidTextElements[mapKey][1],
+          error:
+            accessoryFieldsAdditionalMapKeysErrorValidTextElements[mapKey][0],
+          valid:
+            accessoryFieldsAdditionalMapKeysErrorValidTextElements[mapKey][1],
         },
         inputText: field,
         isValidInputText:
-          areAccessoryFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+          areAccessoryFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
         label: `Name ${mapKey + 1}`,
         maxLength: 75,
         minLength: 1,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreAccessoryFieldsAdditionalFocused,
+            type: createProductAction.setAreAccessoryFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -11922,7 +11982,7 @@ function CreateProduct() {
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setAccessoryFieldsAdditional,
+            type: createProductAction.setAccessoryFieldsAdditionalMap,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -11938,7 +11998,7 @@ function CreateProduct() {
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreAccessoryFieldsAdditionalFocused,
+            type: createProductAction.setAreAccessoryFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -11952,23 +12012,23 @@ function CreateProduct() {
         semanticName: `additional field name ${mapKey + 1}`,
       };
 
-    const accessoryFieldsAdditionalValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const accessoryFieldsAdditionalMapValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
           error:
-            accessoryFieldsAdditionalValuesErrorValidTextElements[mapKey][0],
+            accessoryFieldsAdditionalMapValuesErrorValidTextElements[mapKey][0],
           valid:
-            accessoryFieldsAdditionalValuesErrorValidTextElements[mapKey][1],
+            accessoryFieldsAdditionalMapValuesErrorValidTextElements[mapKey][1],
         },
         inputText: value,
         isValidInputText:
-          areAccessoryFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+          areAccessoryFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
         label: `Value ${mapKey + 1}`,
         maxLength: 2000,
         minLength: 2,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreAccessoryFieldsAdditionalFocused,
+            type: createProductAction.setAreAccessoryFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -11979,7 +12039,7 @@ function CreateProduct() {
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setAccessoryFieldsAdditional,
+            type: createProductAction.setAccessoryFieldsAdditionalMap,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -11995,7 +12055,7 @@ function CreateProduct() {
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreAccessoryFieldsAdditionalFocused,
+            type: createProductAction.setAreAccessoryFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -12010,11 +12070,11 @@ function CreateProduct() {
       };
 
     const [
-      createdAccessoryFieldsAdditionalKeysTextAreaInput,
-      createdAccessoryFieldsAdditionalValuesTextAreaInput,
+      createdAccessoryFieldsAdditionalMapKeysTextAreaInput,
+      createdAccessoryFieldsAdditionalMapValuesTextAreaInput,
     ] = returnAccessibleTextAreaInputElements([
-      accessoryFieldsAdditionalKeysTextInputCreatorInfo,
-      accessoryFieldsAdditionalValuesTextInputCreatorInfo,
+      accessoryFieldsAdditionalMapKeysTextInputCreatorInfo,
+      accessoryFieldsAdditionalMapValuesTextInputCreatorInfo,
     ]);
 
     const [createdDeleteButton] = returnAccessibleButtonElements([
@@ -12022,7 +12082,7 @@ function CreateProduct() {
         buttonLabel: 'Delete',
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
           createProductDispatch({
-            type: createProductAction.setAccessoryFieldsAdditional,
+            type: createProductAction.setAccessoryFieldsAdditionalMap,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -12030,7 +12090,7 @@ function CreateProduct() {
           });
 
           createProductDispatch({
-            type: createProductAction.setAreAccessoryFieldsAdditionalFocused,
+            type: createProductAction.setAreAccessoryFieldsAdditionalMapFocused,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -12038,7 +12098,7 @@ function CreateProduct() {
           });
 
           createProductDispatch({
-            type: createProductAction.setAreAccessoryFieldsAdditionalValid,
+            type: createProductAction.setAreAccessoryFieldsAdditionalMapValid,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -12063,7 +12123,11 @@ function CreateProduct() {
     );
 
     return (
-      <Stack key={`accessoryFieldsAdditional-${mapKey}`} pt={padding} w="100%">
+      <Stack
+        key={`accessoryFieldsAdditionalMap-${mapKey}`}
+        pt={padding}
+        w="100%"
+      >
         <Group position="apart">
           <Text size="md" weight={600}>{`Additional Accessory field ${
             mapKey + 1
@@ -12071,8 +12135,8 @@ function CreateProduct() {
           {displayDeleteButton}
         </Group>
         <Group position="apart">
-          {createdAccessoryFieldsAdditionalKeysTextAreaInput}
-          {createdAccessoryFieldsAdditionalValuesTextAreaInput}
+          {createdAccessoryFieldsAdditionalMapKeysTextAreaInput}
+          {createdAccessoryFieldsAdditionalMapValuesTextAreaInput}
         </Group>
       </Stack>
     );
@@ -12210,7 +12274,7 @@ function CreateProduct() {
     ]);
 
   // page 2 -> specifications -> webcam -> add new field button
-  const [createdAddWebcamFieldsAdditionalButton] =
+  const [createdAddWebcamFieldsAdditionalMapButton] =
     returnAccessibleButtonElements([
       {
         buttonLabel: 'Add',
@@ -12219,7 +12283,7 @@ function CreateProduct() {
         leftIcon: <TbPlus />,
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
           createProductDispatch({
-            type: createProductAction.setWebcamFieldsAdditional,
+            type: createProductAction.setWebcamFieldsAdditionalMap,
             payload: {
               operation: 'add',
               data: ['', ''],
@@ -12227,7 +12291,7 @@ function CreateProduct() {
           });
 
           createProductDispatch({
-            type: createProductAction.setAreWebcamFieldsAdditionalFocused,
+            type: createProductAction.setAreWebcamFieldsAdditionalMapFocused,
             payload: {
               operation: 'add',
               data: [false, false],
@@ -12235,7 +12299,7 @@ function CreateProduct() {
           });
 
           createProductDispatch({
-            type: createProductAction.setAreWebcamFieldsAdditionalValid,
+            type: createProductAction.setAreWebcamFieldsAdditionalMapValid,
             payload: {
               operation: 'add',
               data: [false, false],
@@ -12252,23 +12316,23 @@ function CreateProduct() {
   // page 2 -> specifications -> webcam -> webcam fields user defined -> accessible screen reader text elements -> field names
 
   // returns an array of tuples containing the error and valid text elements for each field name
-  const webcamFieldsAdditionalKeysErrorValidTextElements: [
+  const webcamFieldsAdditionalMapKeysErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(webcamFieldsAdditional).map((keyFieldValue) => {
+  ][] = Array.from(webcamFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [field, _value]] = keyFieldValue;
 
     // screenreader accessible error/valid text elements that are consumed by the text input element creator
     const [
-      webcamFieldsAdditionalKeysInputErrorText,
-      webcamFieldsAdditionalKeysInputValidText,
+      webcamFieldsAdditionalMapKeysInputErrorText,
+      webcamFieldsAdditionalMapKeysInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field name ${mapKey + 1}`,
       inputText: field,
       isInputTextFocused:
-        areWebcamFieldsAdditionalFocused.get(mapKey)?.[0] ?? false,
+        areWebcamFieldsAdditionalMapFocused.get(mapKey)?.[0] ?? false,
       isValidInputText:
-        areWebcamFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+        areWebcamFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
       regexValidationText: returnObjectKeyValidationText({
         content: field,
         contentKind: `additional field name ${mapKey + 1}`,
@@ -12278,31 +12342,31 @@ function CreateProduct() {
     });
 
     return [
-      webcamFieldsAdditionalKeysInputErrorText,
-      webcamFieldsAdditionalKeysInputValidText,
+      webcamFieldsAdditionalMapKeysInputErrorText,
+      webcamFieldsAdditionalMapKeysInputValidText,
     ];
   });
 
   // page 2 -> specifications -> webcam -> webcam fields user defined -> accessible screen reader text elements -> field values
 
   // returns an array of tuples containing the error and valid text elements for each field value
-  const webcamFieldsAdditionalValuesErrorValidTextElements: [
+  const webcamFieldsAdditionalMapValuesErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(webcamFieldsAdditional).map((keyFieldValue) => {
+  ][] = Array.from(webcamFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [_field, value]] = keyFieldValue;
 
     // screenreader accessible error/valid text elements that are consumed by the text input element creator
     const [
-      webcamFieldsAdditionalValuesInputErrorText,
-      webcamFieldsAdditionalValuesInputValidText,
+      webcamFieldsAdditionalMapValuesInputErrorText,
+      webcamFieldsAdditionalMapValuesInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field value ${mapKey + 1}`,
       inputText: value,
       isInputTextFocused:
-        areWebcamFieldsAdditionalFocused.get(mapKey)?.[1] ?? false,
+        areWebcamFieldsAdditionalMapFocused.get(mapKey)?.[1] ?? false,
       isValidInputText:
-        areWebcamFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+        areWebcamFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
       regexValidationText: returnUserDefinedFieldValueValidationText({
         content: value,
         contentKind: `additional field value ${mapKey + 1}`,
@@ -12312,32 +12376,32 @@ function CreateProduct() {
     });
 
     return [
-      webcamFieldsAdditionalValuesInputErrorText,
-      webcamFieldsAdditionalValuesInputValidText,
+      webcamFieldsAdditionalMapValuesInputErrorText,
+      webcamFieldsAdditionalMapValuesInputValidText,
     ];
   });
 
   // page 2 -> specifications -> webcam -> webcam fields user defined -> text area input element creator
-  const createdWebcamFieldsAdditionalTextInputElements = Array.from(
-    webcamFieldsAdditional
+  const createdWebcamFieldsAdditionalMapTextInputElements = Array.from(
+    webcamFieldsAdditionalMap
   ).map((keyFieldValue) => {
     const [mapKey, [field, value]] = keyFieldValue;
 
-    const webcamFieldsAdditionalKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const webcamFieldsAdditionalMapKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
-          error: webcamFieldsAdditionalKeysErrorValidTextElements[mapKey][0],
-          valid: webcamFieldsAdditionalKeysErrorValidTextElements[mapKey][1],
+          error: webcamFieldsAdditionalMapKeysErrorValidTextElements[mapKey][0],
+          valid: webcamFieldsAdditionalMapKeysErrorValidTextElements[mapKey][1],
         },
         inputText: field,
         isValidInputText:
-          areWebcamFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+          areWebcamFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
         label: `Name ${mapKey + 1}`,
         maxLength: 75,
         minLength: 1,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreWebcamFieldsAdditionalFocused,
+            type: createProductAction.setAreWebcamFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -12348,7 +12412,7 @@ function CreateProduct() {
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setWebcamFieldsAdditional,
+            type: createProductAction.setWebcamFieldsAdditionalMap,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -12364,7 +12428,7 @@ function CreateProduct() {
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreWebcamFieldsAdditionalFocused,
+            type: createProductAction.setAreWebcamFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -12378,21 +12442,23 @@ function CreateProduct() {
         semanticName: `additional field name ${mapKey + 1}`,
       };
 
-    const webcamFieldsAdditionalValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const webcamFieldsAdditionalMapValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
-          error: webcamFieldsAdditionalValuesErrorValidTextElements[mapKey][0],
-          valid: webcamFieldsAdditionalValuesErrorValidTextElements[mapKey][1],
+          error:
+            webcamFieldsAdditionalMapValuesErrorValidTextElements[mapKey][0],
+          valid:
+            webcamFieldsAdditionalMapValuesErrorValidTextElements[mapKey][1],
         },
         inputText: value,
         isValidInputText:
-          areWebcamFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+          areWebcamFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
         label: `Value ${mapKey + 1}`,
         maxLength: 2000,
         minLength: 2,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreWebcamFieldsAdditionalFocused,
+            type: createProductAction.setAreWebcamFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -12403,7 +12469,7 @@ function CreateProduct() {
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setWebcamFieldsAdditional,
+            type: createProductAction.setWebcamFieldsAdditionalMap,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -12419,7 +12485,7 @@ function CreateProduct() {
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreWebcamFieldsAdditionalFocused,
+            type: createProductAction.setAreWebcamFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -12434,11 +12500,11 @@ function CreateProduct() {
       };
 
     const [
-      createdWebcamFieldsAdditionalKeysTextAreaInput,
-      createdWebcamFieldsAdditionalValuesTextAreaInput,
+      createdWebcamFieldsAdditionalMapKeysTextAreaInput,
+      createdWebcamFieldsAdditionalMapValuesTextAreaInput,
     ] = returnAccessibleTextAreaInputElements([
-      webcamFieldsAdditionalKeysTextInputCreatorInfo,
-      webcamFieldsAdditionalValuesTextInputCreatorInfo,
+      webcamFieldsAdditionalMapKeysTextInputCreatorInfo,
+      webcamFieldsAdditionalMapValuesTextInputCreatorInfo,
     ]);
 
     const [createdDeleteButton] = returnAccessibleButtonElements([
@@ -12446,7 +12512,7 @@ function CreateProduct() {
         buttonLabel: 'Delete',
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
           createProductDispatch({
-            type: createProductAction.setWebcamFieldsAdditional,
+            type: createProductAction.setWebcamFieldsAdditionalMap,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -12454,7 +12520,7 @@ function CreateProduct() {
           });
 
           createProductDispatch({
-            type: createProductAction.setAreWebcamFieldsAdditionalFocused,
+            type: createProductAction.setAreWebcamFieldsAdditionalMapFocused,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -12462,7 +12528,7 @@ function CreateProduct() {
           });
 
           createProductDispatch({
-            type: createProductAction.setAreWebcamFieldsAdditionalValid,
+            type: createProductAction.setAreWebcamFieldsAdditionalMapValid,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -12487,7 +12553,7 @@ function CreateProduct() {
     );
 
     return (
-      <Stack key={`webcamFieldsAdditional-${mapKey}`} pt={padding} w="100%">
+      <Stack key={`webcamFieldsAdditionalMap-${mapKey}`} pt={padding} w="100%">
         <Group position="apart">
           <Text size="md" weight={600}>{`Additional Webcam field ${
             mapKey + 1
@@ -12495,8 +12561,8 @@ function CreateProduct() {
           {displayDeleteButton}
         </Group>
         <Group position="apart">
-          {createdWebcamFieldsAdditionalKeysTextAreaInput}
-          {createdWebcamFieldsAdditionalValuesTextAreaInput}
+          {createdWebcamFieldsAdditionalMapKeysTextAreaInput}
+          {createdWebcamFieldsAdditionalMapValuesTextAreaInput}
         </Group>
       </Stack>
     );
@@ -12666,7 +12732,7 @@ function CreateProduct() {
     ]);
 
   // page 2 -> specifications -> microphone -> add new field button
-  const [createdAddMicrophoneFieldsAdditionalButton] =
+  const [createdAddMicrophoneFieldsAdditionalMapButton] =
     returnAccessibleButtonElements([
       {
         buttonLabel: 'Add',
@@ -12675,7 +12741,7 @@ function CreateProduct() {
         leftIcon: <TbPlus />,
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
           createProductDispatch({
-            type: createProductAction.setMicrophoneFieldsAdditional,
+            type: createProductAction.setMicrophoneFieldsAdditionalMap,
             payload: {
               operation: 'add',
               data: ['', ''],
@@ -12683,7 +12749,7 @@ function CreateProduct() {
           });
 
           createProductDispatch({
-            type: createProductAction.setAreMicrophoneFieldsAdditionalFocused,
+            type: createProductAction.setAreMicrophoneFieldsAdditionalMapFocused,
             payload: {
               operation: 'add',
               data: [false, false],
@@ -12691,7 +12757,7 @@ function CreateProduct() {
           });
 
           createProductDispatch({
-            type: createProductAction.setAreMicrophoneFieldsAdditionalValid,
+            type: createProductAction.setAreMicrophoneFieldsAdditionalMapValid,
             payload: {
               operation: 'add',
               data: [false, false],
@@ -12708,23 +12774,23 @@ function CreateProduct() {
   // page 2 -> specifications -> microphone -> microphone fields user defined -> accessible screen reader text elements -> field names
 
   // returns an array of tuples containing the error and valid text elements for each field name
-  const microphoneFieldsAdditionalKeysErrorValidTextElements: [
+  const microphoneFieldsAdditionalMapKeysErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(microphoneFieldsAdditional).map((keyFieldValue) => {
+  ][] = Array.from(microphoneFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [field, _value]] = keyFieldValue;
 
     // screenreader accessible error/valid text elements that are consumed by the text input element creator
     const [
-      microphoneFieldsAdditionalKeysInputErrorText,
-      microphoneFieldsAdditionalKeysInputValidText,
+      microphoneFieldsAdditionalMapKeysInputErrorText,
+      microphoneFieldsAdditionalMapKeysInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field name ${mapKey + 1}`,
       inputText: field,
       isInputTextFocused:
-        areMicrophoneFieldsAdditionalFocused.get(mapKey)?.[0] ?? false,
+        areMicrophoneFieldsAdditionalMapFocused.get(mapKey)?.[0] ?? false,
       isValidInputText:
-        areMicrophoneFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+        areMicrophoneFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
       regexValidationText: returnObjectKeyValidationText({
         content: field,
         contentKind: `additional field name ${mapKey + 1}`,
@@ -12734,31 +12800,31 @@ function CreateProduct() {
     });
 
     return [
-      microphoneFieldsAdditionalKeysInputErrorText,
-      microphoneFieldsAdditionalKeysInputValidText,
+      microphoneFieldsAdditionalMapKeysInputErrorText,
+      microphoneFieldsAdditionalMapKeysInputValidText,
     ];
   });
 
   // page 2 -> specifications -> microphone -> microphone fields user defined -> accessible screen reader text elements -> field values
 
   // returns an array of tuples containing the error and valid text elements for each field value
-  const microphoneFieldsAdditionalValuesErrorValidTextElements: [
+  const microphoneFieldsAdditionalMapValuesErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(microphoneFieldsAdditional).map((keyFieldValue) => {
+  ][] = Array.from(microphoneFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [_field, value]] = keyFieldValue;
 
     // screenreader accessible error/valid text elements that are consumed by the text input element creator
     const [
-      microphoneFieldsAdditionalValuesInputErrorText,
-      microphoneFieldsAdditionalValuesInputValidText,
+      microphoneFieldsAdditionalMapValuesInputErrorText,
+      microphoneFieldsAdditionalMapValuesInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field value ${mapKey + 1}`,
       inputText: value,
       isInputTextFocused:
-        areMicrophoneFieldsAdditionalFocused.get(mapKey)?.[1] ?? false,
+        areMicrophoneFieldsAdditionalMapFocused.get(mapKey)?.[1] ?? false,
       isValidInputText:
-        areMicrophoneFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+        areMicrophoneFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
       regexValidationText: returnUserDefinedFieldValueValidationText({
         content: value,
         contentKind: `additional field value ${mapKey + 1}`,
@@ -12768,34 +12834,34 @@ function CreateProduct() {
     });
 
     return [
-      microphoneFieldsAdditionalValuesInputErrorText,
-      microphoneFieldsAdditionalValuesInputValidText,
+      microphoneFieldsAdditionalMapValuesInputErrorText,
+      microphoneFieldsAdditionalMapValuesInputValidText,
     ];
   });
 
   // page 2 -> specifications -> microphone -> microphone fields user defined -> text area input element creator
-  const createdMicrophoneFieldsAdditionalTextInputElements = Array.from(
-    microphoneFieldsAdditional
+  const createdMicrophoneFieldsAdditionalMapTextInputElements = Array.from(
+    microphoneFieldsAdditionalMap
   ).map((keyFieldValue) => {
     const [mapKey, [field, value]] = keyFieldValue;
 
-    const microphoneFieldsAdditionalKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const microphoneFieldsAdditionalMapKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
           error:
-            microphoneFieldsAdditionalKeysErrorValidTextElements[mapKey][0],
+            microphoneFieldsAdditionalMapKeysErrorValidTextElements[mapKey][0],
           valid:
-            microphoneFieldsAdditionalKeysErrorValidTextElements[mapKey][1],
+            microphoneFieldsAdditionalMapKeysErrorValidTextElements[mapKey][1],
         },
         inputText: field,
         isValidInputText:
-          areMicrophoneFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+          areMicrophoneFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
         label: `Name ${mapKey + 1}`,
         maxLength: 75,
         minLength: 1,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreMicrophoneFieldsAdditionalFocused,
+            type: createProductAction.setAreMicrophoneFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -12806,7 +12872,7 @@ function CreateProduct() {
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setMicrophoneFieldsAdditional,
+            type: createProductAction.setMicrophoneFieldsAdditionalMap,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -12822,7 +12888,7 @@ function CreateProduct() {
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreMicrophoneFieldsAdditionalFocused,
+            type: createProductAction.setAreMicrophoneFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -12836,23 +12902,27 @@ function CreateProduct() {
         semanticName: `additional field name ${mapKey + 1}`,
       };
 
-    const microphoneFieldsAdditionalValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const microphoneFieldsAdditionalMapValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
           error:
-            microphoneFieldsAdditionalValuesErrorValidTextElements[mapKey][0],
+            microphoneFieldsAdditionalMapValuesErrorValidTextElements[
+              mapKey
+            ][0],
           valid:
-            microphoneFieldsAdditionalValuesErrorValidTextElements[mapKey][1],
+            microphoneFieldsAdditionalMapValuesErrorValidTextElements[
+              mapKey
+            ][1],
         },
         inputText: value,
         isValidInputText:
-          areMicrophoneFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+          areMicrophoneFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
         label: `Value ${mapKey + 1}`,
         maxLength: 2000,
         minLength: 2,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreMicrophoneFieldsAdditionalFocused,
+            type: createProductAction.setAreMicrophoneFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -12863,7 +12933,7 @@ function CreateProduct() {
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setMicrophoneFieldsAdditional,
+            type: createProductAction.setMicrophoneFieldsAdditionalMap,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -12879,7 +12949,7 @@ function CreateProduct() {
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreMicrophoneFieldsAdditionalFocused,
+            type: createProductAction.setAreMicrophoneFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -12894,11 +12964,11 @@ function CreateProduct() {
       };
 
     const [
-      createdMicrophoneFieldsAdditionalKeysTextAreaInput,
-      createdMicrophoneFieldsAdditionalValuesTextAreaInput,
+      createdMicrophoneFieldsAdditionalMapKeysTextAreaInput,
+      createdMicrophoneFieldsAdditionalMapValuesTextAreaInput,
     ] = returnAccessibleTextAreaInputElements([
-      microphoneFieldsAdditionalKeysTextInputCreatorInfo,
-      microphoneFieldsAdditionalValuesTextInputCreatorInfo,
+      microphoneFieldsAdditionalMapKeysTextInputCreatorInfo,
+      microphoneFieldsAdditionalMapValuesTextInputCreatorInfo,
     ]);
 
     const [createdDeleteButton] = returnAccessibleButtonElements([
@@ -12906,7 +12976,7 @@ function CreateProduct() {
         buttonLabel: 'Delete',
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
           createProductDispatch({
-            type: createProductAction.setMicrophoneFieldsAdditional,
+            type: createProductAction.setMicrophoneFieldsAdditionalMap,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -12914,7 +12984,7 @@ function CreateProduct() {
           });
 
           createProductDispatch({
-            type: createProductAction.setAreMicrophoneFieldsAdditionalFocused,
+            type: createProductAction.setAreMicrophoneFieldsAdditionalMapFocused,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -12922,7 +12992,7 @@ function CreateProduct() {
           });
 
           createProductDispatch({
-            type: createProductAction.setAreMicrophoneFieldsAdditionalValid,
+            type: createProductAction.setAreMicrophoneFieldsAdditionalMapValid,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -12947,7 +13017,11 @@ function CreateProduct() {
     );
 
     return (
-      <Stack key={`microphoneFieldsAdditional-${mapKey}`} pt={padding} w="100%">
+      <Stack
+        key={`microphoneFieldsAdditionalMap-${mapKey}`}
+        pt={padding}
+        w="100%"
+      >
         <Group position="apart">
           <Text size="md" weight={600}>{`Additional Microphone field ${
             mapKey + 1
@@ -12955,8 +13029,8 @@ function CreateProduct() {
           {displayDeleteButton}
         </Group>
         <Group position="apart">
-          {createdMicrophoneFieldsAdditionalKeysTextAreaInput}
-          {createdMicrophoneFieldsAdditionalValuesTextAreaInput}
+          {createdMicrophoneFieldsAdditionalMapKeysTextAreaInput}
+          {createdMicrophoneFieldsAdditionalMapValuesTextAreaInput}
         </Group>
       </Stack>
     );
@@ -13033,9 +13107,11 @@ function CreateProduct() {
   // page 2 -> specifications -> cpu
 
   // page 2 -> specifications -> cpu -> add new button
-  const displayCpuFieldsAdditionalButton = (
-    <Tooltip label={`Add new additional field ${cpuFieldsAdditional.size + 1}`}>
-      <Group>{createdAddCpuFieldsAdditionalButton}</Group>
+  const displayCpuFieldsAdditionalMapButton = (
+    <Tooltip
+      label={`Add new additional field ${cpuFieldsAdditionalMap.size + 1}`}
+    >
+      <Group>{createdAddCpuFieldsAdditionalMapButton}</Group>
     </Tooltip>
   );
 
@@ -13049,7 +13125,7 @@ function CreateProduct() {
     >
       <Group position="apart" w="100%">
         <Title order={4}>CPU Specifications</Title>
-        {displayCpuFieldsAdditionalButton}
+        {displayCpuFieldsAdditionalMapButton}
       </Group>
       {createdCpuSocketTextInput}
       {createdCpuWattageTextInput}
@@ -13061,16 +13137,18 @@ function CreateProduct() {
       {createdCpuL2CacheCapacityUnitSelectInput}
       {createdCpuL3CacheCapacityTextInput}
       {createdCpuL3CacheCapacityUnitSelectInput}
-      {createdCpuFieldsAdditionalTextInputElements}
+      {createdCpuFieldsAdditionalMapTextInputElements}
     </Group>
   );
 
   // page 2 -> specifications -> gpu chipset
 
   // page 2 -> specifications -> gpu -> add new button
-  const displayGpuFieldsAdditionalButton = (
-    <Tooltip label={`Add new additional field ${gpuFieldsAdditional.size + 1}`}>
-      <Group>{createdAddGpuFieldsAdditionalButton}</Group>
+  const displayGpuFieldsAdditionalMapButton = (
+    <Tooltip
+      label={`Add new additional field ${gpuFieldsAdditionalMap.size + 1}`}
+    >
+      <Group>{createdAddGpuFieldsAdditionalMapButton}</Group>
     </Tooltip>
   );
 
@@ -13084,7 +13162,7 @@ function CreateProduct() {
     >
       <Group w="100%" position="apart">
         <Title order={4}>GPU Specifications</Title>
-        {displayGpuFieldsAdditionalButton}
+        {displayGpuFieldsAdditionalMapButton}
       </Group>
       {createdGpuChipsetTextInput}
       {createdGpuMemoryCapacityTextInput}
@@ -13092,18 +13170,20 @@ function CreateProduct() {
       {createdGpuWattageTextInput}
       {createdGpuCoreClockTextInput}
       {createdGpuBoostClockTextInput}
-      {createdGpuFieldsAdditionalTextInputElements}
+      {createdGpuFieldsAdditionalMapTextInputElements}
     </Group>
   );
 
   // page 2 -> specifications -> motherboard
 
   // page 2 -> specifications -> motherboard -> add new button
-  const displayMotherboardFieldsAdditionalButton = (
+  const displayMotherboardFieldsAdditionalMapButton = (
     <Tooltip
-      label={`Add new additional field ${motherboardFieldsAdditional.size + 1}`}
+      label={`Add new additional field ${
+        motherboardFieldsAdditionalMap.size + 1
+      }`}
     >
-      <Group>{createdAddMotherboardFieldsAdditionalButton}</Group>
+      <Group>{createdAddMotherboardFieldsAdditionalMapButton}</Group>
     </Tooltip>
   );
 
@@ -13117,7 +13197,7 @@ function CreateProduct() {
     >
       <Group w="100%" position="apart">
         <Title order={4}>Motherboard Specifications</Title>
-        {displayMotherboardFieldsAdditionalButton}
+        {displayMotherboardFieldsAdditionalMapButton}
       </Group>
       {createdMotherboardSocketTextInput}
       {createdMotherboardChipsetTextInput}
@@ -13131,16 +13211,18 @@ function CreateProduct() {
       {createdMotherboardPcie3SlotsTextInput}
       {createdMotherboardPcie4SlotsTextInput}
       {createdMotherboardPcie5SlotsTextInput}
-      {createdMotherboardFieldsAdditionalTextInputElements}
+      {createdMotherboardFieldsAdditionalMapTextInputElements}
     </Group>
   );
 
   // page 2 -> specifications -> ram
 
   // page 2 -> specifications -> ram -> add new button
-  const displayRamFieldsAdditionalButton = (
-    <Tooltip label={`Add new additional field ${ramFieldsAdditional.size + 1}`}>
-      <Group>{createdAddRamFieldsAdditionalButton}</Group>
+  const displayRamFieldsAdditionalMapButton = (
+    <Tooltip
+      label={`Add new additional field ${ramFieldsAdditionalMap.size + 1}`}
+    >
+      <Group>{createdAddRamFieldsAdditionalMapButton}</Group>
     </Tooltip>
   );
 
@@ -13154,7 +13236,7 @@ function CreateProduct() {
     >
       <Group w="100%" position="apart">
         <Title order={4}>Memory (RAM) Specifications</Title>
-        {displayRamFieldsAdditionalButton}
+        {displayRamFieldsAdditionalMapButton}
       </Group>
       {createdRamDataRateTextInput}
       {createdRamModulesQuantityTextInput}
@@ -13164,18 +13246,18 @@ function CreateProduct() {
       {createdRamColorTextInput}
       {createdRamVoltageTextInput}
       {createdRamTimingTextInput}
-      {createdRamFieldsAdditionalTextInputElements}
+      {createdRamFieldsAdditionalMapTextInputElements}
     </Group>
   );
 
   // page 2 -> specifications -> storage
 
   // page 2 -> specifications -> storage -> add new button
-  const displayStorageFieldsAdditionalButton = (
+  const displayStorageFieldsAdditionalMapButton = (
     <Tooltip
-      label={`Add new additional field ${storageFieldsAdditional.size + 1}`}
+      label={`Add new additional field ${storageFieldsAdditionalMap.size + 1}`}
     >
-      <Group>{createdAddStorageFieldsAdditionalButton}</Group>
+      <Group>{createdAddStorageFieldsAdditionalMapButton}</Group>
     </Tooltip>
   );
 
@@ -13189,7 +13271,7 @@ function CreateProduct() {
     >
       <Group w="100%" position="apart">
         <Title order={4}>Storage Specifications</Title>
-        {displayStorageFieldsAdditionalButton}
+        {displayStorageFieldsAdditionalMapButton}
       </Group>
       {createdStorageTypeSelectInput}
       {createdStorageInterfaceSelectInput}
@@ -13198,16 +13280,18 @@ function CreateProduct() {
       {createdStorageCacheCapacityTextInput}
       {createdStorageCacheCapacityUnitSelectInput}
       {createdStorageFormFactorSelectInput}
-      {createdStorageFieldsAdditionalTextInputElements}
+      {createdStorageFieldsAdditionalMapTextInputElements}
     </Group>
   );
 
   // page 2 -> specifications -> power supply
 
   // page 2 -> specifications -> power supply -> add new button
-  const displayPsuFieldsAdditionalButton = (
-    <Tooltip label={`Add new additional field ${psuFieldsAdditional.size + 1}`}>
-      <Group>{createdAddPsuFieldsAdditionalButton}</Group>
+  const displayPsuFieldsAdditionalMapButton = (
+    <Tooltip
+      label={`Add new additional field ${psuFieldsAdditionalMap.size + 1}`}
+    >
+      <Group>{createdAddPsuFieldsAdditionalMapButton}</Group>
     </Tooltip>
   );
 
@@ -13221,24 +13305,24 @@ function CreateProduct() {
     >
       <Group w="100%" position="apart">
         <Title order={4}>Power Supply Unit (PSU) Specifications</Title>
-        {displayPsuFieldsAdditionalButton}
+        {displayPsuFieldsAdditionalMapButton}
       </Group>
       {createdPsuWattageTextInput}
       {createdPsuEfficiencyRatingSelectInput}
       {createdPsuFormFactorSelectInput}
       {createdPsuModularitySelectInput}
-      {createdPsuFieldsAdditionalTextInputElements}
+      {createdPsuFieldsAdditionalMapTextInputElements}
     </Group>
   );
 
   // page 2 -> specifications -> computer case
 
   // page 2 -> specifications -> computer case -> add new button
-  const displayCaseFieldsAdditionalButton = (
+  const displayCaseFieldsAdditionalMapButton = (
     <Tooltip
-      label={`Add new additional field ${caseFieldsAdditional.size + 1}`}
+      label={`Add new additional field ${caseFieldsAdditionalMap.size + 1}`}
     >
-      <Group>{createdAddCaseFieldsAdditionalButton}</Group>
+      <Group>{createdAddCaseFieldsAdditionalMapButton}</Group>
     </Tooltip>
   );
 
@@ -13252,23 +13336,23 @@ function CreateProduct() {
     >
       <Group w="100%" position="apart">
         <Title order={4}>Case Specifications</Title>
-        {displayCaseFieldsAdditionalButton}
+        {displayCaseFieldsAdditionalMapButton}
       </Group>
       {createdCaseTypeSelectInput}
       {createdCaseColorTextInput}
       {createdCaseSidePanelSelectInput}
-      {createdCaseFieldsAdditionalTextInputElements}
+      {createdCaseFieldsAdditionalMapTextInputElements}
     </Group>
   );
 
   // page 2 -> specifications -> display
 
   // page 2 -> specifications -> display -> add new button
-  const displayDisplayFieldsAdditionalButton = (
+  const displayDisplayFieldsAdditionalMapButton = (
     <Tooltip
-      label={`Add new additional field ${displayFieldsAdditional.size + 1}`}
+      label={`Add new additional field ${displayFieldsAdditionalMap.size + 1}`}
     >
-      <Group>{createdAddDisplayFieldsAdditionalButton}</Group>
+      <Group>{createdAddDisplayFieldsAdditionalMapButton}</Group>
     </Tooltip>
   );
 
@@ -13282,7 +13366,7 @@ function CreateProduct() {
     >
       <Group w="100%" position="apart">
         <Title order={4}>Display Specifications</Title>
-        {displayDisplayFieldsAdditionalButton}
+        {displayDisplayFieldsAdditionalMapButton}
       </Group>
       {createdDisplaySizeTextInput}
       {createdDisplayResolutionHorizontalTextInput}
@@ -13291,18 +13375,18 @@ function CreateProduct() {
       {createdDisplayPanelTypeSelectInput}
       {createdDisplayResponseTimeTextInput}
       {createdDisplayAspectRatioTextInput}
-      {createdDisplayFieldsAdditionalTextInputElements}
+      {createdDisplayFieldsAdditionalMapTextInputElements}
     </Group>
   );
 
   // page 2 -> specifications -> keyboard
 
   // page 2 -> specifications -> keyboard -> add new button
-  const displayKeyboardFieldsAdditionalButton = (
+  const displayKeyboardFieldsAdditionalMapButton = (
     <Tooltip
-      label={`Add new additional field ${keyboardFieldsAdditional.size + 1}`}
+      label={`Add new additional field ${keyboardFieldsAdditionalMap.size + 1}`}
     >
-      <Group>{createdAddKeyboardFieldsAdditionalButton}</Group>
+      <Group>{createdAddKeyboardFieldsAdditionalMapButton}</Group>
     </Tooltip>
   );
 
@@ -13316,24 +13400,24 @@ function CreateProduct() {
     >
       <Group w="100%" position="apart">
         <Title order={4}>Keyboard Specifications</Title>
-        {displayKeyboardFieldsAdditionalButton}
+        {displayKeyboardFieldsAdditionalMapButton}
       </Group>
       {createdKeyboardSwitchSelectInput}
       {createdKeyboardLayoutSelectInput}
       {createdKeyboardBacklightSelectInput}
       {createdKeyboardInterfaceSelectInput}
-      {createdKeyboardFieldsAdditionalTextInputElements}
+      {createdKeyboardFieldsAdditionalMapTextInputElements}
     </Group>
   );
 
   // page 2 -> specifications -> mouse
 
   // page 2 -> specifications -> mouse -> add new button
-  const displayMouseFieldsAdditionalButton = (
+  const displayMouseFieldsAdditionalMapButton = (
     <Tooltip
-      label={`Add new additional field ${mouseFieldsAdditional.size + 1}`}
+      label={`Add new additional field ${mouseFieldsAdditionalMap.size + 1}`}
     >
-      <Group>{createdAddMouseFieldsAdditionalButton}</Group>
+      <Group>{createdAddMouseFieldsAdditionalMapButton}</Group>
     </Tooltip>
   );
 
@@ -13347,25 +13431,27 @@ function CreateProduct() {
     >
       <Group w="100%" position="apart">
         <Title order={4}>Mouse Specifications</Title>
-        {displayMouseFieldsAdditionalButton}
+        {displayMouseFieldsAdditionalMapButton}
       </Group>
       {createdMouseSensorSelectInput}
       {createdMouseDpiTextInput}
       {createdMouseButtonsTextInput}
       {createdMouseColorTextInput}
       {createdMouseInterfaceSelectInput}
-      {createdMouseFieldsAdditionalTextInputElements}
+      {createdMouseFieldsAdditionalMapTextInputElements}
     </Group>
   );
 
   // page 2 -> specifications -> headphone
 
   // page 2 -> specifications -> headphone -> add new button
-  const displayHeadphoneFieldsAdditionalButton = (
+  const displayHeadphoneFieldsAdditionalMapButton = (
     <Tooltip
-      label={`Add new additional field ${headphoneFieldsAdditional.size + 1}`}
+      label={`Add new additional field ${
+        headphoneFieldsAdditionalMap.size + 1
+      }`}
     >
-      <Group>{createdAddHeadphoneFieldsAdditionalButton}</Group>
+      <Group>{createdAddHeadphoneFieldsAdditionalMapButton}</Group>
     </Tooltip>
   );
 
@@ -13379,7 +13465,7 @@ function CreateProduct() {
     >
       <Group w="100%" position="apart">
         <Title order={4}>Headphone Specifications</Title>
-        {displayHeadphoneFieldsAdditionalButton}
+        {displayHeadphoneFieldsAdditionalMapButton}
       </Group>
       {createdHeadphoneTypeSelectInput}
       {createdHeadphoneDriverTextInput}
@@ -13387,18 +13473,18 @@ function CreateProduct() {
       {createdHeadphoneImpedanceTextInput}
       {createdHeadphoneColorTextInput}
       {createdHeadphoneInterfaceSelectInput}
-      {createdHeadphoneFieldsAdditionalTextInputElements}
+      {createdHeadphoneFieldsAdditionalMapTextInputElements}
     </Group>
   );
 
   // page 2 -> specifications -> speaker
 
   // page 2 -> specifications -> speaker -> add new button
-  const displaySpeakerFieldsAdditionalButton = (
+  const displaySpeakerFieldsAdditionalMapButton = (
     <Tooltip
-      label={`Add new additional field ${speakerFieldsAdditional.size + 1}`}
+      label={`Add new additional field ${speakerFieldsAdditionalMap.size + 1}`}
     >
-      <Group>{createdAddSpeakerFieldsAdditionalButton}</Group>
+      <Group>{createdAddSpeakerFieldsAdditionalMapButton}</Group>
     </Tooltip>
   );
 
@@ -13412,25 +13498,27 @@ function CreateProduct() {
     >
       <Group w="100%" position="apart">
         <Title order={4}>Speaker Specifications</Title>
-        {displaySpeakerFieldsAdditionalButton}
+        {displaySpeakerFieldsAdditionalMapButton}
       </Group>
       {createdSpeakerTypeSelectInput}
       {createdSpeakerTotalWattageTextInput}
       {createdSpeakerFrequencyResponseTextInput}
       {createdSpeakerColorTextInput}
       {createdSpeakerInterfaceSelectInput}
-      {createdSpeakerFieldsAdditionalTextInputElements}
+      {createdSpeakerFieldsAdditionalMapTextInputElements}
     </Group>
   );
 
   // page 2 -> specifications -> smartphone
 
   // page 2 -> specifications -> smartphone -> add new button
-  const displaySmartphoneFieldsAdditionalButton = (
+  const displaySmartphoneFieldsAdditionalMapButton = (
     <Tooltip
-      label={`Add new additional field ${smartphoneFieldsAdditional.size + 1}`}
+      label={`Add new additional field ${
+        smartphoneFieldsAdditionalMap.size + 1
+      }`}
     >
-      <Group>{createdAddSmartphoneFieldsAdditionalButton}</Group>
+      <Group>{createdAddSmartphoneFieldsAdditionalMapButton}</Group>
     </Tooltip>
   );
 
@@ -13444,7 +13532,7 @@ function CreateProduct() {
     >
       <Group w="100%" position="apart">
         <Title order={4}>Smartphone Specifications</Title>
-        {displaySmartphoneFieldsAdditionalButton}
+        {displaySmartphoneFieldsAdditionalMapButton}
       </Group>
       {createdSmartphoneOsSelectInput}
       {createdSmartphoneChipsetTextInput}
@@ -13457,18 +13545,18 @@ function CreateProduct() {
       {createdSmartphoneStorageCapacityTextInput}
       {createdSmartphoneBatteryCapacityTextInput}
       {createdSmartphoneCameraTextInput}
-      {createdSmartphoneFieldsAdditionalTextInputElements}
+      {createdSmartphoneFieldsAdditionalMapTextInputElements}
     </Group>
   );
 
   // page 2 -> specifications -> tablet
 
   // page 2 -> specifications -> tablet -> add new button
-  const displayTabletFieldsAdditionalButton = (
+  const displayTabletFieldsAdditionalMapButton = (
     <Tooltip
-      label={`Add new additional field ${tabletFieldsAdditional.size + 1}`}
+      label={`Add new additional field ${tabletFieldsAdditionalMap.size + 1}`}
     >
-      <Group>{createdAddTabletFieldsAdditionalButton}</Group>
+      <Group>{createdAddTabletFieldsAdditionalMapButton}</Group>
     </Tooltip>
   );
 
@@ -13482,7 +13570,7 @@ function CreateProduct() {
     >
       <Group w="100%" position="apart">
         <Title order={4}>Tablet Specifications</Title>
-        {displayTabletFieldsAdditionalButton}
+        {displayTabletFieldsAdditionalMapButton}
       </Group>
       {createdTabletOsSelectInput}
       {createdTabletChipsetTextInput}
@@ -13495,18 +13583,20 @@ function CreateProduct() {
       {createdTabletStorageCapacityTextInput}
       {createdTabletBatteryCapacityTextInput}
       {createdTabletCameraTextInput}
-      {createdTabletFieldsAdditionalTextInputElements}
+      {createdTabletFieldsAdditionalMapTextInputElements}
     </Group>
   );
 
   // page 2 -> specifications -> accessory
 
   // page 2 -> specifications -> accessory -> add new button
-  const displayAccessoryFieldsAdditionalButton = (
+  const displayAccessoryFieldsAdditionalMapButton = (
     <Tooltip
-      label={`Add new additional field ${accessoryFieldsAdditional.size + 1}`}
+      label={`Add new additional field ${
+        accessoryFieldsAdditionalMap.size + 1
+      }`}
     >
-      <Group>{createdAddAccessoryFieldsAdditionalButton}</Group>
+      <Group>{createdAddAccessoryFieldsAdditionalMapButton}</Group>
     </Tooltip>
   );
 
@@ -13520,12 +13610,12 @@ function CreateProduct() {
     >
       <Group w="100%" position="apart">
         <Title order={4}>Accessory Specifications</Title>
-        {displayAccessoryFieldsAdditionalButton}
+        {displayAccessoryFieldsAdditionalMapButton}
       </Group>
       {createdAccessoryTypeTextInput}
       {createdAccessoryColorTextInput}
       {createdAccessoryInterfaceSelectInput}
-      {createdAccessoryFieldsAdditionalTextInputElements}
+      {createdAccessoryFieldsAdditionalMapTextInputElements}
     </Group>
   );
 
@@ -13560,11 +13650,11 @@ function CreateProduct() {
   // page 2 -> specifications -> webcams
 
   // page 2 -> specifications -> webcams -> add new button
-  const displayWebcamFieldsAdditionalButton = (
+  const displayWebcamFieldsAdditionalMapButton = (
     <Tooltip
-      label={`Add new additional field ${webcamFieldsAdditional.size + 1}`}
+      label={`Add new additional field ${webcamFieldsAdditionalMap.size + 1}`}
     >
-      <Group>{createdAddWebcamFieldsAdditionalButton}</Group>
+      <Group>{createdAddWebcamFieldsAdditionalMapButton}</Group>
     </Tooltip>
   );
 
@@ -13578,25 +13668,27 @@ function CreateProduct() {
     >
       <Group w="100%" position="apart">
         <Title order={4}>Webcam Specifications</Title>
-        {displayWebcamFieldsAdditionalButton}
+        {displayWebcamFieldsAdditionalMapButton}
       </Group>
       {createdWebcamResolutionSelectInput}
       {createdWebcamColorTextInput}
       {createdWebcamMicrophoneSelectInput}
       {createdWebcamInterfaceSelectInput}
       {createdWebcamFrameRateSelectInput}
-      {createdWebcamFieldsAdditionalTextInputElements}
+      {createdWebcamFieldsAdditionalMapTextInputElements}
     </Group>
   );
 
   // page 2 -> specifications -> microphones
 
   // page 2 -> specifications -> microphones -> add new button
-  const displayMicrophoneFieldsAdditionalButton = (
+  const displayMicrophoneFieldsAdditionalMapButton = (
     <Tooltip
-      label={`Add new additional field ${microphoneFieldsAdditional.size + 1}`}
+      label={`Add new additional field ${
+        microphoneFieldsAdditionalMap.size + 1
+      }`}
     >
-      <Group>{createdAddMicrophoneFieldsAdditionalButton}</Group>
+      <Group>{createdAddMicrophoneFieldsAdditionalMapButton}</Group>
     </Tooltip>
   );
 
@@ -13610,14 +13702,14 @@ function CreateProduct() {
     >
       <Group w="100%" position="apart">
         <Title order={4}>Microphone Specifications</Title>
-        {displayMicrophoneFieldsAdditionalButton}
+        {displayMicrophoneFieldsAdditionalMapButton}
       </Group>
       {createdMicrophoneTypeSelectInput}
       {createdMicrophoneColorTextInput}
       {createdMicrophoneInterfaceSelectInput}
       {createdMicrophonePolarPatternSelectInput}
       {createdMicrophoneFrequencyResponseTextInput}
-      {createdMicrophoneFieldsAdditionalTextInputElements}
+      {createdMicrophoneFieldsAdditionalMapTextInputElements}
     </Group>
   );
 
@@ -13760,10 +13852,10 @@ function CreateProduct() {
   // page 2 -> specifications -> cpu
 
   // page 2 -> specifications -> cpu -> cpu fields user defined -> form review objs
-  const cpuFieldsAdditionalFormReviewObjects =
+  const cpuFieldsAdditionalMapFormReviewObjects =
     returnFormReviewObjectsFromUserDefinedFields({
-      additionalFields: cpuFieldsAdditional,
-      areAdditionalFieldsValid: areCpuFieldsAdditionalValid,
+      additionalFields: cpuFieldsAdditionalMap,
+      areAdditionalFieldsValid: areCpuFieldsAdditionalMapValid,
     });
 
   // page 2 -> specifications -> cpu -> cpu fields hardcoded -> form review objs
@@ -13816,17 +13908,17 @@ function CreateProduct() {
         inputValue: cpuWattage,
         isInputValueValid: isCpuWattageValid,
       },
-      ...cpuFieldsAdditionalFormReviewObjects,
+      ...cpuFieldsAdditionalMapFormReviewObjects,
     ],
   };
 
   // page 2 -> specifications -> gpu chipset
 
   // page 2 -> specifications -> gpu -> gpu fields user defined -> form review objs
-  const gpuFieldsAdditionalFormReviewObjects =
+  const gpuFieldsAdditionalMapFormReviewObjects =
     returnFormReviewObjectsFromUserDefinedFields({
-      additionalFields: gpuFieldsAdditional,
-      areAdditionalFieldsValid: areGpuFieldsAdditionalValid,
+      additionalFields: gpuFieldsAdditionalMap,
+      areAdditionalFieldsValid: areGpuFieldsAdditionalMapValid,
     });
 
   const page2GpuFormReviewObject: FormReviewObjectArray = {
@@ -13860,17 +13952,17 @@ function CreateProduct() {
         inputValue: gpuTdp,
         isInputValueValid: isGpuTdpValid,
       },
-      ...gpuFieldsAdditionalFormReviewObjects,
+      ...gpuFieldsAdditionalMapFormReviewObjects,
     ],
   };
 
   // page 2 -> specifications -> motherboard
 
   // page 2 -> specifications -> motherboard -> motherboard fields user defined -> form review objs
-  const motherboardFieldsAdditionalFormReviewObjects =
+  const motherboardFieldsAdditionalMapFormReviewObjects =
     returnFormReviewObjectsFromUserDefinedFields({
-      additionalFields: motherboardFieldsAdditional,
-      areAdditionalFieldsValid: areMotherboardFieldsAdditionalValid,
+      additionalFields: motherboardFieldsAdditionalMap,
+      areAdditionalFieldsValid: areMotherboardFieldsAdditionalMapValid,
     });
 
   const page2MotherboardFormReviewObject: FormReviewObjectArray = {
@@ -13934,17 +14026,17 @@ function CreateProduct() {
           ? isMotherboardPcie5SlotsValid
           : true,
       },
-      ...motherboardFieldsAdditionalFormReviewObjects,
+      ...motherboardFieldsAdditionalMapFormReviewObjects,
     ],
   };
 
   // page 2 -> specifications -> ram
 
   // page 2 -> specifications -> ram -> ram fields user defined -> form review objs
-  const ramFieldsAdditionalFormReviewObjects =
+  const ramFieldsAdditionalMapFormReviewObjects =
     returnFormReviewObjectsFromUserDefinedFields({
-      additionalFields: ramFieldsAdditional,
-      areAdditionalFieldsValid: areRamFieldsAdditionalValid,
+      additionalFields: ramFieldsAdditionalMap,
+      areAdditionalFieldsValid: areRamFieldsAdditionalMapValid,
     });
 
   const page2RamFormReviewObject: FormReviewObjectArray = {
@@ -13987,17 +14079,17 @@ function CreateProduct() {
         inputValue: ramTiming,
         isInputValueValid: isRamTimingValid,
       },
-      ...ramFieldsAdditionalFormReviewObjects,
+      ...ramFieldsAdditionalMapFormReviewObjects,
     ],
   };
 
   // page 2 -> specifications -> storage
 
   // page 2 -> specifications -> storage -> storage fields user defined -> form review objs
-  const storageFieldsAdditionalFormReviewObjects =
+  const storageFieldsAdditionalMapFormReviewObjects =
     returnFormReviewObjectsFromUserDefinedFields({
-      additionalFields: storageFieldsAdditional,
-      areAdditionalFieldsValid: areStorageFieldsAdditionalValid,
+      additionalFields: storageFieldsAdditionalMap,
+      areAdditionalFieldsValid: areStorageFieldsAdditionalMapValid,
     });
 
   const page2StorageFormReviewObject: FormReviewObjectArray = {
@@ -14032,17 +14124,17 @@ function CreateProduct() {
         inputName: 'Storage Interface',
         inputValue: storageInterface,
       },
-      ...storageFieldsAdditionalFormReviewObjects,
+      ...storageFieldsAdditionalMapFormReviewObjects,
     ],
   };
 
   // page 2 -> specifications -> power supply
 
   // page 2 -> specifications -> power supply -> power supply fields user defined -> form review objs
-  const psuFieldsAdditionalFormReviewObjects =
+  const psuFieldsAdditionalMapFormReviewObjects =
     returnFormReviewObjectsFromUserDefinedFields({
-      additionalFields: psuFieldsAdditional,
-      areAdditionalFieldsValid: arePsuFieldsAdditionalValid,
+      additionalFields: psuFieldsAdditionalMap,
+      areAdditionalFieldsValid: arePsuFieldsAdditionalMapValid,
     });
 
   const page2PowerSupplyFormReviewObject: FormReviewObjectArray = {
@@ -14064,17 +14156,17 @@ function CreateProduct() {
         inputName: 'PSU Modularity',
         inputValue: psuModularity,
       },
-      ...psuFieldsAdditionalFormReviewObjects,
+      ...psuFieldsAdditionalMapFormReviewObjects,
     ],
   };
 
   // page 2 -> specifications -> computer case
 
   // page 2 -> specifications -> computer case -> computer case fields user defined -> form review objs
-  const caseFieldsAdditionalFormReviewObjects =
+  const caseFieldsAdditionalMapFormReviewObjects =
     returnFormReviewObjectsFromUserDefinedFields({
-      additionalFields: caseFieldsAdditional,
-      areAdditionalFieldsValid: areCaseFieldsAdditionalValid,
+      additionalFields: caseFieldsAdditionalMap,
+      areAdditionalFieldsValid: areCaseFieldsAdditionalMapValid,
     });
 
   const page2ComputerCaseFormReviewObject: FormReviewObjectArray = {
@@ -14092,17 +14184,17 @@ function CreateProduct() {
         inputName: 'Case Side Panel',
         inputValue: caseSidePanel,
       },
-      ...caseFieldsAdditionalFormReviewObjects,
+      ...caseFieldsAdditionalMapFormReviewObjects,
     ],
   };
 
   // page 2 -> specifications -> display
 
   // page 2 -> specifications -> display -> display fields user defined -> form review objs
-  const displayFieldsAdditionalFormReviewObjects =
+  const displayFieldsAdditionalMapFormReviewObjects =
     returnFormReviewObjectsFromUserDefinedFields({
-      additionalFields: displayFieldsAdditional,
-      areAdditionalFieldsValid: areDisplayFieldsAdditionalValid,
+      additionalFields: displayFieldsAdditionalMap,
+      areAdditionalFieldsValid: areDisplayFieldsAdditionalMapValid,
     });
 
   const page2DisplayFormReviewObject: FormReviewObjectArray = {
@@ -14141,17 +14233,17 @@ function CreateProduct() {
         inputValue: displayAspectRatio,
         isInputValueValid: isDisplayAspectRatioValid,
       },
-      ...displayFieldsAdditionalFormReviewObjects,
+      ...displayFieldsAdditionalMapFormReviewObjects,
     ],
   };
 
   // page 2 -> specifications -> keyboard
 
   // page 2 -> specifications -> keyboard -> keyboard fields user defined -> form review objs
-  const keyboardFieldsAdditionalFormReviewObjects =
+  const keyboardFieldsAdditionalMapFormReviewObjects =
     returnFormReviewObjectsFromUserDefinedFields({
-      additionalFields: keyboardFieldsAdditional,
-      areAdditionalFieldsValid: areKeyboardFieldsAdditionalValid,
+      additionalFields: keyboardFieldsAdditionalMap,
+      areAdditionalFieldsValid: areKeyboardFieldsAdditionalMapValid,
     });
 
   const page2KeyboardFormReviewObject: FormReviewObjectArray = {
@@ -14172,17 +14264,17 @@ function CreateProduct() {
         inputName: 'Keyboard Interface',
         inputValue: keyboardInterface,
       },
-      ...keyboardFieldsAdditionalFormReviewObjects,
+      ...keyboardFieldsAdditionalMapFormReviewObjects,
     ],
   };
 
   // page 2 -> specifications -> mouse
 
   // page 2 -> specifications -> mouse -> mouse fields user defined -> form review objs
-  const mouseFieldsAdditionalFormReviewObjects =
+  const mouseFieldsAdditionalMapFormReviewObjects =
     returnFormReviewObjectsFromUserDefinedFields({
-      additionalFields: mouseFieldsAdditional,
-      areAdditionalFieldsValid: areMouseFieldsAdditionalValid,
+      additionalFields: mouseFieldsAdditionalMap,
+      areAdditionalFieldsValid: areMouseFieldsAdditionalMapValid,
     });
 
   const page2MouseFormReviewObject: FormReviewObjectArray = {
@@ -14210,17 +14302,17 @@ function CreateProduct() {
         inputName: 'Mouse Interface',
         inputValue: mouseInterface,
       },
-      ...mouseFieldsAdditionalFormReviewObjects,
+      ...mouseFieldsAdditionalMapFormReviewObjects,
     ],
   };
 
   // page 2 -> specifications -> headphone
 
   // page 2 -> specifications -> headphone -> headphone fields user defined -> form review objs
-  const headphoneFieldsAdditionalFormReviewObjects =
+  const headphoneFieldsAdditionalMapFormReviewObjects =
     returnFormReviewObjectsFromUserDefinedFields({
-      additionalFields: headphoneFieldsAdditional,
-      areAdditionalFieldsValid: areHeadphoneFieldsAdditionalValid,
+      additionalFields: headphoneFieldsAdditionalMap,
+      areAdditionalFieldsValid: areHeadphoneFieldsAdditionalMapValid,
     });
 
   const page2HeadphoneFormReviewObject: FormReviewObjectArray = {
@@ -14253,17 +14345,17 @@ function CreateProduct() {
         inputName: 'Headphone Interface',
         inputValue: headphoneInterface,
       },
-      ...headphoneFieldsAdditionalFormReviewObjects,
+      ...headphoneFieldsAdditionalMapFormReviewObjects,
     ],
   };
 
   // page 2 -> specifications -> speaker
 
   // page 2 -> specifications -> speaker -> speaker fields user defined -> form review objs
-  const speakerFieldsAdditionalFormReviewObjects =
+  const speakerFieldsAdditionalMapFormReviewObjects =
     returnFormReviewObjectsFromUserDefinedFields({
-      additionalFields: speakerFieldsAdditional,
-      areAdditionalFieldsValid: areSpeakerFieldsAdditionalValid,
+      additionalFields: speakerFieldsAdditionalMap,
+      areAdditionalFieldsValid: areSpeakerFieldsAdditionalMapValid,
     });
 
   const page2SpeakerFormReviewObject: FormReviewObjectArray = {
@@ -14291,17 +14383,17 @@ function CreateProduct() {
         inputName: 'Speaker Interface',
         inputValue: speakerInterface,
       },
-      ...speakerFieldsAdditionalFormReviewObjects,
+      ...speakerFieldsAdditionalMapFormReviewObjects,
     ],
   };
 
   // page 2 -> specifications -> smartphone
 
   // page 2 -> specifications -> smartphone -> smartphone fields user defined -> form review objs
-  const smartphoneFieldsAdditionalFormReviewObjects =
+  const smartphoneFieldsAdditionalMapFormReviewObjects =
     returnFormReviewObjectsFromUserDefinedFields({
-      additionalFields: smartphoneFieldsAdditional,
-      areAdditionalFieldsValid: areSmartphoneFieldsAdditionalValid,
+      additionalFields: smartphoneFieldsAdditionalMap,
+      areAdditionalFieldsValid: areSmartphoneFieldsAdditionalMapValid,
     });
   const page2SmartphoneFormReviewObject: FormReviewObjectArray = {
     'Smartphone Specifications': [
@@ -14358,17 +14450,17 @@ function CreateProduct() {
         inputValue: smartphoneColor,
         isInputValueValid: isSmartphoneColorValid,
       },
-      ...smartphoneFieldsAdditionalFormReviewObjects,
+      ...smartphoneFieldsAdditionalMapFormReviewObjects,
     ],
   };
 
   // page 2 -> specifications -> tablet
 
   // page 2 -> specifications -> tablet -> tablet fields user defined -> form review objs
-  const tabletFieldsAdditionalFormReviewObjects =
+  const tabletFieldsAdditionalMapFormReviewObjects =
     returnFormReviewObjectsFromUserDefinedFields({
-      additionalFields: tabletFieldsAdditional,
-      areAdditionalFieldsValid: areTabletFieldsAdditionalValid,
+      additionalFields: tabletFieldsAdditionalMap,
+      areAdditionalFieldsValid: areTabletFieldsAdditionalMapValid,
     });
 
   const page2TabletFormReviewObject: FormReviewObjectArray = {
@@ -14426,17 +14518,17 @@ function CreateProduct() {
         inputValue: tabletColor,
         isInputValueValid: isTabletColorValid,
       },
-      ...tabletFieldsAdditionalFormReviewObjects,
+      ...tabletFieldsAdditionalMapFormReviewObjects,
     ],
   };
 
   // page 2 -> specifications -> accessory
 
   // page 2 -> specifications -> accessory -> accessory fields user defined -> form review objs
-  const accessoryFieldsAdditionalFormReviewObjects =
+  const accessoryFieldsAdditionalMapFormReviewObjects =
     returnFormReviewObjectsFromUserDefinedFields({
-      additionalFields: accessoryFieldsAdditional,
-      areAdditionalFieldsValid: areAccessoryFieldsAdditionalValid,
+      additionalFields: accessoryFieldsAdditionalMap,
+      areAdditionalFieldsValid: areAccessoryFieldsAdditionalMapValid,
     });
 
   const page2AccessoryFormReviewObject: FormReviewObjectArray = {
@@ -14455,17 +14547,17 @@ function CreateProduct() {
         inputName: 'Accessory Interface',
         inputValue: accessoryInterface,
       },
-      ...accessoryFieldsAdditionalFormReviewObjects,
+      ...accessoryFieldsAdditionalMapFormReviewObjects,
     ],
   };
 
   // page 2 -> specifications -> webcams
 
   // page 2 -> specifications -> webcams -> webcam fields user defined -> form review objs
-  const webcamFieldsAdditionalFormReviewObjects =
+  const webcamFieldsAdditionalMapFormReviewObjects =
     returnFormReviewObjectsFromUserDefinedFields({
-      additionalFields: webcamFieldsAdditional,
-      areAdditionalFieldsValid: areWebcamFieldsAdditionalValid,
+      additionalFields: webcamFieldsAdditionalMap,
+      areAdditionalFieldsValid: areWebcamFieldsAdditionalMapValid,
     });
 
   const page2WebcamFormReviewObject: FormReviewObjectArray = {
@@ -14491,17 +14583,17 @@ function CreateProduct() {
         inputName: 'Webcam Frame Rate',
         inputValue: webcamFrameRate,
       },
-      ...webcamFieldsAdditionalFormReviewObjects,
+      ...webcamFieldsAdditionalMapFormReviewObjects,
     ],
   };
 
   // page 2 -> specifications -> microphones
 
   // page 2 -> specifications -> microphones -> microphone fields user defined -> form review objs
-  const microphoneFieldsAdditionalFormReviewObjects =
+  const microphoneFieldsAdditionalMapFormReviewObjects =
     returnFormReviewObjectsFromUserDefinedFields({
-      additionalFields: microphoneFieldsAdditional,
-      areAdditionalFieldsValid: areMicrophoneFieldsAdditionalValid,
+      additionalFields: microphoneFieldsAdditionalMap,
+      areAdditionalFieldsValid: areMicrophoneFieldsAdditionalMapValid,
     });
 
   const page2MicrophoneFormReviewObject: FormReviewObjectArray = {
@@ -14528,7 +14620,7 @@ function CreateProduct() {
         inputValue: microphoneFrequencyResponse,
         isInputValueValid: isMicrophoneFrequencyResponseValid,
       },
-      ...microphoneFieldsAdditionalFormReviewObjects,
+      ...microphoneFieldsAdditionalMapFormReviewObjects,
     ],
   };
 

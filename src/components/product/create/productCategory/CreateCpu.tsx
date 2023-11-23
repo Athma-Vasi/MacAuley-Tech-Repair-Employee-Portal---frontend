@@ -41,11 +41,11 @@ import {
 } from '../types';
 
 type CreateCpuProps = {
-  areCpuFieldsAdditionalFocused: Map<number, [boolean, boolean]>;
-  areCpuFieldsAdditionalValid: Map<number, [boolean, boolean]>;
+  areCpuFieldsAdditionalMapFocused: Map<number, [boolean, boolean]>;
+  areCpuFieldsAdditionalMapValid: Map<number, [boolean, boolean]>;
   borderColor: string;
   cpuCores: string;
-  cpuFieldsAdditional: Map<number, [string, string]>;
+  cpuFieldsAdditionalMap: Map<number, [string, string]>;
   cpuFrequency: string;
   cpuL1CacheCapacity: string;
   cpuL1CacheCapacityUnit: MemoryUnit;
@@ -76,11 +76,11 @@ type CreateCpuProps = {
 };
 
 function CreateCpu({
-  areCpuFieldsAdditionalFocused,
-  areCpuFieldsAdditionalValid,
+  areCpuFieldsAdditionalMapFocused,
+  areCpuFieldsAdditionalMapValid,
   borderColor,
   cpuCores,
-  cpuFieldsAdditional,
+  cpuFieldsAdditionalMap,
   cpuFrequency,
   cpuL1CacheCapacity,
   cpuL1CacheCapacityUnit,
@@ -109,11 +109,11 @@ function CreateCpu({
   isCpuWattageValid,
   padding,
 }: CreateCpuProps) {
-  // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
   //  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
   //    VALIDATION USE EFFECTS
   //  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
-  // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+  // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
   // ╭─────────────────────────────────────────────────────────────────╮
   //    CPU SOCKET
@@ -227,7 +227,7 @@ function CreateCpu({
   //    CPU FIELDS ADDITIONAL
   // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
-    const currentlyUpdatingCpuFieldAdditional = cpuFieldsAdditional.get(
+    const currentlyUpdatingCpuFieldAdditional = cpuFieldsAdditionalMap.get(
       currentlySelectedAdditionalFieldIndex
     );
 
@@ -239,7 +239,7 @@ function CreateCpu({
 
     const isKeyValid = OBJECT_KEY_REGEX.test(key);
     createProductDispatch({
-      type: createProductAction.setAreCpuFieldsAdditionalValid,
+      type: createProductAction.setAreCpuFieldsAdditionalMapValid,
       payload: {
         operation: 'update',
         data: isKeyValid,
@@ -250,7 +250,7 @@ function CreateCpu({
 
     const isValueValid = USER_DEFINED_VALUE_REGEX.test(value);
     createProductDispatch({
-      type: createProductAction.setAreCpuFieldsAdditionalValid,
+      type: createProductAction.setAreCpuFieldsAdditionalMapValid,
       payload: {
         operation: 'update',
         data: isValueValid,
@@ -260,9 +260,9 @@ function CreateCpu({
     });
   }, [
     currentlySelectedAdditionalFieldIndex,
-    cpuFieldsAdditional,
+    cpuFieldsAdditionalMap,
     createProductDispatch,
-    createProductAction.setAreCpuFieldsAdditionalValid,
+    createProductAction.setAreCpuFieldsAdditionalMapValid,
   ]);
 
   // ╔═════════════════════════════════════════════════════════════════╗
@@ -273,8 +273,8 @@ function CreateCpu({
     // optional inputs with empty string count as valid
     // select inputs are not included as they always have a default value
 
-    const areCpuFieldsAdditionalInError = Array.from(
-      areCpuFieldsAdditionalValid
+    const areCpuFieldsAdditionalMapInError = Array.from(
+      areCpuFieldsAdditionalMapValid
     ).some(([_key, value]) => !value);
 
     const areCpuInputsInError =
@@ -285,7 +285,7 @@ function CreateCpu({
       !isCpuL2CacheCapacityValid ||
       !isCpuL3CacheCapacityValid ||
       !isCpuWattageValid ||
-      areCpuFieldsAdditionalInError;
+      areCpuFieldsAdditionalMapInError;
 
     createProductDispatch({
       type: createProductAction.setStepsInError,
@@ -295,7 +295,7 @@ function CreateCpu({
       },
     });
   }, [
-    areCpuFieldsAdditionalValid,
+    areCpuFieldsAdditionalMapValid,
     createProductAction.setStepsInError,
     createProductDispatch,
     isCpuCoresValid,
@@ -307,11 +307,11 @@ function CreateCpu({
     isCpuWattageValid,
   ]);
 
-  // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
   //  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
   //    INPUT CREATION
   //  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
-  // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+  // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
   // ╭─────────────────────────────────────────────────────────────────╮
   //    CPU SOCKET
@@ -743,61 +743,63 @@ function CreateCpu({
   // ╭─────────────────────────────────────────────────────────────────╮
   //    ADD ADDITIONAL FIELD BUTTON
   // ╰─────────────────────────────────────────────────────────────────╯
-  const [createdAddCpuFieldsAdditionalButton] = returnAccessibleButtonElements([
-    {
-      buttonLabel: 'Add',
-      semanticDescription: 'Add new additional field',
-      semanticName: 'Add new field',
-      leftIcon: <TbPlus />,
-      buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
-        createProductDispatch({
-          type: createProductAction.setCpuFieldsAdditional,
-          payload: {
-            operation: 'add',
-            data: ['', ''],
-          },
-        });
+  const [createdAddCpuFieldsAdditionalMapButton] =
+    returnAccessibleButtonElements([
+      {
+        buttonLabel: 'Add',
+        semanticDescription: 'Add new additional field',
+        semanticName: 'Add new field',
+        leftIcon: <TbPlus />,
+        buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
+          createProductDispatch({
+            type: createProductAction.setCpuFieldsAdditionalMap,
+            payload: {
+              operation: 'add',
+              data: ['', ''],
+            },
+          });
 
-        createProductDispatch({
-          type: createProductAction.setAreCpuFieldsAdditionalFocused,
-          payload: {
-            operation: 'add',
-            data: [false, false],
-          },
-        });
+          createProductDispatch({
+            type: createProductAction.setAreCpuFieldsAdditionalMapFocused,
+            payload: {
+              operation: 'add',
+              data: [false, false],
+            },
+          });
 
-        createProductDispatch({
-          type: createProductAction.setAreCpuFieldsAdditionalValid,
-          payload: {
-            operation: 'add',
-            data: [false, false],
-          },
-        });
+          createProductDispatch({
+            type: createProductAction.setAreCpuFieldsAdditionalMapValid,
+            payload: {
+              operation: 'add',
+              data: [false, false],
+            },
+          });
+        },
       },
-    },
-  ]);
+    ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    ERROR/VALID ELEMENTS TUPLE => FIELD NAMES
+  //    SCREENREADER ERROR/VALID ELEMENTS TUPLE => FIELD NAMES
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // returns an array of tuples containing the error and valid text elements for each field name
-  const cpuFieldsAdditionalKeysErrorValidTextElements: [
+  const cpuFieldsAdditionalMapKeysErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(cpuFieldsAdditional).map((keyFieldValue) => {
+  ][] = Array.from(cpuFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [field, _value]] = keyFieldValue;
 
     // screenreader error/valid text elements that are consumed by the text input element creator
     const [
-      cpuFieldsAdditionalKeysInputErrorText,
-      cpuFieldsAdditionalKeysInputValidText,
+      cpuFieldsAdditionalMapKeysInputErrorText,
+      cpuFieldsAdditionalMapKeysInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field name ${mapKey + 1}`,
       inputText: field,
       isInputTextFocused:
-        areCpuFieldsAdditionalFocused.get(mapKey)?.[0] ?? false,
-      isValidInputText: areCpuFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+        areCpuFieldsAdditionalMapFocused.get(mapKey)?.[0] ?? false,
+      isValidInputText:
+        areCpuFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
       regexValidationText: returnObjectKeyValidationText({
         content: field,
         contentKind: `additional field name ${mapKey + 1}`,
@@ -807,32 +809,33 @@ function CreateCpu({
     });
 
     return [
-      cpuFieldsAdditionalKeysInputErrorText,
-      cpuFieldsAdditionalKeysInputValidText,
+      cpuFieldsAdditionalMapKeysInputErrorText,
+      cpuFieldsAdditionalMapKeysInputValidText,
     ];
   });
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    ERROR/VALID ELEMENTS TUPLE => FIELD VALUES
+  //    SCREENREADER ERROR/VALID ELEMENTS TUPLE => FIELD VALUES
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // returns an array of tuples containing the error and valid text elements for each field value
-  const cpuFieldsAdditionalValuesErrorValidTextElements: [
+  const cpuFieldsAdditionalMapValuesErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(cpuFieldsAdditional).map((keyFieldValue) => {
+  ][] = Array.from(cpuFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [_field, value]] = keyFieldValue;
 
     // screenreader error/valid text elements that are consumed by the text input element creator
     const [
-      cpuFieldsAdditionalValuesInputErrorText,
-      cpuFieldsAdditionalValuesInputValidText,
+      cpuFieldsAdditionalMapValuesInputErrorText,
+      cpuFieldsAdditionalMapValuesInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field value ${mapKey + 1}`,
       inputText: value,
       isInputTextFocused:
-        areCpuFieldsAdditionalFocused.get(mapKey)?.[1] ?? false,
-      isValidInputText: areCpuFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+        areCpuFieldsAdditionalMapFocused.get(mapKey)?.[1] ?? false,
+      isValidInputText:
+        areCpuFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
       regexValidationText: returnUserDefinedFieldValueValidationText({
         content: value,
         contentKind: `additional field value ${mapKey + 1}`,
@@ -842,33 +845,34 @@ function CreateCpu({
     });
 
     return [
-      cpuFieldsAdditionalValuesInputErrorText,
-      cpuFieldsAdditionalValuesInputValidText,
+      cpuFieldsAdditionalMapValuesInputErrorText,
+      cpuFieldsAdditionalMapValuesInputValidText,
     ];
   });
 
-  const createdCpuFieldsAdditionalTextInputElements = Array.from(
-    cpuFieldsAdditional
+  const createdCpuFieldsAdditionalMapTextInputElements = Array.from(
+    cpuFieldsAdditionalMap
   ).map((keyFieldValue) => {
     const [mapKey, [field, value]] = keyFieldValue;
 
     // ╭─────────────────────────────────────────────────────────────────╮
     //    ADDITIONAL FIELD TEXT INPUT => FIELD NAME
     // ╰─────────────────────────────────────────────────────────────────╯
-    const cpuFieldsAdditionalKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const cpuFieldsAdditionalMapKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
-          error: cpuFieldsAdditionalKeysErrorValidTextElements[mapKey][0],
-          valid: cpuFieldsAdditionalKeysErrorValidTextElements[mapKey][1],
+          error: cpuFieldsAdditionalMapKeysErrorValidTextElements[mapKey][0],
+          valid: cpuFieldsAdditionalMapKeysErrorValidTextElements[mapKey][1],
         },
         inputText: field,
-        isValidInputText: areCpuFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+        isValidInputText:
+          areCpuFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
         label: `Name ${mapKey + 1}`,
         maxLength: 75,
         minLength: 1,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreCpuFieldsAdditionalFocused,
+            type: createProductAction.setAreCpuFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -879,7 +883,7 @@ function CreateCpu({
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setCpuFieldsAdditional,
+            type: createProductAction.setCpuFieldsAdditionalMap,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -895,7 +899,7 @@ function CreateCpu({
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreCpuFieldsAdditionalFocused,
+            type: createProductAction.setAreCpuFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -912,20 +916,21 @@ function CreateCpu({
     // ╭─────────────────────────────────────────────────────────────────╮
     //    ADDITIONAL FIELD TEXT INPUT => FIELD VALUE
     // ╰─────────────────────────────────────────────────────────────────╯
-    const cpuFieldsAdditionalValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const cpuFieldsAdditionalMapValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
-          error: cpuFieldsAdditionalValuesErrorValidTextElements[mapKey][0],
-          valid: cpuFieldsAdditionalValuesErrorValidTextElements[mapKey][1],
+          error: cpuFieldsAdditionalMapValuesErrorValidTextElements[mapKey][0],
+          valid: cpuFieldsAdditionalMapValuesErrorValidTextElements[mapKey][1],
         },
         inputText: value,
-        isValidInputText: areCpuFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+        isValidInputText:
+          areCpuFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
         label: `Value ${mapKey + 1}`,
         maxLength: 2000,
         minLength: 2,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreCpuFieldsAdditionalFocused,
+            type: createProductAction.setAreCpuFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -936,7 +941,7 @@ function CreateCpu({
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setCpuFieldsAdditional,
+            type: createProductAction.setCpuFieldsAdditionalMap,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -952,7 +957,7 @@ function CreateCpu({
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreCpuFieldsAdditionalFocused,
+            type: createProductAction.setAreCpuFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -967,11 +972,11 @@ function CreateCpu({
       };
 
     const [
-      createdCpuFieldsAdditionalKeysTextAreaInput,
-      createdCpuFieldsAdditionalValuesTextAreaInput,
+      createdCpuFieldsAdditionalMapKeysTextAreaInput,
+      createdCpuFieldsAdditionalMapValuesTextAreaInput,
     ] = returnAccessibleTextAreaInputElements([
-      cpuFieldsAdditionalKeysTextInputCreatorInfo,
-      cpuFieldsAdditionalValuesTextInputCreatorInfo,
+      cpuFieldsAdditionalMapKeysTextInputCreatorInfo,
+      cpuFieldsAdditionalMapValuesTextInputCreatorInfo,
     ]);
 
     // ╭─────────────────────────────────────────────────────────────────╮
@@ -982,7 +987,7 @@ function CreateCpu({
         buttonLabel: 'Delete',
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
           createProductDispatch({
-            type: createProductAction.setCpuFieldsAdditional,
+            type: createProductAction.setCpuFieldsAdditionalMap,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -990,7 +995,7 @@ function CreateCpu({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreCpuFieldsAdditionalFocused,
+            type: createProductAction.setAreCpuFieldsAdditionalMapFocused,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -998,7 +1003,7 @@ function CreateCpu({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreCpuFieldsAdditionalValid,
+            type: createProductAction.setAreCpuFieldsAdditionalMapValid,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -1023,7 +1028,7 @@ function CreateCpu({
     );
 
     return (
-      <Stack key={`cpuFieldsAdditional-${mapKey}`} pt={padding} w="100%">
+      <Stack key={`cpuFieldsAdditionalMap-${mapKey}`} pt={padding} w="100%">
         <Group position="apart">
           <Text size="md" weight={600}>{`Additional Cpu field ${
             mapKey + 1
@@ -1031,22 +1036,24 @@ function CreateCpu({
           {displayDeleteButton}
         </Group>
         <Group position="apart">
-          {createdCpuFieldsAdditionalKeysTextAreaInput}
-          {createdCpuFieldsAdditionalValuesTextAreaInput}
+          {createdCpuFieldsAdditionalMapKeysTextAreaInput}
+          {createdCpuFieldsAdditionalMapValuesTextAreaInput}
         </Group>
       </Stack>
     );
   });
 
-  // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
   //  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
   //    INPUT DISPLAY
   //  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
-  // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+  // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
-  const displayCpuFieldsAdditionalButton = (
-    <Tooltip label={`Add new additional field ${cpuFieldsAdditional.size + 1}`}>
-      <Group>{createdAddCpuFieldsAdditionalButton}</Group>
+  const displayCpuFieldsAdditionalMapButton = (
+    <Tooltip
+      label={`Add new additional field ${cpuFieldsAdditionalMap.size + 1}`}
+    >
+      <Group>{createdAddCpuFieldsAdditionalMapButton}</Group>
     </Tooltip>
   );
 
@@ -1059,7 +1066,7 @@ function CreateCpu({
     >
       <Group position="apart" w="100%">
         <Title order={4}>CPU Specifications</Title>
-        {displayCpuFieldsAdditionalButton}
+        {displayCpuFieldsAdditionalMapButton}
       </Group>
       {createdCpuSocketTextInput}
       {createdCpuWattageTextInput}
@@ -1071,7 +1078,7 @@ function CreateCpu({
       {createdCpuL2CacheCapacityUnitSelectInput}
       {createdCpuL3CacheCapacityTextInput}
       {createdCpuL3CacheCapacityUnitSelectInput}
-      {createdCpuFieldsAdditionalTextInputElements}
+      {createdCpuFieldsAdditionalMapTextInputElements}
     </Group>
   );
 

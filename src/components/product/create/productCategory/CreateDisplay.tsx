@@ -41,14 +41,14 @@ import {
 } from '../types';
 
 type CreateDisplayProps = {
-  areDisplayFieldsAdditionalFocused: Map<number, [boolean, boolean]>;
-  areDisplayFieldsAdditionalValid: Map<number, [boolean, boolean]>;
+  areDisplayFieldsAdditionalMapFocused: Map<number, [boolean, boolean]>;
+  areDisplayFieldsAdditionalMapValid: Map<number, [boolean, boolean]>;
   borderColor: string;
   createProductAction: CreateProductAction;
   createProductDispatch: React.Dispatch<CreateProductDispatch>;
   currentlySelectedAdditionalFieldIndex: number;
   displayAspectRatio: string;
-  displayFieldsAdditional: Map<number, [string, string]>;
+  displayFieldsAdditionalMap: Map<number, [string, string]>;
   displayPanelType: DisplayPanelType;
   displayRefreshRate: string;
   displayResolutionHorizontal: string;
@@ -71,14 +71,14 @@ type CreateDisplayProps = {
 };
 
 function CreateDisplay({
-  areDisplayFieldsAdditionalFocused,
-  areDisplayFieldsAdditionalValid,
+  areDisplayFieldsAdditionalMapFocused,
+  areDisplayFieldsAdditionalMapValid,
   borderColor,
   createProductAction,
   createProductDispatch,
   currentlySelectedAdditionalFieldIndex,
   displayAspectRatio,
-  displayFieldsAdditional,
+  displayFieldsAdditionalMap,
   displayPanelType,
   displayRefreshRate,
   displayResolutionHorizontal,
@@ -99,11 +99,11 @@ function CreateDisplay({
   isDisplaySizeValid,
   padding,
 }: CreateDisplayProps) {
-  // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
   //  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
   //    VALIDATION USE EFFECTS
   //  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
-  // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+  // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
   // ╭─────────────────────────────────────────────────────────────────╮
   //    DISPLAY SIZE
@@ -205,9 +205,8 @@ function CreateDisplay({
   //    DISPLAY ADDITIONAL FIELDS
   // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
-    const currentlyUpdatingDisplayFieldAdditional = displayFieldsAdditional.get(
-      currentlySelectedAdditionalFieldIndex
-    );
+    const currentlyUpdatingDisplayFieldAdditional =
+      displayFieldsAdditionalMap.get(currentlySelectedAdditionalFieldIndex);
 
     if (!currentlyUpdatingDisplayFieldAdditional) {
       return;
@@ -217,7 +216,7 @@ function CreateDisplay({
 
     const isKeyValid = OBJECT_KEY_REGEX.test(key);
     createProductDispatch({
-      type: createProductAction.setAreDisplayFieldsAdditionalValid,
+      type: createProductAction.setAreDisplayFieldsAdditionalMapValid,
       payload: {
         operation: 'update',
         data: isKeyValid,
@@ -228,7 +227,7 @@ function CreateDisplay({
 
     const isValueValid = USER_DEFINED_VALUE_REGEX.test(value);
     createProductDispatch({
-      type: createProductAction.setAreDisplayFieldsAdditionalValid,
+      type: createProductAction.setAreDisplayFieldsAdditionalMapValid,
       payload: {
         operation: 'update',
         data: isValueValid,
@@ -237,10 +236,10 @@ function CreateDisplay({
       },
     });
   }, [
-    createProductAction.setAreDisplayFieldsAdditionalValid,
+    createProductAction.setAreDisplayFieldsAdditionalMapValid,
     createProductDispatch,
     currentlySelectedAdditionalFieldIndex,
-    displayFieldsAdditional,
+    displayFieldsAdditionalMap,
   ]);
 
   // ╔═════════════════════════════════════════════════════════════════╗
@@ -260,7 +259,7 @@ function CreateDisplay({
       !isDisplaySizeValid;
 
     const areDisplayInputsUserDefinedInError = Array.from(
-      areDisplayFieldsAdditionalValid
+      areDisplayFieldsAdditionalMapValid
     ).some(([_key, value]) => !value);
 
     const areDisplayInputsInError =
@@ -274,7 +273,7 @@ function CreateDisplay({
       },
     });
   }, [
-    areDisplayFieldsAdditionalValid,
+    areDisplayFieldsAdditionalMapValid,
     createProductAction.setStepsInError,
     createProductDispatch,
     isDisplayAspectRatioValid,
@@ -285,11 +284,11 @@ function CreateDisplay({
     isDisplaySizeValid,
   ]);
 
-  // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
   //  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
   //    INPUT CREATION
   //  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
-  // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+  // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
   // ╭─────────────────────────────────────────────────────────────────╮
   //    DISPLAY SIZE
@@ -637,7 +636,7 @@ function CreateDisplay({
   // ╭─────────────────────────────────────────────────────────────────╮
   //    ADD ADDITIONAL FIELD BUTTON
   // ╰─────────────────────────────────────────────────────────────────╯
-  const [createdAddDisplayFieldsAdditionalButton] =
+  const [createdAddDisplayFieldsAdditionalMapButton] =
     returnAccessibleButtonElements([
       {
         buttonLabel: 'Add',
@@ -646,7 +645,7 @@ function CreateDisplay({
         leftIcon: <TbPlus />,
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
           createProductDispatch({
-            type: createProductAction.setDisplayFieldsAdditional,
+            type: createProductAction.setDisplayFieldsAdditionalMap,
             payload: {
               operation: 'add',
               data: ['', ''],
@@ -654,7 +653,7 @@ function CreateDisplay({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreDisplayFieldsAdditionalFocused,
+            type: createProductAction.setAreDisplayFieldsAdditionalMapFocused,
             payload: {
               operation: 'add',
               data: [false, false],
@@ -662,7 +661,7 @@ function CreateDisplay({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreDisplayFieldsAdditionalValid,
+            type: createProductAction.setAreDisplayFieldsAdditionalMapValid,
             payload: {
               operation: 'add',
               data: [false, false],
@@ -673,27 +672,27 @@ function CreateDisplay({
     ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    ERROR/VALID ELEMENTS TUPLE => FIELD NAMES
+  //    SCREENREADER ERROR/VALID ELEMENTS TUPLE => FIELD NAMES
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // returns an array of tuples containing the error and valid text elements for each field name
-  const displayFieldsAdditionalKeysErrorValidTextElements: [
+  const displayFieldsAdditionalMapKeysErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(displayFieldsAdditional).map((keyFieldValue) => {
+  ][] = Array.from(displayFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [field, _value]] = keyFieldValue;
 
     // screenreader error/valid text elements that are consumed by the text input element creator
     const [
-      displayFieldsAdditionalKeysInputErrorText,
-      displayFieldsAdditionalKeysInputValidText,
+      displayFieldsAdditionalMapKeysInputErrorText,
+      displayFieldsAdditionalMapKeysInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field name ${mapKey + 1}`,
       inputText: field,
       isInputTextFocused:
-        areDisplayFieldsAdditionalFocused.get(mapKey)?.[0] ?? false,
+        areDisplayFieldsAdditionalMapFocused.get(mapKey)?.[0] ?? false,
       isValidInputText:
-        areDisplayFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+        areDisplayFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
       regexValidationText: returnObjectKeyValidationText({
         content: field,
         contentKind: `additional field name ${mapKey + 1}`,
@@ -703,32 +702,32 @@ function CreateDisplay({
     });
 
     return [
-      displayFieldsAdditionalKeysInputErrorText,
-      displayFieldsAdditionalKeysInputValidText,
+      displayFieldsAdditionalMapKeysInputErrorText,
+      displayFieldsAdditionalMapKeysInputValidText,
     ];
   });
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    ERROR/VALID ELEMENTS TUPLE => FIELD VALUES
+  //    SCREENREADER ERROR/VALID ELEMENTS TUPLE => FIELD VALUES
   // ╰─────────────────────────────────────────────────────────────────╯
   // returns an array of tuples containing the error and valid text elements for each field value
-  const displayFieldsAdditionalValuesErrorValidTextElements: [
+  const displayFieldsAdditionalMapValuesErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(displayFieldsAdditional).map((keyFieldValue) => {
+  ][] = Array.from(displayFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [_field, value]] = keyFieldValue;
 
     // screenreader error/valid text elements that are consumed by the text input element creator
     const [
-      displayFieldsAdditionalValuesInputErrorText,
-      displayFieldsAdditionalValuesInputValidText,
+      displayFieldsAdditionalMapValuesInputErrorText,
+      displayFieldsAdditionalMapValuesInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field value ${mapKey + 1}`,
       inputText: value,
       isInputTextFocused:
-        areDisplayFieldsAdditionalFocused.get(mapKey)?.[1] ?? false,
+        areDisplayFieldsAdditionalMapFocused.get(mapKey)?.[1] ?? false,
       isValidInputText:
-        areDisplayFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+        areDisplayFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
       regexValidationText: returnUserDefinedFieldValueValidationText({
         content: value,
         contentKind: `additional field value ${mapKey + 1}`,
@@ -738,34 +737,36 @@ function CreateDisplay({
     });
 
     return [
-      displayFieldsAdditionalValuesInputErrorText,
-      displayFieldsAdditionalValuesInputValidText,
+      displayFieldsAdditionalMapValuesInputErrorText,
+      displayFieldsAdditionalMapValuesInputValidText,
     ];
   });
 
-  const createdDisplayFieldsAdditionalTextInputElements = Array.from(
-    displayFieldsAdditional
+  const createdDisplayFieldsAdditionalMapTextInputElements = Array.from(
+    displayFieldsAdditionalMap
   ).map((keyFieldValue) => {
     const [mapKey, [field, value]] = keyFieldValue;
 
     // ╭─────────────────────────────────────────────────────────────────╮
     //    ADDITIONAL FIELD TEXT INPUT => FIELD NAME
     // ╰─────────────────────────────────────────────────────────────────╯
-    const displayFieldsAdditionalKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const displayFieldsAdditionalMapKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
-          error: displayFieldsAdditionalKeysErrorValidTextElements[mapKey][0],
-          valid: displayFieldsAdditionalKeysErrorValidTextElements[mapKey][1],
+          error:
+            displayFieldsAdditionalMapKeysErrorValidTextElements[mapKey][0],
+          valid:
+            displayFieldsAdditionalMapKeysErrorValidTextElements[mapKey][1],
         },
         inputText: field,
         isValidInputText:
-          areDisplayFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+          areDisplayFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
         label: `Name ${mapKey + 1}`,
         maxLength: 75,
         minLength: 1,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreDisplayFieldsAdditionalFocused,
+            type: createProductAction.setAreDisplayFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -776,7 +777,7 @@ function CreateDisplay({
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setDisplayFieldsAdditional,
+            type: createProductAction.setDisplayFieldsAdditionalMap,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -792,7 +793,7 @@ function CreateDisplay({
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreDisplayFieldsAdditionalFocused,
+            type: createProductAction.setAreDisplayFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -809,21 +810,23 @@ function CreateDisplay({
     // ╭─────────────────────────────────────────────────────────────────╮
     //    ADDITIONAL FIELD TEXT INPUT => FIELD VALUE
     // ╰─────────────────────────────────────────────────────────────────╯
-    const displayFieldsAdditionalValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const displayFieldsAdditionalMapValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
-          error: displayFieldsAdditionalValuesErrorValidTextElements[mapKey][0],
-          valid: displayFieldsAdditionalValuesErrorValidTextElements[mapKey][1],
+          error:
+            displayFieldsAdditionalMapValuesErrorValidTextElements[mapKey][0],
+          valid:
+            displayFieldsAdditionalMapValuesErrorValidTextElements[mapKey][1],
         },
         inputText: value,
         isValidInputText:
-          areDisplayFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+          areDisplayFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
         label: `Value ${mapKey + 1}`,
         maxLength: 2000,
         minLength: 2,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreDisplayFieldsAdditionalFocused,
+            type: createProductAction.setAreDisplayFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -834,7 +837,7 @@ function CreateDisplay({
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setDisplayFieldsAdditional,
+            type: createProductAction.setDisplayFieldsAdditionalMap,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -850,7 +853,7 @@ function CreateDisplay({
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreDisplayFieldsAdditionalFocused,
+            type: createProductAction.setAreDisplayFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -865,11 +868,11 @@ function CreateDisplay({
       };
 
     const [
-      createdDisplayFieldsAdditionalKeysTextAreaInput,
-      createdDisplayFieldsAdditionalValuesTextAreaInput,
+      createdDisplayFieldsAdditionalMapKeysTextAreaInput,
+      createdDisplayFieldsAdditionalMapValuesTextAreaInput,
     ] = returnAccessibleTextAreaInputElements([
-      displayFieldsAdditionalKeysTextInputCreatorInfo,
-      displayFieldsAdditionalValuesTextInputCreatorInfo,
+      displayFieldsAdditionalMapKeysTextInputCreatorInfo,
+      displayFieldsAdditionalMapValuesTextInputCreatorInfo,
     ]);
 
     // ╭─────────────────────────────────────────────────────────────────╮
@@ -880,7 +883,7 @@ function CreateDisplay({
         buttonLabel: 'Delete',
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
           createProductDispatch({
-            type: createProductAction.setDisplayFieldsAdditional,
+            type: createProductAction.setDisplayFieldsAdditionalMap,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -888,7 +891,7 @@ function CreateDisplay({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreDisplayFieldsAdditionalFocused,
+            type: createProductAction.setAreDisplayFieldsAdditionalMapFocused,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -896,7 +899,7 @@ function CreateDisplay({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreDisplayFieldsAdditionalValid,
+            type: createProductAction.setAreDisplayFieldsAdditionalMapValid,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -921,7 +924,7 @@ function CreateDisplay({
     );
 
     return (
-      <Stack key={`displayFieldsAdditional-${mapKey}`} pt={padding} w="100%">
+      <Stack key={`displayFieldsAdditionalMap-${mapKey}`} pt={padding} w="100%">
         <Group position="apart">
           <Text size="md" weight={600}>{`Additional Display field ${
             mapKey + 1
@@ -929,24 +932,24 @@ function CreateDisplay({
           {displayDeleteButton}
         </Group>
         <Group position="apart">
-          {createdDisplayFieldsAdditionalKeysTextAreaInput}
-          {createdDisplayFieldsAdditionalValuesTextAreaInput}
+          {createdDisplayFieldsAdditionalMapKeysTextAreaInput}
+          {createdDisplayFieldsAdditionalMapValuesTextAreaInput}
         </Group>
       </Stack>
     );
   });
 
-  // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
   //  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
   //    INPUT DISPLAY
   //  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
-  // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+  // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
-  const displayDisplayFieldsAdditionalButton = (
+  const displayDisplayFieldsAdditionalMapButton = (
     <Tooltip
-      label={`Add new additional field ${displayFieldsAdditional.size + 1}`}
+      label={`Add new additional field ${displayFieldsAdditionalMap.size + 1}`}
     >
-      <Group>{createdAddDisplayFieldsAdditionalButton}</Group>
+      <Group>{createdAddDisplayFieldsAdditionalMapButton}</Group>
     </Tooltip>
   );
 
@@ -960,7 +963,7 @@ function CreateDisplay({
     >
       <Group w="100%" position="apart">
         <Title order={4}>Display Specifications</Title>
-        {displayDisplayFieldsAdditionalButton}
+        {displayDisplayFieldsAdditionalMapButton}
       </Group>
       {createdDisplaySizeTextInput}
       {createdDisplayResolutionHorizontalTextInput}
@@ -969,7 +972,7 @@ function CreateDisplay({
       {createdDisplayPanelTypeSelectInput}
       {createdDisplayResponseTimeTextInput}
       {createdDisplayAspectRatioTextInput}
-      {createdDisplayFieldsAdditionalTextInputElements}
+      {createdDisplayFieldsAdditionalMapTextInputElements}
     </Group>
   );
 

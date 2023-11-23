@@ -39,8 +39,8 @@ import {
 } from '../types';
 
 type CreatePsuProps = {
-  arePsuFieldsAdditionalFocused: Map<number, [boolean, boolean]>;
-  arePsuFieldsAdditionalValid: Map<number, [boolean, boolean]>;
+  arePsuFieldsAdditionalMapFocused: Map<number, [boolean, boolean]>;
+  arePsuFieldsAdditionalMapValid: Map<number, [boolean, boolean]>;
   borderColor: string;
   createProductAction: CreateProductAction;
   createProductDispatch: React.Dispatch<CreateProductDispatch>;
@@ -49,15 +49,15 @@ type CreatePsuProps = {
   isPsuWattageValid: boolean;
   padding: MantineNumberSize;
   psuEfficiency: PsuEfficiency;
-  psuFieldsAdditional: Map<number, [string, string]>;
+  psuFieldsAdditionalMap: Map<number, [string, string]>;
   psuFormFactor: PsuFormFactor;
   psuModularity: PsuModularity;
   psuWattage: string;
 };
 
 function CreatePsu({
-  arePsuFieldsAdditionalFocused,
-  arePsuFieldsAdditionalValid,
+  arePsuFieldsAdditionalMapFocused,
+  arePsuFieldsAdditionalMapValid,
   borderColor,
   createProductAction,
   createProductDispatch,
@@ -66,16 +66,16 @@ function CreatePsu({
   isPsuWattageValid,
   padding,
   psuEfficiency,
-  psuFieldsAdditional,
+  psuFieldsAdditionalMap,
   psuFormFactor,
   psuModularity,
   psuWattage,
 }: CreatePsuProps) {
-  // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
   //  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
   //    VALIDATION USE EFFECTS
   //  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
-  // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+  // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
   // ╭─────────────────────────────────────────────────────────────────╮
   //    PSU WATTAGE
@@ -97,7 +97,7 @@ function CreatePsu({
   //    PSU ADDITIONAL FIELDS
   // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
-    const currentlyUpdatingPsuFieldAdditional = psuFieldsAdditional.get(
+    const currentlyUpdatingPsuFieldAdditional = psuFieldsAdditionalMap.get(
       currentlySelectedAdditionalFieldIndex
     );
 
@@ -109,7 +109,7 @@ function CreatePsu({
 
     const isKeyValid = OBJECT_KEY_REGEX.test(key);
     createProductDispatch({
-      type: createProductAction.setArePsuFieldsAdditionalValid,
+      type: createProductAction.setArePsuFieldsAdditionalMapValid,
       payload: {
         operation: 'update',
         data: isKeyValid,
@@ -120,7 +120,7 @@ function CreatePsu({
 
     const isValueValid = USER_DEFINED_VALUE_REGEX.test(value);
     createProductDispatch({
-      type: createProductAction.setArePsuFieldsAdditionalValid,
+      type: createProductAction.setArePsuFieldsAdditionalMapValid,
       payload: {
         operation: 'update',
         data: isValueValid,
@@ -129,10 +129,10 @@ function CreatePsu({
       },
     });
   }, [
-    createProductAction.setArePsuFieldsAdditionalValid,
+    createProductAction.setArePsuFieldsAdditionalMapValid,
     createProductDispatch,
     currentlySelectedAdditionalFieldIndex,
-    psuFieldsAdditional,
+    psuFieldsAdditionalMap,
   ]);
 
   // ╔═════════════════════════════════════════════════════════════════╗
@@ -144,7 +144,7 @@ function CreatePsu({
     // select inputs are not included as they always have a default value
 
     const arePsuInputsUserDefinedInError = Array.from(
-      arePsuFieldsAdditionalValid
+      arePsuFieldsAdditionalMapValid
     ).some(([_key, value]) => !value);
 
     const arePsuInputsInError =
@@ -158,18 +158,18 @@ function CreatePsu({
       },
     });
   }, [
-    arePsuFieldsAdditionalValid,
+    arePsuFieldsAdditionalMapValid,
     createProductAction.setStepsInError,
     createProductDispatch,
     currentlySelectedAdditionalFieldIndex,
     isPsuWattageValid,
   ]);
 
-  // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
   //  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
   //    INPUT CREATION
   //  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
-  // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+  // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
   // ╭─────────────────────────────────────────────────────────────────╮
   //    PSU WATTAGE
@@ -291,61 +291,63 @@ function CreatePsu({
   // ╭─────────────────────────────────────────────────────────────────╮
   //    ADD ADDITIONAL FIELD BUTTON
   // ╰─────────────────────────────────────────────────────────────────╯
-  const [createdAddPsuFieldsAdditionalButton] = returnAccessibleButtonElements([
-    {
-      buttonLabel: 'Add',
-      semanticDescription: 'Add new additional field',
-      semanticName: 'Add new field',
-      leftIcon: <TbPlus />,
-      buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
-        createProductDispatch({
-          type: createProductAction.setPsuFieldsAdditional,
-          payload: {
-            operation: 'add',
-            data: ['', ''],
-          },
-        });
+  const [createdAddPsuFieldsAdditionalMapButton] =
+    returnAccessibleButtonElements([
+      {
+        buttonLabel: 'Add',
+        semanticDescription: 'Add new additional field',
+        semanticName: 'Add new field',
+        leftIcon: <TbPlus />,
+        buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
+          createProductDispatch({
+            type: createProductAction.setPsuFieldsAdditionalMap,
+            payload: {
+              operation: 'add',
+              data: ['', ''],
+            },
+          });
 
-        createProductDispatch({
-          type: createProductAction.setArePsuFieldsAdditionalFocused,
-          payload: {
-            operation: 'add',
-            data: [false, false],
-          },
-        });
+          createProductDispatch({
+            type: createProductAction.setArePsuFieldsAdditionalMapFocused,
+            payload: {
+              operation: 'add',
+              data: [false, false],
+            },
+          });
 
-        createProductDispatch({
-          type: createProductAction.setArePsuFieldsAdditionalValid,
-          payload: {
-            operation: 'add',
-            data: [false, false],
-          },
-        });
+          createProductDispatch({
+            type: createProductAction.setArePsuFieldsAdditionalMapValid,
+            payload: {
+              operation: 'add',
+              data: [false, false],
+            },
+          });
+        },
       },
-    },
-  ]);
+    ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    ERROR/VALID ELEMENTS TUPLE => FIELD NAMES
+  //    SCREENREADER ERROR/VALID ELEMENTS TUPLE => FIELD NAMES
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // returns an array of tuples containing the error and valid text elements for each field name
-  const psuFieldsAdditionalKeysErrorValidTextElements: [
+  const psuFieldsAdditionalMapKeysErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(psuFieldsAdditional).map((keyFieldValue) => {
+  ][] = Array.from(psuFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [field, _value]] = keyFieldValue;
 
     // screenreader error/valid text elements that are consumed by the text input element creator
     const [
-      psuFieldsAdditionalKeysInputErrorText,
-      psuFieldsAdditionalKeysInputValidText,
+      psuFieldsAdditionalMapKeysInputErrorText,
+      psuFieldsAdditionalMapKeysInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field name ${mapKey + 1}`,
       inputText: field,
       isInputTextFocused:
-        arePsuFieldsAdditionalFocused.get(mapKey)?.[0] ?? false,
-      isValidInputText: arePsuFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+        arePsuFieldsAdditionalMapFocused.get(mapKey)?.[0] ?? false,
+      isValidInputText:
+        arePsuFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
       regexValidationText: returnObjectKeyValidationText({
         content: field,
         contentKind: `additional field name ${mapKey + 1}`,
@@ -355,32 +357,33 @@ function CreatePsu({
     });
 
     return [
-      psuFieldsAdditionalKeysInputErrorText,
-      psuFieldsAdditionalKeysInputValidText,
+      psuFieldsAdditionalMapKeysInputErrorText,
+      psuFieldsAdditionalMapKeysInputValidText,
     ];
   });
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    ERROR/VALID ELEMENTS TUPLE => FIELD VALUES
+  //    SCREENREADER ERROR/VALID ELEMENTS TUPLE => FIELD VALUES
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // returns an array of tuples containing the error and valid text elements for each field value
-  const psuFieldsAdditionalValuesErrorValidTextElements: [
+  const psuFieldsAdditionalMapValuesErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(psuFieldsAdditional).map((keyFieldValue) => {
+  ][] = Array.from(psuFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [_field, value]] = keyFieldValue;
 
     // screenreader error/valid text elements that are consumed by the text input element creator
     const [
-      psuFieldsAdditionalValuesInputErrorText,
-      psuFieldsAdditionalValuesInputValidText,
+      psuFieldsAdditionalMapValuesInputErrorText,
+      psuFieldsAdditionalMapValuesInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field value ${mapKey + 1}`,
       inputText: value,
       isInputTextFocused:
-        arePsuFieldsAdditionalFocused.get(mapKey)?.[1] ?? false,
-      isValidInputText: arePsuFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+        arePsuFieldsAdditionalMapFocused.get(mapKey)?.[1] ?? false,
+      isValidInputText:
+        arePsuFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
       regexValidationText: returnUserDefinedFieldValueValidationText({
         content: value,
         contentKind: `additional field value ${mapKey + 1}`,
@@ -390,33 +393,34 @@ function CreatePsu({
     });
 
     return [
-      psuFieldsAdditionalValuesInputErrorText,
-      psuFieldsAdditionalValuesInputValidText,
+      psuFieldsAdditionalMapValuesInputErrorText,
+      psuFieldsAdditionalMapValuesInputValidText,
     ];
   });
 
-  const createdPsuFieldsAdditionalTextInputElements = Array.from(
-    psuFieldsAdditional
+  const createdPsuFieldsAdditionalMapTextInputElements = Array.from(
+    psuFieldsAdditionalMap
   ).map((keyFieldValue) => {
     const [mapKey, [field, value]] = keyFieldValue;
 
     // ╭─────────────────────────────────────────────────────────────────╮
     //    ADDITIONAL FIELD TEXT INPUT => FIELD NAME
     // ╰─────────────────────────────────────────────────────────────────╯
-    const psuFieldsAdditionalKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const psuFieldsAdditionalMapKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
-          error: psuFieldsAdditionalKeysErrorValidTextElements[mapKey][0],
-          valid: psuFieldsAdditionalKeysErrorValidTextElements[mapKey][1],
+          error: psuFieldsAdditionalMapKeysErrorValidTextElements[mapKey][0],
+          valid: psuFieldsAdditionalMapKeysErrorValidTextElements[mapKey][1],
         },
         inputText: field,
-        isValidInputText: arePsuFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+        isValidInputText:
+          arePsuFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
         label: `Name ${mapKey + 1}`,
         maxLength: 75,
         minLength: 1,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setArePsuFieldsAdditionalFocused,
+            type: createProductAction.setArePsuFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -427,7 +431,7 @@ function CreatePsu({
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setPsuFieldsAdditional,
+            type: createProductAction.setPsuFieldsAdditionalMap,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -443,7 +447,7 @@ function CreatePsu({
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setArePsuFieldsAdditionalFocused,
+            type: createProductAction.setArePsuFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -460,20 +464,21 @@ function CreatePsu({
     // ╭─────────────────────────────────────────────────────────────────╮
     //    ADDITIONAL FIELD TEXT INPUT => FIELD VALUE
     // ╰─────────────────────────────────────────────────────────────────╯
-    const psuFieldsAdditionalValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const psuFieldsAdditionalMapValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
-          error: psuFieldsAdditionalValuesErrorValidTextElements[mapKey][0],
-          valid: psuFieldsAdditionalValuesErrorValidTextElements[mapKey][1],
+          error: psuFieldsAdditionalMapValuesErrorValidTextElements[mapKey][0],
+          valid: psuFieldsAdditionalMapValuesErrorValidTextElements[mapKey][1],
         },
         inputText: value,
-        isValidInputText: arePsuFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+        isValidInputText:
+          arePsuFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
         label: `Value ${mapKey + 1}`,
         maxLength: 2000,
         minLength: 2,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setArePsuFieldsAdditionalFocused,
+            type: createProductAction.setArePsuFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -484,7 +489,7 @@ function CreatePsu({
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setPsuFieldsAdditional,
+            type: createProductAction.setPsuFieldsAdditionalMap,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -500,7 +505,7 @@ function CreatePsu({
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setArePsuFieldsAdditionalFocused,
+            type: createProductAction.setArePsuFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -515,11 +520,11 @@ function CreatePsu({
       };
 
     const [
-      createdPsuFieldsAdditionalKeysTextAreaInput,
-      createdPsuFieldsAdditionalValuesTextAreaInput,
+      createdPsuFieldsAdditionalMapKeysTextAreaInput,
+      createdPsuFieldsAdditionalMapValuesTextAreaInput,
     ] = returnAccessibleTextAreaInputElements([
-      psuFieldsAdditionalKeysTextInputCreatorInfo,
-      psuFieldsAdditionalValuesTextInputCreatorInfo,
+      psuFieldsAdditionalMapKeysTextInputCreatorInfo,
+      psuFieldsAdditionalMapValuesTextInputCreatorInfo,
     ]);
 
     // ╭─────────────────────────────────────────────────────────────────╮
@@ -530,7 +535,7 @@ function CreatePsu({
         buttonLabel: 'Delete',
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
           createProductDispatch({
-            type: createProductAction.setPsuFieldsAdditional,
+            type: createProductAction.setPsuFieldsAdditionalMap,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -538,7 +543,7 @@ function CreatePsu({
           });
 
           createProductDispatch({
-            type: createProductAction.setArePsuFieldsAdditionalFocused,
+            type: createProductAction.setArePsuFieldsAdditionalMapFocused,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -546,7 +551,7 @@ function CreatePsu({
           });
 
           createProductDispatch({
-            type: createProductAction.setArePsuFieldsAdditionalValid,
+            type: createProductAction.setArePsuFieldsAdditionalMapValid,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -571,7 +576,7 @@ function CreatePsu({
     );
 
     return (
-      <Stack key={`psuFieldsAdditional-${mapKey}`} pt={padding} w="100%">
+      <Stack key={`psuFieldsAdditionalMap-${mapKey}`} pt={padding} w="100%">
         <Group position="apart">
           <Text size="md" weight={600}>{`Additional Psu field ${
             mapKey + 1
@@ -579,22 +584,24 @@ function CreatePsu({
           {displayDeleteButton}
         </Group>
         <Group position="apart">
-          {createdPsuFieldsAdditionalKeysTextAreaInput}
-          {createdPsuFieldsAdditionalValuesTextAreaInput}
+          {createdPsuFieldsAdditionalMapKeysTextAreaInput}
+          {createdPsuFieldsAdditionalMapValuesTextAreaInput}
         </Group>
       </Stack>
     );
   });
 
-  // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
   //  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
   //    INPUT DISPLAY
   //  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
-  // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+  // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
-  const displayPsuFieldsAdditionalButton = (
-    <Tooltip label={`Add new additional field ${psuFieldsAdditional.size + 1}`}>
-      <Group>{createdAddPsuFieldsAdditionalButton}</Group>
+  const displayPsuFieldsAdditionalMapButton = (
+    <Tooltip
+      label={`Add new additional field ${psuFieldsAdditionalMap.size + 1}`}
+    >
+      <Group>{createdAddPsuFieldsAdditionalMapButton}</Group>
     </Tooltip>
   );
 
@@ -607,13 +614,13 @@ function CreatePsu({
     >
       <Group w="100%" position="apart">
         <Title order={4}>Power Supply Unit (PSU) Specifications</Title>
-        {displayPsuFieldsAdditionalButton}
+        {displayPsuFieldsAdditionalMapButton}
       </Group>
       {createdPsuWattageTextInput}
       {createdPsuEfficiencyRatingSelectInput}
       {createdPsuFormFactorSelectInput}
       {createdPsuModularitySelectInput}
-      {createdPsuFieldsAdditionalTextInputElements}
+      {createdPsuFieldsAdditionalMapTextInputElements}
     </Group>
   );
 

@@ -41,8 +41,8 @@ import {
 } from '../types';
 
 type CreateMicrophoneProps = {
-  areMicrophoneFieldsAdditionalFocused: Map<number, [boolean, boolean]>;
-  areMicrophoneFieldsAdditionalValid: Map<number, [boolean, boolean]>;
+  areMicrophoneFieldsAdditionalMapFocused: Map<number, [boolean, boolean]>;
+  areMicrophoneFieldsAdditionalMapValid: Map<number, [boolean, boolean]>;
   borderColor: string;
   createProductAction: CreateProductAction;
   createProductDispatch: React.Dispatch<CreateProductDispatch>;
@@ -52,7 +52,7 @@ type CreateMicrophoneProps = {
   isMicrophoneFrequencyResponseFocused: boolean;
   isMicrophoneFrequencyResponseValid: boolean;
   microphoneColor: string;
-  microphoneFieldsAdditional: Map<number, [string, string]>;
+  microphoneFieldsAdditionalMap: Map<number, [string, string]>;
   microphoneFrequencyResponse: string;
   microphoneInterface: MicrophoneInterface;
   microphonePolarPattern: MicrophonePolarPattern;
@@ -61,8 +61,8 @@ type CreateMicrophoneProps = {
 };
 
 function CreateMicrophone({
-  areMicrophoneFieldsAdditionalFocused,
-  areMicrophoneFieldsAdditionalValid,
+  areMicrophoneFieldsAdditionalMapFocused,
+  areMicrophoneFieldsAdditionalMapValid,
   borderColor,
   createProductAction,
   createProductDispatch,
@@ -72,18 +72,19 @@ function CreateMicrophone({
   isMicrophoneFrequencyResponseFocused,
   isMicrophoneFrequencyResponseValid,
   microphoneColor,
-  microphoneFieldsAdditional,
+  microphoneFieldsAdditionalMap,
   microphoneFrequencyResponse,
   microphoneInterface,
   microphonePolarPattern,
   microphoneType,
   padding,
 }: CreateMicrophoneProps) {
-  // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
   //  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
   //    VALIDATION USE EFFECTS
   //  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
-  // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+  // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+
   // ╭─────────────────────────────────────────────────────────────────╮
   //    MICROPHONE COLOR
   // ╰─────────────────────────────────────────────────────────────────╯
@@ -121,7 +122,7 @@ function CreateMicrophone({
   // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
     const currentlyUpdatingMicrophoneFieldAdditional =
-      microphoneFieldsAdditional.get(currentlySelectedAdditionalFieldIndex);
+      microphoneFieldsAdditionalMap.get(currentlySelectedAdditionalFieldIndex);
 
     if (!currentlyUpdatingMicrophoneFieldAdditional) {
       return;
@@ -131,7 +132,7 @@ function CreateMicrophone({
 
     const isKeyValid = OBJECT_KEY_REGEX.test(key);
     createProductDispatch({
-      type: createProductAction.setAreMicrophoneFieldsAdditionalValid,
+      type: createProductAction.setAreMicrophoneFieldsAdditionalMapValid,
       payload: {
         operation: 'update',
         data: isKeyValid,
@@ -142,7 +143,7 @@ function CreateMicrophone({
 
     const isValueValid = USER_DEFINED_VALUE_REGEX.test(value);
     createProductDispatch({
-      type: createProductAction.setAreMicrophoneFieldsAdditionalValid,
+      type: createProductAction.setAreMicrophoneFieldsAdditionalMapValid,
       payload: {
         operation: 'update',
         data: isValueValid,
@@ -151,10 +152,10 @@ function CreateMicrophone({
       },
     });
   }, [
-    createProductAction.setAreMicrophoneFieldsAdditionalValid,
+    createProductAction.setAreMicrophoneFieldsAdditionalMapValid,
     createProductDispatch,
     currentlySelectedAdditionalFieldIndex,
-    microphoneFieldsAdditional,
+    microphoneFieldsAdditionalMap,
   ]);
 
   // ╔═════════════════════════════════════════════════════════════════╗
@@ -169,7 +170,7 @@ function CreateMicrophone({
       !isMicrophoneColorValid || !isMicrophoneFrequencyResponseValid;
 
     const areMicrophoneInputsUserDefinedInError = Array.from(
-      areMicrophoneFieldsAdditionalValid
+      areMicrophoneFieldsAdditionalMapValid
     ).some(([_key, value]) => !value);
 
     const areMicrophoneInputsInError =
@@ -184,7 +185,7 @@ function CreateMicrophone({
       },
     });
   }, [
-    areMicrophoneFieldsAdditionalValid,
+    areMicrophoneFieldsAdditionalMapValid,
     createProductAction.setStepsInError,
     createProductDispatch,
     isMicrophoneColorValid,
@@ -194,11 +195,11 @@ function CreateMicrophone({
     microphoneType,
   ]);
 
-  // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
   //  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
   //    INPUT CREATION
   //  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
-  // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+  // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
   // ╭─────────────────────────────────────────────────────────────────╮
   //    MICROPHONE TYPE
@@ -372,7 +373,7 @@ function CreateMicrophone({
   // ╭─────────────────────────────────────────────────────────────────╮
   //    ADD ADDITIONAL FIELD BUTTON
   // ╰─────────────────────────────────────────────────────────────────╯
-  const [createdAddMicrophoneFieldsAdditionalButton] =
+  const [createdAddMicrophoneFieldsAdditionalMapButton] =
     returnAccessibleButtonElements([
       {
         buttonLabel: 'Add',
@@ -381,7 +382,7 @@ function CreateMicrophone({
         leftIcon: <TbPlus />,
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
           createProductDispatch({
-            type: createProductAction.setMicrophoneFieldsAdditional,
+            type: createProductAction.setMicrophoneFieldsAdditionalMap,
             payload: {
               operation: 'add',
               data: ['', ''],
@@ -389,7 +390,7 @@ function CreateMicrophone({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreMicrophoneFieldsAdditionalFocused,
+            type: createProductAction.setAreMicrophoneFieldsAdditionalMapFocused,
             payload: {
               operation: 'add',
               data: [false, false],
@@ -397,7 +398,7 @@ function CreateMicrophone({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreMicrophoneFieldsAdditionalValid,
+            type: createProductAction.setAreMicrophoneFieldsAdditionalMapValid,
             payload: {
               operation: 'add',
               data: [false, false],
@@ -408,27 +409,27 @@ function CreateMicrophone({
     ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    ERROR/VALID ELEMENTS TUPLE => FIELD NAMES
+  //    SCREENREADER ERROR/VALID ELEMENTS TUPLE => FIELD NAMES
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // returns an array of tuples containing the error and valid text elements for each field name
-  const microphoneFieldsAdditionalKeysErrorValidTextElements: [
+  const microphoneFieldsAdditionalMapKeysErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(microphoneFieldsAdditional).map((keyFieldValue) => {
+  ][] = Array.from(microphoneFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [field, _value]] = keyFieldValue;
 
     // screenreader error/valid text elements that are consumed by the text input element creator
     const [
-      microphoneFieldsAdditionalKeysInputErrorText,
-      microphoneFieldsAdditionalKeysInputValidText,
+      microphoneFieldsAdditionalMapKeysInputErrorText,
+      microphoneFieldsAdditionalMapKeysInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field name ${mapKey + 1}`,
       inputText: field,
       isInputTextFocused:
-        areMicrophoneFieldsAdditionalFocused.get(mapKey)?.[0] ?? false,
+        areMicrophoneFieldsAdditionalMapFocused.get(mapKey)?.[0] ?? false,
       isValidInputText:
-        areMicrophoneFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+        areMicrophoneFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
       regexValidationText: returnObjectKeyValidationText({
         content: field,
         contentKind: `additional field name ${mapKey + 1}`,
@@ -438,33 +439,33 @@ function CreateMicrophone({
     });
 
     return [
-      microphoneFieldsAdditionalKeysInputErrorText,
-      microphoneFieldsAdditionalKeysInputValidText,
+      microphoneFieldsAdditionalMapKeysInputErrorText,
+      microphoneFieldsAdditionalMapKeysInputValidText,
     ];
   });
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    ERROR/VALID ELEMENTS TUPLE => FIELD VALUES
+  //    SCREENREADER ERROR/VALID ELEMENTS TUPLE => FIELD VALUES
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // returns an array of tuples containing the error and valid text elements for each field value
-  const microphoneFieldsAdditionalValuesErrorValidTextElements: [
+  const microphoneFieldsAdditionalMapValuesErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(microphoneFieldsAdditional).map((keyFieldValue) => {
+  ][] = Array.from(microphoneFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [_field, value]] = keyFieldValue;
 
     // screenreader error/valid text elements that are consumed by the text input element creator
     const [
-      microphoneFieldsAdditionalValuesInputErrorText,
-      microphoneFieldsAdditionalValuesInputValidText,
+      microphoneFieldsAdditionalMapValuesInputErrorText,
+      microphoneFieldsAdditionalMapValuesInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field value ${mapKey + 1}`,
       inputText: value,
       isInputTextFocused:
-        areMicrophoneFieldsAdditionalFocused.get(mapKey)?.[1] ?? false,
+        areMicrophoneFieldsAdditionalMapFocused.get(mapKey)?.[1] ?? false,
       isValidInputText:
-        areMicrophoneFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+        areMicrophoneFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
       regexValidationText: returnUserDefinedFieldValueValidationText({
         content: value,
         contentKind: `additional field value ${mapKey + 1}`,
@@ -474,36 +475,36 @@ function CreateMicrophone({
     });
 
     return [
-      microphoneFieldsAdditionalValuesInputErrorText,
-      microphoneFieldsAdditionalValuesInputValidText,
+      microphoneFieldsAdditionalMapValuesInputErrorText,
+      microphoneFieldsAdditionalMapValuesInputValidText,
     ];
   });
 
-  const createdMicrophoneFieldsAdditionalTextInputElements = Array.from(
-    microphoneFieldsAdditional
+  const createdMicrophoneFieldsAdditionalMapTextInputElements = Array.from(
+    microphoneFieldsAdditionalMap
   ).map((keyFieldValue) => {
     const [mapKey, [field, value]] = keyFieldValue;
 
     // ╭─────────────────────────────────────────────────────────────────╮
     //    ADDITIONAL FIELD TEXT INPUT => FIELD NAME
     // ╰─────────────────────────────────────────────────────────────────╯
-    const microphoneFieldsAdditionalKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const microphoneFieldsAdditionalMapKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
           error:
-            microphoneFieldsAdditionalKeysErrorValidTextElements[mapKey][0],
+            microphoneFieldsAdditionalMapKeysErrorValidTextElements[mapKey][0],
           valid:
-            microphoneFieldsAdditionalKeysErrorValidTextElements[mapKey][1],
+            microphoneFieldsAdditionalMapKeysErrorValidTextElements[mapKey][1],
         },
         inputText: field,
         isValidInputText:
-          areMicrophoneFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+          areMicrophoneFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
         label: `Name ${mapKey + 1}`,
         maxLength: 75,
         minLength: 1,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreMicrophoneFieldsAdditionalFocused,
+            type: createProductAction.setAreMicrophoneFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -514,7 +515,7 @@ function CreateMicrophone({
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setMicrophoneFieldsAdditional,
+            type: createProductAction.setMicrophoneFieldsAdditionalMap,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -530,7 +531,7 @@ function CreateMicrophone({
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreMicrophoneFieldsAdditionalFocused,
+            type: createProductAction.setAreMicrophoneFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -547,23 +548,27 @@ function CreateMicrophone({
     // ╭─────────────────────────────────────────────────────────────────╮
     //    ADDITIONAL FIELD TEXT INPUT => FIELD VALUE
     // ╰─────────────────────────────────────────────────────────────────╯
-    const microphoneFieldsAdditionalValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const microphoneFieldsAdditionalMapValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
           error:
-            microphoneFieldsAdditionalValuesErrorValidTextElements[mapKey][0],
+            microphoneFieldsAdditionalMapValuesErrorValidTextElements[
+              mapKey
+            ][0],
           valid:
-            microphoneFieldsAdditionalValuesErrorValidTextElements[mapKey][1],
+            microphoneFieldsAdditionalMapValuesErrorValidTextElements[
+              mapKey
+            ][1],
         },
         inputText: value,
         isValidInputText:
-          areMicrophoneFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+          areMicrophoneFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
         label: `Value ${mapKey + 1}`,
         maxLength: 2000,
         minLength: 2,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreMicrophoneFieldsAdditionalFocused,
+            type: createProductAction.setAreMicrophoneFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -574,7 +579,7 @@ function CreateMicrophone({
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setMicrophoneFieldsAdditional,
+            type: createProductAction.setMicrophoneFieldsAdditionalMap,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -590,7 +595,7 @@ function CreateMicrophone({
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreMicrophoneFieldsAdditionalFocused,
+            type: createProductAction.setAreMicrophoneFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -605,11 +610,11 @@ function CreateMicrophone({
       };
 
     const [
-      createdMicrophoneFieldsAdditionalKeysTextAreaInput,
-      createdMicrophoneFieldsAdditionalValuesTextAreaInput,
+      createdMicrophoneFieldsAdditionalMapKeysTextAreaInput,
+      createdMicrophoneFieldsAdditionalMapValuesTextAreaInput,
     ] = returnAccessibleTextAreaInputElements([
-      microphoneFieldsAdditionalKeysTextInputCreatorInfo,
-      microphoneFieldsAdditionalValuesTextInputCreatorInfo,
+      microphoneFieldsAdditionalMapKeysTextInputCreatorInfo,
+      microphoneFieldsAdditionalMapValuesTextInputCreatorInfo,
     ]);
 
     // ╭─────────────────────────────────────────────────────────────────╮
@@ -620,7 +625,7 @@ function CreateMicrophone({
         buttonLabel: 'Delete',
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
           createProductDispatch({
-            type: createProductAction.setMicrophoneFieldsAdditional,
+            type: createProductAction.setMicrophoneFieldsAdditionalMap,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -628,7 +633,7 @@ function CreateMicrophone({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreMicrophoneFieldsAdditionalFocused,
+            type: createProductAction.setAreMicrophoneFieldsAdditionalMapFocused,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -636,7 +641,7 @@ function CreateMicrophone({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreMicrophoneFieldsAdditionalValid,
+            type: createProductAction.setAreMicrophoneFieldsAdditionalMapValid,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -661,7 +666,11 @@ function CreateMicrophone({
     );
 
     return (
-      <Stack key={`microphoneFieldsAdditional-${mapKey}`} pt={padding} w="100%">
+      <Stack
+        key={`microphoneFieldsAdditionalMap-${mapKey}`}
+        pt={padding}
+        w="100%"
+      >
         <Group position="apart">
           <Text size="md" weight={600}>{`Additional Microphone field ${
             mapKey + 1
@@ -669,24 +678,26 @@ function CreateMicrophone({
           {displayDeleteButton}
         </Group>
         <Group position="apart">
-          {createdMicrophoneFieldsAdditionalKeysTextAreaInput}
-          {createdMicrophoneFieldsAdditionalValuesTextAreaInput}
+          {createdMicrophoneFieldsAdditionalMapKeysTextAreaInput}
+          {createdMicrophoneFieldsAdditionalMapValuesTextAreaInput}
         </Group>
       </Stack>
     );
   });
 
-  // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
   //  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
   //    INPUT DISPLAY
   //  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
-  // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+  // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
-  const displayMicrophoneFieldsAdditionalButton = (
+  const displayMicrophoneFieldsAdditionalMapButton = (
     <Tooltip
-      label={`Add new additional field ${microphoneFieldsAdditional.size + 1}`}
+      label={`Add new additional field ${
+        microphoneFieldsAdditionalMap.size + 1
+      }`}
     >
-      <Group>{createdAddMicrophoneFieldsAdditionalButton}</Group>
+      <Group>{createdAddMicrophoneFieldsAdditionalMapButton}</Group>
     </Tooltip>
   );
 
@@ -699,14 +710,14 @@ function CreateMicrophone({
     >
       <Group w="100%" position="apart">
         <Title order={4}>Microphone Specifications</Title>
-        {displayMicrophoneFieldsAdditionalButton}
+        {displayMicrophoneFieldsAdditionalMapButton}
       </Group>
       {createdMicrophoneTypeSelectInput}
       {createdMicrophoneColorTextInput}
       {createdMicrophoneInterfaceSelectInput}
       {createdMicrophonePolarPatternSelectInput}
       {createdMicrophoneFrequencyResponseTextInput}
-      {createdMicrophoneFieldsAdditionalTextInputElements}
+      {createdMicrophoneFieldsAdditionalMapTextInputElements}
     </Group>
   );
 

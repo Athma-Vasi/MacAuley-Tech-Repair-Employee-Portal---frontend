@@ -60,9 +60,9 @@ const initialCreateAccessoryState: CreateAccessoryState = {
   accessoryType: '',
   isAccessoryTypeFocused: false,
   isAccessoryTypeValid: false,
-  accessoryFieldsAdditional: new Map<number, [string, string]>(),
-  areAccessoryFieldsAdditionalFocused: new Map<number, [boolean, boolean]>(),
-  areAccessoryFieldsAdditionalValid: new Map<number, [boolean, boolean]>(),
+  accessoryFieldsAdditionalMap: new Map<number, [string, string]>(),
+  areAccessoryFieldsAdditionalMapFocused: new Map<number, [boolean, boolean]>(),
+  areAccessoryFieldsAdditionalMapValid: new Map<number, [boolean, boolean]>(),
   currentlySelectedAdditionalFieldIndex: 0,
 
   // page 3
@@ -136,10 +136,11 @@ const createAccessoryAction: CreateAccessoryAction = {
   setIsAccessoryColorValid: 'setIsAccessoryColorValid',
   setIsAccessoryColorFocused: 'setIsAccessoryColorFocused',
   setAccessoryInterface: 'setAccessoryInterface',
-  setAccessoryFieldsAdditional: 'setAccessoryFieldsAdditional',
-  setAreAccessoryFieldsAdditionalFocused:
-    'setAreAccessoryFieldsAdditionalFocused',
-  setAreAccessoryFieldsAdditionalValid: 'setAreAccessoryFieldsAdditionalValid',
+  setAccessoryFieldsAdditionalMap: 'setAccessoryFieldsAdditionalMap',
+  setAreAccessoryFieldsAdditionalMapFocused:
+    'setAreAccessoryFieldsAdditionalMapFocused',
+  setAreAccessoryFieldsAdditionalMapValid:
+    'setAreAccessoryFieldsAdditionalMapValid',
   setCurrentlySelectedAdditionalFieldIndex:
     'setCurrentlySelectedAdditionalFieldIndex',
 
@@ -412,60 +413,60 @@ function createAccessoryReducer(
       };
 
     // page 2 -> accessory -> additional fields
-    case createAccessoryAction.setAccessoryFieldsAdditional: {
+    case createAccessoryAction.setAccessoryFieldsAdditionalMap: {
       const { operation } = action.payload;
 
       switch (operation) {
         case 'add': {
-          const accessoryFieldsAdditionalClone = structuredClone(
-            state.accessoryFieldsAdditional
+          const accessoryFieldsAdditionalMapClone = structuredClone(
+            state.accessoryFieldsAdditionalMap
           );
 
           const { data } = action.payload;
-          const prevSize = accessoryFieldsAdditionalClone.size;
-          accessoryFieldsAdditionalClone.set(prevSize, data);
+          const prevSize = accessoryFieldsAdditionalMapClone.size;
+          accessoryFieldsAdditionalMapClone.set(prevSize, data);
 
           return {
             ...state,
-            accessoryFieldsAdditional: accessoryFieldsAdditionalClone,
+            accessoryFieldsAdditionalMap: accessoryFieldsAdditionalMapClone,
           };
         }
         case 'remove': {
-          const accessoryFieldsAdditionalClone = structuredClone(
-            state.accessoryFieldsAdditional
+          const accessoryFieldsAdditionalMapClone = structuredClone(
+            state.accessoryFieldsAdditionalMap
           );
 
           const { index } = action.payload;
-          accessoryFieldsAdditionalClone.delete(index);
+          accessoryFieldsAdditionalMapClone.delete(index);
 
           // resets the indices because the indices are used as keys
-          const filteredAccessoryFieldsAdditional = new Map<
+          const filteredAccessoryFieldsAdditionalMap = new Map<
             number,
             [string, string]
           >();
-          Array.from(accessoryFieldsAdditionalClone).forEach(
+          Array.from(accessoryFieldsAdditionalMapClone).forEach(
             (mapIdxKeyVal, arrayIdx) => {
               const [_mapIdx, keyVal] = mapIdxKeyVal as [
                 number,
                 [string, string]
               ];
 
-              filteredAccessoryFieldsAdditional.set(arrayIdx, keyVal);
+              filteredAccessoryFieldsAdditionalMap.set(arrayIdx, keyVal);
             }
           );
 
           return {
             ...state,
-            accessoryFieldsAdditional: filteredAccessoryFieldsAdditional,
+            accessoryFieldsAdditionalMap: filteredAccessoryFieldsAdditionalMap,
           };
         }
         case 'update': {
-          const accessoryFieldsAdditionalClone = structuredClone(
-            state.accessoryFieldsAdditional
+          const accessoryFieldsAdditionalMapClone = structuredClone(
+            state.accessoryFieldsAdditionalMap
           );
 
           const { data, index, kind } = action.payload;
-          const prevKeyVal = accessoryFieldsAdditionalClone.get(index);
+          const prevKeyVal = accessoryFieldsAdditionalMapClone.get(index);
 
           if (!prevKeyVal) {
             return state;
@@ -473,12 +474,12 @@ function createAccessoryReducer(
 
           const [prevKey, prevValue] = prevKeyVal;
           kind === 'key'
-            ? accessoryFieldsAdditionalClone.set(index, [data, prevValue])
-            : accessoryFieldsAdditionalClone.set(index, [prevKey, data]);
+            ? accessoryFieldsAdditionalMapClone.set(index, [data, prevValue])
+            : accessoryFieldsAdditionalMapClone.set(index, [prevKey, data]);
 
           return {
             ...state,
-            accessoryFieldsAdditional: accessoryFieldsAdditionalClone,
+            accessoryFieldsAdditionalMap: accessoryFieldsAdditionalMapClone,
           };
         }
         default:
@@ -486,63 +487,66 @@ function createAccessoryReducer(
       }
     }
 
-    case createAccessoryAction.setAreAccessoryFieldsAdditionalFocused: {
+    case createAccessoryAction.setAreAccessoryFieldsAdditionalMapFocused: {
       const { operation } = action.payload;
 
       switch (operation) {
         case 'add': {
-          const areAccessoryFieldsAdditionalFocusedClone = structuredClone(
-            state.areAccessoryFieldsAdditionalFocused
+          const areAccessoryFieldsAdditionalMapFocusedClone = structuredClone(
+            state.areAccessoryFieldsAdditionalMapFocused
           );
 
           const { data } = action.payload;
-          const prevSize = areAccessoryFieldsAdditionalFocusedClone.size;
-          areAccessoryFieldsAdditionalFocusedClone.set(prevSize, data);
+          const prevSize = areAccessoryFieldsAdditionalMapFocusedClone.size;
+          areAccessoryFieldsAdditionalMapFocusedClone.set(prevSize, data);
 
           return {
             ...state,
-            areAccessoryFieldsAdditionalFocused:
-              areAccessoryFieldsAdditionalFocusedClone,
+            areAccessoryFieldsAdditionalMapFocused:
+              areAccessoryFieldsAdditionalMapFocusedClone,
           };
         }
         case 'remove': {
-          const areAccessoryFieldsAdditionalFocusedClone = structuredClone(
-            state.areAccessoryFieldsAdditionalFocused
+          const areAccessoryFieldsAdditionalMapFocusedClone = structuredClone(
+            state.areAccessoryFieldsAdditionalMapFocused
           );
 
           const { index } = action.payload;
-          areAccessoryFieldsAdditionalFocusedClone.delete(index);
+          areAccessoryFieldsAdditionalMapFocusedClone.delete(index);
 
           // resets the indices because the indices are used as keys
-          const filteredAreAccessoryFieldsAdditionalFocused = new Map<
+          const filteredAreAccessoryFieldsAdditionalMapFocused = new Map<
             number,
             [boolean, boolean]
           >();
-          Array.from(areAccessoryFieldsAdditionalFocusedClone).forEach(
+          Array.from(areAccessoryFieldsAdditionalMapFocusedClone).forEach(
             (mapIdxKeyVal, arrayIdx) => {
               const [_mapIdx, keyVal] = mapIdxKeyVal as [
                 number,
                 [boolean, boolean]
               ];
 
-              filteredAreAccessoryFieldsAdditionalFocused.set(arrayIdx, keyVal);
+              filteredAreAccessoryFieldsAdditionalMapFocused.set(
+                arrayIdx,
+                keyVal
+              );
             }
           );
 
           return {
             ...state,
-            areAccessoryFieldsAdditionalFocused:
-              filteredAreAccessoryFieldsAdditionalFocused,
+            areAccessoryFieldsAdditionalMapFocused:
+              filteredAreAccessoryFieldsAdditionalMapFocused,
           };
         }
         case 'update': {
-          const areAccessoryFieldsAdditionalFocusedClone = structuredClone(
-            state.areAccessoryFieldsAdditionalFocused
+          const areAccessoryFieldsAdditionalMapFocusedClone = structuredClone(
+            state.areAccessoryFieldsAdditionalMapFocused
           );
 
           const { data, index, kind } = action.payload;
           const prevKeyVal =
-            areAccessoryFieldsAdditionalFocusedClone.get(index);
+            areAccessoryFieldsAdditionalMapFocusedClone.get(index);
 
           if (!prevKeyVal) {
             return state;
@@ -550,19 +554,19 @@ function createAccessoryReducer(
 
           const [prevKey, prevValue] = prevKeyVal;
           kind === 'key'
-            ? areAccessoryFieldsAdditionalFocusedClone.set(index, [
+            ? areAccessoryFieldsAdditionalMapFocusedClone.set(index, [
                 data,
                 prevValue,
               ])
-            : areAccessoryFieldsAdditionalFocusedClone.set(index, [
+            : areAccessoryFieldsAdditionalMapFocusedClone.set(index, [
                 prevKey,
                 data,
               ]);
 
           return {
             ...state,
-            areAccessoryFieldsAdditionalFocused:
-              areAccessoryFieldsAdditionalFocusedClone,
+            areAccessoryFieldsAdditionalMapFocused:
+              areAccessoryFieldsAdditionalMapFocusedClone,
           };
         }
         default:
@@ -570,62 +574,66 @@ function createAccessoryReducer(
       }
     }
 
-    case createAccessoryAction.setAreAccessoryFieldsAdditionalValid: {
+    case createAccessoryAction.setAreAccessoryFieldsAdditionalMapValid: {
       const { operation } = action.payload;
 
       switch (operation) {
         case 'add': {
-          const areAccessoryFieldsAdditionalValidClone = structuredClone(
-            state.areAccessoryFieldsAdditionalValid
+          const areAccessoryFieldsAdditionalMapValidClone = structuredClone(
+            state.areAccessoryFieldsAdditionalMapValid
           );
 
           const { data } = action.payload;
-          const prevSize = areAccessoryFieldsAdditionalValidClone.size;
-          areAccessoryFieldsAdditionalValidClone.set(prevSize, data);
+          const prevSize = areAccessoryFieldsAdditionalMapValidClone.size;
+          areAccessoryFieldsAdditionalMapValidClone.set(prevSize, data);
 
           return {
             ...state,
-            areAccessoryFieldsAdditionalValid:
-              areAccessoryFieldsAdditionalValidClone,
+            areAccessoryFieldsAdditionalMapValid:
+              areAccessoryFieldsAdditionalMapValidClone,
           };
         }
         case 'remove': {
-          const areAccessoryFieldsAdditionalValidClone = structuredClone(
-            state.areAccessoryFieldsAdditionalValid
+          const areAccessoryFieldsAdditionalMapValidClone = structuredClone(
+            state.areAccessoryFieldsAdditionalMapValid
           );
 
           const { index } = action.payload;
-          areAccessoryFieldsAdditionalValidClone.delete(index);
+          areAccessoryFieldsAdditionalMapValidClone.delete(index);
 
           // resets the indices because the indices are used as keys
-          const filteredAreAccessoryFieldsAdditionalValid = new Map<
+          const filteredAreAccessoryFieldsAdditionalMapValid = new Map<
             number,
             [boolean, boolean]
           >();
-          Array.from(areAccessoryFieldsAdditionalValidClone).forEach(
+          Array.from(areAccessoryFieldsAdditionalMapValidClone).forEach(
             (mapIdxKeyVal, arrayIdx) => {
               const [_mapIdx, keyVal] = mapIdxKeyVal as [
                 number,
                 [boolean, boolean]
               ];
 
-              filteredAreAccessoryFieldsAdditionalValid.set(arrayIdx, keyVal);
+              filteredAreAccessoryFieldsAdditionalMapValid.set(
+                arrayIdx,
+                keyVal
+              );
             }
           );
 
           return {
             ...state,
-            areAccessoryFieldsAdditionalValid:
-              filteredAreAccessoryFieldsAdditionalValid,
+            areAccessoryFieldsAdditionalMapValid:
+              filteredAreAccessoryFieldsAdditionalMapValid,
           };
         }
         case 'update': {
-          const areAccessoryFieldsAdditionalValidClone = structuredClone(
-            state.areAccessoryFieldsAdditionalValid
+          const areAccessoryFieldsAdditionalMapValidClone = structuredClone(
+            state.areAccessoryFieldsAdditionalMapValid
           );
 
           const { data, index, kind } = action.payload;
-          const prevKeyVal = areAccessoryFieldsAdditionalValidClone.get(index);
+          const prevKeyVal =
+            areAccessoryFieldsAdditionalMapValidClone.get(index);
 
           if (!prevKeyVal) {
             return state;
@@ -633,19 +641,19 @@ function createAccessoryReducer(
 
           const [prevKey, prevValue] = prevKeyVal;
           kind === 'key'
-            ? areAccessoryFieldsAdditionalValidClone.set(index, [
+            ? areAccessoryFieldsAdditionalMapValidClone.set(index, [
                 data,
                 prevValue,
               ])
-            : areAccessoryFieldsAdditionalValidClone.set(index, [
+            : areAccessoryFieldsAdditionalMapValidClone.set(index, [
                 prevKey,
                 data,
               ]);
 
           return {
             ...state,
-            areAccessoryFieldsAdditionalValid:
-              areAccessoryFieldsAdditionalValidClone,
+            areAccessoryFieldsAdditionalMapValid:
+              areAccessoryFieldsAdditionalMapValidClone,
           };
         }
 

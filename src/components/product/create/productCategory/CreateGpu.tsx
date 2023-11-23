@@ -39,8 +39,8 @@ import {
 } from '../types';
 
 type CreateGpuProps = {
-  areGpuFieldsAdditionalFocused: Map<number, [boolean, boolean]>;
-  areGpuFieldsAdditionalValid: Map<number, [boolean, boolean]>;
+  areGpuFieldsAdditionalMapFocused: Map<number, [boolean, boolean]>;
+  areGpuFieldsAdditionalMapValid: Map<number, [boolean, boolean]>;
   borderColor: string;
   createProductAction: CreateProductAction;
   createProductDispatch: React.Dispatch<CreateProductDispatch>;
@@ -48,7 +48,7 @@ type CreateGpuProps = {
   gpuBoostClock: string;
   gpuChipset: string;
   gpuCoreClock: string;
-  gpuFieldsAdditional: Map<number, [string, string]>;
+  gpuFieldsAdditionalMap: Map<number, [string, string]>;
   gpuMemoryCapacity: string;
   gpuMemoryCapacityUnit: MemoryUnit;
   gpuTdp: string;
@@ -66,8 +66,8 @@ type CreateGpuProps = {
 };
 
 function CreateGpu({
-  areGpuFieldsAdditionalFocused,
-  areGpuFieldsAdditionalValid,
+  areGpuFieldsAdditionalMapFocused,
+  areGpuFieldsAdditionalMapValid,
   borderColor,
   createProductAction,
   createProductDispatch,
@@ -75,7 +75,7 @@ function CreateGpu({
   gpuBoostClock,
   gpuChipset,
   gpuCoreClock,
-  gpuFieldsAdditional,
+  gpuFieldsAdditionalMap,
   gpuMemoryCapacity,
   gpuMemoryCapacityUnit,
   gpuTdp,
@@ -91,11 +91,11 @@ function CreateGpu({
   isGpuTdpValid,
   padding,
 }: CreateGpuProps) {
-  // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
   //  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
   //    VALIDATION USE EFFECTS
   //  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
-  // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+  // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
   // ╭─────────────────────────────────────────────────────────────────╮
   //    GPU CHIPSET
@@ -177,7 +177,7 @@ function CreateGpu({
   //    GPU FIELDS ADDITIONAL
   // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
-    const currentlyUpdatingGpuFieldAdditional = gpuFieldsAdditional.get(
+    const currentlyUpdatingGpuFieldAdditional = gpuFieldsAdditionalMap.get(
       currentlySelectedAdditionalFieldIndex
     );
 
@@ -189,7 +189,7 @@ function CreateGpu({
 
     const isKeyValid = OBJECT_KEY_REGEX.test(key);
     createProductDispatch({
-      type: createProductAction.setAreGpuFieldsAdditionalValid,
+      type: createProductAction.setAreGpuFieldsAdditionalMapValid,
       payload: {
         operation: 'update',
         data: isKeyValid,
@@ -200,7 +200,7 @@ function CreateGpu({
 
     const isValueValid = USER_DEFINED_VALUE_REGEX.test(value);
     createProductDispatch({
-      type: createProductAction.setAreGpuFieldsAdditionalValid,
+      type: createProductAction.setAreGpuFieldsAdditionalMapValid,
       payload: {
         operation: 'update',
         data: isValueValid,
@@ -209,10 +209,10 @@ function CreateGpu({
       },
     });
   }, [
-    createProductAction.setAreGpuFieldsAdditionalValid,
+    createProductAction.setAreGpuFieldsAdditionalMapValid,
     createProductDispatch,
     currentlySelectedAdditionalFieldIndex,
-    gpuFieldsAdditional,
+    gpuFieldsAdditionalMap,
   ]);
 
   // ╔═════════════════════════════════════════════════════════════════╗
@@ -231,7 +231,7 @@ function CreateGpu({
       !isGpuTdpValid;
 
     const areGpuInputsUserDefinedInError = Array.from(
-      areGpuFieldsAdditionalValid
+      areGpuFieldsAdditionalMapValid
     ).some(([_key, value]) => !value);
 
     const areGpuInputsInError =
@@ -245,7 +245,7 @@ function CreateGpu({
       },
     });
   }, [
-    areGpuFieldsAdditionalValid,
+    areGpuFieldsAdditionalMapValid,
     createProductAction.setStepsInError,
     createProductDispatch,
     isGpuBoostClockValid,
@@ -255,11 +255,11 @@ function CreateGpu({
     isGpuTdpValid,
   ]);
 
-  // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
   //  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
   //    INPUT CREATION
   //  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
-  // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+  // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
   // ╭─────────────────────────────────────────────────────────────────╮
   //    GPU CHIPSET
@@ -549,61 +549,63 @@ function CreateGpu({
   // ╭─────────────────────────────────────────────────────────────────╮
   //    ADD ADDITIONAL FIELD BUTTON
   // ╰─────────────────────────────────────────────────────────────────╯
-  const [createdAddGpuFieldsAdditionalButton] = returnAccessibleButtonElements([
-    {
-      buttonLabel: 'Add',
-      semanticDescription: 'Add new additional field',
-      semanticName: 'Add new field',
-      leftIcon: <TbPlus />,
-      buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
-        createProductDispatch({
-          type: createProductAction.setGpuFieldsAdditional,
-          payload: {
-            operation: 'add',
-            data: ['', ''],
-          },
-        });
+  const [createdAddGpuFieldsAdditionalMapButton] =
+    returnAccessibleButtonElements([
+      {
+        buttonLabel: 'Add',
+        semanticDescription: 'Add new additional field',
+        semanticName: 'Add new field',
+        leftIcon: <TbPlus />,
+        buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
+          createProductDispatch({
+            type: createProductAction.setGpuFieldsAdditionalMap,
+            payload: {
+              operation: 'add',
+              data: ['', ''],
+            },
+          });
 
-        createProductDispatch({
-          type: createProductAction.setAreGpuFieldsAdditionalFocused,
-          payload: {
-            operation: 'add',
-            data: [false, false],
-          },
-        });
+          createProductDispatch({
+            type: createProductAction.setAreGpuFieldsAdditionalMapFocused,
+            payload: {
+              operation: 'add',
+              data: [false, false],
+            },
+          });
 
-        createProductDispatch({
-          type: createProductAction.setAreGpuFieldsAdditionalValid,
-          payload: {
-            operation: 'add',
-            data: [false, false],
-          },
-        });
+          createProductDispatch({
+            type: createProductAction.setAreGpuFieldsAdditionalMapValid,
+            payload: {
+              operation: 'add',
+              data: [false, false],
+            },
+          });
+        },
       },
-    },
-  ]);
+    ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    ERROR/VALID ELEMENTS TUPLE => FIELD NAMES
+  //    SCREENREADER ERROR/VALID ELEMENTS TUPLE => FIELD NAMES
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // returns an array of tuples containing the error and valid text elements for each field name
-  const gpuFieldsAdditionalKeysErrorValidTextElements: [
+  const gpuFieldsAdditionalMapKeysErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(gpuFieldsAdditional).map((keyFieldValue) => {
+  ][] = Array.from(gpuFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [field, _value]] = keyFieldValue;
 
     // screenreader error/valid text elements that are consumed by the text input element creator
     const [
-      gpuFieldsAdditionalKeysInputErrorText,
-      gpuFieldsAdditionalKeysInputValidText,
+      gpuFieldsAdditionalMapKeysInputErrorText,
+      gpuFieldsAdditionalMapKeysInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field name ${mapKey + 1}`,
       inputText: field,
       isInputTextFocused:
-        areGpuFieldsAdditionalFocused.get(mapKey)?.[0] ?? false,
-      isValidInputText: areGpuFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+        areGpuFieldsAdditionalMapFocused.get(mapKey)?.[0] ?? false,
+      isValidInputText:
+        areGpuFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
       regexValidationText: returnObjectKeyValidationText({
         content: field,
         contentKind: `additional field name ${mapKey + 1}`,
@@ -613,32 +615,33 @@ function CreateGpu({
     });
 
     return [
-      gpuFieldsAdditionalKeysInputErrorText,
-      gpuFieldsAdditionalKeysInputValidText,
+      gpuFieldsAdditionalMapKeysInputErrorText,
+      gpuFieldsAdditionalMapKeysInputValidText,
     ];
   });
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    ERROR/VALID ELEMENTS TUPLE => FIELD VALUES
+  //    SCREENREADER ERROR/VALID ELEMENTS TUPLE => FIELD VALUES
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // returns an array of tuples containing the error and valid text elements for each field value
-  const gpuFieldsAdditionalValuesErrorValidTextElements: [
+  const gpuFieldsAdditionalMapValuesErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(gpuFieldsAdditional).map((keyFieldValue) => {
+  ][] = Array.from(gpuFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [_field, value]] = keyFieldValue;
 
     // screenreader error/valid text elements that are consumed by the text input element creator
     const [
-      gpuFieldsAdditionalValuesInputErrorText,
-      gpuFieldsAdditionalValuesInputValidText,
+      gpuFieldsAdditionalMapValuesInputErrorText,
+      gpuFieldsAdditionalMapValuesInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field value ${mapKey + 1}`,
       inputText: value,
       isInputTextFocused:
-        areGpuFieldsAdditionalFocused.get(mapKey)?.[1] ?? false,
-      isValidInputText: areGpuFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+        areGpuFieldsAdditionalMapFocused.get(mapKey)?.[1] ?? false,
+      isValidInputText:
+        areGpuFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
       regexValidationText: returnUserDefinedFieldValueValidationText({
         content: value,
         contentKind: `additional field value ${mapKey + 1}`,
@@ -648,33 +651,34 @@ function CreateGpu({
     });
 
     return [
-      gpuFieldsAdditionalValuesInputErrorText,
-      gpuFieldsAdditionalValuesInputValidText,
+      gpuFieldsAdditionalMapValuesInputErrorText,
+      gpuFieldsAdditionalMapValuesInputValidText,
     ];
   });
 
-  const createdGpuFieldsAdditionalTextInputElements = Array.from(
-    gpuFieldsAdditional
+  const createdGpuFieldsAdditionalMapTextInputElements = Array.from(
+    gpuFieldsAdditionalMap
   ).map((keyFieldValue) => {
     const [mapKey, [field, value]] = keyFieldValue;
 
     // ╭─────────────────────────────────────────────────────────────────╮
     //    ADDITIONAL FIELD TEXT INPUT => FIELD NAME
     // ╰─────────────────────────────────────────────────────────────────╯
-    const gpuFieldsAdditionalKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const gpuFieldsAdditionalMapKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
-          error: gpuFieldsAdditionalKeysErrorValidTextElements[mapKey][0],
-          valid: gpuFieldsAdditionalKeysErrorValidTextElements[mapKey][1],
+          error: gpuFieldsAdditionalMapKeysErrorValidTextElements[mapKey][0],
+          valid: gpuFieldsAdditionalMapKeysErrorValidTextElements[mapKey][1],
         },
         inputText: field,
-        isValidInputText: areGpuFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+        isValidInputText:
+          areGpuFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
         label: `Name ${mapKey + 1}`,
         maxLength: 75,
         minLength: 1,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreGpuFieldsAdditionalFocused,
+            type: createProductAction.setAreGpuFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -685,7 +689,7 @@ function CreateGpu({
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setGpuFieldsAdditional,
+            type: createProductAction.setGpuFieldsAdditionalMap,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -701,7 +705,7 @@ function CreateGpu({
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreGpuFieldsAdditionalFocused,
+            type: createProductAction.setAreGpuFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -718,20 +722,21 @@ function CreateGpu({
     // ╭─────────────────────────────────────────────────────────────────╮
     //    ADDITIONAL FIELD TEXT INPUT => FIELD VALUE
     // ╰─────────────────────────────────────────────────────────────────╯
-    const gpuFieldsAdditionalValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const gpuFieldsAdditionalMapValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
-          error: gpuFieldsAdditionalValuesErrorValidTextElements[mapKey][0],
-          valid: gpuFieldsAdditionalValuesErrorValidTextElements[mapKey][1],
+          error: gpuFieldsAdditionalMapValuesErrorValidTextElements[mapKey][0],
+          valid: gpuFieldsAdditionalMapValuesErrorValidTextElements[mapKey][1],
         },
         inputText: value,
-        isValidInputText: areGpuFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+        isValidInputText:
+          areGpuFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
         label: `Value ${mapKey + 1}`,
         maxLength: 2000,
         minLength: 2,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreGpuFieldsAdditionalFocused,
+            type: createProductAction.setAreGpuFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -742,7 +747,7 @@ function CreateGpu({
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setGpuFieldsAdditional,
+            type: createProductAction.setGpuFieldsAdditionalMap,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -758,7 +763,7 @@ function CreateGpu({
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreGpuFieldsAdditionalFocused,
+            type: createProductAction.setAreGpuFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -773,11 +778,11 @@ function CreateGpu({
       };
 
     const [
-      createdGpuFieldsAdditionalKeysTextAreaInput,
-      createdGpuFieldsAdditionalValuesTextAreaInput,
+      createdGpuFieldsAdditionalMapKeysTextAreaInput,
+      createdGpuFieldsAdditionalMapValuesTextAreaInput,
     ] = returnAccessibleTextAreaInputElements([
-      gpuFieldsAdditionalKeysTextInputCreatorInfo,
-      gpuFieldsAdditionalValuesTextInputCreatorInfo,
+      gpuFieldsAdditionalMapKeysTextInputCreatorInfo,
+      gpuFieldsAdditionalMapValuesTextInputCreatorInfo,
     ]);
 
     // ╭─────────────────────────────────────────────────────────────────╮
@@ -788,7 +793,7 @@ function CreateGpu({
         buttonLabel: 'Delete',
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
           createProductDispatch({
-            type: createProductAction.setGpuFieldsAdditional,
+            type: createProductAction.setGpuFieldsAdditionalMap,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -796,7 +801,7 @@ function CreateGpu({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreGpuFieldsAdditionalFocused,
+            type: createProductAction.setAreGpuFieldsAdditionalMapFocused,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -804,7 +809,7 @@ function CreateGpu({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreGpuFieldsAdditionalValid,
+            type: createProductAction.setAreGpuFieldsAdditionalMapValid,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -829,7 +834,7 @@ function CreateGpu({
     );
 
     return (
-      <Stack key={`gpuFieldsAdditional-${mapKey}`} pt={padding} w="100%">
+      <Stack key={`gpuFieldsAdditionalMap-${mapKey}`} pt={padding} w="100%">
         <Group position="apart">
           <Text size="md" weight={600}>{`Additional Gpu field ${
             mapKey + 1
@@ -837,22 +842,24 @@ function CreateGpu({
           {displayDeleteButton}
         </Group>
         <Group position="apart">
-          {createdGpuFieldsAdditionalKeysTextAreaInput}
-          {createdGpuFieldsAdditionalValuesTextAreaInput}
+          {createdGpuFieldsAdditionalMapKeysTextAreaInput}
+          {createdGpuFieldsAdditionalMapValuesTextAreaInput}
         </Group>
       </Stack>
     );
   });
 
-  // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
   //  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
   //    INPUT DISPLAY
   //  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
-  // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+  // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
-  const displayGpuFieldsAdditionalButton = (
-    <Tooltip label={`Add new additional field ${gpuFieldsAdditional.size + 1}`}>
-      <Group>{createdAddGpuFieldsAdditionalButton}</Group>
+  const displayGpuFieldsAdditionalMapButton = (
+    <Tooltip
+      label={`Add new additional field ${gpuFieldsAdditionalMap.size + 1}`}
+    >
+      <Group>{createdAddGpuFieldsAdditionalMapButton}</Group>
     </Tooltip>
   );
 
@@ -865,7 +872,7 @@ function CreateGpu({
     >
       <Group w="100%" position="apart">
         <Title order={4}>GPU Specifications</Title>
-        {displayGpuFieldsAdditionalButton}
+        {displayGpuFieldsAdditionalMapButton}
       </Group>
       {createdGpuChipsetTextInput}
       {createdGpuMemoryCapacityTextInput}
@@ -873,7 +880,7 @@ function CreateGpu({
       {createdGpuWattageTextInput}
       {createdGpuCoreClockTextInput}
       {createdGpuBoostClockTextInput}
-      {createdGpuFieldsAdditionalTextInputElements}
+      {createdGpuFieldsAdditionalMapTextInputElements}
     </Group>
   );
 

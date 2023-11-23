@@ -37,11 +37,11 @@ import {
 } from '../types';
 
 type CreateCaseProps = {
-  areCaseFieldsAdditionalFocused: Map<number, [boolean, boolean]>;
-  areCaseFieldsAdditionalValid: Map<number, [boolean, boolean]>;
+  areCaseFieldsAdditionalMapFocused: Map<number, [boolean, boolean]>;
+  areCaseFieldsAdditionalMapValid: Map<number, [boolean, boolean]>;
   borderColor: string;
   caseColor: string;
-  caseFieldsAdditional: Map<number, [string, string]>;
+  caseFieldsAdditionalMap: Map<number, [string, string]>;
   caseSidePanel: CaseSidePanel;
   caseType: CaseType;
   createProductAction: CreateProductAction;
@@ -53,11 +53,11 @@ type CreateCaseProps = {
 };
 
 function CreateCase({
-  areCaseFieldsAdditionalFocused,
-  areCaseFieldsAdditionalValid,
+  areCaseFieldsAdditionalMapFocused,
+  areCaseFieldsAdditionalMapValid,
   borderColor,
   caseColor,
-  caseFieldsAdditional,
+  caseFieldsAdditionalMap,
   caseSidePanel,
   caseType,
   createProductAction,
@@ -67,11 +67,11 @@ function CreateCase({
   isCaseColorValid,
   padding,
 }: CreateCaseProps) {
-  // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
   //  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
   //    VALIDATION USE EFFECTS
   //  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
-  // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+  // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
   // ╭─────────────────────────────────────────────────────────────────╮
   //    CASE COLOR
@@ -93,7 +93,7 @@ function CreateCase({
   //    CASE FIELDS ADDITIONAL
   // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
-    const currentlyUpdatingCaseFieldAdditional = caseFieldsAdditional.get(
+    const currentlyUpdatingCaseFieldAdditional = caseFieldsAdditionalMap.get(
       currentlySelectedAdditionalFieldIndex
     );
 
@@ -105,7 +105,7 @@ function CreateCase({
 
     const isKeyValid = OBJECT_KEY_REGEX.test(key);
     createProductDispatch({
-      type: createProductAction.setAreCaseFieldsAdditionalValid,
+      type: createProductAction.setAreCaseFieldsAdditionalMapValid,
       payload: {
         operation: 'update',
         data: isKeyValid,
@@ -116,7 +116,7 @@ function CreateCase({
 
     const isValueValid = USER_DEFINED_VALUE_REGEX.test(value);
     createProductDispatch({
-      type: createProductAction.setAreCaseFieldsAdditionalValid,
+      type: createProductAction.setAreCaseFieldsAdditionalMapValid,
       payload: {
         operation: 'update',
         data: isValueValid,
@@ -126,9 +126,9 @@ function CreateCase({
     });
   }, [
     currentlySelectedAdditionalFieldIndex,
-    caseFieldsAdditional,
+    caseFieldsAdditionalMap,
     createProductDispatch,
-    createProductAction.setAreCaseFieldsAdditionalValid,
+    createProductAction.setAreCaseFieldsAdditionalMapValid,
   ]);
 
   // ╔═════════════════════════════════════════════════════════════════╗
@@ -139,12 +139,12 @@ function CreateCase({
     // optional inputs with empty string count as valid
     // select inputs are not included as they always have a default value
 
-    const areCaseFieldsAdditionalInError = Array.from(
-      areCaseFieldsAdditionalValid
+    const areCaseFieldsAdditionalMapInError = Array.from(
+      areCaseFieldsAdditionalMapValid
     ).some(([_key, value]) => !value);
 
     const areCaseInputsInError =
-      !isCaseColorValid || areCaseFieldsAdditionalInError;
+      !isCaseColorValid || areCaseFieldsAdditionalMapInError;
 
     createProductDispatch({
       type: createProductAction.setStepsInError,
@@ -154,17 +154,17 @@ function CreateCase({
       },
     });
   }, [
-    areCaseFieldsAdditionalValid,
+    areCaseFieldsAdditionalMapValid,
     createProductAction.setStepsInError,
     createProductDispatch,
     isCaseColorValid,
   ]);
 
-  // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
   //  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
   //    INPUT CREATION
   //  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
-  // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+  // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
   // ╭─────────────────────────────────────────────────────────────────╮
   //    CASE TYPE
@@ -268,8 +268,8 @@ function CreateCase({
   // ╭─────────────────────────────────────────────────────────────────╮
   //    ADD ADDITIONAL FIELD BUTTON
   // ╰─────────────────────────────────────────────────────────────────╯
-  const [createdAddCaseFieldsAdditionalButton] = returnAccessibleButtonElements(
-    [
+  const [createdAddCaseFieldsAdditionalMapButton] =
+    returnAccessibleButtonElements([
       {
         buttonLabel: 'Add',
         semanticDescription: 'Add new additional field',
@@ -277,7 +277,7 @@ function CreateCase({
         leftIcon: <TbPlus />,
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
           createProductDispatch({
-            type: createProductAction.setCaseFieldsAdditional,
+            type: createProductAction.setCaseFieldsAdditionalMap,
             payload: {
               operation: 'add',
               data: ['', ''],
@@ -285,7 +285,7 @@ function CreateCase({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreCaseFieldsAdditionalFocused,
+            type: createProductAction.setAreCaseFieldsAdditionalMapFocused,
             payload: {
               operation: 'add',
               data: [false, false],
@@ -293,7 +293,7 @@ function CreateCase({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreCaseFieldsAdditionalValid,
+            type: createProductAction.setAreCaseFieldsAdditionalMapValid,
             payload: {
               operation: 'add',
               data: [false, false],
@@ -301,30 +301,30 @@ function CreateCase({
           });
         },
       },
-    ]
-  );
+    ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    ERROR/VALID ELEMENTS TUPLE => FIELD NAMES
+  //    SCREENREADER ERROR/VALID ELEMENTS TUPLE => FIELD NAMES
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // returns an array of tuples containing the error and valid text elements for each field name
-  const caseFieldsAdditionalKeysErrorValidTextElements: [
+  const caseFieldsAdditionalMapKeysErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(caseFieldsAdditional).map((keyFieldValue) => {
+  ][] = Array.from(caseFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [field, _value]] = keyFieldValue;
 
     // screenreader error/valid text elements that are consumed by the text input element creator
     const [
-      caseFieldsAdditionalKeysInputErrorText,
-      caseFieldsAdditionalKeysInputValidText,
+      caseFieldsAdditionalMapKeysInputErrorText,
+      caseFieldsAdditionalMapKeysInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field name ${mapKey + 1}`,
       inputText: field,
       isInputTextFocused:
-        areCaseFieldsAdditionalFocused.get(mapKey)?.[0] ?? false,
-      isValidInputText: areCaseFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+        areCaseFieldsAdditionalMapFocused.get(mapKey)?.[0] ?? false,
+      isValidInputText:
+        areCaseFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
       regexValidationText: returnObjectKeyValidationText({
         content: field,
         contentKind: `additional field name ${mapKey + 1}`,
@@ -334,32 +334,33 @@ function CreateCase({
     });
 
     return [
-      caseFieldsAdditionalKeysInputErrorText,
-      caseFieldsAdditionalKeysInputValidText,
+      caseFieldsAdditionalMapKeysInputErrorText,
+      caseFieldsAdditionalMapKeysInputValidText,
     ];
   });
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    ERROR/VALID ELEMENTS TUPLE => FIELD VALUES
+  //    SCREENREADER ERROR/VALID ELEMENTS TUPLE => FIELD VALUES
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // returns an array of tuples containing the error and valid text elements for each field value
-  const caseFieldsAdditionalValuesErrorValidTextElements: [
+  const caseFieldsAdditionalMapValuesErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(caseFieldsAdditional).map((keyFieldValue) => {
+  ][] = Array.from(caseFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [_field, value]] = keyFieldValue;
 
     // screenreader error/valid text elements that are consumed by the text input element creator
     const [
-      caseFieldsAdditionalValuesInputErrorText,
-      caseFieldsAdditionalValuesInputValidText,
+      caseFieldsAdditionalMapValuesInputErrorText,
+      caseFieldsAdditionalMapValuesInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field value ${mapKey + 1}`,
       inputText: value,
       isInputTextFocused:
-        areCaseFieldsAdditionalFocused.get(mapKey)?.[1] ?? false,
-      isValidInputText: areCaseFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+        areCaseFieldsAdditionalMapFocused.get(mapKey)?.[1] ?? false,
+      isValidInputText:
+        areCaseFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
       regexValidationText: returnUserDefinedFieldValueValidationText({
         content: value,
         contentKind: `additional field value ${mapKey + 1}`,
@@ -369,34 +370,34 @@ function CreateCase({
     });
 
     return [
-      caseFieldsAdditionalValuesInputErrorText,
-      caseFieldsAdditionalValuesInputValidText,
+      caseFieldsAdditionalMapValuesInputErrorText,
+      caseFieldsAdditionalMapValuesInputValidText,
     ];
   });
 
-  const createdCaseFieldsAdditionalTextInputElements = Array.from(
-    caseFieldsAdditional
+  const createdCaseFieldsAdditionalMapTextInputElements = Array.from(
+    caseFieldsAdditionalMap
   ).map((keyFieldValue) => {
     const [mapKey, [field, value]] = keyFieldValue;
 
     // ╭─────────────────────────────────────────────────────────────────╮
     //    ADDITIONAL FIELD TEXT INPUT => FIELD NAME
     // ╰─────────────────────────────────────────────────────────────────╯
-    const caseFieldsAdditionalKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const caseFieldsAdditionalMapKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
-          error: caseFieldsAdditionalKeysErrorValidTextElements[mapKey][0],
-          valid: caseFieldsAdditionalKeysErrorValidTextElements[mapKey][1],
+          error: caseFieldsAdditionalMapKeysErrorValidTextElements[mapKey][0],
+          valid: caseFieldsAdditionalMapKeysErrorValidTextElements[mapKey][1],
         },
         inputText: field,
         isValidInputText:
-          areCaseFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+          areCaseFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
         label: `Name ${mapKey + 1}`,
         maxLength: 75,
         minLength: 1,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreCaseFieldsAdditionalFocused,
+            type: createProductAction.setAreCaseFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -407,7 +408,7 @@ function CreateCase({
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setCaseFieldsAdditional,
+            type: createProductAction.setCaseFieldsAdditionalMap,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -423,7 +424,7 @@ function CreateCase({
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreCaseFieldsAdditionalFocused,
+            type: createProductAction.setAreCaseFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -440,21 +441,21 @@ function CreateCase({
     // ╭─────────────────────────────────────────────────────────────────╮
     //    ADDITIONAL FIELD TEXT INPUT => FIELD VALUE
     // ╰─────────────────────────────────────────────────────────────────╯
-    const caseFieldsAdditionalValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const caseFieldsAdditionalMapValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
-          error: caseFieldsAdditionalValuesErrorValidTextElements[mapKey][0],
-          valid: caseFieldsAdditionalValuesErrorValidTextElements[mapKey][1],
+          error: caseFieldsAdditionalMapValuesErrorValidTextElements[mapKey][0],
+          valid: caseFieldsAdditionalMapValuesErrorValidTextElements[mapKey][1],
         },
         inputText: value,
         isValidInputText:
-          areCaseFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+          areCaseFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
         label: `Value ${mapKey + 1}`,
         maxLength: 2000,
         minLength: 2,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreCaseFieldsAdditionalFocused,
+            type: createProductAction.setAreCaseFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -465,7 +466,7 @@ function CreateCase({
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setCaseFieldsAdditional,
+            type: createProductAction.setCaseFieldsAdditionalMap,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -481,7 +482,7 @@ function CreateCase({
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreCaseFieldsAdditionalFocused,
+            type: createProductAction.setAreCaseFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -496,11 +497,11 @@ function CreateCase({
       };
 
     const [
-      createdCaseFieldsAdditionalKeysTextAreaInput,
-      createdCaseFieldsAdditionalValuesTextAreaInput,
+      createdCaseFieldsAdditionalMapKeysTextAreaInput,
+      createdCaseFieldsAdditionalMapValuesTextAreaInput,
     ] = returnAccessibleTextAreaInputElements([
-      caseFieldsAdditionalKeysTextInputCreatorInfo,
-      caseFieldsAdditionalValuesTextInputCreatorInfo,
+      caseFieldsAdditionalMapKeysTextInputCreatorInfo,
+      caseFieldsAdditionalMapValuesTextInputCreatorInfo,
     ]);
 
     // ╭─────────────────────────────────────────────────────────────────╮
@@ -511,7 +512,7 @@ function CreateCase({
         buttonLabel: 'Delete',
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
           createProductDispatch({
-            type: createProductAction.setCaseFieldsAdditional,
+            type: createProductAction.setCaseFieldsAdditionalMap,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -519,7 +520,7 @@ function CreateCase({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreCaseFieldsAdditionalFocused,
+            type: createProductAction.setAreCaseFieldsAdditionalMapFocused,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -527,7 +528,7 @@ function CreateCase({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreCaseFieldsAdditionalValid,
+            type: createProductAction.setAreCaseFieldsAdditionalMapValid,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -552,7 +553,7 @@ function CreateCase({
     );
 
     return (
-      <Stack key={`caseFieldsAdditional-${mapKey}`} pt={padding} w="100%">
+      <Stack key={`caseFieldsAdditionalMap-${mapKey}`} pt={padding} w="100%">
         <Group position="apart">
           <Text size="md" weight={600}>{`Additional Case field ${
             mapKey + 1
@@ -560,24 +561,24 @@ function CreateCase({
           {displayDeleteButton}
         </Group>
         <Group position="apart">
-          {createdCaseFieldsAdditionalKeysTextAreaInput}
-          {createdCaseFieldsAdditionalValuesTextAreaInput}
+          {createdCaseFieldsAdditionalMapKeysTextAreaInput}
+          {createdCaseFieldsAdditionalMapValuesTextAreaInput}
         </Group>
       </Stack>
     );
   });
 
-  // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
   //  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
   //    INPUT DISPLAY
   //  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
-  // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+  // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
-  const displayCaseFieldsAdditionalButton = (
+  const displayCaseFieldsAdditionalMapButton = (
     <Tooltip
-      label={`Add new additional field ${caseFieldsAdditional.size + 1}`}
+      label={`Add new additional field ${caseFieldsAdditionalMap.size + 1}`}
     >
-      <Group>{createdAddCaseFieldsAdditionalButton}</Group>
+      <Group>{createdAddCaseFieldsAdditionalMapButton}</Group>
     </Tooltip>
   );
 
@@ -590,12 +591,12 @@ function CreateCase({
     >
       <Group w="100%" position="apart">
         <Title order={4}>Case Specifications</Title>
-        {displayCaseFieldsAdditionalButton}
+        {displayCaseFieldsAdditionalMapButton}
       </Group>
       {createdCaseTypeSelectInput}
       {createdCaseColorTextInput}
       {createdCaseSidePanelSelectInput}
-      {createdCaseFieldsAdditionalTextInputElements}
+      {createdCaseFieldsAdditionalMapTextInputElements}
     </Group>
   );
 

@@ -47,8 +47,8 @@ import {
 } from '../types';
 
 type CreateSmartphoneProps = {
-  areSmartphoneFieldsAdditionalFocused: Map<number, [boolean, boolean]>;
-  areSmartphoneFieldsAdditionalValid: Map<number, [boolean, boolean]>;
+  areSmartphoneFieldsAdditionalMapFocused: Map<number, [boolean, boolean]>;
+  areSmartphoneFieldsAdditionalMapValid: Map<number, [boolean, boolean]>;
   borderColor: string;
   createProductAction: CreateProductAction;
   createProductDispatch: React.Dispatch<CreateProductDispatch>;
@@ -77,7 +77,7 @@ type CreateSmartphoneProps = {
   smartphoneChipset: string;
   smartphoneColor: string;
   smartphoneDisplay: string;
-  smartphoneFieldsAdditional: Map<number, [string, string]>;
+  smartphoneFieldsAdditionalMap: Map<number, [string, string]>;
   smartphoneOs: MobileOs;
   smartphoneRamCapacity: string;
   smartphoneRamCapacityUnit: MemoryUnit;
@@ -87,8 +87,8 @@ type CreateSmartphoneProps = {
 };
 
 function CreateSmartphone({
-  areSmartphoneFieldsAdditionalFocused,
-  areSmartphoneFieldsAdditionalValid,
+  areSmartphoneFieldsAdditionalMapFocused,
+  areSmartphoneFieldsAdditionalMapValid,
   borderColor,
   createProductAction,
   createProductDispatch,
@@ -117,7 +117,7 @@ function CreateSmartphone({
   smartphoneChipset,
   smartphoneColor,
   smartphoneDisplay,
-  smartphoneFieldsAdditional,
+  smartphoneFieldsAdditionalMap,
   smartphoneOs,
   smartphoneRamCapacity,
   smartphoneRamCapacityUnit,
@@ -125,11 +125,11 @@ function CreateSmartphone({
   smartphoneResolutionVertical,
   smartphoneStorageCapacity,
 }: CreateSmartphoneProps) {
-  // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
   //  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
   //    VALIDATION USE EFFECTS
   //  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
-  // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+  // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
   // ╭─────────────────────────────────────────────────────────────────╮
   //    SMARTPHONE CHIPSET
@@ -280,7 +280,7 @@ function CreateSmartphone({
   // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
     const currentlyUpdatingSmartphoneFieldAdditional =
-      smartphoneFieldsAdditional.get(currentlySelectedAdditionalFieldIndex);
+      smartphoneFieldsAdditionalMap.get(currentlySelectedAdditionalFieldIndex);
 
     if (!currentlyUpdatingSmartphoneFieldAdditional) {
       return;
@@ -290,7 +290,7 @@ function CreateSmartphone({
 
     const isKeyValid = OBJECT_KEY_REGEX.test(key);
     createProductDispatch({
-      type: createProductAction.setAreSmartphoneFieldsAdditionalValid,
+      type: createProductAction.setAreSmartphoneFieldsAdditionalMapValid,
       payload: {
         operation: 'update',
         data: isKeyValid,
@@ -301,7 +301,7 @@ function CreateSmartphone({
 
     const isValueValid = USER_DEFINED_VALUE_REGEX.test(value);
     createProductDispatch({
-      type: createProductAction.setAreSmartphoneFieldsAdditionalValid,
+      type: createProductAction.setAreSmartphoneFieldsAdditionalMapValid,
       payload: {
         operation: 'update',
         data: isValueValid,
@@ -310,10 +310,10 @@ function CreateSmartphone({
       },
     });
   }, [
-    createProductAction.setAreSmartphoneFieldsAdditionalValid,
+    createProductAction.setAreSmartphoneFieldsAdditionalMapValid,
     createProductDispatch,
     currentlySelectedAdditionalFieldIndex,
-    smartphoneFieldsAdditional,
+    smartphoneFieldsAdditionalMap,
   ]);
 
   // ╔═════════════════════════════════════════════════════════════════╗
@@ -335,13 +335,13 @@ function CreateSmartphone({
       !isSmartphoneCameraValid ||
       !isSmartphoneColorValid;
 
-    const areSmartphoneFieldsAdditionalInError = Array.from(
-      areSmartphoneFieldsAdditionalValid
+    const areSmartphoneFieldsAdditionalMapInError = Array.from(
+      areSmartphoneFieldsAdditionalMapValid
     ).some(([_key, value]) => !value);
 
     const areSmartphoneInputsInError =
       areSmartphoneHardcodedInputsInError ||
-      areSmartphoneFieldsAdditionalInError;
+      areSmartphoneFieldsAdditionalMapInError;
 
     createProductDispatch({
       type: createProductAction.setStepsInError,
@@ -351,7 +351,7 @@ function CreateSmartphone({
       },
     });
   }, [
-    areSmartphoneFieldsAdditionalValid,
+    areSmartphoneFieldsAdditionalMapValid,
     createProductAction.setStepsInError,
     createProductDispatch,
     isSmartphoneBatteryCapacityValid,
@@ -365,11 +365,11 @@ function CreateSmartphone({
     isSmartphoneStorageCapacityValid,
   ]);
 
-  // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
   //  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
   //    INPUT CREATION
   //  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
-  // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+  // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
   // ╭─────────────────────────────────────────────────────────────────╮
   //    SMARTPHONE OS
@@ -903,7 +903,7 @@ function CreateSmartphone({
   // ╭─────────────────────────────────────────────────────────────────╮
   //    ADD ADDITIONAL FIELD BUTTON
   // ╰─────────────────────────────────────────────────────────────────╯
-  const [createdAddSmartphoneFieldsAdditionalButton] =
+  const [createdAddSmartphoneFieldsAdditionalMapButton] =
     returnAccessibleButtonElements([
       {
         buttonLabel: 'Add',
@@ -912,7 +912,7 @@ function CreateSmartphone({
         leftIcon: <TbPlus />,
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
           createProductDispatch({
-            type: createProductAction.setSmartphoneFieldsAdditional,
+            type: createProductAction.setSmartphoneFieldsAdditionalMap,
             payload: {
               operation: 'add',
               data: ['', ''],
@@ -920,7 +920,7 @@ function CreateSmartphone({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreSmartphoneFieldsAdditionalFocused,
+            type: createProductAction.setAreSmartphoneFieldsAdditionalMapFocused,
             payload: {
               operation: 'add',
               data: [false, false],
@@ -928,7 +928,7 @@ function CreateSmartphone({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreSmartphoneFieldsAdditionalValid,
+            type: createProductAction.setAreSmartphoneFieldsAdditionalMapValid,
             payload: {
               operation: 'add',
               data: [false, false],
@@ -939,27 +939,27 @@ function CreateSmartphone({
     ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    ERROR/VALID ELEMENTS TUPLE => FIELD NAMES
+  //    SCREENREADER ERROR/VALID ELEMENTS TUPLE => FIELD NAMES
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // returns an array of tuples containing the error and valid text elements for each field name
-  const smartphoneFieldsAdditionalKeysErrorValidTextElements: [
+  const smartphoneFieldsAdditionalMapKeysErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(smartphoneFieldsAdditional).map((keyFieldValue) => {
+  ][] = Array.from(smartphoneFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [field, _value]] = keyFieldValue;
 
     // screenreader error/valid text elements that are consumed by the text input element creator
     const [
-      smartphoneFieldsAdditionalKeysInputErrorText,
-      smartphoneFieldsAdditionalKeysInputValidText,
+      smartphoneFieldsAdditionalMapKeysInputErrorText,
+      smartphoneFieldsAdditionalMapKeysInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field name ${mapKey + 1}`,
       inputText: field,
       isInputTextFocused:
-        areSmartphoneFieldsAdditionalFocused.get(mapKey)?.[0] ?? false,
+        areSmartphoneFieldsAdditionalMapFocused.get(mapKey)?.[0] ?? false,
       isValidInputText:
-        areSmartphoneFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+        areSmartphoneFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
       regexValidationText: returnObjectKeyValidationText({
         content: field,
         contentKind: `additional field name ${mapKey + 1}`,
@@ -969,33 +969,33 @@ function CreateSmartphone({
     });
 
     return [
-      smartphoneFieldsAdditionalKeysInputErrorText,
-      smartphoneFieldsAdditionalKeysInputValidText,
+      smartphoneFieldsAdditionalMapKeysInputErrorText,
+      smartphoneFieldsAdditionalMapKeysInputValidText,
     ];
   });
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    ERROR/VALID ELEMENTS TUPLE => FIELD VALUES
+  //    SCREENREADER ERROR/VALID ELEMENTS TUPLE => FIELD VALUES
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // returns an array of tuples containing the error and valid text elements for each field value
-  const smartphoneFieldsAdditionalValuesErrorValidTextElements: [
+  const smartphoneFieldsAdditionalMapValuesErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(smartphoneFieldsAdditional).map((keyFieldValue) => {
+  ][] = Array.from(smartphoneFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [_field, value]] = keyFieldValue;
 
     // screenreader error/valid text elements that are consumed by the text input element creator
     const [
-      smartphoneFieldsAdditionalValuesInputErrorText,
-      smartphoneFieldsAdditionalValuesInputValidText,
+      smartphoneFieldsAdditionalMapValuesInputErrorText,
+      smartphoneFieldsAdditionalMapValuesInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field value ${mapKey + 1}`,
       inputText: value,
       isInputTextFocused:
-        areSmartphoneFieldsAdditionalFocused.get(mapKey)?.[1] ?? false,
+        areSmartphoneFieldsAdditionalMapFocused.get(mapKey)?.[1] ?? false,
       isValidInputText:
-        areSmartphoneFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+        areSmartphoneFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
       regexValidationText: returnUserDefinedFieldValueValidationText({
         content: value,
         contentKind: `additional field value ${mapKey + 1}`,
@@ -1005,36 +1005,36 @@ function CreateSmartphone({
     });
 
     return [
-      smartphoneFieldsAdditionalValuesInputErrorText,
-      smartphoneFieldsAdditionalValuesInputValidText,
+      smartphoneFieldsAdditionalMapValuesInputErrorText,
+      smartphoneFieldsAdditionalMapValuesInputValidText,
     ];
   });
 
-  const createdSmartphoneFieldsAdditionalTextInputElements = Array.from(
-    smartphoneFieldsAdditional
+  const createdSmartphoneFieldsAdditionalMapTextInputElements = Array.from(
+    smartphoneFieldsAdditionalMap
   ).map((keyFieldValue) => {
     const [mapKey, [field, value]] = keyFieldValue;
 
     // ╭─────────────────────────────────────────────────────────────────╮
     //    ADDITIONAL FIELD TEXT INPUT => FIELD NAME
     // ╰─────────────────────────────────────────────────────────────────╯
-    const smartphoneFieldsAdditionalKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const smartphoneFieldsAdditionalMapKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
           error:
-            smartphoneFieldsAdditionalKeysErrorValidTextElements[mapKey][0],
+            smartphoneFieldsAdditionalMapKeysErrorValidTextElements[mapKey][0],
           valid:
-            smartphoneFieldsAdditionalKeysErrorValidTextElements[mapKey][1],
+            smartphoneFieldsAdditionalMapKeysErrorValidTextElements[mapKey][1],
         },
         inputText: field,
         isValidInputText:
-          areSmartphoneFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+          areSmartphoneFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
         label: `Name ${mapKey + 1}`,
         maxLength: 75,
         minLength: 1,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreSmartphoneFieldsAdditionalFocused,
+            type: createProductAction.setAreSmartphoneFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -1045,7 +1045,7 @@ function CreateSmartphone({
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setSmartphoneFieldsAdditional,
+            type: createProductAction.setSmartphoneFieldsAdditionalMap,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -1061,7 +1061,7 @@ function CreateSmartphone({
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreSmartphoneFieldsAdditionalFocused,
+            type: createProductAction.setAreSmartphoneFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -1078,23 +1078,27 @@ function CreateSmartphone({
     // ╭─────────────────────────────────────────────────────────────────╮
     //    ADDITIONAL FIELD TEXT INPUT => FIELD VALUE
     // ╰─────────────────────────────────────────────────────────────────╯
-    const smartphoneFieldsAdditionalValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const smartphoneFieldsAdditionalMapValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
           error:
-            smartphoneFieldsAdditionalValuesErrorValidTextElements[mapKey][0],
+            smartphoneFieldsAdditionalMapValuesErrorValidTextElements[
+              mapKey
+            ][0],
           valid:
-            smartphoneFieldsAdditionalValuesErrorValidTextElements[mapKey][1],
+            smartphoneFieldsAdditionalMapValuesErrorValidTextElements[
+              mapKey
+            ][1],
         },
         inputText: value,
         isValidInputText:
-          areSmartphoneFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+          areSmartphoneFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
         label: `Value ${mapKey + 1}`,
         maxLength: 2000,
         minLength: 2,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreSmartphoneFieldsAdditionalFocused,
+            type: createProductAction.setAreSmartphoneFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -1105,7 +1109,7 @@ function CreateSmartphone({
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setSmartphoneFieldsAdditional,
+            type: createProductAction.setSmartphoneFieldsAdditionalMap,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -1121,7 +1125,7 @@ function CreateSmartphone({
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreSmartphoneFieldsAdditionalFocused,
+            type: createProductAction.setAreSmartphoneFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -1136,11 +1140,11 @@ function CreateSmartphone({
       };
 
     const [
-      createdSmartphoneFieldsAdditionalKeysTextAreaInput,
-      createdSmartphoneFieldsAdditionalValuesTextAreaInput,
+      createdSmartphoneFieldsAdditionalMapKeysTextAreaInput,
+      createdSmartphoneFieldsAdditionalMapValuesTextAreaInput,
     ] = returnAccessibleTextAreaInputElements([
-      smartphoneFieldsAdditionalKeysTextInputCreatorInfo,
-      smartphoneFieldsAdditionalValuesTextInputCreatorInfo,
+      smartphoneFieldsAdditionalMapKeysTextInputCreatorInfo,
+      smartphoneFieldsAdditionalMapValuesTextInputCreatorInfo,
     ]);
 
     // ╭─────────────────────────────────────────────────────────────────╮
@@ -1151,7 +1155,7 @@ function CreateSmartphone({
         buttonLabel: 'Delete',
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
           createProductDispatch({
-            type: createProductAction.setSmartphoneFieldsAdditional,
+            type: createProductAction.setSmartphoneFieldsAdditionalMap,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -1159,7 +1163,7 @@ function CreateSmartphone({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreSmartphoneFieldsAdditionalFocused,
+            type: createProductAction.setAreSmartphoneFieldsAdditionalMapFocused,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -1167,7 +1171,7 @@ function CreateSmartphone({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreSmartphoneFieldsAdditionalValid,
+            type: createProductAction.setAreSmartphoneFieldsAdditionalMapValid,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -1192,7 +1196,11 @@ function CreateSmartphone({
     );
 
     return (
-      <Stack key={`smartphoneFieldsAdditional-${mapKey}`} pt={padding} w="100%">
+      <Stack
+        key={`smartphoneFieldsAdditionalMap-${mapKey}`}
+        pt={padding}
+        w="100%"
+      >
         <Group position="apart">
           <Text size="md" weight={600}>{`Additional Smartphone field ${
             mapKey + 1
@@ -1200,24 +1208,26 @@ function CreateSmartphone({
           {displayDeleteButton}
         </Group>
         <Group position="apart">
-          {createdSmartphoneFieldsAdditionalKeysTextAreaInput}
-          {createdSmartphoneFieldsAdditionalValuesTextAreaInput}
+          {createdSmartphoneFieldsAdditionalMapKeysTextAreaInput}
+          {createdSmartphoneFieldsAdditionalMapValuesTextAreaInput}
         </Group>
       </Stack>
     );
   });
 
-  // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
   //  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
   //    INPUT DISPLAY
   //  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
-  // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+  // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
-  const displaySmartphoneFieldsAdditionalButton = (
+  const displaySmartphoneFieldsAdditionalMapButton = (
     <Tooltip
-      label={`Add new additional field ${smartphoneFieldsAdditional.size + 1}`}
+      label={`Add new additional field ${
+        smartphoneFieldsAdditionalMap.size + 1
+      }`}
     >
-      <Group>{createdAddSmartphoneFieldsAdditionalButton}</Group>
+      <Group>{createdAddSmartphoneFieldsAdditionalMapButton}</Group>
     </Tooltip>
   );
 
@@ -1230,7 +1240,7 @@ function CreateSmartphone({
     >
       <Group w="100%" position="apart">
         <Title order={4}>Smartphone Specifications</Title>
-        {displaySmartphoneFieldsAdditionalButton}
+        {displaySmartphoneFieldsAdditionalMapButton}
       </Group>
       {createdSmartphoneOsSelectInput}
       {createdSmartphoneChipsetTextInput}
@@ -1243,7 +1253,7 @@ function CreateSmartphone({
       {createdSmartphoneStorageCapacityTextInput}
       {createdSmartphoneBatteryCapacityTextInput}
       {createdSmartphoneCameraTextInput}
-      {createdSmartphoneFieldsAdditionalTextInputElements}
+      {createdSmartphoneFieldsAdditionalMapTextInputElements}
     </Group>
   );
 

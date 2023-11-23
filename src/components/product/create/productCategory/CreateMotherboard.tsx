@@ -44,8 +44,8 @@ import {
 } from '../types';
 
 type CreateMotherboardProps = {
-  areMotherboardFieldsAdditionalFocused: Map<number, [boolean, boolean]>;
-  areMotherboardFieldsAdditionalValid: Map<number, [boolean, boolean]>;
+  areMotherboardFieldsAdditionalMapFocused: Map<number, [boolean, boolean]>;
+  areMotherboardFieldsAdditionalMapValid: Map<number, [boolean, boolean]>;
   borderColor: string;
   createProductAction: CreateProductAction;
   createProductDispatch: React.Dispatch<CreateProductDispatch>;
@@ -69,7 +69,7 @@ type CreateMotherboardProps = {
   isMotherboardSocketFocused: boolean;
   isMotherboardSocketValid: boolean;
   motherboardChipset: string;
-  motherboardFieldsAdditional: Map<number, [string, string]>;
+  motherboardFieldsAdditionalMap: Map<number, [string, string]>;
   motherboardFormFactor: MotherboardFormFactor;
   motherboardM2Slots: string;
   motherboardMemoryMaxCapacity: string;
@@ -85,8 +85,8 @@ type CreateMotherboardProps = {
 };
 
 function CreateMotherboard({
-  areMotherboardFieldsAdditionalFocused,
-  areMotherboardFieldsAdditionalValid,
+  areMotherboardFieldsAdditionalMapFocused,
+  areMotherboardFieldsAdditionalMapValid,
   borderColor,
   createProductAction,
   createProductDispatch,
@@ -110,7 +110,7 @@ function CreateMotherboard({
   isMotherboardSocketFocused,
   isMotherboardSocketValid,
   motherboardChipset,
-  motherboardFieldsAdditional,
+  motherboardFieldsAdditionalMap,
   motherboardFormFactor,
   motherboardM2Slots,
   motherboardMemoryMaxCapacity,
@@ -124,11 +124,11 @@ function CreateMotherboard({
   motherboardSocket,
   padding,
 }: CreateMotherboardProps) {
-  // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
   //  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
   //    VALIDATION USE EFFECTS
   //  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
-  // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+  // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
   // ╭─────────────────────────────────────────────────────────────────╮
   //    MOTHERBOARD SOCKET
@@ -279,7 +279,7 @@ function CreateMotherboard({
   // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
     const currentlyUpdatingMotherboardFieldAdditional =
-      motherboardFieldsAdditional.get(currentlySelectedAdditionalFieldIndex);
+      motherboardFieldsAdditionalMap.get(currentlySelectedAdditionalFieldIndex);
 
     if (!currentlyUpdatingMotherboardFieldAdditional) {
       return;
@@ -289,7 +289,7 @@ function CreateMotherboard({
 
     const isKeyValid = OBJECT_KEY_REGEX.test(key);
     createProductDispatch({
-      type: createProductAction.setAreMotherboardFieldsAdditionalValid,
+      type: createProductAction.setAreMotherboardFieldsAdditionalMapValid,
       payload: {
         operation: 'update',
         data: isKeyValid,
@@ -300,7 +300,7 @@ function CreateMotherboard({
 
     const isValueValid = USER_DEFINED_VALUE_REGEX.test(value);
     createProductDispatch({
-      type: createProductAction.setAreMotherboardFieldsAdditionalValid,
+      type: createProductAction.setAreMotherboardFieldsAdditionalMapValid,
       payload: {
         operation: 'update',
         data: isValueValid,
@@ -309,10 +309,10 @@ function CreateMotherboard({
       },
     });
   }, [
-    createProductAction.setAreMotherboardFieldsAdditionalValid,
+    createProductAction.setAreMotherboardFieldsAdditionalMapValid,
     createProductDispatch,
     currentlySelectedAdditionalFieldIndex,
-    motherboardFieldsAdditional,
+    motherboardFieldsAdditionalMap,
   ]);
 
   // ╔═════════════════════════════════════════════════════════════════╗
@@ -334,7 +334,7 @@ function CreateMotherboard({
       !isMotherboardSocketValid;
 
     const areMotherboardInputsUserDefinedInError = Array.from(
-      areMotherboardFieldsAdditionalValid
+      areMotherboardFieldsAdditionalMapValid
     ).some(([_key, value]) => !value);
 
     const areMotherboardInputsInError =
@@ -349,7 +349,7 @@ function CreateMotherboard({
       },
     });
   }, [
-    areMotherboardFieldsAdditionalValid,
+    areMotherboardFieldsAdditionalMapValid,
     createProductAction.setStepsInError,
     createProductDispatch,
     isMotherboardChipsetValid,
@@ -362,11 +362,11 @@ function CreateMotherboard({
     isMotherboardSocketValid,
   ]);
 
-  // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
   //  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
   //    INPUT CREATION
   //  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
-  // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+  // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
   // ╭─────────────────────────────────────────────────────────────────╮
   //    MOTHERBOARD SOCKET
@@ -924,7 +924,7 @@ function CreateMotherboard({
   // ╭─────────────────────────────────────────────────────────────────╮
   //    ADD ADDITIONAL FIELD BUTTON
   // ╰─────────────────────────────────────────────────────────────────╯
-  const [createdAddMotherboardFieldsAdditionalButton] =
+  const [createdAddMotherboardFieldsAdditionalMapButton] =
     returnAccessibleButtonElements([
       {
         buttonLabel: 'Add',
@@ -933,7 +933,7 @@ function CreateMotherboard({
         leftIcon: <TbPlus />,
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
           createProductDispatch({
-            type: createProductAction.setMotherboardFieldsAdditional,
+            type: createProductAction.setMotherboardFieldsAdditionalMap,
             payload: {
               operation: 'add',
               data: ['', ''],
@@ -941,7 +941,7 @@ function CreateMotherboard({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreMotherboardFieldsAdditionalFocused,
+            type: createProductAction.setAreMotherboardFieldsAdditionalMapFocused,
             payload: {
               operation: 'add',
               data: [false, false],
@@ -949,7 +949,7 @@ function CreateMotherboard({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreMotherboardFieldsAdditionalValid,
+            type: createProductAction.setAreMotherboardFieldsAdditionalMapValid,
             payload: {
               operation: 'add',
               data: [false, false],
@@ -960,27 +960,27 @@ function CreateMotherboard({
     ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    ERROR/VALID ELEMENTS TUPLE => FIELD NAMES
+  //    SCREENREADER ERROR/VALID ELEMENTS TUPLE => FIELD NAMES
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // returns an array of tuples containing the error and valid text elements for each field name
-  const motherboardFieldsAdditionalKeysErrorValidTextElements: [
+  const motherboardFieldsAdditionalMapKeysErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(motherboardFieldsAdditional).map((keyFieldValue) => {
+  ][] = Array.from(motherboardFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [field, _value]] = keyFieldValue;
 
     // screenreader error/valid text elements that are consumed by the text input element creator
     const [
-      motherboardFieldsAdditionalKeysInputErrorText,
-      motherboardFieldsAdditionalKeysInputValidText,
+      motherboardFieldsAdditionalMapKeysInputErrorText,
+      motherboardFieldsAdditionalMapKeysInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field name ${mapKey + 1}`,
       inputText: field,
       isInputTextFocused:
-        areMotherboardFieldsAdditionalFocused.get(mapKey)?.[0] ?? false,
+        areMotherboardFieldsAdditionalMapFocused.get(mapKey)?.[0] ?? false,
       isValidInputText:
-        areMotherboardFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+        areMotherboardFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
       regexValidationText: returnObjectKeyValidationText({
         content: field,
         contentKind: `additional field name ${mapKey + 1}`,
@@ -990,32 +990,32 @@ function CreateMotherboard({
     });
 
     return [
-      motherboardFieldsAdditionalKeysInputErrorText,
-      motherboardFieldsAdditionalKeysInputValidText,
+      motherboardFieldsAdditionalMapKeysInputErrorText,
+      motherboardFieldsAdditionalMapKeysInputValidText,
     ];
   });
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    ERROR/VALID ELEMENTS TUPLE => FIELD VALUES
+  //    SCREENREADER ERROR/VALID ELEMENTS TUPLE => FIELD VALUES
   // ╰─────────────────────────────────────────────────────────────────╯
   // returns an array of tuples containing the error and valid text elements for each field value
-  const motherboardFieldsAdditionalValuesErrorValidTextElements: [
+  const motherboardFieldsAdditionalMapValuesErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(motherboardFieldsAdditional).map((keyFieldValue) => {
+  ][] = Array.from(motherboardFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [_field, value]] = keyFieldValue;
 
     // screenreader error/valid text elements that are consumed by the text input element creator
     const [
-      motherboardFieldsAdditionalValuesInputErrorText,
-      motherboardFieldsAdditionalValuesInputValidText,
+      motherboardFieldsAdditionalMapValuesInputErrorText,
+      motherboardFieldsAdditionalMapValuesInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field value ${mapKey + 1}`,
       inputText: value,
       isInputTextFocused:
-        areMotherboardFieldsAdditionalFocused.get(mapKey)?.[1] ?? false,
+        areMotherboardFieldsAdditionalMapFocused.get(mapKey)?.[1] ?? false,
       isValidInputText:
-        areMotherboardFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+        areMotherboardFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
       regexValidationText: returnUserDefinedFieldValueValidationText({
         content: value,
         contentKind: `additional field value ${mapKey + 1}`,
@@ -1025,36 +1025,36 @@ function CreateMotherboard({
     });
 
     return [
-      motherboardFieldsAdditionalValuesInputErrorText,
-      motherboardFieldsAdditionalValuesInputValidText,
+      motherboardFieldsAdditionalMapValuesInputErrorText,
+      motherboardFieldsAdditionalMapValuesInputValidText,
     ];
   });
 
-  const createdMotherboardFieldsAdditionalTextInputElements = Array.from(
-    motherboardFieldsAdditional
+  const createdMotherboardFieldsAdditionalMapTextInputElements = Array.from(
+    motherboardFieldsAdditionalMap
   ).map((keyFieldValue) => {
     const [mapKey, [field, value]] = keyFieldValue;
 
     // ╭─────────────────────────────────────────────────────────────────╮
     //    ADDITIONAL FIELD TEXT INPUT => FIELD NAME
     // ╰─────────────────────────────────────────────────────────────────╯
-    const motherboardFieldsAdditionalKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const motherboardFieldsAdditionalMapKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
           error:
-            motherboardFieldsAdditionalKeysErrorValidTextElements[mapKey][0],
+            motherboardFieldsAdditionalMapKeysErrorValidTextElements[mapKey][0],
           valid:
-            motherboardFieldsAdditionalKeysErrorValidTextElements[mapKey][1],
+            motherboardFieldsAdditionalMapKeysErrorValidTextElements[mapKey][1],
         },
         inputText: field,
         isValidInputText:
-          areMotherboardFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+          areMotherboardFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
         label: `Name ${mapKey + 1}`,
         maxLength: 75,
         minLength: 1,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreMotherboardFieldsAdditionalFocused,
+            type: createProductAction.setAreMotherboardFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -1065,7 +1065,7 @@ function CreateMotherboard({
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setMotherboardFieldsAdditional,
+            type: createProductAction.setMotherboardFieldsAdditionalMap,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -1081,7 +1081,7 @@ function CreateMotherboard({
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreMotherboardFieldsAdditionalFocused,
+            type: createProductAction.setAreMotherboardFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -1098,23 +1098,27 @@ function CreateMotherboard({
     // ╭─────────────────────────────────────────────────────────────────╮
     //    ADDITIONAL FIELD TEXT INPUT => FIELD VALUE
     // ╰─────────────────────────────────────────────────────────────────╯
-    const motherboardFieldsAdditionalValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const motherboardFieldsAdditionalMapValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
           error:
-            motherboardFieldsAdditionalValuesErrorValidTextElements[mapKey][0],
+            motherboardFieldsAdditionalMapValuesErrorValidTextElements[
+              mapKey
+            ][0],
           valid:
-            motherboardFieldsAdditionalValuesErrorValidTextElements[mapKey][1],
+            motherboardFieldsAdditionalMapValuesErrorValidTextElements[
+              mapKey
+            ][1],
         },
         inputText: value,
         isValidInputText:
-          areMotherboardFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+          areMotherboardFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
         label: `Value ${mapKey + 1}`,
         maxLength: 2000,
         minLength: 2,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreMotherboardFieldsAdditionalFocused,
+            type: createProductAction.setAreMotherboardFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -1125,7 +1129,7 @@ function CreateMotherboard({
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setMotherboardFieldsAdditional,
+            type: createProductAction.setMotherboardFieldsAdditionalMap,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -1141,7 +1145,7 @@ function CreateMotherboard({
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreMotherboardFieldsAdditionalFocused,
+            type: createProductAction.setAreMotherboardFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -1156,11 +1160,11 @@ function CreateMotherboard({
       };
 
     const [
-      createdMotherboardFieldsAdditionalKeysTextAreaInput,
-      createdMotherboardFieldsAdditionalValuesTextAreaInput,
+      createdMotherboardFieldsAdditionalMapKeysTextAreaInput,
+      createdMotherboardFieldsAdditionalMapValuesTextAreaInput,
     ] = returnAccessibleTextAreaInputElements([
-      motherboardFieldsAdditionalKeysTextInputCreatorInfo,
-      motherboardFieldsAdditionalValuesTextInputCreatorInfo,
+      motherboardFieldsAdditionalMapKeysTextInputCreatorInfo,
+      motherboardFieldsAdditionalMapValuesTextInputCreatorInfo,
     ]);
 
     // ╭─────────────────────────────────────────────────────────────────╮
@@ -1171,7 +1175,7 @@ function CreateMotherboard({
         buttonLabel: 'Delete',
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
           createProductDispatch({
-            type: createProductAction.setMotherboardFieldsAdditional,
+            type: createProductAction.setMotherboardFieldsAdditionalMap,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -1179,7 +1183,7 @@ function CreateMotherboard({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreMotherboardFieldsAdditionalFocused,
+            type: createProductAction.setAreMotherboardFieldsAdditionalMapFocused,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -1187,7 +1191,7 @@ function CreateMotherboard({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreMotherboardFieldsAdditionalValid,
+            type: createProductAction.setAreMotherboardFieldsAdditionalMapValid,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -1213,7 +1217,7 @@ function CreateMotherboard({
 
     return (
       <Stack
-        key={`motherboardFieldsAdditional-${mapKey}`}
+        key={`motherboardFieldsAdditionalMap-${mapKey}`}
         pt={padding}
         w="100%"
       >
@@ -1224,24 +1228,26 @@ function CreateMotherboard({
           {displayDeleteButton}
         </Group>
         <Group position="apart">
-          {createdMotherboardFieldsAdditionalKeysTextAreaInput}
-          {createdMotherboardFieldsAdditionalValuesTextAreaInput}
+          {createdMotherboardFieldsAdditionalMapKeysTextAreaInput}
+          {createdMotherboardFieldsAdditionalMapValuesTextAreaInput}
         </Group>
       </Stack>
     );
   });
 
-  // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
   //  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
   //    INPUT DISPLAY
   //  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
-  // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+  // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
-  const displayMotherboardFieldsAdditionalButton = (
+  const displayMotherboardFieldsAdditionalMapButton = (
     <Tooltip
-      label={`Add new additional field ${motherboardFieldsAdditional.size + 1}`}
+      label={`Add new additional field ${
+        motherboardFieldsAdditionalMap.size + 1
+      }`}
     >
-      <Group>{createdAddMotherboardFieldsAdditionalButton}</Group>
+      <Group>{createdAddMotherboardFieldsAdditionalMapButton}</Group>
     </Tooltip>
   );
 
@@ -1254,7 +1260,7 @@ function CreateMotherboard({
     >
       <Group w="100%" position="apart">
         <Title order={4}>Motherboard Specifications</Title>
-        {displayMotherboardFieldsAdditionalButton}
+        {displayMotherboardFieldsAdditionalMapButton}
       </Group>
       {createdMotherboardSocketTextInput}
       {createdMotherboardChipsetTextInput}
@@ -1268,7 +1274,7 @@ function CreateMotherboard({
       {createdMotherboardPcie3SlotsTextInput}
       {createdMotherboardPcie4SlotsTextInput}
       {createdMotherboardPcie5SlotsTextInput}
-      {createdMotherboardFieldsAdditionalTextInputElements}
+      {createdMotherboardFieldsAdditionalMapTextInputElements}
     </Group>
   );
 

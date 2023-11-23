@@ -38,14 +38,14 @@ import {
 } from '../types';
 
 type CreateKeyboardsProps = {
-  areKeyboardFieldsAdditionalFocused: Map<number, [boolean, boolean]>;
-  areKeyboardFieldsAdditionalValid: Map<number, [boolean, boolean]>;
+  areKeyboardFieldsAdditionalMapFocused: Map<number, [boolean, boolean]>;
+  areKeyboardFieldsAdditionalMapValid: Map<number, [boolean, boolean]>;
   borderColor: string;
   createProductAction: CreateProductAction;
   createProductDispatch: React.Dispatch<CreateProductDispatch>;
   currentlySelectedAdditionalFieldIndex: number;
   keyboardBacklight: KeyboardBacklight;
-  keyboardFieldsAdditional: Map<number, [string, string]>;
+  keyboardFieldsAdditionalMap: Map<number, [string, string]>;
   keyboardInterface: PeripheralsInterface;
   keyboardLayout: KeyboardLayout;
   keyboardSwitch: KeyboardSwitch;
@@ -53,31 +53,31 @@ type CreateKeyboardsProps = {
 };
 
 function CreateKeyboards({
-  areKeyboardFieldsAdditionalFocused,
-  areKeyboardFieldsAdditionalValid,
+  areKeyboardFieldsAdditionalMapFocused,
+  areKeyboardFieldsAdditionalMapValid,
   borderColor,
   createProductAction,
   createProductDispatch,
   currentlySelectedAdditionalFieldIndex,
   keyboardBacklight,
-  keyboardFieldsAdditional,
+  keyboardFieldsAdditionalMap,
   keyboardInterface,
   keyboardLayout,
   keyboardSwitch,
   padding,
 }: CreateKeyboardsProps) {
-  // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
   //  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
   //    VALIDATION USE EFFECTS
   //  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
-  // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+  // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
   // ╭─────────────────────────────────────────────────────────────────╮
   //    KEYBOARD ADDITIONAL FIELDS
   // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
     const currentlyUpdatingKeyboardFieldAdditional =
-      keyboardFieldsAdditional.get(currentlySelectedAdditionalFieldIndex);
+      keyboardFieldsAdditionalMap.get(currentlySelectedAdditionalFieldIndex);
 
     if (!currentlyUpdatingKeyboardFieldAdditional) {
       return;
@@ -87,7 +87,7 @@ function CreateKeyboards({
 
     const isKeyValid = OBJECT_KEY_REGEX.test(key);
     createProductDispatch({
-      type: createProductAction.setAreKeyboardFieldsAdditionalValid,
+      type: createProductAction.setAreKeyboardFieldsAdditionalMapValid,
       payload: {
         operation: 'update',
         data: isKeyValid,
@@ -98,7 +98,7 @@ function CreateKeyboards({
 
     const isValueValid = USER_DEFINED_VALUE_REGEX.test(value);
     createProductDispatch({
-      type: createProductAction.setAreKeyboardFieldsAdditionalValid,
+      type: createProductAction.setAreKeyboardFieldsAdditionalMapValid,
       payload: {
         operation: 'update',
         data: isValueValid,
@@ -107,10 +107,10 @@ function CreateKeyboards({
       },
     });
   }, [
-    createProductAction.setAreKeyboardFieldsAdditionalValid,
+    createProductAction.setAreKeyboardFieldsAdditionalMapValid,
     createProductDispatch,
     currentlySelectedAdditionalFieldIndex,
-    keyboardFieldsAdditional,
+    keyboardFieldsAdditionalMap,
   ]);
 
   // ╔═════════════════════════════════════════════════════════════════╗
@@ -122,7 +122,7 @@ function CreateKeyboards({
     // select inputs are not included as they always have a default value
 
     const areKeyboardInputsUserDefinedInError = Array.from(
-      areKeyboardFieldsAdditionalValid
+      areKeyboardFieldsAdditionalMapValid
     ).some(([_key, value]) => !value);
 
     createProductDispatch({
@@ -133,7 +133,7 @@ function CreateKeyboards({
       },
     });
   }, [
-    areKeyboardFieldsAdditionalValid,
+    areKeyboardFieldsAdditionalMapValid,
     createProductAction.setStepsInError,
     createProductDispatch,
     keyboardBacklight,
@@ -142,11 +142,11 @@ function CreateKeyboards({
     keyboardSwitch,
   ]);
 
-  // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
   //  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
   //    INPUT CREATION
   //  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
-  // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+  // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
   // ╭─────────────────────────────────────────────────────────────────╮
   //    KEYBOARD SWITCH
@@ -235,7 +235,7 @@ function CreateKeyboards({
   // ╭─────────────────────────────────────────────────────────────────╮
   //    ADD ADDITIONAL FIELD BUTTON
   // ╰─────────────────────────────────────────────────────────────────╯
-  const [createdAddKeyboardFieldsAdditionalButton] =
+  const [createdAddKeyboardFieldsAdditionalMapButton] =
     returnAccessibleButtonElements([
       {
         buttonLabel: 'Add',
@@ -244,7 +244,7 @@ function CreateKeyboards({
         leftIcon: <TbPlus />,
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
           createProductDispatch({
-            type: createProductAction.setKeyboardFieldsAdditional,
+            type: createProductAction.setKeyboardFieldsAdditionalMap,
             payload: {
               operation: 'add',
               data: ['', ''],
@@ -252,7 +252,7 @@ function CreateKeyboards({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreKeyboardFieldsAdditionalFocused,
+            type: createProductAction.setAreKeyboardFieldsAdditionalMapFocused,
             payload: {
               operation: 'add',
               data: [false, false],
@@ -260,7 +260,7 @@ function CreateKeyboards({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreKeyboardFieldsAdditionalValid,
+            type: createProductAction.setAreKeyboardFieldsAdditionalMapValid,
             payload: {
               operation: 'add',
               data: [false, false],
@@ -271,27 +271,27 @@ function CreateKeyboards({
     ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    ERROR/VALID ELEMENTS TUPLE => FIELD NAMES
+  //    SCREENREADER ERROR/VALID ELEMENTS TUPLE => FIELD NAMES
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // returns an array of tuples containing the error and valid text elements for each field name
-  const keyboardFieldsAdditionalKeysErrorValidTextElements: [
+  const keyboardFieldsAdditionalMapKeysErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(keyboardFieldsAdditional).map((keyFieldValue) => {
+  ][] = Array.from(keyboardFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [field, _value]] = keyFieldValue;
 
     // screenreader error/valid text elements that are consumed by the text input element creator
     const [
-      keyboardFieldsAdditionalKeysInputErrorText,
-      keyboardFieldsAdditionalKeysInputValidText,
+      keyboardFieldsAdditionalMapKeysInputErrorText,
+      keyboardFieldsAdditionalMapKeysInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field name ${mapKey + 1}`,
       inputText: field,
       isInputTextFocused:
-        areKeyboardFieldsAdditionalFocused.get(mapKey)?.[0] ?? false,
+        areKeyboardFieldsAdditionalMapFocused.get(mapKey)?.[0] ?? false,
       isValidInputText:
-        areKeyboardFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+        areKeyboardFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
       regexValidationText: returnObjectKeyValidationText({
         content: field,
         contentKind: `additional field name ${mapKey + 1}`,
@@ -301,33 +301,33 @@ function CreateKeyboards({
     });
 
     return [
-      keyboardFieldsAdditionalKeysInputErrorText,
-      keyboardFieldsAdditionalKeysInputValidText,
+      keyboardFieldsAdditionalMapKeysInputErrorText,
+      keyboardFieldsAdditionalMapKeysInputValidText,
     ];
   });
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    ERROR/VALID ELEMENTS TUPLE => FIELD VALUES
+  //    SCREENREADER ERROR/VALID ELEMENTS TUPLE => FIELD VALUES
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // returns an array of tuples containing the error and valid text elements for each field value
-  const keyboardFieldsAdditionalValuesErrorValidTextElements: [
+  const keyboardFieldsAdditionalMapValuesErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(keyboardFieldsAdditional).map((keyFieldValue) => {
+  ][] = Array.from(keyboardFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [_field, value]] = keyFieldValue;
 
     // screenreader error/valid text elements that are consumed by the text input element creator
     const [
-      keyboardFieldsAdditionalValuesInputErrorText,
-      keyboardFieldsAdditionalValuesInputValidText,
+      keyboardFieldsAdditionalMapValuesInputErrorText,
+      keyboardFieldsAdditionalMapValuesInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field value ${mapKey + 1}`,
       inputText: value,
       isInputTextFocused:
-        areKeyboardFieldsAdditionalFocused.get(mapKey)?.[1] ?? false,
+        areKeyboardFieldsAdditionalMapFocused.get(mapKey)?.[1] ?? false,
       isValidInputText:
-        areKeyboardFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+        areKeyboardFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
       regexValidationText: returnUserDefinedFieldValueValidationText({
         content: value,
         contentKind: `additional field value ${mapKey + 1}`,
@@ -337,34 +337,36 @@ function CreateKeyboards({
     });
 
     return [
-      keyboardFieldsAdditionalValuesInputErrorText,
-      keyboardFieldsAdditionalValuesInputValidText,
+      keyboardFieldsAdditionalMapValuesInputErrorText,
+      keyboardFieldsAdditionalMapValuesInputValidText,
     ];
   });
 
-  const createdKeyboardFieldsAdditionalTextInputElements = Array.from(
-    keyboardFieldsAdditional
+  const createdKeyboardFieldsAdditionalMapTextInputElements = Array.from(
+    keyboardFieldsAdditionalMap
   ).map((keyFieldValue) => {
     const [mapKey, [field, value]] = keyFieldValue;
 
     // ╭─────────────────────────────────────────────────────────────────╮
     //    ADDITIONAL FIELD TEXT INPUT => FIELD NAME
     // ╰─────────────────────────────────────────────────────────────────╯
-    const keyboardFieldsAdditionalKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const keyboardFieldsAdditionalMapKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
-          error: keyboardFieldsAdditionalKeysErrorValidTextElements[mapKey][0],
-          valid: keyboardFieldsAdditionalKeysErrorValidTextElements[mapKey][1],
+          error:
+            keyboardFieldsAdditionalMapKeysErrorValidTextElements[mapKey][0],
+          valid:
+            keyboardFieldsAdditionalMapKeysErrorValidTextElements[mapKey][1],
         },
         inputText: field,
         isValidInputText:
-          areKeyboardFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+          areKeyboardFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
         label: `Name ${mapKey + 1}`,
         maxLength: 75,
         minLength: 1,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreKeyboardFieldsAdditionalFocused,
+            type: createProductAction.setAreKeyboardFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -375,7 +377,7 @@ function CreateKeyboards({
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setKeyboardFieldsAdditional,
+            type: createProductAction.setKeyboardFieldsAdditionalMap,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -391,7 +393,7 @@ function CreateKeyboards({
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreKeyboardFieldsAdditionalFocused,
+            type: createProductAction.setAreKeyboardFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -408,23 +410,23 @@ function CreateKeyboards({
     // ╭─────────────────────────────────────────────────────────────────╮
     //    ADDITIONAL FIELD TEXT INPUT => FIELD VALUE
     // ╰─────────────────────────────────────────────────────────────────╯
-    const keyboardFieldsAdditionalValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const keyboardFieldsAdditionalMapValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
           error:
-            keyboardFieldsAdditionalValuesErrorValidTextElements[mapKey][0],
+            keyboardFieldsAdditionalMapValuesErrorValidTextElements[mapKey][0],
           valid:
-            keyboardFieldsAdditionalValuesErrorValidTextElements[mapKey][1],
+            keyboardFieldsAdditionalMapValuesErrorValidTextElements[mapKey][1],
         },
         inputText: value,
         isValidInputText:
-          areKeyboardFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+          areKeyboardFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
         label: `Value ${mapKey + 1}`,
         maxLength: 2000,
         minLength: 2,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreKeyboardFieldsAdditionalFocused,
+            type: createProductAction.setAreKeyboardFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -435,7 +437,7 @@ function CreateKeyboards({
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setKeyboardFieldsAdditional,
+            type: createProductAction.setKeyboardFieldsAdditionalMap,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -451,7 +453,7 @@ function CreateKeyboards({
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreKeyboardFieldsAdditionalFocused,
+            type: createProductAction.setAreKeyboardFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -466,11 +468,11 @@ function CreateKeyboards({
       };
 
     const [
-      createdKeyboardFieldsAdditionalKeysTextAreaInput,
-      createdKeyboardFieldsAdditionalValuesTextAreaInput,
+      createdKeyboardFieldsAdditionalMapKeysTextAreaInput,
+      createdKeyboardFieldsAdditionalMapValuesTextAreaInput,
     ] = returnAccessibleTextAreaInputElements([
-      keyboardFieldsAdditionalKeysTextInputCreatorInfo,
-      keyboardFieldsAdditionalValuesTextInputCreatorInfo,
+      keyboardFieldsAdditionalMapKeysTextInputCreatorInfo,
+      keyboardFieldsAdditionalMapValuesTextInputCreatorInfo,
     ]);
 
     // ╭─────────────────────────────────────────────────────────────────╮
@@ -481,7 +483,7 @@ function CreateKeyboards({
         buttonLabel: 'Delete',
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
           createProductDispatch({
-            type: createProductAction.setKeyboardFieldsAdditional,
+            type: createProductAction.setKeyboardFieldsAdditionalMap,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -489,7 +491,7 @@ function CreateKeyboards({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreKeyboardFieldsAdditionalFocused,
+            type: createProductAction.setAreKeyboardFieldsAdditionalMapFocused,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -497,7 +499,7 @@ function CreateKeyboards({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreKeyboardFieldsAdditionalValid,
+            type: createProductAction.setAreKeyboardFieldsAdditionalMapValid,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -522,7 +524,11 @@ function CreateKeyboards({
     );
 
     return (
-      <Stack key={`keyboardFieldsAdditional-${mapKey}`} pt={padding} w="100%">
+      <Stack
+        key={`keyboardFieldsAdditionalMap-${mapKey}`}
+        pt={padding}
+        w="100%"
+      >
         <Group position="apart">
           <Text size="md" weight={600}>{`Additional Keyboard field ${
             mapKey + 1
@@ -530,24 +536,24 @@ function CreateKeyboards({
           {displayDeleteButton}
         </Group>
         <Group position="apart">
-          {createdKeyboardFieldsAdditionalKeysTextAreaInput}
-          {createdKeyboardFieldsAdditionalValuesTextAreaInput}
+          {createdKeyboardFieldsAdditionalMapKeysTextAreaInput}
+          {createdKeyboardFieldsAdditionalMapValuesTextAreaInput}
         </Group>
       </Stack>
     );
   });
 
-  // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
   //  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
   //    INPUT DISPLAY
   //  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
-  // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+  // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
-  const displayKeyboardFieldsAdditionalButton = (
+  const displayKeyboardFieldsAdditionalMapButton = (
     <Tooltip
-      label={`Add new additional field ${keyboardFieldsAdditional.size + 1}`}
+      label={`Add new additional field ${keyboardFieldsAdditionalMap.size + 1}`}
     >
-      <Group>{createdAddKeyboardFieldsAdditionalButton}</Group>
+      <Group>{createdAddKeyboardFieldsAdditionalMapButton}</Group>
     </Tooltip>
   );
 
@@ -560,13 +566,13 @@ function CreateKeyboards({
     >
       <Group w="100%" position="apart">
         <Title order={4}>Keyboard Specifications</Title>
-        {displayKeyboardFieldsAdditionalButton}
+        {displayKeyboardFieldsAdditionalMapButton}
       </Group>
       {createdKeyboardSwitchSelectInput}
       {createdKeyboardLayoutSelectInput}
       {createdKeyboardBacklightSelectInput}
       {createdKeyboardInterfaceSelectInput}
-      {createdKeyboardFieldsAdditionalTextInputElements}
+      {createdKeyboardFieldsAdditionalMapTextInputElements}
     </Group>
   );
 

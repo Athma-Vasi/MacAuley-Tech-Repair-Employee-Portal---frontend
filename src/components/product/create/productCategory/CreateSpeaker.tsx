@@ -18,71 +18,71 @@ import {
 } from '../../../../jsxCreators';
 import {
   returnColorVariantValidationText,
-  returnLargeIntegerValidationText,
+  returnFrequencyResponseValidationText,
+  returnMediumIntegerValidationText,
   returnObjectKeyValidationText,
-  returnSmallIntegerValidationText,
   returnUserDefinedFieldValueValidationText,
 } from '../../../../utils';
 import { AccessibleTextAreaInputCreatorInfo } from '../../../wrappers';
 import {
   COLOR_VARIANT_REGEX,
-  LARGE_INTEGER_REGEX,
-  MOUSE_SENSOR_DATA,
+  FREQUENCY_RESPONSE_REGEX,
+  MEDIUM_INTEGER_REGEX,
   OBJECT_KEY_REGEX,
-  PERIPHERALS_INTERFACE_DATA,
-  SMALL_INTEGER_REGEX,
+  SPEAKER_INTERFACE_DATA,
+  SPEAKER_TYPE_DATA,
   USER_DEFINED_VALUE_REGEX,
 } from '../../constants';
 import {
   CreateProductAction,
   CreateProductDispatch,
-  MouseSensor,
-  PeripheralsInterface,
+  SpeakerInterface,
+  SpeakerType,
 } from '../types';
 
-type CreateMouseProps = {
-  areMouseFieldsAdditionalMapFocused: Map<number, [boolean, boolean]>;
-  areMouseFieldsAdditionalMapValid: Map<number, [boolean, boolean]>;
+type CreateSpeakerProps = {
+  areSpeakerFieldsAdditionalMapFocused: Map<number, [boolean, boolean]>;
+  areSpeakerFieldsAdditionalMapValid: Map<number, [boolean, boolean]>;
   borderColor: string;
   createProductAction: CreateProductAction;
   createProductDispatch: React.Dispatch<CreateProductDispatch>;
   currentlySelectedAdditionalFieldIndex: number;
-  isMouseButtonsFocused: boolean;
-  isMouseButtonsValid: boolean;
-  isMouseColorFocused: boolean;
-  isMouseColorValid: boolean;
-  isMouseDpiFocused: boolean;
-  isMouseDpiValid: boolean;
-  mouseButtons: string;
-  mouseColor: string;
-  mouseDpi: string;
-  mouseFieldsAdditionalMap: Map<number, [string, string]>;
-  mouseInterface: PeripheralsInterface;
-  mouseSensor: MouseSensor;
+  isSpeakerColorFocused: boolean;
+  isSpeakerColorValid: boolean;
+  isSpeakerFrequencyResponseFocused: boolean;
+  isSpeakerFrequencyResponseValid: boolean;
+  isSpeakerTotalWattageFocused: boolean;
+  isSpeakerTotalWattageValid: boolean;
   padding: MantineNumberSize;
+  speakerColor: string;
+  speakerFieldsAdditionalMap: Map<number, [string, string]>;
+  speakerFrequencyResponse: string;
+  speakerInterface: SpeakerInterface;
+  speakerTotalWattage: string;
+  speakerType: SpeakerType;
 };
 
-function CreateMouse({
-  areMouseFieldsAdditionalMapFocused,
-  areMouseFieldsAdditionalMapValid,
+function CreateSpeaker({
+  areSpeakerFieldsAdditionalMapFocused,
+  areSpeakerFieldsAdditionalMapValid,
   borderColor,
   createProductAction,
   createProductDispatch,
   currentlySelectedAdditionalFieldIndex,
-  isMouseButtonsFocused,
-  isMouseButtonsValid,
-  isMouseColorFocused,
-  isMouseColorValid,
-  isMouseDpiFocused,
-  isMouseDpiValid,
-  mouseButtons,
-  mouseColor,
-  mouseDpi,
-  mouseFieldsAdditionalMap,
-  mouseInterface,
-  mouseSensor,
+  isSpeakerColorFocused,
+  isSpeakerColorValid,
+  isSpeakerFrequencyResponseFocused,
+  isSpeakerFrequencyResponseValid,
+  isSpeakerTotalWattageFocused,
+  isSpeakerTotalWattageValid,
   padding,
-}: CreateMouseProps) {
+  speakerColor,
+  speakerFieldsAdditionalMap,
+  speakerFrequencyResponse,
+  speakerInterface,
+  speakerTotalWattage,
+  speakerType,
+}: CreateSpeakerProps) {
   // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
   //  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
   //    VALIDATION USE EFFECTS
@@ -90,66 +90,69 @@ function CreateMouse({
   // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    MOUSE DPI
+  //    SPEAKER TOTAL WATTAGE
   // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
-    const isValid = LARGE_INTEGER_REGEX.test(mouseDpi);
+    const isValid = MEDIUM_INTEGER_REGEX.test(speakerTotalWattage);
 
     createProductDispatch({
-      type: createProductAction.setIsMouseDpiValid,
-      payload: isValid,
-    });
-  }, [createProductAction.setIsMouseDpiValid, createProductDispatch, mouseDpi]);
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    MOUSE BUTTONS
-  // ╰─────────────────────────────────────────────────────────────────╯
-  useEffect(() => {
-    const isValid = SMALL_INTEGER_REGEX.test(mouseButtons);
-
-    createProductDispatch({
-      type: createProductAction.setIsMouseButtonsValid,
+      type: createProductAction.setIsSpeakerTotalWattageValid,
       payload: isValid,
     });
   }, [
-    createProductAction.setIsMouseButtonsValid,
+    createProductAction.setIsSpeakerTotalWattageValid,
     createProductDispatch,
-    mouseButtons,
+    speakerTotalWattage,
   ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    MOUSE COLOR
+  //    SPEAKER FREQUENCY RESPONSE
   // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
-    const isValid = COLOR_VARIANT_REGEX.test(mouseColor);
+    const isValid = FREQUENCY_RESPONSE_REGEX.test(speakerFrequencyResponse);
 
     createProductDispatch({
-      type: createProductAction.setIsMouseColorValid,
+      type: createProductAction.setIsSpeakerFrequencyResponseValid,
       payload: isValid,
     });
   }, [
-    createProductAction.setIsMouseColorValid,
+    createProductAction.setIsSpeakerFrequencyResponseValid,
     createProductDispatch,
-    mouseColor,
+    speakerFrequencyResponse,
   ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    MOUSE ADDITIONAL FIELDS
+  //    SPEAKER COLOR
   // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
-    const currentlyUpdatingMouseFieldAdditional = mouseFieldsAdditionalMap.get(
-      currentlySelectedAdditionalFieldIndex
-    );
+    const isValid = COLOR_VARIANT_REGEX.test(speakerColor);
 
-    if (!currentlyUpdatingMouseFieldAdditional) {
+    createProductDispatch({
+      type: createProductAction.setIsSpeakerColorValid,
+      payload: isValid,
+    });
+  }, [
+    createProductAction.setIsSpeakerColorValid,
+    createProductDispatch,
+    speakerColor,
+  ]);
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    SPEAKER ADDITIONAL FIELDS
+  // ╰─────────────────────────────────────────────────────────────────╯
+  useEffect(() => {
+    const currentlyUpdatingSpeakerFieldAdditional =
+      speakerFieldsAdditionalMap.get(currentlySelectedAdditionalFieldIndex);
+
+    if (!currentlyUpdatingSpeakerFieldAdditional) {
       return;
     }
 
-    const [key, value] = currentlyUpdatingMouseFieldAdditional;
+    const [key, value] = currentlyUpdatingSpeakerFieldAdditional;
 
     const isKeyValid = OBJECT_KEY_REGEX.test(key);
     createProductDispatch({
-      type: createProductAction.setAreMouseFieldsAdditionalMapValid,
+      type: createProductAction.setAreSpeakerFieldsAdditionalMapValid,
       payload: {
         operation: 'update',
         data: isKeyValid,
@@ -160,7 +163,7 @@ function CreateMouse({
 
     const isValueValid = USER_DEFINED_VALUE_REGEX.test(value);
     createProductDispatch({
-      type: createProductAction.setAreMouseFieldsAdditionalMapValid,
+      type: createProductAction.setAreSpeakerFieldsAdditionalMapValid,
       payload: {
         operation: 'update',
         data: isValueValid,
@@ -169,10 +172,10 @@ function CreateMouse({
       },
     });
   }, [
-    createProductAction.setAreMouseFieldsAdditionalMapValid,
+    createProductAction.setAreSpeakerFieldsAdditionalMapValid,
     createProductDispatch,
     currentlySelectedAdditionalFieldIndex,
-    mouseFieldsAdditionalMap,
+    speakerFieldsAdditionalMap,
   ]);
 
   // ╔═════════════════════════════════════════════════════════════════╗
@@ -183,32 +186,32 @@ function CreateMouse({
     // optional inputs with empty string count as valid
     // select inputs are not included as they always have a default value
 
-    const areMouseInputsHardcodedInError =
-      !isMouseButtonsValid || !isMouseColorValid || !isMouseDpiValid;
+    const areSpeakerHardcodedInputsInError =
+      !isSpeakerTotalWattageValid ||
+      !isSpeakerFrequencyResponseValid ||
+      !isSpeakerColorValid;
 
-    const areMouseInputsUserDefinedInError = Array.from(
-      areMouseFieldsAdditionalMapValid
+    const areSpeakerFieldsAdditionalMapInError = Array.from(
+      areSpeakerFieldsAdditionalMapValid
     ).some(([_key, value]) => !value);
 
-    const areMouseInputsInError =
-      areMouseInputsHardcodedInError || areMouseInputsUserDefinedInError;
+    const areSpeakerInputsInError =
+      areSpeakerHardcodedInputsInError || areSpeakerFieldsAdditionalMapInError;
 
     createProductDispatch({
       type: createProductAction.setStepsInError,
       payload: {
-        kind: areMouseInputsInError ? 'add' : 'delete',
+        kind: areSpeakerInputsInError ? 'add' : 'delete',
         step: 1,
       },
     });
   }, [
-    areMouseFieldsAdditionalMapValid,
+    areSpeakerFieldsAdditionalMapValid,
     createProductAction.setStepsInError,
     createProductDispatch,
-    isMouseButtonsValid,
-    isMouseColorValid,
-    isMouseDpiValid,
-    mouseInterface,
-    mouseSensor,
+    isSpeakerColorValid,
+    isSpeakerFrequencyResponseValid,
+    isSpeakerTotalWattageValid,
   ]);
 
   // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
@@ -218,209 +221,217 @@ function CreateMouse({
   // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    MOUSE SENSOR
+  //    SPEAKER TYPE
   // ╰─────────────────────────────────────────────────────────────────╯
-  const [createdMouseSensorSelectInput] = returnAccessibleSelectInputElements([
+  const [createdSpeakerTypeSelectInput] = returnAccessibleSelectInputElements([
     {
-      data: MOUSE_SENSOR_DATA,
+      data: SPEAKER_TYPE_DATA,
       description: '',
-      label: 'Mouse Sensor',
+      label: 'Speaker Type',
       onChange: (event: ChangeEvent<HTMLSelectElement>) => {
         createProductDispatch({
-          type: createProductAction.setMouseSensor,
-          payload: event.currentTarget.value as MouseSensor,
+          type: createProductAction.setSpeakerType,
+          payload: event.currentTarget.value as SpeakerType,
         });
       },
-      value: mouseSensor,
+      value: speakerType,
       required: true,
     },
   ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    MOUSE DPI
+  //    SPEAKER TOTAL WATTAGE
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // screenreader error/valid text elements
-  const [mouseDpiInputErrorText, mouseDpiInputValidText] =
+  const [speakerTotalWattageInputErrorText, speakerTotalWattageInputValidText] =
     AccessibleErrorValidTextElements({
-      inputElementKind: 'mouse dpi',
-      inputText: mouseDpi,
-      isInputTextFocused: isMouseDpiFocused,
-      isValidInputText: isMouseDpiValid,
-      regexValidationText: returnLargeIntegerValidationText({
-        content: mouseDpi,
-        contentKind: 'mouse dpi',
+      inputElementKind: 'speaker total wattage',
+      inputText: speakerTotalWattage,
+      isInputTextFocused: isSpeakerTotalWattageFocused,
+      isValidInputText: isSpeakerTotalWattageValid,
+      regexValidationText: returnMediumIntegerValidationText({
+        content: speakerTotalWattage,
+        contentKind: 'speaker total wattage',
       }),
     });
 
   // accessible text input element creator
-  const [createdMouseDpiTextInput] = returnAccessibleTextInputElements([
-    {
-      description: {
-        error: mouseDpiInputErrorText,
-        valid: mouseDpiInputValidText,
+  const [createdSpeakerTotalWattageTextInput] =
+    returnAccessibleTextInputElements([
+      {
+        description: {
+          error: speakerTotalWattageInputErrorText,
+          valid: speakerTotalWattageInputValidText,
+        },
+        inputText: speakerTotalWattage,
+        isValidInputText: isSpeakerTotalWattageValid,
+        label: 'Speaker Total Wattage (W)',
+        onBlur: () => {
+          createProductDispatch({
+            type: createProductAction.setIsSpeakerTotalWattageFocused,
+            payload: false,
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLInputElement>) => {
+          createProductDispatch({
+            type: createProductAction.setSpeakerTotalWattage,
+            payload: event.currentTarget.value,
+          });
+        },
+        onFocus: () => {
+          createProductDispatch({
+            type: createProductAction.setIsSpeakerTotalWattageFocused,
+            payload: true,
+          });
+        },
+        placeholder: 'Format: 0000',
+        required: true,
+        semanticName: 'speaker total wattage',
       },
-      inputText: mouseDpi,
-      isValidInputText: isMouseDpiValid,
-      label: 'Mouse DPI (dots per inch)',
-      onBlur: () => {
-        createProductDispatch({
-          type: createProductAction.setIsMouseDpiFocused,
-          payload: false,
-        });
-      },
-      onChange: (event: ChangeEvent<HTMLInputElement>) => {
-        createProductDispatch({
-          type: createProductAction.setMouseDpi,
-          payload: event.currentTarget.value,
-        });
-      },
-      onFocus: () => {
-        createProductDispatch({
-          type: createProductAction.setIsMouseDpiFocused,
-          payload: true,
-        });
-      },
-      placeholder: 'Format: 000000',
-      required: true,
-      semanticName: 'mouse dpi',
-    },
-  ]);
+    ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    MOUSE BUTTONS
+  //    SPEAKER FREQUENCY RESPONSE
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // screenreader error/valid text elements
-  const [mouseButtonsInputErrorText, mouseButtonsInputValidText] =
-    AccessibleErrorValidTextElements({
-      inputElementKind: 'mouse buttons quantity',
-      inputText: mouseButtons,
-      isInputTextFocused: isMouseButtonsFocused,
-      isValidInputText: isMouseButtonsValid,
-      regexValidationText: returnSmallIntegerValidationText({
-        content: mouseButtons,
-        contentKind: 'mouse buttons quantity',
-      }),
-    });
+  const [
+    speakerFrequencyResponseInputErrorText,
+    speakerFrequencyResponseInputValidText,
+  ] = AccessibleErrorValidTextElements({
+    inputElementKind: 'speaker frequency response',
+    inputText: speakerFrequencyResponse,
+    isInputTextFocused: isSpeakerFrequencyResponseFocused,
+    isValidInputText: isSpeakerFrequencyResponseValid,
+    regexValidationText: returnFrequencyResponseValidationText({
+      content: speakerFrequencyResponse,
+      contentKind: 'speaker frequency response',
+      maxLength: 14,
+      minLength: 8,
+    }),
+  });
 
   // accessible text input element creator
-  const [createdMouseButtonsTextInput] = returnAccessibleTextInputElements([
-    {
-      description: {
-        error: mouseButtonsInputErrorText,
-        valid: mouseButtonsInputValidText,
+  const [createdSpeakerFrequencyResponseTextInput] =
+    returnAccessibleTextInputElements([
+      {
+        description: {
+          error: speakerFrequencyResponseInputErrorText,
+          valid: speakerFrequencyResponseInputValidText,
+        },
+        inputText: speakerFrequencyResponse,
+        isValidInputText: isSpeakerFrequencyResponseValid,
+        label: 'Speaker Frequency Response',
+        maxLength: 14,
+        minLength: 8,
+        onBlur: () => {
+          createProductDispatch({
+            type: createProductAction.setIsSpeakerFrequencyResponseFocused,
+            payload: false,
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLInputElement>) => {
+          createProductDispatch({
+            type: createProductAction.setSpeakerFrequencyResponse,
+            payload: event.currentTarget.value,
+          });
+        },
+        onFocus: () => {
+          createProductDispatch({
+            type: createProductAction.setIsSpeakerFrequencyResponseFocused,
+            payload: true,
+          });
+        },
+        placeholder: '00 Hz - 00 kHz or 0Hz-0kHz',
+        required: true,
+        semanticName: 'speaker frequency response',
       },
-      inputText: mouseButtons,
-      isValidInputText: isMouseButtonsValid,
-      label: 'Mouse Buttons Quantity',
-      onBlur: () => {
-        createProductDispatch({
-          type: createProductAction.setIsMouseButtonsFocused,
-          payload: false,
-        });
-      },
-      onChange: (event: ChangeEvent<HTMLInputElement>) => {
-        createProductDispatch({
-          type: createProductAction.setMouseButtons,
-          payload: event.currentTarget.value,
-        });
-      },
-      onFocus: () => {
-        createProductDispatch({
-          type: createProductAction.setIsMouseButtonsFocused,
-          payload: true,
-        });
-      },
-      placeholder: 'Format: 00',
-      required: true,
-      semanticName: 'mouse buttons quantity',
-    },
-  ]);
+    ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    MOUSE COLOR
+  //    SPEAKER COLOR
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // screenreader error/valid text elements
-  const [mouseColorInputErrorText, mouseColorInputValidText] =
+  const [speakerColorInputErrorText, speakerColorInputValidText] =
     AccessibleErrorValidTextElements({
-      inputElementKind: 'mouse color',
-      inputText: mouseColor,
-      isInputTextFocused: isMouseColorFocused,
-      isValidInputText: isMouseColorValid,
+      inputElementKind: 'speaker color',
+      inputText: speakerColor,
+      isInputTextFocused: isSpeakerColorFocused,
+      isValidInputText: isSpeakerColorValid,
       regexValidationText: returnColorVariantValidationText({
-        content: mouseColor,
-        contentKind: 'mouse color',
+        content: speakerColor,
+        contentKind: 'speaker color',
         maxLength: 30,
         minLength: 2,
       }),
     });
 
   // accessible text input element creator
-  const [createdMouseColorTextInput] = returnAccessibleTextInputElements([
+  const [createdSpeakerColorTextInput] = returnAccessibleTextInputElements([
     {
       description: {
-        error: mouseColorInputErrorText,
-        valid: mouseColorInputValidText,
+        error: speakerColorInputErrorText,
+        valid: speakerColorInputValidText,
       },
-      inputText: mouseColor,
-      isValidInputText: isMouseColorValid,
-      label: 'Mouse Color',
+      inputText: speakerColor,
+      isValidInputText: isSpeakerColorValid,
+      label: 'Speaker Color',
       maxLength: 30,
       minLength: 2,
       onBlur: () => {
         createProductDispatch({
-          type: createProductAction.setIsMouseColorFocused,
+          type: createProductAction.setIsSpeakerColorFocused,
           payload: false,
         });
       },
       onChange: (event: ChangeEvent<HTMLInputElement>) => {
         createProductDispatch({
-          type: createProductAction.setMouseColor,
+          type: createProductAction.setSpeakerColor,
           payload: event.currentTarget.value,
         });
       },
       onFocus: () => {
         createProductDispatch({
-          type: createProductAction.setIsMouseColorFocused,
+          type: createProductAction.setIsSpeakerColorFocused,
           payload: true,
         });
       },
-      placeholder: 'Enter mouse color',
+      placeholder: 'Enter speaker color',
       required: true,
-      semanticName: 'mouse color',
+      semanticName: 'speaker color',
     },
   ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    MOUSE INTERFACE
+  //    SPEAKER INTERFACE
   // ╰─────────────────────────────────────────────────────────────────╯
-  const [createdMouseInterfaceSelectInput] =
+  const [createdSpeakerInterfaceSelectInput] =
     returnAccessibleSelectInputElements([
       {
-        data: PERIPHERALS_INTERFACE_DATA,
+        data: SPEAKER_INTERFACE_DATA,
         description: '',
-        label: 'Mouse Interface',
+        label: 'Speaker Interface',
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           createProductDispatch({
-            type: createProductAction.setMouseInterface,
-            payload: event.currentTarget.value as PeripheralsInterface,
+            type: createProductAction.setSpeakerInterface,
+            payload: event.currentTarget.value as SpeakerInterface,
           });
         },
-        value: mouseInterface,
+        value: speakerInterface,
         required: true,
       },
     ]);
 
   // ╔═════════════════════════════════════════════════════════════════╗
-  //   MOUSE ADDITIONAL FIELDS
+  //   SPEAKER ADDITIONAL FIELDS
   // ╚═════════════════════════════════════════════════════════════════╝
 
   // ╭─────────────────────────────────────────────────────────────────╮
   //    ADD ADDITIONAL FIELD BUTTON
   // ╰─────────────────────────────────────────────────────────────────╯
-  const [createdAddMouseFieldsAdditionalMapButton] =
+  const [createdAddSpeakerFieldsAdditionalMapButton] =
     returnAccessibleButtonElements([
       {
         buttonLabel: 'Add',
@@ -429,7 +440,7 @@ function CreateMouse({
         leftIcon: <TbPlus />,
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
           createProductDispatch({
-            type: createProductAction.setMouseFieldsAdditionalMap,
+            type: createProductAction.setSpeakerFieldsAdditionalMap,
             payload: {
               operation: 'add',
               data: ['', ''],
@@ -437,7 +448,7 @@ function CreateMouse({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreMouseFieldsAdditionalMapFocused,
+            type: createProductAction.setAreSpeakerFieldsAdditionalMapFocused,
             payload: {
               operation: 'add',
               data: [false, false],
@@ -445,7 +456,7 @@ function CreateMouse({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreMouseFieldsAdditionalMapValid,
+            type: createProductAction.setAreSpeakerFieldsAdditionalMapValid,
             payload: {
               operation: 'add',
               data: [false, false],
@@ -460,23 +471,23 @@ function CreateMouse({
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // returns an array of tuples containing the error and valid text elements for each field name
-  const mouseFieldsAdditionalMapKeysErrorValidTextElements: [
+  const speakerFieldsAdditionalMapKeysErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(mouseFieldsAdditionalMap).map((keyFieldValue) => {
+  ][] = Array.from(speakerFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [field, _value]] = keyFieldValue;
 
-    // screenreader error/valid text elements that are consumed by the text input element creator
+    // screenreader accessible error/valid text elements that are consumed by the text input element creator
     const [
-      mouseFieldsAdditionalMapKeysInputErrorText,
-      mouseFieldsAdditionalMapKeysInputValidText,
+      speakerFieldsAdditionalMapKeysInputErrorText,
+      speakerFieldsAdditionalMapKeysInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field name ${mapKey + 1}`,
       inputText: field,
       isInputTextFocused:
-        areMouseFieldsAdditionalMapFocused.get(mapKey)?.[0] ?? false,
+        areSpeakerFieldsAdditionalMapFocused.get(mapKey)?.[0] ?? false,
       isValidInputText:
-        areMouseFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
+        areSpeakerFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
       regexValidationText: returnObjectKeyValidationText({
         content: field,
         contentKind: `additional field name ${mapKey + 1}`,
@@ -486,8 +497,8 @@ function CreateMouse({
     });
 
     return [
-      mouseFieldsAdditionalMapKeysInputErrorText,
-      mouseFieldsAdditionalMapKeysInputValidText,
+      speakerFieldsAdditionalMapKeysInputErrorText,
+      speakerFieldsAdditionalMapKeysInputValidText,
     ];
   });
 
@@ -496,23 +507,23 @@ function CreateMouse({
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // returns an array of tuples containing the error and valid text elements for each field value
-  const mouseFieldsAdditionalMapValuesErrorValidTextElements: [
+  const speakerFieldsAdditionalMapValuesErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(mouseFieldsAdditionalMap).map((keyFieldValue) => {
+  ][] = Array.from(speakerFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [_field, value]] = keyFieldValue;
 
-    // screenreader error/valid text elements that are consumed by the text input element creator
+    // screenreader accessible error/valid text elements that are consumed by the text input element creator
     const [
-      mouseFieldsAdditionalMapValuesInputErrorText,
-      mouseFieldsAdditionalMapValuesInputValidText,
+      speakerFieldsAdditionalMapValuesInputErrorText,
+      speakerFieldsAdditionalMapValuesInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field value ${mapKey + 1}`,
       inputText: value,
       isInputTextFocused:
-        areMouseFieldsAdditionalMapFocused.get(mapKey)?.[1] ?? false,
+        areSpeakerFieldsAdditionalMapFocused.get(mapKey)?.[1] ?? false,
       isValidInputText:
-        areMouseFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
+        areSpeakerFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
       regexValidationText: returnUserDefinedFieldValueValidationText({
         content: value,
         contentKind: `additional field value ${mapKey + 1}`,
@@ -522,34 +533,36 @@ function CreateMouse({
     });
 
     return [
-      mouseFieldsAdditionalMapValuesInputErrorText,
-      mouseFieldsAdditionalMapValuesInputValidText,
+      speakerFieldsAdditionalMapValuesInputErrorText,
+      speakerFieldsAdditionalMapValuesInputValidText,
     ];
   });
 
-  const createdMouseFieldsAdditionalMapTextInputElements = Array.from(
-    mouseFieldsAdditionalMap
+  const createdSpeakerFieldsAdditionalMapTextInputElements = Array.from(
+    speakerFieldsAdditionalMap
   ).map((keyFieldValue) => {
     const [mapKey, [field, value]] = keyFieldValue;
 
     // ╭─────────────────────────────────────────────────────────────────╮
     //    ADDITIONAL FIELD TEXT INPUT => FIELD NAME
     // ╰─────────────────────────────────────────────────────────────────╯
-    const mouseFieldsAdditionalMapKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const speakerFieldsAdditionalMapKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
-          error: mouseFieldsAdditionalMapKeysErrorValidTextElements[mapKey][0],
-          valid: mouseFieldsAdditionalMapKeysErrorValidTextElements[mapKey][1],
+          error:
+            speakerFieldsAdditionalMapKeysErrorValidTextElements[mapKey][0],
+          valid:
+            speakerFieldsAdditionalMapKeysErrorValidTextElements[mapKey][1],
         },
         inputText: field,
         isValidInputText:
-          areMouseFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
+          areSpeakerFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
         label: `Name ${mapKey + 1}`,
         maxLength: 75,
         minLength: 1,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreMouseFieldsAdditionalMapFocused,
+            type: createProductAction.setAreSpeakerFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -560,7 +573,7 @@ function CreateMouse({
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setMouseFieldsAdditionalMap,
+            type: createProductAction.setSpeakerFieldsAdditionalMap,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -576,7 +589,7 @@ function CreateMouse({
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreMouseFieldsAdditionalMapFocused,
+            type: createProductAction.setAreSpeakerFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -593,23 +606,23 @@ function CreateMouse({
     // ╭─────────────────────────────────────────────────────────────────╮
     //    ADDITIONAL FIELD TEXT INPUT => FIELD VALUE
     // ╰─────────────────────────────────────────────────────────────────╯
-    const mouseFieldsAdditionalMapValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const speakerFieldsAdditionalMapValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
           error:
-            mouseFieldsAdditionalMapValuesErrorValidTextElements[mapKey][0],
+            speakerFieldsAdditionalMapValuesErrorValidTextElements[mapKey][0],
           valid:
-            mouseFieldsAdditionalMapValuesErrorValidTextElements[mapKey][1],
+            speakerFieldsAdditionalMapValuesErrorValidTextElements[mapKey][1],
         },
         inputText: value,
         isValidInputText:
-          areMouseFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
+          areSpeakerFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
         label: `Value ${mapKey + 1}`,
         maxLength: 2000,
         minLength: 2,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreMouseFieldsAdditionalMapFocused,
+            type: createProductAction.setAreSpeakerFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -620,7 +633,7 @@ function CreateMouse({
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setMouseFieldsAdditionalMap,
+            type: createProductAction.setSpeakerFieldsAdditionalMap,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -636,7 +649,7 @@ function CreateMouse({
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreMouseFieldsAdditionalMapFocused,
+            type: createProductAction.setAreSpeakerFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -651,11 +664,11 @@ function CreateMouse({
       };
 
     const [
-      createdMouseFieldsAdditionalMapKeysTextAreaInput,
-      createdMouseFieldsAdditionalMapValuesTextAreaInput,
+      createdSpeakerFieldsAdditionalMapKeysTextAreaInput,
+      createdSpeakerFieldsAdditionalMapValuesTextAreaInput,
     ] = returnAccessibleTextAreaInputElements([
-      mouseFieldsAdditionalMapKeysTextInputCreatorInfo,
-      mouseFieldsAdditionalMapValuesTextInputCreatorInfo,
+      speakerFieldsAdditionalMapKeysTextInputCreatorInfo,
+      speakerFieldsAdditionalMapValuesTextInputCreatorInfo,
     ]);
 
     // ╭─────────────────────────────────────────────────────────────────╮
@@ -666,7 +679,7 @@ function CreateMouse({
         buttonLabel: 'Delete',
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
           createProductDispatch({
-            type: createProductAction.setMouseFieldsAdditionalMap,
+            type: createProductAction.setSpeakerFieldsAdditionalMap,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -674,7 +687,7 @@ function CreateMouse({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreMouseFieldsAdditionalMapFocused,
+            type: createProductAction.setAreSpeakerFieldsAdditionalMapFocused,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -682,7 +695,7 @@ function CreateMouse({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreMouseFieldsAdditionalMapValid,
+            type: createProductAction.setAreSpeakerFieldsAdditionalMapValid,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -707,16 +720,16 @@ function CreateMouse({
     );
 
     return (
-      <Stack key={`mouseFieldsAdditionalMap-${mapKey}`} pt={padding} w="100%">
+      <Stack key={`speakerFieldsAdditionalMap-${mapKey}`} pt={padding} w="100%">
         <Group position="apart">
-          <Text size="md" weight={600}>{`Additional Mouse field ${
+          <Text size="md" weight={600}>{`Additional Speaker field ${
             mapKey + 1
           }`}</Text>
           {displayDeleteButton}
         </Group>
         <Group position="apart">
-          {createdMouseFieldsAdditionalMapKeysTextAreaInput}
-          {createdMouseFieldsAdditionalMapValuesTextAreaInput}
+          {createdSpeakerFieldsAdditionalMapKeysTextAreaInput}
+          {createdSpeakerFieldsAdditionalMapValuesTextAreaInput}
         </Group>
       </Stack>
     );
@@ -728,15 +741,15 @@ function CreateMouse({
   //  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
   // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
-  const displayMouseFieldsAdditionalMapButton = (
+  const displaySpeakerFieldsAdditionalMapButton = (
     <Tooltip
-      label={`Add new additional field ${mouseFieldsAdditionalMap.size + 1}`}
+      label={`Add new additional field ${speakerFieldsAdditionalMap.size + 1}`}
     >
-      <Group>{createdAddMouseFieldsAdditionalMapButton}</Group>
+      <Group>{createdAddSpeakerFieldsAdditionalMapButton}</Group>
     </Tooltip>
   );
 
-  const displayMouseSpecificationsInputs = (
+  const displaySpeakerSpecificationsInputs = (
     <Group
       py={padding}
       position="apart"
@@ -744,19 +757,19 @@ function CreateMouse({
       w="100%"
     >
       <Group w="100%" position="apart">
-        <Title order={4}>Mouse Specifications</Title>
-        {displayMouseFieldsAdditionalMapButton}
+        <Title order={4}>Speaker Specifications</Title>
+        {displaySpeakerFieldsAdditionalMapButton}
       </Group>
-      {createdMouseSensorSelectInput}
-      {createdMouseDpiTextInput}
-      {createdMouseButtonsTextInput}
-      {createdMouseColorTextInput}
-      {createdMouseInterfaceSelectInput}
-      {createdMouseFieldsAdditionalMapTextInputElements}
+      {createdSpeakerTypeSelectInput}
+      {createdSpeakerTotalWattageTextInput}
+      {createdSpeakerFrequencyResponseTextInput}
+      {createdSpeakerColorTextInput}
+      {createdSpeakerInterfaceSelectInput}
+      {createdSpeakerFieldsAdditionalMapTextInputElements}
     </Group>
   );
 
-  return displayMouseSpecificationsInputs;
+  return displaySpeakerSpecificationsInputs;
 }
 
-export default CreateMouse;
+export default CreateSpeaker;

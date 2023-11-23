@@ -45,8 +45,8 @@ import {
 } from '../types';
 
 type CreateRamProps = {
-  areRamFieldsAdditionalFocused: Map<number, [boolean, boolean]>;
-  areRamFieldsAdditionalValid: Map<number, [boolean, boolean]>;
+  areRamFieldsAdditionalMapFocused: Map<number, [boolean, boolean]>;
+  areRamFieldsAdditionalMapValid: Map<number, [boolean, boolean]>;
   borderColor: string;
   createProductAction: CreateProductAction;
   createProductDispatch: React.Dispatch<CreateProductDispatch>;
@@ -66,7 +66,7 @@ type CreateRamProps = {
   padding: MantineNumberSize;
   ramColor: string;
   ramDataRate: string;
-  ramFieldsAdditional: Map<number, [string, string]>;
+  ramFieldsAdditionalMap: Map<number, [string, string]>;
   ramModulesCapacity: string;
   ramModulesCapacityUnit: MemoryUnit;
   ramModulesQuantity: string;
@@ -76,8 +76,8 @@ type CreateRamProps = {
 };
 
 function CreateRam({
-  areRamFieldsAdditionalFocused,
-  areRamFieldsAdditionalValid,
+  areRamFieldsAdditionalMapFocused,
+  areRamFieldsAdditionalMapValid,
   borderColor,
   createProductAction,
   createProductDispatch,
@@ -97,7 +97,7 @@ function CreateRam({
   padding,
   ramColor,
   ramDataRate,
-  ramFieldsAdditional,
+  ramFieldsAdditionalMap,
   ramModulesCapacity,
   ramModulesCapacityUnit,
   ramModulesQuantity,
@@ -105,11 +105,11 @@ function CreateRam({
   ramType,
   ramVoltage,
 }: CreateRamProps) {
-  // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
   //  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
   //    VALIDATION USE EFFECTS
   //  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
-  // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+  // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
   // ╭─────────────────────────────────────────────────────────────────╮
   //    RAM DATA RATE
@@ -207,7 +207,7 @@ function CreateRam({
   //    RAM FIELDS ADDITIONAL
   // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
-    const currentlyUpdatingRamFieldAdditional = ramFieldsAdditional.get(
+    const currentlyUpdatingRamFieldAdditional = ramFieldsAdditionalMap.get(
       currentlySelectedAdditionalFieldIndex
     );
 
@@ -219,7 +219,7 @@ function CreateRam({
 
     const isKeyValid = OBJECT_KEY_REGEX.test(key);
     createProductDispatch({
-      type: createProductAction.setAreRamFieldsAdditionalValid,
+      type: createProductAction.setAreRamFieldsAdditionalMapValid,
       payload: {
         operation: 'update',
         data: isKeyValid,
@@ -230,7 +230,7 @@ function CreateRam({
 
     const isValueValid = USER_DEFINED_VALUE_REGEX.test(value);
     createProductDispatch({
-      type: createProductAction.setAreRamFieldsAdditionalValid,
+      type: createProductAction.setAreRamFieldsAdditionalMapValid,
       payload: {
         operation: 'update',
         data: isValueValid,
@@ -239,10 +239,10 @@ function CreateRam({
       },
     });
   }, [
-    createProductAction.setAreRamFieldsAdditionalValid,
+    createProductAction.setAreRamFieldsAdditionalMapValid,
     createProductDispatch,
     currentlySelectedAdditionalFieldIndex,
-    ramFieldsAdditional,
+    ramFieldsAdditionalMap,
   ]);
 
   // ╔═════════════════════════════════════════════════════════════════╗
@@ -262,7 +262,7 @@ function CreateRam({
       !isRamTimingValid;
 
     const areRamInputsUserDefinedInError = Array.from(
-      areRamFieldsAdditionalValid
+      areRamFieldsAdditionalMapValid
     ).some(([_key, value]) => !value);
 
     const areRamInputsInError =
@@ -276,7 +276,7 @@ function CreateRam({
       },
     });
   }, [
-    areRamFieldsAdditionalValid,
+    areRamFieldsAdditionalMapValid,
     createProductAction.setStepsInError,
     createProductDispatch,
     isRamColorValid,
@@ -287,11 +287,11 @@ function CreateRam({
     isRamVoltageValid,
   ]);
 
-  // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
   //  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
   //    INPUT CREATION
   //  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
-  // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+  // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
   // ╭─────────────────────────────────────────────────────────────────╮
   //    RAM DATA RATE
@@ -655,61 +655,63 @@ function CreateRam({
   // ╭─────────────────────────────────────────────────────────────────╮
   //    ADD ADDITIONAL FIELD BUTTON
   // ╰─────────────────────────────────────────────────────────────────╯
-  const [createdAddRamFieldsAdditionalButton] = returnAccessibleButtonElements([
-    {
-      buttonLabel: 'Add',
-      semanticDescription: 'Add new additional field',
-      semanticName: 'Add new field',
-      leftIcon: <TbPlus />,
-      buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
-        createProductDispatch({
-          type: createProductAction.setRamFieldsAdditional,
-          payload: {
-            operation: 'add',
-            data: ['', ''],
-          },
-        });
+  const [createdAddRamFieldsAdditionalMapButton] =
+    returnAccessibleButtonElements([
+      {
+        buttonLabel: 'Add',
+        semanticDescription: 'Add new additional field',
+        semanticName: 'Add new field',
+        leftIcon: <TbPlus />,
+        buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
+          createProductDispatch({
+            type: createProductAction.setRamFieldsAdditionalMap,
+            payload: {
+              operation: 'add',
+              data: ['', ''],
+            },
+          });
 
-        createProductDispatch({
-          type: createProductAction.setAreRamFieldsAdditionalFocused,
-          payload: {
-            operation: 'add',
-            data: [false, false],
-          },
-        });
+          createProductDispatch({
+            type: createProductAction.setAreRamFieldsAdditionalMapFocused,
+            payload: {
+              operation: 'add',
+              data: [false, false],
+            },
+          });
 
-        createProductDispatch({
-          type: createProductAction.setAreRamFieldsAdditionalValid,
-          payload: {
-            operation: 'add',
-            data: [false, false],
-          },
-        });
+          createProductDispatch({
+            type: createProductAction.setAreRamFieldsAdditionalMapValid,
+            payload: {
+              operation: 'add',
+              data: [false, false],
+            },
+          });
+        },
       },
-    },
-  ]);
+    ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    ERROR/VALID ELEMENTS TUPLE => FIELD NAMES
+  //    SCREENREADER ERROR/VALID ELEMENTS TUPLE => FIELD NAMES
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // returns an array of tuples containing the error and valid text elements for each field name
-  const ramFieldsAdditionalKeysErrorValidTextElements: [
+  const ramFieldsAdditionalMapKeysErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(ramFieldsAdditional).map((keyFieldValue) => {
+  ][] = Array.from(ramFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [field, _value]] = keyFieldValue;
 
     // screenreader error/valid text elements that are consumed by the text input element creator
     const [
-      ramFieldsAdditionalKeysInputErrorText,
-      ramFieldsAdditionalKeysInputValidText,
+      ramFieldsAdditionalMapKeysInputErrorText,
+      ramFieldsAdditionalMapKeysInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field name ${mapKey + 1}`,
       inputText: field,
       isInputTextFocused:
-        areRamFieldsAdditionalFocused.get(mapKey)?.[0] ?? false,
-      isValidInputText: areRamFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+        areRamFieldsAdditionalMapFocused.get(mapKey)?.[0] ?? false,
+      isValidInputText:
+        areRamFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
       regexValidationText: returnObjectKeyValidationText({
         content: field,
         contentKind: `additional field name ${mapKey + 1}`,
@@ -719,32 +721,33 @@ function CreateRam({
     });
 
     return [
-      ramFieldsAdditionalKeysInputErrorText,
-      ramFieldsAdditionalKeysInputValidText,
+      ramFieldsAdditionalMapKeysInputErrorText,
+      ramFieldsAdditionalMapKeysInputValidText,
     ];
   });
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    ERROR/VALID ELEMENTS TUPLE => FIELD VALUES
+  //    SCREENREADER ERROR/VALID ELEMENTS TUPLE => FIELD VALUES
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // returns an array of tuples containing the error and valid text elements for each field value
-  const ramFieldsAdditionalValuesErrorValidTextElements: [
+  const ramFieldsAdditionalMapValuesErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(ramFieldsAdditional).map((keyFieldValue) => {
+  ][] = Array.from(ramFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [_field, value]] = keyFieldValue;
 
     // screenreader error/valid text elements that are consumed by the text input element creator
     const [
-      ramFieldsAdditionalValuesInputErrorText,
-      ramFieldsAdditionalValuesInputValidText,
+      ramFieldsAdditionalMapValuesInputErrorText,
+      ramFieldsAdditionalMapValuesInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field value ${mapKey + 1}`,
       inputText: value,
       isInputTextFocused:
-        areRamFieldsAdditionalFocused.get(mapKey)?.[1] ?? false,
-      isValidInputText: areRamFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+        areRamFieldsAdditionalMapFocused.get(mapKey)?.[1] ?? false,
+      isValidInputText:
+        areRamFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
       regexValidationText: returnUserDefinedFieldValueValidationText({
         content: value,
         contentKind: `additional field value ${mapKey + 1}`,
@@ -754,33 +757,34 @@ function CreateRam({
     });
 
     return [
-      ramFieldsAdditionalValuesInputErrorText,
-      ramFieldsAdditionalValuesInputValidText,
+      ramFieldsAdditionalMapValuesInputErrorText,
+      ramFieldsAdditionalMapValuesInputValidText,
     ];
   });
 
-  const createdRamFieldsAdditionalTextInputElements = Array.from(
-    ramFieldsAdditional
+  const createdRamFieldsAdditionalMapTextInputElements = Array.from(
+    ramFieldsAdditionalMap
   ).map((keyFieldValue) => {
     const [mapKey, [field, value]] = keyFieldValue;
 
     // ╭─────────────────────────────────────────────────────────────────╮
     //    ADDITIONAL FIELD TEXT INPUT => FIELD NAME
     // ╰─────────────────────────────────────────────────────────────────╯
-    const ramFieldsAdditionalKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const ramFieldsAdditionalMapKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
-          error: ramFieldsAdditionalKeysErrorValidTextElements[mapKey][0],
-          valid: ramFieldsAdditionalKeysErrorValidTextElements[mapKey][1],
+          error: ramFieldsAdditionalMapKeysErrorValidTextElements[mapKey][0],
+          valid: ramFieldsAdditionalMapKeysErrorValidTextElements[mapKey][1],
         },
         inputText: field,
-        isValidInputText: areRamFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+        isValidInputText:
+          areRamFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
         label: `Name ${mapKey + 1}`,
         maxLength: 75,
         minLength: 1,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreRamFieldsAdditionalFocused,
+            type: createProductAction.setAreRamFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -791,7 +795,7 @@ function CreateRam({
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setRamFieldsAdditional,
+            type: createProductAction.setRamFieldsAdditionalMap,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -807,7 +811,7 @@ function CreateRam({
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreRamFieldsAdditionalFocused,
+            type: createProductAction.setAreRamFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -824,20 +828,21 @@ function CreateRam({
     // ╭─────────────────────────────────────────────────────────────────╮
     //    ADDITIONAL FIELD TEXT INPUT => FIELD VALUE
     // ╰─────────────────────────────────────────────────────────────────╯
-    const ramFieldsAdditionalValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const ramFieldsAdditionalMapValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
-          error: ramFieldsAdditionalValuesErrorValidTextElements[mapKey][0],
-          valid: ramFieldsAdditionalValuesErrorValidTextElements[mapKey][1],
+          error: ramFieldsAdditionalMapValuesErrorValidTextElements[mapKey][0],
+          valid: ramFieldsAdditionalMapValuesErrorValidTextElements[mapKey][1],
         },
         inputText: value,
-        isValidInputText: areRamFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+        isValidInputText:
+          areRamFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
         label: `Value ${mapKey + 1}`,
         maxLength: 2000,
         minLength: 2,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreRamFieldsAdditionalFocused,
+            type: createProductAction.setAreRamFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -848,7 +853,7 @@ function CreateRam({
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setRamFieldsAdditional,
+            type: createProductAction.setRamFieldsAdditionalMap,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -864,7 +869,7 @@ function CreateRam({
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreRamFieldsAdditionalFocused,
+            type: createProductAction.setAreRamFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -879,11 +884,11 @@ function CreateRam({
       };
 
     const [
-      createdRamFieldsAdditionalKeysTextAreaInput,
-      createdRamFieldsAdditionalValuesTextAreaInput,
+      createdRamFieldsAdditionalMapKeysTextAreaInput,
+      createdRamFieldsAdditionalMapValuesTextAreaInput,
     ] = returnAccessibleTextAreaInputElements([
-      ramFieldsAdditionalKeysTextInputCreatorInfo,
-      ramFieldsAdditionalValuesTextInputCreatorInfo,
+      ramFieldsAdditionalMapKeysTextInputCreatorInfo,
+      ramFieldsAdditionalMapValuesTextInputCreatorInfo,
     ]);
 
     // ╭─────────────────────────────────────────────────────────────────╮
@@ -894,7 +899,7 @@ function CreateRam({
         buttonLabel: 'Delete',
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
           createProductDispatch({
-            type: createProductAction.setRamFieldsAdditional,
+            type: createProductAction.setRamFieldsAdditionalMap,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -902,7 +907,7 @@ function CreateRam({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreRamFieldsAdditionalFocused,
+            type: createProductAction.setAreRamFieldsAdditionalMapFocused,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -910,7 +915,7 @@ function CreateRam({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreRamFieldsAdditionalValid,
+            type: createProductAction.setAreRamFieldsAdditionalMapValid,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -935,7 +940,7 @@ function CreateRam({
     );
 
     return (
-      <Stack key={`ramFieldsAdditional-${mapKey}`} pt={padding} w="100%">
+      <Stack key={`ramFieldsAdditionalMap-${mapKey}`} pt={padding} w="100%">
         <Group position="apart">
           <Text size="md" weight={600}>{`Additional Ram field ${
             mapKey + 1
@@ -943,22 +948,24 @@ function CreateRam({
           {displayDeleteButton}
         </Group>
         <Group position="apart">
-          {createdRamFieldsAdditionalKeysTextAreaInput}
-          {createdRamFieldsAdditionalValuesTextAreaInput}
+          {createdRamFieldsAdditionalMapKeysTextAreaInput}
+          {createdRamFieldsAdditionalMapValuesTextAreaInput}
         </Group>
       </Stack>
     );
   });
 
-  // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
   //  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
   //    INPUT DISPLAY
   //  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
-  // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+  // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
-  const displayRamFieldsAdditionalButton = (
-    <Tooltip label={`Add new additional field ${ramFieldsAdditional.size + 1}`}>
-      <Group>{createdAddRamFieldsAdditionalButton}</Group>
+  const displayRamFieldsAdditionalMapButton = (
+    <Tooltip
+      label={`Add new additional field ${ramFieldsAdditionalMap.size + 1}`}
+    >
+      <Group>{createdAddRamFieldsAdditionalMapButton}</Group>
     </Tooltip>
   );
 
@@ -971,7 +978,7 @@ function CreateRam({
     >
       <Group w="100%" position="apart">
         <Title order={4}>Memory (RAM) Specifications</Title>
-        {displayRamFieldsAdditionalButton}
+        {displayRamFieldsAdditionalMapButton}
       </Group>
       {createdRamDataRateTextInput}
       {createdRamModulesQuantityTextInput}
@@ -981,7 +988,7 @@ function CreateRam({
       {createdRamColorTextInput}
       {createdRamVoltageTextInput}
       {createdRamTimingTextInput}
-      {createdRamFieldsAdditionalTextInputElements}
+      {createdRamFieldsAdditionalMapTextInputElements}
     </Group>
   );
 

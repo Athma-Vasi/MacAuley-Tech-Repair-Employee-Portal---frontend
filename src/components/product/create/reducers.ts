@@ -566,15 +566,15 @@ function setAccessoryInterface_CreateProductReducer(
 // ╰─────────────────────────────────────────────────────────────────╯
 /**
  * This reducer function contains three operations that are used to update the
- * accessoryFieldsAdditional state.
- * @description add: adds a new key-value pair to the accessoryFieldsAdditional state
+ * accessoryFieldsAdditionalMap state.
+ * @description add: adds a new key-value pair to the accessoryFieldsAdditionalMap state
  * @description remove: clones the state, deletes the key-value pair, and iterates over the map
     - with the callback fn index to use as the key for the new map
     - this is done because the indices are used as the keys that access the error/valid elements array
     - and must be consecutive as removal of a key-value pair will leave a gap in the indices
- * @description update: updates either the key or value from the accessoryFieldsAdditional state
+ * @description update: updates either the key or value from the accessoryFieldsAdditionalMap state
  */
-function setAccessoryFieldsAdditional_CreateProductReducer(
+function setAccessoryFieldsAdditionalMap_CreateProductReducer(
   state: CreateProductState,
   action: CreateProductDispatch
 ): CreateProductState {
@@ -582,52 +582,52 @@ function setAccessoryFieldsAdditional_CreateProductReducer(
 
   switch (operation) {
     case 'add': {
-      const accessoryFieldsAdditionalClone = structuredClone(
-        state.accessoryFieldsAdditional
+      const accessoryFieldsAdditionalMapClone = structuredClone(
+        state.accessoryFieldsAdditionalMap
       );
 
       const { data } = action.payload as AdditionalFieldsAdd;
-      const prevSize = accessoryFieldsAdditionalClone.size;
-      accessoryFieldsAdditionalClone.set(prevSize, data);
+      const prevSize = accessoryFieldsAdditionalMapClone.size;
+      accessoryFieldsAdditionalMapClone.set(prevSize, data);
 
       return {
         ...state,
-        accessoryFieldsAdditional: accessoryFieldsAdditionalClone,
+        accessoryFieldsAdditionalMap: accessoryFieldsAdditionalMapClone,
       };
     }
 
     case 'remove': {
-      const accessoryFieldsAdditionalClone = structuredClone(
-        state.accessoryFieldsAdditional
+      const accessoryFieldsAdditionalMapClone = structuredClone(
+        state.accessoryFieldsAdditionalMap
       );
 
       const { index } = action.payload as AdditionalFieldsRemove;
-      accessoryFieldsAdditionalClone.delete(index);
+      accessoryFieldsAdditionalMapClone.delete(index);
 
-      const filteredAccessoryFieldsAdditional = new Map<
+      const filteredAccessoryFieldsAdditionalMap = new Map<
         number,
         [string, string]
       >();
 
-      Array.from(accessoryFieldsAdditionalClone).forEach(
+      Array.from(accessoryFieldsAdditionalMapClone).forEach(
         (mapIdxKeyVal, arrayIdx) => {
           const [_mapIdx, keyVal] = mapIdxKeyVal as [number, [string, string]];
-          filteredAccessoryFieldsAdditional.set(arrayIdx, keyVal);
+          filteredAccessoryFieldsAdditionalMap.set(arrayIdx, keyVal);
         }
       );
 
       return {
         ...state,
-        accessoryFieldsAdditional: filteredAccessoryFieldsAdditional,
+        accessoryFieldsAdditionalMap: filteredAccessoryFieldsAdditionalMap,
       };
     }
     case 'update': {
-      const accessoryFieldsAdditionalClone = structuredClone(
-        state.accessoryFieldsAdditional
+      const accessoryFieldsAdditionalMapClone = structuredClone(
+        state.accessoryFieldsAdditionalMap
       );
 
       const { data, index, kind } = action.payload as AdditionalFieldsUpdate;
-      const prevKeyVal = accessoryFieldsAdditionalClone.get(index);
+      const prevKeyVal = accessoryFieldsAdditionalMapClone.get(index);
 
       if (!prevKeyVal) {
         return state;
@@ -635,12 +635,12 @@ function setAccessoryFieldsAdditional_CreateProductReducer(
 
       const [prevKey, prevValue] = prevKeyVal;
       kind === 'key'
-        ? accessoryFieldsAdditionalClone.set(index, [data, prevValue])
-        : accessoryFieldsAdditionalClone.set(index, [prevKey, data]);
+        ? accessoryFieldsAdditionalMapClone.set(index, [data, prevValue])
+        : accessoryFieldsAdditionalMapClone.set(index, [prevKey, data]);
 
       return {
         ...state,
-        accessoryFieldsAdditional: accessoryFieldsAdditionalClone,
+        accessoryFieldsAdditionalMap: accessoryFieldsAdditionalMapClone,
       };
     }
     default:
@@ -654,17 +654,17 @@ function setAccessoryFieldsAdditional_CreateProductReducer(
 
 /**
  * This reducer function contains three operations that are used to update the
- * areAccessoryFieldsAdditionalFocused state.
- * @description add: adds a new key-value pair to the areAccessoryFieldsAdditionalFocused state
+ * areAccessoryFieldsAdditionalMapFocused state.
+ * @description add: adds a new key-value pair to the areAccessoryFieldsAdditionalMapFocused state
  * @description remove:
    - clones the state, deletes the key-value pair, and iterates over the map
    - with the callback fn index to use as the key for the new map
-   - this is done because the indices are used as the keys by the mapped over accessoryFieldsAdditional state to generate the text elements
-   - that access the areAccessoryFieldsAdditionalFocused state Map to determine if the appropriate text element should be focused/blurred
+   - this is done because the indices are used as the keys by the mapped over accessoryFieldsAdditionalMap state to generate the text elements
+   - that access the areAccessoryFieldsAdditionalMapFocused state Map to determine if the appropriate text element should be focused/blurred
    - and must be consecutive as removal of a key-value pair will leave a gap in the indices
-  * @description update: updates either the key or value from the areAccessoryFieldsAdditionalFocused state
+  * @description update: updates either the key or value from the areAccessoryFieldsAdditionalMapFocused state
  */
-function setAreAccessoryFieldsAdditionalFocused_CreateProductReducer(
+function setAreAccessoryFieldsAdditionalMapFocused_CreateProductReducer(
   state: CreateProductState,
   action: CreateProductDispatch
 ): CreateProductState {
@@ -672,58 +672,58 @@ function setAreAccessoryFieldsAdditionalFocused_CreateProductReducer(
 
   switch (operation) {
     case 'add': {
-      const areAccessoryFieldsAdditionalFocusedClone = structuredClone(
-        state.areAccessoryFieldsAdditionalFocused
+      const areAccessoryFieldsAdditionalMapFocusedClone = structuredClone(
+        state.areAccessoryFieldsAdditionalMapFocused
       );
 
       const { data } = action.payload as AdditionalFieldsValidFocusedAdd;
-      const prevSize = areAccessoryFieldsAdditionalFocusedClone.size;
-      areAccessoryFieldsAdditionalFocusedClone.set(prevSize, data);
+      const prevSize = areAccessoryFieldsAdditionalMapFocusedClone.size;
+      areAccessoryFieldsAdditionalMapFocusedClone.set(prevSize, data);
 
       return {
         ...state,
-        areAccessoryFieldsAdditionalFocused:
-          areAccessoryFieldsAdditionalFocusedClone,
+        areAccessoryFieldsAdditionalMapFocused:
+          areAccessoryFieldsAdditionalMapFocusedClone,
       };
     }
     case 'remove': {
-      const areAccessoryFieldsAdditionalFocusedClone = structuredClone(
-        state.areAccessoryFieldsAdditionalFocused
+      const areAccessoryFieldsAdditionalMapFocusedClone = structuredClone(
+        state.areAccessoryFieldsAdditionalMapFocused
       );
 
       const { index } = action.payload as AdditionalFieldsValidFocusedRemove;
-      areAccessoryFieldsAdditionalFocusedClone.delete(index);
+      areAccessoryFieldsAdditionalMapFocusedClone.delete(index);
 
-      const filteredAreAccessoryFieldsAdditionalFocused = new Map<
+      const filteredAreAccessoryFieldsAdditionalMapFocused = new Map<
         number,
         [boolean, boolean]
       >();
 
-      Array.from(areAccessoryFieldsAdditionalFocusedClone).forEach(
+      Array.from(areAccessoryFieldsAdditionalMapFocusedClone).forEach(
         (mapIdxKeyVal, arrayIdx) => {
           const [_mapIdx, keyVal] = mapIdxKeyVal as [
             number,
             [boolean, boolean]
           ];
 
-          filteredAreAccessoryFieldsAdditionalFocused.set(arrayIdx, keyVal);
+          filteredAreAccessoryFieldsAdditionalMapFocused.set(arrayIdx, keyVal);
         }
       );
 
       return {
         ...state,
-        areAccessoryFieldsAdditionalFocused:
-          filteredAreAccessoryFieldsAdditionalFocused,
+        areAccessoryFieldsAdditionalMapFocused:
+          filteredAreAccessoryFieldsAdditionalMapFocused,
       };
     }
     case 'update': {
-      const areAccessoryFieldsAdditionalFocusedClone = structuredClone(
-        state.areAccessoryFieldsAdditionalFocused
+      const areAccessoryFieldsAdditionalMapFocusedClone = structuredClone(
+        state.areAccessoryFieldsAdditionalMapFocused
       );
 
       const { data, index, kind } =
         action.payload as AdditionalFieldsValidFocusedUpdate;
-      const prevKeyVal = areAccessoryFieldsAdditionalFocusedClone.get(index);
+      const prevKeyVal = areAccessoryFieldsAdditionalMapFocusedClone.get(index);
 
       if (!prevKeyVal) {
         return state;
@@ -731,13 +731,19 @@ function setAreAccessoryFieldsAdditionalFocused_CreateProductReducer(
 
       const [prevKey, prevValue] = prevKeyVal;
       kind === 'key'
-        ? areAccessoryFieldsAdditionalFocusedClone.set(index, [data, prevValue])
-        : areAccessoryFieldsAdditionalFocusedClone.set(index, [prevKey, data]);
+        ? areAccessoryFieldsAdditionalMapFocusedClone.set(index, [
+            data,
+            prevValue,
+          ])
+        : areAccessoryFieldsAdditionalMapFocusedClone.set(index, [
+            prevKey,
+            data,
+          ]);
 
       return {
         ...state,
-        areAccessoryFieldsAdditionalFocused:
-          areAccessoryFieldsAdditionalFocusedClone,
+        areAccessoryFieldsAdditionalMapFocused:
+          areAccessoryFieldsAdditionalMapFocusedClone,
       };
     }
     default:
@@ -751,18 +757,18 @@ function setAreAccessoryFieldsAdditionalFocused_CreateProductReducer(
 
 /**
  * This reducer function contains three operations that are used to update the
- * areAccessoryFieldsAdditionalValid state.
- * @description add: adds a new key-value pair to the areAccessoryFieldsAdditionalValid state
+ * areAccessoryFieldsAdditionalMapValid state.
+ * @description add: adds a new key-value pair to the areAccessoryFieldsAdditionalMapValid state
  * @description remove:
    - clones the state, deletes the key-value pair, and iterates over the map
    - with the callback fn index to use as the key for the new map
-   - this is done because the indices are used as the keys by the mapped over accessoryFieldsAdditional state to generate the text elements
-   - that access the areAccessoryFieldsAdditionalValid state Map based on said element's error state
+   - this is done because the indices are used as the keys by the mapped over accessoryFieldsAdditionalMap state to generate the text elements
+   - that access the areAccessoryFieldsAdditionalMapValid state Map based on said element's error state
    - to display the text contained in the screenreader accessible error/valid text elements array
    - map keys must be consecutive as removal of a key-value pair will leave a gap in the indices
-  * @description update: updates either the key or value from the areAccessoryFieldsAdditionalValid state
+  * @description update: updates either the key or value from the areAccessoryFieldsAdditionalMapValid state
  */
-function setAreAccessoryFieldsAdditionalValid_CreateProductReducer(
+function setAreAccessoryFieldsAdditionalMapValid_CreateProductReducer(
   state: CreateProductState,
   action: CreateProductDispatch
 ): CreateProductState {
@@ -770,58 +776,58 @@ function setAreAccessoryFieldsAdditionalValid_CreateProductReducer(
 
   switch (operation) {
     case 'add': {
-      const areAccessoryFieldsAdditionalValidClone = structuredClone(
-        state.areAccessoryFieldsAdditionalValid
+      const areAccessoryFieldsAdditionalMapValidClone = structuredClone(
+        state.areAccessoryFieldsAdditionalMapValid
       );
 
       const { data } = action.payload as AdditionalFieldsValidFocusedAdd;
-      const prevSize = areAccessoryFieldsAdditionalValidClone.size;
-      areAccessoryFieldsAdditionalValidClone.set(prevSize, data);
+      const prevSize = areAccessoryFieldsAdditionalMapValidClone.size;
+      areAccessoryFieldsAdditionalMapValidClone.set(prevSize, data);
 
       return {
         ...state,
-        areAccessoryFieldsAdditionalValid:
-          areAccessoryFieldsAdditionalValidClone,
+        areAccessoryFieldsAdditionalMapValid:
+          areAccessoryFieldsAdditionalMapValidClone,
       };
     }
     case 'remove': {
-      const areAccessoryFieldsAdditionalValidClone = structuredClone(
-        state.areAccessoryFieldsAdditionalValid
+      const areAccessoryFieldsAdditionalMapValidClone = structuredClone(
+        state.areAccessoryFieldsAdditionalMapValid
       );
 
       const { index } = action.payload as AdditionalFieldsValidFocusedRemove;
-      areAccessoryFieldsAdditionalValidClone.delete(index);
+      areAccessoryFieldsAdditionalMapValidClone.delete(index);
 
-      const filteredAreAccessoryFieldsAdditionalValid = new Map<
+      const filteredAreAccessoryFieldsAdditionalMapValid = new Map<
         number,
         [boolean, boolean]
       >();
 
-      Array.from(areAccessoryFieldsAdditionalValidClone).forEach(
+      Array.from(areAccessoryFieldsAdditionalMapValidClone).forEach(
         (mapIdxKeyVal, arrayIdx) => {
           const [_mapIdx, keyVal] = mapIdxKeyVal as [
             number,
             [boolean, boolean]
           ];
 
-          filteredAreAccessoryFieldsAdditionalValid.set(arrayIdx, keyVal);
+          filteredAreAccessoryFieldsAdditionalMapValid.set(arrayIdx, keyVal);
         }
       );
 
       return {
         ...state,
-        areAccessoryFieldsAdditionalValid:
-          filteredAreAccessoryFieldsAdditionalValid,
+        areAccessoryFieldsAdditionalMapValid:
+          filteredAreAccessoryFieldsAdditionalMapValid,
       };
     }
     case 'update': {
-      const areAccessoryFieldsAdditionalValidClone = structuredClone(
-        state.areAccessoryFieldsAdditionalValid
+      const areAccessoryFieldsAdditionalMapValidClone = structuredClone(
+        state.areAccessoryFieldsAdditionalMapValid
       );
 
       const { data, index, kind } =
         action.payload as AdditionalFieldsValidFocusedUpdate;
-      const prevKeyVal = areAccessoryFieldsAdditionalValidClone.get(index);
+      const prevKeyVal = areAccessoryFieldsAdditionalMapValidClone.get(index);
 
       if (!prevKeyVal) {
         return state;
@@ -829,13 +835,16 @@ function setAreAccessoryFieldsAdditionalValid_CreateProductReducer(
 
       const [prevKey, prevValue] = prevKeyVal;
       kind === 'key'
-        ? areAccessoryFieldsAdditionalValidClone.set(index, [data, prevValue])
-        : areAccessoryFieldsAdditionalValidClone.set(index, [prevKey, data]);
+        ? areAccessoryFieldsAdditionalMapValidClone.set(index, [
+            data,
+            prevValue,
+          ])
+        : areAccessoryFieldsAdditionalMapValidClone.set(index, [prevKey, data]);
 
       return {
         ...state,
-        areAccessoryFieldsAdditionalValid:
-          areAccessoryFieldsAdditionalValidClone,
+        areAccessoryFieldsAdditionalMapValid:
+          areAccessoryFieldsAdditionalMapValidClone,
       };
     }
     default:
@@ -1119,15 +1128,15 @@ function setIsCpuWattageValid_CreateProductReducer(
 
 /**
  * This reducer function contains three operations that are used to update the
- * cpuFieldsAdditional state.
- * @description add: adds a new key-value pair to the cpuFieldsAdditional state
+ * cpuFieldsAdditionalMap state.
+ * @description add: adds a new key-value pair to the cpuFieldsAdditionalMap state
  * @description remove: clones the state, deletes the key-value pair, and iterates over the map
     - with the callback fn index to use as the key for the new map
     - this is done because the indices are used as the keys that access the error/valid elements array
     - and must be consecutive as removal of a key-value pair will leave a gap in the indices
- * @description update: updates either the key or value from the cpuFieldsAdditional state
+ * @description update: updates either the key or value from the cpuFieldsAdditionalMap state
  */
-function setCpuFieldsAdditional_CreateProductReducer(
+function setCpuFieldsAdditionalMap_CreateProductReducer(
   state: CreateProductState,
   action: CreateProductDispatch
 ): CreateProductState {
@@ -1135,47 +1144,52 @@ function setCpuFieldsAdditional_CreateProductReducer(
 
   switch (operation) {
     case 'add': {
-      const cpuFieldsAdditionalClone = structuredClone(
-        state.cpuFieldsAdditional
+      const cpuFieldsAdditionalMapClone = structuredClone(
+        state.cpuFieldsAdditionalMap
       );
 
       const { data } = action.payload as AdditionalFieldsAdd;
-      const prevSize = cpuFieldsAdditionalClone.size;
-      cpuFieldsAdditionalClone.set(prevSize, data);
+      const prevSize = cpuFieldsAdditionalMapClone.size;
+      cpuFieldsAdditionalMapClone.set(prevSize, data);
 
       return {
         ...state,
-        cpuFieldsAdditional: cpuFieldsAdditionalClone,
+        cpuFieldsAdditionalMap: cpuFieldsAdditionalMapClone,
       };
     }
 
     case 'remove': {
-      const cpuFieldsAdditionalClone = structuredClone(
-        state.cpuFieldsAdditional
+      const cpuFieldsAdditionalMapClone = structuredClone(
+        state.cpuFieldsAdditionalMap
       );
 
       const { index } = action.payload as AdditionalFieldsRemove;
-      cpuFieldsAdditionalClone.delete(index);
+      cpuFieldsAdditionalMapClone.delete(index);
 
-      const filteredCpuFieldsAdditional = new Map<number, [string, string]>();
+      const filteredCpuFieldsAdditionalMap = new Map<
+        number,
+        [string, string]
+      >();
 
-      Array.from(cpuFieldsAdditionalClone).forEach((mapIdxKeyVal, arrayIdx) => {
-        const [_mapIdx, keyVal] = mapIdxKeyVal as [number, [string, string]];
-        filteredCpuFieldsAdditional.set(arrayIdx, keyVal);
-      });
+      Array.from(cpuFieldsAdditionalMapClone).forEach(
+        (mapIdxKeyVal, arrayIdx) => {
+          const [_mapIdx, keyVal] = mapIdxKeyVal as [number, [string, string]];
+          filteredCpuFieldsAdditionalMap.set(arrayIdx, keyVal);
+        }
+      );
 
       return {
         ...state,
-        cpuFieldsAdditional: filteredCpuFieldsAdditional,
+        cpuFieldsAdditionalMap: filteredCpuFieldsAdditionalMap,
       };
     }
     case 'update': {
-      const cpuFieldsAdditionalClone = structuredClone(
-        state.cpuFieldsAdditional
+      const cpuFieldsAdditionalMapClone = structuredClone(
+        state.cpuFieldsAdditionalMap
       );
 
       const { data, index, kind } = action.payload as AdditionalFieldsUpdate;
-      const prevKeyVal = cpuFieldsAdditionalClone.get(index);
+      const prevKeyVal = cpuFieldsAdditionalMapClone.get(index);
 
       if (!prevKeyVal) {
         return state;
@@ -1183,12 +1197,12 @@ function setCpuFieldsAdditional_CreateProductReducer(
 
       const [prevKey, prevValue] = prevKeyVal;
       kind === 'key'
-        ? cpuFieldsAdditionalClone.set(index, [data, prevValue])
-        : cpuFieldsAdditionalClone.set(index, [prevKey, data]);
+        ? cpuFieldsAdditionalMapClone.set(index, [data, prevValue])
+        : cpuFieldsAdditionalMapClone.set(index, [prevKey, data]);
 
       return {
         ...state,
-        cpuFieldsAdditional: cpuFieldsAdditionalClone,
+        cpuFieldsAdditionalMap: cpuFieldsAdditionalMapClone,
       };
     }
     default:
@@ -1202,17 +1216,17 @@ function setCpuFieldsAdditional_CreateProductReducer(
 
 /**
  * This reducer function contains three operations that are used to update the
- * areCpuFieldsAdditionalFocused state.
- * @description add: adds a new key-value pair to the areCpuFieldsAdditionalFocused state
+ * areCpuFieldsAdditionalMapFocused state.
+ * @description add: adds a new key-value pair to the areCpuFieldsAdditionalMapFocused state
  * @description remove:
    - clones the state, deletes the key-value pair, and iterates over the map
    - with the callback fn index to use as the key for the new map
-   - this is done because the indices are used as the keys by the mapped over cpuFieldsAdditional state to generate the text elements
-   - that access the areCpuFieldsAdditionalFocused state Map to determine if the appropriate text element should be focused/blurred
+   - this is done because the indices are used as the keys by the mapped over cpuFieldsAdditionalMap state to generate the text elements
+   - that access the areCpuFieldsAdditionalMapFocused state Map to determine if the appropriate text element should be focused/blurred
    - and must be consecutive as removal of a key-value pair will leave a gap in the indices
-  * @description update: updates either the key or value from the areCpuFieldsAdditionalFocused state
+  * @description update: updates either the key or value from the areCpuFieldsAdditionalMapFocused state
  */
-function setAreCpuFieldsAdditionalFocused_CreateProductReducer(
+function setAreCpuFieldsAdditionalMapFocused_CreateProductReducer(
   state: CreateProductState,
   action: CreateProductDispatch
 ): CreateProductState {
@@ -1220,56 +1234,57 @@ function setAreCpuFieldsAdditionalFocused_CreateProductReducer(
 
   switch (operation) {
     case 'add': {
-      const areCpuFieldsAdditionalFocusedClone = structuredClone(
-        state.areCpuFieldsAdditionalFocused
+      const areCpuFieldsAdditionalMapFocusedClone = structuredClone(
+        state.areCpuFieldsAdditionalMapFocused
       );
 
       const { data } = action.payload as AdditionalFieldsValidFocusedAdd;
-      const prevSize = areCpuFieldsAdditionalFocusedClone.size;
-      areCpuFieldsAdditionalFocusedClone.set(prevSize, data);
+      const prevSize = areCpuFieldsAdditionalMapFocusedClone.size;
+      areCpuFieldsAdditionalMapFocusedClone.set(prevSize, data);
 
       return {
         ...state,
-        areCpuFieldsAdditionalFocused: areCpuFieldsAdditionalFocusedClone,
+        areCpuFieldsAdditionalMapFocused: areCpuFieldsAdditionalMapFocusedClone,
       };
     }
     case 'remove': {
-      const areCpuFieldsAdditionalFocusedClone = structuredClone(
-        state.areCpuFieldsAdditionalFocused
+      const areCpuFieldsAdditionalMapFocusedClone = structuredClone(
+        state.areCpuFieldsAdditionalMapFocused
       );
 
       const { index } = action.payload as AdditionalFieldsValidFocusedRemove;
-      areCpuFieldsAdditionalFocusedClone.delete(index);
+      areCpuFieldsAdditionalMapFocusedClone.delete(index);
 
-      const filteredAreCpuFieldsAdditionalFocused = new Map<
+      const filteredAreCpuFieldsAdditionalMapFocused = new Map<
         number,
         [boolean, boolean]
       >();
 
-      Array.from(areCpuFieldsAdditionalFocusedClone).forEach(
+      Array.from(areCpuFieldsAdditionalMapFocusedClone).forEach(
         (mapIdxKeyVal, arrayIdx) => {
           const [_mapIdx, keyVal] = mapIdxKeyVal as [
             number,
             [boolean, boolean]
           ];
 
-          filteredAreCpuFieldsAdditionalFocused.set(arrayIdx, keyVal);
+          filteredAreCpuFieldsAdditionalMapFocused.set(arrayIdx, keyVal);
         }
       );
 
       return {
         ...state,
-        areCpuFieldsAdditionalFocused: filteredAreCpuFieldsAdditionalFocused,
+        areCpuFieldsAdditionalMapFocused:
+          filteredAreCpuFieldsAdditionalMapFocused,
       };
     }
     case 'update': {
-      const areCpuFieldsAdditionalFocusedClone = structuredClone(
-        state.areCpuFieldsAdditionalFocused
+      const areCpuFieldsAdditionalMapFocusedClone = structuredClone(
+        state.areCpuFieldsAdditionalMapFocused
       );
 
       const { data, index, kind } =
         action.payload as AdditionalFieldsValidFocusedUpdate;
-      const prevKeyVal = areCpuFieldsAdditionalFocusedClone.get(index);
+      const prevKeyVal = areCpuFieldsAdditionalMapFocusedClone.get(index);
 
       if (!prevKeyVal) {
         return state;
@@ -1277,12 +1292,12 @@ function setAreCpuFieldsAdditionalFocused_CreateProductReducer(
 
       const [prevKey, prevValue] = prevKeyVal;
       kind === 'key'
-        ? areCpuFieldsAdditionalFocusedClone.set(index, [data, prevValue])
-        : areCpuFieldsAdditionalFocusedClone.set(index, [prevKey, data]);
+        ? areCpuFieldsAdditionalMapFocusedClone.set(index, [data, prevValue])
+        : areCpuFieldsAdditionalMapFocusedClone.set(index, [prevKey, data]);
 
       return {
         ...state,
-        areCpuFieldsAdditionalFocused: areCpuFieldsAdditionalFocusedClone,
+        areCpuFieldsAdditionalMapFocused: areCpuFieldsAdditionalMapFocusedClone,
       };
     }
     default:
@@ -1296,18 +1311,18 @@ function setAreCpuFieldsAdditionalFocused_CreateProductReducer(
 
 /**
  * This reducer function contains three operations that are used to update the
- * areCpuFieldsAdditionalValid state.
- * @description add: adds a new key-value pair to the areCpuFieldsAdditionalValid state
+ * areCpuFieldsAdditionalMapValid state.
+ * @description add: adds a new key-value pair to the areCpuFieldsAdditionalMapValid state
  * @description remove:
    - clones the state, deletes the key-value pair, and iterates over the map
    - with the callback fn index to use as the key for the new map
-   - this is done because the indices are used as the keys by the mapped over cpuFieldsAdditional state to generate the text elements
-   - that access the areCpuFieldsAdditionalValid state Map based on said element's error state
+   - this is done because the indices are used as the keys by the mapped over cpuFieldsAdditionalMap state to generate the text elements
+   - that access the areCpuFieldsAdditionalMapValid state Map based on said element's error state
    - to display the text contained in the screenreader accessible error/valid text elements array
    - map keys must be consecutive as removal of a key-value pair will leave a gap in the indices
-  * @description update: updates either the key or value from the areCpuFieldsAdditionalValid state
+  * @description update: updates either the key or value from the areCpuFieldsAdditionalMapValid state
  */
-function setAreCpuFieldsAdditionalValid_CreateProductReducer(
+function setAreCpuFieldsAdditionalMapValid_CreateProductReducer(
   state: CreateProductState,
   action: CreateProductDispatch
 ): CreateProductState {
@@ -1315,56 +1330,56 @@ function setAreCpuFieldsAdditionalValid_CreateProductReducer(
 
   switch (operation) {
     case 'add': {
-      const areCpuFieldsAdditionalValidClone = structuredClone(
-        state.areCpuFieldsAdditionalValid
+      const areCpuFieldsAdditionalMapValidClone = structuredClone(
+        state.areCpuFieldsAdditionalMapValid
       );
 
       const { data } = action.payload as AdditionalFieldsValidFocusedAdd;
-      const prevSize = areCpuFieldsAdditionalValidClone.size;
-      areCpuFieldsAdditionalValidClone.set(prevSize, data);
+      const prevSize = areCpuFieldsAdditionalMapValidClone.size;
+      areCpuFieldsAdditionalMapValidClone.set(prevSize, data);
 
       return {
         ...state,
-        areCpuFieldsAdditionalValid: areCpuFieldsAdditionalValidClone,
+        areCpuFieldsAdditionalMapValid: areCpuFieldsAdditionalMapValidClone,
       };
     }
     case 'remove': {
-      const areCpuFieldsAdditionalValidClone = structuredClone(
-        state.areCpuFieldsAdditionalValid
+      const areCpuFieldsAdditionalMapValidClone = structuredClone(
+        state.areCpuFieldsAdditionalMapValid
       );
 
       const { index } = action.payload as AdditionalFieldsValidFocusedRemove;
-      areCpuFieldsAdditionalValidClone.delete(index);
+      areCpuFieldsAdditionalMapValidClone.delete(index);
 
-      const filteredAreCpuFieldsAdditionalValid = new Map<
+      const filteredAreCpuFieldsAdditionalMapValid = new Map<
         number,
         [boolean, boolean]
       >();
 
-      Array.from(areCpuFieldsAdditionalValidClone).forEach(
+      Array.from(areCpuFieldsAdditionalMapValidClone).forEach(
         (mapIdxKeyVal, arrayIdx) => {
           const [_mapIdx, keyVal] = mapIdxKeyVal as [
             number,
             [boolean, boolean]
           ];
 
-          filteredAreCpuFieldsAdditionalValid.set(arrayIdx, keyVal);
+          filteredAreCpuFieldsAdditionalMapValid.set(arrayIdx, keyVal);
         }
       );
 
       return {
         ...state,
-        areCpuFieldsAdditionalValid: filteredAreCpuFieldsAdditionalValid,
+        areCpuFieldsAdditionalMapValid: filteredAreCpuFieldsAdditionalMapValid,
       };
     }
     case 'update': {
-      const areCpuFieldsAdditionalValidClone = structuredClone(
-        state.areCpuFieldsAdditionalValid
+      const areCpuFieldsAdditionalMapValidClone = structuredClone(
+        state.areCpuFieldsAdditionalMapValid
       );
 
       const { data, index, kind } =
         action.payload as AdditionalFieldsValidFocusedUpdate;
-      const prevKeyVal = areCpuFieldsAdditionalValidClone.get(index);
+      const prevKeyVal = areCpuFieldsAdditionalMapValidClone.get(index);
 
       if (!prevKeyVal) {
         return state;
@@ -1372,12 +1387,12 @@ function setAreCpuFieldsAdditionalValid_CreateProductReducer(
 
       const [prevKey, prevValue] = prevKeyVal;
       kind === 'key'
-        ? areCpuFieldsAdditionalValidClone.set(index, [data, prevValue])
-        : areCpuFieldsAdditionalValidClone.set(index, [prevKey, data]);
+        ? areCpuFieldsAdditionalMapValidClone.set(index, [data, prevValue])
+        : areCpuFieldsAdditionalMapValidClone.set(index, [prevKey, data]);
 
       return {
         ...state,
-        areCpuFieldsAdditionalValid: areCpuFieldsAdditionalValidClone,
+        areCpuFieldsAdditionalMapValid: areCpuFieldsAdditionalMapValidClone,
       };
     }
     default:
@@ -1569,15 +1584,15 @@ function setIsGpuTdpValid_CreateProductReducer(
 
 /**
  * This reducer function contains three operations that are used to update the
- * gpuFieldsAdditional state.
- * @description add: adds a new key-value pair to the gpuFieldsAdditional state
+ * gpuFieldsAdditionalMap state.
+ * @description add: adds a new key-value pair to the gpuFieldsAdditionalMap state
  * @description remove: clones the state, deletes the key-value pair, and iterates over the map
  *   - with the callback fn index to use as the key for the new map
  *  - this is done because the indices are used as the keys that access the error/valid elements array
  * - and must be consecutive as removal of a key-value pair will leave a gap in the indices
- * @description update: updates either the key or value from the gpuFieldsAdditional state
+ * @description update: updates either the key or value from the gpuFieldsAdditionalMap state
  */
-function setGpuFieldsAdditional_CreateProductReducer(
+function setGpuFieldsAdditionalMap_CreateProductReducer(
   state: CreateProductState,
   action: CreateProductDispatch
 ): CreateProductState {
@@ -1585,47 +1600,52 @@ function setGpuFieldsAdditional_CreateProductReducer(
 
   switch (operation) {
     case 'add': {
-      const gpuFieldsAdditionalClone = structuredClone(
-        state.gpuFieldsAdditional
+      const gpuFieldsAdditionalMapClone = structuredClone(
+        state.gpuFieldsAdditionalMap
       );
 
       const { data } = action.payload as AdditionalFieldsAdd;
-      const prevSize = gpuFieldsAdditionalClone.size;
-      gpuFieldsAdditionalClone.set(prevSize, data);
+      const prevSize = gpuFieldsAdditionalMapClone.size;
+      gpuFieldsAdditionalMapClone.set(prevSize, data);
 
       return {
         ...state,
-        gpuFieldsAdditional: gpuFieldsAdditionalClone,
+        gpuFieldsAdditionalMap: gpuFieldsAdditionalMapClone,
       };
     }
 
     case 'remove': {
-      const gpuFieldsAdditionalClone = structuredClone(
-        state.gpuFieldsAdditional
+      const gpuFieldsAdditionalMapClone = structuredClone(
+        state.gpuFieldsAdditionalMap
       );
 
       const { index } = action.payload as AdditionalFieldsRemove;
-      gpuFieldsAdditionalClone.delete(index);
+      gpuFieldsAdditionalMapClone.delete(index);
 
-      const filteredGpuFieldsAdditional = new Map<number, [string, string]>();
+      const filteredGpuFieldsAdditionalMap = new Map<
+        number,
+        [string, string]
+      >();
 
-      Array.from(gpuFieldsAdditionalClone).forEach((mapIdxKeyVal, arrayIdx) => {
-        const [_mapIdx, keyVal] = mapIdxKeyVal as [number, [string, string]];
-        filteredGpuFieldsAdditional.set(arrayIdx, keyVal);
-      });
+      Array.from(gpuFieldsAdditionalMapClone).forEach(
+        (mapIdxKeyVal, arrayIdx) => {
+          const [_mapIdx, keyVal] = mapIdxKeyVal as [number, [string, string]];
+          filteredGpuFieldsAdditionalMap.set(arrayIdx, keyVal);
+        }
+      );
 
       return {
         ...state,
-        gpuFieldsAdditional: filteredGpuFieldsAdditional,
+        gpuFieldsAdditionalMap: filteredGpuFieldsAdditionalMap,
       };
     }
     case 'update': {
-      const gpuFieldsAdditionalClone = structuredClone(
-        state.gpuFieldsAdditional
+      const gpuFieldsAdditionalMapClone = structuredClone(
+        state.gpuFieldsAdditionalMap
       );
 
       const { data, index, kind } = action.payload as AdditionalFieldsUpdate;
-      const prevKeyVal = gpuFieldsAdditionalClone.get(index);
+      const prevKeyVal = gpuFieldsAdditionalMapClone.get(index);
 
       if (!prevKeyVal) {
         return state;
@@ -1633,12 +1653,12 @@ function setGpuFieldsAdditional_CreateProductReducer(
 
       const [prevKey, prevValue] = prevKeyVal;
       kind === 'key'
-        ? gpuFieldsAdditionalClone.set(index, [data, prevValue])
-        : gpuFieldsAdditionalClone.set(index, [prevKey, data]);
+        ? gpuFieldsAdditionalMapClone.set(index, [data, prevValue])
+        : gpuFieldsAdditionalMapClone.set(index, [prevKey, data]);
 
       return {
         ...state,
-        gpuFieldsAdditional: gpuFieldsAdditionalClone,
+        gpuFieldsAdditionalMap: gpuFieldsAdditionalMapClone,
       };
     }
     default:
@@ -1652,17 +1672,17 @@ function setGpuFieldsAdditional_CreateProductReducer(
 
 /**
  * This reducer function contains three operations that are used to update the
- * areGpuFieldsAdditionalFocused state.
- * @description add: adds a new key-value pair to the areGpuFieldsAdditionalFocused state
+ * areGpuFieldsAdditionalMapFocused state.
+ * @description add: adds a new key-value pair to the areGpuFieldsAdditionalMapFocused state
  * @description remove:
    - clones the state, deletes the key-value pair, and iterates over the map
    - with the callback fn index to use as the key for the new map
-   - this is done because the indices are used as the keys by the mapped over gpuFieldsAdditional state to generate the text elements
-   - that access the areGpuFieldsAdditionalFocused state Map to determine if the appropriate text element should be focused/blurred
+   - this is done because the indices are used as the keys by the mapped over gpuFieldsAdditionalMap state to generate the text elements
+   - that access the areGpuFieldsAdditionalMapFocused state Map to determine if the appropriate text element should be focused/blurred
    - and must be consecutive as removal of a key-value pair will leave a gap in the indices
-  * @description update: updates either the key or value from the areGpuFieldsAdditionalFocused state
+  * @description update: updates either the key or value from the areGpuFieldsAdditionalMapFocused state
  */
-function setAreGpuFieldsAdditionalFocused_CreateProductReducer(
+function setAreGpuFieldsAdditionalMapFocused_CreateProductReducer(
   state: CreateProductState,
   action: CreateProductDispatch
 ): CreateProductState {
@@ -1670,56 +1690,57 @@ function setAreGpuFieldsAdditionalFocused_CreateProductReducer(
 
   switch (operation) {
     case 'add': {
-      const areGpuFieldsAdditionalFocusedClone = structuredClone(
-        state.areGpuFieldsAdditionalFocused
+      const areGpuFieldsAdditionalMapFocusedClone = structuredClone(
+        state.areGpuFieldsAdditionalMapFocused
       );
 
       const { data } = action.payload as AdditionalFieldsValidFocusedAdd;
-      const prevSize = areGpuFieldsAdditionalFocusedClone.size;
-      areGpuFieldsAdditionalFocusedClone.set(prevSize, data);
+      const prevSize = areGpuFieldsAdditionalMapFocusedClone.size;
+      areGpuFieldsAdditionalMapFocusedClone.set(prevSize, data);
 
       return {
         ...state,
-        areGpuFieldsAdditionalFocused: areGpuFieldsAdditionalFocusedClone,
+        areGpuFieldsAdditionalMapFocused: areGpuFieldsAdditionalMapFocusedClone,
       };
     }
     case 'remove': {
-      const areGpuFieldsAdditionalFocusedClone = structuredClone(
-        state.areGpuFieldsAdditionalFocused
+      const areGpuFieldsAdditionalMapFocusedClone = structuredClone(
+        state.areGpuFieldsAdditionalMapFocused
       );
 
       const { index } = action.payload as AdditionalFieldsValidFocusedRemove;
-      areGpuFieldsAdditionalFocusedClone.delete(index);
+      areGpuFieldsAdditionalMapFocusedClone.delete(index);
 
-      const filteredAreGpuFieldsAdditionalFocused = new Map<
+      const filteredAreGpuFieldsAdditionalMapFocused = new Map<
         number,
         [boolean, boolean]
       >();
 
-      Array.from(areGpuFieldsAdditionalFocusedClone).forEach(
+      Array.from(areGpuFieldsAdditionalMapFocusedClone).forEach(
         (mapIdxKeyVal, arrayIdx) => {
           const [_mapIdx, keyVal] = mapIdxKeyVal as [
             number,
             [boolean, boolean]
           ];
 
-          filteredAreGpuFieldsAdditionalFocused.set(arrayIdx, keyVal);
+          filteredAreGpuFieldsAdditionalMapFocused.set(arrayIdx, keyVal);
         }
       );
 
       return {
         ...state,
-        areGpuFieldsAdditionalFocused: filteredAreGpuFieldsAdditionalFocused,
+        areGpuFieldsAdditionalMapFocused:
+          filteredAreGpuFieldsAdditionalMapFocused,
       };
     }
     case 'update': {
-      const areGpuFieldsAdditionalFocusedClone = structuredClone(
-        state.areGpuFieldsAdditionalFocused
+      const areGpuFieldsAdditionalMapFocusedClone = structuredClone(
+        state.areGpuFieldsAdditionalMapFocused
       );
 
       const { data, index, kind } =
         action.payload as AdditionalFieldsValidFocusedUpdate;
-      const prevKeyVal = areGpuFieldsAdditionalFocusedClone.get(index);
+      const prevKeyVal = areGpuFieldsAdditionalMapFocusedClone.get(index);
 
       if (!prevKeyVal) {
         return state;
@@ -1727,12 +1748,12 @@ function setAreGpuFieldsAdditionalFocused_CreateProductReducer(
 
       const [prevKey, prevValue] = prevKeyVal;
       kind === 'key'
-        ? areGpuFieldsAdditionalFocusedClone.set(index, [data, prevValue])
-        : areGpuFieldsAdditionalFocusedClone.set(index, [prevKey, data]);
+        ? areGpuFieldsAdditionalMapFocusedClone.set(index, [data, prevValue])
+        : areGpuFieldsAdditionalMapFocusedClone.set(index, [prevKey, data]);
 
       return {
         ...state,
-        areGpuFieldsAdditionalFocused: areGpuFieldsAdditionalFocusedClone,
+        areGpuFieldsAdditionalMapFocused: areGpuFieldsAdditionalMapFocusedClone,
       };
     }
     default:
@@ -1746,18 +1767,18 @@ function setAreGpuFieldsAdditionalFocused_CreateProductReducer(
 
 /**
  * This reducer function contains three operations that are used to update the
- * areGpuFieldsAdditionalValid state.
- * @description add: adds a new key-value pair to the areGpuFieldsAdditionalValid state
+ * areGpuFieldsAdditionalMapValid state.
+ * @description add: adds a new key-value pair to the areGpuFieldsAdditionalMapValid state
  * @description remove:
    - clones the state, deletes the key-value pair, and iterates over the map
    - with the callback fn index to use as the key for the new map
-   - this is done because the indices are used as the keys by the mapped over gpuFieldsAdditional state to generate the text elements
-   - that access the areGpuFieldsAdditionalValid state Map based on said element's error state
+   - this is done because the indices are used as the keys by the mapped over gpuFieldsAdditionalMap state to generate the text elements
+   - that access the areGpuFieldsAdditionalMapValid state Map based on said element's error state
    - to display the text contained in the screenreader accessible error/valid text elements array
    - map keys must be consecutive as removal of a key-value pair will leave a gap in the indices
-  * @description update: updates either the key or value from the areGpuFieldsAdditionalValid state
+  * @description update: updates either the key or value from the areGpuFieldsAdditionalMapValid state
  */
-function setAreGpuFieldsAdditionalValid_CreateProductReducer(
+function setAreGpuFieldsAdditionalMapValid_CreateProductReducer(
   state: CreateProductState,
   action: CreateProductDispatch
 ): CreateProductState {
@@ -1765,56 +1786,56 @@ function setAreGpuFieldsAdditionalValid_CreateProductReducer(
 
   switch (operation) {
     case 'add': {
-      const areGpuFieldsAdditionalValidClone = structuredClone(
-        state.areGpuFieldsAdditionalValid
+      const areGpuFieldsAdditionalMapValidClone = structuredClone(
+        state.areGpuFieldsAdditionalMapValid
       );
 
       const { data } = action.payload as AdditionalFieldsValidFocusedAdd;
-      const prevSize = areGpuFieldsAdditionalValidClone.size;
-      areGpuFieldsAdditionalValidClone.set(prevSize, data);
+      const prevSize = areGpuFieldsAdditionalMapValidClone.size;
+      areGpuFieldsAdditionalMapValidClone.set(prevSize, data);
 
       return {
         ...state,
-        areGpuFieldsAdditionalValid: areGpuFieldsAdditionalValidClone,
+        areGpuFieldsAdditionalMapValid: areGpuFieldsAdditionalMapValidClone,
       };
     }
     case 'remove': {
-      const areGpuFieldsAdditionalValidClone = structuredClone(
-        state.areGpuFieldsAdditionalValid
+      const areGpuFieldsAdditionalMapValidClone = structuredClone(
+        state.areGpuFieldsAdditionalMapValid
       );
 
       const { index } = action.payload as AdditionalFieldsValidFocusedRemove;
-      areGpuFieldsAdditionalValidClone.delete(index);
+      areGpuFieldsAdditionalMapValidClone.delete(index);
 
-      const filteredAreGpuFieldsAdditionalValid = new Map<
+      const filteredAreGpuFieldsAdditionalMapValid = new Map<
         number,
         [boolean, boolean]
       >();
 
-      Array.from(areGpuFieldsAdditionalValidClone).forEach(
+      Array.from(areGpuFieldsAdditionalMapValidClone).forEach(
         (mapIdxKeyVal, arrayIdx) => {
           const [_mapIdx, keyVal] = mapIdxKeyVal as [
             number,
             [boolean, boolean]
           ];
 
-          filteredAreGpuFieldsAdditionalValid.set(arrayIdx, keyVal);
+          filteredAreGpuFieldsAdditionalMapValid.set(arrayIdx, keyVal);
         }
       );
 
       return {
         ...state,
-        areGpuFieldsAdditionalValid: filteredAreGpuFieldsAdditionalValid,
+        areGpuFieldsAdditionalMapValid: filteredAreGpuFieldsAdditionalMapValid,
       };
     }
     case 'update': {
-      const areGpuFieldsAdditionalValidClone = structuredClone(
-        state.areGpuFieldsAdditionalValid
+      const areGpuFieldsAdditionalMapValidClone = structuredClone(
+        state.areGpuFieldsAdditionalMapValid
       );
 
       const { data, index, kind } =
         action.payload as AdditionalFieldsValidFocusedUpdate;
-      const prevKeyVal = areGpuFieldsAdditionalValidClone.get(index);
+      const prevKeyVal = areGpuFieldsAdditionalMapValidClone.get(index);
 
       if (!prevKeyVal) {
         return state;
@@ -1822,12 +1843,12 @@ function setAreGpuFieldsAdditionalValid_CreateProductReducer(
 
       const [prevKey, prevValue] = prevKeyVal;
       kind === 'key'
-        ? areGpuFieldsAdditionalValidClone.set(index, [data, prevValue])
-        : areGpuFieldsAdditionalValidClone.set(index, [prevKey, data]);
+        ? areGpuFieldsAdditionalMapValidClone.set(index, [data, prevValue])
+        : areGpuFieldsAdditionalMapValidClone.set(index, [prevKey, data]);
 
       return {
         ...state,
-        areGpuFieldsAdditionalValid: areGpuFieldsAdditionalValidClone,
+        areGpuFieldsAdditionalMapValid: areGpuFieldsAdditionalMapValidClone,
       };
     }
     default:
@@ -1999,15 +2020,15 @@ function setHeadphoneInterface_CreateProductReducer(
 
 /**
  * This reducer function contains three operations that are used to update the
- * headphoneFieldsAdditional state.
- * @description add: adds a new key-value pair to the headphoneFieldsAdditional state
+ * headphoneFieldsAdditionalMap state.
+ * @description add: adds a new key-value pair to the headphoneFieldsAdditionalMap state
  * @description remove: clones the state, deletes the key-value pair, and iterates over the map
  *   - with the callback fn index to use as the key for the new map
  *  - this is done because the indices are used as the keys that access the error/valid elements array
  * - and must be consecutive as removal of a key-value pair will leave a gap in the indices
- * @description update: updates either the key or value from the headphoneFieldsAdditional state
+ * @description update: updates either the key or value from the headphoneFieldsAdditionalMap state
  */
-function setHeadphoneFieldsAdditional_CreateProductReducer(
+function setHeadphoneFieldsAdditionalMap_CreateProductReducer(
   state: CreateProductState,
   action: CreateProductDispatch
 ): CreateProductState {
@@ -2015,52 +2036,52 @@ function setHeadphoneFieldsAdditional_CreateProductReducer(
 
   switch (operation) {
     case 'add': {
-      const headphoneFieldsAdditionalClone = structuredClone(
-        state.headphoneFieldsAdditional
+      const headphoneFieldsAdditionalMapClone = structuredClone(
+        state.headphoneFieldsAdditionalMap
       );
 
       const { data } = action.payload as AdditionalFieldsAdd;
-      const prevSize = headphoneFieldsAdditionalClone.size;
-      headphoneFieldsAdditionalClone.set(prevSize, data);
+      const prevSize = headphoneFieldsAdditionalMapClone.size;
+      headphoneFieldsAdditionalMapClone.set(prevSize, data);
 
       return {
         ...state,
-        headphoneFieldsAdditional: headphoneFieldsAdditionalClone,
+        headphoneFieldsAdditionalMap: headphoneFieldsAdditionalMapClone,
       };
     }
 
     case 'remove': {
-      const headphoneFieldsAdditionalClone = structuredClone(
-        state.headphoneFieldsAdditional
+      const headphoneFieldsAdditionalMapClone = structuredClone(
+        state.headphoneFieldsAdditionalMap
       );
 
       const { index } = action.payload as AdditionalFieldsRemove;
-      headphoneFieldsAdditionalClone.delete(index);
+      headphoneFieldsAdditionalMapClone.delete(index);
 
-      const filteredHeadphoneFieldsAdditional = new Map<
+      const filteredHeadphoneFieldsAdditionalMap = new Map<
         number,
         [string, string]
       >();
 
-      Array.from(headphoneFieldsAdditionalClone).forEach(
+      Array.from(headphoneFieldsAdditionalMapClone).forEach(
         (mapIdxKeyVal, arrayIdx) => {
           const [_mapIdx, keyVal] = mapIdxKeyVal as [number, [string, string]];
-          filteredHeadphoneFieldsAdditional.set(arrayIdx, keyVal);
+          filteredHeadphoneFieldsAdditionalMap.set(arrayIdx, keyVal);
         }
       );
 
       return {
         ...state,
-        headphoneFieldsAdditional: filteredHeadphoneFieldsAdditional,
+        headphoneFieldsAdditionalMap: filteredHeadphoneFieldsAdditionalMap,
       };
     }
     case 'update': {
-      const headphoneFieldsAdditionalClone = structuredClone(
-        state.headphoneFieldsAdditional
+      const headphoneFieldsAdditionalMapClone = structuredClone(
+        state.headphoneFieldsAdditionalMap
       );
 
       const { data, index, kind } = action.payload as AdditionalFieldsUpdate;
-      const prevKeyVal = headphoneFieldsAdditionalClone.get(index);
+      const prevKeyVal = headphoneFieldsAdditionalMapClone.get(index);
 
       if (!prevKeyVal) {
         return state;
@@ -2068,12 +2089,12 @@ function setHeadphoneFieldsAdditional_CreateProductReducer(
 
       const [prevKey, prevValue] = prevKeyVal;
       kind === 'key'
-        ? headphoneFieldsAdditionalClone.set(index, [data, prevValue])
-        : headphoneFieldsAdditionalClone.set(index, [prevKey, data]);
+        ? headphoneFieldsAdditionalMapClone.set(index, [data, prevValue])
+        : headphoneFieldsAdditionalMapClone.set(index, [prevKey, data]);
 
       return {
         ...state,
-        headphoneFieldsAdditional: headphoneFieldsAdditionalClone,
+        headphoneFieldsAdditionalMap: headphoneFieldsAdditionalMapClone,
       };
     }
     default:
@@ -2087,17 +2108,17 @@ function setHeadphoneFieldsAdditional_CreateProductReducer(
 
 /**
  * This reducer function contains three operations that are used to update the
- * areHeadphoneFieldsAdditionalFocused state.
- * @description add: adds a new key-value pair to the areHeadphoneFieldsAdditionalFocused state
+ * areHeadphoneFieldsAdditionalMapFocused state.
+ * @description add: adds a new key-value pair to the areHeadphoneFieldsAdditionalMapFocused state
  * @description remove:
    - clones the state, deletes the key-value pair, and iterates over the map
    - with the callback fn index to use as the key for the new map
-   - this is done because the indices are used as the keys by the mapped over headphoneFieldsAdditional state to generate the text elements
-   - that access the areHeadphoneFieldsAdditionalFocused state Map to determine if the appropriate text element should be focused/blurred
+   - this is done because the indices are used as the keys by the mapped over headphoneFieldsAdditionalMap state to generate the text elements
+   - that access the areHeadphoneFieldsAdditionalMapFocused state Map to determine if the appropriate text element should be focused/blurred
    - and must be consecutive as removal of a key-value pair will leave a gap in the indices
-  * @description update: updates either the key or value from the areHeadphoneFieldsAdditionalFocused state
+  * @description update: updates either the key or value from the areHeadphoneFieldsAdditionalMapFocused state
  */
-function setAreHeadphoneFieldsAdditionalFocused_CreateProductReducer(
+function setAreHeadphoneFieldsAdditionalMapFocused_CreateProductReducer(
   state: CreateProductState,
   action: CreateProductDispatch
 ): CreateProductState {
@@ -2105,58 +2126,58 @@ function setAreHeadphoneFieldsAdditionalFocused_CreateProductReducer(
 
   switch (operation) {
     case 'add': {
-      const areHeadphoneFieldsAdditionalFocusedClone = structuredClone(
-        state.areHeadphoneFieldsAdditionalFocused
+      const areHeadphoneFieldsAdditionalMapFocusedClone = structuredClone(
+        state.areHeadphoneFieldsAdditionalMapFocused
       );
 
       const { data } = action.payload as AdditionalFieldsValidFocusedAdd;
-      const prevSize = areHeadphoneFieldsAdditionalFocusedClone.size;
-      areHeadphoneFieldsAdditionalFocusedClone.set(prevSize, data);
+      const prevSize = areHeadphoneFieldsAdditionalMapFocusedClone.size;
+      areHeadphoneFieldsAdditionalMapFocusedClone.set(prevSize, data);
 
       return {
         ...state,
-        areHeadphoneFieldsAdditionalFocused:
-          areHeadphoneFieldsAdditionalFocusedClone,
+        areHeadphoneFieldsAdditionalMapFocused:
+          areHeadphoneFieldsAdditionalMapFocusedClone,
       };
     }
     case 'remove': {
-      const areHeadphoneFieldsAdditionalFocusedClone = structuredClone(
-        state.areHeadphoneFieldsAdditionalFocused
+      const areHeadphoneFieldsAdditionalMapFocusedClone = structuredClone(
+        state.areHeadphoneFieldsAdditionalMapFocused
       );
 
       const { index } = action.payload as AdditionalFieldsValidFocusedRemove;
-      areHeadphoneFieldsAdditionalFocusedClone.delete(index);
+      areHeadphoneFieldsAdditionalMapFocusedClone.delete(index);
 
-      const filteredAreHeadphoneFieldsAdditionalFocused = new Map<
+      const filteredAreHeadphoneFieldsAdditionalMapFocused = new Map<
         number,
         [boolean, boolean]
       >();
 
-      Array.from(areHeadphoneFieldsAdditionalFocusedClone).forEach(
+      Array.from(areHeadphoneFieldsAdditionalMapFocusedClone).forEach(
         (mapIdxKeyVal, arrayIdx) => {
           const [_mapIdx, keyVal] = mapIdxKeyVal as [
             number,
             [boolean, boolean]
           ];
 
-          filteredAreHeadphoneFieldsAdditionalFocused.set(arrayIdx, keyVal);
+          filteredAreHeadphoneFieldsAdditionalMapFocused.set(arrayIdx, keyVal);
         }
       );
 
       return {
         ...state,
-        areHeadphoneFieldsAdditionalFocused:
-          filteredAreHeadphoneFieldsAdditionalFocused,
+        areHeadphoneFieldsAdditionalMapFocused:
+          filteredAreHeadphoneFieldsAdditionalMapFocused,
       };
     }
     case 'update': {
-      const areHeadphoneFieldsAdditionalFocusedClone = structuredClone(
-        state.areHeadphoneFieldsAdditionalFocused
+      const areHeadphoneFieldsAdditionalMapFocusedClone = structuredClone(
+        state.areHeadphoneFieldsAdditionalMapFocused
       );
 
       const { data, index, kind } =
         action.payload as AdditionalFieldsValidFocusedUpdate;
-      const prevKeyVal = areHeadphoneFieldsAdditionalFocusedClone.get(index);
+      const prevKeyVal = areHeadphoneFieldsAdditionalMapFocusedClone.get(index);
 
       if (!prevKeyVal) {
         return state;
@@ -2164,13 +2185,19 @@ function setAreHeadphoneFieldsAdditionalFocused_CreateProductReducer(
 
       const [prevKey, prevValue] = prevKeyVal;
       kind === 'key'
-        ? areHeadphoneFieldsAdditionalFocusedClone.set(index, [data, prevValue])
-        : areHeadphoneFieldsAdditionalFocusedClone.set(index, [prevKey, data]);
+        ? areHeadphoneFieldsAdditionalMapFocusedClone.set(index, [
+            data,
+            prevValue,
+          ])
+        : areHeadphoneFieldsAdditionalMapFocusedClone.set(index, [
+            prevKey,
+            data,
+          ]);
 
       return {
         ...state,
-        areHeadphoneFieldsAdditionalFocused:
-          areHeadphoneFieldsAdditionalFocusedClone,
+        areHeadphoneFieldsAdditionalMapFocused:
+          areHeadphoneFieldsAdditionalMapFocusedClone,
       };
     }
     default:
@@ -2184,18 +2211,18 @@ function setAreHeadphoneFieldsAdditionalFocused_CreateProductReducer(
 
 /**
  * This reducer function contains three operations that are used to update the
- * areHeadphoneFieldsAdditionalValid state.
- * @description add: adds a new key-value pair to the areHeadphoneFieldsAdditionalValid state
+ * areHeadphoneFieldsAdditionalMapValid state.
+ * @description add: adds a new key-value pair to the areHeadphoneFieldsAdditionalMapValid state
  * @description remove:
    - clones the state, deletes the key-value pair, and iterates over the map
    - with the callback fn index to use as the key for the new map
-   - this is done because the indices are used as the keys by the mapped over headphoneFieldsAdditional state to generate the text elements
-   - that access the areHeadphoneFieldsAdditionalValid state Map based on said element's error state
+   - this is done because the indices are used as the keys by the mapped over headphoneFieldsAdditionalMap state to generate the text elements
+   - that access the areHeadphoneFieldsAdditionalMapValid state Map based on said element's error state
    - to display the text contained in the screenreader accessible error/valid text elements array
    - map keys must be consecutive as removal of a key-value pair will leave a gap in the indices
-  * @description update: updates either the key or value from the areHeadphoneFieldsAdditionalValid state
+  * @description update: updates either the key or value from the areHeadphoneFieldsAdditionalMapValid state
  */
-function setAreHeadphoneFieldsAdditionalValid_CreateProductReducer(
+function setAreHeadphoneFieldsAdditionalMapValid_CreateProductReducer(
   state: CreateProductState,
   action: CreateProductDispatch
 ): CreateProductState {
@@ -2203,58 +2230,58 @@ function setAreHeadphoneFieldsAdditionalValid_CreateProductReducer(
 
   switch (operation) {
     case 'add': {
-      const areHeadphoneFieldsAdditionalValidClone = structuredClone(
-        state.areHeadphoneFieldsAdditionalValid
+      const areHeadphoneFieldsAdditionalMapValidClone = structuredClone(
+        state.areHeadphoneFieldsAdditionalMapValid
       );
 
       const { data } = action.payload as AdditionalFieldsValidFocusedAdd;
-      const prevSize = areHeadphoneFieldsAdditionalValidClone.size;
-      areHeadphoneFieldsAdditionalValidClone.set(prevSize, data);
+      const prevSize = areHeadphoneFieldsAdditionalMapValidClone.size;
+      areHeadphoneFieldsAdditionalMapValidClone.set(prevSize, data);
 
       return {
         ...state,
-        areHeadphoneFieldsAdditionalValid:
-          areHeadphoneFieldsAdditionalValidClone,
+        areHeadphoneFieldsAdditionalMapValid:
+          areHeadphoneFieldsAdditionalMapValidClone,
       };
     }
     case 'remove': {
-      const areHeadphoneFieldsAdditionalValidClone = structuredClone(
-        state.areHeadphoneFieldsAdditionalValid
+      const areHeadphoneFieldsAdditionalMapValidClone = structuredClone(
+        state.areHeadphoneFieldsAdditionalMapValid
       );
 
       const { index } = action.payload as AdditionalFieldsValidFocusedRemove;
-      areHeadphoneFieldsAdditionalValidClone.delete(index);
+      areHeadphoneFieldsAdditionalMapValidClone.delete(index);
 
-      const filteredAreHeadphoneFieldsAdditionalValid = new Map<
+      const filteredAreHeadphoneFieldsAdditionalMapValid = new Map<
         number,
         [boolean, boolean]
       >();
 
-      Array.from(areHeadphoneFieldsAdditionalValidClone).forEach(
+      Array.from(areHeadphoneFieldsAdditionalMapValidClone).forEach(
         (mapIdxKeyVal, arrayIdx) => {
           const [_mapIdx, keyVal] = mapIdxKeyVal as [
             number,
             [boolean, boolean]
           ];
 
-          filteredAreHeadphoneFieldsAdditionalValid.set(arrayIdx, keyVal);
+          filteredAreHeadphoneFieldsAdditionalMapValid.set(arrayIdx, keyVal);
         }
       );
 
       return {
         ...state,
-        areHeadphoneFieldsAdditionalValid:
-          filteredAreHeadphoneFieldsAdditionalValid,
+        areHeadphoneFieldsAdditionalMapValid:
+          filteredAreHeadphoneFieldsAdditionalMapValid,
       };
     }
     case 'update': {
-      const areHeadphoneFieldsAdditionalValidClone = structuredClone(
-        state.areHeadphoneFieldsAdditionalValid
+      const areHeadphoneFieldsAdditionalMapValidClone = structuredClone(
+        state.areHeadphoneFieldsAdditionalMapValid
       );
 
       const { data, index, kind } =
         action.payload as AdditionalFieldsValidFocusedUpdate;
-      const prevKeyVal = areHeadphoneFieldsAdditionalValidClone.get(index);
+      const prevKeyVal = areHeadphoneFieldsAdditionalMapValidClone.get(index);
 
       if (!prevKeyVal) {
         return state;
@@ -2262,13 +2289,16 @@ function setAreHeadphoneFieldsAdditionalValid_CreateProductReducer(
 
       const [prevKey, prevValue] = prevKeyVal;
       kind === 'key'
-        ? areHeadphoneFieldsAdditionalValidClone.set(index, [data, prevValue])
-        : areHeadphoneFieldsAdditionalValidClone.set(index, [prevKey, data]);
+        ? areHeadphoneFieldsAdditionalMapValidClone.set(index, [
+            data,
+            prevValue,
+          ])
+        : areHeadphoneFieldsAdditionalMapValidClone.set(index, [prevKey, data]);
 
       return {
         ...state,
-        areHeadphoneFieldsAdditionalValid:
-          areHeadphoneFieldsAdditionalValidClone,
+        areHeadphoneFieldsAdditionalMapValid:
+          areHeadphoneFieldsAdditionalMapValidClone,
       };
     }
     default:
@@ -2334,15 +2364,15 @@ function setKeyboardInterface_CreateProductReducer(
 
 /**
  * This reducer function contains three operations that are used to update the
- * keyboardFieldsAdditional state.
- * @description add: adds a new key-value pair to the keyboardFieldsAdditional state
+ * keyboardFieldsAdditionalMap state.
+ * @description add: adds a new key-value pair to the keyboardFieldsAdditionalMap state
  * @description remove: clones the state, deletes the key-value pair, and iterates over the map
  *   - with the callback fn index to use as the key for the new map
  *  - this is done because the indices are used as the keys that access the error/valid elements array
  * - and must be consecutive as removal of a key-value pair will leave a gap in the indices
- * @description update: updates either the key or value from the keyboardFieldsAdditional state
+ * @description update: updates either the key or value from the keyboardFieldsAdditionalMap state
  */
-function setKeyboardFieldsAdditional_CreateProductReducer(
+function setKeyboardFieldsAdditionalMap_CreateProductReducer(
   state: CreateProductState,
   action: CreateProductDispatch
 ): CreateProductState {
@@ -2350,52 +2380,52 @@ function setKeyboardFieldsAdditional_CreateProductReducer(
 
   switch (operation) {
     case 'add': {
-      const keyboardFieldsAdditionalClone = structuredClone(
-        state.keyboardFieldsAdditional
+      const keyboardFieldsAdditionalMapClone = structuredClone(
+        state.keyboardFieldsAdditionalMap
       );
 
       const { data } = action.payload as AdditionalFieldsAdd;
-      const prevSize = keyboardFieldsAdditionalClone.size;
-      keyboardFieldsAdditionalClone.set(prevSize, data);
+      const prevSize = keyboardFieldsAdditionalMapClone.size;
+      keyboardFieldsAdditionalMapClone.set(prevSize, data);
 
       return {
         ...state,
-        keyboardFieldsAdditional: keyboardFieldsAdditionalClone,
+        keyboardFieldsAdditionalMap: keyboardFieldsAdditionalMapClone,
       };
     }
 
     case 'remove': {
-      const keyboardFieldsAdditionalClone = structuredClone(
-        state.keyboardFieldsAdditional
+      const keyboardFieldsAdditionalMapClone = structuredClone(
+        state.keyboardFieldsAdditionalMap
       );
 
       const { index } = action.payload as AdditionalFieldsRemove;
-      keyboardFieldsAdditionalClone.delete(index);
+      keyboardFieldsAdditionalMapClone.delete(index);
 
-      const filteredKeyboardFieldsAdditional = new Map<
+      const filteredKeyboardFieldsAdditionalMap = new Map<
         number,
         [string, string]
       >();
 
-      Array.from(keyboardFieldsAdditionalClone).forEach(
+      Array.from(keyboardFieldsAdditionalMapClone).forEach(
         (mapIdxKeyVal, arrayIdx) => {
           const [_mapIdx, keyVal] = mapIdxKeyVal as [number, [string, string]];
-          filteredKeyboardFieldsAdditional.set(arrayIdx, keyVal);
+          filteredKeyboardFieldsAdditionalMap.set(arrayIdx, keyVal);
         }
       );
 
       return {
         ...state,
-        keyboardFieldsAdditional: filteredKeyboardFieldsAdditional,
+        keyboardFieldsAdditionalMap: filteredKeyboardFieldsAdditionalMap,
       };
     }
     case 'update': {
-      const keyboardFieldsAdditionalClone = structuredClone(
-        state.keyboardFieldsAdditional
+      const keyboardFieldsAdditionalMapClone = structuredClone(
+        state.keyboardFieldsAdditionalMap
       );
 
       const { data, index, kind } = action.payload as AdditionalFieldsUpdate;
-      const prevKeyVal = keyboardFieldsAdditionalClone.get(index);
+      const prevKeyVal = keyboardFieldsAdditionalMapClone.get(index);
 
       if (!prevKeyVal) {
         return state;
@@ -2403,12 +2433,12 @@ function setKeyboardFieldsAdditional_CreateProductReducer(
 
       const [prevKey, prevValue] = prevKeyVal;
       kind === 'key'
-        ? keyboardFieldsAdditionalClone.set(index, [data, prevValue])
-        : keyboardFieldsAdditionalClone.set(index, [prevKey, data]);
+        ? keyboardFieldsAdditionalMapClone.set(index, [data, prevValue])
+        : keyboardFieldsAdditionalMapClone.set(index, [prevKey, data]);
 
       return {
         ...state,
-        keyboardFieldsAdditional: keyboardFieldsAdditionalClone,
+        keyboardFieldsAdditionalMap: keyboardFieldsAdditionalMapClone,
       };
     }
     default:
@@ -2422,17 +2452,17 @@ function setKeyboardFieldsAdditional_CreateProductReducer(
 
 /**
  * This reducer function contains three operations that are used to update the
- * areKeyboardFieldsAdditionalFocused state.
- * @description add: adds a new key-value pair to the areKeyboardFieldsAdditionalFocused state
+ * areKeyboardFieldsAdditionalMapFocused state.
+ * @description add: adds a new key-value pair to the areKeyboardFieldsAdditionalMapFocused state
  * @description remove:
    - clones the state, deletes the key-value pair, and iterates over the map
    - with the callback fn index to use as the key for the new map
-   - this is done because the indices are used as the keys by the mapped over keyboardFieldsAdditional state to generate the text elements
-   - that access the areKeyboardFieldsAdditionalFocused state Map to determine if the appropriate text element should be focused/blurred
+   - this is done because the indices are used as the keys by the mapped over keyboardFieldsAdditionalMap state to generate the text elements
+   - that access the areKeyboardFieldsAdditionalMapFocused state Map to determine if the appropriate text element should be focused/blurred
    - and must be consecutive as removal of a key-value pair will leave a gap in the indices
-  * @description update: updates either the key or value from the areKeyboardFieldsAdditionalFocused state
+  * @description update: updates either the key or value from the areKeyboardFieldsAdditionalMapFocused state
  */
-function setAreKeyboardFieldsAdditionalFocused_CreateProductReducer(
+function setAreKeyboardFieldsAdditionalMapFocused_CreateProductReducer(
   state: CreateProductState,
   action: CreateProductDispatch
 ): CreateProductState {
@@ -2440,58 +2470,58 @@ function setAreKeyboardFieldsAdditionalFocused_CreateProductReducer(
 
   switch (operation) {
     case 'add': {
-      const areKeyboardFieldsAdditionalFocusedClone = structuredClone(
-        state.areKeyboardFieldsAdditionalFocused
+      const areKeyboardFieldsAdditionalMapFocusedClone = structuredClone(
+        state.areKeyboardFieldsAdditionalMapFocused
       );
 
       const { data } = action.payload as AdditionalFieldsValidFocusedAdd;
-      const prevSize = areKeyboardFieldsAdditionalFocusedClone.size;
-      areKeyboardFieldsAdditionalFocusedClone.set(prevSize, data);
+      const prevSize = areKeyboardFieldsAdditionalMapFocusedClone.size;
+      areKeyboardFieldsAdditionalMapFocusedClone.set(prevSize, data);
 
       return {
         ...state,
-        areKeyboardFieldsAdditionalFocused:
-          areKeyboardFieldsAdditionalFocusedClone,
+        areKeyboardFieldsAdditionalMapFocused:
+          areKeyboardFieldsAdditionalMapFocusedClone,
       };
     }
     case 'remove': {
-      const areKeyboardFieldsAdditionalFocusedClone = structuredClone(
-        state.areKeyboardFieldsAdditionalFocused
+      const areKeyboardFieldsAdditionalMapFocusedClone = structuredClone(
+        state.areKeyboardFieldsAdditionalMapFocused
       );
 
       const { index } = action.payload as AdditionalFieldsValidFocusedRemove;
-      areKeyboardFieldsAdditionalFocusedClone.delete(index);
+      areKeyboardFieldsAdditionalMapFocusedClone.delete(index);
 
-      const filteredAreKeyboardFieldsAdditionalFocused = new Map<
+      const filteredAreKeyboardFieldsAdditionalMapFocused = new Map<
         number,
         [boolean, boolean]
       >();
 
-      Array.from(areKeyboardFieldsAdditionalFocusedClone).forEach(
+      Array.from(areKeyboardFieldsAdditionalMapFocusedClone).forEach(
         (mapIdxKeyVal, arrayIdx) => {
           const [_mapIdx, keyVal] = mapIdxKeyVal as [
             number,
             [boolean, boolean]
           ];
 
-          filteredAreKeyboardFieldsAdditionalFocused.set(arrayIdx, keyVal);
+          filteredAreKeyboardFieldsAdditionalMapFocused.set(arrayIdx, keyVal);
         }
       );
 
       return {
         ...state,
-        areKeyboardFieldsAdditionalFocused:
-          filteredAreKeyboardFieldsAdditionalFocused,
+        areKeyboardFieldsAdditionalMapFocused:
+          filteredAreKeyboardFieldsAdditionalMapFocused,
       };
     }
     case 'update': {
-      const areKeyboardFieldsAdditionalFocusedClone = structuredClone(
-        state.areKeyboardFieldsAdditionalFocused
+      const areKeyboardFieldsAdditionalMapFocusedClone = structuredClone(
+        state.areKeyboardFieldsAdditionalMapFocused
       );
 
       const { data, index, kind } =
         action.payload as AdditionalFieldsValidFocusedUpdate;
-      const prevKeyVal = areKeyboardFieldsAdditionalFocusedClone.get(index);
+      const prevKeyVal = areKeyboardFieldsAdditionalMapFocusedClone.get(index);
 
       if (!prevKeyVal) {
         return state;
@@ -2499,13 +2529,19 @@ function setAreKeyboardFieldsAdditionalFocused_CreateProductReducer(
 
       const [prevKey, prevValue] = prevKeyVal;
       kind === 'key'
-        ? areKeyboardFieldsAdditionalFocusedClone.set(index, [data, prevValue])
-        : areKeyboardFieldsAdditionalFocusedClone.set(index, [prevKey, data]);
+        ? areKeyboardFieldsAdditionalMapFocusedClone.set(index, [
+            data,
+            prevValue,
+          ])
+        : areKeyboardFieldsAdditionalMapFocusedClone.set(index, [
+            prevKey,
+            data,
+          ]);
 
       return {
         ...state,
-        areKeyboardFieldsAdditionalFocused:
-          areKeyboardFieldsAdditionalFocusedClone,
+        areKeyboardFieldsAdditionalMapFocused:
+          areKeyboardFieldsAdditionalMapFocusedClone,
       };
     }
     default:
@@ -2519,18 +2555,18 @@ function setAreKeyboardFieldsAdditionalFocused_CreateProductReducer(
 
 /**
  * This reducer function contains three operations that are used to update the
- * areKeyboardFieldsAdditionalValid state.
- * @description add: adds a new key-value pair to the areKeyboardFieldsAdditionalValid state
+ * areKeyboardFieldsAdditionalMapValid state.
+ * @description add: adds a new key-value pair to the areKeyboardFieldsAdditionalMapValid state
  * @description remove:
    - clones the state, deletes the key-value pair, and iterates over the map
    - with the callback fn index to use as the key for the new map
-   - this is done because the indices are used as the keys by the mapped over keyboardFieldsAdditional state to generate the text elements
-   - that access the areKeyboardFieldsAdditionalValid state Map based on said element's error state
+   - this is done because the indices are used as the keys by the mapped over keyboardFieldsAdditionalMap state to generate the text elements
+   - that access the areKeyboardFieldsAdditionalMapValid state Map based on said element's error state
    - to display the text contained in the screenreader accessible error/valid text elements array
    - map keys must be consecutive as removal of a key-value pair will leave a gap in the indices
-  * @description update: updates either the key or value from the areKeyboardFieldsAdditionalValid state
+  * @description update: updates either the key or value from the areKeyboardFieldsAdditionalMapValid state
  */
-function setAreKeyboardFieldsAdditionalValid_CreateProductReducer(
+function setAreKeyboardFieldsAdditionalMapValid_CreateProductReducer(
   state: CreateProductState,
   action: CreateProductDispatch
 ): CreateProductState {
@@ -2538,57 +2574,58 @@ function setAreKeyboardFieldsAdditionalValid_CreateProductReducer(
 
   switch (operation) {
     case 'add': {
-      const areKeyboardFieldsAdditionalValidClone = structuredClone(
-        state.areKeyboardFieldsAdditionalValid
+      const areKeyboardFieldsAdditionalMapValidClone = structuredClone(
+        state.areKeyboardFieldsAdditionalMapValid
       );
 
       const { data } = action.payload as AdditionalFieldsValidFocusedAdd;
-      const prevSize = areKeyboardFieldsAdditionalValidClone.size;
-      areKeyboardFieldsAdditionalValidClone.set(prevSize, data);
+      const prevSize = areKeyboardFieldsAdditionalMapValidClone.size;
+      areKeyboardFieldsAdditionalMapValidClone.set(prevSize, data);
 
       return {
         ...state,
-        areKeyboardFieldsAdditionalValid: areKeyboardFieldsAdditionalValidClone,
+        areKeyboardFieldsAdditionalMapValid:
+          areKeyboardFieldsAdditionalMapValidClone,
       };
     }
     case 'remove': {
-      const areKeyboardFieldsAdditionalValidClone = structuredClone(
-        state.areKeyboardFieldsAdditionalValid
+      const areKeyboardFieldsAdditionalMapValidClone = structuredClone(
+        state.areKeyboardFieldsAdditionalMapValid
       );
 
       const { index } = action.payload as AdditionalFieldsValidFocusedRemove;
-      areKeyboardFieldsAdditionalValidClone.delete(index);
+      areKeyboardFieldsAdditionalMapValidClone.delete(index);
 
-      const filteredAreKeyboardFieldsAdditionalValid = new Map<
+      const filteredAreKeyboardFieldsAdditionalMapValid = new Map<
         number,
         [boolean, boolean]
       >();
 
-      Array.from(areKeyboardFieldsAdditionalValidClone).forEach(
+      Array.from(areKeyboardFieldsAdditionalMapValidClone).forEach(
         (mapIdxKeyVal, arrayIdx) => {
           const [_mapIdx, keyVal] = mapIdxKeyVal as [
             number,
             [boolean, boolean]
           ];
 
-          filteredAreKeyboardFieldsAdditionalValid.set(arrayIdx, keyVal);
+          filteredAreKeyboardFieldsAdditionalMapValid.set(arrayIdx, keyVal);
         }
       );
 
       return {
         ...state,
-        areKeyboardFieldsAdditionalValid:
-          filteredAreKeyboardFieldsAdditionalValid,
+        areKeyboardFieldsAdditionalMapValid:
+          filteredAreKeyboardFieldsAdditionalMapValid,
       };
     }
     case 'update': {
-      const areKeyboardFieldsAdditionalValidClone = structuredClone(
-        state.areKeyboardFieldsAdditionalValid
+      const areKeyboardFieldsAdditionalMapValidClone = structuredClone(
+        state.areKeyboardFieldsAdditionalMapValid
       );
 
       const { data, index, kind } =
         action.payload as AdditionalFieldsValidFocusedUpdate;
-      const prevKeyVal = areKeyboardFieldsAdditionalValidClone.get(index);
+      const prevKeyVal = areKeyboardFieldsAdditionalMapValidClone.get(index);
 
       if (!prevKeyVal) {
         return state;
@@ -2596,12 +2633,13 @@ function setAreKeyboardFieldsAdditionalValid_CreateProductReducer(
 
       const [prevKey, prevValue] = prevKeyVal;
       kind === 'key'
-        ? areKeyboardFieldsAdditionalValidClone.set(index, [data, prevValue])
-        : areKeyboardFieldsAdditionalValidClone.set(index, [prevKey, data]);
+        ? areKeyboardFieldsAdditionalMapValidClone.set(index, [data, prevValue])
+        : areKeyboardFieldsAdditionalMapValidClone.set(index, [prevKey, data]);
 
       return {
         ...state,
-        areKeyboardFieldsAdditionalValid: areKeyboardFieldsAdditionalValidClone,
+        areKeyboardFieldsAdditionalMapValid:
+          areKeyboardFieldsAdditionalMapValidClone,
       };
     }
     default:
@@ -2839,15 +2877,15 @@ function setIsRamTimingValid_CreateProductReducer(
 
 /**
  * This reducer function contains three operations that are used to update the
- * ramFieldsAdditional state.
- * @description add: adds a new key-value pair to the ramFieldsAdditional state
+ * ramFieldsAdditionalMap state.
+ * @description add: adds a new key-value pair to the ramFieldsAdditionalMap state
  * @description remove: clones the state, deletes the key-value pair, and iterates over the map
  *   - with the callback fn index to use as the key for the new map
  *  - this is done because the indices are used as the keys that access the error/valid elements array
  * - and must be consecutive as removal of a key-value pair will leave a gap in the indices
- * @description update: updates either the key or value from the ramFieldsAdditional state
+ * @description update: updates either the key or value from the ramFieldsAdditionalMap state
  */
-function setRamFieldsAdditional_CreateProductReducer(
+function setRamFieldsAdditionalMap_CreateProductReducer(
   state: CreateProductState,
   action: CreateProductDispatch
 ): CreateProductState {
@@ -2855,47 +2893,52 @@ function setRamFieldsAdditional_CreateProductReducer(
 
   switch (operation) {
     case 'add': {
-      const ramFieldsAdditionalClone = structuredClone(
-        state.ramFieldsAdditional
+      const ramFieldsAdditionalMapClone = structuredClone(
+        state.ramFieldsAdditionalMap
       );
 
       const { data } = action.payload as AdditionalFieldsAdd;
-      const prevSize = ramFieldsAdditionalClone.size;
-      ramFieldsAdditionalClone.set(prevSize, data);
+      const prevSize = ramFieldsAdditionalMapClone.size;
+      ramFieldsAdditionalMapClone.set(prevSize, data);
 
       return {
         ...state,
-        ramFieldsAdditional: ramFieldsAdditionalClone,
+        ramFieldsAdditionalMap: ramFieldsAdditionalMapClone,
       };
     }
 
     case 'remove': {
-      const ramFieldsAdditionalClone = structuredClone(
-        state.ramFieldsAdditional
+      const ramFieldsAdditionalMapClone = structuredClone(
+        state.ramFieldsAdditionalMap
       );
 
       const { index } = action.payload as AdditionalFieldsRemove;
-      ramFieldsAdditionalClone.delete(index);
+      ramFieldsAdditionalMapClone.delete(index);
 
-      const filteredRamFieldsAdditional = new Map<number, [string, string]>();
+      const filteredRamFieldsAdditionalMap = new Map<
+        number,
+        [string, string]
+      >();
 
-      Array.from(ramFieldsAdditionalClone).forEach((mapIdxKeyVal, arrayIdx) => {
-        const [_mapIdx, keyVal] = mapIdxKeyVal as [number, [string, string]];
-        filteredRamFieldsAdditional.set(arrayIdx, keyVal);
-      });
+      Array.from(ramFieldsAdditionalMapClone).forEach(
+        (mapIdxKeyVal, arrayIdx) => {
+          const [_mapIdx, keyVal] = mapIdxKeyVal as [number, [string, string]];
+          filteredRamFieldsAdditionalMap.set(arrayIdx, keyVal);
+        }
+      );
 
       return {
         ...state,
-        ramFieldsAdditional: filteredRamFieldsAdditional,
+        ramFieldsAdditionalMap: filteredRamFieldsAdditionalMap,
       };
     }
     case 'update': {
-      const ramFieldsAdditionalClone = structuredClone(
-        state.ramFieldsAdditional
+      const ramFieldsAdditionalMapClone = structuredClone(
+        state.ramFieldsAdditionalMap
       );
 
       const { data, index, kind } = action.payload as AdditionalFieldsUpdate;
-      const prevKeyVal = ramFieldsAdditionalClone.get(index);
+      const prevKeyVal = ramFieldsAdditionalMapClone.get(index);
 
       if (!prevKeyVal) {
         return state;
@@ -2903,12 +2946,12 @@ function setRamFieldsAdditional_CreateProductReducer(
 
       const [prevKey, prevValue] = prevKeyVal;
       kind === 'key'
-        ? ramFieldsAdditionalClone.set(index, [data, prevValue])
-        : ramFieldsAdditionalClone.set(index, [prevKey, data]);
+        ? ramFieldsAdditionalMapClone.set(index, [data, prevValue])
+        : ramFieldsAdditionalMapClone.set(index, [prevKey, data]);
 
       return {
         ...state,
-        ramFieldsAdditional: ramFieldsAdditionalClone,
+        ramFieldsAdditionalMap: ramFieldsAdditionalMapClone,
       };
     }
     default:
@@ -2922,17 +2965,17 @@ function setRamFieldsAdditional_CreateProductReducer(
 
 /**
  * This reducer function contains three operations that are used to update the
- * areRamFieldsAdditionalFocused state.
- * @description add: adds a new key-value pair to the areRamFieldsAdditionalFocused state
+ * areRamFieldsAdditionalMapFocused state.
+ * @description add: adds a new key-value pair to the areRamFieldsAdditionalMapFocused state
  * @description remove:
    - clones the state, deletes the key-value pair, and iterates over the map
    - with the callback fn index to use as the key for the new map
-   - this is done because the indices are used as the keys by the mapped over ramFieldsAdditional state to generate the text elements
-   - that access the areRamFieldsAdditionalFocused state Map to determine if the appropriate text element should be focused/blurred
+   - this is done because the indices are used as the keys by the mapped over ramFieldsAdditionalMap state to generate the text elements
+   - that access the areRamFieldsAdditionalMapFocused state Map to determine if the appropriate text element should be focused/blurred
    - and must be consecutive as removal of a key-value pair will leave a gap in the indices
-  * @description update: updates either the key or value from the areRamFieldsAdditionalFocused state
+  * @description update: updates either the key or value from the areRamFieldsAdditionalMapFocused state
  */
-function setAreRamFieldsAdditionalFocused_CreateProductReducer(
+function setAreRamFieldsAdditionalMapFocused_CreateProductReducer(
   state: CreateProductState,
   action: CreateProductDispatch
 ): CreateProductState {
@@ -2940,56 +2983,57 @@ function setAreRamFieldsAdditionalFocused_CreateProductReducer(
 
   switch (operation) {
     case 'add': {
-      const areRamFieldsAdditionalFocusedClone = structuredClone(
-        state.areRamFieldsAdditionalFocused
+      const areRamFieldsAdditionalMapFocusedClone = structuredClone(
+        state.areRamFieldsAdditionalMapFocused
       );
 
       const { data } = action.payload as AdditionalFieldsValidFocusedAdd;
-      const prevSize = areRamFieldsAdditionalFocusedClone.size;
-      areRamFieldsAdditionalFocusedClone.set(prevSize, data);
+      const prevSize = areRamFieldsAdditionalMapFocusedClone.size;
+      areRamFieldsAdditionalMapFocusedClone.set(prevSize, data);
 
       return {
         ...state,
-        areRamFieldsAdditionalFocused: areRamFieldsAdditionalFocusedClone,
+        areRamFieldsAdditionalMapFocused: areRamFieldsAdditionalMapFocusedClone,
       };
     }
     case 'remove': {
-      const areRamFieldsAdditionalFocusedClone = structuredClone(
-        state.areRamFieldsAdditionalFocused
+      const areRamFieldsAdditionalMapFocusedClone = structuredClone(
+        state.areRamFieldsAdditionalMapFocused
       );
 
       const { index } = action.payload as AdditionalFieldsValidFocusedRemove;
-      areRamFieldsAdditionalFocusedClone.delete(index);
+      areRamFieldsAdditionalMapFocusedClone.delete(index);
 
-      const filteredAreRamFieldsAdditionalFocused = new Map<
+      const filteredAreRamFieldsAdditionalMapFocused = new Map<
         number,
         [boolean, boolean]
       >();
 
-      Array.from(areRamFieldsAdditionalFocusedClone).forEach(
+      Array.from(areRamFieldsAdditionalMapFocusedClone).forEach(
         (mapIdxKeyVal, arrayIdx) => {
           const [_mapIdx, keyVal] = mapIdxKeyVal as [
             number,
             [boolean, boolean]
           ];
 
-          filteredAreRamFieldsAdditionalFocused.set(arrayIdx, keyVal);
+          filteredAreRamFieldsAdditionalMapFocused.set(arrayIdx, keyVal);
         }
       );
 
       return {
         ...state,
-        areRamFieldsAdditionalFocused: filteredAreRamFieldsAdditionalFocused,
+        areRamFieldsAdditionalMapFocused:
+          filteredAreRamFieldsAdditionalMapFocused,
       };
     }
     case 'update': {
-      const areRamFieldsAdditionalFocusedClone = structuredClone(
-        state.areRamFieldsAdditionalFocused
+      const areRamFieldsAdditionalMapFocusedClone = structuredClone(
+        state.areRamFieldsAdditionalMapFocused
       );
 
       const { data, index, kind } =
         action.payload as AdditionalFieldsValidFocusedUpdate;
-      const prevKeyVal = areRamFieldsAdditionalFocusedClone.get(index);
+      const prevKeyVal = areRamFieldsAdditionalMapFocusedClone.get(index);
 
       if (!prevKeyVal) {
         return state;
@@ -2997,12 +3041,12 @@ function setAreRamFieldsAdditionalFocused_CreateProductReducer(
 
       const [prevKey, prevValue] = prevKeyVal;
       kind === 'key'
-        ? areRamFieldsAdditionalFocusedClone.set(index, [data, prevValue])
-        : areRamFieldsAdditionalFocusedClone.set(index, [prevKey, data]);
+        ? areRamFieldsAdditionalMapFocusedClone.set(index, [data, prevValue])
+        : areRamFieldsAdditionalMapFocusedClone.set(index, [prevKey, data]);
 
       return {
         ...state,
-        areRamFieldsAdditionalFocused: areRamFieldsAdditionalFocusedClone,
+        areRamFieldsAdditionalMapFocused: areRamFieldsAdditionalMapFocusedClone,
       };
     }
     default:
@@ -3016,18 +3060,18 @@ function setAreRamFieldsAdditionalFocused_CreateProductReducer(
 
 /**
  * This reducer function contains three operations that are used to update the
- * areRamFieldsAdditionalValid state.
- * @description add: adds a new key-value pair to the areRamFieldsAdditionalValid state
+ * areRamFieldsAdditionalMapValid state.
+ * @description add: adds a new key-value pair to the areRamFieldsAdditionalMapValid state
  * @description remove:
    - clones the state, deletes the key-value pair, and iterates over the map
    - with the callback fn index to use as the key for the new map
-   - this is done because the indices are used as the keys by the mapped over ramFieldsAdditional state to generate the text elements
-   - that access the areRamFieldsAdditionalValid state Map based on said element's error state
+   - this is done because the indices are used as the keys by the mapped over ramFieldsAdditionalMap state to generate the text elements
+   - that access the areRamFieldsAdditionalMapValid state Map based on said element's error state
    - to display the text contained in the screenreader accessible error/valid text elements array
    - map keys must be consecutive as removal of a key-value pair will leave a gap in the indices
-  * @description update: updates either the key or value from the areRamFieldsAdditionalValid state
+  * @description update: updates either the key or value from the areRamFieldsAdditionalMapValid state
  */
-function setAreRamFieldsAdditionalValid_CreateProductReducer(
+function setAreRamFieldsAdditionalMapValid_CreateProductReducer(
   state: CreateProductState,
   action: CreateProductDispatch
 ): CreateProductState {
@@ -3035,56 +3079,56 @@ function setAreRamFieldsAdditionalValid_CreateProductReducer(
 
   switch (operation) {
     case 'add': {
-      const areRamFieldsAdditionalValidClone = structuredClone(
-        state.areRamFieldsAdditionalValid
+      const areRamFieldsAdditionalMapValidClone = structuredClone(
+        state.areRamFieldsAdditionalMapValid
       );
 
       const { data } = action.payload as AdditionalFieldsValidFocusedAdd;
-      const prevSize = areRamFieldsAdditionalValidClone.size;
-      areRamFieldsAdditionalValidClone.set(prevSize, data);
+      const prevSize = areRamFieldsAdditionalMapValidClone.size;
+      areRamFieldsAdditionalMapValidClone.set(prevSize, data);
 
       return {
         ...state,
-        areRamFieldsAdditionalValid: areRamFieldsAdditionalValidClone,
+        areRamFieldsAdditionalMapValid: areRamFieldsAdditionalMapValidClone,
       };
     }
     case 'remove': {
-      const areRamFieldsAdditionalValidClone = structuredClone(
-        state.areRamFieldsAdditionalValid
+      const areRamFieldsAdditionalMapValidClone = structuredClone(
+        state.areRamFieldsAdditionalMapValid
       );
 
       const { index } = action.payload as AdditionalFieldsValidFocusedRemove;
-      areRamFieldsAdditionalValidClone.delete(index);
+      areRamFieldsAdditionalMapValidClone.delete(index);
 
-      const filteredAreRamFieldsAdditionalValid = new Map<
+      const filteredAreRamFieldsAdditionalMapValid = new Map<
         number,
         [boolean, boolean]
       >();
 
-      Array.from(areRamFieldsAdditionalValidClone).forEach(
+      Array.from(areRamFieldsAdditionalMapValidClone).forEach(
         (mapIdxKeyVal, arrayIdx) => {
           const [_mapIdx, keyVal] = mapIdxKeyVal as [
             number,
             [boolean, boolean]
           ];
 
-          filteredAreRamFieldsAdditionalValid.set(arrayIdx, keyVal);
+          filteredAreRamFieldsAdditionalMapValid.set(arrayIdx, keyVal);
         }
       );
 
       return {
         ...state,
-        areRamFieldsAdditionalValid: filteredAreRamFieldsAdditionalValid,
+        areRamFieldsAdditionalMapValid: filteredAreRamFieldsAdditionalMapValid,
       };
     }
     case 'update': {
-      const areRamFieldsAdditionalValidClone = structuredClone(
-        state.areRamFieldsAdditionalValid
+      const areRamFieldsAdditionalMapValidClone = structuredClone(
+        state.areRamFieldsAdditionalMapValid
       );
 
       const { data, index, kind } =
         action.payload as AdditionalFieldsValidFocusedUpdate;
-      const prevKeyVal = areRamFieldsAdditionalValidClone.get(index);
+      const prevKeyVal = areRamFieldsAdditionalMapValidClone.get(index);
 
       if (!prevKeyVal) {
         return state;
@@ -3092,12 +3136,12 @@ function setAreRamFieldsAdditionalValid_CreateProductReducer(
 
       const [prevKey, prevValue] = prevKeyVal;
       kind === 'key'
-        ? areRamFieldsAdditionalValidClone.set(index, [data, prevValue])
-        : areRamFieldsAdditionalValidClone.set(index, [prevKey, data]);
+        ? areRamFieldsAdditionalMapValidClone.set(index, [data, prevValue])
+        : areRamFieldsAdditionalMapValidClone.set(index, [prevKey, data]);
 
       return {
         ...state,
-        areRamFieldsAdditionalValid: areRamFieldsAdditionalValidClone,
+        areRamFieldsAdditionalMapValid: areRamFieldsAdditionalMapValidClone,
       };
     }
     default:
@@ -3236,15 +3280,15 @@ function setMouseInterface_CreateProductReducer(
 
 /**
  * This reducer function contains three operations that are used to update the
- * mouseFieldsAdditional state.
- * @description add: adds a new key-value pair to the mouseFieldsAdditional state
+ * mouseFieldsAdditionalMap state.
+ * @description add: adds a new key-value pair to the mouseFieldsAdditionalMap state
  * @description remove: clones the state, deletes the key-value pair, and iterates over the map
  *   - with the callback fn index to use as the key for the new map
  *  - this is done because the indices are used as the keys that access the error/valid elements array
  * - and must be consecutive as removal of a key-value pair will leave a gap in the indices
- * @description update: updates either the key or value from the mouseFieldsAdditional state
+ * @description update: updates either the key or value from the mouseFieldsAdditionalMap state
  */
-function setMouseFieldsAdditional_CreateProductReducer(
+function setMouseFieldsAdditionalMap_CreateProductReducer(
   state: CreateProductState,
   action: CreateProductDispatch
 ): CreateProductState {
@@ -3252,49 +3296,52 @@ function setMouseFieldsAdditional_CreateProductReducer(
 
   switch (operation) {
     case 'add': {
-      const mouseFieldsAdditionalClone = structuredClone(
-        state.mouseFieldsAdditional
+      const mouseFieldsAdditionalMapClone = structuredClone(
+        state.mouseFieldsAdditionalMap
       );
 
       const { data } = action.payload as AdditionalFieldsAdd;
-      const prevSize = mouseFieldsAdditionalClone.size;
-      mouseFieldsAdditionalClone.set(prevSize, data);
+      const prevSize = mouseFieldsAdditionalMapClone.size;
+      mouseFieldsAdditionalMapClone.set(prevSize, data);
 
       return {
         ...state,
-        mouseFieldsAdditional: mouseFieldsAdditionalClone,
+        mouseFieldsAdditionalMap: mouseFieldsAdditionalMapClone,
       };
     }
 
     case 'remove': {
-      const mouseFieldsAdditionalClone = structuredClone(
-        state.mouseFieldsAdditional
+      const mouseFieldsAdditionalMapClone = structuredClone(
+        state.mouseFieldsAdditionalMap
       );
 
       const { index } = action.payload as AdditionalFieldsRemove;
-      mouseFieldsAdditionalClone.delete(index);
+      mouseFieldsAdditionalMapClone.delete(index);
 
-      const filteredMouseFieldsAdditional = new Map<number, [string, string]>();
+      const filteredMouseFieldsAdditionalMap = new Map<
+        number,
+        [string, string]
+      >();
 
-      Array.from(mouseFieldsAdditionalClone).forEach(
+      Array.from(mouseFieldsAdditionalMapClone).forEach(
         (mapIdxKeyVal, arrayIdx) => {
           const [_mapIdx, keyVal] = mapIdxKeyVal as [number, [string, string]];
-          filteredMouseFieldsAdditional.set(arrayIdx, keyVal);
+          filteredMouseFieldsAdditionalMap.set(arrayIdx, keyVal);
         }
       );
 
       return {
         ...state,
-        mouseFieldsAdditional: filteredMouseFieldsAdditional,
+        mouseFieldsAdditionalMap: filteredMouseFieldsAdditionalMap,
       };
     }
     case 'update': {
-      const mouseFieldsAdditionalClone = structuredClone(
-        state.mouseFieldsAdditional
+      const mouseFieldsAdditionalMapClone = structuredClone(
+        state.mouseFieldsAdditionalMap
       );
 
       const { data, index, kind } = action.payload as AdditionalFieldsUpdate;
-      const prevKeyVal = mouseFieldsAdditionalClone.get(index);
+      const prevKeyVal = mouseFieldsAdditionalMapClone.get(index);
 
       if (!prevKeyVal) {
         return state;
@@ -3302,12 +3349,12 @@ function setMouseFieldsAdditional_CreateProductReducer(
 
       const [prevKey, prevValue] = prevKeyVal;
       kind === 'key'
-        ? mouseFieldsAdditionalClone.set(index, [data, prevValue])
-        : mouseFieldsAdditionalClone.set(index, [prevKey, data]);
+        ? mouseFieldsAdditionalMapClone.set(index, [data, prevValue])
+        : mouseFieldsAdditionalMapClone.set(index, [prevKey, data]);
 
       return {
         ...state,
-        mouseFieldsAdditional: mouseFieldsAdditionalClone,
+        mouseFieldsAdditionalMap: mouseFieldsAdditionalMapClone,
       };
     }
     default:
@@ -3321,17 +3368,17 @@ function setMouseFieldsAdditional_CreateProductReducer(
 
 /**
  * This reducer function contains three operations that are used to update the
- * areMouseFieldsAdditionalFocused state.
- * @description add: adds a new key-value pair to the areMouseFieldsAdditionalFocused state
+ * areMouseFieldsAdditionalMapFocused state.
+ * @description add: adds a new key-value pair to the areMouseFieldsAdditionalMapFocused state
  * @description remove:
    - clones the state, deletes the key-value pair, and iterates over the map
    - with the callback fn index to use as the key for the new map
-   - this is done because the indices are used as the keys by the mapped over mouseFieldsAdditional state to generate the text elements
-   - that access the areMouseFieldsAdditionalFocused state Map to determine if the appropriate text element should be focused/blurred
+   - this is done because the indices are used as the keys by the mapped over mouseFieldsAdditionalMap state to generate the text elements
+   - that access the areMouseFieldsAdditionalMapFocused state Map to determine if the appropriate text element should be focused/blurred
    - and must be consecutive as removal of a key-value pair will leave a gap in the indices
-  * @description update: updates either the key or value from the areMouseFieldsAdditionalFocused state
+  * @description update: updates either the key or value from the areMouseFieldsAdditionalMapFocused state
  */
-function setAreMouseFieldsAdditionalFocused_CreateProductReducer(
+function setAreMouseFieldsAdditionalMapFocused_CreateProductReducer(
   state: CreateProductState,
   action: CreateProductDispatch
 ): CreateProductState {
@@ -3339,57 +3386,58 @@ function setAreMouseFieldsAdditionalFocused_CreateProductReducer(
 
   switch (operation) {
     case 'add': {
-      const areMouseFieldsAdditionalFocusedClone = structuredClone(
-        state.areMouseFieldsAdditionalFocused
+      const areMouseFieldsAdditionalMapFocusedClone = structuredClone(
+        state.areMouseFieldsAdditionalMapFocused
       );
 
       const { data } = action.payload as AdditionalFieldsValidFocusedAdd;
-      const prevSize = areMouseFieldsAdditionalFocusedClone.size;
-      areMouseFieldsAdditionalFocusedClone.set(prevSize, data);
+      const prevSize = areMouseFieldsAdditionalMapFocusedClone.size;
+      areMouseFieldsAdditionalMapFocusedClone.set(prevSize, data);
 
       return {
         ...state,
-        areMouseFieldsAdditionalFocused: areMouseFieldsAdditionalFocusedClone,
+        areMouseFieldsAdditionalMapFocused:
+          areMouseFieldsAdditionalMapFocusedClone,
       };
     }
     case 'remove': {
-      const areMouseFieldsAdditionalFocusedClone = structuredClone(
-        state.areMouseFieldsAdditionalFocused
+      const areMouseFieldsAdditionalMapFocusedClone = structuredClone(
+        state.areMouseFieldsAdditionalMapFocused
       );
 
       const { index } = action.payload as AdditionalFieldsValidFocusedRemove;
-      areMouseFieldsAdditionalFocusedClone.delete(index);
+      areMouseFieldsAdditionalMapFocusedClone.delete(index);
 
-      const filteredAreMouseFieldsAdditionalFocused = new Map<
+      const filteredAreMouseFieldsAdditionalMapFocused = new Map<
         number,
         [boolean, boolean]
       >();
 
-      Array.from(areMouseFieldsAdditionalFocusedClone).forEach(
+      Array.from(areMouseFieldsAdditionalMapFocusedClone).forEach(
         (mapIdxKeyVal, arrayIdx) => {
           const [_mapIdx, keyVal] = mapIdxKeyVal as [
             number,
             [boolean, boolean]
           ];
 
-          filteredAreMouseFieldsAdditionalFocused.set(arrayIdx, keyVal);
+          filteredAreMouseFieldsAdditionalMapFocused.set(arrayIdx, keyVal);
         }
       );
 
       return {
         ...state,
-        areMouseFieldsAdditionalFocused:
-          filteredAreMouseFieldsAdditionalFocused,
+        areMouseFieldsAdditionalMapFocused:
+          filteredAreMouseFieldsAdditionalMapFocused,
       };
     }
     case 'update': {
-      const areMouseFieldsAdditionalFocusedClone = structuredClone(
-        state.areMouseFieldsAdditionalFocused
+      const areMouseFieldsAdditionalMapFocusedClone = structuredClone(
+        state.areMouseFieldsAdditionalMapFocused
       );
 
       const { data, index, kind } =
         action.payload as AdditionalFieldsValidFocusedUpdate;
-      const prevKeyVal = areMouseFieldsAdditionalFocusedClone.get(index);
+      const prevKeyVal = areMouseFieldsAdditionalMapFocusedClone.get(index);
 
       if (!prevKeyVal) {
         return state;
@@ -3397,12 +3445,13 @@ function setAreMouseFieldsAdditionalFocused_CreateProductReducer(
 
       const [prevKey, prevValue] = prevKeyVal;
       kind === 'key'
-        ? areMouseFieldsAdditionalFocusedClone.set(index, [data, prevValue])
-        : areMouseFieldsAdditionalFocusedClone.set(index, [prevKey, data]);
+        ? areMouseFieldsAdditionalMapFocusedClone.set(index, [data, prevValue])
+        : areMouseFieldsAdditionalMapFocusedClone.set(index, [prevKey, data]);
 
       return {
         ...state,
-        areMouseFieldsAdditionalFocused: areMouseFieldsAdditionalFocusedClone,
+        areMouseFieldsAdditionalMapFocused:
+          areMouseFieldsAdditionalMapFocusedClone,
       };
     }
     default:
@@ -3416,18 +3465,18 @@ function setAreMouseFieldsAdditionalFocused_CreateProductReducer(
 
 /**
  * This reducer function contains three operations that are used to update the
- * areMouseFieldsAdditionalValid state.
- * @description add: adds a new key-value pair to the areMouseFieldsAdditionalValid state
+ * areMouseFieldsAdditionalMapValid state.
+ * @description add: adds a new key-value pair to the areMouseFieldsAdditionalMapValid state
  * @description remove:
    - clones the state, deletes the key-value pair, and iterates over the map
    - with the callback fn index to use as the key for the new map
-   - this is done because the indices are used as the keys by the mapped over mouseFieldsAdditional state to generate the text elements
-   - that access the areMouseFieldsAdditionalValid state Map based on said element's error state
+   - this is done because the indices are used as the keys by the mapped over mouseFieldsAdditionalMap state to generate the text elements
+   - that access the areMouseFieldsAdditionalMapValid state Map based on said element's error state
    - to display the text contained in the screenreader accessible error/valid text elements array
    - map keys must be consecutive as removal of a key-value pair will leave a gap in the indices
-  * @description update: updates either the key or value from the areMouseFieldsAdditionalValid state
+  * @description update: updates either the key or value from the areMouseFieldsAdditionalMapValid state
  */
-function setAreMouseFieldsAdditionalValid_CreateProductReducer(
+function setAreMouseFieldsAdditionalMapValid_CreateProductReducer(
   state: CreateProductState,
   action: CreateProductDispatch
 ): CreateProductState {
@@ -3435,56 +3484,57 @@ function setAreMouseFieldsAdditionalValid_CreateProductReducer(
 
   switch (operation) {
     case 'add': {
-      const areMouseFieldsAdditionalValidClone = structuredClone(
-        state.areMouseFieldsAdditionalValid
+      const areMouseFieldsAdditionalMapValidClone = structuredClone(
+        state.areMouseFieldsAdditionalMapValid
       );
 
       const { data } = action.payload as AdditionalFieldsValidFocusedAdd;
-      const prevSize = areMouseFieldsAdditionalValidClone.size;
-      areMouseFieldsAdditionalValidClone.set(prevSize, data);
+      const prevSize = areMouseFieldsAdditionalMapValidClone.size;
+      areMouseFieldsAdditionalMapValidClone.set(prevSize, data);
 
       return {
         ...state,
-        areMouseFieldsAdditionalValid: areMouseFieldsAdditionalValidClone,
+        areMouseFieldsAdditionalMapValid: areMouseFieldsAdditionalMapValidClone,
       };
     }
     case 'remove': {
-      const areMouseFieldsAdditionalValidClone = structuredClone(
-        state.areMouseFieldsAdditionalValid
+      const areMouseFieldsAdditionalMapValidClone = structuredClone(
+        state.areMouseFieldsAdditionalMapValid
       );
 
       const { index } = action.payload as AdditionalFieldsValidFocusedRemove;
-      areMouseFieldsAdditionalValidClone.delete(index);
+      areMouseFieldsAdditionalMapValidClone.delete(index);
 
-      const filteredAreMouseFieldsAdditionalValid = new Map<
+      const filteredAreMouseFieldsAdditionalMapValid = new Map<
         number,
         [boolean, boolean]
       >();
 
-      Array.from(areMouseFieldsAdditionalValidClone).forEach(
+      Array.from(areMouseFieldsAdditionalMapValidClone).forEach(
         (mapIdxKeyVal, arrayIdx) => {
           const [_mapIdx, keyVal] = mapIdxKeyVal as [
             number,
             [boolean, boolean]
           ];
 
-          filteredAreMouseFieldsAdditionalValid.set(arrayIdx, keyVal);
+          filteredAreMouseFieldsAdditionalMapValid.set(arrayIdx, keyVal);
         }
       );
 
       return {
         ...state,
-        areMouseFieldsAdditionalValid: filteredAreMouseFieldsAdditionalValid,
+        areMouseFieldsAdditionalMapValid:
+          filteredAreMouseFieldsAdditionalMapValid,
       };
     }
     case 'update': {
-      const areMouseFieldsAdditionalValidClone = structuredClone(
-        state.areMouseFieldsAdditionalValid
+      const areMouseFieldsAdditionalMapValidClone = structuredClone(
+        state.areMouseFieldsAdditionalMapValid
       );
 
       const { data, index, kind } =
         action.payload as AdditionalFieldsValidFocusedUpdate;
-      const prevKeyVal = areMouseFieldsAdditionalValidClone.get(index);
+      const prevKeyVal = areMouseFieldsAdditionalMapValidClone.get(index);
 
       if (!prevKeyVal) {
         return state;
@@ -3492,12 +3542,12 @@ function setAreMouseFieldsAdditionalValid_CreateProductReducer(
 
       const [prevKey, prevValue] = prevKeyVal;
       kind === 'key'
-        ? areMouseFieldsAdditionalValidClone.set(index, [data, prevValue])
-        : areMouseFieldsAdditionalValidClone.set(index, [prevKey, data]);
+        ? areMouseFieldsAdditionalMapValidClone.set(index, [data, prevValue])
+        : areMouseFieldsAdditionalMapValidClone.set(index, [prevKey, data]);
 
       return {
         ...state,
-        areMouseFieldsAdditionalValid: areMouseFieldsAdditionalValidClone,
+        areMouseFieldsAdditionalMapValid: areMouseFieldsAdditionalMapValidClone,
       };
     }
     default:
@@ -3616,15 +3666,15 @@ function setIsMicrophoneColorValid_CreateProductReducer(
 
 /**
  * This reducer function contains three operations that are used to update the
- * microphoneFieldsAdditional state.
- * @description add: adds a new key-value pair to the microphoneFieldsAdditional state
+ * microphoneFieldsAdditionalMap state.
+ * @description add: adds a new key-value pair to the microphoneFieldsAdditionalMap state
  * @description remove: clones the state, deletes the key-value pair, and iterates over the map
  *   - with the callback fn index to use as the key for the new map
  *  - this is done because the indices are used as the keys that access the error/valid elements array
  * - and must be consecutive as removal of a key-value pair will leave a gap in the indices
- * @description update: updates either the key or value from the microphoneFieldsAdditional state
+ * @description update: updates either the key or value from the microphoneFieldsAdditionalMap state
  */
-function setMicrophoneFieldsAdditional_CreateProductReducer(
+function setMicrophoneFieldsAdditionalMap_CreateProductReducer(
   state: CreateProductState,
   action: CreateProductDispatch
 ): CreateProductState {
@@ -3632,52 +3682,52 @@ function setMicrophoneFieldsAdditional_CreateProductReducer(
 
   switch (operation) {
     case 'add': {
-      const microphoneFieldsAdditionalClone = structuredClone(
-        state.microphoneFieldsAdditional
+      const microphoneFieldsAdditionalMapClone = structuredClone(
+        state.microphoneFieldsAdditionalMap
       );
 
       const { data } = action.payload as AdditionalFieldsAdd;
-      const prevSize = microphoneFieldsAdditionalClone.size;
-      microphoneFieldsAdditionalClone.set(prevSize, data);
+      const prevSize = microphoneFieldsAdditionalMapClone.size;
+      microphoneFieldsAdditionalMapClone.set(prevSize, data);
 
       return {
         ...state,
-        microphoneFieldsAdditional: microphoneFieldsAdditionalClone,
+        microphoneFieldsAdditionalMap: microphoneFieldsAdditionalMapClone,
       };
     }
 
     case 'remove': {
-      const microphoneFieldsAdditionalClone = structuredClone(
-        state.microphoneFieldsAdditional
+      const microphoneFieldsAdditionalMapClone = structuredClone(
+        state.microphoneFieldsAdditionalMap
       );
 
       const { index } = action.payload as AdditionalFieldsRemove;
-      microphoneFieldsAdditionalClone.delete(index);
+      microphoneFieldsAdditionalMapClone.delete(index);
 
-      const filteredMicrophoneFieldsAdditional = new Map<
+      const filteredMicrophoneFieldsAdditionalMap = new Map<
         number,
         [string, string]
       >();
 
-      Array.from(microphoneFieldsAdditionalClone).forEach(
+      Array.from(microphoneFieldsAdditionalMapClone).forEach(
         (mapIdxKeyVal, arrayIdx) => {
           const [_mapIdx, keyVal] = mapIdxKeyVal as [number, [string, string]];
-          filteredMicrophoneFieldsAdditional.set(arrayIdx, keyVal);
+          filteredMicrophoneFieldsAdditionalMap.set(arrayIdx, keyVal);
         }
       );
 
       return {
         ...state,
-        microphoneFieldsAdditional: filteredMicrophoneFieldsAdditional,
+        microphoneFieldsAdditionalMap: filteredMicrophoneFieldsAdditionalMap,
       };
     }
     case 'update': {
-      const microphoneFieldsAdditionalClone = structuredClone(
-        state.microphoneFieldsAdditional
+      const microphoneFieldsAdditionalMapClone = structuredClone(
+        state.microphoneFieldsAdditionalMap
       );
 
       const { data, index, kind } = action.payload as AdditionalFieldsUpdate;
-      const prevKeyVal = microphoneFieldsAdditionalClone.get(index);
+      const prevKeyVal = microphoneFieldsAdditionalMapClone.get(index);
 
       if (!prevKeyVal) {
         return state;
@@ -3685,12 +3735,12 @@ function setMicrophoneFieldsAdditional_CreateProductReducer(
 
       const [prevKey, prevValue] = prevKeyVal;
       kind === 'key'
-        ? microphoneFieldsAdditionalClone.set(index, [data, prevValue])
-        : microphoneFieldsAdditionalClone.set(index, [prevKey, data]);
+        ? microphoneFieldsAdditionalMapClone.set(index, [data, prevValue])
+        : microphoneFieldsAdditionalMapClone.set(index, [prevKey, data]);
 
       return {
         ...state,
-        microphoneFieldsAdditional: microphoneFieldsAdditionalClone,
+        microphoneFieldsAdditionalMap: microphoneFieldsAdditionalMapClone,
       };
     }
     default:
@@ -3704,17 +3754,17 @@ function setMicrophoneFieldsAdditional_CreateProductReducer(
 
 /**
  * This reducer function contains three operations that are used to update the
- * areMicrophoneFieldsAdditionalFocused state.
- * @description add: adds a new key-value pair to the areMicrophoneFieldsAdditionalFocused state
+ * areMicrophoneFieldsAdditionalMapFocused state.
+ * @description add: adds a new key-value pair to the areMicrophoneFieldsAdditionalMapFocused state
  * @description remove:
    - clones the state, deletes the key-value pair, and iterates over the map
    - with the callback fn index to use as the key for the new map
-   - this is done because the indices are used as the keys by the mapped over microphoneFieldsAdditional state to generate the text elements
-   - that access the areMicrophoneFieldsAdditionalFocused state Map to determine if the appropriate text element should be focused/blurred
+   - this is done because the indices are used as the keys by the mapped over microphoneFieldsAdditionalMap state to generate the text elements
+   - that access the areMicrophoneFieldsAdditionalMapFocused state Map to determine if the appropriate text element should be focused/blurred
    - and must be consecutive as removal of a key-value pair will leave a gap in the indices
-  * @description update: updates either the key or value from the areMicrophoneFieldsAdditionalFocused state
+  * @description update: updates either the key or value from the areMicrophoneFieldsAdditionalMapFocused state
  */
-function setAreMicrophoneFieldsAdditionalFocused_CreateProductReducer(
+function setAreMicrophoneFieldsAdditionalMapFocused_CreateProductReducer(
   state: CreateProductState,
   action: CreateProductDispatch
 ): CreateProductState {
@@ -3722,58 +3772,59 @@ function setAreMicrophoneFieldsAdditionalFocused_CreateProductReducer(
 
   switch (operation) {
     case 'add': {
-      const areMicrophoneFieldsAdditionalFocusedClone = structuredClone(
-        state.areMicrophoneFieldsAdditionalFocused
+      const areMicrophoneFieldsAdditionalMapFocusedClone = structuredClone(
+        state.areMicrophoneFieldsAdditionalMapFocused
       );
 
       const { data } = action.payload as AdditionalFieldsValidFocusedAdd;
-      const prevSize = areMicrophoneFieldsAdditionalFocusedClone.size;
-      areMicrophoneFieldsAdditionalFocusedClone.set(prevSize, data);
+      const prevSize = areMicrophoneFieldsAdditionalMapFocusedClone.size;
+      areMicrophoneFieldsAdditionalMapFocusedClone.set(prevSize, data);
 
       return {
         ...state,
-        areMicrophoneFieldsAdditionalFocused:
-          areMicrophoneFieldsAdditionalFocusedClone,
+        areMicrophoneFieldsAdditionalMapFocused:
+          areMicrophoneFieldsAdditionalMapFocusedClone,
       };
     }
     case 'remove': {
-      const areMicrophoneFieldsAdditionalFocusedClone = structuredClone(
-        state.areMicrophoneFieldsAdditionalFocused
+      const areMicrophoneFieldsAdditionalMapFocusedClone = structuredClone(
+        state.areMicrophoneFieldsAdditionalMapFocused
       );
 
       const { index } = action.payload as AdditionalFieldsValidFocusedRemove;
-      areMicrophoneFieldsAdditionalFocusedClone.delete(index);
+      areMicrophoneFieldsAdditionalMapFocusedClone.delete(index);
 
-      const filteredAreMicrophoneFieldsAdditionalFocused = new Map<
+      const filteredAreMicrophoneFieldsAdditionalMapFocused = new Map<
         number,
         [boolean, boolean]
       >();
 
-      Array.from(areMicrophoneFieldsAdditionalFocusedClone).forEach(
+      Array.from(areMicrophoneFieldsAdditionalMapFocusedClone).forEach(
         (mapIdxKeyVal, arrayIdx) => {
           const [_mapIdx, keyVal] = mapIdxKeyVal as [
             number,
             [boolean, boolean]
           ];
 
-          filteredAreMicrophoneFieldsAdditionalFocused.set(arrayIdx, keyVal);
+          filteredAreMicrophoneFieldsAdditionalMapFocused.set(arrayIdx, keyVal);
         }
       );
 
       return {
         ...state,
-        areMicrophoneFieldsAdditionalFocused:
-          filteredAreMicrophoneFieldsAdditionalFocused,
+        areMicrophoneFieldsAdditionalMapFocused:
+          filteredAreMicrophoneFieldsAdditionalMapFocused,
       };
     }
     case 'update': {
-      const areMicrophoneFieldsAdditionalFocusedClone = structuredClone(
-        state.areMicrophoneFieldsAdditionalFocused
+      const areMicrophoneFieldsAdditionalMapFocusedClone = structuredClone(
+        state.areMicrophoneFieldsAdditionalMapFocused
       );
 
       const { data, index, kind } =
         action.payload as AdditionalFieldsValidFocusedUpdate;
-      const prevKeyVal = areMicrophoneFieldsAdditionalFocusedClone.get(index);
+      const prevKeyVal =
+        areMicrophoneFieldsAdditionalMapFocusedClone.get(index);
 
       if (!prevKeyVal) {
         return state;
@@ -3781,16 +3832,19 @@ function setAreMicrophoneFieldsAdditionalFocused_CreateProductReducer(
 
       const [prevKey, prevValue] = prevKeyVal;
       kind === 'key'
-        ? areMicrophoneFieldsAdditionalFocusedClone.set(index, [
+        ? areMicrophoneFieldsAdditionalMapFocusedClone.set(index, [
             data,
             prevValue,
           ])
-        : areMicrophoneFieldsAdditionalFocusedClone.set(index, [prevKey, data]);
+        : areMicrophoneFieldsAdditionalMapFocusedClone.set(index, [
+            prevKey,
+            data,
+          ]);
 
       return {
         ...state,
-        areMicrophoneFieldsAdditionalFocused:
-          areMicrophoneFieldsAdditionalFocusedClone,
+        areMicrophoneFieldsAdditionalMapFocused:
+          areMicrophoneFieldsAdditionalMapFocusedClone,
       };
     }
     default:
@@ -3804,18 +3858,18 @@ function setAreMicrophoneFieldsAdditionalFocused_CreateProductReducer(
 
 /**
  * This reducer function contains three operations that are used to update the
- * areMicrophoneFieldsAdditionalValid state.
- * @description add: adds a new key-value pair to the areMicrophoneFieldsAdditionalValid state
+ * areMicrophoneFieldsAdditionalMapValid state.
+ * @description add: adds a new key-value pair to the areMicrophoneFieldsAdditionalMapValid state
  * @description remove:
    - clones the state, deletes the key-value pair, and iterates over the map
    - with the callback fn index to use as the key for the new map
-   - this is done because the indices are used as the keys by the mapped over microphoneFieldsAdditional state to generate the text elements
-   - that access the areMicrophoneFieldsAdditionalValid state Map based on said element's error state
+   - this is done because the indices are used as the keys by the mapped over microphoneFieldsAdditionalMap state to generate the text elements
+   - that access the areMicrophoneFieldsAdditionalMapValid state Map based on said element's error state
    - to display the text contained in the screenreader accessible error/valid text elements array
    - map keys must be consecutive as removal of a key-value pair will leave a gap in the indices
-  * @description update: updates either the key or value from the areMicrophoneFieldsAdditionalValid state
+  * @description update: updates either the key or value from the areMicrophoneFieldsAdditionalMapValid state
  */
-function setAreMicrophoneFieldsAdditionalValid_CreateProductReducer(
+function setAreMicrophoneFieldsAdditionalMapValid_CreateProductReducer(
   state: CreateProductState,
   action: CreateProductDispatch
 ): CreateProductState {
@@ -3823,58 +3877,58 @@ function setAreMicrophoneFieldsAdditionalValid_CreateProductReducer(
 
   switch (operation) {
     case 'add': {
-      const areMicrophoneFieldsAdditionalValidClone = structuredClone(
-        state.areMicrophoneFieldsAdditionalValid
+      const areMicrophoneFieldsAdditionalMapValidClone = structuredClone(
+        state.areMicrophoneFieldsAdditionalMapValid
       );
 
       const { data } = action.payload as AdditionalFieldsValidFocusedAdd;
-      const prevSize = areMicrophoneFieldsAdditionalValidClone.size;
-      areMicrophoneFieldsAdditionalValidClone.set(prevSize, data);
+      const prevSize = areMicrophoneFieldsAdditionalMapValidClone.size;
+      areMicrophoneFieldsAdditionalMapValidClone.set(prevSize, data);
 
       return {
         ...state,
-        areMicrophoneFieldsAdditionalValid:
-          areMicrophoneFieldsAdditionalValidClone,
+        areMicrophoneFieldsAdditionalMapValid:
+          areMicrophoneFieldsAdditionalMapValidClone,
       };
     }
     case 'remove': {
-      const areMicrophoneFieldsAdditionalValidClone = structuredClone(
-        state.areMicrophoneFieldsAdditionalValid
+      const areMicrophoneFieldsAdditionalMapValidClone = structuredClone(
+        state.areMicrophoneFieldsAdditionalMapValid
       );
 
       const { index } = action.payload as AdditionalFieldsValidFocusedRemove;
-      areMicrophoneFieldsAdditionalValidClone.delete(index);
+      areMicrophoneFieldsAdditionalMapValidClone.delete(index);
 
-      const filteredAreMicrophoneFieldsAdditionalValid = new Map<
+      const filteredAreMicrophoneFieldsAdditionalMapValid = new Map<
         number,
         [boolean, boolean]
       >();
 
-      Array.from(areMicrophoneFieldsAdditionalValidClone).forEach(
+      Array.from(areMicrophoneFieldsAdditionalMapValidClone).forEach(
         (mapIdxKeyVal, arrayIdx) => {
           const [_mapIdx, keyVal] = mapIdxKeyVal as [
             number,
             [boolean, boolean]
           ];
 
-          filteredAreMicrophoneFieldsAdditionalValid.set(arrayIdx, keyVal);
+          filteredAreMicrophoneFieldsAdditionalMapValid.set(arrayIdx, keyVal);
         }
       );
 
       return {
         ...state,
-        areMicrophoneFieldsAdditionalValid:
-          filteredAreMicrophoneFieldsAdditionalValid,
+        areMicrophoneFieldsAdditionalMapValid:
+          filteredAreMicrophoneFieldsAdditionalMapValid,
       };
     }
     case 'update': {
-      const areMicrophoneFieldsAdditionalValidClone = structuredClone(
-        state.areMicrophoneFieldsAdditionalValid
+      const areMicrophoneFieldsAdditionalMapValidClone = structuredClone(
+        state.areMicrophoneFieldsAdditionalMapValid
       );
 
       const { data, index, kind } =
         action.payload as AdditionalFieldsValidFocusedUpdate;
-      const prevKeyVal = areMicrophoneFieldsAdditionalValidClone.get(index);
+      const prevKeyVal = areMicrophoneFieldsAdditionalMapValidClone.get(index);
 
       if (!prevKeyVal) {
         return state;
@@ -3882,13 +3936,19 @@ function setAreMicrophoneFieldsAdditionalValid_CreateProductReducer(
 
       const [prevKey, prevValue] = prevKeyVal;
       kind === 'key'
-        ? areMicrophoneFieldsAdditionalValidClone.set(index, [data, prevValue])
-        : areMicrophoneFieldsAdditionalValidClone.set(index, [prevKey, data]);
+        ? areMicrophoneFieldsAdditionalMapValidClone.set(index, [
+            data,
+            prevValue,
+          ])
+        : areMicrophoneFieldsAdditionalMapValidClone.set(index, [
+            prevKey,
+            data,
+          ]);
 
       return {
         ...state,
-        areMicrophoneFieldsAdditionalValid:
-          areMicrophoneFieldsAdditionalValidClone,
+        areMicrophoneFieldsAdditionalMapValid:
+          areMicrophoneFieldsAdditionalMapValidClone,
       };
     }
     default:
@@ -4113,15 +4173,15 @@ function setIsDisplayAspectRatioValid_CreateProductReducer(
 
 /**
  * This reducer function contains three operations that are used to update the
- * displayFieldsAdditional state.
- * @description add: adds a new key-value pair to the displayFieldsAdditional state
+ * displayFieldsAdditionalMap state.
+ * @description add: adds a new key-value pair to the displayFieldsAdditionalMap state
  * @description remove: clones the state, deletes the key-value pair, and iterates over the map
  *   - with the callback fn index to use as the key for the new map
  *  - this is done because the indices are used as the keys that access the error/valid elements array
  * - and must be consecutive as removal of a key-value pair will leave a gap in the indices
- * @description update: updates either the key or value from the displayFieldsAdditional state
+ * @description update: updates either the key or value from the displayFieldsAdditionalMap state
  */
-function setDisplayFieldsAdditional_CreateProductReducer(
+function setDisplayFieldsAdditionalMap_CreateProductReducer(
   state: CreateProductState,
   action: CreateProductDispatch
 ): CreateProductState {
@@ -4129,52 +4189,52 @@ function setDisplayFieldsAdditional_CreateProductReducer(
 
   switch (operation) {
     case 'add': {
-      const displayFieldsAdditionalClone = structuredClone(
-        state.displayFieldsAdditional
+      const displayFieldsAdditionalMapClone = structuredClone(
+        state.displayFieldsAdditionalMap
       );
 
       const { data } = action.payload as AdditionalFieldsAdd;
-      const prevSize = displayFieldsAdditionalClone.size;
-      displayFieldsAdditionalClone.set(prevSize, data);
+      const prevSize = displayFieldsAdditionalMapClone.size;
+      displayFieldsAdditionalMapClone.set(prevSize, data);
 
       return {
         ...state,
-        displayFieldsAdditional: displayFieldsAdditionalClone,
+        displayFieldsAdditionalMap: displayFieldsAdditionalMapClone,
       };
     }
 
     case 'remove': {
-      const displayFieldsAdditionalClone = structuredClone(
-        state.displayFieldsAdditional
+      const displayFieldsAdditionalMapClone = structuredClone(
+        state.displayFieldsAdditionalMap
       );
 
       const { index } = action.payload as AdditionalFieldsRemove;
-      displayFieldsAdditionalClone.delete(index);
+      displayFieldsAdditionalMapClone.delete(index);
 
-      const filteredDisplayFieldsAdditional = new Map<
+      const filteredDisplayFieldsAdditionalMap = new Map<
         number,
         [string, string]
       >();
 
-      Array.from(displayFieldsAdditionalClone).forEach(
+      Array.from(displayFieldsAdditionalMapClone).forEach(
         (mapIdxKeyVal, arrayIdx) => {
           const [_mapIdx, keyVal] = mapIdxKeyVal as [number, [string, string]];
-          filteredDisplayFieldsAdditional.set(arrayIdx, keyVal);
+          filteredDisplayFieldsAdditionalMap.set(arrayIdx, keyVal);
         }
       );
 
       return {
         ...state,
-        displayFieldsAdditional: filteredDisplayFieldsAdditional,
+        displayFieldsAdditionalMap: filteredDisplayFieldsAdditionalMap,
       };
     }
     case 'update': {
-      const displayFieldsAdditionalClone = structuredClone(
-        state.displayFieldsAdditional
+      const displayFieldsAdditionalMapClone = structuredClone(
+        state.displayFieldsAdditionalMap
       );
 
       const { data, index, kind } = action.payload as AdditionalFieldsUpdate;
-      const prevKeyVal = displayFieldsAdditionalClone.get(index);
+      const prevKeyVal = displayFieldsAdditionalMapClone.get(index);
 
       if (!prevKeyVal) {
         return state;
@@ -4182,12 +4242,12 @@ function setDisplayFieldsAdditional_CreateProductReducer(
 
       const [prevKey, prevValue] = prevKeyVal;
       kind === 'key'
-        ? displayFieldsAdditionalClone.set(index, [data, prevValue])
-        : displayFieldsAdditionalClone.set(index, [prevKey, data]);
+        ? displayFieldsAdditionalMapClone.set(index, [data, prevValue])
+        : displayFieldsAdditionalMapClone.set(index, [prevKey, data]);
 
       return {
         ...state,
-        displayFieldsAdditional: displayFieldsAdditionalClone,
+        displayFieldsAdditionalMap: displayFieldsAdditionalMapClone,
       };
     }
     default:
@@ -4201,17 +4261,17 @@ function setDisplayFieldsAdditional_CreateProductReducer(
 
 /**
  * This reducer function contains three operations that are used to update the
- * areDisplayFieldsAdditionalFocused state.
- * @description add: adds a new key-value pair to the areDisplayFieldsAdditionalFocused state
+ * areDisplayFieldsAdditionalMapFocused state.
+ * @description add: adds a new key-value pair to the areDisplayFieldsAdditionalMapFocused state
  * @description remove:
    - clones the state, deletes the key-value pair, and iterates over the map
    - with the callback fn index to use as the key for the new map
-   - this is done because the indices are used as the keys by the mapped over displayFieldsAdditional state to generate the text elements
-   - that access the areDisplayFieldsAdditionalFocused state Map to determine if the appropriate text element should be focused/blurred
+   - this is done because the indices are used as the keys by the mapped over displayFieldsAdditionalMap state to generate the text elements
+   - that access the areDisplayFieldsAdditionalMapFocused state Map to determine if the appropriate text element should be focused/blurred
    - and must be consecutive as removal of a key-value pair will leave a gap in the indices
-  * @description update: updates either the key or value from the areDisplayFieldsAdditionalFocused state
+  * @description update: updates either the key or value from the areDisplayFieldsAdditionalMapFocused state
  */
-function setAreDisplayFieldsAdditionalFocused_CreateProductReducer(
+function setAreDisplayFieldsAdditionalMapFocused_CreateProductReducer(
   state: CreateProductState,
   action: CreateProductDispatch
 ): CreateProductState {
@@ -4219,58 +4279,58 @@ function setAreDisplayFieldsAdditionalFocused_CreateProductReducer(
 
   switch (operation) {
     case 'add': {
-      const areDisplayFieldsAdditionalFocusedClone = structuredClone(
-        state.areDisplayFieldsAdditionalFocused
+      const areDisplayFieldsAdditionalMapFocusedClone = structuredClone(
+        state.areDisplayFieldsAdditionalMapFocused
       );
 
       const { data } = action.payload as AdditionalFieldsValidFocusedAdd;
-      const prevSize = areDisplayFieldsAdditionalFocusedClone.size;
-      areDisplayFieldsAdditionalFocusedClone.set(prevSize, data);
+      const prevSize = areDisplayFieldsAdditionalMapFocusedClone.size;
+      areDisplayFieldsAdditionalMapFocusedClone.set(prevSize, data);
 
       return {
         ...state,
-        areDisplayFieldsAdditionalFocused:
-          areDisplayFieldsAdditionalFocusedClone,
+        areDisplayFieldsAdditionalMapFocused:
+          areDisplayFieldsAdditionalMapFocusedClone,
       };
     }
     case 'remove': {
-      const areDisplayFieldsAdditionalFocusedClone = structuredClone(
-        state.areDisplayFieldsAdditionalFocused
+      const areDisplayFieldsAdditionalMapFocusedClone = structuredClone(
+        state.areDisplayFieldsAdditionalMapFocused
       );
 
       const { index } = action.payload as AdditionalFieldsValidFocusedRemove;
-      areDisplayFieldsAdditionalFocusedClone.delete(index);
+      areDisplayFieldsAdditionalMapFocusedClone.delete(index);
 
-      const filteredAreDisplayFieldsAdditionalFocused = new Map<
+      const filteredAreDisplayFieldsAdditionalMapFocused = new Map<
         number,
         [boolean, boolean]
       >();
 
-      Array.from(areDisplayFieldsAdditionalFocusedClone).forEach(
+      Array.from(areDisplayFieldsAdditionalMapFocusedClone).forEach(
         (mapIdxKeyVal, arrayIdx) => {
           const [_mapIdx, keyVal] = mapIdxKeyVal as [
             number,
             [boolean, boolean]
           ];
 
-          filteredAreDisplayFieldsAdditionalFocused.set(arrayIdx, keyVal);
+          filteredAreDisplayFieldsAdditionalMapFocused.set(arrayIdx, keyVal);
         }
       );
 
       return {
         ...state,
-        areDisplayFieldsAdditionalFocused:
-          filteredAreDisplayFieldsAdditionalFocused,
+        areDisplayFieldsAdditionalMapFocused:
+          filteredAreDisplayFieldsAdditionalMapFocused,
       };
     }
     case 'update': {
-      const areDisplayFieldsAdditionalFocusedClone = structuredClone(
-        state.areDisplayFieldsAdditionalFocused
+      const areDisplayFieldsAdditionalMapFocusedClone = structuredClone(
+        state.areDisplayFieldsAdditionalMapFocused
       );
 
       const { data, index, kind } =
         action.payload as AdditionalFieldsValidFocusedUpdate;
-      const prevKeyVal = areDisplayFieldsAdditionalFocusedClone.get(index);
+      const prevKeyVal = areDisplayFieldsAdditionalMapFocusedClone.get(index);
 
       if (!prevKeyVal) {
         return state;
@@ -4278,13 +4338,16 @@ function setAreDisplayFieldsAdditionalFocused_CreateProductReducer(
 
       const [prevKey, prevValue] = prevKeyVal;
       kind === 'key'
-        ? areDisplayFieldsAdditionalFocusedClone.set(index, [data, prevValue])
-        : areDisplayFieldsAdditionalFocusedClone.set(index, [prevKey, data]);
+        ? areDisplayFieldsAdditionalMapFocusedClone.set(index, [
+            data,
+            prevValue,
+          ])
+        : areDisplayFieldsAdditionalMapFocusedClone.set(index, [prevKey, data]);
 
       return {
         ...state,
-        areDisplayFieldsAdditionalFocused:
-          areDisplayFieldsAdditionalFocusedClone,
+        areDisplayFieldsAdditionalMapFocused:
+          areDisplayFieldsAdditionalMapFocusedClone,
       };
     }
     default:
@@ -4298,18 +4361,18 @@ function setAreDisplayFieldsAdditionalFocused_CreateProductReducer(
 
 /**
  * This reducer function contains three operations that are used to update the
- * areDisplayFieldsAdditionalValid state.
- * @description add: adds a new key-value pair to the areDisplayFieldsAdditionalValid state
+ * areDisplayFieldsAdditionalMapValid state.
+ * @description add: adds a new key-value pair to the areDisplayFieldsAdditionalMapValid state
  * @description remove:
    - clones the state, deletes the key-value pair, and iterates over the map
    - with the callback fn index to use as the key for the new map
-   - this is done because the indices are used as the keys by the mapped over displayFieldsAdditional state to generate the text elements
-   - that access the areDisplayFieldsAdditionalValid state Map based on said element's error state
+   - this is done because the indices are used as the keys by the mapped over displayFieldsAdditionalMap state to generate the text elements
+   - that access the areDisplayFieldsAdditionalMapValid state Map based on said element's error state
    - to display the text contained in the screenreader accessible error/valid text elements array
    - map keys must be consecutive as removal of a key-value pair will leave a gap in the indices
-  * @description update: updates either the key or value from the areDisplayFieldsAdditionalValid state
+  * @description update: updates either the key or value from the areDisplayFieldsAdditionalMapValid state
  */
-function setAreDisplayFieldsAdditionalValid_CreateProductReducer(
+function setAreDisplayFieldsAdditionalMapValid_CreateProductReducer(
   state: CreateProductState,
   action: CreateProductDispatch
 ): CreateProductState {
@@ -4317,57 +4380,58 @@ function setAreDisplayFieldsAdditionalValid_CreateProductReducer(
 
   switch (operation) {
     case 'add': {
-      const areDisplayFieldsAdditionalValidClone = structuredClone(
-        state.areDisplayFieldsAdditionalValid
+      const areDisplayFieldsAdditionalMapValidClone = structuredClone(
+        state.areDisplayFieldsAdditionalMapValid
       );
 
       const { data } = action.payload as AdditionalFieldsValidFocusedAdd;
-      const prevSize = areDisplayFieldsAdditionalValidClone.size;
-      areDisplayFieldsAdditionalValidClone.set(prevSize, data);
+      const prevSize = areDisplayFieldsAdditionalMapValidClone.size;
+      areDisplayFieldsAdditionalMapValidClone.set(prevSize, data);
 
       return {
         ...state,
-        areDisplayFieldsAdditionalValid: areDisplayFieldsAdditionalValidClone,
+        areDisplayFieldsAdditionalMapValid:
+          areDisplayFieldsAdditionalMapValidClone,
       };
     }
     case 'remove': {
-      const areDisplayFieldsAdditionalValidClone = structuredClone(
-        state.areDisplayFieldsAdditionalValid
+      const areDisplayFieldsAdditionalMapValidClone = structuredClone(
+        state.areDisplayFieldsAdditionalMapValid
       );
 
       const { index } = action.payload as AdditionalFieldsValidFocusedRemove;
-      areDisplayFieldsAdditionalValidClone.delete(index);
+      areDisplayFieldsAdditionalMapValidClone.delete(index);
 
-      const filteredAreDisplayFieldsAdditionalValid = new Map<
+      const filteredAreDisplayFieldsAdditionalMapValid = new Map<
         number,
         [boolean, boolean]
       >();
 
-      Array.from(areDisplayFieldsAdditionalValidClone).forEach(
+      Array.from(areDisplayFieldsAdditionalMapValidClone).forEach(
         (mapIdxKeyVal, arrayIdx) => {
           const [_mapIdx, keyVal] = mapIdxKeyVal as [
             number,
             [boolean, boolean]
           ];
 
-          filteredAreDisplayFieldsAdditionalValid.set(arrayIdx, keyVal);
+          filteredAreDisplayFieldsAdditionalMapValid.set(arrayIdx, keyVal);
         }
       );
 
       return {
         ...state,
-        areDisplayFieldsAdditionalValid:
-          filteredAreDisplayFieldsAdditionalValid,
+        areDisplayFieldsAdditionalMapValid:
+          filteredAreDisplayFieldsAdditionalMapValid,
       };
     }
     case 'update': {
-      const areDisplayFieldsAdditionalValidClone = structuredClone(
-        state.areDisplayFieldsAdditionalValid
+      const areDisplayFieldsAdditionalMapValidClone = structuredClone(
+        state.areDisplayFieldsAdditionalMapValid
       );
 
       const { data, index, kind } =
         action.payload as AdditionalFieldsValidFocusedUpdate;
-      const prevKeyVal = areDisplayFieldsAdditionalValidClone.get(index);
+      const prevKeyVal = areDisplayFieldsAdditionalMapValidClone.get(index);
 
       if (!prevKeyVal) {
         return state;
@@ -4375,12 +4439,13 @@ function setAreDisplayFieldsAdditionalValid_CreateProductReducer(
 
       const [prevKey, prevValue] = prevKeyVal;
       kind === 'key'
-        ? areDisplayFieldsAdditionalValidClone.set(index, [data, prevValue])
-        : areDisplayFieldsAdditionalValidClone.set(index, [prevKey, data]);
+        ? areDisplayFieldsAdditionalMapValidClone.set(index, [data, prevValue])
+        : areDisplayFieldsAdditionalMapValidClone.set(index, [prevKey, data]);
 
       return {
         ...state,
-        areDisplayFieldsAdditionalValid: areDisplayFieldsAdditionalValidClone,
+        areDisplayFieldsAdditionalMapValid:
+          areDisplayFieldsAdditionalMapValidClone,
       };
     }
     default:
@@ -4730,15 +4795,15 @@ function setIsMotherboardPcie5SlotsValid_CreateProductReducer(
 
 /**
  * This reducer function contains three operations that are used to update the
- * motherboardFieldsAdditional state.
- * @description add: adds a new key-value pair to the motherboardFieldsAdditional state
+ * motherboardFieldsAdditionalMap state.
+ * @description add: adds a new key-value pair to the motherboardFieldsAdditionalMap state
  * @description remove: clones the state, deletes the key-value pair, and iterates over the map
  *  - with the callback fn index to use as the key for the new map
  * - this is done because the indices are used as the keys that access the error/valid elements array
  * - and must be consecutive as removal of a key-value pair will leave a gap in the indices
- * @description update: updates either the key or value from the motherboardFieldsAdditional state
+ * @description update: updates either the key or value from the motherboardFieldsAdditionalMap state
  */
-function setMotherboardFieldsAdditional_CreateProductReducer(
+function setMotherboardFieldsAdditionalMap_CreateProductReducer(
   state: CreateProductState,
   action: CreateProductDispatch
 ): CreateProductState {
@@ -4746,51 +4811,51 @@ function setMotherboardFieldsAdditional_CreateProductReducer(
 
   switch (operation) {
     case 'add': {
-      const motherboardFieldsAdditionalClone = structuredClone(
-        state.motherboardFieldsAdditional
+      const motherboardFieldsAdditionalMapClone = structuredClone(
+        state.motherboardFieldsAdditionalMap
       );
 
       const { data } = action.payload as AdditionalFieldsAdd;
-      const prevSize = motherboardFieldsAdditionalClone.size;
-      motherboardFieldsAdditionalClone.set(prevSize, data);
+      const prevSize = motherboardFieldsAdditionalMapClone.size;
+      motherboardFieldsAdditionalMapClone.set(prevSize, data);
 
       return {
         ...state,
-        motherboardFieldsAdditional: motherboardFieldsAdditionalClone,
+        motherboardFieldsAdditionalMap: motherboardFieldsAdditionalMapClone,
       };
     }
     case 'remove': {
-      const motherboardFieldsAdditionalClone = structuredClone(
-        state.motherboardFieldsAdditional
+      const motherboardFieldsAdditionalMapClone = structuredClone(
+        state.motherboardFieldsAdditionalMap
       );
 
       const { index } = action.payload as AdditionalFieldsRemove;
-      motherboardFieldsAdditionalClone.delete(index);
+      motherboardFieldsAdditionalMapClone.delete(index);
 
-      const filteredMotherboardFieldsAdditional = new Map<
+      const filteredMotherboardFieldsAdditionalMap = new Map<
         number,
         [string, string]
       >();
 
-      Array.from(motherboardFieldsAdditionalClone).forEach(
+      Array.from(motherboardFieldsAdditionalMapClone).forEach(
         (mapIdxKeyVal, arrayIdx) => {
           const [_mapIdx, keyVal] = mapIdxKeyVal as [number, [string, string]];
-          filteredMotherboardFieldsAdditional.set(arrayIdx, keyVal);
+          filteredMotherboardFieldsAdditionalMap.set(arrayIdx, keyVal);
         }
       );
 
       return {
         ...state,
-        motherboardFieldsAdditional: filteredMotherboardFieldsAdditional,
+        motherboardFieldsAdditionalMap: filteredMotherboardFieldsAdditionalMap,
       };
     }
     case 'update': {
-      const motherboardFieldsAdditionalClone = structuredClone(
-        state.motherboardFieldsAdditional
+      const motherboardFieldsAdditionalMapClone = structuredClone(
+        state.motherboardFieldsAdditionalMap
       );
 
       const { data, index, kind } = action.payload as AdditionalFieldsUpdate;
-      const prevKeyVal = motherboardFieldsAdditionalClone.get(index);
+      const prevKeyVal = motherboardFieldsAdditionalMapClone.get(index);
 
       if (!prevKeyVal) {
         return state;
@@ -4798,12 +4863,12 @@ function setMotherboardFieldsAdditional_CreateProductReducer(
 
       const [prevKey, prevValue] = prevKeyVal;
       kind === 'key'
-        ? motherboardFieldsAdditionalClone.set(index, [data, prevValue])
-        : motherboardFieldsAdditionalClone.set(index, [prevKey, data]);
+        ? motherboardFieldsAdditionalMapClone.set(index, [data, prevValue])
+        : motherboardFieldsAdditionalMapClone.set(index, [prevKey, data]);
 
       return {
         ...state,
-        motherboardFieldsAdditional: motherboardFieldsAdditionalClone,
+        motherboardFieldsAdditionalMap: motherboardFieldsAdditionalMapClone,
       };
     }
     default:
@@ -4817,17 +4882,17 @@ function setMotherboardFieldsAdditional_CreateProductReducer(
 
 /**
  * This reducer function contains three operations that are used to update the
- * areMotherboardFieldsAdditionalFocused state.
- * @description add: adds a new key-value pair to the areMotherboardFieldsAdditionalFocused state
+ * areMotherboardFieldsAdditionalMapFocused state.
+ * @description add: adds a new key-value pair to the areMotherboardFieldsAdditionalMapFocused state
  * @description remove:
    - clones the state, deletes the key-value pair, and iterates over the map
    - with the callback fn index to use as the key for the new map
-   - this is done because the indices are used as the keys by the mapped over motherboardFieldsAdditional state to generate the text elements
-   - that access the areMotherboardFieldsAdditionalFocused state Map to determine if the appropriate text element should be focused/blurred
+   - this is done because the indices are used as the keys by the mapped over motherboardFieldsAdditionalMap state to generate the text elements
+   - that access the areMotherboardFieldsAdditionalMapFocused state Map to determine if the appropriate text element should be focused/blurred
    - and must be consecutive as removal of a key-value pair will leave a gap in the indices
-  * @description update: updates either the key or value from the areMotherboardFieldsAdditionalFocused state
+  * @description update: updates either the key or value from the areMotherboardFieldsAdditionalMapFocused state
  */
-function setAreMotherboardFieldsAdditionalFocused_CreateProductReducer(
+function setAreMotherboardFieldsAdditionalMapFocused_CreateProductReducer(
   state: CreateProductState,
   action: CreateProductDispatch
 ): CreateProductState {
@@ -4835,58 +4900,62 @@ function setAreMotherboardFieldsAdditionalFocused_CreateProductReducer(
 
   switch (operation) {
     case 'add': {
-      const areMotherboardFieldsAdditionalFocusedClone = structuredClone(
-        state.areMotherboardFieldsAdditionalFocused
+      const areMotherboardFieldsAdditionalMapFocusedClone = structuredClone(
+        state.areMotherboardFieldsAdditionalMapFocused
       );
 
       const { data } = action.payload as AdditionalFieldsValidFocusedAdd;
-      const prevSize = areMotherboardFieldsAdditionalFocusedClone.size;
-      areMotherboardFieldsAdditionalFocusedClone.set(prevSize, data);
+      const prevSize = areMotherboardFieldsAdditionalMapFocusedClone.size;
+      areMotherboardFieldsAdditionalMapFocusedClone.set(prevSize, data);
 
       return {
         ...state,
-        areMotherboardFieldsAdditionalFocused:
-          areMotherboardFieldsAdditionalFocusedClone,
+        areMotherboardFieldsAdditionalMapFocused:
+          areMotherboardFieldsAdditionalMapFocusedClone,
       };
     }
     case 'remove': {
-      const areMotherboardFieldsAdditionalFocusedClone = structuredClone(
-        state.areMotherboardFieldsAdditionalFocused
+      const areMotherboardFieldsAdditionalMapFocusedClone = structuredClone(
+        state.areMotherboardFieldsAdditionalMapFocused
       );
 
       const { index } = action.payload as AdditionalFieldsValidFocusedRemove;
-      areMotherboardFieldsAdditionalFocusedClone.delete(index);
+      areMotherboardFieldsAdditionalMapFocusedClone.delete(index);
 
-      const filteredAreMotherboardFieldsAdditionalFocused = new Map<
+      const filteredAreMotherboardFieldsAdditionalMapFocused = new Map<
         number,
         [boolean, boolean]
       >();
 
-      Array.from(areMotherboardFieldsAdditionalFocusedClone).forEach(
+      Array.from(areMotherboardFieldsAdditionalMapFocusedClone).forEach(
         (mapIdxKeyVal, arrayIdx) => {
           const [_mapIdx, keyVal] = mapIdxKeyVal as [
             number,
             [boolean, boolean]
           ];
 
-          filteredAreMotherboardFieldsAdditionalFocused.set(arrayIdx, keyVal);
+          filteredAreMotherboardFieldsAdditionalMapFocused.set(
+            arrayIdx,
+            keyVal
+          );
         }
       );
 
       return {
         ...state,
-        areMotherboardFieldsAdditionalFocused:
-          filteredAreMotherboardFieldsAdditionalFocused,
+        areMotherboardFieldsAdditionalMapFocused:
+          filteredAreMotherboardFieldsAdditionalMapFocused,
       };
     }
     case 'update': {
-      const areMotherboardFieldsAdditionalFocusedClone = structuredClone(
-        state.areMotherboardFieldsAdditionalFocused
+      const areMotherboardFieldsAdditionalMapFocusedClone = structuredClone(
+        state.areMotherboardFieldsAdditionalMapFocused
       );
 
       const { data, index, kind } =
         action.payload as AdditionalFieldsValidFocusedUpdate;
-      const prevKeyVal = areMotherboardFieldsAdditionalFocusedClone.get(index);
+      const prevKeyVal =
+        areMotherboardFieldsAdditionalMapFocusedClone.get(index);
 
       if (!prevKeyVal) {
         return state;
@@ -4894,19 +4963,19 @@ function setAreMotherboardFieldsAdditionalFocused_CreateProductReducer(
 
       const [prevKey, prevValue] = prevKeyVal;
       kind === 'key'
-        ? areMotherboardFieldsAdditionalFocusedClone.set(index, [
+        ? areMotherboardFieldsAdditionalMapFocusedClone.set(index, [
             data,
             prevValue,
           ])
-        : areMotherboardFieldsAdditionalFocusedClone.set(index, [
+        : areMotherboardFieldsAdditionalMapFocusedClone.set(index, [
             prevKey,
             data,
           ]);
 
       return {
         ...state,
-        areMotherboardFieldsAdditionalFocused:
-          areMotherboardFieldsAdditionalFocusedClone,
+        areMotherboardFieldsAdditionalMapFocused:
+          areMotherboardFieldsAdditionalMapFocusedClone,
       };
     }
     default:
@@ -4920,18 +4989,18 @@ function setAreMotherboardFieldsAdditionalFocused_CreateProductReducer(
 
 /**
  * This reducer function contains three operations that are used to update the
- * areMotherboardFieldsAdditionalValid state.
- * @description add: adds a new key-value pair to the areMotherboardFieldsAdditionalValid state
+ * areMotherboardFieldsAdditionalMapValid state.
+ * @description add: adds a new key-value pair to the areMotherboardFieldsAdditionalMapValid state
  * @description remove:
    - clones the state, deletes the key-value pair, and iterates over the map
    - with the callback fn index to use as the key for the new map
-   - this is done because the indices are used as the keys by the mapped over motherboardFieldsAdditional state to generate the text elements
-   - that access the areMotherboardFieldsAdditionalValid state Map based on said element's error state
+   - this is done because the indices are used as the keys by the mapped over motherboardFieldsAdditionalMap state to generate the text elements
+   - that access the areMotherboardFieldsAdditionalMapValid state Map based on said element's error state
    - to display the text contained in the screenreader accessible error/valid text elements array
    - map keys must be consecutive as removal of a key-value pair will leave a gap in the indices
-  * @description update: updates either the key or value from the areMotherboardFieldsAdditionalValid state
+  * @description update: updates either the key or value from the areMotherboardFieldsAdditionalMapValid state
  */
-function setAreMotherboardFieldsAdditionalValid_CreateProductReducer(
+function setAreMotherboardFieldsAdditionalMapValid_CreateProductReducer(
   state: CreateProductState,
   action: CreateProductDispatch
 ): CreateProductState {
@@ -4939,58 +5008,58 @@ function setAreMotherboardFieldsAdditionalValid_CreateProductReducer(
 
   switch (operation) {
     case 'add': {
-      const areMotherboardFieldsAdditionalValidClone = structuredClone(
-        state.areMotherboardFieldsAdditionalValid
+      const areMotherboardFieldsAdditionalMapValidClone = structuredClone(
+        state.areMotherboardFieldsAdditionalMapValid
       );
 
       const { data } = action.payload as AdditionalFieldsValidFocusedAdd;
-      const prevSize = areMotherboardFieldsAdditionalValidClone.size;
-      areMotherboardFieldsAdditionalValidClone.set(prevSize, data);
+      const prevSize = areMotherboardFieldsAdditionalMapValidClone.size;
+      areMotherboardFieldsAdditionalMapValidClone.set(prevSize, data);
 
       return {
         ...state,
-        areMotherboardFieldsAdditionalValid:
-          areMotherboardFieldsAdditionalValidClone,
+        areMotherboardFieldsAdditionalMapValid:
+          areMotherboardFieldsAdditionalMapValidClone,
       };
     }
     case 'remove': {
-      const areMotherboardFieldsAdditionalValidClone = structuredClone(
-        state.areMotherboardFieldsAdditionalValid
+      const areMotherboardFieldsAdditionalMapValidClone = structuredClone(
+        state.areMotherboardFieldsAdditionalMapValid
       );
 
       const { index } = action.payload as AdditionalFieldsValidFocusedRemove;
-      areMotherboardFieldsAdditionalValidClone.delete(index);
+      areMotherboardFieldsAdditionalMapValidClone.delete(index);
 
-      const filteredAreMotherboardFieldsAdditionalValid = new Map<
+      const filteredAreMotherboardFieldsAdditionalMapValid = new Map<
         number,
         [boolean, boolean]
       >();
 
-      Array.from(areMotherboardFieldsAdditionalValidClone).forEach(
+      Array.from(areMotherboardFieldsAdditionalMapValidClone).forEach(
         (mapIdxKeyVal, arrayIdx) => {
           const [_mapIdx, keyVal] = mapIdxKeyVal as [
             number,
             [boolean, boolean]
           ];
 
-          filteredAreMotherboardFieldsAdditionalValid.set(arrayIdx, keyVal);
+          filteredAreMotherboardFieldsAdditionalMapValid.set(arrayIdx, keyVal);
         }
       );
 
       return {
         ...state,
-        areMotherboardFieldsAdditionalValid:
-          filteredAreMotherboardFieldsAdditionalValid,
+        areMotherboardFieldsAdditionalMapValid:
+          filteredAreMotherboardFieldsAdditionalMapValid,
       };
     }
     case 'update': {
-      const areMotherboardFieldsAdditionalValidClone = structuredClone(
-        state.areMotherboardFieldsAdditionalValid
+      const areMotherboardFieldsAdditionalMapValidClone = structuredClone(
+        state.areMotherboardFieldsAdditionalMapValid
       );
 
       const { data, index, kind } =
         action.payload as AdditionalFieldsValidFocusedUpdate;
-      const prevKeyVal = areMotherboardFieldsAdditionalValidClone.get(index);
+      const prevKeyVal = areMotherboardFieldsAdditionalMapValidClone.get(index);
 
       if (!prevKeyVal) {
         return state;
@@ -4998,13 +5067,19 @@ function setAreMotherboardFieldsAdditionalValid_CreateProductReducer(
 
       const [prevKey, prevValue] = prevKeyVal;
       kind === 'key'
-        ? areMotherboardFieldsAdditionalValidClone.set(index, [data, prevValue])
-        : areMotherboardFieldsAdditionalValidClone.set(index, [prevKey, data]);
+        ? areMotherboardFieldsAdditionalMapValidClone.set(index, [
+            data,
+            prevValue,
+          ])
+        : areMotherboardFieldsAdditionalMapValidClone.set(index, [
+            prevKey,
+            data,
+          ]);
 
       return {
         ...state,
-        areMotherboardFieldsAdditionalValid:
-          areMotherboardFieldsAdditionalValidClone,
+        areMotherboardFieldsAdditionalMapValid:
+          areMotherboardFieldsAdditionalMapValidClone,
       };
     }
     default:
@@ -5341,16 +5416,16 @@ function setIsSmartphoneColorValid_CreateProductReducer(
 
 /**
  * This reducer function contains three operations that are used to update the
- * smartphoneFieldsAdditional state.
- * @description add: adds a new key-value pair to the smartphoneFieldsAdditional state
+ * smartphoneFieldsAdditionalMap state.
+ * @description add: adds a new key-value pair to the smartphoneFieldsAdditionalMap state
  * @description remove:
     - clones the state, deletes the key-value pair, and iterates over the map
     - with the callback fn index to use as the key for the new map
     - this is done because the indices are used as the keys that access the error/valid elements array
     - and must be consecutive as removal of a key-value pair will leave a gap in the indices    
-  * @description update: updates either the key or value from the smartphoneFieldsAdditional state
+  * @description update: updates either the key or value from the smartphoneFieldsAdditionalMap state
  */
-function setSmartphoneFieldsAdditional_CreateProductReducer(
+function setSmartphoneFieldsAdditionalMap_CreateProductReducer(
   state: CreateProductState,
   action: CreateProductDispatch
 ): CreateProductState {
@@ -5358,51 +5433,51 @@ function setSmartphoneFieldsAdditional_CreateProductReducer(
 
   switch (operation) {
     case 'add': {
-      const smartphoneFieldsAdditionalClone = structuredClone(
-        state.smartphoneFieldsAdditional
+      const smartphoneFieldsAdditionalMapClone = structuredClone(
+        state.smartphoneFieldsAdditionalMap
       );
 
       const { data } = action.payload as AdditionalFieldsAdd;
-      const prevSize = smartphoneFieldsAdditionalClone.size;
-      smartphoneFieldsAdditionalClone.set(prevSize, data);
+      const prevSize = smartphoneFieldsAdditionalMapClone.size;
+      smartphoneFieldsAdditionalMapClone.set(prevSize, data);
 
       return {
         ...state,
-        smartphoneFieldsAdditional: smartphoneFieldsAdditionalClone,
+        smartphoneFieldsAdditionalMap: smartphoneFieldsAdditionalMapClone,
       };
     }
     case 'remove': {
-      const smartphoneFieldsAdditionalClone = structuredClone(
-        state.smartphoneFieldsAdditional
+      const smartphoneFieldsAdditionalMapClone = structuredClone(
+        state.smartphoneFieldsAdditionalMap
       );
 
       const { index } = action.payload as AdditionalFieldsRemove;
-      smartphoneFieldsAdditionalClone.delete(index);
+      smartphoneFieldsAdditionalMapClone.delete(index);
 
-      const filteredSmartphoneFieldsAdditional = new Map<
+      const filteredSmartphoneFieldsAdditionalMap = new Map<
         number,
         [string, string]
       >();
 
-      Array.from(smartphoneFieldsAdditionalClone).forEach(
+      Array.from(smartphoneFieldsAdditionalMapClone).forEach(
         (mapIdxKeyVal, arrayIdx) => {
           const [_mapIdx, keyVal] = mapIdxKeyVal as [number, [string, string]];
-          filteredSmartphoneFieldsAdditional.set(arrayIdx, keyVal);
+          filteredSmartphoneFieldsAdditionalMap.set(arrayIdx, keyVal);
         }
       );
 
       return {
         ...state,
-        smartphoneFieldsAdditional: filteredSmartphoneFieldsAdditional,
+        smartphoneFieldsAdditionalMap: filteredSmartphoneFieldsAdditionalMap,
       };
     }
     case 'update': {
-      const smartphoneFieldsAdditionalClone = structuredClone(
-        state.smartphoneFieldsAdditional
+      const smartphoneFieldsAdditionalMapClone = structuredClone(
+        state.smartphoneFieldsAdditionalMap
       );
 
       const { data, index, kind } = action.payload as AdditionalFieldsUpdate;
-      const prevKeyVal = smartphoneFieldsAdditionalClone.get(index);
+      const prevKeyVal = smartphoneFieldsAdditionalMapClone.get(index);
 
       if (!prevKeyVal) {
         return state;
@@ -5410,12 +5485,12 @@ function setSmartphoneFieldsAdditional_CreateProductReducer(
 
       const [prevKey, prevValue] = prevKeyVal;
       kind === 'key'
-        ? smartphoneFieldsAdditionalClone.set(index, [data, prevValue])
-        : smartphoneFieldsAdditionalClone.set(index, [prevKey, data]);
+        ? smartphoneFieldsAdditionalMapClone.set(index, [data, prevValue])
+        : smartphoneFieldsAdditionalMapClone.set(index, [prevKey, data]);
 
       return {
         ...state,
-        smartphoneFieldsAdditional: smartphoneFieldsAdditionalClone,
+        smartphoneFieldsAdditionalMap: smartphoneFieldsAdditionalMapClone,
       };
     }
     default:
@@ -5429,17 +5504,17 @@ function setSmartphoneFieldsAdditional_CreateProductReducer(
 
 /**
  * This reducer function contains three operations that are used to update the
- * areSmartphoneFieldsAdditionalFocused state.
- * @description add: adds a new key-value pair to the areSmartphoneFieldsAdditionalFocused state
+ * areSmartphoneFieldsAdditionalMapFocused state.
+ * @description add: adds a new key-value pair to the areSmartphoneFieldsAdditionalMapFocused state
  * @description remove:
  * - clones the state, deletes the key-value pair, and iterates over the map
  * - with the callback fn index to use as the key for the new map
- * - this is done because the indices are used as the keys by the mapped over smartphoneFieldsAdditional state to generate the text elements
- * - that access the areSmartphoneFieldsAdditionalFocused state Map to determine if the appropriate text element should be focused/blurred
+ * - this is done because the indices are used as the keys by the mapped over smartphoneFieldsAdditionalMap state to generate the text elements
+ * - that access the areSmartphoneFieldsAdditionalMapFocused state Map to determine if the appropriate text element should be focused/blurred
  * - and must be consecutive as removal of a key-value pair will leave a gap in the indices
- * @description update: updates either the key or value from the areSmartphoneFieldsAdditionalFocused state
+ * @description update: updates either the key or value from the areSmartphoneFieldsAdditionalMapFocused state
  */
-function setAreSmartphoneFieldsAdditionalFocused_CreateProductReducer(
+function setAreSmartphoneFieldsAdditionalMapFocused_CreateProductReducer(
   state: CreateProductState,
   action: CreateProductDispatch
 ): CreateProductState {
@@ -5447,58 +5522,59 @@ function setAreSmartphoneFieldsAdditionalFocused_CreateProductReducer(
 
   switch (operation) {
     case 'add': {
-      const areSmartphoneFieldsAdditionalFocusedClone = structuredClone(
-        state.areSmartphoneFieldsAdditionalFocused
+      const areSmartphoneFieldsAdditionalMapFocusedClone = structuredClone(
+        state.areSmartphoneFieldsAdditionalMapFocused
       );
 
       const { data } = action.payload as AdditionalFieldsValidFocusedAdd;
-      const prevSize = areSmartphoneFieldsAdditionalFocusedClone.size;
-      areSmartphoneFieldsAdditionalFocusedClone.set(prevSize, data);
+      const prevSize = areSmartphoneFieldsAdditionalMapFocusedClone.size;
+      areSmartphoneFieldsAdditionalMapFocusedClone.set(prevSize, data);
 
       return {
         ...state,
-        areSmartphoneFieldsAdditionalFocused:
-          areSmartphoneFieldsAdditionalFocusedClone,
+        areSmartphoneFieldsAdditionalMapFocused:
+          areSmartphoneFieldsAdditionalMapFocusedClone,
       };
     }
     case 'remove': {
-      const areSmartphoneFieldsAdditionalFocusedClone = structuredClone(
-        state.areSmartphoneFieldsAdditionalFocused
+      const areSmartphoneFieldsAdditionalMapFocusedClone = structuredClone(
+        state.areSmartphoneFieldsAdditionalMapFocused
       );
 
       const { index } = action.payload as AdditionalFieldsValidFocusedRemove;
-      areSmartphoneFieldsAdditionalFocusedClone.delete(index);
+      areSmartphoneFieldsAdditionalMapFocusedClone.delete(index);
 
-      const filteredAreSmartphoneFieldsAdditionalFocused = new Map<
+      const filteredAreSmartphoneFieldsAdditionalMapFocused = new Map<
         number,
         [boolean, boolean]
       >();
 
-      Array.from(areSmartphoneFieldsAdditionalFocusedClone).forEach(
+      Array.from(areSmartphoneFieldsAdditionalMapFocusedClone).forEach(
         (mapIdxKeyVal, arrayIdx) => {
           const [_mapIdx, keyVal] = mapIdxKeyVal as [
             number,
             [boolean, boolean]
           ];
 
-          filteredAreSmartphoneFieldsAdditionalFocused.set(arrayIdx, keyVal);
+          filteredAreSmartphoneFieldsAdditionalMapFocused.set(arrayIdx, keyVal);
         }
       );
 
       return {
         ...state,
-        areSmartphoneFieldsAdditionalFocused:
-          filteredAreSmartphoneFieldsAdditionalFocused,
+        areSmartphoneFieldsAdditionalMapFocused:
+          filteredAreSmartphoneFieldsAdditionalMapFocused,
       };
     }
     case 'update': {
-      const areSmartphoneFieldsAdditionalFocusedClone = structuredClone(
-        state.areSmartphoneFieldsAdditionalFocused
+      const areSmartphoneFieldsAdditionalMapFocusedClone = structuredClone(
+        state.areSmartphoneFieldsAdditionalMapFocused
       );
 
       const { data, index, kind } =
         action.payload as AdditionalFieldsValidFocusedUpdate;
-      const prevKeyVal = areSmartphoneFieldsAdditionalFocusedClone.get(index);
+      const prevKeyVal =
+        areSmartphoneFieldsAdditionalMapFocusedClone.get(index);
 
       if (!prevKeyVal) {
         return state;
@@ -5506,16 +5582,19 @@ function setAreSmartphoneFieldsAdditionalFocused_CreateProductReducer(
 
       const [prevKey, prevValue] = prevKeyVal;
       kind === 'key'
-        ? areSmartphoneFieldsAdditionalFocusedClone.set(index, [
+        ? areSmartphoneFieldsAdditionalMapFocusedClone.set(index, [
             data,
             prevValue,
           ])
-        : areSmartphoneFieldsAdditionalFocusedClone.set(index, [prevKey, data]);
+        : areSmartphoneFieldsAdditionalMapFocusedClone.set(index, [
+            prevKey,
+            data,
+          ]);
 
       return {
         ...state,
-        areSmartphoneFieldsAdditionalFocused:
-          areSmartphoneFieldsAdditionalFocusedClone,
+        areSmartphoneFieldsAdditionalMapFocused:
+          areSmartphoneFieldsAdditionalMapFocusedClone,
       };
     }
     default:
@@ -5529,18 +5608,18 @@ function setAreSmartphoneFieldsAdditionalFocused_CreateProductReducer(
 
 /**
  * This reducer function contains three operations that are used to update the
- * areSmartphoneFieldsAdditionalValid state.
- * @description add: adds a new key-value pair to the areSmartphoneFieldsAdditionalValid state
+ * areSmartphoneFieldsAdditionalMapValid state.
+ * @description add: adds a new key-value pair to the areSmartphoneFieldsAdditionalMapValid state
  * @description remove:
    - clones the state, deletes the key-value pair, and iterates over the map
    - with the callback fn index to use as the key for the new map
-   - this is done because the indices are used as the keys by the mapped over smartphoneFieldsAdditional state to generate the text elements
-   - that access the areSmartphoneFieldsAdditionalValid state Map based on said element's error state
+   - this is done because the indices are used as the keys by the mapped over smartphoneFieldsAdditionalMap state to generate the text elements
+   - that access the areSmartphoneFieldsAdditionalMapValid state Map based on said element's error state
    - to display the text contained in the screenreader accessible error/valid text elements array
    - map keys must be consecutive as removal of a key-value pair will leave a gap in the indices
-  * @description update: updates either the key or value from the areSmartphoneFieldsAdditionalValid state
+  * @description update: updates either the key or value from the areSmartphoneFieldsAdditionalMapValid state
  */
-function setAreSmartphoneFieldsAdditionalValid_CreateProductReducer(
+function setAreSmartphoneFieldsAdditionalMapValid_CreateProductReducer(
   state: CreateProductState,
   action: CreateProductDispatch
 ): CreateProductState {
@@ -5548,58 +5627,58 @@ function setAreSmartphoneFieldsAdditionalValid_CreateProductReducer(
 
   switch (operation) {
     case 'add': {
-      const areSmartphoneFieldsAdditionalValidClone = structuredClone(
-        state.areSmartphoneFieldsAdditionalValid
+      const areSmartphoneFieldsAdditionalMapValidClone = structuredClone(
+        state.areSmartphoneFieldsAdditionalMapValid
       );
 
       const { data } = action.payload as AdditionalFieldsValidFocusedAdd;
-      const prevSize = areSmartphoneFieldsAdditionalValidClone.size;
-      areSmartphoneFieldsAdditionalValidClone.set(prevSize, data);
+      const prevSize = areSmartphoneFieldsAdditionalMapValidClone.size;
+      areSmartphoneFieldsAdditionalMapValidClone.set(prevSize, data);
 
       return {
         ...state,
-        areSmartphoneFieldsAdditionalValid:
-          areSmartphoneFieldsAdditionalValidClone,
+        areSmartphoneFieldsAdditionalMapValid:
+          areSmartphoneFieldsAdditionalMapValidClone,
       };
     }
     case 'remove': {
-      const areSmartphoneFieldsAdditionalValidClone = structuredClone(
-        state.areSmartphoneFieldsAdditionalValid
+      const areSmartphoneFieldsAdditionalMapValidClone = structuredClone(
+        state.areSmartphoneFieldsAdditionalMapValid
       );
 
       const { index } = action.payload as AdditionalFieldsValidFocusedRemove;
-      areSmartphoneFieldsAdditionalValidClone.delete(index);
+      areSmartphoneFieldsAdditionalMapValidClone.delete(index);
 
-      const filteredAreSmartphoneFieldsAdditionalValid = new Map<
+      const filteredAreSmartphoneFieldsAdditionalMapValid = new Map<
         number,
         [boolean, boolean]
       >();
 
-      Array.from(areSmartphoneFieldsAdditionalValidClone).forEach(
+      Array.from(areSmartphoneFieldsAdditionalMapValidClone).forEach(
         (mapIdxKeyVal, arrayIdx) => {
           const [_mapIdx, keyVal] = mapIdxKeyVal as [
             number,
             [boolean, boolean]
           ];
 
-          filteredAreSmartphoneFieldsAdditionalValid.set(arrayIdx, keyVal);
+          filteredAreSmartphoneFieldsAdditionalMapValid.set(arrayIdx, keyVal);
         }
       );
 
       return {
         ...state,
-        areSmartphoneFieldsAdditionalValid:
-          filteredAreSmartphoneFieldsAdditionalValid,
+        areSmartphoneFieldsAdditionalMapValid:
+          filteredAreSmartphoneFieldsAdditionalMapValid,
       };
     }
     case 'update': {
-      const areSmartphoneFieldsAdditionalValidClone = structuredClone(
-        state.areSmartphoneFieldsAdditionalValid
+      const areSmartphoneFieldsAdditionalMapValidClone = structuredClone(
+        state.areSmartphoneFieldsAdditionalMapValid
       );
 
       const { data, index, kind } =
         action.payload as AdditionalFieldsValidFocusedUpdate;
-      const prevKeyVal = areSmartphoneFieldsAdditionalValidClone.get(index);
+      const prevKeyVal = areSmartphoneFieldsAdditionalMapValidClone.get(index);
 
       if (!prevKeyVal) {
         return state;
@@ -5607,13 +5686,19 @@ function setAreSmartphoneFieldsAdditionalValid_CreateProductReducer(
 
       const [prevKey, prevValue] = prevKeyVal;
       kind === 'key'
-        ? areSmartphoneFieldsAdditionalValidClone.set(index, [data, prevValue])
-        : areSmartphoneFieldsAdditionalValidClone.set(index, [prevKey, data]);
+        ? areSmartphoneFieldsAdditionalMapValidClone.set(index, [
+            data,
+            prevValue,
+          ])
+        : areSmartphoneFieldsAdditionalMapValidClone.set(index, [
+            prevKey,
+            data,
+          ]);
 
       return {
         ...state,
-        areSmartphoneFieldsAdditionalValid:
-          areSmartphoneFieldsAdditionalValidClone,
+        areSmartphoneFieldsAdditionalMapValid:
+          areSmartphoneFieldsAdditionalMapValidClone,
       };
     }
     default:
@@ -5752,16 +5837,16 @@ function setSpeakerInterface_CreateProductReducer(
 
 /**
  * This reducer function contains three operations that are used to update the
- * speakerFieldsAdditional state.
- * @description add: adds a new key-value pair to the speakerFieldsAdditional state
+ * speakerFieldsAdditionalMap state.
+ * @description add: adds a new key-value pair to the speakerFieldsAdditionalMap state
  * @description remove:
  * - clones the state, deletes the key-value pair, and iterates over the map
  * - with the callback fn index to use as the key for the new map
  * - this is done because the indices are used as the keys that access the error/valid elements array
  * - and must be consecutive as removal of a key-value pair will leave a gap in the indices
- * @description update: updates either the key or value from the speakerFieldsAdditional state
+ * @description update: updates either the key or value from the speakerFieldsAdditionalMap state
  */
-function setSpeakerFieldsAdditional_CreateProductReducer(
+function setSpeakerFieldsAdditionalMap_CreateProductReducer(
   state: CreateProductState,
   action: CreateProductDispatch
 ): CreateProductState {
@@ -5769,51 +5854,51 @@ function setSpeakerFieldsAdditional_CreateProductReducer(
 
   switch (operation) {
     case 'add': {
-      const speakerFieldsAdditionalClone = structuredClone(
-        state.speakerFieldsAdditional
+      const speakerFieldsAdditionalMapClone = structuredClone(
+        state.speakerFieldsAdditionalMap
       );
 
       const { data } = action.payload as AdditionalFieldsAdd;
-      const prevSize = speakerFieldsAdditionalClone.size;
-      speakerFieldsAdditionalClone.set(prevSize, data);
+      const prevSize = speakerFieldsAdditionalMapClone.size;
+      speakerFieldsAdditionalMapClone.set(prevSize, data);
 
       return {
         ...state,
-        speakerFieldsAdditional: speakerFieldsAdditionalClone,
+        speakerFieldsAdditionalMap: speakerFieldsAdditionalMapClone,
       };
     }
     case 'remove': {
-      const speakerFieldsAdditionalClone = structuredClone(
-        state.speakerFieldsAdditional
+      const speakerFieldsAdditionalMapClone = structuredClone(
+        state.speakerFieldsAdditionalMap
       );
 
       const { index } = action.payload as AdditionalFieldsRemove;
-      speakerFieldsAdditionalClone.delete(index);
+      speakerFieldsAdditionalMapClone.delete(index);
 
-      const filteredSpeakerFieldsAdditional = new Map<
+      const filteredSpeakerFieldsAdditionalMap = new Map<
         number,
         [string, string]
       >();
 
-      Array.from(speakerFieldsAdditionalClone).forEach(
+      Array.from(speakerFieldsAdditionalMapClone).forEach(
         (mapIdxKeyVal, arrayIdx) => {
           const [_mapIdx, keyVal] = mapIdxKeyVal as [number, [string, string]];
-          filteredSpeakerFieldsAdditional.set(arrayIdx, keyVal);
+          filteredSpeakerFieldsAdditionalMap.set(arrayIdx, keyVal);
         }
       );
 
       return {
         ...state,
-        speakerFieldsAdditional: filteredSpeakerFieldsAdditional,
+        speakerFieldsAdditionalMap: filteredSpeakerFieldsAdditionalMap,
       };
     }
     case 'update': {
-      const speakerFieldsAdditionalClone = structuredClone(
-        state.speakerFieldsAdditional
+      const speakerFieldsAdditionalMapClone = structuredClone(
+        state.speakerFieldsAdditionalMap
       );
 
       const { data, index, kind } = action.payload as AdditionalFieldsUpdate;
-      const prevKeyVal = speakerFieldsAdditionalClone.get(index);
+      const prevKeyVal = speakerFieldsAdditionalMapClone.get(index);
 
       if (!prevKeyVal) {
         return state;
@@ -5821,12 +5906,12 @@ function setSpeakerFieldsAdditional_CreateProductReducer(
 
       const [prevKey, prevValue] = prevKeyVal;
       kind === 'key'
-        ? speakerFieldsAdditionalClone.set(index, [data, prevValue])
-        : speakerFieldsAdditionalClone.set(index, [prevKey, data]);
+        ? speakerFieldsAdditionalMapClone.set(index, [data, prevValue])
+        : speakerFieldsAdditionalMapClone.set(index, [prevKey, data]);
 
       return {
         ...state,
-        speakerFieldsAdditional: speakerFieldsAdditionalClone,
+        speakerFieldsAdditionalMap: speakerFieldsAdditionalMapClone,
       };
     }
     default:
@@ -5840,17 +5925,17 @@ function setSpeakerFieldsAdditional_CreateProductReducer(
 
 /**
  * This reducer function contains three operations that are used to update the
- * areSpeakerFieldsAdditionalFocused state.
- * @description add: adds a new key-value pair to the areSpeakerFieldsAdditionalFocused state
+ * areSpeakerFieldsAdditionalMapFocused state.
+ * @description add: adds a new key-value pair to the areSpeakerFieldsAdditionalMapFocused state
  * @description remove:
  * - clones the state, deletes the key-value pair, and iterates over the map
  * - with the callback fn index to use as the key for the new map
- * - this is done because the indices are used as the keys by the mapped over speakerFieldsAdditional state to generate the text elements
- * - that access the areSpeakerFieldsAdditionalFocused state Map to determine if the appropriate text element should be focused/blurred
+ * - this is done because the indices are used as the keys by the mapped over speakerFieldsAdditionalMap state to generate the text elements
+ * - that access the areSpeakerFieldsAdditionalMapFocused state Map to determine if the appropriate text element should be focused/blurred
  * - and must be consecutive as removal of a key-value pair will leave a gap in the indices
- * @description update: updates either the key or value from the areSpeakerFieldsAdditionalFocused state
+ * @description update: updates either the key or value from the areSpeakerFieldsAdditionalMapFocused state
  */
-function setAreSpeakerFieldsAdditionalFocused_CreateProductReducer(
+function setAreSpeakerFieldsAdditionalMapFocused_CreateProductReducer(
   state: CreateProductState,
   action: CreateProductDispatch
 ): CreateProductState {
@@ -5858,58 +5943,58 @@ function setAreSpeakerFieldsAdditionalFocused_CreateProductReducer(
 
   switch (operation) {
     case 'add': {
-      const areSpeakerFieldsAdditionalFocusedClone = structuredClone(
-        state.areSpeakerFieldsAdditionalFocused
+      const areSpeakerFieldsAdditionalMapFocusedClone = structuredClone(
+        state.areSpeakerFieldsAdditionalMapFocused
       );
 
       const { data } = action.payload as AdditionalFieldsValidFocusedAdd;
-      const prevSize = areSpeakerFieldsAdditionalFocusedClone.size;
-      areSpeakerFieldsAdditionalFocusedClone.set(prevSize, data);
+      const prevSize = areSpeakerFieldsAdditionalMapFocusedClone.size;
+      areSpeakerFieldsAdditionalMapFocusedClone.set(prevSize, data);
 
       return {
         ...state,
-        areSpeakerFieldsAdditionalFocused:
-          areSpeakerFieldsAdditionalFocusedClone,
+        areSpeakerFieldsAdditionalMapFocused:
+          areSpeakerFieldsAdditionalMapFocusedClone,
       };
     }
     case 'remove': {
-      const areSpeakerFieldsAdditionalFocusedClone = structuredClone(
-        state.areSpeakerFieldsAdditionalFocused
+      const areSpeakerFieldsAdditionalMapFocusedClone = structuredClone(
+        state.areSpeakerFieldsAdditionalMapFocused
       );
 
       const { index } = action.payload as AdditionalFieldsValidFocusedRemove;
-      areSpeakerFieldsAdditionalFocusedClone.delete(index);
+      areSpeakerFieldsAdditionalMapFocusedClone.delete(index);
 
-      const filteredAreSpeakerFieldsAdditionalFocused = new Map<
+      const filteredAreSpeakerFieldsAdditionalMapFocused = new Map<
         number,
         [boolean, boolean]
       >();
 
-      Array.from(areSpeakerFieldsAdditionalFocusedClone).forEach(
+      Array.from(areSpeakerFieldsAdditionalMapFocusedClone).forEach(
         (mapIdxKeyVal, arrayIdx) => {
           const [_mapIdx, keyVal] = mapIdxKeyVal as [
             number,
             [boolean, boolean]
           ];
 
-          filteredAreSpeakerFieldsAdditionalFocused.set(arrayIdx, keyVal);
+          filteredAreSpeakerFieldsAdditionalMapFocused.set(arrayIdx, keyVal);
         }
       );
 
       return {
         ...state,
-        areSpeakerFieldsAdditionalFocused:
-          filteredAreSpeakerFieldsAdditionalFocused,
+        areSpeakerFieldsAdditionalMapFocused:
+          filteredAreSpeakerFieldsAdditionalMapFocused,
       };
     }
     case 'update': {
-      const areSpeakerFieldsAdditionalFocusedClone = structuredClone(
-        state.areSpeakerFieldsAdditionalFocused
+      const areSpeakerFieldsAdditionalMapFocusedClone = structuredClone(
+        state.areSpeakerFieldsAdditionalMapFocused
       );
 
       const { data, index, kind } =
         action.payload as AdditionalFieldsValidFocusedUpdate;
-      const prevKeyVal = areSpeakerFieldsAdditionalFocusedClone.get(index);
+      const prevKeyVal = areSpeakerFieldsAdditionalMapFocusedClone.get(index);
 
       if (!prevKeyVal) {
         return state;
@@ -5917,13 +6002,16 @@ function setAreSpeakerFieldsAdditionalFocused_CreateProductReducer(
 
       const [prevKey, prevValue] = prevKeyVal;
       kind === 'key'
-        ? areSpeakerFieldsAdditionalFocusedClone.set(index, [data, prevValue])
-        : areSpeakerFieldsAdditionalFocusedClone.set(index, [prevKey, data]);
+        ? areSpeakerFieldsAdditionalMapFocusedClone.set(index, [
+            data,
+            prevValue,
+          ])
+        : areSpeakerFieldsAdditionalMapFocusedClone.set(index, [prevKey, data]);
 
       return {
         ...state,
-        areSpeakerFieldsAdditionalFocused:
-          areSpeakerFieldsAdditionalFocusedClone,
+        areSpeakerFieldsAdditionalMapFocused:
+          areSpeakerFieldsAdditionalMapFocusedClone,
       };
     }
     default:
@@ -5937,18 +6025,18 @@ function setAreSpeakerFieldsAdditionalFocused_CreateProductReducer(
 
 /**
  * This reducer function contains three operations that are used to update the
- * areSpeakerFieldsAdditionalValid state.
- * @description add: adds a new key-value pair to the areSpeakerFieldsAdditionalValid state
+ * areSpeakerFieldsAdditionalMapValid state.
+ * @description add: adds a new key-value pair to the areSpeakerFieldsAdditionalMapValid state
  * @description remove:
    - clones the state, deletes the key-value pair, and iterates over the map
    - with the callback fn index to use as the key for the new map
-   - this is done because the indices are used as the keys by the mapped over speakerFieldsAdditional state to generate the text elements
-   - that access the areSpeakerFieldsAdditionalValid state Map based on said element's error state
+   - this is done because the indices are used as the keys by the mapped over speakerFieldsAdditionalMap state to generate the text elements
+   - that access the areSpeakerFieldsAdditionalMapValid state Map based on said element's error state
    - to display the text contained in the screenreader accessible error/valid text elements array
    - map keys must be consecutive as removal of a key-value pair will leave a gap in the indices
-  * @description update: updates either the key or value from the areSpeakerFieldsAdditionalValid state
+  * @description update: updates either the key or value from the areSpeakerFieldsAdditionalMapValid state
  */
-function setAreSpeakerFieldsAdditionalValid_CreateProductReducer(
+function setAreSpeakerFieldsAdditionalMapValid_CreateProductReducer(
   state: CreateProductState,
   action: CreateProductDispatch
 ): CreateProductState {
@@ -5956,57 +6044,58 @@ function setAreSpeakerFieldsAdditionalValid_CreateProductReducer(
 
   switch (operation) {
     case 'add': {
-      const areSpeakerFieldsAdditionalValidClone = structuredClone(
-        state.areSpeakerFieldsAdditionalValid
+      const areSpeakerFieldsAdditionalMapValidClone = structuredClone(
+        state.areSpeakerFieldsAdditionalMapValid
       );
 
       const { data } = action.payload as AdditionalFieldsValidFocusedAdd;
-      const prevSize = areSpeakerFieldsAdditionalValidClone.size;
-      areSpeakerFieldsAdditionalValidClone.set(prevSize, data);
+      const prevSize = areSpeakerFieldsAdditionalMapValidClone.size;
+      areSpeakerFieldsAdditionalMapValidClone.set(prevSize, data);
 
       return {
         ...state,
-        areSpeakerFieldsAdditionalValid: areSpeakerFieldsAdditionalValidClone,
+        areSpeakerFieldsAdditionalMapValid:
+          areSpeakerFieldsAdditionalMapValidClone,
       };
     }
     case 'remove': {
-      const areSpeakerFieldsAdditionalValidClone = structuredClone(
-        state.areSpeakerFieldsAdditionalValid
+      const areSpeakerFieldsAdditionalMapValidClone = structuredClone(
+        state.areSpeakerFieldsAdditionalMapValid
       );
 
       const { index } = action.payload as AdditionalFieldsValidFocusedRemove;
-      areSpeakerFieldsAdditionalValidClone.delete(index);
+      areSpeakerFieldsAdditionalMapValidClone.delete(index);
 
-      const filteredAreSpeakerFieldsAdditionalValid = new Map<
+      const filteredAreSpeakerFieldsAdditionalMapValid = new Map<
         number,
         [boolean, boolean]
       >();
 
-      Array.from(areSpeakerFieldsAdditionalValidClone).forEach(
+      Array.from(areSpeakerFieldsAdditionalMapValidClone).forEach(
         (mapIdxKeyVal, arrayIdx) => {
           const [_mapIdx, keyVal] = mapIdxKeyVal as [
             number,
             [boolean, boolean]
           ];
 
-          filteredAreSpeakerFieldsAdditionalValid.set(arrayIdx, keyVal);
+          filteredAreSpeakerFieldsAdditionalMapValid.set(arrayIdx, keyVal);
         }
       );
 
       return {
         ...state,
-        areSpeakerFieldsAdditionalValid:
-          filteredAreSpeakerFieldsAdditionalValid,
+        areSpeakerFieldsAdditionalMapValid:
+          filteredAreSpeakerFieldsAdditionalMapValid,
       };
     }
     case 'update': {
-      const areSpeakerFieldsAdditionalValidClone = structuredClone(
-        state.areSpeakerFieldsAdditionalValid
+      const areSpeakerFieldsAdditionalMapValidClone = structuredClone(
+        state.areSpeakerFieldsAdditionalMapValid
       );
 
       const { data, index, kind } =
         action.payload as AdditionalFieldsValidFocusedUpdate;
-      const prevKeyVal = areSpeakerFieldsAdditionalValidClone.get(index);
+      const prevKeyVal = areSpeakerFieldsAdditionalMapValidClone.get(index);
 
       if (!prevKeyVal) {
         return state;
@@ -6014,12 +6103,13 @@ function setAreSpeakerFieldsAdditionalValid_CreateProductReducer(
 
       const [prevKey, prevValue] = prevKeyVal;
       kind === 'key'
-        ? areSpeakerFieldsAdditionalValidClone.set(index, [data, prevValue])
-        : areSpeakerFieldsAdditionalValidClone.set(index, [prevKey, data]);
+        ? areSpeakerFieldsAdditionalMapValidClone.set(index, [data, prevValue])
+        : areSpeakerFieldsAdditionalMapValidClone.set(index, [prevKey, data]);
 
       return {
         ...state,
-        areSpeakerFieldsAdditionalValid: areSpeakerFieldsAdditionalValidClone,
+        areSpeakerFieldsAdditionalMapValid:
+          areSpeakerFieldsAdditionalMapValidClone,
       };
     }
     default:
@@ -6164,16 +6254,16 @@ function setStorageInterface_CreateProductReducer(
 
 /**
  * This reducer function contains three operations that are used to update the
- * storageFieldsAdditional state.
- * @description add: adds a new key-value pair to the storageFieldsAdditional state
+ * storageFieldsAdditionalMap state.
+ * @description add: adds a new key-value pair to the storageFieldsAdditionalMap state
  * @description remove:
  * - clones the state, deletes the key-value pair, and iterates over the map
  * - with the callback fn index to use as the key for the new map
  * - this is done because the indices are used as the keys that access the error/valid elements array
  * - and must be consecutive as removal of a key-value pair will leave a gap in the indices
- * @description update: updates either the key or value from the storageFieldsAdditional state
+ * @description update: updates either the key or value from the storageFieldsAdditionalMap state
  */
-function setStorageFieldsAdditional_CreateProductReducer(
+function setStorageFieldsAdditionalMap_CreateProductReducer(
   state: CreateProductState,
   action: CreateProductDispatch
 ): CreateProductState {
@@ -6181,51 +6271,51 @@ function setStorageFieldsAdditional_CreateProductReducer(
 
   switch (operation) {
     case 'add': {
-      const storageFieldsAdditionalClone = structuredClone(
-        state.storageFieldsAdditional
+      const storageFieldsAdditionalMapClone = structuredClone(
+        state.storageFieldsAdditionalMap
       );
 
       const { data } = action.payload as AdditionalFieldsAdd;
-      const prevSize = storageFieldsAdditionalClone.size;
-      storageFieldsAdditionalClone.set(prevSize, data);
+      const prevSize = storageFieldsAdditionalMapClone.size;
+      storageFieldsAdditionalMapClone.set(prevSize, data);
 
       return {
         ...state,
-        storageFieldsAdditional: storageFieldsAdditionalClone,
+        storageFieldsAdditionalMap: storageFieldsAdditionalMapClone,
       };
     }
     case 'remove': {
-      const storageFieldsAdditionalClone = structuredClone(
-        state.storageFieldsAdditional
+      const storageFieldsAdditionalMapClone = structuredClone(
+        state.storageFieldsAdditionalMap
       );
 
       const { index } = action.payload as AdditionalFieldsRemove;
-      storageFieldsAdditionalClone.delete(index);
+      storageFieldsAdditionalMapClone.delete(index);
 
-      const filteredStorageFieldsAdditional = new Map<
+      const filteredStorageFieldsAdditionalMap = new Map<
         number,
         [string, string]
       >();
 
-      Array.from(storageFieldsAdditionalClone).forEach(
+      Array.from(storageFieldsAdditionalMapClone).forEach(
         (mapIdxKeyVal, arrayIdx) => {
           const [_mapIdx, keyVal] = mapIdxKeyVal as [number, [string, string]];
-          filteredStorageFieldsAdditional.set(arrayIdx, keyVal);
+          filteredStorageFieldsAdditionalMap.set(arrayIdx, keyVal);
         }
       );
 
       return {
         ...state,
-        storageFieldsAdditional: filteredStorageFieldsAdditional,
+        storageFieldsAdditionalMap: filteredStorageFieldsAdditionalMap,
       };
     }
     case 'update': {
-      const storageFieldsAdditionalClone = structuredClone(
-        state.storageFieldsAdditional
+      const storageFieldsAdditionalMapClone = structuredClone(
+        state.storageFieldsAdditionalMap
       );
 
       const { data, index, kind } = action.payload as AdditionalFieldsUpdate;
-      const prevKeyVal = storageFieldsAdditionalClone.get(index);
+      const prevKeyVal = storageFieldsAdditionalMapClone.get(index);
 
       if (!prevKeyVal) {
         return state;
@@ -6233,12 +6323,12 @@ function setStorageFieldsAdditional_CreateProductReducer(
 
       const [prevKey, prevValue] = prevKeyVal;
       kind === 'key'
-        ? storageFieldsAdditionalClone.set(index, [data, prevValue])
-        : storageFieldsAdditionalClone.set(index, [prevKey, data]);
+        ? storageFieldsAdditionalMapClone.set(index, [data, prevValue])
+        : storageFieldsAdditionalMapClone.set(index, [prevKey, data]);
 
       return {
         ...state,
-        storageFieldsAdditional: storageFieldsAdditionalClone,
+        storageFieldsAdditionalMap: storageFieldsAdditionalMapClone,
       };
     }
     default:
@@ -6252,17 +6342,17 @@ function setStorageFieldsAdditional_CreateProductReducer(
 
 /**
  * This reducer function contains three operations that are used to update the
- * areStorageFieldsAdditionalFocused state.
- * @description add: adds a new key-value pair to the areStorageFieldsAdditionalFocused state
+ * areStorageFieldsAdditionalMapFocused state.
+ * @description add: adds a new key-value pair to the areStorageFieldsAdditionalMapFocused state
  * @description remove:
  * - clones the state, deletes the key-value pair, and iterates over the map
  * - with the callback fn index to use as the key for the new map
- * - this is done because the indices are used as the keys by the mapped over storageFieldsAdditional state to generate the text elements
- * - that access the areStorageFieldsAdditionalFocused state Map to determine if the appropriate text element should be focused/blurred
+ * - this is done because the indices are used as the keys by the mapped over storageFieldsAdditionalMap state to generate the text elements
+ * - that access the areStorageFieldsAdditionalMapFocused state Map to determine if the appropriate text element should be focused/blurred
  * - and must be consecutive as removal of a key-value pair will leave a gap in the indices
- * @description update: updates either the key or value from the areStorageFieldsAdditionalFocused state
+ * @description update: updates either the key or value from the areStorageFieldsAdditionalMapFocused state
  */
-function setAreStorageFieldsAdditionalFocused_CreateProductReducer(
+function setAreStorageFieldsAdditionalMapFocused_CreateProductReducer(
   state: CreateProductState,
   action: CreateProductDispatch
 ): CreateProductState {
@@ -6270,58 +6360,58 @@ function setAreStorageFieldsAdditionalFocused_CreateProductReducer(
 
   switch (operation) {
     case 'add': {
-      const areStorageFieldsAdditionalFocusedClone = structuredClone(
-        state.areStorageFieldsAdditionalFocused
+      const areStorageFieldsAdditionalMapFocusedClone = structuredClone(
+        state.areStorageFieldsAdditionalMapFocused
       );
 
       const { data } = action.payload as AdditionalFieldsValidFocusedAdd;
-      const prevSize = areStorageFieldsAdditionalFocusedClone.size;
-      areStorageFieldsAdditionalFocusedClone.set(prevSize, data);
+      const prevSize = areStorageFieldsAdditionalMapFocusedClone.size;
+      areStorageFieldsAdditionalMapFocusedClone.set(prevSize, data);
 
       return {
         ...state,
-        areStorageFieldsAdditionalFocused:
-          areStorageFieldsAdditionalFocusedClone,
+        areStorageFieldsAdditionalMapFocused:
+          areStorageFieldsAdditionalMapFocusedClone,
       };
     }
     case 'remove': {
-      const areStorageFieldsAdditionalFocusedClone = structuredClone(
-        state.areStorageFieldsAdditionalFocused
+      const areStorageFieldsAdditionalMapFocusedClone = structuredClone(
+        state.areStorageFieldsAdditionalMapFocused
       );
 
       const { index } = action.payload as AdditionalFieldsValidFocusedRemove;
-      areStorageFieldsAdditionalFocusedClone.delete(index);
+      areStorageFieldsAdditionalMapFocusedClone.delete(index);
 
-      const filteredAreStorageFieldsAdditionalFocused = new Map<
+      const filteredAreStorageFieldsAdditionalMapFocused = new Map<
         number,
         [boolean, boolean]
       >();
 
-      Array.from(areStorageFieldsAdditionalFocusedClone).forEach(
+      Array.from(areStorageFieldsAdditionalMapFocusedClone).forEach(
         (mapIdxKeyVal, arrayIdx) => {
           const [_mapIdx, keyVal] = mapIdxKeyVal as [
             number,
             [boolean, boolean]
           ];
 
-          filteredAreStorageFieldsAdditionalFocused.set(arrayIdx, keyVal);
+          filteredAreStorageFieldsAdditionalMapFocused.set(arrayIdx, keyVal);
         }
       );
 
       return {
         ...state,
-        areStorageFieldsAdditionalFocused:
-          filteredAreStorageFieldsAdditionalFocused,
+        areStorageFieldsAdditionalMapFocused:
+          filteredAreStorageFieldsAdditionalMapFocused,
       };
     }
     case 'update': {
-      const areStorageFieldsAdditionalFocusedClone = structuredClone(
-        state.areStorageFieldsAdditionalFocused
+      const areStorageFieldsAdditionalMapFocusedClone = structuredClone(
+        state.areStorageFieldsAdditionalMapFocused
       );
 
       const { data, index, kind } =
         action.payload as AdditionalFieldsValidFocusedUpdate;
-      const prevKeyVal = areStorageFieldsAdditionalFocusedClone.get(index);
+      const prevKeyVal = areStorageFieldsAdditionalMapFocusedClone.get(index);
 
       if (!prevKeyVal) {
         return state;
@@ -6329,13 +6419,16 @@ function setAreStorageFieldsAdditionalFocused_CreateProductReducer(
 
       const [prevKey, prevValue] = prevKeyVal;
       kind === 'key'
-        ? areStorageFieldsAdditionalFocusedClone.set(index, [data, prevValue])
-        : areStorageFieldsAdditionalFocusedClone.set(index, [prevKey, data]);
+        ? areStorageFieldsAdditionalMapFocusedClone.set(index, [
+            data,
+            prevValue,
+          ])
+        : areStorageFieldsAdditionalMapFocusedClone.set(index, [prevKey, data]);
 
       return {
         ...state,
-        areStorageFieldsAdditionalFocused:
-          areStorageFieldsAdditionalFocusedClone,
+        areStorageFieldsAdditionalMapFocused:
+          areStorageFieldsAdditionalMapFocusedClone,
       };
     }
     default:
@@ -6349,18 +6442,18 @@ function setAreStorageFieldsAdditionalFocused_CreateProductReducer(
 
 /**
  * This reducer function contains three operations that are used to update the
- * areStorageFieldsAdditionalValid state.
- * @description add: adds a new key-value pair to the areStorageFieldsAdditionalValid state
+ * areStorageFieldsAdditionalMapValid state.
+ * @description add: adds a new key-value pair to the areStorageFieldsAdditionalMapValid state
  * @description remove:
  *  - clones the state, deletes the key-value pair, and iterates over the map
  * - with the callback fn index to use as the key for the new map
- * - this is done because the indices are used as the keys by the mapped over storageFieldsAdditional state to generate the text elements
- * - that access the areStorageFieldsAdditionalValid state Map based on said element's error state
+ * - this is done because the indices are used as the keys by the mapped over storageFieldsAdditionalMap state to generate the text elements
+ * - that access the areStorageFieldsAdditionalMapValid state Map based on said element's error state
  * - to display the text contained in the screenreader accessible error/valid text elements array
  * - map keys must be consecutive as removal of a key-value pair will leave a gap in the indices
- * @description update: updates either the key or value from the areStorageFieldsAdditionalValid state
+ * @description update: updates either the key or value from the areStorageFieldsAdditionalMapValid state
  */
-function setAreStorageFieldsAdditionalValid_CreateProductReducer(
+function setAreStorageFieldsAdditionalMapValid_CreateProductReducer(
   state: CreateProductState,
   action: CreateProductDispatch
 ): CreateProductState {
@@ -6368,56 +6461,56 @@ function setAreStorageFieldsAdditionalValid_CreateProductReducer(
 
   switch (operation) {
     case 'add': {
-      const arePsuFieldsAdditionalValidClone = structuredClone(
-        state.arePsuFieldsAdditionalValid
+      const arePsuFieldsAdditionalMapValidClone = structuredClone(
+        state.arePsuFieldsAdditionalMapValid
       );
 
       const { data } = action.payload as AdditionalFieldsValidFocusedAdd;
-      const prevSize = arePsuFieldsAdditionalValidClone.size;
-      arePsuFieldsAdditionalValidClone.set(prevSize, data);
+      const prevSize = arePsuFieldsAdditionalMapValidClone.size;
+      arePsuFieldsAdditionalMapValidClone.set(prevSize, data);
 
       return {
         ...state,
-        arePsuFieldsAdditionalValid: arePsuFieldsAdditionalValidClone,
+        arePsuFieldsAdditionalMapValid: arePsuFieldsAdditionalMapValidClone,
       };
     }
     case 'remove': {
-      const arePsuFieldsAdditionalValidClone = structuredClone(
-        state.arePsuFieldsAdditionalValid
+      const arePsuFieldsAdditionalMapValidClone = structuredClone(
+        state.arePsuFieldsAdditionalMapValid
       );
 
       const { index } = action.payload as AdditionalFieldsValidFocusedRemove;
-      arePsuFieldsAdditionalValidClone.delete(index);
+      arePsuFieldsAdditionalMapValidClone.delete(index);
 
       // resets the indices because the indices are used as keys
-      const filteredArePsuFieldsAdditionalValid = new Map<
+      const filteredArePsuFieldsAdditionalMapValid = new Map<
         number,
         [boolean, boolean]
       >();
-      Array.from(arePsuFieldsAdditionalValidClone).forEach(
+      Array.from(arePsuFieldsAdditionalMapValidClone).forEach(
         (mapIdxKeyVal, arrayIdx) => {
           const [_mapIdx, keyVal] = mapIdxKeyVal as [
             number,
             [boolean, boolean]
           ];
 
-          filteredArePsuFieldsAdditionalValid.set(arrayIdx, keyVal);
+          filteredArePsuFieldsAdditionalMapValid.set(arrayIdx, keyVal);
         }
       );
 
       return {
         ...state,
-        arePsuFieldsAdditionalValid: filteredArePsuFieldsAdditionalValid,
+        arePsuFieldsAdditionalMapValid: filteredArePsuFieldsAdditionalMapValid,
       };
     }
     case 'update': {
-      const arePsuFieldsAdditionalValidClone = structuredClone(
-        state.arePsuFieldsAdditionalValid
+      const arePsuFieldsAdditionalMapValidClone = structuredClone(
+        state.arePsuFieldsAdditionalMapValid
       );
 
       const { data, index, kind } =
         action.payload as AdditionalFieldsValidFocusedUpdate;
-      const prevKeyVal = arePsuFieldsAdditionalValidClone.get(index);
+      const prevKeyVal = arePsuFieldsAdditionalMapValidClone.get(index);
 
       if (!prevKeyVal) {
         return state;
@@ -6425,12 +6518,12 @@ function setAreStorageFieldsAdditionalValid_CreateProductReducer(
 
       const [prevKey, prevValue] = prevKeyVal;
       kind === 'key'
-        ? arePsuFieldsAdditionalValidClone.set(index, [data, prevValue])
-        : arePsuFieldsAdditionalValidClone.set(index, [prevKey, data]);
+        ? arePsuFieldsAdditionalMapValidClone.set(index, [data, prevValue])
+        : arePsuFieldsAdditionalMapValidClone.set(index, [prevKey, data]);
 
       return {
         ...state,
-        arePsuFieldsAdditionalValid: arePsuFieldsAdditionalValidClone,
+        arePsuFieldsAdditionalMapValid: arePsuFieldsAdditionalMapValidClone,
       };
     }
     default:
@@ -6767,16 +6860,16 @@ function setIsTabletColorValid_CreateProductReducer(
 
 /**
  * This reducer function contains three operations that are used to update the
- * tabletFieldsAdditional state.
- * @description add: adds a new key-value pair to the tabletFieldsAdditional state
+ * tabletFieldsAdditionalMap state.
+ * @description add: adds a new key-value pair to the tabletFieldsAdditionalMap state
  * @description remove:
  * - clones the state, deletes the key-value pair, and iterates over the map
  * - with the callback fn index to use as the key for the new map
  * - this is done because the indices are used as the keys that access the error/valid elements array
  * - and must be consecutive as removal of a key-value pair will leave a gap in the indices
- * @description update: updates either the key or value from the tabletFieldsAdditional state
+ * @description update: updates either the key or value from the tabletFieldsAdditionalMap state
  */
-function setTabletFieldsAdditional_CreateProductReducer(
+function setTabletFieldsAdditionalMap_CreateProductReducer(
   state: CreateProductState,
   action: CreateProductDispatch
 ): CreateProductState {
@@ -6784,52 +6877,52 @@ function setTabletFieldsAdditional_CreateProductReducer(
 
   switch (operation) {
     case 'add': {
-      const tabletFieldsAdditionalClone = structuredClone(
-        state.tabletFieldsAdditional
+      const tabletFieldsAdditionalMapClone = structuredClone(
+        state.tabletFieldsAdditionalMap
       );
 
       const { data } = action.payload as AdditionalFieldsAdd;
-      const prevSize = tabletFieldsAdditionalClone.size;
-      tabletFieldsAdditionalClone.set(prevSize, data);
+      const prevSize = tabletFieldsAdditionalMapClone.size;
+      tabletFieldsAdditionalMapClone.set(prevSize, data);
 
       return {
         ...state,
-        tabletFieldsAdditional: tabletFieldsAdditionalClone,
+        tabletFieldsAdditionalMap: tabletFieldsAdditionalMapClone,
       };
     }
     case 'remove': {
-      const tabletFieldsAdditionalClone = structuredClone(
-        state.tabletFieldsAdditional
+      const tabletFieldsAdditionalMapClone = structuredClone(
+        state.tabletFieldsAdditionalMap
       );
 
       const { index } = action.payload as AdditionalFieldsRemove;
-      tabletFieldsAdditionalClone.delete(index);
+      tabletFieldsAdditionalMapClone.delete(index);
 
       // resets the indices because the indices are used as keys
-      const filteredTabletFieldsAdditional = new Map<
+      const filteredTabletFieldsAdditionalMap = new Map<
         number,
         [string, string]
       >();
-      Array.from(tabletFieldsAdditionalClone).forEach(
+      Array.from(tabletFieldsAdditionalMapClone).forEach(
         (mapIdxKeyVal, arrayIdx) => {
           const [_mapIdx, keyVal] = mapIdxKeyVal as [number, [string, string]];
 
-          filteredTabletFieldsAdditional.set(arrayIdx, keyVal);
+          filteredTabletFieldsAdditionalMap.set(arrayIdx, keyVal);
         }
       );
 
       return {
         ...state,
-        tabletFieldsAdditional: filteredTabletFieldsAdditional,
+        tabletFieldsAdditionalMap: filteredTabletFieldsAdditionalMap,
       };
     }
     case 'update': {
-      const tabletFieldsAdditionalClone = structuredClone(
-        state.tabletFieldsAdditional
+      const tabletFieldsAdditionalMapClone = structuredClone(
+        state.tabletFieldsAdditionalMap
       );
 
       const { data, index, kind } = action.payload as AdditionalFieldsUpdate;
-      const prevKeyVal = tabletFieldsAdditionalClone.get(index);
+      const prevKeyVal = tabletFieldsAdditionalMapClone.get(index);
 
       if (!prevKeyVal) {
         return state;
@@ -6837,12 +6930,12 @@ function setTabletFieldsAdditional_CreateProductReducer(
 
       const [prevKey, prevValue] = prevKeyVal;
       kind === 'key'
-        ? tabletFieldsAdditionalClone.set(index, [data, prevValue])
-        : tabletFieldsAdditionalClone.set(index, [prevKey, data]);
+        ? tabletFieldsAdditionalMapClone.set(index, [data, prevValue])
+        : tabletFieldsAdditionalMapClone.set(index, [prevKey, data]);
 
       return {
         ...state,
-        tabletFieldsAdditional: tabletFieldsAdditionalClone,
+        tabletFieldsAdditionalMap: tabletFieldsAdditionalMapClone,
       };
     }
     default:
@@ -6856,17 +6949,17 @@ function setTabletFieldsAdditional_CreateProductReducer(
 
 /**
  * This reducer function contains three operations that are used to update the
- * areTabletFieldsAdditionalFocused state.
- * @description add: adds a new key-value pair to the areTabletFieldsAdditionalFocused state
+ * areTabletFieldsAdditionalMapFocused state.
+ * @description add: adds a new key-value pair to the areTabletFieldsAdditionalMapFocused state
  * @description remove:
  * - clones the state, deletes the key-value pair, and iterates over the map
  * - with the callback fn index to use as the key for the new map
- * - this is done because the indices are used as the keys by the mapped over tabletFieldsAdditional state to generate the text elements
- * - that access the areTabletFieldsAdditionalFocused state Map to determine if the appropriate text element should be focused/blurred
+ * - this is done because the indices are used as the keys by the mapped over tabletFieldsAdditionalMap state to generate the text elements
+ * - that access the areTabletFieldsAdditionalMapFocused state Map to determine if the appropriate text element should be focused/blurred
  * - and must be consecutive as removal of a key-value pair will leave a gap in the indices
- * @description update: updates either the key or value from the areTabletFieldsAdditionalFocused state
+ * @description update: updates either the key or value from the areTabletFieldsAdditionalMapFocused state
  */
-function setAreTabletFieldsAdditionalFocused_CreateProductReducer(
+function setAreTabletFieldsAdditionalMapFocused_CreateProductReducer(
   state: CreateProductState,
   action: CreateProductDispatch
 ): CreateProductState {
@@ -6874,57 +6967,58 @@ function setAreTabletFieldsAdditionalFocused_CreateProductReducer(
 
   switch (operation) {
     case 'add': {
-      const areTabletFieldsAdditionalFocusedClone = structuredClone(
-        state.areTabletFieldsAdditionalFocused
+      const areTabletFieldsAdditionalMapFocusedClone = structuredClone(
+        state.areTabletFieldsAdditionalMapFocused
       );
 
       const { data } = action.payload as AdditionalFieldsValidFocusedAdd;
-      const prevSize = areTabletFieldsAdditionalFocusedClone.size;
-      areTabletFieldsAdditionalFocusedClone.set(prevSize, data);
+      const prevSize = areTabletFieldsAdditionalMapFocusedClone.size;
+      areTabletFieldsAdditionalMapFocusedClone.set(prevSize, data);
 
       return {
         ...state,
-        areTabletFieldsAdditionalFocused: areTabletFieldsAdditionalFocusedClone,
+        areTabletFieldsAdditionalMapFocused:
+          areTabletFieldsAdditionalMapFocusedClone,
       };
     }
     case 'remove': {
-      const areTabletFieldsAdditionalFocusedClone = structuredClone(
-        state.areTabletFieldsAdditionalFocused
+      const areTabletFieldsAdditionalMapFocusedClone = structuredClone(
+        state.areTabletFieldsAdditionalMapFocused
       );
 
       const { index } = action.payload as AdditionalFieldsValidFocusedRemove;
-      areTabletFieldsAdditionalFocusedClone.delete(index);
+      areTabletFieldsAdditionalMapFocusedClone.delete(index);
 
       // resets the indices because the indices are used as keys
-      const filteredAreTabletFieldsAdditionalFocused = new Map<
+      const filteredAreTabletFieldsAdditionalMapFocused = new Map<
         number,
         [boolean, boolean]
       >();
-      Array.from(areTabletFieldsAdditionalFocusedClone).forEach(
+      Array.from(areTabletFieldsAdditionalMapFocusedClone).forEach(
         (mapIdxKeyVal, arrayIdx) => {
           const [_mapIdx, keyVal] = mapIdxKeyVal as [
             number,
             [boolean, boolean]
           ];
 
-          filteredAreTabletFieldsAdditionalFocused.set(arrayIdx, keyVal);
+          filteredAreTabletFieldsAdditionalMapFocused.set(arrayIdx, keyVal);
         }
       );
 
       return {
         ...state,
-        areTabletFieldsAdditionalFocused:
-          filteredAreTabletFieldsAdditionalFocused,
+        areTabletFieldsAdditionalMapFocused:
+          filteredAreTabletFieldsAdditionalMapFocused,
       };
     }
     case 'update': {
-      const areTabletFieldsAdditionalFocusedClone = structuredClone(
-        state.areTabletFieldsAdditionalFocused
+      const areTabletFieldsAdditionalMapFocusedClone = structuredClone(
+        state.areTabletFieldsAdditionalMapFocused
       );
 
       const { data, index, kind } =
         action.payload as AdditionalFieldsValidFocusedUpdate;
-      const prevKeyVal = areTabletFieldsAdditionalFocusedClone.get(index);
+      const prevKeyVal = areTabletFieldsAdditionalMapFocusedClone.get(index);
 
       if (!prevKeyVal) {
         return state;
@@ -6932,12 +7026,13 @@ function setAreTabletFieldsAdditionalFocused_CreateProductReducer(
 
       const [prevKey, prevValue] = prevKeyVal;
       kind === 'key'
-        ? areTabletFieldsAdditionalFocusedClone.set(index, [data, prevValue])
-        : areTabletFieldsAdditionalFocusedClone.set(index, [prevKey, data]);
+        ? areTabletFieldsAdditionalMapFocusedClone.set(index, [data, prevValue])
+        : areTabletFieldsAdditionalMapFocusedClone.set(index, [prevKey, data]);
 
       return {
         ...state,
-        areTabletFieldsAdditionalFocused: areTabletFieldsAdditionalFocusedClone,
+        areTabletFieldsAdditionalMapFocused:
+          areTabletFieldsAdditionalMapFocusedClone,
       };
     }
     default:
@@ -6951,18 +7046,18 @@ function setAreTabletFieldsAdditionalFocused_CreateProductReducer(
 
 /**
  * This reducer function contains three operations that are used to update the
- * areTabletFieldsAdditionalValid state.
- * @description add: adds a new key-value pair to the areTabletFieldsAdditionalValid state
+ * areTabletFieldsAdditionalMapValid state.
+ * @description add: adds a new key-value pair to the areTabletFieldsAdditionalMapValid state
  * @description remove:
  * - clones the state, deletes the key-value pair, and iterates over the map
  * - with the callback fn index to use as the key for the new map
- * - this is done because the indices are used as the keys by the mapped over tabletFieldsAdditional state to generate the text elements
- * - that access the areTabletFieldsAdditionalValid state Map based on said element's error state
+ * - this is done because the indices are used as the keys by the mapped over tabletFieldsAdditionalMap state to generate the text elements
+ * - that access the areTabletFieldsAdditionalMapValid state Map based on said element's error state
  * - to display the text contained in the screenreader accessible error/valid text elements array
  * - map keys must be consecutive as removal of a key-value pair will leave a gap in the indices
- * @description update: updates either the key or value from the areTabletFieldsAdditionalValid state
+ * @description update: updates either the key or value from the areTabletFieldsAdditionalMapValid state
  */
-function setAreTabletFieldsAdditionalValid_CreateProductReducer(
+function setAreTabletFieldsAdditionalMapValid_CreateProductReducer(
   state: CreateProductState,
   action: CreateProductDispatch
 ): CreateProductState {
@@ -6970,56 +7065,58 @@ function setAreTabletFieldsAdditionalValid_CreateProductReducer(
 
   switch (operation) {
     case 'add': {
-      const areTabletFieldsAdditionalValidClone = structuredClone(
-        state.areTabletFieldsAdditionalValid
+      const areTabletFieldsAdditionalMapValidClone = structuredClone(
+        state.areTabletFieldsAdditionalMapValid
       );
 
       const { data } = action.payload as AdditionalFieldsValidFocusedAdd;
-      const prevSize = areTabletFieldsAdditionalValidClone.size;
-      areTabletFieldsAdditionalValidClone.set(prevSize, data);
+      const prevSize = areTabletFieldsAdditionalMapValidClone.size;
+      areTabletFieldsAdditionalMapValidClone.set(prevSize, data);
 
       return {
         ...state,
-        areTabletFieldsAdditionalValid: areTabletFieldsAdditionalValidClone,
+        areTabletFieldsAdditionalMapValid:
+          areTabletFieldsAdditionalMapValidClone,
       };
     }
     case 'remove': {
-      const areTabletFieldsAdditionalValidClone = structuredClone(
-        state.areTabletFieldsAdditionalValid
+      const areTabletFieldsAdditionalMapValidClone = structuredClone(
+        state.areTabletFieldsAdditionalMapValid
       );
 
       const { index } = action.payload as AdditionalFieldsValidFocusedRemove;
-      areTabletFieldsAdditionalValidClone.delete(index);
+      areTabletFieldsAdditionalMapValidClone.delete(index);
 
       // resets the indices because the indices are used as keys
-      const filteredAreTabletFieldsAdditionalValid = new Map<
+      const filteredAreTabletFieldsAdditionalMapValid = new Map<
         number,
         [boolean, boolean]
       >();
-      Array.from(areTabletFieldsAdditionalValidClone).forEach(
+      Array.from(areTabletFieldsAdditionalMapValidClone).forEach(
         (mapIdxKeyVal, arrayIdx) => {
           const [_mapIdx, keyVal] = mapIdxKeyVal as [
             number,
             [boolean, boolean]
           ];
 
-          filteredAreTabletFieldsAdditionalValid.set(arrayIdx, keyVal);
+          filteredAreTabletFieldsAdditionalMapValid.set(arrayIdx, keyVal);
         }
       );
 
       return {
         ...state,
-        areTabletFieldsAdditionalValid: filteredAreTabletFieldsAdditionalValid,
+        areTabletFieldsAdditionalMapValid:
+          filteredAreTabletFieldsAdditionalMapValid,
       };
     }
     case 'update': {
-      const areTabletFieldsAdditionalValidClone = structuredClone(
-        state.areTabletFieldsAdditionalValid
+      const areTabletFieldsAdditionalMapValidClone = structuredClone(
+        state.areTabletFieldsAdditionalMapValid
       );
 
       const { data, index, kind } =
         action.payload as AdditionalFieldsValidFocusedUpdate;
-      const prevKeyVal = areTabletFieldsAdditionalValidClone.get(index);
+      const prevKeyVal = areTabletFieldsAdditionalMapValidClone.get(index);
 
       if (!prevKeyVal) {
         return state;
@@ -7027,12 +7124,13 @@ function setAreTabletFieldsAdditionalValid_CreateProductReducer(
 
       const [prevKey, prevValue] = prevKeyVal;
       kind === 'key'
-        ? areTabletFieldsAdditionalValidClone.set(index, [data, prevValue])
-        : areTabletFieldsAdditionalValidClone.set(index, [prevKey, data]);
+        ? areTabletFieldsAdditionalMapValidClone.set(index, [data, prevValue])
+        : areTabletFieldsAdditionalMapValidClone.set(index, [prevKey, data]);
 
       return {
         ...state,
-        areTabletFieldsAdditionalValid: areTabletFieldsAdditionalValidClone,
+        areTabletFieldsAdditionalMapValid:
+          areTabletFieldsAdditionalMapValidClone,
       };
     }
     default:
@@ -7131,16 +7229,16 @@ function setIsWebcamColorValid_CreateProductReducer(
 
 /**
  * This reducer function contains three operations that are used to update the
- * webcamFieldsAdditional state.
- * @description add: adds a new key-value pair to the webcamFieldsAdditional state
+ * webcamFieldsAdditionalMap state.
+ * @description add: adds a new key-value pair to the webcamFieldsAdditionalMap state
  * @description remove:
  * - clones the state, deletes the key-value pair, and iterates over the map
  * - with the callback fn index to use as the key for the new map
  * - this is done because the indices are used as the keys that access the error/valid elements array
  * - and must be consecutive as removal of a key-value pair will leave a gap in the indices
- * @description update: updates either the key or value from the webcamFieldsAdditional state
+ * @description update: updates either the key or value from the webcamFieldsAdditionalMap state
  */
-function setWebcamFieldsAdditional_CreateProductReducer(
+function setWebcamFieldsAdditionalMap_CreateProductReducer(
   state: CreateProductState,
   action: CreateProductDispatch
 ): CreateProductState {
@@ -7148,52 +7246,52 @@ function setWebcamFieldsAdditional_CreateProductReducer(
 
   switch (operation) {
     case 'add': {
-      const webcamFieldsAdditionalClone = structuredClone(
-        state.webcamFieldsAdditional
+      const webcamFieldsAdditionalMapClone = structuredClone(
+        state.webcamFieldsAdditionalMap
       );
 
       const { data } = action.payload as AdditionalFieldsAdd;
-      const prevSize = webcamFieldsAdditionalClone.size;
-      webcamFieldsAdditionalClone.set(prevSize, data);
+      const prevSize = webcamFieldsAdditionalMapClone.size;
+      webcamFieldsAdditionalMapClone.set(prevSize, data);
 
       return {
         ...state,
-        webcamFieldsAdditional: webcamFieldsAdditionalClone,
+        webcamFieldsAdditionalMap: webcamFieldsAdditionalMapClone,
       };
     }
     case 'remove': {
-      const webcamFieldsAdditionalClone = structuredClone(
-        state.webcamFieldsAdditional
+      const webcamFieldsAdditionalMapClone = structuredClone(
+        state.webcamFieldsAdditionalMap
       );
 
       const { index } = action.payload as AdditionalFieldsRemove;
-      webcamFieldsAdditionalClone.delete(index);
+      webcamFieldsAdditionalMapClone.delete(index);
 
       // resets the indices because the indices are used as keys
-      const filteredWebcamFieldsAdditional = new Map<
+      const filteredWebcamFieldsAdditionalMap = new Map<
         number,
         [string, string]
       >();
-      Array.from(webcamFieldsAdditionalClone).forEach(
+      Array.from(webcamFieldsAdditionalMapClone).forEach(
         (mapIdxKeyVal, arrayIdx) => {
           const [_mapIdx, keyVal] = mapIdxKeyVal as [number, [string, string]];
 
-          filteredWebcamFieldsAdditional.set(arrayIdx, keyVal);
+          filteredWebcamFieldsAdditionalMap.set(arrayIdx, keyVal);
         }
       );
 
       return {
         ...state,
-        webcamFieldsAdditional: filteredWebcamFieldsAdditional,
+        webcamFieldsAdditionalMap: filteredWebcamFieldsAdditionalMap,
       };
     }
     case 'update': {
-      const webcamFieldsAdditionalClone = structuredClone(
-        state.webcamFieldsAdditional
+      const webcamFieldsAdditionalMapClone = structuredClone(
+        state.webcamFieldsAdditionalMap
       );
 
       const { data, index, kind } = action.payload as AdditionalFieldsUpdate;
-      const prevKeyVal = webcamFieldsAdditionalClone.get(index);
+      const prevKeyVal = webcamFieldsAdditionalMapClone.get(index);
 
       if (!prevKeyVal) {
         return state;
@@ -7201,12 +7299,12 @@ function setWebcamFieldsAdditional_CreateProductReducer(
 
       const [prevKey, prevValue] = prevKeyVal;
       kind === 'key'
-        ? webcamFieldsAdditionalClone.set(index, [data, prevValue])
-        : webcamFieldsAdditionalClone.set(index, [prevKey, data]);
+        ? webcamFieldsAdditionalMapClone.set(index, [data, prevValue])
+        : webcamFieldsAdditionalMapClone.set(index, [prevKey, data]);
 
       return {
         ...state,
-        webcamFieldsAdditional: webcamFieldsAdditionalClone,
+        webcamFieldsAdditionalMap: webcamFieldsAdditionalMapClone,
       };
     }
     default:
@@ -7220,17 +7318,17 @@ function setWebcamFieldsAdditional_CreateProductReducer(
 
 /**
  * This reducer function contains three operations that are used to update the
- * areWebcamFieldsAdditionalFocused state.
- * @description add: adds a new key-value pair to the areWebcamFieldsAdditionalFocused state
+ * areWebcamFieldsAdditionalMapFocused state.
+ * @description add: adds a new key-value pair to the areWebcamFieldsAdditionalMapFocused state
  * @description remove:
  * - clones the state, deletes the key-value pair, and iterates over the map
  * - with the callback fn index to use as the key for the new map
- * - this is done because the indices are used as the keys by the mapped over webcamFieldsAdditional state to generate the text elements
- * - that access the areWebcamFieldsAdditionalFocused state Map to determine if the appropriate text element should be focused/blurred
+ * - this is done because the indices are used as the keys by the mapped over webcamFieldsAdditionalMap state to generate the text elements
+ * - that access the areWebcamFieldsAdditionalMapFocused state Map to determine if the appropriate text element should be focused/blurred
  * - and must be consecutive as removal of a key-value pair will leave a gap in the indices
- * @description update: updates either the key or value from the areWebcamFieldsAdditionalFocused state
+ * @description update: updates either the key or value from the areWebcamFieldsAdditionalMapFocused state
  */
-function setAreWebcamFieldsAdditionalFocused_CreateProductReducer(
+function setAreWebcamFieldsAdditionalMapFocused_CreateProductReducer(
   state: CreateProductState,
   action: CreateProductDispatch
 ): CreateProductState {
@@ -7238,57 +7336,58 @@ function setAreWebcamFieldsAdditionalFocused_CreateProductReducer(
 
   switch (operation) {
     case 'add': {
-      const areWebcamFieldsAdditionalFocusedClone = structuredClone(
-        state.areWebcamFieldsAdditionalFocused
+      const areWebcamFieldsAdditionalMapFocusedClone = structuredClone(
+        state.areWebcamFieldsAdditionalMapFocused
       );
 
       const { data } = action.payload as AdditionalFieldsValidFocusedAdd;
-      const prevSize = areWebcamFieldsAdditionalFocusedClone.size;
-      areWebcamFieldsAdditionalFocusedClone.set(prevSize, data);
+      const prevSize = areWebcamFieldsAdditionalMapFocusedClone.size;
+      areWebcamFieldsAdditionalMapFocusedClone.set(prevSize, data);
 
       return {
         ...state,
-        areWebcamFieldsAdditionalFocused: areWebcamFieldsAdditionalFocusedClone,
+        areWebcamFieldsAdditionalMapFocused:
+          areWebcamFieldsAdditionalMapFocusedClone,
       };
     }
     case 'remove': {
-      const areWebcamFieldsAdditionalFocusedClone = structuredClone(
-        state.areWebcamFieldsAdditionalFocused
+      const areWebcamFieldsAdditionalMapFocusedClone = structuredClone(
+        state.areWebcamFieldsAdditionalMapFocused
       );
 
       const { index } = action.payload as AdditionalFieldsValidFocusedRemove;
-      areWebcamFieldsAdditionalFocusedClone.delete(index);
+      areWebcamFieldsAdditionalMapFocusedClone.delete(index);
 
       // resets the indices because the indices are used as keys
-      const filteredAreWebcamFieldsAdditionalFocused = new Map<
+      const filteredAreWebcamFieldsAdditionalMapFocused = new Map<
         number,
         [boolean, boolean]
       >();
-      Array.from(areWebcamFieldsAdditionalFocusedClone).forEach(
+      Array.from(areWebcamFieldsAdditionalMapFocusedClone).forEach(
         (mapIdxKeyVal, arrayIdx) => {
           const [_mapIdx, keyVal] = mapIdxKeyVal as [
             number,
             [boolean, boolean]
           ];
 
-          filteredAreWebcamFieldsAdditionalFocused.set(arrayIdx, keyVal);
+          filteredAreWebcamFieldsAdditionalMapFocused.set(arrayIdx, keyVal);
         }
       );
 
       return {
         ...state,
-        areWebcamFieldsAdditionalFocused:
-          filteredAreWebcamFieldsAdditionalFocused,
+        areWebcamFieldsAdditionalMapFocused:
+          filteredAreWebcamFieldsAdditionalMapFocused,
       };
     }
     case 'update': {
-      const areWebcamFieldsAdditionalFocusedClone = structuredClone(
-        state.areWebcamFieldsAdditionalFocused
+      const areWebcamFieldsAdditionalMapFocusedClone = structuredClone(
+        state.areWebcamFieldsAdditionalMapFocused
       );
 
       const { data, index, kind } =
         action.payload as AdditionalFieldsValidFocusedUpdate;
-      const prevKeyVal = areWebcamFieldsAdditionalFocusedClone.get(index);
+      const prevKeyVal = areWebcamFieldsAdditionalMapFocusedClone.get(index);
 
       if (!prevKeyVal) {
         return state;
@@ -7296,12 +7395,13 @@ function setAreWebcamFieldsAdditionalFocused_CreateProductReducer(
 
       const [prevKey, prevValue] = prevKeyVal;
       kind === 'key'
-        ? areWebcamFieldsAdditionalFocusedClone.set(index, [data, prevValue])
-        : areWebcamFieldsAdditionalFocusedClone.set(index, [prevKey, data]);
+        ? areWebcamFieldsAdditionalMapFocusedClone.set(index, [data, prevValue])
+        : areWebcamFieldsAdditionalMapFocusedClone.set(index, [prevKey, data]);
 
       return {
         ...state,
-        areWebcamFieldsAdditionalFocused: areWebcamFieldsAdditionalFocusedClone,
+        areWebcamFieldsAdditionalMapFocused:
+          areWebcamFieldsAdditionalMapFocusedClone,
       };
     }
     default:
@@ -7315,18 +7415,18 @@ function setAreWebcamFieldsAdditionalFocused_CreateProductReducer(
 
 /**
  * This reducer function contains three operations that are used to update the
- * areWebcamFieldsAdditionalValid state.
- * @description add: adds a new key-value pair to the areWebcamFieldsAdditionalValid state
+ * areWebcamFieldsAdditionalMapValid state.
+ * @description add: adds a new key-value pair to the areWebcamFieldsAdditionalMapValid state
  * @description remove:
  * - clones the state, deletes the key-value pair, and iterates over the map
  * - with the callback fn index to use as the key for the new map
- * - this is done because the indices are used as the keys by the mapped over webcamFieldsAdditional state to generate the text elements
- * - that access the areWebcamFieldsAdditionalValid state Map based on said element's error state
+ * - this is done because the indices are used as the keys by the mapped over webcamFieldsAdditionalMap state to generate the text elements
+ * - that access the areWebcamFieldsAdditionalMapValid state Map based on said element's error state
  * - to display the text contained in the screenreader accessible error/valid text elements array
  * - map keys must be consecutive as removal of a key-value pair will leave a gap in the indices
- * @description update: updates either the key or value from the areWebcamFieldsAdditionalValid state
+ * @description update: updates either the key or value from the areWebcamFieldsAdditionalMapValid state
  */
-function setAreWebcamFieldsAdditionalValid_CreateProductReducer(
+function setAreWebcamFieldsAdditionalMapValid_CreateProductReducer(
   state: CreateProductState,
   action: CreateProductDispatch
 ): CreateProductState {
@@ -7334,56 +7434,58 @@ function setAreWebcamFieldsAdditionalValid_CreateProductReducer(
 
   switch (operation) {
     case 'add': {
-      const areWebcamFieldsAdditionalValidClone = structuredClone(
-        state.areWebcamFieldsAdditionalValid
+      const areWebcamFieldsAdditionalMapValidClone = structuredClone(
+        state.areWebcamFieldsAdditionalMapValid
       );
 
       const { data } = action.payload as AdditionalFieldsValidFocusedAdd;
-      const prevSize = areWebcamFieldsAdditionalValidClone.size;
-      areWebcamFieldsAdditionalValidClone.set(prevSize, data);
+      const prevSize = areWebcamFieldsAdditionalMapValidClone.size;
+      areWebcamFieldsAdditionalMapValidClone.set(prevSize, data);
 
       return {
         ...state,
-        areWebcamFieldsAdditionalValid: areWebcamFieldsAdditionalValidClone,
+        areWebcamFieldsAdditionalMapValid:
+          areWebcamFieldsAdditionalMapValidClone,
       };
     }
     case 'remove': {
-      const areWebcamFieldsAdditionalValidClone = structuredClone(
-        state.areWebcamFieldsAdditionalValid
+      const areWebcamFieldsAdditionalMapValidClone = structuredClone(
+        state.areWebcamFieldsAdditionalMapValid
       );
 
       const { index } = action.payload as AdditionalFieldsValidFocusedRemove;
-      areWebcamFieldsAdditionalValidClone.delete(index);
+      areWebcamFieldsAdditionalMapValidClone.delete(index);
 
       // resets the indices because the indices are used as keys
-      const filteredAreWebcamFieldsAdditionalValid = new Map<
+      const filteredAreWebcamFieldsAdditionalMapValid = new Map<
         number,
         [boolean, boolean]
       >();
-      Array.from(areWebcamFieldsAdditionalValidClone).forEach(
+      Array.from(areWebcamFieldsAdditionalMapValidClone).forEach(
         (mapIdxKeyVal, arrayIdx) => {
           const [_mapIdx, keyVal] = mapIdxKeyVal as [
             number,
             [boolean, boolean]
           ];
 
-          filteredAreWebcamFieldsAdditionalValid.set(arrayIdx, keyVal);
+          filteredAreWebcamFieldsAdditionalMapValid.set(arrayIdx, keyVal);
         }
       );
 
       return {
         ...state,
-        areWebcamFieldsAdditionalValid: filteredAreWebcamFieldsAdditionalValid,
+        areWebcamFieldsAdditionalMapValid:
+          filteredAreWebcamFieldsAdditionalMapValid,
       };
     }
     case 'update': {
-      const areWebcamFieldsAdditionalValidClone = structuredClone(
-        state.areWebcamFieldsAdditionalValid
+      const areWebcamFieldsAdditionalMapValidClone = structuredClone(
+        state.areWebcamFieldsAdditionalMapValid
       );
 
       const { data, index, kind } =
         action.payload as AdditionalFieldsValidFocusedUpdate;
-      const prevKeyVal = areWebcamFieldsAdditionalValidClone.get(index);
+      const prevKeyVal = areWebcamFieldsAdditionalMapValidClone.get(index);
 
       if (!prevKeyVal) {
         return state;
@@ -7391,12 +7493,13 @@ function setAreWebcamFieldsAdditionalValid_CreateProductReducer(
 
       const [prevKey, prevValue] = prevKeyVal;
       kind === 'key'
-        ? areWebcamFieldsAdditionalValidClone.set(index, [data, prevValue])
-        : areWebcamFieldsAdditionalValidClone.set(index, [prevKey, data]);
+        ? areWebcamFieldsAdditionalMapValidClone.set(index, [data, prevValue])
+        : areWebcamFieldsAdditionalMapValidClone.set(index, [prevKey, data]);
 
       return {
         ...state,
-        areWebcamFieldsAdditionalValid: areWebcamFieldsAdditionalValidClone,
+        areWebcamFieldsAdditionalMapValid:
+          areWebcamFieldsAdditionalMapValidClone,
       };
     }
     default:
@@ -7786,16 +7889,16 @@ const createProductReducersMap = new Map<
   ],
   // accessory -> additional fields
   [
-    createProductAction.setAccessoryFieldsAdditional,
-    setAccessoryFieldsAdditional_CreateProductReducer,
+    createProductAction.setAccessoryFieldsAdditionalMap,
+    setAccessoryFieldsAdditionalMap_CreateProductReducer,
   ],
   [
-    createProductAction.setAreAccessoryFieldsAdditionalFocused,
-    setAreAccessoryFieldsAdditionalFocused_CreateProductReducer,
+    createProductAction.setAreAccessoryFieldsAdditionalMapFocused,
+    setAreAccessoryFieldsAdditionalMapFocused_CreateProductReducer,
   ],
   [
-    createProductAction.setAreAccessoryFieldsAdditionalValid,
-    setAreAccessoryFieldsAdditionalValid_CreateProductReducer,
+    createProductAction.setAreAccessoryFieldsAdditionalMapValid,
+    setAreAccessoryFieldsAdditionalMapValid_CreateProductReducer,
   ],
 
   // ╭─────────────────────────────────────────────────────────────────╮
@@ -7898,16 +8001,16 @@ const createProductReducersMap = new Map<
   ],
   // cpu -> additional fields
   [
-    createProductAction.setCpuFieldsAdditional,
-    setCpuFieldsAdditional_CreateProductReducer,
+    createProductAction.setCpuFieldsAdditionalMap,
+    setCpuFieldsAdditionalMap_CreateProductReducer,
   ],
   [
-    createProductAction.setAreCpuFieldsAdditionalFocused,
-    setAreCpuFieldsAdditionalFocused_CreateProductReducer,
+    createProductAction.setAreCpuFieldsAdditionalMapFocused,
+    setAreCpuFieldsAdditionalMapFocused_CreateProductReducer,
   ],
   [
-    createProductAction.setAreCpuFieldsAdditionalValid,
-    setAreCpuFieldsAdditionalValid_CreateProductReducer,
+    createProductAction.setAreCpuFieldsAdditionalMapValid,
+    setAreCpuFieldsAdditionalMapValid_CreateProductReducer,
   ],
 
   // ╭─────────────────────────────────────────────────────────────────╮
@@ -7971,16 +8074,16 @@ const createProductReducersMap = new Map<
   ],
   // gpu -> additional fields
   [
-    createProductAction.setGpuFieldsAdditional,
-    setGpuFieldsAdditional_CreateProductReducer,
+    createProductAction.setGpuFieldsAdditionalMap,
+    setGpuFieldsAdditionalMap_CreateProductReducer,
   ],
   [
-    createProductAction.setAreGpuFieldsAdditionalFocused,
-    setAreGpuFieldsAdditionalFocused_CreateProductReducer,
+    createProductAction.setAreGpuFieldsAdditionalMapFocused,
+    setAreGpuFieldsAdditionalMapFocused_CreateProductReducer,
   ],
   [
-    createProductAction.setAreGpuFieldsAdditionalValid,
-    setAreGpuFieldsAdditionalValid_CreateProductReducer,
+    createProductAction.setAreGpuFieldsAdditionalMapValid,
+    setAreGpuFieldsAdditionalMapValid_CreateProductReducer,
   ],
 
   // ╭─────────────────────────────────────────────────────────────────╮
@@ -8048,16 +8151,16 @@ const createProductReducersMap = new Map<
   ],
   // headphones -> additional fields
   [
-    createProductAction.setHeadphoneFieldsAdditional,
-    setHeadphoneFieldsAdditional_CreateProductReducer,
+    createProductAction.setHeadphoneFieldsAdditionalMap,
+    setHeadphoneFieldsAdditionalMap_CreateProductReducer,
   ],
   [
-    createProductAction.setAreHeadphoneFieldsAdditionalFocused,
-    setAreHeadphoneFieldsAdditionalFocused_CreateProductReducer,
+    createProductAction.setAreHeadphoneFieldsAdditionalMapFocused,
+    setAreHeadphoneFieldsAdditionalMapFocused_CreateProductReducer,
   ],
   [
-    createProductAction.setAreHeadphoneFieldsAdditionalValid,
-    setAreHeadphoneFieldsAdditionalValid_CreateProductReducer,
+    createProductAction.setAreHeadphoneFieldsAdditionalMapValid,
+    setAreHeadphoneFieldsAdditionalMapValid_CreateProductReducer,
   ],
 
   // ╭─────────────────────────────────────────────────────────────────╮
@@ -8086,16 +8189,16 @@ const createProductReducersMap = new Map<
   ],
   // keyboard -> additional fields
   [
-    createProductAction.setKeyboardFieldsAdditional,
-    setKeyboardFieldsAdditional_CreateProductReducer,
+    createProductAction.setKeyboardFieldsAdditionalMap,
+    setKeyboardFieldsAdditionalMap_CreateProductReducer,
   ],
   [
-    createProductAction.setAreKeyboardFieldsAdditionalFocused,
-    setAreKeyboardFieldsAdditionalFocused_CreateProductReducer,
+    createProductAction.setAreKeyboardFieldsAdditionalMapFocused,
+    setAreKeyboardFieldsAdditionalMapFocused_CreateProductReducer,
   ],
   [
-    createProductAction.setAreKeyboardFieldsAdditionalValid,
-    setAreKeyboardFieldsAdditionalValid_CreateProductReducer,
+    createProductAction.setAreKeyboardFieldsAdditionalMapValid,
+    setAreKeyboardFieldsAdditionalMapValid_CreateProductReducer,
   ],
 
   // ╭─────────────────────────────────────────────────────────────────╮
@@ -8177,16 +8280,16 @@ const createProductReducersMap = new Map<
   ],
   // ram -> additional fields
   [
-    createProductAction.setRamFieldsAdditional,
-    setRamFieldsAdditional_CreateProductReducer,
+    createProductAction.setRamFieldsAdditionalMap,
+    setRamFieldsAdditionalMap_CreateProductReducer,
   ],
   [
-    createProductAction.setAreRamFieldsAdditionalFocused,
-    setAreRamFieldsAdditionalFocused_CreateProductReducer,
+    createProductAction.setAreRamFieldsAdditionalMapFocused,
+    setAreRamFieldsAdditionalMapFocused_CreateProductReducer,
   ],
   [
-    createProductAction.setAreRamFieldsAdditionalValid,
-    setAreRamFieldsAdditionalValid_CreateProductReducer,
+    createProductAction.setAreRamFieldsAdditionalMapValid,
+    setAreRamFieldsAdditionalMapValid_CreateProductReducer,
   ],
 
   // ╭─────────────────────────────────────────────────────────────────╮
@@ -8232,16 +8335,16 @@ const createProductReducersMap = new Map<
   ],
   // mouse -> additional fields
   [
-    createProductAction.setMouseFieldsAdditional,
-    setMouseFieldsAdditional_CreateProductReducer,
+    createProductAction.setMouseFieldsAdditionalMap,
+    setMouseFieldsAdditionalMap_CreateProductReducer,
   ],
   [
-    createProductAction.setAreMouseFieldsAdditionalFocused,
-    setAreMouseFieldsAdditionalFocused_CreateProductReducer,
+    createProductAction.setAreMouseFieldsAdditionalMapFocused,
+    setAreMouseFieldsAdditionalMapFocused_CreateProductReducer,
   ],
   [
-    createProductAction.setAreMouseFieldsAdditionalValid,
-    setAreMouseFieldsAdditionalValid_CreateProductReducer,
+    createProductAction.setAreMouseFieldsAdditionalMapValid,
+    setAreMouseFieldsAdditionalMapValid_CreateProductReducer,
   ],
 
   // ╭─────────────────────────────────────────────────────────────────╮
@@ -8291,16 +8394,16 @@ const createProductReducersMap = new Map<
   ],
   // microphone -> additional fields
   [
-    createProductAction.setMicrophoneFieldsAdditional,
-    setMicrophoneFieldsAdditional_CreateProductReducer,
+    createProductAction.setMicrophoneFieldsAdditionalMap,
+    setMicrophoneFieldsAdditionalMap_CreateProductReducer,
   ],
   [
-    createProductAction.setAreMicrophoneFieldsAdditionalFocused,
-    setAreMicrophoneFieldsAdditionalFocused_CreateProductReducer,
+    createProductAction.setAreMicrophoneFieldsAdditionalMapFocused,
+    setAreMicrophoneFieldsAdditionalMapFocused_CreateProductReducer,
   ],
   [
-    createProductAction.setAreMicrophoneFieldsAdditionalValid,
-    setAreMicrophoneFieldsAdditionalValid_CreateProductReducer,
+    createProductAction.setAreMicrophoneFieldsAdditionalMapValid,
+    setAreMicrophoneFieldsAdditionalMapValid_CreateProductReducer,
   ],
 
   // ╭─────────────────────────────────────────────────────────────────╮
@@ -8389,16 +8492,16 @@ const createProductReducersMap = new Map<
   ],
   // display -> additional fields
   [
-    createProductAction.setDisplayFieldsAdditional,
-    setDisplayFieldsAdditional_CreateProductReducer,
+    createProductAction.setDisplayFieldsAdditionalMap,
+    setDisplayFieldsAdditionalMap_CreateProductReducer,
   ],
   [
-    createProductAction.setAreDisplayFieldsAdditionalFocused,
-    setAreDisplayFieldsAdditionalFocused_CreateProductReducer,
+    createProductAction.setAreDisplayFieldsAdditionalMapFocused,
+    setAreDisplayFieldsAdditionalMapFocused_CreateProductReducer,
   ],
   [
-    createProductAction.setAreDisplayFieldsAdditionalValid,
-    setAreDisplayFieldsAdditionalValid_CreateProductReducer,
+    createProductAction.setAreDisplayFieldsAdditionalMapValid,
+    setAreDisplayFieldsAdditionalMapValid_CreateProductReducer,
   ],
 
   // ╭─────────────────────────────────────────────────────────────────╮
@@ -8539,16 +8642,16 @@ const createProductReducersMap = new Map<
   ],
   // motherboard -> additional fields
   [
-    createProductAction.setMotherboardFieldsAdditional,
-    setMotherboardFieldsAdditional_CreateProductReducer,
+    createProductAction.setMotherboardFieldsAdditionalMap,
+    setMotherboardFieldsAdditionalMap_CreateProductReducer,
   ],
   [
-    createProductAction.setAreMotherboardFieldsAdditionalFocused,
-    setAreMotherboardFieldsAdditionalFocused_CreateProductReducer,
+    createProductAction.setAreMotherboardFieldsAdditionalMapFocused,
+    setAreMotherboardFieldsAdditionalMapFocused_CreateProductReducer,
   ],
   [
-    createProductAction.setAreMotherboardFieldsAdditionalValid,
-    setAreMotherboardFieldsAdditionalValid_CreateProductReducer,
+    createProductAction.setAreMotherboardFieldsAdditionalMapValid,
+    setAreMotherboardFieldsAdditionalMapValid_CreateProductReducer,
   ],
 
   // ╭─────────────────────────────────────────────────────────────────╮
@@ -8681,16 +8784,16 @@ const createProductReducersMap = new Map<
   ],
   // smartphone -> additional fields
   [
-    createProductAction.setSmartphoneFieldsAdditional,
-    setSmartphoneFieldsAdditional_CreateProductReducer,
+    createProductAction.setSmartphoneFieldsAdditionalMap,
+    setSmartphoneFieldsAdditionalMap_CreateProductReducer,
   ],
   [
-    createProductAction.setAreSmartphoneFieldsAdditionalFocused,
-    setAreSmartphoneFieldsAdditionalFocused_CreateProductReducer,
+    createProductAction.setAreSmartphoneFieldsAdditionalMapFocused,
+    setAreSmartphoneFieldsAdditionalMapFocused_CreateProductReducer,
   ],
   [
-    createProductAction.setAreSmartphoneFieldsAdditionalValid,
-    setAreSmartphoneFieldsAdditionalValid_CreateProductReducer,
+    createProductAction.setAreSmartphoneFieldsAdditionalMapValid,
+    setAreSmartphoneFieldsAdditionalMapValid_CreateProductReducer,
   ],
 
   // ╭─────────────────────────────────────────────────────────────────╮
@@ -8742,16 +8845,16 @@ const createProductReducersMap = new Map<
   ],
   // speaker -> additional fields
   [
-    createProductAction.setSpeakerFieldsAdditional,
-    setSpeakerFieldsAdditional_CreateProductReducer,
+    createProductAction.setSpeakerFieldsAdditionalMap,
+    setSpeakerFieldsAdditionalMap_CreateProductReducer,
   ],
   [
-    createProductAction.setAreSpeakerFieldsAdditionalFocused,
-    setAreSpeakerFieldsAdditionalFocused_CreateProductReducer,
+    createProductAction.setAreSpeakerFieldsAdditionalMapFocused,
+    setAreSpeakerFieldsAdditionalMapFocused_CreateProductReducer,
   ],
   [
-    createProductAction.setAreSpeakerFieldsAdditionalValid,
-    setAreSpeakerFieldsAdditionalValid_CreateProductReducer,
+    createProductAction.setAreSpeakerFieldsAdditionalMapValid,
+    setAreSpeakerFieldsAdditionalMapValid_CreateProductReducer,
   ],
 
   // ╭─────────────────────────────────────────────────────────────────╮
@@ -8808,16 +8911,16 @@ const createProductReducersMap = new Map<
   ],
   // storage -> additional fields
   [
-    createProductAction.setStorageFieldsAdditional,
-    setStorageFieldsAdditional_CreateProductReducer,
+    createProductAction.setStorageFieldsAdditionalMap,
+    setStorageFieldsAdditionalMap_CreateProductReducer,
   ],
   [
-    createProductAction.setAreStorageFieldsAdditionalFocused,
-    setAreStorageFieldsAdditionalFocused_CreateProductReducer,
+    createProductAction.setAreStorageFieldsAdditionalMapFocused,
+    setAreStorageFieldsAdditionalMapFocused_CreateProductReducer,
   ],
   [
-    createProductAction.setAreStorageFieldsAdditionalValid,
-    setAreStorageFieldsAdditionalValid_CreateProductReducer,
+    createProductAction.setAreStorageFieldsAdditionalMapValid,
+    setAreStorageFieldsAdditionalMapValid_CreateProductReducer,
   ],
 
   // ╭─────────────────────────────────────────────────────────────────╮
@@ -8938,16 +9041,16 @@ const createProductReducersMap = new Map<
   ],
   // tablet -> additional fields
   [
-    createProductAction.setTabletFieldsAdditional,
-    setTabletFieldsAdditional_CreateProductReducer,
+    createProductAction.setTabletFieldsAdditionalMap,
+    setTabletFieldsAdditionalMap_CreateProductReducer,
   ],
   [
-    createProductAction.setAreTabletFieldsAdditionalFocused,
-    setAreTabletFieldsAdditionalFocused_CreateProductReducer,
+    createProductAction.setAreTabletFieldsAdditionalMapFocused,
+    setAreTabletFieldsAdditionalMapFocused_CreateProductReducer,
   ],
   [
-    createProductAction.setAreTabletFieldsAdditionalValid,
-    setAreTabletFieldsAdditionalValid_CreateProductReducer,
+    createProductAction.setAreTabletFieldsAdditionalMapValid,
+    setAreTabletFieldsAdditionalMapValid_CreateProductReducer,
   ],
 
   // ╭─────────────────────────────────────────────────────────────────╮
@@ -8986,16 +9089,16 @@ const createProductReducersMap = new Map<
   ],
   // webcam -> additional fields
   [
-    createProductAction.setWebcamFieldsAdditional,
-    setWebcamFieldsAdditional_CreateProductReducer,
+    createProductAction.setWebcamFieldsAdditionalMap,
+    setWebcamFieldsAdditionalMap_CreateProductReducer,
   ],
   [
-    createProductAction.setAreWebcamFieldsAdditionalFocused,
-    setAreWebcamFieldsAdditionalFocused_CreateProductReducer,
+    createProductAction.setAreWebcamFieldsAdditionalMapFocused,
+    setAreWebcamFieldsAdditionalMapFocused_CreateProductReducer,
   ],
   [
-    createProductAction.setAreWebcamFieldsAdditionalValid,
-    setAreWebcamFieldsAdditionalValid_CreateProductReducer,
+    createProductAction.setAreWebcamFieldsAdditionalMapValid,
+    setAreWebcamFieldsAdditionalMapValid_CreateProductReducer,
   ],
 
   // ╔═════════════════════════════════════════════════════════════════╗
@@ -9063,43 +9166,43 @@ export {
   createProductReducer,
   createProductReducersMap,
   setAccessoryColor_CreateProductReducer,
-  setAccessoryFieldsAdditional_CreateProductReducer,
+  setAccessoryFieldsAdditionalMap_CreateProductReducer,
   setAccessoryInterface_CreateProductReducer,
   setAccessoryType_CreateProductReducer,
   setAdditionalComments_CreateProductReducer,
-  setAreAccessoryFieldsAdditionalFocused_CreateProductReducer,
-  setAreAccessoryFieldsAdditionalValid_CreateProductReducer,
-  setAreCpuFieldsAdditionalFocused_CreateProductReducer,
-  setAreCpuFieldsAdditionalValid_CreateProductReducer,
-  setAreDisplayFieldsAdditionalFocused_CreateProductReducer,
-  setAreDisplayFieldsAdditionalValid_CreateProductReducer,
-  setAreGpuFieldsAdditionalFocused_CreateProductReducer,
-  setAreGpuFieldsAdditionalValid_CreateProductReducer,
-  setAreHeadphoneFieldsAdditionalFocused_CreateProductReducer,
-  setAreHeadphoneFieldsAdditionalValid_CreateProductReducer,
+  setAreAccessoryFieldsAdditionalMapFocused_CreateProductReducer,
+  setAreAccessoryFieldsAdditionalMapValid_CreateProductReducer,
+  setAreCpuFieldsAdditionalMapFocused_CreateProductReducer,
+  setAreCpuFieldsAdditionalMapValid_CreateProductReducer,
+  setAreDisplayFieldsAdditionalMapFocused_CreateProductReducer,
+  setAreDisplayFieldsAdditionalMapValid_CreateProductReducer,
+  setAreGpuFieldsAdditionalMapFocused_CreateProductReducer,
+  setAreGpuFieldsAdditionalMapValid_CreateProductReducer,
+  setAreHeadphoneFieldsAdditionalMapFocused_CreateProductReducer,
+  setAreHeadphoneFieldsAdditionalMapValid_CreateProductReducer,
   setAreImagesValid_CreateProductReducer,
-  setAreKeyboardFieldsAdditionalFocused_CreateProductReducer,
-  setAreKeyboardFieldsAdditionalValid_CreateProductReducer,
-  setAreMicrophoneFieldsAdditionalFocused_CreateProductReducer,
-  setAreMicrophoneFieldsAdditionalValid_CreateProductReducer,
-  setAreMotherboardFieldsAdditionalFocused_CreateProductReducer,
-  setAreMotherboardFieldsAdditionalValid_CreateProductReducer,
-  setAreMouseFieldsAdditionalFocused_CreateProductReducer,
-  setAreMouseFieldsAdditionalValid_CreateProductReducer,
-  setAreRamFieldsAdditionalFocused_CreateProductReducer,
-  setAreRamFieldsAdditionalValid_CreateProductReducer,
-  setAreSmartphoneFieldsAdditionalFocused_CreateProductReducer,
-  setAreSmartphoneFieldsAdditionalValid_CreateProductReducer,
-  setAreSpeakerFieldsAdditionalFocused_CreateProductReducer,
-  setAreSpeakerFieldsAdditionalValid_CreateProductReducer,
-  setAreStorageFieldsAdditionalFocused_CreateProductReducer,
-  setAreStorageFieldsAdditionalValid_CreateProductReducer,
-  setAreTabletFieldsAdditionalFocused_CreateProductReducer,
-  setAreTabletFieldsAdditionalValid_CreateProductReducer,
+  setAreKeyboardFieldsAdditionalMapFocused_CreateProductReducer,
+  setAreKeyboardFieldsAdditionalMapValid_CreateProductReducer,
+  setAreMicrophoneFieldsAdditionalMapFocused_CreateProductReducer,
+  setAreMicrophoneFieldsAdditionalMapValid_CreateProductReducer,
+  setAreMotherboardFieldsAdditionalMapFocused_CreateProductReducer,
+  setAreMotherboardFieldsAdditionalMapValid_CreateProductReducer,
+  setAreMouseFieldsAdditionalMapFocused_CreateProductReducer,
+  setAreMouseFieldsAdditionalMapValid_CreateProductReducer,
+  setAreRamFieldsAdditionalMapFocused_CreateProductReducer,
+  setAreRamFieldsAdditionalMapValid_CreateProductReducer,
+  setAreSmartphoneFieldsAdditionalMapFocused_CreateProductReducer,
+  setAreSmartphoneFieldsAdditionalMapValid_CreateProductReducer,
+  setAreSpeakerFieldsAdditionalMapFocused_CreateProductReducer,
+  setAreSpeakerFieldsAdditionalMapValid_CreateProductReducer,
+  setAreStorageFieldsAdditionalMapFocused_CreateProductReducer,
+  setAreStorageFieldsAdditionalMapValid_CreateProductReducer,
+  setAreTabletFieldsAdditionalMapFocused_CreateProductReducer,
+  setAreTabletFieldsAdditionalMapValid_CreateProductReducer,
   setAvailability_CreateProductReducer,
   setBrand_CreateProductReducer,
   setCpuCores_CreateProductReducer,
-  setCpuFieldsAdditional_CreateProductReducer,
+  setCpuFieldsAdditionalMap_CreateProductReducer,
   setCpuFrequency_CreateProductReducer,
   setCpuL1CacheCapacity_CreateProductReducer,
   setCpuL1CacheCapacityUnit_CreateProductReducer,
@@ -9120,7 +9223,7 @@ export {
   setDimensionWidth_CreateProductReducer,
   setDimensionWidthUnit_CreateProductReducer,
   setDisplayAspectRatio_CreateProductReducer,
-  setDisplayFieldsAdditional_CreateProductReducer,
+  setDisplayFieldsAdditionalMap_CreateProductReducer,
   setDisplayPanelType_CreateProductReducer,
   setDisplayRefreshRate_CreateProductReducer,
   setDisplayResolutionHorizontal_CreateProductReducer,
@@ -9130,13 +9233,13 @@ export {
   setGpuBoostClock_CreateProductReducer,
   setGpuChipset_CreateProductReducer,
   setGpuCoreClock_CreateProductReducer,
-  setGpuFieldsAdditional_CreateProductReducer,
+  setGpuFieldsAdditionalMap_CreateProductReducer,
   setGpuMemoryCapacity_CreateProductReducer,
   setGpuMemoryCapacityUnit_CreateProductReducer,
   setGpuTdp_CreateProductReducer,
   setHeadphoneColor_CreateProductReducer,
   setHeadphoneDriver_CreateProductReducer,
-  setHeadphoneFieldsAdditional_CreateProductReducer,
+  setHeadphoneFieldsAdditionalMap_CreateProductReducer,
   setHeadphoneFrequencyResponse_CreateProductReducer,
   setHeadphoneImpedance_CreateProductReducer,
   setHeadphoneInterface_CreateProductReducer,
@@ -9299,19 +9402,19 @@ export {
   setIsWeightFocused_CreateProductReducer,
   setIsWeightValid_CreateProductReducer,
   setKeyboardBacklight_CreateProductReducer,
-  setKeyboardFieldsAdditional_CreateProductReducer,
+  setKeyboardFieldsAdditionalMap_CreateProductReducer,
   setKeyboardInterface_CreateProductReducer,
   setKeyboardLayout_CreateProductReducer,
   setKeyboardSwitch_CreateProductReducer,
   setMicrophoneColor_CreateProductReducer,
-  setMicrophoneFieldsAdditional_CreateProductReducer,
+  setMicrophoneFieldsAdditionalMap_CreateProductReducer,
   setMicrophoneFrequencyResponse_CreateProductReducer,
   setMicrophoneInterface_CreateProductReducer,
   setMicrophonePolarPattern_CreateProductReducer,
   setMicrophoneType_CreateProductReducer,
   setModel_CreateProductReducer,
   setMotherboardChipset_CreateProductReducer,
-  setMotherboardFieldsAdditional_CreateProductReducer,
+  setMotherboardFieldsAdditionalMap_CreateProductReducer,
   setMotherboardFormFactor_CreateProductReducer,
   setMotherboardM2Slots_CreateProductReducer,
   setMotherboardMemoryMaxCapacity_CreateProductReducer,
@@ -9326,7 +9429,7 @@ export {
   setMouseButtons_CreateProductReducer,
   setMouseColor_CreateProductReducer,
   setMouseDpi_CreateProductReducer,
-  setMouseFieldsAdditional_CreateProductReducer,
+  setMouseFieldsAdditionalMap_CreateProductReducer,
   setMouseInterface_CreateProductReducer,
   setMouseSensor_CreateProductReducer,
   setPrice_CreateProductReducer,
@@ -9334,7 +9437,7 @@ export {
   setQuantity_CreateProductReducer,
   setRamColor_CreateProductReducer,
   setRamDataRate_CreateProductReducer,
-  setRamFieldsAdditional_CreateProductReducer,
+  setRamFieldsAdditionalMap_CreateProductReducer,
   setRamModulesCapacity_CreateProductReducer,
   setRamModulesCapacityUnit_CreateProductReducer,
   setRamModulesQuantity_CreateProductReducer,
@@ -9346,7 +9449,7 @@ export {
   setSmartphoneChipset_CreateProductReducer,
   setSmartphoneColor_CreateProductReducer,
   setSmartphoneDisplay_CreateProductReducer,
-  setSmartphoneFieldsAdditional_CreateProductReducer,
+  setSmartphoneFieldsAdditionalMap_CreateProductReducer,
   setSmartphoneOs_CreateProductReducer,
   setSmartphoneRamCapacity_CreateProductReducer,
   setSmartphoneRamCapacityUnit_CreateProductReducer,
@@ -9354,7 +9457,7 @@ export {
   setSmartphoneResolutionVertical_CreateProductReducer,
   setSmartphoneStorageCapacity_CreateProductReducer,
   setSpeakerColor_CreateProductReducer,
-  setSpeakerFieldsAdditional_CreateProductReducer,
+  setSpeakerFieldsAdditionalMap_CreateProductReducer,
   setSpeakerFrequencyResponse_CreateProductReducer,
   setSpeakerInterface_CreateProductReducer,
   setSpeakerTotalWattage_CreateProductReducer,
@@ -9364,7 +9467,7 @@ export {
   setStorageCacheCapacityUnit_CreateProductReducer,
   setStorageCapacity_CreateProductReducer,
   setStorageCapacityUnit_CreateProductReducer,
-  setStorageFieldsAdditional_CreateProductReducer,
+  setStorageFieldsAdditionalMap_CreateProductReducer,
   setStorageFormFactor_CreateProductReducer,
   setStorageInterface_CreateProductReducer,
   setStorageType_CreateProductReducer,
@@ -9375,7 +9478,7 @@ export {
   setTabletChipset_CreateProductReducer,
   setTabletColor_CreateProductReducer,
   setTabletDisplay_CreateProductReducer,
-  setTabletFieldsAdditional_CreateProductReducer,
+  setTabletFieldsAdditionalMap_CreateProductReducer,
   setTabletOs_CreateProductReducer,
   setTabletRamCapacity_CreateProductReducer,
   setTabletRamCapacityUnit_CreateProductReducer,

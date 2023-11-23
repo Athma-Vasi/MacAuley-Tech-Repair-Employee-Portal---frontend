@@ -110,9 +110,9 @@ type CreateAccessoryState = {
   isAccessoryColorValid: boolean;
   isAccessoryColorFocused: boolean;
   accessoryInterface: PeripheralsInterface;
-  accessoryFieldsAdditional: Map<number, [string, string]>; // Map<index, [key, value]>
-  areAccessoryFieldsAdditionalValid: Map<number, [boolean, boolean]>; // Map<index, [isKeyValid, isValueValid]>
-  areAccessoryFieldsAdditionalFocused: Map<number, [boolean, boolean]>; // Map<index, [isKeyFocused, isValueFocused]>
+  accessoryFieldsAdditionalMap: Map<number, [string, string]>; // Map<index, [key, value]>
+  areAccessoryFieldsAdditionalMapValid: Map<number, [boolean, boolean]>; // Map<index, [isKeyValid, isValueValid]>
+  areAccessoryFieldsAdditionalMapFocused: Map<number, [boolean, boolean]>; // Map<index, [isKeyFocused, isValueFocused]>
   currentlySelectedAdditionalFieldIndex: number; // currently updating idx
 
   // page 3
@@ -185,9 +185,9 @@ type CreateAccessoryAction = {
   setIsAccessoryColorValid: 'setIsAccessoryColorValid';
   setIsAccessoryColorFocused: 'setIsAccessoryColorFocused';
   setAccessoryInterface: 'setAccessoryInterface';
-  setAccessoryFieldsAdditional: 'setAccessoryFieldsAdditional';
-  setAreAccessoryFieldsAdditionalValid: 'setAreAccessoryFieldsAdditionalValid';
-  setAreAccessoryFieldsAdditionalFocused: 'setAreAccessoryFieldsAdditionalFocused';
+  setAccessoryFieldsAdditionalMap: 'setAccessoryFieldsAdditionalMap';
+  setAreAccessoryFieldsAdditionalMapValid: 'setAreAccessoryFieldsAdditionalMapValid';
+  setAreAccessoryFieldsAdditionalMapFocused: 'setAreAccessoryFieldsAdditionalMapFocused';
   setCurrentlySelectedAdditionalFieldIndex: 'setCurrentlySelectedAdditionalFieldIndex';
 
   // page 3
@@ -354,13 +354,13 @@ type CreateAccessoryDispatch =
       payload: PeripheralsInterface;
     }
   | {
-      type: CreateAccessoryAction['setAccessoryFieldsAdditional'];
+      type: CreateAccessoryAction['setAccessoryFieldsAdditionalMap'];
       payload: AdditionalFieldsPayload;
     }
   | {
       type:
-        | CreateAccessoryAction['setAreAccessoryFieldsAdditionalValid']
-        | CreateAccessoryAction['setAreAccessoryFieldsAdditionalFocused'];
+        | CreateAccessoryAction['setAreAccessoryFieldsAdditionalMapValid']
+        | CreateAccessoryAction['setAreAccessoryFieldsAdditionalMapFocused'];
       payload: AdditionalFieldsValidFocusedPayload;
     } // page 3
   | {

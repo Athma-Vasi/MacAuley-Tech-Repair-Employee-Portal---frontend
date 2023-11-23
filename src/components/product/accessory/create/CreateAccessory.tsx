@@ -159,9 +159,9 @@ function CreateAccessory() {
     isAccessoryColorFocused,
     isAccessoryColorValid,
     accessoryInterface,
-    accessoryFieldsAdditional,
-    areAccessoryFieldsAdditionalFocused,
-    areAccessoryFieldsAdditionalValid,
+    accessoryFieldsAdditionalMap,
+    areAccessoryFieldsAdditionalMapFocused,
+    areAccessoryFieldsAdditionalMapValid,
     currentlySelectedAdditionalFieldIndex,
 
     // page 3
@@ -332,8 +332,8 @@ function CreateAccessory() {
           };
 
           // request body -> page 2 -> accessory
-          const accessoryFieldsAdditionalRequestBody = Array.from(
-            accessoryFieldsAdditional
+          const accessoryFieldsAdditionalMapRequestBody = Array.from(
+            accessoryFieldsAdditionalMap
           ).reduce((acc, [_key, tuple]) => {
             const [field, value] = tuple;
             acc[field] = value;
@@ -346,7 +346,7 @@ function CreateAccessory() {
             accessoryColor,
             accessoryInterface,
             additionalFields: {
-              ...accessoryFieldsAdditionalRequestBody,
+              ...accessoryFieldsAdditionalMapRequestBody,
             },
           };
 
@@ -605,7 +605,7 @@ function CreateAccessory() {
   // page 2 -> user defined accessory fields
   useEffect(() => {
     const currentlyUpdatingAccessoryFieldAdditional =
-      accessoryFieldsAdditional.get(currentlySelectedAdditionalFieldIndex);
+      accessoryFieldsAdditionalMap.get(currentlySelectedAdditionalFieldIndex);
     if (!currentlyUpdatingAccessoryFieldAdditional) {
       return;
     }
@@ -615,7 +615,7 @@ function CreateAccessory() {
     const isKeyValid = OBJECT_KEY_REGEX.test(key);
 
     createAccessoryDispatch({
-      type: createAccessoryAction.setAreAccessoryFieldsAdditionalValid,
+      type: createAccessoryAction.setAreAccessoryFieldsAdditionalMapValid,
       payload: {
         operation: 'update',
         data: isKeyValid,
@@ -626,7 +626,7 @@ function CreateAccessory() {
 
     const isValueValid = USER_DEFINED_VALUE_REGEX.test(value);
     createAccessoryDispatch({
-      type: createAccessoryAction.setAreAccessoryFieldsAdditionalValid,
+      type: createAccessoryAction.setAreAccessoryFieldsAdditionalMapValid,
       payload: {
         operation: 'update',
         data: isValueValid,
@@ -634,7 +634,7 @@ function CreateAccessory() {
         kind: 'value',
       },
     });
-  }, [currentlySelectedAdditionalFieldIndex, accessoryFieldsAdditional]);
+  }, [currentlySelectedAdditionalFieldIndex, accessoryFieldsAdditionalMap]);
 
   // page 2 -> accessory type
   useEffect(() => {
@@ -702,7 +702,7 @@ function CreateAccessory() {
       !isAccessoryTypeValid || !isAccessoryColorValid;
 
     const arePage2UserDefinedFieldsInError = Array.from(
-      areAccessoryFieldsAdditionalValid
+      areAccessoryFieldsAdditionalMapValid
     ).some(([_key, value]) => !value);
 
     const arePage2InputsInError =
@@ -716,7 +716,7 @@ function CreateAccessory() {
       },
     });
   }, [
-    areAccessoryFieldsAdditionalValid,
+    areAccessoryFieldsAdditionalMapValid,
     isAccessoryColorValid,
     isAccessoryTypeValid,
   ]);
@@ -1496,7 +1496,7 @@ function CreateAccessory() {
     ]);
 
   // page 2 -> accessory -> add new field button
-  const [createdAddAccessoryFieldsAdditionalButton] =
+  const [createdAddAccessoryFieldsAdditionalMapButton] =
     returnAccessibleButtonElements([
       {
         buttonLabel: 'Add',
@@ -1505,7 +1505,7 @@ function CreateAccessory() {
         leftIcon: <TbPlus />,
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
           createAccessoryDispatch({
-            type: createAccessoryAction.setAccessoryFieldsAdditional,
+            type: createAccessoryAction.setAccessoryFieldsAdditionalMap,
             payload: {
               operation: 'add',
               data: ['', ''],
@@ -1513,7 +1513,7 @@ function CreateAccessory() {
           });
 
           createAccessoryDispatch({
-            type: createAccessoryAction.setAreAccessoryFieldsAdditionalFocused,
+            type: createAccessoryAction.setAreAccessoryFieldsAdditionalMapFocused,
             payload: {
               operation: 'add',
               data: [false, false],
@@ -1521,7 +1521,7 @@ function CreateAccessory() {
           });
 
           createAccessoryDispatch({
-            type: createAccessoryAction.setAreAccessoryFieldsAdditionalValid,
+            type: createAccessoryAction.setAreAccessoryFieldsAdditionalMapValid,
             payload: {
               operation: 'add',
               data: [false, false],
@@ -1542,22 +1542,22 @@ function CreateAccessory() {
   // valid & focused accessory fields map consists of tuples of the form [idxKey, [isNameFocused/Valid, isValueFocused/Valid]]
   // and are used to provide screenreader accessible error/valid text elements that are consumed by the text input element creator
 
-  const accessoryFieldsAdditionalKeysErrorValidTextElements: [
+  const accessoryFieldsAdditionalMapKeysErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(accessoryFieldsAdditional).map((keyFieldValue) => {
+  ][] = Array.from(accessoryFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [field, _value]] = keyFieldValue;
 
     const [
-      accessoryFieldsAdditionalKeysInputErrorText,
-      accessoryFieldsAdditionalKeysInputValidText,
+      accessoryFieldsAdditionalMapKeysInputErrorText,
+      accessoryFieldsAdditionalMapKeysInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field name ${mapKey + 1}`,
       inputText: field,
       isInputTextFocused:
-        areAccessoryFieldsAdditionalFocused.get(mapKey)?.[0] ?? false,
+        areAccessoryFieldsAdditionalMapFocused.get(mapKey)?.[0] ?? false,
       isValidInputText:
-        areAccessoryFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+        areAccessoryFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
       regexValidationText: returnObjectKeyValidationText({
         content: field,
         contentKind: `additional field name ${mapKey + 1}`,
@@ -1567,28 +1567,28 @@ function CreateAccessory() {
     });
 
     return [
-      accessoryFieldsAdditionalKeysInputErrorText,
-      accessoryFieldsAdditionalKeysInputValidText,
+      accessoryFieldsAdditionalMapKeysInputErrorText,
+      accessoryFieldsAdditionalMapKeysInputValidText,
     ];
   });
 
   // page 2 -> accessory -> accessory fields user defined -> accessible screen reader text elements -> field values
-  const accessoryFieldsAdditionalValuesErrorValidTextElements: [
+  const accessoryFieldsAdditionalMapValuesErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(accessoryFieldsAdditional).map((keyFieldValue) => {
+  ][] = Array.from(accessoryFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [_field, value]] = keyFieldValue;
 
     const [
-      accessoryFieldsAdditionalValuesInputErrorText,
-      accessoryFieldsAdditionalValuesInputValidText,
+      accessoryFieldsAdditionalMapValuesInputErrorText,
+      accessoryFieldsAdditionalMapValuesInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field value ${mapKey + 1}`,
       inputText: value,
       isInputTextFocused:
-        areAccessoryFieldsAdditionalFocused.get(mapKey)?.[1] ?? false,
+        areAccessoryFieldsAdditionalMapFocused.get(mapKey)?.[1] ?? false,
       isValidInputText:
-        areAccessoryFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+        areAccessoryFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
       regexValidationText: returnUserDefinedFieldValueValidationText({
         content: value,
         contentKind: `additional field value ${mapKey + 1}`,
@@ -1598,32 +1598,34 @@ function CreateAccessory() {
     });
 
     return [
-      accessoryFieldsAdditionalValuesInputErrorText,
-      accessoryFieldsAdditionalValuesInputValidText,
+      accessoryFieldsAdditionalMapValuesInputErrorText,
+      accessoryFieldsAdditionalMapValuesInputValidText,
     ];
   });
 
   // page 2 -> accessory -> accessory fields user defined -> text area input element creator
-  const createdAccessoryFieldsAdditionalTextInputElements = Array.from(
-    accessoryFieldsAdditional
+  const createdAccessoryFieldsAdditionalMapTextInputElements = Array.from(
+    accessoryFieldsAdditionalMap
   ).map((keyFieldValue) => {
     const [mapKey, [field, value]] = keyFieldValue;
 
-    const accessoryFieldsAdditionalKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const accessoryFieldsAdditionalMapKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
-          error: accessoryFieldsAdditionalKeysErrorValidTextElements[mapKey][0],
-          valid: accessoryFieldsAdditionalKeysErrorValidTextElements[mapKey][1],
+          error:
+            accessoryFieldsAdditionalMapKeysErrorValidTextElements[mapKey][0],
+          valid:
+            accessoryFieldsAdditionalMapKeysErrorValidTextElements[mapKey][1],
         },
         inputText: field,
         isValidInputText:
-          areAccessoryFieldsAdditionalValid.get(mapKey)?.[0] ?? false,
+          areAccessoryFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
         label: `Name ${mapKey + 1}`,
         maxLength: 75,
         minLength: 1,
         onBlur: () => {
           createAccessoryDispatch({
-            type: createAccessoryAction.setAreAccessoryFieldsAdditionalFocused,
+            type: createAccessoryAction.setAreAccessoryFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -1634,7 +1636,7 @@ function CreateAccessory() {
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createAccessoryDispatch({
-            type: createAccessoryAction.setAccessoryFieldsAdditional,
+            type: createAccessoryAction.setAccessoryFieldsAdditionalMap,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -1650,7 +1652,7 @@ function CreateAccessory() {
         },
         onFocus: () => {
           createAccessoryDispatch({
-            type: createAccessoryAction.setAreAccessoryFieldsAdditionalFocused,
+            type: createAccessoryAction.setAreAccessoryFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -1664,23 +1666,23 @@ function CreateAccessory() {
         semanticName: `additional field name ${mapKey + 1}`,
       };
 
-    const accessoryFieldsAdditionalValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const accessoryFieldsAdditionalMapValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
           error:
-            accessoryFieldsAdditionalValuesErrorValidTextElements[mapKey][0],
+            accessoryFieldsAdditionalMapValuesErrorValidTextElements[mapKey][0],
           valid:
-            accessoryFieldsAdditionalValuesErrorValidTextElements[mapKey][1],
+            accessoryFieldsAdditionalMapValuesErrorValidTextElements[mapKey][1],
         },
         inputText: value,
         isValidInputText:
-          areAccessoryFieldsAdditionalValid.get(mapKey)?.[1] ?? false,
+          areAccessoryFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
         label: `Value ${mapKey + 1}`,
         maxLength: 2000,
         minLength: 2,
         onBlur: () => {
           createAccessoryDispatch({
-            type: createAccessoryAction.setAreAccessoryFieldsAdditionalFocused,
+            type: createAccessoryAction.setAreAccessoryFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -1691,7 +1693,7 @@ function CreateAccessory() {
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createAccessoryDispatch({
-            type: createAccessoryAction.setAccessoryFieldsAdditional,
+            type: createAccessoryAction.setAccessoryFieldsAdditionalMap,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -1707,7 +1709,7 @@ function CreateAccessory() {
         },
         onFocus: () => {
           createAccessoryDispatch({
-            type: createAccessoryAction.setAreAccessoryFieldsAdditionalFocused,
+            type: createAccessoryAction.setAreAccessoryFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -1722,11 +1724,11 @@ function CreateAccessory() {
       };
 
     const [
-      createdAccessoryFieldsAdditionalKeysTextAreaInput,
-      createdAccessoryFieldsAdditionalValuesTextAreaInput,
+      createdAccessoryFieldsAdditionalMapKeysTextAreaInput,
+      createdAccessoryFieldsAdditionalMapValuesTextAreaInput,
     ] = returnAccessibleTextAreaInputElements([
-      accessoryFieldsAdditionalKeysTextInputCreatorInfo,
-      accessoryFieldsAdditionalValuesTextInputCreatorInfo,
+      accessoryFieldsAdditionalMapKeysTextInputCreatorInfo,
+      accessoryFieldsAdditionalMapValuesTextInputCreatorInfo,
     ]);
 
     const [createdDeleteButton] = returnAccessibleButtonElements([
@@ -1734,7 +1736,7 @@ function CreateAccessory() {
         buttonLabel: 'Delete',
         buttonOnClick: (_event: MouseEvent<HTMLButtonElement>) => {
           createAccessoryDispatch({
-            type: createAccessoryAction.setAccessoryFieldsAdditional,
+            type: createAccessoryAction.setAccessoryFieldsAdditionalMap,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -1742,7 +1744,7 @@ function CreateAccessory() {
           });
 
           createAccessoryDispatch({
-            type: createAccessoryAction.setAreAccessoryFieldsAdditionalFocused,
+            type: createAccessoryAction.setAreAccessoryFieldsAdditionalMapFocused,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -1750,7 +1752,7 @@ function CreateAccessory() {
           });
 
           createAccessoryDispatch({
-            type: createAccessoryAction.setAreAccessoryFieldsAdditionalValid,
+            type: createAccessoryAction.setAreAccessoryFieldsAdditionalMapValid,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -1776,7 +1778,7 @@ function CreateAccessory() {
 
     return (
       <Stack
-        key={`accessoryFieldsAdditional-${mapKey}`}
+        key={`accessoryFieldsAdditionalMap-${mapKey}`}
         pt={padding}
         style={{ borderTop: borderColor }}
         w="100%"
@@ -1786,8 +1788,8 @@ function CreateAccessory() {
           {displayDeleteButton}
         </Group>
         <Group position="apart">
-          {createdAccessoryFieldsAdditionalKeysTextAreaInput}
-          {createdAccessoryFieldsAdditionalValuesTextAreaInput}
+          {createdAccessoryFieldsAdditionalMapKeysTextAreaInput}
+          {createdAccessoryFieldsAdditionalMapValuesTextAreaInput}
         </Group>
       </Stack>
     );
@@ -1862,11 +1864,13 @@ function CreateAccessory() {
   // page 2 -> accessory
 
   // page 2 -> accessory -> add new button
-  const displayAccessoryFieldsAdditionalButton = (
+  const displayAccessoryFieldsAdditionalMapButton = (
     <Tooltip
-      label={`Add new additional field ${accessoryFieldsAdditional.size + 1}`}
+      label={`Add new additional field ${
+        accessoryFieldsAdditionalMap.size + 1
+      }`}
     >
-      <Group>{createdAddAccessoryFieldsAdditionalButton}</Group>
+      <Group>{createdAddAccessoryFieldsAdditionalMapButton}</Group>
     </Tooltip>
   );
 
@@ -1874,12 +1878,12 @@ function CreateAccessory() {
     <FormLayoutWrapper>
       <Group w="100%" position="apart">
         <Title order={4}>Accessory Specifications</Title>
-        {displayAccessoryFieldsAdditionalButton}
+        {displayAccessoryFieldsAdditionalMapButton}
       </Group>
       {createdAccessoryTypeTextInput}
       {createdAccessoryColorTextInput}
       {createdAccessoryInterfaceSelectInput}
-      {createdAccessoryFieldsAdditionalTextInputElements}
+      {createdAccessoryFieldsAdditionalMapTextInputElements}
     </FormLayoutWrapper>
   );
 
@@ -1975,10 +1979,10 @@ function CreateAccessory() {
 
   // page 2 -> accessory
 
-  const accessoryFieldsAdditionalFormReviewObjects =
+  const accessoryFieldsAdditionalMapFormReviewObjects =
     returnFormReviewObjectsFromUserDefinedFields({
-      additionalFields: accessoryFieldsAdditional,
-      areAdditionalFieldsValid: areAccessoryFieldsAdditionalValid,
+      additionalFields: accessoryFieldsAdditionalMap,
+      areAdditionalFieldsValid: areAccessoryFieldsAdditionalMapValid,
     });
 
   const page2AccessoryFormReviewObject: FormReviewObjectArray = {
@@ -1997,7 +2001,7 @@ function CreateAccessory() {
         inputName: 'Accessory Interface',
         inputValue: accessoryInterface,
       },
-      ...accessoryFieldsAdditionalFormReviewObjects,
+      ...accessoryFieldsAdditionalMapFormReviewObjects,
     ],
   };
 
