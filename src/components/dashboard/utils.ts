@@ -765,41 +765,41 @@ function returnUnitsRevenueTuple({
   }
 
   const units =
-    categoryType === 'Desktop Computers' ||
-    categoryType === 'Laptops' ||
-    categoryType === 'Smartphones' ||
-    categoryType === 'Tablets'
+    categoryType === 'Desktop Computer' ||
+    categoryType === 'Laptop' ||
+    categoryType === 'Smartphone' ||
+    categoryType === 'Tablet'
       ? returnRandomUnits()
-      : categoryType === 'Central Processing Units (CPUs)' ||
-        categoryType === 'Graphics Processing Units (GPUs)' ||
-        categoryType === 'Motherboards' ||
-        categoryType === 'Headphones' ||
-        categoryType === 'Speakers' ||
-        categoryType === 'Displays' ||
-        categoryType === 'Power Supplies'
+      : categoryType === 'Central Processing Unit (CPU)' ||
+        categoryType === 'Graphics Processing Unit (GPU)' ||
+        categoryType === 'Motherboard' ||
+        categoryType === 'Headphone' ||
+        categoryType === 'Speaker' ||
+        categoryType === 'Display' ||
+        categoryType === 'Power Supply Unit (PSU)'
       ? returnRandomUnits() + 5
-      : categoryType === 'Accessories'
+      : categoryType === 'Accessory'
       ? returnRandomUnits() + 30
       : returnRandomUnits() + 7;
 
   const revenue =
-    categoryType === 'Desktop Computers' ||
-    categoryType === 'Laptops' ||
-    categoryType === 'Smartphones' ||
-    categoryType === 'Tablets'
+    categoryType === 'Desktop Computer' ||
+    categoryType === 'Laptop' ||
+    categoryType === 'Smartphone' ||
+    categoryType === 'Tablet'
       ? units * Math.round(Math.random() * (2200 - 300) + 300) // spread between 300 and 2200
-      : categoryType === 'Central Processing Units (CPUs)' ||
-        categoryType === 'Graphics Processing Units (GPUs)'
+      : categoryType === 'Central Processing Unit (CPU)' ||
+        categoryType === 'Graphics Processing Unit (GPU)'
       ? units * Math.round(Math.random() * (900 - 150) + 150) // spread between 150 and 900
-      : categoryType === 'Motherboards' ||
-        categoryType === 'Headphones' ||
-        categoryType === 'Speakers' ||
-        categoryType === 'Displays' ||
-        categoryType === 'Power Supplies'
+      : categoryType === 'Motherboard' ||
+        categoryType === 'Headphone' ||
+        categoryType === 'Speaker' ||
+        categoryType === 'Display' ||
+        categoryType === 'Power Supply Unit (PSU)'
       ? units * Math.round(Math.random() * (700 - 150) + 150) // spread between 150 and 700
-      : categoryType === 'Keyboards' ||
+      : categoryType === 'Keyboard' ||
         categoryType === 'Memory (RAM)' ||
-        categoryType === 'Mice' ||
+        categoryType === 'Mouse' ||
         categoryType === 'Storage'
       ? units * Math.round(Math.random() * (300 - 100) + 100) // spread between 100 and 300
       : units * Math.round(Math.random() * (100 - 50) + 50); // spread between 50 and 100

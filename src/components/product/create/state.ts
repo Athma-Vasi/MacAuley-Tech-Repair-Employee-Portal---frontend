@@ -15,7 +15,7 @@ const initialCreateProductState: CreateProductState = {
   model: '',
   isModelValid: false,
   isModelFocused: false,
-  productCategory: 'Accessories',
+  productCategory: 'Accessory',
   // page 1 -> description
   description: '',
   isDescriptionValid: false,

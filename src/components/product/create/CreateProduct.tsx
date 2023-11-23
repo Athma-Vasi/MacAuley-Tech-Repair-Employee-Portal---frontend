@@ -1,4 +1,4 @@
-import { Group, Text, Title, Tooltip } from '@mantine/core';
+import { Group, Title, Tooltip } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { InvalidTokenError } from 'jwt-decode';
 import { ChangeEvent, MouseEvent, useEffect, useReducer } from 'react';
@@ -59,10 +59,12 @@ import {
 import CreateAccessory from './productCategory/CreateAccessory';
 import CreateCase from './productCategory/CreateCase';
 import CreateCpu from './productCategory/CreateCpu';
+import CreateDesktopComputer from './productCategory/CreateDesktopComputer';
 import CreateDisplay from './productCategory/CreateDisplay';
 import CreateGpu from './productCategory/CreateGpu';
 import CreateHeadphone from './productCategory/CreateHeadphone';
 import CreateKeyboard from './productCategory/CreateKeyboard';
+import CreateLaptop from './productCategory/CreateLaptop';
 import CreateMicrophone from './productCategory/CreateMicrophone';
 import CreateMotherboard from './productCategory/CreateMotherboard';
 import CreateMouse from './productCategory/CreateMouse';
@@ -81,8 +83,6 @@ import {
   ProductDocument,
   WeightUnit,
 } from './types';
-import CreateDesktopComputer from './productCategory/CreateDesktopComputer';
-import CreateLaptop from './productCategory/CreateLaptop';
 
 function CreateProduct() {
   const [createProductState, createProductDispatch] = useReducer(
@@ -871,35 +871,35 @@ function CreateProduct() {
           };
 
           const page2SpecificationsRequestBody =
-            productCategory === 'Accessories'
+            productCategory === 'Accessory'
               ? { accessory: accessoryRequestBody }
-              : productCategory === 'Desktop Computers'
+              : productCategory === 'Desktop Computer'
               ? { desktopComputer: desktopComputerRequestBody }
-              : productCategory === 'Laptops'
+              : productCategory === 'Laptop'
               ? { laptop: laptopRequestBody }
-              : productCategory === 'Central Processing Units (CPUs)'
+              : productCategory === 'Central Processing Unit (CPU)'
               ? { cpu: cpuRequestBody }
-              : productCategory === 'Computer Cases'
+              : productCategory === 'Computer Case'
               ? { case: caseRequestBody }
-              : productCategory === 'Graphics Processing Units (GPUs)'
+              : productCategory === 'Graphics Processing Unit (GPU)'
               ? { gpu: gpuRequestBody }
-              : productCategory === 'Headphones'
+              : productCategory === 'Headphone'
               ? { headphone: headphoneRequestBody }
-              : productCategory === 'Keyboards'
+              : productCategory === 'Keyboard'
               ? { keyboard: keyboardRequestBody }
               : productCategory === 'Memory (RAM)'
               ? { ram: ramRequestBody }
-              : productCategory === 'Mice'
+              : productCategory === 'Mouse'
               ? { mouse: mouseRequestBody }
-              : productCategory === 'Displays'
+              : productCategory === 'Display'
               ? { display: displayRequestBody }
-              : productCategory === 'Motherboards'
+              : productCategory === 'Motherboard'
               ? { motherboard: motherboardRequestBody }
-              : productCategory === 'Power Supplies'
+              : productCategory === 'Power Supply Unit (PSU)'
               ? { psu: psuRequestBody }
-              : productCategory === 'Smartphones'
+              : productCategory === 'Smartphone'
               ? { smartphone: smartphoneRequestBody }
-              : productCategory === 'Speakers'
+              : productCategory === 'Speaker'
               ? { speaker: speakerRequestBody }
               : productCategory === 'Storage'
               ? { storage: storageRequestBody }
@@ -1928,7 +1928,7 @@ function CreateProduct() {
   );
 
   const displaySelectedProductCategoryInputs =
-    productCategory === 'Accessories' ? (
+    productCategory === 'Accessory' ? (
       <CreateAccessory
         accessoryColor={accessoryColor}
         accessoryFieldsAdditionalMap={accessoryFieldsAdditionalMap}
@@ -1952,7 +1952,7 @@ function CreateProduct() {
         isAccessoryTypeValid={isAccessoryTypeValid}
         padding={padding}
       />
-    ) : productCategory === 'Central Processing Units (CPUs)' ? (
+    ) : productCategory === 'Central Processing Unit (CPU)' ? (
       <CreateCpu
         areCpuFieldsAdditionalMapFocused={areCpuFieldsAdditionalMapFocused}
         areCpuFieldsAdditionalMapValid={areCpuFieldsAdditionalMapValid}
@@ -1989,7 +1989,7 @@ function CreateProduct() {
         isCpuWattageValid={isCpuWattageValid}
         padding={padding}
       />
-    ) : productCategory === 'Computer Cases' ? (
+    ) : productCategory === 'Computer Case' ? (
       <CreateCase
         areCaseFieldsAdditionalMapFocused={areCaseFieldsAdditionalMapFocused}
         areCaseFieldsAdditionalMapValid={areCaseFieldsAdditionalMapValid}
@@ -2007,7 +2007,7 @@ function CreateProduct() {
         isCaseColorValid={isCaseColorValid}
         padding={padding}
       />
-    ) : productCategory === 'Desktop Computers' ? (
+    ) : productCategory === 'Desktop Computer' ? (
       <CreateDesktopComputer
         // case
         areCaseFieldsAdditionalMapFocused={areCaseFieldsAdditionalMapFocused}
@@ -2239,7 +2239,7 @@ function CreateProduct() {
         }
         padding={padding}
       />
-    ) : productCategory === 'Displays' ? (
+    ) : productCategory === 'Display' ? (
       <CreateDisplay
         areDisplayFieldsAdditionalMapFocused={
           areDisplayFieldsAdditionalMapFocused
@@ -2275,7 +2275,7 @@ function CreateProduct() {
         isDisplaySizeValid={isDisplaySizeValid}
         padding={padding}
       />
-    ) : productCategory === 'Graphics Processing Units (GPUs)' ? (
+    ) : productCategory === 'Graphics Processing Unit (GPU)' ? (
       <CreateGpu
         areGpuFieldsAdditionalMapFocused={areGpuFieldsAdditionalMapFocused}
         areGpuFieldsAdditionalMapValid={areGpuFieldsAdditionalMapValid}
@@ -2304,7 +2304,7 @@ function CreateProduct() {
         isGpuTdpValid={isGpuTdpValid}
         padding={padding}
       />
-    ) : productCategory === 'Headphones' ? (
+    ) : productCategory === 'Headphone' ? (
       <CreateHeadphone
         areHeadphoneFieldsAdditionalMapFocused={
           areHeadphoneFieldsAdditionalMapFocused
@@ -2337,7 +2337,7 @@ function CreateProduct() {
         isHeadphoneImpedanceValid={isHeadphoneImpedanceValid}
         padding={padding}
       />
-    ) : productCategory === 'Keyboards' ? (
+    ) : productCategory === 'Keyboard' ? (
       <CreateKeyboard
         areKeyboardFieldsAdditionalMapFocused={
           areKeyboardFieldsAdditionalMapFocused
@@ -2358,7 +2358,7 @@ function CreateProduct() {
         keyboardSwitch={keyboardSwitch}
         padding={padding}
       />
-    ) : productCategory === 'Laptops' ? (
+    ) : productCategory === 'Laptop' ? (
       <CreateLaptop
         // cpu
         isCpuWattageValid={isCpuWattageValid}
@@ -2518,7 +2518,7 @@ function CreateProduct() {
         ramType={ramType}
         ramVoltage={ramVoltage}
       />
-    ) : productCategory === 'Mice' ? (
+    ) : productCategory === 'Mouse' ? (
       <CreateMouse
         areMouseFieldsAdditionalMapFocused={areMouseFieldsAdditionalMapFocused}
         areMouseFieldsAdditionalMapValid={areMouseFieldsAdditionalMapValid}
@@ -2542,7 +2542,7 @@ function CreateProduct() {
         mouseSensor={mouseSensor}
         padding={padding}
       />
-    ) : productCategory === 'Motherboards' ? (
+    ) : productCategory === 'Motherboard' ? (
       <CreateMotherboard
         areMotherboardFieldsAdditionalMapFocused={
           areMotherboardFieldsAdditionalMapFocused
@@ -2593,7 +2593,7 @@ function CreateProduct() {
         motherboardSocket={motherboardSocket}
         padding={padding}
       />
-    ) : productCategory === 'Power Supplies' ? (
+    ) : productCategory === 'Power Supply Unit (PSU)' ? (
       <CreatePsu
         arePsuFieldsAdditionalMapFocused={arePsuFieldsAdditionalMapFocused}
         arePsuFieldsAdditionalMapValid={arePsuFieldsAdditionalMapValid}
@@ -2612,7 +2612,7 @@ function CreateProduct() {
         psuModularity={psuModularity}
         psuWattage={psuWattage}
       />
-    ) : productCategory === 'Smartphones' ? (
+    ) : productCategory === 'Smartphone' ? (
       <CreateSmartphone
         areSmartphoneFieldsAdditionalMapFocused={
           areSmartphoneFieldsAdditionalMapFocused
@@ -2666,7 +2666,7 @@ function CreateProduct() {
         smartphoneResolutionVertical={smartphoneResolutionVertical}
         smartphoneStorageCapacity={smartphoneStorageCapacity}
       />
-    ) : productCategory === 'Speakers' ? (
+    ) : productCategory === 'Speaker' ? (
       <CreateSpeaker
         areSpeakerFieldsAdditionalMapFocused={
           areSpeakerFieldsAdditionalMapFocused
@@ -2718,7 +2718,7 @@ function CreateProduct() {
         storageInterface={storageInterface}
         storageType={storageType}
       />
-    ) : productCategory === 'Tablets' ? (
+    ) : productCategory === 'Tablet' ? (
       <CreateTablet
         areTabletFieldsAdditionalMapFocused={
           areTabletFieldsAdditionalMapFocused
@@ -2764,7 +2764,7 @@ function CreateProduct() {
         tabletResolutionVertical={tabletResolutionVertical}
         tabletStorageCapacity={tabletStorageCapacity}
       />
-    ) : productCategory === 'Webcams' ? (
+    ) : productCategory === 'Webcam' ? (
       <CreateWebcam
         areWebcamFieldsAdditionalMapFocused={
           areWebcamFieldsAdditionalMapFocused
@@ -3726,41 +3726,41 @@ function CreateProduct() {
 
   const CREATE_PRODUCT_FORM_REVIEW_OBJECTS: FormReviewObjectArray = {
     ...page1FormReviewObject,
-    ...(productCategory === 'Accessories'
+    ...(productCategory === 'Accessory'
       ? page2AccessoryFormReviewObject
-      : productCategory === 'Central Processing Units (CPUs)'
+      : productCategory === 'Central Processing Unit (CPU)'
       ? page2CpuFormReviewObject
-      : productCategory === 'Computer Cases'
+      : productCategory === 'Computer Case'
       ? page2ComputerCaseFormReviewObject
-      : productCategory === 'Desktop Computers'
+      : productCategory === 'Desktop Computer'
       ? page2DesktopComputerFormReviewObject
-      : productCategory === 'Graphics Processing Units (GPUs)'
+      : productCategory === 'Graphics Processing Unit (GPU)'
       ? page2GpuFormReviewObject
-      : productCategory === 'Headphones'
+      : productCategory === 'Headphone'
       ? page2HeadphoneFormReviewObject
-      : productCategory === 'Keyboards'
+      : productCategory === 'Keyboard'
       ? page2KeyboardFormReviewObject
-      : productCategory === 'Laptops'
+      : productCategory === 'Laptop'
       ? page2LaptopComputerFormReviewObject
       : productCategory === 'Memory (RAM)'
       ? page2RamFormReviewObject
-      : productCategory === 'Mice'
+      : productCategory === 'Mouse'
       ? page2MouseFormReviewObject
-      : productCategory === 'Displays'
+      : productCategory === 'Display'
       ? page2DisplayFormReviewObject
-      : productCategory === 'Motherboards'
+      : productCategory === 'Motherboard'
       ? page2MotherboardFormReviewObject
-      : productCategory === 'Power Supplies'
+      : productCategory === 'Power Supply Unit (PSU)'
       ? page2PowerSupplyFormReviewObject
-      : productCategory === 'Smartphones'
+      : productCategory === 'Smartphone'
       ? page2SmartphoneFormReviewObject
-      : productCategory === 'Speakers'
+      : productCategory === 'Speaker'
       ? page2SpeakerFormReviewObject
       : productCategory === 'Storage'
       ? page2StorageFormReviewObject
-      : productCategory === 'Tablets'
+      : productCategory === 'Tablet'
       ? page2TabletFormReviewObject
-      : productCategory === 'Webcams'
+      : productCategory === 'Webcam'
       ? page2WebcamFormReviewObject
       : page2MicrophoneFormReviewObject),
     ...page3ImageUploadsFormReviewObject,

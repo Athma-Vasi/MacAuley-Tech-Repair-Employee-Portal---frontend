@@ -8,10 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { COLORS_SWATCHES, PROPERTY_DESCRIPTOR } from '../../constants/data';
 import { globalAction } from '../../context/globalProvider/state';
 import { useAuth, useGlobalState, useWrapFetch } from '../../hooks';
-import {
-  returnAccessibleImageElements,
-  returnAccessibleSelectInputElements,
-} from '../../jsxCreators';
+import { returnAccessibleSelectInputElements } from '../../jsxCreators';
 import {
   FileUploadDocument,
   GetQueriedResourceRequestServerResponse,
@@ -26,6 +23,8 @@ import {
   splitCamelCase,
   urlBuilder,
 } from '../../utils';
+import { PRODUCT_CATEGORIES } from '../dashboard/constants';
+import { ProductCategory } from '../dashboard/types';
 import { DisplayFileUploads } from '../displayFileUploads';
 import { DisplayQuery } from '../displayQuery';
 import { NotificationModal } from '../notificationModal';
@@ -38,8 +37,6 @@ import {
 } from './constants';
 import { displayResourceAction, displayResourceReducer } from './state';
 import { DisplayResourceProps, DisplayResourceState } from './types';
-import { PRODUCT_CATEGORIES } from '../dashboard/constants';
-import { ProductCategory } from '../dashboard/types';
 import {
   buildQueryString,
   returnProductCategoryComponentQueryData,
@@ -61,7 +58,7 @@ function DisplayResource<Doc>({
     resourceData: [],
     pages: 0,
     totalDocuments: 0,
-    productCategory: 'Accessories',
+    productCategory: 'Accessory',
 
     queryValuesArray: [],
     newQueryFlag: true,

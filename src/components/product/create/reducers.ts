@@ -58,9 +58,9 @@ import {
 // - Map<CreateProductAction[keyof CreateProductAction], Reducer>
 // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 
-// ╔═════════════════════════════════════════════════════════════════╗
+// ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
 //   REDUCER FUNCTIONS => STEPPER PAGE 1
-// ╚═════════════════════════════════════════════════════════════════╝
+// ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 // ╭─────────────────────────────────────────────────────────────────╮
 //    BRAND
@@ -470,9 +470,9 @@ function setIsAdditionalCommentsValid_CreateProductReducer(
   };
 }
 
-// ╔═════════════════════════════════════════════════════════════════╗
+// ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
 //   REDUCER FUNCTIONS => STEPPER PAGE 2
-// ╚═════════════════════════════════════════════════════════════════╝
+// ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 // ╭─────────────────────────────────────────────────────────────────╮
 //    PRODUCT CATEGORY
@@ -486,6 +486,10 @@ function setProductCategory_CreateProductReducer(
     productCategory: action.payload as ProductCategory,
   };
 }
+
+// ╔═════════════════════════════════════════════════════════════════╗
+//   ACCESSORY
+// ╚═════════════════════════════════════════════════════════════════╝
 
 // ╭─────────────────────────────────────────────────────────────────╮
 //    ACCESSORY => TYPE
@@ -856,6 +860,10 @@ function setAreAccessoryFieldsAdditionalMapValid_CreateProductReducer(
       return state;
   }
 }
+
+// ╔═════════════════════════════════════════════════════════════════╗
+//   CPU
+// ╚═════════════════════════════════════════════════════════════════╝
 
 // ╭─────────────────────────────────────────────────────────────────╮
 //    CPU => SOCKET
@@ -1405,6 +1413,857 @@ function setAreCpuFieldsAdditionalMapValid_CreateProductReducer(
   }
 }
 
+// ╔═════════════════════════════════════════════════════════════════╗
+//   CASE
+// ╚═════════════════════════════════════════════════════════════════╝
+
+// ╭─────────────────────────────────────────────────────────────────╮
+//    CASE => TYPE
+// ╰─────────────────────────────────────────────────────────────────╯
+function setCaseType_CreateProductReducer(
+  state: CreateProductState,
+  action: CreateProductDispatch
+): CreateProductState {
+  return {
+    ...state,
+    caseType: action.payload as CaseType,
+  };
+}
+
+// ╭─────────────────────────────────────────────────────────────────╮
+//    CASE => COLOR
+// ╰─────────────────────────────────────────────────────────────────╯
+function setCaseColor_CreateProductReducer(
+  state: CreateProductState,
+  action: CreateProductDispatch
+): CreateProductState {
+  return {
+    ...state,
+    caseColor: action.payload as string,
+  };
+}
+
+function setIsCaseColorFocused_CreateProductReducer(
+  state: CreateProductState,
+  action: CreateProductDispatch
+): CreateProductState {
+  return {
+    ...state,
+    isCaseColorFocused: action.payload as boolean,
+  };
+}
+
+function setIsCaseColorValid_CreateProductReducer(
+  state: CreateProductState,
+  action: CreateProductDispatch
+): CreateProductState {
+  return {
+    ...state,
+    isCaseColorValid: action.payload as boolean,
+  };
+}
+
+// ╭─────────────────────────────────────────────────────────────────╮
+//    CASE => SIDE PANEL
+// ╰─────────────────────────────────────────────────────────────────╯
+function setCaseSidePanel_CreateProductReducer(
+  state: CreateProductState,
+  action: CreateProductDispatch
+): CreateProductState {
+  return {
+    ...state,
+    caseSidePanel: action.payload as CaseSidePanel,
+  };
+}
+
+// ╭─────────────────────────────────────────────────────────────────╮
+//    CASE => ADDITIONAL FIELDS
+// ╰─────────────────────────────────────────────────────────────────╯
+
+/**
+ * This reducer function contains three operations that are used to update the
+ * caseFieldsAdditionalMap state.
+ * @description add: adds a new key-value pair to the caseFieldsAdditionalMap state
+ * @description remove:
+ * - clones the state, deletes the key-value pair, and iterates over the map
+ * - with the callback fn index to use as the key for the new map
+ * - this is done because the indices are used as the keys that access the error/valid elements array
+ * - and must be consecutive as removal of a key-value pair will leave a gap in the indices
+ * @description update: updates either the key or value from the caseFieldsAdditionalMap state
+ */
+
+function setCaseFieldsAdditionalMap_CreateProductReducer(
+  state: CreateProductState,
+  action: CreateProductDispatch
+): CreateProductState {
+  const { operation } = action.payload as AdditionalFieldsPayload;
+
+  switch (operation) {
+    case 'add': {
+      const caseFieldsAdditionalMapClone = structuredClone(
+        state.caseFieldsAdditionalMap
+      );
+
+      const { data } = action.payload as AdditionalFieldsAdd;
+      const prevSize = caseFieldsAdditionalMapClone.size;
+      caseFieldsAdditionalMapClone.set(prevSize, data);
+
+      return {
+        ...state,
+        caseFieldsAdditionalMap: caseFieldsAdditionalMapClone,
+      };
+    }
+    case 'remove': {
+      const caseFieldsAdditionalMapClone = structuredClone(
+        state.caseFieldsAdditionalMap
+      );
+
+      const { index } = action.payload as AdditionalFieldsRemove;
+      caseFieldsAdditionalMapClone.delete(index);
+
+      // resets the indices because the indices are used as keys
+      const filteredCaseFieldsAdditionalMap = new Map<
+        number,
+        [string, string]
+      >();
+      Array.from(caseFieldsAdditionalMapClone).forEach(
+        (mapIdxKeyVal, arrayIdx) => {
+          const [_mapIdx, keyVal] = mapIdxKeyVal as [number, [string, string]];
+
+          filteredCaseFieldsAdditionalMap.set(arrayIdx, keyVal);
+        }
+      );
+
+      return {
+        ...state,
+        caseFieldsAdditionalMap: filteredCaseFieldsAdditionalMap,
+      };
+    }
+    case 'update': {
+      const caseFieldsAdditionalMapClone = structuredClone(
+        state.caseFieldsAdditionalMap
+      );
+
+      const { data, index, kind } = action.payload as AdditionalFieldsUpdate;
+      const prevKeyVal = caseFieldsAdditionalMapClone.get(index);
+
+      if (!prevKeyVal) {
+        return state;
+      }
+
+      const [prevKey, prevValue] = prevKeyVal;
+      kind === 'key'
+        ? caseFieldsAdditionalMapClone.set(index, [data, prevValue])
+        : caseFieldsAdditionalMapClone.set(index, [prevKey, data]);
+
+      return {
+        ...state,
+        caseFieldsAdditionalMap: caseFieldsAdditionalMapClone,
+      };
+    }
+    default:
+      return state;
+  }
+}
+
+// ╭─────────────────────────────────────────────────────────────────╮
+//    CASE => ADDITIONAL FIELDS => FOCUSED
+// ╰─────────────────────────────────────────────────────────────────╯
+
+/**
+ * This reducer function contains three operations that are used to update the
+ * areCaseFieldsAdditionalMapFocused state.
+ * @description add: adds a new key-value pair to the areCaseFieldsAdditionalMapFocused state
+ * @description remove:
+ * - clones the state, deletes the key-value pair, and iterates over the map
+ * - with the callback fn index to use as the key for the new map
+ * - this is done because the indices are used as the keys by the mapped over caseFieldsAdditionalMap state to generate the text elements
+ * - that access the areCaseFieldsAdditionalMapFocused state Map to determine if the appropriate text element should be focused/blurred
+ * - and must be consecutive as removal of a key-value pair will leave a gap in the indices
+ * @description update: updates either the key or value from the areCaseFieldsAdditionalMapFocused state
+ */
+function setAreCaseFieldsAdditionalMapFocused_CreateProductReducer(
+  state: CreateProductState,
+  action: CreateProductDispatch
+): CreateProductState {
+  const { operation } = action.payload as AdditionalFieldsValidFocusedPayload;
+
+  switch (operation) {
+    case 'add': {
+      const areCaseFieldsAdditionalMapFocusedClone = structuredClone(
+        state.areCaseFieldsAdditionalMapFocused
+      );
+
+      const { data } = action.payload as AdditionalFieldsValidFocusedAdd;
+      const prevSize = areCaseFieldsAdditionalMapFocusedClone.size;
+      areCaseFieldsAdditionalMapFocusedClone.set(prevSize, data);
+
+      return {
+        ...state,
+        areCaseFieldsAdditionalMapFocused:
+          areCaseFieldsAdditionalMapFocusedClone,
+      };
+    }
+    case 'remove': {
+      const areCaseFieldsAdditionalMapFocusedClone = structuredClone(
+        state.areCaseFieldsAdditionalMapFocused
+      );
+
+      const { index } = action.payload as AdditionalFieldsValidFocusedRemove;
+      areCaseFieldsAdditionalMapFocusedClone.delete(index);
+
+      // resets the indices because the indices are used as keys
+      const filteredAreCaseFieldsAdditionalMapFocused = new Map<
+        number,
+        [boolean, boolean]
+      >();
+      Array.from(areCaseFieldsAdditionalMapFocusedClone).forEach(
+        (mapIdxKeyVal, arrayIdx) => {
+          const [_mapIdx, keyVal] = mapIdxKeyVal as [
+            number,
+            [boolean, boolean]
+          ];
+
+          filteredAreCaseFieldsAdditionalMapFocused.set(arrayIdx, keyVal);
+        }
+      );
+
+      return {
+        ...state,
+        areCaseFieldsAdditionalMapFocused:
+          filteredAreCaseFieldsAdditionalMapFocused,
+      };
+    }
+    case 'update': {
+      const areCaseFieldsAdditionalMapFocusedClone = structuredClone(
+        state.areCaseFieldsAdditionalMapFocused
+      );
+
+      const { data, index, kind } =
+        action.payload as AdditionalFieldsValidFocusedUpdate;
+      const prevKeyVal = areCaseFieldsAdditionalMapFocusedClone.get(index);
+
+      if (!prevKeyVal) {
+        return state;
+      }
+
+      const [prevKey, prevValue] = prevKeyVal;
+      kind === 'key'
+        ? areCaseFieldsAdditionalMapFocusedClone.set(index, [data, prevValue])
+        : areCaseFieldsAdditionalMapFocusedClone.set(index, [prevKey, data]);
+
+      return {
+        ...state,
+        areCaseFieldsAdditionalMapFocused:
+          areCaseFieldsAdditionalMapFocusedClone,
+      };
+    }
+    default:
+      return state;
+  }
+}
+
+// ╭─────────────────────────────────────────────────────────────────╮
+//    CASE => ADDITIONAL FIELDS => VALID
+// ╰─────────────────────────────────────────────────────────────────╯
+
+/**
+ * This reducer function contains three operations that are used to update the
+ * areCaseFieldsAdditionalMapValid state.
+ * @description add: adds a new key-value pair to the areCaseFieldsAdditionalMapValid state
+ * @description remove:
+ * - clones the state, deletes the key-value pair, and iterates over the map
+ * - with the callback fn index to use as the key for the new map
+ * - this is done because the indices are used as the keys by the mapped over caseFieldsAdditionalMap state to generate the text elements
+ * - that access the areCaseFieldsAdditionalMapValid state Map based on said element's error state
+ * - to display the text contained in the screenreader accessible error/valid text elements array
+ * - map keys must be consecutive as removal of a key-value pair will leave a gap in the indices
+ * @description update: updates either the key or value from the areCaseFieldsAdditionalMapValid state
+ */
+function setAreCaseFieldsAdditionalMapValid_CreateProductReducer(
+  state: CreateProductState,
+  action: CreateProductDispatch
+): CreateProductState {
+  const { operation } = action.payload as AdditionalFieldsValidFocusedPayload;
+
+  switch (operation) {
+    case 'add': {
+      const areCaseFieldsAdditionalMapValidClone = structuredClone(
+        state.areCaseFieldsAdditionalMapValid
+      );
+
+      const { data } = action.payload as AdditionalFieldsValidFocusedAdd;
+      const prevSize = areCaseFieldsAdditionalMapValidClone.size;
+      areCaseFieldsAdditionalMapValidClone.set(prevSize, data);
+
+      return {
+        ...state,
+        areCaseFieldsAdditionalMapValid: areCaseFieldsAdditionalMapValidClone,
+      };
+    }
+    case 'remove': {
+      const areCaseFieldsAdditionalMapValidClone = structuredClone(
+        state.areCaseFieldsAdditionalMapValid
+      );
+
+      const { index } = action.payload as AdditionalFieldsValidFocusedRemove;
+      areCaseFieldsAdditionalMapValidClone.delete(index);
+
+      // resets the indices because the indices are used as keys
+      const filteredAreCaseFieldsAdditionalMapValid = new Map<
+        number,
+        [boolean, boolean]
+      >();
+      Array.from(areCaseFieldsAdditionalMapValidClone).forEach(
+        (mapIdxKeyVal, arrayIdx) => {
+          const [_mapIdx, keyVal] = mapIdxKeyVal as [
+            number,
+            [boolean, boolean]
+          ];
+
+          filteredAreCaseFieldsAdditionalMapValid.set(arrayIdx, keyVal);
+        }
+      );
+
+      return {
+        ...state,
+        areCaseFieldsAdditionalMapValid:
+          filteredAreCaseFieldsAdditionalMapValid,
+      };
+    }
+    case 'update': {
+      const areCaseFieldsAdditionalMapValidClone = structuredClone(
+        state.areCaseFieldsAdditionalMapValid
+      );
+
+      const { data, index, kind } =
+        action.payload as AdditionalFieldsValidFocusedUpdate;
+      const prevKeyVal = areCaseFieldsAdditionalMapValidClone.get(index);
+
+      if (!prevKeyVal) {
+        return state;
+      }
+
+      const [prevKey, prevValue] = prevKeyVal;
+      kind === 'key'
+        ? areCaseFieldsAdditionalMapValidClone.set(index, [data, prevValue])
+        : areCaseFieldsAdditionalMapValidClone.set(index, [prevKey, data]);
+
+      return {
+        ...state,
+        areCaseFieldsAdditionalMapValid: areCaseFieldsAdditionalMapValidClone,
+      };
+    }
+    default:
+      return state;
+  }
+}
+
+// ╔═════════════════════════════════════════════════════════════════╗
+//   DISPLAY
+// ╚═════════════════════════════════════════════════════════════════╝
+
+// ╭─────────────────────────────────────────────────────────────────╮
+//    DISPLAY => SIZE (INCHES)
+// ╰─────────────────────────────────────────────────────────────────╯
+function setDisplaySize_CreateProductReducer(
+  state: CreateProductState,
+  action: CreateProductDispatch
+): CreateProductState {
+  return {
+    ...state,
+    displaySize: action.payload as string,
+  };
+}
+
+function setIsDisplaySizeFocused_CreateProductReducer(
+  state: CreateProductState,
+  action: CreateProductDispatch
+): CreateProductState {
+  return {
+    ...state,
+    isDisplaySizeFocused: action.payload as boolean,
+  };
+}
+
+function setIsDisplaySizeValid_CreateProductReducer(
+  state: CreateProductState,
+  action: CreateProductDispatch
+): CreateProductState {
+  return {
+    ...state,
+    isDisplaySizeValid: action.payload as boolean,
+  };
+}
+
+// ╭─────────────────────────────────────────────────────────────────╮
+//    DISPLAY => RESOLUTION (HORIZONTAL)
+// ╰─────────────────────────────────────────────────────────────────╯
+function setDisplayResolutionHorizontal_CreateProductReducer(
+  state: CreateProductState,
+  action: CreateProductDispatch
+): CreateProductState {
+  return {
+    ...state,
+    displayResolutionHorizontal: action.payload as string,
+  };
+}
+
+function setIsDisplayResolutionHorizontalFocused_CreateProductReducer(
+  state: CreateProductState,
+  action: CreateProductDispatch
+): CreateProductState {
+  return {
+    ...state,
+    isDisplayResolutionHorizontalFocused: action.payload as boolean,
+  };
+}
+
+function setIsDisplayResolutionHorizontalValid_CreateProductReducer(
+  state: CreateProductState,
+  action: CreateProductDispatch
+): CreateProductState {
+  return {
+    ...state,
+    isDisplayResolutionHorizontalValid: action.payload as boolean,
+  };
+}
+
+// ╭─────────────────────────────────────────────────────────────────╮
+//    DISPLAY => RESOLUTION (VERTICAL)
+// ╰─────────────────────────────────────────────────────────────────╯
+function setDisplayResolutionVertical_CreateProductReducer(
+  state: CreateProductState,
+  action: CreateProductDispatch
+): CreateProductState {
+  return {
+    ...state,
+    displayResolutionVertical: action.payload as string,
+  };
+}
+
+function setIsDisplayResolutionVerticalFocused_CreateProductReducer(
+  state: CreateProductState,
+  action: CreateProductDispatch
+): CreateProductState {
+  return {
+    ...state,
+    isDisplayResolutionVerticalFocused: action.payload as boolean,
+  };
+}
+
+function setIsDisplayResolutionVerticalValid_CreateProductReducer(
+  state: CreateProductState,
+  action: CreateProductDispatch
+): CreateProductState {
+  return {
+    ...state,
+    isDisplayResolutionVerticalValid: action.payload as boolean,
+  };
+}
+
+// ╭─────────────────────────────────────────────────────────────────╮
+//    DISPLAY => REFRESH RATE
+// ╰─────────────────────────────────────────────────────────────────╯
+function setDisplayRefreshRate_CreateProductReducer(
+  state: CreateProductState,
+  action: CreateProductDispatch
+): CreateProductState {
+  return {
+    ...state,
+    displayRefreshRate: action.payload as string,
+  };
+}
+
+function setIsDisplayRefreshRateFocused_CreateProductReducer(
+  state: CreateProductState,
+  action: CreateProductDispatch
+): CreateProductState {
+  return {
+    ...state,
+    isDisplayRefreshRateFocused: action.payload as boolean,
+  };
+}
+
+function setIsDisplayRefreshRateValid_CreateProductReducer(
+  state: CreateProductState,
+  action: CreateProductDispatch
+): CreateProductState {
+  return {
+    ...state,
+    isDisplayRefreshRateValid: action.payload as boolean,
+  };
+}
+
+// ╭─────────────────────────────────────────────────────────────────╮
+//    DISPLAY => PANEL TYPE
+// ╰─────────────────────────────────────────────────────────────────╯
+function setDisplayPanelType_CreateProductReducer(
+  state: CreateProductState,
+  action: CreateProductDispatch
+): CreateProductState {
+  return {
+    ...state,
+    displayPanelType: action.payload as DisplayPanelType,
+  };
+}
+
+// ╭─────────────────────────────────────────────────────────────────╮
+//    DISPLAY => RESPONSE TIME
+// ╰─────────────────────────────────────────────────────────────────╯
+function setDisplayResponseTime_CreateProductReducer(
+  state: CreateProductState,
+  action: CreateProductDispatch
+): CreateProductState {
+  return {
+    ...state,
+    displayResponseTime: action.payload as string,
+  };
+}
+
+function setIsDisplayResponseTimeFocused_CreateProductReducer(
+  state: CreateProductState,
+  action: CreateProductDispatch
+): CreateProductState {
+  return {
+    ...state,
+    isDisplayResponseTimeFocused: action.payload as boolean,
+  };
+}
+
+function setIsDisplayResponseTimeValid_CreateProductReducer(
+  state: CreateProductState,
+  action: CreateProductDispatch
+): CreateProductState {
+  return {
+    ...state,
+    isDisplayResponseTimeValid: action.payload as boolean,
+  };
+}
+
+// ╭─────────────────────────────────────────────────────────────────╮
+//    DISPLAY => ASPECT RATIO
+// ╰─────────────────────────────────────────────────────────────────╯
+function setDisplayAspectRatio_CreateProductReducer(
+  state: CreateProductState,
+  action: CreateProductDispatch
+): CreateProductState {
+  return {
+    ...state,
+    displayAspectRatio: action.payload as string,
+  };
+}
+
+function setIsDisplayAspectRatioFocused_CreateProductReducer(
+  state: CreateProductState,
+  action: CreateProductDispatch
+): CreateProductState {
+  return {
+    ...state,
+    isDisplayAspectRatioFocused: action.payload as boolean,
+  };
+}
+
+function setIsDisplayAspectRatioValid_CreateProductReducer(
+  state: CreateProductState,
+  action: CreateProductDispatch
+): CreateProductState {
+  return {
+    ...state,
+    isDisplayAspectRatioValid: action.payload as boolean,
+  };
+}
+
+// ╭─────────────────────────────────────────────────────────────────╮
+//    DISPLAY => ADDITIONAL FIELDS
+// ╰─────────────────────────────────────────────────────────────────╯
+
+/**
+ * This reducer function contains three operations that are used to update the
+ * displayFieldsAdditionalMap state.
+ * @description add: adds a new key-value pair to the displayFieldsAdditionalMap state
+ * @description remove: clones the state, deletes the key-value pair, and iterates over the map
+ *   - with the callback fn index to use as the key for the new map
+ *  - this is done because the indices are used as the keys that access the error/valid elements array
+ * - and must be consecutive as removal of a key-value pair will leave a gap in the indices
+ * @description update: updates either the key or value from the displayFieldsAdditionalMap state
+ */
+function setDisplayFieldsAdditionalMap_CreateProductReducer(
+  state: CreateProductState,
+  action: CreateProductDispatch
+): CreateProductState {
+  const { operation } = action.payload as AdditionalFieldsPayload;
+
+  switch (operation) {
+    case 'add': {
+      const displayFieldsAdditionalMapClone = structuredClone(
+        state.displayFieldsAdditionalMap
+      );
+
+      const { data } = action.payload as AdditionalFieldsAdd;
+      const prevSize = displayFieldsAdditionalMapClone.size;
+      displayFieldsAdditionalMapClone.set(prevSize, data);
+
+      return {
+        ...state,
+        displayFieldsAdditionalMap: displayFieldsAdditionalMapClone,
+      };
+    }
+
+    case 'remove': {
+      const displayFieldsAdditionalMapClone = structuredClone(
+        state.displayFieldsAdditionalMap
+      );
+
+      const { index } = action.payload as AdditionalFieldsRemove;
+      displayFieldsAdditionalMapClone.delete(index);
+
+      const filteredDisplayFieldsAdditionalMap = new Map<
+        number,
+        [string, string]
+      >();
+
+      Array.from(displayFieldsAdditionalMapClone).forEach(
+        (mapIdxKeyVal, arrayIdx) => {
+          const [_mapIdx, keyVal] = mapIdxKeyVal as [number, [string, string]];
+          filteredDisplayFieldsAdditionalMap.set(arrayIdx, keyVal);
+        }
+      );
+
+      return {
+        ...state,
+        displayFieldsAdditionalMap: filteredDisplayFieldsAdditionalMap,
+      };
+    }
+    case 'update': {
+      const displayFieldsAdditionalMapClone = structuredClone(
+        state.displayFieldsAdditionalMap
+      );
+
+      const { data, index, kind } = action.payload as AdditionalFieldsUpdate;
+      const prevKeyVal = displayFieldsAdditionalMapClone.get(index);
+
+      if (!prevKeyVal) {
+        return state;
+      }
+
+      const [prevKey, prevValue] = prevKeyVal;
+      kind === 'key'
+        ? displayFieldsAdditionalMapClone.set(index, [data, prevValue])
+        : displayFieldsAdditionalMapClone.set(index, [prevKey, data]);
+
+      return {
+        ...state,
+        displayFieldsAdditionalMap: displayFieldsAdditionalMapClone,
+      };
+    }
+    default:
+      return state;
+  }
+}
+
+// ╭─────────────────────────────────────────────────────────────────╮
+//    DISPLAY => ADDITIONAL FIELDS => FOCUSED
+// ╰─────────────────────────────────────────────────────────────────╯
+
+/**
+ * This reducer function contains three operations that are used to update the
+ * areDisplayFieldsAdditionalMapFocused state.
+ * @description add: adds a new key-value pair to the areDisplayFieldsAdditionalMapFocused state
+ * @description remove:
+   - clones the state, deletes the key-value pair, and iterates over the map
+   - with the callback fn index to use as the key for the new map
+   - this is done because the indices are used as the keys by the mapped over displayFieldsAdditionalMap state to generate the text elements
+   - that access the areDisplayFieldsAdditionalMapFocused state Map to determine if the appropriate text element should be focused/blurred
+   - and must be consecutive as removal of a key-value pair will leave a gap in the indices
+  * @description update: updates either the key or value from the areDisplayFieldsAdditionalMapFocused state
+ */
+function setAreDisplayFieldsAdditionalMapFocused_CreateProductReducer(
+  state: CreateProductState,
+  action: CreateProductDispatch
+): CreateProductState {
+  const { operation } = action.payload as AdditionalFieldsValidFocusedPayload;
+
+  switch (operation) {
+    case 'add': {
+      const areDisplayFieldsAdditionalMapFocusedClone = structuredClone(
+        state.areDisplayFieldsAdditionalMapFocused
+      );
+
+      const { data } = action.payload as AdditionalFieldsValidFocusedAdd;
+      const prevSize = areDisplayFieldsAdditionalMapFocusedClone.size;
+      areDisplayFieldsAdditionalMapFocusedClone.set(prevSize, data);
+
+      return {
+        ...state,
+        areDisplayFieldsAdditionalMapFocused:
+          areDisplayFieldsAdditionalMapFocusedClone,
+      };
+    }
+    case 'remove': {
+      const areDisplayFieldsAdditionalMapFocusedClone = structuredClone(
+        state.areDisplayFieldsAdditionalMapFocused
+      );
+
+      const { index } = action.payload as AdditionalFieldsValidFocusedRemove;
+      areDisplayFieldsAdditionalMapFocusedClone.delete(index);
+
+      const filteredAreDisplayFieldsAdditionalMapFocused = new Map<
+        number,
+        [boolean, boolean]
+      >();
+
+      Array.from(areDisplayFieldsAdditionalMapFocusedClone).forEach(
+        (mapIdxKeyVal, arrayIdx) => {
+          const [_mapIdx, keyVal] = mapIdxKeyVal as [
+            number,
+            [boolean, boolean]
+          ];
+
+          filteredAreDisplayFieldsAdditionalMapFocused.set(arrayIdx, keyVal);
+        }
+      );
+
+      return {
+        ...state,
+        areDisplayFieldsAdditionalMapFocused:
+          filteredAreDisplayFieldsAdditionalMapFocused,
+      };
+    }
+    case 'update': {
+      const areDisplayFieldsAdditionalMapFocusedClone = structuredClone(
+        state.areDisplayFieldsAdditionalMapFocused
+      );
+
+      const { data, index, kind } =
+        action.payload as AdditionalFieldsValidFocusedUpdate;
+      const prevKeyVal = areDisplayFieldsAdditionalMapFocusedClone.get(index);
+
+      if (!prevKeyVal) {
+        return state;
+      }
+
+      const [prevKey, prevValue] = prevKeyVal;
+      kind === 'key'
+        ? areDisplayFieldsAdditionalMapFocusedClone.set(index, [
+            data,
+            prevValue,
+          ])
+        : areDisplayFieldsAdditionalMapFocusedClone.set(index, [prevKey, data]);
+
+      return {
+        ...state,
+        areDisplayFieldsAdditionalMapFocused:
+          areDisplayFieldsAdditionalMapFocusedClone,
+      };
+    }
+    default:
+      return state;
+  }
+}
+
+// ╭─────────────────────────────────────────────────────────────────╮
+//    DISPLAY => ADDITIONAL FIELDS => VALID
+// ╰─────────────────────────────────────────────────────────────────╯
+
+/**
+ * This reducer function contains three operations that are used to update the
+ * areDisplayFieldsAdditionalMapValid state.
+ * @description add: adds a new key-value pair to the areDisplayFieldsAdditionalMapValid state
+ * @description remove:
+   - clones the state, deletes the key-value pair, and iterates over the map
+   - with the callback fn index to use as the key for the new map
+   - this is done because the indices are used as the keys by the mapped over displayFieldsAdditionalMap state to generate the text elements
+   - that access the areDisplayFieldsAdditionalMapValid state Map based on said element's error state
+   - to display the text contained in the screenreader accessible error/valid text elements array
+   - map keys must be consecutive as removal of a key-value pair will leave a gap in the indices
+  * @description update: updates either the key or value from the areDisplayFieldsAdditionalMapValid state
+ */
+function setAreDisplayFieldsAdditionalMapValid_CreateProductReducer(
+  state: CreateProductState,
+  action: CreateProductDispatch
+): CreateProductState {
+  const { operation } = action.payload as AdditionalFieldsValidFocusedPayload;
+
+  switch (operation) {
+    case 'add': {
+      const areDisplayFieldsAdditionalMapValidClone = structuredClone(
+        state.areDisplayFieldsAdditionalMapValid
+      );
+
+      const { data } = action.payload as AdditionalFieldsValidFocusedAdd;
+      const prevSize = areDisplayFieldsAdditionalMapValidClone.size;
+      areDisplayFieldsAdditionalMapValidClone.set(prevSize, data);
+
+      return {
+        ...state,
+        areDisplayFieldsAdditionalMapValid:
+          areDisplayFieldsAdditionalMapValidClone,
+      };
+    }
+    case 'remove': {
+      const areDisplayFieldsAdditionalMapValidClone = structuredClone(
+        state.areDisplayFieldsAdditionalMapValid
+      );
+
+      const { index } = action.payload as AdditionalFieldsValidFocusedRemove;
+      areDisplayFieldsAdditionalMapValidClone.delete(index);
+
+      const filteredAreDisplayFieldsAdditionalMapValid = new Map<
+        number,
+        [boolean, boolean]
+      >();
+
+      Array.from(areDisplayFieldsAdditionalMapValidClone).forEach(
+        (mapIdxKeyVal, arrayIdx) => {
+          const [_mapIdx, keyVal] = mapIdxKeyVal as [
+            number,
+            [boolean, boolean]
+          ];
+
+          filteredAreDisplayFieldsAdditionalMapValid.set(arrayIdx, keyVal);
+        }
+      );
+
+      return {
+        ...state,
+        areDisplayFieldsAdditionalMapValid:
+          filteredAreDisplayFieldsAdditionalMapValid,
+      };
+    }
+    case 'update': {
+      const areDisplayFieldsAdditionalMapValidClone = structuredClone(
+        state.areDisplayFieldsAdditionalMapValid
+      );
+
+      const { data, index, kind } =
+        action.payload as AdditionalFieldsValidFocusedUpdate;
+      const prevKeyVal = areDisplayFieldsAdditionalMapValidClone.get(index);
+
+      if (!prevKeyVal) {
+        return state;
+      }
+
+      const [prevKey, prevValue] = prevKeyVal;
+      kind === 'key'
+        ? areDisplayFieldsAdditionalMapValidClone.set(index, [data, prevValue])
+        : areDisplayFieldsAdditionalMapValidClone.set(index, [prevKey, data]);
+
+      return {
+        ...state,
+        areDisplayFieldsAdditionalMapValid:
+          areDisplayFieldsAdditionalMapValidClone,
+      };
+    }
+    default:
+      return state;
+  }
+}
+
+// ╔═════════════════════════════════════════════════════════════════╗
+//   GPU
+// ╚═════════════════════════════════════════════════════════════════╝
+
 // ╭─────────────────────────────────────────────────────────────────╮
 //    GPU => CHIPSET
 // ╰─────────────────────────────────────────────────────────────────╯
@@ -1861,6 +2720,10 @@ function setAreGpuFieldsAdditionalMapValid_CreateProductReducer(
   }
 }
 
+// ╔═════════════════════════════════════════════════════════════════╗
+//   HEADPHONE
+// ╚═════════════════════════════════════════════════════════════════╝
+
 // ╭─────────────────────────────────────────────────────────────────╮
 //    HEADPHONES => TYPE
 // ╰─────────────────────────────────────────────────────────────────╯
@@ -2311,6 +3174,10 @@ function setAreHeadphoneFieldsAdditionalMapValid_CreateProductReducer(
   }
 }
 
+// ╔═════════════════════════════════════════════════════════════════╗
+//   KEYBOARD
+// ╚═════════════════════════════════════════════════════════════════╝
+
 // ╭─────────────────────────────────────────────────────────────────╮
 //    KEYBOARD => SWITCH
 // ╰─────────────────────────────────────────────────────────────────╯
@@ -2651,6 +3518,10 @@ function setAreKeyboardFieldsAdditionalMapValid_CreateProductReducer(
       return state;
   }
 }
+
+// ╔═════════════════════════════════════════════════════════════════╗
+//   MEMORY (RAM)
+// ╚═════════════════════════════════════════════════════════════════╝
 
 // ╭─────────────────────────────────────────────────────────────────╮
 //    RAM => DATA RATE
@@ -3154,6 +4025,10 @@ function setAreRamFieldsAdditionalMapValid_CreateProductReducer(
   }
 }
 
+// ╔═════════════════════════════════════════════════════════════════╗
+//   MOUSE
+// ╚═════════════════════════════════════════════════════════════════╝
+
 // ╭─────────────────────────────────────────────────────────────────╮
 //    MOUSE => SENSOR
 // ╰─────────────────────────────────────────────────────────────────╯
@@ -3560,6 +4435,10 @@ function setAreMouseFieldsAdditionalMapValid_CreateProductReducer(
   }
 }
 
+// ╔═════════════════════════════════════════════════════════════════╗
+//   MICROPHONE
+// ╚═════════════════════════════════════════════════════════════════╝
+
 // ╭─────────────────────────────────────────────────────────────────╮
 //    MICROPHONE => TYPE
 // ╰─────────────────────────────────────────────────────────────────╯
@@ -3961,853 +4840,9 @@ function setAreMicrophoneFieldsAdditionalMapValid_CreateProductReducer(
   }
 }
 
-// ╭─────────────────────────────────────────────────────────────────╮
-//    PSU WATTAGE
-// ╰─────────────────────────────────────────────────────────────────╯
-function setPsuWattage_CreateProductReducer(
-  state: CreateProductState,
-  action: CreateProductDispatch
-): CreateProductState {
-  return {
-    ...state,
-    psuWattage: action.payload as string,
-  };
-}
-
-function setIsPsuWattageFocused_CreateProductReducer(
-  state: CreateProductState,
-  action: CreateProductDispatch
-): CreateProductState {
-  return {
-    ...state,
-    isPsuWattageFocused: action.payload as boolean,
-  };
-}
-
-function setIsPsuWattageValid_CreateProductReducer(
-  state: CreateProductState,
-  action: CreateProductDispatch
-): CreateProductState {
-  return {
-    ...state,
-    isPsuWattageValid: action.payload as boolean,
-  };
-}
-
-// ╭─────────────────────────────────────────────────────────────────╮
-//    PSU EFFICIENCY
-// ╰─────────────────────────────────────────────────────────────────╯
-function setPsuEfficiency_CreateProductReducer(
-  state: CreateProductState,
-  action: CreateProductDispatch
-): CreateProductState {
-  return {
-    ...state,
-    psuEfficiency: action.payload as PsuEfficiency,
-  };
-}
-
-// ╭─────────────────────────────────────────────────────────────────╮
-//    PSU FORM FACTOR
-// ╰─────────────────────────────────────────────────────────────────╯
-function setPsuFormFactor_CreateProductReducer(
-  state: CreateProductState,
-  action: CreateProductDispatch
-): CreateProductState {
-  return {
-    ...state,
-    psuFormFactor: action.payload as PsuFormFactor,
-  };
-}
-
-// ╭─────────────────────────────────────────────────────────────────╮
-//    PSU MODULARITY
-// ╰─────────────────────────────────────────────────────────────────╯
-function setPsuModularity_CreateProductReducer(
-  state: CreateProductState,
-  action: CreateProductDispatch
-): CreateProductState {
-  return {
-    ...state,
-    psuModularity: action.payload as PsuModularity,
-  };
-}
-
-// ╭─────────────────────────────────────────────────────────────────╮
-//    PSU ADDITIONAL FIELDS
-// ╰─────────────────────────────────────────────────────────────────╯
-
-/**
- * This reducer function contains three operations that are used to update the
- * psuFieldsAdditionalMap state.
- * @description add: adds a new key-value pair to the psuFieldsAdditionalMap state
- * @description remove: clones the state, deletes the key-value pair, and iterates over the map
- *  - with the callback fn index to use as the key for the new map
- * - this is done because the indices are used as the keys that access the error/valid elements array
- * - and must be consecutive as removal of a key-value pair will leave a gap in the indices
- * @description update: updates either the key or value from the psuFieldsAdditionalMap state
- */
-
-function setPsuFieldsAdditionalMap_CreateProductReducer(
-  state: CreateProductState,
-  action: CreateProductDispatch
-): CreateProductState {
-  const { operation } = action.payload as AdditionalFieldsPayload;
-
-  switch (operation) {
-    case 'add': {
-      const psuFieldsAdditionalMapClone = structuredClone(
-        state.psuFieldsAdditionalMap
-      );
-
-      const { data } = action.payload as AdditionalFieldsAdd;
-      const prevSize = psuFieldsAdditionalMapClone.size;
-      psuFieldsAdditionalMapClone.set(prevSize, data);
-
-      return {
-        ...state,
-        psuFieldsAdditionalMap: psuFieldsAdditionalMapClone,
-      };
-    }
-    case 'remove': {
-      const psuFieldsAdditionalMapClone = structuredClone(
-        state.psuFieldsAdditionalMap
-      );
-
-      const { index } = action.payload as AdditionalFieldsRemove;
-      psuFieldsAdditionalMapClone.delete(index);
-
-      // resets the indices because the indices are used as keys
-      const filteredPsuFieldsAdditionalMap = new Map<
-        number,
-        [string, string]
-      >();
-      Array.from(psuFieldsAdditionalMapClone).forEach(
-        (mapIdxKeyVal, arrayIdx) => {
-          const [_mapIdx, keyVal] = mapIdxKeyVal as [number, [string, string]];
-
-          filteredPsuFieldsAdditionalMap.set(arrayIdx, keyVal);
-        }
-      );
-
-      return {
-        ...state,
-        psuFieldsAdditionalMap: filteredPsuFieldsAdditionalMap,
-      };
-    }
-    case 'update': {
-      const psuFieldsAdditionalMapClone = structuredClone(
-        state.psuFieldsAdditionalMap
-      );
-
-      const { data, index, kind } = action.payload as AdditionalFieldsUpdate;
-      const prevKeyVal = psuFieldsAdditionalMapClone.get(index);
-
-      if (!prevKeyVal) {
-        return state;
-      }
-
-      const [prevKey, prevValue] = prevKeyVal;
-      kind === 'key'
-        ? psuFieldsAdditionalMapClone.set(index, [data, prevValue])
-        : psuFieldsAdditionalMapClone.set(index, [prevKey, data]);
-
-      return {
-        ...state,
-        psuFieldsAdditionalMap: psuFieldsAdditionalMapClone,
-      };
-    }
-    default:
-      return state;
-  }
-}
-
-// ╭─────────────────────────────────────────────────────────────────╮
-//    PSU ADDITIONAL FIELDS => FOCUSED
-// ╰─────────────────────────────────────────────────────────────────╯
-
-/**
- * This reducer function contains three operations that are used to update the
- * arePsuFieldsAdditionalMapFocused state.
- * @description add: adds a new key-value pair to the arePsuFieldsAdditionalMapFocused state
- * @description remove:
- * - clones the state, deletes the key-value pair, and iterates over the map
- * - with the callback fn index to use as the key for the new map
- * - this is done because the indices are used as the keys by the mapped over psuFieldsAdditionalMap state to generate the text elements
- * - that access the arePsuFieldsAdditionalMapFocused state Map to determine if the appropriate text element should be focused/blurred
- * - and must be consecutive as removal of a key-value pair will leave a gap in the indices
- * @description update: updates either the key or value from the arePsuFieldsAdditionalMapFocused state
- */
-function setArePsuFieldsAdditionalMapFocused_CreateProductReducer(
-  state: CreateProductState,
-  action: CreateProductDispatch
-): CreateProductState {
-  const { operation } = action.payload as AdditionalFieldsValidFocusedPayload;
-
-  switch (operation) {
-    case 'add': {
-      const arePsuFieldsAdditionalMapFocusedClone = structuredClone(
-        state.arePsuFieldsAdditionalMapFocused
-      );
-
-      const { data } = action.payload as AdditionalFieldsValidFocusedAdd;
-      const prevSize = arePsuFieldsAdditionalMapFocusedClone.size;
-      arePsuFieldsAdditionalMapFocusedClone.set(prevSize, data);
-
-      return {
-        ...state,
-        arePsuFieldsAdditionalMapFocused: arePsuFieldsAdditionalMapFocusedClone,
-      };
-    }
-    case 'remove': {
-      const arePsuFieldsAdditionalMapFocusedClone = structuredClone(
-        state.arePsuFieldsAdditionalMapFocused
-      );
-
-      const { index } = action.payload as AdditionalFieldsValidFocusedRemove;
-      arePsuFieldsAdditionalMapFocusedClone.delete(index);
-
-      // resets the indices because the indices are used as keys
-      const filteredArePsuFieldsAdditionalMapFocused = new Map<
-        number,
-        [boolean, boolean]
-      >();
-      Array.from(arePsuFieldsAdditionalMapFocusedClone).forEach(
-        (mapIdxKeyVal, arrayIdx) => {
-          const [_mapIdx, keyVal] = mapIdxKeyVal as [
-            number,
-            [boolean, boolean]
-          ];
-
-          filteredArePsuFieldsAdditionalMapFocused.set(arrayIdx, keyVal);
-        }
-      );
-
-      return {
-        ...state,
-        arePsuFieldsAdditionalMapFocused:
-          filteredArePsuFieldsAdditionalMapFocused,
-      };
-    }
-    case 'update': {
-      const arePsuFieldsAdditionalMapFocusedClone = structuredClone(
-        state.arePsuFieldsAdditionalMapFocused
-      );
-
-      const { data, index, kind } =
-        action.payload as AdditionalFieldsValidFocusedUpdate;
-      const prevKeyVal = arePsuFieldsAdditionalMapFocusedClone.get(index);
-
-      if (!prevKeyVal) {
-        return state;
-      }
-
-      const [prevKey, prevValue] = prevKeyVal;
-      kind === 'key'
-        ? arePsuFieldsAdditionalMapFocusedClone.set(index, [data, prevValue])
-        : arePsuFieldsAdditionalMapFocusedClone.set(index, [prevKey, data]);
-
-      return {
-        ...state,
-        arePsuFieldsAdditionalMapFocused: arePsuFieldsAdditionalMapFocusedClone,
-      };
-    }
-    default:
-      return state;
-  }
-}
-
-// ╭─────────────────────────────────────────────────────────────────╮
-//    PSU ADDITIONAL FIELDS => VALID
-// ╰─────────────────────────────────────────────────────────────────╯
-
-/**
- * This reducer function contains three operations that are used to update the
- * arePsuFieldsAdditionalMapValid state.
- * @description add: adds a new key-value pair to the arePsuFieldsAdditionalMapValid state
- * @description remove:
- * - clones the state, deletes the key-value pair, and iterates over the map
- * - with the callback fn index to use as the key for the new map
- * - this is done because the indices are used as the keys by the mapped over psuFieldsAdditionalMap state to generate the text elements
- * - that access the arePsuFieldsAdditionalMapValid state Map based on said element's error state
- * - to display the text contained in the screenreader accessible error/valid text elements array
- * - map keys must be consecutive as removal of a key-value pair will leave a gap in the indices
- * @description update: updates either the key or value from the arePsuFieldsAdditionalMapValid state
- */
-function setArePsuFieldsAdditionalMapValid_CreateProductReducer(
-  state: CreateProductState,
-  action: CreateProductDispatch
-): CreateProductState {
-  const { operation } = action.payload as AdditionalFieldsValidFocusedPayload;
-
-  switch (operation) {
-    case 'add': {
-      const arePsuFieldsAdditionalMapValidClone = structuredClone(
-        state.arePsuFieldsAdditionalMapValid
-      );
-
-      const { data } = action.payload as AdditionalFieldsValidFocusedAdd;
-      const prevSize = arePsuFieldsAdditionalMapValidClone.size;
-      arePsuFieldsAdditionalMapValidClone.set(prevSize, data);
-
-      return {
-        ...state,
-        arePsuFieldsAdditionalMapValid: arePsuFieldsAdditionalMapValidClone,
-      };
-    }
-    case 'remove': {
-      const arePsuFieldsAdditionalMapValidClone = structuredClone(
-        state.arePsuFieldsAdditionalMapValid
-      );
-
-      const { index } = action.payload as AdditionalFieldsValidFocusedRemove;
-      arePsuFieldsAdditionalMapValidClone.delete(index);
-
-      // resets the indices because the indices are used as keys
-      const filteredArePsuFieldsAdditionalMapValid = new Map<
-        number,
-        [boolean, boolean]
-      >();
-      Array.from(arePsuFieldsAdditionalMapValidClone).forEach(
-        (mapIdxKeyVal, arrayIdx) => {
-          const [_mapIdx, keyVal] = mapIdxKeyVal as [
-            number,
-            [boolean, boolean]
-          ];
-
-          filteredArePsuFieldsAdditionalMapValid.set(arrayIdx, keyVal);
-        }
-      );
-
-      return {
-        ...state,
-        arePsuFieldsAdditionalMapValid: filteredArePsuFieldsAdditionalMapValid,
-      };
-    }
-    case 'update': {
-      const arePsuFieldsAdditionalMapValidClone = structuredClone(
-        state.arePsuFieldsAdditionalMapValid
-      );
-
-      const { data, index, kind } =
-        action.payload as AdditionalFieldsValidFocusedUpdate;
-      const prevKeyVal = arePsuFieldsAdditionalMapValidClone.get(index);
-
-      if (!prevKeyVal) {
-        return state;
-      }
-
-      const [prevKey, prevValue] = prevKeyVal;
-      kind === 'key'
-        ? arePsuFieldsAdditionalMapValidClone.set(index, [data, prevValue])
-        : arePsuFieldsAdditionalMapValidClone.set(index, [prevKey, data]);
-
-      return {
-        ...state,
-        arePsuFieldsAdditionalMapValid: arePsuFieldsAdditionalMapValidClone,
-      };
-    }
-    default:
-      return state;
-  }
-}
-
-// ╭─────────────────────────────────────────────────────────────────╮
-//    DISPLAY => SIZE (INCHES)
-// ╰─────────────────────────────────────────────────────────────────╯
-function setDisplaySize_CreateProductReducer(
-  state: CreateProductState,
-  action: CreateProductDispatch
-): CreateProductState {
-  return {
-    ...state,
-    displaySize: action.payload as string,
-  };
-}
-
-function setIsDisplaySizeFocused_CreateProductReducer(
-  state: CreateProductState,
-  action: CreateProductDispatch
-): CreateProductState {
-  return {
-    ...state,
-    isDisplaySizeFocused: action.payload as boolean,
-  };
-}
-
-function setIsDisplaySizeValid_CreateProductReducer(
-  state: CreateProductState,
-  action: CreateProductDispatch
-): CreateProductState {
-  return {
-    ...state,
-    isDisplaySizeValid: action.payload as boolean,
-  };
-}
-
-// ╭─────────────────────────────────────────────────────────────────╮
-//    DISPLAY => RESOLUTION (HORIZONTAL)
-// ╰─────────────────────────────────────────────────────────────────╯
-function setDisplayResolutionHorizontal_CreateProductReducer(
-  state: CreateProductState,
-  action: CreateProductDispatch
-): CreateProductState {
-  return {
-    ...state,
-    displayResolutionHorizontal: action.payload as string,
-  };
-}
-
-function setIsDisplayResolutionHorizontalFocused_CreateProductReducer(
-  state: CreateProductState,
-  action: CreateProductDispatch
-): CreateProductState {
-  return {
-    ...state,
-    isDisplayResolutionHorizontalFocused: action.payload as boolean,
-  };
-}
-
-function setIsDisplayResolutionHorizontalValid_CreateProductReducer(
-  state: CreateProductState,
-  action: CreateProductDispatch
-): CreateProductState {
-  return {
-    ...state,
-    isDisplayResolutionHorizontalValid: action.payload as boolean,
-  };
-}
-
-// ╭─────────────────────────────────────────────────────────────────╮
-//    DISPLAY => RESOLUTION (VERTICAL)
-// ╰─────────────────────────────────────────────────────────────────╯
-function setDisplayResolutionVertical_CreateProductReducer(
-  state: CreateProductState,
-  action: CreateProductDispatch
-): CreateProductState {
-  return {
-    ...state,
-    displayResolutionVertical: action.payload as string,
-  };
-}
-
-function setIsDisplayResolutionVerticalFocused_CreateProductReducer(
-  state: CreateProductState,
-  action: CreateProductDispatch
-): CreateProductState {
-  return {
-    ...state,
-    isDisplayResolutionVerticalFocused: action.payload as boolean,
-  };
-}
-
-function setIsDisplayResolutionVerticalValid_CreateProductReducer(
-  state: CreateProductState,
-  action: CreateProductDispatch
-): CreateProductState {
-  return {
-    ...state,
-    isDisplayResolutionVerticalValid: action.payload as boolean,
-  };
-}
-
-// ╭─────────────────────────────────────────────────────────────────╮
-//    DISPLAY => REFRESH RATE
-// ╰─────────────────────────────────────────────────────────────────╯
-function setDisplayRefreshRate_CreateProductReducer(
-  state: CreateProductState,
-  action: CreateProductDispatch
-): CreateProductState {
-  return {
-    ...state,
-    displayRefreshRate: action.payload as string,
-  };
-}
-
-function setIsDisplayRefreshRateFocused_CreateProductReducer(
-  state: CreateProductState,
-  action: CreateProductDispatch
-): CreateProductState {
-  return {
-    ...state,
-    isDisplayRefreshRateFocused: action.payload as boolean,
-  };
-}
-
-function setIsDisplayRefreshRateValid_CreateProductReducer(
-  state: CreateProductState,
-  action: CreateProductDispatch
-): CreateProductState {
-  return {
-    ...state,
-    isDisplayRefreshRateValid: action.payload as boolean,
-  };
-}
-
-// ╭─────────────────────────────────────────────────────────────────╮
-//    DISPLAY => PANEL TYPE
-// ╰─────────────────────────────────────────────────────────────────╯
-function setDisplayPanelType_CreateProductReducer(
-  state: CreateProductState,
-  action: CreateProductDispatch
-): CreateProductState {
-  return {
-    ...state,
-    displayPanelType: action.payload as DisplayPanelType,
-  };
-}
-
-// ╭─────────────────────────────────────────────────────────────────╮
-//    DISPLAY => RESPONSE TIME
-// ╰─────────────────────────────────────────────────────────────────╯
-function setDisplayResponseTime_CreateProductReducer(
-  state: CreateProductState,
-  action: CreateProductDispatch
-): CreateProductState {
-  return {
-    ...state,
-    displayResponseTime: action.payload as string,
-  };
-}
-
-function setIsDisplayResponseTimeFocused_CreateProductReducer(
-  state: CreateProductState,
-  action: CreateProductDispatch
-): CreateProductState {
-  return {
-    ...state,
-    isDisplayResponseTimeFocused: action.payload as boolean,
-  };
-}
-
-function setIsDisplayResponseTimeValid_CreateProductReducer(
-  state: CreateProductState,
-  action: CreateProductDispatch
-): CreateProductState {
-  return {
-    ...state,
-    isDisplayResponseTimeValid: action.payload as boolean,
-  };
-}
-
-// ╭─────────────────────────────────────────────────────────────────╮
-//    DISPLAY => ASPECT RATIO
-// ╰─────────────────────────────────────────────────────────────────╯
-function setDisplayAspectRatio_CreateProductReducer(
-  state: CreateProductState,
-  action: CreateProductDispatch
-): CreateProductState {
-  return {
-    ...state,
-    displayAspectRatio: action.payload as string,
-  };
-}
-
-function setIsDisplayAspectRatioFocused_CreateProductReducer(
-  state: CreateProductState,
-  action: CreateProductDispatch
-): CreateProductState {
-  return {
-    ...state,
-    isDisplayAspectRatioFocused: action.payload as boolean,
-  };
-}
-
-function setIsDisplayAspectRatioValid_CreateProductReducer(
-  state: CreateProductState,
-  action: CreateProductDispatch
-): CreateProductState {
-  return {
-    ...state,
-    isDisplayAspectRatioValid: action.payload as boolean,
-  };
-}
-
-// ╭─────────────────────────────────────────────────────────────────╮
-//    DISPLAY => ADDITIONAL FIELDS
-// ╰─────────────────────────────────────────────────────────────────╯
-
-/**
- * This reducer function contains three operations that are used to update the
- * displayFieldsAdditionalMap state.
- * @description add: adds a new key-value pair to the displayFieldsAdditionalMap state
- * @description remove: clones the state, deletes the key-value pair, and iterates over the map
- *   - with the callback fn index to use as the key for the new map
- *  - this is done because the indices are used as the keys that access the error/valid elements array
- * - and must be consecutive as removal of a key-value pair will leave a gap in the indices
- * @description update: updates either the key or value from the displayFieldsAdditionalMap state
- */
-function setDisplayFieldsAdditionalMap_CreateProductReducer(
-  state: CreateProductState,
-  action: CreateProductDispatch
-): CreateProductState {
-  const { operation } = action.payload as AdditionalFieldsPayload;
-
-  switch (operation) {
-    case 'add': {
-      const displayFieldsAdditionalMapClone = structuredClone(
-        state.displayFieldsAdditionalMap
-      );
-
-      const { data } = action.payload as AdditionalFieldsAdd;
-      const prevSize = displayFieldsAdditionalMapClone.size;
-      displayFieldsAdditionalMapClone.set(prevSize, data);
-
-      return {
-        ...state,
-        displayFieldsAdditionalMap: displayFieldsAdditionalMapClone,
-      };
-    }
-
-    case 'remove': {
-      const displayFieldsAdditionalMapClone = structuredClone(
-        state.displayFieldsAdditionalMap
-      );
-
-      const { index } = action.payload as AdditionalFieldsRemove;
-      displayFieldsAdditionalMapClone.delete(index);
-
-      const filteredDisplayFieldsAdditionalMap = new Map<
-        number,
-        [string, string]
-      >();
-
-      Array.from(displayFieldsAdditionalMapClone).forEach(
-        (mapIdxKeyVal, arrayIdx) => {
-          const [_mapIdx, keyVal] = mapIdxKeyVal as [number, [string, string]];
-          filteredDisplayFieldsAdditionalMap.set(arrayIdx, keyVal);
-        }
-      );
-
-      return {
-        ...state,
-        displayFieldsAdditionalMap: filteredDisplayFieldsAdditionalMap,
-      };
-    }
-    case 'update': {
-      const displayFieldsAdditionalMapClone = structuredClone(
-        state.displayFieldsAdditionalMap
-      );
-
-      const { data, index, kind } = action.payload as AdditionalFieldsUpdate;
-      const prevKeyVal = displayFieldsAdditionalMapClone.get(index);
-
-      if (!prevKeyVal) {
-        return state;
-      }
-
-      const [prevKey, prevValue] = prevKeyVal;
-      kind === 'key'
-        ? displayFieldsAdditionalMapClone.set(index, [data, prevValue])
-        : displayFieldsAdditionalMapClone.set(index, [prevKey, data]);
-
-      return {
-        ...state,
-        displayFieldsAdditionalMap: displayFieldsAdditionalMapClone,
-      };
-    }
-    default:
-      return state;
-  }
-}
-
-// ╭─────────────────────────────────────────────────────────────────╮
-//    DISPLAY => ADDITIONAL FIELDS => FOCUSED
-// ╰─────────────────────────────────────────────────────────────────╯
-
-/**
- * This reducer function contains three operations that are used to update the
- * areDisplayFieldsAdditionalMapFocused state.
- * @description add: adds a new key-value pair to the areDisplayFieldsAdditionalMapFocused state
- * @description remove:
-   - clones the state, deletes the key-value pair, and iterates over the map
-   - with the callback fn index to use as the key for the new map
-   - this is done because the indices are used as the keys by the mapped over displayFieldsAdditionalMap state to generate the text elements
-   - that access the areDisplayFieldsAdditionalMapFocused state Map to determine if the appropriate text element should be focused/blurred
-   - and must be consecutive as removal of a key-value pair will leave a gap in the indices
-  * @description update: updates either the key or value from the areDisplayFieldsAdditionalMapFocused state
- */
-function setAreDisplayFieldsAdditionalMapFocused_CreateProductReducer(
-  state: CreateProductState,
-  action: CreateProductDispatch
-): CreateProductState {
-  const { operation } = action.payload as AdditionalFieldsValidFocusedPayload;
-
-  switch (operation) {
-    case 'add': {
-      const areDisplayFieldsAdditionalMapFocusedClone = structuredClone(
-        state.areDisplayFieldsAdditionalMapFocused
-      );
-
-      const { data } = action.payload as AdditionalFieldsValidFocusedAdd;
-      const prevSize = areDisplayFieldsAdditionalMapFocusedClone.size;
-      areDisplayFieldsAdditionalMapFocusedClone.set(prevSize, data);
-
-      return {
-        ...state,
-        areDisplayFieldsAdditionalMapFocused:
-          areDisplayFieldsAdditionalMapFocusedClone,
-      };
-    }
-    case 'remove': {
-      const areDisplayFieldsAdditionalMapFocusedClone = structuredClone(
-        state.areDisplayFieldsAdditionalMapFocused
-      );
-
-      const { index } = action.payload as AdditionalFieldsValidFocusedRemove;
-      areDisplayFieldsAdditionalMapFocusedClone.delete(index);
-
-      const filteredAreDisplayFieldsAdditionalMapFocused = new Map<
-        number,
-        [boolean, boolean]
-      >();
-
-      Array.from(areDisplayFieldsAdditionalMapFocusedClone).forEach(
-        (mapIdxKeyVal, arrayIdx) => {
-          const [_mapIdx, keyVal] = mapIdxKeyVal as [
-            number,
-            [boolean, boolean]
-          ];
-
-          filteredAreDisplayFieldsAdditionalMapFocused.set(arrayIdx, keyVal);
-        }
-      );
-
-      return {
-        ...state,
-        areDisplayFieldsAdditionalMapFocused:
-          filteredAreDisplayFieldsAdditionalMapFocused,
-      };
-    }
-    case 'update': {
-      const areDisplayFieldsAdditionalMapFocusedClone = structuredClone(
-        state.areDisplayFieldsAdditionalMapFocused
-      );
-
-      const { data, index, kind } =
-        action.payload as AdditionalFieldsValidFocusedUpdate;
-      const prevKeyVal = areDisplayFieldsAdditionalMapFocusedClone.get(index);
-
-      if (!prevKeyVal) {
-        return state;
-      }
-
-      const [prevKey, prevValue] = prevKeyVal;
-      kind === 'key'
-        ? areDisplayFieldsAdditionalMapFocusedClone.set(index, [
-            data,
-            prevValue,
-          ])
-        : areDisplayFieldsAdditionalMapFocusedClone.set(index, [prevKey, data]);
-
-      return {
-        ...state,
-        areDisplayFieldsAdditionalMapFocused:
-          areDisplayFieldsAdditionalMapFocusedClone,
-      };
-    }
-    default:
-      return state;
-  }
-}
-
-// ╭─────────────────────────────────────────────────────────────────╮
-//    DISPLAY => ADDITIONAL FIELDS => VALID
-// ╰─────────────────────────────────────────────────────────────────╯
-
-/**
- * This reducer function contains three operations that are used to update the
- * areDisplayFieldsAdditionalMapValid state.
- * @description add: adds a new key-value pair to the areDisplayFieldsAdditionalMapValid state
- * @description remove:
-   - clones the state, deletes the key-value pair, and iterates over the map
-   - with the callback fn index to use as the key for the new map
-   - this is done because the indices are used as the keys by the mapped over displayFieldsAdditionalMap state to generate the text elements
-   - that access the areDisplayFieldsAdditionalMapValid state Map based on said element's error state
-   - to display the text contained in the screenreader accessible error/valid text elements array
-   - map keys must be consecutive as removal of a key-value pair will leave a gap in the indices
-  * @description update: updates either the key or value from the areDisplayFieldsAdditionalMapValid state
- */
-function setAreDisplayFieldsAdditionalMapValid_CreateProductReducer(
-  state: CreateProductState,
-  action: CreateProductDispatch
-): CreateProductState {
-  const { operation } = action.payload as AdditionalFieldsValidFocusedPayload;
-
-  switch (operation) {
-    case 'add': {
-      const areDisplayFieldsAdditionalMapValidClone = structuredClone(
-        state.areDisplayFieldsAdditionalMapValid
-      );
-
-      const { data } = action.payload as AdditionalFieldsValidFocusedAdd;
-      const prevSize = areDisplayFieldsAdditionalMapValidClone.size;
-      areDisplayFieldsAdditionalMapValidClone.set(prevSize, data);
-
-      return {
-        ...state,
-        areDisplayFieldsAdditionalMapValid:
-          areDisplayFieldsAdditionalMapValidClone,
-      };
-    }
-    case 'remove': {
-      const areDisplayFieldsAdditionalMapValidClone = structuredClone(
-        state.areDisplayFieldsAdditionalMapValid
-      );
-
-      const { index } = action.payload as AdditionalFieldsValidFocusedRemove;
-      areDisplayFieldsAdditionalMapValidClone.delete(index);
-
-      const filteredAreDisplayFieldsAdditionalMapValid = new Map<
-        number,
-        [boolean, boolean]
-      >();
-
-      Array.from(areDisplayFieldsAdditionalMapValidClone).forEach(
-        (mapIdxKeyVal, arrayIdx) => {
-          const [_mapIdx, keyVal] = mapIdxKeyVal as [
-            number,
-            [boolean, boolean]
-          ];
-
-          filteredAreDisplayFieldsAdditionalMapValid.set(arrayIdx, keyVal);
-        }
-      );
-
-      return {
-        ...state,
-        areDisplayFieldsAdditionalMapValid:
-          filteredAreDisplayFieldsAdditionalMapValid,
-      };
-    }
-    case 'update': {
-      const areDisplayFieldsAdditionalMapValidClone = structuredClone(
-        state.areDisplayFieldsAdditionalMapValid
-      );
-
-      const { data, index, kind } =
-        action.payload as AdditionalFieldsValidFocusedUpdate;
-      const prevKeyVal = areDisplayFieldsAdditionalMapValidClone.get(index);
-
-      if (!prevKeyVal) {
-        return state;
-      }
-
-      const [prevKey, prevValue] = prevKeyVal;
-      kind === 'key'
-        ? areDisplayFieldsAdditionalMapValidClone.set(index, [data, prevValue])
-        : areDisplayFieldsAdditionalMapValidClone.set(index, [prevKey, data]);
-
-      return {
-        ...state,
-        areDisplayFieldsAdditionalMapValid:
-          areDisplayFieldsAdditionalMapValidClone,
-      };
-    }
-    default:
-      return state;
-  }
-}
+// ╔═════════════════════════════════════════════════════════════════╗
+//   MOTHERBOARD
+// ╚═════════════════════════════════════════════════════════════════╝
 
 // ╭─────────────────────────────────────────────────────────────────╮
 //    MOTHERBOARD => SOCKET
@@ -5443,6 +5478,365 @@ function setAreMotherboardFieldsAdditionalMapValid_CreateProductReducer(
   }
 }
 
+// ╔═════════════════════════════════════════════════════════════════╗
+//   PSU
+// ╚═════════════════════════════════════════════════════════════════╝
+
+// ╭─────────────────────────────────────────────────────────────────╮
+//    PSU WATTAGE
+// ╰─────────────────────────────────────────────────────────────────╯
+function setPsuWattage_CreateProductReducer(
+  state: CreateProductState,
+  action: CreateProductDispatch
+): CreateProductState {
+  return {
+    ...state,
+    psuWattage: action.payload as string,
+  };
+}
+
+function setIsPsuWattageFocused_CreateProductReducer(
+  state: CreateProductState,
+  action: CreateProductDispatch
+): CreateProductState {
+  return {
+    ...state,
+    isPsuWattageFocused: action.payload as boolean,
+  };
+}
+
+function setIsPsuWattageValid_CreateProductReducer(
+  state: CreateProductState,
+  action: CreateProductDispatch
+): CreateProductState {
+  return {
+    ...state,
+    isPsuWattageValid: action.payload as boolean,
+  };
+}
+
+// ╭─────────────────────────────────────────────────────────────────╮
+//    PSU EFFICIENCY
+// ╰─────────────────────────────────────────────────────────────────╯
+function setPsuEfficiency_CreateProductReducer(
+  state: CreateProductState,
+  action: CreateProductDispatch
+): CreateProductState {
+  return {
+    ...state,
+    psuEfficiency: action.payload as PsuEfficiency,
+  };
+}
+
+// ╭─────────────────────────────────────────────────────────────────╮
+//    PSU FORM FACTOR
+// ╰─────────────────────────────────────────────────────────────────╯
+function setPsuFormFactor_CreateProductReducer(
+  state: CreateProductState,
+  action: CreateProductDispatch
+): CreateProductState {
+  return {
+    ...state,
+    psuFormFactor: action.payload as PsuFormFactor,
+  };
+}
+
+// ╭─────────────────────────────────────────────────────────────────╮
+//    PSU MODULARITY
+// ╰─────────────────────────────────────────────────────────────────╯
+function setPsuModularity_CreateProductReducer(
+  state: CreateProductState,
+  action: CreateProductDispatch
+): CreateProductState {
+  return {
+    ...state,
+    psuModularity: action.payload as PsuModularity,
+  };
+}
+
+// ╭─────────────────────────────────────────────────────────────────╮
+//    PSU ADDITIONAL FIELDS
+// ╰─────────────────────────────────────────────────────────────────╯
+
+/**
+ * This reducer function contains three operations that are used to update the
+ * psuFieldsAdditionalMap state.
+ * @description add: adds a new key-value pair to the psuFieldsAdditionalMap state
+ * @description remove: clones the state, deletes the key-value pair, and iterates over the map
+ *  - with the callback fn index to use as the key for the new map
+ * - this is done because the indices are used as the keys that access the error/valid elements array
+ * - and must be consecutive as removal of a key-value pair will leave a gap in the indices
+ * @description update: updates either the key or value from the psuFieldsAdditionalMap state
+ */
+
+function setPsuFieldsAdditionalMap_CreateProductReducer(
+  state: CreateProductState,
+  action: CreateProductDispatch
+): CreateProductState {
+  const { operation } = action.payload as AdditionalFieldsPayload;
+
+  switch (operation) {
+    case 'add': {
+      const psuFieldsAdditionalMapClone = structuredClone(
+        state.psuFieldsAdditionalMap
+      );
+
+      const { data } = action.payload as AdditionalFieldsAdd;
+      const prevSize = psuFieldsAdditionalMapClone.size;
+      psuFieldsAdditionalMapClone.set(prevSize, data);
+
+      return {
+        ...state,
+        psuFieldsAdditionalMap: psuFieldsAdditionalMapClone,
+      };
+    }
+    case 'remove': {
+      const psuFieldsAdditionalMapClone = structuredClone(
+        state.psuFieldsAdditionalMap
+      );
+
+      const { index } = action.payload as AdditionalFieldsRemove;
+      psuFieldsAdditionalMapClone.delete(index);
+
+      // resets the indices because the indices are used as keys
+      const filteredPsuFieldsAdditionalMap = new Map<
+        number,
+        [string, string]
+      >();
+      Array.from(psuFieldsAdditionalMapClone).forEach(
+        (mapIdxKeyVal, arrayIdx) => {
+          const [_mapIdx, keyVal] = mapIdxKeyVal as [number, [string, string]];
+
+          filteredPsuFieldsAdditionalMap.set(arrayIdx, keyVal);
+        }
+      );
+
+      return {
+        ...state,
+        psuFieldsAdditionalMap: filteredPsuFieldsAdditionalMap,
+      };
+    }
+    case 'update': {
+      const psuFieldsAdditionalMapClone = structuredClone(
+        state.psuFieldsAdditionalMap
+      );
+
+      const { data, index, kind } = action.payload as AdditionalFieldsUpdate;
+      const prevKeyVal = psuFieldsAdditionalMapClone.get(index);
+
+      if (!prevKeyVal) {
+        return state;
+      }
+
+      const [prevKey, prevValue] = prevKeyVal;
+      kind === 'key'
+        ? psuFieldsAdditionalMapClone.set(index, [data, prevValue])
+        : psuFieldsAdditionalMapClone.set(index, [prevKey, data]);
+
+      return {
+        ...state,
+        psuFieldsAdditionalMap: psuFieldsAdditionalMapClone,
+      };
+    }
+    default:
+      return state;
+  }
+}
+
+// ╭─────────────────────────────────────────────────────────────────╮
+//    PSU ADDITIONAL FIELDS => FOCUSED
+// ╰─────────────────────────────────────────────────────────────────╯
+
+/**
+ * This reducer function contains three operations that are used to update the
+ * arePsuFieldsAdditionalMapFocused state.
+ * @description add: adds a new key-value pair to the arePsuFieldsAdditionalMapFocused state
+ * @description remove:
+ * - clones the state, deletes the key-value pair, and iterates over the map
+ * - with the callback fn index to use as the key for the new map
+ * - this is done because the indices are used as the keys by the mapped over psuFieldsAdditionalMap state to generate the text elements
+ * - that access the arePsuFieldsAdditionalMapFocused state Map to determine if the appropriate text element should be focused/blurred
+ * - and must be consecutive as removal of a key-value pair will leave a gap in the indices
+ * @description update: updates either the key or value from the arePsuFieldsAdditionalMapFocused state
+ */
+function setArePsuFieldsAdditionalMapFocused_CreateProductReducer(
+  state: CreateProductState,
+  action: CreateProductDispatch
+): CreateProductState {
+  const { operation } = action.payload as AdditionalFieldsValidFocusedPayload;
+
+  switch (operation) {
+    case 'add': {
+      const arePsuFieldsAdditionalMapFocusedClone = structuredClone(
+        state.arePsuFieldsAdditionalMapFocused
+      );
+
+      const { data } = action.payload as AdditionalFieldsValidFocusedAdd;
+      const prevSize = arePsuFieldsAdditionalMapFocusedClone.size;
+      arePsuFieldsAdditionalMapFocusedClone.set(prevSize, data);
+
+      return {
+        ...state,
+        arePsuFieldsAdditionalMapFocused: arePsuFieldsAdditionalMapFocusedClone,
+      };
+    }
+    case 'remove': {
+      const arePsuFieldsAdditionalMapFocusedClone = structuredClone(
+        state.arePsuFieldsAdditionalMapFocused
+      );
+
+      const { index } = action.payload as AdditionalFieldsValidFocusedRemove;
+      arePsuFieldsAdditionalMapFocusedClone.delete(index);
+
+      // resets the indices because the indices are used as keys
+      const filteredArePsuFieldsAdditionalMapFocused = new Map<
+        number,
+        [boolean, boolean]
+      >();
+      Array.from(arePsuFieldsAdditionalMapFocusedClone).forEach(
+        (mapIdxKeyVal, arrayIdx) => {
+          const [_mapIdx, keyVal] = mapIdxKeyVal as [
+            number,
+            [boolean, boolean]
+          ];
+
+          filteredArePsuFieldsAdditionalMapFocused.set(arrayIdx, keyVal);
+        }
+      );
+
+      return {
+        ...state,
+        arePsuFieldsAdditionalMapFocused:
+          filteredArePsuFieldsAdditionalMapFocused,
+      };
+    }
+    case 'update': {
+      const arePsuFieldsAdditionalMapFocusedClone = structuredClone(
+        state.arePsuFieldsAdditionalMapFocused
+      );
+
+      const { data, index, kind } =
+        action.payload as AdditionalFieldsValidFocusedUpdate;
+      const prevKeyVal = arePsuFieldsAdditionalMapFocusedClone.get(index);
+
+      if (!prevKeyVal) {
+        return state;
+      }
+
+      const [prevKey, prevValue] = prevKeyVal;
+      kind === 'key'
+        ? arePsuFieldsAdditionalMapFocusedClone.set(index, [data, prevValue])
+        : arePsuFieldsAdditionalMapFocusedClone.set(index, [prevKey, data]);
+
+      return {
+        ...state,
+        arePsuFieldsAdditionalMapFocused: arePsuFieldsAdditionalMapFocusedClone,
+      };
+    }
+    default:
+      return state;
+  }
+}
+
+// ╭─────────────────────────────────────────────────────────────────╮
+//    PSU ADDITIONAL FIELDS => VALID
+// ╰─────────────────────────────────────────────────────────────────╯
+
+/**
+ * This reducer function contains three operations that are used to update the
+ * arePsuFieldsAdditionalMapValid state.
+ * @description add: adds a new key-value pair to the arePsuFieldsAdditionalMapValid state
+ * @description remove:
+ * - clones the state, deletes the key-value pair, and iterates over the map
+ * - with the callback fn index to use as the key for the new map
+ * - this is done because the indices are used as the keys by the mapped over psuFieldsAdditionalMap state to generate the text elements
+ * - that access the arePsuFieldsAdditionalMapValid state Map based on said element's error state
+ * - to display the text contained in the screenreader accessible error/valid text elements array
+ * - map keys must be consecutive as removal of a key-value pair will leave a gap in the indices
+ * @description update: updates either the key or value from the arePsuFieldsAdditionalMapValid state
+ */
+function setArePsuFieldsAdditionalMapValid_CreateProductReducer(
+  state: CreateProductState,
+  action: CreateProductDispatch
+): CreateProductState {
+  const { operation } = action.payload as AdditionalFieldsValidFocusedPayload;
+
+  switch (operation) {
+    case 'add': {
+      const arePsuFieldsAdditionalMapValidClone = structuredClone(
+        state.arePsuFieldsAdditionalMapValid
+      );
+
+      const { data } = action.payload as AdditionalFieldsValidFocusedAdd;
+      const prevSize = arePsuFieldsAdditionalMapValidClone.size;
+      arePsuFieldsAdditionalMapValidClone.set(prevSize, data);
+
+      return {
+        ...state,
+        arePsuFieldsAdditionalMapValid: arePsuFieldsAdditionalMapValidClone,
+      };
+    }
+    case 'remove': {
+      const arePsuFieldsAdditionalMapValidClone = structuredClone(
+        state.arePsuFieldsAdditionalMapValid
+      );
+
+      const { index } = action.payload as AdditionalFieldsValidFocusedRemove;
+      arePsuFieldsAdditionalMapValidClone.delete(index);
+
+      // resets the indices because the indices are used as keys
+      const filteredArePsuFieldsAdditionalMapValid = new Map<
+        number,
+        [boolean, boolean]
+      >();
+      Array.from(arePsuFieldsAdditionalMapValidClone).forEach(
+        (mapIdxKeyVal, arrayIdx) => {
+          const [_mapIdx, keyVal] = mapIdxKeyVal as [
+            number,
+            [boolean, boolean]
+          ];
+
+          filteredArePsuFieldsAdditionalMapValid.set(arrayIdx, keyVal);
+        }
+      );
+
+      return {
+        ...state,
+        arePsuFieldsAdditionalMapValid: filteredArePsuFieldsAdditionalMapValid,
+      };
+    }
+    case 'update': {
+      const arePsuFieldsAdditionalMapValidClone = structuredClone(
+        state.arePsuFieldsAdditionalMapValid
+      );
+
+      const { data, index, kind } =
+        action.payload as AdditionalFieldsValidFocusedUpdate;
+      const prevKeyVal = arePsuFieldsAdditionalMapValidClone.get(index);
+
+      if (!prevKeyVal) {
+        return state;
+      }
+
+      const [prevKey, prevValue] = prevKeyVal;
+      kind === 'key'
+        ? arePsuFieldsAdditionalMapValidClone.set(index, [data, prevValue])
+        : arePsuFieldsAdditionalMapValidClone.set(index, [prevKey, data]);
+
+      return {
+        ...state,
+        arePsuFieldsAdditionalMapValid: arePsuFieldsAdditionalMapValidClone,
+      };
+    }
+    default:
+      return state;
+  }
+}
+
+// ╔═════════════════════════════════════════════════════════════════╗
+//   SMARTPHONE
+// ╚═════════════════════════════════════════════════════════════════╝
+
 // ╭─────────────────────────────────────────────────────────────────╮
 //    SMARTPHONE => OS
 // ╰─────────────────────────────────────────────────────────────────╯
@@ -6062,6 +6456,10 @@ function setAreSmartphoneFieldsAdditionalMapValid_CreateProductReducer(
   }
 }
 
+// ╔═════════════════════════════════════════════════════════════════╗
+//   SPEAKER
+// ╚═════════════════════════════════════════════════════════════════╝
+
 // ╭─────────────────────────────────────────────────────────────────╮
 //    SPEAKER => TYPE
 // ╰─────────────────────────────────────────────────────────────────╯
@@ -6473,611 +6871,9 @@ function setAreSpeakerFieldsAdditionalMapValid_CreateProductReducer(
   }
 }
 
-/**
- * // page 2 -> specifications -> case
-    case createProductAction.setCaseColor:
-      return {
-        ...state,
-        caseColor: action.payload,
-      };
-    case createProductAction.setIsCaseColorFocused:
-      return {
-        ...state,
-        isCaseColorFocused: action.payload,
-      };
-    case createProductAction.setIsCaseColorValid:
-      return {
-        ...state,
-        isCaseColorValid: action.payload,
-      };
-    case createProductAction.setCaseType:
-      return {
-        ...state,
-        caseType: action.payload,
-      };
-    case createProductAction.setCaseSidePanel:
-      return {
-        ...state,
-        caseSidePanel: action.payload,
-      };
-
-    // page 2 -> specifications -> case -> additional fields
-    case createProductAction.setCaseFieldsAdditionalMap: {
-      const { operation } = action.payload;
-
-      switch (operation) {
-        case 'add': {
-          const caseFieldsAdditionalMapClone = structuredClone(
-            state.caseFieldsAdditionalMap
-          );
-
-          const { data } = action.payload;
-          const prevSize = caseFieldsAdditionalMapClone.size;
-          caseFieldsAdditionalMapClone.set(prevSize, data);
-
-          return {
-            ...state,
-            caseFieldsAdditionalMap: caseFieldsAdditionalMapClone,
-          };
-        }
-        case 'remove': {
-          const caseFieldsAdditionalMapClone = structuredClone(
-            state.caseFieldsAdditionalMap
-          );
-
-          const { index } = action.payload;
-          caseFieldsAdditionalMapClone.delete(index);
-
-          // resets the indices because the indices are used as keys
-          const filteredCaseFieldsAdditionalMap = new Map<
-            number,
-            [string, string]
-          >();
-          Array.from(caseFieldsAdditionalMapClone).forEach(
-            (mapIdxKeyVal, arrayIdx) => {
-              const [_mapIdx, keyVal] = mapIdxKeyVal as [
-                number,
-                [string, string]
-              ];
-
-              filteredCaseFieldsAdditionalMap.set(arrayIdx, keyVal);
-            }
-          );
-
-          return {
-            ...state,
-            caseFieldsAdditionalMap: filteredCaseFieldsAdditionalMap,
-          };
-        }
-        case 'update': {
-          const caseFieldsAdditionalMapClone = structuredClone(
-            state.caseFieldsAdditionalMap
-          );
-
-          const { data, index, kind } = action.payload;
-          const prevKeyVal = caseFieldsAdditionalMapClone.get(index);
-
-          if (!prevKeyVal) {
-            return state;
-          }
-
-          const [prevKey, prevValue] = prevKeyVal;
-          kind === 'key'
-            ? caseFieldsAdditionalMapClone.set(index, [data, prevValue])
-            : caseFieldsAdditionalMapClone.set(index, [prevKey, data]);
-
-          return {
-            ...state,
-            caseFieldsAdditionalMap: caseFieldsAdditionalMapClone,
-          };
-        }
-        default:
-          return state;
-      }
-    }
-
-    case createProductAction.setAreCaseFieldsAdditionalMapFocused: {
-      const { operation } = action.payload;
-
-      switch (operation) {
-        case 'add': {
-          const areCaseFieldsAdditionalMapFocusedClone = structuredClone(
-            state.areCaseFieldsAdditionalMapFocused
-          );
-
-          const { data } = action.payload;
-          const prevSize = areCaseFieldsAdditionalMapFocusedClone.size;
-          areCaseFieldsAdditionalMapFocusedClone.set(prevSize, data);
-
-          return {
-            ...state,
-            areCaseFieldsAdditionalMapFocused:
-              areCaseFieldsAdditionalMapFocusedClone,
-          };
-        }
-        case 'remove': {
-          const areCaseFieldsAdditionalMapFocusedClone = structuredClone(
-            state.areCaseFieldsAdditionalMapFocused
-          );
-
-          const { index } = action.payload;
-          areCaseFieldsAdditionalMapFocusedClone.delete(index);
-
-          // resets the indices because the indices are used as keys
-          const filteredAreCaseFieldsAdditionalMapFocused = new Map<
-            number,
-            [boolean, boolean]
-          >();
-          Array.from(areCaseFieldsAdditionalMapFocusedClone).forEach(
-            (mapIdxKeyVal, arrayIdx) => {
-              const [_mapIdx, keyVal] = mapIdxKeyVal as [
-                number,
-                [boolean, boolean]
-              ];
-
-              filteredAreCaseFieldsAdditionalMapFocused.set(arrayIdx, keyVal);
-            }
-          );
-
-          return {
-            ...state,
-            areCaseFieldsAdditionalMapFocused:
-              filteredAreCaseFieldsAdditionalMapFocused,
-          };
-        }
-        case 'update': {
-          const areCaseFieldsAdditionalMapFocusedClone = structuredClone(
-            state.areCaseFieldsAdditionalMapFocused
-          );
-
-          const { data, index, kind } = action.payload;
-          const prevKeyVal = areCaseFieldsAdditionalMapFocusedClone.get(index);
-
-          if (!prevKeyVal) {
-            return state;
-          }
-
-          const [prevKey, prevValue] = prevKeyVal;
-          kind === 'key'
-            ? areCaseFieldsAdditionalMapFocusedClone.set(index, [
-                data,
-                prevValue,
-              ])
-            : areCaseFieldsAdditionalMapFocusedClone.set(index, [
-                prevKey,
-                data,
-              ]);
-
-          return {
-            ...state,
-            areCaseFieldsAdditionalMapFocused:
-              areCaseFieldsAdditionalMapFocusedClone,
-          };
-        }
-        default:
-          return state;
-      }
-    }
-
-    case createProductAction.setAreCaseFieldsAdditionalMapValid: {
-      const { operation } = action.payload;
-
-      switch (operation) {
-        case 'add': {
-          const areCaseFieldsAdditionalMapValidClone = structuredClone(
-            state.areCaseFieldsAdditionalMapValid
-          );
-
-          const { data } = action.payload;
-          const prevSize = areCaseFieldsAdditionalMapValidClone.size;
-          areCaseFieldsAdditionalMapValidClone.set(prevSize, data);
-
-          return {
-            ...state,
-            areCaseFieldsAdditionalMapValid:
-              areCaseFieldsAdditionalMapValidClone,
-          };
-        }
-        case 'remove': {
-          const areCaseFieldsAdditionalMapValidClone = structuredClone(
-            state.areCaseFieldsAdditionalMapValid
-          );
-
-          const { index } = action.payload;
-          areCaseFieldsAdditionalMapValidClone.delete(index);
-
-          // resets the indices because the indices are used as keys
-          const filteredAreCaseFieldsAdditionalMapValid = new Map<
-            number,
-            [boolean, boolean]
-          >();
-          Array.from(areCaseFieldsAdditionalMapValidClone).forEach(
-            (mapIdxKeyVal, arrayIdx) => {
-              const [_mapIdx, keyVal] = mapIdxKeyVal as [
-                number,
-                [boolean, boolean]
-              ];
-
-              filteredAreCaseFieldsAdditionalMapValid.set(arrayIdx, keyVal);
-            }
-          );
-
-          return {
-            ...state,
-            areCaseFieldsAdditionalMapValid:
-              filteredAreCaseFieldsAdditionalMapValid,
-          };
-        }
-        case 'update': {
-          const areCaseFieldsAdditionalMapValidClone = structuredClone(
-            state.areCaseFieldsAdditionalMapValid
-          );
-
-          const { data, index, kind } = action.payload;
-          const prevKeyVal = areCaseFieldsAdditionalMapValidClone.get(index);
-
-          if (!prevKeyVal) {
-            return state;
-          }
-
-          const [prevKey, prevValue] = prevKeyVal;
-          kind === 'key'
-            ? areCaseFieldsAdditionalMapValidClone.set(index, [data, prevValue])
-            : areCaseFieldsAdditionalMapValidClone.set(index, [prevKey, data]);
-
-          return {
-            ...state,
-            areCaseFieldsAdditionalMapValid:
-              areCaseFieldsAdditionalMapValidClone,
-          };
-        }
-        default:
-          return state;
-      }
-    }
- */
-
-// ╭─────────────────────────────────────────────────────────────────╮
-//    CASE => TYPE
-// ╰─────────────────────────────────────────────────────────────────╯
-function setCaseType_CreateProductReducer(
-  state: CreateProductState,
-  action: CreateProductDispatch
-): CreateProductState {
-  return {
-    ...state,
-    caseType: action.payload as CaseType,
-  };
-}
-
-// ╭─────────────────────────────────────────────────────────────────╮
-//    CASE => COLOR
-// ╰─────────────────────────────────────────────────────────────────╯
-function setCaseColor_CreateProductReducer(
-  state: CreateProductState,
-  action: CreateProductDispatch
-): CreateProductState {
-  return {
-    ...state,
-    caseColor: action.payload as string,
-  };
-}
-
-function setIsCaseColorFocused_CreateProductReducer(
-  state: CreateProductState,
-  action: CreateProductDispatch
-): CreateProductState {
-  return {
-    ...state,
-    isCaseColorFocused: action.payload as boolean,
-  };
-}
-
-function setIsCaseColorValid_CreateProductReducer(
-  state: CreateProductState,
-  action: CreateProductDispatch
-): CreateProductState {
-  return {
-    ...state,
-    isCaseColorValid: action.payload as boolean,
-  };
-}
-
-// ╭─────────────────────────────────────────────────────────────────╮
-//    CASE => SIDE PANEL
-// ╰─────────────────────────────────────────────────────────────────╯
-function setCaseSidePanel_CreateProductReducer(
-  state: CreateProductState,
-  action: CreateProductDispatch
-): CreateProductState {
-  return {
-    ...state,
-    caseSidePanel: action.payload as CaseSidePanel,
-  };
-}
-
-// ╭─────────────────────────────────────────────────────────────────╮
-//    CASE => ADDITIONAL FIELDS
-// ╰─────────────────────────────────────────────────────────────────╯
-
-/**
- * This reducer function contains three operations that are used to update the
- * caseFieldsAdditionalMap state.
- * @description add: adds a new key-value pair to the caseFieldsAdditionalMap state
- * @description remove:
- * - clones the state, deletes the key-value pair, and iterates over the map
- * - with the callback fn index to use as the key for the new map
- * - this is done because the indices are used as the keys that access the error/valid elements array
- * - and must be consecutive as removal of a key-value pair will leave a gap in the indices
- * @description update: updates either the key or value from the caseFieldsAdditionalMap state
- */
-
-function setCaseFieldsAdditionalMap_CreateProductReducer(
-  state: CreateProductState,
-  action: CreateProductDispatch
-): CreateProductState {
-  const { operation } = action.payload as AdditionalFieldsPayload;
-
-  switch (operation) {
-    case 'add': {
-      const caseFieldsAdditionalMapClone = structuredClone(
-        state.caseFieldsAdditionalMap
-      );
-
-      const { data } = action.payload as AdditionalFieldsAdd;
-      const prevSize = caseFieldsAdditionalMapClone.size;
-      caseFieldsAdditionalMapClone.set(prevSize, data);
-
-      return {
-        ...state,
-        caseFieldsAdditionalMap: caseFieldsAdditionalMapClone,
-      };
-    }
-    case 'remove': {
-      const caseFieldsAdditionalMapClone = structuredClone(
-        state.caseFieldsAdditionalMap
-      );
-
-      const { index } = action.payload as AdditionalFieldsRemove;
-      caseFieldsAdditionalMapClone.delete(index);
-
-      // resets the indices because the indices are used as keys
-      const filteredCaseFieldsAdditionalMap = new Map<
-        number,
-        [string, string]
-      >();
-      Array.from(caseFieldsAdditionalMapClone).forEach(
-        (mapIdxKeyVal, arrayIdx) => {
-          const [_mapIdx, keyVal] = mapIdxKeyVal as [number, [string, string]];
-
-          filteredCaseFieldsAdditionalMap.set(arrayIdx, keyVal);
-        }
-      );
-
-      return {
-        ...state,
-        caseFieldsAdditionalMap: filteredCaseFieldsAdditionalMap,
-      };
-    }
-    case 'update': {
-      const caseFieldsAdditionalMapClone = structuredClone(
-        state.caseFieldsAdditionalMap
-      );
-
-      const { data, index, kind } = action.payload as AdditionalFieldsUpdate;
-      const prevKeyVal = caseFieldsAdditionalMapClone.get(index);
-
-      if (!prevKeyVal) {
-        return state;
-      }
-
-      const [prevKey, prevValue] = prevKeyVal;
-      kind === 'key'
-        ? caseFieldsAdditionalMapClone.set(index, [data, prevValue])
-        : caseFieldsAdditionalMapClone.set(index, [prevKey, data]);
-
-      return {
-        ...state,
-        caseFieldsAdditionalMap: caseFieldsAdditionalMapClone,
-      };
-    }
-    default:
-      return state;
-  }
-}
-
-// ╭─────────────────────────────────────────────────────────────────╮
-//    CASE => ADDITIONAL FIELDS => FOCUSED
-// ╰─────────────────────────────────────────────────────────────────╯
-
-/**
- * This reducer function contains three operations that are used to update the
- * areCaseFieldsAdditionalMapFocused state.
- * @description add: adds a new key-value pair to the areCaseFieldsAdditionalMapFocused state
- * @description remove:
- * - clones the state, deletes the key-value pair, and iterates over the map
- * - with the callback fn index to use as the key for the new map
- * - this is done because the indices are used as the keys by the mapped over caseFieldsAdditionalMap state to generate the text elements
- * - that access the areCaseFieldsAdditionalMapFocused state Map to determine if the appropriate text element should be focused/blurred
- * - and must be consecutive as removal of a key-value pair will leave a gap in the indices
- * @description update: updates either the key or value from the areCaseFieldsAdditionalMapFocused state
- */
-function setAreCaseFieldsAdditionalMapFocused_CreateProductReducer(
-  state: CreateProductState,
-  action: CreateProductDispatch
-): CreateProductState {
-  const { operation } = action.payload as AdditionalFieldsValidFocusedPayload;
-
-  switch (operation) {
-    case 'add': {
-      const areCaseFieldsAdditionalMapFocusedClone = structuredClone(
-        state.areCaseFieldsAdditionalMapFocused
-      );
-
-      const { data } = action.payload as AdditionalFieldsValidFocusedAdd;
-      const prevSize = areCaseFieldsAdditionalMapFocusedClone.size;
-      areCaseFieldsAdditionalMapFocusedClone.set(prevSize, data);
-
-      return {
-        ...state,
-        areCaseFieldsAdditionalMapFocused:
-          areCaseFieldsAdditionalMapFocusedClone,
-      };
-    }
-    case 'remove': {
-      const areCaseFieldsAdditionalMapFocusedClone = structuredClone(
-        state.areCaseFieldsAdditionalMapFocused
-      );
-
-      const { index } = action.payload as AdditionalFieldsValidFocusedRemove;
-      areCaseFieldsAdditionalMapFocusedClone.delete(index);
-
-      // resets the indices because the indices are used as keys
-      const filteredAreCaseFieldsAdditionalMapFocused = new Map<
-        number,
-        [boolean, boolean]
-      >();
-      Array.from(areCaseFieldsAdditionalMapFocusedClone).forEach(
-        (mapIdxKeyVal, arrayIdx) => {
-          const [_mapIdx, keyVal] = mapIdxKeyVal as [
-            number,
-            [boolean, boolean]
-          ];
-
-          filteredAreCaseFieldsAdditionalMapFocused.set(arrayIdx, keyVal);
-        }
-      );
-
-      return {
-        ...state,
-        areCaseFieldsAdditionalMapFocused:
-          filteredAreCaseFieldsAdditionalMapFocused,
-      };
-    }
-    case 'update': {
-      const areCaseFieldsAdditionalMapFocusedClone = structuredClone(
-        state.areCaseFieldsAdditionalMapFocused
-      );
-
-      const { data, index, kind } =
-        action.payload as AdditionalFieldsValidFocusedUpdate;
-      const prevKeyVal = areCaseFieldsAdditionalMapFocusedClone.get(index);
-
-      if (!prevKeyVal) {
-        return state;
-      }
-
-      const [prevKey, prevValue] = prevKeyVal;
-      kind === 'key'
-        ? areCaseFieldsAdditionalMapFocusedClone.set(index, [data, prevValue])
-        : areCaseFieldsAdditionalMapFocusedClone.set(index, [prevKey, data]);
-
-      return {
-        ...state,
-        areCaseFieldsAdditionalMapFocused:
-          areCaseFieldsAdditionalMapFocusedClone,
-      };
-    }
-    default:
-      return state;
-  }
-}
-
-// ╭─────────────────────────────────────────────────────────────────╮
-//    CASE => ADDITIONAL FIELDS => VALID
-// ╰─────────────────────────────────────────────────────────────────╯
-
-/**
- * This reducer function contains three operations that are used to update the
- * areCaseFieldsAdditionalMapValid state.
- * @description add: adds a new key-value pair to the areCaseFieldsAdditionalMapValid state
- * @description remove:
- * - clones the state, deletes the key-value pair, and iterates over the map
- * - with the callback fn index to use as the key for the new map
- * - this is done because the indices are used as the keys by the mapped over caseFieldsAdditionalMap state to generate the text elements
- * - that access the areCaseFieldsAdditionalMapValid state Map based on said element's error state
- * - to display the text contained in the screenreader accessible error/valid text elements array
- * - map keys must be consecutive as removal of a key-value pair will leave a gap in the indices
- * @description update: updates either the key or value from the areCaseFieldsAdditionalMapValid state
- */
-function setAreCaseFieldsAdditionalMapValid_CreateProductReducer(
-  state: CreateProductState,
-  action: CreateProductDispatch
-): CreateProductState {
-  const { operation } = action.payload as AdditionalFieldsValidFocusedPayload;
-
-  switch (operation) {
-    case 'add': {
-      const areCaseFieldsAdditionalMapValidClone = structuredClone(
-        state.areCaseFieldsAdditionalMapValid
-      );
-
-      const { data } = action.payload as AdditionalFieldsValidFocusedAdd;
-      const prevSize = areCaseFieldsAdditionalMapValidClone.size;
-      areCaseFieldsAdditionalMapValidClone.set(prevSize, data);
-
-      return {
-        ...state,
-        areCaseFieldsAdditionalMapValid: areCaseFieldsAdditionalMapValidClone,
-      };
-    }
-    case 'remove': {
-      const areCaseFieldsAdditionalMapValidClone = structuredClone(
-        state.areCaseFieldsAdditionalMapValid
-      );
-
-      const { index } = action.payload as AdditionalFieldsValidFocusedRemove;
-      areCaseFieldsAdditionalMapValidClone.delete(index);
-
-      // resets the indices because the indices are used as keys
-      const filteredAreCaseFieldsAdditionalMapValid = new Map<
-        number,
-        [boolean, boolean]
-      >();
-      Array.from(areCaseFieldsAdditionalMapValidClone).forEach(
-        (mapIdxKeyVal, arrayIdx) => {
-          const [_mapIdx, keyVal] = mapIdxKeyVal as [
-            number,
-            [boolean, boolean]
-          ];
-
-          filteredAreCaseFieldsAdditionalMapValid.set(arrayIdx, keyVal);
-        }
-      );
-
-      return {
-        ...state,
-        areCaseFieldsAdditionalMapValid:
-          filteredAreCaseFieldsAdditionalMapValid,
-      };
-    }
-    case 'update': {
-      const areCaseFieldsAdditionalMapValidClone = structuredClone(
-        state.areCaseFieldsAdditionalMapValid
-      );
-
-      const { data, index, kind } =
-        action.payload as AdditionalFieldsValidFocusedUpdate;
-      const prevKeyVal = areCaseFieldsAdditionalMapValidClone.get(index);
-
-      if (!prevKeyVal) {
-        return state;
-      }
-
-      const [prevKey, prevValue] = prevKeyVal;
-      kind === 'key'
-        ? areCaseFieldsAdditionalMapValidClone.set(index, [data, prevValue])
-        : areCaseFieldsAdditionalMapValidClone.set(index, [prevKey, data]);
-
-      return {
-        ...state,
-        areCaseFieldsAdditionalMapValid: areCaseFieldsAdditionalMapValidClone,
-      };
-    }
-    default:
-      return state;
-  }
-}
+// ╔═════════════════════════════════════════════════════════════════╗
+//   STORAGE
+// ╚═════════════════════════════════════════════════════════════════╝
 
 // ╭─────────────────────────────────────────────────────────────────╮
 //   STORAGE => TYPE
@@ -7496,6 +7292,9 @@ function setAreStorageFieldsAdditionalMapValid_CreateProductReducer(
   }
 }
 
+// ╔═════════════════════════════════════════════════════════════════╗
+//   TABLET
+// ╚═════════════════════════════════════════════════════════════════╝
 // ╭─────────────────────────────────────────────────────────────────╮
 //   TABLET => OS
 // ╰─────────────────────────────────────────────────────────────────╯
@@ -8102,6 +7901,10 @@ function setAreTabletFieldsAdditionalMapValid_CreateProductReducer(
       return state;
   }
 }
+
+// ╔═════════════════════════════════════════════════════════════════╗
+//   WEBCAM
+// ╚═════════════════════════════════════════════════════════════════╝
 
 // ╭─────────────────────────────────────────────────────────────────╮
 //   WEBCAM => RESOLUTION
