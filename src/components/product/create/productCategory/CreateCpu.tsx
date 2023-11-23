@@ -1058,12 +1058,7 @@ function CreateCpu({
   );
 
   const displayCpuSpecificationsInputs = (
-    <Group
-      py={padding}
-      position="apart"
-      style={{ borderBottom: borderColor }}
-      w="100%"
-    >
+    <Group py={padding} position="apart" w="100%">
       <Group position="apart" w="100%">
         <Title order={4}>CPU Specifications</Title>
         {displayCpuFieldsAdditionalMapButton}

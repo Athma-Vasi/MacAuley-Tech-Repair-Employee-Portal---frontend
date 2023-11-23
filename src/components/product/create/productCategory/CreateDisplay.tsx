@@ -953,14 +953,8 @@ function CreateDisplay({
     </Tooltip>
   );
 
-  // page 2 -> specifications -> display -> display
   const displayDisplaySpecificationsInputs = (
-    <Group
-      py={padding}
-      position="apart"
-      style={{ borderBottom: borderColor }}
-      w="100%"
-    >
+    <Group py={padding} position="apart" w="100%">
       <Group w="100%" position="apart">
         <Title order={4}>Display Specifications</Title>
         {displayDisplayFieldsAdditionalMapButton}

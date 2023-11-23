@@ -37,7 +37,7 @@ import {
   PeripheralsInterface,
 } from '../types';
 
-type CreateKeyboardsProps = {
+type CreateKeyboardProps = {
   areKeyboardFieldsAdditionalMapFocused: Map<number, [boolean, boolean]>;
   areKeyboardFieldsAdditionalMapValid: Map<number, [boolean, boolean]>;
   borderColor: string;
@@ -52,7 +52,7 @@ type CreateKeyboardsProps = {
   padding: MantineNumberSize;
 };
 
-function CreateKeyboards({
+function CreateKeyboard({
   areKeyboardFieldsAdditionalMapFocused,
   areKeyboardFieldsAdditionalMapValid,
   borderColor,
@@ -65,7 +65,7 @@ function CreateKeyboards({
   keyboardLayout,
   keyboardSwitch,
   padding,
-}: CreateKeyboardsProps) {
+}: CreateKeyboardProps) {
   // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
   //  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
   //    VALIDATION USE EFFECTS
@@ -558,12 +558,7 @@ function CreateKeyboards({
   );
 
   const displayKeyboardSpecificationsInputs = (
-    <Group
-      py={padding}
-      position="apart"
-      style={{ borderBottom: borderColor }}
-      w="100%"
-    >
+    <Group py={padding} position="apart" w="100%">
       <Group w="100%" position="apart">
         <Title order={4}>Keyboard Specifications</Title>
         {displayKeyboardFieldsAdditionalMapButton}
@@ -579,4 +574,4 @@ function CreateKeyboards({
   return displayKeyboardSpecificationsInputs;
 }
 
-export default CreateKeyboards;
+export default CreateKeyboard;

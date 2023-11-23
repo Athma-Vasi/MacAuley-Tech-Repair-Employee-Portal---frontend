@@ -1,27 +1,27 @@
-import { Action, Currency, SetStepsInErrorPayload, User } from '../../../types';
+import { Action, Currency, SetStepsInErrorPayload } from '../../../types';
 import { ActionsDashboard } from '../../../types/actions.types';
 import { ProductCategory } from '../../dashboard/types';
 
 type DesktopComputerSpecifications = {
-  cpu: CpuSpecifications;
-  gpu: GpuSpecifications;
-  motherboard: MotherboardSpecifications;
-  ram: RamSpecifications;
-  storage: StorageSpecifications;
-  psu: PsuSpecifications;
   case: CaseSpecifications;
+  cpu: CpuSpecifications;
   display: DisplaySpecifications;
+  gpu: GpuSpecifications;
   keyboard: KeyboardSpecifications;
+  motherboard: MotherboardSpecifications;
   mouse: MouseSpecifications;
+  psu: PsuSpecifications;
+  ram: RamSpecifications;
   speaker: SpeakerSpecifications;
+  storage: StorageSpecifications;
 };
 
 type LaptopSpecifications = {
   cpu: CpuSpecifications;
+  display: DisplaySpecifications;
   gpu: GpuSpecifications;
   ram: RamSpecifications;
   storage: StorageSpecifications;
-  display: DisplaySpecifications;
 };
 
 type MemoryUnit = 'KB' | 'MB' | 'GB' | 'TB';

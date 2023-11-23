@@ -360,7 +360,7 @@ function CreateMicrophone({
             payload: true,
           });
         },
-        placeholder: 'Enter microphone frequency response',
+        placeholder: 'Format: 00 Hz - 00 kHz',
         required: true,
         semanticName: 'microphone frequency response',
       },
@@ -702,12 +702,7 @@ function CreateMicrophone({
   );
 
   const displayMicrophoneSpecificationsInputs = (
-    <Group
-      py={padding}
-      position="apart"
-      style={{ borderBottom: borderColor }}
-      w="100%"
-    >
+    <Group py={padding} position="apart" w="100%">
       <Group w="100%" position="apart">
         <Title order={4}>Microphone Specifications</Title>
         {displayMicrophoneFieldsAdditionalMapButton}

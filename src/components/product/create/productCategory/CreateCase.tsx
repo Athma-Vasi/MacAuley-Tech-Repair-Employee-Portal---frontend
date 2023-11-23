@@ -583,12 +583,7 @@ function CreateCase({
   );
 
   const displayComputerCaseSpecificationsInputs = (
-    <Group
-      py={padding}
-      position="apart"
-      style={{ borderBottom: borderColor }}
-      w="100%"
-    >
+    <Group py={padding} position="apart" w="100%">
       <Group w="100%" position="apart">
         <Title order={4}>Case Specifications</Title>
         {displayCaseFieldsAdditionalMapButton}
