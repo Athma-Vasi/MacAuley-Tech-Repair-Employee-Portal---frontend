@@ -7,35 +7,35 @@ import {
 const initialCreateProductState: CreateProductState = {
   // page 1
 
-  // page 1 -> brand
+  // brand
   brand: '',
   isBrandValid: false,
   isBrandFocused: false,
-  // page 1 -> model, product category
+  // model, product category
   model: '',
   isModelValid: false,
   isModelFocused: false,
   productCategory: 'Accessory',
-  // page 1 -> description
+  // description
   description: '',
   isDescriptionValid: false,
   isDescriptionFocused: false,
-  // page 1 -> price, currency, availability
+  // price, currency, availability
   price: '',
   isPriceValid: false,
   isPriceFocused: false,
   currency: 'CAD',
   availability: 'In Stock',
-  // page 1 -> quantity
+  // quantity
   quantity: '',
   isQuantityFocused: false,
   isQuantityValid: false,
-  // page 1 -> weight
+  // weight
   weight: '',
   isWeightFocused: false,
   isWeightValid: false,
   weightUnit: 'g',
-  // page 1 -> dimension
+  // dimension
   dimensionHeight: '',
   isDimensionHeightFocused: false,
   isDimensionHeightValid: false,
@@ -48,15 +48,80 @@ const initialCreateProductState: CreateProductState = {
   isDimensionLengthFocused: false,
   isDimensionLengthValid: false,
   dimensionLengthUnit: 'cm',
-  // page 1 -> additional comments
+  // additional comments
   additionalComments: '',
   isAdditionalCommentsFocused: false,
   isAdditionalCommentsValid: false,
 
   // page 2
 
-  // page 2 -> specifications
-  // page 2 -> specifications -> cpu
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //   ACCESSORY
+  // ╰─────────────────────────────────────────────────────────────────╯
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //   CENTRAL PROCESSING UNIT (CPU)
+  // ╰─────────────────────────────────────────────────────────────────╯
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //   COMPUTER CASE
+  // ╰─────────────────────────────────────────────────────────────────╯
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //   DISPLAY
+  // ╰─────────────────────────────────────────────────────────────────╯
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //   GRAPHICS PROCESSING UNIT (GPU)
+  // ╰─────────────────────────────────────────────────────────────────╯
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //   HEADPHONE
+  // ╰─────────────────────────────────────────────────────────────────╯
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //   KEYBOARD
+  // ╰─────────────────────────────────────────────────────────────────╯
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //   MEMORY (RAM)
+  // ╰─────────────────────────────────────────────────────────────────╯
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //   MOUSE
+  // ╰─────────────────────────────────────────────────────────────────╯
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //   MICROPHONE
+  // ╰─────────────────────────────────────────────────────────────────╯
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //   MOTHERBOARD
+  // ╰─────────────────────────────────────────────────────────────────╯
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //   POWER SUPPLY UNIT (PSU)
+  // ╰─────────────────────────────────────────────────────────────────╯
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //   SMARTPHONE
+  // ╰─────────────────────────────────────────────────────────────────╯
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //   SPEAKER
+  // ╰─────────────────────────────────────────────────────────────────╯
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //   STORAGE
+  // ╰─────────────────────────────────────────────────────────────────╯
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //   TABLET
+  // ╰─────────────────────────────────────────────────────────────────╯
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //   WEBCAM
+  // ╰─────────────────────────────────────────────────────────────────╯
   cpuSocket: '',
   isCpuSocketFocused: false,
   isCpuSocketValid: false,
@@ -423,35 +488,35 @@ const initialCreateProductState: CreateProductState = {
 const createProductAction: CreateProductAction = {
   // page 1
 
-  // page 1 -> brand
+  // brand
   setBrand: 'setBrand',
   setIsBrandValid: 'setIsBrandValid',
   setIsBrandFocused: 'setIsBrandFocused',
-  // page 1 -> model, product category
+  // model, product category
   setModel: 'setModel',
   setIsModelValid: 'setIsModelValid',
   setIsModelFocused: 'setIsModelFocused',
   setProductCategory: 'setProductCategory',
-  // page 1 -> description
+  // description
   setDescription: 'setDescription',
   setIsDescriptionValid: 'setIsDescriptionValid',
   setIsDescriptionFocused: 'setIsDescriptionFocused',
-  // page 1 -> price, currency, availability, quantity
+  // price, currency, availability, quantity
   setPrice: 'setPrice',
   setIsPriceValid: 'setIsPriceValid',
   setIsPriceFocused: 'setIsPriceFocused',
   setCurrency: 'setCurrency',
   setAvailability: 'setAvailability',
-  // page 1 -> quantity
+  // quantity
   setQuantity: 'setQuantity',
   setIsQuantityValid: 'setIsQuantityValid',
   setIsQuantityFocused: 'setIsQuantityFocused',
-  // page 1 -> weight
+  // weight
   setWeight: 'setWeight',
   setIsWeightValid: 'setIsWeightValid',
   setIsWeightFocused: 'setIsWeightFocused',
   setWeightUnit: 'setWeightUnit',
-  // page 1 -> dimensions
+  // dimensions
   setDimensionLength: 'setDimensionLength',
   setIsDimensionLengthValid: 'setIsDimensionLengthValid',
   setIsDimensionLengthFocused: 'setIsDimensionLengthFocused',
@@ -464,16 +529,88 @@ const createProductAction: CreateProductAction = {
   setIsDimensionHeightValid: 'setIsDimensionHeightValid',
   setIsDimensionHeightFocused: 'setIsDimensionHeightFocused',
   setDimensionHeightUnit: 'setDimensionHeightUnit',
-  // page 1 -> additional comments
+  // additional comments
   setAdditionalComments: 'setAdditionalComments',
   setIsAdditionalCommentsValid: 'setIsAdditionalCommentsValid',
   setIsAdditionalCommentsFocused: 'setIsAdditionalCommentsFocused',
 
   // page 2
 
-  // page 2 -> specifications
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //   ACCESSORY
+  // ╰─────────────────────────────────────────────────────────────────╯
 
-  // page 2 -> specifications -> cpu
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //   CENTRAL PROCESSING UNIT (CPU)
+  // ╰─────────────────────────────────────────────────────────────────╯
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //   COMPUTER CASE
+  // ╰─────────────────────────────────────────────────────────────────╯
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //   DESKTOP COMPUTER
+  // ╰─────────────────────────────────────────────────────────────────╯
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //   DISPLAY
+  // ╰─────────────────────────────────────────────────────────────────╯
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //   GRAPHICS PROCESSING UNIT (GPU)
+  // ╰─────────────────────────────────────────────────────────────────╯
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //   HEADPHONE
+  // ╰─────────────────────────────────────────────────────────────────╯
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //   KEYBOARD
+  // ╰─────────────────────────────────────────────────────────────────╯
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //   LAPTOP
+  // ╰─────────────────────────────────────────────────────────────────╯
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //   MEMORY (RAM)
+  // ╰─────────────────────────────────────────────────────────────────╯
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //   MOUSE
+  // ╰─────────────────────────────────────────────────────────────────╯
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //   MICROPHONE
+  // ╰─────────────────────────────────────────────────────────────────╯
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //   MOTHERBOARD
+  // ╰─────────────────────────────────────────────────────────────────╯
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //   POWER SUPPLY UNIT (PSU)
+  // ╰─────────────────────────────────────────────────────────────────╯
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //   SMARTPHONE
+  // ╰─────────────────────────────────────────────────────────────────╯
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //   SPEAKER
+  // ╰─────────────────────────────────────────────────────────────────╯
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //   STORAGE
+  // ╰─────────────────────────────────────────────────────────────────╯
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //   TABLET
+  // ╰─────────────────────────────────────────────────────────────────╯
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //   WEBCAM
+  // ╰─────────────────────────────────────────────────────────────────╯
   setCpuSocket: 'setCpuSocket',
   setIsCpuSocketValid: 'setIsCpuSocketValid',
   setIsCpuSocketFocused: 'setIsCpuSocketFocused',
@@ -871,7 +1008,7 @@ function createProductReducer(
 ): CreateProductState {
   switch (action.type) {
     // page 1
-    // page 1 -> brand
+    // brand
     case createProductAction.setBrand:
       return {
         ...state,
@@ -888,7 +1025,7 @@ function createProductReducer(
         isBrandFocused: action.payload,
       };
 
-    // page 1 -> model
+    // model
     case createProductAction.setModel:
       return {
         ...state,
@@ -911,7 +1048,7 @@ function createProductReducer(
         productCategory: action.payload,
       };
 
-    // page 1 -> description
+    // description
     case createProductAction.setDescription:
       return {
         ...state,
@@ -928,7 +1065,7 @@ function createProductReducer(
         isDescriptionFocused: action.payload,
       };
 
-    // page 1 -> price
+    // price
     case createProductAction.setPrice:
       return {
         ...state,
@@ -957,7 +1094,7 @@ function createProductReducer(
         availability: action.payload,
       };
 
-    // page 1 -> quantity
+    // quantity
     case createProductAction.setQuantity:
       return {
         ...state,
@@ -974,7 +1111,7 @@ function createProductReducer(
         isQuantityFocused: action.payload,
       };
 
-    // page 1 -> weight
+    // weight
     case createProductAction.setWeight:
       return {
         ...state,
@@ -996,9 +1133,9 @@ function createProductReducer(
         weightUnit: action.payload,
       };
 
-    // page 1 -> dimension
+    // dimension
 
-    // page 1 -> dimension -> height
+    // dimension -> height
     case createProductAction.setDimensionHeight:
       return {
         ...state,
@@ -1020,7 +1157,7 @@ function createProductReducer(
         dimensionHeightUnit: action.payload,
       };
 
-    // page 1 -> dimension -> width
+    // dimension -> width
     case createProductAction.setDimensionWidth:
       return {
         ...state,
@@ -1042,7 +1179,7 @@ function createProductReducer(
         dimensionWidthUnit: action.payload,
       };
 
-    // page 1 -> dimension -> length
+    // dimension -> length
     case createProductAction.setDimensionLength:
       return {
         ...state,
@@ -1064,7 +1201,7 @@ function createProductReducer(
         dimensionLengthUnit: action.payload,
       };
 
-    // page 1 -> additional comments
+    // additional comments
     case createProductAction.setAdditionalComments:
       return {
         ...state,

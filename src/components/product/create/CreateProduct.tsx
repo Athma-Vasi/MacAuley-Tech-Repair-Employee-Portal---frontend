@@ -79,7 +79,7 @@ import { createProductReducer } from './reducers';
 import { createProductAction, initialCreateProductState } from './state';
 import {
   DimensionUnit,
-  MerchandiseAvailability,
+  ProductAvailability,
   ProductDocument,
   WeightUnit,
 } from './types';
@@ -1457,7 +1457,7 @@ function CreateProduct() {
       onChange: (event: ChangeEvent<HTMLSelectElement>) => {
         createProductDispatch({
           type: createProductAction.setAvailability,
-          payload: event.currentTarget.value as MerchandiseAvailability,
+          payload: event.currentTarget.value as ProductAvailability,
         });
       },
       value: availability,

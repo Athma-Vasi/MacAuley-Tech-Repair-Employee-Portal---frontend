@@ -25,7 +25,6 @@ import {
   KeyboardSwitch,
   MemoryType,
   MemoryUnit,
-  MerchandiseAvailability,
   MicrophoneInterface,
   MicrophonePolarPattern,
   MicrophoneType,
@@ -33,6 +32,7 @@ import {
   MotherboardFormFactor,
   MouseSensor,
   PeripheralsInterface,
+  ProductAvailability,
   PsuEfficiency,
   PsuFormFactor,
   PsuModularity,
@@ -216,7 +216,7 @@ function setAvailability_CreateProductReducer(
 ): CreateProductState {
   return {
     ...state,
-    availability: action.payload as MerchandiseAvailability,
+    availability: action.payload as ProductAvailability,
   };
 }
 
@@ -8309,57 +8309,6 @@ function setAreImagesValid_CreateProductReducer(
 //   REDUCER FUNCTIONS => MISC.
 // ╚═════════════════════════════════════════════════════════════════╝
 
-/**
- * // misc.
-    case createProductAction.setCurrentlySelectedAdditionalFieldIndex:
-      return {
-        ...state,
-        currentlySelectedAdditionalFieldIndex: action.payload,
-      };
-
-    case createProductAction.setTriggerFormSubmit:
-      return {
-        ...state,
-        triggerFormSubmit: action.payload,
-      };
-    case createProductAction.setCurrentStepperPosition:
-      return {
-        ...state,
-        currentStepperPosition: action.payload,
-      };
-    case createProductAction.setStepsInError: {
-      const { kind, step } = action.payload;
-      const stepsInError = new Set(state.stepsInError);
-      kind === 'add' ? stepsInError.add(step) : stepsInError.delete(step);
-
-      return {
-        ...state,
-        stepsInError,
-      };
-    }
-
-    case createProductAction.setIsSubmitting:
-      return {
-        ...state,
-        isSubmitting: action.payload,
-      };
-    case createProductAction.setSubmitMessage:
-      return {
-        ...state,
-        submitMessage: action.payload,
-      };
-    case createProductAction.setIsSuccessful:
-      return {
-        ...state,
-        isSuccessful: action.payload,
-      };
-    case createProductAction.setSuccessMessage:
-      return {
-        ...state,
-        successMessage: action.payload,
-      };
- */
-
 // ╭─────────────────────────────────────────────────────────────────╮
 //   CURRENTLY SELECTED ADDITIONAL FIELD INDEX
 // ╰─────────────────────────────────────────────────────────────────╯
@@ -8468,11 +8417,11 @@ function setSuccessMessage_CreateProductReducer(
   };
 }
 
-// ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+// ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 //  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
 //    REDUCERS MAP
 //  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
-// ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+// ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
 const createProductReducersMap = new Map<
   CreateProductAction[keyof CreateProductAction],
