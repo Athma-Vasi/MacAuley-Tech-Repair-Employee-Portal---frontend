@@ -39,17 +39,12 @@ import {
   SMARTPHONE_CHIPSET_REGEX,
   USER_DEFINED_VALUE_REGEX,
 } from '../constants';
-import {
-  CreateProductAction,
-  CreateProductDispatch,
-  MemoryUnit,
-  MobileOs,
-} from '../types';
+import { CreateProductDispatch } from '../dispatches';
+import { CreateProductAction, MemoryUnit, MobileOs } from '../types';
 
 type CreateSmartphoneProps = {
   areSmartphoneFieldsAdditionalMapFocused: Map<number, [boolean, boolean]>;
   areSmartphoneFieldsAdditionalMapValid: Map<number, [boolean, boolean]>;
-  borderColor: string;
   createProductAction: CreateProductAction;
   createProductDispatch: React.Dispatch<CreateProductDispatch>;
   currentlySelectedAdditionalFieldIndex: number;
@@ -89,7 +84,6 @@ type CreateSmartphoneProps = {
 function CreateSmartphone({
   areSmartphoneFieldsAdditionalMapFocused,
   areSmartphoneFieldsAdditionalMapValid,
-  borderColor,
   createProductAction,
   createProductDispatch,
   currentlySelectedAdditionalFieldIndex,
@@ -954,7 +948,7 @@ function CreateSmartphone({
       smartphoneFieldsAdditionalMapKeysInputErrorText,
       smartphoneFieldsAdditionalMapKeysInputValidText,
     ] = AccessibleErrorValidTextElements({
-      inputElementKind: `additional field name ${mapKey + 1}`,
+      inputElementKind: `additional Smartphone field name ${mapKey + 1}`,
       inputText: field,
       isInputTextFocused:
         areSmartphoneFieldsAdditionalMapFocused.get(mapKey)?.[0] ?? false,
@@ -962,7 +956,7 @@ function CreateSmartphone({
         areSmartphoneFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
       regexValidationText: returnObjectKeyValidationText({
         content: field,
-        contentKind: `additional field name ${mapKey + 1}`,
+        contentKind: `additional Smartphone field name ${mapKey + 1}`,
         maxLength: 75,
         minLength: 1,
       }),
@@ -990,7 +984,7 @@ function CreateSmartphone({
       smartphoneFieldsAdditionalMapValuesInputErrorText,
       smartphoneFieldsAdditionalMapValuesInputValidText,
     ] = AccessibleErrorValidTextElements({
-      inputElementKind: `additional field value ${mapKey + 1}`,
+      inputElementKind: `additional Smartphone field value ${mapKey + 1}`,
       inputText: value,
       isInputTextFocused:
         areSmartphoneFieldsAdditionalMapFocused.get(mapKey)?.[1] ?? false,
@@ -998,7 +992,7 @@ function CreateSmartphone({
         areSmartphoneFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
       regexValidationText: returnUserDefinedFieldValueValidationText({
         content: value,
-        contentKind: `additional field value ${mapKey + 1}`,
+        contentKind: `additional Smartphone field value ${mapKey + 1}`,
         maxLength: 2000,
         minLength: 2,
       }),
@@ -1072,7 +1066,7 @@ function CreateSmartphone({
         },
         placeholder: 'Enter additional field name',
         required: true,
-        semanticName: `additional field name ${mapKey + 1}`,
+        semanticName: `additional Smartphone field name ${mapKey + 1}`,
       };
 
     // ╭─────────────────────────────────────────────────────────────────╮
@@ -1136,7 +1130,7 @@ function CreateSmartphone({
         },
         placeholder: 'Enter additional field value',
         required: true,
-        semanticName: `additional field value ${mapKey + 1}`,
+        semanticName: `additional Smartphone field value ${mapKey + 1}`,
       };
 
     const [
@@ -1255,4 +1249,4 @@ function CreateSmartphone({
   return displaySmartphoneSpecificationsInputs;
 }
 
-export default CreateSmartphone;
+export { CreateSmartphone };

@@ -1,10 +1,10 @@
 import { Group, MantineNumberSize, Stack, Title } from '@mantine/core';
 
+import { CreateProductDispatch } from '../dispatches';
 import {
   CaseSidePanel,
   CaseType,
   CreateProductAction,
-  CreateProductDispatch,
   DisplayPanelType,
   KeyboardBacklight,
   KeyboardLayout,
@@ -23,17 +23,17 @@ import {
   StorageInterface,
   StorageType,
 } from '../types';
-import CreateCase from './CreateCase';
-import CreateCpu from './CreateCpu';
-import CreateDisplay from './CreateDisplay';
-import CreateGpu from './CreateGpu';
-import CreateKeyboard from './CreateKeyboard';
-import CreateMotherboard from './CreateMotherboard';
-import CreateMouse from './CreateMouse';
-import CreatePsu from './CreatePsu';
-import CreateRam from './CreateRam';
-import CreateSpeaker from './CreateSpeaker';
-import CreateStorage from './CreateStorage';
+import { CreateCase } from './CreateCase';
+import { CreateCpu } from './CreateCpu';
+import { CreateDisplay } from './CreateDisplay';
+import { CreateGpu } from './CreateGpu';
+import { CreateKeyboard } from './CreateKeyboard';
+import { CreateMotherboard } from './CreateMotherboard';
+import { CreateMouse } from './CreateMouse';
+import { CreatePsu } from './CreatePsu';
+import { CreateRam } from './CreateRam';
+import { CreateSpeaker } from './CreateSpeaker';
+import { CreateStorage } from './CreateStorage';
 
 type CreateDesktopComputerProps = {
   // ╭─────────────────────────────────────────────────────────────────╮
@@ -499,7 +499,6 @@ function CreateDesktopComputer({
     <CreateCase
       areCaseFieldsAdditionalMapFocused={areCaseFieldsAdditionalMapFocused}
       areCaseFieldsAdditionalMapValid={areCaseFieldsAdditionalMapValid}
-      borderColor={borderColor}
       caseColor={caseColor}
       caseFieldsAdditionalMap={caseFieldsAdditionalMap}
       caseSidePanel={caseSidePanel}
@@ -522,7 +521,6 @@ function CreateDesktopComputer({
     <CreateCpu
       areCpuFieldsAdditionalMapFocused={areCpuFieldsAdditionalMapFocused}
       areCpuFieldsAdditionalMapValid={areCpuFieldsAdditionalMapValid}
-      borderColor={borderColor}
       cpuCores={cpuCores}
       cpuFieldsAdditionalMap={cpuFieldsAdditionalMap}
       cpuFrequency={cpuFrequency}
@@ -566,7 +564,6 @@ function CreateDesktopComputer({
         areDisplayFieldsAdditionalMapFocused
       }
       areDisplayFieldsAdditionalMapValid={areDisplayFieldsAdditionalMapValid}
-      borderColor={borderColor}
       createProductAction={createProductAction}
       createProductDispatch={createProductDispatch}
       currentlySelectedAdditionalFieldIndex={
@@ -605,7 +602,6 @@ function CreateDesktopComputer({
     <CreateGpu
       areGpuFieldsAdditionalMapFocused={areGpuFieldsAdditionalMapFocused}
       areGpuFieldsAdditionalMapValid={areGpuFieldsAdditionalMapValid}
-      borderColor={borderColor}
       createProductAction={createProductAction}
       createProductDispatch={createProductDispatch}
       currentlySelectedAdditionalFieldIndex={
@@ -641,7 +637,6 @@ function CreateDesktopComputer({
         areKeyboardFieldsAdditionalMapFocused
       }
       areKeyboardFieldsAdditionalMapValid={areKeyboardFieldsAdditionalMapValid}
-      borderColor={borderColor}
       createProductAction={createProductAction}
       createProductDispatch={createProductDispatch}
       currentlySelectedAdditionalFieldIndex={
@@ -667,7 +662,6 @@ function CreateDesktopComputer({
       areMotherboardFieldsAdditionalMapValid={
         areMotherboardFieldsAdditionalMapValid
       }
-      borderColor={borderColor}
       createProductAction={createProductAction}
       createProductDispatch={createProductDispatch}
       currentlySelectedAdditionalFieldIndex={
@@ -717,7 +711,6 @@ function CreateDesktopComputer({
     <CreateMouse
       areMouseFieldsAdditionalMapFocused={areMouseFieldsAdditionalMapFocused}
       areMouseFieldsAdditionalMapValid={areMouseFieldsAdditionalMapValid}
-      borderColor={borderColor}
       createProductAction={createProductAction}
       createProductDispatch={createProductDispatch}
       currentlySelectedAdditionalFieldIndex={
@@ -746,7 +739,6 @@ function CreateDesktopComputer({
     <CreatePsu
       arePsuFieldsAdditionalMapFocused={arePsuFieldsAdditionalMapFocused}
       arePsuFieldsAdditionalMapValid={arePsuFieldsAdditionalMapValid}
-      borderColor={borderColor}
       createProductAction={createProductAction}
       createProductDispatch={createProductDispatch}
       currentlySelectedAdditionalFieldIndex={
@@ -770,7 +762,6 @@ function CreateDesktopComputer({
     <CreateRam
       areRamFieldsAdditionalMapFocused={areRamFieldsAdditionalMapFocused}
       areRamFieldsAdditionalMapValid={areRamFieldsAdditionalMapValid}
-      borderColor={borderColor}
       createProductAction={createProductAction}
       createProductDispatch={createProductDispatch}
       currentlySelectedAdditionalFieldIndex={
@@ -810,7 +801,6 @@ function CreateDesktopComputer({
         areSpeakerFieldsAdditionalMapFocused
       }
       areSpeakerFieldsAdditionalMapValid={areSpeakerFieldsAdditionalMapValid}
-      borderColor={borderColor}
       createProductAction={createProductAction}
       createProductDispatch={createProductDispatch}
       currentlySelectedAdditionalFieldIndex={
@@ -841,7 +831,6 @@ function CreateDesktopComputer({
         areStorageFieldsAdditionalMapFocused
       }
       areStorageFieldsAdditionalMapValid={areStorageFieldsAdditionalMapValid}
-      borderColor={borderColor}
       createProductAction={createProductAction}
       createProductDispatch={createProductDispatch}
       currentlySelectedAdditionalFieldIndex={
@@ -866,16 +855,36 @@ function CreateDesktopComputer({
   const displayDesktopComputerSpecificationsInputs = (
     <Stack w="100%">
       <Title order={3}>Desktop Computer Specifications</Title>
-      {displayCaseSpecificationsInputs}
-      {displayCpuSpecificationsInputs}
-      {displayDisplaySpecificationsInputs}
-      {displayGpuSpecificationsInputs}
-      {displayKeyboardSpecificationsInputs}
-      {displayMotherboardSpecificationsInputs}
-      {displayMouseSpecificationsInputs}
-      {displayPsuSpecificationsInputs}
-      {displayRamSpecificationsInputs}
-      {displaySpeakerSpecificationsInputs}
+      <Group style={{ borderBottom: borderColor }}>
+        {displayCaseSpecificationsInputs}
+      </Group>
+      <Group style={{ borderBottom: borderColor }}>
+        {displayCpuSpecificationsInputs}
+      </Group>
+      <Group style={{ borderBottom: borderColor }}>
+        {displayDisplaySpecificationsInputs}
+      </Group>
+      <Group style={{ borderBottom: borderColor }}>
+        {displayGpuSpecificationsInputs}
+      </Group>
+      <Group style={{ borderBottom: borderColor }}>
+        {displayKeyboardSpecificationsInputs}
+      </Group>
+      <Group style={{ borderBottom: borderColor }}>
+        {displayMotherboardSpecificationsInputs}
+      </Group>
+      <Group style={{ borderBottom: borderColor }}>
+        {displayMouseSpecificationsInputs}
+      </Group>
+      <Group style={{ borderBottom: borderColor }}>
+        {displayPsuSpecificationsInputs}
+      </Group>
+      <Group style={{ borderBottom: borderColor }}>
+        {displayRamSpecificationsInputs}
+      </Group>
+      <Group style={{ borderBottom: borderColor }}>
+        {displaySpeakerSpecificationsInputs}
+      </Group>
       {displayStorageSpecificationsInputs}
     </Stack>
   );
@@ -883,4 +892,4 @@ function CreateDesktopComputer({
   return displayDesktopComputerSpecificationsInputs;
 }
 
-export default CreateDesktopComputer;
+export { CreateDesktopComputer };

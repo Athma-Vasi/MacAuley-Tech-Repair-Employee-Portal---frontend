@@ -30,9 +30,9 @@ import {
   PSU_MODULARITY_DATA,
   USER_DEFINED_VALUE_REGEX,
 } from '../constants';
+import { CreateProductDispatch } from '../dispatches';
 import {
   CreateProductAction,
-  CreateProductDispatch,
   PsuEfficiency,
   PsuFormFactor,
   PsuModularity,
@@ -41,7 +41,6 @@ import {
 type CreatePsuProps = {
   arePsuFieldsAdditionalMapFocused: Map<number, [boolean, boolean]>;
   arePsuFieldsAdditionalMapValid: Map<number, [boolean, boolean]>;
-  borderColor: string;
   createProductAction: CreateProductAction;
   createProductDispatch: React.Dispatch<CreateProductDispatch>;
   currentlySelectedAdditionalFieldIndex: number;
@@ -58,7 +57,6 @@ type CreatePsuProps = {
 function CreatePsu({
   arePsuFieldsAdditionalMapFocused,
   arePsuFieldsAdditionalMapValid,
-  borderColor,
   createProductAction,
   createProductDispatch,
   currentlySelectedAdditionalFieldIndex,
@@ -342,7 +340,7 @@ function CreatePsu({
       psuFieldsAdditionalMapKeysInputErrorText,
       psuFieldsAdditionalMapKeysInputValidText,
     ] = AccessibleErrorValidTextElements({
-      inputElementKind: `additional field name ${mapKey + 1}`,
+      inputElementKind: `additional PSU field name ${mapKey + 1}`,
       inputText: field,
       isInputTextFocused:
         arePsuFieldsAdditionalMapFocused.get(mapKey)?.[0] ?? false,
@@ -350,7 +348,7 @@ function CreatePsu({
         arePsuFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
       regexValidationText: returnObjectKeyValidationText({
         content: field,
-        contentKind: `additional field name ${mapKey + 1}`,
+        contentKind: `additional PSU field name ${mapKey + 1}`,
         maxLength: 75,
         minLength: 1,
       }),
@@ -378,7 +376,7 @@ function CreatePsu({
       psuFieldsAdditionalMapValuesInputErrorText,
       psuFieldsAdditionalMapValuesInputValidText,
     ] = AccessibleErrorValidTextElements({
-      inputElementKind: `additional field value ${mapKey + 1}`,
+      inputElementKind: `additional PSU field value ${mapKey + 1}`,
       inputText: value,
       isInputTextFocused:
         arePsuFieldsAdditionalMapFocused.get(mapKey)?.[1] ?? false,
@@ -386,7 +384,7 @@ function CreatePsu({
         arePsuFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
       regexValidationText: returnUserDefinedFieldValueValidationText({
         content: value,
-        contentKind: `additional field value ${mapKey + 1}`,
+        contentKind: `additional PSU field value ${mapKey + 1}`,
         maxLength: 2000,
         minLength: 2,
       }),
@@ -458,7 +456,7 @@ function CreatePsu({
         },
         placeholder: 'Enter additional field name',
         required: true,
-        semanticName: `additional field name ${mapKey + 1}`,
+        semanticName: `additional PSU field name ${mapKey + 1}`,
       };
 
     // ╭─────────────────────────────────────────────────────────────────╮
@@ -516,7 +514,7 @@ function CreatePsu({
         },
         placeholder: 'Enter additional field value',
         required: true,
-        semanticName: `additional field value ${mapKey + 1}`,
+        semanticName: `additional PSU field value ${mapKey + 1}`,
       };
 
     const [
@@ -622,4 +620,4 @@ function CreatePsu({
   return displayPowerSupplySpecificationsInputs;
 }
 
-export default CreatePsu;
+export { CreatePsu };

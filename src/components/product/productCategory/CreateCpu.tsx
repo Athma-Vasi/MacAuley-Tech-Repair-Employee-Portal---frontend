@@ -34,16 +34,12 @@ import {
   SMALL_INTEGER_REGEX,
   USER_DEFINED_VALUE_REGEX,
 } from '../constants';
-import {
-  CreateProductAction,
-  CreateProductDispatch,
-  MemoryUnit,
-} from '../types';
+import { CreateProductDispatch } from '../dispatches';
+import { CreateProductAction, MemoryUnit } from '../types';
 
 type CreateCpuProps = {
   areCpuFieldsAdditionalMapFocused: Map<number, [boolean, boolean]>;
   areCpuFieldsAdditionalMapValid: Map<number, [boolean, boolean]>;
-  borderColor: string;
   cpuCores: string;
   cpuFieldsAdditionalMap: Map<number, [string, string]>;
   cpuFrequency: string;
@@ -78,7 +74,6 @@ type CreateCpuProps = {
 function CreateCpu({
   areCpuFieldsAdditionalMapFocused,
   areCpuFieldsAdditionalMapValid,
-  borderColor,
   cpuCores,
   cpuFieldsAdditionalMap,
   cpuFrequency,
@@ -794,7 +789,7 @@ function CreateCpu({
       cpuFieldsAdditionalMapKeysInputErrorText,
       cpuFieldsAdditionalMapKeysInputValidText,
     ] = AccessibleErrorValidTextElements({
-      inputElementKind: `additional field name ${mapKey + 1}`,
+      inputElementKind: `additional CPU field name ${mapKey + 1}`,
       inputText: field,
       isInputTextFocused:
         areCpuFieldsAdditionalMapFocused.get(mapKey)?.[0] ?? false,
@@ -802,7 +797,7 @@ function CreateCpu({
         areCpuFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
       regexValidationText: returnObjectKeyValidationText({
         content: field,
-        contentKind: `additional field name ${mapKey + 1}`,
+        contentKind: `additional CPU field name ${mapKey + 1}`,
         maxLength: 75,
         minLength: 1,
       }),
@@ -830,7 +825,7 @@ function CreateCpu({
       cpuFieldsAdditionalMapValuesInputErrorText,
       cpuFieldsAdditionalMapValuesInputValidText,
     ] = AccessibleErrorValidTextElements({
-      inputElementKind: `additional field value ${mapKey + 1}`,
+      inputElementKind: `additional CPU field value ${mapKey + 1}`,
       inputText: value,
       isInputTextFocused:
         areCpuFieldsAdditionalMapFocused.get(mapKey)?.[1] ?? false,
@@ -838,7 +833,7 @@ function CreateCpu({
         areCpuFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
       regexValidationText: returnUserDefinedFieldValueValidationText({
         content: value,
-        contentKind: `additional field value ${mapKey + 1}`,
+        contentKind: `additional CPU field value ${mapKey + 1}`,
         maxLength: 2000,
         minLength: 2,
       }),
@@ -910,7 +905,7 @@ function CreateCpu({
         },
         placeholder: 'Enter additional field name',
         required: true,
-        semanticName: `additional field name ${mapKey + 1}`,
+        semanticName: `additional CPU field name ${mapKey + 1}`,
       };
 
     // ╭─────────────────────────────────────────────────────────────────╮
@@ -968,7 +963,7 @@ function CreateCpu({
         },
         placeholder: 'Enter additional field value',
         required: true,
-        semanticName: `additional field value ${mapKey + 1}`,
+        semanticName: `additional CPU field value ${mapKey + 1}`,
       };
 
     const [
@@ -1080,4 +1075,4 @@ function CreateCpu({
   return displayCpuSpecificationsInputs;
 }
 
-export default CreateCpu;
+export { CreateCpu };

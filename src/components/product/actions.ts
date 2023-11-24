@@ -259,25 +259,6 @@ const createProductAction: CreateProductAction = {
   setAreRamFieldsAdditionalMapValid: 'setAreRamFieldsAdditionalMapValid',
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    MOUSE
-  // ╰─────────────────────────────────────────────────────────────────╯
-  setMouseSensor: 'setMouseSensor',
-  setMouseDpi: 'setMouseDpi',
-  setIsMouseDpiValid: 'setIsMouseDpiValid',
-  setIsMouseDpiFocused: 'setIsMouseDpiFocused',
-  setMouseButtons: 'setMouseButtons',
-  setIsMouseButtonsValid: 'setIsMouseButtonsValid',
-  setIsMouseButtonsFocused: 'setIsMouseButtonsFocused',
-  setMouseColor: 'setMouseColor',
-  setIsMouseColorValid: 'setIsMouseColorValid',
-  setIsMouseColorFocused: 'setIsMouseColorFocused',
-  setMouseInterface: 'setMouseInterface',
-  setMouseFieldsAdditionalMap: 'setMouseFieldsAdditionalMap',
-  setAreMouseFieldsAdditionalMapFocused:
-    'setAreMouseFieldsAdditionalMapFocused',
-  setAreMouseFieldsAdditionalMapValid: 'setAreMouseFieldsAdditionalMapValid',
-
-  // ╭─────────────────────────────────────────────────────────────────╮
   //    MICROPHONE
   // ╰─────────────────────────────────────────────────────────────────╯
   setMicrophoneType: 'setMicrophoneType',
@@ -337,6 +318,25 @@ const createProductAction: CreateProductAction = {
     'setAreMotherboardFieldsAdditionalMapFocused',
   setAreMotherboardFieldsAdditionalMapValid:
     'setAreMotherboardFieldsAdditionalMapValid',
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    MOUSE
+  // ╰─────────────────────────────────────────────────────────────────╯
+  setMouseSensor: 'setMouseSensor',
+  setMouseDpi: 'setMouseDpi',
+  setIsMouseDpiValid: 'setIsMouseDpiValid',
+  setIsMouseDpiFocused: 'setIsMouseDpiFocused',
+  setMouseButtons: 'setMouseButtons',
+  setIsMouseButtonsValid: 'setIsMouseButtonsValid',
+  setIsMouseButtonsFocused: 'setIsMouseButtonsFocused',
+  setMouseColor: 'setMouseColor',
+  setIsMouseColorValid: 'setIsMouseColorValid',
+  setIsMouseColorFocused: 'setIsMouseColorFocused',
+  setMouseInterface: 'setMouseInterface',
+  setMouseFieldsAdditionalMap: 'setMouseFieldsAdditionalMap',
+  setAreMouseFieldsAdditionalMapFocused:
+    'setAreMouseFieldsAdditionalMapFocused',
+  setAreMouseFieldsAdditionalMapValid: 'setAreMouseFieldsAdditionalMapValid',
 
   // ╭─────────────────────────────────────────────────────────────────╮
   //    POWER SUPPLY UNIT (PSU)

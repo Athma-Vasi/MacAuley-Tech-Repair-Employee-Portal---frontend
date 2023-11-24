@@ -4027,416 +4027,6 @@ function setAreRamFieldsAdditionalMapValid_CreateProductReducer(
 }
 
 // ╔═════════════════════════════════════════════════════════════════╗
-//   MOUSE
-// ╚═════════════════════════════════════════════════════════════════╝
-
-// ╭─────────────────────────────────────────────────────────────────╮
-//    MOUSE => SENSOR
-// ╰─────────────────────────────────────────────────────────────────╯
-function setMouseSensor_CreateProductReducer(
-  state: CreateProductState,
-  action: CreateProductDispatch
-): CreateProductState {
-  return {
-    ...state,
-    mouseSensor: action.payload as MouseSensor,
-  };
-}
-
-// ╭─────────────────────────────────────────────────────────────────╮
-//    MOUSE => DPI
-// ╰─────────────────────────────────────────────────────────────────╯
-function setMouseDpi_CreateProductReducer(
-  state: CreateProductState,
-  action: CreateProductDispatch
-): CreateProductState {
-  return {
-    ...state,
-    mouseDpi: action.payload as string,
-  };
-}
-
-function setIsMouseDpiFocused_CreateProductReducer(
-  state: CreateProductState,
-  action: CreateProductDispatch
-): CreateProductState {
-  return {
-    ...state,
-    isMouseDpiFocused: action.payload as boolean,
-  };
-}
-
-function setIsMouseDpiValid_CreateProductReducer(
-  state: CreateProductState,
-  action: CreateProductDispatch
-): CreateProductState {
-  return {
-    ...state,
-    isMouseDpiValid: action.payload as boolean,
-  };
-}
-
-// ╭─────────────────────────────────────────────────────────────────╮
-//    MOUSE => BUTTONS
-// ╰─────────────────────────────────────────────────────────────────╯
-function setMouseButtons_CreateProductReducer(
-  state: CreateProductState,
-  action: CreateProductDispatch
-): CreateProductState {
-  return {
-    ...state,
-    mouseButtons: action.payload as string,
-  };
-}
-
-function setIsMouseButtonsFocused_CreateProductReducer(
-  state: CreateProductState,
-  action: CreateProductDispatch
-): CreateProductState {
-  return {
-    ...state,
-    isMouseButtonsFocused: action.payload as boolean,
-  };
-}
-
-function setIsMouseButtonsValid_CreateProductReducer(
-  state: CreateProductState,
-  action: CreateProductDispatch
-): CreateProductState {
-  return {
-    ...state,
-    isMouseButtonsValid: action.payload as boolean,
-  };
-}
-
-// ╭─────────────────────────────────────────────────────────────────╮
-//    MOUSE => COLOR
-// ╰─────────────────────────────────────────────────────────────────╯
-function setMouseColor_CreateProductReducer(
-  state: CreateProductState,
-  action: CreateProductDispatch
-): CreateProductState {
-  return {
-    ...state,
-    mouseColor: action.payload as string,
-  };
-}
-
-function setIsMouseColorFocused_CreateProductReducer(
-  state: CreateProductState,
-  action: CreateProductDispatch
-): CreateProductState {
-  return {
-    ...state,
-    isMouseColorFocused: action.payload as boolean,
-  };
-}
-
-function setIsMouseColorValid_CreateProductReducer(
-  state: CreateProductState,
-  action: CreateProductDispatch
-): CreateProductState {
-  return {
-    ...state,
-    isMouseColorValid: action.payload as boolean,
-  };
-}
-
-// ╭─────────────────────────────────────────────────────────────────╮
-//    MOUSE => INTERFACE
-// ╰─────────────────────────────────────────────────────────────────╯
-function setMouseInterface_CreateProductReducer(
-  state: CreateProductState,
-  action: CreateProductDispatch
-): CreateProductState {
-  return {
-    ...state,
-    mouseInterface: action.payload as PeripheralsInterface,
-  };
-}
-
-// ╭─────────────────────────────────────────────────────────────────╮
-//    MOUSE => ADDITIONAL FIELDS
-// ╰─────────────────────────────────────────────────────────────────╯
-
-/**
- * This reducer function contains three operations that are used to update the
- * mouseFieldsAdditionalMap state.
- * @description add: adds a new key-value pair to the mouseFieldsAdditionalMap state
- * @description remove: clones the state, deletes the key-value pair, and iterates over the map
- *   - with the callback fn index to use as the key for the new map
- *  - this is done because the indices are used as the keys that access the error/valid elements array
- * - and must be consecutive as removal of a key-value pair will leave a gap in the indices
- * @description update: updates either the key or value from the mouseFieldsAdditionalMap state
- */
-function setMouseFieldsAdditionalMap_CreateProductReducer(
-  state: CreateProductState,
-  action: CreateProductDispatch
-): CreateProductState {
-  const { operation } = action.payload as AdditionalFieldsPayload;
-
-  switch (operation) {
-    case 'add': {
-      const mouseFieldsAdditionalMapClone = structuredClone(
-        state.mouseFieldsAdditionalMap
-      );
-
-      const { data } = action.payload as AdditionalFieldsAdd;
-      const prevSize = mouseFieldsAdditionalMapClone.size;
-      mouseFieldsAdditionalMapClone.set(prevSize, data);
-
-      return {
-        ...state,
-        mouseFieldsAdditionalMap: mouseFieldsAdditionalMapClone,
-      };
-    }
-
-    case 'remove': {
-      const mouseFieldsAdditionalMapClone = structuredClone(
-        state.mouseFieldsAdditionalMap
-      );
-
-      const { index } = action.payload as AdditionalFieldsRemove;
-      mouseFieldsAdditionalMapClone.delete(index);
-
-      const filteredMouseFieldsAdditionalMap = new Map<
-        number,
-        [string, string]
-      >();
-
-      Array.from(mouseFieldsAdditionalMapClone).forEach(
-        (mapIdxKeyVal, arrayIdx) => {
-          const [_mapIdx, keyVal] = mapIdxKeyVal as [number, [string, string]];
-          filteredMouseFieldsAdditionalMap.set(arrayIdx, keyVal);
-        }
-      );
-
-      return {
-        ...state,
-        mouseFieldsAdditionalMap: filteredMouseFieldsAdditionalMap,
-      };
-    }
-    case 'update': {
-      const mouseFieldsAdditionalMapClone = structuredClone(
-        state.mouseFieldsAdditionalMap
-      );
-
-      const { data, index, kind } = action.payload as AdditionalFieldsUpdate;
-      const prevKeyVal = mouseFieldsAdditionalMapClone.get(index);
-
-      if (!prevKeyVal) {
-        return state;
-      }
-
-      const [prevKey, prevValue] = prevKeyVal;
-      kind === 'key'
-        ? mouseFieldsAdditionalMapClone.set(index, [data, prevValue])
-        : mouseFieldsAdditionalMapClone.set(index, [prevKey, data]);
-
-      return {
-        ...state,
-        mouseFieldsAdditionalMap: mouseFieldsAdditionalMapClone,
-      };
-    }
-    default:
-      return state;
-  }
-}
-
-// ╭─────────────────────────────────────────────────────────────────╮
-//    MOUSE => ADDITIONAL FIELDS => FOCUSED
-// ╰─────────────────────────────────────────────────────────────────╯
-
-/**
- * This reducer function contains three operations that are used to update the
- * areMouseFieldsAdditionalMapFocused state.
- * @description add: adds a new key-value pair to the areMouseFieldsAdditionalMapFocused state
- * @description remove:
-   - clones the state, deletes the key-value pair, and iterates over the map
-   - with the callback fn index to use as the key for the new map
-   - this is done because the indices are used as the keys by the mapped over mouseFieldsAdditionalMap state to generate the text elements
-   - that access the areMouseFieldsAdditionalMapFocused state Map to determine if the appropriate text element should be focused/blurred
-   - and must be consecutive as removal of a key-value pair will leave a gap in the indices
-  * @description update: updates either the key or value from the areMouseFieldsAdditionalMapFocused state
- */
-function setAreMouseFieldsAdditionalMapFocused_CreateProductReducer(
-  state: CreateProductState,
-  action: CreateProductDispatch
-): CreateProductState {
-  const { operation } = action.payload as AdditionalFieldsValidFocusedPayload;
-
-  switch (operation) {
-    case 'add': {
-      const areMouseFieldsAdditionalMapFocusedClone = structuredClone(
-        state.areMouseFieldsAdditionalMapFocused
-      );
-
-      const { data } = action.payload as AdditionalFieldsValidFocusedAdd;
-      const prevSize = areMouseFieldsAdditionalMapFocusedClone.size;
-      areMouseFieldsAdditionalMapFocusedClone.set(prevSize, data);
-
-      return {
-        ...state,
-        areMouseFieldsAdditionalMapFocused:
-          areMouseFieldsAdditionalMapFocusedClone,
-      };
-    }
-    case 'remove': {
-      const areMouseFieldsAdditionalMapFocusedClone = structuredClone(
-        state.areMouseFieldsAdditionalMapFocused
-      );
-
-      const { index } = action.payload as AdditionalFieldsValidFocusedRemove;
-      areMouseFieldsAdditionalMapFocusedClone.delete(index);
-
-      const filteredAreMouseFieldsAdditionalMapFocused = new Map<
-        number,
-        [boolean, boolean]
-      >();
-
-      Array.from(areMouseFieldsAdditionalMapFocusedClone).forEach(
-        (mapIdxKeyVal, arrayIdx) => {
-          const [_mapIdx, keyVal] = mapIdxKeyVal as [
-            number,
-            [boolean, boolean]
-          ];
-
-          filteredAreMouseFieldsAdditionalMapFocused.set(arrayIdx, keyVal);
-        }
-      );
-
-      return {
-        ...state,
-        areMouseFieldsAdditionalMapFocused:
-          filteredAreMouseFieldsAdditionalMapFocused,
-      };
-    }
-    case 'update': {
-      const areMouseFieldsAdditionalMapFocusedClone = structuredClone(
-        state.areMouseFieldsAdditionalMapFocused
-      );
-
-      const { data, index, kind } =
-        action.payload as AdditionalFieldsValidFocusedUpdate;
-      const prevKeyVal = areMouseFieldsAdditionalMapFocusedClone.get(index);
-
-      if (!prevKeyVal) {
-        return state;
-      }
-
-      const [prevKey, prevValue] = prevKeyVal;
-      kind === 'key'
-        ? areMouseFieldsAdditionalMapFocusedClone.set(index, [data, prevValue])
-        : areMouseFieldsAdditionalMapFocusedClone.set(index, [prevKey, data]);
-
-      return {
-        ...state,
-        areMouseFieldsAdditionalMapFocused:
-          areMouseFieldsAdditionalMapFocusedClone,
-      };
-    }
-    default:
-      return state;
-  }
-}
-
-// ╭─────────────────────────────────────────────────────────────────╮
-//    MOUSE => ADDITIONAL FIELDS => VALID
-// ╰─────────────────────────────────────────────────────────────────╯
-
-/**
- * This reducer function contains three operations that are used to update the
- * areMouseFieldsAdditionalMapValid state.
- * @description add: adds a new key-value pair to the areMouseFieldsAdditionalMapValid state
- * @description remove:
-   - clones the state, deletes the key-value pair, and iterates over the map
-   - with the callback fn index to use as the key for the new map
-   - this is done because the indices are used as the keys by the mapped over mouseFieldsAdditionalMap state to generate the text elements
-   - that access the areMouseFieldsAdditionalMapValid state Map based on said element's error state
-   - to display the text contained in the screenreader accessible error/valid text elements array
-   - map keys must be consecutive as removal of a key-value pair will leave a gap in the indices
-  * @description update: updates either the key or value from the areMouseFieldsAdditionalMapValid state
- */
-function setAreMouseFieldsAdditionalMapValid_CreateProductReducer(
-  state: CreateProductState,
-  action: CreateProductDispatch
-): CreateProductState {
-  const { operation } = action.payload as AdditionalFieldsValidFocusedPayload;
-
-  switch (operation) {
-    case 'add': {
-      const areMouseFieldsAdditionalMapValidClone = structuredClone(
-        state.areMouseFieldsAdditionalMapValid
-      );
-
-      const { data } = action.payload as AdditionalFieldsValidFocusedAdd;
-      const prevSize = areMouseFieldsAdditionalMapValidClone.size;
-      areMouseFieldsAdditionalMapValidClone.set(prevSize, data);
-
-      return {
-        ...state,
-        areMouseFieldsAdditionalMapValid: areMouseFieldsAdditionalMapValidClone,
-      };
-    }
-    case 'remove': {
-      const areMouseFieldsAdditionalMapValidClone = structuredClone(
-        state.areMouseFieldsAdditionalMapValid
-      );
-
-      const { index } = action.payload as AdditionalFieldsValidFocusedRemove;
-      areMouseFieldsAdditionalMapValidClone.delete(index);
-
-      const filteredAreMouseFieldsAdditionalMapValid = new Map<
-        number,
-        [boolean, boolean]
-      >();
-
-      Array.from(areMouseFieldsAdditionalMapValidClone).forEach(
-        (mapIdxKeyVal, arrayIdx) => {
-          const [_mapIdx, keyVal] = mapIdxKeyVal as [
-            number,
-            [boolean, boolean]
-          ];
-
-          filteredAreMouseFieldsAdditionalMapValid.set(arrayIdx, keyVal);
-        }
-      );
-
-      return {
-        ...state,
-        areMouseFieldsAdditionalMapValid:
-          filteredAreMouseFieldsAdditionalMapValid,
-      };
-    }
-    case 'update': {
-      const areMouseFieldsAdditionalMapValidClone = structuredClone(
-        state.areMouseFieldsAdditionalMapValid
-      );
-
-      const { data, index, kind } =
-        action.payload as AdditionalFieldsValidFocusedUpdate;
-      const prevKeyVal = areMouseFieldsAdditionalMapValidClone.get(index);
-
-      if (!prevKeyVal) {
-        return state;
-      }
-
-      const [prevKey, prevValue] = prevKeyVal;
-      kind === 'key'
-        ? areMouseFieldsAdditionalMapValidClone.set(index, [data, prevValue])
-        : areMouseFieldsAdditionalMapValidClone.set(index, [prevKey, data]);
-
-      return {
-        ...state,
-        areMouseFieldsAdditionalMapValid: areMouseFieldsAdditionalMapValidClone,
-      };
-    }
-    default:
-      return state;
-  }
-}
-
-// ╔═════════════════════════════════════════════════════════════════╗
 //   MICROPHONE
 // ╚═════════════════════════════════════════════════════════════════╝
 
@@ -5472,6 +5062,416 @@ function setAreMotherboardFieldsAdditionalMapValid_CreateProductReducer(
         ...state,
         areMotherboardFieldsAdditionalMapValid:
           areMotherboardFieldsAdditionalMapValidClone,
+      };
+    }
+    default:
+      return state;
+  }
+}
+
+// ╔═════════════════════════════════════════════════════════════════╗
+//   MOUSE
+// ╚═════════════════════════════════════════════════════════════════╝
+
+// ╭─────────────────────────────────────────────────────────────────╮
+//    MOUSE => SENSOR
+// ╰─────────────────────────────────────────────────────────────────╯
+function setMouseSensor_CreateProductReducer(
+  state: CreateProductState,
+  action: CreateProductDispatch
+): CreateProductState {
+  return {
+    ...state,
+    mouseSensor: action.payload as MouseSensor,
+  };
+}
+
+// ╭─────────────────────────────────────────────────────────────────╮
+//    MOUSE => DPI
+// ╰─────────────────────────────────────────────────────────────────╯
+function setMouseDpi_CreateProductReducer(
+  state: CreateProductState,
+  action: CreateProductDispatch
+): CreateProductState {
+  return {
+    ...state,
+    mouseDpi: action.payload as string,
+  };
+}
+
+function setIsMouseDpiFocused_CreateProductReducer(
+  state: CreateProductState,
+  action: CreateProductDispatch
+): CreateProductState {
+  return {
+    ...state,
+    isMouseDpiFocused: action.payload as boolean,
+  };
+}
+
+function setIsMouseDpiValid_CreateProductReducer(
+  state: CreateProductState,
+  action: CreateProductDispatch
+): CreateProductState {
+  return {
+    ...state,
+    isMouseDpiValid: action.payload as boolean,
+  };
+}
+
+// ╭─────────────────────────────────────────────────────────────────╮
+//    MOUSE => BUTTONS
+// ╰─────────────────────────────────────────────────────────────────╯
+function setMouseButtons_CreateProductReducer(
+  state: CreateProductState,
+  action: CreateProductDispatch
+): CreateProductState {
+  return {
+    ...state,
+    mouseButtons: action.payload as string,
+  };
+}
+
+function setIsMouseButtonsFocused_CreateProductReducer(
+  state: CreateProductState,
+  action: CreateProductDispatch
+): CreateProductState {
+  return {
+    ...state,
+    isMouseButtonsFocused: action.payload as boolean,
+  };
+}
+
+function setIsMouseButtonsValid_CreateProductReducer(
+  state: CreateProductState,
+  action: CreateProductDispatch
+): CreateProductState {
+  return {
+    ...state,
+    isMouseButtonsValid: action.payload as boolean,
+  };
+}
+
+// ╭─────────────────────────────────────────────────────────────────╮
+//    MOUSE => COLOR
+// ╰─────────────────────────────────────────────────────────────────╯
+function setMouseColor_CreateProductReducer(
+  state: CreateProductState,
+  action: CreateProductDispatch
+): CreateProductState {
+  return {
+    ...state,
+    mouseColor: action.payload as string,
+  };
+}
+
+function setIsMouseColorFocused_CreateProductReducer(
+  state: CreateProductState,
+  action: CreateProductDispatch
+): CreateProductState {
+  return {
+    ...state,
+    isMouseColorFocused: action.payload as boolean,
+  };
+}
+
+function setIsMouseColorValid_CreateProductReducer(
+  state: CreateProductState,
+  action: CreateProductDispatch
+): CreateProductState {
+  return {
+    ...state,
+    isMouseColorValid: action.payload as boolean,
+  };
+}
+
+// ╭─────────────────────────────────────────────────────────────────╮
+//    MOUSE => INTERFACE
+// ╰─────────────────────────────────────────────────────────────────╯
+function setMouseInterface_CreateProductReducer(
+  state: CreateProductState,
+  action: CreateProductDispatch
+): CreateProductState {
+  return {
+    ...state,
+    mouseInterface: action.payload as PeripheralsInterface,
+  };
+}
+
+// ╭─────────────────────────────────────────────────────────────────╮
+//    MOUSE => ADDITIONAL FIELDS
+// ╰─────────────────────────────────────────────────────────────────╯
+
+/**
+ * This reducer function contains three operations that are used to update the
+ * mouseFieldsAdditionalMap state.
+ * @description add: adds a new key-value pair to the mouseFieldsAdditionalMap state
+ * @description remove: clones the state, deletes the key-value pair, and iterates over the map
+ *   - with the callback fn index to use as the key for the new map
+ *  - this is done because the indices are used as the keys that access the error/valid elements array
+ * - and must be consecutive as removal of a key-value pair will leave a gap in the indices
+ * @description update: updates either the key or value from the mouseFieldsAdditionalMap state
+ */
+function setMouseFieldsAdditionalMap_CreateProductReducer(
+  state: CreateProductState,
+  action: CreateProductDispatch
+): CreateProductState {
+  const { operation } = action.payload as AdditionalFieldsPayload;
+
+  switch (operation) {
+    case 'add': {
+      const mouseFieldsAdditionalMapClone = structuredClone(
+        state.mouseFieldsAdditionalMap
+      );
+
+      const { data } = action.payload as AdditionalFieldsAdd;
+      const prevSize = mouseFieldsAdditionalMapClone.size;
+      mouseFieldsAdditionalMapClone.set(prevSize, data);
+
+      return {
+        ...state,
+        mouseFieldsAdditionalMap: mouseFieldsAdditionalMapClone,
+      };
+    }
+
+    case 'remove': {
+      const mouseFieldsAdditionalMapClone = structuredClone(
+        state.mouseFieldsAdditionalMap
+      );
+
+      const { index } = action.payload as AdditionalFieldsRemove;
+      mouseFieldsAdditionalMapClone.delete(index);
+
+      const filteredMouseFieldsAdditionalMap = new Map<
+        number,
+        [string, string]
+      >();
+
+      Array.from(mouseFieldsAdditionalMapClone).forEach(
+        (mapIdxKeyVal, arrayIdx) => {
+          const [_mapIdx, keyVal] = mapIdxKeyVal as [number, [string, string]];
+          filteredMouseFieldsAdditionalMap.set(arrayIdx, keyVal);
+        }
+      );
+
+      return {
+        ...state,
+        mouseFieldsAdditionalMap: filteredMouseFieldsAdditionalMap,
+      };
+    }
+    case 'update': {
+      const mouseFieldsAdditionalMapClone = structuredClone(
+        state.mouseFieldsAdditionalMap
+      );
+
+      const { data, index, kind } = action.payload as AdditionalFieldsUpdate;
+      const prevKeyVal = mouseFieldsAdditionalMapClone.get(index);
+
+      if (!prevKeyVal) {
+        return state;
+      }
+
+      const [prevKey, prevValue] = prevKeyVal;
+      kind === 'key'
+        ? mouseFieldsAdditionalMapClone.set(index, [data, prevValue])
+        : mouseFieldsAdditionalMapClone.set(index, [prevKey, data]);
+
+      return {
+        ...state,
+        mouseFieldsAdditionalMap: mouseFieldsAdditionalMapClone,
+      };
+    }
+    default:
+      return state;
+  }
+}
+
+// ╭─────────────────────────────────────────────────────────────────╮
+//    MOUSE => ADDITIONAL FIELDS => FOCUSED
+// ╰─────────────────────────────────────────────────────────────────╯
+
+/**
+ * This reducer function contains three operations that are used to update the
+ * areMouseFieldsAdditionalMapFocused state.
+ * @description add: adds a new key-value pair to the areMouseFieldsAdditionalMapFocused state
+ * @description remove:
+   - clones the state, deletes the key-value pair, and iterates over the map
+   - with the callback fn index to use as the key for the new map
+   - this is done because the indices are used as the keys by the mapped over mouseFieldsAdditionalMap state to generate the text elements
+   - that access the areMouseFieldsAdditionalMapFocused state Map to determine if the appropriate text element should be focused/blurred
+   - and must be consecutive as removal of a key-value pair will leave a gap in the indices
+  * @description update: updates either the key or value from the areMouseFieldsAdditionalMapFocused state
+ */
+function setAreMouseFieldsAdditionalMapFocused_CreateProductReducer(
+  state: CreateProductState,
+  action: CreateProductDispatch
+): CreateProductState {
+  const { operation } = action.payload as AdditionalFieldsValidFocusedPayload;
+
+  switch (operation) {
+    case 'add': {
+      const areMouseFieldsAdditionalMapFocusedClone = structuredClone(
+        state.areMouseFieldsAdditionalMapFocused
+      );
+
+      const { data } = action.payload as AdditionalFieldsValidFocusedAdd;
+      const prevSize = areMouseFieldsAdditionalMapFocusedClone.size;
+      areMouseFieldsAdditionalMapFocusedClone.set(prevSize, data);
+
+      return {
+        ...state,
+        areMouseFieldsAdditionalMapFocused:
+          areMouseFieldsAdditionalMapFocusedClone,
+      };
+    }
+    case 'remove': {
+      const areMouseFieldsAdditionalMapFocusedClone = structuredClone(
+        state.areMouseFieldsAdditionalMapFocused
+      );
+
+      const { index } = action.payload as AdditionalFieldsValidFocusedRemove;
+      areMouseFieldsAdditionalMapFocusedClone.delete(index);
+
+      const filteredAreMouseFieldsAdditionalMapFocused = new Map<
+        number,
+        [boolean, boolean]
+      >();
+
+      Array.from(areMouseFieldsAdditionalMapFocusedClone).forEach(
+        (mapIdxKeyVal, arrayIdx) => {
+          const [_mapIdx, keyVal] = mapIdxKeyVal as [
+            number,
+            [boolean, boolean]
+          ];
+
+          filteredAreMouseFieldsAdditionalMapFocused.set(arrayIdx, keyVal);
+        }
+      );
+
+      return {
+        ...state,
+        areMouseFieldsAdditionalMapFocused:
+          filteredAreMouseFieldsAdditionalMapFocused,
+      };
+    }
+    case 'update': {
+      const areMouseFieldsAdditionalMapFocusedClone = structuredClone(
+        state.areMouseFieldsAdditionalMapFocused
+      );
+
+      const { data, index, kind } =
+        action.payload as AdditionalFieldsValidFocusedUpdate;
+      const prevKeyVal = areMouseFieldsAdditionalMapFocusedClone.get(index);
+
+      if (!prevKeyVal) {
+        return state;
+      }
+
+      const [prevKey, prevValue] = prevKeyVal;
+      kind === 'key'
+        ? areMouseFieldsAdditionalMapFocusedClone.set(index, [data, prevValue])
+        : areMouseFieldsAdditionalMapFocusedClone.set(index, [prevKey, data]);
+
+      return {
+        ...state,
+        areMouseFieldsAdditionalMapFocused:
+          areMouseFieldsAdditionalMapFocusedClone,
+      };
+    }
+    default:
+      return state;
+  }
+}
+
+// ╭─────────────────────────────────────────────────────────────────╮
+//    MOUSE => ADDITIONAL FIELDS => VALID
+// ╰─────────────────────────────────────────────────────────────────╯
+
+/**
+ * This reducer function contains three operations that are used to update the
+ * areMouseFieldsAdditionalMapValid state.
+ * @description add: adds a new key-value pair to the areMouseFieldsAdditionalMapValid state
+ * @description remove:
+   - clones the state, deletes the key-value pair, and iterates over the map
+   - with the callback fn index to use as the key for the new map
+   - this is done because the indices are used as the keys by the mapped over mouseFieldsAdditionalMap state to generate the text elements
+   - that access the areMouseFieldsAdditionalMapValid state Map based on said element's error state
+   - to display the text contained in the screenreader accessible error/valid text elements array
+   - map keys must be consecutive as removal of a key-value pair will leave a gap in the indices
+  * @description update: updates either the key or value from the areMouseFieldsAdditionalMapValid state
+ */
+function setAreMouseFieldsAdditionalMapValid_CreateProductReducer(
+  state: CreateProductState,
+  action: CreateProductDispatch
+): CreateProductState {
+  const { operation } = action.payload as AdditionalFieldsValidFocusedPayload;
+
+  switch (operation) {
+    case 'add': {
+      const areMouseFieldsAdditionalMapValidClone = structuredClone(
+        state.areMouseFieldsAdditionalMapValid
+      );
+
+      const { data } = action.payload as AdditionalFieldsValidFocusedAdd;
+      const prevSize = areMouseFieldsAdditionalMapValidClone.size;
+      areMouseFieldsAdditionalMapValidClone.set(prevSize, data);
+
+      return {
+        ...state,
+        areMouseFieldsAdditionalMapValid: areMouseFieldsAdditionalMapValidClone,
+      };
+    }
+    case 'remove': {
+      const areMouseFieldsAdditionalMapValidClone = structuredClone(
+        state.areMouseFieldsAdditionalMapValid
+      );
+
+      const { index } = action.payload as AdditionalFieldsValidFocusedRemove;
+      areMouseFieldsAdditionalMapValidClone.delete(index);
+
+      const filteredAreMouseFieldsAdditionalMapValid = new Map<
+        number,
+        [boolean, boolean]
+      >();
+
+      Array.from(areMouseFieldsAdditionalMapValidClone).forEach(
+        (mapIdxKeyVal, arrayIdx) => {
+          const [_mapIdx, keyVal] = mapIdxKeyVal as [
+            number,
+            [boolean, boolean]
+          ];
+
+          filteredAreMouseFieldsAdditionalMapValid.set(arrayIdx, keyVal);
+        }
+      );
+
+      return {
+        ...state,
+        areMouseFieldsAdditionalMapValid:
+          filteredAreMouseFieldsAdditionalMapValid,
+      };
+    }
+    case 'update': {
+      const areMouseFieldsAdditionalMapValidClone = structuredClone(
+        state.areMouseFieldsAdditionalMapValid
+      );
+
+      const { data, index, kind } =
+        action.payload as AdditionalFieldsValidFocusedUpdate;
+      const prevKeyVal = areMouseFieldsAdditionalMapValidClone.get(index);
+
+      if (!prevKeyVal) {
+        return state;
+      }
+
+      const [prevKey, prevValue] = prevKeyVal;
+      kind === 'key'
+        ? areMouseFieldsAdditionalMapValidClone.set(index, [data, prevValue])
+        : areMouseFieldsAdditionalMapValidClone.set(index, [prevKey, data]);
+
+      return {
+        ...state,
+        areMouseFieldsAdditionalMapValid: areMouseFieldsAdditionalMapValidClone,
       };
     }
     default:
@@ -8764,6 +8764,104 @@ const createProductReducersMap = new Map<
   ],
 
   // ╭─────────────────────────────────────────────────────────────────╮
+  //    DISPLAY
+  // ╰─────────────────────────────────────────────────────────────────╯
+
+  // display -> size
+  [createProductAction.setDisplaySize, setDisplaySize_CreateProductReducer],
+  [
+    createProductAction.setIsDisplaySizeValid,
+    setIsDisplaySizeValid_CreateProductReducer,
+  ],
+  [
+    createProductAction.setIsDisplaySizeFocused,
+    setIsDisplaySizeFocused_CreateProductReducer,
+  ],
+  // display -> resolution -> horizontal
+  [
+    createProductAction.setDisplayResolutionHorizontal,
+    setDisplayResolutionHorizontal_CreateProductReducer,
+  ],
+  [
+    createProductAction.setIsDisplayResolutionHorizontalValid,
+    setIsDisplayResolutionHorizontalValid_CreateProductReducer,
+  ],
+  [
+    createProductAction.setIsDisplayResolutionHorizontalFocused,
+    setIsDisplayResolutionHorizontalFocused_CreateProductReducer,
+  ],
+  // display -> resolution -> vertical
+  [
+    createProductAction.setDisplayResolutionVertical,
+    setDisplayResolutionVertical_CreateProductReducer,
+  ],
+  [
+    createProductAction.setIsDisplayResolutionVerticalValid,
+    setIsDisplayResolutionVerticalValid_CreateProductReducer,
+  ],
+  [
+    createProductAction.setIsDisplayResolutionVerticalFocused,
+    setIsDisplayResolutionVerticalFocused_CreateProductReducer,
+  ],
+  // display -> refresh rate
+  [
+    createProductAction.setDisplayRefreshRate,
+    setDisplayRefreshRate_CreateProductReducer,
+  ],
+  [
+    createProductAction.setIsDisplayRefreshRateValid,
+    setIsDisplayRefreshRateValid_CreateProductReducer,
+  ],
+  [
+    createProductAction.setIsDisplayRefreshRateFocused,
+    setIsDisplayRefreshRateFocused_CreateProductReducer,
+  ],
+  // display -> panel type
+  [
+    createProductAction.setDisplayPanelType,
+    setDisplayPanelType_CreateProductReducer,
+  ],
+  // display -> response time
+  [
+    createProductAction.setDisplayResponseTime,
+    setDisplayResponseTime_CreateProductReducer,
+  ],
+  [
+    createProductAction.setIsDisplayResponseTimeValid,
+    setIsDisplayResponseTimeValid_CreateProductReducer,
+  ],
+  [
+    createProductAction.setIsDisplayResponseTimeFocused,
+    setIsDisplayResponseTimeFocused_CreateProductReducer,
+  ],
+  // display -> aspect ratio
+  [
+    createProductAction.setDisplayAspectRatio,
+    setDisplayAspectRatio_CreateProductReducer,
+  ],
+  [
+    createProductAction.setIsDisplayAspectRatioValid,
+    setIsDisplayAspectRatioValid_CreateProductReducer,
+  ],
+  [
+    createProductAction.setIsDisplayAspectRatioFocused,
+    setIsDisplayAspectRatioFocused_CreateProductReducer,
+  ],
+  // display -> additional fields
+  [
+    createProductAction.setDisplayFieldsAdditionalMap,
+    setDisplayFieldsAdditionalMap_CreateProductReducer,
+  ],
+  [
+    createProductAction.setAreDisplayFieldsAdditionalMapFocused,
+    setAreDisplayFieldsAdditionalMapFocused_CreateProductReducer,
+  ],
+  [
+    createProductAction.setAreDisplayFieldsAdditionalMapValid,
+    setAreDisplayFieldsAdditionalMapValid_CreateProductReducer,
+  ],
+
+  // ╭─────────────────────────────────────────────────────────────────╮
   //    GPU
   // ╰─────────────────────────────────────────────────────────────────╯
 
@@ -8952,152 +9050,6 @@ const createProductReducersMap = new Map<
   ],
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    RAM
-  // ╰─────────────────────────────────────────────────────────────────╯
-
-  // ram -> data rate
-  [createProductAction.setRamDataRate, setRamDataRate_CreateProductReducer],
-  [
-    createProductAction.setIsRamDataRateValid,
-    setIsRamDataRateValid_CreateProductReducer,
-  ],
-  [
-    createProductAction.setIsRamDataRateFocused,
-    setIsRamDataRateFocused_CreateProductReducer,
-  ],
-  // ram -> modules quantity
-  [
-    createProductAction.setRamModulesQuantity,
-    setRamModulesQuantity_CreateProductReducer,
-  ],
-  [
-    createProductAction.setIsRamModulesQuantityValid,
-    setIsRamModulesQuantityValid_CreateProductReducer,
-  ],
-  [
-    createProductAction.setIsRamModulesQuantityFocused,
-    setIsRamModulesQuantityFocused_CreateProductReducer,
-  ],
-  // ram -> modules capacity
-  [
-    createProductAction.setRamModulesCapacity,
-    setRamModulesCapacity_CreateProductReducer,
-  ],
-  [
-    createProductAction.setIsRamModulesCapacityValid,
-    setIsRamModulesCapacityValid_CreateProductReducer,
-  ],
-  [
-    createProductAction.setIsRamModulesCapacityFocused,
-    setIsRamModulesCapacityFocused_CreateProductReducer,
-  ],
-  // ram -> modules capacity unit
-  [
-    createProductAction.setRamModulesCapacityUnit,
-    setRamModulesCapacityUnit_CreateProductReducer,
-  ],
-  // ram -> type
-  [createProductAction.setRamType, setRamType_CreateProductReducer],
-  // ram -> color
-  [createProductAction.setRamColor, setRamColor_CreateProductReducer],
-  [
-    createProductAction.setIsRamColorValid,
-    setIsRamColorValid_CreateProductReducer,
-  ],
-  [
-    createProductAction.setIsRamColorFocused,
-    setIsRamColorFocused_CreateProductReducer,
-  ],
-  // ram -> voltage
-  [createProductAction.setRamVoltage, setRamVoltage_CreateProductReducer],
-  [
-    createProductAction.setIsRamVoltageValid,
-    setIsRamVoltageValid_CreateProductReducer,
-  ],
-  [
-    createProductAction.setIsRamVoltageFocused,
-    setIsRamVoltageFocused_CreateProductReducer,
-  ],
-  // ram -> timing
-  [createProductAction.setRamTiming, setRamTiming_CreateProductReducer],
-  [
-    createProductAction.setIsRamTimingValid,
-    setIsRamTimingValid_CreateProductReducer,
-  ],
-  [
-    createProductAction.setIsRamTimingFocused,
-    setIsRamTimingFocused_CreateProductReducer,
-  ],
-  // ram -> additional fields
-  [
-    createProductAction.setRamFieldsAdditionalMap,
-    setRamFieldsAdditionalMap_CreateProductReducer,
-  ],
-  [
-    createProductAction.setAreRamFieldsAdditionalMapFocused,
-    setAreRamFieldsAdditionalMapFocused_CreateProductReducer,
-  ],
-  [
-    createProductAction.setAreRamFieldsAdditionalMapValid,
-    setAreRamFieldsAdditionalMapValid_CreateProductReducer,
-  ],
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    MOUSE
-  // ╰─────────────────────────────────────────────────────────────────╯
-
-  // mouse -> sensor
-  [createProductAction.setMouseSensor, setMouseSensor_CreateProductReducer],
-  // mouse -> dpi
-  [createProductAction.setMouseDpi, setMouseDpi_CreateProductReducer],
-  [
-    createProductAction.setIsMouseDpiValid,
-    setIsMouseDpiValid_CreateProductReducer,
-  ],
-  [
-    createProductAction.setIsMouseDpiFocused,
-    setIsMouseDpiFocused_CreateProductReducer,
-  ],
-  // mouse -> buttons
-  [createProductAction.setMouseButtons, setMouseButtons_CreateProductReducer],
-  [
-    createProductAction.setIsMouseButtonsValid,
-    setIsMouseButtonsValid_CreateProductReducer,
-  ],
-  [
-    createProductAction.setIsMouseButtonsFocused,
-    setIsMouseButtonsFocused_CreateProductReducer,
-  ],
-  // mouse -> color
-  [createProductAction.setMouseColor, setMouseColor_CreateProductReducer],
-  [
-    createProductAction.setIsMouseColorValid,
-    setIsMouseColorValid_CreateProductReducer,
-  ],
-  [
-    createProductAction.setIsMouseColorFocused,
-    setIsMouseColorFocused_CreateProductReducer,
-  ],
-  // mouse -> interface
-  [
-    createProductAction.setMouseInterface,
-    setMouseInterface_CreateProductReducer,
-  ],
-  // mouse -> additional fields
-  [
-    createProductAction.setMouseFieldsAdditionalMap,
-    setMouseFieldsAdditionalMap_CreateProductReducer,
-  ],
-  [
-    createProductAction.setAreMouseFieldsAdditionalMapFocused,
-    setAreMouseFieldsAdditionalMapFocused_CreateProductReducer,
-  ],
-  [
-    createProductAction.setAreMouseFieldsAdditionalMapValid,
-    setAreMouseFieldsAdditionalMapValid_CreateProductReducer,
-  ],
-
-  // ╭─────────────────────────────────────────────────────────────────╮
   //    MICROPHONE
   // ╰─────────────────────────────────────────────────────────────────╯
 
@@ -9154,138 +9106,6 @@ const createProductReducersMap = new Map<
   [
     createProductAction.setAreMicrophoneFieldsAdditionalMapValid,
     setAreMicrophoneFieldsAdditionalMapValid_CreateProductReducer,
-  ],
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    PSU
-  // ╰─────────────────────────────────────────────────────────────────╯
-
-  // psu -> wattage
-  [createProductAction.setPsuWattage, setPsuWattage_CreateProductReducer],
-  [
-    createProductAction.setIsPsuWattageValid,
-    setIsPsuWattageValid_CreateProductReducer,
-  ],
-  [
-    createProductAction.setIsPsuWattageFocused,
-    setIsPsuWattageFocused_CreateProductReducer,
-  ],
-  // psu -> efficiency
-  [createProductAction.setPsuEfficiency, setPsuEfficiency_CreateProductReducer],
-  // psu -> form factor
-  [createProductAction.setPsuFormFactor, setPsuFormFactor_CreateProductReducer],
-  // psu -> modularity
-  [createProductAction.setPsuModularity, setPsuModularity_CreateProductReducer],
-  // psu -> additional fields
-  [
-    createProductAction.setPsuFieldsAdditionalMap,
-    setPsuFieldsAdditionalMap_CreateProductReducer,
-  ],
-  [
-    createProductAction.setArePsuFieldsAdditionalMapFocused,
-    setArePsuFieldsAdditionalMapFocused_CreateProductReducer,
-  ],
-  [
-    createProductAction.setArePsuFieldsAdditionalMapValid,
-    setArePsuFieldsAdditionalMapValid_CreateProductReducer,
-  ],
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    DISPLAY
-  // ╰─────────────────────────────────────────────────────────────────╯
-
-  // display -> size
-  [createProductAction.setDisplaySize, setDisplaySize_CreateProductReducer],
-  [
-    createProductAction.setIsDisplaySizeValid,
-    setIsDisplaySizeValid_CreateProductReducer,
-  ],
-  [
-    createProductAction.setIsDisplaySizeFocused,
-    setIsDisplaySizeFocused_CreateProductReducer,
-  ],
-  // display -> resolution -> horizontal
-  [
-    createProductAction.setDisplayResolutionHorizontal,
-    setDisplayResolutionHorizontal_CreateProductReducer,
-  ],
-  [
-    createProductAction.setIsDisplayResolutionHorizontalValid,
-    setIsDisplayResolutionHorizontalValid_CreateProductReducer,
-  ],
-  [
-    createProductAction.setIsDisplayResolutionHorizontalFocused,
-    setIsDisplayResolutionHorizontalFocused_CreateProductReducer,
-  ],
-  // display -> resolution -> vertical
-  [
-    createProductAction.setDisplayResolutionVertical,
-    setDisplayResolutionVertical_CreateProductReducer,
-  ],
-  [
-    createProductAction.setIsDisplayResolutionVerticalValid,
-    setIsDisplayResolutionVerticalValid_CreateProductReducer,
-  ],
-  [
-    createProductAction.setIsDisplayResolutionVerticalFocused,
-    setIsDisplayResolutionVerticalFocused_CreateProductReducer,
-  ],
-  // display -> refresh rate
-  [
-    createProductAction.setDisplayRefreshRate,
-    setDisplayRefreshRate_CreateProductReducer,
-  ],
-  [
-    createProductAction.setIsDisplayRefreshRateValid,
-    setIsDisplayRefreshRateValid_CreateProductReducer,
-  ],
-  [
-    createProductAction.setIsDisplayRefreshRateFocused,
-    setIsDisplayRefreshRateFocused_CreateProductReducer,
-  ],
-  // display -> panel type
-  [
-    createProductAction.setDisplayPanelType,
-    setDisplayPanelType_CreateProductReducer,
-  ],
-  // display -> response time
-  [
-    createProductAction.setDisplayResponseTime,
-    setDisplayResponseTime_CreateProductReducer,
-  ],
-  [
-    createProductAction.setIsDisplayResponseTimeValid,
-    setIsDisplayResponseTimeValid_CreateProductReducer,
-  ],
-  [
-    createProductAction.setIsDisplayResponseTimeFocused,
-    setIsDisplayResponseTimeFocused_CreateProductReducer,
-  ],
-  // display -> aspect ratio
-  [
-    createProductAction.setDisplayAspectRatio,
-    setDisplayAspectRatio_CreateProductReducer,
-  ],
-  [
-    createProductAction.setIsDisplayAspectRatioValid,
-    setIsDisplayAspectRatioValid_CreateProductReducer,
-  ],
-  [
-    createProductAction.setIsDisplayAspectRatioFocused,
-    setIsDisplayAspectRatioFocused_CreateProductReducer,
-  ],
-  // display -> additional fields
-  [
-    createProductAction.setDisplayFieldsAdditionalMap,
-    setDisplayFieldsAdditionalMap_CreateProductReducer,
-  ],
-  [
-    createProductAction.setAreDisplayFieldsAdditionalMapFocused,
-    setAreDisplayFieldsAdditionalMapFocused_CreateProductReducer,
-  ],
-  [
-    createProductAction.setAreDisplayFieldsAdditionalMapValid,
-    setAreDisplayFieldsAdditionalMapValid_CreateProductReducer,
   ],
 
   // ╭─────────────────────────────────────────────────────────────────╮
@@ -9436,6 +9256,186 @@ const createProductReducersMap = new Map<
   [
     createProductAction.setAreMotherboardFieldsAdditionalMapValid,
     setAreMotherboardFieldsAdditionalMapValid_CreateProductReducer,
+  ],
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    MOUSE
+  // ╰─────────────────────────────────────────────────────────────────╯
+
+  // mouse -> sensor
+  [createProductAction.setMouseSensor, setMouseSensor_CreateProductReducer],
+  // mouse -> dpi
+  [createProductAction.setMouseDpi, setMouseDpi_CreateProductReducer],
+  [
+    createProductAction.setIsMouseDpiValid,
+    setIsMouseDpiValid_CreateProductReducer,
+  ],
+  [
+    createProductAction.setIsMouseDpiFocused,
+    setIsMouseDpiFocused_CreateProductReducer,
+  ],
+  // mouse -> buttons
+  [createProductAction.setMouseButtons, setMouseButtons_CreateProductReducer],
+  [
+    createProductAction.setIsMouseButtonsValid,
+    setIsMouseButtonsValid_CreateProductReducer,
+  ],
+  [
+    createProductAction.setIsMouseButtonsFocused,
+    setIsMouseButtonsFocused_CreateProductReducer,
+  ],
+  // mouse -> color
+  [createProductAction.setMouseColor, setMouseColor_CreateProductReducer],
+  [
+    createProductAction.setIsMouseColorValid,
+    setIsMouseColorValid_CreateProductReducer,
+  ],
+  [
+    createProductAction.setIsMouseColorFocused,
+    setIsMouseColorFocused_CreateProductReducer,
+  ],
+  // mouse -> interface
+  [
+    createProductAction.setMouseInterface,
+    setMouseInterface_CreateProductReducer,
+  ],
+  // mouse -> additional fields
+  [
+    createProductAction.setMouseFieldsAdditionalMap,
+    setMouseFieldsAdditionalMap_CreateProductReducer,
+  ],
+  [
+    createProductAction.setAreMouseFieldsAdditionalMapFocused,
+    setAreMouseFieldsAdditionalMapFocused_CreateProductReducer,
+  ],
+  [
+    createProductAction.setAreMouseFieldsAdditionalMapValid,
+    setAreMouseFieldsAdditionalMapValid_CreateProductReducer,
+  ],
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    PSU
+  // ╰─────────────────────────────────────────────────────────────────╯
+
+  // psu -> wattage
+  [createProductAction.setPsuWattage, setPsuWattage_CreateProductReducer],
+  [
+    createProductAction.setIsPsuWattageValid,
+    setIsPsuWattageValid_CreateProductReducer,
+  ],
+  [
+    createProductAction.setIsPsuWattageFocused,
+    setIsPsuWattageFocused_CreateProductReducer,
+  ],
+  // psu -> efficiency
+  [createProductAction.setPsuEfficiency, setPsuEfficiency_CreateProductReducer],
+  // psu -> form factor
+  [createProductAction.setPsuFormFactor, setPsuFormFactor_CreateProductReducer],
+  // psu -> modularity
+  [createProductAction.setPsuModularity, setPsuModularity_CreateProductReducer],
+  // psu -> additional fields
+  [
+    createProductAction.setPsuFieldsAdditionalMap,
+    setPsuFieldsAdditionalMap_CreateProductReducer,
+  ],
+  [
+    createProductAction.setArePsuFieldsAdditionalMapFocused,
+    setArePsuFieldsAdditionalMapFocused_CreateProductReducer,
+  ],
+  [
+    createProductAction.setArePsuFieldsAdditionalMapValid,
+    setArePsuFieldsAdditionalMapValid_CreateProductReducer,
+  ],
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    RAM
+  // ╰─────────────────────────────────────────────────────────────────╯
+
+  // ram -> data rate
+  [createProductAction.setRamDataRate, setRamDataRate_CreateProductReducer],
+  [
+    createProductAction.setIsRamDataRateValid,
+    setIsRamDataRateValid_CreateProductReducer,
+  ],
+  [
+    createProductAction.setIsRamDataRateFocused,
+    setIsRamDataRateFocused_CreateProductReducer,
+  ],
+  // ram -> modules quantity
+  [
+    createProductAction.setRamModulesQuantity,
+    setRamModulesQuantity_CreateProductReducer,
+  ],
+  [
+    createProductAction.setIsRamModulesQuantityValid,
+    setIsRamModulesQuantityValid_CreateProductReducer,
+  ],
+  [
+    createProductAction.setIsRamModulesQuantityFocused,
+    setIsRamModulesQuantityFocused_CreateProductReducer,
+  ],
+  // ram -> modules capacity
+  [
+    createProductAction.setRamModulesCapacity,
+    setRamModulesCapacity_CreateProductReducer,
+  ],
+  [
+    createProductAction.setIsRamModulesCapacityValid,
+    setIsRamModulesCapacityValid_CreateProductReducer,
+  ],
+  [
+    createProductAction.setIsRamModulesCapacityFocused,
+    setIsRamModulesCapacityFocused_CreateProductReducer,
+  ],
+  // ram -> modules capacity unit
+  [
+    createProductAction.setRamModulesCapacityUnit,
+    setRamModulesCapacityUnit_CreateProductReducer,
+  ],
+  // ram -> type
+  [createProductAction.setRamType, setRamType_CreateProductReducer],
+  // ram -> color
+  [createProductAction.setRamColor, setRamColor_CreateProductReducer],
+  [
+    createProductAction.setIsRamColorValid,
+    setIsRamColorValid_CreateProductReducer,
+  ],
+  [
+    createProductAction.setIsRamColorFocused,
+    setIsRamColorFocused_CreateProductReducer,
+  ],
+  // ram -> voltage
+  [createProductAction.setRamVoltage, setRamVoltage_CreateProductReducer],
+  [
+    createProductAction.setIsRamVoltageValid,
+    setIsRamVoltageValid_CreateProductReducer,
+  ],
+  [
+    createProductAction.setIsRamVoltageFocused,
+    setIsRamVoltageFocused_CreateProductReducer,
+  ],
+  // ram -> timing
+  [createProductAction.setRamTiming, setRamTiming_CreateProductReducer],
+  [
+    createProductAction.setIsRamTimingValid,
+    setIsRamTimingValid_CreateProductReducer,
+  ],
+  [
+    createProductAction.setIsRamTimingFocused,
+    setIsRamTimingFocused_CreateProductReducer,
+  ],
+  // ram -> additional fields
+  [
+    createProductAction.setRamFieldsAdditionalMap,
+    setRamFieldsAdditionalMap_CreateProductReducer,
+  ],
+  [
+    createProductAction.setAreRamFieldsAdditionalMapFocused,
+    setAreRamFieldsAdditionalMapFocused_CreateProductReducer,
+  ],
+  [
+    createProductAction.setAreRamFieldsAdditionalMapValid,
+    setAreRamFieldsAdditionalMapValid_CreateProductReducer,
   ],
 
   // ╭─────────────────────────────────────────────────────────────────╮

@@ -35,9 +35,9 @@ import {
   SMALL_INTEGER_REGEX,
   USER_DEFINED_VALUE_REGEX,
 } from '../constants';
+import { CreateProductDispatch } from '../dispatches';
 import {
   CreateProductAction,
-  CreateProductDispatch,
   MemoryType,
   MemoryUnit,
   MotherboardFormFactor,
@@ -46,7 +46,6 @@ import {
 type CreateMotherboardProps = {
   areMotherboardFieldsAdditionalMapFocused: Map<number, [boolean, boolean]>;
   areMotherboardFieldsAdditionalMapValid: Map<number, [boolean, boolean]>;
-  borderColor: string;
   createProductAction: CreateProductAction;
   createProductDispatch: React.Dispatch<CreateProductDispatch>;
   currentlySelectedAdditionalFieldIndex: number;
@@ -87,7 +86,6 @@ type CreateMotherboardProps = {
 function CreateMotherboard({
   areMotherboardFieldsAdditionalMapFocused,
   areMotherboardFieldsAdditionalMapValid,
-  borderColor,
   createProductAction,
   createProductDispatch,
   currentlySelectedAdditionalFieldIndex,
@@ -975,7 +973,7 @@ function CreateMotherboard({
       motherboardFieldsAdditionalMapKeysInputErrorText,
       motherboardFieldsAdditionalMapKeysInputValidText,
     ] = AccessibleErrorValidTextElements({
-      inputElementKind: `additional field name ${mapKey + 1}`,
+      inputElementKind: `additional Motherboard field name ${mapKey + 1}`,
       inputText: field,
       isInputTextFocused:
         areMotherboardFieldsAdditionalMapFocused.get(mapKey)?.[0] ?? false,
@@ -983,7 +981,7 @@ function CreateMotherboard({
         areMotherboardFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
       regexValidationText: returnObjectKeyValidationText({
         content: field,
-        contentKind: `additional field name ${mapKey + 1}`,
+        contentKind: `additional Motherboard field name ${mapKey + 1}`,
         maxLength: 75,
         minLength: 1,
       }),
@@ -1010,7 +1008,7 @@ function CreateMotherboard({
       motherboardFieldsAdditionalMapValuesInputErrorText,
       motherboardFieldsAdditionalMapValuesInputValidText,
     ] = AccessibleErrorValidTextElements({
-      inputElementKind: `additional field value ${mapKey + 1}`,
+      inputElementKind: `additional Motherboard field value ${mapKey + 1}`,
       inputText: value,
       isInputTextFocused:
         areMotherboardFieldsAdditionalMapFocused.get(mapKey)?.[1] ?? false,
@@ -1018,7 +1016,7 @@ function CreateMotherboard({
         areMotherboardFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
       regexValidationText: returnUserDefinedFieldValueValidationText({
         content: value,
-        contentKind: `additional field value ${mapKey + 1}`,
+        contentKind: `additional Motherboard field value ${mapKey + 1}`,
         maxLength: 2000,
         minLength: 2,
       }),
@@ -1092,7 +1090,7 @@ function CreateMotherboard({
         },
         placeholder: 'Enter additional field name',
         required: true,
-        semanticName: `additional field name ${mapKey + 1}`,
+        semanticName: `additional Motherboard field name ${mapKey + 1}`,
       };
 
     // ╭─────────────────────────────────────────────────────────────────╮
@@ -1156,7 +1154,7 @@ function CreateMotherboard({
         },
         placeholder: 'Enter additional field value',
         required: true,
-        semanticName: `additional field value ${mapKey + 1}`,
+        semanticName: `additional Motherboard field value ${mapKey + 1}`,
       };
 
     const [
@@ -1278,4 +1276,4 @@ function CreateMotherboard({
   return displayMotherboardSpecificationsInputs;
 }
 
-export default CreateMotherboard;
+export { CreateMotherboard };

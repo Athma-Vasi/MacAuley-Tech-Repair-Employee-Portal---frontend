@@ -33,9 +33,9 @@ import {
   SMALL_INTEGER_REGEX,
   USER_DEFINED_VALUE_REGEX,
 } from '../constants';
+import { CreateProductDispatch } from '../dispatches';
 import {
   CreateProductAction,
-  CreateProductDispatch,
   MouseSensor,
   PeripheralsInterface,
 } from '../types';
@@ -43,7 +43,6 @@ import {
 type CreateMouseProps = {
   areMouseFieldsAdditionalMapFocused: Map<number, [boolean, boolean]>;
   areMouseFieldsAdditionalMapValid: Map<number, [boolean, boolean]>;
-  borderColor: string;
   createProductAction: CreateProductAction;
   createProductDispatch: React.Dispatch<CreateProductDispatch>;
   currentlySelectedAdditionalFieldIndex: number;
@@ -65,7 +64,6 @@ type CreateMouseProps = {
 function CreateMouse({
   areMouseFieldsAdditionalMapFocused,
   areMouseFieldsAdditionalMapValid,
-  borderColor,
   createProductAction,
   createProductDispatch,
   currentlySelectedAdditionalFieldIndex,
@@ -471,7 +469,7 @@ function CreateMouse({
       mouseFieldsAdditionalMapKeysInputErrorText,
       mouseFieldsAdditionalMapKeysInputValidText,
     ] = AccessibleErrorValidTextElements({
-      inputElementKind: `additional field name ${mapKey + 1}`,
+      inputElementKind: `additional Mouse field name ${mapKey + 1}`,
       inputText: field,
       isInputTextFocused:
         areMouseFieldsAdditionalMapFocused.get(mapKey)?.[0] ?? false,
@@ -479,7 +477,7 @@ function CreateMouse({
         areMouseFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
       regexValidationText: returnObjectKeyValidationText({
         content: field,
-        contentKind: `additional field name ${mapKey + 1}`,
+        contentKind: `additional Mouse field name ${mapKey + 1}`,
         maxLength: 75,
         minLength: 1,
       }),
@@ -507,7 +505,7 @@ function CreateMouse({
       mouseFieldsAdditionalMapValuesInputErrorText,
       mouseFieldsAdditionalMapValuesInputValidText,
     ] = AccessibleErrorValidTextElements({
-      inputElementKind: `additional field value ${mapKey + 1}`,
+      inputElementKind: `additional Mouse field value ${mapKey + 1}`,
       inputText: value,
       isInputTextFocused:
         areMouseFieldsAdditionalMapFocused.get(mapKey)?.[1] ?? false,
@@ -515,7 +513,7 @@ function CreateMouse({
         areMouseFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
       regexValidationText: returnUserDefinedFieldValueValidationText({
         content: value,
-        contentKind: `additional field value ${mapKey + 1}`,
+        contentKind: `additional Mouse field value ${mapKey + 1}`,
         maxLength: 2000,
         minLength: 2,
       }),
@@ -587,7 +585,7 @@ function CreateMouse({
         },
         placeholder: 'Enter additional field name',
         required: true,
-        semanticName: `additional field name ${mapKey + 1}`,
+        semanticName: `additional Mouse field name ${mapKey + 1}`,
       };
 
     // ╭─────────────────────────────────────────────────────────────────╮
@@ -647,7 +645,7 @@ function CreateMouse({
         },
         placeholder: 'Enter additional field value',
         required: true,
-        semanticName: `additional field value ${mapKey + 1}`,
+        semanticName: `additional Mouse field value ${mapKey + 1}`,
       };
 
     const [
@@ -754,4 +752,4 @@ function CreateMouse({
   return displayMouseSpecificationsInputs;
 }
 
-export default CreateMouse;
+export { CreateMouse };

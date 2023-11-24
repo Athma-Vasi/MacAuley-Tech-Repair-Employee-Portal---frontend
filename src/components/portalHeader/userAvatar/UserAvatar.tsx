@@ -129,12 +129,13 @@ function UserAvatar() {
       };
 
       try {
-        const response: Response = await wrappedFetch({
-          isMounted,
-          requestInit,
-          signal: controller.signal,
-          url,
-        });
+        // const response: Response = await wrappedFetch({
+        //   isMounted,
+        //   requestInit,
+        //   signal: controller.signal,
+        //   url,
+        // });
+        const response: Response = await fetch(url, requestInit);
 
         const data: { message: string } = await response.json();
 

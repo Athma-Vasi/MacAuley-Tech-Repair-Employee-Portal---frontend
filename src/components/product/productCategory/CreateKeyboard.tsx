@@ -28,9 +28,9 @@ import {
   PERIPHERALS_INTERFACE_DATA,
   USER_DEFINED_VALUE_REGEX,
 } from '../constants';
+import { CreateProductDispatch } from '../dispatches';
 import {
   CreateProductAction,
-  CreateProductDispatch,
   KeyboardBacklight,
   KeyboardLayout,
   KeyboardSwitch,
@@ -40,7 +40,6 @@ import {
 type CreateKeyboardProps = {
   areKeyboardFieldsAdditionalMapFocused: Map<number, [boolean, boolean]>;
   areKeyboardFieldsAdditionalMapValid: Map<number, [boolean, boolean]>;
-  borderColor: string;
   createProductAction: CreateProductAction;
   createProductDispatch: React.Dispatch<CreateProductDispatch>;
   currentlySelectedAdditionalFieldIndex: number;
@@ -55,7 +54,6 @@ type CreateKeyboardProps = {
 function CreateKeyboard({
   areKeyboardFieldsAdditionalMapFocused,
   areKeyboardFieldsAdditionalMapValid,
-  borderColor,
   createProductAction,
   createProductDispatch,
   currentlySelectedAdditionalFieldIndex,
@@ -286,7 +284,7 @@ function CreateKeyboard({
       keyboardFieldsAdditionalMapKeysInputErrorText,
       keyboardFieldsAdditionalMapKeysInputValidText,
     ] = AccessibleErrorValidTextElements({
-      inputElementKind: `additional field name ${mapKey + 1}`,
+      inputElementKind: `additional Keyboard field name ${mapKey + 1}`,
       inputText: field,
       isInputTextFocused:
         areKeyboardFieldsAdditionalMapFocused.get(mapKey)?.[0] ?? false,
@@ -294,7 +292,7 @@ function CreateKeyboard({
         areKeyboardFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
       regexValidationText: returnObjectKeyValidationText({
         content: field,
-        contentKind: `additional field name ${mapKey + 1}`,
+        contentKind: `additional Keyboard field name ${mapKey + 1}`,
         maxLength: 75,
         minLength: 1,
       }),
@@ -322,7 +320,7 @@ function CreateKeyboard({
       keyboardFieldsAdditionalMapValuesInputErrorText,
       keyboardFieldsAdditionalMapValuesInputValidText,
     ] = AccessibleErrorValidTextElements({
-      inputElementKind: `additional field value ${mapKey + 1}`,
+      inputElementKind: `additional Keyboard field value ${mapKey + 1}`,
       inputText: value,
       isInputTextFocused:
         areKeyboardFieldsAdditionalMapFocused.get(mapKey)?.[1] ?? false,
@@ -330,7 +328,7 @@ function CreateKeyboard({
         areKeyboardFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
       regexValidationText: returnUserDefinedFieldValueValidationText({
         content: value,
-        contentKind: `additional field value ${mapKey + 1}`,
+        contentKind: `additional Keyboard field value ${mapKey + 1}`,
         maxLength: 2000,
         minLength: 2,
       }),
@@ -404,7 +402,7 @@ function CreateKeyboard({
         },
         placeholder: 'Enter additional field name',
         required: true,
-        semanticName: `additional field name ${mapKey + 1}`,
+        semanticName: `additional Keyboard field name ${mapKey + 1}`,
       };
 
     // ╭─────────────────────────────────────────────────────────────────╮
@@ -464,7 +462,7 @@ function CreateKeyboard({
         },
         placeholder: 'Enter additional field value',
         required: true,
-        semanticName: `additional field value ${mapKey + 1}`,
+        semanticName: `additional Keyboard field value ${mapKey + 1}`,
       };
 
     const [
@@ -576,4 +574,4 @@ function CreateKeyboard({
   return displayKeyboardSpecificationsInputs;
 }
 
-export default CreateKeyboard;
+export { CreateKeyboard };

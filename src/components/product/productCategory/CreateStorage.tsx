@@ -31,9 +31,9 @@ import {
   STORAGE_TYPE_DATA,
   USER_DEFINED_VALUE_REGEX,
 } from '../constants';
+import { CreateProductDispatch } from '../dispatches';
 import {
   CreateProductAction,
-  CreateProductDispatch,
   MemoryUnit,
   StorageFormFactor,
   StorageInterface,
@@ -43,7 +43,6 @@ import {
 type CreateStorageProps = {
   areStorageFieldsAdditionalMapFocused: Map<number, [boolean, boolean]>;
   areStorageFieldsAdditionalMapValid: Map<number, [boolean, boolean]>;
-  borderColor: string;
   createProductAction: CreateProductAction;
   createProductDispatch: React.Dispatch<CreateProductDispatch>;
   currentlySelectedAdditionalFieldIndex: number;
@@ -65,7 +64,6 @@ type CreateStorageProps = {
 function CreateStorage({
   areStorageFieldsAdditionalMapFocused,
   areStorageFieldsAdditionalMapValid,
-  borderColor,
   createProductAction,
   createProductDispatch,
   currentlySelectedAdditionalFieldIndex,
@@ -464,7 +462,7 @@ function CreateStorage({
       storageFieldsAdditionalMapKeysInputErrorText,
       storageFieldsAdditionalMapKeysInputValidText,
     ] = AccessibleErrorValidTextElements({
-      inputElementKind: `additional field name ${mapKey + 1}`,
+      inputElementKind: `additional Storage field name ${mapKey + 1}`,
       inputText: field,
       isInputTextFocused:
         areStorageFieldsAdditionalMapFocused.get(mapKey)?.[0] ?? false,
@@ -472,7 +470,7 @@ function CreateStorage({
         areStorageFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
       regexValidationText: returnObjectKeyValidationText({
         content: field,
-        contentKind: `additional field name ${mapKey + 1}`,
+        contentKind: `additional Storage field name ${mapKey + 1}`,
         maxLength: 75,
         minLength: 1,
       }),
@@ -499,7 +497,7 @@ function CreateStorage({
       storageFieldsAdditionalMapValuesInputErrorText,
       storageFieldsAdditionalMapValuesInputValidText,
     ] = AccessibleErrorValidTextElements({
-      inputElementKind: `additional field value ${mapKey + 1}`,
+      inputElementKind: `additional Storage field value ${mapKey + 1}`,
       inputText: value,
       isInputTextFocused:
         areStorageFieldsAdditionalMapFocused.get(mapKey)?.[1] ?? false,
@@ -507,7 +505,7 @@ function CreateStorage({
         areStorageFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
       regexValidationText: returnUserDefinedFieldValueValidationText({
         content: value,
-        contentKind: `additional field value ${mapKey + 1}`,
+        contentKind: `additional Storage field value ${mapKey + 1}`,
         maxLength: 2000,
         minLength: 2,
       }),
@@ -581,7 +579,7 @@ function CreateStorage({
         },
         placeholder: 'Enter additional field name',
         required: true,
-        semanticName: `additional field name ${mapKey + 1}`,
+        semanticName: `additional Storage field name ${mapKey + 1}`,
       };
 
     // ╭─────────────────────────────────────────────────────────────────╮
@@ -641,7 +639,7 @@ function CreateStorage({
         },
         placeholder: 'Enter additional field value',
         required: true,
-        semanticName: `additional field value ${mapKey + 1}`,
+        semanticName: `additional Storage field value ${mapKey + 1}`,
       };
 
     const [
@@ -752,4 +750,4 @@ function CreateStorage({
   return displayStorageSpecificationsInputs;
 }
 
-export default CreateStorage;
+export { CreateStorage };

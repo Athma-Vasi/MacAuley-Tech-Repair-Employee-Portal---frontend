@@ -1,4 +1,4 @@
-import { Group, Title, Tooltip } from '@mantine/core';
+import { Group, Space, Stack, Title, Tooltip } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { InvalidTokenError } from 'jwt-decode';
 import { ChangeEvent, MouseEvent, useEffect, useReducer } from 'react';
@@ -57,25 +57,27 @@ import {
   WEIGHT_REGEX,
   WEIGHT_UNIT_SELECT_INPUT_DATA,
 } from './constants';
-import CreateAccessory from './productCategory/CreateAccessory';
-import CreateCase from './productCategory/CreateCase';
-import CreateCpu from './productCategory/CreateCpu';
-import CreateDesktopComputer from './productCategory/CreateDesktopComputer';
-import CreateDisplay from './productCategory/CreateDisplay';
-import CreateGpu from './productCategory/CreateGpu';
-import CreateHeadphone from './productCategory/CreateHeadphone';
-import CreateKeyboard from './productCategory/CreateKeyboard';
-import CreateLaptop from './productCategory/CreateLaptop';
-import CreateMicrophone from './productCategory/CreateMicrophone';
-import CreateMotherboard from './productCategory/CreateMotherboard';
-import CreateMouse from './productCategory/CreateMouse';
-import CreatePsu from './productCategory/CreatePsu';
-import CreateRam from './productCategory/CreateRam';
-import CreateSmartphone from './productCategory/CreateSmartphone';
-import CreateSpeaker from './productCategory/CreateSpeaker';
-import CreateStorage from './productCategory/CreateStorage';
-import CreateTablet from './productCategory/CreateTablet';
-import CreateWebcam from './productCategory/CreateWebcam';
+import {
+  CreateAccessory,
+  CreateCase,
+  CreateCpu,
+  CreateDesktopComputer,
+  CreateDisplay,
+  CreateGpu,
+  CreateHeadphone,
+  CreateKeyboard,
+  CreateLaptop,
+  CreateMicrophone,
+  CreateMotherboard,
+  CreateMouse,
+  CreatePsu,
+  CreateRam,
+  CreateSmartphone,
+  CreateSpeaker,
+  CreateStorage,
+  CreateTablet,
+  CreateWebcam,
+} from './productCategory';
 import { createProductReducer } from './reducers';
 import { createProductAction, initialCreateProductState } from './state';
 import {
@@ -751,7 +753,7 @@ function CreateProduct() {
           });
 
           const createProductUrl: URL = urlBuilder({
-            path: `actions/dashboard/product/${PRODUCT_CATEGORY_ROUTE_NAME_OBJ[productCategory]}`,
+            path: `actions/dashboard/product-category/${PRODUCT_CATEGORY_ROUTE_NAME_OBJ[productCategory]}`,
           });
 
           // ╔═════════════════════════════════════════════════════════════════╗
@@ -1420,6 +1422,44 @@ function CreateProduct() {
               return;
             }
 
+            // delete uploaded file if error occurs
+            const deleteFileUploadUrl = urlBuilder({
+              path: `file-upload/${imgUploadResponseData[0]?.documentId}`,
+            });
+
+            const imgDeleteRequestInit: RequestInit = {
+              method: 'DELETE',
+              headers: {
+                Authorization: '', // will be added in wrappedFetch
+              },
+            };
+
+            try {
+              const imgDeleteResponse: Response = await wrappedFetch({
+                isMounted,
+                requestInit: imgDeleteRequestInit,
+                signal: controller.signal,
+                url: deleteFileUploadUrl,
+              });
+
+              if (!isMounted) {
+                return;
+              }
+              if (!imgDeleteResponse.ok) {
+                throw new Error('File uploads failed. Please try again.');
+              }
+            } catch (error: any) {
+              const errorMessage =
+                error instanceof InvalidTokenError
+                  ? 'Invalid token. Please login again.'
+                  : !error.response
+                  ? 'Network error. Please try again.'
+                  : error?.message ??
+                    'Unknown error occurred. Please try again.';
+
+              throw new Error(errorMessage);
+            }
+
             const errorMessage =
               error instanceof InvalidTokenError
                 ? 'Invalid token. Please login again.'
@@ -1682,6 +1722,8 @@ function CreateProduct() {
     price,
     quantity,
   ]);
+
+  // page 2 inputs are validated in their respective components
 
   // ╭─────────────────────────────────────────────────────────────────╮
   //     PAGE 3
@@ -2432,8 +2474,8 @@ function CreateProduct() {
       {createdModelTextInput}
       {createdPriceTextInput}
       {createdCurrencySelectInput}
-      {createdAvailabilitySelectInput}
       {createdQuantityTextInput}
+      {createdAvailabilitySelectInput}
       {createdWeightTextInput}
       {createdWeightUnitSelectInput}
       {createdDimensionLengthTextInput}
@@ -2460,7 +2502,6 @@ function CreateProduct() {
         areAccessoryFieldsAdditionalMapValid={
           areAccessoryFieldsAdditionalMapValid
         }
-        borderColor={borderColor}
         createProductAction={createProductAction}
         createProductDispatch={createProductDispatch}
         currentlySelectedAdditionalFieldIndex={
@@ -2476,7 +2517,6 @@ function CreateProduct() {
       <CreateCpu
         areCpuFieldsAdditionalMapFocused={areCpuFieldsAdditionalMapFocused}
         areCpuFieldsAdditionalMapValid={areCpuFieldsAdditionalMapValid}
-        borderColor={borderColor}
         cpuCores={cpuCores}
         cpuFieldsAdditionalMap={cpuFieldsAdditionalMap}
         cpuFrequency={cpuFrequency}
@@ -2513,7 +2553,6 @@ function CreateProduct() {
       <CreateCase
         areCaseFieldsAdditionalMapFocused={areCaseFieldsAdditionalMapFocused}
         areCaseFieldsAdditionalMapValid={areCaseFieldsAdditionalMapValid}
-        borderColor={borderColor}
         caseColor={caseColor}
         caseFieldsAdditionalMap={caseFieldsAdditionalMap}
         caseSidePanel={caseSidePanel}
@@ -2532,6 +2571,7 @@ function CreateProduct() {
         // case
         areCaseFieldsAdditionalMapFocused={areCaseFieldsAdditionalMapFocused}
         areCaseFieldsAdditionalMapValid={areCaseFieldsAdditionalMapValid}
+        borderColor={borderColor}
         caseColor={caseColor}
         caseFieldsAdditionalMap={caseFieldsAdditionalMap}
         caseSidePanel={caseSidePanel}
@@ -2751,7 +2791,6 @@ function CreateProduct() {
         storageInterface={storageInterface}
         storageType={storageType}
         // misc.
-        borderColor={borderColor}
         createProductAction={createProductAction}
         createProductDispatch={createProductDispatch}
         currentlySelectedAdditionalFieldIndex={
@@ -2765,7 +2804,6 @@ function CreateProduct() {
           areDisplayFieldsAdditionalMapFocused
         }
         areDisplayFieldsAdditionalMapValid={areDisplayFieldsAdditionalMapValid}
-        borderColor={borderColor}
         createProductAction={createProductAction}
         createProductDispatch={createProductDispatch}
         currentlySelectedAdditionalFieldIndex={
@@ -2799,7 +2837,6 @@ function CreateProduct() {
       <CreateGpu
         areGpuFieldsAdditionalMapFocused={areGpuFieldsAdditionalMapFocused}
         areGpuFieldsAdditionalMapValid={areGpuFieldsAdditionalMapValid}
-        borderColor={borderColor}
         createProductAction={createProductAction}
         createProductDispatch={createProductDispatch}
         currentlySelectedAdditionalFieldIndex={
@@ -2832,7 +2869,6 @@ function CreateProduct() {
         areHeadphoneFieldsAdditionalMapValid={
           areHeadphoneFieldsAdditionalMapValid
         }
-        borderColor={borderColor}
         createProductAction={createProductAction}
         createProductDispatch={createProductDispatch}
         currentlySelectedAdditionalFieldIndex={
@@ -2865,7 +2901,6 @@ function CreateProduct() {
         areKeyboardFieldsAdditionalMapValid={
           areKeyboardFieldsAdditionalMapValid
         }
-        borderColor={borderColor}
         createProductAction={createProductAction}
         createProductDispatch={createProductDispatch}
         currentlySelectedAdditionalFieldIndex={
@@ -2881,6 +2916,7 @@ function CreateProduct() {
     ) : productCategory === 'Laptop' ? (
       <CreateLaptop
         // cpu
+        borderColor={borderColor}
         isCpuWattageValid={isCpuWattageValid}
         isCpuWattageFocused={isCpuWattageFocused}
         isCpuSocketValid={isCpuSocketValid}
@@ -2997,7 +3033,6 @@ function CreateProduct() {
         storageInterface={storageInterface}
         storageType={storageType}
         // misc.
-        borderColor={borderColor}
         createProductAction={createProductAction}
         createProductDispatch={createProductDispatch}
         currentlySelectedAdditionalFieldIndex={
@@ -3009,7 +3044,6 @@ function CreateProduct() {
       <CreateRam
         areRamFieldsAdditionalMapFocused={areRamFieldsAdditionalMapFocused}
         areRamFieldsAdditionalMapValid={areRamFieldsAdditionalMapValid}
-        borderColor={borderColor}
         createProductAction={createProductAction}
         createProductDispatch={createProductDispatch}
         currentlySelectedAdditionalFieldIndex={
@@ -3042,7 +3076,6 @@ function CreateProduct() {
       <CreateMouse
         areMouseFieldsAdditionalMapFocused={areMouseFieldsAdditionalMapFocused}
         areMouseFieldsAdditionalMapValid={areMouseFieldsAdditionalMapValid}
-        borderColor={borderColor}
         createProductAction={createProductAction}
         createProductDispatch={createProductDispatch}
         currentlySelectedAdditionalFieldIndex={
@@ -3070,7 +3103,6 @@ function CreateProduct() {
         areMotherboardFieldsAdditionalMapValid={
           areMotherboardFieldsAdditionalMapValid
         }
-        borderColor={borderColor}
         createProductAction={createProductAction}
         createProductDispatch={createProductDispatch}
         currentlySelectedAdditionalFieldIndex={
@@ -3117,7 +3149,6 @@ function CreateProduct() {
       <CreatePsu
         arePsuFieldsAdditionalMapFocused={arePsuFieldsAdditionalMapFocused}
         arePsuFieldsAdditionalMapValid={arePsuFieldsAdditionalMapValid}
-        borderColor={borderColor}
         createProductAction={createProductAction}
         createProductDispatch={createProductDispatch}
         currentlySelectedAdditionalFieldIndex={
@@ -3140,7 +3171,6 @@ function CreateProduct() {
         areSmartphoneFieldsAdditionalMapValid={
           areSmartphoneFieldsAdditionalMapValid
         }
-        borderColor={borderColor}
         createProductAction={createProductAction}
         createProductDispatch={createProductDispatch}
         currentlySelectedAdditionalFieldIndex={
@@ -3192,7 +3222,6 @@ function CreateProduct() {
           areSpeakerFieldsAdditionalMapFocused
         }
         areSpeakerFieldsAdditionalMapValid={areSpeakerFieldsAdditionalMapValid}
-        borderColor={borderColor}
         createProductAction={createProductAction}
         createProductDispatch={createProductDispatch}
         currentlySelectedAdditionalFieldIndex={
@@ -3218,7 +3247,6 @@ function CreateProduct() {
           areStorageFieldsAdditionalMapFocused
         }
         areStorageFieldsAdditionalMapValid={areStorageFieldsAdditionalMapValid}
-        borderColor={borderColor}
         createProductAction={createProductAction}
         createProductDispatch={createProductDispatch}
         currentlySelectedAdditionalFieldIndex={
@@ -3244,7 +3272,6 @@ function CreateProduct() {
           areTabletFieldsAdditionalMapFocused
         }
         areTabletFieldsAdditionalMapValid={areTabletFieldsAdditionalMapValid}
-        borderColor={borderColor}
         createProductAction={createProductAction}
         createProductDispatch={createProductDispatch}
         currentlySelectedAdditionalFieldIndex={
@@ -3290,7 +3317,6 @@ function CreateProduct() {
           areWebcamFieldsAdditionalMapFocused
         }
         areWebcamFieldsAdditionalMapValid={areWebcamFieldsAdditionalMapValid}
-        borderColor={borderColor}
         createProductAction={createProductAction}
         createProductDispatch={createProductDispatch}
         currentlySelectedAdditionalFieldIndex={
@@ -3314,7 +3340,6 @@ function CreateProduct() {
         areMicrophoneFieldsAdditionalMapValid={
           areMicrophoneFieldsAdditionalMapValid
         }
-        borderColor={borderColor}
         createProductAction={createProductAction}
         createProductDispatch={createProductDispatch}
         currentlySelectedAdditionalFieldIndex={
@@ -3338,15 +3363,11 @@ function CreateProduct() {
 
   const displayCreateProductFormPage2 = (
     <FormLayoutWrapper>
-      <Group
-        position="apart"
-        py={padding}
-        style={{ borderBottom: borderColor }}
-        w="100%"
-      >
+      <Stack style={{ borderBottom: borderColor }} pb={padding}>
         {createdProductCategorySelectInput}
-        {displaySelectedProductCategoryInputs}
-      </Group>
+      </Stack>
+      <Space h="sm" />
+      {displaySelectedProductCategoryInputs}
     </FormLayoutWrapper>
   );
 
@@ -3354,7 +3375,7 @@ function CreateProduct() {
   //  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
   //    FORM REVIEW OBJECTS
   //  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
-  // - used to display the entered values in the form review page of the Stepper component
+  // - used to display the input values in the form review page of the Stepper component
   // - inputs whose values are in error are highlighted in red
   // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 

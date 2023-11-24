@@ -29,17 +29,12 @@ import {
   OBJECT_KEY_REGEX,
   USER_DEFINED_VALUE_REGEX,
 } from '../constants';
-import {
-  CaseSidePanel,
-  CaseType,
-  CreateProductAction,
-  CreateProductDispatch,
-} from '../types';
+import { CreateProductDispatch } from '../dispatches';
+import { CaseSidePanel, CaseType, CreateProductAction } from '../types';
 
 type CreateCaseProps = {
   areCaseFieldsAdditionalMapFocused: Map<number, [boolean, boolean]>;
   areCaseFieldsAdditionalMapValid: Map<number, [boolean, boolean]>;
-  borderColor: string;
   caseColor: string;
   caseFieldsAdditionalMap: Map<number, [string, string]>;
   caseSidePanel: CaseSidePanel;
@@ -55,7 +50,6 @@ type CreateCaseProps = {
 function CreateCase({
   areCaseFieldsAdditionalMapFocused,
   areCaseFieldsAdditionalMapValid,
-  borderColor,
   caseColor,
   caseFieldsAdditionalMap,
   caseSidePanel,
@@ -319,7 +313,7 @@ function CreateCase({
       caseFieldsAdditionalMapKeysInputErrorText,
       caseFieldsAdditionalMapKeysInputValidText,
     ] = AccessibleErrorValidTextElements({
-      inputElementKind: `additional field name ${mapKey + 1}`,
+      inputElementKind: `additional Case field name ${mapKey + 1}`,
       inputText: field,
       isInputTextFocused:
         areCaseFieldsAdditionalMapFocused.get(mapKey)?.[0] ?? false,
@@ -327,7 +321,7 @@ function CreateCase({
         areCaseFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
       regexValidationText: returnObjectKeyValidationText({
         content: field,
-        contentKind: `additional field name ${mapKey + 1}`,
+        contentKind: `additional Case field name ${mapKey + 1}`,
         maxLength: 75,
         minLength: 1,
       }),
@@ -355,7 +349,7 @@ function CreateCase({
       caseFieldsAdditionalMapValuesInputErrorText,
       caseFieldsAdditionalMapValuesInputValidText,
     ] = AccessibleErrorValidTextElements({
-      inputElementKind: `additional field value ${mapKey + 1}`,
+      inputElementKind: `additional Case field value ${mapKey + 1}`,
       inputText: value,
       isInputTextFocused:
         areCaseFieldsAdditionalMapFocused.get(mapKey)?.[1] ?? false,
@@ -363,7 +357,7 @@ function CreateCase({
         areCaseFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
       regexValidationText: returnUserDefinedFieldValueValidationText({
         content: value,
-        contentKind: `additional field value ${mapKey + 1}`,
+        contentKind: `additional Case field value ${mapKey + 1}`,
         maxLength: 2000,
         minLength: 2,
       }),
@@ -435,7 +429,7 @@ function CreateCase({
         },
         placeholder: 'Enter additional field name',
         required: true,
-        semanticName: `additional field name ${mapKey + 1}`,
+        semanticName: `additional Case field name ${mapKey + 1}`,
       };
 
     // ╭─────────────────────────────────────────────────────────────────╮
@@ -493,7 +487,7 @@ function CreateCase({
         },
         placeholder: 'Enter additional field value',
         required: true,
-        semanticName: `additional field value ${mapKey + 1}`,
+        semanticName: `additional Case field value ${mapKey + 1}`,
       };
 
     const [
@@ -598,4 +592,4 @@ function CreateCase({
   return displayComputerCaseSpecificationsInputs;
 }
 
-export default CreateCase;
+export { CreateCase };

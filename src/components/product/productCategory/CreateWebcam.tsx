@@ -31,9 +31,9 @@ import {
   WEBCAM_MICROPHONE_DATA,
   WEBCAM_RESOLUTION_DATA,
 } from '../constants';
+import { CreateProductDispatch } from '../dispatches';
 import {
   CreateProductAction,
-  CreateProductDispatch,
   WebcamFrameRate,
   WebcamInterface,
   WebcamMicrophone,
@@ -43,7 +43,6 @@ import {
 type CreateWebcamProps = {
   areWebcamFieldsAdditionalMapFocused: Map<number, [boolean, boolean]>;
   areWebcamFieldsAdditionalMapValid: Map<number, [boolean, boolean]>;
-  borderColor: string;
   createProductAction: CreateProductAction;
   createProductDispatch: React.Dispatch<CreateProductDispatch>;
   currentlySelectedAdditionalFieldIndex: number;
@@ -61,7 +60,6 @@ type CreateWebcamProps = {
 function CreateWebcam({
   areWebcamFieldsAdditionalMapFocused,
   areWebcamFieldsAdditionalMapValid,
-  borderColor,
   createProductAction,
   createProductDispatch,
   currentlySelectedAdditionalFieldIndex,
@@ -365,7 +363,7 @@ function CreateWebcam({
       webcamFieldsAdditionalMapKeysInputErrorText,
       webcamFieldsAdditionalMapKeysInputValidText,
     ] = AccessibleErrorValidTextElements({
-      inputElementKind: `additional field name ${mapKey + 1}`,
+      inputElementKind: `additional Webcam field name ${mapKey + 1}`,
       inputText: field,
       isInputTextFocused:
         areWebcamFieldsAdditionalMapFocused.get(mapKey)?.[0] ?? false,
@@ -373,7 +371,7 @@ function CreateWebcam({
         areWebcamFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
       regexValidationText: returnObjectKeyValidationText({
         content: field,
-        contentKind: `additional field name ${mapKey + 1}`,
+        contentKind: `additional Webcam field name ${mapKey + 1}`,
         maxLength: 75,
         minLength: 1,
       }),
@@ -401,7 +399,7 @@ function CreateWebcam({
       webcamFieldsAdditionalMapValuesInputErrorText,
       webcamFieldsAdditionalMapValuesInputValidText,
     ] = AccessibleErrorValidTextElements({
-      inputElementKind: `additional field value ${mapKey + 1}`,
+      inputElementKind: `additional Webcam field value ${mapKey + 1}`,
       inputText: value,
       isInputTextFocused:
         areWebcamFieldsAdditionalMapFocused.get(mapKey)?.[1] ?? false,
@@ -409,7 +407,7 @@ function CreateWebcam({
         areWebcamFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
       regexValidationText: returnUserDefinedFieldValueValidationText({
         content: value,
-        contentKind: `additional field value ${mapKey + 1}`,
+        contentKind: `additional Webcam field value ${mapKey + 1}`,
         maxLength: 2000,
         minLength: 2,
       }),
@@ -481,7 +479,7 @@ function CreateWebcam({
         },
         placeholder: 'Enter additional field name',
         required: true,
-        semanticName: `additional field name ${mapKey + 1}`,
+        semanticName: `additional Webcam field name ${mapKey + 1}`,
       };
 
     // ╭─────────────────────────────────────────────────────────────────╮
@@ -541,7 +539,7 @@ function CreateWebcam({
         },
         placeholder: 'Enter additional field value',
         required: true,
-        semanticName: `additional field value ${mapKey + 1}`,
+        semanticName: `additional Webcam field value ${mapKey + 1}`,
       };
 
     const [
@@ -650,4 +648,4 @@ function CreateWebcam({
   return displayWebcamSpecificationsInputs;
 }
 
-export default CreateWebcam;
+export { CreateWebcam };

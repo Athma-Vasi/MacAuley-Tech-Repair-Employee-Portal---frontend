@@ -32,16 +32,12 @@ import {
   SMALL_INTEGER_REGEX,
   USER_DEFINED_VALUE_REGEX,
 } from '../constants';
-import {
-  CreateProductAction,
-  CreateProductDispatch,
-  MemoryUnit,
-} from '../types';
+import { CreateProductDispatch } from '../dispatches';
+import { CreateProductAction, MemoryUnit } from '../types';
 
 type CreateGpuProps = {
   areGpuFieldsAdditionalMapFocused: Map<number, [boolean, boolean]>;
   areGpuFieldsAdditionalMapValid: Map<number, [boolean, boolean]>;
-  borderColor: string;
   createProductAction: CreateProductAction;
   createProductDispatch: React.Dispatch<CreateProductDispatch>;
   currentlySelectedAdditionalFieldIndex: number;
@@ -68,7 +64,6 @@ type CreateGpuProps = {
 function CreateGpu({
   areGpuFieldsAdditionalMapFocused,
   areGpuFieldsAdditionalMapValid,
-  borderColor,
   createProductAction,
   createProductDispatch,
   currentlySelectedAdditionalFieldIndex,
@@ -600,7 +595,7 @@ function CreateGpu({
       gpuFieldsAdditionalMapKeysInputErrorText,
       gpuFieldsAdditionalMapKeysInputValidText,
     ] = AccessibleErrorValidTextElements({
-      inputElementKind: `additional field name ${mapKey + 1}`,
+      inputElementKind: `additional GPU field name ${mapKey + 1}`,
       inputText: field,
       isInputTextFocused:
         areGpuFieldsAdditionalMapFocused.get(mapKey)?.[0] ?? false,
@@ -608,7 +603,7 @@ function CreateGpu({
         areGpuFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
       regexValidationText: returnObjectKeyValidationText({
         content: field,
-        contentKind: `additional field name ${mapKey + 1}`,
+        contentKind: `additional GPU field name ${mapKey + 1}`,
         maxLength: 75,
         minLength: 1,
       }),
@@ -636,7 +631,7 @@ function CreateGpu({
       gpuFieldsAdditionalMapValuesInputErrorText,
       gpuFieldsAdditionalMapValuesInputValidText,
     ] = AccessibleErrorValidTextElements({
-      inputElementKind: `additional field value ${mapKey + 1}`,
+      inputElementKind: `additional GPU field value ${mapKey + 1}`,
       inputText: value,
       isInputTextFocused:
         areGpuFieldsAdditionalMapFocused.get(mapKey)?.[1] ?? false,
@@ -644,7 +639,7 @@ function CreateGpu({
         areGpuFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
       regexValidationText: returnUserDefinedFieldValueValidationText({
         content: value,
-        contentKind: `additional field value ${mapKey + 1}`,
+        contentKind: `additional GPU field value ${mapKey + 1}`,
         maxLength: 2000,
         minLength: 2,
       }),
@@ -716,7 +711,7 @@ function CreateGpu({
         },
         placeholder: 'Enter additional field name',
         required: true,
-        semanticName: `additional field name ${mapKey + 1}`,
+        semanticName: `additional GPU field name ${mapKey + 1}`,
       };
 
     // ╭─────────────────────────────────────────────────────────────────╮
@@ -774,7 +769,7 @@ function CreateGpu({
         },
         placeholder: 'Enter additional field value',
         required: true,
-        semanticName: `additional field value ${mapKey + 1}`,
+        semanticName: `additional GPU field value ${mapKey + 1}`,
       };
 
     const [
@@ -882,4 +877,4 @@ function CreateGpu({
   return displayGpuSpecificationsInputs;
 }
 
-export default CreateGpu;
+export { CreateGpu };

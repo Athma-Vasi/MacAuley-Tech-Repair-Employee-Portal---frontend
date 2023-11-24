@@ -33,17 +33,12 @@ import {
   SPEAKER_TYPE_DATA,
   USER_DEFINED_VALUE_REGEX,
 } from '../constants';
-import {
-  CreateProductAction,
-  CreateProductDispatch,
-  SpeakerInterface,
-  SpeakerType,
-} from '../types';
+import { CreateProductDispatch } from '../dispatches';
+import { CreateProductAction, SpeakerInterface, SpeakerType } from '../types';
 
 type CreateSpeakerProps = {
   areSpeakerFieldsAdditionalMapFocused: Map<number, [boolean, boolean]>;
   areSpeakerFieldsAdditionalMapValid: Map<number, [boolean, boolean]>;
-  borderColor: string;
   createProductAction: CreateProductAction;
   createProductDispatch: React.Dispatch<CreateProductDispatch>;
   currentlySelectedAdditionalFieldIndex: number;
@@ -65,7 +60,6 @@ type CreateSpeakerProps = {
 function CreateSpeaker({
   areSpeakerFieldsAdditionalMapFocused,
   areSpeakerFieldsAdditionalMapValid,
-  borderColor,
   createProductAction,
   createProductDispatch,
   currentlySelectedAdditionalFieldIndex,
@@ -483,7 +477,7 @@ function CreateSpeaker({
       speakerFieldsAdditionalMapKeysInputErrorText,
       speakerFieldsAdditionalMapKeysInputValidText,
     ] = AccessibleErrorValidTextElements({
-      inputElementKind: `additional field name ${mapKey + 1}`,
+      inputElementKind: `additional Speaker field name ${mapKey + 1}`,
       inputText: field,
       isInputTextFocused:
         areSpeakerFieldsAdditionalMapFocused.get(mapKey)?.[0] ?? false,
@@ -491,7 +485,7 @@ function CreateSpeaker({
         areSpeakerFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
       regexValidationText: returnObjectKeyValidationText({
         content: field,
-        contentKind: `additional field name ${mapKey + 1}`,
+        contentKind: `additional Speaker field name ${mapKey + 1}`,
         maxLength: 75,
         minLength: 1,
       }),
@@ -519,7 +513,7 @@ function CreateSpeaker({
       speakerFieldsAdditionalMapValuesInputErrorText,
       speakerFieldsAdditionalMapValuesInputValidText,
     ] = AccessibleErrorValidTextElements({
-      inputElementKind: `additional field value ${mapKey + 1}`,
+      inputElementKind: `additional Speaker field value ${mapKey + 1}`,
       inputText: value,
       isInputTextFocused:
         areSpeakerFieldsAdditionalMapFocused.get(mapKey)?.[1] ?? false,
@@ -527,7 +521,7 @@ function CreateSpeaker({
         areSpeakerFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
       regexValidationText: returnUserDefinedFieldValueValidationText({
         content: value,
-        contentKind: `additional field value ${mapKey + 1}`,
+        contentKind: `additional Speaker field value ${mapKey + 1}`,
         maxLength: 2000,
         minLength: 2,
       }),
@@ -601,7 +595,7 @@ function CreateSpeaker({
         },
         placeholder: 'Enter additional field name',
         required: true,
-        semanticName: `additional field name ${mapKey + 1}`,
+        semanticName: `additional Speaker field name ${mapKey + 1}`,
       };
 
     // ╭─────────────────────────────────────────────────────────────────╮
@@ -661,7 +655,7 @@ function CreateSpeaker({
         },
         placeholder: 'Enter additional field value',
         required: true,
-        semanticName: `additional field value ${mapKey + 1}`,
+        semanticName: `additional Speaker field value ${mapKey + 1}`,
       };
 
     const [
@@ -770,4 +764,4 @@ function CreateSpeaker({
   return displaySpeakerSpecificationsInputs;
 }
 
-export default CreateSpeaker;
+export { CreateSpeaker };

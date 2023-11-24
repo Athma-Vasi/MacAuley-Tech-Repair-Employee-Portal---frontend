@@ -699,57 +699,6 @@ type CreateProductDispatch =
       payload: AdditionalFieldsValidFocusedPayload;
     }
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    MOUSE
-  // ╰─────────────────────────────────────────────────────────────────╯
-  | {
-      type: CreateProductAction['setMouseSensor'];
-      payload: MouseSensor;
-    }
-  | {
-      type: CreateProductAction['setMouseDpi'];
-      payload: string;
-    }
-  | {
-      type:
-        | CreateProductAction['setIsMouseDpiValid']
-        | CreateProductAction['setIsMouseDpiFocused'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setMouseButtons'];
-      payload: string;
-    }
-  | {
-      type:
-        | CreateProductAction['setIsMouseButtonsValid']
-        | CreateProductAction['setIsMouseButtonsFocused'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setMouseColor'];
-      payload: string;
-    }
-  | {
-      type:
-        | CreateProductAction['setIsMouseColorValid']
-        | CreateProductAction['setIsMouseColorFocused'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setMouseInterface'];
-      payload: PeripheralsInterface;
-    }
-  | {
-      type: CreateProductAction['setMouseFieldsAdditionalMap'];
-      payload: AdditionalFieldsPayload;
-    }
-  | {
-      type:
-        | CreateProductAction['setAreMouseFieldsAdditionalMapValid']
-        | CreateProductAction['setAreMouseFieldsAdditionalMapFocused'];
-      payload: AdditionalFieldsValidFocusedPayload;
-    }
-  // ╭─────────────────────────────────────────────────────────────────╮
   //    MICROPHONE
   // ╰─────────────────────────────────────────────────────────────────╯
   | {
@@ -907,6 +856,57 @@ type CreateProductDispatch =
       type:
         | CreateProductAction['setAreMotherboardFieldsAdditionalMapValid']
         | CreateProductAction['setAreMotherboardFieldsAdditionalMapFocused'];
+      payload: AdditionalFieldsValidFocusedPayload;
+    }
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    MOUSE
+  // ╰─────────────────────────────────────────────────────────────────╯
+  | {
+      type: CreateProductAction['setMouseSensor'];
+      payload: MouseSensor;
+    }
+  | {
+      type: CreateProductAction['setMouseDpi'];
+      payload: string;
+    }
+  | {
+      type:
+        | CreateProductAction['setIsMouseDpiValid']
+        | CreateProductAction['setIsMouseDpiFocused'];
+      payload: boolean;
+    }
+  | {
+      type: CreateProductAction['setMouseButtons'];
+      payload: string;
+    }
+  | {
+      type:
+        | CreateProductAction['setIsMouseButtonsValid']
+        | CreateProductAction['setIsMouseButtonsFocused'];
+      payload: boolean;
+    }
+  | {
+      type: CreateProductAction['setMouseColor'];
+      payload: string;
+    }
+  | {
+      type:
+        | CreateProductAction['setIsMouseColorValid']
+        | CreateProductAction['setIsMouseColorFocused'];
+      payload: boolean;
+    }
+  | {
+      type: CreateProductAction['setMouseInterface'];
+      payload: PeripheralsInterface;
+    }
+  | {
+      type: CreateProductAction['setMouseFieldsAdditionalMap'];
+      payload: AdditionalFieldsPayload;
+    }
+  | {
+      type:
+        | CreateProductAction['setAreMouseFieldsAdditionalMapValid']
+        | CreateProductAction['setAreMouseFieldsAdditionalMapFocused'];
       payload: AdditionalFieldsValidFocusedPayload;
     }
   // ╭─────────────────────────────────────────────────────────────────╮

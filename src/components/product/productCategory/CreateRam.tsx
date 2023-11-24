@@ -37,17 +37,12 @@ import {
   SMALL_INTEGER_REGEX,
   USER_DEFINED_VALUE_REGEX,
 } from '../constants';
-import {
-  CreateProductAction,
-  CreateProductDispatch,
-  MemoryType,
-  MemoryUnit,
-} from '../types';
+import { CreateProductDispatch } from '../dispatches';
+import { CreateProductAction, MemoryType, MemoryUnit } from '../types';
 
 type CreateRamProps = {
   areRamFieldsAdditionalMapFocused: Map<number, [boolean, boolean]>;
   areRamFieldsAdditionalMapValid: Map<number, [boolean, boolean]>;
-  borderColor: string;
   createProductAction: CreateProductAction;
   createProductDispatch: React.Dispatch<CreateProductDispatch>;
   currentlySelectedAdditionalFieldIndex: number;
@@ -78,7 +73,6 @@ type CreateRamProps = {
 function CreateRam({
   areRamFieldsAdditionalMapFocused,
   areRamFieldsAdditionalMapValid,
-  borderColor,
   createProductAction,
   createProductDispatch,
   currentlySelectedAdditionalFieldIndex,
@@ -706,7 +700,7 @@ function CreateRam({
       ramFieldsAdditionalMapKeysInputErrorText,
       ramFieldsAdditionalMapKeysInputValidText,
     ] = AccessibleErrorValidTextElements({
-      inputElementKind: `additional field name ${mapKey + 1}`,
+      inputElementKind: `additional RAM field name ${mapKey + 1}`,
       inputText: field,
       isInputTextFocused:
         areRamFieldsAdditionalMapFocused.get(mapKey)?.[0] ?? false,
@@ -714,7 +708,7 @@ function CreateRam({
         areRamFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
       regexValidationText: returnObjectKeyValidationText({
         content: field,
-        contentKind: `additional field name ${mapKey + 1}`,
+        contentKind: `additional RAM field name ${mapKey + 1}`,
         maxLength: 75,
         minLength: 1,
       }),
@@ -742,7 +736,7 @@ function CreateRam({
       ramFieldsAdditionalMapValuesInputErrorText,
       ramFieldsAdditionalMapValuesInputValidText,
     ] = AccessibleErrorValidTextElements({
-      inputElementKind: `additional field value ${mapKey + 1}`,
+      inputElementKind: `additional RAM field value ${mapKey + 1}`,
       inputText: value,
       isInputTextFocused:
         areRamFieldsAdditionalMapFocused.get(mapKey)?.[1] ?? false,
@@ -750,7 +744,7 @@ function CreateRam({
         areRamFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
       regexValidationText: returnUserDefinedFieldValueValidationText({
         content: value,
-        contentKind: `additional field value ${mapKey + 1}`,
+        contentKind: `additional RAM field value ${mapKey + 1}`,
         maxLength: 2000,
         minLength: 2,
       }),
@@ -822,7 +816,7 @@ function CreateRam({
         },
         placeholder: 'Enter additional field name',
         required: true,
-        semanticName: `additional field name ${mapKey + 1}`,
+        semanticName: `additional RAM field name ${mapKey + 1}`,
       };
 
     // ╭─────────────────────────────────────────────────────────────────╮
@@ -880,7 +874,7 @@ function CreateRam({
         },
         placeholder: 'Enter additional field value',
         required: true,
-        semanticName: `additional field value ${mapKey + 1}`,
+        semanticName: `additional RAM field value ${mapKey + 1}`,
       };
 
     const [
@@ -990,4 +984,4 @@ function CreateRam({
   return displayRamSpecificationsInputs;
 }
 
-export default CreateRam;
+export { CreateRam };

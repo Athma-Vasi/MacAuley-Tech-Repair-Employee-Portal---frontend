@@ -237,24 +237,6 @@ const initialCreateProductState: CreateProductState = {
   areRamFieldsAdditionalMapValid: new Map<number, [boolean, boolean]>(),
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    MOUSE
-  // ╰─────────────────────────────────────────────────────────────────╯
-  mouseSensor: 'Optical',
-  mouseDpi: '',
-  isMouseDpiFocused: false,
-  isMouseDpiValid: false,
-  mouseButtons: '',
-  isMouseButtonsFocused: false,
-  isMouseButtonsValid: false,
-  mouseColor: '',
-  isMouseColorFocused: false,
-  isMouseColorValid: false,
-  mouseInterface: 'USB',
-  mouseFieldsAdditionalMap: new Map<number, [string, string]>(),
-  areMouseFieldsAdditionalMapFocused: new Map<number, [boolean, boolean]>(),
-  areMouseFieldsAdditionalMapValid: new Map<number, [boolean, boolean]>(),
-
-  // ╭─────────────────────────────────────────────────────────────────╮
   //    MICROPHONE
   // ╰─────────────────────────────────────────────────────────────────╯
   microphoneColor: '',
@@ -312,6 +294,24 @@ const initialCreateProductState: CreateProductState = {
     [boolean, boolean]
   >(),
   areMotherboardFieldsAdditionalMapValid: new Map<number, [boolean, boolean]>(),
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    MOUSE
+  // ╰─────────────────────────────────────────────────────────────────╯
+  mouseSensor: 'Optical',
+  mouseDpi: '',
+  isMouseDpiFocused: false,
+  isMouseDpiValid: false,
+  mouseButtons: '',
+  isMouseButtonsFocused: false,
+  isMouseButtonsValid: false,
+  mouseColor: '',
+  isMouseColorFocused: false,
+  isMouseColorValid: false,
+  mouseInterface: 'USB',
+  mouseFieldsAdditionalMap: new Map<number, [string, string]>(),
+  areMouseFieldsAdditionalMapFocused: new Map<number, [boolean, boolean]>(),
+  areMouseFieldsAdditionalMapValid: new Map<number, [boolean, boolean]>(),
 
   // ╭─────────────────────────────────────────────────────────────────╮
   //    POWER SUPPLY UNIT (PSU)

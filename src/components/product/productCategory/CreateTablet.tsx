@@ -39,17 +39,12 @@ import {
   TABLET_CHIPSET_REGEX,
   USER_DEFINED_VALUE_REGEX,
 } from '../constants';
-import {
-  CreateProductAction,
-  CreateProductDispatch,
-  MemoryUnit,
-  MobileOs,
-} from '../types';
+import { CreateProductDispatch } from '../dispatches';
+import { CreateProductAction, MemoryUnit, MobileOs } from '../types';
 
 type CreateTabletProps = {
   areTabletFieldsAdditionalMapFocused: Map<number, [boolean, boolean]>;
   areTabletFieldsAdditionalMapValid: Map<number, [boolean, boolean]>;
-  borderColor: string;
   createProductAction: CreateProductAction;
   createProductDispatch: React.Dispatch<CreateProductDispatch>;
   currentlySelectedAdditionalFieldIndex: number;
@@ -89,7 +84,6 @@ type CreateTabletProps = {
 function CreateTablet({
   areTabletFieldsAdditionalMapFocused,
   areTabletFieldsAdditionalMapValid,
-  borderColor,
   createProductAction,
   createProductDispatch,
   currentlySelectedAdditionalFieldIndex,
@@ -949,7 +943,7 @@ function CreateTablet({
       tabletFieldsAdditionalMapKeysInputErrorText,
       tabletFieldsAdditionalMapKeysInputValidText,
     ] = AccessibleErrorValidTextElements({
-      inputElementKind: `additional field name ${mapKey + 1}`,
+      inputElementKind: `additional Tablet field name ${mapKey + 1}`,
       inputText: field,
       isInputTextFocused:
         areTabletFieldsAdditionalMapFocused.get(mapKey)?.[0] ?? false,
@@ -957,7 +951,7 @@ function CreateTablet({
         areTabletFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
       regexValidationText: returnObjectKeyValidationText({
         content: field,
-        contentKind: `additional field name ${mapKey + 1}`,
+        contentKind: `additional Tablet field name ${mapKey + 1}`,
         maxLength: 75,
         minLength: 1,
       }),
@@ -985,7 +979,7 @@ function CreateTablet({
       tabletFieldsAdditionalMapValuesInputErrorText,
       tabletFieldsAdditionalMapValuesInputValidText,
     ] = AccessibleErrorValidTextElements({
-      inputElementKind: `additional field value ${mapKey + 1}`,
+      inputElementKind: `additional Tablet field value ${mapKey + 1}`,
       inputText: value,
       isInputTextFocused:
         areTabletFieldsAdditionalMapFocused.get(mapKey)?.[1] ?? false,
@@ -993,7 +987,7 @@ function CreateTablet({
         areTabletFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
       regexValidationText: returnUserDefinedFieldValueValidationText({
         content: value,
-        contentKind: `additional field value ${mapKey + 1}`,
+        contentKind: `additional Tablet field value ${mapKey + 1}`,
         maxLength: 2000,
         minLength: 2,
       }),
@@ -1065,7 +1059,7 @@ function CreateTablet({
         },
         placeholder: 'Enter additional field name',
         required: true,
-        semanticName: `additional field name ${mapKey + 1}`,
+        semanticName: `additional Tablet field name ${mapKey + 1}`,
       };
 
     // ╭─────────────────────────────────────────────────────────────────╮
@@ -1125,7 +1119,7 @@ function CreateTablet({
         },
         placeholder: 'Enter additional field value',
         required: true,
-        semanticName: `additional field value ${mapKey + 1}`,
+        semanticName: `additional Tablet field value ${mapKey + 1}`,
       };
 
     const [
@@ -1240,4 +1234,4 @@ function CreateTablet({
   return displayTabletSpecificationsInputs;
 }
 
-export default CreateTablet;
+export { CreateTablet };

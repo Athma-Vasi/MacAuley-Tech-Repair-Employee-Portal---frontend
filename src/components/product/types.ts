@@ -472,38 +472,6 @@ type RamRequestBody = ProductCategoryPage1Specifications &
   };
 
 // ╭─────────────────────────────────────────────────────────────────╮
-//    MOUSE
-// ╰─────────────────────────────────────────────────────────────────╯
-
-type MouseSensor = 'Optical' | 'Laser' | 'Infrared' | 'Other';
-
-type MouseSpecifications = {
-  mouseSensor: MouseSensor; // Optical, Laser, etc.
-  mouseDpi: number; // 800, 1600, etc.
-  mouseButtons: number; // 6, 8, etc.
-  mouseColor: string; // Black, White, etc.
-  mouseInterface: PeripheralsInterface; // USB, Bluetooth, etc.
-};
-
-type MouseSchema = ProductCategorySchema & MouseSpecifications;
-
-type MouseDocument = MouseSchema & {
-  _id: string;
-  createdAt: Date;
-  updatedAt: Date;
-  __v: number;
-};
-
-type MouseRequestBody = ProductCategoryPage1Specifications &
-  MouseSpecifications & {
-    additionalFields: {
-      [key: string]: string;
-    };
-    reviews: ProductReview[];
-    uploadedFilesIds: string[];
-  };
-
-// ╭─────────────────────────────────────────────────────────────────╮
 //    MICROPHONE
 // ╰─────────────────────────────────────────────────────────────────╯
 
@@ -586,6 +554,38 @@ type MotherboardDocument = MotherboardSchema & {
 
 type MotherboardRequestBody = ProductCategoryPage1Specifications &
   MotherboardSpecifications & {
+    additionalFields: {
+      [key: string]: string;
+    };
+    reviews: ProductReview[];
+    uploadedFilesIds: string[];
+  };
+
+// ╭─────────────────────────────────────────────────────────────────╮
+//    MOUSE
+// ╰─────────────────────────────────────────────────────────────────╯
+
+type MouseSensor = 'Optical' | 'Laser' | 'Infrared' | 'Other';
+
+type MouseSpecifications = {
+  mouseSensor: MouseSensor; // Optical, Laser, etc.
+  mouseDpi: number; // 800, 1600, etc.
+  mouseButtons: number; // 6, 8, etc.
+  mouseColor: string; // Black, White, etc.
+  mouseInterface: PeripheralsInterface; // USB, Bluetooth, etc.
+};
+
+type MouseSchema = ProductCategorySchema & MouseSpecifications;
+
+type MouseDocument = MouseSchema & {
+  _id: string;
+  createdAt: Date;
+  updatedAt: Date;
+  __v: number;
+};
+
+type MouseRequestBody = ProductCategoryPage1Specifications &
+  MouseSpecifications & {
     additionalFields: {
       [key: string]: string;
     };
@@ -1073,24 +1073,6 @@ type CreateProductState = {
   areRamFieldsAdditionalMapFocused: AdditionalFieldsFocusedMap;
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    MOUSE
-  // ╰─────────────────────────────────────────────────────────────────╯
-  mouseSensor: MouseSensor;
-  mouseDpi: string;
-  isMouseDpiValid: boolean;
-  isMouseDpiFocused: boolean;
-  mouseButtons: string;
-  isMouseButtonsValid: boolean;
-  isMouseButtonsFocused: boolean;
-  mouseColor: string;
-  isMouseColorValid: boolean;
-  isMouseColorFocused: boolean;
-  mouseInterface: PeripheralsInterface;
-  mouseFieldsAdditionalMap: AdditionalFieldsMap;
-  areMouseFieldsAdditionalMapValid: AdditionalFieldsValidMap;
-  areMouseFieldsAdditionalMapFocused: AdditionalFieldsFocusedMap;
-
-  // ╭─────────────────────────────────────────────────────────────────╮
   //    MICROPHONE
   // ╰─────────────────────────────────────────────────────────────────╯
   microphoneType: MicrophoneType;
@@ -1142,6 +1124,24 @@ type CreateProductState = {
   motherboardFieldsAdditionalMap: AdditionalFieldsMap;
   areMotherboardFieldsAdditionalMapValid: AdditionalFieldsValidMap;
   areMotherboardFieldsAdditionalMapFocused: AdditionalFieldsFocusedMap;
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    MOUSE
+  // ╰─────────────────────────────────────────────────────────────────╯
+  mouseSensor: MouseSensor;
+  mouseDpi: string;
+  isMouseDpiValid: boolean;
+  isMouseDpiFocused: boolean;
+  mouseButtons: string;
+  isMouseButtonsValid: boolean;
+  isMouseButtonsFocused: boolean;
+  mouseColor: string;
+  isMouseColorValid: boolean;
+  isMouseColorFocused: boolean;
+  mouseInterface: PeripheralsInterface;
+  mouseFieldsAdditionalMap: AdditionalFieldsMap;
+  areMouseFieldsAdditionalMapValid: AdditionalFieldsValidMap;
+  areMouseFieldsAdditionalMapFocused: AdditionalFieldsFocusedMap;
 
   // ╭─────────────────────────────────────────────────────────────────╮
   //    POWER SUPPLY UNIT (PSU)

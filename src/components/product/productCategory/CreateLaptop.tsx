@@ -1,39 +1,20 @@
-import { MantineNumberSize, Stack, Title } from '@mantine/core';
+import { Group, MantineNumberSize, Stack, Title } from '@mantine/core';
 
+import { CreateProductDispatch } from '../dispatches';
 import {
-  CaseSidePanel,
-  CaseType,
   CreateProductAction,
-  CreateProductDispatch,
   DisplayPanelType,
-  KeyboardBacklight,
-  KeyboardLayout,
-  KeyboardSwitch,
   MemoryType,
   MemoryUnit,
-  MotherboardFormFactor,
-  MouseSensor,
-  PeripheralsInterface,
-  PsuEfficiency,
-  PsuFormFactor,
-  PsuModularity,
-  SpeakerInterface,
-  SpeakerType,
   StorageFormFactor,
   StorageInterface,
   StorageType,
 } from '../types';
-import CreateCase from './CreateCase';
-import CreateCpu from './CreateCpu';
-import CreateDisplay from './CreateDisplay';
-import CreateGpu from './CreateGpu';
-import CreateKeyboard from './CreateKeyboard';
-import CreateMotherboard from './CreateMotherboard';
-import CreateMouse from './CreateMouse';
-import CreatePsu from './CreatePsu';
-import CreateRam from './CreateRam';
-import CreateSpeaker from './CreateSpeaker';
-import CreateStorage from './CreateStorage';
+import { CreateCpu } from './CreateCpu';
+import { CreateDisplay } from './CreateDisplay';
+import { CreateGpu } from './CreateGpu';
+import { CreateRam } from './CreateRam';
+import { CreateStorage } from './CreateStorage';
 
 type CreateLaptopProps = {
   // ╭─────────────────────────────────────────────────────────────────╮
@@ -41,7 +22,6 @@ type CreateLaptopProps = {
   // ╰─────────────────────────────────────────────────────────────────╯
   areCpuFieldsAdditionalMapFocused: Map<number, [boolean, boolean]>;
   areCpuFieldsAdditionalMapValid: Map<number, [boolean, boolean]>;
-  borderColor: string;
   cpuCores: string;
   cpuFieldsAdditionalMap: Map<number, [string, string]>;
   cpuFrequency: string;
@@ -53,9 +33,6 @@ type CreateLaptopProps = {
   cpuL3CacheCapacityUnit: MemoryUnit;
   cpuSocket: string;
   cpuWattage: string;
-  createProductAction: CreateProductAction;
-  createProductDispatch: React.Dispatch<CreateProductDispatch>;
-  currentlySelectedAdditionalFieldIndex: number;
   isCpuCoresFocused: boolean;
   isCpuCoresValid: boolean;
   isCpuFrequencyFocused: boolean;
@@ -165,6 +142,14 @@ type CreateLaptopProps = {
   storageFormFactor: StorageFormFactor;
   storageInterface: StorageInterface;
   storageType: StorageType;
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    MISC.
+  // ╰─────────────────────────────────────────────────────────────────╯
+  borderColor: string;
+  createProductAction: CreateProductAction;
+  createProductDispatch: React.Dispatch<CreateProductDispatch>;
+  currentlySelectedAdditionalFieldIndex: number;
 };
 
 function CreateLaptop({
@@ -297,7 +282,6 @@ function CreateLaptop({
     <CreateCpu
       areCpuFieldsAdditionalMapFocused={areCpuFieldsAdditionalMapFocused}
       areCpuFieldsAdditionalMapValid={areCpuFieldsAdditionalMapValid}
-      borderColor={borderColor}
       cpuCores={cpuCores}
       cpuFieldsAdditionalMap={cpuFieldsAdditionalMap}
       cpuFrequency={cpuFrequency}
@@ -341,7 +325,6 @@ function CreateLaptop({
         areDisplayFieldsAdditionalMapFocused
       }
       areDisplayFieldsAdditionalMapValid={areDisplayFieldsAdditionalMapValid}
-      borderColor={borderColor}
       createProductAction={createProductAction}
       createProductDispatch={createProductDispatch}
       currentlySelectedAdditionalFieldIndex={
@@ -380,7 +363,6 @@ function CreateLaptop({
     <CreateGpu
       areGpuFieldsAdditionalMapFocused={areGpuFieldsAdditionalMapFocused}
       areGpuFieldsAdditionalMapValid={areGpuFieldsAdditionalMapValid}
-      borderColor={borderColor}
       createProductAction={createProductAction}
       createProductDispatch={createProductDispatch}
       currentlySelectedAdditionalFieldIndex={
@@ -414,7 +396,6 @@ function CreateLaptop({
     <CreateRam
       areRamFieldsAdditionalMapFocused={areRamFieldsAdditionalMapFocused}
       areRamFieldsAdditionalMapValid={areRamFieldsAdditionalMapValid}
-      borderColor={borderColor}
       createProductAction={createProductAction}
       createProductDispatch={createProductDispatch}
       currentlySelectedAdditionalFieldIndex={
@@ -454,7 +435,6 @@ function CreateLaptop({
         areStorageFieldsAdditionalMapFocused
       }
       areStorageFieldsAdditionalMapValid={areStorageFieldsAdditionalMapValid}
-      borderColor={borderColor}
       createProductAction={createProductAction}
       createProductDispatch={createProductDispatch}
       currentlySelectedAdditionalFieldIndex={
@@ -479,10 +459,18 @@ function CreateLaptop({
   const displayLaptopSpecificationsInputs = (
     <Stack w="100%">
       <Title order={3}>Laptop Specifications</Title>
-      {displayCpuSpecificationsInputs}
-      {displayDisplaySpecificationsInputs}
-      {displayGpuSpecificationsInputs}
-      {displayRamSpecificationsInputs}
+      <Group style={{ borderBottom: borderColor }}>
+        {displayCpuSpecificationsInputs}
+      </Group>
+      <Group style={{ borderBottom: borderColor }}>
+        {displayDisplaySpecificationsInputs}
+      </Group>
+      <Group style={{ borderBottom: borderColor }}>
+        {displayGpuSpecificationsInputs}
+      </Group>
+      <Group style={{ borderBottom: borderColor }}>
+        {displayRamSpecificationsInputs}
+      </Group>
       {displayStorageSpecificationsInputs}
     </Stack>
   );
@@ -490,4 +478,4 @@ function CreateLaptop({
   return displayLaptopSpecificationsInputs;
 }
 
-export default CreateLaptop;
+export { CreateLaptop };

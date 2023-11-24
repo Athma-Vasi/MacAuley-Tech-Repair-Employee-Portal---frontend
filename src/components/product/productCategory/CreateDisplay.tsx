@@ -34,16 +34,12 @@ import {
   OBJECT_KEY_REGEX,
   USER_DEFINED_VALUE_REGEX,
 } from '../constants';
-import {
-  CreateProductAction,
-  CreateProductDispatch,
-  DisplayPanelType,
-} from '../types';
+import { CreateProductDispatch } from '../dispatches';
+import { CreateProductAction, DisplayPanelType } from '../types';
 
 type CreateDisplayProps = {
   areDisplayFieldsAdditionalMapFocused: Map<number, [boolean, boolean]>;
   areDisplayFieldsAdditionalMapValid: Map<number, [boolean, boolean]>;
-  borderColor: string;
   createProductAction: CreateProductAction;
   createProductDispatch: React.Dispatch<CreateProductDispatch>;
   currentlySelectedAdditionalFieldIndex: number;
@@ -73,7 +69,6 @@ type CreateDisplayProps = {
 function CreateDisplay({
   areDisplayFieldsAdditionalMapFocused,
   areDisplayFieldsAdditionalMapValid,
-  borderColor,
   createProductAction,
   createProductDispatch,
   currentlySelectedAdditionalFieldIndex,
@@ -687,7 +682,7 @@ function CreateDisplay({
       displayFieldsAdditionalMapKeysInputErrorText,
       displayFieldsAdditionalMapKeysInputValidText,
     ] = AccessibleErrorValidTextElements({
-      inputElementKind: `additional field name ${mapKey + 1}`,
+      inputElementKind: `additional Display field name ${mapKey + 1}`,
       inputText: field,
       isInputTextFocused:
         areDisplayFieldsAdditionalMapFocused.get(mapKey)?.[0] ?? false,
@@ -695,7 +690,7 @@ function CreateDisplay({
         areDisplayFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
       regexValidationText: returnObjectKeyValidationText({
         content: field,
-        contentKind: `additional field name ${mapKey + 1}`,
+        contentKind: `additional Display field name ${mapKey + 1}`,
         maxLength: 75,
         minLength: 1,
       }),
@@ -722,7 +717,7 @@ function CreateDisplay({
       displayFieldsAdditionalMapValuesInputErrorText,
       displayFieldsAdditionalMapValuesInputValidText,
     ] = AccessibleErrorValidTextElements({
-      inputElementKind: `additional field value ${mapKey + 1}`,
+      inputElementKind: `additional Display field value ${mapKey + 1}`,
       inputText: value,
       isInputTextFocused:
         areDisplayFieldsAdditionalMapFocused.get(mapKey)?.[1] ?? false,
@@ -730,7 +725,7 @@ function CreateDisplay({
         areDisplayFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
       regexValidationText: returnUserDefinedFieldValueValidationText({
         content: value,
-        contentKind: `additional field value ${mapKey + 1}`,
+        contentKind: `additional Display field value ${mapKey + 1}`,
         maxLength: 2000,
         minLength: 2,
       }),
@@ -804,7 +799,7 @@ function CreateDisplay({
         },
         placeholder: 'Enter additional field name',
         required: true,
-        semanticName: `additional field name ${mapKey + 1}`,
+        semanticName: `additional Display field name ${mapKey + 1}`,
       };
 
     // ╭─────────────────────────────────────────────────────────────────╮
@@ -864,7 +859,7 @@ function CreateDisplay({
         },
         placeholder: 'Enter additional field value',
         required: true,
-        semanticName: `additional field value ${mapKey + 1}`,
+        semanticName: `additional Display field value ${mapKey + 1}`,
       };
 
     const [
@@ -975,4 +970,4 @@ function CreateDisplay({
   return displayDisplaySpecificationsInputs;
 }
 
-export default CreateDisplay;
+export { CreateDisplay };

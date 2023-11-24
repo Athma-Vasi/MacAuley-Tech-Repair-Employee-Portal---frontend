@@ -40,7 +40,6 @@ type CreateAccessoryProps = {
   accessoryType: string;
   areAccessoryFieldsAdditionalMapFocused: Map<number, [boolean, boolean]>;
   areAccessoryFieldsAdditionalMapValid: Map<number, [boolean, boolean]>;
-  borderColor: string;
   createProductAction: CreateProductAction;
   createProductDispatch: React.Dispatch<CreateProductDispatch>;
   currentlySelectedAdditionalFieldIndex: number;
@@ -58,7 +57,6 @@ function CreateAccessory({
   accessoryType,
   areAccessoryFieldsAdditionalMapFocused,
   areAccessoryFieldsAdditionalMapValid,
-  borderColor,
   createProductAction,
   createProductDispatch,
   currentlySelectedAdditionalFieldIndex,
@@ -378,7 +376,7 @@ function CreateAccessory({
       accessoryFieldsAdditionalMapKeysInputErrorText,
       accessoryFieldsAdditionalMapKeysInputValidText,
     ] = AccessibleErrorValidTextElements({
-      inputElementKind: `additional field name ${mapKey + 1}`,
+      inputElementKind: `additional Accessory field name ${mapKey + 1}`,
       inputText: field,
       isInputTextFocused:
         areAccessoryFieldsAdditionalMapFocused.get(mapKey)?.[0] ?? false,
@@ -386,7 +384,7 @@ function CreateAccessory({
         areAccessoryFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
       regexValidationText: returnObjectKeyValidationText({
         content: field,
-        contentKind: `additional field name ${mapKey + 1}`,
+        contentKind: `additional Accessory field name ${mapKey + 1}`,
         maxLength: 75,
         minLength: 1,
       }),
@@ -414,7 +412,7 @@ function CreateAccessory({
       accessoryFieldsAdditionalMapValuesInputErrorText,
       accessoryFieldsAdditionalMapValuesInputValidText,
     ] = AccessibleErrorValidTextElements({
-      inputElementKind: `additional field value ${mapKey + 1}`,
+      inputElementKind: `additional Accessory field value ${mapKey + 1}`,
       inputText: value,
       isInputTextFocused:
         areAccessoryFieldsAdditionalMapFocused.get(mapKey)?.[1] ?? false,
@@ -422,7 +420,7 @@ function CreateAccessory({
         areAccessoryFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
       regexValidationText: returnUserDefinedFieldValueValidationText({
         content: value,
-        contentKind: `additional field value ${mapKey + 1}`,
+        contentKind: `additional Accessory field value ${mapKey + 1}`,
         maxLength: 2000,
         minLength: 2,
       }),
@@ -496,7 +494,7 @@ function CreateAccessory({
         },
         placeholder: 'Enter additional field name',
         required: true,
-        semanticName: `additional field name ${mapKey + 1}`,
+        semanticName: `additional Accessory field name ${mapKey + 1}`,
       };
 
     // ╭─────────────────────────────────────────────────────────────────╮
@@ -556,7 +554,7 @@ function CreateAccessory({
         },
         placeholder: 'Enter additional field value',
         required: true,
-        semanticName: `additional field value ${mapKey + 1}`,
+        semanticName: `additional Accessory field value ${mapKey + 1}`,
       };
 
     const [
@@ -667,4 +665,4 @@ function CreateAccessory({
   return displayAccessorySpecificationsInputs;
 }
 
-export default CreateAccessory;
+export { CreateAccessory };
