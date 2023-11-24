@@ -3468,8 +3468,9 @@ function CreateProduct() {
   // ╰─────────────────────────────────────────────────────────────────╯
   const accessoryFieldsAdditionalMapFormReviewObjects =
     returnFormReviewObjectsFromUserDefinedFields({
-      additionalFields: accessoryFieldsAdditionalMap,
-      areAdditionalFieldsValid: areAccessoryFieldsAdditionalMapValid,
+      additionalFieldsMap: accessoryFieldsAdditionalMap,
+      areAdditionalFieldsValidMap: areAccessoryFieldsAdditionalMapValid,
+      productCategorySimple: 'Accessory',
     });
 
   const page2AccessoryFormReviewObject: FormReviewObjectArray = {
@@ -3497,8 +3498,9 @@ function CreateProduct() {
   // ╰─────────────────────────────────────────────────────────────────╯
   const cpuFieldsAdditionalMapFormReviewObjects =
     returnFormReviewObjectsFromUserDefinedFields({
-      additionalFields: cpuFieldsAdditionalMap,
-      areAdditionalFieldsValid: areCpuFieldsAdditionalMapValid,
+      additionalFieldsMap: cpuFieldsAdditionalMap,
+      areAdditionalFieldsValidMap: areCpuFieldsAdditionalMapValid,
+      productCategorySimple: 'CPU',
     });
 
   const page2CpuFormReviewObject: FormReviewObjectArray = {
@@ -3559,8 +3561,9 @@ function CreateProduct() {
   // ╰─────────────────────────────────────────────────────────────────╯
   const caseFieldsAdditionalMapFormReviewObjects =
     returnFormReviewObjectsFromUserDefinedFields({
-      additionalFields: caseFieldsAdditionalMap,
-      areAdditionalFieldsValid: areCaseFieldsAdditionalMapValid,
+      additionalFieldsMap: caseFieldsAdditionalMap,
+      areAdditionalFieldsValidMap: areCaseFieldsAdditionalMapValid,
+      productCategorySimple: 'Case',
     });
 
   const page2ComputerCaseFormReviewObject: FormReviewObjectArray = {
@@ -3587,8 +3590,9 @@ function CreateProduct() {
   // ╰─────────────────────────────────────────────────────────────────╯
   const displayFieldsAdditionalMapFormReviewObjects =
     returnFormReviewObjectsFromUserDefinedFields({
-      additionalFields: displayFieldsAdditionalMap,
-      areAdditionalFieldsValid: areDisplayFieldsAdditionalMapValid,
+      additionalFieldsMap: displayFieldsAdditionalMap,
+      areAdditionalFieldsValidMap: areDisplayFieldsAdditionalMapValid,
+      productCategorySimple: 'Display',
     });
 
   const page2DisplayFormReviewObject: FormReviewObjectArray = {
@@ -3636,8 +3640,9 @@ function CreateProduct() {
   // ╰─────────────────────────────────────────────────────────────────╯
   const gpuFieldsAdditionalMapFormReviewObjects =
     returnFormReviewObjectsFromUserDefinedFields({
-      additionalFields: gpuFieldsAdditionalMap,
-      areAdditionalFieldsValid: areGpuFieldsAdditionalMapValid,
+      additionalFieldsMap: gpuFieldsAdditionalMap,
+      areAdditionalFieldsValidMap: areGpuFieldsAdditionalMapValid,
+      productCategorySimple: 'GPU',
     });
 
   const page2GpuFormReviewObject: FormReviewObjectArray = {
@@ -3680,8 +3685,9 @@ function CreateProduct() {
   // ╰─────────────────────────────────────────────────────────────────╯
   const headphoneFieldsAdditionalMapFormReviewObjects =
     returnFormReviewObjectsFromUserDefinedFields({
-      additionalFields: headphoneFieldsAdditionalMap,
-      areAdditionalFieldsValid: areHeadphoneFieldsAdditionalMapValid,
+      additionalFieldsMap: headphoneFieldsAdditionalMap,
+      areAdditionalFieldsValidMap: areHeadphoneFieldsAdditionalMapValid,
+      productCategorySimple: 'Headphone',
     });
 
   const page2HeadphoneFormReviewObject: FormReviewObjectArray = {
@@ -3723,8 +3729,9 @@ function CreateProduct() {
   // ╰─────────────────────────────────────────────────────────────────╯
   const keyboardFieldsAdditionalMapFormReviewObjects =
     returnFormReviewObjectsFromUserDefinedFields({
-      additionalFields: keyboardFieldsAdditionalMap,
-      areAdditionalFieldsValid: areKeyboardFieldsAdditionalMapValid,
+      additionalFieldsMap: keyboardFieldsAdditionalMap,
+      areAdditionalFieldsValidMap: areKeyboardFieldsAdditionalMapValid,
+      productCategorySimple: 'Keyboard',
     });
 
   const page2KeyboardFormReviewObject: FormReviewObjectArray = {
@@ -3754,8 +3761,9 @@ function CreateProduct() {
   // ╰─────────────────────────────────────────────────────────────────╯
   const ramFieldsAdditionalMapFormReviewObjects =
     returnFormReviewObjectsFromUserDefinedFields({
-      additionalFields: ramFieldsAdditionalMap,
-      areAdditionalFieldsValid: areRamFieldsAdditionalMapValid,
+      additionalFieldsMap: ramFieldsAdditionalMap,
+      areAdditionalFieldsValidMap: areRamFieldsAdditionalMapValid,
+      productCategorySimple: 'RAM',
     });
 
   const page2RamFormReviewObject: FormReviewObjectArray = {
@@ -3807,8 +3815,9 @@ function CreateProduct() {
   // ╰─────────────────────────────────────────────────────────────────╯
   const mouseFieldsAdditionalMapFormReviewObjects =
     returnFormReviewObjectsFromUserDefinedFields({
-      additionalFields: mouseFieldsAdditionalMap,
-      areAdditionalFieldsValid: areMouseFieldsAdditionalMapValid,
+      additionalFieldsMap: mouseFieldsAdditionalMap,
+      areAdditionalFieldsValidMap: areMouseFieldsAdditionalMapValid,
+      productCategorySimple: 'Mouse',
     });
 
   const page2MouseFormReviewObject: FormReviewObjectArray = {
@@ -3845,8 +3854,9 @@ function CreateProduct() {
   // ╰─────────────────────────────────────────────────────────────────╯
   const microphoneFieldsAdditionalMapFormReviewObjects =
     returnFormReviewObjectsFromUserDefinedFields({
-      additionalFields: microphoneFieldsAdditionalMap,
-      areAdditionalFieldsValid: areMicrophoneFieldsAdditionalMapValid,
+      additionalFieldsMap: microphoneFieldsAdditionalMap,
+      areAdditionalFieldsValidMap: areMicrophoneFieldsAdditionalMapValid,
+      productCategorySimple: 'Microphone',
     });
 
   const page2MicrophoneFormReviewObject: FormReviewObjectArray = {
@@ -3882,8 +3892,9 @@ function CreateProduct() {
   // ╰─────────────────────────────────────────────────────────────────╯
   const motherboardFieldsAdditionalMapFormReviewObjects =
     returnFormReviewObjectsFromUserDefinedFields({
-      additionalFields: motherboardFieldsAdditionalMap,
-      areAdditionalFieldsValid: areMotherboardFieldsAdditionalMapValid,
+      additionalFieldsMap: motherboardFieldsAdditionalMap,
+      areAdditionalFieldsValidMap: areMotherboardFieldsAdditionalMapValid,
+      productCategorySimple: 'Motherboard',
     });
 
   const page2MotherboardFormReviewObject: FormReviewObjectArray = {
@@ -3956,8 +3967,9 @@ function CreateProduct() {
   // ╰─────────────────────────────────────────────────────────────────╯
   const psuFieldsAdditionalMapFormReviewObjects =
     returnFormReviewObjectsFromUserDefinedFields({
-      additionalFields: psuFieldsAdditionalMap,
-      areAdditionalFieldsValid: arePsuFieldsAdditionalMapValid,
+      additionalFieldsMap: psuFieldsAdditionalMap,
+      areAdditionalFieldsValidMap: arePsuFieldsAdditionalMapValid,
+      productCategorySimple: 'PSU',
     });
 
   const page2PowerSupplyFormReviewObject: FormReviewObjectArray = {
@@ -3988,8 +4000,9 @@ function CreateProduct() {
   // ╰─────────────────────────────────────────────────────────────────╯
   const smartphoneFieldsAdditionalMapFormReviewObjects =
     returnFormReviewObjectsFromUserDefinedFields({
-      additionalFields: smartphoneFieldsAdditionalMap,
-      areAdditionalFieldsValid: areSmartphoneFieldsAdditionalMapValid,
+      additionalFieldsMap: smartphoneFieldsAdditionalMap,
+      areAdditionalFieldsValidMap: areSmartphoneFieldsAdditionalMapValid,
+      productCategorySimple: 'Smartphone',
     });
   const page2SmartphoneFormReviewObject: FormReviewObjectArray = {
     'Smartphone Specifications': [
@@ -4055,8 +4068,9 @@ function CreateProduct() {
   // ╰─────────────────────────────────────────────────────────────────╯
   const speakerFieldsAdditionalMapFormReviewObjects =
     returnFormReviewObjectsFromUserDefinedFields({
-      additionalFields: speakerFieldsAdditionalMap,
-      areAdditionalFieldsValid: areSpeakerFieldsAdditionalMapValid,
+      additionalFieldsMap: speakerFieldsAdditionalMap,
+      areAdditionalFieldsValidMap: areSpeakerFieldsAdditionalMapValid,
+      productCategorySimple: 'Speaker',
     });
 
   const page2SpeakerFormReviewObject: FormReviewObjectArray = {
@@ -4093,8 +4107,9 @@ function CreateProduct() {
   // ╰─────────────────────────────────────────────────────────────────╯
   const storageFieldsAdditionalMapFormReviewObjects =
     returnFormReviewObjectsFromUserDefinedFields({
-      additionalFields: storageFieldsAdditionalMap,
-      areAdditionalFieldsValid: areStorageFieldsAdditionalMapValid,
+      additionalFieldsMap: storageFieldsAdditionalMap,
+      areAdditionalFieldsValidMap: areStorageFieldsAdditionalMapValid,
+      productCategorySimple: 'Storage',
     });
 
   const page2StorageFormReviewObject: FormReviewObjectArray = {
@@ -4138,8 +4153,9 @@ function CreateProduct() {
   // ╰─────────────────────────────────────────────────────────────────╯
   const tabletFieldsAdditionalMapFormReviewObjects =
     returnFormReviewObjectsFromUserDefinedFields({
-      additionalFields: tabletFieldsAdditionalMap,
-      areAdditionalFieldsValid: areTabletFieldsAdditionalMapValid,
+      additionalFieldsMap: tabletFieldsAdditionalMap,
+      areAdditionalFieldsValidMap: areTabletFieldsAdditionalMapValid,
+      productCategorySimple: 'Tablet',
     });
 
   const page2TabletFormReviewObject: FormReviewObjectArray = {
@@ -4206,8 +4222,9 @@ function CreateProduct() {
   // ╰─────────────────────────────────────────────────────────────────╯
   const webcamFieldsAdditionalMapFormReviewObjects =
     returnFormReviewObjectsFromUserDefinedFields({
-      additionalFields: webcamFieldsAdditionalMap,
-      areAdditionalFieldsValid: areWebcamFieldsAdditionalMapValid,
+      additionalFieldsMap: webcamFieldsAdditionalMap,
+      areAdditionalFieldsValidMap: areWebcamFieldsAdditionalMapValid,
+      productCategorySimple: 'Webcam',
     });
 
   const page2WebcamFormReviewObject: FormReviewObjectArray = {
