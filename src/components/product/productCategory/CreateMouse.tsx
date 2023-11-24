@@ -15,82 +15,74 @@ import {
   returnAccessibleSelectInputElements,
   returnAccessibleTextAreaInputElements,
   returnAccessibleTextInputElements,
-} from '../../../../jsxCreators';
+} from '../../../jsxCreators';
 import {
-  returnMediumIntegerValidationText,
+  returnColorVariantValidationText,
+  returnLargeIntegerValidationText,
   returnObjectKeyValidationText,
   returnSmallIntegerValidationText,
-  returnSocketChipsetValidationText,
   returnUserDefinedFieldValueValidationText,
-} from '../../../../utils';
-import { AccessibleTextAreaInputCreatorInfo } from '../../../wrappers';
+} from '../../../utils';
+import { AccessibleTextAreaInputCreatorInfo } from '../../wrappers';
 import {
-  GPU_CHIPSET_REGEX,
-  MEDIUM_INTEGER_REGEX,
-  MEMORY_UNIT_SELECT_INPUT_DATA,
+  COLOR_VARIANT_REGEX,
+  LARGE_INTEGER_REGEX,
+  MOUSE_SENSOR_DATA,
   OBJECT_KEY_REGEX,
+  PERIPHERALS_INTERFACE_DATA,
   SMALL_INTEGER_REGEX,
   USER_DEFINED_VALUE_REGEX,
-} from '../../constants';
+} from '../constants';
 import {
   CreateProductAction,
   CreateProductDispatch,
-  MemoryUnit,
+  MouseSensor,
+  PeripheralsInterface,
 } from '../types';
 
-type CreateGpuProps = {
-  areGpuFieldsAdditionalMapFocused: Map<number, [boolean, boolean]>;
-  areGpuFieldsAdditionalMapValid: Map<number, [boolean, boolean]>;
+type CreateMouseProps = {
+  areMouseFieldsAdditionalMapFocused: Map<number, [boolean, boolean]>;
+  areMouseFieldsAdditionalMapValid: Map<number, [boolean, boolean]>;
   borderColor: string;
   createProductAction: CreateProductAction;
   createProductDispatch: React.Dispatch<CreateProductDispatch>;
   currentlySelectedAdditionalFieldIndex: number;
-  gpuBoostClock: string;
-  gpuChipset: string;
-  gpuCoreClock: string;
-  gpuFieldsAdditionalMap: Map<number, [string, string]>;
-  gpuMemoryCapacity: string;
-  gpuMemoryCapacityUnit: MemoryUnit;
-  gpuTdp: string;
-  isGpuBoostClockFocused: boolean;
-  isGpuBoostClockValid: boolean;
-  isGpuChipsetFocused: boolean;
-  isGpuChipsetValid: boolean;
-  isGpuCoreClockFocused: boolean;
-  isGpuCoreClockValid: boolean;
-  isGpuMemoryCapacityFocused: boolean;
-  isGpuMemoryCapacityValid: boolean;
-  isGpuTdpFocused: boolean;
-  isGpuTdpValid: boolean;
+  isMouseButtonsFocused: boolean;
+  isMouseButtonsValid: boolean;
+  isMouseColorFocused: boolean;
+  isMouseColorValid: boolean;
+  isMouseDpiFocused: boolean;
+  isMouseDpiValid: boolean;
+  mouseButtons: string;
+  mouseColor: string;
+  mouseDpi: string;
+  mouseFieldsAdditionalMap: Map<number, [string, string]>;
+  mouseInterface: PeripheralsInterface;
+  mouseSensor: MouseSensor;
   padding: MantineNumberSize;
 };
 
-function CreateGpu({
-  areGpuFieldsAdditionalMapFocused,
-  areGpuFieldsAdditionalMapValid,
+function CreateMouse({
+  areMouseFieldsAdditionalMapFocused,
+  areMouseFieldsAdditionalMapValid,
   borderColor,
   createProductAction,
   createProductDispatch,
   currentlySelectedAdditionalFieldIndex,
-  gpuBoostClock,
-  gpuChipset,
-  gpuCoreClock,
-  gpuFieldsAdditionalMap,
-  gpuMemoryCapacity,
-  gpuMemoryCapacityUnit,
-  gpuTdp,
-  isGpuBoostClockFocused,
-  isGpuBoostClockValid,
-  isGpuChipsetFocused,
-  isGpuChipsetValid,
-  isGpuCoreClockFocused,
-  isGpuCoreClockValid,
-  isGpuMemoryCapacityFocused,
-  isGpuMemoryCapacityValid,
-  isGpuTdpFocused,
-  isGpuTdpValid,
+  isMouseButtonsFocused,
+  isMouseButtonsValid,
+  isMouseColorFocused,
+  isMouseColorValid,
+  isMouseDpiFocused,
+  isMouseDpiValid,
+  mouseButtons,
+  mouseColor,
+  mouseDpi,
+  mouseFieldsAdditionalMap,
+  mouseInterface,
+  mouseSensor,
   padding,
-}: CreateGpuProps) {
+}: CreateMouseProps) {
   // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
   //  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
   //    VALIDATION USE EFFECTS
@@ -98,98 +90,66 @@ function CreateGpu({
   // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    GPU CHIPSET
+  //    MOUSE DPI
   // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
-    const isValid = GPU_CHIPSET_REGEX.test(gpuChipset);
+    const isValid = LARGE_INTEGER_REGEX.test(mouseDpi);
 
     createProductDispatch({
-      type: createProductAction.setIsGpuChipsetValid,
+      type: createProductAction.setIsMouseDpiValid,
+      payload: isValid,
+    });
+  }, [createProductAction.setIsMouseDpiValid, createProductDispatch, mouseDpi]);
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    MOUSE BUTTONS
+  // ╰─────────────────────────────────────────────────────────────────╯
+  useEffect(() => {
+    const isValid = SMALL_INTEGER_REGEX.test(mouseButtons);
+
+    createProductDispatch({
+      type: createProductAction.setIsMouseButtonsValid,
       payload: isValid,
     });
   }, [
-    createProductAction.setIsGpuChipsetValid,
+    createProductAction.setIsMouseButtonsValid,
     createProductDispatch,
-    gpuChipset,
+    mouseButtons,
   ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    GPU MEMORY CAPACITY
+  //    MOUSE COLOR
   // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
-    const isValid = SMALL_INTEGER_REGEX.test(gpuMemoryCapacity);
+    const isValid = COLOR_VARIANT_REGEX.test(mouseColor);
 
     createProductDispatch({
-      type: createProductAction.setIsGpuMemoryCapacityValid,
+      type: createProductAction.setIsMouseColorValid,
       payload: isValid,
     });
   }, [
-    createProductAction.setIsGpuMemoryCapacityValid,
+    createProductAction.setIsMouseColorValid,
     createProductDispatch,
-    gpuMemoryCapacity,
+    mouseColor,
   ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    GPU CORE CLOCK
+  //    MOUSE ADDITIONAL FIELDS
   // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
-    const isValid = MEDIUM_INTEGER_REGEX.test(gpuCoreClock);
-
-    createProductDispatch({
-      type: createProductAction.setIsGpuCoreClockValid,
-      payload: isValid,
-    });
-  }, [
-    createProductAction.setIsGpuCoreClockValid,
-    createProductDispatch,
-    gpuCoreClock,
-  ]);
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    GPU BOOST CLOCK
-  // ╰─────────────────────────────────────────────────────────────────╯
-  useEffect(() => {
-    const isValid = MEDIUM_INTEGER_REGEX.test(gpuBoostClock);
-
-    createProductDispatch({
-      type: createProductAction.setIsGpuBoostClockValid,
-      payload: isValid,
-    });
-  }, [
-    createProductAction.setIsGpuBoostClockValid,
-    createProductDispatch,
-    gpuBoostClock,
-  ]);
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    GPU TDP
-  // ╰─────────────────────────────────────────────────────────────────╯
-  useEffect(() => {
-    const isValid = MEDIUM_INTEGER_REGEX.test(gpuTdp);
-
-    createProductDispatch({
-      type: createProductAction.setIsGpuTdpValid,
-      payload: isValid,
-    });
-  }, [createProductAction.setIsGpuTdpValid, createProductDispatch, gpuTdp]);
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    GPU FIELDS ADDITIONAL
-  // ╰─────────────────────────────────────────────────────────────────╯
-  useEffect(() => {
-    const currentlyUpdatingGpuFieldAdditional = gpuFieldsAdditionalMap.get(
+    const currentlyUpdatingMouseFieldAdditional = mouseFieldsAdditionalMap.get(
       currentlySelectedAdditionalFieldIndex
     );
 
-    if (!currentlyUpdatingGpuFieldAdditional) {
+    if (!currentlyUpdatingMouseFieldAdditional) {
       return;
     }
 
-    const [key, value] = currentlyUpdatingGpuFieldAdditional;
+    const [key, value] = currentlyUpdatingMouseFieldAdditional;
 
     const isKeyValid = OBJECT_KEY_REGEX.test(key);
     createProductDispatch({
-      type: createProductAction.setAreGpuFieldsAdditionalMapValid,
+      type: createProductAction.setAreMouseFieldsAdditionalMapValid,
       payload: {
         operation: 'update',
         data: isKeyValid,
@@ -200,7 +160,7 @@ function CreateGpu({
 
     const isValueValid = USER_DEFINED_VALUE_REGEX.test(value);
     createProductDispatch({
-      type: createProductAction.setAreGpuFieldsAdditionalMapValid,
+      type: createProductAction.setAreMouseFieldsAdditionalMapValid,
       payload: {
         operation: 'update',
         data: isValueValid,
@@ -209,10 +169,10 @@ function CreateGpu({
       },
     });
   }, [
-    createProductAction.setAreGpuFieldsAdditionalMapValid,
+    createProductAction.setAreMouseFieldsAdditionalMapValid,
     createProductDispatch,
     currentlySelectedAdditionalFieldIndex,
-    gpuFieldsAdditionalMap,
+    mouseFieldsAdditionalMap,
   ]);
 
   // ╔═════════════════════════════════════════════════════════════════╗
@@ -223,36 +183,32 @@ function CreateGpu({
     // optional inputs with empty string count as valid
     // select inputs are not included as they always have a default value
 
-    const areGpuInputsHardcodedInError =
-      !isGpuChipsetValid ||
-      !isGpuMemoryCapacityValid ||
-      !isGpuCoreClockValid ||
-      !isGpuBoostClockValid ||
-      !isGpuTdpValid;
+    const areMouseInputsHardcodedInError =
+      !isMouseButtonsValid || !isMouseColorValid || !isMouseDpiValid;
 
-    const areGpuInputsUserDefinedInError = Array.from(
-      areGpuFieldsAdditionalMapValid
+    const areMouseInputsUserDefinedInError = Array.from(
+      areMouseFieldsAdditionalMapValid
     ).some(([_key, value]) => !value);
 
-    const areGpuInputsInError =
-      areGpuInputsHardcodedInError || areGpuInputsUserDefinedInError;
+    const areMouseInputsInError =
+      areMouseInputsHardcodedInError || areMouseInputsUserDefinedInError;
 
     createProductDispatch({
       type: createProductAction.setStepsInError,
       payload: {
-        kind: areGpuInputsInError ? 'add' : 'delete',
+        kind: areMouseInputsInError ? 'add' : 'delete',
         step: 1,
       },
     });
   }, [
-    areGpuFieldsAdditionalMapValid,
+    areMouseFieldsAdditionalMapValid,
     createProductAction.setStepsInError,
     createProductDispatch,
-    isGpuBoostClockValid,
-    isGpuChipsetValid,
-    isGpuCoreClockValid,
-    isGpuMemoryCapacityValid,
-    isGpuTdpValid,
+    isMouseButtonsValid,
+    isMouseColorValid,
+    isMouseDpiValid,
+    mouseInterface,
+    mouseSensor,
   ]);
 
   // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
@@ -262,303 +218,218 @@ function CreateGpu({
   // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    GPU CHIPSET
+  //    MOUSE SENSOR
+  // ╰─────────────────────────────────────────────────────────────────╯
+  const [createdMouseSensorSelectInput] = returnAccessibleSelectInputElements([
+    {
+      data: MOUSE_SENSOR_DATA,
+      description: '',
+      label: 'Mouse Sensor',
+      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+        createProductDispatch({
+          type: createProductAction.setMouseSensor,
+          payload: event.currentTarget.value as MouseSensor,
+        });
+      },
+      value: mouseSensor,
+      required: true,
+    },
+  ]);
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    MOUSE DPI
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // error/valid text elements
-  const [gpuChipsetInputErrorText, gpuChipsetInputValidText] =
+  const [mouseDpiInputErrorText, mouseDpiInputValidText] =
     AccessibleErrorValidTextElements({
-      inputElementKind: 'gpu chipset',
-      inputText: gpuChipset,
-      isInputTextFocused: isGpuChipsetFocused,
-      isValidInputText: isGpuChipsetValid,
-      regexValidationText: returnSocketChipsetValidationText({
-        content: gpuChipset,
-        contentKind: 'gpu chipset',
+      inputElementKind: 'mouse dpi',
+      inputText: mouseDpi,
+      isInputTextFocused: isMouseDpiFocused,
+      isValidInputText: isMouseDpiValid,
+      regexValidationText: returnLargeIntegerValidationText({
+        content: mouseDpi,
+        contentKind: 'mouse dpi',
+      }),
+    });
+
+  // screenreader accessible text input element
+  const [createdMouseDpiTextInput] = returnAccessibleTextInputElements([
+    {
+      description: {
+        error: mouseDpiInputErrorText,
+        valid: mouseDpiInputValidText,
+      },
+      inputText: mouseDpi,
+      isValidInputText: isMouseDpiValid,
+      label: 'Mouse DPI (dots per inch)',
+      onBlur: () => {
+        createProductDispatch({
+          type: createProductAction.setIsMouseDpiFocused,
+          payload: false,
+        });
+      },
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
+        createProductDispatch({
+          type: createProductAction.setMouseDpi,
+          payload: event.currentTarget.value,
+        });
+      },
+      onFocus: () => {
+        createProductDispatch({
+          type: createProductAction.setIsMouseDpiFocused,
+          payload: true,
+        });
+      },
+      placeholder: 'Format: 000000',
+      required: true,
+      semanticName: 'mouse dpi',
+    },
+  ]);
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    MOUSE BUTTONS
+  // ╰─────────────────────────────────────────────────────────────────╯
+
+  // error/valid text elements
+  const [mouseButtonsInputErrorText, mouseButtonsInputValidText] =
+    AccessibleErrorValidTextElements({
+      inputElementKind: 'mouse buttons quantity',
+      inputText: mouseButtons,
+      isInputTextFocused: isMouseButtonsFocused,
+      isValidInputText: isMouseButtonsValid,
+      regexValidationText: returnSmallIntegerValidationText({
+        content: mouseButtons,
+        contentKind: 'mouse buttons quantity',
+      }),
+    });
+
+  // screenreader accessible text input element
+  const [createdMouseButtonsTextInput] = returnAccessibleTextInputElements([
+    {
+      description: {
+        error: mouseButtonsInputErrorText,
+        valid: mouseButtonsInputValidText,
+      },
+      inputText: mouseButtons,
+      isValidInputText: isMouseButtonsValid,
+      label: 'Mouse Buttons Quantity',
+      onBlur: () => {
+        createProductDispatch({
+          type: createProductAction.setIsMouseButtonsFocused,
+          payload: false,
+        });
+      },
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
+        createProductDispatch({
+          type: createProductAction.setMouseButtons,
+          payload: event.currentTarget.value,
+        });
+      },
+      onFocus: () => {
+        createProductDispatch({
+          type: createProductAction.setIsMouseButtonsFocused,
+          payload: true,
+        });
+      },
+      placeholder: 'Format: 00',
+      required: true,
+      semanticName: 'mouse buttons quantity',
+    },
+  ]);
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    MOUSE COLOR
+  // ╰─────────────────────────────────────────────────────────────────╯
+
+  // error/valid text elements
+  const [mouseColorInputErrorText, mouseColorInputValidText] =
+    AccessibleErrorValidTextElements({
+      inputElementKind: 'mouse color',
+      inputText: mouseColor,
+      isInputTextFocused: isMouseColorFocused,
+      isValidInputText: isMouseColorValid,
+      regexValidationText: returnColorVariantValidationText({
+        content: mouseColor,
+        contentKind: 'mouse color',
         maxLength: 30,
         minLength: 2,
       }),
     });
 
   // screenreader accessible text input element
-  const [createdGpuChipsetTextInput] = returnAccessibleTextInputElements([
+  const [createdMouseColorTextInput] = returnAccessibleTextInputElements([
     {
       description: {
-        error: gpuChipsetInputErrorText,
-        valid: gpuChipsetInputValidText,
+        error: mouseColorInputErrorText,
+        valid: mouseColorInputValidText,
       },
-      inputText: gpuChipset,
-      isValidInputText: isGpuChipsetValid,
-      label: 'GPU Chipset',
+      inputText: mouseColor,
+      isValidInputText: isMouseColorValid,
+      label: 'Mouse Color',
       maxLength: 30,
       minLength: 2,
       onBlur: () => {
         createProductDispatch({
-          type: createProductAction.setIsGpuChipsetFocused,
+          type: createProductAction.setIsMouseColorFocused,
           payload: false,
         });
       },
       onChange: (event: ChangeEvent<HTMLInputElement>) => {
         createProductDispatch({
-          type: createProductAction.setGpuChipset,
+          type: createProductAction.setMouseColor,
           payload: event.currentTarget.value,
         });
       },
       onFocus: () => {
         createProductDispatch({
-          type: createProductAction.setIsGpuChipsetFocused,
+          type: createProductAction.setIsMouseColorFocused,
           payload: true,
         });
       },
-      placeholder: 'Enter GPU chipset',
+      placeholder: 'Enter mouse color',
       required: true,
-      semanticName: 'gpu chipset',
+      semanticName: 'mouse color',
     },
   ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    GPU MEMORY CAPACITY
+  //    MOUSE INTERFACE
   // ╰─────────────────────────────────────────────────────────────────╯
-
-  // error/valid text elements
-  const [gpuMemoryCapacityInputErrorText, gpuMemoryCapacityInputValidText] =
-    AccessibleErrorValidTextElements({
-      inputElementKind: 'gpu memory capacity',
-      inputText: gpuMemoryCapacity,
-      isInputTextFocused: isGpuMemoryCapacityFocused,
-      isValidInputText: isGpuMemoryCapacityValid,
-      regexValidationText: returnSmallIntegerValidationText({
-        content: gpuMemoryCapacity,
-        contentKind: 'gpu memory capacity',
-      }),
-    });
-
-  // screenreader accessible text input element
-  const [createdGpuMemoryCapacityTextInput] = returnAccessibleTextInputElements(
-    [
-      {
-        description: {
-          error: gpuMemoryCapacityInputErrorText,
-          valid: gpuMemoryCapacityInputValidText,
-        },
-        inputText: gpuMemoryCapacity,
-        isValidInputText: isGpuMemoryCapacityValid,
-        label: 'GPU Memory Capacity (GB)',
-        onBlur: () => {
-          createProductDispatch({
-            type: createProductAction.setIsGpuMemoryCapacityFocused,
-            payload: false,
-          });
-        },
-        onChange: (event: ChangeEvent<HTMLInputElement>) => {
-          createProductDispatch({
-            type: createProductAction.setGpuMemoryCapacity,
-            payload: event.currentTarget.value,
-          });
-        },
-        onFocus: () => {
-          createProductDispatch({
-            type: createProductAction.setIsGpuMemoryCapacityFocused,
-            payload: true,
-          });
-        },
-        placeholder: 'Format: 00',
-        required: true,
-        semanticName: 'gpu memory capacity',
-      },
-    ]
-  );
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    GPU MEMORY CAPACITY UNIT
-  // ╰─────────────────────────────────────────────────────────────────╯
-  const [createdGpuMemoryCapacityUnitSelectInput] =
+  const [createdMouseInterfaceSelectInput] =
     returnAccessibleSelectInputElements([
       {
-        data: MEMORY_UNIT_SELECT_INPUT_DATA,
+        data: PERIPHERALS_INTERFACE_DATA,
         description: '',
-        label: 'GPU Memory Capacity Unit',
+        label: 'Mouse Interface',
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           createProductDispatch({
-            type: createProductAction.setGpuMemoryCapacityUnit,
-            payload: event.currentTarget.value as MemoryUnit,
+            type: createProductAction.setMouseInterface,
+            payload: event.currentTarget.value as PeripheralsInterface,
           });
         },
-        value: gpuMemoryCapacityUnit,
+        value: mouseInterface,
         required: true,
       },
     ]);
 
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    GPU CORE CLOCK
-  // ╰─────────────────────────────────────────────────────────────────╯
-
-  // error/valid text elements
-  const [gpuCoreClockInputErrorText, gpuCoreClockInputValidText] =
-    AccessibleErrorValidTextElements({
-      inputElementKind: 'gpu core clock',
-      inputText: gpuCoreClock,
-      isInputTextFocused: isGpuCoreClockFocused,
-      isValidInputText: isGpuCoreClockValid,
-      regexValidationText: returnMediumIntegerValidationText({
-        content: gpuCoreClock,
-        contentKind: 'gpu core clock',
-      }),
-    });
-
-  // screenreader accessible text input element
-  const [createdGpuCoreClockTextInput] = returnAccessibleTextInputElements([
-    {
-      description: {
-        error: gpuCoreClockInputErrorText,
-        valid: gpuCoreClockInputValidText,
-      },
-      inputText: gpuCoreClock,
-      isValidInputText: isGpuCoreClockValid,
-      label: 'GPU Core Clock (MHz)',
-      onBlur: () => {
-        createProductDispatch({
-          type: createProductAction.setIsGpuCoreClockFocused,
-          payload: false,
-        });
-      },
-      onChange: (event: ChangeEvent<HTMLInputElement>) => {
-        createProductDispatch({
-          type: createProductAction.setGpuCoreClock,
-          payload: event.currentTarget.value,
-        });
-      },
-      onFocus: () => {
-        createProductDispatch({
-          type: createProductAction.setIsGpuCoreClockFocused,
-          payload: true,
-        });
-      },
-      placeholder: 'Format: 0000',
-      required: true,
-      semanticName: 'gpu core clock',
-    },
-  ]);
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    GPU BOOST CLOCK
-  // ╰─────────────────────────────────────────────────────────────────╯
-
-  // error/valid text elements
-  const [gpuBoostClockInputErrorText, gpuBoostClockInputValidText] =
-    AccessibleErrorValidTextElements({
-      inputElementKind: 'gpu boost clock',
-      inputText: gpuBoostClock,
-      isInputTextFocused: isGpuBoostClockFocused,
-      isValidInputText: isGpuBoostClockValid,
-      regexValidationText: returnMediumIntegerValidationText({
-        content: gpuBoostClock,
-        contentKind: 'gpu boost clock',
-      }),
-    });
-
-  // screenreader accessible text input element
-  const [createdGpuBoostClockTextInput] = returnAccessibleTextInputElements([
-    {
-      description: {
-        error: gpuBoostClockInputErrorText,
-        valid: gpuBoostClockInputValidText,
-      },
-      inputText: gpuBoostClock,
-      isValidInputText: isGpuBoostClockValid,
-      label: 'GPU Boost Clock (MHz)',
-      onBlur: () => {
-        createProductDispatch({
-          type: createProductAction.setIsGpuBoostClockFocused,
-          payload: false,
-        });
-      },
-      onChange: (event: ChangeEvent<HTMLInputElement>) => {
-        createProductDispatch({
-          type: createProductAction.setGpuBoostClock,
-          payload: event.currentTarget.value,
-        });
-      },
-      onFocus: () => {
-        createProductDispatch({
-          type: createProductAction.setIsGpuBoostClockFocused,
-          payload: true,
-        });
-      },
-      placeholder: 'Format: 0000',
-      required: true,
-      semanticName: 'gpu boost clock',
-    },
-  ]);
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    GPU TDP
-  // ╰─────────────────────────────────────────────────────────────────╯
-
-  // error/valid text elements
-  const [gpuTdpInputErrorText, gpuTdpInputValidText] =
-    AccessibleErrorValidTextElements({
-      inputElementKind: 'gpu wattage',
-      inputText: gpuTdp,
-      isInputTextFocused: isGpuTdpFocused,
-      isValidInputText: isGpuTdpValid,
-      regexValidationText: returnMediumIntegerValidationText({
-        content: gpuTdp,
-        contentKind: 'gpu wattage',
-      }),
-    });
-
-  // screenreader accessible text input element
-  const [createdGpuWattageTextInput] = returnAccessibleTextInputElements([
-    {
-      description: {
-        error: gpuTdpInputErrorText,
-        valid: gpuTdpInputValidText,
-      },
-      inputText: gpuTdp,
-      isValidInputText: isGpuTdpValid,
-      label: 'GPU Wattage (W)',
-      onBlur: () => {
-        createProductDispatch({
-          type: createProductAction.setIsGpuTdpFocused,
-          payload: false,
-        });
-      },
-      onChange: (event: ChangeEvent<HTMLInputElement>) => {
-        createProductDispatch({
-          type: createProductAction.setGpuTdp,
-          payload: event.currentTarget.value,
-        });
-      },
-      onFocus: () => {
-        createProductDispatch({
-          type: createProductAction.setIsGpuTdpFocused,
-          payload: true,
-        });
-      },
-      placeholder: 'Format: 0000',
-      required: true,
-      semanticName: 'gpu wattage',
-    },
-  ]);
-
   // ╔═════════════════════════════════════════════════════════════════╗
-  //   GPU ADDITIONAL FIELDS
+  //   MOUSE ADDITIONAL FIELDS
   // ╚═════════════════════════════════════════════════════════════════╝
 
   // ╭─────────────────────────────────────────────────────────────────╮
   //    ADD ADDITIONAL FIELD BUTTON
   // ╰─────────────────────────────────────────────────────────────────╯
-  const [createdAddGpuFieldsAdditionalMapButton] =
+  const [createdAddMouseFieldsAdditionalMapButton] =
     returnAccessibleButtonElements([
       {
         buttonLabel: 'Add',
-        semanticDescription: 'Add new additional GPU field',
+        semanticDescription: 'Add new additional Mouse field',
         semanticName: 'Add new field',
         leftIcon: <TbPlus />,
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
           createProductDispatch({
-            type: createProductAction.setGpuFieldsAdditionalMap,
+            type: createProductAction.setMouseFieldsAdditionalMap,
             payload: {
               operation: 'add',
               data: ['', ''],
@@ -566,7 +437,7 @@ function CreateGpu({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreGpuFieldsAdditionalMapFocused,
+            type: createProductAction.setAreMouseFieldsAdditionalMapFocused,
             payload: {
               operation: 'add',
               data: [false, false],
@@ -574,7 +445,7 @@ function CreateGpu({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreGpuFieldsAdditionalMapValid,
+            type: createProductAction.setAreMouseFieldsAdditionalMapValid,
             payload: {
               operation: 'add',
               data: [false, false],
@@ -589,23 +460,23 @@ function CreateGpu({
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // returns an array of tuples containing the error and valid text elements for each field name
-  const gpuFieldsAdditionalMapKeysErrorValidTextElements: [
+  const mouseFieldsAdditionalMapKeysErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(gpuFieldsAdditionalMap).map((keyFieldValue) => {
+  ][] = Array.from(mouseFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [field, _value]] = keyFieldValue;
 
     // error/valid text elements that are consumed by the text input element creator
     const [
-      gpuFieldsAdditionalMapKeysInputErrorText,
-      gpuFieldsAdditionalMapKeysInputValidText,
+      mouseFieldsAdditionalMapKeysInputErrorText,
+      mouseFieldsAdditionalMapKeysInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field name ${mapKey + 1}`,
       inputText: field,
       isInputTextFocused:
-        areGpuFieldsAdditionalMapFocused.get(mapKey)?.[0] ?? false,
+        areMouseFieldsAdditionalMapFocused.get(mapKey)?.[0] ?? false,
       isValidInputText:
-        areGpuFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
+        areMouseFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
       regexValidationText: returnObjectKeyValidationText({
         content: field,
         contentKind: `additional field name ${mapKey + 1}`,
@@ -615,8 +486,8 @@ function CreateGpu({
     });
 
     return [
-      gpuFieldsAdditionalMapKeysInputErrorText,
-      gpuFieldsAdditionalMapKeysInputValidText,
+      mouseFieldsAdditionalMapKeysInputErrorText,
+      mouseFieldsAdditionalMapKeysInputValidText,
     ];
   });
 
@@ -625,23 +496,23 @@ function CreateGpu({
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // returns an array of tuples containing the error and valid text elements for each field value
-  const gpuFieldsAdditionalMapValuesErrorValidTextElements: [
+  const mouseFieldsAdditionalMapValuesErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(gpuFieldsAdditionalMap).map((keyFieldValue) => {
+  ][] = Array.from(mouseFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [_field, value]] = keyFieldValue;
 
     // error/valid text elements that are consumed by the text input element creator
     const [
-      gpuFieldsAdditionalMapValuesInputErrorText,
-      gpuFieldsAdditionalMapValuesInputValidText,
+      mouseFieldsAdditionalMapValuesInputErrorText,
+      mouseFieldsAdditionalMapValuesInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field value ${mapKey + 1}`,
       inputText: value,
       isInputTextFocused:
-        areGpuFieldsAdditionalMapFocused.get(mapKey)?.[1] ?? false,
+        areMouseFieldsAdditionalMapFocused.get(mapKey)?.[1] ?? false,
       isValidInputText:
-        areGpuFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
+        areMouseFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
       regexValidationText: returnUserDefinedFieldValueValidationText({
         content: value,
         contentKind: `additional field value ${mapKey + 1}`,
@@ -651,34 +522,34 @@ function CreateGpu({
     });
 
     return [
-      gpuFieldsAdditionalMapValuesInputErrorText,
-      gpuFieldsAdditionalMapValuesInputValidText,
+      mouseFieldsAdditionalMapValuesInputErrorText,
+      mouseFieldsAdditionalMapValuesInputValidText,
     ];
   });
 
-  const createdGpuFieldsAdditionalMapTextInputElements = Array.from(
-    gpuFieldsAdditionalMap
+  const createdMouseFieldsAdditionalMapTextInputElements = Array.from(
+    mouseFieldsAdditionalMap
   ).map((keyFieldValue) => {
     const [mapKey, [field, value]] = keyFieldValue;
 
     // ╭─────────────────────────────────────────────────────────────────╮
     //    ADDITIONAL FIELD ACCESSIBLE TEXT INPUT => FIELD NAME
     // ╰─────────────────────────────────────────────────────────────────╯
-    const gpuFieldsAdditionalMapKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const mouseFieldsAdditionalMapKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
-          error: gpuFieldsAdditionalMapKeysErrorValidTextElements[mapKey][0],
-          valid: gpuFieldsAdditionalMapKeysErrorValidTextElements[mapKey][1],
+          error: mouseFieldsAdditionalMapKeysErrorValidTextElements[mapKey][0],
+          valid: mouseFieldsAdditionalMapKeysErrorValidTextElements[mapKey][1],
         },
         inputText: field,
         isValidInputText:
-          areGpuFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
+          areMouseFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
         label: `Name ${mapKey + 1}`,
         maxLength: 75,
         minLength: 1,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreGpuFieldsAdditionalMapFocused,
+            type: createProductAction.setAreMouseFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -689,7 +560,7 @@ function CreateGpu({
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setGpuFieldsAdditionalMap,
+            type: createProductAction.setMouseFieldsAdditionalMap,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -705,7 +576,7 @@ function CreateGpu({
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreGpuFieldsAdditionalMapFocused,
+            type: createProductAction.setAreMouseFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -722,21 +593,23 @@ function CreateGpu({
     // ╭─────────────────────────────────────────────────────────────────╮
     //    ADDITIONAL FIELD ACCESSIBLE TEXT INPUT => FIELD VALUE
     // ╰─────────────────────────────────────────────────────────────────╯
-    const gpuFieldsAdditionalMapValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const mouseFieldsAdditionalMapValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
-          error: gpuFieldsAdditionalMapValuesErrorValidTextElements[mapKey][0],
-          valid: gpuFieldsAdditionalMapValuesErrorValidTextElements[mapKey][1],
+          error:
+            mouseFieldsAdditionalMapValuesErrorValidTextElements[mapKey][0],
+          valid:
+            mouseFieldsAdditionalMapValuesErrorValidTextElements[mapKey][1],
         },
         inputText: value,
         isValidInputText:
-          areGpuFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
+          areMouseFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
         label: `Value ${mapKey + 1}`,
         maxLength: 2000,
         minLength: 2,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreGpuFieldsAdditionalMapFocused,
+            type: createProductAction.setAreMouseFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -747,7 +620,7 @@ function CreateGpu({
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setGpuFieldsAdditionalMap,
+            type: createProductAction.setMouseFieldsAdditionalMap,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -763,7 +636,7 @@ function CreateGpu({
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreGpuFieldsAdditionalMapFocused,
+            type: createProductAction.setAreMouseFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -778,11 +651,11 @@ function CreateGpu({
       };
 
     const [
-      createdGpuFieldsAdditionalMapKeysTextAreaInput,
-      createdGpuFieldsAdditionalMapValuesTextAreaInput,
+      createdMouseFieldsAdditionalMapKeysTextAreaInput,
+      createdMouseFieldsAdditionalMapValuesTextAreaInput,
     ] = returnAccessibleTextAreaInputElements([
-      gpuFieldsAdditionalMapKeysTextInputCreatorInfo,
-      gpuFieldsAdditionalMapValuesTextInputCreatorInfo,
+      mouseFieldsAdditionalMapKeysTextInputCreatorInfo,
+      mouseFieldsAdditionalMapValuesTextInputCreatorInfo,
     ]);
 
     // ╭─────────────────────────────────────────────────────────────────╮
@@ -793,7 +666,7 @@ function CreateGpu({
         buttonLabel: 'Delete',
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
           createProductDispatch({
-            type: createProductAction.setGpuFieldsAdditionalMap,
+            type: createProductAction.setMouseFieldsAdditionalMap,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -801,7 +674,7 @@ function CreateGpu({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreGpuFieldsAdditionalMapFocused,
+            type: createProductAction.setAreMouseFieldsAdditionalMapFocused,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -809,7 +682,7 @@ function CreateGpu({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreGpuFieldsAdditionalMapValid,
+            type: createProductAction.setAreMouseFieldsAdditionalMapValid,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -822,28 +695,28 @@ function CreateGpu({
           });
         },
         leftIcon: <TbTrash />,
-        semanticDescription: `Delete additional GPU field ${mapKey + 1}`,
+        semanticDescription: `Delete additional Mouse field ${mapKey + 1}`,
         semanticName: 'Delete field and value',
       },
     ]);
 
     const displayDeleteButton = (
-      <Tooltip label={`Delete additional GPU field ${mapKey + 1}`}>
+      <Tooltip label={`Delete additional Mouse field ${mapKey + 1}`}>
         <Group>{createdDeleteButton}</Group>
       </Tooltip>
     );
 
     return (
-      <Stack key={`gpuFieldsAdditionalMap-${mapKey}`} pt={padding} w="100%">
+      <Stack key={`mouseFieldsAdditionalMap-${mapKey}`} pt={padding} w="100%">
         <Group position="apart">
-          <Text size="md" weight={600}>{`Additional GPU field ${
+          <Text size="md" weight={600}>{`Additional Mouse field ${
             mapKey + 1
           }`}</Text>
           {displayDeleteButton}
         </Group>
         <Group position="apart">
-          {createdGpuFieldsAdditionalMapKeysTextAreaInput}
-          {createdGpuFieldsAdditionalMapValuesTextAreaInput}
+          {createdMouseFieldsAdditionalMapKeysTextAreaInput}
+          {createdMouseFieldsAdditionalMapValuesTextAreaInput}
         </Group>
       </Stack>
     );
@@ -855,31 +728,30 @@ function CreateGpu({
   //  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
   // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
-  const displayGpuFieldsAdditionalMapButton = (
+  const displayMouseFieldsAdditionalMapButton = (
     <Tooltip
-      label={`Add additional GPU field ${gpuFieldsAdditionalMap.size + 1}`}
+      label={`Add additional Mouse field ${mouseFieldsAdditionalMap.size + 1}`}
     >
-      <Group>{createdAddGpuFieldsAdditionalMapButton}</Group>
+      <Group>{createdAddMouseFieldsAdditionalMapButton}</Group>
     </Tooltip>
   );
 
-  const displayGpuSpecificationsInputs = (
+  const displayMouseSpecificationsInputs = (
     <Group py={padding} position="apart" w="100%">
       <Group w="100%" position="apart">
-        <Title order={4}>GPU Specifications</Title>
-        {displayGpuFieldsAdditionalMapButton}
+        <Title order={4}>Mouse Specifications</Title>
+        {displayMouseFieldsAdditionalMapButton}
       </Group>
-      {createdGpuChipsetTextInput}
-      {createdGpuMemoryCapacityTextInput}
-      {createdGpuMemoryCapacityUnitSelectInput}
-      {createdGpuWattageTextInput}
-      {createdGpuCoreClockTextInput}
-      {createdGpuBoostClockTextInput}
-      {createdGpuFieldsAdditionalMapTextInputElements}
+      {createdMouseSensorSelectInput}
+      {createdMouseDpiTextInput}
+      {createdMouseButtonsTextInput}
+      {createdMouseColorTextInput}
+      {createdMouseInterfaceSelectInput}
+      {createdMouseFieldsAdditionalMapTextInputElements}
     </Group>
   );
 
-  return displayGpuSpecificationsInputs;
+  return displayMouseSpecificationsInputs;
 }
 
-export default CreateGpu;
+export default CreateMouse;

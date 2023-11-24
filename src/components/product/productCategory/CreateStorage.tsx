@@ -15,82 +15,74 @@ import {
   returnAccessibleSelectInputElements,
   returnAccessibleTextAreaInputElements,
   returnAccessibleTextInputElements,
-} from '../../../../jsxCreators';
+} from '../../../jsxCreators';
 import {
-  returnColorVariantValidationText,
-  returnFrequencyResponseValidationText,
   returnMediumIntegerValidationText,
   returnObjectKeyValidationText,
-  returnSmallIntegerValidationText,
   returnUserDefinedFieldValueValidationText,
-} from '../../../../utils';
-import { AccessibleTextAreaInputCreatorInfo } from '../../../wrappers';
+} from '../../../utils';
+import { AccessibleTextAreaInputCreatorInfo } from '../../wrappers';
 import {
-  COLOR_VARIANT_REGEX,
-  FREQUENCY_RESPONSE_REGEX,
-  HEADPHONE_INTERFACE_DATA,
-  HEADPHONE_TYPE_DATA,
   MEDIUM_INTEGER_REGEX,
+  MEMORY_UNIT_SELECT_INPUT_DATA,
   OBJECT_KEY_REGEX,
-  SMALL_INTEGER_REGEX,
+  STORAGE_FORM_FACTOR_DATA,
+  STORAGE_INTERFACE_DATA,
+  STORAGE_TYPE_DATA,
   USER_DEFINED_VALUE_REGEX,
-} from '../../constants';
+} from '../constants';
 import {
   CreateProductAction,
   CreateProductDispatch,
-  HeadphoneInterface,
-  HeadphoneType,
+  MemoryUnit,
+  StorageFormFactor,
+  StorageInterface,
+  StorageType,
 } from '../types';
 
-type CreateHeadphoneProps = {
-  areHeadphoneFieldsAdditionalMapFocused: Map<number, [boolean, boolean]>;
-  areHeadphoneFieldsAdditionalMapValid: Map<number, [boolean, boolean]>;
+type CreateStorageProps = {
+  areStorageFieldsAdditionalMapFocused: Map<number, [boolean, boolean]>;
+  areStorageFieldsAdditionalMapValid: Map<number, [boolean, boolean]>;
   borderColor: string;
   createProductAction: CreateProductAction;
   createProductDispatch: React.Dispatch<CreateProductDispatch>;
   currentlySelectedAdditionalFieldIndex: number;
-  headphoneColor: string;
-  headphoneDriver: string;
-  headphoneFieldsAdditionalMap: Map<number, [string, string]>;
-  headphoneFrequencyResponse: string;
-  headphoneImpedance: string;
-  headphoneInterface: HeadphoneInterface;
-  headphoneType: HeadphoneType;
-  isHeadphoneColorFocused: boolean;
-  isHeadphoneColorValid: boolean;
-  isHeadphoneDriverFocused: boolean;
-  isHeadphoneDriverValid: boolean;
-  isHeadphoneFrequencyResponseFocused: boolean;
-  isHeadphoneFrequencyResponseValid: boolean;
-  isHeadphoneImpedanceFocused: boolean;
-  isHeadphoneImpedanceValid: boolean;
+  isStorageCacheCapacityFocused: boolean;
+  isStorageCacheCapacityValid: boolean;
+  isStorageCapacityFocused: boolean;
+  isStorageCapacityValid: boolean;
   padding: MantineNumberSize;
+  storageCacheCapacity: string;
+  storageCacheCapacityUnit: MemoryUnit;
+  storageCapacity: string;
+  storageCapacityUnit: MemoryUnit;
+  storageFieldsAdditionalMap: Map<number, [string, string]>;
+  storageFormFactor: StorageFormFactor;
+  storageInterface: StorageInterface;
+  storageType: StorageType;
 };
 
-function CreateHeadphone({
-  areHeadphoneFieldsAdditionalMapFocused,
-  areHeadphoneFieldsAdditionalMapValid,
+function CreateStorage({
+  areStorageFieldsAdditionalMapFocused,
+  areStorageFieldsAdditionalMapValid,
   borderColor,
   createProductAction,
   createProductDispatch,
   currentlySelectedAdditionalFieldIndex,
-  headphoneColor,
-  headphoneDriver,
-  headphoneFieldsAdditionalMap,
-  headphoneFrequencyResponse,
-  headphoneImpedance,
-  headphoneInterface,
-  headphoneType,
-  isHeadphoneColorFocused,
-  isHeadphoneColorValid,
-  isHeadphoneDriverFocused,
-  isHeadphoneDriverValid,
-  isHeadphoneFrequencyResponseFocused,
-  isHeadphoneFrequencyResponseValid,
-  isHeadphoneImpedanceFocused,
-  isHeadphoneImpedanceValid,
+  isStorageCacheCapacityFocused,
+  isStorageCacheCapacityValid,
+  isStorageCapacityFocused,
+  isStorageCapacityValid,
   padding,
-}: CreateHeadphoneProps) {
+  storageCacheCapacity,
+  storageCacheCapacityUnit,
+  storageCapacity,
+  storageCapacityUnit,
+  storageFieldsAdditionalMap,
+  storageFormFactor,
+  storageInterface,
+  storageType,
+}: CreateStorageProps) {
   // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
   //  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
   //    VALIDATION USE EFFECTS
@@ -98,85 +90,53 @@ function CreateHeadphone({
   // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    HEADPHONE DRIVER
+  //    STORAGE CAPACITY
   // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
-    const isValid = SMALL_INTEGER_REGEX.test(headphoneDriver);
+    const isValid = MEDIUM_INTEGER_REGEX.test(storageCapacity);
 
     createProductDispatch({
-      type: createProductAction.setIsHeadphoneDriverValid,
+      type: createProductAction.setIsStorageCapacityValid,
       payload: isValid,
     });
   }, [
-    createProductAction.setIsHeadphoneDriverValid,
+    createProductAction.setIsStorageCapacityValid,
     createProductDispatch,
-    headphoneDriver,
+    storageCapacity,
   ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    HEADPHONE FREQUENCY RESPONSE
+  //    STORAGE CACHE CAPACITY
   // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
-    const isValid = FREQUENCY_RESPONSE_REGEX.test(headphoneFrequencyResponse);
+    const isValid = MEDIUM_INTEGER_REGEX.test(storageCacheCapacity);
 
     createProductDispatch({
-      type: createProductAction.setIsHeadphoneFrequencyResponseValid,
+      type: createProductAction.setIsStorageCacheCapacityValid,
       payload: isValid,
     });
   }, [
-    createProductAction.setIsHeadphoneFrequencyResponseValid,
+    createProductAction.setIsStorageCacheCapacityValid,
     createProductDispatch,
-    headphoneFrequencyResponse,
+    storageCacheCapacity,
   ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    HEADPHONE IMPEDANCE
+  //    STORAGE FIELDS ADDITIONAL
   // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
-    const isValid = MEDIUM_INTEGER_REGEX.test(headphoneImpedance);
+    const currentlyUpdatingStorageFieldAdditional =
+      storageFieldsAdditionalMap.get(currentlySelectedAdditionalFieldIndex);
 
-    createProductDispatch({
-      type: createProductAction.setIsHeadphoneImpedanceValid,
-      payload: isValid,
-    });
-  }, [
-    createProductAction.setIsHeadphoneImpedanceValid,
-    createProductDispatch,
-    headphoneImpedance,
-  ]);
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    HEADPHONE COLOR
-  // ╰─────────────────────────────────────────────────────────────────╯
-  useEffect(() => {
-    const isValid = COLOR_VARIANT_REGEX.test(headphoneColor);
-
-    createProductDispatch({
-      type: createProductAction.setIsHeadphoneColorValid,
-      payload: isValid,
-    });
-  }, [
-    createProductAction.setIsHeadphoneColorValid,
-    createProductDispatch,
-    headphoneColor,
-  ]);
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    HEADPHONE ADDITIONAL FIELDS
-  // ╰─────────────────────────────────────────────────────────────────╯
-  useEffect(() => {
-    const currentlyUpdatingHeadphoneFieldAdditional =
-      headphoneFieldsAdditionalMap.get(currentlySelectedAdditionalFieldIndex);
-
-    if (!currentlyUpdatingHeadphoneFieldAdditional) {
+    if (!currentlyUpdatingStorageFieldAdditional) {
       return;
     }
 
-    const [key, value] = currentlyUpdatingHeadphoneFieldAdditional;
+    const [key, value] = currentlyUpdatingStorageFieldAdditional;
 
     const isKeyValid = OBJECT_KEY_REGEX.test(key);
     createProductDispatch({
-      type: createProductAction.setAreHeadphoneFieldsAdditionalMapValid,
+      type: createProductAction.setAreStorageFieldsAdditionalMapValid,
       payload: {
         operation: 'update',
         data: isKeyValid,
@@ -187,7 +147,7 @@ function CreateHeadphone({
 
     const isValueValid = USER_DEFINED_VALUE_REGEX.test(value);
     createProductDispatch({
-      type: createProductAction.setAreHeadphoneFieldsAdditionalMapValid,
+      type: createProductAction.setAreStorageFieldsAdditionalMapValid,
       payload: {
         operation: 'update',
         data: isValueValid,
@@ -196,10 +156,10 @@ function CreateHeadphone({
       },
     });
   }, [
-    createProductAction.setAreHeadphoneFieldsAdditionalMapValid,
+    createProductAction.setAreStorageFieldsAdditionalMapValid,
     createProductDispatch,
     currentlySelectedAdditionalFieldIndex,
-    headphoneFieldsAdditionalMap,
+    storageFieldsAdditionalMap,
   ]);
 
   // ╔═════════════════════════════════════════════════════════════════╗
@@ -210,35 +170,30 @@ function CreateHeadphone({
     // optional inputs with empty string count as valid
     // select inputs are not included as they always have a default value
 
-    const areHeadphoneInputsHardcodedInError =
-      !isHeadphoneDriverValid ||
-      !isHeadphoneFrequencyResponseValid ||
-      !isHeadphoneImpedanceValid ||
-      !isHeadphoneColorValid;
+    const areStorageHardcodedRequiredInputsInError =
+      !isStorageCapacityValid || !isStorageCacheCapacityValid;
 
-    const areHeadphoneInputsUserDefinedInError = Array.from(
-      areHeadphoneFieldsAdditionalMapValid
+    const areStorageFieldsAdditionalMapInError = Array.from(
+      areStorageFieldsAdditionalMapValid
     ).some(([_key, value]) => !value);
 
-    const areHeadphoneInputsInError =
-      areHeadphoneInputsHardcodedInError ||
-      areHeadphoneInputsUserDefinedInError;
+    const areStorageInputsInError =
+      areStorageHardcodedRequiredInputsInError ||
+      areStorageFieldsAdditionalMapInError;
 
     createProductDispatch({
       type: createProductAction.setStepsInError,
       payload: {
-        kind: areHeadphoneInputsInError ? 'add' : 'delete',
+        kind: areStorageInputsInError ? 'add' : 'delete',
         step: 1,
       },
     });
   }, [
-    areHeadphoneFieldsAdditionalMapValid,
+    areStorageFieldsAdditionalMapValid,
     createProductAction.setStepsInError,
     createProductDispatch,
-    isHeadphoneColorValid,
-    isHeadphoneDriverValid,
-    isHeadphoneFrequencyResponseValid,
-    isHeadphoneImpedanceValid,
+    isStorageCacheCapacityValid,
+    isStorageCapacityValid,
   ]);
 
   // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
@@ -248,279 +203,226 @@ function CreateHeadphone({
   // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    HEADPHONE TYPE
+  //    STORAGE TYPE
   // ╰─────────────────────────────────────────────────────────────────╯
-  const [createdHeadphoneTypeSelectInput] = returnAccessibleSelectInputElements(
-    [
-      {
-        data: HEADPHONE_TYPE_DATA,
-        description: 'Select headphone type',
-        label: 'Headphone Type',
-        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-          createProductDispatch({
-            type: createProductAction.setHeadphoneType,
-            payload: event.currentTarget.value as HeadphoneType,
-          });
-        },
-        value: headphoneType,
-        required: true,
+  const [createdStorageTypeSelectInput] = returnAccessibleSelectInputElements([
+    {
+      data: STORAGE_TYPE_DATA,
+      description: '',
+      label: 'Storage Type',
+      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+        createProductDispatch({
+          type: createProductAction.setStorageType,
+          payload: event.currentTarget.value as StorageType,
+        });
       },
-    ]
-  );
+      value: storageType,
+      required: true,
+    },
+  ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    HEADPHONE DRIVER
+  //    STORAGE CAPACITY
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // error/valid text elements
-  const [headphoneDriverInputErrorText, headphoneDriverInputValidText] =
+  const [storageCapacityInputErrorText, storageCapacityInputValidText] =
     AccessibleErrorValidTextElements({
-      inputElementKind: 'headphone driver',
-      inputText: headphoneDriver,
-      isInputTextFocused: isHeadphoneDriverFocused,
-      isValidInputText: isHeadphoneDriverValid,
-      regexValidationText: returnSmallIntegerValidationText({
-        content: headphoneDriver,
-        contentKind: 'headphone driver',
+      inputElementKind: 'storage capacity',
+      inputText: storageCapacity,
+      isInputTextFocused: isStorageCapacityFocused,
+      isValidInputText: isStorageCapacityValid,
+      regexValidationText: returnMediumIntegerValidationText({
+        content: storageCapacity,
+        contentKind: 'storage capacity',
       }),
     });
 
   // screenreader accessible text input element
-  const [createdHeadphoneDriverTextInput] = returnAccessibleTextInputElements([
+  const [createdStorageCapacityTextInput] = returnAccessibleTextInputElements([
     {
       description: {
-        error: headphoneDriverInputErrorText,
-        valid: headphoneDriverInputValidText,
+        error: storageCapacityInputErrorText,
+        valid: storageCapacityInputValidText,
       },
-      inputText: headphoneDriver,
-      isValidInputText: isHeadphoneDriverValid,
-      label: 'Headphone Driver (mm)',
+      inputText: storageCapacity,
+      isValidInputText: isStorageCapacityValid,
+      label: 'Storage Capacity',
       onBlur: () => {
         createProductDispatch({
-          type: createProductAction.setIsHeadphoneDriverFocused,
+          type: createProductAction.setIsStorageCapacityFocused,
           payload: false,
         });
       },
       onChange: (event: ChangeEvent<HTMLInputElement>) => {
         createProductDispatch({
-          type: createProductAction.setHeadphoneDriver,
+          type: createProductAction.setStorageCapacity,
           payload: event.currentTarget.value,
         });
       },
       onFocus: () => {
         createProductDispatch({
-          type: createProductAction.setIsHeadphoneDriverFocused,
+          type: createProductAction.setIsStorageCapacityFocused,
           payload: true,
         });
       },
-      placeholder: 'Format: 00',
+      placeholder: 'Format: 0000',
       required: true,
-      semanticName: 'headphone driver',
+      semanticName: 'storage capacity',
     },
   ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    HEADPHONE FREQUENCY RESPONSE
+  //    STORAGE CAPACITY UNIT
   // ╰─────────────────────────────────────────────────────────────────╯
-
-  // error/valid text elements
-  const [
-    headphoneFrequencyResponseInputErrorText,
-    headphoneFrequencyResponseInputValidText,
-  ] = AccessibleErrorValidTextElements({
-    inputElementKind: 'headphone frequency response',
-    inputText: headphoneFrequencyResponse,
-    isInputTextFocused: isHeadphoneFrequencyResponseFocused,
-    isValidInputText: isHeadphoneFrequencyResponseValid,
-    regexValidationText: returnFrequencyResponseValidationText({
-      content: headphoneFrequencyResponse,
-      contentKind: 'headphone frequency response',
-      maxLength: 14,
-      minLength: 12,
-    }),
-  });
-
-  // screenreader accessible text input element
-  const [createdHeadphoneFrequencyResponseTextInput] =
-    returnAccessibleTextInputElements([
+  const [createdStorageCapacityUnitSelectInput] =
+    returnAccessibleSelectInputElements([
       {
-        description: {
-          error: headphoneFrequencyResponseInputErrorText,
-          valid: headphoneFrequencyResponseInputValidText,
-        },
-        inputText: headphoneFrequencyResponse,
-        isValidInputText: isHeadphoneFrequencyResponseValid,
-        label: 'Headphone Frequency Response (Hz - kHz)',
-        maxLength: 14,
-        minLength: 12,
-        onBlur: () => {
+        data: MEMORY_UNIT_SELECT_INPUT_DATA,
+        description: '',
+        label: 'Storage Capacity Unit',
+        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           createProductDispatch({
-            type: createProductAction.setIsHeadphoneFrequencyResponseFocused,
-            payload: false,
+            type: createProductAction.setStorageCapacityUnit,
+            payload: event.currentTarget.value as MemoryUnit,
           });
         },
-        onChange: (event: ChangeEvent<HTMLInputElement>) => {
-          createProductDispatch({
-            type: createProductAction.setHeadphoneFrequencyResponse,
-            payload: event.currentTarget.value,
-          });
-        },
-        onFocus: () => {
-          createProductDispatch({
-            type: createProductAction.setIsHeadphoneFrequencyResponseFocused,
-            payload: true,
-          });
-        },
-        placeholder: 'Format: 00 Hz - 00 kHz or 0Hz-0kHz',
+        value: storageCapacityUnit,
         required: true,
-        semanticName: 'headphone frequency response',
       },
     ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    HEADPHONE IMPEDANCE
+  //    STORAGE CACHE CAPACITY
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // error/valid text elements
-  const [headphoneImpedanceInputErrorText, headphoneImpedanceInputValidText] =
-    AccessibleErrorValidTextElements({
-      inputElementKind: 'headphone impedance',
-      inputText: headphoneImpedance,
-      isInputTextFocused: isHeadphoneImpedanceFocused,
-      isValidInputText: isHeadphoneImpedanceValid,
-      regexValidationText: returnMediumIntegerValidationText({
-        content: headphoneImpedance,
-        contentKind: 'headphone impedance',
-      }),
-    });
+  const [
+    storageCacheCapacityInputErrorText,
+    storageCacheCapacityInputValidText,
+  ] = AccessibleErrorValidTextElements({
+    inputElementKind: 'storage cache capacity',
+    inputText: storageCacheCapacity,
+    isInputTextFocused: isStorageCacheCapacityFocused,
+    isValidInputText: isStorageCacheCapacityValid,
+    regexValidationText: returnMediumIntegerValidationText({
+      content: storageCacheCapacity,
+      contentKind: 'storage cache capacity',
+    }),
+  });
 
   // screenreader accessible text input element
-  const [createdHeadphoneImpedanceTextInput] =
+  const [createdStorageCacheCapacityTextInput] =
     returnAccessibleTextInputElements([
       {
         description: {
-          error: headphoneImpedanceInputErrorText,
-          valid: headphoneImpedanceInputValidText,
+          error: storageCacheCapacityInputErrorText,
+          valid: storageCacheCapacityInputValidText,
         },
-        inputText: headphoneImpedance,
-        isValidInputText: isHeadphoneImpedanceValid,
-        label: 'Headphone Impedance (Ω)',
+        inputText: storageCacheCapacity,
+        isValidInputText: isStorageCacheCapacityValid,
+        label: 'Storage Cache Capacity',
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setIsHeadphoneImpedanceFocused,
+            type: createProductAction.setIsStorageCacheCapacityFocused,
             payload: false,
           });
         },
         onChange: (event: ChangeEvent<HTMLInputElement>) => {
           createProductDispatch({
-            type: createProductAction.setHeadphoneImpedance,
+            type: createProductAction.setStorageCacheCapacity,
             payload: event.currentTarget.value,
           });
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setIsHeadphoneImpedanceFocused,
+            type: createProductAction.setIsStorageCacheCapacityFocused,
             payload: true,
           });
         },
         placeholder: 'Format: 0000',
         required: true,
-        semanticName: 'headphone impedance',
+        semanticName: 'storage cache capacity',
       },
     ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    HEADPHONE COLOR
+  //    STORAGE CACHE CAPACITY UNIT
   // ╰─────────────────────────────────────────────────────────────────╯
-
-  // error/valid text elements
-  const [headphoneColorInputErrorText, headphoneColorInputValidText] =
-    AccessibleErrorValidTextElements({
-      inputElementKind: 'headphone color',
-      inputText: headphoneColor,
-      isInputTextFocused: isHeadphoneColorFocused,
-      isValidInputText: isHeadphoneColorValid,
-      regexValidationText: returnColorVariantValidationText({
-        content: headphoneColor,
-        contentKind: 'headphone color',
-        maxLength: 30,
-        minLength: 2,
-      }),
-    });
-
-  // screenreader accessible text input element
-  const [createdHeadphoneColorTextInput] = returnAccessibleTextInputElements([
-    {
-      description: {
-        error: headphoneColorInputErrorText,
-        valid: headphoneColorInputValidText,
-      },
-      inputText: headphoneColor,
-      isValidInputText: isHeadphoneColorValid,
-      label: 'Headphone Color',
-      maxLength: 30,
-      minLength: 2,
-      onBlur: () => {
-        createProductDispatch({
-          type: createProductAction.setIsHeadphoneColorFocused,
-          payload: false,
-        });
-      },
-      onChange: (event: ChangeEvent<HTMLInputElement>) => {
-        createProductDispatch({
-          type: createProductAction.setHeadphoneColor,
-          payload: event.currentTarget.value,
-        });
-      },
-      onFocus: () => {
-        createProductDispatch({
-          type: createProductAction.setIsHeadphoneColorFocused,
-          payload: true,
-        });
-      },
-      placeholder: 'Enter headphone color',
-      required: true,
-      semanticName: 'headphone color',
-    },
-  ]);
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    HEADPHONE INTERFACE
-  // ╰─────────────────────────────────────────────────────────────────╯
-  const [createdHeadphoneInterfaceSelectInput] =
+  const [createdStorageCacheCapacityUnitSelectInput] =
     returnAccessibleSelectInputElements([
       {
-        data: HEADPHONE_INTERFACE_DATA,
+        data: MEMORY_UNIT_SELECT_INPUT_DATA,
         description: '',
-        label: 'Headphone Interface',
+        label: 'Storage Cache Capacity Unit',
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           createProductDispatch({
-            type: createProductAction.setHeadphoneInterface,
-            payload: event.currentTarget.value as HeadphoneInterface,
+            type: createProductAction.setStorageCacheCapacityUnit,
+            payload: event.currentTarget.value as MemoryUnit,
           });
         },
-        value: headphoneInterface,
+        value: storageCacheCapacityUnit,
+        required: true,
+      },
+    ]);
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    STORAGE FORM FACTOR
+  // ╰─────────────────────────────────────────────────────────────────╯
+  const [createdStorageFormFactorSelectInput] =
+    returnAccessibleSelectInputElements([
+      {
+        data: STORAGE_FORM_FACTOR_DATA,
+        description: '',
+        label: 'Storage Form Factor',
+        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+          createProductDispatch({
+            type: createProductAction.setStorageFormFactor,
+            payload: event.currentTarget.value as StorageFormFactor,
+          });
+        },
+        value: storageFormFactor,
+        required: true,
+      },
+    ]);
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    STORAGE INTERFACE
+  // ╰─────────────────────────────────────────────────────────────────╯
+  const [createdStorageInterfaceSelectInput] =
+    returnAccessibleSelectInputElements([
+      {
+        data: STORAGE_INTERFACE_DATA,
+        description: '',
+        label: 'Storage Interface',
+        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+          createProductDispatch({
+            type: createProductAction.setStorageInterface,
+            payload: event.currentTarget.value as StorageInterface,
+          });
+        },
+        value: storageInterface,
         required: true,
       },
     ]);
 
   // ╔═════════════════════════════════════════════════════════════════╗
-  //   HEADPHONE ADDITIONAL FIELDS
+  //   STORAGE ADDITIONAL FIELDS
   // ╚═════════════════════════════════════════════════════════════════╝
 
   // ╭─────────────────────────────────────────────────────────────────╮
   //    ADD ADDITIONAL FIELD BUTTON
   // ╰─────────────────────────────────────────────────────────────────╯
-  const [createdAddHeadphoneFieldsAdditionalMapButton] =
+  const [createdAddStorageFieldsAdditionalMapButton] =
     returnAccessibleButtonElements([
       {
         buttonLabel: 'Add',
-        semanticDescription: 'Add new additional Headphone field',
+        semanticDescription: 'Add new additional Storage field',
         semanticName: 'Add new field',
         leftIcon: <TbPlus />,
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
           createProductDispatch({
-            type: createProductAction.setHeadphoneFieldsAdditionalMap,
+            type: createProductAction.setStorageFieldsAdditionalMap,
             payload: {
               operation: 'add',
               data: ['', ''],
@@ -528,7 +430,7 @@ function CreateHeadphone({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreHeadphoneFieldsAdditionalMapFocused,
+            type: createProductAction.setAreStorageFieldsAdditionalMapFocused,
             payload: {
               operation: 'add',
               data: [false, false],
@@ -536,7 +438,7 @@ function CreateHeadphone({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreHeadphoneFieldsAdditionalMapValid,
+            type: createProductAction.setAreStorageFieldsAdditionalMapValid,
             payload: {
               operation: 'add',
               data: [false, false],
@@ -551,23 +453,23 @@ function CreateHeadphone({
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // returns an array of tuples containing the error and valid text elements for each field name
-  const headphoneFieldsAdditionalMapKeysErrorValidTextElements: [
+  const storageFieldsAdditionalMapKeysErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(headphoneFieldsAdditionalMap).map((keyFieldValue) => {
+  ][] = Array.from(storageFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [field, _value]] = keyFieldValue;
 
-    // error/valid text elements that are consumed by the text input element creator
+    // screenreader accessible error/valid text elements that are consumed by the text input element creator
     const [
-      headphoneFieldsAdditionalMapKeysInputErrorText,
-      headphoneFieldsAdditionalMapKeysInputValidText,
+      storageFieldsAdditionalMapKeysInputErrorText,
+      storageFieldsAdditionalMapKeysInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field name ${mapKey + 1}`,
       inputText: field,
       isInputTextFocused:
-        areHeadphoneFieldsAdditionalMapFocused.get(mapKey)?.[0] ?? false,
+        areStorageFieldsAdditionalMapFocused.get(mapKey)?.[0] ?? false,
       isValidInputText:
-        areHeadphoneFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
+        areStorageFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
       regexValidationText: returnObjectKeyValidationText({
         content: field,
         contentKind: `additional field name ${mapKey + 1}`,
@@ -577,33 +479,32 @@ function CreateHeadphone({
     });
 
     return [
-      headphoneFieldsAdditionalMapKeysInputErrorText,
-      headphoneFieldsAdditionalMapKeysInputValidText,
+      storageFieldsAdditionalMapKeysInputErrorText,
+      storageFieldsAdditionalMapKeysInputValidText,
     ];
   });
 
   // ╭─────────────────────────────────────────────────────────────────╮
   //    ERROR/VALID ELEMENTS TUPLE => FIELD VALUES
   // ╰─────────────────────────────────────────────────────────────────╯
-
   // returns an array of tuples containing the error and valid text elements for each field value
-  const headphoneFieldsAdditionalMapValuesErrorValidTextElements: [
+  const storageFieldsAdditionalMapValuesErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(headphoneFieldsAdditionalMap).map((keyFieldValue) => {
+  ][] = Array.from(storageFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [_field, value]] = keyFieldValue;
 
-    // error/valid text elements that are consumed by the text input element creator
+    // screenreader accessible error/valid text elements that are consumed by the text input element creator
     const [
-      headphoneFieldsAdditionalMapValuesInputErrorText,
-      headphoneFieldsAdditionalMapValuesInputValidText,
+      storageFieldsAdditionalMapValuesInputErrorText,
+      storageFieldsAdditionalMapValuesInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field value ${mapKey + 1}`,
       inputText: value,
       isInputTextFocused:
-        areHeadphoneFieldsAdditionalMapFocused.get(mapKey)?.[1] ?? false,
+        areStorageFieldsAdditionalMapFocused.get(mapKey)?.[1] ?? false,
       isValidInputText:
-        areHeadphoneFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
+        areStorageFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
       regexValidationText: returnUserDefinedFieldValueValidationText({
         content: value,
         contentKind: `additional field value ${mapKey + 1}`,
@@ -613,36 +514,36 @@ function CreateHeadphone({
     });
 
     return [
-      headphoneFieldsAdditionalMapValuesInputErrorText,
-      headphoneFieldsAdditionalMapValuesInputValidText,
+      storageFieldsAdditionalMapValuesInputErrorText,
+      storageFieldsAdditionalMapValuesInputValidText,
     ];
   });
 
-  const createdHeadphoneFieldsAdditionalMapTextInputElements = Array.from(
-    headphoneFieldsAdditionalMap
+  const createdStorageFieldsAdditionalMapTextInputElements = Array.from(
+    storageFieldsAdditionalMap
   ).map((keyFieldValue) => {
     const [mapKey, [field, value]] = keyFieldValue;
 
     // ╭─────────────────────────────────────────────────────────────────╮
     //    ADDITIONAL FIELD ACCESSIBLE TEXT INPUT => FIELD NAME
     // ╰─────────────────────────────────────────────────────────────────╯
-    const headphoneFieldsAdditionalMapKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const storageFieldsAdditionalMapKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
           error:
-            headphoneFieldsAdditionalMapKeysErrorValidTextElements[mapKey][0],
+            storageFieldsAdditionalMapKeysErrorValidTextElements[mapKey][0],
           valid:
-            headphoneFieldsAdditionalMapKeysErrorValidTextElements[mapKey][1],
+            storageFieldsAdditionalMapKeysErrorValidTextElements[mapKey][1],
         },
         inputText: field,
         isValidInputText:
-          areHeadphoneFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
+          areStorageFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
         label: `Name ${mapKey + 1}`,
         maxLength: 75,
         minLength: 1,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreHeadphoneFieldsAdditionalMapFocused,
+            type: createProductAction.setAreStorageFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -653,7 +554,7 @@ function CreateHeadphone({
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setHeadphoneFieldsAdditionalMap,
+            type: createProductAction.setStorageFieldsAdditionalMap,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -669,7 +570,7 @@ function CreateHeadphone({
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreHeadphoneFieldsAdditionalMapFocused,
+            type: createProductAction.setAreStorageFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -686,23 +587,23 @@ function CreateHeadphone({
     // ╭─────────────────────────────────────────────────────────────────╮
     //    ADDITIONAL FIELD ACCESSIBLE TEXT INPUT => FIELD VALUE
     // ╰─────────────────────────────────────────────────────────────────╯
-    const headphoneFieldsAdditionalMapValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const storageFieldsAdditionalMapValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
           error:
-            headphoneFieldsAdditionalMapValuesErrorValidTextElements[mapKey][0],
+            storageFieldsAdditionalMapValuesErrorValidTextElements[mapKey][0],
           valid:
-            headphoneFieldsAdditionalMapValuesErrorValidTextElements[mapKey][1],
+            storageFieldsAdditionalMapValuesErrorValidTextElements[mapKey][1],
         },
         inputText: value,
         isValidInputText:
-          areHeadphoneFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
+          areStorageFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
         label: `Value ${mapKey + 1}`,
         maxLength: 2000,
         minLength: 2,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreHeadphoneFieldsAdditionalMapFocused,
+            type: createProductAction.setAreStorageFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -713,7 +614,7 @@ function CreateHeadphone({
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setHeadphoneFieldsAdditionalMap,
+            type: createProductAction.setStorageFieldsAdditionalMap,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -729,7 +630,7 @@ function CreateHeadphone({
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreHeadphoneFieldsAdditionalMapFocused,
+            type: createProductAction.setAreStorageFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -744,11 +645,11 @@ function CreateHeadphone({
       };
 
     const [
-      createdHeadphoneFieldsAdditionalMapKeysTextAreaInput,
-      createdHeadphoneFieldsAdditionalMapValuesTextAreaInput,
+      createdStorageFieldsAdditionalMapKeysTextAreaInput,
+      createdStorageFieldsAdditionalMapValuesTextAreaInput,
     ] = returnAccessibleTextAreaInputElements([
-      headphoneFieldsAdditionalMapKeysTextInputCreatorInfo,
-      headphoneFieldsAdditionalMapValuesTextInputCreatorInfo,
+      storageFieldsAdditionalMapKeysTextInputCreatorInfo,
+      storageFieldsAdditionalMapValuesTextInputCreatorInfo,
     ]);
 
     // ╭─────────────────────────────────────────────────────────────────╮
@@ -759,7 +660,7 @@ function CreateHeadphone({
         buttonLabel: 'Delete',
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
           createProductDispatch({
-            type: createProductAction.setHeadphoneFieldsAdditionalMap,
+            type: createProductAction.setStorageFieldsAdditionalMap,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -767,7 +668,7 @@ function CreateHeadphone({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreHeadphoneFieldsAdditionalMapFocused,
+            type: createProductAction.setAreStorageFieldsAdditionalMapFocused,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -775,7 +676,7 @@ function CreateHeadphone({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreHeadphoneFieldsAdditionalMapValid,
+            type: createProductAction.setAreStorageFieldsAdditionalMapValid,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -788,32 +689,28 @@ function CreateHeadphone({
           });
         },
         leftIcon: <TbTrash />,
-        semanticDescription: `Delete additional Headphone field ${mapKey + 1}`,
+        semanticDescription: `Delete additional Storage field ${mapKey + 1}`,
         semanticName: 'Delete field and value',
       },
     ]);
 
     const displayDeleteButton = (
-      <Tooltip label={`Delete additional Headphone field ${mapKey + 1}`}>
+      <Tooltip label={`Delete additional Storage field ${mapKey + 1}`}>
         <Group>{createdDeleteButton}</Group>
       </Tooltip>
     );
 
     return (
-      <Stack
-        key={`headphoneFieldsAdditionalMap-${mapKey}`}
-        pt={padding}
-        w="100%"
-      >
+      <Stack key={`storageFieldsAdditionalMap-${mapKey}`} pt={padding} w="100%">
         <Group position="apart">
-          <Text size="md" weight={600}>{`Additional Headphone field ${
+          <Text size="md" weight={600}>{`Additional Storage field ${
             mapKey + 1
           }`}</Text>
           {displayDeleteButton}
         </Group>
         <Group position="apart">
-          {createdHeadphoneFieldsAdditionalMapKeysTextAreaInput}
-          {createdHeadphoneFieldsAdditionalMapValuesTextAreaInput}
+          {createdStorageFieldsAdditionalMapKeysTextAreaInput}
+          {createdStorageFieldsAdditionalMapValuesTextAreaInput}
         </Group>
       </Stack>
     );
@@ -825,33 +722,34 @@ function CreateHeadphone({
   //  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
   // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
-  const displayHeadphoneFieldsAdditionalMapButton = (
+  const displayStorageFieldsAdditionalMapButton = (
     <Tooltip
-      label={`Add additional Headphone field ${
-        headphoneFieldsAdditionalMap.size + 1
+      label={`Add additional Storage field ${
+        storageFieldsAdditionalMap.size + 1
       }`}
     >
-      <Group>{createdAddHeadphoneFieldsAdditionalMapButton}</Group>
+      <Group>{createdAddStorageFieldsAdditionalMapButton}</Group>
     </Tooltip>
   );
 
-  const displayHeadphoneSpecificationsInputs = (
+  const displayStorageSpecificationsInputs = (
     <Group py={padding} position="apart" w="100%">
       <Group w="100%" position="apart">
-        <Title order={4}>Headphone Specifications</Title>
-        {displayHeadphoneFieldsAdditionalMapButton}
+        <Title order={4}>Storage Specifications</Title>
+        {displayStorageFieldsAdditionalMapButton}
       </Group>
-      {createdHeadphoneTypeSelectInput}
-      {createdHeadphoneDriverTextInput}
-      {createdHeadphoneFrequencyResponseTextInput}
-      {createdHeadphoneImpedanceTextInput}
-      {createdHeadphoneColorTextInput}
-      {createdHeadphoneInterfaceSelectInput}
-      {createdHeadphoneFieldsAdditionalMapTextInputElements}
+      {createdStorageTypeSelectInput}
+      {createdStorageInterfaceSelectInput}
+      {createdStorageCapacityTextInput}
+      {createdStorageCapacityUnitSelectInput}
+      {createdStorageCacheCapacityTextInput}
+      {createdStorageCacheCapacityUnitSelectInput}
+      {createdStorageFormFactorSelectInput}
+      {createdStorageFieldsAdditionalMapTextInputElements}
     </Group>
   );
 
-  return displayHeadphoneSpecificationsInputs;
+  return displayStorageSpecificationsInputs;
 }
 
-export default CreateHeadphone;
+export default CreateStorage;

@@ -15,66 +15,62 @@ import {
   returnAccessibleSelectInputElements,
   returnAccessibleTextAreaInputElements,
   returnAccessibleTextInputElements,
-} from '../../../../jsxCreators';
+} from '../../../jsxCreators';
 import {
-  returnColorVariantValidationText,
+  returnMediumIntegerValidationText,
   returnObjectKeyValidationText,
   returnUserDefinedFieldValueValidationText,
-} from '../../../../utils';
-import { AccessibleTextAreaInputCreatorInfo } from '../../../wrappers';
+} from '../../../utils';
+import { AccessibleTextAreaInputCreatorInfo } from '../../wrappers';
 import {
-  COLOR_VARIANT_REGEX,
+  MEDIUM_INTEGER_REGEX,
   OBJECT_KEY_REGEX,
+  PSU_EFFICIENCY_RATING_DATA,
+  PSU_FORM_FACTOR_DATA,
+  PSU_MODULARITY_DATA,
   USER_DEFINED_VALUE_REGEX,
-  WEBCAM_FRAME_RATE_DATA,
-  WEBCAM_INTERFACE_DATA,
-  WEBCAM_MICROPHONE_DATA,
-  WEBCAM_RESOLUTION_DATA,
-} from '../../constants';
+} from '../constants';
 import {
   CreateProductAction,
   CreateProductDispatch,
-  WebcamFrameRate,
-  WebcamInterface,
-  WebcamMicrophone,
-  WebcamResolution,
+  PsuEfficiency,
+  PsuFormFactor,
+  PsuModularity,
 } from '../types';
 
-type CreateWebcamProps = {
-  areWebcamFieldsAdditionalMapFocused: Map<number, [boolean, boolean]>;
-  areWebcamFieldsAdditionalMapValid: Map<number, [boolean, boolean]>;
+type CreatePsuProps = {
+  arePsuFieldsAdditionalMapFocused: Map<number, [boolean, boolean]>;
+  arePsuFieldsAdditionalMapValid: Map<number, [boolean, boolean]>;
   borderColor: string;
   createProductAction: CreateProductAction;
   createProductDispatch: React.Dispatch<CreateProductDispatch>;
   currentlySelectedAdditionalFieldIndex: number;
-  isWebcamColorFocused: boolean;
-  isWebcamColorValid: boolean;
+  isPsuWattageFocused: boolean;
+  isPsuWattageValid: boolean;
   padding: MantineNumberSize;
-  webcamColor: string;
-  webcamFieldsAdditionalMap: Map<number, [string, string]>;
-  webcamFrameRate: WebcamFrameRate;
-  webcamInterface: WebcamInterface;
-  webcamMicrophone: WebcamMicrophone;
-  webcamResolution: WebcamResolution;
+  psuEfficiency: PsuEfficiency;
+  psuFieldsAdditionalMap: Map<number, [string, string]>;
+  psuFormFactor: PsuFormFactor;
+  psuModularity: PsuModularity;
+  psuWattage: string;
 };
 
-function CreateWebcam({
-  areWebcamFieldsAdditionalMapFocused,
-  areWebcamFieldsAdditionalMapValid,
+function CreatePsu({
+  arePsuFieldsAdditionalMapFocused,
+  arePsuFieldsAdditionalMapValid,
   borderColor,
   createProductAction,
   createProductDispatch,
   currentlySelectedAdditionalFieldIndex,
-  isWebcamColorFocused,
-  isWebcamColorValid,
+  isPsuWattageFocused,
+  isPsuWattageValid,
   padding,
-  webcamColor,
-  webcamFieldsAdditionalMap,
-  webcamFrameRate,
-  webcamInterface,
-  webcamMicrophone,
-  webcamResolution,
-}: CreateWebcamProps) {
+  psuEfficiency,
+  psuFieldsAdditionalMap,
+  psuFormFactor,
+  psuModularity,
+  psuWattage,
+}: CreatePsuProps) {
   // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
   //  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
   //    VALIDATION USE EFFECTS
@@ -82,37 +78,38 @@ function CreateWebcam({
   // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    WEBCAM COLOR
+  //    PSU WATTAGE
   // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
-    const isValid = COLOR_VARIANT_REGEX.test(webcamColor);
+    const isValid = MEDIUM_INTEGER_REGEX.test(psuWattage);
 
     createProductDispatch({
-      type: createProductAction.setIsWebcamColorValid,
+      type: createProductAction.setIsPsuWattageValid,
       payload: isValid,
     });
   }, [
-    createProductAction.setIsWebcamColorValid,
+    createProductAction.setIsPsuWattageValid,
     createProductDispatch,
-    webcamColor,
+    psuWattage,
   ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    WEBCAM ADDITIONAL FIELDS
+  //    PSU ADDITIONAL FIELDS
   // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
-    const currentlyUpdatingWebcamFieldAdditional =
-      webcamFieldsAdditionalMap.get(currentlySelectedAdditionalFieldIndex);
+    const currentlyUpdatingPsuFieldAdditional = psuFieldsAdditionalMap.get(
+      currentlySelectedAdditionalFieldIndex
+    );
 
-    if (!currentlyUpdatingWebcamFieldAdditional) {
+    if (!currentlyUpdatingPsuFieldAdditional) {
       return;
     }
 
-    const [key, value] = currentlyUpdatingWebcamFieldAdditional;
+    const [key, value] = currentlyUpdatingPsuFieldAdditional;
 
     const isKeyValid = OBJECT_KEY_REGEX.test(key);
     createProductDispatch({
-      type: createProductAction.setAreWebcamFieldsAdditionalMapValid,
+      type: createProductAction.setArePsuFieldsAdditionalMapValid,
       payload: {
         operation: 'update',
         data: isKeyValid,
@@ -123,7 +120,7 @@ function CreateWebcam({
 
     const isValueValid = USER_DEFINED_VALUE_REGEX.test(value);
     createProductDispatch({
-      type: createProductAction.setAreWebcamFieldsAdditionalMapValid,
+      type: createProductAction.setArePsuFieldsAdditionalMapValid,
       payload: {
         operation: 'update',
         data: isValueValid,
@@ -132,10 +129,10 @@ function CreateWebcam({
       },
     });
   }, [
-    createProductAction.setAreWebcamFieldsAdditionalMapValid,
+    createProductAction.setArePsuFieldsAdditionalMapValid,
     createProductDispatch,
     currentlySelectedAdditionalFieldIndex,
-    webcamFieldsAdditionalMap,
+    psuFieldsAdditionalMap,
   ]);
 
   // ╔═════════════════════════════════════════════════════════════════╗
@@ -146,28 +143,26 @@ function CreateWebcam({
     // optional inputs with empty string count as valid
     // select inputs are not included as they always have a default value
 
-    const areWebcamHardcodedRequiredInputsInError = !isWebcamColorValid;
-
-    const areWebcamFieldsAdditionalMapInError = Array.from(
-      areWebcamFieldsAdditionalMapValid
+    const arePsuInputsUserDefinedInError = Array.from(
+      arePsuFieldsAdditionalMapValid
     ).some(([_key, value]) => !value);
 
-    const areWebcamInputsInError =
-      areWebcamHardcodedRequiredInputsInError ||
-      areWebcamFieldsAdditionalMapInError;
+    const arePsuInputsInError =
+      !isPsuWattageValid || arePsuInputsUserDefinedInError;
 
     createProductDispatch({
       type: createProductAction.setStepsInError,
       payload: {
-        kind: areWebcamInputsInError ? 'add' : 'delete',
+        kind: arePsuInputsInError ? 'add' : 'delete',
         step: 1,
       },
     });
   }, [
-    areWebcamFieldsAdditionalMapValid,
+    arePsuFieldsAdditionalMapValid,
     createProductAction.setStepsInError,
     createProductDispatch,
-    isWebcamColorValid,
+    currentlySelectedAdditionalFieldIndex,
+    isPsuWattageValid,
   ]);
 
   // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
@@ -177,153 +172,135 @@ function CreateWebcam({
   // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    WEBCAM RESOLUTION
-  // ╰─────────────────────────────────────────────────────────────────╯
-  const [createdWebcamResolutionSelectInput] =
-    returnAccessibleSelectInputElements([
-      {
-        data: WEBCAM_RESOLUTION_DATA,
-        description: '',
-        label: 'Webcam Resolution',
-        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-          createProductDispatch({
-            type: createProductAction.setWebcamResolution,
-            payload: event.currentTarget.value as WebcamResolution,
-          });
-        },
-        value: webcamResolution,
-        required: true,
-      },
-    ]);
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    WEBCAM COLOR
+  //    PSU WATTAGE
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // error/valid text elements
-  const [webcamColorInputErrorText, webcamColorInputValidText] =
+  const [psuWattageInputErrorText, psuWattageInputValidText] =
     AccessibleErrorValidTextElements({
-      inputElementKind: 'webcam color',
-      inputText: webcamColor,
-      isInputTextFocused: isWebcamColorFocused,
-      isValidInputText: isWebcamColorValid,
-      regexValidationText: returnColorVariantValidationText({
-        content: webcamColor,
-        contentKind: 'webcam color',
+      inputElementKind: 'psu wattage',
+      inputText: psuWattage,
+      isInputTextFocused: isPsuWattageFocused,
+      isValidInputText: isPsuWattageValid,
+      regexValidationText: returnMediumIntegerValidationText({
+        content: psuWattage,
+        contentKind: 'psu wattage',
       }),
     });
 
-  // accessible text input element
-  const [createdWebcamColorTextInput] = returnAccessibleTextInputElements([
+  // screenreader accessible text input element
+  const [createdPsuWattageTextInput] = returnAccessibleTextInputElements([
     {
       description: {
-        error: webcamColorInputErrorText,
-        valid: webcamColorInputValidText,
+        error: psuWattageInputErrorText,
+        valid: psuWattageInputValidText,
       },
-      inputText: webcamColor,
-      isValidInputText: isWebcamColorValid,
-      label: 'Webcam Color',
+      inputText: psuWattage,
+      isValidInputText: isPsuWattageValid,
+      label: 'PSU Wattage',
       onBlur: () => {
         createProductDispatch({
-          type: createProductAction.setIsWebcamColorFocused,
+          type: createProductAction.setIsPsuWattageFocused,
           payload: false,
         });
       },
       onChange: (event: ChangeEvent<HTMLInputElement>) => {
         createProductDispatch({
-          type: createProductAction.setWebcamColor,
+          type: createProductAction.setPsuWattage,
           payload: event.currentTarget.value,
         });
       },
       onFocus: () => {
         createProductDispatch({
-          type: createProductAction.setIsWebcamColorFocused,
+          type: createProductAction.setIsPsuWattageFocused,
           payload: true,
         });
       },
-      placeholder: 'Enter webcam color',
+      placeholder: 'Format: 0000',
       required: true,
-      semanticName: 'webcam color',
+      semanticName: 'psu wattage',
     },
   ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    WEBCAM MICROPHONE
+  //    PSU EFFICIENCY RATING
   // ╰─────────────────────────────────────────────────────────────────╯
-  const [createdWebcamMicrophoneSelectInput] =
+  const [createdPsuEfficiencyRatingSelectInput] =
     returnAccessibleSelectInputElements([
       {
-        data: WEBCAM_MICROPHONE_DATA,
+        data: PSU_EFFICIENCY_RATING_DATA,
         description: '',
-        label: 'Webcam Microphone',
+        label: 'PSU Efficiency Rating',
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           createProductDispatch({
-            type: createProductAction.setWebcamMicrophone,
-            payload: event.currentTarget.value as WebcamMicrophone,
+            type: createProductAction.setPsuEfficiency,
+            payload: event.currentTarget.value as PsuEfficiency,
           });
         },
-        value: webcamMicrophone,
+        value: psuEfficiency,
         required: true,
       },
     ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    WEBCAM INTERFACE
+  //    PSU MODULARITY
   // ╰─────────────────────────────────────────────────────────────────╯
-  const [createdWebcamInterfaceSelectInput] =
-    returnAccessibleSelectInputElements([
+  const [createdPsuModularitySelectInput] = returnAccessibleSelectInputElements(
+    [
       {
-        data: WEBCAM_INTERFACE_DATA,
-        description: '',
-        label: 'Webcam Interface',
+        data: PSU_MODULARITY_DATA,
+        description: 'Select PSU modularity',
+        label: 'PSU Modularity',
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           createProductDispatch({
-            type: createProductAction.setWebcamInterface,
-            payload: event.currentTarget.value as WebcamInterface,
+            type: createProductAction.setPsuModularity,
+            payload: event.currentTarget.value as PsuModularity,
           });
         },
-        value: webcamInterface,
+        value: psuModularity,
         required: true,
       },
-    ]);
+    ]
+  );
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    WEBCAM FRAME RATE
+  //    PSU FORM FACTOR
   // ╰─────────────────────────────────────────────────────────────────╯
-  const [createdWebcamFrameRateSelectInput] =
-    returnAccessibleSelectInputElements([
+  const [createdPsuFormFactorSelectInput] = returnAccessibleSelectInputElements(
+    [
       {
-        data: WEBCAM_FRAME_RATE_DATA,
-        description: '',
-        label: 'Webcam Frame Rate',
+        data: PSU_FORM_FACTOR_DATA,
+        description: 'Select PSU form factor',
+        label: 'PSU Form Factor',
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           createProductDispatch({
-            type: createProductAction.setWebcamFrameRate,
-            payload: event.currentTarget.value as WebcamFrameRate,
+            type: createProductAction.setPsuFormFactor,
+            payload: event.currentTarget.value as PsuFormFactor,
           });
         },
-        value: webcamFrameRate,
+        value: psuFormFactor,
         required: true,
       },
-    ]);
+    ]
+  );
 
   // ╔═════════════════════════════════════════════════════════════════╗
-  //   WEBCAM ADDITIONAL FIELDS
+  //   PSU ADDITIONAL FIELDS
   // ╚═════════════════════════════════════════════════════════════════╝
 
   // ╭─────────────────────────────────────────────────────────────────╮
   //    ADD ADDITIONAL FIELD BUTTON
   // ╰─────────────────────────────────────────────────────────────────╯
-  const [createdAddWebcamFieldsAdditionalMapButton] =
+  const [createdAddPsuFieldsAdditionalMapButton] =
     returnAccessibleButtonElements([
       {
         buttonLabel: 'Add',
-        semanticDescription: 'Add new additional Webcam field',
+        semanticDescription: 'Add new additional PSU field',
         semanticName: 'Add new field',
         leftIcon: <TbPlus />,
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
           createProductDispatch({
-            type: createProductAction.setWebcamFieldsAdditionalMap,
+            type: createProductAction.setPsuFieldsAdditionalMap,
             payload: {
               operation: 'add',
               data: ['', ''],
@@ -331,7 +308,7 @@ function CreateWebcam({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreWebcamFieldsAdditionalMapFocused,
+            type: createProductAction.setArePsuFieldsAdditionalMapFocused,
             payload: {
               operation: 'add',
               data: [false, false],
@@ -339,7 +316,7 @@ function CreateWebcam({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreWebcamFieldsAdditionalMapValid,
+            type: createProductAction.setArePsuFieldsAdditionalMapValid,
             payload: {
               operation: 'add',
               data: [false, false],
@@ -354,23 +331,23 @@ function CreateWebcam({
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // returns an array of tuples containing the error and valid text elements for each field name
-  const webcamFieldsAdditionalMapKeysErrorValidTextElements: [
+  const psuFieldsAdditionalMapKeysErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(webcamFieldsAdditionalMap).map((keyFieldValue) => {
+  ][] = Array.from(psuFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [field, _value]] = keyFieldValue;
 
-    // screenreader accessible error/valid text elements that are consumed by the text input element creator
+    // error/valid text elements that are consumed by the text input element creator
     const [
-      webcamFieldsAdditionalMapKeysInputErrorText,
-      webcamFieldsAdditionalMapKeysInputValidText,
+      psuFieldsAdditionalMapKeysInputErrorText,
+      psuFieldsAdditionalMapKeysInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field name ${mapKey + 1}`,
       inputText: field,
       isInputTextFocused:
-        areWebcamFieldsAdditionalMapFocused.get(mapKey)?.[0] ?? false,
+        arePsuFieldsAdditionalMapFocused.get(mapKey)?.[0] ?? false,
       isValidInputText:
-        areWebcamFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
+        arePsuFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
       regexValidationText: returnObjectKeyValidationText({
         content: field,
         contentKind: `additional field name ${mapKey + 1}`,
@@ -380,8 +357,8 @@ function CreateWebcam({
     });
 
     return [
-      webcamFieldsAdditionalMapKeysInputErrorText,
-      webcamFieldsAdditionalMapKeysInputValidText,
+      psuFieldsAdditionalMapKeysInputErrorText,
+      psuFieldsAdditionalMapKeysInputValidText,
     ];
   });
 
@@ -390,23 +367,23 @@ function CreateWebcam({
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // returns an array of tuples containing the error and valid text elements for each field value
-  const webcamFieldsAdditionalMapValuesErrorValidTextElements: [
+  const psuFieldsAdditionalMapValuesErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(webcamFieldsAdditionalMap).map((keyFieldValue) => {
+  ][] = Array.from(psuFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [_field, value]] = keyFieldValue;
 
-    // screenreader accessible error/valid text elements that are consumed by the text input element creator
+    // error/valid text elements that are consumed by the text input element creator
     const [
-      webcamFieldsAdditionalMapValuesInputErrorText,
-      webcamFieldsAdditionalMapValuesInputValidText,
+      psuFieldsAdditionalMapValuesInputErrorText,
+      psuFieldsAdditionalMapValuesInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field value ${mapKey + 1}`,
       inputText: value,
       isInputTextFocused:
-        areWebcamFieldsAdditionalMapFocused.get(mapKey)?.[1] ?? false,
+        arePsuFieldsAdditionalMapFocused.get(mapKey)?.[1] ?? false,
       isValidInputText:
-        areWebcamFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
+        arePsuFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
       regexValidationText: returnUserDefinedFieldValueValidationText({
         content: value,
         contentKind: `additional field value ${mapKey + 1}`,
@@ -416,34 +393,34 @@ function CreateWebcam({
     });
 
     return [
-      webcamFieldsAdditionalMapValuesInputErrorText,
-      webcamFieldsAdditionalMapValuesInputValidText,
+      psuFieldsAdditionalMapValuesInputErrorText,
+      psuFieldsAdditionalMapValuesInputValidText,
     ];
   });
 
-  const createdWebcamFieldsAdditionalMapTextInputElements = Array.from(
-    webcamFieldsAdditionalMap
+  const createdPsuFieldsAdditionalMapTextInputElements = Array.from(
+    psuFieldsAdditionalMap
   ).map((keyFieldValue) => {
     const [mapKey, [field, value]] = keyFieldValue;
 
     // ╭─────────────────────────────────────────────────────────────────╮
     //    ADDITIONAL FIELD ACCESSIBLE TEXT INPUT => FIELD NAME
     // ╰─────────────────────────────────────────────────────────────────╯
-    const webcamFieldsAdditionalMapKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const psuFieldsAdditionalMapKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
-          error: webcamFieldsAdditionalMapKeysErrorValidTextElements[mapKey][0],
-          valid: webcamFieldsAdditionalMapKeysErrorValidTextElements[mapKey][1],
+          error: psuFieldsAdditionalMapKeysErrorValidTextElements[mapKey][0],
+          valid: psuFieldsAdditionalMapKeysErrorValidTextElements[mapKey][1],
         },
         inputText: field,
         isValidInputText:
-          areWebcamFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
+          arePsuFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
         label: `Name ${mapKey + 1}`,
         maxLength: 75,
         minLength: 1,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreWebcamFieldsAdditionalMapFocused,
+            type: createProductAction.setArePsuFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -454,7 +431,7 @@ function CreateWebcam({
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setWebcamFieldsAdditionalMap,
+            type: createProductAction.setPsuFieldsAdditionalMap,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -470,7 +447,7 @@ function CreateWebcam({
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreWebcamFieldsAdditionalMapFocused,
+            type: createProductAction.setArePsuFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -487,23 +464,21 @@ function CreateWebcam({
     // ╭─────────────────────────────────────────────────────────────────╮
     //    ADDITIONAL FIELD ACCESSIBLE TEXT INPUT => FIELD VALUE
     // ╰─────────────────────────────────────────────────────────────────╯
-    const webcamFieldsAdditionalMapValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const psuFieldsAdditionalMapValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
-          error:
-            webcamFieldsAdditionalMapValuesErrorValidTextElements[mapKey][0],
-          valid:
-            webcamFieldsAdditionalMapValuesErrorValidTextElements[mapKey][1],
+          error: psuFieldsAdditionalMapValuesErrorValidTextElements[mapKey][0],
+          valid: psuFieldsAdditionalMapValuesErrorValidTextElements[mapKey][1],
         },
         inputText: value,
         isValidInputText:
-          areWebcamFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
+          arePsuFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
         label: `Value ${mapKey + 1}`,
         maxLength: 2000,
         minLength: 2,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreWebcamFieldsAdditionalMapFocused,
+            type: createProductAction.setArePsuFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -514,7 +489,7 @@ function CreateWebcam({
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setWebcamFieldsAdditionalMap,
+            type: createProductAction.setPsuFieldsAdditionalMap,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -530,7 +505,7 @@ function CreateWebcam({
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreWebcamFieldsAdditionalMapFocused,
+            type: createProductAction.setArePsuFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -545,11 +520,11 @@ function CreateWebcam({
       };
 
     const [
-      createdWebcamFieldsAdditionalMapKeysTextAreaInput,
-      createdWebcamFieldsAdditionalMapValuesTextAreaInput,
+      createdPsuFieldsAdditionalMapKeysTextAreaInput,
+      createdPsuFieldsAdditionalMapValuesTextAreaInput,
     ] = returnAccessibleTextAreaInputElements([
-      webcamFieldsAdditionalMapKeysTextInputCreatorInfo,
-      webcamFieldsAdditionalMapValuesTextInputCreatorInfo,
+      psuFieldsAdditionalMapKeysTextInputCreatorInfo,
+      psuFieldsAdditionalMapValuesTextInputCreatorInfo,
     ]);
 
     // ╭─────────────────────────────────────────────────────────────────╮
@@ -560,7 +535,7 @@ function CreateWebcam({
         buttonLabel: 'Delete',
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
           createProductDispatch({
-            type: createProductAction.setWebcamFieldsAdditionalMap,
+            type: createProductAction.setPsuFieldsAdditionalMap,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -568,7 +543,7 @@ function CreateWebcam({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreWebcamFieldsAdditionalMapFocused,
+            type: createProductAction.setArePsuFieldsAdditionalMapFocused,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -576,7 +551,7 @@ function CreateWebcam({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreWebcamFieldsAdditionalMapValid,
+            type: createProductAction.setArePsuFieldsAdditionalMapValid,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -589,28 +564,28 @@ function CreateWebcam({
           });
         },
         leftIcon: <TbTrash />,
-        semanticDescription: `Delete additional Webcam field ${mapKey + 1}`,
+        semanticDescription: `Delete additional PSU field ${mapKey + 1}`,
         semanticName: 'Delete field and value',
       },
     ]);
 
     const displayDeleteButton = (
-      <Tooltip label={`Delete additional Webcam field ${mapKey + 1}`}>
+      <Tooltip label={`Delete additional PSU field ${mapKey + 1}`}>
         <Group>{createdDeleteButton}</Group>
       </Tooltip>
     );
 
     return (
-      <Stack key={`webcamFieldsAdditionalMap-${mapKey}`} pt={padding} w="100%">
+      <Stack key={`psuFieldsAdditionalMap-${mapKey}`} pt={padding} w="100%">
         <Group position="apart">
-          <Text size="md" weight={600}>{`Additional Webcam field ${
+          <Text size="md" weight={600}>{`Additional PSU field ${
             mapKey + 1
           }`}</Text>
           {displayDeleteButton}
         </Group>
         <Group position="apart">
-          {createdWebcamFieldsAdditionalMapKeysTextAreaInput}
-          {createdWebcamFieldsAdditionalMapValuesTextAreaInput}
+          {createdPsuFieldsAdditionalMapKeysTextAreaInput}
+          {createdPsuFieldsAdditionalMapValuesTextAreaInput}
         </Group>
       </Stack>
     );
@@ -622,32 +597,29 @@ function CreateWebcam({
   //  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
   // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
-  const displayWebcamFieldsAdditionalMapButton = (
+  const displayPsuFieldsAdditionalMapButton = (
     <Tooltip
-      label={`Add additional Webcam field ${
-        webcamFieldsAdditionalMap.size + 1
-      }`}
+      label={`Add additional PSU field ${psuFieldsAdditionalMap.size + 1}`}
     >
-      <Group>{createdAddWebcamFieldsAdditionalMapButton}</Group>
+      <Group>{createdAddPsuFieldsAdditionalMapButton}</Group>
     </Tooltip>
   );
 
-  const displayWebcamSpecificationsInputs = (
+  const displayPowerSupplySpecificationsInputs = (
     <Group py={padding} position="apart" w="100%">
       <Group w="100%" position="apart">
-        <Title order={4}>Webcam Specifications</Title>
-        {displayWebcamFieldsAdditionalMapButton}
+        <Title order={4}>Power Supply Unit (PSU) Specifications</Title>
+        {displayPsuFieldsAdditionalMapButton}
       </Group>
-      {createdWebcamResolutionSelectInput}
-      {createdWebcamColorTextInput}
-      {createdWebcamMicrophoneSelectInput}
-      {createdWebcamInterfaceSelectInput}
-      {createdWebcamFrameRateSelectInput}
-      {createdWebcamFieldsAdditionalMapTextInputElements}
+      {createdPsuWattageTextInput}
+      {createdPsuEfficiencyRatingSelectInput}
+      {createdPsuFormFactorSelectInput}
+      {createdPsuModularitySelectInput}
+      {createdPsuFieldsAdditionalMapTextInputElements}
     </Group>
   );
 
-  return displayWebcamSpecificationsInputs;
+  return displayPowerSupplySpecificationsInputs;
 }
 
-export default CreateWebcam;
+export default CreatePsu;

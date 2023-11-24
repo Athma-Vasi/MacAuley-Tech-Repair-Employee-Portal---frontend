@@ -15,70 +15,82 @@ import {
   returnAccessibleSelectInputElements,
   returnAccessibleTextAreaInputElements,
   returnAccessibleTextInputElements,
-} from '../../../../jsxCreators';
+} from '../../../jsxCreators';
 import {
-  returnColorVariantValidationText,
-  returnFrequencyResponseValidationText,
+  returnMediumIntegerValidationText,
   returnObjectKeyValidationText,
+  returnSmallIntegerValidationText,
+  returnSocketChipsetValidationText,
   returnUserDefinedFieldValueValidationText,
-} from '../../../../utils';
-import { AccessibleTextAreaInputCreatorInfo } from '../../../wrappers';
+} from '../../../utils';
+import { AccessibleTextAreaInputCreatorInfo } from '../../wrappers';
 import {
-  COLOR_VARIANT_REGEX,
-  FREQUENCY_RESPONSE_REGEX,
-  MICROPHONE_INTERFACE_DATA,
-  MICROPHONE_POLAR_PATTERN_DATA,
-  MICROPHONE_TYPE_DATA,
+  GPU_CHIPSET_REGEX,
+  MEDIUM_INTEGER_REGEX,
+  MEMORY_UNIT_SELECT_INPUT_DATA,
   OBJECT_KEY_REGEX,
+  SMALL_INTEGER_REGEX,
   USER_DEFINED_VALUE_REGEX,
-} from '../../constants';
+} from '../constants';
 import {
   CreateProductAction,
   CreateProductDispatch,
-  MicrophoneInterface,
-  MicrophonePolarPattern,
-  MicrophoneType,
+  MemoryUnit,
 } from '../types';
 
-type CreateMicrophoneProps = {
-  areMicrophoneFieldsAdditionalMapFocused: Map<number, [boolean, boolean]>;
-  areMicrophoneFieldsAdditionalMapValid: Map<number, [boolean, boolean]>;
+type CreateGpuProps = {
+  areGpuFieldsAdditionalMapFocused: Map<number, [boolean, boolean]>;
+  areGpuFieldsAdditionalMapValid: Map<number, [boolean, boolean]>;
   borderColor: string;
   createProductAction: CreateProductAction;
   createProductDispatch: React.Dispatch<CreateProductDispatch>;
   currentlySelectedAdditionalFieldIndex: number;
-  isMicrophoneColorFocused: boolean;
-  isMicrophoneColorValid: boolean;
-  isMicrophoneFrequencyResponseFocused: boolean;
-  isMicrophoneFrequencyResponseValid: boolean;
-  microphoneColor: string;
-  microphoneFieldsAdditionalMap: Map<number, [string, string]>;
-  microphoneFrequencyResponse: string;
-  microphoneInterface: MicrophoneInterface;
-  microphonePolarPattern: MicrophonePolarPattern;
-  microphoneType: MicrophoneType;
+  gpuBoostClock: string;
+  gpuChipset: string;
+  gpuCoreClock: string;
+  gpuFieldsAdditionalMap: Map<number, [string, string]>;
+  gpuMemoryCapacity: string;
+  gpuMemoryCapacityUnit: MemoryUnit;
+  gpuTdp: string;
+  isGpuBoostClockFocused: boolean;
+  isGpuBoostClockValid: boolean;
+  isGpuChipsetFocused: boolean;
+  isGpuChipsetValid: boolean;
+  isGpuCoreClockFocused: boolean;
+  isGpuCoreClockValid: boolean;
+  isGpuMemoryCapacityFocused: boolean;
+  isGpuMemoryCapacityValid: boolean;
+  isGpuTdpFocused: boolean;
+  isGpuTdpValid: boolean;
   padding: MantineNumberSize;
 };
 
-function CreateMicrophone({
-  areMicrophoneFieldsAdditionalMapFocused,
-  areMicrophoneFieldsAdditionalMapValid,
+function CreateGpu({
+  areGpuFieldsAdditionalMapFocused,
+  areGpuFieldsAdditionalMapValid,
   borderColor,
   createProductAction,
   createProductDispatch,
   currentlySelectedAdditionalFieldIndex,
-  isMicrophoneColorFocused,
-  isMicrophoneColorValid,
-  isMicrophoneFrequencyResponseFocused,
-  isMicrophoneFrequencyResponseValid,
-  microphoneColor,
-  microphoneFieldsAdditionalMap,
-  microphoneFrequencyResponse,
-  microphoneInterface,
-  microphonePolarPattern,
-  microphoneType,
+  gpuBoostClock,
+  gpuChipset,
+  gpuCoreClock,
+  gpuFieldsAdditionalMap,
+  gpuMemoryCapacity,
+  gpuMemoryCapacityUnit,
+  gpuTdp,
+  isGpuBoostClockFocused,
+  isGpuBoostClockValid,
+  isGpuChipsetFocused,
+  isGpuChipsetValid,
+  isGpuCoreClockFocused,
+  isGpuCoreClockValid,
+  isGpuMemoryCapacityFocused,
+  isGpuMemoryCapacityValid,
+  isGpuTdpFocused,
+  isGpuTdpValid,
   padding,
-}: CreateMicrophoneProps) {
+}: CreateGpuProps) {
   // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
   //  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
   //    VALIDATION USE EFFECTS
@@ -86,53 +98,98 @@ function CreateMicrophone({
   // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    MICROPHONE COLOR
+  //    GPU CHIPSET
   // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
-    const isValid = COLOR_VARIANT_REGEX.test(microphoneColor);
+    const isValid = GPU_CHIPSET_REGEX.test(gpuChipset);
 
     createProductDispatch({
-      type: createProductAction.setIsMicrophoneColorValid,
+      type: createProductAction.setIsGpuChipsetValid,
       payload: isValid,
     });
   }, [
-    createProductAction.setIsMicrophoneColorValid,
+    createProductAction.setIsGpuChipsetValid,
     createProductDispatch,
-    microphoneColor,
+    gpuChipset,
   ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    MICROPHONE FREQUENCY RESPONSE
+  //    GPU MEMORY CAPACITY
   // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
-    const isValid = FREQUENCY_RESPONSE_REGEX.test(microphoneFrequencyResponse);
+    const isValid = SMALL_INTEGER_REGEX.test(gpuMemoryCapacity);
 
     createProductDispatch({
-      type: createProductAction.setIsMicrophoneFrequencyResponseValid,
+      type: createProductAction.setIsGpuMemoryCapacityValid,
       payload: isValid,
     });
   }, [
-    createProductAction.setIsMicrophoneFrequencyResponseValid,
+    createProductAction.setIsGpuMemoryCapacityValid,
     createProductDispatch,
-    microphoneFrequencyResponse,
+    gpuMemoryCapacity,
   ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    MICROPHONE FIELDS ADDITIONAL
+  //    GPU CORE CLOCK
   // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
-    const currentlyUpdatingMicrophoneFieldAdditional =
-      microphoneFieldsAdditionalMap.get(currentlySelectedAdditionalFieldIndex);
+    const isValid = MEDIUM_INTEGER_REGEX.test(gpuCoreClock);
 
-    if (!currentlyUpdatingMicrophoneFieldAdditional) {
+    createProductDispatch({
+      type: createProductAction.setIsGpuCoreClockValid,
+      payload: isValid,
+    });
+  }, [
+    createProductAction.setIsGpuCoreClockValid,
+    createProductDispatch,
+    gpuCoreClock,
+  ]);
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    GPU BOOST CLOCK
+  // ╰─────────────────────────────────────────────────────────────────╯
+  useEffect(() => {
+    const isValid = MEDIUM_INTEGER_REGEX.test(gpuBoostClock);
+
+    createProductDispatch({
+      type: createProductAction.setIsGpuBoostClockValid,
+      payload: isValid,
+    });
+  }, [
+    createProductAction.setIsGpuBoostClockValid,
+    createProductDispatch,
+    gpuBoostClock,
+  ]);
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    GPU TDP
+  // ╰─────────────────────────────────────────────────────────────────╯
+  useEffect(() => {
+    const isValid = MEDIUM_INTEGER_REGEX.test(gpuTdp);
+
+    createProductDispatch({
+      type: createProductAction.setIsGpuTdpValid,
+      payload: isValid,
+    });
+  }, [createProductAction.setIsGpuTdpValid, createProductDispatch, gpuTdp]);
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    GPU FIELDS ADDITIONAL
+  // ╰─────────────────────────────────────────────────────────────────╯
+  useEffect(() => {
+    const currentlyUpdatingGpuFieldAdditional = gpuFieldsAdditionalMap.get(
+      currentlySelectedAdditionalFieldIndex
+    );
+
+    if (!currentlyUpdatingGpuFieldAdditional) {
       return;
     }
 
-    const [key, value] = currentlyUpdatingMicrophoneFieldAdditional;
+    const [key, value] = currentlyUpdatingGpuFieldAdditional;
 
     const isKeyValid = OBJECT_KEY_REGEX.test(key);
     createProductDispatch({
-      type: createProductAction.setAreMicrophoneFieldsAdditionalMapValid,
+      type: createProductAction.setAreGpuFieldsAdditionalMapValid,
       payload: {
         operation: 'update',
         data: isKeyValid,
@@ -143,7 +200,7 @@ function CreateMicrophone({
 
     const isValueValid = USER_DEFINED_VALUE_REGEX.test(value);
     createProductDispatch({
-      type: createProductAction.setAreMicrophoneFieldsAdditionalMapValid,
+      type: createProductAction.setAreGpuFieldsAdditionalMapValid,
       payload: {
         operation: 'update',
         data: isValueValid,
@@ -152,10 +209,10 @@ function CreateMicrophone({
       },
     });
   }, [
-    createProductAction.setAreMicrophoneFieldsAdditionalMapValid,
+    createProductAction.setAreGpuFieldsAdditionalMapValid,
     createProductDispatch,
     currentlySelectedAdditionalFieldIndex,
-    microphoneFieldsAdditionalMap,
+    gpuFieldsAdditionalMap,
   ]);
 
   // ╔═════════════════════════════════════════════════════════════════╗
@@ -166,33 +223,36 @@ function CreateMicrophone({
     // optional inputs with empty string count as valid
     // select inputs are not included as they always have a default value
 
-    const areMicrophoneInputsHardcodedInError =
-      !isMicrophoneColorValid || !isMicrophoneFrequencyResponseValid;
+    const areGpuInputsHardcodedInError =
+      !isGpuChipsetValid ||
+      !isGpuMemoryCapacityValid ||
+      !isGpuCoreClockValid ||
+      !isGpuBoostClockValid ||
+      !isGpuTdpValid;
 
-    const areMicrophoneInputsUserDefinedInError = Array.from(
-      areMicrophoneFieldsAdditionalMapValid
+    const areGpuInputsUserDefinedInError = Array.from(
+      areGpuFieldsAdditionalMapValid
     ).some(([_key, value]) => !value);
 
-    const areMicrophoneInputsInError =
-      areMicrophoneInputsHardcodedInError ||
-      areMicrophoneInputsUserDefinedInError;
+    const areGpuInputsInError =
+      areGpuInputsHardcodedInError || areGpuInputsUserDefinedInError;
 
     createProductDispatch({
       type: createProductAction.setStepsInError,
       payload: {
-        kind: areMicrophoneInputsInError ? 'add' : 'delete',
+        kind: areGpuInputsInError ? 'add' : 'delete',
         step: 1,
       },
     });
   }, [
-    areMicrophoneFieldsAdditionalMapValid,
+    areGpuFieldsAdditionalMapValid,
     createProductAction.setStepsInError,
     createProductDispatch,
-    isMicrophoneColorValid,
-    isMicrophoneFrequencyResponseValid,
-    microphoneInterface,
-    microphonePolarPattern,
-    microphoneType,
+    isGpuBoostClockValid,
+    isGpuChipsetValid,
+    isGpuCoreClockValid,
+    isGpuMemoryCapacityValid,
+    isGpuTdpValid,
   ]);
 
   // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
@@ -202,187 +262,303 @@ function CreateMicrophone({
   // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    MICROPHONE TYPE
-  // ╰─────────────────────────────────────────────────────────────────╯
-  const [createdMicrophoneTypeSelectInput] =
-    returnAccessibleSelectInputElements([
-      {
-        data: MICROPHONE_TYPE_DATA,
-        description: '',
-        label: 'Microphone Type',
-        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-          createProductDispatch({
-            type: createProductAction.setMicrophoneType,
-            payload: event.currentTarget.value as MicrophoneType,
-          });
-        },
-        value: microphoneType,
-        required: true,
-      },
-    ]);
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    MICROPHONE COLOR
+  //    GPU CHIPSET
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // error/valid text elements
-  const [microphoneColorInputErrorText, microphoneColorInputValidText] =
+  const [gpuChipsetInputErrorText, gpuChipsetInputValidText] =
     AccessibleErrorValidTextElements({
-      inputElementKind: 'microphone color',
-      inputText: microphoneColor,
-      isInputTextFocused: isMicrophoneColorFocused,
-      isValidInputText: isMicrophoneColorValid,
-      regexValidationText: returnColorVariantValidationText({
-        content: microphoneColor,
-        contentKind: 'microphone color',
+      inputElementKind: 'gpu chipset',
+      inputText: gpuChipset,
+      isInputTextFocused: isGpuChipsetFocused,
+      isValidInputText: isGpuChipsetValid,
+      regexValidationText: returnSocketChipsetValidationText({
+        content: gpuChipset,
+        contentKind: 'gpu chipset',
+        maxLength: 30,
+        minLength: 2,
       }),
     });
 
   // screenreader accessible text input element
-  const [createdMicrophoneColorTextInput] = returnAccessibleTextInputElements([
+  const [createdGpuChipsetTextInput] = returnAccessibleTextInputElements([
     {
       description: {
-        error: microphoneColorInputErrorText,
-        valid: microphoneColorInputValidText,
+        error: gpuChipsetInputErrorText,
+        valid: gpuChipsetInputValidText,
       },
-      inputText: microphoneColor,
-      isValidInputText: isMicrophoneColorValid,
-      label: 'Microphone Color',
+      inputText: gpuChipset,
+      isValidInputText: isGpuChipsetValid,
+      label: 'GPU Chipset',
+      maxLength: 30,
+      minLength: 2,
       onBlur: () => {
         createProductDispatch({
-          type: createProductAction.setIsMicrophoneColorFocused,
+          type: createProductAction.setIsGpuChipsetFocused,
           payload: false,
         });
       },
       onChange: (event: ChangeEvent<HTMLInputElement>) => {
         createProductDispatch({
-          type: createProductAction.setMicrophoneColor,
+          type: createProductAction.setGpuChipset,
           payload: event.currentTarget.value,
         });
       },
       onFocus: () => {
         createProductDispatch({
-          type: createProductAction.setIsMicrophoneColorFocused,
+          type: createProductAction.setIsGpuChipsetFocused,
           payload: true,
         });
       },
-      placeholder: 'Enter microphone color',
+      placeholder: 'Enter GPU chipset',
       required: true,
-      semanticName: 'microphone color',
+      semanticName: 'gpu chipset',
     },
   ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    MICROPHONE INTERFACE
-  // ╰─────────────────────────────────────────────────────────────────╯
-  const [createdMicrophoneInterfaceSelectInput] =
-    returnAccessibleSelectInputElements([
-      {
-        data: MICROPHONE_INTERFACE_DATA,
-        description: '',
-        label: 'Microphone Interface',
-        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-          createProductDispatch({
-            type: createProductAction.setMicrophoneInterface,
-            payload: event.currentTarget.value as MicrophoneInterface,
-          });
-        },
-        value: microphoneInterface,
-        required: true,
-      },
-    ]);
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    MICROPHONE POLAR PATTERN
-  // ╰─────────────────────────────────────────────────────────────────╯
-  const [createdMicrophonePolarPatternSelectInput] =
-    returnAccessibleSelectInputElements([
-      {
-        data: MICROPHONE_POLAR_PATTERN_DATA,
-        description: '',
-        label: 'Microphone Polar Pattern',
-        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-          createProductDispatch({
-            type: createProductAction.setMicrophonePolarPattern,
-            payload: event.currentTarget.value as MicrophonePolarPattern,
-          });
-        },
-        value: microphonePolarPattern,
-        required: true,
-      },
-    ]);
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    MICROPHONE FREQUENCY RESPONSE
+  //    GPU MEMORY CAPACITY
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // error/valid text elements
-  const [
-    microphoneFrequencyResponseInputErrorText,
-    microphoneFrequencyResponseInputValidText,
-  ] = AccessibleErrorValidTextElements({
-    inputElementKind: 'microphone frequency response',
-    inputText: microphoneFrequencyResponse,
-    isInputTextFocused: isMicrophoneFrequencyResponseFocused,
-    isValidInputText: isMicrophoneFrequencyResponseValid,
-    regexValidationText: returnFrequencyResponseValidationText({
-      content: microphoneFrequencyResponse,
-      contentKind: 'microphone frequency response',
-    }),
-  });
+  const [gpuMemoryCapacityInputErrorText, gpuMemoryCapacityInputValidText] =
+    AccessibleErrorValidTextElements({
+      inputElementKind: 'gpu memory capacity',
+      inputText: gpuMemoryCapacity,
+      isInputTextFocused: isGpuMemoryCapacityFocused,
+      isValidInputText: isGpuMemoryCapacityValid,
+      regexValidationText: returnSmallIntegerValidationText({
+        content: gpuMemoryCapacity,
+        contentKind: 'gpu memory capacity',
+      }),
+    });
 
   // screenreader accessible text input element
-  const [createdMicrophoneFrequencyResponseTextInput] =
-    returnAccessibleTextInputElements([
+  const [createdGpuMemoryCapacityTextInput] = returnAccessibleTextInputElements(
+    [
       {
         description: {
-          error: microphoneFrequencyResponseInputErrorText,
-          valid: microphoneFrequencyResponseInputValidText,
+          error: gpuMemoryCapacityInputErrorText,
+          valid: gpuMemoryCapacityInputValidText,
         },
-        inputText: microphoneFrequencyResponse,
-        isValidInputText: isMicrophoneFrequencyResponseValid,
-        label: 'Microphone Frequency Response (Hz-kHz)',
+        inputText: gpuMemoryCapacity,
+        isValidInputText: isGpuMemoryCapacityValid,
+        label: 'GPU Memory Capacity (GB)',
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setIsMicrophoneFrequencyResponseFocused,
+            type: createProductAction.setIsGpuMemoryCapacityFocused,
             payload: false,
           });
         },
         onChange: (event: ChangeEvent<HTMLInputElement>) => {
           createProductDispatch({
-            type: createProductAction.setMicrophoneFrequencyResponse,
+            type: createProductAction.setGpuMemoryCapacity,
             payload: event.currentTarget.value,
           });
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setIsMicrophoneFrequencyResponseFocused,
+            type: createProductAction.setIsGpuMemoryCapacityFocused,
             payload: true,
           });
         },
-        placeholder: 'Format: 00 Hz - 00 kHz',
+        placeholder: 'Format: 00',
         required: true,
-        semanticName: 'microphone frequency response',
+        semanticName: 'gpu memory capacity',
+      },
+    ]
+  );
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    GPU MEMORY CAPACITY UNIT
+  // ╰─────────────────────────────────────────────────────────────────╯
+  const [createdGpuMemoryCapacityUnitSelectInput] =
+    returnAccessibleSelectInputElements([
+      {
+        data: MEMORY_UNIT_SELECT_INPUT_DATA,
+        description: '',
+        label: 'GPU Memory Capacity Unit',
+        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+          createProductDispatch({
+            type: createProductAction.setGpuMemoryCapacityUnit,
+            payload: event.currentTarget.value as MemoryUnit,
+          });
+        },
+        value: gpuMemoryCapacityUnit,
+        required: true,
       },
     ]);
 
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    GPU CORE CLOCK
+  // ╰─────────────────────────────────────────────────────────────────╯
+
+  // error/valid text elements
+  const [gpuCoreClockInputErrorText, gpuCoreClockInputValidText] =
+    AccessibleErrorValidTextElements({
+      inputElementKind: 'gpu core clock',
+      inputText: gpuCoreClock,
+      isInputTextFocused: isGpuCoreClockFocused,
+      isValidInputText: isGpuCoreClockValid,
+      regexValidationText: returnMediumIntegerValidationText({
+        content: gpuCoreClock,
+        contentKind: 'gpu core clock',
+      }),
+    });
+
+  // screenreader accessible text input element
+  const [createdGpuCoreClockTextInput] = returnAccessibleTextInputElements([
+    {
+      description: {
+        error: gpuCoreClockInputErrorText,
+        valid: gpuCoreClockInputValidText,
+      },
+      inputText: gpuCoreClock,
+      isValidInputText: isGpuCoreClockValid,
+      label: 'GPU Core Clock (MHz)',
+      onBlur: () => {
+        createProductDispatch({
+          type: createProductAction.setIsGpuCoreClockFocused,
+          payload: false,
+        });
+      },
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
+        createProductDispatch({
+          type: createProductAction.setGpuCoreClock,
+          payload: event.currentTarget.value,
+        });
+      },
+      onFocus: () => {
+        createProductDispatch({
+          type: createProductAction.setIsGpuCoreClockFocused,
+          payload: true,
+        });
+      },
+      placeholder: 'Format: 0000',
+      required: true,
+      semanticName: 'gpu core clock',
+    },
+  ]);
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    GPU BOOST CLOCK
+  // ╰─────────────────────────────────────────────────────────────────╯
+
+  // error/valid text elements
+  const [gpuBoostClockInputErrorText, gpuBoostClockInputValidText] =
+    AccessibleErrorValidTextElements({
+      inputElementKind: 'gpu boost clock',
+      inputText: gpuBoostClock,
+      isInputTextFocused: isGpuBoostClockFocused,
+      isValidInputText: isGpuBoostClockValid,
+      regexValidationText: returnMediumIntegerValidationText({
+        content: gpuBoostClock,
+        contentKind: 'gpu boost clock',
+      }),
+    });
+
+  // screenreader accessible text input element
+  const [createdGpuBoostClockTextInput] = returnAccessibleTextInputElements([
+    {
+      description: {
+        error: gpuBoostClockInputErrorText,
+        valid: gpuBoostClockInputValidText,
+      },
+      inputText: gpuBoostClock,
+      isValidInputText: isGpuBoostClockValid,
+      label: 'GPU Boost Clock (MHz)',
+      onBlur: () => {
+        createProductDispatch({
+          type: createProductAction.setIsGpuBoostClockFocused,
+          payload: false,
+        });
+      },
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
+        createProductDispatch({
+          type: createProductAction.setGpuBoostClock,
+          payload: event.currentTarget.value,
+        });
+      },
+      onFocus: () => {
+        createProductDispatch({
+          type: createProductAction.setIsGpuBoostClockFocused,
+          payload: true,
+        });
+      },
+      placeholder: 'Format: 0000',
+      required: true,
+      semanticName: 'gpu boost clock',
+    },
+  ]);
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    GPU TDP
+  // ╰─────────────────────────────────────────────────────────────────╯
+
+  // error/valid text elements
+  const [gpuTdpInputErrorText, gpuTdpInputValidText] =
+    AccessibleErrorValidTextElements({
+      inputElementKind: 'gpu wattage',
+      inputText: gpuTdp,
+      isInputTextFocused: isGpuTdpFocused,
+      isValidInputText: isGpuTdpValid,
+      regexValidationText: returnMediumIntegerValidationText({
+        content: gpuTdp,
+        contentKind: 'gpu wattage',
+      }),
+    });
+
+  // screenreader accessible text input element
+  const [createdGpuWattageTextInput] = returnAccessibleTextInputElements([
+    {
+      description: {
+        error: gpuTdpInputErrorText,
+        valid: gpuTdpInputValidText,
+      },
+      inputText: gpuTdp,
+      isValidInputText: isGpuTdpValid,
+      label: 'GPU Wattage (W)',
+      onBlur: () => {
+        createProductDispatch({
+          type: createProductAction.setIsGpuTdpFocused,
+          payload: false,
+        });
+      },
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
+        createProductDispatch({
+          type: createProductAction.setGpuTdp,
+          payload: event.currentTarget.value,
+        });
+      },
+      onFocus: () => {
+        createProductDispatch({
+          type: createProductAction.setIsGpuTdpFocused,
+          payload: true,
+        });
+      },
+      placeholder: 'Format: 0000',
+      required: true,
+      semanticName: 'gpu wattage',
+    },
+  ]);
+
   // ╔═════════════════════════════════════════════════════════════════╗
-  //   MICROPHONE ADDITIONAL FIELDS
+  //   GPU ADDITIONAL FIELDS
   // ╚═════════════════════════════════════════════════════════════════╝
 
   // ╭─────────────────────────────────────────────────────────────────╮
   //    ADD ADDITIONAL FIELD BUTTON
   // ╰─────────────────────────────────────────────────────────────────╯
-  const [createdAddMicrophoneFieldsAdditionalMapButton] =
+  const [createdAddGpuFieldsAdditionalMapButton] =
     returnAccessibleButtonElements([
       {
         buttonLabel: 'Add',
-        semanticDescription: 'Add new additional Headphone field',
+        semanticDescription: 'Add new additional GPU field',
         semanticName: 'Add new field',
         leftIcon: <TbPlus />,
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
           createProductDispatch({
-            type: createProductAction.setMicrophoneFieldsAdditionalMap,
+            type: createProductAction.setGpuFieldsAdditionalMap,
             payload: {
               operation: 'add',
               data: ['', ''],
@@ -390,7 +566,7 @@ function CreateMicrophone({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreMicrophoneFieldsAdditionalMapFocused,
+            type: createProductAction.setAreGpuFieldsAdditionalMapFocused,
             payload: {
               operation: 'add',
               data: [false, false],
@@ -398,7 +574,7 @@ function CreateMicrophone({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreMicrophoneFieldsAdditionalMapValid,
+            type: createProductAction.setAreGpuFieldsAdditionalMapValid,
             payload: {
               operation: 'add',
               data: [false, false],
@@ -413,23 +589,23 @@ function CreateMicrophone({
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // returns an array of tuples containing the error and valid text elements for each field name
-  const microphoneFieldsAdditionalMapKeysErrorValidTextElements: [
+  const gpuFieldsAdditionalMapKeysErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(microphoneFieldsAdditionalMap).map((keyFieldValue) => {
+  ][] = Array.from(gpuFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [field, _value]] = keyFieldValue;
 
     // error/valid text elements that are consumed by the text input element creator
     const [
-      microphoneFieldsAdditionalMapKeysInputErrorText,
-      microphoneFieldsAdditionalMapKeysInputValidText,
+      gpuFieldsAdditionalMapKeysInputErrorText,
+      gpuFieldsAdditionalMapKeysInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field name ${mapKey + 1}`,
       inputText: field,
       isInputTextFocused:
-        areMicrophoneFieldsAdditionalMapFocused.get(mapKey)?.[0] ?? false,
+        areGpuFieldsAdditionalMapFocused.get(mapKey)?.[0] ?? false,
       isValidInputText:
-        areMicrophoneFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
+        areGpuFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
       regexValidationText: returnObjectKeyValidationText({
         content: field,
         contentKind: `additional field name ${mapKey + 1}`,
@@ -439,8 +615,8 @@ function CreateMicrophone({
     });
 
     return [
-      microphoneFieldsAdditionalMapKeysInputErrorText,
-      microphoneFieldsAdditionalMapKeysInputValidText,
+      gpuFieldsAdditionalMapKeysInputErrorText,
+      gpuFieldsAdditionalMapKeysInputValidText,
     ];
   });
 
@@ -449,23 +625,23 @@ function CreateMicrophone({
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // returns an array of tuples containing the error and valid text elements for each field value
-  const microphoneFieldsAdditionalMapValuesErrorValidTextElements: [
+  const gpuFieldsAdditionalMapValuesErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(microphoneFieldsAdditionalMap).map((keyFieldValue) => {
+  ][] = Array.from(gpuFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [_field, value]] = keyFieldValue;
 
     // error/valid text elements that are consumed by the text input element creator
     const [
-      microphoneFieldsAdditionalMapValuesInputErrorText,
-      microphoneFieldsAdditionalMapValuesInputValidText,
+      gpuFieldsAdditionalMapValuesInputErrorText,
+      gpuFieldsAdditionalMapValuesInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field value ${mapKey + 1}`,
       inputText: value,
       isInputTextFocused:
-        areMicrophoneFieldsAdditionalMapFocused.get(mapKey)?.[1] ?? false,
+        areGpuFieldsAdditionalMapFocused.get(mapKey)?.[1] ?? false,
       isValidInputText:
-        areMicrophoneFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
+        areGpuFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
       regexValidationText: returnUserDefinedFieldValueValidationText({
         content: value,
         contentKind: `additional field value ${mapKey + 1}`,
@@ -475,36 +651,34 @@ function CreateMicrophone({
     });
 
     return [
-      microphoneFieldsAdditionalMapValuesInputErrorText,
-      microphoneFieldsAdditionalMapValuesInputValidText,
+      gpuFieldsAdditionalMapValuesInputErrorText,
+      gpuFieldsAdditionalMapValuesInputValidText,
     ];
   });
 
-  const createdMicrophoneFieldsAdditionalMapTextInputElements = Array.from(
-    microphoneFieldsAdditionalMap
+  const createdGpuFieldsAdditionalMapTextInputElements = Array.from(
+    gpuFieldsAdditionalMap
   ).map((keyFieldValue) => {
     const [mapKey, [field, value]] = keyFieldValue;
 
     // ╭─────────────────────────────────────────────────────────────────╮
     //    ADDITIONAL FIELD ACCESSIBLE TEXT INPUT => FIELD NAME
     // ╰─────────────────────────────────────────────────────────────────╯
-    const microphoneFieldsAdditionalMapKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const gpuFieldsAdditionalMapKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
-          error:
-            microphoneFieldsAdditionalMapKeysErrorValidTextElements[mapKey][0],
-          valid:
-            microphoneFieldsAdditionalMapKeysErrorValidTextElements[mapKey][1],
+          error: gpuFieldsAdditionalMapKeysErrorValidTextElements[mapKey][0],
+          valid: gpuFieldsAdditionalMapKeysErrorValidTextElements[mapKey][1],
         },
         inputText: field,
         isValidInputText:
-          areMicrophoneFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
+          areGpuFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
         label: `Name ${mapKey + 1}`,
         maxLength: 75,
         minLength: 1,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreMicrophoneFieldsAdditionalMapFocused,
+            type: createProductAction.setAreGpuFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -515,7 +689,7 @@ function CreateMicrophone({
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setMicrophoneFieldsAdditionalMap,
+            type: createProductAction.setGpuFieldsAdditionalMap,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -531,7 +705,7 @@ function CreateMicrophone({
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreMicrophoneFieldsAdditionalMapFocused,
+            type: createProductAction.setAreGpuFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -548,27 +722,21 @@ function CreateMicrophone({
     // ╭─────────────────────────────────────────────────────────────────╮
     //    ADDITIONAL FIELD ACCESSIBLE TEXT INPUT => FIELD VALUE
     // ╰─────────────────────────────────────────────────────────────────╯
-    const microphoneFieldsAdditionalMapValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const gpuFieldsAdditionalMapValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
-          error:
-            microphoneFieldsAdditionalMapValuesErrorValidTextElements[
-              mapKey
-            ][0],
-          valid:
-            microphoneFieldsAdditionalMapValuesErrorValidTextElements[
-              mapKey
-            ][1],
+          error: gpuFieldsAdditionalMapValuesErrorValidTextElements[mapKey][0],
+          valid: gpuFieldsAdditionalMapValuesErrorValidTextElements[mapKey][1],
         },
         inputText: value,
         isValidInputText:
-          areMicrophoneFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
+          areGpuFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
         label: `Value ${mapKey + 1}`,
         maxLength: 2000,
         minLength: 2,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreMicrophoneFieldsAdditionalMapFocused,
+            type: createProductAction.setAreGpuFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -579,7 +747,7 @@ function CreateMicrophone({
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setMicrophoneFieldsAdditionalMap,
+            type: createProductAction.setGpuFieldsAdditionalMap,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -595,7 +763,7 @@ function CreateMicrophone({
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreMicrophoneFieldsAdditionalMapFocused,
+            type: createProductAction.setAreGpuFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -610,11 +778,11 @@ function CreateMicrophone({
       };
 
     const [
-      createdMicrophoneFieldsAdditionalMapKeysTextAreaInput,
-      createdMicrophoneFieldsAdditionalMapValuesTextAreaInput,
+      createdGpuFieldsAdditionalMapKeysTextAreaInput,
+      createdGpuFieldsAdditionalMapValuesTextAreaInput,
     ] = returnAccessibleTextAreaInputElements([
-      microphoneFieldsAdditionalMapKeysTextInputCreatorInfo,
-      microphoneFieldsAdditionalMapValuesTextInputCreatorInfo,
+      gpuFieldsAdditionalMapKeysTextInputCreatorInfo,
+      gpuFieldsAdditionalMapValuesTextInputCreatorInfo,
     ]);
 
     // ╭─────────────────────────────────────────────────────────────────╮
@@ -625,7 +793,7 @@ function CreateMicrophone({
         buttonLabel: 'Delete',
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
           createProductDispatch({
-            type: createProductAction.setMicrophoneFieldsAdditionalMap,
+            type: createProductAction.setGpuFieldsAdditionalMap,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -633,7 +801,7 @@ function CreateMicrophone({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreMicrophoneFieldsAdditionalMapFocused,
+            type: createProductAction.setAreGpuFieldsAdditionalMapFocused,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -641,7 +809,7 @@ function CreateMicrophone({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreMicrophoneFieldsAdditionalMapValid,
+            type: createProductAction.setAreGpuFieldsAdditionalMapValid,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -654,32 +822,28 @@ function CreateMicrophone({
           });
         },
         leftIcon: <TbTrash />,
-        semanticDescription: `Delete additional Microphone field ${mapKey + 1}`,
+        semanticDescription: `Delete additional GPU field ${mapKey + 1}`,
         semanticName: 'Delete field and value',
       },
     ]);
 
     const displayDeleteButton = (
-      <Tooltip label={`Delete additional Microphone field ${mapKey + 1}`}>
+      <Tooltip label={`Delete additional GPU field ${mapKey + 1}`}>
         <Group>{createdDeleteButton}</Group>
       </Tooltip>
     );
 
     return (
-      <Stack
-        key={`microphoneFieldsAdditionalMap-${mapKey}`}
-        pt={padding}
-        w="100%"
-      >
+      <Stack key={`gpuFieldsAdditionalMap-${mapKey}`} pt={padding} w="100%">
         <Group position="apart">
-          <Text size="md" weight={600}>{`Additional Microphone field ${
+          <Text size="md" weight={600}>{`Additional GPU field ${
             mapKey + 1
           }`}</Text>
           {displayDeleteButton}
         </Group>
         <Group position="apart">
-          {createdMicrophoneFieldsAdditionalMapKeysTextAreaInput}
-          {createdMicrophoneFieldsAdditionalMapValuesTextAreaInput}
+          {createdGpuFieldsAdditionalMapKeysTextAreaInput}
+          {createdGpuFieldsAdditionalMapValuesTextAreaInput}
         </Group>
       </Stack>
     );
@@ -691,32 +855,31 @@ function CreateMicrophone({
   //  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
   // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
-  const displayMicrophoneFieldsAdditionalMapButton = (
+  const displayGpuFieldsAdditionalMapButton = (
     <Tooltip
-      label={`Add additional Microphone field ${
-        microphoneFieldsAdditionalMap.size + 1
-      }`}
+      label={`Add additional GPU field ${gpuFieldsAdditionalMap.size + 1}`}
     >
-      <Group>{createdAddMicrophoneFieldsAdditionalMapButton}</Group>
+      <Group>{createdAddGpuFieldsAdditionalMapButton}</Group>
     </Tooltip>
   );
 
-  const displayMicrophoneSpecificationsInputs = (
+  const displayGpuSpecificationsInputs = (
     <Group py={padding} position="apart" w="100%">
       <Group w="100%" position="apart">
-        <Title order={4}>Microphone Specifications</Title>
-        {displayMicrophoneFieldsAdditionalMapButton}
+        <Title order={4}>GPU Specifications</Title>
+        {displayGpuFieldsAdditionalMapButton}
       </Group>
-      {createdMicrophoneTypeSelectInput}
-      {createdMicrophoneColorTextInput}
-      {createdMicrophoneInterfaceSelectInput}
-      {createdMicrophonePolarPatternSelectInput}
-      {createdMicrophoneFrequencyResponseTextInput}
-      {createdMicrophoneFieldsAdditionalMapTextInputElements}
+      {createdGpuChipsetTextInput}
+      {createdGpuMemoryCapacityTextInput}
+      {createdGpuMemoryCapacityUnitSelectInput}
+      {createdGpuWattageTextInput}
+      {createdGpuCoreClockTextInput}
+      {createdGpuBoostClockTextInput}
+      {createdGpuFieldsAdditionalMapTextInputElements}
     </Group>
   );
 
-  return displayMicrophoneSpecificationsInputs;
+  return displayGpuSpecificationsInputs;
 }
 
-export default CreateMicrophone;
+export default CreateGpu;

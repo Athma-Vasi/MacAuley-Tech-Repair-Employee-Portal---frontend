@@ -14,75 +14,58 @@ import {
   returnAccessibleButtonElements,
   returnAccessibleSelectInputElements,
   returnAccessibleTextAreaInputElements,
-  returnAccessibleTextInputElements,
-} from '../../../../jsxCreators';
+} from '../../../jsxCreators';
 import {
-  returnColorVariantValidationText,
-  returnFrequencyResponseValidationText,
-  returnMediumIntegerValidationText,
   returnObjectKeyValidationText,
   returnUserDefinedFieldValueValidationText,
-} from '../../../../utils';
-import { AccessibleTextAreaInputCreatorInfo } from '../../../wrappers';
+} from '../../../utils';
+import { AccessibleTextAreaInputCreatorInfo } from '../../wrappers';
 import {
-  COLOR_VARIANT_REGEX,
-  FREQUENCY_RESPONSE_REGEX,
-  MEDIUM_INTEGER_REGEX,
+  KEYBOARD_BACKLIGHT_DATA,
+  KEYBOARD_LAYOUT_DATA,
+  KEYBOARD_SWITCH_DATA,
   OBJECT_KEY_REGEX,
-  SPEAKER_INTERFACE_DATA,
-  SPEAKER_TYPE_DATA,
+  PERIPHERALS_INTERFACE_DATA,
   USER_DEFINED_VALUE_REGEX,
-} from '../../constants';
+} from '../constants';
 import {
   CreateProductAction,
   CreateProductDispatch,
-  SpeakerInterface,
-  SpeakerType,
+  KeyboardBacklight,
+  KeyboardLayout,
+  KeyboardSwitch,
+  PeripheralsInterface,
 } from '../types';
 
-type CreateSpeakerProps = {
-  areSpeakerFieldsAdditionalMapFocused: Map<number, [boolean, boolean]>;
-  areSpeakerFieldsAdditionalMapValid: Map<number, [boolean, boolean]>;
+type CreateKeyboardProps = {
+  areKeyboardFieldsAdditionalMapFocused: Map<number, [boolean, boolean]>;
+  areKeyboardFieldsAdditionalMapValid: Map<number, [boolean, boolean]>;
   borderColor: string;
   createProductAction: CreateProductAction;
   createProductDispatch: React.Dispatch<CreateProductDispatch>;
   currentlySelectedAdditionalFieldIndex: number;
-  isSpeakerColorFocused: boolean;
-  isSpeakerColorValid: boolean;
-  isSpeakerFrequencyResponseFocused: boolean;
-  isSpeakerFrequencyResponseValid: boolean;
-  isSpeakerTotalWattageFocused: boolean;
-  isSpeakerTotalWattageValid: boolean;
+  keyboardBacklight: KeyboardBacklight;
+  keyboardFieldsAdditionalMap: Map<number, [string, string]>;
+  keyboardInterface: PeripheralsInterface;
+  keyboardLayout: KeyboardLayout;
+  keyboardSwitch: KeyboardSwitch;
   padding: MantineNumberSize;
-  speakerColor: string;
-  speakerFieldsAdditionalMap: Map<number, [string, string]>;
-  speakerFrequencyResponse: string;
-  speakerInterface: SpeakerInterface;
-  speakerTotalWattage: string;
-  speakerType: SpeakerType;
 };
 
-function CreateSpeaker({
-  areSpeakerFieldsAdditionalMapFocused,
-  areSpeakerFieldsAdditionalMapValid,
+function CreateKeyboard({
+  areKeyboardFieldsAdditionalMapFocused,
+  areKeyboardFieldsAdditionalMapValid,
   borderColor,
   createProductAction,
   createProductDispatch,
   currentlySelectedAdditionalFieldIndex,
-  isSpeakerColorFocused,
-  isSpeakerColorValid,
-  isSpeakerFrequencyResponseFocused,
-  isSpeakerFrequencyResponseValid,
-  isSpeakerTotalWattageFocused,
-  isSpeakerTotalWattageValid,
+  keyboardBacklight,
+  keyboardFieldsAdditionalMap,
+  keyboardInterface,
+  keyboardLayout,
+  keyboardSwitch,
   padding,
-  speakerColor,
-  speakerFieldsAdditionalMap,
-  speakerFrequencyResponse,
-  speakerInterface,
-  speakerTotalWattage,
-  speakerType,
-}: CreateSpeakerProps) {
+}: CreateKeyboardProps) {
   // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
   //  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
   //    VALIDATION USE EFFECTS
@@ -90,69 +73,21 @@ function CreateSpeaker({
   // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    SPEAKER TOTAL WATTAGE
+  //    KEYBOARD ADDITIONAL FIELDS
   // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
-    const isValid = MEDIUM_INTEGER_REGEX.test(speakerTotalWattage);
+    const currentlyUpdatingKeyboardFieldAdditional =
+      keyboardFieldsAdditionalMap.get(currentlySelectedAdditionalFieldIndex);
 
-    createProductDispatch({
-      type: createProductAction.setIsSpeakerTotalWattageValid,
-      payload: isValid,
-    });
-  }, [
-    createProductAction.setIsSpeakerTotalWattageValid,
-    createProductDispatch,
-    speakerTotalWattage,
-  ]);
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    SPEAKER FREQUENCY RESPONSE
-  // ╰─────────────────────────────────────────────────────────────────╯
-  useEffect(() => {
-    const isValid = FREQUENCY_RESPONSE_REGEX.test(speakerFrequencyResponse);
-
-    createProductDispatch({
-      type: createProductAction.setIsSpeakerFrequencyResponseValid,
-      payload: isValid,
-    });
-  }, [
-    createProductAction.setIsSpeakerFrequencyResponseValid,
-    createProductDispatch,
-    speakerFrequencyResponse,
-  ]);
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    SPEAKER COLOR
-  // ╰─────────────────────────────────────────────────────────────────╯
-  useEffect(() => {
-    const isValid = COLOR_VARIANT_REGEX.test(speakerColor);
-
-    createProductDispatch({
-      type: createProductAction.setIsSpeakerColorValid,
-      payload: isValid,
-    });
-  }, [
-    createProductAction.setIsSpeakerColorValid,
-    createProductDispatch,
-    speakerColor,
-  ]);
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    SPEAKER ADDITIONAL FIELDS
-  // ╰─────────────────────────────────────────────────────────────────╯
-  useEffect(() => {
-    const currentlyUpdatingSpeakerFieldAdditional =
-      speakerFieldsAdditionalMap.get(currentlySelectedAdditionalFieldIndex);
-
-    if (!currentlyUpdatingSpeakerFieldAdditional) {
+    if (!currentlyUpdatingKeyboardFieldAdditional) {
       return;
     }
 
-    const [key, value] = currentlyUpdatingSpeakerFieldAdditional;
+    const [key, value] = currentlyUpdatingKeyboardFieldAdditional;
 
     const isKeyValid = OBJECT_KEY_REGEX.test(key);
     createProductDispatch({
-      type: createProductAction.setAreSpeakerFieldsAdditionalMapValid,
+      type: createProductAction.setAreKeyboardFieldsAdditionalMapValid,
       payload: {
         operation: 'update',
         data: isKeyValid,
@@ -163,7 +98,7 @@ function CreateSpeaker({
 
     const isValueValid = USER_DEFINED_VALUE_REGEX.test(value);
     createProductDispatch({
-      type: createProductAction.setAreSpeakerFieldsAdditionalMapValid,
+      type: createProductAction.setAreKeyboardFieldsAdditionalMapValid,
       payload: {
         operation: 'update',
         data: isValueValid,
@@ -172,10 +107,10 @@ function CreateSpeaker({
       },
     });
   }, [
-    createProductAction.setAreSpeakerFieldsAdditionalMapValid,
+    createProductAction.setAreKeyboardFieldsAdditionalMapValid,
     createProductDispatch,
     currentlySelectedAdditionalFieldIndex,
-    speakerFieldsAdditionalMap,
+    keyboardFieldsAdditionalMap,
   ]);
 
   // ╔═════════════════════════════════════════════════════════════════╗
@@ -186,33 +121,25 @@ function CreateSpeaker({
     // optional inputs with empty string count as valid
     // select inputs are not included as they always have a default value
 
-    const areSpeakerHardcodedRequiredInputsInError =
-      !isSpeakerTotalWattageValid ||
-      !isSpeakerFrequencyResponseValid ||
-      !isSpeakerColorValid;
-
-    const areSpeakerFieldsAdditionalMapInError = Array.from(
-      areSpeakerFieldsAdditionalMapValid
+    const areKeyboardInputsUserDefinedInError = Array.from(
+      areKeyboardFieldsAdditionalMapValid
     ).some(([_key, value]) => !value);
-
-    const areSpeakerInputsInError =
-      areSpeakerHardcodedRequiredInputsInError ||
-      areSpeakerFieldsAdditionalMapInError;
 
     createProductDispatch({
       type: createProductAction.setStepsInError,
       payload: {
-        kind: areSpeakerInputsInError ? 'add' : 'delete',
+        kind: areKeyboardInputsUserDefinedInError ? 'add' : 'delete',
         step: 1,
       },
     });
   }, [
-    areSpeakerFieldsAdditionalMapValid,
+    areKeyboardFieldsAdditionalMapValid,
     createProductAction.setStepsInError,
     createProductDispatch,
-    isSpeakerColorValid,
-    isSpeakerFrequencyResponseValid,
-    isSpeakerTotalWattageValid,
+    keyboardBacklight,
+    keyboardInterface,
+    keyboardLayout,
+    keyboardSwitch,
   ]);
 
   // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
@@ -222,226 +149,102 @@ function CreateSpeaker({
   // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    SPEAKER TYPE
+  //    KEYBOARD SWITCH
   // ╰─────────────────────────────────────────────────────────────────╯
-  const [createdSpeakerTypeSelectInput] = returnAccessibleSelectInputElements([
-    {
-      data: SPEAKER_TYPE_DATA,
-      description: '',
-      label: 'Speaker Type',
-      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-        createProductDispatch({
-          type: createProductAction.setSpeakerType,
-          payload: event.currentTarget.value as SpeakerType,
-        });
-      },
-      value: speakerType,
-      required: true,
-    },
-  ]);
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    SPEAKER TOTAL WATTAGE
-  // ╰─────────────────────────────────────────────────────────────────╯
-
-  // error/valid text elements
-  const [speakerTotalWattageInputErrorText, speakerTotalWattageInputValidText] =
-    AccessibleErrorValidTextElements({
-      inputElementKind: 'speaker total wattage',
-      inputText: speakerTotalWattage,
-      isInputTextFocused: isSpeakerTotalWattageFocused,
-      isValidInputText: isSpeakerTotalWattageValid,
-      regexValidationText: returnMediumIntegerValidationText({
-        content: speakerTotalWattage,
-        contentKind: 'speaker total wattage',
-      }),
-    });
-
-  // screenreader accessible text input element
-  const [createdSpeakerTotalWattageTextInput] =
-    returnAccessibleTextInputElements([
-      {
-        description: {
-          error: speakerTotalWattageInputErrorText,
-          valid: speakerTotalWattageInputValidText,
-        },
-        inputText: speakerTotalWattage,
-        isValidInputText: isSpeakerTotalWattageValid,
-        label: 'Speaker Total Wattage (W)',
-        onBlur: () => {
-          createProductDispatch({
-            type: createProductAction.setIsSpeakerTotalWattageFocused,
-            payload: false,
-          });
-        },
-        onChange: (event: ChangeEvent<HTMLInputElement>) => {
-          createProductDispatch({
-            type: createProductAction.setSpeakerTotalWattage,
-            payload: event.currentTarget.value,
-          });
-        },
-        onFocus: () => {
-          createProductDispatch({
-            type: createProductAction.setIsSpeakerTotalWattageFocused,
-            payload: true,
-          });
-        },
-        placeholder: 'Format: 0000',
-        required: true,
-        semanticName: 'speaker total wattage',
-      },
-    ]);
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    SPEAKER FREQUENCY RESPONSE
-  // ╰─────────────────────────────────────────────────────────────────╯
-
-  // error/valid text elements
-  const [
-    speakerFrequencyResponseInputErrorText,
-    speakerFrequencyResponseInputValidText,
-  ] = AccessibleErrorValidTextElements({
-    inputElementKind: 'speaker frequency response',
-    inputText: speakerFrequencyResponse,
-    isInputTextFocused: isSpeakerFrequencyResponseFocused,
-    isValidInputText: isSpeakerFrequencyResponseValid,
-    regexValidationText: returnFrequencyResponseValidationText({
-      content: speakerFrequencyResponse,
-      contentKind: 'speaker frequency response',
-      maxLength: 14,
-      minLength: 8,
-    }),
-  });
-
-  // screenreader accessible text input element
-  const [createdSpeakerFrequencyResponseTextInput] =
-    returnAccessibleTextInputElements([
-      {
-        description: {
-          error: speakerFrequencyResponseInputErrorText,
-          valid: speakerFrequencyResponseInputValidText,
-        },
-        inputText: speakerFrequencyResponse,
-        isValidInputText: isSpeakerFrequencyResponseValid,
-        label: 'Speaker Frequency Response',
-        maxLength: 14,
-        minLength: 8,
-        onBlur: () => {
-          createProductDispatch({
-            type: createProductAction.setIsSpeakerFrequencyResponseFocused,
-            payload: false,
-          });
-        },
-        onChange: (event: ChangeEvent<HTMLInputElement>) => {
-          createProductDispatch({
-            type: createProductAction.setSpeakerFrequencyResponse,
-            payload: event.currentTarget.value,
-          });
-        },
-        onFocus: () => {
-          createProductDispatch({
-            type: createProductAction.setIsSpeakerFrequencyResponseFocused,
-            payload: true,
-          });
-        },
-        placeholder: '00 Hz - 00 kHz or 0Hz-0kHz',
-        required: true,
-        semanticName: 'speaker frequency response',
-      },
-    ]);
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    SPEAKER COLOR
-  // ╰─────────────────────────────────────────────────────────────────╯
-
-  // error/valid text elements
-  const [speakerColorInputErrorText, speakerColorInputValidText] =
-    AccessibleErrorValidTextElements({
-      inputElementKind: 'speaker color',
-      inputText: speakerColor,
-      isInputTextFocused: isSpeakerColorFocused,
-      isValidInputText: isSpeakerColorValid,
-      regexValidationText: returnColorVariantValidationText({
-        content: speakerColor,
-        contentKind: 'speaker color',
-        maxLength: 30,
-        minLength: 2,
-      }),
-    });
-
-  // screenreader accessible text input element
-  const [createdSpeakerColorTextInput] = returnAccessibleTextInputElements([
-    {
-      description: {
-        error: speakerColorInputErrorText,
-        valid: speakerColorInputValidText,
-      },
-      inputText: speakerColor,
-      isValidInputText: isSpeakerColorValid,
-      label: 'Speaker Color',
-      maxLength: 30,
-      minLength: 2,
-      onBlur: () => {
-        createProductDispatch({
-          type: createProductAction.setIsSpeakerColorFocused,
-          payload: false,
-        });
-      },
-      onChange: (event: ChangeEvent<HTMLInputElement>) => {
-        createProductDispatch({
-          type: createProductAction.setSpeakerColor,
-          payload: event.currentTarget.value,
-        });
-      },
-      onFocus: () => {
-        createProductDispatch({
-          type: createProductAction.setIsSpeakerColorFocused,
-          payload: true,
-        });
-      },
-      placeholder: 'Enter speaker color',
-      required: true,
-      semanticName: 'speaker color',
-    },
-  ]);
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    SPEAKER INTERFACE
-  // ╰─────────────────────────────────────────────────────────────────╯
-  const [createdSpeakerInterfaceSelectInput] =
+  const [createdKeyboardSwitchSelectInput] =
     returnAccessibleSelectInputElements([
       {
-        data: SPEAKER_INTERFACE_DATA,
+        data: KEYBOARD_SWITCH_DATA,
         description: '',
-        label: 'Speaker Interface',
+        label: 'Keyboard Switch',
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           createProductDispatch({
-            type: createProductAction.setSpeakerInterface,
-            payload: event.currentTarget.value as SpeakerInterface,
+            type: createProductAction.setKeyboardSwitch,
+            payload: event.currentTarget.value as KeyboardSwitch,
           });
         },
-        value: speakerInterface,
+        value: keyboardSwitch,
+        required: true,
+      },
+    ]);
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    KEYBOARD LAYOUT
+  // ╰─────────────────────────────────────────────────────────────────╯
+  const [createdKeyboardLayoutSelectInput] =
+    returnAccessibleSelectInputElements([
+      {
+        data: KEYBOARD_LAYOUT_DATA,
+        description: '',
+        label: 'Keyboard Layout',
+        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+          createProductDispatch({
+            type: createProductAction.setKeyboardLayout,
+            payload: event.currentTarget.value as KeyboardLayout,
+          });
+        },
+        value: keyboardLayout,
+        required: true,
+      },
+    ]);
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    KEYBOARD BACKLIGHT
+  // ╰─────────────────────────────────────────────────────────────────╯
+  const [createdKeyboardBacklightSelectInput] =
+    returnAccessibleSelectInputElements([
+      {
+        data: KEYBOARD_BACKLIGHT_DATA,
+        description: '',
+        label: 'Keyboard Backlight',
+        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+          createProductDispatch({
+            type: createProductAction.setKeyboardBacklight,
+            payload: event.currentTarget.value as KeyboardBacklight,
+          });
+        },
+        value: keyboardBacklight,
+        required: true,
+      },
+    ]);
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    KEYBOARD INTERFACE
+  // ╰─────────────────────────────────────────────────────────────────╯
+  const [createdKeyboardInterfaceSelectInput] =
+    returnAccessibleSelectInputElements([
+      {
+        data: PERIPHERALS_INTERFACE_DATA,
+        description: '',
+        label: 'Keyboard Interface',
+        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+          createProductDispatch({
+            type: createProductAction.setKeyboardInterface,
+            payload: event.currentTarget.value as PeripheralsInterface,
+          });
+        },
+        value: keyboardInterface,
         required: true,
       },
     ]);
 
   // ╔═════════════════════════════════════════════════════════════════╗
-  //   SPEAKER ADDITIONAL FIELDS
+  //   KEYBOARD ADDITIONAL FIELDS
   // ╚═════════════════════════════════════════════════════════════════╝
 
   // ╭─────────────────────────────────────────────────────────────────╮
   //    ADD ADDITIONAL FIELD BUTTON
   // ╰─────────────────────────────────────────────────────────────────╯
-  const [createdAddSpeakerFieldsAdditionalMapButton] =
+  const [createdAddKeyboardFieldsAdditionalMapButton] =
     returnAccessibleButtonElements([
       {
         buttonLabel: 'Add',
-        semanticDescription: 'Add new additional Speaker field',
+        semanticDescription: 'Add new additional Keyboard field',
         semanticName: 'Add new field',
         leftIcon: <TbPlus />,
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
           createProductDispatch({
-            type: createProductAction.setSpeakerFieldsAdditionalMap,
+            type: createProductAction.setKeyboardFieldsAdditionalMap,
             payload: {
               operation: 'add',
               data: ['', ''],
@@ -449,7 +252,7 @@ function CreateSpeaker({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreSpeakerFieldsAdditionalMapFocused,
+            type: createProductAction.setAreKeyboardFieldsAdditionalMapFocused,
             payload: {
               operation: 'add',
               data: [false, false],
@@ -457,7 +260,7 @@ function CreateSpeaker({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreSpeakerFieldsAdditionalMapValid,
+            type: createProductAction.setAreKeyboardFieldsAdditionalMapValid,
             payload: {
               operation: 'add',
               data: [false, false],
@@ -472,23 +275,23 @@ function CreateSpeaker({
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // returns an array of tuples containing the error and valid text elements for each field name
-  const speakerFieldsAdditionalMapKeysErrorValidTextElements: [
+  const keyboardFieldsAdditionalMapKeysErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(speakerFieldsAdditionalMap).map((keyFieldValue) => {
+  ][] = Array.from(keyboardFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [field, _value]] = keyFieldValue;
 
-    // screenreader accessible error/valid text elements that are consumed by the text input element creator
+    // error/valid text elements that are consumed by the text input element creator
     const [
-      speakerFieldsAdditionalMapKeysInputErrorText,
-      speakerFieldsAdditionalMapKeysInputValidText,
+      keyboardFieldsAdditionalMapKeysInputErrorText,
+      keyboardFieldsAdditionalMapKeysInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field name ${mapKey + 1}`,
       inputText: field,
       isInputTextFocused:
-        areSpeakerFieldsAdditionalMapFocused.get(mapKey)?.[0] ?? false,
+        areKeyboardFieldsAdditionalMapFocused.get(mapKey)?.[0] ?? false,
       isValidInputText:
-        areSpeakerFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
+        areKeyboardFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
       regexValidationText: returnObjectKeyValidationText({
         content: field,
         contentKind: `additional field name ${mapKey + 1}`,
@@ -498,8 +301,8 @@ function CreateSpeaker({
     });
 
     return [
-      speakerFieldsAdditionalMapKeysInputErrorText,
-      speakerFieldsAdditionalMapKeysInputValidText,
+      keyboardFieldsAdditionalMapKeysInputErrorText,
+      keyboardFieldsAdditionalMapKeysInputValidText,
     ];
   });
 
@@ -508,23 +311,23 @@ function CreateSpeaker({
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // returns an array of tuples containing the error and valid text elements for each field value
-  const speakerFieldsAdditionalMapValuesErrorValidTextElements: [
+  const keyboardFieldsAdditionalMapValuesErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(speakerFieldsAdditionalMap).map((keyFieldValue) => {
+  ][] = Array.from(keyboardFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [_field, value]] = keyFieldValue;
 
-    // screenreader accessible error/valid text elements that are consumed by the text input element creator
+    // error/valid text elements that are consumed by the text input element creator
     const [
-      speakerFieldsAdditionalMapValuesInputErrorText,
-      speakerFieldsAdditionalMapValuesInputValidText,
+      keyboardFieldsAdditionalMapValuesInputErrorText,
+      keyboardFieldsAdditionalMapValuesInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field value ${mapKey + 1}`,
       inputText: value,
       isInputTextFocused:
-        areSpeakerFieldsAdditionalMapFocused.get(mapKey)?.[1] ?? false,
+        areKeyboardFieldsAdditionalMapFocused.get(mapKey)?.[1] ?? false,
       isValidInputText:
-        areSpeakerFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
+        areKeyboardFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
       regexValidationText: returnUserDefinedFieldValueValidationText({
         content: value,
         contentKind: `additional field value ${mapKey + 1}`,
@@ -534,36 +337,36 @@ function CreateSpeaker({
     });
 
     return [
-      speakerFieldsAdditionalMapValuesInputErrorText,
-      speakerFieldsAdditionalMapValuesInputValidText,
+      keyboardFieldsAdditionalMapValuesInputErrorText,
+      keyboardFieldsAdditionalMapValuesInputValidText,
     ];
   });
 
-  const createdSpeakerFieldsAdditionalMapTextInputElements = Array.from(
-    speakerFieldsAdditionalMap
+  const createdKeyboardFieldsAdditionalMapTextInputElements = Array.from(
+    keyboardFieldsAdditionalMap
   ).map((keyFieldValue) => {
     const [mapKey, [field, value]] = keyFieldValue;
 
     // ╭─────────────────────────────────────────────────────────────────╮
     //    ADDITIONAL FIELD ACCESSIBLE TEXT INPUT => FIELD NAME
     // ╰─────────────────────────────────────────────────────────────────╯
-    const speakerFieldsAdditionalMapKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const keyboardFieldsAdditionalMapKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
           error:
-            speakerFieldsAdditionalMapKeysErrorValidTextElements[mapKey][0],
+            keyboardFieldsAdditionalMapKeysErrorValidTextElements[mapKey][0],
           valid:
-            speakerFieldsAdditionalMapKeysErrorValidTextElements[mapKey][1],
+            keyboardFieldsAdditionalMapKeysErrorValidTextElements[mapKey][1],
         },
         inputText: field,
         isValidInputText:
-          areSpeakerFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
+          areKeyboardFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
         label: `Name ${mapKey + 1}`,
         maxLength: 75,
         minLength: 1,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreSpeakerFieldsAdditionalMapFocused,
+            type: createProductAction.setAreKeyboardFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -574,7 +377,7 @@ function CreateSpeaker({
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setSpeakerFieldsAdditionalMap,
+            type: createProductAction.setKeyboardFieldsAdditionalMap,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -590,7 +393,7 @@ function CreateSpeaker({
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreSpeakerFieldsAdditionalMapFocused,
+            type: createProductAction.setAreKeyboardFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -607,23 +410,23 @@ function CreateSpeaker({
     // ╭─────────────────────────────────────────────────────────────────╮
     //    ADDITIONAL FIELD ACCESSIBLE TEXT INPUT => FIELD VALUE
     // ╰─────────────────────────────────────────────────────────────────╯
-    const speakerFieldsAdditionalMapValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const keyboardFieldsAdditionalMapValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
           error:
-            speakerFieldsAdditionalMapValuesErrorValidTextElements[mapKey][0],
+            keyboardFieldsAdditionalMapValuesErrorValidTextElements[mapKey][0],
           valid:
-            speakerFieldsAdditionalMapValuesErrorValidTextElements[mapKey][1],
+            keyboardFieldsAdditionalMapValuesErrorValidTextElements[mapKey][1],
         },
         inputText: value,
         isValidInputText:
-          areSpeakerFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
+          areKeyboardFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
         label: `Value ${mapKey + 1}`,
         maxLength: 2000,
         minLength: 2,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreSpeakerFieldsAdditionalMapFocused,
+            type: createProductAction.setAreKeyboardFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -634,7 +437,7 @@ function CreateSpeaker({
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setSpeakerFieldsAdditionalMap,
+            type: createProductAction.setKeyboardFieldsAdditionalMap,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -650,7 +453,7 @@ function CreateSpeaker({
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreSpeakerFieldsAdditionalMapFocused,
+            type: createProductAction.setAreKeyboardFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -665,11 +468,11 @@ function CreateSpeaker({
       };
 
     const [
-      createdSpeakerFieldsAdditionalMapKeysTextAreaInput,
-      createdSpeakerFieldsAdditionalMapValuesTextAreaInput,
+      createdKeyboardFieldsAdditionalMapKeysTextAreaInput,
+      createdKeyboardFieldsAdditionalMapValuesTextAreaInput,
     ] = returnAccessibleTextAreaInputElements([
-      speakerFieldsAdditionalMapKeysTextInputCreatorInfo,
-      speakerFieldsAdditionalMapValuesTextInputCreatorInfo,
+      keyboardFieldsAdditionalMapKeysTextInputCreatorInfo,
+      keyboardFieldsAdditionalMapValuesTextInputCreatorInfo,
     ]);
 
     // ╭─────────────────────────────────────────────────────────────────╮
@@ -680,7 +483,7 @@ function CreateSpeaker({
         buttonLabel: 'Delete',
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
           createProductDispatch({
-            type: createProductAction.setSpeakerFieldsAdditionalMap,
+            type: createProductAction.setKeyboardFieldsAdditionalMap,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -688,7 +491,7 @@ function CreateSpeaker({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreSpeakerFieldsAdditionalMapFocused,
+            type: createProductAction.setAreKeyboardFieldsAdditionalMapFocused,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -696,7 +499,7 @@ function CreateSpeaker({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreSpeakerFieldsAdditionalMapValid,
+            type: createProductAction.setAreKeyboardFieldsAdditionalMapValid,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -709,28 +512,32 @@ function CreateSpeaker({
           });
         },
         leftIcon: <TbTrash />,
-        semanticDescription: `Delete additional Speaker field ${mapKey + 1}`,
+        semanticDescription: `Delete additional Keyboard field ${mapKey + 1}`,
         semanticName: 'Delete field and value',
       },
     ]);
 
     const displayDeleteButton = (
-      <Tooltip label={`Delete additional Speaker field ${mapKey + 1}`}>
+      <Tooltip label={`Delete additional Keyboard field ${mapKey + 1}`}>
         <Group>{createdDeleteButton}</Group>
       </Tooltip>
     );
 
     return (
-      <Stack key={`speakerFieldsAdditionalMap-${mapKey}`} pt={padding} w="100%">
+      <Stack
+        key={`keyboardFieldsAdditionalMap-${mapKey}`}
+        pt={padding}
+        w="100%"
+      >
         <Group position="apart">
-          <Text size="md" weight={600}>{`Additional Speaker field ${
+          <Text size="md" weight={600}>{`Additional Keyboard field ${
             mapKey + 1
           }`}</Text>
           {displayDeleteButton}
         </Group>
         <Group position="apart">
-          {createdSpeakerFieldsAdditionalMapKeysTextAreaInput}
-          {createdSpeakerFieldsAdditionalMapValuesTextAreaInput}
+          {createdKeyboardFieldsAdditionalMapKeysTextAreaInput}
+          {createdKeyboardFieldsAdditionalMapValuesTextAreaInput}
         </Group>
       </Stack>
     );
@@ -742,32 +549,31 @@ function CreateSpeaker({
   //  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
   // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
-  const displaySpeakerFieldsAdditionalMapButton = (
+  const displayKeyboardFieldsAdditionalMapButton = (
     <Tooltip
-      label={`Add additional Speaker field ${
-        speakerFieldsAdditionalMap.size + 1
+      label={`Add additional Keyboard field ${
+        keyboardFieldsAdditionalMap.size + 1
       }`}
     >
-      <Group>{createdAddSpeakerFieldsAdditionalMapButton}</Group>
+      <Group>{createdAddKeyboardFieldsAdditionalMapButton}</Group>
     </Tooltip>
   );
 
-  const displaySpeakerSpecificationsInputs = (
+  const displayKeyboardSpecificationsInputs = (
     <Group py={padding} position="apart" w="100%">
       <Group w="100%" position="apart">
-        <Title order={4}>Speaker Specifications</Title>
-        {displaySpeakerFieldsAdditionalMapButton}
+        <Title order={4}>Keyboard Specifications</Title>
+        {displayKeyboardFieldsAdditionalMapButton}
       </Group>
-      {createdSpeakerTypeSelectInput}
-      {createdSpeakerTotalWattageTextInput}
-      {createdSpeakerFrequencyResponseTextInput}
-      {createdSpeakerColorTextInput}
-      {createdSpeakerInterfaceSelectInput}
-      {createdSpeakerFieldsAdditionalMapTextInputElements}
+      {createdKeyboardSwitchSelectInput}
+      {createdKeyboardLayoutSelectInput}
+      {createdKeyboardBacklightSelectInput}
+      {createdKeyboardInterfaceSelectInput}
+      {createdKeyboardFieldsAdditionalMapTextInputElements}
     </Group>
   );
 
-  return displaySpeakerSpecificationsInputs;
+  return displayKeyboardSpecificationsInputs;
 }
 
-export default CreateSpeaker;
+export default CreateKeyboard;

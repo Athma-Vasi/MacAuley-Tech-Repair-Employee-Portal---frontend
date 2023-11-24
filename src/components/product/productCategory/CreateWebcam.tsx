@@ -15,74 +15,66 @@ import {
   returnAccessibleSelectInputElements,
   returnAccessibleTextAreaInputElements,
   returnAccessibleTextInputElements,
-} from '../../../../jsxCreators';
+} from '../../../jsxCreators';
 import {
   returnColorVariantValidationText,
-  returnLargeIntegerValidationText,
   returnObjectKeyValidationText,
-  returnSmallIntegerValidationText,
   returnUserDefinedFieldValueValidationText,
-} from '../../../../utils';
-import { AccessibleTextAreaInputCreatorInfo } from '../../../wrappers';
+} from '../../../utils';
+import { AccessibleTextAreaInputCreatorInfo } from '../../wrappers';
 import {
   COLOR_VARIANT_REGEX,
-  LARGE_INTEGER_REGEX,
-  MOUSE_SENSOR_DATA,
   OBJECT_KEY_REGEX,
-  PERIPHERALS_INTERFACE_DATA,
-  SMALL_INTEGER_REGEX,
   USER_DEFINED_VALUE_REGEX,
-} from '../../constants';
+  WEBCAM_FRAME_RATE_DATA,
+  WEBCAM_INTERFACE_DATA,
+  WEBCAM_MICROPHONE_DATA,
+  WEBCAM_RESOLUTION_DATA,
+} from '../constants';
 import {
   CreateProductAction,
   CreateProductDispatch,
-  MouseSensor,
-  PeripheralsInterface,
+  WebcamFrameRate,
+  WebcamInterface,
+  WebcamMicrophone,
+  WebcamResolution,
 } from '../types';
 
-type CreateMouseProps = {
-  areMouseFieldsAdditionalMapFocused: Map<number, [boolean, boolean]>;
-  areMouseFieldsAdditionalMapValid: Map<number, [boolean, boolean]>;
+type CreateWebcamProps = {
+  areWebcamFieldsAdditionalMapFocused: Map<number, [boolean, boolean]>;
+  areWebcamFieldsAdditionalMapValid: Map<number, [boolean, boolean]>;
   borderColor: string;
   createProductAction: CreateProductAction;
   createProductDispatch: React.Dispatch<CreateProductDispatch>;
   currentlySelectedAdditionalFieldIndex: number;
-  isMouseButtonsFocused: boolean;
-  isMouseButtonsValid: boolean;
-  isMouseColorFocused: boolean;
-  isMouseColorValid: boolean;
-  isMouseDpiFocused: boolean;
-  isMouseDpiValid: boolean;
-  mouseButtons: string;
-  mouseColor: string;
-  mouseDpi: string;
-  mouseFieldsAdditionalMap: Map<number, [string, string]>;
-  mouseInterface: PeripheralsInterface;
-  mouseSensor: MouseSensor;
+  isWebcamColorFocused: boolean;
+  isWebcamColorValid: boolean;
   padding: MantineNumberSize;
+  webcamColor: string;
+  webcamFieldsAdditionalMap: Map<number, [string, string]>;
+  webcamFrameRate: WebcamFrameRate;
+  webcamInterface: WebcamInterface;
+  webcamMicrophone: WebcamMicrophone;
+  webcamResolution: WebcamResolution;
 };
 
-function CreateMouse({
-  areMouseFieldsAdditionalMapFocused,
-  areMouseFieldsAdditionalMapValid,
+function CreateWebcam({
+  areWebcamFieldsAdditionalMapFocused,
+  areWebcamFieldsAdditionalMapValid,
   borderColor,
   createProductAction,
   createProductDispatch,
   currentlySelectedAdditionalFieldIndex,
-  isMouseButtonsFocused,
-  isMouseButtonsValid,
-  isMouseColorFocused,
-  isMouseColorValid,
-  isMouseDpiFocused,
-  isMouseDpiValid,
-  mouseButtons,
-  mouseColor,
-  mouseDpi,
-  mouseFieldsAdditionalMap,
-  mouseInterface,
-  mouseSensor,
+  isWebcamColorFocused,
+  isWebcamColorValid,
   padding,
-}: CreateMouseProps) {
+  webcamColor,
+  webcamFieldsAdditionalMap,
+  webcamFrameRate,
+  webcamInterface,
+  webcamMicrophone,
+  webcamResolution,
+}: CreateWebcamProps) {
   // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
   //  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
   //    VALIDATION USE EFFECTS
@@ -90,66 +82,37 @@ function CreateMouse({
   // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    MOUSE DPI
+  //    WEBCAM COLOR
   // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
-    const isValid = LARGE_INTEGER_REGEX.test(mouseDpi);
+    const isValid = COLOR_VARIANT_REGEX.test(webcamColor);
 
     createProductDispatch({
-      type: createProductAction.setIsMouseDpiValid,
-      payload: isValid,
-    });
-  }, [createProductAction.setIsMouseDpiValid, createProductDispatch, mouseDpi]);
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    MOUSE BUTTONS
-  // ╰─────────────────────────────────────────────────────────────────╯
-  useEffect(() => {
-    const isValid = SMALL_INTEGER_REGEX.test(mouseButtons);
-
-    createProductDispatch({
-      type: createProductAction.setIsMouseButtonsValid,
+      type: createProductAction.setIsWebcamColorValid,
       payload: isValid,
     });
   }, [
-    createProductAction.setIsMouseButtonsValid,
+    createProductAction.setIsWebcamColorValid,
     createProductDispatch,
-    mouseButtons,
+    webcamColor,
   ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    MOUSE COLOR
+  //    WEBCAM ADDITIONAL FIELDS
   // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
-    const isValid = COLOR_VARIANT_REGEX.test(mouseColor);
+    const currentlyUpdatingWebcamFieldAdditional =
+      webcamFieldsAdditionalMap.get(currentlySelectedAdditionalFieldIndex);
 
-    createProductDispatch({
-      type: createProductAction.setIsMouseColorValid,
-      payload: isValid,
-    });
-  }, [
-    createProductAction.setIsMouseColorValid,
-    createProductDispatch,
-    mouseColor,
-  ]);
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    MOUSE ADDITIONAL FIELDS
-  // ╰─────────────────────────────────────────────────────────────────╯
-  useEffect(() => {
-    const currentlyUpdatingMouseFieldAdditional = mouseFieldsAdditionalMap.get(
-      currentlySelectedAdditionalFieldIndex
-    );
-
-    if (!currentlyUpdatingMouseFieldAdditional) {
+    if (!currentlyUpdatingWebcamFieldAdditional) {
       return;
     }
 
-    const [key, value] = currentlyUpdatingMouseFieldAdditional;
+    const [key, value] = currentlyUpdatingWebcamFieldAdditional;
 
     const isKeyValid = OBJECT_KEY_REGEX.test(key);
     createProductDispatch({
-      type: createProductAction.setAreMouseFieldsAdditionalMapValid,
+      type: createProductAction.setAreWebcamFieldsAdditionalMapValid,
       payload: {
         operation: 'update',
         data: isKeyValid,
@@ -160,7 +123,7 @@ function CreateMouse({
 
     const isValueValid = USER_DEFINED_VALUE_REGEX.test(value);
     createProductDispatch({
-      type: createProductAction.setAreMouseFieldsAdditionalMapValid,
+      type: createProductAction.setAreWebcamFieldsAdditionalMapValid,
       payload: {
         operation: 'update',
         data: isValueValid,
@@ -169,10 +132,10 @@ function CreateMouse({
       },
     });
   }, [
-    createProductAction.setAreMouseFieldsAdditionalMapValid,
+    createProductAction.setAreWebcamFieldsAdditionalMapValid,
     createProductDispatch,
     currentlySelectedAdditionalFieldIndex,
-    mouseFieldsAdditionalMap,
+    webcamFieldsAdditionalMap,
   ]);
 
   // ╔═════════════════════════════════════════════════════════════════╗
@@ -183,32 +146,28 @@ function CreateMouse({
     // optional inputs with empty string count as valid
     // select inputs are not included as they always have a default value
 
-    const areMouseInputsHardcodedInError =
-      !isMouseButtonsValid || !isMouseColorValid || !isMouseDpiValid;
+    const areWebcamHardcodedRequiredInputsInError = !isWebcamColorValid;
 
-    const areMouseInputsUserDefinedInError = Array.from(
-      areMouseFieldsAdditionalMapValid
+    const areWebcamFieldsAdditionalMapInError = Array.from(
+      areWebcamFieldsAdditionalMapValid
     ).some(([_key, value]) => !value);
 
-    const areMouseInputsInError =
-      areMouseInputsHardcodedInError || areMouseInputsUserDefinedInError;
+    const areWebcamInputsInError =
+      areWebcamHardcodedRequiredInputsInError ||
+      areWebcamFieldsAdditionalMapInError;
 
     createProductDispatch({
       type: createProductAction.setStepsInError,
       payload: {
-        kind: areMouseInputsInError ? 'add' : 'delete',
+        kind: areWebcamInputsInError ? 'add' : 'delete',
         step: 1,
       },
     });
   }, [
-    areMouseFieldsAdditionalMapValid,
+    areWebcamFieldsAdditionalMapValid,
     createProductAction.setStepsInError,
     createProductDispatch,
-    isMouseButtonsValid,
-    isMouseColorValid,
-    isMouseDpiValid,
-    mouseInterface,
-    mouseSensor,
+    isWebcamColorValid,
   ]);
 
   // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
@@ -218,218 +177,153 @@ function CreateMouse({
   // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    MOUSE SENSOR
+  //    WEBCAM RESOLUTION
   // ╰─────────────────────────────────────────────────────────────────╯
-  const [createdMouseSensorSelectInput] = returnAccessibleSelectInputElements([
-    {
-      data: MOUSE_SENSOR_DATA,
-      description: '',
-      label: 'Mouse Sensor',
-      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-        createProductDispatch({
-          type: createProductAction.setMouseSensor,
-          payload: event.currentTarget.value as MouseSensor,
-        });
-      },
-      value: mouseSensor,
-      required: true,
-    },
-  ]);
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    MOUSE DPI
-  // ╰─────────────────────────────────────────────────────────────────╯
-
-  // error/valid text elements
-  const [mouseDpiInputErrorText, mouseDpiInputValidText] =
-    AccessibleErrorValidTextElements({
-      inputElementKind: 'mouse dpi',
-      inputText: mouseDpi,
-      isInputTextFocused: isMouseDpiFocused,
-      isValidInputText: isMouseDpiValid,
-      regexValidationText: returnLargeIntegerValidationText({
-        content: mouseDpi,
-        contentKind: 'mouse dpi',
-      }),
-    });
-
-  // screenreader accessible text input element
-  const [createdMouseDpiTextInput] = returnAccessibleTextInputElements([
-    {
-      description: {
-        error: mouseDpiInputErrorText,
-        valid: mouseDpiInputValidText,
-      },
-      inputText: mouseDpi,
-      isValidInputText: isMouseDpiValid,
-      label: 'Mouse DPI (dots per inch)',
-      onBlur: () => {
-        createProductDispatch({
-          type: createProductAction.setIsMouseDpiFocused,
-          payload: false,
-        });
-      },
-      onChange: (event: ChangeEvent<HTMLInputElement>) => {
-        createProductDispatch({
-          type: createProductAction.setMouseDpi,
-          payload: event.currentTarget.value,
-        });
-      },
-      onFocus: () => {
-        createProductDispatch({
-          type: createProductAction.setIsMouseDpiFocused,
-          payload: true,
-        });
-      },
-      placeholder: 'Format: 000000',
-      required: true,
-      semanticName: 'mouse dpi',
-    },
-  ]);
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    MOUSE BUTTONS
-  // ╰─────────────────────────────────────────────────────────────────╯
-
-  // error/valid text elements
-  const [mouseButtonsInputErrorText, mouseButtonsInputValidText] =
-    AccessibleErrorValidTextElements({
-      inputElementKind: 'mouse buttons quantity',
-      inputText: mouseButtons,
-      isInputTextFocused: isMouseButtonsFocused,
-      isValidInputText: isMouseButtonsValid,
-      regexValidationText: returnSmallIntegerValidationText({
-        content: mouseButtons,
-        contentKind: 'mouse buttons quantity',
-      }),
-    });
-
-  // screenreader accessible text input element
-  const [createdMouseButtonsTextInput] = returnAccessibleTextInputElements([
-    {
-      description: {
-        error: mouseButtonsInputErrorText,
-        valid: mouseButtonsInputValidText,
-      },
-      inputText: mouseButtons,
-      isValidInputText: isMouseButtonsValid,
-      label: 'Mouse Buttons Quantity',
-      onBlur: () => {
-        createProductDispatch({
-          type: createProductAction.setIsMouseButtonsFocused,
-          payload: false,
-        });
-      },
-      onChange: (event: ChangeEvent<HTMLInputElement>) => {
-        createProductDispatch({
-          type: createProductAction.setMouseButtons,
-          payload: event.currentTarget.value,
-        });
-      },
-      onFocus: () => {
-        createProductDispatch({
-          type: createProductAction.setIsMouseButtonsFocused,
-          payload: true,
-        });
-      },
-      placeholder: 'Format: 00',
-      required: true,
-      semanticName: 'mouse buttons quantity',
-    },
-  ]);
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    MOUSE COLOR
-  // ╰─────────────────────────────────────────────────────────────────╯
-
-  // error/valid text elements
-  const [mouseColorInputErrorText, mouseColorInputValidText] =
-    AccessibleErrorValidTextElements({
-      inputElementKind: 'mouse color',
-      inputText: mouseColor,
-      isInputTextFocused: isMouseColorFocused,
-      isValidInputText: isMouseColorValid,
-      regexValidationText: returnColorVariantValidationText({
-        content: mouseColor,
-        contentKind: 'mouse color',
-        maxLength: 30,
-        minLength: 2,
-      }),
-    });
-
-  // screenreader accessible text input element
-  const [createdMouseColorTextInput] = returnAccessibleTextInputElements([
-    {
-      description: {
-        error: mouseColorInputErrorText,
-        valid: mouseColorInputValidText,
-      },
-      inputText: mouseColor,
-      isValidInputText: isMouseColorValid,
-      label: 'Mouse Color',
-      maxLength: 30,
-      minLength: 2,
-      onBlur: () => {
-        createProductDispatch({
-          type: createProductAction.setIsMouseColorFocused,
-          payload: false,
-        });
-      },
-      onChange: (event: ChangeEvent<HTMLInputElement>) => {
-        createProductDispatch({
-          type: createProductAction.setMouseColor,
-          payload: event.currentTarget.value,
-        });
-      },
-      onFocus: () => {
-        createProductDispatch({
-          type: createProductAction.setIsMouseColorFocused,
-          payload: true,
-        });
-      },
-      placeholder: 'Enter mouse color',
-      required: true,
-      semanticName: 'mouse color',
-    },
-  ]);
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    MOUSE INTERFACE
-  // ╰─────────────────────────────────────────────────────────────────╯
-  const [createdMouseInterfaceSelectInput] =
+  const [createdWebcamResolutionSelectInput] =
     returnAccessibleSelectInputElements([
       {
-        data: PERIPHERALS_INTERFACE_DATA,
+        data: WEBCAM_RESOLUTION_DATA,
         description: '',
-        label: 'Mouse Interface',
+        label: 'Webcam Resolution',
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           createProductDispatch({
-            type: createProductAction.setMouseInterface,
-            payload: event.currentTarget.value as PeripheralsInterface,
+            type: createProductAction.setWebcamResolution,
+            payload: event.currentTarget.value as WebcamResolution,
           });
         },
-        value: mouseInterface,
+        value: webcamResolution,
+        required: true,
+      },
+    ]);
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    WEBCAM COLOR
+  // ╰─────────────────────────────────────────────────────────────────╯
+
+  // error/valid text elements
+  const [webcamColorInputErrorText, webcamColorInputValidText] =
+    AccessibleErrorValidTextElements({
+      inputElementKind: 'webcam color',
+      inputText: webcamColor,
+      isInputTextFocused: isWebcamColorFocused,
+      isValidInputText: isWebcamColorValid,
+      regexValidationText: returnColorVariantValidationText({
+        content: webcamColor,
+        contentKind: 'webcam color',
+      }),
+    });
+
+  // accessible text input element
+  const [createdWebcamColorTextInput] = returnAccessibleTextInputElements([
+    {
+      description: {
+        error: webcamColorInputErrorText,
+        valid: webcamColorInputValidText,
+      },
+      inputText: webcamColor,
+      isValidInputText: isWebcamColorValid,
+      label: 'Webcam Color',
+      onBlur: () => {
+        createProductDispatch({
+          type: createProductAction.setIsWebcamColorFocused,
+          payload: false,
+        });
+      },
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
+        createProductDispatch({
+          type: createProductAction.setWebcamColor,
+          payload: event.currentTarget.value,
+        });
+      },
+      onFocus: () => {
+        createProductDispatch({
+          type: createProductAction.setIsWebcamColorFocused,
+          payload: true,
+        });
+      },
+      placeholder: 'Enter webcam color',
+      required: true,
+      semanticName: 'webcam color',
+    },
+  ]);
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    WEBCAM MICROPHONE
+  // ╰─────────────────────────────────────────────────────────────────╯
+  const [createdWebcamMicrophoneSelectInput] =
+    returnAccessibleSelectInputElements([
+      {
+        data: WEBCAM_MICROPHONE_DATA,
+        description: '',
+        label: 'Webcam Microphone',
+        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+          createProductDispatch({
+            type: createProductAction.setWebcamMicrophone,
+            payload: event.currentTarget.value as WebcamMicrophone,
+          });
+        },
+        value: webcamMicrophone,
+        required: true,
+      },
+    ]);
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    WEBCAM INTERFACE
+  // ╰─────────────────────────────────────────────────────────────────╯
+  const [createdWebcamInterfaceSelectInput] =
+    returnAccessibleSelectInputElements([
+      {
+        data: WEBCAM_INTERFACE_DATA,
+        description: '',
+        label: 'Webcam Interface',
+        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+          createProductDispatch({
+            type: createProductAction.setWebcamInterface,
+            payload: event.currentTarget.value as WebcamInterface,
+          });
+        },
+        value: webcamInterface,
+        required: true,
+      },
+    ]);
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    WEBCAM FRAME RATE
+  // ╰─────────────────────────────────────────────────────────────────╯
+  const [createdWebcamFrameRateSelectInput] =
+    returnAccessibleSelectInputElements([
+      {
+        data: WEBCAM_FRAME_RATE_DATA,
+        description: '',
+        label: 'Webcam Frame Rate',
+        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+          createProductDispatch({
+            type: createProductAction.setWebcamFrameRate,
+            payload: event.currentTarget.value as WebcamFrameRate,
+          });
+        },
+        value: webcamFrameRate,
         required: true,
       },
     ]);
 
   // ╔═════════════════════════════════════════════════════════════════╗
-  //   MOUSE ADDITIONAL FIELDS
+  //   WEBCAM ADDITIONAL FIELDS
   // ╚═════════════════════════════════════════════════════════════════╝
 
   // ╭─────────────────────────────────────────────────────────────────╮
   //    ADD ADDITIONAL FIELD BUTTON
   // ╰─────────────────────────────────────────────────────────────────╯
-  const [createdAddMouseFieldsAdditionalMapButton] =
+  const [createdAddWebcamFieldsAdditionalMapButton] =
     returnAccessibleButtonElements([
       {
         buttonLabel: 'Add',
-        semanticDescription: 'Add new additional Mouse field',
+        semanticDescription: 'Add new additional Webcam field',
         semanticName: 'Add new field',
         leftIcon: <TbPlus />,
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
           createProductDispatch({
-            type: createProductAction.setMouseFieldsAdditionalMap,
+            type: createProductAction.setWebcamFieldsAdditionalMap,
             payload: {
               operation: 'add',
               data: ['', ''],
@@ -437,7 +331,7 @@ function CreateMouse({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreMouseFieldsAdditionalMapFocused,
+            type: createProductAction.setAreWebcamFieldsAdditionalMapFocused,
             payload: {
               operation: 'add',
               data: [false, false],
@@ -445,7 +339,7 @@ function CreateMouse({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreMouseFieldsAdditionalMapValid,
+            type: createProductAction.setAreWebcamFieldsAdditionalMapValid,
             payload: {
               operation: 'add',
               data: [false, false],
@@ -460,23 +354,23 @@ function CreateMouse({
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // returns an array of tuples containing the error and valid text elements for each field name
-  const mouseFieldsAdditionalMapKeysErrorValidTextElements: [
+  const webcamFieldsAdditionalMapKeysErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(mouseFieldsAdditionalMap).map((keyFieldValue) => {
+  ][] = Array.from(webcamFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [field, _value]] = keyFieldValue;
 
-    // error/valid text elements that are consumed by the text input element creator
+    // screenreader accessible error/valid text elements that are consumed by the text input element creator
     const [
-      mouseFieldsAdditionalMapKeysInputErrorText,
-      mouseFieldsAdditionalMapKeysInputValidText,
+      webcamFieldsAdditionalMapKeysInputErrorText,
+      webcamFieldsAdditionalMapKeysInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field name ${mapKey + 1}`,
       inputText: field,
       isInputTextFocused:
-        areMouseFieldsAdditionalMapFocused.get(mapKey)?.[0] ?? false,
+        areWebcamFieldsAdditionalMapFocused.get(mapKey)?.[0] ?? false,
       isValidInputText:
-        areMouseFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
+        areWebcamFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
       regexValidationText: returnObjectKeyValidationText({
         content: field,
         contentKind: `additional field name ${mapKey + 1}`,
@@ -486,8 +380,8 @@ function CreateMouse({
     });
 
     return [
-      mouseFieldsAdditionalMapKeysInputErrorText,
-      mouseFieldsAdditionalMapKeysInputValidText,
+      webcamFieldsAdditionalMapKeysInputErrorText,
+      webcamFieldsAdditionalMapKeysInputValidText,
     ];
   });
 
@@ -496,23 +390,23 @@ function CreateMouse({
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // returns an array of tuples containing the error and valid text elements for each field value
-  const mouseFieldsAdditionalMapValuesErrorValidTextElements: [
+  const webcamFieldsAdditionalMapValuesErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(mouseFieldsAdditionalMap).map((keyFieldValue) => {
+  ][] = Array.from(webcamFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [_field, value]] = keyFieldValue;
 
-    // error/valid text elements that are consumed by the text input element creator
+    // screenreader accessible error/valid text elements that are consumed by the text input element creator
     const [
-      mouseFieldsAdditionalMapValuesInputErrorText,
-      mouseFieldsAdditionalMapValuesInputValidText,
+      webcamFieldsAdditionalMapValuesInputErrorText,
+      webcamFieldsAdditionalMapValuesInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field value ${mapKey + 1}`,
       inputText: value,
       isInputTextFocused:
-        areMouseFieldsAdditionalMapFocused.get(mapKey)?.[1] ?? false,
+        areWebcamFieldsAdditionalMapFocused.get(mapKey)?.[1] ?? false,
       isValidInputText:
-        areMouseFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
+        areWebcamFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
       regexValidationText: returnUserDefinedFieldValueValidationText({
         content: value,
         contentKind: `additional field value ${mapKey + 1}`,
@@ -522,34 +416,34 @@ function CreateMouse({
     });
 
     return [
-      mouseFieldsAdditionalMapValuesInputErrorText,
-      mouseFieldsAdditionalMapValuesInputValidText,
+      webcamFieldsAdditionalMapValuesInputErrorText,
+      webcamFieldsAdditionalMapValuesInputValidText,
     ];
   });
 
-  const createdMouseFieldsAdditionalMapTextInputElements = Array.from(
-    mouseFieldsAdditionalMap
+  const createdWebcamFieldsAdditionalMapTextInputElements = Array.from(
+    webcamFieldsAdditionalMap
   ).map((keyFieldValue) => {
     const [mapKey, [field, value]] = keyFieldValue;
 
     // ╭─────────────────────────────────────────────────────────────────╮
     //    ADDITIONAL FIELD ACCESSIBLE TEXT INPUT => FIELD NAME
     // ╰─────────────────────────────────────────────────────────────────╯
-    const mouseFieldsAdditionalMapKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const webcamFieldsAdditionalMapKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
-          error: mouseFieldsAdditionalMapKeysErrorValidTextElements[mapKey][0],
-          valid: mouseFieldsAdditionalMapKeysErrorValidTextElements[mapKey][1],
+          error: webcamFieldsAdditionalMapKeysErrorValidTextElements[mapKey][0],
+          valid: webcamFieldsAdditionalMapKeysErrorValidTextElements[mapKey][1],
         },
         inputText: field,
         isValidInputText:
-          areMouseFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
+          areWebcamFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
         label: `Name ${mapKey + 1}`,
         maxLength: 75,
         minLength: 1,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreMouseFieldsAdditionalMapFocused,
+            type: createProductAction.setAreWebcamFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -560,7 +454,7 @@ function CreateMouse({
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setMouseFieldsAdditionalMap,
+            type: createProductAction.setWebcamFieldsAdditionalMap,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -576,7 +470,7 @@ function CreateMouse({
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreMouseFieldsAdditionalMapFocused,
+            type: createProductAction.setAreWebcamFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -593,23 +487,23 @@ function CreateMouse({
     // ╭─────────────────────────────────────────────────────────────────╮
     //    ADDITIONAL FIELD ACCESSIBLE TEXT INPUT => FIELD VALUE
     // ╰─────────────────────────────────────────────────────────────────╯
-    const mouseFieldsAdditionalMapValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const webcamFieldsAdditionalMapValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
           error:
-            mouseFieldsAdditionalMapValuesErrorValidTextElements[mapKey][0],
+            webcamFieldsAdditionalMapValuesErrorValidTextElements[mapKey][0],
           valid:
-            mouseFieldsAdditionalMapValuesErrorValidTextElements[mapKey][1],
+            webcamFieldsAdditionalMapValuesErrorValidTextElements[mapKey][1],
         },
         inputText: value,
         isValidInputText:
-          areMouseFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
+          areWebcamFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
         label: `Value ${mapKey + 1}`,
         maxLength: 2000,
         minLength: 2,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreMouseFieldsAdditionalMapFocused,
+            type: createProductAction.setAreWebcamFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -620,7 +514,7 @@ function CreateMouse({
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setMouseFieldsAdditionalMap,
+            type: createProductAction.setWebcamFieldsAdditionalMap,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -636,7 +530,7 @@ function CreateMouse({
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreMouseFieldsAdditionalMapFocused,
+            type: createProductAction.setAreWebcamFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -651,11 +545,11 @@ function CreateMouse({
       };
 
     const [
-      createdMouseFieldsAdditionalMapKeysTextAreaInput,
-      createdMouseFieldsAdditionalMapValuesTextAreaInput,
+      createdWebcamFieldsAdditionalMapKeysTextAreaInput,
+      createdWebcamFieldsAdditionalMapValuesTextAreaInput,
     ] = returnAccessibleTextAreaInputElements([
-      mouseFieldsAdditionalMapKeysTextInputCreatorInfo,
-      mouseFieldsAdditionalMapValuesTextInputCreatorInfo,
+      webcamFieldsAdditionalMapKeysTextInputCreatorInfo,
+      webcamFieldsAdditionalMapValuesTextInputCreatorInfo,
     ]);
 
     // ╭─────────────────────────────────────────────────────────────────╮
@@ -666,7 +560,7 @@ function CreateMouse({
         buttonLabel: 'Delete',
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
           createProductDispatch({
-            type: createProductAction.setMouseFieldsAdditionalMap,
+            type: createProductAction.setWebcamFieldsAdditionalMap,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -674,7 +568,7 @@ function CreateMouse({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreMouseFieldsAdditionalMapFocused,
+            type: createProductAction.setAreWebcamFieldsAdditionalMapFocused,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -682,7 +576,7 @@ function CreateMouse({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreMouseFieldsAdditionalMapValid,
+            type: createProductAction.setAreWebcamFieldsAdditionalMapValid,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -695,28 +589,28 @@ function CreateMouse({
           });
         },
         leftIcon: <TbTrash />,
-        semanticDescription: `Delete additional Mouse field ${mapKey + 1}`,
+        semanticDescription: `Delete additional Webcam field ${mapKey + 1}`,
         semanticName: 'Delete field and value',
       },
     ]);
 
     const displayDeleteButton = (
-      <Tooltip label={`Delete additional Mouse field ${mapKey + 1}`}>
+      <Tooltip label={`Delete additional Webcam field ${mapKey + 1}`}>
         <Group>{createdDeleteButton}</Group>
       </Tooltip>
     );
 
     return (
-      <Stack key={`mouseFieldsAdditionalMap-${mapKey}`} pt={padding} w="100%">
+      <Stack key={`webcamFieldsAdditionalMap-${mapKey}`} pt={padding} w="100%">
         <Group position="apart">
-          <Text size="md" weight={600}>{`Additional Mouse field ${
+          <Text size="md" weight={600}>{`Additional Webcam field ${
             mapKey + 1
           }`}</Text>
           {displayDeleteButton}
         </Group>
         <Group position="apart">
-          {createdMouseFieldsAdditionalMapKeysTextAreaInput}
-          {createdMouseFieldsAdditionalMapValuesTextAreaInput}
+          {createdWebcamFieldsAdditionalMapKeysTextAreaInput}
+          {createdWebcamFieldsAdditionalMapValuesTextAreaInput}
         </Group>
       </Stack>
     );
@@ -728,30 +622,32 @@ function CreateMouse({
   //  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
   // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
-  const displayMouseFieldsAdditionalMapButton = (
+  const displayWebcamFieldsAdditionalMapButton = (
     <Tooltip
-      label={`Add additional Mouse field ${mouseFieldsAdditionalMap.size + 1}`}
+      label={`Add additional Webcam field ${
+        webcamFieldsAdditionalMap.size + 1
+      }`}
     >
-      <Group>{createdAddMouseFieldsAdditionalMapButton}</Group>
+      <Group>{createdAddWebcamFieldsAdditionalMapButton}</Group>
     </Tooltip>
   );
 
-  const displayMouseSpecificationsInputs = (
+  const displayWebcamSpecificationsInputs = (
     <Group py={padding} position="apart" w="100%">
       <Group w="100%" position="apart">
-        <Title order={4}>Mouse Specifications</Title>
-        {displayMouseFieldsAdditionalMapButton}
+        <Title order={4}>Webcam Specifications</Title>
+        {displayWebcamFieldsAdditionalMapButton}
       </Group>
-      {createdMouseSensorSelectInput}
-      {createdMouseDpiTextInput}
-      {createdMouseButtonsTextInput}
-      {createdMouseColorTextInput}
-      {createdMouseInterfaceSelectInput}
-      {createdMouseFieldsAdditionalMapTextInputElements}
+      {createdWebcamResolutionSelectInput}
+      {createdWebcamColorTextInput}
+      {createdWebcamMicrophoneSelectInput}
+      {createdWebcamInterfaceSelectInput}
+      {createdWebcamFrameRateSelectInput}
+      {createdWebcamFieldsAdditionalMapTextInputElements}
     </Group>
   );
 
-  return displayMouseSpecificationsInputs;
+  return displayWebcamSpecificationsInputs;
 }
 
-export default CreateMouse;
+export default CreateWebcam;

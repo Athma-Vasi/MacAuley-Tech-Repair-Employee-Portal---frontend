@@ -15,15 +15,15 @@ import {
   returnAccessibleSelectInputElements,
   returnAccessibleTextAreaInputElements,
   returnAccessibleTextInputElements,
-} from '../../../../jsxCreators';
+} from '../../../jsxCreators';
 import {
   returnMediumIntegerValidationText,
   returnObjectKeyValidationText,
   returnSmallIntegerValidationText,
   returnSocketChipsetValidationText,
   returnUserDefinedFieldValueValidationText,
-} from '../../../../utils';
-import { AccessibleTextAreaInputCreatorInfo } from '../../../wrappers';
+} from '../../../utils';
+import { AccessibleTextAreaInputCreatorInfo } from '../../wrappers';
 import {
   MEDIUM_INTEGER_REGEX,
   MEMORY_UNIT_SELECT_INPUT_DATA,
@@ -34,7 +34,7 @@ import {
   OBJECT_KEY_REGEX,
   SMALL_INTEGER_REGEX,
   USER_DEFINED_VALUE_REGEX,
-} from '../../constants';
+} from '../constants';
 import {
   CreateProductAction,
   CreateProductDispatch,

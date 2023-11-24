@@ -15,96 +15,100 @@ import {
   returnAccessibleSelectInputElements,
   returnAccessibleTextAreaInputElements,
   returnAccessibleTextInputElements,
-} from '../../../../jsxCreators';
+} from '../../../jsxCreators';
 import {
-  returnColorVariantValidationText,
+  returnCpuFrequencyValidationText,
   returnMediumIntegerValidationText,
   returnObjectKeyValidationText,
-  returnRamTimingValidationText,
-  returnRamVoltageValidationText,
   returnSmallIntegerValidationText,
+  returnSocketChipsetValidationText,
   returnUserDefinedFieldValueValidationText,
-} from '../../../../utils';
-import { AccessibleTextAreaInputCreatorInfo } from '../../../wrappers';
+} from '../../../utils';
+import { AccessibleTextAreaInputCreatorInfo } from '../../wrappers';
 import {
-  COLOR_VARIANT_REGEX,
+  CPU_FREQUENCY_REGEX,
+  CPU_SOCKET_REGEX,
   MEDIUM_INTEGER_REGEX,
   MEMORY_UNIT_SELECT_INPUT_DATA,
   OBJECT_KEY_REGEX,
-  RAM_MEMORY_TYPE_DATA,
-  RAM_TIMING_REGEX,
-  RAM_VOLTAGE_REGEX,
   SMALL_INTEGER_REGEX,
   USER_DEFINED_VALUE_REGEX,
-} from '../../constants';
+} from '../constants';
 import {
   CreateProductAction,
   CreateProductDispatch,
-  MemoryType,
   MemoryUnit,
 } from '../types';
 
-type CreateRamProps = {
-  areRamFieldsAdditionalMapFocused: Map<number, [boolean, boolean]>;
-  areRamFieldsAdditionalMapValid: Map<number, [boolean, boolean]>;
+type CreateCpuProps = {
+  areCpuFieldsAdditionalMapFocused: Map<number, [boolean, boolean]>;
+  areCpuFieldsAdditionalMapValid: Map<number, [boolean, boolean]>;
   borderColor: string;
+  cpuCores: string;
+  cpuFieldsAdditionalMap: Map<number, [string, string]>;
+  cpuFrequency: string;
+  cpuL1CacheCapacity: string;
+  cpuL1CacheCapacityUnit: MemoryUnit;
+  cpuL2CacheCapacity: string;
+  cpuL2CacheCapacityUnit: MemoryUnit;
+  cpuL3CacheCapacity: string;
+  cpuL3CacheCapacityUnit: MemoryUnit;
+  cpuSocket: string;
+  cpuWattage: string;
   createProductAction: CreateProductAction;
   createProductDispatch: React.Dispatch<CreateProductDispatch>;
   currentlySelectedAdditionalFieldIndex: number;
-  isRamColorFocused: boolean;
-  isRamColorValid: boolean;
-  isRamDataRateFocused: boolean;
-  isRamDataRateValid: boolean;
-  isRamModulesCapacityFocused: boolean;
-  isRamModulesCapacityValid: boolean;
-  isRamModulesQuantityFocused: boolean;
-  isRamModulesQuantityValid: boolean;
-  isRamTimingFocused: boolean;
-  isRamTimingValid: boolean;
-  isRamVoltageFocused: boolean;
-  isRamVoltageValid: boolean;
+  isCpuCoresFocused: boolean;
+  isCpuCoresValid: boolean;
+  isCpuFrequencyFocused: boolean;
+  isCpuFrequencyValid: boolean;
+  isCpuL1CacheCapacityFocused: boolean;
+  isCpuL1CacheCapacityValid: boolean;
+  isCpuL2CacheCapacityFocused: boolean;
+  isCpuL2CacheCapacityValid: boolean;
+  isCpuL3CacheCapacityFocused: boolean;
+  isCpuL3CacheCapacityValid: boolean;
+  isCpuSocketFocused: boolean;
+  isCpuSocketValid: boolean;
+  isCpuWattageFocused: boolean;
+  isCpuWattageValid: boolean;
   padding: MantineNumberSize;
-  ramColor: string;
-  ramDataRate: string;
-  ramFieldsAdditionalMap: Map<number, [string, string]>;
-  ramModulesCapacity: string;
-  ramModulesCapacityUnit: MemoryUnit;
-  ramModulesQuantity: string;
-  ramTiming: string;
-  ramType: MemoryType;
-  ramVoltage: string;
 };
 
-function CreateRam({
-  areRamFieldsAdditionalMapFocused,
-  areRamFieldsAdditionalMapValid,
+function CreateCpu({
+  areCpuFieldsAdditionalMapFocused,
+  areCpuFieldsAdditionalMapValid,
   borderColor,
+  cpuCores,
+  cpuFieldsAdditionalMap,
+  cpuFrequency,
+  cpuL1CacheCapacity,
+  cpuL1CacheCapacityUnit,
+  cpuL2CacheCapacity,
+  cpuL2CacheCapacityUnit,
+  cpuL3CacheCapacity,
+  cpuL3CacheCapacityUnit,
+  cpuSocket,
+  cpuWattage,
   createProductAction,
   createProductDispatch,
   currentlySelectedAdditionalFieldIndex,
-  isRamColorFocused,
-  isRamColorValid,
-  isRamDataRateFocused,
-  isRamDataRateValid,
-  isRamModulesCapacityFocused,
-  isRamModulesCapacityValid,
-  isRamModulesQuantityFocused,
-  isRamModulesQuantityValid,
-  isRamTimingFocused,
-  isRamTimingValid,
-  isRamVoltageFocused,
-  isRamVoltageValid,
+  isCpuCoresFocused,
+  isCpuCoresValid,
+  isCpuFrequencyFocused,
+  isCpuFrequencyValid,
+  isCpuL1CacheCapacityFocused,
+  isCpuL1CacheCapacityValid,
+  isCpuL2CacheCapacityFocused,
+  isCpuL2CacheCapacityValid,
+  isCpuL3CacheCapacityFocused,
+  isCpuL3CacheCapacityValid,
+  isCpuSocketFocused,
+  isCpuSocketValid,
+  isCpuWattageFocused,
+  isCpuWattageValid,
   padding,
-  ramColor,
-  ramDataRate,
-  ramFieldsAdditionalMap,
-  ramModulesCapacity,
-  ramModulesCapacityUnit,
-  ramModulesQuantity,
-  ramTiming,
-  ramType,
-  ramVoltage,
-}: CreateRamProps) {
+}: CreateCpuProps) {
   // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
   //  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
   //    VALIDATION USE EFFECTS
@@ -112,114 +116,130 @@ function CreateRam({
   // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    RAM DATA RATE
+  //    CPU SOCKET
   // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
-    const isValid = MEDIUM_INTEGER_REGEX.test(ramDataRate);
+    const isValid = CPU_SOCKET_REGEX.test(cpuSocket);
 
     createProductDispatch({
-      type: createProductAction.setIsRamDataRateValid,
+      type: createProductAction.setIsCpuSocketValid,
       payload: isValid,
     });
   }, [
-    createProductAction.setIsRamDataRateValid,
+    cpuSocket,
+    createProductAction.setIsCpuSocketValid,
     createProductDispatch,
-    ramDataRate,
   ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    RAM MODULES QUANTITY
+  //    CPU FREQUENCY
   // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
-    const isValid = SMALL_INTEGER_REGEX.test(ramModulesQuantity);
+    const isValid = CPU_FREQUENCY_REGEX.test(cpuFrequency);
 
     createProductDispatch({
-      type: createProductAction.setIsRamModulesQuantityValid,
+      type: createProductAction.setIsCpuFrequencyValid,
       payload: isValid,
     });
   }, [
-    createProductAction.setIsRamModulesQuantityValid,
+    cpuFrequency,
+    createProductAction.setIsCpuFrequencyValid,
     createProductDispatch,
-    ramModulesQuantity,
   ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    RAM MODULES CAPACITY
+  //    CPU CORES
   // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
-    const isValid = MEDIUM_INTEGER_REGEX.test(ramModulesCapacity);
+    const isValid = SMALL_INTEGER_REGEX.test(cpuCores);
 
     createProductDispatch({
-      type: createProductAction.setIsRamModulesCapacityValid,
+      type: createProductAction.setIsCpuCoresValid,
+      payload: isValid,
+    });
+  }, [cpuCores, createProductAction.setIsCpuCoresValid, createProductDispatch]);
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    CPU L1 CACHE CAPACITY
+  // ╰─────────────────────────────────────────────────────────────────╯
+  useEffect(() => {
+    const isValid = MEDIUM_INTEGER_REGEX.test(cpuL1CacheCapacity);
+
+    createProductDispatch({
+      type: createProductAction.setIsCpuL1CacheCapacityValid,
       payload: isValid,
     });
   }, [
-    createProductAction.setIsRamModulesCapacityValid,
+    cpuL1CacheCapacity,
+    createProductAction.setIsCpuL1CacheCapacityValid,
     createProductDispatch,
-    ramModulesCapacity,
   ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    RAM VOLTAGE
+  //    CPU L2 CACHE CAPACITY
   // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
-    const isValid = RAM_VOLTAGE_REGEX.test(ramVoltage);
+    const isValid = MEDIUM_INTEGER_REGEX.test(cpuL2CacheCapacity);
 
     createProductDispatch({
-      type: createProductAction.setIsRamVoltageValid,
+      type: createProductAction.setIsCpuL2CacheCapacityValid,
       payload: isValid,
     });
   }, [
-    createProductAction.setIsRamVoltageValid,
+    cpuL2CacheCapacity,
+    createProductAction.setIsCpuL2CacheCapacityValid,
     createProductDispatch,
-    ramVoltage,
   ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    RAM COLOR
+  //    CPU L3 CACHE CAPACITY
   // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
-    const isValid = COLOR_VARIANT_REGEX.test(ramColor);
+    const isValid = MEDIUM_INTEGER_REGEX.test(cpuL3CacheCapacity);
 
     createProductDispatch({
-      type: createProductAction.setIsRamColorValid,
-      payload: isValid,
-    });
-  }, [createProductAction.setIsRamColorValid, createProductDispatch, ramColor]);
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    RAM TIMING
-  // ╰─────────────────────────────────────────────────────────────────╯
-  useEffect(() => {
-    const isValid = RAM_TIMING_REGEX.test(ramTiming);
-
-    createProductDispatch({
-      type: createProductAction.setIsRamTimingValid,
+      type: createProductAction.setIsCpuL3CacheCapacityValid,
       payload: isValid,
     });
   }, [
-    createProductAction.setIsRamTimingValid,
+    cpuL3CacheCapacity,
+    createProductAction.setIsCpuL3CacheCapacityValid,
     createProductDispatch,
-    ramTiming,
   ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    RAM FIELDS ADDITIONAL
+  //    CPU WATTAGE
   // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
-    const currentlyUpdatingRamFieldAdditional = ramFieldsAdditionalMap.get(
+    const isValid = MEDIUM_INTEGER_REGEX.test(cpuWattage);
+
+    createProductDispatch({
+      type: createProductAction.setIsCpuWattageValid,
+      payload: isValid,
+    });
+  }, [
+    cpuWattage,
+    createProductAction.setIsCpuWattageValid,
+    createProductDispatch,
+  ]);
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    CPU FIELDS ADDITIONAL
+  // ╰─────────────────────────────────────────────────────────────────╯
+  useEffect(() => {
+    const currentlyUpdatingCpuFieldAdditional = cpuFieldsAdditionalMap.get(
       currentlySelectedAdditionalFieldIndex
     );
 
-    if (!currentlyUpdatingRamFieldAdditional) {
+    if (!currentlyUpdatingCpuFieldAdditional) {
       return;
     }
 
-    const [key, value] = currentlyUpdatingRamFieldAdditional;
+    const [key, value] = currentlyUpdatingCpuFieldAdditional;
 
     const isKeyValid = OBJECT_KEY_REGEX.test(key);
     createProductDispatch({
-      type: createProductAction.setAreRamFieldsAdditionalMapValid,
+      type: createProductAction.setAreCpuFieldsAdditionalMapValid,
       payload: {
         operation: 'update',
         data: isKeyValid,
@@ -230,7 +250,7 @@ function CreateRam({
 
     const isValueValid = USER_DEFINED_VALUE_REGEX.test(value);
     createProductDispatch({
-      type: createProductAction.setAreRamFieldsAdditionalMapValid,
+      type: createProductAction.setAreCpuFieldsAdditionalMapValid,
       payload: {
         operation: 'update',
         data: isValueValid,
@@ -239,10 +259,10 @@ function CreateRam({
       },
     });
   }, [
-    createProductAction.setAreRamFieldsAdditionalMapValid,
-    createProductDispatch,
     currentlySelectedAdditionalFieldIndex,
-    ramFieldsAdditionalMap,
+    cpuFieldsAdditionalMap,
+    createProductDispatch,
+    createProductAction.setAreCpuFieldsAdditionalMapValid,
   ]);
 
   // ╔═════════════════════════════════════════════════════════════════╗
@@ -253,38 +273,38 @@ function CreateRam({
     // optional inputs with empty string count as valid
     // select inputs are not included as they always have a default value
 
-    const areRamInputsHardcodedInError =
-      !isRamDataRateValid ||
-      !isRamModulesQuantityValid ||
-      !isRamModulesCapacityValid ||
-      !isRamVoltageValid ||
-      !isRamColorValid ||
-      !isRamTimingValid;
-
-    const areRamInputsUserDefinedInError = Array.from(
-      areRamFieldsAdditionalMapValid
+    const areCpuFieldsAdditionalMapInError = Array.from(
+      areCpuFieldsAdditionalMapValid
     ).some(([_key, value]) => !value);
 
-    const areRamInputsInError =
-      areRamInputsHardcodedInError || areRamInputsUserDefinedInError;
+    const areCpuInputsInError =
+      !isCpuSocketValid ||
+      !isCpuFrequencyValid ||
+      !isCpuCoresValid ||
+      !isCpuL1CacheCapacityValid ||
+      !isCpuL2CacheCapacityValid ||
+      !isCpuL3CacheCapacityValid ||
+      !isCpuWattageValid ||
+      areCpuFieldsAdditionalMapInError;
 
     createProductDispatch({
       type: createProductAction.setStepsInError,
       payload: {
-        kind: areRamInputsInError ? 'add' : 'delete',
+        kind: areCpuInputsInError ? 'add' : 'delete',
         step: 1,
       },
     });
   }, [
-    areRamFieldsAdditionalMapValid,
+    areCpuFieldsAdditionalMapValid,
     createProductAction.setStepsInError,
     createProductDispatch,
-    isRamColorValid,
-    isRamDataRateValid,
-    isRamModulesCapacityValid,
-    isRamModulesQuantityValid,
-    isRamTimingValid,
-    isRamVoltageValid,
+    isCpuCoresValid,
+    isCpuFrequencyValid,
+    isCpuL1CacheCapacityValid,
+    isCpuL2CacheCapacityValid,
+    isCpuL3CacheCapacityValid,
+    isCpuSocketValid,
+    isCpuWattageValid,
   ]);
 
   // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
@@ -294,377 +314,445 @@ function CreateRam({
   // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    RAM DATA RATE
+  //    CPU SOCKET
   // ╰─────────────────────────────────────────────────────────────────╯
-
-  // screenreader accessible text input elements
-  const [ramDataRateInputErrorText, ramDataRateInputValidText] =
+  // accessible screen reader text elements
+  const [cpuSocketInputErrorText, cpuSocketInputValidText] =
     AccessibleErrorValidTextElements({
-      inputElementKind: 'ram data rate',
-      inputText: ramDataRate,
-      isInputTextFocused: isRamDataRateFocused,
-      isValidInputText: isRamDataRateValid,
-      regexValidationText: returnMediumIntegerValidationText({
-        content: ramDataRate,
-        contentKind: 'ram data rate',
-      }),
-    });
-
-  // screenreader accessible text input element
-  const [createdRamDataRateTextInput] = returnAccessibleTextInputElements([
-    {
-      description: {
-        error: ramDataRateInputErrorText,
-        valid: ramDataRateInputValidText,
-      },
-      inputText: ramDataRate,
-      isValidInputText: isRamDataRateValid,
-      label: 'RAM Data Rate (MT/s)',
-      onBlur: () => {
-        createProductDispatch({
-          type: createProductAction.setIsRamDataRateFocused,
-          payload: false,
-        });
-      },
-      onChange: (event: ChangeEvent<HTMLInputElement>) => {
-        createProductDispatch({
-          type: createProductAction.setRamDataRate,
-          payload: event.currentTarget.value,
-        });
-      },
-      onFocus: () => {
-        createProductDispatch({
-          type: createProductAction.setIsRamDataRateFocused,
-          payload: true,
-        });
-      },
-      placeholder: 'Format: 0000',
-      required: true,
-      semanticName: 'ram data rate',
-    },
-  ]);
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    RAM MODULES QUANTITY
-  // ╰─────────────────────────────────────────────────────────────────╯
-
-  // screenreader accessible text input elements
-  const [ramModulesQuantityInputErrorText, ramModulesQuantityInputValidText] =
-    AccessibleErrorValidTextElements({
-      inputElementKind: 'ram modules quantity',
-      inputText: ramModulesQuantity,
-      isInputTextFocused: isRamModulesQuantityFocused,
-      isValidInputText: isRamModulesQuantityValid,
-      regexValidationText: returnSmallIntegerValidationText({
-        content: ramModulesQuantity,
-        contentKind: 'ram modules quantity',
-      }),
-    });
-
-  // screenreader accessible text input element
-  const [createdRamModulesQuantityTextInput] =
-    returnAccessibleTextInputElements([
-      {
-        description: {
-          error: ramModulesQuantityInputErrorText,
-          valid: ramModulesQuantityInputValidText,
-        },
-        inputText: ramModulesQuantity,
-        isValidInputText: isRamModulesQuantityValid,
-        label: 'RAM Modules Quantity',
-        onBlur: () => {
-          createProductDispatch({
-            type: createProductAction.setIsRamModulesQuantityFocused,
-            payload: false,
-          });
-        },
-        onChange: (event: ChangeEvent<HTMLInputElement>) => {
-          createProductDispatch({
-            type: createProductAction.setRamModulesQuantity,
-            payload: event.currentTarget.value,
-          });
-        },
-        onFocus: () => {
-          createProductDispatch({
-            type: createProductAction.setIsRamModulesQuantityFocused,
-            payload: true,
-          });
-        },
-        placeholder: 'Format: 00',
-        required: true,
-        semanticName: 'ram modules quantity',
-      },
-    ]);
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    RAM MODULES CAPACITY
-  // ╰─────────────────────────────────────────────────────────────────╯
-
-  // screenreader accessible text input elements
-  const [ramModulesCapacityInputErrorText, ramModulesCapacityInputValidText] =
-    AccessibleErrorValidTextElements({
-      inputElementKind: 'ram modules capacity',
-      inputText: ramModulesCapacity,
-      isInputTextFocused: isRamModulesCapacityFocused,
-      isValidInputText: isRamModulesCapacityValid,
-      regexValidationText: returnMediumIntegerValidationText({
-        content: ramModulesCapacity,
-        contentKind: 'ram modules capacity',
-      }),
-    });
-
-  // screenreader accessible text input element
-  const [createdRamModulesCapacityTextInput] =
-    returnAccessibleTextInputElements([
-      {
-        description: {
-          error: ramModulesCapacityInputErrorText,
-          valid: ramModulesCapacityInputValidText,
-        },
-        inputText: ramModulesCapacity,
-        isValidInputText: isRamModulesCapacityValid,
-        label: 'RAM Modules Capacity',
-        onBlur: () => {
-          createProductDispatch({
-            type: createProductAction.setIsRamModulesCapacityFocused,
-            payload: false,
-          });
-        },
-        onChange: (event: ChangeEvent<HTMLInputElement>) => {
-          createProductDispatch({
-            type: createProductAction.setRamModulesCapacity,
-            payload: event.currentTarget.value,
-          });
-        },
-        onFocus: () => {
-          createProductDispatch({
-            type: createProductAction.setIsRamModulesCapacityFocused,
-            payload: true,
-          });
-        },
-        placeholder: 'Format: 0000',
-        required: true,
-        semanticName: 'ram modules capacity',
-      },
-    ]);
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    RAM MODULES CAPACITY UNIT
-  // ╰─────────────────────────────────────────────────────────────────╯
-  const [createdRamModulesCapacityUnitSelectInput] =
-    returnAccessibleSelectInputElements([
-      {
-        data: MEMORY_UNIT_SELECT_INPUT_DATA,
-        description: '',
-        label: 'RAM Modules Capacity Unit',
-        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-          createProductDispatch({
-            type: createProductAction.setRamModulesCapacityUnit,
-            payload: event.currentTarget.value as MemoryUnit,
-          });
-        },
-        value: ramModulesCapacityUnit,
-        required: true,
-      },
-    ]);
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    RAM TYPE
-  // ╰─────────────────────────────────────────────────────────────────╯
-  const [createdRamTypeSelectInput] = returnAccessibleSelectInputElements([
-    {
-      data: RAM_MEMORY_TYPE_DATA,
-      description: '',
-      label: 'RAM Type',
-      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-        createProductDispatch({
-          type: createProductAction.setRamType,
-          payload: event.currentTarget.value as MemoryType,
-        });
-      },
-      value: ramType,
-      required: true,
-    },
-  ]);
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    RAM COLOR
-  // ╰─────────────────────────────────────────────────────────────────╯
-
-  // screenreader accessible text input elements
-  const [ramColorInputErrorText, ramColorInputValidText] =
-    AccessibleErrorValidTextElements({
-      inputElementKind: 'ram color',
-      inputText: ramColor,
-      isInputTextFocused: isRamColorFocused,
-      isValidInputText: isRamColorValid,
-      regexValidationText: returnColorVariantValidationText({
-        content: ramColor,
-        contentKind: 'ram color',
+      inputElementKind: 'cpu socket',
+      inputText: cpuSocket,
+      isInputTextFocused: isCpuSocketFocused,
+      isValidInputText: isCpuSocketValid,
+      regexValidationText: returnSocketChipsetValidationText({
+        content: cpuSocket,
+        contentKind: 'cpu socket',
         maxLength: 30,
         minLength: 2,
       }),
     });
 
   // screenreader accessible text input element
-  const [createdRamColorTextInput] = returnAccessibleTextInputElements([
+  const [createdCpuSocketTextInput] = returnAccessibleTextInputElements([
     {
       description: {
-        error: ramColorInputErrorText,
-        valid: ramColorInputValidText,
+        error: cpuSocketInputErrorText,
+        valid: cpuSocketInputValidText,
       },
-      inputText: ramColor,
-      isValidInputText: isRamColorValid,
-      label: 'RAM Color',
+      inputText: cpuSocket,
+      isValidInputText: isCpuSocketValid,
+      label: 'CPU Socket',
       maxLength: 30,
       minLength: 2,
       onBlur: () => {
         createProductDispatch({
-          type: createProductAction.setIsRamColorFocused,
+          type: createProductAction.setIsCpuSocketFocused,
           payload: false,
         });
       },
       onChange: (event: ChangeEvent<HTMLInputElement>) => {
         createProductDispatch({
-          type: createProductAction.setRamColor,
+          type: createProductAction.setCpuSocket,
           payload: event.currentTarget.value,
         });
       },
       onFocus: () => {
         createProductDispatch({
-          type: createProductAction.setIsRamColorFocused,
+          type: createProductAction.setIsCpuSocketFocused,
           payload: true,
         });
       },
-      placeholder: 'Enter RAM color',
+      placeholder: 'Enter CPU socket',
       required: true,
-      semanticName: 'ram color',
+      semanticName: 'cpu socket',
     },
   ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    RAM VOLTAGE
+  //    CPU FREQUENCY
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // screenreader accessible text input elements
-  const [ramVoltageInputErrorText, ramVoltageInputValidText] =
+  const [cpuFrequencyInputErrorText, cpuFrequencyInputValidText] =
     AccessibleErrorValidTextElements({
-      inputElementKind: 'ram voltage',
-      inputText: ramVoltage,
-      isInputTextFocused: isRamVoltageFocused,
-      isValidInputText: isRamVoltageValid,
-      regexValidationText: returnRamVoltageValidationText({
-        content: ramVoltage,
-        contentKind: 'ram voltage',
+      inputElementKind: 'cpu frequency',
+      inputText: cpuFrequency,
+      isInputTextFocused: isCpuFrequencyFocused,
+      isValidInputText: isCpuFrequencyValid,
+      regexValidationText: returnCpuFrequencyValidationText({
+        content: cpuFrequency,
+        contentKind: 'cpu frequency',
       }),
     });
 
   // screenreader accessible text input element
-  const [createdRamVoltageTextInput] = returnAccessibleTextInputElements([
+  const [createdCpuFrequencyTextInput] = returnAccessibleTextInputElements([
     {
       description: {
-        error: ramVoltageInputErrorText,
-        valid: ramVoltageInputValidText,
+        error: cpuFrequencyInputErrorText,
+        valid: cpuFrequencyInputValidText,
       },
-      inputText: ramVoltage,
-      isValidInputText: isRamVoltageValid,
-      label: 'RAM Voltage (V)',
+      inputText: cpuFrequency,
+      isValidInputText: isCpuFrequencyValid,
+      label: 'CPU Frequency (GHz)',
       onBlur: () => {
         createProductDispatch({
-          type: createProductAction.setIsRamVoltageFocused,
+          type: createProductAction.setIsCpuFrequencyFocused,
           payload: false,
         });
       },
       onChange: (event: ChangeEvent<HTMLInputElement>) => {
         createProductDispatch({
-          type: createProductAction.setRamVoltage,
+          type: createProductAction.setCpuFrequency,
           payload: event.currentTarget.value,
         });
       },
       onFocus: () => {
         createProductDispatch({
-          type: createProductAction.setIsRamVoltageFocused,
+          type: createProductAction.setIsCpuFrequencyFocused,
           payload: true,
         });
       },
-      placeholder: 'Format: 0.00',
+      placeholder: 'Format: 0.0 or 0.00',
       required: true,
-      semanticName: 'ram voltage',
+      semanticName: 'cpu frequency',
     },
   ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    RAM TIMING
+  //    CPU CORES
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // screenreader accessible text input elements
-  const [ramTimingInputErrorText, ramTimingInputValidText] =
+  const [cpuCoresInputErrorText, cpuCoresInputValidText] =
     AccessibleErrorValidTextElements({
-      inputElementKind: 'ram timing',
-      inputText: ramTiming,
-      isInputTextFocused: isRamTimingFocused,
-      isValidInputText: isRamTimingValid,
-      regexValidationText: returnRamTimingValidationText({
-        content: ramTiming,
-        contentKind: 'ram timing',
-        maxLength: 14,
-        minLength: 7,
+      inputElementKind: 'cpu cores',
+      inputText: cpuCores,
+      isInputTextFocused: isCpuCoresFocused,
+      isValidInputText: isCpuCoresValid,
+      regexValidationText: returnSmallIntegerValidationText({
+        content: cpuCores,
+        contentKind: 'cpu cores',
       }),
     });
 
   // screenreader accessible text input element
-  const [createdRamTimingTextInput] = returnAccessibleTextInputElements([
+  const [createdCpuCoresTextInput] = returnAccessibleTextInputElements([
     {
       description: {
-        error: ramTimingInputErrorText,
-        valid: ramTimingInputValidText,
+        error: cpuCoresInputErrorText,
+        valid: cpuCoresInputValidText,
       },
-      inputText: ramTiming,
-      isValidInputText: isRamTimingValid,
-      label: 'RAM Timing',
-      maxLength: 14,
-      minLength: 7,
+      inputText: cpuCores,
+      isValidInputText: isCpuCoresValid,
+      label: 'CPU Cores',
       onBlur: () => {
         createProductDispatch({
-          type: createProductAction.setIsRamTimingFocused,
+          type: createProductAction.setIsCpuCoresFocused,
           payload: false,
         });
       },
       onChange: (event: ChangeEvent<HTMLInputElement>) => {
         createProductDispatch({
-          type: createProductAction.setRamTiming,
+          type: createProductAction.setCpuCores,
           payload: event.currentTarget.value,
         });
       },
       onFocus: () => {
         createProductDispatch({
-          type: createProductAction.setIsRamTimingFocused,
+          type: createProductAction.setIsCpuCoresFocused,
           payload: true,
         });
       },
-      placeholder: 'Format: 00-00-00-00 or 0-0-0-0',
+      placeholder: 'Enter CPU cores',
       required: true,
-      semanticName: 'ram timing',
+      semanticName: 'cpu cores',
+    },
+  ]);
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    CPU L1 CACHE CAPACITY
+  // ╰─────────────────────────────────────────────────────────────────╯
+
+  // screenreader accessible text input elements
+  const [cpuL1CacheCapacityInputErrorText, cpuL1CacheCapacityInputValidText] =
+    AccessibleErrorValidTextElements({
+      inputElementKind: 'cpu L1 cache capacity',
+      inputText: cpuL1CacheCapacity,
+      isInputTextFocused: isCpuL1CacheCapacityFocused,
+      isValidInputText: isCpuL1CacheCapacityValid,
+      regexValidationText: returnMediumIntegerValidationText({
+        content: cpuL1CacheCapacity,
+        contentKind: 'cpu L1 cache capacity',
+      }),
+    });
+
+  // screenreader accessible text input element
+  const [createdCpuL1CacheCapacityTextInput] =
+    returnAccessibleTextInputElements([
+      {
+        description: {
+          error: cpuL1CacheCapacityInputErrorText,
+          valid: cpuL1CacheCapacityInputValidText,
+        },
+        inputText: cpuL1CacheCapacity,
+        isValidInputText: isCpuL1CacheCapacityValid,
+        label: 'CPU L1 Cache Capacity',
+        onBlur: () => {
+          createProductDispatch({
+            type: createProductAction.setIsCpuL1CacheCapacityFocused,
+            payload: false,
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLInputElement>) => {
+          createProductDispatch({
+            type: createProductAction.setCpuL1CacheCapacity,
+            payload: event.currentTarget.value,
+          });
+        },
+        onFocus: () => {
+          createProductDispatch({
+            type: createProductAction.setIsCpuL1CacheCapacityFocused,
+            payload: true,
+          });
+        },
+        placeholder: 'Enter CPU L1 cache capacity',
+        required: true,
+        semanticName: 'cpu L1 cache capacity',
+      },
+    ]);
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    CPU L1 CACHE CAPACITY UNIT
+  // ╰─────────────────────────────────────────────────────────────────╯
+  const [createdCpuL1CacheCapacityUnitSelectInput] =
+    returnAccessibleSelectInputElements([
+      {
+        data: MEMORY_UNIT_SELECT_INPUT_DATA,
+        description: '',
+        label: 'CPU L1 Cache Capacity Unit',
+        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+          createProductDispatch({
+            type: createProductAction.setCpuL1CacheCapacityUnit,
+            payload: event.currentTarget.value as MemoryUnit,
+          });
+        },
+        value: cpuL1CacheCapacityUnit,
+        required: true,
+      },
+    ]);
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    CPU L2 CACHE CAPACITY
+  // ╰─────────────────────────────────────────────────────────────────╯
+
+  // screenreader accessible text input elements
+  const [cpuL2CacheCapacityInputErrorText, cpuL2CacheCapacityInputValidText] =
+    AccessibleErrorValidTextElements({
+      inputElementKind: 'cpu L2 cache capacity',
+      inputText: cpuL2CacheCapacity,
+      isInputTextFocused: isCpuL2CacheCapacityFocused,
+      isValidInputText: isCpuL2CacheCapacityValid,
+      regexValidationText: returnMediumIntegerValidationText({
+        content: cpuL2CacheCapacity,
+        contentKind: 'cpu L2 cache capacity',
+      }),
+    });
+
+  // screenreader accessible text input element
+  const [createdCpuL2CacheCapacityTextInput] =
+    returnAccessibleTextInputElements([
+      {
+        description: {
+          error: cpuL2CacheCapacityInputErrorText,
+          valid: cpuL2CacheCapacityInputValidText,
+        },
+        inputText: cpuL2CacheCapacity,
+        isValidInputText: isCpuL2CacheCapacityValid,
+        label: 'CPU L2 Cache Capacity',
+        onBlur: () => {
+          createProductDispatch({
+            type: createProductAction.setIsCpuL2CacheCapacityFocused,
+            payload: false,
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLInputElement>) => {
+          createProductDispatch({
+            type: createProductAction.setCpuL2CacheCapacity,
+            payload: event.currentTarget.value,
+          });
+        },
+        onFocus: () => {
+          createProductDispatch({
+            type: createProductAction.setIsCpuL2CacheCapacityFocused,
+            payload: true,
+          });
+        },
+        placeholder: 'Enter CPU L2 cache capacity',
+        required: true,
+        semanticName: 'cpu L2 cache capacity',
+      },
+    ]);
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    CPU L2 CACHE CAPACITY UNIT
+  // ╰─────────────────────────────────────────────────────────────────╯
+  const [createdCpuL2CacheCapacityUnitSelectInput] =
+    returnAccessibleSelectInputElements([
+      {
+        data: MEMORY_UNIT_SELECT_INPUT_DATA,
+        description: '',
+        label: 'CPU L2 Cache Capacity Unit',
+        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+          createProductDispatch({
+            type: createProductAction.setCpuL2CacheCapacityUnit,
+            payload: event.currentTarget.value as MemoryUnit,
+          });
+        },
+        value: cpuL2CacheCapacityUnit,
+        required: true,
+      },
+    ]);
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    CPU L3 CACHE CAPACITY
+  // ╰─────────────────────────────────────────────────────────────────╯
+
+  // screenreader accessible text input elements
+  const [cpuL3CacheCapacityInputErrorText, cpuL3CacheCapacityInputValidText] =
+    AccessibleErrorValidTextElements({
+      inputElementKind: 'cpu L3 cache capacity',
+      inputText: cpuL3CacheCapacity,
+      isInputTextFocused: isCpuL3CacheCapacityFocused,
+      isValidInputText: isCpuL3CacheCapacityValid,
+      regexValidationText: returnMediumIntegerValidationText({
+        content: cpuL3CacheCapacity,
+        contentKind: 'cpu L3 cache capacity',
+      }),
+    });
+
+  // screenreader accessible text input element
+  const [createdCpuL3CacheCapacityTextInput] =
+    returnAccessibleTextInputElements([
+      {
+        description: {
+          error: cpuL3CacheCapacityInputErrorText,
+          valid: cpuL3CacheCapacityInputValidText,
+        },
+        inputText: cpuL3CacheCapacity,
+        isValidInputText: isCpuL3CacheCapacityValid,
+        label: 'CPU L3 Cache Capacity',
+        onBlur: () => {
+          createProductDispatch({
+            type: createProductAction.setIsCpuL3CacheCapacityFocused,
+            payload: false,
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLInputElement>) => {
+          createProductDispatch({
+            type: createProductAction.setCpuL3CacheCapacity,
+            payload: event.currentTarget.value,
+          });
+        },
+        onFocus: () => {
+          createProductDispatch({
+            type: createProductAction.setIsCpuL3CacheCapacityFocused,
+            payload: true,
+          });
+        },
+        placeholder: 'Enter CPU L3 cache capacity',
+        required: true,
+        semanticName: 'cpu L3 cache capacity',
+      },
+    ]);
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    CPU L3 CACHE CAPACITY UNIT
+  // ╰─────────────────────────────────────────────────────────────────╯
+  const [createdCpuL3CacheCapacityUnitSelectInput] =
+    returnAccessibleSelectInputElements([
+      {
+        data: MEMORY_UNIT_SELECT_INPUT_DATA,
+        description: '',
+        label: 'CPU L3 Cache Capacity Unit',
+        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+          createProductDispatch({
+            type: createProductAction.setCpuL3CacheCapacityUnit,
+            payload: event.currentTarget.value as MemoryUnit,
+          });
+        },
+        value: cpuL3CacheCapacityUnit,
+        required: true,
+      },
+    ]);
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    CPU WATTAGE
+  // ╰─────────────────────────────────────────────────────────────────╯
+
+  // screenreader accessible text input elements
+  const [cpuWattageInputErrorText, cpuWattageInputValidText] =
+    AccessibleErrorValidTextElements({
+      inputElementKind: 'cpu wattage',
+      inputText: cpuWattage,
+      isInputTextFocused: isCpuWattageFocused,
+      isValidInputText: isCpuWattageValid,
+      regexValidationText: returnMediumIntegerValidationText({
+        content: cpuWattage,
+        contentKind: 'cpu wattage',
+      }),
+    });
+
+  // screenreader accessible text input element
+  const [createdCpuWattageTextInput] = returnAccessibleTextInputElements([
+    {
+      description: {
+        error: cpuWattageInputErrorText,
+        valid: cpuWattageInputValidText,
+      },
+      inputText: cpuWattage,
+      isValidInputText: isCpuWattageValid,
+      label: 'CPU Wattage',
+      onBlur: () => {
+        createProductDispatch({
+          type: createProductAction.setIsCpuWattageFocused,
+          payload: false,
+        });
+      },
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
+        createProductDispatch({
+          type: createProductAction.setCpuWattage,
+          payload: event.currentTarget.value,
+        });
+      },
+      onFocus: () => {
+        createProductDispatch({
+          type: createProductAction.setIsCpuWattageFocused,
+          payload: true,
+        });
+      },
+      placeholder: 'Enter CPU wattage',
+      required: true,
+      semanticName: 'cpu wattage',
     },
   ]);
 
   // ╔═════════════════════════════════════════════════════════════════╗
-  //   RAM ADDITIONAL FIELDS
+  //   CPU ADDITIONAL FIELDS
   // ╚═════════════════════════════════════════════════════════════════╝
 
   // ╭─────────────────────────────────────────────────────────────────╮
   //    ADD ADDITIONAL FIELD BUTTON
   // ╰─────────────────────────────────────────────────────────────────╯
-  const [createdAddRamFieldsAdditionalMapButton] =
+  const [createdAddCpuFieldsAdditionalMapButton] =
     returnAccessibleButtonElements([
       {
         buttonLabel: 'Add',
-        semanticDescription: 'Add new additional RAM field',
+        semanticDescription: 'Add new additional CPU field',
         semanticName: 'Add new field',
         leftIcon: <TbPlus />,
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
           createProductDispatch({
-            type: createProductAction.setRamFieldsAdditionalMap,
+            type: createProductAction.setCpuFieldsAdditionalMap,
             payload: {
               operation: 'add',
               data: ['', ''],
@@ -672,7 +760,7 @@ function CreateRam({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreRamFieldsAdditionalMapFocused,
+            type: createProductAction.setAreCpuFieldsAdditionalMapFocused,
             payload: {
               operation: 'add',
               data: [false, false],
@@ -680,7 +768,7 @@ function CreateRam({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreRamFieldsAdditionalMapValid,
+            type: createProductAction.setAreCpuFieldsAdditionalMapValid,
             payload: {
               operation: 'add',
               data: [false, false],
@@ -695,23 +783,23 @@ function CreateRam({
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // returns an array of tuples containing the error and valid text elements for each field name
-  const ramFieldsAdditionalMapKeysErrorValidTextElements: [
+  const cpuFieldsAdditionalMapKeysErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(ramFieldsAdditionalMap).map((keyFieldValue) => {
+  ][] = Array.from(cpuFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [field, _value]] = keyFieldValue;
 
     // error/valid text elements that are consumed by the text input element creator
     const [
-      ramFieldsAdditionalMapKeysInputErrorText,
-      ramFieldsAdditionalMapKeysInputValidText,
+      cpuFieldsAdditionalMapKeysInputErrorText,
+      cpuFieldsAdditionalMapKeysInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field name ${mapKey + 1}`,
       inputText: field,
       isInputTextFocused:
-        areRamFieldsAdditionalMapFocused.get(mapKey)?.[0] ?? false,
+        areCpuFieldsAdditionalMapFocused.get(mapKey)?.[0] ?? false,
       isValidInputText:
-        areRamFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
+        areCpuFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
       regexValidationText: returnObjectKeyValidationText({
         content: field,
         contentKind: `additional field name ${mapKey + 1}`,
@@ -721,8 +809,8 @@ function CreateRam({
     });
 
     return [
-      ramFieldsAdditionalMapKeysInputErrorText,
-      ramFieldsAdditionalMapKeysInputValidText,
+      cpuFieldsAdditionalMapKeysInputErrorText,
+      cpuFieldsAdditionalMapKeysInputValidText,
     ];
   });
 
@@ -731,23 +819,23 @@ function CreateRam({
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // returns an array of tuples containing the error and valid text elements for each field value
-  const ramFieldsAdditionalMapValuesErrorValidTextElements: [
+  const cpuFieldsAdditionalMapValuesErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(ramFieldsAdditionalMap).map((keyFieldValue) => {
+  ][] = Array.from(cpuFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [_field, value]] = keyFieldValue;
 
     // error/valid text elements that are consumed by the text input element creator
     const [
-      ramFieldsAdditionalMapValuesInputErrorText,
-      ramFieldsAdditionalMapValuesInputValidText,
+      cpuFieldsAdditionalMapValuesInputErrorText,
+      cpuFieldsAdditionalMapValuesInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field value ${mapKey + 1}`,
       inputText: value,
       isInputTextFocused:
-        areRamFieldsAdditionalMapFocused.get(mapKey)?.[1] ?? false,
+        areCpuFieldsAdditionalMapFocused.get(mapKey)?.[1] ?? false,
       isValidInputText:
-        areRamFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
+        areCpuFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
       regexValidationText: returnUserDefinedFieldValueValidationText({
         content: value,
         contentKind: `additional field value ${mapKey + 1}`,
@@ -757,34 +845,34 @@ function CreateRam({
     });
 
     return [
-      ramFieldsAdditionalMapValuesInputErrorText,
-      ramFieldsAdditionalMapValuesInputValidText,
+      cpuFieldsAdditionalMapValuesInputErrorText,
+      cpuFieldsAdditionalMapValuesInputValidText,
     ];
   });
 
-  const createdRamFieldsAdditionalMapTextInputElements = Array.from(
-    ramFieldsAdditionalMap
+  const createdCpuFieldsAdditionalMapTextInputElements = Array.from(
+    cpuFieldsAdditionalMap
   ).map((keyFieldValue) => {
     const [mapKey, [field, value]] = keyFieldValue;
 
     // ╭─────────────────────────────────────────────────────────────────╮
     //    ADDITIONAL FIELD ACCESSIBLE TEXT INPUT => FIELD NAME
     // ╰─────────────────────────────────────────────────────────────────╯
-    const ramFieldsAdditionalMapKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const cpuFieldsAdditionalMapKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
-          error: ramFieldsAdditionalMapKeysErrorValidTextElements[mapKey][0],
-          valid: ramFieldsAdditionalMapKeysErrorValidTextElements[mapKey][1],
+          error: cpuFieldsAdditionalMapKeysErrorValidTextElements[mapKey][0],
+          valid: cpuFieldsAdditionalMapKeysErrorValidTextElements[mapKey][1],
         },
         inputText: field,
         isValidInputText:
-          areRamFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
+          areCpuFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
         label: `Name ${mapKey + 1}`,
         maxLength: 75,
         minLength: 1,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreRamFieldsAdditionalMapFocused,
+            type: createProductAction.setAreCpuFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -795,7 +883,7 @@ function CreateRam({
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setRamFieldsAdditionalMap,
+            type: createProductAction.setCpuFieldsAdditionalMap,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -811,7 +899,7 @@ function CreateRam({
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreRamFieldsAdditionalMapFocused,
+            type: createProductAction.setAreCpuFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -828,21 +916,21 @@ function CreateRam({
     // ╭─────────────────────────────────────────────────────────────────╮
     //    ADDITIONAL FIELD ACCESSIBLE TEXT INPUT => FIELD VALUE
     // ╰─────────────────────────────────────────────────────────────────╯
-    const ramFieldsAdditionalMapValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const cpuFieldsAdditionalMapValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
-          error: ramFieldsAdditionalMapValuesErrorValidTextElements[mapKey][0],
-          valid: ramFieldsAdditionalMapValuesErrorValidTextElements[mapKey][1],
+          error: cpuFieldsAdditionalMapValuesErrorValidTextElements[mapKey][0],
+          valid: cpuFieldsAdditionalMapValuesErrorValidTextElements[mapKey][1],
         },
         inputText: value,
         isValidInputText:
-          areRamFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
+          areCpuFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
         label: `Value ${mapKey + 1}`,
         maxLength: 2000,
         minLength: 2,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreRamFieldsAdditionalMapFocused,
+            type: createProductAction.setAreCpuFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -853,7 +941,7 @@ function CreateRam({
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setRamFieldsAdditionalMap,
+            type: createProductAction.setCpuFieldsAdditionalMap,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -869,7 +957,7 @@ function CreateRam({
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreRamFieldsAdditionalMapFocused,
+            type: createProductAction.setAreCpuFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -884,11 +972,11 @@ function CreateRam({
       };
 
     const [
-      createdRamFieldsAdditionalMapKeysTextAreaInput,
-      createdRamFieldsAdditionalMapValuesTextAreaInput,
+      createdCpuFieldsAdditionalMapKeysTextAreaInput,
+      createdCpuFieldsAdditionalMapValuesTextAreaInput,
     ] = returnAccessibleTextAreaInputElements([
-      ramFieldsAdditionalMapKeysTextInputCreatorInfo,
-      ramFieldsAdditionalMapValuesTextInputCreatorInfo,
+      cpuFieldsAdditionalMapKeysTextInputCreatorInfo,
+      cpuFieldsAdditionalMapValuesTextInputCreatorInfo,
     ]);
 
     // ╭─────────────────────────────────────────────────────────────────╮
@@ -899,7 +987,7 @@ function CreateRam({
         buttonLabel: 'Delete',
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
           createProductDispatch({
-            type: createProductAction.setRamFieldsAdditionalMap,
+            type: createProductAction.setCpuFieldsAdditionalMap,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -907,7 +995,7 @@ function CreateRam({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreRamFieldsAdditionalMapFocused,
+            type: createProductAction.setAreCpuFieldsAdditionalMapFocused,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -915,7 +1003,7 @@ function CreateRam({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreRamFieldsAdditionalMapValid,
+            type: createProductAction.setAreCpuFieldsAdditionalMapValid,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -928,28 +1016,28 @@ function CreateRam({
           });
         },
         leftIcon: <TbTrash />,
-        semanticDescription: `Delete additional RAM field ${mapKey + 1}`,
+        semanticDescription: `Delete additional CPU field ${mapKey + 1}`,
         semanticName: 'Delete field and value',
       },
     ]);
 
     const displayDeleteButton = (
-      <Tooltip label={`Delete additional RAM field ${mapKey + 1}`}>
+      <Tooltip label={`Delete additional CPU field ${mapKey + 1}`}>
         <Group>{createdDeleteButton}</Group>
       </Tooltip>
     );
 
     return (
-      <Stack key={`ramFieldsAdditionalMap-${mapKey}`} pt={padding} w="100%">
+      <Stack key={`cpuFieldsAdditionalMap-${mapKey}`} pt={padding} w="100%">
         <Group position="apart">
-          <Text size="md" weight={600}>{`Additional RAM field ${
+          <Text size="md" weight={600}>{`Additional CPU field ${
             mapKey + 1
           }`}</Text>
           {displayDeleteButton}
         </Group>
         <Group position="apart">
-          {createdRamFieldsAdditionalMapKeysTextAreaInput}
-          {createdRamFieldsAdditionalMapValuesTextAreaInput}
+          {createdCpuFieldsAdditionalMapKeysTextAreaInput}
+          {createdCpuFieldsAdditionalMapValuesTextAreaInput}
         </Group>
       </Stack>
     );
@@ -961,33 +1049,35 @@ function CreateRam({
   //  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
   // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
-  const displayRamFieldsAdditionalMapButton = (
+  const displayCpuFieldsAdditionalMapButton = (
     <Tooltip
-      label={`Add additional RAM field ${ramFieldsAdditionalMap.size + 1}`}
+      label={`Add additional CPU field ${cpuFieldsAdditionalMap.size + 1}`}
     >
-      <Group>{createdAddRamFieldsAdditionalMapButton}</Group>
+      <Group>{createdAddCpuFieldsAdditionalMapButton}</Group>
     </Tooltip>
   );
 
-  const displayRamSpecificationsInputs = (
+  const displayCpuSpecificationsInputs = (
     <Group py={padding} position="apart" w="100%">
-      <Group w="100%" position="apart">
-        <Title order={4}>Memory (RAM) Specifications</Title>
-        {displayRamFieldsAdditionalMapButton}
+      <Group position="apart" w="100%">
+        <Title order={4}>CPU Specifications</Title>
+        {displayCpuFieldsAdditionalMapButton}
       </Group>
-      {createdRamDataRateTextInput}
-      {createdRamModulesQuantityTextInput}
-      {createdRamModulesCapacityTextInput}
-      {createdRamModulesCapacityUnitSelectInput}
-      {createdRamTypeSelectInput}
-      {createdRamColorTextInput}
-      {createdRamVoltageTextInput}
-      {createdRamTimingTextInput}
-      {createdRamFieldsAdditionalMapTextInputElements}
+      {createdCpuSocketTextInput}
+      {createdCpuWattageTextInput}
+      {createdCpuFrequencyTextInput}
+      {createdCpuCoresTextInput}
+      {createdCpuL1CacheCapacityTextInput}
+      {createdCpuL1CacheCapacityUnitSelectInput}
+      {createdCpuL2CacheCapacityTextInput}
+      {createdCpuL2CacheCapacityUnitSelectInput}
+      {createdCpuL3CacheCapacityTextInput}
+      {createdCpuL3CacheCapacityUnitSelectInput}
+      {createdCpuFieldsAdditionalMapTextInputElements}
     </Group>
   );
 
-  return displayRamSpecificationsInputs;
+  return displayCpuSpecificationsInputs;
 }
 
-export default CreateRam;
+export default CreateCpu;

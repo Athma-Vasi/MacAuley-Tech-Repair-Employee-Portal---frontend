@@ -15,90 +15,82 @@ import {
   returnAccessibleSelectInputElements,
   returnAccessibleTextAreaInputElements,
   returnAccessibleTextInputElements,
-} from '../../../../jsxCreators';
+} from '../../../jsxCreators';
 import {
-  returnDimensionsValidationText,
-  returnDisplayAspectRatioValidationText,
-  returnLargeIntegerValidationText,
+  returnColorVariantValidationText,
+  returnFrequencyResponseValidationText,
   returnMediumIntegerValidationText,
   returnObjectKeyValidationText,
+  returnSmallIntegerValidationText,
   returnUserDefinedFieldValueValidationText,
-} from '../../../../utils';
-import { AccessibleTextAreaInputCreatorInfo } from '../../../wrappers';
+} from '../../../utils';
+import { AccessibleTextAreaInputCreatorInfo } from '../../wrappers';
 import {
-  DIMENSIONS_REGEX,
-  DISPLAY_ASPECT_RATIO_REGEX,
-  DISPLAY_PANEL_TYPE_DATA,
-  LARGE_INTEGER_REGEX,
+  COLOR_VARIANT_REGEX,
+  FREQUENCY_RESPONSE_REGEX,
+  HEADPHONE_INTERFACE_DATA,
+  HEADPHONE_TYPE_DATA,
   MEDIUM_INTEGER_REGEX,
   OBJECT_KEY_REGEX,
+  SMALL_INTEGER_REGEX,
   USER_DEFINED_VALUE_REGEX,
-} from '../../constants';
+} from '../constants';
 import {
   CreateProductAction,
   CreateProductDispatch,
-  DisplayPanelType,
+  HeadphoneInterface,
+  HeadphoneType,
 } from '../types';
 
-type CreateDisplayProps = {
-  areDisplayFieldsAdditionalMapFocused: Map<number, [boolean, boolean]>;
-  areDisplayFieldsAdditionalMapValid: Map<number, [boolean, boolean]>;
+type CreateHeadphoneProps = {
+  areHeadphoneFieldsAdditionalMapFocused: Map<number, [boolean, boolean]>;
+  areHeadphoneFieldsAdditionalMapValid: Map<number, [boolean, boolean]>;
   borderColor: string;
   createProductAction: CreateProductAction;
   createProductDispatch: React.Dispatch<CreateProductDispatch>;
   currentlySelectedAdditionalFieldIndex: number;
-  displayAspectRatio: string;
-  displayFieldsAdditionalMap: Map<number, [string, string]>;
-  displayPanelType: DisplayPanelType;
-  displayRefreshRate: string;
-  displayResolutionHorizontal: string;
-  displayResolutionVertical: string;
-  displayResponseTime: string;
-  displaySize: string; // inches
-  isDisplayAspectRatioFocused: boolean;
-  isDisplayAspectRatioValid: boolean;
-  isDisplayRefreshRateFocused: boolean;
-  isDisplayRefreshRateValid: boolean;
-  isDisplayResolutionHorizontalFocused: boolean;
-  isDisplayResolutionHorizontalValid: boolean;
-  isDisplayResolutionVerticalFocused: boolean;
-  isDisplayResolutionVerticalValid: boolean;
-  isDisplayResponseTimeFocused: boolean;
-  isDisplayResponseTimeValid: boolean;
-  isDisplaySizeFocused: boolean;
-  isDisplaySizeValid: boolean;
+  headphoneColor: string;
+  headphoneDriver: string;
+  headphoneFieldsAdditionalMap: Map<number, [string, string]>;
+  headphoneFrequencyResponse: string;
+  headphoneImpedance: string;
+  headphoneInterface: HeadphoneInterface;
+  headphoneType: HeadphoneType;
+  isHeadphoneColorFocused: boolean;
+  isHeadphoneColorValid: boolean;
+  isHeadphoneDriverFocused: boolean;
+  isHeadphoneDriverValid: boolean;
+  isHeadphoneFrequencyResponseFocused: boolean;
+  isHeadphoneFrequencyResponseValid: boolean;
+  isHeadphoneImpedanceFocused: boolean;
+  isHeadphoneImpedanceValid: boolean;
   padding: MantineNumberSize;
 };
 
-function CreateDisplay({
-  areDisplayFieldsAdditionalMapFocused,
-  areDisplayFieldsAdditionalMapValid,
+function CreateHeadphone({
+  areHeadphoneFieldsAdditionalMapFocused,
+  areHeadphoneFieldsAdditionalMapValid,
   borderColor,
   createProductAction,
   createProductDispatch,
   currentlySelectedAdditionalFieldIndex,
-  displayAspectRatio,
-  displayFieldsAdditionalMap,
-  displayPanelType,
-  displayRefreshRate,
-  displayResolutionHorizontal,
-  displayResolutionVertical,
-  displayResponseTime,
-  displaySize,
-  isDisplayAspectRatioFocused,
-  isDisplayAspectRatioValid,
-  isDisplayRefreshRateFocused,
-  isDisplayRefreshRateValid,
-  isDisplayResolutionHorizontalFocused,
-  isDisplayResolutionHorizontalValid,
-  isDisplayResolutionVerticalFocused,
-  isDisplayResolutionVerticalValid,
-  isDisplayResponseTimeFocused,
-  isDisplayResponseTimeValid,
-  isDisplaySizeFocused,
-  isDisplaySizeValid,
+  headphoneColor,
+  headphoneDriver,
+  headphoneFieldsAdditionalMap,
+  headphoneFrequencyResponse,
+  headphoneImpedance,
+  headphoneInterface,
+  headphoneType,
+  isHeadphoneColorFocused,
+  isHeadphoneColorValid,
+  isHeadphoneDriverFocused,
+  isHeadphoneDriverValid,
+  isHeadphoneFrequencyResponseFocused,
+  isHeadphoneFrequencyResponseValid,
+  isHeadphoneImpedanceFocused,
+  isHeadphoneImpedanceValid,
   padding,
-}: CreateDisplayProps) {
+}: CreateHeadphoneProps) {
   // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
   //  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
   //    VALIDATION USE EFFECTS
@@ -106,117 +98,85 @@ function CreateDisplay({
   // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    DISPLAY SIZE
+  //    HEADPHONE DRIVER
   // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
-    const isValid = DIMENSIONS_REGEX.test(displaySize);
+    const isValid = SMALL_INTEGER_REGEX.test(headphoneDriver);
 
     createProductDispatch({
-      type: createProductAction.setIsDisplaySizeValid,
+      type: createProductAction.setIsHeadphoneDriverValid,
       payload: isValid,
     });
   }, [
-    createProductAction.setIsDisplaySizeValid,
+    createProductAction.setIsHeadphoneDriverValid,
     createProductDispatch,
-    displaySize,
+    headphoneDriver,
   ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    DISPLAY RESOLUTION HORIZONTAL
+  //    HEADPHONE FREQUENCY RESPONSE
   // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
-    const isValid = LARGE_INTEGER_REGEX.test(displayResolutionHorizontal);
+    const isValid = FREQUENCY_RESPONSE_REGEX.test(headphoneFrequencyResponse);
 
     createProductDispatch({
-      type: createProductAction.setIsDisplayResolutionHorizontalValid,
+      type: createProductAction.setIsHeadphoneFrequencyResponseValid,
       payload: isValid,
     });
   }, [
-    createProductAction.setIsDisplayResolutionHorizontalValid,
+    createProductAction.setIsHeadphoneFrequencyResponseValid,
     createProductDispatch,
-    displayResolutionHorizontal,
+    headphoneFrequencyResponse,
   ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    DISPLAY RESOLUTION VERTICAL
+  //    HEADPHONE IMPEDANCE
   // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
-    const isValid = LARGE_INTEGER_REGEX.test(displayResolutionVertical);
+    const isValid = MEDIUM_INTEGER_REGEX.test(headphoneImpedance);
 
     createProductDispatch({
-      type: createProductAction.setIsDisplayResolutionVerticalValid,
+      type: createProductAction.setIsHeadphoneImpedanceValid,
       payload: isValid,
     });
   }, [
-    createProductAction.setIsDisplayResolutionVerticalValid,
+    createProductAction.setIsHeadphoneImpedanceValid,
     createProductDispatch,
-    displayResolutionVertical,
+    headphoneImpedance,
   ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    DISPLAY REFRESH RATE
+  //    HEADPHONE COLOR
   // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
-    const isValid = MEDIUM_INTEGER_REGEX.test(displayRefreshRate);
+    const isValid = COLOR_VARIANT_REGEX.test(headphoneColor);
 
     createProductDispatch({
-      type: createProductAction.setIsDisplayRefreshRateValid,
+      type: createProductAction.setIsHeadphoneColorValid,
       payload: isValid,
     });
   }, [
-    createProductAction.setIsDisplayRefreshRateValid,
+    createProductAction.setIsHeadphoneColorValid,
     createProductDispatch,
-    displayRefreshRate,
+    headphoneColor,
   ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    DISPLAY RESPONSE TIME
+  //    HEADPHONE ADDITIONAL FIELDS
   // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
-    const isValid = DIMENSIONS_REGEX.test(displayResponseTime);
+    const currentlyUpdatingHeadphoneFieldAdditional =
+      headphoneFieldsAdditionalMap.get(currentlySelectedAdditionalFieldIndex);
 
-    createProductDispatch({
-      type: createProductAction.setIsDisplayResponseTimeValid,
-      payload: isValid,
-    });
-  }, [
-    createProductAction.setIsDisplayResponseTimeValid,
-    createProductDispatch,
-    displayResponseTime,
-  ]);
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    DISPLAY ASPECT RATIO
-  // ╰─────────────────────────────────────────────────────────────────╯
-  useEffect(() => {
-    const isValid = DISPLAY_ASPECT_RATIO_REGEX.test(displayAspectRatio);
-
-    createProductDispatch({
-      type: createProductAction.setIsDisplayAspectRatioValid,
-      payload: isValid,
-    });
-  }, [
-    createProductAction.setIsDisplayAspectRatioValid,
-    createProductDispatch,
-    displayAspectRatio,
-  ]);
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    DISPLAY ADDITIONAL FIELDS
-  // ╰─────────────────────────────────────────────────────────────────╯
-  useEffect(() => {
-    const currentlyUpdatingDisplayFieldAdditional =
-      displayFieldsAdditionalMap.get(currentlySelectedAdditionalFieldIndex);
-
-    if (!currentlyUpdatingDisplayFieldAdditional) {
+    if (!currentlyUpdatingHeadphoneFieldAdditional) {
       return;
     }
 
-    const [key, value] = currentlyUpdatingDisplayFieldAdditional;
+    const [key, value] = currentlyUpdatingHeadphoneFieldAdditional;
 
     const isKeyValid = OBJECT_KEY_REGEX.test(key);
     createProductDispatch({
-      type: createProductAction.setAreDisplayFieldsAdditionalMapValid,
+      type: createProductAction.setAreHeadphoneFieldsAdditionalMapValid,
       payload: {
         operation: 'update',
         data: isKeyValid,
@@ -227,7 +187,7 @@ function CreateDisplay({
 
     const isValueValid = USER_DEFINED_VALUE_REGEX.test(value);
     createProductDispatch({
-      type: createProductAction.setAreDisplayFieldsAdditionalMapValid,
+      type: createProductAction.setAreHeadphoneFieldsAdditionalMapValid,
       payload: {
         operation: 'update',
         data: isValueValid,
@@ -236,10 +196,10 @@ function CreateDisplay({
       },
     });
   }, [
-    createProductAction.setAreDisplayFieldsAdditionalMapValid,
+    createProductAction.setAreHeadphoneFieldsAdditionalMapValid,
     createProductDispatch,
     currentlySelectedAdditionalFieldIndex,
-    displayFieldsAdditionalMap,
+    headphoneFieldsAdditionalMap,
   ]);
 
   // ╔═════════════════════════════════════════════════════════════════╗
@@ -250,38 +210,35 @@ function CreateDisplay({
     // optional inputs with empty string count as valid
     // select inputs are not included as they always have a default value
 
-    const areDisplayInputsHardcodedInError =
-      !isDisplayAspectRatioValid ||
-      !isDisplayRefreshRateValid ||
-      !isDisplayResolutionHorizontalValid ||
-      !isDisplayResolutionVerticalValid ||
-      !isDisplayResponseTimeValid ||
-      !isDisplaySizeValid;
+    const areHeadphoneInputsHardcodedInError =
+      !isHeadphoneDriverValid ||
+      !isHeadphoneFrequencyResponseValid ||
+      !isHeadphoneImpedanceValid ||
+      !isHeadphoneColorValid;
 
-    const areDisplayInputsUserDefinedInError = Array.from(
-      areDisplayFieldsAdditionalMapValid
+    const areHeadphoneInputsUserDefinedInError = Array.from(
+      areHeadphoneFieldsAdditionalMapValid
     ).some(([_key, value]) => !value);
 
-    const areDisplayInputsInError =
-      areDisplayInputsHardcodedInError || areDisplayInputsUserDefinedInError;
+    const areHeadphoneInputsInError =
+      areHeadphoneInputsHardcodedInError ||
+      areHeadphoneInputsUserDefinedInError;
 
     createProductDispatch({
       type: createProductAction.setStepsInError,
       payload: {
-        kind: areDisplayInputsInError ? 'add' : 'delete',
+        kind: areHeadphoneInputsInError ? 'add' : 'delete',
         step: 1,
       },
     });
   }, [
-    areDisplayFieldsAdditionalMapValid,
+    areHeadphoneFieldsAdditionalMapValid,
     createProductAction.setStepsInError,
     createProductDispatch,
-    isDisplayAspectRatioValid,
-    isDisplayRefreshRateValid,
-    isDisplayResolutionHorizontalValid,
-    isDisplayResolutionVerticalValid,
-    isDisplayResponseTimeValid,
-    isDisplaySizeValid,
+    isHeadphoneColorValid,
+    isHeadphoneDriverValid,
+    isHeadphoneFrequencyResponseValid,
+    isHeadphoneImpedanceValid,
   ]);
 
   // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
@@ -291,361 +248,279 @@ function CreateDisplay({
   // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    DISPLAY SIZE
+  //    HEADPHONE TYPE
+  // ╰─────────────────────────────────────────────────────────────────╯
+  const [createdHeadphoneTypeSelectInput] = returnAccessibleSelectInputElements(
+    [
+      {
+        data: HEADPHONE_TYPE_DATA,
+        description: 'Select headphone type',
+        label: 'Headphone Type',
+        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+          createProductDispatch({
+            type: createProductAction.setHeadphoneType,
+            payload: event.currentTarget.value as HeadphoneType,
+          });
+        },
+        value: headphoneType,
+        required: true,
+      },
+    ]
+  );
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    HEADPHONE DRIVER
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // error/valid text elements
-  const [displaySizeInputErrorText, displaySizeInputValidText] =
+  const [headphoneDriverInputErrorText, headphoneDriverInputValidText] =
     AccessibleErrorValidTextElements({
-      inputElementKind: 'display size',
-      inputText: displaySize,
-      isInputTextFocused: isDisplaySizeFocused,
-      isValidInputText: isDisplaySizeValid,
-      regexValidationText: returnDimensionsValidationText({
-        content: displaySize,
-        contentKind: 'display size',
+      inputElementKind: 'headphone driver',
+      inputText: headphoneDriver,
+      isInputTextFocused: isHeadphoneDriverFocused,
+      isValidInputText: isHeadphoneDriverValid,
+      regexValidationText: returnSmallIntegerValidationText({
+        content: headphoneDriver,
+        contentKind: 'headphone driver',
       }),
     });
 
   // screenreader accessible text input element
-  const [createdDisplaySizeTextInput] = returnAccessibleTextInputElements([
+  const [createdHeadphoneDriverTextInput] = returnAccessibleTextInputElements([
     {
       description: {
-        error: displaySizeInputErrorText,
-        valid: displaySizeInputValidText,
+        error: headphoneDriverInputErrorText,
+        valid: headphoneDriverInputValidText,
       },
-      inputText: displaySize,
-      isValidInputText: isDisplaySizeValid,
-      label: 'Display Size (inches)',
+      inputText: headphoneDriver,
+      isValidInputText: isHeadphoneDriverValid,
+      label: 'Headphone Driver (mm)',
       onBlur: () => {
         createProductDispatch({
-          type: createProductAction.setIsDisplaySizeFocused,
+          type: createProductAction.setIsHeadphoneDriverFocused,
           payload: false,
         });
       },
       onChange: (event: ChangeEvent<HTMLInputElement>) => {
         createProductDispatch({
-          type: createProductAction.setDisplaySize,
+          type: createProductAction.setHeadphoneDriver,
           payload: event.currentTarget.value,
         });
       },
       onFocus: () => {
         createProductDispatch({
-          type: createProductAction.setIsDisplaySizeFocused,
+          type: createProductAction.setIsHeadphoneDriverFocused,
           payload: true,
         });
       },
-      placeholder: 'Format: 000.00',
+      placeholder: 'Format: 00',
       required: true,
-      semanticName: 'display size',
+      semanticName: 'headphone driver',
     },
   ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    DISPLAY RESOLUTION HORIZONTAL
+  //    HEADPHONE FREQUENCY RESPONSE
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // error/valid text elements
   const [
-    displayResolutionHorizontalInputErrorText,
-    displayResolutionHorizontalInputValidText,
+    headphoneFrequencyResponseInputErrorText,
+    headphoneFrequencyResponseInputValidText,
   ] = AccessibleErrorValidTextElements({
-    inputElementKind: 'display resolution horizontal',
-    inputText: displayResolutionHorizontal,
-    isInputTextFocused: isDisplayResolutionHorizontalFocused,
-    isValidInputText: isDisplayResolutionHorizontalValid,
-    regexValidationText: returnLargeIntegerValidationText({
-      content: displayResolutionHorizontal,
-      contentKind: 'display resolution horizontal',
+    inputElementKind: 'headphone frequency response',
+    inputText: headphoneFrequencyResponse,
+    isInputTextFocused: isHeadphoneFrequencyResponseFocused,
+    isValidInputText: isHeadphoneFrequencyResponseValid,
+    regexValidationText: returnFrequencyResponseValidationText({
+      content: headphoneFrequencyResponse,
+      contentKind: 'headphone frequency response',
+      maxLength: 14,
+      minLength: 12,
     }),
   });
 
   // screenreader accessible text input element
-  const [createdDisplayResolutionHorizontalTextInput] =
+  const [createdHeadphoneFrequencyResponseTextInput] =
     returnAccessibleTextInputElements([
       {
         description: {
-          error: displayResolutionHorizontalInputErrorText,
-          valid: displayResolutionHorizontalInputValidText,
+          error: headphoneFrequencyResponseInputErrorText,
+          valid: headphoneFrequencyResponseInputValidText,
         },
-        inputText: displayResolutionHorizontal,
-        isValidInputText: isDisplayResolutionHorizontalValid,
-        label: 'Display Resolution Horizontal (pixels)',
+        inputText: headphoneFrequencyResponse,
+        isValidInputText: isHeadphoneFrequencyResponseValid,
+        label: 'Headphone Frequency Response (Hz - kHz)',
+        maxLength: 14,
+        minLength: 12,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setIsDisplayResolutionHorizontalFocused,
+            type: createProductAction.setIsHeadphoneFrequencyResponseFocused,
             payload: false,
           });
         },
         onChange: (event: ChangeEvent<HTMLInputElement>) => {
           createProductDispatch({
-            type: createProductAction.setDisplayResolutionHorizontal,
+            type: createProductAction.setHeadphoneFrequencyResponse,
             payload: event.currentTarget.value,
           });
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setIsDisplayResolutionHorizontalFocused,
+            type: createProductAction.setIsHeadphoneFrequencyResponseFocused,
             payload: true,
           });
         },
-        placeholder: 'Format: 000000',
+        placeholder: 'Format: 00 Hz - 00 kHz or 0Hz-0kHz',
         required: true,
-        semanticName: 'display resolution horizontal',
+        semanticName: 'headphone frequency response',
       },
     ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    DISPLAY RESOLUTION VERTICAL
+  //    HEADPHONE IMPEDANCE
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // error/valid text elements
-  const [
-    displayResolutionVerticalInputErrorText,
-    displayResolutionVerticalInputValidText,
-  ] = AccessibleErrorValidTextElements({
-    inputElementKind: 'display resolution vertical',
-    inputText: displayResolutionVertical,
-    isInputTextFocused: isDisplayResolutionVerticalFocused,
-    isValidInputText: isDisplayResolutionVerticalValid,
-    regexValidationText: returnLargeIntegerValidationText({
-      content: displayResolutionVertical,
-      contentKind: 'display resolution vertical',
-    }),
-  });
-
-  // screenreader accessible text input element
-  const [createdDisplayResolutionVerticalTextInput] =
-    returnAccessibleTextInputElements([
-      {
-        description: {
-          error: displayResolutionVerticalInputErrorText,
-          valid: displayResolutionVerticalInputValidText,
-        },
-        inputText: displayResolutionVertical,
-        isValidInputText: isDisplayResolutionVerticalValid,
-        label: 'Display Resolution Vertical (pixels)',
-        onBlur: () => {
-          createProductDispatch({
-            type: createProductAction.setIsDisplayResolutionVerticalFocused,
-            payload: false,
-          });
-        },
-        onChange: (event: ChangeEvent<HTMLInputElement>) => {
-          createProductDispatch({
-            type: createProductAction.setDisplayResolutionVertical,
-            payload: event.currentTarget.value,
-          });
-        },
-        onFocus: () => {
-          createProductDispatch({
-            type: createProductAction.setIsDisplayResolutionVerticalFocused,
-            payload: true,
-          });
-        },
-        placeholder: 'Format: 000000',
-        required: true,
-        semanticName: 'display resolution vertical',
-      },
-    ]);
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    DISPLAY REFRESH RATE
-  // ╰─────────────────────────────────────────────────────────────────╯
-
-  // error/valid text elements
-  const [displayRefreshRateInputErrorText, displayRefreshRateInputValidText] =
+  const [headphoneImpedanceInputErrorText, headphoneImpedanceInputValidText] =
     AccessibleErrorValidTextElements({
-      inputElementKind: 'display refresh rate',
-      inputText: displayRefreshRate,
-      isInputTextFocused: isDisplayRefreshRateFocused,
-      isValidInputText: isDisplayRefreshRateValid,
+      inputElementKind: 'headphone impedance',
+      inputText: headphoneImpedance,
+      isInputTextFocused: isHeadphoneImpedanceFocused,
+      isValidInputText: isHeadphoneImpedanceValid,
       regexValidationText: returnMediumIntegerValidationText({
-        content: displayRefreshRate,
-        contentKind: 'display refresh rate',
+        content: headphoneImpedance,
+        contentKind: 'headphone impedance',
       }),
     });
 
   // screenreader accessible text input element
-  const [createdDisplayRefreshRateTextInput] =
+  const [createdHeadphoneImpedanceTextInput] =
     returnAccessibleTextInputElements([
       {
         description: {
-          error: displayRefreshRateInputErrorText,
-          valid: displayRefreshRateInputValidText,
+          error: headphoneImpedanceInputErrorText,
+          valid: headphoneImpedanceInputValidText,
         },
-        inputText: displayRefreshRate,
-        isValidInputText: isDisplayRefreshRateValid,
-        label: 'Display Refresh Rate (Hz)',
+        inputText: headphoneImpedance,
+        isValidInputText: isHeadphoneImpedanceValid,
+        label: 'Headphone Impedance (Ω)',
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setIsDisplayRefreshRateFocused,
+            type: createProductAction.setIsHeadphoneImpedanceFocused,
             payload: false,
           });
         },
         onChange: (event: ChangeEvent<HTMLInputElement>) => {
           createProductDispatch({
-            type: createProductAction.setDisplayRefreshRate,
+            type: createProductAction.setHeadphoneImpedance,
             payload: event.currentTarget.value,
           });
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setIsDisplayRefreshRateFocused,
+            type: createProductAction.setIsHeadphoneImpedanceFocused,
             payload: true,
           });
         },
         placeholder: 'Format: 0000',
         required: true,
-        semanticName: 'display refresh rate',
+        semanticName: 'headphone impedance',
       },
     ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    DISPLAY PANEL TYPE
+  //    HEADPHONE COLOR
   // ╰─────────────────────────────────────────────────────────────────╯
-  const [createdDisplayPanelTypeSelectInput] =
+
+  // error/valid text elements
+  const [headphoneColorInputErrorText, headphoneColorInputValidText] =
+    AccessibleErrorValidTextElements({
+      inputElementKind: 'headphone color',
+      inputText: headphoneColor,
+      isInputTextFocused: isHeadphoneColorFocused,
+      isValidInputText: isHeadphoneColorValid,
+      regexValidationText: returnColorVariantValidationText({
+        content: headphoneColor,
+        contentKind: 'headphone color',
+        maxLength: 30,
+        minLength: 2,
+      }),
+    });
+
+  // screenreader accessible text input element
+  const [createdHeadphoneColorTextInput] = returnAccessibleTextInputElements([
+    {
+      description: {
+        error: headphoneColorInputErrorText,
+        valid: headphoneColorInputValidText,
+      },
+      inputText: headphoneColor,
+      isValidInputText: isHeadphoneColorValid,
+      label: 'Headphone Color',
+      maxLength: 30,
+      minLength: 2,
+      onBlur: () => {
+        createProductDispatch({
+          type: createProductAction.setIsHeadphoneColorFocused,
+          payload: false,
+        });
+      },
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
+        createProductDispatch({
+          type: createProductAction.setHeadphoneColor,
+          payload: event.currentTarget.value,
+        });
+      },
+      onFocus: () => {
+        createProductDispatch({
+          type: createProductAction.setIsHeadphoneColorFocused,
+          payload: true,
+        });
+      },
+      placeholder: 'Enter headphone color',
+      required: true,
+      semanticName: 'headphone color',
+    },
+  ]);
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    HEADPHONE INTERFACE
+  // ╰─────────────────────────────────────────────────────────────────╯
+  const [createdHeadphoneInterfaceSelectInput] =
     returnAccessibleSelectInputElements([
       {
-        data: DISPLAY_PANEL_TYPE_DATA,
+        data: HEADPHONE_INTERFACE_DATA,
         description: '',
-        label: 'Display Panel Type',
+        label: 'Headphone Interface',
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           createProductDispatch({
-            type: createProductAction.setDisplayPanelType,
-            payload: event.currentTarget.value as DisplayPanelType,
+            type: createProductAction.setHeadphoneInterface,
+            payload: event.currentTarget.value as HeadphoneInterface,
           });
         },
-        value: displayPanelType,
+        value: headphoneInterface,
         required: true,
-      },
-    ]);
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    DISPLAY RESPONSE TIME
-  // ╰─────────────────────────────────────────────────────────────────╯
-
-  // error/valid text elements
-  const [displayResponseTimeInputErrorText, displayResponseTimeInputValidText] =
-    AccessibleErrorValidTextElements({
-      inputElementKind: 'display response time',
-      inputText: displayResponseTime,
-      isInputTextFocused: isDisplayResponseTimeFocused,
-      isValidInputText: isDisplayResponseTimeValid,
-      regexValidationText: returnDimensionsValidationText({
-        content: displayResponseTime,
-        contentKind: 'display response time',
-      }),
-    });
-
-  // screenreader accessible text input element
-  const [createdDisplayResponseTimeTextInput] =
-    returnAccessibleTextInputElements([
-      {
-        description: {
-          error: displayResponseTimeInputErrorText,
-          valid: displayResponseTimeInputValidText,
-        },
-        inputText: displayResponseTime,
-        isValidInputText: isDisplayResponseTimeValid,
-        label: 'Display Response Time (ms)',
-        onBlur: () => {
-          createProductDispatch({
-            type: createProductAction.setIsDisplayResponseTimeFocused,
-            payload: false,
-          });
-        },
-        onChange: (event: ChangeEvent<HTMLInputElement>) => {
-          createProductDispatch({
-            type: createProductAction.setDisplayResponseTime,
-            payload: event.currentTarget.value,
-          });
-        },
-        onFocus: () => {
-          createProductDispatch({
-            type: createProductAction.setIsDisplayResponseTimeFocused,
-            payload: true,
-          });
-        },
-        placeholder: 'Format: 000.00',
-        required: true,
-        semanticName: 'display response time',
-      },
-    ]);
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    DISPLAY ASPECT RATIO
-  // ╰─────────────────────────────────────────────────────────────────╯
-
-  // error/valid text elements
-  const [displayAspectRatioInputErrorText, displayAspectRatioInputValidText] =
-    AccessibleErrorValidTextElements({
-      inputElementKind: 'display aspect ratio',
-      inputText: displayAspectRatio,
-      isInputTextFocused: isDisplayAspectRatioFocused,
-      isValidInputText: isDisplayAspectRatioValid,
-      regexValidationText: returnDisplayAspectRatioValidationText({
-        content: displayAspectRatio,
-        contentKind: 'display aspect ratio',
-        maxLength: 5,
-        minLength: 3,
-      }),
-    });
-
-  // screenreader accessible text input element
-  const [createdDisplayAspectRatioTextInput] =
-    returnAccessibleTextInputElements([
-      {
-        description: {
-          error: displayAspectRatioInputErrorText,
-          valid: displayAspectRatioInputValidText,
-        },
-        inputText: displayAspectRatio,
-        isValidInputText: isDisplayAspectRatioValid,
-        label: 'Display Aspect Ratio',
-        maxLength: 5,
-        minLength: 3,
-        onBlur: () => {
-          createProductDispatch({
-            type: createProductAction.setIsDisplayAspectRatioFocused,
-            payload: false,
-          });
-        },
-        onChange: (event: ChangeEvent<HTMLInputElement>) => {
-          createProductDispatch({
-            type: createProductAction.setDisplayAspectRatio,
-            payload: event.currentTarget.value,
-          });
-        },
-        onFocus: () => {
-          createProductDispatch({
-            type: createProductAction.setIsDisplayAspectRatioFocused,
-            payload: true,
-          });
-        },
-        placeholder: 'Format: 00:00',
-        required: true,
-        semanticName: 'display aspect ratio',
       },
     ]);
 
   // ╔═════════════════════════════════════════════════════════════════╗
-  //   DISPLAY ADDITIONAL FIELDS
+  //   HEADPHONE ADDITIONAL FIELDS
   // ╚═════════════════════════════════════════════════════════════════╝
 
   // ╭─────────────────────────────────────────────────────────────────╮
   //    ADD ADDITIONAL FIELD BUTTON
   // ╰─────────────────────────────────────────────────────────────────╯
-  const [createdAddDisplayFieldsAdditionalMapButton] =
+  const [createdAddHeadphoneFieldsAdditionalMapButton] =
     returnAccessibleButtonElements([
       {
         buttonLabel: 'Add',
-        semanticDescription: 'Add new additional Display field',
+        semanticDescription: 'Add new additional Headphone field',
         semanticName: 'Add new field',
         leftIcon: <TbPlus />,
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
           createProductDispatch({
-            type: createProductAction.setDisplayFieldsAdditionalMap,
+            type: createProductAction.setHeadphoneFieldsAdditionalMap,
             payload: {
               operation: 'add',
               data: ['', ''],
@@ -653,7 +528,7 @@ function CreateDisplay({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreDisplayFieldsAdditionalMapFocused,
+            type: createProductAction.setAreHeadphoneFieldsAdditionalMapFocused,
             payload: {
               operation: 'add',
               data: [false, false],
@@ -661,7 +536,7 @@ function CreateDisplay({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreDisplayFieldsAdditionalMapValid,
+            type: createProductAction.setAreHeadphoneFieldsAdditionalMapValid,
             payload: {
               operation: 'add',
               data: [false, false],
@@ -676,23 +551,23 @@ function CreateDisplay({
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // returns an array of tuples containing the error and valid text elements for each field name
-  const displayFieldsAdditionalMapKeysErrorValidTextElements: [
+  const headphoneFieldsAdditionalMapKeysErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(displayFieldsAdditionalMap).map((keyFieldValue) => {
+  ][] = Array.from(headphoneFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [field, _value]] = keyFieldValue;
 
     // error/valid text elements that are consumed by the text input element creator
     const [
-      displayFieldsAdditionalMapKeysInputErrorText,
-      displayFieldsAdditionalMapKeysInputValidText,
+      headphoneFieldsAdditionalMapKeysInputErrorText,
+      headphoneFieldsAdditionalMapKeysInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field name ${mapKey + 1}`,
       inputText: field,
       isInputTextFocused:
-        areDisplayFieldsAdditionalMapFocused.get(mapKey)?.[0] ?? false,
+        areHeadphoneFieldsAdditionalMapFocused.get(mapKey)?.[0] ?? false,
       isValidInputText:
-        areDisplayFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
+        areHeadphoneFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
       regexValidationText: returnObjectKeyValidationText({
         content: field,
         contentKind: `additional field name ${mapKey + 1}`,
@@ -702,32 +577,33 @@ function CreateDisplay({
     });
 
     return [
-      displayFieldsAdditionalMapKeysInputErrorText,
-      displayFieldsAdditionalMapKeysInputValidText,
+      headphoneFieldsAdditionalMapKeysInputErrorText,
+      headphoneFieldsAdditionalMapKeysInputValidText,
     ];
   });
 
   // ╭─────────────────────────────────────────────────────────────────╮
   //    ERROR/VALID ELEMENTS TUPLE => FIELD VALUES
   // ╰─────────────────────────────────────────────────────────────────╯
+
   // returns an array of tuples containing the error and valid text elements for each field value
-  const displayFieldsAdditionalMapValuesErrorValidTextElements: [
+  const headphoneFieldsAdditionalMapValuesErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(displayFieldsAdditionalMap).map((keyFieldValue) => {
+  ][] = Array.from(headphoneFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [_field, value]] = keyFieldValue;
 
     // error/valid text elements that are consumed by the text input element creator
     const [
-      displayFieldsAdditionalMapValuesInputErrorText,
-      displayFieldsAdditionalMapValuesInputValidText,
+      headphoneFieldsAdditionalMapValuesInputErrorText,
+      headphoneFieldsAdditionalMapValuesInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field value ${mapKey + 1}`,
       inputText: value,
       isInputTextFocused:
-        areDisplayFieldsAdditionalMapFocused.get(mapKey)?.[1] ?? false,
+        areHeadphoneFieldsAdditionalMapFocused.get(mapKey)?.[1] ?? false,
       isValidInputText:
-        areDisplayFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
+        areHeadphoneFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
       regexValidationText: returnUserDefinedFieldValueValidationText({
         content: value,
         contentKind: `additional field value ${mapKey + 1}`,
@@ -737,36 +613,36 @@ function CreateDisplay({
     });
 
     return [
-      displayFieldsAdditionalMapValuesInputErrorText,
-      displayFieldsAdditionalMapValuesInputValidText,
+      headphoneFieldsAdditionalMapValuesInputErrorText,
+      headphoneFieldsAdditionalMapValuesInputValidText,
     ];
   });
 
-  const createdDisplayFieldsAdditionalMapTextInputElements = Array.from(
-    displayFieldsAdditionalMap
+  const createdHeadphoneFieldsAdditionalMapTextInputElements = Array.from(
+    headphoneFieldsAdditionalMap
   ).map((keyFieldValue) => {
     const [mapKey, [field, value]] = keyFieldValue;
 
     // ╭─────────────────────────────────────────────────────────────────╮
     //    ADDITIONAL FIELD ACCESSIBLE TEXT INPUT => FIELD NAME
     // ╰─────────────────────────────────────────────────────────────────╯
-    const displayFieldsAdditionalMapKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const headphoneFieldsAdditionalMapKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
           error:
-            displayFieldsAdditionalMapKeysErrorValidTextElements[mapKey][0],
+            headphoneFieldsAdditionalMapKeysErrorValidTextElements[mapKey][0],
           valid:
-            displayFieldsAdditionalMapKeysErrorValidTextElements[mapKey][1],
+            headphoneFieldsAdditionalMapKeysErrorValidTextElements[mapKey][1],
         },
         inputText: field,
         isValidInputText:
-          areDisplayFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
+          areHeadphoneFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
         label: `Name ${mapKey + 1}`,
         maxLength: 75,
         minLength: 1,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreDisplayFieldsAdditionalMapFocused,
+            type: createProductAction.setAreHeadphoneFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -777,7 +653,7 @@ function CreateDisplay({
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setDisplayFieldsAdditionalMap,
+            type: createProductAction.setHeadphoneFieldsAdditionalMap,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -793,7 +669,7 @@ function CreateDisplay({
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreDisplayFieldsAdditionalMapFocused,
+            type: createProductAction.setAreHeadphoneFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -810,23 +686,23 @@ function CreateDisplay({
     // ╭─────────────────────────────────────────────────────────────────╮
     //    ADDITIONAL FIELD ACCESSIBLE TEXT INPUT => FIELD VALUE
     // ╰─────────────────────────────────────────────────────────────────╯
-    const displayFieldsAdditionalMapValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const headphoneFieldsAdditionalMapValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
           error:
-            displayFieldsAdditionalMapValuesErrorValidTextElements[mapKey][0],
+            headphoneFieldsAdditionalMapValuesErrorValidTextElements[mapKey][0],
           valid:
-            displayFieldsAdditionalMapValuesErrorValidTextElements[mapKey][1],
+            headphoneFieldsAdditionalMapValuesErrorValidTextElements[mapKey][1],
         },
         inputText: value,
         isValidInputText:
-          areDisplayFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
+          areHeadphoneFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
         label: `Value ${mapKey + 1}`,
         maxLength: 2000,
         minLength: 2,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreDisplayFieldsAdditionalMapFocused,
+            type: createProductAction.setAreHeadphoneFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -837,7 +713,7 @@ function CreateDisplay({
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setDisplayFieldsAdditionalMap,
+            type: createProductAction.setHeadphoneFieldsAdditionalMap,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -853,7 +729,7 @@ function CreateDisplay({
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreDisplayFieldsAdditionalMapFocused,
+            type: createProductAction.setAreHeadphoneFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -868,11 +744,11 @@ function CreateDisplay({
       };
 
     const [
-      createdDisplayFieldsAdditionalMapKeysTextAreaInput,
-      createdDisplayFieldsAdditionalMapValuesTextAreaInput,
+      createdHeadphoneFieldsAdditionalMapKeysTextAreaInput,
+      createdHeadphoneFieldsAdditionalMapValuesTextAreaInput,
     ] = returnAccessibleTextAreaInputElements([
-      displayFieldsAdditionalMapKeysTextInputCreatorInfo,
-      displayFieldsAdditionalMapValuesTextInputCreatorInfo,
+      headphoneFieldsAdditionalMapKeysTextInputCreatorInfo,
+      headphoneFieldsAdditionalMapValuesTextInputCreatorInfo,
     ]);
 
     // ╭─────────────────────────────────────────────────────────────────╮
@@ -883,7 +759,7 @@ function CreateDisplay({
         buttonLabel: 'Delete',
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
           createProductDispatch({
-            type: createProductAction.setDisplayFieldsAdditionalMap,
+            type: createProductAction.setHeadphoneFieldsAdditionalMap,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -891,7 +767,7 @@ function CreateDisplay({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreDisplayFieldsAdditionalMapFocused,
+            type: createProductAction.setAreHeadphoneFieldsAdditionalMapFocused,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -899,7 +775,7 @@ function CreateDisplay({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreDisplayFieldsAdditionalMapValid,
+            type: createProductAction.setAreHeadphoneFieldsAdditionalMapValid,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -912,28 +788,32 @@ function CreateDisplay({
           });
         },
         leftIcon: <TbTrash />,
-        semanticDescription: `Delete additional Display field ${mapKey + 1}`,
+        semanticDescription: `Delete additional Headphone field ${mapKey + 1}`,
         semanticName: 'Delete field and value',
       },
     ]);
 
     const displayDeleteButton = (
-      <Tooltip label={`Delete additional Display field ${mapKey + 1}`}>
+      <Tooltip label={`Delete additional Headphone field ${mapKey + 1}`}>
         <Group>{createdDeleteButton}</Group>
       </Tooltip>
     );
 
     return (
-      <Stack key={`displayFieldsAdditionalMap-${mapKey}`} pt={padding} w="100%">
+      <Stack
+        key={`headphoneFieldsAdditionalMap-${mapKey}`}
+        pt={padding}
+        w="100%"
+      >
         <Group position="apart">
-          <Text size="md" weight={600}>{`Additional Display field ${
+          <Text size="md" weight={600}>{`Additional Headphone field ${
             mapKey + 1
           }`}</Text>
           {displayDeleteButton}
         </Group>
         <Group position="apart">
-          {createdDisplayFieldsAdditionalMapKeysTextAreaInput}
-          {createdDisplayFieldsAdditionalMapValuesTextAreaInput}
+          {createdHeadphoneFieldsAdditionalMapKeysTextAreaInput}
+          {createdHeadphoneFieldsAdditionalMapValuesTextAreaInput}
         </Group>
       </Stack>
     );
@@ -945,34 +825,33 @@ function CreateDisplay({
   //  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
   // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
-  const displayDisplayFieldsAdditionalMapButton = (
+  const displayHeadphoneFieldsAdditionalMapButton = (
     <Tooltip
-      label={`Add additional Display field ${
-        displayFieldsAdditionalMap.size + 1
+      label={`Add additional Headphone field ${
+        headphoneFieldsAdditionalMap.size + 1
       }`}
     >
-      <Group>{createdAddDisplayFieldsAdditionalMapButton}</Group>
+      <Group>{createdAddHeadphoneFieldsAdditionalMapButton}</Group>
     </Tooltip>
   );
 
-  const displayDisplaySpecificationsInputs = (
+  const displayHeadphoneSpecificationsInputs = (
     <Group py={padding} position="apart" w="100%">
       <Group w="100%" position="apart">
-        <Title order={4}>Display Specifications</Title>
-        {displayDisplayFieldsAdditionalMapButton}
+        <Title order={4}>Headphone Specifications</Title>
+        {displayHeadphoneFieldsAdditionalMapButton}
       </Group>
-      {createdDisplaySizeTextInput}
-      {createdDisplayResolutionHorizontalTextInput}
-      {createdDisplayResolutionVerticalTextInput}
-      {createdDisplayRefreshRateTextInput}
-      {createdDisplayPanelTypeSelectInput}
-      {createdDisplayResponseTimeTextInput}
-      {createdDisplayAspectRatioTextInput}
-      {createdDisplayFieldsAdditionalMapTextInputElements}
+      {createdHeadphoneTypeSelectInput}
+      {createdHeadphoneDriverTextInput}
+      {createdHeadphoneFrequencyResponseTextInput}
+      {createdHeadphoneImpedanceTextInput}
+      {createdHeadphoneColorTextInput}
+      {createdHeadphoneInterfaceSelectInput}
+      {createdHeadphoneFieldsAdditionalMapTextInputElements}
     </Group>
   );
 
-  return displayDisplaySpecificationsInputs;
+  return displayHeadphoneSpecificationsInputs;
 }
 
-export default CreateDisplay;
+export default CreateHeadphone;

@@ -15,100 +15,116 @@ import {
   returnAccessibleSelectInputElements,
   returnAccessibleTextAreaInputElements,
   returnAccessibleTextInputElements,
-} from '../../../../jsxCreators';
+} from '../../../jsxCreators';
 import {
-  returnCpuFrequencyValidationText,
+  returnColorVariantValidationText,
+  returnDimensionsValidationText,
+  returnLargeIntegerValidationText,
   returnMediumIntegerValidationText,
+  returnMobileCameraResolutionValidationText,
   returnObjectKeyValidationText,
-  returnSmallIntegerValidationText,
   returnSocketChipsetValidationText,
   returnUserDefinedFieldValueValidationText,
-} from '../../../../utils';
-import { AccessibleTextAreaInputCreatorInfo } from '../../../wrappers';
+} from '../../../utils';
+import { AccessibleTextAreaInputCreatorInfo } from '../../wrappers';
 import {
-  CPU_FREQUENCY_REGEX,
-  CPU_SOCKET_REGEX,
+  COLOR_VARIANT_REGEX,
+  DIMENSIONS_REGEX,
+  LARGE_INTEGER_REGEX,
   MEDIUM_INTEGER_REGEX,
   MEMORY_UNIT_SELECT_INPUT_DATA,
+  MOBILE_CAMERA_REGEX,
+  MOBILE_OS_DATA,
   OBJECT_KEY_REGEX,
-  SMALL_INTEGER_REGEX,
+  TABLET_CHIPSET_REGEX,
   USER_DEFINED_VALUE_REGEX,
-} from '../../constants';
+} from '../constants';
 import {
   CreateProductAction,
   CreateProductDispatch,
   MemoryUnit,
+  MobileOs,
 } from '../types';
 
-type CreateCpuProps = {
-  areCpuFieldsAdditionalMapFocused: Map<number, [boolean, boolean]>;
-  areCpuFieldsAdditionalMapValid: Map<number, [boolean, boolean]>;
+type CreateTabletProps = {
+  areTabletFieldsAdditionalMapFocused: Map<number, [boolean, boolean]>;
+  areTabletFieldsAdditionalMapValid: Map<number, [boolean, boolean]>;
   borderColor: string;
-  cpuCores: string;
-  cpuFieldsAdditionalMap: Map<number, [string, string]>;
-  cpuFrequency: string;
-  cpuL1CacheCapacity: string;
-  cpuL1CacheCapacityUnit: MemoryUnit;
-  cpuL2CacheCapacity: string;
-  cpuL2CacheCapacityUnit: MemoryUnit;
-  cpuL3CacheCapacity: string;
-  cpuL3CacheCapacityUnit: MemoryUnit;
-  cpuSocket: string;
-  cpuWattage: string;
   createProductAction: CreateProductAction;
   createProductDispatch: React.Dispatch<CreateProductDispatch>;
   currentlySelectedAdditionalFieldIndex: number;
-  isCpuCoresFocused: boolean;
-  isCpuCoresValid: boolean;
-  isCpuFrequencyFocused: boolean;
-  isCpuFrequencyValid: boolean;
-  isCpuL1CacheCapacityFocused: boolean;
-  isCpuL1CacheCapacityValid: boolean;
-  isCpuL2CacheCapacityFocused: boolean;
-  isCpuL2CacheCapacityValid: boolean;
-  isCpuL3CacheCapacityFocused: boolean;
-  isCpuL3CacheCapacityValid: boolean;
-  isCpuSocketFocused: boolean;
-  isCpuSocketValid: boolean;
-  isCpuWattageFocused: boolean;
-  isCpuWattageValid: boolean;
+  isTabletBatteryCapacityFocused: boolean;
+  isTabletBatteryCapacityValid: boolean;
+  isTabletCameraFocused: boolean;
+  isTabletCameraValid: boolean;
+  isTabletChipsetFocused: boolean;
+  isTabletChipsetValid: boolean;
+  isTabletColorFocused: boolean;
+  isTabletColorValid: boolean;
+  isTabletDisplayFocused: boolean;
+  isTabletDisplayValid: boolean;
+  isTabletRamCapacityFocused: boolean;
+  isTabletRamCapacityValid: boolean;
+  isTabletResolutionHorizontalFocused: boolean;
+  isTabletResolutionHorizontalValid: boolean;
+  isTabletResolutionVerticalFocused: boolean;
+  isTabletResolutionVerticalValid: boolean;
+  isTabletStorageCapacityFocused: boolean;
+  isTabletStorageCapacityValid: boolean;
   padding: MantineNumberSize;
+  tabletBatteryCapacity: string; // mAh
+  tabletCamera: string; // 108 MP, 64 MP, etc.
+  tabletChipset: string;
+  tabletColor: string;
+  tabletDisplay: string;
+  tabletFieldsAdditionalMap: Map<number, [string, string]>;
+  tabletOs: MobileOs;
+  tabletRamCapacity: string;
+  tabletRamCapacityUnit: MemoryUnit;
+  tabletResolutionHorizontal: string;
+  tabletResolutionVertical: string;
+  tabletStorageCapacity: string; // GB
 };
 
-function CreateCpu({
-  areCpuFieldsAdditionalMapFocused,
-  areCpuFieldsAdditionalMapValid,
+function CreateTablet({
+  areTabletFieldsAdditionalMapFocused,
+  areTabletFieldsAdditionalMapValid,
   borderColor,
-  cpuCores,
-  cpuFieldsAdditionalMap,
-  cpuFrequency,
-  cpuL1CacheCapacity,
-  cpuL1CacheCapacityUnit,
-  cpuL2CacheCapacity,
-  cpuL2CacheCapacityUnit,
-  cpuL3CacheCapacity,
-  cpuL3CacheCapacityUnit,
-  cpuSocket,
-  cpuWattage,
   createProductAction,
   createProductDispatch,
   currentlySelectedAdditionalFieldIndex,
-  isCpuCoresFocused,
-  isCpuCoresValid,
-  isCpuFrequencyFocused,
-  isCpuFrequencyValid,
-  isCpuL1CacheCapacityFocused,
-  isCpuL1CacheCapacityValid,
-  isCpuL2CacheCapacityFocused,
-  isCpuL2CacheCapacityValid,
-  isCpuL3CacheCapacityFocused,
-  isCpuL3CacheCapacityValid,
-  isCpuSocketFocused,
-  isCpuSocketValid,
-  isCpuWattageFocused,
-  isCpuWattageValid,
+  isTabletBatteryCapacityFocused,
+  isTabletBatteryCapacityValid,
+  isTabletCameraFocused,
+  isTabletCameraValid,
+  isTabletChipsetFocused,
+  isTabletChipsetValid,
+  isTabletColorFocused,
+  isTabletColorValid,
+  isTabletDisplayFocused,
+  isTabletDisplayValid,
+  isTabletRamCapacityFocused,
+  isTabletRamCapacityValid,
+  isTabletResolutionHorizontalFocused,
+  isTabletResolutionHorizontalValid,
+  isTabletResolutionVerticalFocused,
+  isTabletResolutionVerticalValid,
+  isTabletStorageCapacityFocused,
+  isTabletStorageCapacityValid,
   padding,
-}: CreateCpuProps) {
+  tabletBatteryCapacity,
+  tabletCamera,
+  tabletChipset,
+  tabletColor,
+  tabletDisplay,
+  tabletFieldsAdditionalMap,
+  tabletOs,
+  tabletRamCapacity,
+  tabletRamCapacityUnit,
+  tabletResolutionHorizontal,
+  tabletResolutionVertical,
+  tabletStorageCapacity,
+}: CreateTabletProps) {
   // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
   //  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
   //    VALIDATION USE EFFECTS
@@ -116,130 +132,165 @@ function CreateCpu({
   // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    CPU SOCKET
+  //    TABLET CHIPSET
   // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
-    const isValid = CPU_SOCKET_REGEX.test(cpuSocket);
+    const isValid = TABLET_CHIPSET_REGEX.test(tabletChipset);
 
     createProductDispatch({
-      type: createProductAction.setIsCpuSocketValid,
+      type: createProductAction.setIsTabletChipsetValid,
       payload: isValid,
     });
   }, [
-    cpuSocket,
-    createProductAction.setIsCpuSocketValid,
+    createProductAction.setIsTabletChipsetValid,
     createProductDispatch,
+    tabletChipset,
   ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    CPU FREQUENCY
+  //    TABLET DISPLAY
   // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
-    const isValid = CPU_FREQUENCY_REGEX.test(cpuFrequency);
+    const isValid = DIMENSIONS_REGEX.test(tabletDisplay);
 
     createProductDispatch({
-      type: createProductAction.setIsCpuFrequencyValid,
+      type: createProductAction.setIsTabletDisplayValid,
       payload: isValid,
     });
   }, [
-    cpuFrequency,
-    createProductAction.setIsCpuFrequencyValid,
+    createProductAction.setIsTabletDisplayValid,
     createProductDispatch,
+    tabletDisplay,
   ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    CPU CORES
+  //    TABLET RESOLUTION HORIZONTAL
   // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
-    const isValid = SMALL_INTEGER_REGEX.test(cpuCores);
+    const isValid = LARGE_INTEGER_REGEX.test(tabletResolutionHorizontal);
 
     createProductDispatch({
-      type: createProductAction.setIsCpuCoresValid,
-      payload: isValid,
-    });
-  }, [cpuCores, createProductAction.setIsCpuCoresValid, createProductDispatch]);
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    CPU L1 CACHE CAPACITY
-  // ╰─────────────────────────────────────────────────────────────────╯
-  useEffect(() => {
-    const isValid = MEDIUM_INTEGER_REGEX.test(cpuL1CacheCapacity);
-
-    createProductDispatch({
-      type: createProductAction.setIsCpuL1CacheCapacityValid,
+      type: createProductAction.setIsTabletResolutionHorizontalValid,
       payload: isValid,
     });
   }, [
-    cpuL1CacheCapacity,
-    createProductAction.setIsCpuL1CacheCapacityValid,
+    createProductAction.setIsTabletResolutionHorizontalValid,
     createProductDispatch,
+    tabletResolutionHorizontal,
   ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    CPU L2 CACHE CAPACITY
+  //    TABLET RESOLUTION VERTICAL
   // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
-    const isValid = MEDIUM_INTEGER_REGEX.test(cpuL2CacheCapacity);
+    const isValid = LARGE_INTEGER_REGEX.test(tabletResolutionVertical);
 
     createProductDispatch({
-      type: createProductAction.setIsCpuL2CacheCapacityValid,
+      type: createProductAction.setIsTabletResolutionVerticalValid,
       payload: isValid,
     });
   }, [
-    cpuL2CacheCapacity,
-    createProductAction.setIsCpuL2CacheCapacityValid,
+    createProductAction.setIsTabletResolutionVerticalValid,
     createProductDispatch,
+    tabletResolutionVertical,
   ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    CPU L3 CACHE CAPACITY
+  //    TABLET RAM CAPACITY
   // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
-    const isValid = MEDIUM_INTEGER_REGEX.test(cpuL3CacheCapacity);
+    const isValid = MEDIUM_INTEGER_REGEX.test(tabletRamCapacity);
 
     createProductDispatch({
-      type: createProductAction.setIsCpuL3CacheCapacityValid,
+      type: createProductAction.setIsTabletRamCapacityValid,
       payload: isValid,
     });
   }, [
-    cpuL3CacheCapacity,
-    createProductAction.setIsCpuL3CacheCapacityValid,
+    createProductAction.setIsTabletRamCapacityValid,
     createProductDispatch,
+    tabletRamCapacity,
   ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    CPU WATTAGE
+  //    TABLET STORAGE CAPACITY
   // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
-    const isValid = MEDIUM_INTEGER_REGEX.test(cpuWattage);
+    const isValid = MEDIUM_INTEGER_REGEX.test(tabletStorageCapacity);
 
     createProductDispatch({
-      type: createProductAction.setIsCpuWattageValid,
+      type: createProductAction.setIsTabletStorageCapacityValid,
       payload: isValid,
     });
   }, [
-    cpuWattage,
-    createProductAction.setIsCpuWattageValid,
+    createProductAction.setIsTabletStorageCapacityValid,
     createProductDispatch,
+    tabletStorageCapacity,
   ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    CPU FIELDS ADDITIONAL
+  //    TABLET BATTERY CAPACITY
   // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
-    const currentlyUpdatingCpuFieldAdditional = cpuFieldsAdditionalMap.get(
-      currentlySelectedAdditionalFieldIndex
-    );
+    const isValid = LARGE_INTEGER_REGEX.test(tabletBatteryCapacity);
 
-    if (!currentlyUpdatingCpuFieldAdditional) {
+    createProductDispatch({
+      type: createProductAction.setIsTabletBatteryCapacityValid,
+      payload: isValid,
+    });
+  }, [
+    createProductAction.setIsTabletBatteryCapacityValid,
+    createProductDispatch,
+    tabletBatteryCapacity,
+  ]);
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    TABLET CAMERA
+  // ╰─────────────────────────────────────────────────────────────────╯
+  useEffect(() => {
+    const isValid = MOBILE_CAMERA_REGEX.test(tabletCamera);
+
+    createProductDispatch({
+      type: createProductAction.setIsTabletCameraValid,
+      payload: isValid,
+    });
+  }, [
+    createProductAction.setIsTabletCameraValid,
+    createProductDispatch,
+    tabletCamera,
+  ]);
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    TABLET COLOR
+  // ╰─────────────────────────────────────────────────────────────────╯
+  useEffect(() => {
+    const isValid = COLOR_VARIANT_REGEX.test(tabletColor);
+
+    createProductDispatch({
+      type: createProductAction.setIsTabletColorValid,
+      payload: isValid,
+    });
+  }, [
+    createProductAction.setIsTabletColorValid,
+    createProductDispatch,
+    tabletColor,
+  ]);
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    TABLET ADDITIONAL FIELDS
+  // ╰─────────────────────────────────────────────────────────────────╯
+  useEffect(() => {
+    const currentlyUpdatingTabletFieldAdditional =
+      tabletFieldsAdditionalMap.get(currentlySelectedAdditionalFieldIndex);
+
+    if (!currentlyUpdatingTabletFieldAdditional) {
       return;
     }
 
-    const [key, value] = currentlyUpdatingCpuFieldAdditional;
+    const [key, value] = currentlyUpdatingTabletFieldAdditional;
 
     const isKeyValid = OBJECT_KEY_REGEX.test(key);
     createProductDispatch({
-      type: createProductAction.setAreCpuFieldsAdditionalMapValid,
+      type: createProductAction.setAreTabletFieldsAdditionalMapValid,
       payload: {
         operation: 'update',
         data: isKeyValid,
@@ -250,7 +301,7 @@ function CreateCpu({
 
     const isValueValid = USER_DEFINED_VALUE_REGEX.test(value);
     createProductDispatch({
-      type: createProductAction.setAreCpuFieldsAdditionalMapValid,
+      type: createProductAction.setAreTabletFieldsAdditionalMapValid,
       payload: {
         operation: 'update',
         data: isValueValid,
@@ -259,10 +310,10 @@ function CreateCpu({
       },
     });
   }, [
-    currentlySelectedAdditionalFieldIndex,
-    cpuFieldsAdditionalMap,
+    createProductAction.setAreTabletFieldsAdditionalMapValid,
     createProductDispatch,
-    createProductAction.setAreCpuFieldsAdditionalMapValid,
+    currentlySelectedAdditionalFieldIndex,
+    tabletFieldsAdditionalMap,
   ]);
 
   // ╔═════════════════════════════════════════════════════════════════╗
@@ -273,38 +324,45 @@ function CreateCpu({
     // optional inputs with empty string count as valid
     // select inputs are not included as they always have a default value
 
-    const areCpuFieldsAdditionalMapInError = Array.from(
-      areCpuFieldsAdditionalMapValid
+    const areTabletHardcodedRequiredInputsInError =
+      !isTabletChipsetValid ||
+      !isTabletDisplayValid ||
+      !isTabletResolutionHorizontalValid ||
+      !isTabletResolutionVerticalValid ||
+      !isTabletRamCapacityValid ||
+      !isTabletStorageCapacityValid ||
+      !isTabletBatteryCapacityValid ||
+      !isTabletCameraValid ||
+      !isTabletColorValid;
+
+    const areTabletFieldsAdditionalMapInError = Array.from(
+      areTabletFieldsAdditionalMapValid
     ).some(([_key, value]) => !value);
 
-    const areCpuInputsInError =
-      !isCpuSocketValid ||
-      !isCpuFrequencyValid ||
-      !isCpuCoresValid ||
-      !isCpuL1CacheCapacityValid ||
-      !isCpuL2CacheCapacityValid ||
-      !isCpuL3CacheCapacityValid ||
-      !isCpuWattageValid ||
-      areCpuFieldsAdditionalMapInError;
+    const areTabletInputsInError =
+      areTabletHardcodedRequiredInputsInError ||
+      areTabletFieldsAdditionalMapInError;
 
     createProductDispatch({
       type: createProductAction.setStepsInError,
       payload: {
-        kind: areCpuInputsInError ? 'add' : 'delete',
+        kind: areTabletInputsInError ? 'add' : 'delete',
         step: 1,
       },
     });
   }, [
-    areCpuFieldsAdditionalMapValid,
+    areTabletFieldsAdditionalMapValid,
     createProductAction.setStepsInError,
     createProductDispatch,
-    isCpuCoresValid,
-    isCpuFrequencyValid,
-    isCpuL1CacheCapacityValid,
-    isCpuL2CacheCapacityValid,
-    isCpuL3CacheCapacityValid,
-    isCpuSocketValid,
-    isCpuWattageValid,
+    isTabletBatteryCapacityValid,
+    isTabletCameraValid,
+    isTabletChipsetValid,
+    isTabletColorValid,
+    isTabletDisplayValid,
+    isTabletRamCapacityValid,
+    isTabletResolutionHorizontalValid,
+    isTabletResolutionVerticalValid,
+    isTabletStorageCapacityValid,
   ]);
 
   // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
@@ -314,445 +372,542 @@ function CreateCpu({
   // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    CPU SOCKET
+  //    TABLET OS
   // ╰─────────────────────────────────────────────────────────────────╯
-  // accessible screen reader text elements
-  const [cpuSocketInputErrorText, cpuSocketInputValidText] =
+  const [createdTabletOsSelectInput] = returnAccessibleSelectInputElements([
+    {
+      data: MOBILE_OS_DATA,
+      description: '',
+      label: 'Tablet OS',
+      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+        createProductDispatch({
+          type: createProductAction.setTabletOs,
+          payload: event.currentTarget.value as MobileOs,
+        });
+      },
+      value: tabletOs,
+      required: true,
+    },
+  ]);
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    TABLET CHIPSET
+  // ╰─────────────────────────────────────────────────────────────────╯
+
+  // error/valid text elements
+  const [tabletChipsetInputErrorText, tabletChipsetInputValidText] =
     AccessibleErrorValidTextElements({
-      inputElementKind: 'cpu socket',
-      inputText: cpuSocket,
-      isInputTextFocused: isCpuSocketFocused,
-      isValidInputText: isCpuSocketValid,
+      inputElementKind: 'tablet chipset',
+      inputText: tabletChipset,
+      isInputTextFocused: isTabletChipsetFocused,
+      isValidInputText: isTabletChipsetValid,
       regexValidationText: returnSocketChipsetValidationText({
-        content: cpuSocket,
-        contentKind: 'cpu socket',
+        content: tabletChipset,
+        contentKind: 'tablet chipset',
         maxLength: 30,
         minLength: 2,
       }),
     });
 
   // screenreader accessible text input element
-  const [createdCpuSocketTextInput] = returnAccessibleTextInputElements([
+  const [createdTabletChipsetTextInput] = returnAccessibleTextInputElements([
     {
       description: {
-        error: cpuSocketInputErrorText,
-        valid: cpuSocketInputValidText,
+        error: tabletChipsetInputErrorText,
+        valid: tabletChipsetInputValidText,
       },
-      inputText: cpuSocket,
-      isValidInputText: isCpuSocketValid,
-      label: 'CPU Socket',
+      inputText: tabletChipset,
+      isValidInputText: isTabletChipsetValid,
+      label: 'Tablet Chipset',
       maxLength: 30,
       minLength: 2,
       onBlur: () => {
         createProductDispatch({
-          type: createProductAction.setIsCpuSocketFocused,
+          type: createProductAction.setIsTabletChipsetFocused,
           payload: false,
         });
       },
       onChange: (event: ChangeEvent<HTMLInputElement>) => {
         createProductDispatch({
-          type: createProductAction.setCpuSocket,
+          type: createProductAction.setTabletChipset,
           payload: event.currentTarget.value,
         });
       },
       onFocus: () => {
         createProductDispatch({
-          type: createProductAction.setIsCpuSocketFocused,
+          type: createProductAction.setIsTabletChipsetFocused,
           payload: true,
         });
       },
-      placeholder: 'Enter CPU socket',
+      placeholder: 'Enter tablet chipset',
       required: true,
-      semanticName: 'cpu socket',
+      semanticName: 'tablet chipset',
     },
   ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    CPU FREQUENCY
+  //    TABLET DISPLAY
   // ╰─────────────────────────────────────────────────────────────────╯
 
-  // screenreader accessible text input elements
-  const [cpuFrequencyInputErrorText, cpuFrequencyInputValidText] =
+  // error/valid text elements
+  const [tabletDisplayInputErrorText, tabletDisplayInputValidText] =
     AccessibleErrorValidTextElements({
-      inputElementKind: 'cpu frequency',
-      inputText: cpuFrequency,
-      isInputTextFocused: isCpuFrequencyFocused,
-      isValidInputText: isCpuFrequencyValid,
-      regexValidationText: returnCpuFrequencyValidationText({
-        content: cpuFrequency,
-        contentKind: 'cpu frequency',
+      inputElementKind: 'tablet display',
+      inputText: tabletDisplay,
+      isInputTextFocused: isTabletDisplayFocused,
+      isValidInputText: isTabletDisplayValid,
+      regexValidationText: returnDimensionsValidationText({
+        content: tabletDisplay,
+        contentKind: 'tablet display',
       }),
     });
 
   // screenreader accessible text input element
-  const [createdCpuFrequencyTextInput] = returnAccessibleTextInputElements([
+  const [createdTabletDisplayTextInput] = returnAccessibleTextInputElements([
     {
       description: {
-        error: cpuFrequencyInputErrorText,
-        valid: cpuFrequencyInputValidText,
+        error: tabletDisplayInputErrorText,
+        valid: tabletDisplayInputValidText,
       },
-      inputText: cpuFrequency,
-      isValidInputText: isCpuFrequencyValid,
-      label: 'CPU Frequency (GHz)',
+      inputText: tabletDisplay,
+      isValidInputText: isTabletDisplayValid,
+      label: 'Tablet Display (inches)',
       onBlur: () => {
         createProductDispatch({
-          type: createProductAction.setIsCpuFrequencyFocused,
+          type: createProductAction.setIsTabletDisplayFocused,
           payload: false,
         });
       },
       onChange: (event: ChangeEvent<HTMLInputElement>) => {
         createProductDispatch({
-          type: createProductAction.setCpuFrequency,
+          type: createProductAction.setTabletDisplay,
           payload: event.currentTarget.value,
         });
       },
       onFocus: () => {
         createProductDispatch({
-          type: createProductAction.setIsCpuFrequencyFocused,
+          type: createProductAction.setIsTabletDisplayFocused,
           payload: true,
         });
       },
-      placeholder: 'Format: 0.0 or 0.00',
+      placeholder: 'Format: 000.00',
       required: true,
-      semanticName: 'cpu frequency',
+      semanticName: 'tablet display',
     },
   ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    CPU CORES
+  //    TABLET RESOLUTION HORIZONTAL
   // ╰─────────────────────────────────────────────────────────────────╯
 
-  // screenreader accessible text input elements
-  const [cpuCoresInputErrorText, cpuCoresInputValidText] =
-    AccessibleErrorValidTextElements({
-      inputElementKind: 'cpu cores',
-      inputText: cpuCores,
-      isInputTextFocused: isCpuCoresFocused,
-      isValidInputText: isCpuCoresValid,
-      regexValidationText: returnSmallIntegerValidationText({
-        content: cpuCores,
-        contentKind: 'cpu cores',
-      }),
-    });
+  // error/valid text elements
+  const [
+    tabletResolutionHorizontalInputErrorText,
+    tabletResolutionHorizontalInputValidText,
+  ] = AccessibleErrorValidTextElements({
+    inputElementKind: 'tablet resolution horizontal',
+    inputText: tabletResolutionHorizontal,
+    isInputTextFocused: isTabletResolutionHorizontalFocused,
+    isValidInputText: isTabletResolutionHorizontalValid,
+    regexValidationText: returnLargeIntegerValidationText({
+      content: tabletResolutionHorizontal,
+      contentKind: 'tablet resolution horizontal',
+    }),
+  });
 
   // screenreader accessible text input element
-  const [createdCpuCoresTextInput] = returnAccessibleTextInputElements([
-    {
-      description: {
-        error: cpuCoresInputErrorText,
-        valid: cpuCoresInputValidText,
-      },
-      inputText: cpuCores,
-      isValidInputText: isCpuCoresValid,
-      label: 'CPU Cores',
-      onBlur: () => {
-        createProductDispatch({
-          type: createProductAction.setIsCpuCoresFocused,
-          payload: false,
-        });
-      },
-      onChange: (event: ChangeEvent<HTMLInputElement>) => {
-        createProductDispatch({
-          type: createProductAction.setCpuCores,
-          payload: event.currentTarget.value,
-        });
-      },
-      onFocus: () => {
-        createProductDispatch({
-          type: createProductAction.setIsCpuCoresFocused,
-          payload: true,
-        });
-      },
-      placeholder: 'Enter CPU cores',
-      required: true,
-      semanticName: 'cpu cores',
-    },
-  ]);
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    CPU L1 CACHE CAPACITY
-  // ╰─────────────────────────────────────────────────────────────────╯
-
-  // screenreader accessible text input elements
-  const [cpuL1CacheCapacityInputErrorText, cpuL1CacheCapacityInputValidText] =
-    AccessibleErrorValidTextElements({
-      inputElementKind: 'cpu L1 cache capacity',
-      inputText: cpuL1CacheCapacity,
-      isInputTextFocused: isCpuL1CacheCapacityFocused,
-      isValidInputText: isCpuL1CacheCapacityValid,
-      regexValidationText: returnMediumIntegerValidationText({
-        content: cpuL1CacheCapacity,
-        contentKind: 'cpu L1 cache capacity',
-      }),
-    });
-
-  // screenreader accessible text input element
-  const [createdCpuL1CacheCapacityTextInput] =
+  const [createdTabletResolutionHorizontalTextInput] =
     returnAccessibleTextInputElements([
       {
         description: {
-          error: cpuL1CacheCapacityInputErrorText,
-          valid: cpuL1CacheCapacityInputValidText,
+          error: tabletResolutionHorizontalInputErrorText,
+          valid: tabletResolutionHorizontalInputValidText,
         },
-        inputText: cpuL1CacheCapacity,
-        isValidInputText: isCpuL1CacheCapacityValid,
-        label: 'CPU L1 Cache Capacity',
+        inputText: tabletResolutionHorizontal,
+        isValidInputText: isTabletResolutionHorizontalValid,
+        label: 'Tablet Resolution Horizontal (pixels)',
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setIsCpuL1CacheCapacityFocused,
+            type: createProductAction.setIsTabletResolutionHorizontalFocused,
             payload: false,
           });
         },
         onChange: (event: ChangeEvent<HTMLInputElement>) => {
           createProductDispatch({
-            type: createProductAction.setCpuL1CacheCapacity,
+            type: createProductAction.setTabletResolutionHorizontal,
             payload: event.currentTarget.value,
           });
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setIsCpuL1CacheCapacityFocused,
+            type: createProductAction.setIsTabletResolutionHorizontalFocused,
             payload: true,
           });
         },
-        placeholder: 'Enter CPU L1 cache capacity',
+        placeholder: 'Format: 000000',
         required: true,
-        semanticName: 'cpu L1 cache capacity',
+        semanticName: 'tablet resolution horizontal',
       },
     ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    CPU L1 CACHE CAPACITY UNIT
-  // ╰─────────────────────────────────────────────────────────────────╯
-  const [createdCpuL1CacheCapacityUnitSelectInput] =
-    returnAccessibleSelectInputElements([
-      {
-        data: MEMORY_UNIT_SELECT_INPUT_DATA,
-        description: '',
-        label: 'CPU L1 Cache Capacity Unit',
-        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-          createProductDispatch({
-            type: createProductAction.setCpuL1CacheCapacityUnit,
-            payload: event.currentTarget.value as MemoryUnit,
-          });
-        },
-        value: cpuL1CacheCapacityUnit,
-        required: true,
-      },
-    ]);
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    CPU L2 CACHE CAPACITY
+  //    TABLET RESOLUTION VERTICAL
   // ╰─────────────────────────────────────────────────────────────────╯
 
-  // screenreader accessible text input elements
-  const [cpuL2CacheCapacityInputErrorText, cpuL2CacheCapacityInputValidText] =
-    AccessibleErrorValidTextElements({
-      inputElementKind: 'cpu L2 cache capacity',
-      inputText: cpuL2CacheCapacity,
-      isInputTextFocused: isCpuL2CacheCapacityFocused,
-      isValidInputText: isCpuL2CacheCapacityValid,
-      regexValidationText: returnMediumIntegerValidationText({
-        content: cpuL2CacheCapacity,
-        contentKind: 'cpu L2 cache capacity',
-      }),
-    });
+  // error/valid text elements
+  const [
+    tabletResolutionVerticalInputErrorText,
+    tabletResolutionVerticalInputValidText,
+  ] = AccessibleErrorValidTextElements({
+    inputElementKind: 'tablet resolution vertical',
+    inputText: tabletResolutionVertical,
+    isInputTextFocused: isTabletResolutionVerticalFocused,
+    isValidInputText: isTabletResolutionVerticalValid,
+    regexValidationText: returnLargeIntegerValidationText({
+      content: tabletResolutionVertical,
+      contentKind: 'tablet resolution vertical',
+    }),
+  });
 
   // screenreader accessible text input element
-  const [createdCpuL2CacheCapacityTextInput] =
+  const [createdTabletResolutionVerticalTextInput] =
     returnAccessibleTextInputElements([
       {
         description: {
-          error: cpuL2CacheCapacityInputErrorText,
-          valid: cpuL2CacheCapacityInputValidText,
+          error: tabletResolutionVerticalInputErrorText,
+          valid: tabletResolutionVerticalInputValidText,
         },
-        inputText: cpuL2CacheCapacity,
-        isValidInputText: isCpuL2CacheCapacityValid,
-        label: 'CPU L2 Cache Capacity',
+        inputText: tabletResolutionVertical,
+        isValidInputText: isTabletResolutionVerticalValid,
+        label: 'Tablet Resolution Vertical (pixels)',
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setIsCpuL2CacheCapacityFocused,
+            type: createProductAction.setIsTabletResolutionVerticalFocused,
             payload: false,
           });
         },
         onChange: (event: ChangeEvent<HTMLInputElement>) => {
           createProductDispatch({
-            type: createProductAction.setCpuL2CacheCapacity,
+            type: createProductAction.setTabletResolutionVertical,
             payload: event.currentTarget.value,
           });
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setIsCpuL2CacheCapacityFocused,
+            type: createProductAction.setIsTabletResolutionVerticalFocused,
             payload: true,
           });
         },
-        placeholder: 'Enter CPU L2 cache capacity',
+        placeholder: 'Format: 000000',
         required: true,
-        semanticName: 'cpu L2 cache capacity',
+        semanticName: 'tablet resolution vertical',
       },
     ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    CPU L2 CACHE CAPACITY UNIT
-  // ╰─────────────────────────────────────────────────────────────────╯
-  const [createdCpuL2CacheCapacityUnitSelectInput] =
-    returnAccessibleSelectInputElements([
-      {
-        data: MEMORY_UNIT_SELECT_INPUT_DATA,
-        description: '',
-        label: 'CPU L2 Cache Capacity Unit',
-        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-          createProductDispatch({
-            type: createProductAction.setCpuL2CacheCapacityUnit,
-            payload: event.currentTarget.value as MemoryUnit,
-          });
-        },
-        value: cpuL2CacheCapacityUnit,
-        required: true,
-      },
-    ]);
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    CPU L3 CACHE CAPACITY
+  //    TABLET RAM CAPACITY
   // ╰─────────────────────────────────────────────────────────────────╯
 
-  // screenreader accessible text input elements
-  const [cpuL3CacheCapacityInputErrorText, cpuL3CacheCapacityInputValidText] =
+  // error/valid text elements
+  const [tabletRamCapacityInputErrorText, tabletRamCapacityInputValidText] =
     AccessibleErrorValidTextElements({
-      inputElementKind: 'cpu L3 cache capacity',
-      inputText: cpuL3CacheCapacity,
-      isInputTextFocused: isCpuL3CacheCapacityFocused,
-      isValidInputText: isCpuL3CacheCapacityValid,
+      inputElementKind: 'tablet ram capacity',
+      inputText: tabletRamCapacity,
+      isInputTextFocused: isTabletRamCapacityFocused,
+      isValidInputText: isTabletRamCapacityValid,
       regexValidationText: returnMediumIntegerValidationText({
-        content: cpuL3CacheCapacity,
-        contentKind: 'cpu L3 cache capacity',
+        content: tabletRamCapacity,
+        contentKind: 'tablet ram capacity',
       }),
     });
 
   // screenreader accessible text input element
-  const [createdCpuL3CacheCapacityTextInput] =
-    returnAccessibleTextInputElements([
+  const [createdTabletRamCapacityTextInput] = returnAccessibleTextInputElements(
+    [
       {
         description: {
-          error: cpuL3CacheCapacityInputErrorText,
-          valid: cpuL3CacheCapacityInputValidText,
+          error: tabletRamCapacityInputErrorText,
+          valid: tabletRamCapacityInputValidText,
         },
-        inputText: cpuL3CacheCapacity,
-        isValidInputText: isCpuL3CacheCapacityValid,
-        label: 'CPU L3 Cache Capacity',
+        inputText: tabletRamCapacity,
+        isValidInputText: isTabletRamCapacityValid,
+        label: 'Tablet RAM Capacity (GB)',
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setIsCpuL3CacheCapacityFocused,
+            type: createProductAction.setIsTabletRamCapacityFocused,
             payload: false,
           });
         },
         onChange: (event: ChangeEvent<HTMLInputElement>) => {
           createProductDispatch({
-            type: createProductAction.setCpuL3CacheCapacity,
+            type: createProductAction.setTabletRamCapacity,
             payload: event.currentTarget.value,
           });
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setIsCpuL3CacheCapacityFocused,
+            type: createProductAction.setIsTabletRamCapacityFocused,
             payload: true,
           });
         },
-        placeholder: 'Enter CPU L3 cache capacity',
+        placeholder: 'Format: 0000',
         required: true,
-        semanticName: 'cpu L3 cache capacity',
+        semanticName: 'tablet ram capacity',
       },
-    ]);
+    ]
+  );
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    CPU L3 CACHE CAPACITY UNIT
+  //    TABLET RAM CAPACITY UNIT
   // ╰─────────────────────────────────────────────────────────────────╯
-  const [createdCpuL3CacheCapacityUnitSelectInput] =
+  const [createdTabletRamCapacityUnitSelectInput] =
     returnAccessibleSelectInputElements([
       {
         data: MEMORY_UNIT_SELECT_INPUT_DATA,
         description: '',
-        label: 'CPU L3 Cache Capacity Unit',
+        label: 'Tablet RAM Capacity Unit',
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           createProductDispatch({
-            type: createProductAction.setCpuL3CacheCapacityUnit,
+            type: createProductAction.setTabletRamCapacityUnit,
             payload: event.currentTarget.value as MemoryUnit,
           });
         },
-        value: cpuL3CacheCapacityUnit,
+        value: tabletRamCapacityUnit,
         required: true,
       },
     ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    CPU WATTAGE
+  //    TABLET STORAGE CAPACITY
+  // ╰─────────────────────────────────────────────────────────────────╯
+  const [
+    tabletStorageCapacityInputErrorText,
+    tabletStorageCapacityInputValidText,
+  ] = AccessibleErrorValidTextElements({
+    inputElementKind: 'tablet storage capacity',
+    inputText: tabletStorageCapacity,
+    isInputTextFocused: isTabletStorageCapacityFocused,
+    isValidInputText: isTabletStorageCapacityValid,
+    regexValidationText: returnMediumIntegerValidationText({
+      content: tabletStorageCapacity,
+      contentKind: 'tablet storage capacity',
+    }),
+  });
+
+  // screenreader accessible text input element
+  const [createdTabletStorageCapacityTextInput] =
+    returnAccessibleTextInputElements([
+      {
+        description: {
+          error: tabletStorageCapacityInputErrorText,
+          valid: tabletStorageCapacityInputValidText,
+        },
+        inputText: tabletStorageCapacity,
+        isValidInputText: isTabletStorageCapacityValid,
+        label: 'Tablet Storage Capacity (GB)',
+        onBlur: () => {
+          createProductDispatch({
+            type: createProductAction.setIsTabletStorageCapacityFocused,
+            payload: false,
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLInputElement>) => {
+          createProductDispatch({
+            type: createProductAction.setTabletStorageCapacity,
+            payload: event.currentTarget.value,
+          });
+        },
+        onFocus: () => {
+          createProductDispatch({
+            type: createProductAction.setIsTabletStorageCapacityFocused,
+            payload: true,
+          });
+        },
+        placeholder: 'Format: 0000',
+        required: true,
+        semanticName: 'tablet storage capacity',
+      },
+    ]);
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    TABLET BATTERY CAPACITY
   // ╰─────────────────────────────────────────────────────────────────╯
 
-  // screenreader accessible text input elements
-  const [cpuWattageInputErrorText, cpuWattageInputValidText] =
+  // error/valid text elements
+  const [
+    tabletBatteryCapacityInputErrorText,
+    tabletBatteryCapacityInputValidText,
+  ] = AccessibleErrorValidTextElements({
+    inputElementKind: 'tablet battery capacity',
+    inputText: tabletBatteryCapacity,
+    isInputTextFocused: isTabletBatteryCapacityFocused,
+    isValidInputText: isTabletBatteryCapacityValid,
+    regexValidationText: returnLargeIntegerValidationText({
+      content: tabletBatteryCapacity,
+      contentKind: 'tablet battery capacity',
+    }),
+  });
+
+  // screenreader accessible text input element
+  const [createdTabletBatteryCapacityTextInput] =
+    returnAccessibleTextInputElements([
+      {
+        description: {
+          error: tabletBatteryCapacityInputErrorText,
+          valid: tabletBatteryCapacityInputValidText,
+        },
+        inputText: tabletBatteryCapacity,
+        isValidInputText: isTabletBatteryCapacityValid,
+        label: 'Tablet Battery Capacity (mAh)',
+        onBlur: () => {
+          createProductDispatch({
+            type: createProductAction.setIsTabletBatteryCapacityFocused,
+            payload: false,
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLInputElement>) => {
+          createProductDispatch({
+            type: createProductAction.setTabletBatteryCapacity,
+            payload: event.currentTarget.value,
+          });
+        },
+        onFocus: () => {
+          createProductDispatch({
+            type: createProductAction.setIsTabletBatteryCapacityFocused,
+            payload: true,
+          });
+        },
+        placeholder: 'Format: 000000',
+        required: true,
+        semanticName: 'tablet battery capacity',
+      },
+    ]);
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    TABLET CAMERA
+  // ╰─────────────────────────────────────────────────────────────────╯
+  const [tabletCameraInputErrorText, tabletCameraInputValidText] =
     AccessibleErrorValidTextElements({
-      inputElementKind: 'cpu wattage',
-      inputText: cpuWattage,
-      isInputTextFocused: isCpuWattageFocused,
-      isValidInputText: isCpuWattageValid,
-      regexValidationText: returnMediumIntegerValidationText({
-        content: cpuWattage,
-        contentKind: 'cpu wattage',
+      inputElementKind: 'tablet camera',
+      inputText: tabletCamera,
+      isInputTextFocused: isTabletCameraFocused,
+      isValidInputText: isTabletCameraValid,
+      regexValidationText: returnMobileCameraResolutionValidationText({
+        content: tabletCamera,
+        contentKind: 'tablet camera',
+        maxLength: 84,
+        minLength: 4,
       }),
     });
 
   // screenreader accessible text input element
-  const [createdCpuWattageTextInput] = returnAccessibleTextInputElements([
+  const [createdTabletCameraTextInput] = returnAccessibleTextInputElements([
     {
       description: {
-        error: cpuWattageInputErrorText,
-        valid: cpuWattageInputValidText,
+        error: tabletCameraInputErrorText,
+        valid: tabletCameraInputValidText,
       },
-      inputText: cpuWattage,
-      isValidInputText: isCpuWattageValid,
-      label: 'CPU Wattage',
+      inputText: tabletCamera,
+      isValidInputText: isTabletCameraValid,
+      label: 'Tablet Camera',
+      maxLength: 84,
+      minLength: 4,
       onBlur: () => {
         createProductDispatch({
-          type: createProductAction.setIsCpuWattageFocused,
+          type: createProductAction.setIsTabletCameraFocused,
           payload: false,
         });
       },
       onChange: (event: ChangeEvent<HTMLInputElement>) => {
         createProductDispatch({
-          type: createProductAction.setCpuWattage,
+          type: createProductAction.setTabletCamera,
           payload: event.currentTarget.value,
         });
       },
       onFocus: () => {
         createProductDispatch({
-          type: createProductAction.setIsCpuWattageFocused,
+          type: createProductAction.setIsTabletCameraFocused,
           payload: true,
         });
       },
-      placeholder: 'Enter CPU wattage',
+      placeholder: 'Enter tablet camera',
       required: true,
-      semanticName: 'cpu wattage',
+      semanticName: 'tablet camera',
+    },
+  ]);
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    TABLET COLOR
+  // ╰─────────────────────────────────────────────────────────────────╯
+
+  // error/valid text elements
+  const [tabletColorInputErrorText, tabletColorInputValidText] =
+    AccessibleErrorValidTextElements({
+      inputElementKind: 'tablet color',
+      inputText: tabletColor,
+      isInputTextFocused: isTabletColorFocused,
+      isValidInputText: isTabletColorValid,
+      regexValidationText: returnColorVariantValidationText({
+        content: tabletColor,
+        contentKind: 'tablet color',
+        maxLength: 30,
+        minLength: 2,
+      }),
+    });
+
+  // screenreader accessible text input element
+  const [createdTabletColorTextInput] = returnAccessibleTextInputElements([
+    {
+      description: {
+        error: tabletColorInputErrorText,
+        valid: tabletColorInputValidText,
+      },
+      inputText: tabletColor,
+      isValidInputText: isTabletColorValid,
+      label: 'Tablet Color',
+      maxLength: 30,
+      minLength: 2,
+      onBlur: () => {
+        createProductDispatch({
+          type: createProductAction.setIsTabletColorFocused,
+          payload: false,
+        });
+      },
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
+        createProductDispatch({
+          type: createProductAction.setTabletColor,
+          payload: event.currentTarget.value,
+        });
+      },
+      onFocus: () => {
+        createProductDispatch({
+          type: createProductAction.setIsTabletColorFocused,
+          payload: true,
+        });
+      },
+      placeholder: 'Enter tablet color',
+      required: true,
+      semanticName: 'tablet color',
     },
   ]);
 
   // ╔═════════════════════════════════════════════════════════════════╗
-  //   CPU ADDITIONAL FIELDS
+  //   TABLET ADDITIONAL FIELDS
   // ╚═════════════════════════════════════════════════════════════════╝
 
   // ╭─────────────────────────────────────────────────────────────────╮
   //    ADD ADDITIONAL FIELD BUTTON
   // ╰─────────────────────────────────────────────────────────────────╯
-  const [createdAddCpuFieldsAdditionalMapButton] =
+  const [createdAddTabletFieldsAdditionalMapButton] =
     returnAccessibleButtonElements([
       {
         buttonLabel: 'Add',
-        semanticDescription: 'Add new additional CPU field',
+        semanticDescription: 'Add new additional Tablet field',
         semanticName: 'Add new field',
         leftIcon: <TbPlus />,
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
           createProductDispatch({
-            type: createProductAction.setCpuFieldsAdditionalMap,
+            type: createProductAction.setTabletFieldsAdditionalMap,
             payload: {
               operation: 'add',
               data: ['', ''],
@@ -760,7 +915,7 @@ function CreateCpu({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreCpuFieldsAdditionalMapFocused,
+            type: createProductAction.setAreTabletFieldsAdditionalMapFocused,
             payload: {
               operation: 'add',
               data: [false, false],
@@ -768,7 +923,7 @@ function CreateCpu({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreCpuFieldsAdditionalMapValid,
+            type: createProductAction.setAreTabletFieldsAdditionalMapValid,
             payload: {
               operation: 'add',
               data: [false, false],
@@ -783,23 +938,23 @@ function CreateCpu({
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // returns an array of tuples containing the error and valid text elements for each field name
-  const cpuFieldsAdditionalMapKeysErrorValidTextElements: [
+  const tabletFieldsAdditionalMapKeysErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(cpuFieldsAdditionalMap).map((keyFieldValue) => {
+  ][] = Array.from(tabletFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [field, _value]] = keyFieldValue;
 
     // error/valid text elements that are consumed by the text input element creator
     const [
-      cpuFieldsAdditionalMapKeysInputErrorText,
-      cpuFieldsAdditionalMapKeysInputValidText,
+      tabletFieldsAdditionalMapKeysInputErrorText,
+      tabletFieldsAdditionalMapKeysInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field name ${mapKey + 1}`,
       inputText: field,
       isInputTextFocused:
-        areCpuFieldsAdditionalMapFocused.get(mapKey)?.[0] ?? false,
+        areTabletFieldsAdditionalMapFocused.get(mapKey)?.[0] ?? false,
       isValidInputText:
-        areCpuFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
+        areTabletFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
       regexValidationText: returnObjectKeyValidationText({
         content: field,
         contentKind: `additional field name ${mapKey + 1}`,
@@ -809,8 +964,8 @@ function CreateCpu({
     });
 
     return [
-      cpuFieldsAdditionalMapKeysInputErrorText,
-      cpuFieldsAdditionalMapKeysInputValidText,
+      tabletFieldsAdditionalMapKeysInputErrorText,
+      tabletFieldsAdditionalMapKeysInputValidText,
     ];
   });
 
@@ -819,23 +974,23 @@ function CreateCpu({
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // returns an array of tuples containing the error and valid text elements for each field value
-  const cpuFieldsAdditionalMapValuesErrorValidTextElements: [
+  const tabletFieldsAdditionalMapValuesErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(cpuFieldsAdditionalMap).map((keyFieldValue) => {
+  ][] = Array.from(tabletFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [_field, value]] = keyFieldValue;
 
     // error/valid text elements that are consumed by the text input element creator
     const [
-      cpuFieldsAdditionalMapValuesInputErrorText,
-      cpuFieldsAdditionalMapValuesInputValidText,
+      tabletFieldsAdditionalMapValuesInputErrorText,
+      tabletFieldsAdditionalMapValuesInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field value ${mapKey + 1}`,
       inputText: value,
       isInputTextFocused:
-        areCpuFieldsAdditionalMapFocused.get(mapKey)?.[1] ?? false,
+        areTabletFieldsAdditionalMapFocused.get(mapKey)?.[1] ?? false,
       isValidInputText:
-        areCpuFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
+        areTabletFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
       regexValidationText: returnUserDefinedFieldValueValidationText({
         content: value,
         contentKind: `additional field value ${mapKey + 1}`,
@@ -845,34 +1000,34 @@ function CreateCpu({
     });
 
     return [
-      cpuFieldsAdditionalMapValuesInputErrorText,
-      cpuFieldsAdditionalMapValuesInputValidText,
+      tabletFieldsAdditionalMapValuesInputErrorText,
+      tabletFieldsAdditionalMapValuesInputValidText,
     ];
   });
 
-  const createdCpuFieldsAdditionalMapTextInputElements = Array.from(
-    cpuFieldsAdditionalMap
+  const createdTabletFieldsAdditionalMapTextInputElements = Array.from(
+    tabletFieldsAdditionalMap
   ).map((keyFieldValue) => {
     const [mapKey, [field, value]] = keyFieldValue;
 
     // ╭─────────────────────────────────────────────────────────────────╮
     //    ADDITIONAL FIELD ACCESSIBLE TEXT INPUT => FIELD NAME
     // ╰─────────────────────────────────────────────────────────────────╯
-    const cpuFieldsAdditionalMapKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const tabletFieldsAdditionalMapKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
-          error: cpuFieldsAdditionalMapKeysErrorValidTextElements[mapKey][0],
-          valid: cpuFieldsAdditionalMapKeysErrorValidTextElements[mapKey][1],
+          error: tabletFieldsAdditionalMapKeysErrorValidTextElements[mapKey][0],
+          valid: tabletFieldsAdditionalMapKeysErrorValidTextElements[mapKey][1],
         },
         inputText: field,
         isValidInputText:
-          areCpuFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
+          areTabletFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
         label: `Name ${mapKey + 1}`,
         maxLength: 75,
         minLength: 1,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreCpuFieldsAdditionalMapFocused,
+            type: createProductAction.setAreTabletFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -883,7 +1038,7 @@ function CreateCpu({
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setCpuFieldsAdditionalMap,
+            type: createProductAction.setTabletFieldsAdditionalMap,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -899,7 +1054,7 @@ function CreateCpu({
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreCpuFieldsAdditionalMapFocused,
+            type: createProductAction.setAreTabletFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -916,21 +1071,23 @@ function CreateCpu({
     // ╭─────────────────────────────────────────────────────────────────╮
     //    ADDITIONAL FIELD ACCESSIBLE TEXT INPUT => FIELD VALUE
     // ╰─────────────────────────────────────────────────────────────────╯
-    const cpuFieldsAdditionalMapValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const tabletFieldsAdditionalMapValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
-          error: cpuFieldsAdditionalMapValuesErrorValidTextElements[mapKey][0],
-          valid: cpuFieldsAdditionalMapValuesErrorValidTextElements[mapKey][1],
+          error:
+            tabletFieldsAdditionalMapValuesErrorValidTextElements[mapKey][0],
+          valid:
+            tabletFieldsAdditionalMapValuesErrorValidTextElements[mapKey][1],
         },
         inputText: value,
         isValidInputText:
-          areCpuFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
+          areTabletFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
         label: `Value ${mapKey + 1}`,
         maxLength: 2000,
         minLength: 2,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreCpuFieldsAdditionalMapFocused,
+            type: createProductAction.setAreTabletFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -941,7 +1098,7 @@ function CreateCpu({
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setCpuFieldsAdditionalMap,
+            type: createProductAction.setTabletFieldsAdditionalMap,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -957,7 +1114,7 @@ function CreateCpu({
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreCpuFieldsAdditionalMapFocused,
+            type: createProductAction.setAreTabletFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -972,11 +1129,11 @@ function CreateCpu({
       };
 
     const [
-      createdCpuFieldsAdditionalMapKeysTextAreaInput,
-      createdCpuFieldsAdditionalMapValuesTextAreaInput,
+      createdTabletFieldsAdditionalMapKeysTextAreaInput,
+      createdTabletFieldsAdditionalMapValuesTextAreaInput,
     ] = returnAccessibleTextAreaInputElements([
-      cpuFieldsAdditionalMapKeysTextInputCreatorInfo,
-      cpuFieldsAdditionalMapValuesTextInputCreatorInfo,
+      tabletFieldsAdditionalMapKeysTextInputCreatorInfo,
+      tabletFieldsAdditionalMapValuesTextInputCreatorInfo,
     ]);
 
     // ╭─────────────────────────────────────────────────────────────────╮
@@ -987,7 +1144,7 @@ function CreateCpu({
         buttonLabel: 'Delete',
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
           createProductDispatch({
-            type: createProductAction.setCpuFieldsAdditionalMap,
+            type: createProductAction.setTabletFieldsAdditionalMap,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -995,7 +1152,7 @@ function CreateCpu({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreCpuFieldsAdditionalMapFocused,
+            type: createProductAction.setAreTabletFieldsAdditionalMapFocused,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -1003,7 +1160,7 @@ function CreateCpu({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreCpuFieldsAdditionalMapValid,
+            type: createProductAction.setAreTabletFieldsAdditionalMapValid,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -1016,28 +1173,28 @@ function CreateCpu({
           });
         },
         leftIcon: <TbTrash />,
-        semanticDescription: `Delete additional CPU field ${mapKey + 1}`,
+        semanticDescription: `Delete additional Tablet field ${mapKey + 1}`,
         semanticName: 'Delete field and value',
       },
     ]);
 
     const displayDeleteButton = (
-      <Tooltip label={`Delete additional CPU field ${mapKey + 1}`}>
+      <Tooltip label={`Delete additional Tablet field ${mapKey + 1}`}>
         <Group>{createdDeleteButton}</Group>
       </Tooltip>
     );
 
     return (
-      <Stack key={`cpuFieldsAdditionalMap-${mapKey}`} pt={padding} w="100%">
+      <Stack key={`tabletFieldsAdditionalMap-${mapKey}`} pt={padding} w="100%">
         <Group position="apart">
-          <Text size="md" weight={600}>{`Additional CPU field ${
+          <Text size="md" weight={600}>{`Additional Tablet field ${
             mapKey + 1
           }`}</Text>
           {displayDeleteButton}
         </Group>
         <Group position="apart">
-          {createdCpuFieldsAdditionalMapKeysTextAreaInput}
-          {createdCpuFieldsAdditionalMapValuesTextAreaInput}
+          {createdTabletFieldsAdditionalMapKeysTextAreaInput}
+          {createdTabletFieldsAdditionalMapValuesTextAreaInput}
         </Group>
       </Stack>
     );
@@ -1049,35 +1206,38 @@ function CreateCpu({
   //  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
   // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
-  const displayCpuFieldsAdditionalMapButton = (
+  const displayTabletFieldsAdditionalMapButton = (
     <Tooltip
-      label={`Add additional CPU field ${cpuFieldsAdditionalMap.size + 1}`}
+      label={`Add additional Tablet field ${
+        tabletFieldsAdditionalMap.size + 1
+      }`}
     >
-      <Group>{createdAddCpuFieldsAdditionalMapButton}</Group>
+      <Group>{createdAddTabletFieldsAdditionalMapButton}</Group>
     </Tooltip>
   );
 
-  const displayCpuSpecificationsInputs = (
+  const displayTabletSpecificationsInputs = (
     <Group py={padding} position="apart" w="100%">
-      <Group position="apart" w="100%">
-        <Title order={4}>CPU Specifications</Title>
-        {displayCpuFieldsAdditionalMapButton}
+      <Group w="100%" position="apart">
+        <Title order={4}>Tablet Specifications</Title>
+        {displayTabletFieldsAdditionalMapButton}
       </Group>
-      {createdCpuSocketTextInput}
-      {createdCpuWattageTextInput}
-      {createdCpuFrequencyTextInput}
-      {createdCpuCoresTextInput}
-      {createdCpuL1CacheCapacityTextInput}
-      {createdCpuL1CacheCapacityUnitSelectInput}
-      {createdCpuL2CacheCapacityTextInput}
-      {createdCpuL2CacheCapacityUnitSelectInput}
-      {createdCpuL3CacheCapacityTextInput}
-      {createdCpuL3CacheCapacityUnitSelectInput}
-      {createdCpuFieldsAdditionalMapTextInputElements}
+      {createdTabletOsSelectInput}
+      {createdTabletChipsetTextInput}
+      {createdTabletDisplayTextInput}
+      {createdTabletResolutionHorizontalTextInput}
+      {createdTabletResolutionVerticalTextInput}
+      {createdTabletColorTextInput}
+      {createdTabletRamCapacityTextInput}
+      {createdTabletRamCapacityUnitSelectInput}
+      {createdTabletStorageCapacityTextInput}
+      {createdTabletBatteryCapacityTextInput}
+      {createdTabletCameraTextInput}
+      {createdTabletFieldsAdditionalMapTextInputElements}
     </Group>
   );
 
-  return displayCpuSpecificationsInputs;
+  return displayTabletSpecificationsInputs;
 }
 
-export default CreateCpu;
+export default CreateTablet;

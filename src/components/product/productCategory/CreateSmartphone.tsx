@@ -15,7 +15,7 @@ import {
   returnAccessibleSelectInputElements,
   returnAccessibleTextAreaInputElements,
   returnAccessibleTextInputElements,
-} from '../../../../jsxCreators';
+} from '../../../jsxCreators';
 import {
   returnColorVariantValidationText,
   returnDimensionsValidationText,
@@ -25,8 +25,8 @@ import {
   returnObjectKeyValidationText,
   returnSocketChipsetValidationText,
   returnUserDefinedFieldValueValidationText,
-} from '../../../../utils';
-import { AccessibleTextAreaInputCreatorInfo } from '../../../wrappers';
+} from '../../../utils';
+import { AccessibleTextAreaInputCreatorInfo } from '../../wrappers';
 import {
   COLOR_VARIANT_REGEX,
   DIMENSIONS_REGEX,
@@ -36,9 +36,9 @@ import {
   MOBILE_CAMERA_REGEX,
   MOBILE_OS_DATA,
   OBJECT_KEY_REGEX,
-  TABLET_CHIPSET_REGEX,
+  SMARTPHONE_CHIPSET_REGEX,
   USER_DEFINED_VALUE_REGEX,
-} from '../../constants';
+} from '../constants';
 import {
   CreateProductAction,
   CreateProductDispatch,
@@ -46,85 +46,85 @@ import {
   MobileOs,
 } from '../types';
 
-type CreateTabletProps = {
-  areTabletFieldsAdditionalMapFocused: Map<number, [boolean, boolean]>;
-  areTabletFieldsAdditionalMapValid: Map<number, [boolean, boolean]>;
+type CreateSmartphoneProps = {
+  areSmartphoneFieldsAdditionalMapFocused: Map<number, [boolean, boolean]>;
+  areSmartphoneFieldsAdditionalMapValid: Map<number, [boolean, boolean]>;
   borderColor: string;
   createProductAction: CreateProductAction;
   createProductDispatch: React.Dispatch<CreateProductDispatch>;
   currentlySelectedAdditionalFieldIndex: number;
-  isTabletBatteryCapacityFocused: boolean;
-  isTabletBatteryCapacityValid: boolean;
-  isTabletCameraFocused: boolean;
-  isTabletCameraValid: boolean;
-  isTabletChipsetFocused: boolean;
-  isTabletChipsetValid: boolean;
-  isTabletColorFocused: boolean;
-  isTabletColorValid: boolean;
-  isTabletDisplayFocused: boolean;
-  isTabletDisplayValid: boolean;
-  isTabletRamCapacityFocused: boolean;
-  isTabletRamCapacityValid: boolean;
-  isTabletResolutionHorizontalFocused: boolean;
-  isTabletResolutionHorizontalValid: boolean;
-  isTabletResolutionVerticalFocused: boolean;
-  isTabletResolutionVerticalValid: boolean;
-  isTabletStorageCapacityFocused: boolean;
-  isTabletStorageCapacityValid: boolean;
+  isSmartphoneBatteryCapacityFocused: boolean;
+  isSmartphoneBatteryCapacityValid: boolean;
+  isSmartphoneCameraFocused: boolean;
+  isSmartphoneCameraValid: boolean;
+  isSmartphoneChipsetFocused: boolean;
+  isSmartphoneChipsetValid: boolean;
+  isSmartphoneColorFocused: boolean;
+  isSmartphoneColorValid: boolean;
+  isSmartphoneDisplayFocused: boolean;
+  isSmartphoneDisplayValid: boolean;
+  isSmartphoneRamCapacityFocused: boolean;
+  isSmartphoneRamCapacityValid: boolean;
+  isSmartphoneResolutionHorizontalFocused: boolean;
+  isSmartphoneResolutionHorizontalValid: boolean;
+  isSmartphoneResolutionVerticalFocused: boolean;
+  isSmartphoneResolutionVerticalValid: boolean;
+  isSmartphoneStorageCapacityFocused: boolean;
+  isSmartphoneStorageCapacityValid: boolean;
   padding: MantineNumberSize;
-  tabletBatteryCapacity: string; // mAh
-  tabletCamera: string; // 108 MP, 64 MP, etc.
-  tabletChipset: string;
-  tabletColor: string;
-  tabletDisplay: string;
-  tabletFieldsAdditionalMap: Map<number, [string, string]>;
-  tabletOs: MobileOs;
-  tabletRamCapacity: string;
-  tabletRamCapacityUnit: MemoryUnit;
-  tabletResolutionHorizontal: string;
-  tabletResolutionVertical: string;
-  tabletStorageCapacity: string; // GB
+  smartphoneBatteryCapacity: string; // mAh
+  smartphoneCamera: string; // 108 MP, 64 MP, etc.
+  smartphoneChipset: string;
+  smartphoneColor: string;
+  smartphoneDisplay: string;
+  smartphoneFieldsAdditionalMap: Map<number, [string, string]>;
+  smartphoneOs: MobileOs;
+  smartphoneRamCapacity: string;
+  smartphoneRamCapacityUnit: MemoryUnit;
+  smartphoneResolutionHorizontal: string;
+  smartphoneResolutionVertical: string;
+  smartphoneStorageCapacity: string; // GB
 };
 
-function CreateTablet({
-  areTabletFieldsAdditionalMapFocused,
-  areTabletFieldsAdditionalMapValid,
+function CreateSmartphone({
+  areSmartphoneFieldsAdditionalMapFocused,
+  areSmartphoneFieldsAdditionalMapValid,
   borderColor,
   createProductAction,
   createProductDispatch,
   currentlySelectedAdditionalFieldIndex,
-  isTabletBatteryCapacityFocused,
-  isTabletBatteryCapacityValid,
-  isTabletCameraFocused,
-  isTabletCameraValid,
-  isTabletChipsetFocused,
-  isTabletChipsetValid,
-  isTabletColorFocused,
-  isTabletColorValid,
-  isTabletDisplayFocused,
-  isTabletDisplayValid,
-  isTabletRamCapacityFocused,
-  isTabletRamCapacityValid,
-  isTabletResolutionHorizontalFocused,
-  isTabletResolutionHorizontalValid,
-  isTabletResolutionVerticalFocused,
-  isTabletResolutionVerticalValid,
-  isTabletStorageCapacityFocused,
-  isTabletStorageCapacityValid,
+  isSmartphoneBatteryCapacityFocused,
+  isSmartphoneBatteryCapacityValid,
+  isSmartphoneCameraFocused,
+  isSmartphoneCameraValid,
+  isSmartphoneChipsetFocused,
+  isSmartphoneChipsetValid,
+  isSmartphoneColorFocused,
+  isSmartphoneColorValid,
+  isSmartphoneDisplayFocused,
+  isSmartphoneDisplayValid,
+  isSmartphoneRamCapacityFocused,
+  isSmartphoneRamCapacityValid,
+  isSmartphoneResolutionHorizontalFocused,
+  isSmartphoneResolutionHorizontalValid,
+  isSmartphoneResolutionVerticalFocused,
+  isSmartphoneResolutionVerticalValid,
+  isSmartphoneStorageCapacityFocused,
+  isSmartphoneStorageCapacityValid,
   padding,
-  tabletBatteryCapacity,
-  tabletCamera,
-  tabletChipset,
-  tabletColor,
-  tabletDisplay,
-  tabletFieldsAdditionalMap,
-  tabletOs,
-  tabletRamCapacity,
-  tabletRamCapacityUnit,
-  tabletResolutionHorizontal,
-  tabletResolutionVertical,
-  tabletStorageCapacity,
-}: CreateTabletProps) {
+  smartphoneBatteryCapacity,
+  smartphoneCamera,
+  smartphoneChipset,
+  smartphoneColor,
+  smartphoneDisplay,
+  smartphoneFieldsAdditionalMap,
+  smartphoneOs,
+  smartphoneRamCapacity,
+  smartphoneRamCapacityUnit,
+  smartphoneResolutionHorizontal,
+  smartphoneResolutionVertical,
+  smartphoneStorageCapacity,
+}: CreateSmartphoneProps) {
   // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
   //  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
   //    VALIDATION USE EFFECTS
@@ -132,165 +132,165 @@ function CreateTablet({
   // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    TABLET CHIPSET
+  //    SMARTPHONE CHIPSET
   // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
-    const isValid = TABLET_CHIPSET_REGEX.test(tabletChipset);
+    const isValid = SMARTPHONE_CHIPSET_REGEX.test(smartphoneChipset);
 
     createProductDispatch({
-      type: createProductAction.setIsTabletChipsetValid,
+      type: createProductAction.setIsSmartphoneChipsetValid,
       payload: isValid,
     });
   }, [
-    createProductAction.setIsTabletChipsetValid,
+    createProductAction.setIsSmartphoneChipsetValid,
     createProductDispatch,
-    tabletChipset,
+    smartphoneChipset,
   ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    TABLET DISPLAY
+  //    SMARTPHONE DISPLAY
   // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
-    const isValid = DIMENSIONS_REGEX.test(tabletDisplay);
+    const isValid = DIMENSIONS_REGEX.test(smartphoneDisplay);
 
     createProductDispatch({
-      type: createProductAction.setIsTabletDisplayValid,
+      type: createProductAction.setIsSmartphoneDisplayValid,
       payload: isValid,
     });
   }, [
-    createProductAction.setIsTabletDisplayValid,
+    createProductAction.setIsSmartphoneDisplayValid,
     createProductDispatch,
-    tabletDisplay,
+    smartphoneDisplay,
   ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    TABLET RESOLUTION HORIZONTAL
+  //    SMARTPHONE RESOLUTION HORIZONTAL
   // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
-    const isValid = LARGE_INTEGER_REGEX.test(tabletResolutionHorizontal);
+    const isValid = LARGE_INTEGER_REGEX.test(smartphoneResolutionHorizontal);
 
     createProductDispatch({
-      type: createProductAction.setIsTabletResolutionHorizontalValid,
+      type: createProductAction.setIsSmartphoneResolutionHorizontalValid,
       payload: isValid,
     });
   }, [
-    createProductAction.setIsTabletResolutionHorizontalValid,
+    createProductAction.setIsSmartphoneResolutionHorizontalValid,
     createProductDispatch,
-    tabletResolutionHorizontal,
+    smartphoneResolutionHorizontal,
   ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    TABLET RESOLUTION VERTICAL
+  //    SMARTPHONE RESOLUTION VERTICAL
   // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
-    const isValid = LARGE_INTEGER_REGEX.test(tabletResolutionVertical);
+    const isValid = LARGE_INTEGER_REGEX.test(smartphoneResolutionVertical);
 
     createProductDispatch({
-      type: createProductAction.setIsTabletResolutionVerticalValid,
+      type: createProductAction.setIsSmartphoneResolutionVerticalValid,
       payload: isValid,
     });
   }, [
-    createProductAction.setIsTabletResolutionVerticalValid,
+    createProductAction.setIsSmartphoneResolutionVerticalValid,
     createProductDispatch,
-    tabletResolutionVertical,
+    smartphoneResolutionVertical,
   ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    TABLET RAM CAPACITY
+  //    SMARTPHONE RAM CAPACITY
   // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
-    const isValid = MEDIUM_INTEGER_REGEX.test(tabletRamCapacity);
+    const isValid = MEDIUM_INTEGER_REGEX.test(smartphoneRamCapacity);
 
     createProductDispatch({
-      type: createProductAction.setIsTabletRamCapacityValid,
+      type: createProductAction.setIsSmartphoneRamCapacityValid,
       payload: isValid,
     });
   }, [
-    createProductAction.setIsTabletRamCapacityValid,
+    createProductAction.setIsSmartphoneRamCapacityValid,
     createProductDispatch,
-    tabletRamCapacity,
+    smartphoneRamCapacity,
   ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    TABLET STORAGE CAPACITY
+  //    SMARTPHONE STORAGE CAPACITY
   // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
-    const isValid = MEDIUM_INTEGER_REGEX.test(tabletStorageCapacity);
+    const isValid = MEDIUM_INTEGER_REGEX.test(smartphoneStorageCapacity);
 
     createProductDispatch({
-      type: createProductAction.setIsTabletStorageCapacityValid,
+      type: createProductAction.setIsSmartphoneStorageCapacityValid,
       payload: isValid,
     });
   }, [
-    createProductAction.setIsTabletStorageCapacityValid,
+    createProductAction.setIsSmartphoneStorageCapacityValid,
     createProductDispatch,
-    tabletStorageCapacity,
+    smartphoneStorageCapacity,
   ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    TABLET BATTERY CAPACITY
+  //    SMARTPHONE BATTERY CAPACITY
   // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
-    const isValid = LARGE_INTEGER_REGEX.test(tabletBatteryCapacity);
+    const isValid = LARGE_INTEGER_REGEX.test(smartphoneBatteryCapacity);
 
     createProductDispatch({
-      type: createProductAction.setIsTabletBatteryCapacityValid,
+      type: createProductAction.setIsSmartphoneBatteryCapacityValid,
       payload: isValid,
     });
   }, [
-    createProductAction.setIsTabletBatteryCapacityValid,
+    createProductAction.setIsSmartphoneBatteryCapacityValid,
     createProductDispatch,
-    tabletBatteryCapacity,
+    smartphoneBatteryCapacity,
   ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    TABLET CAMERA
+  //    SMARTPHONE CAMERA
   // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
-    const isValid = MOBILE_CAMERA_REGEX.test(tabletCamera);
+    const isValid = MOBILE_CAMERA_REGEX.test(smartphoneCamera);
 
     createProductDispatch({
-      type: createProductAction.setIsTabletCameraValid,
+      type: createProductAction.setIsSmartphoneCameraValid,
       payload: isValid,
     });
   }, [
-    createProductAction.setIsTabletCameraValid,
+    createProductAction.setIsSmartphoneCameraValid,
     createProductDispatch,
-    tabletCamera,
+    smartphoneCamera,
   ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    TABLET COLOR
+  //    SMARTPHONE COLOR
   // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
-    const isValid = COLOR_VARIANT_REGEX.test(tabletColor);
+    const isValid = COLOR_VARIANT_REGEX.test(smartphoneColor);
 
     createProductDispatch({
-      type: createProductAction.setIsTabletColorValid,
+      type: createProductAction.setIsSmartphoneColorValid,
       payload: isValid,
     });
   }, [
-    createProductAction.setIsTabletColorValid,
+    createProductAction.setIsSmartphoneColorValid,
     createProductDispatch,
-    tabletColor,
+    smartphoneColor,
   ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    TABLET ADDITIONAL FIELDS
+  //    SMARTPHONE ADDITIONAL FIELDS
   // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
-    const currentlyUpdatingTabletFieldAdditional =
-      tabletFieldsAdditionalMap.get(currentlySelectedAdditionalFieldIndex);
+    const currentlyUpdatingSmartphoneFieldAdditional =
+      smartphoneFieldsAdditionalMap.get(currentlySelectedAdditionalFieldIndex);
 
-    if (!currentlyUpdatingTabletFieldAdditional) {
+    if (!currentlyUpdatingSmartphoneFieldAdditional) {
       return;
     }
 
-    const [key, value] = currentlyUpdatingTabletFieldAdditional;
+    const [key, value] = currentlyUpdatingSmartphoneFieldAdditional;
 
     const isKeyValid = OBJECT_KEY_REGEX.test(key);
     createProductDispatch({
-      type: createProductAction.setAreTabletFieldsAdditionalMapValid,
+      type: createProductAction.setAreSmartphoneFieldsAdditionalMapValid,
       payload: {
         operation: 'update',
         data: isKeyValid,
@@ -301,7 +301,7 @@ function CreateTablet({
 
     const isValueValid = USER_DEFINED_VALUE_REGEX.test(value);
     createProductDispatch({
-      type: createProductAction.setAreTabletFieldsAdditionalMapValid,
+      type: createProductAction.setAreSmartphoneFieldsAdditionalMapValid,
       payload: {
         operation: 'update',
         data: isValueValid,
@@ -310,10 +310,10 @@ function CreateTablet({
       },
     });
   }, [
-    createProductAction.setAreTabletFieldsAdditionalMapValid,
+    createProductAction.setAreSmartphoneFieldsAdditionalMapValid,
     createProductDispatch,
     currentlySelectedAdditionalFieldIndex,
-    tabletFieldsAdditionalMap,
+    smartphoneFieldsAdditionalMap,
   ]);
 
   // ╔═════════════════════════════════════════════════════════════════╗
@@ -324,45 +324,45 @@ function CreateTablet({
     // optional inputs with empty string count as valid
     // select inputs are not included as they always have a default value
 
-    const areTabletHardcodedRequiredInputsInError =
-      !isTabletChipsetValid ||
-      !isTabletDisplayValid ||
-      !isTabletResolutionHorizontalValid ||
-      !isTabletResolutionVerticalValid ||
-      !isTabletRamCapacityValid ||
-      !isTabletStorageCapacityValid ||
-      !isTabletBatteryCapacityValid ||
-      !isTabletCameraValid ||
-      !isTabletColorValid;
+    const areSmartphoneHardcodedRequiredInputsInError =
+      !isSmartphoneChipsetValid ||
+      !isSmartphoneDisplayValid ||
+      !isSmartphoneResolutionHorizontalValid ||
+      !isSmartphoneResolutionVerticalValid ||
+      !isSmartphoneRamCapacityValid ||
+      !isSmartphoneStorageCapacityValid ||
+      !isSmartphoneBatteryCapacityValid ||
+      !isSmartphoneCameraValid ||
+      !isSmartphoneColorValid;
 
-    const areTabletFieldsAdditionalMapInError = Array.from(
-      areTabletFieldsAdditionalMapValid
+    const areSmartphoneFieldsAdditionalMapInError = Array.from(
+      areSmartphoneFieldsAdditionalMapValid
     ).some(([_key, value]) => !value);
 
-    const areTabletInputsInError =
-      areTabletHardcodedRequiredInputsInError ||
-      areTabletFieldsAdditionalMapInError;
+    const areSmartphoneInputsInError =
+      areSmartphoneHardcodedRequiredInputsInError ||
+      areSmartphoneFieldsAdditionalMapInError;
 
     createProductDispatch({
       type: createProductAction.setStepsInError,
       payload: {
-        kind: areTabletInputsInError ? 'add' : 'delete',
+        kind: areSmartphoneInputsInError ? 'add' : 'delete',
         step: 1,
       },
     });
   }, [
-    areTabletFieldsAdditionalMapValid,
+    areSmartphoneFieldsAdditionalMapValid,
     createProductAction.setStepsInError,
     createProductDispatch,
-    isTabletBatteryCapacityValid,
-    isTabletCameraValid,
-    isTabletChipsetValid,
-    isTabletColorValid,
-    isTabletDisplayValid,
-    isTabletRamCapacityValid,
-    isTabletResolutionHorizontalValid,
-    isTabletResolutionVerticalValid,
-    isTabletStorageCapacityValid,
+    isSmartphoneBatteryCapacityValid,
+    isSmartphoneCameraValid,
+    isSmartphoneChipsetValid,
+    isSmartphoneColorValid,
+    isSmartphoneDisplayValid,
+    isSmartphoneRamCapacityValid,
+    isSmartphoneResolutionHorizontalValid,
+    isSmartphoneResolutionVerticalValid,
+    isSmartphoneStorageCapacityValid,
   ]);
 
   // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
@@ -372,542 +372,547 @@ function CreateTablet({
   // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    TABLET OS
+  //    SMARTPHONE OS
   // ╰─────────────────────────────────────────────────────────────────╯
-  const [createdTabletOsSelectInput] = returnAccessibleSelectInputElements([
+  const [createdSmartphoneOsSelectInput] = returnAccessibleSelectInputElements([
     {
       data: MOBILE_OS_DATA,
       description: '',
-      label: 'Tablet OS',
+      label: 'Smartphone OS',
       onChange: (event: ChangeEvent<HTMLSelectElement>) => {
         createProductDispatch({
-          type: createProductAction.setTabletOs,
+          type: createProductAction.setSmartphoneOs,
           payload: event.currentTarget.value as MobileOs,
         });
       },
-      value: tabletOs,
+      value: smartphoneOs,
       required: true,
     },
   ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    TABLET CHIPSET
+  //    SMARTPHONE CHIPSET
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // error/valid text elements
-  const [tabletChipsetInputErrorText, tabletChipsetInputValidText] =
+  const [smartphoneChipsetInputErrorText, smartphoneChipsetInputValidText] =
     AccessibleErrorValidTextElements({
-      inputElementKind: 'tablet chipset',
-      inputText: tabletChipset,
-      isInputTextFocused: isTabletChipsetFocused,
-      isValidInputText: isTabletChipsetValid,
+      inputElementKind: 'smartphone chipset',
+      inputText: smartphoneChipset,
+      isInputTextFocused: isSmartphoneChipsetFocused,
+      isValidInputText: isSmartphoneChipsetValid,
       regexValidationText: returnSocketChipsetValidationText({
-        content: tabletChipset,
-        contentKind: 'tablet chipset',
+        content: smartphoneChipset,
+        contentKind: 'smartphone chipset',
         maxLength: 30,
         minLength: 2,
       }),
     });
 
   // screenreader accessible text input element
-  const [createdTabletChipsetTextInput] = returnAccessibleTextInputElements([
-    {
-      description: {
-        error: tabletChipsetInputErrorText,
-        valid: tabletChipsetInputValidText,
-      },
-      inputText: tabletChipset,
-      isValidInputText: isTabletChipsetValid,
-      label: 'Tablet Chipset',
-      maxLength: 30,
-      minLength: 2,
-      onBlur: () => {
-        createProductDispatch({
-          type: createProductAction.setIsTabletChipsetFocused,
-          payload: false,
-        });
-      },
-      onChange: (event: ChangeEvent<HTMLInputElement>) => {
-        createProductDispatch({
-          type: createProductAction.setTabletChipset,
-          payload: event.currentTarget.value,
-        });
-      },
-      onFocus: () => {
-        createProductDispatch({
-          type: createProductAction.setIsTabletChipsetFocused,
-          payload: true,
-        });
-      },
-      placeholder: 'Enter tablet chipset',
-      required: true,
-      semanticName: 'tablet chipset',
-    },
-  ]);
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    TABLET DISPLAY
-  // ╰─────────────────────────────────────────────────────────────────╯
-
-  // error/valid text elements
-  const [tabletDisplayInputErrorText, tabletDisplayInputValidText] =
-    AccessibleErrorValidTextElements({
-      inputElementKind: 'tablet display',
-      inputText: tabletDisplay,
-      isInputTextFocused: isTabletDisplayFocused,
-      isValidInputText: isTabletDisplayValid,
-      regexValidationText: returnDimensionsValidationText({
-        content: tabletDisplay,
-        contentKind: 'tablet display',
-      }),
-    });
-
-  // screenreader accessible text input element
-  const [createdTabletDisplayTextInput] = returnAccessibleTextInputElements([
-    {
-      description: {
-        error: tabletDisplayInputErrorText,
-        valid: tabletDisplayInputValidText,
-      },
-      inputText: tabletDisplay,
-      isValidInputText: isTabletDisplayValid,
-      label: 'Tablet Display (inches)',
-      onBlur: () => {
-        createProductDispatch({
-          type: createProductAction.setIsTabletDisplayFocused,
-          payload: false,
-        });
-      },
-      onChange: (event: ChangeEvent<HTMLInputElement>) => {
-        createProductDispatch({
-          type: createProductAction.setTabletDisplay,
-          payload: event.currentTarget.value,
-        });
-      },
-      onFocus: () => {
-        createProductDispatch({
-          type: createProductAction.setIsTabletDisplayFocused,
-          payload: true,
-        });
-      },
-      placeholder: 'Format: 000.00',
-      required: true,
-      semanticName: 'tablet display',
-    },
-  ]);
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    TABLET RESOLUTION HORIZONTAL
-  // ╰─────────────────────────────────────────────────────────────────╯
-
-  // error/valid text elements
-  const [
-    tabletResolutionHorizontalInputErrorText,
-    tabletResolutionHorizontalInputValidText,
-  ] = AccessibleErrorValidTextElements({
-    inputElementKind: 'tablet resolution horizontal',
-    inputText: tabletResolutionHorizontal,
-    isInputTextFocused: isTabletResolutionHorizontalFocused,
-    isValidInputText: isTabletResolutionHorizontalValid,
-    regexValidationText: returnLargeIntegerValidationText({
-      content: tabletResolutionHorizontal,
-      contentKind: 'tablet resolution horizontal',
-    }),
-  });
-
-  // screenreader accessible text input element
-  const [createdTabletResolutionHorizontalTextInput] =
-    returnAccessibleTextInputElements([
-      {
-        description: {
-          error: tabletResolutionHorizontalInputErrorText,
-          valid: tabletResolutionHorizontalInputValidText,
-        },
-        inputText: tabletResolutionHorizontal,
-        isValidInputText: isTabletResolutionHorizontalValid,
-        label: 'Tablet Resolution Horizontal (pixels)',
-        onBlur: () => {
-          createProductDispatch({
-            type: createProductAction.setIsTabletResolutionHorizontalFocused,
-            payload: false,
-          });
-        },
-        onChange: (event: ChangeEvent<HTMLInputElement>) => {
-          createProductDispatch({
-            type: createProductAction.setTabletResolutionHorizontal,
-            payload: event.currentTarget.value,
-          });
-        },
-        onFocus: () => {
-          createProductDispatch({
-            type: createProductAction.setIsTabletResolutionHorizontalFocused,
-            payload: true,
-          });
-        },
-        placeholder: 'Format: 000000',
-        required: true,
-        semanticName: 'tablet resolution horizontal',
-      },
-    ]);
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    TABLET RESOLUTION VERTICAL
-  // ╰─────────────────────────────────────────────────────────────────╯
-
-  // error/valid text elements
-  const [
-    tabletResolutionVerticalInputErrorText,
-    tabletResolutionVerticalInputValidText,
-  ] = AccessibleErrorValidTextElements({
-    inputElementKind: 'tablet resolution vertical',
-    inputText: tabletResolutionVertical,
-    isInputTextFocused: isTabletResolutionVerticalFocused,
-    isValidInputText: isTabletResolutionVerticalValid,
-    regexValidationText: returnLargeIntegerValidationText({
-      content: tabletResolutionVertical,
-      contentKind: 'tablet resolution vertical',
-    }),
-  });
-
-  // screenreader accessible text input element
-  const [createdTabletResolutionVerticalTextInput] =
-    returnAccessibleTextInputElements([
-      {
-        description: {
-          error: tabletResolutionVerticalInputErrorText,
-          valid: tabletResolutionVerticalInputValidText,
-        },
-        inputText: tabletResolutionVertical,
-        isValidInputText: isTabletResolutionVerticalValid,
-        label: 'Tablet Resolution Vertical (pixels)',
-        onBlur: () => {
-          createProductDispatch({
-            type: createProductAction.setIsTabletResolutionVerticalFocused,
-            payload: false,
-          });
-        },
-        onChange: (event: ChangeEvent<HTMLInputElement>) => {
-          createProductDispatch({
-            type: createProductAction.setTabletResolutionVertical,
-            payload: event.currentTarget.value,
-          });
-        },
-        onFocus: () => {
-          createProductDispatch({
-            type: createProductAction.setIsTabletResolutionVerticalFocused,
-            payload: true,
-          });
-        },
-        placeholder: 'Format: 000000',
-        required: true,
-        semanticName: 'tablet resolution vertical',
-      },
-    ]);
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    TABLET RAM CAPACITY
-  // ╰─────────────────────────────────────────────────────────────────╯
-
-  // error/valid text elements
-  const [tabletRamCapacityInputErrorText, tabletRamCapacityInputValidText] =
-    AccessibleErrorValidTextElements({
-      inputElementKind: 'tablet ram capacity',
-      inputText: tabletRamCapacity,
-      isInputTextFocused: isTabletRamCapacityFocused,
-      isValidInputText: isTabletRamCapacityValid,
-      regexValidationText: returnMediumIntegerValidationText({
-        content: tabletRamCapacity,
-        contentKind: 'tablet ram capacity',
-      }),
-    });
-
-  // screenreader accessible text input element
-  const [createdTabletRamCapacityTextInput] = returnAccessibleTextInputElements(
+  const [createdSmartphoneChipsetTextInput] = returnAccessibleTextInputElements(
     [
       {
         description: {
-          error: tabletRamCapacityInputErrorText,
-          valid: tabletRamCapacityInputValidText,
+          error: smartphoneChipsetInputErrorText,
+          valid: smartphoneChipsetInputValidText,
         },
-        inputText: tabletRamCapacity,
-        isValidInputText: isTabletRamCapacityValid,
-        label: 'Tablet RAM Capacity (GB)',
+        inputText: smartphoneChipset,
+        isValidInputText: isSmartphoneChipsetValid,
+        label: 'Smartphone Chipset',
+        maxLength: 30,
+        minLength: 2,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setIsTabletRamCapacityFocused,
+            type: createProductAction.setIsSmartphoneChipsetFocused,
             payload: false,
           });
         },
         onChange: (event: ChangeEvent<HTMLInputElement>) => {
           createProductDispatch({
-            type: createProductAction.setTabletRamCapacity,
+            type: createProductAction.setSmartphoneChipset,
             payload: event.currentTarget.value,
           });
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setIsTabletRamCapacityFocused,
+            type: createProductAction.setIsSmartphoneChipsetFocused,
             payload: true,
           });
         },
-        placeholder: 'Format: 0000',
+        placeholder: 'Enter smartphone chipset',
         required: true,
-        semanticName: 'tablet ram capacity',
+        semanticName: 'smartphone chipset',
       },
     ]
   );
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    TABLET RAM CAPACITY UNIT
+  //    SMARTPHONE DISPLAY
   // ╰─────────────────────────────────────────────────────────────────╯
-  const [createdTabletRamCapacityUnitSelectInput] =
-    returnAccessibleSelectInputElements([
-      {
-        data: MEMORY_UNIT_SELECT_INPUT_DATA,
-        description: '',
-        label: 'Tablet RAM Capacity Unit',
-        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-          createProductDispatch({
-            type: createProductAction.setTabletRamCapacityUnit,
-            payload: event.currentTarget.value as MemoryUnit,
-          });
-        },
-        value: tabletRamCapacityUnit,
-        required: true,
-      },
-    ]);
 
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    TABLET STORAGE CAPACITY
-  // ╰─────────────────────────────────────────────────────────────────╯
-  const [
-    tabletStorageCapacityInputErrorText,
-    tabletStorageCapacityInputValidText,
-  ] = AccessibleErrorValidTextElements({
-    inputElementKind: 'tablet storage capacity',
-    inputText: tabletStorageCapacity,
-    isInputTextFocused: isTabletStorageCapacityFocused,
-    isValidInputText: isTabletStorageCapacityValid,
-    regexValidationText: returnMediumIntegerValidationText({
-      content: tabletStorageCapacity,
-      contentKind: 'tablet storage capacity',
-    }),
-  });
+  // error/valid text elements
+  const [smartphoneDisplayInputErrorText, smartphoneDisplayInputValidText] =
+    AccessibleErrorValidTextElements({
+      inputElementKind: 'smartphone display',
+      inputText: smartphoneDisplay,
+      isInputTextFocused: isSmartphoneDisplayFocused,
+      isValidInputText: isSmartphoneDisplayValid,
+      regexValidationText: returnDimensionsValidationText({
+        content: smartphoneDisplay,
+        contentKind: 'smartphone display',
+      }),
+    });
 
   // screenreader accessible text input element
-  const [createdTabletStorageCapacityTextInput] =
-    returnAccessibleTextInputElements([
+  const [createdSmartphoneDisplayTextInput] = returnAccessibleTextInputElements(
+    [
       {
         description: {
-          error: tabletStorageCapacityInputErrorText,
-          valid: tabletStorageCapacityInputValidText,
+          error: smartphoneDisplayInputErrorText,
+          valid: smartphoneDisplayInputValidText,
         },
-        inputText: tabletStorageCapacity,
-        isValidInputText: isTabletStorageCapacityValid,
-        label: 'Tablet Storage Capacity (GB)',
+        inputText: smartphoneDisplay,
+        isValidInputText: isSmartphoneDisplayValid,
+        label: 'Smartphone Display (inches)',
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setIsTabletStorageCapacityFocused,
+            type: createProductAction.setIsSmartphoneDisplayFocused,
             payload: false,
           });
         },
         onChange: (event: ChangeEvent<HTMLInputElement>) => {
           createProductDispatch({
-            type: createProductAction.setTabletStorageCapacity,
+            type: createProductAction.setSmartphoneDisplay,
             payload: event.currentTarget.value,
           });
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setIsTabletStorageCapacityFocused,
+            type: createProductAction.setIsSmartphoneDisplayFocused,
             payload: true,
           });
         },
-        placeholder: 'Format: 0000',
+        placeholder: 'Format: 000.00',
         required: true,
-        semanticName: 'tablet storage capacity',
+        semanticName: 'smartphone display',
       },
-    ]);
+    ]
+  );
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    TABLET BATTERY CAPACITY
+  //    SMARTPHONE RESOLUTION HORIZONTAL
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // error/valid text elements
   const [
-    tabletBatteryCapacityInputErrorText,
-    tabletBatteryCapacityInputValidText,
+    smartphoneResolutionHorizontalInputErrorText,
+    smartphoneResolutionHorizontalInputValidText,
   ] = AccessibleErrorValidTextElements({
-    inputElementKind: 'tablet battery capacity',
-    inputText: tabletBatteryCapacity,
-    isInputTextFocused: isTabletBatteryCapacityFocused,
-    isValidInputText: isTabletBatteryCapacityValid,
+    inputElementKind: 'smartphone resolution horizontal',
+    inputText: smartphoneResolutionHorizontal,
+    isInputTextFocused: isSmartphoneResolutionHorizontalFocused,
+    isValidInputText: isSmartphoneResolutionHorizontalValid,
     regexValidationText: returnLargeIntegerValidationText({
-      content: tabletBatteryCapacity,
-      contentKind: 'tablet battery capacity',
+      content: smartphoneResolutionHorizontal,
+      contentKind: 'smartphone resolution horizontal',
     }),
   });
 
   // screenreader accessible text input element
-  const [createdTabletBatteryCapacityTextInput] =
+  const [createdSmartphoneResolutionHorizontalTextInput] =
     returnAccessibleTextInputElements([
       {
         description: {
-          error: tabletBatteryCapacityInputErrorText,
-          valid: tabletBatteryCapacityInputValidText,
+          error: smartphoneResolutionHorizontalInputErrorText,
+          valid: smartphoneResolutionHorizontalInputValidText,
         },
-        inputText: tabletBatteryCapacity,
-        isValidInputText: isTabletBatteryCapacityValid,
-        label: 'Tablet Battery Capacity (mAh)',
+        inputText: smartphoneResolutionHorizontal,
+        isValidInputText: isSmartphoneResolutionHorizontalValid,
+        label: 'Smartphone Resolution Horizontal (pixels)',
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setIsTabletBatteryCapacityFocused,
+            type: createProductAction.setIsSmartphoneResolutionHorizontalFocused,
             payload: false,
           });
         },
         onChange: (event: ChangeEvent<HTMLInputElement>) => {
           createProductDispatch({
-            type: createProductAction.setTabletBatteryCapacity,
+            type: createProductAction.setSmartphoneResolutionHorizontal,
             payload: event.currentTarget.value,
           });
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setIsTabletBatteryCapacityFocused,
+            type: createProductAction.setIsSmartphoneResolutionHorizontalFocused,
             payload: true,
           });
         },
         placeholder: 'Format: 000000',
         required: true,
-        semanticName: 'tablet battery capacity',
+        semanticName: 'smartphone resolution horizontal',
       },
     ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    TABLET CAMERA
+  //    SMARTPHONE RESOLUTION VERTICAL
   // ╰─────────────────────────────────────────────────────────────────╯
-  const [tabletCameraInputErrorText, tabletCameraInputValidText] =
+
+  // error/valid text elements
+  const [
+    smartphoneResolutionVerticalInputErrorText,
+    smartphoneResolutionVerticalInputValidText,
+  ] = AccessibleErrorValidTextElements({
+    inputElementKind: 'smartphone resolution vertical',
+    inputText: smartphoneResolutionVertical,
+    isInputTextFocused: isSmartphoneResolutionVerticalFocused,
+    isValidInputText: isSmartphoneResolutionVerticalValid,
+    regexValidationText: returnLargeIntegerValidationText({
+      content: smartphoneResolutionVertical,
+      contentKind: 'smartphone resolution vertical',
+    }),
+  });
+
+  // screenreader accessible text input element
+  const [createdSmartphoneResolutionVerticalTextInput] =
+    returnAccessibleTextInputElements([
+      {
+        description: {
+          error: smartphoneResolutionVerticalInputErrorText,
+          valid: smartphoneResolutionVerticalInputValidText,
+        },
+        inputText: smartphoneResolutionVertical,
+        isValidInputText: isSmartphoneResolutionVerticalValid,
+        label: 'Smartphone Resolution Vertical (pixels)',
+        onBlur: () => {
+          createProductDispatch({
+            type: createProductAction.setIsSmartphoneResolutionVerticalFocused,
+            payload: false,
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLInputElement>) => {
+          createProductDispatch({
+            type: createProductAction.setSmartphoneResolutionVertical,
+            payload: event.currentTarget.value,
+          });
+        },
+        onFocus: () => {
+          createProductDispatch({
+            type: createProductAction.setIsSmartphoneResolutionVerticalFocused,
+            payload: true,
+          });
+        },
+        placeholder: 'Format: 000000',
+        required: true,
+        semanticName: 'smartphone resolution vertical',
+      },
+    ]);
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    SMARTPHONE RAM CAPACITY
+  // ╰─────────────────────────────────────────────────────────────────╯
+
+  // error/valid text elements
+  const [
+    smartphoneRamCapacityInputErrorText,
+    smartphoneRamCapacityInputValidText,
+  ] = AccessibleErrorValidTextElements({
+    inputElementKind: 'smartphone ram capacity',
+    inputText: smartphoneRamCapacity,
+    isInputTextFocused: isSmartphoneRamCapacityFocused,
+    isValidInputText: isSmartphoneRamCapacityValid,
+    regexValidationText: returnMediumIntegerValidationText({
+      content: smartphoneRamCapacity,
+      contentKind: 'smartphone ram capacity',
+    }),
+  });
+
+  // screenreader accessible text input element
+  const [createdSmartphoneRamCapacityTextInput] =
+    returnAccessibleTextInputElements([
+      {
+        description: {
+          error: smartphoneRamCapacityInputErrorText,
+          valid: smartphoneRamCapacityInputValidText,
+        },
+        inputText: smartphoneRamCapacity,
+        isValidInputText: isSmartphoneRamCapacityValid,
+        label: 'Smartphone RAM Capacity (GB)',
+        onBlur: () => {
+          createProductDispatch({
+            type: createProductAction.setIsSmartphoneRamCapacityFocused,
+            payload: false,
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLInputElement>) => {
+          createProductDispatch({
+            type: createProductAction.setSmartphoneRamCapacity,
+            payload: event.currentTarget.value,
+          });
+        },
+        onFocus: () => {
+          createProductDispatch({
+            type: createProductAction.setIsSmartphoneRamCapacityFocused,
+            payload: true,
+          });
+        },
+        placeholder: 'Format: 0000',
+        required: true,
+        semanticName: 'smartphone ram capacity',
+      },
+    ]);
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    SMARTPHONE RAM CAPACITY UNIT
+  // ╰─────────────────────────────────────────────────────────────────╯
+  const [createdSmartphoneRamCapacityUnitSelectInput] =
+    returnAccessibleSelectInputElements([
+      {
+        data: MEMORY_UNIT_SELECT_INPUT_DATA,
+        description: '',
+        label: 'Smartphone RAM Capacity Unit',
+        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+          createProductDispatch({
+            type: createProductAction.setSmartphoneRamCapacityUnit,
+            payload: event.currentTarget.value as MemoryUnit,
+          });
+        },
+        value: smartphoneRamCapacityUnit,
+        required: true,
+      },
+    ]);
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    SMARTPHONE STORAGE CAPACITY
+  // ╰─────────────────────────────────────────────────────────────────╯
+  const [
+    smartphoneStorageCapacityInputErrorText,
+    smartphoneStorageCapacityInputValidText,
+  ] = AccessibleErrorValidTextElements({
+    inputElementKind: 'smartphone storage capacity',
+    inputText: smartphoneStorageCapacity,
+    isInputTextFocused: isSmartphoneStorageCapacityFocused,
+    isValidInputText: isSmartphoneStorageCapacityValid,
+    regexValidationText: returnMediumIntegerValidationText({
+      content: smartphoneStorageCapacity,
+      contentKind: 'smartphone storage capacity',
+    }),
+  });
+
+  // screenreader accessible text input element
+  const [createdSmartphoneStorageCapacityTextInput] =
+    returnAccessibleTextInputElements([
+      {
+        description: {
+          error: smartphoneStorageCapacityInputErrorText,
+          valid: smartphoneStorageCapacityInputValidText,
+        },
+        inputText: smartphoneStorageCapacity,
+        isValidInputText: isSmartphoneStorageCapacityValid,
+        label: 'Smartphone Storage Capacity (GB)',
+        onBlur: () => {
+          createProductDispatch({
+            type: createProductAction.setIsSmartphoneStorageCapacityFocused,
+            payload: false,
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLInputElement>) => {
+          createProductDispatch({
+            type: createProductAction.setSmartphoneStorageCapacity,
+            payload: event.currentTarget.value,
+          });
+        },
+        onFocus: () => {
+          createProductDispatch({
+            type: createProductAction.setIsSmartphoneStorageCapacityFocused,
+            payload: true,
+          });
+        },
+        placeholder: 'Format: 0000',
+        required: true,
+        semanticName: 'smartphone storage capacity',
+      },
+    ]);
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    SMARTPHONE BATTERY CAPACITY
+  // ╰─────────────────────────────────────────────────────────────────╯
+
+  // error/valid text elements
+  const [
+    smartphoneBatteryCapacityInputErrorText,
+    smartphoneBatteryCapacityInputValidText,
+  ] = AccessibleErrorValidTextElements({
+    inputElementKind: 'smartphone battery capacity',
+    inputText: smartphoneBatteryCapacity,
+    isInputTextFocused: isSmartphoneBatteryCapacityFocused,
+    isValidInputText: isSmartphoneBatteryCapacityValid,
+    regexValidationText: returnLargeIntegerValidationText({
+      content: smartphoneBatteryCapacity,
+      contentKind: 'smartphone battery capacity',
+    }),
+  });
+
+  // screenreader accessible text input element
+  const [createdSmartphoneBatteryCapacityTextInput] =
+    returnAccessibleTextInputElements([
+      {
+        description: {
+          error: smartphoneBatteryCapacityInputErrorText,
+          valid: smartphoneBatteryCapacityInputValidText,
+        },
+        inputText: smartphoneBatteryCapacity,
+        isValidInputText: isSmartphoneBatteryCapacityValid,
+        label: 'Smartphone Battery Capacity (mAh)',
+        onBlur: () => {
+          createProductDispatch({
+            type: createProductAction.setIsSmartphoneBatteryCapacityFocused,
+            payload: false,
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLInputElement>) => {
+          createProductDispatch({
+            type: createProductAction.setSmartphoneBatteryCapacity,
+            payload: event.currentTarget.value,
+          });
+        },
+        onFocus: () => {
+          createProductDispatch({
+            type: createProductAction.setIsSmartphoneBatteryCapacityFocused,
+            payload: true,
+          });
+        },
+        placeholder: 'Format: 000000',
+        required: true,
+        semanticName: 'smartphone battery capacity',
+      },
+    ]);
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    SMARTPHONE CAMERA
+  // ╰─────────────────────────────────────────────────────────────────╯
+  const [smartphoneCameraInputErrorText, smartphoneCameraInputValidText] =
     AccessibleErrorValidTextElements({
-      inputElementKind: 'tablet camera',
-      inputText: tabletCamera,
-      isInputTextFocused: isTabletCameraFocused,
-      isValidInputText: isTabletCameraValid,
+      inputElementKind: 'smartphone camera',
+      inputText: smartphoneCamera,
+      isInputTextFocused: isSmartphoneCameraFocused,
+      isValidInputText: isSmartphoneCameraValid,
       regexValidationText: returnMobileCameraResolutionValidationText({
-        content: tabletCamera,
-        contentKind: 'tablet camera',
+        content: smartphoneCamera,
+        contentKind: 'smartphone camera',
         maxLength: 84,
         minLength: 4,
       }),
     });
 
   // screenreader accessible text input element
-  const [createdTabletCameraTextInput] = returnAccessibleTextInputElements([
+  const [createdSmartphoneCameraTextInput] = returnAccessibleTextInputElements([
     {
       description: {
-        error: tabletCameraInputErrorText,
-        valid: tabletCameraInputValidText,
+        error: smartphoneCameraInputErrorText,
+        valid: smartphoneCameraInputValidText,
       },
-      inputText: tabletCamera,
-      isValidInputText: isTabletCameraValid,
-      label: 'Tablet Camera',
+      inputText: smartphoneCamera,
+      isValidInputText: isSmartphoneCameraValid,
+      label: 'Smartphone Camera',
       maxLength: 84,
       minLength: 4,
       onBlur: () => {
         createProductDispatch({
-          type: createProductAction.setIsTabletCameraFocused,
+          type: createProductAction.setIsSmartphoneCameraFocused,
           payload: false,
         });
       },
       onChange: (event: ChangeEvent<HTMLInputElement>) => {
         createProductDispatch({
-          type: createProductAction.setTabletCamera,
+          type: createProductAction.setSmartphoneCamera,
           payload: event.currentTarget.value,
         });
       },
       onFocus: () => {
         createProductDispatch({
-          type: createProductAction.setIsTabletCameraFocused,
+          type: createProductAction.setIsSmartphoneCameraFocused,
           payload: true,
         });
       },
-      placeholder: 'Enter tablet camera',
+      placeholder: 'Enter smartphone camera',
       required: true,
-      semanticName: 'tablet camera',
+      semanticName: 'smartphone camera',
     },
   ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    TABLET COLOR
+  //    SMARTPHONE COLOR
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // error/valid text elements
-  const [tabletColorInputErrorText, tabletColorInputValidText] =
+  const [smartphoneColorInputErrorText, smartphoneColorInputValidText] =
     AccessibleErrorValidTextElements({
-      inputElementKind: 'tablet color',
-      inputText: tabletColor,
-      isInputTextFocused: isTabletColorFocused,
-      isValidInputText: isTabletColorValid,
+      inputElementKind: 'smartphone color',
+      inputText: smartphoneColor,
+      isInputTextFocused: isSmartphoneColorFocused,
+      isValidInputText: isSmartphoneColorValid,
       regexValidationText: returnColorVariantValidationText({
-        content: tabletColor,
-        contentKind: 'tablet color',
+        content: smartphoneColor,
+        contentKind: 'smartphone color',
         maxLength: 30,
         minLength: 2,
       }),
     });
 
   // screenreader accessible text input element
-  const [createdTabletColorTextInput] = returnAccessibleTextInputElements([
+  const [createdSmartphoneColorTextInput] = returnAccessibleTextInputElements([
     {
       description: {
-        error: tabletColorInputErrorText,
-        valid: tabletColorInputValidText,
+        error: smartphoneColorInputErrorText,
+        valid: smartphoneColorInputValidText,
       },
-      inputText: tabletColor,
-      isValidInputText: isTabletColorValid,
-      label: 'Tablet Color',
+      inputText: smartphoneColor,
+      isValidInputText: isSmartphoneColorValid,
+      label: 'Smartphone Color',
       maxLength: 30,
       minLength: 2,
       onBlur: () => {
         createProductDispatch({
-          type: createProductAction.setIsTabletColorFocused,
+          type: createProductAction.setIsSmartphoneColorFocused,
           payload: false,
         });
       },
       onChange: (event: ChangeEvent<HTMLInputElement>) => {
         createProductDispatch({
-          type: createProductAction.setTabletColor,
+          type: createProductAction.setSmartphoneColor,
           payload: event.currentTarget.value,
         });
       },
       onFocus: () => {
         createProductDispatch({
-          type: createProductAction.setIsTabletColorFocused,
+          type: createProductAction.setIsSmartphoneColorFocused,
           payload: true,
         });
       },
-      placeholder: 'Enter tablet color',
+      placeholder: 'Enter smartphone color',
       required: true,
-      semanticName: 'tablet color',
+      semanticName: 'smartphone color',
     },
   ]);
 
   // ╔═════════════════════════════════════════════════════════════════╗
-  //   TABLET ADDITIONAL FIELDS
+  //   SMARTPHONE ADDITIONAL FIELDS
   // ╚═════════════════════════════════════════════════════════════════╝
 
   // ╭─────────────────────────────────────────────────────────────────╮
   //    ADD ADDITIONAL FIELD BUTTON
   // ╰─────────────────────────────────────────────────────────────────╯
-  const [createdAddTabletFieldsAdditionalMapButton] =
+  const [createdAddSmartphoneFieldsAdditionalMapButton] =
     returnAccessibleButtonElements([
       {
         buttonLabel: 'Add',
-        semanticDescription: 'Add new additional Tablet field',
+        semanticDescription: 'Add new additional Smartphone field',
         semanticName: 'Add new field',
         leftIcon: <TbPlus />,
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
           createProductDispatch({
-            type: createProductAction.setTabletFieldsAdditionalMap,
+            type: createProductAction.setSmartphoneFieldsAdditionalMap,
             payload: {
               operation: 'add',
               data: ['', ''],
@@ -915,7 +920,7 @@ function CreateTablet({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreTabletFieldsAdditionalMapFocused,
+            type: createProductAction.setAreSmartphoneFieldsAdditionalMapFocused,
             payload: {
               operation: 'add',
               data: [false, false],
@@ -923,7 +928,7 @@ function CreateTablet({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreTabletFieldsAdditionalMapValid,
+            type: createProductAction.setAreSmartphoneFieldsAdditionalMapValid,
             payload: {
               operation: 'add',
               data: [false, false],
@@ -938,23 +943,23 @@ function CreateTablet({
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // returns an array of tuples containing the error and valid text elements for each field name
-  const tabletFieldsAdditionalMapKeysErrorValidTextElements: [
+  const smartphoneFieldsAdditionalMapKeysErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(tabletFieldsAdditionalMap).map((keyFieldValue) => {
+  ][] = Array.from(smartphoneFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [field, _value]] = keyFieldValue;
 
     // error/valid text elements that are consumed by the text input element creator
     const [
-      tabletFieldsAdditionalMapKeysInputErrorText,
-      tabletFieldsAdditionalMapKeysInputValidText,
+      smartphoneFieldsAdditionalMapKeysInputErrorText,
+      smartphoneFieldsAdditionalMapKeysInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field name ${mapKey + 1}`,
       inputText: field,
       isInputTextFocused:
-        areTabletFieldsAdditionalMapFocused.get(mapKey)?.[0] ?? false,
+        areSmartphoneFieldsAdditionalMapFocused.get(mapKey)?.[0] ?? false,
       isValidInputText:
-        areTabletFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
+        areSmartphoneFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
       regexValidationText: returnObjectKeyValidationText({
         content: field,
         contentKind: `additional field name ${mapKey + 1}`,
@@ -964,8 +969,8 @@ function CreateTablet({
     });
 
     return [
-      tabletFieldsAdditionalMapKeysInputErrorText,
-      tabletFieldsAdditionalMapKeysInputValidText,
+      smartphoneFieldsAdditionalMapKeysInputErrorText,
+      smartphoneFieldsAdditionalMapKeysInputValidText,
     ];
   });
 
@@ -974,23 +979,23 @@ function CreateTablet({
   // ╰─────────────────────────────────────────────────────────────────╯
 
   // returns an array of tuples containing the error and valid text elements for each field value
-  const tabletFieldsAdditionalMapValuesErrorValidTextElements: [
+  const smartphoneFieldsAdditionalMapValuesErrorValidTextElements: [
     JSX.Element,
     JSX.Element
-  ][] = Array.from(tabletFieldsAdditionalMap).map((keyFieldValue) => {
+  ][] = Array.from(smartphoneFieldsAdditionalMap).map((keyFieldValue) => {
     const [mapKey, [_field, value]] = keyFieldValue;
 
     // error/valid text elements that are consumed by the text input element creator
     const [
-      tabletFieldsAdditionalMapValuesInputErrorText,
-      tabletFieldsAdditionalMapValuesInputValidText,
+      smartphoneFieldsAdditionalMapValuesInputErrorText,
+      smartphoneFieldsAdditionalMapValuesInputValidText,
     ] = AccessibleErrorValidTextElements({
       inputElementKind: `additional field value ${mapKey + 1}`,
       inputText: value,
       isInputTextFocused:
-        areTabletFieldsAdditionalMapFocused.get(mapKey)?.[1] ?? false,
+        areSmartphoneFieldsAdditionalMapFocused.get(mapKey)?.[1] ?? false,
       isValidInputText:
-        areTabletFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
+        areSmartphoneFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
       regexValidationText: returnUserDefinedFieldValueValidationText({
         content: value,
         contentKind: `additional field value ${mapKey + 1}`,
@@ -1000,34 +1005,36 @@ function CreateTablet({
     });
 
     return [
-      tabletFieldsAdditionalMapValuesInputErrorText,
-      tabletFieldsAdditionalMapValuesInputValidText,
+      smartphoneFieldsAdditionalMapValuesInputErrorText,
+      smartphoneFieldsAdditionalMapValuesInputValidText,
     ];
   });
 
-  const createdTabletFieldsAdditionalMapTextInputElements = Array.from(
-    tabletFieldsAdditionalMap
+  const createdSmartphoneFieldsAdditionalMapTextInputElements = Array.from(
+    smartphoneFieldsAdditionalMap
   ).map((keyFieldValue) => {
     const [mapKey, [field, value]] = keyFieldValue;
 
     // ╭─────────────────────────────────────────────────────────────────╮
     //    ADDITIONAL FIELD ACCESSIBLE TEXT INPUT => FIELD NAME
     // ╰─────────────────────────────────────────────────────────────────╯
-    const tabletFieldsAdditionalMapKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const smartphoneFieldsAdditionalMapKeysTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
-          error: tabletFieldsAdditionalMapKeysErrorValidTextElements[mapKey][0],
-          valid: tabletFieldsAdditionalMapKeysErrorValidTextElements[mapKey][1],
+          error:
+            smartphoneFieldsAdditionalMapKeysErrorValidTextElements[mapKey][0],
+          valid:
+            smartphoneFieldsAdditionalMapKeysErrorValidTextElements[mapKey][1],
         },
         inputText: field,
         isValidInputText:
-          areTabletFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
+          areSmartphoneFieldsAdditionalMapValid.get(mapKey)?.[0] ?? false,
         label: `Name ${mapKey + 1}`,
         maxLength: 75,
         minLength: 1,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreTabletFieldsAdditionalMapFocused,
+            type: createProductAction.setAreSmartphoneFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -1038,7 +1045,7 @@ function CreateTablet({
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setTabletFieldsAdditionalMap,
+            type: createProductAction.setSmartphoneFieldsAdditionalMap,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -1054,7 +1061,7 @@ function CreateTablet({
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreTabletFieldsAdditionalMapFocused,
+            type: createProductAction.setAreSmartphoneFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -1071,23 +1078,27 @@ function CreateTablet({
     // ╭─────────────────────────────────────────────────────────────────╮
     //    ADDITIONAL FIELD ACCESSIBLE TEXT INPUT => FIELD VALUE
     // ╰─────────────────────────────────────────────────────────────────╯
-    const tabletFieldsAdditionalMapValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
+    const smartphoneFieldsAdditionalMapValuesTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
       {
         description: {
           error:
-            tabletFieldsAdditionalMapValuesErrorValidTextElements[mapKey][0],
+            smartphoneFieldsAdditionalMapValuesErrorValidTextElements[
+              mapKey
+            ][0],
           valid:
-            tabletFieldsAdditionalMapValuesErrorValidTextElements[mapKey][1],
+            smartphoneFieldsAdditionalMapValuesErrorValidTextElements[
+              mapKey
+            ][1],
         },
         inputText: value,
         isValidInputText:
-          areTabletFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
+          areSmartphoneFieldsAdditionalMapValid.get(mapKey)?.[1] ?? false,
         label: `Value ${mapKey + 1}`,
         maxLength: 2000,
         minLength: 2,
         onBlur: () => {
           createProductDispatch({
-            type: createProductAction.setAreTabletFieldsAdditionalMapFocused,
+            type: createProductAction.setAreSmartphoneFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: false,
@@ -1098,7 +1109,7 @@ function CreateTablet({
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
           createProductDispatch({
-            type: createProductAction.setTabletFieldsAdditionalMap,
+            type: createProductAction.setSmartphoneFieldsAdditionalMap,
             payload: {
               operation: 'update',
               data: event.currentTarget.value,
@@ -1114,7 +1125,7 @@ function CreateTablet({
         },
         onFocus: () => {
           createProductDispatch({
-            type: createProductAction.setAreTabletFieldsAdditionalMapFocused,
+            type: createProductAction.setAreSmartphoneFieldsAdditionalMapFocused,
             payload: {
               operation: 'update',
               data: true,
@@ -1129,11 +1140,11 @@ function CreateTablet({
       };
 
     const [
-      createdTabletFieldsAdditionalMapKeysTextAreaInput,
-      createdTabletFieldsAdditionalMapValuesTextAreaInput,
+      createdSmartphoneFieldsAdditionalMapKeysTextAreaInput,
+      createdSmartphoneFieldsAdditionalMapValuesTextAreaInput,
     ] = returnAccessibleTextAreaInputElements([
-      tabletFieldsAdditionalMapKeysTextInputCreatorInfo,
-      tabletFieldsAdditionalMapValuesTextInputCreatorInfo,
+      smartphoneFieldsAdditionalMapKeysTextInputCreatorInfo,
+      smartphoneFieldsAdditionalMapValuesTextInputCreatorInfo,
     ]);
 
     // ╭─────────────────────────────────────────────────────────────────╮
@@ -1144,7 +1155,7 @@ function CreateTablet({
         buttonLabel: 'Delete',
         buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
           createProductDispatch({
-            type: createProductAction.setTabletFieldsAdditionalMap,
+            type: createProductAction.setSmartphoneFieldsAdditionalMap,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -1152,7 +1163,7 @@ function CreateTablet({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreTabletFieldsAdditionalMapFocused,
+            type: createProductAction.setAreSmartphoneFieldsAdditionalMapFocused,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -1160,7 +1171,7 @@ function CreateTablet({
           });
 
           createProductDispatch({
-            type: createProductAction.setAreTabletFieldsAdditionalMapValid,
+            type: createProductAction.setAreSmartphoneFieldsAdditionalMapValid,
             payload: {
               operation: 'remove',
               index: mapKey,
@@ -1173,28 +1184,32 @@ function CreateTablet({
           });
         },
         leftIcon: <TbTrash />,
-        semanticDescription: `Delete additional Tablet field ${mapKey + 1}`,
+        semanticDescription: `Delete additional Smartphone field ${mapKey + 1}`,
         semanticName: 'Delete field and value',
       },
     ]);
 
     const displayDeleteButton = (
-      <Tooltip label={`Delete additional Tablet field ${mapKey + 1}`}>
+      <Tooltip label={`Delete additional Smartphone field ${mapKey + 1}`}>
         <Group>{createdDeleteButton}</Group>
       </Tooltip>
     );
 
     return (
-      <Stack key={`tabletFieldsAdditionalMap-${mapKey}`} pt={padding} w="100%">
+      <Stack
+        key={`smartphoneFieldsAdditionalMap-${mapKey}`}
+        pt={padding}
+        w="100%"
+      >
         <Group position="apart">
-          <Text size="md" weight={600}>{`Additional Tablet field ${
+          <Text size="md" weight={600}>{`Additional Smartphone field ${
             mapKey + 1
           }`}</Text>
           {displayDeleteButton}
         </Group>
         <Group position="apart">
-          {createdTabletFieldsAdditionalMapKeysTextAreaInput}
-          {createdTabletFieldsAdditionalMapValuesTextAreaInput}
+          {createdSmartphoneFieldsAdditionalMapKeysTextAreaInput}
+          {createdSmartphoneFieldsAdditionalMapValuesTextAreaInput}
         </Group>
       </Stack>
     );
@@ -1206,38 +1221,38 @@ function CreateTablet({
   //  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
   // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
-  const displayTabletFieldsAdditionalMapButton = (
+  const displaySmartphoneFieldsAdditionalMapButton = (
     <Tooltip
-      label={`Add additional Tablet field ${
-        tabletFieldsAdditionalMap.size + 1
+      label={`Add additional Smartphone field ${
+        smartphoneFieldsAdditionalMap.size + 1
       }`}
     >
-      <Group>{createdAddTabletFieldsAdditionalMapButton}</Group>
+      <Group>{createdAddSmartphoneFieldsAdditionalMapButton}</Group>
     </Tooltip>
   );
 
-  const displayTabletSpecificationsInputs = (
+  const displaySmartphoneSpecificationsInputs = (
     <Group py={padding} position="apart" w="100%">
       <Group w="100%" position="apart">
-        <Title order={4}>Tablet Specifications</Title>
-        {displayTabletFieldsAdditionalMapButton}
+        <Title order={4}>Smartphone Specifications</Title>
+        {displaySmartphoneFieldsAdditionalMapButton}
       </Group>
-      {createdTabletOsSelectInput}
-      {createdTabletChipsetTextInput}
-      {createdTabletDisplayTextInput}
-      {createdTabletResolutionHorizontalTextInput}
-      {createdTabletResolutionVerticalTextInput}
-      {createdTabletColorTextInput}
-      {createdTabletRamCapacityTextInput}
-      {createdTabletRamCapacityUnitSelectInput}
-      {createdTabletStorageCapacityTextInput}
-      {createdTabletBatteryCapacityTextInput}
-      {createdTabletCameraTextInput}
-      {createdTabletFieldsAdditionalMapTextInputElements}
+      {createdSmartphoneOsSelectInput}
+      {createdSmartphoneChipsetTextInput}
+      {createdSmartphoneDisplayTextInput}
+      {createdSmartphoneResolutionHorizontalTextInput}
+      {createdSmartphoneResolutionVerticalTextInput}
+      {createdSmartphoneColorTextInput}
+      {createdSmartphoneRamCapacityTextInput}
+      {createdSmartphoneRamCapacityUnitSelectInput}
+      {createdSmartphoneStorageCapacityTextInput}
+      {createdSmartphoneBatteryCapacityTextInput}
+      {createdSmartphoneCameraTextInput}
+      {createdSmartphoneFieldsAdditionalMapTextInputElements}
     </Group>
   );
 
-  return displayTabletSpecificationsInputs;
+  return displaySmartphoneSpecificationsInputs;
 }
 
-export default CreateTablet;
+export default CreateSmartphone;

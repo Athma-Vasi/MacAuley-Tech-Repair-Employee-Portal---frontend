@@ -1,12 +1,8 @@
-import {
-  Currency,
-  FileUploadDocument,
-  SetStepsInErrorPayload,
-} from '../../../types';
-import { ProductCategory } from '../../dashboard/types';
+import { Currency, FileUploadDocument } from '../../types';
+import { ProductCategory } from '../dashboard/types';
 
 // ╔═════════════════════════════════════════════════════════════════╗
-//   PRODUCT CATEGORY TYPES
+//    PRODUCT CATEGORY TYPES
 // ╚═════════════════════════════════════════════════════════════════╝
 
 type ProductAvailability =
@@ -39,19 +35,11 @@ type ProductServerResponse<
   fileUploads: FileUploadDocument[];
 };
 
-/**
- * @description - Contains shared properties between all product categories.
- *  - all product categories have these properties and their own specifications
- */
-type ProductCategorySchema = {
-  userId: string;
-  username: string;
-
-  // page 1
+type ProductCategoryPage1Specifications = {
   brand: string;
   model: string;
   description: string;
-  price: Number;
+  price: number;
   currency: Currency;
   availability: ProductAvailability;
   quantity: number;
@@ -64,9 +52,20 @@ type ProductCategorySchema = {
   height: number;
   heightUnit: DimensionUnit;
   additionalComments: string;
+};
+
+/**
+ * @description - Contains shared properties between all product categories.
+ *  - all product categories have these properties and their own specifications
+ */
+type ProductCategorySchema = ProductCategoryPage1Specifications & {
+  userId: string;
+  username: string;
+
+  // page 1 specifications here
 
   // product category specifications
-  // with user defined additional fields (page 2)
+  // with user defined additional fields (page 2) here
   additionalFields: {
     [key: string]: string;
   };
@@ -98,7 +97,7 @@ type ProductDocument =
   | WebcamDocument;
 
 // ╭─────────────────────────────────────────────────────────────────╮
-//   ACCESSORY
+//    ACCESSORY
 // ╰─────────────────────────────────────────────────────────────────╯
 
 type AccessorySpecifications = {
@@ -116,8 +115,17 @@ type AccessoryDocument = AccessorySchema & {
   __v: number;
 };
 
+type AccessoryRequestBody = ProductCategoryPage1Specifications &
+  AccessorySpecifications & {
+    additionalFields: {
+      [key: string]: string;
+    };
+    reviews: ProductReview[];
+    uploadedFilesIds: string[];
+  };
+
 // ╭─────────────────────────────────────────────────────────────────╮
-//   CENTRAL PROCESSING UNIT (CPU)
+//    CENTRAL PROCESSING UNIT (CPU)
 // ╰─────────────────────────────────────────────────────────────────╯
 
 type CpuSpecifications = {
@@ -142,9 +150,28 @@ type CpuDocument = CpuSchema & {
   __v: number;
 };
 
+type CpuRequestBody = ProductCategoryPage1Specifications &
+  CpuSpecifications & {
+    additionalFields: {
+      [key: string]: string;
+    };
+    reviews: ProductReview[];
+    uploadedFilesIds: string[];
+  };
+
 // ╭─────────────────────────────────────────────────────────────────╮
-//   COMPUTER CASE
+//    COMPUTER CASE
 // ╰─────────────────────────────────────────────────────────────────╯
+
+type CaseType =
+  | 'Mid Tower'
+  | 'Full Tower'
+  | 'Mini Tower'
+  | 'Cube'
+  | 'Slim'
+  | 'Desktop'
+  | 'Other';
+type CaseSidePanel = 'Windowed' | 'Solid';
 
 type CaseSpecifications = {
   caseType: CaseType; // Mid Tower, Full Tower, etc.
@@ -161,18 +188,17 @@ type ComputerCaseDocument = ComputerCaseSchema & {
   __v: number;
 };
 
-type CaseType =
-  | 'Mid Tower'
-  | 'Full Tower'
-  | 'Mini Tower'
-  | 'Cube'
-  | 'Slim'
-  | 'Desktop'
-  | 'Other';
-type CaseSidePanel = 'Windowed' | 'Solid';
+type ComputerCaseRequestBody = ProductCategoryPage1Specifications &
+  CaseSpecifications & {
+    additionalFields: {
+      [key: string]: string;
+    };
+    reviews: ProductReview[];
+    uploadedFilesIds: string[];
+  };
 
 // ╭─────────────────────────────────────────────────────────────────╮
-//   DESKTOP COMPUTER
+//    DESKTOP COMPUTER
 // ╰─────────────────────────────────────────────────────────────────╯
 
 /**
@@ -212,9 +238,20 @@ type DesktopComputerDocument = DesktopComputerSchema & {
   __v: number;
 };
 
+type DesktopComputerRequestBody = ProductCategoryPage1Specifications &
+  DesktopComputerSpecifications & {
+    additionalFields: {
+      [key: string]: string;
+    };
+    reviews: ProductReview[];
+    uploadedFilesIds: string[];
+  };
+
 // ╭─────────────────────────────────────────────────────────────────╮
-//   DISPLAY
+//    DISPLAY
 // ╰─────────────────────────────────────────────────────────────────╯
+
+type DisplayPanelType = 'IPS' | 'TN' | 'VA' | 'OLED' | 'QLED' | 'Other';
 
 type DisplaySpecifications = {
   displaySize: number; // 24", 27", etc.
@@ -235,10 +272,17 @@ type DisplayDocument = DisplaySchema & {
   __v: number;
 };
 
-type DisplayPanelType = 'IPS' | 'TN' | 'VA' | 'OLED' | 'QLED' | 'Other';
+type DisplayRequestBody = ProductCategoryPage1Specifications &
+  DisplaySpecifications & {
+    additionalFields: {
+      [key: string]: string;
+    };
+    reviews: ProductReview[];
+    uploadedFilesIds: string[];
+  };
 
 // ╭─────────────────────────────────────────────────────────────────╮
-//   GRAPHICS PROCESSING UNIT (GPU)
+//    GRAPHICS PROCESSING UNIT (GPU)
 // ╰─────────────────────────────────────────────────────────────────╯
 
 type GpuSpecifications = {
@@ -259,9 +303,27 @@ type GpuDocument = GpuSchema & {
   __v: number;
 };
 
+type GpuRequestBody = ProductCategoryPage1Specifications &
+  GpuSpecifications & {
+    additionalFields: {
+      [key: string]: string;
+    };
+    reviews: ProductReview[];
+    uploadedFilesIds: string[];
+  };
+
 // ╭─────────────────────────────────────────────────────────────────╮
-//   HEADPHONE
+//    HEADPHONE
 // ╰─────────────────────────────────────────────────────────────────╯
+
+type HeadphoneType = 'Over-ear' | 'On-ear' | 'In-ear' | 'Other';
+type HeadphoneInterface =
+  | 'USB'
+  | 'Bluetooth'
+  | '3.5 mm'
+  | '2.5 mm'
+  | 'MMCX'
+  | 'Other';
 
 type HeadphoneSpecifications = {
   headphoneType: HeadphoneType; // Over-ear, On-ear, etc.
@@ -281,34 +343,18 @@ type HeadphoneDocument = HeadphoneSchema & {
   __v: number;
 };
 
-type HeadphoneType = 'Over-ear' | 'On-ear' | 'In-ear' | 'Other';
-type HeadphoneInterface =
-  | 'USB'
-  | 'Bluetooth'
-  | '3.5 mm'
-  | '2.5 mm'
-  | 'MMCX'
-  | 'Other';
+type HeadphoneRequestBody = ProductCategoryPage1Specifications &
+  HeadphoneSpecifications & {
+    additionalFields: {
+      [key: string]: string;
+    };
+    reviews: ProductReview[];
+    uploadedFilesIds: string[];
+  };
 
 // ╭─────────────────────────────────────────────────────────────────╮
-//   KEYBOARD
+//    KEYBOARD
 // ╰─────────────────────────────────────────────────────────────────╯
-
-type KeyboardSpecifications = {
-  keyboardSwitch: KeyboardSwitch; // Cherry MX Red, Cherry MX Blue, etc.
-  keyboardLayout: KeyboardLayout; // ANSI, ISO, etc.
-  keyboardBacklight: KeyboardBacklight; // RGB, etc.
-  keyboardInterface: PeripheralsInterface; // USB, Bluetooth, etc.
-};
-
-type KeyboardSchema = ProductCategorySchema & KeyboardSpecifications;
-
-type KeyboardDocument = KeyboardSchema & {
-  _id: string;
-  createdAt: Date;
-  updatedAt: Date;
-  __v: number;
-};
 
 type KeyboardSwitch =
   | 'Cherry MX Red'
@@ -330,8 +376,33 @@ type KeyboardLayout =
   | 'Other';
 type KeyboardBacklight = 'RGB' | 'Single Color' | 'None';
 
+type KeyboardSpecifications = {
+  keyboardSwitch: KeyboardSwitch; // Cherry MX Red, Cherry MX Blue, etc.
+  keyboardLayout: KeyboardLayout; // ANSI, ISO, etc.
+  keyboardBacklight: KeyboardBacklight; // RGB, etc.
+  keyboardInterface: PeripheralsInterface; // USB, Bluetooth, etc.
+};
+
+type KeyboardSchema = ProductCategorySchema & KeyboardSpecifications;
+
+type KeyboardDocument = KeyboardSchema & {
+  _id: string;
+  createdAt: Date;
+  updatedAt: Date;
+  __v: number;
+};
+
+type KeyboardRequestBody = ProductCategoryPage1Specifications &
+  KeyboardSpecifications & {
+    additionalFields: {
+      [key: string]: string;
+    };
+    reviews: ProductReview[];
+    uploadedFilesIds: string[];
+  };
+
 // ╭─────────────────────────────────────────────────────────────────╮
-//   LAPTOP
+//    LAPTOP
 // ╰─────────────────────────────────────────────────────────────────╯
 
 /**
@@ -358,8 +429,17 @@ type LaptopDocument = LaptopSchema & {
   __v: number;
 };
 
+type LaptopRequestBody = ProductCategoryPage1Specifications &
+  LaptopSpecifications & {
+    additionalFields: {
+      [key: string]: string;
+    };
+    reviews: ProductReview[];
+    uploadedFilesIds: string[];
+  };
+
 // ╭─────────────────────────────────────────────────────────────────╮
-//   MEMORY (RAM)
+//    MEMORY (RAM)
 // ╰─────────────────────────────────────────────────────────────────╯
 
 type RamSpecifications = {
@@ -382,9 +462,20 @@ type RamDocument = RamSchema & {
   __v: number;
 };
 
+type RamRequestBody = ProductCategoryPage1Specifications &
+  RamSpecifications & {
+    additionalFields: {
+      [key: string]: string;
+    };
+    reviews: ProductReview[];
+    uploadedFilesIds: string[];
+  };
+
 // ╭─────────────────────────────────────────────────────────────────╮
-//   MOUSE
+//    MOUSE
 // ╰─────────────────────────────────────────────────────────────────╯
+
+type MouseSensor = 'Optical' | 'Laser' | 'Infrared' | 'Other';
 
 type MouseSpecifications = {
   mouseSensor: MouseSensor; // Optical, Laser, etc.
@@ -403,11 +494,34 @@ type MouseDocument = MouseSchema & {
   __v: number;
 };
 
-type MouseSensor = 'Optical' | 'Laser' | 'Infrared' | 'Other';
+type MouseRequestBody = ProductCategoryPage1Specifications &
+  MouseSpecifications & {
+    additionalFields: {
+      [key: string]: string;
+    };
+    reviews: ProductReview[];
+    uploadedFilesIds: string[];
+  };
 
 // ╭─────────────────────────────────────────────────────────────────╮
-//   MICROPHONE
+//    MICROPHONE
 // ╰─────────────────────────────────────────────────────────────────╯
+
+type MicrophoneType =
+  | 'Condenser'
+  | 'Dynamic'
+  | 'Ribbon'
+  | 'USB'
+  | 'Wireless'
+  | 'Other';
+type MicrophonePolarPattern =
+  | 'Cardioid'
+  | 'Supercardioid'
+  | 'Hypercardioid'
+  | 'Omnidirectional'
+  | 'Bidirectional'
+  | 'Other';
+type MicrophoneInterface = 'XLR' | 'USB' | '3.5mm' | 'Wireless' | 'Other';
 
 type MicrophoneSpecifications = {
   microphoneType: MicrophoneType; // Condenser, Dynamic, etc.
@@ -426,25 +540,25 @@ type MicrophoneDocument = MicrophoneSchema & {
   __v: number;
 };
 
-type MicrophoneType =
-  | 'Condenser'
-  | 'Dynamic'
-  | 'Ribbon'
-  | 'USB'
-  | 'Wireless'
-  | 'Other';
-type MicrophonePolarPattern =
-  | 'Cardioid'
-  | 'Supercardioid'
-  | 'Hypercardioid'
-  | 'Omnidirectional'
-  | 'Bidirectional'
-  | 'Other';
-type MicrophoneInterface = 'XLR' | 'USB' | '3.5mm' | 'Wireless' | 'Other';
+type MicrophoneRequestBody = ProductCategoryPage1Specifications &
+  MicrophoneSpecifications & {
+    additionalFields: {
+      [key: string]: string;
+    };
+    reviews: ProductReview[];
+    uploadedFilesIds: string[];
+  };
 
 // ╭─────────────────────────────────────────────────────────────────╮
-//   MOTHERBOARD
+//    MOTHERBOARD
 // ╰─────────────────────────────────────────────────────────────────╯
+
+type MotherboardFormFactor =
+  | 'ATX'
+  | 'Micro ATX'
+  | 'Mini ITX'
+  | 'E-ATX'
+  | 'XL-ATX';
 
 type MotherboardSpecifications = {
   motherboardSocket: string; // LGA 1200, AM4, etc.
@@ -470,16 +584,28 @@ type MotherboardDocument = MotherboardSchema & {
   __v: number;
 };
 
-type MotherboardFormFactor =
-  | 'ATX'
-  | 'Micro ATX'
-  | 'Mini ITX'
-  | 'E-ATX'
-  | 'XL-ATX';
+type MotherboardRequestBody = ProductCategoryPage1Specifications &
+  MotherboardSpecifications & {
+    additionalFields: {
+      [key: string]: string;
+    };
+    reviews: ProductReview[];
+    uploadedFilesIds: string[];
+  };
 
 // ╭─────────────────────────────────────────────────────────────────╮
-//   POWER SUPPLY UNIT (PSU)
+//    POWER SUPPLY UNIT (PSU)
 // ╰─────────────────────────────────────────────────────────────────╯
+
+type PsuEfficiency =
+  | '80+'
+  | '80+ Bronze'
+  | '80+ Silver'
+  | '80+ Gold'
+  | '80+ Platinum'
+  | '80+ Titanium';
+type PsuModularity = 'Full' | 'Semi' | 'None' | 'Other';
+type PsuFormFactor = 'ATX' | 'SFX' | 'SFX-L' | 'TFX' | 'Flex ATX' | 'Other';
 
 type PsuSpecifications = {
   psuWattage: number; // 650 W, 750 W, etc.
@@ -497,18 +623,17 @@ type PsuDocument = PsuSchema & {
   __v: number;
 };
 
-type PsuEfficiency =
-  | '80+'
-  | '80+ Bronze'
-  | '80+ Silver'
-  | '80+ Gold'
-  | '80+ Platinum'
-  | '80+ Titanium';
-type PsuModularity = 'Full' | 'Semi' | 'None' | 'Other';
-type PsuFormFactor = 'ATX' | 'SFX' | 'SFX-L' | 'TFX' | 'Flex ATX' | 'Other';
+type PsuRequestBody = ProductCategoryPage1Specifications &
+  PsuSpecifications & {
+    additionalFields: {
+      [key: string]: string;
+    };
+    reviews: ProductReview[];
+    uploadedFilesIds: string[];
+  };
 
 // ╭─────────────────────────────────────────────────────────────────╮
-//   SMARTPHONE
+//    SMARTPHONE
 // ╰─────────────────────────────────────────────────────────────────╯
 
 type SmartphoneSpecifications = {
@@ -534,9 +659,28 @@ type SmartphoneDocument = SmartphoneSchema & {
   __v: number;
 };
 
+type SmartphoneRequestBody = ProductCategoryPage1Specifications &
+  SmartphoneSpecifications & {
+    additionalFields: {
+      [key: string]: string;
+    };
+    reviews: ProductReview[];
+    uploadedFilesIds: string[];
+  };
+
 // ╭─────────────────────────────────────────────────────────────────╮
-//   SPEAKER
+//    SPEAKER
 // ╰─────────────────────────────────────────────────────────────────╯
+
+type SpeakerType = '2.0' | '2.1' | '3.1' | '4.1' | '5.1' | '7.1' | 'Other';
+type SpeakerInterface =
+  | 'USB'
+  | 'Bluetooth'
+  | '3.5 mm'
+  | '2.5 mm'
+  | 'RCA'
+  | 'TRS'
+  | 'Other';
 
 type SpeakerSpecifications = {
   speakerType: SpeakerType; // 2.0, 2.1, etc.
@@ -555,38 +699,18 @@ type SpeakerDocument = SpeakerSchema & {
   __v: number;
 };
 
-type SpeakerType = '2.0' | '2.1' | '3.1' | '4.1' | '5.1' | '7.1' | 'Other';
-type SpeakerInterface =
-  | 'USB'
-  | 'Bluetooth'
-  | '3.5 mm'
-  | '2.5 mm'
-  | 'RCA'
-  | 'TRS'
-  | 'Other';
+type SpeakerRequestBody = ProductCategoryPage1Specifications &
+  SpeakerSpecifications & {
+    additionalFields: {
+      [key: string]: string;
+    };
+    reviews: ProductReview[];
+    uploadedFilesIds: string[];
+  };
 
 // ╭─────────────────────────────────────────────────────────────────╮
-//   STORAGE
+//    STORAGE
 // ╰─────────────────────────────────────────────────────────────────╯
-
-type StorageSpecifications = {
-  storageType: StorageType; // SSD, HDD, etc.
-  storageCapacity: number; // 1, 2, etc.
-  storageCapacityUnit: MemoryUnit; // TB, etc.
-  storageCache: number; // 64 MB, 128 MB, etc.
-  storageCacheUnit: MemoryUnit; // MB, etc.
-  storageFormFactor: StorageFormFactor; // 2.5", M.2 2280, etc.
-  storageInterface: StorageInterface; // SATA III, PCIe 3.0 x4, etc.
-};
-
-type StorageSchema = ProductCategorySchema & StorageSpecifications;
-
-type StorageDocument = StorageSchema & {
-  _id: string;
-  createdAt: Date;
-  updatedAt: Date;
-  __v: number;
-};
 
 type StorageType = 'SSD' | 'HDD' | 'SSHD' | 'Other';
 type StorageFormFactor =
@@ -609,8 +733,36 @@ type StorageInterface =
   | 'mSATA'
   | 'Other';
 
+type StorageSpecifications = {
+  storageType: StorageType; // SSD, HDD, etc.
+  storageCapacity: number; // 1, 2, etc.
+  storageCapacityUnit: MemoryUnit; // TB, etc.
+  storageCache: number; // 64 MB, 128 MB, etc.
+  storageCacheUnit: MemoryUnit; // MB, etc.
+  storageFormFactor: StorageFormFactor; // 2.5", M.2 2280, etc.
+  storageInterface: StorageInterface; // SATA III, PCIe 3.0 x4, etc.
+};
+
+type StorageSchema = ProductCategorySchema & StorageSpecifications;
+
+type StorageDocument = StorageSchema & {
+  _id: string;
+  createdAt: Date;
+  updatedAt: Date;
+  __v: number;
+};
+
+type StorageRequestBody = ProductCategoryPage1Specifications &
+  StorageSpecifications & {
+    additionalFields: {
+      [key: string]: string;
+    };
+    reviews: ProductReview[];
+    uploadedFilesIds: string[];
+  };
+
 // ╭─────────────────────────────────────────────────────────────────╮
-//   TABLET
+//    TABLET
 // ╰─────────────────────────────────────────────────────────────────╯
 
 type TabletSpecifications = {
@@ -636,9 +788,23 @@ type TabletDocument = TabletSchema & {
   __v: number;
 };
 
+type TabletRequestBody = ProductCategoryPage1Specifications &
+  TabletSpecifications & {
+    additionalFields: {
+      [key: string]: string;
+    };
+    reviews: ProductReview[];
+    uploadedFilesIds: string[];
+  };
+
 // ╭─────────────────────────────────────────────────────────────────╮
-//   WEBCAM
+//    WEBCAM
 // ╰─────────────────────────────────────────────────────────────────╯
+
+type WebcamResolution = '720p' | '1080p' | '1440p' | '4K' | 'Other';
+type WebcamFrameRate = '30 fps' | '60 fps' | '120 fps' | '240 fps' | 'Other';
+type WebcamInterface = 'USB' | 'Bluetooth' | 'Other';
+type WebcamMicrophone = 'Yes' | 'No';
 
 type WebcamSpecifications = {
   webcamResolution: WebcamResolution; // 720p, 1080p, etc.
@@ -657,14 +823,18 @@ type WebcamDocument = WebcamSchema & {
   __v: number;
 };
 
-type WebcamResolution = '720p' | '1080p' | '1440p' | '4K' | 'Other';
-type WebcamFrameRate = '30 fps' | '60 fps' | '120 fps' | '240 fps' | 'Other';
-type WebcamInterface = 'USB' | 'Bluetooth' | 'Other';
-type WebcamMicrophone = 'Yes' | 'No';
+type WebcamRequestBody = ProductCategoryPage1Specifications &
+  WebcamSpecifications & {
+    additionalFields: {
+      [key: string]: string;
+    };
+    reviews: ProductReview[];
+    uploadedFilesIds: string[];
+  };
 
 // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 //  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-//    CREATE PRODUCT STATE TYPES
+//     CREATE PRODUCT STATE TYPES
 //  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
@@ -674,7 +844,7 @@ type AdditionalFieldsFocusedMap = Map<number, [boolean, boolean]>; // Map<index,
 
 type CreateProductState = {
   // ╔═════════════════════════════════════════════════════════════════╗
-  //   PAGE 1
+  //    PAGE 1
   // ╚═════════════════════════════════════════════════════════════════╝
 
   // brand
@@ -731,14 +901,14 @@ type CreateProductState = {
   isAdditionalCommentsFocused: boolean;
 
   // ╔═════════════════════════════════════════════════════════════════╗
-  //   PAGE 2
+  //    PAGE 2
   // ╚═════════════════════════════════════════════════════════════════╝
 
   // product category
   productCategory: ProductCategory;
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //   ACCESSORY
+  //    ACCESSORY
   // ╰─────────────────────────────────────────────────────────────────╯
   accessoryType: string;
   isAccessoryTypeValid: boolean;
@@ -752,7 +922,7 @@ type CreateProductState = {
   areAccessoryFieldsAdditionalMapFocused: AdditionalFieldsFocusedMap;
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //   CENTRAL PROCESSING UNIT (CPU)
+  //    CENTRAL PROCESSING UNIT (CPU)
   // ╰─────────────────────────────────────────────────────────────────╯
   cpuSocket: string;
   isCpuSocketValid: boolean;
@@ -783,7 +953,7 @@ type CreateProductState = {
   areCpuFieldsAdditionalMapFocused: AdditionalFieldsFocusedMap;
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //   COMPUTER CASE
+  //    COMPUTER CASE
   // ╰─────────────────────────────────────────────────────────────────╯
   caseType: CaseType;
   caseColor: string;
@@ -795,7 +965,7 @@ type CreateProductState = {
   areCaseFieldsAdditionalMapFocused: AdditionalFieldsFocusedMap;
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //   DISPLAY
+  //    DISPLAY
   // ╰─────────────────────────────────────────────────────────────────╯
   displaySize: string; // inches
   isDisplaySizeValid: boolean;
@@ -821,7 +991,7 @@ type CreateProductState = {
   areDisplayFieldsAdditionalMapFocused: AdditionalFieldsFocusedMap;
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //   GRAPHICS PROCESSING UNIT (GPU)
+  //    GRAPHICS PROCESSING UNIT (GPU)
   // ╰─────────────────────────────────────────────────────────────────╯
   gpuChipset: string;
   isGpuChipsetValid: boolean;
@@ -844,7 +1014,7 @@ type CreateProductState = {
   areGpuFieldsAdditionalMapFocused: AdditionalFieldsFocusedMap;
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //   HEADPHONE
+  //    HEADPHONE
   // ╰─────────────────────────────────────────────────────────────────╯
   headphoneType: HeadphoneType;
   headphoneDriver: string;
@@ -865,7 +1035,7 @@ type CreateProductState = {
   areHeadphoneFieldsAdditionalMapFocused: AdditionalFieldsFocusedMap;
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //   KEYBOARD
+  //    KEYBOARD
   // ╰─────────────────────────────────────────────────────────────────╯
   keyboardSwitch: KeyboardSwitch;
   keyboardLayout: KeyboardLayout;
@@ -876,7 +1046,7 @@ type CreateProductState = {
   areKeyboardFieldsAdditionalMapFocused: AdditionalFieldsFocusedMap;
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //   MEMORY (RAM)
+  //    MEMORY (RAM)
   // ╰─────────────────────────────────────────────────────────────────╯
   ramDataRate: string;
   isRamDataRateValid: boolean;
@@ -903,7 +1073,7 @@ type CreateProductState = {
   areRamFieldsAdditionalMapFocused: AdditionalFieldsFocusedMap;
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //   MOUSE
+  //    MOUSE
   // ╰─────────────────────────────────────────────────────────────────╯
   mouseSensor: MouseSensor;
   mouseDpi: string;
@@ -921,7 +1091,7 @@ type CreateProductState = {
   areMouseFieldsAdditionalMapFocused: AdditionalFieldsFocusedMap;
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //   MICROPHONE
+  //    MICROPHONE
   // ╰─────────────────────────────────────────────────────────────────╯
   microphoneType: MicrophoneType;
   microphonePolarPattern: MicrophonePolarPattern;
@@ -937,7 +1107,7 @@ type CreateProductState = {
   areMicrophoneFieldsAdditionalMapFocused: AdditionalFieldsFocusedMap;
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //   MOTHERBOARD
+  //    MOTHERBOARD
   // ╰─────────────────────────────────────────────────────────────────╯
   motherboardSocket: string;
   isMotherboardSocketValid: boolean;
@@ -974,7 +1144,7 @@ type CreateProductState = {
   areMotherboardFieldsAdditionalMapFocused: AdditionalFieldsFocusedMap;
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //   POWER SUPPLY UNIT (PSU)
+  //    POWER SUPPLY UNIT (PSU)
   // ╰─────────────────────────────────────────────────────────────────╯
   psuWattage: string;
   isPsuWattageValid: boolean;
@@ -987,7 +1157,7 @@ type CreateProductState = {
   arePsuFieldsAdditionalMapFocused: AdditionalFieldsFocusedMap;
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //   SMARTPHONE
+  //    SMARTPHONE
   // ╰─────────────────────────────────────────────────────────────────╯
   smartphoneOs: MobileOs;
   smartphoneChipset: string;
@@ -1023,7 +1193,7 @@ type CreateProductState = {
   areSmartphoneFieldsAdditionalMapFocused: AdditionalFieldsFocusedMap;
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //   SPEAKER
+  //    SPEAKER
   // ╰─────────────────────────────────────────────────────────────────╯
   speakerType: SpeakerType;
   speakerTotalWattage: string;
@@ -1041,7 +1211,7 @@ type CreateProductState = {
   areSpeakerFieldsAdditionalMapFocused: AdditionalFieldsFocusedMap;
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //   STORAGE
+  //    STORAGE
   // ╰─────────────────────────────────────────────────────────────────╯
   storageType: StorageType;
   storageCapacity: string;
@@ -1059,7 +1229,7 @@ type CreateProductState = {
   areStorageFieldsAdditionalMapFocused: AdditionalFieldsFocusedMap;
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //   TABLET
+  //    TABLET
   // ╰─────────────────────────────────────────────────────────────────╯
   tabletOs: MobileOs;
   tabletChipset: string;
@@ -1095,7 +1265,7 @@ type CreateProductState = {
   areTabletFieldsAdditionalMapFocused: AdditionalFieldsFocusedMap;
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //   WEBCAM
+  //    WEBCAM
   // ╰─────────────────────────────────────────────────────────────────╯
   webcamResolution: WebcamResolution;
   webcamInterface: WebcamInterface;
@@ -1109,15 +1279,14 @@ type CreateProductState = {
   areWebcamFieldsAdditionalMapFocused: AdditionalFieldsFocusedMap;
 
   // ╔═════════════════════════════════════════════════════════════════╗
-  //   PAGE 3
+  //    PAGE 3
   // ╚═════════════════════════════════════════════════════════════════╝
   imgFormDataArray: FormData[];
   areImagesValid: boolean;
 
   // ╔═════════════════════════════════════════════════════════════════╗
-  //   MISC.
+  //    MISC.
   // ╚═════════════════════════════════════════════════════════════════╝
-
   currentlySelectedAdditionalFieldIndex: number; // currently updating idx
   triggerFormSubmit: boolean;
   currentStepperPosition: number;
@@ -1127,19 +1296,17 @@ type CreateProductState = {
   submitMessage: string;
   isSuccessful: boolean;
   successMessage: string;
-  isLoading: boolean;
-  loadingMessage: string;
 };
 
 // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 //  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-//    CREATE PRODUCT ACTION TYPE
+//     CREATE PRODUCT ACTION TYPE
 //  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
 type CreateProductAction = {
   // ╔═════════════════════════════════════════════════════════════════╗
-  //   PAGE 1
+  //    PAGE 1
   // ╚═════════════════════════════════════════════════════════════════╝
 
   // brand
@@ -1196,14 +1363,14 @@ type CreateProductAction = {
   setIsAdditionalCommentsFocused: 'setIsAdditionalCommentsFocused';
 
   // ╔═════════════════════════════════════════════════════════════════╗
-  //   PAGE 2
+  //    PAGE 2
   // ╚═════════════════════════════════════════════════════════════════╝
 
   // product category
   setProductCategory: 'setProductCategory';
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //   ACCESSORY
+  //    ACCESSORY
   // ╰─────────────────────────────────────────────────────────────────╯
   setAccessoryType: 'setAccessoryType';
   setIsAccessoryTypeValid: 'setIsAccessoryTypeValid';
@@ -1217,7 +1384,7 @@ type CreateProductAction = {
   setAreAccessoryFieldsAdditionalMapFocused: 'setAreAccessoryFieldsAdditionalMapFocused';
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //   CENTRAL PROCESSING UNIT (CPU)
+  //    CENTRAL PROCESSING UNIT (CPU)
   // ╰─────────────────────────────────────────────────────────────────╯
   setCpuSocket: 'setCpuSocket';
   setIsCpuSocketValid: 'setIsCpuSocketValid';
@@ -1248,7 +1415,7 @@ type CreateProductAction = {
   setAreCpuFieldsAdditionalMapFocused: 'setAreCpuFieldsAdditionalMapFocused';
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //   COMPUTER CASE
+  //    COMPUTER CASE
   // ╰─────────────────────────────────────────────────────────────────╯
   setCaseType: 'setCaseType';
   setCaseColor: 'setCaseColor';
@@ -1260,7 +1427,7 @@ type CreateProductAction = {
   setAreCaseFieldsAdditionalMapFocused: 'setAreCaseFieldsAdditionalMapFocused';
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //   DISPLAY
+  //    DISPLAY
   // ╰─────────────────────────────────────────────────────────────────╯
   setDisplaySize: 'setDisplaySize';
   setIsDisplaySizeValid: 'setIsDisplaySizeValid';
@@ -1286,7 +1453,7 @@ type CreateProductAction = {
   setAreDisplayFieldsAdditionalMapFocused: 'setAreDisplayFieldsAdditionalMapFocused';
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //   GRAPHICS PROCESSING UNIT (GPU)
+  //    GRAPHICS PROCESSING UNIT (GPU)
   // ╰─────────────────────────────────────────────────────────────────╯
   setGpuChipset: 'setGpuChipset';
   setIsGpuChipsetValid: 'setIsGpuChipsetValid';
@@ -1309,7 +1476,7 @@ type CreateProductAction = {
   setAreGpuFieldsAdditionalMapFocused: 'setAreGpuFieldsAdditionalMapFocused';
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //   HEADPHONE
+  //    HEADPHONE
   // ╰─────────────────────────────────────────────────────────────────╯
   setHeadphoneType: 'setHeadphoneType';
   setHeadphoneDriver: 'setHeadphoneDriver';
@@ -1330,7 +1497,7 @@ type CreateProductAction = {
   setAreHeadphoneFieldsAdditionalMapFocused: 'setAreHeadphoneFieldsAdditionalMapFocused';
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //   KEYBOARD
+  //    KEYBOARD
   // ╰─────────────────────────────────────────────────────────────────╯
   setKeyboardSwitch: 'setKeyboardSwitch';
   setKeyboardLayout: 'setKeyboardLayout';
@@ -1341,7 +1508,7 @@ type CreateProductAction = {
   setAreKeyboardFieldsAdditionalMapFocused: 'setAreKeyboardFieldsAdditionalMapFocused';
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //   MEMORY (RAM)
+  //    MEMORY (RAM)
   // ╰─────────────────────────────────────────────────────────────────╯
   setRamDataRate: 'setRamDataRate';
   setIsRamDataRateValid: 'setIsRamDataRateValid';
@@ -1368,7 +1535,7 @@ type CreateProductAction = {
   setAreRamFieldsAdditionalMapFocused: 'setAreRamFieldsAdditionalMapFocused';
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //   MOUSE
+  //    MOUSE
   // ╰─────────────────────────────────────────────────────────────────╯
   setMouseSensor: 'setMouseSensor';
   setMouseDpi: 'setMouseDpi';
@@ -1386,7 +1553,7 @@ type CreateProductAction = {
   setAreMouseFieldsAdditionalMapFocused: 'setAreMouseFieldsAdditionalMapFocused';
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //   MICROPHONE
+  //    MICROPHONE
   // ╰─────────────────────────────────────────────────────────────────╯
   setMicrophoneType: 'setMicrophoneType';
   setMicrophonePolarPattern: 'setMicrophonePolarPattern';
@@ -1402,7 +1569,7 @@ type CreateProductAction = {
   setAreMicrophoneFieldsAdditionalMapFocused: 'setAreMicrophoneFieldsAdditionalMapFocused';
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //   MOTHERBOARD
+  //    MOTHERBOARD
   // ╰─────────────────────────────────────────────────────────────────╯
   setMotherboardSocket: 'setMotherboardSocket';
   setIsMotherboardSocketValid: 'setIsMotherboardSocketValid';
@@ -1439,7 +1606,7 @@ type CreateProductAction = {
   setAreMotherboardFieldsAdditionalMapFocused: 'setAreMotherboardFieldsAdditionalMapFocused';
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //   POWER SUPPLY UNIT (PSU)
+  //    POWER SUPPLY UNIT (PSU)
   // ╰─────────────────────────────────────────────────────────────────╯
   setPsuWattage: 'setPsuWattage';
   setIsPsuWattageValid: 'setIsPsuWattageValid';
@@ -1452,7 +1619,7 @@ type CreateProductAction = {
   setArePsuFieldsAdditionalMapFocused: 'setArePsuFieldsAdditionalMapFocused';
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //   SMARTPHONE
+  //    SMARTPHONE
   // ╰─────────────────────────────────────────────────────────────────╯
   setSmartphoneOs: 'setSmartphoneOs';
   setSmartphoneChipset: 'setSmartphoneChipset';
@@ -1488,7 +1655,7 @@ type CreateProductAction = {
   setAreSmartphoneFieldsAdditionalMapFocused: 'setAreSmartphoneFieldsAdditionalMapFocused';
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //   SPEAKER
+  //    SPEAKER
   // ╰─────────────────────────────────────────────────────────────────╯
   setSpeakerType: 'setSpeakerType';
   setSpeakerTotalWattage: 'setSpeakerTotalWattage';
@@ -1506,7 +1673,7 @@ type CreateProductAction = {
   setAreSpeakerFieldsAdditionalMapFocused: 'setAreSpeakerFieldsAdditionalMapFocused';
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //   STORAGE
+  //    STORAGE
   // ╰─────────────────────────────────────────────────────────────────╯
   setStorageType: 'setStorageType';
   setStorageCapacity: 'setStorageCapacity';
@@ -1524,7 +1691,7 @@ type CreateProductAction = {
   setAreStorageFieldsAdditionalMapFocused: 'setAreStorageFieldsAdditionalMapFocused';
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //   TABLET
+  //    TABLET
   // ╰─────────────────────────────────────────────────────────────────╯
   setTabletOs: 'setTabletOs';
   setTabletChipset: 'setTabletChipset';
@@ -1560,7 +1727,7 @@ type CreateProductAction = {
   setAreTabletFieldsAdditionalMapFocused: 'setAreTabletFieldsAdditionalMapFocused';
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //   WEBCAM
+  //    WEBCAM
   // ╰─────────────────────────────────────────────────────────────────╯
   setWebcamResolution: 'setWebcamResolution';
   setWebcamInterface: 'setWebcamInterface';
@@ -1574,13 +1741,13 @@ type CreateProductAction = {
   setAreWebcamFieldsAdditionalMapFocused: 'setAreWebcamFieldsAdditionalMapFocused';
 
   // ╔═════════════════════════════════════════════════════════════════╗
-  //   PAGE 3
+  //    PAGE 3
   // ╚═════════════════════════════════════════════════════════════════╝
   setImgFormDataArray: 'setImgFormDataArray';
   setAreImagesValid: 'setAreImagesValid';
 
   // ╔═════════════════════════════════════════════════════════════════╗
-  //   MISC.
+  //    MISC.
   // ╚═════════════════════════════════════════════════════════════════╝
   setCurrentlySelectedAdditionalFieldIndex: 'setCurrentlySelectedAdditionalFieldIndex';
   setTriggerFormSubmit: 'setTriggerFormSubmit';
@@ -1591,1402 +1758,124 @@ type CreateProductAction = {
   setSubmitMessage: 'setSubmitMessage';
   setIsSuccessful: 'setIsSuccessful';
   setSuccessMessage: 'setSuccessMessage';
-  setIsLoading: 'setIsLoading';
-  setLoadingMessage: 'setLoadingMessage';
 };
-
-// ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
-//  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-//    CREATE PRODUCT DISPATCH TYPES
-//  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
-// ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
-
-type AdditionalFieldsAdd = {
-  operation: 'add';
-  data: [string, string];
-};
-type AdditionalFieldsRemove = {
-  operation: 'remove';
-  index: number;
-};
-type AdditionalFieldsUpdate = {
-  operation: 'update';
-  kind: 'key' | 'value';
-  index: number;
-  data: string;
-};
-type AdditionalFieldsPayload =
-  | AdditionalFieldsAdd
-  | AdditionalFieldsRemove
-  | AdditionalFieldsUpdate;
-
-type AdditionalFieldsValidFocusedAdd = {
-  operation: 'add';
-  data: [boolean, boolean];
-};
-type AdditionalFieldsValidFocusedRemove = {
-  operation: 'remove';
-  index: number;
-};
-type AdditionalFieldsValidFocusedUpdate = {
-  operation: 'update';
-  kind: 'key' | 'value';
-  index: number;
-  data: boolean;
-};
-type AdditionalFieldsValidFocusedPayload =
-  | AdditionalFieldsValidFocusedAdd
-  | AdditionalFieldsValidFocusedRemove
-  | AdditionalFieldsValidFocusedUpdate;
-
-type CreateProductDispatch =
-  // ╔═════════════════════════════════════════════════════════════════╗
-  //   PAGE 1
-  // ╚═════════════════════════════════════════════════════════════════╝
-  // brand
-  | {
-      type: CreateProductAction['setBrand'];
-      payload: string;
-    }
-  | {
-      type:
-        | CreateProductAction['setIsBrandValid']
-        | CreateProductAction['setIsBrandFocused'];
-      payload: boolean;
-    }
-  // model
-  | {
-      type: CreateProductAction['setModel'];
-      payload: string;
-    }
-  | {
-      type:
-        | CreateProductAction['setIsModelValid']
-        | CreateProductAction['setIsModelFocused'];
-      payload: boolean;
-    }
-  // description
-  | {
-      type: CreateProductAction['setDescription'];
-      payload: string;
-    }
-  | {
-      type:
-        | CreateProductAction['setIsDescriptionValid']
-        | CreateProductAction['setIsDescriptionFocused'];
-      payload: boolean;
-    }
-  // price
-  | {
-      type: CreateProductAction['setPrice'];
-      payload: string;
-    }
-  | {
-      type:
-        | CreateProductAction['setIsPriceValid']
-        | CreateProductAction['setIsPriceFocused'];
-      payload: boolean;
-    }
-  // currency
-  | {
-      type: CreateProductAction['setCurrency'];
-      payload: Currency;
-    }
-  // availability
-  | {
-      type: CreateProductAction['setAvailability'];
-      payload: ProductAvailability;
-    }
-  // quantity
-  | {
-      type: CreateProductAction['setQuantity'];
-      payload: string;
-    }
-  | {
-      type:
-        | CreateProductAction['setIsQuantityValid']
-        | CreateProductAction['setIsQuantityFocused'];
-      payload: boolean;
-    }
-  // weight
-  | {
-      type: CreateProductAction['setWeight'];
-      payload: string;
-    }
-  | {
-      type:
-        | CreateProductAction['setIsWeightValid']
-        | CreateProductAction['setIsWeightFocused'];
-      payload: boolean;
-    }
-  // weight unit
-  | {
-      type: CreateProductAction['setWeightUnit'];
-      payload: WeightUnit;
-    }
-  | {
-      type: CreateProductAction['setDimensionLength'];
-      payload: string;
-    }
-  // dimension length
-  | {
-      type:
-        | CreateProductAction['setIsDimensionLengthFocused']
-        | CreateProductAction['setIsDimensionLengthValid'];
-      payload: boolean;
-    }
-  // dimension length unit
-  | {
-      type: CreateProductAction['setDimensionLengthUnit'];
-      payload: DimensionUnit;
-    }
-  // dimension width
-  | {
-      type: CreateProductAction['setDimensionWidth'];
-      payload: string;
-    }
-  | {
-      type:
-        | CreateProductAction['setIsDimensionWidthValid']
-        | CreateProductAction['setIsDimensionWidthFocused'];
-      payload: boolean;
-    }
-  // dimension width unit
-  | {
-      type: CreateProductAction['setDimensionWidthUnit'];
-      payload: DimensionUnit;
-    }
-  // dimension height
-  | {
-      type: CreateProductAction['setDimensionHeight'];
-      payload: string;
-    }
-  | {
-      type:
-        | CreateProductAction['setIsDimensionHeightValid']
-        | CreateProductAction['setIsDimensionHeightFocused'];
-      payload: boolean;
-    }
-  // dimension height unit
-  | {
-      type: CreateProductAction['setDimensionHeightUnit'];
-      payload: DimensionUnit;
-    }
-  // additional comments
-  | {
-      type: CreateProductAction['setAdditionalComments'];
-      payload: string;
-    }
-  | {
-      type:
-        | CreateProductAction['setIsAdditionalCommentsValid']
-        | CreateProductAction['setIsAdditionalCommentsFocused'];
-      payload: boolean;
-    }
-  // ╔═════════════════════════════════════════════════════════════════╗
-  //   PAGE 2
-  // ╚═════════════════════════════════════════════════════════════════╝
-  // product category
-  | {
-      type: CreateProductAction['setProductCategory'];
-      payload: ProductCategory;
-    }
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //   ACCESSORY
-  // ╰─────────────────────────────────────────────────────────────────╯
-  | {
-      type: CreateProductAction['setAccessoryType'];
-      payload: string;
-    }
-  | {
-      type:
-        | CreateProductAction['setIsAccessoryTypeValid']
-        | CreateProductAction['setIsAccessoryTypeFocused'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setAccessoryColor'];
-      payload: string;
-    }
-  | {
-      type:
-        | CreateProductAction['setIsAccessoryColorValid']
-        | CreateProductAction['setIsAccessoryColorFocused'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setAccessoryInterface'];
-      payload: PeripheralsInterface;
-    }
-  | {
-      type: CreateProductAction['setAccessoryFieldsAdditionalMap'];
-      payload: AdditionalFieldsPayload;
-    }
-  | {
-      type:
-        | CreateProductAction['setAreAccessoryFieldsAdditionalMapValid']
-        | CreateProductAction['setAreAccessoryFieldsAdditionalMapFocused'];
-      payload: AdditionalFieldsValidFocusedPayload;
-    }
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //   CENTRAL PROCESSING UNIT (CPU)
-  // ╰─────────────────────────────────────────────────────────────────╯
-  | {
-      type: CreateProductAction['setCpuSocket'];
-      payload: string;
-    }
-  | {
-      type:
-        | CreateProductAction['setIsCpuSocketValid']
-        | CreateProductAction['setIsCpuSocketFocused'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setCpuFrequency'];
-      payload: string;
-    }
-  | {
-      type:
-        | CreateProductAction['setIsCpuFrequencyValid']
-        | CreateProductAction['setIsCpuFrequencyFocused'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setCpuCores'];
-      payload: string;
-    }
-  | {
-      type:
-        | CreateProductAction['setIsCpuCoresValid']
-        | CreateProductAction['setIsCpuCoresFocused'];
-      payload: boolean;
-    }
-  | {
-      type:
-        | CreateProductAction['setCpuL1CacheCapacity']
-        | CreateProductAction['setCpuL2CacheCapacity']
-        | CreateProductAction['setCpuL3CacheCapacity'];
-      payload: string;
-    }
-  | {
-      type:
-        | CreateProductAction['setIsCpuL1CacheCapacityValid']
-        | CreateProductAction['setIsCpuL1CacheCapacityFocused']
-        | CreateProductAction['setIsCpuL2CacheCapacityValid']
-        | CreateProductAction['setIsCpuL2CacheCapacityFocused']
-        | CreateProductAction['setIsCpuL3CacheCapacityValid']
-        | CreateProductAction['setIsCpuL3CacheCapacityFocused'];
-      payload: boolean;
-    }
-  | {
-      type:
-        | CreateProductAction['setCpuL1CacheCapacityUnit']
-        | CreateProductAction['setCpuL2CacheCapacityUnit']
-        | CreateProductAction['setCpuL3CacheCapacityUnit'];
-      payload: MemoryUnit;
-    }
-  | {
-      type: CreateProductAction['setCpuWattage'];
-      payload: string;
-    }
-  | {
-      type:
-        | CreateProductAction['setIsCpuWattageValid']
-        | CreateProductAction['setIsCpuWattageFocused'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setCpuFieldsAdditionalMap'];
-      payload: AdditionalFieldsPayload;
-    }
-  | {
-      type:
-        | CreateProductAction['setAreCpuFieldsAdditionalMapValid']
-        | CreateProductAction['setAreCpuFieldsAdditionalMapFocused'];
-      payload: AdditionalFieldsValidFocusedPayload;
-    }
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //   COMPUTER CASE
-  // ╰─────────────────────────────────────────────────────────────────╯
-  | {
-      type: CreateProductAction['setCaseType'];
-      payload: CaseType;
-    }
-  | {
-      type: CreateProductAction['setCaseColor'];
-      payload: string;
-    }
-  | {
-      type:
-        | CreateProductAction['setIsCaseColorValid']
-        | CreateProductAction['setIsCaseColorFocused'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setCaseSidePanel'];
-      payload: CaseSidePanel;
-    }
-  | {
-      type: CreateProductAction['setCaseFieldsAdditionalMap'];
-      payload: AdditionalFieldsPayload;
-    }
-  | {
-      type:
-        | CreateProductAction['setAreCaseFieldsAdditionalMapValid']
-        | CreateProductAction['setAreCaseFieldsAdditionalMapFocused'];
-      payload: AdditionalFieldsValidFocusedPayload;
-    }
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //   DISPLAY
-  // ╰─────────────────────────────────────────────────────────────────╯
-  | {
-      type: CreateProductAction['setDisplaySize'];
-      payload: string;
-    }
-  | {
-      type:
-        | CreateProductAction['setIsDisplaySizeValid']
-        | CreateProductAction['setIsDisplaySizeFocused'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setDisplayResolutionHorizontal'];
-      payload: string;
-    }
-  | {
-      type:
-        | CreateProductAction['setIsDisplayResolutionHorizontalValid']
-        | CreateProductAction['setIsDisplayResolutionHorizontalFocused'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setDisplayResolutionVertical'];
-      payload: string;
-    }
-  | {
-      type:
-        | CreateProductAction['setIsDisplayResolutionVerticalValid']
-        | CreateProductAction['setIsDisplayResolutionVerticalFocused'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setDisplayRefreshRate'];
-      payload: string;
-    }
-  | {
-      type:
-        | CreateProductAction['setIsDisplayRefreshRateValid']
-        | CreateProductAction['setIsDisplayRefreshRateFocused'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setDisplayPanelType'];
-      payload: DisplayPanelType;
-    }
-  | {
-      type: CreateProductAction['setDisplayResponseTime'];
-      payload: string;
-    }
-  | {
-      type:
-        | CreateProductAction['setIsDisplayResponseTimeValid']
-        | CreateProductAction['setIsDisplayResponseTimeFocused'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setDisplayAspectRatio'];
-      payload: string;
-    }
-  | {
-      type:
-        | CreateProductAction['setIsDisplayAspectRatioValid']
-        | CreateProductAction['setIsDisplayAspectRatioFocused'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setDisplayFieldsAdditionalMap'];
-      payload: AdditionalFieldsPayload;
-    }
-  | {
-      type:
-        | CreateProductAction['setAreDisplayFieldsAdditionalMapValid']
-        | CreateProductAction['setAreDisplayFieldsAdditionalMapFocused'];
-      payload: AdditionalFieldsValidFocusedPayload;
-    }
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //   GRAPHICS PROCESSING UNIT (GPU)
-  // ╰─────────────────────────────────────────────────────────────────╯
-  | {
-      type: CreateProductAction['setGpuChipset'];
-      payload: string;
-    }
-  | {
-      type:
-        | CreateProductAction['setIsGpuChipsetValid']
-        | CreateProductAction['setIsGpuChipsetFocused'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setGpuMemoryCapacity'];
-      payload: string;
-    }
-  | {
-      type:
-        | CreateProductAction['setIsGpuMemoryCapacityValid']
-        | CreateProductAction['setIsGpuMemoryCapacityFocused'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setGpuMemoryCapacityUnit'];
-      payload: MemoryUnit;
-    }
-  | {
-      type: CreateProductAction['setGpuCoreClock'];
-      payload: string;
-    }
-  | {
-      type:
-        | CreateProductAction['setIsGpuCoreClockValid']
-        | CreateProductAction['setIsGpuCoreClockFocused'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setGpuBoostClock'];
-      payload: string;
-    }
-  | {
-      type:
-        | CreateProductAction['setIsGpuBoostClockValid']
-        | CreateProductAction['setIsGpuBoostClockFocused'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setGpuTdp'];
-      payload: string;
-    }
-  | {
-      type:
-        | CreateProductAction['setIsGpuTdpValid']
-        | CreateProductAction['setIsGpuTdpFocused'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setGpuFieldsAdditionalMap'];
-      payload: AdditionalFieldsPayload;
-    }
-  | {
-      type:
-        | CreateProductAction['setAreGpuFieldsAdditionalMapValid']
-        | CreateProductAction['setAreGpuFieldsAdditionalMapFocused'];
-      payload: AdditionalFieldsValidFocusedPayload;
-    }
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //   HEADPHONE
-  // ╰─────────────────────────────────────────────────────────────────╯
-  | {
-      type: CreateProductAction['setHeadphoneType'];
-      payload: HeadphoneType;
-    }
-  | {
-      type: CreateProductAction['setHeadphoneDriver'];
-      payload: string;
-    }
-  | {
-      type:
-        | CreateProductAction['setIsHeadphoneDriverValid']
-        | CreateProductAction['setIsHeadphoneDriverFocused'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setHeadphoneFrequencyResponse'];
-      payload: string;
-    }
-  | {
-      type:
-        | CreateProductAction['setIsHeadphoneFrequencyResponseValid']
-        | CreateProductAction['setIsHeadphoneFrequencyResponseFocused'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setHeadphoneImpedance'];
-      payload: string;
-    }
-  | {
-      type:
-        | CreateProductAction['setIsHeadphoneImpedanceValid']
-        | CreateProductAction['setIsHeadphoneImpedanceFocused'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setHeadphoneColor'];
-      payload: string;
-    }
-  | {
-      type:
-        | CreateProductAction['setIsHeadphoneColorValid']
-        | CreateProductAction['setIsHeadphoneColorFocused'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setHeadphoneInterface'];
-      payload: HeadphoneInterface;
-    }
-  | {
-      type: CreateProductAction['setHeadphoneFieldsAdditionalMap'];
-      payload: AdditionalFieldsPayload;
-    }
-  | {
-      type:
-        | CreateProductAction['setAreHeadphoneFieldsAdditionalMapValid']
-        | CreateProductAction['setAreHeadphoneFieldsAdditionalMapFocused'];
-      payload: AdditionalFieldsValidFocusedPayload;
-    }
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //   KEYBOARD
-  // ╰─────────────────────────────────────────────────────────────────╯
-  | {
-      type: CreateProductAction['setKeyboardSwitch'];
-      payload: KeyboardSwitch;
-    }
-  | {
-      type: CreateProductAction['setKeyboardLayout'];
-      payload: KeyboardLayout;
-    }
-  | {
-      type: CreateProductAction['setKeyboardBacklight'];
-      payload: KeyboardBacklight;
-    }
-  | {
-      type: CreateProductAction['setKeyboardInterface'];
-      payload: PeripheralsInterface;
-    }
-  | {
-      type: CreateProductAction['setKeyboardFieldsAdditionalMap'];
-      payload: AdditionalFieldsPayload;
-    }
-  | {
-      type:
-        | CreateProductAction['setAreKeyboardFieldsAdditionalMapValid']
-        | CreateProductAction['setAreKeyboardFieldsAdditionalMapFocused'];
-      payload: AdditionalFieldsValidFocusedPayload;
-    }
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //   MEMORY (RAM)
-  // ╰─────────────────────────────────────────────────────────────────╯
-  | {
-      type: CreateProductAction['setRamDataRate'];
-      payload: string;
-    }
-  | {
-      type:
-        | CreateProductAction['setIsRamDataRateValid']
-        | CreateProductAction['setIsRamDataRateFocused'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setRamModulesQuantity'];
-      payload: string;
-    }
-  | {
-      type:
-        | CreateProductAction['setIsRamModulesQuantityValid']
-        | CreateProductAction['setIsRamModulesQuantityFocused'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setRamModulesCapacity'];
-      payload: string;
-    }
-  | {
-      type:
-        | CreateProductAction['setIsRamModulesCapacityValid']
-        | CreateProductAction['setIsRamModulesCapacityFocused'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setRamModulesCapacityUnit'];
-      payload: MemoryUnit;
-    }
-  | {
-      type: CreateProductAction['setRamType'];
-      payload: MemoryType;
-    }
-  | {
-      type: CreateProductAction['setRamColor'];
-      payload: string;
-    }
-  | {
-      type:
-        | CreateProductAction['setIsRamColorValid']
-        | CreateProductAction['setIsRamColorFocused'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setRamVoltage'];
-      payload: string;
-    }
-  | {
-      type:
-        | CreateProductAction['setIsRamVoltageValid']
-        | CreateProductAction['setIsRamVoltageFocused'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setRamTiming'];
-      payload: string;
-    }
-  | {
-      type:
-        | CreateProductAction['setIsRamTimingValid']
-        | CreateProductAction['setIsRamTimingFocused'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setRamFieldsAdditionalMap'];
-      payload: AdditionalFieldsPayload;
-    }
-  | {
-      type:
-        | CreateProductAction['setAreRamFieldsAdditionalMapValid']
-        | CreateProductAction['setAreRamFieldsAdditionalMapFocused'];
-      payload: AdditionalFieldsValidFocusedPayload;
-    }
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //   MOUSE
-  // ╰─────────────────────────────────────────────────────────────────╯
-  | {
-      type: CreateProductAction['setMouseSensor'];
-      payload: MouseSensor;
-    }
-  | {
-      type: CreateProductAction['setMouseDpi'];
-      payload: string;
-    }
-  | {
-      type:
-        | CreateProductAction['setIsMouseDpiValid']
-        | CreateProductAction['setIsMouseDpiFocused'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setMouseButtons'];
-      payload: string;
-    }
-  | {
-      type:
-        | CreateProductAction['setIsMouseButtonsValid']
-        | CreateProductAction['setIsMouseButtonsFocused'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setMouseColor'];
-      payload: string;
-    }
-  | {
-      type:
-        | CreateProductAction['setIsMouseColorValid']
-        | CreateProductAction['setIsMouseColorFocused'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setMouseInterface'];
-      payload: PeripheralsInterface;
-    }
-  | {
-      type: CreateProductAction['setMouseFieldsAdditionalMap'];
-      payload: AdditionalFieldsPayload;
-    }
-  | {
-      type:
-        | CreateProductAction['setAreMouseFieldsAdditionalMapValid']
-        | CreateProductAction['setAreMouseFieldsAdditionalMapFocused'];
-      payload: AdditionalFieldsValidFocusedPayload;
-    }
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //   MICROPHONE
-  // ╰─────────────────────────────────────────────────────────────────╯
-  | {
-      type: CreateProductAction['setMicrophoneType'];
-      payload: MicrophoneType;
-    }
-  | {
-      type: CreateProductAction['setMicrophonePolarPattern'];
-      payload: MicrophonePolarPattern;
-    }
-  | {
-      type: CreateProductAction['setMicrophoneInterface'];
-      payload: MicrophoneInterface;
-    }
-  | {
-      type: CreateProductAction['setMicrophoneColor'];
-      payload: string;
-    }
-  | {
-      type:
-        | CreateProductAction['setIsMicrophoneColorValid']
-        | CreateProductAction['setIsMicrophoneColorFocused'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setMicrophoneFrequencyResponse'];
-      payload: string;
-    }
-  | {
-      type:
-        | CreateProductAction['setIsMicrophoneFrequencyResponseValid']
-        | CreateProductAction['setIsMicrophoneFrequencyResponseFocused'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setMicrophoneFieldsAdditionalMap'];
-      payload: AdditionalFieldsPayload;
-    }
-  | {
-      type:
-        | CreateProductAction['setAreMicrophoneFieldsAdditionalMapValid']
-        | CreateProductAction['setAreMicrophoneFieldsAdditionalMapFocused'];
-      payload: AdditionalFieldsValidFocusedPayload;
-    }
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //   MOTHERBOARD
-  // ╰─────────────────────────────────────────────────────────────────╯
-  | {
-      type: CreateProductAction['setMotherboardSocket'];
-      payload: string;
-    }
-  | {
-      type:
-        | CreateProductAction['setIsMotherboardSocketValid']
-        | CreateProductAction['setIsMotherboardSocketFocused'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setMotherboardChipset'];
-      payload: string;
-    }
-  | {
-      type:
-        | CreateProductAction['setIsMotherboardChipsetValid']
-        | CreateProductAction['setIsMotherboardChipsetFocused'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setMotherboardFormFactor'];
-      payload: MotherboardFormFactor;
-    }
-  | {
-      type: CreateProductAction['setMotherboardMemoryMaxCapacity'];
-      payload: string;
-    }
-  | {
-      type:
-        | CreateProductAction['setIsMotherboardMemoryMaxCapacityValid']
-        | CreateProductAction['setIsMotherboardMemoryMaxCapacityFocused'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setMotherboardMemoryMaxCapacityUnit'];
-      payload: MemoryUnit;
-    }
-  | {
-      type: CreateProductAction['setMotherboardMemorySlots'];
-      payload: string;
-    }
-  | {
-      type:
-        | CreateProductAction['setIsMotherboardMemorySlotsValid']
-        | CreateProductAction['setIsMotherboardMemorySlotsFocused'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setMotherboardMemoryType'];
-      payload: MemoryType;
-    }
-  | {
-      type: CreateProductAction['setMotherboardSataPorts'];
-      payload: string;
-    }
-  | {
-      type:
-        | CreateProductAction['setIsMotherboardSataPortsValid']
-        | CreateProductAction['setIsMotherboardSataPortsFocused'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setMotherboardM2Slots'];
-      payload: string;
-    }
-  | {
-      type:
-        | CreateProductAction['setIsMotherboardM2SlotsValid']
-        | CreateProductAction['setIsMotherboardM2SlotsFocused'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setMotherboardPcie3Slots'];
-      payload: string;
-    }
-  | {
-      type:
-        | CreateProductAction['setIsMotherboardPcie3SlotsValid']
-        | CreateProductAction['setIsMotherboardPcie3SlotsFocused'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setMotherboardPcie4Slots'];
-      payload: string;
-    }
-  | {
-      type:
-        | CreateProductAction['setIsMotherboardPcie4SlotsValid']
-        | CreateProductAction['setIsMotherboardPcie4SlotsFocused'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setMotherboardPcie5Slots'];
-      payload: string;
-    }
-  | {
-      type:
-        | CreateProductAction['setIsMotherboardPcie5SlotsValid']
-        | CreateProductAction['setIsMotherboardPcie5SlotsFocused'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setMotherboardFieldsAdditionalMap'];
-      payload: AdditionalFieldsPayload;
-    }
-  | {
-      type:
-        | CreateProductAction['setAreMotherboardFieldsAdditionalMapValid']
-        | CreateProductAction['setAreMotherboardFieldsAdditionalMapFocused'];
-      payload: AdditionalFieldsValidFocusedPayload;
-    }
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //   POWER SUPPLY UNIT (PSU)
-  // ╰─────────────────────────────────────────────────────────────────╯
-  | {
-      type: CreateProductAction['setPsuWattage'];
-      payload: string;
-    }
-  | {
-      type:
-        | CreateProductAction['setIsPsuWattageValid']
-        | CreateProductAction['setIsPsuWattageFocused'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setPsuEfficiency'];
-      payload: PsuEfficiency;
-    }
-  | {
-      type: CreateProductAction['setPsuFormFactor'];
-      payload: PsuFormFactor;
-    }
-  | {
-      type: CreateProductAction['setPsuModularity'];
-      payload: PsuModularity;
-    }
-  | {
-      type: CreateProductAction['setPsuFieldsAdditionalMap'];
-      payload: AdditionalFieldsPayload;
-    }
-  | {
-      type:
-        | CreateProductAction['setArePsuFieldsAdditionalMapValid']
-        | CreateProductAction['setArePsuFieldsAdditionalMapFocused'];
-      payload: AdditionalFieldsValidFocusedPayload;
-    }
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //   SMARTPHONE
-  // ╰─────────────────────────────────────────────────────────────────╯
-  | {
-      type: CreateProductAction['setSmartphoneOs'];
-      payload: MobileOs;
-    }
-  | {
-      type: CreateProductAction['setSmartphoneChipset'];
-      payload: string;
-    }
-  | {
-      type:
-        | CreateProductAction['setIsSmartphoneChipsetValid']
-        | CreateProductAction['setIsSmartphoneChipsetFocused'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setSmartphoneDisplay'];
-      payload: string;
-    }
-  | {
-      type:
-        | CreateProductAction['setIsSmartphoneDisplayValid']
-        | CreateProductAction['setIsSmartphoneDisplayFocused'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setSmartphoneResolutionHorizontal'];
-      payload: string;
-    }
-  | {
-      type:
-        | CreateProductAction['setIsSmartphoneResolutionHorizontalValid']
-        | CreateProductAction['setIsSmartphoneResolutionHorizontalFocused'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setSmartphoneResolutionVertical'];
-      payload: string;
-    }
-  | {
-      type:
-        | CreateProductAction['setIsSmartphoneResolutionVerticalValid']
-        | CreateProductAction['setIsSmartphoneResolutionVerticalFocused'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setSmartphoneRamCapacity'];
-      payload: string;
-    }
-  | {
-      type:
-        | CreateProductAction['setIsSmartphoneRamCapacityValid']
-        | CreateProductAction['setIsSmartphoneRamCapacityFocused'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setSmartphoneRamCapacityUnit'];
-      payload: MemoryUnit;
-    }
-  | {
-      type: CreateProductAction['setSmartphoneStorageCapacity'];
-      payload: string;
-    }
-  | {
-      type:
-        | CreateProductAction['setIsSmartphoneStorageCapacityValid']
-        | CreateProductAction['setIsSmartphoneStorageCapacityFocused'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setSmartphoneBatteryCapacity'];
-      payload: string;
-    }
-  | {
-      type:
-        | CreateProductAction['setIsSmartphoneBatteryCapacityValid']
-        | CreateProductAction['setIsSmartphoneBatteryCapacityFocused'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setSmartphoneCamera'];
-      payload: string;
-    }
-  | {
-      type:
-        | CreateProductAction['setIsSmartphoneCameraValid']
-        | CreateProductAction['setIsSmartphoneCameraFocused'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setSmartphoneColor'];
-      payload: string;
-    }
-  | {
-      type:
-        | CreateProductAction['setIsSmartphoneColorValid']
-        | CreateProductAction['setIsSmartphoneColorFocused'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setSmartphoneFieldsAdditionalMap'];
-      payload: AdditionalFieldsPayload;
-    }
-  | {
-      type:
-        | CreateProductAction['setAreSmartphoneFieldsAdditionalMapValid']
-        | CreateProductAction['setAreSmartphoneFieldsAdditionalMapFocused'];
-      payload: AdditionalFieldsValidFocusedPayload;
-    }
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //   SPEAKER
-  // ╰─────────────────────────────────────────────────────────────────╯
-  | {
-      type: CreateProductAction['setSpeakerType'];
-      payload: SpeakerType;
-    }
-  | {
-      type: CreateProductAction['setSpeakerTotalWattage'];
-      payload: string;
-    }
-  | {
-      type:
-        | CreateProductAction['setIsSpeakerTotalWattageValid']
-        | CreateProductAction['setIsSpeakerTotalWattageFocused'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setSpeakerFrequencyResponse'];
-      payload: string;
-    }
-  | {
-      type:
-        | CreateProductAction['setIsSpeakerFrequencyResponseValid']
-        | CreateProductAction['setIsSpeakerFrequencyResponseFocused'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setSpeakerColor'];
-      payload: string;
-    }
-  | {
-      type:
-        | CreateProductAction['setIsSpeakerColorValid']
-        | CreateProductAction['setIsSpeakerColorFocused'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setSpeakerInterface'];
-      payload: SpeakerInterface;
-    }
-  | {
-      type: CreateProductAction['setSpeakerFieldsAdditionalMap'];
-      payload: AdditionalFieldsPayload;
-    }
-  | {
-      type:
-        | CreateProductAction['setAreSpeakerFieldsAdditionalMapValid']
-        | CreateProductAction['setAreSpeakerFieldsAdditionalMapFocused'];
-      payload: AdditionalFieldsValidFocusedPayload;
-    }
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //   STORAGE
-  // ╰─────────────────────────────────────────────────────────────────╯
-  | {
-      type: CreateProductAction['setStorageType'];
-      payload: StorageType;
-    }
-  | {
-      type: CreateProductAction['setStorageCapacity'];
-      payload: string;
-    }
-  | {
-      type:
-        | CreateProductAction['setIsStorageCapacityValid']
-        | CreateProductAction['setIsStorageCapacityFocused'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setStorageCapacityUnit'];
-      payload: MemoryUnit;
-    }
-  | {
-      type: CreateProductAction['setStorageCacheCapacity'];
-      payload: string;
-    }
-  | {
-      type:
-        | CreateProductAction['setIsStorageCacheCapacityValid']
-        | CreateProductAction['setIsStorageCacheCapacityFocused'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setStorageCacheCapacityUnit'];
-      payload: MemoryUnit;
-    }
-  | {
-      type: CreateProductAction['setStorageFormFactor'];
-      payload: StorageFormFactor;
-    }
-  | {
-      type: CreateProductAction['setStorageInterface'];
-      payload: StorageInterface;
-    }
-  | {
-      type: CreateProductAction['setStorageFieldsAdditionalMap'];
-      payload: AdditionalFieldsPayload;
-    }
-  | {
-      type:
-        | CreateProductAction['setAreStorageFieldsAdditionalMapValid']
-        | CreateProductAction['setAreStorageFieldsAdditionalMapFocused'];
-      payload: AdditionalFieldsValidFocusedPayload;
-    }
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //   TABLET
-  // ╰─────────────────────────────────────────────────────────────────╯
-  | {
-      type: CreateProductAction['setTabletOs'];
-      payload: MobileOs;
-    }
-  | {
-      type: CreateProductAction['setTabletChipset'];
-      payload: string;
-    }
-  | {
-      type:
-        | CreateProductAction['setIsTabletChipsetValid']
-        | CreateProductAction['setIsTabletChipsetFocused'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setTabletDisplay'];
-      payload: string;
-    }
-  | {
-      type:
-        | CreateProductAction['setIsTabletDisplayValid']
-        | CreateProductAction['setIsTabletDisplayFocused'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setTabletResolutionHorizontal'];
-      payload: string;
-    }
-  | {
-      type:
-        | CreateProductAction['setIsTabletResolutionHorizontalValid']
-        | CreateProductAction['setIsTabletResolutionHorizontalFocused'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setTabletResolutionVertical'];
-      payload: string;
-    }
-  | {
-      type:
-        | CreateProductAction['setIsTabletResolutionVerticalValid']
-        | CreateProductAction['setIsTabletResolutionVerticalFocused'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setTabletRamCapacity'];
-      payload: string;
-    }
-  | {
-      type:
-        | CreateProductAction['setIsTabletRamCapacityValid']
-        | CreateProductAction['setIsTabletRamCapacityFocused'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setTabletRamCapacityUnit'];
-      payload: MemoryUnit;
-    }
-  | {
-      type: CreateProductAction['setTabletStorageCapacity'];
-      payload: string;
-    }
-  | {
-      type:
-        | CreateProductAction['setIsTabletStorageCapacityValid']
-        | CreateProductAction['setIsTabletStorageCapacityFocused'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setTabletBatteryCapacity'];
-      payload: string;
-    }
-  | {
-      type:
-        | CreateProductAction['setIsTabletBatteryCapacityValid']
-        | CreateProductAction['setIsTabletBatteryCapacityFocused'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setTabletCamera'];
-      payload: string;
-    }
-  | {
-      type:
-        | CreateProductAction['setIsTabletCameraValid']
-        | CreateProductAction['setIsTabletCameraFocused'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setTabletColor'];
-      payload: string;
-    }
-  | {
-      type:
-        | CreateProductAction['setIsTabletColorValid']
-        | CreateProductAction['setIsTabletColorFocused'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setTabletFieldsAdditionalMap'];
-      payload: AdditionalFieldsPayload;
-    }
-  | {
-      type:
-        | CreateProductAction['setAreTabletFieldsAdditionalMapValid']
-        | CreateProductAction['setAreTabletFieldsAdditionalMapFocused'];
-      payload: AdditionalFieldsValidFocusedPayload;
-    }
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //   WEBCAM
-  // ╰─────────────────────────────────────────────────────────────────╯
-  | {
-      type: CreateProductAction['setWebcamResolution'];
-      payload: WebcamResolution;
-    }
-  | {
-      type: CreateProductAction['setWebcamInterface'];
-      payload: WebcamInterface;
-    }
-  | {
-      type: CreateProductAction['setWebcamMicrophone'];
-      payload: WebcamMicrophone;
-    }
-  | {
-      type: CreateProductAction['setWebcamFrameRate'];
-      payload: WebcamFrameRate;
-    }
-  | {
-      type: CreateProductAction['setWebcamColor'];
-      payload: string;
-    }
-  | {
-      type:
-        | CreateProductAction['setIsWebcamColorValid']
-        | CreateProductAction['setIsWebcamColorFocused'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setWebcamFieldsAdditionalMap'];
-      payload: AdditionalFieldsPayload;
-    }
-  | {
-      type:
-        | CreateProductAction['setAreWebcamFieldsAdditionalMapValid']
-        | CreateProductAction['setAreWebcamFieldsAdditionalMapFocused'];
-      payload: AdditionalFieldsValidFocusedPayload;
-    }
-  // ╔═════════════════════════════════════════════════════════════════╗
-  //   PAGE 3
-  // ╚═════════════════════════════════════════════════════════════════╝
-  | {
-      type: CreateProductAction['setCurrentlySelectedAdditionalFieldIndex'];
-      payload: number;
-    }
-  | {
-      type: CreateProductAction['setImgFormDataArray'];
-      payload: FormData[];
-    }
-  | {
-      type: CreateProductAction['setAreImagesValid'];
-      payload: boolean;
-    }
-  // ╔═════════════════════════════════════════════════════════════════╗
-  //   MISC.
-  // ╚═════════════════════════════════════════════════════════════════╝
-  | {
-      type: CreateProductAction['setTriggerFormSubmit'];
-      payload: boolean;
-    }
-  | {
-      type: CreateProductAction['setCurrentStepperPosition'];
-      payload: number;
-    }
-  | {
-      type: CreateProductAction['setStepsInError'];
-      payload: SetStepsInErrorPayload;
-    }
-  | {
-      type:
-        | CreateProductAction['setIsSubmitting']
-        | CreateProductAction['setIsSuccessful']
-        | CreateProductAction['setIsLoading'];
-      payload: boolean;
-    }
-  | {
-      type:
-        | CreateProductAction['setSubmitMessage']
-        | CreateProductAction['setSuccessMessage']
-        | CreateProductAction['setLoadingMessage'];
-      payload: string;
-    };
 
 export type {
   AccessoryDocument,
+  AccessoryRequestBody,
+  AccessorySchema,
   AccessorySpecifications,
-  AdditionalFieldsAdd,
-  AdditionalFieldsPayload,
-  AdditionalFieldsRemove,
-  AdditionalFieldsUpdate,
-  AdditionalFieldsValidFocusedAdd,
-  AdditionalFieldsValidFocusedPayload,
-  AdditionalFieldsValidFocusedRemove,
-  AdditionalFieldsValidFocusedUpdate,
+  AdditionalFieldsFocusedMap,
+  AdditionalFieldsMap,
+  AdditionalFieldsValidMap,
   CaseSidePanel,
   CaseSpecifications,
   CaseType,
   ComputerCaseDocument,
+  ComputerCaseRequestBody,
+  ComputerCaseSchema,
   CpuDocument,
+  CpuRequestBody,
+  CpuSchema,
   CpuSpecifications,
   CreateProductAction,
-  CreateProductDispatch,
   CreateProductState,
   DesktopComputerDocument,
+  DesktopComputerRequestBody,
+  DesktopComputerSchema,
   DesktopComputerSpecifications,
   DimensionUnit,
   DisplayDocument,
   DisplayPanelType,
+  DisplayRequestBody,
+  DisplaySchema,
   DisplaySpecifications,
   GpuDocument,
+  GpuRequestBody,
+  GpuSchema,
   GpuSpecifications,
   HeadphoneDocument,
   HeadphoneInterface,
+  HeadphoneRequestBody,
+  HeadphoneSchema,
   HeadphoneSpecifications,
   HeadphoneType,
   KeyboardBacklight,
   KeyboardDocument,
   KeyboardLayout,
+  KeyboardRequestBody,
+  KeyboardSchema,
   KeyboardSpecifications,
   KeyboardSwitch,
   LaptopDocument,
+  LaptopRequestBody,
+  LaptopSchema,
   LaptopSpecifications,
   MemoryType,
   MemoryUnit,
   MicrophoneDocument,
   MicrophoneInterface,
   MicrophonePolarPattern,
+  MicrophoneRequestBody,
+  MicrophoneSchema,
+  MicrophoneSpecifications,
   MicrophoneType,
   MobileOs,
   MotherboardDocument,
   MotherboardFormFactor,
+  MotherboardRequestBody,
+  MotherboardSchema,
   MotherboardSpecifications,
   MouseDocument,
+  MouseRequestBody,
+  MouseSchema,
   MouseSensor,
   MouseSpecifications,
   PeripheralsInterface,
   ProductAvailability,
+  ProductCategoryPage1Specifications,
   ProductDocument,
   ProductReview,
+  ProductServerResponse,
   PsuDocument,
   PsuEfficiency,
   PsuFormFactor,
   PsuModularity,
+  PsuRequestBody,
+  PsuSchema,
   PsuSpecifications,
   RamDocument,
+  RamRequestBody,
+  RamSchema,
   RamSpecifications,
   SmartphoneDocument,
+  SmartphoneRequestBody,
+  SmartphoneSchema,
   SmartphoneSpecifications,
   SpeakerDocument,
   SpeakerInterface,
+  SpeakerRequestBody,
+  SpeakerSchema,
   SpeakerSpecifications,
   SpeakerType,
   StorageDocument,
   StorageFormFactor,
   StorageInterface,
+  StorageRequestBody,
+  StorageSchema,
   StorageSpecifications,
   StorageType,
   TabletDocument,
+  TabletRequestBody,
+  TabletSchema,
   TabletSpecifications,
   WebcamDocument,
   WebcamFrameRate,
   WebcamInterface,
   WebcamMicrophone,
+  WebcamRequestBody,
   WebcamResolution,
+  WebcamSchema,
+  WebcamSpecifications,
   WeightUnit,
 };

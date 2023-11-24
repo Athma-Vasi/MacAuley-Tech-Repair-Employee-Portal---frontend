@@ -6,43 +6,43 @@ import { useErrorBoundary } from 'react-error-boundary';
 import { TbUpload } from 'react-icons/tb';
 import { useNavigate } from 'react-router-dom';
 
-import { COLORS_SWATCHES } from '../../../constants/data';
+import { COLORS_SWATCHES } from '../../constants/data';
 import {
   GRAMMAR_TEXTAREA_INPUT_REGEX,
   MONEY_REGEX,
   SERIAL_ID_REGEX,
-} from '../../../constants/regex';
-import { globalAction } from '../../../context/globalProvider/state';
-import { useGlobalState, useWrapFetch } from '../../../hooks';
+} from '../../constants/regex';
+import { globalAction } from '../../context/globalProvider/state';
+import { useGlobalState, useWrapFetch } from '../../hooks';
 import {
   AccessibleErrorValidTextElements,
   returnAccessibleButtonElements,
   returnAccessibleSelectInputElements,
   returnAccessibleTextAreaInputElements,
   returnAccessibleTextInputElements,
-} from '../../../jsxCreators';
-import { Currency, ResourceRequestServerResponse } from '../../../types';
+} from '../../jsxCreators';
+import { Currency, ResourceRequestServerResponse } from '../../types';
 import {
+  removeUndefinedAndNull,
   returnBrandNameValidationText,
   returnDimensionsValidationText,
   returnFloatAmountValidationText,
-  returnFormReviewObjectsFromUserDefinedFields,
   returnGrammarValidationText,
   returnLargeIntegerValidationText,
   returnSerialIdValidationText,
   returnThemeColors,
   returnWeightValidationText,
   urlBuilder,
-} from '../../../utils';
-import { CURRENCY_DATA } from '../../benefits/constants';
-import { PRODUCT_CATEGORIES } from '../../dashboard/constants';
-import { ProductCategory } from '../../dashboard/types';
+} from '../../utils';
+import { CURRENCY_DATA } from '../benefits/constants';
+import { PRODUCT_CATEGORIES } from '../dashboard/constants';
+import { ProductCategory } from '../dashboard/types';
 import FormReviewPage, {
   FormReviewObjectArray,
-} from '../../formReviewPage/FormReviewPage';
-import { ImageUpload } from '../../imageUpload';
-import { NotificationModal } from '../../notificationModal';
-import { FormLayoutWrapper, StepperWrapper } from '../../wrappers';
+} from '../formReviewPage/FormReviewPage';
+import { ImageUpload } from '../imageUpload';
+import { NotificationModal } from '../notificationModal';
+import { FormLayoutWrapper, StepperWrapper } from '../wrappers';
 import {
   BRAND_REGEX,
   CREATE_PRODUCT_DESCRIPTION_OBJECTS,
@@ -53,9 +53,10 @@ import {
   DIMENSIONS_REGEX,
   LARGE_INTEGER_REGEX,
   PRODUCT_AVAILABILITY_DATA,
+  PRODUCT_CATEGORY_ROUTE_NAME_OBJ,
   WEIGHT_REGEX,
   WEIGHT_UNIT_SELECT_INPUT_DATA,
-} from '../constants';
+} from './constants';
 import CreateAccessory from './productCategory/CreateAccessory';
 import CreateCase from './productCategory/CreateCase';
 import CreateCpu from './productCategory/CreateCpu';
@@ -78,17 +79,61 @@ import CreateWebcam from './productCategory/CreateWebcam';
 import { createProductReducer } from './reducers';
 import { createProductAction, initialCreateProductState } from './state';
 import {
+  AccessoryRequestBody,
+  AccessorySpecifications,
+  CaseSpecifications,
+  ComputerCaseRequestBody,
+  CpuRequestBody,
+  CpuSpecifications,
+  DesktopComputerRequestBody,
+  DesktopComputerSpecifications,
   DimensionUnit,
+  DisplayRequestBody,
+  DisplaySpecifications,
+  GpuRequestBody,
+  GpuSpecifications,
+  HeadphoneRequestBody,
+  HeadphoneSpecifications,
+  KeyboardRequestBody,
+  KeyboardSpecifications,
+  LaptopRequestBody,
+  LaptopSpecifications,
+  MicrophoneRequestBody,
+  MicrophoneSpecifications,
+  MotherboardRequestBody,
+  MotherboardSpecifications,
+  MouseRequestBody,
+  MouseSpecifications,
   ProductAvailability,
+  ProductCategoryPage1Specifications,
   ProductDocument,
+  PsuRequestBody,
+  PsuSpecifications,
+  RamRequestBody,
+  RamSpecifications,
+  SmartphoneRequestBody,
+  SmartphoneSpecifications,
+  SpeakerRequestBody,
+  SpeakerSpecifications,
+  StorageRequestBody,
+  StorageSpecifications,
+  TabletRequestBody,
+  TabletSpecifications,
+  WebcamRequestBody,
+  WebcamSpecifications,
   WeightUnit,
 } from './types';
+import {
+  returnFormReviewObjectsFromUserDefinedFields,
+  returnRequestBodyfromUserDefinedFields,
+} from './utils';
 
 function CreateProduct() {
-  const [createProductState, createProductDispatch] = useReducer(
-    createProductReducer,
-    initialCreateProductState
-  );
+  // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+  //  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+  //     CREATE PRODUCT HOOKS
+  //  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+  // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
   const {
     globalDispatch,
@@ -108,60 +153,93 @@ function CreateProduct() {
     },
   ] = useDisclosure(false);
 
-  const {
-    // page 1
+  const [createProductState, createProductDispatch] = useReducer(
+    createProductReducer,
+    initialCreateProductState
+  );
 
-    // page 1 -> brand
+  const {
+    // ╔═════════════════════════════════════════════════════════════════╗
+    //    PAGE 1
+    // ╚═════════════════════════════════════════════════════════════════╝
+
+    // brand
     brand,
     isBrandValid,
     isBrandFocused,
-    // page 1 -> model, product category
+    // model
     model,
     isModelValid,
     isModelFocused,
-    productCategory,
-    // page 1 -> description
+    // description
     description,
     isDescriptionValid,
     isDescriptionFocused,
-    // page 1 -> price, currency, availability
+    // price
     price,
     isPriceValid,
     isPriceFocused,
+    // currency
     currency,
+    // availability
     availability,
-    // page 1 -> quantity
+    // quantity
     quantity,
     isQuantityFocused,
     isQuantityValid,
-    // page 1 -> weight
+    // weight
     weight,
     isWeightFocused,
     isWeightValid,
+    // weight unit
     weightUnit,
-    // page 1 -> dimensions
+    // dimension length
     dimensionLength,
     isDimensionLengthFocused,
     isDimensionLengthValid,
+    // dimension length unit
     dimensionLengthUnit,
+    // dimension width
     dimensionWidth,
     isDimensionWidthFocused,
     isDimensionWidthValid,
+    // dimension width unit
     dimensionWidthUnit,
+    // dimension height
     dimensionHeight,
     isDimensionHeightFocused,
     isDimensionHeightValid,
+    // dimension height unit
     dimensionHeightUnit,
-    // page 1 -> additional comments
+    // additional comments
     additionalComments,
     isAdditionalCommentsValid,
     isAdditionalCommentsFocused,
 
-    // page 2
+    // ╔═════════════════════════════════════════════════════════════════╗
+    //    PAGE 2
+    // ╚═════════════════════════════════════════════════════════════════╝
 
-    // page 2 -> specifications
+    // product category
+    productCategory,
 
-    // page 2 -> specifications -> cpu
+    // ╭─────────────────────────────────────────────────────────────────╮
+    //    ACCESSORY
+    // ╰─────────────────────────────────────────────────────────────────╯
+    accessoryType,
+    isAccessoryTypeValid,
+    isAccessoryTypeFocused,
+    accessoryColor,
+    isAccessoryColorFocused,
+    isAccessoryColorValid,
+    accessoryInterface,
+    accessoryFieldsAdditionalMap,
+    areAccessoryFieldsAdditionalMapFocused,
+    areAccessoryFieldsAdditionalMapValid,
+
+    // ╭─────────────────────────────────────────────────────────────────╮
+    //    CENTRAL PROCESSING UNIT (CPU)
+    // ╰─────────────────────────────────────────────────────────────────╯
     cpuSocket,
     isCpuSocketValid,
     isCpuSocketFocused,
@@ -190,7 +268,47 @@ function CreateProduct() {
     areCpuFieldsAdditionalMapFocused,
     areCpuFieldsAdditionalMapValid,
 
-    // page 2 -> specifications -> gpu
+    // ╭─────────────────────────────────────────────────────────────────╮
+    //    COMPUTER CASE
+    // ╰─────────────────────────────────────────────────────────────────╯
+    caseType,
+    caseColor,
+    isCaseColorFocused,
+    isCaseColorValid,
+    caseSidePanel,
+    caseFieldsAdditionalMap,
+    areCaseFieldsAdditionalMapFocused,
+    areCaseFieldsAdditionalMapValid,
+
+    // ╭─────────────────────────────────────────────────────────────────╮
+    //    DISPLAY
+    // ╰─────────────────────────────────────────────────────────────────╯
+    displaySize,
+    isDisplaySizeFocused,
+    isDisplaySizeValid,
+    displayResolutionHorizontal,
+    isDisplayResolutionHorizontalFocused,
+    isDisplayResolutionHorizontalValid,
+    displayResolutionVertical,
+    isDisplayResolutionVerticalFocused,
+    isDisplayResolutionVerticalValid,
+    displayRefreshRate,
+    isDisplayRefreshRateFocused,
+    isDisplayRefreshRateValid,
+    displayPanelType,
+    displayResponseTime,
+    isDisplayResponseTimeFocused,
+    isDisplayResponseTimeValid,
+    displayAspectRatio,
+    isDisplayAspectRatioFocused,
+    isDisplayAspectRatioValid,
+    displayFieldsAdditionalMap,
+    areDisplayFieldsAdditionalMapFocused,
+    areDisplayFieldsAdditionalMapValid,
+
+    // ╭─────────────────────────────────────────────────────────────────╮
+    //    GRAPHICS PROCESSING UNIT (GPU)
+    // ╰─────────────────────────────────────────────────────────────────╯
     gpuChipset,
     isGpuChipsetValid,
     isGpuChipsetFocused,
@@ -211,7 +329,102 @@ function CreateProduct() {
     areGpuFieldsAdditionalMapFocused,
     areGpuFieldsAdditionalMapValid,
 
-    // page 2 -> specifications -> motherboard
+    // ╭─────────────────────────────────────────────────────────────────╮
+    //    HEADPHONE
+    // ╰─────────────────────────────────────────────────────────────────╯
+    headphoneType,
+    headphoneColor,
+    isHeadphoneColorFocused,
+    isHeadphoneColorValid,
+    headphoneDriver,
+    isHeadphoneDriverFocused,
+    isHeadphoneDriverValid,
+    headphoneFrequencyResponse,
+    isHeadphoneFrequencyResponseFocused,
+    isHeadphoneFrequencyResponseValid,
+    headphoneImpedance,
+    isHeadphoneImpedanceFocused,
+    isHeadphoneImpedanceValid,
+    headphoneInterface,
+    headphoneFieldsAdditionalMap,
+    areHeadphoneFieldsAdditionalMapFocused,
+    areHeadphoneFieldsAdditionalMapValid,
+
+    // ╭─────────────────────────────────────────────────────────────────╮
+    //    KEYBOARD
+    // ╰─────────────────────────────────────────────────────────────────╯
+    keyboardSwitch,
+    keyboardLayout,
+    keyboardBacklight,
+    keyboardInterface,
+    keyboardFieldsAdditionalMap,
+    areKeyboardFieldsAdditionalMapFocused,
+    areKeyboardFieldsAdditionalMapValid,
+
+    // ╭─────────────────────────────────────────────────────────────────╮
+    //    MEMORY (RAM)
+    // ╰─────────────────────────────────────────────────────────────────╯
+    ramDataRate,
+    isRamDataRateFocused,
+    isRamDataRateValid,
+    ramModulesQuantity,
+    isRamModulesQuantityFocused,
+    isRamModulesQuantityValid,
+    ramModulesCapacity,
+    isRamModulesCapacityFocused,
+    isRamModulesCapacityValid,
+    ramModulesCapacityUnit,
+    ramType,
+    ramColor,
+    isRamColorFocused,
+    isRamColorValid,
+    ramVoltage,
+    isRamVoltageFocused,
+    isRamVoltageValid,
+    ramTiming,
+    isRamTimingFocused,
+    isRamTimingValid,
+    ramFieldsAdditionalMap,
+    areRamFieldsAdditionalMapFocused,
+    areRamFieldsAdditionalMapValid,
+
+    // ╭─────────────────────────────────────────────────────────────────╮
+    //    MOUSE
+    // ╰─────────────────────────────────────────────────────────────────╯
+    mouseSensor,
+    mouseDpi,
+    isMouseDpiFocused,
+    isMouseDpiValid,
+    mouseButtons,
+    isMouseButtonsFocused,
+    isMouseButtonsValid,
+    mouseColor,
+    isMouseColorFocused,
+    isMouseColorValid,
+    mouseInterface,
+    mouseFieldsAdditionalMap,
+    areMouseFieldsAdditionalMapFocused,
+    areMouseFieldsAdditionalMapValid,
+
+    // ╭─────────────────────────────────────────────────────────────────╮
+    //    MICROPHONE
+    // ╰─────────────────────────────────────────────────────────────────╯
+    microphoneColor,
+    isMicrophoneColorFocused,
+    isMicrophoneColorValid,
+    microphoneInterface,
+    microphoneType,
+    microphonePolarPattern,
+    microphoneFrequencyResponse,
+    isMicrophoneFrequencyResponseFocused,
+    isMicrophoneFrequencyResponseValid,
+    microphoneFieldsAdditionalMap,
+    areMicrophoneFieldsAdditionalMapFocused,
+    areMicrophoneFieldsAdditionalMapValid,
+
+    // ╭─────────────────────────────────────────────────────────────────╮
+    //    MOTHERBOARD
+    // ╰─────────────────────────────────────────────────────────────────╯
     motherboardSocket,
     isMotherboardSocketFocused,
     isMotherboardSocketValid,
@@ -246,48 +459,9 @@ function CreateProduct() {
     areMotherboardFieldsAdditionalMapFocused,
     areMotherboardFieldsAdditionalMapValid,
 
-    // page 2 -> specifications -> ram
-    ramDataRate,
-    isRamDataRateFocused,
-    isRamDataRateValid,
-    ramModulesQuantity,
-    isRamModulesQuantityFocused,
-    isRamModulesQuantityValid,
-    ramModulesCapacity,
-    isRamModulesCapacityFocused,
-    isRamModulesCapacityValid,
-    ramModulesCapacityUnit,
-    ramType,
-    ramColor,
-    isRamColorFocused,
-    isRamColorValid,
-    ramVoltage,
-    isRamVoltageFocused,
-    isRamVoltageValid,
-    ramTiming,
-    isRamTimingFocused,
-    isRamTimingValid,
-    ramFieldsAdditionalMap,
-    areRamFieldsAdditionalMapFocused,
-    areRamFieldsAdditionalMapValid,
-
-    // page 2 -> specifications -> storage
-    storageType,
-    storageCapacity,
-    isStorageCapacityFocused,
-    isStorageCapacityValid,
-    storageCapacityUnit,
-    storageCacheCapacity,
-    isStorageCacheCapacityFocused,
-    isStorageCacheCapacityValid,
-    storageCacheCapacityUnit,
-    storageFormFactor,
-    storageInterface,
-    storageFieldsAdditionalMap,
-    areStorageFieldsAdditionalMapFocused,
-    areStorageFieldsAdditionalMapValid,
-
-    // page 2 -> specifications -> psu
+    // ╭─────────────────────────────────────────────────────────────────╮
+    //    POWER SUPPLY UNIT (PSU)
+    // ╰─────────────────────────────────────────────────────────────────╯
     psuWattage,
     isPsuWattageFocused,
     isPsuWattageValid,
@@ -298,101 +472,10 @@ function CreateProduct() {
     arePsuFieldsAdditionalMapFocused,
     arePsuFieldsAdditionalMapValid,
 
-    // page 2 -> specifications -> case
-    caseType,
-    caseColor,
-    isCaseColorFocused,
-    isCaseColorValid,
-    caseSidePanel,
-    caseFieldsAdditionalMap,
-    areCaseFieldsAdditionalMapFocused,
-    areCaseFieldsAdditionalMapValid,
+    // ╭─────────────────────────────────────────────────────────────────╮
+    //    SMARTPHONE
+    // ╰─────────────────────────────────────────────────────────────────╯
 
-    // page 2 -> specifications -> display
-    displaySize,
-    isDisplaySizeFocused,
-    isDisplaySizeValid,
-    displayResolutionHorizontal,
-    isDisplayResolutionHorizontalFocused,
-    isDisplayResolutionHorizontalValid,
-    displayResolutionVertical,
-    isDisplayResolutionVerticalFocused,
-    isDisplayResolutionVerticalValid,
-    displayRefreshRate,
-    isDisplayRefreshRateFocused,
-    isDisplayRefreshRateValid,
-    displayPanelType,
-    displayResponseTime,
-    isDisplayResponseTimeFocused,
-    isDisplayResponseTimeValid,
-    displayAspectRatio,
-    isDisplayAspectRatioFocused,
-    isDisplayAspectRatioValid,
-    displayFieldsAdditionalMap,
-    areDisplayFieldsAdditionalMapFocused,
-    areDisplayFieldsAdditionalMapValid,
-
-    // page 2 -> specifications -> keyboard
-    keyboardSwitch,
-    keyboardLayout,
-    keyboardBacklight,
-    keyboardInterface,
-    keyboardFieldsAdditionalMap,
-    areKeyboardFieldsAdditionalMapFocused,
-    areKeyboardFieldsAdditionalMapValid,
-
-    // page 2 -> specifications -> mouse
-    mouseSensor,
-    mouseDpi,
-    isMouseDpiFocused,
-    isMouseDpiValid,
-    mouseButtons,
-    isMouseButtonsFocused,
-    isMouseButtonsValid,
-    mouseColor,
-    isMouseColorFocused,
-    isMouseColorValid,
-    mouseInterface,
-    mouseFieldsAdditionalMap,
-    areMouseFieldsAdditionalMapFocused,
-    areMouseFieldsAdditionalMapValid,
-
-    // page 2 -> specifications -> headphone
-    headphoneType,
-    headphoneColor,
-    isHeadphoneColorFocused,
-    isHeadphoneColorValid,
-    headphoneDriver,
-    isHeadphoneDriverFocused,
-    isHeadphoneDriverValid,
-    headphoneFrequencyResponse,
-    isHeadphoneFrequencyResponseFocused,
-    isHeadphoneFrequencyResponseValid,
-    headphoneImpedance,
-    isHeadphoneImpedanceFocused,
-    isHeadphoneImpedanceValid,
-    headphoneInterface,
-    headphoneFieldsAdditionalMap,
-    areHeadphoneFieldsAdditionalMapFocused,
-    areHeadphoneFieldsAdditionalMapValid,
-
-    // page 2 -> specifications -> speaker
-    speakerType,
-    speakerColor,
-    isSpeakerColorFocused,
-    isSpeakerColorValid,
-    speakerFrequencyResponse,
-    isSpeakerFrequencyResponseFocused,
-    isSpeakerFrequencyResponseValid,
-    speakerTotalWattage,
-    isSpeakerTotalWattageFocused,
-    isSpeakerTotalWattageValid,
-    speakerInterface,
-    speakerFieldsAdditionalMap,
-    areSpeakerFieldsAdditionalMapFocused,
-    areSpeakerFieldsAdditionalMapValid,
-
-    // page 2 -> specifications -> smartphone
     smartphoneBatteryCapacity,
     isSmartphoneBatteryCapacityFocused,
     isSmartphoneBatteryCapacityValid,
@@ -426,7 +509,45 @@ function CreateProduct() {
     areSmartphoneFieldsAdditionalMapFocused,
     areSmartphoneFieldsAdditionalMapValid,
 
-    // page 2 -> specifications -> tablet
+    // ╭─────────────────────────────────────────────────────────────────╮
+    //    SPEAKER
+    // ╰─────────────────────────────────────────────────────────────────╯
+    speakerType,
+    speakerColor,
+    isSpeakerColorFocused,
+    isSpeakerColorValid,
+    speakerFrequencyResponse,
+    isSpeakerFrequencyResponseFocused,
+    isSpeakerFrequencyResponseValid,
+    speakerTotalWattage,
+    isSpeakerTotalWattageFocused,
+    isSpeakerTotalWattageValid,
+    speakerInterface,
+    speakerFieldsAdditionalMap,
+    areSpeakerFieldsAdditionalMapFocused,
+    areSpeakerFieldsAdditionalMapValid,
+
+    // ╭─────────────────────────────────────────────────────────────────╮
+    //    STORAGE
+    // ╰─────────────────────────────────────────────────────────────────╯
+    storageType,
+    storageCapacity,
+    isStorageCapacityFocused,
+    isStorageCapacityValid,
+    storageCapacityUnit,
+    storageCacheCapacity,
+    isStorageCacheCapacityFocused,
+    isStorageCacheCapacityValid,
+    storageCacheCapacityUnit,
+    storageFormFactor,
+    storageInterface,
+    storageFieldsAdditionalMap,
+    areStorageFieldsAdditionalMapFocused,
+    areStorageFieldsAdditionalMapValid,
+
+    // ╭─────────────────────────────────────────────────────────────────╮
+    //    TABLET
+    // ╰─────────────────────────────────────────────────────────────────╯
     tabletBatteryCapacity,
     isTabletBatteryCapacityFocused,
     isTabletBatteryCapacityValid,
@@ -460,20 +581,9 @@ function CreateProduct() {
     areTabletFieldsAdditionalMapFocused,
     areTabletFieldsAdditionalMapValid,
 
-    // page 2 -> specifications -> accessory
-    accessoryType,
-    isAccessoryTypeValid,
-    isAccessoryTypeFocused,
-    accessoryColor,
-    isAccessoryColorFocused,
-    isAccessoryColorValid,
-    accessoryInterface,
-    accessoryFieldsAdditionalMap,
-    areAccessoryFieldsAdditionalMapFocused,
-    areAccessoryFieldsAdditionalMapValid,
-    currentlySelectedAdditionalFieldIndex,
-
-    // page 2 -> specifications -> webcam
+    // ╭─────────────────────────────────────────────────────────────────╮
+    //    WEBCAM
+    // ╰─────────────────────────────────────────────────────────────────╯
     webcamColor,
     isWebcamColorFocused,
     isWebcamColorValid,
@@ -485,25 +595,16 @@ function CreateProduct() {
     areWebcamFieldsAdditionalMapFocused,
     areWebcamFieldsAdditionalMapValid,
 
-    // page 2 -> specifications -> microphone
-    microphoneColor,
-    isMicrophoneColorFocused,
-    isMicrophoneColorValid,
-    microphoneInterface,
-    microphoneType,
-    microphonePolarPattern,
-    microphoneFrequencyResponse,
-    isMicrophoneFrequencyResponseFocused,
-    isMicrophoneFrequencyResponseValid,
-    microphoneFieldsAdditionalMap,
-    areMicrophoneFieldsAdditionalMapFocused,
-    areMicrophoneFieldsAdditionalMapValid,
-
-    // page 3
+    // ╔═════════════════════════════════════════════════════════════════╗
+    //    PAGE 3
+    // ╚═════════════════════════════════════════════════════════════════╝
     imgFormDataArray,
     areImagesValid,
 
-    //
+    // ╔═════════════════════════════════════════════════════════════════╗
+    //    MISC.
+    // ╚═════════════════════════════════════════════════════════════════╝
+    currentlySelectedAdditionalFieldIndex,
     triggerFormSubmit,
     currentStepperPosition,
     stepsInError,
@@ -512,10 +613,17 @@ function CreateProduct() {
     submitMessage,
     isSuccessful,
     successMessage,
-    isLoading,
-    loadingMessage,
   } = createProductState;
 
+  // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+  //  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+  //     CREATE PRODUCT EFFECTS
+  //  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+  // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+
+  // ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+  //    TRIGGER FORM SUBMIT EFFECT
+  // ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
   useEffect(() => {
     let isMounted = true;
     const controller = new AbortController();
@@ -643,290 +751,640 @@ function CreateProduct() {
           });
 
           const createProductUrl: URL = urlBuilder({
-            path: 'actions/dashboard/product',
+            path: `actions/dashboard/product/${PRODUCT_CATEGORY_ROUTE_NAME_OBJ[productCategory]}`,
           });
 
-          // request body
+          // ╔═════════════════════════════════════════════════════════════════╗
+          //    REQUEST BODY
+          // ╚═════════════════════════════════════════════════════════════════╝
 
-          // request body -> page 1
-          const page1RequestBody = {
+          const page1Specifications: ProductCategoryPage1Specifications = {
             brand,
             model,
-            price,
+            price: parseFloat(price),
             currency,
             availability,
-            quantity,
-            weight,
+            quantity: parseInt(quantity),
+            weight: parseFloat(weight),
             weightUnit,
-            length: dimensionLength,
+            length: parseFloat(dimensionLength),
             lengthUnit: dimensionLengthUnit,
-            width: dimensionWidth,
+            width: parseFloat(dimensionWidth),
             widthUnit: dimensionWidthUnit,
-            height: dimensionHeight,
+            height: parseFloat(dimensionHeight),
             heightUnit: dimensionHeightUnit,
             description,
             additionalComments,
           };
 
-          // request body -> page 2
+          // ╭─────────────────────────────────────────────────────────────────╮
+          //    ACCESSORY
+          // ╰─────────────────────────────────────────────────────────────────╯
+          const accessorySpecifications: AccessorySpecifications = {
+            accessoryType,
+            accessoryColor,
+            accessoryInterface,
+          };
 
-          // request body -> page 2 -> specifications
+          const accessoryAdditionalFieldsObj =
+            returnRequestBodyfromUserDefinedFields(
+              accessoryFieldsAdditionalMap
+            );
 
-          // request body -> page 2 -> specifications -> cpu
-          const cpuRequestBody = {
+          const accessoryRequestBody: AccessoryRequestBody = {
+            ...page1Specifications,
+            ...accessorySpecifications,
+            additionalFields: {
+              ...accessoryAdditionalFieldsObj,
+            },
+            reviews: [],
+            uploadedFilesIds: imgUploadResponseData
+              .filter(removeUndefinedAndNull)
+              .map((item) => item.documentId),
+          };
+
+          // ╭─────────────────────────────────────────────────────────────────╮
+          //    CENTRAL PROCESSING UNIT (CPU)
+          // ╰─────────────────────────────────────────────────────────────────╯
+          const cpuSpecifications: CpuSpecifications = {
             cpuSocket,
-            cpuFrequency,
-            cpuCores,
-            cpuL1Cache: cpuL1CacheCapacity,
+            cpuFrequency: parseFloat(cpuFrequency),
+            cpuCores: parseInt(cpuCores),
+            cpuL1Cache: parseFloat(cpuL1CacheCapacity),
             cpuL1CacheUnit: cpuL1CacheCapacityUnit,
-            cpuL2Cache: cpuL2CacheCapacity,
+            cpuL2Cache: parseFloat(cpuL2CacheCapacity),
             cpuL2CacheUnit: cpuL2CacheCapacityUnit,
-            cpuL3Cache: cpuL3CacheCapacity,
+            cpuL3Cache: parseFloat(cpuL3CacheCapacity),
             cpuL3CacheUnit: cpuL3CacheCapacityUnit,
-            cpuWattage,
+            cpuWattage: parseInt(cpuWattage),
           };
 
-          // request body -> page 2 -> specifications -> gpu
-          const gpuRequestBody = {
-            gpuChipset,
-            gpuMemory: gpuMemoryCapacity,
-            gpuMemoryUnit: gpuMemoryCapacityUnit,
-            gpuCoreClock,
-            gpuBoostClock,
-            gpuTdp,
+          const cpuAdditionalFieldsObj = returnRequestBodyfromUserDefinedFields(
+            cpuFieldsAdditionalMap
+          );
+
+          const cpuRequestBody: CpuRequestBody = {
+            ...page1Specifications,
+            ...cpuSpecifications,
+            additionalFields: {
+              ...cpuAdditionalFieldsObj,
+            },
+            reviews: [],
+            uploadedFilesIds: imgUploadResponseData
+              .filter(removeUndefinedAndNull)
+              .map((item) => item.documentId),
           };
 
-          // request body -> page 2 -> specifications -> motherboard
-          const motherboardRequestBody = {
-            motherboardSocket,
-            motherboardChipset,
-            motherboardFormFactor,
-            motherboardMemoryMax: motherboardMemoryMaxCapacity,
-            motherboardMemoryMaxUnit: motherboardMemoryMaxCapacityUnit,
-            motherboardMemorySlots,
-            motherboardMemoryType,
-            motherboardSataPorts,
-            motherboardM2Slots,
-            motherboardPcie3Slots,
-            motherboardPcie4Slots,
-            motherboardPcie5Slots,
-          };
-
-          // request body -> page 2 -> specifications -> ram
-          const ramRequestBody = {
-            ramDataRate,
-            ramModulesQuantity,
-            ramModulesCapacity,
-            ramModulesCapacityUnit,
-            ramType,
-            ramColor,
-            ramVoltage,
-            ramTiming,
-          };
-
-          // request body -> page 2 -> specifications -> storage
-          const storageRequestBody = {
-            storageType,
-            storageCapacity,
-            storageCapacityUnit,
-            storageCache: storageCacheCapacity,
-            storageCacheUnit: storageCacheCapacityUnit,
-            storageFormFactor,
-            storageInterface,
-          };
-
-          // request body -> page 2 -> specifications -> psu
-          const psuRequestBody = {
-            psuWattage,
-            psuEfficiency,
-            psuFormFactor,
-            psuModularity,
-          };
-
-          // request body -> page 2 -> specifications -> case
-          const caseRequestBody = {
+          // ╭─────────────────────────────────────────────────────────────────╮
+          //    COMPUTER CASE
+          // ╰─────────────────────────────────────────────────────────────────╯
+          const caseSpecifications: CaseSpecifications = {
             caseType,
             caseColor,
             caseSidePanel,
           };
 
-          // request body -> page 2 -> specifications -> display
-          const displayRequestBody = {
-            displaySize,
-            displayHorizontalResolution: displayResolutionHorizontal,
-            displayVerticalResolution: displayResolutionVertical,
-            displayRefreshRate,
+          const caseAdditionalFieldsObj =
+            returnRequestBodyfromUserDefinedFields(caseFieldsAdditionalMap);
+
+          const caseRequestBody: ComputerCaseRequestBody = {
+            ...page1Specifications,
+            ...caseSpecifications,
+            additionalFields: {
+              ...caseAdditionalFieldsObj,
+            },
+            reviews: [],
+            uploadedFilesIds: imgUploadResponseData
+              .filter(removeUndefinedAndNull)
+              .map((item) => item.documentId),
+          };
+
+          // ╭─────────────────────────────────────────────────────────────────╮
+          //    DISPLAY
+          // ╰─────────────────────────────────────────────────────────────────╯
+          const displaySpecifications: DisplaySpecifications = {
+            displaySize: parseFloat(displaySize),
+            displayHorizontalResolution: parseInt(displayResolutionHorizontal),
+            displayVerticalResolution: parseInt(displayResolutionVertical),
+            displayRefreshRate: parseInt(displayRefreshRate),
             displayPanelType,
-            displayResponseTime,
+            displayResponseTime: parseFloat(displayResponseTime),
             displayAspectRatio,
           };
 
-          // request body -> page 2 -> specifications -> keyboard
-          const keyboardRequestBody = {
+          const displayAdditionalFieldsObj =
+            returnRequestBodyfromUserDefinedFields(displayFieldsAdditionalMap);
+
+          const displayRequestBody: DisplayRequestBody = {
+            ...page1Specifications,
+            ...displaySpecifications,
+            additionalFields: {
+              ...displayAdditionalFieldsObj,
+            },
+            reviews: [],
+            uploadedFilesIds: imgUploadResponseData
+              .filter(removeUndefinedAndNull)
+              .map((item) => item.documentId),
+          };
+
+          // ╭─────────────────────────────────────────────────────────────────╮
+          //    GRAPHICS PROCESSING UNIT (GPU)
+          // ╰─────────────────────────────────────────────────────────────────╯
+          const gpuSpecifications: GpuSpecifications = {
+            gpuChipset,
+            gpuMemory: parseInt(gpuMemoryCapacity),
+            gpuMemoryUnit: gpuMemoryCapacityUnit,
+            gpuCoreClock: parseInt(gpuCoreClock),
+            gpuBoostClock: parseInt(gpuBoostClock),
+            gpuTdp: parseInt(gpuTdp),
+          };
+
+          const gpuAdditionalFieldsObj = returnRequestBodyfromUserDefinedFields(
+            gpuFieldsAdditionalMap
+          );
+
+          const gpuRequestBody: GpuRequestBody = {
+            ...page1Specifications,
+            ...gpuSpecifications,
+            additionalFields: {
+              ...gpuAdditionalFieldsObj,
+            },
+            reviews: [],
+            uploadedFilesIds: imgUploadResponseData
+              .filter(removeUndefinedAndNull)
+              .map((item) => item.documentId),
+          };
+
+          // ╭─────────────────────────────────────────────────────────────────╮
+          //    HEADPHONE
+          // ╰─────────────────────────────────────────────────────────────────╯
+          const headphoneSpecifications: HeadphoneSpecifications = {
+            headphoneType,
+            headphoneDriver: parseInt(headphoneDriver),
+            headphoneFrequencyResponse,
+            headphoneImpedance: parseInt(headphoneImpedance),
+            headphoneColor,
+            headphoneInterface,
+          };
+
+          const headphoneAdditionalFieldsObj =
+            returnRequestBodyfromUserDefinedFields(
+              headphoneFieldsAdditionalMap
+            );
+
+          const headphoneRequestBody: HeadphoneRequestBody = {
+            ...page1Specifications,
+            ...headphoneSpecifications,
+            additionalFields: {
+              ...headphoneAdditionalFieldsObj,
+            },
+            reviews: [],
+            uploadedFilesIds: imgUploadResponseData
+              .filter(removeUndefinedAndNull)
+              .map((item) => item.documentId),
+          };
+
+          // ╭─────────────────────────────────────────────────────────────────╮
+          //    KEYBOARD
+          // ╰─────────────────────────────────────────────────────────────────╯
+          const keyboardSpecifications: KeyboardSpecifications = {
             keyboardSwitch,
             keyboardLayout,
             keyboardBacklight,
             keyboardInterface,
           };
 
-          // request body -> page 2 -> specifications -> mouse
-          const mouseRequestBody = {
+          const keyboardAdditionalFieldsObj =
+            returnRequestBodyfromUserDefinedFields(keyboardFieldsAdditionalMap);
+
+          const keyboardRequestBody: KeyboardRequestBody = {
+            ...page1Specifications,
+            ...keyboardSpecifications,
+            additionalFields: {
+              ...keyboardAdditionalFieldsObj,
+            },
+            reviews: [],
+            uploadedFilesIds: imgUploadResponseData
+              .filter(removeUndefinedAndNull)
+              .map((item) => item.documentId),
+          };
+
+          // ╭─────────────────────────────────────────────────────────────────╮
+          //    MEMORY (RAM)
+          // ╰─────────────────────────────────────────────────────────────────╯
+          const ramSpecifications: RamSpecifications = {
+            ramDataRate: parseInt(ramDataRate),
+            ramModulesQuantity: parseInt(ramModulesQuantity),
+            ramModulesCapacity: parseInt(ramModulesCapacity),
+            ramModulesCapacityUnit,
+            ramType,
+            ramColor,
+            ramVoltage: parseFloat(ramVoltage),
+            ramTiming,
+          };
+
+          const ramAdditionalFieldsObj = returnRequestBodyfromUserDefinedFields(
+            ramFieldsAdditionalMap
+          );
+
+          const ramRequestBody: RamRequestBody = {
+            ...page1Specifications,
+            ...ramSpecifications,
+            additionalFields: {
+              ...ramAdditionalFieldsObj,
+            },
+            reviews: [],
+            uploadedFilesIds: imgUploadResponseData
+              .filter(removeUndefinedAndNull)
+              .map((item) => item.documentId),
+          };
+
+          // ╭─────────────────────────────────────────────────────────────────╮
+          //    MOUSE
+          // ╰─────────────────────────────────────────────────────────────────╯
+          const mouseSpecifications: MouseSpecifications = {
             mouseSensor,
-            mouseDpi,
-            mouseButtons,
+            mouseDpi: parseInt(mouseDpi),
+            mouseButtons: parseInt(mouseButtons),
             mouseColor,
             mouseInterface,
           };
 
-          // request body -> page 2 -> specifications -> headphone
-          const headphoneRequestBody = {
-            headphoneType,
-            headphoneDriver,
-            headphoneFrequencyResponse,
-            headphoneImpedance,
-            headphoneColor,
-            headphoneInterface,
+          const mouseAdditionalFieldsObj =
+            returnRequestBodyfromUserDefinedFields(mouseFieldsAdditionalMap);
+
+          const mouseRequestBody: MouseRequestBody = {
+            ...page1Specifications,
+            ...mouseSpecifications,
+            additionalFields: {
+              ...mouseAdditionalFieldsObj,
+            },
+            reviews: [],
+            uploadedFilesIds: imgUploadResponseData
+              .filter(removeUndefinedAndNull)
+              .map((item) => item.documentId),
           };
 
-          // request body -> page 2 -> specifications -> speaker
-          const speakerRequestBody = {
+          // ╭─────────────────────────────────────────────────────────────────╮
+          //    MICROPHONE
+          // ╰─────────────────────────────────────────────────────────────────╯
+          const microphoneSpecifications: MicrophoneSpecifications = {
+            microphoneType,
+            microphonePolarPattern,
+            microphoneFrequencyResponse,
+            microphoneColor,
+            microphoneInterface,
+          };
+
+          const microphoneAdditionalFieldsObj =
+            returnRequestBodyfromUserDefinedFields(
+              microphoneFieldsAdditionalMap
+            );
+
+          const microphoneRequestBody: MicrophoneRequestBody = {
+            ...page1Specifications,
+            ...microphoneSpecifications,
+            additionalFields: {
+              ...microphoneAdditionalFieldsObj,
+            },
+            reviews: [],
+            uploadedFilesIds: imgUploadResponseData
+              .filter(removeUndefinedAndNull)
+              .map((item) => item?.documentId),
+          };
+
+          // ╭─────────────────────────────────────────────────────────────────╮
+          //    MOTHERBOARD
+          // ╰─────────────────────────────────────────────────────────────────╯
+          const motherboardSpecifications: MotherboardSpecifications = {
+            motherboardSocket,
+            motherboardChipset,
+            motherboardFormFactor,
+            motherboardMemoryMax: parseInt(motherboardMemoryMaxCapacity),
+            motherboardMemoryMaxUnit: motherboardMemoryMaxCapacityUnit,
+            motherboardMemorySlots: parseInt(motherboardMemorySlots),
+            motherboardMemoryType,
+            motherboardSataPorts: parseInt(motherboardSataPorts),
+            motherboardM2Slots: parseInt(motherboardM2Slots),
+            motherboardPcie3Slots: parseInt(motherboardPcie3Slots),
+            motherboardPcie4Slots: parseInt(motherboardPcie4Slots),
+            motherboardPcie5Slots: parseInt(motherboardPcie5Slots),
+          };
+
+          const motherboardAdditionalFieldsObj =
+            returnRequestBodyfromUserDefinedFields(
+              motherboardFieldsAdditionalMap
+            );
+
+          const motherboardRequestBody: MotherboardRequestBody = {
+            ...page1Specifications,
+            ...motherboardSpecifications,
+            additionalFields: {
+              ...motherboardAdditionalFieldsObj,
+            },
+            reviews: [],
+            uploadedFilesIds: imgUploadResponseData
+              .filter(removeUndefinedAndNull)
+              .map((item) => item.documentId),
+          };
+
+          // ╭─────────────────────────────────────────────────────────────────╮
+          //    POWER SUPPLY UNIT (PSU)
+          // ╰─────────────────────────────────────────────────────────────────╯
+          const psuSpecifications: PsuSpecifications = {
+            psuWattage: parseInt(psuWattage),
+            psuEfficiency,
+            psuFormFactor,
+            psuModularity,
+          };
+
+          const psuAdditionalFieldsObj = returnRequestBodyfromUserDefinedFields(
+            psuFieldsAdditionalMap
+          );
+
+          const psuRequestBody: PsuRequestBody = {
+            ...page1Specifications,
+            ...psuSpecifications,
+            additionalFields: {
+              ...psuAdditionalFieldsObj,
+            },
+            reviews: [],
+            uploadedFilesIds: imgUploadResponseData
+              .filter(removeUndefinedAndNull)
+              .map((item) => item.documentId),
+          };
+
+          // ╭─────────────────────────────────────────────────────────────────╮
+          //    SMARTPHONE
+          // ╰─────────────────────────────────────────────────────────────────╯
+          const smartphoneSpecifications: SmartphoneSpecifications = {
+            smartphoneOs,
+            smartphoneChipset,
+            smartphoneDisplay: parseFloat(smartphoneDisplay),
+            smartphoneHorizontalResolution: parseInt(
+              smartphoneResolutionHorizontal
+            ),
+            smartphoneVerticalResolution: parseInt(
+              smartphoneResolutionVertical
+            ),
+            smartphoneRamCapacity: parseInt(smartphoneRamCapacity),
+            smartphoneRamCapacityUnit,
+            smartphoneStorage: parseInt(smartphoneStorageCapacity),
+            smartphoneBattery: parseInt(smartphoneBatteryCapacity),
+            smartphoneCamera,
+            smartphoneColor,
+          };
+
+          const smartphoneAdditionalFieldsObj =
+            returnRequestBodyfromUserDefinedFields(
+              smartphoneFieldsAdditionalMap
+            );
+
+          const smartphoneRequestBody: SmartphoneRequestBody = {
+            ...page1Specifications,
+            ...smartphoneSpecifications,
+            additionalFields: {
+              ...smartphoneAdditionalFieldsObj,
+            },
+            reviews: [],
+            uploadedFilesIds: imgUploadResponseData
+              .filter(removeUndefinedAndNull)
+              .map((item) => item?.documentId),
+          };
+
+          // ╭─────────────────────────────────────────────────────────────────╮
+          //    SPEAKER
+          // ╰─────────────────────────────────────────────────────────────────╯
+          const speakerSpecifications: SpeakerSpecifications = {
             speakerType,
-            speakerTotalWattage,
+            speakerTotalWattage: parseInt(speakerTotalWattage),
             speakerFrequencyResponse,
             speakerColor,
             speakerInterface,
           };
 
-          // request body -> page 2 -> specifications -> smartphone
-          const smartphoneRequestBody = {
-            smartphoneOs,
-            smartphoneChipset,
-            smartphoneDisplay,
-            smartphoneHorizontalResolution: smartphoneResolutionHorizontal,
-            smartphoneVerticalResolution: smartphoneResolutionVertical,
-            smartphoneRamCapacity,
-            smartphoneRamCapacityUnit,
-            smartphoneStorageCapacity,
-            smartphoneBatteryCapacity,
-            smartphoneCamera,
-            smartphoneColor,
+          const speakerAdditionalFieldsObj =
+            returnRequestBodyfromUserDefinedFields(speakerFieldsAdditionalMap);
+
+          const speakerRequestBody: SpeakerRequestBody = {
+            ...page1Specifications,
+            ...speakerSpecifications,
+            additionalFields: {
+              ...speakerAdditionalFieldsObj,
+            },
+            reviews: [],
+            uploadedFilesIds: imgUploadResponseData
+              .filter(removeUndefinedAndNull)
+              .map((item) => item?.documentId),
           };
 
-          // request body -> page 2 -> specifications -> tablet
-          const tabletRequestBody = {
+          // ╭─────────────────────────────────────────────────────────────────╮
+          //    STORAGE
+          // ╰─────────────────────────────────────────────────────────────────╯
+          const storageSpecifications: StorageSpecifications = {
+            storageType,
+            storageCapacity: parseInt(storageCapacity),
+            storageCapacityUnit,
+            storageCache: parseInt(storageCacheCapacity),
+            storageCacheUnit: storageCacheCapacityUnit,
+            storageFormFactor,
+            storageInterface,
+          };
+
+          const storageAdditionalFieldsObj =
+            returnRequestBodyfromUserDefinedFields(storageFieldsAdditionalMap);
+
+          const storageRequestBody: StorageRequestBody = {
+            ...page1Specifications,
+            ...storageSpecifications,
+            additionalFields: {
+              ...storageAdditionalFieldsObj,
+            },
+            reviews: [],
+            uploadedFilesIds: imgUploadResponseData
+              .filter(removeUndefinedAndNull)
+              .map((item) => item.documentId),
+          };
+
+          // ╭─────────────────────────────────────────────────────────────────╮
+          //    TABLET
+          // ╰─────────────────────────────────────────────────────────────────╯
+          const tabletSpecifications: TabletSpecifications = {
             tabletOs,
             tabletChipset,
-            tabletDisplay,
-            tabletHorizontalResolution: tabletResolutionHorizontal,
-            tabletVerticalResolution: tabletResolutionVertical,
-            tabletRamCapacity,
+            tabletDisplay: parseFloat(tabletDisplay),
+            tabletHorizontalResolution: parseInt(tabletResolutionHorizontal),
+            tabletVerticalResolution: parseInt(tabletResolutionVertical),
+            tabletRamCapacity: parseInt(tabletRamCapacity),
             tabletRamCapacityUnit,
-            tabletStorageCapacity,
-            tabletBatteryCapacity,
+            tabletStorage: parseInt(tabletStorageCapacity),
+            tabletBattery: parseInt(tabletBatteryCapacity),
             tabletCamera,
             tabletColor,
           };
 
-          // request body -> page 2 -> specifications -> accessory
-          const accessoryFieldsAdditionalMapRequestBody = Array.from(
-            accessoryFieldsAdditionalMap
-          ).reduce((acc, [key, tuple]) => {
-            const [field, value] = tuple;
-            acc[field] = value;
+          const tabletAdditionalFieldsObj =
+            returnRequestBodyfromUserDefinedFields(tabletFieldsAdditionalMap);
 
-            return acc;
-          }, Object.create(null));
-
-          const accessoryRequestBody = {
-            accessoryType,
-            accessoryColor,
-            accessoryInterface,
-            userDefinedFields: {
-              ...accessoryFieldsAdditionalMapRequestBody,
+          const tabletRequestBody: TabletRequestBody = {
+            ...page1Specifications,
+            ...tabletSpecifications,
+            additionalFields: {
+              ...tabletAdditionalFieldsObj,
             },
+            reviews: [],
+            uploadedFilesIds: imgUploadResponseData
+              .filter(removeUndefinedAndNull)
+              .map((item) => item?.documentId),
           };
 
-          // request body -> page 2 -> desktop computer
-          const desktopComputerRequestBody = {
-            cpu: cpuRequestBody,
-            gpu: gpuRequestBody,
-            motherboard: motherboardRequestBody,
-            ram: ramRequestBody,
-            storage: storageRequestBody,
-            psu: psuRequestBody,
-            case: caseRequestBody,
-            display: displayRequestBody,
-            keyboard: keyboardRequestBody,
-            mouse: mouseRequestBody,
-            speaker: speakerRequestBody,
+          // ╭─────────────────────────────────────────────────────────────────╮
+          //    WEBCAM
+          // ╰─────────────────────────────────────────────────────────────────╯
+          const webcamSpecifications: WebcamSpecifications = {
+            webcamColor,
+            webcamFrameRate,
+            webcamInterface,
+            webcamMicrophone,
+            webcamResolution,
           };
 
-          // request body -> page 2 -> laptop
-          const laptopRequestBody = {
-            cpu: cpuRequestBody,
-            gpu: gpuRequestBody,
-            display: displayRequestBody,
-            ram: ramRequestBody,
-            storage: storageRequestBody,
+          const webcamAdditionalFieldsObj =
+            returnRequestBodyfromUserDefinedFields(webcamFieldsAdditionalMap);
+
+          const webcamRequestBody: WebcamRequestBody = {
+            ...page1Specifications,
+            ...webcamSpecifications,
+            additionalFields: {
+              ...webcamAdditionalFieldsObj,
+            },
+            reviews: [],
+            uploadedFilesIds: imgUploadResponseData
+              .filter(removeUndefinedAndNull)
+              .map((item) => item?.documentId),
           };
 
-          const page2SpecificationsRequestBody =
+          // ╭─────────────────────────────────────────────────────────────────╮
+          //    DESKTOP COMPUTER
+          // ╰─────────────────────────────────────────────────────────────────╯
+          const desktopComputerSpecifications: DesktopComputerSpecifications = {
+            ...caseSpecifications,
+            ...cpuSpecifications,
+            ...displaySpecifications,
+            ...gpuSpecifications,
+            ...keyboardSpecifications,
+            ...motherboardSpecifications,
+            ...mouseSpecifications,
+            ...psuSpecifications,
+            ...ramSpecifications,
+            ...speakerSpecifications,
+            ...storageSpecifications,
+          };
+
+          const desktopComputerAdditionalFieldsObj = {
+            ...caseAdditionalFieldsObj,
+            ...cpuAdditionalFieldsObj,
+            ...displayAdditionalFieldsObj,
+            ...gpuAdditionalFieldsObj,
+            ...keyboardAdditionalFieldsObj,
+            ...motherboardAdditionalFieldsObj,
+            ...mouseAdditionalFieldsObj,
+            ...psuAdditionalFieldsObj,
+            ...ramAdditionalFieldsObj,
+            ...speakerAdditionalFieldsObj,
+            ...storageAdditionalFieldsObj,
+          };
+
+          const desktopComputerRequestBody: DesktopComputerRequestBody = {
+            ...page1Specifications,
+            ...desktopComputerSpecifications,
+            additionalFields: {
+              ...desktopComputerAdditionalFieldsObj,
+            },
+            reviews: [],
+            uploadedFilesIds: imgUploadResponseData
+              .filter(removeUndefinedAndNull)
+              .map((item) => item?.documentId),
+          };
+
+          // ╭─────────────────────────────────────────────────────────────────╮
+          //    LAPTOP
+          // ╰─────────────────────────────────────────────────────────────────╯
+          const laptopSpecifications: LaptopSpecifications = {
+            ...cpuSpecifications,
+            ...displaySpecifications,
+            ...gpuSpecifications,
+            ...ramSpecifications,
+            ...storageSpecifications,
+          };
+
+          const laptopAdditionalFieldsObj = {
+            ...cpuAdditionalFieldsObj,
+            ...displayAdditionalFieldsObj,
+            ...gpuAdditionalFieldsObj,
+            ...ramAdditionalFieldsObj,
+            ...storageAdditionalFieldsObj,
+          };
+
+          const laptopRequestBody: LaptopRequestBody = {
+            ...page1Specifications,
+            ...laptopSpecifications,
+            additionalFields: {
+              ...laptopAdditionalFieldsObj,
+            },
+            reviews: [],
+            uploadedFilesIds: imgUploadResponseData
+              .filter(removeUndefinedAndNull)
+              .map((item) => item?.documentId),
+          };
+
+          const createProductFormRequestBody =
             productCategory === 'Accessory'
-              ? { accessory: accessoryRequestBody }
-              : productCategory === 'Desktop Computer'
-              ? { desktopComputer: desktopComputerRequestBody }
-              : productCategory === 'Laptop'
-              ? { laptop: laptopRequestBody }
+              ? { accessoryFields: accessoryRequestBody }
               : productCategory === 'Central Processing Unit (CPU)'
-              ? { cpu: cpuRequestBody }
+              ? { cpuFields: cpuRequestBody }
               : productCategory === 'Computer Case'
-              ? { case: caseRequestBody }
-              : productCategory === 'Graphics Processing Unit (GPU)'
-              ? { gpu: gpuRequestBody }
-              : productCategory === 'Headphone'
-              ? { headphone: headphoneRequestBody }
-              : productCategory === 'Keyboard'
-              ? { keyboard: keyboardRequestBody }
-              : productCategory === 'Memory (RAM)'
-              ? { ram: ramRequestBody }
-              : productCategory === 'Mouse'
-              ? { mouse: mouseRequestBody }
+              ? { computerCaseFields: caseRequestBody }
+              : productCategory === 'Desktop Computer'
+              ? { desktopComputerFields: desktopComputerRequestBody }
               : productCategory === 'Display'
-              ? { display: displayRequestBody }
+              ? { displayFields: displayRequestBody }
+              : productCategory === 'Graphics Processing Unit (GPU)'
+              ? { gpuFields: gpuRequestBody }
+              : productCategory === 'Headphone'
+              ? { headphoneFields: headphoneRequestBody }
+              : productCategory === 'Keyboard'
+              ? { keyboardFields: keyboardRequestBody }
+              : productCategory === 'Laptop'
+              ? { laptopFields: laptopRequestBody }
+              : productCategory === 'Memory (RAM)'
+              ? { ramFields: ramRequestBody }
+              : productCategory === 'Microphone'
+              ? { microphoneFields: microphoneRequestBody }
               : productCategory === 'Motherboard'
-              ? { motherboard: motherboardRequestBody }
+              ? { motherboardFields: motherboardRequestBody }
+              : productCategory === 'Mouse'
+              ? { mouseFields: mouseRequestBody }
               : productCategory === 'Power Supply Unit (PSU)'
-              ? { psu: psuRequestBody }
+              ? { psuFields: psuRequestBody }
               : productCategory === 'Smartphone'
-              ? { smartphone: smartphoneRequestBody }
+              ? { smartphoneFields: smartphoneRequestBody }
               : productCategory === 'Speaker'
-              ? { speaker: speakerRequestBody }
+              ? { speakerFields: speakerRequestBody }
               : productCategory === 'Storage'
-              ? { storage: storageRequestBody }
-              : { tablet: tabletRequestBody };
-
-          const createProductRequestBody = JSON.stringify({
-            product: {
-              ...page1RequestBody,
-              productCategory,
-              specifications: {
-                ...page2SpecificationsRequestBody,
-              },
-              reviews: [],
-              uploadedFilesIds: imgUploadResponseData
-                .filter((item) => item !== undefined)
-                .map((item) => item?.documentId),
-            },
-          });
-
-          console.log('createProductRequestBody', createProductRequestBody);
+              ? { storageFields: storageRequestBody }
+              : productCategory === 'Tablet'
+              ? { tabletFields: tabletRequestBody }
+              : {
+                  webcamFields: webcamRequestBody,
+                };
 
           const createProductRequestInit: RequestInit = {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
             },
-            body: createProductRequestBody,
+            body: JSON.stringify(createProductFormRequestBody),
           };
 
           try {
@@ -1030,11 +1488,15 @@ function CreateProduct() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [triggerFormSubmit]);
 
-  // page 1
+  // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+  //  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+  //     VALIDATION USE EFFECTS
+  //  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+  // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
-  // page 1 -> validations
-
-  // page 1 -> brand
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //     BRAND
+  // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
     const isValid = BRAND_REGEX.test(brand);
 
@@ -1044,7 +1506,9 @@ function CreateProduct() {
     });
   }, [brand]);
 
-  // page 1 -> model
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //     MODEL
+  // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
     const isValid = SERIAL_ID_REGEX.test(model);
 
@@ -1054,7 +1518,9 @@ function CreateProduct() {
     });
   }, [model]);
 
-  // page 1 -> description
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //     DESCRIPTION
+  // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
     const isValid = GRAMMAR_TEXTAREA_INPUT_REGEX.test(description);
 
@@ -1064,7 +1530,9 @@ function CreateProduct() {
     });
   }, [description]);
 
-  // page 1 -> price
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //     PRICE
+  // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
     const isValid = MONEY_REGEX.test(price);
 
@@ -1074,7 +1542,9 @@ function CreateProduct() {
     });
   }, [price]);
 
-  // page 1 -> quantity
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //     QUANTITY
+  // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
     const isValid = LARGE_INTEGER_REGEX.test(quantity);
 
@@ -1084,7 +1554,9 @@ function CreateProduct() {
     });
   }, [quantity]);
 
-  // page 1 -> weight
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //     WEIGHT
+  // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
     const isValid = WEIGHT_REGEX.test(weight);
 
@@ -1094,7 +1566,9 @@ function CreateProduct() {
     });
   }, [weight]);
 
-  // page 1 -> dimension length
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //     DIMENSION LENGTH
+  // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
     const isValid = DIMENSIONS_REGEX.test(dimensionLength);
 
@@ -1104,7 +1578,9 @@ function CreateProduct() {
     });
   }, [dimensionLength]);
 
-  // page 1 -> dimension width
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //     DIMENSION WIDTH
+  // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
     const isValid = DIMENSIONS_REGEX.test(dimensionWidth);
 
@@ -1114,7 +1590,9 @@ function CreateProduct() {
     });
   }, [dimensionWidth]);
 
-  // page 1 -> dimension height
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //     DIMENSION HEIGHT
+  // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
     const isValid = DIMENSIONS_REGEX.test(dimensionHeight);
 
@@ -1123,6 +1601,10 @@ function CreateProduct() {
       payload: isValid,
     });
   }, [dimensionHeight]);
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //     CURRENCY
+  // ╰─────────────────────────────────────────────────────────────────╯
 
   // insert comma if currency is EUR
   useEffect(() => {
@@ -1150,7 +1632,9 @@ function CreateProduct() {
     }
   }, [currency, price]);
 
-  // page 1 -> additional comments
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //     DIMENSION LENGTH UNIT
+  // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
     const isValid = GRAMMAR_TEXTAREA_INPUT_REGEX.test(additionalComments);
 
@@ -1160,7 +1644,12 @@ function CreateProduct() {
     });
   }, [additionalComments]);
 
-  // update stepper wrapper state on every page 1 input validation change
+  // ╔═════════════════════════════════════════════════════════════════╗
+  //    STEPPER STATE UPDATE
+  // ╚═════════════════════════════════════════════════════════════════╝
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //     PAGE 1
+  // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
     const arePage1RequiredInputsInError =
       !isBrandValid ||
@@ -1194,7 +1683,9 @@ function CreateProduct() {
     quantity,
   ]);
 
-  // update stepper wrapper state on every page 3 input validation change
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //     PAGE 3
+  // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
     const arePage3InputsInError =
       !areImagesValid || imgFormDataArray.length === 0;
@@ -1208,19 +1699,25 @@ function CreateProduct() {
     });
   }, [areImagesValid, imgFormDataArray.length]);
 
-  // ╭──────────────────────────────────────────────────────────────╮
-  // │ Created Inputs                                               │
-  // ╰──────────────────────────────────────────────────────────────╯
+  // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+  //  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+  //     INPUT CREATION
+  //  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+  // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
   const {
     appThemeColors: { borderColor },
   } = returnThemeColors({ themeObject, colorsSwatches: COLORS_SWATCHES });
 
-  // page 1
+  // ╔═════════════════════════════════════════════════════════════════╗
+  //    PAGE 1
+  // ╚═════════════════════════════════════════════════════════════════╝
 
-  // page 1 -> brand
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //     BRAND
+  // ╰─────────────────────────────────────────────────────────────────╯
 
-  // page 1 -> brand -> accessible screen reader text elements
+  // error/valid text elements
   const [brandInputErrorText, brandInputValidText] =
     AccessibleErrorValidTextElements({
       inputElementKind: 'brand',
@@ -1235,7 +1732,7 @@ function CreateProduct() {
       }),
     });
 
-  // page 1 -> brand -> text input element creator
+  // screenreader accessible text input element
   const [createdBrandTextInput] = returnAccessibleTextInputElements([
     {
       description: {
@@ -1271,9 +1768,11 @@ function CreateProduct() {
     },
   ]);
 
-  // page 1 -> model
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //     MODEL
+  // ╰─────────────────────────────────────────────────────────────────╯
 
-  // page 1 -> model -> accessible screen reader text elements
+  // error/valid text elements
   const [modelInputErrorText, modelInputValidText] =
     AccessibleErrorValidTextElements({
       inputElementKind: 'model',
@@ -1288,7 +1787,7 @@ function CreateProduct() {
       }),
     });
 
-  // page 1 -> model -> text input element creator
+  // screenreader accessible text input element
   const [createdModelTextInput] = returnAccessibleTextInputElements([
     {
       description: {
@@ -1324,9 +1823,11 @@ function CreateProduct() {
     },
   ]);
 
-  // page 1 -> description
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //     DESCRIPTION
+  // ╰─────────────────────────────────────────────────────────────────╯
 
-  // page 1 -> description -> accessible screen reader text elements
+  // error/valid text elements
   const [descriptionInputErrorText, descriptionInputValidText] =
     AccessibleErrorValidTextElements({
       inputElementKind: 'description',
@@ -1341,7 +1842,7 @@ function CreateProduct() {
       }),
     });
 
-  // page 1 -> description -> text input element creator
+  // screenreader accessible text input element
   const [createdDescriptionTextAreaInput] =
     returnAccessibleTextAreaInputElements([
       {
@@ -1378,9 +1879,11 @@ function CreateProduct() {
       },
     ]);
 
-  // page 1 -> price
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //     PRICE
+  // ╰─────────────────────────────────────────────────────────────────╯
 
-  // page 1 -> price -> accessible screen reader text elements
+  // error/valid text elements
   const [priceInputErrorText, priceInputValidText] =
     AccessibleErrorValidTextElements({
       inputElementKind: 'price',
@@ -1393,7 +1896,7 @@ function CreateProduct() {
       }),
     });
 
-  // page 1 -> price -> text input element creator
+  // screenreader accessible text input element
   const [createdPriceTextInput] = returnAccessibleTextInputElements([
     {
       description: {
@@ -1427,9 +1930,9 @@ function CreateProduct() {
     },
   ]);
 
-  // page 1 -> currency
-
-  // page 1 -> currency -> select element creator
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //     CURRENCY
+  // ╰─────────────────────────────────────────────────────────────────╯
   const [createdCurrencySelectInput] = returnAccessibleSelectInputElements([
     {
       data: CURRENCY_DATA,
@@ -1446,9 +1949,9 @@ function CreateProduct() {
     },
   ]);
 
-  // page 1 -> availability
-
-  // page 1 -> availability -> radio element creator
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //     AVAILABILITY
+  // ╰─────────────────────────────────────────────────────────────────╯
   const [createdAvailabilitySelectInput] = returnAccessibleSelectInputElements([
     {
       data: PRODUCT_AVAILABILITY_DATA,
@@ -1465,9 +1968,11 @@ function CreateProduct() {
     },
   ]);
 
-  // page 1 -> quantity
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //     QUANTITY
+  // ╰─────────────────────────────────────────────────────────────────╯
 
-  // page 1 -> quantity -> screenreader accessible text input elements
+  // error/valid text elements
   const [quantityInputErrorText, quantityInputValidText] =
     AccessibleErrorValidTextElements({
       inputElementKind: 'quantity',
@@ -1480,7 +1985,7 @@ function CreateProduct() {
       }),
     });
 
-  // page 1 -> quantity -> text input element creator
+  // screenreader accessible text input element
   const [createdQuantityTextInput] = returnAccessibleTextInputElements([
     {
       description: {
@@ -1514,9 +2019,11 @@ function CreateProduct() {
     },
   ]);
 
-  // page 1 -> weight
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //     WEIGHT
+  // ╰─────────────────────────────────────────────────────────────────╯
 
-  // page 1 -> weight -> screenreader accessible text input elements
+  // error/valid text elements
   const [weightInputErrorText, weightInputValidText] =
     AccessibleErrorValidTextElements({
       inputElementKind: 'weight',
@@ -1529,7 +2036,7 @@ function CreateProduct() {
       }),
     });
 
-  // page 1 -> weight -> text input element creator
+  // screenreader accessible text input element
   const [createdWeightTextInput] = returnAccessibleTextInputElements([
     {
       description: {
@@ -1563,9 +2070,9 @@ function CreateProduct() {
     },
   ]);
 
-  // page 1 -> weight unit
-
-  // page 1 -> weight -> weight unit select input
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //     WEIGHT UNIT
+  // ╰─────────────────────────────────────────────────────────────────╯
   const [createdWeightUnitSelectInput] = returnAccessibleSelectInputElements([
     {
       data: WEIGHT_UNIT_SELECT_INPUT_DATA,
@@ -1582,11 +2089,11 @@ function CreateProduct() {
     },
   ]);
 
-  // page 1 -> dimensions
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //     DIMENSION LENGTH
+  // ╰─────────────────────────────────────────────────────────────────╯
 
-  // page 1 -> dimensions -> length
-
-  // page 1 -> dimensions -> length -> screenreader accessible text input elements
+  // error/valid text elements
   const [dimensionLengthInputErrorText, dimensionLengthInputValidText] =
     AccessibleErrorValidTextElements({
       inputElementKind: 'dimension length',
@@ -1599,7 +2106,7 @@ function CreateProduct() {
       }),
     });
 
-  // page 1 -> dimensions -> length -> text input element creator
+  // screenreader accessible text input element
   const [createdDimensionLengthTextInput] = returnAccessibleTextInputElements([
     {
       description: {
@@ -1633,7 +2140,9 @@ function CreateProduct() {
     },
   ]);
 
-  // page 1 -> dimensions -> length unit select input
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //     DIMENSION LENGTH UNIT
+  // ╰─────────────────────────────────────────────────────────────────╯
   const [createdDimensionLengthUnitSelectInput] =
     returnAccessibleSelectInputElements([
       {
@@ -1651,9 +2160,11 @@ function CreateProduct() {
       },
     ]);
 
-  // page 1 -> dimensions -> width
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //     DIMENSION WIDTH
+  // ╰─────────────────────────────────────────────────────────────────╯
 
-  // page 1 -> dimensions -> width -> screenreader accessible text input elements
+  // error/valid text elements
   const [dimensionWidthInputErrorText, dimensionWidthInputValidText] =
     AccessibleErrorValidTextElements({
       inputElementKind: 'dimension width',
@@ -1666,7 +2177,7 @@ function CreateProduct() {
       }),
     });
 
-  // page 1 -> dimensions -> width -> text input element creator
+  // screenreader accessible text input element
   const [createdDimensionWidthTextInput] = returnAccessibleTextInputElements([
     {
       description: {
@@ -1700,7 +2211,9 @@ function CreateProduct() {
     },
   ]);
 
-  // page 1 -> dimensions -> width unit select input
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //     DIMENSION WIDTH UNIT
+  // ╰─────────────────────────────────────────────────────────────────╯
   const [createdDimensionWidthUnitSelectInput] =
     returnAccessibleSelectInputElements([
       {
@@ -1718,9 +2231,11 @@ function CreateProduct() {
       },
     ]);
 
-  // page 1 -> dimensions -> height
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //     DIMENSION HEIGHT
+  // ╰─────────────────────────────────────────────────────────────────╯
 
-  // page 1 -> dimensions -> height -> screenreader accessible text input elements
+  // error/valid text elements
   const [dimensionHeightInputErrorText, dimensionHeightInputValidText] =
     AccessibleErrorValidTextElements({
       inputElementKind: 'dimension height',
@@ -1733,7 +2248,7 @@ function CreateProduct() {
       }),
     });
 
-  // page 1 -> dimensions -> height -> text input element creator
+  // screenreader accessible text input element
   const [createdDimensionHeightTextInput] = returnAccessibleTextInputElements([
     {
       description: {
@@ -1767,7 +2282,9 @@ function CreateProduct() {
     },
   ]);
 
-  // page 1 -> dimensions -> height unit select input
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //     DIMENSION HEIGHT UNIT
+  // ╰─────────────────────────────────────────────────────────────────╯
   const [createdDimensionHeightUnitSelectInput] =
     returnAccessibleSelectInputElements([
       {
@@ -1785,9 +2302,11 @@ function CreateProduct() {
       },
     ]);
 
-  // page 1 -> additional comments
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //     ADDITIONAL COMMENTS
+  // ╰─────────────────────────────────────────────────────────────────╯
 
-  // page 1 -> additional comments -> accessible screen reader text elements
+  // error/valid text elements
   const [additionalCommentsInputErrorText, additionalCommentsInputValidText] =
     AccessibleErrorValidTextElements({
       inputElementKind: 'additional comments',
@@ -1802,7 +2321,7 @@ function CreateProduct() {
       }),
     });
 
-  // page 1 -> additional comments -> text input element creator
+  // screenreader accessible text input element
   const [createdAdditionalCommentsTextAreaInput] =
     returnAccessibleTextAreaInputElements([
       {
@@ -1838,11 +2357,13 @@ function CreateProduct() {
       },
     ]);
 
-  // page 2
+  // ╔═════════════════════════════════════════════════════════════════╗
+  //    PAGE 2
+  // ╚═════════════════════════════════════════════════════════════════╝
 
-  // page 2 -> product category
-
-  // page 2 -> product category -> select element creator
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //     PRODUCT CATEGORY
+  // ╰─────────────────────────────────────────────────────────────────╯
   const [createdProductCategorySelectInput] =
     returnAccessibleSelectInputElements([
       {
@@ -1861,11 +2382,13 @@ function CreateProduct() {
       },
     ]);
 
-  // page 4
+  // ╔═════════════════════════════════════════════════════════════════╗
+  //    PAGE 4
+  // ╚═════════════════════════════════════════════════════════════════╝
 
-  // page 4 -> submit button
-
-  // page 4 -> submit button -> accessible button element
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //     SUBMIT FORM BUTTON
+  // ╰─────────────────────────────────────────────────────────────────╯
   const [createdSubmitButton] = returnAccessibleButtonElements([
     {
       buttonLabel: 'Submit',
@@ -1882,7 +2405,6 @@ function CreateProduct() {
     },
   ]);
 
-  // page 4 -> submit button -> with tooltip
   const createdSubmitButtonWithTooltip =
     currentStepperPosition === CREATE_PRODUCT_MAX_STEPPER_POSITION ? (
       <Tooltip
@@ -1900,11 +2422,9 @@ function CreateProduct() {
 
   // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
   //  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-  //    INPUT DISPLAY
+  //     INPUT DISPLAY
   //  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
   // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
-
-  // page 1
 
   const displayCreateProductFormPage1 = (
     <FormLayoutWrapper>
@@ -2830,11 +3350,17 @@ function CreateProduct() {
     </FormLayoutWrapper>
   );
 
-  // ╭──────────────────────────────────────────────────────────────╮
-  // │ Form Review Objects                                          │
-  // ╰──────────────────────────────────────────────────────────────╯
+  // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+  //  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+  //    FORM REVIEW OBJECTS
+  //  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+  // - used to display the entered values in the form review page of the Stepper component
+  // - inputs whose values are in error are highlighted in red
+  // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 
-  // page 1
+  // ╔═════════════════════════════════════════════════════════════════╗
+  //    PAGE 1
+  // ╚═════════════════════════════════════════════════════════════════╝
   const page1FormReviewObject: FormReviewObjectArray = {
     'Product Details': [
       {
@@ -2912,20 +3438,48 @@ function CreateProduct() {
     ],
   };
 
-  // page 2
+  // ╔═════════════════════════════════════════════════════════════════╗
+  //    PAGE 2
+  // ╚═════════════════════════════════════════════════════════════════╝
 
-  // page 2 -> specifications
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    ACCESSORY
+  // ╰─────────────────────────────────────────────────────────────────╯
+  const accessoryFieldsAdditionalMapFormReviewObjects =
+    returnFormReviewObjectsFromUserDefinedFields({
+      additionalFields: accessoryFieldsAdditionalMap,
+      areAdditionalFieldsValid: areAccessoryFieldsAdditionalMapValid,
+    });
 
-  // page 2 -> specifications -> cpu
+  const page2AccessoryFormReviewObject: FormReviewObjectArray = {
+    'Accessory Specifications': [
+      {
+        inputName: 'Accessory Type',
+        inputValue: accessoryType,
+        isInputValueValid: isAccessoryTypeValid,
+      },
+      {
+        inputName: 'Accessory Color',
+        inputValue: accessoryColor,
+        isInputValueValid: isAccessoryColorValid,
+      },
+      {
+        inputName: 'Accessory Interface',
+        inputValue: accessoryInterface,
+      },
+      ...accessoryFieldsAdditionalMapFormReviewObjects,
+    ],
+  };
 
-  // page 2 -> specifications -> cpu -> cpu fields user defined -> form review objs
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    CENTRAL PROCESSING UNIT (CPU)
+  // ╰─────────────────────────────────────────────────────────────────╯
   const cpuFieldsAdditionalMapFormReviewObjects =
     returnFormReviewObjectsFromUserDefinedFields({
       additionalFields: cpuFieldsAdditionalMap,
       areAdditionalFieldsValid: areCpuFieldsAdditionalMapValid,
     });
 
-  // page 2 -> specifications -> cpu -> cpu fields hardcoded -> form review objs
   const page2CpuFormReviewObject: FormReviewObjectArray = {
     'CPU Specifications': [
       {
@@ -2979,9 +3533,86 @@ function CreateProduct() {
     ],
   };
 
-  // page 2 -> specifications -> gpu chipset
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    COMPUTER CASE
+  // ╰─────────────────────────────────────────────────────────────────╯
+  const caseFieldsAdditionalMapFormReviewObjects =
+    returnFormReviewObjectsFromUserDefinedFields({
+      additionalFields: caseFieldsAdditionalMap,
+      areAdditionalFieldsValid: areCaseFieldsAdditionalMapValid,
+    });
 
-  // page 2 -> specifications -> gpu -> gpu fields user defined -> form review objs
+  const page2ComputerCaseFormReviewObject: FormReviewObjectArray = {
+    'Case Specifications': [
+      {
+        inputName: 'Case Type',
+        inputValue: caseType,
+      },
+      {
+        inputName: 'Case Color',
+        inputValue: caseColor,
+        isInputValueValid: isCaseColorValid,
+      },
+      {
+        inputName: 'Case Side Panel',
+        inputValue: caseSidePanel,
+      },
+      ...caseFieldsAdditionalMapFormReviewObjects,
+    ],
+  };
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    DISPLAY
+  // ╰─────────────────────────────────────────────────────────────────╯
+  const displayFieldsAdditionalMapFormReviewObjects =
+    returnFormReviewObjectsFromUserDefinedFields({
+      additionalFields: displayFieldsAdditionalMap,
+      areAdditionalFieldsValid: areDisplayFieldsAdditionalMapValid,
+    });
+
+  const page2DisplayFormReviewObject: FormReviewObjectArray = {
+    'Display Specifications': [
+      {
+        inputName: 'Display Size',
+        inputValue: displaySize,
+        isInputValueValid: isDisplaySizeValid,
+      },
+      {
+        inputName: 'Display Resolution Horizontal',
+        inputValue: displayResolutionHorizontal,
+        isInputValueValid: isDisplayResolutionHorizontalValid,
+      },
+      {
+        inputName: 'Display Resolution Vertical',
+        inputValue: displayResolutionVertical,
+        isInputValueValid: isDisplayResolutionVerticalValid,
+      },
+      {
+        inputName: 'Display Refresh Rate',
+        inputValue: displayRefreshRate,
+        isInputValueValid: isDisplayRefreshRateValid,
+      },
+      {
+        inputName: 'Display Panel Type',
+        inputValue: displayPanelType,
+      },
+      {
+        inputName: 'Display Response Time',
+        inputValue: displayResponseTime,
+        isInputValueValid: isDisplayResponseTimeValid,
+      },
+      {
+        inputName: 'Display Aspect Ratio',
+        inputValue: displayAspectRatio,
+        isInputValueValid: isDisplayAspectRatioValid,
+      },
+      ...displayFieldsAdditionalMapFormReviewObjects,
+    ],
+  };
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    GRAPHICS PROCESSING UNIT (GPU)
+  // ╰─────────────────────────────────────────────────────────────────╯
   const gpuFieldsAdditionalMapFormReviewObjects =
     returnFormReviewObjectsFromUserDefinedFields({
       additionalFields: gpuFieldsAdditionalMap,
@@ -3023,9 +3654,211 @@ function CreateProduct() {
     ],
   };
 
-  // page 2 -> specifications -> motherboard
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    HEADPHONE
+  // ╰─────────────────────────────────────────────────────────────────╯
+  const headphoneFieldsAdditionalMapFormReviewObjects =
+    returnFormReviewObjectsFromUserDefinedFields({
+      additionalFields: headphoneFieldsAdditionalMap,
+      areAdditionalFieldsValid: areHeadphoneFieldsAdditionalMapValid,
+    });
 
-  // page 2 -> specifications -> motherboard -> motherboard fields user defined -> form review objs
+  const page2HeadphoneFormReviewObject: FormReviewObjectArray = {
+    'Headphone Specifications': [
+      {
+        inputName: 'Headphone Type',
+        inputValue: headphoneType,
+      },
+      {
+        inputName: 'Headphone Driver',
+        inputValue: headphoneDriver,
+        isInputValueValid: isHeadphoneDriverValid,
+      },
+      {
+        inputName: 'Headphone Frequency Response',
+        inputValue: headphoneFrequencyResponse,
+        isInputValueValid: isHeadphoneFrequencyResponseValid,
+      },
+      {
+        inputName: 'Headphone Impedance',
+        inputValue: headphoneImpedance,
+        isInputValueValid: isHeadphoneImpedanceValid,
+      },
+      {
+        inputName: 'Headphone Color',
+        inputValue: headphoneColor,
+        isInputValueValid: isHeadphoneColorValid,
+      },
+      {
+        inputName: 'Headphone Interface',
+        inputValue: headphoneInterface,
+      },
+      ...headphoneFieldsAdditionalMapFormReviewObjects,
+    ],
+  };
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    KEYBOARD
+  // ╰─────────────────────────────────────────────────────────────────╯
+  const keyboardFieldsAdditionalMapFormReviewObjects =
+    returnFormReviewObjectsFromUserDefinedFields({
+      additionalFields: keyboardFieldsAdditionalMap,
+      areAdditionalFieldsValid: areKeyboardFieldsAdditionalMapValid,
+    });
+
+  const page2KeyboardFormReviewObject: FormReviewObjectArray = {
+    'Keyboard Specifications': [
+      {
+        inputName: 'Keyboard Switch',
+        inputValue: keyboardSwitch,
+      },
+      {
+        inputName: 'Keyboard Layout',
+        inputValue: keyboardLayout,
+      },
+      {
+        inputName: 'Keyboard Backlight',
+        inputValue: keyboardBacklight,
+      },
+      {
+        inputName: 'Keyboard Interface',
+        inputValue: keyboardInterface,
+      },
+      ...keyboardFieldsAdditionalMapFormReviewObjects,
+    ],
+  };
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    MEMORY (RAM)
+  // ╰─────────────────────────────────────────────────────────────────╯
+  const ramFieldsAdditionalMapFormReviewObjects =
+    returnFormReviewObjectsFromUserDefinedFields({
+      additionalFields: ramFieldsAdditionalMap,
+      areAdditionalFieldsValid: areRamFieldsAdditionalMapValid,
+    });
+
+  const page2RamFormReviewObject: FormReviewObjectArray = {
+    'Memory (RAM) Specifications': [
+      {
+        inputName: 'RAM Data Rate',
+        inputValue: ramDataRate,
+        isInputValueValid: isRamDataRateValid,
+      },
+      {
+        inputName: 'RAM Modules Quantity',
+        inputValue: ramModulesQuantity,
+        isInputValueValid: isRamModulesQuantityValid,
+      },
+      {
+        inputName: 'RAM Modules Capacity',
+        inputValue: ramModulesCapacity,
+        isInputValueValid: isRamModulesCapacityValid,
+      },
+      {
+        inputName: 'RAM Modules Capacity Unit',
+        inputValue: ramModulesCapacityUnit,
+      },
+      {
+        inputName: 'RAM Type',
+        inputValue: ramType,
+      },
+      {
+        inputName: 'RAM Color',
+        inputValue: ramColor,
+        isInputValueValid: isRamColorValid,
+      },
+      {
+        inputName: 'RAM Voltage',
+        inputValue: ramVoltage,
+        isInputValueValid: isRamVoltageValid,
+      },
+      {
+        inputName: 'RAM Timing',
+        inputValue: ramTiming,
+        isInputValueValid: isRamTimingValid,
+      },
+      ...ramFieldsAdditionalMapFormReviewObjects,
+    ],
+  };
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    MOUSE
+  // ╰─────────────────────────────────────────────────────────────────╯
+  const mouseFieldsAdditionalMapFormReviewObjects =
+    returnFormReviewObjectsFromUserDefinedFields({
+      additionalFields: mouseFieldsAdditionalMap,
+      areAdditionalFieldsValid: areMouseFieldsAdditionalMapValid,
+    });
+
+  const page2MouseFormReviewObject: FormReviewObjectArray = {
+    'Mouse Specifications': [
+      {
+        inputName: 'Mouse Sensor',
+        inputValue: mouseSensor,
+      },
+      {
+        inputName: 'Mouse DPI',
+        inputValue: mouseDpi,
+        isInputValueValid: isMouseDpiValid,
+      },
+      {
+        inputName: 'Mouse Buttons',
+        inputValue: mouseButtons,
+        isInputValueValid: isMouseButtonsValid,
+      },
+      {
+        inputName: 'Mouse Color',
+        inputValue: mouseColor,
+        isInputValueValid: isMouseColorValid,
+      },
+      {
+        inputName: 'Mouse Interface',
+        inputValue: mouseInterface,
+      },
+      ...mouseFieldsAdditionalMapFormReviewObjects,
+    ],
+  };
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    MICROPHONE
+  // ╰─────────────────────────────────────────────────────────────────╯
+  const microphoneFieldsAdditionalMapFormReviewObjects =
+    returnFormReviewObjectsFromUserDefinedFields({
+      additionalFields: microphoneFieldsAdditionalMap,
+      areAdditionalFieldsValid: areMicrophoneFieldsAdditionalMapValid,
+    });
+
+  const page2MicrophoneFormReviewObject: FormReviewObjectArray = {
+    'Microphone Specifications': [
+      {
+        inputName: 'Microphone Type',
+        inputValue: microphoneType,
+      },
+      {
+        inputName: 'Microphone Color',
+        inputValue: microphoneColor,
+        isInputValueValid: isMicrophoneColorValid,
+      },
+      {
+        inputName: 'Microphone Interface',
+        inputValue: microphoneInterface,
+      },
+      {
+        inputName: 'Microphone Polar Pattern',
+        inputValue: microphonePolarPattern,
+      },
+      {
+        inputName: 'Microphone Frequency Response',
+        inputValue: microphoneFrequencyResponse,
+        isInputValueValid: isMicrophoneFrequencyResponseValid,
+      },
+      ...microphoneFieldsAdditionalMapFormReviewObjects,
+    ],
+  };
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    MOTHERBOARD
+  // ╰─────────────────────────────────────────────────────────────────╯
   const motherboardFieldsAdditionalMapFormReviewObjects =
     returnFormReviewObjectsFromUserDefinedFields({
       additionalFields: motherboardFieldsAdditionalMap,
@@ -3097,107 +3930,9 @@ function CreateProduct() {
     ],
   };
 
-  // page 2 -> specifications -> ram
-
-  // page 2 -> specifications -> ram -> ram fields user defined -> form review objs
-  const ramFieldsAdditionalMapFormReviewObjects =
-    returnFormReviewObjectsFromUserDefinedFields({
-      additionalFields: ramFieldsAdditionalMap,
-      areAdditionalFieldsValid: areRamFieldsAdditionalMapValid,
-    });
-
-  const page2RamFormReviewObject: FormReviewObjectArray = {
-    'Memory (RAM) Specifications': [
-      {
-        inputName: 'RAM Data Rate',
-        inputValue: ramDataRate,
-        isInputValueValid: isRamDataRateValid,
-      },
-      {
-        inputName: 'RAM Modules Quantity',
-        inputValue: ramModulesQuantity,
-        isInputValueValid: isRamModulesQuantityValid,
-      },
-      {
-        inputName: 'RAM Modules Capacity',
-        inputValue: ramModulesCapacity,
-        isInputValueValid: isRamModulesCapacityValid,
-      },
-      {
-        inputName: 'RAM Modules Capacity Unit',
-        inputValue: ramModulesCapacityUnit,
-      },
-      {
-        inputName: 'RAM Type',
-        inputValue: ramType,
-      },
-      {
-        inputName: 'RAM Color',
-        inputValue: ramColor,
-        isInputValueValid: isRamColorValid,
-      },
-      {
-        inputName: 'RAM Voltage',
-        inputValue: ramVoltage,
-        isInputValueValid: isRamVoltageValid,
-      },
-      {
-        inputName: 'RAM Timing',
-        inputValue: ramTiming,
-        isInputValueValid: isRamTimingValid,
-      },
-      ...ramFieldsAdditionalMapFormReviewObjects,
-    ],
-  };
-
-  // page 2 -> specifications -> storage
-
-  // page 2 -> specifications -> storage -> storage fields user defined -> form review objs
-  const storageFieldsAdditionalMapFormReviewObjects =
-    returnFormReviewObjectsFromUserDefinedFields({
-      additionalFields: storageFieldsAdditionalMap,
-      areAdditionalFieldsValid: areStorageFieldsAdditionalMapValid,
-    });
-
-  const page2StorageFormReviewObject: FormReviewObjectArray = {
-    'Storage Specifications': [
-      {
-        inputName: 'Storage Type',
-        inputValue: storageType,
-      },
-      {
-        inputName: 'Storage Capacity',
-        inputValue: storageCapacity,
-        isInputValueValid: isStorageCapacityValid,
-      },
-      {
-        inputName: 'Storage Capacity Unit',
-        inputValue: storageCapacityUnit,
-      },
-      {
-        inputName: 'Storage Cache Capacity',
-        inputValue: storageCacheCapacity,
-        isInputValueValid: isStorageCacheCapacityValid,
-      },
-      {
-        inputName: 'Storage Cache Capacity Unit',
-        inputValue: storageCacheCapacityUnit,
-      },
-      {
-        inputName: 'Storage Form Factor',
-        inputValue: storageFormFactor,
-      },
-      {
-        inputName: 'Storage Interface',
-        inputValue: storageInterface,
-      },
-      ...storageFieldsAdditionalMapFormReviewObjects,
-    ],
-  };
-
-  // page 2 -> specifications -> power supply
-
-  // page 2 -> specifications -> power supply -> power supply fields user defined -> form review objs
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    POWER SUPPLY UNIT (PSU)
+  // ╰─────────────────────────────────────────────────────────────────╯
   const psuFieldsAdditionalMapFormReviewObjects =
     returnFormReviewObjectsFromUserDefinedFields({
       additionalFields: psuFieldsAdditionalMap,
@@ -3227,236 +3962,9 @@ function CreateProduct() {
     ],
   };
 
-  // page 2 -> specifications -> computer case
-
-  // page 2 -> specifications -> computer case -> computer case fields user defined -> form review objs
-  const caseFieldsAdditionalMapFormReviewObjects =
-    returnFormReviewObjectsFromUserDefinedFields({
-      additionalFields: caseFieldsAdditionalMap,
-      areAdditionalFieldsValid: areCaseFieldsAdditionalMapValid,
-    });
-
-  const page2ComputerCaseFormReviewObject: FormReviewObjectArray = {
-    'Case Specifications': [
-      {
-        inputName: 'Case Type',
-        inputValue: caseType,
-      },
-      {
-        inputName: 'Case Color',
-        inputValue: caseColor,
-        isInputValueValid: isCaseColorValid,
-      },
-      {
-        inputName: 'Case Side Panel',
-        inputValue: caseSidePanel,
-      },
-      ...caseFieldsAdditionalMapFormReviewObjects,
-    ],
-  };
-
-  // page 2 -> specifications -> display
-
-  // page 2 -> specifications -> display -> display fields user defined -> form review objs
-  const displayFieldsAdditionalMapFormReviewObjects =
-    returnFormReviewObjectsFromUserDefinedFields({
-      additionalFields: displayFieldsAdditionalMap,
-      areAdditionalFieldsValid: areDisplayFieldsAdditionalMapValid,
-    });
-
-  const page2DisplayFormReviewObject: FormReviewObjectArray = {
-    'Display Specifications': [
-      {
-        inputName: 'Display Size',
-        inputValue: displaySize,
-        isInputValueValid: isDisplaySizeValid,
-      },
-      {
-        inputName: 'Display Resolution Horizontal',
-        inputValue: displayResolutionHorizontal,
-        isInputValueValid: isDisplayResolutionHorizontalValid,
-      },
-      {
-        inputName: 'Display Resolution Vertical',
-        inputValue: displayResolutionVertical,
-        isInputValueValid: isDisplayResolutionVerticalValid,
-      },
-      {
-        inputName: 'Display Refresh Rate',
-        inputValue: displayRefreshRate,
-        isInputValueValid: isDisplayRefreshRateValid,
-      },
-      {
-        inputName: 'Display Panel Type',
-        inputValue: displayPanelType,
-      },
-      {
-        inputName: 'Display Response Time',
-        inputValue: displayResponseTime,
-        isInputValueValid: isDisplayResponseTimeValid,
-      },
-      {
-        inputName: 'Display Aspect Ratio',
-        inputValue: displayAspectRatio,
-        isInputValueValid: isDisplayAspectRatioValid,
-      },
-      ...displayFieldsAdditionalMapFormReviewObjects,
-    ],
-  };
-
-  // page 2 -> specifications -> keyboard
-
-  // page 2 -> specifications -> keyboard -> keyboard fields user defined -> form review objs
-  const keyboardFieldsAdditionalMapFormReviewObjects =
-    returnFormReviewObjectsFromUserDefinedFields({
-      additionalFields: keyboardFieldsAdditionalMap,
-      areAdditionalFieldsValid: areKeyboardFieldsAdditionalMapValid,
-    });
-
-  const page2KeyboardFormReviewObject: FormReviewObjectArray = {
-    'Keyboard Specifications': [
-      {
-        inputName: 'Keyboard Switch',
-        inputValue: keyboardSwitch,
-      },
-      {
-        inputName: 'Keyboard Layout',
-        inputValue: keyboardLayout,
-      },
-      {
-        inputName: 'Keyboard Backlight',
-        inputValue: keyboardBacklight,
-      },
-      {
-        inputName: 'Keyboard Interface',
-        inputValue: keyboardInterface,
-      },
-      ...keyboardFieldsAdditionalMapFormReviewObjects,
-    ],
-  };
-
-  // page 2 -> specifications -> mouse
-
-  // page 2 -> specifications -> mouse -> mouse fields user defined -> form review objs
-  const mouseFieldsAdditionalMapFormReviewObjects =
-    returnFormReviewObjectsFromUserDefinedFields({
-      additionalFields: mouseFieldsAdditionalMap,
-      areAdditionalFieldsValid: areMouseFieldsAdditionalMapValid,
-    });
-
-  const page2MouseFormReviewObject: FormReviewObjectArray = {
-    'Mouse Specifications': [
-      {
-        inputName: 'Mouse Sensor',
-        inputValue: mouseSensor,
-      },
-      {
-        inputName: 'Mouse DPI',
-        inputValue: mouseDpi,
-        isInputValueValid: isMouseDpiValid,
-      },
-      {
-        inputName: 'Mouse Buttons',
-        inputValue: mouseButtons,
-        isInputValueValid: isMouseButtonsValid,
-      },
-      {
-        inputName: 'Mouse Color',
-        inputValue: mouseColor,
-        isInputValueValid: isMouseColorValid,
-      },
-      {
-        inputName: 'Mouse Interface',
-        inputValue: mouseInterface,
-      },
-      ...mouseFieldsAdditionalMapFormReviewObjects,
-    ],
-  };
-
-  // page 2 -> specifications -> headphone
-
-  // page 2 -> specifications -> headphone -> headphone fields user defined -> form review objs
-  const headphoneFieldsAdditionalMapFormReviewObjects =
-    returnFormReviewObjectsFromUserDefinedFields({
-      additionalFields: headphoneFieldsAdditionalMap,
-      areAdditionalFieldsValid: areHeadphoneFieldsAdditionalMapValid,
-    });
-
-  const page2HeadphoneFormReviewObject: FormReviewObjectArray = {
-    'Headphone Specifications': [
-      {
-        inputName: 'Headphone Type',
-        inputValue: headphoneType,
-      },
-      {
-        inputName: 'Headphone Driver',
-        inputValue: headphoneDriver,
-        isInputValueValid: isHeadphoneDriverValid,
-      },
-      {
-        inputName: 'Headphone Frequency Response',
-        inputValue: headphoneFrequencyResponse,
-        isInputValueValid: isHeadphoneFrequencyResponseValid,
-      },
-      {
-        inputName: 'Headphone Impedance',
-        inputValue: headphoneImpedance,
-        isInputValueValid: isHeadphoneImpedanceValid,
-      },
-      {
-        inputName: 'Headphone Color',
-        inputValue: headphoneColor,
-        isInputValueValid: isHeadphoneColorValid,
-      },
-      {
-        inputName: 'Headphone Interface',
-        inputValue: headphoneInterface,
-      },
-      ...headphoneFieldsAdditionalMapFormReviewObjects,
-    ],
-  };
-
-  // page 2 -> specifications -> speaker
-
-  // page 2 -> specifications -> speaker -> speaker fields user defined -> form review objs
-  const speakerFieldsAdditionalMapFormReviewObjects =
-    returnFormReviewObjectsFromUserDefinedFields({
-      additionalFields: speakerFieldsAdditionalMap,
-      areAdditionalFieldsValid: areSpeakerFieldsAdditionalMapValid,
-    });
-
-  const page2SpeakerFormReviewObject: FormReviewObjectArray = {
-    'Speaker Specifications': [
-      {
-        inputName: 'Speaker Type',
-        inputValue: speakerType,
-      },
-      {
-        inputName: 'Speaker Total Wattage',
-        inputValue: speakerTotalWattage,
-        isInputValueValid: isSpeakerTotalWattageValid,
-      },
-      {
-        inputName: 'Speaker Frequency Response',
-        inputValue: speakerFrequencyResponse,
-        isInputValueValid: isSpeakerFrequencyResponseValid,
-      },
-      {
-        inputName: 'Speaker Color',
-        inputValue: speakerColor,
-        isInputValueValid: isSpeakerColorValid,
-      },
-      {
-        inputName: 'Speaker Interface',
-        inputValue: speakerInterface,
-      },
-      ...speakerFieldsAdditionalMapFormReviewObjects,
-    ],
-  };
-
-  // page 2 -> specifications -> smartphone
-
-  // page 2 -> specifications -> smartphone -> smartphone fields user defined -> form review objs
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    SMARTPHONE
+  // ╰─────────────────────────────────────────────────────────────────╯
   const smartphoneFieldsAdditionalMapFormReviewObjects =
     returnFormReviewObjectsFromUserDefinedFields({
       additionalFields: smartphoneFieldsAdditionalMap,
@@ -3521,9 +4029,92 @@ function CreateProduct() {
     ],
   };
 
-  // page 2 -> specifications -> tablet
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    SPEAKER
+  // ╰─────────────────────────────────────────────────────────────────╯
+  const speakerFieldsAdditionalMapFormReviewObjects =
+    returnFormReviewObjectsFromUserDefinedFields({
+      additionalFields: speakerFieldsAdditionalMap,
+      areAdditionalFieldsValid: areSpeakerFieldsAdditionalMapValid,
+    });
 
-  // page 2 -> specifications -> tablet -> tablet fields user defined -> form review objs
+  const page2SpeakerFormReviewObject: FormReviewObjectArray = {
+    'Speaker Specifications': [
+      {
+        inputName: 'Speaker Type',
+        inputValue: speakerType,
+      },
+      {
+        inputName: 'Speaker Total Wattage',
+        inputValue: speakerTotalWattage,
+        isInputValueValid: isSpeakerTotalWattageValid,
+      },
+      {
+        inputName: 'Speaker Frequency Response',
+        inputValue: speakerFrequencyResponse,
+        isInputValueValid: isSpeakerFrequencyResponseValid,
+      },
+      {
+        inputName: 'Speaker Color',
+        inputValue: speakerColor,
+        isInputValueValid: isSpeakerColorValid,
+      },
+      {
+        inputName: 'Speaker Interface',
+        inputValue: speakerInterface,
+      },
+      ...speakerFieldsAdditionalMapFormReviewObjects,
+    ],
+  };
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    STORAGE
+  // ╰─────────────────────────────────────────────────────────────────╯
+  const storageFieldsAdditionalMapFormReviewObjects =
+    returnFormReviewObjectsFromUserDefinedFields({
+      additionalFields: storageFieldsAdditionalMap,
+      areAdditionalFieldsValid: areStorageFieldsAdditionalMapValid,
+    });
+
+  const page2StorageFormReviewObject: FormReviewObjectArray = {
+    'Storage Specifications': [
+      {
+        inputName: 'Storage Type',
+        inputValue: storageType,
+      },
+      {
+        inputName: 'Storage Capacity',
+        inputValue: storageCapacity,
+        isInputValueValid: isStorageCapacityValid,
+      },
+      {
+        inputName: 'Storage Capacity Unit',
+        inputValue: storageCapacityUnit,
+      },
+      {
+        inputName: 'Storage Cache Capacity',
+        inputValue: storageCacheCapacity,
+        isInputValueValid: isStorageCacheCapacityValid,
+      },
+      {
+        inputName: 'Storage Cache Capacity Unit',
+        inputValue: storageCacheCapacityUnit,
+      },
+      {
+        inputName: 'Storage Form Factor',
+        inputValue: storageFormFactor,
+      },
+      {
+        inputName: 'Storage Interface',
+        inputValue: storageInterface,
+      },
+      ...storageFieldsAdditionalMapFormReviewObjects,
+    ],
+  };
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    TABLET
+  // ╰─────────────────────────────────────────────────────────────────╯
   const tabletFieldsAdditionalMapFormReviewObjects =
     returnFormReviewObjectsFromUserDefinedFields({
       additionalFields: tabletFieldsAdditionalMap,
@@ -3589,38 +4180,9 @@ function CreateProduct() {
     ],
   };
 
-  // page 2 -> specifications -> accessory
-
-  // page 2 -> specifications -> accessory -> accessory fields user defined -> form review objs
-  const accessoryFieldsAdditionalMapFormReviewObjects =
-    returnFormReviewObjectsFromUserDefinedFields({
-      additionalFields: accessoryFieldsAdditionalMap,
-      areAdditionalFieldsValid: areAccessoryFieldsAdditionalMapValid,
-    });
-
-  const page2AccessoryFormReviewObject: FormReviewObjectArray = {
-    'Accessory Specifications': [
-      {
-        inputName: 'Accessory Type',
-        inputValue: accessoryType,
-        isInputValueValid: isAccessoryTypeValid,
-      },
-      {
-        inputName: 'Accessory Color',
-        inputValue: accessoryColor,
-        isInputValueValid: isAccessoryColorValid,
-      },
-      {
-        inputName: 'Accessory Interface',
-        inputValue: accessoryInterface,
-      },
-      ...accessoryFieldsAdditionalMapFormReviewObjects,
-    ],
-  };
-
-  // page 2 -> specifications -> webcams
-
-  // page 2 -> specifications -> webcams -> webcam fields user defined -> form review objs
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    WEBCAM
+  // ╰─────────────────────────────────────────────────────────────────╯
   const webcamFieldsAdditionalMapFormReviewObjects =
     returnFormReviewObjectsFromUserDefinedFields({
       additionalFields: webcamFieldsAdditionalMap,
@@ -3654,44 +4216,9 @@ function CreateProduct() {
     ],
   };
 
-  // page 2 -> specifications -> microphones
-
-  // page 2 -> specifications -> microphones -> microphone fields user defined -> form review objs
-  const microphoneFieldsAdditionalMapFormReviewObjects =
-    returnFormReviewObjectsFromUserDefinedFields({
-      additionalFields: microphoneFieldsAdditionalMap,
-      areAdditionalFieldsValid: areMicrophoneFieldsAdditionalMapValid,
-    });
-
-  const page2MicrophoneFormReviewObject: FormReviewObjectArray = {
-    'Microphone Specifications': [
-      {
-        inputName: 'Microphone Type',
-        inputValue: microphoneType,
-      },
-      {
-        inputName: 'Microphone Color',
-        inputValue: microphoneColor,
-        isInputValueValid: isMicrophoneColorValid,
-      },
-      {
-        inputName: 'Microphone Interface',
-        inputValue: microphoneInterface,
-      },
-      {
-        inputName: 'Microphone Polar Pattern',
-        inputValue: microphonePolarPattern,
-      },
-      {
-        inputName: 'Microphone Frequency Response',
-        inputValue: microphoneFrequencyResponse,
-        isInputValueValid: isMicrophoneFrequencyResponseValid,
-      },
-      ...microphoneFieldsAdditionalMapFormReviewObjects,
-    ],
-  };
-
-  // page 2 -> specifications -> desktop computers
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    DESKTOP COMPUTER
+  // ╰─────────────────────────────────────────────────────────────────╯
   const page2DesktopComputerFormReviewObject: FormReviewObjectArray = {
     ...page2CpuFormReviewObject,
     ...page2GpuFormReviewObject,
@@ -3706,7 +4233,9 @@ function CreateProduct() {
     ...page2SpeakerFormReviewObject,
   };
 
-  // page 2 -> specifications -> laptop computers
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    LAPTOP
+  // ╰─────────────────────────────────────────────────────────────────╯
   const page2LaptopComputerFormReviewObject: FormReviewObjectArray = {
     ...page2CpuFormReviewObject,
     ...page2GpuFormReviewObject,
@@ -3714,6 +4243,9 @@ function CreateProduct() {
     ...page2StorageFormReviewObject,
   };
 
+  // ╔═════════════════════════════════════════════════════════════════╗
+  //    PAGE 3
+  // ╚═════════════════════════════════════════════════════════════════╝
   const page3ImageUploadsFormReviewObject: FormReviewObjectArray = {
     'Upload Images': [
       {
@@ -3766,10 +4298,11 @@ function CreateProduct() {
     ...page3ImageUploadsFormReviewObject,
   };
 
-  // ╭──────────────────────────────────────────────────────────────╮
-  // │ Display Create Product Component                             │
-  // ╰──────────────────────────────────────────────────────────────╯
-
+  // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+  //  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+  //    INPUT DISPLAY
+  //  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+  // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
   const displayCreateProductReviewPage = (
     <FormReviewPage
       formReviewObject={CREATE_PRODUCT_FORM_REVIEW_OBJECTS}

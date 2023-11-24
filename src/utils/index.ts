@@ -2311,8 +2311,6 @@ async function captureScreenshot({
     img.src = dataURL;
     // Create a link element
     const a = document.createElement('a');
-    // a.innerHTML = 'DOWNLOAD';
-    // a.target = '_blank';
     // Set the href of the link to the data URL of the image
     a.href = img.src;
 
@@ -2338,35 +2336,8 @@ function returnToFixedFloat(num: number, precision = 4): number {
   return Number(num.toFixed(precision));
 }
 
-function returnFormReviewObjectsFromUserDefinedFields({
-  additionalFields,
-  areAdditionalFieldsValid,
-}: {
-  additionalFields: Map<number, [string, string]>;
-  areAdditionalFieldsValid: Map<number, [boolean, boolean]>;
-}): FormReviewObject[] {
-  return Array.from(additionalFields).reduce<FormReviewObject[]>(
-    (formReviewObjAcc, tuple) => {
-      const [index, [key, value]] = tuple;
-
-      const keyFormReviewObject: FormReviewObject = {
-        inputName: `Additional field ${index + 1}: key`,
-        inputValue: key,
-        isInputValueValid: areAdditionalFieldsValid.get(index)?.[0] ?? true,
-      };
-      formReviewObjAcc.push(keyFormReviewObject);
-
-      const valueFormReviewObject: FormReviewObject = {
-        inputName: `Additional field ${index + 1}: value`,
-        inputValue: value,
-        isInputValueValid: areAdditionalFieldsValid.get(index)?.[1] ?? true,
-      };
-      formReviewObjAcc.push(valueFormReviewObject);
-
-      return formReviewObjAcc;
-    },
-    []
-  );
+function removeUndefinedAndNull<T>(value: T | undefined | null): value is T {
+  return value !== undefined && value !== null;
 }
 
 export {
@@ -2379,6 +2350,7 @@ export {
   groupByField,
   groupQueryResponse,
   logState,
+  removeUndefinedAndNull,
   replaceLastCommaWithAnd,
   replaceLastCommaWithOr,
   returnAcknowledgementValidationText,
@@ -2392,12 +2364,12 @@ export {
   returnDateNearPastValidationText,
   returnDateOfBirthValidationText,
   returnDateValidationText,
+  returnDimensionsValidationText,
   returnDisplayAspectRatioValidationText,
   returnElapsedTime,
   returnEmailValidationText,
   returnFilenameValidationText,
   returnFloatAmountValidationText,
-  returnFormReviewObjectsFromUserDefinedFields,
   returnFrequencyResponseValidationText,
   returnGrammarValidationText,
   returnImageValidationText,
@@ -2413,8 +2385,6 @@ export {
   returnPostalCodeValidationText,
   returnPrinterMakeModelValidationText,
   returnPrinterSerialNumberValidationText,
-  returnDimensionsValidationText,
-  returnWeightValidationText,
   returnRamTimingValidationText,
   returnRamVoltageValidationText,
   returnSerialIdValidationText,
@@ -2428,6 +2398,7 @@ export {
   returnUrlValidationText,
   returnUserDefinedFieldValueValidationText,
   returnUsernameRegexValidationText,
+  returnWeightValidationText,
   shuffleArray,
   splitCamelCase,
   splitWordIntoUpperCasedSentence,

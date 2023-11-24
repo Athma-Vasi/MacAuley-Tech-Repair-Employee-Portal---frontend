@@ -105,8 +105,8 @@ function StepperWrapper({
     [prevButtonCreatorInfo, nextButtonCreatorInfo]
   );
 
-  const successMessage = '˖ ࣪‧₊˚⋆✩٩(ˊᗜˋ*)و ✩  Looks great! You are good to go!';
-  const errorMessage = `(｡•́︿•̀｡)  Oh dear! Looks like there ${
+  const successMessage = 'Looks great! You are good to go!';
+  const errorMessage = `Oops! Looks like there ${
     stepsInError.size > 1 ? 'are' : 'is'
   } ${stepsInError.size > 1 ? 'some' : 'an'} error${
     stepsInError.size > 1 ? 's' : ''

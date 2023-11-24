@@ -1,7 +1,6 @@
-import { Currency } from '../../../types';
-import { ProductCategory } from '../../dashboard/types';
-import { StepsInErrorPayload } from '../../endorsements/create/types';
-import { createProductAction } from './state';
+import { Currency } from '../../types';
+import { ProductCategory } from '../dashboard/types';
+import { StepsInErrorPayload } from '../endorsements/create/types';
 import {
   AdditionalFieldsAdd,
   AdditionalFieldsPayload,
@@ -11,10 +10,13 @@ import {
   AdditionalFieldsValidFocusedPayload,
   AdditionalFieldsValidFocusedRemove,
   AdditionalFieldsValidFocusedUpdate,
+  CreateProductDispatch,
+} from './dispatches';
+import { createProductAction } from './state';
+import {
   CaseSidePanel,
   CaseType,
   CreateProductAction,
-  CreateProductDispatch,
   CreateProductState,
   DimensionUnit,
   DisplayPanelType,
@@ -52,10 +54,9 @@ import {
 //  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
 //    REDUCER FUNCTIONS
 //  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
-// - contains all reducer functions for CreateProduct component
 // - each reducer function is mapped to an action type
-// - type Reducer = (state: CreateProductState, action: CreateProductDispatch) => CreateProductState
-// - Map<CreateProductAction[keyof CreateProductAction], Reducer>
+// - type ComponentReducer = (state: ComponentState, action: ComponentDispatch) => ComponentState
+// - Map<ComponentAction[keyof ComponentAction], ComponentReducer>
 // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 
 // ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
@@ -8434,21 +8435,21 @@ const createProductReducersMap = new Map<
   //   REDUCERS MAP => STEPPER PAGE 1
   // ╚═════════════════════════════════════════════════════════════════╝
 
-  // page 1 -> brand
+  // brand
   [createProductAction.setBrand, setBrand_CreateProductReducer],
   [createProductAction.setIsBrandValid, setIsBrandValid_CreateProductReducer],
   [
     createProductAction.setIsBrandFocused,
     setIsBrandFocused_CreateProductReducer,
   ],
-  // page 1 -> model
+  // model
   [createProductAction.setModel, setModel_CreateProductReducer],
   [createProductAction.setIsModelValid, setIsModelValid_CreateProductReducer],
   [
     createProductAction.setIsModelFocused,
     setIsModelFocused_CreateProductReducer,
   ],
-  // page 1 -> description
+  // description
   [createProductAction.setDescription, setDescription_CreateProductReducer],
   [
     createProductAction.setIsDescriptionValid,
@@ -8458,20 +8459,20 @@ const createProductReducersMap = new Map<
     createProductAction.setIsDescriptionFocused,
     setIsDescriptionFocused_CreateProductReducer,
   ],
-  // page 1 -> price
+  // price
   [createProductAction.setPrice, setPrice_CreateProductReducer],
   [createProductAction.setIsPriceValid, setIsPriceValid_CreateProductReducer],
   [
     createProductAction.setIsPriceFocused,
     setIsPriceFocused_CreateProductReducer,
   ],
-  // page 1 -> currency
+  // currency
   [createProductAction.setCurrency, setCurrency_CreateProductReducer],
 
-  // page 1 -> availability
+  // availability
   [createProductAction.setAvailability, setAvailability_CreateProductReducer],
 
-  // page 1 -> quantity
+  // quantity
   [createProductAction.setQuantity, setQuantity_CreateProductReducer],
   [
     createProductAction.setIsQuantityValid,
@@ -8481,16 +8482,16 @@ const createProductReducersMap = new Map<
     createProductAction.setIsQuantityFocused,
     setIsQuantityFocused_CreateProductReducer,
   ],
-  // page 1 -> weight
+  // weight
   [createProductAction.setWeight, setWeight_CreateProductReducer],
   [createProductAction.setIsWeightValid, setIsWeightValid_CreateProductReducer],
   [
     createProductAction.setIsWeightFocused,
     setIsWeightFocused_CreateProductReducer,
   ],
-  // page 1 -> weight unit
+  // weight unit
   [createProductAction.setWeightUnit, setWeightUnit_CreateProductReducer],
-  // page 1 -> dimension height
+  // dimension height
   [
     createProductAction.setDimensionHeight,
     setDimensionHeight_CreateProductReducer,
@@ -8503,12 +8504,12 @@ const createProductReducersMap = new Map<
     createProductAction.setIsDimensionHeightFocused,
     setIsDimensionHeightFocused_CreateProductReducer,
   ],
-  // page 1 -> dimension height unit
+  // dimension height unit
   [
     createProductAction.setDimensionHeightUnit,
     setDimensionHeightUnit_CreateProductReducer,
   ],
-  // page 1 -> dimension width
+  // dimension width
   [
     createProductAction.setDimensionWidth,
     setDimensionWidth_CreateProductReducer,
@@ -8521,12 +8522,12 @@ const createProductReducersMap = new Map<
     createProductAction.setIsDimensionWidthFocused,
     setIsDimensionWidthFocused_CreateProductReducer,
   ],
-  // page 1 -> dimension width unit
+  // dimension width unit
   [
     createProductAction.setDimensionWidthUnit,
     setDimensionWidthUnit_CreateProductReducer,
   ],
-  // page 1 -> dimension length
+  // dimension length
   [
     createProductAction.setDimensionLength,
     setDimensionLength_CreateProductReducer,
@@ -8539,12 +8540,12 @@ const createProductReducersMap = new Map<
     createProductAction.setIsDimensionLengthFocused,
     setIsDimensionLengthFocused_CreateProductReducer,
   ],
-  // page 1 -> dimension length unit
+  // dimension length unit
   [
     createProductAction.setDimensionLengthUnit,
     setDimensionLengthUnit_CreateProductReducer,
   ],
-  // page 1 -> additional comments
+  // additional comments
   [
     createProductAction.setAdditionalComments,
     setAdditionalComments_CreateProductReducer,

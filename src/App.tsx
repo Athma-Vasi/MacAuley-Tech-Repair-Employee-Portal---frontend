@@ -33,9 +33,7 @@ const DisplayResponsiveChart = lazy(
 // dashboard -> product
 
 // dashboard -> product -> create
-const CreateProduct = lazy(
-  () => import('./components/product/create/CreateProduct')
-);
+const CreateProduct = lazy(() => import('./components/product/CreateProduct'));
 
 // dashboard -> product -> create -> accessory
 const CreateAccessory = lazy(

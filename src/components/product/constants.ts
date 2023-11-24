@@ -1,8 +1,6 @@
 import {
   DATE_FULL_RANGE_REGEX,
-  FLOAT_REGEX,
   GRAMMAR_TEXTAREA_INPUT_REGEX,
-  INTEGER_REGEX,
   MONEY_REGEX,
   SERIAL_ID_REGEX,
   USERNAME_REGEX,
@@ -13,22 +11,22 @@ import {
   returnColorVariantValidationText,
   returnCpuFrequencyValidationText,
   returnDateFullRangeValidationText,
+  returnDimensionsValidationText,
   returnFloatAmountValidationText,
   returnFrequencyResponseValidationText,
   returnGrammarValidationText,
-  returnIntegerValidationText,
   returnLargeIntegerValidationText,
   returnMediumIntegerValidationText,
-  returnDimensionsValidationText,
-  returnWeightValidationText,
   returnRamTimingValidationText,
   returnRamVoltageValidationText,
   returnSerialIdValidationText,
   returnSmallIntegerValidationText,
   returnSocketChipsetValidationText,
   returnUsernameRegexValidationText,
+  returnWeightValidationText,
 } from '../../utils';
 import { CURRENCY_DATA } from '../benefits/constants';
+import { ProductCategory } from '../dashboard/types';
 import { ComponentQueryData } from '../queryBuilder';
 import { DescriptionObjectsArray } from '../wrappers';
 import {
@@ -63,7 +61,7 @@ import {
   WebcamMicrophone,
   WebcamResolution,
   WeightUnit,
-} from './create/types';
+} from './types';
 
 /**
  * - /^[^"'\s\\]{1,75}$/;
@@ -490,6 +488,33 @@ const MICROPHONE_INTERFACE_DATA: MicrophoneInterface[] = [
   'Wireless',
   'Other',
 ];
+
+/**
+ * - contains the correct backend route name for each product category
+ * - interpolated inside url string in the form request function
+ * - ex: 'Central Processing Unit (CPU)' -> 'cpu'
+ */
+const PRODUCT_CATEGORY_ROUTE_NAME_OBJ: Record<ProductCategory, string> = {
+  Accessory: 'accessory',
+  'Central Processing Unit (CPU)': 'cpu',
+  'Computer Case': 'computer-case',
+  'Desktop Computer': 'desktop-computer',
+  Display: 'display',
+  'Graphics Processing Unit (GPU)': 'gpu',
+  Headphone: 'headphone',
+  Keyboard: 'keyboard',
+  Laptop: 'laptop',
+  'Memory (RAM)': 'ram',
+  Mouse: 'mouse',
+  Microphone: 'microphone',
+  Motherboard: 'motherboard',
+  'Power Supply Unit (PSU)': 'psu',
+  Smartphone: 'smartphone',
+  Speaker: 'speaker',
+  Storage: 'storage',
+  Tablet: 'tablet',
+  Webcam: 'webcam',
+};
 
 const CREATE_PRODUCT_MAX_STEPPER_POSITION = 4;
 
@@ -1433,6 +1458,7 @@ export {
   CREATE_PRODUCT_MAX_IMG_SIZE,
   CREATE_PRODUCT_MAX_STEPPER_POSITION,
   DIMENSION_UNIT_SELECT_INPUT_DATA,
+  DIMENSIONS_REGEX,
   DISPLAY_ASPECT_RATIO_REGEX,
   DISPLAY_PANEL_TYPE_DATA,
   FREQUENCY_RESPONSE_REGEX,
@@ -1458,8 +1484,7 @@ export {
   OBJECT_KEY_REGEX,
   PERIPHERALS_INTERFACE_DATA,
   PRODUCT_AVAILABILITY_DATA,
-  DIMENSIONS_REGEX,
-  WEIGHT_REGEX,
+  PRODUCT_CATEGORY_ROUTE_NAME_OBJ,
   PRODUCTS_QUERY_DATA,
   PRODUCTS_RESOURCE_PATHS,
   PSU_EFFICIENCY_RATING_DATA,
@@ -1481,5 +1506,6 @@ export {
   WEBCAM_INTERFACE_DATA,
   WEBCAM_MICROPHONE_DATA,
   WEBCAM_RESOLUTION_DATA,
+  WEIGHT_REGEX,
   WEIGHT_UNIT_SELECT_INPUT_DATA,
 };
