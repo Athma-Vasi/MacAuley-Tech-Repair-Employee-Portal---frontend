@@ -799,7 +799,7 @@ function CreateProduct() {
             additionalFields: {
               ...accessoryAdditionalFieldsObj,
             },
-            reviews: [],
+            reviewsIds: [],
             uploadedFilesIds: imgUploadResponseData
               .filter(removeUndefinedAndNull)
               .map((item) => item.documentId),
@@ -831,7 +831,7 @@ function CreateProduct() {
             additionalFields: {
               ...cpuAdditionalFieldsObj,
             },
-            reviews: [],
+            reviewsIds: [],
             uploadedFilesIds: imgUploadResponseData
               .filter(removeUndefinedAndNull)
               .map((item) => item.documentId),
@@ -855,7 +855,7 @@ function CreateProduct() {
             additionalFields: {
               ...caseAdditionalFieldsObj,
             },
-            reviews: [],
+            reviewsIds: [],
             uploadedFilesIds: imgUploadResponseData
               .filter(removeUndefinedAndNull)
               .map((item) => item.documentId),
@@ -883,7 +883,7 @@ function CreateProduct() {
             additionalFields: {
               ...displayAdditionalFieldsObj,
             },
-            reviews: [],
+            reviewsIds: [],
             uploadedFilesIds: imgUploadResponseData
               .filter(removeUndefinedAndNull)
               .map((item) => item.documentId),
@@ -911,7 +911,7 @@ function CreateProduct() {
             additionalFields: {
               ...gpuAdditionalFieldsObj,
             },
-            reviews: [],
+            reviewsIds: [],
             uploadedFilesIds: imgUploadResponseData
               .filter(removeUndefinedAndNull)
               .map((item) => item.documentId),
@@ -940,7 +940,7 @@ function CreateProduct() {
             additionalFields: {
               ...headphoneAdditionalFieldsObj,
             },
-            reviews: [],
+            reviewsIds: [],
             uploadedFilesIds: imgUploadResponseData
               .filter(removeUndefinedAndNull)
               .map((item) => item.documentId),
@@ -965,7 +965,7 @@ function CreateProduct() {
             additionalFields: {
               ...keyboardAdditionalFieldsObj,
             },
-            reviews: [],
+            reviewsIds: [],
             uploadedFilesIds: imgUploadResponseData
               .filter(removeUndefinedAndNull)
               .map((item) => item.documentId),
@@ -995,7 +995,7 @@ function CreateProduct() {
             additionalFields: {
               ...ramAdditionalFieldsObj,
             },
-            reviews: [],
+            reviewsIds: [],
             uploadedFilesIds: imgUploadResponseData
               .filter(removeUndefinedAndNull)
               .map((item) => item.documentId),
@@ -1021,7 +1021,7 @@ function CreateProduct() {
             additionalFields: {
               ...mouseAdditionalFieldsObj,
             },
-            reviews: [],
+            reviewsIds: [],
             uploadedFilesIds: imgUploadResponseData
               .filter(removeUndefinedAndNull)
               .map((item) => item.documentId),
@@ -1049,7 +1049,7 @@ function CreateProduct() {
             additionalFields: {
               ...microphoneAdditionalFieldsObj,
             },
-            reviews: [],
+            reviewsIds: [],
             uploadedFilesIds: imgUploadResponseData
               .filter(removeUndefinedAndNull)
               .map((item) => item?.documentId),
@@ -1084,7 +1084,7 @@ function CreateProduct() {
             additionalFields: {
               ...motherboardAdditionalFieldsObj,
             },
-            reviews: [],
+            reviewsIds: [],
             uploadedFilesIds: imgUploadResponseData
               .filter(removeUndefinedAndNull)
               .map((item) => item.documentId),
@@ -1110,7 +1110,7 @@ function CreateProduct() {
             additionalFields: {
               ...psuAdditionalFieldsObj,
             },
-            reviews: [],
+            reviewsIds: [],
             uploadedFilesIds: imgUploadResponseData
               .filter(removeUndefinedAndNull)
               .map((item) => item.documentId),
@@ -1148,7 +1148,7 @@ function CreateProduct() {
             additionalFields: {
               ...smartphoneAdditionalFieldsObj,
             },
-            reviews: [],
+            reviewsIds: [],
             uploadedFilesIds: imgUploadResponseData
               .filter(removeUndefinedAndNull)
               .map((item) => item?.documentId),
@@ -1174,7 +1174,7 @@ function CreateProduct() {
             additionalFields: {
               ...speakerAdditionalFieldsObj,
             },
-            reviews: [],
+            reviewsIds: [],
             uploadedFilesIds: imgUploadResponseData
               .filter(removeUndefinedAndNull)
               .map((item) => item?.documentId),
@@ -1202,7 +1202,7 @@ function CreateProduct() {
             additionalFields: {
               ...storageAdditionalFieldsObj,
             },
-            reviews: [],
+            reviewsIds: [],
             uploadedFilesIds: imgUploadResponseData
               .filter(removeUndefinedAndNull)
               .map((item) => item.documentId),
@@ -1234,7 +1234,7 @@ function CreateProduct() {
             additionalFields: {
               ...tabletAdditionalFieldsObj,
             },
-            reviews: [],
+            reviewsIds: [],
             uploadedFilesIds: imgUploadResponseData
               .filter(removeUndefinedAndNull)
               .map((item) => item?.documentId),
@@ -1260,7 +1260,7 @@ function CreateProduct() {
             additionalFields: {
               ...webcamAdditionalFieldsObj,
             },
-            reviews: [],
+            reviewsIds: [],
             uploadedFilesIds: imgUploadResponseData
               .filter(removeUndefinedAndNull)
               .map((item) => item?.documentId),
@@ -1303,7 +1303,7 @@ function CreateProduct() {
             additionalFields: {
               ...desktopComputerAdditionalFieldsObj,
             },
-            reviews: [],
+            reviewsIds: [],
             uploadedFilesIds: imgUploadResponseData
               .filter(removeUndefinedAndNull)
               .map((item) => item?.documentId),
@@ -1334,7 +1334,7 @@ function CreateProduct() {
             additionalFields: {
               ...laptopAdditionalFieldsObj,
             },
-            reviews: [],
+            reviewsIds: [],
             uploadedFilesIds: imgUploadResponseData
               .filter(removeUndefinedAndNull)
               .map((item) => item?.documentId),
@@ -1418,10 +1418,6 @@ function CreateProduct() {
                 `Successfully created ${productCategory} product.`,
             });
           } catch (error: any) {
-            if (!isMounted || error.name === 'AbortError') {
-              return;
-            }
-
             // delete uploaded file if error occurs
             const deleteFileUploadUrl = urlBuilder({
               path: `file-upload/${imgUploadResponseData[0]?.documentId}`,
@@ -1442,9 +1438,6 @@ function CreateProduct() {
                 url: deleteFileUploadUrl,
               });
 
-              if (!isMounted) {
-                return;
-              }
               if (!imgDeleteResponse.ok) {
                 throw new Error('File uploads failed. Please try again.');
               }
@@ -1458,6 +1451,10 @@ function CreateProduct() {
                     'Unknown error occurred. Please try again.';
 
               throw new Error(errorMessage);
+            }
+
+            if (!isMounted || error.name === 'AbortError') {
+              return;
             }
 
             const errorMessage =
@@ -1729,8 +1726,9 @@ function CreateProduct() {
   //     PAGE 3
   // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
+    // can have no images associated
     const arePage3InputsInError =
-      !areImagesValid || imgFormDataArray.length === 0;
+      !areImagesValid || imgFormDataArray.length < 1;
 
     createProductDispatch({
       type: createProductAction.setStepsInError,

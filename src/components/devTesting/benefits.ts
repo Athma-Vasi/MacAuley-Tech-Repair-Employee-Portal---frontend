@@ -3,7 +3,7 @@ import { Department } from '../../types';
 import { groupByField } from '../../utils';
 import { CURRENCY_DATA } from '../benefits/constants';
 import { DirectoryUserDocument } from '../directory/types';
-import { USERS_DOC } from './constants';
+import { USERS_DOCS } from './constants';
 
 const benefitsArray = [
   {

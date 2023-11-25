@@ -562,8 +562,8 @@ const addressChangesArray = [
           ];
 
         const randomUserDoc =
-          USERS_DOC_CORRECT[
-            Math.floor(Math.random() * USERS_DOC_CORRECT.length)
+          USERS_DOCS_CORRECT[
+            Math.floor(Math.random() * USERS_DOCS_CORRECT.length)
           ];
         const randomUserId = randomUserDoc._id;
         const randomUsername = randomUserDoc.username;

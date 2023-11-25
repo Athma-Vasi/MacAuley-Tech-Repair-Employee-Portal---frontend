@@ -263,7 +263,7 @@ function CreateExpenseClaim() {
                 .map((item) => item?.documentId),
               expenseClaimKind,
               expenseClaimCurrency,
-              expenseClaimAmount: Number(expenseClaimAmount),
+              expenseClaimAmount: Number(expenseClaimAmount.replace(',', '.')),
               expenseClaimDate,
               expenseClaimDescription,
               additionalComments,

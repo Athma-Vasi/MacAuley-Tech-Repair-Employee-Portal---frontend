@@ -115,7 +115,7 @@ const DIMENSIONS_REGEX = /^(?!^$|^0*$)(?!^0*\.?0*$)[0-9]{1,3}(\.[0-9]{1,2})?$/;
 const CPU_FREQUENCY_REGEX = /^(?!^$|^0*$)(?!^0*\.?0*$)[0-9]{1}(\.[0-9]{1,2})?$/;
 
 /**
- * -/^(?!^$|^0*$)[0-9]{1,2}$/
+ * - /^(?!^$|^0*$)[0-9]{1,2}$/
  * - (?!^$|^0*$): Negative lookahead assertion to ensure that the entire string is not empty (^$) or consists entirely of zeroes (^0*$).
  * - [0-9]{1,2}: Matches one to two digits for the integral part
  * - ^ and $ ensure that the entire string matches the regex.
@@ -124,7 +124,7 @@ const CPU_FREQUENCY_REGEX = /^(?!^$|^0*$)(?!^0*\.?0*$)[0-9]{1}(\.[0-9]{1,2})?$/;
 const SMALL_INTEGER_REGEX = /^(?!^$|^0*$)[0-9]{1,2}$/;
 
 /**
- * -/^(?!^$|^0*$)[0-9]{1,4}$/
+ * - /^(?!^$|^0*$)[0-9]{1,4}$/
  * - (?!^$|^0*$): Negative lookahead assertion to ensure that the entire string is not empty (^$) or consists entirely of zeroes (^0*$).
  * - [0-9]{1,4}: Matches one to four digits for the integral part
  * - ^ and $ ensure that the entire string matches the regex.
@@ -389,6 +389,7 @@ const PERIPHERALS_INTERFACE_DATA: PeripheralsInterface[] = [
   'USB',
   'Bluetooth',
   'PS/2',
+  'Wi-Fi',
   'Other',
 ];
 
@@ -430,6 +431,7 @@ const SPEAKER_INTERFACE_DATA: SpeakerInterface[] = [
   '2.5 mm',
   'USB',
   'Bluetooth',
+  'Wi-Fi',
   'RCA',
   'TRS',
   'Other',
@@ -451,7 +453,12 @@ const WEBCAM_RESOLUTION_DATA: WebcamResolution[] = [
   'Other',
 ];
 
-const WEBCAM_INTERFACE_DATA: WebcamInterface[] = ['USB', 'Bluetooth', 'Other'];
+const WEBCAM_INTERFACE_DATA: WebcamInterface[] = [
+  'USB',
+  'Bluetooth',
+  'Wi-Fi',
+  'Other',
+];
 
 const WEBCAM_FRAME_RATE_DATA: WebcamFrameRate[] = [
   '30 fps',

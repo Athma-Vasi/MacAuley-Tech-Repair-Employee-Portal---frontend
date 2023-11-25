@@ -216,7 +216,7 @@ const US_CITY_STATES = [
   },
 ];
 
-const USERS_DOC: DirectoryUserDocument[] = [
+const USERS_DOCS: DirectoryUserDocument[] = [
   {
     _id: '64ebbb658a5b2e5f8b4b57e1',
     username: 'ceo',
@@ -4426,4 +4426,4 @@ const USERS_DOC: DirectoryUserDocument[] = [
   },
 ];
 
-export { CANADA_CITY_PROVINCES, US_CITY_STATES, USERS_DOC };
+export { CANADA_CITY_PROVINCES, US_CITY_STATES, USERS_DOCS };

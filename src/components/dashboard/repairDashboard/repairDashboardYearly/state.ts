@@ -34,33 +34,22 @@ function setLineChartYAxisVariable_RepairDashboardYearly(
   };
 }
 
-// const repairDashboardYearlyReducerMap = new Map<
-//   RepairDashboardYearlyAction[keyof RepairDashboardYearlyAction],
-//   (
-//     state: RepairDashboardYearlyState,
-//     action: RepairDashboardYearlyDispatch
-//   ) => RepairDashboardYearlyState
-// >([
-//   [
-//     repairDashboardYearlyAction.setBarChartYAxisVariable,
-//     setBarChartYAxisVariable_RepairDashboardYearly,
-//   ],
-//   [
-//     repairDashboardYearlyAction.setLineChartYAxisVariable,
-//     setLineChartYAxisVariable_RepairDashboardYearly,
-//   ],
-// ]);
-
-const repairDashboardYearlyReducerObj: Record<
+const repairDashboardYearlyReducerMap = new Map<
   RepairDashboardYearlyAction[keyof RepairDashboardYearlyAction],
   (
     state: RepairDashboardYearlyState,
     action: RepairDashboardYearlyDispatch
   ) => RepairDashboardYearlyState
-> = {
-  setBarChartYAxisVariable: setBarChartYAxisVariable_RepairDashboardYearly,
-  setLineChartYAxisVariable: setLineChartYAxisVariable_RepairDashboardYearly,
-};
+>([
+  [
+    repairDashboardYearlyAction.setBarChartYAxisVariable,
+    setBarChartYAxisVariable_RepairDashboardYearly,
+  ],
+  [
+    repairDashboardYearlyAction.setLineChartYAxisVariable,
+    setLineChartYAxisVariable_RepairDashboardYearly,
+  ],
+]);
 
 // function repairDashboardYearlyReducer(
 //   state: RepairDashboardYearlyState,
@@ -88,9 +77,7 @@ function repairDashboardYearlyReducer(
   state: RepairDashboardYearlyState,
   action: RepairDashboardYearlyDispatch
 ): RepairDashboardYearlyState {
-  // const reducer = repairDashboardYearlyReducerMap.get(action.type);
-  // return reducer ? reducer(state, action) : state;
-  const reducer = repairDashboardYearlyReducerObj[action.type];
+  const reducer = repairDashboardYearlyReducerMap.get(action.type);
   return reducer ? reducer(state, action) : state;
 }
 

@@ -25,7 +25,7 @@ type ProductReview = {
 type MemoryType = 'DDR5' | 'DDR4' | 'DDR3' | 'DDR2' | 'DDR';
 type MemoryUnit = 'KB' | 'MB' | 'GB' | 'TB';
 
-type PeripheralsInterface = 'USB' | 'Bluetooth' | 'PS/2' | 'Other';
+type PeripheralsInterface = 'USB' | 'Bluetooth' | 'PS/2' | 'Wi-Fi' | 'Other';
 
 type MobileOs = 'Android' | 'iOS' | 'Windows' | 'Linux' | 'Other';
 
@@ -54,14 +54,7 @@ type ProductCategoryPage1Specifications = {
   additionalComments: string;
 };
 
-/**
- * @description - Contains shared properties between all product categories.
- *  - all product categories have these properties and their own specifications
- */
-type ProductCategorySchema = ProductCategoryPage1Specifications & {
-  userId: string;
-  username: string;
-
+type ProductCategorySpecifications = ProductCategoryPage1Specifications & {
   // page 1 specifications here
 
   // product category specifications
@@ -71,8 +64,17 @@ type ProductCategorySchema = ProductCategoryPage1Specifications & {
   };
 
   // page 3
-  reviews: ProductReview[];
+  reviewsIds: string[];
   uploadedFilesIds: string[];
+};
+
+/**
+ * @description - Contains shared properties between all product categories.
+ *  - all product categories have these properties and their own specifications
+ */
+type ProductCategorySchema = ProductCategorySpecifications & {
+  userId: string;
+  username: string;
 };
 
 type ProductDocument =
@@ -120,7 +122,7 @@ type AccessoryRequestBody = ProductCategoryPage1Specifications &
     additionalFields: {
       [key: string]: string;
     };
-    reviews: ProductReview[];
+    reviewsIds: string[];
     uploadedFilesIds: string[];
   };
 
@@ -155,7 +157,7 @@ type CpuRequestBody = ProductCategoryPage1Specifications &
     additionalFields: {
       [key: string]: string;
     };
-    reviews: ProductReview[];
+    reviewsIds: string[];
     uploadedFilesIds: string[];
   };
 
@@ -193,7 +195,7 @@ type ComputerCaseRequestBody = ProductCategoryPage1Specifications &
     additionalFields: {
       [key: string]: string;
     };
-    reviews: ProductReview[];
+    reviewsIds: string[];
     uploadedFilesIds: string[];
   };
 
@@ -243,7 +245,7 @@ type DesktopComputerRequestBody = ProductCategoryPage1Specifications &
     additionalFields: {
       [key: string]: string;
     };
-    reviews: ProductReview[];
+    reviewsIds: string[];
     uploadedFilesIds: string[];
   };
 
@@ -277,7 +279,7 @@ type DisplayRequestBody = ProductCategoryPage1Specifications &
     additionalFields: {
       [key: string]: string;
     };
-    reviews: ProductReview[];
+    reviewsIds: string[];
     uploadedFilesIds: string[];
   };
 
@@ -308,7 +310,7 @@ type GpuRequestBody = ProductCategoryPage1Specifications &
     additionalFields: {
       [key: string]: string;
     };
-    reviews: ProductReview[];
+    reviewsIds: string[];
     uploadedFilesIds: string[];
   };
 
@@ -348,7 +350,7 @@ type HeadphoneRequestBody = ProductCategoryPage1Specifications &
     additionalFields: {
       [key: string]: string;
     };
-    reviews: ProductReview[];
+    reviewsIds: string[];
     uploadedFilesIds: string[];
   };
 
@@ -397,7 +399,7 @@ type KeyboardRequestBody = ProductCategoryPage1Specifications &
     additionalFields: {
       [key: string]: string;
     };
-    reviews: ProductReview[];
+    reviewsIds: string[];
     uploadedFilesIds: string[];
   };
 
@@ -434,7 +436,7 @@ type LaptopRequestBody = ProductCategoryPage1Specifications &
     additionalFields: {
       [key: string]: string;
     };
-    reviews: ProductReview[];
+    reviewsIds: string[];
     uploadedFilesIds: string[];
   };
 
@@ -467,7 +469,7 @@ type RamRequestBody = ProductCategoryPage1Specifications &
     additionalFields: {
       [key: string]: string;
     };
-    reviews: ProductReview[];
+    reviewsIds: string[];
     uploadedFilesIds: string[];
   };
 
@@ -513,7 +515,7 @@ type MicrophoneRequestBody = ProductCategoryPage1Specifications &
     additionalFields: {
       [key: string]: string;
     };
-    reviews: ProductReview[];
+    reviewsIds: string[];
     uploadedFilesIds: string[];
   };
 
@@ -557,7 +559,7 @@ type MotherboardRequestBody = ProductCategoryPage1Specifications &
     additionalFields: {
       [key: string]: string;
     };
-    reviews: ProductReview[];
+    reviewsIds: string[];
     uploadedFilesIds: string[];
   };
 
@@ -589,7 +591,7 @@ type MouseRequestBody = ProductCategoryPage1Specifications &
     additionalFields: {
       [key: string]: string;
     };
-    reviews: ProductReview[];
+    reviewsIds: string[];
     uploadedFilesIds: string[];
   };
 
@@ -628,7 +630,7 @@ type PsuRequestBody = ProductCategoryPage1Specifications &
     additionalFields: {
       [key: string]: string;
     };
-    reviews: ProductReview[];
+    reviewsIds: string[];
     uploadedFilesIds: string[];
   };
 
@@ -664,7 +666,7 @@ type SmartphoneRequestBody = ProductCategoryPage1Specifications &
     additionalFields: {
       [key: string]: string;
     };
-    reviews: ProductReview[];
+    reviewsIds: string[];
     uploadedFilesIds: string[];
   };
 
@@ -680,6 +682,7 @@ type SpeakerInterface =
   | '2.5 mm'
   | 'RCA'
   | 'TRS'
+  | 'Wi-Fi'
   | 'Other';
 
 type SpeakerSpecifications = {
@@ -704,7 +707,7 @@ type SpeakerRequestBody = ProductCategoryPage1Specifications &
     additionalFields: {
       [key: string]: string;
     };
-    reviews: ProductReview[];
+    reviewsIds: string[];
     uploadedFilesIds: string[];
   };
 
@@ -757,7 +760,7 @@ type StorageRequestBody = ProductCategoryPage1Specifications &
     additionalFields: {
       [key: string]: string;
     };
-    reviews: ProductReview[];
+    reviewsIds: string[];
     uploadedFilesIds: string[];
   };
 
@@ -793,7 +796,7 @@ type TabletRequestBody = ProductCategoryPage1Specifications &
     additionalFields: {
       [key: string]: string;
     };
-    reviews: ProductReview[];
+    reviewsIds: string[];
     uploadedFilesIds: string[];
   };
 
@@ -803,7 +806,7 @@ type TabletRequestBody = ProductCategoryPage1Specifications &
 
 type WebcamResolution = '720p' | '1080p' | '1440p' | '4K' | 'Other';
 type WebcamFrameRate = '30 fps' | '60 fps' | '120 fps' | '240 fps' | 'Other';
-type WebcamInterface = 'USB' | 'Bluetooth' | 'Other';
+type WebcamInterface = 'USB' | 'Bluetooth' | 'Wi-Fi' | 'Other';
 type WebcamMicrophone = 'Yes' | 'No';
 
 type WebcamSpecifications = {
@@ -828,7 +831,7 @@ type WebcamRequestBody = ProductCategoryPage1Specifications &
     additionalFields: {
       [key: string]: string;
     };
-    reviews: ProductReview[];
+    reviewsIds: string[];
     uploadedFilesIds: string[];
   };
 
@@ -1834,6 +1837,7 @@ export type {
   PeripheralsInterface,
   ProductAvailability,
   ProductCategoryPage1Specifications,
+  ProductCategorySpecifications,
   ProductDocument,
   ProductReview,
   ProductServerResponse,

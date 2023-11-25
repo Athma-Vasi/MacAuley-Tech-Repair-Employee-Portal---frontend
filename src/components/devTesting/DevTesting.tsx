@@ -1,4 +1,4 @@
-import { Button, Center, Text } from '@mantine/core';
+import { Button, Center, Group, Stack, Text } from '@mantine/core';
 import jwtDecode from 'jwt-decode';
 import { useEffect, useReducer } from 'react';
 
@@ -10,47 +10,55 @@ import {
   logState,
   urlBuilder,
 } from '../../utils';
+
 import {
-  announcementsArray,
-  returnAnnouncementsRequestBodies,
-} from './announcements';
-import { anonymousRequestsArray } from './anonymousRequests';
-import { benefitsArray, returnBenefitsRequestBodies } from './benefits';
-import {
-  commentsArray,
-  returnCommentsRequestBodies,
-  returnCommentsWithoutQuotedUsername,
-} from './comments';
-import { CANADA_CITY_PROVINCES, US_CITY_STATES, USERS_DOC } from './constants';
-import {
-  endorsementsArray,
-  returnEndorsementsRequestBodies,
-} from './endorsement';
-import { eventsArray, returnEventsRequestBodies } from './event';
-import {
-  expenseClaimArray,
-  returnExpenseClaimRequestBodies,
-} from './expenseClaim';
-import { leaveRequestsArray, returnLeaveRequestsBodies } from './leaveRequests';
-import {
-  printerIssuesArray,
-  returnPrinterIssuesRequestBodies,
-} from './printerIssue';
-import {
-  refermentsArray,
-  RefermentsGroupedByDepartments,
-  returnRefermentsRequestBodies,
-} from './referment';
-import {
-  requestResourcesArray,
-  returnRequestResourcesBodies,
-} from './requestResource';
+  ACCESSORY_ARRAYS,
+  returnAccessorySchemas,
+} from './productCategory/accessory';
+
 import {
   devTestingAction,
   devTestingReducer,
   initialDevTestingState,
 } from './state';
-import { returnUsersRequestBodies } from './users';
+import { USERS_DOCS } from './constants';
+import { CPUS_ARRAY, returnCpuSchemas } from './productCategory/cpu';
+import { CASE_ARRAY, returnCaseSchemas } from './productCategory/case';
+import {
+  DISPLAYS_ARRAY,
+  returnDisplaySchemas,
+} from './productCategory/display';
+import { GPUS_ARRAY, returnGpuSchemas } from './productCategory/gpu';
+import {
+  HEADPHONES_ARRAY,
+  returnHeadphoneSchemas,
+} from './productCategory/headphone';
+import {
+  KEYBOARDS_ARRAY,
+  returnKeyboardSchemas,
+} from './productCategory/keyboard';
+import { RAMS_ARRAY, returnRamSchemas } from './productCategory/ram';
+import {
+  MICROPHONES_ARRAY,
+  returnMicrophoneSchemas,
+} from './productCategory/microphone';
+import {
+  MOTHERBOARDS_ARRAY,
+  returnMotherboardSchemas,
+} from './productCategory/motherboard';
+import { MOUSE_ARRAY, returnMouseSchemas } from './productCategory/mouse';
+import { PSUS_ARRAY, returnPsuSchemas } from './productCategory/psu';
+import {
+  SMARTPHONES_ARRAY,
+  returnSmartphoneSchemas,
+} from './productCategory/smartphone';
+import { TABLETS_ARRAY, returnTabletSchemas } from './productCategory/tablet';
+import {
+  SPEAKERS_ARRAY,
+  returnSpeakerSchemas,
+} from './productCategory/speaker';
+import { STORAGE_ARRAY, returnStorageSchemas } from './productCategory/storage';
+import { WEBCAMS_ARRAY, returnWebcamSchemas } from './productCategory/webcam';
 
 function DevTesting() {
   const [devTestingState, devTestingDispatch] = useReducer(
@@ -71,11 +79,8 @@ function DevTesting() {
 
     async function submitDevTestingForm() {
       const url: URL = urlBuilder({
-        path: 'actions/outreach/event/dev',
+        path: 'actions/dashboard/product-category/webcam/dev',
       });
-      // const url: URL = new URL(
-      //   'http://localhost:5500/api/v1/user/dev/add-field'
-      // );
 
       const newBodiesArrCount =
         bodiesArr.length - bodiesArrCount > 50
@@ -93,7 +98,7 @@ function DevTesting() {
 
       const reqBody = {
         userInfo,
-        events: slicedBodiesArr,
+        webcamSchemas: slicedBodiesArr,
       };
 
       console.log({ slicedBodiesArr });
@@ -139,9 +144,9 @@ function DevTesting() {
       }
     }
 
-    // if (triggerFormSubmit) {
-    //   submitDevTestingForm();
-    // }
+    if (triggerFormSubmit) {
+      submitDevTestingForm();
+    }
 
     return () => {
       isMounted = false;
@@ -149,44 +154,17 @@ function DevTesting() {
     };
   }, [triggerFormSubmit]);
 
-  // useEffect(() => {
-  // const bodiesArr = returnEventsRequestBodies({
-  //   eventsArray,
-  //   userDocs: USERS_DOC,
-  // });
-
-  // devTestingDispatch({
-  //   type: devTestingAction.setBodiesArr,
-  //   payload: bodiesArr,
-  // });
-  // }, []);
-
   useEffect(() => {
-    const sampleObject = {
-      prop1: 'value1',
-      prop2: {
-        nestedProp1: 'nestedValue1',
-        nestedProp2: {
-          deeplyNestedProp: 'deeplyNestedValue1',
-          deeplyNestedProp2: {
-            deeplyDeeplyNestedProp3: 'deeplyDeeplyNestedValue3',
-          },
-          deeplyNestedProp3: 'deeplyNestedValue3',
-        },
-        nestedProp3: 'nestedValue3',
-      },
-      prop3: 'value3',
-    };
+    const bodiesArr = returnWebcamSchemas({
+      usersDocs: USERS_DOCS,
+      webcamsArray: WEBCAMS_ARRAY,
+    });
 
-    //
-    //
-    //
-    //
-    //
-
-    const flattenedObjIterative = flattenObjectIterative(sampleObject);
-    console.log('flattenedObjIterative', flattenedObjIterative);
-  });
+    devTestingDispatch({
+      type: devTestingAction.setBodiesArr,
+      payload: bodiesArr,
+    });
+  }, []);
 
   useEffect(() => {
     logState({
@@ -197,18 +175,23 @@ function DevTesting() {
 
   return (
     <Center w="100%">
-      <Text>DEV TESTING</Text>
-      {/* <Button
-        disabled={bodiesArrCount === bodiesArr.length || triggerFormSubmit}
-        onClick={() => {
-          devTestingDispatch({
-            type: devTestingAction.setTriggerFormSubmit,
-            payload: true,
-          });
-        }}
-      >
-        Trigger
-      </Button> */}
+      <Stack>
+        <Text>DEV TESTING</Text>
+
+        {/* <Group>
+          <Button
+            disabled={bodiesArrCount === bodiesArr.length || triggerFormSubmit}
+            onClick={() => {
+              devTestingDispatch({
+                type: devTestingAction.setTriggerFormSubmit,
+                payload: true,
+              });
+            }}
+          >
+            Trigger
+          </Button>
+        </Group> */}
+      </Stack>
     </Center>
   );
 }

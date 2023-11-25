@@ -9,7 +9,7 @@ type ReturnFormReviewObjectsFromUserDefinedFieldsInput = {
 /**
  * @description Returns an array of FormReviewObjects from the ${productCategory}FieldsAdditionalMap.
  * - The FormReviewObjects are used to display the user's input in the FormReviewPage.
- * @param productCategorySimple - this is not the ProductCategory type, but the simplified ProductCategory  (ex: Cpu instead of Central Processing Unit (CPU))
+ * @param productCategorySimple - this is not the ProductCategory type, but the simplified ProductCategory  (ex: CPU instead of Central Processing Unit (CPU))
  */
 function returnFormReviewObjectsFromUserDefinedFields({
   additionalFieldsMap,
