@@ -112,8 +112,8 @@ type AccessorySchema = ProductCategorySchema & AccessorySpecifications;
 
 type AccessoryDocument = AccessorySchema & {
   _id: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
   __v: number;
 };
 
@@ -147,8 +147,8 @@ type CpuSchema = ProductCategorySchema & CpuSpecifications;
 
 type CpuDocument = CpuSchema & {
   _id: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
   __v: number;
 };
 
@@ -185,8 +185,8 @@ type ComputerCaseSchema = ProductCategorySchema & CaseSpecifications;
 
 type ComputerCaseDocument = ComputerCaseSchema & {
   _id: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
   __v: number;
 };
 
@@ -235,8 +235,8 @@ type DesktopComputerSchema = ProductCategorySchema &
 
 type DesktopComputerDocument = DesktopComputerSchema & {
   _id: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
   __v: number;
 };
 
@@ -269,8 +269,8 @@ type DisplaySchema = ProductCategorySchema & DisplaySpecifications;
 
 type DisplayDocument = DisplaySchema & {
   _id: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
   __v: number;
 };
 
@@ -300,8 +300,8 @@ type GpuSchema = ProductCategorySchema & GpuSpecifications;
 
 type GpuDocument = GpuSchema & {
   _id: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
   __v: number;
 };
 
@@ -340,8 +340,8 @@ type HeadphoneSchema = ProductCategorySchema & HeadphoneSpecifications;
 
 type HeadphoneDocument = HeadphoneSchema & {
   _id: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
   __v: number;
 };
 
@@ -389,8 +389,8 @@ type KeyboardSchema = ProductCategorySchema & KeyboardSpecifications;
 
 type KeyboardDocument = KeyboardSchema & {
   _id: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
   __v: number;
 };
 
@@ -426,8 +426,8 @@ type LaptopSchema = ProductCategorySchema & LaptopSpecifications;
 
 type LaptopDocument = LaptopSchema & {
   _id: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
   __v: number;
 };
 
@@ -459,8 +459,8 @@ type RamSchema = ProductCategorySchema & RamSpecifications;
 
 type RamDocument = RamSchema & {
   _id: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
   __v: number;
 };
 
@@ -505,8 +505,8 @@ type MicrophoneSchema = ProductCategorySchema & MicrophoneSpecifications;
 
 type MicrophoneDocument = MicrophoneSchema & {
   _id: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
   __v: number;
 };
 
@@ -549,8 +549,8 @@ type MotherboardSchema = ProductCategorySchema & MotherboardSpecifications;
 
 type MotherboardDocument = MotherboardSchema & {
   _id: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
   __v: number;
 };
 
@@ -581,8 +581,8 @@ type MouseSchema = ProductCategorySchema & MouseSpecifications;
 
 type MouseDocument = MouseSchema & {
   _id: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
   __v: number;
 };
 
@@ -620,8 +620,8 @@ type PsuSchema = ProductCategorySchema & PsuSpecifications;
 
 type PsuDocument = PsuSchema & {
   _id: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
   __v: number;
 };
 
@@ -656,8 +656,8 @@ type SmartphoneSchema = ProductCategorySchema & SmartphoneSpecifications;
 
 type SmartphoneDocument = SmartphoneSchema & {
   _id: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
   __v: number;
 };
 
@@ -697,8 +697,8 @@ type SpeakerSchema = ProductCategorySchema & SpeakerSpecifications;
 
 type SpeakerDocument = SpeakerSchema & {
   _id: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
   __v: number;
 };
 
@@ -750,8 +750,8 @@ type StorageSchema = ProductCategorySchema & StorageSpecifications;
 
 type StorageDocument = StorageSchema & {
   _id: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
   __v: number;
 };
 
@@ -786,8 +786,8 @@ type TabletSchema = ProductCategorySchema & TabletSpecifications;
 
 type TabletDocument = TabletSchema & {
   _id: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
   __v: number;
 };
 
@@ -821,8 +821,8 @@ type WebcamSchema = ProductCategorySchema & WebcamSpecifications;
 
 type WebcamDocument = WebcamSchema & {
   _id: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
   __v: number;
 };
 

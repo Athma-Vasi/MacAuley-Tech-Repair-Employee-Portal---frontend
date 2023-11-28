@@ -1,5 +1,5 @@
-import { replaceLastCommaWithAnd, shuffleArray } from '../../utils';
-import { DirectoryUserDocument } from '../directory/types';
+import { replaceLastCommaWithAnd, shuffleArray } from '../../../utils';
+import { DirectoryUserDocument } from '../../directory/types';
 
 type EventsArray = {
   eventTitle: string;

@@ -1,5 +1,5 @@
-import { groupByField } from '../../utils';
-import { DirectoryUserDocument } from '../directory/types';
+import { groupByField } from '../../../utils';
+import { DirectoryUserDocument } from '../../directory/types';
 
 const expenseClaimArray = [
   {

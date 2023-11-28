@@ -1,5 +1,5 @@
-import { groupByField, shuffleArray } from '../../utils';
-import { DirectoryUserDocument } from '../directory/types';
+import { groupByField, shuffleArray } from '../../../utils';
+import { DirectoryUserDocument } from '../../directory/types';
 
 const requestResourcesArray = [
   {

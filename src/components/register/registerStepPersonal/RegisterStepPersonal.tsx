@@ -1,27 +1,22 @@
-import { faCheck } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Flex, NativeSelect, TextInput } from '@mantine/core';
 import { ChangeEvent, useCallback, useEffect } from 'react';
 
 import {
   DATE_OF_BIRTH_REGEX,
-  DATE_REGEX,
   NAME_REGEX,
   URL_REGEX,
 } from '../../../constants/regex';
 import {
-  returnAccessibleDateTimeElements,
   AccessibleErrorValidTextElements,
+  returnAccessibleDateTimeElements,
   returnAccessibleSelectInputElements,
   returnAccessibleTextInputElements,
 } from '../../../jsxCreators';
+import { PreferredPronouns } from '../../../types';
 import {
   returnDateValidationText,
   returnNameValidationText,
   returnUrlValidationText,
 } from '../../../utils';
-import type { RegisterStepPersonalProps } from './types';
-import { PreferredPronouns } from '../../../types';
 import {
   AccessibleDateTimeInputCreatorInfo,
   AccessibleSelectInputCreatorInfo,
@@ -29,6 +24,7 @@ import {
   FormLayoutWrapper,
 } from '../../wrappers';
 import { PREFERRED_PRONOUNS_DATA } from '../constants';
+import type { RegisterStepPersonalProps } from './types';
 
 function RegisterStepPersonal({
   firstName,

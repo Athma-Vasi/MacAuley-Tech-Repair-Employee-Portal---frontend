@@ -1,4 +1,4 @@
-import { DirectoryUserDocument } from '../directory/types';
+import { DirectoryUserDocument } from '../../directory/types';
 
 const anonymousRequestsArray = [
   {

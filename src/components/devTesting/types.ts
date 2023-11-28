@@ -1,27 +1,41 @@
 type DevTestingState = {
-  triggerFormSubmit: boolean;
-  bodiesArr: any[];
+  bodiesArr: Record<string, any>[];
   bodiesArrCount: number;
+  resourceDocuments: Record<string, any>[];
+
+  triggerPostFormSubmit: boolean;
+  triggerGetRequest: boolean;
 };
 
 type DevTestingAction = {
-  setTriggerFormSubmit: 'setTriggerFormSubmit';
   setBodiesArr: 'setBodiesArr';
   setBodiesArrCount: 'setBodiesArrCount';
+  setResourceDocuments: 'setResourceDocuments';
+
+  setTriggerPostFormSubmit: 'setTriggerPostFormSubmit';
+  setTriggerGetRequest: 'setTriggerGetRequest';
 };
 
 type DevTestingDispatch =
   | {
-      type: DevTestingAction['setTriggerFormSubmit'];
-      payload: boolean;
-    }
-  | {
       type: DevTestingAction['setBodiesArr'];
-      payload: any[];
+      payload: Record<string, any>[];
     }
   | {
       type: DevTestingAction['setBodiesArrCount'];
       payload: number;
+    }
+  | {
+      type: DevTestingAction['setResourceDocuments'];
+      payload: Record<string, any>[];
+    }
+  | {
+      type: DevTestingAction['setTriggerPostFormSubmit'];
+      payload: boolean;
+    }
+  | {
+      type: DevTestingAction['setTriggerGetRequest'];
+      payload: boolean;
     };
 
 export type { DevTestingAction, DevTestingDispatch, DevTestingState };

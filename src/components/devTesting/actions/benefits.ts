@@ -1,9 +1,9 @@
-import { REQUEST_STATUS } from '../../constants/data';
-import { Department } from '../../types';
-import { groupByField } from '../../utils';
-import { CURRENCY_DATA } from '../benefits/constants';
-import { DirectoryUserDocument } from '../directory/types';
-import { USERS_DOCS } from './constants';
+import { REQUEST_STATUS } from '../../../constants/data';
+import { Department } from '../../../types';
+import { groupByField } from '../../../utils';
+import { CURRENCY_DATA } from '../../benefits/constants';
+import { DirectoryUserDocument } from '../../directory/types';
+import { USERS_DOCS } from '../constants';
 
 const benefitsArray = [
   {

@@ -1,5 +1,5 @@
-import { createProductAction } from './actions';
-import { CreateProductState } from './types';
+import { createProductAction } from "./actions";
+import { CreateProductState } from "./types";
 
 // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 //  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
@@ -8,467 +8,467 @@ import { CreateProductState } from './types';
 // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
 const initialCreateProductState: CreateProductState = {
-  // ╔═════════════════════════════════════════════════════════════════╗
-  //    PAGE 1
-  // ╚═════════════════════════════════════════════════════════════════╝
+	// ╔═════════════════════════════════════════════════════════════════╗
+	//    PAGE 1
+	// ╚═════════════════════════════════════════════════════════════════╝
 
-  // brand
-  brand: '',
-  isBrandValid: false,
-  isBrandFocused: false,
-  // model,
-  model: '',
-  isModelValid: false,
-  isModelFocused: false,
-  // description
-  description: '',
-  isDescriptionValid: false,
-  isDescriptionFocused: false,
-  // price
-  price: '',
-  isPriceValid: false,
-  isPriceFocused: false,
-  // currency
-  currency: 'CAD',
-  // availability
-  availability: 'In Stock',
-  // quantity
-  quantity: '',
-  isQuantityFocused: false,
-  isQuantityValid: false,
-  // weight
-  weight: '',
-  isWeightFocused: false,
-  isWeightValid: false,
-  weightUnit: 'g',
-  // dimension height
-  dimensionHeight: '',
-  isDimensionHeightFocused: false,
-  isDimensionHeightValid: false,
-  // dimension height unit
-  dimensionHeightUnit: 'cm',
-  // dimension width
-  dimensionWidth: '',
-  isDimensionWidthFocused: false,
-  isDimensionWidthValid: false,
-  // dimension width unit
-  dimensionWidthUnit: 'cm',
-  // dimension length
-  dimensionLength: '',
-  isDimensionLengthFocused: false,
-  isDimensionLengthValid: false,
-  // dimension length unit
-  dimensionLengthUnit: 'cm',
-  // additional comments
-  additionalComments: '',
-  isAdditionalCommentsFocused: false,
-  isAdditionalCommentsValid: false,
+	// brand
+	brand: "",
+	isBrandValid: false,
+	isBrandFocused: false,
+	// model,
+	model: "",
+	isModelValid: false,
+	isModelFocused: false,
+	// description
+	description: "",
+	isDescriptionValid: false,
+	isDescriptionFocused: false,
+	// price
+	price: "",
+	isPriceValid: false,
+	isPriceFocused: false,
+	// currency
+	currency: "CAD",
+	// availability
+	availability: "In Stock",
+	// quantity
+	quantity: "",
+	isQuantityFocused: false,
+	isQuantityValid: false,
+	// weight
+	weight: "",
+	isWeightFocused: false,
+	isWeightValid: false,
+	weightUnit: "g",
+	// dimension height
+	dimensionHeight: "",
+	isDimensionHeightFocused: false,
+	isDimensionHeightValid: false,
+	// dimension height unit
+	dimensionHeightUnit: "cm",
+	// dimension width
+	dimensionWidth: "",
+	isDimensionWidthFocused: false,
+	isDimensionWidthValid: false,
+	// dimension width unit
+	dimensionWidthUnit: "cm",
+	// dimension length
+	dimensionLength: "",
+	isDimensionLengthFocused: false,
+	isDimensionLengthValid: false,
+	// dimension length unit
+	dimensionLengthUnit: "cm",
+	// additional comments
+	additionalComments: "",
+	isAdditionalCommentsFocused: false,
+	isAdditionalCommentsValid: false,
 
-  // ╔═════════════════════════════════════════════════════════════════╗
-  //    PAGE 2
-  // ╚═════════════════════════════════════════════════════════════════╝
+	// ╔═════════════════════════════════════════════════════════════════╗
+	//    PAGE 2
+	// ╚═════════════════════════════════════════════════════════════════╝
 
-  productCategory: 'Accessory',
+	productCategory: "Accessory",
 
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    ACCESSORY
-  // ╰─────────────────────────────────────────────────────────────────╯
-  accessoryColor: '',
-  isAccessoryColorFocused: false,
-  isAccessoryColorValid: false,
-  accessoryInterface: 'USB',
-  accessoryType: '',
-  isAccessoryTypeFocused: false,
-  isAccessoryTypeValid: false,
-  accessoryFieldsAdditionalMap: new Map<number, [string, string]>(),
-  areAccessoryFieldsAdditionalMapFocused: new Map<number, [boolean, boolean]>(),
-  areAccessoryFieldsAdditionalMapValid: new Map<number, [boolean, boolean]>(),
+	// ╭─────────────────────────────────────────────────────────────────╮
+	//    ACCESSORY
+	// ╰─────────────────────────────────────────────────────────────────╯
+	accessoryColor: "",
+	isAccessoryColorFocused: false,
+	isAccessoryColorValid: false,
+	accessoryInterface: "USB",
+	accessoryType: "",
+	isAccessoryTypeFocused: false,
+	isAccessoryTypeValid: false,
+	accessoryFieldsAdditionalMap: new Map<number, [string, string]>(),
+	areAccessoryFieldsAdditionalMapFocused: new Map<number, [boolean, boolean]>(),
+	areAccessoryFieldsAdditionalMapValid: new Map<number, [boolean, boolean]>(),
 
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    CENTRAL PROCESSING UNIT (CPU)
-  // ╰─────────────────────────────────────────────────────────────────╯
-  cpuSocket: '',
-  isCpuSocketFocused: false,
-  isCpuSocketValid: false,
-  cpuFrequency: '', // GHz
-  isCpuFrequencyFocused: false,
-  isCpuFrequencyValid: false,
-  cpuCores: '',
-  isCpuCoresFocused: false,
-  isCpuCoresValid: false,
-  cpuL1CacheCapacity: '',
-  isCpuL1CacheCapacityFocused: false,
-  isCpuL1CacheCapacityValid: false,
-  cpuL1CacheCapacityUnit: 'KB',
-  cpuL2CacheCapacity: '',
-  isCpuL2CacheCapacityFocused: false,
-  isCpuL2CacheCapacityValid: false,
-  cpuL2CacheCapacityUnit: 'KB',
-  cpuL3CacheCapacity: '',
-  isCpuL3CacheCapacityFocused: false,
-  isCpuL3CacheCapacityValid: false,
-  cpuL3CacheCapacityUnit: 'KB',
-  cpuWattage: '',
-  isCpuWattageFocused: false,
-  isCpuWattageValid: false,
-  cpuFieldsAdditionalMap: new Map<number, [string, string]>(),
-  areCpuFieldsAdditionalMapFocused: new Map<number, [boolean, boolean]>(),
-  areCpuFieldsAdditionalMapValid: new Map<number, [boolean, boolean]>(),
+	// ╭─────────────────────────────────────────────────────────────────╮
+	//    CENTRAL PROCESSING UNIT (CPU)
+	// ╰─────────────────────────────────────────────────────────────────╯
+	cpuSocket: "",
+	isCpuSocketFocused: false,
+	isCpuSocketValid: false,
+	cpuFrequency: "", // GHz
+	isCpuFrequencyFocused: false,
+	isCpuFrequencyValid: false,
+	cpuCores: "",
+	isCpuCoresFocused: false,
+	isCpuCoresValid: false,
+	cpuL1CacheCapacity: "",
+	isCpuL1CacheCapacityFocused: false,
+	isCpuL1CacheCapacityValid: false,
+	cpuL1CacheCapacityUnit: "KB",
+	cpuL2CacheCapacity: "",
+	isCpuL2CacheCapacityFocused: false,
+	isCpuL2CacheCapacityValid: false,
+	cpuL2CacheCapacityUnit: "KB",
+	cpuL3CacheCapacity: "",
+	isCpuL3CacheCapacityFocused: false,
+	isCpuL3CacheCapacityValid: false,
+	cpuL3CacheCapacityUnit: "KB",
+	cpuWattage: "",
+	isCpuWattageFocused: false,
+	isCpuWattageValid: false,
+	cpuFieldsAdditionalMap: new Map<number, [string, string]>(),
+	areCpuFieldsAdditionalMapFocused: new Map<number, [boolean, boolean]>(),
+	areCpuFieldsAdditionalMapValid: new Map<number, [boolean, boolean]>(),
 
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    COMPUTER CASE
-  // ╰─────────────────────────────────────────────────────────────────╯
-  caseColor: '',
-  isCaseColorFocused: false,
-  isCaseColorValid: false,
-  caseType: 'Mid Tower',
-  caseSidePanel: 'Solid',
-  caseFieldsAdditionalMap: new Map<number, [string, string]>(),
-  areCaseFieldsAdditionalMapFocused: new Map<number, [boolean, boolean]>(),
-  areCaseFieldsAdditionalMapValid: new Map<number, [boolean, boolean]>(),
+	// ╭─────────────────────────────────────────────────────────────────╮
+	//    COMPUTER CASE
+	// ╰─────────────────────────────────────────────────────────────────╯
+	caseColor: "",
+	isCaseColorFocused: false,
+	isCaseColorValid: false,
+	caseType: "Mid Tower",
+	caseSidePanel: "Solid",
+	caseFieldsAdditionalMap: new Map<number, [string, string]>(),
+	areCaseFieldsAdditionalMapFocused: new Map<number, [boolean, boolean]>(),
+	areCaseFieldsAdditionalMapValid: new Map<number, [boolean, boolean]>(),
 
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    DISPLAY
-  // ╰─────────────────────────────────────────────────────────────────╯
-  displaySize: '',
-  isDisplaySizeFocused: false,
-  isDisplaySizeValid: false,
-  displayResolutionHorizontal: '',
-  isDisplayResolutionHorizontalFocused: false,
-  isDisplayResolutionHorizontalValid: false,
-  displayResolutionVertical: '',
-  isDisplayResolutionVerticalFocused: false,
-  isDisplayResolutionVerticalValid: false,
-  displayRefreshRate: '',
-  isDisplayRefreshRateFocused: false,
-  isDisplayRefreshRateValid: false,
-  displayPanelType: 'IPS',
-  displayResponseTime: '',
-  isDisplayResponseTimeFocused: false,
-  isDisplayResponseTimeValid: false,
-  displayAspectRatio: '',
-  isDisplayAspectRatioFocused: false,
-  isDisplayAspectRatioValid: false,
-  displayFieldsAdditionalMap: new Map<number, [string, string]>(),
-  areDisplayFieldsAdditionalMapFocused: new Map<number, [boolean, boolean]>(),
-  areDisplayFieldsAdditionalMapValid: new Map<number, [boolean, boolean]>(),
+	// ╭─────────────────────────────────────────────────────────────────╮
+	//    DISPLAY
+	// ╰─────────────────────────────────────────────────────────────────╯
+	displaySize: "",
+	isDisplaySizeFocused: false,
+	isDisplaySizeValid: false,
+	displayResolutionHorizontal: "",
+	isDisplayResolutionHorizontalFocused: false,
+	isDisplayResolutionHorizontalValid: false,
+	displayResolutionVertical: "",
+	isDisplayResolutionVerticalFocused: false,
+	isDisplayResolutionVerticalValid: false,
+	displayRefreshRate: "",
+	isDisplayRefreshRateFocused: false,
+	isDisplayRefreshRateValid: false,
+	displayPanelType: "IPS",
+	displayResponseTime: "",
+	isDisplayResponseTimeFocused: false,
+	isDisplayResponseTimeValid: false,
+	displayAspectRatio: "",
+	isDisplayAspectRatioFocused: false,
+	isDisplayAspectRatioValid: false,
+	displayFieldsAdditionalMap: new Map<number, [string, string]>(),
+	areDisplayFieldsAdditionalMapFocused: new Map<number, [boolean, boolean]>(),
+	areDisplayFieldsAdditionalMapValid: new Map<number, [boolean, boolean]>(),
 
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    GRAPHICS PROCESSING UNIT (GPU)
-  // ╰─────────────────────────────────────────────────────────────────╯
-  gpuChipset: '',
-  isGpuChipsetFocused: false,
-  isGpuChipsetValid: false,
-  gpuMemoryCapacity: '',
-  isGpuMemoryCapacityFocused: false,
-  isGpuMemoryCapacityValid: false,
-  gpuMemoryCapacityUnit: 'GB',
-  gpuCoreClock: '', // MHz
-  isGpuCoreClockFocused: false,
-  isGpuCoreClockValid: false,
-  gpuBoostClock: '', // MHz
-  isGpuBoostClockFocused: false,
-  isGpuBoostClockValid: false,
-  gpuTdp: '',
-  isGpuTdpFocused: false,
-  isGpuTdpValid: false,
-  gpuFieldsAdditionalMap: new Map<number, [string, string]>(),
-  areGpuFieldsAdditionalMapFocused: new Map<number, [boolean, boolean]>(),
-  areGpuFieldsAdditionalMapValid: new Map<number, [boolean, boolean]>(),
+	// ╭─────────────────────────────────────────────────────────────────╮
+	//    GRAPHICS PROCESSING UNIT (GPU)
+	// ╰─────────────────────────────────────────────────────────────────╯
+	gpuChipset: "",
+	isGpuChipsetFocused: false,
+	isGpuChipsetValid: false,
+	gpuMemoryCapacity: "",
+	isGpuMemoryCapacityFocused: false,
+	isGpuMemoryCapacityValid: false,
+	gpuMemoryCapacityUnit: "GB",
+	gpuCoreClock: "", // MHz
+	isGpuCoreClockFocused: false,
+	isGpuCoreClockValid: false,
+	gpuBoostClock: "", // MHz
+	isGpuBoostClockFocused: false,
+	isGpuBoostClockValid: false,
+	gpuTdp: "",
+	isGpuTdpFocused: false,
+	isGpuTdpValid: false,
+	gpuFieldsAdditionalMap: new Map<number, [string, string]>(),
+	areGpuFieldsAdditionalMapFocused: new Map<number, [boolean, boolean]>(),
+	areGpuFieldsAdditionalMapValid: new Map<number, [boolean, boolean]>(),
 
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    HEADPHONE
-  // ╰─────────────────────────────────────────────────────────────────╯
-  headphoneType: 'Over-ear',
-  headphoneColor: '',
-  isHeadphoneColorFocused: false,
-  isHeadphoneColorValid: false,
-  headphoneDriver: '',
-  isHeadphoneDriverFocused: false,
-  isHeadphoneDriverValid: false,
-  headphoneFrequencyResponse: '',
-  isHeadphoneFrequencyResponseFocused: false,
-  isHeadphoneFrequencyResponseValid: false,
-  headphoneImpedance: '',
-  isHeadphoneImpedanceFocused: false,
-  isHeadphoneImpedanceValid: false,
-  headphoneInterface: 'USB',
-  headphoneFieldsAdditionalMap: new Map<number, [string, string]>(),
-  areHeadphoneFieldsAdditionalMapFocused: new Map<number, [boolean, boolean]>(),
-  areHeadphoneFieldsAdditionalMapValid: new Map<number, [boolean, boolean]>(),
+	// ╭─────────────────────────────────────────────────────────────────╮
+	//    HEADPHONE
+	// ╰─────────────────────────────────────────────────────────────────╯
+	headphoneType: "Over-ear",
+	headphoneColor: "",
+	isHeadphoneColorFocused: false,
+	isHeadphoneColorValid: false,
+	headphoneDriver: "",
+	isHeadphoneDriverFocused: false,
+	isHeadphoneDriverValid: false,
+	headphoneFrequencyResponse: "",
+	isHeadphoneFrequencyResponseFocused: false,
+	isHeadphoneFrequencyResponseValid: false,
+	headphoneImpedance: "",
+	isHeadphoneImpedanceFocused: false,
+	isHeadphoneImpedanceValid: false,
+	headphoneInterface: "USB",
+	headphoneFieldsAdditionalMap: new Map<number, [string, string]>(),
+	areHeadphoneFieldsAdditionalMapFocused: new Map<number, [boolean, boolean]>(),
+	areHeadphoneFieldsAdditionalMapValid: new Map<number, [boolean, boolean]>(),
 
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    KEYBOARD
-  // ╰─────────────────────────────────────────────────────────────────╯
-  keyboardBacklight: 'RGB',
-  keyboardInterface: 'USB',
-  keyboardLayout: 'QWERTY',
-  keyboardSwitch: 'Cherry MX Brown',
-  keyboardFieldsAdditionalMap: new Map<number, [string, string]>(),
-  areKeyboardFieldsAdditionalMapFocused: new Map<number, [boolean, boolean]>(),
-  areKeyboardFieldsAdditionalMapValid: new Map<number, [boolean, boolean]>(),
+	// ╭─────────────────────────────────────────────────────────────────╮
+	//    KEYBOARD
+	// ╰─────────────────────────────────────────────────────────────────╯
+	keyboardBacklight: "RGB",
+	keyboardInterface: "USB",
+	keyboardLayout: "QWERTY",
+	keyboardSwitch: "Cherry MX Brown",
+	keyboardFieldsAdditionalMap: new Map<number, [string, string]>(),
+	areKeyboardFieldsAdditionalMapFocused: new Map<number, [boolean, boolean]>(),
+	areKeyboardFieldsAdditionalMapValid: new Map<number, [boolean, boolean]>(),
 
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    MEMORY (RAM)
-  // ╰─────────────────────────────────────────────────────────────────╯
+	// ╭─────────────────────────────────────────────────────────────────╮
+	//    MEMORY (RAM)
+	// ╰─────────────────────────────────────────────────────────────────╯
 
-  ramDataRate: '',
-  isRamDataRateFocused: false,
-  isRamDataRateValid: false,
-  ramModulesQuantity: '',
-  isRamModulesQuantityFocused: false,
-  isRamModulesQuantityValid: false,
-  ramModulesCapacity: '',
-  isRamModulesCapacityFocused: false,
-  isRamModulesCapacityValid: false,
-  ramModulesCapacityUnit: 'GB',
-  ramType: 'DDR4',
-  ramColor: '',
-  isRamColorFocused: false,
-  isRamColorValid: false,
-  ramVoltage: '',
-  isRamVoltageFocused: false,
-  isRamVoltageValid: false,
-  ramTiming: '',
-  isRamTimingFocused: false,
-  isRamTimingValid: false,
-  ramFieldsAdditionalMap: new Map<number, [string, string]>(),
-  areRamFieldsAdditionalMapFocused: new Map<number, [boolean, boolean]>(),
-  areRamFieldsAdditionalMapValid: new Map<number, [boolean, boolean]>(),
+	ramDataRate: "",
+	isRamDataRateFocused: false,
+	isRamDataRateValid: false,
+	ramModulesQuantity: "",
+	isRamModulesQuantityFocused: false,
+	isRamModulesQuantityValid: false,
+	ramModulesCapacity: "",
+	isRamModulesCapacityFocused: false,
+	isRamModulesCapacityValid: false,
+	ramModulesCapacityUnit: "GB",
+	ramType: "DDR4",
+	ramColor: "",
+	isRamColorFocused: false,
+	isRamColorValid: false,
+	ramVoltage: "",
+	isRamVoltageFocused: false,
+	isRamVoltageValid: false,
+	ramTiming: "",
+	isRamTimingFocused: false,
+	isRamTimingValid: false,
+	ramFieldsAdditionalMap: new Map<number, [string, string]>(),
+	areRamFieldsAdditionalMapFocused: new Map<number, [boolean, boolean]>(),
+	areRamFieldsAdditionalMapValid: new Map<number, [boolean, boolean]>(),
 
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    MICROPHONE
-  // ╰─────────────────────────────────────────────────────────────────╯
-  microphoneColor: '',
-  isMicrophoneColorFocused: false,
-  isMicrophoneColorValid: false,
-  microphoneInterface: 'USB',
-  microphoneType: 'Condenser',
-  microphonePolarPattern: 'Cardioid',
-  microphoneFrequencyResponse: '',
-  isMicrophoneFrequencyResponseFocused: false,
-  isMicrophoneFrequencyResponseValid: false,
-  microphoneFieldsAdditionalMap: new Map<number, [string, string]>(),
-  areMicrophoneFieldsAdditionalMapFocused: new Map<
-    number,
-    [boolean, boolean]
-  >(),
-  areMicrophoneFieldsAdditionalMapValid: new Map<number, [boolean, boolean]>(),
+	// ╭─────────────────────────────────────────────────────────────────╮
+	//    MICROPHONE
+	// ╰─────────────────────────────────────────────────────────────────╯
+	microphoneColor: "",
+	isMicrophoneColorFocused: false,
+	isMicrophoneColorValid: false,
+	microphoneInterface: "USB",
+	microphoneType: "Condenser",
+	microphonePolarPattern: "Cardioid",
+	microphoneFrequencyResponse: "",
+	isMicrophoneFrequencyResponseFocused: false,
+	isMicrophoneFrequencyResponseValid: false,
+	microphoneFieldsAdditionalMap: new Map<number, [string, string]>(),
+	areMicrophoneFieldsAdditionalMapFocused: new Map<
+		number,
+		[boolean, boolean]
+	>(),
+	areMicrophoneFieldsAdditionalMapValid: new Map<number, [boolean, boolean]>(),
 
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    MOTHERBOARD
-  // ╰─────────────────────────────────────────────────────────────────╯
-  motherboardSocket: '',
-  isMotherboardSocketFocused: false,
-  isMotherboardSocketValid: false,
-  motherboardChipset: '',
-  isMotherboardChipsetFocused: false,
-  isMotherboardChipsetValid: false,
-  motherboardFormFactor: 'ATX',
-  motherboardMemoryMaxCapacity: '',
-  isMotherboardMemoryMaxCapacityFocused: false,
-  isMotherboardMemoryMaxCapacityValid: false,
-  motherboardMemoryMaxCapacityUnit: 'GB',
-  motherboardMemorySlots: '',
-  isMotherboardMemorySlotsFocused: false,
-  isMotherboardMemorySlotsValid: false,
-  motherboardMemoryType: 'DDR4',
-  motherboardSataPorts: '',
-  isMotherboardSataPortsFocused: false,
-  isMotherboardSataPortsValid: false,
-  motherboardM2Slots: '',
-  isMotherboardM2SlotsFocused: false,
-  isMotherboardM2SlotsValid: false,
-  motherboardPcie3Slots: '',
-  isMotherboardPcie3SlotsFocused: false,
-  isMotherboardPcie3SlotsValid: false,
-  motherboardPcie4Slots: '',
-  isMotherboardPcie4SlotsFocused: false,
-  isMotherboardPcie4SlotsValid: false,
-  motherboardPcie5Slots: '',
-  isMotherboardPcie5SlotsFocused: false,
-  isMotherboardPcie5SlotsValid: false,
-  motherboardFieldsAdditionalMap: new Map<number, [string, string]>(),
-  areMotherboardFieldsAdditionalMapFocused: new Map<
-    number,
-    [boolean, boolean]
-  >(),
-  areMotherboardFieldsAdditionalMapValid: new Map<number, [boolean, boolean]>(),
+	// ╭─────────────────────────────────────────────────────────────────╮
+	//    MOTHERBOARD
+	// ╰─────────────────────────────────────────────────────────────────╯
+	motherboardSocket: "",
+	isMotherboardSocketFocused: false,
+	isMotherboardSocketValid: false,
+	motherboardChipset: "",
+	isMotherboardChipsetFocused: false,
+	isMotherboardChipsetValid: false,
+	motherboardFormFactor: "ATX",
+	motherboardMemoryMaxCapacity: "",
+	isMotherboardMemoryMaxCapacityFocused: false,
+	isMotherboardMemoryMaxCapacityValid: false,
+	motherboardMemoryMaxCapacityUnit: "GB",
+	motherboardMemorySlots: "",
+	isMotherboardMemorySlotsFocused: false,
+	isMotherboardMemorySlotsValid: false,
+	motherboardMemoryType: "DDR4",
+	motherboardSataPorts: "",
+	isMotherboardSataPortsFocused: false,
+	isMotherboardSataPortsValid: false,
+	motherboardM2Slots: "",
+	isMotherboardM2SlotsFocused: false,
+	isMotherboardM2SlotsValid: false,
+	motherboardPcie3Slots: "",
+	isMotherboardPcie3SlotsFocused: false,
+	isMotherboardPcie3SlotsValid: false,
+	motherboardPcie4Slots: "",
+	isMotherboardPcie4SlotsFocused: false,
+	isMotherboardPcie4SlotsValid: false,
+	motherboardPcie5Slots: "",
+	isMotherboardPcie5SlotsFocused: false,
+	isMotherboardPcie5SlotsValid: false,
+	motherboardFieldsAdditionalMap: new Map<number, [string, string]>(),
+	areMotherboardFieldsAdditionalMapFocused: new Map<
+		number,
+		[boolean, boolean]
+	>(),
+	areMotherboardFieldsAdditionalMapValid: new Map<number, [boolean, boolean]>(),
 
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    MOUSE
-  // ╰─────────────────────────────────────────────────────────────────╯
-  mouseSensor: 'Optical',
-  mouseDpi: '',
-  isMouseDpiFocused: false,
-  isMouseDpiValid: false,
-  mouseButtons: '',
-  isMouseButtonsFocused: false,
-  isMouseButtonsValid: false,
-  mouseColor: '',
-  isMouseColorFocused: false,
-  isMouseColorValid: false,
-  mouseInterface: 'USB',
-  mouseFieldsAdditionalMap: new Map<number, [string, string]>(),
-  areMouseFieldsAdditionalMapFocused: new Map<number, [boolean, boolean]>(),
-  areMouseFieldsAdditionalMapValid: new Map<number, [boolean, boolean]>(),
+	// ╭─────────────────────────────────────────────────────────────────╮
+	//    MOUSE
+	// ╰─────────────────────────────────────────────────────────────────╯
+	mouseSensor: "Optical",
+	mouseDpi: "",
+	isMouseDpiFocused: false,
+	isMouseDpiValid: false,
+	mouseButtons: "",
+	isMouseButtonsFocused: false,
+	isMouseButtonsValid: false,
+	mouseColor: "",
+	isMouseColorFocused: false,
+	isMouseColorValid: false,
+	mouseInterface: "USB",
+	mouseFieldsAdditionalMap: new Map<number, [string, string]>(),
+	areMouseFieldsAdditionalMapFocused: new Map<number, [boolean, boolean]>(),
+	areMouseFieldsAdditionalMapValid: new Map<number, [boolean, boolean]>(),
 
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    POWER SUPPLY UNIT (PSU)
-  // ╰─────────────────────────────────────────────────────────────────╯
-  psuWattage: '',
-  isPsuWattageFocused: false,
-  isPsuWattageValid: false,
-  psuEfficiency: '80+ Bronze',
-  psuModularity: 'Full',
-  psuFormFactor: 'ATX',
-  psuFieldsAdditionalMap: new Map<number, [string, string]>(),
-  arePsuFieldsAdditionalMapFocused: new Map<number, [boolean, boolean]>(),
-  arePsuFieldsAdditionalMapValid: new Map<number, [boolean, boolean]>(),
+	// ╭─────────────────────────────────────────────────────────────────╮
+	//    POWER SUPPLY UNIT (PSU)
+	// ╰─────────────────────────────────────────────────────────────────╯
+	psuWattage: "",
+	isPsuWattageFocused: false,
+	isPsuWattageValid: false,
+	psuEfficiency: "80+ Bronze",
+	psuModularity: "Full",
+	psuFormFactor: "ATX",
+	psuFieldsAdditionalMap: new Map<number, [string, string]>(),
+	arePsuFieldsAdditionalMapFocused: new Map<number, [boolean, boolean]>(),
+	arePsuFieldsAdditionalMapValid: new Map<number, [boolean, boolean]>(),
 
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    SMARTPHONE
-  // ╰─────────────────────────────────────────────────────────────────╯
-  smartphoneBatteryCapacity: '',
-  isSmartphoneBatteryCapacityFocused: false,
-  isSmartphoneBatteryCapacityValid: false,
-  smartphoneCamera: '',
-  isSmartphoneCameraFocused: false,
-  isSmartphoneCameraValid: false,
-  smartphoneChipset: '',
-  isSmartphoneChipsetFocused: false,
-  isSmartphoneChipsetValid: false,
-  smartphoneColor: '',
-  isSmartphoneColorFocused: false,
-  isSmartphoneColorValid: false,
-  smartphoneDisplay: '',
-  isSmartphoneDisplayFocused: false,
-  isSmartphoneDisplayValid: false,
-  smartphoneResolutionHorizontal: '',
-  isSmartphoneResolutionHorizontalFocused: false,
-  isSmartphoneResolutionHorizontalValid: false,
-  smartphoneResolutionVertical: '',
-  isSmartphoneResolutionVerticalFocused: false,
-  isSmartphoneResolutionVerticalValid: false,
-  smartphoneOs: 'iOS',
-  smartphoneRamCapacity: '',
-  isSmartphoneRamCapacityFocused: false,
-  isSmartphoneRamCapacityValid: false,
-  smartphoneRamCapacityUnit: 'GB',
-  smartphoneStorageCapacity: '',
-  isSmartphoneStorageCapacityFocused: false,
-  isSmartphoneStorageCapacityValid: false,
-  smartphoneFieldsAdditionalMap: new Map<number, [string, string]>(),
-  areSmartphoneFieldsAdditionalMapFocused: new Map<
-    number,
-    [boolean, boolean]
-  >(),
-  areSmartphoneFieldsAdditionalMapValid: new Map<number, [boolean, boolean]>(),
+	// ╭─────────────────────────────────────────────────────────────────╮
+	//    SMARTPHONE
+	// ╰─────────────────────────────────────────────────────────────────╯
+	smartphoneBatteryCapacity: "",
+	isSmartphoneBatteryCapacityFocused: false,
+	isSmartphoneBatteryCapacityValid: false,
+	smartphoneCamera: "",
+	isSmartphoneCameraFocused: false,
+	isSmartphoneCameraValid: false,
+	smartphoneChipset: "",
+	isSmartphoneChipsetFocused: false,
+	isSmartphoneChipsetValid: false,
+	smartphoneColor: "",
+	isSmartphoneColorFocused: false,
+	isSmartphoneColorValid: false,
+	smartphoneDisplay: "",
+	isSmartphoneDisplayFocused: false,
+	isSmartphoneDisplayValid: false,
+	smartphoneResolutionHorizontal: "",
+	isSmartphoneResolutionHorizontalFocused: false,
+	isSmartphoneResolutionHorizontalValid: false,
+	smartphoneResolutionVertical: "",
+	isSmartphoneResolutionVerticalFocused: false,
+	isSmartphoneResolutionVerticalValid: false,
+	smartphoneOs: "iOS",
+	smartphoneRamCapacity: "",
+	isSmartphoneRamCapacityFocused: false,
+	isSmartphoneRamCapacityValid: false,
+	smartphoneRamCapacityUnit: "GB",
+	smartphoneStorageCapacity: "",
+	isSmartphoneStorageCapacityFocused: false,
+	isSmartphoneStorageCapacityValid: false,
+	smartphoneFieldsAdditionalMap: new Map<number, [string, string]>(),
+	areSmartphoneFieldsAdditionalMapFocused: new Map<
+		number,
+		[boolean, boolean]
+	>(),
+	areSmartphoneFieldsAdditionalMapValid: new Map<number, [boolean, boolean]>(),
 
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    SPEAKER
-  // ╰─────────────────────────────────────────────────────────────────╯
-  speakerType: '2.0',
-  speakerColor: '',
-  isSpeakerColorFocused: false,
-  isSpeakerColorValid: false,
-  speakerFrequencyResponse: '',
-  isSpeakerFrequencyResponseFocused: false,
-  isSpeakerFrequencyResponseValid: false,
-  speakerTotalWattage: '',
-  isSpeakerTotalWattageFocused: false,
-  isSpeakerTotalWattageValid: false,
-  speakerInterface: 'USB',
-  speakerFieldsAdditionalMap: new Map<number, [string, string]>(),
-  areSpeakerFieldsAdditionalMapFocused: new Map<number, [boolean, boolean]>(),
-  areSpeakerFieldsAdditionalMapValid: new Map<number, [boolean, boolean]>(),
+	// ╭─────────────────────────────────────────────────────────────────╮
+	//    SPEAKER
+	// ╰─────────────────────────────────────────────────────────────────╯
+	speakerType: "2.0",
+	speakerColor: "",
+	isSpeakerColorFocused: false,
+	isSpeakerColorValid: false,
+	speakerFrequencyResponse: "",
+	isSpeakerFrequencyResponseFocused: false,
+	isSpeakerFrequencyResponseValid: false,
+	speakerTotalWattage: "",
+	isSpeakerTotalWattageFocused: false,
+	isSpeakerTotalWattageValid: false,
+	speakerInterface: "USB",
+	speakerFieldsAdditionalMap: new Map<number, [string, string]>(),
+	areSpeakerFieldsAdditionalMapFocused: new Map<number, [boolean, boolean]>(),
+	areSpeakerFieldsAdditionalMapValid: new Map<number, [boolean, boolean]>(),
 
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    STORAGE
-  // ╰─────────────────────────────────────────────────────────────────╯
-  storageType: 'SSD',
-  storageCapacity: '',
-  isStorageCapacityFocused: false,
-  isStorageCapacityValid: false,
-  storageCapacityUnit: 'GB',
-  storageCacheCapacity: '',
-  isStorageCacheCapacityFocused: false,
-  isStorageCacheCapacityValid: false,
-  storageCacheCapacityUnit: 'MB',
-  storageFormFactor: 'M.2 2280',
-  storageInterface: 'M.2',
-  storageFieldsAdditionalMap: new Map<number, [string, string]>(),
-  areStorageFieldsAdditionalMapFocused: new Map<number, [boolean, boolean]>(),
-  areStorageFieldsAdditionalMapValid: new Map<number, [boolean, boolean]>(),
+	// ╭─────────────────────────────────────────────────────────────────╮
+	//    STORAGE
+	// ╰─────────────────────────────────────────────────────────────────╯
+	storageType: "SSD",
+	storageCapacity: "",
+	isStorageCapacityFocused: false,
+	isStorageCapacityValid: false,
+	storageCapacityUnit: "GB",
+	storageCacheCapacity: "",
+	isStorageCacheCapacityFocused: false,
+	isStorageCacheCapacityValid: false,
+	storageCacheCapacityUnit: "MB",
+	storageFormFactor: "M.2 2280",
+	storageInterface: "M.2",
+	storageFieldsAdditionalMap: new Map<number, [string, string]>(),
+	areStorageFieldsAdditionalMapFocused: new Map<number, [boolean, boolean]>(),
+	areStorageFieldsAdditionalMapValid: new Map<number, [boolean, boolean]>(),
 
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    TABLET
-  // ╰─────────────────────────────────────────────────────────────────╯
-  tabletBatteryCapacity: '',
-  isTabletBatteryCapacityFocused: false,
-  isTabletBatteryCapacityValid: false,
-  tabletCamera: '',
-  isTabletCameraFocused: false,
-  isTabletCameraValid: false,
-  tabletChipset: '',
-  isTabletChipsetFocused: false,
-  isTabletChipsetValid: false,
-  tabletColor: '',
-  isTabletColorFocused: false,
-  isTabletColorValid: false,
-  tabletDisplay: '',
-  isTabletDisplayFocused: false,
-  isTabletDisplayValid: false,
-  tabletResolutionHorizontal: '',
-  isTabletResolutionHorizontalFocused: false,
-  isTabletResolutionHorizontalValid: false,
-  tabletResolutionVertical: '',
-  isTabletResolutionVerticalFocused: false,
-  isTabletResolutionVerticalValid: false,
-  tabletOs: 'iOS',
-  tabletRamCapacity: '',
-  isTabletRamCapacityFocused: false,
-  isTabletRamCapacityValid: false,
-  tabletRamCapacityUnit: 'GB',
-  tabletStorageCapacity: '',
-  isTabletStorageCapacityFocused: false,
-  isTabletStorageCapacityValid: false,
-  tabletFieldsAdditionalMap: new Map<number, [string, string]>(),
-  areTabletFieldsAdditionalMapFocused: new Map<number, [boolean, boolean]>(),
-  areTabletFieldsAdditionalMapValid: new Map<number, [boolean, boolean]>(),
+	// ╭─────────────────────────────────────────────────────────────────╮
+	//    TABLET
+	// ╰─────────────────────────────────────────────────────────────────╯
+	tabletBatteryCapacity: "",
+	isTabletBatteryCapacityFocused: false,
+	isTabletBatteryCapacityValid: false,
+	tabletCamera: "",
+	isTabletCameraFocused: false,
+	isTabletCameraValid: false,
+	tabletChipset: "",
+	isTabletChipsetFocused: false,
+	isTabletChipsetValid: false,
+	tabletColor: "",
+	isTabletColorFocused: false,
+	isTabletColorValid: false,
+	tabletDisplay: "",
+	isTabletDisplayFocused: false,
+	isTabletDisplayValid: false,
+	tabletResolutionHorizontal: "",
+	isTabletResolutionHorizontalFocused: false,
+	isTabletResolutionHorizontalValid: false,
+	tabletResolutionVertical: "",
+	isTabletResolutionVerticalFocused: false,
+	isTabletResolutionVerticalValid: false,
+	tabletOs: "iOS",
+	tabletRamCapacity: "",
+	isTabletRamCapacityFocused: false,
+	isTabletRamCapacityValid: false,
+	tabletRamCapacityUnit: "GB",
+	tabletStorageCapacity: "",
+	isTabletStorageCapacityFocused: false,
+	isTabletStorageCapacityValid: false,
+	tabletFieldsAdditionalMap: new Map<number, [string, string]>(),
+	areTabletFieldsAdditionalMapFocused: new Map<number, [boolean, boolean]>(),
+	areTabletFieldsAdditionalMapValid: new Map<number, [boolean, boolean]>(),
 
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    WEBCAM
-  // ╰─────────────────────────────────────────────────────────────────╯
-  webcamColor: '',
-  isWebcamColorFocused: false,
-  isWebcamColorValid: false,
-  webcamFrameRate: '60 fps',
-  webcamInterface: 'USB',
-  webcamMicrophone: 'Yes',
-  webcamResolution: '1080p',
-  webcamFieldsAdditionalMap: new Map<number, [string, string]>(),
-  areWebcamFieldsAdditionalMapFocused: new Map<number, [boolean, boolean]>(),
-  areWebcamFieldsAdditionalMapValid: new Map<number, [boolean, boolean]>(),
+	// ╭─────────────────────────────────────────────────────────────────╮
+	//    WEBCAM
+	// ╰─────────────────────────────────────────────────────────────────╯
+	webcamColor: "",
+	isWebcamColorFocused: false,
+	isWebcamColorValid: false,
+	webcamFrameRate: "60 fps",
+	webcamInterface: "USB",
+	webcamMicrophone: "Yes",
+	webcamResolution: "1080p",
+	webcamFieldsAdditionalMap: new Map<number, [string, string]>(),
+	areWebcamFieldsAdditionalMapFocused: new Map<number, [boolean, boolean]>(),
+	areWebcamFieldsAdditionalMapValid: new Map<number, [boolean, boolean]>(),
 
-  // ╔═════════════════════════════════════════════════════════════════╗
-  //    PAGE 3
-  // ╚═════════════════════════════════════════════════════════════════╝
-  imgFormDataArray: [],
-  areImagesValid: false,
+	// ╔═════════════════════════════════════════════════════════════════╗
+	//    PAGE 3
+	// ╚═════════════════════════════════════════════════════════════════╝
+	imgFormDataArray: [],
+	areImagesValid: false,
 
-  // ╔═════════════════════════════════════════════════════════════════╗
-  //    MISC.
-  // ╚═════════════════════════════════════════════════════════════════╝
-  currentlySelectedAdditionalFieldIndex: 0,
-  triggerFormSubmit: false,
-  currentStepperPosition: 0,
-  stepsInError: new Set(),
+	// ╔═════════════════════════════════════════════════════════════════╗
+	//    MISC.
+	// ╚═════════════════════════════════════════════════════════════════╝
+	currentlySelectedAdditionalFieldIndex: 0,
+	triggerFormSubmit: false,
+	currentStepperPosition: 0,
+	stepsInError: new Set(),
 
-  isSubmitting: false,
-  submitMessage: '',
-  isSuccessful: false,
-  successMessage: '',
+	isSubmitting: false,
+	submitMessage: "",
+	isSuccessful: false,
+	successMessage: "",
 };
 
 // function createProductReducer(

@@ -1,7 +1,4 @@
-import { faCheck, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Flex, PasswordInput, Text, TextInput } from '@mantine/core';
-import { ChangeEvent, KeyboardEvent, MouseEvent, useEffect } from 'react';
+import { ChangeEvent, useEffect } from 'react';
 
 import {
   EMAIL_REGEX,

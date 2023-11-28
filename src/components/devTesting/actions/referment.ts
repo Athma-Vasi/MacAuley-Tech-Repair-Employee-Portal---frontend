@@ -1,7 +1,7 @@
-import { DEPARTMENT_JOB_POSITION_MAP } from '../../constants/data';
-import { Department, PhoneNumber, RequestStatus } from '../../types';
-import { groupByField } from '../../utils';
-import { DirectoryUserDocument } from '../directory/types';
+import { DEPARTMENT_JOB_POSITION_MAP } from '../../../constants/data';
+import { Department, PhoneNumber, RequestStatus } from '../../../types';
+import { groupByField } from '../../../utils';
+import { DirectoryUserDocument } from '../../directory/types';
 
 const refermentsArray = [
   {

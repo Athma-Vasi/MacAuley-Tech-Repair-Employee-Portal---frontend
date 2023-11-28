@@ -1,5 +1,5 @@
-import { shuffleArray } from '../../utils';
-import { DirectoryUserDocument } from '../directory/types';
+import { shuffleArray } from '../../../utils';
+import { DirectoryUserDocument } from '../../directory/types';
 
 type AnnouncementsArray = {
   title: string;
