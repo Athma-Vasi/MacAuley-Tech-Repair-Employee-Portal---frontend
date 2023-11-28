@@ -4,107 +4,60 @@ import { useEffect, useReducer } from "react";
 
 import { useAuth, useWrapFetch } from "../../hooks";
 import { UserRoles } from "../../types";
-import {
-	flattenObjectIterative,
-	groupByField,
-	logState,
-	urlBuilder,
-} from "../../utils";
-import { USERS_DOCS } from "./constants";
-import { returnCustomerSchemas } from "./customer/customer";
-import { CUSTOMER_DOCUMENTS } from "./customer/documents";
-import {
-	ACCESSORY_DOCUMENTS,
-	ACCESSORY_REVIEWS,
-} from "./productCategory/accessory";
-import {
-	ACCESSORY_ARRAYS,
-	returnAccessorySchemas,
-} from "./productCategory/accessory";
-import { CASE_DOCUMENTS, CASE_REVIEWS } from "./productCategory/case";
-import { CASE_ARRAY, returnCaseSchemas } from "./productCategory/case";
-import { CPU_DOCUMENTS, CPU_REVIEWS } from "./productCategory/cpu";
-import { CPUS_ARRAY, returnCpuSchemas } from "./productCategory/cpu";
-import {
-	DESKTOP_COMPUTER_DOCUMENTS,
-	DESKTOP_COMPUTER_REVIEWS,
-} from "./productCategory/desktopComputer";
-import {
-	DESKTOP_COMPUTERS_ARRAY,
-	returnDesktopComputerSchemas,
-} from "./productCategory/desktopComputer";
-import { DISPLAY_DOCUMENTS, DISPLAY_REVIEWS } from "./productCategory/display";
-import {
-	DISPLAYS_ARRAY,
-	returnDisplaySchemas,
-} from "./productCategory/display";
-import { GPU_DOCUMENTS, GPU_REVIEWS } from "./productCategory/gpu";
-import { GPUS_ARRAY, returnGpuSchemas } from "./productCategory/gpu";
-import {
-	HEADPHONE_DOCUMENTS,
-	HEADPHONE_REVIEWS,
-} from "./productCategory/headphone";
-import {
-	HEADPHONES_ARRAY,
-	returnHeadphoneSchemas,
-} from "./productCategory/headphone";
-import {
-	KEYBOARD_DOCUMENTS,
-	KEYBOARD_REVIEWS,
-} from "./productCategory/keyboard";
-import {
-	KEYBOARDS_ARRAY,
-	returnKeyboardSchemas,
-} from "./productCategory/keyboard";
-import { LAPTOP_DOCUMENTS, LAPTOP_REVIEWS } from "./productCategory/laptop";
-import { LAPTOPS_ARRAY, returnLaptopSchemas } from "./productCategory/laptop";
-import {
-	MICROPHONE_DOCUMENTS,
-	MICROPHONE_REVIEWS,
-} from "./productCategory/microphone";
-import {
-	MICROPHONES_ARRAY,
-	returnMicrophoneSchemas,
-} from "./productCategory/microphone";
-import {
-	MOTHERBOARD_DOCUMENTS,
-	MOTHERBOARD_REVIEWS,
-} from "./productCategory/motherboard";
-import {
-	MOTHERBOARDS_ARRAY,
-	returnMotherboardSchemas,
-} from "./productCategory/motherboard";
-import { MOUSE_DOCUMENTS, MOUSE_REVIEWS } from "./productCategory/mouse";
-import { MOUSE_ARRAY, returnMouseSchemas } from "./productCategory/mouse";
-import { PSU_DOCUMENTS, PSU_REVIEWS } from "./productCategory/psu";
-import { PSUS_ARRAY, returnPsuSchemas } from "./productCategory/psu";
-import { RAM_DOCUMENTS, RAM_REVIEWS } from "./productCategory/ram";
-import { RAMS_ARRAY, returnRamSchemas } from "./productCategory/ram";
-import {
-	SMARTPHONE_DOCUMENTS,
-	SMARTPHONE_REVIEWS,
-} from "./productCategory/smartphone";
-import {
-	returnSmartphoneSchemas,
-	SMARTPHONES_ARRAY,
-} from "./productCategory/smartphone";
-import { SPEAKER_DOCUMENTS, SPEAKER_REVIEWS } from "./productCategory/speaker";
-import {
-	returnSpeakerSchemas,
-	SPEAKERS_ARRAY,
-} from "./productCategory/speaker";
-import { STORAGE_DOCUMENTS, STORAGE_REVIEWS } from "./productCategory/storage";
-import { returnStorageSchemas, STORAGE_ARRAY } from "./productCategory/storage";
-import { TABLET_DOCUMENTS, TABLET_REVIEWS } from "./productCategory/tablet";
-import { returnTabletSchemas, TABLETS_ARRAY } from "./productCategory/tablet";
-import { WEBCAM_DOCUMENTS, WEBCAM_REVIEWS } from "./productCategory/webcam";
-import { returnWebcamSchemas, WEBCAMS_ARRAY } from "./productCategory/webcam";
-import { returnProductReviewSchemas } from "./productReview/review";
+import { logState, urlBuilder } from "../../utils";
 import {
 	devTestingAction,
 	devTestingReducer,
 	initialDevTestingState,
 } from "./state";
+import {
+	returnCustomerFieldsToAdd,
+	returnCustomerSchemas,
+} from "./customer/customer";
+import { REVIEW_DOCUMENTS } from "./productReview/reviewDocuments";
+import { USERS_DOCS } from "./constants";
+import { CUSTOMER_DOCUMENTS } from "./customer/customerDocuments";
+import {
+	ACCESSORY_DOCUMENTS,
+	ACCESSORY_REVIEWS,
+} from "./productCategory/accessory";
+import { CASE_DOCUMENTS, CASE_REVIEWS } from "./productCategory/case";
+import { CPU_DOCUMENTS, CPU_REVIEWS } from "./productCategory/cpu";
+import {
+	DESKTOP_COMPUTER_DOCUMENTS,
+	DESKTOP_COMPUTER_REVIEWS,
+} from "./productCategory/desktopComputer";
+import { DISPLAY_DOCUMENTS, DISPLAY_REVIEWS } from "./productCategory/display";
+import { GPU_DOCUMENTS, GPU_REVIEWS } from "./productCategory/gpu";
+import {
+	HEADPHONE_DOCUMENTS,
+	HEADPHONE_REVIEWS,
+} from "./productCategory/headphone";
+import {
+	KEYBOARD_DOCUMENTS,
+	KEYBOARD_REVIEWS,
+} from "./productCategory/keyboard";
+import { LAPTOP_DOCUMENTS, LAPTOP_REVIEWS } from "./productCategory/laptop";
+import {
+	MICROPHONE_DOCUMENTS,
+	MICROPHONE_REVIEWS,
+} from "./productCategory/microphone";
+import {
+	MOTHERBOARD_DOCUMENTS,
+	MOTHERBOARD_REVIEWS,
+} from "./productCategory/motherboard";
+import { MOUSE_DOCUMENTS, MOUSE_REVIEWS } from "./productCategory/mouse";
+import { PSU_DOCUMENTS, PSU_REVIEWS } from "./productCategory/psu";
+import { RAM_DOCUMENTS, RAM_REVIEWS } from "./productCategory/ram";
+import {
+	SMARTPHONE_DOCUMENTS,
+	SMARTPHONE_REVIEWS,
+} from "./productCategory/smartphone";
+import { SPEAKER_DOCUMENTS, SPEAKER_REVIEWS } from "./productCategory/speaker";
+import { STORAGE_DOCUMENTS, STORAGE_REVIEWS } from "./productCategory/storage";
+import { TABLET_DOCUMENTS, TABLET_REVIEWS } from "./productCategory/tablet";
+import { WEBCAM_DOCUMENTS, WEBCAM_REVIEWS } from "./productCategory/webcam";
+import { returnProductReviewSchemas } from "./productReview/review";
 
 function DevTesting() {
 	const [devTestingState, devTestingDispatch] = useReducer(
@@ -130,7 +83,7 @@ function DevTesting() {
 
 		async function submitDevTestingForm() {
 			const url: URL = urlBuilder({
-				path: "product-review/dev",
+				path: "customer/dev/add-field",
 			});
 
 			const newBodiesArrCount =
@@ -149,7 +102,7 @@ function DevTesting() {
 
 			const reqBody = {
 				userInfo,
-				productReviewSchemas: slicedBodiesArr,
+				customerFields: slicedBodiesArr,
 			};
 
 			console.log({ slicedBodiesArr });
@@ -211,7 +164,7 @@ function DevTesting() {
 
 		async function getAllResourceDocumentsBulk() {
 			const url: URL = urlBuilder({
-				path: "customer/dev",
+				path: "product-review/dev",
 			});
 
 			const requestInit: RequestInit = {
@@ -264,7 +217,64 @@ function DevTesting() {
 	}, [triggerGetRequest]);
 
 	useEffect(() => {
-		const bodiesArr = returnProductReviewSchemas({
+		const bodiesArr = returnCustomerFieldsToAdd(REVIEW_DOCUMENTS);
+
+		devTestingDispatch({
+			type: devTestingAction.setBodiesArr,
+			payload: bodiesArr,
+		});
+	}, []);
+
+	useEffect(() => {
+		logState({
+			state: devTestingState,
+			groupLabel: "Dev Testing",
+		});
+	}, [devTestingState]);
+
+	return (
+		<Center w="100%">
+			<Stack>
+				<Text>POST REQUEST</Text>
+				<Group>
+					<Button
+						disabled={
+							bodiesArrCount === bodiesArr.length || triggerPostFormSubmit
+						}
+						onClick={() => {
+							devTestingDispatch({
+								type: devTestingAction.setTriggerPostFormSubmit,
+								payload: true,
+							});
+						}}
+					>
+						Trigger POST
+					</Button>
+				</Group>
+
+				<Text>GET REQUEST</Text>
+				<Group>
+					<Button
+						disabled={triggerGetRequest}
+						onClick={() => {
+							devTestingDispatch({
+								type: devTestingAction.setTriggerGetRequest,
+								payload: true,
+							});
+						}}
+					>
+						Trigger GET
+					</Button>
+				</Group>
+			</Stack>
+		</Center>
+	);
+}
+
+export default DevTesting;
+
+/**
+ * const bodiesArr = returnProductReviewSchemas({
 			accessoryDocuments: ACCESSORY_DOCUMENTS,
 			accessoryReviews: ACCESSORY_REVIEWS,
 			caseDocuments: CASE_DOCUMENTS,
@@ -305,57 +315,4 @@ function DevTesting() {
 			webcamReviews: WEBCAM_REVIEWS,
 			customerDocuments: CUSTOMER_DOCUMENTS,
 		});
-
-		devTestingDispatch({
-			type: devTestingAction.setBodiesArr,
-			payload: bodiesArr,
-		});
-	}, []);
-
-	useEffect(() => {
-		logState({
-			state: devTestingState,
-			groupLabel: "Dev Testing",
-		});
-	}, [devTestingState]);
-
-	return (
-		<Center w="100%">
-			<Stack>
-				<Text>POST REQUEST</Text>
-				<Group>
-					<Button
-						disabled={
-							bodiesArrCount === bodiesArr.length || triggerPostFormSubmit
-						}
-						onClick={() => {
-							devTestingDispatch({
-								type: devTestingAction.setTriggerPostFormSubmit,
-								payload: true,
-							});
-						}}
-					>
-						Trigger POST
-					</Button>
-				</Group>
-
-				{/* <Text>GET REQUEST</Text>
-				<Group>
-					<Button
-						disabled={triggerGetRequest}
-						onClick={() => {
-							devTestingDispatch({
-								type: devTestingAction.setTriggerGetRequest,
-								payload: true,
-							});
-						}}
-					>
-						Trigger GET
-					</Button>
-				</Group> */}
-			</Stack>
-		</Center>
-	);
-}
-
-export default DevTesting;
+ */

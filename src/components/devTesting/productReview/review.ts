@@ -1,6 +1,7 @@
 import { shuffleArray } from "../../../utils";
 import { ProductCategory } from "../../dashboard/types";
-import { CUSTOMER_DOCUMENTS } from "../customer/documents";
+import { CUSTOMER_DOCUMENTS } from "../customer/customerDocuments";
+
 import {
 	ACCESSORY_DOCUMENTS,
 	ACCESSORY_REVIEWS,
@@ -189,15 +190,12 @@ function returnProductReviewSchemas({
 	const productReviewSchemas = customerDocuments.flatMap((customerDoc) => {
 		const { _id: userId, username } = customerDoc;
 
-		// pick a random number of reviews to generate
 		const numberOfReviews = Math.floor(Math.random() * 3);
 
 		const tuples = Array.from(TUPLES_MAP.entries());
 
-		// shuffle the tuple
 		const shuffledTuples = shuffleArray(tuples);
 
-		// slice the shuffled tuples to the number of reviews
 		const slicedTuples = shuffledTuples.slice(0, numberOfReviews) as [
 			string,
 			[any[], ProductReviewsBlueprint[]],
@@ -211,16 +209,13 @@ function returnProductReviewSchemas({
 				];
 				const [productCategoryDocuments, productCategoryReviews] = keyVal;
 
-				// shuffle the product documents
 				const shuffledProductCategoryDocuments = shuffleArray(
 					productCategoryDocuments,
 				);
 
-				// slice the shuffled product documents to the number of reviews
 				const slicedProductCategoryDocuments =
 					shuffledProductCategoryDocuments.slice(0, numberOfReviews);
 
-				// slice the shuffled product reviews to the number of reviews
 				const slicedProductCategoryReviews = productCategoryReviews.slice(
 					0,
 					numberOfReviews,

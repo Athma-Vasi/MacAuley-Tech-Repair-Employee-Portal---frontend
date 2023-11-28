@@ -6,8 +6,9 @@ import {
 	Province,
 	StatesUS,
 } from "../../../types";
-
 import { DirectoryUserDocument } from "../../directory/types";
+import type { ReviewDocuments } from "../productReview/reviewDocuments";
+import { REVIEW_DOCUMENTS } from "../productReview/reviewDocuments";
 
 type PaymentInformation = {
 	cardholderName: string;
@@ -42,6 +43,7 @@ type CustomerSchema = {
 	contactNumber: PhoneNumber;
 	address: Address;
 	paymentInformation: PaymentInformation;
+	productReviewsIds: string[];
 	purchaseHistoryIds: string[];
 	rmaHistoryIds: string[];
 
@@ -86,7 +88,7 @@ function returnCustomerSchemas(usersDocs: DirectoryUserDocument[]) {
 
 	const alphabets = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 
-	const customerSchemas = Array.from({ length: 1000 }).map((_, idx) => {
+	const customerSchemas = Array.from({ length: 750 }).map((_, idx) => {
 		const firstNamePool = Array.from(
 			aggregatedUserFields.get("firstName") ?? [],
 		) as string[];
@@ -217,6 +219,7 @@ function returnCustomerSchemas(usersDocs: DirectoryUserDocument[]) {
 				expirationDate,
 				billingAddress,
 			},
+			productReviewsIds: [],
 			purchaseHistoryIds: [],
 			rmaHistoryIds: [],
 			isActive: true,
@@ -230,5 +233,58 @@ function returnCustomerSchemas(usersDocs: DirectoryUserDocument[]) {
 	return customerSchemas;
 }
 
-export { returnCustomerSchemas };
+function returnCustomerFieldsToAdd(reviewDocuments: typeof REVIEW_DOCUMENTS) {
+	const userIdToProductReviewsIdMap = reviewDocuments.reduce(
+		(
+			acc: Map<
+				string, // userId (customer)
+				Set<string>
+			>,
+			reviewDoc: ReviewDocuments[0],
+		) => {
+			const { _id, userId } = reviewDoc;
+
+			if (acc.has(userId)) {
+				const prevSet = acc.get(userId) ?? new Set();
+				acc.set(userId, prevSet.add(_id));
+			} else {
+				acc.set(userId, new Set([_id]));
+			}
+
+			return acc;
+		},
+		new Map(),
+	);
+
+	return Array.from(userIdToProductReviewsIdMap).reduce<
+		{
+			customerId: string;
+			fieldName: string;
+			fieldValue: string[];
+		}[]
+	>((acc, tuple) => {
+		const [userId, productReviewsIds] = tuple as [string, Set<string>];
+
+		// const customerFieldsToAdd = {
+		// 	customerId: userId,
+		// 	fields: {
+		// 		productReviewsIds: Array.from(productReviewsIds),
+		// 	},
+		// };
+
+		Array.from(productReviewsIds).forEach((productReviewsId) => {
+			const customerFieldsToAdd = {
+				customerId: userId,
+				fieldName: "productReviewsIds",
+				fieldValue: [productReviewsId],
+			};
+
+			acc.push(customerFieldsToAdd);
+		});
+
+		return acc;
+	}, []);
+}
+
+export { returnCustomerFieldsToAdd, returnCustomerSchemas };
 export type { CustomerDocument, CustomerSchema };
