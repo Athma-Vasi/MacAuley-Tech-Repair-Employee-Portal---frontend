@@ -1558,14 +1558,19 @@ function returnObjectKeyValidationText({
 	maxLength = 75,
 	minLength = 1,
 }: RegexValidationProps): string {
-	// /^[^"'\s\\]{1,75}$/;
+	// /^(?![0-9])[^"'\s\\]{1,75}$/;
 	const objectKeyLengthRegex = new RegExp(`^(?=.{${minLength},${maxLength}}$)`);
+	const objectKeyFirstCharacterRegex = /^(?![0-9])/;
 	const objectKeyCharacterRegex = /^[^"'\s\\]+$/;
 
 	const objectKeyRegexTupleArr: [boolean, string][] = [
 		[
 			objectKeyLengthRegex.test(content),
 			`Must be between ${minLength} and ${maxLength} characters.`,
+		],
+		[
+			objectKeyFirstCharacterRegex.test(content),
+			"Must not begin with a number. Must begin with a letter, underscore, or dollar sign.",
 		],
 		[
 			objectKeyCharacterRegex.test(content),

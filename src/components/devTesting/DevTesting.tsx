@@ -217,13 +217,24 @@ function DevTesting() {
 	}, [triggerGetRequest]);
 
 	useEffect(() => {
-		const bodiesArr = returnCustomerFieldsToAdd(REVIEW_DOCUMENTS);
-
-		devTestingDispatch({
-			type: devTestingAction.setBodiesArr,
-			payload: bodiesArr,
-		});
+		// const bodiesArr = returnCustomerFieldsToAdd(REVIEW_DOCUMENTS);
+		// devTestingDispatch({
+		// 	type: devTestingAction.setBodiesArr,
+		// 	payload: bodiesArr,
+		// });
 	}, []);
+
+	useEffect(() => {
+		const updateOperator = "$set";
+
+		const fields = { quantity: -2, "metrics.orders": 1 };
+
+		const updateString = `{ "${updateOperator}": ${JSON.stringify(fields)} }`;
+		const updateObject = JSON.parse(updateString);
+
+		const obj = `{ ${updateOperator}: ${JSON.stringify(fields)} }`;
+		console.log("obj", obj);
+	});
 
 	useEffect(() => {
 		logState({

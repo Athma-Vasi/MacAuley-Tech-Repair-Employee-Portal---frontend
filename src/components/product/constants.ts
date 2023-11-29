@@ -64,13 +64,14 @@ import {
 } from "./types";
 
 /**
- * - /^[^"'\s\\]{1,75}$/;
- * - [^"'\s\\] matches any character except ", ', whitespace and \.
+ * - /^(?![0-9])[^"'\s\\]{1,75}$/;
+ * - (?![0-9]) ensures that the first character is not a digit.
+ * - [^"'\s\\] ensures that the input does not contain any of the following characters: ", ', whitespace, \.
  * - {1,75} matches the preceding token between 1 and 75 times.
  * - ^ and $ ensure that the entire string matches the regex.
- * ex: 'username' or 'username123' or 'username-123' or '123-username'
+ * ex: 'username' or 'username123' or 'username-123' or 'u123-sername'
  */
-const OBJECT_KEY_REGEX = /^[^"'\s\\]{1,75}$/;
+const OBJECT_KEY_REGEX = /^(?![0-9])[^"'\s\\]{1,75}$/;
 
 /**
  * - /^(?!^\s*$)[a-zA-Z0-9!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]{2,2000}$/i
