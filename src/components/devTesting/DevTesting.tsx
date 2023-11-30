@@ -78,7 +78,13 @@ import {
 } from "./productCategory/motherboard";
 import { MOUSE_ARRAY, returnMouseSchemas } from "./productCategory/mouse";
 import { PSUS_ARRAY, returnPsuSchemas } from "./productCategory/psu";
-import { RAMS_ARRAY, returnRamSchemas } from "./productCategory/ram";
+import {
+  RAMS_ARRAY,
+  RAM_DOCUMENTS,
+  RAM_REVIEWS,
+  returnRamProductReviewSchemas,
+  returnRamSchemas,
+} from "./productCategory/ram";
 import { returnSmartphoneSchemas, SMARTPHONES_ARRAY } from "./productCategory/smartphone";
 import { returnSpeakerSchemas, SPEAKERS_ARRAY } from "./productCategory/speaker";
 import { returnStorageSchemas, STORAGE_ARRAY } from "./productCategory/storage";
@@ -233,10 +239,10 @@ function DevTesting() {
   }, [triggerGetRequest]);
 
   useEffect(() => {
-    const bodiesArr = returnLaptopProductReviewSchemas({
+    const bodiesArr = returnRamProductReviewSchemas({
       customerDocuments: CUSTOMER_DOCUMENTS,
-      laptopDocuments: LAPTOP_DOCUMENTS,
-      laptopReviews: LAPTOP_REVIEWS,
+      ramDocuments: RAM_DOCUMENTS,
+      ramReviews: RAM_REVIEWS,
     });
 
     devTestingDispatch({
