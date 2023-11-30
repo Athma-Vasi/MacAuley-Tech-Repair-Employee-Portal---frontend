@@ -92,7 +92,13 @@ import {
   returnMouseProductReviewSchemas,
   returnMouseSchemas,
 } from "./productCategory/mouse";
-import { PSUS_ARRAY, returnPsuSchemas } from "./productCategory/psu";
+import {
+  PSUS_ARRAY,
+  PSU_DOCUMENTS,
+  PSU_REVIEWS,
+  returnPsuProductReviewSchemas,
+  returnPsuSchemas,
+} from "./productCategory/psu";
 import {
   RAMS_ARRAY,
   RAM_DOCUMENTS,
@@ -254,10 +260,10 @@ function DevTesting() {
   }, [triggerGetRequest]);
 
   useEffect(() => {
-    const bodiesArr = returnMouseProductReviewSchemas({
-      mouseDocuments: MOUSE_DOCUMENTS,
+    const bodiesArr = returnPsuProductReviewSchemas({
       customerDocuments: CUSTOMER_DOCUMENTS,
-      mouseReviews: MOUSE_REVIEWS,
+      psuDocuments: PSU_DOCUMENTS,
+      psuReviews: PSU_REVIEWS,
     });
 
     devTestingDispatch({
