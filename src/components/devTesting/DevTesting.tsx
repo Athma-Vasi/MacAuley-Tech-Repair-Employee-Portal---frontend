@@ -57,7 +57,11 @@ import { SPEAKER_DOCUMENTS, SPEAKER_REVIEWS } from "./productCategory/speaker";
 import { STORAGE_DOCUMENTS, STORAGE_REVIEWS } from "./productCategory/storage";
 import { TABLET_DOCUMENTS, TABLET_REVIEWS } from "./productCategory/tablet";
 import { WEBCAM_DOCUMENTS, WEBCAM_REVIEWS } from "./productCategory/webcam";
-import { returnProductReviewSchemas } from "./productReview/review";
+import {
+	returnProductCategoryStarRatingsCount,
+	returnProductReviewSchemas,
+} from "./productReview/review";
+import { AccessoryDocument } from "../product/types";
 
 function DevTesting() {
 	const [devTestingState, devTestingDispatch] = useReducer(
@@ -83,12 +87,12 @@ function DevTesting() {
 
 		async function submitDevTestingForm() {
 			const url: URL = urlBuilder({
-				path: "customer/dev/add-field",
+				path: "product-category/computer-case/dev",
 			});
 
 			const newBodiesArrCount =
-				bodiesArr.length - bodiesArrCount > 75
-					? bodiesArrCount + 75
+				bodiesArr.length - bodiesArrCount > 5
+					? bodiesArrCount + 5
 					: bodiesArr.length;
 			const slicedBodiesArr = bodiesArr.slice(
 				bodiesArrCount,
@@ -102,13 +106,11 @@ function DevTesting() {
 
 			const reqBody = {
 				userInfo,
-				customerFields: slicedBodiesArr,
+				computerCaseFields: slicedBodiesArr,
 			};
 
-			console.log({ slicedBodiesArr });
-
 			const requestInit: RequestInit = {
-				method: "POST",
+				method: "PATCH",
 				headers: {
 					"Content-Type": "application/json",
 				},
@@ -217,23 +219,24 @@ function DevTesting() {
 	}, [triggerGetRequest]);
 
 	useEffect(() => {
-		// const bodiesArr = returnCustomerFieldsToAdd(REVIEW_DOCUMENTS);
-		// devTestingDispatch({
-		// 	type: devTestingAction.setBodiesArr,
-		// 	payload: bodiesArr,
-		// });
+		const bodiesArr = returnProductCategoryStarRatingsCount({
+			productCategory: "Computer Case",
+			reviewDocuments: REVIEW_DOCUMENTS,
+		});
+
+		devTestingDispatch({
+			type: devTestingAction.setBodiesArr,
+			payload: bodiesArr,
+		});
 	}, []);
 
 	useEffect(() => {
-		const updateOperator = "$set";
-
-		const fields = { quantity: -2, "metrics.orders": 1 };
-
-		const updateString = `{ "${updateOperator}": ${JSON.stringify(fields)} }`;
-		const updateObject = JSON.parse(updateString);
-
-		const obj = `{ ${updateOperator}: ${JSON.stringify(fields)} }`;
-		console.log("obj", obj);
+		// const starRatingsCount =
+		// 			returnProductCategoryStarRatingsCount({
+		// 				productCategory: "Accessory",
+		// 				reviewDocuments: REVIEW_DOCUMENTS,
+		// 			});
+		// 		console.log({ starRatingsCount });
 	});
 
 	useEffect(() => {

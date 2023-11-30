@@ -5,6 +5,7 @@ import { ChangeEvent, MouseEvent, useEffect, useReducer } from "react";
 import { useErrorBoundary } from "react-error-boundary";
 import { TbUpload } from "react-icons/tb";
 import { useNavigate } from "react-router-dom";
+import { v4 as uuidv4 } from "uuid";
 
 import { COLORS_SWATCHES } from "../../constants/data";
 import {
@@ -762,6 +763,7 @@ function CreateProduct() {
 					// ╚═════════════════════════════════════════════════════════════════╝
 
 					const page1Specifications: ProductCategoryPage1Specifications = {
+						sku: uuidv4(),
 						brand,
 						model,
 						price: parseFloat(price),

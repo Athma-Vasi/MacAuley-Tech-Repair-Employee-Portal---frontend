@@ -1,7 +1,8 @@
-import { shuffleArray } from "../../../utils";
+import { DocumentUpdateOperation } from "../../../types";
+import { groupByField, shuffleArray } from "../../../utils";
 import { ProductCategory } from "../../dashboard/types";
+import { AccessoryDocument } from "../../product/types";
 import { CUSTOMER_DOCUMENTS } from "../customer/customerDocuments";
-
 import {
 	ACCESSORY_DOCUMENTS,
 	ACCESSORY_REVIEWS,
@@ -42,6 +43,7 @@ import { SPEAKER_DOCUMENTS, SPEAKER_REVIEWS } from "../productCategory/speaker";
 import { STORAGE_DOCUMENTS, STORAGE_REVIEWS } from "../productCategory/storage";
 import { TABLET_DOCUMENTS, TABLET_REVIEWS } from "../productCategory/tablet";
 import { WEBCAM_DOCUMENTS, WEBCAM_REVIEWS } from "../productCategory/webcam";
+import { REVIEW_DOCUMENTS } from "./reviewDocuments";
 
 type ProductRating =
 	| "0.5"
@@ -216,10 +218,12 @@ function returnProductReviewSchemas({
 				const slicedProductCategoryDocuments =
 					shuffledProductCategoryDocuments.slice(0, numberOfReviews);
 
-				const slicedProductCategoryReviews = productCategoryReviews.slice(
-					0,
-					numberOfReviews,
+				const shuffledProductCategoryReviews = shuffleArray(
+					productCategoryReviews,
 				);
+
+				const slicedProductCategoryReviews =
+					shuffledProductCategoryReviews.slice(0, numberOfReviews);
 
 				const productReviewSchemas = slicedProductCategoryDocuments.map(
 					(productCategoryDocument, idx) => {
@@ -264,5 +268,95 @@ function returnProductReviewSchemas({
 	return productReviewSchemas;
 }
 
-export { returnProductReviewSchemas };
+function returnProductCategoryStarRatingsCount({
+	productCategory,
+	reviewDocuments,
+}: {
+	productCategory: ProductCategory;
+	reviewDocuments: typeof REVIEW_DOCUMENTS;
+}) {
+	const groupedByProductCategory = groupByField({
+		objectArray: reviewDocuments,
+		field: "productCategory",
+	});
+
+	const productCategoryDocuments = groupedByProductCategory[productCategory];
+
+	const groupedByProductId = groupByField({
+		objectArray: productCategoryDocuments,
+		field: "productId",
+	});
+
+	console.log("groupedByProductId", groupedByProductId);
+
+	// because the productRating is a string (e.g. "4.5")
+	const starRatingsObj: Record<string, string> = {
+		"0.5": "'0.5'",
+		"1": "'1.0'",
+		"1.5": "'1.5'",
+		"2": "'2.0'",
+		"2.5": "'2.5'",
+		"3": "'3.0'",
+		"3.5": "'3.5'",
+		"4": "'4.0'",
+		"4.5": "'4.5'",
+		"5": "'5.0'",
+	};
+
+	const starRatingsCount = Object.entries(groupedByProductId).reduce(
+		(starRatingsCountAcc: any[], tuple) => {
+			const [productId, reviews] = tuple;
+
+			const initialUpdateFieldsObj = {
+				documentId: productId,
+				documentUpdate: {
+					updateKind: "field",
+					updateOperator: "$set",
+					fields: {
+						starRatingsCount: {
+							"0.5": 0,
+							"1.0": 0,
+							"1.5": 0,
+							"2.0": 0,
+							"2.5": 0,
+							"3.0": 0,
+							"3.5": 0,
+							"4.0": 0,
+							"4.5": 0,
+							"5.0": 0,
+						},
+					},
+				},
+			};
+
+			const updateFields = reviews.reduce((updateFieldsAcc: any, review) => {
+				const { productRating } = review;
+				const starRating = starRatingsObj[productRating];
+
+				// find the star rating key in the updateFields object
+				const starRatingKey =
+					Object.keys(
+						updateFieldsAcc.documentUpdate.fields.starRatingsCount,
+					).find((key) => key === starRating) ?? "";
+
+				// increment the star rating count
+				updateFieldsAcc.documentUpdate.fields.starRatingsCount[
+					starRatingKey
+				] += 1;
+
+				return updateFieldsAcc;
+			}, structuredClone(initialUpdateFieldsObj));
+
+			starRatingsCountAcc.push(updateFields);
+
+			//
+			return starRatingsCountAcc;
+		},
+		[],
+	);
+
+	return starRatingsCount;
+}
+
+export { returnProductCategoryStarRatingsCount, returnProductReviewSchemas };
 export type { ProductRating, ProductReviewDocument, ProductReviewSchema };
