@@ -127,7 +127,13 @@ import {
   STORAGE_DOCUMENTS,
   STORAGE_REVIEWS,
 } from "./productCategory/storage";
-import { returnTabletSchemas, TABLETS_ARRAY } from "./productCategory/tablet";
+import {
+  returnTabletProductReviewSchemas,
+  returnTabletSchemas,
+  TABLET_DOCUMENTS,
+  TABLET_REVIEWS,
+  TABLETS_ARRAY,
+} from "./productCategory/tablet";
 import { returnWebcamSchemas, WEBCAMS_ARRAY } from "./productCategory/webcam";
 import { devTestingAction, devTestingReducer, initialDevTestingState } from "./state";
 
@@ -278,10 +284,10 @@ function DevTesting() {
   }, [triggerGetRequest]);
 
   useEffect(() => {
-    const bodiesArr = returnStorageProductReviewSchemas({
+    const bodiesArr = returnTabletProductReviewSchemas({
+      tabletDocuments: TABLET_DOCUMENTS,
       customerDocuments: CUSTOMER_DOCUMENTS,
-      storageDocuments: STORAGE_DOCUMENTS,
-      storageReviews: STORAGE_REVIEWS,
+      tabletReviews: TABLET_REVIEWS,
     });
 
     devTestingDispatch({
