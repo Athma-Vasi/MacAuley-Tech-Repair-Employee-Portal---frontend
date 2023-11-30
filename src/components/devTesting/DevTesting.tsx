@@ -7,8 +7,7 @@ import { UserRoles } from "../../types";
 import { logState, urlBuilder } from "../../utils";
 import { USERS_DOCS } from "./constants";
 import { returnCustomerSchemas } from "./customer/customer";
-import { devTestingAction, devTestingReducer, initialDevTestingState } from "./state";
-import { LAPTOPS_ARRAY, returnLaptopSchemas } from "./productCategory/laptop";
+import { CUSTOMER_DOCUMENTS } from "./customer/customerDocuments";
 import {
   ACCESSORY_ARRAYS,
   ACCESSORY_DOCUMENTS,
@@ -17,13 +16,6 @@ import {
   returnAccessorySchemas,
 } from "./productCategory/accessory";
 import {
-  CPUS_ARRAY,
-  CPU_DOCUMENTS,
-  CPU_REVIEWS,
-  returnCpuProductReviewSchemas,
-  returnCpuSchemas,
-} from "./productCategory/cpu";
-import {
   CASE_ARRAY,
   CASE_DOCUMENTS,
   CASE_REVIEWS,
@@ -31,29 +23,48 @@ import {
   returnCaseSchemas,
 } from "./productCategory/case";
 import {
-  DESKTOP_COMPUTERS_ARRAY,
+  CPU_DOCUMENTS,
+  CPU_REVIEWS,
+  CPUS_ARRAY,
+  returnCpuProductReviewSchemas,
+  returnCpuSchemas,
+} from "./productCategory/cpu";
+import {
   DESKTOP_COMPUTER_DOCUMENTS,
   DESKTOP_COMPUTER_REVIEWS,
+  DESKTOP_COMPUTERS_ARRAY,
   returnDesktopComputerProductReviewSchemas,
   returnDesktopComputerSchemas,
 } from "./productCategory/desktopComputer";
 import {
-  DISPLAYS_ARRAY,
   DISPLAY_DOCUMENTS,
   DISPLAY_REVIEWS,
+  DISPLAYS_ARRAY,
   returnDisplayProductReviewSchemas,
   returnDisplaySchemas,
 } from "./productCategory/display";
 import {
-  GPUS_ARRAY,
   GPU_DOCUMENTS,
   GPU_REVIEWS,
+  GPUS_ARRAY,
   returnGpuProductReviewSchemas,
   returnGpuSchemas,
 } from "./productCategory/gpu";
-import { HEADPHONES_ARRAY, returnHeadphoneSchemas } from "./productCategory/headphone";
-import { KEYBOARDS_ARRAY, returnKeyboardSchemas } from "./productCategory/keyboard";
-import { RAMS_ARRAY, returnRamSchemas } from "./productCategory/ram";
+import {
+  HEADPHONE_DOCUMENTS,
+  HEADPHONE_REVIEWS,
+  HEADPHONES_ARRAY,
+  returnHeadphoneProductReviewSchemas,
+  returnHeadphoneSchemas,
+} from "./productCategory/headphone";
+import {
+  KEYBOARD_DOCUMENTS,
+  KEYBOARD_REVIEWS,
+  KEYBOARDS_ARRAY,
+  returnKeyboardProductReviewSchemas,
+  returnKeyboardSchemas,
+} from "./productCategory/keyboard";
+import { LAPTOPS_ARRAY, returnLaptopSchemas } from "./productCategory/laptop";
 import { MICROPHONES_ARRAY, returnMicrophoneSchemas } from "./productCategory/microphone";
 import {
   MOTHERBOARDS_ARRAY,
@@ -61,12 +72,13 @@ import {
 } from "./productCategory/motherboard";
 import { MOUSE_ARRAY, returnMouseSchemas } from "./productCategory/mouse";
 import { PSUS_ARRAY, returnPsuSchemas } from "./productCategory/psu";
-import { SMARTPHONES_ARRAY, returnSmartphoneSchemas } from "./productCategory/smartphone";
-import { SPEAKERS_ARRAY, returnSpeakerSchemas } from "./productCategory/speaker";
-import { STORAGE_ARRAY, returnStorageSchemas } from "./productCategory/storage";
-import { TABLETS_ARRAY, returnTabletSchemas } from "./productCategory/tablet";
-import { WEBCAMS_ARRAY, returnWebcamSchemas } from "./productCategory/webcam";
-import { CUSTOMER_DOCUMENTS } from "./customer/customerDocuments";
+import { RAMS_ARRAY, returnRamSchemas } from "./productCategory/ram";
+import { returnSmartphoneSchemas, SMARTPHONES_ARRAY } from "./productCategory/smartphone";
+import { returnSpeakerSchemas, SPEAKERS_ARRAY } from "./productCategory/speaker";
+import { returnStorageSchemas, STORAGE_ARRAY } from "./productCategory/storage";
+import { returnTabletSchemas, TABLETS_ARRAY } from "./productCategory/tablet";
+import { returnWebcamSchemas, WEBCAMS_ARRAY } from "./productCategory/webcam";
+import { devTestingAction, devTestingReducer, initialDevTestingState } from "./state";
 
 function DevTesting() {
   const [devTestingState, devTestingDispatch] = useReducer(
@@ -215,10 +227,10 @@ function DevTesting() {
   }, [triggerGetRequest]);
 
   useEffect(() => {
-    const bodiesArr = returnGpuProductReviewSchemas({
+    const bodiesArr = returnKeyboardProductReviewSchemas({
       customerDocuments: CUSTOMER_DOCUMENTS,
-      gpuDocuments: GPU_DOCUMENTS,
-      gpuReviews: GPU_REVIEWS,
+      keyboardDocuments: KEYBOARD_DOCUMENTS,
+      keyboardReviews: KEYBOARD_REVIEWS,
     });
 
     devTestingDispatch({
