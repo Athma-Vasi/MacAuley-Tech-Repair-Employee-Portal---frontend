@@ -1062,11 +1062,9 @@ const SMARTPHONES_ARRAY: Omit<
 
 function returnSmartphoneSchemas(smartphonesArray: typeof SMARTPHONES_ARRAY) {
   return smartphonesArray.map((smartphone, index) => {
-    const sku = uuidv4();
-
     const smartphoneSchema: SmartphoneSchema = {
       ...smartphone,
-      sku,
+      sku: Array.from({ length: smartphone.quantity }, (_) => uuidv4()),
     };
 
     return smartphoneSchema;

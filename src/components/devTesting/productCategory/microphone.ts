@@ -846,7 +846,7 @@ function returnMicrophoneSchemas(microphonesArray: typeof MICROPHONES_ARRAY) {
   return microphonesArray.map((microphone) => {
     const microphoneSchema: MicrophoneSchema = {
       ...microphone,
-      sku: uuidv4(),
+      sku: Array.from({ length: microphone.quantity }, (_) => uuidv4()),
     };
 
     return microphoneSchema;
@@ -2272,7 +2272,7 @@ function returnMicrophoneProductReviewSchemas({
   });
 }
 
-const MICROPHONE_REVIEW_DOCUMENTS:ProductReviewDocument[] = [
+const MICROPHONE_REVIEW_DOCUMENTS: ProductReviewDocument[] = [
   {
     userId: "65684be701240d69b9093a7b",
     username: "Jake-Ahmed-193",

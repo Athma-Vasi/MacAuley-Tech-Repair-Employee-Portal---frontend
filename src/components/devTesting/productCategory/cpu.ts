@@ -1191,7 +1191,7 @@ function returnCpuSchemas(cpusArray: typeof CPUS_ARRAY) {
   return cpusArray.map((cpuDoc) => {
     const cpuSchema: CpuSchema = {
       ...cpuDoc,
-      sku: uuidv4(),
+      sku: Array.from({ length: cpuDoc.quantity }, (_) => uuidv4()),
     };
 
     return cpuSchema;

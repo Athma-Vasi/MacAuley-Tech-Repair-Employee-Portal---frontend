@@ -1510,11 +1510,9 @@ const WEBCAMS_ARRAY: Omit<ProductCategorySpecifications & WebcamSpecifications, 
 
 function returnWebcamSchemas(webcamsArray: typeof WEBCAMS_ARRAY) {
   return webcamsArray.map((webcam, idx) => {
-    const sku = uuidv4();
-
     const webcamSchema: WebcamSchema = {
       ...webcam,
-      sku,
+      sku: Array.from({ length: webcam.quantity }, (_) => uuidv4()),
     };
 
     return webcamSchema;
@@ -3516,7 +3514,7 @@ function returnWebcamProductReviewSchemas({
   });
 }
 
-const WEBCAM_REVIEW_DOCUMENTS:ProductReviewDocument[] = [
+const WEBCAM_REVIEW_DOCUMENTS: ProductReviewDocument[] = [
   {
     userId: "65684c2d01240d69b90944ef",
     username: "Dylan-Taylor-866",

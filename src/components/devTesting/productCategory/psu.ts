@@ -963,11 +963,9 @@ const PSUS_ARRAY: Omit<ProductCategorySpecifications & PsuSpecifications, "sku">
 
 function returnPsuSchemas(psusArray: typeof PSUS_ARRAY) {
   return psusArray.map((psu, idx) => {
-    const sku = uuidv4();
-
     const psuSchema: PsuSchema = {
       ...psu,
-      sku,
+      sku: Array.from({ length: psu.quantity }, (_) => uuidv4()),
     };
 
     return psuSchema;
@@ -2419,7 +2417,7 @@ function returnPsuProductReviewSchemas({
   });
 }
 
-const PSU_REVIEW_DOCUMENTS:ProductReviewDocument[] = [
+const PSU_REVIEW_DOCUMENTS: ProductReviewDocument[] = [
   {
     userId: "65684bf701240d69b9093c9f",
     username: "Liam-Thomas-336",

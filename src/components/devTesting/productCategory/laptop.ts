@@ -1345,8 +1345,6 @@ const LAPTOPS_ARRAY: Omit<ProductCategorySpecifications, "sku">[] = [
 
 function returnLaptopSchemas(laptopsArray: typeof LAPTOPS_ARRAY) {
   return laptopsArray.map((laptop, index) => {
-    const sku = uuidv4();
-
     // random cpu specs
     const {
       cpuCores,
@@ -1401,7 +1399,7 @@ function returnLaptopSchemas(laptopsArray: typeof LAPTOPS_ARRAY) {
 
     const laptopSchema: LaptopSchema = {
       ...laptop,
-      sku,
+      sku: Array.from({ length: laptop.quantity }, (_) => uuidv4()),
 
       // cpu specs
       cpuCores,
@@ -2775,7 +2773,7 @@ function returnLaptopProductReviewSchemas({
   });
 }
 
-const LAPTOP_REVIEW_DOCUMENTS:ProductReviewDocument[] = [
+const LAPTOP_REVIEW_DOCUMENTS: ProductReviewDocument[] = [
   {
     userId: "65684c2d01240d69b9094535",
     username: "Lisa-Clark-871",

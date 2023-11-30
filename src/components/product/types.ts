@@ -62,7 +62,7 @@ type ProductServerResponse<Doc extends Record<string, any> = Record<string, any>
   };
 
 type ProductCategoryPage1Specifications = {
-  sku: string;
+  sku: string[];
   brand: string;
   model: string;
   description: string;

@@ -1231,11 +1231,9 @@ const STORAGE_ARRAY: Omit<
 
 function returnStorageSchemas(storageArray: typeof STORAGE_ARRAY) {
   return storageArray.map((storage, index) => {
-    const sku = uuidv4();
-
     const storageSchema: StorageSchema = {
       ...storage,
-      sku,
+      sku: Array.from({ length: storage.quantity }, (_) => uuidv4()),
     };
 
     return storageSchema;
@@ -3095,7 +3093,7 @@ function returnStorageProductReviewSchemas({
   });
 }
 
-const STORAGE_REVIEW_DOCUMENTS:ProductReviewDocument[] = [
+const STORAGE_REVIEW_DOCUMENTS: ProductReviewDocument[] = [
   {
     userId: "65684c2301240d69b90943e9",
     username: "Liam-Gonzalez-824",

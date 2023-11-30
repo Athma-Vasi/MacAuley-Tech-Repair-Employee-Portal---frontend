@@ -991,7 +991,7 @@ function returnAccessorySchemas(accessoryArrays: typeof ACCESSORY_ARRAYS) {
   return accessoryArrays.map((accessoryArray) => {
     const accessorySchema: AccessorySchema = {
       ...accessoryArray,
-      sku: uuidv4(),
+      sku: Array.from({ length: accessoryArray.quantity }, (_) => uuidv4()),
     };
 
     return accessorySchema;

@@ -1220,11 +1220,9 @@ const SPEAKERS_ARRAY: Omit<
 
 function returnSpeakerSchemas(speakersArray: typeof SPEAKERS_ARRAY) {
   return speakersArray.map((speaker, index) => {
-    const sku = uuidv4();
-
     const speakerSchema: SpeakerSchema = {
       ...speaker,
-      sku,
+      sku: Array.from({ length: speaker.quantity }, (_) => uuidv4()),
     };
 
     return speakerSchema;
@@ -2217,7 +2215,7 @@ function returnSpeakerProductReviewSchemas({
   });
 }
 
-const SPEAKER_REVIEW_DOCUMENTS:ProductReviewDocument[] = [
+const SPEAKER_REVIEW_DOCUMENTS: ProductReviewDocument[] = [
   {
     userId: "65684c0101240d69b9093de9",
     username: "Jessica-Martinez-410",

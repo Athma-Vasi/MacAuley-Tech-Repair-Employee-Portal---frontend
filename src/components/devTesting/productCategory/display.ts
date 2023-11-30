@@ -978,7 +978,7 @@ function returnDisplaySchemas(displaysArray: typeof DISPLAYS_ARRAY) {
   return displaysArray.map((display) => {
     const displaySchema: DisplaySchema = {
       ...display,
-      sku: uuidv4(),
+      sku: Array.from({ length: display.quantity }, (_) => uuidv4()),
     };
 
     return displaySchema;

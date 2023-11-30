@@ -1625,7 +1625,7 @@ function returnMouseSchemas(mouseArray: typeof MOUSE_ARRAY) {
   return mouseArray.map((mouse, index) => {
     const mouseSchema: MouseSchema = {
       ...mouse,
-      sku: uuidv4(),
+      sku: Array.from({ length: mouse.quantity }, (_) => uuidv4()),
     };
 
     return mouseSchema;

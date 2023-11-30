@@ -1042,11 +1042,9 @@ const TABLETS_ARRAY: Omit<ProductCategorySpecifications & TabletSpecifications, 
 
 function returnTabletSchemas(tabletsArray: typeof TABLETS_ARRAY) {
   return tabletsArray.map((tablet, index) => {
-    const sku = uuidv4();
-
     const tabletSchema: TabletSchema = {
       ...tablet,
-      sku,
+      sku: Array.from({ length: tablet.quantity }, (_) => uuidv4()),
     };
 
     return tabletSchema;

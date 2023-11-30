@@ -896,7 +896,7 @@ function returnMotherboardSchemas(motherboardsArray: typeof MOTHERBOARDS_ARRAY) 
   return motherboardsArray.map((motherboard, idx) => {
     const motherboardSchema: MotherboardSchema = {
       ...motherboard,
-      sku: uuidv4(),
+      sku: Array.from({ length: motherboard.quantity }, (_) => uuidv4()),
     };
 
     return motherboardSchema;
@@ -2333,7 +2333,7 @@ function returnMotherboardProductReviewSchemas({
   });
 }
 
-const MOTHERBOARD_REVIEW_DOCUMENTS:ProductReviewDocument[] = [
+const MOTHERBOARD_REVIEW_DOCUMENTS: ProductReviewDocument[] = [
   {
     userId: "65684c1501240d69b90941b5",
     username: "Adam-Clark-638",

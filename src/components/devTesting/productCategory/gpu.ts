@@ -1174,7 +1174,7 @@ function returnGpuSchemas(gpusArray: typeof GPUS_ARRAY) {
   return gpusArray.map((gpu) => {
     const gpuSchema: GpuSchema = {
       ...gpu,
-      sku: uuidv4(),
+      sku: Array.from({ length: gpu.quantity }, (_) => uuidv4()),
     };
 
     return gpuSchema;
@@ -2887,7 +2887,7 @@ function returnGpuProductReviewSchemas({
   });
 }
 
-const GPU_REVIEW_DOCUMENTS:ProductReviewDocument[] = [
+const GPU_REVIEW_DOCUMENTS: ProductReviewDocument[] = [
   {
     userId: "65684bdf01240d69b909392f",
     username: "Emma-Nguyen-101",

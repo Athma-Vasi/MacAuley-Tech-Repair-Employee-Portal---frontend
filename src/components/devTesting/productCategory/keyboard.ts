@@ -2690,7 +2690,7 @@ function returnKeyboardSchemas(keyboardsArray: typeof KEYBOARDS_ARRAY) {
   return keyboardsArray.map((keyboard) => {
     const keyboardSchema: KeyboardSchema = {
       ...keyboard,
-      sku: uuidv4(),
+      sku: Array.from({ length: keyboard.quantity }, (_) => uuidv4()),
     };
 
     return keyboardSchema;

@@ -988,7 +988,7 @@ function returnCaseSchemas(caseArrays: typeof CASE_ARRAY) {
   return caseArrays.map((caseObj, idx) => {
     const caseSchema: ComputerCaseSchema = {
       ...caseObj,
-      sku: uuidv4(),
+      sku: Array.from({ length: caseObj.quantity }, (_) => uuidv4()),
     };
 
     return caseSchema;
@@ -2506,7 +2506,7 @@ function returnCaseProductReviewSchemas({
   });
 }
 
-const CASE_REVIEW_DOCUMENTS:ProductReviewDocument[] = [
+const CASE_REVIEW_DOCUMENTS: ProductReviewDocument[] = [
   {
     userId: "65684c4d01240d69b90945e7",
     username: "Liam-Martinez-909",

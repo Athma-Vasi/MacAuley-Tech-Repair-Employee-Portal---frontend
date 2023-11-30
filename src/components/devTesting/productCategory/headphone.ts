@@ -1827,7 +1827,7 @@ function returnHeadphoneSchemas(headphonesArray: typeof HEADPHONES_ARRAY) {
   return headphonesArray.map((headphone) => {
     const headphoneSchema: HeadphoneSchema = {
       ...headphone,
-      sku: uuidv4(),
+      sku: Array.from({ length: headphone.quantity }, (_) => uuidv4()),
     };
 
     return headphoneSchema;
@@ -4260,7 +4260,7 @@ function returnHeadphoneProductReviewSchemas({
   });
 }
 
-const HEADPHONE_REVIEW_DOCUMENTS:ProductReviewDocument[] = [
+const HEADPHONE_REVIEW_DOCUMENTS: ProductReviewDocument[] = [
   {
     userId: "65684bde01240d69b909392b",
     username: "Alex-Williams-97",

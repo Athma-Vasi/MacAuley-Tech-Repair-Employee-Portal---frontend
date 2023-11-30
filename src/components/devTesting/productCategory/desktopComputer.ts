@@ -794,8 +794,6 @@ function returnDesktopComputerSchemas(
   desktopComputersArray: typeof DESKTOP_COMPUTERS_ARRAY
 ) {
   return desktopComputersArray.map((desktopComputer, idx) => {
-    const sku = uuidv4();
-
     // random case specs
     const { caseColor, caseSidePanel, caseType } =
       CASE_ARRAY[Math.floor(Math.random() * CASE_ARRAY.length)];
@@ -891,7 +889,7 @@ function returnDesktopComputerSchemas(
 
     const desktopComputerSchema: DesktopComputerSchema = {
       ...desktopComputer,
-      sku,
+      sku: Array.from({ length: desktopComputer.quantity }, (_) => uuidv4()),
 
       // random case specs
       caseColor,

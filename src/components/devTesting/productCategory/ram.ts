@@ -1316,7 +1316,7 @@ function returnRamSchemas(ramsArray: typeof RAMS_ARRAY) {
   return ramsArray.map((ram, index) => {
     const ramSchema: RamSchema = {
       ...ram,
-      sku: uuidv4(),
+      sku: Array.from({ length: ram.quantity }, (_) => uuidv4()),
     };
 
     return ramSchema;
@@ -3223,7 +3223,7 @@ function returnRamProductReviewSchemas({
   });
 }
 
-const RAM_REVIEW_DOCUMENTS:ProductReviewDocument[] = [
+const RAM_REVIEW_DOCUMENTS: ProductReviewDocument[] = [
   {
     userId: "65684bcd01240d69b90937dd",
     username: "Eva-Wilson-12",
