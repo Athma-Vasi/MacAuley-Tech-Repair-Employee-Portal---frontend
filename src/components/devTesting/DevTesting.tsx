@@ -120,7 +120,13 @@ import {
   SPEAKER_REVIEWS,
   SPEAKERS_ARRAY,
 } from "./productCategory/speaker";
-import { returnStorageSchemas, STORAGE_ARRAY } from "./productCategory/storage";
+import {
+  returnStorageProductReviewSchemas,
+  returnStorageSchemas,
+  STORAGE_ARRAY,
+  STORAGE_DOCUMENTS,
+  STORAGE_REVIEWS,
+} from "./productCategory/storage";
 import { returnTabletSchemas, TABLETS_ARRAY } from "./productCategory/tablet";
 import { returnWebcamSchemas, WEBCAMS_ARRAY } from "./productCategory/webcam";
 import { devTestingAction, devTestingReducer, initialDevTestingState } from "./state";
@@ -272,10 +278,10 @@ function DevTesting() {
   }, [triggerGetRequest]);
 
   useEffect(() => {
-    const bodiesArr = returnSpeakerProductReviewSchemas({
+    const bodiesArr = returnStorageProductReviewSchemas({
       customerDocuments: CUSTOMER_DOCUMENTS,
-      speakerDocuments: SPEAKER_DOCUMENTS,
-      speakerReviews: SPEAKER_REVIEWS,
+      storageDocuments: STORAGE_DOCUMENTS,
+      storageReviews: STORAGE_REVIEWS,
     });
 
     devTestingDispatch({
