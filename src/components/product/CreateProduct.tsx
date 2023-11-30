@@ -802,7 +802,7 @@ function CreateProduct() {
 						additionalFields: {
 							...accessoryAdditionalFieldsObj,
 						},
-						reviewsIds: [],
+						productReviewsIds: [],
 						uploadedFilesIds: imgUploadResponseData
 							.filter(removeUndefinedAndNull)
 							.map((item) => item.documentId),
@@ -834,7 +834,7 @@ function CreateProduct() {
 						additionalFields: {
 							...cpuAdditionalFieldsObj,
 						},
-						reviewsIds: [],
+						productReviewsIds: [],
 						uploadedFilesIds: imgUploadResponseData
 							.filter(removeUndefinedAndNull)
 							.map((item) => item.documentId),
@@ -858,7 +858,7 @@ function CreateProduct() {
 						additionalFields: {
 							...caseAdditionalFieldsObj,
 						},
-						reviewsIds: [],
+						productReviewsIds: [],
 						uploadedFilesIds: imgUploadResponseData
 							.filter(removeUndefinedAndNull)
 							.map((item) => item.documentId),
@@ -886,7 +886,7 @@ function CreateProduct() {
 						additionalFields: {
 							...displayAdditionalFieldsObj,
 						},
-						reviewsIds: [],
+						productReviewsIds: [],
 						uploadedFilesIds: imgUploadResponseData
 							.filter(removeUndefinedAndNull)
 							.map((item) => item.documentId),
@@ -914,7 +914,7 @@ function CreateProduct() {
 						additionalFields: {
 							...gpuAdditionalFieldsObj,
 						},
-						reviewsIds: [],
+						productReviewsIds: [],
 						uploadedFilesIds: imgUploadResponseData
 							.filter(removeUndefinedAndNull)
 							.map((item) => item.documentId),
@@ -943,7 +943,7 @@ function CreateProduct() {
 						additionalFields: {
 							...headphoneAdditionalFieldsObj,
 						},
-						reviewsIds: [],
+						productReviewsIds: [],
 						uploadedFilesIds: imgUploadResponseData
 							.filter(removeUndefinedAndNull)
 							.map((item) => item.documentId),
@@ -968,7 +968,7 @@ function CreateProduct() {
 						additionalFields: {
 							...keyboardAdditionalFieldsObj,
 						},
-						reviewsIds: [],
+						productReviewsIds: [],
 						uploadedFilesIds: imgUploadResponseData
 							.filter(removeUndefinedAndNull)
 							.map((item) => item.documentId),
@@ -998,7 +998,7 @@ function CreateProduct() {
 						additionalFields: {
 							...ramAdditionalFieldsObj,
 						},
-						reviewsIds: [],
+						productReviewsIds: [],
 						uploadedFilesIds: imgUploadResponseData
 							.filter(removeUndefinedAndNull)
 							.map((item) => item.documentId),
@@ -1024,7 +1024,7 @@ function CreateProduct() {
 						additionalFields: {
 							...mouseAdditionalFieldsObj,
 						},
-						reviewsIds: [],
+						productReviewsIds: [],
 						uploadedFilesIds: imgUploadResponseData
 							.filter(removeUndefinedAndNull)
 							.map((item) => item.documentId),
@@ -1052,7 +1052,7 @@ function CreateProduct() {
 						additionalFields: {
 							...microphoneAdditionalFieldsObj,
 						},
-						reviewsIds: [],
+						productReviewsIds: [],
 						uploadedFilesIds: imgUploadResponseData
 							.filter(removeUndefinedAndNull)
 							.map((item) => item?.documentId),
@@ -1087,7 +1087,7 @@ function CreateProduct() {
 						additionalFields: {
 							...motherboardAdditionalFieldsObj,
 						},
-						reviewsIds: [],
+						productReviewsIds: [],
 						uploadedFilesIds: imgUploadResponseData
 							.filter(removeUndefinedAndNull)
 							.map((item) => item.documentId),
@@ -1113,7 +1113,7 @@ function CreateProduct() {
 						additionalFields: {
 							...psuAdditionalFieldsObj,
 						},
-						reviewsIds: [],
+						productReviewsIds: [],
 						uploadedFilesIds: imgUploadResponseData
 							.filter(removeUndefinedAndNull)
 							.map((item) => item.documentId),
@@ -1151,7 +1151,7 @@ function CreateProduct() {
 						additionalFields: {
 							...smartphoneAdditionalFieldsObj,
 						},
-						reviewsIds: [],
+						productReviewsIds: [],
 						uploadedFilesIds: imgUploadResponseData
 							.filter(removeUndefinedAndNull)
 							.map((item) => item?.documentId),
@@ -1177,7 +1177,7 @@ function CreateProduct() {
 						additionalFields: {
 							...speakerAdditionalFieldsObj,
 						},
-						reviewsIds: [],
+						productReviewsIds: [],
 						uploadedFilesIds: imgUploadResponseData
 							.filter(removeUndefinedAndNull)
 							.map((item) => item?.documentId),
@@ -1205,7 +1205,7 @@ function CreateProduct() {
 						additionalFields: {
 							...storageAdditionalFieldsObj,
 						},
-						reviewsIds: [],
+						productReviewsIds: [],
 						uploadedFilesIds: imgUploadResponseData
 							.filter(removeUndefinedAndNull)
 							.map((item) => item.documentId),
@@ -1237,7 +1237,7 @@ function CreateProduct() {
 						additionalFields: {
 							...tabletAdditionalFieldsObj,
 						},
-						reviewsIds: [],
+						productReviewsIds: [],
 						uploadedFilesIds: imgUploadResponseData
 							.filter(removeUndefinedAndNull)
 							.map((item) => item?.documentId),
@@ -1263,7 +1263,7 @@ function CreateProduct() {
 						additionalFields: {
 							...webcamAdditionalFieldsObj,
 						},
-						reviewsIds: [],
+						productReviewsIds: [],
 						uploadedFilesIds: imgUploadResponseData
 							.filter(removeUndefinedAndNull)
 							.map((item) => item?.documentId),
@@ -1306,7 +1306,7 @@ function CreateProduct() {
 						additionalFields: {
 							...desktopComputerAdditionalFieldsObj,
 						},
-						reviewsIds: [],
+						productReviewsIds: [],
 						uploadedFilesIds: imgUploadResponseData
 							.filter(removeUndefinedAndNull)
 							.map((item) => item?.documentId),
@@ -1337,7 +1337,7 @@ function CreateProduct() {
 						additionalFields: {
 							...laptopAdditionalFieldsObj,
 						},
-						reviewsIds: [],
+						productReviewsIds: [],
 						uploadedFilesIds: imgUploadResponseData
 							.filter(removeUndefinedAndNull)
 							.map((item) => item?.documentId),

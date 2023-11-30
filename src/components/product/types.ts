@@ -75,16 +75,16 @@ type ProductCategoryPage1Specifications = {
 };
 
 type StarRatingsCount = {
-	"0.5": number;
-	"1.0": number;
-	"1.5": number;
-	"2.0": number;
-	"2.5": number;
-	"3.0": number;
-	"3.5": number;
-	"4.0": number;
-	"4.5": number;
-	"5.0": number;
+	halfStar: number;
+	oneStar: number;
+	oneAndHalfStars: number;
+	twoStars: number;
+	twoAndHalfStars: number;
+	threeStars: number;
+	threeAndHalfStars: number;
+	fourStars: number;
+	fourAndHalfStars: number;
+	fiveStars: number;
 };
 
 /**
@@ -101,7 +101,7 @@ type ProductCategorySpecifications = ProductCategoryPage1Specifications & {
 	};
 
 	starRatingsCount: StarRatingsCount;
-	reviewsIds: string[];
+	productReviewsIds: string[];
 	uploadedFilesIds: string[];
 };
 
@@ -150,7 +150,7 @@ type AccessoryRequestBody = ProductCategoryPage1Specifications &
 		additionalFields: {
 			[key: string]: string;
 		};
-		reviewsIds: string[];
+		productReviewsIds: string[];
 		uploadedFilesIds: string[];
 	};
 
@@ -185,7 +185,7 @@ type CpuRequestBody = ProductCategoryPage1Specifications &
 		additionalFields: {
 			[key: string]: string;
 		};
-		reviewsIds: string[];
+		productReviewsIds: string[];
 		uploadedFilesIds: string[];
 	};
 
@@ -223,7 +223,7 @@ type ComputerCaseRequestBody = ProductCategoryPage1Specifications &
 		additionalFields: {
 			[key: string]: string;
 		};
-		reviewsIds: string[];
+		productReviewsIds: string[];
 		uploadedFilesIds: string[];
 	};
 
@@ -273,7 +273,7 @@ type DesktopComputerRequestBody = ProductCategoryPage1Specifications &
 		additionalFields: {
 			[key: string]: string;
 		};
-		reviewsIds: string[];
+		productReviewsIds: string[];
 		uploadedFilesIds: string[];
 	};
 
@@ -307,7 +307,7 @@ type DisplayRequestBody = ProductCategoryPage1Specifications &
 		additionalFields: {
 			[key: string]: string;
 		};
-		reviewsIds: string[];
+		productReviewsIds: string[];
 		uploadedFilesIds: string[];
 	};
 
@@ -338,7 +338,7 @@ type GpuRequestBody = ProductCategoryPage1Specifications &
 		additionalFields: {
 			[key: string]: string;
 		};
-		reviewsIds: string[];
+		productReviewsIds: string[];
 		uploadedFilesIds: string[];
 	};
 
@@ -378,7 +378,7 @@ type HeadphoneRequestBody = ProductCategoryPage1Specifications &
 		additionalFields: {
 			[key: string]: string;
 		};
-		reviewsIds: string[];
+		productReviewsIds: string[];
 		uploadedFilesIds: string[];
 	};
 
@@ -427,7 +427,7 @@ type KeyboardRequestBody = ProductCategoryPage1Specifications &
 		additionalFields: {
 			[key: string]: string;
 		};
-		reviewsIds: string[];
+		productReviewsIds: string[];
 		uploadedFilesIds: string[];
 	};
 
@@ -464,7 +464,7 @@ type LaptopRequestBody = ProductCategoryPage1Specifications &
 		additionalFields: {
 			[key: string]: string;
 		};
-		reviewsIds: string[];
+		productReviewsIds: string[];
 		uploadedFilesIds: string[];
 	};
 
@@ -497,7 +497,7 @@ type RamRequestBody = ProductCategoryPage1Specifications &
 		additionalFields: {
 			[key: string]: string;
 		};
-		reviewsIds: string[];
+		productReviewsIds: string[];
 		uploadedFilesIds: string[];
 	};
 
@@ -544,7 +544,7 @@ type MicrophoneRequestBody = ProductCategoryPage1Specifications &
 		additionalFields: {
 			[key: string]: string;
 		};
-		reviewsIds: string[];
+		productReviewsIds: string[];
 		uploadedFilesIds: string[];
 	};
 
@@ -589,7 +589,7 @@ type MotherboardRequestBody = ProductCategoryPage1Specifications &
 		additionalFields: {
 			[key: string]: string;
 		};
-		reviewsIds: string[];
+		productReviewsIds: string[];
 		uploadedFilesIds: string[];
 	};
 
@@ -621,7 +621,7 @@ type MouseRequestBody = ProductCategoryPage1Specifications &
 		additionalFields: {
 			[key: string]: string;
 		};
-		reviewsIds: string[];
+		productReviewsIds: string[];
 		uploadedFilesIds: string[];
 	};
 
@@ -660,7 +660,7 @@ type PsuRequestBody = ProductCategoryPage1Specifications &
 		additionalFields: {
 			[key: string]: string;
 		};
-		reviewsIds: string[];
+		productReviewsIds: string[];
 		uploadedFilesIds: string[];
 	};
 
@@ -697,7 +697,7 @@ type SmartphoneRequestBody = ProductCategoryPage1Specifications &
 		additionalFields: {
 			[key: string]: string;
 		};
-		reviewsIds: string[];
+		productReviewsIds: string[];
 		uploadedFilesIds: string[];
 	};
 
@@ -738,7 +738,7 @@ type SpeakerRequestBody = ProductCategoryPage1Specifications &
 		additionalFields: {
 			[key: string]: string;
 		};
-		reviewsIds: string[];
+		productReviewsIds: string[];
 		uploadedFilesIds: string[];
 	};
 
@@ -791,7 +791,7 @@ type StorageRequestBody = ProductCategoryPage1Specifications &
 		additionalFields: {
 			[key: string]: string;
 		};
-		reviewsIds: string[];
+		productReviewsIds: string[];
 		uploadedFilesIds: string[];
 	};
 
@@ -827,7 +827,7 @@ type TabletRequestBody = ProductCategoryPage1Specifications &
 		additionalFields: {
 			[key: string]: string;
 		};
-		reviewsIds: string[];
+		productReviewsIds: string[];
 		uploadedFilesIds: string[];
 	};
 
@@ -862,7 +862,7 @@ type WebcamRequestBody = ProductCategoryPage1Specifications &
 		additionalFields: {
 			[key: string]: string;
 		};
-		reviewsIds: string[];
+		productReviewsIds: string[];
 		uploadedFilesIds: string[];
 	};
 

@@ -7,8 +7,6 @@ import {
 	StatesUS,
 } from "../../../types";
 import { DirectoryUserDocument } from "../../directory/types";
-import type { ReviewDocuments } from "../productReview/reviewDocuments";
-import { REVIEW_DOCUMENTS } from "../productReview/reviewDocuments";
 
 type PaymentInformation = {
 	cardholderName: string;
@@ -88,7 +86,7 @@ function returnCustomerSchemas(usersDocs: DirectoryUserDocument[]) {
 
 	const alphabets = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 
-	const customerSchemas = Array.from({ length: 750 }).map((_, idx) => {
+	const customerSchemas = Array.from({ length: 1000 }).map((_, idx) => {
 		const firstNamePool = Array.from(
 			aggregatedUserFields.get("firstName") ?? [],
 		) as string[];
@@ -157,7 +155,7 @@ function returnCustomerSchemas(usersDocs: DirectoryUserDocument[]) {
 		const randomAddress =
 			addressPool[Math.floor(Math.random() * addressPool.length)];
 
-		const randomAddressLine1 = `${idx + 1} ${randomLastName} ${
+		const randomAddressLine = `${idx + 1} ${randomLastName} ${
 			["St.", "Ave.", "Blvd.", "Cres.", "Dr.", "Rd.", "Way."][
 				Math.floor(Math.random() * 7)
 			]
@@ -186,7 +184,7 @@ function returnCustomerSchemas(usersDocs: DirectoryUserDocument[]) {
 		).toISOString();
 		const billingAddress = {
 			...randomAddress,
-			addressLine: randomAddressLine1,
+			addressLine: randomAddressLine,
 			postalCode: randomPostalCode,
 		};
 
@@ -209,7 +207,7 @@ function returnCustomerSchemas(usersDocs: DirectoryUserDocument[]) {
 			contactNumber: randomContactNumber,
 			address: {
 				...randomAddress,
-				addressLine: randomAddressLine1,
+				addressLine: randomAddressLine,
 				postalCode: randomPostalCode,
 			},
 			paymentInformation: {
@@ -233,58 +231,58 @@ function returnCustomerSchemas(usersDocs: DirectoryUserDocument[]) {
 	return customerSchemas;
 }
 
-function returnCustomerFieldsToAdd(reviewDocuments: typeof REVIEW_DOCUMENTS) {
-	const userIdToProductReviewsIdMap = reviewDocuments.reduce(
-		(
-			acc: Map<
-				string, // userId (customer)
-				Set<string>
-			>,
-			reviewDoc: ReviewDocuments[0],
-		) => {
-			const { _id, userId } = reviewDoc;
+// function returnCustomerFieldsToAdd(reviewDocuments: typeof REVIEW_DOCUMENTS) {
+// 	const userIdToProductReviewsIdMap = reviewDocuments.reduce(
+// 		(
+// 			acc: Map<
+// 				string, // userId (customer)
+// 				Set<string>
+// 			>,
+// 			reviewDoc: ReviewDocuments[0],
+// 		) => {
+// 			const { _id, userId } = reviewDoc;
 
-			if (acc.has(userId)) {
-				const prevSet = acc.get(userId) ?? new Set();
-				acc.set(userId, prevSet.add(_id));
-			} else {
-				acc.set(userId, new Set([_id]));
-			}
+// 			if (acc.has(userId)) {
+// 				const prevSet = acc.get(userId) ?? new Set();
+// 				acc.set(userId, prevSet.add(_id));
+// 			} else {
+// 				acc.set(userId, new Set([_id]));
+// 			}
 
-			return acc;
-		},
-		new Map(),
-	);
+// 			return acc;
+// 		},
+// 		new Map(),
+// 	);
 
-	return Array.from(userIdToProductReviewsIdMap).reduce<
-		{
-			customerId: string;
-			fieldName: string;
-			fieldValue: string[];
-		}[]
-	>((acc, tuple) => {
-		const [userId, productReviewsIds] = tuple as [string, Set<string>];
+// 	return Array.from(userIdToProductReviewsIdMap).reduce<
+// 		{
+// 			customerId: string;
+// 			fieldName: string;
+// 			fieldValue: string[];
+// 		}[]
+// 	>((acc, tuple) => {
+// 		const [userId, productReviewsIds] = tuple as [string, Set<string>];
 
-		// const customerFieldsToAdd = {
-		// 	customerId: userId,
-		// 	fields: {
-		// 		productReviewsIds: Array.from(productReviewsIds),
-		// 	},
-		// };
+// 		// const customerFieldsToAdd = {
+// 		// 	customerId: userId,
+// 		// 	fields: {
+// 		// 		productReviewsIds: Array.from(productReviewsIds),
+// 		// 	},
+// 		// };
 
-		Array.from(productReviewsIds).forEach((productReviewsId) => {
-			const customerFieldsToAdd = {
-				customerId: userId,
-				fieldName: "productReviewsIds",
-				fieldValue: [productReviewsId],
-			};
+// 		Array.from(productReviewsIds).forEach((productReviewsId) => {
+// 			const customerFieldsToAdd = {
+// 				customerId: userId,
+// 				fieldName: "productReviewsIds",
+// 				fieldValue: [productReviewsId],
+// 			};
 
-			acc.push(customerFieldsToAdd);
-		});
+// 			acc.push(customerFieldsToAdd);
+// 		});
 
-		return acc;
-	}, []);
-}
+// 		return acc;
+// 	}, []);
+// }
 
-export { returnCustomerFieldsToAdd, returnCustomerSchemas };
+export { returnCustomerSchemas };
 export type { CustomerDocument, CustomerSchema };

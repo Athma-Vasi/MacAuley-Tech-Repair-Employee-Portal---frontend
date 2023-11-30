@@ -19,8 +19,7 @@
 		}
 	},
 	"formatter": {
-		"enabled": true,
-		"formatWithErrors": true
+		"enabled": false
 	},
 	"files": {
 		"maxSize": 2097152

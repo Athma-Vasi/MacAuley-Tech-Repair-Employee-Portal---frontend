@@ -5,284 +5,241 @@ import { useEffect, useReducer } from "react";
 import { useAuth, useWrapFetch } from "../../hooks";
 import { UserRoles } from "../../types";
 import { logState, urlBuilder } from "../../utils";
-import {
-	devTestingAction,
-	devTestingReducer,
-	initialDevTestingState,
-} from "./state";
-import {
-	returnCustomerFieldsToAdd,
-	returnCustomerSchemas,
-} from "./customer/customer";
-import { REVIEW_DOCUMENTS } from "./productReview/reviewDocuments";
 import { USERS_DOCS } from "./constants";
-import { CUSTOMER_DOCUMENTS } from "./customer/customerDocuments";
+import { returnCustomerSchemas } from "./customer/customer";
+import { devTestingAction, devTestingReducer, initialDevTestingState } from "./state";
+import { LAPTOPS_ARRAY, returnLaptopSchemas } from "./productCategory/laptop";
+import { ACCESSORY_ARRAYS, returnAccessorySchemas } from "./productCategory/accessory";
+import { CPUS_ARRAY, returnCpuSchemas } from "./productCategory/cpu";
+import { CASE_ARRAY, returnCaseSchemas } from "./productCategory/case";
 import {
-	ACCESSORY_DOCUMENTS,
-	ACCESSORY_REVIEWS,
-} from "./productCategory/accessory";
-import { CASE_DOCUMENTS, CASE_REVIEWS } from "./productCategory/case";
-import { CPU_DOCUMENTS, CPU_REVIEWS } from "./productCategory/cpu";
-import {
-	DESKTOP_COMPUTER_DOCUMENTS,
-	DESKTOP_COMPUTER_REVIEWS,
+  DESKTOP_COMPUTERS_ARRAY,
+  returnDesktopComputerSchemas,
 } from "./productCategory/desktopComputer";
-import { DISPLAY_DOCUMENTS, DISPLAY_REVIEWS } from "./productCategory/display";
-import { GPU_DOCUMENTS, GPU_REVIEWS } from "./productCategory/gpu";
+import { DISPLAYS_ARRAY, returnDisplaySchemas } from "./productCategory/display";
+import { GPUS_ARRAY, returnGpuSchemas } from "./productCategory/gpu";
+import { HEADPHONES_ARRAY, returnHeadphoneSchemas } from "./productCategory/headphone";
+import { KEYBOARDS_ARRAY, returnKeyboardSchemas } from "./productCategory/keyboard";
+import { RAMS_ARRAY, returnRamSchemas } from "./productCategory/ram";
+import { MICROPHONES_ARRAY, returnMicrophoneSchemas } from "./productCategory/microphone";
 import {
-	HEADPHONE_DOCUMENTS,
-	HEADPHONE_REVIEWS,
-} from "./productCategory/headphone";
-import {
-	KEYBOARD_DOCUMENTS,
-	KEYBOARD_REVIEWS,
-} from "./productCategory/keyboard";
-import { LAPTOP_DOCUMENTS, LAPTOP_REVIEWS } from "./productCategory/laptop";
-import {
-	MICROPHONE_DOCUMENTS,
-	MICROPHONE_REVIEWS,
-} from "./productCategory/microphone";
-import {
-	MOTHERBOARD_DOCUMENTS,
-	MOTHERBOARD_REVIEWS,
+  MOTHERBOARDS_ARRAY,
+  returnMotherboardSchemas,
 } from "./productCategory/motherboard";
-import { MOUSE_DOCUMENTS, MOUSE_REVIEWS } from "./productCategory/mouse";
-import { PSU_DOCUMENTS, PSU_REVIEWS } from "./productCategory/psu";
-import { RAM_DOCUMENTS, RAM_REVIEWS } from "./productCategory/ram";
-import {
-	SMARTPHONE_DOCUMENTS,
-	SMARTPHONE_REVIEWS,
-} from "./productCategory/smartphone";
-import { SPEAKER_DOCUMENTS, SPEAKER_REVIEWS } from "./productCategory/speaker";
-import { STORAGE_DOCUMENTS, STORAGE_REVIEWS } from "./productCategory/storage";
-import { TABLET_DOCUMENTS, TABLET_REVIEWS } from "./productCategory/tablet";
-import { WEBCAM_DOCUMENTS, WEBCAM_REVIEWS } from "./productCategory/webcam";
-import {
-	returnProductCategoryStarRatingsCount,
-	returnProductReviewSchemas,
-} from "./productReview/review";
-import { AccessoryDocument } from "../product/types";
+import { MOUSE_ARRAY, returnMouseSchemas } from "./productCategory/mouse";
+import { PSUS_ARRAY, returnPsuSchemas } from "./productCategory/psu";
+import { SMARTPHONES_ARRAY, returnSmartphoneSchemas } from "./productCategory/smartphone";
+import { SPEAKERS_ARRAY, returnSpeakerSchemas } from "./productCategory/speaker";
+import { STORAGE_ARRAY, returnStorageSchemas } from "./productCategory/storage";
+import { TABLETS_ARRAY, returnTabletSchemas } from "./productCategory/tablet";
+import { WEBCAMS_ARRAY, returnWebcamSchemas } from "./productCategory/webcam";
 
 function DevTesting() {
-	const [devTestingState, devTestingDispatch] = useReducer(
-		devTestingReducer,
-		initialDevTestingState,
-	);
-	const {
-		triggerPostFormSubmit,
-		bodiesArr,
-		bodiesArrCount,
-		triggerGetRequest,
-	} = devTestingState;
+  const [devTestingState, devTestingDispatch] = useReducer(
+    devTestingReducer,
+    initialDevTestingState
+  );
+  const { triggerPostFormSubmit, bodiesArr, bodiesArrCount, triggerGetRequest } =
+    devTestingState;
 
-	const {
-		authState: { accessToken },
-	} = useAuth();
+  const {
+    authState: { accessToken },
+  } = useAuth();
 
-	const { wrappedFetch } = useWrapFetch();
+  const { wrappedFetch } = useWrapFetch();
 
-	useEffect(() => {
-		let isMounted = true;
-		const controller = new AbortController();
+  useEffect(() => {
+    let isMounted = true;
+    const controller = new AbortController();
 
-		async function submitDevTestingForm() {
-			const url: URL = urlBuilder({
-				path: "product-category/computer-case/dev",
-			});
+    async function submitDevTestingForm() {
+      const url: URL = urlBuilder({
+        path: "product-category/webcam/dev",
+      });
 
-			const newBodiesArrCount =
-				bodiesArr.length - bodiesArrCount > 5
-					? bodiesArrCount + 5
-					: bodiesArr.length;
-			const slicedBodiesArr = bodiesArr.slice(
-				bodiesArrCount,
-				newBodiesArrCount,
-			);
-			const { userInfo } = jwtDecode<{
-				exp: number;
-				iat: number;
-				userInfo: { userId: string; username: string; roles: UserRoles };
-			}>(accessToken);
+      const newBodiesArrCount =
+        bodiesArr.length - bodiesArrCount > 75 ? bodiesArrCount + 75 : bodiesArr.length;
+      const slicedBodiesArr = bodiesArr.slice(bodiesArrCount, newBodiesArrCount);
+      const { userInfo } = jwtDecode<{
+        exp: number;
+        iat: number;
+        userInfo: { userId: string; username: string; roles: UserRoles };
+      }>(accessToken);
 
-			const reqBody = {
-				userInfo,
-				computerCaseFields: slicedBodiesArr,
-			};
+      const reqBody = {
+        userInfo,
+        webcamSchemas: slicedBodiesArr,
+      };
 
-			const requestInit: RequestInit = {
-				method: "PATCH",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify(reqBody),
-			};
+      const requestInit: RequestInit = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(reqBody),
+      };
 
-			try {
-				const response: Response = await wrappedFetch({
-					isMounted,
-					requestInit,
-					signal: controller.signal,
-					url,
-				});
-				const data = await response.json();
+      try {
+        const response: Response = await wrappedFetch({
+          isMounted,
+          requestInit,
+          signal: controller.signal,
+          url,
+        });
+        const data = await response.json();
 
-				if (!isMounted) {
-					return;
-				}
+        if (!isMounted) {
+          return;
+        }
 
-				if (!response.ok) {
-					throw new Error(data.message);
-				}
+        if (!response.ok) {
+          throw new Error(data.message);
+        }
 
-				devTestingDispatch({
-					type: devTestingAction.setBodiesArrCount,
-					payload: newBodiesArrCount,
-				});
+        devTestingDispatch({
+          type: devTestingAction.setBodiesArrCount,
+          payload: newBodiesArrCount,
+        });
 
-				console.log({ data });
-			} catch (error: any) {
-				console.error(error);
-			} finally {
-				devTestingDispatch({
-					type: devTestingAction.setTriggerPostFormSubmit,
-					payload: false,
-				});
-			}
-		}
+        console.log({ data });
+      } catch (error: any) {
+        console.error(error);
+      } finally {
+        devTestingDispatch({
+          type: devTestingAction.setTriggerPostFormSubmit,
+          payload: false,
+        });
+      }
+    }
 
-		if (triggerPostFormSubmit) {
-			submitDevTestingForm();
-		}
+    if (triggerPostFormSubmit) {
+      submitDevTestingForm();
+    }
 
-		return () => {
-			isMounted = false;
-			controller.abort();
-		};
-	}, [triggerPostFormSubmit]);
+    return () => {
+      isMounted = false;
+      controller.abort();
+    };
+  }, [triggerPostFormSubmit]);
 
-	useEffect(() => {
-		let isMounted = true;
-		const controller = new AbortController();
+  useEffect(() => {
+    let isMounted = true;
+    const controller = new AbortController();
 
-		async function getAllResourceDocumentsBulk() {
-			const url: URL = urlBuilder({
-				path: "product-review/dev",
-			});
+    async function getAllResourceDocumentsBulk() {
+      const url: URL = urlBuilder({
+        path: "product-category/speaker",
+      });
 
-			const requestInit: RequestInit = {
-				method: "GET",
-				headers: {
-					"Content-Type": "application/json",
-				},
-			};
+      const requestInit: RequestInit = {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
 
-			try {
-				const response: Response = await wrappedFetch({
-					isMounted,
-					requestInit,
-					signal: controller.signal,
-					url,
-				});
-				const data: { message: string; resourceData: Record<string, any>[] } =
-					await response.json();
+      try {
+        const response: Response = await wrappedFetch({
+          isMounted,
+          requestInit,
+          signal: controller.signal,
+          url,
+        });
+        const data: { message: string; resourceData: Record<string, any>[] } =
+          await response.json();
 
-				if (!isMounted) {
-					return;
-				}
+        if (!isMounted) {
+          return;
+        }
 
-				if (!response.ok) {
-					throw new Error(data.message);
-				}
+        if (!response.ok) {
+          throw new Error(data.message);
+        }
 
-				devTestingDispatch({
-					type: devTestingAction.setResourceDocuments,
-					payload: data.resourceData,
-				});
-			} catch (error: any) {
-				console.error(error);
-			} finally {
-				devTestingDispatch({
-					type: devTestingAction.setTriggerPostFormSubmit,
-					payload: false,
-				});
-			}
-		}
+        devTestingDispatch({
+          type: devTestingAction.setResourceDocuments,
+          payload: data.resourceData,
+        });
+      } catch (error: any) {
+        console.error(error);
+      } finally {
+        devTestingDispatch({
+          type: devTestingAction.setTriggerPostFormSubmit,
+          payload: false,
+        });
+      }
+    }
 
-		if (triggerGetRequest) {
-			getAllResourceDocumentsBulk();
-		}
+    if (triggerGetRequest) {
+      getAllResourceDocumentsBulk();
+    }
 
-		return () => {
-			isMounted = false;
-			controller.abort();
-		};
-	}, [triggerGetRequest]);
+    return () => {
+      isMounted = false;
+      controller.abort();
+    };
+  }, [triggerGetRequest]);
 
-	useEffect(() => {
-		const bodiesArr = returnProductCategoryStarRatingsCount({
-			productCategory: "Computer Case",
-			reviewDocuments: REVIEW_DOCUMENTS,
-		});
+  useEffect(() => {
+    const bodiesArr = returnWebcamSchemas(WEBCAMS_ARRAY);
 
-		devTestingDispatch({
-			type: devTestingAction.setBodiesArr,
-			payload: bodiesArr,
-		});
-	}, []);
+    devTestingDispatch({
+      type: devTestingAction.setBodiesArr,
+      payload: bodiesArr,
+    });
+  }, []);
 
-	useEffect(() => {
-		// const starRatingsCount =
-		// 			returnProductCategoryStarRatingsCount({
-		// 				productCategory: "Accessory",
-		// 				reviewDocuments: REVIEW_DOCUMENTS,
-		// 			});
-		// 		console.log({ starRatingsCount });
-	});
+  useEffect(() => {
+    // const starRatingsCount =
+    // 			returnProductCategoryStarRatingsCount({
+    // 				productCategory: "Accessory",
+    // 				reviewDocuments: REVIEW_DOCUMENTS,
+    // 			});
+    // 		console.log({ starRatingsCount });
+  });
 
-	useEffect(() => {
-		logState({
-			state: devTestingState,
-			groupLabel: "Dev Testing",
-		});
-	}, [devTestingState]);
+  useEffect(() => {
+    logState({
+      state: devTestingState,
+      groupLabel: "Dev Testing",
+    });
+  }, [devTestingState]);
 
-	return (
-		<Center w="100%">
-			<Stack>
-				<Text>POST REQUEST</Text>
-				<Group>
-					<Button
-						disabled={
-							bodiesArrCount === bodiesArr.length || triggerPostFormSubmit
-						}
-						onClick={() => {
-							devTestingDispatch({
-								type: devTestingAction.setTriggerPostFormSubmit,
-								payload: true,
-							});
-						}}
-					>
-						Trigger POST
-					</Button>
-				</Group>
+  return (
+    <Center w="100%">
+      <Stack>
+        <Text>POST REQUEST</Text>
+        <Group>
+          <Button
+            disabled={bodiesArrCount === bodiesArr.length || triggerPostFormSubmit}
+            onClick={() => {
+              devTestingDispatch({
+                type: devTestingAction.setTriggerPostFormSubmit,
+                payload: true,
+              });
+            }}
+          >
+            Trigger POST
+          </Button>
+        </Group>
 
-				<Text>GET REQUEST</Text>
-				<Group>
-					<Button
-						disabled={triggerGetRequest}
-						onClick={() => {
-							devTestingDispatch({
-								type: devTestingAction.setTriggerGetRequest,
-								payload: true,
-							});
-						}}
-					>
-						Trigger GET
-					</Button>
-				</Group>
-			</Stack>
-		</Center>
-	);
+        {/* <Text>GET REQUEST</Text>
+        <Group>
+          <Button
+            disabled={triggerGetRequest}
+            onClick={() => {
+              devTestingDispatch({
+                type: devTestingAction.setTriggerGetRequest,
+                payload: true,
+              });
+            }}
+          >
+            Trigger GET
+          </Button>
+        </Group> */}
+      </Stack>
+    </Center>
+  );
 }
 
 export default DevTesting;
