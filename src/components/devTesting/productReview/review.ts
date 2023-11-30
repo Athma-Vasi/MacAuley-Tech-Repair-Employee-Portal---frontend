@@ -1,37 +1,17 @@
 import { ProductCategory } from "../../dashboard/types";
+import { RatingKind } from "../../product/types";
 
-type RatingKind =
-  | "halfStar"
-  | "oneStar"
-  | "oneAndHalfStars"
-  | "twoStars"
-  | "twoAndHalfStars"
-  | "threeStars"
-  | "threeAndHalfStars"
-  | "fourStars"
-  | "fourAndHalfStars"
-  | "fiveStars";
-
-type ProductReviewSchema = {
-  userId: string; // customer id
-  username: string; // customer username
-  productId: string;
-  productCategory: ProductCategory;
-  productSku: string;
-  productBrand: string;
-  productModel: string;
-  productReview: string;
-  productRating: RatingKind;
-  helpfulVotes: number;
-  unhelpfulVotes: number;
-  isVerifiedPurchase: boolean;
-};
-
-type ProductReviewDocument = ProductReviewSchema & {
-  _id: string;
-  createdAt: Date;
-  updatedAt: Date;
-  __v: number;
+const STAR_RATINGS_OBJ: Record<string, RatingKind> = {
+  "0.5": "halfStar",
+  "1": "oneStar",
+  "1.5": "oneAndHalfStars",
+  "2": "twoStars",
+  "2.5": "twoAndHalfStars",
+  "3": "threeStars",
+  "3.5": "threeAndHalfStars",
+  "4": "fourStars",
+  "4.5": "fourAndHalfStars",
+  "5": "fiveStars",
 };
 
 type ProductReviewsBlueprint = {
@@ -222,5 +202,5 @@ function returnProductReviewSchemas({
 // 	return starRatingsCount;
 // }
 
-export { returnProductReviewSchemas };
-export type { ProductReviewDocument, ProductReviewSchema, RatingKind };
+export { returnProductReviewSchemas, STAR_RATINGS_OBJ };
+export type { RatingKind };

@@ -13,10 +13,16 @@ import {
   ACCESSORY_ARRAYS,
   ACCESSORY_DOCUMENTS,
   ACCESSORY_REVIEWS,
-  returnAccessoryProductReviews,
+  returnAccessoryProductReviewSchemas,
   returnAccessorySchemas,
 } from "./productCategory/accessory";
-import { CPUS_ARRAY, returnCpuSchemas } from "./productCategory/cpu";
+import {
+  CPUS_ARRAY,
+  CPU_DOCUMENTS,
+  CPU_REVIEWS,
+  returnCpuProductReviewSchemas,
+  returnCpuSchemas,
+} from "./productCategory/cpu";
 import { CASE_ARRAY, returnCaseSchemas } from "./productCategory/case";
 import {
   DESKTOP_COMPUTERS_ARRAY,
@@ -188,9 +194,9 @@ function DevTesting() {
   }, [triggerGetRequest]);
 
   useEffect(() => {
-    const bodiesArr = returnAccessoryProductReviews({
-      accessoryDocuments: ACCESSORY_DOCUMENTS,
-      accessoryReviews: ACCESSORY_REVIEWS,
+    const bodiesArr = returnCpuProductReviewSchemas({
+      cpuDocuments: CPU_DOCUMENTS,
+      cpuReviews: CPU_REVIEWS,
       customerDocuments: CUSTOMER_DOCUMENTS,
     });
 

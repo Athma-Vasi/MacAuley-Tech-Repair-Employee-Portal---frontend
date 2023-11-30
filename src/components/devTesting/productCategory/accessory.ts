@@ -34,9 +34,10 @@ import {
   AccessorySchema,
   AccessorySpecifications,
   ProductCategorySpecifications,
+  ProductReviewSchema,
 } from "../../product/types";
 import { CUSTOMER_DOCUMENTS } from "../customer/customerDocuments";
-import { ProductReviewSchema, RatingKind } from "../productReview/review";
+import { STAR_RATINGS_OBJ } from "../productReview/review";
 
 const ACCESSORY_ARRAYS: Omit<
   ProductCategorySpecifications & AccessorySpecifications,
@@ -2507,7 +2508,7 @@ const ACCESSORY_REVIEWS = [
   },
 ];
 
-function returnAccessoryProductReviews({
+function returnAccessoryProductReviewSchemas({
   accessoryDocuments,
   accessoryReviews,
   customerDocuments,
@@ -2516,19 +2517,6 @@ function returnAccessoryProductReviews({
   accessoryReviews: typeof ACCESSORY_REVIEWS;
   customerDocuments: typeof CUSTOMER_DOCUMENTS;
 }) {
-  const starRatingsObj: Record<string, RatingKind> = {
-    "0.5": "halfStar",
-    "1": "oneStar",
-    "1.5": "oneAndHalfStars",
-    "2": "twoStars",
-    "2.5": "twoAndHalfStars",
-    "3": "threeStars",
-    "3.5": "threeAndHalfStars",
-    "4": "fourStars",
-    "4.5": "fourAndHalfStars",
-    "5": "fiveStars",
-  };
-
   return accessoryDocuments.flatMap((accessoryDocument) => {
     // random number of reviews
     const numberOfReviews = Math.round(Math.random() * (3 - 1) + 1);
@@ -2560,7 +2548,7 @@ function returnAccessoryProductReviews({
         productBrand: accessoryDocument.brand,
         productModel: accessoryDocument.model,
         productReview,
-        productRating: starRatingsObj[productRating],
+        productRating: STAR_RATINGS_OBJ[productRating],
         helpfulVotes,
         unhelpfulVotes,
         isVerifiedPurchase,
@@ -3433,6 +3421,6 @@ export {
   ACCESSORY_DOCUMENTS,
   ACCESSORY_REVIEW_DOCUMENTS,
   ACCESSORY_REVIEWS,
-  returnAccessoryProductReviews,
+  returnAccessoryProductReviewSchemas,
   returnAccessorySchemas,
 };
