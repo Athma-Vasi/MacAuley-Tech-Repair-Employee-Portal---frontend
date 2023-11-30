@@ -64,7 +64,13 @@ import {
   returnKeyboardProductReviewSchemas,
   returnKeyboardSchemas,
 } from "./productCategory/keyboard";
-import { LAPTOPS_ARRAY, returnLaptopSchemas } from "./productCategory/laptop";
+import {
+  LAPTOPS_ARRAY,
+  LAPTOP_DOCUMENTS,
+  LAPTOP_REVIEWS,
+  returnLaptopProductReviewSchemas,
+  returnLaptopSchemas,
+} from "./productCategory/laptop";
 import { MICROPHONES_ARRAY, returnMicrophoneSchemas } from "./productCategory/microphone";
 import {
   MOTHERBOARDS_ARRAY,
@@ -227,10 +233,10 @@ function DevTesting() {
   }, [triggerGetRequest]);
 
   useEffect(() => {
-    const bodiesArr = returnKeyboardProductReviewSchemas({
+    const bodiesArr = returnLaptopProductReviewSchemas({
       customerDocuments: CUSTOMER_DOCUMENTS,
-      keyboardDocuments: KEYBOARD_DOCUMENTS,
-      keyboardReviews: KEYBOARD_REVIEWS,
+      laptopDocuments: LAPTOP_DOCUMENTS,
+      laptopReviews: LAPTOP_REVIEWS,
     });
 
     devTestingDispatch({
