@@ -134,7 +134,13 @@ import {
   TABLET_REVIEWS,
   TABLETS_ARRAY,
 } from "./productCategory/tablet";
-import { returnWebcamSchemas, WEBCAMS_ARRAY } from "./productCategory/webcam";
+import {
+  returnWebcamProductReviewSchemas,
+  returnWebcamSchemas,
+  WEBCAM_DOCUMENTS,
+  WEBCAM_REVIEWS,
+  WEBCAMS_ARRAY,
+} from "./productCategory/webcam";
 import { devTestingAction, devTestingReducer, initialDevTestingState } from "./state";
 
 function DevTesting() {
@@ -284,10 +290,10 @@ function DevTesting() {
   }, [triggerGetRequest]);
 
   useEffect(() => {
-    const bodiesArr = returnTabletProductReviewSchemas({
-      tabletDocuments: TABLET_DOCUMENTS,
+    const bodiesArr = returnWebcamProductReviewSchemas({
       customerDocuments: CUSTOMER_DOCUMENTS,
-      tabletReviews: TABLET_REVIEWS,
+      webcamDocuments: WEBCAM_DOCUMENTS,
+      webcamReviews: WEBCAM_REVIEWS,
     });
 
     devTestingDispatch({
