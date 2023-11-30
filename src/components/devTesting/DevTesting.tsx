@@ -9,7 +9,13 @@ import { USERS_DOCS } from "./constants";
 import { returnCustomerSchemas } from "./customer/customer";
 import { devTestingAction, devTestingReducer, initialDevTestingState } from "./state";
 import { LAPTOPS_ARRAY, returnLaptopSchemas } from "./productCategory/laptop";
-import { ACCESSORY_ARRAYS, returnAccessorySchemas } from "./productCategory/accessory";
+import {
+  ACCESSORY_ARRAYS,
+  ACCESSORY_DOCUMENTS,
+  ACCESSORY_REVIEWS,
+  returnAccessoryProductReviews,
+  returnAccessorySchemas,
+} from "./productCategory/accessory";
 import { CPUS_ARRAY, returnCpuSchemas } from "./productCategory/cpu";
 import { CASE_ARRAY, returnCaseSchemas } from "./productCategory/case";
 import {
@@ -33,6 +39,7 @@ import { SPEAKERS_ARRAY, returnSpeakerSchemas } from "./productCategory/speaker"
 import { STORAGE_ARRAY, returnStorageSchemas } from "./productCategory/storage";
 import { TABLETS_ARRAY, returnTabletSchemas } from "./productCategory/tablet";
 import { WEBCAMS_ARRAY, returnWebcamSchemas } from "./productCategory/webcam";
+import { CUSTOMER_DOCUMENTS } from "./customer/customerDocuments";
 
 function DevTesting() {
   const [devTestingState, devTestingDispatch] = useReducer(
@@ -54,7 +61,7 @@ function DevTesting() {
 
     async function submitDevTestingForm() {
       const url: URL = urlBuilder({
-        path: "product-category/webcam/dev",
+        path: "product-review/dev",
       });
 
       const newBodiesArrCount =
@@ -68,7 +75,7 @@ function DevTesting() {
 
       const reqBody = {
         userInfo,
-        webcamSchemas: slicedBodiesArr,
+        productReviewSchemas: slicedBodiesArr,
       };
 
       const requestInit: RequestInit = {
@@ -181,7 +188,11 @@ function DevTesting() {
   }, [triggerGetRequest]);
 
   useEffect(() => {
-    const bodiesArr = returnWebcamSchemas(WEBCAMS_ARRAY);
+    const bodiesArr = returnAccessoryProductReviews({
+      accessoryDocuments: ACCESSORY_DOCUMENTS,
+      accessoryReviews: ACCESSORY_REVIEWS,
+      customerDocuments: CUSTOMER_DOCUMENTS,
+    });
 
     devTestingDispatch({
       type: devTestingAction.setBodiesArr,

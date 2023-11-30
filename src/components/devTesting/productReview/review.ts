@@ -1,134 +1,135 @@
 import { ProductCategory } from "../../dashboard/types";
 
-type ProductRating =
-	| "0.5"
-	| "1"
-	| "1.5"
-	| "2"
-	| "2.5"
-	| "3"
-	| "3.5"
-	| "4"
-	| "4.5"
-	| "5";
+type RatingKind =
+  | "halfStar"
+  | "oneStar"
+  | "oneAndHalfStars"
+  | "twoStars"
+  | "twoAndHalfStars"
+  | "threeStars"
+  | "threeAndHalfStars"
+  | "fourStars"
+  | "fourAndHalfStars"
+  | "fiveStars";
 
 type ProductReviewSchema = {
-	userId: string; // customer id
-	username: string; // customer username
-	productId: string;
-	productCategory: ProductCategory;
-	productBrand: string;
-	productModel: string;
-	productReview: string;
-	productRating: ProductRating;
-	helpfulVotes: number;
-	unhelpfulVotes: number;
-	isVerifiedPurchase: boolean;
+  userId: string; // customer id
+  username: string; // customer username
+  productId: string;
+  productCategory: ProductCategory;
+  productSku: string;
+  productBrand: string;
+  productModel: string;
+  productReview: string;
+  productRating: RatingKind;
+  helpfulVotes: number;
+  unhelpfulVotes: number;
+  isVerifiedPurchase: boolean;
 };
 
 type ProductReviewDocument = ProductReviewSchema & {
-	_id: string;
-	createdAt: Date;
-	updatedAt: Date;
-	__v: number;
+  _id: string;
+  createdAt: Date;
+  updatedAt: Date;
+  __v: number;
 };
 
 type ProductReviewsBlueprint = {
-	productReview: string;
-	productRating: ProductRating;
-	helpfulVotes: number;
-	unhelpfulVotes: number;
-	isVerifiedPurchase: boolean;
+  productReview: string;
+  productRating: RatingKind;
+  helpfulVotes: number;
+  unhelpfulVotes: number;
+  isVerifiedPurchase: boolean;
 };
 
 function returnProductReviewSchemas({
-	productCategoryDocuments,
-	productCategoryReviews,
+  productCategoryDocuments,
+  productCategoryReviews,
 }: {
-	productCategoryDocuments: Record<string, any>[];
-	productCategoryReviews: ProductReviewsBlueprint[];
+  productCategoryDocuments: Record<string, any>[];
+  productCategoryReviews: ProductReviewsBlueprint[];
 }) {
-	// const TUPLES_MAP = new Map([
-	// 	["Accessory", [accessoryDocuments, accessoryReviews]],
-	// 	["Central Processing Unit (CPU)", [caseDocuments, caseReviews]],
-	// 	["Computer Case", [cpuDocuments, cpuReviews]],
-	// 	["Desktop Computer", [desktopComputerDocuments, desktopComputerReviews]],
-	// 	["Display", [displayDocuments, displayReviews]],
-	// 	["Graphics Processing Unit (GPU)", [gpuDocuments, gpuReviews]],
-	// 	["Headphone", [headphoneDocuments, headphoneReviews]],
-	// 	["Keyboard", [keyboardDocuments, keyboardReviews]],
-	// 	["Laptop", [laptopDocuments, laptopReviews]],
-	// 	["Memory (RAM)", [ramDocuments, ramReviews]],
-	// 	["Microphone", [microphoneDocuments, microphoneReviews]],
-	// 	["Motherboard", [motherboardDocuments, motherboardReviews]],
-	// 	["Mouse", [mouseDocuments, mouseReviews]],
-	// 	["Power Supply Unit (PSU)", [psuDocuments, psuReviews]],
-	// 	["Smartphone", [smartphoneDocuments, smartphoneReviews]],
-	// 	["Speaker", [speakerDocuments, speakerReviews]],
-	// 	["Storage", [storageDocuments, storageReviews]],
-	// 	["Tablet", [tabletDocuments, tabletReviews]],
-	// 	["Webcam", [webcamDocuments, webcamReviews]],
-	// ]);
-	// const productReviewSchemas = customerDocuments.flatMap((customerDoc) => {
-	// 	const { _id: userId, username } = customerDoc;
-	// 	const numberOfReviews = Math.floor(Math.random() * 3);
-	// 	const tuples = Array.from(TUPLES_MAP.entries());
-	// 	const shuffledTuples = shuffleArray(tuples);
-	// 	const slicedTuples = shuffledTuples.slice(0, numberOfReviews) as [
-	// 		string,
-	// 		[any[], ProductReviewsBlueprint[]],
-	// 	][];
-	// 	const productReviews = slicedTuples.reduce<ProductReviewSchema[]>(
-	// 		(productReviewsAcc, tuple) => {
-	// 			const [productCategory, keyVal] = tuple as [
-	// 				ProductCategory,
-	// 				[any[], ProductReviewsBlueprint[]],
-	// 			];
-	// 			const [productCategoryDocuments, productCategoryReviews] = keyVal;
-	// 			const shuffledProductCategoryDocuments = shuffleArray(
-	// 				productCategoryDocuments,
-	// 			);
-	// 			const slicedProductCategoryDocuments =
-	// 				shuffledProductCategoryDocuments.slice(0, numberOfReviews);
-	// 			const shuffledProductCategoryReviews = shuffleArray(
-	// 				productCategoryReviews,
-	// 			);
-	// 			const slicedProductCategoryReviews =
-	// 				shuffledProductCategoryReviews.slice(0, numberOfReviews);
-	// 			const productReviewSchemas = slicedProductCategoryDocuments.map(
-	// 				(productCategoryDocument, idx) => {
-	// 					const {
-	// 						helpfulVotes,
-	// 						isVerifiedPurchase,
-	// 						productRating,
-	// 						productReview,
-	// 						unhelpfulVotes,
-	// 					} = slicedProductCategoryReviews[idx];
-	// 					const { brand, model, _id: productId } = productCategoryDocument;
-	// 					const productReviewSchema: ProductReviewSchema = {
-	// 						userId,
-	// 						username,
-	// 						productId,
-	// 						productCategory,
-	// 						productBrand: brand,
-	// 						productModel: model,
-	// 						productReview,
-	// 						productRating,
-	// 						helpfulVotes,
-	// 						unhelpfulVotes,
-	// 						isVerifiedPurchase,
-	// 					};
-	// 					return productReviewSchema;
-	// 				},
-	// 			);
-	// 			productReviewsAcc.push(...productReviewSchemas);
-	// 			return productReviewsAcc;
-	// 		},
-	// 		[],
-	// 	);
-	// 	return productReviews;
-	// });
-	// return productReviewSchemas;
+  // const TUPLES_MAP = new Map([
+  // 	["Accessory", [accessoryDocuments, accessoryReviews]],
+  // 	["Central Processing Unit (CPU)", [caseDocuments, caseReviews]],
+  // 	["Computer Case", [cpuDocuments, cpuReviews]],
+  // 	["Desktop Computer", [desktopComputerDocuments, desktopComputerReviews]],
+  // 	["Display", [displayDocuments, displayReviews]],
+  // 	["Graphics Processing Unit (GPU)", [gpuDocuments, gpuReviews]],
+  // 	["Headphone", [headphoneDocuments, headphoneReviews]],
+  // 	["Keyboard", [keyboardDocuments, keyboardReviews]],
+  // 	["Laptop", [laptopDocuments, laptopReviews]],
+  // 	["Memory (RAM)", [ramDocuments, ramReviews]],
+  // 	["Microphone", [microphoneDocuments, microphoneReviews]],
+  // 	["Motherboard", [motherboardDocuments, motherboardReviews]],
+  // 	["Mouse", [mouseDocuments, mouseReviews]],
+  // 	["Power Supply Unit (PSU)", [psuDocuments, psuReviews]],
+  // 	["Smartphone", [smartphoneDocuments, smartphoneReviews]],
+  // 	["Speaker", [speakerDocuments, speakerReviews]],
+  // 	["Storage", [storageDocuments, storageReviews]],
+  // 	["Tablet", [tabletDocuments, tabletReviews]],
+  // 	["Webcam", [webcamDocuments, webcamReviews]],
+  // ]);
+  // const productReviewSchemas = customerDocuments.flatMap((customerDoc) => {
+  // 	const { _id: userId, username } = customerDoc;
+  // 	const numberOfReviews = Math.floor(Math.random() * 3);
+  // 	const tuples = Array.from(TUPLES_MAP.entries());
+  // 	const shuffledTuples = shuffleArray(tuples);
+  // 	const slicedTuples = shuffledTuples.slice(0, numberOfReviews) as [
+  // 		string,
+  // 		[any[], ProductReviewsBlueprint[]],
+  // 	][];
+  // 	const productReviews = slicedTuples.reduce<ProductReviewSchema[]>(
+  // 		(productReviewsAcc, tuple) => {
+  // 			const [productCategory, keyVal] = tuple as [
+  // 				ProductCategory,
+  // 				[any[], ProductReviewsBlueprint[]],
+  // 			];
+  // 			const [productCategoryDocuments, productCategoryReviews] = keyVal;
+  // 			const shuffledProductCategoryDocuments = shuffleArray(
+  // 				productCategoryDocuments,
+  // 			);
+  // 			const slicedProductCategoryDocuments =
+  // 				shuffledProductCategoryDocuments.slice(0, numberOfReviews);
+  // 			const shuffledProductCategoryReviews = shuffleArray(
+  // 				productCategoryReviews,
+  // 			);
+  // 			const slicedProductCategoryReviews =
+  // 				shuffledProductCategoryReviews.slice(0, numberOfReviews);
+  // 			const productReviewSchemas = slicedProductCategoryDocuments.map(
+  // 				(productCategoryDocument, idx) => {
+  // 					const {
+  // 						helpfulVotes,
+  // 						isVerifiedPurchase,
+  // 						productRating,
+  // 						productReview,
+  // 						unhelpfulVotes,
+  // 					} = slicedProductCategoryReviews[idx];
+  // 					const { brand, model, _id: productId } = productCategoryDocument;
+  // 					const productReviewSchema: ProductReviewSchema = {
+  // 						userId,
+  // 						username,
+  // 						productId,
+  // 						productCategory,
+  // 						productBrand: brand,
+  // 						productModel: model,
+  // 						productReview,
+  // 						productRating,
+  // 						helpfulVotes,
+  // 						unhelpfulVotes,
+  // 						isVerifiedPurchase,
+  // 					};
+  // 					return productReviewSchema;
+  // 				},
+  // 			);
+  // 			productReviewsAcc.push(...productReviewSchemas);
+  // 			return productReviewsAcc;
+  // 		},
+  // 		[],
+  // 	);
+  // 	return productReviews;
+  // });
+  // return productReviewSchemas;
 }
 
 // function returnProductCategoryStarRatingsCount({
@@ -222,4 +223,4 @@ function returnProductReviewSchemas({
 // }
 
 export { returnProductReviewSchemas };
-export type { ProductRating, ProductReviewDocument, ProductReviewSchema };
+export type { ProductReviewDocument, ProductReviewSchema, RatingKind };
