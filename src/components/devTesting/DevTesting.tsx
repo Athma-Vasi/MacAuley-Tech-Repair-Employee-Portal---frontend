@@ -106,7 +106,13 @@ import {
   returnRamProductReviewSchemas,
   returnRamSchemas,
 } from "./productCategory/ram";
-import { returnSmartphoneSchemas, SMARTPHONES_ARRAY } from "./productCategory/smartphone";
+import {
+  returnSmartphoneProductReviewSchemas,
+  returnSmartphoneSchemas,
+  SMARTPHONE_DOCUMENTS,
+  SMARTPHONE_REVIEWS,
+  SMARTPHONES_ARRAY,
+} from "./productCategory/smartphone";
 import { returnSpeakerSchemas, SPEAKERS_ARRAY } from "./productCategory/speaker";
 import { returnStorageSchemas, STORAGE_ARRAY } from "./productCategory/storage";
 import { returnTabletSchemas, TABLETS_ARRAY } from "./productCategory/tablet";
@@ -260,10 +266,10 @@ function DevTesting() {
   }, [triggerGetRequest]);
 
   useEffect(() => {
-    const bodiesArr = returnPsuProductReviewSchemas({
+    const bodiesArr = returnSmartphoneProductReviewSchemas({
       customerDocuments: CUSTOMER_DOCUMENTS,
-      psuDocuments: PSU_DOCUMENTS,
-      psuReviews: PSU_REVIEWS,
+      smartphoneDocuments: SMARTPHONE_DOCUMENTS,
+      smartphoneReviews: SMARTPHONE_REVIEWS,
     });
 
     devTestingDispatch({
