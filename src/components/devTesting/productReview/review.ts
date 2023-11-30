@@ -1,5 +1,4 @@
 import { groupByField } from "../../../utils";
-import { ProductCategory } from "../../dashboard/types";
 import { ProductReviewDocument, RatingKind } from "../../product/types";
 
 const STAR_RATINGS_OBJ: Record<string, RatingKind> = {
@@ -13,14 +12,6 @@ const STAR_RATINGS_OBJ: Record<string, RatingKind> = {
   "4": "fourStars",
   "4.5": "fourAndHalfStars",
   "5": "fiveStars",
-};
-
-type ProductReviewsBlueprint = {
-  productReview: string;
-  productRating: RatingKind;
-  helpfulVotes: number;
-  unhelpfulVotes: number;
-  isVerifiedPurchase: boolean;
 };
 
 /**

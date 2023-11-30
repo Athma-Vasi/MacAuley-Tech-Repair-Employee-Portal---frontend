@@ -6,7 +6,10 @@ import { useAuth, useWrapFetch } from "../../hooks";
 import { UserRoles } from "../../types";
 import { logState, urlBuilder } from "../../utils";
 import { USERS_DOCS } from "./constants";
-import { returnCustomerSchemas } from "./customer/customer";
+import {
+  returnCustomerSchemas,
+  returnUpdateCustomerProductReviewsIdsFields,
+} from "./customer/customer";
 import { CUSTOMER_DOCUMENTS } from "./customer/customerDocuments";
 import {
   ACCESSORY_ARRAYS,
@@ -186,7 +189,7 @@ function DevTesting() {
 
     async function submitDevTestingForm() {
       const url: URL = urlBuilder({
-        path: "product-category/webcam/dev",
+        path: "customer/dev",
       });
 
       const newBodiesArrCount =
@@ -200,7 +203,7 @@ function DevTesting() {
 
       const reqBody = {
         userInfo,
-        webcamFields: slicedBodiesArr,
+        customerFields: slicedBodiesArr,
       };
 
       const requestInit: RequestInit = {
@@ -313,7 +316,9 @@ function DevTesting() {
   }, [triggerGetRequest]);
 
   useEffect(() => {
-    const bodiesArr = returnUpdateProductCategoryReviewIdsFields(WEBCAM_REVIEW_DOCUMENTS);
+    const bodiesArr = returnUpdateCustomerProductReviewsIdsFields(
+      WEBCAM_REVIEW_DOCUMENTS
+    );
 
     devTestingDispatch({
       type: devTestingAction.setBodiesArr,
