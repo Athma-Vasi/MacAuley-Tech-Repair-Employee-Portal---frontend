@@ -85,7 +85,13 @@ import {
   returnMotherboardProductReviewSchemas,
   returnMotherboardSchemas,
 } from "./productCategory/motherboard";
-import { MOUSE_ARRAY, returnMouseSchemas } from "./productCategory/mouse";
+import {
+  MOUSE_ARRAY,
+  MOUSE_DOCUMENTS,
+  MOUSE_REVIEWS,
+  returnMouseProductReviewSchemas,
+  returnMouseSchemas,
+} from "./productCategory/mouse";
 import { PSUS_ARRAY, returnPsuSchemas } from "./productCategory/psu";
 import {
   RAMS_ARRAY,
@@ -248,10 +254,10 @@ function DevTesting() {
   }, [triggerGetRequest]);
 
   useEffect(() => {
-    const bodiesArr = returnMotherboardProductReviewSchemas({
+    const bodiesArr = returnMouseProductReviewSchemas({
+      mouseDocuments: MOUSE_DOCUMENTS,
       customerDocuments: CUSTOMER_DOCUMENTS,
-      motherboardDocuments: MOTHERBOARD_DOCUMENTS,
-      motherboardReviews: MOTHERBOARD_REVIEWS,
+      mouseReviews: MOUSE_REVIEWS,
     });
 
     devTestingDispatch({

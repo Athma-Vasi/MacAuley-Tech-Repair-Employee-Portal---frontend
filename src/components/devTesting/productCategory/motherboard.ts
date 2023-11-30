@@ -2279,61 +2279,6 @@ const MOTHERBOARD_REVIEWS = [
   },
 ];
 
-/**
- * function returnAccessoryProductReviewSchemas({
-  accessoryDocuments,
-  accessoryReviews,
-  customerDocuments,
-}: {
-  accessoryDocuments: typeof ACCESSORY_DOCUMENTS;
-  accessoryReviews: typeof ACCESSORY_REVIEWS;
-  customerDocuments: typeof CUSTOMER_DOCUMENTS;
-}) {
-  return accessoryDocuments.flatMap((accessoryDocument) => {
-    // random number of reviews
-    const numberOfReviews = Math.round(Math.random() * (3 - 1) + 1);
-    // shuffle customers
-    const shuffledCustomers = shuffleArray(customerDocuments);
-    // random slice of customers
-    const randomCustomers = shuffledCustomers.slice(0, numberOfReviews);
-    // shuffle reviews
-    const shuffledReviews = shuffleArray(accessoryReviews);
-    // random slice of reviews
-    const randomReviews = shuffledReviews.slice(0, numberOfReviews);
-
-    const productReviewSchemas: ProductReviewSchema[] = [];
-    randomCustomers.forEach((customer, index) => {
-      const {
-        helpfulVotes,
-        isVerifiedPurchase,
-        productRating,
-        productReview,
-        unhelpfulVotes,
-      } = randomReviews[index];
-
-      const productReviewSchema: ProductReviewSchema = {
-        userId: customer._id,
-        username: customer.username,
-        productId: accessoryDocument._id,
-        productCategory: "Accessory",
-        productSku: accessoryDocument.sku,
-        productBrand: accessoryDocument.brand,
-        productModel: accessoryDocument.model,
-        productReview,
-        productRating: STAR_RATINGS_OBJ[productRating],
-        helpfulVotes,
-        unhelpfulVotes,
-        isVerifiedPurchase,
-      };
-
-      productReviewSchemas.push(productReviewSchema);
-    });
-
-    return productReviewSchemas;
-  });
-}
- */
-
 function returnMotherboardProductReviewSchemas({
   motherboardDocuments,
   motherboardReviews,
