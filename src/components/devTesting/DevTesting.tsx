@@ -113,7 +113,13 @@ import {
   SMARTPHONE_REVIEWS,
   SMARTPHONES_ARRAY,
 } from "./productCategory/smartphone";
-import { returnSpeakerSchemas, SPEAKERS_ARRAY } from "./productCategory/speaker";
+import {
+  returnSpeakerProductReviewSchemas,
+  returnSpeakerSchemas,
+  SPEAKER_DOCUMENTS,
+  SPEAKER_REVIEWS,
+  SPEAKERS_ARRAY,
+} from "./productCategory/speaker";
 import { returnStorageSchemas, STORAGE_ARRAY } from "./productCategory/storage";
 import { returnTabletSchemas, TABLETS_ARRAY } from "./productCategory/tablet";
 import { returnWebcamSchemas, WEBCAMS_ARRAY } from "./productCategory/webcam";
@@ -266,10 +272,10 @@ function DevTesting() {
   }, [triggerGetRequest]);
 
   useEffect(() => {
-    const bodiesArr = returnSmartphoneProductReviewSchemas({
+    const bodiesArr = returnSpeakerProductReviewSchemas({
       customerDocuments: CUSTOMER_DOCUMENTS,
-      smartphoneDocuments: SMARTPHONE_DOCUMENTS,
-      smartphoneReviews: SMARTPHONE_REVIEWS,
+      speakerDocuments: SPEAKER_DOCUMENTS,
+      speakerReviews: SPEAKER_REVIEWS,
     });
 
     devTestingDispatch({
