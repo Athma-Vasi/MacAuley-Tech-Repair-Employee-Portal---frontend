@@ -23,13 +23,34 @@ import {
   returnCpuProductReviewSchemas,
   returnCpuSchemas,
 } from "./productCategory/cpu";
-import { CASE_ARRAY, returnCaseSchemas } from "./productCategory/case";
+import {
+  CASE_ARRAY,
+  CASE_DOCUMENTS,
+  CASE_REVIEWS,
+  returnCaseProductReviewSchemas,
+  returnCaseSchemas,
+} from "./productCategory/case";
 import {
   DESKTOP_COMPUTERS_ARRAY,
+  DESKTOP_COMPUTER_DOCUMENTS,
+  DESKTOP_COMPUTER_REVIEWS,
+  returnDesktopComputerProductReviewSchemas,
   returnDesktopComputerSchemas,
 } from "./productCategory/desktopComputer";
-import { DISPLAYS_ARRAY, returnDisplaySchemas } from "./productCategory/display";
-import { GPUS_ARRAY, returnGpuSchemas } from "./productCategory/gpu";
+import {
+  DISPLAYS_ARRAY,
+  DISPLAY_DOCUMENTS,
+  DISPLAY_REVIEWS,
+  returnDisplayProductReviewSchemas,
+  returnDisplaySchemas,
+} from "./productCategory/display";
+import {
+  GPUS_ARRAY,
+  GPU_DOCUMENTS,
+  GPU_REVIEWS,
+  returnGpuProductReviewSchemas,
+  returnGpuSchemas,
+} from "./productCategory/gpu";
 import { HEADPHONES_ARRAY, returnHeadphoneSchemas } from "./productCategory/headphone";
 import { KEYBOARDS_ARRAY, returnKeyboardSchemas } from "./productCategory/keyboard";
 import { RAMS_ARRAY, returnRamSchemas } from "./productCategory/ram";
@@ -194,10 +215,10 @@ function DevTesting() {
   }, [triggerGetRequest]);
 
   useEffect(() => {
-    const bodiesArr = returnCpuProductReviewSchemas({
-      cpuDocuments: CPU_DOCUMENTS,
-      cpuReviews: CPU_REVIEWS,
+    const bodiesArr = returnGpuProductReviewSchemas({
       customerDocuments: CUSTOMER_DOCUMENTS,
+      gpuDocuments: GPU_DOCUMENTS,
+      gpuReviews: GPU_REVIEWS,
     });
 
     devTestingDispatch({
