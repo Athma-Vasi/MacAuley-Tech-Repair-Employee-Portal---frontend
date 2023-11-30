@@ -75,5 +75,41 @@ function returnUpdateProductCategoryRatingsCountFields(
   return productCategoryFields;
 }
 
-export { returnUpdateProductCategoryRatingsCountFields, STAR_RATINGS_OBJ };
+function returnUpdateProductCategoryReviewIdsFields(
+  reviewDocuments: ProductReviewDocument[]
+) {
+  const groupedByProductId = groupByField({
+    objectArray: reviewDocuments,
+    field: "productId",
+  });
+
+  const productCategoryFields = Object.entries(groupedByProductId).reduce(
+    (acc, [productId, reviews]) => {
+      const fields = reviews.map((review) => {
+        const productCategoryField = {
+          documentId: productId,
+          documentUpdate: {
+            updateKind: "array",
+            updateOperator: "$push",
+            fields: { productReviewsIds: review._id },
+          },
+        };
+        return productCategoryField;
+      });
+
+      acc.push(fields);
+
+      return acc;
+    },
+    [] as Record<string, any>[]
+  );
+
+  return productCategoryFields.flat();
+}
+
+export {
+  returnUpdateProductCategoryRatingsCountFields,
+  returnUpdateProductCategoryReviewIdsFields,
+  STAR_RATINGS_OBJ,
+};
 export type { RatingKind };

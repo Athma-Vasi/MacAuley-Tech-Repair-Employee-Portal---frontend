@@ -161,7 +161,10 @@ import {
   WEBCAMS_ARRAY,
 } from "./productCategory/webcam";
 import { devTestingAction, devTestingReducer, initialDevTestingState } from "./state";
-import { returnUpdateProductCategoryRatingsCountFields } from "./productReview/review";
+import {
+  returnUpdateProductCategoryRatingsCountFields,
+  returnUpdateProductCategoryReviewIdsFields,
+} from "./productReview/review";
 
 function DevTesting() {
   const [devTestingState, devTestingDispatch] = useReducer(
@@ -310,9 +313,7 @@ function DevTesting() {
   }, [triggerGetRequest]);
 
   useEffect(() => {
-    const bodiesArr = returnUpdateProductCategoryRatingsCountFields(
-      WEBCAM_REVIEW_DOCUMENTS
-    );
+    const bodiesArr = returnUpdateProductCategoryReviewIdsFields(WEBCAM_REVIEW_DOCUMENTS);
 
     devTestingDispatch({
       type: devTestingAction.setBodiesArr,
