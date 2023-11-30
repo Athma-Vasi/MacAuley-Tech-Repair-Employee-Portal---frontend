@@ -71,7 +71,13 @@ import {
   returnLaptopProductReviewSchemas,
   returnLaptopSchemas,
 } from "./productCategory/laptop";
-import { MICROPHONES_ARRAY, returnMicrophoneSchemas } from "./productCategory/microphone";
+import {
+  MICROPHONES_ARRAY,
+  MICROPHONE_DOCUMENTS,
+  MICROPHONE_REVIEWS,
+  returnMicrophoneProductReviewSchemas,
+  returnMicrophoneSchemas,
+} from "./productCategory/microphone";
 import {
   MOTHERBOARDS_ARRAY,
   returnMotherboardSchemas,
@@ -239,10 +245,10 @@ function DevTesting() {
   }, [triggerGetRequest]);
 
   useEffect(() => {
-    const bodiesArr = returnRamProductReviewSchemas({
+    const bodiesArr = returnMicrophoneProductReviewSchemas({
       customerDocuments: CUSTOMER_DOCUMENTS,
-      ramDocuments: RAM_DOCUMENTS,
-      ramReviews: RAM_REVIEWS,
+      microphoneDocuments: MICROPHONE_DOCUMENTS,
+      microphoneReviews: MICROPHONE_REVIEWS,
     });
 
     devTestingDispatch({
