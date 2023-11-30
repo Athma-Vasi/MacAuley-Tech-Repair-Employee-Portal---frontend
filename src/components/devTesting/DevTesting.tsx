@@ -168,6 +168,7 @@ import {
   returnUpdateProductCategoryRatingsCountFields,
   returnUpdateProductCategoryReviewIdsFields,
 } from "./productReview/review";
+import { returnUpdateProductCategorySkuFields } from "./productCategory/all";
 
 function DevTesting() {
   const [devTestingState, devTestingDispatch] = useReducer(
@@ -189,11 +190,11 @@ function DevTesting() {
 
     async function submitDevTestingForm() {
       const url: URL = urlBuilder({
-        path: "customer/dev",
+        path: "product-category/webcam/dev",
       });
 
       const newBodiesArrCount =
-        bodiesArr.length - bodiesArrCount > 75 ? bodiesArrCount + 75 : bodiesArr.length;
+        bodiesArr.length - bodiesArrCount > 25 ? bodiesArrCount + 25 : bodiesArr.length;
       const slicedBodiesArr = bodiesArr.slice(bodiesArrCount, newBodiesArrCount);
       const { userInfo } = jwtDecode<{
         exp: number;
@@ -203,7 +204,7 @@ function DevTesting() {
 
       const reqBody = {
         userInfo,
-        customerFields: slicedBodiesArr,
+        webcamFields: slicedBodiesArr,
       };
 
       const requestInit: RequestInit = {
@@ -316,9 +317,7 @@ function DevTesting() {
   }, [triggerGetRequest]);
 
   useEffect(() => {
-    const bodiesArr = returnUpdateCustomerProductReviewsIdsFields(
-      WEBCAM_REVIEW_DOCUMENTS
-    );
+    const bodiesArr = returnUpdateProductCategorySkuFields(WEBCAM_DOCUMENTS);
 
     devTestingDispatch({
       type: devTestingAction.setBodiesArr,
