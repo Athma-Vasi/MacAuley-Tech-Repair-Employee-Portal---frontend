@@ -12,6 +12,7 @@ import {
   ACCESSORY_ARRAYS,
   ACCESSORY_DOCUMENTS,
   ACCESSORY_REVIEWS,
+  ACCESSORY_REVIEW_DOCUMENTS,
   returnAccessoryProductReviewSchemas,
   returnAccessorySchemas,
 } from "./productCategory/accessory";
@@ -19,11 +20,13 @@ import {
   CASE_ARRAY,
   CASE_DOCUMENTS,
   CASE_REVIEWS,
+  CASE_REVIEW_DOCUMENTS,
   returnCaseProductReviewSchemas,
   returnCaseSchemas,
 } from "./productCategory/case";
 import {
   CPU_DOCUMENTS,
+  CPU_REVIEW_DOCUMENTS,
   CPU_REVIEWS,
   CPUS_ARRAY,
   returnCpuProductReviewSchemas,
@@ -31,6 +34,7 @@ import {
 } from "./productCategory/cpu";
 import {
   DESKTOP_COMPUTER_DOCUMENTS,
+  DESKTOP_COMPUTER_REVIEW_DOCUMENTS,
   DESKTOP_COMPUTER_REVIEWS,
   DESKTOP_COMPUTERS_ARRAY,
   returnDesktopComputerProductReviewSchemas,
@@ -38,6 +42,7 @@ import {
 } from "./productCategory/desktopComputer";
 import {
   DISPLAY_DOCUMENTS,
+  DISPLAY_REVIEW_DOCUMENTS,
   DISPLAY_REVIEWS,
   DISPLAYS_ARRAY,
   returnDisplayProductReviewSchemas,
@@ -45,6 +50,7 @@ import {
 } from "./productCategory/display";
 import {
   GPU_DOCUMENTS,
+  GPU_REVIEW_DOCUMENTS,
   GPU_REVIEWS,
   GPUS_ARRAY,
   returnGpuProductReviewSchemas,
@@ -52,6 +58,7 @@ import {
 } from "./productCategory/gpu";
 import {
   HEADPHONE_DOCUMENTS,
+  HEADPHONE_REVIEW_DOCUMENTS,
   HEADPHONE_REVIEWS,
   HEADPHONES_ARRAY,
   returnHeadphoneProductReviewSchemas,
@@ -59,6 +66,7 @@ import {
 } from "./productCategory/headphone";
 import {
   KEYBOARD_DOCUMENTS,
+  KEYBOARD_REVIEW_DOCUMENTS,
   KEYBOARD_REVIEWS,
   KEYBOARDS_ARRAY,
   returnKeyboardProductReviewSchemas,
@@ -68,6 +76,7 @@ import {
   LAPTOPS_ARRAY,
   LAPTOP_DOCUMENTS,
   LAPTOP_REVIEWS,
+  LAPTOP_REVIEW_DOCUMENTS,
   returnLaptopProductReviewSchemas,
   returnLaptopSchemas,
 } from "./productCategory/laptop";
@@ -75,6 +84,7 @@ import {
   MICROPHONES_ARRAY,
   MICROPHONE_DOCUMENTS,
   MICROPHONE_REVIEWS,
+  MICROPHONE_REVIEW_DOCUMENTS,
   returnMicrophoneProductReviewSchemas,
   returnMicrophoneSchemas,
 } from "./productCategory/microphone";
@@ -82,6 +92,7 @@ import {
   MOTHERBOARDS_ARRAY,
   MOTHERBOARD_DOCUMENTS,
   MOTHERBOARD_REVIEWS,
+  MOTHERBOARD_REVIEW_DOCUMENTS,
   returnMotherboardProductReviewSchemas,
   returnMotherboardSchemas,
 } from "./productCategory/motherboard";
@@ -89,6 +100,7 @@ import {
   MOUSE_ARRAY,
   MOUSE_DOCUMENTS,
   MOUSE_REVIEWS,
+  MOUSE_REVIEW_DOCUMENTS,
   returnMouseProductReviewSchemas,
   returnMouseSchemas,
 } from "./productCategory/mouse";
@@ -96,6 +108,7 @@ import {
   PSUS_ARRAY,
   PSU_DOCUMENTS,
   PSU_REVIEWS,
+  PSU_REVIEW_DOCUMENTS,
   returnPsuProductReviewSchemas,
   returnPsuSchemas,
 } from "./productCategory/psu";
@@ -103,6 +116,7 @@ import {
   RAMS_ARRAY,
   RAM_DOCUMENTS,
   RAM_REVIEWS,
+  RAM_REVIEW_DOCUMENTS,
   returnRamProductReviewSchemas,
   returnRamSchemas,
 } from "./productCategory/ram";
@@ -110,6 +124,7 @@ import {
   returnSmartphoneProductReviewSchemas,
   returnSmartphoneSchemas,
   SMARTPHONE_DOCUMENTS,
+  SMARTPHONE_REVIEW_DOCUMENTS,
   SMARTPHONE_REVIEWS,
   SMARTPHONES_ARRAY,
 } from "./productCategory/smartphone";
@@ -117,6 +132,7 @@ import {
   returnSpeakerProductReviewSchemas,
   returnSpeakerSchemas,
   SPEAKER_DOCUMENTS,
+  SPEAKER_REVIEW_DOCUMENTS,
   SPEAKER_REVIEWS,
   SPEAKERS_ARRAY,
 } from "./productCategory/speaker";
@@ -125,12 +141,14 @@ import {
   returnStorageSchemas,
   STORAGE_ARRAY,
   STORAGE_DOCUMENTS,
+  STORAGE_REVIEW_DOCUMENTS,
   STORAGE_REVIEWS,
 } from "./productCategory/storage";
 import {
   returnTabletProductReviewSchemas,
   returnTabletSchemas,
   TABLET_DOCUMENTS,
+  TABLET_REVIEW_DOCUMENTS,
   TABLET_REVIEWS,
   TABLETS_ARRAY,
 } from "./productCategory/tablet";
@@ -138,10 +156,12 @@ import {
   returnWebcamProductReviewSchemas,
   returnWebcamSchemas,
   WEBCAM_DOCUMENTS,
+  WEBCAM_REVIEW_DOCUMENTS,
   WEBCAM_REVIEWS,
   WEBCAMS_ARRAY,
 } from "./productCategory/webcam";
 import { devTestingAction, devTestingReducer, initialDevTestingState } from "./state";
+import { returnUpdateProductCategoryRatingsCountFields } from "./productReview/review";
 
 function DevTesting() {
   const [devTestingState, devTestingDispatch] = useReducer(
@@ -163,7 +183,7 @@ function DevTesting() {
 
     async function submitDevTestingForm() {
       const url: URL = urlBuilder({
-        path: "product-review/dev",
+        path: "product-category/webcam/dev",
       });
 
       const newBodiesArrCount =
@@ -177,11 +197,11 @@ function DevTesting() {
 
       const reqBody = {
         userInfo,
-        productReviewSchemas: slicedBodiesArr,
+        webcamFields: slicedBodiesArr,
       };
 
       const requestInit: RequestInit = {
-        method: "POST",
+        method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
@@ -290,11 +310,9 @@ function DevTesting() {
   }, [triggerGetRequest]);
 
   useEffect(() => {
-    const bodiesArr = returnWebcamProductReviewSchemas({
-      customerDocuments: CUSTOMER_DOCUMENTS,
-      webcamDocuments: WEBCAM_DOCUMENTS,
-      webcamReviews: WEBCAM_REVIEWS,
-    });
+    const bodiesArr = returnUpdateProductCategoryRatingsCountFields(
+      WEBCAM_REVIEW_DOCUMENTS
+    );
 
     devTestingDispatch({
       type: devTestingAction.setBodiesArr,
@@ -302,14 +320,13 @@ function DevTesting() {
     });
   }, []);
 
-  useEffect(() => {
-    // const starRatingsCount =
-    // 			returnProductCategoryStarRatingsCount({
-    // 				productCategory: "Accessory",
-    // 				reviewDocuments: REVIEW_DOCUMENTS,
-    // 			});
-    // 		console.log({ starRatingsCount });
-  });
+  // useEffect(() => {
+  //   const starRatingsCount = returnUpdateProductCategoryRatingsCountFields(
+  //     ACCESSORY_REVIEW_DOCUMENTS
+  //   );
+
+  //   console.log({ starRatingsCount });
+  // });
 
   useEffect(() => {
     logState({

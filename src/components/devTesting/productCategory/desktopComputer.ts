@@ -32,6 +32,7 @@ import { shuffleArray } from "../../../utils";
 import {
   DesktopComputerSchema,
   ProductCategorySpecifications,
+  ProductReviewDocument,
   ProductReviewSchema,
 } from "../../product/types";
 import { CUSTOMER_DOCUMENTS } from "../customer/customerDocuments";
@@ -3789,7 +3790,7 @@ function returnDesktopComputerProductReviewSchemas({
   });
 }
 
-const DESKTOP_COMPUTER_REVIEW_DOCUMENTS = [
+const DESKTOP_COMPUTER_REVIEW_DOCUMENTS: ProductReviewDocument[] = [
   {
     userId: "65684bef01240d69b9093b5d",
     username: "Elijah-Jones-251",

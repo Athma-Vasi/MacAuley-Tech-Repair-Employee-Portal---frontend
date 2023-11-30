@@ -35,6 +35,7 @@ import { v4 as uuidv4 } from "uuid";
 import { shuffleArray } from "../../../utils";
 import {
   ProductCategorySpecifications,
+  ProductReviewDocument,
   ProductReviewSchema,
   WebcamSchema,
   WebcamSpecifications,
@@ -3515,7 +3516,7 @@ function returnWebcamProductReviewSchemas({
   });
 }
 
-const WEBCAM_REVIEW_DOCUMENTS = [
+const WEBCAM_REVIEW_DOCUMENTS:ProductReviewDocument[] = [
   {
     userId: "65684c2d01240d69b90944ef",
     username: "Dylan-Taylor-866",

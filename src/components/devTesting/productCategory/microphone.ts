@@ -38,6 +38,7 @@ import {
   MicrophoneSchema,
   MicrophoneSpecifications,
   ProductCategorySpecifications,
+  ProductReviewDocument,
   ProductReviewSchema,
 } from "../../product/types";
 import { CUSTOMER_DOCUMENTS } from "../customer/customerDocuments";
@@ -2271,7 +2272,7 @@ function returnMicrophoneProductReviewSchemas({
   });
 }
 
-const MICROPHONE_REVIEW_DOCUMENTS = [
+const MICROPHONE_REVIEW_DOCUMENTS:ProductReviewDocument[] = [
   {
     userId: "65684be701240d69b9093a7b",
     username: "Jake-Ahmed-193",

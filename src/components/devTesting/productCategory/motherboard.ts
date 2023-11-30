@@ -45,6 +45,7 @@ import {
   MotherboardSchema,
   MotherboardSpecifications,
   ProductCategorySpecifications,
+  ProductReviewDocument,
   ProductReviewSchema,
 } from "../../product/types";
 import { CUSTOMER_DOCUMENTS } from "../customer/customerDocuments";
@@ -2332,7 +2333,7 @@ function returnMotherboardProductReviewSchemas({
   });
 }
 
-const MOTHERBOARD_REVIEW_DOCUMENTS = [
+const MOTHERBOARD_REVIEW_DOCUMENTS:ProductReviewDocument[] = [
   {
     userId: "65684c1501240d69b90941b5",
     username: "Adam-Clark-638",

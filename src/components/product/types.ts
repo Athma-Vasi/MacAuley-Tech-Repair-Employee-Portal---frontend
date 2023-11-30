@@ -44,8 +44,8 @@ type ProductReviewSchema = {
 
 type ProductReviewDocument = ProductReviewSchema & {
   _id: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
   __v: number;
 };
 

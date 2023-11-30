@@ -38,6 +38,7 @@ import {
   MouseSchema,
   MouseSpecifications,
   ProductCategorySpecifications,
+  ProductReviewDocument,
   ProductReviewSchema,
 } from "../../product/types";
 import { CUSTOMER_DOCUMENTS } from "../customer/customerDocuments";
@@ -3917,7 +3918,7 @@ function returnMouseProductReviewSchemas({
   });
 }
 
-const MOUSE_REVIEW_DOCUMENTS = [
+const MOUSE_REVIEW_DOCUMENTS: ProductReviewDocument[] = [
   {
     userId: "65684c1b01240d69b909429b",
     username: "Carlos-Wong-732",

@@ -35,6 +35,7 @@ import { v4 as uuidv4 } from "uuid";
 import { shuffleArray } from "../../../utils";
 import {
   ProductCategorySpecifications,
+  ProductReviewDocument,
   ProductReviewSchema,
   PsuSchema,
   PsuSpecifications,
@@ -2418,7 +2419,7 @@ function returnPsuProductReviewSchemas({
   });
 }
 
-const PSU_REVIEW_DOCUMENTS = [
+const PSU_REVIEW_DOCUMENTS:ProductReviewDocument[] = [
   {
     userId: "65684bf701240d69b9093c9f",
     username: "Liam-Thomas-336",

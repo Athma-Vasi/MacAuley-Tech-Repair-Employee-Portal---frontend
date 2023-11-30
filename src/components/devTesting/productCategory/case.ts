@@ -36,6 +36,7 @@ import {
   CaseSpecifications,
   ComputerCaseSchema,
   ProductCategorySpecifications,
+  ProductReviewDocument,
   ProductReviewSchema,
 } from "../../product/types";
 import { CUSTOMER_DOCUMENTS } from "../customer/customerDocuments";
@@ -2505,7 +2506,7 @@ function returnCaseProductReviewSchemas({
   });
 }
 
-const CASE_REVIEW_DOCUMENTS = [
+const CASE_REVIEW_DOCUMENTS:ProductReviewDocument[] = [
   {
     userId: "65684c4d01240d69b90945e7",
     username: "Liam-Martinez-909",

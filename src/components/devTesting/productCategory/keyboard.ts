@@ -37,6 +37,7 @@ import {
   KeyboardSchema,
   KeyboardSpecifications,
   ProductCategorySpecifications,
+  ProductReviewDocument,
   ProductReviewSchema,
 } from "../../product/types";
 import { CUSTOMER_DOCUMENTS } from "../customer/customerDocuments";
@@ -6087,7 +6088,7 @@ function returnKeyboardProductReviewSchemas({
   });
 }
 
-const KEYBOARD_REVIEW_DOCUMENTS = [
+const KEYBOARD_REVIEW_DOCUMENTS: ProductReviewDocument[] = [
   {
     userId: "65684bf701240d69b9093c89",
     username: "Sophia-Wilson-314",

@@ -39,6 +39,7 @@ import {
   HeadphoneSchema,
   HeadphoneSpecifications,
   ProductCategorySpecifications,
+  ProductReviewDocument,
   ProductReviewSchema,
 } from "../../product/types";
 import { CUSTOMER_DOCUMENTS } from "../customer/customerDocuments";
@@ -4259,7 +4260,7 @@ function returnHeadphoneProductReviewSchemas({
   });
 }
 
-const HEADPHONE_REVIEW_DOCUMENTS = [
+const HEADPHONE_REVIEW_DOCUMENTS:ProductReviewDocument[] = [
   {
     userId: "65684bde01240d69b909392b",
     username: "Alex-Williams-97",

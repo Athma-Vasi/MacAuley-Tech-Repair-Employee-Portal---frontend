@@ -32,6 +32,7 @@ import { shuffleArray } from "../../../utils";
 import {
   LaptopSchema,
   ProductCategorySpecifications,
+  ProductReviewDocument,
   ProductReviewSchema,
 } from "../../product/types";
 import { CUSTOMER_DOCUMENTS } from "../customer/customerDocuments";
@@ -2774,7 +2775,7 @@ function returnLaptopProductReviewSchemas({
   });
 }
 
-const LAPTOP_REVIEW_DOCUMENTS = [
+const LAPTOP_REVIEW_DOCUMENTS:ProductReviewDocument[] = [
   {
     userId: "65684c2d01240d69b9094535",
     username: "Lisa-Clark-871",

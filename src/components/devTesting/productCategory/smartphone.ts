@@ -42,6 +42,7 @@ import { v4 as uuidv4 } from "uuid";
 import { shuffleArray } from "../../../utils";
 import {
   ProductCategorySpecifications,
+  ProductReviewDocument,
   ProductReviewSchema,
   SmartphoneSchema,
   SmartphoneSpecifications,
@@ -2703,7 +2704,7 @@ function returnSmartphoneProductReviewSchemas({
   });
 }
 
-const SMARTPHONE_REVIEW_DOCUMENTS = [
+const SMARTPHONE_REVIEW_DOCUMENTS: ProductReviewDocument[] = [
   {
     userId: "65684bd201240d69b9093839",
     username: "Logan-Gonzalez-56",

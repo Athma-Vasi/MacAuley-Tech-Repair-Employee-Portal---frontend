@@ -29,12 +29,14 @@ reviewsIds:[];
  */
 import { v4 as uuidv4 } from "uuid";
 
-import { shuffleArray } from "../../../utils";
+import { groupByField, shuffleArray } from "../../../utils";
 import {
   AccessorySchema,
   AccessorySpecifications,
   ProductCategorySpecifications,
+  ProductReviewDocument,
   ProductReviewSchema,
+  RatingKind,
 } from "../../product/types";
 import { CUSTOMER_DOCUMENTS } from "../customer/customerDocuments";
 import { STAR_RATINGS_OBJ } from "../productReview/review";
@@ -2561,7 +2563,7 @@ function returnAccessoryProductReviewSchemas({
   });
 }
 
-const ACCESSORY_REVIEW_DOCUMENTS = [
+const ACCESSORY_REVIEW_DOCUMENTS: ProductReviewDocument[] = [
   {
     userId: "65684c0801240d69b9093f57",
     username: "Ella-Khan-460",

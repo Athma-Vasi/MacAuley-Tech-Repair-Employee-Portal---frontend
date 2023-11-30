@@ -39,6 +39,7 @@ import {
   GpuSchema,
   GpuSpecifications,
   ProductCategorySpecifications,
+  ProductReviewDocument,
   ProductReviewSchema,
 } from "../../product/types";
 import { CUSTOMER_DOCUMENTS } from "../customer/customerDocuments";
@@ -2886,7 +2887,7 @@ function returnGpuProductReviewSchemas({
   });
 }
 
-const GPU_REVIEW_DOCUMENTS = [
+const GPU_REVIEW_DOCUMENTS:ProductReviewDocument[] = [
   {
     userId: "65684bdf01240d69b909392f",
     username: "Emma-Nguyen-101",

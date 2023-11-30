@@ -40,6 +40,7 @@ import {
   DisplaySchema,
   DisplaySpecifications,
   ProductCategorySpecifications,
+  ProductReviewDocument,
   ProductReviewSchema,
 } from "../../product/types";
 import { CUSTOMER_DOCUMENTS } from "../customer/customerDocuments";
@@ -2540,7 +2541,7 @@ function returnDisplayProductReviewSchemas({
   });
 }
 
-const DISPLAY_REVIEW_DOCUMENTS = [
+const DISPLAY_REVIEW_DOCUMENTS: ProductReviewDocument[] = [
   {
     userId: "65684bdf01240d69b9093931",
     username: "Elijah-Turner-104",

@@ -43,6 +43,7 @@ import {
   CpuSchema,
   CpuSpecifications,
   ProductCategorySpecifications,
+  ProductReviewDocument,
   ProductReviewSchema,
 } from "../../product/types";
 import { CUSTOMER_DOCUMENTS } from "../customer/customerDocuments";
@@ -2988,7 +2989,7 @@ function returnCpuProductReviewSchemas({
   });
 }
 
-const CPU_REVIEW_DOCUMENTS = [
+const CPU_REVIEW_DOCUMENTS: ProductReviewDocument[] = [
   {
     userId: "65684c0501240d69b9093eeb",
     username: "Samuel-Wilson-472",

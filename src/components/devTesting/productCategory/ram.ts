@@ -39,6 +39,7 @@ import { v4 as uuidv4 } from "uuid";
 import { shuffleArray } from "../../../utils";
 import {
   ProductCategorySpecifications,
+  ProductReviewDocument,
   ProductReviewSchema,
   RamSchema,
   RamSpecifications,
@@ -3222,7 +3223,7 @@ function returnRamProductReviewSchemas({
   });
 }
 
-const RAM_REVIEW_DOCUMENTS = [
+const RAM_REVIEW_DOCUMENTS:ProductReviewDocument[] = [
   {
     userId: "65684bcd01240d69b90937dd",
     username: "Eva-Wilson-12",

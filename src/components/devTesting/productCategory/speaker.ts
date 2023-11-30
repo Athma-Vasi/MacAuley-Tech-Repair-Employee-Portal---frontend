@@ -36,6 +36,7 @@ import { v4 as uuidv4 } from "uuid";
 import { shuffleArray } from "../../../utils";
 import {
   ProductCategorySpecifications,
+  ProductReviewDocument,
   ProductReviewSchema,
   SpeakerSchema,
   SpeakerSpecifications,
@@ -2216,7 +2217,7 @@ function returnSpeakerProductReviewSchemas({
   });
 }
 
-const SPEAKER_REVIEW_DOCUMENTS = [
+const SPEAKER_REVIEW_DOCUMENTS:ProductReviewDocument[] = [
   {
     userId: "65684c0101240d69b9093de9",
     username: "Jessica-Martinez-410",
