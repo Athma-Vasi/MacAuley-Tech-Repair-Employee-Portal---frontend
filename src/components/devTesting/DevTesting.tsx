@@ -80,6 +80,9 @@ import {
 } from "./productCategory/microphone";
 import {
   MOTHERBOARDS_ARRAY,
+  MOTHERBOARD_DOCUMENTS,
+  MOTHERBOARD_REVIEWS,
+  returnMotherboardProductReviewSchemas,
   returnMotherboardSchemas,
 } from "./productCategory/motherboard";
 import { MOUSE_ARRAY, returnMouseSchemas } from "./productCategory/mouse";
@@ -245,10 +248,10 @@ function DevTesting() {
   }, [triggerGetRequest]);
 
   useEffect(() => {
-    const bodiesArr = returnMicrophoneProductReviewSchemas({
+    const bodiesArr = returnMotherboardProductReviewSchemas({
       customerDocuments: CUSTOMER_DOCUMENTS,
-      microphoneDocuments: MICROPHONE_DOCUMENTS,
-      microphoneReviews: MICROPHONE_REVIEWS,
+      motherboardDocuments: MOTHERBOARD_DOCUMENTS,
+      motherboardReviews: MOTHERBOARD_REVIEWS,
     });
 
     devTestingDispatch({
