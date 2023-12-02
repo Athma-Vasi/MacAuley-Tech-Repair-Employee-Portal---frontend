@@ -66,6 +66,9 @@ function returnUpdateProductCategoryRatingsCountFields(
   return productCategoryFields;
 }
 
+/**
+ * @description - returns productCategory fields request body field for updating the productReviewsIds based on the created productCategory product review documents' ids.
+ */
 function returnUpdateProductCategoryReviewIdsFields(
   reviewDocuments: ProductReviewDocument[]
 ) {
@@ -98,7 +101,26 @@ function returnUpdateProductCategoryReviewIdsFields(
   return productCategoryFields.flat();
 }
 
+/**
+ * removes the productSku field from the productReview documents mistakenly created
+ */
+function returnRemoveProductReviewSkuFields(productReviews: ProductReviewDocument[]) {
+  return productReviews.map((review) => {
+    const updateInfo = {
+      productReviewId: review._id,
+      documentUpdate: {
+        updateKind: "field",
+        updateOperator: "$unset",
+        fields: { productSku: "" },
+      },
+    };
+
+    return updateInfo;
+  });
+}
+
 export {
+  returnRemoveProductReviewSkuFields,
   returnUpdateProductCategoryRatingsCountFields,
   returnUpdateProductCategoryReviewIdsFields,
   STAR_RATINGS_OBJ,

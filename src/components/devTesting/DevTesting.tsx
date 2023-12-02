@@ -165,10 +165,12 @@ import {
 } from "./productCategory/webcam";
 import { devTestingAction, devTestingReducer, initialDevTestingState } from "./state";
 import {
+  returnRemoveProductReviewSkuFields,
   returnUpdateProductCategoryRatingsCountFields,
   returnUpdateProductCategoryReviewIdsFields,
 } from "./productReview/review";
 import { returnUpdateProductCategorySkuFields } from "./productCategory/all";
+import { PRODUCT_REVIEW_DOCUMENTS } from "./productReview/reviewDocuments";
 
 function DevTesting() {
   const [devTestingState, devTestingDispatch] = useReducer(
@@ -190,11 +192,11 @@ function DevTesting() {
 
     async function submitDevTestingForm() {
       const url: URL = urlBuilder({
-        path: "product-category/webcam/dev",
+        path: "product-review/dev",
       });
 
       const newBodiesArrCount =
-        bodiesArr.length - bodiesArrCount > 25 ? bodiesArrCount + 25 : bodiesArr.length;
+        bodiesArr.length - bodiesArrCount > 75 ? bodiesArrCount + 75 : bodiesArr.length;
       const slicedBodiesArr = bodiesArr.slice(bodiesArrCount, newBodiesArrCount);
       const { userInfo } = jwtDecode<{
         exp: number;
@@ -204,7 +206,7 @@ function DevTesting() {
 
       const reqBody = {
         userInfo,
-        webcamFields: slicedBodiesArr,
+        productReviewFields: slicedBodiesArr,
       };
 
       const requestInit: RequestInit = {
@@ -264,7 +266,7 @@ function DevTesting() {
 
     async function getAllResourceDocumentsBulk() {
       const url: URL = urlBuilder({
-        path: "product-category/speaker",
+        path: "product-review/dev",
       });
 
       const requestInit: RequestInit = {
@@ -317,21 +319,13 @@ function DevTesting() {
   }, [triggerGetRequest]);
 
   useEffect(() => {
-    const bodiesArr = returnUpdateProductCategorySkuFields(WEBCAM_DOCUMENTS);
+    const bodiesArr = returnRemoveProductReviewSkuFields(PRODUCT_REVIEW_DOCUMENTS);
 
     devTestingDispatch({
       type: devTestingAction.setBodiesArr,
       payload: bodiesArr,
     });
   }, []);
-
-  // useEffect(() => {
-  //   const starRatingsCount = returnUpdateProductCategoryRatingsCountFields(
-  //     ACCESSORY_REVIEW_DOCUMENTS
-  //   );
-
-  //   console.log({ starRatingsCount });
-  // });
 
   useEffect(() => {
     logState({
