@@ -13,47 +13,42 @@ import {
   Text,
   Title,
   Tooltip,
-} from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
-import { ChangeEvent, FormEvent, useEffect, useReducer } from 'react';
-import {
-  TbNewSection,
-  TbQuestionMark,
-  TbTrash,
-  TbUpload,
-} from 'react-icons/tb';
-import { useNavigate } from 'react-router-dom';
+} from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
+import { ChangeEvent, FormEvent, useEffect, useReducer } from "react";
+import { TbNewSection, TbQuestionMark, TbTrash, TbUpload } from "react-icons/tb";
+import { useNavigate } from "react-router-dom";
 
-import { COLORS_SWATCHES } from '../../constants/data';
-import { ACKNOWLEDGEMENT_TEXT_INPUT_REGEX } from '../../constants/regex';
-import { useGlobalState } from '../../hooks';
+import { COLORS_SWATCHES } from "../../constants/data";
+import { ACKNOWLEDGEMENT_TEXT_INPUT_REGEX } from "../../constants/regex";
+import { useGlobalState } from "../../hooks";
 import {
   AccessibleErrorValidTextElements,
   returnAccessibleButtonElements,
   returnAccessibleRadioGroupInputsElements,
   returnAccessibleTextInputElements,
-} from '../../jsxCreators';
+} from "../../jsxCreators";
 import {
   formatDate,
   groupQueryResponse,
   logState,
   returnAcknowledgementValidationText,
   returnThemeColors,
-} from '../../utils';
+} from "../../utils";
 import {
   AccessibleButtonCreatorInfo,
   AccessibleRadioGroupInputCreatorInfo,
   AccessibleTextInputCreatorInfo,
-} from '../wrappers';
-import { DisplayQueryDesktop } from './displayQueryDesktop/DisplayQueryDesktop';
-import { DisplayQueryMobile } from './displayQueryMobile/DisplayQueryMobile';
+} from "../wrappers";
+import { DisplayQueryDesktop } from "./displayQueryDesktop/DisplayQueryDesktop";
+import { DisplayQueryMobile } from "./displayQueryMobile/DisplayQueryMobile";
 import {
   displayQueryAction,
   displayQueryReducer,
   initialDisplayQueryState,
-} from './state';
-import { DisplayQueryProps } from './types';
-import { GROUP_BY_HELP_MODAL_CONTENT } from './utils';
+} from "./state";
+import { DisplayQueryProps } from "./types";
+import { GROUP_BY_HELP_MODAL_CONTENT } from "./utils";
 
 function DisplayQuery<
   Doc extends Record<string | symbol | number, any> = Record<
@@ -84,7 +79,6 @@ function DisplayQuery<
     groupBySelection,
     groupedByQueryResponseData,
     fileUploadsForAForm,
-    currentSegmentedSelection,
     acknowledgementText,
     isAcknowledgementTextFocused,
     isValidAcknowledgementText,
@@ -101,10 +95,8 @@ function DisplayQuery<
     openedDeleteAcknowledge,
     { open: openDeleteAcknowledge, close: closeDeleteAcknowledge },
   ] = useDisclosure(false);
-  const [
-    openedDisplayFileUploads,
-    { open: openFileUploads, close: closeFileUploads },
-  ] = useDisclosure(false);
+  const [openedDisplayFileUploads, { open: openFileUploads, close: closeFileUploads }] =
+    useDisclosure(false);
   const [
     openedGroupByHelpModal,
     { open: openGroupByHelpModal, close: closeGroupByHelpModal },
@@ -114,19 +106,19 @@ function DisplayQuery<
 
   async function handleDeleteFormSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    console.log('delete form submitted');
+    console.log("delete form submitted");
 
     if (!isValidAcknowledgementText) {
       return;
     }
 
     parentDeleteResourceDispatch({
-      type: 'setDeleteResource',
+      type: "setDeleteResource",
       payload: {
         formId: deleteFormId,
         kind: deleteResourceKind,
         fileUploadId:
-          deleteResourceKind === 'fileUpload' ? deleteFileUploadId : undefined,
+          deleteResourceKind === "fileUpload" ? deleteFileUploadId : undefined,
         value: true,
       },
     });
@@ -146,19 +138,12 @@ function DisplayQuery<
   useEffect(() => {
     const initialGroupByRadioData = componentQueryData
       .reduce(
-        (
-          acc: Array<{ value: string; label: string }>,
-          { inputKind, label, value }
-        ) => {
-          if (inputKind === 'selectInput' || inputKind === 'booleanInput') {
+        (acc: Array<{ value: string; label: string }>, { inputKind, label, value }) => {
+          if (inputKind === "selectInput" || inputKind === "booleanInput") {
             // only push if it is also present in query response data
-            const isFieldExcluded = queryResponseData.filter(
-              (queryResponseObj) => {
-                return Object.entries(queryResponseObj).find(
-                  ([key, _]) => key === value
-                );
-              }
-            );
+            const isFieldExcluded = queryResponseData.filter((queryResponseObj) => {
+              return Object.entries(queryResponseObj).find(([key, _]) => key === value);
+            });
 
             if (isFieldExcluded.length > 0) {
               acc.push({ label, value });
@@ -168,15 +153,13 @@ function DisplayQuery<
           return acc;
         },
         [
-          { label: 'None', value: 'none' },
-          { label: 'Username', value: 'username' },
+          { label: "None", value: "none" },
+          { label: "Username", value: "username" },
         ]
       )
       // username is not displayed when resource is anonymousRequest
       .filter(({ value }) => {
-        return parentComponentName === 'Anonymous Request'
-          ? value !== 'username'
-          : true;
+        return parentComponentName === "Anonymous Request" ? value !== "username" : true;
       });
 
     displayQueryDispatch({
@@ -188,8 +171,8 @@ function DisplayQuery<
   // assign current groupBy selection's corresponding options data
   useEffect(() => {
     const currentSelectData =
-      groupBySelection === 'username' || groupBySelection === 'none'
-        ? ['']
+      groupBySelection === "username" || groupBySelection === "none"
+        ? [""]
         : componentQueryData.reduce(
             (acc, componentQueryObj) => {
               if (groupBySelection === componentQueryObj.value) {
@@ -200,7 +183,7 @@ function DisplayQuery<
 
               return acc;
             },
-            ['']
+            [""]
           );
 
     displayQueryDispatch({
@@ -227,12 +210,11 @@ function DisplayQuery<
 
   const [acknowledgementInputErrorText, acknowledgementInputValidText] =
     AccessibleErrorValidTextElements({
-      inputElementKind: 'acknowledgement',
+      inputElementKind: "acknowledgement",
       inputText: acknowledgementText,
       isValidInputText: isValidAcknowledgementText,
       isInputTextFocused: isAcknowledgementTextFocused,
-      regexValidationText:
-        returnAcknowledgementValidationText(acknowledgementText),
+      regexValidationText: returnAcknowledgementValidationText(acknowledgementText),
     });
 
   /** ------------- end accessible error/valid text elems ------------- */
@@ -242,8 +224,8 @@ function DisplayQuery<
   const [createdGroupByButton] = returnAccessibleButtonElements([
     {
       buttonLabel: <TbQuestionMark />,
-      semanticDescription: 'Open group by help modal',
-      semanticName: 'group by help',
+      semanticDescription: "Open group by help modal",
+      semanticName: "group by help",
       buttonOnClick: () => {
         openGroupByHelpModal();
       },
@@ -261,34 +243,17 @@ function DisplayQuery<
 
   const groupByRadioGroupCreatorInfo: AccessibleRadioGroupInputCreatorInfo = {
     dataObjectArray: groupByRadioData,
-    description: 'Group by fields with constrained values',
+    description: "Group by fields with constrained values",
     onChange: (value: string) => {
       displayQueryDispatch({
         type: displayQueryAction.setGroupBySelection,
         payload: value,
       });
     },
-    semanticName: 'group by',
+    semanticName: "group by",
     value: groupBySelection,
     label: groupByRadioLabel,
   };
-
-  const segmentedControl = (
-    <SegmentedControl
-      data={[
-        { label: 'Condensed', value: 'condensed' },
-        { label: 'Expanded', value: 'expanded' },
-      ]}
-      value={currentSegmentedSelection}
-      onChange={(value: string) => {
-        displayQueryDispatch({
-          type: displayQueryAction.setCurrentSegmentedSelection,
-          payload: value as 'condensed' | 'expanded',
-        });
-      }}
-      radius="lg"
-    />
-  );
 
   const acknowledgementTextInputCreatorInfo: AccessibleTextInputCreatorInfo = {
     description: {
@@ -297,8 +262,8 @@ function DisplayQuery<
     },
     inputText: acknowledgementText,
     isValidInputText: isValidAcknowledgementText,
-    label: 'Acknowledgement',
-    name: 'acknowledgement',
+    label: "Acknowledgement",
+    name: "acknowledgement",
     onBlur: () => {
       displayQueryDispatch({
         type: displayQueryAction.setIsAcknowledgementTextFocused,
@@ -317,18 +282,18 @@ function DisplayQuery<
         payload: true,
       });
     },
-    placeholder: 'Enter your acknowledgement',
+    placeholder: "Enter your acknowledgement",
     required: true,
     withAsterisk: true,
-    semanticName: 'acknowledgement',
+    semanticName: "acknowledgement",
     textInputWidth: 300,
   };
 
   const deleteButtonCreatorInfo: AccessibleButtonCreatorInfo = {
-    buttonLabel: 'Delete',
-    semanticDescription: 'confirm delete form submit button',
-    semanticName: 'confirm delete button',
-    buttonType: 'submit',
+    buttonLabel: "Delete",
+    semanticDescription: "confirm delete form submit button",
+    semanticName: "confirm delete button",
+    buttonType: "submit",
     leftIcon: <TbTrash />,
     rightIcon: <TbUpload />,
     buttonOnClick: () => {
@@ -338,7 +303,7 @@ function DisplayQuery<
   };
 
   const createResourceButtonCreatorInfo: AccessibleButtonCreatorInfo = {
-    buttonLabel: 'Create',
+    buttonLabel: "Create",
     semanticDescription: `create ${parentComponentName} form button`,
     semanticName: `create ${parentComponentName} button`,
     leftIcon: <TbNewSection />,
@@ -402,21 +367,6 @@ function DisplayQuery<
     </Group>
   );
 
-  const displayTableViewSegmentControl = (
-    <Group
-      w={sectionWidth}
-      style={{
-        border: borderColor,
-        borderRadius: 4,
-      }}
-      spacing={rowGap}
-      p={padding}
-    >
-      <Title order={5}>Table view</Title>
-      {segmentedControl}
-    </Group>
-  );
-
   const displayAcknowledgementModal = (
     <Modal
       centered
@@ -438,17 +388,10 @@ function DisplayQuery<
         >
           <Title order={5}>Delete file</Title>
           <Text>
-            To delete this file, please enter: 'I solemnly swear that I am up to
-            no good.'
+            To delete this file, please enter: 'I solemnly swear that I am up to no good.'
           </Text>
           {createdAcknowledgementTextInput}
-          <Flex
-            w="100%"
-            justify="flex-end"
-            align="center"
-            columnGap={rowGap}
-            p={padding}
-          >
+          <Flex w="100%" justify="flex-end" align="center" columnGap={rowGap} p={padding}>
             {createdDeleteButton}
           </Flex>
         </Flex>
@@ -521,9 +464,7 @@ function DisplayQuery<
                 >
                   <Text>File name: </Text>
                   <Text>
-                    {fileName.length > 11
-                      ? `${fileName.slice(0, 11)}...`
-                      : fileName}
+                    {fileName.length > 11 ? `${fileName.slice(0, 11)}...` : fileName}
                   </Text>
                 </Flex>
               </HoverCard.Target>
@@ -603,20 +544,20 @@ function DisplayQuery<
           const formattedCreatedDate = formatDate({
             date: createdAt,
             formatOptions: {
-              year: 'numeric',
-              month: 'numeric',
-              day: 'numeric',
+              year: "numeric",
+              month: "numeric",
+              day: "numeric",
             },
-            locale: 'en-US',
+            locale: "en-US",
           });
           const dropDownFullCreatedDate = formatDate({
             date: createdAt,
             formatOptions: {
-              dateStyle: 'full',
-              timeStyle: 'long',
+              dateStyle: "full",
+              timeStyle: "long",
               hour12: false,
             },
-            locale: 'en-US',
+            locale: "en-US",
           });
 
           const displayCreatedAtDesktop = (
@@ -664,21 +605,21 @@ function DisplayQuery<
           const formattedUpdatedDate = formatDate({
             date: updatedAt,
             formatOptions: {
-              year: 'numeric',
-              month: 'numeric',
-              day: 'numeric',
+              year: "numeric",
+              month: "numeric",
+              day: "numeric",
             },
-            locale: 'en-US',
+            locale: "en-US",
           });
 
           const dropdownFullUpdatedDate = formatDate({
             date: updatedAt,
             formatOptions: {
-              dateStyle: 'full',
-              timeStyle: 'long',
+              dateStyle: "full",
+              timeStyle: "long",
               hour12: false,
             },
-            locale: 'en-US',
+            locale: "en-US",
           });
           const displayUpdatedAtDesktop = (
             <HoverCard
@@ -834,16 +775,12 @@ function DisplayQuery<
             <Accordion py={padding}>
               <Accordion.Item
                 value={`${
-                  fileName.length > 23
-                    ? `${fileName.slice(0, 23)}...`
-                    : fileName
+                  fileName.length > 23 ? `${fileName.slice(0, 23)}...` : fileName
                 } info`}
               >
                 <Accordion.Control>
                   <Text>
-                    {fileName.length > 23
-                      ? `${fileName.slice(0, 23)}...`
-                      : fileName}
+                    {fileName.length > 23 ? `${fileName.slice(0, 23)}...` : fileName}
                   </Text>
                 </Accordion.Control>
                 <Accordion.Panel>{displayFileUploadInfo}</Accordion.Panel>
@@ -853,14 +790,14 @@ function DisplayQuery<
 
           const createdDeleteFileButton = returnAccessibleButtonElements([
             {
-              buttonLabel: 'Delete',
+              buttonLabel: "Delete",
               leftIcon: <TbTrash />,
               semanticDescription: `Click button to delete ${fileName}`,
               semanticName: `delete ${fileName}`,
               buttonOnClick: () => {
                 displayQueryDispatch({
                   type: displayQueryAction.setDeleteResourceKind,
-                  payload: 'fileUpload',
+                  payload: "fileUpload",
                 });
                 displayQueryDispatch({
                   type: displayQueryAction.setDeleteFileUploadId,
@@ -885,9 +822,7 @@ function DisplayQuery<
               <Group w="100%" position="center" pt={padding}>
                 <Tooltip
                   label={`Delete file ${
-                    fileName.length > 23
-                      ? `${fileName.slice(0, 23)}...`
-                      : fileName
+                    fileName.length > 23 ? `${fileName.slice(0, 23)}...` : fileName
                   }`}
                 >
                   <Group>{createdDeleteFileButton}</Group>
@@ -935,14 +870,13 @@ function DisplayQuery<
         queryValuesArray={queryValuesArray}
         requestStatusDispatch={parentRequestStatusDispatch}
         setFileUploadsForAFormDispatch={displayQueryDispatch}
-        tableViewSelection={currentSegmentedSelection}
       />
     );
 
   useEffect(() => {
     logState({
       state: displayQueryState,
-      groupLabel: 'displayQueryState',
+      groupLabel: "displayQueryState",
     });
   }, [displayQueryState]);
 
@@ -959,7 +893,7 @@ function DisplayQuery<
       opened={openedGroupByHelpModal}
       onClose={closeGroupByHelpModal}
       title={<Title order={4}>Group By help</Title>}
-      size={width <= 1024 ? 'auto' : 1024 - 200}
+      size={width <= 1024 ? "auto" : 1024 - 200}
     >
       {GROUP_BY_HELP_MODAL_CONTENT}
     </Modal>
@@ -981,16 +915,9 @@ function DisplayQuery<
       {displayFileUploadsModal}
 
       {displayGroupByRadioGroup}
-      {width >= 1024 ? displayTableViewSegmentControl : null}
       <Space h="md" />
       <Space h="md" />
-      <Flex
-        align="center"
-        justify="space-between"
-        w="100%"
-        py={padding}
-        pr={padding}
-      >
+      <Flex align="center" justify="space-between" w="100%" py={padding} pr={padding}>
         <Group spacing={rowGap}>
           <Title order={2}>{parentComponentName}s</Title>
           {displayCreateResourceButton}

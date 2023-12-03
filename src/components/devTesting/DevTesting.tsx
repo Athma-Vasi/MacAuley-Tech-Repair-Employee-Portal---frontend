@@ -169,8 +169,15 @@ import {
   returnUpdateProductCategoryRatingsCountFields,
   returnUpdateProductCategoryReviewIdsFields,
 } from "./productReview/review";
-import { returnUpdateProductCategorySkuFields } from "./productCategory/all";
+import {
+  returnUpdateProductCategoryCurrencyFields,
+  returnUpdateProductCategorySkuFields,
+} from "./productCategory/all";
 import { PRODUCT_REVIEW_DOCUMENTS } from "./productReview/reviewDocuments";
+import { returnPurchaseSchemas } from "./purchase/purchase";
+import { RMA_REASONS_POOL, returnRMASchemas } from "./rma/rma";
+import { constants } from "buffer";
+import { PURCHASE_DOCUMENTS } from "./purchase/purchaseDocuments";
 
 function DevTesting() {
   const [devTestingState, devTestingDispatch] = useReducer(
@@ -192,7 +199,7 @@ function DevTesting() {
 
     async function submitDevTestingForm() {
       const url: URL = urlBuilder({
-        path: "product-review/dev",
+        path: "rma/dev",
       });
 
       const newBodiesArrCount =
@@ -206,11 +213,11 @@ function DevTesting() {
 
       const reqBody = {
         userInfo,
-        productReviewFields: slicedBodiesArr,
+        rmaSchemas: slicedBodiesArr,
       };
 
       const requestInit: RequestInit = {
-        method: "PATCH",
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
@@ -266,7 +273,7 @@ function DevTesting() {
 
     async function getAllResourceDocumentsBulk() {
       const url: URL = urlBuilder({
-        path: "product-review/dev",
+        path: "rma/dev",
       });
 
       const requestInit: RequestInit = {
@@ -319,7 +326,38 @@ function DevTesting() {
   }, [triggerGetRequest]);
 
   useEffect(() => {
-    const bodiesArr = returnRemoveProductReviewSkuFields(PRODUCT_REVIEW_DOCUMENTS);
+    // const productCategoryDocuments = [
+    //   ...ACCESSORY_DOCUMENTS,
+    //   ...CASE_DOCUMENTS,
+    //   ...CPU_DOCUMENTS,
+    //   ...DESKTOP_COMPUTER_DOCUMENTS,
+    //   ...DISPLAY_DOCUMENTS,
+    //   ...GPU_DOCUMENTS,
+    //   ...HEADPHONE_DOCUMENTS,
+    //   ...KEYBOARD_DOCUMENTS,
+    //   ...LAPTOP_DOCUMENTS,
+    //   ...MICROPHONE_DOCUMENTS,
+    //   ...MOTHERBOARD_DOCUMENTS,
+    //   ...MOUSE_DOCUMENTS,
+    //   ...PSU_DOCUMENTS,
+    //   ...RAM_DOCUMENTS,
+    //   ...SMARTPHONE_DOCUMENTS,
+    //   ...SPEAKER_DOCUMENTS,
+    //   ...STORAGE_DOCUMENTS,
+    //   ...TABLET_DOCUMENTS,
+    //   ...WEBCAM_DOCUMENTS,
+    // ];
+
+    // const bodiesArr = returnPurchaseSchemas({
+    //   customerDocuments: CUSTOMER_DOCUMENTS,
+    //   productCategoryDocuments,
+    //   productReviewDocuments: PRODUCT_REVIEW_DOCUMENTS,
+    // });
+
+    const bodiesArr = returnRMASchemas({
+      rmaReasonsPool: RMA_REASONS_POOL,
+      purchaseDocuments: PURCHASE_DOCUMENTS,
+    });
 
     devTestingDispatch({
       type: devTestingAction.setBodiesArr,
@@ -352,7 +390,7 @@ function DevTesting() {
           </Button>
         </Group>
 
-        {/* <Text>GET REQUEST</Text>
+        <Text>GET REQUEST</Text>
         <Group>
           <Button
             disabled={triggerGetRequest}
@@ -365,7 +403,7 @@ function DevTesting() {
           >
             Trigger GET
           </Button>
-        </Group> */}
+        </Group>
       </Stack>
     </Center>
   );
@@ -374,45 +412,25 @@ function DevTesting() {
 export default DevTesting;
 
 /**
- * const bodiesArr = returnProductReviewSchemas({
-			accessoryDocuments: ACCESSORY_DOCUMENTS,
-			accessoryReviews: ACCESSORY_REVIEWS,
-			caseDocuments: CASE_DOCUMENTS,
-			caseReviews: CASE_REVIEWS,
-			cpuDocuments: CPU_DOCUMENTS,
-			cpuReviews: CPU_REVIEWS,
-			desktopComputerDocuments: DESKTOP_COMPUTER_DOCUMENTS,
-			desktopComputerReviews: DESKTOP_COMPUTER_REVIEWS,
-			displayDocuments: DISPLAY_DOCUMENTS,
-			displayReviews: DISPLAY_REVIEWS,
-			gpuDocuments: GPU_DOCUMENTS,
-			gpuReviews: GPU_REVIEWS,
-			headphoneDocuments: HEADPHONE_DOCUMENTS,
-			headphoneReviews: HEADPHONE_REVIEWS,
-			keyboardDocuments: KEYBOARD_DOCUMENTS,
-			keyboardReviews: KEYBOARD_REVIEWS,
-			laptopDocuments: LAPTOP_DOCUMENTS,
-			laptopReviews: LAPTOP_REVIEWS,
-			microphoneDocuments: MICROPHONE_DOCUMENTS,
-			microphoneReviews: MICROPHONE_REVIEWS,
-			motherboardDocuments: MOTHERBOARD_DOCUMENTS,
-			motherboardReviews: MOTHERBOARD_REVIEWS,
-			mouseDocuments: MOUSE_DOCUMENTS,
-			mouseReviews: MOUSE_REVIEWS,
-			psuDocuments: PSU_DOCUMENTS,
-			psuReviews: PSU_REVIEWS,
-			ramDocuments: RAM_DOCUMENTS,
-			ramReviews: RAM_REVIEWS,
-			smartphoneDocuments: SMARTPHONE_DOCUMENTS,
-			smartphoneReviews: SMARTPHONE_REVIEWS,
-			speakerDocuments: SPEAKER_DOCUMENTS,
-			speakerReviews: SPEAKER_REVIEWS,
-			storageDocuments: STORAGE_DOCUMENTS,
-			storageReviews: STORAGE_REVIEWS,
-			tabletDocuments: TABLET_DOCUMENTS,
-			tabletReviews: TABLET_REVIEWS,
-			webcamDocuments: WEBCAM_DOCUMENTS,
-			webcamReviews: WEBCAM_REVIEWS,
-			customerDocuments: CUSTOMER_DOCUMENTS,
-		});
+ * const productCategoryDocuments = [
+      ...ACCESSORY_DOCUMENTS,
+      ...CASE_DOCUMENTS,
+      ...CPU_DOCUMENTS,
+      ...DESKTOP_COMPUTER_DOCUMENTS,
+      ...DISPLAY_DOCUMENTS,
+      ...GPU_DOCUMENTS,
+      ...HEADPHONE_DOCUMENTS,
+      ...KEYBOARD_DOCUMENTS,
+      ...LAPTOP_DOCUMENTS,
+      ...MICROPHONE_DOCUMENTS,
+      ...MOTHERBOARD_DOCUMENTS,
+      ...MOUSE_DOCUMENTS,
+      ...PSU_DOCUMENTS,
+      ...RAM_DOCUMENTS,
+      ...SMARTPHONE_DOCUMENTS,
+      ...SPEAKER_DOCUMENTS,
+      ...STORAGE_DOCUMENTS,
+      ...TABLET_DOCUMENTS,
+      ...WEBCAM_DOCUMENTS,
+    ];
  */

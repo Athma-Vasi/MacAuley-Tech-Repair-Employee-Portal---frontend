@@ -1,20 +1,20 @@
-import { Group, Stack, Title } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
-import { InvalidTokenError } from 'jwt-decode';
-import { ChangeEvent, useEffect, useReducer } from 'react';
-import { useErrorBoundary } from 'react-error-boundary';
-import { useNavigate } from 'react-router-dom';
+import { Group, Stack, Title } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
+import { InvalidTokenError } from "jwt-decode";
+import { ChangeEvent, useEffect, useReducer } from "react";
+import { useErrorBoundary } from "react-error-boundary";
+import { useNavigate } from "react-router-dom";
 
-import { COLORS_SWATCHES, PROPERTY_DESCRIPTOR } from '../../constants/data';
-import { globalAction } from '../../context/globalProvider/state';
-import { useAuth, useGlobalState, useWrapFetch } from '../../hooks';
-import { returnAccessibleSelectInputElements } from '../../jsxCreators';
+import { COLORS_SWATCHES, PROPERTY_DESCRIPTOR } from "../../constants/data";
+import { globalAction } from "../../context/globalProvider/state";
+import { useAuth, useGlobalState, useWrapFetch } from "../../hooks";
+import { returnAccessibleSelectInputElements } from "../../jsxCreators";
 import {
   FileUploadDocument,
   GetQueriedResourceRequestServerResponse,
   QueryResponseData,
   ResourceRequestServerResponse,
-} from '../../types';
+} from "../../types";
 import {
   filterFieldsFromObject,
   flattenObjectIterative,
@@ -22,25 +22,22 @@ import {
   returnThemeColors,
   splitCamelCase,
   urlBuilder,
-} from '../../utils';
-import { PRODUCT_CATEGORIES } from '../dashboard/constants';
-import { ProductCategory } from '../dashboard/types';
-import { DisplayFileUploads } from '../displayFileUploads';
-import { DisplayQuery } from '../displayQuery';
-import { NotificationModal } from '../notificationModal';
-import { PageBuilder } from '../pageBuilder';
-import { QueryBuilder } from '../queryBuilder';
-import { AccessibleSelectInputCreatorInfo } from '../wrappers';
+} from "../../utils";
+import { ProductCategory } from "../dashboard/types";
+import { DisplayFileUploads } from "../displayFileUploads";
+import { DisplayQuery } from "../displayQuery";
+import { NotificationModal } from "../notificationModal";
+import { PageBuilder } from "../pageBuilder";
+import { QueryBuilder } from "../queryBuilder";
+import { AccessibleSelectInputCreatorInfo } from "../wrappers";
 import {
   PRODUCT_CATEGORY_FIELDS_OBJ,
+  PRODUCT_CATEGORY_ROUTE_SELECT_DATA,
   QUERY_LIMIT_PER_PAGE_SELECT_DATA,
-} from './constants';
-import { displayResourceAction, displayResourceReducer } from './state';
-import { DisplayResourceProps, DisplayResourceState } from './types';
-import {
-  buildQueryString,
-  returnProductCategoryComponentQueryData,
-} from './utils';
+} from "./constants";
+import { displayResourceAction, displayResourceReducer } from "./state";
+import { DisplayResourceProps, DisplayResourceState } from "./types";
+import { buildQueryString } from "./utils";
 
 function DisplayResource<Doc>({
   style = {},
@@ -48,8 +45,8 @@ function DisplayResource<Doc>({
   createResourcePath,
   isDisplayFilesOnly = false,
   isDisplayProductsDocs = false,
-  fileUploadFieldName = 'fileUploads',
-  fileUploadIdFieldName = 'uploadedFilesIds',
+  fileUploadFieldName = "fileUploads",
+  fileUploadIdFieldName = "uploadedFilesIds",
   isFileUploadsWithResource = false,
   requestBodyHeading,
   resourceUrlPaths,
@@ -58,36 +55,36 @@ function DisplayResource<Doc>({
     resourceData: [],
     pages: 0,
     totalDocuments: 0,
-    productCategory: 'Accessory',
+    productCategory: "Accessory",
 
     queryValuesArray: [],
     newQueryFlag: true,
-    queryBuilderString: '?',
-    pageQueryString: '',
-    limitPerPage: '10',
+    queryBuilderString: "?",
+    pageQueryString: "",
+    limitPerPage: "10",
     resetPage: false,
 
     fileUploads: [],
     requestStatus: {
-      id: '',
-      status: 'pending',
+      id: "",
+      status: "pending",
     },
 
     deleteResource: {
-      formId: '',
+      formId: "",
       fileUploadId: undefined,
-      kind: '',
+      kind: "",
       value: false,
     },
     triggerRefresh: true,
     triggerUpdateRequestStatus: false,
 
     isSubmitting: false,
-    submitMessage: '',
+    submitMessage: "",
     isSuccessful: false,
-    successMessage: '',
+    successMessage: "",
     isLoading: false,
-    loadingMessage: '',
+    loadingMessage: "",
   };
 
   const [displayResourceState, displayResourceDispatch] = useReducer(
@@ -151,17 +148,15 @@ function DisplayResource<Doc>({
         type: displayResourceAction.setIsLoading,
         payload: true,
       });
-      const pageNumber = pageQueryString.split('=')[1] ?? '1';
+      const pageNumber = pageQueryString.split("=")[1] ?? "1";
       displayResourceDispatch({
         type: displayResourceAction.setLoadingMessage,
-        payload: `Loading ${splitCamelCase(
-          requestBodyHeading
-        )}s: page ${pageNumber} ...`,
+        payload: `Loading ${splitCamelCase(requestBodyHeading)}s: page ${pageNumber} ...`,
       });
 
       // employees can view their own resources only
       const path =
-        roles.includes('Admin') || roles.includes('Manager')
+        roles.includes("Admin") || roles.includes("Manager")
           ? resourceUrlPaths.manager
           : resourceUrlPaths.employee;
 
@@ -181,9 +176,9 @@ function DisplayResource<Doc>({
       });
 
       const requestInit: RequestInit = {
-        method: 'GET',
+        method: "GET",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
       };
 
@@ -195,9 +190,8 @@ function DisplayResource<Doc>({
           url,
         });
 
-        const data: GetQueriedResourceRequestServerResponse<Doc> =
-          await response.json();
-        console.log('response json data', data);
+        const data: GetQueriedResourceRequestServerResponse<Doc> = await response.json();
+        console.log("response json data", data);
         if (!isMounted) {
           return;
         }
@@ -247,35 +241,34 @@ function DisplayResource<Doc>({
 
               // reduce over the object entries of the current resource data
               // to separate the file uploads from the rest of the data
-              const [fileUploadsObj, resourceDataWithoutFileUploadsObj] =
-                Object.entries(currObj).reduce(
-                  (objTuplesAcc, [docKey, docValue]) => {
-                    const [
-                      fileUploadsObjAcc,
-                      resourceDataWithoutFileUploadsObjAcc,
-                    ] = objTuplesAcc as [
+              const [fileUploadsObj, resourceDataWithoutFileUploadsObj] = Object.entries(
+                currObj
+              ).reduce(
+                (objTuplesAcc, [docKey, docValue]) => {
+                  const [fileUploadsObjAcc, resourceDataWithoutFileUploadsObjAcc] =
+                    objTuplesAcc as [
                       { fileUploads: FileUploadDocument[] },
                       QueryResponseData<Doc>
                     ];
 
-                    docKey === fileUploadFieldName
-                      ? Object.defineProperty(fileUploadsObjAcc, docKey, {
+                  docKey === fileUploadFieldName
+                    ? Object.defineProperty(fileUploadsObjAcc, docKey, {
+                        ...PROPERTY_DESCRIPTOR,
+                        value: structuredClone(docValue),
+                      })
+                    : Object.defineProperty(
+                        resourceDataWithoutFileUploadsObjAcc,
+                        docKey,
+                        {
                           ...PROPERTY_DESCRIPTOR,
                           value: structuredClone(docValue),
-                        })
-                      : Object.defineProperty(
-                          resourceDataWithoutFileUploadsObjAcc,
-                          docKey,
-                          {
-                            ...PROPERTY_DESCRIPTOR,
-                            value: structuredClone(docValue),
-                          }
-                        );
+                        }
+                      );
 
-                    return objTuplesAcc;
-                  },
-                  [Object.create(null), Object.create(null)]
-                );
+                  return objTuplesAcc;
+                },
+                [Object.create(null), Object.create(null)]
+              );
 
               resourceDataWithoutFileUploadsArrAcc.push(
                 resourceDataWithoutFileUploadsObj
@@ -306,16 +299,16 @@ function DisplayResource<Doc>({
           payload: data.totalDocuments ?? totalDocuments,
         });
       } catch (error: any) {
-        if (!isMounted || error.name === 'AbortError') {
+        if (!isMounted || error.name === "AbortError") {
           return;
         }
 
         const errorMessage =
           error instanceof InvalidTokenError
-            ? 'Invalid token. Please login again.'
+            ? "Invalid token. Please login again."
             : !error.response
-            ? 'Network error. Please try again.'
-            : error?.message ?? 'Unknown error occurred. Please try again.';
+            ? "Network error. Please try again."
+            : error?.message ?? "Unknown error occurred. Please try again.";
 
         globalDispatch({
           type: globalAction.setErrorState,
@@ -323,13 +316,13 @@ function DisplayResource<Doc>({
             isError: true,
             errorMessage,
             errorCallback: () => {
-              navigate('/home');
+              navigate("/home");
 
               globalDispatch({
                 type: globalAction.setErrorState,
                 payload: {
                   isError: false,
-                  errorMessage: '',
+                  errorMessage: "",
                   errorCallback: () => {},
                 },
               });
@@ -365,13 +358,7 @@ function DisplayResource<Doc>({
       type: displayResourceAction.setTriggerRefresh,
       payload: true,
     });
-  }, [
-    newQueryFlag,
-    queryBuilderString,
-    pageQueryString,
-    limitPerPage,
-    productCategory,
-  ]);
+  }, [newQueryFlag, queryBuilderString, pageQueryString, limitPerPage, productCategory]);
 
   // backend is set to trigger countDocuments scan on a new query only, not on page changes
   useEffect(() => {
@@ -396,7 +383,7 @@ function DisplayResource<Doc>({
     });
     displayResourceDispatch({
       type: displayResourceAction.setLoadingMessage,
-      payload: '',
+      payload: "",
     });
   }, [resourceData]);
 
@@ -440,9 +427,9 @@ function DisplayResource<Doc>({
       const body = JSON.stringify(resourceBody);
 
       const requestInit: RequestInit = {
-        method: 'PATCH',
+        method: "PATCH",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body,
       };
@@ -456,7 +443,7 @@ function DisplayResource<Doc>({
         });
 
         const data: ResourceRequestServerResponse<Doc> = await response.json();
-        console.log('request status update response', data);
+        console.log("request status update response", data);
         if (!isMounted) {
           return;
         }
@@ -465,28 +452,27 @@ function DisplayResource<Doc>({
         }
 
         const [updatedResource] = data.resourceData;
-        const flattenedUpdatedResource =
-          flattenObjectIterative(updatedResource);
+        const flattenedUpdatedResource = flattenObjectIterative(updatedResource);
 
         displayResourceDispatch({
           type: displayResourceAction.updateResourceData,
           payload: {
             id: updatedResource._id,
-            kind: 'update',
+            kind: "update",
             data: flattenedUpdatedResource,
           },
         });
       } catch (error: any) {
-        if (!isMounted || error.name === 'AbortError') {
+        if (!isMounted || error.name === "AbortError") {
           return;
         }
 
         const errorMessage =
           error instanceof InvalidTokenError
-            ? 'Invalid token. Please login again.'
+            ? "Invalid token. Please login again."
             : !error.response
-            ? 'Network error. Please try again.'
-            : error?.message ?? 'Unknown error occurred. Please try again.';
+            ? "Network error. Please try again."
+            : error?.message ?? "Unknown error occurred. Please try again.";
 
         globalDispatch({
           type: globalAction.setErrorState,
@@ -494,13 +480,13 @@ function DisplayResource<Doc>({
             isError: true,
             errorMessage,
             errorCallback: () => {
-              navigate('/home');
+              navigate("/home");
 
               globalDispatch({
                 type: globalAction.setErrorState,
                 payload: {
                   isError: false,
-                  errorMessage: '',
+                  errorMessage: "",
                   errorCallback: () => {},
                 },
               });
@@ -517,7 +503,7 @@ function DisplayResource<Doc>({
           });
           displayResourceDispatch({
             type: displayResourceAction.setSubmitMessage,
-            payload: '',
+            payload: "",
           });
           displayResourceDispatch({
             type: displayResourceAction.setIsSuccessful,
@@ -530,8 +516,8 @@ function DisplayResource<Doc>({
           displayResourceDispatch({
             type: displayResourceAction.setRequestStatus,
             payload: {
-              id: '',
-              status: 'pending',
+              id: "",
+              status: "pending",
             },
           });
           displayResourceDispatch({
@@ -543,7 +529,7 @@ function DisplayResource<Doc>({
     }
 
     // only allow Admin and Manager to update request status
-    if (roles.includes('Admin') || roles.includes('Manager')) {
+    if (roles.includes("Admin") || roles.includes("Manager")) {
       if (triggerUpdateRequestStatus) {
         updateRequestStatus();
       }
@@ -587,15 +573,15 @@ function DisplayResource<Doc>({
       openSubmitSuccessNotificationModal();
 
       const path =
-        kind === 'form'
+        kind === "form"
           ? `${resourceUrlPaths.manager}/${formId}`
           : `file-upload/${fileUploadId}`;
       const url: URL = urlBuilder({ path });
 
       const requestInit: RequestInit = {
-        method: 'DELETE',
+        method: "DELETE",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
       };
 
@@ -607,10 +593,9 @@ function DisplayResource<Doc>({
           url,
         });
 
-        const data: { message: string; resourceData?: [] } =
-          await response.json();
+        const data: { message: string; resourceData?: [] } = await response.json();
 
-        console.log('delete response', data);
+        console.log("delete response", data);
 
         if (!isMounted) {
           return;
@@ -623,21 +608,21 @@ function DisplayResource<Doc>({
           type: displayResourceAction.updateResourceData,
           payload: {
             id: formId,
-            kind: 'delete',
+            kind: "delete",
             data: Object.create(null),
           },
         });
       } catch (error: any) {
-        if (!isMounted || error.name === 'AbortError') {
+        if (!isMounted || error.name === "AbortError") {
           return;
         }
 
         const errorMessage =
           error instanceof InvalidTokenError
-            ? 'Invalid token. Please login again.'
+            ? "Invalid token. Please login again."
             : !error.response
-            ? 'Network error. Please try again.'
-            : error?.message ?? 'Unknown error occurred. Please try again.';
+            ? "Network error. Please try again."
+            : error?.message ?? "Unknown error occurred. Please try again.";
 
         globalDispatch({
           type: globalAction.setErrorState,
@@ -645,13 +630,13 @@ function DisplayResource<Doc>({
             isError: true,
             errorMessage,
             errorCallback: () => {
-              navigate('/home');
+              navigate("/home");
 
               globalDispatch({
                 type: globalAction.setErrorState,
                 payload: {
                   isError: false,
-                  errorMessage: '',
+                  errorMessage: "",
                   errorCallback: () => {},
                 },
               });
@@ -668,7 +653,7 @@ function DisplayResource<Doc>({
           });
           displayResourceDispatch({
             type: displayResourceAction.setSubmitMessage,
-            payload: '',
+            payload: "",
           });
           displayResourceDispatch({
             type: displayResourceAction.setIsSuccessful,
@@ -683,7 +668,7 @@ function DisplayResource<Doc>({
     }
 
     // only allow Managers to delete forms
-    if (roles.includes('Manager')) {
+    if (roles.includes("Manager")) {
       if (formId.length > 0 && kind.length > 0 && value === true) {
         deleteResourceRequest();
       }
@@ -742,7 +727,7 @@ function DisplayResource<Doc>({
 
                   Object.defineProperty(clone, key, {
                     ...PROPERTY_DESCRIPTOR,
-                    value: '',
+                    value: "",
                   });
                   acc = clone;
                 }
@@ -761,13 +746,11 @@ function DisplayResource<Doc>({
       }
 
       const { _id } = associatedResource;
-      const filteredAssociatedResource = filterFieldsFromObject<
-        Record<string, any>
-      >({
+      const filteredAssociatedResource = filterFieldsFromObject<Record<string, any>>({
         object: associatedResource,
         // delete was added at front end
         // fileUploads does not belong in the resource schema, and is added to response by server
-        fieldsToFilter: ['delete', 'fileUploads'],
+        fieldsToFilter: ["delete", "fileUploads"],
       });
 
       const url: URL = urlBuilder({
@@ -783,9 +766,9 @@ function DisplayResource<Doc>({
       const body = JSON.stringify(resourceBody);
 
       const requestInit: RequestInit = {
-        method: 'PUT',
+        method: "PUT",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body,
       };
@@ -808,28 +791,27 @@ function DisplayResource<Doc>({
         }
 
         const [updatedResource] = data.resourceData;
-        const flattenedUpdatedResource =
-          flattenObjectIterative(updatedResource);
+        const flattenedUpdatedResource = flattenObjectIterative(updatedResource);
 
         displayResourceDispatch({
           type: displayResourceAction.updateResourceData,
           payload: {
             id: updatedResource._id,
-            kind: 'update',
+            kind: "update",
             data: flattenedUpdatedResource,
           },
         });
       } catch (error: any) {
-        if (!isMounted || error.name === 'AbortError') {
+        if (!isMounted || error.name === "AbortError") {
           return;
         }
 
         const errorMessage =
           error instanceof InvalidTokenError
-            ? 'Invalid token. Please login again.'
+            ? "Invalid token. Please login again."
             : !error.response
-            ? 'Network error. Please try again.'
-            : error?.message ?? 'Unknown error occurred. Please try again.';
+            ? "Network error. Please try again."
+            : error?.message ?? "Unknown error occurred. Please try again.";
 
         globalDispatch({
           type: globalAction.setErrorState,
@@ -837,13 +819,13 @@ function DisplayResource<Doc>({
             isError: true,
             errorMessage,
             errorCallback: () => {
-              navigate('/home');
+              navigate("/home");
 
               globalDispatch({
                 type: globalAction.setErrorState,
                 payload: {
                   isError: false,
-                  errorMessage: '',
+                  errorMessage: "",
                   errorCallback: () => {},
                 },
               });
@@ -860,7 +842,7 @@ function DisplayResource<Doc>({
           });
           displayResourceDispatch({
             type: displayResourceAction.setSubmitMessage,
-            payload: '',
+            payload: "",
           });
           displayResourceDispatch({
             type: displayResourceAction.setIsSuccessful,
@@ -894,9 +876,9 @@ function DisplayResource<Doc>({
 
   const limitPerPageSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
     data: QUERY_LIMIT_PER_PAGE_SELECT_DATA,
-    description: 'Select number of documents to display per page',
+    description: "Select number of documents to display per page",
     disabled: resourceData.length === 0,
-    label: '',
+    label: "",
     onChange: (event: ChangeEvent<HTMLSelectElement>) => {
       displayResourceDispatch({
         type: displayResourceAction.setLimitPerPage,
@@ -931,8 +913,8 @@ function DisplayResource<Doc>({
   // product category select input
   const productCategorySelectInput = returnAccessibleSelectInputElements([
     {
-      data: PRODUCT_CATEGORIES,
-      description: 'Select product category',
+      data: PRODUCT_CATEGORY_ROUTE_SELECT_DATA,
+      description: "Select product category",
       disabled: resourceData.length === 0,
       onChange: (event: ChangeEvent<HTMLSelectElement>) => {
         displayResourceDispatch({
@@ -969,13 +951,7 @@ function DisplayResource<Doc>({
   );
 
   const displayPagination = (
-    <Group
-      w={sectionWidth}
-      spacing={rowGap}
-      p={padding}
-      position="center"
-      align="center"
-    >
+    <Group w={sectionWidth} spacing={rowGap} p={padding} position="center" align="center">
       <PageBuilder
         total={pages}
         resetPage={resetPage}
@@ -987,17 +963,16 @@ function DisplayResource<Doc>({
 
   // prevent display of option to groupBy/projection exclusion of username field if the resource is anonymousRequest
   const filteredComponentQueryData =
-    requestBodyHeading === 'anonymousRequest'
-      ? componentQueryData?.filter((obj) => obj.value !== 'username')
+    requestBodyHeading === "anonymousRequest"
+      ? componentQueryData?.filter((obj) => obj.value !== "username")
       : componentQueryData;
 
-  // prevents display of all Product model fields and only displays the fields for the selected product category
-  const productCategoryComponentQueryData =
-    returnProductCategoryComponentQueryData({
-      componentQueryData: filteredComponentQueryData,
-      productCategory,
-      productCategoryFieldsObj: PRODUCT_CATEGORY_FIELDS_OBJ,
-    });
+  // // prevents display of all Product model fields and only displays the fields for the selected product category
+  // const productCategoryComponentQueryData = returnProductCategoryComponentQueryData({
+  //   componentQueryData: filteredComponentQueryData,
+  //   productCategory,
+  //   productCategoryFieldsObj: PRODUCT_CATEGORY_FIELDS_OBJ,
+  // });
 
   const displayQueryBuilder = (
     <QueryBuilder
@@ -1005,9 +980,10 @@ function DisplayResource<Doc>({
       queryBuilderStringDispatch={displayResourceDispatch}
       queryValuesArrayDispatch={displayResourceDispatch}
       componentQueryData={
-        isDisplayProductsDocs
-          ? productCategoryComponentQueryData
-          : filteredComponentQueryData
+        // isDisplayProductsDocs
+        //   ? PRODUCT_CATEGORY_FIELDS_OBJ[productCategory]
+        //   : filteredComponentQueryData
+        filteredComponentQueryData
       }
       collectionName={splitCamelCase(requestBodyHeading)}
     />
@@ -1021,9 +997,7 @@ function DisplayResource<Doc>({
         loading: isSubmitting,
         text: isSubmitting ? submitMessage : successMessage,
       }}
-      title={
-        <Title order={4}>{isSuccessful ? 'Success!' : 'Submitting ...'}</Title>
-      }
+      title={<Title order={4}>{isSuccessful ? "Success!" : "Submitting ..."}</Title>}
     />
   );
 
@@ -1078,7 +1052,7 @@ function DisplayResource<Doc>({
   useEffect(() => {
     logState({
       state: displayResourceState,
-      groupLabel: 'displayResourceState',
+      groupLabel: "displayResourceState",
     });
   }, [displayResourceState]);
 

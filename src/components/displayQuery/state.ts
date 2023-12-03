@@ -1,46 +1,38 @@
-import {
-  DisplayQueryAction,
-  DisplayQueryDispatch,
-  DisplayQueryState,
-} from './types';
+import { DisplayQueryAction, DisplayQueryDispatch, DisplayQueryState } from "./types";
 
 const initialDisplayQueryState: DisplayQueryState = {
   groupByRadioData: [],
-  groupBySelection: 'none',
+  groupBySelection: "none",
   currentSelectionData: [],
 
   groupedByQueryResponseData: new Map(),
   fileUploadsForAForm: [],
 
-  currentSegmentedSelection: 'condensed',
-
-  acknowledgementText: '',
+  acknowledgementText: "",
   isValidAcknowledgementText: false,
   isAcknowledgementTextFocused: false,
 
-  deleteFormId: '',
-  deleteFileUploadId: '',
-  deleteResourceKind: '',
+  deleteFormId: "",
+  deleteFileUploadId: "",
+  deleteResourceKind: "",
 };
 
 const displayQueryAction: DisplayQueryAction = {
-  setGroupByRadioData: 'setGroupByRadioData',
-  setGroupBySelection: 'setGroupBySelection',
-  setCurrentSelectionData: 'setCurrentSelectionData',
+  setGroupByRadioData: "setGroupByRadioData",
+  setGroupBySelection: "setGroupBySelection",
+  setCurrentSelectionData: "setCurrentSelectionData",
 
-  setGroupedByQueryResponseData: 'setGroupedByQueryResponseData',
+  setGroupedByQueryResponseData: "setGroupedByQueryResponseData",
 
-  setFileUploadsForAForm: 'setFileUploadsForAForm',
+  setFileUploadsForAForm: "setFileUploadsForAForm",
 
-  setCurrentSegmentedSelection: 'setCurrentSegmentedSelection',
+  setAcknowledgementText: "setAcknowledgementText",
+  setIsValidAcknowledgementText: "setIsValidAcknowledgementText",
+  setIsAcknowledgementTextFocused: "setIsAcknowledgementTextFocused",
 
-  setAcknowledgementText: 'setAcknowledgementText',
-  setIsValidAcknowledgementText: 'setIsValidAcknowledgementText',
-  setIsAcknowledgementTextFocused: 'setIsAcknowledgementTextFocused',
-
-  setDeleteFormId: 'setDeleteFormId',
-  setDeleteFileUploadId: 'setDeleteFileUploadId',
-  setDeleteResourceKind: 'setDeleteResourceKind',
+  setDeleteFormId: "setDeleteFormId",
+  setDeleteFileUploadId: "setDeleteFileUploadId",
+  setDeleteResourceKind: "setDeleteResourceKind",
 };
 
 function displayQueryReducer(
@@ -76,12 +68,6 @@ function displayQueryReducer(
       return {
         ...state,
         fileUploadsForAForm: action.payload,
-      };
-
-    case displayQueryAction.setCurrentSegmentedSelection:
-      return {
-        ...state,
-        currentSegmentedSelection: action.payload,
       };
 
     case displayQueryAction.setAcknowledgementText:

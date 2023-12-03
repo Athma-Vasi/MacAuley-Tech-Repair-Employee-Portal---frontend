@@ -14,24 +14,21 @@ import {
   Text,
   Title,
   Tooltip,
-} from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
-import { CSSProperties, useEffect, useReducer } from 'react';
-import { IoMdOpen } from 'react-icons/io';
-import { TbEdit, TbStatusChange, TbTrash, TbUserSearch } from 'react-icons/tb';
-import { TiArrowDownThick, TiArrowUpThick } from 'react-icons/ti';
+} from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
+import { CSSProperties, useEffect, useReducer } from "react";
+import { IoMdOpen } from "react-icons/io";
+import { TbEdit, TbStatusChange, TbTrash, TbUserSearch } from "react-icons/tb";
+import { TiArrowDownThick, TiArrowUpThick } from "react-icons/ti";
 
-import {
-  COLORS_SWATCHES,
-  FIELDNAMES_WITH_DATE_VALUES,
-} from '../../../constants/data';
-import { useAuth, useGlobalState } from '../../../hooks';
+import { COLORS_SWATCHES, FIELDNAMES_WITH_DATE_VALUES } from "../../../constants/data";
+import { useAuth, useGlobalState } from "../../../hooks";
 import {
   returnAccessibleButtonElements,
   returnHighlightedText,
   returnScrollableDocumentInfo,
-} from '../../../jsxCreators';
-import { UserDocument } from '../../../types';
+} from "../../../jsxCreators";
+import { UserDocument } from "../../../types";
 import {
   addFieldsToObject,
   flattenObjectIterative,
@@ -40,17 +37,17 @@ import {
   replaceLastCommaWithAnd,
   returnThemeColors,
   splitCamelCase,
-} from '../../../utils';
-import EditRepairNote from '../editRepairNote/EditRepairNote';
-import { ProfileInfo } from '../profileInfo/ProfileInfo';
-import UpdateRequestStatus from '../updateRequestStatus/UpdateRequestStatus';
+} from "../../../utils";
+import EditRepairNote from "../editRepairNote/EditRepairNote";
+import { ProfileInfo } from "../profileInfo/ProfileInfo";
+import UpdateRequestStatus from "../updateRequestStatus/UpdateRequestStatus";
 import {
   displayQueryDesktopAction,
   displayQueryDesktopReducer,
   initialDisplayQueryDesktopState,
-} from './state';
-import { DisplayQueryDesktopProps } from './types';
-import { sortGroupedByQueryResponseData } from './utils';
+} from "./state";
+import { DisplayQueryDesktopProps } from "./types";
+import { returnWhichResourceInView, sortGroupedByQueryResponseData } from "./utils";
 
 function DisplayQueryDesktop({
   componentQueryData,
@@ -61,14 +58,13 @@ function DisplayQueryDesktop({
   groupBySelection,
   groupedByQueryResponseData,
   isLoading,
-  loadingMessage = '',
+  loadingMessage = "",
   openDeleteAcknowledge,
   openFileUploads,
   queryValuesArray,
   requestStatusDispatch,
   setFileUploadsForAFormDispatch,
   style = {},
-  tableViewSelection,
 }: DisplayQueryDesktopProps) {
   const [displayQueryDesktopState, displayQueryDesktopDispatch] = useReducer(
     displayQueryDesktopReducer,
@@ -92,10 +88,7 @@ function DisplayQueryDesktop({
 
   const [
     openedUpdateRequestStatusModal,
-    {
-      open: openUpdateRequestStatusModal,
-      close: closeUpdateRequestStatusModal,
-    },
+    { open: openUpdateRequestStatusModal, close: closeUpdateRequestStatusModal },
   ] = useDisclosure(false);
 
   // for repair note fields update only
@@ -122,76 +115,61 @@ function DisplayQueryDesktop({
     },
   } = returnThemeColors({ themeObject, colorsSwatches: COLORS_SWATCHES });
 
-  // determines that the user is viewing repair notes section
-  const isRepairNoteSectionInView = Array.from(groupedByQueryResponseData).some(
-    ([_groupedByFieldKey, queryResponseObjArrays]) => {
-      return queryResponseObjArrays.some((queryResponseObj) => {
-        return (
-          Object.hasOwn(queryResponseObj, 'repairNotes') &&
-          Object.hasOwn(queryResponseObj, 'testingResults') &&
-          Object.hasOwn(queryResponseObj, 'finalRepairCost') &&
-          Object.hasOwn(queryResponseObj, 'finalRepairCostCurrency') &&
-          Object.hasOwn(queryResponseObj, 'repairStatus')
-        );
-      });
-    }
-  );
+  // // determines that the user is viewing repair notes section
+  // const isRepairNoteSectionInView = Array.from(groupedByQueryResponseData).some(
+  //   ([_groupedByFieldKey, queryResponseObjArrays]) => {
+  //     return queryResponseObjArrays.some((queryResponseObj) => {
+  //       return (
+  //         Object.hasOwn(queryResponseObj, "repairNotes") &&
+  //         Object.hasOwn(queryResponseObj, "testingResults") &&
+  //         Object.hasOwn(queryResponseObj, "finalRepairCost") &&
+  //         Object.hasOwn(queryResponseObj, "finalRepairCostCurrency") &&
+  //         Object.hasOwn(queryResponseObj, "repairStatus")
+  //       );
+  //     });
+  //   }
+  // );
 
-  // determines if user is viewing anonymous requests section
-  const isAnonymousRequestsSectionInView = Array.from(
-    groupedByQueryResponseData
-  ).some(([_groupedByFieldKey, queryResponseObjArrays]) => {
-    return queryResponseObjArrays.some((queryResponseObj) => {
-      return (
-        Object.hasOwn(queryResponseObj, 'secureContactNumber') &&
-        Object.hasOwn(queryResponseObj, 'secureContactEmail') &&
-        Object.hasOwn(queryResponseObj, 'requestKind') &&
-        Object.hasOwn(queryResponseObj, 'requestDescription')
-      );
-    });
-  });
+  // // determines if user is viewing anonymous requests section
+  // const isAnonymousRequestsSectionInView = Array.from(groupedByQueryResponseData).some(
+  //   ([_groupedByFieldKey, queryResponseObjArrays]) => {
+  //     return queryResponseObjArrays.some((queryResponseObj) => {
+  //       return (
+  //         Object.hasOwn(queryResponseObj, "secureContactNumber") &&
+  //         Object.hasOwn(queryResponseObj, "secureContactEmail") &&
+  //         Object.hasOwn(queryResponseObj, "requestKind") &&
+  //         Object.hasOwn(queryResponseObj, "requestDescription")
+  //       );
+  //     });
+  //   }
+  // );
 
-  const tableHeaderValueExclusionSet = new Set([
-    'benefitUserId',
-    '_id',
-    'uploadedFilesIds',
-    'userId',
-  ]); // used for expanded / condensed table view
+  const {
+    isAnonymousRequestsSectionInView,
+    isProductCategorySectionInView,
+    isPurchaseSectionInView,
+    isRMASectionInView,
+    isRepairNoteSectionInView,
+  } = returnWhichResourceInView(groupedByQueryResponseData);
 
   // the data received is in a Map grouped by a field, header values are created separately to avoid creating multiple tables
   const tableHeaderValuesArr =
     groupedByQueryResponseData.size > 0
       ? Array.from(groupedByQueryResponseData).map(
           ([_groupedByFieldKey, queryResponseObjArrays]) => {
-            // const headerValues =
-            //   tableViewSelection === 'expanded'
-            //     ? Object.keys(queryResponseObjArrays[0])
-            //     : Object.keys(queryResponseObjArrays[0]).filter(
-            //         (key) => !tableHeaderValueExclusionSet.has(key)
-            //       );
-
-            const expandedViewHeaderValues = Object.keys(
+            const headerValues = Object.keys(
               flattenObjectIterative(queryResponseObjArrays[0])
             );
-
-            const condensedViewHeaderValues = Object.keys(
-              flattenObjectIterative(queryResponseObjArrays[0])
-            ).filter((key) => !tableHeaderValueExclusionSet.has(key));
-
-            const headerValues =
-              tableViewSelection === 'expanded'
-                ? expandedViewHeaderValues
-                : condensedViewHeaderValues;
 
             const headerValuesWithFieldsInserted =
               // allows for modification of file uploads and deletion of documents
               fileUploadsData.length > 0
-                ? [...headerValues, 'viewProfile', 'fileUploads', 'delete']
+                ? [...headerValues, "viewProfile", "fileUploads", "delete"]
                 : isRepairNoteSectionInView
-                ? [...headerValues, 'viewProfile', 'edit', 'delete']
+                ? [...headerValues, "viewProfile", "edit", "delete"]
                 : isAnonymousRequestsSectionInView
-                ? [...headerValues, 'delete']
-                : [...headerValues, 'viewProfile', 'delete'];
+                ? [...headerValues, "delete"]
+                : [...headerValues, "viewProfile", "delete"];
 
             return headerValuesWithFieldsInserted.map((headerValue) =>
               splitCamelCase(headerValue)
@@ -204,14 +182,14 @@ function DisplayQueryDesktop({
 
   // used to prevent display of sort arrows on groupedBy or id fields
   const headerExclusionSet = new Set([
-    '_id',
-    'user id',
-    'benefit user id',
-    'uploaded files ids',
-    'view profile',
-    'file uploads',
-    'edit',
-    'delete',
+    "_id",
+    "user id",
+    "benefit user id",
+    "uploaded files ids",
+    "view profile",
+    "file uploads",
+    "edit",
+    "delete",
   ]);
   const groupByRadioDataLabels = new Set(
     groupByRadioData.map(({ label }) => label.toLowerCase())
@@ -261,11 +239,11 @@ function DisplayQueryDesktop({
     <thead
       style={{
         borderRadius: 4,
-        position: 'sticky',
+        position: "sticky",
         top: 0,
         zIndex: 3,
         height: 35,
-        boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25)',
+        boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.25)",
       }}
     >
       <tr>
@@ -274,18 +252,18 @@ function DisplayQueryDesktop({
             border: headerBorderColor,
             // borderRight: '1px solid transparent',
             backgroundColor: tableHeadersBgColor,
-            padding: '4px 4px 4px 8px',
+            padding: "4px 4px 4px 8px",
           };
           const headerGroupStyle: CSSProperties = {
             width:
-              headerValue === '_id'
-                ? 'Document Id'.length * 10 + 70
+              headerValue === "_id"
+                ? "Document Id".length * 10 + 70
                 : headerValue.length * 10 + 70, // rough ch plus space for sort arrows
             backgroundColor: tableHeadersBgColor,
           };
 
           const ascendingIconColor =
-            headerValue === fieldToSortBy && sortDirection === 'asc'
+            headerValue === fieldToSortBy && sortDirection === "asc"
               ? themeColorShade // on
               : headersIconColor; // off
 
@@ -298,7 +276,7 @@ function DisplayQueryDesktop({
               <Group>
                 <TiArrowUpThick
                   color={ascendingIconColor}
-                  style={{ cursor: 'pointer' }}
+                  style={{ cursor: "pointer" }}
                   size={17}
                   onClick={() => {
                     displayQueryDesktopDispatch({
@@ -307,7 +285,7 @@ function DisplayQueryDesktop({
                     });
                     displayQueryDesktopDispatch({
                       type: displayQueryDesktopAction.setSortDirection,
-                      payload: 'asc',
+                      payload: "asc",
                     });
                   }}
                 />
@@ -316,7 +294,7 @@ function DisplayQueryDesktop({
           );
 
           const descendingIconColor =
-            headerValue === fieldToSortBy && sortDirection === 'desc'
+            headerValue === fieldToSortBy && sortDirection === "desc"
               ? themeColorShade // on
               : headersIconColor; // off
 
@@ -329,7 +307,7 @@ function DisplayQueryDesktop({
               <Group>
                 <TiArrowDownThick
                   color={descendingIconColor}
-                  style={{ cursor: 'pointer' }}
+                  style={{ cursor: "pointer" }}
                   size={17}
                   onClick={() => {
                     displayQueryDesktopDispatch({
@@ -338,7 +316,7 @@ function DisplayQueryDesktop({
                     });
                     displayQueryDesktopDispatch({
                       type: displayQueryDesktopAction.setSortDirection,
-                      payload: 'desc',
+                      payload: "desc",
                     });
                   }}
                 />
@@ -352,35 +330,25 @@ function DisplayQueryDesktop({
             <Group style={headerGroupStyle} position="center">
               {ascendingIconWithTooltip}
               <Title order={6}>
-                {headerValue === '_id' ? 'Document Id' : headerValue}
+                {headerValue === "_id" ? "Document Id" : headerValue}
               </Title>
               {descendingIconWithTooltip}
             </Group>
           ) : (
             <Group style={headerGroupStyle} position="center">
               <Title order={6}>
-                {headerValue === '_id' ? 'Document Id' : headerValue}
+                {headerValue === "_id" ? "Document Id" : headerValue}
               </Title>
             </Group>
           );
 
-          const displayExpandedHeaderRows = (
+          const displayHeaderRows = (
             <th key={`${headerIdx}`} style={headerStyle}>
               {headerRowWithSortArrows}
             </th>
           );
 
-          const displayCondensedHeaderRows = !tableHeaderValueExclusionSet.has(
-            headerValue
-          ) ? (
-            <th key={`${headerIdx}`} style={headerStyle}>
-              {headerRowWithSortArrows}
-            </th>
-          ) : null;
-
-          return tableViewSelection === 'expanded'
-            ? displayExpandedHeaderRows
-            : displayCondensedHeaderRows;
+          return displayHeaderRows;
         })}
       </tr>
     </thead>
@@ -399,30 +367,30 @@ function DisplayQueryDesktop({
                 ? addFieldsToObject({
                     object: queryResponseObj,
                     fieldValuesTuples: [
-                      ['viewProfile', ''],
-                      ['fileUploads', ''],
-                      ['delete', ''],
+                      ["viewProfile", ""],
+                      ["fileUploads", ""],
+                      ["delete", ""],
                     ],
                   })
                 : isRepairNoteSectionInView
                 ? addFieldsToObject({
                     object: queryResponseObj,
                     fieldValuesTuples: [
-                      ['viewProfile', ''],
-                      ['edit', ''],
-                      ['delete', ''],
+                      ["viewProfile", ""],
+                      ["edit", ""],
+                      ["delete", ""],
                     ],
                   })
                 : isAnonymousRequestsSectionInView
                 ? addFieldsToObject({
                     object: queryResponseObj,
-                    fieldValuesTuples: [['delete', '']],
+                    fieldValuesTuples: [["delete", ""]],
                   })
                 : addFieldsToObject({
                     object: queryResponseObj,
                     fieldValuesTuples: [
-                      ['viewProfile', ''],
-                      ['delete', ''],
+                      ["viewProfile", ""],
+                      ["delete", ""],
                     ],
                   });
 
@@ -432,30 +400,30 @@ function DisplayQueryDesktop({
                   ([key, value], keyValIdx) => {
                     const formattedValue =
                       value === true
-                        ? 'Yes'
+                        ? "Yes"
                         : value === false
-                        ? 'No'
+                        ? "No"
                         : Array.isArray(value)
-                        ? replaceLastCommaWithAnd(value.join(', '))
-                        : key.toLowerCase().includes('id')
+                        ? replaceLastCommaWithAnd(value.join(", "))
+                        : key.toLowerCase().includes("id")
                         ? (value as string)
-                        : key === 'createdAt' || key === 'updatedAt'
+                        : key === "createdAt" || key === "updatedAt"
                         ? (formatDate({
                             date: value,
                             formatOptions: {
-                              year: 'numeric',
-                              month: 'numeric',
-                              day: 'numeric',
+                              year: "numeric",
+                              month: "numeric",
+                              day: "numeric",
                             },
-                            locale: 'en-US',
+                            locale: "en-US",
                           }) as string)
                         : FIELDNAMES_WITH_DATE_VALUES.has(key)
                         ? (formatDate({
                             date: value,
                             formatOptions: {
-                              dateStyle: 'short',
+                              dateStyle: "short",
                             },
-                            locale: 'en-US',
+                            locale: "en-US",
                           }) as string)
                         : (`${value.toString().charAt(0).toUpperCase()}${value
                             .toString()
@@ -467,14 +435,12 @@ function DisplayQueryDesktop({
                     const sliceLength = 23;
                     const formattedValueSliced =
                       formattedValue.length > sliceLength
-                        ? formattedValue
+                        ? `${formattedValue
                             .toString()
                             .slice(
                               0,
-                              key.toLowerCase().includes('id')
-                                ? 11
-                                : sliceLength
-                            ) + '...'
+                              key.toLowerCase().includes("id") ? 11 : sliceLength
+                            )}...`
                         : (formattedValue as string);
 
                     // regex to determine if formattedValue has any terms in queryValuesArray
@@ -482,9 +448,9 @@ function DisplayQueryDesktop({
                       ? new RegExp(
                           queryValuesArray
                             .filter((value) => value) // remove empty strings
-                            .flatMap((value) => value.split(' ')) // split strings into words
-                            .join('|'),
-                          'gi'
+                            .flatMap((value) => value.split(" ")) // split strings into words
+                            .join("|"),
+                          "gi"
                         )
                       : null;
 
@@ -509,41 +475,37 @@ function DisplayQueryDesktop({
                     const groupBySelectionValue =
                       queryResponseObjWithAddedFields[groupBySelection];
 
-                    const groupedBySelectedValueHighlightedText =
-                      returnHighlightedText({
-                        textHighlightColor,
-                        queryValuesArray,
-                        fieldValue: groupBySelectionValue,
-                      });
+                    const groupedBySelectedValueHighlightedText = returnHighlightedText({
+                      textHighlightColor,
+                      queryValuesArray,
+                      fieldValue: groupBySelectionValue,
+                    });
 
-                    const displayDropdownAccordion =
-                      returnScrollableDocumentInfo({
-                        borderColor,
-                        document: queryResponseObjWithAddedFields,
-                        excludeKeys: [
-                          'fileUploads',
-                          'edit',
-                          'delete',
-                          'viewProfile',
-                          groupBySelection,
-                        ],
-                        fieldNamesWithDateValues: FIELDNAMES_WITH_DATE_VALUES,
-                        queryValuesArray,
-                        rowGap,
-                        scrollBarStyle,
-                        textHighlightColor,
-                      });
+                    const displayDropdownAccordion = returnScrollableDocumentInfo({
+                      borderColor,
+                      document: queryResponseObjWithAddedFields,
+                      excludeKeys: [
+                        "fileUploads",
+                        "edit",
+                        "delete",
+                        "viewProfile",
+                        groupBySelection,
+                      ],
+                      fieldNamesWithDateValues: FIELDNAMES_WITH_DATE_VALUES,
+                      queryValuesArray,
+                      rowGap,
+                      scrollBarStyle,
+                      textHighlightColor,
+                    });
 
                     const dropDownFooter = (
                       <Flex wrap="wrap">
-                        {groupBySelection === 'none' ? null : (
+                        {groupBySelection === "none" ? null : (
                           <Group pb={padding}>
                             <Text>{splitCamelCase(groupBySelection)}:</Text>
 
                             <Flex gap={4} wrap="wrap">
-                              <strong>
-                                {groupedBySelectedValueHighlightedText}
-                              </strong>
+                              <strong>{groupedBySelectedValueHighlightedText}</strong>
                             </Flex>
                             <Space w="xs" />
                           </Group>
@@ -561,144 +523,142 @@ function DisplayQueryDesktop({
                       fieldValue: formattedValue,
                     });
 
-                    const truncatedValuesWithHoverCards =
-                      FIELDNAMES_WITH_DATE_VALUES.has(key) ? (
-                        <HoverCard
-                          width={500}
-                          shadow="lg"
-                          openDelay={150}
-                          closeDelay={50}
-                          withArrow
-                        >
-                          <HoverCard.Target>
-                            <Text>{formattedValue}</Text>
-                          </HoverCard.Target>
-                          <HoverCard.Dropdown>
-                            <Stack>
-                              <Group>
-                                <Text>{splitCamelCase(key)}:</Text>
-                                <Text>
-                                  {formatDate({
-                                    date: value,
-                                    formatOptions: {
-                                      dateStyle: 'full',
-                                      localeMatcher: 'best fit',
-                                      formatMatcher: 'best fit',
-                                    },
-                                    locale: 'en-US',
-                                  })}
-                                </Text>
-                              </Group>
-                              {dropDownFooter}
-                            </Stack>
-                          </HoverCard.Dropdown>
-                        </HoverCard>
-                      ) : key === 'createdAt' || key === 'updatedAt' ? (
-                        <HoverCard
-                          width={500}
-                          shadow="lg"
-                          openDelay={150}
-                          closeDelay={50}
-                          withArrow
-                        >
-                          <HoverCard.Target>
-                            <Text>{formattedValue}</Text>
-                          </HoverCard.Target>
-                          <HoverCard.Dropdown>
-                            <Flex wrap="wrap" rowGap={rowGap}>
+                    const truncatedValuesWithHoverCards = FIELDNAMES_WITH_DATE_VALUES.has(
+                      key
+                    ) ? (
+                      <HoverCard
+                        width={500}
+                        shadow="lg"
+                        openDelay={150}
+                        closeDelay={50}
+                        withArrow
+                      >
+                        <HoverCard.Target>
+                          <Text>{formattedValue}</Text>
+                        </HoverCard.Target>
+                        <HoverCard.Dropdown>
+                          <Stack>
+                            <Group>
                               <Text>{splitCamelCase(key)}:</Text>
-                              <Space w="xs" />
                               <Text>
                                 {formatDate({
                                   date: value,
                                   formatOptions: {
-                                    dateStyle: 'full',
-                                    timeStyle: 'long',
-                                    hour12: false,
+                                    dateStyle: "full",
+                                    localeMatcher: "best fit",
+                                    formatMatcher: "best fit",
                                   },
-                                  locale: 'en-US',
+                                  locale: "en-US",
                                 })}
                               </Text>
-                              {dropDownFooter}
-                            </Flex>
-                          </HoverCard.Dropdown>
-                        </HoverCard>
-                      ) : (
-                        <HoverCard
-                          width={500}
-                          shadow="lg"
-                          openDelay={150}
-                          closeDelay={50}
-                          withArrow
-                        >
-                          <HoverCard.Target>
-                            <Group>{highlightedText}</Group>
-                          </HoverCard.Target>
-                          <HoverCard.Dropdown>
-                            <Stack>
-                              {
-                                <Flex w="100%" wrap="wrap" gap="xs">
-                                  {key === '_id' ? (
-                                    <Text>{'Document Id'}: </Text>
-                                  ) : (
-                                    <Text>{splitCamelCase(key)}: </Text>
-                                  )}
+                            </Group>
+                            {dropDownFooter}
+                          </Stack>
+                        </HoverCard.Dropdown>
+                      </HoverCard>
+                    ) : key === "createdAt" || key === "updatedAt" ? (
+                      <HoverCard
+                        width={500}
+                        shadow="lg"
+                        openDelay={150}
+                        closeDelay={50}
+                        withArrow
+                      >
+                        <HoverCard.Target>
+                          <Text>{formattedValue}</Text>
+                        </HoverCard.Target>
+                        <HoverCard.Dropdown>
+                          <Flex wrap="wrap" rowGap={rowGap}>
+                            <Text>{splitCamelCase(key)}:</Text>
+                            <Space w="xs" />
+                            <Text>
+                              {formatDate({
+                                date: value,
+                                formatOptions: {
+                                  dateStyle: "full",
+                                  timeStyle: "long",
+                                  hour12: false,
+                                },
+                                locale: "en-US",
+                              })}
+                            </Text>
+                            {dropDownFooter}
+                          </Flex>
+                        </HoverCard.Dropdown>
+                      </HoverCard>
+                    ) : (
+                      <HoverCard
+                        width={500}
+                        shadow="lg"
+                        openDelay={150}
+                        closeDelay={50}
+                        withArrow
+                      >
+                        <HoverCard.Target>
+                          <Group>{highlightedText}</Group>
+                        </HoverCard.Target>
+                        <HoverCard.Dropdown>
+                          <Stack>
+                            {
+                              <Flex w="100%" wrap="wrap" gap="xs">
+                                {key === "_id" ? (
+                                  <Text>{"Document Id"}: </Text>
+                                ) : (
+                                  <Text>{splitCamelCase(key)}: </Text>
+                                )}
 
-                                  <Flex gap={4} wrap="wrap" pl={padding}>
-                                    {footerHighlightedText}
-                                  </Flex>
+                                <Flex gap={4} wrap="wrap" pl={padding}>
+                                  {footerHighlightedText}
                                 </Flex>
-                              }
-                              {dropDownFooter}
-                            </Stack>
-                          </HoverCard.Dropdown>
-                        </HoverCard>
-                      );
+                              </Flex>
+                            }
+                            {dropDownFooter}
+                          </Stack>
+                        </HoverCard.Dropdown>
+                      </HoverCard>
+                    );
 
                     // only when user views repair notes section
-                    const [createdRepairNoteEditButton] =
-                      isRepairNoteSectionInView
-                        ? returnAccessibleButtonElements([
-                            {
-                              buttonLabel: <TbEdit />,
-                              semanticDescription: `Modify ${key} for username: ${queryResponseObjWithAddedFields.username} and form with id: ${queryResponseObjWithAddedFields._id}`,
-                              semanticName: `Modify ${key}`,
-                              buttonOnClick: () => {
-                                displayQueryDesktopDispatch({
-                                  type: displayQueryDesktopAction.setEditRepairNoteInput,
-                                  payload: {
-                                    repairNoteFormId:
-                                      queryResponseObjWithAddedFields._id,
-                                    repairNotes:
-                                      queryResponseObjWithAddedFields.repairNotes,
-                                    testingResults:
-                                      queryResponseObjWithAddedFields.testingResults,
-                                    finalRepairCost:
-                                      queryResponseObjWithAddedFields.finalRepairCost,
-                                    finalRepairCostCurrency:
-                                      queryResponseObjWithAddedFields.finalRepairCostCurrency,
-                                    repairStatus:
-                                      queryResponseObjWithAddedFields.repairStatus,
-                                  },
-                                });
+                    const [createdRepairNoteEditButton] = isRepairNoteSectionInView
+                      ? returnAccessibleButtonElements([
+                          {
+                            buttonLabel: <TbEdit />,
+                            semanticDescription: `Modify ${key} for username: ${queryResponseObjWithAddedFields.username} and form with id: ${queryResponseObjWithAddedFields._id}`,
+                            semanticName: `Modify ${key}`,
+                            buttonOnClick: () => {
+                              displayQueryDesktopDispatch({
+                                type: displayQueryDesktopAction.setEditRepairNoteInput,
+                                payload: {
+                                  repairNoteFormId: queryResponseObjWithAddedFields._id,
+                                  repairNotes:
+                                    queryResponseObjWithAddedFields.repairNotes,
+                                  testingResults:
+                                    queryResponseObjWithAddedFields.testingResults,
+                                  finalRepairCost:
+                                    queryResponseObjWithAddedFields.finalRepairCost,
+                                  finalRepairCostCurrency:
+                                    queryResponseObjWithAddedFields.finalRepairCostCurrency,
+                                  repairStatus:
+                                    queryResponseObjWithAddedFields.repairStatus,
+                                },
+                              });
 
-                                openEditRepairNotesModal();
-                              },
+                              openEditRepairNotesModal();
                             },
-                          ])
-                        : [null];
+                          },
+                        ])
+                      : [null];
 
-                    const displayRepairNoteEditButton =
-                      createdRepairNoteEditButton ? (
-                        <Tooltip
-                          label={`Edit repair note for ${
-                            queryResponseObjWithAddedFields.customerName ??
-                            queryResponseObjWithAddedFields._id
-                          }`}
-                        >
-                          <Group>{createdRepairNoteEditButton}</Group>
-                        </Tooltip>
-                      ) : null;
+                    const displayRepairNoteEditButton = createdRepairNoteEditButton ? (
+                      <Tooltip
+                        label={`Edit repair note for ${
+                          queryResponseObjWithAddedFields.customerName ??
+                          queryResponseObjWithAddedFields._id
+                        }`}
+                      >
+                        <Group>{createdRepairNoteEditButton}</Group>
+                      </Tooltip>
+                    ) : null;
 
                     const [
                       createdUpdateRequestStatusButton,
@@ -710,7 +670,7 @@ function DisplayQueryDesktop({
                       {
                         buttonLabel: <TbStatusChange />,
                         semanticDescription: `Modify current request status of ${queryResponseObjWithAddedFields.requestStatus} for username: ${queryResponseObjWithAddedFields.username} and form with id: ${queryResponseObjWithAddedFields._id}`,
-                        semanticName: 'Update request status',
+                        semanticName: "Update request status",
                         buttonOnClick: () => {
                           displayQueryDesktopDispatch({
                             type: displayQueryDesktopAction.setCurrentDocumentId,
@@ -718,8 +678,7 @@ function DisplayQueryDesktop({
                           });
                           displayQueryDesktopDispatch({
                             type: displayQueryDesktopAction.setCurrentRequestStatus,
-                            payload:
-                              queryResponseObjWithAddedFields.requestStatus,
+                            payload: queryResponseObjWithAddedFields.requestStatus,
                           });
 
                           openUpdateRequestStatusModal();
@@ -729,7 +688,7 @@ function DisplayQueryDesktop({
                       {
                         buttonLabel: <TbUserSearch />,
                         semanticDescription: `View profile of username: ${queryResponseObjWithAddedFields.username}`,
-                        semanticName: 'View profile',
+                        semanticName: "View profile",
                         buttonOnClick: () => {
                           displayQueryDesktopDispatch({
                             type: displayQueryDesktopAction.setEmployeeDocument,
@@ -747,15 +706,15 @@ function DisplayQueryDesktop({
                       {
                         buttonLabel: <TbTrash />,
                         semanticDescription: `Delete form with id: ${queryResponseObjWithAddedFields._id} belonging to username: ${queryResponseObjWithAddedFields.username}`,
-                        semanticName: 'Delete',
+                        semanticName: "Delete",
                         buttonOnClick: () => {
                           deleteFormIdDispatch({
-                            type: 'setDeleteFormId',
+                            type: "setDeleteFormId",
                             payload: queryResponseObjWithAddedFields._id,
                           });
                           deleteResourceKindDispatch({
-                            type: 'setDeleteResourceKind',
-                            payload: 'form',
+                            type: "setDeleteResourceKind",
+                            payload: "form",
                           });
 
                           openDeleteAcknowledge();
@@ -764,21 +723,20 @@ function DisplayQueryDesktop({
                       // open file uploads modal button
                       {
                         buttonLabel: <IoMdOpen />,
-                        buttonDisabled:
-                          !fileUploadsData[objIdx]?.fileUploads.length,
+                        buttonDisabled: !fileUploadsData[objIdx]?.fileUploads.length,
                         semanticDescription: `${
                           !fileUploadsData[objIdx]?.fileUploads.length
                             ? `No file uploads associated with username: ${queryResponseObjWithAddedFields.username}with form id: ${queryResponseObjWithAddedFields._id}}`
                             : `View file uploads belonging to username: ${queryResponseObjWithAddedFields.username}with form id: ${queryResponseObjWithAddedFields._id}`
                         }`,
-                        semanticName: 'Open file uploads modal',
+                        semanticName: "Open file uploads modal",
                         buttonOnClick: () => {
                           setFileUploadsForAFormDispatch({
-                            type: 'setFileUploadsForAForm',
+                            type: "setFileUploadsForAForm",
                             payload: fileUploadsData[objIdx]?.fileUploads,
                           });
                           deleteFormIdDispatch({
-                            type: 'setDeleteFormId',
+                            type: "setDeleteFormId",
                             payload: queryResponseObjWithAddedFields._id,
                           });
 
@@ -804,29 +762,27 @@ function DisplayQueryDesktop({
                     );
 
                     // only managers can update request status
-                    const displayUpdateRequestStatusButton = roles.includes(
-                      'Manager'
-                    )
-                      ? key === 'requestStatus'
+                    const displayUpdateRequestStatusButton = roles.includes("Manager")
+                      ? key === "requestStatus"
                         ? createdUpdateRequestStatusButtonWithTooltip
                         : null
                       : null;
 
-                    // for both expanded and condensed:  if fieldname is 'requestStatus', display popover with radio group and submit button, else if the document viewed is a repair note, display edit button, else display truncated values with hover cards
+                    // if fieldname is 'requestStatus', display popover with radio group and submit button, else if the document viewed is a repair note, display edit button, else display truncated values with hover cards
 
-                    const displayExpandedBodyRows = (
+                    const displayBodyRows = (
                       <td key={`${objIdx}-${keyValIdx}`}>
-                        {key === 'requestStatus' ? (
+                        {key === "requestStatus" ? (
                           <Group w="100%" position="center">
                             <Text>{truncatedValuesWithHoverCards}</Text>
                             {displayUpdateRequestStatusButton}
                           </Group>
-                        ) : key === 'edit' ? (
+                        ) : key === "edit" ? (
                           <Group w="100%" position="center">
                             <Text>{truncatedValuesWithHoverCards}</Text>
                             {displayRepairNoteEditButton}
                           </Group>
-                        ) : key === 'viewProfile' ? (
+                        ) : key === "viewProfile" ? (
                           <Group w="100%" position="center">
                             {truncatedValuesWithHoverCards}
                             {createdViewProfileButtonWithTooltip}
@@ -839,42 +795,13 @@ function DisplayQueryDesktop({
                       </td>
                     );
 
-                    const displayCondensedBodyRows =
-                      !tableHeaderValueExclusionSet.has(
-                        Object.keys(queryResponseObjWithAddedFields)[keyValIdx]
-                      ) ? (
-                        <td key={`${objIdx}-${keyValIdx}`}>
-                          {key === 'requestStatus' ? (
-                            <Group position="center" w="100%">
-                              <Text>{truncatedValuesWithHoverCards}</Text>
-                              {displayUpdateRequestStatusButton}
-                            </Group>
-                          ) : key === 'edit' ? (
-                            <Group w="100%" position="center">
-                              <Text>{truncatedValuesWithHoverCards}</Text>
-                              {displayRepairNoteEditButton}
-                            </Group>
-                          ) : key === 'viewProfile' ? (
-                            <Group w="100%" position="center">
-                              {truncatedValuesWithHoverCards}
-                              {createdViewProfileButtonWithTooltip}
-                            </Group>
-                          ) : (
-                            <Group w="100%" position="center">
-                              {truncatedValuesWithHoverCards}
-                            </Group>
-                          )}
-                        </td>
-                      ) : null;
-
-                    const viewFileUploadsButtonToolTipLabel = !fileUploadsData[
-                      objIdx
-                    ]?.fileUploads.length
+                    const viewFileUploadsButtonToolTipLabel = !fileUploadsData[objIdx]
+                      ?.fileUploads.length
                       ? `No file uploads associated with id: ${queryResponseObjWithAddedFields._id}`
                       : `View file uploads belonging to id: ${queryResponseObjWithAddedFields._id}`;
 
                     const displayOpenFileUploadsModalButton =
-                      key === 'fileUploads' ? (
+                      key === "fileUploads" ? (
                         <td key={`${sectionIdx}-${objIdx}-${keyValIdx}`}>
                           <Center>
                             <Tooltip label={viewFileUploadsButtonToolTipLabel}>
@@ -885,7 +812,7 @@ function DisplayQueryDesktop({
                       ) : null;
 
                     const displayDeleteButton =
-                      key === 'delete' ? (
+                      key === "delete" ? (
                         <td key={`${sectionIdx}-${objIdx}-${keyValIdx}`}>
                           <Center>
                             <Tooltip
@@ -899,13 +826,11 @@ function DisplayQueryDesktop({
                         </td>
                       ) : null;
 
-                    return key === 'delete'
+                    return key === "delete"
                       ? displayDeleteButton
-                      : key === 'fileUploads'
+                      : key === "fileUploads"
                       ? displayOpenFileUploadsModalButton
-                      : tableViewSelection === 'expanded'
-                      ? displayExpandedBodyRows
-                      : displayCondensedBodyRows;
+                      : displayBodyRows;
                   }
                 )}
               </tr>
@@ -923,8 +848,8 @@ function DisplayQueryDesktop({
       <Group
         w={width <= 991 ? width - 225 - 44 : width - 300 - 44}
         style={{
-          minHeight: '500px', // allows popovers and tooltips to display
-          maxHeight: '62vh',
+          minHeight: "500px", // allows popovers and tooltips to display
+          maxHeight: "62vh",
         }}
         align="flex-start"
       >
@@ -962,8 +887,7 @@ function DisplayQueryDesktop({
   const selectedDocument =
     Array.from(groupedByQueryResponseData)
       .flatMap(([, queryResponseObjArrays]) => queryResponseObjArrays)
-      .find((queryResponseObj) => queryResponseObj._id === currentDocumentId) ||
-    {};
+      .find((queryResponseObj) => queryResponseObj._id === currentDocumentId) || {};
 
   const displayUpdateRequestStatusModal = (
     <Modal
@@ -1004,7 +928,7 @@ function DisplayQueryDesktop({
   useEffect(() => {
     logState({
       state: displayQueryDesktopState,
-      groupLabel: 'displayQueryDesktopState',
+      groupLabel: "displayQueryDesktopState",
     });
   }, [displayQueryDesktopState]);
 

@@ -1,4 +1,4 @@
-import { CSSProperties } from 'react';
+import { CSSProperties } from "react";
 
 import type {
   Currency,
@@ -6,19 +6,19 @@ import type {
   QueryResponseData,
   RequestStatus,
   UserDocument,
-} from '../../../types';
-import type { ComponentQueryData } from '../../queryBuilder';
-import { RepairStatus } from '../../repairNote/types';
+} from "../../../types";
+import type { ComponentQueryData } from "../../queryBuilder";
+import { RepairStatus } from "../../repairNote/types";
 
 type DisplayQueryDesktopProps = {
   componentQueryData: ComponentQueryData[];
   deleteFormIdDispatch: React.Dispatch<{
-    type: 'setDeleteFormId';
+    type: "setDeleteFormId";
     payload: string;
   }>;
   deleteResourceKindDispatch: React.Dispatch<{
-    type: 'setDeleteResourceKind';
-    payload: 'form' | 'fileUpload' | '';
+    type: "setDeleteResourceKind";
+    payload: "form" | "fileUpload" | "";
   }>;
   fileUploadsData?: Array<{ [key: string]: FileUploadDocument[] }>;
   groupByRadioData: Array<{ label: string; value: string }>;
@@ -33,18 +33,17 @@ type DisplayQueryDesktopProps = {
   openFileUploads: () => void;
   queryValuesArray: string[];
   requestStatusDispatch: React.Dispatch<{
-    type: 'setRequestStatus';
+    type: "setRequestStatus";
     payload: {
       id: string;
       status: RequestStatus;
     };
   }>;
   setFileUploadsForAFormDispatch: React.Dispatch<{
-    type: 'setFileUploadsForAForm';
+    type: "setFileUploadsForAForm";
     payload: FileUploadDocument[];
   }>;
   style?: CSSProperties;
-  tableViewSelection: 'expanded' | 'condensed';
 };
 
 type EditRepairNoteInput = {
@@ -58,7 +57,7 @@ type EditRepairNoteInput = {
 
 type DisplayQueryDesktopState = {
   fieldToSortBy: string;
-  sortDirection: 'asc' | 'desc';
+  sortDirection: "asc" | "desc";
 
   currentDocumentId: string;
   currentRequestStatus: RequestStatus;
@@ -70,15 +69,15 @@ type DisplayQueryDesktopState = {
 };
 
 type DisplayQueryDesktopAction = {
-  setFieldToSortBy: 'setFieldToSortBy';
-  setSortDirection: 'setSortDirection';
+  setFieldToSortBy: "setFieldToSortBy";
+  setSortDirection: "setSortDirection";
 
-  setCurrentDocumentId: 'setCurrentDocumentId';
-  setCurrentRequestStatus: 'setCurrentRequestStatus';
+  setCurrentDocumentId: "setCurrentDocumentId";
+  setCurrentRequestStatus: "setCurrentRequestStatus";
 
-  setEditRepairNoteInput: 'setEditRepairNoteInput';
+  setEditRepairNoteInput: "setEditRepairNoteInput";
 
-  setEmployeeDocument: 'setEmployeeDocument';
+  setEmployeeDocument: "setEmployeeDocument";
 };
 
 type DisplayQueryDesktopReducer = (
@@ -89,25 +88,25 @@ type DisplayQueryDesktopReducer = (
 type DisplayQueryDesktopDispatch =
   | {
       type:
-        | DisplayQueryDesktopAction['setFieldToSortBy']
-        | DisplayQueryDesktopAction['setCurrentDocumentId'];
+        | DisplayQueryDesktopAction["setFieldToSortBy"]
+        | DisplayQueryDesktopAction["setCurrentDocumentId"];
 
       payload: string;
     }
   | {
-      type: DisplayQueryDesktopAction['setSortDirection'];
-      payload: 'asc' | 'desc';
+      type: DisplayQueryDesktopAction["setSortDirection"];
+      payload: "asc" | "desc";
     }
   | {
-      type: DisplayQueryDesktopAction['setCurrentRequestStatus'];
+      type: DisplayQueryDesktopAction["setCurrentRequestStatus"];
       payload: RequestStatus;
     }
   | {
-      type: DisplayQueryDesktopAction['setEditRepairNoteInput'];
+      type: DisplayQueryDesktopAction["setEditRepairNoteInput"];
       payload: EditRepairNoteInput;
     }
   | {
-      type: DisplayQueryDesktopAction['setEmployeeDocument'];
+      type: DisplayQueryDesktopAction["setEmployeeDocument"];
       payload: UserDocument | null;
     };
 

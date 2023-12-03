@@ -1,12 +1,12 @@
-import { CSSProperties } from 'react';
+import { CSSProperties } from "react";
 
 import {
   FileUploadDocument,
   QueryResponseData,
   RadioGroupInputData,
   RequestStatus,
-} from '../../types';
-import { ComponentQueryData } from '../queryBuilder';
+} from "../../types";
+import { ComponentQueryData } from "../queryBuilder";
 
 type GroupedByQueryResponseData = Map<
   string | number | boolean | symbol,
@@ -21,18 +21,18 @@ type DisplayQueryProps<Doc> = {
   loadingMessage?: string;
   parentComponentName: string;
   parentRequestStatusDispatch: React.Dispatch<{
-    type: 'setRequestStatus';
+    type: "setRequestStatus";
     payload: {
       id: string;
       status: RequestStatus;
     };
   }>;
   parentDeleteResourceDispatch: React.Dispatch<{
-    type: 'setDeleteResource';
+    type: "setDeleteResource";
     payload: {
       formId: string;
       fileUploadId?: string;
-      kind: 'form' | 'fileUpload' | '';
+      kind: "form" | "fileUpload" | "";
       value: boolean;
     };
   }>;
@@ -50,35 +50,31 @@ type DisplayQueryState = {
 
   fileUploadsForAForm: FileUploadDocument[];
 
-  currentSegmentedSelection: 'expanded' | 'condensed';
-
   acknowledgementText: string;
   isValidAcknowledgementText: boolean;
   isAcknowledgementTextFocused: boolean;
 
   deleteFormId: string;
   deleteFileUploadId: string;
-  deleteResourceKind: 'form' | 'fileUpload' | '';
+  deleteResourceKind: "form" | "fileUpload" | "";
 };
 
 type DisplayQueryAction = {
-  setGroupByRadioData: 'setGroupByRadioData';
-  setGroupBySelection: 'setGroupBySelection';
-  setCurrentSelectionData: 'setCurrentSelectionData';
+  setGroupByRadioData: "setGroupByRadioData";
+  setGroupBySelection: "setGroupBySelection";
+  setCurrentSelectionData: "setCurrentSelectionData";
 
-  setGroupedByQueryResponseData: 'setGroupedByQueryResponseData';
+  setGroupedByQueryResponseData: "setGroupedByQueryResponseData";
 
-  setFileUploadsForAForm: 'setFileUploadsForAForm';
+  setFileUploadsForAForm: "setFileUploadsForAForm";
 
-  setCurrentSegmentedSelection: 'setCurrentSegmentedSelection';
+  setAcknowledgementText: "setAcknowledgementText";
+  setIsValidAcknowledgementText: "setIsValidAcknowledgementText";
+  setIsAcknowledgementTextFocused: "setIsAcknowledgementTextFocused";
 
-  setAcknowledgementText: 'setAcknowledgementText';
-  setIsValidAcknowledgementText: 'setIsValidAcknowledgementText';
-  setIsAcknowledgementTextFocused: 'setIsAcknowledgementTextFocused';
-
-  setDeleteFormId: 'setDeleteFormId';
-  setDeleteFileUploadId: 'setDeleteFileUploadId';
-  setDeleteResourceKind: 'setDeleteResourceKind';
+  setDeleteFormId: "setDeleteFormId";
+  setDeleteFileUploadId: "setDeleteFileUploadId";
+  setDeleteResourceKind: "setDeleteResourceKind";
 };
 
 type DisplayQueryDispatch<
@@ -88,42 +84,38 @@ type DisplayQueryDispatch<
   >
 > =
   | {
-      type: DisplayQueryAction['setGroupByRadioData'];
+      type: DisplayQueryAction["setGroupByRadioData"];
       payload: RadioGroupInputData;
     }
   | {
       type:
-        | DisplayQueryAction['setGroupBySelection']
-        | DisplayQueryAction['setAcknowledgementText']
-        | DisplayQueryAction['setDeleteFormId']
-        | DisplayQueryAction['setDeleteFileUploadId'];
+        | DisplayQueryAction["setGroupBySelection"]
+        | DisplayQueryAction["setAcknowledgementText"]
+        | DisplayQueryAction["setDeleteFormId"]
+        | DisplayQueryAction["setDeleteFileUploadId"];
       payload: string;
     }
   | {
       type:
-        | DisplayQueryAction['setIsValidAcknowledgementText']
-        | DisplayQueryAction['setIsAcknowledgementTextFocused'];
+        | DisplayQueryAction["setIsValidAcknowledgementText"]
+        | DisplayQueryAction["setIsAcknowledgementTextFocused"];
       payload: boolean;
     }
   | {
-      type: DisplayQueryAction['setCurrentSegmentedSelection'];
-      payload: 'expanded' | 'condensed';
-    }
-  | {
-      type: DisplayQueryAction['setCurrentSelectionData'];
+      type: DisplayQueryAction["setCurrentSelectionData"];
       payload: string[];
     }
   | {
-      type: DisplayQueryAction['setGroupedByQueryResponseData'];
+      type: DisplayQueryAction["setGroupedByQueryResponseData"];
       payload: Map<keyof Doc, Record<keyof Doc, Doc[keyof Doc]>[]>;
     }
   | {
-      type: DisplayQueryAction['setFileUploadsForAForm'];
+      type: DisplayQueryAction["setFileUploadsForAForm"];
       payload: FileUploadDocument[];
     }
   | {
-      type: DisplayQueryAction['setDeleteResourceKind'];
-      payload: 'form' | 'fileUpload' | '';
+      type: DisplayQueryAction["setDeleteResourceKind"];
+      payload: "form" | "fileUpload" | "";
     };
 
 export type {

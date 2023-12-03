@@ -1,150 +1,128 @@
-import './index.css';
+import "./index.css";
 
-import { MantineProvider, Text } from '@mantine/core';
-import { lazy, Suspense } from 'react';
-import { ErrorBoundary } from 'react-error-boundary';
-import { Route, Routes } from 'react-router-dom';
+import { MantineProvider, Text } from "@mantine/core";
+import { lazy, Suspense } from "react";
+import { ErrorBoundary } from "react-error-boundary";
+import { Route, Routes } from "react-router-dom";
 
-import CustomFonts from './components/customFonts/CustomFonts';
-import DevTesting from './components/devTesting/DevTesting';
-import ErrorFallback from './components/errorFallback/ErrorFallback';
-import { useGlobalState } from './hooks/useGlobalState';
+import CustomFonts from "./components/customFonts/CustomFonts";
+import DevTesting from "./components/devTesting/DevTesting";
+import ErrorFallback from "./components/errorFallback/ErrorFallback";
+import { useGlobalState } from "./hooks/useGlobalState";
 
 // ┏━ begin lazy loading ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-const PublicLayout = lazy(
-  () => import('./components/publicLayout/PublicLayout')
-);
-const Login = lazy(() => import('./components/login/Login'));
-const Register = lazy(() => import('./components/register/Register'));
+const PublicLayout = lazy(() => import("./components/publicLayout/PublicLayout"));
+const Login = lazy(() => import("./components/login/Login"));
+const Register = lazy(() => import("./components/register/Register"));
 
-const PortalLayout = lazy(
-  () => import('./components/portalLayout/PortalLayout')
-);
-const Home = lazy(() => import('./components/home/Home'));
+const PortalLayout = lazy(() => import("./components/portalLayout/PortalLayout"));
+const Home = lazy(() => import("./components/home/Home"));
 
 // dashboard
-const Dashboard = lazy(() => import('./components/dashboard/Dashboard'));
+const Dashboard = lazy(() => import("./components/dashboard/Dashboard"));
 
 // dashboard -> display responsive chart
 const DisplayResponsiveChart = lazy(
-  () => import('./components/dashboard/DisplayResponsiveChart')
+  () => import("./components/dashboard/DisplayResponsiveChart")
 );
 
 // dashboard -> product
 
 // dashboard -> product -> create
-const CreateProduct = lazy(() => import('./components/product/CreateProduct'));
+const CreateProduct = lazy(() => import("./components/product/CreateProduct"));
 
 // dashboard -> product -> display
-const DisplayProducts = lazy(
-  () => import('./components/product/DisplayProducts')
-);
+const DisplayProducts = lazy(() => import("./components/product/DisplayProducts"));
 
 // directory
-const Directory = lazy(() => import('./components/directory/Directory'));
+const Directory = lazy(() => import("./components/directory/Directory"));
 
 // repair note
 const CreateRepairNote = lazy(
-  () => import('./components/repairNote/create/CreateRepairNote')
+  () => import("./components/repairNote/create/CreateRepairNote")
 );
 const DisplayRepairNotes = lazy(
-  () => import('./components/repairNote/display/DisplayRepairNotes')
+  () => import("./components/repairNote/display/DisplayRepairNotes")
 );
 
 // company
 const AddressChange = lazy(
-  () => import('./components/addressChange/create/AddressChange')
+  () => import("./components/addressChange/create/AddressChange")
 );
 const DisplayAddressChanges = lazy(
-  () => import('./components/addressChange/DisplayAddressChanges')
+  () => import("./components/addressChange/DisplayAddressChanges")
 );
 
-const CreateBenefit = lazy(
-  () => import('./components/benefits/create/CreateBenefit')
-);
-const DisplayBenefits = lazy(
-  () => import('./components/benefits/DisplayBenefits')
-);
+const CreateBenefit = lazy(() => import("./components/benefits/create/CreateBenefit"));
+const DisplayBenefits = lazy(() => import("./components/benefits/DisplayBenefits"));
 
 const CreateLeaveRequest = lazy(
-  () => import('./components/leaveRequest/create/CreateLeaveRequest')
+  () => import("./components/leaveRequest/create/CreateLeaveRequest")
 );
 const DisplayLeaveRequests = lazy(
-  () => import('./components/leaveRequest/DisplayLeaveRequests')
+  () => import("./components/leaveRequest/DisplayLeaveRequests")
 );
 
 const DisplayRequestResources = lazy(
-  () => import('./components/requestResource/DisplayRequestResources')
+  () => import("./components/requestResource/DisplayRequestResources")
 );
 const RequestResource = lazy(
-  () => import('./components/requestResource/create/RequestResource')
+  () => import("./components/requestResource/create/RequestResource")
 );
 
 const DisplayExpenseClaims = lazy(
-  () => import('./components/expenseClaim/DisplayExpenseClaims')
+  () => import("./components/expenseClaim/DisplayExpenseClaims")
 );
 const CreateExpenseClaim = lazy(
-  () => import('./components/expenseClaim/create/CreateExpenseClaim')
+  () => import("./components/expenseClaim/create/CreateExpenseClaim")
 );
 
 // general
 const DisplayAnonymousRequests = lazy(
-  () => import('./components/anonymousRequest/DisplayAnonymousRequests')
+  () => import("./components/anonymousRequest/DisplayAnonymousRequests")
 );
 const CreateAnonymousRequest = lazy(
-  () => import('./components/anonymousRequest/create/CreateAnonymousRequest')
+  () => import("./components/anonymousRequest/create/CreateAnonymousRequest")
 );
 
 const DisplayEndorsements = lazy(
-  () => import('./components/endorsements/DisplayEndorsements')
+  () => import("./components/endorsements/DisplayEndorsements")
 );
 const CreateEndorsement = lazy(
-  () => import('./components/endorsements/create/CreateEndorsement')
+  () => import("./components/endorsements/create/CreateEndorsement")
 );
 
 const DisplayPrinterIssues = lazy(
-  () => import('./components/printerIssue/DisplayPrinterIssues')
+  () => import("./components/printerIssue/DisplayPrinterIssues")
 );
 const CreatePrinterIssue = lazy(
-  () => import('./components/printerIssue/create/CreatePrinterIssue')
+  () => import("./components/printerIssue/create/CreatePrinterIssue")
 );
 
-const DisplayReferments = lazy(
-  () => import('./components/referment/DisplayReferments')
-);
+const DisplayReferments = lazy(() => import("./components/referment/DisplayReferments"));
 const CreateReferment = lazy(
-  () => import('./components/referment/create/CreateReferment')
+  () => import("./components/referment/create/CreateReferment")
 );
 
 // outreach
-const DisplayEvents = lazy(() => import('./components/event/DisplayEvents'));
-const EventCreator = lazy(
-  () => import('./components/event/create/EventCreator')
-);
+const DisplayEvents = lazy(() => import("./components/event/DisplayEvents"));
+const EventCreator = lazy(() => import("./components/event/create/EventCreator"));
 
-const DisplaySurveys = lazy(
-  () => import('./components/survey/display/DisplaySurveys')
-);
-const SurveyBuilder = lazy(
-  () => import('./components/survey/create/SurveyBuilder')
-);
+const DisplaySurveys = lazy(() => import("./components/survey/display/DisplaySurveys"));
+const SurveyBuilder = lazy(() => import("./components/survey/create/SurveyBuilder"));
 
 const DisplayAnnouncements = lazy(
-  () =>
-    import(
-      './components/announcement/display/announcements/DisplayAnnouncements'
-    )
+  () => import("./components/announcement/display/announcements/DisplayAnnouncements")
 );
 const CreateAnnouncement = lazy(
-  () => import('./components/announcement/create/CreateAnnouncement')
+  () => import("./components/announcement/create/CreateAnnouncement")
 );
 const DisplayAnnouncement = lazy(
-  () =>
-    import('./components/announcement/display/announcement/DisplayAnnouncement')
+  () => import("./components/announcement/display/announcement/DisplayAnnouncement")
 );
 
 // catch all
-const NotFound = lazy(() => import('./components/notFound/NotFound'));
+const NotFound = lazy(() => import("./components/notFound/NotFound"));
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end lazy loading ━┛
 
@@ -650,7 +628,7 @@ function App() {
           <Route path="dashboard">
             <Route index element={dashboardElement} />
             <Route path="product">
-              <Route index element={createProductElement} />
+              <Route index element={displayProductsElement} />
               <Route path="create" element={createProductElement} />
               <Route path="display" element={displayProductsElement} />
             </Route>
@@ -748,10 +726,7 @@ function App() {
             <Route path="announcement">
               <Route index element={displayAnnouncementsElement} />
               <Route path="create" element={createAnnouncementElement} />
-              <Route
-                path=":announcementId"
-                element={displayAnnouncementElement}
-              />
+              <Route path=":announcementId" element={displayAnnouncementElement} />
             </Route>
           </Route>
         </Route>

@@ -1,15 +1,15 @@
-import { Flex } from '@mantine/core';
+import { Flex, Group } from "@mantine/core";
 
-import { DisplayResource } from '../displayResource';
-import DisplayResourceHeader from '../displayResourceHeader/DisplayResourceHeader';
-import { PRODUCTS_QUERY_DATA, PRODUCTS_RESOURCE_PATHS } from './constants';
+import { DisplayResource } from "../displayResource";
+import DisplayResourceHeader from "../displayResourceHeader/DisplayResourceHeader";
+import { PRODUCTS_QUERY_DATA, PRODUCTS_RESOURCE_PATHS } from "./constants";
 
 function DisplayProducts() {
   const imageSrc =
-    'https://images.pexels.com/photos/356056/pexels-photo-356056.jpeg?auto=compress';
-  const imageAlt = 'Black and White Laptop Computer on Brown Wooden Desk';
-  const resourceDescription = 'Manage Your Products';
-  const resourceTitle = 'Products';
+    "https://images.pexels.com/photos/356056/pexels-photo-356056.jpeg?auto=compress";
+  const imageAlt = "Black and White Laptop Computer on Brown Wooden Desk";
+  const resourceDescription = "Manage Your Products";
+  const resourceTitle = "Products";
 
   const displayResourceHeader = (
     <DisplayResourceHeader
@@ -19,6 +19,10 @@ function DisplayProducts() {
       resourceTitle={resourceTitle}
     />
   );
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //     DISPLAY RESOURCE
+  // ╰─────────────────────────────────────────────────────────────────╯
 
   const displayResource = (
     <DisplayResource

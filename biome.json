@@ -4,7 +4,7 @@
     "enabled": true
   },
   "linter": {
-    "enabled": false,
+    "enabled": true,
     "rules": {
       "recommended": true,
       "complexity": {
@@ -15,6 +15,9 @@
       },
       "suspicious": {
         "noExplicitAny": "off"
+      },
+      "style": {
+        "noParameterAssign": "off"
       }
     }
   },
