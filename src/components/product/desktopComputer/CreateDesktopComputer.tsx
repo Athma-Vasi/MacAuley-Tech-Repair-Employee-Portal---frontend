@@ -30,8 +30,8 @@ import CreateGpu from "../gpu/CreateGpu";
 import CreateKeyboard from "../keyboard/CreateKeyboard";
 import CreateMotherboard from "../motherboard/CreateMotherboard";
 import CreateMouse from "../mouse/CreateMouse";
-import CreatePsu from "../psu/CreatePsu";
-import CreateRam from "../ram/CreateRam";
+import CreatePsu from "../psu/CreatePSU";
+import CreateRam from "../ram/CreateRAM";
 import CreateSpeaker from "../speaker/CreateSpeaker";
 import CreateStorage from "../storage/CreateStorage";
 

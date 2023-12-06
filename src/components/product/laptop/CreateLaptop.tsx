@@ -13,7 +13,7 @@ import {
 import CreateCpu from "../cpu/CreateCpu";
 import CreateDisplay from "../display/CreateDisplay";
 import CreateGpu from "../gpu/CreateGpu";
-import CreateRam from "../ram/CreateRam";
+import CreateRam from "../ram/CreateRAM";
 import CreateStorage from "../storage/CreateStorage";
 
 type CreateLaptopProps = {
