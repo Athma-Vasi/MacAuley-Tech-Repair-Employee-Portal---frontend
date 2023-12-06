@@ -109,10 +109,10 @@ import {
 } from "./utils";
 import CreateAccessory from "./accessory/CreateAccessory";
 import CreateCase from "./case/CreateCase";
-import CreateCpu from "./cpu/CreateCpu";
+import CreateCpu from "./cpu/CreateCPU";
 import CreateDesktopComputer from "./desktopComputer/CreateDesktopComputer";
 import CreateDisplay from "./display/CreateDisplay";
-import CreateGpu from "./gpu/CreateGpu";
+import CreateGpu from "./gpu/CreateGPU";
 import CreateHeadphone from "./headphone/CreateHeadphone";
 import CreateKeyboard from "./keyboard/CreateKeyboard";
 import CreateLaptop from "./laptop/CreateLaptop";

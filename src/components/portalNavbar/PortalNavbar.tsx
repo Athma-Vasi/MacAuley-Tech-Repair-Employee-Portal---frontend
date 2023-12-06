@@ -25,7 +25,7 @@ import {
   TbUserCheck,
 } from "react-icons/tb";
 import { TiThumbsUp } from "react-icons/ti";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import { COLORS_SWATCHES } from "../../constants/data";
 import { useGlobalState } from "../../hooks";
@@ -36,14 +36,12 @@ import { portalNavbarAction } from "./actions";
 import { portalNavbarReducer } from "./reducers";
 import { initialPortalNavbarState } from "./state";
 import { PortalNavbarProps } from "./types";
-import { returnPortalNavbarStateActionTuple } from "./utils";
 
 function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
   const {
     globalState: { width, themeObject, height, padding },
   } = useGlobalState();
   const navigate = useNavigate();
-  const { pathname } = useLocation();
 
   const [portalNavbarState, portalNavbarDispatch] = useReducer(
     portalNavbarReducer,
@@ -715,7 +713,6 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
         type: portalNavbarAction.setIsProductActive,
         payload: !isProductActive,
       });
-      navigate("/home/product");
     },
     opened: isProductNavlinkOpened,
     rightSection: (
@@ -904,7 +901,6 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
         type: portalNavbarAction.setIsRepairActive,
         payload: !isRepairActive,
       });
-      navigate("/home/repair");
     },
     opened: isRepairNavlinkOpened,
     rightSection: (
@@ -972,7 +968,6 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
         type: portalNavbarAction.setIsTransactionActive,
         payload: !isTransactionActive,
       });
-      navigate("/home/transaction");
     },
     opened: isTransactionNavlinkOpened,
     rightSection: (
@@ -1113,7 +1108,6 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
         type: portalNavbarAction.setIsCompanyActive,
         payload: !isCompanyActive,
       });
-      navigate("/home/company");
     },
     opened: isCompanyNavlinkOpened,
     rightSection: (
@@ -1235,7 +1229,6 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
         type: portalNavbarAction.setIsGeneralActive,
         payload: !isGeneralActive,
       });
-      navigate("/home/general");
     },
     opened: isGeneralNavlinkOpened,
     rightSection: (
@@ -1324,7 +1317,6 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
         type: portalNavbarAction.setIsOutreachActive,
         payload: !isOutreachActive,
       });
-      navigate("/home/outreach");
     },
     opened: isOutreachNavlinkOpened,
     rightSection: (
@@ -1396,6 +1388,8 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
           {createdProductReviewNavLink}
 
           {createdRepairNavLink}
+
+          {createdTransactionNavLink}
 
           {createdCompanyNavLink}
 

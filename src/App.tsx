@@ -10,126 +10,394 @@ import DevTesting from "./components/devTesting/DevTesting";
 import ErrorFallback from "./components/errorFallback/ErrorFallback";
 import { useGlobalState } from "./hooks/useGlobalState";
 
-// ┏━ begin lazy loading ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+//  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+//    LAZY LOADING COMPONENTS
+//  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+// ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+
+// ╔═════════════════════════════════════════════════════════════════╗
+//   PUBLIC LAYOUT
+// ╚═════════════════════════════════════════════════════════════════╝
 const PublicLayout = lazy(() => import("./components/publicLayout/PublicLayout"));
+
+// ╔═════════════════════════════════════════════════════════════════╗
+//   LOGIN
+// ╚═════════════════════════════════════════════════════════════════╝
 const Login = lazy(() => import("./components/login/Login"));
+
+// ╔═════════════════════════════════════════════════════════════════╗
+//   REGISTER
+// ╚═════════════════════════════════════════════════════════════════╝
 const Register = lazy(() => import("./components/register/Register"));
 
+// ╔═════════════════════════════════════════════════════════════════╗
+//   PORTAL LAYOUT
+// ╚═════════════════════════════════════════════════════════════════╝
 const PortalLayout = lazy(() => import("./components/portalLayout/PortalLayout"));
+
+// ╔═════════════════════════════════════════════════════════════════╗
+//   HOME
+// ╚═════════════════════════════════════════════════════════════════╝
 const Home = lazy(() => import("./components/home/Home"));
 
-// dashboard
+// ╔═════════════════════════════════════════════════════════════════╗
+//   DASHBOARD
+// ╚═════════════════════════════════════════════════════════════════╝
 const Dashboard = lazy(() => import("./components/dashboard/Dashboard"));
 
-// dashboard -> display responsive chart
+// ╭─────────────────────────────────────────────────────────────────╮
+//    DISPLAY RESPONSIVE CHART
+// ╰─────────────────────────────────────────────────────────────────╯
 const DisplayResponsiveChart = lazy(
   () => import("./components/dashboard/DisplayResponsiveChart")
 );
 
-// dashboard -> product
+// ╔═════════════════════════════════════════════════════════════════╗
+//   CUSTOMER
+// ╚═════════════════════════════════════════════════════════════════╝
 
-// dashboard -> product -> create
+// ╔═════════════════════════════════════════════════════════════════╗
+//   COMMENT
+// ╚═════════════════════════════════════════════════════════════════╝
+
+// ╔═════════════════════════════════════════════════════════════════╗
+//   FILE UPLOAD
+// ╚═════════════════════════════════════════════════════════════════╝
+
+// ╔═════════════════════════════════════════════════════════════════╗
+//   PRODUCT
+// ╚═════════════════════════════════════════════════════════════════╝
 const CreateProduct = lazy(() => import("./components/product/CreateProduct"));
 
-// dashboard -> product -> display
-const DisplayProducts = lazy(() => import("./components/product/DisplayProducts"));
+// ╭─────────────────────────────────────────────────────────────────╮
+//    ACCESSORY
+// ╰─────────────────────────────────────────────────────────────────╯
+const DisplayAccessory = lazy(
+  () => import("./components/product/accessory/DisplayAccessory")
+);
 
-// directory
-const Directory = lazy(() => import("./components/directory/Directory"));
+const CreateAccessory = lazy(
+  () => import("./components/product/accessory/CreateAccessory")
+);
 
-// repair note
+// ╭─────────────────────────────────────────────────────────────────╮
+//    CPU
+// ╰─────────────────────────────────────────────────────────────────╯
+const DisplayCPU = lazy(() => import("./components/product/cpu/DisplayCPU"));
+
+const CreateCPU = lazy(() => import("./components/product/cpu/CreateCPU"));
+
+// ╭─────────────────────────────────────────────────────────────────╮
+//    COMPUTER CASE
+// ╰─────────────────────────────────────────────────────────────────╯
+const DisplayCase = lazy(() => import("./components/product/case/DisplayCase"));
+
+const CreateCase = lazy(() => import("./components/product/case/CreateCase"));
+
+// ╭─────────────────────────────────────────────────────────────────╮
+//    DESKTOP COMPUTER
+// ╰─────────────────────────────────────────────────────────────────╯
+const DisplayDesktopComputer = lazy(
+  () => import("./components/product/desktopComputer/DisplayDestopComputer")
+);
+
+const CreateDesktopComputer = lazy(
+  () => import("./components/product/desktopComputer/CreateDesktopComputer")
+);
+
+// ╭─────────────────────────────────────────────────────────────────╮
+//    DISPLAY
+// ╰─────────────────────────────────────────────────────────────────╯
+const DisplayDisplay = lazy(() => import("./components/product/display/DisplayDisplay"));
+
+const CreateDisplay = lazy(() => import("./components/product/display/CreateDisplay"));
+
+// ╭─────────────────────────────────────────────────────────────────╮
+//    GPU
+// ╰─────────────────────────────────────────────────────────────────╯
+const DisplayGPU = lazy(() => import("./components/product/gpu/DisplayGPU"));
+
+const CreateGPU = lazy(() => import("./components/product/gpu/CreateGPU"));
+
+// ╭─────────────────────────────────────────────────────────────────╮
+//    HEADPHONE
+// ╰─────────────────────────────────────────────────────────────────╯
+const DisplayHeadphone = lazy(
+  () => import("./components/product/headphone/DisplayHeadphone")
+);
+
+const CreateHeadphone = lazy(
+  () => import("./components/product/headphone/CreateHeadphone")
+);
+
+// ╭─────────────────────────────────────────────────────────────────╮
+//    KEYBOARD
+// ╰─────────────────────────────────────────────────────────────────╯
+const DisplayKeyboard = lazy(
+  () => import("./components/product/keyboard/DisplayKeyboard")
+);
+
+const CreateKeyboard = lazy(() => import("./components/product/keyboard/CreateKeyboard"));
+
+// ╭─────────────────────────────────────────────────────────────────╮
+//    LAPTOP
+// ╰─────────────────────────────────────────────────────────────────╯
+const DisplayLaptop = lazy(() => import("./components/product/laptop/DisplayLaptop"));
+
+const CreateLaptop = lazy(() => import("./components/product/laptop/CreateLaptop"));
+
+// ╭─────────────────────────────────────────────────────────────────╮
+//    RAM
+// ╰─────────────────────────────────────────────────────────────────╯
+const DisplayRAM = lazy(() => import("./components/product/ram/DisplayRAM"));
+
+const CreateRAM = lazy(() => import("./components/product/ram/CreateRAM"));
+
+// ╭─────────────────────────────────────────────────────────────────╮
+//    MICROPHONE
+// ╰─────────────────────────────────────────────────────────────────╯
+const DisplayMicrophone = lazy(
+  () => import("./components/product/microphone/DisplayMicrophone")
+);
+
+const CreateMicrophone = lazy(
+  () => import("./components/product/microphone/CreateMicrophone")
+);
+
+// ╭─────────────────────────────────────────────────────────────────╮
+//    MOTHERBOARD
+// ╰─────────────────────────────────────────────────────────────────╯
+const DisplayMotherboard = lazy(
+  () => import("./components/product/motherboard/DisplayMotherboard")
+);
+
+const CreateMotherboard = lazy(
+  () => import("./components/product/motherboard/CreateMotherboard")
+);
+
+// ╭─────────────────────────────────────────────────────────────────╮
+//    MOUSE
+// ╰─────────────────────────────────────────────────────────────────╯
+const DisplayMouse = lazy(() => import("./components/product/mouse/DisplayMouse"));
+
+const CreateMouse = lazy(() => import("./components/product/mouse/CreateMouse"));
+
+// ╭─────────────────────────────────────────────────────────────────╮
+//    PSU
+// ╰─────────────────────────────────────────────────────────────────╯
+const DisplayPSU = lazy(() => import("./components/product/psu/DisplayPSU"));
+
+const CreatePSU = lazy(() => import("./components/product/psu/CreatePSU"));
+
+// ╭─────────────────────────────────────────────────────────────────╮
+//    SMARTPHONE
+// ╰─────────────────────────────────────────────────────────────────╯
+const DisplaySmartphone = lazy(
+  () => import("./components/product/smartphone/DisplaySmartphone")
+);
+
+const CreateSmartphone = lazy(
+  () => import("./components/product/smartphone/CreateSmartphone")
+);
+
+// ╭─────────────────────────────────────────────────────────────────╮
+//    SPEAKER
+// ╰─────────────────────────────────────────────────────────────────╯
+const DisplaySpeaker = lazy(() => import("./components/product/speaker/DisplaySpeaker"));
+
+const CreateSpeaker = lazy(() => import("./components/product/speaker/CreateSpeaker"));
+
+// ╭─────────────────────────────────────────────────────────────────╮
+//    STORAGE
+// ╰─────────────────────────────────────────────────────────────────╯
+const DisplayStorage = lazy(() => import("./components/product/storage/DisplayStorage"));
+
+const CreateStorage = lazy(() => import("./components/product/storage/CreateStorage"));
+
+// ╭─────────────────────────────────────────────────────────────────╮
+//    TABLET
+// ╰─────────────────────────────────────────────────────────────────╯
+const DisplayTablet = lazy(() => import("./components/product/tablet/DisplayTablet"));
+
+const CreateTablet = lazy(() => import("./components/product/tablet/CreateTablet"));
+
+// ╭─────────────────────────────────────────────────────────────────╮
+//    WEBCAM
+// ╰─────────────────────────────────────────────────────────────────╯
+const DisplayWebcam = lazy(() => import("./components/product/webcam/DisplayWebcam"));
+
+const CreateWebcam = lazy(() => import("./components/product/webcam/CreateWebcam"));
+
+// ╔═════════════════════════════════════════════════════════════════╗
+//   PRODUCT REVIEW
+// ╚═════════════════════════════════════════════════════════════════╝
+
+// ╔═════════════════════════════════════════════════════════════════╗
+//   REPAIR
+// ╚═════════════════════════════════════════════════════════════════╝
 const CreateRepairNote = lazy(
   () => import("./components/repairNote/create/CreateRepairNote")
 );
-const DisplayRepairNotes = lazy(
-  () => import("./components/repairNote/display/DisplayRepairNotes")
-);
 
-// company
+// ╔═════════════════════════════════════════════════════════════════╗
+//   TRANSACTION
+// ╚═════════════════════════════════════════════════════════════════╝
+
+// ╔═════════════════════════════════════════════════════════════════╗
+//   COMPANY
+// ╚═════════════════════════════════════════════════════════════════╝
+
+// ╭─────────────────────────────────────────────────────────────────╮
+//    ADDRESS CHANGE
+// ╰─────────────────────────────────────────────────────────────────╯
 const AddressChange = lazy(
   () => import("./components/addressChange/create/AddressChange")
 );
+
 const DisplayAddressChanges = lazy(
   () => import("./components/addressChange/DisplayAddressChanges")
 );
 
+// ╭─────────────────────────────────────────────────────────────────╮
+//    BENEFIT
+// ╰─────────────────────────────────────────────────────────────────╯
 const CreateBenefit = lazy(() => import("./components/benefits/create/CreateBenefit"));
+
 const DisplayBenefits = lazy(() => import("./components/benefits/DisplayBenefits"));
 
+// ╭─────────────────────────────────────────────────────────────────╮
+//    LEAVE REQUEST
+// ╰─────────────────────────────────────────────────────────────────╯
 const CreateLeaveRequest = lazy(
   () => import("./components/leaveRequest/create/CreateLeaveRequest")
 );
+
 const DisplayLeaveRequests = lazy(
   () => import("./components/leaveRequest/DisplayLeaveRequests")
 );
 
+// ╭─────────────────────────────────────────────────────────────────╮
+//    REQUEST RESOURCE
+// ╰─────────────────────────────────────────────────────────────────╯
 const DisplayRequestResources = lazy(
   () => import("./components/requestResource/DisplayRequestResources")
 );
+
 const RequestResource = lazy(
   () => import("./components/requestResource/create/RequestResource")
 );
 
+// ╭─────────────────────────────────────────────────────────────────╮
+//    EXPENSE CLAIM
+// ╰─────────────────────────────────────────────────────────────────╯
 const DisplayExpenseClaims = lazy(
   () => import("./components/expenseClaim/DisplayExpenseClaims")
 );
+
 const CreateExpenseClaim = lazy(
   () => import("./components/expenseClaim/create/CreateExpenseClaim")
 );
 
-// general
+// ╔═════════════════════════════════════════════════════════════════╗
+//   GENERAL
+// ╚═════════════════════════════════════════════════════════════════╝
+
+// ╭─────────────────────────────────────────────────────────────────╮
+//   ANONYMOUS REQUEST
+// ╰─────────────────────────────────────────────────────────────────╯
 const DisplayAnonymousRequests = lazy(
   () => import("./components/anonymousRequest/DisplayAnonymousRequests")
 );
+
 const CreateAnonymousRequest = lazy(
   () => import("./components/anonymousRequest/create/CreateAnonymousRequest")
 );
 
+// ╭─────────────────────────────────────────────────────────────────╮
+//   ENDORSEMENT
+// ╰─────────────────────────────────────────────────────────────────╯
 const DisplayEndorsements = lazy(
   () => import("./components/endorsements/DisplayEndorsements")
 );
+
 const CreateEndorsement = lazy(
   () => import("./components/endorsements/create/CreateEndorsement")
 );
 
+// ╭─────────────────────────────────────────────────────────────────╮
+//   PRINTER ISSUE
+// ╰─────────────────────────────────────────────────────────────────╯
 const DisplayPrinterIssues = lazy(
   () => import("./components/printerIssue/DisplayPrinterIssues")
 );
+
 const CreatePrinterIssue = lazy(
   () => import("./components/printerIssue/create/CreatePrinterIssue")
 );
 
+// ╭─────────────────────────────────────────────────────────────────╮
+//   REFERMENT
+// ╰─────────────────────────────────────────────────────────────────╯
 const DisplayReferments = lazy(() => import("./components/referment/DisplayReferments"));
+
 const CreateReferment = lazy(
   () => import("./components/referment/create/CreateReferment")
 );
 
-// outreach
-const DisplayEvents = lazy(() => import("./components/event/DisplayEvents"));
-const EventCreator = lazy(() => import("./components/event/create/EventCreator"));
+// ╔═════════════════════════════════════════════════════════════════╗
+//   OUTREACH
+// ╚═════════════════════════════════════════════════════════════════╝
 
-const DisplaySurveys = lazy(() => import("./components/survey/display/DisplaySurveys"));
-const SurveyBuilder = lazy(() => import("./components/survey/create/SurveyBuilder"));
-
+// ╭─────────────────────────────────────────────────────────────────╮
+//   ANNOUNCEMENT
+// ╰─────────────────────────────────────────────────────────────────╯
 const DisplayAnnouncements = lazy(
   () => import("./components/announcement/display/announcements/DisplayAnnouncements")
 );
+
 const CreateAnnouncement = lazy(
   () => import("./components/announcement/create/CreateAnnouncement")
 );
+
 const DisplayAnnouncement = lazy(
   () => import("./components/announcement/display/announcement/DisplayAnnouncement")
 );
 
-// catch all
-const NotFound = lazy(() => import("./components/notFound/NotFound"));
+// ╭─────────────────────────────────────────────────────────────────╮
+//   EVENT
+// ╰─────────────────────────────────────────────────────────────────╯
+const DisplayEvents = lazy(() => import("./components/event/DisplayEvents"));
 
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end lazy loading ━┛
+const EventCreator = lazy(() => import("./components/event/create/EventCreator"));
+
+// ╭─────────────────────────────────────────────────────────────────╮
+//   SURVEY
+// ╰─────────────────────────────────────────────────────────────────╯
+const DisplaySurveys = lazy(() => import("./components/survey/display/DisplaySurveys"));
+
+const SurveyBuilder = lazy(() => import("./components/survey/create/SurveyBuilder"));
+
+// ╔═════════════════════════════════════════════════════════════════╗
+//   DIRECTORY
+// ╚═════════════════════════════════════════════════════════════════╝
+const Directory = lazy(() => import("./components/directory/Directory"));
+
+  // ╔═════════════════════════════════════════════════════════════════╗
+  //   CATCH ALL
+  // ╚═════════════════════════════════════════════════════════════════╝
+const NotFound = lazy(() => import("./components/notFound/NotFound"));
 
 function App() {
   const {
     globalState: { themeObject, errorState },
   } = useGlobalState();
+
+  // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+  //  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+  //    WRAPPED COMPONENTS
+  //  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+  // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
   // @desc   the public facing page
   // @route  /
@@ -197,6 +465,21 @@ function App() {
     </ErrorBoundary>
   );
 
+  // @desc   the responsive chart page
+  // @route  /home/dashboard/responsive-chart
+  // @access private
+  const displayResponsiveChartElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>}>
+        <DisplayResponsiveChart />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // ╔═════════════════════════════════════════════════════════════════╗
+  //   PRODUCT
+  // ╚═════════════════════════════════════════════════════════════════╝
+
   // @desc   products page
   // @route  /home/product/create
   // @access private
@@ -208,49 +491,527 @@ function App() {
     </ErrorBoundary>
   );
 
-  // @desc   products page
-  // @route  /home/product/display
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //   ACCESSORY
+  // ╰─────────────────────────────────────────────────────────────────╯
+
+  // @desc   accessory page (index and display)
+  // @route  /home/product/accessory (index) and /home/product/accessory/display
   // @access private
-  const displayProductsElement = (
+  const displayAccessoriesElement = (
     <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
       <Suspense fallback={<div>Generic Loading message...</div>}>
-        <DisplayProducts />
+        <DisplayAccessory />
       </Suspense>
     </ErrorBoundary>
   );
 
-  // @desc   the bar chart page
-  // @route  /home/dashboard/responsive-chart
+  // @desc   accessory page (create)
+  // @route  /home/product/accessory/create
   // @access private
-  const displayResponsiveChartElement = (
+  const createAccessoryElement = (
     <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
       <Suspense fallback={<div>Generic Loading message...</div>}>
-        <DisplayResponsiveChart />
+        <CreateAccessory />
       </Suspense>
     </ErrorBoundary>
   );
 
-  // @desc   the directory page
-  // @route  /home/directory
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //   CPU
+  // ╰─────────────────────────────────────────────────────────────────╯
+
+  // @desc   cpu page (index and display)
+  // @route  /home/product/cpu (index) and /home/product/cpu/display
   // @access private
-  const directoryElement = (
+  const displayCPUsElement = (
     <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
       <Suspense fallback={<div>Generic Loading message...</div>}>
-        <Directory />
+        <DisplayCPU />
       </Suspense>
     </ErrorBoundary>
   );
 
-  // @desc   repair-note page (index and display)
-  // @route  /home/repair-note (index) and /home/repair-note/display
+  // @desc   cpu page (create)
+  // @route  /home/product/cpu/create
   // @access private
-  const displayRepairNotesElement = (
+  const createCPUElement = (
     <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
       <Suspense fallback={<div>Generic Loading message...</div>}>
-        <DisplayRepairNotes />
+          <CreateCPU />
       </Suspense>
     </ErrorBoundary>
   );
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //   CASE
+  // ╰─────────────────────────────────────────────────────────────────╯
+
+  // @desc   case page (index and display)
+  // @route  /home/product/case (index) and /home/product/case/display
+  // @access private
+  const displayCasesElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>}>
+        <DisplayCase />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // @desc   case page (create)
+  // @route  /home/product/case/create
+  // @access private
+  const createCaseElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>>} 
+      >
+        <CreateCase />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //   DESKTOP COMPUTER
+  // ╰─────────────────────────────────────────────────────────────────╯
+
+  // @desc   desktop computer page (index and display)
+  // @route  /home/product/desktop-computer (index) and /home/product/desktop-computer/display
+  // @access private
+  const displayDesktopComputersElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>}>
+        <DisplayDesktopComputer />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // @desc   desktop computer page (create)
+  // @route  /home/product/desktop-computer/create
+  // @access private
+  const createDesktopComputerElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>} 
+      >
+        <CreateDesktopComputer />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //   DISPLAY
+  // ╰─────────────────────────────────────────────────────────────────╯
+
+  // @desc   display page (index and display)
+  // @route  /home/product/display (index) and /home/product/display/display
+  // @access private
+  const displayDisplaysElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>}>
+        <DisplayDisplay />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // @desc   display page (create)
+  // @route  /home/product/display/create
+  // @access private
+  const createDisplayElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>} 
+      >
+        <CreateDisplay />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //   GPU
+  // ╰─────────────────────────────────────────────────────────────────╯
+
+  // @desc   gpu page (index and display)
+  // @route  /home/product/gpu (index) and /home/product/gpu/display
+  // @access private
+  const displayGPUsElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>}>
+        <DisplayGPU />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // @desc   gpu page (create)
+  // @route  /home/product/gpu/create
+  // @access private
+  const createGPUElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>} 
+      >
+        <CreateGPU />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //   HEADPHONE
+  // ╰─────────────────────────────────────────────────────────────────╯
+
+  // @desc   headphone page (index and display)
+  // @route  /home/product/headphone (index) and /home/product/headphone/display
+  // @access private
+  const displayHeadphonesElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>}>
+        <DisplayHeadphone />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // @desc   headphone page (create)
+  // @route  /home/product/headphone/create
+  // @access private
+  const createHeadphoneElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>} 
+      >
+        <CreateHeadphone />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //   KEYBOARD
+  // ╰─────────────────────────────────────────────────────────────────╯
+
+  // @desc   keyboard page (index and display)
+  // @route  /home/product/keyboard (index) and /home/product/keyboard/display
+  // @access private
+  const displayKeyboardsElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>}>
+        <DisplayKeyboard />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // @desc   keyboard page (create)
+  // @route  /home/product/keyboard/create
+  // @access private
+  const createKeyboardElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>} 
+      >
+        <CreateKeyboard />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //   LAPTOP
+  // ╰─────────────────────────────────────────────────────────────────╯
+
+  // @desc   laptop page (index and display)
+  // @route  /home/product/laptop (index) and /home/product/laptop/display
+  // @access private
+  const displayLaptopsElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>}
+      >
+        <DisplayLaptop />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // @desc   laptop page (create)
+  // @route  /home/product/laptop/create
+  // @access private
+  const createLaptopElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>}
+      >
+        <CreateLaptop />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //   RAM
+  // ╰─────────────────────────────────────────────────────────────────╯
+
+  // @desc   ram page (index and display)
+  // @route  /home/product/ram (index) and /home/product/ram/display
+  // @access private
+  const displayRAMsElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>}
+      >
+        <DisplayRAM />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // @desc   ram page (create)
+  // @route  /home/product/ram/create
+  // @access private
+  const createRAMElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>}
+      >
+        <CreateRAM />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //   MICROPHONE
+  // ╰─────────────────────────────────────────────────────────────────╯
+
+  // @desc   microphone page (index and display)
+  // @route  /home/product/microphone (index) and /home/product/microphone/display
+  // @access private
+  const displayMicrophonesElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>}
+      >
+        <DisplayMicrophone />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // @desc   microphone page (create)
+  // @route  /home/product/microphone/create
+  // @access private
+  const createMicrophoneElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>}
+      >
+        <CreateMicrophone />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //   MOTHERBOARD
+  // ╰─────────────────────────────────────────────────────────────────╯
+
+  // @desc   motherboard page (index and display)
+  // @route  /home/product/motherboard (index) and /home/product/motherboard/display
+  // @access private
+  const displayMotherboardsElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>}
+      >
+        <DisplayMotherboard />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // @desc   motherboard page (create)
+  // @route  /home/product/motherboard/create
+  // @access private
+  const createMotherboardElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>}
+      > 
+        <CreateMotherboard />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //   MOUSE
+  // ╰─────────────────────────────────────────────────────────────────╯
+
+  // @desc   mouse page (index and display)
+  // @route  /home/product/mouse (index) and /home/product/mouse/display
+  // @access private
+  const displayMousesElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>} 
+      >
+        <DisplayMouse />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // @desc   mouse page (create)
+  // @route  /home/product/mouse/create
+  // @access private
+  const createMouseElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>} 
+      >
+        <CreateMouse />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //   PSU
+  // ╰─────────────────────────────────────────────────────────────────╯
+    
+  // @desc   psu page (index and display)
+  // @route  /home/product/psu (index) and /home/product/psu/display
+  // @access private
+  const displayPSUsElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>} 
+      >
+        <DisplayPSU />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // @desc   psu page (create)
+  // @route  /home/product/psu/create
+  // @access private
+  const createPSUElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>} 
+      >
+        <CreatePSU />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //   SMARTPHONE
+  // ╰─────────────────────────────────────────────────────────────────╯
+
+  // @desc   smartphone page (index and display)
+  // @route  /home/product/smartphone (index) and /home/product/smartphone/display
+  // @access private
+  const displaySmartphonesElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>} 
+      >
+        <DisplaySmartphone />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // @desc   smartphone page (create)
+  // @route  /home/product/smartphone/create
+  // @access private
+  const createSmartphoneElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>} >
+        <CreateSmartphone />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //   SPEAKER
+  // ╰─────────────────────────────────────────────────────────────────╯
+
+  // @desc   speaker page (index and display)
+  // @route  /home/product/speaker (index) and /home/product/speaker/display
+  // @access private
+  const displaySpeakersElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>} >
+        <DisplaySpeaker />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // @desc   speaker page (create)
+  // @route  /home/product/speaker/create
+  // @access private
+  const createSpeakerElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>} >
+        <CreateSpeaker />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //   STORAGE
+  // ╰─────────────────────────────────────────────────────────────────╯
+
+  // @desc   storage page (index and display)
+  // @route  /home/product/storage (index) and /home/product/storage/display
+  // @access private
+  const displayStoragesElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>} >
+        <DisplayStorage />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // @desc   storage page (create)
+  // @route  /home/product/storage/create
+  // @access private
+  const createStorageElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>} >
+        <CreateStorage />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //   TABLET
+  // ╰─────────────────────────────────────────────────────────────────╯
+
+  // @desc   tablet page (index and display)
+  // @route  /home/product/tablet (index) and /home/product/tablet/display
+  // @access private
+  const displayTabletsElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>} >
+        <DisplayTablet />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // @desc   tablet page (create)
+  // @route  /home/product/tablet/create
+  // @access private
+  const createTabletElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>} >
+        <CreateTablet />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //   WEBCAM
+  // ╰─────────────────────────────────────────────────────────────────╯
+
+  // @desc   webcam page (index and display)
+  // @route  /home/product/webcam (index) and /home/product/webcam/display
+  // @access private
+  const displayWebcamsElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>} >
+        <DisplayWebcam />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // @desc   webcam page (create)
+  // @route  /home/product/webcam/create
+  // @access private
+  const createWebcamElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>} >
+          <CreateWebcam />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+    // ╔═════════════════════════════════════════════════════════════════╗
+  //   PRODUCT REVIEW
+  // ╚═════════════════════════════════════════════════════════════════╝
+
+
+  // ╔═════════════════════════════════════════════════════════════════╗
+  //   REPAIR
+  // ╚═════════════════════════════════════════════════════════════════╝
 
   // @desc   repair-note page (create)
   // @route  /home/repair-note/create
@@ -263,16 +1024,20 @@ function App() {
     </ErrorBoundary>
   );
 
-  // @desc   the company action landing page
-  // @route  /home/company
-  // @access private
-  const companyElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
-      <Suspense fallback={<div>Generic Loading message...</div>}>
-        <Text>Company</Text>
-      </Suspense>
-    </ErrorBoundary>
-  );
+    // ╔═════════════════════════════════════════════════════════════════╗
+  //   TRANSACTION
+  // ╚═════════════════════════════════════════════════════════════════╝
+
+    // ╔═════════════════════════════════════════════════════════════════╗
+  //   COMPANY
+  // ╚═════════════════════════════════════════════════════════════════╝
+
+  
+
+
+// ╭─────────────────────────────────────────────────────────────────╮
+//   ADDRESS CHANGE
+// ╰─────────────────────────────────────────────────────────────────╯
 
   // @desc   address-change page (index and display)
   // @route  /home/company/address-change (index) and /home/company/address-change/display
@@ -296,6 +1061,10 @@ function App() {
     </ErrorBoundary>
   );
 
+ // ╭─────────────────────────────────────────────────────────────────╮
+//   BENEFIT
+// ╰─────────────────────────────────────────────────────────────────╯
+
   // @desc   benefits page (index and display)
   // @route  /home/company/benefit (index) and /home/company/benefit/display
   // @access private
@@ -317,6 +1086,10 @@ function App() {
       </Suspense>
     </ErrorBoundary>
   );
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+//   LEAVE REQUEST
+// ╰─────────────────────────────────────────────────────────────────╯
 
   // @desc   leave-request page (index and display)
   // @route  /home/company/leave-request (index) and /home/company/leave-request/display
@@ -340,6 +1113,10 @@ function App() {
     </ErrorBoundary>
   );
 
+// ╭─────────────────────────────────────────────────────────────────╮
+//   REQUEST RESOURCE
+// ╰─────────────────────────────────────────────────────────────────╯
+
   // @desc   request-resource page (index and display)
   // @route  /home/company/request-resource (index) and /home/company/request-resource/display
   // @access private
@@ -361,6 +1138,10 @@ function App() {
       </Suspense>
     </ErrorBoundary>
   );
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+//   EXPENSE CLAIM
+// ╰─────────────────────────────────────────────────────────────────╯
 
   // @desc   expense-claim page (index and display)
   // @route  /home/company/expense-claim (index) and /home/company/expense-claim/display
@@ -384,16 +1165,14 @@ function App() {
     </ErrorBoundary>
   );
 
-  // @desc   general action landing page
-  // @route  /home/general
-  // @access private
-  const generalElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
-      <Suspense fallback={<div>Generic Loading message...</div>}>
-        <Text>General</Text>
-      </Suspense>
-    </ErrorBoundary>
-  );
+
+   // ╔═════════════════════════════════════════════════════════════════╗
+  //   GENERAL
+  // ╚═════════════════════════════════════════════════════════════════╝
+
+    // ╭─────────────────────────────────────────────────────────────────╮
+  //   ANONYMOUS REQUEST
+  // ╰─────────────────────────────────────────────────────────────────╯
 
   // @desc   anonymous-request page (index and display)
   // @route  /home/general/anonymous-request (index) and /home/general/anonymous-request/display
@@ -417,6 +1196,11 @@ function App() {
     </ErrorBoundary>
   );
 
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //   ENDORSEMENT
+  // ╰─────────────────────────────────────────────────────────────────╯
+
+
   // @desc   endorsement page (index and display)
   // @route  /home/general/endorsement (index) and /home/general/endorsement/display
   // @access private
@@ -438,6 +1222,10 @@ function App() {
       </Suspense>
     </ErrorBoundary>
   );
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //   PRINTER ISSUE
+  // ╰─────────────────────────────────────────────────────────────────╯
 
   // @desc   printer-issue page (index and display)
   // @route  /home/general/printer-issue (index) and /home/general/printer-issue/display
@@ -461,6 +1249,10 @@ function App() {
     </ErrorBoundary>
   );
 
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //   REFERMENT
+  // ╰─────────────────────────────────────────────────────────────────╯
+
   // @desc   referment page (index and display)
   // @route  /home/general/referment (index) and /home/general/referment/display
   // @access private
@@ -483,60 +1275,13 @@ function App() {
     </ErrorBoundary>
   );
 
-  // @desc   outreach action landing page
-  // @route  /home/outreach
-  // @access private
-  const outreachElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
-      <Suspense fallback={<div>Generic Loading message...</div>}>
-        <Text>Outreach</Text>
-      </Suspense>
-    </ErrorBoundary>
-  );
+// ╔═════════════════════════════════════════════════════════════════╗
+  //   OUTREACH
+  // ╚═════════════════════════════════════════════════════════════════╝
 
-  // @desc   event-creator page (index and display)
-  // @route  /home/outreach/event-creator (index) and /home/outreach/event-creator/display
-  // @access private
-  const displayEventsElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
-      <Suspense fallback={<div>Generic Loading message...</div>}>
-        <DisplayEvents />
-      </Suspense>
-    </ErrorBoundary>
-  );
-
-  // @desc   event-creator page (create)
-  // @route  /home/outreach/event-creator/create
-  // @access private
-  const eventCreatorElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
-      <Suspense fallback={<div>Generic Loading message...</div>}>
-        <EventCreator />
-      </Suspense>
-    </ErrorBoundary>
-  );
-
-  // @desc   survey-builder page (index and display)
-  // @route  /home/outreach/survey-builder (index) and /home/outreach/survey-builder/display
-  // @access private
-  const displaySurveysElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
-      <Suspense fallback={<div>Generic Loading message...</div>}>
-        <DisplaySurveys />
-      </Suspense>
-    </ErrorBoundary>
-  );
-
-  // @desc   survey-builder page (create)
-  // @route  /home/outreach/survey-builder/create
-  // @access private
-  const surveyBuilderElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
-      <Suspense fallback={<div>Generic Loading message...</div>}>
-        <SurveyBuilder />
-      </Suspense>
-    </ErrorBoundary>
-  );
+// ╭─────────────────────────────────────────────────────────────────╮
+  //   ANNOUNCEMENT
+  // ╰─────────────────────────────────────────────────────────────────╯
 
   // @desc   announcement page (index and display)
   // @route  /home/outreach/announcement (index) and /home/outreach/announcement/display
@@ -570,6 +1315,79 @@ function App() {
       </Suspense>
     </ErrorBoundary>
   );
+
+    // ╭─────────────────────────────────────────────────────────────────╮
+  //   EVENT
+  // ╰─────────────────────────────────────────────────────────────────╯
+
+  
+
+  // @desc   event-creator page (index and display)
+  // @route  /home/outreach/event-creator (index) and /home/outreach/event-creator/display
+  // @access private
+  const displayEventsElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>}>
+        <DisplayEvents />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // @desc   event-creator page (create)
+  // @route  /home/outreach/event-creator/create
+  // @access private
+  const eventCreatorElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>}>
+        <EventCreator />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+// ╭─────────────────────────────────────────────────────────────────╮
+  //   SURVEY
+  // ╰─────────────────────────────────────────────────────────────────╯
+
+  // @desc   survey-builder page (index and display)
+  // @route  /home/outreach/survey-builder (index) and /home/outreach/survey-builder/display
+  // @access private
+  const displaySurveysElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>}>
+        <DisplaySurveys />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // @desc   survey-builder page (create)
+  // @route  /home/outreach/survey-builder/create
+  // @access private
+  const surveyBuilderElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>}>
+        <SurveyBuilder />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // ╔═════════════════════════════════════════════════════════════════╗
+  //   DIRECTORY
+  // ╚═════════════════════════════════════════════════════════════════╝
+
+  // @desc   the directory page
+  // @route  /home/directory
+  // @access private
+  const directoryElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>}>
+        <Directory />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // ╔═════════════════════════════════════════════════════════════════╗
+  //   CATCH ALL
+  // ╚═════════════════════════════════════════════════════════════════╝
 
   // @desc   catch all page
   // @route  *
@@ -623,30 +1441,25 @@ function App() {
           <Route path="dev-testing" element={<DevTesting />} />
           {/* <Route path="home" element={homeElement} /> */}
 
-          {/* dashboard */}
-          {/* <Route path="dashboard" element={dashboardElement} /> */}
+          {/* dashboard */}       
           <Route path="dashboard">
-            <Route index element={dashboardElement} />
-            <Route path="product">
-              <Route index element={displayProductsElement} />
-              <Route path="create" element={createProductElement} />
-              <Route path="display" element={displayProductsElement} />
-            </Route>
+            <Route index element={dashboardElement} />            
             <Route path=":chartKind" element={displayResponsiveChartElement} />
           </Route>
 
-          {/* directory */}
-          <Route path="directory" element={directoryElement} />
+{/* product */}
+
+
+
+          
 
           {/* repair-note */}
           <Route path="repair-note">
-            <Route index element={displayRepairNotesElement} />
             <Route path="create" element={createRepairNoteElement} />
           </Route>
 
           {/* company */}
           <Route path="company">
-            <Route index element={companyElement} />
 
             {/* address change */}
             <Route path="address-change">
@@ -680,7 +1493,6 @@ function App() {
           </Route>
 
           <Route path="general">
-            <Route index element={generalElement} />
 
             {/* anonymous-request */}
             <Route path="anonymous-request">
@@ -708,7 +1520,6 @@ function App() {
           </Route>
 
           <Route path="outreach">
-            <Route index element={outreachElement} />
 
             {/* event */}
             <Route path="event">
@@ -729,6 +1540,9 @@ function App() {
               <Route path=":announcementId" element={displayAnnouncementElement} />
             </Route>
           </Route>
+
+          {/* directory */}
+          <Route path="directory" element={directoryElement} />
         </Route>
 
         {/* catch all */}

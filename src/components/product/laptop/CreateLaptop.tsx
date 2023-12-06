@@ -10,9 +10,9 @@ import {
   StorageInterface,
   StorageType,
 } from "../types";
-import CreateCpu from "../cpu/CreateCpu";
+import CreateCpu from "../cpu/CreateCPU";
 import CreateDisplay from "../display/CreateDisplay";
-import CreateGpu from "../gpu/CreateGpu";
+import CreateGpu from "../gpu/CreateGPU";
 import CreateRam from "../ram/CreateRAM";
 import CreateStorage from "../storage/CreateStorage";
 

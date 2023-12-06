@@ -23,10 +23,10 @@ import {
   StorageType,
 } from "../types";
 import CreateCase from "../case/CreateCase";
-import CreateCpu from "../cpu/CreateCpu";
+import CreateCpu from "../cpu/CreateCPU";
 import { CreateProductDispatch } from "../dispatch";
 import CreateDisplay from "../display/CreateDisplay";
-import CreateGpu from "../gpu/CreateGpu";
+import CreateGpu from "../gpu/CreateGPU";
 import CreateKeyboard from "../keyboard/CreateKeyboard";
 import CreateMotherboard from "../motherboard/CreateMotherboard";
 import CreateMouse from "../mouse/CreateMouse";
