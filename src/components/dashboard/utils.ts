@@ -817,9 +817,9 @@ function returnUnitsRepairedRevenueTuple({
   const units = returnRandomUnitsRepaired();
 
   const revenue =
-    categoryType === "Computer Components" || categoryType === "Electronics"
+    categoryType === "Computer Component" || categoryType === "Electronic Device"
       ? units * Math.round(Math.random() * (400 - 150) + 150) // spread between 150 and 400
-      : categoryType === "Mobile Devices"
+      : categoryType === "Mobile Device"
       ? units * Math.round(Math.random() * (200 - 125) + 125) // spread between 200 and 125
       : units * Math.round(Math.random() * (150 - 50) + 50); // spread between 50 and 150
 

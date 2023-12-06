@@ -1,20 +1,16 @@
-import { StoreLocation } from '../../types';
+import { StoreLocation } from "../../types";
 
-type DashboardCalendarView = 'Daily' | 'Monthly' | 'Yearly';
-type DashboardMetricsView = 'Financials' | 'Customers' | 'Products' | 'Repairs';
+type DashboardCalendarView = "Daily" | "Monthly" | "Yearly";
+type DashboardMetricsView = "Financials" | "Customers" | "Products" | "Repairs";
 type DashboardFinancialMetric =
-  | 'Expenses'
-  | 'Profit'
-  | 'Revenue'
-  | 'Transactions'
-  | 'Other Metrics';
-type DashboardCustomerMetric =
-  | 'Overview'
-  | 'New'
-  | 'Returning'
-  | 'Other Metrics';
-type DashboardProductMetric = ProductCategory | 'All Products';
-type DashboardRepairMetric = RepairCategory | 'All Repairs';
+  | "Expenses"
+  | "Profit"
+  | "Revenue"
+  | "Transactions"
+  | "Other Metrics";
+type DashboardCustomerMetric = "Overview" | "New" | "Returning" | "Other Metrics";
+type DashboardProductMetric = ProductCategory | "All Products";
+type DashboardRepairMetric = RepairCategory | "All Repairs";
 
 type DashboardState = {
   businessMetrics: BusinessMetric[];
@@ -29,117 +25,114 @@ type DashboardState = {
 };
 
 type DashboardAction = {
-  setBusinessMetrics: 'setBusinessMetrics';
-  setCalendarView: 'setCalendarView';
-  setCustomerMetric: 'setCustomerMetric';
-  setFinancialMetric: 'setFinancialMetric';
-  setMetricsView: 'setMetricsView';
-  setProductMetric: 'setProductMetric';
-  setRepairMetric: 'setRepairMetric';
-  setSelectedYYYYMMDD: 'setSelectedYYYYMMDD';
-  setStoreLocationView: 'setStoreLocationView';
+  setBusinessMetrics: "setBusinessMetrics";
+  setCalendarView: "setCalendarView";
+  setCustomerMetric: "setCustomerMetric";
+  setFinancialMetric: "setFinancialMetric";
+  setMetricsView: "setMetricsView";
+  setProductMetric: "setProductMetric";
+  setRepairMetric: "setRepairMetric";
+  setSelectedYYYYMMDD: "setSelectedYYYYMMDD";
+  setStoreLocationView: "setStoreLocationView";
 };
 
 type DashboardDispatch =
   | {
-      type: DashboardAction['setBusinessMetrics'];
+      type: DashboardAction["setBusinessMetrics"];
       payload: BusinessMetric[];
     }
   | {
-      type: DashboardAction['setCalendarView'];
+      type: DashboardAction["setCalendarView"];
       payload: DashboardCalendarView;
     }
   | {
-      type: DashboardAction['setCustomerMetric'];
+      type: DashboardAction["setCustomerMetric"];
       payload: DashboardCustomerMetric;
     }
   | {
-      type: DashboardAction['setFinancialMetric'];
+      type: DashboardAction["setFinancialMetric"];
       payload: DashboardFinancialMetric;
     }
   | {
-      type: DashboardAction['setMetricsView'];
+      type: DashboardAction["setMetricsView"];
       payload: DashboardMetricsView;
     }
   | {
-      type: DashboardAction['setProductMetric'];
+      type: DashboardAction["setProductMetric"];
       payload: DashboardProductMetric;
     }
   | {
-      type: DashboardAction['setRepairMetric'];
+      type: DashboardAction["setRepairMetric"];
       payload: DashboardRepairMetric;
     }
   | {
-      type: DashboardAction['setStoreLocationView'];
+      type: DashboardAction["setStoreLocationView"];
       payload: BusinessMetricStoreLocation;
     }
   | {
-      type: DashboardAction['setSelectedYYYYMMDD'];
+      type: DashboardAction["setSelectedYYYYMMDD"];
       payload: string;
     };
 
 type Month =
-  | 'January'
-  | 'February'
-  | 'March'
-  | 'April'
-  | 'May'
-  | 'June'
-  | 'July'
-  | 'August'
-  | 'September'
-  | 'October'
-  | 'November'
-  | 'December';
+  | "January"
+  | "February"
+  | "March"
+  | "April"
+  | "May"
+  | "June"
+  | "July"
+  | "August"
+  | "September"
+  | "October"
+  | "November"
+  | "December";
 
 type Year =
-  | '2013'
-  | '2014'
-  | '2015'
-  | '2016'
-  | '2017'
-  | '2018'
-  | '2019'
-  | '2020'
-  | '2021'
-  | '2022'
-  | '2023';
+  | "2013"
+  | "2014"
+  | "2015"
+  | "2016"
+  | "2017"
+  | "2018"
+  | "2019"
+  | "2020"
+  | "2021"
+  | "2022"
+  | "2023";
 
 type DaysInMonthsInYears = Map<Year, Map<Month, string[]>>;
 
 type ProductCategory =
-  | 'Accessory'
-  | 'Central Processing Unit (CPU)'
-  | 'Computer Case'
-  | 'Desktop Computer'
-  | 'Display'
-  | 'Graphics Processing Unit (GPU)'
-  | 'Headphone'
-  | 'Keyboard'
-  | 'Laptop'
-  | 'Memory (RAM)'
-  | 'Microphone'
-  | 'Motherboard'
-  | 'Mouse'
-  | 'Power Supply Unit (PSU)'
-  | 'Smartphone'
-  | 'Speaker'
-  | 'Storage'
-  | 'Tablet'
-  | 'Webcam';
+  | "Accessory"
+  | "Central Processing Unit (CPU)"
+  | "Computer Case"
+  | "Desktop Computer"
+  | "Display"
+  | "Graphics Processing Unit (GPU)"
+  | "Headphone"
+  | "Keyboard"
+  | "Laptop"
+  | "Memory (RAM)"
+  | "Microphone"
+  | "Motherboard"
+  | "Mouse"
+  | "Power Supply Unit (PSU)"
+  | "Smartphone"
+  | "Speaker"
+  | "Storage"
+  | "Tablet"
+  | "Webcam";
 
 type RepairCategory =
-  | 'Computer Components'
-  | 'Peripherals'
-  | 'Electronics'
-  | 'Mobile Devices'
-  | 'Audio/Video'
-  | 'Accessories';
+  | "Computer Component"
+  | "Peripheral"
+  | "Electronic Device"
+  | "Mobile Device"
+  | "Audio/Video"
+  | "Accessory";
 
-type LocationYearSpread = Record<
-  StoreLocation,
-  Record<string, [number, number]>
->;
+type LocationYearSpread = Record<StoreLocation, Record<string, [number, number]>>;
 
 type FinancialMetricCategory = {
   total: number;
@@ -242,7 +235,7 @@ type CustomerDailyMetric = {
 };
 
 type ProductMetric = {
-  name: ProductCategory | 'All Products';
+  name: ProductCategory | "All Products";
   yearlyMetrics: ProductYearlyMetric[];
 };
 
@@ -275,7 +268,7 @@ type ProductDailyMetric = {
 };
 
 type RepairMetric = {
-  name: RepairCategory | 'All Repairs';
+  name: RepairCategory | "All Repairs";
   yearlyMetrics: RepairYearlyMetric[];
 };
 
@@ -301,7 +294,7 @@ type RepairDailyMetric = {
   unitsRepaired: number;
 };
 
-type BusinessMetricStoreLocation = 'All Locations' | StoreLocation;
+type BusinessMetricStoreLocation = "All Locations" | StoreLocation;
 
 type BusinessMetric = {
   storeLocation: BusinessMetricStoreLocation;

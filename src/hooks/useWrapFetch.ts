@@ -1,13 +1,14 @@
-import jwtDecode from 'jwt-decode';
-import { useErrorBoundary } from 'react-error-boundary';
-import { useNavigate } from 'react-router-dom';
+import jwtDecode from "jwt-decode";
+import { useErrorBoundary } from "react-error-boundary";
+import { useNavigate } from "react-router-dom";
 
-import { DecodedToken } from '../components/login/types';
-import { REFRESH_URL } from '../components/portalHeader/constants';
-import { authAction } from '../context/authProvider';
-import { globalAction } from '../context/globalProvider/state';
-import { useAuth } from './useAuth';
-import { useGlobalState } from './useGlobalState';
+import { DecodedToken } from "../components/login/types";
+import { REFRESH_URL } from "../components/portalHeader/constants";
+import { authAction } from "../context/authProvider";
+import { globalAction } from "../context/globalProvider/state";
+import { useAuth } from "./useAuth";
+import { useGlobalState } from "./useGlobalState";
+import { useRef } from "react";
 
 /**
  * - inspired by axios interceptors, the wrappedFetch fn will check access token expiration before calling fetch
@@ -29,6 +30,9 @@ function useWrapFetch() {
   // check if access token is expired with buffer of 5 seconds
   const isAccessTokenExpired = decodedToken.exp * 1000 < Date.now() + 5000;
 
+  // prevents race conditions
+  const abortControllerRefTokenRequest = useRef<AbortController | null>(null);
+
   async function wrappedFetch({
     isMounted,
     requestInit,
@@ -37,14 +41,13 @@ function useWrapFetch() {
   }: {
     isMounted: boolean;
     requestInit: RequestInit;
-    signal: AbortSignal;
+    signal?: AbortSignal;
     url: URL | string;
   }) {
     try {
-      let newAccessToken = '';
+      let newAccessToken = "";
       if (isAccessTokenExpired) {
-        newAccessToken =
-          (await fetchAccessAndRefreshTokens({ isMounted, signal })) ?? '';
+        newAccessToken = (await fetchAccessAndRefreshTokens(isMounted)) ?? "";
       }
 
       const requestInitWithNewAccessToken: RequestInit = {
@@ -63,29 +66,28 @@ function useWrapFetch() {
       const response = fetch(request);
       return response;
     } catch (error: any) {
-      throw new Error(error.message, { cause: 'Error in wrappedFetch' });
+      throw new Error(error.message, { cause: "Error in wrappedFetch" });
     }
   }
 
-  async function fetchAccessAndRefreshTokens({
-    isMounted,
-    signal,
-  }: {
-    isMounted: boolean;
-    signal: AbortSignal;
-  }) {
+  async function fetchAccessAndRefreshTokens(isMounted: boolean) {
+    // before fetching access & refresh tokens, abort any previous requests
+    abortControllerRefTokenRequest.current?.abort();
+    // create new abort controller for current request
+    abortControllerRefTokenRequest.current = new AbortController();
+
     const refreshUrl: URL = new URL(REFRESH_URL);
 
     const tokensRequest: Request = new Request(refreshUrl.toString(), {
       body: JSON.stringify({ sessionId }),
-      credentials: 'include',
+      credentials: "include",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
         Authorization: `Bearer ${accessToken}`,
       },
-      method: 'POST',
-      mode: 'cors',
-      signal,
+      method: "POST",
+      mode: "cors",
+      signal: abortControllerRefTokenRequest.current.signal,
     });
 
     try {
@@ -98,12 +100,12 @@ function useWrapFetch() {
       }
       const { status } = tokensResponse;
       if (status !== 200) {
-        throw new Error('Your session has expired. Please log in again.');
+        throw new Error("Your session has expired. Please log in again.");
       }
 
       const { accessToken: newAccessToken } = data;
       if (!newAccessToken) {
-        throw new Error('Error refreshing tokens');
+        throw new Error("Error refreshing tokens");
       }
 
       authDispatch({
@@ -117,7 +119,7 @@ function useWrapFetch() {
 
       return newAccessToken;
     } catch (error: any) {
-      if (!isMounted || error.name === 'AbortError') {
+      if (!isMounted || error.name === "AbortError") {
         return;
       }
 
@@ -131,12 +133,12 @@ function useWrapFetch() {
               type: globalAction.setErrorState,
               payload: {
                 isError: false,
-                errorMessage: '',
+                errorMessage: "",
                 errorCallback: () => {},
               },
             });
 
-            navigate('/');
+            navigate("/");
           },
         },
       });

@@ -1,114 +1,116 @@
-import { PortalNavbarState } from "./types";
-
 // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 //  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-//    INITIAL STATE
+//    PORTAL NAVBAR ACTION OBJECT
 //  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
-const initialPortalNavbarState: PortalNavbarState = {
+
+const portalNavbarAction = {
   // ╭─────────────────────────────────────────────────────────────────╮
   //    HOME
   // ╰─────────────────────────────────────────────────────────────────╯
-  isHomeActive: true,
+  setIsHomeActive: "setIsHomeActive",
 
   // ╭─────────────────────────────────────────────────────────────────╮
   //    DASHBOARD
   // ╰─────────────────────────────────────────────────────────────────╯
-  isDashboardActive: false,
+  setIsDashboardActive: "setIsDashboardActive",
 
   // ╭─────────────────────────────────────────────────────────────────╮
   //    CUSTOMER
   // ╰─────────────────────────────────────────────────────────────────╯
-  isCustomerActive: false,
+  setIsCustomerActive: "setIsCustomerActive",
 
   // ╭─────────────────────────────────────────────────────────────────╮
   //    COMMENT
   // ╰─────────────────────────────────────────────────────────────────╯
-  isCommentActive: false,
+  setIsCommentActive: "setIsCommentActive",
 
   // ╭─────────────────────────────────────────────────────────────────╮
   //    FILE UPLOAD
   // ╰─────────────────────────────────────────────────────────────────╯
-  isFileUploadActive: false,
+  setIsFileUploadActive: "setIsFileUploadActive",
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    PRODUCT
+  //    PRODUCT CATEGORY
   // ╰─────────────────────────────────────────────────────────────────╯
-  isProductActive: false,
-  isProductAccessoryActive: false,
-  isCPUActive: false,
-  isComputerCaseActive: false,
-  isDesktopComputerActive: false,
-  isDisplayActive: false,
-  isGPUActive: false,
-  isHeadphoneActive: false,
-  isKeyboardActive: false,
-  isLaptopActive: false,
-  isRAMActive: false,
-  isMicrophoneActive: false,
-  isMotherboardActive: false,
-  isMouseActive: false,
-  isPSUActive: false,
-  isSmartphoneActive: false,
-  isSpeakerActive: false,
-  isStorageActive: false,
-  isTabletActive: false,
-  isWebcamActive: false,
+  setIsProductActive: "setIsProductActive",
+  setIsProductAccessoryActive: "setIsProductAccessoryActive",
+  setIsCPUActive: "setIsCPUActive",
+  setIsComputerCaseActive: "setIsComputerCaseActive",
+  setIsDesktopComputerActive: "setIsDesktopComputerActive",
+  setIsDisplayActive: "setIsDisplayActive",
+  setIsGPUActive: "setIsGPUActive",
+  setIsHeadphoneActive: "setIsHeadphoneActive",
+  setIsKeyboardActive: "setIsKeyboardActive",
+  setIsLaptopActive: "setIsLaptopActive",
+  setIsRAMActive: "setIsRAMActive",
+  setIsMicrophoneActive: "setIsMicrophoneActive",
+  setIsMotherboardActive: "setIsMotherboardActive",
+  setIsMouseActive: "setIsMouseActive",
+  setIsPSUActive: "setIsPSUActive",
+  setIsSmartphoneActive: "setIsSmartphoneActive",
+  setIsSpeakerActive: "setIsSpeakerActive",
+  setIsStorageActive: "setIsStorageActive",
+  setIsTabletActive: "setIsTabletActive",
+  setIsWebcamActive: "setIsWebcamActive",
 
   // ╭─────────────────────────────────────────────────────────────────╮
   //    PRODUCT REVIEW
   // ╰─────────────────────────────────────────────────────────────────╯
-  isProductReviewActive: false,
+  setIsProductReviewActive: "setIsProductReviewActive",
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    REPAIR
+  //    REPAIR CATEGORY
   // ╰─────────────────────────────────────────────────────────────────╯
-  isRepairActive: false,
-  isComputerComponentActive: false,
-  isPeripheralActive: false,
-  isElectronicDeviceActive: false,
-  isMobileDeviceActive: false,
-  isAudioVideoActive: false,
-  isRepairAccessoryActive: false,
+  setIsRepairActive: "setIsRepairActive",
+  setIsComputerComponentActive: "setIsComputerComponentActive",
+  setIsPeripheralActive: "setIsPeripheralActive",
+  setIsElectronicDeviceActive: "setIsElectronicDeviceActive",
+  setIsMobileDeviceActive: "setIsMobileDeviceActive",
+  setIsAudioVideoActive: "setIsAudioVideoActive",
+  setIsRepairAccessoryActive: "setIsRepairAccessoryActive",
 
   // ╭─────────────────────────────────────────────────────────────────╮
   //    TRANSACTION
   // ╰─────────────────────────────────────────────────────────────────╯
-  isTransactionActive: false,
-  isPurchaseActive: false,
-  isRMAActive: false,
+  setIsTransactionActive: "setIsTransactionActive",
+  setIsPurchaseActive: "setIsPurchaseActive",
+  setIsRMAActive: "setIsRMAActive",
 
   // ╭─────────────────────────────────────────────────────────────────╮
   //    COMPANY
   // ╰─────────────────────────────────────────────────────────────────╯
-  isCompanyActive: false,
-  isAddressChangeActive: false,
-  isBenefitActive: false,
-  isExpenseClaimActive: false,
-  isLeaveRequestActive: false,
-  isRequestResourceActive: false,
+  setIsCompanyActive: "setIsCompanyActive",
+  setIsAddressChangeActive: "setIsAddressChangeActive",
+  setIsBenefitActive: "setIsBenefitActive",
+  setIsExpenseClaimActive: "setIsExpenseClaimActive",
+  setIsLeaveRequestActive: "setIsLeaveRequestActive",
+  setIsRequestResourceActive: "setIsRequestResourceActive",
 
   // ╭─────────────────────────────────────────────────────────────────╮
   //    GENERAL
   // ╰─────────────────────────────────────────────────────────────────╯
-  isGeneralActive: false,
-  isEndorsementActive: false,
-  isPrinterIssueActive: false,
-  isAnonymousRequestActive: false,
-  isRefermentActive: false,
+  setIsGeneralActive: "setIsGeneralActive",
+  setIsEndorsementActive: "setIsEndorsementActive",
+  setIsPrinterIssueActive: "setIsPrinterIssueActive",
+  setIsAnonymousRequestActive: "setIsAnonymousRequestActive",
+  setIsRefermentActive: "setIsRefermentActive",
 
   // ╭─────────────────────────────────────────────────────────────────╮
   //    OUTREACH
   // ╰─────────────────────────────────────────────────────────────────╯
-  isOutreachActive: false,
-  isAnnouncementActive: false,
-  isSurveyActive: false,
-  isEventActive: false,
+  setIsOutreachActive: "setIsOutreachActive",
+  setIsAnnouncementActive: "setIsAnnouncementActive",
+  setIsSurveyActive: "setIsSurveyActive",
+  setIsEventActive: "setIsEventActive",
 
   // ╭─────────────────────────────────────────────────────────────────╮
   //    DIRECTORY
   // ╰─────────────────────────────────────────────────────────────────╯
-  isDirectoryActive: false,
+  setIsDirectoryActive: "setIsDirectoryActive",
 };
 
-export { initialPortalNavbarState };
+type PortalNavbarAction = typeof portalNavbarAction;
+
+export { portalNavbarAction };
+export type { PortalNavbarAction };

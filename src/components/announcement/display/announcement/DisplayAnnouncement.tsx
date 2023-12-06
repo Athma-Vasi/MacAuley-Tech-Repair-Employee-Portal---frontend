@@ -10,39 +10,34 @@ import {
   Text,
   Title,
   Tooltip,
-} from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
-import { InvalidTokenError } from 'jwt-decode';
-import { useEffect, useReducer } from 'react';
-import { useErrorBoundary } from 'react-error-boundary';
-import { MdOutlineAddReaction } from 'react-icons/md';
-import { TbMoodHappy, TbUpload } from 'react-icons/tb';
-import { useNavigate } from 'react-router-dom';
+} from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
+import { InvalidTokenError } from "jwt-decode";
+import { useEffect, useReducer } from "react";
+import { useErrorBoundary } from "react-error-boundary";
+import { MdOutlineAddReaction } from "react-icons/md";
+import { TbMoodHappy, TbUpload } from "react-icons/tb";
+import { useNavigate } from "react-router-dom";
 
-import { COLORS_SWATCHES } from '../../../../constants/data';
-import { globalAction } from '../../../../context/globalProvider/state';
-import { useAuth, useGlobalState } from '../../../../hooks';
+import { COLORS_SWATCHES } from "../../../../constants/data";
+import { globalAction } from "../../../../context/globalProvider/state";
+import { useAuth, useGlobalState } from "../../../../hooks";
 import {
   returnAccessibleButtonElements,
   returnAccessibleImageElements,
-} from '../../../../jsxCreators';
-import { UserDocument } from '../../../../types';
-import {
-  formatDate,
-  logState,
-  returnThemeColors,
-  urlBuilder,
-} from '../../../../utils';
-import { ResponsivePieChart } from '../../../charts';
-import { Comment } from '../../../comment';
-import { CustomRating } from '../../../customRating/CustomRating';
-import { NotificationModal } from '../../../notificationModal';
-import { AnnouncementDocument } from '../../create/types';
+} from "../../../../jsxCreators";
+import { UserDocument } from "../../../../types";
+import { formatDate, logState, returnThemeColors, urlBuilder } from "../../../../utils";
+import { ResponsivePieChart } from "../../../charts";
+import { Comment } from "../../../comment";
+import { CustomRating } from "../../../customRating/CustomRating";
+import { NotificationModal } from "../../../notificationModal";
+import { AnnouncementDocument } from "../../create/types";
 import {
   displayAnnouncementAction,
   displayAnnouncementReducer,
   initialDisplayAnnouncementState,
-} from './state';
+} from "./state";
 
 function DisplayAnnouncement() {
   /** ------------- begin hooks ------------- */
@@ -83,10 +78,8 @@ function DisplayAnnouncement() {
   const navigate = useNavigate();
   const { showBoundary } = useErrorBoundary();
 
-  const [
-    openedRatingModal,
-    { open: openRatingModal, close: closeRatingModal },
-  ] = useDisclosure(false);
+  const [openedRatingModal, { open: openRatingModal, close: closeRatingModal }] =
+    useDisclosure(false);
 
   const [
     openedStatisticsModal,
@@ -135,9 +128,9 @@ function DisplayAnnouncement() {
       });
 
       const request: Request = new Request(url.toString(), {
-        method: 'PATCH',
+        method: "PATCH",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           Authorization: `Bearer ${accessToken}`,
         },
         body,
@@ -148,10 +141,7 @@ function DisplayAnnouncement() {
         const response: Response = await fetch(request);
         const data: {
           message: string;
-          resourceData: [
-            Omit<AnnouncementDocument, '__v'>,
-            Omit<UserDocument, '__v' | 'password'>
-          ];
+          resourceData: [AnnouncementDocument, Omit<UserDocument, "password">];
         } = await response.json();
 
         if (!isMounted) {
@@ -161,8 +151,7 @@ function DisplayAnnouncement() {
           throw new Error(data.message);
         }
 
-        const [_updatedAnnouncementDocument, updatedUserDocument] =
-          data.resourceData;
+        const [_updatedAnnouncementDocument, updatedUserDocument] = data.resourceData;
         globalDispatch({
           type: globalAction.setUserDocument,
           payload: updatedUserDocument,
@@ -174,19 +163,19 @@ function DisplayAnnouncement() {
         });
         displayAnnouncementDispatch({
           type: displayAnnouncementAction.setSuccessMessage,
-          payload: data.message ?? 'Success!',
+          payload: data.message ?? "Success!",
         });
       } catch (error: any) {
-        if (!isMounted || error.name === 'AbortError') {
+        if (!isMounted || error.name === "AbortError") {
           return;
         }
 
         const errorMessage =
           error instanceof InvalidTokenError
-            ? 'Invalid token. Please login again.'
+            ? "Invalid token. Please login again."
             : !error.response
-            ? 'Network error. Please try again.'
-            : error?.message ?? 'Unknown error occurred. Please try again.';
+            ? "Network error. Please try again."
+            : error?.message ?? "Unknown error occurred. Please try again.";
 
         globalDispatch({
           type: globalAction.setErrorState,
@@ -194,13 +183,13 @@ function DisplayAnnouncement() {
             isError: true,
             errorMessage,
             errorCallback: () => {
-              navigate('/home');
+              navigate("/home");
 
               globalDispatch({
                 type: globalAction.setErrorState,
                 payload: {
                   isError: false,
-                  errorMessage: '',
+                  errorMessage: "",
                   errorCallback: () => {},
                 },
               });
@@ -217,7 +206,7 @@ function DisplayAnnouncement() {
           });
           displayAnnouncementDispatch({
             type: displayAnnouncementAction.setSubmitMessage,
-            payload: '',
+            payload: "",
           });
           displayAnnouncementDispatch({
             type: displayAnnouncementAction.setTriggerRatingSubmit,
@@ -268,7 +257,7 @@ function DisplayAnnouncement() {
   useEffect(() => {
     logState({
       state: displayAnnouncementState,
-      groupLabel: 'announcement',
+      groupLabel: "announcement",
     });
   }, [displayAnnouncementState]);
   /** ------------- end useEffects ------------- */
@@ -286,12 +275,12 @@ function DisplayAnnouncement() {
       order={1}
       size={52}
       style={{
-        letterSpacing: '0.1rem',
+        letterSpacing: "0.1rem",
       }}
       px={padding}
       pt={padding}
     >
-      {announcement?.title ?? ''}
+      {announcement?.title ?? ""}
     </Title>
   );
 
@@ -299,8 +288,8 @@ function DisplayAnnouncement() {
 
   const articleAuthor = (
     <Group spacing={rowGap}>
-      <Text size="md" style={{ letterSpacing: '0.05rem' }}>
-        {announcement?.author?.toUpperCase() ?? ''}
+      <Text size="md" style={{ letterSpacing: "0.05rem" }}>
+        {announcement?.author?.toUpperCase() ?? ""}
       </Text>
       {spacer}
     </Group>
@@ -309,14 +298,14 @@ function DisplayAnnouncement() {
   const formattedDate = formatDate({
     date: announcement?.createdAt ?? new Date().toISOString(),
     formatOptions: {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: 'numeric',
-      minute: 'numeric',
-      timeZoneName: 'short',
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+      timeZoneName: "short",
     },
-    locale: 'en-US',
+    locale: "en-US",
   });
 
   const articleCreatedAt = (
@@ -354,11 +343,11 @@ function DisplayAnnouncement() {
   /** article paragraphs */
   const articleParagraphs = announcement?.article?.map((paragraph, index) => {
     const firstWordsStartingParagraph =
-      index === 0 ? paragraph.split(' ').slice(0, 2).join(' ') : '';
+      index === 0 ? paragraph.split(" ").slice(0, 2).join(" ") : "";
     const restWordsStartingParagraph =
-      index === 0 ? paragraph.split(' ').slice(2).join(' ') : paragraph;
+      index === 0 ? paragraph.split(" ").slice(2).join(" ") : paragraph;
     const displayLargeFirstWords = (
-      <Text size={32} pr={padding} w="fit-content" style={{ float: 'left' }}>
+      <Text size={32} pr={padding} w="fit-content" style={{ float: "left" }}>
         <strong>{firstWordsStartingParagraph}</strong>
       </Text>
     );
@@ -370,7 +359,7 @@ function DisplayAnnouncement() {
           size="md"
           w="fit-content"
           style={{
-            lineHeight: '1.75rem',
+            lineHeight: "1.75rem",
           }}
         >
           {restWordsStartingParagraph}
@@ -383,7 +372,7 @@ function DisplayAnnouncement() {
         key={`${index}`}
         size="md"
         style={{
-          lineHeight: '1.75rem',
+          lineHeight: "1.75rem",
         }}
       >
         {index === 0 ? displayFirstParagraph : paragraph}
@@ -395,7 +384,7 @@ function DisplayAnnouncement() {
 
   const displayArticleParagraphs = (
     <Flex w="100%" align="center" justify="center" py={padding}>
-      <Stack w={width < 480 ? '85%' : '62%'} px={padding}>
+      <Stack w={width < 480 ? "85%" : "62%"} px={padding}>
         {articleParagraphs}
       </Stack>
     </Flex>
@@ -409,11 +398,11 @@ function DisplayAnnouncement() {
   ] = returnAccessibleButtonElements([
     // submit rating button
     {
-      buttonLabel: 'Submit',
+      buttonLabel: "Submit",
       leftIcon: <MdOutlineAddReaction />,
       rightIcon: <TbUpload />,
-      semanticDescription: 'Button to submit rating and view results',
-      semanticName: 'submitRatingButton',
+      semanticDescription: "Button to submit rating and view results",
+      semanticName: "submitRatingButton",
       buttonDisabled: rating === 0,
       buttonOnClick: () => {
         displayAnnouncementDispatch({
@@ -433,21 +422,21 @@ function DisplayAnnouncement() {
     },
     // rate button
     {
-      buttonLabel: 'Rate',
+      buttonLabel: "Rate",
       leftIcon: <TbMoodHappy />,
       rightIcon: <TbUpload />,
-      semanticDescription: 'Button to submit rating',
-      semanticName: 'submitRatingButton',
+      semanticDescription: "Button to submit rating",
+      semanticName: "submitRatingButton",
       buttonOnClick: () => {
         openRatingModal();
       },
     },
     // view statistics button
     {
-      buttonLabel: 'View',
+      buttonLabel: "View",
       leftIcon: <MdOutlineAddReaction />,
-      semanticDescription: 'Button to submit rating and view results',
-      semanticName: 'submitRatingButton',
+      semanticDescription: "Button to submit rating and view results",
+      semanticName: "submitRatingButton",
       buttonOnClick: () => {
         openStatisticsModal();
       },
@@ -469,18 +458,14 @@ function DisplayAnnouncement() {
       spacing={rowGap}
       p={padding}
       w="100%"
-      style={{ border: borderColor, borderRadius: '4px' }}
+      style={{ border: borderColor, borderRadius: "4px" }}
     >
       <Group position="left">{createdRatingComponent}</Group>
       <Space w="lg" />
       <Group position="right">
         <Tooltip
           position="left"
-          label={
-            rating === 0
-              ? 'Please rate before submitting'
-              : 'Submit your rating'
-          }
+          label={rating === 0 ? "Please rate before submitting" : "Submit your rating"}
         >
           <Group>{createdSubmitRatingButton}</Group>
         </Tooltip>
@@ -492,20 +477,19 @@ function DisplayAnnouncement() {
     <Stack w="100%">
       <Group position="right">
         <Text size="md">
-          {announcement?.ratingResponse?.ratingCount ?? 0} people have rated
-          this
+          {announcement?.ratingResponse?.ratingCount ?? 0} people have rated this
         </Text>
       </Group>
       <ResponsivePieChart pieChartData={ratingPieChartDataArray} />
     </Stack>
   );
 
-  const ratingModalSize = announcement?.ratedUserIds?.includes(userId ?? '')
-    ? 'calc(100% - 2rem)'
+  const ratingModalSize = announcement?.ratedUserIds?.includes(userId ?? "")
+    ? "calc(100% - 2rem)"
     : width < 480
-    ? 'calc(100% - 3rem)'
-    : '640px';
-  const ratingModalTitle = <Title order={4}>{announcement?.title ?? ''}</Title>;
+    ? "calc(100% - 3rem)"
+    : "640px";
+  const ratingModalTitle = <Title order={4}>{announcement?.title ?? ""}</Title>;
   const displayRatingModal = (
     <Modal
       opened={openedRatingModal}
@@ -519,9 +503,7 @@ function DisplayAnnouncement() {
   );
 
   const statisticsModalTitle = (
-    <Title order={4}>
-      MacAuley family responses to {announcement?.title ?? ''}
-    </Title>
+    <Title order={4}>MacAuley family responses to {announcement?.title ?? ""}</Title>
   );
   const displayStatisticsModal = (
     <Modal
@@ -538,27 +520,22 @@ function DisplayAnnouncement() {
   /** reader response */
   const displayReaderResponseIcons = (
     <Group w="100%" position="center" pt={padding}>
-      <Group
-        w={width < 480 ? '85%' : '62%'}
-        p={padding}
-        spacing={rowGap}
-        position="left"
-      >
+      <Group w={width < 480 ? "85%" : "62%"} p={padding} spacing={rowGap} position="left">
         <Text size="md">
-          {announcement?.ratedUserIds?.includes(userId ?? '')
-            ? 'View reactions of MacAuley family members!'
-            : 'How do you feel about this?'}
+          {announcement?.ratedUserIds?.includes(userId ?? "")
+            ? "View reactions of MacAuley family members!"
+            : "How do you feel about this?"}
         </Text>
         {/* rating icon */}
         <Tooltip
           label={
-            announcement?.ratedUserIds?.includes(userId ?? '')
-              ? 'View statistics'
-              : 'Rate to view reactions of MacAuley family members'
+            announcement?.ratedUserIds?.includes(userId ?? "")
+              ? "View statistics"
+              : "Rate to view reactions of MacAuley family members"
           }
         >
           <Group>
-            {announcement?.ratedUserIds?.includes(userId ?? '')
+            {announcement?.ratedUserIds?.includes(userId ?? "")
               ? createdViewStatisticsButton
               : createdRateAnnouncementButton}
           </Group>
@@ -571,8 +548,8 @@ function DisplayAnnouncement() {
 
   const displayComments = announcement ? (
     <Comment
-      parentResourceId={announcement?._id ?? ''}
-      parentResourceTitle={announcement?.title ?? ''}
+      parentResourceId={announcement?._id ?? ""}
+      parentResourceTitle={announcement?.title ?? ""}
     />
   ) : null;
 
@@ -581,9 +558,7 @@ function DisplayAnnouncement() {
       onCloseCallbacks={[
         closeSubmitSuccessNotificationModal,
         () => {
-          navigate(
-            `/home/outreach/announcement/display/${announcement?.title}`
-          );
+          navigate(`/home/outreach/announcement/display/${announcement?.title}`);
         },
       ]}
       opened={openedSubmitSuccessNotificationModal}
@@ -591,9 +566,7 @@ function DisplayAnnouncement() {
         loading: isSubmitting,
         text: isSubmitting ? submitMessage : successMessage,
       }}
-      title={
-        <Title order={4}>{isSuccessful ? 'Success!' : 'Submitting ...'}</Title>
-      }
+      title={<Title order={4}>{isSuccessful ? "Success!" : "Submitting ..."}</Title>}
     />
   );
 

@@ -1,14 +1,14 @@
-import { AppShell, Flex, Group, ScrollArea, Space } from '@mantine/core';
-import { useEffect, useState } from 'react';
-import { Outlet, useLocation } from 'react-router-dom';
+import { AppShell, Flex, Group, ScrollArea, Space } from "@mantine/core";
+import { useEffect, useState } from "react";
+import { Outlet, useLocation } from "react-router-dom";
 
-import { COLORS_SWATCHES } from '../../constants/data';
-import { useGlobalState } from '../../hooks/useGlobalState';
-import { returnThemeColors } from '../../utils';
-import { BreadcrumbsBuilder } from '../breadcrumbsBuilder/BreadcrumbsBuilder';
-import { PortalFooter } from '../portalFooter';
-import { PortalHeader } from '../portalHeader';
-import { PortalNavbar } from '../portalNavbar';
+import { COLORS_SWATCHES } from "../../constants/data";
+import { useGlobalState } from "../../hooks/useGlobalState";
+import { returnThemeColors } from "../../utils";
+import { BreadcrumbsBuilder } from "../breadcrumbsBuilder/BreadcrumbsBuilder";
+import { PortalFooter } from "../portalFooter";
+import { PortalHeader } from "../portalHeader";
+import { PortalNavbar } from "../portalNavbar";
 
 function PortalLayout() {
   const [opened, setOpened] = useState<boolean>(false);
@@ -45,9 +45,7 @@ function PortalLayout() {
       padding={0}
       navbarOffsetBreakpoint="sm"
       navbar={<PortalNavbar openedNavbar={opened} />}
-      header={
-        <PortalHeader openedHeader={opened} setOpenedHeader={setOpened} />
-      }
+      header={<PortalHeader openedHeader={opened} setOpenedHeader={setOpened} />}
       // footer={scrollYDirection === 'up' ? <PortalFooter /> : <></>}
       footer={<PortalFooter />}
     >

@@ -1,117 +1,235 @@
-type PortalNavbarProps = {
-  openedNavbar: boolean;
-};
-
 // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
 //  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-//    PORTAL NAVBAR STATE
+//    PORTAL NAVBAR DISPATCH
 //  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+import { PortalNavbarAction } from "./actions";
+import { PortalNavbarState } from "./types";
+
 // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
-// contains the active states of the navlinks
-type PortalNavbarState = {
+type PortalNavbarDispatch =
   // ╭─────────────────────────────────────────────────────────────────╮
   //    HOME
   // ╰─────────────────────────────────────────────────────────────────╯
-  isHomeActive: boolean;
-
+  | {
+      type: PortalNavbarAction["setIsHomeActive"];
+      payload: PortalNavbarState["isHomeActive"];
+    }
   // ╭─────────────────────────────────────────────────────────────────╮
   //    DASHBOARD
   // ╰─────────────────────────────────────────────────────────────────╯
-  isDashboardActive: boolean;
-
+  | {
+      type: PortalNavbarAction["setIsDashboardActive"];
+      payload: PortalNavbarState["isDashboardActive"];
+    }
   // ╭─────────────────────────────────────────────────────────────────╮
   //    CUSTOMER
   // ╰─────────────────────────────────────────────────────────────────╯
-  isCustomerActive: boolean;
-
+  | {
+      type: PortalNavbarAction["setIsCustomerActive"];
+      payload: PortalNavbarState["isCustomerActive"];
+    }
   // ╭─────────────────────────────────────────────────────────────────╮
   //    COMMENT
   // ╰─────────────────────────────────────────────────────────────────╯
-  isCommentActive: boolean;
-
+  | {
+      type: PortalNavbarAction["setIsCommentActive"];
+      payload: PortalNavbarState["isCommentActive"];
+    }
   // ╭─────────────────────────────────────────────────────────────────╮
   //    FILE UPLOAD
   // ╰─────────────────────────────────────────────────────────────────╯
-  isFileUploadActive: boolean;
-
+  | {
+      type: PortalNavbarAction["setIsFileUploadActive"];
+      payload: PortalNavbarState["isFileUploadActive"];
+    }
   // ╭─────────────────────────────────────────────────────────────────╮
   //    PRODUCT CATEGORY
   // ╰─────────────────────────────────────────────────────────────────╯
-  isProductActive: boolean;
-  isProductAccessoryActive: boolean;
-  isCPUActive: boolean;
-  isComputerCaseActive: boolean;
-  isDesktopComputerActive: boolean;
-  isDisplayActive: boolean;
-  isGPUActive: boolean;
-  isHeadphoneActive: boolean;
-  isKeyboardActive: boolean;
-  isLaptopActive: boolean;
-  isRAMActive: boolean;
-  isMicrophoneActive: boolean;
-  isMotherboardActive: boolean;
-  isMouseActive: boolean;
-  isPSUActive: boolean;
-  isSmartphoneActive: boolean;
-  isSpeakerActive: boolean;
-  isStorageActive: boolean;
-  isTabletActive: boolean;
-  isWebcamActive: boolean;
-
+  | {
+      type: PortalNavbarAction["setIsProductActive"];
+      payload: PortalNavbarState["isProductActive"];
+    }
+  | {
+      type: PortalNavbarAction["setIsProductAccessoryActive"];
+      payload: PortalNavbarState["isProductAccessoryActive"];
+    }
+  | {
+      type: PortalNavbarAction["setIsCPUActive"];
+      payload: PortalNavbarState["isCPUActive"];
+    }
+  | {
+      type: PortalNavbarAction["setIsComputerCaseActive"];
+      payload: PortalNavbarState["isComputerCaseActive"];
+    }
+  | {
+      type: PortalNavbarAction["setIsDesktopComputerActive"];
+      payload: PortalNavbarState["isDesktopComputerActive"];
+    }
+  | {
+      type: PortalNavbarAction["setIsDisplayActive"];
+      payload: PortalNavbarState["isDisplayActive"];
+    }
+  | {
+      type: PortalNavbarAction["setIsGPUActive"];
+      payload: PortalNavbarState["isGPUActive"];
+    }
+  | {
+      type: PortalNavbarAction["setIsHeadphoneActive"];
+      payload: PortalNavbarState["isHeadphoneActive"];
+    }
+  | {
+      type: PortalNavbarAction["setIsKeyboardActive"];
+      payload: PortalNavbarState["isKeyboardActive"];
+    }
+  | {
+      type: PortalNavbarAction["setIsLaptopActive"];
+      payload: PortalNavbarState["isLaptopActive"];
+    }
+  | {
+      type: PortalNavbarAction["setIsRAMActive"];
+      payload: PortalNavbarState["isRAMActive"];
+    }
+  | {
+      type: PortalNavbarAction["setIsMicrophoneActive"];
+      payload: PortalNavbarState["isMicrophoneActive"];
+    }
+  | {
+      type: PortalNavbarAction["setIsMotherboardActive"];
+      payload: PortalNavbarState["isMotherboardActive"];
+    }
+  | {
+      type: PortalNavbarAction["setIsMouseActive"];
+      payload: PortalNavbarState["isMouseActive"];
+    }
+  | {
+      type: PortalNavbarAction["setIsPSUActive"];
+      payload: PortalNavbarState["isPSUActive"];
+    }
+  | {
+      type: PortalNavbarAction["setIsSmartphoneActive"];
+      payload: PortalNavbarState["isSmartphoneActive"];
+    }
+  | {
+      type: PortalNavbarAction["setIsSpeakerActive"];
+      payload: PortalNavbarState["isSpeakerActive"];
+    }
+  | {
+      type: PortalNavbarAction["setIsStorageActive"];
+      payload: PortalNavbarState["isStorageActive"];
+    }
+  | {
+      type: PortalNavbarAction["setIsTabletActive"];
+      payload: PortalNavbarState["isTabletActive"];
+    }
+  | {
+      type: PortalNavbarAction["setIsWebcamActive"];
+      payload: PortalNavbarState["isWebcamActive"];
+    }
   // ╭─────────────────────────────────────────────────────────────────╮
   //    PRODUCT REVIEW
   // ╰─────────────────────────────────────────────────────────────────╯
-  isProductReviewActive: boolean;
-
+  | {
+      type: PortalNavbarAction["setIsProductReviewActive"];
+      payload: PortalNavbarState["isProductReviewActive"];
+    }
   // ╭─────────────────────────────────────────────────────────────────╮
   //    REPAIR CATEGORY
   // ╰─────────────────────────────────────────────────────────────────╯
-  isRepairActive: boolean;
-  isComputerComponentActive: boolean;
-  isPeripheralActive: boolean;
-  isElectronicDeviceActive: boolean;
-  isMobileDeviceActive: boolean;
-  isAudioVideoActive: boolean;
-  isRepairAccessoryActive: boolean;
-
+  | {
+      type: PortalNavbarAction["setIsRepairActive"];
+      payload: PortalNavbarState["isRepairActive"];
+    }
   // ╭─────────────────────────────────────────────────────────────────╮
   //    TRANSACTION
   // ╰─────────────────────────────────────────────────────────────────╯
-  isTransactionActive: boolean;
-  isPurchaseActive: boolean;
-  isRMAActive: boolean;
-
+  | {
+      type: PortalNavbarAction["setIsTransactionActive"];
+      payload: PortalNavbarState["isTransactionActive"];
+    }
+  | {
+      type: PortalNavbarAction["setIsPurchaseActive"];
+      payload: PortalNavbarState["isPurchaseActive"];
+    }
+  | {
+      type: PortalNavbarAction["setIsRMAActive"];
+      payload: PortalNavbarState["isRMAActive"];
+    }
   // ╭─────────────────────────────────────────────────────────────────╮
   //    COMPANY
   // ╰─────────────────────────────────────────────────────────────────╯
-  isCompanyActive: boolean;
-  isAddressChangeActive: boolean;
-  isBenefitActive: boolean;
-  isExpenseClaimActive: boolean;
-  isLeaveRequestActive: boolean;
-  isRequestResourceActive: boolean;
-
+  | {
+      type: PortalNavbarAction["setIsCompanyActive"];
+      payload: PortalNavbarState["isCompanyActive"];
+    }
+  | {
+      type: PortalNavbarAction["setIsAddressChangeActive"];
+      payload: PortalNavbarState["isAddressChangeActive"];
+    }
+  | {
+      type: PortalNavbarAction["setIsBenefitActive"];
+      payload: PortalNavbarState["isBenefitActive"];
+    }
+  | {
+      type: PortalNavbarAction["setIsExpenseClaimActive"];
+      payload: PortalNavbarState["isExpenseClaimActive"];
+    }
+  | {
+      type: PortalNavbarAction["setIsLeaveRequestActive"];
+      payload: PortalNavbarState["isLeaveRequestActive"];
+    }
+  | {
+      type: PortalNavbarAction["setIsRequestResourceActive"];
+      payload: PortalNavbarState["isRequestResourceActive"];
+    }
   // ╭─────────────────────────────────────────────────────────────────╮
   //    GENERAL
   // ╰─────────────────────────────────────────────────────────────────╯
-  isGeneralActive: boolean;
-  isEndorsementActive: boolean;
-  isPrinterIssueActive: boolean;
-  isAnonymousRequestActive: boolean;
-  isRefermentActive: boolean;
-
+  | {
+      type: PortalNavbarAction["setIsGeneralActive"];
+      payload: PortalNavbarState["isGeneralActive"];
+    }
+  | {
+      type: PortalNavbarAction["setIsEndorsementActive"];
+      payload: PortalNavbarState["isEndorsementActive"];
+    }
+  | {
+      type: PortalNavbarAction["setIsPrinterIssueActive"];
+      payload: PortalNavbarState["isPrinterIssueActive"];
+    }
+  | {
+      type: PortalNavbarAction["setIsAnonymousRequestActive"];
+      payload: PortalNavbarState["isAnonymousRequestActive"];
+    }
+  | {
+      type: PortalNavbarAction["setIsRefermentActive"];
+      payload: PortalNavbarState["isRefermentActive"];
+    }
   // ╭─────────────────────────────────────────────────────────────────╮
   //    OUTREACH
   // ╰─────────────────────────────────────────────────────────────────╯
-  isOutreachActive: boolean;
-  isAnnouncementActive: boolean;
-  isSurveyActive: boolean;
-  isEventActive: boolean;
-
+  | {
+      type: PortalNavbarAction["setIsOutreachActive"];
+      payload: PortalNavbarState["isOutreachActive"];
+    }
+  | {
+      type: PortalNavbarAction["setIsAnnouncementActive"];
+      payload: PortalNavbarState["isAnnouncementActive"];
+    }
+  | {
+      type: PortalNavbarAction["setIsSurveyActive"];
+      payload: PortalNavbarState["isSurveyActive"];
+    }
+  | {
+      type: PortalNavbarAction["setIsEventActive"];
+      payload: PortalNavbarState["isEventActive"];
+    }
   // ╭─────────────────────────────────────────────────────────────────╮
   //    DIRECTORY
   // ╰─────────────────────────────────────────────────────────────────╯
-  isDirectoryActive: boolean;
-};
+  | {
+      type: PortalNavbarAction["setIsDirectoryActive"];
+      payload: PortalNavbarState["isDirectoryActive"];
+    };
 
-export type { PortalNavbarProps, PortalNavbarState };
+export type { PortalNavbarDispatch };

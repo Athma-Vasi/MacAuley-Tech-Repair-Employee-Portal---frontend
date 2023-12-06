@@ -1,8 +1,9 @@
-import { Flex, Navbar, NavLink, ScrollArea, Text } from '@mantine/core';
-import { useReducer } from 'react';
-import { CgDatabase } from 'react-icons/cg';
-import { MdSafetyDivider } from 'react-icons/md';
-import { RiSignalTowerFill } from 'react-icons/ri';
+import { Flex, Navbar, NavLink, ScrollArea, Text } from "@mantine/core";
+import { useReducer } from "react";
+import { CgDatabase } from "react-icons/cg";
+import { GrTransaction } from "react-icons/gr";
+import { MdSafetyDivider } from "react-icons/md";
+import { RiSignalTowerFill } from "react-icons/ri";
 import {
   TbAddressBook,
   TbBuildingWarehouse,
@@ -11,44 +12,120 @@ import {
   TbChartPie3,
   TbChevronRight,
   TbCircleTriangle,
+  TbCircuitResistor,
   TbDashboard,
   TbGift,
   TbHome2,
   TbNotebook,
   TbPrinterOff,
   TbReceipt2,
+  TbShoppingCartPlus,
   TbSpeakerphone,
   TbTimelineEventPlus,
   TbUserCheck,
-} from 'react-icons/tb';
-import { TiThumbsUp } from 'react-icons/ti';
-import { useNavigate } from 'react-router-dom';
+} from "react-icons/tb";
+import { TiThumbsUp } from "react-icons/ti";
+import { useLocation, useNavigate } from "react-router-dom";
 
-import { COLORS_SWATCHES } from '../../constants/data';
-import { useGlobalState } from '../../hooks';
-import { returnAccessibleNavLinkElements } from '../../jsxCreators';
-import { returnThemeColors } from '../../utils';
-import { AccessibleNavLinkCreatorInfo } from '../wrappers';
-import {
-  initialPortalNavbarState,
-  portalNavbarAction,
-  portalNavbarReducer,
-} from './state';
-import { PortalNavbarProps } from './types';
+import { COLORS_SWATCHES } from "../../constants/data";
+import { useGlobalState } from "../../hooks";
+import { returnAccessibleNavLinkElements } from "../../jsxCreators";
+import { returnThemeColors } from "../../utils";
+import { AccessibleNavLinkCreatorInfo } from "../wrappers";
+import { portalNavbarAction } from "./actions";
+import { portalNavbarReducer } from "./reducers";
+import { initialPortalNavbarState } from "./state";
+import { PortalNavbarProps } from "./types";
+import { returnPortalNavbarStateActionTuple } from "./utils";
 
 function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
+  const {
+    globalState: { width, themeObject, height, padding },
+  } = useGlobalState();
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
+
   const [portalNavbarState, portalNavbarDispatch] = useReducer(
     portalNavbarReducer,
     initialPortalNavbarState
   );
-  const {
-    // active states
-    isHomeActive,
-    isDashboardActive,
-    isProductActive,
-    isNotesActive,
 
-    // company
+  const {
+    // ╭─────────────────────────────────────────────────────────────────╮
+    //    HOME
+    // ╰─────────────────────────────────────────────────────────────────╯
+    isHomeActive,
+
+    // ╭─────────────────────────────────────────────────────────────────╮
+    //    DASHBOARD
+    // ╰─────────────────────────────────────────────────────────────────╯
+    isDashboardActive,
+
+    // ╭─────────────────────────────────────────────────────────────────╮
+    //    CUSTOMER
+    // ╰─────────────────────────────────────────────────────────────────╯
+    isCustomerActive,
+
+    // ╭─────────────────────────────────────────────────────────────────╮
+    //    COMMENT
+    // ╰─────────────────────────────────────────────────────────────────╯
+    isCommentActive,
+
+    // ╭─────────────────────────────────────────────────────────────────╮
+    //    FILE UPLOAD
+    // ╰─────────────────────────────────────────────────────────────────╯
+    isFileUploadActive,
+
+    // ╭─────────────────────────────────────────────────────────────────╮
+    //    PRODUCT
+    // ╰─────────────────────────────────────────────────────────────────╯
+    isProductActive,
+    isProductAccessoryActive,
+    isCPUActive,
+    isComputerCaseActive,
+    isDesktopComputerActive,
+    isDisplayActive,
+    isGPUActive,
+    isHeadphoneActive,
+    isKeyboardActive,
+    isLaptopActive,
+    isRAMActive,
+    isMicrophoneActive,
+    isMotherboardActive,
+    isMouseActive,
+    isPSUActive,
+    isSmartphoneActive,
+    isSpeakerActive,
+    isStorageActive,
+    isTabletActive,
+    isWebcamActive,
+
+    // ╭─────────────────────────────────────────────────────────────────╮
+    //    PRODUCT REVIEW
+    // ╰─────────────────────────────────────────────────────────────────╯
+    isProductReviewActive,
+
+    // ╭─────────────────────────────────────────────────────────────────╮
+    //    REPAIR
+    // ╰─────────────────────────────────────────────────────────────────╯
+    isRepairActive,
+    isComputerComponentActive,
+    isPeripheralActive,
+    isElectronicDeviceActive,
+    isMobileDeviceActive,
+    isAudioVideoActive,
+    isRepairAccessoryActive,
+
+    // ╭─────────────────────────────────────────────────────────────────╮
+    //    TRANSACTION
+    // ╰─────────────────────────────────────────────────────────────────╯
+    isTransactionActive,
+    isPurchaseActive,
+    isRMAActive,
+
+    // ╭─────────────────────────────────────────────────────────────────╮
+    //    COMPANY
+    // ╰─────────────────────────────────────────────────────────────────╯
     isCompanyActive,
     isAddressChangeActive,
     isBenefitActive,
@@ -56,26 +133,56 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
     isLeaveRequestActive,
     isRequestResourceActive,
 
-    // general
+    // ╭─────────────────────────────────────────────────────────────────╮
+    //    GENERAL
+    // ╰─────────────────────────────────────────────────────────────────╯
     isGeneralActive,
     isEndorsementActive,
     isPrinterIssueActive,
     isAnonymousRequestActive,
     isRefermentActive,
 
-    // outreach
+    // ╭─────────────────────────────────────────────────────────────────╮
+    //    OUTREACH
+    // ╰─────────────────────────────────────────────────────────────────╯
     isOutreachActive,
     isAnnouncementActive,
     isSurveyActive,
     isEventActive,
 
+    // ╭─────────────────────────────────────────────────────────────────╮
+    //    DIRECTORY
+    // ╰─────────────────────────────────────────────────────────────────╯
     isDirectoryActive,
   } = portalNavbarState;
 
-  const {
-    globalState: { width, themeObject, height, padding },
-  } = useGlobalState();
-  const navigate = useNavigate();
+  // useEffect(() => {
+  //   const splitPathArr = pathname.split("/");
+  //   const currentLocation = splitPathArr.at(-1) ?? "";
+  //   const parentLocation = splitPathArr.at(-2) ?? "";
+
+  //   console.log("PORTAL NAVBAR currentLocation", currentLocation);
+  //   console.log("PORTAL NAVBAR parentLocation", parentLocation);
+
+  //   if (parentLocation.includes("company")) {
+  //   }
+
+  //   const [currentLocationState, currentLocationAction] =
+  //     returnPortalNavbarStateActionTuple({
+  //       pathname: currentLocation,
+  //       portalNavbarAction,
+  //       portalNavbarState,
+  //     });
+
+  //   console.log("PORTAL NAVBAR currentLocationState", currentLocationState);
+  //   console.log("PORTAL NAVBAR currentLocationAction", currentLocationAction);
+
+  //   portalNavbarDispatch({
+  //     type: currentLocationAction,
+  //     payload: !currentLocationState,
+  //   });
+
+  // }, [pathname]);
 
   const {
     scrollBarStyle,
@@ -86,174 +193,879 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
     colorsSwatches: COLORS_SWATCHES,
   });
 
-  const homeNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
-    active: isHomeActive,
-    ariaLabel: 'Will navigate to home page',
-    icon: <TbHome2 color={isHomeActive ? themeColorShade : iconGray} />,
-    label: 'Home',
-    onClick: () => {
-      portalNavbarDispatch({
-        type: 'setIsHomeActive',
-        payload: !isHomeActive,
-      });
-      navigate('/home');
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    HOME
+  // ╰─────────────────────────────────────────────────────────────────╯
+  const [createdHomeNavLink] = returnAccessibleNavLinkElements([
+    {
+      active: isHomeActive,
+      ariaLabel: "Will navigate to home page",
+      icon: <TbHome2 color={isHomeActive ? themeColorShade : iconGray} />,
+      label: "Home",
+      onClick: () => {
+        portalNavbarDispatch({
+          type: portalNavbarAction.setIsHomeActive,
+          payload: !isHomeActive,
+        });
+        navigate("/home");
+      },
     },
-  };
+  ]);
 
-  const dashboardNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
-    active: isDashboardActive,
-    ariaLabel: 'Will navigate to dashboard page',
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    DASHBOARD
+  // ╰─────────────────────────────────────────────────────────────────╯
+  const [createdDashboardNavLink] = returnAccessibleNavLinkElements([
+    {
+      active: isDashboardActive,
+      ariaLabel: "Will navigate to dashboard page",
+      icon: <TbDashboard color={isDashboardActive ? themeColorShade : iconGray} />,
+      label: "Dashboard",
+      onClick: () => {
+        portalNavbarDispatch({
+          type: portalNavbarAction.setIsDashboardActive,
+          payload: !isDashboardActive,
+        });
+        navigate("/home/dashboard");
+      },
+    },
+  ]);
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    CUSTOMER
+  // ╰─────────────────────────────────────────────────────────────────╯
+  const [createdCustomerNavLink] = returnAccessibleNavLinkElements([
+    {
+      active: isCustomerActive,
+      ariaLabel: "Will navigate to customer page",
+      icon: <TbUserCheck color={isCustomerActive ? themeColorShade : iconGray} />,
+      label: "Customer",
+      onClick: () => {
+        portalNavbarDispatch({
+          type: portalNavbarAction.setIsCustomerActive,
+          payload: !isCustomerActive,
+        });
+        navigate("/home/customer");
+      },
+    },
+  ]);
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    COMMENT
+  // ╰─────────────────────────────────────────────────────────────────╯
+  const [createdCommentNavLink] = returnAccessibleNavLinkElements([
+    {
+      active: isCommentActive,
+      ariaLabel: "Will navigate to comment page",
+      icon: <TbNotebook color={isCommentActive ? themeColorShade : iconGray} />,
+      label: "Comment",
+      onClick: () => {
+        portalNavbarDispatch({
+          type: portalNavbarAction.setIsCommentActive,
+          payload: !isCommentActive,
+        });
+        navigate("/home/comment");
+      },
+    },
+  ]);
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    FILE UPLOAD
+  // ╰─────────────────────────────────────────────────────────────────╯
+  const [createdFileUploadNavLink] = returnAccessibleNavLinkElements([
+    {
+      active: isFileUploadActive,
+      ariaLabel: "Will navigate to file upload page",
+      icon: <TbReceipt2 color={isFileUploadActive ? themeColorShade : iconGray} />,
+      label: "File upload",
+      onClick: () => {
+        portalNavbarDispatch({
+          type: portalNavbarAction.setIsFileUploadActive,
+          payload: !isFileUploadActive,
+        });
+        navigate("/home/file-upload");
+      },
+    },
+  ]);
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    PRODUCT => ACCESSORY
+  // ╰─────────────────────────────────────────────────────────────────╯
+  const productAccessoryNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
+    active: isProductAccessoryActive,
+    ariaLabel: "Will navigate to product accessory page",
     icon: (
-      <TbDashboard color={isDashboardActive ? themeColorShade : iconGray} />
+      <TbCircleTriangle color={isProductAccessoryActive ? themeColorShade : iconGray} />
     ),
-    label: 'Dashboard',
+    label: "Accessory",
     onClick: () => {
       portalNavbarDispatch({
-        type: 'setIsDashboardActive',
-        payload: !isDashboardActive,
+        type: portalNavbarAction.setIsProductAccessoryActive,
+        payload: !isProductAccessoryActive,
       });
-      navigate('/home/dashboard');
+      navigate("/home/product/accessory");
     },
   };
 
-  const productNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
-    active: isProductActive,
-    ariaLabel: 'Will navigate to product page',
-    icon: <TbDashboard color={isProductActive ? themeColorShade : iconGray} />,
-    label: 'Product',
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    PRODUCT => CPU
+  // ╰─────────────────────────────────────────────────────────────────╯
+  const cpuNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
+    active: isCPUActive,
+    ariaLabel: "Will navigate to cpu page",
+    icon: <TbCircleTriangle color={isCPUActive ? themeColorShade : iconGray} />,
+    label: "CPU",
     onClick: () => {
       portalNavbarDispatch({
-        type: 'setIsProductActive',
-        payload: !isProductActive,
+        type: portalNavbarAction.setIsCPUActive,
+        payload: !isCPUActive,
       });
-      navigate('/home/dashboard/product');
+      navigate("/home/product/cpu");
     },
   };
 
-  const directoryNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
-    active: isDirectoryActive,
-    ariaLabel: 'Will navigate to directory page',
-    icon: <CgDatabase color={isDirectoryActive ? themeColorShade : iconGray} />,
-    label: 'Directory',
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    PRODUCT => COMPUTER CASE
+  // ╰─────────────────────────────────────────────────────────────────╯
+  const computerCaseNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
+    active: isComputerCaseActive,
+    ariaLabel: "Will navigate to computer case page",
+    icon: <TbCircleTriangle color={isComputerCaseActive ? themeColorShade : iconGray} />,
+    label: "Computer case",
     onClick: () => {
       portalNavbarDispatch({
-        type: portalNavbarAction.setIsDirectoryActive,
-        payload: !isDirectoryActive,
+        type: portalNavbarAction.setIsComputerCaseActive,
+        payload: !isComputerCaseActive,
       });
-      navigate('/home/directory');
+      navigate("/home/product/computer-case");
     },
   };
 
-  const notesNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
-    active: isNotesActive,
-    ariaLabel: 'Will navigate to repair notes page',
-    icon: <TbNotebook color={isNotesActive ? themeColorShade : iconGray} />,
-    label: 'Repair Notes',
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    PRODUCT => DESKTOP COMPUTER
+  // ╰─────────────────────────────────────────────────────────────────╯
+  const desktopComputerNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
+    active: isDesktopComputerActive,
+    ariaLabel: "Will navigate to desktop computer page",
+    icon: (
+      <TbCircleTriangle color={isDesktopComputerActive ? themeColorShade : iconGray} />
+    ),
+    label: "Desktop computer",
     onClick: () => {
       portalNavbarDispatch({
-        type: portalNavbarAction.setIsNotesActive,
-        payload: !isNotesActive,
+        type: portalNavbarAction.setIsDesktopComputerActive,
+        payload: !isDesktopComputerActive,
       });
-      navigate('/home/repair-note');
+      navigate("/home/product/desktop-computer");
+    },
+  };
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    PRODUCT => DISPLAY
+  // ╰─────────────────────────────────────────────────────────────────╯
+  const displayNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
+    active: isDisplayActive,
+    ariaLabel: "Will navigate to display page",
+    icon: <TbCircleTriangle color={isDisplayActive ? themeColorShade : iconGray} />,
+    label: "Display",
+    onClick: () => {
+      portalNavbarDispatch({
+        type: portalNavbarAction.setIsDisplayActive,
+        payload: !isDisplayActive,
+      });
+      navigate("/home/product/display");
+    },
+  };
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    PRODUCT => GPU
+  // ╰─────────────────────────────────────────────────────────────────╯
+  const gpuNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
+    active: isGPUActive,
+    ariaLabel: "Will navigate to gpu page",
+    icon: <TbCircleTriangle color={isGPUActive ? themeColorShade : iconGray} />,
+    label: "GPU",
+    onClick: () => {
+      portalNavbarDispatch({
+        type: portalNavbarAction.setIsGPUActive,
+        payload: !isGPUActive,
+      });
+      navigate("/home/product/gpu");
+    },
+  };
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    PRODUCT => HEADPHONE
+  // ╰─────────────────────────────────────────────────────────────────╯
+  const headphoneNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
+    active: isHeadphoneActive,
+    ariaLabel: "Will navigate to headphone page",
+    icon: <TbCircleTriangle color={isHeadphoneActive ? themeColorShade : iconGray} />,
+    label: "Headphone",
+    onClick: () => {
+      portalNavbarDispatch({
+        type: portalNavbarAction.setIsHeadphoneActive,
+        payload: !isHeadphoneActive,
+      });
+      navigate("/home/product/headphone");
+    },
+  };
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    PRODUCT => KEYBOARD
+  // ╰─────────────────────────────────────────────────────────────────╯
+  const keyboardNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
+    active: isKeyboardActive,
+    ariaLabel: "Will navigate to keyboard page",
+    icon: <TbCircleTriangle color={isKeyboardActive ? themeColorShade : iconGray} />,
+    label: "Keyboard",
+    onClick: () => {
+      portalNavbarDispatch({
+        type: portalNavbarAction.setIsKeyboardActive,
+        payload: !isKeyboardActive,
+      });
+      navigate("/home/product/keyboard");
+    },
+  };
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    PRODUCT => LAPTOP
+  // ╰─────────────────────────────────────────────────────────────────╯
+  const laptopNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
+    active: isLaptopActive,
+    ariaLabel: "Will navigate to laptop page",
+    icon: <TbCircleTriangle color={isLaptopActive ? themeColorShade : iconGray} />,
+    label: "Laptop",
+    onClick: () => {
+      portalNavbarDispatch({
+        type: portalNavbarAction.setIsLaptopActive,
+        payload: !isLaptopActive,
+      });
+      navigate("/home/product/laptop");
+    },
+  };
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    PRODUCT => RAM
+  // ╰─────────────────────────────────────────────────────────────────╯
+  const ramNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
+    active: isRAMActive,
+    ariaLabel: "Will navigate to ram page",
+    icon: <TbCircleTriangle color={isRAMActive ? themeColorShade : iconGray} />,
+    label: "RAM",
+    onClick: () => {
+      portalNavbarDispatch({
+        type: portalNavbarAction.setIsRAMActive,
+        payload: !isRAMActive,
+      });
+      navigate("/home/product/ram");
+    },
+  };
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    PRODUCT => MICROPHONE
+  // ╰─────────────────────────────────────────────────────────────────╯
+  const microphoneNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
+    active: isMicrophoneActive,
+    ariaLabel: "Will navigate to microphone page",
+    icon: <TbCircleTriangle color={isMicrophoneActive ? themeColorShade : iconGray} />,
+    label: "Microphone",
+    onClick: () => {
+      portalNavbarDispatch({
+        type: portalNavbarAction.setIsMicrophoneActive,
+        payload: !isMicrophoneActive,
+      });
+      navigate("/home/product/microphone");
+    },
+  };
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    PRODUCT => MOTHERBOARD
+  // ╰─────────────────────────────────────────────────────────────────╯
+  const motherboardNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
+    active: isMotherboardActive,
+    ariaLabel: "Will navigate to motherboard page",
+    icon: <TbCircleTriangle color={isMotherboardActive ? themeColorShade : iconGray} />,
+    label: "Motherboard",
+    onClick: () => {
+      portalNavbarDispatch({
+        type: portalNavbarAction.setIsMotherboardActive,
+        payload: !isMotherboardActive,
+      });
+      navigate("/home/product/motherboard");
+    },
+  };
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    PRODUCT => MOUSE
+  // ╰─────────────────────────────────────────────────────────────────╯
+  const mouseNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
+    active: isMouseActive,
+    ariaLabel: "Will navigate to mouse page",
+    icon: <TbCircleTriangle color={isMouseActive ? themeColorShade : iconGray} />,
+    label: "Mouse",
+    onClick: () => {
+      portalNavbarDispatch({
+        type: portalNavbarAction.setIsMouseActive,
+        payload: !isMouseActive,
+      });
+      navigate("/home/product/mouse");
+    },
+  };
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    PRODUCT => PSU
+  // ╰─────────────────────────────────────────────────────────────────╯
+  const psuNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
+    active: isPSUActive,
+    ariaLabel: "Will navigate to psu page",
+    icon: <TbCircleTriangle color={isPSUActive ? themeColorShade : iconGray} />,
+    label: "PSU",
+    onClick: () => {
+      portalNavbarDispatch({
+        type: portalNavbarAction.setIsPSUActive,
+        payload: !isPSUActive,
+      });
+      navigate("/home/product/psu");
+    },
+  };
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    PRODUCT => SMARTPHONE
+  // ╰─────────────────────────────────────────────────────────────────╯
+  const smartphoneNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
+    active: isSmartphoneActive,
+    ariaLabel: "Will navigate to smartphone page",
+    icon: <TbCircleTriangle color={isSmartphoneActive ? themeColorShade : iconGray} />,
+    label: "Smartphone",
+    onClick: () => {
+      portalNavbarDispatch({
+        type: portalNavbarAction.setIsSmartphoneActive,
+        payload: !isSmartphoneActive,
+      });
+      navigate("/home/product/smartphone");
+    },
+  };
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    PRODUCT => SPEAKER
+  // ╰─────────────────────────────────────────────────────────────────╯
+  const speakerNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
+    active: isSpeakerActive,
+    ariaLabel: "Will navigate to speaker page",
+    icon: <TbCircleTriangle color={isSpeakerActive ? themeColorShade : iconGray} />,
+    label: "Speaker",
+    onClick: () => {
+      portalNavbarDispatch({
+        type: portalNavbarAction.setIsSpeakerActive,
+        payload: !isSpeakerActive,
+      });
+      navigate("/home/product/speaker");
+    },
+  };
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    PRODUCT => STORAGE
+  // ╰─────────────────────────────────────────────────────────────────╯
+  const storageNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
+    active: isStorageActive,
+    ariaLabel: "Will navigate to storage page",
+    icon: <TbCircleTriangle color={isStorageActive ? themeColorShade : iconGray} />,
+    label: "Storage",
+    onClick: () => {
+      portalNavbarDispatch({
+        type: portalNavbarAction.setIsStorageActive,
+        payload: !isStorageActive,
+      });
+      navigate("/home/product/storage");
+    },
+  };
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    PRODUCT => TABLET
+  // ╰─────────────────────────────────────────────────────────────────╯
+  const tabletNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
+    active: isTabletActive,
+    ariaLabel: "Will navigate to tablet page",
+    icon: <TbCircleTriangle color={isTabletActive ? themeColorShade : iconGray} />,
+    label: "Tablet",
+    onClick: () => {
+      portalNavbarDispatch({
+        type: portalNavbarAction.setIsTabletActive,
+        payload: !isTabletActive,
+      });
+      navigate("/home/product/tablet");
+    },
+  };
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    PRODUCT => WEBCAM
+  // ╰─────────────────────────────────────────────────────────────────╯
+  const webcamNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
+    active: isWebcamActive,
+    ariaLabel: "Will navigate to webcam page",
+    icon: <TbCircleTriangle color={isWebcamActive ? themeColorShade : iconGray} />,
+    label: "Webcam",
+    onClick: () => {
+      portalNavbarDispatch({
+        type: portalNavbarAction.setIsWebcamActive,
+        payload: !isWebcamActive,
+      });
+      navigate("/home/product/webcam");
     },
   };
 
   const [
-    createdHomeNavLink,
-    createdDashboardNavLink,
-    createdProductNavLink,
-    createdDirectoryNavLink,
-    createdNotesNavLink,
+    createdProductAccessoryNavLink,
+    createdCPUNavLink,
+    createdComputerCaseNavLink,
+    createdDesktopComputerNavLink,
+    createdDisplayNavLink,
+    createdGPUNavLink,
+    createdHeadphoneNavLink,
+    createdKeyboardNavLink,
+    createdLaptopNavLink,
+    createdRAMNavLink,
+    createdMicrophoneNavLink,
+    createdMotherboardNavLink,
+    createdMouseNavLink,
+    createdPSUNavLink,
+    createdSmartphoneNavLink,
+    createdSpeakerNavLink,
+    createdStorageNavLink,
+    createdTabletNavLink,
+    createdWebcamNavLink,
   ] = returnAccessibleNavLinkElements([
-    homeNavLinkCreatorInfo,
-    dashboardNavLinkCreatorInfo,
-    productNavLinkCreatorInfo,
-    directoryNavLinkCreatorInfo,
-    notesNavLinkCreatorInfo,
+    productAccessoryNavLinkCreatorInfo,
+    cpuNavLinkCreatorInfo,
+    computerCaseNavLinkCreatorInfo,
+    desktopComputerNavLinkCreatorInfo,
+    displayNavLinkCreatorInfo,
+    gpuNavLinkCreatorInfo,
+    headphoneNavLinkCreatorInfo,
+    keyboardNavLinkCreatorInfo,
+    laptopNavLinkCreatorInfo,
+    ramNavLinkCreatorInfo,
+    microphoneNavLinkCreatorInfo,
+    motherboardNavLinkCreatorInfo,
+    mouseNavLinkCreatorInfo,
+    psuNavLinkCreatorInfo,
+    smartphoneNavLinkCreatorInfo,
+    speakerNavLinkCreatorInfo,
+    storageNavLinkCreatorInfo,
+    tabletNavLinkCreatorInfo,
+    webcamNavLinkCreatorInfo,
   ]);
 
-  // company
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    PRODUCT
+  // ╰─────────────────────────────────────────────────────────────────╯
+  const isProductNavlinkOpened =
+    isProductActive ||
+    isProductAccessoryActive ||
+    isCPUActive ||
+    isComputerCaseActive ||
+    isDesktopComputerActive ||
+    isDisplayActive ||
+    isGPUActive ||
+    isHeadphoneActive ||
+    isKeyboardActive ||
+    isLaptopActive ||
+    isRAMActive ||
+    isMicrophoneActive ||
+    isMotherboardActive ||
+    isMouseActive ||
+    isPSUActive ||
+    isSmartphoneActive ||
+    isSpeakerActive ||
+    isStorageActive ||
+    isTabletActive ||
+    isWebcamActive
+      ? true
+      : false;
+
+  const productNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
+    active: isProductActive,
+    ariaLabel: "Will navigate to product page",
+    children: [
+      createdProductAccessoryNavLink,
+      createdCPUNavLink,
+      createdComputerCaseNavLink,
+      createdDesktopComputerNavLink,
+      createdDisplayNavLink,
+      createdGPUNavLink,
+      createdHeadphoneNavLink,
+      createdKeyboardNavLink,
+      createdLaptopNavLink,
+      createdRAMNavLink,
+      createdMicrophoneNavLink,
+      createdMotherboardNavLink,
+      createdMouseNavLink,
+      createdPSUNavLink,
+      createdSmartphoneNavLink,
+      createdSpeakerNavLink,
+      createdStorageNavLink,
+      createdTabletNavLink,
+      createdWebcamNavLink,
+    ],
+    icon: <TbShoppingCartPlus color={isProductActive ? themeColorShade : iconGray} />,
+    label: "Product",
+    onClick: () => {
+      portalNavbarDispatch({
+        type: portalNavbarAction.setIsProductActive,
+        payload: !isProductActive,
+      });
+      navigate("/home/product");
+    },
+    opened: isProductNavlinkOpened,
+    rightSection: (
+      <TbChevronRight color={isProductNavlinkOpened ? themeColorShade : iconGray} />
+    ),
+  };
+
+  const [createdProductNavLink] = returnAccessibleNavLinkElements([
+    productNavLinkCreatorInfo,
+  ]);
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    PRODUCT REVIEW
+  // ╰─────────────────────────────────────────────────────────────────╯
+  const [createdProductReviewNavLink] = returnAccessibleNavLinkElements([
+    {
+      active: isProductReviewActive,
+      ariaLabel: "Will navigate to product review page",
+      icon: (
+        <TbTimelineEventPlus color={isProductReviewActive ? themeColorShade : iconGray} />
+      ),
+      label: "Product review",
+      onClick: () => {
+        portalNavbarDispatch({
+          type: portalNavbarAction.setIsProductReviewActive,
+          payload: !isProductReviewActive,
+        });
+        navigate("/home/product-review");
+      },
+    },
+  ]);
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    REPAIR => COMPUTER COMPONENT
+  // ╰─────────────────────────────────────────────────────────────────╯
+  const computerComponentNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
+    active: isComputerComponentActive,
+    ariaLabel: "Will navigate to computer component page",
+    icon: (
+      <TbCircleTriangle color={isComputerComponentActive ? themeColorShade : iconGray} />
+    ),
+    label: "Computer component",
+    onClick: () => {
+      portalNavbarDispatch({
+        type: portalNavbarAction.setIsComputerComponentActive,
+        payload: !isComputerComponentActive,
+      });
+      navigate("/home/repair/computer-component");
+    },
+  };
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    REPAIR => PERIPHERAL
+  // ╰─────────────────────────────────────────────────────────────────╯
+  const peripheralNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
+    active: isPeripheralActive,
+    ariaLabel: "Will navigate to peripheral page",
+    icon: <TbCircleTriangle color={isPeripheralActive ? themeColorShade : iconGray} />,
+    label: "Peripheral",
+    onClick: () => {
+      portalNavbarDispatch({
+        type: portalNavbarAction.setIsPeripheralActive,
+        payload: !isPeripheralActive,
+      });
+      navigate("/home/repair/peripheral");
+    },
+  };
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    REPAIR => ELECTRONIC DEVICE
+  // ╰─────────────────────────────────────────────────────────────────╯
+  const electronicDeviceNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
+    active: isElectronicDeviceActive,
+    ariaLabel: "Will navigate to electronic device page",
+    icon: (
+      <TbCircleTriangle color={isElectronicDeviceActive ? themeColorShade : iconGray} />
+    ),
+    label: "Electronic device",
+    onClick: () => {
+      portalNavbarDispatch({
+        type: portalNavbarAction.setIsElectronicDeviceActive,
+        payload: !isElectronicDeviceActive,
+      });
+      navigate("/home/repair/electronic-device");
+    },
+  };
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    REPAIR => MOBILE DEVICE
+  // ╰─────────────────────────────────────────────────────────────────╯
+  const mobileDeviceNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
+    active: isMobileDeviceActive,
+    ariaLabel: "Will navigate to mobile device page",
+    icon: <TbCircleTriangle color={isMobileDeviceActive ? themeColorShade : iconGray} />,
+    label: "Mobile device",
+    onClick: () => {
+      portalNavbarDispatch({
+        type: portalNavbarAction.setIsMobileDeviceActive,
+        payload: !isMobileDeviceActive,
+      });
+      navigate("/home/repair/mobile-device");
+    },
+  };
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    REPAIR => AUDIO VIDEO
+  // ╰─────────────────────────────────────────────────────────────────╯
+  const audioVideoNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
+    active: isAudioVideoActive,
+    ariaLabel: "Will navigate to audio video page",
+    icon: <TbCircleTriangle color={isAudioVideoActive ? themeColorShade : iconGray} />,
+    label: "Audio video",
+    onClick: () => {
+      portalNavbarDispatch({
+        type: portalNavbarAction.setIsAudioVideoActive,
+        payload: !isAudioVideoActive,
+      });
+      navigate("/home/repair/audio-video");
+    },
+  };
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    REPAIR => ACCESSORY
+  // ╰─────────────────────────────────────────────────────────────────╯
+  const repairAccessoryNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
+    active: isRepairAccessoryActive,
+    ariaLabel: "Will navigate to repair accessory page",
+    icon: (
+      <TbCircleTriangle color={isRepairAccessoryActive ? themeColorShade : iconGray} />
+    ),
+    label: "Accessory",
+    onClick: () => {
+      portalNavbarDispatch({
+        type: portalNavbarAction.setIsRepairAccessoryActive,
+        payload: !isRepairAccessoryActive,
+      });
+      navigate("/home/repair/accessory");
+    },
+  };
+
+  const [
+    createdComputerComponentNavLink,
+    createdPeripheralNavLink,
+    createdElectronicDeviceNavLink,
+    createdMobileDeviceNavLink,
+    createdAudioVideoNavLink,
+    createdRepairAccessoryNavLink,
+  ] = returnAccessibleNavLinkElements([
+    computerComponentNavLinkCreatorInfo,
+    peripheralNavLinkCreatorInfo,
+    electronicDeviceNavLinkCreatorInfo,
+    mobileDeviceNavLinkCreatorInfo,
+    audioVideoNavLinkCreatorInfo,
+    repairAccessoryNavLinkCreatorInfo,
+  ]);
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    REPAIR
+  // ╰─────────────────────────────────────────────────────────────────╯
+  const isRepairNavlinkOpened =
+    isRepairActive ||
+    isComputerComponentActive ||
+    isPeripheralActive ||
+    isElectronicDeviceActive ||
+    isMobileDeviceActive ||
+    isAudioVideoActive ||
+    isRepairAccessoryActive
+      ? true
+      : false;
+
+  const repairNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
+    active: isRepairActive,
+    ariaLabel: "Will navigate to repair page",
+    children: [
+      createdComputerComponentNavLink,
+      createdPeripheralNavLink,
+      createdElectronicDeviceNavLink,
+      createdMobileDeviceNavLink,
+      createdAudioVideoNavLink,
+      createdRepairAccessoryNavLink,
+    ],
+    icon: <TbCircuitResistor color={isRepairActive ? themeColorShade : iconGray} />,
+    label: "Repair",
+    onClick: () => {
+      portalNavbarDispatch({
+        type: portalNavbarAction.setIsRepairActive,
+        payload: !isRepairActive,
+      });
+      navigate("/home/repair");
+    },
+    opened: isRepairNavlinkOpened,
+    rightSection: (
+      <TbChevronRight color={isRepairNavlinkOpened ? themeColorShade : iconGray} />
+    ),
+  };
+
+  const [createdRepairNavLink] = returnAccessibleNavLinkElements([
+    repairNavLinkCreatorInfo,
+  ]);
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    TRANSACTION => PURCHASE
+  // ╰─────────────────────────────────────────────────────────────────╯
+  const purchaseNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
+    active: isPurchaseActive,
+    ariaLabel: "Will navigate to purchase page",
+    icon: <TbCircleTriangle color={isPurchaseActive ? themeColorShade : iconGray} />,
+    label: "Purchase",
+    onClick: () => {
+      portalNavbarDispatch({
+        type: portalNavbarAction.setIsPurchaseActive,
+        payload: !isPurchaseActive,
+      });
+      navigate("/home/transaction/purchase");
+    },
+  };
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    TRANSACTION => RMA
+  // ╰─────────────────────────────────────────────────────────────────╯
+  const rmaNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
+    active: isRMAActive,
+    ariaLabel: "Will navigate to rma page",
+    icon: <TbCircleTriangle color={isRMAActive ? themeColorShade : iconGray} />,
+    label: "RMA",
+    onClick: () => {
+      portalNavbarDispatch({
+        type: portalNavbarAction.setIsRMAActive,
+        payload: !isRMAActive,
+      });
+      navigate("/home/transaction/rma");
+    },
+  };
+
+  const [createdPurchaseNavLink, createdRMANavLink] = returnAccessibleNavLinkElements([
+    purchaseNavLinkCreatorInfo,
+    rmaNavLinkCreatorInfo,
+  ]);
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    TRANSACTION
+  // ╰─────────────────────────────────────────────────────────────────╯
+  const isTransactionNavlinkOpened =
+    isTransactionActive || isPurchaseActive || isRMAActive;
+
+  const transactionNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
+    active: isTransactionActive,
+    ariaLabel: "Will navigate to transaction page",
+    children: [createdPurchaseNavLink, createdRMANavLink],
+    icon: <GrTransaction color={isTransactionActive ? themeColorShade : iconGray} />,
+    label: "Transaction",
+    onClick: () => {
+      portalNavbarDispatch({
+        type: portalNavbarAction.setIsTransactionActive,
+        payload: !isTransactionActive,
+      });
+      navigate("/home/transaction");
+    },
+    opened: isTransactionNavlinkOpened,
+    rightSection: (
+      <TbChevronRight color={isTransactionNavlinkOpened ? themeColorShade : iconGray} />
+    ),
+  };
+
+  const [createdTransactionNavLink] = returnAccessibleNavLinkElements([
+    transactionNavLinkCreatorInfo,
+  ]);
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    COMPANY => ADDRESS CHANGE
+  // ╰─────────────────────────────────────────────────────────────────╯
   const addressChangeNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
     active: isAddressChangeActive,
-    ariaLabel: 'Will navigate to address change page',
-    icon: (
-      <TbAddressBook
-        color={isAddressChangeActive ? themeColorShade : iconGray}
-      />
-    ),
-    label: 'Address change',
+    ariaLabel: "Will navigate to address change page",
+    icon: <TbAddressBook color={isAddressChangeActive ? themeColorShade : iconGray} />,
+    label: "Address change",
     onClick: () => {
       portalNavbarDispatch({
         type: portalNavbarAction.setIsAddressChangeActive,
         payload: !isAddressChangeActive,
       });
-      navigate('/home/company/address-change');
+      navigate("/home/company/address-change");
     },
   };
 
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    COMPANY => BENEFIT
+  // ╰─────────────────────────────────────────────────────────────────╯
   const benefitNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
     active: isBenefitActive,
-    ariaLabel: 'Will navigate to benefit page',
+    ariaLabel: "Will navigate to benefit page",
     icon: <TbGift color={isBenefitActive ? themeColorShade : iconGray} />,
-    label: 'Benefit',
+    label: "Benefit",
     onClick: () => {
       portalNavbarDispatch({
         type: portalNavbarAction.setIsBenefitActive,
         payload: !isBenefitActive,
       });
-      navigate('/home/company/benefit');
+      navigate("/home/company/benefit");
     },
   };
 
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    COMPANY => EXPENSE CLAIM
+  // ╰─────────────────────────────────────────────────────────────────╯
   const expenseClaimNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
     active: isExpenseClaimActive,
-    ariaLabel: 'Will navigate to expense claim page',
-    icon: (
-      <TbReceipt2 color={isExpenseClaimActive ? themeColorShade : iconGray} />
-    ),
-    label: 'Expense claim',
+    ariaLabel: "Will navigate to expense claim page",
+    icon: <TbReceipt2 color={isExpenseClaimActive ? themeColorShade : iconGray} />,
+    label: "Expense claim",
     onClick: () => {
       portalNavbarDispatch({
         type: portalNavbarAction.setIsExpenseClaimActive,
         payload: !isExpenseClaimActive,
       });
-      navigate('/home/company/expense-claim');
+      navigate("/home/company/expense-claim");
     },
   };
 
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    COMPANY => LEAVE REQUEST
+  // ╰─────────────────────────────────────────────────────────────────╯
   const leaveRequestNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
     active: isLeaveRequestActive,
-    ariaLabel: 'Will navigate to leave request page',
-    icon: (
-      <TbCalendarPin
-        color={isLeaveRequestActive ? themeColorShade : iconGray}
-      />
-    ),
-    label: 'Leave request',
+    ariaLabel: "Will navigate to leave request page",
+    icon: <TbCalendarPin color={isLeaveRequestActive ? themeColorShade : iconGray} />,
+    label: "Leave request",
     onClick: () => {
       portalNavbarDispatch({
         type: portalNavbarAction.setIsLeaveRequestActive,
         payload: !isLeaveRequestActive,
       });
-      navigate('/home/company/leave-request');
+      navigate("/home/company/leave-request");
     },
   };
 
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    COMPANY => REQUEST RESOURCE
+  // ╰─────────────────────────────────────────────────────────────────╯
   const requestResourceNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
     active: isRequestResourceActive,
-    ariaLabel: 'Will navigate to request resource page',
-    icon: (
-      <TbCashBanknote
-        color={isRequestResourceActive ? themeColorShade : iconGray}
-      />
-    ),
-    label: 'Request resource',
+    ariaLabel: "Will navigate to request resource page",
+    icon: <TbCashBanknote color={isRequestResourceActive ? themeColorShade : iconGray} />,
+    label: "Request resource",
     onClick: () => {
       portalNavbarDispatch({
         type: portalNavbarAction.setIsRequestResourceActive,
         payload: !isRequestResourceActive,
       });
-      navigate('/home/company/request-resource');
+      navigate("/home/company/request-resource");
     },
   };
 
@@ -271,6 +1083,9 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
     requestResourceNavLinkCreatorInfo,
   ]);
 
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    COMPANY
+  // ╰─────────────────────────────────────────────────────────────────╯
   const isCompanyNavlinkOpened =
     isCompanyActive ||
     isAddressChangeActive ||
@@ -283,7 +1098,7 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
 
   const companyNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
     active: isCompanyActive,
-    ariaLabel: 'Will navigate to company page',
+    ariaLabel: "Will navigate to company page",
     children: [
       createdAddressChangeNavLink,
       createdBenefitNavLink,
@@ -291,24 +1106,18 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
       createdLeaveRequestNavLink,
       createdRequestResourceNavLink,
     ],
-    icon: (
-      <TbBuildingWarehouse
-        color={isCompanyActive ? themeColorShade : iconGray}
-      />
-    ),
-    label: 'Company',
+    icon: <TbBuildingWarehouse color={isCompanyActive ? themeColorShade : iconGray} />,
+    label: "Company",
     onClick: () => {
       portalNavbarDispatch({
         type: portalNavbarAction.setIsCompanyActive,
         payload: !isCompanyActive,
       });
-      navigate('/home/company');
+      navigate("/home/company");
     },
     opened: isCompanyNavlinkOpened,
     rightSection: (
-      <TbChevronRight
-        color={isCompanyNavlinkOpened ? themeColorShade : iconGray}
-      />
+      <TbChevronRight color={isCompanyNavlinkOpened ? themeColorShade : iconGray} />
     ),
   };
 
@@ -316,69 +1125,73 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
     companyNavLinkCreatorInfo,
   ]);
 
-  // general
-
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    GENERAL => ENDORSEMENT
+  // ╰─────────────────────────────────────────────────────────────────╯
   const endorsementNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
     active: isEndorsementActive,
-    ariaLabel: 'Will navigate to endorsement page',
-    icon: (
-      <TbUserCheck color={isEndorsementActive ? themeColorShade : iconGray} />
-    ),
-    label: 'Endorsement',
+    ariaLabel: "Will navigate to endorsement page",
+    icon: <TbUserCheck color={isEndorsementActive ? themeColorShade : iconGray} />,
+    label: "Endorsement",
     onClick: () => {
       portalNavbarDispatch({
         type: portalNavbarAction.setIsEndorsementActive,
         payload: !isEndorsementActive,
       });
-      navigate('/home/general/endorsement');
+      navigate("/home/general/endorsement");
     },
   };
 
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    GENERAL => PRINTER ISSUE
+  // ╰─────────────────────────────────────────────────────────────────╯
   const printerIssueNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
     active: isPrinterIssueActive,
-    ariaLabel: 'Will navigate to printer issue page',
-    icon: (
-      <TbPrinterOff color={isPrinterIssueActive ? themeColorShade : iconGray} />
-    ),
-    label: 'Printer issue',
+    ariaLabel: "Will navigate to printer issue page",
+    icon: <TbPrinterOff color={isPrinterIssueActive ? themeColorShade : iconGray} />,
+    label: "Printer issue",
     onClick: () => {
       portalNavbarDispatch({
         type: portalNavbarAction.setIsPrinterIssueActive,
         payload: !isPrinterIssueActive,
       });
-      navigate('/home/general/printer-issue');
+      navigate("/home/general/printer-issue");
     },
   };
 
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    GENERAL => ANONYMOUS REQUEST
+  // ╰─────────────────────────────────────────────────────────────────╯
   const anonymousRequestNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
     active: isAnonymousRequestActive,
-    ariaLabel: 'Will navigate to anonymous request page',
+    ariaLabel: "Will navigate to anonymous request page",
     icon: (
-      <MdSafetyDivider
-        color={isAnonymousRequestActive ? themeColorShade : iconGray}
-      />
+      <MdSafetyDivider color={isAnonymousRequestActive ? themeColorShade : iconGray} />
     ),
-    label: 'Anonymous request',
+    label: "Anonymous request",
     onClick: () => {
       portalNavbarDispatch({
         type: portalNavbarAction.setIsAnonymousRequestActive,
         payload: !isAnonymousRequestActive,
       });
-      navigate('/home/general/anonymous-request');
+      navigate("/home/general/anonymous-request");
     },
   };
 
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    GENERAL => REFERMENT
+  // ╰─────────────────────────────────────────────────────────────────╯
   const refermentNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
     active: isRefermentActive,
-    ariaLabel: 'Will navigate to referment page',
+    ariaLabel: "Will navigate to referment page",
     icon: <TiThumbsUp color={isRefermentActive ? themeColorShade : iconGray} />,
-    label: 'Referment',
+    label: "Referment",
     onClick: () => {
       portalNavbarDispatch({
         type: portalNavbarAction.setIsRefermentActive,
         payload: !isRefermentActive,
       });
-      navigate('/home/general/referment');
+      navigate("/home/general/referment");
     },
   };
 
@@ -394,6 +1207,9 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
     refermentNavLinkCreatorInfo,
   ]);
 
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    GENERAL
+  // ╰─────────────────────────────────────────────────────────────────╯
   const isGeneralNavlinkOpened =
     isGeneralActive ||
     isEndorsementActive ||
@@ -405,29 +1221,25 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
 
   const generalNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
     active: isGeneralActive,
-    ariaLabel: 'Will navigate to general page',
+    ariaLabel: "Will navigate to general page",
     children: [
       createdEndorsementNavLink,
       createdPrinterIssueNavLink,
       createdAnonymousRequestNavLink,
       createdRefermentNavLink,
     ],
-    icon: (
-      <TbCircleTriangle color={isGeneralActive ? themeColorShade : iconGray} />
-    ),
-    label: 'General',
+    icon: <TbCircleTriangle color={isGeneralActive ? themeColorShade : iconGray} />,
+    label: "General",
     onClick: () => {
       portalNavbarDispatch({
         type: portalNavbarAction.setIsGeneralActive,
         payload: !isGeneralActive,
       });
-      navigate('/home/general');
+      navigate("/home/general");
     },
     opened: isGeneralNavlinkOpened,
     rightSection: (
-      <TbChevronRight
-        color={isGeneralNavlinkOpened ? themeColorShade : iconGray}
-      />
+      <TbChevronRight color={isGeneralNavlinkOpened ? themeColorShade : iconGray} />
     ),
   };
 
@@ -435,65 +1247,67 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
     generalNavLinkCreatorInfo,
   ]);
 
-  // outreach
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    OUTREACH => ANNOUNCEMENT
+  // ╰─────────────────────────────────────────────────────────────────╯
   const announcementNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
     active: isAnnouncementActive,
-    ariaLabel: 'Will navigate to announcement page',
-    icon: (
-      <TbSpeakerphone
-        color={isAnnouncementActive ? themeColorShade : iconGray}
-      />
-    ),
-    label: 'Announcement',
+    ariaLabel: "Will navigate to announcement page",
+    icon: <TbSpeakerphone color={isAnnouncementActive ? themeColorShade : iconGray} />,
+    label: "Announcement",
     onClick: () => {
       portalNavbarDispatch({
         type: portalNavbarAction.setIsAnnouncementActive,
         payload: !isAnnouncementActive,
       });
-      navigate('/home/outreach/announcement');
+      navigate("/home/outreach/announcement");
     },
   };
 
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    OUTREACH => SURVEY
+  // ╰─────────────────────────────────────────────────────────────────╯
   const surveyNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
     active: isSurveyActive,
-    ariaLabel: 'Will navigate to survey page',
+    ariaLabel: "Will navigate to survey page",
     icon: <TbChartPie3 color={isSurveyActive ? themeColorShade : iconGray} />,
-    label: 'Survey',
+    label: "Survey",
     onClick: () => {
       portalNavbarDispatch({
         type: portalNavbarAction.setIsSurveyActive,
         payload: !isSurveyActive,
       });
-      navigate('/home/outreach/survey');
+      navigate("/home/outreach/survey");
     },
   };
 
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    OUTREACH => EVENT
+  // ╰─────────────────────────────────────────────────────────────────╯
   const eventNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
     active: isEventActive,
-    ariaLabel: 'Will navigate to event page',
-    icon: (
-      <TbTimelineEventPlus color={isEventActive ? themeColorShade : iconGray} />
-    ),
-    label: 'Event',
+    ariaLabel: "Will navigate to event page",
+    icon: <TbTimelineEventPlus color={isEventActive ? themeColorShade : iconGray} />,
+    label: "Event",
     onClick: () => {
       portalNavbarDispatch({
         type: portalNavbarAction.setIsEventActive,
         payload: !isEventActive,
       });
-      navigate('/home/outreach/event');
+      navigate("/home/outreach/event");
     },
   };
 
-  const [
-    createdAnnouncementNavLink,
-    createdSurveyNavLink,
-    createdEventNavLink,
-  ] = returnAccessibleNavLinkElements([
-    announcementNavLinkCreatorInfo,
-    surveyNavLinkCreatorInfo,
-    eventNavLinkCreatorInfo,
-  ]);
+  const [createdAnnouncementNavLink, createdSurveyNavLink, createdEventNavLink] =
+    returnAccessibleNavLinkElements([
+      announcementNavLinkCreatorInfo,
+      surveyNavLinkCreatorInfo,
+      eventNavLinkCreatorInfo,
+    ]);
 
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    OUTREACH
+  // ╰─────────────────────────────────────────────────────────────────╯
   const isOutreachNavlinkOpened =
     isOutreachActive || isAnnouncementActive || isEventActive || isSurveyActive
       ? true
@@ -501,35 +1315,44 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
 
   const outreachNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
     active: isOutreachActive,
-    ariaLabel: 'Will navigate to outreach page',
-    children: [
-      createdAnnouncementNavLink,
-      createdSurveyNavLink,
-      createdEventNavLink,
-    ],
-    icon: (
-      <RiSignalTowerFill
-        color={isOutreachActive ? themeColorShade : iconGray}
-      />
-    ),
-    label: 'Outreach',
+    ariaLabel: "Will navigate to outreach page",
+    children: [createdAnnouncementNavLink, createdSurveyNavLink, createdEventNavLink],
+    icon: <RiSignalTowerFill color={isOutreachActive ? themeColorShade : iconGray} />,
+    label: "Outreach",
     onClick: () => {
       portalNavbarDispatch({
         type: portalNavbarAction.setIsOutreachActive,
         payload: !isOutreachActive,
       });
-      navigate('/home/outreach');
+      navigate("/home/outreach");
     },
     opened: isOutreachNavlinkOpened,
     rightSection: (
-      <TbChevronRight
-        color={isOutreachNavlinkOpened ? themeColorShade : iconGray}
-      />
+      <TbChevronRight color={isOutreachNavlinkOpened ? themeColorShade : iconGray} />
     ),
   };
 
   const [createdOutreachNavLink] = returnAccessibleNavLinkElements([
     outreachNavLinkCreatorInfo,
+  ]);
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //    DIRECTORY
+  // ╰─────────────────────────────────────────────────────────────────╯
+  const [createdDirectoryNavLink] = returnAccessibleNavLinkElements([
+    {
+      active: isDirectoryActive,
+      ariaLabel: "Will navigate to directory page",
+      icon: <CgDatabase color={isDirectoryActive ? themeColorShade : iconGray} />,
+      label: "Directory",
+      onClick: () => {
+        portalNavbarDispatch({
+          type: portalNavbarAction.setIsDirectoryActive,
+          payload: !isDirectoryActive,
+        });
+        navigate("/home/directory");
+      },
+    },
   ]);
 
   // dev testing page
@@ -538,17 +1361,10 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
       label={<Text>Dev testing</Text>}
       icon={<TbTimelineEventPlus color={iconGray} />}
       onClick={() => {
-        navigate('/home/dev-testing');
+        navigate("/home/dev-testing");
       }}
     />
   );
-
-  // useEffect(() => {
-  //   logState({
-  //     state: portalNavbarState,
-  //     groupLabel: 'PortalNavbar',
-  //   });
-  // }, [portalNavbarState]);
 
   return (
     <Navbar
@@ -563,31 +1379,30 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
     >
       <ScrollArea styles={() => scrollBarStyle} offsetScrollbars>
         <Flex direction="column">
-          {/* dev testing */}
           {displayDevTestingNavLink}
 
-          {/* {displayHomeNavLink} */}
           {createdHomeNavLink}
 
-          {/* {displayDashboardNavLink} */}
           {createdDashboardNavLink}
 
-          {/* {displayProductNavLink} */}
+          {createdCustomerNavLink}
+
+          {createdCommentNavLink}
+
+          {createdFileUploadNavLink}
+
           {createdProductNavLink}
 
-          {/* {displayNotesNavLink} */}
-          {createdNotesNavLink}
+          {createdProductReviewNavLink}
 
-          {/* {displayCompanyNavLinks} */}
+          {createdRepairNavLink}
+
           {createdCompanyNavLink}
 
-          {/* {displayGeneralNavLinks} */}
           {createdGeneralNavLink}
 
-          {/* {displayOutreachNavLinks} */}
           {createdOutreachNavLink}
 
-          {/* {displayDirectoryNavLink} */}
           {createdDirectoryNavLink}
         </Flex>
       </ScrollArea>

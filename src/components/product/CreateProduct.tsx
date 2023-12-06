@@ -56,27 +56,6 @@ import {
   WEIGHT_REGEX,
   WEIGHT_UNIT_SELECT_INPUT_DATA,
 } from "./constants";
-import {
-  CreateAccessory,
-  CreateCase,
-  CreateCpu,
-  CreateDesktopComputer,
-  CreateDisplay,
-  CreateGpu,
-  CreateHeadphone,
-  CreateKeyboard,
-  CreateLaptop,
-  CreateMicrophone,
-  CreateMotherboard,
-  CreateMouse,
-  CreatePsu,
-  CreateRam,
-  CreateSmartphone,
-  CreateSpeaker,
-  CreateStorage,
-  CreateTablet,
-  CreateWebcam,
-} from "./productCategory";
 import { createProductReducer } from "./reducers";
 import { createProductAction, initialCreateProductState } from "./state";
 import {
@@ -128,6 +107,25 @@ import {
   returnFormReviewObjectsFromUserDefinedFields,
   returnRequestBodyfromUserDefinedFields,
 } from "./utils";
+import CreateAccessory from "./accessory/CreateAccessory";
+import CreateCase from "./case/CreateCase";
+import CreateCpu from "./cpu/CreateCpu";
+import CreateDesktopComputer from "./desktopComputer/CreateDesktopComputer";
+import CreateDisplay from "./display/CreateDisplay";
+import CreateGpu from "./gpu/CreateGpu";
+import CreateHeadphone from "./headphone/CreateHeadphone";
+import CreateKeyboard from "./keyboard/CreateKeyboard";
+import CreateLaptop from "./laptop/CreateLaptop";
+import CreateMicrophone from "./microphone/CreateMicrophone";
+import CreateMotherboard from "./motherboard/CreateMotherboard";
+import CreateMouse from "./mouse/CreateMouse";
+import CreatePsu from "./psu/CreatePsu";
+import CreateRam from "./ram/CreateRam";
+import CreateSmartphone from "./smartphone/CreateSmartphone";
+import CreateSpeaker from "./speaker/CreateSpeaker";
+import CreateStorage from "./storage/CreateStorage";
+import CreateTablet from "./tablet/CreateTablet";
+import CreateWebcam from "./webcam/CreateWebcam";
 
 function CreateProduct() {
   // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄

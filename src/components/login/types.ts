@@ -1,4 +1,4 @@
-import { UserDocument } from '../../types';
+import { UserDocument } from "../../types";
 
 type LoginState = {
   username: string;
@@ -16,39 +16,39 @@ type LoginState = {
 };
 
 type LoginAction = {
-  setUsername: 'setUsername';
-  setPassword: 'setPassword';
-  setTriggerLoginSubmit: 'setTriggerLoginSubmit';
+  setUsername: "setUsername";
+  setPassword: "setPassword";
+  setTriggerLoginSubmit: "setTriggerLoginSubmit";
 
-  setIsError: 'setIsError';
-  setErrorMessage: 'setErrorMessage';
-  setIsLoading: 'setIsLoading';
-  setLoadingMessage: 'setLoadingMessage';
-  setIsSubmitting: 'setIsSubmitting';
-  setSubmitMessage: 'setSubmitMessage';
-  setIsSuccessful: 'setIsSuccessful';
-  setSuccessMessage: 'setSuccessMessage';
+  setIsError: "setIsError";
+  setErrorMessage: "setErrorMessage";
+  setIsLoading: "setIsLoading";
+  setLoadingMessage: "setLoadingMessage";
+  setIsSubmitting: "setIsSubmitting";
+  setSubmitMessage: "setSubmitMessage";
+  setIsSuccessful: "setIsSuccessful";
+  setSuccessMessage: "setSuccessMessage";
 };
 
 type LoginDispatch =
   | {
       type:
-        | LoginAction['setUsername']
-        | LoginAction['setPassword']
-        | LoginAction['setErrorMessage']
-        | LoginAction['setLoadingMessage']
-        | LoginAction['setSuccessMessage']
-        | LoginAction['setSubmitMessage'];
+        | LoginAction["setUsername"]
+        | LoginAction["setPassword"]
+        | LoginAction["setErrorMessage"]
+        | LoginAction["setLoadingMessage"]
+        | LoginAction["setSuccessMessage"]
+        | LoginAction["setSubmitMessage"];
 
       payload: string;
     }
   | {
       type:
-        | LoginAction['setTriggerLoginSubmit']
-        | LoginAction['setIsError']
-        | LoginAction['setIsLoading']
-        | LoginAction['setIsSuccessful']
-        | LoginAction['setIsSubmitting'];
+        | LoginAction["setTriggerLoginSubmit"]
+        | LoginAction["setIsError"]
+        | LoginAction["setIsLoading"]
+        | LoginAction["setIsSuccessful"]
+        | LoginAction["setIsSubmitting"];
 
       payload: boolean;
     };
@@ -58,14 +58,14 @@ type LoginReducer = (state: LoginState, action: LoginDispatch) => LoginState;
 type LoginResponse = {
   message: string;
   accessToken?: string | undefined;
-  userDocument?: Omit<UserDocument, 'password' | '__v'>;
+  userDocument?: Omit<UserDocument, "password">;
 };
 
 type DecodedToken = {
   userInfo: {
     userId: string;
     username: string;
-    roles: ('Admin' | 'Employee' | 'Manager')[];
+    roles: ("Admin" | "Employee" | "Manager")[];
   };
   sessionId: string;
   iat: number;

@@ -1,7 +1,7 @@
 import { Group, Stack, Title } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { InvalidTokenError } from "jwt-decode";
-import { ChangeEvent, useEffect, useReducer } from "react";
+import { ChangeEvent, useEffect, useReducer, useRef } from "react";
 import { useErrorBoundary } from "react-error-boundary";
 import { useNavigate } from "react-router-dom";
 
@@ -31,7 +31,6 @@ import { PageBuilder } from "../pageBuilder";
 import { QueryBuilder } from "../queryBuilder";
 import { AccessibleSelectInputCreatorInfo } from "../wrappers";
 import {
-  PRODUCT_CATEGORY_FIELDS_OBJ,
   PRODUCT_CATEGORY_ROUTE_SELECT_DATA,
   QUERY_LIMIT_PER_PAGE_SELECT_DATA,
 } from "./constants";
@@ -127,6 +126,9 @@ function DisplayResource<Doc>({
 
   const { wrappedFetch } = useWrapFetch();
 
+  // prevents race conditions
+  const abortControllerRefDataRequest = useRef<AbortController | null>(null);
+
   // submit success notification modal
   const [
     openedSubmitSuccessNotificationModal,
@@ -141,7 +143,10 @@ function DisplayResource<Doc>({
 
   useEffect(() => {
     let isMounted = true;
-    const controller = new AbortController();
+    // before making a new request, abort the previous request
+    abortControllerRefDataRequest.current?.abort();
+    // once prev controller has aborted, create a new abort controller for the fetch request
+    abortControllerRefDataRequest.current = new AbortController();
 
     async function fetchResource() {
       displayResourceDispatch({
@@ -186,7 +191,7 @@ function DisplayResource<Doc>({
         const response = await wrappedFetch({
           isMounted,
           requestInit,
-          signal: controller.signal,
+          signal: abortControllerRefDataRequest.current?.signal,
           url,
         });
 
@@ -347,7 +352,8 @@ function DisplayResource<Doc>({
 
     return () => {
       isMounted = false;
-      controller.abort();
+      // when component unmounts, abort the fetch request
+      abortControllerRefDataRequest.current?.abort();
     };
     // only trigger fetchResource on triggerRefresh change
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -387,10 +393,13 @@ function DisplayResource<Doc>({
     });
   }, [resourceData]);
 
-  // submit request status form on change
+  // submit request status modification form on triggerUpdateRequestStatus change
   useEffect(() => {
     let isMounted = true;
-    const controller = new AbortController();
+    // before making a new request, abort the previous request
+    abortControllerRefDataRequest.current?.abort();
+    // once prev controller has aborted, create a new abort controller for the fetch request
+    abortControllerRefDataRequest.current = new AbortController();
 
     async function updateRequestStatus() {
       displayResourceDispatch({
@@ -438,7 +447,7 @@ function DisplayResource<Doc>({
         const response = await wrappedFetch({
           isMounted,
           requestInit,
-          signal: controller.signal,
+          signal: abortControllerRefDataRequest.current?.signal,
           url,
         });
 
@@ -537,7 +546,8 @@ function DisplayResource<Doc>({
 
     return () => {
       isMounted = false;
-      controller.abort();
+      // when component unmounts, abort the fetch request
+      abortControllerRefDataRequest.current?.abort();
     };
 
     // only trigger updateRequestStatus on triggerUpdateRequestStatus change
@@ -557,7 +567,10 @@ function DisplayResource<Doc>({
   // ALSO MAKE A PUT REQUEST WITH MODIFIED FORM DATA
   useEffect(() => {
     let isMounted = true;
-    const controller = new AbortController();
+    // before making a new request, abort the previous request
+    abortControllerRefDataRequest.current?.abort();
+    // once prev controller has aborted, create a new abort controller for the fetch request
+    abortControllerRefDataRequest.current = new AbortController();
 
     const { formId, fileUploadId, kind, value } = deleteResource;
 
@@ -589,7 +602,7 @@ function DisplayResource<Doc>({
         const response = await wrappedFetch({
           isMounted,
           requestInit,
-          signal: controller.signal,
+          signal: abortControllerRefDataRequest.current?.signal,
           url,
         });
 
@@ -676,7 +689,8 @@ function DisplayResource<Doc>({
 
     return () => {
       isMounted = false;
-      controller.abort();
+      // when component unmounts, abort the fetch request
+      abortControllerRefDataRequest.current?.abort();
     };
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -685,7 +699,10 @@ function DisplayResource<Doc>({
   // when an uploaded file is deleted, patch request is made to update the asociated resource
   useEffect(() => {
     let isMounted = true;
-    const controller = new AbortController();
+    // before making a new request, abort the previous request
+    abortControllerRefDataRequest.current?.abort();
+    // once prev controller has aborted, create a new abort controller for the fetch request
+    abortControllerRefDataRequest.current = new AbortController();
 
     async function updateAssociatedResource() {
       displayResourceDispatch({
@@ -766,7 +783,7 @@ function DisplayResource<Doc>({
       const body = JSON.stringify(resourceBody);
 
       const requestInit: RequestInit = {
-        method: "PUT",
+        method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
@@ -777,7 +794,7 @@ function DisplayResource<Doc>({
         const response = await wrappedFetch({
           isMounted,
           requestInit,
-          signal: controller.signal,
+          signal: abortControllerRefDataRequest.current?.signal,
           url,
         });
 
@@ -862,7 +879,8 @@ function DisplayResource<Doc>({
 
     return () => {
       isMounted = false;
-      controller.abort();
+      // when component unmounts, abort the fetch request
+      abortControllerRefDataRequest.current?.abort();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [deleteResource.fileUploadId]);

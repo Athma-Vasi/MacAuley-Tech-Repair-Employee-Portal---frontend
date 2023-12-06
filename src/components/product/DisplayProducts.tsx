@@ -23,7 +23,6 @@ function DisplayProducts() {
   // ╭─────────────────────────────────────────────────────────────────╮
   //     DISPLAY RESOURCE
   // ╰─────────────────────────────────────────────────────────────────╯
-
   const displayResource = (
     <DisplayResource
       componentQueryData={PRODUCTS_QUERY_DATA}

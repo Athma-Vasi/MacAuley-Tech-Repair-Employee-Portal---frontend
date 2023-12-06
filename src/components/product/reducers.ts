@@ -11,7 +11,7 @@ import {
   AdditionalFieldsValidFocusedRemove,
   AdditionalFieldsValidFocusedUpdate,
   CreateProductDispatch,
-} from "./dispatches";
+} from "./dispatch";
 import { createProductAction } from "./state";
 import {
   CaseSidePanel,

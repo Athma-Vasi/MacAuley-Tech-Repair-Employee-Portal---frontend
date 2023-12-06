@@ -5,43 +5,41 @@ import {
   MantineSize,
   MantineTheme,
   MantineThemeOverride,
-} from '@mantine/core';
-import { ReactNode } from 'react';
+} from "@mantine/core";
+import { ReactNode } from "react";
 
-import { AddressChangeDocument } from '../../components/addressChange/create/types';
-import { AnnouncementDocument } from '../../components/announcement/create/types';
-import { AnonymousRequestDocument } from '../../components/anonymousRequest/create/types';
-import { BenefitsDocument } from '../../components/benefits/create/types';
-import { BarChartData } from '../../components/charts/responsiveBarChart/types';
-import { CalendarChartData } from '../../components/charts/responsiveCalendarChart/types';
-import { LineChartData } from '../../components/charts/responsiveLineChart/types';
-import { PieChartData } from '../../components/charts/responsivePieChart/types';
-import { RadialBarChartData } from '../../components/charts/responsiveRadialBarChart/types';
-import { SunburstChartData } from '../../components/charts/responsiveSunburstChart/types';
-import { NivoChartUnitKind } from '../../components/charts/types';
-import { EndorsementDocument } from '../../components/endorsements/create/types';
-import { EventCreatorDocument } from '../../components/event/create/types';
-import { ExpenseClaimDocument } from '../../components/expenseClaim/create/types';
-import { LeaveRequestDocument } from '../../components/leaveRequest/types';
-import { PrinterIssueDocument } from '../../components/printerIssue/create/types';
-import { RefermentDocument } from '../../components/referment/create/types';
-import { RepairNoteDocument } from '../../components/repairNote/types';
-import { RequestResourceDocument } from '../../components/requestResource/create/types';
-import { SurveyBuilderDocument } from '../../components/survey/types';
+import { AddressChangeDocument } from "../../components/addressChange/create/types";
+import { AnnouncementDocument } from "../../components/announcement/create/types";
+import { AnonymousRequestDocument } from "../../components/anonymousRequest/create/types";
+import { BenefitsDocument } from "../../components/benefits/create/types";
+import { BarChartData } from "../../components/charts/responsiveBarChart/types";
+import { CalendarChartData } from "../../components/charts/responsiveCalendarChart/types";
+import { LineChartData } from "../../components/charts/responsiveLineChart/types";
+import { PieChartData } from "../../components/charts/responsivePieChart/types";
+import { RadialBarChartData } from "../../components/charts/responsiveRadialBarChart/types";
+import { SunburstChartData } from "../../components/charts/responsiveSunburstChart/types";
+import { NivoChartUnitKind } from "../../components/charts/types";
+import { EndorsementDocument } from "../../components/endorsements/create/types";
+import { EventCreatorDocument } from "../../components/event/create/types";
+import { ExpenseClaimDocument } from "../../components/expenseClaim/create/types";
+import { LeaveRequestDocument } from "../../components/leaveRequest/types";
+import { PrinterIssueDocument } from "../../components/printerIssue/create/types";
+import { RefermentDocument } from "../../components/referment/create/types";
+import { RepairNoteDocument } from "../../components/repairNote/types";
+import { RequestResourceDocument } from "../../components/requestResource/create/types";
+import { SurveyBuilderDocument } from "../../components/survey/types";
 import {
   ScrollAxesDirection,
   ScrollXDirection,
   ScrollYDirection,
-} from '../../hooks/useScrollDirection';
-import { QueryResponseData, UserDocument } from '../../types';
+} from "../../hooks/useScrollDirection";
+import { QueryResponseData, UserDocument } from "../../types";
 
-type ColorScheme = 'light' | 'dark';
+type ColorScheme = "light" | "dark";
 type Shade = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
 
 interface ThemeComponent {
-  defaultProps?:
-    | Record<string, any>
-    | ((theme: MantineTheme) => Record<string, any>);
+  defaultProps?: Record<string, any> | ((theme: MantineTheme) => Record<string, any>);
   classNames?: Record<string, string>;
   styles?:
     | Record<string, CSSObject>
@@ -131,27 +129,27 @@ type CustomizeChartsPageData = {
   chartUnitKind: NivoChartUnitKind;
 } & (
   | {
-      chartKind: 'bar';
+      chartKind: "bar";
       chartData: BarChartData[];
     }
   | {
-      chartKind: 'calendar';
+      chartKind: "calendar";
       chartData: CalendarChartData[];
     }
   | {
-      chartKind: 'line';
+      chartKind: "line";
       chartData: LineChartData[];
     }
   | {
-      chartKind: 'pie';
+      chartKind: "pie";
       chartData: PieChartData[];
     }
   | {
-      chartKind: 'radialBar';
+      chartKind: "radialBar";
       chartData: RadialBarChartData[];
     }
   | {
-      chartKind: 'sunburst';
+      chartKind: "sunburst";
       chartData: SunburstChartData[];
     }
 );
@@ -160,14 +158,14 @@ type GlobalState = {
   width: number;
   height: number;
   rowGap: MantineSize;
-  padding: 'xs' | 'sm' | 'md';
+  padding: "xs" | "sm" | "md";
   scrollXDirection: ScrollXDirection;
   scrollYDirection: ScrollYDirection;
 
   // mantine theme object
   themeObject: ThemeObject;
 
-  userDocument: Omit<UserDocument, '__v' | 'password'> | null;
+  userDocument: Omit<UserDocument, "password"> | null;
   actionsDocuments: ActionsDocuments | null;
   announcementDocument: QueryResponseData<AnnouncementDocument> | null;
   isPrefersReducedMotion: boolean;
@@ -177,30 +175,30 @@ type GlobalState = {
 };
 
 type GlobalAction = {
-  setWidth: 'setWidth';
-  setHeight: 'setHeight';
-  setRowGap: 'setRowGap';
-  setPadding: 'setPadding';
-  setWindowSize: 'setWindowSize';
-  setScrollAxesDirection: 'setScrollAxesDirection';
+  setWidth: "setWidth";
+  setHeight: "setHeight";
+  setRowGap: "setRowGap";
+  setPadding: "setPadding";
+  setWindowSize: "setWindowSize";
+  setScrollAxesDirection: "setScrollAxesDirection";
 
   // mantine theme object
-  setRespectReducedMotion: 'setRespectReducedMotion';
-  setColorScheme: 'setColorScheme';
-  setPrimaryColor: 'setPrimaryColor';
-  setPrimaryShade: 'setPrimaryShade';
-  setDefaultGradient: 'setDefaultGradient';
-  setFontFamily: 'setFontFamily';
-  setComponents: 'setComponents';
+  setRespectReducedMotion: "setRespectReducedMotion";
+  setColorScheme: "setColorScheme";
+  setPrimaryColor: "setPrimaryColor";
+  setPrimaryShade: "setPrimaryShade";
+  setDefaultGradient: "setDefaultGradient";
+  setFontFamily: "setFontFamily";
+  setComponents: "setComponents";
 
-  setUserDocument: 'setUserDocument';
-  setActionsDocuments: 'setActionsDocuments';
-  setAnnouncementDocument: 'setAnnouncementDocument';
-  setPrefersReducedMotion: 'setPrefersReducedMotion';
+  setUserDocument: "setUserDocument";
+  setActionsDocuments: "setActionsDocuments";
+  setAnnouncementDocument: "setAnnouncementDocument";
+  setPrefersReducedMotion: "setPrefersReducedMotion";
 
-  setErrorState: 'setErrorState';
-  setCustomizeChartsPageData: 'setCustomizeChartsPageData';
-  setCustomizeChartsPageDataSelectedYYYYMMDD: 'setCustomizeChartsPageDataSelectedYYYYMMDD';
+  setErrorState: "setErrorState";
+  setCustomizeChartsPageData: "setCustomizeChartsPageData";
+  setCustomizeChartsPageDataSelectedYYYYMMDD: "setCustomizeChartsPageDataSelectedYYYYMMDD";
 };
 
 type WindowDimensions = {
@@ -210,89 +208,86 @@ type WindowDimensions = {
 
 type GlobalDispatch =
   | {
-      type: GlobalAction['setWindowSize'];
+      type: GlobalAction["setWindowSize"];
       payload: WindowDimensions;
     }
   | {
-      type: GlobalAction['setScrollAxesDirection'];
+      type: GlobalAction["setScrollAxesDirection"];
       payload: ScrollAxesDirection;
     }
   | {
-      type: GlobalAction['setWidth'] | GlobalAction['setHeight'];
+      type: GlobalAction["setWidth"] | GlobalAction["setHeight"];
       payload: number;
     }
   | {
-      type: GlobalAction['setRowGap'];
+      type: GlobalAction["setRowGap"];
       payload: MantineSize;
     }
   | {
-      type: GlobalAction['setPadding'];
-      payload: 'xs' | 'sm' | 'md';
+      type: GlobalAction["setPadding"];
+      payload: "xs" | "sm" | "md";
     }
   // mantine theme object
   | {
       type:
-        | GlobalAction['setRespectReducedMotion']
-        | GlobalAction['setPrefersReducedMotion'];
+        | GlobalAction["setRespectReducedMotion"]
+        | GlobalAction["setPrefersReducedMotion"];
       payload: boolean;
     }
   | {
-      type: GlobalAction['setColorScheme'];
+      type: GlobalAction["setColorScheme"];
       payload: ColorScheme;
     }
   | {
-      type: GlobalAction['setPrimaryColor'];
+      type: GlobalAction["setPrimaryColor"];
       payload: MantineColor;
     }
   | {
-      type: GlobalAction['setPrimaryShade'];
+      type: GlobalAction["setPrimaryShade"];
       payload: { light: Shade; dark: Shade };
     }
   | {
-      type: GlobalAction['setDefaultGradient'];
+      type: GlobalAction["setDefaultGradient"];
       payload: { deg: number; from: MantineColor; to: MantineColor };
     }
   | {
-      type: GlobalAction['setFontFamily'];
+      type: GlobalAction["setFontFamily"];
       payload: string;
     }
   | {
-      type: GlobalAction['setComponents'];
+      type: GlobalAction["setComponents"];
       payload: any;
     }
   // documents
   | {
-      type: GlobalAction['setUserDocument'];
-      payload: Omit<UserDocument, '__v' | 'password'>;
+      type: GlobalAction["setUserDocument"];
+      payload: Omit<UserDocument, "password">;
     }
   | {
-      type: GlobalAction['setActionsDocuments'];
+      type: GlobalAction["setActionsDocuments"];
       payload: ActionsDocuments;
     }
   | {
-      type: GlobalAction['setAnnouncementDocument'];
+      type: GlobalAction["setAnnouncementDocument"];
       payload: QueryResponseData<AnnouncementDocument>;
     }
 
   // error state
   | {
-      type: GlobalAction['setErrorState'];
+      type: GlobalAction["setErrorState"];
       payload: ErrorState;
     }
   // customize charts page data
   | {
-      type: GlobalAction['setCustomizeChartsPageData'];
+      type: GlobalAction["setCustomizeChartsPageData"];
       payload: CustomizeChartsPageData;
     }
   | {
-      type: GlobalAction['setCustomizeChartsPageDataSelectedYYYYMMDD'];
+      type: GlobalAction["setCustomizeChartsPageDataSelectedYYYYMMDD"];
       payload: string;
     };
 
-type GlobalReducer = (
-  state: GlobalState,
-  action: GlobalDispatch
-) => GlobalState;
+type GlobalReducer = (state: GlobalState, action: GlobalDispatch) => GlobalState;
 
 type GlobalProviderProps = {
   children?: ReactNode;
