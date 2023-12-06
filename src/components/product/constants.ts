@@ -541,7 +541,6 @@ const PRODUCTS_QUERY_DATA: ComponentQueryData[] = [
     regex: DATE_FULL_RANGE_REGEX,
     regexValidationFn: returnDateFullRangeValidationText,
   },
-  // page 1
   {
     label: "Brand",
     value: "brand",
