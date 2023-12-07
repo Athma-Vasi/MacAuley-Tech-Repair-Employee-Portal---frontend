@@ -199,6 +199,15 @@ const CreateRepairNote = lazy(
 //   TRANSACTION
 // ╚═════════════════════════════════════════════════════════════════╝
 
+// ╭─────────────────────────────────────────────────────────────────╮
+//    PURCHASE
+// ╰─────────────────────────────────────────────────────────────────╯
+const DisplayPurchase = lazy(() => import("./components/purchase/DisplayPurchase"));
+
+// ╭─────────────────────────────────────────────────────────────────╮
+//    RMA
+// ╰─────────────────────────────────────────────────────────────────╯
+
 // ╔═════════════════════════════════════════════════════════════════╗
 //   COMPANY
 // ╚═════════════════════════════════════════════════════════════════╝
@@ -823,6 +832,25 @@ function App() {
   //   TRANSACTION
   // ╚═════════════════════════════════════════════════════════════════╝
 
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //   PURCHASE
+  // ╰─────────────────────────────────────────────────────────────────╯
+
+  // @desc   purchase page (index and display)
+  // @route  /home/purchase (index) and /home/purchase/display
+  // @access private
+  const displayPurchasesElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>}>
+        <DisplayPurchase />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //   RMA
+  // ╰─────────────────────────────────────────────────────────────────╯
+
   // ╔═════════════════════════════════════════════════════════════════╗
   //   COMPANY
   // ╚═════════════════════════════════════════════════════════════════╝
@@ -1371,6 +1399,14 @@ function App() {
           <Route path="product-review">
             <Route index element={displayProductReviewsElement} />
             <Route path="display" element={displayProductReviewsElement} />
+          </Route>
+
+          {/* transactions */}
+
+          {/* purchase */}
+          <Route path="purchase">
+            <Route index element={displayPurchasesElement} />
+            <Route path="display" element={displayPurchasesElement} />
           </Route>
 
           {/* repair-note */}

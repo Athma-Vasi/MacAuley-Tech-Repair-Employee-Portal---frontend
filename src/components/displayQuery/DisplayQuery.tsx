@@ -880,11 +880,11 @@ function DisplayQuery<
     });
   }, [displayQueryState]);
 
-  const displayCreateResourceButton = (
+  const displayCreateResourceButton = createResourcePath.length ? (
     <Tooltip label={`Create ${parentComponentName}`}>
       <Group>{createdCreateResourceButton}</Group>
     </Tooltip>
-  );
+  ) : null;
 
   const groupByHelpModal = (
     <Modal
