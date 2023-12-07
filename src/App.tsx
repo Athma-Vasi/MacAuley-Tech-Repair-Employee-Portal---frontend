@@ -184,6 +184,9 @@ const DisplayWebcam = lazy(() => import("./components/product/webcam/DisplayWebc
 // ╔═════════════════════════════════════════════════════════════════╗
 //   PRODUCT REVIEW
 // ╚═════════════════════════════════════════════════════════════════╝
+const DisplayProductReview = lazy(
+  () => import("./components/productReview/DisplayProductReview")
+);
 
 // ╔═════════════════════════════════════════════════════════════════╗
 //   REPAIR
@@ -790,6 +793,17 @@ function App() {
   //   PRODUCT REVIEW
   // ╚═════════════════════════════════════════════════════════════════╝
 
+  // @desc   product-review page (index and display)
+  // @route  /home/product-review (index) and /home/product-review/display
+  // @access private
+  const displayProductReviewsElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>}>
+        <DisplayProductReview />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
   // ╔═════════════════════════════════════════════════════════════════╗
   //   REPAIR
   // ╚═════════════════════════════════════════════════════════════════╝
@@ -1351,6 +1365,12 @@ function App() {
               <Route index element={displayWebcamsElement} />
               <Route path="create" element={createProductElement} />
             </Route>
+          </Route>
+
+          {/* product-review */}
+          <Route path="product-review">
+            <Route index element={displayProductReviewsElement} />
+            <Route path="display" element={displayProductReviewsElement} />
           </Route>
 
           {/* repair-note */}
