@@ -9,6 +9,8 @@ import { USERS_DOCS } from "./constants";
 import {
   returnCustomerSchemas,
   returnUpdateCustomerProductReviewsIdsFields,
+  returnUpdateCustomerPurchaseReviewsIds,
+  returnUpdateCustomerRMAReviewsIds,
 } from "./customer/customer";
 import { CUSTOMER_DOCUMENTS } from "./customer/customerDocuments";
 import {
@@ -178,6 +180,7 @@ import { returnPurchaseSchemas } from "./purchase/purchase";
 import { RMA_REASONS_POOL, returnRMASchemas } from "./rma/rma";
 import { constants } from "buffer";
 import { PURCHASE_DOCUMENTS } from "./purchase/purchaseDocuments";
+import { RMA_DOCUMENTS } from "./rma/rmaDocuments";
 
 function DevTesting() {
   const [devTestingState, devTestingDispatch] = useReducer(
@@ -199,7 +202,7 @@ function DevTesting() {
 
     async function submitDevTestingForm() {
       const url: URL = urlBuilder({
-        path: "rma/dev",
+        path: "customer/dev",
       });
 
       const newBodiesArrCount =
@@ -213,11 +216,11 @@ function DevTesting() {
 
       const reqBody = {
         userInfo,
-        rmaSchemas: slicedBodiesArr,
+        customerFields: slicedBodiesArr,
       };
 
       const requestInit: RequestInit = {
-        method: "POST",
+        method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
@@ -347,22 +350,20 @@ function DevTesting() {
     //   ...TABLET_DOCUMENTS,
     //   ...WEBCAM_DOCUMENTS,
     // ];
-
     // const bodiesArr = returnPurchaseSchemas({
     //   customerDocuments: CUSTOMER_DOCUMENTS,
     //   productCategoryDocuments,
     //   productReviewDocuments: PRODUCT_REVIEW_DOCUMENTS,
     // });
-
-    const bodiesArr = returnRMASchemas({
-      rmaReasonsPool: RMA_REASONS_POOL,
-      purchaseDocuments: PURCHASE_DOCUMENTS,
-    });
-
-    devTestingDispatch({
-      type: devTestingAction.setBodiesArr,
-      payload: bodiesArr,
-    });
+    // const bodiesArr = returnRMASchemas({
+    //   rmaReasonsPool: RMA_REASONS_POOL,
+    //   purchaseDocuments: PURCHASE_DOCUMENTS,
+    // });
+    // const bodiesArr = returnUpdateCustomerRMAReviewsIds(RMA_DOCUMENTS);
+    // devTestingDispatch({
+    //   type: devTestingAction.setBodiesArr,
+    //   payload: bodiesArr,
+    // });
   }, []);
 
   useEffect(() => {

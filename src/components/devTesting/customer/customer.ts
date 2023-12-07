@@ -9,6 +9,9 @@ import {
 import { groupByField } from "../../../utils";
 import { DirectoryUserDocument } from "../../directory/types";
 import { ProductReviewDocument } from "../../product/types";
+import { PurchaseDocument } from "../purchase/purchase";
+import { PURCHASE_DOCUMENTS } from "../purchase/purchaseDocuments";
+import { RMADocument } from "../rma/rma";
 
 type PaymentInformation = {
   cardholderName: string;
@@ -249,5 +252,72 @@ function returnUpdateCustomerProductReviewsIdsFields(
   return customerFields.flat();
 }
 
-export { returnUpdateCustomerProductReviewsIdsFields, returnCustomerSchemas };
+function returnUpdateCustomerPurchaseReviewsIds(
+  purchaseDocuments: typeof PURCHASE_DOCUMENTS
+) {
+  const groupedByCustomerId = groupByField({
+    objectArray: purchaseDocuments,
+    field: "customerId",
+  });
+
+  const customerFields = Object.entries(groupedByCustomerId).reduce(
+    (acc, [customerId, purchases]) => {
+      const fields = purchases.map((purchase) => {
+        const customerField = {
+          customerId,
+          documentUpdate: {
+            updateKind: "array",
+            updateOperator: "$push",
+            fields: { purchaseHistoryIds: purchase._id },
+          },
+        };
+        return customerField;
+      });
+
+      acc.push(fields);
+
+      return acc;
+    },
+    [] as Record<string, any>[]
+  );
+
+  return customerFields.flat();
+}
+
+function returnUpdateCustomerRMAReviewsIds(rmaDocuments: RMADocument[]) {
+  const groupedByCustomerId = groupByField({
+    objectArray: rmaDocuments,
+    field: "customerId",
+  });
+
+  const customerFields = Object.entries(groupedByCustomerId).reduce(
+    (acc, [customerId, rmas]) => {
+      const fields = rmas.map((rma) => {
+        const customerField = {
+          customerId,
+          documentUpdate: {
+            updateKind: "array",
+            updateOperator: "$push",
+            fields: { rmaHistoryIds: rma._id },
+          },
+        };
+        return customerField;
+      });
+
+      acc.push(fields);
+
+      return acc;
+    },
+    [] as Record<string, any>[]
+  );
+
+  return customerFields.flat();
+}
+
+export {
+  returnCustomerSchemas,
+  returnUpdateCustomerProductReviewsIdsFields,
+  returnUpdateCustomerPurchaseReviewsIds,
+  returnUpdateCustomerRMAReviewsIds,
+};
 export type { CustomerDocument, CustomerSchema };

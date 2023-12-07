@@ -1,3 +1,5 @@
+import { PurchaseDocument } from "./purchase";
+
 const PURCHASE_DOCUMENTS = [
   {
     _id: "656b861cc6d9aadb6a1fd28f",

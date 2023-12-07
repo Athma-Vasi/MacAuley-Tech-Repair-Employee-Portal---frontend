@@ -174,9 +174,9 @@ const ACCESSORY_QUERY_DATA: ComponentQueryData[] = [
 ];
 
 const ACCESSORY_RESOURCE_ROUTE_PATHS: ResourceRoutePaths = {
-  admin: "/product-category/accessory",
-  manager: "/product-category/accessory",
-  employee: "/product-category/accessory",
+  admin: "product-category/accessory",
+  manager: "product-category/accessory",
+  employee: "product-category/accessory",
 };
 
 export { ACCESSORY_QUERY_DATA, ACCESSORY_RESOURCE_ROUTE_PATHS };

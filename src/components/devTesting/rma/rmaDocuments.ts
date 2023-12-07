@@ -1,4 +1,6 @@
-const RMA_DOCUMENTS = [
+import { RMADocument } from "./rma";
+
+const RMA_DOCUMENTS: RMADocument[] = [
   {
     _id: "656b8702c6d9aadb6a1fe2b8",
     purchaseDocumentId: "656b861cc6d9aadb6a1fd2d6",

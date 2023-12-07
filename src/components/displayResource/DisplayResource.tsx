@@ -373,13 +373,15 @@ function DisplayResource<Doc>({
       payload: true,
     });
   }, [queryBuilderString]);
-  // set new query flag to false on page changes
-  useEffect(() => {
-    displayResourceDispatch({
-      type: displayResourceAction.setNewQueryFlag,
-      payload: false,
-    });
-  }, [pageQueryString]);
+  // // set new query flag to false on page changes
+  // useEffect(() => {
+  //   if (!pageQueryString.includes("1")) {
+  //     displayResourceDispatch({
+  //       type: displayResourceAction.setNewQueryFlag,
+  //       payload: false,
+  //     });
+  //   }
+  // }, [pageQueryString]);
 
   // separate instead of inside finally block to avoid causing flicker by previous page state displaying then updating after overlay disappears
   useEffect(() => {

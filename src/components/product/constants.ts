@@ -51,6 +51,7 @@ import {
   PsuEfficiency,
   PsuFormFactor,
   PsuModularity,
+  RatingKind,
   SpeakerInterface,
   SpeakerType,
   StorageFormFactor,
@@ -464,6 +465,19 @@ const MICROPHONE_INTERFACE_DATA: MicrophoneInterface[] = [
   "3.5mm",
   "Wireless",
   "Other",
+];
+
+const PRODUCT_RATING_DATA: RatingKind[] = [
+  "halfStar",
+  "oneStar",
+  "oneAndHalfStars",
+  "twoStars",
+  "twoAndHalfStars",
+  "threeStars",
+  "threeAndHalfStars",
+  "fourStars",
+  "fourAndHalfStars",
+  "fiveStars",
 ];
 
 /**
@@ -1463,6 +1477,7 @@ export {
   PERIPHERALS_INTERFACE_DATA,
   PRODUCT_AVAILABILITY_DATA,
   PRODUCT_CATEGORY_ROUTE_NAME_OBJ,
+  PRODUCT_RATING_DATA,
   PRODUCTS_QUERY_DATA,
   PRODUCTS_RESOURCE_PATHS,
   PSU_EFFICIENCY_RATING_DATA,

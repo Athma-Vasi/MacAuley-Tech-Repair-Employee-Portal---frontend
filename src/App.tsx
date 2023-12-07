@@ -56,6 +56,7 @@ const DisplayResponsiveChart = lazy(
 // ╔═════════════════════════════════════════════════════════════════╗
 //   CUSTOMER
 // ╚═════════════════════════════════════════════════════════════════╝
+const DisplayCustomer = lazy(() => import("./components/customer/DisplayCustomer"));
 
 // ╔═════════════════════════════════════════════════════════════════╗
 //   COMMENT
@@ -454,6 +455,17 @@ function App() {
   // ╔═════════════════════════════════════════════════════════════════╗
   //   CUSTOMER
   // ╚═════════════════════════════════════════════════════════════════╝
+
+  // @desc   customer page (index and display)
+  // @route  /home/customer (index) and /home/customer/display
+  // @access private
+  const displayCustomersElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>}>
+        <DisplayCustomer />
+      </Suspense>
+    </ErrorBoundary>
+  );
 
   // ╔═════════════════════════════════════════════════════════════════╗
   //   COMMENT
@@ -1210,6 +1222,10 @@ function App() {
           </Route>
 
           {/* customer */}
+          <Route path="customer">
+            <Route index element={displayCustomersElement} />
+            <Route path="display" element={displayCustomersElement} />
+          </Route>
 
           {/* comment */}
           <Route path="comment">
