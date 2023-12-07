@@ -60,6 +60,7 @@ const DisplayResponsiveChart = lazy(
 // ╔═════════════════════════════════════════════════════════════════╗
 //   COMMENT
 // ╚═════════════════════════════════════════════════════════════════╝
+const DisplayComment = lazy(() => import("./components/comment/DisplayComment"));
 
 // ╔═════════════════════════════════════════════════════════════════╗
 //   FILE UPLOAD
@@ -77,23 +78,15 @@ const DisplayAccessory = lazy(
   () => import("./components/product/accessory/DisplayAccessory")
 );
 
-const CreateAccessory = lazy(
-  () => import("./components/product/accessory/CreateAccessory")
-);
-
 // ╭─────────────────────────────────────────────────────────────────╮
 //    CPU
 // ╰─────────────────────────────────────────────────────────────────╯
 const DisplayCPU = lazy(() => import("./components/product/cpu/DisplayCPU"));
 
-const CreateCPU = lazy(() => import("./components/product/cpu/CreateCPU"));
-
 // ╭─────────────────────────────────────────────────────────────────╮
 //    COMPUTER CASE
 // ╰─────────────────────────────────────────────────────────────────╯
 const DisplayCase = lazy(() => import("./components/product/case/DisplayCase"));
-
-const CreateCase = lazy(() => import("./components/product/case/CreateCase"));
 
 // ╭─────────────────────────────────────────────────────────────────╮
 //    DESKTOP COMPUTER
@@ -102,33 +95,21 @@ const DisplayDesktopComputer = lazy(
   () => import("./components/product/desktopComputer/DisplayDestopComputer")
 );
 
-const CreateDesktopComputer = lazy(
-  () => import("./components/product/desktopComputer/CreateDesktopComputer")
-);
-
 // ╭─────────────────────────────────────────────────────────────────╮
 //    DISPLAY
 // ╰─────────────────────────────────────────────────────────────────╯
 const DisplayDisplay = lazy(() => import("./components/product/display/DisplayDisplay"));
-
-const CreateDisplay = lazy(() => import("./components/product/display/CreateDisplay"));
 
 // ╭─────────────────────────────────────────────────────────────────╮
 //    GPU
 // ╰─────────────────────────────────────────────────────────────────╯
 const DisplayGPU = lazy(() => import("./components/product/gpu/DisplayGPU"));
 
-const CreateGPU = lazy(() => import("./components/product/gpu/CreateGPU"));
-
 // ╭─────────────────────────────────────────────────────────────────╮
 //    HEADPHONE
 // ╰─────────────────────────────────────────────────────────────────╯
 const DisplayHeadphone = lazy(
   () => import("./components/product/headphone/DisplayHeadphone")
-);
-
-const CreateHeadphone = lazy(
-  () => import("./components/product/headphone/CreateHeadphone")
 );
 
 // ╭─────────────────────────────────────────────────────────────────╮
@@ -138,31 +119,21 @@ const DisplayKeyboard = lazy(
   () => import("./components/product/keyboard/DisplayKeyboard")
 );
 
-const CreateKeyboard = lazy(() => import("./components/product/keyboard/CreateKeyboard"));
-
 // ╭─────────────────────────────────────────────────────────────────╮
 //    LAPTOP
 // ╰─────────────────────────────────────────────────────────────────╯
 const DisplayLaptop = lazy(() => import("./components/product/laptop/DisplayLaptop"));
-
-const CreateLaptop = lazy(() => import("./components/product/laptop/CreateLaptop"));
 
 // ╭─────────────────────────────────────────────────────────────────╮
 //    RAM
 // ╰─────────────────────────────────────────────────────────────────╯
 const DisplayRAM = lazy(() => import("./components/product/ram/DisplayRAM"));
 
-const CreateRAM = lazy(() => import("./components/product/ram/CreateRAM"));
-
 // ╭─────────────────────────────────────────────────────────────────╮
 //    MICROPHONE
 // ╰─────────────────────────────────────────────────────────────────╯
 const DisplayMicrophone = lazy(
   () => import("./components/product/microphone/DisplayMicrophone")
-);
-
-const CreateMicrophone = lazy(
-  () => import("./components/product/microphone/CreateMicrophone")
 );
 
 // ╭─────────────────────────────────────────────────────────────────╮
@@ -172,23 +143,15 @@ const DisplayMotherboard = lazy(
   () => import("./components/product/motherboard/DisplayMotherboard")
 );
 
-const CreateMotherboard = lazy(
-  () => import("./components/product/motherboard/CreateMotherboard")
-);
-
 // ╭─────────────────────────────────────────────────────────────────╮
 //    MOUSE
 // ╰─────────────────────────────────────────────────────────────────╯
 const DisplayMouse = lazy(() => import("./components/product/mouse/DisplayMouse"));
 
-const CreateMouse = lazy(() => import("./components/product/mouse/CreateMouse"));
-
 // ╭─────────────────────────────────────────────────────────────────╮
 //    PSU
 // ╰─────────────────────────────────────────────────────────────────╯
 const DisplayPSU = lazy(() => import("./components/product/psu/DisplayPSU"));
-
-const CreatePSU = lazy(() => import("./components/product/psu/CreatePSU"));
 
 // ╭─────────────────────────────────────────────────────────────────╮
 //    SMARTPHONE
@@ -197,37 +160,25 @@ const DisplaySmartphone = lazy(
   () => import("./components/product/smartphone/DisplaySmartphone")
 );
 
-const CreateSmartphone = lazy(
-  () => import("./components/product/smartphone/CreateSmartphone")
-);
-
 // ╭─────────────────────────────────────────────────────────────────╮
 //    SPEAKER
 // ╰─────────────────────────────────────────────────────────────────╯
 const DisplaySpeaker = lazy(() => import("./components/product/speaker/DisplaySpeaker"));
-
-const CreateSpeaker = lazy(() => import("./components/product/speaker/CreateSpeaker"));
 
 // ╭─────────────────────────────────────────────────────────────────╮
 //    STORAGE
 // ╰─────────────────────────────────────────────────────────────────╯
 const DisplayStorage = lazy(() => import("./components/product/storage/DisplayStorage"));
 
-const CreateStorage = lazy(() => import("./components/product/storage/CreateStorage"));
-
 // ╭─────────────────────────────────────────────────────────────────╮
 //    TABLET
 // ╰─────────────────────────────────────────────────────────────────╯
 const DisplayTablet = lazy(() => import("./components/product/tablet/DisplayTablet"));
 
-const CreateTablet = lazy(() => import("./components/product/tablet/CreateTablet"));
-
 // ╭─────────────────────────────────────────────────────────────────╮
 //    WEBCAM
 // ╰─────────────────────────────────────────────────────────────────╯
 const DisplayWebcam = lazy(() => import("./components/product/webcam/DisplayWebcam"));
-
-const CreateWebcam = lazy(() => import("./components/product/webcam/CreateWebcam"));
 
 // ╔═════════════════════════════════════════════════════════════════╗
 //   PRODUCT REVIEW
@@ -383,9 +334,9 @@ const SurveyBuilder = lazy(() => import("./components/survey/create/SurveyBuilde
 // ╚═════════════════════════════════════════════════════════════════╝
 const Directory = lazy(() => import("./components/directory/Directory"));
 
-  // ╔═════════════════════════════════════════════════════════════════╗
-  //   CATCH ALL
-  // ╚═════════════════════════════════════════════════════════════════╝
+// ╔═════════════════════════════════════════════════════════════════╗
+//   CATCH ALL
+// ╚═════════════════════════════════════════════════════════════════╝
 const NotFound = lazy(() => import("./components/notFound/NotFound"));
 
 function App() {
@@ -399,6 +350,10 @@ function App() {
   //  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
   // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
+  // ╔═════════════════════════════════════════════════════════════════╗
+  //   INDEX
+  // ╚═════════════════════════════════════════════════════════════════╝
+
   // @desc   the public facing page
   // @route  /
   // @access public
@@ -409,6 +364,10 @@ function App() {
       </Suspense>
     </ErrorBoundary>
   );
+
+  // ╔═════════════════════════════════════════════════════════════════╗
+  //   LOGIN
+  // ╚═════════════════════════════════════════════════════════════════╝
 
   // @desc   the login page
   // @route  /login
@@ -421,6 +380,10 @@ function App() {
     </ErrorBoundary>
   );
 
+  // ╔═════════════════════════════════════════════════════════════════╗
+  //   REGISTER
+  // ╚═════════════════════════════════════════════════════════════════╝
+
   // @desc   the register page
   // @route  /register
   // @access public
@@ -431,6 +394,10 @@ function App() {
       </Suspense>
     </ErrorBoundary>
   );
+
+  // ╔═════════════════════════════════════════════════════════════════╗
+  //   PORTAL INDEX
+  // ╚═════════════════════════════════════════════════════════════════╝
 
   // @desc   the parent component for the entire app (logged in users only)
   // @route  /home
@@ -443,6 +410,10 @@ function App() {
     </ErrorBoundary>
   );
 
+  // ╔═════════════════════════════════════════════════════════════════╗
+  //   HOME
+  // ╚═════════════════════════════════════════════════════════════════╝
+
   // @desc   the home page (welcome page for logged in users)
   // @route  /home
   // @access private
@@ -453,6 +424,10 @@ function App() {
       </Suspense>
     </ErrorBoundary>
   );
+
+  // ╔═════════════════════════════════════════════════════════════════╗
+  //   DASHBOARD
+  // ╚═════════════════════════════════════════════════════════════════╝
 
   // @desc   the dashboard page
   // @route  /home/dashboard
@@ -475,6 +450,29 @@ function App() {
       </Suspense>
     </ErrorBoundary>
   );
+
+  // ╔═════════════════════════════════════════════════════════════════╗
+  //   CUSTOMER
+  // ╚═════════════════════════════════════════════════════════════════╝
+
+  // ╔═════════════════════════════════════════════════════════════════╗
+  //   COMMENT
+  // ╚═════════════════════════════════════════════════════════════════╝
+
+  // @desc   comment page (index and display)
+  // @route  /home/product/comment (index) and /home/product/comment/display
+  // @access private
+  const displayCommentsElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>}>
+        <DisplayComment />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // ╔═════════════════════════════════════════════════════════════════╗
+  //   FILE UPLOAD
+  // ╚═════════════════════════════════════════════════════════════════╝
 
   // ╔═════════════════════════════════════════════════════════════════╗
   //   PRODUCT
@@ -506,17 +504,6 @@ function App() {
     </ErrorBoundary>
   );
 
-  // @desc   accessory page (create)
-  // @route  /home/product/accessory/create
-  // @access private
-  const createAccessoryElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
-      <Suspense fallback={<div>Generic Loading message...</div>}>
-        <CreateAccessory />
-      </Suspense>
-    </ErrorBoundary>
-  );
-
   // ╭─────────────────────────────────────────────────────────────────╮
   //   CPU
   // ╰─────────────────────────────────────────────────────────────────╯
@@ -528,17 +515,6 @@ function App() {
     <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
       <Suspense fallback={<div>Generic Loading message...</div>}>
         <DisplayCPU />
-      </Suspense>
-    </ErrorBoundary>
-  );
-
-  // @desc   cpu page (create)
-  // @route  /home/product/cpu/create
-  // @access private
-  const createCPUElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
-      <Suspense fallback={<div>Generic Loading message...</div>}>
-          <CreateCPU />
       </Suspense>
     </ErrorBoundary>
   );
@@ -558,18 +534,6 @@ function App() {
     </ErrorBoundary>
   );
 
-  // @desc   case page (create)
-  // @route  /home/product/case/create
-  // @access private
-  const createCaseElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
-      <Suspense fallback={<div>Generic Loading message...</div>>} 
-      >
-        <CreateCase />
-      </Suspense>
-    </ErrorBoundary>
-  );
-
   // ╭─────────────────────────────────────────────────────────────────╮
   //   DESKTOP COMPUTER
   // ╰─────────────────────────────────────────────────────────────────╯
@@ -581,18 +545,6 @@ function App() {
     <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
       <Suspense fallback={<div>Generic Loading message...</div>}>
         <DisplayDesktopComputer />
-      </Suspense>
-    </ErrorBoundary>
-  );
-
-  // @desc   desktop computer page (create)
-  // @route  /home/product/desktop-computer/create
-  // @access private
-  const createDesktopComputerElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
-      <Suspense fallback={<div>Generic Loading message...</div>} 
-      >
-        <CreateDesktopComputer />
       </Suspense>
     </ErrorBoundary>
   );
@@ -612,18 +564,6 @@ function App() {
     </ErrorBoundary>
   );
 
-  // @desc   display page (create)
-  // @route  /home/product/display/create
-  // @access private
-  const createDisplayElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
-      <Suspense fallback={<div>Generic Loading message...</div>} 
-      >
-        <CreateDisplay />
-      </Suspense>
-    </ErrorBoundary>
-  );
-
   // ╭─────────────────────────────────────────────────────────────────╮
   //   GPU
   // ╰─────────────────────────────────────────────────────────────────╯
@@ -635,18 +575,6 @@ function App() {
     <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
       <Suspense fallback={<div>Generic Loading message...</div>}>
         <DisplayGPU />
-      </Suspense>
-    </ErrorBoundary>
-  );
-
-  // @desc   gpu page (create)
-  // @route  /home/product/gpu/create
-  // @access private
-  const createGPUElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
-      <Suspense fallback={<div>Generic Loading message...</div>} 
-      >
-        <CreateGPU />
       </Suspense>
     </ErrorBoundary>
   );
@@ -666,18 +594,6 @@ function App() {
     </ErrorBoundary>
   );
 
-  // @desc   headphone page (create)
-  // @route  /home/product/headphone/create
-  // @access private
-  const createHeadphoneElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
-      <Suspense fallback={<div>Generic Loading message...</div>} 
-      >
-        <CreateHeadphone />
-      </Suspense>
-    </ErrorBoundary>
-  );
-
   // ╭─────────────────────────────────────────────────────────────────╮
   //   KEYBOARD
   // ╰─────────────────────────────────────────────────────────────────╯
@@ -693,18 +609,6 @@ function App() {
     </ErrorBoundary>
   );
 
-  // @desc   keyboard page (create)
-  // @route  /home/product/keyboard/create
-  // @access private
-  const createKeyboardElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
-      <Suspense fallback={<div>Generic Loading message...</div>} 
-      >
-        <CreateKeyboard />
-      </Suspense>
-    </ErrorBoundary>
-  );
-
   // ╭─────────────────────────────────────────────────────────────────╮
   //   LAPTOP
   // ╰─────────────────────────────────────────────────────────────────╯
@@ -714,21 +618,8 @@ function App() {
   // @access private
   const displayLaptopsElement = (
     <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
-      <Suspense fallback={<div>Generic Loading message...</div>}
-      >
+      <Suspense fallback={<div>Generic Loading message...</div>}>
         <DisplayLaptop />
-      </Suspense>
-    </ErrorBoundary>
-  );
-
-  // @desc   laptop page (create)
-  // @route  /home/product/laptop/create
-  // @access private
-  const createLaptopElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
-      <Suspense fallback={<div>Generic Loading message...</div>}
-      >
-        <CreateLaptop />
       </Suspense>
     </ErrorBoundary>
   );
@@ -742,21 +633,8 @@ function App() {
   // @access private
   const displayRAMsElement = (
     <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
-      <Suspense fallback={<div>Generic Loading message...</div>}
-      >
+      <Suspense fallback={<div>Generic Loading message...</div>}>
         <DisplayRAM />
-      </Suspense>
-    </ErrorBoundary>
-  );
-
-  // @desc   ram page (create)
-  // @route  /home/product/ram/create
-  // @access private
-  const createRAMElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
-      <Suspense fallback={<div>Generic Loading message...</div>}
-      >
-        <CreateRAM />
       </Suspense>
     </ErrorBoundary>
   );
@@ -770,21 +648,8 @@ function App() {
   // @access private
   const displayMicrophonesElement = (
     <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
-      <Suspense fallback={<div>Generic Loading message...</div>}
-      >
+      <Suspense fallback={<div>Generic Loading message...</div>}>
         <DisplayMicrophone />
-      </Suspense>
-    </ErrorBoundary>
-  );
-
-  // @desc   microphone page (create)
-  // @route  /home/product/microphone/create
-  // @access private
-  const createMicrophoneElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
-      <Suspense fallback={<div>Generic Loading message...</div>}
-      >
-        <CreateMicrophone />
       </Suspense>
     </ErrorBoundary>
   );
@@ -798,21 +663,8 @@ function App() {
   // @access private
   const displayMotherboardsElement = (
     <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
-      <Suspense fallback={<div>Generic Loading message...</div>}
-      >
+      <Suspense fallback={<div>Generic Loading message...</div>}>
         <DisplayMotherboard />
-      </Suspense>
-    </ErrorBoundary>
-  );
-
-  // @desc   motherboard page (create)
-  // @route  /home/product/motherboard/create
-  // @access private
-  const createMotherboardElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
-      <Suspense fallback={<div>Generic Loading message...</div>}
-      > 
-        <CreateMotherboard />
       </Suspense>
     </ErrorBoundary>
   );
@@ -826,21 +678,8 @@ function App() {
   // @access private
   const displayMousesElement = (
     <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
-      <Suspense fallback={<div>Generic Loading message...</div>} 
-      >
+      <Suspense fallback={<div>Generic Loading message...</div>}>
         <DisplayMouse />
-      </Suspense>
-    </ErrorBoundary>
-  );
-
-  // @desc   mouse page (create)
-  // @route  /home/product/mouse/create
-  // @access private
-  const createMouseElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
-      <Suspense fallback={<div>Generic Loading message...</div>} 
-      >
-        <CreateMouse />
       </Suspense>
     </ErrorBoundary>
   );
@@ -848,27 +687,14 @@ function App() {
   // ╭─────────────────────────────────────────────────────────────────╮
   //   PSU
   // ╰─────────────────────────────────────────────────────────────────╯
-    
+
   // @desc   psu page (index and display)
   // @route  /home/product/psu (index) and /home/product/psu/display
   // @access private
   const displayPSUsElement = (
     <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
-      <Suspense fallback={<div>Generic Loading message...</div>} 
-      >
+      <Suspense fallback={<div>Generic Loading message...</div>}>
         <DisplayPSU />
-      </Suspense>
-    </ErrorBoundary>
-  );
-
-  // @desc   psu page (create)
-  // @route  /home/product/psu/create
-  // @access private
-  const createPSUElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
-      <Suspense fallback={<div>Generic Loading message...</div>} 
-      >
-        <CreatePSU />
       </Suspense>
     </ErrorBoundary>
   );
@@ -882,20 +708,8 @@ function App() {
   // @access private
   const displaySmartphonesElement = (
     <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
-      <Suspense fallback={<div>Generic Loading message...</div>} 
-      >
+      <Suspense fallback={<div>Generic Loading message...</div>}>
         <DisplaySmartphone />
-      </Suspense>
-    </ErrorBoundary>
-  );
-
-  // @desc   smartphone page (create)
-  // @route  /home/product/smartphone/create
-  // @access private
-  const createSmartphoneElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
-      <Suspense fallback={<div>Generic Loading message...</div>} >
-        <CreateSmartphone />
       </Suspense>
     </ErrorBoundary>
   );
@@ -909,19 +723,8 @@ function App() {
   // @access private
   const displaySpeakersElement = (
     <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
-      <Suspense fallback={<div>Generic Loading message...</div>} >
+      <Suspense fallback={<div>Generic Loading message...</div>}>
         <DisplaySpeaker />
-      </Suspense>
-    </ErrorBoundary>
-  );
-
-  // @desc   speaker page (create)
-  // @route  /home/product/speaker/create
-  // @access private
-  const createSpeakerElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
-      <Suspense fallback={<div>Generic Loading message...</div>} >
-        <CreateSpeaker />
       </Suspense>
     </ErrorBoundary>
   );
@@ -935,19 +738,8 @@ function App() {
   // @access private
   const displayStoragesElement = (
     <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
-      <Suspense fallback={<div>Generic Loading message...</div>} >
+      <Suspense fallback={<div>Generic Loading message...</div>}>
         <DisplayStorage />
-      </Suspense>
-    </ErrorBoundary>
-  );
-
-  // @desc   storage page (create)
-  // @route  /home/product/storage/create
-  // @access private
-  const createStorageElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
-      <Suspense fallback={<div>Generic Loading message...</div>} >
-        <CreateStorage />
       </Suspense>
     </ErrorBoundary>
   );
@@ -961,19 +753,8 @@ function App() {
   // @access private
   const displayTabletsElement = (
     <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
-      <Suspense fallback={<div>Generic Loading message...</div>} >
+      <Suspense fallback={<div>Generic Loading message...</div>}>
         <DisplayTablet />
-      </Suspense>
-    </ErrorBoundary>
-  );
-
-  // @desc   tablet page (create)
-  // @route  /home/product/tablet/create
-  // @access private
-  const createTabletElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
-      <Suspense fallback={<div>Generic Loading message...</div>} >
-        <CreateTablet />
       </Suspense>
     </ErrorBoundary>
   );
@@ -987,27 +768,15 @@ function App() {
   // @access private
   const displayWebcamsElement = (
     <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
-      <Suspense fallback={<div>Generic Loading message...</div>} >
+      <Suspense fallback={<div>Generic Loading message...</div>}>
         <DisplayWebcam />
       </Suspense>
     </ErrorBoundary>
   );
 
-  // @desc   webcam page (create)
-  // @route  /home/product/webcam/create
-  // @access private
-  const createWebcamElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
-      <Suspense fallback={<div>Generic Loading message...</div>} >
-          <CreateWebcam />
-      </Suspense>
-    </ErrorBoundary>
-  );
-
-    // ╔═════════════════════════════════════════════════════════════════╗
+  // ╔═════════════════════════════════════════════════════════════════╗
   //   PRODUCT REVIEW
   // ╚═════════════════════════════════════════════════════════════════╝
-
 
   // ╔═════════════════════════════════════════════════════════════════╗
   //   REPAIR
@@ -1024,20 +793,17 @@ function App() {
     </ErrorBoundary>
   );
 
-    // ╔═════════════════════════════════════════════════════════════════╗
+  // ╔═════════════════════════════════════════════════════════════════╗
   //   TRANSACTION
   // ╚═════════════════════════════════════════════════════════════════╝
 
-    // ╔═════════════════════════════════════════════════════════════════╗
+  // ╔═════════════════════════════════════════════════════════════════╗
   //   COMPANY
   // ╚═════════════════════════════════════════════════════════════════╝
 
-  
-
-
-// ╭─────────────────────────────────────────────────────────────────╮
-//   ADDRESS CHANGE
-// ╰─────────────────────────────────────────────────────────────────╯
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //   ADDRESS CHANGE
+  // ╰─────────────────────────────────────────────────────────────────╯
 
   // @desc   address-change page (index and display)
   // @route  /home/company/address-change (index) and /home/company/address-change/display
@@ -1061,9 +827,9 @@ function App() {
     </ErrorBoundary>
   );
 
- // ╭─────────────────────────────────────────────────────────────────╮
-//   BENEFIT
-// ╰─────────────────────────────────────────────────────────────────╯
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //   BENEFIT
+  // ╰─────────────────────────────────────────────────────────────────╯
 
   // @desc   benefits page (index and display)
   // @route  /home/company/benefit (index) and /home/company/benefit/display
@@ -1088,8 +854,8 @@ function App() {
   );
 
   // ╭─────────────────────────────────────────────────────────────────╮
-//   LEAVE REQUEST
-// ╰─────────────────────────────────────────────────────────────────╯
+  //   LEAVE REQUEST
+  // ╰─────────────────────────────────────────────────────────────────╯
 
   // @desc   leave-request page (index and display)
   // @route  /home/company/leave-request (index) and /home/company/leave-request/display
@@ -1113,9 +879,9 @@ function App() {
     </ErrorBoundary>
   );
 
-// ╭─────────────────────────────────────────────────────────────────╮
-//   REQUEST RESOURCE
-// ╰─────────────────────────────────────────────────────────────────╯
+  // ╭─────────────────────────────────────────────────────────────────╮
+  //   REQUEST RESOURCE
+  // ╰─────────────────────────────────────────────────────────────────╯
 
   // @desc   request-resource page (index and display)
   // @route  /home/company/request-resource (index) and /home/company/request-resource/display
@@ -1140,8 +906,8 @@ function App() {
   );
 
   // ╭─────────────────────────────────────────────────────────────────╮
-//   EXPENSE CLAIM
-// ╰─────────────────────────────────────────────────────────────────╯
+  //   EXPENSE CLAIM
+  // ╰─────────────────────────────────────────────────────────────────╯
 
   // @desc   expense-claim page (index and display)
   // @route  /home/company/expense-claim (index) and /home/company/expense-claim/display
@@ -1165,12 +931,11 @@ function App() {
     </ErrorBoundary>
   );
 
-
-   // ╔═════════════════════════════════════════════════════════════════╗
+  // ╔═════════════════════════════════════════════════════════════════╗
   //   GENERAL
   // ╚═════════════════════════════════════════════════════════════════╝
 
-    // ╭─────────────────────────────────────────────────────────────────╮
+  // ╭─────────────────────────────────────────────────────────────────╮
   //   ANONYMOUS REQUEST
   // ╰─────────────────────────────────────────────────────────────────╯
 
@@ -1199,7 +964,6 @@ function App() {
   // ╭─────────────────────────────────────────────────────────────────╮
   //   ENDORSEMENT
   // ╰─────────────────────────────────────────────────────────────────╯
-
 
   // @desc   endorsement page (index and display)
   // @route  /home/general/endorsement (index) and /home/general/endorsement/display
@@ -1275,11 +1039,11 @@ function App() {
     </ErrorBoundary>
   );
 
-// ╔═════════════════════════════════════════════════════════════════╗
+  // ╔═════════════════════════════════════════════════════════════════╗
   //   OUTREACH
   // ╚═════════════════════════════════════════════════════════════════╝
 
-// ╭─────────────────────────────────────────────────────────────────╮
+  // ╭─────────────────────────────────────────────────────────────────╮
   //   ANNOUNCEMENT
   // ╰─────────────────────────────────────────────────────────────────╯
 
@@ -1316,11 +1080,9 @@ function App() {
     </ErrorBoundary>
   );
 
-    // ╭─────────────────────────────────────────────────────────────────╮
+  // ╭─────────────────────────────────────────────────────────────────╮
   //   EVENT
   // ╰─────────────────────────────────────────────────────────────────╯
-
-  
 
   // @desc   event-creator page (index and display)
   // @route  /home/outreach/event-creator (index) and /home/outreach/event-creator/display
@@ -1344,7 +1106,7 @@ function App() {
     </ErrorBoundary>
   );
 
-// ╭─────────────────────────────────────────────────────────────────╮
+  // ╭─────────────────────────────────────────────────────────────────╮
   //   SURVEY
   // ╰─────────────────────────────────────────────────────────────────╯
 
@@ -1441,17 +1203,139 @@ function App() {
           <Route path="dev-testing" element={<DevTesting />} />
           {/* <Route path="home" element={homeElement} /> */}
 
-          {/* dashboard */}       
+          {/* dashboard */}
           <Route path="dashboard">
-            <Route index element={dashboardElement} />            
+            <Route index element={dashboardElement} />
             <Route path=":chartKind" element={displayResponsiveChartElement} />
           </Route>
 
-{/* product */}
+          {/* customer */}
 
+          {/* comment */}
+          <Route path="comment">
+            <Route index element={displayCommentsElement} />
+            <Route path="display" element={displayCommentsElement} />
+          </Route>
 
+          {/* file upload */}
 
-          
+          {/* product */}
+          <Route path="product">
+            <Route path="create" element={createProductElement} />
+            {/* accessory */}
+            <Route path="accessory">
+              <Route index element={displayAccessoriesElement} />
+              <Route path="create" element={createProductElement} />
+            </Route>
+
+            {/* cpu */}
+            <Route path="cpu">
+              <Route index element={displayCPUsElement} />
+              <Route path="create" element={createProductElement} />
+            </Route>
+
+            {/* case */}
+            <Route path="computer-case">
+              <Route index element={displayCasesElement} />
+              <Route path="create" element={createProductElement} />
+            </Route>
+
+            {/* desktop-computer */}
+            <Route path="desktop-computer">
+              <Route index element={displayDesktopComputersElement} />
+              <Route path="create" element={createProductElement} />
+            </Route>
+
+            {/* display */}
+            <Route path="display">
+              <Route index element={displayDisplaysElement} />
+              <Route path="create" element={createProductElement} />
+            </Route>
+
+            {/* gpu */}
+            <Route path="gpu">
+              <Route index element={displayGPUsElement} />
+              <Route path="create" element={createProductElement} />
+            </Route>
+
+            {/* headphone */}
+            <Route path="headphone">
+              <Route index element={displayHeadphonesElement} />
+              <Route path="create" element={createProductElement} />
+            </Route>
+
+            {/* keyboard */}
+            <Route path="keyboard">
+              <Route index element={displayKeyboardsElement} />
+              <Route path="create" element={createProductElement} />
+            </Route>
+
+            {/* laptop */}
+            <Route path="laptop">
+              <Route index element={displayLaptopsElement} />
+              <Route path="create" element={createProductElement} />
+            </Route>
+
+            {/* ram */}
+            <Route path="ram">
+              <Route index element={displayRAMsElement} />
+              <Route path="create" element={createProductElement} />
+            </Route>
+
+            {/* microphone */}
+            <Route path="microphone">
+              <Route index element={displayMicrophonesElement} />
+              <Route path="create" element={createProductElement} />
+            </Route>
+
+            {/* motherboard */}
+            <Route path="motherboard">
+              <Route index element={displayMotherboardsElement} />
+              <Route path="create" element={createProductElement} />
+            </Route>
+
+            {/* mouse */}
+            <Route path="mouse">
+              <Route index element={displayMousesElement} />
+              <Route path="create" element={createProductElement} />
+            </Route>
+
+            {/* psu */}
+            <Route path="psu">
+              <Route index element={displayPSUsElement} />
+              <Route path="create" element={createProductElement} />
+            </Route>
+
+            {/* smartphone */}
+            <Route path="smartphone">
+              <Route index element={displaySmartphonesElement} />
+              <Route path="create" element={createProductElement} />
+            </Route>
+
+            {/* speaker */}
+            <Route path="speaker">
+              <Route index element={displaySpeakersElement} />
+              <Route path="create" element={createProductElement} />
+            </Route>
+
+            {/* storage */}
+            <Route path="storage">
+              <Route index element={displayStoragesElement} />
+              <Route path="create" element={createProductElement} />
+            </Route>
+
+            {/* tablet */}
+            <Route path="tablet">
+              <Route index element={displayTabletsElement} />
+              <Route path="create" element={createProductElement} />
+            </Route>
+
+            {/* webcam */}
+            <Route path="webcam">
+              <Route index element={displayWebcamsElement} />
+              <Route path="create" element={createProductElement} />
+            </Route>
+          </Route>
 
           {/* repair-note */}
           <Route path="repair-note">
@@ -1460,7 +1344,6 @@ function App() {
 
           {/* company */}
           <Route path="company">
-
             {/* address change */}
             <Route path="address-change">
               <Route index element={displayAddressChangesElement} />
@@ -1493,7 +1376,6 @@ function App() {
           </Route>
 
           <Route path="general">
-
             {/* anonymous-request */}
             <Route path="anonymous-request">
               <Route index element={displayAnonymousRequestsElement} />
@@ -1520,7 +1402,6 @@ function App() {
           </Route>
 
           <Route path="outreach">
-
             {/* event */}
             <Route path="event">
               <Route index element={displayEventsElement} />

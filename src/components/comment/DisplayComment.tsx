@@ -1,18 +1,18 @@
 import { Flex } from "@mantine/core";
 
-import { DisplayResource } from "../../displayResource";
-import DisplayResourceHeader from "../../displayResourceHeader/DisplayResourceHeader";
-import { ACCESSORY_QUERY_DATA, ACCESSORY_RESOURCE_ROUTE_PATHS } from "./constants";
+import { DisplayResource } from "../displayResource";
+import DisplayResourceHeader from "../displayResourceHeader/DisplayResourceHeader";
+import { COMMENT_QUERY_DATA, COMMENT_RESOURCE_ROUTE_PATHS } from "./constants";
 
-function DisplayAccessory() {
+function DisplayComment() {
   // ╭─────────────────────────────────────────────────────────────────╮
   //     RESOURCE HEADER
   // ╰─────────────────────────────────────────────────────────────────╯
   const imageSrc =
-    "https://images.pexels.com/photos/7364948/pexels-photo-7364948.jpeg?auto=compress";
-  const imageAlt = "White security camera";
-  const resourceDescription = "Manage Your Accessories";
-  const resourceTitle = "Accessories";
+    "https://images.pexels.com/photos/1181681/pexels-photo-1181681.jpeg?auto=compress";
+  const imageAlt = "Photography of Woman Using Laptop";
+  const resourceDescription = "Manage Your Comments";
+  const resourceTitle = "Comment";
 
   const displayResourceHeader = (
     <DisplayResourceHeader
@@ -28,23 +28,21 @@ function DisplayAccessory() {
   // ╰─────────────────────────────────────────────────────────────────╯
   const displayResource = (
     <DisplayResource
-      componentQueryData={ACCESSORY_QUERY_DATA}
-      createResourcePath="/home/product/accessory/create"
-      requestBodyHeading="accessorie"
-      resourceUrlPaths={ACCESSORY_RESOURCE_ROUTE_PATHS}
-      fileUploadFieldName="fileUploads"
-      isFileUploadsWithResource={true}
+      componentQueryData={COMMENT_QUERY_DATA}
+      createResourcePath="/home/comment/create"
+      requestBodyHeading="Comment"
+      resourceUrlPaths={COMMENT_RESOURCE_ROUTE_PATHS}
     />
   );
 
-  const displayAccessoryComponent = (
+  const displayCommentComponent = (
     <Flex direction="column" w="100%">
       {displayResourceHeader}
       {displayResource}
     </Flex>
   );
 
-  return displayAccessoryComponent;
+  return displayCommentComponent;
 }
 
-export default DisplayAccessory;
+export default DisplayComment;
