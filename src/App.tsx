@@ -207,6 +207,7 @@ const DisplayPurchase = lazy(() => import("./components/purchase/DisplayPurchase
 // ╭─────────────────────────────────────────────────────────────────╮
 //    RMA
 // ╰─────────────────────────────────────────────────────────────────╯
+const DisplayRMA = lazy(() => import("./components/rma/DisplayRMA"));
 
 // ╔═════════════════════════════════════════════════════════════════╗
 //   COMPANY
@@ -851,6 +852,17 @@ function App() {
   //   RMA
   // ╰─────────────────────────────────────────────────────────────────╯
 
+  // @desc   rma page (index and display)
+  // @route  /home/rma (index) and /home/rma/display
+  // @access private
+  const displayRMAsElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>}>
+        <DisplayRMA />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
   // ╔═════════════════════════════════════════════════════════════════╗
   //   COMPANY
   // ╚═════════════════════════════════════════════════════════════════╝
@@ -1407,6 +1419,12 @@ function App() {
           <Route path="purchase">
             <Route index element={displayPurchasesElement} />
             <Route path="display" element={displayPurchasesElement} />
+          </Route>
+
+          {/* rma */}
+          <Route path="rma">
+            <Route index element={displayRMAsElement} />
+            <Route path="display" element={displayRMAsElement} />
           </Route>
 
           {/* repair-note */}

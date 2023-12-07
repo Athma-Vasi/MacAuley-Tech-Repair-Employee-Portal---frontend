@@ -925,7 +925,7 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
         type: portalNavbarAction.setIsPurchaseActive,
         payload: !isPurchaseActive,
       });
-      navigate("/home/transaction/purchase");
+      navigate("/home/purchase");
     },
   };
 
@@ -942,7 +942,7 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
         type: portalNavbarAction.setIsRMAActive,
         payload: !isRMAActive,
       });
-      navigate("/home/transaction/rma");
+      navigate("/home/rma");
     },
   };
 

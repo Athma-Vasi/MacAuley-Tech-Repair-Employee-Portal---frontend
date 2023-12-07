@@ -1,10 +1,10 @@
-import { STATES_US, PROVINCES } from "../../constants/data";
+import { PROVINCES, STATES_US } from "../../constants/data";
 import {
-  USERNAME_REGEX,
-  DATE_FULL_RANGE_REGEX,
-  SERIAL_ID_REGEX,
   ADDRESS_LINE_REGEX,
   CITY_REGEX,
+  DATE_FULL_RANGE_REGEX,
+  SERIAL_ID_REGEX,
+  USERNAME_REGEX,
 } from "../../constants/regex";
 import { ResourceRoutePaths } from "../../types";
 import {
@@ -23,13 +23,6 @@ import { ComponentQueryData } from "../queryBuilder";
 import { STORE_LOCATION_DATA } from "../register/constants";
 
 const PURCHASE_QUERY_DATA: ComponentQueryData[] = [
-  {
-    label: "Username",
-    value: "username",
-    inputKind: "textInput",
-    regex: USERNAME_REGEX,
-    regexValidationFn: returnUsernameRegexValidationText,
-  },
   {
     label: "Created Date",
     value: "createdAt",
