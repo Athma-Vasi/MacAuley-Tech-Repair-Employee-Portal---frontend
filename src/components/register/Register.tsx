@@ -1,50 +1,48 @@
-import '../../index.css';
+import "../../index.css";
 
-import { Button, Flex, Group, Text } from '@mantine/core';
-import { MouseEvent, useEffect, useReducer } from 'react';
-import { TbUpload } from 'react-icons/tb';
-import { Link } from 'react-router-dom';
+import { Flex, Text, Title } from "@mantine/core";
+import { InvalidTokenError } from "jwt-decode";
+import { MouseEvent, useEffect, useReducer, useRef } from "react";
+import { useErrorBoundary } from "react-error-boundary";
+import { TbUpload } from "react-icons/tb";
+import { Link, useNavigate } from "react-router-dom";
 
-import { axiosInstance } from '../../api/axios';
-import {
-  ADDRESS_LINE_REGEX,
-  CITY_REGEX,
-  DATE_OF_BIRTH_REGEX,
-  DATE_REGEX,
-  EMAIL_REGEX,
-  FULL_NAME_REGEX,
-  NAME_REGEX,
-  PASSWORD_REGEX,
-  PHONE_NUMBER_REGEX,
-  POSTAL_CODE_REGEX_CANADA,
-  POSTAL_CODE_REGEX_US,
-  USERNAME_REGEX,
-} from '../../constants/regex';
-import { returnAccessibleButtonElements } from '../../jsxCreators';
-import { UserSchema } from '../../types';
-import { Loading } from '../loading';
-import {
-  AccessibleButtonCreatorInfo,
-  FormLayoutWrapper,
-  StepperWrapper,
-} from '../wrappers';
-import {
-  REGISTER_DESCRIPTION_OBJECTS,
-  REGISTER_MAX_STEPPER_POSITION,
-  REGISTER_URL,
-} from './constants';
-import { RegisterStepAdditional } from './registerStepAdditional/RegisterStepAdditional';
-import { RegisterStepAddress } from './registerStepAddress/RegisterStepAddress';
-import { RegisterStepAuthentication } from './registerStepAuthentication/RegisterStepAuthentication';
-import { RegisterStepPersonal } from './registerStepPersonal/RegisterStepPersonal';
-import { RegisterStepReview } from './registerStepReview/RegisterStepReview';
-import { initialRegisterState, registerAction, registerReducer } from './state';
+import { globalAction } from "../../context/globalProvider/state";
+import { useGlobalState, useWrapFetch } from "../../hooks";
+import { returnAccessibleButtonElements } from "../../jsxCreators";
+import { ResourceRequestServerResponse, UserDocument, UserSchema } from "../../types";
+import { urlBuilder } from "../../utils";
+import { AccessibleButtonCreatorInfo, StepperWrapper } from "../wrappers";
+import { REGISTER_DESCRIPTION_OBJECTS, REGISTER_MAX_STEPPER_POSITION } from "./constants";
+import { RegisterStepAdditional } from "./registerStepAdditional/RegisterStepAdditional";
+import { RegisterStepAddress } from "./registerStepAddress/RegisterStepAddress";
+import { RegisterStepAuthentication } from "./registerStepAuthentication/RegisterStepAuthentication";
+import { RegisterStepPersonal } from "./registerStepPersonal/RegisterStepPersonal";
+import { RegisterStepReview } from "./registerStepReview/RegisterStepReview";
+import { initialRegisterState, registerAction, registerReducer } from "./state";
+import { useDisclosure } from "@mantine/hooks";
+import { NotificationModal } from "../notificationModal";
 
 function Register() {
+  const { globalDispatch } = useGlobalState();
+
+  const { wrappedFetch } = useWrapFetch();
+  const { showBoundary } = useErrorBoundary();
+  const navigate = useNavigate();
+
+  const [
+    openedSubmitSuccessNotificationModal,
+    {
+      open: openSubmitSuccessNotificationModal,
+      close: closeSubmitSuccessNotificationModal,
+    },
+  ] = useDisclosure(false);
+
   const [registerState, registerDispatch] = useReducer(
     registerReducer,
     initialRegisterState
   );
+
   const {
     email,
     isValidEmail,
@@ -105,12 +103,8 @@ function Register() {
     currentStepperPosition,
     stepsInError,
 
-    isError,
-    errorMessage,
     isSuccessful,
     successMessage,
-    isLoading,
-    loadingMessage,
     isSubmitting,
     submitMessage,
   } = registerState;
@@ -137,65 +131,21 @@ function Register() {
     isPhoneNumberFocused,
   } = emergencyContact;
 
-  // removes error message after every change in values of input fields in dependency array
-  useEffect(() => {
-    registerDispatch({
-      type: registerAction.setErrorMessage,
-      payload: '',
-    });
-  }, [
-    email,
-    username,
-    password,
-    confirmPassword,
-    firstName,
-    middleName,
-    lastName,
-    preferredName,
-    dateOfBirth,
-    contactNumber,
-    addressLine,
-    city,
-    postalCode,
-    fullName,
-    phoneNumber,
-    startDate,
-  ]);
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
+    let isMounted = true;
+    // before submitting form, abort any previous requests
+    abortControllerRef.current?.abort();
+    // create new abort controller for current request
+    abortControllerRef.current = new AbortController();
+
     async function handleRegisterFormSubmit() {
-      // ~sanity~ safety check
-      const finalRegexTest = [
-        EMAIL_REGEX.test(email),
-        USERNAME_REGEX.test(username),
-        PASSWORD_REGEX.test(password),
-        password === confirmPassword,
-        NAME_REGEX.test(firstName),
-        NAME_REGEX.test(middleName),
-        NAME_REGEX.test(lastName),
-        NAME_REGEX.test(preferredName),
-        PHONE_NUMBER_REGEX.test(contactNumber),
-        ADDRESS_LINE_REGEX.test(addressLine),
-        CITY_REGEX.test(city),
-        country === 'Canada'
-          ? POSTAL_CODE_REGEX_CANADA.test(postalCode)
-          : POSTAL_CODE_REGEX_US.test(postalCode),
-        FULL_NAME_REGEX.test(fullName),
-        PHONE_NUMBER_REGEX.test(phoneNumber),
-        DATE_OF_BIRTH_REGEX.test(dateOfBirth),
-        DATE_REGEX.test(startDate),
-      ];
-
-      // if any field is invalid, display error message and return
-      if (finalRegexTest.includes(false)) {
-        registerDispatch({
-          type: registerAction.setErrorMessage,
-          payload: 'Please fill out all fields correctly',
-        });
-        return;
-      }
-
-      console.log('finalRegexTest', finalRegexTest);
+      registerDispatch({
+        type: registerAction.setIsSubmitting,
+        payload: true,
+      });
+      openSubmitSuccessNotificationModal();
 
       const newUserObj: UserSchema = {
         email,
@@ -215,79 +165,118 @@ function Register() {
         storeLocation,
         emergencyContact: { fullName, contactNumber },
         startDate,
-        roles: ['Employee'],
+        roles: ["Employee"],
         active: true,
         completedSurveys: [],
         isPrefersReducedMotion: false,
       };
 
-      const controller = new AbortController();
-      const { signal } = controller;
+      const url: URL = urlBuilder({
+        path: "user",
+      });
+
+      const requestInit: RequestInit = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          userSchema: newUserObj,
+        }),
+      };
 
       try {
+        const response: Response = await wrappedFetch({
+          isMounted,
+          requestInit,
+          signal: abortControllerRef.current?.signal,
+          url,
+        });
+
+        const data: ResourceRequestServerResponse<UserDocument> = await response.json();
+
+        if (!isMounted) {
+          return;
+        }
+        if (!response.ok) {
+          throw new Error(data.message);
+        }
+
         registerDispatch({
-          type: registerAction.setIsSubmitting,
+          type: registerAction.setIsSuccessful,
           payload: true,
         });
 
-        const axiosConfig = {
-          method: 'post',
-          signal,
-          url: REGISTER_URL,
-          data: newUserObj,
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          withCredentials: true,
-        };
-
-        const response = await axiosInstance(axiosConfig);
-
-        const { status } = response;
-
-        if (status === 201) {
-          registerDispatch({
-            type: registerAction.setIsSuccessful,
-            payload: true,
-          });
-          registerDispatch({
-            type: registerAction.setErrorMessage,
-            payload: '',
-          });
+        registerDispatch({
+          type: registerAction.setSuccessMessage,
+          payload: data.message ?? "User created successfully!",
+        });
+      } catch (error: any) {
+        if (!isMounted || error.name === "AbortError") {
           return;
         }
-      } catch (error: any) {
-        if (!error.response) {
-          registerDispatch({
-            type: registerAction.setErrorMessage,
-            payload: 'Network error',
-          });
-        } else {
-          registerDispatch({
-            type: registerAction.setErrorMessage,
-            payload: error.response.data.message,
-          });
-        }
-      } finally {
-        registerDispatch({
-          type: registerAction.setIsSubmitting,
-          payload: false,
+
+        const errorMessage =
+          error instanceof InvalidTokenError
+            ? "Invalid token. Please login again."
+            : !error.response
+            ? "Network error. Please try again."
+            : error?.message ?? "Unknown error occurred. Please try again.";
+
+        globalDispatch({
+          type: globalAction.setErrorState,
+          payload: {
+            isError: true,
+            errorMessage,
+            errorCallback: () => {
+              navigate("/home");
+
+              globalDispatch({
+                type: globalAction.setErrorState,
+                payload: {
+                  isError: false,
+                  errorMessage: "",
+                  errorCallback: () => {},
+                },
+              });
+            },
+          },
         });
 
-        controller.abort();
+        showBoundary(error);
+      } finally {
+        if (isMounted) {
+          registerDispatch({
+            type: registerAction.setIsSubmitting,
+            payload: false,
+          });
+          registerDispatch({
+            type: registerAction.setSubmitMessage,
+            payload: "",
+          });
+          registerDispatch({
+            type: registerAction.setTriggerFormSubmit,
+            payload: false,
+          });
+        }
       }
     }
 
     if (triggerFormSubmit) {
       handleRegisterFormSubmit();
     }
+
+    return () => {
+      isMounted = false;
+      abortControllerRef.current?.abort();
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [triggerFormSubmit]);
 
   const submitButtonCreatorInfo: AccessibleButtonCreatorInfo = {
-    buttonLabel: 'Submit',
-    semanticDescription: 'register form submit button',
-    semanticName: 'submit button',
+    buttonLabel: "Submit",
+    semanticDescription: "register form submit button",
+    semanticName: "submit button",
     leftIcon: <TbUpload />,
     buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
       registerDispatch({
@@ -299,15 +288,30 @@ function Register() {
     buttonDisabled: stepsInError.size > 0 || triggerFormSubmit,
   };
 
-  const [createdSubmitButton] = returnAccessibleButtonElements([
-    submitButtonCreatorInfo,
-  ]);
+  const [createdSubmitButton] = returnAccessibleButtonElements([submitButtonCreatorInfo]);
   const displaySubmitButton =
     currentStepperPosition === REGISTER_MAX_STEPPER_POSITION ? (
       <Flex align="center" justify="center" w="100%">
         {createdSubmitButton}
       </Flex>
     ) : null;
+
+  const displaySubmitSuccessNotificationModal = (
+    <NotificationModal
+      onCloseCallbacks={[
+        closeSubmitSuccessNotificationModal,
+        () => {
+          navigate("/home");
+        },
+      ]}
+      opened={openedSubmitSuccessNotificationModal}
+      notificationProps={{
+        loading: isSubmitting,
+        text: isSubmitting ? submitMessage : successMessage,
+      }}
+      title={<Title order={4}>{isSuccessful ? "Success!" : "Submitting ..."}</Title>}
+    />
+  );
 
   const displayRegisterComponentPage =
     currentStepperPosition === 0 ? (
@@ -426,6 +430,7 @@ function Register() {
       parentComponentDispatch={registerDispatch}
     >
       {displayRegisterComponentPage}
+      {displaySubmitSuccessNotificationModal}
     </StepperWrapper>
   );
 
@@ -451,15 +456,7 @@ function Register() {
     </Flex>
   );
 
-  useEffect(() => {
-    console.group('Register component mounted');
-    Object.entries(registerState).forEach(([key, value]) => {
-      console.log(`${key}: `, JSON.stringify(value, null, 2));
-    });
-    console.groupEnd();
-  }, [registerState]);
-
-  return <>{displayRegisterComponent}</>;
+  return displayRegisterComponent;
 }
 
 export default Register;

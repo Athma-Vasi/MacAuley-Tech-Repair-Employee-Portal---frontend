@@ -107,12 +107,6 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
     //    REPAIR
     // ╰─────────────────────────────────────────────────────────────────╯
     isRepairActive,
-    isComputerComponentActive,
-    isPeripheralActive,
-    isElectronicDeviceActive,
-    isMobileDeviceActive,
-    isAudioVideoActive,
-    isRepairAccessoryActive,
 
     // ╭─────────────────────────────────────────────────────────────────╮
     //    TRANSACTION
@@ -746,170 +740,23 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
   ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //    REPAIR => COMPUTER COMPONENT
-  // ╰─────────────────────────────────────────────────────────────────╯
-  const computerComponentNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
-    active: isComputerComponentActive,
-    ariaLabel: "Will navigate to computer component page",
-    icon: (
-      <TbCircleTriangle color={isComputerComponentActive ? themeColorShade : iconGray} />
-    ),
-    label: "Computer component",
-    onClick: () => {
-      portalNavbarDispatch({
-        type: portalNavbarAction.setIsComputerComponentActive,
-        payload: !isComputerComponentActive,
-      });
-      navigate("/home/repair/computer-component");
-    },
-  };
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    REPAIR => PERIPHERAL
-  // ╰─────────────────────────────────────────────────────────────────╯
-  const peripheralNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
-    active: isPeripheralActive,
-    ariaLabel: "Will navigate to peripheral page",
-    icon: <TbCircleTriangle color={isPeripheralActive ? themeColorShade : iconGray} />,
-    label: "Peripheral",
-    onClick: () => {
-      portalNavbarDispatch({
-        type: portalNavbarAction.setIsPeripheralActive,
-        payload: !isPeripheralActive,
-      });
-      navigate("/home/repair/peripheral");
-    },
-  };
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    REPAIR => ELECTRONIC DEVICE
-  // ╰─────────────────────────────────────────────────────────────────╯
-  const electronicDeviceNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
-    active: isElectronicDeviceActive,
-    ariaLabel: "Will navigate to electronic device page",
-    icon: (
-      <TbCircleTriangle color={isElectronicDeviceActive ? themeColorShade : iconGray} />
-    ),
-    label: "Electronic device",
-    onClick: () => {
-      portalNavbarDispatch({
-        type: portalNavbarAction.setIsElectronicDeviceActive,
-        payload: !isElectronicDeviceActive,
-      });
-      navigate("/home/repair/electronic-device");
-    },
-  };
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    REPAIR => MOBILE DEVICE
-  // ╰─────────────────────────────────────────────────────────────────╯
-  const mobileDeviceNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
-    active: isMobileDeviceActive,
-    ariaLabel: "Will navigate to mobile device page",
-    icon: <TbCircleTriangle color={isMobileDeviceActive ? themeColorShade : iconGray} />,
-    label: "Mobile device",
-    onClick: () => {
-      portalNavbarDispatch({
-        type: portalNavbarAction.setIsMobileDeviceActive,
-        payload: !isMobileDeviceActive,
-      });
-      navigate("/home/repair/mobile-device");
-    },
-  };
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    REPAIR => AUDIO VIDEO
-  // ╰─────────────────────────────────────────────────────────────────╯
-  const audioVideoNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
-    active: isAudioVideoActive,
-    ariaLabel: "Will navigate to audio video page",
-    icon: <TbCircleTriangle color={isAudioVideoActive ? themeColorShade : iconGray} />,
-    label: "Audio video",
-    onClick: () => {
-      portalNavbarDispatch({
-        type: portalNavbarAction.setIsAudioVideoActive,
-        payload: !isAudioVideoActive,
-      });
-      navigate("/home/repair/audio-video");
-    },
-  };
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    REPAIR => ACCESSORY
-  // ╰─────────────────────────────────────────────────────────────────╯
-  const repairAccessoryNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
-    active: isRepairAccessoryActive,
-    ariaLabel: "Will navigate to repair accessory page",
-    icon: (
-      <TbCircleTriangle color={isRepairAccessoryActive ? themeColorShade : iconGray} />
-    ),
-    label: "Accessory",
-    onClick: () => {
-      portalNavbarDispatch({
-        type: portalNavbarAction.setIsRepairAccessoryActive,
-        payload: !isRepairAccessoryActive,
-      });
-      navigate("/home/repair/accessory");
-    },
-  };
-
-  const [
-    createdComputerComponentNavLink,
-    createdPeripheralNavLink,
-    createdElectronicDeviceNavLink,
-    createdMobileDeviceNavLink,
-    createdAudioVideoNavLink,
-    createdRepairAccessoryNavLink,
-  ] = returnAccessibleNavLinkElements([
-    computerComponentNavLinkCreatorInfo,
-    peripheralNavLinkCreatorInfo,
-    electronicDeviceNavLinkCreatorInfo,
-    mobileDeviceNavLinkCreatorInfo,
-    audioVideoNavLinkCreatorInfo,
-    repairAccessoryNavLinkCreatorInfo,
-  ]);
-
-  // ╭─────────────────────────────────────────────────────────────────╮
   //    REPAIR
   // ╰─────────────────────────────────────────────────────────────────╯
-  const isRepairNavlinkOpened =
-    isRepairActive ||
-    isComputerComponentActive ||
-    isPeripheralActive ||
-    isElectronicDeviceActive ||
-    isMobileDeviceActive ||
-    isAudioVideoActive ||
-    isRepairAccessoryActive
-      ? true
-      : false;
-
-  const repairNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
-    active: isRepairActive,
-    ariaLabel: "Will navigate to repair page",
-    children: [
-      createdComputerComponentNavLink,
-      createdPeripheralNavLink,
-      createdElectronicDeviceNavLink,
-      createdMobileDeviceNavLink,
-      createdAudioVideoNavLink,
-      createdRepairAccessoryNavLink,
-    ],
-    icon: <TbCircuitResistor color={isRepairActive ? themeColorShade : iconGray} />,
-    label: "Repair",
-    onClick: () => {
-      portalNavbarDispatch({
-        type: portalNavbarAction.setIsRepairActive,
-        payload: !isRepairActive,
-      });
-    },
-    opened: isRepairNavlinkOpened,
-    rightSection: (
-      <TbChevronRight color={isRepairNavlinkOpened ? themeColorShade : iconGray} />
-    ),
-  };
 
   const [createdRepairNavLink] = returnAccessibleNavLinkElements([
-    repairNavLinkCreatorInfo,
+    {
+      active: isRepairActive,
+      ariaLabel: "Will navigate to repair page",
+      icon: <TbCircuitResistor color={isRepairActive ? themeColorShade : iconGray} />,
+      label: "Repair",
+      onClick: () => {
+        portalNavbarDispatch({
+          type: portalNavbarAction.setIsRepairActive,
+          payload: !isRepairActive,
+        });
+        navigate("/home/repair-ticket");
+      },
+    },
   ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮

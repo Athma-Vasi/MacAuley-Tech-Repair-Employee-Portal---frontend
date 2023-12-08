@@ -64,12 +64,6 @@ const initialPortalNavbarState: PortalNavbarState = {
   //    REPAIR
   // ╰─────────────────────────────────────────────────────────────────╯
   isRepairActive: false,
-  isComputerComponentActive: false,
-  isPeripheralActive: false,
-  isElectronicDeviceActive: false,
-  isMobileDeviceActive: false,
-  isAudioVideoActive: false,
-  isRepairAccessoryActive: false,
 
   // ╭─────────────────────────────────────────────────────────────────╮
   //    TRANSACTION

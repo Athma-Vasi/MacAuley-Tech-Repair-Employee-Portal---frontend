@@ -4,11 +4,11 @@ import {
   Popover,
   Stack,
   useMantineTheme,
-} from '@mantine/core';
-import { ReactNode, useState } from 'react';
-import { TbCheck } from 'react-icons/tb';
+} from "@mantine/core";
+import { ReactNode, useState } from "react";
+import { TbCheck } from "react-icons/tb";
 
-import { useGlobalState } from '../../hooks';
+import { useGlobalState } from "../../hooks";
 
 type AccessiblePasswordInputCreatorInfo = {
   semanticName: string;
@@ -39,15 +39,12 @@ type PasswordInputWrapperProps = {
   creatorInfoObject: AccessiblePasswordInputCreatorInfo;
 };
 
-function PasswordInputWrapper({
-  creatorInfoObject,
-}: PasswordInputWrapperProps) {
+function PasswordInputWrapper({ creatorInfoObject }: PasswordInputWrapperProps) {
   const [popoverOpened, setPopoverOpened] = useState(false);
   const { colors } = useMantineTheme();
   const {
     globalState: {
       themeObject: { colorScheme, primaryShade },
-      width,
     },
   } = useGlobalState();
 
@@ -59,7 +56,7 @@ function PasswordInputWrapper({
     ariaRequired = false,
     description,
     placeholder,
-    initialInputValue = '',
+    initialInputValue = "",
     icon = null,
     onChange,
     onFocus,
@@ -69,11 +66,10 @@ function PasswordInputWrapper({
     withAsterisk = false,
     ref = null,
     required = false,
-    size = 'sm',
+    size = "sm",
   } = creatorInfoObject;
 
-  const colorShade =
-    colorScheme === 'light' ? primaryShade.light : primaryShade.dark;
+  const colorShade = colorScheme === "light" ? primaryShade.light : primaryShade.dark;
 
   const leftIcon = isValidInputText ? (
     icon ? (
@@ -90,7 +86,7 @@ function PasswordInputWrapper({
       opened={inputText ? popoverOpened : false}
       position="bottom"
       shadow="md"
-      transitionProps={{ transition: 'pop' }}
+      transitionProps={{ transition: "pop" }}
       width="target"
       withArrow
     >
@@ -107,8 +103,8 @@ function PasswordInputWrapper({
             aria-required={ariaRequired}
             aria-describedby={
               isValidInputText
-                ? `${semanticName.split(' ').join('-')}-input-note-valid`
-                : `${semanticName.split(' ').join('-')}-input-note-error`
+                ? `${semanticName.split(" ").join("-")}-input-note-valid`
+                : `${semanticName.split(" ").join("-")}-input-note-error`
             }
             placeholder={placeholder}
             aria-invalid={isValidInputText ? false : true}
@@ -121,7 +117,7 @@ function PasswordInputWrapper({
             onBlur={onBlur}
             minLength={minLength}
             maxLength={maxLength}
-            name={semanticName.split(' ').join('-')}
+            name={semanticName.split(" ").join("-")}
             ref={ref}
             withAsterisk={withAsterisk}
             required={required}
@@ -130,9 +126,7 @@ function PasswordInputWrapper({
       </Popover.Target>
 
       <Popover.Dropdown>
-        <Stack>
-          {isValidInputText ? description.valid : description.error}
-        </Stack>
+        <Stack>{isValidInputText ? description.valid : description.error}</Stack>
       </Popover.Dropdown>
     </Popover>
   );

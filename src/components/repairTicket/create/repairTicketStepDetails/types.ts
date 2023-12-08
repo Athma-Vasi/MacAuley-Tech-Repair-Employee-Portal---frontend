@@ -1,11 +1,8 @@
-import type { Currency, Urgency } from '../../../../types';
-import type { PartsNeeded, RequiredRepairs } from '../../types';
-import type {
-  CreateRepairNoteAction,
-  CreateRepairNoteDispatch,
-} from '../types';
+import type { Currency, Urgency } from "../../../../types";
+import type { PartsNeeded, RequiredRepairs } from "../../types";
+import type { CreateRepairTicketAction, CreateRepairTicketDispatch } from "../types";
 
-type RepairNoteStepDetailsProps = {
+type RepairTicketStepDetailsProps = {
   requiredRepairs: RequiredRepairs[];
   partsNeeded: PartsNeeded[];
   partsNeededModels: string;
@@ -24,8 +21,8 @@ type RepairNoteStepDetailsProps = {
 
   repairPriority: Urgency;
 
-  createRepairNoteAction: CreateRepairNoteAction;
-  createRepairNoteDispatch: React.Dispatch<CreateRepairNoteDispatch>;
+  createRepairTicketAction: CreateRepairTicketAction;
+  createRepairTicketDispatch: React.Dispatch<CreateRepairTicketDispatch>;
 };
 
-export type { RepairNoteStepDetailsProps };
+export type { RepairTicketStepDetailsProps };

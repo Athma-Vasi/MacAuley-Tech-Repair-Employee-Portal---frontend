@@ -42,6 +42,8 @@ import FormReviewPage, { FormReviewObjectArray } from "../formReviewPage/FormRev
 import { ImageUpload } from "../imageUpload";
 import { NotificationModal } from "../notificationModal";
 import { FormLayoutWrapper, StepperWrapper } from "../wrappers";
+import CreateAccessory from "./accessory/CreateAccessory";
+import CreateCase from "./case/CreateCase";
 import {
   BRAND_REGEX,
   CREATE_PRODUCT_DESCRIPTION_OBJECTS,
@@ -56,8 +58,24 @@ import {
   WEIGHT_REGEX,
   WEIGHT_UNIT_SELECT_INPUT_DATA,
 } from "./constants";
+import CreateCpu from "./cpu/CreateCPU";
+import CreateDesktopComputer from "./desktopComputer/CreateDesktopComputer";
+import CreateDisplay from "./display/CreateDisplay";
+import CreateGpu from "./gpu/CreateGPU";
+import CreateHeadphone from "./headphone/CreateHeadphone";
+import CreateKeyboard from "./keyboard/CreateKeyboard";
+import CreateLaptop from "./laptop/CreateLaptop";
+import CreateMicrophone from "./microphone/CreateMicrophone";
+import CreateMotherboard from "./motherboard/CreateMotherboard";
+import CreateMouse from "./mouse/CreateMouse";
+import CreatePsu from "./psu/CreatePSU";
+import CreateRam from "./ram/CreateRAM";
 import { createProductReducer } from "./reducers";
+import CreateSmartphone from "./smartphone/CreateSmartphone";
+import CreateSpeaker from "./speaker/CreateSpeaker";
 import { createProductAction, initialCreateProductState } from "./state";
+import CreateStorage from "./storage/CreateStorage";
+import CreateTablet from "./tablet/CreateTablet";
 import {
   AccessoryRequestBody,
   AccessorySpecifications,
@@ -107,24 +125,6 @@ import {
   returnFormReviewObjectsFromUserDefinedFields,
   returnRequestBodyfromUserDefinedFields,
 } from "./utils";
-import CreateAccessory from "./accessory/CreateAccessory";
-import CreateCase from "./case/CreateCase";
-import CreateCpu from "./cpu/CreateCPU";
-import CreateDesktopComputer from "./desktopComputer/CreateDesktopComputer";
-import CreateDisplay from "./display/CreateDisplay";
-import CreateGpu from "./gpu/CreateGPU";
-import CreateHeadphone from "./headphone/CreateHeadphone";
-import CreateKeyboard from "./keyboard/CreateKeyboard";
-import CreateLaptop from "./laptop/CreateLaptop";
-import CreateMicrophone from "./microphone/CreateMicrophone";
-import CreateMotherboard from "./motherboard/CreateMotherboard";
-import CreateMouse from "./mouse/CreateMouse";
-import CreatePsu from "./psu/CreatePSU";
-import CreateRam from "./ram/CreateRAM";
-import CreateSmartphone from "./smartphone/CreateSmartphone";
-import CreateSpeaker from "./speaker/CreateSpeaker";
-import CreateStorage from "./storage/CreateStorage";
-import CreateTablet from "./tablet/CreateTablet";
 import CreateWebcam from "./webcam/CreateWebcam";
 
 function CreateProduct() {
@@ -4222,7 +4222,7 @@ function CreateProduct() {
       onCloseCallbacks={[
         closeSubmitSuccessNotificationModal,
         () => {
-          navigate("/home/dashboard/product/display");
+          navigate("/home/product/display");
         },
       ]}
       opened={openedSubmitSuccessNotificationModal}

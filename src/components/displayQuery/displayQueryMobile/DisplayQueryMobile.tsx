@@ -9,10 +9,10 @@ import {
   Spoiler,
   Stack,
   Text,
-} from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
-import { useReducer } from 'react';
-import { IoMdOpen } from 'react-icons/io';
+} from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
+import { useReducer } from "react";
+import { IoMdOpen } from "react-icons/io";
 import {
   TbArrowDown,
   TbArrowUp,
@@ -20,34 +20,31 @@ import {
   TbStatusChange,
   TbTrash,
   TbUserSearch,
-} from 'react-icons/tb';
+} from "react-icons/tb";
 
-import {
-  COLORS_SWATCHES,
-  FIELDNAMES_WITH_DATE_VALUES,
-} from '../../../constants/data';
-import { useAuth, useGlobalState } from '../../../hooks';
+import { COLORS_SWATCHES, FIELDNAMES_WITH_DATE_VALUES } from "../../../constants/data";
+import { useAuth, useGlobalState } from "../../../hooks";
 import {
   returnAccessibleButtonElements,
   returnHighlightedText,
-} from '../../../jsxCreators';
-import { UserDocument } from '../../../types';
+} from "../../../jsxCreators";
+import { UserDocument } from "../../../types";
 import {
   addFieldsToObject,
   formatDate,
   replaceLastCommaWithAnd,
   returnThemeColors,
   splitCamelCase,
-} from '../../../utils';
-import EditRepairNote from '../editRepairNote/EditRepairNote';
-import { ProfileInfo } from '../profileInfo/ProfileInfo';
-import UpdateRequestStatus from '../updateRequestStatus/UpdateRequestStatus';
+} from "../../../utils";
+import EditRepairTicket from "../editRepairTicket/EditRepairTicket";
+import { ProfileInfo } from "../profileInfo/ProfileInfo";
+import UpdateRequestStatus from "../updateRequestStatus/UpdateRequestStatus";
 import {
   displayQueryMobileAction,
   displayQueryMobileReducer,
   initialDisplayQueryMobileState,
-} from './state';
-import { DisplayQueryMobileProps } from './types';
+} from "./state";
+import { DisplayQueryMobileProps } from "./types";
 
 function DisplayQueryMobile({
   componentQueryData,
@@ -70,7 +67,7 @@ function DisplayQueryMobile({
     initialDisplayQueryMobileState
   );
   const {
-    editRepairNoteInput,
+    editRepairTicketInput,
     currentDocumentId,
     currentRequestStatus,
     employeeDocument,
@@ -85,16 +82,13 @@ function DisplayQueryMobile({
 
   const [
     openedUpdateRequestStatusModal,
-    {
-      open: openUpdateRequestStatusModal,
-      close: closeUpdateRequestStatusModal,
-    },
+    { open: openUpdateRequestStatusModal, close: closeUpdateRequestStatusModal },
   ] = useDisclosure(false);
 
   // for repair note fields update only
   const [
-    openedEditRepairNotesModal,
-    { open: openEditRepairNotesModal, close: closeEditRepairNotesModal },
+    openedEditRepairTicketsModal,
+    { open: openEditRepairTicketsModal, close: closeEditRepairTicketsModal },
   ] = useDisclosure(false);
 
   const [
@@ -102,23 +96,22 @@ function DisplayQueryMobile({
     { open: openProfileInfoModal, close: closeProfileInfoModal },
   ] = useDisclosure(false);
 
-  const [createdShowMoreButton, createdHideButton] =
-    returnAccessibleButtonElements([
-      {
-        buttonLabel: 'Show',
-        leftIcon: <TbArrowDown />,
-        buttonType: 'button',
-        semanticDescription: 'Reveal more information',
-        semanticName: 'Show more',
-      },
-      {
-        buttonLabel: 'Hide',
-        leftIcon: <TbArrowUp />,
-        buttonType: 'button',
-        semanticDescription: 'Hide revealed information',
-        semanticName: 'Hide',
-      },
-    ]);
+  const [createdShowMoreButton, createdHideButton] = returnAccessibleButtonElements([
+    {
+      buttonLabel: "Show",
+      leftIcon: <TbArrowDown />,
+      buttonType: "button",
+      semanticDescription: "Reveal more information",
+      semanticName: "Show more",
+    },
+    {
+      buttonLabel: "Hide",
+      leftIcon: <TbArrowUp />,
+      buttonType: "button",
+      semanticDescription: "Hide revealed information",
+      semanticName: "Hide",
+    },
+  ]);
 
   const {
     appThemeColors: { borderColor },
@@ -130,402 +123,397 @@ function DisplayQueryMobile({
   });
 
   // determines that the user is viewing repair notes section
-  const isRepairNoteSectionInView = Array.from(groupedByQueryResponseData).some(
+  const isRepairTicketSectionInView = Array.from(groupedByQueryResponseData).some(
     ([_groupedByFieldKey, queryResponseObjArrays]) => {
       return queryResponseObjArrays.some((queryResponseObj) => {
         return (
-          Object.hasOwn(queryResponseObj, 'repairNotes') &&
-          Object.hasOwn(queryResponseObj, 'testingResults') &&
-          Object.hasOwn(queryResponseObj, 'finalRepairCost') &&
-          Object.hasOwn(queryResponseObj, 'finalRepairCostCurrency') &&
-          Object.hasOwn(queryResponseObj, 'repairStatus')
+          Object.hasOwn(queryResponseObj, "repairTickets") &&
+          Object.hasOwn(queryResponseObj, "testingResults") &&
+          Object.hasOwn(queryResponseObj, "finalRepairCost") &&
+          Object.hasOwn(queryResponseObj, "finalRepairCostCurrency") &&
+          Object.hasOwn(queryResponseObj, "repairStatus")
         );
       });
     }
   );
 
   // determines if user is viewing anonymous requests section
-  const isAnonymousRequestsSectionInView = Array.from(
-    groupedByQueryResponseData
-  ).some(([_groupedByFieldKey, queryResponseObjArrays]) => {
-    return queryResponseObjArrays.some((queryResponseObj) => {
-      return (
-        Object.hasOwn(queryResponseObj, 'secureContactNumber') &&
-        Object.hasOwn(queryResponseObj, 'secureContactEmail') &&
-        Object.hasOwn(queryResponseObj, 'requestKind') &&
-        Object.hasOwn(queryResponseObj, 'requestDescription')
-      );
-    });
-  });
+  const isAnonymousRequestsSectionInView = Array.from(groupedByQueryResponseData).some(
+    ([_groupedByFieldKey, queryResponseObjArrays]) => {
+      return queryResponseObjArrays.some((queryResponseObj) => {
+        return (
+          Object.hasOwn(queryResponseObj, "secureContactNumber") &&
+          Object.hasOwn(queryResponseObj, "secureContactEmail") &&
+          Object.hasOwn(queryResponseObj, "requestKind") &&
+          Object.hasOwn(queryResponseObj, "requestDescription")
+        );
+      });
+    }
+  );
 
-  const displayGroupedByQueryResponseData = Array.from(
-    groupedByQueryResponseData
-  ).map(([section, queryObjArr], responseDataIdx) => {
-    const displayQueryObjArr = queryObjArr.map((queryObj, queryObjIdx) => {
-      const queryResponseObjWithAddedFields =
-        fileUploadsData.length > 0
-          ? addFieldsToObject({
-              object: queryObj,
-              fieldValuesTuples: [
-                ['viewProfile', ''],
-                ['fileUploads', ''],
-                ['delete', ''],
-              ],
-            })
-          : isRepairNoteSectionInView
-          ? addFieldsToObject({
-              object: queryObj,
-              fieldValuesTuples: [
-                ['viewProfile', ''],
-                ['edit', ''],
-                ['delete', ''],
-              ],
-            })
-          : isAnonymousRequestsSectionInView
-          ? addFieldsToObject({
-              object: queryObj,
-              fieldValuesTuples: [['delete', '']],
-            })
-          : addFieldsToObject({
-              object: queryObj,
-              fieldValuesTuples: [
-                ['viewProfile', ''],
-                ['delete', ''],
-              ],
+  const displayGroupedByQueryResponseData = Array.from(groupedByQueryResponseData).map(
+    ([section, queryObjArr], responseDataIdx) => {
+      const displayQueryObjArr = queryObjArr.map((queryObj, queryObjIdx) => {
+        const queryResponseObjWithAddedFields =
+          fileUploadsData.length > 0
+            ? addFieldsToObject({
+                object: queryObj,
+                fieldValuesTuples: [
+                  ["viewProfile", ""],
+                  ["fileUploads", ""],
+                  ["delete", ""],
+                ],
+              })
+            : isRepairTicketSectionInView
+            ? addFieldsToObject({
+                object: queryObj,
+                fieldValuesTuples: [
+                  ["viewProfile", ""],
+                  ["edit", ""],
+                  ["delete", ""],
+                ],
+              })
+            : isAnonymousRequestsSectionInView
+            ? addFieldsToObject({
+                object: queryObj,
+                fieldValuesTuples: [["delete", ""]],
+              })
+            : addFieldsToObject({
+                object: queryObj,
+                fieldValuesTuples: [
+                  ["viewProfile", ""],
+                  ["delete", ""],
+                ],
+              });
+
+        const displayKeyValues = Object.entries(queryResponseObjWithAddedFields).map(
+          (document, keyValIdx) => {
+            const [key, value] = document;
+            // grab the section instead of the camelCased value and if it doesn't exist, split the camelCase
+            const sectionKey =
+              componentQueryData.find((queryDataObj) => queryDataObj.value === key)
+                ?.label ?? splitCamelCase(key);
+
+            const formattedValue =
+              value === true
+                ? "Yes"
+                : value === false
+                ? "No"
+                : Array.isArray(value)
+                ? replaceLastCommaWithAnd(value.join(", "))
+                : key.toLowerCase().includes("id")
+                ? value
+                : key === "createdAt" || key === "updatedAt"
+                ? formatDate({
+                    date: value,
+                    formatOptions: {
+                      year: "numeric",
+                      month: "numeric",
+                      day: "numeric",
+                      hour: "numeric",
+                      minute: "numeric",
+                      second: "numeric",
+                      hour12: false,
+                      timeZoneName: "long",
+                    },
+                    locale: "en-US",
+                  })
+                : FIELDNAMES_WITH_DATE_VALUES.has(key)
+                ? formatDate({
+                    date: value,
+                    formatOptions: {
+                      dateStyle: "short",
+                    },
+                    locale: "en-US",
+                  })
+                : `${value.toString().charAt(0).toUpperCase()}${value
+                    .toString()
+                    .slice(1)}`;
+
+            const highlightedText = returnHighlightedText({
+              textHighlightColor,
+              fieldValue: formattedValue,
+              queryValuesArray,
             });
 
-      const displayKeyValues = Object.entries(
-        queryResponseObjWithAddedFields
-      ).map((document, keyValIdx) => {
-        const [key, value] = document;
-        // grab the section instead of the camelCased value and if it doesn't exist, split the camelCase
-        const sectionKey =
-          componentQueryData.find((queryDataObj) => queryDataObj.value === key)
-            ?.label ?? splitCamelCase(key);
+            // only when user views repair notes section
+            const [createdRepairTicketEditButton] = isRepairTicketSectionInView
+              ? returnAccessibleButtonElements([
+                  {
+                    buttonLabel: <TbEdit />,
+                    semanticDescription: `Modify ${key} for username: ${queryResponseObjWithAddedFields.username} and form with id: ${queryResponseObjWithAddedFields._id}`,
+                    semanticName: `Modify ${key}`,
+                    buttonOnClick: () => {
+                      displayQueryMobileDispatch({
+                        type: displayQueryMobileAction.setEditRepairTicketInput,
+                        payload: {
+                          repairTicketFormId: queryResponseObjWithAddedFields._id,
+                          repairTickets: queryResponseObjWithAddedFields.repairTickets,
+                          testingResults: queryResponseObjWithAddedFields.testingResults,
+                          finalRepairCost:
+                            queryResponseObjWithAddedFields.finalRepairCost,
+                          finalRepairCostCurrency:
+                            queryResponseObjWithAddedFields.finalRepairCostCurrency,
+                          repairStatus: queryResponseObjWithAddedFields.repairStatus,
+                        },
+                      });
 
-        const formattedValue =
-          value === true
-            ? 'Yes'
-            : value === false
-            ? 'No'
-            : Array.isArray(value)
-            ? replaceLastCommaWithAnd(value.join(', '))
-            : key.toLowerCase().includes('id')
-            ? value
-            : key === 'createdAt' || key === 'updatedAt'
-            ? formatDate({
-                date: value,
-                formatOptions: {
-                  year: 'numeric',
-                  month: 'numeric',
-                  day: 'numeric',
-                  hour: 'numeric',
-                  minute: 'numeric',
-                  second: 'numeric',
-                  hour12: false,
-                  timeZoneName: 'long',
-                },
-                locale: 'en-US',
-              })
-            : FIELDNAMES_WITH_DATE_VALUES.has(key)
-            ? formatDate({
-                date: value,
-                formatOptions: {
-                  dateStyle: 'short',
-                },
-                locale: 'en-US',
-              })
-            : `${value.toString().charAt(0).toUpperCase()}${value
-                .toString()
-                .slice(1)}`;
+                      openEditRepairTicketsModal();
+                    },
+                  },
+                ])
+              : [null];
 
-        const highlightedText = returnHighlightedText({
-          textHighlightColor,
-          fieldValue: formattedValue,
-          queryValuesArray,
-        });
-
-        // only when user views repair notes section
-        const [createdRepairNoteEditButton] = isRepairNoteSectionInView
-          ? returnAccessibleButtonElements([
+            const [
+              createdUpdateRequestStatusButton,
+              createdViewProfileButton,
+              createdDeleteButton,
+              createdOpenFileUploadsModalButton,
+            ] = returnAccessibleButtonElements([
+              // update request status button
               {
-                buttonLabel: <TbEdit />,
-                semanticDescription: `Modify ${key} for username: ${queryResponseObjWithAddedFields.username} and form with id: ${queryResponseObjWithAddedFields._id}`,
-                semanticName: `Modify ${key}`,
+                buttonLabel: <TbStatusChange />,
+                semanticDescription: `Modify current request status of ${queryResponseObjWithAddedFields.requestStatus} for username: ${queryResponseObjWithAddedFields.username} and form with id: ${queryResponseObjWithAddedFields._id}`,
+                semanticName: "Update request status",
                 buttonOnClick: () => {
                   displayQueryMobileDispatch({
-                    type: displayQueryMobileAction.setEditRepairNoteInput,
-                    payload: {
-                      repairNoteFormId: queryResponseObjWithAddedFields._id,
-                      repairNotes: queryResponseObjWithAddedFields.repairNotes,
-                      testingResults:
-                        queryResponseObjWithAddedFields.testingResults,
-                      finalRepairCost:
-                        queryResponseObjWithAddedFields.finalRepairCost,
-                      finalRepairCostCurrency:
-                        queryResponseObjWithAddedFields.finalRepairCostCurrency,
-                      repairStatus:
-                        queryResponseObjWithAddedFields.repairStatus,
-                    },
+                    type: displayQueryMobileAction.setCurrentDocumentId,
+                    payload: queryResponseObjWithAddedFields._id,
                   });
-
-                  openEditRepairNotesModal();
+                  displayQueryMobileDispatch({
+                    type: displayQueryMobileAction.setCurrentRequestStatus,
+                    payload: queryResponseObjWithAddedFields.requestStatus,
+                  });
+                  openUpdateRequestStatusModal();
                 },
               },
-            ])
-          : [null];
+              // view profile button
+              {
+                buttonLabel: <TbUserSearch />,
+                semanticDescription: `View profile of username: ${queryResponseObjWithAddedFields.username}`,
+                semanticName: "View profile",
+                buttonOnClick: () => {
+                  displayQueryMobileDispatch({
+                    type: displayQueryMobileAction.setEmployeeDocument,
+                    payload:
+                      actionsDocuments?.employeeData?.get(
+                        queryResponseObjWithAddedFields.userId ??
+                          queryResponseObjWithAddedFields.benefitUserId
+                      ) ?? ({} as UserDocument),
+                  });
 
-        const [
-          createdUpdateRequestStatusButton,
-          createdViewProfileButton,
-          createdDeleteButton,
-          createdOpenFileUploadsModalButton,
-        ] = returnAccessibleButtonElements([
-          // update request status button
-          {
-            buttonLabel: <TbStatusChange />,
-            semanticDescription: `Modify current request status of ${queryResponseObjWithAddedFields.requestStatus} for username: ${queryResponseObjWithAddedFields.username} and form with id: ${queryResponseObjWithAddedFields._id}`,
-            semanticName: 'Update request status',
-            buttonOnClick: () => {
-              displayQueryMobileDispatch({
-                type: displayQueryMobileAction.setCurrentDocumentId,
-                payload: queryResponseObjWithAddedFields._id,
-              });
-              displayQueryMobileDispatch({
-                type: displayQueryMobileAction.setCurrentRequestStatus,
-                payload: queryResponseObjWithAddedFields.requestStatus,
-              });
-              openUpdateRequestStatusModal();
-            },
-          },
-          // view profile button
-          {
-            buttonLabel: <TbUserSearch />,
-            semanticDescription: `View profile of username: ${queryResponseObjWithAddedFields.username}`,
-            semanticName: 'View profile',
-            buttonOnClick: () => {
-              displayQueryMobileDispatch({
-                type: displayQueryMobileAction.setEmployeeDocument,
-                payload:
-                  actionsDocuments?.employeeData?.get(
-                    queryResponseObjWithAddedFields.userId ??
-                      queryResponseObjWithAddedFields.benefitUserId
-                  ) ?? ({} as UserDocument),
-              });
+                  openProfileInfoModal();
+                },
+              },
+              // delete button
+              {
+                buttonLabel: <TbTrash />,
+                semanticDescription: "Delete this form",
+                semanticName: "Delete",
+                buttonOnClick: () => {
+                  deleteFormIdDispatch({
+                    type: "setDeleteFormId",
+                    payload: queryObj._id,
+                  });
+                  deleteResourceKindDispatch({
+                    type: "setDeleteResourceKind",
+                    payload: "form",
+                  });
+                  openDeleteAcknowledge();
+                },
+              },
+              // open file uploads modal button
+              {
+                buttonLabel: "Open",
+                buttonDisabled: fileUploadsData[queryObjIdx]?.fileUploads.length < 1,
+                leftIcon: <IoMdOpen />,
+                semanticDescription:
+                  "Open modal to display file uploads associated with this document",
+                semanticName: "Open file uploads modal",
+                buttonOnClick: () => {
+                  setFileUploadsForAFormDispatch({
+                    type: "setFileUploadsForAForm",
+                    payload: fileUploadsData[queryObjIdx]?.fileUploads,
+                  });
+                  deleteFormIdDispatch({
+                    type: "setDeleteFormId",
+                    payload: queryResponseObjWithAddedFields._id,
+                  });
+                  openFileUploads();
+                },
+              },
+            ]);
 
-              openProfileInfoModal();
-            },
-          },
-          // delete button
-          {
-            buttonLabel: <TbTrash />,
-            semanticDescription: 'Delete this form',
-            semanticName: 'Delete',
-            buttonOnClick: () => {
-              deleteFormIdDispatch({
-                type: 'setDeleteFormId',
-                payload: queryObj._id,
-              });
-              deleteResourceKindDispatch({
-                type: 'setDeleteResourceKind',
-                payload: 'form',
-              });
-              openDeleteAcknowledge();
-            },
-          },
-          // open file uploads modal button
-          {
-            buttonLabel: 'Open',
-            buttonDisabled:
-              fileUploadsData[queryObjIdx]?.fileUploads.length < 1,
-            leftIcon: <IoMdOpen />,
-            semanticDescription:
-              'Open modal to display file uploads associated with this document',
-            semanticName: 'Open file uploads modal',
-            buttonOnClick: () => {
-              setFileUploadsForAFormDispatch({
-                type: 'setFileUploadsForAForm',
-                payload: fileUploadsData[queryObjIdx]?.fileUploads,
-              });
-              deleteFormIdDispatch({
-                type: 'setDeleteFormId',
-                payload: queryResponseObjWithAddedFields._id,
-              });
-              openFileUploads();
-            },
-          },
-        ]);
+            // only managers can update request status
+            const displayUpdateRequestStatusButton = roles.includes("Manager")
+              ? key === "requestStatus"
+                ? createdUpdateRequestStatusButton
+                : null
+              : null;
 
-        // only managers can update request status
-        const displayUpdateRequestStatusButton = roles.includes('Manager')
-          ? key === 'requestStatus'
-            ? createdUpdateRequestStatusButton
-            : null
-          : null;
+            const displayViewProfileButton =
+              key === "viewProfile" ? createdViewProfileButton : null;
+            const displayCreatedDeleteButton =
+              key === "delete" ? createdDeleteButton : null;
+            const displayEditRepairTicketButton =
+              key === "edit" ? createdRepairTicketEditButton : null;
+            const displayCreatedOpenFileUploadsModalButton =
+              key === "fileUploads" ? createdOpenFileUploadsModalButton : null;
 
-        const displayViewProfileButton =
-          key === 'viewProfile' ? createdViewProfileButton : null;
-        const displayCreatedDeleteButton =
-          key === 'delete' ? createdDeleteButton : null;
-        const displayEditRepairNoteButton =
-          key === 'edit' ? createdRepairNoteEditButton : null;
-        const displayCreatedOpenFileUploadsModalButton =
-          key === 'fileUploads' ? createdOpenFileUploadsModalButton : null;
+            // regex to determine if formattedValue has any terms in queryValuesArray
+            const regex = queryValuesArray.length
+              ? new RegExp(
+                  queryValuesArray
+                    .filter((value) => value) // remove empty strings
+                    .flatMap((value) => value.split(" ")) // split strings into words
+                    .join("|"),
+                  "gi"
+                )
+              : null;
 
-        // regex to determine if formattedValue has any terms in queryValuesArray
-        const regex = queryValuesArray.length
-          ? new RegExp(
-              queryValuesArray
-                .filter((value) => value) // remove empty strings
-                .flatMap((value) => value.split(' ')) // split strings into words
-                .join('|'),
-              'gi'
-            )
-          : null;
+            const highlightedSectionKey = regex?.test(formattedValue) ? (
+              <Text weight={600}>
+                {sectionKey === "_id" ? "Document Id" : sectionKey}
+              </Text>
+            ) : (
+              <Text>{sectionKey === "_id" ? "Document Id" : sectionKey}</Text>
+            );
 
-        const highlightedSectionKey = regex?.test(formattedValue) ? (
-          <Text weight={600}>
-            {sectionKey === '_id' ? 'Document Id' : sectionKey}
-          </Text>
-        ) : (
-          <Text>{sectionKey === '_id' ? 'Document Id' : sectionKey}</Text>
-        );
-
-        const displayFullLabelValueRow = (
-          <Flex w="100%">
-            <Flex w="100%">{highlightedSectionKey}</Flex>
-            <Flex
-              align="center"
-              justify="flex-end"
-              w="100%"
-              columnGap={rowGap}
-              pl={padding}
-            >
-              {displayUpdateRequestStatusButton}
-              {displayViewProfileButton}
-              {displayCreatedOpenFileUploadsModalButton}
-              {displayCreatedDeleteButton}
-              {displayEditRepairNoteButton}
-              <Spoiler
-                maxHeight={70}
-                showLabel={createdShowMoreButton}
-                hideLabel={createdHideButton}
-              >
-                <Flex direction="row" wrap="wrap" gap={4}>
-                  {highlightedText}
+            const displayFullLabelValueRow = (
+              <Flex w="100%">
+                <Flex w="100%">{highlightedSectionKey}</Flex>
+                <Flex
+                  align="center"
+                  justify="flex-end"
+                  w="100%"
+                  columnGap={rowGap}
+                  pl={padding}
+                >
+                  {displayUpdateRequestStatusButton}
+                  {displayViewProfileButton}
+                  {displayCreatedOpenFileUploadsModalButton}
+                  {displayCreatedDeleteButton}
+                  {displayEditRepairTicketButton}
+                  <Spoiler
+                    maxHeight={70}
+                    showLabel={createdShowMoreButton}
+                    hideLabel={createdHideButton}
+                  >
+                    <Flex direction="row" wrap="wrap" gap={4}>
+                      {highlightedText}
+                    </Flex>
+                  </Spoiler>
                 </Flex>
-              </Spoiler>
-            </Flex>
-          </Flex>
+              </Flex>
+            );
+
+            const rowBackgroundColorLight =
+              keyValIdx % 2 === 0 ? "#f9f9f9" : "transparent";
+            const rowBackgroundColorDark = "transparent";
+            const rowBackgroundColor =
+              themeObject.colorScheme === "dark"
+                ? rowBackgroundColorDark
+                : rowBackgroundColorLight;
+
+            const lastKeyValBorderBottom =
+              Object.keys(queryResponseObjWithAddedFields).length - 1 === keyValIdx
+                ? ""
+                : borderColor;
+
+            return (
+              <Flex
+                key={`${key}-${keyValIdx}`}
+                direction={width < 768 ? "column" : "row"}
+                align={width < 768 ? "flex-start" : "center"}
+                justify={width < 768 ? "flex-start" : "space-between"}
+                bg={rowBackgroundColor}
+                style={{ borderBottom: lastKeyValBorderBottom }}
+                rowGap={rowGap}
+                w="100%"
+                p={padding}
+              >
+                {displayFullLabelValueRow}
+              </Flex>
+            );
+          }
         );
 
-        const rowBackgroundColorLight =
-          keyValIdx % 2 === 0 ? '#f9f9f9' : 'transparent';
-        const rowBackgroundColorDark = 'transparent';
-        const rowBackgroundColor =
-          themeObject.colorScheme === 'dark'
-            ? rowBackgroundColorDark
-            : rowBackgroundColorLight;
+        const displayBeginDivider =
+          queryObjIdx === 0 ? null : (
+            <Divider
+              label={<Text>Begin</Text>}
+              labelPosition="center"
+              w="100%"
+              variant="dashed"
+            />
+          );
 
-        const lastKeyValBorderBottom =
-          Object.keys(queryResponseObjWithAddedFields).length - 1 === keyValIdx
-            ? ''
-            : borderColor;
+        const displayEndDivider =
+          queryObjIdx === queryObj.length - 1 ? null : (
+            <Divider
+              label={<Text>End</Text>}
+              labelPosition="center"
+              w="100%"
+              variant="dashed"
+            />
+          );
 
         return (
           <Flex
-            key={`${key}-${keyValIdx}`}
-            direction={width < 768 ? 'column' : 'row'}
-            align={width < 768 ? 'flex-start' : 'center'}
-            justify={width < 768 ? 'flex-start' : 'space-between'}
-            bg={rowBackgroundColor}
-            style={{ borderBottom: lastKeyValBorderBottom }}
-            rowGap={rowGap}
+            key={`${String(section)}-${queryObjIdx}}`}
+            direction="column"
+            align="flex-start"
+            justify="center"
             w="100%"
-            p={padding}
+            rowGap={rowGap}
+            py={padding}
           >
-            {displayFullLabelValueRow}
+            {displayBeginDivider}
+            {displayKeyValues}
+            {displayEndDivider}
           </Flex>
         );
       });
-
-      const displayBeginDivider =
-        queryObjIdx === 0 ? null : (
-          <Divider
-            label={<Text>Begin</Text>}
-            labelPosition="center"
-            w="100%"
-            variant="dashed"
-          />
-        );
-
-      const displayEndDivider =
-        queryObjIdx === queryObj.length - 1 ? null : (
-          <Divider
-            label={<Text>End</Text>}
-            labelPosition="center"
-            w="100%"
-            variant="dashed"
-          />
-        );
+      const displaySection =
+        section === true
+          ? "Yes"
+          : section === false
+          ? "No"
+          : `${section.toString().charAt(0).toUpperCase()}${section.toString().slice(1)}`;
 
       return (
         <Flex
-          key={`${String(section)}-${queryObjIdx}}`}
+          key={`${String(section)}-${responseDataIdx}}`}
           direction="column"
+          py={padding}
           align="flex-start"
           justify="center"
+          // style={{ border: borderColor, borderRadius: 4 }}
           w="100%"
           rowGap={rowGap}
-          py={padding}
         >
-          {displayBeginDivider}
-          {displayKeyValues}
-          {displayEndDivider}
+          <Accordion w="100%">
+            <Accordion.Item value={displaySection}>
+              <Accordion.Control>
+                <Text weight={500}>{displaySection}</Text>
+              </Accordion.Control>
+              <Accordion.Panel>
+                <Flex
+                  direction="column"
+                  align="flex-start"
+                  justify="center"
+                  w="100%"
+                  rowGap={rowGap}
+                >
+                  {displayQueryObjArr}
+                </Flex>
+              </Accordion.Panel>
+            </Accordion.Item>
+          </Accordion>
         </Flex>
       );
-    });
-    const displaySection =
-      section === true
-        ? 'Yes'
-        : section === false
-        ? 'No'
-        : `${section.toString().charAt(0).toUpperCase()}${section
-            .toString()
-            .slice(1)}`;
-
-    return (
-      <Flex
-        key={`${String(section)}-${responseDataIdx}}`}
-        direction="column"
-        py={padding}
-        align="flex-start"
-        justify="center"
-        // style={{ border: borderColor, borderRadius: 4 }}
-        w="100%"
-        rowGap={rowGap}
-      >
-        <Accordion w="100%">
-          <Accordion.Item value={displaySection}>
-            <Accordion.Control>
-              <Text weight={500}>{displaySection}</Text>
-            </Accordion.Control>
-            <Accordion.Panel>
-              <Flex
-                direction="column"
-                align="flex-start"
-                justify="center"
-                w="100%"
-                rowGap={rowGap}
-              >
-                {displayQueryObjArr}
-              </Flex>
-            </Accordion.Panel>
-          </Accordion.Item>
-        </Accordion>
-      </Flex>
-    );
-  });
+    }
+  );
 
   // StepperWrapper width plus extra paddingX
   const modalSize =
@@ -537,17 +525,17 @@ function DisplayQueryMobile({
       : // at 768vw the navbar appears at width of 225px
         (width - 225) * 0.9;
 
-  const displayEditRepairNoteModal = (
+  const displayEditRepairTicketModal = (
     <Modal
       centered
       closeButtonProps={{ color: themeColorShade }}
-      opened={openedEditRepairNotesModal}
-      onClose={closeEditRepairNotesModal}
+      opened={openedEditRepairTicketsModal}
+      onClose={closeEditRepairTicketsModal}
       size={modalSize}
     >
-      <EditRepairNote
-        editRepairNoteInput={editRepairNoteInput}
-        parentComponentCallbacks={[closeEditRepairNotesModal]}
+      <EditRepairTicket
+        editRepairTicketInput={editRepairTicketInput}
+        parentComponentCallbacks={[closeEditRepairTicketsModal]}
       />
     </Modal>
   );
@@ -555,8 +543,7 @@ function DisplayQueryMobile({
   const selectedDocument =
     Array.from(groupedByQueryResponseData)
       .flatMap(([, queryResponseObjArrays]) => queryResponseObjArrays)
-      .find((queryResponseObj) => queryResponseObj._id === currentDocumentId) ||
-    {};
+      .find((queryResponseObj) => queryResponseObj._id === currentDocumentId) || {};
 
   const displayUpdateRequestStatusModal = (
     <Modal
@@ -621,7 +608,7 @@ function DisplayQueryMobile({
   return (
     <Flex
       direction="column"
-      style={{ ...style, position: 'relative' }}
+      style={{ ...style, position: "relative" }}
       align="flex-start"
       justify="center"
       w="100%"
@@ -629,7 +616,7 @@ function DisplayQueryMobile({
     >
       {displayLoadingOverlay}
       {displayUpdateRequestStatusModal}
-      {displayEditRepairNoteModal}
+      {displayEditRepairTicketModal}
       {displayProfileInfoModal}
       {displayGroupedByQueryResponseData}
     </Flex>

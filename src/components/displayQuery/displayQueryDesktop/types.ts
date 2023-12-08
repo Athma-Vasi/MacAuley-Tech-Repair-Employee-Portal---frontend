@@ -8,7 +8,7 @@ import type {
   UserDocument,
 } from "../../../types";
 import type { ComponentQueryData } from "../../queryBuilder";
-import { RepairStatus } from "../../repairNote/types";
+import { RepairStatus } from "../../repairTicket/types";
 
 type DisplayQueryDesktopProps = {
   componentQueryData: ComponentQueryData[];
@@ -46,9 +46,9 @@ type DisplayQueryDesktopProps = {
   style?: CSSProperties;
 };
 
-type EditRepairNoteInput = {
-  repairNoteFormId: string;
-  repairNotes: string;
+type EditRepairTicketInput = {
+  repairTicketFormId: string;
+  repairTickets: string;
   testingResults: string;
   finalRepairCost: string;
   finalRepairCostCurrency: Currency;
@@ -63,7 +63,7 @@ type DisplayQueryDesktopState = {
   currentRequestStatus: RequestStatus;
 
   // for repair notes docs only
-  editRepairNoteInput: EditRepairNoteInput;
+  editRepairTicketInput: EditRepairTicketInput;
 
   employeeDocument: UserDocument | null;
 };
@@ -75,7 +75,7 @@ type DisplayQueryDesktopAction = {
   setCurrentDocumentId: "setCurrentDocumentId";
   setCurrentRequestStatus: "setCurrentRequestStatus";
 
-  setEditRepairNoteInput: "setEditRepairNoteInput";
+  setEditRepairTicketInput: "setEditRepairTicketInput";
 
   setEmployeeDocument: "setEmployeeDocument";
 };
@@ -102,8 +102,8 @@ type DisplayQueryDesktopDispatch =
       payload: RequestStatus;
     }
   | {
-      type: DisplayQueryDesktopAction["setEditRepairNoteInput"];
-      payload: EditRepairNoteInput;
+      type: DisplayQueryDesktopAction["setEditRepairTicketInput"];
+      payload: EditRepairTicketInput;
     }
   | {
       type: DisplayQueryDesktopAction["setEmployeeDocument"];
@@ -116,5 +116,5 @@ export type {
   DisplayQueryDesktopProps,
   DisplayQueryDesktopReducer,
   DisplayQueryDesktopState,
-  EditRepairNoteInput,
+  EditRepairTicketInput,
 };

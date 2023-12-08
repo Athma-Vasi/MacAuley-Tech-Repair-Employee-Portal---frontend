@@ -123,7 +123,7 @@ function returnWhichResourceInView(
     Record<string, any>[]
   >
 ) {
-  let isRepairNoteSectionInView = false;
+  let isRepairTicketSectionInView = false;
   let isAnonymousRequestsSectionInView = false;
   let isProductCategorySectionInView = false;
   let isPurchaseSectionInView = false;
@@ -133,13 +133,13 @@ function returnWhichResourceInView(
     ([_groupedByFieldKey, queryResponseObjArrays]) => {
       queryResponseObjArrays.forEach((queryResponseObj) => {
         if (
-          Object.hasOwn(queryResponseObj, "repairNotes") &&
+          Object.hasOwn(queryResponseObj, "repairTickets") &&
           Object.hasOwn(queryResponseObj, "testingResults") &&
           Object.hasOwn(queryResponseObj, "finalRepairCost") &&
           Object.hasOwn(queryResponseObj, "finalRepairCostCurrency") &&
           Object.hasOwn(queryResponseObj, "repairStatus")
         ) {
-          isRepairNoteSectionInView = true;
+          isRepairTicketSectionInView = true;
         }
 
         if (
@@ -183,7 +183,7 @@ function returnWhichResourceInView(
   );
 
   return {
-    isRepairNoteSectionInView,
+    isRepairTicketSectionInView,
     isAnonymousRequestsSectionInView,
     isProductCategorySectionInView,
     isPurchaseSectionInView,

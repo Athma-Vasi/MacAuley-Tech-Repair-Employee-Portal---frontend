@@ -38,7 +38,7 @@ import {
   returnThemeColors,
   splitCamelCase,
 } from "../../../utils";
-import EditRepairNote from "../editRepairNote/EditRepairNote";
+import EditRepairTicket from "../editRepairTicket/EditRepairTicket";
 import { ProfileInfo } from "../profileInfo/ProfileInfo";
 import UpdateRequestStatus from "../updateRequestStatus/UpdateRequestStatus";
 import {
@@ -73,7 +73,7 @@ function DisplayQueryDesktop({
   const {
     currentDocumentId,
     currentRequestStatus,
-    editRepairNoteInput,
+    editRepairTicketInput,
     employeeDocument,
     fieldToSortBy,
     sortDirection,
@@ -93,8 +93,8 @@ function DisplayQueryDesktop({
 
   // for repair note fields update only
   const [
-    openedEditRepairNotesModal,
-    { open: openEditRepairNotesModal, close: closeEditRepairNotesModal },
+    openedEditRepairTicketsModal,
+    { open: openEditRepairTicketsModal, close: closeEditRepairTicketsModal },
   ] = useDisclosure(false);
 
   const [
@@ -116,11 +116,11 @@ function DisplayQueryDesktop({
   } = returnThemeColors({ themeObject, colorsSwatches: COLORS_SWATCHES });
 
   // // determines that the user is viewing repair notes section
-  // const isRepairNoteSectionInView = Array.from(groupedByQueryResponseData).some(
+  // const isRepairTicketSectionInView = Array.from(groupedByQueryResponseData).some(
   //   ([_groupedByFieldKey, queryResponseObjArrays]) => {
   //     return queryResponseObjArrays.some((queryResponseObj) => {
   //       return (
-  //         Object.hasOwn(queryResponseObj, "repairNotes") &&
+  //         Object.hasOwn(queryResponseObj, "repairTickets") &&
   //         Object.hasOwn(queryResponseObj, "testingResults") &&
   //         Object.hasOwn(queryResponseObj, "finalRepairCost") &&
   //         Object.hasOwn(queryResponseObj, "finalRepairCostCurrency") &&
@@ -149,7 +149,7 @@ function DisplayQueryDesktop({
     isProductCategorySectionInView,
     isPurchaseSectionInView,
     isRMASectionInView,
-    isRepairNoteSectionInView,
+    isRepairTicketSectionInView,
   } = returnWhichResourceInView(groupedByQueryResponseData);
 
   // the data received is in a Map grouped by a field, header values are created separately to avoid creating multiple tables
@@ -165,7 +165,7 @@ function DisplayQueryDesktop({
               // allows for modification of file uploads and deletion of documents
               fileUploadsData.length > 0
                 ? [...headerValues, "viewProfile", "fileUploads", "delete"]
-                : isRepairNoteSectionInView
+                : isRepairTicketSectionInView
                 ? [...headerValues, "viewProfile", "edit", "delete"]
                 : isAnonymousRequestsSectionInView
                 ? [...headerValues, "delete"]
@@ -372,7 +372,7 @@ function DisplayQueryDesktop({
                       ["delete", ""],
                     ],
                   })
-                : isRepairNoteSectionInView
+                : isRepairTicketSectionInView
                 ? addFieldsToObject({
                     object: queryResponseObj,
                     fieldValuesTuples: [
@@ -619,7 +619,7 @@ function DisplayQueryDesktop({
                     );
 
                     // only when user views repair notes section
-                    const [createdRepairNoteEditButton] = isRepairNoteSectionInView
+                    const [createdRepairTicketEditButton] = isRepairTicketSectionInView
                       ? returnAccessibleButtonElements([
                           {
                             buttonLabel: <TbEdit />,
@@ -627,11 +627,11 @@ function DisplayQueryDesktop({
                             semanticName: `Modify ${key}`,
                             buttonOnClick: () => {
                               displayQueryDesktopDispatch({
-                                type: displayQueryDesktopAction.setEditRepairNoteInput,
+                                type: displayQueryDesktopAction.setEditRepairTicketInput,
                                 payload: {
-                                  repairNoteFormId: queryResponseObjWithAddedFields._id,
-                                  repairNotes:
-                                    queryResponseObjWithAddedFields.repairNotes,
+                                  repairTicketFormId: queryResponseObjWithAddedFields._id,
+                                  repairTickets:
+                                    queryResponseObjWithAddedFields.repairTickets,
                                   testingResults:
                                     queryResponseObjWithAddedFields.testingResults,
                                   finalRepairCost:
@@ -643,22 +643,23 @@ function DisplayQueryDesktop({
                                 },
                               });
 
-                              openEditRepairNotesModal();
+                              openEditRepairTicketsModal();
                             },
                           },
                         ])
                       : [null];
 
-                    const displayRepairNoteEditButton = createdRepairNoteEditButton ? (
-                      <Tooltip
-                        label={`Edit repair note for ${
-                          queryResponseObjWithAddedFields.customerName ??
-                          queryResponseObjWithAddedFields._id
-                        }`}
-                      >
-                        <Group>{createdRepairNoteEditButton}</Group>
-                      </Tooltip>
-                    ) : null;
+                    const displayRepairTicketEditButton =
+                      createdRepairTicketEditButton ? (
+                        <Tooltip
+                          label={`Edit repair note for ${
+                            queryResponseObjWithAddedFields.customerName ??
+                            queryResponseObjWithAddedFields._id
+                          }`}
+                        >
+                          <Group>{createdRepairTicketEditButton}</Group>
+                        </Tooltip>
+                      ) : null;
 
                     const [
                       createdUpdateRequestStatusButton,
@@ -780,7 +781,7 @@ function DisplayQueryDesktop({
                         ) : key === "edit" ? (
                           <Group w="100%" position="center">
                             <Text>{truncatedValuesWithHoverCards}</Text>
-                            {displayRepairNoteEditButton}
+                            {displayRepairTicketEditButton}
                           </Group>
                         ) : key === "viewProfile" ? (
                           <Group w="100%" position="center">
@@ -868,18 +869,18 @@ function DisplayQueryDesktop({
     // this component is only displayed on desktop (>=1024)
     width < 1200 ? (width - 300) * 0.95 : 920;
 
-  const displayEditRepairNoteModal = (
+  const displayEditRepairTicketModal = (
     <Modal
       bg={backgroundColor}
       centered
       closeButtonProps={{ color: themeColorShade }}
-      opened={openedEditRepairNotesModal}
-      onClose={closeEditRepairNotesModal}
+      opened={openedEditRepairTicketsModal}
+      onClose={closeEditRepairTicketsModal}
       size={modalSize}
     >
-      <EditRepairNote
-        editRepairNoteInput={editRepairNoteInput}
-        parentComponentCallbacks={[closeEditRepairNotesModal]}
+      <EditRepairTicket
+        editRepairTicketInput={editRepairTicketInput}
+        parentComponentCallbacks={[closeEditRepairTicketsModal]}
       />
     </Modal>
   );
@@ -936,7 +937,7 @@ function DisplayQueryDesktop({
     <Stack w="100%" style={{ ...style }} py={padding}>
       {displayUpdateRequestStatusModal}
       {displayProfileInfoModal}
-      {displayEditRepairNoteModal}
+      {displayEditRepairTicketModal}
       {displayTable}
     </Stack>
   );

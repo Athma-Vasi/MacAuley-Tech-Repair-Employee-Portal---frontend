@@ -413,102 +413,6 @@ function setIsRepairActive_PortalNavbarReducer(
 }
 
 // ╭─────────────────────────────────────────────────────────────────╮
-//    REPAIR CATEGORY => COMPUTER COMPONENT
-// ╰─────────────────────────────────────────────────────────────────╯
-function setIsComputerComponentActive_PortalNavbarReducer(
-  state: PortalNavbarState,
-  dispatch: PortalNavbarDispatch
-): PortalNavbarState {
-  const updatedState = toggleNavlinksActive<PortalNavbarState>({
-    navlinksState: state,
-    payload: dispatch.payload,
-    toggledNavlink: "isComputerComponentActive",
-  });
-
-  return updatedState;
-}
-
-// ╭─────────────────────────────────────────────────────────────────╮
-//    REPAIR CATEGORY => PERIPHERAL
-// ╰─────────────────────────────────────────────────────────────────╯
-function setIsPeripheralActive_PortalNavbarReducer(
-  state: PortalNavbarState,
-  dispatch: PortalNavbarDispatch
-): PortalNavbarState {
-  const updatedState = toggleNavlinksActive<PortalNavbarState>({
-    navlinksState: state,
-    payload: dispatch.payload,
-    toggledNavlink: "isPeripheralActive",
-  });
-
-  return updatedState;
-}
-
-// ╭─────────────────────────────────────────────────────────────────╮
-//    REPAIR CATEGORY => ELECTRONIC DEVICE
-// ╰─────────────────────────────────────────────────────────────────╯
-function setIsElectronicDeviceActive_PortalNavbarReducer(
-  state: PortalNavbarState,
-  dispatch: PortalNavbarDispatch
-): PortalNavbarState {
-  const updatedState = toggleNavlinksActive<PortalNavbarState>({
-    navlinksState: state,
-    payload: dispatch.payload,
-    toggledNavlink: "isElectronicDeviceActive",
-  });
-
-  return updatedState;
-}
-
-// ╭─────────────────────────────────────────────────────────────────╮
-//    REPAIR CATEGORY => MOBILE DEVICE
-// ╰─────────────────────────────────────────────────────────────────╯
-function setIsMobileDeviceActive_PortalNavbarReducer(
-  state: PortalNavbarState,
-  dispatch: PortalNavbarDispatch
-): PortalNavbarState {
-  const updatedState = toggleNavlinksActive<PortalNavbarState>({
-    navlinksState: state,
-    payload: dispatch.payload,
-    toggledNavlink: "isMobileDeviceActive",
-  });
-
-  return updatedState;
-}
-
-// ╭─────────────────────────────────────────────────────────────────╮
-//    REPAIR CATEGORY => AUDIO VIDEO
-// ╰─────────────────────────────────────────────────────────────────╯
-function setIsAudioVideoActive_PortalNavbarReducer(
-  state: PortalNavbarState,
-  dispatch: PortalNavbarDispatch
-): PortalNavbarState {
-  const updatedState = toggleNavlinksActive<PortalNavbarState>({
-    navlinksState: state,
-    payload: dispatch.payload,
-    toggledNavlink: "isAudioVideoActive",
-  });
-
-  return updatedState;
-}
-
-// ╭─────────────────────────────────────────────────────────────────╮
-//    REPAIR CATEGORY => ACCESSORY
-// ╰─────────────────────────────────────────────────────────────────╯
-function setIsRepairAccessoryActive_PortalNavbarReducer(
-  state: PortalNavbarState,
-  dispatch: PortalNavbarDispatch
-): PortalNavbarState {
-  const updatedState = toggleNavlinksActive<PortalNavbarState>({
-    navlinksState: state,
-    payload: dispatch.payload,
-    toggledNavlink: "isRepairAccessoryActive",
-  });
-
-  return updatedState;
-}
-
-// ╭─────────────────────────────────────────────────────────────────╮
 //    TRANSACTION
 // ╰─────────────────────────────────────────────────────────────────╯
 function setIsTransactionActive_PortalNavbarReducer(
@@ -890,24 +794,6 @@ const portalNavbarReducersMap = new Map<
   //    REPAIR CATEGORY
   // ╰─────────────────────────────────────────────────────────────────╯
   [portalNavbarAction.setIsRepairActive, setIsRepairActive_PortalNavbarReducer],
-  [
-    portalNavbarAction.setIsComputerComponentActive,
-    setIsComputerComponentActive_PortalNavbarReducer,
-  ],
-  [portalNavbarAction.setIsPeripheralActive, setIsPeripheralActive_PortalNavbarReducer],
-  [
-    portalNavbarAction.setIsElectronicDeviceActive,
-    setIsElectronicDeviceActive_PortalNavbarReducer,
-  ],
-  [
-    portalNavbarAction.setIsMobileDeviceActive,
-    setIsMobileDeviceActive_PortalNavbarReducer,
-  ],
-  [portalNavbarAction.setIsAudioVideoActive, setIsAudioVideoActive_PortalNavbarReducer],
-  [
-    portalNavbarAction.setIsRepairAccessoryActive,
-    setIsRepairAccessoryActive_PortalNavbarReducer,
-  ],
 
   // ╭─────────────────────────────────────────────────────────────────╮
   //    TRANSACTION
@@ -980,23 +866,19 @@ function portalNavbarReducer(
 
 export {
   portalNavbarReducer,
-  setIsProductAccessoryActive_PortalNavbarReducer,
   setIsAddressChangeActive_PortalNavbarReducer,
   setIsAnnouncementActive_PortalNavbarReducer,
   setIsAnonymousRequestActive_PortalNavbarReducer,
-  setIsAudioVideoActive_PortalNavbarReducer,
   setIsBenefitActive_PortalNavbarReducer,
   setIsCommentActive_PortalNavbarReducer,
   setIsCompanyActive_PortalNavbarReducer,
   setIsComputerCaseActive_PortalNavbarReducer,
-  setIsComputerComponentActive_PortalNavbarReducer,
   setIsCPUActive_PortalNavbarReducer,
   setIsCustomerActive_PortalNavbarReducer,
   setIsDashboardActive_PortalNavbarReducer,
   setIsDesktopComputerActive_PortalNavbarReducer,
   setIsDirectoryActive_PortalNavbarReducer,
   setIsDisplayActive_PortalNavbarReducer,
-  setIsElectronicDeviceActive_PortalNavbarReducer,
   setIsEndorsementActive_PortalNavbarReducer,
   setIsEventActive_PortalNavbarReducer,
   setIsExpenseClaimActive_PortalNavbarReducer,
@@ -1007,19 +889,17 @@ export {
   setIsLaptopActive_PortalNavbarReducer,
   setIsLeaveRequestActive_PortalNavbarReducer,
   setIsMicrophoneActive_PortalNavbarReducer,
-  setIsMobileDeviceActive_PortalNavbarReducer,
   setIsMotherboardActive_PortalNavbarReducer,
   setIsMouseActive_PortalNavbarReducer,
   setIsOutreachActive_PortalNavbarReducer,
-  setIsPeripheralActive_PortalNavbarReducer,
   setIsPrinterIssueActive_PortalNavbarReducer,
+  setIsProductAccessoryActive_PortalNavbarReducer,
   setIsProductActive_PortalNavbarReducer,
   setIsProductReviewActive_PortalNavbarReducer,
   setIsPSUActive_PortalNavbarReducer,
   setIsPurchaseActive_PortalNavbarReducer,
   setIsRAMActive_PortalNavbarReducer,
   setIsRefermentActive_PortalNavbarReducer,
-  setIsRepairAccessoryActive_PortalNavbarReducer,
   setIsRepairActive_PortalNavbarReducer,
   setIsRequestResourceActive_PortalNavbarReducer,
   setIsRMAActive_PortalNavbarReducer,

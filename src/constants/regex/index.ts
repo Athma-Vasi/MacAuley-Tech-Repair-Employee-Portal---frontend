@@ -24,8 +24,7 @@ const EMAIL_REGEX =
  * - (?<![-_.]) ensures that the username does not end with a hyphen, underscore, or period.
  * - ^ and $ ensure that the entire string matches the regex.
  */
-const USERNAME_REGEX =
-  /^(?=.{3,20}$)(?![-_.])(?!.*[-_.]{2})[a-zA-Z0-9-_.]+(?<![-_.])$/;
+const USERNAME_REGEX = /^(?=.{3,20}$)(?![-_.])(?!.*[-_.]{2})[a-zA-Z0-9-_.]+(?<![-_.])$/;
 
 /**
  * - /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*])(?!.*\s).{8,32}$/
@@ -186,8 +185,7 @@ const DATE_FULL_RANGE_REGEX =
  * - (0[1-9]|[12][0-9]|3[01]) day: matches either 0 followed by a digit between 1 and 9, or 1 or 2 followed by a digit between 0 and 9, or 3 followed by a digit between 0 and 1.
  * - ^ and $ ensure that the entire string matches the regex.
  */
-const DATE_NEAR_FUTURE_REGEX =
-  /^(?:202[3-6])-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])/;
+const DATE_NEAR_FUTURE_REGEX = /^(?:202[3-6])-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])/;
 
 /**
  * - 202[0-3] matches the years from 2020 to 2023.
@@ -197,8 +195,7 @@ const DATE_NEAR_FUTURE_REGEX =
  * - (0[1-9]|[12][0-9]|3[01]) day: matches either 0 followed by a digit between 1 and 9, or 1 or 2 followed by a digit between 0 and 9, or 3 followed by a digit between 0 and 1.
  * - ^ and $ ensure that the entire string matches the regex.
  */
-const DATE_NEAR_PAST_REGEX =
-  /^(?:202[0-3])-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])/;
+const DATE_NEAR_PAST_REGEX = /^(?:202[0-3])-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])/;
 
 /**
  * - 19[0-9][0-9] matches the years from 1900 to 1999.
@@ -221,8 +218,7 @@ const DATE_OF_BIRTH_REGEX =
  * - ^ and $ ensure that the entire string matches the regex.
  * - i makes the regex case-insensitive.
  */
-const GRAMMAR_TEXTAREA_INPUT_REGEX =
-  /^(?=.*[A-Za-z0-9])[\w\s.,!?():;"'-]{2,2000}$/i;
+const GRAMMAR_TEXTAREA_INPUT_REGEX = /^(?=.*[A-Za-z0-9])[\w\s.,!?():;"'-]{2,2000}$/i;
 
 /**
  * - /^(?=.*[A-Za-z0-9])[\w\s.,!?():;"'-]{2,100}$/i
@@ -237,8 +233,7 @@ const GRAMMAR_TEXT_INPUT_REGEX = /^(?=.*[A-Za-z0-9])[\w\s.,!?():;"'-]{2,100}$/i;
 /**
  * matches the exact Marauder's Map phrase
  */
-const ACKNOWLEDGEMENT_TEXT_INPUT_REGEX =
-  /^I solemnly swear that I am up to no good\.$/i;
+const ACKNOWLEDGEMENT_TEXT_INPUT_REGEX = /^I solemnly swear that I am up to no good\.$/i;
 
 // /**
 //  * - ^[A-Za-z0-9\s.,'()-]{1,50}$/i
@@ -294,10 +289,41 @@ const FLOAT_REGEX = /^\d{1,6}(?:[,.]\d{0,2})?$/;
  */
 const FILENAME_REGEX = /^[a-zA-Z0-9\s.,'()-]{1,50}$/i;
 
+/**
+ * - /^\d{4} \d{4} \d{4} \d{4}$/
+ * - ^ asserts that the string starts with a digit.
+ * - \d{4} matches exactly 4 digits.
+ * - [ ] matches a space.
+ * - $ asserts that the string ends with a digit.
+ */
+const CREDIT_CARD_NUMBER_REGEX = /^\d{4} \d{4} \d{4} \d{4}$/;
+
+/**
+ * - /^(0[1-9]|1[0-2])\/([0-9]{4}|[0-9]{2})$/
+ * - ^ asserts that the string starts with a digit.
+ * - (0[1-9]|1[0-2]) matches either 0 followed by a digit between 1 and 9, or 1 followed by a digit between 0 and 2.
+ * - \/ matches "/".
+ * - ([0-9]{4}|[0-9]{2}) matches either 4 digits or 2 digits.
+ * - $ asserts that the string ends with a digit.
+ * - This regex matches the following date formats: MM/YYYY, MM/YY.
+ */
+const CREDIT_CARD_EXPIRATION_DATE_REGEX = /^(0[1-9]|1[0-2])\/([0-9]{4}|[0-9]{2})$/;
+
+/**
+ * - /^\d{3,4}$/
+ * - ^ asserts that the string starts with a digit.
+ * - \d{3,4} matches between 3 and 4 digits.
+ * - $ asserts that the string ends with a digit.
+ */
+const CREDIT_CARD_CVV_REGEX = /^\d{3,4}$/;
+
 export {
   ACKNOWLEDGEMENT_TEXT_INPUT_REGEX,
   ADDRESS_LINE_REGEX,
   CITY_REGEX,
+  CREDIT_CARD_CVV_REGEX,
+  CREDIT_CARD_EXPIRATION_DATE_REGEX,
+  CREDIT_CARD_NUMBER_REGEX,
   DATE_FULL_RANGE_REGEX,
   DATE_NEAR_FUTURE_REGEX,
   DATE_NEAR_PAST_REGEX,

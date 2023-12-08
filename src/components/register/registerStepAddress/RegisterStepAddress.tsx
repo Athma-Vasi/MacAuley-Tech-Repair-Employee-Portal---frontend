@@ -1,34 +1,34 @@
-import { ChangeEvent, KeyboardEvent, useEffect } from 'react';
+import { ChangeEvent, KeyboardEvent, useEffect } from "react";
 
-import { PROVINCES, STATES_US } from '../../../constants/data';
+import { PROVINCES, STATES_US } from "../../../constants/data";
 import {
   ADDRESS_LINE_REGEX,
   CITY_REGEX,
   PHONE_NUMBER_REGEX,
   POSTAL_CODE_REGEX_CANADA,
   POSTAL_CODE_REGEX_US,
-} from '../../../constants/regex';
+} from "../../../constants/regex";
 import {
   AccessibleErrorValidTextElements,
   returnAccessiblePhoneNumberTextInputElements,
   returnAccessibleSelectInputElements,
   returnAccessibleTextInputElements,
-} from '../../../jsxCreators';
-import { Country, Province, StatesUS } from '../../../types';
+} from "../../../jsxCreators";
+import { Country, Province, StatesUS } from "../../../types";
 import {
   returnAddressValidationText,
   returnCityValidationText,
   returnPhoneNumberValidationText,
   returnPostalCodeValidationText,
-} from '../../../utils';
-import { COUNTRIES_DATA } from '../../addressChange/constants';
+} from "../../../utils";
+import { COUNTRIES_DATA } from "../../addressChange/constants";
 import {
   AccessiblePhoneNumberTextInputCreatorInfo,
   AccessibleSelectInputCreatorInfo,
   AccessibleTextInputCreatorInfo,
   FormLayoutWrapper,
-} from '../../wrappers';
-import { RegisterStepAddressProps } from './types';
+} from "../../wrappers";
+import { RegisterStepAddressProps } from "./types";
 
 function RegisterStepAddress({
   contactNumber,
@@ -140,11 +140,11 @@ function RegisterStepAddress({
   // used to validate postal code on every change
   useEffect(() => {
     const isValidPostal =
-      country === 'Canada'
+      country === "Canada"
         ? POSTAL_CODE_REGEX_CANADA.test(postalCode)
         : POSTAL_CODE_REGEX_US.test(postalCode);
 
-    if (country === 'Canada') {
+    if (country === "Canada") {
       const postalCodeLength = postalCode.length;
       if (postalCodeLength === 3) {
         registerDispatch({
@@ -182,15 +182,12 @@ function RegisterStepAddress({
   // update the corresponding stepsInError state if any of the inputs are in error
   useEffect(() => {
     const isStepInError =
-      !isValidAddressLine ||
-      !isValidCity ||
-      !isValidPostalCode ||
-      !isValidContactNumber;
+      !isValidAddressLine || !isValidCity || !isValidPostalCode || !isValidContactNumber;
 
     registerDispatch({
       type: registerAction.setStepsInError,
       payload: {
-        kind: isStepInError ? 'add' : 'delete',
+        kind: isStepInError ? "add" : "delete",
         step: 2,
       },
     });
@@ -206,35 +203,34 @@ function RegisterStepAddress({
   // following are the accessible text elements for screen readers to read out based on the state of the input
   const [addressLineInputErrorText, addressLineInputValidText] =
     AccessibleErrorValidTextElements({
-      inputElementKind: 'address line',
+      inputElementKind: "address line",
       inputText: addressLine,
       isValidInputText: isValidAddressLine,
       isInputTextFocused: isAddressLineFocused,
       regexValidationText: returnAddressValidationText({
         content: addressLine,
-        contentKind: 'address line',
+        contentKind: "address line",
         minLength: 2,
         maxLength: 75,
       }),
     });
 
-  const [cityInputErrorText, cityInputValidText] =
-    AccessibleErrorValidTextElements({
-      inputElementKind: 'city',
-      inputText: city,
-      isValidInputText: isValidCity,
-      isInputTextFocused: isCityFocused,
-      regexValidationText: returnCityValidationText({
-        content: city,
-        contentKind: 'city',
-        minLength: 2,
-        maxLength: 75,
-      }),
-    });
+  const [cityInputErrorText, cityInputValidText] = AccessibleErrorValidTextElements({
+    inputElementKind: "city",
+    inputText: city,
+    isValidInputText: isValidCity,
+    isInputTextFocused: isCityFocused,
+    regexValidationText: returnCityValidationText({
+      content: city,
+      contentKind: "city",
+      minLength: 2,
+      maxLength: 75,
+    }),
+  });
 
   const [postalCodeInputErrorText, postalCodeInputValidText] =
     AccessibleErrorValidTextElements({
-      inputElementKind: 'postal code',
+      inputElementKind: "postal code",
       inputText: postalCode,
       isValidInputText: isValidPostalCode,
       isInputTextFocused: isPostalCodeFocused,
@@ -246,69 +242,68 @@ function RegisterStepAddress({
 
   const [contactNumberInputErrorText, contactNumberInputValidText] =
     AccessibleErrorValidTextElements({
-      inputElementKind: 'contact number',
+      inputElementKind: "contact number",
       inputText: contactNumber,
       isValidInputText: isValidContactNumber,
       isInputTextFocused: isContactNumberFocused,
       regexValidationText: returnPhoneNumberValidationText({
         content: contactNumber,
-        contentKind: 'contact number',
+        contentKind: "contact number",
       }),
     });
 
-  const contactNumberPhoneInputCreatorInfo: AccessiblePhoneNumberTextInputCreatorInfo =
-    {
-      description: {
-        error: contactNumberInputErrorText,
-        valid: contactNumberInputValidText,
-      },
-      inputText: contactNumber,
-      isValidInputText: isValidContactNumber,
-      label: 'Contact number',
-      onBlur: () => {
-        registerDispatch({
-          type: registerAction.setIsContactNumberFocused,
-          payload: false,
-        });
-      },
-      onChange: (event: ChangeEvent<HTMLInputElement>) => {
-        registerDispatch({
-          type: registerAction.setContactNumber,
-          payload: event.currentTarget.value,
-        });
-      },
-      onFocus: () => {
-        registerDispatch({
-          type: registerAction.setIsContactNumberFocused,
-          payload: true,
-        });
-      },
-      placeholder: 'Enter your contact number',
-      required: true,
-      rightSection: true,
-      rightSectionOnClick: () => {
-        registerDispatch({
-          type: registerAction.setContactNumber,
-          payload: '+(1)',
-        });
-      },
-      withAsterisk: true,
-      semanticName: 'contact number',
-      onKeyDown: (event: KeyboardEvent<HTMLInputElement>) => {
-        if (event.key === 'Backspace') {
-          if (contactNumber.length === 14 || contactNumber.length === 9) {
-            registerDispatch({
-              type: registerAction.setContactNumber,
-              payload: contactNumber.slice(0, -1),
-            });
-          }
+  const contactNumberPhoneInputCreatorInfo: AccessiblePhoneNumberTextInputCreatorInfo = {
+    description: {
+      error: contactNumberInputErrorText,
+      valid: contactNumberInputValidText,
+    },
+    inputText: contactNumber,
+    isValidInputText: isValidContactNumber,
+    label: "Contact number",
+    onBlur: () => {
+      registerDispatch({
+        type: registerAction.setIsContactNumberFocused,
+        payload: false,
+      });
+    },
+    onChange: (event: ChangeEvent<HTMLInputElement>) => {
+      registerDispatch({
+        type: registerAction.setContactNumber,
+        payload: event.currentTarget.value,
+      });
+    },
+    onFocus: () => {
+      registerDispatch({
+        type: registerAction.setIsContactNumberFocused,
+        payload: true,
+      });
+    },
+    placeholder: "Enter your contact number",
+    required: true,
+    rightSection: true,
+    rightSectionOnClick: () => {
+      registerDispatch({
+        type: registerAction.setContactNumber,
+        payload: "+(1)",
+      });
+    },
+    withAsterisk: true,
+    semanticName: "contact number",
+    onKeyDown: (event: KeyboardEvent<HTMLInputElement>) => {
+      if (event.key === "Backspace") {
+        if (contactNumber.length === 14 || contactNumber.length === 9) {
+          registerDispatch({
+            type: registerAction.setContactNumber,
+            payload: contactNumber.slice(0, -1),
+          });
         }
-      },
-    };
+      }
+    },
+  };
 
   const countrySelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
-    description: 'Select your country',
-    label: 'Country',
+    description: "Select your country",
+    label: "Country",
     onChange: (event: ChangeEvent<HTMLSelectElement>) => {
       registerDispatch({
         type: registerAction.setCountry,
@@ -328,7 +323,7 @@ function RegisterStepAddress({
     },
     inputText: addressLine,
     isValidInputText: isValidAddressLine,
-    label: 'Address line',
+    label: "Address line",
     onBlur: () => {
       registerDispatch({
         type: registerAction.setIsAddressLineFocused,
@@ -347,10 +342,10 @@ function RegisterStepAddress({
         payload: true,
       });
     },
-    placeholder: 'Enter your address',
+    placeholder: "Enter your address",
     required: true,
     withAsterisk: true,
-    semanticName: 'address line',
+    semanticName: "address line",
   };
 
   const cityTextInputCreatorInfo: AccessibleTextInputCreatorInfo = {
@@ -360,7 +355,7 @@ function RegisterStepAddress({
     },
     inputText: city,
     isValidInputText: isValidCity,
-    label: 'City',
+    label: "City",
     onBlur: () => {
       registerDispatch({
         type: registerAction.setIsCityFocused,
@@ -379,34 +374,32 @@ function RegisterStepAddress({
         payload: true,
       });
     },
-    placeholder: 'Enter your city',
+    placeholder: "Enter your city",
     required: true,
     withAsterisk: true,
-    semanticName: 'city',
+    semanticName: "city",
 
     minLength: 2,
     maxLength: 75,
   };
 
-  const provinceOrStateSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo =
-    {
-      data: country === 'Canada' ? PROVINCES : STATES_US,
-      description:
-        country === 'Canada' ? 'Select your province' : 'Select your state',
-      label: country === 'Canada' ? 'Province' : 'State',
-      value: country === 'Canada' ? province : state,
-      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-        country === 'Canada'
-          ? registerDispatch({
-              type: registerAction.setProvince,
-              payload: event.currentTarget.value as Province,
-            })
-          : registerDispatch({
-              type: registerAction.setState,
-              payload: event.currentTarget.value as StatesUS,
-            });
-      },
-    };
+  const provinceOrStateSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
+    data: country === "Canada" ? PROVINCES : STATES_US,
+    description: country === "Canada" ? "Select your province" : "Select your state",
+    label: country === "Canada" ? "Province" : "State",
+    value: country === "Canada" ? province : state,
+    onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+      country === "Canada"
+        ? registerDispatch({
+            type: registerAction.setProvince,
+            payload: event.currentTarget.value as Province,
+          })
+        : registerDispatch({
+            type: registerAction.setState,
+            payload: event.currentTarget.value as StatesUS,
+          });
+    },
+  };
 
   const zipOrPostalCodeTextInputCreatorInfo: AccessibleTextInputCreatorInfo = {
     description: {
@@ -415,12 +408,14 @@ function RegisterStepAddress({
     },
     inputText: postalCode,
     isValidInputText: isValidPostalCode,
-    label: country === 'Canada' ? 'Postal code' : 'Zip code',
+    label: country === "Canada" ? "Postal code" : "Zip code",
+    maxLength: country === "Canada" ? 7 : 10,
+    minLength: country === "Canada" ? 6 : 5,
     onChange: (event: ChangeEvent<HTMLInputElement>) => {
       registerDispatch({
         type: registerAction.setPostalCode,
         payload:
-          country === 'Canada'
+          country === "Canada"
             ? event.currentTarget.value.toUpperCase()
             : event.currentTarget.value,
       });
@@ -439,8 +434,8 @@ function RegisterStepAddress({
     },
     onKeyDown: (event: KeyboardEvent<HTMLInputElement>) => {
       switch (country) {
-        case 'Canada': {
-          if (event.key === 'Backspace' && postalCode.length === 4) {
+        case "Canada": {
+          if (event.key === "Backspace" && postalCode.length === 4) {
             registerDispatch({
               type: registerAction.setPostalCode,
               payload: postalCode.slice(0, 3),
@@ -448,8 +443,8 @@ function RegisterStepAddress({
           }
           break;
         }
-        case 'United States': {
-          if (event.key === 'Backspace' && postalCode.length === 7) {
+        case "United States": {
+          if (event.key === "Backspace" && postalCode.length === 7) {
             registerDispatch({
               type: registerAction.setPostalCode,
               payload: postalCode.slice(0, 6),
@@ -462,16 +457,9 @@ function RegisterStepAddress({
       }
     },
     placeholder:
-      country === 'Canada'
-        ? 'Enter Canadian postal code'
-        : 'Enter US postal code',
-    semanticName: 'postal code',
-
-    minLength: country === 'Canada' ? 6 : 5,
-    maxLength: country === 'Canada' ? 7 : 10,
-
+      country === "Canada" ? "Enter Canadian postal code" : "Enter US postal code",
     required: true,
-    withAsterisk: true,
+    semanticName: "postal code",
   };
 
   // following are the created accessible input elements
@@ -485,10 +473,9 @@ function RegisterStepAddress({
     zipOrPostalCodeTextInputCreatorInfo,
   ]);
 
-  const [createdContactNumberTextInput] =
-    returnAccessiblePhoneNumberTextInputElements([
-      contactNumberPhoneInputCreatorInfo,
-    ]);
+  const [createdContactNumberTextInput] = returnAccessiblePhoneNumberTextInputElements([
+    contactNumberPhoneInputCreatorInfo,
+  ]);
 
   const [createdCountrySelectInput, createdProvinceOrStateSelectInput] =
     returnAccessibleSelectInputElements([
@@ -511,361 +498,3 @@ function RegisterStepAddress({
 }
 
 export { RegisterStepAddress };
-
-/**
- * const displayProvinceOrStateInput =
-    country === 'Canada' ? (
-      <NativeSelect
-        size="sm"
-        data={PROVINCES}
-        label="Select your province"
-        // description="Select your province"
-        value={province}
-        onChange={(event) => {
-          registerDispatch({
-            type: registerAction.setProvince,
-            payload: event.currentTarget.value as Province,
-          });
-        }}
-        required
-        withAsterisk
-      />
-    ) : (
-      <NativeSelect
-        size="sm"
-        data={STATES_US}
-        // description="Select your state"
-        label="Select your state"
-        value={state}
-        onChange={(event) => {
-          registerDispatch({
-            type: registerAction.setState,
-            payload: event.currentTarget.value as StatesUS,
-          });
-        }}
-        required
-        withAsterisk
-      />
-    );
-
-  const selectCanadianPostalCodeInput = (
-    <TextInput
-      size="sm"
-      w="100%"
-      color="dark"
-      label="Postal code"
-      placeholder="Enter Canadian postal code"
-      autoComplete="off"
-      aria-required
-      aria-describedby={
-        isValidPostalCode
-          ? 'postal-code-input-note-valid'
-          : 'postal-code-input-note-error'
-      }
-      aria-invalid={isValidPostalCode ? false : true}
-      icon={
-        isValidPostalCode ? (
-          <FontAwesomeIcon icon={faCheck} color="green" />
-        ) : null
-      }
-      onKeyDown={(event) => {
-        if (event.key === 'Backspace' && postalCode.length === 4) {
-          registerDispatch({
-            type: registerAction.setPostalCode,
-            payload: postalCode.slice(0, 3),
-          });
-        }
-      }}
-      value={postalCode}
-      error={!isValidPostalCode && postalCode !== ''}
-      description={
-        isValidPostalCode ? postalCodeInputValidText : postalCodeInputErrorText
-      }
-      onChange={(event) => {
-        registerDispatch({
-          type: registerAction.setPostalCode,
-          payload: event.currentTarget.value.toUpperCase(),
-        });
-      }}
-      onFocus={() => {
-        registerDispatch({
-          type: registerAction.setIsPostalCodeFocused,
-          payload: true,
-        });
-      }}
-      onBlur={() => {
-        registerDispatch({
-          type: registerAction.setIsPostalCodeFocused,
-          payload: false,
-        });
-      }}
-      withAsterisk
-      required
-      maxLength={7}
-    />
-  );
-
-  const selectUSPostalCodeInput = (
-    <TextInput
-      size="sm"
-      w="100%"
-      color="dark"
-      label="Postal code"
-      placeholder="Enter US postal code"
-      autoComplete="off"
-      aria-required
-      aria-describedby={
-        isValidPostalCode
-          ? 'postal-code-input-note-valid'
-          : 'postal-code-input-note-error'
-      }
-      aria-invalid={isValidPostalCode ? false : true}
-      icon={
-        isValidPostalCode ? (
-          <FontAwesomeIcon icon={faCheck} color="green" />
-        ) : null
-      }
-      value={postalCode}
-      error={!isValidPostalCode && postalCode !== ''}
-      description={
-        isValidPostalCode ? postalCodeInputValidText : postalCodeInputErrorText
-      }
-      onChange={(event) => {
-        registerDispatch({
-          type: registerAction.setPostalCode,
-          payload: event.currentTarget.value,
-        });
-      }}
-      onFocus={() => {
-        registerDispatch({
-          type: registerAction.setIsPostalCodeFocused,
-          payload: true,
-        });
-      }}
-      onBlur={() => {
-        registerDispatch({
-          type: registerAction.setIsPostalCodeFocused,
-          payload: false,
-        });
-      }}
-      onKeyDown={(event) => {
-        if (event.key === 'Backspace' && postalCode.length === 7) {
-          registerDispatch({
-            type: registerAction.setPostalCode,
-            payload: postalCode.slice(0, 6),
-          });
-        }
-      }}
-      withAsterisk
-      required
-      minLength={5}
-      maxLength={10}
-    />
-  );
-
- */
-
-/**
-   * <Flex
-      direction="column"
-      align="flex-start"
-      justify="center"
-      rowGap="lg"
-      w="100%"
-    >
-      <TextInput
-        size="sm"
-        w="100%"
-        color="dark"
-        label="Personal contact number"
-        aria-required
-        aria-describedby={
-          isValidContactNumber
-            ? 'contact-number-input-note-valid'
-            : 'contact-number-input-note-error'
-        }
-        description={
-          isValidContactNumber
-            ? contactNumberInputValidText
-            : contactNumberInputErrorText
-        }
-        placeholder="Enter contact number"
-        autoComplete="off"
-        aria-invalid={isValidContactNumber ? false : true}
-        value={contactNumber}
-        onKeyDown={(event) => {
-          if (event.key === 'Backspace') {
-            if (contactNumber.length === 14) {
-              registerDispatch({
-                type: registerAction.setContactNumber,
-                payload: contactNumber.slice(0, -1),
-              });
-            } else if (contactNumber.length === 9) {
-              registerDispatch({
-                type: registerAction.setContactNumber,
-                payload: contactNumber.slice(0, -1),
-              });
-            }
-          }
-        }}
-        rightSection={
-          <Tooltip label="Reset value to +(1)">
-            <Button
-              type="button"
-              size="xs"
-              variant="white"
-              aria-label="Reset personal contact number value to +(1)"
-              mr="md"
-            >
-              <FontAwesomeIcon
-                icon={faRefresh}
-                cursor="pointer"
-                color="gray"
-                onClick={() => {
-                  registerDispatch({
-                    type: registerAction.setContactNumber,
-                    payload: '+(1)',
-                  });
-                }}
-              />
-            </Button>
-          </Tooltip>
-        }
-        icon={
-          isValidContactNumber ? (
-            <FontAwesomeIcon icon={faCheck} color="green" />
-          ) : null
-        }
-        error={!isValidContactNumber && contactNumber !== '+(1)'}
-        onChange={(event) => {
-          registerDispatch({
-            type: registerAction.setContactNumber,
-            payload: event.currentTarget.value,
-          });
-        }}
-        onFocus={() => {
-          registerDispatch({
-            type: registerAction.setIsContactNumberFocused,
-            payload: true,
-          });
-        }}
-        onBlur={() => {
-          registerDispatch({
-            type: registerAction.setIsContactNumberFocused,
-            payload: false,
-          });
-        }}
-        maxLength={18}
-      />
-      <NativeSelect
-        size="sm"
-        data={['Canada', 'United States']}
-        label="Country"
-        value={country}
-        onChange={(event) => {
-          registerDispatch({
-            type: registerAction.setCountry,
-            payload: event.currentTarget.value as Country,
-          });
-        }}
-        withAsterisk
-        required
-      />
-
-      <TextInput
-        size="sm"
-        w="100%"
-        color="dark"
-        label="Address line"
-        placeholder="Enter address line"
-        autoComplete="off"
-        aria-required
-        aria-describedby={
-          isValidAddressLine
-            ? 'address-line-input-note-valid'
-            : 'address-line-input-note-error'
-        }
-        aria-invalid={isValidAddressLine ? false : true}
-        value={addressLine}
-        icon={
-          isValidAddressLine ? (
-            <FontAwesomeIcon icon={faCheck} color="green" />
-          ) : null
-        }
-        error={!isValidAddressLine && addressLine !== ''}
-        description={
-          isValidAddressLine
-            ? addressLineInputValidText
-            : addressLineInputErrorText
-        }
-        onChange={(event) => {
-          registerDispatch({
-            type: registerAction.setAddressLine,
-            payload: event.currentTarget.value,
-          });
-        }}
-        onFocus={() => {
-          registerDispatch({
-            type: registerAction.setIsAddressLineFocused,
-            payload: true,
-          });
-        }}
-        onBlur={() => {
-          registerDispatch({
-            type: registerAction.setIsAddressLineFocused,
-            payload: false,
-          });
-        }}
-        withAsterisk
-        required
-        minLength={2}
-        maxLength={75}
-      />
-      <TextInput
-        size="sm"
-        w="100%"
-        color="dark"
-        label="City"
-        placeholder="Enter city"
-        autoComplete="off"
-        aria-required
-        aria-describedby={
-          isValidCity ? 'city-input-note-valid' : 'city-input-note-error'
-        }
-        aria-invalid={isValidCity ? false : true}
-        value={city}
-        icon={
-          isValidCity ? <FontAwesomeIcon icon={faCheck} color="green" /> : null
-        }
-        error={!isValidCity && city !== ''}
-        description={isValidCity ? cityInputValidText : cityInputErrorText}
-        onChange={(event) => {
-          registerDispatch({
-            type: registerAction.setCity,
-            payload: event.currentTarget.value,
-          });
-        }}
-        onFocus={() => {
-          registerDispatch({
-            type: registerAction.setIsCityFocused,
-            payload: true,
-          });
-        }}
-        onBlur={() => {
-          registerDispatch({
-            type: registerAction.setIsCityFocused,
-            payload: false,
-          });
-        }}
-        minLength={2}
-        maxLength={75}
-        withAsterisk
-        required
-      />
-      {displayProvinceOrStateInput}
-
-      {country === 'Canada'
-        ? selectCanadianPostalCodeInput
-        : selectUSPostalCodeInput}
-    </Flex>
-   */

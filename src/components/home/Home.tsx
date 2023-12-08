@@ -11,11 +11,11 @@ import {
   Title,
   Tooltip,
   UnstyledButton,
-} from '@mantine/core';
-import { InvalidTokenError } from 'jwt-decode';
-import React, { useEffect, useReducer } from 'react';
-import { useErrorBoundary } from 'react-error-boundary';
-import { MdSafetyDivider } from 'react-icons/md';
+} from "@mantine/core";
+import { InvalidTokenError } from "jwt-decode";
+import React, { useEffect, useReducer } from "react";
+import { useErrorBoundary } from "react-error-boundary";
+import { MdSafetyDivider } from "react-icons/md";
 import {
   TbAddressBook,
   TbCalendarEvent,
@@ -29,23 +29,20 @@ import {
   TbReceipt2,
   TbTimelineEventPlus,
   TbUserCheck,
-} from 'react-icons/tb';
-import { TiThumbsUp } from 'react-icons/ti';
-import { useNavigate } from 'react-router-dom';
+} from "react-icons/tb";
+import { TiThumbsUp } from "react-icons/ti";
+import { useNavigate } from "react-router-dom";
 
-import { COLORS_SWATCHES } from '../../constants/data';
-import { globalAction } from '../../context/globalProvider/state';
-import { useGlobalState, useWrapFetch } from '../../hooks';
-import { useAuth } from '../../hooks/useAuth';
+import { COLORS_SWATCHES } from "../../constants/data";
+import { globalAction } from "../../context/globalProvider/state";
+import { useGlobalState, useWrapFetch } from "../../hooks";
+import { useAuth } from "../../hooks/useAuth";
 import {
   returnAccessibleButtonElements,
   returnAccessibleImageElements,
   returnScrollableDocumentInfo,
-} from '../../jsxCreators';
-import {
-  ActionsResourceRequestServerResponse,
-  UserDocument,
-} from '../../types';
+} from "../../jsxCreators";
+import { ActionsResourceRequestServerResponse, UserDocument } from "../../types";
 import {
   formatDate,
   logState,
@@ -53,10 +50,10 @@ import {
   returnElapsedTime,
   returnThemeColors,
   returnTimeRemaining,
-} from '../../utils';
-import CarouselBuilder from '../carouselBuilder/CarouselBuilder';
-import DisplayResourceHeader from '../displayResourceHeader/DisplayResourceHeader';
-import { homeAction, homeReducer, initialHomeState } from './state';
+} from "../../utils";
+import CarouselBuilder from "../carouselBuilder/CarouselBuilder";
+import DisplayResourceHeader from "../displayResourceHeader/DisplayResourceHeader";
+import { homeAction, homeReducer, initialHomeState } from "./state";
 
 function Home() {
   const [homeState, homeDispatch] = useReducer(homeReducer, initialHomeState);
@@ -81,14 +78,8 @@ function Home() {
   const navigate = useNavigate();
   const { showBoundary } = useErrorBoundary();
 
-  const {
-    padding,
-    width,
-    themeObject,
-    rowGap,
-    actionsDocuments,
-    userDocument,
-  } = globalState;
+  const { padding, width, themeObject, rowGap, actionsDocuments, userDocument } =
+    globalState;
 
   // useEffect(() => {
   //   if (isAccessTokenExpired) {
@@ -137,7 +128,7 @@ function Home() {
   //         throw new Error(data.message);
   //       }
 
-  //       const { repairNoteData, companyData, generalData, outreachData } = data;
+  //       const { repairTicketData, companyData, generalData, outreachData } = data;
 
   //       const employeeData = new Map<string, UserDocument>();
   //       data.employeeData.forEach((employee: UserDocument) => {
@@ -145,7 +136,7 @@ function Home() {
   //       });
 
   //       const actionsDocuments = {
-  //         repairNoteData,
+  //         repairTicketData,
   //         companyData,
   //         generalData,
   //         outreachData,
@@ -234,19 +225,19 @@ function Home() {
       });
       homeDispatch({
         type: homeAction.setLoadingMessage,
-        payload: 'Fetching recent company, general and outreach documents...',
+        payload: "Fetching recent company, general and outreach documents...",
       });
 
       const url: URL = new URL(
         `http://localhost:5500/api/v1/actions/home${
-          roles.includes('Employee') ? `${userId}/` : ''
+          roles.includes("Employee") ? `${userId}/` : ""
         }?&newQueryFlag=true&limit=5&totalDocuments=0`
       );
 
       const requestInit: RequestInit = {
-        method: 'GET',
+        method: "GET",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
       };
 
@@ -258,8 +249,7 @@ function Home() {
           signal: controller.signal,
           url,
         });
-        const data: ActionsResourceRequestServerResponse =
-          await response.json();
+        const data: ActionsResourceRequestServerResponse = await response.json();
 
         if (!isMounted) {
           return;
@@ -268,7 +258,7 @@ function Home() {
           throw new Error(data.message);
         }
 
-        const { repairNoteData, companyData, generalData, outreachData } = data;
+        const { repairTicketData, companyData, generalData, outreachData } = data;
 
         const employeeData = new Map<string, UserDocument>();
         data.employeeData.forEach((employee: UserDocument) => {
@@ -276,7 +266,7 @@ function Home() {
         });
 
         const actionsDocuments = {
-          repairNoteData,
+          repairTicketData,
           companyData,
           generalData,
           outreachData,
@@ -292,20 +282,19 @@ function Home() {
         });
         homeDispatch({
           type: homeAction.setSuccessMessage,
-          payload:
-            'Successfully fetched recent company, general and outreach documents',
+          payload: "Successfully fetched recent company, general and outreach documents",
         });
       } catch (error: any) {
-        if (!isMounted || error.name === 'AbortError') {
+        if (!isMounted || error.name === "AbortError") {
           return;
         }
 
         const errorMessage =
           error instanceof InvalidTokenError
-            ? 'Invalid token. Please login again.'
+            ? "Invalid token. Please login again."
             : !error.response
-            ? 'Network error. Please try again.'
-            : error?.message ?? 'Unknown error occurred. Please try again.';
+            ? "Network error. Please try again."
+            : error?.message ?? "Unknown error occurred. Please try again.";
 
         globalDispatch({
           type: globalAction.setErrorState,
@@ -313,13 +302,13 @@ function Home() {
             isError: true,
             errorMessage,
             errorCallback: () => {
-              navigate('/');
+              navigate("/");
 
               globalDispatch({
                 type: globalAction.setErrorState,
                 payload: {
                   isError: false,
-                  errorMessage: '',
+                  errorMessage: "",
                   errorCallback: () => {},
                 },
               });
@@ -335,7 +324,7 @@ function Home() {
         });
         homeDispatch({
           type: homeAction.setLoadingMessage,
-          payload: '',
+          payload: "",
         });
         homeDispatch({
           type: homeAction.triggerFetchActionsDocuments,
@@ -357,7 +346,7 @@ function Home() {
   useEffect(() => {
     logState({
       state: globalState,
-      groupLabel: 'Home.tsx',
+      groupLabel: "Home.tsx",
     });
   }, [globalState]);
 
@@ -368,9 +357,9 @@ function Home() {
   } = returnThemeColors({ colorsSwatches: COLORS_SWATCHES, themeObject });
 
   const imageSrc =
-    'https://images.pexels.com/photos/3771110/pexels-photo-3771110.jpeg?auto=compress';
-  const imageAlt = 'Reception desk with antique hotel bell';
-  const resourceDescription = 'Welcome to the MacAuley home!';
+    "https://images.pexels.com/photos/3771110/pexels-photo-3771110.jpeg?auto=compress";
+  const imageAlt = "Reception desk with antique hotel bell";
+  const resourceDescription = "Welcome to the MacAuley home!";
   const resourceTitle = `Hi, ${userDocument?.firstName ?? username}!`;
   const displayWelcomeHeader = (
     <DisplayResourceHeader
@@ -394,84 +383,83 @@ function Home() {
       ? (width - 225) * 0.8
       : 900 - 40;
 
-  const createdRepairNotes =
-    actionsDocuments?.repairNoteData.map((repairNote, repairNoteIdx) => {
+  const createdRepairTickets =
+    actionsDocuments?.repairTicketData.map((repairTicket, repairTicketIdx) => {
       const fieldNamesWithDateValues = new Set([
-        'dateReceived',
-        'estimatedCompletionDate',
+        "dateReceived",
+        "estimatedCompletionDate",
       ]);
 
-      const displayRepairNote = returnScrollableDocumentInfo({
+      const displayRepairTicket = returnScrollableDocumentInfo({
         borderColor,
-        document: repairNote,
+        document: repairTicket,
         excludeKeys: [],
         fieldNamesWithDateValues,
-        heading: `Assigned to: ${repairNote.username}`,
+        heading: `Assigned to: ${repairTicket.username}`,
         queryValuesArray: [],
         rowGap,
         scrollBarStyle,
         scrollViewportHeight: componentWidth * 0.62 - 175,
-        textHighlightColor: '',
+        textHighlightColor: "",
       });
 
-      const repairNoteCard = (
+      const repairTicketCard = (
         <Card
-          key={`${repairNote._id}-${repairNoteIdx}`}
+          key={`${repairTicket._id}-${repairTicketIdx}`}
           w={componentWidth}
           h="100%"
           // style={{ border: borderColor,  }}
-          style={{ outline: '1px solid teal' }}
+          style={{ outline: "1px solid teal" }}
         >
-          <Stack>{displayRepairNote}</Stack>
+          <Stack>{displayRepairTicket}</Stack>
         </Card>
       );
 
-      return repairNoteCard;
+      return repairTicketCard;
     }) ?? ([] as Array<React.JSX.Element>);
 
-  const displayRepairNotesCarousel = (
+  const displayRepairTicketsCarousel = (
     <CarouselBuilder
       slideDimensions={{
         width: componentWidth,
         height: componentWidth * 0.62,
       }}
-      slides={createdRepairNotes}
+      slides={createdRepairTickets}
     />
   );
 
-  const [createdVisitRepairNotesPageButton] = returnAccessibleButtonElements([
+  const [createdVisitRepairTicketsPageButton] = returnAccessibleButtonElements([
     {
-      buttonLabel: 'Visit',
+      buttonLabel: "Visit",
       rightIcon: <TbCircleArrowUpRight size={20} />,
-      semanticDescription: 'Click to view repair notes',
-      semanticName: 'visit repair notes page',
+      semanticDescription: "Click to view repair notes",
+      semanticName: "visit repair notes page",
       buttonOnClick: () => {
-        navigate('/home/repair-note');
+        navigate("/home/repair-note");
       },
     },
   ]);
 
-  const displayVisitRepairNotesPageButton = (
+  const displayVisitRepairTicketsPageButton = (
     <Tooltip label="Visit repair notes page">
-      <Group>{createdVisitRepairNotesPageButton}</Group>
+      <Group>{createdVisitRepairTicketsPageButton}</Group>
     </Tooltip>
   );
 
-  const displayRepairNotesSection = (
+  const displayRepairTicketsSection = (
     <Stack w={componentWidth}>
       <Group spacing={rowGap}>
         <Title order={4}>Repair Notes awaiting approval</Title>
-        {displayVisitRepairNotesPageButton}
+        {displayVisitRepairTicketsPageButton}
       </Group>
-      {displayRepairNotesCarousel}
+      {displayRepairTicketsCarousel}
     </Stack>
   );
 
   const createdAnnouncementsCards =
     actionsDocuments?.outreachData.announcementData.map(
       (announcement, announcementIdx) => {
-        const { _id, bannerImageAlt, title, bannerImageSrcCompressed } =
-          announcement;
+        const { _id, bannerImageAlt, title, bannerImageSrcCompressed } = announcement;
 
         const [createdImage] = returnAccessibleImageElements([
           {
@@ -485,7 +473,7 @@ function Home() {
         ]);
 
         // required to avoid breadcrumbs showing '%20' instead of spaces
-        const dynamicPath = title ? title.replace(/ /g, '-') : _id;
+        const dynamicPath = title ? title.replace(/ /g, "-") : _id;
         const announcementCard = (
           <UnstyledButton
             key={`${_id}-${announcementIdx}`}
@@ -523,12 +511,12 @@ function Home() {
 
   const [createdVisitAnnouncementsPageButton] = returnAccessibleButtonElements([
     {
-      buttonLabel: 'Visit',
+      buttonLabel: "Visit",
       rightIcon: <TbCircleArrowUpRight size={20} />,
-      semanticDescription: 'Click to view announcements',
-      semanticName: 'visit announcements page',
+      semanticDescription: "Click to view announcements",
+      semanticName: "visit announcements page",
       buttonOnClick: () => {
-        navigate('/home/outreach/announcement');
+        navigate("/home/outreach/announcement");
       },
     },
   ]);
@@ -569,9 +557,10 @@ function Home() {
       const questions = (
         <Flex direction="column" gap="xs">
           {survey.questions.map((question, questionIdx) => (
-            <Text
-              key={`${question}-${questionIdx}`}
-            >{`${question.question.slice(0, 39)}...`}</Text>
+            <Text key={`${question}-${questionIdx}`}>{`${question.question.slice(
+              0,
+              39
+            )}...`}</Text>
           ))}
         </Flex>
       );
@@ -583,11 +572,7 @@ function Home() {
       );
 
       const surveyCard = (
-        <Card
-          key={`${_id}-${surveyIdx}`}
-          w={350}
-          style={{ border: borderColor }}
-        >
+        <Card key={`${_id}-${surveyIdx}`} w={350} style={{ border: borderColor }}>
           <Stack>
             {heading}
             {title}
@@ -602,12 +587,12 @@ function Home() {
 
   const [createdVisitSurveyPageButton] = returnAccessibleButtonElements([
     {
-      buttonLabel: 'Visit',
+      buttonLabel: "Visit",
       rightIcon: <TbCircleArrowUpRight size={20} />,
-      semanticDescription: 'Click to view completed and uncompleted surveys',
-      semanticName: 'visit survey page',
+      semanticDescription: "Click to view completed and uncompleted surveys",
+      semanticName: "visit survey page",
       buttonOnClick: () => {
-        navigate('/home/outreach/survey');
+        navigate("/home/outreach/survey");
       },
     },
   ]);
@@ -630,7 +615,7 @@ function Home() {
           w={componentWidth}
           h={componentWidth * 0.62 - 160}
           gap={rowGap}
-          justify={width < 480 ? 'center' : 'flex-start'}
+          justify={width < 480 ? "center" : "flex-start"}
         >
           {createdUncompletedSurveyCards}
         </Flex>
@@ -651,119 +636,111 @@ function Home() {
     return aDate - bDate;
   });
 
-  const createdUpcomingEventCards = sortedUpcomingEvents.map(
-    (event, eventIdx) => {
-      const {
-        _id,
-        eventTitle,
-        eventStartDate,
-        eventEndDate,
-        eventStartTime,
-        eventEndTime,
-        eventLocation,
-        rsvpDeadline,
-      } = event;
+  const createdUpcomingEventCards = sortedUpcomingEvents.map((event, eventIdx) => {
+    const {
+      _id,
+      eventTitle,
+      eventStartDate,
+      eventEndDate,
+      eventStartTime,
+      eventEndTime,
+      eventLocation,
+      rsvpDeadline,
+    } = event;
 
-      const eventIcon = <TbCalendarEvent size={20} />;
-      const heading = (
-        <Group w="100%">
-          {eventIcon}
-          <Text size="md">Event</Text>
-        </Group>
-      );
+    const eventIcon = <TbCalendarEvent size={20} />;
+    const heading = (
+      <Group w="100%">
+        {eventIcon}
+        <Text size="md">Event</Text>
+      </Group>
+    );
 
-      const formattedStartDate = formatDate({
-        date: eventStartDate,
-        formatOptions: { dateStyle: 'full' },
-        locale: 'en-US',
-      });
+    const formattedStartDate = formatDate({
+      date: eventStartDate,
+      formatOptions: { dateStyle: "full" },
+      locale: "en-US",
+    });
 
-      const formattedEndDate = formatDate({
-        date: eventEndDate,
-        formatOptions: { dateStyle: 'full' },
-        locale: 'en-US',
-      });
+    const formattedEndDate = formatDate({
+      date: eventEndDate,
+      formatOptions: { dateStyle: "full" },
+      locale: "en-US",
+    });
 
-      const title = <Title order={5}>{eventTitle}</Title>;
+    const title = <Title order={5}>{eventTitle}</Title>;
 
-      const startDate = (
-        <Flex wrap="wrap">
-          <Text>Start:</Text>
-          <Text
-            pl={padding}
-          >{`${formattedStartDate} at ${eventStartTime}`}</Text>
-        </Flex>
-      );
+    const startDate = (
+      <Flex wrap="wrap">
+        <Text>Start:</Text>
+        <Text pl={padding}>{`${formattedStartDate} at ${eventStartTime}`}</Text>
+      </Flex>
+    );
 
-      const endDate = (
-        <Flex wrap="wrap">
-          <Text>End:</Text>
-          <Text pl={padding}>{`${formattedEndDate} at ${eventEndTime}`}</Text>
-        </Flex>
-      );
+    const endDate = (
+      <Flex wrap="wrap">
+        <Text>End:</Text>
+        <Text pl={padding}>{`${formattedEndDate} at ${eventEndTime}`}</Text>
+      </Flex>
+    );
 
-      const location = (
-        <Flex wrap="wrap">
-          <Text>Location:</Text>
-          <Text pl={padding}>{eventLocation}</Text>
-        </Flex>
-      );
+    const location = (
+      <Flex wrap="wrap">
+        <Text>Location:</Text>
+        <Text pl={padding}>{eventLocation}</Text>
+      </Flex>
+    );
 
-      const formattedRsvpDeadline = formatDate({
-        date: rsvpDeadline,
-        formatOptions: { dateStyle: 'full' },
-        locale: 'en-US',
-      });
+    const formattedRsvpDeadline = formatDate({
+      date: rsvpDeadline,
+      formatOptions: { dateStyle: "full" },
+      locale: "en-US",
+    });
 
-      const rsvp = (
-        <Flex wrap="wrap">
-          <Text>RSVP Deadline:</Text>
-          <Text pl={padding}>{formattedRsvpDeadline}</Text>
-        </Flex>
-      );
+    const rsvp = (
+      <Flex wrap="wrap">
+        <Text>RSVP Deadline:</Text>
+        <Text pl={padding}>{formattedRsvpDeadline}</Text>
+      </Flex>
+    );
 
-      const remainingTime = (
-        <Group position="right" w="100%">
-          <Text>{returnTimeRemaining(eventStartDate)}</Text>
-        </Group>
-      );
+    const remainingTime = (
+      <Group position="right" w="100%">
+        <Text>{returnTimeRemaining(eventStartDate)}</Text>
+      </Group>
+    );
 
-      const displayBody = (
-        <Flex direction="column" gap="xs">
-          {startDate}
-          {endDate}
-          {location}
-          {rsvp}
-        </Flex>
-      );
+    const displayBody = (
+      <Flex direction="column" gap="xs">
+        {startDate}
+        {endDate}
+        {location}
+        {rsvp}
+      </Flex>
+    );
 
-      const eventCard = (
-        <Card
-          key={`${_id}-${eventIdx}`}
-          w={350}
-          style={{ border: borderColor }}
-        >
-          <Stack>
-            {heading}
-            {title}
-            {displayBody}
-            {remainingTime}
-          </Stack>
-        </Card>
-      );
+    const eventCard = (
+      <Card key={`${_id}-${eventIdx}`} w={350} style={{ border: borderColor }}>
+        <Stack>
+          {heading}
+          {title}
+          {displayBody}
+          {remainingTime}
+        </Stack>
+      </Card>
+    );
 
-      return eventCard;
-    }
-  );
+    return eventCard;
+  });
 
   const [createdVisitEventPageButton] = returnAccessibleButtonElements([
     {
-      buttonLabel: 'Visit',
+      buttonLabel: "Visit",
       rightIcon: <TbCircleArrowUpRight size={20} />,
-      semanticDescription: 'Click to view upcoming events',
-      semanticName: 'visit event page',
+      semanticDescription: "Click to view upcoming events",
+      semanticName: "visit event page",
       buttonOnClick: () => {
-        navigate('/home/outreach/event');
+        navigate("/home/outreach/event");
       },
     },
   ]);
@@ -787,7 +764,7 @@ function Home() {
           w={componentWidth}
           h={componentWidth * 0.62 - 160}
           gap={rowGap}
-          justify={width < 480 ? 'center' : 'flex-start'}
+          justify={width < 480 ? "center" : "flex-start"}
         >
           {createdUpcomingEventCards}
         </Flex>
@@ -904,12 +881,12 @@ function Home() {
 
   const [createdVisitAddressChangePageButton] = returnAccessibleButtonElements([
     {
-      buttonLabel: 'Visit',
+      buttonLabel: "Visit",
       rightIcon: <TbCircleArrowUpRight size={20} />,
-      semanticDescription: 'Click to view address change requests',
-      semanticName: 'visit address change page',
+      semanticDescription: "Click to view address change requests",
+      semanticName: "visit address change page",
       buttonOnClick: () => {
-        navigate('/home/company/address-change');
+        navigate("/home/company/address-change");
       },
     },
   ]);
@@ -933,7 +910,7 @@ function Home() {
           w={componentWidth}
           h={componentWidth * 0.62 - 160}
           gap={rowGap}
-          justify={width < 480 ? 'center' : 'flex-start'}
+          justify={width < 480 ? "center" : "flex-start"}
         >
           {createdAddressChangeCards}
         </Flex>
@@ -1008,11 +985,7 @@ function Home() {
       );
 
       const benefitCard = (
-        <Card
-          key={`${_id}-${benefitIdx}`}
-          w={350}
-          style={{ border: borderColor }}
-        >
+        <Card key={`${_id}-${benefitIdx}`} w={350} style={{ border: borderColor }}>
           <Stack>
             {title}
             {displayBenefit}
@@ -1027,12 +1000,12 @@ function Home() {
 
   const [createdVisitBenefitsPageButton] = returnAccessibleButtonElements([
     {
-      buttonLabel: 'Visit',
+      buttonLabel: "Visit",
       rightIcon: <TbCircleArrowUpRight size={20} />,
-      semanticDescription: 'Click to view benefits',
-      semanticName: 'visit benefits page',
+      semanticDescription: "Click to view benefits",
+      semanticName: "visit benefits page",
       buttonOnClick: () => {
-        navigate('/home/company/benefit');
+        navigate("/home/company/benefit");
       },
     },
   ]);
@@ -1056,7 +1029,7 @@ function Home() {
           w={componentWidth}
           h={componentWidth * 0.62 - 160}
           gap={rowGap}
-          justify={width < 480 ? 'center' : 'flex-start'}
+          justify={width < 480 ? "center" : "flex-start"}
         >
           {createdBenefitsCards}
         </Flex>
@@ -1064,95 +1037,90 @@ function Home() {
     </Stack>
   );
 
-  const createdExpenseClaimCards =
-    actionsDocuments?.companyData.expenseClaimData.map(
-      (expenseClaim, expenseClaimIdx) => {
-        const {
-          _id,
-          expenseClaimKind,
-          expenseClaimAmount,
-          expenseClaimCurrency,
-          expenseClaimDate,
-          requestStatus,
-          createdAt,
-        } = expenseClaim;
+  const createdExpenseClaimCards = actionsDocuments?.companyData.expenseClaimData.map(
+    (expenseClaim, expenseClaimIdx) => {
+      const {
+        _id,
+        expenseClaimKind,
+        expenseClaimAmount,
+        expenseClaimCurrency,
+        expenseClaimDate,
+        requestStatus,
+        createdAt,
+      } = expenseClaim;
 
-        const title = <Title order={5}>{expenseClaimKind}</Title>;
+      const title = <Title order={5}>{expenseClaimKind}</Title>;
 
-        const displayExpenseClaimAmount = (
-          <Flex wrap="wrap">
-            <Text>Amount: </Text>
-            <Text pl={padding}>{expenseClaimAmount}</Text>
-          </Flex>
-        );
+      const displayExpenseClaimAmount = (
+        <Flex wrap="wrap">
+          <Text>Amount: </Text>
+          <Text pl={padding}>{expenseClaimAmount}</Text>
+        </Flex>
+      );
 
-        const displayExpenseClaimCurrency = (
-          <Flex wrap="wrap">
-            <Text>Currency: </Text>
-            <Text pl={padding}>{expenseClaimCurrency}</Text>
-          </Flex>
-        );
+      const displayExpenseClaimCurrency = (
+        <Flex wrap="wrap">
+          <Text>Currency: </Text>
+          <Text pl={padding}>{expenseClaimCurrency}</Text>
+        </Flex>
+      );
 
-        const formattedExpenseClaimDate = formatDate({
-          date: expenseClaimDate,
-          formatOptions: { dateStyle: 'full' },
-          locale: 'en-US',
-        });
-        const displayExpenseClaimDate = (
-          <Flex wrap="wrap">
-            <Text>Date: </Text>
-            <Text pl={padding}>{formattedExpenseClaimDate}</Text>
-          </Flex>
-        );
+      const formattedExpenseClaimDate = formatDate({
+        date: expenseClaimDate,
+        formatOptions: { dateStyle: "full" },
+        locale: "en-US",
+      });
+      const displayExpenseClaimDate = (
+        <Flex wrap="wrap">
+          <Text>Date: </Text>
+          <Text pl={padding}>{formattedExpenseClaimDate}</Text>
+        </Flex>
+      );
 
-        const displayRequestStatus = (
-          <Flex wrap="wrap">
-            <Text>Request Status: </Text>
-            <Text pl={padding}>{requestStatus}</Text>
-          </Flex>
-        );
+      const displayRequestStatus = (
+        <Flex wrap="wrap">
+          <Text>Request Status: </Text>
+          <Text pl={padding}>{requestStatus}</Text>
+        </Flex>
+      );
 
-        const displayExpenseClaim = (
-          <Flex direction="column" gap="xs">
-            {displayExpenseClaimAmount}
-            {displayExpenseClaimCurrency}
-            {displayExpenseClaimDate}
-            {displayRequestStatus}
-          </Flex>
-        );
+      const displayExpenseClaim = (
+        <Flex direction="column" gap="xs">
+          {displayExpenseClaimAmount}
+          {displayExpenseClaimCurrency}
+          {displayExpenseClaimDate}
+          {displayRequestStatus}
+        </Flex>
+      );
 
-        const elapsedTime = (
-          <Group position="right" w="100%">
-            <Text>{returnElapsedTime(createdAt)}</Text>
-          </Group>
-        );
+      const elapsedTime = (
+        <Group position="right" w="100%">
+          <Text>{returnElapsedTime(createdAt)}</Text>
+        </Group>
+      );
 
-        const expenseClaimCard = (
-          <Card
-            key={`${_id}-${expenseClaimIdx}`}
-            w={350}
-            style={{ border: borderColor }}
-          >
-            <Stack>
-              {title}
-              {displayExpenseClaim}
-              {elapsedTime}
-            </Stack>
-          </Card>
-        );
+      const expenseClaimCard = (
+        <Card key={`${_id}-${expenseClaimIdx}`} w={350} style={{ border: borderColor }}>
+          <Stack>
+            {title}
+            {displayExpenseClaim}
+            {elapsedTime}
+          </Stack>
+        </Card>
+      );
 
-        return expenseClaimCard;
-      }
-    );
+      return expenseClaimCard;
+    }
+  );
 
   const [createdVisitExpenseClaimsPageButton] = returnAccessibleButtonElements([
     {
-      buttonLabel: 'Visit',
+      buttonLabel: "Visit",
       rightIcon: <TbCircleArrowUpRight size={20} />,
-      semanticDescription: 'Click to view expense claims',
-      semanticName: 'visit expense claims page',
+      semanticDescription: "Click to view expense claims",
+      semanticName: "visit expense claims page",
       buttonOnClick: () => {
-        navigate('/home/company/expense-claim');
+        navigate("/home/company/expense-claim");
       },
     },
   ]);
@@ -1176,7 +1144,7 @@ function Home() {
           w={componentWidth}
           h={componentWidth * 0.62 - 160}
           gap={rowGap}
-          justify={width < 480 ? 'center' : 'flex-start'}
+          justify={width < 480 ? "center" : "flex-start"}
         >
           {createdExpenseClaimCards}
         </Flex>
@@ -1185,100 +1153,95 @@ function Home() {
   );
 
   // leave requests
-  const createdLeaveRequestsCards =
-    actionsDocuments?.companyData.leaveRequestData.map(
-      (leaveRequest, leaveRequestIdx) => {
-        const {
-          _id,
-          username,
-          startDate,
-          endDate,
-          reasonForLeave,
-          requestStatus,
-          createdAt,
-        } = leaveRequest;
+  const createdLeaveRequestsCards = actionsDocuments?.companyData.leaveRequestData.map(
+    (leaveRequest, leaveRequestIdx) => {
+      const {
+        _id,
+        username,
+        startDate,
+        endDate,
+        reasonForLeave,
+        requestStatus,
+        createdAt,
+      } = leaveRequest;
 
-        const title = <Title order={5}>{username}</Title>;
+      const title = <Title order={5}>{username}</Title>;
 
-        const formattedStartDate = formatDate({
-          date: startDate,
-          formatOptions: { dateStyle: 'full' },
-          locale: 'en-US',
-        });
-        const displayStartDate = (
-          <Flex wrap="wrap">
-            <Text>Start Date: </Text>
-            <Text pl={padding}>{formattedStartDate}</Text>
-          </Flex>
-        );
+      const formattedStartDate = formatDate({
+        date: startDate,
+        formatOptions: { dateStyle: "full" },
+        locale: "en-US",
+      });
+      const displayStartDate = (
+        <Flex wrap="wrap">
+          <Text>Start Date: </Text>
+          <Text pl={padding}>{formattedStartDate}</Text>
+        </Flex>
+      );
 
-        const formattedEndDate = formatDate({
-          date: endDate,
-          formatOptions: { dateStyle: 'full' },
-          locale: 'en-US',
-        });
-        const displayEndDate = (
-          <Flex wrap="wrap">
-            <Text>End Date: </Text>
-            <Text pl={padding}>{formattedEndDate}</Text>
-          </Flex>
-        );
+      const formattedEndDate = formatDate({
+        date: endDate,
+        formatOptions: { dateStyle: "full" },
+        locale: "en-US",
+      });
+      const displayEndDate = (
+        <Flex wrap="wrap">
+          <Text>End Date: </Text>
+          <Text pl={padding}>{formattedEndDate}</Text>
+        </Flex>
+      );
 
-        const displayReasonForLeave = (
-          <Flex wrap="wrap">
-            <Text>Reason for Leave: </Text>
-            <Text pl={padding}>{reasonForLeave}</Text>
-          </Flex>
-        );
+      const displayReasonForLeave = (
+        <Flex wrap="wrap">
+          <Text>Reason for Leave: </Text>
+          <Text pl={padding}>{reasonForLeave}</Text>
+        </Flex>
+      );
 
-        const displayRequestStatus = (
-          <Flex wrap="wrap">
-            <Text>Request Status: </Text>
-            <Text pl={padding}>{requestStatus}</Text>
-          </Flex>
-        );
+      const displayRequestStatus = (
+        <Flex wrap="wrap">
+          <Text>Request Status: </Text>
+          <Text pl={padding}>{requestStatus}</Text>
+        </Flex>
+      );
 
-        const displayLeaveRequest = (
-          <Flex direction="column" gap="xs">
-            {displayStartDate}
-            {displayEndDate}
-            {displayReasonForLeave}
-            {displayRequestStatus}
-          </Flex>
-        );
+      const displayLeaveRequest = (
+        <Flex direction="column" gap="xs">
+          {displayStartDate}
+          {displayEndDate}
+          {displayReasonForLeave}
+          {displayRequestStatus}
+        </Flex>
+      );
 
-        const elapsedTime = (
-          <Group position="right" w="100%">
-            <Text>{returnElapsedTime(createdAt)}</Text>
-          </Group>
-        );
+      const elapsedTime = (
+        <Group position="right" w="100%">
+          <Text>{returnElapsedTime(createdAt)}</Text>
+        </Group>
+      );
 
-        const leaveRequestCard = (
-          <Card
-            key={`${_id}-${leaveRequestIdx}`}
-            w={350}
-            style={{ border: borderColor }}
-          >
-            <Stack>
-              {title}
-              {displayLeaveRequest}
-              {elapsedTime}
-            </Stack>
-          </Card>
-        );
+      const leaveRequestCard = (
+        <Card key={`${_id}-${leaveRequestIdx}`} w={350} style={{ border: borderColor }}>
+          <Stack>
+            {title}
+            {displayLeaveRequest}
+            {elapsedTime}
+          </Stack>
+        </Card>
+      );
 
-        return leaveRequestCard;
-      }
-    );
+      return leaveRequestCard;
+    }
+  );
 
   const [createdVisitLeaveRequestsPageButton] = returnAccessibleButtonElements([
     {
-      buttonLabel: 'Visit',
+      buttonLabel: "Visit",
       rightIcon: <TbCircleArrowUpRight size={20} />,
-      semanticDescription: 'Click to view leave requests',
-      semanticName: 'visit leave requests page',
+      semanticDescription: "Click to view leave requests",
+      semanticName: "visit leave requests page",
       buttonOnClick: () => {
-        navigate('/home/company/leave-request');
+        navigate("/home/company/leave-request");
       },
     },
   ]);
@@ -1302,7 +1265,7 @@ function Home() {
           w={componentWidth}
           h={componentWidth * 0.62 - 160}
           gap={rowGap}
-          justify={width < 480 ? 'center' : 'flex-start'}
+          justify={width < 480 ? "center" : "flex-start"}
         >
           {createdLeaveRequestsCards}
         </Flex>
@@ -1349,8 +1312,8 @@ function Home() {
 
         const formattedDateNeededBy = formatDate({
           date: dateNeededBy,
-          formatOptions: { dateStyle: 'full' },
-          locale: 'en-US',
+          formatOptions: { dateStyle: "full" },
+          locale: "en-US",
         });
         const displayDateNeededBy = (
           <Flex wrap="wrap">
@@ -1400,18 +1363,17 @@ function Home() {
       }
     );
 
-  const [createdVisitRequestResourcePageButton] =
-    returnAccessibleButtonElements([
-      {
-        buttonLabel: 'Visit',
-        rightIcon: <TbCircleArrowUpRight size={20} />,
-        semanticDescription: 'Click to view request resource',
-        semanticName: 'visit request resource page',
-        buttonOnClick: () => {
-          navigate('/home/company/request-resource');
-        },
+  const [createdVisitRequestResourcePageButton] = returnAccessibleButtonElements([
+    {
+      buttonLabel: "Visit",
+      rightIcon: <TbCircleArrowUpRight size={20} />,
+      semanticDescription: "Click to view request resource",
+      semanticName: "visit request resource page",
+      buttonOnClick: () => {
+        navigate("/home/company/request-resource");
       },
-    ]);
+    },
+  ]);
 
   const displayVisitRequestResourcePageButton = (
     <Tooltip label="Visit request resource page">
@@ -1432,7 +1394,7 @@ function Home() {
           w={componentWidth}
           h={componentWidth * 0.62 - 160}
           gap={rowGap}
-          justify={width < 480 ? 'center' : 'flex-start'}
+          justify={width < 480 ? "center" : "flex-start"}
         >
           {createdRequestResourceCards}
         </Flex>
@@ -1460,96 +1422,90 @@ function Home() {
 
   // general section
   // endorsements
-  const createdEndorsementCards =
-    actionsDocuments?.generalData.endorsementData.map(
-      (endorsement, endorsementIdx) => {
-        const {
-          _id,
-          title,
-          userToBeEndorsed,
-          username,
-          attributeEndorsed,
-          requestStatus,
-          createdAt,
-        } = endorsement;
+  const createdEndorsementCards = actionsDocuments?.generalData.endorsementData.map(
+    (endorsement, endorsementIdx) => {
+      const {
+        _id,
+        title,
+        userToBeEndorsed,
+        username,
+        attributeEndorsed,
+        requestStatus,
+        createdAt,
+      } = endorsement;
 
-        const titleElement = <Title order={5}>{title}</Title>;
+      const titleElement = <Title order={5}>{title}</Title>;
 
-        const displayUserToBeEndorsed = (
-          <Flex wrap="wrap">
-            <Text>Endorsed:</Text>
-            <Text pl={padding}>{userToBeEndorsed}</Text>
-          </Flex>
-        );
+      const displayUserToBeEndorsed = (
+        <Flex wrap="wrap">
+          <Text>Endorsed:</Text>
+          <Text pl={padding}>{userToBeEndorsed}</Text>
+        </Flex>
+      );
 
-        const displayUsername = (
-          <Flex wrap="wrap">
-            <Text>Endorser:</Text>
-            <Text pl={padding}>{username}</Text>
-          </Flex>
-        );
+      const displayUsername = (
+        <Flex wrap="wrap">
+          <Text>Endorser:</Text>
+          <Text pl={padding}>{username}</Text>
+        </Flex>
+      );
 
-        const uppercasedAttributeEndorsed = attributeEndorsed.map(
-          (attribute) =>
-            `${attribute.charAt(0).toUpperCase()}${attribute.slice(1)}`
-        );
-        const displayAttributeEndorsed = (
-          <Flex wrap="wrap">
-            <Text>Attribute Endorsed:</Text>
-            <Text pl={padding}>
-              {replaceLastCommaWithAnd(uppercasedAttributeEndorsed.join(', '))}
-            </Text>
-          </Flex>
-        );
+      const uppercasedAttributeEndorsed = attributeEndorsed.map(
+        (attribute) => `${attribute.charAt(0).toUpperCase()}${attribute.slice(1)}`
+      );
+      const displayAttributeEndorsed = (
+        <Flex wrap="wrap">
+          <Text>Attribute Endorsed:</Text>
+          <Text pl={padding}>
+            {replaceLastCommaWithAnd(uppercasedAttributeEndorsed.join(", "))}
+          </Text>
+        </Flex>
+      );
 
-        const displayRequestStatus = (
-          <Flex wrap="wrap">
-            <Text>Request Status:</Text>
-            <Text pl={padding}>{requestStatus}</Text>
-          </Flex>
-        );
+      const displayRequestStatus = (
+        <Flex wrap="wrap">
+          <Text>Request Status:</Text>
+          <Text pl={padding}>{requestStatus}</Text>
+        </Flex>
+      );
 
-        const displayEndorsement = (
-          <Flex direction="column" gap="xs">
-            {displayUserToBeEndorsed}
-            {displayUsername}
-            {displayAttributeEndorsed}
-            {displayRequestStatus}
-          </Flex>
-        );
+      const displayEndorsement = (
+        <Flex direction="column" gap="xs">
+          {displayUserToBeEndorsed}
+          {displayUsername}
+          {displayAttributeEndorsed}
+          {displayRequestStatus}
+        </Flex>
+      );
 
-        const elapsedTime = (
-          <Group position="right" w="100%">
-            <Text>{returnElapsedTime(createdAt)}</Text>
-          </Group>
-        );
+      const elapsedTime = (
+        <Group position="right" w="100%">
+          <Text>{returnElapsedTime(createdAt)}</Text>
+        </Group>
+      );
 
-        const endorsementCard = (
-          <Card
-            key={`${_id}-${endorsementIdx}`}
-            w={350}
-            style={{ border: borderColor }}
-          >
-            <Stack>
-              {titleElement}
-              {displayEndorsement}
-              {elapsedTime}
-            </Stack>
-          </Card>
-        );
+      const endorsementCard = (
+        <Card key={`${_id}-${endorsementIdx}`} w={350} style={{ border: borderColor }}>
+          <Stack>
+            {titleElement}
+            {displayEndorsement}
+            {elapsedTime}
+          </Stack>
+        </Card>
+      );
 
-        return endorsementCard;
-      }
-    );
+      return endorsementCard;
+    }
+  );
 
   const [createdVisitEndorsementsPageButton] = returnAccessibleButtonElements([
     {
-      buttonLabel: 'Visit',
+      buttonLabel: "Visit",
       rightIcon: <TbCircleArrowUpRight size={20} />,
-      semanticDescription: 'Click to view endorsements',
-      semanticName: 'visit endorsements page',
+      semanticDescription: "Click to view endorsements",
+      semanticName: "visit endorsements page",
       buttonOnClick: () => {
-        navigate('/home/general/endorsement');
+        navigate("/home/general/endorsement");
       },
     },
   ]);
@@ -1573,7 +1529,7 @@ function Home() {
           w={componentWidth}
           h={componentWidth * 0.62 - 160}
           gap={rowGap}
-          justify={width < 480 ? 'center' : 'flex-start'}
+          justify={width < 480 ? "center" : "flex-start"}
         >
           {createdEndorsementCards}
         </Flex>
@@ -1582,100 +1538,93 @@ function Home() {
   );
 
   // printer issue
-  const createdPrinterIssueCards =
-    actionsDocuments?.generalData.printerIssueData.map(
-      (printerIssue, printerIssueIdx) => {
-        const {
-          _id,
-          dateOfOccurrence,
-          timeOfOccurrence,
-          printerIssueDescription,
-          urgency,
-          requestStatus,
-          createdAt,
-        } = printerIssue;
+  const createdPrinterIssueCards = actionsDocuments?.generalData.printerIssueData.map(
+    (printerIssue, printerIssueIdx) => {
+      const {
+        _id,
+        dateOfOccurrence,
+        timeOfOccurrence,
+        printerIssueDescription,
+        urgency,
+        requestStatus,
+        createdAt,
+      } = printerIssue;
 
-        const formattedDateOfOccurrence = formatDate({
-          date: dateOfOccurrence,
-          formatOptions: { dateStyle: 'full' },
-          locale: 'en-US',
-        });
+      const formattedDateOfOccurrence = formatDate({
+        date: dateOfOccurrence,
+        formatOptions: { dateStyle: "full" },
+        locale: "en-US",
+      });
 
-        const title = (
-          <Title
-            order={5}
-          >{`Printer Issue on ${formattedDateOfOccurrence}`}</Title>
-        );
+      const title = (
+        <Title order={5}>{`Printer Issue on ${formattedDateOfOccurrence}`}</Title>
+      );
 
-        const displayTimeOfOccurrence = (
-          <Flex wrap="wrap">
-            <Text>Time of Occurrence:</Text>
-            <Text pl={padding}>{timeOfOccurrence}</Text>
-          </Flex>
-        );
+      const displayTimeOfOccurrence = (
+        <Flex wrap="wrap">
+          <Text>Time of Occurrence:</Text>
+          <Text pl={padding}>{timeOfOccurrence}</Text>
+        </Flex>
+      );
 
-        const displayPrinterIssueDescription = (
-          <Flex wrap="wrap">
-            <Text>Issue Description:</Text>
-            <Text pl={padding}>{printerIssueDescription}</Text>
-          </Flex>
-        );
+      const displayPrinterIssueDescription = (
+        <Flex wrap="wrap">
+          <Text>Issue Description:</Text>
+          <Text pl={padding}>{printerIssueDescription}</Text>
+        </Flex>
+      );
 
-        const displayUrgency = (
-          <Flex wrap="wrap">
-            <Text>Urgency:</Text>
-            <Text pl={padding}>{urgency}</Text>
-          </Flex>
-        );
+      const displayUrgency = (
+        <Flex wrap="wrap">
+          <Text>Urgency:</Text>
+          <Text pl={padding}>{urgency}</Text>
+        </Flex>
+      );
 
-        const displayRequestStatus = (
-          <Flex wrap="wrap">
-            <Text>Request Status:</Text>
-            <Text pl={padding}>{requestStatus}</Text>
-          </Flex>
-        );
+      const displayRequestStatus = (
+        <Flex wrap="wrap">
+          <Text>Request Status:</Text>
+          <Text pl={padding}>{requestStatus}</Text>
+        </Flex>
+      );
 
-        const displayPrinterIssue = (
-          <Flex direction="column" gap="xs">
-            {displayTimeOfOccurrence}
-            {displayPrinterIssueDescription}
-            {displayUrgency}
-            {displayRequestStatus}
-          </Flex>
-        );
+      const displayPrinterIssue = (
+        <Flex direction="column" gap="xs">
+          {displayTimeOfOccurrence}
+          {displayPrinterIssueDescription}
+          {displayUrgency}
+          {displayRequestStatus}
+        </Flex>
+      );
 
-        const elapsedTime = (
-          <Group position="right" w="100%">
-            <Text>{returnElapsedTime(createdAt)}</Text>
-          </Group>
-        );
+      const elapsedTime = (
+        <Group position="right" w="100%">
+          <Text>{returnElapsedTime(createdAt)}</Text>
+        </Group>
+      );
 
-        const printerIssueCard = (
-          <Card
-            key={`${_id}-${printerIssueIdx}`}
-            w={350}
-            style={{ border: borderColor }}
-          >
-            <Stack>
-              {title}
-              {displayPrinterIssue}
-              {elapsedTime}
-            </Stack>
-          </Card>
-        );
+      const printerIssueCard = (
+        <Card key={`${_id}-${printerIssueIdx}`} w={350} style={{ border: borderColor }}>
+          <Stack>
+            {title}
+            {displayPrinterIssue}
+            {elapsedTime}
+          </Stack>
+        </Card>
+      );
 
-        return printerIssueCard;
-      }
-    );
+      return printerIssueCard;
+    }
+  );
 
   const [createdVisitPrinterIssuePageButton] = returnAccessibleButtonElements([
     {
-      buttonLabel: 'Visit',
+      buttonLabel: "Visit",
       rightIcon: <TbCircleArrowUpRight size={20} />,
-      semanticDescription: 'Click to view printer issues',
-      semanticName: 'visit printer issues page',
+      semanticDescription: "Click to view printer issues",
+      semanticName: "visit printer issues page",
       buttonOnClick: () => {
-        navigate('/home/general/printer-issue');
+        navigate("/home/general/printer-issue");
       },
     },
   ]);
@@ -1699,7 +1648,7 @@ function Home() {
           w={componentWidth}
           h={componentWidth * 0.62 - 160}
           gap={rowGap}
-          justify={width < 480 ? 'center' : 'flex-start'}
+          justify={width < 480 ? "center" : "flex-start"}
         >
           {createdPrinterIssueCards}
         </Flex>
@@ -1784,18 +1733,17 @@ function Home() {
       }
     );
 
-  const [createdVisitAnonymousRequestsPageButton] =
-    returnAccessibleButtonElements([
-      {
-        buttonLabel: 'Visit',
-        rightIcon: <TbCircleArrowUpRight size={20} />,
-        semanticDescription: 'Click to view anonymous requests',
-        semanticName: 'visit anonymous requests page',
-        buttonOnClick: () => {
-          navigate('/home/general/anonymous-request');
-        },
+  const [createdVisitAnonymousRequestsPageButton] = returnAccessibleButtonElements([
+    {
+      buttonLabel: "Visit",
+      rightIcon: <TbCircleArrowUpRight size={20} />,
+      semanticDescription: "Click to view anonymous requests",
+      semanticName: "visit anonymous requests page",
+      buttonOnClick: () => {
+        navigate("/home/general/anonymous-request");
       },
-    ]);
+    },
+  ]);
 
   const displayVisitAnonymousRequestsPageButton = (
     <Tooltip label="Visit anonymous requests page">
@@ -1816,7 +1764,7 @@ function Home() {
           w={componentWidth}
           h={componentWidth * 0.62 - 160}
           gap={rowGap}
-          justify={width < 480 ? 'center' : 'flex-start'}
+          justify={width < 480 ? "center" : "flex-start"}
         >
           {createdAnonymousRequestCards}
         </Flex>
@@ -1883,11 +1831,7 @@ function Home() {
       );
 
       const refermentCard = (
-        <Card
-          key={`${_id}-${refermentIdx}`}
-          w={350}
-          style={{ border: borderColor }}
-        >
+        <Card key={`${_id}-${refermentIdx}`} w={350} style={{ border: borderColor }}>
           <Stack>
             {title}
             {displayReferment}
@@ -1902,12 +1846,12 @@ function Home() {
 
   const [createdVisitRefermentsPageButton] = returnAccessibleButtonElements([
     {
-      buttonLabel: 'Visit',
+      buttonLabel: "Visit",
       rightIcon: <TbCircleArrowUpRight size={20} />,
-      semanticDescription: 'Click to view referments',
-      semanticName: 'visit referments page',
+      semanticDescription: "Click to view referments",
+      semanticName: "visit referments page",
       buttonOnClick: () => {
-        navigate('/home/general/referment');
+        navigate("/home/general/referment");
       },
     },
   ]);
@@ -1931,7 +1875,7 @@ function Home() {
           w={componentWidth}
           h={componentWidth * 0.62 - 160}
           gap={rowGap}
-          justify={width < 480 ? 'center' : 'flex-start'}
+          justify={width < 480 ? "center" : "flex-start"}
         >
           {createdRefermentCards}
         </Flex>
@@ -1972,24 +1916,10 @@ function Home() {
     />
   );
 
-  useEffect(() => {
-    logState({
-      state: homeState,
-      groupLabel: 'home state in Home',
-    });
-  }, [homeState]);
-
   return (
-    <Stack
-      w="100%"
-      align="center"
-      style={{ position: 'relative' }}
-      spacing="xl"
-    >
+    <Stack w="100%" align="center" style={{ position: "relative" }} spacing="xl">
       {displayLoadingOverlay}
-      <Text>{`Access token is ${
-        accessToken ? 'present' : 'not present'
-      }`}</Text>
+      <Text>{`Access token is ${accessToken ? "present" : "not present"}`}</Text>
 
       <Button
         onClick={() => {
@@ -2004,7 +1934,7 @@ function Home() {
 
       {displayWelcomeHeader}
 
-      {displayRepairNotesSection}
+      {displayRepairTicketsSection}
 
       {displayAnnouncementsSection}
 

@@ -126,36 +126,6 @@ function returnPortalNavbarStateActionTuple({
 
     // repair
     repair: [portalNavbarState.isRepairActive, portalNavbarAction.setIsRepairActive],
-    // repair => computer component
-    computerComponent: [
-      portalNavbarState.isComputerComponentActive,
-      portalNavbarAction.setIsComputerComponentActive,
-    ],
-    // repair => peripheral
-    peripheral: [
-      portalNavbarState.isPeripheralActive,
-      portalNavbarAction.setIsPeripheralActive,
-    ],
-    // repair => electronic device
-    electronicDevice: [
-      portalNavbarState.isElectronicDeviceActive,
-      portalNavbarAction.setIsElectronicDeviceActive,
-    ],
-    // repair => mobile device
-    mobileDevice: [
-      portalNavbarState.isMobileDeviceActive,
-      portalNavbarAction.setIsMobileDeviceActive,
-    ],
-    // repair => audio video
-    audioVideo: [
-      portalNavbarState.isAudioVideoActive,
-      portalNavbarAction.setIsAudioVideoActive,
-    ],
-    // repair => accessory
-    repairAccessory: [
-      portalNavbarState.isRepairAccessoryActive,
-      portalNavbarAction.setIsRepairAccessoryActive,
-    ],
 
     // transaction
     transaction: [

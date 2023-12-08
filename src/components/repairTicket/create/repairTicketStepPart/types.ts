@@ -1,9 +1,6 @@
-import type {
-  CreateRepairNoteAction,
-  CreateRepairNoteDispatch,
-} from '../types';
+import type { CreateRepairTicketAction, CreateRepairTicketDispatch } from "../types";
 
-type RepairNoteStepPartProps = {
+type RepairTicketStepPartProps = {
   partName: string;
   isValidPartName: boolean;
   isPartNameFocused: boolean;
@@ -24,8 +21,8 @@ type RepairNoteStepPartProps = {
   isValidInitialInspectionNotes: boolean;
   isInitialInspectionNotesFocused: boolean;
 
-  createRepairNoteAction: CreateRepairNoteAction;
-  createRepairNoteDispatch: React.Dispatch<CreateRepairNoteDispatch>;
+  createRepairTicketAction: CreateRepairTicketAction;
+  createRepairTicketDispatch: React.Dispatch<CreateRepairTicketDispatch>;
 };
 
-export type { RepairNoteStepPartProps };
+export type { RepairTicketStepPartProps };

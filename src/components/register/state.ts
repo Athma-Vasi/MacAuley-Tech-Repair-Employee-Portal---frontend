@@ -6,86 +6,86 @@ import {
   PostalCode,
   Province,
   StatesUS,
-} from '../../types';
-import { PreferredPronouns } from '../../types/user.types';
-import { RegisterAction, RegisterDispatch, RegisterState } from './types';
+} from "../../types";
+import { PreferredPronouns } from "../../types/user.types";
+import { RegisterAction, RegisterDispatch, RegisterState } from "./types";
 
 const initialRegisterState: RegisterState = {
-  email: '',
+  email: "",
   isValidEmail: false,
   isEmailFocused: false,
 
-  username: '',
+  username: "",
   isValidUsername: false,
   isUsernameFocused: false,
 
-  password: '',
+  password: "",
   isValidPassword: false,
   isPasswordFocused: false,
 
-  confirmPassword: '',
+  confirmPassword: "",
   isValidConfirmPassword: false,
   isConfirmPasswordFocused: false,
 
-  firstName: '',
+  firstName: "",
   isValidFirstName: false,
   isFirstNameFocused: false,
 
-  middleName: '',
+  middleName: "",
   isValidMiddleName: false,
   isMiddleNameFocused: false,
 
-  lastName: '',
+  lastName: "",
   isValidLastName: false,
   isLastNameFocused: false,
 
-  preferredName: '',
+  preferredName: "",
   isValidPreferredName: false,
   isPreferredNameFocused: false,
 
-  preferredPronouns: 'Prefer not to say',
-  profilePictureUrl: '',
+  preferredPronouns: "Prefer not to say",
+  profilePictureUrl: "",
   isValidProfilePictureUrl: false,
   isProfilePictureUrlFocused: false,
 
-  dateOfBirth: '',
+  dateOfBirth: "",
   isValidDateOfBirth: false,
   isDateOfBirthFocused: false,
 
-  contactNumber: '+(1)',
+  contactNumber: "+(1)",
   isValidContactNumber: false,
   isContactNumberFocused: false,
 
   address: {
-    addressLine: '',
+    addressLine: "",
     isValidAddressLine: false,
     isAddressLineFocused: false,
-    city: '',
+    city: "",
     isValidCity: false,
     isCityFocused: false,
-    province: 'Alberta',
-    state: 'Alabama',
-    postalCode: '',
+    province: "Alberta",
+    state: "Alabama",
+    postalCode: "",
     isValidPostalCode: false,
     isPostalCodeFocused: false,
-    country: 'Canada',
+    country: "Canada",
   },
 
-  department: 'Store Administration',
-  jobPosition: 'Accounting Manager',
-  storeLocation: 'Edmonton',
+  department: "Store Administration",
+  jobPosition: "Accounting Manager",
+  storeLocation: "Edmonton",
 
   emergencyContact: {
-    fullName: '',
+    fullName: "",
     isValidFullName: false,
     isFullNameFocused: false,
 
-    phoneNumber: '+(1)',
+    phoneNumber: "+(1)",
     isValidPhoneNumber: false,
     isPhoneNumberFocused: false,
   },
 
-  startDate: '',
+  startDate: "",
   isValidStartDate: false,
   isStartDateFocused: false,
 
@@ -93,111 +93,98 @@ const initialRegisterState: RegisterState = {
   currentStepperPosition: 0,
   stepsInError: new Set<number>(),
 
-  isError: false,
-  errorMessage: '',
   isSubmitting: false,
-  submitMessage: '',
+  submitMessage: "",
   isSuccessful: false,
-  successMessage: '',
-  isLoading: false,
-  loadingMessage: '',
+  successMessage: "",
 };
 
 const registerAction: RegisterAction = {
-  setEmail: 'setEmail',
-  setIsValidEmail: 'setIsValidEmail',
-  setIsEmailFocused: 'setIsEmailFocused',
+  setEmail: "setEmail",
+  setIsValidEmail: "setIsValidEmail",
+  setIsEmailFocused: "setIsEmailFocused",
 
-  setUsername: 'setUsername',
-  setIsValidUsername: 'setIsValidUsername',
-  setIsUsernameFocused: 'setIsUsernameFocused',
+  setUsername: "setUsername",
+  setIsValidUsername: "setIsValidUsername",
+  setIsUsernameFocused: "setIsUsernameFocused",
 
-  setPassword: 'setPassword',
-  setIsValidPassword: 'setIsValidPassword',
-  setIsPasswordFocused: 'setIsPasswordFocused',
+  setPassword: "setPassword",
+  setIsValidPassword: "setIsValidPassword",
+  setIsPasswordFocused: "setIsPasswordFocused",
 
-  setConfirmPassword: 'setConfirmPassword',
-  setIsValidConfirmPassword: 'setIsValidConfirmPassword',
-  setIsConfirmPasswordFocused: 'setIsConfirmPasswordFocused',
+  setConfirmPassword: "setConfirmPassword",
+  setIsValidConfirmPassword: "setIsValidConfirmPassword",
+  setIsConfirmPasswordFocused: "setIsConfirmPasswordFocused",
 
-  setFirstName: 'setFirstName',
-  setIsValidFirstName: 'setIsValidFirstName',
-  setIsFirstNameFocused: 'setIsFirstNameFocused',
+  setFirstName: "setFirstName",
+  setIsValidFirstName: "setIsValidFirstName",
+  setIsFirstNameFocused: "setIsFirstNameFocused",
 
-  setMiddleName: 'setMiddleName',
-  setIsValidMiddleName: 'setIsValidMiddleName',
-  setIsMiddleNameFocused: 'setIsMiddleNameFocused',
+  setMiddleName: "setMiddleName",
+  setIsValidMiddleName: "setIsValidMiddleName",
+  setIsMiddleNameFocused: "setIsMiddleNameFocused",
 
-  setLastName: 'setLastName',
-  setIsValidLastName: 'setIsValidLastName',
-  setIsLastNameFocused: 'setIsLastNameFocused',
+  setLastName: "setLastName",
+  setIsValidLastName: "setIsValidLastName",
+  setIsLastNameFocused: "setIsLastNameFocused",
 
-  setPreferredName: 'setPreferredName',
-  setIsValidPreferredName: 'setIsValidPreferredName',
-  setIsPreferredNameFocused: 'setIsPreferredNameFocused',
+  setPreferredName: "setPreferredName",
+  setIsValidPreferredName: "setIsValidPreferredName",
+  setIsPreferredNameFocused: "setIsPreferredNameFocused",
 
-  setPreferredPronouns: 'setPreferredPronouns',
-  setProfilePictureUrl: 'setProfilePictureUrl',
-  setIsValidProfilePictureUrl: 'setIsValidProfilePictureUrl',
-  setIsProfilePictureUrlFocused: 'setIsProfilePictureUrlFocused',
+  setPreferredPronouns: "setPreferredPronouns",
+  setProfilePictureUrl: "setProfilePictureUrl",
+  setIsValidProfilePictureUrl: "setIsValidProfilePictureUrl",
+  setIsProfilePictureUrlFocused: "setIsProfilePictureUrlFocused",
 
-  setDateOfBirth: 'setDateOfBirth',
-  setIsValidDateOfBirth: 'setIsValidDateOfBirth',
-  setIsDateOfBirthFocused: 'setIsDateOfBirthFocused',
+  setDateOfBirth: "setDateOfBirth",
+  setIsValidDateOfBirth: "setIsValidDateOfBirth",
+  setIsDateOfBirthFocused: "setIsDateOfBirthFocused",
 
-  setContactNumber: 'setContactNumber',
-  setIsValidContactNumber: 'setIsValidContactNumber',
-  setIsContactNumberFocused: 'setIsContactNumberFocused',
+  setContactNumber: "setContactNumber",
+  setIsValidContactNumber: "setIsValidContactNumber",
+  setIsContactNumberFocused: "setIsContactNumberFocused",
 
-  setAddressLine: 'setAddressLine',
-  setIsValidAddressLine: 'setIsValidAddressLine',
-  setIsAddressLineFocused: 'setIsAddressLineFocused',
-  setCity: 'setCity',
-  setIsValidCity: 'setIsValidCity',
-  setIsCityFocused: 'setIsCityFocused',
-  setProvince: 'setProvince',
-  setState: 'setState',
-  setPostalCode: 'setPostalCode',
-  setIsValidPostalCode: 'setIsValidPostalCode',
-  setIsPostalCodeFocused: 'setIsPostalCodeFocused',
-  setCountry: 'setCountry',
+  setAddressLine: "setAddressLine",
+  setIsValidAddressLine: "setIsValidAddressLine",
+  setIsAddressLineFocused: "setIsAddressLineFocused",
+  setCity: "setCity",
+  setIsValidCity: "setIsValidCity",
+  setIsCityFocused: "setIsCityFocused",
+  setProvince: "setProvince",
+  setState: "setState",
+  setPostalCode: "setPostalCode",
+  setIsValidPostalCode: "setIsValidPostalCode",
+  setIsPostalCodeFocused: "setIsPostalCodeFocused",
+  setCountry: "setCountry",
 
-  setJobPosition: 'setJobPosition',
-  setDepartment: 'setDepartment',
-  setStoreLocation: 'setStoreLocation',
+  setJobPosition: "setJobPosition",
+  setDepartment: "setDepartment",
+  setStoreLocation: "setStoreLocation",
 
-  setEmergencyContactFullName: 'setEmergencyContactFullName',
-  setIsValidEmergencyContactFullName: 'setIsValidEmergencyContactFullName',
-  setIsEmergencyContactFullNameFocused: 'setIsEmergencyContactFullNameFocused',
+  setEmergencyContactFullName: "setEmergencyContactFullName",
+  setIsValidEmergencyContactFullName: "setIsValidEmergencyContactFullName",
+  setIsEmergencyContactFullNameFocused: "setIsEmergencyContactFullNameFocused",
 
-  setEmergencyContactPhoneNumber: 'setEmergencyContactPhoneNumber',
-  setIsValidEmergencyContactPhoneNumber:
-    'setIsValidEmergencyContactPhoneNumber',
-  setIsEmergencyContactPhoneNumberFocused:
-    'setIsEmergencyContactPhoneNumberFocused',
+  setEmergencyContactPhoneNumber: "setEmergencyContactPhoneNumber",
+  setIsValidEmergencyContactPhoneNumber: "setIsValidEmergencyContactPhoneNumber",
+  setIsEmergencyContactPhoneNumberFocused: "setIsEmergencyContactPhoneNumberFocused",
 
-  setStartDate: 'setStartDate',
-  setIsValidStartDate: 'setIsValidStartDate',
-  setIsStartDateFocused: 'setIsStartDateFocused',
+  setStartDate: "setStartDate",
+  setIsValidStartDate: "setIsValidStartDate",
+  setIsStartDateFocused: "setIsStartDateFocused",
 
-  setTriggerFormSubmit: 'setTriggerFormSubmit',
-  setCurrentStepperPosition: 'setCurrentStepperPosition',
-  setStepsInError: 'setStepsInError',
+  setTriggerFormSubmit: "setTriggerFormSubmit",
+  setCurrentStepperPosition: "setCurrentStepperPosition",
+  setStepsInError: "setStepsInError",
 
-  setIsError: 'setIsError',
-  setErrorMessage: 'setErrorMessage',
-  setIsSubmitting: 'setIsSubmitting',
-  setSubmitMessage: 'setSubmitMessage',
-  setIsSuccessful: 'setIsSuccessful',
-  setSuccessMessage: 'setSuccessMessage',
-  setIsLoading: 'setIsLoading',
-  setLoadingMessage: 'setLoadingMessage',
+  setIsSubmitting: "setIsSubmitting",
+  setSubmitMessage: "setSubmitMessage",
+  setIsSuccessful: "setIsSuccessful",
+  setSuccessMessage: "setSuccessMessage",
 };
 
-function registerReducer(
-  state: RegisterState,
-  action: RegisterDispatch
-): RegisterState {
+function registerReducer(state: RegisterState, action: RegisterDispatch): RegisterState {
   switch (action.type) {
     case registerAction.setEmail:
       return { ...state, email: action.payload };
@@ -432,15 +419,11 @@ function registerReducer(
     case registerAction.setStepsInError: {
       const { kind, step } = action.payload;
       const stepsInError = structuredClone(state.stepsInError);
-      kind === 'add' ? stepsInError.add(step) : stepsInError.delete(step);
+      kind === "add" ? stepsInError.add(step) : stepsInError.delete(step);
 
       return { ...state, stepsInError };
     }
 
-    case registerAction.setIsError:
-      return { ...state, isError: action.payload };
-    case registerAction.setErrorMessage:
-      return { ...state, errorMessage: action.payload };
     case registerAction.setIsSubmitting:
       return { ...state, isSubmitting: action.payload };
     case registerAction.setSubmitMessage:
@@ -449,10 +432,6 @@ function registerReducer(
       return { ...state, isSuccessful: action.payload };
     case registerAction.setSuccessMessage:
       return { ...state, successMessage: action.payload };
-    case registerAction.setIsLoading:
-      return { ...state, isLoading: action.payload };
-    case registerAction.setLoadingMessage:
-      return { ...state, loadingMessage: action.payload };
 
     default:
       return state;

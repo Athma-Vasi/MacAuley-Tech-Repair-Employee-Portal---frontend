@@ -58,6 +58,8 @@ const DisplayResponsiveChart = lazy(
 // ╚═════════════════════════════════════════════════════════════════╝
 const DisplayCustomer = lazy(() => import("./components/customer/DisplayCustomer"));
 
+const CreateCustomer = lazy(() => import("./components/customer/CreateCustomer"));
+
 // ╔═════════════════════════════════════════════════════════════════╗
 //   COMMENT
 // ╚═════════════════════════════════════════════════════════════════╝
@@ -191,8 +193,12 @@ const DisplayProductReview = lazy(
 // ╔═════════════════════════════════════════════════════════════════╗
 //   REPAIR
 // ╚═════════════════════════════════════════════════════════════════╝
-const CreateRepairNote = lazy(
-  () => import("./components/repairNote/create/CreateRepairNote")
+const CreateRepairTicket = lazy(
+  () => import("./components/repairTicket/create/CreateRepairTicket")
+);
+
+const DisplayRepairTicket = lazy(
+  () => import("./components/repairTicket/display/DisplayRepairTickets")
 );
 
 // ╔═════════════════════════════════════════════════════════════════╗
@@ -476,6 +482,17 @@ function App() {
     <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
       <Suspense fallback={<div>Generic Loading message...</div>}>
         <DisplayCustomer />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // @desc   create customer page
+  // @route  /home/customer/create
+  // @access private
+  const createCustomerElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>}>
+        <CreateCustomer />
       </Suspense>
     </ErrorBoundary>
   );
@@ -821,10 +838,21 @@ function App() {
   // @desc   repair-note page (create)
   // @route  /home/repair-note/create
   // @access private
-  const createRepairNoteElement = (
+  const createRepairTicketElement = (
     <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
       <Suspense fallback={<div>Generic Loading message...</div>}>
-        <CreateRepairNote />
+        <CreateRepairTicket />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
+  // @desc   repair-note page (index and display)
+  // @route  /home/repair-note (index) and /home/repair-note/display
+  // @access private
+  const displayRepairTicketsElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>}>
+        <DisplayRepairTicket />
       </Suspense>
     </ErrorBoundary>
   );
@@ -1278,6 +1306,7 @@ function App() {
           {/* customer */}
           <Route path="customer">
             <Route index element={displayCustomersElement} />
+            <Route path="create" element={createCustomerElement} />
             <Route path="display" element={displayCustomersElement} />
           </Route>
 
@@ -1427,9 +1456,12 @@ function App() {
             <Route path="display" element={displayRMAsElement} />
           </Route>
 
-          {/* repair-note */}
-          <Route path="repair-note">
-            <Route path="create" element={createRepairNoteElement} />
+          {/* repair-ticket */}
+          <Route path="repair-ticket">
+            {/* <Route index element={displayRepairTicketsElement} /> */}
+            <Route index element={createRepairTicketElement} />
+            <Route path="create" element={createRepairTicketElement} />
+            <Route path="display" element={displayRepairTicketsElement} />
           </Route>
 
           {/* company */}

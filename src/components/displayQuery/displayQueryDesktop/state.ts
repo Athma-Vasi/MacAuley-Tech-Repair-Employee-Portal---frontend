@@ -2,39 +2,39 @@ import {
   DisplayQueryDesktopAction,
   DisplayQueryDesktopDispatch,
   DisplayQueryDesktopState,
-} from './types';
+} from "./types";
 
 const initialDisplayQueryDesktopState: DisplayQueryDesktopState = {
-  fieldToSortBy: 'username',
-  sortDirection: 'asc',
+  fieldToSortBy: "username",
+  sortDirection: "asc",
 
-  currentDocumentId: '',
-  currentRequestStatus: 'pending',
+  currentDocumentId: "",
+  currentRequestStatus: "pending",
 
   // for repair notes docs only
-  editRepairNoteInput: {
-    repairNoteFormId: '',
-    repairNotes: '',
-    testingResults: '',
-    finalRepairCost: '',
-    finalRepairCostCurrency: 'CAD',
-    repairStatus: 'In progress',
+  editRepairTicketInput: {
+    repairTicketFormId: "",
+    repairTickets: "",
+    testingResults: "",
+    finalRepairCost: "",
+    finalRepairCostCurrency: "CAD",
+    repairStatus: "In progress",
   },
 
   employeeDocument: null,
 };
 
 const displayQueryDesktopAction: DisplayQueryDesktopAction = {
-  setFieldToSortBy: 'setFieldToSortBy',
-  setSortDirection: 'setSortDirection',
+  setFieldToSortBy: "setFieldToSortBy",
+  setSortDirection: "setSortDirection",
 
-  setCurrentDocumentId: 'setCurrentDocumentId',
-  setCurrentRequestStatus: 'setCurrentRequestStatus',
+  setCurrentDocumentId: "setCurrentDocumentId",
+  setCurrentRequestStatus: "setCurrentRequestStatus",
 
   // for repair notes docs only
-  setEditRepairNoteInput: 'setEditRepairNoteInput',
+  setEditRepairTicketInput: "setEditRepairTicketInput",
 
-  setEmployeeDocument: 'setEmployeeDocument',
+  setEmployeeDocument: "setEmployeeDocument",
 };
 
 function displayQueryDesktopReducer(
@@ -65,10 +65,10 @@ function displayQueryDesktopReducer(
       };
 
     // for repair notes docs only
-    case displayQueryDesktopAction.setEditRepairNoteInput:
+    case displayQueryDesktopAction.setEditRepairTicketInput:
       return {
         ...state,
-        editRepairNoteInput: action.payload,
+        editRepairTicketInput: action.payload,
       };
 
     case displayQueryDesktopAction.setEmployeeDocument:

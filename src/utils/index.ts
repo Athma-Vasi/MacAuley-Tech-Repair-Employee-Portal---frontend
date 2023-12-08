@@ -2,7 +2,6 @@ import html2canvas from "html2canvas";
 import jwtDecode from "jwt-decode";
 import { v4 as uuidv4 } from "uuid";
 
-import { FormReviewObject } from "../components/formReviewPage/FormReviewPage";
 import { DecodedToken } from "../components/login/types";
 import { ColorsSwatches, PROPERTY_DESCRIPTOR } from "../constants/data";
 import { ThemeObject } from "../context/globalProvider/types";
@@ -581,6 +580,34 @@ function returnDateFullRangeValidationText({
     .join(" ");
 
   return validationText ? `Invalid ${contentKind}. ${validationText}` : "";
+}
+
+function isAgeOver18(dateString: string): boolean {
+  const currentDate = new Date();
+  const inputDate = new Date(dateString);
+  const inputYear = inputDate.getFullYear();
+  const inputMonth = inputDate.getMonth() + 1;
+  const inputDay = inputDate.getDate();
+
+  const eighteenYearsAgo = new Date();
+  eighteenYearsAgo.setFullYear(currentDate.getFullYear() - 18);
+  const eighteenYearsAgoYear = eighteenYearsAgo.getFullYear();
+  const eighteenYearsAgoMonth = eighteenYearsAgo.getMonth() + 1;
+  const eighteenYearsAgoDay = eighteenYearsAgo.getDate();
+
+  if (inputYear < eighteenYearsAgoYear) {
+    return true;
+  } else if (inputYear === eighteenYearsAgoYear) {
+    if (inputMonth < eighteenYearsAgoMonth) {
+      return true;
+    } else if (inputMonth === eighteenYearsAgoMonth) {
+      if (inputDay <= eighteenYearsAgoDay) {
+        return true;
+      }
+    }
+  }
+
+  return false;
 }
 
 function returnDateOfBirthValidationText({
@@ -1499,6 +1526,121 @@ function returnUserDefinedFieldValueValidationText({
     : "";
 }
 
+function returnCreditCardNumberValidationText({
+  content,
+  contentKind,
+  maxLength = 19,
+  minLength = 19,
+}: RegexValidationProps): string {
+  // /^\d{4} \d{4} \d{4} \d{4}$/
+  const creditCardNumberLengthRegex = new RegExp(`^(?=.{${minLength},${maxLength}}$)`);
+  const creditCardNumberCharacterRegex = /^\d{4} \d{4} \d{4} \d{4}$/;
+
+  const creditCardNumberRegexTupleArr: [boolean, string][] = [
+    [
+      creditCardNumberLengthRegex.test(content),
+      `Must be between ${minLength} and ${maxLength} characters.`,
+    ],
+    [
+      creditCardNumberCharacterRegex.test(content),
+      "Must be a valid credit card number in the format 0000 0000 0000 0000.",
+    ],
+  ];
+
+  const validationText = creditCardNumberRegexTupleArr
+    .filter(([isValidRegex, _]: [boolean, string]) => !isValidRegex)
+    .map(([_, validationText]: [boolean, string]) => validationText)
+    .join(" ");
+
+  return validationText ? `Invalid ${contentKind}. ${validationText}` : "";
+}
+
+function returnIsExpirationDateInPast(expirationDate: string) {
+  const currentMonth = new Date().getMonth() + 1;
+  const currentYear = new Date().getFullYear();
+  const expirationDateArray = expirationDate.split("/");
+  const expirationMonth = Number(expirationDateArray[0]);
+  const expirationYearStr = expirationDateArray[1] ?? "";
+  const expirationYear =
+    expirationYearStr.length === 2
+      ? Number(`20${expirationYearStr}`)
+      : Number(expirationYearStr);
+
+  if (expirationYear < currentYear) {
+    return true;
+  }
+
+  if (expirationYear === currentYear && expirationMonth < currentMonth) {
+    return true;
+  }
+
+  return false;
+}
+
+function returnCreditCardExpirationDateValidationText({
+  content,
+  contentKind,
+  maxLength = 5,
+  minLength = 5,
+}: RegexValidationProps): string {
+  // /^(0[1-9]|1[0-2])\/([0-9]{4}|[0-9]{2})$/
+  const creditCardExpirationDateLengthRegex = new RegExp(
+    `^(?=.{${minLength},${maxLength}}$)`
+  );
+  const creditCardExpirationDateCharacterRegex = /^(0[1-9]|1[0-2])\/([0-9]{4}|[0-9]{2})$/;
+  const isExpirationDateValid = returnIsExpirationDateInPast(content);
+
+  const creditCardExpirationDateRegexTupleArr: [boolean, string][] = [
+    [
+      creditCardExpirationDateLengthRegex.test(content),
+      `Must be between ${minLength} and ${maxLength} characters.`,
+    ],
+    [
+      creditCardExpirationDateCharacterRegex.test(content),
+      "Must be a valid credit card expiration date in formats: MM/YYYY or MM/YY",
+    ],
+    [isExpirationDateValid, "Must be in the future."],
+  ];
+
+  const validationText = creditCardExpirationDateRegexTupleArr
+    .filter(([isValidRegex, _]: [boolean, string]) => !isValidRegex)
+    .map(([_, validationText]: [boolean, string]) => validationText)
+    .join(" ");
+
+  return validationText ? `Invalid ${contentKind}. ${validationText}` : "";
+}
+
+function returnCreditCardCvvValidationText({
+  content,
+  contentKind,
+  maxLength = 4,
+  minLength = 3,
+}: RegexValidationProps): string {
+  // /^\d{3,4}$/
+  const creditCardCvvLengthRegex = new RegExp(`^(?=.{${minLength},${maxLength}}$)`);
+  const creditCardCvvCharacterRegex = /^\d{3,4}$/;
+  const onlyNumbersRegex = /^\d+$/;
+
+  const creditCardCvvRegexTupleArr: [boolean, string][] = [
+    [
+      creditCardCvvLengthRegex.test(content),
+      `Must be between ${minLength} and ${maxLength} characters.`,
+    ],
+    [
+      creditCardCvvCharacterRegex.test(content),
+      "Must be a valid credit card CVV in the format 000 or 0000.",
+    ],
+    [onlyNumbersRegex.test(content), "Must only contain numbers."],
+  ];
+
+  const validationText = creditCardCvvRegexTupleArr
+    .filter(([isValidRegex, _]: [boolean, string]) => !isValidRegex)
+    .map(([_, validationText]: [boolean, string]) => validationText)
+    .join(" ");
+
+  return validationText ? `Invalid ${contentKind}. ${validationText}` : "";
+}
+
 function logState({
   state,
   groupLabel = "state",
@@ -2213,6 +2355,7 @@ export {
   formatDate,
   groupByField,
   groupQueryResponse,
+  isAgeOver18,
   logState,
   removeUndefinedAndNull,
   replaceLastCommaWithAnd,
@@ -2223,6 +2366,9 @@ export {
   returnCityValidationText,
   returnColorVariantValidationText,
   returnCpuFrequencyValidationText,
+  returnCreditCardCvvValidationText,
+  returnCreditCardExpirationDateValidationText,
+  returnCreditCardNumberValidationText,
   returnDateFullRangeValidationText,
   returnDateNearFutureValidationText,
   returnDateNearPastValidationText,
@@ -2239,6 +2385,7 @@ export {
   returnImageValidationText,
   returnIntegerValidationText,
   returnIsAccessTokenExpired,
+  returnIsExpirationDateInPast,
   returnLargeIntegerValidationText,
   returnMediumIntegerValidationText,
   returnMobileCameraResolutionValidationText,

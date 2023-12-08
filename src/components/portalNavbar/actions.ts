@@ -63,12 +63,6 @@ const portalNavbarAction = {
   //    REPAIR CATEGORY
   // ╰─────────────────────────────────────────────────────────────────╯
   setIsRepairActive: "setIsRepairActive",
-  setIsComputerComponentActive: "setIsComputerComponentActive",
-  setIsPeripheralActive: "setIsPeripheralActive",
-  setIsElectronicDeviceActive: "setIsElectronicDeviceActive",
-  setIsMobileDeviceActive: "setIsMobileDeviceActive",
-  setIsAudioVideoActive: "setIsAudioVideoActive",
-  setIsRepairAccessoryActive: "setIsRepairAccessoryActive",
 
   // ╭─────────────────────────────────────────────────────────────────╮
   //    TRANSACTION

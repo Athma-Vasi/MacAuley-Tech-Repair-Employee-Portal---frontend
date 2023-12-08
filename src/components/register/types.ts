@@ -9,7 +9,7 @@ import {
   SetStepsInErrorPayload,
   StatesUS,
   StoreLocation,
-} from '../../types';
+} from "../../types";
 
 type RegisterState = {
   email: string;
@@ -94,215 +94,203 @@ type RegisterState = {
   currentStepperPosition: number;
   stepsInError: Set<number>;
 
-  isError: boolean;
-  errorMessage: string;
   isSubmitting: boolean;
   submitMessage: string;
   isSuccessful: boolean;
   successMessage: string;
-  isLoading: boolean;
-  loadingMessage: string;
 };
 
 type RegisterAction = {
-  setEmail: 'setEmail';
-  setIsValidEmail: 'setIsValidEmail';
-  setIsEmailFocused: 'setIsEmailFocused';
+  setEmail: "setEmail";
+  setIsValidEmail: "setIsValidEmail";
+  setIsEmailFocused: "setIsEmailFocused";
 
-  setUsername: 'setUsername';
-  setIsValidUsername: 'setIsValidUsername';
-  setIsUsernameFocused: 'setIsUsernameFocused';
+  setUsername: "setUsername";
+  setIsValidUsername: "setIsValidUsername";
+  setIsUsernameFocused: "setIsUsernameFocused";
 
-  setPassword: 'setPassword';
-  setIsValidPassword: 'setIsValidPassword';
-  setIsPasswordFocused: 'setIsPasswordFocused';
+  setPassword: "setPassword";
+  setIsValidPassword: "setIsValidPassword";
+  setIsPasswordFocused: "setIsPasswordFocused";
 
-  setConfirmPassword: 'setConfirmPassword';
-  setIsValidConfirmPassword: 'setIsValidConfirmPassword';
-  setIsConfirmPasswordFocused: 'setIsConfirmPasswordFocused';
+  setConfirmPassword: "setConfirmPassword";
+  setIsValidConfirmPassword: "setIsValidConfirmPassword";
+  setIsConfirmPasswordFocused: "setIsConfirmPasswordFocused";
 
-  setFirstName: 'setFirstName';
-  setIsValidFirstName: 'setIsValidFirstName';
-  setIsFirstNameFocused: 'setIsFirstNameFocused';
+  setFirstName: "setFirstName";
+  setIsValidFirstName: "setIsValidFirstName";
+  setIsFirstNameFocused: "setIsFirstNameFocused";
 
-  setMiddleName: 'setMiddleName';
-  setIsValidMiddleName: 'setIsValidMiddleName';
-  setIsMiddleNameFocused: 'setIsMiddleNameFocused';
+  setMiddleName: "setMiddleName";
+  setIsValidMiddleName: "setIsValidMiddleName";
+  setIsMiddleNameFocused: "setIsMiddleNameFocused";
 
-  setLastName: 'setLastName';
-  setIsValidLastName: 'setIsValidLastName';
-  setIsLastNameFocused: 'setIsLastNameFocused';
+  setLastName: "setLastName";
+  setIsValidLastName: "setIsValidLastName";
+  setIsLastNameFocused: "setIsLastNameFocused";
 
-  setPreferredName: 'setPreferredName';
-  setIsValidPreferredName: 'setIsValidPreferredName';
-  setIsPreferredNameFocused: 'setIsPreferredNameFocused';
+  setPreferredName: "setPreferredName";
+  setIsValidPreferredName: "setIsValidPreferredName";
+  setIsPreferredNameFocused: "setIsPreferredNameFocused";
 
-  setPreferredPronouns: 'setPreferredPronouns';
-  setProfilePictureUrl: 'setProfilePictureUrl';
-  setIsValidProfilePictureUrl: 'setIsValidProfilePictureUrl';
-  setIsProfilePictureUrlFocused: 'setIsProfilePictureUrlFocused';
+  setPreferredPronouns: "setPreferredPronouns";
+  setProfilePictureUrl: "setProfilePictureUrl";
+  setIsValidProfilePictureUrl: "setIsValidProfilePictureUrl";
+  setIsProfilePictureUrlFocused: "setIsProfilePictureUrlFocused";
 
-  setDateOfBirth: 'setDateOfBirth';
-  setIsValidDateOfBirth: 'setIsValidDateOfBirth';
-  setIsDateOfBirthFocused: 'setIsDateOfBirthFocused';
+  setDateOfBirth: "setDateOfBirth";
+  setIsValidDateOfBirth: "setIsValidDateOfBirth";
+  setIsDateOfBirthFocused: "setIsDateOfBirthFocused";
 
-  setContactNumber: 'setContactNumber';
-  setIsValidContactNumber: 'setIsValidContactNumber';
-  setIsContactNumberFocused: 'setIsContactNumberFocused';
+  setContactNumber: "setContactNumber";
+  setIsValidContactNumber: "setIsValidContactNumber";
+  setIsContactNumberFocused: "setIsContactNumberFocused";
 
-  setAddressLine: 'setAddressLine';
-  setIsAddressLineFocused: 'setIsAddressLineFocused';
-  setIsValidAddressLine: 'setIsValidAddressLine';
-  setCity: 'setCity';
-  setIsValidCity: 'setIsValidCity';
-  setIsCityFocused: 'setIsCityFocused';
-  setProvince: 'setProvince';
-  setState: 'setState';
-  setPostalCode: 'setPostalCode';
-  setIsValidPostalCode: 'setIsValidPostalCode';
-  setIsPostalCodeFocused: 'setIsPostalCodeFocused';
-  setCountry: 'setCountry';
+  setAddressLine: "setAddressLine";
+  setIsAddressLineFocused: "setIsAddressLineFocused";
+  setIsValidAddressLine: "setIsValidAddressLine";
+  setCity: "setCity";
+  setIsValidCity: "setIsValidCity";
+  setIsCityFocused: "setIsCityFocused";
+  setProvince: "setProvince";
+  setState: "setState";
+  setPostalCode: "setPostalCode";
+  setIsValidPostalCode: "setIsValidPostalCode";
+  setIsPostalCodeFocused: "setIsPostalCodeFocused";
+  setCountry: "setCountry";
 
-  setDepartment: 'setDepartment';
-  setJobPosition: 'setJobPosition';
-  setStoreLocation: 'setStoreLocation';
+  setDepartment: "setDepartment";
+  setJobPosition: "setJobPosition";
+  setStoreLocation: "setStoreLocation";
 
-  setEmergencyContactFullName: 'setEmergencyContactFullName';
-  setIsValidEmergencyContactFullName: 'setIsValidEmergencyContactFullName';
-  setIsEmergencyContactFullNameFocused: 'setIsEmergencyContactFullNameFocused';
+  setEmergencyContactFullName: "setEmergencyContactFullName";
+  setIsValidEmergencyContactFullName: "setIsValidEmergencyContactFullName";
+  setIsEmergencyContactFullNameFocused: "setIsEmergencyContactFullNameFocused";
 
-  setEmergencyContactPhoneNumber: 'setEmergencyContactPhoneNumber';
-  setIsValidEmergencyContactPhoneNumber: 'setIsValidEmergencyContactPhoneNumber';
-  setIsEmergencyContactPhoneNumberFocused: 'setIsEmergencyContactPhoneNumberFocused';
+  setEmergencyContactPhoneNumber: "setEmergencyContactPhoneNumber";
+  setIsValidEmergencyContactPhoneNumber: "setIsValidEmergencyContactPhoneNumber";
+  setIsEmergencyContactPhoneNumberFocused: "setIsEmergencyContactPhoneNumberFocused";
 
-  setStartDate: 'setStartDate';
-  setIsValidStartDate: 'setIsValidStartDate';
-  setIsStartDateFocused: 'setIsStartDateFocused';
+  setStartDate: "setStartDate";
+  setIsValidStartDate: "setIsValidStartDate";
+  setIsStartDateFocused: "setIsStartDateFocused";
 
-  setTriggerFormSubmit: 'setTriggerFormSubmit';
-  setCurrentStepperPosition: 'setCurrentStepperPosition';
-  setStepsInError: 'setStepsInError';
+  setTriggerFormSubmit: "setTriggerFormSubmit";
+  setCurrentStepperPosition: "setCurrentStepperPosition";
+  setStepsInError: "setStepsInError";
 
-  setIsError: 'setIsError';
-  setErrorMessage: 'setErrorMessage';
-  setIsSubmitting: 'setIsSubmitting';
-  setSubmitMessage: 'setSubmitMessage';
-  setIsSuccessful: 'setIsSuccessful';
-  setSuccessMessage: 'setSuccessMessage';
-  setIsLoading: 'setIsLoading';
-  setLoadingMessage: 'setLoadingMessage';
+  setIsSubmitting: "setIsSubmitting";
+  setSubmitMessage: "setSubmitMessage";
+  setIsSuccessful: "setIsSuccessful";
+  setSuccessMessage: "setSuccessMessage";
 };
 
 type RegisterDispatch =
   | {
       type:
-        | RegisterAction['setEmail']
-        | RegisterAction['setUsername']
-        | RegisterAction['setPassword']
-        | RegisterAction['setConfirmPassword']
-        | RegisterAction['setFirstName']
-        | RegisterAction['setMiddleName']
-        | RegisterAction['setLastName']
-        | RegisterAction['setPreferredName']
-        | RegisterAction['setProfilePictureUrl']
-        | RegisterAction['setDateOfBirth']
-        | RegisterAction['setAddressLine']
-        | RegisterAction['setCity']
-        | RegisterAction['setEmergencyContactFullName']
-        | RegisterAction['setStartDate']
-        | RegisterAction['setErrorMessage']
-        | RegisterAction['setLoadingMessage']
-        | RegisterAction['setSuccessMessage']
-        | RegisterAction['setSubmitMessage'];
+        | RegisterAction["setEmail"]
+        | RegisterAction["setUsername"]
+        | RegisterAction["setPassword"]
+        | RegisterAction["setConfirmPassword"]
+        | RegisterAction["setFirstName"]
+        | RegisterAction["setMiddleName"]
+        | RegisterAction["setLastName"]
+        | RegisterAction["setPreferredName"]
+        | RegisterAction["setProfilePictureUrl"]
+        | RegisterAction["setDateOfBirth"]
+        | RegisterAction["setAddressLine"]
+        | RegisterAction["setCity"]
+        | RegisterAction["setEmergencyContactFullName"]
+        | RegisterAction["setStartDate"]
+        | RegisterAction["setSuccessMessage"]
+        | RegisterAction["setSubmitMessage"];
       payload: string;
     }
   | {
       type:
-        | RegisterAction['setIsValidEmail']
-        | RegisterAction['setIsEmailFocused']
-        | RegisterAction['setIsValidUsername']
-        | RegisterAction['setIsUsernameFocused']
-        | RegisterAction['setIsValidPassword']
-        | RegisterAction['setIsPasswordFocused']
-        | RegisterAction['setIsValidConfirmPassword']
-        | RegisterAction['setIsConfirmPasswordFocused']
-        | RegisterAction['setIsValidFirstName']
-        | RegisterAction['setIsFirstNameFocused']
-        | RegisterAction['setIsValidMiddleName']
-        | RegisterAction['setIsMiddleNameFocused']
-        | RegisterAction['setIsValidLastName']
-        | RegisterAction['setIsLastNameFocused']
-        | RegisterAction['setIsValidPreferredName']
-        | RegisterAction['setIsPreferredNameFocused']
-        | RegisterAction['setIsValidContactNumber']
-        | RegisterAction['setIsContactNumberFocused']
-        | RegisterAction['setIsValidProfilePictureUrl']
-        | RegisterAction['setIsProfilePictureUrlFocused']
-        | RegisterAction['setIsValidDateOfBirth']
-        | RegisterAction['setIsDateOfBirthFocused']
-        | RegisterAction['setIsValidAddressLine']
-        | RegisterAction['setIsAddressLineFocused']
-        | RegisterAction['setIsValidCity']
-        | RegisterAction['setIsCityFocused']
-        | RegisterAction['setIsValidPostalCode']
-        | RegisterAction['setIsPostalCodeFocused']
-        | RegisterAction['setIsValidEmergencyContactFullName']
-        | RegisterAction['setIsEmergencyContactFullNameFocused']
-        | RegisterAction['setIsValidEmergencyContactPhoneNumber']
-        | RegisterAction['setIsEmergencyContactPhoneNumberFocused']
-        | RegisterAction['setIsValidStartDate']
-        | RegisterAction['setIsStartDateFocused']
-        | RegisterAction['setTriggerFormSubmit']
-        | RegisterAction['setIsError']
-        | RegisterAction['setIsSubmitting']
-        | RegisterAction['setIsSuccessful']
-        | RegisterAction['setIsLoading'];
+        | RegisterAction["setIsValidEmail"]
+        | RegisterAction["setIsEmailFocused"]
+        | RegisterAction["setIsValidUsername"]
+        | RegisterAction["setIsUsernameFocused"]
+        | RegisterAction["setIsValidPassword"]
+        | RegisterAction["setIsPasswordFocused"]
+        | RegisterAction["setIsValidConfirmPassword"]
+        | RegisterAction["setIsConfirmPasswordFocused"]
+        | RegisterAction["setIsValidFirstName"]
+        | RegisterAction["setIsFirstNameFocused"]
+        | RegisterAction["setIsValidMiddleName"]
+        | RegisterAction["setIsMiddleNameFocused"]
+        | RegisterAction["setIsValidLastName"]
+        | RegisterAction["setIsLastNameFocused"]
+        | RegisterAction["setIsValidPreferredName"]
+        | RegisterAction["setIsPreferredNameFocused"]
+        | RegisterAction["setIsValidContactNumber"]
+        | RegisterAction["setIsContactNumberFocused"]
+        | RegisterAction["setIsValidProfilePictureUrl"]
+        | RegisterAction["setIsProfilePictureUrlFocused"]
+        | RegisterAction["setIsValidDateOfBirth"]
+        | RegisterAction["setIsDateOfBirthFocused"]
+        | RegisterAction["setIsValidAddressLine"]
+        | RegisterAction["setIsAddressLineFocused"]
+        | RegisterAction["setIsValidCity"]
+        | RegisterAction["setIsCityFocused"]
+        | RegisterAction["setIsValidPostalCode"]
+        | RegisterAction["setIsPostalCodeFocused"]
+        | RegisterAction["setIsValidEmergencyContactFullName"]
+        | RegisterAction["setIsEmergencyContactFullNameFocused"]
+        | RegisterAction["setIsValidEmergencyContactPhoneNumber"]
+        | RegisterAction["setIsEmergencyContactPhoneNumberFocused"]
+        | RegisterAction["setIsValidStartDate"]
+        | RegisterAction["setIsStartDateFocused"]
+        | RegisterAction["setTriggerFormSubmit"]
+        | RegisterAction["setIsSubmitting"]
+        | RegisterAction["setIsSuccessful"];
       payload: boolean;
     }
   | {
-      type: RegisterAction['setProvince'];
+      type: RegisterAction["setProvince"];
       payload: Province;
     }
   | {
-      type: RegisterAction['setState'];
+      type: RegisterAction["setState"];
       payload: StatesUS;
     }
   | {
-      type: RegisterAction['setCountry'];
+      type: RegisterAction["setCountry"];
       payload: Country;
     }
   | {
-      type: RegisterAction['setDepartment'];
+      type: RegisterAction["setDepartment"];
       payload: Department;
     }
   | {
-      type: RegisterAction['setJobPosition'];
+      type: RegisterAction["setJobPosition"];
       payload: JobPosition;
     }
   | {
-      type: RegisterAction['setStoreLocation'];
+      type: RegisterAction["setStoreLocation"];
       payload: StoreLocation;
     }
   | {
-      type: RegisterAction['setPostalCode'];
+      type: RegisterAction["setPostalCode"];
       payload: PostalCode;
     }
   | {
-      type: RegisterAction['setPreferredPronouns'];
+      type: RegisterAction["setPreferredPronouns"];
       payload: PreferredPronouns;
     }
   | {
       type:
-        | RegisterAction['setEmergencyContactPhoneNumber']
-        | RegisterAction['setContactNumber'];
+        | RegisterAction["setEmergencyContactPhoneNumber"]
+        | RegisterAction["setContactNumber"];
       payload: PhoneNumber | string;
     }
   | {
-      type: RegisterAction['setStepsInError'];
+      type: RegisterAction["setStepsInError"];
       payload: SetStepsInErrorPayload;
     }
   | {
-      type: RegisterAction['setCurrentStepperPosition'];
+      type: RegisterAction["setCurrentStepperPosition"];
       payload: number;
     };
 

@@ -2,33 +2,33 @@ import {
   DisplayQueryMobileAction,
   DisplayQueryMobileDispatch,
   DisplayQueryMobileState,
-} from './types';
+} from "./types";
 
 const initialDisplayQueryMobileState: DisplayQueryMobileState = {
-  currentDocumentId: '',
-  currentRequestStatus: 'pending',
+  currentDocumentId: "",
+  currentRequestStatus: "pending",
 
   // for repair notes docs only
-  editRepairNoteInput: {
-    repairNoteFormId: '',
-    repairNotes: '',
-    testingResults: '',
-    finalRepairCost: '',
-    finalRepairCostCurrency: 'CAD',
-    repairStatus: 'In progress',
+  editRepairTicketInput: {
+    repairTicketFormId: "",
+    repairTickets: "",
+    testingResults: "",
+    finalRepairCost: "",
+    finalRepairCostCurrency: "CAD",
+    repairStatus: "In progress",
   },
 
   employeeDocument: null,
 };
 
 const displayQueryMobileAction: DisplayQueryMobileAction = {
-  setCurrentDocumentId: 'setCurrentDocumentId',
-  setCurrentRequestStatus: 'setCurrentRequestStatus',
+  setCurrentDocumentId: "setCurrentDocumentId",
+  setCurrentRequestStatus: "setCurrentRequestStatus",
 
   // for repair notes docs only
-  setEditRepairNoteInput: 'setEditRepairNoteInput',
+  setEditRepairTicketInput: "setEditRepairTicketInput",
 
-  setEmployeeDocument: 'setEmployeeDocument',
+  setEmployeeDocument: "setEmployeeDocument",
 };
 
 function displayQueryMobileReducer(
@@ -48,10 +48,10 @@ function displayQueryMobileReducer(
       };
 
     // for repair notes docs only
-    case displayQueryMobileAction.setEditRepairNoteInput:
+    case displayQueryMobileAction.setEditRepairTicketInput:
       return {
         ...state,
-        editRepairNoteInput: action.payload,
+        editRepairTicketInput: action.payload,
       };
 
     case displayQueryMobileAction.setEmployeeDocument:

@@ -25,6 +25,7 @@ import {
 import { COUNTRIES_DATA } from "../addressChange/constants";
 import { ComponentQueryData } from "../queryBuilder";
 import { PREFERRED_PRONOUNS_DATA } from "../register/constants";
+import { DescriptionObjectsArray } from "../wrappers";
 
 const CUSTOMER_QUERY_DATA: ComponentQueryData[] = [
   {
@@ -161,4 +162,27 @@ const CUSTOMER_RESOURCE_ROUTE_PATHS: ResourceRoutePaths = {
   employee: "customer",
 };
 
-export { CUSTOMER_QUERY_DATA, CUSTOMER_RESOURCE_ROUTE_PATHS };
+const CREATE_CUSTOMER_MAX_STEPPER_POSITION = 3;
+
+const CREATE_CUSTOMER_DESCRIPTION_OBJECTS: DescriptionObjectsArray = [
+  {
+    description: "Customer Personal Details",
+    ariaLabel:
+      "Enter customer's username, email, password, first name, middle name, last name, preferred name, preferred pronouns, profile picture url and date of birth",
+  },
+  {
+    description: "Customer Contact & Payment Information",
+    ariaLabel: "Enter customer's contact number, address and payment information",
+  },
+  {
+    description: "Review and Proceed",
+    ariaLabel: "Review all the information you have entered",
+  },
+];
+
+export {
+  CREATE_CUSTOMER_DESCRIPTION_OBJECTS,
+  CREATE_CUSTOMER_MAX_STEPPER_POSITION,
+  CUSTOMER_QUERY_DATA,
+  CUSTOMER_RESOURCE_ROUTE_PATHS,
+};

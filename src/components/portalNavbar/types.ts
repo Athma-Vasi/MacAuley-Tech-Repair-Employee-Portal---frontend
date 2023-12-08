@@ -67,12 +67,6 @@ type PortalNavbarState = {
   //    REPAIR CATEGORY
   // ╰─────────────────────────────────────────────────────────────────╯
   isRepairActive: boolean;
-  isComputerComponentActive: boolean;
-  isPeripheralActive: boolean;
-  isElectronicDeviceActive: boolean;
-  isMobileDeviceActive: boolean;
-  isAudioVideoActive: boolean;
-  isRepairAccessoryActive: boolean;
 
   // ╭─────────────────────────────────────────────────────────────────╮
   //    TRANSACTION

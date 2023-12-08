@@ -1,71 +1,43 @@
-import { Flex, Group, Title, Tooltip } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
-import { InvalidTokenError } from 'jwt-decode';
-import { useEffect, useReducer } from 'react';
-import { useErrorBoundary } from 'react-error-boundary';
-import { TbNote, TbUpload } from 'react-icons/tb';
-import { useNavigate } from 'react-router-dom';
+import { Flex, Group, Title, Tooltip } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
+import { InvalidTokenError } from "jwt-decode";
+import { useEffect, useReducer } from "react";
+import { useErrorBoundary } from "react-error-boundary";
+import { TbNote, TbUpload } from "react-icons/tb";
+import { useNavigate } from "react-router-dom";
 
-import { globalAction } from '../../../context/globalProvider/state';
-import { useGlobalState, useWrapFetch } from '../../../hooks';
-import { returnAccessibleButtonElements } from '../../../jsxCreators';
-import { ResourceRequestServerResponse } from '../../../types';
-import { replaceLastCommaWithAnd, urlBuilder } from '../../../utils';
+import { globalAction } from "../../../context/globalProvider/state";
+import { useGlobalState, useWrapFetch } from "../../../hooks";
+import { returnAccessibleButtonElements } from "../../../jsxCreators";
+import { ResourceRequestServerResponse } from "../../../types";
+import { replaceLastCommaWithAnd, urlBuilder } from "../../../utils";
 import FormReviewPage, {
   FormReviewObjectArray,
-} from '../../formReviewPage/FormReviewPage';
-import { NotificationModal } from '../../notificationModal';
-import { StepperWrapper } from '../../wrappers';
-import { RepairNoteDocument, RepairNoteInitialSchema } from '../types';
+} from "../../formReviewPage/FormReviewPage";
+import { NotificationModal } from "../../notificationModal";
+import { StepperWrapper } from "../../wrappers";
+import { RepairTicketDocument, RepairTicketInitialSchema } from "../types";
 import {
   CREATE_REPAIR_NOTE_DESCRIPTION_OBJECTS,
   CREATE_REPAIR_NOTE_MAX_STEPPER_POSITION,
-} from './constants';
-import { RepairNoteStepCustomer } from './repairNoteStepCustomer/RepairNoteStepCustomer';
-import { RepairNoteStepDetail } from './repairNoteStepDetails/RepairNoteStepDetails';
-import { RepairNoteStepPart } from './repairNoteStepPart/RepairNoteStepPart';
+} from "./constants";
+import { RepairTicketStepCustomer } from "./repairTicketStepCustomer/RepairTicketStepCustomer";
+import { RepairTicketStepDetail } from "./repairTicketStepDetails/RepairTicketStepDetails";
+import { RepairTicketStepPart } from "./repairTicketStepPart/RepairTicketStepPart";
 import {
-  createRepairNoteAction,
-  createRepairNoteReducer,
-  initialCreateRepairNoteState,
-} from './state';
-import { returnPartialRepairNoteRequestObject } from './utils';
+  createRepairTicketAction,
+  createRepairTicketReducer,
+  initialCreateRepairTicketState,
+} from "./state";
 
-function CreateRepairNote() {
+function CreateRepairTicket() {
   /** ------------- begin hooks ------------- */
-  const [createRepairNoteState, createRepairNoteDispatch] = useReducer(
-    createRepairNoteReducer,
-    initialCreateRepairNoteState
+  const [createRepairTicketState, createRepairTicketDispatch] = useReducer(
+    createRepairTicketReducer,
+    initialCreateRepairTicketState
   );
   const {
-    // customer info
-    customerName,
-    isValidCustomerName,
-    isCustomerNameFocused,
-
-    customerPhone,
-    isValidCustomerPhone,
-    isCustomerPhoneFocused,
-
-    customerEmail,
-    isValidCustomerEmail,
-    isCustomerEmailFocused,
-
-    customerAddressLine,
-    isValidCustomerAddressLine,
-    isCustomerAddressLineFocused,
-
-    customerCity,
-    isValidCustomerCity,
-    isCustomerCityFocused,
-
-    customerState,
-    customerProvince,
-    customerCountry,
-    customerPostalCode,
-    isValidCustomerPostalCode,
-    isCustomerPostalCodeFocused,
-
+    customerId,
     // device info
     partName,
     isValidPartName,
@@ -88,6 +60,7 @@ function CreateRepairNote() {
     isInitialInspectionNotesFocused,
 
     // repair info
+    repairCategory,
     requiredRepairs,
     partsNeeded,
     partsNeededModels,
@@ -116,7 +89,7 @@ function CreateRepairNote() {
     successMessage,
     isLoading,
     loadingMessage,
-  } = createRepairNoteState;
+  } = createRepairTicketState;
 
   const { globalDispatch } = useGlobalState();
 
@@ -140,30 +113,21 @@ function CreateRepairNote() {
     let isMounted = true;
     const controller = new AbortController();
 
-    async function submitCreateRepairNoteForm() {
-      createRepairNoteDispatch({
-        type: createRepairNoteAction.setIsSubmitting,
+    async function submitCreateRepairTicketForm() {
+      createRepairTicketDispatch({
+        type: createRepairTicketAction.setIsSubmitting,
         payload: true,
       });
-      createRepairNoteDispatch({
-        type: createRepairNoteAction.setSubmitMessage,
-        payload: `Submitting repair note form for ${customerName}...`,
+      createRepairTicketDispatch({
+        type: createRepairTicketAction.setSubmitMessage,
+        payload: "Submitting repair note form ...",
       });
       openSubmitSuccessNotificationModal();
 
-      const url: URL = urlBuilder({ path: 'repair-note' });
+      const url: URL = urlBuilder({ path: "repair-note" });
 
-      const initialRepairNote: RepairNoteInitialSchema = {
-        // customer info
-        customerName,
-        customerPhone,
-        customerEmail,
-        customerAddressLine,
-        customerCity,
-        customerState,
-        customerProvince,
-        customerCountry,
-        customerPostalCode,
+      const initialRepairTicket: RepairTicketInitialSchema = {
+        customerId,
         // part information
         partName,
         partSerialId,
@@ -171,6 +135,7 @@ function CreateRepairNote() {
         descriptionOfIssue,
         initialInspectionNotes,
         // repair information
+        repairCategory,
         requiredRepairs,
         partsNeeded,
         partsNeededModels,
@@ -182,18 +147,12 @@ function CreateRepairNote() {
         // rest are fields updated as repair note progresses
       };
 
-      const repairNote: Partial<RepairNoteInitialSchema> =
-        returnPartialRepairNoteRequestObject({
-          customerCountry,
-          initialRepairNote,
-        });
-
       const requestInit: RequestInit = {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({ repairNote }),
+        body: JSON.stringify({ initialRepairTicket }),
       };
 
       try {
@@ -204,7 +163,7 @@ function CreateRepairNote() {
           url,
         });
 
-        const data: ResourceRequestServerResponse<RepairNoteDocument> =
+        const data: ResourceRequestServerResponse<RepairTicketDocument> =
           await response.json();
 
         if (!isMounted) {
@@ -214,25 +173,25 @@ function CreateRepairNote() {
           throw new Error(data.message);
         }
 
-        createRepairNoteDispatch({
-          type: createRepairNoteAction.setIsSuccessful,
+        createRepairTicketDispatch({
+          type: createRepairTicketAction.setIsSuccessful,
           payload: true,
         });
-        createRepairNoteDispatch({
-          type: createRepairNoteAction.setSuccessMessage,
+        createRepairTicketDispatch({
+          type: createRepairTicketAction.setSuccessMessage,
           payload: data.message,
         });
       } catch (error: any) {
-        if (!isMounted || error.name === 'AbortError') {
+        if (!isMounted || error.name === "AbortError") {
           return;
         }
 
         const errorMessage =
           error instanceof InvalidTokenError
-            ? 'Invalid token. Please login again.'
+            ? "Invalid token. Please login again."
             : !error.response
-            ? 'Network error. Please try again.'
-            : error?.message ?? 'Unknown error occurred. Please try again.';
+            ? "Network error. Please try again."
+            : error?.message ?? "Unknown error occurred. Please try again.";
 
         globalDispatch({
           type: globalAction.setErrorState,
@@ -240,13 +199,13 @@ function CreateRepairNote() {
             isError: true,
             errorMessage,
             errorCallback: () => {
-              navigate('/home');
+              navigate("/home");
 
               globalDispatch({
                 type: globalAction.setErrorState,
                 payload: {
                   isError: false,
-                  errorMessage: '',
+                  errorMessage: "",
                   errorCallback: () => {},
                 },
               });
@@ -257,16 +216,16 @@ function CreateRepairNote() {
         showBoundary(error);
       } finally {
         if (isMounted) {
-          createRepairNoteDispatch({
-            type: createRepairNoteAction.setIsSubmitting,
+          createRepairTicketDispatch({
+            type: createRepairTicketAction.setIsSubmitting,
             payload: false,
           });
-          createRepairNoteDispatch({
-            type: createRepairNoteAction.setTriggerFormSubmit,
+          createRepairTicketDispatch({
+            type: createRepairTicketAction.setTriggerFormSubmit,
             payload: false,
           });
-          createRepairNoteDispatch({
-            type: createRepairNoteAction.setTriggerFormSubmit,
+          createRepairTicketDispatch({
+            type: createRepairTicketAction.setTriggerFormSubmit,
             payload: false,
           });
         }
@@ -274,7 +233,7 @@ function CreateRepairNote() {
     }
 
     if (triggerFormSubmit) {
-      submitCreateRepairNoteForm();
+      submitCreateRepairTicketForm();
     }
 
     return () => {
@@ -289,12 +248,12 @@ function CreateRepairNote() {
   /** ------------- begin input creators ------------- */
   const [createdSubmitButton] = returnAccessibleButtonElements([
     {
-      buttonLabel: 'Submit',
-      semanticDescription: 'Click button to submit repair note form',
-      semanticName: 'submit repair note button',
+      buttonLabel: "Submit",
+      semanticDescription: "Click button to submit repair note form",
+      semanticName: "submit repair note button",
       buttonOnClick: () => {
-        createRepairNoteDispatch({
-          type: createRepairNoteAction.setTriggerFormSubmit,
+        createRepairTicketDispatch({
+          type: createRepairTicketAction.setTriggerFormSubmit,
           payload: true,
         });
       },
@@ -309,113 +268,74 @@ function CreateRepairNote() {
 
   const REPAIR_NOTE_REVIEW_OBJECT: FormReviewObjectArray = {
     // customer info page
-    'Customer Information': [
-      {
-        inputName: 'Name',
-        inputValue: customerName,
-        isInputValueValid: isValidCustomerName,
-      },
-      {
-        inputName: 'Phone Number',
-        inputValue: customerPhone,
-        isInputValueValid: isValidCustomerPhone,
-      },
-      {
-        inputName: 'Email',
-        inputValue: customerEmail,
-        isInputValueValid: isValidCustomerEmail,
-      },
-      {
-        inputName: 'Address Line',
-        inputValue: customerAddressLine,
-        isInputValueValid: isValidCustomerAddressLine,
-      },
-      {
-        inputName: 'City',
-        inputValue: customerCity,
-        isInputValueValid: isValidCustomerCity,
-      },
-      {
-        inputName: customerCountry === 'United States' ? 'State' : 'Province',
-        inputValue:
-          customerCountry === 'United States'
-            ? customerState
-            : customerProvince,
-        isInputValueValid: true,
-      },
-      {
-        inputName: 'Postal Code',
-        inputValue: customerPostalCode,
-        isInputValueValid: isValidCustomerPostalCode,
-      },
-    ],
+    "Customer Information": [],
     // repair item info page
-    'Repair Item Information': [
+    "Repair Item Information": [
       {
-        inputName: 'Part Name',
+        inputName: "Part Name",
         inputValue: partName,
         isInputValueValid: isValidPartName,
       },
       {
-        inputName: 'Part Serial ID',
+        inputName: "Part Serial ID",
         inputValue: partSerialId,
         isInputValueValid: isValidPartSerialId,
       },
       {
-        inputName: 'Date Received',
+        inputName: "Date Received",
         inputValue: dateReceived,
         isInputValueValid: isValidDateReceived,
       },
       {
-        inputName: 'Description of Issue',
+        inputName: "Description of Issue",
         inputValue: descriptionOfIssue,
         isInputValueValid: isValidDescriptionOfIssue,
       },
       {
-        inputName: 'Initial Inspection Notes',
+        inputName: "Initial Inspection Notes",
         inputValue: initialInspectionNotes,
         isInputValueValid: isValidInitialInspectionNotes,
       },
     ],
     // repair details page
-    'Repair Information': [
+    "Repair Information": [
       {
-        inputName: 'Required Repairs',
-        inputValue: replaceLastCommaWithAnd(requiredRepairs.join(', ')),
+        inputName: "Required Repairs",
+        inputValue: replaceLastCommaWithAnd(requiredRepairs.join(", ")),
         isInputValueValid: true,
       },
       {
-        inputName: 'Parts Needed',
-        inputValue: replaceLastCommaWithAnd(partsNeeded.join(', ')),
+        inputName: "Parts Needed",
+        inputValue: replaceLastCommaWithAnd(partsNeeded.join(", ")),
         isInputValueValid: true,
       },
       {
-        inputName: 'Parts Needed Models',
+        inputName: "Parts Needed Models",
         inputValue: partsNeededModels,
         isInputValueValid: isValidPartsNeededModels,
       },
       {
-        inputName: 'Part Under Warranty',
-        inputValue: partUnderWarranty ? 'Yes' : 'No',
+        inputName: "Part Under Warranty",
+        inputValue: partUnderWarranty ? "Yes" : "No",
         isInputValueValid: true,
       },
       {
-        inputName: 'Estimated Repair Cost',
+        inputName: "Estimated Repair Cost",
         inputValue: estimatedRepairCost,
         isInputValueValid: isValidEstimatedRepairCost,
       },
       {
-        inputName: 'Estimated Repair Cost Currency',
+        inputName: "Estimated Repair Cost Currency",
         inputValue: estimatedRepairCostCurrency,
         isInputValueValid: true,
       },
       {
-        inputName: 'Estimated Completion Date',
+        inputName: "Estimated Completion Date",
         inputValue: estimatedCompletionDate,
         isInputValueValid: isValidEstimatedCompletionDate,
       },
       {
-        inputName: 'Repair Priority',
+        inputName: "Repair Priority",
         inputValue: repairPriority,
         isInputValueValid: true,
       },
@@ -423,10 +343,7 @@ function CreateRepairNote() {
   };
 
   const displayReviewPage = (
-    <FormReviewPage
-      formReviewObject={REPAIR_NOTE_REVIEW_OBJECT}
-      formName="Repair Note"
-    />
+    <FormReviewPage formReviewObject={REPAIR_NOTE_REVIEW_OBJECT} formName="Repair Note" />
   );
 
   const displaySubmitSuccessNotificationModal = (
@@ -434,7 +351,7 @@ function CreateRepairNote() {
       onCloseCallbacks={[
         closeSubmitSuccessNotificationModal,
         () => {
-          navigate('/home/repair-note/display');
+          navigate("/home/repair-note/display");
         },
       ]}
       opened={openedSubmitSuccessNotificationModal}
@@ -442,9 +359,7 @@ function CreateRepairNote() {
         loading: isSubmitting,
         text: isSubmitting ? submitMessage : successMessage,
       }}
-      title={
-        <Title order={4}>{isSuccessful ? 'Success!' : 'Submitting ...'}</Title>
-      }
+      title={<Title order={4}>{isSuccessful ? "Success!" : "Submitting ..."}</Title>}
     />
   );
 
@@ -452,8 +367,8 @@ function CreateRepairNote() {
     <Tooltip
       label={
         stepsInError.size > 0
-          ? 'Please fix errors before submitting form'
-          : 'Submit Repair Note form'
+          ? "Please fix errors before submitting form"
+          : "Submit Repair Note form"
       }
     >
       <Group w="100%" position="center">
@@ -462,35 +377,14 @@ function CreateRepairNote() {
     </Tooltip>
   );
 
-  const displayRepairNoteComponentPage =
+  const displayRepairTicketComponentPage =
     currentStepperPosition === 0 ? (
-      <RepairNoteStepCustomer
-        customerAddressLine={customerAddressLine}
-        customerCity={customerCity}
-        customerCountry={customerCountry}
-        customerEmail={customerEmail}
-        customerName={customerName}
-        customerPhone={customerPhone}
-        customerPostalCode={customerPostalCode}
-        customerProvince={customerProvince}
-        customerState={customerState}
-        isCustomerAddressLineFocused={isCustomerAddressLineFocused}
-        isCustomerCityFocused={isCustomerCityFocused}
-        isCustomerEmailFocused={isCustomerEmailFocused}
-        isCustomerNameFocused={isCustomerNameFocused}
-        isCustomerPhoneFocused={isCustomerPhoneFocused}
-        isCustomerPostalCodeFocused={isCustomerPostalCodeFocused}
-        isValidCustomerAddressLine={isValidCustomerAddressLine}
-        isValidCustomerCity={isValidCustomerCity}
-        isValidCustomerEmail={isValidCustomerEmail}
-        isValidCustomerName={isValidCustomerName}
-        isValidCustomerPhone={isValidCustomerPhone}
-        isValidCustomerPostalCode={isValidCustomerPostalCode}
-        createRepairNoteAction={createRepairNoteAction}
-        createRepairNoteDispatch={createRepairNoteDispatch}
+      <RepairTicketStepCustomer
+        createRepairTicketAction={createRepairTicketAction}
+        createRepairTicketDispatch={createRepairTicketDispatch}
       />
     ) : currentStepperPosition === 1 ? (
-      <RepairNoteStepPart
+      <RepairTicketStepPart
         partName={partName}
         partSerialId={partSerialId}
         dateReceived={dateReceived}
@@ -506,11 +400,11 @@ function CreateRepairNote() {
         isValidDateReceived={isValidDateReceived}
         isValidDescriptionOfIssue={isValidDescriptionOfIssue}
         isValidInitialInspectionNotes={isValidInitialInspectionNotes}
-        createRepairNoteAction={createRepairNoteAction}
-        createRepairNoteDispatch={createRepairNoteDispatch}
+        createRepairTicketAction={createRepairTicketAction}
+        createRepairTicketDispatch={createRepairTicketDispatch}
       />
     ) : currentStepperPosition === 2 ? (
-      <RepairNoteStepDetail
+      <RepairTicketStepDetail
         requiredRepairs={requiredRepairs}
         partsNeeded={partsNeeded}
         partsNeededModels={partsNeededModels}
@@ -525,8 +419,8 @@ function CreateRepairNote() {
         estimatedRepairCostCurrency={estimatedRepairCostCurrency}
         isValidEstimatedRepairCost={isValidEstimatedRepairCost}
         isValidEstimatedCompletionDate={isValidEstimatedCompletionDate}
-        createRepairNoteAction={createRepairNoteAction}
-        createRepairNoteDispatch={createRepairNoteDispatch}
+        createRepairTicketAction={createRepairTicketAction}
+        createRepairTicketDispatch={createRepairTicketDispatch}
       />
     ) : currentStepperPosition === 3 ? (
       displayReviewPage
@@ -534,23 +428,21 @@ function CreateRepairNote() {
       displaySubmitButton
     );
 
-  const displayRepairNoteForm = (
+  const displayRepairTicketForm = (
     <StepperWrapper
       currentStepperPosition={currentStepperPosition}
       descriptionObjectsArray={CREATE_REPAIR_NOTE_DESCRIPTION_OBJECTS}
       maxStepperPosition={CREATE_REPAIR_NOTE_MAX_STEPPER_POSITION}
-      parentComponentDispatch={createRepairNoteDispatch}
-      setCurrentStepperPosition={
-        createRepairNoteAction.setCurrentStepperPosition
-      }
+      parentComponentDispatch={createRepairTicketDispatch}
+      setCurrentStepperPosition={createRepairTicketAction.setCurrentStepperPosition}
       stepsInError={stepsInError}
       childrenTitle="Create repair note"
     >
-      {displayRepairNoteComponentPage}
+      {displayRepairTicketComponentPage}
     </StepperWrapper>
   );
 
-  const displayRepairNoteComponent = (
+  const displayRepairTicketComponent = (
     <Flex
       h="100%"
       w="100%"
@@ -560,11 +452,11 @@ function CreateRepairNote() {
       rowGap="lg"
     >
       {displaySubmitSuccessNotificationModal}
-      {displayRepairNoteForm}
+      {displayRepairTicketForm}
     </Flex>
   );
   /** ------------- end input display ------------- */
-  return displayRepairNoteComponent;
+  return displayRepairTicketComponent;
 }
 
-export default CreateRepairNote;
+export default CreateRepairTicket;
