@@ -140,7 +140,7 @@ function CreateRepairTicket() {
         partsNeeded,
         partsNeededModels,
         partUnderWarranty,
-        estimatedRepairCost,
+        estimatedRepairCost: parseFloat(estimatedRepairCost),
         estimatedRepairCostCurrency,
         estimatedCompletionDate,
         repairPriority,

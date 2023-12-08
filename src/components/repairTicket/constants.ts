@@ -35,6 +35,7 @@ import {
 import { COUNTRIES_DATA } from "../addressChange/constants";
 import { CURRENCY_DATA } from "../benefits/constants";
 import { ComponentQueryData } from "../queryBuilder";
+import { PartsNeeded } from "./types";
 
 const REQUIRED_REPAIRS_CHECKBOX_DATA = [
   {
@@ -83,7 +84,10 @@ const REQUIRED_REPAIRS_CHECKBOX_DATA = [
   },
 ];
 
-const PARTS_NEEDED_CHECKBOX_DATA = [
+const PARTS_NEEDED_CHECKBOX_DATA: {
+  label: PartsNeeded;
+  value: PartsNeeded;
+}[] = [
   {
     label: "CPU",
     value: "CPU",
@@ -121,6 +125,26 @@ const PARTS_NEEDED_CHECKBOX_DATA = [
     value: "Software",
   },
   {
+    label: "Screen",
+    value: "Screen",
+  },
+  {
+    label: "Keyboard",
+    value: "Keyboard",
+  },
+  {
+    label: "Mouse",
+    value: "Mouse",
+  },
+  {
+    label: "Speaker",
+    value: "Speaker",
+  },
+  {
+    label: "Battery",
+    value: "Battery",
+  },
+  {
     label: "Other",
     value: "Other",
   },
@@ -156,64 +180,7 @@ const REPAIR_NOTE_QUERY_DATA: ComponentQueryData[] = [
     regex: DATE_FULL_RANGE_REGEX,
     regexValidationFn: returnDateFullRangeValidationText,
   },
-  {
-    label: "Customer Name",
-    value: "customerName",
-    inputKind: "textInput",
-    regex: FULL_NAME_REGEX,
-    regexValidationFn: returnNameValidationText,
-  },
-  {
-    label: "Customer Phone",
-    value: "customerPhone",
-    inputKind: "textInput",
-    regex: PHONE_NUMBER_REGEX,
-    regexValidationFn: returnPhoneNumberValidationText,
-  },
-  {
-    label: "Customer Email",
-    value: "customerEmail",
-    inputKind: "textInput",
-    regex: EMAIL_REGEX,
-    regexValidationFn: returnEmailValidationText,
-  },
-  {
-    label: "Customer Address Line",
-    value: "customerAddressLine",
-    inputKind: "textInput",
-    regex: ADDRESS_LINE_REGEX,
-    regexValidationFn: returnAddressValidationText,
-  },
-  {
-    label: "Customer City",
-    value: "customerCity",
-    inputKind: "textInput",
-    regex: CITY_REGEX,
-    regexValidationFn: returnCityValidationText,
-  },
-  {
-    label: "Customer State",
-    value: "customerState",
-    inputKind: "selectInput",
-    selectData: STATES_US,
-  },
-  {
-    label: "Customer Province",
-    value: "customerProvince",
-    inputKind: "selectInput",
-    selectData: PROVINCES,
-  },
-  {
-    label: "Customer Country",
-    value: "customerCountry",
-    inputKind: "selectInput",
-    selectData: COUNTRIES_DATA,
-  },
-  {
-    label: "Customer Postal Code",
-    value: "customerPostalCode",
-    inputKind: "textInput",
-  },
+
   // part information
   {
     label: "Part Name",

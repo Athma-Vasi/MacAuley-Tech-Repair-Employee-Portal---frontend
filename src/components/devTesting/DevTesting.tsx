@@ -181,6 +181,10 @@ import { RMA_REASONS_POOL, returnRMASchemas } from "./rma/rma";
 import { constants } from "buffer";
 import { PURCHASE_DOCUMENTS } from "./purchase/purchaseDocuments";
 import { RMA_DOCUMENTS } from "./rma/rmaDocuments";
+import {
+  REPAIR_TICKETS_ARRAY,
+  returnRepairTicketSchemas,
+} from "./repairTickets/repairTickets";
 
 function DevTesting() {
   const [devTestingState, devTestingDispatch] = useReducer(
@@ -202,7 +206,7 @@ function DevTesting() {
 
     async function submitDevTestingForm() {
       const url: URL = urlBuilder({
-        path: "customer/dev",
+        path: "repair-ticket/dev",
       });
 
       const newBodiesArrCount =
@@ -216,11 +220,11 @@ function DevTesting() {
 
       const reqBody = {
         userInfo,
-        customerFields: slicedBodiesArr,
+        repairTicketSchemas: slicedBodiesArr,
       };
 
       const requestInit: RequestInit = {
-        method: "PATCH",
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
@@ -329,41 +333,16 @@ function DevTesting() {
   }, [triggerGetRequest]);
 
   useEffect(() => {
-    // const productCategoryDocuments = [
-    //   ...ACCESSORY_DOCUMENTS,
-    //   ...CASE_DOCUMENTS,
-    //   ...CPU_DOCUMENTS,
-    //   ...DESKTOP_COMPUTER_DOCUMENTS,
-    //   ...DISPLAY_DOCUMENTS,
-    //   ...GPU_DOCUMENTS,
-    //   ...HEADPHONE_DOCUMENTS,
-    //   ...KEYBOARD_DOCUMENTS,
-    //   ...LAPTOP_DOCUMENTS,
-    //   ...MICROPHONE_DOCUMENTS,
-    //   ...MOTHERBOARD_DOCUMENTS,
-    //   ...MOUSE_DOCUMENTS,
-    //   ...PSU_DOCUMENTS,
-    //   ...RAM_DOCUMENTS,
-    //   ...SMARTPHONE_DOCUMENTS,
-    //   ...SPEAKER_DOCUMENTS,
-    //   ...STORAGE_DOCUMENTS,
-    //   ...TABLET_DOCUMENTS,
-    //   ...WEBCAM_DOCUMENTS,
-    // ];
-    // const bodiesArr = returnPurchaseSchemas({
-    //   customerDocuments: CUSTOMER_DOCUMENTS,
-    //   productCategoryDocuments,
-    //   productReviewDocuments: PRODUCT_REVIEW_DOCUMENTS,
-    // });
-    // const bodiesArr = returnRMASchemas({
-    //   rmaReasonsPool: RMA_REASONS_POOL,
-    //   purchaseDocuments: PURCHASE_DOCUMENTS,
-    // });
-    // const bodiesArr = returnUpdateCustomerRMAReviewsIds(RMA_DOCUMENTS);
-    // devTestingDispatch({
-    //   type: devTestingAction.setBodiesArr,
-    //   payload: bodiesArr,
-    // });
+    const bodiesArr = returnRepairTicketSchemas({
+      customerDocuments: CUSTOMER_DOCUMENTS,
+      repairTicketsArray: REPAIR_TICKETS_ARRAY,
+      usersDocs: USERS_DOCS,
+    });
+
+    devTestingDispatch({
+      type: devTestingAction.setBodiesArr,
+      payload: bodiesArr,
+    });
   }, []);
 
   useEffect(() => {
