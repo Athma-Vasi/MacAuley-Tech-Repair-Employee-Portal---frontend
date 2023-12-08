@@ -86,6 +86,8 @@ const initialCreateCustomerState: CreateCustomerState = {
   isCvvFocused: false,
   isCvvValid: false,
 
+  isBillingAddressSameAsShippingAddress: false,
+
   billingAddressLine: "",
   isBillingAddressLineFocused: false,
   isBillingAddressLineValid: false,

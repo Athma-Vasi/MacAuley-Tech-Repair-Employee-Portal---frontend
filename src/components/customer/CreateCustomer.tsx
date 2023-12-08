@@ -33,7 +33,9 @@ import {
 import { useGlobalState, useWrapFetch } from "../../hooks";
 import {
   AccessibleErrorValidTextElements,
+  AccessibleSelectedDeselectedTextElements,
   returnAccessibleButtonElements,
+  returnAccessibleCheckboxSingleInputElements,
   returnAccessibleDateTimeElements,
   returnAccessiblePasswordInputElements,
   returnAccessiblePhoneNumberTextInputElements,
@@ -192,6 +194,7 @@ function CreateCustomer() {
     isCvvFocused,
     isCvvValid,
 
+    isBillingAddressSameAsShippingAddress,
     billingAddressLine,
     isBillingAddressLineFocused,
     isBillingAddressLineValid,
@@ -261,14 +264,16 @@ function CreateCustomer() {
           cardNumber,
           expirationDate,
           cvv,
-          billingAddress: {
-            addressLine: billingAddressLine,
-            city: billingCity,
-            province: billingProvince,
-            state: billingState,
-            postalCode: billingPostalCode,
-            country: billingCountry,
-          },
+          billingAddress: isBillingAddressSameAsShippingAddress
+            ? { addressLine, city, province, state, postalCode, country }
+            : {
+                addressLine: billingAddressLine,
+                city: billingCity,
+                province: billingProvince,
+                state: billingState,
+                postalCode: billingPostalCode,
+                country: billingCountry,
+              },
         },
         productReviewsIds: [],
         purchaseHistoryIds: [],
@@ -1866,6 +1871,43 @@ function CreateCustomer() {
   ]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
+  //     BILLING ADDRESS SAME AS SHIPPING ADDRESS
+  // ╰─────────────────────────────────────────────────────────────────╯
+
+  // selected/deselected text elements
+  const [
+    billingAddressSameAsShippingAddressInputSelectedText,
+    billingAddressSameAsShippingAddressInputDeselectedText,
+  ] = AccessibleSelectedDeselectedTextElements({
+    isSelected: isBillingAddressSameAsShippingAddress,
+    semanticName: "billing address same as shipping address",
+    selectedDescription: "Billing address is the same as shipping address",
+    deselectedDescription: "Billing address is not the same as shipping address",
+    theme: "muted",
+  });
+
+  // screenreader accessible checkbox input element
+  const [createdBillingAddressSameAsShippingAddressCheckboxInput] =
+    returnAccessibleCheckboxSingleInputElements([
+      {
+        description: {
+          selected: billingAddressSameAsShippingAddressInputSelectedText,
+          deselected: billingAddressSameAsShippingAddressInputDeselectedText,
+        },
+        label: "",
+        onChange: (_event: ChangeEvent<HTMLInputElement>) => {
+          createCustomerDispatch({
+            type: createCustomerAction.setIsBillingAddressSameAsShippingAddress,
+            payload: isBillingAddressSameAsShippingAddress ? false : true,
+          });
+        },
+        checked: isBillingAddressSameAsShippingAddress,
+        semanticName: "billing address same as shipping address",
+        required: true,
+      },
+    ]);
+
+  // ╭─────────────────────────────────────────────────────────────────╮
   //     BILLING ADDRESS LINE
   // ╰─────────────────────────────────────────────────────────────────╯
 
@@ -2096,19 +2138,34 @@ function CreateCustomer() {
   // ╭─────────────────────────────────────────────────────────────────╮
   //     PREFERS REDUCED MOTION
   // ╰─────────────────────────────────────────────────────────────────╯
-  const [createdPrefersReducedMotionRadioInput] =
-    returnAccessibleRadioSingleInputElements([
+
+  // selected/deselected text elements
+  const [prefersReducedMotionInputSelectedText, prefersReducedMotionInputDeselectedText] =
+    AccessibleSelectedDeselectedTextElements({
+      isSelected: isPrefersReducedMotion,
+      semanticName: "toggle animation",
+      selectedDescription: "You have chosen: Animation OFF",
+      deselectedDescription: "Please select your preference (default: Animation ON)",
+      theme: "muted",
+    });
+
+  // screenreader accessible checkbox input element
+  const [createdPrefersReducedMotionCheckboxInput] =
+    returnAccessibleCheckboxSingleInputElements([
       {
-        description: "Select your preference",
-        label: "Prefers Reduced Motion",
-        onChange: (event: ChangeEvent<HTMLInputElement>) => {
+        description: {
+          selected: prefersReducedMotionInputSelectedText,
+          deselected: prefersReducedMotionInputDeselectedText,
+        },
+        label: "Toggle Animation",
+        onChange: (_event: ChangeEvent<HTMLInputElement>) => {
           createCustomerDispatch({
             type: createCustomerAction.setIsPrefersReducedMotion,
-            payload: event.currentTarget.value === "true" ? true : false,
+            payload: isPrefersReducedMotion ? false : true,
           });
         },
         checked: isPrefersReducedMotion,
-        semanticName: "prefers reduced motion",
+        semanticName: "toggle animation",
         required: true,
       },
     ]);
@@ -2165,6 +2222,7 @@ function CreateCustomer() {
       {createdPreferredNameTextInput}
       {createdProfilePictureUrlTextInput}
       {createdDateOfBirthTextInput}
+      {createdPrefersReducedMotionCheckboxInput}
     </FormLayoutWrapper>
   );
 
@@ -2199,15 +2257,17 @@ function CreateCustomer() {
         <Space h="lg" />
 
         <Title order={4}>Billing Address</Title>
-        <Group w="100%" position="apart">
-          {createdBillingAddressLineTextInput}
-          {createdBillingCityTextInput}
-          {createdBillingProvinceStateSelectInput}
-          {createdBillingPostalCodeTextInput}
-          {createdBillingCountrySelectInput}
-        </Group>
+        {createdBillingAddressSameAsShippingAddressCheckboxInput}
+        {isBillingAddressSameAsShippingAddress ? null : (
+          <Group w="100%" position="apart">
+            {createdBillingAddressLineTextInput}
+            {createdBillingCityTextInput}
+            {createdBillingProvinceStateSelectInput}
+            {createdBillingPostalCodeTextInput}
+            {createdBillingCountrySelectInput}
+          </Group>
+        )}
       </Stack>
-      {createdPrefersReducedMotionRadioInput}
     </FormLayoutWrapper>
   );
 

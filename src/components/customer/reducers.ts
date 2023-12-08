@@ -486,6 +486,16 @@ function setIsCvvValid_CreateCustomerReducer(
 }
 
 // ╭─────────────────────────────────────────────────────────────────╮
+//    BILLING ADDRESS SAME AS SHIPPING ADDRESS
+// ╰─────────────────────────────────────────────────────────────────╯
+function setIsBillingAddressSameAsShippingAddress_CreateCustomerReducer(
+  state: CreateCustomerState,
+  dispatch: CreateCustomerDispatch
+): CreateCustomerState {
+  return { ...state, isBillingAddressSameAsShippingAddress: dispatch.payload as boolean };
+}
+
+// ╭─────────────────────────────────────────────────────────────────╮
 //    BILLING ADDRESS LINE
 // ╰─────────────────────────────────────────────────────────────────╯
 function setBillingAddressLine_CreateCustomerReducer(
@@ -891,6 +901,14 @@ const createCustomerReducersMap = new Map<
   [createCustomerAction.setIsCvvValid, setIsCvvValid_CreateCustomerReducer],
 
   // ╭─────────────────────────────────────────────────────────────────╮
+  //    BILLING ADDRESS SAME AS SHIPPING ADDRESS
+  // ╰─────────────────────────────────────────────────────────────────╯
+  [
+    createCustomerAction.setIsBillingAddressSameAsShippingAddress,
+    setIsBillingAddressSameAsShippingAddress_CreateCustomerReducer,
+  ],
+
+  // ╭─────────────────────────────────────────────────────────────────╮
   //    BILLING ADDRESS LINE
   // ╰─────────────────────────────────────────────────────────────────╯
   [
@@ -1028,6 +1046,7 @@ export {
   setIsAddressLineValid_CreateCustomerReducer,
   setIsBillingAddressLineFocused_CreateCustomerReducer,
   setIsBillingAddressLineValid_CreateCustomerReducer,
+  setIsBillingAddressSameAsShippingAddress_CreateCustomerReducer,
   setIsBillingCityFocused_CreateCustomerReducer,
   setIsBillingCityValid_CreateCustomerReducer,
   setIsBillingPostalCodeFocused_CreateCustomerReducer,

@@ -148,6 +148,8 @@ type CreateCustomerState = {
   isCvvFocused: boolean;
   isCvvValid: boolean;
 
+  isBillingAddressSameAsShippingAddress: boolean;
+
   billingAddressLine: string;
   isBillingAddressLineFocused: boolean;
   isBillingAddressLineValid: boolean;

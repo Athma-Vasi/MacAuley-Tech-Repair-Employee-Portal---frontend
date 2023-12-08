@@ -86,6 +86,8 @@ const createCustomerAction: CreateCustomerAction = {
   setIsCvvFocused: "setIsCvvFocused",
   setIsCvvValid: "setIsCvvValid",
 
+  setIsBillingAddressSameAsShippingAddress: "setIsBillingAddressSameAsShippingAddress",
+
   setBillingAddressLine: "setBillingAddressLine",
   setIsBillingAddressLineFocused: "setIsBillingAddressLineFocused",
   setIsBillingAddressLineValid: "setIsBillingAddressLineValid",
@@ -202,6 +204,8 @@ type CreateCustomerAction = {
   setCvv: "setCvv";
   setIsCvvFocused: "setIsCvvFocused";
   setIsCvvValid: "setIsCvvValid";
+
+  setIsBillingAddressSameAsShippingAddress: "setIsBillingAddressSameAsShippingAddress";
 
   setBillingAddressLine: "setBillingAddressLine";
   setIsBillingAddressLineFocused: "setIsBillingAddressLineFocused";

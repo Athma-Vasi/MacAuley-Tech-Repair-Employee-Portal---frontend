@@ -236,6 +236,10 @@ type CreateCustomerDispatch =
       payload: CreateCustomerState["isCvvValid"];
     }
   | {
+      type: CreateCustomerAction["setIsBillingAddressSameAsShippingAddress"];
+      payload: CreateCustomerState["isBillingAddressSameAsShippingAddress"];
+    }
+  | {
       type: CreateCustomerAction["setBillingAddressLine"];
       payload: CreateCustomerState["billingAddressLine"];
     }

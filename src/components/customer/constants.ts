@@ -166,12 +166,12 @@ const CREATE_CUSTOMER_MAX_STEPPER_POSITION = 3;
 
 const CREATE_CUSTOMER_DESCRIPTION_OBJECTS: DescriptionObjectsArray = [
   {
-    description: "Customer Personal Details",
+    description: "Personal Details",
     ariaLabel:
       "Enter customer's username, email, password, first name, middle name, last name, preferred name, preferred pronouns, profile picture url and date of birth",
   },
   {
-    description: "Customer Contact & Payment Information",
+    description: "Contact & Payment Information",
     ariaLabel: "Enter customer's contact number, address and payment information",
   },
   {
