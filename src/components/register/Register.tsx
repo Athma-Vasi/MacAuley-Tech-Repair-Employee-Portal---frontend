@@ -1,17 +1,20 @@
 import "../../index.css";
 
 import { Flex, Text, Title } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
 import { InvalidTokenError } from "jwt-decode";
 import { MouseEvent, useEffect, useReducer, useRef } from "react";
 import { useErrorBoundary } from "react-error-boundary";
 import { TbUpload } from "react-icons/tb";
 import { Link, useNavigate } from "react-router-dom";
 
+import { EMAIL_REGEX, USERNAME_REGEX } from "../../constants/regex";
 import { globalAction } from "../../context/globalProvider/state";
 import { useGlobalState, useWrapFetch } from "../../hooks";
 import { returnAccessibleButtonElements } from "../../jsxCreators";
 import { ResourceRequestServerResponse, UserDocument, UserSchema } from "../../types";
-import { urlBuilder } from "../../utils";
+import { logState, urlBuilder } from "../../utils";
+import { NotificationModal } from "../notificationModal";
 import { AccessibleButtonCreatorInfo, StepperWrapper } from "../wrappers";
 import { REGISTER_DESCRIPTION_OBJECTS, REGISTER_MAX_STEPPER_POSITION } from "./constants";
 import { RegisterStepAdditional } from "./registerStepAdditional/RegisterStepAdditional";
@@ -20,13 +23,10 @@ import { RegisterStepAuthentication } from "./registerStepAuthentication/Registe
 import { RegisterStepPersonal } from "./registerStepPersonal/RegisterStepPersonal";
 import { RegisterStepReview } from "./registerStepReview/RegisterStepReview";
 import { initialRegisterState, registerAction, registerReducer } from "./state";
-import { useDisclosure } from "@mantine/hooks";
-import { NotificationModal } from "../notificationModal";
 
 function Register() {
   const { globalDispatch } = useGlobalState();
 
-  const { wrappedFetch } = useWrapFetch();
   const { showBoundary } = useErrorBoundary();
   const navigate = useNavigate();
 
@@ -47,10 +47,12 @@ function Register() {
     email,
     isValidEmail,
     isEmailFocused,
+    isEmailExists,
 
     username,
     isValidUsername,
     isUsernameFocused,
+    isUsernameExists,
 
     password,
     isValidPassword,
@@ -183,15 +185,12 @@ function Register() {
         body: JSON.stringify({
           userSchema: newUserObj,
         }),
+        signal: abortControllerRef.current?.signal,
       };
 
       try {
-        const response: Response = await wrappedFetch({
-          isMounted,
-          requestInit,
-          signal: abortControllerRef.current?.signal,
-          url,
-        });
+        const request: Request = new Request(url.toString(), requestInit);
+        const response: Response = await fetch(request);
 
         const data: ResourceRequestServerResponse<UserDocument> = await response.json();
 
@@ -229,7 +228,7 @@ function Register() {
             isError: true,
             errorMessage,
             errorCallback: () => {
-              navigate("/home");
+              navigate("/register");
 
               globalDispatch({
                 type: globalAction.setErrorState,
@@ -273,6 +272,217 @@ function Register() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [triggerFormSubmit]);
 
+  // check if username exists on every valid state change
+  useEffect(() => {
+    let isMounted = true;
+    // before submitting form, abort any previous requests
+    abortControllerRef.current?.abort();
+    // create new abort controller for current request
+    abortControllerRef.current = new AbortController();
+
+    async function handleCheckUsernameExists() {
+      registerDispatch({
+        type: registerAction.setIsSubmitting,
+        payload: true,
+      });
+
+      const url: URL = urlBuilder({
+        path: "username-email-set/check",
+      });
+
+      const requestInit: RequestInit = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          fields: { username },
+        }),
+        signal: abortControllerRef.current?.signal,
+      };
+
+      try {
+        const request: Request = new Request(url.toString(), requestInit);
+        const response: Response = await fetch(request);
+
+        const data: { status: "error" | "success"; message: string } =
+          await response.json();
+
+        if (!isMounted) {
+          return;
+        }
+        if (!response.ok) {
+          throw new Error(data.message);
+        }
+
+        data.status === "error"
+          ? registerDispatch({
+              type: registerAction.setIsUsernameExists,
+              payload: true,
+            })
+          : registerDispatch({
+              type: registerAction.setIsUsernameExists,
+              payload: false,
+            });
+      } catch (error: any) {
+        if (!isMounted || error.name === "AbortError") {
+          return;
+        }
+
+        const errorMessage = !error.response
+          ? "Network error. Please try again."
+          : error?.message ?? "Unknown error occurred. Please try again.";
+
+        globalDispatch({
+          type: globalAction.setErrorState,
+          payload: {
+            isError: true,
+            errorMessage,
+            errorCallback: () => {
+              navigate("/register");
+
+              globalDispatch({
+                type: globalAction.setErrorState,
+                payload: {
+                  isError: false,
+                  errorMessage: "",
+                  errorCallback: () => {},
+                },
+              });
+            },
+          },
+        });
+
+        showBoundary(error);
+      } finally {
+        if (isMounted) {
+          registerDispatch({
+            type: registerAction.setIsSubmitting,
+            payload: false,
+          });
+        }
+      }
+    }
+
+    if (USERNAME_REGEX.test(username) && username.length > 0) {
+      handleCheckUsernameExists();
+    }
+
+    return () => {
+      isMounted = false;
+      abortControllerRef.current?.abort();
+    };
+  }, [username, isValidUsername, globalDispatch, showBoundary, navigate]);
+
+  // check if email exists on every valid state change
+  useEffect(() => {
+    let isMounted = true;
+    // before submitting form, abort any previous requests
+    abortControllerRef.current?.abort();
+    // create new abort controller for current request
+    abortControllerRef.current = new AbortController();
+
+    async function handleCheckEmailExists() {
+      registerDispatch({
+        type: registerAction.setIsSubmitting,
+        payload: true,
+      });
+
+      const url: URL = urlBuilder({
+        path: "username-email-set/check",
+      });
+
+      const requestInit: RequestInit = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          fields: { email },
+        }),
+        signal: abortControllerRef.current?.signal,
+      };
+
+      try {
+        const request: Request = new Request(url.toString(), requestInit);
+        const response: Response = await fetch(request);
+
+        const data: { status: "error" | "success"; message: string } =
+          await response.json();
+
+        if (!isMounted) {
+          return;
+        }
+        if (!response.ok) {
+          throw new Error(data.message);
+        }
+
+        data.status === "error"
+          ? registerDispatch({
+              type: registerAction.setIsEmailExists,
+              payload: true,
+            })
+          : registerDispatch({
+              type: registerAction.setIsEmailExists,
+              payload: false,
+            });
+      } catch (error: any) {
+        if (!isMounted || error.name === "AbortError") {
+          return;
+        }
+
+        const errorMessage = !error.response
+          ? "Network error. Please try again."
+          : error?.message ?? "Unknown error occurred. Please try again.";
+
+        globalDispatch({
+          type: globalAction.setErrorState,
+          payload: {
+            isError: true,
+            errorMessage,
+            errorCallback: () => {
+              navigate("/register");
+
+              globalDispatch({
+                type: globalAction.setErrorState,
+                payload: {
+                  isError: false,
+                  errorMessage: "",
+                  errorCallback: () => {},
+                },
+              });
+            },
+          },
+        });
+
+        showBoundary(error);
+      } finally {
+        if (isMounted) {
+          registerDispatch({
+            type: registerAction.setIsSubmitting,
+            payload: false,
+          });
+        }
+      }
+    }
+
+    if (EMAIL_REGEX.test(email) && email.length > 0) {
+      handleCheckEmailExists();
+    }
+
+    return () => {
+      isMounted = false;
+      abortControllerRef.current?.abort();
+    };
+  }, [email, isValidEmail, globalDispatch, showBoundary, navigate]);
+
+  useEffect(() => {
+    logState({
+      state: registerState,
+      groupLabel: "Register State",
+    });
+  }, [registerState]);
+
   const submitButtonCreatorInfo: AccessibleButtonCreatorInfo = {
     buttonLabel: "Submit",
     semanticDescription: "register form submit button",
@@ -301,7 +511,7 @@ function Register() {
       onCloseCallbacks={[
         closeSubmitSuccessNotificationModal,
         () => {
-          navigate("/home");
+          navigate("/login");
         },
       ]}
       opened={openedSubmitSuccessNotificationModal}
@@ -319,9 +529,11 @@ function Register() {
         email={email}
         isValidEmail={isValidEmail}
         isEmailFocused={isEmailFocused}
+        isEmailExists={isEmailExists}
         username={username}
         isValidUsername={isValidUsername}
         isUsernameFocused={isUsernameFocused}
+        isUsernameExists={isUsernameExists}
         password={password}
         isValidPassword={isValidPassword}
         isPasswordFocused={isPasswordFocused}

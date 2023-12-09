@@ -16,6 +16,10 @@ type CreateCustomerDispatch =
       payload: CreateCustomerState["isUsernameValid"];
     }
   | {
+      type: CreateCustomerAction["setIsUsernameExists"];
+      payload: CreateCustomerState["isUsernameExists"];
+    }
+  | {
       type: CreateCustomerAction["setConfirmPassword"];
       payload: CreateCustomerState["confirmPassword"];
     }
@@ -50,6 +54,10 @@ type CreateCustomerDispatch =
   | {
       type: CreateCustomerAction["setIsEmailValid"];
       payload: CreateCustomerState["isEmailValid"];
+    }
+  | {
+      type: CreateCustomerAction["setIsEmailExists"];
+      payload: CreateCustomerState["isEmailExists"];
     }
   | {
       type: CreateCustomerAction["setFirstName"];

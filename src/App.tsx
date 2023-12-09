@@ -1261,13 +1261,10 @@ function App() {
       <CustomFonts />
       <Routes>
         {/* these are public routes */}
-        <Route path="/" element={rootIndexWrapper}>
-          <Route index element={loginElement} />
-          <Route path="login" element={loginElement} />
-          <Route path="register" element={<PortalLayout />}>
-            <Route index element={registerElement} />
-          </Route>
-        </Route>
+        <Route path="/" element={loginElement} />
+        {/* <Route index element={loginElement} /> */}
+        <Route path="login" element={loginElement} />
+        <Route path="register" element={registerElement} />
 
         {/* these are protected routes */}
         {/* all roles are allowed to view the protected home page */}

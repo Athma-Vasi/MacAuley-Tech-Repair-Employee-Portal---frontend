@@ -1,5 +1,5 @@
 type DevTestingState = {
-  bodiesArr: Record<string, any>[];
+  bodiesArr: { username: string[]; email: string[] };
   bodiesArrCount: number;
   resourceDocuments: Record<string, any>[];
 
@@ -8,33 +8,33 @@ type DevTestingState = {
 };
 
 type DevTestingAction = {
-  setBodiesArr: 'setBodiesArr';
-  setBodiesArrCount: 'setBodiesArrCount';
-  setResourceDocuments: 'setResourceDocuments';
+  setBodiesArr: "setBodiesArr";
+  setBodiesArrCount: "setBodiesArrCount";
+  setResourceDocuments: "setResourceDocuments";
 
-  setTriggerPostFormSubmit: 'setTriggerPostFormSubmit';
-  setTriggerGetRequest: 'setTriggerGetRequest';
+  setTriggerPostFormSubmit: "setTriggerPostFormSubmit";
+  setTriggerGetRequest: "setTriggerGetRequest";
 };
 
 type DevTestingDispatch =
   | {
-      type: DevTestingAction['setBodiesArr'];
-      payload: Record<string, any>[];
+      type: DevTestingAction["setBodiesArr"];
+      payload: { username: string[]; email: string[] };
     }
   | {
-      type: DevTestingAction['setBodiesArrCount'];
+      type: DevTestingAction["setBodiesArrCount"];
       payload: number;
     }
   | {
-      type: DevTestingAction['setResourceDocuments'];
+      type: DevTestingAction["setResourceDocuments"];
       payload: Record<string, any>[];
     }
   | {
-      type: DevTestingAction['setTriggerPostFormSubmit'];
+      type: DevTestingAction["setTriggerPostFormSubmit"];
       payload: boolean;
     }
   | {
-      type: DevTestingAction['setTriggerGetRequest'];
+      type: DevTestingAction["setTriggerGetRequest"];
       payload: boolean;
     };
 

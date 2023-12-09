@@ -1,23 +1,15 @@
-import {
-  Country,
-  Department,
-  JobPosition,
-  PhoneNumber,
-  PostalCode,
-  Province,
-  StatesUS,
-} from "../../types";
-import { PreferredPronouns } from "../../types/user.types";
 import { RegisterAction, RegisterDispatch, RegisterState } from "./types";
 
 const initialRegisterState: RegisterState = {
   email: "",
   isValidEmail: false,
   isEmailFocused: false,
+  isEmailExists: false,
 
   username: "",
   isValidUsername: false,
   isUsernameFocused: false,
+  isUsernameExists: false,
 
   password: "",
   isValidPassword: false,
@@ -103,10 +95,12 @@ const registerAction: RegisterAction = {
   setEmail: "setEmail",
   setIsValidEmail: "setIsValidEmail",
   setIsEmailFocused: "setIsEmailFocused",
+  setIsEmailExists: "setIsEmailExists",
 
   setUsername: "setUsername",
   setIsValidUsername: "setIsValidUsername",
   setIsUsernameFocused: "setIsUsernameFocused",
+  setIsUsernameExists: "setIsUsernameExists",
 
   setPassword: "setPassword",
   setIsValidPassword: "setIsValidPassword",
@@ -192,6 +186,8 @@ function registerReducer(state: RegisterState, action: RegisterDispatch): Regist
       return { ...state, isValidEmail: action.payload };
     case registerAction.setIsEmailFocused:
       return { ...state, isEmailFocused: action.payload };
+    case registerAction.setIsEmailExists:
+      return { ...state, isEmailExists: action.payload };
 
     case registerAction.setUsername:
       return { ...state, username: action.payload };
@@ -199,6 +195,8 @@ function registerReducer(state: RegisterState, action: RegisterDispatch): Regist
       return { ...state, isValidUsername: action.payload };
     case registerAction.setIsUsernameFocused:
       return { ...state, isUsernameFocused: action.payload };
+    case registerAction.setIsUsernameExists:
+      return { ...state, isUsernameExists: action.payload };
 
     case registerAction.setPassword:
       return { ...state, password: action.payload };

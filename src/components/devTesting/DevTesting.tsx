@@ -185,6 +185,7 @@ import {
   REPAIR_TICKETS_ARRAY,
   returnRepairTicketSchemas,
 } from "./repairTickets/repairTickets";
+import { returnUsernameEmailSetSchemas } from "./usernameEmailSet/usernameEmailSet";
 
 function DevTesting() {
   const [devTestingState, devTestingDispatch] = useReducer(
@@ -206,12 +207,12 @@ function DevTesting() {
 
     async function submitDevTestingForm() {
       const url: URL = urlBuilder({
-        path: "repair-ticket/dev",
+        path: "username-email-set",
       });
 
-      const newBodiesArrCount =
-        bodiesArr.length - bodiesArrCount > 75 ? bodiesArrCount + 75 : bodiesArr.length;
-      const slicedBodiesArr = bodiesArr.slice(bodiesArrCount, newBodiesArrCount);
+      // const newBodiesArrCount =
+      //   bodiesArr.length - bodiesArrCount > 75 ? bodiesArrCount + 75 : bodiesArr.length;
+      // const slicedBodiesArr = bodiesArr.slice(bodiesArrCount, newBodiesArrCount);
       const { userInfo } = jwtDecode<{
         exp: number;
         iat: number;
@@ -220,7 +221,8 @@ function DevTesting() {
 
       const reqBody = {
         userInfo,
-        repairTicketSchemas: slicedBodiesArr,
+        username: bodiesArr.username,
+        email: bodiesArr.email,
       };
 
       const requestInit: RequestInit = {
@@ -248,10 +250,10 @@ function DevTesting() {
           throw new Error(data.message);
         }
 
-        devTestingDispatch({
-          type: devTestingAction.setBodiesArrCount,
-          payload: newBodiesArrCount,
-        });
+        // devTestingDispatch({
+        //   type: devTestingAction.setBodiesArrCount,
+        //   payload: newBodiesArrCount,
+        // });
 
         console.log({ data });
       } catch (error: any) {
@@ -333,16 +335,14 @@ function DevTesting() {
   }, [triggerGetRequest]);
 
   useEffect(() => {
-    const bodiesArr = returnRepairTicketSchemas({
-      customerDocuments: CUSTOMER_DOCUMENTS,
-      repairTicketsArray: REPAIR_TICKETS_ARRAY,
-      usersDocs: USERS_DOCS,
-    });
-
-    devTestingDispatch({
-      type: devTestingAction.setBodiesArr,
-      payload: bodiesArr,
-    });
+    // const bodiesArr = returnUsernameEmailSetSchemas({
+    //   customersDocs: CUSTOMER_DOCUMENTS,
+    //   usersDocs: USERS_DOCS,
+    // });
+    // devTestingDispatch({
+    //   type: devTestingAction.setBodiesArr,
+    //   payload: bodiesArr,
+    // });
   }, []);
 
   useEffect(() => {
@@ -356,9 +356,9 @@ function DevTesting() {
     <Center w="100%">
       <Stack>
         <Text>POST REQUEST</Text>
-        <Group>
+        {/* <Group>
           <Button
-            disabled={bodiesArrCount === bodiesArr.length || triggerPostFormSubmit}
+            // disabled={bodiesArrCount === bodiesArr.length || triggerPostFormSubmit}
             onClick={() => {
               devTestingDispatch({
                 type: devTestingAction.setTriggerPostFormSubmit,
@@ -368,7 +368,7 @@ function DevTesting() {
           >
             Trigger POST
           </Button>
-        </Group>
+        </Group> */}
 
         <Text>GET REQUEST</Text>
         <Group>

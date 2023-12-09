@@ -66,6 +66,7 @@ type CreateCustomerState = {
   username: string;
   isUsernameFocused: boolean;
   isUsernameValid: boolean;
+  isUsernameExists: boolean;
 
   password: string;
   isPasswordFocused: boolean;
@@ -78,6 +79,7 @@ type CreateCustomerState = {
   email: string;
   isEmailFocused: boolean;
   isEmailValid: boolean;
+  isEmailExists: boolean;
 
   firstName: string;
   isFirstNameFocused: boolean;

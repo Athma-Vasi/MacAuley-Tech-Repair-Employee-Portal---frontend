@@ -37,6 +37,13 @@ function setIsUsernameValid_CreateCustomerReducer(
   return { ...state, isUsernameValid: dispatch.payload as boolean };
 }
 
+function setIsUsernameExists_CreateCustomerReducer(
+  state: CreateCustomerState,
+  dispatch: CreateCustomerDispatch
+): CreateCustomerState {
+  return { ...state, isUsernameExists: dispatch.payload as boolean };
+}
+
 // ╭─────────────────────────────────────────────────────────────────╮
 //    PASSWORD
 // ╰─────────────────────────────────────────────────────────────────╯
@@ -107,6 +114,13 @@ function setIsEmailValid_CreateCustomerReducer(
   dispatch: CreateCustomerDispatch
 ): CreateCustomerState {
   return { ...state, isEmailValid: dispatch.payload as boolean };
+}
+
+function setIsEmailExists_CreateCustomerReducer(
+  state: CreateCustomerState,
+  dispatch: CreateCustomerDispatch
+): CreateCustomerState {
+  return { ...state, isEmailExists: dispatch.payload as boolean };
 }
 
 // ╭─────────────────────────────────────────────────────────────────╮
@@ -700,6 +714,7 @@ const createCustomerReducersMap = new Map<
   [createCustomerAction.setUsername, setUsername_CreateCustomerReducer],
   [createCustomerAction.setIsUsernameFocused, setIsUsernameFocused_CreateCustomerReducer],
   [createCustomerAction.setIsUsernameValid, setIsUsernameValid_CreateCustomerReducer],
+  [createCustomerAction.setIsUsernameExists, setIsUsernameExists_CreateCustomerReducer],
 
   // ╭─────────────────────────────────────────────────────────────────╮
   //    PASSWORD
@@ -727,6 +742,7 @@ const createCustomerReducersMap = new Map<
   [createCustomerAction.setEmail, setEmail_CreateCustomerReducer],
   [createCustomerAction.setIsEmailFocused, setIsEmailFocused_CreateCustomerReducer],
   [createCustomerAction.setIsEmailValid, setIsEmailValid_CreateCustomerReducer],
+  [createCustomerAction.setIsEmailExists, setIsEmailExists_CreateCustomerReducer],
 
   // ╭─────────────────────────────────────────────────────────────────╮
   //    FIRST NAME

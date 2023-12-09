@@ -112,6 +112,7 @@ function CreateCustomer() {
     username,
     isUsernameFocused,
     isUsernameValid,
+    isUsernameExists,
 
     confirmPassword,
     isConfirmPasswordFocused,
@@ -124,6 +125,7 @@ function CreateCustomer() {
     email,
     isEmailFocused,
     isEmailValid,
+    isEmailExists,
 
     firstName,
     isFirstNameFocused,
@@ -386,6 +388,218 @@ function CreateCustomer() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [triggerFormSubmit]);
 
+  // check username exists on every valid change
+  useEffect(() => {
+    let isMounted = true;
+    // before submitting form, abort any previous requests
+    abortControllerRef.current?.abort();
+    // create new abort controller for current request
+    abortControllerRef.current = new AbortController();
+
+    async function handleCheckUsernameExists() {
+      createCustomerDispatch({
+        type: createCustomerAction.setIsSubmitting,
+        payload: true,
+      });
+
+      const url: URL = urlBuilder({
+        path: "username-email-set/check",
+      });
+
+      const requestInit: RequestInit = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          fields: { username },
+        }),
+        signal: abortControllerRef.current?.signal,
+      };
+
+      try {
+        const response: Response = await wrappedFetch({
+          isMounted,
+          requestInit,
+          signal: abortControllerRef.current?.signal,
+          url,
+        });
+
+        const data: { status: "error" | "success"; message: string } =
+          await response.json();
+
+        if (!isMounted) {
+          return;
+        }
+        if (!response.ok) {
+          throw new Error(data.message);
+        }
+
+        data.status === "error"
+          ? createCustomerDispatch({
+              type: createCustomerAction.setIsUsernameExists,
+              payload: true,
+            })
+          : createCustomerDispatch({
+              type: createCustomerAction.setIsUsernameExists,
+              payload: false,
+            });
+      } catch (error: any) {
+        if (!isMounted || error.name === "AbortError") {
+          return;
+        }
+
+        const errorMessage = !error.response
+          ? "Network error. Please try again."
+          : error?.message ?? "Unknown error occurred. Please try again.";
+
+        globalDispatch({
+          type: globalAction.setErrorState,
+          payload: {
+            isError: true,
+            errorMessage,
+            errorCallback: () => {
+              navigate("/customer/create");
+
+              globalDispatch({
+                type: globalAction.setErrorState,
+                payload: {
+                  isError: false,
+                  errorMessage: "",
+                  errorCallback: () => {},
+                },
+              });
+            },
+          },
+        });
+
+        showBoundary(error);
+      } finally {
+        if (isMounted) {
+          createCustomerDispatch({
+            type: createCustomerAction.setIsSubmitting,
+            payload: false,
+          });
+        }
+      }
+    }
+
+    if (USERNAME_REGEX.test(username) && username.length > 0) {
+      handleCheckUsernameExists();
+    }
+
+    return () => {
+      isMounted = false;
+      abortControllerRef.current?.abort();
+    };
+  }, [username]);
+
+  // check email exists on every valid change
+  useEffect(() => {
+    let isMounted = true;
+    // before submitting form, abort any previous requests
+    abortControllerRef.current?.abort();
+    // create new abort controller for current request
+    abortControllerRef.current = new AbortController();
+
+    async function handleCheckEmailExists() {
+      createCustomerDispatch({
+        type: createCustomerAction.setIsSubmitting,
+        payload: true,
+      });
+
+      const url: URL = urlBuilder({
+        path: "username-email-set/check",
+      });
+
+      const requestInit: RequestInit = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          fields: { email },
+        }),
+        signal: abortControllerRef.current?.signal,
+      };
+
+      try {
+        const response: Response = await wrappedFetch({
+          isMounted,
+          requestInit,
+          signal: abortControllerRef.current?.signal,
+          url,
+        });
+
+        const data: { status: "error" | "success"; message: string } =
+          await response.json();
+
+        if (!isMounted) {
+          return;
+        }
+        if (!response.ok) {
+          throw new Error(data.message);
+        }
+
+        data.status === "error"
+          ? createCustomerDispatch({
+              type: createCustomerAction.setIsEmailExists,
+              payload: true,
+            })
+          : createCustomerDispatch({
+              type: createCustomerAction.setIsEmailExists,
+              payload: false,
+            });
+      } catch (error: any) {
+        if (!isMounted || error.name === "AbortError") {
+          return;
+        }
+
+        const errorMessage = !error.response
+          ? "Network error. Please try again."
+          : error?.message ?? "Unknown error occurred. Please try again.";
+
+        globalDispatch({
+          type: globalAction.setErrorState,
+          payload: {
+            isError: true,
+            errorMessage,
+            errorCallback: () => {
+              navigate("/customer/create");
+
+              globalDispatch({
+                type: globalAction.setErrorState,
+                payload: {
+                  isError: false,
+                  errorMessage: "",
+                  errorCallback: () => {},
+                },
+              });
+            },
+          },
+        });
+
+        showBoundary(error);
+      } finally {
+        if (isMounted) {
+          createCustomerDispatch({
+            type: createCustomerAction.setIsSubmitting,
+            payload: false,
+          });
+        }
+      }
+    }
+
+    if (EMAIL_REGEX.test(email) && email.length > 0) {
+      handleCheckEmailExists();
+    }
+
+    return () => {
+      isMounted = false;
+      abortControllerRef.current?.abort();
+    };
+  }, [email]);
+
   // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
   //  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
   //     VALIDATION USE EFFECTS
@@ -396,13 +610,13 @@ function CreateCustomer() {
   //     USERNAME
   // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
-    const isValid = USERNAME_REGEX.test(username);
+    const isValid = USERNAME_REGEX.test(username) && !isUsernameExists;
 
     createCustomerDispatch({
       type: createCustomerAction.setIsUsernameValid,
       payload: isValid,
     });
-  }, [username]);
+  }, [isUsernameExists, username]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
   //     PASSWORD
@@ -432,13 +646,13 @@ function CreateCustomer() {
   //     EMAIL
   // ╰─────────────────────────────────────────────────────────────────╯
   useEffect(() => {
-    const isValid = EMAIL_REGEX.test(email);
+    const isValid = EMAIL_REGEX.test(email) && !isEmailExists;
 
     createCustomerDispatch({
       type: createCustomerAction.setIsEmailValid,
       payload: isValid,
     });
-  }, [email]);
+  }, [email, isEmailExists]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
   //     FIRST NAME
@@ -836,10 +1050,14 @@ function CreateCustomer() {
       inputText: username,
       isInputTextFocused: isUsernameFocused,
       isValidInputText: isUsernameValid,
-      regexValidationText: returnUsernameRegexValidationText({
-        content: username,
-        contentKind: "username",
-      }),
+      regexValidationText: `${
+        isUsernameExists
+          ? "Username already exists. Please choose another."
+          : `${returnUsernameRegexValidationText({
+              content: username,
+              contentKind: "username",
+            })}`
+      } `,
     });
 
   // screenreader accessible text input element
@@ -991,10 +1209,14 @@ function CreateCustomer() {
     inputText: email,
     isInputTextFocused: isEmailFocused,
     isValidInputText: isEmailValid,
-    regexValidationText: returnEmailValidationText({
-      content: email,
-      contentKind: "email",
-    }),
+    regexValidationText: `${
+      isEmailExists
+        ? "Email already exists. Please choose another."
+        : `${returnEmailValidationText({
+            content: email,
+            contentKind: "email",
+          })}`
+    }`,
   });
 
   // screenreader accessible text input element

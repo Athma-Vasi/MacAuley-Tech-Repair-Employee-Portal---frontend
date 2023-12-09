@@ -15,10 +15,12 @@ type RegisterState = {
   email: string;
   isValidEmail: boolean;
   isEmailFocused: boolean;
+  isEmailExists: boolean;
 
   username: string;
   isValidUsername: boolean;
   isUsernameFocused: boolean;
+  isUsernameExists: boolean;
 
   password: string;
   isValidPassword: boolean;
@@ -104,10 +106,12 @@ type RegisterAction = {
   setEmail: "setEmail";
   setIsValidEmail: "setIsValidEmail";
   setIsEmailFocused: "setIsEmailFocused";
+  setIsEmailExists: "setIsEmailExists";
 
   setUsername: "setUsername";
   setIsValidUsername: "setIsValidUsername";
   setIsUsernameFocused: "setIsUsernameFocused";
+  setIsUsernameExists: "setIsUsernameExists";
 
   setPassword: "setPassword";
   setIsValidPassword: "setIsValidPassword";
@@ -210,8 +214,10 @@ type RegisterDispatch =
       type:
         | RegisterAction["setIsValidEmail"]
         | RegisterAction["setIsEmailFocused"]
+        | RegisterAction["setIsEmailExists"]
         | RegisterAction["setIsValidUsername"]
         | RegisterAction["setIsUsernameFocused"]
+        | RegisterAction["setIsUsernameExists"]
         | RegisterAction["setIsValidPassword"]
         | RegisterAction["setIsPasswordFocused"]
         | RegisterAction["setIsValidConfirmPassword"]

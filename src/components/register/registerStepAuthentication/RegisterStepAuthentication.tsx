@@ -15,16 +15,41 @@ import {
   AccessibleTextInputCreatorInfo,
   FormLayoutWrapper,
 } from "../../wrappers";
+import { RegisterAction, RegisterDispatch } from "../types";
 import { returnPasswordRegexValidationText } from "../utils";
-import type { RegisterStepAuthenticationProps } from "./types";
+
+type RegisterStepAuthenticationProps = {
+  email: string;
+  isValidEmail: boolean;
+  isEmailFocused: boolean;
+  isEmailExists: boolean;
+
+  username: string;
+  isValidUsername: boolean;
+  isUsernameFocused: boolean;
+  isUsernameExists: boolean;
+
+  password: string;
+  isValidPassword: boolean;
+  isPasswordFocused: boolean;
+
+  confirmPassword: string;
+  isValidConfirmPassword: boolean;
+  isConfirmPasswordFocused: boolean;
+
+  registerAction: RegisterAction;
+  registerDispatch: React.Dispatch<RegisterDispatch>;
+};
 
 function RegisterStepAuthentication({
   email,
   isEmailFocused,
   isValidEmail,
+  isEmailExists,
   username,
   isUsernameFocused,
   isValidUsername,
+  isUsernameExists,
   password,
   isPasswordFocused,
   isValidPassword,
@@ -36,23 +61,23 @@ function RegisterStepAuthentication({
 }: RegisterStepAuthenticationProps) {
   // used to validate email on every change
   useEffect(() => {
-    const isValidMail = EMAIL_REGEX.test(email);
+    const isValidMail = EMAIL_REGEX.test(email) && !isEmailExists;
 
     registerDispatch({
       type: registerAction.setIsValidEmail,
       payload: isValidMail,
     });
-  }, [email]);
+  }, [email, isEmailExists, registerAction.setIsValidEmail, registerDispatch]);
 
   // used to validate username on every change
   useEffect(() => {
-    const isValidUsr = USERNAME_REGEX.test(username);
+    const isValidUsr = USERNAME_REGEX.test(username) && !isUsernameExists;
 
     registerDispatch({
       type: registerAction.setIsValidUsername,
       payload: isValidUsr,
     });
-  }, [username]);
+  }, [isUsernameExists, registerAction.setIsValidUsername, registerDispatch, username]);
 
   // used to validate password on every change and confirm password on every change
   useEffect(() => {
@@ -68,7 +93,13 @@ function RegisterStepAuthentication({
       type: registerAction.setIsValidConfirmPassword,
       payload: matchPassword && password.length > 0,
     });
-  }, [password, confirmPassword]);
+  }, [
+    password,
+    confirmPassword,
+    registerDispatch,
+    registerAction.setIsValidPassword,
+    registerAction.setIsValidConfirmPassword,
+  ]);
 
   // update the corresponding stepsInError state if any of the inputs are in error
   useEffect(() => {
@@ -97,10 +128,14 @@ function RegisterStepAuthentication({
     inputText: email,
     isValidInputText: isValidEmail,
     isInputTextFocused: isEmailFocused,
-    regexValidationText: returnEmailValidationText({
-      content: email,
-      contentKind: "email",
-    }),
+    regexValidationText: `${
+      isEmailExists
+        ? "Email already exists. Please choose another."
+        : `${returnEmailValidationText({
+            content: email,
+            contentKind: "email",
+          })}`
+    }`,
   });
 
   const [usernameInputErrorText, usernameInputValidText] =
@@ -109,10 +144,14 @@ function RegisterStepAuthentication({
       inputText: username,
       isValidInputText: isValidUsername,
       isInputTextFocused: isUsernameFocused,
-      regexValidationText: returnUsernameRegexValidationText({
-        content: username,
-        contentKind: "username",
-      }),
+      regexValidationText: `${
+        isUsernameExists
+          ? "Username already exists. Please choose another."
+          : `${returnUsernameRegexValidationText({
+              content: username,
+              contentKind: "username",
+            })}`
+      } `,
     });
 
   const passwordRegexValidationText = returnPasswordRegexValidationText({

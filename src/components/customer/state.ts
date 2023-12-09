@@ -4,6 +4,7 @@ const initialCreateCustomerState: CreateCustomerState = {
   username: "",
   isUsernameFocused: false,
   isUsernameValid: false,
+  isUsernameExists: false,
 
   confirmPassword: "",
   isConfirmPasswordFocused: false,
@@ -16,6 +17,7 @@ const initialCreateCustomerState: CreateCustomerState = {
   email: "",
   isEmailFocused: false,
   isEmailValid: false,
+  isEmailExists: false,
 
   firstName: "",
   isFirstNameFocused: false,

@@ -1,7 +1,7 @@
-import { DevTestingAction, DevTestingDispatch, DevTestingState } from './types';
+import { DevTestingAction, DevTestingDispatch, DevTestingState } from "./types";
 
 const initialDevTestingState: DevTestingState = {
-  bodiesArr: [],
+  bodiesArr: { username: [], email: [] },
   bodiesArrCount: 0,
   resourceDocuments: [],
 
@@ -10,12 +10,12 @@ const initialDevTestingState: DevTestingState = {
 };
 
 const devTestingAction: DevTestingAction = {
-  setBodiesArr: 'setBodiesArr',
-  setBodiesArrCount: 'setBodiesArrCount',
-  setResourceDocuments: 'setResourceDocuments',
+  setBodiesArr: "setBodiesArr",
+  setBodiesArrCount: "setBodiesArrCount",
+  setResourceDocuments: "setResourceDocuments",
 
-  setTriggerPostFormSubmit: 'setTriggerPostFormSubmit',
-  setTriggerGetRequest: 'setTriggerGetRequest',
+  setTriggerPostFormSubmit: "setTriggerPostFormSubmit",
+  setTriggerGetRequest: "setTriggerGetRequest",
 };
 
 function devTestingReducer(

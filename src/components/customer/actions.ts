@@ -2,6 +2,7 @@ const createCustomerAction: CreateCustomerAction = {
   setUsername: "setUsername",
   setIsUsernameFocused: "setIsUsernameFocused",
   setIsUsernameValid: "setIsUsernameValid",
+  setIsUsernameExists: "setIsUsernameExists",
 
   setPassword: "setPassword",
   setIsPasswordFocused: "setIsPasswordFocused",
@@ -14,6 +15,7 @@ const createCustomerAction: CreateCustomerAction = {
   setEmail: "setEmail",
   setIsEmailFocused: "setIsEmailFocused",
   setIsEmailValid: "setIsEmailValid",
+  setIsEmailExists: "setIsEmailExists",
 
   setFirstName: "setFirstName",
   setIsFirstNameFocused: "setIsFirstNameFocused",
@@ -121,6 +123,7 @@ type CreateCustomerAction = {
   setUsername: "setUsername";
   setIsUsernameFocused: "setIsUsernameFocused";
   setIsUsernameValid: "setIsUsernameValid";
+  setIsUsernameExists: "setIsUsernameExists";
 
   setPassword: "setPassword";
   setIsPasswordFocused: "setIsPasswordFocused";
@@ -133,6 +136,7 @@ type CreateCustomerAction = {
   setEmail: "setEmail";
   setIsEmailFocused: "setIsEmailFocused";
   setIsEmailValid: "setIsEmailValid";
+  setIsEmailExists: "setIsEmailExists";
 
   setFirstName: "setFirstName";
   setIsFirstNameFocused: "setIsFirstNameFocused";
