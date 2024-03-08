@@ -1,9 +1,9 @@
-import { Card, Flex, Group, Stack, Text, Title } from '@mantine/core';
+import { Card, Flex, Group, Stack, Text, Title } from "@mantine/core";
 
-import { COLORS_SWATCHES } from '../../constants/data';
-import { useGlobalState } from '../../hooks';
-import { returnAccessibleImageElements } from '../../jsxCreators';
-import { returnThemeColors } from '../../utils';
+import { COLORS_SWATCHES } from "../../constants/data";
+import { useGlobalState } from "../../hooks";
+import { returnAccessibleImageElements } from "../../jsxCreators";
+import { returnThemeColors } from "../../utils";
 
 type DisplayResourceHeaderProps = {
   imageSrc: string;
@@ -60,12 +60,7 @@ function DisplayResourceHeader({
 
   const displayResourceTitle =
     resourceTitle.length > 1 ? (
-      <Title
-        color="#f5f5f5"
-        px={padding}
-        pt={padding}
-        order={width >= 1200 ? 1 : 2}
-      >
+      <Title color="#f5f5f5" px={padding} pt={padding} order={width >= 1200 ? 1 : 2}>
         {resourceTitle}
       </Title>
     ) : null;
@@ -75,7 +70,7 @@ function DisplayResourceHeader({
       <Text
         color="#f5f5f5"
         px={padding}
-        size={width >= 1200 ? 'xl' : width >= 991 ? 'lg' : 'md'}
+        size={width >= 1200 ? "xl" : width >= 991 ? "lg" : "md"}
       >
         {resourceDescription}
       </Text>
@@ -86,6 +81,7 @@ function DisplayResourceHeader({
       <Card withBorder radius="md">
         <Card.Section>{createdImage}</Card.Section>
         <Card.Section>
+          f
           <Flex
             direction="column"
             pb={padding}
@@ -94,13 +90,13 @@ function DisplayResourceHeader({
             gap={rowGap}
             // h="75%"
             style={{
-              position: 'absolute',
+              position: "absolute",
 
               // top: width < 480 ? '62%' : width < 1024 ? '68%' : '73%',
-              bottom: '0%',
-              left: '0%',
+              bottom: "0%",
+              left: "0%",
               zIndex: 1,
-              backgroundColor: 'rgba(0,0,0,0.7)',
+              backgroundColor: "rgba(0,0,0,0.7)",
             }}
           >
             {displayResourceTitle}

@@ -1,29 +1,23 @@
-import { PROPERTY_DESCRIPTOR } from '../../constants/data';
-
-import { groupByField } from '../../utils';
+import { PROPERTY_DESCRIPTOR } from "../../constants/data";
+import { groupByField } from "../../utils";
 import {
   DepartmentsNodesAndEdges,
-  DirectoryAction,
   DepartmentsWithDefaultKey,
+  DirectoryAction,
   DirectoryDispatch,
-  JobPositionsWithDefaultKey,
   DirectoryState,
-  StoreLocationsWithDefaultKey,
   DirectoryUserDocument,
   FilteredNodesAndEdges,
-} from './types';
+} from "./types";
 
 const initialDirectoryState: DirectoryState = {
-  groupedByDepartment: {} as Record<
-    DepartmentsWithDefaultKey,
-    DirectoryUserDocument[]
-  >,
+  groupedByDepartment: {} as Record<DepartmentsWithDefaultKey, DirectoryUserDocument[]>,
 
-  filterByDepartment: 'Executive Management',
+  filterByDepartment: "Executive Management",
   filteredDepartmentsNodesAndEdges: null,
-  filterByJobPosition: 'All Job Positions',
+  filterByJobPosition: "All Job Positions",
   filteredJobPositionsNodesAndEdges: null,
-  filterByStoreLocation: 'All Store Locations',
+  filterByStoreLocation: "All Store Locations",
   filteredStoreLocationsNodesAndEdges: null,
 
   triggerFetchUsersDirectory: true,
@@ -35,42 +29,42 @@ const initialDirectoryState: DirectoryState = {
   triggerSetLayoutedNodesAndEdges: false,
 
   // dagre layout options
-  dagreRankDir: 'TB',
-  dagreRankAlign: 'undefined',
+  dagreRankDir: "TB",
+  dagreRankAlign: "undefined",
   dagreNodeSep: 50, // default 50
   dagreRankSep: 50, // default 50
-  dagreRanker: 'network-simplex', // default 'network-simplex'
+  dagreRanker: "network-simplex", // default 'network-simplex'
   dagreMinLen: 1, // minimum edge length default: 1
 
   isLoading: false,
-  loadingMessage: '',
+  loadingMessage: "",
 };
 
 const directoryAction: DirectoryAction = {
-  setGroupedByDepartment: 'setGroupedByDepartment',
+  setGroupedByDepartment: "setGroupedByDepartment",
 
-  setFilterByDepartment: 'setFilterByDepartment',
-  setFilterByJobPosition: 'setFilterByJobPosition',
-  setFilterByStoreLocation: 'setFilterByStoreLocation',
+  setFilterByDepartment: "setFilterByDepartment",
+  setFilterByJobPosition: "setFilterByJobPosition",
+  setFilterByStoreLocation: "setFilterByStoreLocation",
 
-  triggerFetchUsersDirectory: 'triggerFetchUsersDirectory',
-  triggerSetDepartmentsNodesAndEdges: 'triggerSetDepartmentsNodesAndEdges',
-  setDepartmentsNodesAndEdges: 'setDepartmentsNodesAndEdges',
+  triggerFetchUsersDirectory: "triggerFetchUsersDirectory",
+  triggerSetDepartmentsNodesAndEdges: "triggerSetDepartmentsNodesAndEdges",
+  setDepartmentsNodesAndEdges: "setDepartmentsNodesAndEdges",
 
-  setLayoutedNodes: 'setLayoutedNodes',
-  setLayoutedEdges: 'setLayoutedEdges',
-  triggerSetLayoutedNodesAndEdges: 'triggerSetLayoutedNodesAndEdges',
+  setLayoutedNodes: "setLayoutedNodes",
+  setLayoutedEdges: "setLayoutedEdges",
+  triggerSetLayoutedNodesAndEdges: "triggerSetLayoutedNodesAndEdges",
 
   // dagre layout options
-  setDagreRankDir: 'setDagreRankDir',
-  setDagreRankAlign: 'setDagreRankAlign',
-  setDagreNodeSep: 'setDagreNodeSep',
-  setDagreRankSep: 'setDagreRankSep',
-  setDagreRanker: 'setDagreRanker',
-  setDagreMinLen: 'setDagreMinLen',
+  setDagreRankDir: "setDagreRankDir",
+  setDagreRankAlign: "setDagreRankAlign",
+  setDagreNodeSep: "setDagreNodeSep",
+  setDagreRankSep: "setDagreRankSep",
+  setDagreRanker: "setDagreRanker",
+  setDagreMinLen: "setDagreMinLen",
 
-  setIsLoading: 'setIsLoading',
-  setLoadingMessage: 'setLoadingMessage',
+  setIsLoading: "setIsLoading",
+  setLoadingMessage: "setLoadingMessage",
 };
 
 function directoryReducer(
@@ -82,7 +76,7 @@ function directoryReducer(
       const users = action.payload;
       const groupedByDepartment = groupByField<DirectoryUserDocument>({
         objectArray: users,
-        field: 'department',
+        field: "department",
       });
 
       // set trigger to true
@@ -100,24 +94,21 @@ function directoryReducer(
       const filterByDepartment = action.payload;
 
       // and set filteredDepartmentsNodesAndEdges based on said value
-      if (filterByDepartment === 'All Departments') {
+      if (filterByDepartment === "All Departments") {
         return {
           ...state,
           filterByDepartment,
           filteredDepartmentsNodesAndEdges: null,
-          filterByJobPosition: 'All Job Positions',
+          filterByJobPosition: "All Job Positions",
           filteredJobPositionsNodesAndEdges: null,
-          filterByStoreLocation: 'All Store Locations',
+          filterByStoreLocation: "All Store Locations",
           filteredStoreLocationsNodesAndEdges: null,
         };
       }
 
-      const nodesAndEdgesObj =
-        state.departmentsNodesAndEdges[filterByDepartment];
+      const nodesAndEdgesObj = state.departmentsNodesAndEdges[filterByDepartment];
       // create a new object and assign nodes and edges
-      const filteredDepartmentsNodesAndEdges = Object.entries(
-        nodesAndEdgesObj
-      ).reduce(
+      const filteredDepartmentsNodesAndEdges = Object.entries(nodesAndEdgesObj).reduce(
         (filteredDepartmentNodesAndEdgesAcc: FilteredNodesAndEdges, curr) => {
           const key = curr[0]; // will be 'nodes' or 'edges'
           const value = curr[1]; // will be Node[] | Edge[]
@@ -137,9 +128,9 @@ function directoryReducer(
         ...state,
         filterByDepartment,
         filteredDepartmentsNodesAndEdges,
-        filterByJobPosition: 'All Job Positions',
+        filterByJobPosition: "All Job Positions",
         filteredJobPositionsNodesAndEdges: null,
-        filterByStoreLocation: 'All Store Locations',
+        filterByStoreLocation: "All Store Locations",
         filteredStoreLocationsNodesAndEdges: null,
       };
     }
@@ -150,39 +141,28 @@ function directoryReducer(
       const filterByStoreLocation = state.filterByStoreLocation;
 
       // filteredDepartmentNodesAndEdges will always be set when this reducer action is dispatched
-      const filteredDepartmentsNodesAndEdges =
-        state.filteredDepartmentsNodesAndEdges;
+      const filteredDepartmentsNodesAndEdges = state.filteredDepartmentsNodesAndEdges;
 
       if (!filteredDepartmentsNodesAndEdges) {
         return state;
       }
 
       // if filterByJobPosition is 'All Job Positions' then return filteredDepartmentsNodesAndEdges filtered by filterByStoreLocation
-      if (filterByJobPosition === 'All Job Positions') {
-        const {
-          nodes: filteredDepartmentsNodes,
-          edges: filteredDepartmentsEdges,
-        } = filteredDepartmentsNodesAndEdges;
+      if (filterByJobPosition === "All Job Positions") {
+        const { nodes: filteredDepartmentsNodes, edges: filteredDepartmentsEdges } =
+          filteredDepartmentsNodesAndEdges;
 
-        const filteredJobPositionsNodes = filteredDepartmentsNodes.filter(
-          (node) => {
-            return filterByStoreLocation === 'All Store Locations'
-              ? node
-              : node.id
-                  .toLowerCase()
-                  .includes(filterByStoreLocation.toLowerCase());
-          }
-        );
+        const filteredJobPositionsNodes = filteredDepartmentsNodes.filter((node) => {
+          return filterByStoreLocation === "All Store Locations"
+            ? node
+            : node.id.toLowerCase().includes(filterByStoreLocation.toLowerCase());
+        });
 
-        const filteredJobPositionsEdges = filteredDepartmentsEdges.filter(
-          (edge) => {
-            return filterByStoreLocation === 'All Store Locations'
-              ? edge
-              : edge.id
-                  .toLowerCase()
-                  .includes(filterByStoreLocation.toLowerCase());
-          }
-        );
+        const filteredJobPositionsEdges = filteredDepartmentsEdges.filter((edge) => {
+          return filterByStoreLocation === "All Store Locations"
+            ? edge
+            : edge.id.toLowerCase().includes(filterByStoreLocation.toLowerCase());
+        });
 
         const filteredJobPositionsNodesAndEdges = Object.create(
           null
@@ -199,36 +179,22 @@ function directoryReducer(
       }
 
       // if filterByJobPosition is not 'All Job Positions' then return filteredDepartmentsNodesAndEdges filtered by filterByJobPosition and filterByStoreLocation
-      const {
-        nodes: filteredDepartmentsNodes,
-        edges: filteredDepartmentsEdges,
-      } = filteredDepartmentsNodesAndEdges;
+      const { nodes: filteredDepartmentsNodes, edges: filteredDepartmentsEdges } =
+        filteredDepartmentsNodesAndEdges;
 
-      const filteredJobPositionsNodes = filteredDepartmentsNodes.filter(
-        (node) => {
-          return filterByStoreLocation === 'All Store Locations'
-            ? node.id.toLowerCase().includes(filterByJobPosition.toLowerCase())
-            : node.id
-                .toLowerCase()
-                .includes(filterByJobPosition.toLowerCase()) &&
-                node.id
-                  .toLowerCase()
-                  .includes(filterByStoreLocation.toLowerCase());
-        }
-      );
+      const filteredJobPositionsNodes = filteredDepartmentsNodes.filter((node) => {
+        return filterByStoreLocation === "All Store Locations"
+          ? node.id.toLowerCase().includes(filterByJobPosition.toLowerCase())
+          : node.id.toLowerCase().includes(filterByJobPosition.toLowerCase()) &&
+              node.id.toLowerCase().includes(filterByStoreLocation.toLowerCase());
+      });
 
-      const filteredJobPositionsEdges = filteredDepartmentsEdges.filter(
-        (edge) => {
-          return filterByStoreLocation === 'All Store Locations'
-            ? edge.id.toLowerCase().includes(filterByJobPosition.toLowerCase())
-            : edge.id
-                .toLowerCase()
-                .includes(filterByJobPosition.toLowerCase()) &&
-                edge.id
-                  .toLowerCase()
-                  .includes(filterByStoreLocation.toLowerCase());
-        }
-      );
+      const filteredJobPositionsEdges = filteredDepartmentsEdges.filter((edge) => {
+        return filterByStoreLocation === "All Store Locations"
+          ? edge.id.toLowerCase().includes(filterByJobPosition.toLowerCase())
+          : edge.id.toLowerCase().includes(filterByJobPosition.toLowerCase()) &&
+              edge.id.toLowerCase().includes(filterByStoreLocation.toLowerCase());
+      });
 
       const filteredJobPositionsNodesAndEdges = Object.create(
         null
@@ -250,39 +216,28 @@ function directoryReducer(
       const filterByJobPosition = state.filterByJobPosition;
 
       // filteredDepartmentsNodesAndEdges will always be set when this reducer action is dispatched
-      const filteredDepartmentsNodesAndEdges =
-        state.filteredDepartmentsNodesAndEdges;
+      const filteredDepartmentsNodesAndEdges = state.filteredDepartmentsNodesAndEdges;
 
       if (!filteredDepartmentsNodesAndEdges) {
         return state;
       }
 
       // if filterByStoreLocation is 'All Store Locations' then return filteredDepartmentsNodesAndEdges filtered by filterByJobPosition
-      if (filterByStoreLocation === 'All Store Locations') {
-        const {
-          nodes: filteredDepartmentsNodes,
-          edges: filteredDepartmentsEdges,
-        } = filteredDepartmentsNodesAndEdges;
+      if (filterByStoreLocation === "All Store Locations") {
+        const { nodes: filteredDepartmentsNodes, edges: filteredDepartmentsEdges } =
+          filteredDepartmentsNodesAndEdges;
 
-        const filteredStoreLocationsNodes = filteredDepartmentsNodes.filter(
-          (node) => {
-            return filterByJobPosition === 'All Job Positions'
-              ? node
-              : node.id
-                  .toLowerCase()
-                  .includes(filterByJobPosition.toLowerCase());
-          }
-        );
+        const filteredStoreLocationsNodes = filteredDepartmentsNodes.filter((node) => {
+          return filterByJobPosition === "All Job Positions"
+            ? node
+            : node.id.toLowerCase().includes(filterByJobPosition.toLowerCase());
+        });
 
-        const filteredStoreLocationsEdges = filteredDepartmentsEdges.filter(
-          (edge) => {
-            return filterByJobPosition === 'All Job Positions'
-              ? edge
-              : edge.id
-                  .toLowerCase()
-                  .includes(filterByJobPosition.toLowerCase());
-          }
-        );
+        const filteredStoreLocationsEdges = filteredDepartmentsEdges.filter((edge) => {
+          return filterByJobPosition === "All Job Positions"
+            ? edge
+            : edge.id.toLowerCase().includes(filterByJobPosition.toLowerCase());
+        });
 
         const filteredStoreLocationsNodesAndEdges = Object.create(
           null
@@ -299,40 +254,22 @@ function directoryReducer(
       }
 
       // if filterByStoreLocation is not 'All Store Locations' then return filteredDepartmentsNodesAndEdges filtered by filterByStoreLocation and filterByJobPosition
-      const {
-        nodes: filteredDepartmentsNodes,
-        edges: filteredDepartmentsEdges,
-      } = filteredDepartmentsNodesAndEdges;
+      const { nodes: filteredDepartmentsNodes, edges: filteredDepartmentsEdges } =
+        filteredDepartmentsNodesAndEdges;
 
-      const filteredStoreLocationsNodes = filteredDepartmentsNodes.filter(
-        (node) => {
-          return filterByJobPosition === 'All Job Positions'
-            ? node.id
-                .toLowerCase()
-                .includes(filterByStoreLocation.toLowerCase())
-            : node.id
-                .toLowerCase()
-                .includes(filterByStoreLocation.toLowerCase()) &&
-                node.id
-                  .toLowerCase()
-                  .includes(filterByJobPosition.toLowerCase());
-        }
-      );
+      const filteredStoreLocationsNodes = filteredDepartmentsNodes.filter((node) => {
+        return filterByJobPosition === "All Job Positions"
+          ? node.id.toLowerCase().includes(filterByStoreLocation.toLowerCase())
+          : node.id.toLowerCase().includes(filterByStoreLocation.toLowerCase()) &&
+              node.id.toLowerCase().includes(filterByJobPosition.toLowerCase());
+      });
 
-      const filteredStoreLocationsEdges = filteredDepartmentsEdges.filter(
-        (edge) => {
-          return filterByJobPosition === 'All Job Positions'
-            ? edge.id
-                .toLowerCase()
-                .includes(filterByStoreLocation.toLowerCase())
-            : edge.id
-                .toLowerCase()
-                .includes(filterByStoreLocation.toLowerCase()) &&
-                edge.id
-                  .toLowerCase()
-                  .includes(filterByJobPosition.toLowerCase());
-        }
-      );
+      const filteredStoreLocationsEdges = filteredDepartmentsEdges.filter((edge) => {
+        return filterByJobPosition === "All Job Positions"
+          ? edge.id.toLowerCase().includes(filterByStoreLocation.toLowerCase())
+          : edge.id.toLowerCase().includes(filterByStoreLocation.toLowerCase()) &&
+              edge.id.toLowerCase().includes(filterByJobPosition.toLowerCase());
+      });
 
       const filteredStoreLocationsNodesAndEdges = Object.create(
         null
@@ -362,7 +299,7 @@ function directoryReducer(
       const departmentsNodesAndEdges = state.departmentsNodesAndEdges;
 
       switch (kind) {
-        case 'nodes': {
+        case "nodes": {
           departmentsNodesAndEdges[department] = {
             ...departmentsNodesAndEdges[department],
             nodes: data,
@@ -373,7 +310,7 @@ function directoryReducer(
             departmentsNodesAndEdges,
           };
         }
-        case 'edges': {
+        case "edges": {
           departmentsNodesAndEdges[department] = {
             ...departmentsNodesAndEdges[department],
             edges: data,

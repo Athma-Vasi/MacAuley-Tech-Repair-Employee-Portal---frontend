@@ -2,35 +2,34 @@ import {
   DisplayResourceAction,
   DisplayResourceDispatch,
   DisplayResourceState,
-} from './types';
+} from "./types";
 
 const displayResourceAction: DisplayResourceAction = {
-  setResourceData: 'setResourceData',
-  updateResourceData: 'updateResourceData',
-  setPages: 'setPages',
-  setTotalDocuments: 'setTotalDocuments',
-  setProductCategory: 'setProductCategory',
+  setResourceData: "setResourceData",
+  updateResourceData: "updateResourceData",
+  setPages: "setPages",
+  setTotalDocuments: "setTotalDocuments",
 
-  setQueryValuesArray: 'setQueryValuesArray',
-  setNewQueryFlag: 'setNewQueryFlag',
-  setQueryBuilderString: 'setQueryBuilderString',
-  setPageQueryString: 'setPageQueryString',
-  setLimitPerPage: 'setLimitPerPage',
-  setResetPage: 'setResetPage',
+  setQueryValuesArray: "setQueryValuesArray",
+  setNewQueryFlag: "setNewQueryFlag",
+  setQueryBuilderString: "setQueryBuilderString",
+  setPageQueryString: "setPageQueryString",
+  setLimitPerPage: "setLimitPerPage",
+  setResetPage: "setResetPage",
 
-  setFileUploads: 'setFileUploads',
-  setRequestStatus: 'setRequestStatus',
+  setFileUploads: "setFileUploads",
+  setRequestStatus: "setRequestStatus",
 
-  setDeleteResource: 'setDeleteResource',
-  setTriggerRefresh: 'setTriggerRefresh',
-  setTriggerUpdateRequestStatus: 'setTriggerUpdateRequestStatus',
+  setDeleteResource: "setDeleteResource",
+  setTriggerRefresh: "setTriggerRefresh",
+  setTriggerUpdateRequestStatus: "setTriggerUpdateRequestStatus",
 
-  setIsSubmitting: 'setIsSubmitting',
-  setSubmitMessage: 'setSubmitMessage',
-  setIsSuccessful: 'setIsSuccessful',
-  setSuccessMessage: 'setSuccessMessage',
-  setIsLoading: 'setIsLoading',
-  setLoadingMessage: 'setLoadingMessage',
+  setIsSubmitting: "setIsSubmitting",
+  setSubmitMessage: "setSubmitMessage",
+  setIsSuccessful: "setIsSuccessful",
+  setSuccessMessage: "setSuccessMessage",
+  setIsLoading: "setIsLoading",
+  setLoadingMessage: "setLoadingMessage",
 };
 
 function displayResourceReducer<Doc>(
@@ -48,7 +47,7 @@ function displayResourceReducer<Doc>(
       const { id, data, kind } = action.payload;
 
       switch (kind) {
-        case 'update': {
+        case "update": {
           const updatedResourceData = state.resourceData.map((resource) => {
             if (resource._id === id) {
               return {
@@ -64,7 +63,7 @@ function displayResourceReducer<Doc>(
             resourceData: updatedResourceData,
           };
         }
-        case 'delete': {
+        case "delete": {
           const updatedResourceData = state.resourceData.filter(
             (resource) => resource._id !== id
           );
@@ -95,14 +94,14 @@ function displayResourceReducer<Doc>(
       const queryValuesArray = [...state.queryValuesArray];
 
       switch (kind) {
-        case 'add': {
+        case "add": {
           queryValuesArray.push(value);
           return {
             ...state,
             queryValuesArray,
           };
         }
-        case 'remove': {
+        case "remove": {
           const index = queryValuesArray.indexOf(value);
           if (index > -1) {
             queryValuesArray.splice(index, 1);
@@ -112,7 +111,7 @@ function displayResourceReducer<Doc>(
             queryValuesArray,
           };
         }
-        case 'clear': {
+        case "clear": {
           return {
             ...state,
             queryValuesArray: [],
@@ -122,12 +121,6 @@ function displayResourceReducer<Doc>(
           return state;
       }
     }
-
-    case displayResourceAction.setProductCategory:
-      return {
-        ...state,
-        productCategory: action.payload,
-      };
 
     case displayResourceAction.setNewQueryFlag:
       return {

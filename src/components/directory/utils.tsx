@@ -6,25 +6,21 @@ import {
   Text,
   Title,
   Tooltip,
-} from '@mantine/core';
-import dagre from 'dagre';
-import { CSSProperties } from 'react';
-import { TbBrandMastodon } from 'react-icons/tb';
-import {
-  TiSocialDribbble,
-  TiSocialFlickr,
-  TiSocialLinkedin,
-} from 'react-icons/ti';
-import { Edge, Node } from 'reactflow';
+} from "@mantine/core";
+import dagre from "dagre";
+import { CSSProperties } from "react";
+import { TbBrandMastodon } from "react-icons/tb";
+import { TiSocialDribbble, TiSocialFlickr, TiSocialLinkedin } from "react-icons/ti";
+import { Edge, Node } from "reactflow";
 
-import { returnAccessibleImageElements } from '../../jsxCreators';
+import { returnAccessibleImageElements } from "../../jsxCreators";
 import {
   DagreLabelPos,
   DagreRankAlign,
   DagreRankDir,
   DagreRankerAlgorithm,
   DirectoryUserDocument,
-} from './types';
+} from "./types";
 
 type ReturnDirectoryProfileCardInput = {
   userDocument: DirectoryUserDocument;
@@ -49,31 +45,31 @@ function returnDirectoryProfileCard({
   rowGap,
   style = {},
 }: ReturnDirectoryProfileCardInput) {
-  const { backgroundColor = '#f5f5f5', border, color } = style;
+  const { backgroundColor = "#f5f5f5", border, color } = style;
 
   const createdSocialMediaIcons = (
     <Flex wrap="wrap" align="center" justify="flex-start" columnGap={4}>
       <Tooltip label={`View ${firstName} ${lastName}'s Mastodon profile`}>
         <Group>
-          <TbBrandMastodon size={18} style={{ cursor: 'pointer', color }} />
+          <TbBrandMastodon size={18} style={{ cursor: "pointer", color }} />
         </Group>
       </Tooltip>
 
       <Tooltip label={`View ${firstName} ${lastName}'s LinkedIn profile`}>
         <Group>
-          <TiSocialLinkedin size={18} style={{ cursor: 'pointer', color }} />
+          <TiSocialLinkedin size={18} style={{ cursor: "pointer", color }} />
         </Group>
       </Tooltip>
 
       <Tooltip label={`View ${firstName} ${lastName}'s Flickr profile`}>
         <Group>
-          <TiSocialFlickr size={18} style={{ cursor: 'pointer', color }} />
+          <TiSocialFlickr size={18} style={{ cursor: "pointer", color }} />
         </Group>
       </Tooltip>
 
       <Tooltip label={`View ${firstName} ${lastName}'s Dribbble profile`}>
         <Group>
-          <TiSocialDribbble size={18} style={{ cursor: 'pointer', color }} />
+          <TiSocialDribbble size={18} style={{ cursor: "pointer", color }} />
         </Group>
       </Tooltip>
     </Flex>
@@ -84,7 +80,7 @@ function returnDirectoryProfileCard({
       customWidth: 84,
       customHeight: 84,
       customRadius: 9999,
-      fit: 'cover',
+      fit: "cover",
       imageSrc: profilePictureUrl,
       imageAlt: `Picture of ${firstName} ${lastName}`,
       isCard: false,
@@ -133,12 +129,12 @@ function returnDirectoryProfileCard({
           <Title
             order={6}
             style={{
-              letterSpacing: '1px',
+              letterSpacing: "1px",
             }}
           >{`${firstName} ${lastName}`}</Title>
           <Text align="initial">{jobPosition}</Text>
           <Flex w="100%" align="center" justify="center" wrap="wrap">
-            {email.split('@').map((str, idx) => (
+            {email.split("@").map((str, idx) => (
               <Flex w="100%" gap={2}>
                 {idx === 1 ? <Text pl={padding}>@</Text> : null}
                 <Text key={`${str}-${idx}`} align="initial">
@@ -184,17 +180,17 @@ function returnDagreLayoutedElements(
     nodes,
     nodeHeight = 267,
     nodeWidth = 371,
-    rankdir = 'TB',
+    rankdir = "TB",
     align,
     nodesep = 50,
     edgesep = 10,
     ranksep = 50,
     marginx = 0,
     marginy = 0,
-    ranker = 'network-simplex',
+    ranker = "network-simplex",
     minlen = 1,
     weight = 1,
-    labelpos = 'r',
+    labelpos = "r",
     labeloffset = 10,
   } = dagreLayoutOptions;
 
@@ -206,7 +202,7 @@ function returnDagreLayoutedElements(
     labeloffset,
   }));
 
-  const isHorizontal = rankdir === 'LR';
+  const isHorizontal = rankdir === "LR";
   dagreGraph.setGraph({
     rankdir,
     align,
@@ -231,8 +227,8 @@ function returnDagreLayoutedElements(
   nodes.forEach((node) => {
     const nodeWithPosition = dagreGraph.node(node.id);
     // type mismatch in library defs
-    node.targetPosition = isHorizontal ? ('left' as any) : ('top' as any);
-    node.sourcePosition = isHorizontal ? ('right' as any) : ('bottom' as any);
+    node.targetPosition = isHorizontal ? ("left" as any) : ("top" as any);
+    node.sourcePosition = isHorizontal ? ("right" as any) : ("bottom" as any);
 
     // shifting the dagre node position (anchor=center center) to the top left
     // so it matches the React Flow node anchor point (top left).
@@ -243,6 +239,8 @@ function returnDagreLayoutedElements(
 
     return node;
   });
+
+  console.log("DAGRE ");
 
   return { nodes, edges };
 }

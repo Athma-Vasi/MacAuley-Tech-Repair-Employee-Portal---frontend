@@ -7,7 +7,6 @@ import {
   Image,
   Modal,
   ScrollArea,
-  SegmentedControl,
   Space,
   Stack,
   Text,
@@ -49,6 +48,7 @@ import {
 } from "./state";
 import { DisplayQueryProps } from "./types";
 import { GROUP_BY_HELP_MODAL_CONTENT } from "./utils";
+import DisplayQueryCards from "./displayQueryCards/DisplayQueryCards";
 
 function DisplayQuery<
   Doc extends Record<string | symbol | number, any> = Record<
@@ -78,6 +78,7 @@ function DisplayQuery<
     currentSelectionData,
     groupBySelection,
     groupedByQueryResponseData,
+    displayDocumentsView,
     fileUploadsForAForm,
     acknowledgementText,
     isAcknowledgementTextFocused,
@@ -854,7 +855,7 @@ function DisplayQuery<
         requestStatusDispatch={parentRequestStatusDispatch}
         setFileUploadsForAFormDispatch={displayQueryDispatch}
       />
-    ) : (
+    ) : displayDocumentsView === "table" ? (
       <DisplayQueryDesktop
         componentQueryData={componentQueryData}
         deleteFormIdDispatch={displayQueryDispatch}
@@ -870,6 +871,13 @@ function DisplayQuery<
         queryValuesArray={queryValuesArray}
         requestStatusDispatch={parentRequestStatusDispatch}
         setFileUploadsForAFormDispatch={displayQueryDispatch}
+      />
+    ) : (
+      <DisplayQueryCards
+        componentQueryData={componentQueryData}
+        groupByRadioData={groupByRadioData}
+        groupBySelection={groupBySelection}
+        groupedByQueryResponseData={groupedByQueryResponseData}
       />
     );
 

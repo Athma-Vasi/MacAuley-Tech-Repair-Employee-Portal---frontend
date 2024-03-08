@@ -1,21 +1,19 @@
-import { Center, Flex, Group, Title } from '@mantine/core';
-import { AnimatePresence, motion } from 'framer-motion';
-import { useEffect, useState } from 'react';
+import { Center, Flex, Group, Title } from "@mantine/core";
+import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useState } from "react";
 import {
   TbArrowLeft,
   TbArrowRight,
-  TbPhoto,
-  TbPhotoPause,
   TbPlayerPauseFilled,
   TbPlayerPlayFilled,
-} from 'react-icons/tb';
+} from "react-icons/tb";
 
-import { COLORS_SWATCHES } from '../../constants/data';
-import { useGlobalState } from '../../hooks';
-import { returnAccessibleButtonElements } from '../../jsxCreators';
-import { returnThemeColors } from '../../utils';
-import { AccessibleButtonCreatorInfo } from '../wrappers';
-import { CarouselBuilderProps } from './types';
+import { COLORS_SWATCHES } from "../../constants/data";
+import { useGlobalState } from "../../hooks";
+import { returnAccessibleButtonElements } from "../../jsxCreators";
+import { returnThemeColors } from "../../utils";
+import { AccessibleButtonCreatorInfo } from "../wrappers";
+import { CarouselBuilderProps } from "./types";
 
 function CarouselBuilder({
   autoPlaySpeed = 5000,
@@ -42,43 +40,36 @@ function CarouselBuilder({
     }
   }, [isAutoplaying, autoPlaySpeed, currentSlide]);
 
-  // const carouselWrapperWidth = slideWidth - 22;
-  // const carouselWrapperHeight = slideHeight - 22;
-  const carouselWrapperWidth = slideWidth;
-  const carouselWrapperHeight = slideHeight;
+  const carouselWrapperWidth = slideWidth - 22;
+  const carouselWrapperHeight = slideHeight - 22;
 
   const leftControlIconButtonCreatorInfo: AccessibleButtonCreatorInfo = {
-    buttonLabel: 'Previous',
+    buttonDisabled: slides.length === 1,
+    buttonLabel: "Previous",
     leftIcon: <TbArrowLeft />,
-    semanticDescription: 'Go to previous slide',
-    semanticName: 'previous slide',
+    semanticDescription: "Go to previous slide",
+    semanticName: "previous slide",
     buttonOnClick: () => {
-      setCurrentSlide(
-        currentSlide === 0 ? slides.length - 1 : currentSlide - 1
-      );
+      setCurrentSlide(currentSlide === 0 ? slides.length - 1 : currentSlide - 1);
     },
   };
 
   const rightControlIconButtonCreatorInfo: AccessibleButtonCreatorInfo = {
-    buttonLabel: 'Next',
+    buttonDisabled: slides.length === 1,
+    buttonLabel: "Next",
     rightIcon: <TbArrowRight />,
-    semanticDescription: 'Go to next slide',
-    semanticName: 'next slide',
+    semanticDescription: "Go to next slide",
+    semanticName: "next slide",
     buttonOnClick: () => {
-      setCurrentSlide(
-        currentSlide === slides.length - 1 ? 0 : currentSlide + 1
-      );
+      setCurrentSlide(currentSlide === slides.length - 1 ? 0 : currentSlide + 1);
     },
   };
 
   const autoPlayPauseIconButtonCreatorInfo: AccessibleButtonCreatorInfo = {
-    buttonLabel: isAutoplaying ? (
-      <TbPlayerPauseFilled />
-    ) : (
-      <TbPlayerPlayFilled />
-    ),
-    semanticDescription: 'Pause autoplay',
-    semanticName: 'pause autoplay',
+    buttonDisabled: slides.length === 1,
+    buttonLabel: isAutoplaying ? <TbPlayerPauseFilled /> : <TbPlayerPlayFilled />,
+    semanticDescription: "Pause autoplay",
+    semanticName: "pause autoplay",
     buttonOnClick: () => {
       setIsAutoplaying((prev) => !prev);
     },
@@ -143,13 +134,13 @@ function CarouselBuilder({
       bg={backgroundColor}
       direction="column"
       h={carouselWrapperHeight}
-      justify={slides.length > 1 ? 'space-evenly' : 'center'}
-      style={{ zIndex: 2, border: withBorder ? borderColor : 'none' }}
+      justify={slides.length > 1 ? "space-evenly" : "center"}
+      style={{ zIndex: 2, border: withBorder ? borderColor : "none" }}
       w={carouselWrapperWidth}
     >
       <Group w="100%" position="apart" px={padding}>
         <Title order={4}>{headings?.[currentSlide]}</Title>
-        <Group spacing={padding}>
+        <Group spacing={padding} pb="xs">
           {createdLeftControlIconButton}
           {createdAutoPlayPauseIconButton}
           {createdRightControlIconButton}

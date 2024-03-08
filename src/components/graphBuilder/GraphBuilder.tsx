@@ -1,7 +1,7 @@
-import 'reactflow/dist/style.css';
+import "reactflow/dist/style.css";
 
-import { Button, Flex } from '@mantine/core';
-import { useEffect } from 'react';
+import { Button, Flex } from "@mantine/core";
+import { useEffect } from "react";
 import ReactFlow, {
   Background,
   Controls,
@@ -11,10 +11,10 @@ import ReactFlow, {
   ReactFlowProvider,
   useReactFlow,
   Viewport,
-} from 'reactflow';
-import { useGlobalState } from '../../hooks';
-import { returnThemeColors } from '../../utils';
-import { COLORS_SWATCHES } from '../../constants/data';
+} from "reactflow";
+import { useGlobalState } from "../../hooks";
+import { returnThemeColors } from "../../utils";
+import { COLORS_SWATCHES } from "../../constants/data";
 
 type GraphBuilderProps = {
   layoutedNodes: Node[];
@@ -75,7 +75,7 @@ function GraphBuilder({ layoutedEdges, layoutedNodes }: GraphBuilderProps) {
     <Flex
       w="100%"
       h="100%"
-      style={{ border: borderColor, borderRadius: '4px' }}
+      style={{ border: borderColor, borderRadius: "4px" }}
       direction="column"
     >
       {/* {displayButtons} */}
@@ -94,10 +94,7 @@ export default function GraphBuilderWrapper({
 }) {
   return (
     <ReactFlowProvider>
-      <GraphBuilder
-        layoutedEdges={layoutedEdges}
-        layoutedNodes={layoutedNodes}
-      />
+      <GraphBuilder layoutedEdges={layoutedEdges} layoutedNodes={layoutedNodes} />
     </ReactFlowProvider>
   );
 }

@@ -48,6 +48,7 @@ import {
 } from "./state";
 import { DisplayQueryDesktopProps } from "./types";
 import { returnWhichResourceInView, sortGroupedByQueryResponseData } from "./utils";
+import { HEADER_EXCLUSION_SET } from "./constants";
 
 function DisplayQueryDesktop({
   componentQueryData,
@@ -180,17 +181,6 @@ function DisplayQueryDesktop({
 
   console.log({ tableHeaderValuesArr });
 
-  // used to prevent display of sort arrows on groupedBy or id fields
-  const headerExclusionSet = new Set([
-    "_id",
-    "user id",
-    "benefit user id",
-    "uploaded files ids",
-    "view profile",
-    "file uploads",
-    "edit",
-    "delete",
-  ]);
   const groupByRadioDataLabels = new Set(
     groupByRadioData.map(({ label }) => label.toLowerCase())
   );
@@ -201,10 +191,11 @@ function DisplayQueryDesktop({
       // ignore any header values present in group by radio data
       if (
         groupByRadioDataLabels.has(headerVal.toLowerCase()) ||
-        headerExclusionSet.has(headerVal.toLowerCase())
+        HEADER_EXCLUSION_SET.has(headerVal.toLowerCase())
       ) {
         return filteredHeaderValsAcc;
       }
+
       filteredHeaderValsAcc.push(headerVal);
 
       return filteredHeaderValsAcc;
@@ -888,7 +879,8 @@ function DisplayQueryDesktop({
   const selectedDocument =
     Array.from(groupedByQueryResponseData)
       .flatMap(([, queryResponseObjArrays]) => queryResponseObjArrays)
-      .find((queryResponseObj) => queryResponseObj._id === currentDocumentId) || {};
+      .find((queryResponseObj) => queryResponseObj._id === currentDocumentId) ||
+    Object.create(null);
 
   const displayUpdateRequestStatusModal = (
     <Modal

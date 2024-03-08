@@ -1,17 +1,13 @@
-import { QUERY_BUILDER_FILTER_OPERATORS } from './constants';
-import {
-  QueryBuilderAction,
-  QueryBuilderDispatch,
-  QueryBuilderState,
-} from './types';
-import { generateQueryString } from './utils';
+import { QUERY_BUILDER_FILTER_OPERATORS } from "./constants";
+import { QueryBuilderAction, QueryBuilderDispatch, QueryBuilderState } from "./types";
+import { generateQueryString } from "./utils";
 
 const initialQueryBuilderState: QueryBuilderState = {
   // filter
   filterSelectData: [],
-  currentFilterField: 'Created Date',
-  currentFilterOperator: 'equal to',
-  currentFilterValue: '1970-01-01',
+  currentFilterField: "Created Date",
+  currentFilterOperator: "equal to",
+  currentFilterValue: "1970-01-01",
   isCurrentFilterValueValid: false,
   isCurrentFilterValueFocused: false,
   filterOperatorSelectData: QUERY_BUILDER_FILTER_OPERATORS,
@@ -19,27 +15,27 @@ const initialQueryBuilderState: QueryBuilderState = {
 
   // search
   searchSelectData: [],
-  currentSearchField: 'Username',
-  currentSearchValue: '',
+  currentSearchField: "Username",
+  currentSearchValue: "",
   isCurrentSearchValueValid: false,
   isCurrentSearchValueFocused: false,
   searchStatementsQueue: [],
 
   isGeneralSearchCaseSensitive: false,
   // general search inclusion
-  generalSearchInclusionValue: '',
+  generalSearchInclusionValue: "",
   isGeneralSearchInclusionValueValid: false,
   isGeneralSearchInclusionValueFocused: false,
 
   // general search exclusion
-  generalSearchExclusionValue: '',
+  generalSearchExclusionValue: "",
   isGeneralSearchExclusionValueValid: false,
   isGeneralSearchExclusionValueFocused: false,
 
   // sort
   sortSelectData: [],
-  currentSortField: 'Created Date',
-  currentSortDirection: 'ascending',
+  currentSortField: "Created Date",
+  currentSortDirection: "ascending",
   sortStatementsQueue: [],
 
   // projection
@@ -49,7 +45,7 @@ const initialQueryBuilderState: QueryBuilderState = {
   projectedFieldsSet: new Set(),
 
   labelValueTypesMap: new Map(),
-  queryString: '?',
+  queryString: "?",
 
   // accordion chevron states
   isQueryBuilderOpened: false,
@@ -61,60 +57,56 @@ const initialQueryBuilderState: QueryBuilderState = {
 
 const queryBuilderAction: QueryBuilderAction = {
   // filter
-  setFilterSelectData: 'setFilterSelectData',
-  setCurrentFilterField: 'setCurrentFilterField',
-  setCurrentFilterOperator: 'setCurrentFilterOperator',
-  setCurrentFilterValue: 'setCurrentFilterValue',
-  setIsCurrentFilterValueValid: 'setIsCurrentFilterValueValid',
-  setIsCurrentFilterValueFocused: 'setIsCurrentFilterValueFocused',
-  setFilterOperatorSelectData: 'setFilterOperatorSelectData',
-  setFilterStatementsQueue: 'setFilterStatementsQueue',
+  setFilterSelectData: "setFilterSelectData",
+  setCurrentFilterField: "setCurrentFilterField",
+  setCurrentFilterOperator: "setCurrentFilterOperator",
+  setCurrentFilterValue: "setCurrentFilterValue",
+  setIsCurrentFilterValueValid: "setIsCurrentFilterValueValid",
+  setIsCurrentFilterValueFocused: "setIsCurrentFilterValueFocused",
+  setFilterOperatorSelectData: "setFilterOperatorSelectData",
+  setFilterStatementsQueue: "setFilterStatementsQueue",
 
   // search
-  setSearchSelectData: 'setSearchSelectData',
-  setCurrentSearchField: 'setCurrentSearchField',
-  setCurrentSearchValue: 'setCurrentSearchValue',
-  setIsCurrentSearchValueValid: 'setIsCurrentSearchValueValid',
-  setIsCurrentSearchValueFocused: 'setIsCurrentSearchValueFocused',
-  setSearchStatementsQueue: 'setSearchStatementsQueue',
+  setSearchSelectData: "setSearchSelectData",
+  setCurrentSearchField: "setCurrentSearchField",
+  setCurrentSearchValue: "setCurrentSearchValue",
+  setIsCurrentSearchValueValid: "setIsCurrentSearchValueValid",
+  setIsCurrentSearchValueFocused: "setIsCurrentSearchValueFocused",
+  setSearchStatementsQueue: "setSearchStatementsQueue",
 
-  setIsGeneralSearchCaseSensitive: 'setIsGeneralSearchCaseSensitive',
+  setIsGeneralSearchCaseSensitive: "setIsGeneralSearchCaseSensitive",
   // general search inclusion
-  setGeneralSearchInclusionValue: 'setGeneralSearchInclusionValue',
-  setIsGeneralSearchInclusionValueValid:
-    'setIsGeneralSearchInclusionValueValid',
-  setIsGeneralSearchInclusionValueFocused:
-    'setIsGeneralSearchInclusionValueFocused',
+  setGeneralSearchInclusionValue: "setGeneralSearchInclusionValue",
+  setIsGeneralSearchInclusionValueValid: "setIsGeneralSearchInclusionValueValid",
+  setIsGeneralSearchInclusionValueFocused: "setIsGeneralSearchInclusionValueFocused",
 
   // general search exclusion
-  setGeneralSearchExclusionValue: 'setGeneralSearchExclusionValue',
-  setIsGeneralSearchExclusionValueValid:
-    'setIsGeneralSearchExclusionValueValid',
-  setIsGeneralSearchExclusionValueFocused:
-    'setIsGeneralSearchExclusionValueFocused',
+  setGeneralSearchExclusionValue: "setGeneralSearchExclusionValue",
+  setIsGeneralSearchExclusionValueValid: "setIsGeneralSearchExclusionValueValid",
+  setIsGeneralSearchExclusionValueFocused: "setIsGeneralSearchExclusionValueFocused",
 
   // sort
-  setSortSelectData: 'setSortSelectData',
-  setCurrentSortField: 'setCurrentSortField',
-  setCurrentSortDirection: 'setCurrentSortDirection',
-  setSortStatementsQueue: 'setSortStatementsQueue',
+  setSortSelectData: "setSortSelectData",
+  setCurrentSortField: "setCurrentSortField",
+  setCurrentSortDirection: "setCurrentSortDirection",
+  setSortStatementsQueue: "setSortStatementsQueue",
 
   // projection
-  setProjectionArray: 'setProjectionArray',
-  setProjectionCheckboxData: 'setProjectionCheckboxData',
-  setSelectedFieldsSet: 'setSelectedFieldsSet',
-  setProjectedFieldsSet: 'setProjectedFieldsSet',
+  setProjectionArray: "setProjectionArray",
+  setProjectionCheckboxData: "setProjectionCheckboxData",
+  setSelectedFieldsSet: "setSelectedFieldsSet",
+  setProjectedFieldsSet: "setProjectedFieldsSet",
 
-  setClearAllQueryData: 'setClearAllQueryData',
-  buildQueryString: 'buildQueryString',
-  setLabelValueTypesMap: 'setLabelValueTypesMap',
+  setClearAllQueryData: "setClearAllQueryData",
+  buildQueryString: "buildQueryString",
+  setLabelValueTypesMap: "setLabelValueTypesMap",
 
   // accordion chevron states
-  toggleIsQueryBuilderOpened: 'toggleIsQueryBuilderOpened',
-  toggleIsFilterOpened: 'toggleIsFilterOpened',
-  toggleIsSearchOpened: 'toggleIsSearchOpened',
-  toggleIsSortOpened: 'toggleIsSortOpened',
-  toggleIsProjectionOpened: 'toggleIsProjectionOpened',
+  toggleIsQueryBuilderOpened: "toggleIsQueryBuilderOpened",
+  toggleIsFilterOpened: "toggleIsFilterOpened",
+  toggleIsSearchOpened: "toggleIsSearchOpened",
+  toggleIsSortOpened: "toggleIsSortOpened",
+  toggleIsProjectionOpened: "toggleIsProjectionOpened",
 };
 
 function queryBuilderReducer(
@@ -166,8 +158,7 @@ function queryBuilderReducer(
       // if filter statement already present return state
       if (
         filterStatementsQueue.filter(
-          (item) =>
-            item[0] === value[0] && item[1] === value[1] && item[2] === value[2]
+          (item) => item[0] === value[0] && item[1] === value[1] && item[2] === value[2]
         ).length > 0
       ) {
         return state;
@@ -179,7 +170,7 @@ function queryBuilderReducer(
       );
       if (duplicateFieldIndex !== -1) {
         // if the operator is 'in', then add the new filter statement
-        if (newOperator === 'in') {
+        if (newOperator === "in") {
           filterStatementsQueue.push(value);
           // if the operator is not 'in', then replace the existing filter statement
         } else {
@@ -196,7 +187,7 @@ function queryBuilderReducer(
       // filter out empty values and return state
       // done last because initial state is ['','','']
       const filteredFilterStatementsQueue = filterStatementsQueue.filter(
-        (item) => item[0] !== '' && item[1] !== '' && item[2] !== ''
+        (item) => item[0] !== "" && item[1] !== "" && item[2] !== ""
       );
 
       return {
@@ -264,12 +255,10 @@ function queryBuilderReducer(
 
       // filter out empty values and return state
       // done last because initial state is ['','']
-      const filteredSearchStatementsQueue = searchStatementsQueue.filter(
-        (item) => {
-          const [currField, currValue] = item;
-          return currField !== '' && currValue !== '';
-        }
-      );
+      const filteredSearchStatementsQueue = searchStatementsQueue.filter((item) => {
+        const [currField, currValue] = item;
+        return currField !== "" && currValue !== "";
+      });
 
       // sort search statements queue by field so that the fields are grouped together
       // required for correct logical operators to be displayed in the search chain
@@ -305,10 +294,7 @@ function queryBuilderReducer(
       /**
        * replaces all occurrences of these symbols with a single space ' '
        */
-      const cleanedValue = value.replace(
-        /[!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]+| +/g,
-        ' '
-      );
+      const cleanedValue = value.replace(/[!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]+| +/g, " ");
 
       return {
         ...state,
@@ -333,10 +319,7 @@ function queryBuilderReducer(
       /**
        * replaces all occurrences of these symbols with a single space ' '
        */
-      const cleanedValue = value.replace(
-        /[!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]+| +/g,
-        ' '
-      );
+      const cleanedValue = value.replace(/[!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]+| +/g, " ");
 
       return {
         ...state,
@@ -376,9 +359,8 @@ function queryBuilderReducer(
 
       // if sort statement already present return state
       if (
-        sortStatementsQueue.filter(
-          (item) => item[0] === value[0] && item[1] === value[1]
-        ).length > 0
+        sortStatementsQueue.filter((item) => item[0] === value[0] && item[1] === value[1])
+          .length > 0
       ) {
         return state;
       }
@@ -400,7 +382,7 @@ function queryBuilderReducer(
       // filter out empty values and return state
       // done last because initial state is ['','','']
       const filteredSortStatementsQueue = sortStatementsQueue.filter(
-        (item) => item[0] !== '' && item[1] !== ''
+        (item) => item[0] !== "" && item[1] !== ""
       );
 
       return {
@@ -426,7 +408,7 @@ function queryBuilderReducer(
       const { calledFrom } = action.payload;
 
       const selectedFieldsSet = new Set<string>(state.selectedFieldsSet);
-      if (calledFrom === 'filter') {
+      if (calledFrom === "filter") {
         const filterStatementsQueue = [...state.filterStatementsQueue];
         if (!filterStatementsQueue.length) {
           return {
@@ -438,7 +420,7 @@ function queryBuilderReducer(
         filterStatementsQueue.forEach(([field, _operator, _value]) => {
           selectedFieldsSet.add(field);
         });
-      } else if (calledFrom === 'search') {
+      } else if (calledFrom === "search") {
         const searchStatementsQueue = [...state.searchStatementsQueue];
         if (!searchStatementsQueue.length) {
           return {
@@ -450,7 +432,7 @@ function queryBuilderReducer(
         searchStatementsQueue.forEach(([field, _value]) => {
           selectedFieldsSet.add(field);
         });
-      } else if (calledFrom === 'sort') {
+      } else if (calledFrom === "sort") {
         const sortStatementsQueue = [...state.sortStatementsQueue];
         if (!sortStatementsQueue.length) {
           return {
@@ -481,7 +463,7 @@ function queryBuilderReducer(
           Array.from(state.labelValueTypesMap).find(([_label, obj]) => {
             const { value } = obj;
             return value === item;
-          })?.[0] ?? '';
+          })?.[0] ?? "";
 
         projectedFieldsSet.add(findCorrespondingLabel);
       });
@@ -495,10 +477,10 @@ function queryBuilderReducer(
     case queryBuilderAction.setClearAllQueryData: {
       return {
         ...state,
-        queryString: '?',
+        queryString: "?",
         filterStatementsQueue: [],
-        generalSearchInclusionValue: '',
-        generalSearchExclusionValue: '',
+        generalSearchInclusionValue: "",
+        generalSearchExclusionValue: "",
         searchStatementsQueue: [],
         sortStatementsQueue: [],
         projectionArray: [],

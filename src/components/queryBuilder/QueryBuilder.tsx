@@ -10,10 +10,10 @@ import {
   Text,
   Title,
   Tooltip,
-} from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
-import { ChangeEvent, useEffect, useReducer } from 'react';
-import { RxLinkBreak2 } from 'react-icons/rx';
+} from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
+import { ChangeEvent, useEffect, useReducer } from "react";
+import { RxLinkBreak2 } from "react-icons/rx";
 import {
   TbArrowDown,
   TbChevronDown,
@@ -23,11 +23,11 @@ import {
   TbQuestionMark,
   TbTrash,
   TbUpload,
-} from 'react-icons/tb';
+} from "react-icons/tb";
 
-import { COLORS_SWATCHES } from '../../constants/data';
-import { NOTE_TEXT_REGEX, SERIAL_ID_REGEX } from '../../constants/regex';
-import { useGlobalState } from '../../hooks';
+import { COLORS_SWATCHES } from "../../constants/data";
+import { NOTE_TEXT_REGEX, SERIAL_ID_REGEX } from "../../constants/regex";
+import { useGlobalState } from "../../hooks";
 import {
   AccessibleErrorValidTextElements,
   AccessibleSelectedDeselectedTextElements,
@@ -37,14 +37,14 @@ import {
   returnAccessibleSelectInputElements,
   returnAccessibleTextAreaInputElements,
   returnAccessibleTextInputElements,
-} from '../../jsxCreators';
-import { CheckboxInputData } from '../../types';
+} from "../../jsxCreators";
+import { CheckboxInputData } from "../../types";
 import {
   replaceLastCommaWithAnd,
   returnSerialIdValidationText,
   returnThemeColors,
-} from '../../utils';
-import { TimelineBuilder } from '../timelineBuilder';
+} from "../../utils";
+import { TimelineBuilder } from "../timelineBuilder";
 import {
   AccessibleButtonCreatorInfo,
   AccessibleCheckboxGroupInputCreatorInfo,
@@ -52,23 +52,19 @@ import {
   AccessibleSelectInputCreatorInfo,
   AccessibleTextAreaInputCreatorInfo,
   AccessibleTextInputCreatorInfo,
-} from '../wrappers';
+} from "../wrappers";
 import {
   ORDINAL_TERMS,
   QUERY_BUILDER_CASE_SENSITIVITY_OPTIONS,
   QUERY_BUILDER_FILTER_OPERATORS,
   QUERY_BUILDER_SORT_OPERATORS,
-} from './constants';
+} from "./constants";
 import {
   initialQueryBuilderState,
   queryBuilderAction,
   queryBuilderReducer,
-} from './state';
-import {
-  ComponentQueryData,
-  QueryBuilderProps,
-  QueryValueTypes,
-} from './types';
+} from "./state";
+import { ComponentQueryData, QueryBuilderProps, QueryValueTypes } from "./types";
 import {
   FILTER_HELP_MODAL_CONTENT,
   GENERAL_SEARCH_HELP_MODAL_CONTENT,
@@ -77,7 +73,7 @@ import {
   QUERY_BUILDER_HELP_MODAL_CONTENT,
   SEARCH_CHAIN_HELP_MODAL_CONTENT,
   SORT_HELP_MODAL_CONTENT,
-} from './utils';
+} from "./utils";
 
 function QueryBuilder({
   componentQueryData,
@@ -144,10 +140,8 @@ function QueryBuilder({
     globalState: { width, rowGap, padding, themeObject },
   } = useGlobalState();
 
-  const [
-    openedQueryHelpModal,
-    { open: openQueryHelpModal, close: closeQueryHelpModal },
-  ] = useDisclosure(false);
+  const [openedQueryHelpModal, { open: openQueryHelpModal, close: closeQueryHelpModal }] =
+    useDisclosure(false);
   const [
     openedFilterHelpModal,
     { open: openFilterHelpModal, close: closeFilterHelpModal },
@@ -160,10 +154,8 @@ function QueryBuilder({
     openedGeneralSearchHelpModal,
     { open: openGeneralSearchHelpModal, close: closeGeneralSearchHelpModal },
   ] = useDisclosure(false);
-  const [
-    openedSortHelpModal,
-    { open: openSortHelpModal, close: closeSortHelpModal },
-  ] = useDisclosure(false);
+  const [openedSortHelpModal, { open: openSortHelpModal, close: closeSortHelpModal }] =
+    useDisclosure(false);
   const [
     openedProjectionHelpModal,
     { open: openProjectionHelpModal, close: closeProjectionHelpModal },
@@ -203,14 +195,14 @@ function QueryBuilder({
         } = curr;
 
         // selectData (string[]) cannot be sorted, the rest(number, boolean, date) can be sorted and filtered
-        if (inputKind === 'selectInput' || inputKind === 'booleanInput') {
+        if (inputKind === "selectInput" || inputKind === "booleanInput") {
           filterSelectDataAcc.push(label);
-        } else if (inputKind === 'textInput') {
+        } else if (inputKind === "textInput") {
           searchSelectDataAcc.push(label);
         } else if (
-          inputKind === 'dateInput' ||
-          inputKind === 'timeInput' ||
-          inputKind === 'numberInput'
+          inputKind === "dateInput" ||
+          inputKind === "timeInput" ||
+          inputKind === "numberInput"
         ) {
           filterSelectDataAcc.push(label);
           sortSelectDataAcc.push(label);
@@ -290,11 +282,10 @@ function QueryBuilder({
       return;
     }
 
-    const currentInputKind =
-      labelValueTypesMap.get(currentFilterField)?.inputKind;
+    const currentInputKind = labelValueTypesMap.get(currentFilterField)?.inputKind;
     const filterOperatorData =
-      currentInputKind === 'selectInput' || currentInputKind === 'booleanInput'
-        ? ['in']
+      currentInputKind === "selectInput" || currentInputKind === "booleanInput"
+        ? ["in"]
         : QUERY_BUILDER_FILTER_OPERATORS;
 
     queryBuilderDispatch({
@@ -338,45 +329,45 @@ function QueryBuilder({
 
     const { inputKind, selectData, booleanData } = labelValueObject;
     switch (inputKind) {
-      case 'selectInput': {
+      case "selectInput": {
         queryBuilderDispatch({
           type: queryBuilderAction.setCurrentFilterValue,
-          payload: selectData?.[0] ?? '',
+          payload: selectData?.[0] ?? "",
         });
         break;
       }
-      case 'booleanInput': {
+      case "booleanInput": {
         queryBuilderDispatch({
           type: queryBuilderAction.setCurrentFilterValue,
           payload: `${booleanData?.[0] ?? false}`,
         });
         break;
       }
-      case 'dateInput': {
+      case "dateInput": {
         queryBuilderDispatch({
           type: queryBuilderAction.setCurrentFilterValue,
           payload: new Date().toISOString().slice(0, 10),
         });
         break;
       }
-      case 'timeInput': {
+      case "timeInput": {
         queryBuilderDispatch({
           type: queryBuilderAction.setCurrentFilterValue,
-          payload: '00:00',
+          payload: "00:00",
         });
         break;
       }
-      case 'numberInput': {
+      case "numberInput": {
         queryBuilderDispatch({
           type: queryBuilderAction.setCurrentFilterValue,
-          payload: '0',
+          payload: "0",
         });
         break;
       }
-      case 'textInput': {
+      case "textInput": {
         queryBuilderDispatch({
           type: queryBuilderAction.setCurrentSearchValue,
-          payload: '',
+          payload: "",
         });
         break;
       }
@@ -428,7 +419,7 @@ function QueryBuilder({
     const searchSelectData = Array.from(labelValueTypesMap).reduce(
       (acc: string[], [label, obj]) => {
         const { inputKind } = obj;
-        if (inputKind === 'textInput') {
+        if (inputKind === "textInput") {
           acc.push(label);
         }
         return acc;
@@ -455,21 +446,21 @@ function QueryBuilder({
         type: queryBuilderAction.setSearchStatementsQueue,
         payload: {
           index,
-          value: ['', ''],
+          value: ["", ""],
         },
       });
     });
 
     queryBuilderDispatch({
       type: queryBuilderAction.setCurrentSearchValue,
-      payload: '',
+      payload: "",
     });
 
     // clear projection exclusion set
     queryBuilderDispatch({
       type: queryBuilderAction.setSelectedFieldsSet,
       payload: {
-        calledFrom: 'search',
+        calledFrom: "search",
       },
     });
   }, [generalSearchInclusionValue, generalSearchExclusionValue]);
@@ -478,11 +469,11 @@ function QueryBuilder({
   useEffect(() => {
     queryBuilderDispatch({
       type: queryBuilderAction.setGeneralSearchInclusionValue,
-      payload: '',
+      payload: "",
     });
     queryBuilderDispatch({
       type: queryBuilderAction.setGeneralSearchExclusionValue,
-      payload: '',
+      payload: "",
     });
   }, [searchStatementsQueue, currentSearchValue]);
 
@@ -495,9 +486,9 @@ function QueryBuilder({
     const generalSearchValue =
       generalSearchInclusionValue.length || generalSearchExclusionValue.length
         ? `${generalSearchInclusionValue.trim()}${
-            generalSearchExclusionValue.length ? ' -' : ''
-          }${generalSearchExclusionValue.trim().split(' ').join(' -')}`
-        : '';
+            generalSearchExclusionValue.length ? " -" : ""
+          }${generalSearchExclusionValue.trim().split(" ").join(" -")}`
+        : "";
 
     // build the query
     queryBuilderDispatch({
@@ -524,23 +515,21 @@ function QueryBuilder({
   ]);
 
   // ----------------- accessibility texts -----------------  //
-  const currentInputKind =
-    labelValueTypesMap.get(currentFilterField)?.inputKind;
+  const currentInputKind = labelValueTypesMap.get(currentFilterField)?.inputKind;
 
   const filterValueRegexValidationText =
     labelValueTypesMap.get(currentFilterField)?.regexValidationFn?.({
       content: currentFilterValue,
       contentKind: currentFilterField,
-    }) ?? '';
+    }) ?? "";
 
-  const [filterValueErrorText, filterValueValidText] =
-    AccessibleErrorValidTextElements({
-      inputElementKind: currentFilterField,
-      inputText: currentFilterValue,
-      isInputTextFocused: isCurrentFilterValueFocused,
-      isValidInputText: isCurrentFilterValueValid,
-      regexValidationText: filterValueRegexValidationText,
-    });
+  const [filterValueErrorText, filterValueValidText] = AccessibleErrorValidTextElements({
+    inputElementKind: currentFilterField,
+    inputText: currentFilterValue,
+    isInputTextFocused: isCurrentFilterValueFocused,
+    isValidInputText: isCurrentFilterValueValid,
+    regexValidationText: filterValueRegexValidationText,
+  });
 
   const projectionExclusionFields = projectionArray
     .map((item) => {
@@ -553,23 +542,21 @@ function QueryBuilder({
 
       return findCorrespondingLabel;
     })
-    .join(', ');
+    .join(", ");
 
-  const [
-    projectionCheckboxInputSelectedText,
-    projectionCheckboxInputDeselectedText,
-  ] = AccessibleSelectedDeselectedTextElements({
-    isSelected: projectionArray.length > 0,
-    semanticName: 'exclusion fields',
-    deselectedDescription: 'All fields will be returned',
-    selectedDescription:
-      projectionArray.length === labelValueTypesMap.size
-        ? 'All fields have been selected for exclusion. Nothing to query!'
-        : `The following fields will not be returned: ${replaceLastCommaWithAnd(
-            projectionExclusionFields
-          )}`,
-    theme: 'muted',
-  });
+  const [projectionCheckboxInputSelectedText, projectionCheckboxInputDeselectedText] =
+    AccessibleSelectedDeselectedTextElements({
+      isSelected: projectionArray.length > 0,
+      semanticName: "exclusion fields",
+      deselectedDescription: "All fields will be returned",
+      selectedDescription:
+        projectionArray.length === labelValueTypesMap.size
+          ? "All fields have been selected for exclusion. Nothing to query!"
+          : `The following fields will not be returned: ${replaceLastCommaWithAnd(
+              projectionExclusionFields
+            )}`,
+      theme: "muted",
+    });
   // ----------------- //
 
   const {
@@ -593,20 +580,20 @@ function QueryBuilder({
       const deleteFilterButtonCreatorInfo: AccessibleButtonCreatorInfo = {
         buttonLabel: <TbTrash />,
         semanticDescription: `Delete ${term} ${operator} ${value}`,
-        semanticName: 'delete filter',
+        semanticName: "delete filter",
         buttonOnClick: () => {
           queryBuilderDispatch({
             type: queryBuilderAction.setFilterStatementsQueue,
             payload: {
               index,
-              value: ['', '', ''],
+              value: ["", "", ""],
             },
           });
           // remove field from selected fields set
           queryBuilderDispatch({
             type: queryBuilderAction.setSelectedFieldsSet,
             payload: {
-              calledFrom: 'filter',
+              calledFrom: "filter",
             },
           });
 
@@ -615,9 +602,9 @@ function QueryBuilder({
             return;
           }
           queryValuesArrayDispatch({
-            type: 'setQueryValuesArray',
+            type: "setQueryValuesArray",
             payload: {
-              kind: 'remove',
+              kind: "remove",
               value: value,
             },
           });
@@ -631,7 +618,7 @@ function QueryBuilder({
       const displayDeleteFilterButton = (
         <Tooltip
           label={`Delete: ${
-            operator === 'in'
+            operator === "in"
               ? `${term} that contain ${value}.`
               : `${term} that are ${operator} ${value}.`
           }`}
@@ -658,12 +645,7 @@ function QueryBuilder({
             columnGap={rowGap}
           >
             <Group w="100%" position="apart">
-              <Divider
-                labelPosition="left"
-                label={displayStatement}
-                w="87%"
-                size="sm"
-              />
+              <Divider labelPosition="left" label={displayStatement} w="87%" size="sm" />
               {displayDeleteFilterButton}
             </Group>
           </Flex>
@@ -680,12 +662,12 @@ function QueryBuilder({
   );
   const filterSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
     data: filteredFilterSelectData,
-    label: 'Field',
+    label: "Field",
     description: `Select a field to filter ${collectionName} by`,
     describedBy:
       filterStatementsQueue.length > 0
-        ? 'filter-statements-deselected'
-        : 'filter-statements-selected',
+        ? "filter-statements-deselected"
+        : "filter-statements-selected",
     value: currentFilterField,
     onChange: (event: ChangeEvent<HTMLSelectElement>) => {
       queryBuilderDispatch({
@@ -695,8 +677,7 @@ function QueryBuilder({
 
       // set the filter value to first select data value, as the stale value is present by default
       const firstSelectDataValue =
-        labelValueTypesMap.get(event.currentTarget.value)?.selectData?.[0] ||
-        '';
+        labelValueTypesMap.get(event.currentTarget.value)?.selectData?.[0] || "";
       queryBuilderDispatch({
         type: queryBuilderAction.setCurrentFilterValue,
         payload: firstSelectDataValue,
@@ -704,29 +685,27 @@ function QueryBuilder({
     },
   };
 
-  const filterOperatorsSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo =
-    {
-      data: filterOperatorSelectData,
-      label: 'Operator',
-      description: `${
-        currentFilterField === ''
-          ? 'Please select a field'
-          : currentInputKind === 'selectInput' ||
-            currentInputKind === 'booleanInput'
-          ? 'Only "in" is available for hardcoded data'
-          : `Select an operator for ${currentFilterField}`
-      }`,
-      value: currentFilterOperator,
-      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-        queryBuilderDispatch({
-          type: queryBuilderAction.setCurrentFilterOperator,
-          payload: event.currentTarget.value,
-        });
-      },
-    };
+  const filterOperatorsSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
+    data: filterOperatorSelectData,
+    label: "Operator",
+    description: `${
+      currentFilterField === ""
+        ? "Please select a field"
+        : currentInputKind === "selectInput" || currentInputKind === "booleanInput"
+        ? 'Only "in" is available for hardcoded data'
+        : `Select an operator for ${currentFilterField}`
+    }`,
+    value: currentFilterOperator,
+    onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+      queryBuilderDispatch({
+        type: queryBuilderAction.setCurrentFilterOperator,
+        payload: event.currentTarget.value,
+      });
+    },
+  };
 
   const filterValueDateInputCreatorInfo: AccessibleDateTimeInputCreatorInfo = {
-    label: 'Value',
+    label: "Value",
     description: {
       error: filterValueErrorText,
       valid: filterValueValidText,
@@ -749,16 +728,16 @@ function QueryBuilder({
         payload: false,
       });
     },
-    inputKind: 'date',
-    dateKind: 'full date',
+    inputKind: "date",
+    dateKind: "full date",
     inputText: currentFilterValue,
     isValidInputText: isCurrentFilterValueValid,
-    placeholder: 'Enter a value',
+    placeholder: "Enter a value",
     semanticName: currentFilterField,
   };
 
   const filterValueTimeInputCreatorInfo: AccessibleDateTimeInputCreatorInfo = {
-    label: 'Value',
+    label: "Value",
     description: {
       error: filterValueErrorText,
       valid: filterValueValidText,
@@ -781,15 +760,15 @@ function QueryBuilder({
         payload: false,
       });
     },
-    inputKind: 'time',
+    inputKind: "time",
     inputText: currentFilterValue,
     isValidInputText: isCurrentFilterValueValid,
-    placeholder: 'Enter time in 24-hour format',
+    placeholder: "Enter time in 24-hour format",
     semanticName: currentFilterField,
   };
 
   const filterValueNumberInputCreatorInfo: AccessibleTextInputCreatorInfo = {
-    label: 'Value',
+    label: "Value",
     description: {
       error: filterValueErrorText,
       valid: filterValueValidText,
@@ -822,11 +801,9 @@ function QueryBuilder({
     data:
       labelValueTypesMap.get(currentFilterField)?.selectData ||
       // select input data type is (string|SelectItem)[], does not accept boolean[]
-      labelValueTypesMap
-        .get(currentFilterField)
-        ?.booleanData?.map((bool) => `${bool}`) ||
+      labelValueTypesMap.get(currentFilterField)?.booleanData?.map((bool) => `${bool}`) ||
       [],
-    label: 'Value',
+    label: "Value",
     description: `Select a value for ${currentFilterField}`,
     value: currentFilterValue,
     onChange: (event) => {
@@ -838,39 +815,35 @@ function QueryBuilder({
   };
 
   const addNewFilterButtonCreatorInfo: AccessibleButtonCreatorInfo = {
-    buttonLabel: 'Add',
+    buttonLabel: "Add",
     semanticDescription:
-      'Add new filter statement that can be chained with previous statements',
-    semanticName: 'add new filter',
+      "Add new filter statement that can be chained with previous statements",
+    semanticName: "add new filter",
     leftIcon: <TbPlus />,
     buttonOnClick: (event) => {
       queryBuilderDispatch({
         type: queryBuilderAction.setFilterStatementsQueue,
         payload: {
           index: filterStatementsQueue.length,
-          value: [
-            currentFilterField,
-            currentFilterOperator,
-            currentFilterValue,
-          ],
+          value: [currentFilterField, currentFilterOperator, currentFilterValue],
         },
       });
       // add field to selected fields set
       queryBuilderDispatch({
         type: queryBuilderAction.setSelectedFieldsSet,
         payload: {
-          calledFrom: 'filter',
+          calledFrom: "filter",
         },
       });
 
       // if filter operator is not 'in', then their corresponding fields do not have a text index and are not searchable, as they may be numbers, dates, etc.
-      if (!queryValuesArrayDispatch || currentFilterOperator !== 'in') {
+      if (!queryValuesArrayDispatch || currentFilterOperator !== "in") {
         return;
       }
       queryValuesArrayDispatch({
-        type: 'setQueryValuesArray',
+        type: "setQueryValuesArray",
         payload: {
-          kind: 'add',
+          kind: "add",
           value: currentFilterValue,
         },
       });
@@ -897,8 +870,8 @@ function QueryBuilder({
           payload: value,
         });
       },
-      semanticName: 'exclusion fields',
-      label: 'Fields',
+      semanticName: "exclusion fields",
+      label: "Fields",
       value: projectionArray,
     };
   // ----------------- //
@@ -909,7 +882,7 @@ function QueryBuilder({
   );
   const searchSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
     data: filteredSearchSelectData,
-    label: 'Field',
+    label: "Field",
     description: `Select a field to search ${collectionName} by`,
     value: currentSearchField,
     onChange: (event) => {
@@ -924,7 +897,7 @@ function QueryBuilder({
     labelValueTypesMap.get(currentSearchField)?.regexValidationFn?.({
       content: currentSearchValue,
       contentKind: currentSearchField,
-    }) ?? '';
+    }) ?? "";
 
   const [searchTextInputErrorText, searchTextInputValidText] =
     AccessibleErrorValidTextElements({
@@ -939,13 +912,13 @@ function QueryBuilder({
     generalSearchInclusionTextInputErrorText,
     generalSearchInclusionTextInputValidText,
   ] = AccessibleErrorValidTextElements({
-    inputElementKind: 'general search inclusion',
+    inputElementKind: "general search inclusion",
     inputText: generalSearchInclusionValue,
     isInputTextFocused: isGeneralSearchInclusionValueFocused,
     isValidInputText: isGeneralSearchInclusionValueValid,
     regexValidationText: returnSerialIdValidationText({
       content: generalSearchInclusionValue,
-      contentKind: 'general search',
+      contentKind: "general search",
     }),
   });
 
@@ -953,24 +926,24 @@ function QueryBuilder({
     generalSearchExclusionTextInputErrorText,
     generalSearchExclusionTextInputValidText,
   ] = AccessibleErrorValidTextElements({
-    inputElementKind: 'general search exclusion',
+    inputElementKind: "general search exclusion",
     inputText: generalSearchExclusionValue,
     isInputTextFocused: isGeneralSearchExclusionValueFocused,
     isValidInputText: isGeneralSearchExclusionValueValid,
     regexValidationText: returnSerialIdValidationText({
       content: generalSearchExclusionValue,
-      contentKind: 'general search',
+      contentKind: "general search",
     }),
   });
 
   const toggleCaseSensitivitySegmentedControl = (
     <SegmentedControl
       data={QUERY_BUILDER_CASE_SENSITIVITY_OPTIONS}
-      value={isGeneralSearchCaseSensitive ? 'sensitive' : 'insensitive'}
+      value={isGeneralSearchCaseSensitive ? "sensitive" : "insensitive"}
       onChange={(value) => {
         queryBuilderDispatch({
           type: queryBuilderAction.setIsGeneralSearchCaseSensitive,
-          payload: value === 'sensitive',
+          payload: value === "sensitive",
         });
       }}
     />
@@ -984,7 +957,7 @@ function QueryBuilder({
     },
     inputText: currentSearchValue,
     isValidInputText: isCurrentSearchValueValid,
-    label: 'Value',
+    label: "Value",
     minLength: 2,
     maxLength: 2000,
     onBlur: () => {
@@ -1005,85 +978,83 @@ function QueryBuilder({
         payload: true,
       });
     },
-    placeholder: 'Enter search term',
+    placeholder: "Enter search term",
     required: false,
     semanticName: currentSearchField,
   };
 
-  const generalSearchInclusionTextInputCreatorInfo: AccessibleTextInputCreatorInfo =
-    {
-      description: {
-        error: generalSearchInclusionTextInputErrorText,
-        valid: generalSearchInclusionTextInputValidText,
-      },
-      inputText: generalSearchInclusionValue,
-      isValidInputText: isGeneralSearchInclusionValueValid,
-      label: 'Include',
-      minLength: 1,
-      maxLength: 100,
-      onBlur: () => {
-        queryBuilderDispatch({
-          type: queryBuilderAction.setIsGeneralSearchInclusionValueFocused,
-          payload: false,
-        });
-      },
-      onChange: (event: ChangeEvent<HTMLInputElement>) => {
-        queryBuilderDispatch({
-          type: queryBuilderAction.setGeneralSearchInclusionValue,
-          payload: event.currentTarget.value,
-        });
-      },
-      onFocus: () => {
-        queryBuilderDispatch({
-          type: queryBuilderAction.setIsGeneralSearchInclusionValueFocused,
-          payload: true,
-        });
-      },
-      placeholder: 'Enter search term',
-      required: false,
-      semanticName: 'general search inclusion',
-    };
+  const generalSearchInclusionTextInputCreatorInfo: AccessibleTextInputCreatorInfo = {
+    description: {
+      error: generalSearchInclusionTextInputErrorText,
+      valid: generalSearchInclusionTextInputValidText,
+    },
+    inputText: generalSearchInclusionValue,
+    isValidInputText: isGeneralSearchInclusionValueValid,
+    label: "Include",
+    minLength: 1,
+    maxLength: 100,
+    onBlur: () => {
+      queryBuilderDispatch({
+        type: queryBuilderAction.setIsGeneralSearchInclusionValueFocused,
+        payload: false,
+      });
+    },
+    onChange: (event: ChangeEvent<HTMLInputElement>) => {
+      queryBuilderDispatch({
+        type: queryBuilderAction.setGeneralSearchInclusionValue,
+        payload: event.currentTarget.value,
+      });
+    },
+    onFocus: () => {
+      queryBuilderDispatch({
+        type: queryBuilderAction.setIsGeneralSearchInclusionValueFocused,
+        payload: true,
+      });
+    },
+    placeholder: "Enter search term",
+    required: false,
+    semanticName: "general search inclusion",
+  };
 
-  const generalSearchExclusionTextInputCreatorInfo: AccessibleTextInputCreatorInfo =
-    {
-      description: {
-        error: generalSearchExclusionTextInputErrorText,
-        valid: generalSearchExclusionTextInputValidText,
-      },
-      inputText: generalSearchExclusionValue,
-      isValidInputText: isGeneralSearchExclusionValueValid,
-      label: 'Exclude',
-      minLength: 1,
-      maxLength: 100,
-      onBlur: () => {
-        queryBuilderDispatch({
-          type: queryBuilderAction.setIsGeneralSearchExclusionValueFocused,
-          payload: false,
-        });
-      },
-      onChange: (event: ChangeEvent<HTMLInputElement>) => {
-        queryBuilderDispatch({
-          type: queryBuilderAction.setGeneralSearchExclusionValue,
-          payload: event.currentTarget.value,
-        });
-      },
-      onFocus: () => {
-        queryBuilderDispatch({
-          type: queryBuilderAction.setIsGeneralSearchExclusionValueFocused,
-          payload: true,
-        });
-      },
-      placeholder: 'Enter search term',
-      required: false,
-      semanticName: 'general search exclusion',
-    };
+  const generalSearchExclusionTextInputCreatorInfo: AccessibleTextInputCreatorInfo = {
+    description: {
+      error: generalSearchExclusionTextInputErrorText,
+      valid: generalSearchExclusionTextInputValidText,
+    },
+    inputText: generalSearchExclusionValue,
+    isValidInputText: isGeneralSearchExclusionValueValid,
+    label: "Exclude",
+    minLength: 1,
+    maxLength: 100,
+    onBlur: () => {
+      queryBuilderDispatch({
+        type: queryBuilderAction.setIsGeneralSearchExclusionValueFocused,
+        payload: false,
+      });
+    },
+    onChange: (event: ChangeEvent<HTMLInputElement>) => {
+      queryBuilderDispatch({
+        type: queryBuilderAction.setGeneralSearchExclusionValue,
+        payload: event.currentTarget.value,
+      });
+    },
+    onFocus: () => {
+      queryBuilderDispatch({
+        type: queryBuilderAction.setIsGeneralSearchExclusionValueFocused,
+        payload: true,
+      });
+    },
+    placeholder: "Enter search term",
+    required: false,
+    semanticName: "general search exclusion",
+  };
 
   const addNewSearchChainButtonCreatorInfo: AccessibleButtonCreatorInfo = {
-    buttonLabel: 'Add',
+    buttonLabel: "Add",
     buttonDisabled: !isCurrentSearchValueValid,
     semanticDescription:
-      'Add new search statement that can be chained with previous statements',
-    semanticName: 'add new search',
+      "Add new search statement that can be chained with previous statements",
+    semanticName: "add new search",
     leftIcon: <TbPlus />,
     buttonOnClick: (event) => {
       queryBuilderDispatch({
@@ -1097,7 +1068,7 @@ function QueryBuilder({
       queryBuilderDispatch({
         type: queryBuilderAction.setSelectedFieldsSet,
         payload: {
-          calledFrom: 'search',
+          calledFrom: "search",
         },
       });
       queryBuilderDispatch({
@@ -1110,9 +1081,9 @@ function QueryBuilder({
         return;
       }
       queryValuesArrayDispatch({
-        type: 'setQueryValuesArray',
+        type: "setQueryValuesArray",
         payload: {
-          kind: 'add',
+          kind: "add",
           value: currentSearchValue,
         },
       });
@@ -1127,21 +1098,21 @@ function QueryBuilder({
       const deleteSearchButtonCreatorInfo: AccessibleButtonCreatorInfo = {
         buttonLabel: <TbTrash />,
         semanticDescription: `Delete ${field} for ${value}`,
-        semanticName: 'delete search',
+        semanticName: "delete search",
         // leftIcon: <TbTrash />,
         buttonOnClick: (event) => {
           queryBuilderDispatch({
             type: queryBuilderAction.setSearchStatementsQueue,
             payload: {
               index,
-              value: ['', ''],
+              value: ["", ""],
             },
           });
           // remove field from selected fields set
           queryBuilderDispatch({
             type: queryBuilderAction.setSelectedFieldsSet,
             payload: {
-              calledFrom: 'search',
+              calledFrom: "search",
             },
           });
 
@@ -1150,9 +1121,9 @@ function QueryBuilder({
             return;
           }
           queryValuesArrayDispatch({
-            type: 'setQueryValuesArray',
+            type: "setQueryValuesArray",
             payload: {
-              kind: 'remove',
+              kind: "remove",
               value: value,
             },
           });
@@ -1169,8 +1140,8 @@ function QueryBuilder({
         </Tooltip>
       );
 
-      const nextField = searchStatementsQueue[index + 1]?.[0] ?? '';
-      const logicalOperator = field === nextField ? 'OR' : 'AND';
+      const nextField = searchStatementsQueue[index + 1]?.[0] ?? "";
+      const logicalOperator = field === nextField ? "OR" : "AND";
 
       const dividerLabel = (
         <Group>
@@ -1210,7 +1181,7 @@ function QueryBuilder({
   );
   const sortSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
     data: filteredSortSelectData,
-    label: 'Field',
+    label: "Field",
     description: `Select a field to sort ${collectionName} by`,
     value: currentSortField,
     onChange: (event) => {
@@ -1222,34 +1193,33 @@ function QueryBuilder({
       queryBuilderDispatch({
         type: queryBuilderAction.setSelectedFieldsSet,
         payload: {
-          calledFrom: 'sort',
+          calledFrom: "sort",
         },
       });
     },
   };
 
-  const sortDirectionSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo =
-    {
-      data: QUERY_BUILDER_SORT_OPERATORS,
-      label: 'Direction',
-      description:
-        currentSortField === ''
-          ? 'Please select a sort field'
-          : `Select a sort direction for ${currentSortField}`,
-      value: currentSortDirection,
-      onChange: (event) => {
-        queryBuilderDispatch({
-          type: queryBuilderAction.setCurrentSortDirection,
-          payload: event.currentTarget.value,
-        });
-      },
-    };
+  const sortDirectionSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
+    data: QUERY_BUILDER_SORT_OPERATORS,
+    label: "Direction",
+    description:
+      currentSortField === ""
+        ? "Please select a sort field"
+        : `Select a sort direction for ${currentSortField}`,
+    value: currentSortDirection,
+    onChange: (event) => {
+      queryBuilderDispatch({
+        type: queryBuilderAction.setCurrentSortDirection,
+        payload: event.currentTarget.value,
+      });
+    },
+  };
 
   const addNewSortButtonCreatorInfo: AccessibleButtonCreatorInfo = {
-    buttonLabel: 'Add',
+    buttonLabel: "Add",
     semanticDescription:
-      'Add new sort statement that can be chained with previous statements',
-    semanticName: 'add new sort',
+      "Add new sort statement that can be chained with previous statements",
+    semanticName: "add new sort",
     leftIcon: <TbPlus />,
     buttonOnClick: (event) => {
       queryBuilderDispatch({
@@ -1263,7 +1233,7 @@ function QueryBuilder({
       queryBuilderDispatch({
         type: queryBuilderAction.setSelectedFieldsSet,
         payload: {
-          calledFrom: 'sort',
+          calledFrom: "sort",
         },
       });
     },
@@ -1277,21 +1247,21 @@ function QueryBuilder({
       const deleteSortButtonCreatorInfo: AccessibleButtonCreatorInfo = {
         buttonLabel: <TbTrash />,
         semanticDescription: `Delete ${term} in ${direction} order`,
-        semanticName: 'delete sort',
+        semanticName: "delete sort",
         // leftIcon: <TbTrash />,
         buttonOnClick: (event) => {
           queryBuilderDispatch({
             type: queryBuilderAction.setSortStatementsQueue,
             payload: {
               index,
-              value: ['', ''],
+              value: ["", ""],
             },
           });
           // remove field from selected fields set
           queryBuilderDispatch({
             type: queryBuilderAction.setSelectedFieldsSet,
             payload: {
-              calledFrom: 'sort',
+              calledFrom: "sort",
             },
           });
         },
@@ -1311,9 +1281,9 @@ function QueryBuilder({
         <Group>
           <RxLinkBreak2 color={grayColorShade} size={16} />
           <Text color={grayColorShade}>
-            {`${ORDINAL_TERMS[index].charAt(0).toUpperCase()}${ORDINAL_TERMS[
-              index
-            ].slice(1)}`}{' '}
+            {`${ORDINAL_TERMS[index].charAt(0).toUpperCase()}${ORDINAL_TERMS[index].slice(
+              1
+            )}`}{" "}
             tiebreaker
           </Text>
           <TbArrowDown color={grayColorShade} size={16} />
@@ -1343,43 +1313,41 @@ function QueryBuilder({
   );
   // ----------------- //
   // ----------------- button creator infos -----------------  //
-  const submitQueryToParentComponentButtonCreatorInfo: AccessibleButtonCreatorInfo =
-    {
-      buttonLabel: 'Submit',
-      buttonDisabled:
-        !isGeneralSearchInclusionValueValid &&
-        generalSearchInclusionValue.length > 0,
-      semanticDescription: `Submit query to ${collectionName}`,
-      semanticName: 'submit query',
-      buttonOnClick: () => {
-        queryBuilderStringDispatch({
-          type: setQueryBuilderString,
-          payload: queryString,
-        });
+  const submitQueryToParentComponentButtonCreatorInfo: AccessibleButtonCreatorInfo = {
+    buttonLabel: "Submit",
+    buttonDisabled:
+      !isGeneralSearchInclusionValueValid && generalSearchInclusionValue.length > 0,
+    semanticDescription: `Submit query to ${collectionName}`,
+    semanticName: "submit query",
+    buttonOnClick: () => {
+      queryBuilderStringDispatch({
+        type: setQueryBuilderString,
+        payload: queryString,
+      });
 
-        // for query values array highlighting
-        if (!queryValuesArrayDispatch || !generalSearchInclusionValue) {
-          return;
-        }
-        queryValuesArrayDispatch({
-          type: 'setQueryValuesArray',
-          payload: {
-            kind: 'add',
-            value: generalSearchInclusionValue,
-          },
-        });
-      },
-      leftIcon: <TbUpload />,
-    };
+      // for query values array highlighting
+      if (!queryValuesArrayDispatch || !generalSearchInclusionValue) {
+        return;
+      }
+      queryValuesArrayDispatch({
+        type: "setQueryValuesArray",
+        payload: {
+          kind: "add",
+          value: generalSearchInclusionValue,
+        },
+      });
+    },
+    leftIcon: <TbUpload />,
+  };
 
   const clearQueryButtonCreatorInfo: AccessibleButtonCreatorInfo = {
-    buttonLabel: 'Clear',
+    buttonLabel: "Clear",
     semanticDescription: `Clear query to ${collectionName}`,
-    semanticName: 'clear query',
+    semanticName: "clear query",
     buttonOnClick: () => {
       queryBuilderDispatch({
         type: queryBuilderAction.setClearAllQueryData,
-        payload: '',
+        payload: "",
       });
       queryBuilderStringDispatch({
         type: setQueryBuilderString,
@@ -1390,10 +1358,10 @@ function QueryBuilder({
         return;
       }
       queryValuesArrayDispatch({
-        type: 'setQueryValuesArray',
+        type: "setQueryValuesArray",
         payload: {
-          kind: 'clear',
-          value: '',
+          kind: "clear",
+          value: "",
         },
       });
     },
@@ -1402,8 +1370,8 @@ function QueryBuilder({
 
   const queryBuilderHelpButtonCreatorInfo: AccessibleButtonCreatorInfo = {
     buttonLabel: <TbQuestionMark />,
-    semanticDescription: 'Open query help modal',
-    semanticName: 'query help',
+    semanticDescription: "Open query help modal",
+    semanticName: "query help",
     buttonOnClick: () => {
       openQueryHelpModal();
     },
@@ -1411,8 +1379,8 @@ function QueryBuilder({
 
   const filterHelpButtonCreatorInfo: AccessibleButtonCreatorInfo = {
     buttonLabel: <TbQuestionMark />,
-    semanticDescription: 'Open filter help modal',
-    semanticName: 'filter help',
+    semanticDescription: "Open filter help modal",
+    semanticName: "filter help",
     buttonOnClick: () => {
       openFilterHelpModal();
     },
@@ -1420,8 +1388,8 @@ function QueryBuilder({
 
   const generalSearchHelpButtonCreatorInfo: AccessibleButtonCreatorInfo = {
     buttonLabel: <TbQuestionMark />,
-    semanticDescription: 'Open general search help modal',
-    semanticName: 'general search help',
+    semanticDescription: "Open general search help modal",
+    semanticName: "general search help",
     buttonOnClick: () => {
       openGeneralSearchHelpModal();
     },
@@ -1429,8 +1397,8 @@ function QueryBuilder({
 
   const searchChainHelpButtonCreatorInfo: AccessibleButtonCreatorInfo = {
     buttonLabel: <TbQuestionMark />,
-    semanticDescription: 'Open search help modal',
-    semanticName: 'search help',
+    semanticDescription: "Open search help modal",
+    semanticName: "search help",
     buttonOnClick: () => {
       openSearchChainHelpModal();
     },
@@ -1438,8 +1406,8 @@ function QueryBuilder({
 
   const sortHelpButtonCreatorInfo: AccessibleButtonCreatorInfo = {
     buttonLabel: <TbQuestionMark />,
-    semanticDescription: 'Open sort help modal',
-    semanticName: 'sort help',
+    semanticDescription: "Open sort help modal",
+    semanticName: "sort help",
     buttonOnClick: () => {
       openSortHelpModal();
     },
@@ -1447,8 +1415,8 @@ function QueryBuilder({
 
   const projectionHelpButtonCreatorInfo: AccessibleButtonCreatorInfo = {
     buttonLabel: <TbQuestionMark />,
-    semanticDescription: 'Open projection help modal',
-    semanticName: 'projection help',
+    semanticDescription: "Open projection help modal",
+    semanticName: "projection help",
     buttonOnClick: () => {
       openProjectionHelpModal();
     },
@@ -1500,13 +1468,11 @@ function QueryBuilder({
     searchTextAreaInputCreatorInfo,
   ]);
 
-  const [
-    createdGeneralSearchInclusionTextInput,
-    createdGeneralSearchExclusionTextInput,
-  ] = returnAccessibleTextInputElements([
-    generalSearchInclusionTextInputCreatorInfo,
-    generalSearchExclusionTextInputCreatorInfo,
-  ]);
+  const [createdGeneralSearchInclusionTextInput, createdGeneralSearchExclusionTextInput] =
+    returnAccessibleTextInputElements([
+      generalSearchInclusionTextInputCreatorInfo,
+      generalSearchExclusionTextInputCreatorInfo,
+    ]);
 
   const [createdProjectionCheckboxGroupInput] =
     returnAccessibleCheckboxGroupInputsElements([
@@ -1514,21 +1480,19 @@ function QueryBuilder({
     ]);
 
   const createdFilterValueInput =
-    currentInputKind === 'dateInput'
+    currentInputKind === "dateInput"
       ? returnAccessibleDateTimeElements([filterValueDateInputCreatorInfo])
-      : currentInputKind === 'timeInput'
+      : currentInputKind === "timeInput"
       ? returnAccessibleDateTimeElements([filterValueTimeInputCreatorInfo])
-      : currentInputKind === 'numberInput'
+      : currentInputKind === "numberInput"
       ? returnAccessibleTextInputElements([filterValueNumberInputCreatorInfo])
-      : returnAccessibleSelectInputElements([
-          filterValueSelectInputCreatorInfo,
-        ]);
+      : returnAccessibleSelectInputElements([filterValueSelectInputCreatorInfo]);
 
   const displayFilterChains = (
     <Stack w="100%">
       <TimelineBuilder
         timelines={{
-          'filter chain': createdFilterStatementsWithDeleteButton,
+          "filter chain": createdFilterStatementsWithDeleteButton,
         }}
       />
     </Stack>
@@ -1538,7 +1502,7 @@ function QueryBuilder({
     <Stack w="100%">
       <TimelineBuilder
         timelines={{
-          'search chain': createdSearchStatementsWithDeleteButton,
+          "search chain": createdSearchStatementsWithDeleteButton,
         }}
       />
     </Stack>
@@ -1548,7 +1512,7 @@ function QueryBuilder({
     <Stack w="100%">
       <TimelineBuilder
         timelines={{
-          'sort chain': createdSortStatementsWithDeleteButton,
+          "sort chain": createdSortStatementsWithDeleteButton,
         }}
       />
     </Stack>
@@ -1562,14 +1526,12 @@ function QueryBuilder({
         <Accordion
           w="100%"
           chevron={
-            <TbChevronDown
-              color={isFilterOpened ? themeColorShade : grayColorShade}
-            />
+            <TbChevronDown color={isFilterOpened ? themeColorShade : grayColorShade} />
           }
           onChange={(value) => {
             queryBuilderDispatch({
               type: queryBuilderAction.toggleIsFilterOpened,
-              payload: value as 'Filter' | null,
+              payload: value as "Filter" | null,
             });
           }}
         >
@@ -1613,14 +1575,12 @@ function QueryBuilder({
       <Accordion
         w="100%"
         chevron={
-          <TbChevronDown
-            color={isProjectionOpened ? themeColorShade : grayColorShade}
-          />
+          <TbChevronDown color={isProjectionOpened ? themeColorShade : grayColorShade} />
         }
         onChange={(value) => {
           queryBuilderDispatch({
             type: queryBuilderAction.toggleIsProjectionOpened,
-            payload: value as 'Projection' | null,
+            payload: value as "Projection" | null,
           });
         }}
       >
@@ -1654,14 +1614,12 @@ function QueryBuilder({
         <Accordion
           w="100%"
           chevron={
-            <TbChevronDown
-              color={isSearchOpened ? themeColorShade : grayColorShade}
-            />
+            <TbChevronDown color={isSearchOpened ? themeColorShade : grayColorShade} />
           }
           onChange={(value) => {
             queryBuilderDispatch({
               type: queryBuilderAction.toggleIsSearchOpened,
-              payload: value as 'Search' | null,
+              payload: value as "Search" | null,
             });
           }}
         >
@@ -1737,14 +1695,12 @@ function QueryBuilder({
         <Accordion
           w="100%"
           chevron={
-            <TbChevronDown
-              color={isSortOpened ? themeColorShade : grayColorShade}
-            />
+            <TbChevronDown color={isSortOpened ? themeColorShade : grayColorShade} />
           }
           onChange={(value) => {
             queryBuilderDispatch({
               type: queryBuilderAction.toggleIsSortOpened,
-              payload: value as 'Sort' | null,
+              payload: value as "Sort" | null,
             });
           }}
         >
@@ -1812,7 +1768,7 @@ function QueryBuilder({
           onChange={(value) => {
             queryBuilderDispatch({
               type: queryBuilderAction.toggleIsQueryBuilderOpened,
-              payload: value as 'Query Builder' | null,
+              payload: value as "Query Builder" | null,
             });
           }}
         >
@@ -1859,7 +1815,7 @@ function QueryBuilder({
       closeButtonProps={{ color: themeColorShade }}
       opened={openedQueryHelpModal}
       onClose={closeQueryHelpModal}
-      size={width <= 1024 ? 'auto' : 1024 - 200}
+      size={width <= 1024 ? "auto" : 1024 - 200}
       title={<Title order={4}>Query help</Title>}
     >
       {QUERY_BUILDER_HELP_MODAL_CONTENT}
@@ -1872,7 +1828,7 @@ function QueryBuilder({
       closeButtonProps={{ color: themeColorShade }}
       opened={openedFilterHelpModal}
       onClose={closeFilterHelpModal}
-      size={width <= 1024 ? 'auto' : 1024 - 200}
+      size={width <= 1024 ? "auto" : 1024 - 200}
       title={<Title order={4}>Filter help</Title>}
     >
       {FILTER_HELP_MODAL_CONTENT}
@@ -1885,7 +1841,7 @@ function QueryBuilder({
       closeButtonProps={{ color: themeColorShade }}
       opened={openedGeneralSearchHelpModal}
       onClose={closeGeneralSearchHelpModal}
-      size={width <= 1024 ? 'auto' : 1024 - 200}
+      size={width <= 1024 ? "auto" : 1024 - 200}
       title={<Title order={4}>General Search help</Title>}
     >
       {GENERAL_SEARCH_HELP_MODAL_CONTENT}
@@ -1898,7 +1854,7 @@ function QueryBuilder({
       closeButtonProps={{ color: themeColorShade }}
       opened={openedSearchChainHelpModal}
       onClose={closeSearchChainHelpModal}
-      size={width <= 1024 ? 'auto' : 1024 - 200}
+      size={width <= 1024 ? "auto" : 1024 - 200}
       title={<Title order={4}>Search Chain help</Title>}
     >
       {SEARCH_CHAIN_HELP_MODAL_CONTENT}
@@ -1911,7 +1867,7 @@ function QueryBuilder({
       closeButtonProps={{ color: themeColorShade }}
       opened={openedSortHelpModal}
       onClose={closeSortHelpModal}
-      size={width <= 1024 ? 'auto' : 1024 - 200}
+      size={width <= 1024 ? "auto" : 1024 - 200}
       title={<Title order={4}>Sort help</Title>}
     >
       {SORT_HELP_MODAL_CONTENT}
@@ -1924,7 +1880,7 @@ function QueryBuilder({
       closeButtonProps={{ color: themeColorShade }}
       opened={openedProjectionHelpModal}
       onClose={closeProjectionHelpModal}
-      size={width <= 1024 ? 'auto' : 1024 - 200}
+      size={width <= 1024 ? "auto" : 1024 - 200}
       title={<Title order={4}>Projection help</Title>}
     >
       {PROJECTION_HELP_MODAL_CONTENT}

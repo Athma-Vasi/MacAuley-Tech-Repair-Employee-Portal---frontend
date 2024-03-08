@@ -233,8 +233,25 @@ const PRODUCT_CATEGORY_ROUTE_SELECT_DATA: SelectInputData = [
   { label: "Webcam", value: "webcam" },
 ];
 
+// used to map resource ids to backend route paths to fetch data from
+// in the DispalyResource component
+const RESOURCE_IDS_ROUTE_MAP = {
+  completedSurveys: "survey",
+  customerId: "customer",
+  dislikedUserIds: "user",
+  likedUserIds: "user",
+  productReviewsIds: "product-review",
+  purchaseDocumentId: "purchase",
+  purchaseHistoryIds: "purchase",
+  reportedUserIds: "user",
+  rmaHistoryIds: "rma",
+  uploadedFilesIds: "file-upload",
+  userId: "user",
+};
+
 export {
   PRODUCT_CATEGORY_FIELDS_OBJ,
   PRODUCT_CATEGORY_ROUTE_SELECT_DATA,
   QUERY_LIMIT_PER_PAGE_SELECT_DATA,
+  RESOURCE_IDS_ROUTE_MAP,
 };

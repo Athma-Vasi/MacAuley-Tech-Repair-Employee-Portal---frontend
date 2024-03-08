@@ -4,6 +4,7 @@ const initialDisplayQueryState: DisplayQueryState = {
   groupByRadioData: [],
   groupBySelection: "none",
   currentSelectionData: [],
+  displayDocumentsView: "cards",
 
   groupedByQueryResponseData: new Map(),
   fileUploadsForAForm: [],
@@ -21,6 +22,7 @@ const displayQueryAction: DisplayQueryAction = {
   setGroupByRadioData: "setGroupByRadioData",
   setGroupBySelection: "setGroupBySelection",
   setCurrentSelectionData: "setCurrentSelectionData",
+  setDisplayDocumentsView: "setDisplayDocumentsView",
 
   setGroupedByQueryResponseData: "setGroupedByQueryResponseData",
 
@@ -62,6 +64,12 @@ function displayQueryReducer(
       return {
         ...state,
         groupedByQueryResponseData: action.payload,
+      };
+
+    case displayQueryAction.setDisplayDocumentsView:
+      return {
+        ...state,
+        displayDocumentsView: action.payload,
       };
 
     case displayQueryAction.setFileUploadsForAForm:

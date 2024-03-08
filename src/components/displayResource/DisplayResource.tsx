@@ -17,23 +17,18 @@ import {
 } from "../../types";
 import {
   filterFieldsFromObject,
-  flattenObjectIterative,
   logState,
   returnThemeColors,
   splitCamelCase,
   urlBuilder,
 } from "../../utils";
-import { ProductCategory } from "../dashboard/types";
 import { DisplayFileUploads } from "../displayFileUploads";
 import { DisplayQuery } from "../displayQuery";
 import { NotificationModal } from "../notificationModal";
 import { PageBuilder } from "../pageBuilder";
 import { QueryBuilder } from "../queryBuilder";
 import { AccessibleSelectInputCreatorInfo } from "../wrappers";
-import {
-  PRODUCT_CATEGORY_ROUTE_SELECT_DATA,
-  QUERY_LIMIT_PER_PAGE_SELECT_DATA,
-} from "./constants";
+import { QUERY_LIMIT_PER_PAGE_SELECT_DATA } from "./constants";
 import { displayResourceAction, displayResourceReducer } from "./state";
 import { DisplayResourceProps, DisplayResourceState } from "./types";
 import { buildQueryString } from "./utils";
@@ -43,7 +38,6 @@ function DisplayResource<Doc>({
   componentQueryData,
   createResourcePath,
   isDisplayFilesOnly = false,
-  isDisplayProductsDocs = false,
   fileUploadFieldName = "fileUploads",
   fileUploadIdFieldName = "uploadedFilesIds",
   isFileUploadsWithResource = false,
@@ -54,7 +48,6 @@ function DisplayResource<Doc>({
     resourceData: [],
     pages: 0,
     totalDocuments: 0,
-    productCategory: "Accessory",
 
     queryValuesArray: [],
     newQueryFlag: true,
@@ -71,7 +64,7 @@ function DisplayResource<Doc>({
 
     deleteResource: {
       formId: "",
-      fileUploadId: undefined,
+      fileUploadId: void 0,
       kind: "",
       value: false,
     },
@@ -94,7 +87,6 @@ function DisplayResource<Doc>({
     resourceData,
     pages,
     totalDocuments,
-    productCategory,
     queryValuesArray,
     newQueryFlag,
     queryBuilderString,
@@ -166,11 +158,9 @@ function DisplayResource<Doc>({
           : resourceUrlPaths.employee;
 
       const query = buildQueryString({
-        isDisplayProductsDocs,
         limitPerPage,
         newQueryFlag,
         pageQueryString,
-        productCategory,
         queryBuilderString,
         totalDocuments,
       });
@@ -196,7 +186,6 @@ function DisplayResource<Doc>({
         });
 
         const data: GetQueriedResourceRequestServerResponse<Doc> = await response.json();
-        console.log("response json data", data);
         if (!isMounted) {
           return;
         }
@@ -204,17 +193,17 @@ function DisplayResource<Doc>({
           throw new Error(data.message);
         }
 
-        const flattenedObjects = data.resourceData.map((obj) => {
-          const flattenedObj = flattenObjectIterative(obj);
+        // const flattenedObjects = data.resourceData.map((obj) => {
+        //   const flattenedObj = flattenObjectIterative(obj);
 
-          return flattenedObj;
-        });
+        //   return flattenedObj;
+        // });
 
         if (!isFileUploadsWithResource || !fileUploadFieldName) {
           // if there are no file uploads, set the resource data as is
           displayResourceDispatch({
             type: displayResourceAction.setResourceData,
-            payload: flattenedObjects,
+            payload: data.resourceData,
           });
 
           // do this regardless of whether there are file uploads or not
@@ -233,7 +222,7 @@ function DisplayResource<Doc>({
         // if there are file uploads, split the data into two arrays
         // one for the resource data and the other for the file uploads
         const [resourceDataWithoutFileUploadsArr, fileUploadsArr] =
-          flattenedObjects.reduce(
+          data.resourceData.reduce(
             (
               splitResourceDataTupleAcc: [
                 QueryResponseData<Doc>[],
@@ -364,7 +353,7 @@ function DisplayResource<Doc>({
       type: displayResourceAction.setTriggerRefresh,
       payload: true,
     });
-  }, [newQueryFlag, queryBuilderString, pageQueryString, limitPerPage, productCategory]);
+  }, [newQueryFlag, queryBuilderString, pageQueryString, limitPerPage]);
 
   // backend is set to trigger countDocuments scan on a new query only, not on page changes
   useEffect(() => {
@@ -373,15 +362,16 @@ function DisplayResource<Doc>({
       payload: true,
     });
   }, [queryBuilderString]);
-  // // set new query flag to false on page changes
-  // useEffect(() => {
-  //   if (!pageQueryString.includes("1")) {
-  //     displayResourceDispatch({
-  //       type: displayResourceAction.setNewQueryFlag,
-  //       payload: false,
-  //     });
-  //   }
-  // }, [pageQueryString]);
+
+  // set new query flag to false on page changes
+  useEffect(() => {
+    if (!pageQueryString.includes("1")) {
+      displayResourceDispatch({
+        type: displayResourceAction.setNewQueryFlag,
+        payload: false,
+      });
+    }
+  }, [pageQueryString]);
 
   // separate instead of inside finally block to avoid causing flicker by previous page state displaying then updating after overlay disappears
   useEffect(() => {
@@ -415,18 +405,15 @@ function DisplayResource<Doc>({
       openSubmitSuccessNotificationModal();
 
       const query = buildQueryString({
-        isDisplayProductsDocs,
         limitPerPage,
         newQueryFlag,
         pageQueryString,
-        productCategory,
         queryBuilderString,
         totalDocuments,
       });
 
       const url: URL = urlBuilder({
         path: `${resourceUrlPaths.manager}/${requestStatus.id}`,
-        // query: `${queryBuilderString}${pageQueryString}&newQueryFlag=${newQueryFlag}&totalDocuments=${totalDocuments}&projection=-action&projection=-category`,
         query,
       });
 
@@ -463,14 +450,14 @@ function DisplayResource<Doc>({
         }
 
         const [updatedResource] = data.resourceData;
-        const flattenedUpdatedResource = flattenObjectIterative(updatedResource);
+        // const flattenedUpdatedResource = flattenObjectIterative(updatedResource);
 
         displayResourceDispatch({
           type: displayResourceAction.updateResourceData,
           payload: {
             id: updatedResource._id,
             kind: "update",
-            data: flattenedUpdatedResource,
+            data: updatedResource,
           },
         });
       } catch (error: any) {
@@ -810,14 +797,14 @@ function DisplayResource<Doc>({
         }
 
         const [updatedResource] = data.resourceData;
-        const flattenedUpdatedResource = flattenObjectIterative(updatedResource);
+        // const flattenedUpdatedResource = flattenObjectIterative(updatedResource);
 
         displayResourceDispatch({
           type: displayResourceAction.updateResourceData,
           payload: {
             id: updatedResource._id,
             kind: "update",
-            data: flattenedUpdatedResource,
+            data: updatedResource,
           },
         });
       } catch (error: any) {
@@ -930,22 +917,6 @@ function DisplayResource<Doc>({
       ? (width - 225) * 0.8
       : 900 - 40;
 
-  // product category select input
-  const productCategorySelectInput = returnAccessibleSelectInputElements([
-    {
-      data: PRODUCT_CATEGORY_ROUTE_SELECT_DATA,
-      description: "Select product category",
-      disabled: resourceData.length === 0,
-      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-        displayResourceDispatch({
-          type: displayResourceAction.setProductCategory,
-          payload: event.currentTarget.value as ProductCategory,
-        });
-      },
-      value: productCategory,
-    },
-  ]);
-
   const displayLimitPerPageAndProductCategory = (
     <Group
       w={sectionWidth}
@@ -961,12 +932,6 @@ function DisplayResource<Doc>({
         <Title order={5}>Limit per page</Title>
         {createdLimitPerPageSelectInput}
       </Group>
-      {isDisplayProductsDocs ? (
-        <Group position="center" align="center">
-          <Title order={5}>Product category</Title>
-          {productCategorySelectInput}
-        </Group>
-      ) : null}
     </Group>
   );
 

@@ -42,11 +42,14 @@ type DisplayQueryProps<Doc> = {
   totalDocuments: number;
 };
 
+type DisplayDocumentsView = "table" | "cards";
+
 type DisplayQueryState = {
   groupByRadioData: RadioGroupInputData;
   groupBySelection: string;
   currentSelectionData: string[];
   groupedByQueryResponseData: GroupedByQueryResponseData;
+  displayDocumentsView: DisplayDocumentsView;
 
   fileUploadsForAForm: FileUploadDocument[];
 
@@ -63,6 +66,7 @@ type DisplayQueryAction = {
   setGroupByRadioData: "setGroupByRadioData";
   setGroupBySelection: "setGroupBySelection";
   setCurrentSelectionData: "setCurrentSelectionData";
+  setDisplayDocumentsView: "setDisplayDocumentsView";
 
   setGroupedByQueryResponseData: "setGroupedByQueryResponseData";
 
@@ -94,6 +98,10 @@ type DisplayQueryDispatch<
         | DisplayQueryAction["setDeleteFormId"]
         | DisplayQueryAction["setDeleteFileUploadId"];
       payload: string;
+    }
+  | {
+      type: "setDisplayDocumentsView";
+      payload: DisplayDocumentsView;
     }
   | {
       type:

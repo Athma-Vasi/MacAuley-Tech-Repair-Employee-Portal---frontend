@@ -11,6 +11,10 @@ import type { ComponentQueryData } from "../../queryBuilder";
 import { RepairStatus } from "../../repairTicket/types";
 
 type DisplayQueryDesktopProps = {
+  /**
+   * - Query data object containing fields specific to a resource.
+   * - Used here to grab the label (camelcased) value for groupedByQueryResponseData (lowercased values)
+   */
   componentQueryData: ComponentQueryData[];
   deleteFormIdDispatch: React.Dispatch<{
     type: "setDeleteFormId";
@@ -21,6 +25,7 @@ type DisplayQueryDesktopProps = {
     payload: "form" | "fileUpload" | "";
   }>;
   fileUploadsData?: Array<{ [key: string]: FileUploadDocument[] }>;
+  /** radio data labels used to exclude certain table header values from having sort arrows displayed */
   groupByRadioData: Array<{ label: string; value: string }>;
   groupedByQueryResponseData: Map<
     string | number | boolean | symbol,
@@ -31,6 +36,7 @@ type DisplayQueryDesktopProps = {
   loadingMessage?: string;
   openDeleteAcknowledge: () => void;
   openFileUploads: () => void;
+  /** values from QueryBuilder component that are used to highlight matched terms in table rows values & dropdown values */
   queryValuesArray: string[];
   requestStatusDispatch: React.Dispatch<{
     type: "setRequestStatus";

@@ -9,44 +9,40 @@ import {
   Stack,
   Text,
   Title,
-} from '@mantine/core';
-import { InvalidTokenError } from 'jwt-decode';
-import localforage from 'localforage';
-import { ChangeEvent, CSSProperties, useEffect, useReducer } from 'react';
-import { useErrorBoundary } from 'react-error-boundary';
-import { useNavigate } from 'react-router-dom';
-import { Edge, Node } from 'reactflow';
+} from "@mantine/core";
+import { InvalidTokenError } from "jwt-decode";
+import localforage from "localforage";
+import { ChangeEvent, CSSProperties, useEffect, useReducer } from "react";
+import { useErrorBoundary } from "react-error-boundary";
+import { useNavigate } from "react-router-dom";
+import { Edge, Node } from "reactflow";
 
 import {
   COLORS_SWATCHES,
   DEPARTMENT_JOB_POSITION_MAP,
   PROPERTY_DESCRIPTOR,
-} from '../../constants/data';
-import { globalAction } from '../../context/globalProvider/state';
-import { useAuth, useGlobalState, useWrapFetch } from '../../hooks';
+} from "../../constants/data";
+import { globalAction } from "../../context/globalProvider/state";
+import { useAuth, useGlobalState, useWrapFetch } from "../../hooks";
 import {
   returnAccessibleSelectInputElements,
   returnAccessibleSliderInputElements,
-} from '../../jsxCreators';
+} from "../../jsxCreators";
 import {
   Department,
   JobPosition,
   SelectInputData,
   StoreLocation,
-} from '../../types';
-import {
-  groupByField,
-  logState,
-  returnThemeColors,
-  urlBuilder,
-} from '../../utils';
-import CarouselBuilder from '../carouselBuilder/CarouselBuilder';
-import { ChartsAndGraphsControlsStacker } from '../charts/utils';
-import GraphBuilderWrapper from '../graphBuilder/GraphBuilder';
+  UserDocument,
+} from "../../types";
+import { groupByField, logState, returnThemeColors, urlBuilder } from "../../utils";
+import CarouselBuilder from "../carouselBuilder/CarouselBuilder";
+import { ChartsAndGraphsControlsStacker } from "../charts/utils";
+import GraphBuilderWrapper from "../graphBuilder/GraphBuilder";
 import {
   AccessibleSelectInputCreatorInfo,
   AccessibleSliderInputCreatorInfo,
-} from '../wrappers';
+} from "../wrappers";
 import {
   DAGRE_LAYOUT_RANKALIGN_SELECT_OPTIONS,
   DAGRE_LAYOUT_RANKDIR_SELECT_OPTIONS,
@@ -54,12 +50,8 @@ import {
   DIRECTORY_DEPARTMENT_SELECT_OPTIONS,
   DIRECTORY_JOB_POSITION_SELECT_OPTIONS,
   DIRECTORY_STORE_LOCATION_SELECT_OPTIONS,
-} from './constants';
-import {
-  directoryAction,
-  directoryReducer,
-  initialDirectoryState,
-} from './state';
+} from "./constants";
+import { directoryAction, directoryReducer, initialDirectoryState } from "./state";
 import {
   CorporateDepartmentsProfileNodesObject,
   DagreRankAlign,
@@ -70,11 +62,8 @@ import {
   JobPositionsWithDefaultKey,
   StoreDepartmentsProfileNodesObject,
   StoreLocationsWithDefaultKey,
-} from './types';
-import {
-  returnDagreLayoutedElements,
-  returnDirectoryProfileCard,
-} from './utils';
+} from "./types";
+import { returnDagreLayoutedElements, returnDirectoryProfileCard } from "./utils";
 
 function Directory() {
   // ┏━ begin hooks ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -128,154 +117,65 @@ function Directory() {
   const { colorScheme } = themeObject;
 
   useEffect(() => {
-    let isMounted = true;
-    const controller = new AbortController();
+    if (!actionsDocuments) {
+      return;
+    }
 
-    async function fetchUsers(): Promise<void> {
-      directoryDispatch({
-        type: directoryAction.setIsLoading,
-        payload: true,
-      });
-      directoryDispatch({
-        type: directoryAction.setLoadingMessage,
-        payload: 'Fetching users directory ...',
-      });
+    const { employeeData } = actionsDocuments;
 
-      const url: URL = urlBuilder({
-        path: 'user/directory',
-      });
+    const directoryUsers = Array.from(employeeData).map(
+      ([_id, document]: [string, UserDocument]) => {
+        const directoryUser = Object.entries(document).reduce(
+          (directoryUserAcc, [key, value]) => {
+            switch (key) {
+              case "address": {
+                // filter out street address and postal code
+                const filteredAddress = Object.entries(value).reduce(
+                  (filteredAddressAcc, [addressKey, addressValue]) => {
+                    if (addressKey === "addressLine" || addressKey === "postalCode") {
+                      return filteredAddressAcc;
+                    }
 
-      const requestInit: RequestInit = {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      };
+                    filteredAddressAcc[addressKey] = addressValue;
 
-      try {
-        const response = await wrappedFetch({
-          isMounted,
-          requestInit,
-          signal: controller.signal,
-          url,
-        });
-        const data: { message: string; resourceData: DirectoryUserDocument[] } =
-          await response.json();
-        if (!isMounted) {
-          return;
-        }
+                    return filteredAddressAcc;
+                  },
+                  Object.create(null)
+                ) as DirectoryUserDocument["address"];
 
-        if (!response.ok) {
-          throw new Error(data.message);
-        }
+                directoryUserAcc.address = filteredAddress;
+                break;
+              }
 
-        // set data to local forage to prevent refetches on every refresh
-        await localforage.setItem<DirectoryUserDocument[]>(
-          'directory',
-          data.resourceData
+              default: {
+                key === "contactNumber" ||
+                key === "emergencyContact" ||
+                key === "isPrefersReducedMotion" ||
+                key === "completedSurveys"
+                  ? void 0
+                  : (directoryUserAcc[key] = value);
+              }
+            }
+
+            return directoryUserAcc;
+          },
+          Object.create(null)
         );
 
-        directoryDispatch({
-          type: directoryAction.setGroupedByDepartment,
-          payload: data.resourceData,
-        });
-      } catch (error: any) {
-        if (!isMounted || error.name === 'AbortError') {
-          return;
-        }
-
-        const errorMessage =
-          error instanceof InvalidTokenError
-            ? 'Invalid token. Please login again.'
-            : !error.response
-            ? 'Network error. Please try again.'
-            : error.message ?? 'Unknown error occured. Please try again.';
-
-        globalDispatch({
-          type: globalAction.setErrorState,
-          payload: {
-            isError: true,
-            errorMessage,
-            errorCallback: () => {
-              navigate('/home/directory');
-
-              globalDispatch({
-                type: globalAction.setErrorState,
-                payload: {
-                  isError: false,
-                  errorMessage: '',
-                  errorCallback: () => {},
-                },
-              });
-            },
-          },
-        });
-
-        showBoundary(error);
-      } finally {
-        directoryDispatch({
-          type: directoryAction.setIsLoading,
-          payload: false,
-        });
-        directoryDispatch({
-          type: directoryAction.setLoadingMessage,
-          payload: '',
-        });
-        directoryDispatch({
-          type: directoryAction.triggerFetchUsersDirectory,
-          payload: false,
-        });
+        return directoryUser;
       }
-    }
+    );
 
-    // only fetch if there is no directory in local forage
-    async function checkLocalForageBeforeFetch(): Promise<void> {
-      const directory = await localforage.getItem('directory');
-      if (!directory) {
-        await fetchUsers();
-      }
-    }
-
-    if (triggerFetchUsersDirectory) {
-      checkLocalForageBeforeFetch();
-    }
-
-    return () => {
-      isMounted = false;
-      controller.abort();
-    };
-  }, [triggerFetchUsersDirectory]);
-
-  // on every mount, check if there are directory docs in local forage
-  useEffect(() => {
-    let isMounted = true;
-
-    async function checkLocalForageForDirectoryDocs(): Promise<void> {
-      const directory = await localforage.getItem<DirectoryUserDocument[]>(
-        'directory'
-      );
-      if (!isMounted || !directory || !directory.length) {
-        return;
-      }
-
-      // if present, set following state from local forage
-      directoryDispatch({
-        type: directoryAction.setGroupedByDepartment,
-        payload: directory,
-      });
-    }
-
-    checkLocalForageForDirectoryDocs();
-
-    return () => {
-      isMounted = false;
-    };
-  }, []);
+    directoryDispatch({
+      type: directoryAction.setGroupedByDepartment,
+      payload: directoryUsers,
+    });
+  }, [actionsDocuments]);
 
   useEffect(() => {
     logState({
       state: directoryState,
-      groupLabel: 'directoryState in Directory',
+      groupLabel: "directoryState in Directory",
     });
   }, [directoryState]);
 
@@ -299,9 +199,9 @@ function Directory() {
   const nodeDimensions = { width: 371, height: 267 };
   const nodeDefaults: Node = {
     // will be overwritten
-    id: '',
+    id: "",
     position: { ...nodePosition },
-    data: { label: '' },
+    data: { label: "" },
     // defaults shared across all nodes
     style: {
       ...nodeDimensions,
@@ -311,16 +211,16 @@ function Directory() {
   };
   const edgeDefaults: Edge = {
     // will be overwritten
-    id: '',
-    source: '',
-    target: '',
+    id: "",
+    source: "",
+    target: "",
     // defaults shared across all edges
-    type: 'smoothstep',
+    type: "smoothstep",
     animated: true,
     labelBgPadding: [8, 4],
     labelBgBorderRadius: 4,
-    labelBgStyle: { fill: 'white' },
-    labelStyle: { fill: 'black', fontWeight: 700 },
+    labelBgStyle: { fill: "white" },
+    labelStyle: { fill: "black", fontWeight: 700 },
     style: { stroke: edgeStrokeColor },
   };
 
@@ -343,16 +243,12 @@ function Directory() {
     // ┏━ begin executive management ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
     async function setExecutiveManagementEdgesAndNodes() {
-      const executiveManagementDocs =
-        groupedByDepartment['Executive Management'] ?? [];
+      const executiveManagementDocs = groupedByDepartment["Executive Management"] ?? [];
 
-      console.log('executiveManagementDocs: ', executiveManagementDocs);
+      console.log("executiveManagementDocs: ", executiveManagementDocs);
 
       const executiveManagementDocsNodes = executiveManagementDocs.reduce(
-        (
-          executiveManagementNodesAcc: Node[],
-          userDocument: DirectoryUserDocument
-        ) => {
+        (executiveManagementNodesAcc: Node[], userDocument: DirectoryUserDocument) => {
           const { jobPosition } = userDocument;
 
           const executiveManagementProfileCard = returnDirectoryProfileCard({
@@ -363,7 +259,7 @@ function Directory() {
           });
 
           const nodeType =
-            jobPosition === 'Chief Executive Officer' ? 'input' : 'default';
+            jobPosition === "Chief Executive Officer" ? "input" : "default";
 
           const executiveManagementCarousel = (
             <CarouselBuilder
@@ -388,17 +284,14 @@ function Directory() {
       const ceoId =
         executiveManagementDocsNodes.find(
           (executiveManagementDocNode) =>
-            executiveManagementDocNode.id === 'Chief Executive Officer'
-        )?.id ?? '';
+            executiveManagementDocNode.id === "Chief Executive Officer"
+        )?.id ?? "";
 
       const executiveManagementEdges = executiveManagementDocs.reduce(
-        (
-          executiveManagementEdgesAcc: Edge[],
-          userDocument: DirectoryUserDocument
-        ) => {
+        (executiveManagementEdgesAcc: Edge[], userDocument: DirectoryUserDocument) => {
           const { jobPosition } = userDocument;
 
-          if (jobPosition === 'Chief Executive Officer') {
+          if (jobPosition === "Chief Executive Officer") {
             return executiveManagementEdgesAcc;
           }
 
@@ -418,8 +311,8 @@ function Directory() {
       directoryDispatch({
         type: directoryAction.setDepartmentsNodesAndEdges,
         payload: {
-          department: 'Executive Management',
-          kind: 'nodes',
+          department: "Executive Management",
+          kind: "nodes",
           data: executiveManagementDocsNodes,
         },
       });
@@ -427,8 +320,8 @@ function Directory() {
       directoryDispatch({
         type: directoryAction.setDepartmentsNodesAndEdges,
         payload: {
-          department: 'Executive Management',
-          kind: 'edges',
+          department: "Executive Management",
+          kind: "edges",
           data: executiveManagementEdges,
         },
       });
@@ -439,8 +332,7 @@ function Directory() {
     // ┏━ begin store administration department ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
     async function setStoreAdministrationEdgesAndNodes() {
-      const storeAdministrationDocs =
-        groupedByDepartment['Store Administration'] ?? [];
+      const storeAdministrationDocs = groupedByDepartment["Store Administration"] ?? [];
 
       // group by store locations
       const storeAdministrationDocsGroupedByStoreLocation: Record<
@@ -448,45 +340,41 @@ function Directory() {
         DirectoryUserDocument[]
       > = groupByField<DirectoryUserDocument>({
         objectArray: storeAdministrationDocs,
-        field: 'storeLocation',
+        field: "storeLocation",
       });
 
       console.log(
-        'storeAdministrationDocsGroupedByStoreLocation: ',
+        "storeAdministrationDocsGroupedByStoreLocation: ",
         storeAdministrationDocsGroupedByStoreLocation
       );
 
       // TODO: REMOVE THIS FILTER FUNCTION IN PRODUCTION
       // filter out manager account used for development
-      const storeAdministrationDocsGroupedByStoreLocationFiltered =
-        Object.entries(storeAdministrationDocsGroupedByStoreLocation).reduce(
-          (
-            storeAdministrationDocsGroupedByStoreLocationFilteredAcc: Record<
-              StoreLocation,
-              DirectoryUserDocument[]
-            >,
-            storeLocationAndDocsTuple
-          ) => {
-            const [storeLocation, storeAdministrationDocsArr] =
-              storeLocationAndDocsTuple as [
-                StoreLocation,
-                DirectoryUserDocument[]
-              ];
+      const storeAdministrationDocsGroupedByStoreLocationFiltered = Object.entries(
+        storeAdministrationDocsGroupedByStoreLocation
+      ).reduce(
+        (
+          storeAdministrationDocsGroupedByStoreLocationFilteredAcc: Record<
+            StoreLocation,
+            DirectoryUserDocument[]
+          >,
+          storeLocationAndDocsTuple
+        ) => {
+          const [storeLocation, storeAdministrationDocsArr] =
+            storeLocationAndDocsTuple as [StoreLocation, DirectoryUserDocument[]];
 
-            const filteredStoreAdministrationDocsArr =
-              storeAdministrationDocsArr.filter(
-                (userDocument: DirectoryUserDocument) =>
-                  userDocument.lastName !== 'Vorkosigan'
-              );
+          const filteredStoreAdministrationDocsArr = storeAdministrationDocsArr.filter(
+            (userDocument: DirectoryUserDocument) =>
+              userDocument.lastName !== "Vorkosigan"
+          );
 
-            storeAdministrationDocsGroupedByStoreLocationFilteredAcc[
-              storeLocation
-            ] = filteredStoreAdministrationDocsArr;
+          storeAdministrationDocsGroupedByStoreLocationFilteredAcc[storeLocation] =
+            filteredStoreAdministrationDocsArr;
 
-            return storeAdministrationDocsGroupedByStoreLocationFilteredAcc;
-          },
-          Object.create(null)
-        );
+          return storeAdministrationDocsGroupedByStoreLocationFilteredAcc;
+        },
+        Object.create(null)
+      );
 
       // using the created object structure, create profile nodes
       const storeAdministrationProfileNodesObject = Object.entries(
@@ -503,23 +391,16 @@ function Directory() {
             ];
 
           // create store location field
-          Object.defineProperty(
-            storeAdministrationProfileNodesObjectAcc,
-            storeLocation,
-            {
-              ...PROPERTY_DESCRIPTOR,
-              value: Object.create(null),
-            }
-          );
+          Object.defineProperty(storeAdministrationProfileNodesObjectAcc, storeLocation, {
+            ...PROPERTY_DESCRIPTOR,
+            value: Object.create(null),
+          });
 
           // iterate through docs for each store location and create profile cards for each job position
           const jobPositionsProfileNodesObj =
             groupedStoreAdministrationByStoreLocationArr.reduce(
               (
-                jobPositionsProfileNodesObjAcc: Record<
-                  JobPosition,
-                  React.JSX.Element[]
-                >,
+                jobPositionsProfileNodesObjAcc: Record<JobPosition, React.JSX.Element[]>,
                 userDocument: DirectoryUserDocument
               ) => {
                 const { jobPosition } = userDocument;
@@ -548,29 +429,24 @@ function Directory() {
           // for each job position, create a single profile node that will hold a carousel of created profile cards
           Object.entries(jobPositionsProfileNodesObj).forEach(
             (jobPositionAndProfileCardsTuple) => {
-              const [jobPosition, profileCards] =
-                jobPositionAndProfileCardsTuple as [
-                  JobPosition,
-                  React.JSX.Element[]
-                ];
+              const [jobPosition, profileCards] = jobPositionAndProfileCardsTuple as [
+                JobPosition,
+                React.JSX.Element[]
+              ];
 
               const groupedStoreAdministrationByStoreLocationCarousel = (
-                <CarouselBuilder
-                  slideDimensions={nodeDimensions}
-                  slides={profileCards}
-                />
+                <CarouselBuilder slideDimensions={nodeDimensions} slides={profileCards} />
               );
 
               // create profile node with carousel
-              const groupedStoreAdministrationByStoreLocationProfileNode: Node =
-                {
-                  ...nodeDefaults,
-                  id: `${storeLocation}-${jobPosition}`,
-                  type: 'default',
-                  data: {
-                    label: groupedStoreAdministrationByStoreLocationCarousel,
-                  },
-                };
+              const groupedStoreAdministrationByStoreLocationProfileNode: Node = {
+                ...nodeDefaults,
+                id: `${storeLocation}-${jobPosition}`,
+                type: "default",
+                data: {
+                  label: groupedStoreAdministrationByStoreLocationCarousel,
+                },
+              };
 
               // add job position field with profile node
               Object.defineProperty(
@@ -605,18 +481,20 @@ function Directory() {
             ];
 
           // find the coo profile node id
-          const cooProfileNodeId = 'Chief Operations Officer';
+          const cooProfileNodeId = "Chief Operations Officer";
 
           // find the store manager profile node id for the store location
           const storeManagerProfileNodeId =
             Object.entries(jobPositionsProfileNodesObj).find(
               (jobPositionAndProfileNodeTuple) => {
-                const [jobPosition, _profileNode] =
-                  jobPositionAndProfileNodeTuple as [JobPosition, Node];
+                const [jobPosition, _profileNode] = jobPositionAndProfileNodeTuple as [
+                  JobPosition,
+                  Node
+                ];
 
-                return jobPosition.toLowerCase().includes('store manager');
+                return jobPosition.toLowerCase().includes("store manager");
               }
-            )?.[1].id ?? '';
+            )?.[1].id ?? "";
 
           // connect coo to store manager
           // [COO] ━━━ [STORE MANAGER]
@@ -635,14 +513,13 @@ function Directory() {
           const storeSubordinatesProfileEdges = Object.entries(
             jobPositionsProfileNodesObj
           ).reduce(
-            (
-              storeSubordinatesProfileEdgesAcc: Edge[],
-              jobPositionProfileNodesTuple
-            ) => {
-              const [jobPosition, storeProfileNode] =
-                jobPositionProfileNodesTuple as [JobPosition, Node];
+            (storeSubordinatesProfileEdgesAcc: Edge[], jobPositionProfileNodesTuple) => {
+              const [jobPosition, storeProfileNode] = jobPositionProfileNodesTuple as [
+                JobPosition,
+                Node
+              ];
 
-              if (jobPosition.toLowerCase().includes('store manager')) {
+              if (jobPosition.toLowerCase().includes("store manager")) {
                 return storeSubordinatesProfileEdgesAcc;
               }
 
@@ -653,18 +530,14 @@ function Directory() {
                 target: storeProfileNode.id,
               };
 
-              storeSubordinatesProfileEdgesAcc.push(
-                storeSubordinateProfileEdge
-              );
+              storeSubordinatesProfileEdgesAcc.push(storeSubordinateProfileEdge);
 
               return storeSubordinatesProfileEdgesAcc;
             },
             [cooToStoreManagerEdge]
           );
 
-          storeAdministrationProfileEdgesAcc.push(
-            ...storeSubordinatesProfileEdges
-          );
+          storeAdministrationProfileEdgesAcc.push(...storeSubordinatesProfileEdges);
 
           return storeAdministrationProfileEdgesAcc;
         },
@@ -685,9 +558,7 @@ function Directory() {
               Record<JobPosition, Node>
             ];
 
-          const jobPositionsProfileNodes = Object.values(
-            jobPositionsProfileNodesObj
-          );
+          const jobPositionsProfileNodes = Object.values(jobPositionsProfileNodesObj);
 
           storeAdministrationProfileNodesAcc.push(...jobPositionsProfileNodes);
 
@@ -699,8 +570,8 @@ function Directory() {
       directoryDispatch({
         type: directoryAction.setDepartmentsNodesAndEdges,
         payload: {
-          department: 'Store Administration',
-          kind: 'nodes',
+          department: "Store Administration",
+          kind: "nodes",
           data: storeAdministrationProfileNodes,
         },
       });
@@ -708,8 +579,8 @@ function Directory() {
       directoryDispatch({
         type: directoryAction.setDepartmentsNodesAndEdges,
         payload: {
-          department: 'Store Administration',
-          kind: 'edges',
+          department: "Store Administration",
+          kind: "edges",
           data: storeAdministrationProfileEdges,
         },
       });
@@ -720,8 +591,7 @@ function Directory() {
     // ┏━ end office administration department ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
     async function setOfficeAdministrationEdgesAndNodes() {
-      const officeAdministrationDocs =
-        groupedByDepartment['Office Administration'] ?? [];
+      const officeAdministrationDocs = groupedByDepartment["Office Administration"] ?? [];
 
       // group by store locations
       const officeAdministrationDocsGroupedByStoreLocation: Record<
@@ -729,7 +599,7 @@ function Directory() {
         DirectoryUserDocument[]
       > = groupByField<DirectoryUserDocument>({
         objectArray: officeAdministrationDocs,
-        field: 'storeLocation',
+        field: "storeLocation",
       });
 
       // using the created object structure, create profile nodes
@@ -760,10 +630,7 @@ function Directory() {
           const jobPositionsProfileNodesObj =
             groupedOfficeAdministrationByStoreLocationArr.reduce(
               (
-                jobPositionsProfileNodesObjAcc: Record<
-                  JobPosition,
-                  React.JSX.Element[]
-                >,
+                jobPositionsProfileNodesObjAcc: Record<JobPosition, React.JSX.Element[]>,
                 userDocument: DirectoryUserDocument
               ) => {
                 const { jobPosition } = userDocument;
@@ -792,35 +659,28 @@ function Directory() {
           // for each job position, create a single profile node that will hold a carousel of created profile cards
           Object.entries(jobPositionsProfileNodesObj).forEach(
             (jobPositionAndProfileCardsTuple) => {
-              const [jobPosition, profileCards] =
-                jobPositionAndProfileCardsTuple as [
-                  JobPosition,
-                  React.JSX.Element[]
-                ];
+              const [jobPosition, profileCards] = jobPositionAndProfileCardsTuple as [
+                JobPosition,
+                React.JSX.Element[]
+              ];
 
-              const nodeType = jobPosition
-                .toLowerCase()
-                .includes('administrator')
-                ? 'default'
-                : 'output';
+              const nodeType = jobPosition.toLowerCase().includes("administrator")
+                ? "default"
+                : "output";
 
               const groupedOfficeAdministrationByStoreLocationCarousel = (
-                <CarouselBuilder
-                  slideDimensions={nodeDimensions}
-                  slides={profileCards}
-                />
+                <CarouselBuilder slideDimensions={nodeDimensions} slides={profileCards} />
               );
 
               // create profile node with carousel
-              const groupedOfficeAdministrationByStoreLocationProfileNode: Node =
-                {
-                  ...nodeDefaults,
-                  id: `${storeLocation}-${jobPosition}`,
-                  type: nodeType,
-                  data: {
-                    label: groupedOfficeAdministrationByStoreLocationCarousel,
-                  },
-                };
+              const groupedOfficeAdministrationByStoreLocationProfileNode: Node = {
+                ...nodeDefaults,
+                id: `${storeLocation}-${jobPosition}`,
+                type: nodeType,
+                data: {
+                  label: groupedOfficeAdministrationByStoreLocationCarousel,
+                },
+              };
 
               // add job position field with profile node
               Object.defineProperty(
@@ -860,12 +720,14 @@ function Directory() {
           const officeAdministratorProfileNodeId =
             Object.entries(jobPositionsProfileNodesObj).find(
               (jobPositionAndProfileNodeTuple) => {
-                const [jobPosition, _profileNode] =
-                  jobPositionAndProfileNodeTuple as [JobPosition, Node];
+                const [jobPosition, _profileNode] = jobPositionAndProfileNodeTuple as [
+                  JobPosition,
+                  Node
+                ];
 
-                return jobPosition.toLowerCase().includes('administrator');
+                return jobPosition.toLowerCase().includes("administrator");
               }
-            )?.[1].id ?? '';
+            )?.[1].id ?? "";
 
           // connect office manager to office administrator
           // [OFFICE MANAGER] ━━━ [OFFICE ADMINISTRATOR]
@@ -883,14 +745,13 @@ function Directory() {
           const officeSubordinatesProfileEdges = Object.entries(
             jobPositionsProfileNodesObj
           ).reduce(
-            (
-              officeSubordinatesProfileEdgesAcc: Edge[],
-              jobPositionProfileNodesTuple
-            ) => {
-              const [jobPosition, officeProfileNode] =
-                jobPositionProfileNodesTuple as [JobPosition, Node];
+            (officeSubordinatesProfileEdgesAcc: Edge[], jobPositionProfileNodesTuple) => {
+              const [jobPosition, officeProfileNode] = jobPositionProfileNodesTuple as [
+                JobPosition,
+                Node
+              ];
 
-              if (jobPosition.toLowerCase().includes('administrator')) {
+              if (jobPosition.toLowerCase().includes("administrator")) {
                 return officeSubordinatesProfileEdgesAcc;
               }
 
@@ -901,18 +762,14 @@ function Directory() {
                 target: officeProfileNode.id,
               };
 
-              officeSubordinatesProfileEdgesAcc.push(
-                officeSubordinateProfileEdge
-              );
+              officeSubordinatesProfileEdgesAcc.push(officeSubordinateProfileEdge);
 
               return officeSubordinatesProfileEdgesAcc;
             },
             [officeManagerToOfficeAdministratorEdge]
           );
 
-          officeAdministrationProfileEdgesAcc.push(
-            ...officeSubordinatesProfileEdges
-          );
+          officeAdministrationProfileEdgesAcc.push(...officeSubordinatesProfileEdges);
 
           return officeAdministrationProfileEdgesAcc;
         },
@@ -933,9 +790,7 @@ function Directory() {
               Record<JobPosition, Node>
             ];
 
-          const jobPositionsProfileNodes = Object.values(
-            jobPositionsProfileNodesObj
-          );
+          const jobPositionsProfileNodes = Object.values(jobPositionsProfileNodesObj);
 
           officeAdministrationProfileNodesAcc.push(...jobPositionsProfileNodes);
 
@@ -947,8 +802,8 @@ function Directory() {
       directoryDispatch({
         type: directoryAction.setDepartmentsNodesAndEdges,
         payload: {
-          department: 'Office Administration',
-          kind: 'nodes',
+          department: "Office Administration",
+          kind: "nodes",
           data: officeAdministrationProfileNodes,
         },
       });
@@ -956,8 +811,8 @@ function Directory() {
       directoryDispatch({
         type: directoryAction.setDepartmentsNodesAndEdges,
         payload: {
-          department: 'Office Administration',
-          kind: 'edges',
+          department: "Office Administration",
+          kind: "edges",
           data: officeAdministrationProfileEdges,
         },
       });
@@ -972,64 +827,61 @@ function Directory() {
 
       // required to link officers to their respective departments' managers
       const CORPORATE_DEPARTMENTS_OFFICER_TUPLE = [
-        ['Accounting', 'Chief Financial Officer'],
-        ['Human Resources', 'Chief Human Resources Officer'],
-        ['Sales', 'Chief Sales Officer'],
-        ['Marketing', 'Chief Marketing Officer'],
-        ['Information Technology', 'Chief Technology Officer'],
+        ["Accounting", "Chief Financial Officer"],
+        ["Human Resources", "Chief Human Resources Officer"],
+        ["Sales", "Chief Sales Officer"],
+        ["Marketing", "Chief Marketing Officer"],
+        ["Information Technology", "Chief Technology Officer"],
       ] as const;
 
-      const [
-        corporateDepartmentsProfileNodesObject,
-        corporateDepartmentsEdgesObject,
-      ] = CORPORATE_DEPARTMENTS_OFFICER_TUPLE.reduce(
-        (
-          corporateDepartmentsEdgesAndNodesObjectAcc: [
-            Record<Department, CorporateDepartmentsProfileNodesObject>,
-            Record<Department, Edge[]>
-          ],
-          corporateDepartmentOfficerTuple
-        ) => {
-          const [
-            corporateDepartmentsProfileNodesObjectAcc,
-            corporateDepartmentsEdgesObjAcc,
-          ] = corporateDepartmentsEdgesAndNodesObjectAcc;
+      const [corporateDepartmentsProfileNodesObject, corporateDepartmentsEdgesObject] =
+        CORPORATE_DEPARTMENTS_OFFICER_TUPLE.reduce(
+          (
+            corporateDepartmentsEdgesAndNodesObjectAcc: [
+              Record<Department, CorporateDepartmentsProfileNodesObject>,
+              Record<Department, Edge[]>
+            ],
+            corporateDepartmentOfficerTuple
+          ) => {
+            const [
+              corporateDepartmentsProfileNodesObjectAcc,
+              corporateDepartmentsEdgesObjAcc,
+            ] = corporateDepartmentsEdgesAndNodesObjectAcc;
 
-          const [corporateDepartment, officerJobPosition] =
-            corporateDepartmentOfficerTuple as [Department, JobPosition];
+            const [corporateDepartment, officerJobPosition] =
+              corporateDepartmentOfficerTuple as [Department, JobPosition];
 
-          const corporateDepartmentDocs =
-            groupedByDepartment[corporateDepartment] ?? [];
+            const corporateDepartmentDocs =
+              groupedByDepartment[corporateDepartment] ?? [];
 
-          // ╭───────────────────────────────────────────────────────────────╮
-          //   nodes creation
-          // ╰───────────────────────────────────────────────────────────────╯
-          // group by job positions
-          const corporateDepartmentDocsGroupedByJobPosition: Record<
-            JobPosition,
-            DirectoryUserDocument[]
-          > = groupByField<DirectoryUserDocument>({
-            objectArray: corporateDepartmentDocs,
-            field: 'jobPosition',
-          });
+            // ╭───────────────────────────────────────────────────────────────╮
+            //   nodes creation
+            // ╰───────────────────────────────────────────────────────────────╯
+            // group by job positions
+            const corporateDepartmentDocsGroupedByJobPosition: Record<
+              JobPosition,
+              DirectoryUserDocument[]
+            > = groupByField<DirectoryUserDocument>({
+              objectArray: corporateDepartmentDocs,
+              field: "jobPosition",
+            });
 
-          // using the created object structure, create profile nodes
-          const jobPositionsProfileNodes = Object.entries(
-            corporateDepartmentDocsGroupedByJobPosition
-          ).reduce(
-            (
-              jobPositionsProfileNodesAcc: CorporateDepartmentsProfileNodesObject,
-              corporateDepartmentGroupedDocsTuple
-            ) => {
-              const [jobPosition, groupedCorporateDepartmentByJobPositionArr] =
-                corporateDepartmentGroupedDocsTuple as [
-                  JobPosition,
-                  DirectoryUserDocument[]
-                ];
+            // using the created object structure, create profile nodes
+            const jobPositionsProfileNodes = Object.entries(
+              corporateDepartmentDocsGroupedByJobPosition
+            ).reduce(
+              (
+                jobPositionsProfileNodesAcc: CorporateDepartmentsProfileNodesObject,
+                corporateDepartmentGroupedDocsTuple
+              ) => {
+                const [jobPosition, groupedCorporateDepartmentByJobPositionArr] =
+                  corporateDepartmentGroupedDocsTuple as [
+                    JobPosition,
+                    DirectoryUserDocument[]
+                  ];
 
-              // create profile cards for each grouped doc
-              const profileCards =
-                groupedCorporateDepartmentByJobPositionArr.map(
+                // create profile cards for each grouped doc
+                const profileCards = groupedCorporateDepartmentByJobPositionArr.map(
                   (userDocument: DirectoryUserDocument) => {
                     const displayProfileCard = returnDirectoryProfileCard({
                       userDocument,
@@ -1042,106 +894,103 @@ function Directory() {
                   }
                 );
 
-              const groupedCorporateDepartmentByJobPositionCarousel = (
-                <CarouselBuilder
-                  slideDimensions={nodeDimensions}
-                  slides={profileCards}
-                />
-              );
+                const groupedCorporateDepartmentByJobPositionCarousel = (
+                  <CarouselBuilder
+                    slideDimensions={nodeDimensions}
+                    slides={profileCards}
+                  />
+                );
 
-              const nodeType = jobPosition.toLowerCase().includes('manager')
-                ? 'default'
-                : 'output';
+                const nodeType = jobPosition.toLowerCase().includes("manager")
+                  ? "default"
+                  : "output";
 
-              // create profile node with carousel
-              const groupedCorporateDepartmentByJobPositionProfileNode: Node = {
-                ...nodeDefaults,
-                id: jobPosition,
-                type: nodeType,
-                data: {
-                  label: groupedCorporateDepartmentByJobPositionCarousel,
-                },
-              };
+                // create profile node with carousel
+                const groupedCorporateDepartmentByJobPositionProfileNode: Node = {
+                  ...nodeDefaults,
+                  id: jobPosition,
+                  type: nodeType,
+                  data: {
+                    label: groupedCorporateDepartmentByJobPositionCarousel,
+                  },
+                };
 
-              // add job position field with profile node
-              jobPositionsProfileNodesAcc[jobPosition] =
-                groupedCorporateDepartmentByJobPositionProfileNode;
+                // add job position field with profile node
+                jobPositionsProfileNodesAcc[jobPosition] =
+                  groupedCorporateDepartmentByJobPositionProfileNode;
 
-              return jobPositionsProfileNodesAcc;
-            },
-            Object.create(null)
-          );
+                return jobPositionsProfileNodesAcc;
+              },
+              Object.create(null)
+            );
 
-          corporateDepartmentsProfileNodesObjectAcc[corporateDepartment] =
-            jobPositionsProfileNodes;
+            corporateDepartmentsProfileNodesObjectAcc[corporateDepartment] =
+              jobPositionsProfileNodes;
 
-          // ╭───────────────────────────────────────────────────────────────╮
-          //   edges creation
-          // ╰───────────────────────────────────────────────────────────────╯
-          // find the corporate department manager profile node id
-          const corporateDepartmentManagerId =
-            Object.entries(jobPositionsProfileNodes).find(
-              (jobPositionAndProfileNodeTuple) => {
-                const [jobPosition, _profileNode] =
-                  jobPositionAndProfileNodeTuple as [JobPosition, Node];
+            // ╭───────────────────────────────────────────────────────────────╮
+            //   edges creation
+            // ╰───────────────────────────────────────────────────────────────╯
+            // find the corporate department manager profile node id
+            const corporateDepartmentManagerId =
+              Object.entries(jobPositionsProfileNodes).find(
+                (jobPositionAndProfileNodeTuple) => {
+                  const [jobPosition, _profileNode] = jobPositionAndProfileNodeTuple as [
+                    JobPosition,
+                    Node
+                  ];
 
-                return jobPosition.toLowerCase().includes('manager');
-              }
-            )?.[1].id ?? '';
+                  return jobPosition.toLowerCase().includes("manager");
+                }
+              )?.[1].id ?? "";
 
-          // connect officer to corporate department manager
-          // [OFFICER] ━━━ [... MANAGER]
-          const officerToCorporateDepartmentManagerEdge: Edge = {
-            ...edgeDefaults,
-            id: `${officerJobPosition}-${corporateDepartmentManagerId}`, // source-target
-            source: officerJobPosition,
-            target: corporateDepartmentManagerId,
-          };
+            // connect officer to corporate department manager
+            // [OFFICER] ━━━ [... MANAGER]
+            const officerToCorporateDepartmentManagerEdge: Edge = {
+              ...edgeDefaults,
+              id: `${officerJobPosition}-${corporateDepartmentManagerId}`, // source-target
+              source: officerJobPosition,
+              target: corporateDepartmentManagerId,
+            };
 
-          const corporateDepartmentsEdges = Object.entries(
-            jobPositionsProfileNodes
-          ).reduce(
-            (
-              corporateDepartmentsEdgesAcc: Edge[],
-              jobPositionAndProfileNode
-            ) => {
-              const [jobPosition, profileNode] = jobPositionAndProfileNode as [
-                JobPosition,
-                Node
-              ];
+            const corporateDepartmentsEdges = Object.entries(
+              jobPositionsProfileNodes
+            ).reduce(
+              (corporateDepartmentsEdgesAcc: Edge[], jobPositionAndProfileNode) => {
+                const [jobPosition, profileNode] = jobPositionAndProfileNode as [
+                  JobPosition,
+                  Node
+                ];
 
-              // ignore manager as it is already connected to officer
-              if (jobPosition.toLowerCase().includes('manager')) {
+                // ignore manager as it is already connected to officer
+                if (jobPosition.toLowerCase().includes("manager")) {
+                  return corporateDepartmentsEdgesAcc;
+                }
+
+                // connect employees to corporate department manager
+                //                              ┏━ [EMPLOYEE]
+                // [OFFICER] ━━━ [... MANAGER] ━━━ [EMPLOYEE]
+                //                              ┗━ [EMPLOYEE]
+                const corporateDepartmentEmployeeProfileEdge: Edge = {
+                  ...edgeDefaults,
+                  id: `${corporateDepartmentManagerId}-${profileNode.id}`, // source-target
+                  source: corporateDepartmentManagerId,
+                  target: profileNode.id,
+                };
+
+                corporateDepartmentsEdgesAcc.push(corporateDepartmentEmployeeProfileEdge);
+
                 return corporateDepartmentsEdgesAcc;
-              }
+              },
+              [officerToCorporateDepartmentManagerEdge]
+            );
 
-              // connect employees to corporate department manager
-              //                              ┏━ [EMPLOYEE]
-              // [OFFICER] ━━━ [... MANAGER] ━━━ [EMPLOYEE]
-              //                              ┗━ [EMPLOYEE]
-              const corporateDepartmentEmployeeProfileEdge: Edge = {
-                ...edgeDefaults,
-                id: `${corporateDepartmentManagerId}-${profileNode.id}`, // source-target
-                source: corporateDepartmentManagerId,
-                target: profileNode.id,
-              };
+            corporateDepartmentsEdgesObjAcc[corporateDepartment] =
+              corporateDepartmentsEdges;
 
-              corporateDepartmentsEdgesAcc.push(
-                corporateDepartmentEmployeeProfileEdge
-              );
-
-              return corporateDepartmentsEdgesAcc;
-            },
-            [officerToCorporateDepartmentManagerEdge]
-          );
-
-          corporateDepartmentsEdgesObjAcc[corporateDepartment] =
-            corporateDepartmentsEdges;
-
-          return corporateDepartmentsEdgesAndNodesObjectAcc;
-        },
-        [Object.create(null), Object.create(null)]
-      );
+            return corporateDepartmentsEdgesAndNodesObjectAcc;
+          },
+          [Object.create(null), Object.create(null)]
+        );
 
       // set corporate departments' nodes and dispatch
       Object.entries(corporateDepartmentsProfileNodesObject).forEach(
@@ -1152,20 +1001,22 @@ function Directory() {
               CorporateDepartmentsProfileNodesObject
             ];
 
-          const corporateDepartmentProfileNodes = Object.entries(
-            profileNodes
-          ).map((jobPositionAndProfileNodeTuple) => {
-            const [_jobPosition, profileNode] =
-              jobPositionAndProfileNodeTuple as [JobPosition, Node];
+          const corporateDepartmentProfileNodes = Object.entries(profileNodes).map(
+            (jobPositionAndProfileNodeTuple) => {
+              const [_jobPosition, profileNode] = jobPositionAndProfileNodeTuple as [
+                JobPosition,
+                Node
+              ];
 
-            return profileNode;
-          });
+              return profileNode;
+            }
+          );
 
           directoryDispatch({
             type: directoryAction.setDepartmentsNodesAndEdges,
             payload: {
               department: corporateDepartment,
-              kind: 'nodes',
+              kind: "nodes",
               data: corporateDepartmentProfileNodes,
             },
           });
@@ -1175,14 +1026,16 @@ function Directory() {
       // set corporate departments' edges and dispatch
       Object.entries(corporateDepartmentsEdgesObject).forEach(
         (corporateDepartmentAndEdgesTuple) => {
-          const [corporateDepartment, edges] =
-            corporateDepartmentAndEdgesTuple as [Department, Edge[]];
+          const [corporateDepartment, edges] = corporateDepartmentAndEdgesTuple as [
+            Department,
+            Edge[]
+          ];
 
           directoryDispatch({
             type: directoryAction.setDepartmentsNodesAndEdges,
             payload: {
               department: corporateDepartment,
-              kind: 'edges',
+              kind: "edges",
               data: edges,
             },
           });
@@ -1197,11 +1050,11 @@ function Directory() {
     // possible only because the org hierarchy and job positions naming scheme are consistent (superiors contain '... supervisor', and only one subordinate level)
     async function setStoreDepartmentsEdgesAndNodes() {
       const STORE_DEPARTMENTS: Department[] = [
-        'Repair Technicians',
-        'Field Service Technicians',
-        'Logistics and Inventory',
-        'Customer Service',
-        'Maintenance',
+        "Repair Technicians",
+        "Field Service Technicians",
+        "Logistics and Inventory",
+        "Customer Service",
+        "Maintenance",
       ];
 
       const storeDepartmentsNodesObject = STORE_DEPARTMENTS.reduce(
@@ -1220,7 +1073,7 @@ function Directory() {
             DirectoryUserDocument[]
           > = groupByField<DirectoryUserDocument>({
             objectArray: departmentDocs,
-            field: 'storeLocation',
+            field: "storeLocation",
           });
 
           // using the created object structure, create profile nodes
@@ -1232,20 +1085,13 @@ function Directory() {
               departmentGroupedDocsTuple
             ) => {
               const [storeLocation, groupedDepartmentByStoreLocationsArr] =
-                departmentGroupedDocsTuple as [
-                  StoreLocation,
-                  DirectoryUserDocument[]
-                ];
+                departmentGroupedDocsTuple as [StoreLocation, DirectoryUserDocument[]];
 
               // create store location field
-              Object.defineProperty(
-                departmentProfileNodesObjectAcc,
-                storeLocation,
-                {
-                  ...PROPERTY_DESCRIPTOR,
-                  value: Object.create(null),
-                }
-              );
+              Object.defineProperty(departmentProfileNodesObjectAcc, storeLocation, {
+                ...PROPERTY_DESCRIPTOR,
+                value: Object.create(null),
+              });
 
               // iterate through docs for each store location and create profile cards for each job position
               const jobPositionsProfileNodesObj =
@@ -1283,40 +1129,33 @@ function Directory() {
               // for each job position, create a single profile node that will hold a carousel of created profile cards
               Object.entries(jobPositionsProfileNodesObj).forEach(
                 (jobPositionGroupedDepartmentTuple) => {
-                  const [
-                    jobPosition,
-                    groupedDepartmentEmployeesForJobPosition,
-                  ] = jobPositionGroupedDepartmentTuple as [
-                    JobPosition,
-                    React.JSX.Element[]
-                  ];
+                  const [jobPosition, groupedDepartmentEmployeesForJobPosition] =
+                    jobPositionGroupedDepartmentTuple as [
+                      JobPosition,
+                      React.JSX.Element[]
+                    ];
 
                   // create a carousel from said profile cards
-                  const groupedDepartmentEmployeesForJobPositionProfileCarousel =
-                    (
-                      <CarouselBuilder
-                        slides={groupedDepartmentEmployeesForJobPosition}
-                        slideDimensions={nodeDimensions}
-                      />
-                    );
+                  const groupedDepartmentEmployeesForJobPositionProfileCarousel = (
+                    <CarouselBuilder
+                      slides={groupedDepartmentEmployeesForJobPosition}
+                      slideDimensions={nodeDimensions}
+                    />
+                  );
 
-                  const nodeType = jobPosition
-                    .toLowerCase()
-                    .includes('supervisor')
-                    ? 'default'
-                    : 'output';
+                  const nodeType = jobPosition.toLowerCase().includes("supervisor")
+                    ? "default"
+                    : "output";
 
                   // create profile node with carousel
-                  const groupedDepartmentEmployeesForJobPositionProfileNode: Node =
-                    {
-                      ...nodeDefaults,
-                      id: `${storeLocation}-${jobPosition}`,
-                      type: nodeType,
-                      data: {
-                        label:
-                          groupedDepartmentEmployeesForJobPositionProfileCarousel,
-                      },
-                    };
+                  const groupedDepartmentEmployeesForJobPositionProfileNode: Node = {
+                    ...nodeDefaults,
+                    id: `${storeLocation}-${jobPosition}`,
+                    type: nodeType,
+                    data: {
+                      label: groupedDepartmentEmployeesForJobPositionProfileCarousel,
+                    },
+                  };
 
                   // add job position field with profile node
                   Object.defineProperty(
@@ -1324,8 +1163,7 @@ function Directory() {
                     jobPosition,
                     {
                       ...PROPERTY_DESCRIPTOR,
-                      value:
-                        groupedDepartmentEmployeesForJobPositionProfileNode,
+                      value: groupedDepartmentEmployeesForJobPositionProfileNode,
                     }
                   );
 
@@ -1340,8 +1178,7 @@ function Directory() {
           );
 
           // set department profile nodes to store departments nodes accumulator
-          storeDepartmentsNodesObjectAcc[department] =
-            departmentProfileNodesObject;
+          storeDepartmentsNodesObjectAcc[department] = departmentProfileNodesObject;
 
           return storeDepartmentsNodesObjectAcc;
         },
@@ -1377,12 +1214,14 @@ function Directory() {
               const departmentSupervisorProfileNodeId =
                 Object.entries(jobPositionsProfileNodesObj).find(
                   (jobPositionProfileNodeTuple) => {
-                    const [jobPosition, _profileNode] =
-                      jobPositionProfileNodeTuple as [JobPosition, Node];
+                    const [jobPosition, _profileNode] = jobPositionProfileNodeTuple as [
+                      JobPosition,
+                      Node
+                    ];
 
-                    return jobPosition.toLowerCase().includes('supervisor');
+                    return jobPosition.toLowerCase().includes("supervisor");
                   }
-                )?.[1].id ?? '';
+                )?.[1].id ?? "";
 
               // connect shift supervisor to department supervisor
               // [SHIFT SUPERVISOR] ━━━ [DEPARTMENT SUPERVISOR]
@@ -1409,7 +1248,7 @@ function Directory() {
                     jobPositionProfileNodesTuple as [JobPosition, Node];
 
                   // ignore supervisors
-                  if (jobPosition.toLowerCase().includes('supervisor')) {
+                  if (jobPosition.toLowerCase().includes("supervisor")) {
                     return departmentEmployeesProfileEdgesAcc;
                   }
 
@@ -1479,7 +1318,7 @@ function Directory() {
             type: directoryAction.setDepartmentsNodesAndEdges,
             payload: {
               department,
-              kind: 'nodes',
+              kind: "nodes",
               data: allStoreLocationsProfileNodesForDepartment,
             },
           });
@@ -1490,16 +1329,13 @@ function Directory() {
       Object.entries(storeDepartmentsEdgesObject).forEach(
         (departmentAndStoreLocationsProfileEdgesTuple) => {
           const [department, storeLocationsProfileEdges] =
-            departmentAndStoreLocationsProfileEdgesTuple as [
-              Department,
-              Edge[]
-            ];
+            departmentAndStoreLocationsProfileEdgesTuple as [Department, Edge[]];
 
           directoryDispatch({
             type: directoryAction.setDepartmentsNodesAndEdges,
             payload: {
               department,
-              kind: 'edges',
+              kind: "edges",
               data: storeLocationsProfileEdges,
             },
           });
@@ -1525,18 +1361,18 @@ function Directory() {
         await Promise.all([
           setExecutiveManagementEdgesAndNodes(),
           setCorporateDepartmentsEdgesAndNodes(),
-
           setStoreAdministrationEdgesAndNodes(),
           setOfficeAdministrationEdgesAndNodes(),
           setStoreDepartmentsEdgesAndNodes(),
         ]);
+
+        console.log("All department nodes and edges have been set.");
       } catch (error: any) {
         if (!isMounted) {
           return;
         }
 
-        const errorMessage =
-          error.message ?? 'Unknown error occured. Please try again.';
+        const errorMessage = error.message ?? "Unknown error occured. Please try again.";
 
         globalDispatch({
           type: globalAction.setErrorState,
@@ -1544,13 +1380,13 @@ function Directory() {
             isError: true,
             errorMessage,
             errorCallback: () => {
-              navigate('/home/directory');
+              navigate("/home/directory");
 
               globalDispatch({
                 type: globalAction.setErrorState,
                 payload: {
                   isError: false,
-                  errorMessage: '',
+                  errorMessage: "",
                   errorCallback: () => {},
                 },
               });
@@ -1592,7 +1428,7 @@ function Directory() {
         });
         directoryDispatch({
           type: directoryAction.setLoadingMessage,
-          payload: '',
+          payload: "",
         });
       }
     }
@@ -1627,14 +1463,12 @@ function Directory() {
     }
 
     // if there is a specific filter by department term, set nodes and edges from that filteredDepartmentNodesAndEdges state
-    if (filterByDepartment !== 'All Departments') {
+    if (filterByDepartment !== "All Departments") {
       return;
     }
 
     // updates all departments nodes and edges when no specific filter terms are present
-    const [initialNodes, initialEdges] = Object.entries(
-      departmentsNodesAndEdges
-    ).reduce(
+    const [initialNodes, initialEdges] = Object.entries(departmentsNodesAndEdges).reduce(
       (initialNodesAndEdgesAcc: [Node[], Edge[]], departmentNodesAndEdges) => {
         const [_department, nodesAndEdges] = departmentNodesAndEdges as [
           Department,
@@ -1656,17 +1490,16 @@ function Directory() {
       [[], []]
     );
 
-    const { nodes: layoutedNodes, edges: layoutedEdges } =
-      returnDagreLayoutedElements({
-        edges: initialEdges,
-        nodes: initialNodes,
-        rankdir: dagreRankDir,
-        align: dagreRankAlign === 'undefined' ? void 0 : dagreRankAlign,
-        nodesep: dagreNodeSep,
-        ranksep: dagreRankSep,
-        ranker: dagreRanker,
-        minlen: dagreMinLen,
-      });
+    const { nodes: layoutedNodes, edges: layoutedEdges } = returnDagreLayoutedElements({
+      edges: initialEdges,
+      nodes: initialNodes,
+      rankdir: dagreRankDir,
+      align: dagreRankAlign === "undefined" ? void 0 : dagreRankAlign,
+      nodesep: dagreNodeSep,
+      ranksep: dagreRankSep,
+      ranker: dagreRanker,
+      minlen: dagreMinLen,
+    });
 
     directoryDispatch({
       type: directoryAction.setLayoutedNodes,
@@ -1705,17 +1538,16 @@ function Directory() {
     const initialNodes = filteredDepartmentsNodesAndEdges.nodes;
     const initialEdges = filteredDepartmentsNodesAndEdges.edges;
 
-    const { nodes: layoutedNodes, edges: layoutedEdges } =
-      returnDagreLayoutedElements({
-        edges: initialEdges,
-        nodes: initialNodes,
-        rankdir: dagreRankDir,
-        align: dagreRankAlign === 'undefined' ? void 0 : dagreRankAlign,
-        nodesep: dagreNodeSep,
-        ranksep: dagreRankSep,
-        ranker: dagreRanker,
-        minlen: dagreMinLen,
-      });
+    const { nodes: layoutedNodes, edges: layoutedEdges } = returnDagreLayoutedElements({
+      edges: initialEdges,
+      nodes: initialNodes,
+      rankdir: dagreRankDir,
+      align: dagreRankAlign === "undefined" ? void 0 : dagreRankAlign,
+      nodesep: dagreNodeSep,
+      ranksep: dagreRankSep,
+      ranker: dagreRanker,
+      minlen: dagreMinLen,
+    });
 
     directoryDispatch({
       type: directoryAction.setLayoutedNodes,
@@ -1746,8 +1578,6 @@ function Directory() {
 
   // update filteredJobPositionsNodesAndEdges
   useEffect(() => {
-    console.log('update filteredJobPositionsNodesAndEdges effect entered');
-
     if (!filteredJobPositionsNodesAndEdges) {
       return;
     }
@@ -1755,17 +1585,16 @@ function Directory() {
     const initialNodes = filteredJobPositionsNodesAndEdges.nodes;
     const initialEdges = filteredJobPositionsNodesAndEdges.edges;
 
-    const { nodes: layoutedNodes, edges: layoutedEdges } =
-      returnDagreLayoutedElements({
-        edges: initialEdges,
-        nodes: initialNodes,
-        rankdir: dagreRankDir,
-        align: dagreRankAlign === 'undefined' ? void 0 : dagreRankAlign,
-        nodesep: dagreNodeSep,
-        ranksep: dagreRankSep,
-        ranker: dagreRanker,
-        minlen: dagreMinLen,
-      });
+    const { nodes: layoutedNodes, edges: layoutedEdges } = returnDagreLayoutedElements({
+      edges: initialEdges,
+      nodes: initialNodes,
+      rankdir: dagreRankDir,
+      align: dagreRankAlign === "undefined" ? void 0 : dagreRankAlign,
+      nodesep: dagreNodeSep,
+      ranksep: dagreRankSep,
+      ranker: dagreRanker,
+      minlen: dagreMinLen,
+    });
 
     directoryDispatch({
       type: directoryAction.setLayoutedNodes,
@@ -1803,17 +1632,18 @@ function Directory() {
     const initialNodes = filteredStoreLocationsNodesAndEdges.nodes;
     const initialEdges = filteredStoreLocationsNodesAndEdges.edges;
 
-    const { nodes: layoutedNodes, edges: layoutedEdges } =
-      returnDagreLayoutedElements({
-        edges: initialEdges,
-        nodes: initialNodes,
-        rankdir: dagreRankDir,
-        align: dagreRankAlign === 'undefined' ? void 0 : dagreRankAlign,
-        nodesep: dagreNodeSep,
-        ranksep: dagreRankSep,
-        ranker: dagreRanker,
-        minlen: dagreMinLen,
-      });
+    console.log("update filteredStoreLocationsNodesAndEdges");
+
+    const { nodes: layoutedNodes, edges: layoutedEdges } = returnDagreLayoutedElements({
+      edges: initialEdges,
+      nodes: initialNodes,
+      rankdir: dagreRankDir,
+      align: dagreRankAlign === "undefined" ? void 0 : dagreRankAlign,
+      nodesep: dagreNodeSep,
+      ranksep: dagreRankSep,
+      ranker: dagreRanker,
+      minlen: dagreMinLen,
+    });
 
     directoryDispatch({
       type: directoryAction.setLayoutedNodes,
@@ -1846,95 +1676,90 @@ function Directory() {
 
   // ┏━ begin input creators info objects ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-  const filterByDepartmentSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo =
-    {
-      data: DIRECTORY_DEPARTMENT_SELECT_OPTIONS,
-      description: '',
-      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-        directoryDispatch({
-          type: directoryAction.setFilterByDepartment,
-          payload: event.currentTarget.value as DepartmentsWithDefaultKey,
-        });
-      },
-      value: filterByDepartment,
-      label: '',
-    };
+  const filterByDepartmentSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
+    data: DIRECTORY_DEPARTMENT_SELECT_OPTIONS,
+    description: "",
+    onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+      directoryDispatch({
+        type: directoryAction.setFilterByDepartment,
+        payload: event.currentTarget.value as DepartmentsWithDefaultKey,
+      });
+    },
+    value: filterByDepartment,
+    label: "",
+  };
 
   let filterByJobPositionSelectData =
-    filterByDepartment === 'All Departments'
+    filterByDepartment === "All Departments"
       ? DIRECTORY_JOB_POSITION_SELECT_OPTIONS
       : DEPARTMENT_JOB_POSITION_MAP.get(filterByDepartment) ??
         DIRECTORY_JOB_POSITION_SELECT_OPTIONS;
 
   // add 'All Job Positions' default to select data when a filterByDepartment value is chosen
   filterByJobPositionSelectData =
-    filterByDepartment === 'All Departments'
+    filterByDepartment === "All Departments"
       ? filterByJobPositionSelectData
       : ([
           ...filterByJobPositionSelectData,
-          { label: 'All Job Positions', value: 'All Job Positions' },
+          { label: "All Job Positions", value: "All Job Positions" },
         ] as SelectInputData);
 
-  const filterByJobPositionSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo =
-    {
-      data: filterByJobPositionSelectData,
-      description: '',
-      disabled: filterByDepartment === 'All Departments',
-      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-        directoryDispatch({
-          type: directoryAction.setFilterByJobPosition,
-          payload: event.currentTarget.value as JobPositionsWithDefaultKey,
-        });
-      },
-      value: filterByJobPosition,
-      label: '',
-    };
+  const filterByJobPositionSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
+    data: filterByJobPositionSelectData,
+    description: "",
+    disabled: filterByDepartment === "All Departments",
+    onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+      directoryDispatch({
+        type: directoryAction.setFilterByJobPosition,
+        payload: event.currentTarget.value as JobPositionsWithDefaultKey,
+      });
+    },
+    value: filterByJobPosition,
+    label: "",
+  };
 
   const isFilterByStoreLocationSelectDisabled = [
-    'All Departments',
-    'Executive Management',
-    'Accounting',
-    'Human Resources',
-    'Sales',
-    'Marketing',
-    'Information Technology',
+    "All Departments",
+    "Executive Management",
+    "Accounting",
+    "Human Resources",
+    "Sales",
+    "Marketing",
+    "Information Technology",
   ].includes(filterByDepartment);
 
-  const filterByStoreLocationSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo =
-    {
-      data: DIRECTORY_STORE_LOCATION_SELECT_OPTIONS,
-      disabled: isFilterByStoreLocationSelectDisabled,
-      description: '',
-      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-        directoryDispatch({
-          type: directoryAction.setFilterByStoreLocation,
-          payload: event.currentTarget.value as StoreLocationsWithDefaultKey,
-        });
-      },
-      value: filterByStoreLocation,
-      label: '',
-    };
+  const filterByStoreLocationSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
+    data: DIRECTORY_STORE_LOCATION_SELECT_OPTIONS,
+    disabled: isFilterByStoreLocationSelectDisabled,
+    description: "",
+    onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+      directoryDispatch({
+        type: directoryAction.setFilterByStoreLocation,
+        payload: event.currentTarget.value as StoreLocationsWithDefaultKey,
+      });
+    },
+    value: filterByStoreLocation,
+    label: "",
+  };
 
   // sliders
   const sliderWidth =
     width < 480
-      ? '217px'
+      ? "217px"
       : width < 768
       ? `${width * 0.38}px`
       : width < 1192
-      ? '500px'
+      ? "500px"
       : width < 1600
       ? `${width * 0.38}px`
-      : '330px';
+      : "330px";
   const { gray } = COLORS_SWATCHES;
   const sliderLabelColor = gray[3];
 
   const dagreNodeSepSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
-    kind: 'slider',
-    ariaLabel: 'node separation',
-    label: (value) => (
-      <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-    ),
+    kind: "slider",
+    ariaLabel: "node separation",
+    label: (value) => <Text style={{ color: sliderLabelColor }}>{value} px</Text>,
     max: 300,
     min: 25,
     step: 1,
@@ -1950,11 +1775,9 @@ function Directory() {
   };
 
   const dagreRankSepSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
-    kind: 'slider',
-    ariaLabel: 'rank separation',
-    label: (value) => (
-      <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-    ),
+    kind: "slider",
+    ariaLabel: "rank separation",
+    label: (value) => <Text style={{ color: sliderLabelColor }}>{value} px</Text>,
     max: 300,
     min: 25,
     step: 1,
@@ -1970,8 +1793,8 @@ function Directory() {
   };
 
   const dagreMinLenSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
-    kind: 'slider',
-    ariaLabel: 'min length',
+    kind: "slider",
+    ariaLabel: "min length",
     label: (value) => <Text style={{ color: sliderLabelColor }}>{value}</Text>,
     max: 10,
     min: 1,
@@ -1989,7 +1812,7 @@ function Directory() {
 
   const dagreRankDirSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
     data: DAGRE_LAYOUT_RANKDIR_SELECT_OPTIONS,
-    description: '',
+    description: "",
     onChange: (event: ChangeEvent<HTMLSelectElement>) => {
       directoryDispatch({
         type: directoryAction.setDagreRankDir,
@@ -1997,26 +1820,23 @@ function Directory() {
       });
     },
     value: dagreRankDir,
-    label: 'Select Rank Direction',
   };
 
-  const dagreRankAlignSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo =
-    {
-      data: DAGRE_LAYOUT_RANKALIGN_SELECT_OPTIONS,
-      description: '',
-      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-        directoryDispatch({
-          type: directoryAction.setDagreRankAlign,
-          payload: event.currentTarget.value as DagreRankAlign,
-        });
-      },
-      value: dagreRankAlign,
-      label: 'Select Rank Alignment',
-    };
+  const dagreRankAlignSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
+    data: DAGRE_LAYOUT_RANKALIGN_SELECT_OPTIONS,
+    description: "",
+    onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+      directoryDispatch({
+        type: directoryAction.setDagreRankAlign,
+        payload: event.currentTarget.value as DagreRankAlign,
+      });
+    },
+    value: dagreRankAlign,
+  };
 
   const dagreRankerSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
     data: DAGRE_LAYOUT_RANKER_SELECT_OPTIONS,
-    description: '',
+    description: "",
     onChange: (event: ChangeEvent<HTMLSelectElement>) => {
       directoryDispatch({
         type: directoryAction.setDagreRanker,
@@ -2024,7 +1844,6 @@ function Directory() {
       });
     },
     value: dagreRanker,
-    label: 'Select Ranker Algorithm',
   };
 
   // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ end input creators info objects━┛
@@ -2067,12 +1886,7 @@ function Directory() {
 
   // filter section
   const displayFilterGraphsText = (
-    <Group
-      w="100%"
-      bg={sectionHeadersBgColor}
-      p={padding}
-      style={{ borderRadius: 4 }}
-    >
+    <Group w="100%" bg={sectionHeadersBgColor} p={padding} style={{ borderRadius: 4 }}>
       <Title order={5}>Graph Filters</Title>
     </Group>
   );
@@ -2091,9 +1905,7 @@ function Directory() {
       input={createdFilterByJobPositionSelectInputElements}
       label="Filter by job position"
       value={
-        filterByDepartment === 'All Departments'
-          ? 'Not applicable'
-          : filterByJobPosition
+        filterByDepartment === "All Departments" ? "Not applicable" : filterByJobPosition
       }
       symbol=""
     />
@@ -2104,9 +1916,7 @@ function Directory() {
       input={createdFilterByStoreLocationSelectInputElements}
       label="Filter by store location"
       value={
-        isFilterByStoreLocationSelectDisabled
-          ? 'Not applicable'
-          : filterByStoreLocation
+        isFilterByStoreLocationSelectDisabled ? "Not applicable" : filterByStoreLocation
       }
       symbol=""
     />
@@ -2123,12 +1933,7 @@ function Directory() {
 
   // dagre layout section
   const displayDagreLayoutText = (
-    <Group
-      w="100%"
-      bg={sectionHeadersBgColor}
-      p={padding}
-      style={{ borderRadius: 4 }}
-    >
+    <Group w="100%" bg={sectionHeadersBgColor} p={padding} style={{ borderRadius: 4 }}>
       <Title order={5}>Graph Layouts</Title>
     </Group>
   );
@@ -2173,7 +1978,7 @@ function Directory() {
     <ChartsAndGraphsControlsStacker
       input={createdDagreRankAlignSelectInput}
       label="Rank Alignment"
-      value={dagreRankAlign === 'undefined' ? 'Default' : dagreRankAlign}
+      value={dagreRankAlign === "undefined" ? "Default" : dagreRankAlign}
       symbol=""
     />
   );
@@ -2213,7 +2018,7 @@ function Directory() {
 
   const displayGraphControls = (
     <ScrollArea type="hover" styles={() => scrollBarStyle} offsetScrollbars>
-      <Stack h={width < 1600 ? '38vh' : '75vh'} p={padding}>
+      <Stack h={width < 1600 ? "38vh" : "75vh"} p={padding}>
         {displayFilterSelectsSection}
         {displayDagreLayoutSection}
       </Stack>
@@ -2221,10 +2026,7 @@ function Directory() {
   );
 
   const displayGraphViewport = (
-    <GraphBuilderWrapper
-      layoutedNodes={layoutedNodes}
-      layoutedEdges={layoutedEdges}
-    />
+    <GraphBuilderWrapper layoutedNodes={layoutedNodes} layoutedEdges={layoutedEdges} />
   );
 
   const displayLoadingOverlay = (
@@ -2249,10 +2051,10 @@ function Directory() {
       w="100%"
       h="75vh"
       gutter={rowGap}
-      style={{ position: 'relative' }}
+      style={{ position: "relative" }}
       py={padding}
     >
-      <Grid.Col span={width < 1600 ? 1 : 4} h={width < 1600 ? '38vh' : '75vh'}>
+      <Grid.Col span={width < 1600 ? 1 : 4} h={width < 1600 ? "38vh" : "75vh"}>
         {displayGraphControls}
       </Grid.Col>
 
@@ -2276,3 +2078,152 @@ function Directory() {
 }
 
 export default Directory;
+
+/**
+ * useEffect(() => {
+    let isMounted = true;
+    const controller = new AbortController();
+
+    async function fetchUsers(): Promise<void> {
+      directoryDispatch({
+        type: directoryAction.setIsLoading,
+        payload: true,
+      });
+      directoryDispatch({
+        type: directoryAction.setLoadingMessage,
+        payload: "Fetching users directory ...",
+      });
+
+      const url: URL = urlBuilder({
+        path: "user/directory",
+      });
+
+      const requestInit: RequestInit = {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+
+      try {
+        const response = await wrappedFetch({
+          isMounted,
+          requestInit,
+          signal: controller.signal,
+          url,
+        });
+        const data: { message: string; resourceData: DirectoryUserDocument[] } =
+          await response.json();
+        if (!isMounted) {
+          return;
+        }
+
+        if (!response.ok) {
+          throw new Error(data.message);
+        }
+
+        // // set data to local forage to prevent refetches on every refresh
+        // await localforage.setItem<DirectoryUserDocument[]>(
+        //   "directory",
+        //   data.resourceData
+        // );
+
+        directoryDispatch({
+          type: directoryAction.setGroupedByDepartment,
+          payload: data.resourceData,
+        });
+      } catch (error: any) {
+        if (!isMounted || error.name === "AbortError") {
+          return;
+        }
+
+        const errorMessage =
+          error instanceof InvalidTokenError
+            ? "Invalid token. Please login again."
+            : !error.response
+            ? "Network error. Please try again."
+            : error.message ?? "Unknown error occured. Please try again.";
+
+        globalDispatch({
+          type: globalAction.setErrorState,
+          payload: {
+            isError: true,
+            errorMessage,
+            errorCallback: () => {
+              navigate("/home/directory");
+
+              globalDispatch({
+                type: globalAction.setErrorState,
+                payload: {
+                  isError: false,
+                  errorMessage: "",
+                  errorCallback: () => {},
+                },
+              });
+            },
+          },
+        });
+
+        showBoundary(error);
+      } finally {
+        directoryDispatch({
+          type: directoryAction.setIsLoading,
+          payload: false,
+        });
+        directoryDispatch({
+          type: directoryAction.setLoadingMessage,
+          payload: "",
+        });
+        directoryDispatch({
+          type: directoryAction.triggerFetchUsersDirectory,
+          payload: false,
+        });
+      }
+    }
+
+    // // only fetch if there is no directory in local forage
+    // async function checkLocalForageBeforeFetch(): Promise<void> {
+    //   const directory = await localforage.getItem("directory");
+    //   if (!directory) {
+    //     console.log("NO DIRECTORY IN LOCAL FORAGE");
+
+    //     await fetchUsers();
+    //   }
+    // }
+
+    if (triggerFetchUsersDirectory) {
+      // checkLocalForageBeforeFetch();
+      fetchUsers();
+    }
+
+    return () => {
+      isMounted = false;
+      controller.abort();
+    };
+  }, [triggerFetchUsersDirectory]);
+
+  // on every mount, check if there are directory docs in local forage
+  useEffect(() => {
+    let isMounted = true;
+
+    async function checkLocalForageForDirectoryDocs(): Promise<void> {
+      const directory = await localforage.getItem<DirectoryUserDocument[]>("directory");
+      if (!isMounted || !directory || !directory.length) {
+        return;
+      }
+
+      // if present, set following state from local forage
+      directoryDispatch({
+        type: directoryAction.setGroupedByDepartment,
+        payload: directory,
+      });
+    }
+
+    checkLocalForageForDirectoryDocs();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+ */
