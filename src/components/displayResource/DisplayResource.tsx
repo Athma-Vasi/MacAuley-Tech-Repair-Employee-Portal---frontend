@@ -193,12 +193,6 @@ function DisplayResource<Doc>({
           throw new Error(data.message);
         }
 
-        // const flattenedObjects = data.resourceData.map((obj) => {
-        //   const flattenedObj = flattenObjectIterative(obj);
-
-        //   return flattenedObj;
-        // });
-
         if (!isFileUploadsWithResource || !fileUploadFieldName) {
           // if there are no file uploads, set the resource data as is
           displayResourceDispatch({
@@ -283,7 +277,7 @@ function DisplayResource<Doc>({
           payload: fileUploadsArr,
         });
 
-        // do this regardless of whether there are file uploads or not
+        // do this regardless of file uploads existence
         displayResourceDispatch({
           type: displayResourceAction.setPages,
           payload: data.pages ?? pages,
@@ -373,7 +367,7 @@ function DisplayResource<Doc>({
     }
   }, [pageQueryString]);
 
-  // separate instead of inside finally block to avoid causing flicker by previous page state displaying then updating after overlay disappears
+  // separate instead of inside finally block to avoid causing flicker
   useEffect(() => {
     displayResourceDispatch({
       type: displayResourceAction.setIsLoading,

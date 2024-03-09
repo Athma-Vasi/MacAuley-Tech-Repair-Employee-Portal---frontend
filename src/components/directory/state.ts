@@ -20,7 +20,6 @@ const initialDirectoryState: DirectoryState = {
   filterByStoreLocation: "All Store Locations",
   filteredStoreLocationsNodesAndEdges: null,
 
-  triggerFetchUsersDirectory: true,
   triggerSetDepartmentsNodesAndEdges: false,
   departmentsNodesAndEdges: {} as DepartmentsNodesAndEdges,
 
@@ -47,7 +46,6 @@ const directoryAction: DirectoryAction = {
   setFilterByJobPosition: "setFilterByJobPosition",
   setFilterByStoreLocation: "setFilterByStoreLocation",
 
-  triggerFetchUsersDirectory: "triggerFetchUsersDirectory",
   triggerSetDepartmentsNodesAndEdges: "triggerSetDepartmentsNodesAndEdges",
   setDepartmentsNodesAndEdges: "setDepartmentsNodesAndEdges",
 
@@ -284,9 +282,6 @@ function directoryReducer(
         filteredStoreLocationsNodesAndEdges,
       };
     }
-
-    case directoryAction.triggerFetchUsersDirectory:
-      return { ...state, triggerFetchUsersDirectory: action.payload };
 
     case directoryAction.triggerSetDepartmentsNodesAndEdges:
       return { ...state, triggerSetDepartmentsNodesAndEdges: action.payload };

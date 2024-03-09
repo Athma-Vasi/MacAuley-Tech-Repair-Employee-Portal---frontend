@@ -1,4 +1,4 @@
-import { Edge, Node } from 'reactflow';
+import { Edge, Node } from "reactflow";
 
 import {
   Country,
@@ -11,7 +11,7 @@ import {
   StatesUS,
   StoreLocation,
   UserRoles,
-} from '../../types';
+} from "../../types";
 
 type DirectoryUserDocument = {
   _id: string;
@@ -41,23 +41,19 @@ type DirectoryUserDocument = {
   active: boolean;
 };
 
-type DagreRankDir = 'TB' | 'BT' | 'LR' | 'RL';
-type DagreRankAlign = 'UL' | 'UR' | 'DL' | 'DR' | 'undefined';
-type DagreRankerAlgorithm = 'network-simplex' | 'tight-tree' | 'longest-path';
-type DagreLabelPos = 'l' | 'r' | 'c';
+type DagreRankDir = "TB" | "BT" | "LR" | "RL";
+type DagreRankAlign = "UL" | "UR" | "DL" | "DR" | "undefined";
+type DagreRankerAlgorithm = "network-simplex" | "tight-tree" | "longest-path";
+type DagreLabelPos = "l" | "r" | "c";
 
-type FetchUsersDirectoryResponse =
-  ResourceRequestServerResponse<DirectoryUserDocument>;
+type FetchUsersDirectoryResponse = ResourceRequestServerResponse<DirectoryUserDocument>;
 
 // default keys needed for select inputs
-type DepartmentsWithDefaultKey = Department | 'All Departments';
-type JobPositionsWithDefaultKey = JobPosition | 'All Job Positions';
-type StoreLocationsWithDefaultKey = StoreLocation | 'All Store Locations';
+type DepartmentsWithDefaultKey = Department | "All Departments";
+type JobPositionsWithDefaultKey = JobPosition | "All Job Positions";
+type StoreLocationsWithDefaultKey = StoreLocation | "All Store Locations";
 
-type DepartmentsNodesAndEdges = Record<
-  Department,
-  { nodes: Node[]; edges: Edge[] }
->;
+type DepartmentsNodesAndEdges = Record<Department, { nodes: Node[]; edges: Edge[] }>;
 
 type FilteredNodesAndEdges = {
   nodes: Node[];
@@ -74,7 +70,6 @@ type DirectoryState = {
   filterByStoreLocation: StoreLocationsWithDefaultKey;
   filteredStoreLocationsNodesAndEdges: FilteredNodesAndEdges | null;
 
-  triggerFetchUsersDirectory: boolean;
   triggerSetDepartmentsNodesAndEdges: boolean;
   departmentsNodesAndEdges: DepartmentsNodesAndEdges;
 
@@ -95,101 +90,98 @@ type DirectoryState = {
 };
 
 type DirectoryAction = {
-  setGroupedByDepartment: 'setGroupedByDepartment';
+  setGroupedByDepartment: "setGroupedByDepartment";
 
-  setFilterByDepartment: 'setFilterByDepartment';
-  setFilterByJobPosition: 'setFilterByJobPosition';
-  setFilterByStoreLocation: 'setFilterByStoreLocation';
+  setFilterByDepartment: "setFilterByDepartment";
+  setFilterByJobPosition: "setFilterByJobPosition";
+  setFilterByStoreLocation: "setFilterByStoreLocation";
 
-  triggerFetchUsersDirectory: 'triggerFetchUsersDirectory';
-  triggerSetDepartmentsNodesAndEdges: 'triggerSetDepartmentsNodesAndEdges';
-  setDepartmentsNodesAndEdges: 'setDepartmentsNodesAndEdges';
+  triggerSetDepartmentsNodesAndEdges: "triggerSetDepartmentsNodesAndEdges";
+  setDepartmentsNodesAndEdges: "setDepartmentsNodesAndEdges";
 
-  setLayoutedNodes: 'setLayoutedNodes';
-  setLayoutedEdges: 'setLayoutedEdges';
-  triggerSetLayoutedNodesAndEdges: 'triggerSetLayoutedNodesAndEdges';
+  setLayoutedNodes: "setLayoutedNodes";
+  setLayoutedEdges: "setLayoutedEdges";
+  triggerSetLayoutedNodesAndEdges: "triggerSetLayoutedNodesAndEdges";
 
   // dagre layout options
-  setDagreRankDir: 'setDagreRankDir';
-  setDagreRankAlign: 'setDagreRankAlign';
-  setDagreNodeSep: 'setDagreNodeSep';
-  setDagreRankSep: 'setDagreRankSep';
-  setDagreRanker: 'setDagreRanker';
-  setDagreMinLen: 'setDagreMinLen';
+  setDagreRankDir: "setDagreRankDir";
+  setDagreRankAlign: "setDagreRankAlign";
+  setDagreNodeSep: "setDagreNodeSep";
+  setDagreRankSep: "setDagreRankSep";
+  setDagreRanker: "setDagreRanker";
+  setDagreMinLen: "setDagreMinLen";
 
-  setIsLoading: 'setIsLoading';
-  setLoadingMessage: 'setLoadingMessage';
+  setIsLoading: "setIsLoading";
+  setLoadingMessage: "setLoadingMessage";
 };
 
 type SetDepartmentNodesAndEdgesPayload =
-  | { department: Department; kind: 'nodes'; data: Node[] }
-  | { department: Department; kind: 'edges'; data: Edge[] };
+  | { department: Department; kind: "nodes"; data: Node[] }
+  | { department: Department; kind: "edges"; data: Edge[] };
 
-type SetFilteredDepartmentsNodesAndEdgesPayload =
-  SetDepartmentNodesAndEdgesPayload;
+type SetFilteredDepartmentsNodesAndEdgesPayload = SetDepartmentNodesAndEdgesPayload;
 
 type DirectoryDispatch =
   | {
-      type: DirectoryAction['setDepartmentsNodesAndEdges'];
+      type: DirectoryAction["setDepartmentsNodesAndEdges"];
       payload: SetDepartmentNodesAndEdgesPayload;
     }
   | {
-      type: DirectoryAction['setFilterByDepartment'];
+      type: DirectoryAction["setFilterByDepartment"];
       payload: DepartmentsWithDefaultKey;
     }
   | {
-      type: DirectoryAction['setFilterByJobPosition'];
+      type: DirectoryAction["setFilterByJobPosition"];
       payload: JobPositionsWithDefaultKey;
     }
   | {
-      type: DirectoryAction['setFilterByStoreLocation'];
+      type: DirectoryAction["setFilterByStoreLocation"];
       payload: StoreLocationsWithDefaultKey;
     }
   | {
-      type: DirectoryAction['setGroupedByDepartment'];
+      type: DirectoryAction["setGroupedByDepartment"];
 
       payload: DirectoryUserDocument[];
     }
   | {
       type:
-        | DirectoryAction['triggerFetchUsersDirectory']
-        | DirectoryAction['triggerSetDepartmentsNodesAndEdges']
-        | DirectoryAction['triggerSetLayoutedNodesAndEdges']
-        | DirectoryAction['setIsLoading'];
+        | DirectoryAction["triggerSetDepartmentsNodesAndEdges"]
+        | DirectoryAction["triggerSetLayoutedNodesAndEdges"]
+        | DirectoryAction["setIsLoading"];
 
       payload: boolean;
     }
   | {
-      type: DirectoryAction['setLoadingMessage'];
+      type: DirectoryAction["setLoadingMessage"];
 
       payload: string;
     }
   // dagre layout options
   | {
-      type: DirectoryAction['setLayoutedNodes'];
+      type: DirectoryAction["setLayoutedNodes"];
       payload: Node[];
     }
   | {
-      type: DirectoryAction['setLayoutedEdges'];
+      type: DirectoryAction["setLayoutedEdges"];
       payload: Edge[];
     }
   | {
-      type: DirectoryAction['setDagreRankDir'];
+      type: DirectoryAction["setDagreRankDir"];
       payload: DagreRankDir;
     }
   | {
-      type: DirectoryAction['setDagreRankAlign'];
+      type: DirectoryAction["setDagreRankAlign"];
       payload: DagreRankAlign;
     }
   | {
-      type: DirectoryAction['setDagreRanker'];
+      type: DirectoryAction["setDagreRanker"];
       payload: DagreRankerAlgorithm;
     }
   | {
       type:
-        | DirectoryAction['setDagreNodeSep']
-        | DirectoryAction['setDagreRankSep']
-        | DirectoryAction['setDagreMinLen'];
+        | DirectoryAction["setDagreNodeSep"]
+        | DirectoryAction["setDagreRankSep"]
+        | DirectoryAction["setDagreMinLen"];
 
       payload: number;
     };

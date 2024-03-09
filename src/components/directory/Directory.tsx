@@ -82,7 +82,6 @@ function Directory() {
     filterByStoreLocation,
     filteredStoreLocationsNodesAndEdges,
 
-    triggerFetchUsersDirectory,
     triggerSetDepartmentsNodesAndEdges,
     departmentsNodesAndEdges,
 
