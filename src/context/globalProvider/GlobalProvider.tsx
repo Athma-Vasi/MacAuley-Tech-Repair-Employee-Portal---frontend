@@ -1,9 +1,9 @@
-import { createContext, useEffect, useMemo, useReducer } from 'react';
+import { createContext, useEffect, useMemo, useReducer } from "react";
 
-import { useWindowSize } from '../../hooks/useWindowSize';
-import { logState } from '../../utils';
-import { globalAction, globalReducer, initialGlobalState } from './state';
-import { GlobalDispatch, GlobalProviderProps, GlobalState } from './types';
+import { useWindowSize } from "../../hooks/useWindowSize";
+import { logState } from "../../utils";
+import { globalAction, globalReducer, initialGlobalState } from "./state";
+import { GlobalDispatch, GlobalProviderProps, GlobalState } from "./types";
 
 const GlobalContext = createContext<{
   globalState: GlobalState;
@@ -14,10 +14,7 @@ const GlobalContext = createContext<{
 });
 
 function GlobalProvider({ children }: GlobalProviderProps) {
-  const [globalState, globalDispatch] = useReducer(
-    globalReducer,
-    initialGlobalState
-  );
+  const [globalState, globalDispatch] = useReducer(globalReducer, initialGlobalState);
 
   const { width, height } = useWindowSize();
   // on window size change, update global state
@@ -33,14 +30,13 @@ function GlobalProvider({ children }: GlobalProviderProps) {
 
   // set rowGap
   useEffect(() => {
-    const rowGap =
-      width < 480 ? 'md' : width < 768 ? 'sm' : width < 1440 ? 'md' : 'lg';
+    const rowGap = width < 480 ? "md" : width < 768 ? "sm" : width < 1440 ? "md" : "lg";
     globalDispatch({
       type: globalAction.setRowGap,
       payload: rowGap,
     });
 
-    const padding = width < 480 ? 'xs' : width < 768 ? 'sm' : 'md';
+    const padding = width < 480 ? "xs" : width < 768 ? "sm" : "md";
     globalDispatch({
       type: globalAction.setPadding,
       payload: padding,
@@ -68,17 +64,15 @@ function GlobalProvider({ children }: GlobalProviderProps) {
     [globalState, globalDispatch]
   );
 
-  useEffect(() => {
-    logState({
-      state: globalState,
-      groupLabel: 'globalState in GlobalProvider',
-    });
-  }, [globalState]);
+  // useEffect(() => {
+  //   logState({
+  //     state: globalState,
+  //     groupLabel: 'globalState in GlobalProvider',
+  //   });
+  // }, [globalState]);
 
   return (
-    <GlobalContext.Provider value={globalContextValue}>
-      {children}
-    </GlobalContext.Provider>
+    <GlobalContext.Provider value={globalContextValue}>{children}</GlobalContext.Provider>
   );
 }
 

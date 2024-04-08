@@ -5,9 +5,9 @@ import {
 } from "./types";
 
 const editRepairTicketAction: EditRepairTicketAction = {
-  setRepairTickets: "setRepairTickets",
-  setIsRepairTicketsValid: "setIsRepairTicketsValid",
-  setIsRepairTicketsFocused: "setIsRepairTicketsFocused",
+  setRepairNotes: "setRepairNotes",
+  setIsRepairNotesValid: "setIsRepairNotesValid",
+  setIsRepairNotesFocused: "setIsRepairNotesFocused",
 
   setTestingResults: "setTestingResults",
   setIsTestingResultsValid: "setIsTestingResultsValid",
@@ -38,20 +38,20 @@ function editRepairTicketReducer(
   action: EditRepairTicketDispatch
 ): EditRepairTicketState {
   switch (action.type) {
-    case editRepairTicketAction.setRepairTickets:
+    case editRepairTicketAction.setRepairNotes:
       return {
         ...state,
-        repairTickets: action.payload,
+        repairNotes: action.payload,
       };
-    case editRepairTicketAction.setIsRepairTicketsValid:
+    case editRepairTicketAction.setIsRepairNotesValid:
       return {
         ...state,
-        isRepairTicketsValid: action.payload,
+        isRepairNotesValid: action.payload,
       };
-    case editRepairTicketAction.setIsRepairTicketsFocused:
+    case editRepairTicketAction.setIsRepairNotesFocused:
       return {
         ...state,
-        isRepairTicketsFocused: action.payload,
+        isRepairNotesFocused: action.payload,
       };
     case editRepairTicketAction.setTestingResults:
       return {

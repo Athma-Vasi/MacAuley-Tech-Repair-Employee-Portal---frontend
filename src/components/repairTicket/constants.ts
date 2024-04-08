@@ -306,9 +306,9 @@ const REPAIR_NOTE_QUERY_DATA: ComponentQueryData[] = [
 ];
 
 const REPAIR_NOTE_ROUTE_PATHS: ResourceRoutePaths = {
-  manager: "repair-note/",
-  admin: "repair-note/",
-  employee: "repair-note/user",
+  manager: "repair-ticket",
+  admin: "repair-ticket",
+  employee: "repair-ticket/user",
 };
 
 export {

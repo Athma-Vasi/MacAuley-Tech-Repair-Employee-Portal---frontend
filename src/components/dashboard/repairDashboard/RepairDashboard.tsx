@@ -1,10 +1,8 @@
-import { useEffect } from 'react';
-
-import { COLORS_SWATCHES } from '../../../constants/data';
-import { useGlobalState } from '../../../hooks';
-import { returnThemeColors } from '../../../utils';
-import { MONTHS } from '../constants';
-import { returnRepairMetricsCards } from '../jsxHelpers';
+import { COLORS_SWATCHES } from "../../../constants/data";
+import { useGlobalState } from "../../../hooks";
+import { returnThemeColors } from "../../../utils";
+import { MONTHS } from "../constants";
+import { returnRepairMetricsCards } from "../jsxHelpers";
 import {
   BusinessMetric,
   BusinessMetricStoreLocation,
@@ -12,14 +10,11 @@ import {
   DashboardRepairMetric,
   Month,
   Year,
-} from '../types';
-import RepairDashboardDaily from './repairDashboardDaily/RepairDashboardDaily';
-import RepairDashboardMonthly from './repairDashboardMonthly/RepairDashboardMonthly';
-import RepairDashboardYearly from './repairDashboardYearly/RepairDashboardYearly';
-import {
-  returnRepairMetricsCharts,
-  returnSelectedDateRepairMetrics,
-} from './utils';
+} from "../types";
+import RepairDashboardDaily from "./repairDashboardDaily/RepairDashboardDaily";
+import RepairDashboardMonthly from "./repairDashboardMonthly/RepairDashboardMonthly";
+import RepairDashboardYearly from "./repairDashboardYearly/RepairDashboardYearly";
+import { returnRepairMetricsCharts, returnSelectedDateRepairMetrics } from "./utils";
 
 function RepairDashboard({
   businessMetrics,
@@ -52,6 +47,10 @@ function RepairDashboard({
     themeObject,
   });
 
+  if (!businessMetrics.length) {
+    return null;
+  }
+
   const selectedDateRepairMetrics = returnSelectedDateRepairMetrics({
     businessMetrics,
     day: selectedDate,
@@ -61,7 +60,7 @@ function RepairDashboard({
     storeLocation: storeLocationView,
     year: selectedYear,
   });
-  console.log('selectedDateRepairMetrics', selectedDateRepairMetrics);
+  console.log("selectedDateRepairMetrics", selectedDateRepairMetrics);
 
   const repairChartsData = returnRepairMetricsCharts({
     businessMetrics,
@@ -70,7 +69,7 @@ function RepairDashboard({
     storeLocation: storeLocationView,
     selectedRepairCategory: repairMetric,
   });
-  console.log('repairChartsData', repairChartsData);
+  console.log("repairChartsData", repairChartsData);
 
   const repairCardsInfo = returnRepairMetricsCards({
     greenColorShade,
@@ -79,32 +78,32 @@ function RepairDashboard({
     selectedDateRepairMetrics,
     width,
   });
-  console.log('repairCardsInfo', repairCardsInfo);
+  console.log("repairCardsInfo", repairCardsInfo);
 
   const { dailyCharts, monthlyCharts, yearlyCharts } = repairChartsData;
   const { dailyCards, monthlyCards, yearlyCards } = repairCardsInfo;
 
   const displayRepairDashboard =
-    calendarView === 'Daily' ? (
+    calendarView === "Daily" ? (
       <RepairDashboardDaily
         borderColor={borderColor}
         businessMetrics={businessMetrics}
         dailyCards={dailyCards}
         dailyCharts={dailyCharts}
         day={selectedDate}
-        month={selectedYYYYMMDD.split('-')[1]}
+        month={selectedYYYYMMDD.split("-")[1]}
         padding={padding}
         repairMetric={repairMetric}
         storeLocation={storeLocationView}
         width={width}
         year={selectedYear}
       />
-    ) : calendarView === 'Monthly' ? (
+    ) : calendarView === "Monthly" ? (
       <RepairDashboardMonthly
         borderColor={borderColor}
         businessMetrics={businessMetrics}
         day={selectedDate}
-        month={selectedYYYYMMDD.split('-')[1]}
+        month={selectedYYYYMMDD.split("-")[1]}
         monthlyCards={monthlyCards}
         monthlyCharts={monthlyCharts}
         padding={padding}

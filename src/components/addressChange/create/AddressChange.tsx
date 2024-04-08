@@ -1,27 +1,21 @@
-import { Group, Title, Tooltip } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
-import { InvalidTokenError } from 'jwt-decode';
-import {
-  ChangeEvent,
-  KeyboardEvent,
-  MouseEvent,
-  useEffect,
-  useReducer,
-} from 'react';
-import { useErrorBoundary } from 'react-error-boundary';
-import { TbUpload } from 'react-icons/tb';
-import { useNavigate } from 'react-router-dom';
+import { Group, Title, Tooltip } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
+import { InvalidTokenError } from "jwt-decode";
+import { ChangeEvent, KeyboardEvent, MouseEvent, useEffect, useReducer } from "react";
+import { useErrorBoundary } from "react-error-boundary";
+import { TbUpload } from "react-icons/tb";
+import { useNavigate } from "react-router-dom";
 
-import { PROVINCES, STATES_US } from '../../../constants/data';
+import { PROVINCES, STATES_US } from "../../../constants/data";
 import {
   ADDRESS_LINE_REGEX,
   CITY_REGEX,
   PHONE_NUMBER_REGEX,
   POSTAL_CODE_REGEX_CANADA,
   POSTAL_CODE_REGEX_US,
-} from '../../../constants/regex';
-import { globalAction } from '../../../context/globalProvider/state';
-import { useAuth, useGlobalState, useWrapFetch } from '../../../hooks';
+} from "../../../constants/regex";
+import { globalAction } from "../../../context/globalProvider/state";
+import { useAuth, useGlobalState, useWrapFetch } from "../../../hooks";
 import {
   AccessibleErrorValidTextElements,
   AccessibleSelectedDeselectedTextElements,
@@ -30,24 +24,24 @@ import {
   returnAccessiblePhoneNumberTextInputElements,
   returnAccessibleSelectInputElements,
   returnAccessibleTextInputElements,
-} from '../../../jsxCreators';
+} from "../../../jsxCreators";
 import {
   Country,
   Province,
   ResourceRequestServerResponse,
   StatesUS,
-} from '../../../types';
+} from "../../../types";
 import {
   returnAddressValidationText,
   returnCityValidationText,
   returnPhoneNumberValidationText,
   returnPostalCodeValidationText,
   urlBuilder,
-} from '../../../utils';
+} from "../../../utils";
 import FormReviewPage, {
   FormReviewObjectArray,
-} from '../../formReviewPage/FormReviewPage';
-import { NotificationModal } from '../../notificationModal';
+} from "../../formReviewPage/FormReviewPage";
+import { NotificationModal } from "../../notificationModal";
 import {
   AccessibleButtonCreatorInfo,
   AccessibleCheckboxSingleInputCreatorInfo,
@@ -56,18 +50,18 @@ import {
   AccessibleTextInputCreatorInfo,
   FormLayoutWrapper,
   StepperWrapper,
-} from '../../wrappers';
+} from "../../wrappers";
 import {
   ADDRESS_CHANGE_DESCRIPTION_OBJECTS,
   ADDRESS_CHANGE_MAX_STEPPER_POSITION,
   COUNTRIES_DATA,
-} from '../constants';
+} from "../constants";
 import {
   addressChangeAction,
   addressChangeReducer,
   initialAddressChangeState,
-} from './state';
-import { AddressChangeDocument } from './types';
+} from "./state";
+import { AddressChangeDocument } from "./types";
 
 function AddressChange() {
   const [addressChangeState, addressChangeDispatch] = useReducer(
@@ -134,17 +128,17 @@ function AddressChange() {
       });
       addressChangeDispatch({
         type: addressChangeAction.setSubmitMessage,
-        payload: 'Address change request is on the way!',
+        payload: "Address change request is on the way!",
       });
       openSubmitSuccessNotificationModal();
 
       const url: URL = urlBuilder({
-        path: 'actions/company/address-change',
+        path: "actions/company/address-change",
       });
 
       const body = JSON.stringify({
-        addressChange:
-          country === 'Canada'
+        addressChangeSchema:
+          country === "Canada"
             ? {
                 contactNumber,
                 addressLine,
@@ -166,9 +160,9 @@ function AddressChange() {
       });
 
       const requestInit: RequestInit = {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body,
       };
@@ -196,19 +190,19 @@ function AddressChange() {
         });
         addressChangeDispatch({
           type: addressChangeAction.setSuccessMessage,
-          payload: data.message ?? 'Address change request successfull!',
+          payload: data.message ?? "Address change request successful!",
         });
       } catch (error: any) {
-        if (!isMounted || error.name === 'AbortError') {
+        if (!isMounted || error.name === "AbortError") {
           return;
         }
 
         const errorMessage =
           error instanceof InvalidTokenError
-            ? 'Invalid token. Please login again.'
+            ? "Invalid token. Please login again."
             : !error.response
-            ? 'Network error. Please try again.'
-            : error?.message ?? 'Unknown error occurred. Please try again.';
+            ? "Network error. Please try again."
+            : error?.message ?? "Unknown error occurred. Please try again.";
 
         globalDispatch({
           type: globalAction.setErrorState,
@@ -216,13 +210,13 @@ function AddressChange() {
             isError: true,
             errorMessage,
             errorCallback: () => {
-              navigate('/home');
+              navigate("/home");
 
               globalDispatch({
                 type: globalAction.setErrorState,
                 payload: {
                   isError: false,
-                  errorMessage: '',
+                  errorMessage: "",
                   errorCallback: () => {},
                 },
               });
@@ -239,7 +233,7 @@ function AddressChange() {
           });
           addressChangeDispatch({
             type: addressChangeAction.setSubmitMessage,
-            payload: '',
+            payload: "",
           });
           addressChangeDispatch({
             type: addressChangeAction.setTriggerFormSubmit,
@@ -285,15 +279,15 @@ function AddressChange() {
   useEffect(() => {
     addressChangeDispatch({
       type: addressChangeAction.setAddressLine,
-      payload: '',
+      payload: "",
     });
     addressChangeDispatch({
       type: addressChangeAction.setCity,
-      payload: '',
+      payload: "",
     });
     addressChangeDispatch({
       type: addressChangeAction.setPostalCode,
-      payload: '',
+      payload: "",
     });
   }, [country]);
 
@@ -340,11 +334,11 @@ function AddressChange() {
   // used to validate postal code on every change
   useEffect(() => {
     const isValidPostal =
-      country === 'Canada'
+      country === "Canada"
         ? POSTAL_CODE_REGEX_CANADA.test(postalCode)
         : POSTAL_CODE_REGEX_US.test(postalCode);
 
-    if (country === 'Canada') {
+    if (country === "Canada") {
       const postalCodeLength = postalCode.length;
       if (postalCodeLength === 3) {
         addressChangeDispatch({
@@ -385,7 +379,7 @@ function AddressChange() {
     addressChangeDispatch({
       type: addressChangeAction.setStepsInError,
       payload: {
-        kind: isStepInError ? 'add' : 'delete',
+        kind: isStepInError ? "add" : "delete",
         step: 0,
       },
     });
@@ -400,35 +394,34 @@ function AddressChange() {
   // following are the accessible text elements for screen readers to read out based on the state of the input
   const [addressLineInputErrorText, addressLineInputValidText] =
     AccessibleErrorValidTextElements({
-      inputElementKind: 'address line',
+      inputElementKind: "address line",
       inputText: addressLine,
       isValidInputText: isValidAddressLine,
       isInputTextFocused: isAddressLineFocused,
       regexValidationText: returnAddressValidationText({
         content: addressLine,
-        contentKind: 'address line',
+        contentKind: "address line",
         minLength: 2,
         maxLength: 75,
       }),
     });
 
-  const [cityInputErrorText, cityInputValidText] =
-    AccessibleErrorValidTextElements({
-      inputElementKind: 'city',
-      inputText: city,
-      isValidInputText: isValidCity,
-      isInputTextFocused: isCityFocused,
-      regexValidationText: returnCityValidationText({
-        content: city,
-        contentKind: 'city',
-        minLength: 2,
-        maxLength: 75,
-      }),
-    });
+  const [cityInputErrorText, cityInputValidText] = AccessibleErrorValidTextElements({
+    inputElementKind: "city",
+    inputText: city,
+    isValidInputText: isValidCity,
+    isInputTextFocused: isCityFocused,
+    regexValidationText: returnCityValidationText({
+      content: city,
+      contentKind: "city",
+      minLength: 2,
+      maxLength: 75,
+    }),
+  });
 
   const [postalCodeInputErrorText, postalCodeInputValidText] =
     AccessibleErrorValidTextElements({
-      inputElementKind: 'postal code',
+      inputElementKind: "postal code",
       inputText: postalCode,
       isValidInputText: isValidPostalCode,
       isInputTextFocused: isPostalCodeFocused,
@@ -440,29 +433,29 @@ function AddressChange() {
 
   const [contactNumberInputErrorText, contactNumberInputValidText] =
     AccessibleErrorValidTextElements({
-      inputElementKind: 'contact number',
+      inputElementKind: "contact number",
       inputText: contactNumber,
       isValidInputText: isValidContactNumber,
       isInputTextFocused: isContactNumberFocused,
       regexValidationText: returnPhoneNumberValidationText({
         content: contactNumber,
-        contentKind: 'contact number',
+        contentKind: "contact number",
       }),
     });
 
   const [acknowledgementInputSelectedText, acknowledgementInputDeselectedText] =
     AccessibleSelectedDeselectedTextElements({
       isSelected: isAcknowledged,
-      semanticName: 'acknowledgement',
-      selectedDescription: 'I acknowledge that the information is correct',
-      deselectedDescription: 'I do not acknowledge',
+      semanticName: "acknowledgement",
+      selectedDescription: "I acknowledge that the information is correct",
+      deselectedDescription: "I do not acknowledge",
     });
 
   // following are info objects for input creators
   const countrySelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
     data: COUNTRIES_DATA,
-    description: 'Select your country',
-    label: 'Country',
+    description: "Select your country",
+    label: "Country",
     value: country,
     onChange: (event: ChangeEvent<HTMLSelectElement>) => {
       addressChangeDispatch({
@@ -474,25 +467,23 @@ function AddressChange() {
     withAsterisk: true,
   };
 
-  const provinceOrStateSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo =
-    {
-      data: country === 'Canada' ? PROVINCES : STATES_US,
-      description:
-        country === 'Canada' ? 'Select your province' : 'Select your state',
-      label: country === 'Canada' ? 'Province' : 'State',
-      value: country === 'Canada' ? province : state,
-      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-        country === 'Canada'
-          ? addressChangeDispatch({
-              type: addressChangeAction.setProvince,
-              payload: event.currentTarget.value as Province,
-            })
-          : addressChangeDispatch({
-              type: addressChangeAction.setState,
-              payload: event.currentTarget.value as StatesUS,
-            });
-      },
-    };
+  const provinceOrStateSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
+    data: country === "Canada" ? PROVINCES : STATES_US,
+    description: country === "Canada" ? "Select your province" : "Select your state",
+    label: country === "Canada" ? "Province" : "State",
+    value: country === "Canada" ? province : state,
+    onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+      country === "Canada"
+        ? addressChangeDispatch({
+            type: addressChangeAction.setProvince,
+            payload: event.currentTarget.value as Province,
+          })
+        : addressChangeDispatch({
+            type: addressChangeAction.setState,
+            payload: event.currentTarget.value as StatesUS,
+          });
+    },
+  };
 
   const addressLineTextInputCreatorInfo: AccessibleTextInputCreatorInfo = {
     description: {
@@ -501,7 +492,7 @@ function AddressChange() {
     },
     inputText: addressLine,
     isValidInputText: isValidAddressLine,
-    label: 'Address Line',
+    label: "Address Line",
     onBlur: () => {
       addressChangeDispatch({
         type: addressChangeAction.setIsAddressLineFocused,
@@ -520,10 +511,10 @@ function AddressChange() {
         payload: true,
       });
     },
-    placeholder: 'Enter your address',
+    placeholder: "Enter your address",
     required: true,
     withAsterisk: true,
-    semanticName: 'address line',
+    semanticName: "address line",
   };
 
   const cityTextInputCreatorInfo: AccessibleTextInputCreatorInfo = {
@@ -533,7 +524,7 @@ function AddressChange() {
     },
     inputText: city,
     isValidInputText: isValidCity,
-    label: 'City',
+    label: "City",
     onBlur: () => {
       addressChangeDispatch({
         type: addressChangeAction.setIsCityFocused,
@@ -552,10 +543,10 @@ function AddressChange() {
         payload: true,
       });
     },
-    placeholder: 'Enter your city',
+    placeholder: "Enter your city",
     required: true,
     withAsterisk: true,
-    semanticName: 'city',
+    semanticName: "city",
 
     minLength: 2,
     maxLength: 75,
@@ -568,12 +559,12 @@ function AddressChange() {
     },
     inputText: postalCode,
     isValidInputText: isValidPostalCode,
-    label: country === 'Canada' ? 'Postal Code' : 'Zip Code',
+    label: country === "Canada" ? "Postal Code" : "Zip Code",
     onChange: (event: ChangeEvent<HTMLInputElement>) => {
       addressChangeDispatch({
         type: addressChangeAction.setPostalCode,
         payload:
-          country === 'Canada'
+          country === "Canada"
             ? event.currentTarget.value.toUpperCase()
             : event.currentTarget.value,
       });
@@ -592,8 +583,8 @@ function AddressChange() {
     },
     onKeyDown: (event: KeyboardEvent<HTMLInputElement>) => {
       switch (country) {
-        case 'Canada': {
-          if (event.key === 'Backspace' && postalCode.length === 4) {
+        case "Canada": {
+          if (event.key === "Backspace" && postalCode.length === 4) {
             addressChangeDispatch({
               type: addressChangeAction.setPostalCode,
               payload: postalCode.slice(0, 3),
@@ -601,8 +592,8 @@ function AddressChange() {
           }
           break;
         }
-        case 'United States': {
-          if (event.key === 'Backspace' && postalCode.length === 7) {
+        case "United States": {
+          if (event.key === "Backspace" && postalCode.length === 7) {
             addressChangeDispatch({
               type: addressChangeAction.setPostalCode,
               payload: postalCode.slice(0, 6),
@@ -615,99 +606,95 @@ function AddressChange() {
       }
     },
     placeholder:
-      country === 'Canada'
-        ? 'Enter Canadian postal code'
-        : 'Enter US postal code',
-    semanticName: 'postal code',
+      country === "Canada" ? "Enter Canadian postal code" : "Enter US postal code",
+    semanticName: "postal code",
 
-    minLength: country === 'Canada' ? 6 : 5,
-    maxLength: country === 'Canada' ? 7 : 10,
+    minLength: country === "Canada" ? 6 : 5,
+    maxLength: country === "Canada" ? 7 : 10,
 
     required: true,
     withAsterisk: true,
   };
 
-  const contactNumberTextInputCreatorInfo: AccessiblePhoneNumberTextInputCreatorInfo =
-    {
-      description: {
-        error: contactNumberInputErrorText,
-        valid: contactNumberInputValidText,
-      },
-      inputText: contactNumber,
-      isValidInputText: isValidContactNumber,
-      label: 'Personal Contact Number',
-      onChange: (event: ChangeEvent<HTMLInputElement>) => {
-        addressChangeDispatch({
-          type: addressChangeAction.setContactNumber,
-          payload: event.currentTarget.value,
-        });
-      },
-      onBlur: () => {
-        addressChangeDispatch({
-          type: addressChangeAction.setIsContactNumberFocused,
-          payload: false,
-        });
-      },
-      onFocus: () => {
-        addressChangeDispatch({
-          type: addressChangeAction.setIsContactNumberFocused,
-          payload: true,
-        });
-      },
-      onKeyDown: (event: KeyboardEvent<HTMLInputElement>) => {
-        if (event.key === 'Backspace') {
-          if (contactNumber.length === 14) {
-            addressChangeDispatch({
-              type: addressChangeAction.setContactNumber,
-              payload: contactNumber.slice(0, -1),
-            });
-          } else if (contactNumber.length === 9) {
-            addressChangeDispatch({
-              type: addressChangeAction.setContactNumber,
-              payload: contactNumber.slice(0, -1),
-            });
-          }
+  const contactNumberTextInputCreatorInfo: AccessiblePhoneNumberTextInputCreatorInfo = {
+    description: {
+      error: contactNumberInputErrorText,
+      valid: contactNumberInputValidText,
+    },
+    inputText: contactNumber,
+    isValidInputText: isValidContactNumber,
+    label: "Personal Contact Number",
+    onChange: (event: ChangeEvent<HTMLInputElement>) => {
+      addressChangeDispatch({
+        type: addressChangeAction.setContactNumber,
+        payload: event.currentTarget.value,
+      });
+    },
+    onBlur: () => {
+      addressChangeDispatch({
+        type: addressChangeAction.setIsContactNumberFocused,
+        payload: false,
+      });
+    },
+    onFocus: () => {
+      addressChangeDispatch({
+        type: addressChangeAction.setIsContactNumberFocused,
+        payload: true,
+      });
+    },
+    onKeyDown: (event: KeyboardEvent<HTMLInputElement>) => {
+      if (event.key === "Backspace") {
+        if (contactNumber.length === 14) {
+          addressChangeDispatch({
+            type: addressChangeAction.setContactNumber,
+            payload: contactNumber.slice(0, -1),
+          });
+        } else if (contactNumber.length === 9) {
+          addressChangeDispatch({
+            type: addressChangeAction.setContactNumber,
+            payload: contactNumber.slice(0, -1),
+          });
         }
-      },
-      placeholder: 'Enter personal contact number',
-      rightSection: true,
-      rightSectionOnClick: () => {
-        addressChangeDispatch({
-          type: addressChangeAction.setContactNumber,
-          payload: '+(1)',
-        });
-      },
-      semanticName: 'contact number',
-      minLength: 18,
-      maxLength: 18,
+      }
+    },
+    placeholder: "Enter personal contact number",
+    rightSection: true,
+    rightSectionOnClick: () => {
+      addressChangeDispatch({
+        type: addressChangeAction.setContactNumber,
+        payload: "+(1)",
+      });
+    },
+    semanticName: "contact number",
+    minLength: 18,
+    maxLength: 18,
 
-      required: true,
-      withAsterisk: true,
-      initialInputValue: '+(1)',
-    };
+    required: true,
+    withAsterisk: true,
+    initialInputValue: "+(1)",
+  };
 
-  const acknowledgementCheckboxCreatorInfo: AccessibleCheckboxSingleInputCreatorInfo =
-    {
-      description: {
-        selected: acknowledgementInputSelectedText,
-        deselected: acknowledgementInputDeselectedText,
-      },
-      checked: isAcknowledged,
-      onChange: (event: ChangeEvent<HTMLInputElement>) => {
-        addressChangeDispatch({
-          type: addressChangeAction.setIsAcknowledged,
-          payload: event.currentTarget.checked,
-        });
-      },
-      semanticName: 'acknowledgement',
-      label: 'Acknowledgement',
-      required: true,
-    };
+  const acknowledgementCheckboxCreatorInfo: AccessibleCheckboxSingleInputCreatorInfo = {
+    description: {
+      selected: acknowledgementInputSelectedText,
+      deselected: acknowledgementInputDeselectedText,
+    },
+    checked: isAcknowledged,
+    onChange: (event: ChangeEvent<HTMLInputElement>) => {
+      addressChangeDispatch({
+        type: addressChangeAction.setIsAcknowledged,
+        payload: event.currentTarget.checked,
+      });
+    },
+    semanticName: "acknowledgement",
+    label: "Acknowledgement",
+    required: true,
+  };
 
   const submitButtonCreatorInfo: AccessibleButtonCreatorInfo = {
-    buttonLabel: 'Submit',
-    semanticDescription: 'address change form submit button',
-    semanticName: 'submit button',
+    buttonLabel: "Submit",
+    semanticDescription: "address change form submit button",
+    semanticName: "submit button",
     leftIcon: <TbUpload />,
     buttonOnClick: (_event: MouseEvent<HTMLButtonElement>) => {
       addressChangeDispatch({
@@ -730,10 +717,9 @@ function AddressChange() {
     zipOrPostalCodeTextInputCreatorInfo,
   ]);
 
-  const [createdContactNumberTextInput] =
-    returnAccessiblePhoneNumberTextInputElements([
-      contactNumberTextInputCreatorInfo,
-    ]);
+  const [createdContactNumberTextInput] = returnAccessiblePhoneNumberTextInputElements([
+    contactNumberTextInputCreatorInfo,
+  ]);
 
   const [createdCountrySelectInput, createdProvinceOrStateSelectInput] =
     returnAccessibleSelectInputElements([
@@ -741,46 +727,45 @@ function AddressChange() {
       provinceOrStateSelectInputCreatorInfo,
     ]);
 
-  const [createdAcknowledgementCheckbox] =
-    returnAccessibleCheckboxSingleInputElements([
-      acknowledgementCheckboxCreatorInfo,
-    ]);
+  const [createdAcknowledgementCheckbox] = returnAccessibleCheckboxSingleInputElements([
+    acknowledgementCheckboxCreatorInfo,
+  ]);
 
   const ADDRESS_CHANGE_REVIEW_OBJECT: FormReviewObjectArray = {
-    'Contact Details': [
+    "Contact Details": [
       {
-        inputName: 'Personal Contact Number',
+        inputName: "Personal Contact Number",
         inputValue: contactNumber,
         isInputValueValid: isValidContactNumber,
       },
       {
-        inputName: 'Country',
+        inputName: "Country",
         inputValue: country,
         isInputValueValid: true,
       },
       {
-        inputName: 'Address Line',
+        inputName: "Address Line",
         inputValue: addressLine,
         isInputValueValid: isValidAddressLine,
       },
       {
-        inputName: 'City',
+        inputName: "City",
         inputValue: city,
         isInputValueValid: isValidCity,
       },
       {
-        inputName: country === 'Canada' ? 'Province' : 'State',
-        inputValue: country === 'Canada' ? province : state,
+        inputName: country === "Canada" ? "Province" : "State",
+        inputValue: country === "Canada" ? province : state,
         isInputValueValid: true,
       },
       {
-        inputName: country === 'Canada' ? 'Postal Code' : 'Zip Code',
+        inputName: country === "Canada" ? "Postal Code" : "Zip Code",
         inputValue: postalCode,
         isInputValueValid: isValidPostalCode,
       },
       {
-        inputName: 'Acknowledgement',
-        inputValue: isAcknowledged ? 'Yes' : 'No',
+        inputName: "Acknowledgement",
+        inputValue: isAcknowledged ? "Yes" : "No",
         isInputValueValid: isAcknowledged,
       },
     ],
@@ -793,16 +778,14 @@ function AddressChange() {
     />
   );
 
-  const [createdSubmitButton] = returnAccessibleButtonElements([
-    submitButtonCreatorInfo,
-  ]);
+  const [createdSubmitButton] = returnAccessibleButtonElements([submitButtonCreatorInfo]);
   const displaySubmitButton =
     currentStepperPosition === ADDRESS_CHANGE_MAX_STEPPER_POSITION ? (
       <Tooltip
         label={
           stepsInError.size > 0
-            ? 'Please fix errors before submitting form'
-            : 'Submit Address Change form'
+            ? "Please fix errors before submitting form"
+            : "Submit Address Change form"
         }
       >
         <Group w="100%" position="center">
@@ -816,7 +799,7 @@ function AddressChange() {
       onCloseCallbacks={[
         closeSubmitSuccessNotificationModal,
         () => {
-          navigate('/home/company/address-change/display');
+          navigate("/home/company/address-change/display");
         },
       ]}
       opened={openedSubmitSuccessNotificationModal}
@@ -824,9 +807,7 @@ function AddressChange() {
         loading: isSubmitting,
         text: isSubmitting ? submitMessage : successMessage,
       }}
-      title={
-        <Title order={4}>{isSuccessful ? 'Success!' : 'Submitting ...'}</Title>
-      }
+      title={<Title order={4}>{isSuccessful ? "Success!" : "Submitting ..."}</Title>}
     />
   );
 

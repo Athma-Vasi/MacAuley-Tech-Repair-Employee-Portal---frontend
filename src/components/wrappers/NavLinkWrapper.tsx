@@ -1,20 +1,20 @@
 import {
   DefaultProps,
-  NavLinkStylesNames,
-  NavLinkStylesParams,
   MantineColor,
-  Variants,
   MantineNumberSize,
   NavLink,
+  NavLinkStylesNames,
+  NavLinkStylesParams,
   Text,
-} from '@mantine/core';
-import { Dispatch, ReactNode, useState } from 'react';
-import { useGlobalState } from '../../hooks';
-import { returnThemeColors } from '../../utils';
-import { COLORS_SWATCHES } from '../../constants/data';
+  Variants,
+} from "@mantine/core";
+import { ReactNode, useState } from "react";
 
-interface NavLinkProps
-  extends DefaultProps<NavLinkStylesNames, NavLinkStylesParams> {
+import { COLORS_SWATCHES } from "../../constants/data";
+import { useGlobalState } from "../../hooks";
+import { returnThemeColors } from "../../utils";
+
+interface NavLinkProps extends DefaultProps<NavLinkStylesNames, NavLinkStylesParams> {
   /** Main link content */
   label?: ReactNode;
   /** Secondary link description */
@@ -28,7 +28,7 @@ interface NavLinkProps
   /** Key of theme.colors, active link color */
   color?: MantineColor;
   /** Active link variant */
-  variant?: Variants<'filled' | 'light' | 'subtle'>;
+  variant?: Variants<"filled" | "light" | "subtle">;
   /** If prop is set then label and description will not wrap on the next line */
   noWrap?: boolean;
   /** Child links */
@@ -70,13 +70,11 @@ function NavLinkWrapper({ creatorInfoObject }: NavLinkWrapperProps) {
     themeObject,
   });
 
-  const { colorScheme, primaryColor } = themeObject;
-
   const {
     active,
     ariaLabel,
     children,
-    childrenOffset = 'md',
+    childrenOffset = "md",
     color,
     defaultOpened = false,
     description,
@@ -89,7 +87,7 @@ function NavLinkWrapper({ creatorInfoObject }: NavLinkWrapperProps) {
     onClick = () => {},
     opened = false,
     rightSection,
-    variant = 'subtle',
+    variant = "subtle",
   } = creatorInfoObject;
 
   return (
@@ -116,15 +114,11 @@ function NavLinkWrapper({ creatorInfoObject }: NavLinkWrapperProps) {
         backgroundColor: active
           ? navLinkActiveShade
           : isHovered && active
-          ? ''
+          ? ""
           : isHovered
           ? navLinkHoverShade
-          : '',
+          : "",
         borderRadius: 4,
-        // border:
-        //   colorScheme === 'dark' && active
-        //     ? `1px solid ${themeColorShade}`
-        //     : '',
       }}
       variant={variant}
     />

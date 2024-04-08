@@ -1,30 +1,19 @@
-import { faCheck, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCheck, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  Accordion,
-  Card,
-  Center,
   Flex,
   Grid,
   Group,
   Highlight,
   MantineNumberSize,
   ScrollArea,
-  Space,
   Spoiler,
   Stack,
   Text,
-  Title,
   useMantineTheme,
-} from '@mantine/core';
-import React, { CSSProperties, ReactNode } from 'react';
-import { MdCalendarMonth, MdDateRange } from 'react-icons/md';
-import {
-  TbArrowDown,
-  TbArrowUp,
-  TbCheck,
-  TbExclamationCircle,
-} from 'react-icons/tb';
+} from "@mantine/core";
+import React from "react";
+import { TbArrowDown, TbArrowUp, TbCheck, TbExclamationCircle } from "react-icons/tb";
 
 import type {
   AccessibleButtonCreatorInfo,
@@ -41,7 +30,7 @@ import type {
   AccessibleSliderInputCreatorInfo,
   AccessibleTextAreaInputCreatorInfo,
   AccessibleTextInputCreatorInfo,
-} from '../components/wrappers';
+} from "../components/wrappers";
 import {
   ButtonWrapper,
   CheckboxGroupInputsWrapper,
@@ -58,17 +47,17 @@ import {
   TextAreaInputWrapper,
   TextInputWrapper,
   TextWrapper,
-} from '../components/wrappers';
-import { COLORS_SWATCHES, PROPERTY_DESCRIPTOR } from '../constants/data';
-import { useGlobalState } from '../hooks';
+} from "../components/wrappers";
+import { COLORS_SWATCHES, PROPERTY_DESCRIPTOR } from "../constants/data";
+import { useGlobalState } from "../hooks";
 import {
   formatDate,
   RegexValidationProps,
   replaceLastCommaWithAnd,
   returnThemeColors,
   splitCamelCase,
-} from '../utils';
-import { RiCalendarLine } from 'react-icons/ri';
+} from "../utils";
+import { returnFormattedDocValue } from "../components/displayQuery/utils";
 
 // The functions : AccessibleErrorValidTextElements and AccessibleErrorValidTextElementsForDynamicInputs return a tuple [error, valid] or tuple[error[], valid[]] of accessible text elements for screen readers to read out based on the state of the controlled input
 
@@ -109,12 +98,9 @@ function AccessibleErrorValidTextElements({
 
   const errorTextElement = (
     <Text
-      id={`${inputElementKind.split(' ').join('-')}-input-note-error`}
+      id={`${inputElementKind.split(" ").join("-")}-input-note-error`}
       style={{
-        display:
-          isInputTextFocused && inputText && !isValidInputText
-            ? 'block'
-            : 'none',
+        display: isInputTextFocused && inputText && !isValidInputText ? "block" : "none",
       }}
       w="100%"
       aria-live="polite"
@@ -136,12 +122,9 @@ function AccessibleErrorValidTextElements({
 
   const validTextElement = (
     <Text
-      id={`${inputElementKind.split(' ').join('-')}-input-note-valid`}
+      id={`${inputElementKind.split(" ").join("-")}-input-note-valid`}
       style={{
-        display:
-          isInputTextFocused && inputText && isValidInputText
-            ? 'block'
-            : 'none',
+        display: isInputTextFocused && inputText && isValidInputText ? "block" : "none",
       }}
       color={greenColorShade}
       w="100%"
@@ -160,7 +143,7 @@ function AccessibleErrorValidTextElements({
                 ? `${inputElementKind[0].toUpperCase()}${inputElementKind.slice(
                     1
                   )} is valid`
-                : ''}
+                : ""}
             </Text>
           </Group>
         </Grid.Col>
@@ -177,9 +160,7 @@ type AccessibleErrorValidTextElementsForDynamicInputsProps = {
   areValidInputTexts: boolean[];
   areInputTextsFocused: boolean[];
   regexValidationProps: RegexValidationProps[];
-  regexValidationFunction?:
-    | ((validationObj: RegexValidationProps) => string)
-    | undefined;
+  regexValidationFunction?: ((validationObj: RegexValidationProps) => string) | undefined;
 };
 
 /**
@@ -213,12 +194,12 @@ function AccessibleErrorValidTextElementsForDynamicInputs({
   const errorTextElements = inputTextArray.map((inputText, index) => (
     <Text
       key={`${index}`}
-      id={`${semanticName.split(' ').join('-')}-${index + 1}-input-note-error`}
+      id={`${semanticName.split(" ").join("-")}-${index + 1}-input-note-error`}
       style={{
         display:
           areInputTextsFocused[index] && inputText && !areValidInputTexts[index]
-            ? 'block'
-            : 'none',
+            ? "block"
+            : "none",
       }}
       color="red"
       w="100%"
@@ -235,7 +216,7 @@ function AccessibleErrorValidTextElementsForDynamicInputs({
           <Group position="center">
             <TbExclamationCircle
               color={
-                colorScheme === 'light'
+                colorScheme === "light"
                   ? colors.red[primaryShade.light]
                   : colors.red[primaryShade.dark]
               }
@@ -250,7 +231,7 @@ function AccessibleErrorValidTextElementsForDynamicInputs({
                 ? `${semanticName[0].toUpperCase()}${semanticName.slice(1)} ${
                     index + 1
                   } - ${regexValidationFunction(regexValidationProps[index])}`
-                : ''}
+                : ""}
             </Text>
           </Group>
         </Grid.Col>
@@ -261,12 +242,12 @@ function AccessibleErrorValidTextElementsForDynamicInputs({
   const validTextElements = inputTextArray.map((inputText, index) => (
     <Text
       key={`${index}`}
-      id={`${semanticName.split(' ').join('-')}-${index + 1}-input-note-valid`}
+      id={`${semanticName.split(" ").join("-")}-${index + 1}-input-note-valid`}
       style={{
         display:
           areInputTextsFocused[index] && inputText && areValidInputTexts[index]
-            ? 'block'
-            : 'none',
+            ? "block"
+            : "none",
       }}
       color="green"
       w="100%"
@@ -281,7 +262,7 @@ function AccessibleErrorValidTextElementsForDynamicInputs({
           <Group position="center">
             <TbCheck
               color={
-                colorScheme === 'light'
+                colorScheme === "light"
                   ? colors.green[primaryShade.light]
                   : colors.green[primaryShade.dark]
               }
@@ -291,9 +272,9 @@ function AccessibleErrorValidTextElementsForDynamicInputs({
         </Grid.Col>
         <Grid.Col span={12}>
           <Group position="left">
-            <Text size="sm">{`${semanticName[0].toUpperCase()}${semanticName.slice(
-              1
-            )} ${index + 1} is valid`}</Text>
+            <Text size="sm">{`${semanticName[0].toUpperCase()}${semanticName.slice(1)} ${
+              index + 1
+            } is valid`}</Text>
           </Group>
         </Grid.Col>
       </Grid>
@@ -345,7 +326,7 @@ function AccessibleErrorValidTextElementsForDynamicImageUploads({
   const errorTextElements = images.map((image, index) => (
     <Text
       key={`error-${index}-${image.name}`}
-      id={`${semanticName.split(' ').join('-')}
+      id={`${semanticName.split(" ").join("-")}
       }-input-note-error-${index}`}
       style={{
         display:
@@ -353,8 +334,8 @@ function AccessibleErrorValidTextElementsForDynamicImageUploads({
           (!areValidImageSizes[index] ||
             !areValidImageKinds[index] ||
             !areValidImageTypes[index])
-            ? 'block'
-            : 'none',
+            ? "block"
+            : "none",
       }}
       size="sm"
       color="red"
@@ -374,7 +355,7 @@ function AccessibleErrorValidTextElementsForDynamicImageUploads({
           <Group position="center">
             <TbExclamationCircle
               color={
-                colorScheme === 'light'
+                colorScheme === "light"
                   ? colors.red[primaryShade.light]
                   : colors.red[primaryShade.dark]
               }
@@ -387,13 +368,9 @@ function AccessibleErrorValidTextElementsForDynamicImageUploads({
             <Text size="sm">
               {validationFunction
                 ? `${
-                    image.name.length > 17
-                      ? `${image.name.slice(0, 17)}...`
-                      : image.name
-                  } is not a valid image - ${validationFunction(
-                    imagePreviews[index]
-                  )}`
-                : ''}
+                    image.name.length > 17 ? `${image.name.slice(0, 17)}...` : image.name
+                  } is not a valid image - ${validationFunction(imagePreviews[index])}`
+                : ""}
             </Text>
           </Group>
         </Grid.Col>
@@ -404,15 +381,15 @@ function AccessibleErrorValidTextElementsForDynamicImageUploads({
   const validTextElements = images.map((image, index) => (
     <Text
       key={`valid-${index}-${image.name}`}
-      id={`${semanticName.split(' ').join('-')}-input-note-valid-${index}`}
+      id={`${semanticName.split(" ").join("-")}-input-note-valid-${index}`}
       style={{
         display:
           image &&
           areValidImageSizes[index] &&
           areValidImageKinds[index] &&
           areValidImageTypes[index]
-            ? 'block'
-            : 'none',
+            ? "block"
+            : "none",
       }}
       size="sm"
       color="green"
@@ -426,7 +403,7 @@ function AccessibleErrorValidTextElementsForDynamicImageUploads({
           <Group position="center">
             <TbCheck
               color={
-                colorScheme === 'light'
+                colorScheme === "light"
                   ? colors.green[primaryShade.light]
                   : colors.green[primaryShade.dark]
               }
@@ -451,15 +428,15 @@ type ReturnAccessibleSelectedDeselectedTextElementsProps = {
   isSelected: boolean;
   selectedDescription?: string;
   deselectedDescription?: string;
-  theme?: 'muted' | 'default';
+  theme?: "muted" | "default";
 };
 
 function AccessibleSelectedDeselectedTextElements({
   semanticName,
   isSelected,
-  selectedDescription = '',
-  deselectedDescription = '',
-  theme = 'default',
+  selectedDescription = "",
+  deselectedDescription = "",
+  theme = "default",
 }: ReturnAccessibleSelectedDeselectedTextElementsProps): [
   React.JSX.Element,
   React.JSX.Element
@@ -469,12 +446,7 @@ function AccessibleSelectedDeselectedTextElements({
   } = useGlobalState();
 
   const {
-    generalColors: {
-      greenColorShade,
-      textColor,
-      grayColorShade,
-      redColorShade,
-    },
+    generalColors: { greenColorShade, textColor, grayColorShade, redColorShade },
   } = returnThemeColors({
     themeObject,
     colorsSwatches: COLORS_SWATCHES,
@@ -483,25 +455,25 @@ function AccessibleSelectedDeselectedTextElements({
   return [
     // selected text elem
     <Text
-      id={`${semanticName.split(' ').join('-')}-selected`}
-      style={{ display: isSelected ? 'block' : 'none' }}
-      color={theme === 'muted' ? textColor : greenColorShade}
+      id={`${semanticName.split(" ").join("-")}-selected`}
+      style={{ display: isSelected ? "block" : "none" }}
+      color={theme === "muted" ? textColor : greenColorShade}
       w="100%"
       aria-live="polite"
     >
-      {theme === 'default' ? (
+      {theme === "default" ? (
         <FontAwesomeIcon icon={faCheck} color={greenColorShade} />
-      ) : null}{' '}
+      ) : null}{" "}
       {`${semanticName[0].toUpperCase()}${semanticName.slice(1)} selected${
-        selectedDescription.length > 0 ? ` - ${selectedDescription}` : ''
+        selectedDescription.length > 0 ? ` - ${selectedDescription}` : ""
       }`}
     </Text>,
     // deselected text elem
     <Text
-      id={`${semanticName.split(' ').join('-')}-deselected`}
-      style={{ display: !isSelected ? 'block' : 'none' }}
+      id={`${semanticName.split(" ").join("-")}-deselected`}
+      style={{ display: !isSelected ? "block" : "none" }}
       color={
-        theme === 'default'
+        theme === "default"
           ? deselectedDescription.length > 0
             ? redColorShade
             : textColor
@@ -510,11 +482,11 @@ function AccessibleSelectedDeselectedTextElements({
       w="100%"
       aria-live="polite"
     >
-      {theme === 'default' ? (
+      {theme === "default" ? (
         <FontAwesomeIcon icon={faInfoCircle} color={redColorShade} />
-      ) : null}{' '}
+      ) : null}{" "}
       {`${semanticName[0].toUpperCase()}${semanticName.slice(1)} deselected${
-        deselectedDescription.length > 0 ? ` - ${deselectedDescription}` : ''
+        deselectedDescription.length > 0 ? ` - ${deselectedDescription}` : ""
       }`}
     </Text>,
   ];
@@ -755,75 +727,76 @@ function returnHighlightedText({
   queryValuesArray: string[];
   textHighlightColor: string;
 }) {
-  const stringifiedText =
-    fieldValue === true
-      ? 'Yes'
-      : fieldValue === false
-      ? 'No'
-      : Array.isArray(fieldValue)
-      ? replaceLastCommaWithAnd(
-          fieldValue
-            ?.map(
-              (value) =>
-                value.toString().charAt(0).toUpperCase() +
-                value.toString().slice(1)
-            )
-            .join(', ')
-        )
-      : `${fieldValue?.toString().charAt(0).toUpperCase()}${fieldValue
-          ?.toString()
-          .slice(1)}`;
+  // // just in case
+  // const stringifiedText =
+  //   fieldValue === true
+  //     ? "Yes"
+  //     : fieldValue === false
+  //     ? "No"
+  //     : Array.isArray(fieldValue)
+  //     ? replaceLastCommaWithAnd(
+  //         fieldValue
+  //           ?.map(
+  //             (value) =>
+  //               value.toString().charAt(0).toUpperCase() + value.toString().slice(1)
+  //           )
+  //           .join(", ")
+  //       )
+  //     : fieldValue
+  //     ? fieldValue.toString()
+  //     : "";
 
   // regex to determine if formattedValue has any terms in queryValuesArray
   const regex = queryValuesArray.length
     ? new RegExp(
         queryValuesArray
           .filter((value) => value) // remove empty strings
-          .flatMap((value) => value.split(' ')) // split strings into words
-          .join('|'),
-        'gi'
+          .flatMap((value) => value.split(" ")) // split strings into words
+          .join("|"),
+        "gi"
       )
     : null;
 
   let returnedText: React.JSX.Element | React.JSX.Element[] | null = null;
-  if (regex?.test(stringifiedText)) {
-    returnedText = stringifiedText.split(' ').map((text, index) => {
-      // word that has below symbol is also highlighted
-      const wordWithoutPunctuation = text
-        .replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, ' ')
-        .toLowerCase()
-        .split(' ');
+  if (regex?.test(fieldValue?.toString() ?? "")) {
+    returnedText = fieldValue
+      .toString()
+      .split(" ")
+      .map((text, index) => {
+        // word that has below symbol is also highlighted
+        const wordWithoutPunctuation = text
+          .replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, " ")
+          .toLowerCase()
+          .split(" ");
 
-      const flattenedQueryValuesArray = queryValuesArray
-        .filter((value) => value) // remove empty strings
-        .flatMap((value) => value.toLowerCase().split(' ')); // split strings into words
+        const flattenedQueryValuesArray = queryValuesArray
+          .filter((value) => value) // remove empty strings
+          .flatMap((value) => value.toLowerCase().split(" "));
 
-      // test with regex
-      const isQueryArrayIncludesWord = flattenedQueryValuesArray.some(
-        (queryValue) => {
-          const regex = new RegExp(queryValue, 'gi');
-          return regex.test(wordWithoutPunctuation.join(' '));
+        // test with regex
+        const isQueryArrayIncludesWord = flattenedQueryValuesArray.some((queryValue) => {
+          const regex = new RegExp(queryValue, "gi");
+          return regex.test(wordWithoutPunctuation.join(" "));
+        });
+
+        if (isQueryArrayIncludesWord) {
+          return (
+            <Flex>
+              <Highlight
+                key={`${text}-${index}`}
+                highlightStyles={{ backgroundColor: textHighlightColor }}
+                highlight={text}
+              >
+                {text}
+              </Highlight>
+            </Flex>
+          );
         }
-      );
 
-      if (isQueryArrayIncludesWord) {
-        return (
-          <Flex>
-            <Highlight
-              key={`${text}-${index}`}
-              highlightStyles={{ backgroundColor: textHighlightColor }}
-              highlight={text}
-            >
-              {text}
-            </Highlight>
-          </Flex>
-        );
-      }
-
-      return <Text key={`${text}-${index}`}>{text}</Text>;
-    });
+        return <Text key={`${text}-${index}`}>{text}</Text>;
+      });
   } else {
-    returnedText = <Text>{stringifiedText}</Text>;
+    returnedText = <Text>{fieldValue?.toString() ?? ""}</Text>;
   }
 
   return returnedText;
@@ -847,30 +820,29 @@ function returnScrollableDocumentInfo({
   document,
   excludeKeys = [],
   fieldNamesWithDateValues,
-  heading = 'Document Details:',
+  heading = "Document Details:",
   queryValuesArray,
   rowGap,
   scrollBarStyle,
   scrollViewportHeight = 150,
   textHighlightColor,
 }: ReturnScrollableDocumentInfoInput): React.JSX.Element {
-  const [createdShowMoreButton, createdHideButton] =
-    returnAccessibleButtonElements([
-      {
-        buttonLabel: 'Show',
-        leftIcon: <TbArrowDown />,
-        buttonType: 'button',
-        semanticDescription: 'Reveal more information',
-        semanticName: 'Show more',
-      },
-      {
-        buttonLabel: 'Hide',
-        leftIcon: <TbArrowUp />,
-        buttonType: 'button',
-        semanticDescription: 'Hide revealed information',
-        semanticName: 'Hide',
-      },
-    ]);
+  const [createdShowMoreButton, createdHideButton] = returnAccessibleButtonElements([
+    {
+      buttonLabel: "Show",
+      leftIcon: <TbArrowDown />,
+      buttonType: "button",
+      semanticDescription: "Reveal more information",
+      semanticName: "Show more",
+    },
+    {
+      buttonLabel: "Hide",
+      leftIcon: <TbArrowUp />,
+      buttonType: "button",
+      semanticDescription: "Hide revealed information",
+      semanticName: "Hide",
+    },
+  ]);
 
   const filteredDocumentTuples = Object.entries(document).filter(
     ([key]) => !excludeKeys.includes(key)
@@ -890,33 +862,9 @@ function returnScrollableDocumentInfo({
           {filteredDocumentTuples.map(([key, value], index) => {
             const stringifiedKey = String(key);
             const splitCamelCaseKey =
-              stringifiedKey === '_id'
-                ? 'Document Id'
-                : splitCamelCase(stringifiedKey);
+              stringifiedKey === "_id" ? "Document Id" : splitCamelCase(stringifiedKey);
 
-            const formattedDateValue = fieldNamesWithDateValues.has(
-              stringifiedKey
-            )
-              ? formatDate({
-                  date: value,
-                  formatOptions: {
-                    dateStyle: 'full',
-                    localeMatcher: 'best fit',
-                    formatMatcher: 'best fit',
-                  },
-                  locale: 'en-US',
-                })
-              : key === 'createdAt' || key === 'updatedAt'
-              ? formatDate({
-                  date: value,
-                  formatOptions: {
-                    dateStyle: 'full',
-                    timeStyle: 'long',
-                    hour12: false,
-                  },
-                  locale: 'en-US',
-                })
-              : value;
+            const formattedDateValue = returnFormattedDocValue(key, value);
 
             const highlightedText = returnHighlightedText({
               fieldValue: formattedDateValue,

@@ -3,7 +3,7 @@ import { useDisclosure } from "@mantine/hooks";
 import { InvalidTokenError } from "jwt-decode";
 import { ChangeEvent, useEffect, useReducer, useRef } from "react";
 import { useErrorBoundary } from "react-error-boundary";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import { COLORS_SWATCHES, PROPERTY_DESCRIPTOR } from "../../constants/data";
 import { globalAction } from "../../context/globalProvider/state";
@@ -22,8 +22,8 @@ import {
   splitCamelCase,
   urlBuilder,
 } from "../../utils";
-import { DisplayFileUploads } from "../displayFileUploads";
 import { DisplayQuery } from "../displayQuery";
+import DisplayFileUploads from "../fileUploads/DisplayFileUploads";
 import { NotificationModal } from "../notificationModal";
 import { PageBuilder } from "../pageBuilder";
 import { QueryBuilder } from "../queryBuilder";
@@ -113,13 +113,12 @@ function DisplayResource<Doc>({
     globalDispatch,
   } = useGlobalState();
   const {
-    authState: { roles },
+    authState: { roles, sessionId },
   } = useAuth();
 
-  const { wrappedFetch } = useWrapFetch();
+  const { pathname } = useLocation();
 
-  // prevents race conditions
-  const abortControllerRefDataRequest = useRef<AbortController | null>(null);
+  const { wrappedFetch } = useWrapFetch();
 
   // submit success notification modal
   const [
@@ -134,6 +133,16 @@ function DisplayResource<Doc>({
   const { showBoundary } = useErrorBoundary();
 
   useEffect(() => {
+    logState({
+      state: displayResourceState,
+      groupLabel: "displayResourceState",
+    });
+  }, [displayResourceState]);
+
+  // prevents race conditions
+  const abortControllerRefDataRequest = useRef<AbortController | null>(null);
+
+  useEffect(() => {
     let isMounted = true;
     // before making a new request, abort the previous request
     abortControllerRefDataRequest.current?.abort();
@@ -141,10 +150,13 @@ function DisplayResource<Doc>({
     abortControllerRefDataRequest.current = new AbortController();
 
     async function fetchResource() {
+      console.log("fetchResource function triggered");
+
       displayResourceDispatch({
         type: displayResourceAction.setIsLoading,
         payload: true,
       });
+
       const pageNumber = pageQueryString.split("=")[1] ?? "1";
       displayResourceDispatch({
         type: displayResourceAction.setLoadingMessage,
@@ -165,10 +177,7 @@ function DisplayResource<Doc>({
         totalDocuments,
       });
 
-      const url: URL = urlBuilder({
-        path,
-        query,
-      });
+      const url: URL = urlBuilder({ path, query });
 
       const requestInit: RequestInit = {
         method: "GET",
@@ -200,7 +209,6 @@ function DisplayResource<Doc>({
             payload: data.resourceData,
           });
 
-          // do this regardless of whether there are file uploads or not
           displayResourceDispatch({
             type: displayResourceAction.setPages,
             payload: data.pages ?? pages,
@@ -277,7 +285,7 @@ function DisplayResource<Doc>({
           payload: fileUploadsArr,
         });
 
-        // do this regardless of file uploads existence
+        // regardless of file uploads existence
         displayResourceDispatch({
           type: displayResourceAction.setPages,
           payload: data.pages ?? pages,
@@ -322,6 +330,16 @@ function DisplayResource<Doc>({
       } finally {
         if (isMounted) {
           displayResourceDispatch({
+            type: displayResourceAction.setIsLoading,
+            payload: false,
+          });
+
+          displayResourceDispatch({
+            type: displayResourceAction.setLoadingMessage,
+            payload: "",
+          });
+
+          displayResourceDispatch({
             type: displayResourceAction.setTriggerRefresh,
             payload: false,
           });
@@ -347,7 +365,7 @@ function DisplayResource<Doc>({
       type: displayResourceAction.setTriggerRefresh,
       payload: true,
     });
-  }, [newQueryFlag, queryBuilderString, pageQueryString, limitPerPage]);
+  }, [newQueryFlag, queryBuilderString, pageQueryString, limitPerPage, pathname]);
 
   // backend is set to trigger countDocuments scan on a new query only, not on page changes
   useEffect(() => {
@@ -369,14 +387,14 @@ function DisplayResource<Doc>({
 
   // separate instead of inside finally block to avoid causing flicker
   useEffect(() => {
-    displayResourceDispatch({
-      type: displayResourceAction.setIsLoading,
-      payload: false,
-    });
-    displayResourceDispatch({
-      type: displayResourceAction.setLoadingMessage,
-      payload: "",
-    });
+    // displayResourceDispatch({
+    //   type: displayResourceAction.setIsLoading,
+    //   payload: false,
+    // });
+    // displayResourceDispatch({
+    //   type: displayResourceAction.setLoadingMessage,
+    //   payload: "",
+    // });
   }, [resourceData]);
 
   // submit request status modification form on triggerUpdateRequestStatus change
@@ -411,19 +429,21 @@ function DisplayResource<Doc>({
         query,
       });
 
-      const resourceBody = Object.create(null);
-      Object.defineProperty(resourceBody, requestBodyHeading, {
-        ...PROPERTY_DESCRIPTOR,
-        value: { requestStatus: requestStatus.status },
-      });
-      const body = JSON.stringify(resourceBody);
+      const resourceBody = {
+        documentUpdate: {
+          fields: {
+            requestStatus: requestStatus.status,
+          },
+          updateOperator: "$set",
+        },
+      };
 
       const requestInit: RequestInit = {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
-        body,
+        body: JSON.stringify(resourceBody),
       };
 
       try {
@@ -868,6 +888,28 @@ function DisplayResource<Doc>({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [deleteResource.fileUploadId]);
 
+  // if (
+  //   !resourceData ||
+  //   !resourceData.length ||
+  //   !componentQueryData ||
+  //   !componentQueryData.length
+  // ) {
+  //   return null;
+  // }
+
+  if (isLoading) {
+    return (
+      <div>
+        <div>Loading...</div>
+        <div>Loading...</div>
+        <div>Loading...</div>
+        <div>Loading...</div>
+        <div>Loading...</div>
+        <div>Loading...</div>
+      </div>
+    );
+  }
+
   const {
     appThemeColors: { backgroundColor, borderColor },
   } = returnThemeColors({
@@ -982,12 +1024,12 @@ function DisplayResource<Doc>({
 
   const displayResource = isDisplayFilesOnly ? (
     <DisplayFileUploads
-      createResourcePath={createResourcePath}
-      fileUploadsData={fileUploads}
-      componentQueryData={filteredComponentQueryData}
-      parentComponentName={splitCamelCase(requestBodyHeading)}
-      parentDeleteResourceDispatch={displayResourceDispatch}
-      totalDocuments={totalDocuments}
+    // createResourcePath={createResourcePath}
+    // fileUploadsData={fileUploads}
+    // componentQueryData={filteredComponentQueryData}
+    // parentComponentName={splitCamelCase(requestBodyHeading)}
+    // parentDeleteResourceDispatch={displayResourceDispatch}
+    // totalDocuments={totalDocuments}
     />
   ) : (
     <DisplayQuery
@@ -1009,10 +1051,7 @@ function DisplayResource<Doc>({
     <Stack
       w="100%"
       bg={backgroundColor}
-      style={{
-        ...style,
-        borderRadius: 4,
-      }}
+      style={{ ...style, borderRadius: 4 }}
       align="center"
       p={padding}
     >
@@ -1027,13 +1066,6 @@ function DisplayResource<Doc>({
       {displayPagination}
     </Stack>
   );
-
-  useEffect(() => {
-    logState({
-      state: displayResourceState,
-      groupLabel: "displayResourceState",
-    });
-  }, [displayResourceState]);
 
   return displayResourceComponent;
 }

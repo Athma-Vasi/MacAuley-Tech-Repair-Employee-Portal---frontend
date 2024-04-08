@@ -4,17 +4,17 @@ import {
   Currency,
   RequestStatus,
   SetStepsInErrorPayload,
-} from '../../../types';
+} from "../../../types";
 
 type BenefitsPlanKind =
-  | 'Health'
-  | 'Dental'
-  | 'Vision'
-  | 'Life'
-  | 'Disability'
-  | 'Retirement'
-  | 'Education'
-  | 'Other';
+  | "Health"
+  | "Dental"
+  | "Vision"
+  | "Life"
+  | "Disability"
+  | "Retirement"
+  | "Education"
+  | "Other";
 
 type BenefitsSchema = {
   action: Action;
@@ -58,7 +58,7 @@ type CreateBenefitState = {
   isValidPlanStartDate: boolean;
   isPlanStartDateFocused: boolean;
 
-  planKind: BenefitsPlanKind | '';
+  planKind: BenefitsPlanKind | "";
   isPlanActive: boolean;
   currency: Currency;
 
@@ -83,95 +83,95 @@ type CreateBenefitState = {
 };
 
 type CreateBenefitAction = {
-  setBenefitUsername: 'setBenefitUsername';
-  setIsValidBenefitUsername: 'setIsValidBenefitUsername';
-  setIsBenefitUsernameFocused: 'setIsBenefitUsernameFocused';
+  setBenefitUsername: "setBenefitUsername";
+  setIsValidBenefitUsername: "setIsValidBenefitUsername";
+  setIsBenefitUsernameFocused: "setIsBenefitUsernameFocused";
 
-  setPlanName: 'setPlanName';
-  setIsValidPlanName: 'setIsValidPlanName';
-  setIsPlanNameFocused: 'setIsPlanNameFocused';
+  setPlanName: "setPlanName";
+  setIsValidPlanName: "setIsValidPlanName";
+  setIsPlanNameFocused: "setIsPlanNameFocused";
 
-  setPlanDescription: 'setPlanDescription';
-  setIsValidPlanDescription: 'setIsValidPlanDescription';
-  setIsPlanDescriptionFocused: 'setIsPlanDescriptionFocused';
+  setPlanDescription: "setPlanDescription";
+  setIsValidPlanDescription: "setIsValidPlanDescription";
+  setIsPlanDescriptionFocused: "setIsPlanDescriptionFocused";
 
-  setPlanStartDate: 'setPlanStartDate';
-  setIsValidPlanStartDate: 'setIsValidPlanStartDate';
-  setIsPlanStartDateFocused: 'setIsPlanStartDateFocused';
+  setPlanStartDate: "setPlanStartDate";
+  setIsValidPlanStartDate: "setIsValidPlanStartDate";
+  setIsPlanStartDateFocused: "setIsPlanStartDateFocused";
 
-  setPlanKind: 'setPlanKind';
-  setIsPlanActive: 'setIsPlanActive';
-  setCurrency: 'setCurrency';
+  setPlanKind: "setPlanKind";
+  setIsPlanActive: "setIsPlanActive";
+  setCurrency: "setCurrency";
 
-  setEmployerContribution: 'setEmployerContribution';
-  setIsValidEmployerContribution: 'setIsValidEmployerContribution';
-  setIsEmployerContributionFocused: 'setIsEmployerContributionFocused';
+  setEmployerContribution: "setEmployerContribution";
+  setIsValidEmployerContribution: "setIsValidEmployerContribution";
+  setIsEmployerContributionFocused: "setIsEmployerContributionFocused";
 
-  setEmployeeContribution: 'setEmployeeContribution';
-  setIsValidEmployeeContribution: 'setIsValidEmployeeContribution';
-  setIsEmployeeContributionFocused: 'setIsEmployeeContributionFocused';
+  setEmployeeContribution: "setEmployeeContribution";
+  setIsValidEmployeeContribution: "setIsValidEmployeeContribution";
+  setIsEmployeeContributionFocused: "setIsEmployeeContributionFocused";
 
-  setTriggerFormSubmit: 'setTriggerFormSubmit';
-  setCurrentStepperPosition: 'setCurrentStepperPosition';
-  setStepsInError: 'setStepsInError';
+  setTriggerFormSubmit: "setTriggerFormSubmit";
+  setCurrentStepperPosition: "setCurrentStepperPosition";
+  setStepsInError: "setStepsInError";
 
-  setIsSubmitting: 'setIsSubmitting';
-  setSubmitMessage: 'setSubmitMessage';
-  setIsSuccessful: 'setIsSuccessful';
-  setSuccessMessage: 'setSuccessMessage';
-  setIsLoading: 'setIsLoading';
-  setLoadingMessage: 'setLoadingMessage';
+  setIsSubmitting: "setIsSubmitting";
+  setSubmitMessage: "setSubmitMessage";
+  setIsSuccessful: "setIsSuccessful";
+  setSuccessMessage: "setSuccessMessage";
+  setIsLoading: "setIsLoading";
+  setLoadingMessage: "setLoadingMessage";
 };
 
 type CreateBenefitDispatch =
   | {
       type:
-        | CreateBenefitAction['setBenefitUsername']
-        | CreateBenefitAction['setPlanName']
-        | CreateBenefitAction['setPlanDescription']
-        | CreateBenefitAction['setPlanStartDate']
-        | CreateBenefitAction['setEmployeeContribution']
-        | CreateBenefitAction['setEmployerContribution']
-        | CreateBenefitAction['setSubmitMessage']
-        | CreateBenefitAction['setSuccessMessage']
-        | CreateBenefitAction['setLoadingMessage'];
+        | CreateBenefitAction["setBenefitUsername"]
+        | CreateBenefitAction["setPlanName"]
+        | CreateBenefitAction["setPlanDescription"]
+        | CreateBenefitAction["setPlanStartDate"]
+        | CreateBenefitAction["setEmployeeContribution"]
+        | CreateBenefitAction["setEmployerContribution"]
+        | CreateBenefitAction["setSubmitMessage"]
+        | CreateBenefitAction["setSuccessMessage"]
+        | CreateBenefitAction["setLoadingMessage"];
       payload: string;
     }
   | {
       type:
-        | CreateBenefitAction['setIsValidBenefitUsername']
-        | CreateBenefitAction['setIsBenefitUsernameFocused']
-        | CreateBenefitAction['setIsValidPlanName']
-        | CreateBenefitAction['setIsPlanNameFocused']
-        | CreateBenefitAction['setIsValidPlanDescription']
-        | CreateBenefitAction['setIsPlanDescriptionFocused']
-        | CreateBenefitAction['setIsValidPlanStartDate']
-        | CreateBenefitAction['setIsPlanStartDateFocused']
-        | CreateBenefitAction['setIsValidEmployeeContribution']
-        | CreateBenefitAction['setIsEmployeeContributionFocused']
-        | CreateBenefitAction['setIsValidEmployerContribution']
-        | CreateBenefitAction['setIsEmployerContributionFocused']
-        | CreateBenefitAction['setIsPlanActive']
-        | CreateBenefitAction['setTriggerFormSubmit']
-        | CreateBenefitAction['setIsSubmitting']
-        | CreateBenefitAction['setIsSuccessful']
-        | CreateBenefitAction['setIsLoading'];
+        | CreateBenefitAction["setIsValidBenefitUsername"]
+        | CreateBenefitAction["setIsBenefitUsernameFocused"]
+        | CreateBenefitAction["setIsValidPlanName"]
+        | CreateBenefitAction["setIsPlanNameFocused"]
+        | CreateBenefitAction["setIsValidPlanDescription"]
+        | CreateBenefitAction["setIsPlanDescriptionFocused"]
+        | CreateBenefitAction["setIsValidPlanStartDate"]
+        | CreateBenefitAction["setIsPlanStartDateFocused"]
+        | CreateBenefitAction["setIsValidEmployeeContribution"]
+        | CreateBenefitAction["setIsEmployeeContributionFocused"]
+        | CreateBenefitAction["setIsValidEmployerContribution"]
+        | CreateBenefitAction["setIsEmployerContributionFocused"]
+        | CreateBenefitAction["setIsPlanActive"]
+        | CreateBenefitAction["setTriggerFormSubmit"]
+        | CreateBenefitAction["setIsSubmitting"]
+        | CreateBenefitAction["setIsSuccessful"]
+        | CreateBenefitAction["setIsLoading"];
       payload: boolean;
     }
   | {
-      type: CreateBenefitAction['setPlanKind'];
-      payload: BenefitsPlanKind | '';
+      type: CreateBenefitAction["setPlanKind"];
+      payload: BenefitsPlanKind | "";
     }
   | {
-      type: CreateBenefitAction['setCurrency'];
+      type: CreateBenefitAction["setCurrency"];
       payload: Currency;
     }
   | {
-      type: CreateBenefitAction['setCurrentStepperPosition'];
+      type: CreateBenefitAction["setCurrentStepperPosition"];
       payload: number;
     }
   | {
-      type: CreateBenefitAction['setStepsInError'];
+      type: CreateBenefitAction["setStepsInError"];
       payload: SetStepsInErrorPayload;
     };
 

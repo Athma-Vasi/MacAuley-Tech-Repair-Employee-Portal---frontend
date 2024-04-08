@@ -7,52 +7,52 @@ import {
   Text,
   Title,
   Tooltip,
-} from '@mantine/core';
-import { ResponsiveBar } from '@nivo/bar';
-import { ChangeEvent, useEffect, useReducer, useRef } from 'react';
-import { BiReset } from 'react-icons/bi';
+} from "@mantine/core";
+import { ResponsiveBar } from "@nivo/bar";
+import { ChangeEvent, useEffect, useReducer, useRef } from "react";
+import { BiReset } from "react-icons/bi";
 
-import { COLORS_SWATCHES } from '../../../constants/data';
-import { useGlobalState } from '../../../hooks';
+import { COLORS_SWATCHES } from "../../../constants/data";
+import { useGlobalState } from "../../../hooks";
 import {
   AccessibleSelectedDeselectedTextElements,
   returnAccessibleButtonElements,
   returnAccessibleSelectInputElements,
   returnAccessibleSliderInputElements,
-} from '../../../jsxCreators';
-import { addCommaSeparator, returnThemeColors } from '../../../utils';
+} from "../../../jsxCreators";
+import { addCommaSeparator, returnThemeColors } from "../../../utils";
 import {
   AccessibleButtonCreatorInfo,
   AccessibleSelectInputCreatorInfo,
   AccessibleSliderInputCreatorInfo,
-} from '../../wrappers';
-import { ChartAndControlsDisplay } from '../chartAndControlsDisplay/ChartAndControlsDisplay';
-import { ChartAxisBottom } from '../chartControls/ChartAxisBottom';
-import { ChartAxisLeft } from '../chartControls/ChartAxisLeft';
-import { ChartAxisRight } from '../chartControls/ChartAxisRight';
-import { ChartAxisTop } from '../chartControls/ChartAxisTop';
-import { ChartLegend } from '../chartControls/ChartLegend';
-import { ChartMargin } from '../chartControls/ChartMargin';
-import { ChartOptions } from '../chartControls/ChartOptions';
+} from "../../wrappers";
+import { ChartAndControlsDisplay } from "../chartAndControlsDisplay/ChartAndControlsDisplay";
+import { ChartAxisBottom } from "../chartControls/ChartAxisBottom";
+import { ChartAxisLeft } from "../chartControls/ChartAxisLeft";
+import { ChartAxisRight } from "../chartControls/ChartAxisRight";
+import { ChartAxisTop } from "../chartControls/ChartAxisTop";
+import { ChartLegend } from "../chartControls/ChartLegend";
+import { ChartMargin } from "../chartControls/ChartMargin";
+import { ChartOptions } from "../chartControls/ChartOptions";
 import {
   NIVO_CHART_PATTERN_DEFS,
   NIVO_COLOR_SCHEME_DATA,
   NIVO_MOTION_CONFIG_DATA,
-} from '../constants';
-import { NivoColorScheme, NivoMotionConfig } from '../types';
-import { ChartsAndGraphsControlsStacker } from '../utils';
+} from "../constants";
+import { NivoColorScheme, NivoMotionConfig } from "../types";
+import { ChartsAndGraphsControlsStacker } from "../utils";
 import {
   BAR_CHART_GROUP_MODE_SELECT_DATA,
   BAR_CHART_LAYOUT_SELECT_DATA,
   BAR_CHART_VALUE_SCALE_SELECT_DATA,
-} from './constants';
+} from "./constants";
 import {
   initialResponsiveBarChartState,
   responsiveBarChartAction,
   responsiveBarChartReducer,
-} from './state';
-import { ResponsiveBarChartProps, ResponsiveBarChartState } from './types';
-import { createBarFillPatterns } from './utils';
+} from "./state";
+import { ResponsiveBarChartProps, ResponsiveBarChartState } from "./types";
+import { createBarFillPatterns } from "./utils";
 
 function ResponsiveBarChart({
   barChartData,
@@ -62,7 +62,7 @@ function ResponsiveBarChart({
   hideControls = false,
   indexBy,
   keys,
-  unitKind = 'currency',
+  unitKind = "currency",
 }: ResponsiveBarChartProps) {
   const {
     globalState: { isPrefersReducedMotion, width, themeObject, padding },
@@ -82,7 +82,7 @@ function ResponsiveBarChart({
   const modifiedInitialResponsiveBarChartState: ResponsiveBarChartState = {
     ...initialResponsiveBarChartState,
     chartBorderColor: chartTextColor,
-    chartTitle: dashboardChartTitle ?? 'Bar Chart',
+    chartTitle: dashboardChartTitle ?? "Bar Chart",
     labelTextColor: chartTextColor,
     chartTitleColor: chartTextColor,
   };
@@ -219,6 +219,10 @@ function ResponsiveBarChart({
     });
   }, [isPrefersReducedMotion]);
 
+  if (!barChartData.length) {
+    return null;
+  }
+
   const { barFillPatterns } = createBarFillPatterns(barChartData);
 
   const displayResponsiveBar = (
@@ -230,7 +234,7 @@ function ResponsiveBarChart({
       groupMode={groupMode}
       layout={layout}
       valueScale={{ type: valueScale }}
-      indexScale={{ type: 'band', round: true }}
+      indexScale={{ type: "band", round: true }}
       reverse={reverse}
       minValue="auto"
       maxValue="auto"
@@ -267,10 +271,10 @@ function ResponsiveBarChart({
               legendOffset: axisTopLegendOffset,
               legendPosition: axisTopLegendPosition,
               format: (value) =>
-                layout === 'horizontal'
-                  ? `${unitKind === 'currency' ? '$' : ''}${addCommaSeparator(
-                      value
-                    )}${unitKind === 'percent' ? '%' : ''}`
+                layout === "horizontal"
+                  ? `${unitKind === "currency" ? "$" : ""}${addCommaSeparator(value)}${
+                      unitKind === "percent" ? "%" : ""
+                    }`
                   : null,
             }
           : null
@@ -285,10 +289,10 @@ function ResponsiveBarChart({
               legendOffset: axisRightLegendOffset,
               legendPosition: axisRightLegendPosition,
               format: (value) =>
-                layout === 'vertical'
-                  ? `${unitKind === 'currency' ? '$' : ''}${addCommaSeparator(
-                      value
-                    )}${unitKind === 'percent' ? '%' : ''}`
+                layout === "vertical"
+                  ? `${unitKind === "currency" ? "$" : ""}${addCommaSeparator(value)}${
+                      unitKind === "percent" ? "%" : ""
+                    }`
                   : null,
             }
           : null
@@ -303,10 +307,10 @@ function ResponsiveBarChart({
               legendOffset: axisBottomLegendOffset,
               legendPosition: axisBottomLegendPosition,
               format: (value) =>
-                layout === 'horizontal'
-                  ? `${unitKind === 'currency' ? '$' : ''}${addCommaSeparator(
-                      value
-                    )}${unitKind === 'percent' ? '%' : ''}`
+                layout === "horizontal"
+                  ? `${unitKind === "currency" ? "$" : ""}${addCommaSeparator(value)}${
+                      unitKind === "percent" ? "%" : ""
+                    }`
                   : null,
             }
           : null
@@ -321,10 +325,10 @@ function ResponsiveBarChart({
               legendOffset: axisLeftLegendOffset,
               legendPosition: axisLeftLegendPosition,
               format: (value) =>
-                layout === 'vertical'
-                  ? `${unitKind === 'currency' ? '$' : ''}${addCommaSeparator(
-                      value
-                    )}${unitKind === 'percent' ? '%' : ''}`
+                layout === "vertical"
+                  ? `${unitKind === "currency" ? "$" : ""}${addCommaSeparator(value)}${
+                      unitKind === "percent" ? "%" : ""
+                    }`
                   : null,
             }
           : null
@@ -333,7 +337,7 @@ function ResponsiveBarChart({
         enableLegend
           ? [
               {
-                dataFrom: 'keys',
+                dataFrom: "keys",
                 anchor: legendAnchor,
                 direction: legendDirection,
                 justify: enableLegendJustify,
@@ -355,7 +359,7 @@ function ResponsiveBarChart({
 
                 effects: [
                   {
-                    on: 'hover',
+                    on: "hover",
                     style: {
                       itemOpacity: 1,
                     },
@@ -371,10 +375,10 @@ function ResponsiveBarChart({
       isInteractive={true}
       role="application"
       ariaLabel={chartTitle}
-      barAriaLabel={(e) => e.id + ': ' + e.formattedValue + e.indexValue}
+      barAriaLabel={(e) => e.id + ": " + e.formattedValue + e.indexValue}
       valueFormat={(value) =>
-        `${unitKind === 'currency' ? '$' : ''}${addCommaSeparator(value)}${
-          unitKind === 'percent' ? '%' : ''
+        `${unitKind === "currency" ? "$" : ""}${addCommaSeparator(value)}${
+          unitKind === "percent" ? "%" : ""
         }`
       }
     />
@@ -391,90 +395,80 @@ function ResponsiveBarChart({
   const [reverseAccessibleSelectedText, reverseAccessibleDeselectedText] =
     AccessibleSelectedDeselectedTextElements({
       deselectedDescription:
-        'Bars will start on bottom instead of top for vertical layout and left instead of right for horizontal one',
+        "Bars will start on bottom instead of top for vertical layout and left instead of right for horizontal one",
       isSelected: reverse,
       selectedDescription:
-        'Bars will start on top instead of bottom for vertical layout and right instead of left for horizontal one',
-      semanticName: 'reverse',
-      theme: 'muted',
+        "Bars will start on top instead of bottom for vertical layout and right instead of left for horizontal one",
+      semanticName: "reverse",
+      theme: "muted",
     });
 
   const [
     enableFillPatternsAccessibleSelectedText,
     enableFillPatternsAccessibleDeselectedText,
   ] = AccessibleSelectedDeselectedTextElements({
-    deselectedDescription: 'Bars will be filled with a solid color.',
+    deselectedDescription: "Bars will be filled with a solid color.",
     isSelected: enableFillPatterns,
-    selectedDescription: 'Bars will be filled with a pattern.',
-    semanticName: 'fill patterns',
-    theme: 'muted',
+    selectedDescription: "Bars will be filled with a pattern.",
+    semanticName: "fill patterns",
+    theme: "muted",
   });
 
-  const [
-    enableLabelsAccessibleSelectedText,
-    enableLabelsAccessibleDeselectedText,
-  ] = AccessibleSelectedDeselectedTextElements({
-    deselectedDescription: 'Bars will not have labels.',
-    isSelected: enableLabels,
-    selectedDescription: 'Bars will have labels.',
-    semanticName: 'labels',
-    theme: 'muted',
-  });
+  const [enableLabelsAccessibleSelectedText, enableLabelsAccessibleDeselectedText] =
+    AccessibleSelectedDeselectedTextElements({
+      deselectedDescription: "Bars will not have labels.",
+      isSelected: enableLabels,
+      selectedDescription: "Bars will have labels.",
+      semanticName: "labels",
+      theme: "muted",
+    });
 
-  const [
-    enableGridXAccessibleSelectedText,
-    enableGridXAccessibleDeselectedText,
-  ] = AccessibleSelectedDeselectedTextElements({
-    deselectedDescription:
-      'Chart display area will not have a grid on the y axis.',
-    isSelected: enableGridX,
-    selectedDescription: 'Chart display area will have a grid on the y axis.',
-    semanticName: 'grid x',
-    theme: 'muted',
-  });
+  const [enableGridXAccessibleSelectedText, enableGridXAccessibleDeselectedText] =
+    AccessibleSelectedDeselectedTextElements({
+      deselectedDescription: "Chart display area will not have a grid on the y axis.",
+      isSelected: enableGridX,
+      selectedDescription: "Chart display area will have a grid on the y axis.",
+      semanticName: "grid x",
+      theme: "muted",
+    });
 
-  const [
-    enableGridYAccessibleSelectedText,
-    enableGridYAccessibleDeselectedText,
-  ] = AccessibleSelectedDeselectedTextElements({
-    deselectedDescription:
-      'Chart display area will not have a grid on the x axis.',
-    isSelected: enableGridY,
-    selectedDescription: 'Chart display area will have a grid on the x axis.',
-    semanticName: 'grid y',
-    theme: 'muted',
-  });
+  const [enableGridYAccessibleSelectedText, enableGridYAccessibleDeselectedText] =
+    AccessibleSelectedDeselectedTextElements({
+      deselectedDescription: "Chart display area will not have a grid on the x axis.",
+      isSelected: enableGridY,
+      selectedDescription: "Chart display area will have a grid on the x axis.",
+      semanticName: "grid y",
+      theme: "muted",
+    });
 
-  const [
-    enableAnimateAccessibleSelectedText,
-    enableAnimateAccessibleDeselectedText,
-  ] = AccessibleSelectedDeselectedTextElements({
-    deselectedDescription: 'Chart will not animate.',
-    isSelected: enableAnimate,
-    selectedDescription: 'Chart will animate.',
-    semanticName: 'animate',
-    theme: 'muted',
-  });
+  const [enableAnimateAccessibleSelectedText, enableAnimateAccessibleDeselectedText] =
+    AccessibleSelectedDeselectedTextElements({
+      deselectedDescription: "Chart will not animate.",
+      isSelected: enableAnimate,
+      selectedDescription: "Chart will animate.",
+      semanticName: "animate",
+      theme: "muted",
+    });
 
   //
   const { gray } = COLORS_SWATCHES;
   const sliderWidth =
     width < 480
-      ? '217px'
+      ? "217px"
       : width < 768
       ? `${width * 0.38}px`
       : width < 1192
-      ? '500px'
+      ? "500px"
       : `${width * 0.15}px`;
   const sliderLabelColor = gray[3];
 
   const groupModeSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
     data: BAR_CHART_GROUP_MODE_SELECT_DATA,
-    description: 'Define how bars are grouped together.',
+    description: "Define how bars are grouped together.",
     onChange: (event: ChangeEvent<HTMLSelectElement>) => {
       responsiveBarChartDispatch({
         type: responsiveBarChartAction.setGroupMode,
-        payload: event.currentTarget.value as 'stacked' | 'grouped',
+        payload: event.currentTarget.value as "stacked" | "grouped",
       });
     },
     value: groupMode,
@@ -483,11 +477,11 @@ function ResponsiveBarChart({
 
   const layoutSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
     data: BAR_CHART_LAYOUT_SELECT_DATA,
-    description: 'Define the chart layout.',
+    description: "Define the chart layout.",
     onChange: (event: ChangeEvent<HTMLSelectElement>) => {
       responsiveBarChartDispatch({
         type: responsiveBarChartAction.setLayout,
-        payload: event.currentTarget.value as 'horizontal' | 'vertical',
+        payload: event.currentTarget.value as "horizontal" | "vertical",
       });
     },
     value: layout,
@@ -496,11 +490,11 @@ function ResponsiveBarChart({
 
   const valueScaleSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
     data: BAR_CHART_VALUE_SCALE_SELECT_DATA,
-    description: 'Define the scale of the chart.',
+    description: "Define the scale of the chart.",
     onChange: (event: ChangeEvent<HTMLSelectElement>) => {
       responsiveBarChartDispatch({
         type: responsiveBarChartAction.setValueScale,
-        payload: event.currentTarget.value as 'linear' | 'symlog',
+        payload: event.currentTarget.value as "linear" | "symlog",
       });
     },
     value: valueScale,
@@ -516,9 +510,7 @@ function ResponsiveBarChart({
       }
       checked={reverse}
       description={
-        reverse
-          ? reverseAccessibleSelectedText
-          : reverseAccessibleDeselectedText
+        reverse ? reverseAccessibleSelectedText : reverseAccessibleDeselectedText
       }
       label={
         <Text weight={500} color={textColor}>
@@ -536,8 +528,8 @@ function ResponsiveBarChart({
   );
 
   const paddingBarSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
-    ariaLabel: 'padding bar',
-    kind: 'slider',
+    ariaLabel: "padding bar",
+    kind: "slider",
     label: (value) => <Text style={{ color: sliderLabelColor }}>{value}</Text>,
     max: 0.9,
     min: 0.1,
@@ -553,31 +545,28 @@ function ResponsiveBarChart({
     width: sliderWidth,
   };
 
-  const innerPaddingBarSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      ariaLabel: 'inner padding bar',
-      kind: 'slider',
-      label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-      ),
-      max: 10,
-      min: 0,
-      onChangeSlider: (value: number) => {
-        responsiveBarChartDispatch({
-          type: responsiveBarChartAction.setInnerPaddingBar,
-          payload: value,
-        });
-      },
-      sliderDefaultValue: 0,
-      step: 1,
-      value: innerPaddingBar,
-      width: sliderWidth,
-    };
+  const innerPaddingBarSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
+    ariaLabel: "inner padding bar",
+    kind: "slider",
+    label: (value) => <Text style={{ color: sliderLabelColor }}>{value} px</Text>,
+    max: 10,
+    min: 0,
+    onChangeSlider: (value: number) => {
+      responsiveBarChartDispatch({
+        type: responsiveBarChartAction.setInnerPaddingBar,
+        payload: value,
+      });
+    },
+    sliderDefaultValue: 0,
+    step: 1,
+    value: innerPaddingBar,
+    width: sliderWidth,
+  };
 
   /** style */
   const chartColorsSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
     data: NIVO_COLOR_SCHEME_DATA,
-    description: 'Define chart colors.',
+    description: "Define chart colors.",
     onChange: (event: ChangeEvent<HTMLSelectElement>) => {
       responsiveBarChartDispatch({
         type: responsiveBarChartAction.setChartColors,
@@ -588,47 +577,41 @@ function ResponsiveBarChart({
     width: sliderWidth,
   };
 
-  const chartBorderRadiusSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      ariaLabel: 'border radius',
-      kind: 'slider',
-      label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-      ),
-      max: 36,
-      min: 0,
-      step: 1,
-      onChangeSlider: (value: number) => {
-        responsiveBarChartDispatch({
-          type: responsiveBarChartAction.setChartBorderRadius,
-          payload: value,
-        });
-      },
-      sliderDefaultValue: 0,
-      value: chartBorderRadius,
-      width: sliderWidth,
-    };
+  const chartBorderRadiusSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
+    ariaLabel: "border radius",
+    kind: "slider",
+    label: (value) => <Text style={{ color: sliderLabelColor }}>{value} px</Text>,
+    max: 36,
+    min: 0,
+    step: 1,
+    onChangeSlider: (value: number) => {
+      responsiveBarChartDispatch({
+        type: responsiveBarChartAction.setChartBorderRadius,
+        payload: value,
+      });
+    },
+    sliderDefaultValue: 0,
+    value: chartBorderRadius,
+    width: sliderWidth,
+  };
 
-  const chartBorderWidthSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      ariaLabel: 'border width',
-      kind: 'slider',
-      label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-      ),
-      max: 20,
-      min: 0,
-      onChangeSlider: (value: number) => {
-        responsiveBarChartDispatch({
-          type: responsiveBarChartAction.setChartBorderWidth,
-          payload: value,
-        });
-      },
-      sliderDefaultValue: 0,
-      step: 1,
-      value: chartBorderWidth,
-      width: sliderWidth,
-    };
+  const chartBorderWidthSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
+    ariaLabel: "border width",
+    kind: "slider",
+    label: (value) => <Text style={{ color: sliderLabelColor }}>{value} px</Text>,
+    max: 20,
+    min: 0,
+    onChangeSlider: (value: number) => {
+      responsiveBarChartDispatch({
+        type: responsiveBarChartAction.setChartBorderWidth,
+        payload: value,
+      });
+    },
+    sliderDefaultValue: 0,
+    step: 1,
+    value: chartBorderWidth,
+    width: sliderWidth,
+  };
 
   const createdChartBorderColorInput = (
     <ColorInput
@@ -702,49 +685,43 @@ function ResponsiveBarChart({
     />
   );
 
-  const labelSkipWidthSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      ariaLabel: 'label skip width',
-      disabled: !enableLabels,
-      kind: 'slider',
-      label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-      ),
-      max: 36,
-      min: 0,
-      onChangeSlider: (value: number) => {
-        responsiveBarChartDispatch({
-          type: responsiveBarChartAction.setLabelSkipWidth,
-          payload: value,
-        });
-      },
-      sliderDefaultValue: 0,
-      step: 1,
-      value: labelSkipWidth,
-      width: sliderWidth,
-    };
+  const labelSkipWidthSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
+    ariaLabel: "label skip width",
+    disabled: !enableLabels,
+    kind: "slider",
+    label: (value) => <Text style={{ color: sliderLabelColor }}>{value} px</Text>,
+    max: 36,
+    min: 0,
+    onChangeSlider: (value: number) => {
+      responsiveBarChartDispatch({
+        type: responsiveBarChartAction.setLabelSkipWidth,
+        payload: value,
+      });
+    },
+    sliderDefaultValue: 0,
+    step: 1,
+    value: labelSkipWidth,
+    width: sliderWidth,
+  };
 
-  const labelSkipHeightSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      ariaLabel: 'label skip height',
-      disabled: !enableLabels,
-      kind: 'slider',
-      label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-      ),
-      max: 36,
-      min: 0,
-      onChangeSlider: (value: number) => {
-        responsiveBarChartDispatch({
-          type: responsiveBarChartAction.setLabelSkipHeight,
-          payload: value,
-        });
-      },
-      sliderDefaultValue: 0,
-      step: 1,
-      value: labelSkipHeight,
-      width: sliderWidth,
-    };
+  const labelSkipHeightSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
+    ariaLabel: "label skip height",
+    disabled: !enableLabels,
+    kind: "slider",
+    label: (value) => <Text style={{ color: sliderLabelColor }}>{value} px</Text>,
+    max: 36,
+    min: 0,
+    onChangeSlider: (value: number) => {
+      responsiveBarChartDispatch({
+        type: responsiveBarChartAction.setLabelSkipHeight,
+        payload: value,
+      });
+    },
+    sliderDefaultValue: 0,
+    step: 1,
+    value: labelSkipHeight,
+    width: sliderWidth,
+  };
 
   const createdLabelTextColorInput = (
     <ColorInput
@@ -850,7 +827,7 @@ function ResponsiveBarChart({
 
   const motionConfigSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
     data: NIVO_MOTION_CONFIG_DATA,
-    description: 'Define motion config.',
+    description: "Define motion config.",
     disabled: !enableAnimate,
     onChange: (event: ChangeEvent<HTMLSelectElement>) => {
       responsiveBarChartDispatch({
@@ -863,10 +840,10 @@ function ResponsiveBarChart({
   };
 
   const resetAllButtonCreatorInfo: AccessibleButtonCreatorInfo = {
-    buttonLabel: 'Reset',
+    buttonLabel: "Reset",
     leftIcon: <BiReset />,
-    semanticDescription: 'Reset all inputs to their default values',
-    semanticName: 'Reset All',
+    semanticDescription: "Reset all inputs to their default values",
+    semanticName: "Reset All",
     buttonOnClick: () => {
       responsiveBarChartDispatch({
         type: responsiveBarChartAction.resetChartToDefault,
@@ -899,13 +876,11 @@ function ResponsiveBarChart({
     chartColorsSelectInputCreatorInfo,
   ]);
 
-  const [
-    createdChartBorderRadiusSliderInput,
-    createdChartBorderWidthSliderInput,
-  ] = returnAccessibleSliderInputElements([
-    chartBorderRadiusSliderInputCreatorInfo,
-    chartBorderWidthSliderInputCreatorInfo,
-  ]);
+  const [createdChartBorderRadiusSliderInput, createdChartBorderWidthSliderInput] =
+    returnAccessibleSliderInputElements([
+      chartBorderRadiusSliderInputCreatorInfo,
+      chartBorderWidthSliderInputCreatorInfo,
+    ]);
 
   /** labels */
   const [createdLabelSkipWidthSliderInput, createdLabelSkipHeightSliderInput] =
@@ -931,8 +906,8 @@ function ResponsiveBarChart({
       bg={sectionHeadersBgColor}
       p={padding}
       style={{
-        boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25)',
-        position: 'sticky',
+        boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.25)",
+        position: "sticky",
         top: 0,
         zIndex: 4,
       }}
@@ -1031,8 +1006,8 @@ function ResponsiveBarChart({
       bg={sectionHeadersBgColor}
       p={padding}
       style={{
-        boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25)',
-        position: 'sticky',
+        boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.25)",
+        position: "sticky",
         top: 0,
         zIndex: 4,
       }}
@@ -1193,8 +1168,8 @@ function ResponsiveBarChart({
       bg={sectionHeadersBgColor}
       p={padding}
       style={{
-        boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25)',
-        position: 'sticky',
+        boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.25)",
+        position: "sticky",
         top: 0,
         zIndex: 4,
       }}
@@ -1260,8 +1235,8 @@ function ResponsiveBarChart({
       bg={sectionHeadersBgColor}
       p={padding}
       style={{
-        boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25)',
-        position: 'sticky',
+        boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.25)",
+        position: "sticky",
         top: 0,
         zIndex: 4,
       }}
@@ -1299,12 +1274,12 @@ function ResponsiveBarChart({
       bg={sectionHeadersBgColor}
       p={padding}
       style={{
-        boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25)',
-        position: 'sticky',
+        boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.25)",
+        position: "sticky",
         top: 0,
         zIndex: 4,
       }}
-      w={width < 1192 ? '100%' : '95%'}
+      w={width < 1192 ? "100%" : "95%"}
     >
       <Title order={5} color={textColor}>
         Motion

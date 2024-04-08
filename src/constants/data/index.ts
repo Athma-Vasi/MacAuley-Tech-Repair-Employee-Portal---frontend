@@ -1,6 +1,14 @@
 import { CSSProperties } from "react";
 
-import { Department, JobPosition, SelectInputData, StoreLocation } from "../../types";
+import {
+  AllowedFileEncodings,
+  AllowedFileExtensions,
+  AllowedFileMimeTypes,
+  Department,
+  JobPosition,
+  SelectInputData,
+  StoreLocation,
+} from "../../types";
 
 const PROVINCES = [
   "Alberta",
@@ -318,7 +326,11 @@ const FIELDNAMES_WITH_DATE_VALUES = new Set([
   "eventStartDate",
   "eventEndDate",
   // register - user
-  "dateofBirth",
+  "dateOfBirth",
+  // rma
+  "rmaDate",
+  // purchase
+  "dateOfPurchase",
 ]);
 
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty
@@ -525,7 +537,32 @@ const SCREENSHOT_IMAGE_TYPE_DATA: SelectInputData = [
   { value: "image/webp", label: "Image/webp" },
 ];
 
+const ALLOWED_FILE_EXTENSIONS: AllowedFileExtensions[] = [
+  ".jpg",
+  ".jpeg",
+  ".png",
+  ".webp",
+];
+
+const ALLOWED_FILE_MIME_TYPES: AllowedFileMimeTypes[] = [
+  "image/jpg",
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+];
+
+const ALLOWED_FILE_ENCODINGS: AllowedFileEncodings[] = [
+  "7bit",
+  "8bit",
+  "binary",
+  "base64",
+  "quoted-printable",
+];
+
 export {
+  ALLOWED_FILE_ENCODINGS,
+  ALLOWED_FILE_EXTENSIONS,
+  ALLOWED_FILE_MIME_TYPES,
   COLORS_SWATCHES,
   DEPARTMENT_DATA,
   DEPARTMENT_JOB_POSITION_MAP,

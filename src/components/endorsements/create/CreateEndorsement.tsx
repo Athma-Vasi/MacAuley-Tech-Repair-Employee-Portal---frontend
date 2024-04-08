@@ -1,18 +1,18 @@
-import { Group, Title, Tooltip } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
-import { InvalidTokenError } from 'jwt-decode';
-import { ChangeEvent, MouseEvent, useEffect, useReducer } from 'react';
-import { useErrorBoundary } from 'react-error-boundary';
-import { TbUpload } from 'react-icons/tb';
-import { useNavigate } from 'react-router-dom';
+import { Group, Title, Tooltip } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
+import { InvalidTokenError } from "jwt-decode";
+import { ChangeEvent, MouseEvent, useEffect, useReducer } from "react";
+import { useErrorBoundary } from "react-error-boundary";
+import { TbUpload } from "react-icons/tb";
+import { useNavigate } from "react-router-dom";
 
 import {
   FULL_NAME_REGEX,
   GRAMMAR_TEXT_INPUT_REGEX,
   GRAMMAR_TEXTAREA_INPUT_REGEX,
-} from '../../../constants/regex';
-import { globalAction } from '../../../context/globalProvider/state';
-import { useGlobalState, useWrapFetch } from '../../../hooks';
+} from "../../../constants/regex";
+import { globalAction } from "../../../context/globalProvider/state";
+import { useGlobalState, useWrapFetch } from "../../../hooks";
 import {
   AccessibleErrorValidTextElements,
   AccessibleSelectedDeselectedTextElements,
@@ -20,18 +20,18 @@ import {
   returnAccessibleCheckboxGroupInputsElements,
   returnAccessibleTextAreaInputElements,
   returnAccessibleTextInputElements,
-} from '../../../jsxCreators';
-import { ResourceRequestServerResponse } from '../../../types';
+} from "../../../jsxCreators";
+import { ResourceRequestServerResponse } from "../../../types";
 import {
   replaceLastCommaWithAnd,
   returnGrammarValidationText,
   returnNameValidationText,
   urlBuilder,
-} from '../../../utils';
+} from "../../../utils";
 import FormReviewPage, {
   FormReviewObjectArray,
-} from '../../formReviewPage/FormReviewPage';
-import { NotificationModal } from '../../notificationModal';
+} from "../../formReviewPage/FormReviewPage";
+import { NotificationModal } from "../../notificationModal";
 import {
   AccessibleButtonCreatorInfo,
   AccessibleCheckboxGroupInputCreatorInfo,
@@ -39,18 +39,18 @@ import {
   AccessibleTextInputCreatorInfo,
   FormLayoutWrapper,
   StepperWrapper,
-} from '../../wrappers';
+} from "../../wrappers";
 import {
   CREATE_ENDORSEMENT_DESCRIPTION_OBJECTS,
   CREATE_ENDORSEMENT_MAX_STEPPER_POSITION,
   EMPLOYEE_ATTRIBUTES_DATA,
-} from '../constants';
+} from "../constants";
 import {
   createEndorsementAction,
   createEndorsementReducer,
   initialCreateEndorsementState,
-} from './state';
-import { EmployeeAttributes, EndorsementDocument } from './types';
+} from "./state";
+import { EmployeeAttributes, EndorsementDocument } from "./types";
 
 function CreateEndorsement() {
   const [createEndorsementState, createEndorsementDispatch] = useReducer(
@@ -110,28 +110,28 @@ function CreateEndorsement() {
       });
       createEndorsementDispatch({
         type: createEndorsementAction.setSubmitMessage,
-        payload: 'Submitting Endorsement form ...',
+        payload: "Submitting Endorsement form ...",
       });
       openSubmitSuccessNotificationModal();
 
       const url: URL = urlBuilder({
-        path: 'actions/general/endorsement',
+        path: "actions/general/endorsement",
       });
 
       const body = JSON.stringify({
-        endorsement: {
+        endorsementSchema: {
           title,
           userToBeEndorsed: employeeToBeEndorsed,
           summaryOfEndorsement,
           attributeEndorsed,
-          requestStatus: 'pending',
+          requestStatus: "pending",
         },
       });
 
       const requestInit: RequestInit = {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body,
       };
@@ -160,19 +160,19 @@ function CreateEndorsement() {
         });
         createEndorsementDispatch({
           type: createEndorsementAction.setSuccessMessage,
-          payload: data.message ?? 'Endorsement form submitted successfully!',
+          payload: data.message ?? "Endorsement form submitted successfully!",
         });
       } catch (error: any) {
-        if (!isMounted || error.name === 'AbortError') {
+        if (!isMounted || error.name === "AbortError") {
           return;
         }
 
         const errorMessage =
           error instanceof InvalidTokenError
-            ? 'Invalid token. Please login again.'
+            ? "Invalid token. Please login again."
             : !error.response
-            ? 'Network error. Please try again.'
-            : error?.message ?? 'Unknown error occurred. Please try again.';
+            ? "Network error. Please try again."
+            : error?.message ?? "Unknown error occurred. Please try again.";
 
         globalDispatch({
           type: globalAction.setErrorState,
@@ -180,13 +180,13 @@ function CreateEndorsement() {
             isError: true,
             errorMessage,
             errorCallback: () => {
-              navigate('/home');
+              navigate("/home");
 
               globalDispatch({
                 type: globalAction.setErrorState,
                 payload: {
                   isError: false,
-                  errorMessage: '',
+                  errorMessage: "",
                   errorCallback: () => {},
                 },
               });
@@ -203,7 +203,7 @@ function CreateEndorsement() {
           });
           createEndorsementDispatch({
             type: createEndorsementAction.setSubmitMessage,
-            payload: '',
+            payload: "",
           });
           createEndorsementDispatch({
             type: createEndorsementAction.setTriggerFormSubmit,
@@ -257,14 +257,12 @@ function CreateEndorsement() {
   // update stepsInError for stepper wrapper
   useEffect(() => {
     const isStepInError =
-      !isValidTitle ||
-      !isValidEmployeeToBeEndorsed ||
-      !isValidSummaryOfEndorsement;
+      !isValidTitle || !isValidEmployeeToBeEndorsed || !isValidSummaryOfEndorsement;
 
     createEndorsementDispatch({
       type: createEndorsementAction.setStepsInError,
       payload: {
-        kind: isStepInError ? 'add' : 'delete',
+        kind: isStepInError ? "add" : "delete",
         step: 0,
       },
     });
@@ -277,85 +275,78 @@ function CreateEndorsement() {
     createEndorsementDispatch({
       type: createEndorsementAction.setStepsInError,
       payload: {
-        kind: isStepInError ? 'add' : 'delete',
+        kind: isStepInError ? "add" : "delete",
         step: 1,
       },
     });
   }, [attributeEndorsed]);
 
   // following are the accessible text elements for screen readers to read out based on the state of the input
-  const [titleInputErrorText, titleInputValidText] =
+  const [titleInputErrorText, titleInputValidText] = AccessibleErrorValidTextElements({
+    inputElementKind: "title",
+    inputText: title,
+    isInputTextFocused: isTitleFocused,
+    isValidInputText: isValidTitle,
+    regexValidationText: returnGrammarValidationText({
+      content: title,
+      contentKind: "title",
+      minLength: 2,
+      maxLength: 75,
+    }),
+  });
+
+  const [employeeToBeEndorsedInputErrorText, employeeToBeEndorsedInputValidText] =
     AccessibleErrorValidTextElements({
-      inputElementKind: 'title',
-      inputText: title,
-      isInputTextFocused: isTitleFocused,
-      isValidInputText: isValidTitle,
-      regexValidationText: returnGrammarValidationText({
-        content: title,
-        contentKind: 'title',
+      inputElementKind: "employee to be endorsed",
+      inputText: employeeToBeEndorsed,
+      isInputTextFocused: isEmployeeToBeEndorsedFocused,
+      isValidInputText: isValidEmployeeToBeEndorsed,
+      regexValidationText: returnNameValidationText({
+        content: employeeToBeEndorsed,
+        contentKind: "employee to be endorsed",
         minLength: 2,
-        maxLength: 75,
+        maxLength: 100,
       }),
     });
 
-  const [
-    employeeToBeEndorsedInputErrorText,
-    employeeToBeEndorsedInputValidText,
-  ] = AccessibleErrorValidTextElements({
-    inputElementKind: 'employee to be endorsed',
-    inputText: employeeToBeEndorsed,
-    isInputTextFocused: isEmployeeToBeEndorsedFocused,
-    isValidInputText: isValidEmployeeToBeEndorsed,
-    regexValidationText: returnNameValidationText({
-      content: employeeToBeEndorsed,
-      contentKind: 'employee to be endorsed',
-      minLength: 2,
-      maxLength: 100,
-    }),
-  });
-
-  const [
-    summaryOfEndorsementInputErrorText,
-    summaryOfEndorsementInputValidText,
-  ] = AccessibleErrorValidTextElements({
-    inputElementKind: 'summary of endorsement',
-    inputText: summaryOfEndorsement,
-    isInputTextFocused: isSummaryOfEndorsementFocused,
-    isValidInputText: isValidSummaryOfEndorsement,
-    regexValidationText: returnGrammarValidationText({
-      content: summaryOfEndorsement,
-      contentKind: 'summary of endorsement',
-      minLength: 2,
-      maxLength: 2000,
-    }),
-  });
+  const [summaryOfEndorsementInputErrorText, summaryOfEndorsementInputValidText] =
+    AccessibleErrorValidTextElements({
+      inputElementKind: "summary of endorsement",
+      inputText: summaryOfEndorsement,
+      isInputTextFocused: isSummaryOfEndorsementFocused,
+      isValidInputText: isValidSummaryOfEndorsement,
+      regexValidationText: returnGrammarValidationText({
+        content: summaryOfEndorsement,
+        contentKind: "summary of endorsement",
+        minLength: 2,
+        maxLength: 2000,
+      }),
+    });
 
   const attributeEndorsedStrCapitalized = attributeEndorsed.map((str) => {
-    const splitStr = str.split(' and ');
+    const splitStr = str.split(" and ");
     if (splitStr.length > 1) {
       return splitStr
         .map((str) => str.charAt(0).toUpperCase() + str.slice(1))
-        .join(' and ');
+        .join(" and ");
     }
 
     return str.charAt(0).toUpperCase() + str.slice(1);
   });
   const attributeEndorsedStr = replaceLastCommaWithAnd(
-    attributeEndorsedStrCapitalized.join(', ')
+    attributeEndorsedStrCapitalized.join(", ")
   );
 
-  const [
-    attributeEndorsedInputSelectedText,
-    attributeEndorsedInputDeselectedText,
-  ] = AccessibleSelectedDeselectedTextElements({
-    isSelected: attributeEndorsed.length > 0,
-    semanticName: 'attributes endorsed',
-    selectedDescription: `You have chosen: ${attributeEndorsedStr} attribute${
-      attributeEndorsed.length > 1 ? 's' : ''
-    } to endorse`,
-    deselectedDescription: 'Please select one or more attributes to endorse',
-    theme: 'muted',
-  });
+  const [attributeEndorsedInputSelectedText, attributeEndorsedInputDeselectedText] =
+    AccessibleSelectedDeselectedTextElements({
+      isSelected: attributeEndorsed.length > 0,
+      semanticName: "attributes endorsed",
+      selectedDescription: `You have chosen: ${attributeEndorsedStr} attribute${
+        attributeEndorsed.length > 1 ? "s" : ""
+      } to endorse`,
+      deselectedDescription: "Please select one or more attributes to endorse",
+      theme: "muted",
+    });
 
   const titleTextInputCreatorInfo: AccessibleTextInputCreatorInfo = {
     description: {
@@ -364,7 +355,7 @@ function CreateEndorsement() {
     },
     inputText: title,
     isValidInputText: isValidTitle,
-    label: 'Endorsement Title',
+    label: "Endorsement Title",
     onBlur: () => {
       createEndorsementDispatch({
         type: createEndorsementAction.setIsTitleFocused,
@@ -383,8 +374,8 @@ function CreateEndorsement() {
         payload: true,
       });
     },
-    placeholder: 'Enter title of endorsement',
-    semanticName: 'title',
+    placeholder: "Enter title of endorsement",
+    semanticName: "title",
     withAsterisk: true,
     required: true,
   };
@@ -396,7 +387,7 @@ function CreateEndorsement() {
     },
     inputText: employeeToBeEndorsed,
     isValidInputText: isValidEmployeeToBeEndorsed,
-    label: 'Employee to be Endorsed',
+    label: "Employee to be Endorsed",
     onBlur: () => {
       createEndorsementDispatch({
         type: createEndorsementAction.setIsEmployeeToBeEndorsedFocused,
@@ -415,70 +406,68 @@ function CreateEndorsement() {
         payload: true,
       });
     },
-    placeholder: 'Enter name of employee to be endorsed',
-    semanticName: 'employee to be endorsed',
+    placeholder: "Enter name of employee to be endorsed",
+    semanticName: "employee to be endorsed",
     minLength: 2,
     maxLength: 100,
     withAsterisk: true,
     required: true,
   };
 
-  const summaryOfEndorsementInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
-    {
-      description: {
-        error: summaryOfEndorsementInputErrorText,
-        valid: summaryOfEndorsementInputValidText,
-      },
-      inputText: summaryOfEndorsement,
-      isValidInputText: isValidSummaryOfEndorsement,
-      label: 'Summary of Endorsement',
-      onBlur: () => {
-        createEndorsementDispatch({
-          type: createEndorsementAction.setIsSummaryOfEndorsementFocused,
-          payload: false,
-        });
-      },
-      onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
-        createEndorsementDispatch({
-          type: createEndorsementAction.setSummaryOfEndorsement,
-          payload: event.currentTarget.value,
-        });
-      },
-      onFocus: () => {
-        createEndorsementDispatch({
-          type: createEndorsementAction.setIsSummaryOfEndorsementFocused,
-          payload: true,
-        });
-      },
-      placeholder: 'Enter summary of endorsement',
-      semanticName: 'summary of endorsement',
-      required: true,
-      withAsterisk: true,
-    };
+  const summaryOfEndorsementInputCreatorInfo: AccessibleTextAreaInputCreatorInfo = {
+    description: {
+      error: summaryOfEndorsementInputErrorText,
+      valid: summaryOfEndorsementInputValidText,
+    },
+    inputText: summaryOfEndorsement,
+    isValidInputText: isValidSummaryOfEndorsement,
+    label: "Summary of Endorsement",
+    onBlur: () => {
+      createEndorsementDispatch({
+        type: createEndorsementAction.setIsSummaryOfEndorsementFocused,
+        payload: false,
+      });
+    },
+    onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
+      createEndorsementDispatch({
+        type: createEndorsementAction.setSummaryOfEndorsement,
+        payload: event.currentTarget.value,
+      });
+    },
+    onFocus: () => {
+      createEndorsementDispatch({
+        type: createEndorsementAction.setIsSummaryOfEndorsementFocused,
+        payload: true,
+      });
+    },
+    placeholder: "Enter summary of endorsement",
+    semanticName: "summary of endorsement",
+    required: true,
+    withAsterisk: true,
+  };
 
-  const employeeAttributesInputCreatorInfo: AccessibleCheckboxGroupInputCreatorInfo =
-    {
-      dataObjectArray: EMPLOYEE_ATTRIBUTES_DATA,
-      description: {
-        selected: attributeEndorsedInputSelectedText,
-        deselected: attributeEndorsedInputDeselectedText,
-      },
-      label: 'Employee Attribute(s)',
-      semanticName: 'employee attributes',
-      value: attributeEndorsed,
-      required: true,
-      onChange: (event: string[]) => {
-        createEndorsementDispatch({
-          type: createEndorsementAction.setAttributeEndorsed,
-          payload: event as EmployeeAttributes,
-        });
-      },
-    };
+  const employeeAttributesInputCreatorInfo: AccessibleCheckboxGroupInputCreatorInfo = {
+    dataObjectArray: EMPLOYEE_ATTRIBUTES_DATA,
+    description: {
+      selected: attributeEndorsedInputSelectedText,
+      deselected: attributeEndorsedInputDeselectedText,
+    },
+    label: "Employee Attribute(s)",
+    semanticName: "employee attributes",
+    value: attributeEndorsed,
+    required: true,
+    onChange: (event: string[]) => {
+      createEndorsementDispatch({
+        type: createEndorsementAction.setAttributeEndorsed,
+        payload: event as EmployeeAttributes,
+      });
+    },
+  };
 
   const submitButtonCreatorInfo: AccessibleButtonCreatorInfo = {
-    buttonLabel: 'Submit',
-    semanticDescription: 'create endorsement form submit button',
-    semanticName: 'submit button',
+    buttonLabel: "Submit",
+    semanticDescription: "create endorsement form submit button",
+    semanticName: "submit button",
     leftIcon: <TbUpload />,
     buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
       createEndorsementDispatch({
@@ -497,25 +486,19 @@ function CreateEndorsement() {
     ]);
 
   const [createdSummaryOfEndorsementTextAreaInput] =
-    returnAccessibleTextAreaInputElements([
-      summaryOfEndorsementInputCreatorInfo,
-    ]);
+    returnAccessibleTextAreaInputElements([summaryOfEndorsementInputCreatorInfo]);
 
   const [createdEmployeeAttributesCheckboxInput] =
-    returnAccessibleCheckboxGroupInputsElements([
-      employeeAttributesInputCreatorInfo,
-    ]);
+    returnAccessibleCheckboxGroupInputsElements([employeeAttributesInputCreatorInfo]);
 
-  const [createdSubmitButton] = returnAccessibleButtonElements([
-    submitButtonCreatorInfo,
-  ]);
+  const [createdSubmitButton] = returnAccessibleButtonElements([submitButtonCreatorInfo]);
   const displaySubmitButton =
     currentStepperPosition === CREATE_ENDORSEMENT_MAX_STEPPER_POSITION ? (
       <Tooltip
         label={
           stepsInError.size > 0
-            ? 'Please correct errors before submitting'
-            : 'Submit Endorsement form'
+            ? "Please correct errors before submitting"
+            : "Submit Endorsement form"
         }
       >
         <Group w="100%" position="center">
@@ -533,32 +516,30 @@ function CreateEndorsement() {
   );
 
   const displayEndorsementSecondPage = (
-    <FormLayoutWrapper>
-      {createdEmployeeAttributesCheckboxInput}
-    </FormLayoutWrapper>
+    <FormLayoutWrapper>{createdEmployeeAttributesCheckboxInput}</FormLayoutWrapper>
   );
 
   const CREATE_ENDORSEMENT_REVIEW_OBJECT: FormReviewObjectArray = {
-    'Employee Endorsement': [
+    "Employee Endorsement": [
       {
-        inputName: 'Endorsement Title',
+        inputName: "Endorsement Title",
         inputValue: title,
         isInputValueValid: isValidTitle,
       },
       {
-        inputName: 'Employee to be Endorsed',
+        inputName: "Employee to be Endorsed",
         inputValue: employeeToBeEndorsed,
         isInputValueValid: isValidEmployeeToBeEndorsed,
       },
       {
-        inputName: 'Summary of Endorsement',
+        inputName: "Summary of Endorsement",
         inputValue: summaryOfEndorsement,
         isInputValueValid: isValidSummaryOfEndorsement,
       },
     ],
-    'Attribute(s) Endorsed': [
+    "Attribute(s) Endorsed": [
       {
-        inputName: 'Employee Attribute(s)',
+        inputName: "Employee Attribute(s)",
         inputValue: attributeEndorsedStr,
         isInputValueValid: attributeEndorsed.length > 0,
       },
@@ -577,7 +558,7 @@ function CreateEndorsement() {
       onCloseCallbacks={[
         closeSubmitSuccessNotificationModal,
         () => {
-          navigate('/home/general/endorsement/display');
+          navigate("/home/general/endorsement/display");
         },
       ]}
       opened={openedSubmitSuccessNotificationModal}
@@ -585,9 +566,7 @@ function CreateEndorsement() {
         loading: isSubmitting,
         text: isSubmitting ? submitMessage : successMessage,
       }}
-      title={
-        <Title order={4}>{isSuccessful ? 'Success!' : 'Submitting ...'}</Title>
-      }
+      title={<Title order={4}>{isSuccessful ? "Success!" : "Submitting ..."}</Title>}
     />
   );
 

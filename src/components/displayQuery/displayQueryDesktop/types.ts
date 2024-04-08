@@ -3,12 +3,12 @@ import { CSSProperties } from "react";
 import type {
   Currency,
   FileUploadDocument,
-  QueryResponseData,
   RequestStatus,
   UserDocument,
 } from "../../../types";
 import type { ComponentQueryData } from "../../queryBuilder";
 import { RepairStatus } from "../../repairTicket/types";
+import { CustomerDocument } from "../../customer/types";
 
 type DisplayQueryDesktopProps = {
   /**
@@ -54,7 +54,7 @@ type DisplayQueryDesktopProps = {
 
 type EditRepairTicketInput = {
   repairTicketFormId: string;
-  repairTickets: string;
+  repairNotes: string;
   testingResults: string;
   finalRepairCost: string;
   finalRepairCostCurrency: Currency;
@@ -72,6 +72,7 @@ type DisplayQueryDesktopState = {
   editRepairTicketInput: EditRepairTicketInput;
 
   employeeDocument: UserDocument | null;
+  customerDocument: Omit<CustomerDocument, "password" | "paymentInformation"> | null;
 };
 
 type DisplayQueryDesktopAction = {
@@ -84,6 +85,7 @@ type DisplayQueryDesktopAction = {
   setEditRepairTicketInput: "setEditRepairTicketInput";
 
   setEmployeeDocument: "setEmployeeDocument";
+  setCustomerDocument: "setCustomerDocument";
 };
 
 type DisplayQueryDesktopReducer = (
@@ -114,6 +116,10 @@ type DisplayQueryDesktopDispatch =
   | {
       type: DisplayQueryDesktopAction["setEmployeeDocument"];
       payload: UserDocument | null;
+    }
+  | {
+      type: DisplayQueryDesktopAction["setCustomerDocument"];
+      payload: Omit<CustomerDocument, "password" | "paymentInformation"> | null;
     };
 
 export type {

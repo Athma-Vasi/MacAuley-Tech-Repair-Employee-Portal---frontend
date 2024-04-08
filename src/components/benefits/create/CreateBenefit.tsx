@@ -154,7 +154,7 @@ function CreateBenefit() {
       });
 
       const body = JSON.stringify({
-        benefit: {
+        benefitSchema: {
           username: benefitUsername,
           planName,
           planDescription,

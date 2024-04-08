@@ -234,7 +234,7 @@ const PRODUCT_CATEGORY_ROUTE_SELECT_DATA: SelectInputData = [
 ];
 
 // used to map resource ids to backend route paths to fetch data from
-// in the DispalyResource component
+// in the DisplayResource component
 const RESOURCE_IDS_ROUTE_MAP = {
   completedSurveys: "survey",
   customerId: "customer",

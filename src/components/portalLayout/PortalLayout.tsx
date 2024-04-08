@@ -18,9 +18,9 @@ function PortalLayout() {
 
   const { pathname } = useLocation();
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [pathname]);
+  // useEffect(() => {
+  //   window.scrollTo(0, 0);
+  // }, [pathname]);
 
   const {
     appThemeColors: { backgroundColor, borderColor },
@@ -46,7 +46,6 @@ function PortalLayout() {
       navbarOffsetBreakpoint="sm"
       navbar={<PortalNavbar openedNavbar={opened} />}
       header={<PortalHeader openedHeader={opened} setOpenedHeader={setOpened} />}
-      // footer={scrollYDirection === 'up' ? <PortalFooter /> : <></>}
       footer={<PortalFooter />}
     >
       {/* breadcrumbs always visible on top of <Outlet /> */}
@@ -56,7 +55,7 @@ function PortalLayout() {
         <Flex
           bg={backgroundColor}
           direction="column"
-          h={width <= 991 ? height - (50 + 56 + 75) : height - (64 + 56 + 75)} //  vw < 991 ?  vh - (header height = 50px + padding = 56 + footer height = 75px) : vh - (header height = 64px + padding = 56 + footer height = 75px)
+          h={width <= 991 ? height - (50 + 56 + 75) : height - (64 + 56 + 75)} //  vw < 991 ?  vh - (header height:50px + padding:56 + footer height:75px) : vh - (header height:64px + padding:56 + footer height:75px)
           w="100%"
         >
           <Space h="xl" />

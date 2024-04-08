@@ -1,8 +1,8 @@
-import { COLORS_SWATCHES } from '../../../constants/data';
-import { useGlobalState } from '../../../hooks';
-import { returnThemeColors } from '../../../utils';
-import { MONTHS } from '../constants';
-import { returnFinancialMetricsCards } from '../jsxHelpers';
+import { COLORS_SWATCHES } from "../../../constants/data";
+import { useGlobalState } from "../../../hooks";
+import { returnThemeColors } from "../../../utils";
+import { MONTHS } from "../constants";
+import { returnFinancialMetricsCards } from "../jsxHelpers";
 import {
   BusinessMetric,
   BusinessMetricStoreLocation,
@@ -10,14 +10,14 @@ import {
   DashboardFinancialMetric,
   Month,
   Year,
-} from '../types';
-import FinancialDashboardDaily from './financialDashboardDaily/FinancialDashboardDaily';
-import FinancialDashboardMonthly from './financialDashboardMonthly/FinancialDashboardMonthly';
-import FinancialDashboardYearly from './financialDashboardYearly/FinancialDashboardYearly';
+} from "../types";
+import FinancialDashboardDaily from "./financialDashboardDaily/FinancialDashboardDaily";
+import FinancialDashboardMonthly from "./financialDashboardMonthly/FinancialDashboardMonthly";
+import FinancialDashboardYearly from "./financialDashboardYearly/FinancialDashboardYearly";
 import {
   returnFinancialMetricsCharts,
   returnSelectedDateFinancialMetrics,
-} from './utils';
+} from "./utils";
 
 function FinancialDashboard({
   businessMetrics,
@@ -59,16 +59,12 @@ function FinancialDashboard({
     year: selectedYear,
   });
 
-  console.log('selectedDateFinancialMetrics', selectedDateFinancialMetrics);
-
   const financialChartsData = returnFinancialMetricsCharts({
     businessMetrics,
     months: MONTHS,
     selectedDateFinancialMetrics,
     storeLocation: storeLocationView,
   });
-
-  console.log('financialChartsData', financialChartsData);
 
   const financialCardsInfo = returnFinancialMetricsCards({
     greenColorShade,
@@ -78,13 +74,11 @@ function FinancialDashboard({
     width,
   });
 
-  console.log('financialCardsInfo', financialCardsInfo);
-
   const { dailyCards, monthlyCards, yearlyCards } = financialCardsInfo;
   const { dailyCharts, monthlyCharts, yearlyCharts } = financialChartsData;
 
   const displayFinancialCalendarInfo =
-    calendarView === 'Daily' ? (
+    calendarView === "Daily" ? (
       <FinancialDashboardDaily
         borderColor={borderColor}
         businessMetrics={businessMetrics}
@@ -92,19 +86,19 @@ function FinancialDashboard({
         dailyCharts={dailyCharts}
         day={selectedDate}
         financialMetric={financialMetric}
-        month={selectedYYYYMMDD.split('-')[1]}
+        month={selectedYYYYMMDD.split("-")[1]}
         padding={padding}
         storeLocation={storeLocationView}
         width={width}
         year={selectedYear}
       />
-    ) : calendarView === 'Monthly' ? (
+    ) : calendarView === "Monthly" ? (
       <FinancialDashboardMonthly
         borderColor={borderColor}
         businessMetrics={businessMetrics}
         day={selectedDate}
         financialMetric={financialMetric}
-        month={selectedYYYYMMDD.split('-')[1]}
+        month={selectedYYYYMMDD.split("-")[1]}
         monthlyCards={monthlyCards}
         monthlyCharts={monthlyCharts}
         padding={padding}
@@ -118,7 +112,7 @@ function FinancialDashboard({
         businessMetrics={businessMetrics}
         day={selectedDate}
         financialMetric={financialMetric}
-        month={selectedYYYYMMDD.split('-')[1]}
+        month={selectedYYYYMMDD.split("-")[1]}
         padding={padding}
         storeLocation={storeLocationView}
         width={width}

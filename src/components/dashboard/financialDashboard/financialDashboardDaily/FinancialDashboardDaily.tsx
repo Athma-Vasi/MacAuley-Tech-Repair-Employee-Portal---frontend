@@ -1,18 +1,18 @@
-import { MantineNumberSize, Stack } from '@mantine/core';
+import { MantineNumberSize, Stack } from "@mantine/core";
 
-import { FinancialMetricsCards } from '../../jsxHelpers';
+import { FinancialMetricsCards } from "../../jsxHelpers";
 import {
   BusinessMetric,
   BusinessMetricStoreLocation,
   DashboardFinancialMetric,
   Year,
-} from '../../types';
-import { FinancialMetricsCharts } from '../utils';
-import FinancialDashboardDailyExpenses from './financialDashboardDailyExpenses/FinancialDashboardDailyExpenses';
-import FinancialDashboardDailyOtherMetrics from './financialDashboardDailyOtherMetrics/FinancialDashboardDailyOtherMetrics';
-import FinancialDashboardDailyProfit from './financialDashboardDailyProfit/FinancialDashboardDailyProfit';
-import FinancialDashboardDailyRevenue from './financialDashboardDailyRevenue/FinancialDashboardDailyRevenue';
-import FinancialDashboardDailyTransactions from './financialDashboardDailyTransactions/FinancialDashboardDailyTransactions';
+} from "../../types";
+import { FinancialMetricsCharts } from "../utils";
+import FinancialDashboardDailyExpenses from "./financialDashboardDailyExpenses/FinancialDashboardDailyExpenses";
+import FinancialDashboardDailyOtherMetrics from "./financialDashboardDailyOtherMetrics/FinancialDashboardDailyOtherMetrics";
+import FinancialDashboardDailyProfit from "./financialDashboardDailyProfit/FinancialDashboardDailyProfit";
+import FinancialDashboardDailyRevenue from "./financialDashboardDailyRevenue/FinancialDashboardDailyRevenue";
+import FinancialDashboardDailyTransactions from "./financialDashboardDailyTransactions/FinancialDashboardDailyTransactions";
 
 function FinancialDashboardDaily({
   borderColor,
@@ -29,8 +29,8 @@ function FinancialDashboardDaily({
 }: {
   borderColor: string;
   businessMetrics: BusinessMetric[];
-  dailyCards: FinancialMetricsCards['dailyCards'];
-  dailyCharts: FinancialMetricsCharts['dailyCharts'];
+  dailyCards: FinancialMetricsCards["dailyCards"];
+  dailyCharts: FinancialMetricsCharts["dailyCharts"];
   day: string;
   financialMetric: DashboardFinancialMetric;
   month: string;
@@ -39,10 +39,6 @@ function FinancialDashboardDaily({
   width: number;
   year: Year;
 }) {
-  if (!businessMetrics.length) {
-    return null;
-  }
-
   const componentWidth =
     width < 480 // for iPhone 5/SE
       ? width * 0.93
@@ -55,12 +51,11 @@ function FinancialDashboardDaily({
       width < 1200
       ? (width - 225) * 0.8
       : 900 - 40;
-  const chartHeight =
-    width < 1024 ? componentWidth * 0.618 : componentWidth * 0.382;
+  const chartHeight = width < 1024 ? componentWidth * 0.618 : componentWidth * 0.382;
   const chartWidth = componentWidth;
 
   const displayFinancialMetricCategory =
-    financialMetric === 'Profit' ? (
+    financialMetric === "Profit" ? (
       <FinancialDashboardDailyProfit
         borderColor={borderColor}
         chartHeight={chartHeight}
@@ -74,7 +69,7 @@ function FinancialDashboardDaily({
         width={width}
         year={year}
       />
-    ) : financialMetric === 'Revenue' ? (
+    ) : financialMetric === "Revenue" ? (
       <FinancialDashboardDailyRevenue
         borderColor={borderColor}
         chartHeight={chartHeight}
@@ -88,7 +83,7 @@ function FinancialDashboardDaily({
         width={width}
         year={year}
       />
-    ) : financialMetric === 'Expenses' ? (
+    ) : financialMetric === "Expenses" ? (
       <FinancialDashboardDailyExpenses
         borderColor={borderColor}
         chartHeight={chartHeight}
@@ -102,7 +97,7 @@ function FinancialDashboardDaily({
         width={width}
         year={year}
       />
-    ) : financialMetric === 'Transactions' ? (
+    ) : financialMetric === "Transactions" ? (
       <FinancialDashboardDailyTransactions
         borderColor={borderColor}
         chartHeight={chartHeight}

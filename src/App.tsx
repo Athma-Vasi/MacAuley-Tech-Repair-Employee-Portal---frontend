@@ -68,6 +68,9 @@ const DisplayComment = lazy(() => import("./components/comment/DisplayComment"))
 // ╔═════════════════════════════════════════════════════════════════╗
 //   FILE UPLOAD
 // ╚═════════════════════════════════════════════════════════════════╝
+const DisplayFileUpload = lazy(
+  () => import("./components/fileUploads/DisplayFileUploads")
+);
 
 // ╔═════════════════════════════════════════════════════════════════╗
 //   PRODUCT
@@ -515,6 +518,17 @@ function App() {
   // ╔═════════════════════════════════════════════════════════════════╗
   //   FILE UPLOAD
   // ╚═════════════════════════════════════════════════════════════════╝
+
+  // @desc   file upload page (index = display)
+  // @route  /home/file-upload (index) and /home/file-upload/display
+  // @access private
+  const displayFileUploadsElement = (
+    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+      <Suspense fallback={<div>Generic Loading message...</div>}>
+        <DisplayFileUpload />
+      </Suspense>
+    </ErrorBoundary>
+  );
 
   // ╔═════════════════════════════════════════════════════════════════╗
   //   PRODUCT
@@ -1314,6 +1328,10 @@ function App() {
           </Route>
 
           {/* file upload */}
+          <Route path="file-upload">
+            <Route index element={displayFileUploadsElement} />
+            <Route path="display" element={displayFileUploadsElement} />
+          </Route>
 
           {/* product */}
           <Route path="product">
@@ -1455,8 +1473,7 @@ function App() {
 
           {/* repair-ticket */}
           <Route path="repair-ticket">
-            {/* <Route index element={displayRepairTicketsElement} /> */}
-            <Route index element={createRepairTicketElement} />
+            <Route index element={displayRepairTicketsElement} />
             <Route path="create" element={createRepairTicketElement} />
             <Route path="display" element={displayRepairTicketsElement} />
           </Route>

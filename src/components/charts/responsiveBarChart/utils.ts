@@ -1,10 +1,13 @@
-import { NivoFillPatternObject } from '../types';
-import { BarChartData } from './types';
+import { NivoFillPatternObject } from "../types";
+import { BarChartData } from "./types";
 
-function createBarFillPatterns(barChartData: BarChartData[]) {
+function createBarFillPatterns(barChartData: BarChartData[]): {
+  barFillPatterns: NivoFillPatternObject[];
+} {
   const barDataObj = barChartData[0];
+
   const barDataObjKeys = Object.keys(barDataObj).filter(
-    (key) => key !== 'Days' && key !== 'Months' && key !== 'Years'
+    (key) => key !== "Days" && key !== "Months" && key !== "Years"
   );
 
   const barFillPatterns = barDataObjKeys.map((barDataObjKey, idx) => {
@@ -14,7 +17,7 @@ function createBarFillPatterns(barChartData: BarChartData[]) {
      */
     const barFillPattern: NivoFillPatternObject = {
       match: { id: barDataObjKey },
-      id: idx % 2 === 0 ? 'dots' : 'lines',
+      id: idx % 2 === 0 ? "dots" : "lines",
     };
 
     return barFillPattern;

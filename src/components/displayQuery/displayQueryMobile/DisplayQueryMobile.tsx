@@ -2,6 +2,7 @@ import {
   Accordion,
   Divider,
   Flex,
+  Group,
   Loader,
   LoadingOverlay,
   Modal,
@@ -9,6 +10,7 @@ import {
   Spoiler,
   Stack,
   Text,
+  Tooltip,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useReducer } from "react";
@@ -17,6 +19,7 @@ import {
   TbArrowDown,
   TbArrowUp,
   TbEdit,
+  TbStars,
   TbStatusChange,
   TbTrash,
   TbUserSearch,
@@ -36,15 +39,19 @@ import {
   returnThemeColors,
   splitCamelCase,
 } from "../../../utils";
+import { returnWhichResourceInView } from "../displayQueryDesktop/utils";
 import EditRepairTicket from "../editRepairTicket/EditRepairTicket";
 import { ProfileInfo } from "../profileInfo/ProfileInfo";
 import UpdateRequestStatus from "../updateRequestStatus/UpdateRequestStatus";
+import { addFieldsToQueryResponseObject } from "../utils";
 import {
   displayQueryMobileAction,
   displayQueryMobileReducer,
   initialDisplayQueryMobileState,
 } from "./state";
 import { DisplayQueryMobileProps } from "./types";
+import { CustomerDocument } from "../../customer/types";
+import { LiaExpandArrowsAltSolid, LiaAddressBook } from "react-icons/lia";
 
 function DisplayQueryMobile({
   componentQueryData,
@@ -71,6 +78,7 @@ function DisplayQueryMobile({
     currentDocumentId,
     currentRequestStatus,
     employeeDocument,
+    customerDocument,
   } = displayQueryMobileState;
 
   const {
@@ -94,6 +102,32 @@ function DisplayQueryMobile({
   const [
     openedProfileInfoModal,
     { open: openProfileInfoModal, close: closeProfileInfoModal },
+  ] = useDisclosure(false);
+
+  // for product category section only
+  const [
+    openedAdditionalFieldsModal,
+    { open: openAdditionalFieldsModal, close: closeAdditionalFieldsModal },
+  ] = useDisclosure(false);
+  const [
+    openedViewStarRatingsModal,
+    { open: openViewStarRatingsModal, close: closeViewStarRatingsModal },
+  ] = useDisclosure(false);
+
+  // for purchase section only
+  const [
+    openedViewPurchasesModal,
+    { open: openViewPurchasesModal, close: closeViewPurchasesModal },
+  ] = useDisclosure(false);
+  const [
+    openedShippingAddressModal,
+    { open: openShippingAddressModal, close: closeShippingAddressModal },
+  ] = useDisclosure(false);
+
+  // for customer section only
+  const [
+    openedPersonalAddressModal,
+    { open: openPersonalAddressModal, close: closePersonalAddressModal },
   ] = useDisclosure(false);
 
   const [createdShowMoreButton, createdHideButton] = returnAccessibleButtonElements([
@@ -122,69 +156,35 @@ function DisplayQueryMobile({
     colorsSwatches: COLORS_SWATCHES,
   });
 
-  // determines that the user is viewing repair notes section
-  const isRepairTicketSectionInView = Array.from(groupedByQueryResponseData).some(
-    ([_groupedByFieldKey, queryResponseObjArrays]) => {
-      return queryResponseObjArrays.some((queryResponseObj) => {
-        return (
-          Object.hasOwn(queryResponseObj, "repairTickets") &&
-          Object.hasOwn(queryResponseObj, "testingResults") &&
-          Object.hasOwn(queryResponseObj, "finalRepairCost") &&
-          Object.hasOwn(queryResponseObj, "finalRepairCostCurrency") &&
-          Object.hasOwn(queryResponseObj, "repairStatus")
-        );
-      });
-    }
-  );
-
-  // determines if user is viewing anonymous requests section
-  const isAnonymousRequestsSectionInView = Array.from(groupedByQueryResponseData).some(
-    ([_groupedByFieldKey, queryResponseObjArrays]) => {
-      return queryResponseObjArrays.some((queryResponseObj) => {
-        return (
-          Object.hasOwn(queryResponseObj, "secureContactNumber") &&
-          Object.hasOwn(queryResponseObj, "secureContactEmail") &&
-          Object.hasOwn(queryResponseObj, "requestKind") &&
-          Object.hasOwn(queryResponseObj, "requestDescription")
-        );
-      });
-    }
-  );
+  const {
+    isAnonymousRequestsSectionInView,
+    isProductCategorySectionInView,
+    isPurchaseSectionInView,
+    isExpenseClaimSectionInView,
+    isRMASectionInView,
+    isRepairTicketSectionInView,
+    isCustomerSectionInView,
+    isFileUploadsSectionInView,
+    isProductReviewSectionInView,
+  } = returnWhichResourceInView(groupedByQueryResponseData);
 
   const displayGroupedByQueryResponseData = Array.from(groupedByQueryResponseData).map(
     ([section, queryObjArr], responseDataIdx) => {
       const displayQueryObjArr = queryObjArr.map((queryObj, queryObjIdx) => {
-        const queryResponseObjWithAddedFields =
-          fileUploadsData.length > 0
-            ? addFieldsToObject({
-                object: queryObj,
-                fieldValuesTuples: [
-                  ["viewProfile", ""],
-                  ["fileUploads", ""],
-                  ["delete", ""],
-                ],
-              })
-            : isRepairTicketSectionInView
-            ? addFieldsToObject({
-                object: queryObj,
-                fieldValuesTuples: [
-                  ["viewProfile", ""],
-                  ["edit", ""],
-                  ["delete", ""],
-                ],
-              })
-            : isAnonymousRequestsSectionInView
-            ? addFieldsToObject({
-                object: queryObj,
-                fieldValuesTuples: [["delete", ""]],
-              })
-            : addFieldsToObject({
-                object: queryObj,
-                fieldValuesTuples: [
-                  ["viewProfile", ""],
-                  ["delete", ""],
-                ],
-              });
+        const queryResponseObjWithAddedFields = addFieldsToQueryResponseObject({
+          isRepairTicketSectionInView,
+          isFileUploadsSectionInView,
+          isAnonymousRequestsSectionInView,
+          isCustomerSectionInView,
+          isProductCategorySectionInView,
+          isPurchaseSectionInView,
+          isExpenseClaimSectionInView,
+          isRMASectionInView,
+          isProductReviewSectionInView,
+          queryResponseObj: queryObj,
+        });
+
+        console.log("queryResponseObjWithAddedFields", queryResponseObjWithAddedFields);
 
         const displayKeyValues = Object.entries(queryResponseObjWithAddedFields).map(
           (document, keyValIdx) => {
@@ -230,12 +230,6 @@ function DisplayQueryMobile({
                     .toString()
                     .slice(1)}`;
 
-            const highlightedText = returnHighlightedText({
-              textHighlightColor,
-              fieldValue: formattedValue,
-              queryValuesArray,
-            });
-
             // only when user views repair notes section
             const [createdRepairTicketEditButton] = isRepairTicketSectionInView
               ? returnAccessibleButtonElements([
@@ -248,7 +242,7 @@ function DisplayQueryMobile({
                         type: displayQueryMobileAction.setEditRepairTicketInput,
                         payload: {
                           repairTicketFormId: queryResponseObjWithAddedFields._id,
-                          repairTickets: queryResponseObjWithAddedFields.repairTickets,
+                          repairNotes: queryResponseObjWithAddedFields.repairNotes,
                           testingResults: queryResponseObjWithAddedFields.testingResults,
                           finalRepairCost:
                             queryResponseObjWithAddedFields.finalRepairCost,
@@ -263,6 +257,142 @@ function DisplayQueryMobile({
                   },
                 ])
               : [null];
+
+            // only when viewing product category section
+            const [createdViewAdditionalFieldsButton] = isProductCategorySectionInView
+              ? returnAccessibleButtonElements([
+                  {
+                    buttonLabel: <LiaExpandArrowsAltSolid />,
+                    semanticDescription: `View additional fields for product with id: ${queryResponseObjWithAddedFields._id}`,
+                    semanticName: "View additional fields",
+                    buttonOnClick: () => {
+                      displayQueryMobileDispatch({
+                        type: displayQueryMobileAction.setCurrentDocumentId,
+                        payload: queryResponseObjWithAddedFields._id,
+                      });
+
+                      openAdditionalFieldsModal();
+                    },
+                  },
+                ])
+              : [null];
+
+            const displayViewAdditionalFieldsButton =
+              createdViewAdditionalFieldsButton ? (
+                <Tooltip
+                  label={`View additional fields for product with id: ${queryResponseObjWithAddedFields._id}`}
+                >
+                  <Group>{createdViewAdditionalFieldsButton}</Group>
+                </Tooltip>
+              ) : null;
+
+            // only when viewing product category section
+            const [viewStarRatingsButton] = isProductCategorySectionInView
+              ? returnAccessibleButtonElements([
+                  {
+                    buttonLabel: <TbStars />,
+                    semanticDescription: `View reviews for product with id: ${queryResponseObjWithAddedFields._id}`,
+                    semanticName: "View reviews",
+                    buttonOnClick: () => {
+                      displayQueryMobileDispatch({
+                        type: displayQueryMobileAction.setCurrentDocumentId,
+                        payload: queryResponseObjWithAddedFields._id,
+                      });
+
+                      openViewStarRatingsModal();
+                    },
+                  },
+                ])
+              : [null];
+
+            const displayViewStarRatingsButton = viewStarRatingsButton ? (
+              <Tooltip
+                label={`View reviews for product with id: ${queryResponseObjWithAddedFields._id}`}
+              >
+                <Group>{viewStarRatingsButton}</Group>
+              </Tooltip>
+            ) : null;
+
+            // only when viewing purchase section
+            const [viewPurchasesModalButton] = isPurchaseSectionInView
+              ? returnAccessibleButtonElements([
+                  {
+                    buttonLabel: <LiaExpandArrowsAltSolid />,
+                    semanticDescription: `View purchase details for customer with id: ${queryResponseObjWithAddedFields.customerId}`,
+                    semanticName: "View purchase details",
+                    buttonOnClick: () => {
+                      displayQueryMobileDispatch({
+                        type: displayQueryMobileAction.setCurrentDocumentId,
+                        payload: queryResponseObjWithAddedFields._id,
+                      });
+
+                      openViewPurchasesModal();
+                    },
+                  },
+                ])
+              : [null];
+
+            const displayViewPurchasesModalButton = viewPurchasesModalButton ? (
+              <Tooltip
+                label={`View purchase details for customer with id: ${queryResponseObjWithAddedFields.customerId}`}
+              >
+                <Group>{viewPurchasesModalButton}</Group>
+              </Tooltip>
+            ) : null;
+
+            // only when viewing purchase section
+            const [viewShippingAddressModalButton] = isPurchaseSectionInView
+              ? returnAccessibleButtonElements([
+                  {
+                    buttonLabel: <LiaAddressBook />,
+                    semanticDescription: `View shipping address for customer with id: ${queryResponseObjWithAddedFields.customerId}`,
+                    semanticName: "View shipping address",
+                    buttonOnClick: () => {
+                      displayQueryMobileDispatch({
+                        type: displayQueryMobileAction.setCurrentDocumentId,
+                        payload: queryResponseObjWithAddedFields._id,
+                      });
+
+                      openShippingAddressModal();
+                    },
+                  },
+                ])
+              : [null];
+
+            const displayShippingAddressModalButton = viewShippingAddressModalButton ? (
+              <Tooltip
+                label={`View shipping address for customer with id: ${queryResponseObjWithAddedFields.customerId}`}
+              >
+                <Group>{viewShippingAddressModalButton}</Group>
+              </Tooltip>
+            ) : null;
+
+            // only when viewing customer section
+            const [viewPersonalAddressModalButton] = isCustomerSectionInView
+              ? returnAccessibleButtonElements([
+                  {
+                    buttonLabel: <LiaAddressBook />,
+                    semanticDescription: `View personal address for username: ${queryResponseObjWithAddedFields.username}`,
+                    semanticName: "View personal address",
+                    buttonOnClick: () => {
+                      displayQueryMobileDispatch({
+                        type: displayQueryMobileAction.setCurrentDocumentId,
+                        payload: queryResponseObjWithAddedFields._id,
+                      });
+
+                      openPersonalAddressModal();
+                    },
+                  },
+                ])
+              : [null];
+
+            const displayPersonalAddressModalButton = viewPersonalAddressModalButton ? (
+              <Tooltip
+                label={`View personal address for username: ${queryResponseObjWithAddedFields.username}`}
+              >
+                <Group>{viewPersonalAddressModalButton}</Group>
+              </Tooltip>
+            ) : null;
 
             const [
               createdUpdateRequestStatusButton,
@@ -293,14 +423,31 @@ function DisplayQueryMobile({
                 semanticDescription: `View profile of username: ${queryResponseObjWithAddedFields.username}`,
                 semanticName: "View profile",
                 buttonOnClick: () => {
-                  displayQueryMobileDispatch({
-                    type: displayQueryMobileAction.setEmployeeDocument,
-                    payload:
-                      actionsDocuments?.employeeData?.get(
-                        queryResponseObjWithAddedFields.userId ??
-                          queryResponseObjWithAddedFields.benefitUserId
-                      ) ?? ({} as UserDocument),
-                  });
+                  isProductReviewSectionInView ||
+                  isPurchaseSectionInView ||
+                  isRMASectionInView
+                    ? displayQueryMobileDispatch({
+                        type: displayQueryMobileAction.setCustomerDocument,
+                        payload:
+                          actionsDocuments?.customerData?.find(
+                            (customer) =>
+                              customer.username ===
+                              queryResponseObjWithAddedFields.username
+                          ) ??
+                          ({} as Omit<
+                            CustomerDocument,
+                            "password" | "paymentInformation"
+                          >),
+                      })
+                    : displayQueryMobileDispatch({
+                        type: displayQueryMobileAction.setEmployeeDocument,
+                        payload: isCustomerSectionInView
+                          ? (queryObj as UserDocument)
+                          : (Array.from(actionsDocuments?.employeeData ?? new Map()).find(
+                              ([_key, value]) =>
+                                value._id === queryResponseObjWithAddedFields.userId
+                            )?.[1] as UserDocument),
+                      });
 
                   openProfileInfoModal();
                 },
@@ -378,6 +525,12 @@ function DisplayQueryMobile({
             ) : (
               <Text>{sectionKey === "_id" ? "Document Id" : sectionKey}</Text>
             );
+
+            const highlightedText = returnHighlightedText({
+              textHighlightColor,
+              fieldValue: formattedValue,
+              queryValuesArray,
+            });
 
             const displayFullLabelValueRow = (
               <Flex w="100%">
@@ -474,6 +627,7 @@ function DisplayQueryMobile({
           </Flex>
         );
       });
+
       const displaySection =
         section === true
           ? "Yes"
@@ -585,7 +739,9 @@ function DisplayQueryMobile({
       }
       scrollAreaComponent={ScrollArea.Autosize}
     >
-      <ProfileInfo employeeDocument={employeeDocument} />
+      <ProfileInfo
+        userDocument={isProductReviewSectionInView ? customerDocument : employeeDocument}
+      />
     </Modal>
   );
 
@@ -624,3 +780,5 @@ function DisplayQueryMobile({
 }
 
 export { DisplayQueryMobile };
+
+// TODO: add view modal buttons present in DisplayQueryDesktop

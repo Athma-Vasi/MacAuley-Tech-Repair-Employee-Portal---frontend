@@ -1,42 +1,37 @@
-import {
-  GlobalAction,
-  GlobalDispatch,
-  GlobalState,
-  ThemeObject,
-} from './types';
+import { GlobalAction, GlobalDispatch, GlobalState, ThemeObject } from "./types";
 
 const initialThemeObject: ThemeObject = {
-  colorScheme: 'light',
+  colorScheme: "light",
   respectReducedMotion: true,
 
   // white: '#f8f9fa', // gray.0
   // black: '#212529', // gray.9
-  white: '#f5f5f5',
-  black: '#25262b',
+  white: "#f5f5f5",
+  black: "#25262b",
 
-  primaryColor: 'violet',
+  primaryColor: "violet",
   primaryShade: { light: 5, dark: 7 },
 
-  defaultGradient: { deg: 45, from: 'blue', to: 'cyan' },
+  defaultGradient: { deg: 45, from: "blue", to: "cyan" },
 
-  fontFamily: 'sans-serif',
+  fontFamily: "sans-serif",
 
   components: {
     Button: {
       // Variants<'filled' | 'outline' | 'light' | 'white' | 'default' | 'subtle' | 'gradient'>
       defaultProps: {
-        variant: 'light',
+        variant: "light",
       },
     },
     Text: {
       defaultProps: {
-        color: 'gray.8',
-        size: 'sm',
+        color: "gray.8",
+        size: "sm",
       },
     },
     Title: {
       defaultProps: {
-        color: 'dark.4',
+        color: "dark.4",
       },
     },
   },
@@ -45,10 +40,10 @@ const initialThemeObject: ThemeObject = {
 const initialGlobalState: GlobalState = {
   width: 0,
   height: 0,
-  rowGap: 'xs',
-  padding: 'xs',
-  scrollXDirection: 'neutral',
-  scrollYDirection: 'neutral',
+  rowGap: "xs",
+  padding: "xs",
+  scrollXDirection: "neutral",
+  scrollYDirection: "neutral",
 
   themeObject: initialThemeObject,
 
@@ -59,51 +54,48 @@ const initialGlobalState: GlobalState = {
 
   errorState: {
     isError: false,
-    errorMessage: '',
+    errorMessage: "",
     errorCallback: () => {},
   },
 
   customizeChartsPageData: {
     chartData: [],
-    chartKind: 'bar',
-    chartTitle: '',
-    chartUnitKind: 'currency',
+    chartKind: "bar",
+    chartTitle: "",
+    chartUnitKind: "currency",
     selectedYYYYMMDD: new Date().toISOString().slice(0, 10),
   },
 };
 
 const globalAction: GlobalAction = {
-  setWidth: 'setWidth',
-  setHeight: 'setHeight',
-  setRowGap: 'setRowGap',
-  setPadding: 'setPadding',
-  setWindowSize: 'setWindowSize',
-  setScrollAxesDirection: 'setScrollAxesDirection',
+  setWidth: "setWidth",
+  setHeight: "setHeight",
+  setRowGap: "setRowGap",
+  setPadding: "setPadding",
+  setWindowSize: "setWindowSize",
+  setScrollAxesDirection: "setScrollAxesDirection",
 
   // mantine theme object
-  setRespectReducedMotion: 'setRespectReducedMotion',
-  setColorScheme: 'setColorScheme',
-  setPrimaryColor: 'setPrimaryColor',
-  setPrimaryShade: 'setPrimaryShade',
-  setDefaultGradient: 'setDefaultGradient',
-  setFontFamily: 'setFontFamily',
-  setComponents: 'setComponents',
+  setRespectReducedMotion: "setRespectReducedMotion",
+  setColorScheme: "setColorScheme",
+  setPrimaryColor: "setPrimaryColor",
+  setPrimaryShade: "setPrimaryShade",
+  setDefaultGradient: "setDefaultGradient",
+  setFontFamily: "setFontFamily",
+  setComponents: "setComponents",
 
-  setUserDocument: 'setUserDocument',
-  setActionsDocuments: 'setActionsDocuments',
-  setAnnouncementDocument: 'setAnnouncementDocument',
-  setPrefersReducedMotion: 'setPrefersReducedMotion',
+  setUserDocument: "setUserDocument",
+  setActionsDocuments: "setActionsDocuments",
+  setAnnouncementDocument: "setAnnouncementDocument",
+  setPrefersReducedMotion: "setPrefersReducedMotion",
 
-  setErrorState: 'setErrorState',
-  setCustomizeChartsPageData: 'setCustomizeChartsPageData',
+  setErrorState: "setErrorState",
+  setCustomizeChartsPageData: "setCustomizeChartsPageData",
   setCustomizeChartsPageDataSelectedYYYYMMDD:
-    'setCustomizeChartsPageDataSelectedYYYYMMDD',
+    "setCustomizeChartsPageDataSelectedYYYYMMDD",
 };
 
-function globalReducer(
-  state: GlobalState,
-  action: GlobalDispatch
-): GlobalState {
+function globalReducer(state: GlobalState, action: GlobalDispatch): GlobalState {
   switch (action.type) {
     case globalAction.setWidth:
       return { ...state, width: action.payload };
@@ -140,21 +132,21 @@ function globalReducer(
       const { defaultProps } = Button;
       const newButtonDefaultProps = {
         ...defaultProps,
-        variant: colorScheme === 'dark' ? 'outline' : 'light',
+        variant: colorScheme === "dark" ? "outline" : "light",
       };
 
       // set text color
       const { defaultProps: textDefaultProps } = Text;
       const newTextDefaultProps = {
         ...textDefaultProps,
-        color: colorScheme === 'dark' ? 'gray.5' : 'gray.8',
+        color: colorScheme === "dark" ? "gray.5" : "gray.8",
       };
 
       // set title color
       const { defaultProps: titleDefaultProps } = Title;
       const newTitleDefaultProps = {
         ...titleDefaultProps,
-        color: colorScheme === 'dark' ? 'dark.1' : 'dark.4',
+        color: colorScheme === "dark" ? "dark.1" : "dark.4",
       };
 
       return {
@@ -242,9 +234,9 @@ function globalReducer(
         state.customizeChartsPageData?.selectedYYYYMMDD ??
         new Date().toISOString().slice(0, 10);
 
-      let [existingYYYY, existingMM, existingDD] = existingYYYYMMDD.split('-');
-      existingMM = existingMM.padStart(2, '0');
-      existingDD = existingDD.padStart(2, '0');
+      let [existingYYYY, existingMM, existingDD] = existingYYYYMMDD.split("-");
+      existingMM = existingMM.padStart(2, "0");
+      existingDD = existingDD.padStart(2, "0");
 
       return {
         ...state,
@@ -259,9 +251,7 @@ function globalReducer(
       const { customizeChartsPageData } = state;
       if (!customizeChartsPageData) return state;
 
-      const clonedCustomizeChartsPageData = structuredClone(
-        customizeChartsPageData
-      );
+      const clonedCustomizeChartsPageData = structuredClone(customizeChartsPageData);
       clonedCustomizeChartsPageData.selectedYYYYMMDD = action.payload;
 
       return {

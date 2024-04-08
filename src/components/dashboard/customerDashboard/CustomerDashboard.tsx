@@ -1,10 +1,10 @@
-import { Stack } from '@mantine/core';
+import { Stack } from "@mantine/core";
 
-import { COLORS_SWATCHES } from '../../../constants/data';
-import { useGlobalState } from '../../../hooks';
-import { returnThemeColors } from '../../../utils';
-import { MONTHS } from '../constants';
-import { returnCustomerMetricsCards } from '../jsxHelpers';
+import { COLORS_SWATCHES } from "../../../constants/data";
+import { useGlobalState } from "../../../hooks";
+import { returnThemeColors } from "../../../utils";
+import { MONTHS } from "../constants";
+import { returnCustomerMetricsCards } from "../jsxHelpers";
 import {
   BusinessMetric,
   BusinessMetricStoreLocation,
@@ -12,14 +12,11 @@ import {
   DashboardCustomerMetric,
   Month,
   Year,
-} from '../types';
-import CustomerDashboardDaily from './customerDashboardDaily/CustomerDashboardDaily';
-import CustomerDashboardMonthly from './customerDashboardMonthly/CustomerDashboardMonthly';
-import CustomerDashboardYearly from './customerDashboardYearly/CustomerDashboardYearly';
-import {
-  returnCustomerMetricsCharts,
-  returnSelectedDateCustomerMetrics,
-} from './utils';
+} from "../types";
+import CustomerDashboardDaily from "./customerDashboardDaily/CustomerDashboardDaily";
+import CustomerDashboardMonthly from "./customerDashboardMonthly/CustomerDashboardMonthly";
+import CustomerDashboardYearly from "./customerDashboardYearly/CustomerDashboardYearly";
+import { returnCustomerMetricsCharts, returnSelectedDateCustomerMetrics } from "./utils";
 
 function CustomerDashboard({
   businessMetrics,
@@ -52,6 +49,10 @@ function CustomerDashboard({
     themeObject,
   });
 
+  if (!businessMetrics.length) {
+    return null;
+  }
+
   const selectedDateCustomerMetrics = returnSelectedDateCustomerMetrics({
     businessMetrics,
     day: selectedDate,
@@ -77,25 +78,25 @@ function CustomerDashboard({
   });
 
   const displayCustomerCalendarInfo =
-    calendarView === 'Daily' ? (
+    calendarView === "Daily" ? (
       <CustomerDashboardDaily
         borderColor={borderColor}
         customerMetric={customerMetric}
         dailyCards={customerCardsInfo.dailyCards}
         dailyCharts={customerChartsData.dailyCharts}
         day={selectedDate}
-        month={selectedYYYYMMDD.split('-')[1]}
+        month={selectedYYYYMMDD.split("-")[1]}
         padding={padding}
         storeLocation={storeLocationView}
         width={width}
         year={selectedYear}
       />
-    ) : calendarView === 'Monthly' ? (
+    ) : calendarView === "Monthly" ? (
       <CustomerDashboardMonthly
         borderColor={borderColor}
         customerMetric={customerMetric}
         day={selectedDate}
-        month={selectedYYYYMMDD.split('-')[1]}
+        month={selectedYYYYMMDD.split("-")[1]}
         monthlyCards={customerCardsInfo.monthlyCards}
         monthlyCharts={customerChartsData.monthlyCharts}
         padding={padding}

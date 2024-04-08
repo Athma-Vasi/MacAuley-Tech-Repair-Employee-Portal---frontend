@@ -186,6 +186,15 @@ import {
   returnRepairTicketSchemas,
 } from "./repairTickets/repairTickets";
 import { returnUsernameEmailSetSchemas } from "./usernameEmailSet/usernameEmailSet";
+import {
+  DAYS_PER_MONTH,
+  MONTHS,
+  PRODUCT_CATEGORIES,
+  REPAIR_CATEGORIES,
+} from "../dashboard/constants";
+import { createRandomBusinessMetrics } from "../dashboard/utils";
+import { STORE_LOCATION_DATA } from "../register/constants";
+import { RiContactsBookLine } from "react-icons/ri";
 
 function DevTesting() {
   const [devTestingState, devTestingDispatch] = useReducer(
@@ -343,6 +352,16 @@ function DevTesting() {
     //   type: devTestingAction.setBodiesArr,
     //   payload: bodiesArr,
     // });
+
+    const businessMetrics = createRandomBusinessMetrics({
+      daysPerMonth: DAYS_PER_MONTH,
+      months: MONTHS,
+      productCategories: PRODUCT_CATEGORIES,
+      repairCategories: REPAIR_CATEGORIES,
+      storeLocations: STORE_LOCATION_DATA,
+    });
+
+    console.log("BUSINESS METRICS", businessMetrics);
   }, []);
 
   useEffect(() => {

@@ -371,23 +371,6 @@ function returnChartTitleNavigateLinks({
   const xAxisVariable =
     calendarView === "Daily" ? "Days" : calendarView === "Monthly" ? "Months" : "Years";
 
-  console.group("returnChartTitleNavigateLinks");
-  console.log("metricCategory: ", metricCategory);
-  console.log("metricsView: ", metricsView);
-  console.log("yAxisBarChartVariable: ", yAxisBarChartVariable);
-  console.log("yAxisCalendarChartVariable: ", yAxisCalendarChartVariable);
-  console.log("yAxisLineChartVariable: ", yAxisLineChartVariable);
-  console.log("yAxisPieChartVariable: ", yAxisPieChartVariable);
-  console.log("productMetric: ", productMetric);
-  console.log("calendarView: ", calendarView);
-  console.log("xAxisVariable: ", xAxisVariable);
-  console.log("months: ", months);
-  console.log("month: ", month);
-  console.log("year: ", year);
-  console.log("day: ", day);
-  console.log("storeLocation: ", storeLocation);
-  console.groupEnd();
-
   const yAxisBarChartPrefix =
     yAxisBarChartVariable.toLowerCase() === metricCategory.toLowerCase()
       ? `${productMetric ? productMetric : ""} ${metricCategory} `
@@ -3322,6 +3305,7 @@ function createRandomBusinessMetrics({
       "2021": [17, 19],
       "2022": [17, 19],
       "2023": [13, 15],
+      "2024": [12, 14],
     },
     Calgary: {
       "2017": [1, 2],
@@ -3331,6 +3315,7 @@ function createRandomBusinessMetrics({
       "2021": [9, 11],
       "2022": [9, 11],
       "2023": [5, 7],
+      "2024": [4, 6],
     },
     Vancouver: {
       "2019": [1, 2],
@@ -3338,6 +3323,7 @@ function createRandomBusinessMetrics({
       "2021": [5, 9],
       "2022": [5, 9],
       "2023": [2, 4],
+      "2024": [1, 3],
     },
   };
 
@@ -3357,6 +3343,7 @@ function createRandomBusinessMetrics({
       "2021": [5, 8],
       "2022": [7, 11],
       "2023": [10, 13],
+      "2024": [9, 12],
     },
     Calgary: {
       "2017": [2, 4],
@@ -3366,6 +3353,7 @@ function createRandomBusinessMetrics({
       "2021": [4, 7],
       "2022": [6, 9],
       "2023": [8, 11],
+      "2024": [7, 10],
     },
     Vancouver: {
       "2019": [3, 5],
@@ -3373,6 +3361,7 @@ function createRandomBusinessMetrics({
       "2021": [5, 8],
       "2022": [6, 9],
       "2023": [9, 11],
+      "2024": [8, 10],
     },
   };
 
@@ -3392,6 +3381,7 @@ function createRandomBusinessMetrics({
       "2021": [0.27, 0.37],
       "2022": [0.27, 0.37],
       "2023": [0.23, 0.33],
+      "2024": [0.21, 0.31],
     },
     Calgary: {
       "2017": [0.07, 0.17],
@@ -3401,6 +3391,7 @@ function createRandomBusinessMetrics({
       "2021": [0.17, 0.27],
       "2022": [0.17, 0.27],
       "2023": [0.13, 0.23],
+      "2024": [0.12, 0.22],
     },
     Vancouver: {
       "2019": [0.09, 0.19],
@@ -3408,6 +3399,7 @@ function createRandomBusinessMetrics({
       "2021": [0.17, 0.27],
       "2022": [0.17, 0.27],
       "2023": [0.15, 0.25],
+      "2024": [0.14, 0.24],
     },
   };
 
@@ -3427,6 +3419,7 @@ function createRandomBusinessMetrics({
       "2021": [0.085, 0.09],
       "2022": [0.085, 0.09],
       "2023": [0.075, 0.08],
+      "2024": [0.07, 0.075],
     },
     Calgary: {
       "2017": [0.02, 0.025],
@@ -3436,6 +3429,7 @@ function createRandomBusinessMetrics({
       "2021": [0.055, 0.06],
       "2022": [0.055, 0.06],
       "2023": [0.045, 0.05],
+      "2024": [0.04, 0.045],
     },
     Vancouver: {
       "2019": [0.03, 0.035],
@@ -3443,6 +3437,7 @@ function createRandomBusinessMetrics({
       "2021": [0.055, 0.06],
       "2022": [0.055, 0.06],
       "2023": [0.05, 0.055],
+      "2024": [0.045, 0.05],
     },
   };
 
@@ -3462,6 +3457,7 @@ function createRandomBusinessMetrics({
       "2021": [0.7, 0.75],
       "2022": [0.7, 0.75],
       "2023": [0.65, 0.7],
+      "2024": [0.6, 0.65],
     },
     Calgary: {
       "2017": [0.4, 0.45],
@@ -3471,6 +3467,7 @@ function createRandomBusinessMetrics({
       "2021": [0.6, 0.65],
       "2022": [0.6, 0.65],
       "2023": [0.55, 0.6],
+      "2024": [0.5, 0.55],
     },
     Vancouver: {
       "2019": [0.45, 0.5],
@@ -3478,6 +3475,7 @@ function createRandomBusinessMetrics({
       "2021": [0.6, 0.65],
       "2022": [0.6, 0.65],
       "2023": [0.55, 0.6],
+      "2024": [0.5, 0.55],
     },
   };
 
@@ -3497,6 +3495,7 @@ function createRandomBusinessMetrics({
       "2021": [0.09, 0.11],
       "2022": [0.09, 0.1],
       "2023": [0.1, 0.11],
+      "2024": [0.1, 0.11],
     },
     Calgary: {
       "2017": [0.15, 0.17],
@@ -3506,6 +3505,7 @@ function createRandomBusinessMetrics({
       "2021": [0.09, 0.11],
       "2022": [0.09, 0.1],
       "2023": [0.1, 0.11],
+      "2024": [0.1, 0.11],
     },
     Vancouver: {
       "2019": [0.11, 0.13],
@@ -3513,6 +3513,7 @@ function createRandomBusinessMetrics({
       "2021": [0.09, 0.11],
       "2022": [0.09, 0.1],
       "2023": [0.1, 0.11],
+      "2024": [0.1, 0.11],
     },
   };
 
@@ -3532,6 +3533,7 @@ function createRandomBusinessMetrics({
       "2021": [0.04, 0.06],
       "2022": [0.04, 0.06],
       "2023": [0.05, 0.07],
+      "2024": [0.05, 0.07],
     },
     Calgary: {
       "2017": [0.14, 0.16],
@@ -3541,6 +3543,7 @@ function createRandomBusinessMetrics({
       "2021": [0.06, 0.08],
       "2022": [0.06, 0.08],
       "2023": [0.05, 0.07],
+      "2024": [0.05, 0.07],
     },
     Vancouver: {
       "2019": [0.1, 0.12],
@@ -3548,6 +3551,7 @@ function createRandomBusinessMetrics({
       "2021": [0.06, 0.08],
       "2022": [0.06, 0.08],
       "2023": [0.05, 0.07],
+      "2024": [0.05, 0.07],
     },
   };
 
@@ -3567,6 +3571,7 @@ function createRandomBusinessMetrics({
       "2021": [0.65, 0.75],
       "2022": [0.65, 0.75],
       "2023": [0.6, 0.7],
+      "2024": [0.55, 0.65],
     },
     Calgary: {
       "2017": [0.35, 0.4],
@@ -3576,6 +3581,7 @@ function createRandomBusinessMetrics({
       "2021": [0.65, 0.75],
       "2022": [0.65, 0.75],
       "2023": [0.6, 0.7],
+      "2024": [0.55, 0.65],
     },
     Vancouver: {
       "2019": [0.45, 0.5],
@@ -3583,6 +3589,7 @@ function createRandomBusinessMetrics({
       "2021": [0.65, 0.75],
       "2022": [0.65, 0.75],
       "2023": [0.6, 0.7],
+      "2024": [0.55, 0.65],
     },
   };
 
@@ -3603,6 +3610,7 @@ function createRandomBusinessMetrics({
       "2021": [0.04, 0.045],
       "2022": [0.04, 0.045],
       "2023": [0.035, 0.04],
+      "2024": [0.03, 0.035],
     },
     Calgary: {
       "2017": [0.02, 0.025],
@@ -3612,6 +3620,7 @@ function createRandomBusinessMetrics({
       "2021": [0.04, 0.045],
       "2022": [0.04, 0.045],
       "2023": [0.035, 0.04],
+      "2024": [0.03, 0.035],
     },
     Vancouver: {
       "2019": [0.03, 0.035],
@@ -3619,6 +3628,7 @@ function createRandomBusinessMetrics({
       "2021": [0.04, 0.045],
       "2022": [0.04, 0.045],
       "2023": [0.035, 0.04],
+      "2024": [0.03, 0.035],
     },
   };
 
@@ -3639,6 +3649,7 @@ function createRandomBusinessMetrics({
       "2021": [0.09, 0.11],
       "2022": [0.09, 0.11],
       "2023": [0.1, 0.12],
+      "2024": [0.1, 0.12],
     },
     Calgary: {
       "2017": [0.18, 0.22],
@@ -3648,6 +3659,7 @@ function createRandomBusinessMetrics({
       "2021": [0.09, 0.11],
       "2022": [0.09, 0.11],
       "2023": [0.1, 0.12],
+      "2024": [0.1, 0.12],
     },
     Vancouver: {
       "2019": [0.13, 0.16],
@@ -3655,6 +3667,7 @@ function createRandomBusinessMetrics({
       "2021": [0.09, 0.11],
       "2022": [0.09, 0.11],
       "2023": [0.1, 0.12],
+      "2024": [0.1, 0.12],
     },
   };
 
@@ -3674,6 +3687,7 @@ function createRandomBusinessMetrics({
       "2021": [540, 740],
       "2022": [540, 740],
       "2023": [460, 660],
+      "2024": [420, 620],
     },
     Calgary: {
       "2017": [60, 260],
@@ -3683,6 +3697,7 @@ function createRandomBusinessMetrics({
       "2021": [220, 420],
       "2022": [260, 460],
       "2023": [300, 500],
+      "2024": [260, 460],
     },
     Vancouver: {
       "2019": [80, 280],
@@ -3690,6 +3705,7 @@ function createRandomBusinessMetrics({
       "2021": [340, 460],
       "2022": [460, 540],
       "2023": [300, 460],
+      "2024": [260, 420],
     },
   };
 
@@ -3709,6 +3725,7 @@ function createRandomBusinessMetrics({
       "2021": [0.2, 0.35],
       "2022": [0.2, 0.35],
       "2023": [0.15, 0.3],
+      "2024": [0.1, 0.25],
     },
     Calgary: {
       "2017": [0.6, 0.7],
@@ -3718,6 +3735,7 @@ function createRandomBusinessMetrics({
       "2021": [0.3, 0.5],
       "2022": [0.25, 0.45],
       "2023": [0.25, 0.4],
+      "2024": [0.2, 0.35],
     },
     Vancouver: {
       "2019": [0.6, 0.7],
@@ -3725,6 +3743,7 @@ function createRandomBusinessMetrics({
       "2021": [0.4, 0.6],
       "2022": [0.35, 0.55],
       "2023": [0.3, 0.5],
+      "2024": [0.25, 0.45],
     },
   };
 
@@ -3896,7 +3915,7 @@ function createRandomBusinessMetrics({
       months,
       yearStart:
         storeLocation === "Edmonton" ? 2013 : storeLocation === "Calgary" ? 2017 : 2019,
-      yearEnd: 2023,
+      yearEnd: 2024,
       // yearStart: 2019,
       // yearEnd: 2019,
     });

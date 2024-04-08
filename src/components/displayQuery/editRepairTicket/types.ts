@@ -2,9 +2,9 @@ import { Currency, SetStepsInErrorPayload } from "../../../types";
 import { RepairStatus } from "../../repairTicket/types";
 
 type EditRepairTicketState = {
-  repairTickets: string;
-  isRepairTicketsValid: boolean;
-  isRepairTicketsFocused: boolean;
+  repairNotes: string;
+  isRepairNotesValid: boolean;
+  isRepairNotesFocused: boolean;
 
   testingResults: string;
   isTestingResultsValid: boolean;
@@ -31,9 +31,9 @@ type EditRepairTicketState = {
 };
 
 type EditRepairTicketAction = {
-  setRepairTickets: "setRepairTickets";
-  setIsRepairTicketsValid: "setIsRepairTicketsValid";
-  setIsRepairTicketsFocused: "setIsRepairTicketsFocused";
+  setRepairNotes: "setRepairNotes";
+  setIsRepairNotesValid: "setIsRepairNotesValid";
+  setIsRepairNotesFocused: "setIsRepairNotesFocused";
 
   setTestingResults: "setTestingResults";
   setIsTestingResultsValid: "setIsTestingResultsValid";
@@ -62,7 +62,7 @@ type EditRepairTicketAction = {
 type EditRepairTicketDispatch =
   | {
       type:
-        | EditRepairTicketAction["setRepairTickets"]
+        | EditRepairTicketAction["setRepairNotes"]
         | EditRepairTicketAction["setTestingResults"]
         | EditRepairTicketAction["setFinalRepairCost"]
         | EditRepairTicketAction["setLoadingMessage"]
@@ -73,10 +73,10 @@ type EditRepairTicketDispatch =
     }
   | {
       type:
-        | EditRepairTicketAction["setIsRepairTicketsValid"]
+        | EditRepairTicketAction["setIsRepairNotesValid"]
         | EditRepairTicketAction["setIsTestingResultsValid"]
         | EditRepairTicketAction["setIsFinalRepairCostValid"]
-        | EditRepairTicketAction["setIsRepairTicketsFocused"]
+        | EditRepairTicketAction["setIsRepairNotesFocused"]
         | EditRepairTicketAction["setIsTestingResultsFocused"]
         | EditRepairTicketAction["setIsFinalRepairCostFocused"]
         | EditRepairTicketAction["setTriggerFormSubmit"]

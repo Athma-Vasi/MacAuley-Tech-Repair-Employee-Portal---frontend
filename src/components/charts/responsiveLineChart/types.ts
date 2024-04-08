@@ -1,7 +1,7 @@
-import { TitleOrder } from '@mantine/core';
-import { ValueFormat } from '@nivo/core';
+import { TitleOrder } from "@mantine/core";
+import { ValueFormat } from "@nivo/core";
 
-import { ScreenshotImageType } from '../../../types';
+import { ScreenshotImageType } from "../../../types";
 import {
   NivoAxisLegendPosition,
   NivoChartTitlePosition,
@@ -17,7 +17,7 @@ import {
   NivoLineCurve,
   NivoLinePointLabel,
   NivoMotionConfig,
-} from '../types';
+} from "../types";
 
 type LineChartData = {
   id: string;
@@ -35,8 +35,8 @@ type ResponsiveLineChartProps = {
   lineChartData: LineChartData[];
   xFormat?: ValueFormat<any>;
   yFormat?: ValueFormat<any>;
-  yScaleMin?: number | 'auto';
-  yScaleMax?: number | 'auto';
+  yScaleMin?: number | "auto";
+  yScaleMax?: number | "auto";
   unitKind?: NivoChartUnitKind;
 };
 
@@ -163,286 +163,286 @@ type ResponsiveLineChartState = {
 
 type ResponsiveLineChartAction = {
   // base
-  setEnableYScaleStacked: 'setEnableYScaleStacked';
-  setReverseScale: 'setReverseScale';
-  setXScale: 'setXScale';
-  setYScale: 'setYScale';
+  setEnableYScaleStacked: "setEnableYScaleStacked";
+  setReverseScale: "setReverseScale";
+  setXScale: "setXScale";
+  setYScale: "setYScale";
 
   // margin
-  setMarginTop: 'setMarginTop';
-  setMarginRight: 'setMarginRight';
-  setMarginBottom: 'setMarginBottom';
-  setMarginLeft: 'setMarginLeft';
+  setMarginTop: "setMarginTop";
+  setMarginRight: "setMarginRight";
+  setMarginBottom: "setMarginBottom";
+  setMarginLeft: "setMarginLeft";
 
   // style
-  setAreaBlendMode: 'setAreaBlendMode';
-  setAreaOpacity: 'setAreaOpacity';
-  setChartColors: 'setChartColors';
-  setEnableArea: 'setEnableArea';
-  setLineCurve: 'setLineCurve';
-  setLineWidth: 'setLineWidth';
+  setAreaBlendMode: "setAreaBlendMode";
+  setAreaOpacity: "setAreaOpacity";
+  setChartColors: "setChartColors";
+  setEnableArea: "setEnableArea";
+  setLineCurve: "setLineCurve";
+  setLineWidth: "setLineWidth";
 
   // points
-  setEnablePointLabel: 'setEnablePointLabel';
-  setEnablePoints: 'setEnablePoints';
-  setPointBorderWidth: 'setPointBorderWidth';
-  setPointColor: 'setPointColor';
-  setPointLabel: 'setPointLabel';
-  setPointLabelYOffset: 'setPointLabelYOffset';
-  setPointSize: 'setPointSize';
+  setEnablePointLabel: "setEnablePointLabel";
+  setEnablePoints: "setEnablePoints";
+  setPointBorderWidth: "setPointBorderWidth";
+  setPointColor: "setPointColor";
+  setPointLabel: "setPointLabel";
+  setPointLabelYOffset: "setPointLabelYOffset";
+  setPointSize: "setPointSize";
 
   // grids
-  setEnableGridX: 'setEnableGridX';
-  setEnableGridY: 'setEnableGridY';
+  setEnableGridX: "setEnableGridX";
+  setEnableGridY: "setEnableGridY";
 
   // axes
   // axisTop
-  setAxisTopLegend: 'setAxisTopLegend';
-  setAxisTopLegendOffset: 'setAxisTopLegendOffset';
-  setAxisTopLegendPosition: 'setAxisTopLegendPosition';
-  setAxisTopTickPadding: 'setAxisTopTickPadding';
-  setAxisTopTickRotation: 'setAxisTopTickRotation';
-  setAxisTopTickSize: 'setAxisTopTickSize';
-  setEnableAxisTop: 'setEnableAxisTop';
-  setIsAxisTopLegendFocused: 'setIsAxisTopLegendFocused';
-  setIsAxisTopLegendValid: 'setIsAxisTopLegendValid';
+  setAxisTopLegend: "setAxisTopLegend";
+  setAxisTopLegendOffset: "setAxisTopLegendOffset";
+  setAxisTopLegendPosition: "setAxisTopLegendPosition";
+  setAxisTopTickPadding: "setAxisTopTickPadding";
+  setAxisTopTickRotation: "setAxisTopTickRotation";
+  setAxisTopTickSize: "setAxisTopTickSize";
+  setEnableAxisTop: "setEnableAxisTop";
+  setIsAxisTopLegendFocused: "setIsAxisTopLegendFocused";
+  setIsAxisTopLegendValid: "setIsAxisTopLegendValid";
   // axisRight
-  setAxisRightLegend: 'setAxisRightLegend';
-  setAxisRightLegendOffset: 'setAxisRightLegendOffset';
-  setAxisRightLegendPosition: 'setAxisRightLegendPosition';
-  setAxisRightTickPadding: 'setAxisRightTickPadding';
-  setAxisRightTickRotation: 'setAxisRightTickRotation';
-  setAxisRightTickSize: 'setAxisRightTickSize';
-  setEnableAxisRight: 'setEnableAxisRight';
-  setIsAxisRightLegendFocused: 'setIsAxisRightLegendFocused';
-  setIsAxisRightLegendValid: 'setIsAxisRightLegendValid';
+  setAxisRightLegend: "setAxisRightLegend";
+  setAxisRightLegendOffset: "setAxisRightLegendOffset";
+  setAxisRightLegendPosition: "setAxisRightLegendPosition";
+  setAxisRightTickPadding: "setAxisRightTickPadding";
+  setAxisRightTickRotation: "setAxisRightTickRotation";
+  setAxisRightTickSize: "setAxisRightTickSize";
+  setEnableAxisRight: "setEnableAxisRight";
+  setIsAxisRightLegendFocused: "setIsAxisRightLegendFocused";
+  setIsAxisRightLegendValid: "setIsAxisRightLegendValid";
   // axisBottom
-  setAxisBottomLegend: 'setAxisBottomLegend';
-  setAxisBottomLegendOffset: 'setAxisBottomLegendOffset';
-  setAxisBottomLegendPosition: 'setAxisBottomLegendPosition';
-  setAxisBottomTickPadding: 'setAxisBottomTickPadding';
-  setAxisBottomTickRotation: 'setAxisBottomTickRotation';
-  setAxisBottomTickSize: 'setAxisBottomTickSize';
-  setEnableAxisBottom: 'setEnableAxisBottom';
-  setIsAxisBottomLegendFocused: 'setIsAxisBottomLegendFocused';
-  setIsAxisBottomLegendValid: 'setIsAxisBottomLegendValid';
+  setAxisBottomLegend: "setAxisBottomLegend";
+  setAxisBottomLegendOffset: "setAxisBottomLegendOffset";
+  setAxisBottomLegendPosition: "setAxisBottomLegendPosition";
+  setAxisBottomTickPadding: "setAxisBottomTickPadding";
+  setAxisBottomTickRotation: "setAxisBottomTickRotation";
+  setAxisBottomTickSize: "setAxisBottomTickSize";
+  setEnableAxisBottom: "setEnableAxisBottom";
+  setIsAxisBottomLegendFocused: "setIsAxisBottomLegendFocused";
+  setIsAxisBottomLegendValid: "setIsAxisBottomLegendValid";
   // axisLeft
-  setAxisLeftLegend: 'setAxisLeftLegend';
-  setAxisLeftLegendOffset: 'setAxisLeftLegendOffset';
-  setAxisLeftLegendPosition: 'setAxisLeftLegendPosition';
-  setAxisLeftTickPadding: 'setAxisLeftTickPadding';
-  setAxisLeftTickRotation: 'setAxisLeftTickRotation';
-  setAxisLeftTickSize: 'setAxisLeftTickSize';
-  setEnableAxisLeft: 'setEnableAxisLeft';
-  setIsAxisLeftLegendFocused: 'setIsAxisLeftLegendFocused';
-  setIsAxisLeftLegendValid: 'setIsAxisLeftLegendValid';
+  setAxisLeftLegend: "setAxisLeftLegend";
+  setAxisLeftLegendOffset: "setAxisLeftLegendOffset";
+  setAxisLeftLegendPosition: "setAxisLeftLegendPosition";
+  setAxisLeftTickPadding: "setAxisLeftTickPadding";
+  setAxisLeftTickRotation: "setAxisLeftTickRotation";
+  setAxisLeftTickSize: "setAxisLeftTickSize";
+  setEnableAxisLeft: "setEnableAxisLeft";
+  setIsAxisLeftLegendFocused: "setIsAxisLeftLegendFocused";
+  setIsAxisLeftLegendValid: "setIsAxisLeftLegendValid";
 
   // interactivity
-  setEnableCrosshair: 'setEnableCrosshair';
-  setCrosshairType: 'setCrosshairType';
+  setEnableCrosshair: "setEnableCrosshair";
+  setCrosshairType: "setCrosshairType";
 
   // legends
-  setEnableLegend: 'setEnableLegend';
-  setEnableLegendJustify: 'setEnableLegendJustify';
-  setLegendAnchor: 'setLegendAnchor';
-  setLegendDirection: 'setLegendDirection';
-  setLegendItemBackground: 'setLegendItemBackground';
-  setLegendItemDirection: 'setLegendItemDirection';
-  setLegendItemHeight: 'setLegendItemHeight';
-  setLegendItemOpacity: 'setLegendItemOpacity';
-  setLegendItemTextColor: 'setLegendItemTextColor';
-  setLegendItemWidth: 'setLegendItemWidth';
-  setLegendItemsSpacing: 'setLegendItemsSpacing';
-  setLegendSymbolBorderColor: 'setLegendSymbolBorderColor';
-  setLegendSymbolBorderWidth: 'setLegendSymbolBorderWidth';
-  setLegendSymbolShape: 'setLegendSymbolShape';
-  setLegendSymbolSize: 'setLegendSymbolSize';
-  setLegendSymbolSpacing: 'setLegendSymbolSpacing';
-  setLegendTranslateX: 'setLegendTranslateX';
-  setLegendTranslateY: 'setLegendTranslateY';
+  setEnableLegend: "setEnableLegend";
+  setEnableLegendJustify: "setEnableLegendJustify";
+  setLegendAnchor: "setLegendAnchor";
+  setLegendDirection: "setLegendDirection";
+  setLegendItemBackground: "setLegendItemBackground";
+  setLegendItemDirection: "setLegendItemDirection";
+  setLegendItemHeight: "setLegendItemHeight";
+  setLegendItemOpacity: "setLegendItemOpacity";
+  setLegendItemTextColor: "setLegendItemTextColor";
+  setLegendItemWidth: "setLegendItemWidth";
+  setLegendItemsSpacing: "setLegendItemsSpacing";
+  setLegendSymbolBorderColor: "setLegendSymbolBorderColor";
+  setLegendSymbolBorderWidth: "setLegendSymbolBorderWidth";
+  setLegendSymbolShape: "setLegendSymbolShape";
+  setLegendSymbolSize: "setLegendSymbolSize";
+  setLegendSymbolSpacing: "setLegendSymbolSpacing";
+  setLegendTranslateX: "setLegendTranslateX";
+  setLegendTranslateY: "setLegendTranslateY";
 
   // motion
-  setEnableAnimate: 'setEnableAnimate';
-  setMotionConfig: 'setMotionConfig';
+  setEnableAnimate: "setEnableAnimate";
+  setMotionConfig: "setMotionConfig";
 
   // options
-  setChartTitle: 'setChartTitle';
-  setChartTitleColor: 'setChartTitleColor';
-  setChartTitlePosition: 'setChartTitlePosition';
-  setChartTitleSize: 'setChartTitleSize';
-  setIsChartTitleFocused: 'setIsChartTitleFocused';
-  setIsChartTitleValid: 'setIsChartTitleValid';
+  setChartTitle: "setChartTitle";
+  setChartTitleColor: "setChartTitleColor";
+  setChartTitlePosition: "setChartTitlePosition";
+  setChartTitleSize: "setChartTitleSize";
+  setIsChartTitleFocused: "setIsChartTitleFocused";
+  setIsChartTitleValid: "setIsChartTitleValid";
 
   // screenshot
-  setIsScreenshotFilenameFocused: 'setIsScreenshotFilenameFocused';
-  setIsScreenshotFilenameValid: 'setIsScreenshotFilenameValid';
-  setScreenshotFilename: 'setScreenshotFilename';
-  setScreenshotImageQuality: 'setScreenshotImageQuality';
-  setScreenshotImageType: 'setScreenshotImageType';
+  setIsScreenshotFilenameFocused: "setIsScreenshotFilenameFocused";
+  setIsScreenshotFilenameValid: "setIsScreenshotFilenameValid";
+  setScreenshotFilename: "setScreenshotFilename";
+  setScreenshotImageQuality: "setScreenshotImageQuality";
+  setScreenshotImageType: "setScreenshotImageType";
 
   // reset all
-  resetChartToDefault: 'resetChartToDefault';
+  resetChartToDefault: "resetChartToDefault";
 };
 
 type ResponsiveLineChartDispatch =
   | {
       type:
-        | ResponsiveLineChartAction['setAxisBottomLegend']
-        | ResponsiveLineChartAction['setAxisLeftLegend']
-        | ResponsiveLineChartAction['setAxisRightLegend']
-        | ResponsiveLineChartAction['setAxisTopLegend']
-        | ResponsiveLineChartAction['setChartTitle']
-        | ResponsiveLineChartAction['setChartTitleColor']
-        | ResponsiveLineChartAction['setLegendItemBackground']
-        | ResponsiveLineChartAction['setLegendItemTextColor']
-        | ResponsiveLineChartAction['setLegendSymbolBorderColor']
-        | ResponsiveLineChartAction['setPointColor']
-        | ResponsiveLineChartAction['setScreenshotFilename'];
+        | ResponsiveLineChartAction["setAxisBottomLegend"]
+        | ResponsiveLineChartAction["setAxisLeftLegend"]
+        | ResponsiveLineChartAction["setAxisRightLegend"]
+        | ResponsiveLineChartAction["setAxisTopLegend"]
+        | ResponsiveLineChartAction["setChartTitle"]
+        | ResponsiveLineChartAction["setChartTitleColor"]
+        | ResponsiveLineChartAction["setLegendItemBackground"]
+        | ResponsiveLineChartAction["setLegendItemTextColor"]
+        | ResponsiveLineChartAction["setLegendSymbolBorderColor"]
+        | ResponsiveLineChartAction["setPointColor"]
+        | ResponsiveLineChartAction["setScreenshotFilename"];
 
       payload: string;
     }
   | {
       type:
-        | ResponsiveLineChartAction['setAreaOpacity']
-        | ResponsiveLineChartAction['setAxisBottomLegendOffset']
-        | ResponsiveLineChartAction['setAxisBottomTickPadding']
-        | ResponsiveLineChartAction['setAxisBottomTickRotation']
-        | ResponsiveLineChartAction['setAxisBottomTickSize']
-        | ResponsiveLineChartAction['setAxisLeftLegendOffset']
-        | ResponsiveLineChartAction['setAxisLeftTickPadding']
-        | ResponsiveLineChartAction['setAxisLeftTickRotation']
-        | ResponsiveLineChartAction['setAxisLeftTickSize']
-        | ResponsiveLineChartAction['setAxisRightLegendOffset']
-        | ResponsiveLineChartAction['setAxisRightTickPadding']
-        | ResponsiveLineChartAction['setAxisRightTickRotation']
-        | ResponsiveLineChartAction['setAxisRightTickSize']
-        | ResponsiveLineChartAction['setAxisTopLegendOffset']
-        | ResponsiveLineChartAction['setAxisTopTickPadding']
-        | ResponsiveLineChartAction['setAxisTopTickRotation']
-        | ResponsiveLineChartAction['setAxisTopTickSize']
-        | ResponsiveLineChartAction['setLegendItemHeight']
-        | ResponsiveLineChartAction['setLegendItemOpacity']
-        | ResponsiveLineChartAction['setLegendItemWidth']
-        | ResponsiveLineChartAction['setLegendItemsSpacing']
-        | ResponsiveLineChartAction['setLegendSymbolBorderWidth']
-        | ResponsiveLineChartAction['setLegendSymbolSize']
-        | ResponsiveLineChartAction['setLegendSymbolSpacing']
-        | ResponsiveLineChartAction['setLegendTranslateX']
-        | ResponsiveLineChartAction['setLegendTranslateY']
-        | ResponsiveLineChartAction['setLineWidth']
-        | ResponsiveLineChartAction['setMarginBottom']
-        | ResponsiveLineChartAction['setMarginLeft']
-        | ResponsiveLineChartAction['setMarginRight']
-        | ResponsiveLineChartAction['setMarginTop']
-        | ResponsiveLineChartAction['setPointBorderWidth']
-        | ResponsiveLineChartAction['setPointLabelYOffset']
-        | ResponsiveLineChartAction['setPointSize']
-        | ResponsiveLineChartAction['setScreenshotImageQuality'];
+        | ResponsiveLineChartAction["setAreaOpacity"]
+        | ResponsiveLineChartAction["setAxisBottomLegendOffset"]
+        | ResponsiveLineChartAction["setAxisBottomTickPadding"]
+        | ResponsiveLineChartAction["setAxisBottomTickRotation"]
+        | ResponsiveLineChartAction["setAxisBottomTickSize"]
+        | ResponsiveLineChartAction["setAxisLeftLegendOffset"]
+        | ResponsiveLineChartAction["setAxisLeftTickPadding"]
+        | ResponsiveLineChartAction["setAxisLeftTickRotation"]
+        | ResponsiveLineChartAction["setAxisLeftTickSize"]
+        | ResponsiveLineChartAction["setAxisRightLegendOffset"]
+        | ResponsiveLineChartAction["setAxisRightTickPadding"]
+        | ResponsiveLineChartAction["setAxisRightTickRotation"]
+        | ResponsiveLineChartAction["setAxisRightTickSize"]
+        | ResponsiveLineChartAction["setAxisTopLegendOffset"]
+        | ResponsiveLineChartAction["setAxisTopTickPadding"]
+        | ResponsiveLineChartAction["setAxisTopTickRotation"]
+        | ResponsiveLineChartAction["setAxisTopTickSize"]
+        | ResponsiveLineChartAction["setLegendItemHeight"]
+        | ResponsiveLineChartAction["setLegendItemOpacity"]
+        | ResponsiveLineChartAction["setLegendItemWidth"]
+        | ResponsiveLineChartAction["setLegendItemsSpacing"]
+        | ResponsiveLineChartAction["setLegendSymbolBorderWidth"]
+        | ResponsiveLineChartAction["setLegendSymbolSize"]
+        | ResponsiveLineChartAction["setLegendSymbolSpacing"]
+        | ResponsiveLineChartAction["setLegendTranslateX"]
+        | ResponsiveLineChartAction["setLegendTranslateY"]
+        | ResponsiveLineChartAction["setLineWidth"]
+        | ResponsiveLineChartAction["setMarginBottom"]
+        | ResponsiveLineChartAction["setMarginLeft"]
+        | ResponsiveLineChartAction["setMarginRight"]
+        | ResponsiveLineChartAction["setMarginTop"]
+        | ResponsiveLineChartAction["setPointBorderWidth"]
+        | ResponsiveLineChartAction["setPointLabelYOffset"]
+        | ResponsiveLineChartAction["setPointSize"]
+        | ResponsiveLineChartAction["setScreenshotImageQuality"];
 
       payload: number;
     }
   | {
       type:
-        | ResponsiveLineChartAction['setEnableAnimate']
-        | ResponsiveLineChartAction['setEnableArea']
-        | ResponsiveLineChartAction['setEnableAxisBottom']
-        | ResponsiveLineChartAction['setEnableAxisLeft']
-        | ResponsiveLineChartAction['setEnableAxisRight']
-        | ResponsiveLineChartAction['setEnableAxisTop']
-        | ResponsiveLineChartAction['setEnableCrosshair']
-        | ResponsiveLineChartAction['setEnableGridX']
-        | ResponsiveLineChartAction['setEnableGridY']
-        | ResponsiveLineChartAction['setEnableLegend']
-        | ResponsiveLineChartAction['setEnableLegendJustify']
-        | ResponsiveLineChartAction['setEnablePointLabel']
-        | ResponsiveLineChartAction['setEnablePoints']
-        | ResponsiveLineChartAction['setEnableYScaleStacked']
-        | ResponsiveLineChartAction['setIsAxisBottomLegendFocused']
-        | ResponsiveLineChartAction['setIsAxisBottomLegendValid']
-        | ResponsiveLineChartAction['setIsAxisLeftLegendFocused']
-        | ResponsiveLineChartAction['setIsAxisLeftLegendValid']
-        | ResponsiveLineChartAction['setIsAxisRightLegendFocused']
-        | ResponsiveLineChartAction['setIsAxisRightLegendValid']
-        | ResponsiveLineChartAction['setIsAxisTopLegendFocused']
-        | ResponsiveLineChartAction['setIsAxisTopLegendValid']
-        | ResponsiveLineChartAction['setIsChartTitleFocused']
-        | ResponsiveLineChartAction['setIsChartTitleValid']
-        | ResponsiveLineChartAction['setIsScreenshotFilenameFocused']
-        | ResponsiveLineChartAction['setIsScreenshotFilenameValid']
-        | ResponsiveLineChartAction['setReverseScale'];
+        | ResponsiveLineChartAction["setEnableAnimate"]
+        | ResponsiveLineChartAction["setEnableArea"]
+        | ResponsiveLineChartAction["setEnableAxisBottom"]
+        | ResponsiveLineChartAction["setEnableAxisLeft"]
+        | ResponsiveLineChartAction["setEnableAxisRight"]
+        | ResponsiveLineChartAction["setEnableAxisTop"]
+        | ResponsiveLineChartAction["setEnableCrosshair"]
+        | ResponsiveLineChartAction["setEnableGridX"]
+        | ResponsiveLineChartAction["setEnableGridY"]
+        | ResponsiveLineChartAction["setEnableLegend"]
+        | ResponsiveLineChartAction["setEnableLegendJustify"]
+        | ResponsiveLineChartAction["setEnablePointLabel"]
+        | ResponsiveLineChartAction["setEnablePoints"]
+        | ResponsiveLineChartAction["setEnableYScaleStacked"]
+        | ResponsiveLineChartAction["setIsAxisBottomLegendFocused"]
+        | ResponsiveLineChartAction["setIsAxisBottomLegendValid"]
+        | ResponsiveLineChartAction["setIsAxisLeftLegendFocused"]
+        | ResponsiveLineChartAction["setIsAxisLeftLegendValid"]
+        | ResponsiveLineChartAction["setIsAxisRightLegendFocused"]
+        | ResponsiveLineChartAction["setIsAxisRightLegendValid"]
+        | ResponsiveLineChartAction["setIsAxisTopLegendFocused"]
+        | ResponsiveLineChartAction["setIsAxisTopLegendValid"]
+        | ResponsiveLineChartAction["setIsChartTitleFocused"]
+        | ResponsiveLineChartAction["setIsChartTitleValid"]
+        | ResponsiveLineChartAction["setIsScreenshotFilenameFocused"]
+        | ResponsiveLineChartAction["setIsScreenshotFilenameValid"]
+        | ResponsiveLineChartAction["setReverseScale"];
 
       payload: boolean;
     }
   | {
-      type: ResponsiveLineChartAction['setChartColors'];
+      type: ResponsiveLineChartAction["setChartColors"];
       payload: NivoColorScheme;
     }
   | {
-      type: ResponsiveLineChartAction['setLineCurve'];
+      type: ResponsiveLineChartAction["setLineCurve"];
       payload: NivoLineCurve;
     }
   | {
-      type: ResponsiveLineChartAction['setAreaBlendMode'];
+      type: ResponsiveLineChartAction["setAreaBlendMode"];
       payload: NivoLineAreaBlendMode;
     }
   | {
       type:
-        | ResponsiveLineChartAction['setAxisTopLegendPosition']
-        | ResponsiveLineChartAction['setAxisRightLegendPosition']
-        | ResponsiveLineChartAction['setAxisBottomLegendPosition']
-        | ResponsiveLineChartAction['setAxisLeftLegendPosition'];
+        | ResponsiveLineChartAction["setAxisTopLegendPosition"]
+        | ResponsiveLineChartAction["setAxisRightLegendPosition"]
+        | ResponsiveLineChartAction["setAxisBottomLegendPosition"]
+        | ResponsiveLineChartAction["setAxisLeftLegendPosition"];
 
       payload: NivoAxisLegendPosition;
     }
   | {
-      type: ResponsiveLineChartAction['setLegendAnchor'];
+      type: ResponsiveLineChartAction["setLegendAnchor"];
       payload: NivoLegendAnchor;
     }
   | {
-      type: ResponsiveLineChartAction['setLegendDirection'];
+      type: ResponsiveLineChartAction["setLegendDirection"];
       payload: NivoLegendDirection;
     }
   | {
-      type: ResponsiveLineChartAction['setLegendItemDirection'];
+      type: ResponsiveLineChartAction["setLegendItemDirection"];
       payload: NivoLegendItemDirection;
     }
   | {
-      type: ResponsiveLineChartAction['setLegendSymbolShape'];
+      type: ResponsiveLineChartAction["setLegendSymbolShape"];
       payload: NivoLegendSymbolShape;
     }
   | {
-      type: ResponsiveLineChartAction['setMotionConfig'];
+      type: ResponsiveLineChartAction["setMotionConfig"];
       payload: NivoMotionConfig;
     }
   | {
-      type: ResponsiveLineChartAction['setCrosshairType'];
+      type: ResponsiveLineChartAction["setCrosshairType"];
       payload: NivoLineCrosshairType;
     }
   | {
       type:
-        | ResponsiveLineChartAction['setXScale']
-        | ResponsiveLineChartAction['setYScale'];
+        | ResponsiveLineChartAction["setXScale"]
+        | ResponsiveLineChartAction["setYScale"];
 
       payload: NivoLineAxesScale;
     }
   | {
-      type: ResponsiveLineChartAction['setPointLabel'];
+      type: ResponsiveLineChartAction["setPointLabel"];
       payload: NivoLinePointLabel;
     }
   | {
-      type: ResponsiveLineChartAction['setChartTitleSize'];
+      type: ResponsiveLineChartAction["setChartTitleSize"];
       payload: TitleOrder;
     }
   | {
-      type: ResponsiveLineChartAction['setChartTitlePosition'];
+      type: ResponsiveLineChartAction["setChartTitlePosition"];
       payload: NivoChartTitlePosition;
     }
   | {
-      type: ResponsiveLineChartAction['setScreenshotImageType'];
+      type: ResponsiveLineChartAction["setScreenshotImageType"];
       payload: ScreenshotImageType;
     }
   | {
-      type: ResponsiveLineChartAction['resetChartToDefault'];
+      type: ResponsiveLineChartAction["resetChartToDefault"];
       payload: ResponsiveLineChartState;
     };
 

@@ -1,6 +1,6 @@
-import { TitleOrder } from '@mantine/core';
+import { TitleOrder } from "@mantine/core";
 
-import { ScreenshotImageType } from '../../../types';
+import { ScreenshotImageType } from "../../../types";
 import {
   NivoAxisLegendPosition,
   NivoBarGroupMode,
@@ -14,13 +14,10 @@ import {
   NivoLegendItemDirection,
   NivoLegendSymbolShape,
   NivoMotionConfig,
-} from '../types';
+} from "../types";
 
 type BarChartData<
-  BarObj extends Record<string, string | number> = Record<
-    string,
-    string | number
-  >
+  BarObj extends Record<string, string | number> = Record<string, string | number>
 > = BarObj & {
   [key: string]: string | number;
 };
@@ -151,265 +148,265 @@ type ResponsiveBarChartState = {
 
 type ResponsiveBarChartAction = {
   /** base */
-  setGroupMode: 'setGroupMode';
-  setInnerPaddingBar: 'setInnerPaddingBar';
-  setLayout: 'setLayout';
-  setPaddingBar: 'setPaddingBar';
-  setReverse: 'setReverse';
-  setValueScale: 'setValueScale';
+  setGroupMode: "setGroupMode";
+  setInnerPaddingBar: "setInnerPaddingBar";
+  setLayout: "setLayout";
+  setPaddingBar: "setPaddingBar";
+  setReverse: "setReverse";
+  setValueScale: "setValueScale";
 
   /** margin */
-  setMarginTop: 'setMarginTop';
-  setMarginRight: 'setMarginRight';
-  setMarginBottom: 'setMarginBottom';
-  setMarginLeft: 'setMarginLeft';
+  setMarginTop: "setMarginTop";
+  setMarginRight: "setMarginRight";
+  setMarginBottom: "setMarginBottom";
+  setMarginLeft: "setMarginLeft";
 
   /** style */
-  setChartBorderColor: 'setChartBorderColor';
-  setChartBorderRadius: 'setChartBorderRadius';
-  setChartBorderWidth: 'setChartBorderWidth';
-  setChartColors: 'setChartColors';
-  setEnableFillPatterns: 'setEnableFillPatterns';
+  setChartBorderColor: "setChartBorderColor";
+  setChartBorderRadius: "setChartBorderRadius";
+  setChartBorderWidth: "setChartBorderWidth";
+  setChartColors: "setChartColors";
+  setEnableFillPatterns: "setEnableFillPatterns";
 
   /** labels */
-  setEnableLabels: 'setEnableLabels';
-  setLabelSkipHeight: 'setLabelSkipHeight';
-  setLabelSkipWidth: 'setLabelSkipWidth';
-  setLabelTextColor: 'setLabelTextColor';
+  setEnableLabels: "setEnableLabels";
+  setLabelSkipHeight: "setLabelSkipHeight";
+  setLabelSkipWidth: "setLabelSkipWidth";
+  setLabelTextColor: "setLabelTextColor";
 
   /** grid and axes */
-  setEnableGridX: 'setEnableGridX';
-  setEnableGridY: 'setEnableGridY';
+  setEnableGridX: "setEnableGridX";
+  setEnableGridY: "setEnableGridY";
   // axis -> axisTop
-  setAxisTopLegend: 'setAxisTopLegend';
-  setAxisTopLegendOffset: 'setAxisTopLegendOffset';
-  setAxisTopLegendPosition: 'setAxisTopLegendPosition';
-  setAxisTopTickPadding: 'setAxisTopTickPadding';
-  setAxisTopTickRotation: 'setAxisTopTickRotation';
-  setAxisTopTickSize: 'setAxisTopTickSize';
-  setEnableAxisTop: 'setEnableAxisTop';
-  setIsAxisTopLegendFocused: 'setIsAxisTopLegendFocused';
-  setIsAxisTopLegendValid: 'setIsAxisTopLegendValid';
+  setAxisTopLegend: "setAxisTopLegend";
+  setAxisTopLegendOffset: "setAxisTopLegendOffset";
+  setAxisTopLegendPosition: "setAxisTopLegendPosition";
+  setAxisTopTickPadding: "setAxisTopTickPadding";
+  setAxisTopTickRotation: "setAxisTopTickRotation";
+  setAxisTopTickSize: "setAxisTopTickSize";
+  setEnableAxisTop: "setEnableAxisTop";
+  setIsAxisTopLegendFocused: "setIsAxisTopLegendFocused";
+  setIsAxisTopLegendValid: "setIsAxisTopLegendValid";
   // axis -> axisRight
-  setAxisRightLegend: 'setAxisRightLegend';
-  setAxisRightLegendOffset: 'setAxisRightLegendOffset';
-  setAxisRightLegendPosition: 'setAxisRightLegendPosition';
-  setAxisRightTickPadding: 'setAxisRightTickPadding';
-  setAxisRightTickRotation: 'setAxisRightTickRotation';
-  setAxisRightTickSize: 'setAxisRightTickSize';
-  setEnableAxisRight: 'setEnableAxisRight';
-  setIsAxisRightLegendFocused: 'setIsAxisRightLegendFocused';
-  setIsAxisRightLegendValid: 'setIsAxisRightLegendValid';
+  setAxisRightLegend: "setAxisRightLegend";
+  setAxisRightLegendOffset: "setAxisRightLegendOffset";
+  setAxisRightLegendPosition: "setAxisRightLegendPosition";
+  setAxisRightTickPadding: "setAxisRightTickPadding";
+  setAxisRightTickRotation: "setAxisRightTickRotation";
+  setAxisRightTickSize: "setAxisRightTickSize";
+  setEnableAxisRight: "setEnableAxisRight";
+  setIsAxisRightLegendFocused: "setIsAxisRightLegendFocused";
+  setIsAxisRightLegendValid: "setIsAxisRightLegendValid";
   // axis -> axisBottom
-  setAxisBottomLegend: 'setAxisBottomLegend';
-  setAxisBottomLegendOffset: 'setAxisBottomLegendOffset';
-  setAxisBottomLegendPosition: 'setAxisBottomLegendPosition';
-  setAxisBottomTickPadding: 'setAxisBottomTickPadding';
-  setAxisBottomTickRotation: 'setAxisBottomTickRotation';
-  setAxisBottomTickSize: 'setAxisBottomTickSize';
-  setEnableAxisBottom: 'setEnableAxisBottom';
-  setIsAxisBottomLegendFocused: 'setIsAxisBottomLegendFocused';
-  setIsAxisBottomLegendValid: 'setIsAxisBottomLegendValid';
+  setAxisBottomLegend: "setAxisBottomLegend";
+  setAxisBottomLegendOffset: "setAxisBottomLegendOffset";
+  setAxisBottomLegendPosition: "setAxisBottomLegendPosition";
+  setAxisBottomTickPadding: "setAxisBottomTickPadding";
+  setAxisBottomTickRotation: "setAxisBottomTickRotation";
+  setAxisBottomTickSize: "setAxisBottomTickSize";
+  setEnableAxisBottom: "setEnableAxisBottom";
+  setIsAxisBottomLegendFocused: "setIsAxisBottomLegendFocused";
+  setIsAxisBottomLegendValid: "setIsAxisBottomLegendValid";
   // axis -> axisLeft
-  setAxisLeftLegend: 'setAxisLeftLegend';
-  setAxisLeftLegendOffset: 'setAxisLeftLegendOffset';
-  setAxisLeftLegendPosition: 'setAxisLeftLegendPosition';
-  setAxisLeftTickPadding: 'setAxisLeftTickPadding';
-  setAxisLeftTickRotation: 'setAxisLeftTickRotation';
-  setAxisLeftTickSize: 'setAxisLeftTickSize';
-  setEnableAxisLeft: 'setEnableAxisLeft';
-  setIsAxisLeftLegendFocused: 'setIsAxisLeftLegendFocused';
-  setIsAxisLeftLegendValid: 'setIsAxisLeftLegendValid';
+  setAxisLeftLegend: "setAxisLeftLegend";
+  setAxisLeftLegendOffset: "setAxisLeftLegendOffset";
+  setAxisLeftLegendPosition: "setAxisLeftLegendPosition";
+  setAxisLeftTickPadding: "setAxisLeftTickPadding";
+  setAxisLeftTickRotation: "setAxisLeftTickRotation";
+  setAxisLeftTickSize: "setAxisLeftTickSize";
+  setEnableAxisLeft: "setEnableAxisLeft";
+  setIsAxisLeftLegendFocused: "setIsAxisLeftLegendFocused";
+  setIsAxisLeftLegendValid: "setIsAxisLeftLegendValid";
 
   /** legend */
-  setEnableLegend: 'setEnableLegend';
-  setEnableLegendJustify: 'setEnableLegendJustify';
-  setLegendAnchor: 'setLegendAnchor';
-  setLegendDirection: 'setLegendDirection';
-  setLegendItemBackground: 'setLegendItemBackground';
-  setLegendItemDirection: 'setLegendItemDirection';
-  setLegendItemHeight: 'setLegendItemHeight';
-  setLegendItemOpacity: 'setLegendItemOpacity';
-  setLegendItemTextColor: 'setLegendItemTextColor';
-  setLegendItemWidth: 'setLegendItemWidth';
-  setLegendItemsSpacing: 'setLegendItemsSpacing';
-  setLegendSymbolBorderColor: 'setLegendSymbolBorderColor';
-  setLegendSymbolBorderWidth: 'setLegendSymbolBorderWidth';
-  setLegendSymbolShape: 'setLegendSymbolShape';
-  setLegendSymbolSize: 'setLegendSymbolSize';
-  setLegendSymbolSpacing: 'setLegendSymbolSpacing';
-  setLegendTranslateX: 'setLegendTranslateX';
-  setLegendTranslateY: 'setLegendTranslateY';
+  setEnableLegend: "setEnableLegend";
+  setEnableLegendJustify: "setEnableLegendJustify";
+  setLegendAnchor: "setLegendAnchor";
+  setLegendDirection: "setLegendDirection";
+  setLegendItemBackground: "setLegendItemBackground";
+  setLegendItemDirection: "setLegendItemDirection";
+  setLegendItemHeight: "setLegendItemHeight";
+  setLegendItemOpacity: "setLegendItemOpacity";
+  setLegendItemTextColor: "setLegendItemTextColor";
+  setLegendItemWidth: "setLegendItemWidth";
+  setLegendItemsSpacing: "setLegendItemsSpacing";
+  setLegendSymbolBorderColor: "setLegendSymbolBorderColor";
+  setLegendSymbolBorderWidth: "setLegendSymbolBorderWidth";
+  setLegendSymbolShape: "setLegendSymbolShape";
+  setLegendSymbolSize: "setLegendSymbolSize";
+  setLegendSymbolSpacing: "setLegendSymbolSpacing";
+  setLegendTranslateX: "setLegendTranslateX";
+  setLegendTranslateY: "setLegendTranslateY";
 
   /** motion */
-  setEnableAnimate: 'setEnableAnimate';
-  setMotionConfig: 'setMotionConfig';
+  setEnableAnimate: "setEnableAnimate";
+  setMotionConfig: "setMotionConfig";
 
   /** options */
-  setChartTitle: 'setChartTitle';
-  setChartTitleColor: 'setChartTitleColor';
-  setChartTitlePosition: 'setChartTitlePosition';
-  setChartTitleSize: 'setChartTitleSize';
-  setIsChartTitleFocused: 'setIsChartTitleFocused';
-  setIsChartTitleValid: 'setIsChartTitleValid';
+  setChartTitle: "setChartTitle";
+  setChartTitleColor: "setChartTitleColor";
+  setChartTitlePosition: "setChartTitlePosition";
+  setChartTitleSize: "setChartTitleSize";
+  setIsChartTitleFocused: "setIsChartTitleFocused";
+  setIsChartTitleValid: "setIsChartTitleValid";
 
   /** screenshot */
-  setIsScreenshotFilenameFocused: 'setIsScreenshotFilenameFocused';
-  setIsScreenshotFilenameValid: 'setIsScreenshotFilenameValid';
-  setScreenshotFilename: 'setScreenshotFilename';
-  setScreenshotImageQuality: 'setScreenshotImageQuality';
-  setScreenshotImageType: 'setScreenshotImageType';
+  setIsScreenshotFilenameFocused: "setIsScreenshotFilenameFocused";
+  setIsScreenshotFilenameValid: "setIsScreenshotFilenameValid";
+  setScreenshotFilename: "setScreenshotFilename";
+  setScreenshotImageQuality: "setScreenshotImageQuality";
+  setScreenshotImageType: "setScreenshotImageType";
 
   // reset all
-  resetChartToDefault: 'resetChartToDefault';
+  resetChartToDefault: "resetChartToDefault";
 };
 
 type ResponsiveBarChartDispatch =
   | {
-      type: ResponsiveBarChartAction['setGroupMode'];
+      type: ResponsiveBarChartAction["setGroupMode"];
       payload: NivoBarGroupMode;
     }
   | {
-      type: ResponsiveBarChartAction['setLayout'];
+      type: ResponsiveBarChartAction["setLayout"];
       payload: NivoBarLayout;
     }
   | {
-      type: ResponsiveBarChartAction['setValueScale'];
+      type: ResponsiveBarChartAction["setValueScale"];
       payload: NivoBarValueScale;
     }
   | {
       type:
-        | ResponsiveBarChartAction['setEnableAnimate']
-        | ResponsiveBarChartAction['setEnableAxisBottom']
-        | ResponsiveBarChartAction['setEnableAxisLeft']
-        | ResponsiveBarChartAction['setEnableAxisRight']
-        | ResponsiveBarChartAction['setEnableAxisTop']
-        | ResponsiveBarChartAction['setEnableFillPatterns']
-        | ResponsiveBarChartAction['setEnableGridX']
-        | ResponsiveBarChartAction['setEnableGridY']
-        | ResponsiveBarChartAction['setEnableLabels']
-        | ResponsiveBarChartAction['setEnableLegend']
-        | ResponsiveBarChartAction['setEnableLegendJustify']
-        | ResponsiveBarChartAction['setIsAxisBottomLegendFocused']
-        | ResponsiveBarChartAction['setIsAxisBottomLegendValid']
-        | ResponsiveBarChartAction['setIsAxisLeftLegendFocused']
-        | ResponsiveBarChartAction['setIsAxisLeftLegendValid']
-        | ResponsiveBarChartAction['setIsAxisRightLegendFocused']
-        | ResponsiveBarChartAction['setIsAxisRightLegendValid']
-        | ResponsiveBarChartAction['setIsAxisTopLegendFocused']
-        | ResponsiveBarChartAction['setIsAxisTopLegendValid']
-        | ResponsiveBarChartAction['setIsChartTitleFocused']
-        | ResponsiveBarChartAction['setIsChartTitleValid']
-        | ResponsiveBarChartAction['setIsScreenshotFilenameFocused']
-        | ResponsiveBarChartAction['setIsScreenshotFilenameValid']
-        | ResponsiveBarChartAction['setReverse'];
+        | ResponsiveBarChartAction["setEnableAnimate"]
+        | ResponsiveBarChartAction["setEnableAxisBottom"]
+        | ResponsiveBarChartAction["setEnableAxisLeft"]
+        | ResponsiveBarChartAction["setEnableAxisRight"]
+        | ResponsiveBarChartAction["setEnableAxisTop"]
+        | ResponsiveBarChartAction["setEnableFillPatterns"]
+        | ResponsiveBarChartAction["setEnableGridX"]
+        | ResponsiveBarChartAction["setEnableGridY"]
+        | ResponsiveBarChartAction["setEnableLabels"]
+        | ResponsiveBarChartAction["setEnableLegend"]
+        | ResponsiveBarChartAction["setEnableLegendJustify"]
+        | ResponsiveBarChartAction["setIsAxisBottomLegendFocused"]
+        | ResponsiveBarChartAction["setIsAxisBottomLegendValid"]
+        | ResponsiveBarChartAction["setIsAxisLeftLegendFocused"]
+        | ResponsiveBarChartAction["setIsAxisLeftLegendValid"]
+        | ResponsiveBarChartAction["setIsAxisRightLegendFocused"]
+        | ResponsiveBarChartAction["setIsAxisRightLegendValid"]
+        | ResponsiveBarChartAction["setIsAxisTopLegendFocused"]
+        | ResponsiveBarChartAction["setIsAxisTopLegendValid"]
+        | ResponsiveBarChartAction["setIsChartTitleFocused"]
+        | ResponsiveBarChartAction["setIsChartTitleValid"]
+        | ResponsiveBarChartAction["setIsScreenshotFilenameFocused"]
+        | ResponsiveBarChartAction["setIsScreenshotFilenameValid"]
+        | ResponsiveBarChartAction["setReverse"];
 
       payload: boolean;
     }
   | {
       type:
-        | ResponsiveBarChartAction['setAxisBottomLegendOffset']
-        | ResponsiveBarChartAction['setAxisBottomTickPadding']
-        | ResponsiveBarChartAction['setAxisBottomTickRotation']
-        | ResponsiveBarChartAction['setAxisBottomTickSize']
-        | ResponsiveBarChartAction['setAxisLeftLegendOffset']
-        | ResponsiveBarChartAction['setAxisLeftTickPadding']
-        | ResponsiveBarChartAction['setAxisLeftTickRotation']
-        | ResponsiveBarChartAction['setAxisLeftTickSize']
-        | ResponsiveBarChartAction['setAxisRightLegendOffset']
-        | ResponsiveBarChartAction['setAxisRightTickPadding']
-        | ResponsiveBarChartAction['setAxisRightTickRotation']
-        | ResponsiveBarChartAction['setAxisRightTickSize']
-        | ResponsiveBarChartAction['setAxisTopLegendOffset']
-        | ResponsiveBarChartAction['setAxisTopTickPadding']
-        | ResponsiveBarChartAction['setAxisTopTickRotation']
-        | ResponsiveBarChartAction['setAxisTopTickSize']
-        | ResponsiveBarChartAction['setChartBorderRadius']
-        | ResponsiveBarChartAction['setChartBorderWidth']
-        | ResponsiveBarChartAction['setInnerPaddingBar']
-        | ResponsiveBarChartAction['setLabelSkipHeight']
-        | ResponsiveBarChartAction['setLabelSkipWidth']
-        | ResponsiveBarChartAction['setLegendItemHeight']
-        | ResponsiveBarChartAction['setLegendItemOpacity']
-        | ResponsiveBarChartAction['setLegendItemWidth']
-        | ResponsiveBarChartAction['setLegendItemsSpacing']
-        | ResponsiveBarChartAction['setLegendSymbolBorderWidth']
-        | ResponsiveBarChartAction['setLegendSymbolSize']
-        | ResponsiveBarChartAction['setLegendSymbolSpacing']
-        | ResponsiveBarChartAction['setLegendTranslateX']
-        | ResponsiveBarChartAction['setLegendTranslateY']
-        | ResponsiveBarChartAction['setMarginBottom']
-        | ResponsiveBarChartAction['setMarginLeft']
-        | ResponsiveBarChartAction['setMarginRight']
-        | ResponsiveBarChartAction['setMarginTop']
-        | ResponsiveBarChartAction['setPaddingBar']
-        | ResponsiveBarChartAction['setScreenshotImageQuality'];
+        | ResponsiveBarChartAction["setAxisBottomLegendOffset"]
+        | ResponsiveBarChartAction["setAxisBottomTickPadding"]
+        | ResponsiveBarChartAction["setAxisBottomTickRotation"]
+        | ResponsiveBarChartAction["setAxisBottomTickSize"]
+        | ResponsiveBarChartAction["setAxisLeftLegendOffset"]
+        | ResponsiveBarChartAction["setAxisLeftTickPadding"]
+        | ResponsiveBarChartAction["setAxisLeftTickRotation"]
+        | ResponsiveBarChartAction["setAxisLeftTickSize"]
+        | ResponsiveBarChartAction["setAxisRightLegendOffset"]
+        | ResponsiveBarChartAction["setAxisRightTickPadding"]
+        | ResponsiveBarChartAction["setAxisRightTickRotation"]
+        | ResponsiveBarChartAction["setAxisRightTickSize"]
+        | ResponsiveBarChartAction["setAxisTopLegendOffset"]
+        | ResponsiveBarChartAction["setAxisTopTickPadding"]
+        | ResponsiveBarChartAction["setAxisTopTickRotation"]
+        | ResponsiveBarChartAction["setAxisTopTickSize"]
+        | ResponsiveBarChartAction["setChartBorderRadius"]
+        | ResponsiveBarChartAction["setChartBorderWidth"]
+        | ResponsiveBarChartAction["setInnerPaddingBar"]
+        | ResponsiveBarChartAction["setLabelSkipHeight"]
+        | ResponsiveBarChartAction["setLabelSkipWidth"]
+        | ResponsiveBarChartAction["setLegendItemHeight"]
+        | ResponsiveBarChartAction["setLegendItemOpacity"]
+        | ResponsiveBarChartAction["setLegendItemWidth"]
+        | ResponsiveBarChartAction["setLegendItemsSpacing"]
+        | ResponsiveBarChartAction["setLegendSymbolBorderWidth"]
+        | ResponsiveBarChartAction["setLegendSymbolSize"]
+        | ResponsiveBarChartAction["setLegendSymbolSpacing"]
+        | ResponsiveBarChartAction["setLegendTranslateX"]
+        | ResponsiveBarChartAction["setLegendTranslateY"]
+        | ResponsiveBarChartAction["setMarginBottom"]
+        | ResponsiveBarChartAction["setMarginLeft"]
+        | ResponsiveBarChartAction["setMarginRight"]
+        | ResponsiveBarChartAction["setMarginTop"]
+        | ResponsiveBarChartAction["setPaddingBar"]
+        | ResponsiveBarChartAction["setScreenshotImageQuality"];
 
       payload: number;
     }
   | {
       type:
-        | ResponsiveBarChartAction['setAxisBottomLegend']
-        | ResponsiveBarChartAction['setAxisLeftLegend']
-        | ResponsiveBarChartAction['setAxisRightLegend']
-        | ResponsiveBarChartAction['setAxisTopLegend']
-        | ResponsiveBarChartAction['setChartBorderColor']
-        | ResponsiveBarChartAction['setChartTitle']
-        | ResponsiveBarChartAction['setChartTitleColor']
-        | ResponsiveBarChartAction['setLabelTextColor']
-        | ResponsiveBarChartAction['setLegendItemBackground']
-        | ResponsiveBarChartAction['setLegendItemTextColor']
-        | ResponsiveBarChartAction['setLegendSymbolBorderColor']
-        | ResponsiveBarChartAction['setScreenshotFilename'];
+        | ResponsiveBarChartAction["setAxisBottomLegend"]
+        | ResponsiveBarChartAction["setAxisLeftLegend"]
+        | ResponsiveBarChartAction["setAxisRightLegend"]
+        | ResponsiveBarChartAction["setAxisTopLegend"]
+        | ResponsiveBarChartAction["setChartBorderColor"]
+        | ResponsiveBarChartAction["setChartTitle"]
+        | ResponsiveBarChartAction["setChartTitleColor"]
+        | ResponsiveBarChartAction["setLabelTextColor"]
+        | ResponsiveBarChartAction["setLegendItemBackground"]
+        | ResponsiveBarChartAction["setLegendItemTextColor"]
+        | ResponsiveBarChartAction["setLegendSymbolBorderColor"]
+        | ResponsiveBarChartAction["setScreenshotFilename"];
 
       payload: string;
     }
   | {
       type:
-        | ResponsiveBarChartAction['setAxisTopLegendPosition']
-        | ResponsiveBarChartAction['setAxisRightLegendPosition']
-        | ResponsiveBarChartAction['setAxisBottomLegendPosition']
-        | ResponsiveBarChartAction['setAxisLeftLegendPosition'];
+        | ResponsiveBarChartAction["setAxisTopLegendPosition"]
+        | ResponsiveBarChartAction["setAxisRightLegendPosition"]
+        | ResponsiveBarChartAction["setAxisBottomLegendPosition"]
+        | ResponsiveBarChartAction["setAxisLeftLegendPosition"];
       payload: NivoAxisLegendPosition;
     }
   | {
-      type: ResponsiveBarChartAction['setLegendAnchor'];
+      type: ResponsiveBarChartAction["setLegendAnchor"];
       payload: NivoLegendAnchor;
     }
   | {
-      type: ResponsiveBarChartAction['setLegendDirection'];
+      type: ResponsiveBarChartAction["setLegendDirection"];
       payload: NivoLegendDirection;
     }
   | {
-      type: ResponsiveBarChartAction['setLegendItemDirection'];
+      type: ResponsiveBarChartAction["setLegendItemDirection"];
       payload: NivoLegendItemDirection;
     }
   | {
-      type: ResponsiveBarChartAction['setLegendSymbolShape'];
+      type: ResponsiveBarChartAction["setLegendSymbolShape"];
       payload: NivoLegendSymbolShape;
     }
   | {
-      type: ResponsiveBarChartAction['setMotionConfig'];
+      type: ResponsiveBarChartAction["setMotionConfig"];
       payload: NivoMotionConfig;
     }
   | {
-      type: ResponsiveBarChartAction['setChartColors'];
+      type: ResponsiveBarChartAction["setChartColors"];
       payload: NivoColorScheme;
     }
   | {
-      type: ResponsiveBarChartAction['setChartTitleSize'];
+      type: ResponsiveBarChartAction["setChartTitleSize"];
       payload: TitleOrder;
     }
   | {
-      type: ResponsiveBarChartAction['setScreenshotImageType'];
+      type: ResponsiveBarChartAction["setScreenshotImageType"];
       payload: ScreenshotImageType;
     }
   | {
-      type: ResponsiveBarChartAction['setChartTitlePosition'];
+      type: ResponsiveBarChartAction["setChartTitlePosition"];
       payload: NivoChartTitlePosition;
     }
   | {
-      type: ResponsiveBarChartAction['resetChartToDefault'];
+      type: ResponsiveBarChartAction["resetChartToDefault"];
       payload: ResponsiveBarChartState;
     };
 

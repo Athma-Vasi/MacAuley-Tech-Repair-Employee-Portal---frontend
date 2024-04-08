@@ -685,17 +685,19 @@ function returnFloatAmountValidationText({
   // only numbers and either comma or decimal regex
   const onlyNumbersAndCommaOrDecimalRegex = /^[0-9,.]+$/;
 
-  const beforeSeparatorAmount = content.includes(".")
-    ? content.split(".")[0]
-    : content.split(",")[0];
-  const afterSeparatorAmount = content.includes(".")
-    ? content.split(".")[1]
-    : content.split(",")[1];
+  const stringifiedContent = content.toString();
+
+  const beforeSeparatorAmount = stringifiedContent.includes(".")
+    ? stringifiedContent.split(".")[0]
+    : stringifiedContent.split(",")[0];
+  const afterSeparatorAmount = stringifiedContent.includes(".")
+    ? stringifiedContent.split(".")[1]
+    : stringifiedContent.split(",")[1];
 
   const amountRegexTupleArr: [boolean, string][] = [
-    [numberPresentRegex.test(content), "Must contain at least one number."],
+    [numberPresentRegex.test(stringifiedContent), "Must contain at least one number."],
     [
-      onlyNumbersAndCommaOrDecimalRegex.test(content),
+      onlyNumbersAndCommaOrDecimalRegex.test(stringifiedContent),
       "Must only contain numbers, commas, or decimals.",
     ],
     [
@@ -1641,6 +1643,122 @@ function returnCreditCardCvvValidationText({
   return validationText ? `Invalid ${contentKind}. ${validationText}` : "";
 }
 
+function returnFileExtensionValidationText({
+  content,
+  contentKind,
+  maxLength = 4,
+  minLength = 3,
+}: RegexValidationProps): string {
+  // /\.(jpg|jpeg|png|webp)$/
+  const fileExtensionLengthRegex = new RegExp(`^(?=.{${minLength},${maxLength}}$)`);
+  const fileExtensionCharacterRegex = /\.(jpg|jpeg|png|webp)$/;
+
+  const fileExtensionRegexTupleArr: [boolean, string][] = [
+    [
+      fileExtensionLengthRegex.test(content),
+      `Must be between ${minLength} and ${maxLength} characters.`,
+    ],
+    [
+      fileExtensionCharacterRegex.test(content),
+      "Must be a valid file extension in the format .jpg, .jpeg, .png, or .webp.",
+    ],
+  ];
+
+  const validationText = fileExtensionRegexTupleArr
+    .filter(([isValidRegex, _]: [boolean, string]) => !isValidRegex)
+    .map(([_, validationText]: [boolean, string]) => validationText)
+    .join(" ");
+
+  return validationText ? `Invalid ${contentKind}. ${validationText}` : "";
+}
+
+function returnFileSizeValidationText({
+  content,
+  contentKind,
+  maxLength = 6,
+  minLength = 1,
+}: RegexValidationProps): string {
+  // /^\d{1,6}$/
+  const fileSizeLengthRegex = new RegExp(`^(?=.{${minLength},${maxLength}}$)`);
+  const fileSizeCharacterRegex = /^\d{1,6}$/;
+
+  const fileSizeRegexTupleArr: [boolean, string][] = [
+    [
+      fileSizeLengthRegex.test(content),
+      `Must be between ${minLength} and ${maxLength} characters.`,
+    ],
+    [
+      fileSizeCharacterRegex.test(content),
+      "Must be a valid SI file size between 1 and 999_999 bytes (1MB).",
+    ],
+  ];
+
+  const validationText = fileSizeRegexTupleArr
+    .filter(([isValidRegex, _]: [boolean, string]) => !isValidRegex)
+    .map(([_, validationText]: [boolean, string]) => validationText)
+    .join(" ");
+
+  return validationText ? `Invalid ${contentKind}. ${validationText}` : "";
+}
+
+function returnFileMimeTypeValidationText({
+  content,
+  contentKind,
+  maxLength = 10,
+  minLength = 10,
+}: RegexValidationProps): string {
+  // /^image\/(jpeg|png|webp)$/
+  const fileMimeTypeLengthRegex = new RegExp(`^(?=.{${minLength},${maxLength}}$)`);
+  const fileMimeTypeCharacterRegex = /^image\/(jpeg|png|webp)$/;
+
+  const fileMimeTypeRegexTupleArr: [boolean, string][] = [
+    [
+      fileMimeTypeLengthRegex.test(content),
+      `Must be between ${minLength} and ${maxLength} characters.`,
+    ],
+    [
+      fileMimeTypeCharacterRegex.test(content),
+      "Must be a valid file MIME type in the format image/jpeg, image/png, or image/webp.",
+    ],
+  ];
+
+  const validationText = fileMimeTypeRegexTupleArr
+    .filter(([isValidRegex, _]: [boolean, string]) => !isValidRegex)
+    .map(([_, validationText]: [boolean, string]) => validationText)
+    .join(" ");
+
+  return validationText ? `Invalid ${contentKind}. ${validationText}` : "";
+}
+
+function returnFileEncodingValidationText({
+  content,
+  contentKind,
+  maxLength = 15,
+  minLength = 4,
+}: RegexValidationProps): string {
+  // /^(7bit|8bit|binary|quoted-printable|base64)$/
+  const fileEncodingLengthRegex = new RegExp(`^(?=.{${minLength},${maxLength}}$)`);
+  const fileEncodingCharacterRegex = /^(7bit|8bit|binary|quoted-printable|base64)$/;
+
+  const fileEncodingRegexTupleArr: [boolean, string][] = [
+    [
+      fileEncodingLengthRegex.test(content),
+      `Must be between ${minLength} and ${maxLength} characters.`,
+    ],
+    [
+      fileEncodingCharacterRegex.test(content),
+      "Must be a valid file encoding in the format 7bit, 8bit, binary, quoted-printable, or base64.",
+    ],
+  ];
+
+  const validationText = fileEncodingRegexTupleArr
+    .filter(([isValidRegex, _]: [boolean, string]) => !isValidRegex)
+    .map(([_, validationText]: [boolean, string]) => validationText)
+    .join(" ");
+
+  return validationText ? `Invalid ${contentKind}. ${validationText}` : "";
+}
+
 function logState({
   state,
   groupLabel = "state",
@@ -1992,7 +2110,7 @@ function returnThemeColors({
   colorsSwatches: ColorsSwatches;
 }) {
   const { colorScheme, primaryColor, primaryShade } = themeObject;
-  const { dark, gray, red, green, cyan } = colorsSwatches;
+  const { dark, gray, red, green, cyan, yellow, blue, orange } = colorsSwatches;
 
   const lightSchemeGray = gray[8];
   const darkSchemeGray = gray[5];
@@ -2011,6 +2129,9 @@ function returnThemeColors({
   const redColorShade = red[colorShade];
   const greenColorShade = green[colorShade];
   const cyanColorShade = cyan[colorShade];
+  const yellowColorShade = yellow[colorShade];
+  const orangeColorShade = orange[colorShade];
+  const blueColorShade = blue[colorShade];
   const sliderLabelColor = gray[3];
   const navLinkHoverShade = colorScheme === "light" ? gray[2] : gray[8];
   const navLinkActiveShade = themeColorShades
@@ -2020,6 +2141,7 @@ function returnThemeColors({
     : gray[5];
 
   const generalColors = {
+    blueColorShade,
     chartTextColor,
     cyanColorShade,
     darkSchemeGray,
@@ -2030,11 +2152,13 @@ function returnThemeColors({
     lightSchemeGray,
     navLinkActiveShade,
     navLinkHoverShade,
+    orangeColorShade,
     redColorShade,
     sliderLabelColor,
     textColor,
     themeColorShade,
     themeColorShades,
+    yellowColorShade,
   };
 
   // app colors
@@ -2381,7 +2505,11 @@ export {
   returnDisplayAspectRatioValidationText,
   returnElapsedTime,
   returnEmailValidationText,
+  returnFileEncodingValidationText,
+  returnFileExtensionValidationText,
+  returnFileMimeTypeValidationText,
   returnFilenameValidationText,
+  returnFileSizeValidationText,
   returnFloatAmountValidationText,
   returnFrequencyResponseValidationText,
   returnGrammarValidationText,

@@ -128,66 +128,90 @@ function returnWhichResourceInView(
   let isProductCategorySectionInView = false;
   let isPurchaseSectionInView = false;
   let isRMASectionInView = false;
+  let isCustomerSectionInView = false;
+  let isProductReviewSectionInView = false;
+  let isExpenseClaimSectionInView = false;
+  let isFileUploadsSectionInView = false;
 
   Array.from(groupedByQueryResponseData).forEach(
     ([_groupedByFieldKey, queryResponseObjArrays]) => {
       queryResponseObjArrays.forEach((queryResponseObj) => {
         if (
-          Object.hasOwn(queryResponseObj, "repairTickets") &&
-          Object.hasOwn(queryResponseObj, "testingResults") &&
           Object.hasOwn(queryResponseObj, "finalRepairCost") &&
-          Object.hasOwn(queryResponseObj, "finalRepairCostCurrency") &&
-          Object.hasOwn(queryResponseObj, "repairStatus")
+          Object.hasOwn(queryResponseObj, "finalRepairCostCurrency")
         ) {
           isRepairTicketSectionInView = true;
         }
 
         if (
           Object.hasOwn(queryResponseObj, "secureContactNumber") &&
-          Object.hasOwn(queryResponseObj, "secureContactEmail") &&
-          Object.hasOwn(queryResponseObj, "requestKind") &&
-          Object.hasOwn(queryResponseObj, "requestDescription")
+          Object.hasOwn(queryResponseObj, "secureContactEmail")
         ) {
           isAnonymousRequestsSectionInView = true;
         }
 
         if (
-          Object.hasOwn(queryResponseObj, "sku") &&
-          Object.hasOwn(queryResponseObj, "brand") &&
-          Object.hasOwn(queryResponseObj, "model") &&
-          Object.hasOwn(queryResponseObj, "price") &&
-          Object.hasOwn(queryResponseObj, "weight")
+          Object.hasOwn(queryResponseObj, "weightUnit") &&
+          Object.hasOwn(queryResponseObj, "lengthUnit")
         ) {
           isProductCategorySectionInView = true;
         }
 
         if (
-          Object.hasOwn(queryResponseObj, "dateOfPurchase") &&
           Object.hasOwn(queryResponseObj, "purchaseAmount") &&
-          Object.hasOwn(queryResponseObj, "purchaseStoreLocation") &&
-          Object.hasOwn(queryResponseObj, "purchaseCurrency")
+          Object.hasOwn(queryResponseObj, "purchaseStoreLocation")
         ) {
           isPurchaseSectionInView = true;
         }
 
         if (
           Object.hasOwn(queryResponseObj, "rmaCode") &&
-          Object.hasOwn(queryResponseObj, "rmaStatus") &&
-          Object.hasOwn(queryResponseObj, "rmaAmount") &&
-          Object.hasOwn(queryResponseObj, "rmaReason")
+          Object.hasOwn(queryResponseObj, "rmaStatus")
         ) {
           isRMASectionInView = true;
+        }
+
+        if (
+          Object.hasOwn(queryResponseObj, "purchaseHistoryIds") &&
+          Object.hasOwn(queryResponseObj, "rmaHistoryIds")
+        ) {
+          isCustomerSectionInView = true;
+        }
+
+        if (
+          Object.hasOwn(queryResponseObj, "helpfulVotes") &&
+          Object.hasOwn(queryResponseObj, "unhelpfulVotes")
+        ) {
+          isProductReviewSectionInView = true;
+        }
+
+        if (
+          Object.hasOwn(queryResponseObj, "expenseClaimKind") &&
+          Object.hasOwn(queryResponseObj, "expenseClaimAmount")
+        ) {
+          isExpenseClaimSectionInView = true;
+        }
+
+        if (
+          Object.hasOwn(queryResponseObj, "fileMimeType") &&
+          Object.hasOwn(queryResponseObj, "fileEncoding")
+        ) {
+          isFileUploadsSectionInView = true;
         }
       });
     }
   );
 
   return {
-    isRepairTicketSectionInView,
     isAnonymousRequestsSectionInView,
+    isCustomerSectionInView,
+    isExpenseClaimSectionInView,
+    isFileUploadsSectionInView,
     isProductCategorySectionInView,
+    isProductReviewSectionInView,
     isPurchaseSectionInView,
     isRMASectionInView,
+    isRepairTicketSectionInView,
   };
 }
 

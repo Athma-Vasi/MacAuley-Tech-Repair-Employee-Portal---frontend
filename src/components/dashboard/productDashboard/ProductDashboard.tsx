@@ -1,8 +1,8 @@
-import { COLORS_SWATCHES } from '../../../constants/data';
-import { useGlobalState } from '../../../hooks';
-import { returnThemeColors } from '../../../utils';
-import { MONTHS } from '../constants';
-import { returnProductMetricsCards } from '../jsxHelpers';
+import { COLORS_SWATCHES } from "../../../constants/data";
+import { useGlobalState } from "../../../hooks";
+import { returnThemeColors } from "../../../utils";
+import { MONTHS } from "../constants";
+import { returnProductMetricsCards } from "../jsxHelpers";
 import {
   BusinessMetric,
   BusinessMetricStoreLocation,
@@ -10,14 +10,11 @@ import {
   DashboardProductMetric,
   Month,
   Year,
-} from '../types';
-import ProductDashboardDaily from './productDashboardDaily/ProductDashboardDaily';
-import ProductDashboardMonthly from './productDashboardMonthly/ProductDashboardMonthly';
-import ProductDashboardYearly from './productDashboardYearly/ProductDashboardYearly';
-import {
-  returnProductMetricsCharts,
-  returnSelectedDateProductMetrics,
-} from './utils';
+} from "../types";
+import ProductDashboardDaily from "./productDashboardDaily/ProductDashboardDaily";
+import ProductDashboardMonthly from "./productDashboardMonthly/ProductDashboardMonthly";
+import ProductDashboardYearly from "./productDashboardYearly/ProductDashboardYearly";
+import { returnProductMetricsCharts, returnSelectedDateProductMetrics } from "./utils";
 
 function ProductDashboard({
   businessMetrics,
@@ -50,6 +47,10 @@ function ProductDashboard({
     themeObject,
   });
 
+  if (!businessMetrics.length) {
+    return null;
+  }
+
   const selectedDateProductMetrics = returnSelectedDateProductMetrics({
     businessMetrics,
     day: selectedDate,
@@ -59,7 +60,7 @@ function ProductDashboard({
     storeLocation: storeLocationView,
     year: selectedYear,
   });
-  console.log('selectedDateProductMetrics', selectedDateProductMetrics);
+  console.log("selectedDateProductMetrics", selectedDateProductMetrics);
 
   const productChartsData = returnProductMetricsCharts({
     businessMetrics,
@@ -68,7 +69,7 @@ function ProductDashboard({
     storeLocation: storeLocationView,
     selectedProductCategory: productMetric,
   });
-  console.log('productChartsData', productChartsData);
+  console.log("productChartsData", productChartsData);
 
   const productCardsInfo = returnProductMetricsCards({
     greenColorShade,
@@ -77,34 +78,34 @@ function ProductDashboard({
     selectedDateProductMetrics,
     width,
   });
-  console.log('productCardsInfo', productCardsInfo);
+  console.log("productCardsInfo", productCardsInfo);
 
   const { dailyCharts, monthlyCharts, yearlyCharts } = productChartsData;
   const { dailyCards, monthlyCards, yearlyCards } = productCardsInfo;
 
   const displayProductDashboard =
-    calendarView === 'Daily' ? (
+    calendarView === "Daily" ? (
       <ProductDashboardDaily
         borderColor={borderColor}
         businessMetrics={businessMetrics}
         dailyCards={dailyCards}
         dailyCharts={dailyCharts}
         day={selectedDate}
-        month={selectedYYYYMMDD.split('-')[1]}
+        month={selectedYYYYMMDD.split("-")[1]}
         padding={padding}
         productMetric={productMetric}
         storeLocation={storeLocationView}
         width={width}
         year={selectedYear}
       />
-    ) : calendarView === 'Monthly' ? (
+    ) : calendarView === "Monthly" ? (
       <ProductDashboardMonthly
         borderColor={borderColor}
         businessMetrics={businessMetrics}
         day={selectedDate}
         monthlyCards={monthlyCards}
         monthlyCharts={monthlyCharts}
-        month={selectedYYYYMMDD.split('-')[1]}
+        month={selectedYYYYMMDD.split("-")[1]}
         padding={padding}
         productMetric={productMetric}
         storeLocation={storeLocationView}
@@ -118,7 +119,7 @@ function ProductDashboard({
         day={selectedDate}
         yearlyCards={yearlyCards}
         yearlyCharts={yearlyCharts}
-        month={selectedYYYYMMDD.split('-')[1]}
+        month={selectedYYYYMMDD.split("-")[1]}
         padding={padding}
         productMetric={productMetric}
         storeLocation={storeLocationView}

@@ -19,6 +19,7 @@ import { PieChartData } from "../../components/charts/responsivePieChart/types";
 import { RadialBarChartData } from "../../components/charts/responsiveRadialBarChart/types";
 import { SunburstChartData } from "../../components/charts/responsiveSunburstChart/types";
 import { NivoChartUnitKind } from "../../components/charts/types";
+import { CustomerDocument } from "../../components/customer/types";
 import { EndorsementDocument } from "../../components/endorsements/create/types";
 import { EventCreatorDocument } from "../../components/event/create/types";
 import { ExpenseClaimDocument } from "../../components/expenseClaim/create/types";
@@ -120,6 +121,7 @@ type ActionsDocuments = {
     surveyData: SurveyBuilderDocument[];
     eventData: EventCreatorDocument[];
   };
+  customerData: Omit<CustomerDocument, "password" | "paymentInformation">[];
   employeeData: Map<string, UserDocument>;
 };
 

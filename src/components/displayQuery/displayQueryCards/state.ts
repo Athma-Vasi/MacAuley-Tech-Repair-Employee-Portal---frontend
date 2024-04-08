@@ -1,10 +1,10 @@
 import {
-  DisplayQueryMobileAction,
-  DisplayQueryMobileDispatch,
-  DisplayQueryMobileState,
+  DisplayQueryCardsAction,
+  DisplayQueryCardsDispatch,
+  DisplayQueryCardsState,
 } from "./types";
 
-const initialDisplayQueryMobileState: DisplayQueryMobileState = {
+const initialDisplayQueryCardsState: DisplayQueryCardsState = {
   currentDocumentId: "",
   currentRequestStatus: "pending",
 
@@ -22,7 +22,7 @@ const initialDisplayQueryMobileState: DisplayQueryMobileState = {
   customerDocument: null,
 };
 
-const displayQueryMobileAction: DisplayQueryMobileAction = {
+const displayQueryCardsAction: DisplayQueryCardsAction = {
   setCurrentDocumentId: "setCurrentDocumentId",
   setCurrentRequestStatus: "setCurrentRequestStatus",
 
@@ -33,36 +33,36 @@ const displayQueryMobileAction: DisplayQueryMobileAction = {
   setCustomerDocument: "setCustomerDocument",
 };
 
-function displayQueryMobileReducer(
-  state: DisplayQueryMobileState,
-  action: DisplayQueryMobileDispatch
-): DisplayQueryMobileState {
+function displayQueryCardsReducer(
+  state: DisplayQueryCardsState,
+  action: DisplayQueryCardsDispatch
+): DisplayQueryCardsState {
   switch (action.type) {
-    case displayQueryMobileAction.setCurrentDocumentId:
+    case displayQueryCardsAction.setCurrentDocumentId:
       return {
         ...state,
         currentDocumentId: action.payload,
       };
-    case displayQueryMobileAction.setCurrentRequestStatus:
+    case displayQueryCardsAction.setCurrentRequestStatus:
       return {
         ...state,
         currentRequestStatus: action.payload,
       };
 
     // for repair notes docs only
-    case displayQueryMobileAction.setEditRepairTicketInput:
+    case displayQueryCardsAction.setEditRepairTicketInput:
       return {
         ...state,
         editRepairTicketInput: action.payload,
       };
 
-    case displayQueryMobileAction.setEmployeeDocument:
+    case displayQueryCardsAction.setEmployeeDocument:
       return {
         ...state,
         employeeDocument: action.payload,
       };
 
-    case displayQueryMobileAction.setCustomerDocument:
+    case displayQueryCardsAction.setCustomerDocument:
       return {
         ...state,
         customerDocument: action.payload,
@@ -74,7 +74,7 @@ function displayQueryMobileReducer(
 }
 
 export {
-  displayQueryMobileAction,
-  displayQueryMobileReducer,
-  initialDisplayQueryMobileState,
+  displayQueryCardsAction,
+  displayQueryCardsReducer,
+  initialDisplayQueryCardsState,
 };

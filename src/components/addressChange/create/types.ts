@@ -8,7 +8,7 @@ import type {
   RequestStatus,
   SetStepsInErrorPayload,
   StatesUS,
-} from '../../../types';
+} from "../../../types";
 
 type AddressChangeSchema = {
   userId: string;
@@ -70,92 +70,92 @@ type AddressChangeState = {
 };
 
 type AddressChangeAction = {
-  setContactNumber: 'setContactNumber';
-  setIsValidContactNumber: 'setIsValidContactNumber';
-  setIsContactNumberFocused: 'setIsContactNumberFocused';
+  setContactNumber: "setContactNumber";
+  setIsValidContactNumber: "setIsValidContactNumber";
+  setIsContactNumberFocused: "setIsContactNumberFocused";
 
-  setAddressLine: 'setAddressLine';
-  setIsAddressLineFocused: 'setIsAddressLineFocused';
-  setIsValidAddressLine: 'setIsValidAddressLine';
+  setAddressLine: "setAddressLine";
+  setIsAddressLineFocused: "setIsAddressLineFocused";
+  setIsValidAddressLine: "setIsValidAddressLine";
 
-  setCity: 'setCity';
-  setIsValidCity: 'setIsValidCity';
-  setIsCityFocused: 'setIsCityFocused';
+  setCity: "setCity";
+  setIsValidCity: "setIsValidCity";
+  setIsCityFocused: "setIsCityFocused";
 
-  setProvince: 'setProvince';
-  setState: 'setState';
-  setCountry: 'setCountry';
+  setProvince: "setProvince";
+  setState: "setState";
+  setCountry: "setCountry";
 
-  setPostalCode: 'setPostalCode';
-  setIsValidPostalCode: 'setIsValidPostalCode';
-  setIsPostalCodeFocused: 'setIsPostalCodeFocused';
-  setIsAcknowledged: 'setIsAcknowledged';
+  setPostalCode: "setPostalCode";
+  setIsValidPostalCode: "setIsValidPostalCode";
+  setIsPostalCodeFocused: "setIsPostalCodeFocused";
+  setIsAcknowledged: "setIsAcknowledged";
 
-  setTriggerFormSubmit: 'setTriggerFormSubmit';
-  setCurrentStepperPosition: 'setCurrentStepperPosition';
-  setStepsInError: 'setStepsInError';
+  setTriggerFormSubmit: "setTriggerFormSubmit";
+  setCurrentStepperPosition: "setCurrentStepperPosition";
+  setStepsInError: "setStepsInError";
 
-  setIsSubmitting: 'setIsSubmitting';
-  setSubmitMessage: 'setSubmitMessage';
-  setIsSuccessful: 'setIsSuccessful';
-  setSuccessMessage: 'setSuccessMessage';
-  setIsLoading: 'setIsLoading';
-  setLoadingMessage: 'setLoadingMessage';
+  setIsSubmitting: "setIsSubmitting";
+  setSubmitMessage: "setSubmitMessage";
+  setIsSuccessful: "setIsSuccessful";
+  setSuccessMessage: "setSuccessMessage";
+  setIsLoading: "setIsLoading";
+  setLoadingMessage: "setLoadingMessage";
 };
 
 type AddressChangeDispatch =
   | {
       type:
-        | AddressChangeAction['setAddressLine']
-        | AddressChangeAction['setCity']
-        | AddressChangeAction['setLoadingMessage']
-        | AddressChangeAction['setSubmitMessage']
-        | AddressChangeAction['setSuccessMessage'];
+        | AddressChangeAction["setAddressLine"]
+        | AddressChangeAction["setCity"]
+        | AddressChangeAction["setLoadingMessage"]
+        | AddressChangeAction["setSubmitMessage"]
+        | AddressChangeAction["setSuccessMessage"];
       payload: string;
     }
   | {
       type:
-        | AddressChangeAction['setIsAddressLineFocused']
-        | AddressChangeAction['setIsValidAddressLine']
-        | AddressChangeAction['setIsCityFocused']
-        | AddressChangeAction['setIsValidCity']
-        | AddressChangeAction['setIsContactNumberFocused']
-        | AddressChangeAction['setIsValidContactNumber']
-        | AddressChangeAction['setIsPostalCodeFocused']
-        | AddressChangeAction['setIsValidPostalCode']
-        | AddressChangeAction['setIsAcknowledged']
-        | AddressChangeAction['setTriggerFormSubmit']
-        | AddressChangeAction['setIsSuccessful']
-        | AddressChangeAction['setIsSubmitting']
-        | AddressChangeAction['setIsLoading'];
+        | AddressChangeAction["setIsAddressLineFocused"]
+        | AddressChangeAction["setIsValidAddressLine"]
+        | AddressChangeAction["setIsCityFocused"]
+        | AddressChangeAction["setIsValidCity"]
+        | AddressChangeAction["setIsContactNumberFocused"]
+        | AddressChangeAction["setIsValidContactNumber"]
+        | AddressChangeAction["setIsPostalCodeFocused"]
+        | AddressChangeAction["setIsValidPostalCode"]
+        | AddressChangeAction["setIsAcknowledged"]
+        | AddressChangeAction["setTriggerFormSubmit"]
+        | AddressChangeAction["setIsSuccessful"]
+        | AddressChangeAction["setIsSubmitting"]
+        | AddressChangeAction["setIsLoading"];
       payload: boolean;
     }
   | {
-      type: AddressChangeAction['setContactNumber'];
+      type: AddressChangeAction["setContactNumber"];
       payload: PhoneNumber | string;
     }
   | {
-      type: AddressChangeAction['setProvince'];
+      type: AddressChangeAction["setProvince"];
       payload: Province;
     }
   | {
-      type: AddressChangeAction['setState'];
+      type: AddressChangeAction["setState"];
       payload: StatesUS;
     }
   | {
-      type: AddressChangeAction['setCountry'];
+      type: AddressChangeAction["setCountry"];
       payload: Country;
     }
   | {
-      type: AddressChangeAction['setPostalCode'];
+      type: AddressChangeAction["setPostalCode"];
       payload: PostalCode;
     }
   | {
-      type: AddressChangeAction['setCurrentStepperPosition'];
+      type: AddressChangeAction["setCurrentStepperPosition"];
       payload: number;
     }
   | {
-      type: AddressChangeAction['setStepsInError'];
+      type: AddressChangeAction["setStepsInError"];
       payload: SetStepsInErrorPayload;
     };
 

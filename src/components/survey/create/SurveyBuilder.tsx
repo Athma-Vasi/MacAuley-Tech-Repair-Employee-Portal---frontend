@@ -1,19 +1,19 @@
-import { Flex, Modal, Text, Title } from '@mantine/core';
-import { Group, Tooltip } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
-import { InvalidTokenError } from 'jwt-decode';
-import { ChangeEvent, MouseEvent, useEffect, useReducer, useRef } from 'react';
-import { useErrorBoundary } from 'react-error-boundary';
-import { TbChartPie4, TbEye, TbHelp, TbPlus, TbUpload } from 'react-icons/tb';
-import { useNavigate } from 'react-router-dom';
+import { Modal, Text, Title } from "@mantine/core";
+import { Group, Tooltip } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
+import { InvalidTokenError } from "jwt-decode";
+import { ChangeEvent, MouseEvent, useEffect, useReducer, useRef } from "react";
+import { useErrorBoundary } from "react-error-boundary";
+import { TbChartPie4, TbEye, TbHelp, TbPlus, TbUpload } from "react-icons/tb";
+import { useNavigate } from "react-router-dom";
 
 import {
   DATE_NEAR_FUTURE_REGEX,
   GRAMMAR_TEXT_INPUT_REGEX,
   GRAMMAR_TEXTAREA_INPUT_REGEX,
-} from '../../../constants/regex';
-import { globalAction } from '../../../context/globalProvider/state';
-import { useGlobalState, useWrapFetch } from '../../../hooks';
+} from "../../../constants/regex";
+import { globalAction } from "../../../context/globalProvider/state";
+import { useAuth, useGlobalState, useWrapFetch } from "../../../hooks";
 import {
   AccessibleErrorValidTextElements,
   AccessibleErrorValidTextElementsForDynamicInputs,
@@ -24,19 +24,19 @@ import {
   returnAccessibleSelectInputElements,
   returnAccessibleTextAreaInputElements,
   returnAccessibleTextInputElements,
-} from '../../../jsxCreators';
-import { ResourceRequestServerResponse } from '../../../types';
+} from "../../../jsxCreators";
+import { ResourceRequestServerResponse } from "../../../types";
 import {
   addFieldsToObject,
   logState,
   returnDateNearFutureValidationText,
   returnGrammarValidationText,
   urlBuilder,
-} from '../../../utils';
+} from "../../../utils";
 import FormReviewPage, {
   FormReviewObjectArray,
-} from '../../formReviewPage/FormReviewPage';
-import { NotificationModal } from '../../notificationModal';
+} from "../../formReviewPage/FormReviewPage";
+import { NotificationModal } from "../../notificationModal";
 import {
   AccessibleButtonCreatorInfo,
   AccessibleDateTimeInputCreatorInfo,
@@ -46,31 +46,27 @@ import {
   AccessibleTextInputCreatorInfo,
   FormLayoutWrapper,
   StepperWrapper,
-} from '../../wrappers';
+} from "../../wrappers";
 import {
   SURVEY_BUILDER_INPUT_HTML_DATA,
   SURVEY_BUILDER_MAX_QUESTION_AMOUNT,
   SURVEY_BUILDER_RECIPIENT_DATA,
   SURVEY_BUILDER_RESPONSE_KIND_DATA,
   SURVEY_MAX_RESPONSE_DATA_OPTIONS,
-} from '../constants';
-import PreviewSurvey from '../preview/PreviewSurvey';
-import {
-  SurveyBuilderDocument,
-  SurveyRecipient,
-  SurveyStatistics,
-} from '../types';
+} from "../constants";
+import PreviewSurvey from "../preview/PreviewSurvey";
+import { SurveyBuilderDocument, SurveyRecipient, SurveyStatistics } from "../types";
 import {
   createSurveyFormReviewObject,
   mergeSurveyQuestionsGroup,
   setSurveyQuestions,
-} from '../utils';
+} from "../utils";
 import {
   initialSurveyBuilderState,
   surveyBuilderAction,
   surveyBuilderReducer,
-} from './state';
-import { SURVEY_BUILDER_HELP_TEXT } from './utils';
+} from "./state";
+import { SURVEY_BUILDER_HELP_TEXT } from "./utils";
 
 function SurveyBuilder() {
   /** ------------- begin hooks ------------- */
@@ -131,6 +127,10 @@ function SurveyBuilder() {
   const { wrappedFetch } = useWrapFetch();
 
   const {
+    authState: { userId, username, roles },
+  } = useAuth();
+
+  const {
     globalState: {
       themeObject: { colorScheme, primaryColor, primaryShade },
     },
@@ -181,11 +181,14 @@ function SurveyBuilder() {
       openSubmitSuccessNotificationModal();
 
       const url: URL = urlBuilder({
-        path: 'actions/outreach/survey',
+        path: "actions/outreach/survey",
       });
 
       const body = JSON.stringify({
-        survey: {
+        surveySchema: {
+          userId,
+          username,
+          creatorRole: roles,
           surveyTitle,
           surveyDescription,
           sendTo: surveyRecipients,
@@ -196,9 +199,9 @@ function SurveyBuilder() {
       });
 
       const requestInit: RequestInit = {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body,
       };
@@ -230,16 +233,16 @@ function SurveyBuilder() {
           payload: data.message,
         });
       } catch (error: any) {
-        if (!isMounted || error.name === 'AbortError') {
+        if (!isMounted || error.name === "AbortError") {
           return;
         }
 
         const errorMessage =
           error instanceof InvalidTokenError
-            ? 'Invalid token. Please login again.'
+            ? "Invalid token. Please login again."
             : !error.response
-            ? 'Network error. Please try again.'
-            : error?.message ?? 'Unknown error occurred. Please try again.';
+            ? "Network error. Please try again."
+            : error?.message ?? "Unknown error occurred. Please try again.";
 
         globalDispatch({
           type: globalAction.setErrorState,
@@ -247,13 +250,13 @@ function SurveyBuilder() {
             isError: true,
             errorMessage,
             errorCallback: () => {
-              navigate('/home');
+              navigate("/home");
 
               globalDispatch({
                 type: globalAction.setErrorState,
                 payload: {
                   isError: false,
-                  errorMessage: '',
+                  errorMessage: "",
                   errorCallback: () => {},
                 },
               });
@@ -338,8 +341,7 @@ function SurveyBuilder() {
   useEffect(() => {
     // check if expiry date is valid and is in the near future
     const isValid =
-      DATE_NEAR_FUTURE_REGEX.test(expiryDate) &&
-      new Date() <= new Date(expiryDate);
+      DATE_NEAR_FUTURE_REGEX.test(expiryDate) && new Date() <= new Date(expiryDate);
 
     surveyBuilderDispatch({
       type: surveyBuilderAction.setIsValidExpiryDate,
@@ -369,14 +371,14 @@ function SurveyBuilder() {
           index: index + 1,
           value: {
             description: `Question ${index + 1}${
-              question.length === 0 ? '' : ':'
+              question.length === 0 ? "" : ":"
             } ${question.slice(0, maxSliceLength)} ${
-              question.length > maxSliceLength ? '...' : ''
+              question.length > maxSliceLength ? "..." : ""
             }`,
             ariaLabel: `Question ${index + 1} ${question
-              .split(' ')
+              .split(" ")
               .slice(0, 3)
-              .join(' ')}`,
+              .join(" ")}`,
           },
         },
       });
@@ -395,11 +397,10 @@ function SurveyBuilder() {
 
   // validate response data options on every change
   useEffect(() => {
-    const isValid = responseDataOptionsArray.map(
-      (responseDataOptions: string[]) =>
-        responseDataOptions.map((responseDataOption) =>
-          GRAMMAR_TEXT_INPUT_REGEX.test(responseDataOption)
-        )
+    const isValid = responseDataOptionsArray.map((responseDataOptions: string[]) =>
+      responseDataOptions.map((responseDataOption) =>
+        GRAMMAR_TEXT_INPUT_REGEX.test(responseDataOption)
+      )
     );
 
     surveyBuilderDispatch({
@@ -415,8 +416,7 @@ function SurveyBuilder() {
         type: surveyBuilderAction.setIsMaxResponseDataOptionsReached,
         payload: {
           index,
-          value:
-            responseDataOptions.length === SURVEY_MAX_RESPONSE_DATA_OPTIONS,
+          value: responseDataOptions.length === SURVEY_MAX_RESPONSE_DATA_OPTIONS,
         },
       });
     });
@@ -430,11 +430,7 @@ function SurveyBuilder() {
 
     // each question group has a corresponding surveyStatistics object that is added to the final survey object on submit
     const surveyStatistics = questions.reduce(
-      (
-        surveyStatisticsAcc: SurveyStatistics[],
-        question: string,
-        questionIdx
-      ) => {
+      (surveyStatisticsAcc: SurveyStatistics[], question: string, questionIdx) => {
         // the responseDistribution object will differ according to the responseKind
         const responseInput = responseInputHtml[questionIdx];
 
@@ -442,13 +438,13 @@ function SurveyBuilder() {
         let surveyStatisticObj = addFieldsToObject({
           object: Object.create(null),
           fieldValuesTuples: [
-            ['question', question],
-            ['totalResponses', 0],
-            ['responseInput', responseInput],
+            ["question", question],
+            ["totalResponses", 0],
+            ["responseInput", responseInput],
           ],
         });
 
-        if (responseInput === 'checkbox' || responseInput === 'radio') {
+        if (responseInput === "checkbox" || responseInput === "radio") {
           const responseDataOptions = responseDataOptionsArray[questionIdx];
           if (!responseDataOptions) {
             return surveyStatisticsAcc;
@@ -457,10 +453,7 @@ function SurveyBuilder() {
 
           //for 'checkbox' || 'radio', responseDistribution object has keys that are the response options and values that are the total responses for that option (initialized to 0)
           const responseDistribution = responseDataOptions.reduce(
-            (
-              responseDistributionAcc: Record<string, 0>,
-              responseDataOption: string
-            ) => {
+            (responseDistributionAcc: Record<string, 0>, responseDataOption: string) => {
               responseDistributionAcc = addFieldsToObject({
                 object: responseDistributionAcc,
                 fieldValuesTuples: [[responseDataOption, 0]],
@@ -473,36 +466,36 @@ function SurveyBuilder() {
 
           surveyStatisticObj = addFieldsToObject({
             object: surveyStatisticObj,
-            fieldValuesTuples: [['responseDistribution', responseDistribution]],
+            fieldValuesTuples: [["responseDistribution", responseDistribution]],
           });
         }
         // agreeDisagree inputs share the same responseDistribution structure
-        else if (responseInput === 'agreeDisagree') {
+        else if (responseInput === "agreeDisagree") {
           const responseDistribution = {
-            'Strongly disagree': 0,
+            "Strongly disagree": 0,
             Disagree: 0,
-            'Neither agree nor disagree': 0,
+            "Neither agree nor disagree": 0,
             Agree: 0,
-            'Strongly agree': 0,
+            "Strongly agree": 0,
           };
 
           surveyStatisticObj = addFieldsToObject({
             object: surveyStatisticObj,
-            fieldValuesTuples: [['responseDistribution', responseDistribution]],
+            fieldValuesTuples: [["responseDistribution", responseDistribution]],
           });
         } else {
           // for ratings: 'emotion' and 'stars'
           const responseDistribution = {
-            '1': 0,
-            '2': 0,
-            '3': 0,
-            '4': 0,
-            '5': 0,
+            "1": 0,
+            "2": 0,
+            "3": 0,
+            "4": 0,
+            "5": 0,
           };
 
           surveyStatisticObj = addFieldsToObject({
             object: surveyStatisticObj,
-            fieldValuesTuples: [['responseDistribution', responseDistribution]],
+            fieldValuesTuples: [["responseDistribution", responseDistribution]],
           });
         }
 
@@ -597,7 +590,7 @@ function SurveyBuilder() {
     surveyBuilderDispatch({
       type: surveyBuilderAction.setStepsInError,
       payload: {
-        kind: isStepInError ? 'add' : 'delete',
+        kind: isStepInError ? "add" : "delete",
         step: 0,
       },
     });
@@ -610,7 +603,7 @@ function SurveyBuilder() {
       const currentInputHtml = responseInputHtml[index];
       const correspondingDataOptions = responseDataOptionsArray?.[index];
       const isDataOptionsPresent =
-        currentInputHtml === 'checkbox' || currentInputHtml === 'radio'
+        currentInputHtml === "checkbox" || currentInputHtml === "radio"
           ? correspondingDataOptions?.length > 0
           : true;
 
@@ -618,14 +611,14 @@ function SurveyBuilder() {
         ? surveyBuilderDispatch({
             type: surveyBuilderAction.setStepsInError,
             payload: {
-              kind: 'delete',
+              kind: "delete",
               step: index + 1,
             },
           })
         : surveyBuilderDispatch({
             type: surveyBuilderAction.setStepsInError,
             payload: {
-              kind: 'add',
+              kind: "add",
               step: index + 1,
             },
           });
@@ -641,30 +634,27 @@ function SurveyBuilder() {
 
   // validate stepper state on every dynamically created response data options input groups
   useEffect(() => {
-    areResponseDataOptionsValid.forEach(
-      (areValidResponseDataOptions, index) => {
-        const isAnyResponseDataForQuestionInError =
-          areValidResponseDataOptions.some(
-            (isValidResponseDataOption) => !isValidResponseDataOption
-          );
+    areResponseDataOptionsValid.forEach((areValidResponseDataOptions, index) => {
+      const isAnyResponseDataForQuestionInError = areValidResponseDataOptions.some(
+        (isValidResponseDataOption) => !isValidResponseDataOption
+      );
 
-        isAnyResponseDataForQuestionInError
-          ? surveyBuilderDispatch({
-              type: surveyBuilderAction.setStepsInError,
-              payload: {
-                kind: 'add',
-                step: index + 1,
-              },
-            })
-          : surveyBuilderDispatch({
-              type: surveyBuilderAction.setStepsInError,
-              payload: {
-                kind: 'delete',
-                step: index + 1,
-              },
-            });
-      }
-    );
+      isAnyResponseDataForQuestionInError
+        ? surveyBuilderDispatch({
+            type: surveyBuilderAction.setStepsInError,
+            payload: {
+              kind: "add",
+              step: index + 1,
+            },
+          })
+        : surveyBuilderDispatch({
+            type: surveyBuilderAction.setStepsInError,
+            payload: {
+              kind: "delete",
+              step: index + 1,
+            },
+          });
+    });
   }, [areResponseDataOptionsValid]);
 
   // set preview survey props on trigger preview survey button
@@ -693,7 +683,7 @@ function SurveyBuilder() {
   useEffect(() => {
     logState({
       state: surveyBuilderState,
-      groupLabel: 'survey builder state',
+      groupLabel: "survey builder state",
     });
   }, [surveyBuilderState]);
   /** ------------- end useEffects ------------- */
@@ -703,29 +693,28 @@ function SurveyBuilder() {
   /** ------------- end component render bypass ------------- */
 
   /** ------------- begin text inputs validation ------------- */
-  const [titleInputErrorText, titleInputValidText] =
-    AccessibleErrorValidTextElements({
-      inputElementKind: 'survey title',
-      inputText: surveyTitle,
-      isInputTextFocused: isSurveyTitleFocused,
-      isValidInputText: isValidSurveyTitle,
-      regexValidationText: returnGrammarValidationText({
-        content: surveyTitle,
-        contentKind: 'survey title',
-        minLength: 2,
-        maxLength: 75,
-      }),
-    });
+  const [titleInputErrorText, titleInputValidText] = AccessibleErrorValidTextElements({
+    inputElementKind: "survey title",
+    inputText: surveyTitle,
+    isInputTextFocused: isSurveyTitleFocused,
+    isValidInputText: isValidSurveyTitle,
+    regexValidationText: returnGrammarValidationText({
+      content: surveyTitle,
+      contentKind: "survey title",
+      minLength: 2,
+      maxLength: 75,
+    }),
+  });
 
   const [descriptionInputErrorText, descriptionInputValidText] =
     AccessibleErrorValidTextElements({
-      inputElementKind: 'survey description',
+      inputElementKind: "survey description",
       inputText: surveyDescription,
       isInputTextFocused: isSurveyDescriptionFocused,
       isValidInputText: isValidSurveyDescription,
       regexValidationText: returnGrammarValidationText({
         content: surveyDescription,
-        contentKind: 'survey description',
+        contentKind: "survey description",
         minLength: 2,
         maxLength: 2000,
       }),
@@ -733,52 +722,50 @@ function SurveyBuilder() {
 
   const [expiryDateInputErrorText, expiryDateInputValidText] =
     AccessibleErrorValidTextElements({
-      inputElementKind: 'expiry date',
+      inputElementKind: "expiry date",
       inputText: expiryDate,
       isInputTextFocused: isExpiryDateFocused,
       isValidInputText: isValidExpiryDate,
       regexValidationText: returnDateNearFutureValidationText({
         content: expiryDate,
-        contentKind: 'expiry date',
+        contentKind: "expiry date",
       }),
     });
 
   const [questionInputsErrorText, questionInputsValidText] =
     AccessibleErrorValidTextElementsForDynamicInputs({
-      semanticName: 'question',
+      semanticName: "question",
       inputTextArray: questions,
       areValidInputTexts: areValidQuestions,
       areInputTextsFocused: areQuestionsFocused,
       regexValidationProps: questions.map((question) => ({
         content: question,
-        contentKind: 'question',
+        contentKind: "question",
         minLength: 2,
         maxLength: 100,
       })),
       regexValidationFunction: returnGrammarValidationText,
     });
 
-  const responseDataOptionsErrorValidTextArrays: [
-    JSX.Element[],
-    JSX.Element[]
-  ][] = responseDataOptionsArray.map((responseDataOptions, questionIdx) => {
-    const [responseDataOptionsErrorTexts, responseDataOptionsValidTexts] =
-      AccessibleErrorValidTextElementsForDynamicInputs({
-        semanticName: `Question ${questionIdx + 1}: option`,
-        inputTextArray: responseDataOptions,
-        areValidInputTexts: areResponseDataOptionsValid?.[questionIdx],
-        areInputTextsFocused: areResponseDataOptionsFocused?.[questionIdx],
-        regexValidationProps: responseDataOptions.map((responseDataOption) => ({
-          content: responseDataOption,
-          contentKind: 'text',
-          minLength: 2,
-          maxLength: 100,
-        })),
-        regexValidationFunction: returnGrammarValidationText,
-      });
+  const responseDataOptionsErrorValidTextArrays: [JSX.Element[], JSX.Element[]][] =
+    responseDataOptionsArray.map((responseDataOptions, questionIdx) => {
+      const [responseDataOptionsErrorTexts, responseDataOptionsValidTexts] =
+        AccessibleErrorValidTextElementsForDynamicInputs({
+          semanticName: `Question ${questionIdx + 1}: option`,
+          inputTextArray: responseDataOptions,
+          areValidInputTexts: areResponseDataOptionsValid?.[questionIdx],
+          areInputTextsFocused: areResponseDataOptionsFocused?.[questionIdx],
+          regexValidationProps: responseDataOptions.map((responseDataOption) => ({
+            content: responseDataOption,
+            contentKind: "text",
+            minLength: 2,
+            maxLength: 100,
+          })),
+          regexValidationFunction: returnGrammarValidationText,
+        });
 
-    return [responseDataOptionsErrorTexts, responseDataOptionsValidTexts];
-  });
+      return [responseDataOptionsErrorTexts, responseDataOptionsValidTexts];
+    });
   /** ------------- end text inputs validation ------------- */
 
   /** ------------- begin input creators info objects */
@@ -789,7 +776,7 @@ function SurveyBuilder() {
     },
     inputText: surveyTitle,
     isValidInputText: isValidSurveyTitle,
-    label: 'Survey Title',
+    label: "Survey Title",
     onBlur: () => {
       surveyBuilderDispatch({
         type: surveyBuilderAction.setIsSurveyTitleFocused,
@@ -808,71 +795,69 @@ function SurveyBuilder() {
         payload: true,
       });
     },
-    placeholder: 'Enter survey title',
-    semanticName: 'survey title',
+    placeholder: "Enter survey title",
+    semanticName: "survey title",
     required: true,
     withAsterisk: true,
   };
 
-  const surveyDescriptionTextAreaInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
-    {
-      description: {
-        error: descriptionInputErrorText,
-        valid: descriptionInputValidText,
-      },
-      inputText: surveyDescription,
-      isValidInputText: isValidSurveyDescription,
-      label: 'Survey Description',
-      onBlur: () => {
-        surveyBuilderDispatch({
-          type: surveyBuilderAction.setIsSurveyDescriptionFocused,
-          payload: false,
-        });
-      },
-      onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
-        surveyBuilderDispatch({
-          type: surveyBuilderAction.setSurveyDescription,
-          payload: event.currentTarget.value,
-        });
-      },
-      onFocus: () => {
-        surveyBuilderDispatch({
-          type: surveyBuilderAction.setIsSurveyDescriptionFocused,
-          payload: true,
-        });
-      },
-      placeholder: 'Enter survey description',
-      semanticName: 'survey description',
-      required: true,
-      withAsterisk: true,
-    };
+  const surveyDescriptionTextAreaInputCreatorInfo: AccessibleTextAreaInputCreatorInfo = {
+    description: {
+      error: descriptionInputErrorText,
+      valid: descriptionInputValidText,
+    },
+    inputText: surveyDescription,
+    isValidInputText: isValidSurveyDescription,
+    label: "Survey Description",
+    onBlur: () => {
+      surveyBuilderDispatch({
+        type: surveyBuilderAction.setIsSurveyDescriptionFocused,
+        payload: false,
+      });
+    },
+    onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
+      surveyBuilderDispatch({
+        type: surveyBuilderAction.setSurveyDescription,
+        payload: event.currentTarget.value,
+      });
+    },
+    onFocus: () => {
+      surveyBuilderDispatch({
+        type: surveyBuilderAction.setIsSurveyDescriptionFocused,
+        payload: true,
+      });
+    },
+    placeholder: "Enter survey description",
+    semanticName: "survey description",
+    required: true,
+    withAsterisk: true,
+  };
 
-  const surveyRecipientsSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo =
-    {
-      data: SURVEY_BUILDER_RECIPIENT_DATA,
-      description: 'Select the target recipients',
-      label: 'Survey recipients',
-      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-        surveyBuilderDispatch({
-          type: surveyBuilderAction.setSurveyRecipients,
-          payload: event.currentTarget.value as SurveyRecipient,
-        });
-      },
-      value: surveyRecipients,
-      required: true,
-      withAsterisk: true,
-    };
+  const surveyRecipientsSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
+    data: SURVEY_BUILDER_RECIPIENT_DATA,
+    description: "Select the target recipients",
+    label: "Survey recipients",
+    onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+      surveyBuilderDispatch({
+        type: surveyBuilderAction.setSurveyRecipients,
+        payload: event.currentTarget.value as SurveyRecipient,
+      });
+    },
+    value: surveyRecipients,
+    required: true,
+    withAsterisk: true,
+  };
 
   const expiryDateInputCreatorInfo: AccessibleDateTimeInputCreatorInfo = {
     description: {
       error: expiryDateInputErrorText,
       valid: expiryDateInputValidText,
     },
-    inputKind: 'date',
-    dateKind: 'date near future',
+    inputKind: "date",
+    dateKind: "date near future",
     inputText: expiryDate,
     isValidInputText: isValidExpiryDate,
-    label: 'Expiry Date',
+    label: "Expiry Date",
     onBlur: () => {
       surveyBuilderDispatch({
         type: surveyBuilderAction.setIsExpiryDateFocused,
@@ -891,8 +876,8 @@ function SurveyBuilder() {
         payload: true,
       });
     },
-    placeholder: 'Enter expiry date',
-    semanticName: 'expiry date',
+    placeholder: "Enter expiry date",
+    semanticName: "expiry date",
     required: true,
     withAsterisk: true,
   };
@@ -910,115 +895,114 @@ function SurveyBuilder() {
       ? (width - 300 - 44) * 0.8
       : 900 - 74;
 
-  const questionsInputCreatorInfo: AccessibleTextInputCreatorInfo[] =
-    Array.from({
-      length: questions.length,
-    }).map((_, index) => {
-      const deleteQuestionGroupLabel =
-        questions.length === 1
-          ? 'Survey must have atleast one question'
-          : `Delete ${
-              questions[index].length > 11
-                ? questions[index].slice(0, 11) + '...'
-                : questions[index]
-            }`;
+  const questionsInputCreatorInfo: AccessibleTextInputCreatorInfo[] = Array.from({
+    length: questions.length,
+  }).map((_, index) => {
+    const deleteQuestionGroupLabel =
+      questions.length === 1
+        ? "Survey must have atleast one question"
+        : `Delete ${
+            questions[index].length > 11
+              ? questions[index].slice(0, 11) + "..."
+              : questions[index]
+          }`;
 
-      const createdDeleteQuestionGroupButton = returnAccessibleButtonElements([
-        {
-          buttonLabel: 'Delete',
-          semanticDescription: `Delete question group ${index + 1}`,
-          semanticName: `question ${index + 1}`,
-          buttonDisabled: questions.length === 1,
-          buttonOnClick: () => {
-            surveyBuilderDispatch({
-              type: surveyBuilderAction.deleteQuestionGroup,
-              payload: index,
-            });
-            // enables display of the previous stepper page after deletion
-            surveyBuilderDispatch({
-              type: surveyBuilderAction.setCurrentStepperPosition,
-              payload: currentStepperPosition - 1,
-            });
-          },
-        },
-      ]);
-
-      const createdDeleteButtonWithTooltip = (
-        <Tooltip label={deleteQuestionGroupLabel}>
-          <Group>{createdDeleteQuestionGroupButton}</Group>
-        </Tooltip>
-      );
-
-      const creatorInfoObject: AccessibleTextInputCreatorInfo = {
-        textInputWidth: customWidth,
-        description: {
-          error: questionInputsErrorText?.[index],
-          valid: questionInputsValidText?.[index],
-        },
-        inputText: questions?.[index],
-        isValidInputText: areValidQuestions?.[index],
-        label: `Question: ${index + 1}`,
-        onBlur: () => {
-          surveyBuilderDispatch({
-            type: surveyBuilderAction.setAreQuestionsFocused,
-            payload: {
-              index,
-              value: false,
-            },
-          });
-        },
-        onChange: (event: ChangeEvent<HTMLInputElement>) => {
-          surveyBuilderDispatch({
-            type: surveyBuilderAction.setQuestions,
-            payload: {
-              index,
-              value: event.currentTarget.value,
-            },
-          });
-        },
-        onFocus: () => {
-          surveyBuilderDispatch({
-            type: surveyBuilderAction.setAreQuestionsFocused,
-            payload: {
-              index,
-              value: true,
-            },
-          });
-        },
-        minLength: 2,
-        maxLength: 100,
-        placeholder: 'Enter question',
+    const createdDeleteQuestionGroupButton = returnAccessibleButtonElements([
+      {
+        buttonLabel: "Delete",
+        semanticDescription: `Delete question group ${index + 1}`,
         semanticName: `question ${index + 1}`,
-        required: true,
-        withAsterisk: false,
-        // dynamicInputProps: {
-        //   dynamicIndex: index,
-        //   buttonDisabled: questions.length === 1,
-        //   dynamicLabel: dynamicInputLabel,
-        //   dynamicInputOnClick: () => {
-        //     surveyBuilderDispatch({
-        //       type: surveyBuilderAction.deleteQuestionGroup,
-        //       payload: index,
-        //     });
-        //     // enables display of the previous stepper page after deletion
-        //     surveyBuilderDispatch({
-        //       type: surveyBuilderAction.setCurrentStepperPosition,
-        //       payload: currentStepperPosition - 1,
-        //     });
-        //   },
-        //   semanticAction: 'delete',
-        // },
-        dynamicInputs: [createdDeleteButtonWithTooltip],
-        ref: index === questions.length - 1 ? newQuestionInputRef : null,
-      };
+        buttonDisabled: questions.length === 1,
+        buttonOnClick: () => {
+          surveyBuilderDispatch({
+            type: surveyBuilderAction.deleteQuestionGroup,
+            payload: index,
+          });
+          // enables display of the previous stepper page after deletion
+          surveyBuilderDispatch({
+            type: surveyBuilderAction.setCurrentStepperPosition,
+            payload: currentStepperPosition - 1,
+          });
+        },
+      },
+    ]);
 
-      return creatorInfoObject;
-    });
+    const createdDeleteButtonWithTooltip = (
+      <Tooltip label={deleteQuestionGroupLabel}>
+        <Group>{createdDeleteQuestionGroupButton}</Group>
+      </Tooltip>
+    );
+
+    const creatorInfoObject: AccessibleTextInputCreatorInfo = {
+      textInputWidth: customWidth,
+      description: {
+        error: questionInputsErrorText?.[index],
+        valid: questionInputsValidText?.[index],
+      },
+      inputText: questions?.[index],
+      isValidInputText: areValidQuestions?.[index],
+      label: `Question: ${index + 1}`,
+      onBlur: () => {
+        surveyBuilderDispatch({
+          type: surveyBuilderAction.setAreQuestionsFocused,
+          payload: {
+            index,
+            value: false,
+          },
+        });
+      },
+      onChange: (event: ChangeEvent<HTMLInputElement>) => {
+        surveyBuilderDispatch({
+          type: surveyBuilderAction.setQuestions,
+          payload: {
+            index,
+            value: event.currentTarget.value,
+          },
+        });
+      },
+      onFocus: () => {
+        surveyBuilderDispatch({
+          type: surveyBuilderAction.setAreQuestionsFocused,
+          payload: {
+            index,
+            value: true,
+          },
+        });
+      },
+      minLength: 2,
+      maxLength: 100,
+      placeholder: "Enter question",
+      semanticName: `question ${index + 1}`,
+      required: true,
+      withAsterisk: false,
+      // dynamicInputProps: {
+      //   dynamicIndex: index,
+      //   buttonDisabled: questions.length === 1,
+      //   dynamicLabel: dynamicInputLabel,
+      //   dynamicInputOnClick: () => {
+      //     surveyBuilderDispatch({
+      //       type: surveyBuilderAction.deleteQuestionGroup,
+      //       payload: index,
+      //     });
+      //     // enables display of the previous stepper page after deletion
+      //     surveyBuilderDispatch({
+      //       type: surveyBuilderAction.setCurrentStepperPosition,
+      //       payload: currentStepperPosition - 1,
+      //     });
+      //   },
+      //   semanticAction: 'delete',
+      // },
+      dynamicInputs: [createdDeleteButtonWithTooltip],
+      ref: index === questions.length - 1 ? newQuestionInputRef : null,
+    };
+
+    return creatorInfoObject;
+  });
 
   const responseKindRadioGroupCreatorInfo: AccessibleRadioGroupInputCreatorInfo[] =
     Array.from({ length: questions.length }).map((_, index) => {
       const creatorInfoObject: AccessibleRadioGroupInputCreatorInfo = {
-        description: 'Choose a response type',
+        description: "Choose a response type",
         dataObjectArray: SURVEY_BUILDER_RESPONSE_KIND_DATA,
         label: `Response Type for Question ${index + 1}`,
         name: `response type for question ${index + 1}`,
@@ -1043,10 +1027,8 @@ function SurveyBuilder() {
   const responseInputHtmlRadioGroupCreatorInfo: AccessibleRadioGroupInputCreatorInfo[] =
     Array.from({ length: questions.length }).map((_, index) => {
       const creatorInfoObject: AccessibleRadioGroupInputCreatorInfo = {
-        description: 'If radio or checkbox, data options must be present',
-        dataObjectArray: SURVEY_BUILDER_INPUT_HTML_DATA.get(
-          responseKinds?.[index]
-        ) as {
+        description: "If radio or checkbox, data options must be present",
+        dataObjectArray: SURVEY_BUILDER_INPUT_HTML_DATA.get(responseKinds?.[index]) as {
           value: string;
           label: string;
         }[],
@@ -1080,38 +1062,34 @@ function SurveyBuilder() {
         }).map((_, optionIdx) => {
           const deleteResponseDataLabel = `Delete ${
             questions?.[questionIdx]?.length > 11
-              ? questions?.[questionIdx].slice(0, 11) + '...'
+              ? questions?.[questionIdx].slice(0, 11) + "..."
               : questions?.[questionIdx]
-          } ${questions?.[questionIdx]?.length > 0 ? ':' : ''} ${
+          } ${questions?.[questionIdx]?.length > 0 ? ":" : ""} ${
             responseDataOptionsArray?.[questionIdx]?.[optionIdx]?.length > 11
-              ? responseDataOptionsArray?.[questionIdx]?.[optionIdx]?.slice(
-                  0,
-                  11
-                ) + '...'
+              ? responseDataOptionsArray?.[questionIdx]?.[optionIdx]?.slice(0, 11) + "..."
               : responseDataOptionsArray?.[questionIdx]?.[optionIdx]
           } ?`;
 
-          const createdDeleteResponseDataOptionButton =
-            returnAccessibleButtonElements([
-              {
-                buttonLabel: 'Delete',
-                semanticDescription: `Delete response data option ${
-                  optionIdx + 1
-                } for question ${questionIdx + 1}`,
-                semanticName: `response data option ${
-                  optionIdx + 1
-                } for question ${questionIdx + 1}`,
-                buttonOnClick: () => {
-                  surveyBuilderDispatch({
-                    type: surveyBuilderAction.deleteResponseDataOption,
-                    payload: {
-                      questionIdx,
-                      optionIdx,
-                    },
-                  });
-                },
+          const createdDeleteResponseDataOptionButton = returnAccessibleButtonElements([
+            {
+              buttonLabel: "Delete",
+              semanticDescription: `Delete response data option ${
+                optionIdx + 1
+              } for question ${questionIdx + 1}`,
+              semanticName: `response data option ${optionIdx + 1} for question ${
+                questionIdx + 1
+              }`,
+              buttonOnClick: () => {
+                surveyBuilderDispatch({
+                  type: surveyBuilderAction.deleteResponseDataOption,
+                  payload: {
+                    questionIdx,
+                    optionIdx,
+                  },
+                });
               },
-            ]);
+            },
+          ]);
 
           const createdDeleteButtonWithTooltip = (
             <Tooltip label={deleteResponseDataLabel}>
@@ -1123,20 +1101,13 @@ function SurveyBuilder() {
             textInputWidth: customWidth,
             description: {
               error:
-                responseDataOptionsErrorValidTextArrays?.[questionIdx]?.[0]?.[
-                  optionIdx
-                ],
+                responseDataOptionsErrorValidTextArrays?.[questionIdx]?.[0]?.[optionIdx],
               valid:
-                responseDataOptionsErrorValidTextArrays?.[questionIdx]?.[1]?.[
-                  optionIdx
-                ],
+                responseDataOptionsErrorValidTextArrays?.[questionIdx]?.[1]?.[optionIdx],
             },
             inputText: responseDataOptionsArray?.[questionIdx]?.[optionIdx],
-            isValidInputText:
-              areResponseDataOptionsValid?.[questionIdx]?.[optionIdx],
-            label: `Response Option ${optionIdx + 1} for Question ${
-              questionIdx + 1
-            }`,
+            isValidInputText: areResponseDataOptionsValid?.[questionIdx]?.[optionIdx],
+            label: `Response Option ${optionIdx + 1} for Question ${questionIdx + 1}`,
             onBlur: () => {
               surveyBuilderDispatch({
                 type: surveyBuilderAction.setAreResponseDataOptionsFocused,
@@ -1169,14 +1140,12 @@ function SurveyBuilder() {
             },
             minLength: 2,
             maxLength: 100,
-            placeholder: 'Enter a response option answer',
+            placeholder: "Enter a response option answer",
             ref:
               optionIdx === responseDataOptionsArray?.[questionIdx]?.length - 1
                 ? newResponseDataOptionInputRef
                 : null,
-            semanticName: `Question ${questionIdx + 1}: option-${
-              optionIdx + 1
-            }`,
+            semanticName: `Question ${questionIdx + 1}: option-${optionIdx + 1}`,
             required: true,
             withAsterisk: false,
             // dynamicInputProps: {
@@ -1203,7 +1172,7 @@ function SurveyBuilder() {
     });
 
   const textColor =
-    colorScheme === 'light'
+    colorScheme === "light"
       ? `${primaryColor}.${primaryShade.light}`
       : `${primaryColor}.${primaryShade.dark}`;
   const addNewQuestionButtonCreatorInfo: AccessibleButtonCreatorInfo = {
@@ -1211,7 +1180,7 @@ function SurveyBuilder() {
     buttonLabel: (
       <Tooltip label="Add new question">
         <Group>
-          <Text size="xs" color={isMaxQuestionsReached ? 'gray' : textColor}>
+          <Text size="xs" color={isMaxQuestionsReached ? "gray" : textColor}>
             Add question
           </Text>
         </Group>
@@ -1239,8 +1208,8 @@ function SurveyBuilder() {
         payload: currentStepperPosition + 1,
       });
     },
-    semanticDescription: 'add new question text input button',
-    semanticName: 'add question button',
+    semanticDescription: "add new question text input button",
+    semanticName: "add question button",
   };
 
   const addNewResponseDataOptionButtonCreatorInfo: AccessibleButtonCreatorInfo[] =
@@ -1251,16 +1220,14 @@ function SurveyBuilder() {
           <Tooltip
             label={
               isMaxResponseDataOptionsReached?.[index]
-                ? 'Max response data options reached'
-                : 'Add new response data option'
+                ? "Max response data options reached"
+                : "Add new response data option"
             }
           >
             <Group>
               <Text
                 size="xs"
-                color={
-                  isMaxResponseDataOptionsReached?.[index] ? 'gray' : textColor
-                }
+                color={isMaxResponseDataOptionsReached?.[index] ? "gray" : textColor}
               >
                 Add option
               </Text>
@@ -1284,17 +1251,17 @@ function SurveyBuilder() {
             },
           });
         },
-        semanticDescription: 'add new response data option text input button',
-        semanticName: 'add response data option button',
+        semanticDescription: "add new response data option text input button",
+        semanticName: "add response data option button",
       };
 
       return creatorInfoObject;
     });
 
   const submitButtonCreatorInfo: AccessibleButtonCreatorInfo = {
-    buttonLabel: 'Submit',
-    semanticDescription: 'survey builder form submit button',
-    semanticName: 'submit button',
+    buttonLabel: "Submit",
+    semanticDescription: "survey builder form submit button",
+    semanticName: "submit button",
     leftIcon: <TbUpload />,
     rightIcon: <TbChartPie4 />,
     buttonOnClick: (_event: MouseEvent<HTMLButtonElement>) => {
@@ -1307,9 +1274,9 @@ function SurveyBuilder() {
   };
 
   const helpButtonCreatorInfo: AccessibleButtonCreatorInfo = {
-    buttonLabel: 'Help',
-    semanticDescription: 'survey builder help button',
-    semanticName: 'help button',
+    buttonLabel: "Help",
+    semanticDescription: "survey builder help button",
+    semanticName: "help button",
     leftIcon: <TbHelp />,
     buttonOnClick: () => {
       openHelpModal();
@@ -1317,9 +1284,9 @@ function SurveyBuilder() {
   };
 
   const previewSurveyButtonCreatorInfo: AccessibleButtonCreatorInfo = {
-    buttonLabel: 'Preview',
-    semanticDescription: 'View survey as it would appear to respondents',
-    semanticName: 'preview survey button',
+    buttonLabel: "Preview",
+    semanticDescription: "View survey as it would appear to respondents",
+    semanticName: "preview survey button",
     leftIcon: <TbEye />,
     rightIcon: <TbChartPie4 />,
     buttonOnClick: () => {
@@ -1345,15 +1312,13 @@ function SurveyBuilder() {
     </Modal>
   );
 
-  const [createdSurveyDescriptionTextAreaInput] =
-    returnAccessibleTextAreaInputElements([
-      surveyDescriptionTextAreaInputCreatorInfo,
-    ]);
+  const [createdSurveyDescriptionTextAreaInput] = returnAccessibleTextAreaInputElements([
+    surveyDescriptionTextAreaInputCreatorInfo,
+  ]);
 
-  const [createdSurveyRecipientsSelectInput] =
-    returnAccessibleSelectInputElements([
-      surveyRecipientsSelectInputCreatorInfo,
-    ]);
+  const [createdSurveyRecipientsSelectInput] = returnAccessibleSelectInputElements([
+    surveyRecipientsSelectInputCreatorInfo,
+  ]);
 
   const [createdExpiryDateInput] = returnAccessibleDateTimeElements([
     expiryDateInputCreatorInfo,
@@ -1370,18 +1335,16 @@ function SurveyBuilder() {
   const createdResponseDataOptionsTextInputs =
     responseDataOptionsTextInputCreatorInfoArray.map(
       (responseDataOptionsTextInputCreatorInfo, index) =>
-        responseInputHtml[index] === 'checkbox' ||
-        responseInputHtml[index] === 'radio'
+        responseInputHtml[index] === "checkbox" || responseInputHtml[index] === "radio"
           ? returnAccessibleDynamicTextInputElements(
               responseDataOptionsTextInputCreatorInfo
             )
           : null
     );
 
-  const createdResponseKindRadioGroups =
-    returnAccessibleDynamicRadioGroupInputsElements(
-      responseKindRadioGroupCreatorInfo
-    );
+  const createdResponseKindRadioGroups = returnAccessibleDynamicRadioGroupInputsElements(
+    responseKindRadioGroupCreatorInfo
+  );
 
   const createdResponseInputHtmlRadioGroups =
     returnAccessibleDynamicRadioGroupInputsElements(
@@ -1403,11 +1366,8 @@ function SurveyBuilder() {
   const createdAddNewResponseDataOptionButtons =
     addNewResponseDataOptionButtonCreatorInfo.map(
       (addNewResponseDataOptionButtonCreatorInfo, index) =>
-        responseInputHtml[index] === 'checkbox' ||
-        responseInputHtml[index] === 'radio'
-          ? returnAccessibleButtonElements([
-              addNewResponseDataOptionButtonCreatorInfo,
-            ])
+        responseInputHtml[index] === "checkbox" || responseInputHtml[index] === "radio"
+          ? returnAccessibleButtonElements([addNewResponseDataOptionButtonCreatorInfo])
           : null
     );
 
@@ -1416,9 +1376,7 @@ function SurveyBuilder() {
       opened={openedPreviewSurveyModal}
       onClose={closePreviewSurveyModal}
       centered
-      size={
-        width < 480 ? 375 : width < 640 ? 640 : width >= 1024 ? 1024 : width
-      }
+      size={width < 480 ? 375 : width < 640 ? 640 : width >= 1024 ? 1024 : width}
     >
       <PreviewSurvey
         surveyDescription={previewSurveyProps.surveyDescription}
@@ -1458,24 +1416,24 @@ function SurveyBuilder() {
   );
 
   const SURVEY_BUILDER_REVIEW_OBJECT: FormReviewObjectArray = {
-    'Survey Details': [
+    "Survey Details": [
       {
-        inputName: 'Survey Title',
+        inputName: "Survey Title",
         inputValue: surveyTitle,
         isInputValueValid: isValidSurveyTitle,
       },
       {
-        inputName: 'Survey Description',
+        inputName: "Survey Description",
         inputValue: surveyDescription,
         isInputValueValid: isValidSurveyDescription,
       },
       {
-        inputName: 'Survey Recipients',
+        inputName: "Survey Recipients",
         inputValue: surveyRecipients,
         isInputValueValid: true,
       },
       {
-        inputName: 'Expiry Date',
+        inputName: "Expiry Date",
         inputValue: expiryDate,
         isInputValueValid: isValidExpiryDate,
       },
@@ -1504,7 +1462,7 @@ function SurveyBuilder() {
       onCloseCallbacks={[
         closeSubmitSuccessNotificationModal,
         () => {
-          navigate('/home/outreach/survey-builder/display');
+          navigate("/home/outreach/survey-builder/display");
         },
       ]}
       opened={openedSubmitSuccessNotificationModal}
@@ -1512,9 +1470,7 @@ function SurveyBuilder() {
         loading: isSubmitting,
         text: isSubmitting ? submitMessage : successMessage,
       }}
-      title={
-        <Title order={4}>{isSuccessful ? 'Success!' : 'Submitting ...'}</Title>
-      }
+      title={<Title order={4}>{isSuccessful ? "Success!" : "Submitting ..."}</Title>}
     />
   );
 
@@ -1524,11 +1480,9 @@ function SurveyBuilder() {
         <Tooltip
           label={
             submitButtonDisabled
-              ? 'Please fix errors to enable preview survey button'
+              ? "Please fix errors to enable preview survey button"
               : `Preview survey: ${
-                  surveyTitle.length > 23
-                    ? surveyTitle.slice(0, 23) + '...'
-                    : surveyTitle
+                  surveyTitle.length > 23 ? surveyTitle.slice(0, 23) + "..." : surveyTitle
                 }`
           }
         >
@@ -1537,11 +1491,9 @@ function SurveyBuilder() {
         <Tooltip
           label={
             submitButtonDisabled
-              ? 'Please fix errors before submitting'
+              ? "Please fix errors before submitting"
               : `Submit survey: ${
-                  surveyTitle.length > 23
-                    ? surveyTitle.slice(0, 23) + '...'
-                    : surveyTitle
+                  surveyTitle.length > 23 ? surveyTitle.slice(0, 23) + "..." : surveyTitle
                 }`
           }
         >
@@ -1556,9 +1508,7 @@ function SurveyBuilder() {
     currentStepperPosition === 0 ? (
       displaySurveyDetailsFormPageOne
     ) : currentStepperPosition === 1 ? (
-      <FormLayoutWrapper>
-        {mergedSurveyQuestionsGroups.slice(0, 1)}
-      </FormLayoutWrapper>
+      <FormLayoutWrapper>{mergedSurveyQuestionsGroups.slice(0, 1)}</FormLayoutWrapper>
     ) : currentStepperPosition === maxStepperPosition - 1 ? (
       displaySurveyBuilderReviewPage
     ) : currentStepperPosition === maxStepperPosition ? (

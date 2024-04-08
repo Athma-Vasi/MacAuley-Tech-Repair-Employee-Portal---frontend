@@ -10,8 +10,8 @@ function DisplayRepairTickets() {
   const imageSrc =
     "https://images.pexels.com/photos/7639370/pexels-photo-7639370.jpeg?auto=compress";
   const imageAlt = "A Person Fixing a Laptop";
-  const resourceDescription = "Welcome to Repair Notes Management Portal";
-  const resourceTitle = "Repair Notes";
+  const resourceDescription = "Welcome to Repair Tickets Management Portal";
+  const resourceTitle = "Repair Tickets";
 
   const displayResourceHeader = (
     <DisplayResourceHeader
@@ -25,7 +25,7 @@ function DisplayRepairTickets() {
   const displayResource = (
     <DisplayResource<QueryResponseData<RepairTicketDocument>[]>
       componentQueryData={REPAIR_NOTE_QUERY_DATA}
-      createResourcePath="/home/repair-note/create"
+      createResourcePath="/home/repair-ticket/create"
       resourceUrlPaths={REPAIR_NOTE_ROUTE_PATHS}
       requestBodyHeading="repairTicket"
     />

@@ -1,8 +1,8 @@
-import { Group, Title, Tooltip } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
-import { InvalidTokenError } from 'jwt-decode';
-import { ChangeEvent, MouseEvent, useEffect, useReducer } from 'react';
-import { useErrorBoundary } from 'react-error-boundary';
+import { Group, Title, Tooltip } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
+import { InvalidTokenError } from "jwt-decode";
+import { ChangeEvent, MouseEvent, useEffect, useReducer } from "react";
+import { useErrorBoundary } from "react-error-boundary";
 import {
   TbCurrencyDollar,
   TbCurrencyEuro,
@@ -10,17 +10,17 @@ import {
   TbCurrencyRenminbi,
   TbCurrencyYen,
   TbUpload,
-} from 'react-icons/tb';
-import { useNavigate } from 'react-router-dom';
+} from "react-icons/tb";
+import { useNavigate } from "react-router-dom";
 
-import { COLORS_SWATCHES } from '../../../constants/data';
+import { COLORS_SWATCHES } from "../../../constants/data";
 import {
   DATE_NEAR_PAST_REGEX,
   GRAMMAR_TEXTAREA_INPUT_REGEX,
   MONEY_REGEX,
-} from '../../../constants/regex';
-import { globalAction } from '../../../context/globalProvider/state';
-import { useGlobalState, useWrapFetch } from '../../../hooks';
+} from "../../../constants/regex";
+import { globalAction } from "../../../context/globalProvider/state";
+import { useGlobalState, useWrapFetch } from "../../../hooks";
 import {
   AccessibleErrorValidTextElements,
   AccessibleSelectedDeselectedTextElements,
@@ -30,22 +30,22 @@ import {
   returnAccessibleSelectInputElements,
   returnAccessibleTextAreaInputElements,
   returnAccessibleTextInputElements,
-} from '../../../jsxCreators';
-import type { Currency, ResourceRequestServerResponse } from '../../../types';
+} from "../../../jsxCreators";
+import type { Currency, ResourceRequestServerResponse } from "../../../types";
 import {
   logState,
   returnDateNearPastValidationText,
-  returnGrammarValidationText,
   returnFloatAmountValidationText,
+  returnGrammarValidationText,
   returnThemeColors,
   urlBuilder,
-} from '../../../utils';
-import { CURRENCY_DATA } from '../../benefits/constants';
+} from "../../../utils";
+import { CURRENCY_DATA } from "../../benefits/constants";
 import FormReviewPage, {
   FormReviewObjectArray,
-} from '../../formReviewPage/FormReviewPage';
-import { ImageUpload } from '../../imageUpload';
-import { NotificationModal } from '../../notificationModal';
+} from "../../formReviewPage/FormReviewPage";
+import { ImageUpload } from "../../imageUpload";
+import { NotificationModal } from "../../notificationModal";
 import {
   AccessibleButtonCreatorInfo,
   AccessibleCheckboxSingleInputCreatorInfo,
@@ -55,20 +55,20 @@ import {
   AccessibleTextInputCreatorInfo,
   FormLayoutWrapper,
   StepperWrapper,
-} from '../../wrappers';
+} from "../../wrappers";
 import {
   EXPENSE_CLAIM_DESCRIPTION_OBJECTS,
   EXPENSE_CLAIM_KIND_DATA,
   EXPENSE_CLAIM_MAX_IMG_AMOUNT,
   EXPENSE_CLAIM_MAX_IMG_SIZE,
   EXPENSE_CLAIM_MAX_STEPPER_POSITION,
-} from '../constants';
+} from "../constants";
 import {
   createExpenseClaimAction,
   createExpenseClaimReducer,
   initialCreateExpenseClaimState,
-} from './state';
-import type { ExpenseClaimDocument, ExpenseClaimKind } from './types';
+} from "./state";
+import type { ExpenseClaimDocument, ExpenseClaimKind } from "./types";
 
 function CreateExpenseClaim() {
   const [createExpenseClaimState, createExpenseClaimDispatch] = useReducer(
@@ -140,7 +140,7 @@ function CreateExpenseClaim() {
       });
       createExpenseClaimDispatch({
         type: createExpenseClaimAction.setSubmitMessage,
-        payload: 'File uploads are being processed...',
+        payload: "File uploads are being processed...",
       });
       openSubmitSuccessNotificationModal();
 
@@ -151,13 +151,13 @@ function CreateExpenseClaim() {
       await Promise.all(
         imgFormDataArray.map(async (formData) => {
           const fileUploadUrl: URL = urlBuilder({
-            path: 'file-upload',
+            path: "file-upload",
           });
 
           const imgUpLoadRequestInit: RequestInit = {
-            method: 'POST',
+            method: "POST",
             headers: {
-              Authorization: '',
+              Authorization: "",
             },
             body: formData,
           };
@@ -188,7 +188,7 @@ function CreateExpenseClaim() {
             });
             createExpenseClaimDispatch({
               type: createExpenseClaimAction.setSubmitMessage,
-              payload: '',
+              payload: "",
             });
 
             createExpenseClaimDispatch({
@@ -197,22 +197,21 @@ function CreateExpenseClaim() {
             });
             createExpenseClaimDispatch({
               type: createExpenseClaimAction.setSuccessMessage,
-              payload:
-                imgUploadResponseData.message ?? 'File uploads successful.',
+              payload: imgUploadResponseData.message ?? "File uploads successful.",
             });
 
             return imgUploadResponseData;
           } catch (error: any) {
-            if (!isMounted || error.name === 'AbortError') {
+            if (!isMounted || error.name === "AbortError") {
               return;
             }
 
             const errorMessage =
               error instanceof InvalidTokenError
-                ? 'Invalid token. Please login again.'
+                ? "Invalid token. Please login again."
                 : !error.response
-                ? 'Network error. Please try again.'
-                : error?.message ?? 'Unknown error occurred. Please try again.';
+                ? "Network error. Please try again."
+                : error?.message ?? "Unknown error occurred. Please try again.";
 
             globalDispatch({
               type: globalAction.setErrorState,
@@ -220,13 +219,13 @@ function CreateExpenseClaim() {
                 isError: true,
                 errorMessage,
                 errorCallback: () => {
-                  navigate('/home');
+                  navigate("/home");
 
                   globalDispatch({
                     type: globalAction.setErrorState,
                     payload: {
                       isError: false,
-                      errorMessage: '',
+                      errorMessage: "",
                       errorCallback: () => {},
                     },
                   });
@@ -253,29 +252,29 @@ function CreateExpenseClaim() {
           });
 
           const expenseUrl: URL = urlBuilder({
-            path: 'actions/company/expense-claim',
+            path: "actions/company/expense-claim",
           });
 
           const expenseClaimRequestBody = JSON.stringify({
-            expenseClaim: {
+            expenseClaimSchema: {
               uploadedFilesIds: imgUploadResponseData
                 .filter((item) => item !== undefined)
                 .map((item) => item?.documentId),
               expenseClaimKind,
               expenseClaimCurrency,
-              expenseClaimAmount: Number(expenseClaimAmount.replace(',', '.')),
+              expenseClaimAmount: Number(expenseClaimAmount.replace(",", ".")),
               expenseClaimDate,
               expenseClaimDescription,
               additionalComments,
               acknowledgement,
-              requestStatus: 'pending',
+              requestStatus: "pending",
             },
           });
 
           const expenseClaimRequestInit: RequestInit = {
-            method: 'POST',
+            method: "POST",
             headers: {
-              'Content-Type': 'application/json',
+              "Content-Type": "application/json",
             },
             body: expenseClaimRequestBody,
           };
@@ -304,20 +303,19 @@ function CreateExpenseClaim() {
             });
             createExpenseClaimDispatch({
               type: createExpenseClaimAction.setSuccessMessage,
-              payload:
-                expenseClaimResponseData.message ?? 'Expense claim successful.',
+              payload: expenseClaimResponseData.message ?? "Expense claim successful.",
             });
           } catch (error: any) {
-            if (!isMounted || error.name === 'AbortError') {
+            if (!isMounted || error.name === "AbortError") {
               return;
             }
 
             const errorMessage =
               error instanceof InvalidTokenError
-                ? 'Invalid token. Please login again.'
+                ? "Invalid token. Please login again."
                 : !error.response
-                ? 'Network error. Please try again.'
-                : error?.message ?? 'Unknown error occurred. Please try again.';
+                ? "Network error. Please try again."
+                : error?.message ?? "Unknown error occurred. Please try again.";
 
             globalDispatch({
               type: globalAction.setErrorState,
@@ -325,13 +323,13 @@ function CreateExpenseClaim() {
                 isError: true,
                 errorMessage,
                 errorCallback: () => {
-                  navigate('/home');
+                  navigate("/home");
 
                   globalDispatch({
                     type: globalAction.setErrorState,
                     payload: {
                       isError: false,
-                      errorMessage: '',
+                      errorMessage: "",
                       errorCallback: () => {},
                     },
                   });
@@ -348,7 +346,7 @@ function CreateExpenseClaim() {
               });
               createExpenseClaimDispatch({
                 type: createExpenseClaimAction.setSubmitMessage,
-                payload: '',
+                payload: "",
               });
               createExpenseClaimDispatch({
                 type: createExpenseClaimAction.setImgFormDataArray,
@@ -383,7 +381,7 @@ function CreateExpenseClaim() {
   useEffect(() => {
     logState({
       state: createExpenseClaimState,
-      groupLabel: 'create expense claim state',
+      groupLabel: "create expense claim state",
     });
   }, [createExpenseClaimState]);
 
@@ -400,10 +398,10 @@ function CreateExpenseClaim() {
   // insert comma if currency is EUR
   useEffect(() => {
     // if currency is EUR, replace decimal with comma and remove leading zeros
-    if (expenseClaimCurrency === 'EUR') {
+    if (expenseClaimCurrency === "EUR") {
       const expenseClaimAmountWithCommaAndNoLeadingZero = expenseClaimAmount
-        .replace('.', ',')
-        .replace(/^0+(?=\d)/, ''); // removes leading zeros if amount !== '0.00'
+        .replace(".", ",")
+        .replace(/^0+(?=\d)/, ""); // removes leading zeros if amount !== '0.00'
 
       createExpenseClaimDispatch({
         type: createExpenseClaimAction.setExpenseClaimAmount,
@@ -413,8 +411,8 @@ function CreateExpenseClaim() {
     // if currency is not EUR, replace comma with decimal and remove leading zeros
     else {
       const expenseClaimAmountWithDecimalAndNoLeadingZero = expenseClaimAmount
-        .replace(',', '.')
-        .replace(/^0+(?=\d)/, '');
+        .replace(",", ".")
+        .replace(/^0+(?=\d)/, "");
 
       createExpenseClaimDispatch({
         type: createExpenseClaimAction.setExpenseClaimAmount,
@@ -464,14 +462,14 @@ function CreateExpenseClaim() {
       !acknowledgement;
 
     const isOptionalInputInError =
-      additionalComments !== '' && !isValidAdditionalComments;
+      additionalComments !== "" && !isValidAdditionalComments;
 
     const isStepInError = areRequiredInputsInError || isOptionalInputInError;
 
     createExpenseClaimDispatch({
       type: createExpenseClaimAction.setStepsInError,
       payload: {
-        kind: isStepInError ? 'add' : 'delete',
+        kind: isStepInError ? "add" : "delete",
         step: 0,
       },
     });
@@ -492,7 +490,7 @@ function CreateExpenseClaim() {
     createExpenseClaimDispatch({
       type: createExpenseClaimAction.setStepsInError,
       payload: {
-        kind: isStepInError ? 'add' : 'delete',
+        kind: isStepInError ? "add" : "delete",
         step: 1,
       },
     });
@@ -501,59 +499,55 @@ function CreateExpenseClaim() {
   // following are the accessible text elements for screen readers to read out based on the state of the input
   const [expenseClaimAmountInputErrorText, expenseClaimAmountInputValidText] =
     AccessibleErrorValidTextElements({
-      inputElementKind: 'expense claim amount',
+      inputElementKind: "expense claim amount",
       inputText: expenseClaimAmount,
       isInputTextFocused: isExpenseClaimAmountFocused,
       isValidInputText: isValidExpenseClaimAmount,
       regexValidationText: returnFloatAmountValidationText({
         content: expenseClaimAmount,
-        contentKind: 'expense claim amount',
+        contentKind: "expense claim amount",
       }),
     });
 
   const expenseClaimInvalidText =
     new Date(expenseClaimDate) > new Date()
-      ? 'Expense claim date cannot be in the future.'
-      : '';
+      ? "Expense claim date cannot be in the future."
+      : "";
   const [expenseClaimDateInputErrorText, expenseClaimDateInputValidText] =
     AccessibleErrorValidTextElements({
-      inputElementKind: 'expense claim date',
+      inputElementKind: "expense claim date",
       inputText: expenseClaimDate,
       isInputTextFocused: isExpenseClaimDateFocused,
       isValidInputText: isValidExpenseClaimDate,
-      regexValidationText: `${expenseClaimInvalidText}${returnDateNearPastValidationText(
-        {
-          content: expenseClaimDate,
-          contentKind: 'expense claim date',
-        }
-      )}`,
+      regexValidationText: `${expenseClaimInvalidText}${returnDateNearPastValidationText({
+        content: expenseClaimDate,
+        contentKind: "expense claim date",
+      })}`,
     });
 
-  const [
-    expenseClaimDescriptionInputErrorText,
-    expenseClaimDescriptionInputValidText,
-  ] = AccessibleErrorValidTextElements({
-    inputElementKind: 'expense claim description',
-    inputText: expenseClaimDescription,
-    isInputTextFocused: isExpenseClaimDescriptionFocused,
-    isValidInputText: isValidExpenseClaimDescription,
-    regexValidationText: returnGrammarValidationText({
-      content: expenseClaimDescription,
-      contentKind: 'expense claim description',
-      minLength: 2,
-      maxLength: 2000,
-    }),
-  });
+  const [expenseClaimDescriptionInputErrorText, expenseClaimDescriptionInputValidText] =
+    AccessibleErrorValidTextElements({
+      inputElementKind: "expense claim description",
+      inputText: expenseClaimDescription,
+      isInputTextFocused: isExpenseClaimDescriptionFocused,
+      isValidInputText: isValidExpenseClaimDescription,
+      regexValidationText: returnGrammarValidationText({
+        content: expenseClaimDescription,
+        contentKind: "expense claim description",
+        minLength: 2,
+        maxLength: 2000,
+      }),
+    });
 
   const [additionalCommentsInputErrorText, additionalCommentsInputValidText] =
     AccessibleErrorValidTextElements({
-      inputElementKind: 'additional comments',
+      inputElementKind: "additional comments",
       inputText: additionalComments,
       isInputTextFocused: isAdditionalCommentsFocused,
       isValidInputText: isValidAdditionalComments,
       regexValidationText: returnGrammarValidationText({
         content: additionalComments,
-        contentKind: 'additional comments',
+        contentKind: "additional comments",
         minLength: 2,
         maxLength: 2000,
       }),
@@ -562,9 +556,9 @@ function CreateExpenseClaim() {
   const [acknowledgementInputSelectedText, acknowledgementInputDeselectedText] =
     AccessibleSelectedDeselectedTextElements({
       isSelected: acknowledgement,
-      semanticName: 'acknowledgement',
-      selectedDescription: 'I acknowledge that the information is correct',
-      deselectedDescription: 'I do not acknowledge',
+      semanticName: "acknowledgement",
+      selectedDescription: "I acknowledge that the information is correct",
+      deselectedDescription: "I do not acknowledge",
     });
 
   const {
@@ -574,121 +568,117 @@ function CreateExpenseClaim() {
     colorsSwatches: COLORS_SWATCHES,
   });
   const currencyIcon =
-    expenseClaimCurrency === 'CNY' ? (
+    expenseClaimCurrency === "CNY" ? (
       <TbCurrencyRenminbi size={14} color={grayColorShade} />
-    ) : expenseClaimCurrency === 'GBP' ? (
+    ) : expenseClaimCurrency === "GBP" ? (
       <TbCurrencyPound size={14} color={grayColorShade} />
-    ) : expenseClaimCurrency === 'EUR' ? (
+    ) : expenseClaimCurrency === "EUR" ? (
       <TbCurrencyEuro size={14} color={grayColorShade} />
-    ) : expenseClaimCurrency === 'JPY' ? (
+    ) : expenseClaimCurrency === "JPY" ? (
       <TbCurrencyYen size={14} color={grayColorShade} />
     ) : (
       <TbCurrencyDollar size={14} color={grayColorShade} />
     );
 
-  const expenseClaimAmountTextInputCreatorInfo: AccessibleTextInputCreatorInfo =
-    {
-      description: {
-        error: expenseClaimAmountInputErrorText,
-        valid: expenseClaimAmountInputValidText,
-      },
-      inputText: expenseClaimAmount,
-      isValidInputText: isValidExpenseClaimAmount,
-      label: 'Expense Claim Amount',
-      onBlur: () => {
-        createExpenseClaimDispatch({
-          type: createExpenseClaimAction.setIsExpenseClaimAmountFocused,
-          payload: false,
-        });
-      },
-      onChange: (event: ChangeEvent<HTMLInputElement>) => {
-        createExpenseClaimDispatch({
-          type: createExpenseClaimAction.setExpenseClaimAmount,
-          payload: event.currentTarget.value,
-        });
-      },
-      onFocus: () => {
-        createExpenseClaimDispatch({
-          type: createExpenseClaimAction.setIsExpenseClaimAmountFocused,
-          payload: true,
-        });
-      },
-      rightSection: true,
-      rightSectionIcon: currencyIcon,
-      placeholder: 'Enter expense claim amount',
-      semanticName: 'expense claim amount',
-      minLength: 3,
-      maxLength: 9,
-      required: true,
-      withAsterisk: true,
-    };
+  const expenseClaimAmountTextInputCreatorInfo: AccessibleTextInputCreatorInfo = {
+    description: {
+      error: expenseClaimAmountInputErrorText,
+      valid: expenseClaimAmountInputValidText,
+    },
+    inputText: expenseClaimAmount,
+    isValidInputText: isValidExpenseClaimAmount,
+    label: "Expense Claim Amount",
+    onBlur: () => {
+      createExpenseClaimDispatch({
+        type: createExpenseClaimAction.setIsExpenseClaimAmountFocused,
+        payload: false,
+      });
+    },
+    onChange: (event: ChangeEvent<HTMLInputElement>) => {
+      createExpenseClaimDispatch({
+        type: createExpenseClaimAction.setExpenseClaimAmount,
+        payload: event.currentTarget.value,
+      });
+    },
+    onFocus: () => {
+      createExpenseClaimDispatch({
+        type: createExpenseClaimAction.setIsExpenseClaimAmountFocused,
+        payload: true,
+      });
+    },
+    rightSection: true,
+    rightSectionIcon: currencyIcon,
+    placeholder: "Enter expense claim amount",
+    semanticName: "expense claim amount",
+    minLength: 3,
+    maxLength: 9,
+    required: true,
+    withAsterisk: true,
+  };
 
-  const expenseClaimKindSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo =
-    {
-      data: EXPENSE_CLAIM_KIND_DATA,
-      description: 'Select a category for your expense claim.',
-      label: 'Expense Claim Kind',
-      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-        createExpenseClaimDispatch({
-          type: createExpenseClaimAction.setExpenseClaimKind,
-          payload: event.currentTarget.value as ExpenseClaimKind,
-        });
-      },
-      value: expenseClaimKind,
-      required: true,
-      withAsterisk: true,
-    };
+  const expenseClaimKindSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
+    data: EXPENSE_CLAIM_KIND_DATA,
+    description: "Select a category for your expense claim.",
+    label: "Expense Claim Kind",
+    onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+      createExpenseClaimDispatch({
+        type: createExpenseClaimAction.setExpenseClaimKind,
+        payload: event.currentTarget.value as ExpenseClaimKind,
+      });
+    },
+    value: expenseClaimKind,
+    required: true,
+    withAsterisk: true,
+  };
 
-  const expenseClaimCurrencySelectInputCreatorInfo: AccessibleSelectInputCreatorInfo =
-    {
-      data: CURRENCY_DATA,
-      description: 'Select the currency for your expense claim.',
-      label: 'Expense Claim Currency',
-      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-        createExpenseClaimDispatch({
-          type: createExpenseClaimAction.setExpenseClaimCurrency,
-          payload: event.currentTarget.value as Currency,
-        });
-      },
-      value: expenseClaimCurrency,
-      required: true,
-      withAsterisk: true,
-    };
+  const expenseClaimCurrencySelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
+    data: CURRENCY_DATA,
+    description: "Select the currency for your expense claim.",
+    label: "Expense Claim Currency",
+    onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+      createExpenseClaimDispatch({
+        type: createExpenseClaimAction.setExpenseClaimCurrency,
+        payload: event.currentTarget.value as Currency,
+      });
+    },
+    value: expenseClaimCurrency,
+    required: true,
+    withAsterisk: true,
+  };
 
-  const expenseClaimDateTextInputCreatorInfo: AccessibleDateTimeInputCreatorInfo =
-    {
-      description: {
-        error: expenseClaimDateInputErrorText,
-        valid: expenseClaimDateInputValidText,
-      },
-      inputText: expenseClaimDate,
-      isValidInputText: isValidExpenseClaimDate,
-      label: 'Expense Claim Date',
-      onBlur: () => {
-        createExpenseClaimDispatch({
-          type: createExpenseClaimAction.setIsExpenseClaimDateFocused,
-          payload: false,
-        });
-      },
-      onChange: (event: ChangeEvent<HTMLInputElement>) => {
-        createExpenseClaimDispatch({
-          type: createExpenseClaimAction.setExpenseClaimDate,
-          payload: event.currentTarget.value,
-        });
-      },
-      onFocus: () => {
-        createExpenseClaimDispatch({
-          type: createExpenseClaimAction.setIsExpenseClaimDateFocused,
-          payload: true,
-        });
-      },
-      placeholder: 'Enter expense claim date',
-      semanticName: 'expense claim date',
-      inputKind: 'date',
-      dateKind: 'date near past',
-      required: true,
-      withAsterisk: true,
-    };
+  const expenseClaimDateTextInputCreatorInfo: AccessibleDateTimeInputCreatorInfo = {
+    description: {
+      error: expenseClaimDateInputErrorText,
+      valid: expenseClaimDateInputValidText,
+    },
+    inputText: expenseClaimDate,
+    isValidInputText: isValidExpenseClaimDate,
+    label: "Expense Claim Date",
+    onBlur: () => {
+      createExpenseClaimDispatch({
+        type: createExpenseClaimAction.setIsExpenseClaimDateFocused,
+        payload: false,
+      });
+    },
+    onChange: (event: ChangeEvent<HTMLInputElement>) => {
+      createExpenseClaimDispatch({
+        type: createExpenseClaimAction.setExpenseClaimDate,
+        payload: event.currentTarget.value,
+      });
+    },
+    onFocus: () => {
+      createExpenseClaimDispatch({
+        type: createExpenseClaimAction.setIsExpenseClaimDateFocused,
+        payload: true,
+      });
+    },
+    placeholder: "Enter expense claim date",
+    semanticName: "expense claim date",
+    inputKind: "date",
+    dateKind: "date near past",
+    required: true,
+    withAsterisk: true,
+  };
 
   const expenseClaimDescriptionTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
     {
@@ -698,7 +688,7 @@ function CreateExpenseClaim() {
       },
       inputText: expenseClaimDescription,
       isValidInputText: isValidExpenseClaimDescription,
-      label: 'Expense Claim Description',
+      label: "Expense Claim Description",
       onBlur: () => {
         createExpenseClaimDispatch({
           type: createExpenseClaimAction.setIsExpenseClaimDescriptionFocused,
@@ -717,42 +707,41 @@ function CreateExpenseClaim() {
           payload: true,
         });
       },
-      placeholder: 'Enter expense claim description',
-      semanticName: 'expense claim description',
+      placeholder: "Enter expense claim description",
+      semanticName: "expense claim description",
       required: true,
       withAsterisk: true,
     };
 
-  const additionalCommentsTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo =
-    {
-      description: {
-        error: additionalCommentsInputErrorText,
-        valid: additionalCommentsInputValidText,
-      },
-      inputText: additionalComments,
-      isValidInputText: isValidAdditionalComments,
-      label: 'Additional Comments',
-      onBlur: () => {
-        createExpenseClaimDispatch({
-          type: createExpenseClaimAction.setIsAdditionalCommentsFocused,
-          payload: false,
-        });
-      },
-      onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
-        createExpenseClaimDispatch({
-          type: createExpenseClaimAction.setAdditionalComments,
-          payload: event.currentTarget.value,
-        });
-      },
-      onFocus: () => {
-        createExpenseClaimDispatch({
-          type: createExpenseClaimAction.setIsAdditionalCommentsFocused,
-          payload: true,
-        });
-      },
-      placeholder: 'Enter additional comments',
-      semanticName: 'additional comments',
-    };
+  const additionalCommentsTextInputCreatorInfo: AccessibleTextAreaInputCreatorInfo = {
+    description: {
+      error: additionalCommentsInputErrorText,
+      valid: additionalCommentsInputValidText,
+    },
+    inputText: additionalComments,
+    isValidInputText: isValidAdditionalComments,
+    label: "Additional Comments",
+    onBlur: () => {
+      createExpenseClaimDispatch({
+        type: createExpenseClaimAction.setIsAdditionalCommentsFocused,
+        payload: false,
+      });
+    },
+    onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
+      createExpenseClaimDispatch({
+        type: createExpenseClaimAction.setAdditionalComments,
+        payload: event.currentTarget.value,
+      });
+    },
+    onFocus: () => {
+      createExpenseClaimDispatch({
+        type: createExpenseClaimAction.setIsAdditionalCommentsFocused,
+        payload: true,
+      });
+    },
+    placeholder: "Enter additional comments",
+    semanticName: "additional comments",
+  };
 
   const acknowledgementCheckboxInputCreatorInfo: AccessibleCheckboxSingleInputCreatorInfo =
     {
@@ -767,15 +756,15 @@ function CreateExpenseClaim() {
           payload: event.currentTarget.checked,
         });
       },
-      semanticName: 'acknowledgement',
-      label: 'Acknowledgement',
+      semanticName: "acknowledgement",
+      label: "Acknowledgement",
       required: true,
     };
 
   const submitButtonCreatorInfo: AccessibleButtonCreatorInfo = {
-    buttonLabel: 'Submit',
-    semanticDescription: 'expense claim form submit button',
-    semanticName: 'submit button',
+    buttonLabel: "Submit",
+    semanticDescription: "expense claim form submit button",
+    semanticName: "submit button",
     leftIcon: <TbUpload />,
     buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
       createExpenseClaimDispatch({
@@ -787,44 +776,39 @@ function CreateExpenseClaim() {
     buttonDisabled: stepsInError.size > 0 || triggerFormSubmit,
   };
 
-  const [createdExpenseClaimAmountTextInput] =
-    returnAccessibleTextInputElements([expenseClaimAmountTextInputCreatorInfo]);
-
-  const [
-    createdExpenseClaimKindSelectInput,
-    createdExpenseClaimCurrencySelectInput,
-  ] = returnAccessibleSelectInputElements([
-    expenseClaimKindSelectInputCreatorInfo,
-    expenseClaimCurrencySelectInputCreatorInfo,
+  const [createdExpenseClaimAmountTextInput] = returnAccessibleTextInputElements([
+    expenseClaimAmountTextInputCreatorInfo,
   ]);
+
+  const [createdExpenseClaimKindSelectInput, createdExpenseClaimCurrencySelectInput] =
+    returnAccessibleSelectInputElements([
+      expenseClaimKindSelectInputCreatorInfo,
+      expenseClaimCurrencySelectInputCreatorInfo,
+    ]);
 
   const [createdExpenseClaimDateTextInput] = returnAccessibleDateTimeElements([
     expenseClaimDateTextInputCreatorInfo,
   ]);
 
-  const [
-    createdExpenseClaimDescriptionTextInput,
-    createdAdditionalCommentsTextInput,
-  ] = returnAccessibleTextAreaInputElements([
-    expenseClaimDescriptionTextInputCreatorInfo,
-    additionalCommentsTextInputCreatorInfo,
-  ]);
+  const [createdExpenseClaimDescriptionTextInput, createdAdditionalCommentsTextInput] =
+    returnAccessibleTextAreaInputElements([
+      expenseClaimDescriptionTextInputCreatorInfo,
+      additionalCommentsTextInputCreatorInfo,
+    ]);
 
   const [createdAcknowledgementCheckboxInput] =
     returnAccessibleCheckboxSingleInputElements([
       acknowledgementCheckboxInputCreatorInfo,
     ]);
 
-  const [createdSubmitButton] = returnAccessibleButtonElements([
-    submitButtonCreatorInfo,
-  ]);
+  const [createdSubmitButton] = returnAccessibleButtonElements([submitButtonCreatorInfo]);
   const displaySubmitButton =
     currentStepperPosition === EXPENSE_CLAIM_MAX_STEPPER_POSITION ? (
       <Tooltip
         label={
           stepsInError.size > 0
-            ? 'Please fix errors before submitting form.'
-            : 'Submit expense claim form'
+            ? "Please fix errors before submitting form."
+            : "Submit expense claim form"
         }
       >
         <Group w="100%" position="center">
@@ -834,42 +818,42 @@ function CreateExpenseClaim() {
     ) : null;
 
   const EXPENSE_CLAIM_REVIEW_OBJECT: FormReviewObjectArray = {
-    'Expense Details': [
+    "Expense Details": [
       {
-        inputName: 'Expense Claim Kind',
+        inputName: "Expense Claim Kind",
         inputValue: expenseClaimKind,
         isInputValueValid: true,
       },
       {
-        inputName: 'Expense Claim Currency',
+        inputName: "Expense Claim Currency",
         inputValue: expenseClaimCurrency,
         isInputValueValid: true,
       },
       {
-        inputName: 'Expense Claim Amount',
+        inputName: "Expense Claim Amount",
         inputValue: expenseClaimAmount,
         isInputValueValid: isValidExpenseClaimAmount,
       },
       {
-        inputName: 'Expense Claim Date',
+        inputName: "Expense Claim Date",
         inputValue: expenseClaimDate,
         isInputValueValid: isValidExpenseClaimDate,
       },
       {
-        inputName: 'Expense Claim Description',
+        inputName: "Expense Claim Description",
         inputValue: expenseClaimDescription,
         isInputValueValid: isValidExpenseClaimDescription,
       },
       {
-        inputName: 'Additional Comments',
+        inputName: "Additional Comments",
         inputValue: additionalComments,
         isInputValueValid: isValidExpenseClaimDescription,
       },
     ],
-    'Upload Receipts': [
+    "Upload Receipts": [
       {
-        inputName: 'Receipts',
-        inputValue: stepsInError.has(1) ? 'Error' : 'Valid',
+        inputName: "Receipts",
+        inputValue: stepsInError.has(1) ? "Error" : "Valid",
         isInputValueValid: !stepsInError.has(1),
       },
     ],
@@ -887,7 +871,7 @@ function CreateExpenseClaim() {
       onCloseCallbacks={[
         closeSubmitSuccessNotificationModal,
         () => {
-          navigate('/home/company/expense-claim/display');
+          navigate("/home/company/expense-claim/display");
         },
       ]}
       opened={openedSubmitSuccessNotificationModal}
@@ -895,9 +879,7 @@ function CreateExpenseClaim() {
         loading: isSubmitting,
         text: isSubmitting ? submitMessage : successMessage,
       }}
-      title={
-        <Title order={4}>{isSuccessful ? 'Success!' : 'Submitting ...'}</Title>
-      }
+      title={<Title order={4}>{isSuccessful ? "Success!" : "Submitting ..."}</Title>}
     />
   );
 
@@ -936,9 +918,7 @@ function CreateExpenseClaim() {
       descriptionObjectsArray={EXPENSE_CLAIM_DESCRIPTION_OBJECTS}
       maxStepperPosition={EXPENSE_CLAIM_MAX_STEPPER_POSITION}
       parentComponentDispatch={createExpenseClaimDispatch}
-      setCurrentStepperPosition={
-        createExpenseClaimAction.setCurrentStepperPosition
-      }
+      setCurrentStepperPosition={createExpenseClaimAction.setCurrentStepperPosition}
       stepsInError={stepsInError}
     >
       {displaySubmitSuccessNotificationModal}

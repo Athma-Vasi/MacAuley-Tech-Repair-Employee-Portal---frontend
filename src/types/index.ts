@@ -11,6 +11,7 @@ import { AddressChangeDocument } from "../components/addressChange/create/types"
 import { AnnouncementDocument } from "../components/announcement/create/types";
 import { AnonymousRequestDocument } from "../components/anonymousRequest/create/types";
 import { BenefitsDocument } from "../components/benefits/create/types";
+import { CustomerDocument } from "../components/customer/types";
 import { EndorsementDocument } from "../components/endorsements/create/types";
 import { EventCreatorDocument } from "../components/event/create/types";
 import { ExpenseClaimDocument } from "../components/expenseClaim/create/types";
@@ -76,32 +77,19 @@ type SliderInputData = Array<{
   value: number;
 }>;
 
-type FileExtension = ".jpg" | "jpeg" | "png" | "gif" | "pdf";
-
 type FileUploadSchema = {
   userId: string;
   uploadedFile: Buffer;
   username: string;
-  fileExtension: FileExtension;
+  fileExtension: AllowedFileExtensions;
   fileName: string;
   fileSize: number;
-  fileMimeType: string;
-  fileEncoding: string;
+  fileMimeType: AllowedFileMimeTypes;
+  fileEncoding: AllowedFileEncodings;
 };
-
-type AssociatedResourceKind =
-  | ActionsCompany
-  | ActionsGeneral
-  | ActionsOutreach
-  | "user"
-  | "repairTicket";
 
 type FileUploadDocument = FileUploadSchema & {
   _id: string;
-  // some fileUploads may not be associated with any resource
-  associatedResource?: AssociatedResourceKind | undefined;
-  // some fileUploads may not be associated with any document
-  associatedDocumentId?: string | undefined;
   createdAt: string;
   updatedAt: string;
   __v: number;
@@ -165,6 +153,7 @@ type ActionsResourceRequestServerResponse = {
     eventData: EventCreatorDocument[];
   };
   employeeData: UserDocument[];
+  customerData: Omit<CustomerDocument, "password" | "paymentInformation">[];
 };
 
 type ResourceRoutePaths = {
@@ -221,11 +210,20 @@ type DocumentArrayUpdateOperation<
   fields: Record<Key, Value>;
 };
 
+type AllowedFileExtensions = ".jpg" | ".jpeg" | ".png" | ".webp";
+
+type AllowedFileMimeTypes = "image/jpg" | "image/jpeg" | "image/png" | "image/webp";
+
+type AllowedFileEncodings = "7bit" | "8bit" | "binary" | "base64" | "quoted-printable";
+
 export type {
   Action,
   ActionsCompany,
   ActionsGeneral,
   ActionsOutreach,
+  AllowedFileEncodings,
+  AllowedFileExtensions,
+  AllowedFileMimeTypes,
   ArrayOperators,
   CanadianPostalCode,
   CheckboxInputData,
@@ -252,11 +250,9 @@ export type {
 
 export type {
   ActionsResourceRequestServerResponse,
-  AssociatedResourceKind,
   BreakPoints,
   CheckBoxMultipleData,
   Currency,
-  FileExtension,
   FileUploadDocument,
   FileUploadSchema,
   GetQueriedResourceRequestServerResponse,

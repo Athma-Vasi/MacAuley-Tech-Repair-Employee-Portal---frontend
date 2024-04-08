@@ -1,9 +1,6 @@
-import { QueryResponseData, UserDocument } from '../../../types';
-import {
-  formatDate,
-  replaceLastCommaWithAnd,
-  splitCamelCase,
-} from '../../../utils';
+import { QueryResponseData, UserDocument } from "../../../types";
+import { formatDate, replaceLastCommaWithAnd, splitCamelCase } from "../../../utils";
+import { CustomerDocument } from "../../customer/types";
 
 type ProfileInfoField = {
   inputName: string;
@@ -17,7 +14,8 @@ type ProfileInfoObject = Record<
 
 function returnProfileInfoObject(
   userDocument:
-    | Omit<UserDocument, '__v' | 'password'>
+    | Omit<UserDocument, "__v" | "password">
+    | Omit<CustomerDocument, "password" | "paymentInformation">
     | QueryResponseData<UserDocument>
     | null
 ): ProfileInfoObject {
@@ -37,25 +35,25 @@ function returnProfileInfoObject(
       const [key, value] = keyValTuple;
 
       const isBelongToPersonal =
-        key === 'username' ||
-        key === 'firstName' ||
-        key === 'middleName' ||
-        key === 'lastName' ||
-        key === 'preferredName' ||
-        key === 'preferredPronouns' ||
-        key === 'dateOfBirth' ||
-        key === 'isPrefersReducedMotion';
+        key === "username" ||
+        key === "firstName" ||
+        key === "middleName" ||
+        key === "lastName" ||
+        key === "preferredName" ||
+        key === "preferredPronouns" ||
+        key === "dateOfBirth" ||
+        key === "isPrefersReducedMotion";
 
       if (isBelongToPersonal) {
-        if (key === 'dateOfBirth') {
+        if (key === "dateOfBirth") {
           const formattedDate = formatDate({
             date: value as string,
             formatOptions: {
-              dateStyle: 'full',
-              localeMatcher: 'best fit',
-              formatMatcher: 'best fit',
+              dateStyle: "full",
+              localeMatcher: "best fit",
+              formatMatcher: "best fit",
             },
-            locale: 'en-US',
+            locale: "en-US",
           });
 
           formReviewObjectAcc.personal.push({
@@ -66,10 +64,10 @@ function returnProfileInfoObject(
           return formReviewObjectAcc;
         }
 
-        if (key === 'isPrefersReducedMotion') {
+        if (key === "isPrefersReducedMotion") {
           formReviewObjectAcc.personal.push({
-            inputName: 'Prefers Reduced Motion',
-            inputValue: (value as boolean) ? 'Yes' : 'No',
+            inputName: "Prefers Reduced Motion",
+            inputValue: (value as boolean) ? "Yes" : "No",
           });
 
           return formReviewObjectAcc;
@@ -84,24 +82,20 @@ function returnProfileInfoObject(
       }
 
       const isBelongToContact =
-        key === 'email' ||
-        key === 'contactNumber' ||
-        key === 'emergencyContact';
+        key === "email" || key === "contactNumber" || key === "emergencyContact";
       if (isBelongToContact) {
-        if (key === 'emergencyContact') {
-          Object.entries(value as Record<string, string>).forEach(
-            ([key, value]) => {
-              key === 'fullName'
-                ? formReviewObjectAcc.contact.push({
-                    inputName: 'Emergency Contact Name',
-                    inputValue: value,
-                  })
-                : formReviewObjectAcc.contact.push({
-                    inputName: 'Emergency Contact Number',
-                    inputValue: value,
-                  });
-            }
-          );
+        if (key === "emergencyContact") {
+          Object.entries(value as Record<string, string>).forEach(([key, value]) => {
+            key === "fullName"
+              ? formReviewObjectAcc.contact.push({
+                  inputName: "Emergency Contact Name",
+                  inputValue: value,
+                })
+              : formReviewObjectAcc.contact.push({
+                  inputName: "Emergency Contact Number",
+                  inputValue: value,
+                });
+          });
 
           return formReviewObjectAcc;
         }
@@ -114,46 +108,44 @@ function returnProfileInfoObject(
         return formReviewObjectAcc;
       }
 
-      const isBelongToAddress = key === 'address';
+      const isBelongToAddress = key === "address";
       if (isBelongToAddress) {
-        Object.entries(value as Record<string, string>).forEach(
-          ([key, value]) => {
-            formReviewObjectAcc.address.push({
-              inputName: splitCamelCase(key),
-              inputValue: value,
-            });
-          }
-        );
+        Object.entries(value as Record<string, string>).forEach(([key, value]) => {
+          formReviewObjectAcc.address.push({
+            inputName: splitCamelCase(key),
+            inputValue: value,
+          });
+        });
 
         return formReviewObjectAcc;
       }
 
       const isBelongToEmployment =
-        key === 'jobPosition' ||
-        key === 'department' ||
-        key === 'storeLocation' ||
-        key === 'startDate' ||
-        key === 'roles';
+        key === "jobPosition" ||
+        key === "department" ||
+        key === "storeLocation" ||
+        key === "startDate" ||
+        key === "roles";
       if (isBelongToEmployment) {
-        if (key === 'roles') {
+        if (key === "roles") {
           const userRoles = value as string[];
           formReviewObjectAcc.employment.push({
             inputName: splitCamelCase(key),
-            inputValue: replaceLastCommaWithAnd(userRoles.join(', ')),
+            inputValue: replaceLastCommaWithAnd(userRoles.join(", ")),
           });
 
           return formReviewObjectAcc;
         }
 
-        if (key === 'startDate') {
+        if (key === "startDate") {
           const formattedDate = formatDate({
             date: value as string,
             formatOptions: {
-              dateStyle: 'full',
-              localeMatcher: 'best fit',
-              formatMatcher: 'best fit',
+              dateStyle: "full",
+              localeMatcher: "best fit",
+              formatMatcher: "best fit",
             },
-            locale: 'en-US',
+            locale: "en-US",
           });
 
           formReviewObjectAcc.employment.push({

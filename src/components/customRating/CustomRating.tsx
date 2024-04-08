@@ -1,5 +1,5 @@
-import { Flex, Rating, rem, Text, useMantineTheme } from '@mantine/core';
-import { useEffect, useState } from 'react';
+import { Flex, Rating, rem, Text } from "@mantine/core";
+import { useEffect, useState } from "react";
 import {
   TbMoodAnnoyed2,
   TbMoodCry,
@@ -12,22 +12,22 @@ import {
   TbNumber5,
   TbStar,
   TbStarFilled,
-} from 'react-icons/tb';
-import { TbMoodHappy } from 'react-icons/tb';
-import { TbMoodCrazyHappy } from 'react-icons/tb';
-import { TbMoodEmpty } from 'react-icons/tb';
+} from "react-icons/tb";
+import { TbMoodHappy } from "react-icons/tb";
+import { TbMoodCrazyHappy } from "react-icons/tb";
+import { TbMoodEmpty } from "react-icons/tb";
 
-import { useGlobalState } from '../../hooks';
-import { SurveySubmissionPayload } from '../survey/display/types';
-import { COLORS_SWATCHES } from '../../constants/data';
-import { returnThemeColors } from '../../utils';
+import { COLORS_SWATCHES } from "../../constants/data";
+import { useGlobalState } from "../../hooks";
+import { returnThemeColors } from "../../utils";
+import { SurveySubmissionPayload } from "../survey/display/types";
 
 type CustomRatingProps = {
   key?: string;
   question: string;
-  ratingKind: 'emotion' | 'stars' | 'scale';
+  ratingKind: "emotion" | "stars" | "scale";
   setRatingDispatch?: React.Dispatch<{
-    type: 'setRating';
+    type: "setRating";
     payload: number;
   }>;
   /** components that are created dynamically need to pass in unique identifier props to the component
@@ -37,13 +37,13 @@ type CustomRatingProps = {
     //a generic set up to be used with any dynamic component
     genericProps?: Record<string, any>;
     genericDispatch?: React.Dispatch<{
-      type: 'setGenericProps';
+      type: "setGenericProps";
       payload: any;
     }>;
     // currently only used for survey response dispatch
     responsePayload?: SurveySubmissionPayload;
     setResponseDispatch?: React.Dispatch<{
-      type: 'setSurveySubmissions';
+      type: "setSurveySubmissions";
       payload: SurveySubmissionPayload;
     }>;
   };
@@ -58,10 +58,23 @@ function CustomRating({
   setRatingDispatch,
   dynamicComponentProps,
 }: CustomRatingProps): React.JSX.Element {
-  const theme = useMantineTheme();
   const {
     globalState: { themeObject, rowGap },
   } = useGlobalState();
+
+  const {
+    generalColors: {
+      grayColorShade,
+      greenColorShade,
+      redColorShade,
+      blueColorShade,
+      yellowColorShade,
+      orangeColorShade,
+    },
+  } = returnThemeColors({
+    colorsSwatches: COLORS_SWATCHES,
+    themeObject,
+  });
 
   const [value, setValue] = useState<number>(controlledValue ?? 0);
 
@@ -77,7 +90,7 @@ function CustomRating({
         } = dynamicComponentProps;
 
         setResponseDispatch({
-          type: 'setSurveySubmissions',
+          type: "setSurveySubmissions",
           payload: {
             surveyId: surveyId,
             surveyTitle: surveyTitle,
@@ -89,13 +102,10 @@ function CustomRating({
         });
       }
 
-      if (
-        dynamicComponentProps.genericDispatch &&
-        dynamicComponentProps.genericProps
-      ) {
+      if (dynamicComponentProps.genericDispatch && dynamicComponentProps.genericProps) {
         const { genericDispatch, genericProps } = dynamicComponentProps;
         genericDispatch({
-          type: 'setGenericProps',
+          type: "setGenericProps",
           payload: {
             ...genericProps,
             rating: value,
@@ -106,45 +116,46 @@ function CustomRating({
 
     if (setRatingDispatch) {
       setRatingDispatch({
-        type: 'setRating',
+        type: "setRating",
         payload: value,
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value]);
 
   function getEmptyIcon(value: number): React.JSX.Element {
-    const defaultProps = { size: rem(24), color: 'gray' };
-    if (ratingKind === 'stars') {
+    const defaultProps = { size: rem(24), color: "gray" };
+    if (ratingKind === "stars") {
       return <TbStar {...defaultProps} />;
     }
 
     switch (value) {
       case 1:
-        return ratingKind === 'emotion' ? (
+        return ratingKind === "emotion" ? (
           <TbMoodCry {...defaultProps} />
         ) : (
           <TbNumber1 {...defaultProps} />
         );
       case 2:
-        return ratingKind === 'emotion' ? (
+        return ratingKind === "emotion" ? (
           <TbMoodAnnoyed2 {...defaultProps} />
         ) : (
           <TbNumber2 {...defaultProps} />
         );
       case 3:
-        return ratingKind === 'emotion' ? (
+        return ratingKind === "emotion" ? (
           <TbMoodSmileBeam {...defaultProps} />
         ) : (
           <TbNumber3 {...defaultProps} />
         );
       case 4:
-        return ratingKind === 'emotion' ? (
+        return ratingKind === "emotion" ? (
           <TbMoodHappy {...defaultProps} />
         ) : (
           <TbNumber4 {...defaultProps} />
         );
       case 5:
-        return ratingKind === 'emotion' ? (
+        return ratingKind === "emotion" ? (
           <TbMoodCrazyHappy {...defaultProps} />
         ) : (
           <TbNumber5 {...defaultProps} />
@@ -157,46 +168,46 @@ function CustomRating({
   function getFullIcon(value: number): React.JSX.Element {
     const defaultProps = { size: rem(24) };
 
-    if (ratingKind === 'stars') {
-      return <TbStarFilled {...defaultProps} color={theme.colors.yellow[7]} />;
+    if (ratingKind === "stars") {
+      return <TbStarFilled {...defaultProps} color={yellowColorShade} />;
     }
 
     switch (value) {
       case 1:
-        return ratingKind === 'emotion' ? (
-          <TbMoodCry {...defaultProps} color={theme.colors.red[7]} />
+        return ratingKind === "emotion" ? (
+          <TbMoodCry {...defaultProps} color={redColorShade} />
         ) : (
-          <TbNumber1 {...defaultProps} color={theme.colors.red[7]} />
+          <TbNumber1 {...defaultProps} color={redColorShade} />
         );
       case 2:
-        return ratingKind === 'emotion' ? (
-          <TbMoodAnnoyed2 {...defaultProps} color={theme.colors.orange[7]} />
+        return ratingKind === "emotion" ? (
+          <TbMoodAnnoyed2 {...defaultProps} color={orangeColorShade} />
         ) : (
-          <TbNumber2 {...defaultProps} color={theme.colors.orange[7]} />
+          <TbNumber2 {...defaultProps} color={orangeColorShade} />
         );
       case 3:
-        return ratingKind === 'emotion' ? (
-          <TbMoodSmileBeam {...defaultProps} color={theme.colors.yellow[7]} />
+        return ratingKind === "emotion" ? (
+          <TbMoodSmileBeam {...defaultProps} color={yellowColorShade} />
         ) : (
-          <TbNumber3 {...defaultProps} color={theme.colors.yellow[7]} />
+          <TbNumber3 {...defaultProps} color={yellowColorShade} />
         );
       case 4:
-        return ratingKind === 'emotion' ? (
-          <TbMoodHappy {...defaultProps} color={theme.colors.green[7]} />
+        return ratingKind === "emotion" ? (
+          <TbMoodHappy {...defaultProps} color={greenColorShade} />
         ) : (
-          <TbNumber4 {...defaultProps} color={theme.colors.green[7]} />
+          <TbNumber4 {...defaultProps} color={greenColorShade} />
         );
       case 5:
-        return ratingKind === 'emotion' ? (
-          <TbMoodCrazyHappy {...defaultProps} color={theme.colors.blue[7]} />
+        return ratingKind === "emotion" ? (
+          <TbMoodCrazyHappy {...defaultProps} color={blueColorShade} />
         ) : (
-          <TbNumber5 {...defaultProps} color={theme.colors.blue[7]} />
+          <TbNumber5 {...defaultProps} color={blueColorShade} />
         );
       default:
-        return ratingKind === 'emotion' ? (
-          <TbMoodEmpty {...defaultProps} color={theme.colors.gray[7]} />
+        return ratingKind === "emotion" ? (
+          <TbMoodEmpty {...defaultProps} color={grayColorShade} />
         ) : (
-          <TbNumber0 {...defaultProps} color={theme.colors.gray[7]} />
+          <TbNumber0 {...defaultProps} color={grayColorShade} />
         );
     }
   }

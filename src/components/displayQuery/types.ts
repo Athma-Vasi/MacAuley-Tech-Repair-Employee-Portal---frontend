@@ -127,6 +127,7 @@ type DisplayQueryDispatch<
     };
 
 export type {
+  DisplayDocumentsView,
   DisplayQueryAction,
   DisplayQueryDispatch,
   DisplayQueryProps,

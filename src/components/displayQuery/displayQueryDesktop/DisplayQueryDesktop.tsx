@@ -1,6 +1,7 @@
 import {
   Center,
   Flex,
+  Grid,
   Group,
   Highlight,
   HoverCard,
@@ -18,7 +19,8 @@ import {
 import { useDisclosure } from "@mantine/hooks";
 import { CSSProperties, useEffect, useReducer } from "react";
 import { IoMdOpen } from "react-icons/io";
-import { TbEdit, TbStatusChange, TbTrash, TbUserSearch } from "react-icons/tb";
+import { LiaAddressBook, LiaExpandArrowsAltSolid } from "react-icons/lia";
+import { TbEdit, TbStars, TbStatusChange, TbTrash, TbUserSearch } from "react-icons/tb";
 import { TiArrowDownThick, TiArrowUpThick } from "react-icons/ti";
 
 import { COLORS_SWATCHES, FIELDNAMES_WITH_DATE_VALUES } from "../../../constants/data";
@@ -28,19 +30,26 @@ import {
   returnHighlightedText,
   returnScrollableDocumentInfo,
 } from "../../../jsxCreators";
-import { UserDocument } from "../../../types";
+import { FileUploadDocument, UserDocument } from "../../../types";
 import {
-  addFieldsToObject,
-  flattenObjectIterative,
   formatDate,
   logState,
   replaceLastCommaWithAnd,
   returnThemeColors,
   splitCamelCase,
 } from "../../../utils";
+import { CustomerDocument } from "../../customer/types";
+import { FormLayoutWrapper } from "../../wrappers";
 import EditRepairTicket from "../editRepairTicket/EditRepairTicket";
 import { ProfileInfo } from "../profileInfo/ProfileInfo";
 import UpdateRequestStatus from "../updateRequestStatus/UpdateRequestStatus";
+import {
+  addFieldsToHeaderValues,
+  addFieldsToQueryResponseObject,
+  returnFormattedDocValue,
+  STAR_RATINGS_TO_ICONS_MAP,
+} from "../utils";
+import { HEADER_EXCLUSION_SET } from "./constants";
 import {
   displayQueryDesktopAction,
   displayQueryDesktopReducer,
@@ -48,7 +57,6 @@ import {
 } from "./state";
 import { DisplayQueryDesktopProps } from "./types";
 import { returnWhichResourceInView, sortGroupedByQueryResponseData } from "./utils";
-import { HEADER_EXCLUSION_SET } from "./constants";
 
 function DisplayQueryDesktop({
   componentQueryData,
@@ -78,7 +86,9 @@ function DisplayQueryDesktop({
     employeeDocument,
     fieldToSortBy,
     sortDirection,
+    customerDocument,
   } = displayQueryDesktopState;
+
   const {
     globalState: { width, padding, rowGap, themeObject, actionsDocuments },
   } = useGlobalState();
@@ -103,6 +113,45 @@ function DisplayQueryDesktop({
     { open: openProfileInfoModal, close: closeProfileInfoModal },
   ] = useDisclosure(false);
 
+  // for product category section only
+  const [
+    openedAdditionalFieldsModal,
+    { open: openAdditionalFieldsModal, close: closeAdditionalFieldsModal },
+  ] = useDisclosure(false);
+  const [
+    openedViewStarRatingsModal,
+    { open: openViewStarRatingsModal, close: closeViewStarRatingsModal },
+  ] = useDisclosure(false);
+
+  // for purchase section only
+  const [
+    openedViewPurchasesModal,
+    { open: openViewPurchasesModal, close: closeViewPurchasesModal },
+  ] = useDisclosure(false);
+  const [
+    openedShippingAddressModal,
+    { open: openShippingAddressModal, close: closeShippingAddressModal },
+  ] = useDisclosure(false);
+
+  // for customer section only
+  const [
+    openedPersonalAddressModal,
+    { open: openPersonalAddressModal, close: closePersonalAddressModal },
+  ] = useDisclosure(false);
+
+  // for file uploads section only
+  const [
+    openedFileUploadsModal,
+    { open: openFileUploadsModal, close: closeFileUploadsModal },
+  ] = useDisclosure(false);
+
+  useEffect(() => {
+    logState({
+      state: displayQueryDesktopState,
+      groupLabel: "displayQueryDesktopState",
+    });
+  }, [displayQueryDesktopState]);
+
   const {
     appThemeColors: { backgroundColor, borderColor },
     generalColors: { themeColorShade },
@@ -116,38 +165,13 @@ function DisplayQueryDesktop({
     },
   } = returnThemeColors({ themeObject, colorsSwatches: COLORS_SWATCHES });
 
-  // // determines that the user is viewing repair notes section
-  // const isRepairTicketSectionInView = Array.from(groupedByQueryResponseData).some(
-  //   ([_groupedByFieldKey, queryResponseObjArrays]) => {
-  //     return queryResponseObjArrays.some((queryResponseObj) => {
-  //       return (
-  //         Object.hasOwn(queryResponseObj, "repairTickets") &&
-  //         Object.hasOwn(queryResponseObj, "testingResults") &&
-  //         Object.hasOwn(queryResponseObj, "finalRepairCost") &&
-  //         Object.hasOwn(queryResponseObj, "finalRepairCostCurrency") &&
-  //         Object.hasOwn(queryResponseObj, "repairStatus")
-  //       );
-  //     });
-  //   }
-  // );
-
-  // // determines if user is viewing anonymous requests section
-  // const isAnonymousRequestsSectionInView = Array.from(groupedByQueryResponseData).some(
-  //   ([_groupedByFieldKey, queryResponseObjArrays]) => {
-  //     return queryResponseObjArrays.some((queryResponseObj) => {
-  //       return (
-  //         Object.hasOwn(queryResponseObj, "secureContactNumber") &&
-  //         Object.hasOwn(queryResponseObj, "secureContactEmail") &&
-  //         Object.hasOwn(queryResponseObj, "requestKind") &&
-  //         Object.hasOwn(queryResponseObj, "requestDescription")
-  //       );
-  //     });
-  //   }
-  // );
-
   const {
     isAnonymousRequestsSectionInView,
+    isCustomerSectionInView,
+    isExpenseClaimSectionInView,
+    isFileUploadsSectionInView,
     isProductCategorySectionInView,
+    isProductReviewSectionInView,
     isPurchaseSectionInView,
     isRMASectionInView,
     isRepairTicketSectionInView,
@@ -158,28 +182,42 @@ function DisplayQueryDesktop({
     groupedByQueryResponseData.size > 0
       ? Array.from(groupedByQueryResponseData).map(
           ([_groupedByFieldKey, queryResponseObjArrays]) => {
-            const headerValues = Object.keys(
-              flattenObjectIterative(queryResponseObjArrays[0])
+            const headerValuesSet = queryResponseObjArrays.reduce<Set<string>>(
+              (acc, queryResponseObj) => {
+                Object.keys(queryResponseObj).forEach((key) =>
+                  key === "productCategoryDocs" || key === "uploadedFile"
+                    ? acc
+                    : acc.add(key)
+                );
+
+                return acc;
+              },
+              new Set<string>()
             );
 
-            const headerValuesWithFieldsInserted =
-              // allows for modification of file uploads and deletion of documents
-              fileUploadsData.length > 0
-                ? [...headerValues, "viewProfile", "fileUploads", "delete"]
-                : isRepairTicketSectionInView
-                ? [...headerValues, "viewProfile", "edit", "delete"]
-                : isAnonymousRequestsSectionInView
-                ? [...headerValues, "delete"]
-                : [...headerValues, "viewProfile", "delete"];
+            console.log("Header Values Set:", headerValuesSet);
 
-            return headerValuesWithFieldsInserted.map((headerValue) =>
-              splitCamelCase(headerValue)
-            );
+            const headerValues = Array.from(headerValuesSet);
+
+            const headerValuesWithFieldsInserted = addFieldsToHeaderValues({
+              headerValues,
+              isAnonymousRequestsSectionInView,
+              isCustomerSectionInView,
+              isExpenseClaimSectionInView,
+              isProductCategorySectionInView,
+              isProductReviewSectionInView,
+              isPurchaseSectionInView,
+              isRMASectionInView,
+              isFileUploadsSectionInView,
+              isRepairTicketSectionInView,
+            });
+
+            return headerValuesWithFieldsInserted;
           }
         )[0]
       : [];
 
-  console.log({ tableHeaderValuesArr });
+  console.log("Table Header Values:", tableHeaderValuesArr);
 
   const groupByRadioDataLabels = new Set(
     groupByRadioData.map(({ label }) => label.toLowerCase())
@@ -249,7 +287,7 @@ function DisplayQueryDesktop({
             width:
               headerValue === "_id"
                 ? "Document Id".length * 10 + 70
-                : headerValue.length * 10 + 70, // rough ch plus space for sort arrows
+                : headerValue?.length * 10 + 70 ?? 150, // rough ch plus space for sort arrows
             backgroundColor: tableHeadersBgColor,
           };
 
@@ -321,14 +359,14 @@ function DisplayQueryDesktop({
             <Group style={headerGroupStyle} position="center">
               {ascendingIconWithTooltip}
               <Title order={6}>
-                {headerValue === "_id" ? "Document Id" : headerValue}
+                {headerValue === "_id" ? "Document Id" : splitCamelCase(headerValue)}
               </Title>
               {descendingIconWithTooltip}
             </Group>
           ) : (
             <Group style={headerGroupStyle} position="center">
               <Title order={6}>
-                {headerValue === "_id" ? "Document Id" : headerValue}
+                {headerValue === "_id" ? "Document Id" : splitCamelCase(headerValue)}
               </Title>
             </Group>
           );
@@ -346,86 +384,37 @@ function DisplayQueryDesktop({
   );
 
   const displayTableBody = Array.from(sortedQueryResponseData).map(
-    ([groupedByFieldKey, queryResponseObjArrays], sectionIdx) => {
+    ([_groupedByFieldKey, queryResponseObjArrays], sectionIdx) => {
       return (
         <tbody>
           {queryResponseObjArrays.map((queryResponseObj, objIdx) => {
-            // delete field is added to the query response object to display delete button
-            // edit field is added to the query response object to display edit repair notes button
-            // fileUploads field is added to the query response object to display open file uploads modal button
-            const queryResponseObjWithAddedFields =
-              fileUploadsData.length > 0
-                ? addFieldsToObject({
-                    object: queryResponseObj,
-                    fieldValuesTuples: [
-                      ["viewProfile", ""],
-                      ["fileUploads", ""],
-                      ["delete", ""],
-                    ],
-                  })
-                : isRepairTicketSectionInView
-                ? addFieldsToObject({
-                    object: queryResponseObj,
-                    fieldValuesTuples: [
-                      ["viewProfile", ""],
-                      ["edit", ""],
-                      ["delete", ""],
-                    ],
-                  })
-                : isAnonymousRequestsSectionInView
-                ? addFieldsToObject({
-                    object: queryResponseObj,
-                    fieldValuesTuples: [["delete", ""]],
-                  })
-                : addFieldsToObject({
-                    object: queryResponseObj,
-                    fieldValuesTuples: [
-                      ["viewProfile", ""],
-                      ["delete", ""],
-                    ],
-                  });
+            const queryResponseObjWithAddedFields = addFieldsToQueryResponseObject({
+              isAnonymousRequestsSectionInView,
+              isCustomerSectionInView,
+              isExpenseClaimSectionInView,
+              isFileUploadsSectionInView,
+              isProductCategorySectionInView,
+              isProductReviewSectionInView,
+              isPurchaseSectionInView,
+              isRMASectionInView,
+              isRepairTicketSectionInView,
+              queryResponseObj,
+            });
 
             const rowWithStringifiedValues = (
               <tr key={`${objIdx}`} style={{ borderBottom: rowsBorderColor }}>
-                {Object.entries(queryResponseObjWithAddedFields).map(
-                  ([key, value], keyValIdx) => {
+                {Object.entries(queryResponseObjWithAddedFields)
+                  .filter(([key, _val]) => key !== "productCategoryDocs")
+                  .filter(([key, _val]) => key !== "uploadedFile")
+                  .map(([key, value], keyValIdx) => {
                     const formattedValue =
-                      value === true
-                        ? "Yes"
-                        : value === false
-                        ? "No"
-                        : Array.isArray(value)
-                        ? replaceLastCommaWithAnd(value.join(", "))
-                        : key.toLowerCase().includes("id")
-                        ? (value as string)
-                        : key === "createdAt" || key === "updatedAt"
-                        ? (formatDate({
-                            date: value,
-                            formatOptions: {
-                              year: "numeric",
-                              month: "numeric",
-                              day: "numeric",
-                            },
-                            locale: "en-US",
-                          }) as string)
-                        : FIELDNAMES_WITH_DATE_VALUES.has(key)
-                        ? (formatDate({
-                            date: value,
-                            formatOptions: {
-                              dateStyle: "short",
-                            },
-                            locale: "en-US",
-                          }) as string)
-                        : (`${value.toString().charAt(0).toUpperCase()}${value
-                            .toString()
-                            .slice(1)}` as string);
+                      value === null || value === undefined
+                        ? ""
+                        : returnFormattedDocValue(key, value);
 
-                    // slice based on length of key to prevent overflow
-                    // const sliceLength =
-                    //   tableHeaderValuesArr[keyValIdx]?.length - 3 ?? 23;
                     const sliceLength = 23;
                     const formattedValueSliced =
-                      formattedValue.length > sliceLength
+                      formattedValue?.length > sliceLength
                         ? `${formattedValue
                             .toString()
                             .slice(
@@ -435,11 +424,11 @@ function DisplayQueryDesktop({
                         : (formattedValue as string);
 
                     // regex to determine if formattedValue has any terms in queryValuesArray
-                    const regex = queryValuesArray.length
+                    const regex = queryValuesArray?.length
                       ? new RegExp(
                           queryValuesArray
                             .filter((value) => value) // remove empty strings
-                            .flatMap((value) => value.split(" ")) // split strings into words
+                            .flatMap((value) => value.split(" "))
                             .join("|"),
                           "gi"
                         )
@@ -477,9 +466,12 @@ function DisplayQueryDesktop({
                       document: queryResponseObjWithAddedFields,
                       excludeKeys: [
                         "fileUploads",
+                        "uploadedFile",
                         "edit",
                         "delete",
                         "viewProfile",
+                        "viewReviews",
+                        "viewFile",
                         groupBySelection,
                       ],
                       fieldNamesWithDateValues: FIELDNAMES_WITH_DATE_VALUES,
@@ -621,8 +613,8 @@ function DisplayQueryDesktop({
                                 type: displayQueryDesktopAction.setEditRepairTicketInput,
                                 payload: {
                                   repairTicketFormId: queryResponseObjWithAddedFields._id,
-                                  repairTickets:
-                                    queryResponseObjWithAddedFields.repairTickets,
+                                  repairNotes:
+                                    queryResponseObjWithAddedFields.repairNotes,
                                   testingResults:
                                     queryResponseObjWithAddedFields.testingResults,
                                   finalRepairCost:
@@ -652,6 +644,178 @@ function DisplayQueryDesktop({
                         </Tooltip>
                       ) : null;
 
+                    // only when viewing product category section
+                    const [createdViewAdditionalFieldsButton] =
+                      isProductCategorySectionInView
+                        ? returnAccessibleButtonElements([
+                            {
+                              buttonLabel: <LiaExpandArrowsAltSolid />,
+                              semanticDescription: `View additional fields for product with id: ${queryResponseObjWithAddedFields._id}`,
+                              semanticName: "View additional fields",
+                              buttonOnClick: () => {
+                                displayQueryDesktopDispatch({
+                                  type: displayQueryDesktopAction.setCurrentDocumentId,
+                                  payload: queryResponseObjWithAddedFields._id,
+                                });
+
+                                openAdditionalFieldsModal();
+                              },
+                            },
+                          ])
+                        : [null];
+
+                    const displayViewAdditionalFieldsButton =
+                      createdViewAdditionalFieldsButton ? (
+                        <Tooltip
+                          label={`View additional fields for product with id: ${queryResponseObjWithAddedFields._id}`}
+                        >
+                          <Group>{createdViewAdditionalFieldsButton}</Group>
+                        </Tooltip>
+                      ) : null;
+
+                    // only when viewing product category section
+                    const [viewStarRatingsButton] = isProductCategorySectionInView
+                      ? returnAccessibleButtonElements([
+                          {
+                            buttonLabel: <TbStars />,
+                            semanticDescription: `View reviews for product with id: ${queryResponseObjWithAddedFields._id}`,
+                            semanticName: "View reviews",
+                            buttonOnClick: () => {
+                              displayQueryDesktopDispatch({
+                                type: displayQueryDesktopAction.setCurrentDocumentId,
+                                payload: queryResponseObjWithAddedFields._id,
+                              });
+
+                              openViewStarRatingsModal();
+                            },
+                          },
+                        ])
+                      : [null];
+
+                    const displayViewStarRatingsButton = viewStarRatingsButton ? (
+                      <Tooltip
+                        label={`View reviews for product with id: ${queryResponseObjWithAddedFields._id}`}
+                      >
+                        <Group>{viewStarRatingsButton}</Group>
+                      </Tooltip>
+                    ) : null;
+
+                    // only when viewing purchase section
+                    const [viewPurchasesModalButton] = isPurchaseSectionInView
+                      ? returnAccessibleButtonElements([
+                          {
+                            buttonLabel: <LiaExpandArrowsAltSolid />,
+                            semanticDescription: `View purchase details for customer with id: ${queryResponseObjWithAddedFields.customerId}`,
+                            semanticName: "View purchase details",
+                            buttonOnClick: () => {
+                              displayQueryDesktopDispatch({
+                                type: displayQueryDesktopAction.setCurrentDocumentId,
+                                payload: queryResponseObjWithAddedFields._id,
+                              });
+
+                              openViewPurchasesModal();
+                            },
+                          },
+                        ])
+                      : [null];
+
+                    const displayViewPurchasesModalButton = viewPurchasesModalButton ? (
+                      <Tooltip
+                        label={`View purchase details for customer with id: ${queryResponseObjWithAddedFields.customerId}`}
+                      >
+                        <Group>{viewPurchasesModalButton}</Group>
+                      </Tooltip>
+                    ) : null;
+
+                    // only when viewing purchase section
+                    const [viewShippingAddressModalButton] = isPurchaseSectionInView
+                      ? returnAccessibleButtonElements([
+                          {
+                            buttonLabel: <LiaAddressBook />,
+                            semanticDescription: `View shipping address for customer with id: ${queryResponseObjWithAddedFields.customerId}`,
+                            semanticName: "View shipping address",
+                            buttonOnClick: () => {
+                              displayQueryDesktopDispatch({
+                                type: displayQueryDesktopAction.setCurrentDocumentId,
+                                payload: queryResponseObjWithAddedFields._id,
+                              });
+
+                              openShippingAddressModal();
+                            },
+                          },
+                        ])
+                      : [null];
+
+                    const displayShippingAddressModalButton =
+                      viewShippingAddressModalButton ? (
+                        <Tooltip
+                          label={`View shipping address for customer with id: ${queryResponseObjWithAddedFields.customerId}`}
+                        >
+                          <Group>{viewShippingAddressModalButton}</Group>
+                        </Tooltip>
+                      ) : null;
+
+                    // only when viewing customer section
+                    const [viewPersonalAddressModalButton] = isCustomerSectionInView
+                      ? returnAccessibleButtonElements([
+                          {
+                            buttonLabel: <LiaAddressBook />,
+                            semanticDescription: `View personal address for username: ${queryResponseObjWithAddedFields.username}`,
+                            semanticName: "View personal address",
+                            buttonOnClick: () => {
+                              displayQueryDesktopDispatch({
+                                type: displayQueryDesktopAction.setCurrentDocumentId,
+                                payload: queryResponseObjWithAddedFields._id,
+                              });
+
+                              openPersonalAddressModal();
+                            },
+                          },
+                        ])
+                      : [null];
+
+                    const displayPersonalAddressModalButton =
+                      viewPersonalAddressModalButton ? (
+                        <Tooltip
+                          label={`View personal address for username: ${queryResponseObjWithAddedFields.username}`}
+                        >
+                          <Group>{viewPersonalAddressModalButton}</Group>
+                        </Tooltip>
+                      ) : null;
+
+                    // only when viewing file uploads section
+                    const [createdViewFilesModalButton] = isFileUploadsSectionInView
+                      ? returnAccessibleButtonElements([
+                          {
+                            buttonLabel: <IoMdOpen />,
+                            semanticDescription: "View Files",
+                            semanticName: "Open file uploads modal",
+                            buttonOnClick: () => {
+                              setFileUploadsForAFormDispatch({
+                                type: "setFileUploadsForAForm",
+                                payload: [
+                                  queryResponseObjWithAddedFields as FileUploadDocument,
+                                ],
+                              });
+                              deleteFormIdDispatch({
+                                type: "setDeleteFormId",
+                                payload: queryResponseObjWithAddedFields._id,
+                              });
+
+                              openFileUploads();
+                            },
+                          },
+                        ])
+                      : [null];
+
+                    const displayViewFilesModalButton = createdViewFilesModalButton ? (
+                      <Tooltip
+                        label={`View file uploads belonging to username: ${queryResponseObjWithAddedFields.username} with form id: ${queryResponseObjWithAddedFields._id}`}
+                      >
+                        <Group>{createdViewFilesModalButton}</Group>
+                      </Tooltip>
+                    ) : null;
+
                     const [
                       createdUpdateRequestStatusButton,
                       createdViewProfileButton,
@@ -668,6 +832,7 @@ function DisplayQueryDesktop({
                             type: displayQueryDesktopAction.setCurrentDocumentId,
                             payload: queryResponseObjWithAddedFields._id,
                           });
+
                           displayQueryDesktopDispatch({
                             type: displayQueryDesktopAction.setCurrentRequestStatus,
                             payload: queryResponseObjWithAddedFields.requestStatus,
@@ -682,14 +847,47 @@ function DisplayQueryDesktop({
                         semanticDescription: `View profile of username: ${queryResponseObjWithAddedFields.username}`,
                         semanticName: "View profile",
                         buttonOnClick: () => {
-                          displayQueryDesktopDispatch({
-                            type: displayQueryDesktopAction.setEmployeeDocument,
-                            payload:
-                              actionsDocuments?.employeeData?.get(
-                                queryResponseObjWithAddedFields.userId ??
-                                  queryResponseObjWithAddedFields.benefitUserId
-                              ) ?? ({} as UserDocument),
-                          });
+                          isProductReviewSectionInView
+                            ? displayQueryDesktopDispatch({
+                                type: displayQueryDesktopAction.setCustomerDocument,
+                                payload:
+                                  actionsDocuments?.customerData?.find(
+                                    (customer) =>
+                                      customer.username ===
+                                      queryResponseObjWithAddedFields.username
+                                  ) ??
+                                  ({} as Omit<
+                                    CustomerDocument,
+                                    "password" | "paymentInformation"
+                                  >),
+                              })
+                            : isPurchaseSectionInView || isRMASectionInView
+                            ? displayQueryDesktopDispatch({
+                                type: displayQueryDesktopAction.setCustomerDocument,
+                                payload:
+                                  actionsDocuments?.customerData?.find(
+                                    (customer) =>
+                                      customer._id ===
+                                      queryResponseObjWithAddedFields.customerId
+                                  ) ??
+                                  ({} as Omit<
+                                    CustomerDocument,
+                                    "password" | "paymentInformation"
+                                  >),
+                              })
+                            : displayQueryDesktopDispatch({
+                                type: displayQueryDesktopAction.setEmployeeDocument,
+                                payload: isCustomerSectionInView
+                                  ? (queryResponseObj as UserDocument)
+                                  : (Array.from(
+                                      actionsDocuments?.employeeData ?? new Map()
+                                    ).find(
+                                      ([_key, value]) =>
+                                        value._id ===
+                                          queryResponseObjWithAddedFields.userId ||
+                                        queryResponseObjWithAddedFields.benefitUserId
+                                    )?.[1] as UserDocument),
+                              });
 
                           openProfileInfoModal();
                         },
@@ -715,9 +913,9 @@ function DisplayQueryDesktop({
                       // open file uploads modal button
                       {
                         buttonLabel: <IoMdOpen />,
-                        buttonDisabled: !fileUploadsData[objIdx]?.fileUploads.length,
+                        buttonDisabled: !fileUploadsData[objIdx]?.fileUploads?.length,
                         semanticDescription: `${
-                          !fileUploadsData[objIdx]?.fileUploads.length
+                          !fileUploadsData[objIdx]?.fileUploads?.length
                             ? `No file uploads associated with username: ${queryResponseObjWithAddedFields.username}with form id: ${queryResponseObjWithAddedFields._id}}`
                             : `View file uploads belonging to username: ${queryResponseObjWithAddedFields.username}with form id: ${queryResponseObjWithAddedFields._id}`
                         }`,
@@ -747,7 +945,13 @@ function DisplayQueryDesktop({
 
                     const createdViewProfileButtonWithTooltip = (
                       <Tooltip
-                        label={`View profile of username: ${queryResponseObjWithAddedFields.username}`}
+                        label={`View profile of username: ${
+                          queryResponseObjWithAddedFields.username ??
+                          actionsDocuments?.customerData?.find(
+                            (customer) =>
+                              customer._id === queryResponseObjWithAddedFields.customerId
+                          )?.username
+                        }`}
                       >
                         <Group>{createdViewProfileButton}</Group>
                       </Tooltip>
@@ -759,8 +963,6 @@ function DisplayQueryDesktop({
                         ? createdUpdateRequestStatusButtonWithTooltip
                         : null
                       : null;
-
-                    // if fieldname is 'requestStatus', display popover with radio group and submit button, else if the document viewed is a repair note, display edit button, else display truncated values with hover cards
 
                     const displayBodyRows = (
                       <td key={`${objIdx}-${keyValIdx}`}>
@@ -776,8 +978,31 @@ function DisplayQueryDesktop({
                           </Group>
                         ) : key === "viewProfile" ? (
                           <Group w="100%" position="center">
-                            {truncatedValuesWithHoverCards}
                             {createdViewProfileButtonWithTooltip}
+                          </Group>
+                        ) : key === "additionalFields" ? (
+                          <Group w="100%" position="center">
+                            {displayViewAdditionalFieldsButton}
+                          </Group>
+                        ) : key === "starRatingsCount" ? (
+                          <Group w="100%" position="center">
+                            {displayViewStarRatingsButton}
+                          </Group>
+                        ) : key === "products" ? (
+                          <Group w="100%" position="center">
+                            {displayViewPurchasesModalButton}
+                          </Group>
+                        ) : key === "shippingAddress" ? (
+                          <Group w="100%" position="center">
+                            {displayShippingAddressModalButton}
+                          </Group>
+                        ) : key === "address" ? (
+                          <Group w="100%" position="center">
+                            {displayPersonalAddressModalButton}
+                          </Group>
+                        ) : key === "viewFile" ? (
+                          <Group w="100%" position="center">
+                            {displayViewFilesModalButton}
                           </Group>
                         ) : (
                           <Group w="100%" position="center">
@@ -788,7 +1013,7 @@ function DisplayQueryDesktop({
                     );
 
                     const viewFileUploadsButtonToolTipLabel = !fileUploadsData[objIdx]
-                      ?.fileUploads.length
+                      ?.fileUploads?.length
                       ? `No file uploads associated with id: ${queryResponseObjWithAddedFields._id}`
                       : `View file uploads belonging to id: ${queryResponseObjWithAddedFields._id}`;
 
@@ -823,8 +1048,7 @@ function DisplayQueryDesktop({
                       : key === "fileUploads"
                       ? displayOpenFileUploadsModalButton
                       : displayBodyRows;
-                  }
-                )}
+                  })}
               </tr>
             );
 
@@ -914,22 +1138,281 @@ function DisplayQueryDesktop({
       title={<Text size="xl">Profile information</Text>}
       scrollAreaComponent={ScrollArea.Autosize}
     >
-      <ProfileInfo employeeDocument={employeeDocument} />
+      <ProfileInfo
+        userDocument={
+          isProductReviewSectionInView || isPurchaseSectionInView || isRMASectionInView
+            ? customerDocument
+            : employeeDocument
+        }
+      />
     </Modal>
   );
 
-  useEffect(() => {
-    logState({
-      state: displayQueryDesktopState,
-      groupLabel: "displayQueryDesktopState",
-    });
-  }, [displayQueryDesktopState]);
+  const additionalFieldsFromQueryObj =
+    Array.from(groupedByQueryResponseData)
+      .at(-1)?.[1]
+      .find((queryResponseObj) => queryResponseObj._id === currentDocumentId)
+      ?.additionalFields ??
+    (Object.create(null) as Record<string, string | number | boolean>);
+
+  const displayAdditionalFields = Object.entries(additionalFieldsFromQueryObj).map(
+    ([key, value], idx) => {
+      const rowBackgroundColorLight = idx % 2 === 0 ? "#f9f9f9" : "transparent";
+      const rowBackgroundColorDark = "transparent";
+      const rowBackgroundColor =
+        themeObject.colorScheme === "dark"
+          ? rowBackgroundColorDark
+          : rowBackgroundColorLight;
+
+      return (
+        <Grid columns={10} w="100%" style={{ borderBottom: borderColor }}>
+          <Grid.Col span={4} style={{ background: rowBackgroundColor }}>
+            <Text>{splitCamelCase(key)}:</Text>
+          </Grid.Col>
+          <Grid.Col span={6} style={{ background: rowBackgroundColor }}>
+            <Flex direction="row" wrap="wrap" gap={4} rowGap={rowGap}>
+              <Text>{value?.toString()}</Text>
+            </Flex>
+          </Grid.Col>
+        </Grid>
+      );
+    }
+  );
+
+  const displayAdditionalFieldsModal = (
+    <Modal
+      centered
+      closeButtonProps={{ color: themeColorShade }}
+      opened={openedAdditionalFieldsModal}
+      onClose={() => {
+        closeAdditionalFieldsModal();
+      }}
+      size={modalSize}
+      title={
+        <Text size="xl">{`${
+          Array.from(groupedByQueryResponseData)
+            .at(-1)?.[1]
+            .find((queryResponseObj) => queryResponseObj._id === currentDocumentId)
+            ?.model ?? ` ${currentDocumentId}`
+        }`}</Text>
+      }
+      scrollAreaComponent={ScrollArea.Autosize}
+    >
+      <Stack>
+        <Text size="lg">Additional Fields</Text>
+        {displayAdditionalFields}
+      </Stack>
+    </Modal>
+  );
+
+  const starRatingsFromQueryObj =
+    Array.from(groupedByQueryResponseData)
+      .at(-1)?.[1]
+      .find((queryResponseObj) => queryResponseObj._id === currentDocumentId)
+      ?.starRatingsCount ?? (Object.create(null) as Record<string, number>);
+
+  const starRatingsModal = Object.entries(starRatingsFromQueryObj).map(
+    ([key, value], idx) => {
+      const rowBackgroundColorLight = idx % 2 === 0 ? "#f9f9f9" : "transparent";
+      const rowBackgroundColorDark = "transparent";
+      const rowBackgroundColor =
+        themeObject.colorScheme === "dark"
+          ? rowBackgroundColorDark
+          : rowBackgroundColorLight;
+
+      return (
+        <Grid columns={10} w="100%" style={{ borderBottom: borderColor }}>
+          <Grid.Col span={4} style={{ background: rowBackgroundColor }}>
+            <Group>
+              {STAR_RATINGS_TO_ICONS_MAP[key].map((icon, idx) => (
+                <Flex style={{ color: themeColorShade }} pt={4}>
+                  {icon}
+                </Flex>
+              ))}
+            </Group>
+          </Grid.Col>
+          <Grid.Col span={6} style={{ background: rowBackgroundColor }}>
+            <Flex direction="row" wrap="wrap" gap={4} rowGap={rowGap}>
+              <Text>{value?.toString()}</Text>
+            </Flex>
+          </Grid.Col>
+        </Grid>
+      );
+    }
+  );
+
+  const displayViewStarRatingsModal = (
+    <Modal
+      centered
+      closeButtonProps={{ color: themeColorShade }}
+      opened={openedViewStarRatingsModal}
+      onClose={() => {
+        closeViewStarRatingsModal();
+      }}
+      size={modalSize}
+      title={<Text size="xl">Star Ratings</Text>}
+      scrollAreaComponent={ScrollArea.Autosize}
+    >
+      {starRatingsModal}
+    </Modal>
+  );
+
+  const productsFromQueryObj =
+    Array.from(groupedByQueryResponseData)
+      .at(-1)?.[1]
+      .find((queryResponseObj) => queryResponseObj._id === currentDocumentId)?.products ??
+    ([] as Record<string, string | number>[]);
+
+  const purchasesModal = productsFromQueryObj.map(
+    (product: Record<string, string | number>) => {
+      const productElement = Object.entries(product).map(([key, value], idx) => {
+        const rowBackgroundColorLight = idx % 2 === 0 ? "#f9f9f9" : "transparent";
+        const rowBackgroundColorDark = "transparent";
+        const rowBackgroundColor =
+          themeObject.colorScheme === "dark"
+            ? rowBackgroundColorDark
+            : rowBackgroundColorLight;
+
+        return (
+          <Grid columns={10} w="100%" style={{ borderBottom: borderColor }}>
+            <Grid.Col span={4} style={{ background: rowBackgroundColor }}>
+              <Text>{splitCamelCase(key) ?? ""}</Text>
+            </Grid.Col>
+            <Grid.Col span={6} style={{ background: rowBackgroundColor }}>
+              <Flex direction="row" wrap="wrap" gap={4} rowGap={rowGap}>
+                <Text>{value?.toString()}</Text>
+              </Flex>
+            </Grid.Col>
+          </Grid>
+        );
+      });
+
+      return (
+        <Stack py={padding}>
+          <FormLayoutWrapper>{productElement}</FormLayoutWrapper>
+        </Stack>
+      );
+    }
+  );
+
+  const displayViewPurchasesModal = (
+    <Modal
+      centered
+      closeButtonProps={{ color: themeColorShade }}
+      opened={openedViewPurchasesModal}
+      onClose={() => {
+        closeViewPurchasesModal();
+      }}
+      size={modalSize}
+      title={<Text size="xl">Purchases</Text>}
+      scrollAreaComponent={ScrollArea.Autosize}
+    >
+      {purchasesModal}
+    </Modal>
+  );
+
+  const shippingAddressFromQueryObj =
+    Array.from(groupedByQueryResponseData)
+      .at(-1)?.[1]
+      .find((queryResponseObj) => queryResponseObj._id === currentDocumentId)
+      ?.shippingAddress ?? (Object.create(null) as Record<string, string>);
+
+  const shippingAddressModal = Object.entries(shippingAddressFromQueryObj).map(
+    ([key, value], idx) => {
+      const rowBackgroundColorLight = idx % 2 === 0 ? "#f9f9f9" : "transparent";
+      const rowBackgroundColorDark = "transparent";
+      const rowBackgroundColor =
+        themeObject.colorScheme === "dark"
+          ? rowBackgroundColorDark
+          : rowBackgroundColorLight;
+
+      return (
+        <Grid columns={10} w="100%" style={{ borderBottom: borderColor }}>
+          <Grid.Col span={4} style={{ background: rowBackgroundColor }}>
+            <Text>{splitCamelCase(key)}:</Text>
+          </Grid.Col>
+          <Grid.Col span={6} style={{ background: rowBackgroundColor }}>
+            <Flex direction="row" wrap="wrap" gap={4} rowGap={rowGap}>
+              <Text>{value?.toString()}</Text>
+            </Flex>
+          </Grid.Col>
+        </Grid>
+      );
+    }
+  );
+
+  const displayShippingAddressModal = (
+    <Modal
+      centered
+      closeButtonProps={{ color: themeColorShade }}
+      opened={openedShippingAddressModal}
+      onClose={() => {
+        closeShippingAddressModal();
+      }}
+      size={modalSize}
+      title={<Text size="xl">Shipping Address</Text>}
+      scrollAreaComponent={ScrollArea.Autosize}
+    >
+      {shippingAddressModal}
+    </Modal>
+  );
+
+  const personalAddressFromQueryObj =
+    Array.from(groupedByQueryResponseData)
+      .at(-1)?.[1]
+      .find((queryResponseObj) => queryResponseObj._id === currentDocumentId)?.address ??
+    (Object.create(null) as Record<string, string>);
+
+  const personalAddressModal = Object.entries(personalAddressFromQueryObj).map(
+    ([key, value], idx) => {
+      const rowBackgroundColorLight = idx % 2 === 0 ? "#f9f9f9" : "transparent";
+      const rowBackgroundColorDark = "transparent";
+      const rowBackgroundColor =
+        themeObject.colorScheme === "dark"
+          ? rowBackgroundColorDark
+          : rowBackgroundColorLight;
+
+      return (
+        <Grid columns={10} w="100%" style={{ borderBottom: borderColor }}>
+          <Grid.Col span={4} style={{ background: rowBackgroundColor }}>
+            <Text>{splitCamelCase(key)}:</Text>
+          </Grid.Col>
+          <Grid.Col span={6} style={{ background: rowBackgroundColor }}>
+            <Flex direction="row" wrap="wrap" gap={4} rowGap={rowGap}>
+              <Text>{value?.toString()}</Text>
+            </Flex>
+          </Grid.Col>
+        </Grid>
+      );
+    }
+  );
+
+  const displayPersonalAddressModal = (
+    <Modal
+      centered
+      closeButtonProps={{ color: themeColorShade }}
+      opened={openedPersonalAddressModal}
+      onClose={() => {
+        closePersonalAddressModal();
+      }}
+      size={modalSize}
+      title={<Text size="xl">Personal Address</Text>}
+      scrollAreaComponent={ScrollArea.Autosize}
+    >
+      {personalAddressModal}
+    </Modal>
+  );
 
   return (
     <Stack w="100%" style={{ ...style }} py={padding}>
       {displayUpdateRequestStatusModal}
       {displayProfileInfoModal}
       {displayEditRepairTicketModal}
+      {displayAdditionalFieldsModal}
+      {displayViewStarRatingsModal}
+      {displayViewPurchasesModal}
+      {displayShippingAddressModal}
+      {displayPersonalAddressModal}
       {displayTable}
     </Stack>
   );

@@ -1,23 +1,18 @@
-import {
-  DashboardAction,
-  DashboardDispatch,
-  DashboardState,
-  Year,
-} from './types';
+import { DashboardAction, DashboardDispatch, DashboardState, Year } from "./types";
 
-const initialSelectedDate = new Date().getDate().toString().padStart(2, '0');
+const initialSelectedDate = new Date().getDate().toString().padStart(2, "0");
 const initialSelectedMonth = new Date().getMonth() + 1;
 const initialSelectedYear = new Date().getFullYear().toString() as Year;
 
 const initialDashboardState: DashboardState = {
   businessMetrics: [],
-  calendarView: 'Daily',
-  customerMetric: 'Overview',
-  financialMetric: 'Profit',
-  metricsView: 'Financials',
-  productMetric: 'All Products',
-  repairMetric: 'All Repairs',
-  storeLocationView: 'All Locations',
+  calendarView: "Daily",
+  customerMetric: "Overview",
+  financialMetric: "Profit",
+  metricsView: "Financials",
+  productMetric: "All Products",
+  repairMetric: "All Repairs",
+  storeLocationView: "All Locations",
   selectedYYYYMMDD: `${initialSelectedYear}-${initialSelectedMonth}-${initialSelectedDate}`,
   // selectedYear: '2019',
   // selectedYYYYMMDD: `${2019}-${
@@ -26,15 +21,15 @@ const initialDashboardState: DashboardState = {
 };
 
 const dashboardAction: DashboardAction = {
-  setBusinessMetrics: 'setBusinessMetrics',
-  setCalendarView: 'setCalendarView',
-  setCustomerMetric: 'setCustomerMetric',
-  setFinancialMetric: 'setFinancialMetric',
-  setMetricsView: 'setMetricsView',
-  setProductMetric: 'setProductMetric',
-  setRepairMetric: 'setRepairMetric',
-  setStoreLocationView: 'setStoreLocationView',
-  setSelectedYYYYMMDD: 'setSelectedYYYYMMDD',
+  setBusinessMetrics: "setBusinessMetrics",
+  setCalendarView: "setCalendarView",
+  setCustomerMetric: "setCustomerMetric",
+  setFinancialMetric: "setFinancialMetric",
+  setMetricsView: "setMetricsView",
+  setProductMetric: "setProductMetric",
+  setRepairMetric: "setRepairMetric",
+  setStoreLocationView: "setStoreLocationView",
+  setSelectedYYYYMMDD: "setSelectedYYYYMMDD",
 };
 
 function dashboardReducer(

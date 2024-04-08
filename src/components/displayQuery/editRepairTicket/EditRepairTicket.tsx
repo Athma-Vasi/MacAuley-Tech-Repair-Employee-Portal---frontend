@@ -65,9 +65,9 @@ function EditRepairTicket({
   const { repairTicketFormId } = editRepairTicketInput;
 
   const initialEditRepairTicketState: EditRepairTicketState = {
-    repairTickets: editRepairTicketInput.repairTickets ?? "",
-    isRepairTicketsValid: false,
-    isRepairTicketsFocused: false,
+    repairNotes: editRepairTicketInput.repairNotes ?? "",
+    isRepairNotesValid: false,
+    isRepairNotesFocused: false,
 
     testingResults: editRepairTicketInput.testingResults ?? "",
     isTestingResultsValid: false,
@@ -98,9 +98,9 @@ function EditRepairTicket({
     initialEditRepairTicketState
   );
   const {
-    repairTickets,
-    isRepairTicketsValid,
-    isRepairTicketsFocused,
+    repairNotes,
+    isRepairNotesValid,
+    isRepairNotesFocused,
     testingResults,
     isTestingResultsValid,
     isTestingResultsFocused,
@@ -158,12 +158,16 @@ function EditRepairTicket({
       const url: URL = urlBuilder({ path: `repair-note/${repairTicketFormId}` });
 
       const body = JSON.stringify({
-        repairTicket: {
-          repairTickets,
-          testingResults,
-          finalRepairCost,
-          finalRepairCostCurrency,
-          repairStatus,
+        documentUpdate: {
+          updateKind: "field",
+          updateOperator: "$set",
+          fields: {
+            repairNotes,
+            testingResults,
+            finalRepairCost,
+            finalRepairCostCurrency,
+            repairStatus,
+          },
         },
       });
 
@@ -259,13 +263,13 @@ function EditRepairTicket({
   }, [triggerFormSubmit]);
 
   useEffect(() => {
-    const isValid = NOTE_TEXT_AREA_REGEX.test(repairTickets);
+    const isValid = NOTE_TEXT_AREA_REGEX.test(repairNotes);
 
     editRepairTicketDispatch({
-      type: editRepairTicketAction.setIsRepairTicketsValid,
+      type: editRepairTicketAction.setIsRepairNotesValid,
       payload: isValid,
     });
-  }, [repairTickets]);
+  }, [repairNotes]);
 
   useEffect(() => {
     const isValid = NOTE_TEXT_AREA_REGEX.test(testingResults);
@@ -289,8 +293,10 @@ function EditRepairTicket({
   useEffect(() => {
     // if currency is EUR, replace decimal with comma and remove leading zeros
 
+    const stringifiedFinalRepairCost = finalRepairCost.toString();
+
     if (finalRepairCostCurrency === "EUR") {
-      const finalRepairCostWithCommaAndNoLeadingZero = finalRepairCost
+      const finalRepairCostWithCommaAndNoLeadingZero = stringifiedFinalRepairCost
         .replace(".", ",")
         .replace(/^0+(?=\d)/, ""); // removes leading zeros if amount !== '0.00'
 
@@ -302,7 +308,7 @@ function EditRepairTicket({
 
     // if currency is not EUR, replace comma with decimal and remove leading zeros
     else {
-      const finalRepairCostWithDecimalAndNoLeadingZero = finalRepairCost
+      const finalRepairCostWithDecimalAndNoLeadingZero = stringifiedFinalRepairCost
         .replace(",", ".")
         .replace(/^0+(?=\d)/, "");
 
@@ -316,13 +322,13 @@ function EditRepairTicket({
   // update stepper wrapper state on every change
   useEffect(() => {
     const areOptionalInputsInError =
-      (repairTickets.length > 0 && !isRepairTicketsValid) ||
+      (repairNotes.length > 0 && !isRepairNotesValid) ||
       (testingResults.length > 0 && !isTestingResultsValid) ||
       (finalRepairCost.length > 0 && !isFinalRepairCostValid);
 
     // has any input been modified
     const isAnyInputModified =
-      repairTickets === editRepairTicketInput.repairTickets &&
+      repairNotes === editRepairTicketInput.repairNotes &&
       testingResults === editRepairTicketInput.testingResults &&
       finalRepairCost === editRepairTicketInput.finalRepairCost &&
       finalRepairCostCurrency === editRepairTicketInput.finalRepairCostCurrency &&
@@ -340,16 +346,16 @@ function EditRepairTicket({
       },
     });
   }, [
-    isRepairTicketsValid,
+    isRepairNotesValid,
     isTestingResultsValid,
     isFinalRepairCostValid,
-    repairTickets.length,
+    repairNotes.length,
     testingResults.length,
     finalRepairCost.length,
-    repairTickets,
+    repairNotes,
     testingResults,
     finalRepairCost,
-    editRepairTicketInput.repairTickets,
+    editRepairTicketInput.repairNotes,
     editRepairTicketInput.testingResults,
     editRepairTicketInput.finalRepairCost,
     editRepairTicketInput.finalRepairCostCurrency,
@@ -361,11 +367,11 @@ function EditRepairTicket({
   const [repairTicketsInputErrorText, repairTicketsInputValidText] =
     AccessibleErrorValidTextElements({
       inputElementKind: "repair notes",
-      inputText: repairTickets,
-      isValidInputText: isRepairTicketsValid,
-      isInputTextFocused: isRepairTicketsFocused,
+      inputText: repairNotes,
+      isValidInputText: isRepairNotesValid,
+      isInputTextFocused: isRepairNotesFocused,
       regexValidationText: returnNoteTextValidationText({
-        content: repairTickets,
+        content: repairNotes,
         contentKind: "repair notes",
         minLength: 2,
         maxLength: 2000,
@@ -403,24 +409,24 @@ function EditRepairTicket({
       error: repairTicketsInputErrorText,
       valid: repairTicketsInputValidText,
     },
-    inputText: repairTickets,
-    isValidInputText: isRepairTicketsValid,
+    inputText: repairNotes,
+    isValidInputText: isRepairNotesValid,
     label: "Repair Notes",
     onBlur: () => {
       editRepairTicketDispatch({
-        type: editRepairTicketAction.setIsRepairTicketsFocused,
+        type: editRepairTicketAction.setIsRepairNotesFocused,
         payload: false,
       });
     },
     onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
       editRepairTicketDispatch({
-        type: editRepairTicketAction.setRepairTickets,
+        type: editRepairTicketAction.setRepairNotes,
         payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
       editRepairTicketDispatch({
-        type: editRepairTicketAction.setIsRepairTicketsFocused,
+        type: editRepairTicketAction.setIsRepairNotesFocused,
         payload: true,
       });
     },
@@ -542,19 +548,6 @@ function EditRepairTicket({
     value: repairStatus,
   };
 
-  const submitButtonCreatorInfo: AccessibleButtonCreatorInfo = {
-    buttonLabel: "Submit",
-    semanticDescription: "repair note form submit button",
-    semanticName: "submit button",
-    buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
-      editRepairTicketDispatch({
-        type: editRepairTicketAction.setTriggerFormSubmit,
-        payload: true,
-      });
-    },
-    buttonDisabled: stepsInError.size > 0 || triggerFormSubmit,
-  };
-
   const [createdRepairTicketsTextAreaInput, createdTestingResultsTextAreaInput] =
     returnAccessibleTextAreaInputElements([
       repairTicketsTextAreaInputCreatorInfo,
@@ -573,14 +566,29 @@ function EditRepairTicket({
 
   // has any input been modified
   const isAnyInputModified =
-    repairTickets === editRepairTicketInput.repairTickets &&
+    repairNotes === editRepairTicketInput.repairNotes &&
     testingResults === editRepairTicketInput.testingResults &&
-    finalRepairCost === editRepairTicketInput.finalRepairCost &&
+    finalRepairCost.toString() === editRepairTicketInput.finalRepairCost.toString() &&
     finalRepairCostCurrency === editRepairTicketInput.finalRepairCostCurrency &&
     repairStatus === editRepairTicketInput.repairStatus
       ? false
       : true;
+
+  const submitButtonCreatorInfo: AccessibleButtonCreatorInfo = {
+    buttonLabel: "Submit",
+    semanticDescription: "repair note form submit button",
+    semanticName: "submit button",
+    buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
+      editRepairTicketDispatch({
+        type: editRepairTicketAction.setTriggerFormSubmit,
+        payload: true,
+      });
+    },
+    buttonDisabled: stepsInError.size > 0 || triggerFormSubmit || !isAnyInputModified,
+  };
+
   const [createdSubmitButton] = returnAccessibleButtonElements([submitButtonCreatorInfo]);
+
   const displaySubmitButton =
     currentStepperPosition === EDIT_REPAIR_NOTE_MAX_STEPPER_POSITION ? (
       <Tooltip
@@ -602,8 +610,8 @@ function EditRepairTicket({
     "Repair Note Details": [
       {
         inputName: "Repair Notes",
-        inputValue: repairTickets,
-        isInputValueValid: isRepairTicketsValid,
+        inputValue: repairNotes,
+        isInputValueValid: isRepairNotesValid,
       },
       {
         inputName: "Testing Results",
@@ -677,7 +685,7 @@ function EditRepairTicket({
       maxStepperPosition={EDIT_REPAIR_NOTE_MAX_STEPPER_POSITION}
       parentComponentDispatch={editRepairTicketDispatch}
       setCurrentStepperPosition={editRepairTicketAction.setCurrentStepperPosition}
-      stepsInError={stepsInError}
+      stepsInError={!isAnyInputModified ? stepsInError.add(0) : stepsInError}
     >
       {displaySubmitSuccessNotificationModal}
       {displayEditRepairTicketForm}

@@ -263,32 +263,32 @@ function ImageUpload({
 
     imagePreviews.forEach((image, index) => {
       // validate image sizes
-      const imageIsValidSize = image.size <= maxImageSize;
+      const isImageValidSize = image.size <= maxImageSize;
       imageUploadDispatch({
         type: imageUploadAction.setAreValidImageSizes,
         payload: {
           index,
-          value: imageIsValidSize,
+          value: isImageValidSize,
         },
       });
 
       // validate image kinds
-      const imageIsValidKind = image.type.split('/')[0] === 'image';
+      const isImageValidKind = image.type.split('/')[0] === 'image';
       imageUploadDispatch({
         type: imageUploadAction.setAreValidImageKinds,
         payload: {
           index,
-          value: imageIsValidKind,
+          value: isImageValidKind,
         },
       });
 
       // validate image types
-      const imageIsValidType = validImageTypes.has(image.type.split('/')[1]);
+      const isImageValidType = validImageTypes.has(image.type.split('/')[1]);
       imageUploadDispatch({
         type: imageUploadAction.setAreValidImageTypes,
         payload: {
           index,
-          value: imageIsValidType,
+          value: isImageValidType,
         },
       });
     });

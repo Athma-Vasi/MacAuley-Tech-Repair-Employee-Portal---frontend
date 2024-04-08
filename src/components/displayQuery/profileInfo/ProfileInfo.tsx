@@ -1,17 +1,21 @@
-import { Grid, Group, Stack, Text } from '@mantine/core';
+import { Grid, Group, Stack, Text, Title } from "@mantine/core";
 
-import { COLORS_SWATCHES } from '../../../constants/data';
-import { useGlobalState } from '../../../hooks';
-import { returnAccessibleImageElements } from '../../../jsxCreators';
-import { UserDocument } from '../../../types';
-import { returnThemeColors, splitCamelCase } from '../../../utils';
-import { returnProfileInfoObject } from '../../portalHeader/userInfo/utils';
+import { COLORS_SWATCHES } from "../../../constants/data";
+import { useGlobalState } from "../../../hooks";
+import { returnAccessibleImageElements } from "../../../jsxCreators";
+import { UserDocument } from "../../../types";
+import { returnThemeColors, splitCamelCase } from "../../../utils";
+import { returnProfileInfoObject } from "../../portalHeader/userInfo/utils";
+import { CustomerDocument } from "../../customer/types";
 
 type ProfileInfoProps = {
-  employeeDocument: UserDocument | null;
+  userDocument:
+    | UserDocument
+    | Omit<CustomerDocument, "password" | "paymentInformation">
+    | null;
 };
 
-function ProfileInfo({ employeeDocument }: ProfileInfoProps) {
+function ProfileInfo({ userDocument }: ProfileInfoProps) {
   const {
     globalState: { themeObject, width, padding, rowGap },
   } = useGlobalState();
@@ -27,9 +31,9 @@ function ProfileInfo({ employeeDocument }: ProfileInfoProps) {
     {
       customWidth: width < 640 ? 128 : width < 1024 ? 256 : 384,
       customRadius: 4,
-      fit: 'cover',
-      imageSrc: employeeDocument?.profilePictureUrl,
-      imageAlt: `Picture of ${employeeDocument?.username}`,
+      fit: "cover",
+      imageSrc: userDocument?.profilePictureUrl,
+      imageAlt: `Picture of ${userDocument?.username}`,
       isCard: false,
       isOverlay: false,
       isLoader: true,
@@ -43,7 +47,9 @@ function ProfileInfo({ employeeDocument }: ProfileInfoProps) {
     </Group>
   );
 
-  const profileInfoObject = returnProfileInfoObject(employeeDocument);
+  const profileInfoObject = returnProfileInfoObject(userDocument);
+
+  console.log("profileInfoObject", profileInfoObject);
 
   const displayProfileStack = Object.entries(profileInfoObject).map(
     (keyValTuple, index) => {
@@ -55,36 +61,34 @@ function ProfileInfo({ employeeDocument }: ProfileInfoProps) {
         }>
       ];
 
-      const displayPageName = (
-        <Group
-          w="100%"
-          position="center"
-          align="baseline"
-          spacing={rowGap}
-          py={padding}
-        >
-          <Text size="lg" weight={500} style={{ marginTop: 16 }}>
-            {splitCamelCase(pageName)}
-          </Text>
-        </Group>
-      );
+      const displayPageName =
+        pageObjectArr.length > 0 ? (
+          <Group
+            w="100%"
+            position="center"
+            align="baseline"
+            spacing={rowGap}
+            py={padding}
+          >
+            <Text size="lg" weight={500} style={{ marginTop: 16 }}>
+              {splitCamelCase(pageName)}
+            </Text>
+          </Group>
+        ) : null;
 
       const displayPageSection = pageObjectArr.map((pageObject, index) => {
-        const { inputName, inputValue = '' } = pageObject;
+        const { inputName, inputValue = "" } = pageObject;
 
         const displayInputName = <Text>{inputName}</Text>;
         const displayValue =
-          inputName === 'Email' ? (
+          inputName === "Email" ? (
             inputValue
               .toString()
-              .split('@')
+              .split("@")
               .map((str, index) => {
                 const displayStr = index === 0 ? str : `@${str}`;
                 return (
-                  <Text
-                    key={`email-${index}`}
-                    style={{ display: 'inline-block' }}
-                  >
+                  <Text key={`email-${index}`} style={{ display: "inline-block" }}>
                     {displayStr}
                   </Text>
                 );
@@ -93,11 +97,10 @@ function ProfileInfo({ employeeDocument }: ProfileInfoProps) {
             <Text>{inputValue}</Text>
           );
 
-        const rowBackgroundColorLight =
-          index % 2 === 0 ? '#f9f9f9' : 'transparent';
-        const rowBackgroundColorDark = 'transparent';
+        const rowBackgroundColorLight = index % 2 === 0 ? "#f9f9f9" : "transparent";
+        const rowBackgroundColorDark = "transparent";
         const rowBackgroundColor =
-          themeObject.colorScheme === 'dark'
+          themeObject.colorScheme === "dark"
             ? rowBackgroundColorDark
             : rowBackgroundColorLight;
 
@@ -133,7 +136,7 @@ function ProfileInfo({ employeeDocument }: ProfileInfoProps) {
   );
 
   const displayProfileInfoComponent = (
-    <Stack w="100%" p={padding} style={{ position: 'relative' }}>
+    <Stack w="100%" p={padding} style={{ position: "relative" }}>
       {displayProfilePic}
       {displayProfileStack}
     </Stack>

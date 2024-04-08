@@ -14,7 +14,7 @@ const initialDisplayQueryDesktopState: DisplayQueryDesktopState = {
   // for repair notes docs only
   editRepairTicketInput: {
     repairTicketFormId: "",
-    repairTickets: "",
+    repairNotes: "",
     testingResults: "",
     finalRepairCost: "",
     finalRepairCostCurrency: "CAD",
@@ -22,6 +22,7 @@ const initialDisplayQueryDesktopState: DisplayQueryDesktopState = {
   },
 
   employeeDocument: null,
+  customerDocument: null,
 };
 
 const displayQueryDesktopAction: DisplayQueryDesktopAction = {
@@ -35,6 +36,7 @@ const displayQueryDesktopAction: DisplayQueryDesktopAction = {
   setEditRepairTicketInput: "setEditRepairTicketInput",
 
   setEmployeeDocument: "setEmployeeDocument",
+  setCustomerDocument: "setCustomerDocument",
 };
 
 function displayQueryDesktopReducer(
@@ -75,6 +77,12 @@ function displayQueryDesktopReducer(
       return {
         ...state,
         employeeDocument: action.payload,
+      };
+
+    case displayQueryDesktopAction.setCustomerDocument:
+      return {
+        ...state,
+        customerDocument: action.payload,
       };
 
     default:

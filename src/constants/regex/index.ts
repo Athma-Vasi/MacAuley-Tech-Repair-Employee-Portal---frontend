@@ -289,7 +289,7 @@ const FLOAT_REGEX = /^\d{1,6}(?:[,.]\d{0,2})?$/;
  * - ^ and $ ensure that the entire string matches the regex.
  * - i makes the regex case-insensitive.
  */
-const FILENAME_REGEX = /^[a-zA-Z0-9\s.,'()-]{1,50}$/i;
+const FILE_NAME_REGEX = /^[a-zA-Z0-9\s.,'()-]{1,50}$/i;
 
 /**
  * - /^\d{4} \d{4} \d{4} \d{4}$/
@@ -319,6 +319,39 @@ const CREDIT_CARD_EXPIRATION_DATE_REGEX = /^(0[1-9]|1[0-2])\/([0-9]{4}|[0-9]{2})
  */
 const CREDIT_CARD_CVV_REGEX = /^\d{3,4}$/;
 
+/**
+ * - /\.(jpg|jpeg|png|webp)$
+ * - \. matches a period.
+ * - (jpg|jpeg|png|webp) matches either "jpg", "jpeg", "png", or "webp".
+ * - $ asserts that the string ends with one of the file extensions.
+ */
+const FILE_EXTENSIONS_REGEX = /\.(jpg|jpeg|png|webp)$/;
+
+/**
+ * - /^\d{1,6}$/
+ * - ^ asserts that the string starts with a digit.
+ * - \d{1,6} matches between 1 and 6 digits. This represents the file size in bytes, allowing for a range of digit lengths from 1 to 6.
+ * - $ asserts that the string ends with a digit.
+ * - technically a SI prefix is used here, as binary size of 1MB = 1,048,576 bytes
+ */
+const FILE_SIZE_REGEX = /^\d{1,6}$/;
+
+/**
+ * - /^image\/(jpeg|png|webp)$/
+ * - ^ asserts that the string starts with "image/".
+ * - (jpeg|png|webp) matches either "jpeg", "png", or "webp".
+ * - $ asserts that the string ends with one of the file extensions.
+ */
+const FILE_MIME_TYPES_REGEX = /^image\/(jpeg|png|webp)$/;
+
+/**
+ * - /^(7bit|8bit|binary|quoted-printable|base64)$/
+ * - (7bit|8bit|binary|quoted-printable|base64) matches either "7bit", "8bit", "binary", "quoted-printable", or "base64".
+ * - ^ asserts that the string starts with one of the file encodings.
+ * - $ asserts that the string ends with one of the file encodings.
+ */
+const FILE_ENCODING_REGEX = /^(7bit|8bit|binary|quoted-printable|base64)$/;
+
 export {
   ACKNOWLEDGEMENT_TEXT_INPUT_REGEX,
   ADDRESS_LINE_REGEX,
@@ -332,7 +365,11 @@ export {
   DATE_OF_BIRTH_REGEX,
   DATE_REGEX,
   EMAIL_REGEX,
-  FILENAME_REGEX,
+  FILE_ENCODING_REGEX,
+  FILE_EXTENSIONS_REGEX,
+  FILE_MIME_TYPES_REGEX,
+  FILE_NAME_REGEX,
+  FILE_SIZE_REGEX,
   FLOAT_REGEX,
   FULL_NAME_REGEX,
   GRAMMAR_TEXT_INPUT_REGEX,

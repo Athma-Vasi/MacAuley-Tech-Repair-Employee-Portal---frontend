@@ -7,19 +7,20 @@ import {
   Text,
   Title,
 } from '@mantine/core';
-import { NivoArcLabel } from '../types';
+import { ChangeEvent } from 'react';
+
+import { COLORS_SWATCHES } from '../../../constants/data';
 import {
   AccessibleSelectedDeselectedTextElements,
   returnAccessibleSelectInputElements,
   returnAccessibleSliderInputElements,
 } from '../../../jsxCreators';
-import { ChangeEvent } from 'react';
-import { COLORS_SWATCHES } from '../../../constants/data';
 import {
   AccessibleSelectInputCreatorInfo,
   AccessibleSliderInputCreatorInfo,
 } from '../../wrappers';
 import { NIVO_SUNBURST_ARC_LABEL_DATA } from '../responsiveSunburstChart/constants';
+import { NivoArcLabel } from '../types';
 import { ChartsAndGraphsControlsStacker } from '../utils';
 
 type ChartArcLabelAction = {

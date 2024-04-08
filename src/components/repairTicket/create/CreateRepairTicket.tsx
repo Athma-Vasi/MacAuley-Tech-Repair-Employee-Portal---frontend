@@ -436,7 +436,7 @@ function CreateRepairTicket() {
       parentComponentDispatch={createRepairTicketDispatch}
       setCurrentStepperPosition={createRepairTicketAction.setCurrentStepperPosition}
       stepsInError={stepsInError}
-      childrenTitle="Create repair note"
+      childrenTitle="Create repair ticket"
     >
       {displayRepairTicketComponentPage}
     </StepperWrapper>
@@ -455,6 +455,9 @@ function CreateRepairTicket() {
       {displayRepairTicketForm}
     </Flex>
   );
+
+  console.log("CREATE REPAIR TICKET");
+
   /** ------------- end input display ------------- */
   return displayRepairTicketComponent;
 }

@@ -1,4 +1,4 @@
-import { SetStepsInErrorPayload } from '../../../types';
+import { SetStepsInErrorPayload } from "../../../types";
 
 type RatingEmotion = {
   estatic: number;
@@ -70,40 +70,40 @@ type CreateAnnouncementState = {
 };
 
 type CreateAnnouncementAction = {
-  setTitle: 'setTitle';
-  setIsValidTitle: 'setIsValidTitle';
-  setIsTitleFocused: 'setIsTitleFocused';
+  setTitle: "setTitle";
+  setIsValidTitle: "setIsValidTitle";
+  setIsTitleFocused: "setIsTitleFocused";
 
-  setAuthor: 'setAuthor';
-  setIsValidAuthor: 'setIsValidAuthor';
-  setIsAuthorFocused: 'setIsAuthorFocused';
+  setAuthor: "setAuthor";
+  setIsValidAuthor: "setIsValidAuthor";
+  setIsAuthorFocused: "setIsAuthorFocused";
 
-  setBannerImageSrc: 'setBannerImageSrc';
-  setIsValidBannerImageSrc: 'setIsValidBannerImageSrc';
-  setIsBannerImageSrcFocused: 'setIsBannerImageSrcFocused';
+  setBannerImageSrc: "setBannerImageSrc";
+  setIsValidBannerImageSrc: "setIsValidBannerImageSrc";
+  setIsBannerImageSrcFocused: "setIsBannerImageSrcFocused";
 
-  setBannerImageAlt: 'setBannerImageAlt';
-  setIsValidBannerImageAlt: 'setIsValidBannerImageAlt';
-  setIsBannerImageAltFocused: 'setIsBannerImageAltFocused';
+  setBannerImageAlt: "setBannerImageAlt";
+  setIsValidBannerImageAlt: "setIsValidBannerImageAlt";
+  setIsBannerImageAltFocused: "setIsBannerImageAltFocused";
 
-  setArticle: 'setArticle';
-  setAreValidArticleParagraphs: 'setAreValidArticleParagraphs';
-  setAreArticleParagraphsFocused: 'setAreArticleParagraphsFocused';
-  setIsArticleLengthExceeded: 'setIsArticleLengthExceeded';
+  setArticle: "setArticle";
+  setAreValidArticleParagraphs: "setAreValidArticleParagraphs";
+  setAreArticleParagraphsFocused: "setAreArticleParagraphsFocused";
+  setIsArticleLengthExceeded: "setIsArticleLengthExceeded";
 
-  setModifyArticleParagraph: 'setModifyArticleParagraph';
-  setTimeToRead: 'setTimeToRead';
+  setModifyArticleParagraph: "setModifyArticleParagraph";
+  setTimeToRead: "setTimeToRead";
 
-  setTriggerFormSubmit: 'setTriggerFormSubmit';
-  setCurrentStepperPosition: 'setCurrentStepperPosition';
-  setStepsInError: 'setStepsInError';
+  setTriggerFormSubmit: "setTriggerFormSubmit";
+  setCurrentStepperPosition: "setCurrentStepperPosition";
+  setStepsInError: "setStepsInError";
 
-  setIsSubmitting: 'setIsSubmitting';
-  setSubmitMessage: 'setSubmitMessage';
-  setIsSuccessful: 'setIsSuccessful';
-  setSuccessMessage: 'setSuccessMessage';
-  setIsLoading: 'setIsLoading';
-  setLoadingMessage: 'setLoadingMessage';
+  setIsSubmitting: "setIsSubmitting";
+  setSubmitMessage: "setSubmitMessage";
+  setIsSuccessful: "setIsSuccessful";
+  setSuccessMessage: "setSuccessMessage";
+  setIsLoading: "setIsLoading";
+  setLoadingMessage: "setLoadingMessage";
 };
 
 type ArticlePayload = {
@@ -119,59 +119,59 @@ type ArticleParagraphFocusedPayload = {
 type CreateAnnouncementDispatch =
   | {
       type:
-        | CreateAnnouncementAction['setTitle']
-        | CreateAnnouncementAction['setAuthor']
-        | CreateAnnouncementAction['setBannerImageSrc']
-        | CreateAnnouncementAction['setBannerImageAlt']
-        | CreateAnnouncementAction['setSubmitMessage']
-        | CreateAnnouncementAction['setSuccessMessage']
-        | CreateAnnouncementAction['setLoadingMessage'];
+        | CreateAnnouncementAction["setTitle"]
+        | CreateAnnouncementAction["setAuthor"]
+        | CreateAnnouncementAction["setBannerImageSrc"]
+        | CreateAnnouncementAction["setBannerImageAlt"]
+        | CreateAnnouncementAction["setSubmitMessage"]
+        | CreateAnnouncementAction["setSuccessMessage"]
+        | CreateAnnouncementAction["setLoadingMessage"];
       payload: string;
     }
   | {
       type:
-        | CreateAnnouncementAction['setIsValidTitle']
-        | CreateAnnouncementAction['setIsTitleFocused']
-        | CreateAnnouncementAction['setIsValidAuthor']
-        | CreateAnnouncementAction['setIsAuthorFocused']
-        | CreateAnnouncementAction['setIsValidBannerImageSrc']
-        | CreateAnnouncementAction['setIsBannerImageSrcFocused']
-        | CreateAnnouncementAction['setIsValidBannerImageAlt']
-        | CreateAnnouncementAction['setIsBannerImageAltFocused']
-        | CreateAnnouncementAction['setIsArticleLengthExceeded']
-        | CreateAnnouncementAction['setTriggerFormSubmit']
-        | CreateAnnouncementAction['setIsSubmitting']
-        | CreateAnnouncementAction['setIsSuccessful']
-        | CreateAnnouncementAction['setIsLoading'];
+        | CreateAnnouncementAction["setIsValidTitle"]
+        | CreateAnnouncementAction["setIsTitleFocused"]
+        | CreateAnnouncementAction["setIsValidAuthor"]
+        | CreateAnnouncementAction["setIsAuthorFocused"]
+        | CreateAnnouncementAction["setIsValidBannerImageSrc"]
+        | CreateAnnouncementAction["setIsBannerImageSrcFocused"]
+        | CreateAnnouncementAction["setIsValidBannerImageAlt"]
+        | CreateAnnouncementAction["setIsBannerImageAltFocused"]
+        | CreateAnnouncementAction["setIsArticleLengthExceeded"]
+        | CreateAnnouncementAction["setTriggerFormSubmit"]
+        | CreateAnnouncementAction["setIsSubmitting"]
+        | CreateAnnouncementAction["setIsSuccessful"]
+        | CreateAnnouncementAction["setIsLoading"];
       payload: boolean;
     }
   | {
-      type: CreateAnnouncementAction['setArticle'];
+      type: CreateAnnouncementAction["setArticle"];
       payload: ArticlePayload;
     }
   | {
-      type: CreateAnnouncementAction['setAreValidArticleParagraphs'];
+      type: CreateAnnouncementAction["setAreValidArticleParagraphs"];
       payload: boolean[];
     }
   | {
-      type: CreateAnnouncementAction['setAreArticleParagraphsFocused'];
+      type: CreateAnnouncementAction["setAreArticleParagraphsFocused"];
       payload: ArticleParagraphFocusedPayload;
     }
   | {
       type:
-        | CreateAnnouncementAction['setTimeToRead']
-        | CreateAnnouncementAction['setCurrentStepperPosition'];
+        | CreateAnnouncementAction["setTimeToRead"]
+        | CreateAnnouncementAction["setCurrentStepperPosition"];
       payload: number;
     }
   | {
-      type: CreateAnnouncementAction['setModifyArticleParagraph'];
+      type: CreateAnnouncementAction["setModifyArticleParagraph"];
       payload: {
         index: number;
-        kind: 'insert' | 'delete';
+        kind: "insert" | "delete";
       };
     }
   | {
-      type: CreateAnnouncementAction['setStepsInError'];
+      type: CreateAnnouncementAction["setStepsInError"];
       payload: SetStepsInErrorPayload;
     };
 

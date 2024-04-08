@@ -1,20 +1,20 @@
-import { Group, Title, Tooltip } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
-import { InvalidTokenError } from 'jwt-decode';
-import { ChangeEvent, MouseEvent, useEffect, useReducer, useRef } from 'react';
-import { useErrorBoundary } from 'react-error-boundary';
-import { TbUpload } from 'react-icons/tb';
-import { useNavigate } from 'react-router-dom';
+import { Group, Title, Tooltip } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
+import { InvalidTokenError } from "jwt-decode";
+import { ChangeEvent, MouseEvent, useEffect, useReducer, useRef } from "react";
+import { useErrorBoundary } from "react-error-boundary";
+import { TbUpload } from "react-icons/tb";
+import { useNavigate } from "react-router-dom";
 
-import { DEPARTMENT_DATA, URGENCY_DATA } from '../../../constants/data';
+import { DEPARTMENT_DATA, URGENCY_DATA } from "../../../constants/data";
 import {
   DATE_NEAR_FUTURE_REGEX,
   GRAMMAR_TEXT_INPUT_REGEX,
   GRAMMAR_TEXTAREA_INPUT_REGEX,
   MONEY_REGEX,
-} from '../../../constants/regex';
-import { globalAction } from '../../../context/globalProvider/state';
-import { useGlobalState, useWrapFetch } from '../../../hooks';
+} from "../../../constants/regex";
+import { globalAction } from "../../../context/globalProvider/state";
+import { useGlobalState, useWrapFetch } from "../../../hooks";
 import {
   AccessibleErrorValidTextElements,
   returnAccessibleButtonElements,
@@ -22,22 +22,18 @@ import {
   returnAccessibleSelectInputElements,
   returnAccessibleTextAreaInputElements,
   returnAccessibleTextInputElements,
-} from '../../../jsxCreators';
-import {
-  Department,
-  ResourceRequestServerResponse,
-  Urgency,
-} from '../../../types';
+} from "../../../jsxCreators";
+import { Department, ResourceRequestServerResponse, Urgency } from "../../../types";
 import {
   returnDateNearFutureValidationText,
-  returnGrammarValidationText,
   returnFloatAmountValidationText,
+  returnGrammarValidationText,
   urlBuilder,
-} from '../../../utils';
+} from "../../../utils";
 import FormReviewPage, {
   FormReviewObjectArray,
-} from '../../formReviewPage/FormReviewPage';
-import { NotificationModal } from '../../notificationModal';
+} from "../../formReviewPage/FormReviewPage";
+import { NotificationModal } from "../../notificationModal";
 import {
   AccessibleButtonCreatorInfo,
   AccessibleDateTimeInputCreatorInfo,
@@ -45,19 +41,19 @@ import {
   AccessibleTextAreaInputCreatorInfo,
   AccessibleTextInputCreatorInfo,
   FormLayoutWrapper,
-} from '../../wrappers';
-import { StepperWrapper } from '../../wrappers';
+} from "../../wrappers";
+import { StepperWrapper } from "../../wrappers";
 import {
   REQUEST_RESOURCE_DESCRIPTION_OBJECTS,
   REQUEST_RESOURCE_KIND_DATA,
   REQUEST_RESOURCE_MAX_STEPPER_POSITION,
-} from '../constants';
+} from "../constants";
 import {
   initialRequestResourceState,
   requestResourceAction,
   requestResourceReducer,
-} from './state';
-import { RequestResourceDocument, RequestResourceKind } from './types';
+} from "./state";
+import { RequestResourceDocument, RequestResourceKind } from "./types";
 
 function RequestResource() {
   const [requestResourceState, requestResourceDispatch] = useReducer(
@@ -132,10 +128,10 @@ function RequestResource() {
       });
       openSubmitSuccessNotificationModal();
 
-      const url: URL = urlBuilder({ path: 'actions/company/request-resource' });
+      const url: URL = urlBuilder({ path: "actions/company/request-resource" });
 
       const body = JSON.stringify({
-        requestResource: {
+        requestResourceSchema: {
           department,
           resourceType,
           resourceQuantity,
@@ -148,9 +144,9 @@ function RequestResource() {
       });
 
       const requestInit: RequestInit = {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body,
       };
@@ -184,16 +180,16 @@ function RequestResource() {
             `New request resource of kind ${resourceType} for ${department} created`,
         });
       } catch (error: any) {
-        if (!isMounted || error.name === 'AbortError') {
+        if (!isMounted || error.name === "AbortError") {
           return;
         }
 
         const errorMessage =
           error instanceof InvalidTokenError
-            ? 'Invalid token. Please login again.'
+            ? "Invalid token. Please login again."
             : !error.response
-            ? 'Network error. Please try again.'
-            : error?.message ?? 'Unknown error occurred. Please try again.';
+            ? "Network error. Please try again."
+            : error?.message ?? "Unknown error occurred. Please try again.";
 
         globalDispatch({
           type: globalAction.setErrorState,
@@ -201,13 +197,13 @@ function RequestResource() {
             isError: true,
             errorMessage,
             errorCallback: () => {
-              navigate('/home');
+              navigate("/home");
 
               globalDispatch({
                 type: globalAction.setErrorState,
                 payload: {
                   isError: false,
-                  errorMessage: '',
+                  errorMessage: "",
                   errorCallback: () => {},
                 },
               });
@@ -224,7 +220,7 @@ function RequestResource() {
           });
           requestResourceDispatch({
             type: requestResourceAction.setSubmitMessage,
-            payload: '',
+            payload: "",
           });
           requestResourceDispatch({
             type: requestResourceAction.setTriggerFormSubmit,
@@ -255,10 +251,7 @@ function RequestResource() {
   // validate resource quantity input on every change
   useEffect(() => {
     // remove leading zeros
-    const resourceQuantityWithoutLeadingZeros = resourceQuantity.replace(
-      /^0+(?=\d)/,
-      ''
-    ); // removes leading zeros if amount !== '0.00'
+    const resourceQuantityWithoutLeadingZeros = resourceQuantity.replace(/^0+(?=\d)/, ""); // removes leading zeros if amount !== '0.00'
 
     requestResourceDispatch({
       type: requestResourceAction.setResourceQuantity,
@@ -297,8 +290,7 @@ function RequestResource() {
     const dateRegexTest = DATE_NEAR_FUTURE_REGEX.test(dateNeededBy);
     const currentDate = new Date();
     const dateNeededByDate = new Date(dateNeededBy);
-    const isValid =
-      dateRegexTest && dateNeededByDate.getTime() > currentDate.getTime();
+    const isValid = dateRegexTest && dateNeededByDate.getTime() > currentDate.getTime();
 
     requestResourceDispatch({
       type: requestResourceAction.setIsValidDateNeededBy,
@@ -318,13 +310,12 @@ function RequestResource() {
 
   // update stepper state on every change
   useEffect(() => {
-    const isStepInError =
-      !isValidResourceQuantity || !isValidResourceDescription;
+    const isStepInError = !isValidResourceQuantity || !isValidResourceDescription;
 
     requestResourceDispatch({
       type: requestResourceAction.setStepsInError,
       payload: {
-        kind: isStepInError ? 'add' : 'delete',
+        kind: isStepInError ? "add" : "delete",
         step: 0,
       },
     });
@@ -341,7 +332,7 @@ function RequestResource() {
     requestResourceDispatch({
       type: requestResourceAction.setStepsInError,
       payload: {
-        kind: isStepInError ? 'add' : 'delete',
+        kind: isStepInError ? "add" : "delete",
         step: 1,
       },
     });
@@ -356,25 +347,25 @@ function RequestResource() {
   // following are the accessible text elements for screen readers to read out based on the state of the input
   const [resourceQuantityInputErrorText, resourceQuantityInputValidText] =
     AccessibleErrorValidTextElements({
-      inputElementKind: 'resource quantity',
+      inputElementKind: "resource quantity",
       inputText: resourceQuantity,
       isInputTextFocused: isResourceQuantityFocused,
       isValidInputText: isValidResourceQuantity,
       regexValidationText: returnFloatAmountValidationText({
         content: resourceQuantity,
-        contentKind: 'resource quantity',
+        contentKind: "resource quantity",
       }),
     });
 
   const [resourceDescriptionInputErrorText, resourceDescriptionInputValidText] =
     AccessibleErrorValidTextElements({
-      inputElementKind: 'resource description',
+      inputElementKind: "resource description",
       inputText: resourceDescription,
       isInputTextFocused: isResourceDescriptionFocused,
       isValidInputText: isValidResourceDescription,
       regexValidationText: returnGrammarValidationText({
         content: resourceDescription,
-        contentKind: 'resource description',
+        contentKind: "resource description",
         minLength: 2,
         maxLength: 2000,
       }),
@@ -382,13 +373,13 @@ function RequestResource() {
 
   const [reasonForRequestInputErrorText, reasonForRequestInputValidText] =
     AccessibleErrorValidTextElements({
-      inputElementKind: 'reason for request',
+      inputElementKind: "reason for request",
       inputText: reasonForRequest,
       isInputTextFocused: isReasonForRequestFocused,
       isValidInputText: isValidReasonForRequest,
       regexValidationText: returnGrammarValidationText({
         content: reasonForRequest,
-        contentKind: 'reason for request',
+        contentKind: "reason for request",
         minLength: 2,
         maxLength: 75,
       }),
@@ -396,37 +387,34 @@ function RequestResource() {
 
   const [dateNeededByInputErrorText, dateNeededByInputValidText] =
     AccessibleErrorValidTextElements({
-      inputElementKind: 'date needed by',
+      inputElementKind: "date needed by",
       inputText: dateNeededBy,
       isInputTextFocused: isDateNeededByFocused,
       isValidInputText: isValidDateNeededBy,
       regexValidationText: returnDateNearFutureValidationText({
         content: dateNeededBy,
-        contentKind: 'date needed by',
+        contentKind: "date needed by",
       }),
     });
 
-  const [
-    additionalInformationInputErrorText,
-    additionalInformationInputValidText,
-  ] = AccessibleErrorValidTextElements({
-    inputElementKind: 'additional information',
-    inputText: additionalInformation,
-    isInputTextFocused: isAdditionalInformationFocused,
-    isValidInputText: isValidAdditionalInformation,
-    regexValidationText: returnGrammarValidationText({
-      content: additionalInformation,
-      contentKind: 'additional information',
-      minLength: 2,
-      maxLength: 2000,
-    }),
-  });
+  const [additionalInformationInputErrorText, additionalInformationInputValidText] =
+    AccessibleErrorValidTextElements({
+      inputElementKind: "additional information",
+      inputText: additionalInformation,
+      isInputTextFocused: isAdditionalInformationFocused,
+      isValidInputText: isValidAdditionalInformation,
+      regexValidationText: returnGrammarValidationText({
+        content: additionalInformation,
+        contentKind: "additional information",
+        minLength: 2,
+        maxLength: 2000,
+      }),
+    });
 
   const departmentSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
     data: DEPARTMENT_DATA,
-    description:
-      'Select the department for which you are requesting a resource.',
-    label: 'Department',
+    description: "Select the department for which you are requesting a resource.",
+    label: "Department",
     onChange: (event: ChangeEvent<HTMLSelectElement>) => {
       requestResourceDispatch({
         type: requestResourceAction.setDepartment,
@@ -440,8 +428,8 @@ function RequestResource() {
 
   const resourceKindSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
     data: REQUEST_RESOURCE_KIND_DATA,
-    description: 'Select the kind of resource you are requesting.',
-    label: 'Resource',
+    description: "Select the kind of resource you are requesting.",
+    label: "Resource",
     onChange: (event: ChangeEvent<HTMLSelectElement>) => {
       requestResourceDispatch({
         type: requestResourceAction.setResourceType,
@@ -460,7 +448,7 @@ function RequestResource() {
     },
     inputText: resourceQuantity,
     isValidInputText: isValidResourceQuantity,
-    label: 'Quantity',
+    label: "Quantity",
     onBlur: () => {
       requestResourceDispatch({
         type: requestResourceAction.setIsResourceQuantityFocused,
@@ -479,46 +467,45 @@ function RequestResource() {
         payload: true,
       });
     },
-    placeholder: 'Enter resource amount',
-    semanticName: 'resource quantity',
+    placeholder: "Enter resource amount",
+    semanticName: "resource quantity",
     minLength: 3,
     maxLength: 9,
     required: true,
     withAsterisk: true,
   };
 
-  const resourceDescriptionTextAreaCreatorInfo: AccessibleTextAreaInputCreatorInfo =
-    {
-      description: {
-        error: resourceDescriptionInputErrorText,
-        valid: resourceDescriptionInputValidText,
-      },
-      inputText: resourceDescription,
-      isValidInputText: isValidResourceDescription,
-      label: 'Description',
-      onBlur: () => {
-        requestResourceDispatch({
-          type: requestResourceAction.setIsResourceDescriptionFocused,
-          payload: false,
-        });
-      },
-      onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
-        requestResourceDispatch({
-          type: requestResourceAction.setResourceDescription,
-          payload: event.currentTarget.value,
-        });
-      },
-      onFocus: () => {
-        requestResourceDispatch({
-          type: requestResourceAction.setIsResourceDescriptionFocused,
-          payload: true,
-        });
-      },
-      placeholder: 'Enter resource description',
-      semanticName: 'resource description',
-      required: true,
-      withAsterisk: true,
-    };
+  const resourceDescriptionTextAreaCreatorInfo: AccessibleTextAreaInputCreatorInfo = {
+    description: {
+      error: resourceDescriptionInputErrorText,
+      valid: resourceDescriptionInputValidText,
+    },
+    inputText: resourceDescription,
+    isValidInputText: isValidResourceDescription,
+    label: "Description",
+    onBlur: () => {
+      requestResourceDispatch({
+        type: requestResourceAction.setIsResourceDescriptionFocused,
+        payload: false,
+      });
+    },
+    onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
+      requestResourceDispatch({
+        type: requestResourceAction.setResourceDescription,
+        payload: event.currentTarget.value,
+      });
+    },
+    onFocus: () => {
+      requestResourceDispatch({
+        type: requestResourceAction.setIsResourceDescriptionFocused,
+        payload: true,
+      });
+    },
+    placeholder: "Enter resource description",
+    semanticName: "resource description",
+    required: true,
+    withAsterisk: true,
+  };
 
   const reasonForRequestTextInputCreatorInfo: AccessibleTextInputCreatorInfo = {
     description: {
@@ -527,7 +514,7 @@ function RequestResource() {
     },
     inputText: reasonForRequest,
     isValidInputText: isValidReasonForRequest,
-    label: 'Reason for Request',
+    label: "Reason for Request",
     onBlur: () => {
       requestResourceDispatch({
         type: requestResourceAction.setIsReasonForRequestFocused,
@@ -546,14 +533,14 @@ function RequestResource() {
         payload: true,
       });
     },
-    placeholder: 'Enter reason for request',
-    semanticName: 'reason for request',
+    placeholder: "Enter reason for request",
+    semanticName: "reason for request",
   };
 
   const urgencySelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
     data: URGENCY_DATA,
-    description: 'Select the urgency of your request.',
-    label: 'Urgency',
+    description: "Select the urgency of your request.",
+    label: "Urgency",
     onChange: (event: ChangeEvent<HTMLSelectElement>) => {
       requestResourceDispatch({
         type: requestResourceAction.setUrgency,
@@ -573,7 +560,7 @@ function RequestResource() {
       },
       inputText: additionalInformation,
       isValidInputText: isValidAdditionalInformation,
-      label: 'Additional Information',
+      label: "Additional Information",
       onBlur: () => {
         requestResourceDispatch({
           type: requestResourceAction.setIsAdditionalInformationFocused,
@@ -592,8 +579,8 @@ function RequestResource() {
           payload: true,
         });
       },
-      placeholder: 'Enter additional information',
-      semanticName: 'additional information',
+      placeholder: "Enter additional information",
+      semanticName: "additional information",
     };
 
   const dateNeededByDateInputCreatorInfo: AccessibleDateTimeInputCreatorInfo = {
@@ -603,7 +590,7 @@ function RequestResource() {
     },
     inputText: dateNeededBy,
     isValidInputText: isValidDateNeededBy,
-    label: 'Date Needed by',
+    label: "Date Needed by",
     onBlur: () => {
       requestResourceDispatch({
         type: requestResourceAction.setIsDateNeededByFocused,
@@ -622,18 +609,18 @@ function RequestResource() {
         payload: true,
       });
     },
-    placeholder: 'Enter date needed by',
-    semanticName: 'date needed by',
-    inputKind: 'date',
-    dateKind: 'date near future',
+    placeholder: "Enter date needed by",
+    semanticName: "date needed by",
+    inputKind: "date",
+    dateKind: "date near future",
     required: true,
     withAsterisk: true,
   };
 
   const submitButtonCreatorInfo: AccessibleButtonCreatorInfo = {
-    buttonLabel: 'Submit',
-    semanticDescription: 'request resource form submit button',
-    semanticName: 'submit button',
+    buttonLabel: "Submit",
+    semanticDescription: "request resource form submit button",
+    semanticName: "submit button",
     leftIcon: <TbUpload />,
     buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
       requestResourceDispatch({
@@ -673,16 +660,14 @@ function RequestResource() {
     dateNeededByDateInputCreatorInfo,
   ]);
 
-  const [createdSubmitButton] = returnAccessibleButtonElements([
-    submitButtonCreatorInfo,
-  ]);
+  const [createdSubmitButton] = returnAccessibleButtonElements([submitButtonCreatorInfo]);
   const displaySubmitButton =
     currentStepperPosition === REQUEST_RESOURCE_MAX_STEPPER_POSITION ? (
       <Tooltip
         label={
           stepsInError.size > 0
-            ? 'Please fix errors before submitting form'
-            : 'Submit Request Resource form'
+            ? "Please fix errors before submitting form"
+            : "Submit Request Resource form"
         }
       >
         <Group position="center" w="100%">
@@ -710,46 +695,46 @@ function RequestResource() {
   );
 
   const REQUEST_RESOURCE_REVIEW_OBJECT: FormReviewObjectArray = {
-    'Resource Details': [
+    "Resource Details": [
       {
-        inputName: 'Department',
+        inputName: "Department",
         inputValue: department,
         isInputValueValid: true,
       },
       {
-        inputName: 'Resource',
+        inputName: "Resource",
         inputValue: resourceType,
         isInputValueValid: true,
       },
       {
-        inputName: 'Quantity',
+        inputName: "Quantity",
         inputValue: resourceQuantity,
         isInputValueValid: isValidResourceQuantity,
       },
       {
-        inputName: 'Description',
+        inputName: "Description",
         inputValue: resourceDescription,
         isInputValueValid: isValidResourceDescription,
       },
     ],
-    'Reason and Urgency': [
+    "Reason and Urgency": [
       {
-        inputName: 'Reason for Request',
+        inputName: "Reason for Request",
         inputValue: reasonForRequest,
         isInputValueValid: isValidReasonForRequest,
       },
       {
-        inputName: 'Urgency',
+        inputName: "Urgency",
         inputValue: urgency,
         isInputValueValid: true,
       },
       {
-        inputName: 'Additional Information',
+        inputName: "Additional Information",
         inputValue: additionalInformation,
         isInputValueValid: isValidAdditionalInformation,
       },
       {
-        inputName: 'Date Needed by',
+        inputName: "Date Needed by",
         inputValue: dateNeededBy,
         isInputValueValid: isValidDateNeededBy,
       },
@@ -768,7 +753,7 @@ function RequestResource() {
       onCloseCallbacks={[
         closeSubmitSuccessNotificationModal,
         () => {
-          navigate('/home/company/request-resource/display');
+          navigate("/home/company/request-resource/display");
         },
       ]}
       opened={openedSubmitSuccessNotificationModal}
@@ -776,9 +761,7 @@ function RequestResource() {
         loading: isSubmitting,
         text: isSubmitting ? submitMessage : successMessage,
       }}
-      title={
-        <Title order={4}>{isSuccessful ? 'Success!' : 'Submitting ...'}</Title>
-      }
+      title={<Title order={4}>{isSuccessful ? "Success!" : "Submitting ..."}</Title>}
     />
   );
 
@@ -798,9 +781,7 @@ function RequestResource() {
       descriptionObjectsArray={REQUEST_RESOURCE_DESCRIPTION_OBJECTS}
       maxStepperPosition={REQUEST_RESOURCE_MAX_STEPPER_POSITION}
       parentComponentDispatch={requestResourceDispatch}
-      setCurrentStepperPosition={
-        requestResourceAction.setCurrentStepperPosition
-      }
+      setCurrentStepperPosition={requestResourceAction.setCurrentStepperPosition}
       stepsInError={stepsInError}
     >
       {displaySubmitSuccessNotificationModal}

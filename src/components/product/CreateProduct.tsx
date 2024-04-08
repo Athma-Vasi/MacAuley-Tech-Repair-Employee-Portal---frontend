@@ -2391,25 +2391,25 @@ function CreateProduct() {
   //    PAGE 2
   // ╚═════════════════════════════════════════════════════════════════╝
 
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //     PRODUCT CATEGORY
-  // ╰─────────────────────────────────────────────────────────────────╯
-  const [createdProductCategorySelectInput] = returnAccessibleSelectInputElements([
-    {
-      data: PRODUCT_CATEGORIES,
-      description: "",
-      describedBy: "Select a product category for your product.",
-      label: "Product Category",
-      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-        createProductDispatch({
-          type: createProductAction.setProductCategory,
-          payload: event.currentTarget.value as ProductCategory,
-        });
-      },
-      value: productCategory,
-      required: true,
-    },
-  ]);
+  // // ╭─────────────────────────────────────────────────────────────────╮
+  // //     PRODUCT CATEGORY
+  // // ╰─────────────────────────────────────────────────────────────────╯
+  // const [createdProductCategorySelectInput] = returnAccessibleSelectInputElements([
+  //   {
+  //     data: PRODUCT_CATEGORIES,
+  //     description: "",
+  //     describedBy: "Select a product category for your product.",
+  //     label: "Product Category",
+  //     onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+  //       createProductDispatch({
+  //         type: createProductAction.setProductCategory,
+  //         payload: event.currentTarget.value as ProductCategory,
+  //       });
+  //     },
+  //     value: productCategory,
+  //     required: true,
+  //   },
+  // ]);
 
   // ╔═════════════════════════════════════════════════════════════════╗
   //    PAGE 4
@@ -3236,10 +3236,10 @@ function CreateProduct() {
 
   const displayCreateProductFormPage2 = (
     <FormLayoutWrapper>
-      <Stack style={{ borderBottom: borderColor }} pb={padding}>
+      {/* <Stack style={{ borderBottom: borderColor }} pb={padding}>
         {createdProductCategorySelectInput}
-      </Stack>
-      <Space h="sm" />
+      </Stack> */}
+      {/* <Space h="sm" /> */}
       {displaySelectedProductCategoryInputs}
     </FormLayoutWrapper>
   );

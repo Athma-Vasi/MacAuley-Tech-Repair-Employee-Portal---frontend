@@ -7,6 +7,7 @@ import {
   Image,
   Modal,
   ScrollArea,
+  SegmentedControl,
   Space,
   Stack,
   Text,
@@ -46,7 +47,7 @@ import {
   displayQueryReducer,
   initialDisplayQueryState,
 } from "./state";
-import { DisplayQueryProps } from "./types";
+import { DisplayDocumentsView, DisplayQueryProps } from "./types";
 import { GROUP_BY_HELP_MODAL_CONTENT } from "./utils";
 import DisplayQueryCards from "./displayQueryCards/DisplayQueryCards";
 
@@ -313,6 +314,22 @@ function DisplayQuery<
     },
   };
 
+  const displayDesktopViewSegmentedControl = (
+    <SegmentedControl
+      value={displayDocumentsView}
+      data={[
+        { label: "Table", value: "table" },
+        { label: "Cards", value: "cards" },
+      ]}
+      onChange={(value) => {
+        displayQueryDispatch({
+          type: displayQueryAction.setDisplayDocumentsView,
+          payload: value as DisplayDocumentsView,
+        });
+      }}
+    />
+  );
+
   /** ------------- end input creator info objects ------------- */
 
   /** ------------- created inputs------------- */
@@ -406,21 +423,18 @@ function DisplayQuery<
       closeButtonProps={{ color: themeColorShade }}
       opened={openedDisplayFileUploads}
       onClose={closeFileUploads}
-      size={width < 1200 ? width * 0.9 : 1150}
+      size={width <= 1024 ? "auto" : 1024 - 200}
       title={<Title order={4}>File Uploads</Title>}
       scrollAreaComponent={ScrollArea.Autosize}
     >
       <Flex
         w="100%"
-        style={{
-          border: borderColor,
-          borderRadius: 4,
-        }}
+        style={{ border: borderColor, borderRadius: 4 }}
         rowGap={rowGap}
         columnGap={rowGap}
         p={padding}
         align="baseline"
-        justify="flex-start"
+        justify="center"
         wrap="wrap"
       >
         {fileUploadsForAForm.map((fileUpload, fileIdx) => {
@@ -839,23 +853,7 @@ function DisplayQuery<
   );
 
   const displayQueryComponent =
-    width <= 1024 ? (
-      <DisplayQueryMobile
-        componentQueryData={componentQueryData}
-        deleteFormIdDispatch={displayQueryDispatch}
-        fileUploadsData={fileUploadsData}
-        deleteResourceKindDispatch={displayQueryDispatch}
-        groupedByQueryResponseData={groupedByQueryResponseData}
-        groupBySelection={groupBySelection}
-        isLoading={isLoading}
-        loadingMessage={loadingMessage}
-        openDeleteAcknowledge={openDeleteAcknowledge}
-        openFileUploads={openFileUploads}
-        queryValuesArray={queryValuesArray}
-        requestStatusDispatch={parentRequestStatusDispatch}
-        setFileUploadsForAFormDispatch={displayQueryDispatch}
-      />
-    ) : displayDocumentsView === "table" ? (
+    displayDocumentsView === "table" ? (
       <DisplayQueryDesktop
         componentQueryData={componentQueryData}
         deleteFormIdDispatch={displayQueryDispatch}
@@ -875,9 +873,19 @@ function DisplayQuery<
     ) : (
       <DisplayQueryCards
         componentQueryData={componentQueryData}
+        deleteResourceKindDispatch={displayQueryDispatch}
+        fileUploadsData={fileUploadsData}
         groupByRadioData={groupByRadioData}
         groupBySelection={groupBySelection}
         groupedByQueryResponseData={groupedByQueryResponseData}
+        isLoading={isLoading}
+        loadingMessage={loadingMessage}
+        openDeleteAcknowledge={openDeleteAcknowledge}
+        openFileUploads={openFileUploads}
+        queryValuesArray={queryValuesArray}
+        deleteFormIdDispatch={displayQueryDispatch}
+        requestStatusDispatch={parentRequestStatusDispatch}
+        setFileUploadsForAFormDispatch={displayQueryDispatch}
       />
     );
 
@@ -928,7 +936,10 @@ function DisplayQuery<
       <Flex align="center" justify="space-between" w="100%" py={padding} pr={padding}>
         <Group spacing={rowGap}>
           <Title order={2}>{parentComponentName}s</Title>
+          <Space w="xs" />
           {displayCreateResourceButton}
+          <Space w="xs" />
+          {displayDesktopViewSegmentedControl}
         </Group>
         <Text>Total documents: {totalDocuments}</Text>
       </Flex>

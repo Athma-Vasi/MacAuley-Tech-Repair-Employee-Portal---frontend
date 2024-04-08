@@ -1,12 +1,12 @@
-import { TitleOrder } from '@mantine/core';
+import { TitleOrder } from "@mantine/core";
 
-import { ScreenshotImageType } from '../../../types';
+import { ScreenshotImageType } from "../../../types";
 import {
   NivoCalendarAlign,
   NivoCalendarDirection,
   NivoCalendarLegendPosition,
   NivoChartTitlePosition,
-} from '../types';
+} from "../types";
 
 type CalendarChartData = {
   day: string; // YYYY-MM-DD
@@ -73,122 +73,122 @@ type ResponsiveCalendarChartState = {
 
 type ResponsiveCalendarChartAction = {
   // base
-  setCalendarAlign: 'setCalendarAlign';
-  setCalendarDirection: 'setCalendarDirection';
+  setCalendarAlign: "setCalendarAlign";
+  setCalendarDirection: "setCalendarDirection";
 
   // margin
-  setMarginTop: 'setMarginTop';
-  setMarginRight: 'setMarginRight';
-  setMarginBottom: 'setMarginBottom';
-  setMarginLeft: 'setMarginLeft';
+  setMarginTop: "setMarginTop";
+  setMarginRight: "setMarginRight";
+  setMarginBottom: "setMarginBottom";
+  setMarginLeft: "setMarginLeft";
 
   // style
-  setEmptyColor: 'setEmptyColor';
-  setEnableDefaultColors: 'setEnableDefaultColors';
+  setEmptyColor: "setEmptyColor";
+  setEnableDefaultColors: "setEnableDefaultColors";
 
   // years
-  setYearLegendOffset: 'setYearLegendOffset';
-  setYearLegendPosition: 'setYearLegendPosition';
-  setYearSpacing: 'setYearSpacing';
+  setYearLegendOffset: "setYearLegendOffset";
+  setYearLegendPosition: "setYearLegendPosition";
+  setYearSpacing: "setYearSpacing";
 
   // months
-  setMonthBorderColor: 'setMonthBorderColor';
-  setMonthBorderWidth: 'setMonthBorderWidth';
-  setMonthLegendOffset: 'setMonthLegendOffset';
-  setMonthLegendPosition: 'setMonthLegendPosition';
-  setMonthSpacing: 'setMonthSpacing';
+  setMonthBorderColor: "setMonthBorderColor";
+  setMonthBorderWidth: "setMonthBorderWidth";
+  setMonthLegendOffset: "setMonthLegendOffset";
+  setMonthLegendPosition: "setMonthLegendPosition";
+  setMonthSpacing: "setMonthSpacing";
 
   // days
-  setDayBorderColor: 'setDayBorderColor';
-  setDayBorderWidth: 'setDayBorderWidth';
-  setDaySpacing: 'setDaySpacing';
+  setDayBorderColor: "setDayBorderColor";
+  setDayBorderWidth: "setDayBorderWidth";
+  setDaySpacing: "setDaySpacing";
 
   // options
-  setChartTitle: 'setChartTitle';
-  setChartTitleColor: 'setChartTitleColor';
-  setChartTitlePosition: 'setChartTitlePosition';
-  setChartTitleSize: 'setChartTitleSize';
-  setIsChartTitleFocused: 'setIsChartTitleFocused';
-  setIsChartTitleValid: 'setIsChartTitleValid';
+  setChartTitle: "setChartTitle";
+  setChartTitleColor: "setChartTitleColor";
+  setChartTitlePosition: "setChartTitlePosition";
+  setChartTitleSize: "setChartTitleSize";
+  setIsChartTitleFocused: "setIsChartTitleFocused";
+  setIsChartTitleValid: "setIsChartTitleValid";
 
   // screenshot
-  setIsScreenshotFilenameFocused: 'setIsScreenshotFilenameFocused';
-  setIsScreenshotFilenameValid: 'setIsScreenshotFilenameValid';
-  setScreenshotFilename: 'setScreenshotFilename';
-  setScreenshotImageQuality: 'setScreenshotImageQuality';
-  setScreenshotImageType: 'setScreenshotImageType';
+  setIsScreenshotFilenameFocused: "setIsScreenshotFilenameFocused";
+  setIsScreenshotFilenameValid: "setIsScreenshotFilenameValid";
+  setScreenshotFilename: "setScreenshotFilename";
+  setScreenshotImageQuality: "setScreenshotImageQuality";
+  setScreenshotImageType: "setScreenshotImageType";
 
   // reset all
-  resetChartToDefault: 'resetChartToDefault';
+  resetChartToDefault: "resetChartToDefault";
 };
 
 type ResponsiveCalendarChartDispatch =
   | {
-      type: ResponsiveCalendarChartAction['setCalendarDirection'];
+      type: ResponsiveCalendarChartAction["setCalendarDirection"];
       payload: NivoCalendarDirection;
     }
   | {
-      type: ResponsiveCalendarChartAction['setCalendarAlign'];
+      type: ResponsiveCalendarChartAction["setCalendarAlign"];
       payload: NivoCalendarAlign;
     }
   | {
       type:
-        | ResponsiveCalendarChartAction['setEnableDefaultColors']
-        | ResponsiveCalendarChartAction['setIsChartTitleFocused']
-        | ResponsiveCalendarChartAction['setIsChartTitleValid']
-        | ResponsiveCalendarChartAction['setIsScreenshotFilenameFocused']
-        | ResponsiveCalendarChartAction['setIsScreenshotFilenameValid'];
+        | ResponsiveCalendarChartAction["setEnableDefaultColors"]
+        | ResponsiveCalendarChartAction["setIsChartTitleFocused"]
+        | ResponsiveCalendarChartAction["setIsChartTitleValid"]
+        | ResponsiveCalendarChartAction["setIsScreenshotFilenameFocused"]
+        | ResponsiveCalendarChartAction["setIsScreenshotFilenameValid"];
 
       payload: boolean;
     }
   | {
       type:
-        | ResponsiveCalendarChartAction['setDayBorderWidth']
-        | ResponsiveCalendarChartAction['setDaySpacing']
-        | ResponsiveCalendarChartAction['setMarginBottom']
-        | ResponsiveCalendarChartAction['setMarginLeft']
-        | ResponsiveCalendarChartAction['setMarginRight']
-        | ResponsiveCalendarChartAction['setMarginTop']
-        | ResponsiveCalendarChartAction['setMonthBorderWidth']
-        | ResponsiveCalendarChartAction['setMonthLegendOffset']
-        | ResponsiveCalendarChartAction['setMonthSpacing']
-        | ResponsiveCalendarChartAction['setScreenshotImageQuality']
-        | ResponsiveCalendarChartAction['setYearLegendOffset']
-        | ResponsiveCalendarChartAction['setYearSpacing'];
+        | ResponsiveCalendarChartAction["setDayBorderWidth"]
+        | ResponsiveCalendarChartAction["setDaySpacing"]
+        | ResponsiveCalendarChartAction["setMarginBottom"]
+        | ResponsiveCalendarChartAction["setMarginLeft"]
+        | ResponsiveCalendarChartAction["setMarginRight"]
+        | ResponsiveCalendarChartAction["setMarginTop"]
+        | ResponsiveCalendarChartAction["setMonthBorderWidth"]
+        | ResponsiveCalendarChartAction["setMonthLegendOffset"]
+        | ResponsiveCalendarChartAction["setMonthSpacing"]
+        | ResponsiveCalendarChartAction["setScreenshotImageQuality"]
+        | ResponsiveCalendarChartAction["setYearLegendOffset"]
+        | ResponsiveCalendarChartAction["setYearSpacing"];
 
       payload: number;
     }
   | {
       type:
-        | ResponsiveCalendarChartAction['setChartTitle']
-        | ResponsiveCalendarChartAction['setChartTitleColor']
-        | ResponsiveCalendarChartAction['setDayBorderColor']
-        | ResponsiveCalendarChartAction['setEmptyColor']
-        | ResponsiveCalendarChartAction['setMonthBorderColor']
-        | ResponsiveCalendarChartAction['setScreenshotFilename'];
+        | ResponsiveCalendarChartAction["setChartTitle"]
+        | ResponsiveCalendarChartAction["setChartTitleColor"]
+        | ResponsiveCalendarChartAction["setDayBorderColor"]
+        | ResponsiveCalendarChartAction["setEmptyColor"]
+        | ResponsiveCalendarChartAction["setMonthBorderColor"]
+        | ResponsiveCalendarChartAction["setScreenshotFilename"];
 
       payload: string;
     }
   | {
       type:
-        | ResponsiveCalendarChartAction['setYearLegendPosition']
-        | ResponsiveCalendarChartAction['setMonthLegendPosition'];
+        | ResponsiveCalendarChartAction["setYearLegendPosition"]
+        | ResponsiveCalendarChartAction["setMonthLegendPosition"];
       payload: NivoCalendarLegendPosition;
     }
   | {
-      type: ResponsiveCalendarChartAction['setChartTitlePosition'];
+      type: ResponsiveCalendarChartAction["setChartTitlePosition"];
       payload: NivoChartTitlePosition;
     }
   | {
-      type: ResponsiveCalendarChartAction['setScreenshotImageType'];
+      type: ResponsiveCalendarChartAction["setScreenshotImageType"];
       payload: ScreenshotImageType;
     }
   | {
-      type: ResponsiveCalendarChartAction['setChartTitleSize'];
+      type: ResponsiveCalendarChartAction["setChartTitleSize"];
       payload: TitleOrder;
     }
   | {
-      type: ResponsiveCalendarChartAction['resetChartToDefault'];
+      type: ResponsiveCalendarChartAction["resetChartToDefault"];
       payload: ResponsiveCalendarChartState;
     };
 

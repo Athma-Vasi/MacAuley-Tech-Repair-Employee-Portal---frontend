@@ -242,7 +242,6 @@ function Home() {
       };
 
       try {
-        // const response: Response = await fetch(request);
         const response = await wrappedFetch({
           isMounted,
           requestInit,
@@ -258,7 +257,8 @@ function Home() {
           throw new Error(data.message);
         }
 
-        const { repairTicketData, companyData, generalData, outreachData } = data;
+        const { repairTicketData, companyData, generalData, outreachData, customerData } =
+          data;
 
         const employeeData = new Map<string, UserDocument>();
         data.employeeData.forEach((employee: UserDocument) => {
@@ -271,6 +271,7 @@ function Home() {
           generalData,
           outreachData,
           employeeData,
+          customerData,
         };
         globalDispatch({
           type: globalAction.setActionsDocuments,
@@ -343,16 +344,15 @@ function Home() {
     };
   }, []);
 
-  useEffect(() => {
-    logState({
-      state: globalState,
-      groupLabel: "Home.tsx",
-    });
-  }, [globalState]);
+  // useEffect(() => {
+  //   logState({
+  //     state: globalState,
+  //     groupLabel: "Home.tsx",
+  //   });
+  // }, [globalState]);
 
   const {
-    appThemeColors: { borderColor, backgroundColor },
-    generalColors: { themeColorShade },
+    appThemeColors: { borderColor },
     scrollBarStyle,
   } = returnThemeColors({ colorsSwatches: COLORS_SWATCHES, themeObject });
 

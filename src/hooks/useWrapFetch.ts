@@ -1,4 +1,5 @@
 import jwtDecode from "jwt-decode";
+import { useRef } from "react";
 import { useErrorBoundary } from "react-error-boundary";
 import { useNavigate } from "react-router-dom";
 
@@ -8,7 +9,6 @@ import { authAction } from "../context/authProvider";
 import { globalAction } from "../context/globalProvider/state";
 import { useAuth } from "./useAuth";
 import { useGlobalState } from "./useGlobalState";
-import { useRef } from "react";
 
 /**
  * - inspired by axios interceptors, the wrappedFetch fn will check access token expiration before calling fetch
@@ -43,7 +43,7 @@ function useWrapFetch() {
     requestInit: RequestInit;
     signal?: AbortSignal;
     url: URL | string;
-  }) {
+  }): Promise<Response> {
     try {
       let newAccessToken = "";
       if (isAccessTokenExpired) {
@@ -70,7 +70,9 @@ function useWrapFetch() {
     }
   }
 
-  async function fetchAccessAndRefreshTokens(isMounted: boolean) {
+  async function fetchAccessAndRefreshTokens(
+    isMounted: boolean
+  ): Promise<string | undefined> {
     // before fetching access & refresh tokens, abort any previous requests
     abortControllerRefTokenRequest.current?.abort();
     // create new abort controller for current request

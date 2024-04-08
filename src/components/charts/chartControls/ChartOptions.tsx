@@ -7,83 +7,80 @@ import {
   Title,
   TitleOrder,
   Tooltip,
-} from '@mantine/core';
-import { ChangeEvent, useEffect } from 'react';
-import { TbDownload } from 'react-icons/tb';
+} from "@mantine/core";
+import { ChangeEvent, useEffect } from "react";
+import { TbDownload } from "react-icons/tb";
 
-import {
-  COLORS_SWATCHES,
-  SCREENSHOT_IMAGE_TYPE_DATA,
-} from '../../../constants/data';
-import { FILENAME_REGEX, SERIAL_ID_REGEX } from '../../../constants/regex';
+import { COLORS_SWATCHES, SCREENSHOT_IMAGE_TYPE_DATA } from "../../../constants/data";
+import { FILE_NAME_REGEX, SERIAL_ID_REGEX } from "../../../constants/regex";
 import {
   AccessibleErrorValidTextElements,
   returnAccessibleButtonElements,
   returnAccessibleSelectInputElements,
   returnAccessibleSliderInputElements,
   returnAccessibleTextInputElements,
-} from '../../../jsxCreators';
-import { ScreenshotImageType } from '../../../types';
+} from "../../../jsxCreators";
+import { ScreenshotImageType } from "../../../types";
 import {
   captureScreenshot,
   returnFilenameValidationText,
   returnSerialIdValidationText,
-} from '../../../utils';
+} from "../../../utils";
 import {
   AccessibleButtonCreatorInfo,
   AccessibleSelectInputCreatorInfo,
   AccessibleSliderInputCreatorInfo,
   AccessibleTextInputCreatorInfo,
-} from '../../wrappers';
-import { NIVO_CHART_TITLE_POSITION_DATA } from '../constants';
-import { NivoChartTitlePosition } from '../types';
-import { ChartsAndGraphsControlsStacker } from '../utils';
+} from "../../wrappers";
+import { NIVO_CHART_TITLE_POSITION_DATA } from "../constants";
+import { NivoChartTitlePosition } from "../types";
+import { ChartsAndGraphsControlsStacker } from "../utils";
 
 type ChartOptionsAction = {
-  setChartTitle: 'setChartTitle';
-  setChartTitleColor: 'setChartTitleColor';
-  setChartTitlePosition: 'setChartTitlePosition';
-  setChartTitleSize: 'setChartTitleSize';
-  setIsChartTitleFocused: 'setIsChartTitleFocused';
-  setIsChartTitleValid: 'setIsChartTitleValid';
-  setIsScreenshotFilenameFocused: 'setIsScreenshotFilenameFocused';
-  setIsScreenshotFilenameValid: 'setIsScreenshotFilenameValid';
-  setScreenshotFilename: 'setScreenshotFilename';
-  setScreenshotImageQuality: 'setScreenshotImageQuality';
-  setScreenshotImageType: 'setScreenshotImageType';
+  setChartTitle: "setChartTitle";
+  setChartTitleColor: "setChartTitleColor";
+  setChartTitlePosition: "setChartTitlePosition";
+  setChartTitleSize: "setChartTitleSize";
+  setIsChartTitleFocused: "setIsChartTitleFocused";
+  setIsChartTitleValid: "setIsChartTitleValid";
+  setIsScreenshotFilenameFocused: "setIsScreenshotFilenameFocused";
+  setIsScreenshotFilenameValid: "setIsScreenshotFilenameValid";
+  setScreenshotFilename: "setScreenshotFilename";
+  setScreenshotImageQuality: "setScreenshotImageQuality";
+  setScreenshotImageType: "setScreenshotImageType";
 };
 
 type ChartOptionsDispatch =
   | {
       type:
-        | ChartOptionsAction['setChartTitle']
-        | ChartOptionsAction['setChartTitleColor']
-        | ChartOptionsAction['setScreenshotFilename'];
+        | ChartOptionsAction["setChartTitle"]
+        | ChartOptionsAction["setChartTitleColor"]
+        | ChartOptionsAction["setScreenshotFilename"];
 
       payload: string;
     }
   | {
-      type: ChartOptionsAction['setScreenshotImageQuality'];
+      type: ChartOptionsAction["setScreenshotImageQuality"];
       payload: number;
     }
   | {
-      type: ChartOptionsAction['setScreenshotImageType'];
+      type: ChartOptionsAction["setScreenshotImageType"];
       payload: ScreenshotImageType;
     }
   | {
-      type: ChartOptionsAction['setChartTitlePosition'];
+      type: ChartOptionsAction["setChartTitlePosition"];
       payload: NivoChartTitlePosition;
     }
   | {
-      type: ChartOptionsAction['setChartTitleSize'];
+      type: ChartOptionsAction["setChartTitleSize"];
       payload: TitleOrder;
     }
   | {
       type:
-        | ChartOptionsAction['setIsChartTitleFocused']
-        | ChartOptionsAction['setIsChartTitleValid']
-        | ChartOptionsAction['setIsScreenshotFilenameFocused']
-        | ChartOptionsAction['setIsScreenshotFilenameValid'];
+        | ChartOptionsAction["setIsChartTitleFocused"]
+        | ChartOptionsAction["setIsChartTitleValid"]
+        | ChartOptionsAction["setIsScreenshotFilenameFocused"]
+        | ChartOptionsAction["setIsScreenshotFilenameValid"];
 
       payload: boolean;
     };
@@ -137,11 +134,11 @@ function ChartOptions(props: ChartOptionsProps) {
   const { gray } = COLORS_SWATCHES;
   const sliderWidth =
     width < 480
-      ? '217px'
+      ? "217px"
       : width < 768
       ? `${width * 0.38}px`
       : width < 1192
-      ? '500px'
+      ? "500px"
       : `${width * 0.15}px`;
   const sliderLabelColor = gray[3];
 
@@ -157,7 +154,7 @@ function ChartOptions(props: ChartOptionsProps) {
 
   // validate screenshotFilename on every change
   useEffect(() => {
-    const isValid = FILENAME_REGEX.test(screenshotFilename);
+    const isValid = FILE_NAME_REGEX.test(screenshotFilename);
 
     parentChartDispatch({
       type: parentChartAction.setIsScreenshotFilenameValid,
@@ -169,17 +166,16 @@ function ChartOptions(props: ChartOptionsProps) {
     screenshotFilename,
   ]);
 
-  const [chartTitleErrorText, chartTitleValidText] =
-    AccessibleErrorValidTextElements({
-      inputElementKind: 'chart title',
-      inputText: chartTitle,
-      isValidInputText: isChartTitleValid,
-      isInputTextFocused: isChartTitleFocused,
-      regexValidationText: returnSerialIdValidationText({
-        content: chartTitle,
-        contentKind: 'chart title',
-      }),
-    });
+  const [chartTitleErrorText, chartTitleValidText] = AccessibleErrorValidTextElements({
+    inputElementKind: "chart title",
+    inputText: chartTitle,
+    isValidInputText: isChartTitleValid,
+    isInputTextFocused: isChartTitleFocused,
+    regexValidationText: returnSerialIdValidationText({
+      content: chartTitle,
+      contentKind: "chart title",
+    }),
+  });
 
   const chartTitleTextInputCreatorInfo: AccessibleTextInputCreatorInfo = {
     description: {
@@ -189,7 +185,7 @@ function ChartOptions(props: ChartOptionsProps) {
     disabled: false,
     inputText: chartTitle,
     isValidInputText: isChartTitleValid,
-    label: '',
+    label: "",
     onBlur: () => {
       parentChartDispatch({
         type: parentChartAction.setIsChartTitleFocused,
@@ -208,9 +204,9 @@ function ChartOptions(props: ChartOptionsProps) {
         payload: true,
       });
     },
-    placeholder: 'Enter chart title text',
+    placeholder: "Enter chart title text",
     required: false,
-    semanticName: 'chart title',
+    semanticName: "chart title",
   };
 
   const createdChartTitleColorInput = (
@@ -228,130 +224,121 @@ function ChartOptions(props: ChartOptionsProps) {
     />
   );
 
-  const chartTitleSizeSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      ariaLabel: 'chart title size',
-      kind: 'slider',
-      label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value}</Text>
-      ),
-      max: 6,
-      min: 1,
-      onChangeSlider: (value: number) => {
-        parentChartDispatch({
-          type: parentChartAction.setChartTitleSize,
-          payload: value as TitleOrder,
-        });
-      },
-      sliderDefaultValue: 3,
-      step: 1,
-      value: chartTitleSize,
-      width: sliderWidth,
-    };
+  const chartTitleSizeSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
+    ariaLabel: "chart title size",
+    kind: "slider",
+    label: (value) => <Text style={{ color: sliderLabelColor }}>{value}</Text>,
+    max: 6,
+    min: 1,
+    onChangeSlider: (value: number) => {
+      parentChartDispatch({
+        type: parentChartAction.setChartTitleSize,
+        payload: value as TitleOrder,
+      });
+    },
+    sliderDefaultValue: 3,
+    step: 1,
+    value: chartTitleSize,
+    width: sliderWidth,
+  };
 
-  const chartTitlePositionSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo =
-    {
-      data: NIVO_CHART_TITLE_POSITION_DATA,
-      description: 'Define chart title position.',
-      disabled: false,
-      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-        parentChartDispatch({
-          type: parentChartAction.setChartTitlePosition,
-          payload: event.currentTarget.value as NivoChartTitlePosition,
-        });
-      },
-      value: chartTitlePosition,
-      width: sliderWidth,
-    };
+  const chartTitlePositionSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
+    data: NIVO_CHART_TITLE_POSITION_DATA,
+    description: "Define chart title position.",
+    disabled: false,
+    onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+      parentChartDispatch({
+        type: parentChartAction.setChartTitlePosition,
+        payload: event.currentTarget.value as NivoChartTitlePosition,
+      });
+    },
+    value: chartTitlePosition,
+    width: sliderWidth,
+  };
 
   // screenshot
   const [screenshotFilenameErrorText, screenshotFilenameValidText] =
     AccessibleErrorValidTextElements({
-      inputElementKind: 'screenshot filename',
+      inputElementKind: "screenshot filename",
       inputText: screenshotFilename,
       isValidInputText: isScreenshotFilenameValid,
       isInputTextFocused: isScreenshotFilenameFocused,
       regexValidationText: returnFilenameValidationText({
         content: screenshotFilename,
-        contentKind: 'screenshot filename',
+        contentKind: "screenshot filename",
       }),
     });
 
-  const screenshotFilenameTextInputCreatorInfo: AccessibleTextInputCreatorInfo =
-    {
-      description: {
-        error: screenshotFilenameErrorText,
-        valid: screenshotFilenameValidText,
-      },
-      disabled: false,
-      inputText: screenshotFilename,
-      isValidInputText: isScreenshotFilenameValid,
-      label: '',
-      onBlur: () => {
-        parentChartDispatch({
-          type: parentChartAction.setIsScreenshotFilenameFocused,
-          payload: false,
-        });
-      },
-      onChange: (event: ChangeEvent<HTMLInputElement>) => {
-        parentChartDispatch({
-          type: parentChartAction.setScreenshotFilename,
-          payload: event.currentTarget.value,
-        });
-      },
-      onFocus: () => {
-        parentChartDispatch({
-          type: parentChartAction.setIsScreenshotFilenameFocused,
-          payload: true,
-        });
-      },
-      placeholder: 'Enter screenshot filename',
-      required: false,
-      semanticName: 'screenshot filename',
-    };
+  const screenshotFilenameTextInputCreatorInfo: AccessibleTextInputCreatorInfo = {
+    description: {
+      error: screenshotFilenameErrorText,
+      valid: screenshotFilenameValidText,
+    },
+    disabled: false,
+    inputText: screenshotFilename,
+    isValidInputText: isScreenshotFilenameValid,
+    label: "",
+    onBlur: () => {
+      parentChartDispatch({
+        type: parentChartAction.setIsScreenshotFilenameFocused,
+        payload: false,
+      });
+    },
+    onChange: (event: ChangeEvent<HTMLInputElement>) => {
+      parentChartDispatch({
+        type: parentChartAction.setScreenshotFilename,
+        payload: event.currentTarget.value,
+      });
+    },
+    onFocus: () => {
+      parentChartDispatch({
+        type: parentChartAction.setIsScreenshotFilenameFocused,
+        payload: true,
+      });
+    },
+    placeholder: "Enter screenshot filename",
+    required: false,
+    semanticName: "screenshot filename",
+  };
 
-  const screenshotImageTypeSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo =
-    {
-      data: SCREENSHOT_IMAGE_TYPE_DATA,
-      description: 'Define screenshot image type.',
-      disabled: false,
-      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-        parentChartDispatch({
-          type: parentChartAction.setScreenshotImageType,
-          payload: event.currentTarget.value as ScreenshotImageType,
-        });
-      },
-      value: screenshotImageType,
-      width: sliderWidth,
-    };
+  const screenshotImageTypeSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
+    data: SCREENSHOT_IMAGE_TYPE_DATA,
+    description: "Define screenshot image type.",
+    disabled: false,
+    onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+      parentChartDispatch({
+        type: parentChartAction.setScreenshotImageType,
+        payload: event.currentTarget.value as ScreenshotImageType,
+      });
+    },
+    value: screenshotImageType,
+    width: sliderWidth,
+  };
 
-  const screenshotImageQualitySliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      ariaLabel: 'screenshot image quality',
-      disabled: screenshotImageType === 'image/png',
-      kind: 'slider',
-      label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value}</Text>
-      ),
-      max: 1,
-      min: 0,
-      onChangeSlider: (value: number) => {
-        parentChartDispatch({
-          type: parentChartAction.setScreenshotImageQuality,
-          payload: value,
-        });
-      },
-      sliderDefaultValue: 1,
-      step: 0.1,
-      value: screenshotImageQuality,
-      width: sliderWidth,
-    };
+  const screenshotImageQualitySliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
+    ariaLabel: "screenshot image quality",
+    disabled: screenshotImageType === "image/png",
+    kind: "slider",
+    label: (value) => <Text style={{ color: sliderLabelColor }}>{value}</Text>,
+    max: 1,
+    min: 0,
+    onChangeSlider: (value: number) => {
+      parentChartDispatch({
+        type: parentChartAction.setScreenshotImageQuality,
+        payload: value,
+      });
+    },
+    sliderDefaultValue: 1,
+    step: 0.1,
+    value: screenshotImageQuality,
+    width: sliderWidth,
+  };
 
   const screenshotDownloadButtonCreatorInfo: AccessibleButtonCreatorInfo = {
-    buttonLabel: 'Download',
+    buttonLabel: "Download",
     leftIcon: <TbDownload />,
-    semanticDescription: 'Download chart screenshot',
-    semanticName: 'Download',
+    semanticDescription: "Download chart screenshot",
+    semanticName: "Download",
     buttonOnClick: async () => {
       await captureScreenshot({
         chartRef,
@@ -368,21 +355,17 @@ function ChartOptions(props: ChartOptionsProps) {
       screenshotFilenameTextInputCreatorInfo,
     ]);
 
-  const [
-    createdChartTitleSizeSliderInput,
-    createdScreenshotImageQualitySliderInput,
-  ] = returnAccessibleSliderInputElements([
-    chartTitleSizeSliderInputCreatorInfo,
-    screenshotImageQualitySliderInputCreatorInfo,
-  ]);
+  const [createdChartTitleSizeSliderInput, createdScreenshotImageQualitySliderInput] =
+    returnAccessibleSliderInputElements([
+      chartTitleSizeSliderInputCreatorInfo,
+      screenshotImageQualitySliderInputCreatorInfo,
+    ]);
 
-  const [
-    createdChartTitlePositionSelectInput,
-    createdScreenshotImageTypeSelectInput,
-  ] = returnAccessibleSelectInputElements([
-    chartTitlePositionSelectInputCreatorInfo,
-    screenshotImageTypeSelectInputCreatorInfo,
-  ]);
+  const [createdChartTitlePositionSelectInput, createdScreenshotImageTypeSelectInput] =
+    returnAccessibleSelectInputElements([
+      chartTitlePositionSelectInputCreatorInfo,
+      screenshotImageTypeSelectInputCreatorInfo,
+    ]);
 
   const [createdScreenshotDownloadButton] = returnAccessibleButtonElements([
     screenshotDownloadButtonCreatorInfo,
@@ -393,8 +376,8 @@ function ChartOptions(props: ChartOptionsProps) {
       bg={sectionHeadersBgColor}
       p={padding}
       style={{
-        boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25)',
-        position: 'sticky',
+        boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.25)",
+        position: "sticky",
         top: 0,
         zIndex: 4,
       }}
@@ -463,7 +446,7 @@ function ChartOptions(props: ChartOptionsProps) {
   const displayScreenshotImageQualitySliderInput = (
     <ChartsAndGraphsControlsStacker
       initialChartState={initialChartState}
-      isInputDisabled={screenshotImageType === 'image/png'}
+      isInputDisabled={screenshotImageType === "image/png"}
       input={createdScreenshotImageQualitySliderInput}
       label="Screenshot image quality"
       value={screenshotImageQuality}

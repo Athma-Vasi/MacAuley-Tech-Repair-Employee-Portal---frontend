@@ -1,13 +1,15 @@
-import { type } from "os";
 import { CSSProperties } from "react";
 
 import { FileUploadDocument, RequestStatus, UserDocument } from "../../../types";
-import { ComponentQueryData } from "../../queryBuilder";
-import { EditRepairTicketInput } from "../displayQueryDesktop/types";
-import { GroupedByQueryResponseData } from "../types";
 import { CustomerDocument } from "../../customer/types";
+import { ComponentQueryData } from "../../queryBuilder/types";
+import { EditRepairTicketInput } from "../displayQueryDesktop/types";
 
-type DisplayQueryMobileProps = {
+type DisplayQueryCardsProps = {
+  /**
+   * - Query data object containing fields specific to a resource.
+   * - Used here to grab the label (camelcased) value for groupedByQueryResponseData (lowercased values)
+   */
   componentQueryData: ComponentQueryData[];
   deleteFormIdDispatch: React.Dispatch<{
     type: "setDeleteFormId";
@@ -18,7 +20,12 @@ type DisplayQueryMobileProps = {
     payload: "form" | "fileUpload" | "";
   }>;
   fileUploadsData?: Array<{ [key: string]: FileUploadDocument[] }>;
-  groupedByQueryResponseData: GroupedByQueryResponseData;
+  /** radio data labels used to exclude certain fields from having sort arrows displayed */
+  groupByRadioData: Array<{ label: string; value: string }>;
+  groupedByQueryResponseData: Map<
+    string | number | boolean | symbol,
+    Record<string, any>[]
+  >;
   groupBySelection: string;
   isLoading: boolean;
   loadingMessage?: string;
@@ -39,7 +46,7 @@ type DisplayQueryMobileProps = {
   style?: CSSProperties;
 };
 
-type DisplayQueryMobileState = {
+type DisplayQueryCardsState = {
   currentDocumentId: string;
   currentRequestStatus: RequestStatus;
 
@@ -50,7 +57,7 @@ type DisplayQueryMobileState = {
   customerDocument: Omit<CustomerDocument, "password" | "paymentInformation"> | null;
 };
 
-type DisplayQueryMobileAction = {
+type DisplayQueryCardsAction = {
   setCurrentDocumentId: "setCurrentDocumentId";
   setCurrentRequestStatus: "setCurrentRequestStatus";
 
@@ -61,31 +68,31 @@ type DisplayQueryMobileAction = {
   setCustomerDocument: "setCustomerDocument";
 };
 
-type DisplayQueryMobileDispatch =
+type DisplayQueryCardsDispatch =
   | {
-      type: DisplayQueryMobileAction["setCurrentDocumentId"];
+      type: DisplayQueryCardsAction["setCurrentDocumentId"];
       payload: string;
     }
   | {
-      type: DisplayQueryMobileAction["setCurrentRequestStatus"];
+      type: DisplayQueryCardsAction["setCurrentRequestStatus"];
       payload: RequestStatus;
     }
   | {
-      type: DisplayQueryMobileAction["setEditRepairTicketInput"];
+      type: DisplayQueryCardsAction["setEditRepairTicketInput"];
       payload: EditRepairTicketInput;
     }
   | {
-      type: DisplayQueryMobileAction["setEmployeeDocument"];
+      type: DisplayQueryCardsAction["setEmployeeDocument"];
       payload: UserDocument | null;
     }
   | {
-      type: DisplayQueryMobileAction["setCustomerDocument"];
+      type: DisplayQueryCardsAction["setCustomerDocument"];
       payload: Omit<CustomerDocument, "password" | "paymentInformation"> | null;
     };
 
 export type {
-  DisplayQueryMobileAction,
-  DisplayQueryMobileDispatch,
-  DisplayQueryMobileProps,
-  DisplayQueryMobileState,
+  DisplayQueryCardsAction,
+  DisplayQueryCardsDispatch,
+  DisplayQueryCardsProps,
+  DisplayQueryCardsState,
 };
