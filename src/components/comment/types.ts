@@ -1,11 +1,4 @@
-import { type } from 'os';
-import {
-  Department,
-  JobPosition,
-  QueryResponseData,
-  User,
-  UserRoles,
-} from '../../types';
+import { Department, JobPosition, UserRoles } from "../../types";
 
 type CommentSchema = {
   userId: string;
@@ -56,23 +49,23 @@ type CommentProps = {
 type CommentsMap = Map<string, CommentDocument>;
 
 type UpdateCommentRequestBody = {
-  fieldsToUpdate: Partial<
+  fields: Partial<
     Pick<
       CommentDocument,
-      | 'dislikedUserIds'
-      | 'dislikesCount'
-      | 'likedUserIds'
-      | 'likesCount'
-      | 'reportedUserIds'
-      | 'reportsCount'
-      | 'isDeleted'
-      | 'isFeatured'
+      | "dislikedUserIds"
+      | "dislikesCount"
+      | "likedUserIds"
+      | "likesCount"
+      | "reportedUserIds"
+      | "reportsCount"
+      | "isDeleted"
+      | "isFeatured"
     >
   >;
 };
 
 type UpdateCommentPayload = {
-  kind: 'like' | 'dislike' | 'report' | 'delete' | 'feature';
+  kind: "like" | "dislike" | "report" | "delete" | "feature";
   value: boolean;
   userId: string;
   commentId: string;
@@ -112,99 +105,94 @@ type CommentState = {
 };
 
 type CommentAction = {
-  setNewComment: 'setNewComment';
-  setIsNewCommentValid: 'setIsNewCommentValid';
-  setIsNewCommentFocused: 'setIsNewCommentFocused';
+  setNewComment: "setNewComment";
+  setIsNewCommentValid: "setIsNewCommentValid";
+  setIsNewCommentFocused: "setIsNewCommentFocused";
 
-  setQuotedUsername: 'setQuotedUsername';
-  setQuotedComment: 'setQuotedComment';
+  setQuotedUsername: "setQuotedUsername";
+  setQuotedComment: "setQuotedComment";
 
-  setReactedCommentId: 'setReactedCommentId';
-  setUpdateCommentRequestBody: 'setUpdateCommentRequestBody';
+  setReactedCommentId: "setReactedCommentId";
+  setUpdateCommentRequestBody: "setUpdateCommentRequestBody";
 
-  setTotalDocuments: 'setTotalDocuments';
-  setNumberOfPages: 'setNumberOfPages';
-  setLimitPerPage: 'setLimitPerPage';
-  setResetPage: 'setResetPage';
-  setNewQueryFlag: 'setNewQueryFlag';
-  setQueryBuilderString: 'setQueryBuilderString';
-  setPageQueryString: 'setPageQueryString';
+  setTotalDocuments: "setTotalDocuments";
+  setNumberOfPages: "setNumberOfPages";
+  setLimitPerPage: "setLimitPerPage";
+  setResetPage: "setResetPage";
+  setNewQueryFlag: "setNewQueryFlag";
+  setQueryBuilderString: "setQueryBuilderString";
+  setPageQueryString: "setPageQueryString";
 
-  setCommentsMap: 'setCommentsMap';
-  updateCommentsMap: 'updateCommentsMap';
-  setQueryValuesArray: 'setQueryValuesArray';
+  setCommentsMap: "setCommentsMap";
+  updateCommentsMap: "updateCommentsMap";
+  setQueryValuesArray: "setQueryValuesArray";
 
-  setTriggerCommentFetch: 'setTriggerCommentFetch';
-  setTriggerCommentUpdate: 'setTriggerCommentUpdate';
-  setTriggerCommentSubmit: 'setTriggerCommentSubmit';
+  setTriggerCommentFetch: "setTriggerCommentFetch";
+  setTriggerCommentUpdate: "setTriggerCommentUpdate";
+  setTriggerCommentSubmit: "setTriggerCommentSubmit";
 
-  setIsSubmitting: 'setIsSubmitting';
-  setSubmitMessage: 'setSubmitMessage';
-  setIsLoading: 'setIsLoading';
-  setLoadingMessage: 'setLoadingMessage';
-  setIsSuccessful: 'setIsSuccessful';
-  setSuccessMessage: 'setSuccessMessage';
+  setIsSubmitting: "setIsSubmitting";
+  setSubmitMessage: "setSubmitMessage";
+  setIsLoading: "setIsLoading";
+  setLoadingMessage: "setLoadingMessage";
+  setIsSuccessful: "setIsSuccessful";
+  setSuccessMessage: "setSuccessMessage";
 };
 
 type CommentDispatch =
   | {
-      type:
-        | CommentAction['setTotalDocuments']
-        | CommentAction['setNumberOfPages'];
+      type: CommentAction["setTotalDocuments"] | CommentAction["setNumberOfPages"];
       payload: number;
     }
   | {
       type:
-        | CommentAction['setQuotedUsername']
-        | CommentAction['setQuotedComment']
-        | CommentAction['setReactedCommentId']
-        | CommentAction['setNewComment']
-        | CommentAction['setLimitPerPage']
-        | CommentAction['setQueryBuilderString']
-        | CommentAction['setPageQueryString']
-        | CommentAction['setSuccessMessage']
-        | CommentAction['setLoadingMessage']
-        | CommentAction['setSubmitMessage'];
+        | CommentAction["setQuotedUsername"]
+        | CommentAction["setQuotedComment"]
+        | CommentAction["setReactedCommentId"]
+        | CommentAction["setNewComment"]
+        | CommentAction["setLimitPerPage"]
+        | CommentAction["setQueryBuilderString"]
+        | CommentAction["setPageQueryString"]
+        | CommentAction["setSuccessMessage"]
+        | CommentAction["setLoadingMessage"]
+        | CommentAction["setSubmitMessage"];
       payload: string;
     }
   | {
       type:
-        | CommentAction['setIsNewCommentValid']
-        | CommentAction['setIsNewCommentFocused']
-        | CommentAction['setResetPage']
-        | CommentAction['setNewQueryFlag']
-        | CommentAction['setTriggerCommentFetch']
-        | CommentAction['setTriggerCommentUpdate']
-        | CommentAction['setTriggerCommentSubmit']
-        | CommentAction['setIsSubmitting']
-        | CommentAction['setIsLoading']
-        | CommentAction['setIsSuccessful'];
+        | CommentAction["setIsNewCommentValid"]
+        | CommentAction["setIsNewCommentFocused"]
+        | CommentAction["setResetPage"]
+        | CommentAction["setNewQueryFlag"]
+        | CommentAction["setTriggerCommentFetch"]
+        | CommentAction["setTriggerCommentUpdate"]
+        | CommentAction["setTriggerCommentSubmit"]
+        | CommentAction["setIsSubmitting"]
+        | CommentAction["setIsLoading"]
+        | CommentAction["setIsSuccessful"];
       payload: boolean;
     }
   | {
-      type: CommentAction['setQueryValuesArray'];
+      type: CommentAction["setQueryValuesArray"];
       payload: {
-        kind: 'add' | 'remove' | 'clear';
+        kind: "add" | "remove" | "clear";
         value: string;
       };
     }
   | {
-      type: CommentAction['setCommentsMap'];
+      type: CommentAction["setCommentsMap"];
       payload: { commentsMap: CommentsMap };
     }
   | {
-      type: CommentAction['updateCommentsMap'];
+      type: CommentAction["updateCommentsMap"];
       payload: { commentDoc: CommentDocument };
     }
   | {
-      type: CommentAction['setUpdateCommentRequestBody'];
+      type: CommentAction["setUpdateCommentRequestBody"];
       payload: UpdateCommentPayload;
     };
 
-type CommentReducer = (
-  state: CommentState,
-  action: CommentDispatch
-) => CommentState;
+type CommentReducer = (state: CommentState, action: CommentDispatch) => CommentState;
 
 type CreatedCommentsSectionObject = {
   profilePicElement: React.JSX.Element;

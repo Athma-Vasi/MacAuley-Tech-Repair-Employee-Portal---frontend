@@ -1,33 +1,28 @@
-import { Group, Text, Title, Tooltip } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
-import { InvalidTokenError } from 'jwt-decode';
-import { ChangeEvent, MouseEvent, useEffect, useReducer, useRef } from 'react';
-import { useErrorBoundary } from 'react-error-boundary';
-import {
-  TbRowInsertBottom,
-  TbRowInsertTop,
-  TbTrash,
-  TbUpload,
-} from 'react-icons/tb';
-import { useNavigate } from 'react-router-dom';
+import { Group, Text, Title, Tooltip } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
+import { InvalidTokenError } from "jwt-decode";
+import { ChangeEvent, MouseEvent, useEffect, useReducer, useRef } from "react";
+import { useErrorBoundary } from "react-error-boundary";
+import { TbRowInsertBottom, TbRowInsertTop, TbTrash, TbUpload } from "react-icons/tb";
+import { useNavigate } from "react-router-dom";
 
-import { COLORS_SWATCHES } from '../../../constants/data';
+import { COLORS_SWATCHES } from "../../../constants/data";
 import {
   FULL_NAME_REGEX,
   GRAMMAR_TEXT_INPUT_REGEX,
   GRAMMAR_TEXTAREA_INPUT_REGEX,
   URL_REGEX,
-} from '../../../constants/regex';
-import { globalAction } from '../../../context/globalProvider/state';
-import { useGlobalState, useWrapFetch } from '../../../hooks';
+} from "../../../constants/regex";
+import { globalAction } from "../../../context/globalProvider/state";
+import { useGlobalState, useWrapFetch } from "../../../hooks";
 import {
   AccessibleErrorValidTextElements,
   AccessibleErrorValidTextElementsForDynamicInputs,
   returnAccessibleButtonElements,
   returnAccessibleDynamicTextAreaInputElements,
   returnAccessibleTextInputElements,
-} from '../../../jsxCreators';
-import { ResourceRequestServerResponse } from '../../../types';
+} from "../../../jsxCreators";
+import { ResourceRequestServerResponse } from "../../../types";
 import {
   logState,
   returnGrammarValidationText,
@@ -35,31 +30,31 @@ import {
   returnThemeColors,
   returnUrlValidationText,
   urlBuilder,
-} from '../../../utils';
+} from "../../../utils";
 import FormReviewPage, {
   FormReviewObjectArray,
-} from '../../formReviewPage/FormReviewPage';
-import { NotificationModal } from '../../notificationModal';
+} from "../../formReviewPage/FormReviewPage";
+import { NotificationModal } from "../../notificationModal";
 import {
   AccessibleButtonCreatorInfo,
   AccessibleTextAreaInputCreatorInfo,
   AccessibleTextInputCreatorInfo,
   FormLayoutWrapper,
   StepperWrapper,
-} from '../../wrappers';
-import { ARTICLE_TITLE_REGEX } from '../constants';
+} from "../../wrappers";
+import { ARTICLE_TITLE_REGEX } from "../constants";
 import {
   CREATE_ANNOUNCEMENT_DESCRIPTION_OBJECTS,
   CREATE_ANNOUNCEMENT_MAX_STEPPER_POSITION,
   MAX_ARTICLE_LENGTH,
-} from './constants';
+} from "./constants";
 import {
   createAnnouncementAction,
   createAnnouncementReducer,
   initialCreateAnnouncementState,
-} from './state';
-import { AnnouncementDocument, RatingResponse } from './types';
-import { createAnnouncementFormReviewObject } from './utils';
+} from "./state";
+import { AnnouncementDocument, RatingResponse } from "./types";
+import { createAnnouncementFormReviewObject } from "./utils";
 
 function CreateAnnouncement() {
   /** ------------- begin hooks ------------- */
@@ -132,12 +127,12 @@ function CreateAnnouncement() {
       });
       createAnnouncementDispatch({
         type: createAnnouncementAction.setSubmitMessage,
-        payload: 'Create announcement request is on the way!',
+        payload: "Create announcement request is on the way!",
       });
       openSubmitSuccessNotificationModal();
 
       const url: URL = urlBuilder({
-        path: 'actions/outreach/announcement',
+        path: "actions/outreach/announcement",
       });
 
       const ratingResponse: RatingResponse = {
@@ -151,24 +146,29 @@ function CreateAnnouncement() {
         ratingCount: 0,
       };
 
+      // copilot magic...removes the query string from the (pexels.com) image url and compresses the image
+      const bannerImageSrcCompressed = bannerImageSrc.replace(
+        /(\?auto=compress&cs=tinysrgb&w=)(\d+)&(h=)(\d+)&(dpr=)(\d+)/,
+        "$11260$3750$41"
+      );
+
       const body = JSON.stringify({
-        announcement: {
+        announcementSchema: {
           title,
           author,
           bannerImageSrc,
+          bannerImageSrcCompressed,
           bannerImageAlt,
           article,
           timeToRead,
           ratingResponse,
-          commentIds: [],
+          ratedUserIds: [],
         },
       });
 
       const requestInit: RequestInit = {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body,
       };
 
@@ -195,19 +195,19 @@ function CreateAnnouncement() {
         });
         createAnnouncementDispatch({
           type: createAnnouncementAction.setSuccessMessage,
-          payload: data.message ?? 'Success!',
+          payload: data.message ?? "Success!",
         });
       } catch (error: any) {
-        if (!isMounted || error.name === 'AbortError') {
+        if (!isMounted || error.name === "AbortError") {
           return;
         }
 
         const errorMessage =
           error instanceof InvalidTokenError
-            ? 'Invalid token. Please login again.'
+            ? "Invalid token. Please login again."
             : !error.response
-            ? 'Network error. Please try again.'
-            : error?.message ?? 'Unknown error occurred. Please try again.';
+            ? "Network error. Please try again."
+            : error?.message ?? "Unknown error occurred. Please try again.";
 
         globalDispatch({
           type: globalAction.setErrorState,
@@ -215,13 +215,13 @@ function CreateAnnouncement() {
             isError: true,
             errorMessage,
             errorCallback: () => {
-              navigate('/home');
+              navigate("/home");
 
               globalDispatch({
                 type: globalAction.setErrorState,
                 payload: {
                   isError: false,
-                  errorMessage: '',
+                  errorMessage: "",
                   errorCallback: () => {},
                 },
               });
@@ -237,7 +237,7 @@ function CreateAnnouncement() {
         });
         createAnnouncementDispatch({
           type: createAnnouncementAction.setSubmitMessage,
-          payload: '',
+          payload: "",
         });
         createAnnouncementDispatch({
           type: createAnnouncementAction.setTriggerFormSubmit,
@@ -318,7 +318,7 @@ function CreateAnnouncement() {
 
   // validate article length on every change
   useEffect(() => {
-    const isValidArticleLength = article.join(' ').length >= MAX_ARTICLE_LENGTH;
+    const isValidArticleLength = article.join(" ").length >= MAX_ARTICLE_LENGTH;
 
     createAnnouncementDispatch({
       type: createAnnouncementAction.setIsArticleLengthExceeded,
@@ -330,7 +330,7 @@ function CreateAnnouncement() {
   useEffect(() => {
     const wordsPerMinute = 200;
     // join article array into a string, split on whitespace, and count the length of the array
-    const numberOfWords = article.join(' ').split(/\s/g).length;
+    const numberOfWords = article.join(" ").split(/\s/g).length;
     // round up to the nearest minute
     const timeToRead = Math.ceil(numberOfWords / wordsPerMinute);
 
@@ -344,15 +344,15 @@ function CreateAnnouncement() {
   useEffect(() => {
     const isRequiredInputInError = !isValidTitle || !isValidAuthor;
     const areOptionalInputsInError =
-      (!isValidBannerImageSrc && bannerImageSrc !== '') ||
-      (!isValidBannerImageAlt && bannerImageAlt !== '');
+      (!isValidBannerImageSrc && bannerImageSrc !== "") ||
+      (!isValidBannerImageAlt && bannerImageAlt !== "");
 
     const isStepInError = isRequiredInputInError || areOptionalInputsInError;
 
     createAnnouncementDispatch({
       type: createAnnouncementAction.setStepsInError,
       payload: {
-        kind: isStepInError ? 'add' : 'delete',
+        kind: isStepInError ? "add" : "delete",
         step: 0,
       },
     });
@@ -373,7 +373,7 @@ function CreateAnnouncement() {
     createAnnouncementDispatch({
       type: createAnnouncementAction.setStepsInError,
       payload: {
-        kind: isStepInError ? 'add' : 'delete',
+        kind: isStepInError ? "add" : "delete",
         step: 1,
       },
     });
@@ -382,61 +382,59 @@ function CreateAnnouncement() {
   useEffect(() => {
     logState({
       state: createAnnouncementState,
-      groupLabel: 'create announcement state',
+      groupLabel: "create announcement state",
     });
   }, [createAnnouncementState]);
   /** ------------- end useEffects ------------- */
 
   /** ------------- begin accessible text elements ------------- */
-  const [titleInputErrorText, titleInputValidText] =
-    AccessibleErrorValidTextElements({
-      inputElementKind: 'title',
-      inputText: title,
-      isInputTextFocused: isTitleFocused,
-      isValidInputText: isValidTitle,
-      regexValidationText: returnGrammarValidationText({
-        content: title,
-        contentKind: 'title',
-        minLength: 2,
-        maxLength: 75,
-      }),
-    });
+  const [titleInputErrorText, titleInputValidText] = AccessibleErrorValidTextElements({
+    inputElementKind: "title",
+    inputText: title,
+    isInputTextFocused: isTitleFocused,
+    isValidInputText: isValidTitle,
+    regexValidationText: returnGrammarValidationText({
+      content: title,
+      contentKind: "title",
+      minLength: 2,
+      maxLength: 75,
+    }),
+  });
 
-  const [authorInputErrorText, authorInputValidText] =
-    AccessibleErrorValidTextElements({
-      inputElementKind: 'author',
-      inputText: author,
-      isInputTextFocused: isAuthorFocused,
-      isValidInputText: isValidAuthor,
-      regexValidationText: returnNameValidationText({
-        content: author,
-        contentKind: 'author',
-        minLength: 2,
-        maxLength: 100,
-      }),
-    });
+  const [authorInputErrorText, authorInputValidText] = AccessibleErrorValidTextElements({
+    inputElementKind: "author",
+    inputText: author,
+    isInputTextFocused: isAuthorFocused,
+    isValidInputText: isValidAuthor,
+    regexValidationText: returnNameValidationText({
+      content: author,
+      contentKind: "author",
+      minLength: 2,
+      maxLength: 100,
+    }),
+  });
 
   const [bannerImgSrcInputErrorText, bannerImgSrcInputValidText] =
     AccessibleErrorValidTextElements({
-      inputElementKind: 'banner image src',
+      inputElementKind: "banner image src",
       inputText: bannerImageSrc,
       isInputTextFocused: isBannerImageSrcFocused,
       isValidInputText: isValidBannerImageSrc,
       regexValidationText: returnUrlValidationText({
         content: bannerImageSrc,
-        contentKind: 'banner image src',
+        contentKind: "banner image src",
       }),
     });
 
   const [bannerImgAltInputErrorText, bannerImgAltInputValidText] =
     AccessibleErrorValidTextElements({
-      inputElementKind: 'banner image alt',
+      inputElementKind: "banner image alt",
       inputText: bannerImageAlt,
       isInputTextFocused: isBannerImageAltFocused,
       isValidInputText: isValidBannerImageAlt,
       regexValidationText: returnGrammarValidationText({
         content: bannerImageAlt,
-        contentKind: 'banner image alt',
+        contentKind: "banner image alt",
         minLength: 2,
         maxLength: 75,
       }),
@@ -447,10 +445,10 @@ function CreateAnnouncement() {
       areInputTextsFocused: areArticleParagraphsFocused,
       areValidInputTexts: areValidArticleParagraphs,
       inputTextArray: article,
-      semanticName: 'article paragraph',
+      semanticName: "article paragraph",
       regexValidationProps: article.map((paragraph) => ({
         content: paragraph,
-        contentKind: 'paragraph',
+        contentKind: "paragraph",
         minLength: 2,
         maxLength: 2000,
       })),
@@ -466,7 +464,7 @@ function CreateAnnouncement() {
     },
     inputText: title,
     isValidInputText: isValidTitle,
-    label: 'Article title',
+    label: "Article title",
     onBlur: () => {
       createAnnouncementDispatch({
         type: createAnnouncementAction.setIsTitleFocused,
@@ -485,8 +483,8 @@ function CreateAnnouncement() {
         payload: true,
       });
     },
-    placeholder: 'Enter article title',
-    semanticName: 'title',
+    placeholder: "Enter article title",
+    semanticName: "title",
     required: true,
     withAsterisk: true,
   };
@@ -498,7 +496,7 @@ function CreateAnnouncement() {
     },
     inputText: author,
     isValidInputText: isValidAuthor,
-    label: 'Author',
+    label: "Author",
     onBlur: () => {
       createAnnouncementDispatch({
         type: createAnnouncementAction.setIsAuthorFocused,
@@ -517,8 +515,8 @@ function CreateAnnouncement() {
         payload: true,
       });
     },
-    placeholder: 'Enter author name',
-    semanticName: 'author',
+    placeholder: "Enter author name",
+    semanticName: "author",
     required: true,
     withAsterisk: true,
   };
@@ -530,7 +528,7 @@ function CreateAnnouncement() {
     },
     inputText: bannerImageSrc,
     isValidInputText: isValidBannerImageSrc,
-    label: 'Banner image src',
+    label: "Banner image src",
     onBlur: () => {
       createAnnouncementDispatch({
         type: createAnnouncementAction.setIsBannerImageSrcFocused,
@@ -549,8 +547,8 @@ function CreateAnnouncement() {
         payload: true,
       });
     },
-    placeholder: 'Enter banner image src',
-    semanticName: 'banner image src',
+    placeholder: "Enter banner image src",
+    semanticName: "banner image src",
   };
 
   const bannerImageAltTextInputCreatorInfo: AccessibleTextInputCreatorInfo = {
@@ -560,7 +558,7 @@ function CreateAnnouncement() {
     },
     inputText: bannerImageAlt,
     isValidInputText: isValidBannerImageAlt,
-    label: 'Banner image alt text',
+    label: "Banner image alt text",
     onBlur: () => {
       createAnnouncementDispatch({
         type: createAnnouncementAction.setIsBannerImageAltFocused,
@@ -579,8 +577,8 @@ function CreateAnnouncement() {
         payload: true,
       });
     },
-    placeholder: 'Enter banner image alt text',
-    semanticName: 'banner image alt',
+    placeholder: "Enter banner image alt text",
+    semanticName: "banner image alt",
   };
 
   const articleParagraphTextAreaInputsCreatorInfo: AccessibleTextAreaInputCreatorInfo[] =
@@ -600,12 +598,12 @@ function CreateAnnouncement() {
             type: createAnnouncementAction.setModifyArticleParagraph,
             payload: {
               index,
-              kind: 'delete',
+              kind: "delete",
             },
           });
         },
         semanticDescription: `Delete paragraph ${index + 1} button`,
-        semanticName: 'Delete paragraph button',
+        semanticName: "Delete paragraph button",
       };
 
       const insertParagraphButtonCreatorInfo: AccessibleButtonCreatorInfo = {
@@ -622,14 +620,12 @@ function CreateAnnouncement() {
             type: createAnnouncementAction.setModifyArticleParagraph,
             payload: {
               index,
-              kind: 'insert',
+              kind: "insert",
             },
           });
         },
-        semanticDescription: `Insert paragraph between ${index} and ${
-          index + 1
-        }`,
-        semanticName: 'Insert paragraph button',
+        semanticDescription: `Insert paragraph between ${index} and ${index + 1}`,
+        semanticName: "Insert paragraph button",
       };
 
       const [createdDeleteParagraphButton, createdInsertParagraphButton] =
@@ -646,10 +642,7 @@ function CreateAnnouncement() {
           error: articleParagraphInputErrorTexts[index],
           valid: articleParagraphInputValidTexts[index],
         },
-        dynamicInputs: [
-          createdDeleteParagraphButton,
-          displayInsertParagraphButton,
-        ],
+        dynamicInputs: [createdDeleteParagraphButton, displayInsertParagraphButton],
         inputText: article[index],
         isValidInputText: areValidArticleParagraphs[index],
         onBlur: () => {
@@ -683,8 +676,7 @@ function CreateAnnouncement() {
         semanticName: `Paragraph ${index + 1}`,
         ref: index === article.length - 1 ? newArticleParagraphRef : null,
         required: true,
-        textAreaWidth:
-          width < 480 ? 330 : width >= 1024 ? 1024 * 0.62 : width * 0.62,
+        textAreaWidth: width < 480 ? 330 : width >= 1024 ? 1024 * 0.62 : width * 0.62,
       };
 
       return creatorInfoObject;
@@ -704,18 +696,18 @@ function CreateAnnouncement() {
         type: createAnnouncementAction.setArticle,
         payload: {
           index: article.length,
-          value: '',
+          value: "",
         },
       });
     },
-    semanticDescription: 'click button to add new paragraph',
-    semanticName: 'add paragraph button',
+    semanticDescription: "click button to add new paragraph",
+    semanticName: "add paragraph button",
   };
 
   const submitButtonCreatorInfo: AccessibleButtonCreatorInfo = {
-    buttonLabel: 'Submit',
-    semanticDescription: 'create announcement form submit button',
-    semanticName: 'submit button',
+    buttonLabel: "Submit",
+    semanticDescription: "create announcement form submit button",
+    semanticName: "submit button",
     leftIcon: <TbUpload />,
     buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
       createAnnouncementDispatch({
@@ -759,8 +751,8 @@ function CreateAnnouncement() {
       <Tooltip
         label={
           stepsInError.size > 0
-            ? 'Please fix errors before submitting'
-            : 'Submit Announcement form'
+            ? "Please fix errors before submitting"
+            : "Submit Announcement form"
         }
       >
         <Group w="100%" position="center">
@@ -798,13 +790,11 @@ function CreateAnnouncement() {
 
         {displayAddArticleParagraphButton}
       </Group>
-      <Text>Current article length: {article.join(' ').length} characters</Text>
+      <Text>Current article length: {article.join(" ").length} characters</Text>
       {isArticleLengthExceeded ? (
         <Text color={redColorShade}>
           {`Maximum character length of ${MAX_ARTICLE_LENGTH} ${
-            article.join(' ').length === MAX_ARTICLE_LENGTH
-              ? 'reached'
-              : 'exceeded'
+            article.join(" ").length === MAX_ARTICLE_LENGTH ? "reached" : "exceeded"
           }`}
         </Text>
       ) : null}
@@ -812,36 +802,35 @@ function CreateAnnouncement() {
   );
 
   const CREATE_ANNOUNCEMENT_REVIEW_OBJECT: FormReviewObjectArray = {
-    'Announcement Details': [
+    "Announcement Details": [
       {
-        inputName: 'Article Title',
+        inputName: "Article Title",
         inputValue: title,
         isInputValueValid: isValidTitle,
       },
       {
-        inputName: 'Author',
+        inputName: "Author",
         inputValue: author,
         isInputValueValid: isValidAuthor,
       },
       {
-        inputName: 'Banner Image Src',
+        inputName: "Banner Image Src",
         inputValue: bannerImageSrc,
         isInputValueValid: isValidBannerImageSrc,
       },
       {
-        inputName: 'Banner Image Alt',
+        inputName: "Banner Image Alt",
         inputValue: bannerImageAlt,
         isInputValueValid: isValidBannerImageAlt,
       },
     ],
   };
 
-  const dynamicCreateAnnouncementFormReviewObject =
-    createAnnouncementFormReviewObject({
-      initialAnnouncementFormReviewObject: CREATE_ANNOUNCEMENT_REVIEW_OBJECT,
-      article,
-      areValidArticleParagraphs,
-    });
+  const dynamicCreateAnnouncementFormReviewObject = createAnnouncementFormReviewObject({
+    initialAnnouncementFormReviewObject: CREATE_ANNOUNCEMENT_REVIEW_OBJECT,
+    article,
+    areValidArticleParagraphs,
+  });
 
   const displayCreateAnnouncementReviewPage = (
     <FormReviewPage
@@ -855,7 +844,7 @@ function CreateAnnouncement() {
       onCloseCallbacks={[
         closeSubmitSuccessNotificationModal,
         () => {
-          navigate('/home/outreach/announcement');
+          navigate("/home/outreach/announcement");
         },
       ]}
       opened={openedSubmitSuccessNotificationModal}
@@ -863,9 +852,7 @@ function CreateAnnouncement() {
         loading: isSubmitting,
         text: isSubmitting ? submitMessage : successMessage,
       }}
-      title={
-        <Title order={4}>{isSuccessful ? 'Success!' : 'Submitting ...'}</Title>
-      }
+      title={<Title order={4}>{isSuccessful ? "Success!" : "Submitting ..."}</Title>}
     />
   );
 
@@ -882,9 +869,7 @@ function CreateAnnouncement() {
     <StepperWrapper
       childrenTitle="Create Announcement"
       currentStepperPosition={currentStepperPosition}
-      setCurrentStepperPosition={
-        createAnnouncementAction.setCurrentStepperPosition
-      }
+      setCurrentStepperPosition={createAnnouncementAction.setCurrentStepperPosition}
       descriptionObjectsArray={CREATE_ANNOUNCEMENT_DESCRIPTION_OBJECTS}
       maxStepperPosition={CREATE_ANNOUNCEMENT_MAX_STEPPER_POSITION}
       parentComponentDispatch={createAnnouncementDispatch}

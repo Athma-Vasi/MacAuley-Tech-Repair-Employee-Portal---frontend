@@ -1,22 +1,21 @@
 import {
   CommentAction,
   CommentDispatch,
-  CommentDocument,
   CommentState,
   UpdateCommentRequestBody,
-} from './types';
+} from "./types";
 
 const initialCommentState: CommentState = {
-  newComment: '',
+  newComment: "",
   isNewCommentValid: false,
   isNewCommentFocused: false,
 
-  quotedUsername: '',
-  quotedComment: '',
+  quotedUsername: "",
+  quotedComment: "",
 
-  updateCommentId: '',
+  updateCommentId: "",
   updateCommentRequestBody: {
-    fieldsToUpdate: {
+    fields: {
       dislikedUserIds: [],
       dislikesCount: 0,
       likedUserIds: [],
@@ -28,11 +27,11 @@ const initialCommentState: CommentState = {
 
   totalDocuments: 0,
   numberOfPages: 1,
-  limitPerPage: '10',
+  limitPerPage: "10",
   resetPage: false,
   newQueryFlag: false,
-  queryBuilderString: '?',
-  pageQueryString: '',
+  queryBuilderString: "?",
+  pageQueryString: "",
 
   commentsMap: new Map(),
   queryValuesArray: [],
@@ -42,52 +41,49 @@ const initialCommentState: CommentState = {
   triggerCommentSubmit: false,
 
   isSubmitting: false,
-  submitMessage: '',
+  submitMessage: "",
   isLoading: false,
-  loadingMessage: '',
+  loadingMessage: "",
   isSuccessful: false,
-  successMessage: '',
+  successMessage: "",
 };
 
 const commentAction: CommentAction = {
-  setNewComment: 'setNewComment',
-  setIsNewCommentValid: 'setIsNewCommentValid',
-  setIsNewCommentFocused: 'setIsNewCommentFocused',
+  setNewComment: "setNewComment",
+  setIsNewCommentValid: "setIsNewCommentValid",
+  setIsNewCommentFocused: "setIsNewCommentFocused",
 
-  setQuotedUsername: 'setQuotedUsername',
-  setQuotedComment: 'setQuotedComment',
+  setQuotedUsername: "setQuotedUsername",
+  setQuotedComment: "setQuotedComment",
 
-  setReactedCommentId: 'setReactedCommentId',
-  setUpdateCommentRequestBody: 'setUpdateCommentRequestBody',
+  setReactedCommentId: "setReactedCommentId",
+  setUpdateCommentRequestBody: "setUpdateCommentRequestBody",
 
-  setTotalDocuments: 'setTotalDocuments',
-  setNumberOfPages: 'setNumberOfPages',
-  setLimitPerPage: 'setLimitPerPage',
-  setResetPage: 'setResetPage',
-  setNewQueryFlag: 'setNewQueryFlag',
-  setQueryBuilderString: 'setQueryBuilderString',
-  setPageQueryString: 'setPageQueryString',
+  setTotalDocuments: "setTotalDocuments",
+  setNumberOfPages: "setNumberOfPages",
+  setLimitPerPage: "setLimitPerPage",
+  setResetPage: "setResetPage",
+  setNewQueryFlag: "setNewQueryFlag",
+  setQueryBuilderString: "setQueryBuilderString",
+  setPageQueryString: "setPageQueryString",
 
-  setCommentsMap: 'setCommentsMap',
-  updateCommentsMap: 'updateCommentsMap',
-  setQueryValuesArray: 'setQueryValuesArray',
+  setCommentsMap: "setCommentsMap",
+  updateCommentsMap: "updateCommentsMap",
+  setQueryValuesArray: "setQueryValuesArray",
 
-  setTriggerCommentFetch: 'setTriggerCommentFetch',
-  setTriggerCommentUpdate: 'setTriggerCommentUpdate',
-  setTriggerCommentSubmit: 'setTriggerCommentSubmit',
+  setTriggerCommentFetch: "setTriggerCommentFetch",
+  setTriggerCommentUpdate: "setTriggerCommentUpdate",
+  setTriggerCommentSubmit: "setTriggerCommentSubmit",
 
-  setIsSubmitting: 'setIsSubmitting',
-  setSubmitMessage: 'setSubmitMessage',
-  setIsLoading: 'setIsLoading',
-  setLoadingMessage: 'setLoadingMessage',
-  setIsSuccessful: 'setIsSuccessful',
-  setSuccessMessage: 'setSuccessMessage',
+  setIsSubmitting: "setIsSubmitting",
+  setSubmitMessage: "setSubmitMessage",
+  setIsLoading: "setIsLoading",
+  setLoadingMessage: "setLoadingMessage",
+  setIsSuccessful: "setIsSuccessful",
+  setSuccessMessage: "setSuccessMessage",
 };
 
-function commentReducer(
-  state: CommentState,
-  action: CommentDispatch
-): CommentState {
+function commentReducer(state: CommentState, action: CommentDispatch): CommentState {
   switch (action.type) {
     case commentAction.setNewComment:
       return {
@@ -137,9 +133,8 @@ function commentReducer(
       }
 
       switch (kind) {
-        case 'like': {
-          const { likedUserIds, likesCount, dislikedUserIds, dislikesCount } =
-            comment;
+        case "like": {
+          const { likedUserIds, likesCount, dislikedUserIds, dislikesCount } = comment;
           const likesCountUpdated = value ? likesCount + 1 : likesCount - 1;
           const likedUserIdsUpdated = value
             ? Array.from(new Set([...likedUserIds, userId]))
@@ -154,7 +149,7 @@ function commentReducer(
             : dislikesCount;
 
           const updateCommentRequestBody: UpdateCommentRequestBody = {
-            fieldsToUpdate: {
+            fields: {
               likedUserIds: likedUserIdsUpdated,
               likesCount: likesCountUpdated,
               dislikedUserIds: dislikedUserIdsUpdated,
@@ -167,12 +162,9 @@ function commentReducer(
             updateCommentRequestBody,
           };
         }
-        case 'dislike': {
-          const { dislikedUserIds, dislikesCount, likedUserIds, likesCount } =
-            comment;
-          const dislikesCountUpdated = value
-            ? dislikesCount + 1
-            : dislikesCount - 1;
+        case "dislike": {
+          const { dislikedUserIds, dislikesCount, likedUserIds, likesCount } = comment;
+          const dislikesCountUpdated = value ? dislikesCount + 1 : dislikesCount - 1;
           const dislikedUserIdsUpdated = value
             ? Array.from(new Set([...dislikedUserIds, userId]))
             : dislikedUserIds.filter((id) => id !== userId);
@@ -186,7 +178,7 @@ function commentReducer(
             : likesCount;
 
           const updateCommentRequestBody: UpdateCommentRequestBody = {
-            fieldsToUpdate: {
+            fields: {
               dislikedUserIds: dislikedUserIdsUpdated,
               dislikesCount: dislikesCountUpdated,
               likedUserIds: likedUserIdsUpdated,
@@ -199,17 +191,15 @@ function commentReducer(
             updateCommentRequestBody,
           };
         }
-        case 'report': {
+        case "report": {
           const { reportedUserIds, reportsCount } = comment;
-          const reportsCountUpdated = value
-            ? reportsCount + 1
-            : reportsCount - 1;
+          const reportsCountUpdated = value ? reportsCount + 1 : reportsCount - 1;
           const reportedUserIdsUpdated = value
             ? Array.from(new Set([...reportedUserIds, userId]))
             : reportedUserIds.filter((id) => id !== userId);
 
           const updateCommentRequestBody: UpdateCommentRequestBody = {
-            fieldsToUpdate: {
+            fields: {
               reportedUserIds: reportedUserIdsUpdated,
               reportsCount: reportsCountUpdated,
             },
@@ -220,10 +210,10 @@ function commentReducer(
             updateCommentRequestBody,
           };
         }
-        case 'delete': {
+        case "delete": {
           const { isDeleted } = comment;
           const updateCommentRequestBody: UpdateCommentRequestBody = {
-            fieldsToUpdate: {
+            fields: {
               isDeleted: !isDeleted,
             },
           };
@@ -233,10 +223,10 @@ function commentReducer(
             updateCommentRequestBody,
           };
         }
-        case 'feature': {
+        case "feature": {
           const { isFeatured } = comment;
           const updateCommentRequestBody: UpdateCommentRequestBody = {
-            fieldsToUpdate: {
+            fields: {
               isFeatured: !isFeatured,
             },
           };
@@ -320,14 +310,14 @@ function commentReducer(
       const queryValuesArray = [...state.queryValuesArray];
 
       switch (kind) {
-        case 'add': {
+        case "add": {
           queryValuesArray.push(value);
           return {
             ...state,
             queryValuesArray,
           };
         }
-        case 'remove': {
+        case "remove": {
           const index = queryValuesArray.indexOf(value);
           if (index > -1) {
             queryValuesArray.splice(index, 1);
@@ -337,7 +327,7 @@ function commentReducer(
             queryValuesArray,
           };
         }
-        case 'clear': {
+        case "clear": {
           return {
             ...state,
             queryValuesArray: [],
