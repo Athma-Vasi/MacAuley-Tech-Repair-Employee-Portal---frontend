@@ -155,7 +155,7 @@ function EditRepairTicket({
       });
       openSubmitSuccessNotificationModal();
 
-      const url: URL = urlBuilder({ path: `repair-note/${repairTicketFormId}` });
+      const url: URL = urlBuilder({ path: `repair-ticket/${repairTicketFormId}` });
 
       const body = JSON.stringify({
         documentUpdate: {
@@ -648,7 +648,7 @@ function EditRepairTicket({
       onCloseCallbacks={[
         closeSubmitSuccessNotificationModal,
         () => {
-          navigate("/home/repair-note/display");
+          navigate("/home/repair-ticket/display");
         },
       ]}
       opened={openedSubmitSuccessNotificationModal}

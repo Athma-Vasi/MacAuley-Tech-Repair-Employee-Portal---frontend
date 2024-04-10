@@ -1,11 +1,65 @@
-import { Currency, SetStepsInErrorPayload, Urgency } from "../../../types";
+import {
+  Country,
+  Currency,
+  PhoneNumber,
+  PostalCode,
+  Province,
+  SetStepsInErrorPayload,
+  StatesUS,
+  Urgency,
+} from "../../../types";
 import { RepairCategory } from "../../dashboard/types";
 import { PartsNeeded, RequiredRepairs } from "../types";
 
 type CreateRepairTicketState = {
-  customerId: string;
+  // customer information search
+  customerId: string; // selected customer id
 
-  // part information
+  username: string;
+  isValidUsername: boolean;
+  isUsernameFocused: boolean;
+
+  email: string;
+  isValidEmail: boolean;
+  isEmailFocused: boolean;
+
+  firstName: string;
+  isValidFirstName: boolean;
+  isFirstNameFocused: boolean;
+
+  middleName: string;
+  isValidMiddleName: boolean;
+  isMiddleNameFocused: boolean;
+
+  lastName: string;
+  isValidLastName: boolean;
+  isLastNameFocused: boolean;
+
+  preferredName: string;
+  isValidPreferredName: boolean;
+  isPreferredNameFocused: boolean;
+
+  contactNumber: PhoneNumber | "+(1)";
+  isValidContactNumber: boolean;
+  isContactNumberFocused: boolean;
+
+  addressLine: string;
+  isValidAddressLine: boolean;
+  isAddressLineFocused: boolean;
+
+  city: string;
+  isValidCity: boolean;
+  isCityFocused: boolean;
+
+  country: Country;
+  province: Province;
+  state: StatesUS;
+
+  postalCode: PostalCode;
+  isValidPostalCode: boolean;
+  isPostalCodeFocused: boolean;
+
+  // part information - page 2
   partName: string;
   isValidPartName: boolean;
   isPartNameFocused: boolean;
@@ -26,7 +80,7 @@ type CreateRepairTicketState = {
   isValidInitialInspectionNotes: boolean;
   isInitialInspectionNotesFocused: boolean;
 
-  // repair information
+  // repair information - page 3
   repairCategory: RepairCategory;
   requiredRepairs: RequiredRepairs[];
   partsNeeded: PartsNeeded[];
@@ -63,6 +117,52 @@ type CreateRepairTicketState = {
 
 type CreateRepairTicketAction = {
   setCustomerId: "setCustomerId";
+
+  // customer information search
+  setUsername: "setUsername";
+  setIsValidUsername: "setIsValidUsername";
+  setIsUsernameFocused: "setIsUsernameFocused";
+
+  setEmail: "setEmail";
+  setIsValidEmail: "setIsValidEmail";
+  setIsEmailFocused: "setIsEmailFocused";
+
+  setFirstName: "setFirstName";
+  setIsValidFirstName: "setIsValidFirstName";
+  setIsFirstNameFocused: "setIsFirstNameFocused";
+
+  setMiddleName: "setMiddleName";
+  setIsValidMiddleName: "setIsValidMiddleName";
+  setIsMiddleNameFocused: "setIsMiddleNameFocused";
+
+  setLastName: "setLastName";
+  setIsValidLastName: "setIsValidLastName";
+  setIsLastNameFocused: "setIsLastNameFocused";
+
+  setPreferredName: "setPreferredName";
+  setIsValidPreferredName: "setIsValidPreferredName";
+  setIsPreferredNameFocused: "setIsPreferredNameFocused";
+
+  setContactNumber: "setContactNumber";
+  setIsValidContactNumber: "setIsValidContactNumber";
+  setIsContactNumberFocused: "setIsContactNumberFocused";
+
+  setAddressLine: "setAddressLine";
+  setIsValidAddressLine: "setIsValidAddressLine";
+  setIsAddressLineFocused: "setIsAddressLineFocused";
+
+  setCity: "setCity";
+  setIsValidCity: "setIsValidCity";
+  setIsCityFocused: "setIsCityFocused";
+
+  setCountry: "setCountry";
+  setProvince: "setProvince";
+  setState: "setState";
+
+  setPostalCode: "setPostalCode";
+  setIsValidPostalCode: "setIsValidPostalCode";
+  setIsPostalCodeFocused: "setIsPostalCodeFocused";
+
   // part information
   setPartName: "setPartName";
   setIsValidPartName: "setIsValidPartName";
@@ -121,6 +221,14 @@ type CreateRepairTicketDispatch =
       // all string payloads
       type:
         | CreateRepairTicketAction["setCustomerId"]
+        | CreateRepairTicketAction["setUsername"]
+        | CreateRepairTicketAction["setEmail"]
+        | CreateRepairTicketAction["setFirstName"]
+        | CreateRepairTicketAction["setMiddleName"]
+        | CreateRepairTicketAction["setLastName"]
+        | CreateRepairTicketAction["setPreferredName"]
+        | CreateRepairTicketAction["setAddressLine"]
+        | CreateRepairTicketAction["setCity"]
         | CreateRepairTicketAction["setPartName"]
         | CreateRepairTicketAction["setPartSerialId"]
         | CreateRepairTicketAction["setDateReceived"]
@@ -143,6 +251,26 @@ type CreateRepairTicketDispatch =
   // all boolean payloads
   | {
       type:
+        | CreateRepairTicketAction["setIsValidUsername"]
+        | CreateRepairTicketAction["setIsUsernameFocused"]
+        | CreateRepairTicketAction["setIsValidEmail"]
+        | CreateRepairTicketAction["setIsEmailFocused"]
+        | CreateRepairTicketAction["setIsValidFirstName"]
+        | CreateRepairTicketAction["setIsFirstNameFocused"]
+        | CreateRepairTicketAction["setIsValidMiddleName"]
+        | CreateRepairTicketAction["setIsMiddleNameFocused"]
+        | CreateRepairTicketAction["setIsValidLastName"]
+        | CreateRepairTicketAction["setIsLastNameFocused"]
+        | CreateRepairTicketAction["setIsValidPreferredName"]
+        | CreateRepairTicketAction["setIsPreferredNameFocused"]
+        | CreateRepairTicketAction["setIsValidContactNumber"]
+        | CreateRepairTicketAction["setIsContactNumberFocused"]
+        | CreateRepairTicketAction["setIsValidAddressLine"]
+        | CreateRepairTicketAction["setIsAddressLineFocused"]
+        | CreateRepairTicketAction["setIsValidCity"]
+        | CreateRepairTicketAction["setIsCityFocused"]
+        | CreateRepairTicketAction["setIsValidPostalCode"]
+        | CreateRepairTicketAction["setIsPostalCodeFocused"]
         | CreateRepairTicketAction["setIsValidPartName"]
         | CreateRepairTicketAction["setIsPartNameFocused"]
         | CreateRepairTicketAction["setIsValidPartSerialId"]
@@ -196,6 +324,31 @@ type CreateRepairTicketDispatch =
       // all Currency payloads
       type: CreateRepairTicketAction["setEstimatedRepairCostCurrency"];
       payload: Currency;
+    }
+  | {
+      // all Country payloads
+      type: CreateRepairTicketAction["setCountry"];
+      payload: Country;
+    }
+  | {
+      // all Province payloads
+      type: CreateRepairTicketAction["setProvince"];
+      payload: Province;
+    }
+  | {
+      // all StatesUS payloads
+      type: CreateRepairTicketAction["setState"];
+      payload: StatesUS;
+    }
+  | {
+      // all PhoneNumber payloads
+      type: CreateRepairTicketAction["setContactNumber"];
+      payload: PhoneNumber | "+(1)";
+    }
+  | {
+      // all PostalCode payloads
+      type: CreateRepairTicketAction["setPostalCode"];
+      payload: PostalCode;
     };
 
 type CreateRepairTicketReducer = (

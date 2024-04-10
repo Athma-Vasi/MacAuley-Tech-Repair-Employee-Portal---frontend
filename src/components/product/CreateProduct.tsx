@@ -1333,60 +1333,58 @@ function CreateProduct() {
 
           const createProductFormRequestBody =
             productCategory === "Accessory"
-              ? { accessoryFields: accessoryRequestBody }
+              ? { accessorySchema: accessoryRequestBody }
               : productCategory === "Central Processing Unit (CPU)"
-              ? { cpuFields: cpuRequestBody }
+              ? { cpuSchema: cpuRequestBody }
               : productCategory === "Computer Case"
-              ? { computerCaseFields: caseRequestBody }
+              ? { computerCaseSchema: caseRequestBody }
               : productCategory === "Desktop Computer"
-              ? { desktopComputerFields: desktopComputerRequestBody }
+              ? { desktopComputerSchema: desktopComputerRequestBody }
               : productCategory === "Display"
-              ? { displayFields: displayRequestBody }
+              ? { displaySchema: displayRequestBody }
               : productCategory === "Graphics Processing Unit (GPU)"
-              ? { gpuFields: gpuRequestBody }
+              ? { gpuSchema: gpuRequestBody }
               : productCategory === "Headphone"
-              ? { headphoneFields: headphoneRequestBody }
+              ? { headphoneSchema: headphoneRequestBody }
               : productCategory === "Keyboard"
-              ? { keyboardFields: keyboardRequestBody }
+              ? { keyboardSchema: keyboardRequestBody }
               : productCategory === "Laptop"
-              ? { laptopFields: laptopRequestBody }
+              ? { laptopSchema: laptopRequestBody }
               : productCategory === "Memory (RAM)"
-              ? { ramFields: ramRequestBody }
+              ? { ramSchema: ramRequestBody }
               : productCategory === "Microphone"
-              ? { microphoneFields: microphoneRequestBody }
+              ? { microphoneSchema: microphoneRequestBody }
               : productCategory === "Motherboard"
               ? {
-                  motherboardFields: motherboardRequestBody,
+                  motherboardSchema: motherboardRequestBody,
                 }
               : productCategory === "Mouse"
-              ? { mouseFields: mouseRequestBody }
+              ? { mouseSchema: mouseRequestBody }
               : productCategory === "Power Supply Unit (PSU)"
-              ? { psuFields: psuRequestBody }
+              ? { psuSchema: psuRequestBody }
               : productCategory === "Smartphone"
               ? {
-                  smartphoneFields: smartphoneRequestBody,
+                  smartphoneSchema: smartphoneRequestBody,
                 }
               : productCategory === "Speaker"
               ? {
-                  speakerFields: speakerRequestBody,
+                  speakerSchema: speakerRequestBody,
                 }
               : productCategory === "Storage"
               ? {
-                  storageFields: storageRequestBody,
+                  storageSchema: storageRequestBody,
                 }
               : productCategory === "Tablet"
               ? {
-                  tabletFields: tabletRequestBody,
+                  tabletSchema: tabletRequestBody,
                 }
               : {
-                  webcamFields: webcamRequestBody,
+                  webcamSchema: webcamRequestBody,
                 };
 
           const createProductRequestInit: RequestInit = {
             method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify(createProductFormRequestBody),
           };
 

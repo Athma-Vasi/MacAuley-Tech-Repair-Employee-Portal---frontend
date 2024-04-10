@@ -1,5 +1,6 @@
 import { Group, Space, Stack, Text, Title, Tooltip } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
+import { InvalidTokenError } from "jwt-decode";
 import {
   ChangeEvent,
   KeyboardEvent,
@@ -30,6 +31,7 @@ import {
   URL_REGEX,
   USERNAME_REGEX,
 } from "../../constants/regex";
+import { globalAction } from "../../context/globalProvider/state";
 import { useGlobalState, useWrapFetch } from "../../hooks";
 import {
   AccessibleErrorValidTextElements,
@@ -39,7 +41,6 @@ import {
   returnAccessibleDateTimeElements,
   returnAccessiblePasswordInputElements,
   returnAccessiblePhoneNumberTextInputElements,
-  returnAccessibleRadioSingleInputElements,
   returnAccessibleSelectInputElements,
   returnAccessibleTextInputElements,
 } from "../../jsxCreators";
@@ -75,8 +76,6 @@ import {
 import { createCustomerReducer } from "./reducers";
 import { initialCreateCustomerState } from "./state";
 import { CustomerDocument, CustomerSchema } from "./types";
-import { InvalidTokenError } from "jwt-decode";
-import { globalAction } from "../../context/globalProvider/state";
 
 function CreateCustomer() {
   // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄

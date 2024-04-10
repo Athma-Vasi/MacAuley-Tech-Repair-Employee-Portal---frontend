@@ -126,7 +126,7 @@ function CreateRepairTicket() {
 
       const url: URL = urlBuilder({ path: "repair-note" });
 
-      const initialRepairTicket: RepairTicketInitialSchema = {
+      const repairTicketSchema: RepairTicketInitialSchema = {
         customerId,
         // part information
         partName,
@@ -149,10 +149,9 @@ function CreateRepairTicket() {
 
       const requestInit: RequestInit = {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+        headers: {          "Content-Type": "application/json",
         },
-        body: JSON.stringify({ initialRepairTicket }),
+        body: JSON.stringify({ repairTicketSchema }),
       };
 
       try {
