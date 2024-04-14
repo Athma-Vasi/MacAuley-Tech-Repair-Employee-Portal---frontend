@@ -39,7 +39,40 @@ function returnFilteredDocuments<Doc extends Record<string, any> = Record<string
         const flattenedObj = flattenObjectIterative<Doc>(document);
 
         switch (searchOperator) {
-          case "AND": {
+          case "OR": {
+            Object.entries(flattenedObj).forEach(([documentKey, documentValue]) => {
+              const pattern = currentSearchObject[documentKey]?.toLowerCase() ?? "";
+
+              if (searchFieldsSet.has(documentKey)) {
+                if (Array.isArray(documentValue) && documentValue.length) {
+                  documentValue.forEach((value) => {
+                    if (
+                      boyerMooreHorspoolSimpleSearch(
+                        pattern,
+                        value.toString().toLowerCase()
+                      ) >= 0
+                    ) {
+                      filteredAcc.push(document);
+                    }
+                  });
+                }
+
+                if (
+                  boyerMooreHorspoolSimpleSearch(
+                    pattern,
+                    documentValue.toString().toLowerCase()
+                  ) >= 0
+                ) {
+                  filteredAcc.push(document);
+                }
+              }
+            });
+
+            break;
+          }
+
+          // "AND"
+          default: {
             const isEveryFieldValueMatch = Object.entries(currentSearchObject).every(
               ([searchKey, searchValue]) => {
                 const pattern = searchValue?.toLowerCase() ?? "";
@@ -68,39 +101,6 @@ function returnFilteredDocuments<Doc extends Record<string, any> = Record<string
             if (isEveryFieldValueMatch) {
               filteredAcc.push(document);
             }
-
-            break;
-          }
-
-          // "OR"
-          default: {
-            Object.entries(flattenedObj).forEach(([documentKey, documentValue]) => {
-              const pattern = currentSearchObject[documentKey]?.toLowerCase() ?? "";
-
-              if (searchFieldsSet.has(documentKey)) {
-                if (Array.isArray(documentValue) && documentValue.length) {
-                  documentValue.forEach((value) => {
-                    if (
-                      boyerMooreHorspoolSimpleSearch(
-                        pattern,
-                        value.toString().toLowerCase()
-                      ) >= 0
-                    ) {
-                      filteredAcc.push(document);
-                    }
-                  });
-                }
-
-                if (
-                  boyerMooreHorspoolSimpleSearch(
-                    pattern,
-                    documentValue.toString().toLowerCase()
-                  ) >= 0
-                ) {
-                  filteredAcc.push(document);
-                }
-              }
-            });
 
             break;
           }

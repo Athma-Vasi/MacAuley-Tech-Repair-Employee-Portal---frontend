@@ -12,7 +12,7 @@ const initialCreateRepairTicketState: CreateRepairTicketState = {
   customerId: "",
   currentSearchObject: {},
   customerSearchResults: [],
-  searchOperator: "OR",
+  searchOperator: "AND",
   clearSearchInputs: false,
   currentSearchResultPage: 1,
 
@@ -268,7 +268,7 @@ function createRepairTicketReducer(
         customerId: "",
         currentSearchObject: {},
         customerSearchResults: [],
-        searchOperator: "OR" as CustomerSearchOperator,
+        searchOperator: "AND" as CustomerSearchOperator,
         clearSearchInputs: false,
         currentSearchResultPage: 1,
         username: "",
