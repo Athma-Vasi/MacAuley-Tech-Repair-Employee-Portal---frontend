@@ -1,15 +1,14 @@
 import {
   Checkbox,
   Flex,
-  Grid,
   Group,
   MantineNumberSize,
   MantineSize,
   Text,
-} from '@mantine/core';
-import { ChangeEvent, ReactNode, RefObject } from 'react';
+} from "@mantine/core";
+import { ChangeEvent, ReactNode, RefObject } from "react";
 
-import { useGlobalState } from '../../hooks';
+import { useGlobalState } from "../../hooks";
 
 type AccessibleCheckboxSingleInputCreatorInfo = {
   ariaRequired?: boolean;
@@ -23,6 +22,7 @@ type AccessibleCheckboxSingleInputCreatorInfo = {
   required?: boolean;
   semanticName: string;
   size?: MantineSize;
+  width?: MantineNumberSize;
 };
 
 type CheckboxSingleInputWrapperProps = {
@@ -43,15 +43,16 @@ function CheckboxSingleInputWrapper({
     ref = null,
     required = false,
     ariaRequired = required,
-    size = 'sm',
+    size = "sm",
+    width = "auto",
   } = creatorInfoObject;
 
   const createdCheckboxSingleInput = (
     <Checkbox
       aria-describedby={
         checked
-          ? `${semanticName.split(' ').join('-')}-selected`
-          : `${semanticName.split(' ').join('-')}-deselected`
+          ? `${semanticName.split(" ").join("-")}-selected`
+          : `${semanticName.split(" ").join("-")}-deselected`
       }
       aria-label={semanticName}
       aria-required={ariaRequired}
@@ -60,12 +61,12 @@ function CheckboxSingleInputWrapper({
       disabled={disabled}
       key={key}
       label={label}
-      name={semanticName.split(' ').join('-')}
+      name={semanticName.split(" ").join("-")}
       onChange={onChange}
       ref={ref}
       required={required}
       size={size}
-      w="100%"
+      w={width}
     />
   );
 
@@ -98,7 +99,7 @@ function CheckboxGroupInputsWrapper({
   creatorInfoObject,
 }: CheckboxGroupInputsWrapperProps) {
   const {
-    globalState: { padding, rowGap, width },
+    globalState: { padding, rowGap },
   } = useGlobalState();
 
   const {
@@ -113,9 +114,9 @@ function CheckboxGroupInputsWrapper({
     value,
     required = false,
     ref = null,
-    size = 'sm',
+    size = "sm",
     withAsterisk = required,
-    widthCheckbox = '100%',
+    widthCheckbox = "100%",
   } = creatorInfoObject;
 
   const inputWidth = 330;
@@ -125,9 +126,7 @@ function CheckboxGroupInputsWrapper({
       size={size}
       label={label}
       key={key}
-      description={
-        value.length > 0 ? description.selected : description.deselected
-      }
+      description={value.length > 0 ? description.selected : description.deselected}
       aria-required={ariaRequired}
       value={value}
       onChange={onChange}
@@ -155,9 +154,7 @@ function CheckboxGroupInputsWrapper({
               py="xs"
             >
               <Checkbox
-                disabled={
-                  disabledValuesSet.has(value) || disabledValuesSet.has(label)
-                }
+                disabled={disabledValuesSet.has(value) || disabledValuesSet.has(label)}
                 label={<Text>{label}</Text>}
                 name={value}
                 value={value}

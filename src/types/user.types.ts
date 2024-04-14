@@ -120,10 +120,8 @@ type StatesUS =
   | "Wisconsin"
   | "Wyoming";
 
-type CanadianPostalCode = `${string}${number}${string} ${number}${string}${number}`;
-type USPostalCode =
-  | `${number}${number}${number}${number}${number}`
-  | `${number}${number}${number}${number}${number}-${number}${number}${number}${number}`;
+type CanadianPostalCode = `${string}${string}${string} ${string}${string}${string}`;
+type USPostalCode = `${string}${string}${string}${string}${string}`;
 type PostalCode = CanadianPostalCode | USPostalCode;
 
 type PhoneNumber =

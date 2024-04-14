@@ -8,12 +8,21 @@ import {
   StatesUS,
   Urgency,
 } from "../../../types";
+import { CustomerDocument } from "../../customer/types";
 import { RepairCategory } from "../../dashboard/types";
 import { PartsNeeded, RequiredRepairs } from "../types";
+
+type CurrentSearchObject = Record<string, string>;
+type CustomerSearchOperator = "AND" | "OR";
 
 type CreateRepairTicketState = {
   // customer information search
   customerId: string; // selected customer id
+  currentSearchObject: CurrentSearchObject;
+  customerSearchResults: Omit<CustomerDocument, "password" | "paymentInformation">[];
+  searchOperator: CustomerSearchOperator;
+  clearSearchInputs: boolean;
+  currentSearchResultPage: number;
 
   username: string;
   isValidUsername: boolean;
@@ -39,7 +48,7 @@ type CreateRepairTicketState = {
   isValidPreferredName: boolean;
   isPreferredNameFocused: boolean;
 
-  contactNumber: PhoneNumber | "+(1)";
+  contactNumber: PhoneNumber | string;
   isValidContactNumber: boolean;
   isContactNumberFocused: boolean;
 
@@ -117,6 +126,11 @@ type CreateRepairTicketState = {
 
 type CreateRepairTicketAction = {
   setCustomerId: "setCustomerId";
+  setCurrentSearchObject: "setCurrentSearchObject";
+  setCustomerSearchResults: "setCustomerSearchResults";
+  setSearchOperator: "setSearchOperator";
+  clearSearchInputs: "clearSearchInputs";
+  setCurrentSearchResultPage: "setCurrentSearchResultPage";
 
   // customer information search
   setUsername: "setUsername";
@@ -251,6 +265,7 @@ type CreateRepairTicketDispatch =
   // all boolean payloads
   | {
       type:
+        | CreateRepairTicketAction["clearSearchInputs"]
         | CreateRepairTicketAction["setIsValidUsername"]
         | CreateRepairTicketAction["setIsUsernameFocused"]
         | CreateRepairTicketAction["setIsValidEmail"]
@@ -296,59 +311,62 @@ type CreateRepairTicketDispatch =
       payload: boolean;
     }
   | {
-      // all Urgency payloads
       type: CreateRepairTicketAction["setRepairPriority"];
       payload: Urgency;
     }
   | {
-      // all RequiredRepairs payloads
       type: CreateRepairTicketAction["setRequiredRepairs"];
       payload: RequiredRepairs[];
     }
   | {
-      // all PartsNeeded payloads
       type: CreateRepairTicketAction["setPartsNeeded"];
       payload: PartsNeeded[];
     }
   | {
-      // all number payloads
-      type: CreateRepairTicketAction["setCurrentStepperPosition"];
+      type:
+        | CreateRepairTicketAction["setCurrentStepperPosition"]
+        | CreateRepairTicketAction["setCurrentSearchResultPage"];
       payload: number;
     }
   | {
-      // all Set<number> payloads
       type: CreateRepairTicketAction["setStepsInError"];
       payload: SetStepsInErrorPayload;
     }
   | {
-      // all Currency payloads
       type: CreateRepairTicketAction["setEstimatedRepairCostCurrency"];
       payload: Currency;
     }
   | {
-      // all Country payloads
       type: CreateRepairTicketAction["setCountry"];
       payload: Country;
     }
   | {
-      // all Province payloads
       type: CreateRepairTicketAction["setProvince"];
       payload: Province;
     }
   | {
-      // all StatesUS payloads
       type: CreateRepairTicketAction["setState"];
       payload: StatesUS;
     }
   | {
-      // all PhoneNumber payloads
       type: CreateRepairTicketAction["setContactNumber"];
-      payload: PhoneNumber | "+(1)";
+      payload: PhoneNumber | string;
     }
   | {
-      // all PostalCode payloads
       type: CreateRepairTicketAction["setPostalCode"];
       payload: PostalCode;
+    }
+  | {
+      type: CreateRepairTicketAction["setCustomerSearchResults"];
+      payload: Omit<CustomerDocument, "password" | "paymentInformation">[];
+    }
+  | {
+      type: CreateRepairTicketAction["setCurrentSearchObject"];
+      payload: CurrentSearchObject;
+    }
+  | {
+      type: CreateRepairTicketAction["setSearchOperator"];
+      payload: CustomerSearchOperator;
     };
 
 type CreateRepairTicketReducer = (
@@ -361,4 +379,6 @@ export type {
   CreateRepairTicketDispatch,
   CreateRepairTicketReducer,
   CreateRepairTicketState,
+  CurrentSearchObject,
+  CustomerSearchOperator,
 };

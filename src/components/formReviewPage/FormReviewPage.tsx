@@ -1,10 +1,10 @@
-import { Grid, Group, Spoiler, Stack, Text, Title } from '@mantine/core';
-import { TbArrowDown, TbArrowUp } from 'react-icons/tb';
+import { Grid, Group, Spoiler, Stack, Text, Title } from "@mantine/core";
+import { TbArrowDown, TbArrowUp } from "react-icons/tb";
 
-import { COLORS_SWATCHES } from '../../constants/data';
-import { useGlobalState } from '../../hooks';
-import { returnAccessibleButtonElements } from '../../jsxCreators';
-import { returnThemeColors, splitCamelCase } from '../../utils';
+import { COLORS_SWATCHES } from "../../constants/data";
+import { useGlobalState } from "../../hooks";
+import { returnAccessibleButtonElements } from "../../jsxCreators";
+import { returnThemeColors, splitCamelCase } from "../../utils";
 
 type FormReviewObject = {
   inputName: string;
@@ -24,7 +24,7 @@ type FormReviewPageProps = {
 
 function FormReviewPage({
   formReviewObject,
-  formName = 'Form review',
+  formName = "Form review",
 }: FormReviewPageProps) {
   const {
     globalState: { themeObject, padding, rowGap },
@@ -48,29 +48,33 @@ function FormReviewPage({
 
       const displayPageSection = pageObjectArr.map((pageObject, index) => {
         const { inputName, isInputValueValid = true } = pageObject;
-        const { inputValue = isInputValueValid ? 'Yes' : 'No' } = pageObject;
+        const { inputValue = isInputValueValid ? "Yes" : "No" } = pageObject;
 
         const displayInputName = (
-          <Text color={isInputValueValid ? void 0 : redColorShade}>
-            {inputName}
-          </Text>
+          <Text color={isInputValueValid ? void 0 : redColorShade}>{inputName}</Text>
         );
 
-        const [showLabelButton, hideLabelButton] =
-          returnAccessibleButtonElements([
-            {
-              buttonLabel: 'Show',
-              semanticDescription: 'Show button to show the hidden text',
-              semanticName: `button to show ${inputName} input text`,
-              leftIcon: <TbArrowDown />,
-            },
-            {
-              buttonLabel: 'Hide',
-              semanticDescription: 'Hide button to hide the shown text',
-              semanticName: `button to hide ${inputName} input text`,
-              leftIcon: <TbArrowUp />,
-            },
-          ]);
+        const rowBackgroundColorLight = index % 2 === 0 ? "#f9f9f9" : "transparent";
+        const rowBackgroundColorDark = "transparent";
+        const rowBackgroundColor =
+          themeObject.colorScheme === "dark"
+            ? rowBackgroundColorDark
+            : rowBackgroundColorLight;
+
+        const [showLabelButton, hideLabelButton] = returnAccessibleButtonElements([
+          {
+            buttonLabel: "Show",
+            semanticDescription: "Show button to show the hidden text",
+            semanticName: `button to show ${inputName} input text`,
+            leftIcon: <TbArrowDown />,
+          },
+          {
+            buttonLabel: "Hide",
+            semanticDescription: "Hide button to hide the shown text",
+            semanticName: `button to hide ${inputName} input text`,
+            leftIcon: <TbArrowUp />,
+          },
+        ]);
 
         const displayValue = (
           <Spoiler
@@ -90,8 +94,12 @@ function FormReviewPage({
             gutter={rowGap}
             w="100%"
           >
-            <Grid.Col span={4}>{displayInputName}</Grid.Col>
-            <Grid.Col span={6}>{displayValue}</Grid.Col>
+            <Grid.Col span={4} style={{ background: rowBackgroundColor }}>
+              {displayInputName}
+            </Grid.Col>
+            <Grid.Col span={6} style={{ background: rowBackgroundColor }}>
+              {displayValue}
+            </Grid.Col>
           </Grid>
         );
 
@@ -116,11 +124,7 @@ function FormReviewPage({
   );
 
   const displayFormReviewPage = (
-    <Stack
-      w="100%"
-      p={padding}
-      style={{ border: borderColor, borderRadius: 4 }}
-    >
+    <Stack w="100%" p={padding} style={{ border: borderColor, borderRadius: 4 }}>
       {displayTitle}
       {displayFormReviewStack}
     </Stack>

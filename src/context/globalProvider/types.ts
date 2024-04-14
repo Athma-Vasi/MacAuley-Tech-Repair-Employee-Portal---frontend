@@ -296,6 +296,7 @@ type GlobalProviderProps = {
 };
 
 export type {
+  ActionsDocuments,
   ColorScheme,
   ErrorState,
   GlobalAction,

@@ -1,21 +1,22 @@
-import { MantineNumberSize, MantineSize, NativeSelect } from '@mantine/core';
-import { ChangeEvent, RefObject } from 'react';
+import { MantineNumberSize, MantineSize, NativeSelect } from "@mantine/core";
+import { ChangeEvent, RefObject } from "react";
 
-import { SelectInputData } from '../../types';
+import { SelectInputData } from "../../types";
 
 type AccessibleSelectInputCreatorInfo = {
   data: string[] | SelectInputData;
-  label?: string;
-  description?: string;
   describedBy?: string;
+  description?: string;
   disabled?: boolean;
-  value?: string;
+  label?: string;
+  name?: string;
   onChange: (event: ChangeEvent<HTMLSelectElement>) => void;
-  withAsterisk?: boolean;
   ref?: RefObject<HTMLSelectElement>;
   required?: boolean;
   size?: MantineSize;
+  value?: string;
   width?: MantineNumberSize;
+  withAsterisk?: boolean;
 };
 
 type NativeSelectWrapperProps = {
@@ -25,36 +26,37 @@ type NativeSelectWrapperProps = {
 function NativeSelectWrapper({ creatorInfoObject }: NativeSelectWrapperProps) {
   const {
     data,
-    label = '',
+    describedBy = "",
     description,
-    describedBy = '',
     disabled = false,
-    value,
+    label = "",
+    name = label,
     onChange,
     ref = null,
     required = false,
-    size = 'sm',
+    size = "sm",
+    value,
     width = 330,
     withAsterisk = required,
   } = creatorInfoObject;
 
   return (
     <NativeSelect
-      size={size}
+      // name={label.split(" ").join("-").toLowerCase()}
+      aria-describedby={describedBy}
+      aria-label={`${description}. Currently selected ${value}`}
+      aria-required={required}
       data={data}
       disabled={disabled}
       label={`${label.charAt(0).toUpperCase() + label.slice(1)}`}
-      aria-label={`${description}. Currently selected ${value}`}
-      aria-required={required}
-      // description={description}
-      aria-describedby={describedBy}
-      value={value}
+      name={name}
       onChange={onChange}
       ref={ref}
-      name={label.split(' ').join('-').toLowerCase()}
-      withAsterisk={withAsterisk}
       required={required}
+      size={size}
+      value={value}
       w={width}
+      withAsterisk={withAsterisk}
     />
   );
 }

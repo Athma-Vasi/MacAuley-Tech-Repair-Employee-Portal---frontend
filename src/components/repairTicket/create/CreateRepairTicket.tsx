@@ -10,8 +10,15 @@ import { globalAction } from "../../../context/globalProvider/state";
 import { useGlobalState, useWrapFetch } from "../../../hooks";
 import { returnAccessibleButtonElements } from "../../../jsxCreators";
 import { ResourceRequestServerResponse } from "../../../types";
-import { replaceLastCommaWithAnd, urlBuilder } from "../../../utils";
+import {
+  flattenObjectIterative,
+  logState,
+  replaceLastCommaWithAnd,
+  splitCamelCase,
+  urlBuilder,
+} from "../../../utils";
 import FormReviewPage, {
+  FormReviewObject,
   FormReviewObjectArray,
 } from "../../formReviewPage/FormReviewPage";
 import { NotificationModal } from "../../notificationModal";
@@ -37,7 +44,58 @@ function CreateRepairTicket() {
     initialCreateRepairTicketState
   );
   const {
+    // customer search
     customerId,
+    currentSearchObject,
+    customerSearchResults,
+    searchOperator,
+    clearSearchInputs,
+    currentSearchResultPage,
+
+    username,
+    isValidUsername,
+    isUsernameFocused,
+
+    email,
+    isValidEmail,
+    isEmailFocused,
+
+    firstName,
+    isValidFirstName,
+    isFirstNameFocused,
+
+    middleName,
+    isValidMiddleName,
+    isMiddleNameFocused,
+
+    lastName,
+    isValidLastName,
+    isLastNameFocused,
+
+    preferredName,
+    isValidPreferredName,
+    isPreferredNameFocused,
+
+    contactNumber,
+    isValidContactNumber,
+    isContactNumberFocused,
+
+    addressLine,
+    isValidAddressLine,
+    isAddressLineFocused,
+
+    city,
+    isValidCity,
+    isCityFocused,
+
+    country,
+    province,
+    state,
+
+    postalCode,
+    isValidPostalCode,
+    isPostalCodeFocused,
+
     // device info
     partName,
     isValidPartName,
@@ -91,7 +149,10 @@ function CreateRepairTicket() {
     loadingMessage,
   } = createRepairTicketState;
 
-  const { globalDispatch } = useGlobalState();
+  const {
+    globalDispatch,
+    globalState: { actionsDocuments },
+  } = useGlobalState();
 
   const { wrappedFetch } = useWrapFetch();
 
@@ -106,6 +167,19 @@ function CreateRepairTicket() {
     },
   ] = useDisclosure(false);
   /** ------------- end hooks ------------- */
+
+  useEffect(() => {
+    logState({
+      state: createRepairTicketState,
+      groupLabel: "Create Repair Ticket State",
+    });
+    // console.group("Create Repair Ticket State");
+    // console.log("currentSearchTerm: ", currentSearchTerm);
+    // console.log("currentSearchField: ", currentSearchField);
+    // console.log("customerId: ", customerId);
+    // console.groupEnd();
+    // }, [currentSearchField, currentSearchTerm, customerId]);
+  }, [createRepairTicketState]);
 
   /** ------------- begin useEffects ------------- */
   // submit form
@@ -149,8 +223,7 @@ function CreateRepairTicket() {
 
       const requestInit: RequestInit = {
         method: "POST",
-        headers: {          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ repairTicketSchema }),
       };
 
@@ -265,9 +338,24 @@ function CreateRepairTicket() {
 
   /** ------------- begin input display ------------- */
 
+  const selectedCustomerInformation =
+    customerSearchResults.find((doc) => doc._id === customerId) ?? {};
+
+  const customerInformationFormReviewObjects = Object.entries(
+    flattenObjectIterative(selectedCustomerInformation)
+  ).map(([key, value]) => {
+    const formReviewObject: FormReviewObject = {
+      inputName: splitCamelCase(key),
+      inputValue: value?.toString() ?? "",
+      isInputValueValid: true,
+    };
+
+    return formReviewObject;
+  });
+
   const REPAIR_NOTE_REVIEW_OBJECT: FormReviewObjectArray = {
     // customer info page
-    "Customer Information": [],
+    "Customer Information": customerInformationFormReviewObjects,
     // repair item info page
     "Repair Item Information": [
       {
@@ -379,6 +467,47 @@ function CreateRepairTicket() {
   const displayRepairTicketComponentPage =
     currentStepperPosition === 0 ? (
       <RepairTicketStepCustomer
+        customerSearchResults={customerSearchResults}
+        actionsDocuments={actionsDocuments}
+        currentSearchObject={currentSearchObject}
+        searchOperator={searchOperator}
+        clearSearchInputs={clearSearchInputs}
+        customerId={customerId}
+        currentSearchResultPage={currentSearchResultPage}
+        username={username}
+        isValidUsername={isValidUsername}
+        isUsernameFocused={isUsernameFocused}
+        email={email}
+        isValidEmail={isValidEmail}
+        isEmailFocused={isEmailFocused}
+        firstName={firstName}
+        isValidFirstName={isValidFirstName}
+        isFirstNameFocused={isFirstNameFocused}
+        middleName={middleName}
+        isValidMiddleName={isValidMiddleName}
+        isMiddleNameFocused={isMiddleNameFocused}
+        lastName={lastName}
+        isValidLastName={isValidLastName}
+        isLastNameFocused={isLastNameFocused}
+        preferredName={preferredName}
+        isValidPreferredName={isValidPreferredName}
+        isPreferredNameFocused={isPreferredNameFocused}
+        contactNumber={contactNumber}
+        isValidContactNumber={isValidContactNumber}
+        isContactNumberFocused={isContactNumberFocused}
+        addressLine={addressLine}
+        isValidAddressLine={isValidAddressLine}
+        isAddressLineFocused={isAddressLineFocused}
+        city={city}
+        isValidCity={isValidCity}
+        isCityFocused={isCityFocused}
+        country={country}
+        province={province}
+        state={state}
+        postalCode={postalCode}
+        isValidPostalCode={isValidPostalCode}
+        isPostalCodeFocused={isPostalCodeFocused}
+        stepsInError={stepsInError}
         createRepairTicketAction={createRepairTicketAction}
         createRepairTicketDispatch={createRepairTicketDispatch}
       />
@@ -454,8 +583,6 @@ function CreateRepairTicket() {
       {displayRepairTicketForm}
     </Flex>
   );
-
-  console.log("CREATE REPAIR TICKET");
 
   /** ------------- end input display ------------- */
   return displayRepairTicketComponent;

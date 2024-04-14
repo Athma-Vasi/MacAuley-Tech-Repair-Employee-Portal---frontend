@@ -7,17 +7,17 @@ import {
   TextInput,
   Tooltip,
   useMantineTheme,
-} from '@mantine/core';
+} from "@mantine/core";
 
-import { useGlobalState } from '../../hooks';
-import { ReactNode, useState } from 'react';
-import { TbCheck, TbRefresh } from 'react-icons/tb';
-import { returnThemeColors, splitCamelCase } from '../../utils';
-import { COLORS_SWATCHES } from '../../constants/data';
+import { useGlobalState } from "../../hooks";
+import { ReactNode, useState } from "react";
+import { TbCheck, TbRefresh } from "react-icons/tb";
+import { returnThemeColors, splitCamelCase } from "../../utils";
+import { COLORS_SWATCHES } from "../../constants/data";
 
 type AccessiblePhoneNumberTextInputCreatorInfo = {
   ariaRequired?: boolean;
-  autoComplete?: 'on' | 'off';
+  autoComplete?: "on" | "off";
   description: { error: JSX.Element; valid: JSX.Element };
   icon?: ReactNode;
   initialInputValue?: string;
@@ -26,6 +26,7 @@ type AccessiblePhoneNumberTextInputCreatorInfo = {
   label: string;
   maxLength?: number;
   minLength?: number;
+  name?: string;
   onBlur: () => void;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onFocus: () => void;
@@ -46,9 +47,7 @@ type PhoneTextInputWrapperProps = {
   creatorInfoObject: AccessiblePhoneNumberTextInputCreatorInfo;
 };
 
-function PhoneTextInputWrapper({
-  creatorInfoObject,
-}: PhoneTextInputWrapperProps) {
+function PhoneTextInputWrapper({ creatorInfoObject }: PhoneTextInputWrapperProps) {
   const [popoverOpened, setPopoverOpened] = useState(false);
   const {
     globalState: { themeObject },
@@ -56,15 +55,16 @@ function PhoneTextInputWrapper({
 
   const {
     ariaRequired = false,
-    autoComplete = 'off',
+    autoComplete = "off",
     description,
     icon = null,
-    initialInputValue = '+(1)',
+    initialInputValue = "+(1)",
     inputText,
     isValidInputText,
     label,
     maxLength = 18,
     minLength = 18,
+    name = label,
     onBlur,
     onChange,
     onFocus,
@@ -76,7 +76,7 @@ function PhoneTextInputWrapper({
     rightSectionIcon = null,
     rightSectionOnClick = () => {},
     semanticName,
-    size = 'sm',
+    size = "sm",
     width = 330,
     withAsterisk = false,
   } = creatorInfoObject;
@@ -97,10 +97,8 @@ function PhoneTextInputWrapper({
     rightSectionIcon ? (
       rightSectionIcon
     ) : (
-      <Tooltip
-        label={`Reset ${splitCamelCase(semanticName)} to ${initialInputValue}`}
-      >
-        <Group style={{ cursor: 'pointer' }}>
+      <Tooltip label={`Reset ${splitCamelCase(semanticName)} to ${initialInputValue}`}>
+        <Group style={{ cursor: "pointer" }}>
           <TbRefresh
             aria-label={`Reset ${splitCamelCase(
               semanticName
@@ -119,7 +117,7 @@ function PhoneTextInputWrapper({
       opened={inputText ? popoverOpened : false}
       position="bottom"
       shadow="md"
-      transitionProps={{ transition: 'pop' }}
+      transitionProps={{ transition: "pop" }}
       width="target"
       withArrow
     >
@@ -132,8 +130,8 @@ function PhoneTextInputWrapper({
           <TextInput
             aria-describedby={
               isValidInputText
-                ? `${semanticName.split(' ').join('-')}-input-note-valid`
-                : `${semanticName.split(' ').join('-')}-input-note-error`
+                ? `${semanticName.split(" ").join("-")}-input-note-valid`
+                : `${semanticName.split(" ").join("-")}-input-note-error`
             }
             aria-invalid={isValidInputText ? false : true}
             aria-required={ariaRequired}
@@ -144,7 +142,8 @@ function PhoneTextInputWrapper({
             label={label}
             maxLength={maxLength}
             minLength={minLength}
-            name={semanticName.split(' ').join('-')}
+            // name={semanticName.split(" ").join("-")}
+            name={name}
             onBlur={onBlur}
             onChange={onChange}
             onFocus={onFocus}
@@ -161,9 +160,7 @@ function PhoneTextInputWrapper({
       </Popover.Target>
 
       <Popover.Dropdown>
-        <Stack>
-          {isValidInputText ? description.valid : description.error}
-        </Stack>
+        <Stack>{isValidInputText ? description.valid : description.error}</Stack>
       </Popover.Dropdown>
     </Popover>
   );
