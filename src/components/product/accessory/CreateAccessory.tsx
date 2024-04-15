@@ -149,7 +149,7 @@ function CreateAccessory({
 
     const areAccessoryInputsUserDefinedInError = Array.from(
       areAccessoryFieldsAdditionalMapValid
-    ).some(([_key, value]) => !value);
+    ).some(([key, value]) => !key || !value);
 
     const areAccessoryInputsInError =
       areAccessoryInputsHardcodedInError || areAccessoryInputsUserDefinedInError;

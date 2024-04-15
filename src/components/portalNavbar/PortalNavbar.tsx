@@ -1,27 +1,45 @@
 import { Flex, Navbar, NavLink, ScrollArea, Text } from "@mantine/core";
 import { useReducer } from "react";
+import { BsDeviceHdd, BsMotherboard, BsWebcam } from "react-icons/bs";
 import { CgDatabase } from "react-icons/cg";
 import { GrTransaction } from "react-icons/gr";
-import { MdSafetyDivider } from "react-icons/md";
+import { IoPhonePortraitOutline } from "react-icons/io5";
+import { LuMemoryStick } from "react-icons/lu";
+import { MdMonitor, MdOutlineKeyboard, MdSafetyDivider } from "react-icons/md";
 import { RiSignalTowerFill } from "react-icons/ri";
 import {
   TbAddressBook,
+  TbAffiliate,
+  TbBriefcase,
   TbBuildingWarehouse,
   TbCalendarPin,
+  TbCash,
   TbCashBanknote,
   TbChartPie3,
   TbChevronRight,
   TbCircleTriangle,
   TbCircuitResistor,
+  TbCpu,
+  TbCpu2,
   TbDashboard,
+  TbDeviceDesktopPlus,
+  TbDeviceLaptop,
+  TbDeviceSpeaker,
+  TbDeviceTablet,
   TbGift,
+  TbHeadphones,
   TbHome2,
+  TbMicrophone,
+  TbMouse,
   TbNotebook,
+  TbPower,
   TbPrinterOff,
   TbReceipt2,
+  TbShoppingBag,
   TbShoppingCartPlus,
   TbSpeakerphone,
   TbTimelineEventPlus,
+  TbTruckReturn,
   TbUserCheck,
 } from "react-icons/tb";
 import { TiThumbsUp } from "react-icons/ti";
@@ -286,9 +304,7 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
   const productAccessoryNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
     active: isProductAccessoryActive,
     ariaLabel: "Will navigate to product accessory page",
-    icon: (
-      <TbCircleTriangle color={isProductAccessoryActive ? themeColorShade : iconGray} />
-    ),
+    icon: <TbAffiliate color={isProductAccessoryActive ? themeColorShade : iconGray} />,
     label: "Accessory",
     onClick: () => {
       portalNavbarDispatch({
@@ -305,7 +321,7 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
   const cpuNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
     active: isCPUActive,
     ariaLabel: "Will navigate to cpu page",
-    icon: <TbCircleTriangle color={isCPUActive ? themeColorShade : iconGray} />,
+    icon: <TbCpu color={isCPUActive ? themeColorShade : iconGray} />,
     label: "CPU",
     onClick: () => {
       portalNavbarDispatch({
@@ -322,7 +338,7 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
   const computerCaseNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
     active: isComputerCaseActive,
     ariaLabel: "Will navigate to computer case page",
-    icon: <TbCircleTriangle color={isComputerCaseActive ? themeColorShade : iconGray} />,
+    icon: <TbBriefcase color={isComputerCaseActive ? themeColorShade : iconGray} />,
     label: "Computer case",
     onClick: () => {
       portalNavbarDispatch({
@@ -340,7 +356,7 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
     active: isDesktopComputerActive,
     ariaLabel: "Will navigate to desktop computer page",
     icon: (
-      <TbCircleTriangle color={isDesktopComputerActive ? themeColorShade : iconGray} />
+      <TbDeviceDesktopPlus color={isDesktopComputerActive ? themeColorShade : iconGray} />
     ),
     label: "Desktop computer",
     onClick: () => {
@@ -358,7 +374,7 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
   const displayNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
     active: isDisplayActive,
     ariaLabel: "Will navigate to display page",
-    icon: <TbCircleTriangle color={isDisplayActive ? themeColorShade : iconGray} />,
+    icon: <MdMonitor color={isDisplayActive ? themeColorShade : iconGray} />,
     label: "Display",
     onClick: () => {
       portalNavbarDispatch({
@@ -375,7 +391,7 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
   const gpuNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
     active: isGPUActive,
     ariaLabel: "Will navigate to gpu page",
-    icon: <TbCircleTriangle color={isGPUActive ? themeColorShade : iconGray} />,
+    icon: <TbCpu2 color={isGPUActive ? themeColorShade : iconGray} />,
     label: "GPU",
     onClick: () => {
       portalNavbarDispatch({
@@ -392,7 +408,7 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
   const headphoneNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
     active: isHeadphoneActive,
     ariaLabel: "Will navigate to headphone page",
-    icon: <TbCircleTriangle color={isHeadphoneActive ? themeColorShade : iconGray} />,
+    icon: <TbHeadphones color={isHeadphoneActive ? themeColorShade : iconGray} />,
     label: "Headphone",
     onClick: () => {
       portalNavbarDispatch({
@@ -409,7 +425,7 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
   const keyboardNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
     active: isKeyboardActive,
     ariaLabel: "Will navigate to keyboard page",
-    icon: <TbCircleTriangle color={isKeyboardActive ? themeColorShade : iconGray} />,
+    icon: <MdOutlineKeyboard color={isKeyboardActive ? themeColorShade : iconGray} />,
     label: "Keyboard",
     onClick: () => {
       portalNavbarDispatch({
@@ -426,7 +442,7 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
   const laptopNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
     active: isLaptopActive,
     ariaLabel: "Will navigate to laptop page",
-    icon: <TbCircleTriangle color={isLaptopActive ? themeColorShade : iconGray} />,
+    icon: <TbDeviceLaptop color={isLaptopActive ? themeColorShade : iconGray} />,
     label: "Laptop",
     onClick: () => {
       portalNavbarDispatch({
@@ -443,7 +459,7 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
   const ramNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
     active: isRAMActive,
     ariaLabel: "Will navigate to ram page",
-    icon: <TbCircleTriangle color={isRAMActive ? themeColorShade : iconGray} />,
+    icon: <LuMemoryStick color={isRAMActive ? themeColorShade : iconGray} />,
     label: "RAM",
     onClick: () => {
       portalNavbarDispatch({
@@ -460,7 +476,7 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
   const microphoneNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
     active: isMicrophoneActive,
     ariaLabel: "Will navigate to microphone page",
-    icon: <TbCircleTriangle color={isMicrophoneActive ? themeColorShade : iconGray} />,
+    icon: <TbMicrophone color={isMicrophoneActive ? themeColorShade : iconGray} />,
     label: "Microphone",
     onClick: () => {
       portalNavbarDispatch({
@@ -477,7 +493,7 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
   const motherboardNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
     active: isMotherboardActive,
     ariaLabel: "Will navigate to motherboard page",
-    icon: <TbCircleTriangle color={isMotherboardActive ? themeColorShade : iconGray} />,
+    icon: <BsMotherboard color={isMotherboardActive ? themeColorShade : iconGray} />,
     label: "Motherboard",
     onClick: () => {
       portalNavbarDispatch({
@@ -494,7 +510,7 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
   const mouseNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
     active: isMouseActive,
     ariaLabel: "Will navigate to mouse page",
-    icon: <TbCircleTriangle color={isMouseActive ? themeColorShade : iconGray} />,
+    icon: <TbMouse color={isMouseActive ? themeColorShade : iconGray} />,
     label: "Mouse",
     onClick: () => {
       portalNavbarDispatch({
@@ -511,7 +527,7 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
   const psuNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
     active: isPSUActive,
     ariaLabel: "Will navigate to psu page",
-    icon: <TbCircleTriangle color={isPSUActive ? themeColorShade : iconGray} />,
+    icon: <TbPower color={isPSUActive ? themeColorShade : iconGray} />,
     label: "PSU",
     onClick: () => {
       portalNavbarDispatch({
@@ -528,7 +544,9 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
   const smartphoneNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
     active: isSmartphoneActive,
     ariaLabel: "Will navigate to smartphone page",
-    icon: <TbCircleTriangle color={isSmartphoneActive ? themeColorShade : iconGray} />,
+    icon: (
+      <IoPhonePortraitOutline color={isSmartphoneActive ? themeColorShade : iconGray} />
+    ),
     label: "Smartphone",
     onClick: () => {
       portalNavbarDispatch({
@@ -545,7 +563,7 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
   const speakerNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
     active: isSpeakerActive,
     ariaLabel: "Will navigate to speaker page",
-    icon: <TbCircleTriangle color={isSpeakerActive ? themeColorShade : iconGray} />,
+    icon: <TbDeviceSpeaker color={isSpeakerActive ? themeColorShade : iconGray} />,
     label: "Speaker",
     onClick: () => {
       portalNavbarDispatch({
@@ -562,7 +580,7 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
   const storageNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
     active: isStorageActive,
     ariaLabel: "Will navigate to storage page",
-    icon: <TbCircleTriangle color={isStorageActive ? themeColorShade : iconGray} />,
+    icon: <BsDeviceHdd color={isStorageActive ? themeColorShade : iconGray} />,
     label: "Storage",
     onClick: () => {
       portalNavbarDispatch({
@@ -579,7 +597,7 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
   const tabletNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
     active: isTabletActive,
     ariaLabel: "Will navigate to tablet page",
-    icon: <TbCircleTriangle color={isTabletActive ? themeColorShade : iconGray} />,
+    icon: <TbDeviceTablet color={isTabletActive ? themeColorShade : iconGray} />,
     label: "Tablet",
     onClick: () => {
       portalNavbarDispatch({
@@ -596,7 +614,7 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
   const webcamNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
     active: isWebcamActive,
     ariaLabel: "Will navigate to webcam page",
-    icon: <TbCircleTriangle color={isWebcamActive ? themeColorShade : iconGray} />,
+    icon: <BsWebcam color={isWebcamActive ? themeColorShade : iconGray} />,
     label: "Webcam",
     onClick: () => {
       portalNavbarDispatch({
@@ -765,7 +783,7 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
   const purchaseNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
     active: isPurchaseActive,
     ariaLabel: "Will navigate to purchase page",
-    icon: <TbCircleTriangle color={isPurchaseActive ? themeColorShade : iconGray} />,
+    icon: <TbShoppingBag color={isPurchaseActive ? themeColorShade : iconGray} />,
     label: "Purchase",
     onClick: () => {
       portalNavbarDispatch({
@@ -782,7 +800,7 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
   const rmaNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
     active: isRMAActive,
     ariaLabel: "Will navigate to rma page",
-    icon: <TbCircleTriangle color={isRMAActive ? themeColorShade : iconGray} />,
+    icon: <TbTruckReturn color={isRMAActive ? themeColorShade : iconGray} />,
     label: "RMA",
     onClick: () => {
       portalNavbarDispatch({
@@ -808,7 +826,7 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
     active: isTransactionActive,
     ariaLabel: "Will navigate to transaction page",
     children: [createdPurchaseNavLink, createdRMANavLink],
-    icon: <GrTransaction color={isTransactionActive ? themeColorShade : iconGray} />,
+    icon: <TbCash color={isTransactionActive ? themeColorShade : iconGray} />,
     label: "Transaction",
     onClick: () => {
       portalNavbarDispatch({
