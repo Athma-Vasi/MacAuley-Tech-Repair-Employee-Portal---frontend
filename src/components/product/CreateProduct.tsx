@@ -4,7 +4,7 @@ import { InvalidTokenError } from "jwt-decode";
 import { ChangeEvent, MouseEvent, useEffect, useReducer } from "react";
 import { useErrorBoundary } from "react-error-boundary";
 import { TbUpload } from "react-icons/tb";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 
 import { COLORS_SWATCHES } from "../../constants/data";
@@ -53,6 +53,7 @@ import {
   DIMENSION_UNIT_SELECT_INPUT_DATA,
   DIMENSIONS_REGEX,
   LARGE_INTEGER_REGEX,
+  LOCATION_PRODUCT_CATEGORY_OBJ,
   PRODUCT_AVAILABILITY_DATA,
   PRODUCT_CATEGORY_ROUTE_NAME_OBJ,
   WEIGHT_REGEX,
@@ -613,6 +614,22 @@ function CreateProduct() {
     isSuccessful,
     successMessage,
   } = createProductState;
+
+  const location = useLocation();
+
+  // because page 2 of the stepper component is displayed based on productCategory, and by default it will display 'Accessory'. The productCategory is set based on the location.pathname.
+  useEffect(() => {
+    const splitLocation = location.pathname.split("/");
+    const productCategoryFromPath = splitLocation[splitLocation.length - 2];
+    const productCategoryProper = LOCATION_PRODUCT_CATEGORY_OBJ[productCategoryFromPath];
+
+    createProductDispatch({
+      type: createProductAction.setProductCategory,
+      payload: productCategoryProper,
+    });
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentStepperPosition]);
 
   // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
   //  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓

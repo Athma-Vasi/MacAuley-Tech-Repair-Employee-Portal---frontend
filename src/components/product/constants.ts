@@ -507,6 +507,33 @@ const PRODUCT_CATEGORY_ROUTE_NAME_OBJ: Record<ProductCategory, string> = {
   Webcam: "webcam",
 };
 
+/**
+ * - contains the correct object key for each product category
+ * - used to ensure that the create button links to the correct product category page
+ * - the object key is split from the location pathname
+ */
+const LOCATION_PRODUCT_CATEGORY_OBJ: Record<string, ProductCategory> = {
+  accessory: "Accessory",
+  cpu: "Central Processing Unit (CPU)",
+  "computer-case": "Computer Case",
+  "desktop-computer": "Desktop Computer",
+  display: "Display",
+  gpu: "Graphics Processing Unit (GPU)",
+  headphone: "Headphone",
+  keyboard: "Keyboard",
+  laptop: "Laptop",
+  ram: "Memory (RAM)",
+  mouse: "Mouse",
+  microphone: "Microphone",
+  motherboard: "Motherboard",
+  psu: "Power Supply Unit (PSU)",
+  smartphone: "Smartphone",
+  speaker: "Speaker",
+  storage: "Storage",
+  tablet: "Tablet",
+  webcam: "Webcam",
+};
+
 const CREATE_PRODUCT_MAX_STEPPER_POSITION = 4;
 
 const CREATE_PRODUCT_MAX_IMG_SIZE = 1 * 1024 * 1024; // 1MB
@@ -1460,6 +1487,7 @@ export {
   KEYBOARD_LAYOUT_DATA,
   KEYBOARD_SWITCH_DATA,
   LARGE_INTEGER_REGEX,
+  LOCATION_PRODUCT_CATEGORY_OBJ,
   MEDIUM_INTEGER_REGEX,
   MEMORY_UNIT_DATA,
   MEMORY_UNIT_SELECT_INPUT_DATA,
