@@ -1,15 +1,17 @@
 import {
   Group,
+  Image,
   Modal,
   Pagination,
   Space,
   Stack,
   Switch,
+  Text,
   Title,
   Tooltip,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { ChangeEvent, KeyboardEvent, MouseEvent, useEffect } from "react";
+import { ChangeEvent, Fragment, KeyboardEvent, MouseEvent, useEffect } from "react";
 import { TbClearAll, TbQuestionMark, TbSearch } from "react-icons/tb";
 
 import { COLORS_SWATCHES, PROVINCES, STATES_US } from "../../../../constants/data";
@@ -44,10 +46,11 @@ import {
   returnPostalCodeValidationText,
   returnThemeColors,
   returnUsernameRegexValidationText,
+  splitCamelCase,
 } from "../../../../utils";
 import { COUNTRIES_DATA } from "../../../addressChange/constants";
 import { CustomerDocument } from "../../../customer/types";
-import { FormLayoutWrapper } from "../../../wrappers";
+import { FormLayoutWrapper, ImageWrapper } from "../../../wrappers";
 import {
   CreateRepairTicketAction,
   CreateRepairTicketDispatch,
@@ -59,6 +62,7 @@ import {
   OPERATOR_SWITCH_HELP_MODAL_CONTENT,
   returnFilteredDocuments,
 } from "../utils";
+import { TiDelete } from "react-icons/ti";
 
 type RepairTicketStepCustomerProps = {
   actionsDocuments: ActionsDocuments | null;
@@ -68,6 +72,7 @@ type RepairTicketStepCustomerProps = {
   clearSearchInputs: boolean;
   customerId: string;
   currentSearchResultPage: number;
+  deleteSearchObjectField: string;
 
   username: string;
   isValidUsername: boolean;
@@ -113,7 +118,6 @@ type RepairTicketStepCustomerProps = {
   isValidPostalCode: boolean;
   isPostalCodeFocused: boolean;
 
-  stepsInError: Set<number>;
   createRepairTicketAction: CreateRepairTicketAction;
   createRepairTicketDispatch: React.Dispatch<CreateRepairTicketDispatch>;
 };
@@ -127,6 +131,7 @@ function RepairTicketStepCustomer(parentState: RepairTicketStepCustomerProps) {
     clearSearchInputs,
     customerId,
     currentSearchResultPage,
+    deleteSearchObjectField,
 
     username,
     isValidUsername,
@@ -1261,21 +1266,22 @@ function RepairTicketStepCustomer(parentState: RepairTicketStepCustomerProps) {
     </FormLayoutWrapper>
   );
 
-  const filteredCustomerDocs = displayResourceDocument({
-    padding,
-    documents:
-      currentSearchResultPage === 1
-        ? customerSearchResults.slice(0, 10)
-        : customerSearchResults.slice(
-            (currentSearchResultPage - 1) * 10,
-            currentSearchResultPage * 10
-          ),
-    themeObject,
-  });
+  const filteredCustomerDocs: Map<[string, string], JSX.Element[]> =
+    displayResourceDocument({
+      padding,
+      documents:
+        currentSearchResultPage === 1
+          ? customerSearchResults.slice(0, 10)
+          : customerSearchResults.slice(
+              (currentSearchResultPage - 1) * 10,
+              currentSearchResultPage * 10
+            ),
+      themeObject,
+    });
 
-  const displayCustomerSearchResults = Array.from(filteredCustomerDocs).map(
+  const customerSearchResultsElements = Array.from(filteredCustomerDocs).map(
     (tuple, index) => {
-      const [documentId, documentElement] = tuple;
+      const [[documentId, profilePictureUrl], documentElement] = tuple;
 
       const [customerSelectRadioSingleInput] = returnAccessibleRadioSingleInputElements([
         {
@@ -1307,30 +1313,112 @@ function RepairTicketStepCustomer(parentState: RepairTicketStepCustomerProps) {
 
       const themeBorder = `1px solid ${themeColorShade}`;
 
-      return (
-        <Stack
-          key={index}
-          w="100%"
-          style={{
-            border: customerId === documentId ? themeBorder : borderColor,
-            borderRadius: 4,
-          }}
-          p={padding}
-          onClick={(_event: MouseEvent<HTMLDivElement>) => {
-            createRepairTicketDispatch({
-              type: createRepairTicketAction.setCustomerId,
-              payload: documentId,
-            });
-          }}
-        >
-          <Group w="100%" py={padding} position="right">
-            {customerSelectRadioSingleInputWithTooltip}
+      const documentHeader = (
+        <Group w="100%">
+          <Group position="left">
+            <ImageWrapper
+              creatorInfoObject={{
+                customHeight: 125,
+                customWidth: 125,
+                customRadius: 9999,
+                imageAlt: "profile picture",
+                imageSrc: profilePictureUrl,
+                fit: "cover",
+              }}
+            />
           </Group>
-          {documentElement}
-          <Space h="xl" />
-        </Stack>
+          <Group position="right">{customerSelectRadioSingleInputWithTooltip}</Group>
+        </Group>
+      );
+
+      return (
+        <Fragment>
+          <Stack
+            key={index}
+            style={{
+              border: customerId === documentId ? themeBorder : borderColor,
+              borderRadius: 4,
+            }}
+            p={padding}
+            onClick={(_event: MouseEvent<HTMLDivElement>) => {
+              createRepairTicketDispatch({
+                type: createRepairTicketAction.setCustomerId,
+                payload: documentId,
+              });
+            }}
+          >
+            <Stack>
+              {documentHeader}
+              {documentElement}
+            </Stack>
+          </Stack>
+          <Space h="xs" />
+        </Fragment>
       );
     }
+  );
+
+  const searchObjLen = Object.keys(currentSearchObject).length;
+  const searchResultsLen = customerSearchResults.length;
+
+  const displayCustomerSearchResults =
+    searchObjLen && searchResultsLen ? (
+      customerSearchResultsElements
+    ) : searchObjLen && !searchResultsLen ? (
+      <Group>
+        <Text>There are no search results</Text>
+      </Group>
+    ) : (
+      <Group>
+        <Text>Search for a customer to see results</Text>
+      </Group>
+    );
+
+  const displaySearchObject = Object.entries(currentSearchObject).map((tuple, index) => {
+    const [key, value] = tuple;
+
+    const [deleteFieldButton] = returnAccessibleButtonElements([
+      {
+        buttonLabel: <TiDelete size={20} />,
+        buttonOnClick: (_event: MouseEvent<HTMLButtonElement>) => {
+          createRepairTicketDispatch({
+            type: createRepairTicketAction.deleteSearchObjectField,
+            payload: key,
+          });
+        },
+        semanticDescription: "Delete search field",
+        semanticName: "delete search field button",
+      },
+    ]);
+
+    const deleteFieldButtonWithTooltip = (
+      <Tooltip label={`Delete field: ${splitCamelCase(key)}`}>
+        <Group>{deleteFieldButton}</Group>
+      </Tooltip>
+    );
+
+    return (
+      <Group key={index} pl={padding}>
+        {deleteFieldButtonWithTooltip}
+        <Text>{splitCamelCase(key)}: </Text>
+        <Text>{value}</Text>
+      </Group>
+    );
+  });
+
+  const displaySearchObjectAndOperator = (
+    <Stack>
+      <Group>
+        <Title order={4}>Search Operator</Title>
+        <Text>{searchOperator}</Text>
+      </Group>
+      <Space h="xs" />
+      <Stack>
+        <Title order={4}>Search Fields</Title>
+        {displaySearchObject}
+        <Space h="xs" />
+      </Stack>
+    </Stack>
   );
 
   const createdPagination = filteredCustomerDocs.size ? (
@@ -1341,8 +1429,8 @@ function RepairTicketStepCustomer(parentState: RepairTicketStepCustomerProps) {
           payload: value,
         });
       }}
-      value={currentSearchResultPage}
       total={customerSearchResults.length / 10 + 1}
+      value={currentSearchResultPage}
     />
   ) : null;
 
@@ -1352,6 +1440,7 @@ function RepairTicketStepCustomer(parentState: RepairTicketStepCustomerProps) {
       {customerSearchInputs}
       <Stack>
         {operatorSwitchModal}
+        {displaySearchObjectAndOperator}
         <Stack>
           <Title order={4}>Search Results</Title>
           {createdPagination}

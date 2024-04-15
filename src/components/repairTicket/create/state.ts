@@ -15,6 +15,7 @@ const initialCreateRepairTicketState: CreateRepairTicketState = {
   searchOperator: "AND",
   clearSearchInputs: false,
   currentSearchResultPage: 1,
+  deleteSearchObjectField: "",
 
   username: "",
   isValidUsername: false,
@@ -123,6 +124,7 @@ const createRepairTicketAction: CreateRepairTicketAction = {
   setSearchOperator: "setSearchOperator",
   clearSearchInputs: "clearSearchInputs",
   setCurrentSearchResultPage: "setCurrentSearchResultPage",
+  deleteSearchObjectField: "deleteSearchObjectField",
 
   setUsername: "setUsername",
   setIsValidUsername: "setIsValidUsername",
@@ -314,6 +316,22 @@ function createRepairTicketReducer(
         ...state,
         currentSearchResultPage: action.payload,
       };
+
+    case createRepairTicketAction.deleteSearchObjectField: {
+      const prevState = structuredClone(state);
+      const { currentSearchObject } = prevState;
+      const field = action.payload;
+
+      const newState = {
+        ...prevState,
+        currentSearchObject: Object.fromEntries(
+          Object.entries(currentSearchObject).filter(([key]) => key !== field)
+        ),
+        deleteSearchObjectField: "",
+      };
+
+      return newState;
+    }
 
     case createRepairTicketAction.setUsername:
       return {

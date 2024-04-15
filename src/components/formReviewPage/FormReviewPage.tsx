@@ -4,7 +4,7 @@ import { TbArrowDown, TbArrowUp } from "react-icons/tb";
 import { COLORS_SWATCHES } from "../../constants/data";
 import { useGlobalState } from "../../hooks";
 import { returnAccessibleButtonElements } from "../../jsxCreators";
-import { returnThemeColors, splitCamelCase } from "../../utils";
+import { replaceLastCommaWithAnd, returnThemeColors, splitCamelCase } from "../../utils";
 
 type FormReviewObject = {
   inputName: string;
@@ -82,7 +82,11 @@ function FormReviewPage({
             showLabel={showLabelButton}
             hideLabel={hideLabelButton}
           >
-            <Text>{inputValue.toString()}</Text>
+            <Text>
+              {Array.isArray(inputValue)
+                ? replaceLastCommaWithAnd(inputValue.join(", "))
+                : inputValue.toString()}
+            </Text>
           </Spoiler>
         );
 

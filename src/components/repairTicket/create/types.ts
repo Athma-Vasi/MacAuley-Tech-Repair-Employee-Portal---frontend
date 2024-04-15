@@ -23,6 +23,7 @@ type CreateRepairTicketState = {
   searchOperator: CustomerSearchOperator;
   clearSearchInputs: boolean;
   currentSearchResultPage: number;
+  deleteSearchObjectField: string;
 
   username: string;
   isValidUsername: boolean;
@@ -131,6 +132,7 @@ type CreateRepairTicketAction = {
   setSearchOperator: "setSearchOperator";
   clearSearchInputs: "clearSearchInputs";
   setCurrentSearchResultPage: "setCurrentSearchResultPage";
+  deleteSearchObjectField: "deleteSearchObjectField";
 
   // customer information search
   setUsername: "setUsername";
@@ -235,6 +237,7 @@ type CreateRepairTicketDispatch =
       // all string payloads
       type:
         | CreateRepairTicketAction["setCustomerId"]
+        | CreateRepairTicketAction["deleteSearchObjectField"]
         | CreateRepairTicketAction["setUsername"]
         | CreateRepairTicketAction["setEmail"]
         | CreateRepairTicketAction["setFirstName"]

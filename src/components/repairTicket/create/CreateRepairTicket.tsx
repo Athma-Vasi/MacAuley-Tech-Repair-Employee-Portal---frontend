@@ -51,6 +51,7 @@ function CreateRepairTicket() {
     searchOperator,
     clearSearchInputs,
     currentSearchResultPage,
+    deleteSearchObjectField,
 
     username,
     isValidUsername,
@@ -474,6 +475,7 @@ function CreateRepairTicket() {
         clearSearchInputs={clearSearchInputs}
         customerId={customerId}
         currentSearchResultPage={currentSearchResultPage}
+        deleteSearchObjectField={deleteSearchObjectField}
         username={username}
         isValidUsername={isValidUsername}
         isUsernameFocused={isUsernameFocused}
@@ -507,7 +509,6 @@ function CreateRepairTicket() {
         postalCode={postalCode}
         isValidPostalCode={isValidPostalCode}
         isPostalCodeFocused={isPostalCodeFocused}
-        stepsInError={stepsInError}
         createRepairTicketAction={createRepairTicketAction}
         createRepairTicketDispatch={createRepairTicketDispatch}
       />

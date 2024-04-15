@@ -15,6 +15,7 @@ import { ThemeObject } from "../../../context/globalProvider/types";
 import { returnAccessibleButtonElements } from "../../../jsxCreators";
 import {
   flattenObjectIterative,
+  replaceLastCommaWithAnd,
   returnThemeColors,
   splitCamelCase,
 } from "../../../utils";
@@ -33,9 +34,10 @@ function returnFilteredDocuments<Doc extends Record<string, any> = Record<string
   searchOperator,
 }: ReturnFilteredDocumentsInput<Doc>): Doc[] {
   const searchFieldsSet = new Set<string>(Object.keys(currentSearchObject ?? {}));
+  const documentsSet = new Set<Doc>(documents ?? []);
 
   return documents && documents.length && currentSearchObject
-    ? documents.reduce<Doc[]>((filteredAcc, document) => {
+    ? Array.from(documentsSet).reduce<Doc[]>((filteredAcc, document) => {
         const flattenedObj = flattenObjectIterative<Doc>(document);
 
         switch (searchOperator) {
@@ -148,7 +150,7 @@ function displayResourceDocument<Doc extends Record<string, any> = Record<string
   themeObject,
   padding,
   documents,
-}: DisplayResourceDocumentInput<Doc>) {
+}: DisplayResourceDocumentInput<Doc>): Map<[string, string], JSX.Element[]> {
   const {
     appThemeColors: { borderColor },
   } = returnThemeColors({
@@ -173,7 +175,7 @@ function displayResourceDocument<Doc extends Record<string, any> = Record<string
     },
   ]);
 
-  return documents.reduce<Map<string, JSX.Element[]>>((acc, document) => {
+  return documents.reduce<Map<[string, string], JSX.Element[]>>((acc, document) => {
     const flattenedDocElements = Object.entries(flattenObjectIterative(document)).map(
       ([key, value], index) => {
         const rowBackgroundColorLight = index % 2 === 0 ? "#f9f9f9" : "transparent";
@@ -200,7 +202,11 @@ function displayResourceDocument<Doc extends Record<string, any> = Record<string
                 hideLabel={createdHideButton}
               >
                 <Flex direction="row" wrap="wrap" gap={4}>
-                  <Text>{value}</Text>
+                  <Text>
+                    {Array.isArray(value)
+                      ? replaceLastCommaWithAnd(value.join(", "))
+                      : value.toString()}
+                  </Text>
                 </Flex>
               </Spoiler>
             </Grid.Col>
@@ -209,10 +215,13 @@ function displayResourceDocument<Doc extends Record<string, any> = Record<string
       }
     );
 
-    acc.set(document._id, flattenedDocElements);
+    const docId = document._id as string;
+    const profilePictureUrl = document.profilePictureUrl as string;
+
+    acc.set([docId, profilePictureUrl], flattenedDocElements);
 
     return acc;
-  }, new Map<string, JSX.Element[]>());
+  }, new Map<[string, string], JSX.Element[]>());
 }
 
 const OPERATOR_SWITCH_HELP_MODAL_CONTENT = (
@@ -226,13 +235,13 @@ const OPERATOR_SWITCH_HELP_MODAL_CONTENT = (
           and values to filter the documents.
         </Text>
         <Text>
-          By default, the search operation uses the "OR" operator to filter the documents.
-          This means that if a document contains <strong>any</strong> of the specified
-          fields and values, it will be included in the search results.
+          By default, the search operation uses the "AND" operator to filter the
+          documents. This means that if a document contains <strong>all</strong> of the
+          specified fields and values, it will be included in the search results.
         </Text>
         <Text>
-          You can change the operator to "AND" to filter the documents that contain{" "}
-          <strong>all</strong> of the specified fields and values.
+          You can change the operator to "OR" to filter the documents that contain{" "}
+          <strong>any</strong> of the specified fields and values.
         </Text>
 
         <Title order={6}>Example:</Title>
@@ -264,15 +273,14 @@ const OPERATOR_SWITCH_HELP_MODAL_CONTENT = (
         </Text>
 
         <Text>
-          By default, the search operation will return the document because it contains
-          the "firstName" field with the value "Isabella".
+          By default, the search operation will <strong>not</strong> return the document
+          because the "city" field does not contain the value "Edmonton".
         </Text>
 
         <Text>
-          However, if you change the operator to "AND", the search operation will not
-          return the document because it does not contain <strong>both</strong> the
-          "firstName" field with the value "Isabella" and the "city" field with the value
-          "Edmonton".
+          However, if you change the operator to "OR", the search operation will return
+          the document because it contains the "firstName" field with the value
+          "Isabella".
         </Text>
 
         <Text>
