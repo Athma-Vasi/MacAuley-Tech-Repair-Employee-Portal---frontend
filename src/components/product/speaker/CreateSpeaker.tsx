@@ -177,7 +177,7 @@ function CreateSpeaker({
 
     const areSpeakerFieldsAdditionalMapInError = Array.from(
       areSpeakerFieldsAdditionalMapValid
-    ).some(([_key, value]) => !value);
+    ).some(([key, value]) => !key || !value);
 
     const areSpeakerInputsInError =
       areSpeakerHardcodedRequiredInputsInError || areSpeakerFieldsAdditionalMapInError;

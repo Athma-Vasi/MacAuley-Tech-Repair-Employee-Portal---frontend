@@ -238,7 +238,7 @@ function CreateRam({
 
     const areRamInputsUserDefinedInError = Array.from(
       areRamFieldsAdditionalMapValid
-    ).some(([_key, value]) => !value);
+    ).some(([key, value]) => !key || !value);
 
     const areRamInputsInError =
       areRamInputsHardcodedInError || areRamInputsUserDefinedInError;

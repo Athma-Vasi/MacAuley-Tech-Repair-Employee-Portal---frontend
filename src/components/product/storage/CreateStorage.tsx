@@ -167,7 +167,7 @@ function CreateStorage({
 
     const areStorageFieldsAdditionalMapInError = Array.from(
       areStorageFieldsAdditionalMapValid
-    ).some(([_key, value]) => !value);
+    ).some(([key, value]) => !key || !value);
 
     const areStorageInputsInError =
       areStorageHardcodedRequiredInputsInError || areStorageFieldsAdditionalMapInError;

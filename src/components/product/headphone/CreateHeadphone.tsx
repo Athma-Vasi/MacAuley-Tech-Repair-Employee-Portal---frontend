@@ -206,7 +206,7 @@ function CreateHeadphone({
 
     const areHeadphoneInputsUserDefinedInError = Array.from(
       areHeadphoneFieldsAdditionalMapValid
-    ).some(([_key, value]) => !value);
+    ).some(([key, value]) => !key || !value);
 
     const areHeadphoneInputsInError =
       areHeadphoneInputsHardcodedInError || areHeadphoneInputsUserDefinedInError;

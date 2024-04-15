@@ -163,7 +163,7 @@ function CreateMicrophone({
 
     const areMicrophoneInputsUserDefinedInError = Array.from(
       areMicrophoneFieldsAdditionalMapValid
-    ).some(([_key, value]) => !value);
+    ).some(([key, value]) => !key || !value);
 
     const areMicrophoneInputsInError =
       areMicrophoneInputsHardcodedInError || areMicrophoneInputsUserDefinedInError;

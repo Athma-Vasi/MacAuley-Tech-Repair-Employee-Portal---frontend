@@ -208,7 +208,7 @@ function CreateGpu({
 
     const areGpuInputsUserDefinedInError = Array.from(
       areGpuFieldsAdditionalMapValid
-    ).some(([_key, value]) => !value);
+    ).some(([key, value]) => !key || !value);
 
     const areGpuInputsInError =
       areGpuInputsHardcodedInError || areGpuInputsUserDefinedInError;
