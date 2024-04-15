@@ -124,7 +124,7 @@ function CreateCase({
 
     const areCaseFieldsAdditionalMapInError = Array.from(
       areCaseFieldsAdditionalMapValid
-    ).some(([_key, value]) => !value);
+    ).some(([key, value]) => !key || !value);
 
     const areCaseInputsInError = !isCaseColorValid || areCaseFieldsAdditionalMapInError;
 
