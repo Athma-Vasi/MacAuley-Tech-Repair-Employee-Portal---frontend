@@ -1,5 +1,17 @@
 import { Group, MantineNumberSize, Stack, Title } from "@mantine/core";
 
+import CreateCase from "../case/CreateCase";
+import CreateCpu from "../cpu/CreateCPU";
+import { CreateProductDispatch } from "../dispatch";
+import CreateDisplay from "../display/CreateDisplay";
+import CreateGpu from "../gpu/CreateGPU";
+import CreateKeyboard from "../keyboard/CreateKeyboard";
+import CreateMotherboard from "../motherboard/CreateMotherboard";
+import CreateMouse from "../mouse/CreateMouse";
+import CreatePsu from "../psu/CreatePSU";
+import CreateRam from "../ram/CreateRAM";
+import CreateSpeaker from "../speaker/CreateSpeaker";
+import CreateStorage from "../storage/CreateStorage";
 import {
   CaseSidePanel,
   CaseType,
@@ -22,18 +34,6 @@ import {
   StorageInterface,
   StorageType,
 } from "../types";
-import CreateCase from "../case/CreateCase";
-import CreateCpu from "../cpu/CreateCPU";
-import { CreateProductDispatch } from "../dispatch";
-import CreateDisplay from "../display/CreateDisplay";
-import CreateGpu from "../gpu/CreateGPU";
-import CreateKeyboard from "../keyboard/CreateKeyboard";
-import CreateMotherboard from "../motherboard/CreateMotherboard";
-import CreateMouse from "../mouse/CreateMouse";
-import CreatePsu from "../psu/CreatePSU";
-import CreateRam from "../ram/CreateRAM";
-import CreateSpeaker from "../speaker/CreateSpeaker";
-import CreateStorage from "../storage/CreateStorage";
 
 type CreateDesktopComputerProps = {
   // ╭─────────────────────────────────────────────────────────────────╮
