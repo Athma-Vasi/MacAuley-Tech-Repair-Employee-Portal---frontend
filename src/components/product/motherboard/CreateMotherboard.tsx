@@ -326,7 +326,7 @@ function CreateMotherboard({
 
     const areMotherboardInputsUserDefinedInError = Array.from(
       areMotherboardFieldsAdditionalMapValid
-    ).some(([key, value]) => !key || !value);
+    ).some(([_key, value]) => value.includes(false));
 
     const areMotherboardInputsInError =
       areMotherboardInputsHardcodedInError || areMotherboardInputsUserDefinedInError;

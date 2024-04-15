@@ -245,7 +245,7 @@ function CreateDisplay({
 
     const areDisplayInputsUserDefinedInError = Array.from(
       areDisplayFieldsAdditionalMapValid
-    ).some(([key, value]) => !key || !value);
+    ).some(([_key, value]) => value.includes(false));
 
     const areDisplayInputsInError =
       areDisplayInputsHardcodedInError || areDisplayInputsUserDefinedInError;

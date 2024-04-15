@@ -29,8 +29,9 @@ function ProfileInfo({ userDocument }: ProfileInfoProps) {
 
   const [profilePicElement] = returnAccessibleImageElements([
     {
-      customWidth: width < 640 ? 128 : width < 1024 ? 256 : 384,
-      customRadius: 4,
+      customWidth: width < 640 ? 92 : width < 1024 ? 128 : 256,
+      customHeight: width < 640 ? 92 : width < 1024 ? 128 : 256,
+      customRadius: 9999,
       fit: "cover",
       imageSrc: userDocument?.profilePictureUrl,
       imageAlt: `Picture of ${userDocument?.username}`,
@@ -48,8 +49,6 @@ function ProfileInfo({ userDocument }: ProfileInfoProps) {
   );
 
   const profileInfoObject = returnProfileInfoObject(userDocument);
-
-  console.log("profileInfoObject", profileInfoObject);
 
   const displayProfileStack = Object.entries(profileInfoObject).map(
     (keyValTuple, index) => {

@@ -115,7 +115,7 @@ function CreateKeyboard({
 
     const areKeyboardInputsUserDefinedInError = Array.from(
       areKeyboardFieldsAdditionalMapValid
-    ).some(([key, value]) => !key || !value);
+    ).some(([_key, value]) => value.includes(false));
 
     createProductDispatch({
       type: createProductAction.setStepsInError,

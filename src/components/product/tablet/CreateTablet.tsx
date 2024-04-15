@@ -309,7 +309,7 @@ function CreateTablet({
 
     const areTabletFieldsAdditionalMapInError = Array.from(
       areTabletFieldsAdditionalMapValid
-    ).some(([key, value]) => !key || !value);
+    ).some(([_key, value]) => value.includes(false));
 
     const areTabletInputsInError =
       areTabletHardcodedRequiredInputsInError || areTabletFieldsAdditionalMapInError;

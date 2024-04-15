@@ -251,7 +251,7 @@ function CreateCpu({
 
     const areCpuFieldsAdditionalMapInError = Array.from(
       areCpuFieldsAdditionalMapValid
-    ).some(([key, value]) => !key || !value);
+    ).some(([_key, value]) => value.includes(false));
 
     const areCpuInputsInError =
       !isCpuSocketValid ||
@@ -262,6 +262,9 @@ function CreateCpu({
       !isCpuL3CacheCapacityValid ||
       !isCpuWattageValid ||
       areCpuFieldsAdditionalMapInError;
+
+    console.log("areCpuFieldsAdditionalMapValid", areCpuFieldsAdditionalMapValid);
+    console.log("areCpuFieldsAdditionalMapInError", areCpuFieldsAdditionalMapInError);
 
     createProductDispatch({
       type: createProductAction.setStepsInError,

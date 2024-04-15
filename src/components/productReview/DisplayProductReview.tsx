@@ -32,7 +32,7 @@ function DisplayProductReview() {
   const displayResource = (
     <DisplayResource
       componentQueryData={PRODUCT_REVIEW_QUERY_DATA}
-      createResourcePath="/home/product-review/create"
+      createResourcePath=""
       requestBodyHeading="Product Review"
       resourceUrlPaths={PRODUCT_REVIEW_RESOURCE_ROUTE_PATHS}
     />

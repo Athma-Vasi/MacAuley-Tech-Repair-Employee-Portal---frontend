@@ -325,7 +325,7 @@ function CreateSmartphone({
 
     const areSmartphoneFieldsAdditionalMapInError = Array.from(
       areSmartphoneFieldsAdditionalMapValid
-    ).some(([key, value]) => !key || !value);
+    ).some(([_key, value]) => value.includes(false));
 
     const areSmartphoneInputsInError =
       areSmartphoneHardcodedRequiredInputsInError ||

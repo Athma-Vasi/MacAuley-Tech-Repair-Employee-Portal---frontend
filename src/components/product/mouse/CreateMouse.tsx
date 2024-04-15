@@ -167,7 +167,7 @@ function CreateMouse({
 
     const areMouseInputsUserDefinedInError = Array.from(
       areMouseFieldsAdditionalMapValid
-    ).some(([key, value]) => !key || !value);
+    ).some(([_key, value]) => value.includes(false));
 
     const areMouseInputsInError =
       areMouseInputsHardcodedInError || areMouseInputsUserDefinedInError;

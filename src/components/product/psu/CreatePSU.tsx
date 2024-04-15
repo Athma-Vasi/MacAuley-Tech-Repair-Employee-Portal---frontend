@@ -132,7 +132,7 @@ function CreatePsu({
 
     const arePsuInputsUserDefinedInError = Array.from(
       arePsuFieldsAdditionalMapValid
-    ).some(([key, value]) => !key || !value);
+    ).some(([_key, value]) => value.includes(false));
 
     const arePsuInputsInError = !isPsuWattageValid || arePsuInputsUserDefinedInError;
 

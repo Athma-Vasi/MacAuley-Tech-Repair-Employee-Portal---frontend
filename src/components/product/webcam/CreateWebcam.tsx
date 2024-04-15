@@ -138,7 +138,7 @@ function CreateWebcam({
 
     const areWebcamFieldsAdditionalMapInError = Array.from(
       areWebcamFieldsAdditionalMapValid
-    ).some(([key, value]) => !key || !value);
+    ).some(([_key, value]) => value.includes(false));
 
     const areWebcamInputsInError =
       areWebcamHardcodedRequiredInputsInError || areWebcamFieldsAdditionalMapInError;
