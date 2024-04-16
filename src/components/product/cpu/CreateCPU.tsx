@@ -263,9 +263,6 @@ function CreateCpu({
       !isCpuWattageValid ||
       areCpuFieldsAdditionalMapInError;
 
-    console.log("areCpuFieldsAdditionalMapValid", areCpuFieldsAdditionalMapValid);
-    console.log("areCpuFieldsAdditionalMapInError", areCpuFieldsAdditionalMapInError);
-
     createProductDispatch({
       type: createProductAction.setStepsInError,
       payload: {

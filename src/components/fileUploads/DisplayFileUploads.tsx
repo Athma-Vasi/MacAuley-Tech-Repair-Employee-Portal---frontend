@@ -1,8 +1,8 @@
 import { Flex } from "@mantine/core";
+
 import { DisplayResource } from "../displayResource";
 import DisplayResourceHeader from "../displayResourceHeader/DisplayResourceHeader";
 import { FILE_UPLOADS_QUERY_DATA, FILE_UPLOADS_RESOURCE_ROUTE_PATHS } from "./constants";
-import { DisplayFileUploadsProps } from "./types";
 
 function DisplayFileUploads() {
   // ╭─────────────────────────────────────────────────────────────────╮
@@ -46,15 +46,3 @@ function DisplayFileUploads() {
 }
 
 export default DisplayFileUploads;
-
-/**
- * {
-  componentQueryData,
-  createResourcePath,
-  fileUploadsData,
-  parentComponentName,
-  parentDeleteResourceDispatch,
-  style = {},
-  totalDocuments,
-}: DisplayFileUploadsProps
- */
