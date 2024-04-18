@@ -276,7 +276,7 @@ function Entry({
           // open file uploads modal button
           {
             buttonLabel: "Open",
-            buttonDisabled: !fileUploadsData[index]?.fileUploads?.length,
+            // buttonDisabled: !fileUploadsData[index]?.fileUploads?.length,
             leftIcon: <IoMdOpen />,
             semanticDescription:
               "Open modal to display file uploads associated with this document",
@@ -386,14 +386,20 @@ function Entry({
                 <Text>{splitCamelCase(key)}</Text>
               </Grid.Col>
               <Grid.Col span={6} style={{ background: rowBackgroundColor }}>
-                <Flex direction="row" wrap="wrap" gap={4}>
-                  {returnFormattedText({
-                    key,
-                    val: value,
-                    queryValuesArray,
-                    textHighlightColor,
-                  })}
-                </Flex>
+                <Spoiler
+                  maxHeight={45}
+                  showLabel={createdShowMoreButton}
+                  hideLabel={createdHideButton}
+                >
+                  <Flex direction="row" wrap="wrap" gap={4}>
+                    {returnFormattedText({
+                      key,
+                      val: value,
+                      queryValuesArray,
+                      textHighlightColor,
+                    })}
+                  </Flex>
+                </Spoiler>
               </Grid.Col>
             </Grid>
           ) : key === "sku" ||

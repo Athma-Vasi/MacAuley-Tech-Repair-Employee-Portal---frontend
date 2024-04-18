@@ -480,7 +480,7 @@ function DisplayAnnouncement() {
           {announcement?.ratingResponse?.ratingCount ?? 0} people have rated this
         </Text>
       </Group>
-      <ResponsivePieChart pieChartData={ratingPieChartDataArray} />
+      <ResponsivePieChart pieChartData={ratingPieChartDataArray} unitKind="number" />
     </Stack>
   );
 
