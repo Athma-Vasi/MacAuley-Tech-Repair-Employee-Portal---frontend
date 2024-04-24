@@ -1,200 +1,24 @@
 import { Button, Center, Group, Stack, Text } from "@mantine/core";
+import { constants } from "buffer";
 import jwtDecode from "jwt-decode";
 import { useEffect, useReducer } from "react";
+import { RiContactsBookLine } from "react-icons/ri";
 
 import { useAuth, useWrapFetch } from "../../hooks";
 import { UserRoles } from "../../types";
 import { logState, urlBuilder } from "../../utils";
-import { USERS_DOCS } from "./constants";
-import {
-  returnCustomerSchemas,
-  returnUpdateCustomerProductReviewsIdsFields,
-  returnUpdateCustomerPurchaseReviewsIds,
-  returnUpdateCustomerRMAReviewsIds,
-} from "./customer/customer";
-import { CUSTOMER_DOCUMENTS } from "./customer/customerDocuments";
-import {
-  ACCESSORY_ARRAYS,
-  ACCESSORY_DOCUMENTS,
-  ACCESSORY_REVIEWS,
-  ACCESSORY_REVIEW_DOCUMENTS,
-  returnAccessoryProductReviewSchemas,
-  returnAccessorySchemas,
-} from "./productCategory/accessory";
-import {
-  CASE_ARRAY,
-  CASE_DOCUMENTS,
-  CASE_REVIEWS,
-  CASE_REVIEW_DOCUMENTS,
-  returnCaseProductReviewSchemas,
-  returnCaseSchemas,
-} from "./productCategory/case";
-import {
-  CPU_DOCUMENTS,
-  CPU_REVIEW_DOCUMENTS,
-  CPU_REVIEWS,
-  CPUS_ARRAY,
-  returnCpuProductReviewSchemas,
-  returnCpuSchemas,
-} from "./productCategory/cpu";
-import {
-  DESKTOP_COMPUTER_DOCUMENTS,
-  DESKTOP_COMPUTER_REVIEW_DOCUMENTS,
-  DESKTOP_COMPUTER_REVIEWS,
-  DESKTOP_COMPUTERS_ARRAY,
-  returnDesktopComputerProductReviewSchemas,
-  returnDesktopComputerSchemas,
-} from "./productCategory/desktopComputer";
-import {
-  DISPLAY_DOCUMENTS,
-  DISPLAY_REVIEW_DOCUMENTS,
-  DISPLAY_REVIEWS,
-  DISPLAYS_ARRAY,
-  returnDisplayProductReviewSchemas,
-  returnDisplaySchemas,
-} from "./productCategory/display";
-import {
-  GPU_DOCUMENTS,
-  GPU_REVIEW_DOCUMENTS,
-  GPU_REVIEWS,
-  GPUS_ARRAY,
-  returnGpuProductReviewSchemas,
-  returnGpuSchemas,
-} from "./productCategory/gpu";
-import {
-  HEADPHONE_DOCUMENTS,
-  HEADPHONE_REVIEW_DOCUMENTS,
-  HEADPHONE_REVIEWS,
-  HEADPHONES_ARRAY,
-  returnHeadphoneProductReviewSchemas,
-  returnHeadphoneSchemas,
-} from "./productCategory/headphone";
-import {
-  KEYBOARD_DOCUMENTS,
-  KEYBOARD_REVIEW_DOCUMENTS,
-  KEYBOARD_REVIEWS,
-  KEYBOARDS_ARRAY,
-  returnKeyboardProductReviewSchemas,
-  returnKeyboardSchemas,
-} from "./productCategory/keyboard";
-import {
-  LAPTOPS_ARRAY,
-  LAPTOP_DOCUMENTS,
-  LAPTOP_REVIEWS,
-  LAPTOP_REVIEW_DOCUMENTS,
-  returnLaptopProductReviewSchemas,
-  returnLaptopSchemas,
-} from "./productCategory/laptop";
-import {
-  MICROPHONES_ARRAY,
-  MICROPHONE_DOCUMENTS,
-  MICROPHONE_REVIEWS,
-  MICROPHONE_REVIEW_DOCUMENTS,
-  returnMicrophoneProductReviewSchemas,
-  returnMicrophoneSchemas,
-} from "./productCategory/microphone";
-import {
-  MOTHERBOARDS_ARRAY,
-  MOTHERBOARD_DOCUMENTS,
-  MOTHERBOARD_REVIEWS,
-  MOTHERBOARD_REVIEW_DOCUMENTS,
-  returnMotherboardProductReviewSchemas,
-  returnMotherboardSchemas,
-} from "./productCategory/motherboard";
-import {
-  MOUSE_ARRAY,
-  MOUSE_DOCUMENTS,
-  MOUSE_REVIEWS,
-  MOUSE_REVIEW_DOCUMENTS,
-  returnMouseProductReviewSchemas,
-  returnMouseSchemas,
-} from "./productCategory/mouse";
-import {
-  PSUS_ARRAY,
-  PSU_DOCUMENTS,
-  PSU_REVIEWS,
-  PSU_REVIEW_DOCUMENTS,
-  returnPsuProductReviewSchemas,
-  returnPsuSchemas,
-} from "./productCategory/psu";
-import {
-  RAMS_ARRAY,
-  RAM_DOCUMENTS,
-  RAM_REVIEWS,
-  RAM_REVIEW_DOCUMENTS,
-  returnRamProductReviewSchemas,
-  returnRamSchemas,
-} from "./productCategory/ram";
-import {
-  returnSmartphoneProductReviewSchemas,
-  returnSmartphoneSchemas,
-  SMARTPHONE_DOCUMENTS,
-  SMARTPHONE_REVIEW_DOCUMENTS,
-  SMARTPHONE_REVIEWS,
-  SMARTPHONES_ARRAY,
-} from "./productCategory/smartphone";
-import {
-  returnSpeakerProductReviewSchemas,
-  returnSpeakerSchemas,
-  SPEAKER_DOCUMENTS,
-  SPEAKER_REVIEW_DOCUMENTS,
-  SPEAKER_REVIEWS,
-  SPEAKERS_ARRAY,
-} from "./productCategory/speaker";
-import {
-  returnStorageProductReviewSchemas,
-  returnStorageSchemas,
-  STORAGE_ARRAY,
-  STORAGE_DOCUMENTS,
-  STORAGE_REVIEW_DOCUMENTS,
-  STORAGE_REVIEWS,
-} from "./productCategory/storage";
-import {
-  returnTabletProductReviewSchemas,
-  returnTabletSchemas,
-  TABLET_DOCUMENTS,
-  TABLET_REVIEW_DOCUMENTS,
-  TABLET_REVIEWS,
-  TABLETS_ARRAY,
-} from "./productCategory/tablet";
-import {
-  returnWebcamProductReviewSchemas,
-  returnWebcamSchemas,
-  WEBCAM_DOCUMENTS,
-  WEBCAM_REVIEW_DOCUMENTS,
-  WEBCAM_REVIEWS,
-  WEBCAMS_ARRAY,
-} from "./productCategory/webcam";
-import { devTestingAction, devTestingReducer, initialDevTestingState } from "./state";
-import {
-  returnRemoveProductReviewSkuFields,
-  returnUpdateProductCategoryRatingsCountFields,
-  returnUpdateProductCategoryReviewIdsFields,
-} from "./productReview/review";
-import {
-  returnUpdateProductCategoryCurrencyFields,
-  returnUpdateProductCategorySkuFields,
-} from "./productCategory/all";
-import { PRODUCT_REVIEW_DOCUMENTS } from "./productReview/reviewDocuments";
-import { returnPurchaseSchemas } from "./purchase/purchase";
-import { RMA_REASONS_POOL, returnRMASchemas } from "./rma/rma";
-import { constants } from "buffer";
-import { PURCHASE_DOCUMENTS } from "./purchase/purchaseDocuments";
-import { RMA_DOCUMENTS } from "./rma/rmaDocuments";
-import {
-  REPAIR_TICKETS_ARRAY,
-  returnRepairTicketSchemas,
-} from "./repairTickets/repairTickets";
-import { returnUsernameEmailSetSchemas } from "./usernameEmailSet/usernameEmailSet";
 import {
   DAYS_PER_MONTH,
   MONTHS,
   PRODUCT_CATEGORIES,
   REPAIR_CATEGORIES,
 } from "../dashboard/constants";
-import { createRandomBusinessMetrics } from "../dashboard/utils";
+import {
+  createRandomBusinessMetrics,
+  returnDaysInMonthsInYears,
+} from "../dashboard/utils";
 import { STORE_LOCATION_DATA } from "../register/constants";
-import { RiContactsBookLine } from "react-icons/ri";
+import { devTestingAction, devTestingReducer, initialDevTestingState } from "./state";
 
 function DevTesting() {
   const [devTestingState, devTestingDispatch] = useReducer(
@@ -209,6 +33,29 @@ function DevTesting() {
   } = useAuth();
 
   const { wrappedFetch } = useWrapFetch();
+
+  useEffect(() => {
+    // const businessMetrics = createRandomBusinessMetrics({
+    //   daysPerMonth: DAYS_PER_MONTH,
+    //   months: MONTHS,
+    //   productCategories: PRODUCT_CATEGORIES,
+    //   repairCategories: REPAIR_CATEGORIES,
+    //   storeLocations: STORE_LOCATION_DATA,
+    // });
+
+    // console.log("BUSINESS METRICS", businessMetrics);
+
+    const yearsMonthDaysMap = returnDaysInMonthsInYears({
+      daysPerMonth: DAYS_PER_MONTH,
+      months: MONTHS,
+      yearEnd: 2021,
+      yearStart: 2020,
+    });
+
+    console.group("YEARS MONTHS DAYS MAP");
+    console.log(yearsMonthDaysMap);
+    console.groupEnd();
+  }, []);
 
   useEffect(() => {
     let isMounted = true;
@@ -343,33 +190,12 @@ function DevTesting() {
     };
   }, [triggerGetRequest]);
 
-  useEffect(() => {
-    // const bodiesArr = returnUsernameEmailSetSchemas({
-    //   customersDocs: CUSTOMER_DOCUMENTS,
-    //   usersDocs: USERS_DOCS,
-    // });
-    // devTestingDispatch({
-    //   type: devTestingAction.setBodiesArr,
-    //   payload: bodiesArr,
-    // });
-
-    const businessMetrics = createRandomBusinessMetrics({
-      daysPerMonth: DAYS_PER_MONTH,
-      months: MONTHS,
-      productCategories: PRODUCT_CATEGORIES,
-      repairCategories: REPAIR_CATEGORIES,
-      storeLocations: STORE_LOCATION_DATA,
-    });
-
-    console.log("BUSINESS METRICS", businessMetrics);
-  }, []);
-
-  useEffect(() => {
-    logState({
-      state: devTestingState,
-      groupLabel: "Dev Testing",
-    });
-  }, [devTestingState]);
+  // useEffect(() => {
+  //   logState({
+  //     state: devTestingState,
+  //     groupLabel: "Dev Testing",
+  //   });
+  // }, [devTestingState]);
 
   return (
     <Center w="100%">

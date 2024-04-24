@@ -454,9 +454,7 @@ function Comment({ parentResourceId = "", parentResourceTitle = "" }: CommentPro
       });
       openSubmitSuccessNotificationModal();
 
-      const url: URL = urlBuilder({
-        path: "comment/",
-      });
+      const url: URL = urlBuilder({ path: "comment/" });
 
       const commentSchema = {
         firstName: userDocument.firstName,

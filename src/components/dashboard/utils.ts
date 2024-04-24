@@ -4030,7 +4030,11 @@ function createRandomBusinessMetrics({
 export {
   createRandomBusinessMetrics,
   returnChartTitleNavigateLinks,
+  returnDaysInMonthsInYears,
+  returnRandomOnlineTransactions,
   returnStatistics,
+  returnUnitsRepairedRevenueTuple,
+  returnUnitsRevenueTuple,
   splitSelectedCalendarDate,
 };
 export type { StatisticsObject };
