@@ -10,10 +10,15 @@ import {
   ProductMonthlyMetric,
   ProductYearlyMetric,
   RepairCategory,
+  RepairDailyMetric,
+  RepairMetric,
+  RepairMonthlyMetric,
+  RepairYearlyMetric,
 } from "../dashboard/types";
 import {
   returnDaysInMonthsInYears,
   returnRandomOnlineTransactions,
+  returnUnitsRepairedRevenueTuple,
   returnUnitsRevenueTuple,
 } from "../dashboard/utils";
 import { BUSINESS_METRICS_TEMPLATE } from "./constantsDashboard";
@@ -127,7 +132,7 @@ async function createRandomProductMetrics({
   storeLocation,
   yearOnlineTransactionsSpread,
   yearUnitsSoldSpread,
-}: CreateRandomProductMetricsInput) {
+}: CreateRandomProductMetricsInput): CreateRandomProductMetricsOutput {
   return productCategories.map((productCategory) => {
     const yearlyProductMetrics = Array.from(daysInMonthsInYears).map((yearTuple) => {
       const [year, daysInMonthsMap] = yearTuple;
@@ -279,5 +284,117 @@ async function createRandomProductMetrics({
     };
 
     return randomProductMetrics;
+  });
+}
+
+/**
+ *repairMetrics: {
+    name: RepairCategory;
+    yearlyMetrics: {
+      year: string;
+      revenue: number;
+      unitsRepaired: number;
+
+      monthlyMetrics: {
+        month: string;
+        revenue: number;
+        unitsRepaired: number;
+
+        dailyMetrics: {
+          day: string;
+          revenue: number;
+          unitsRepaired: number;
+        }[];
+      }[];
+    }[];    
+  }[]
+ */
+
+type CreateRandomRepairMetricsInput = {
+  daysInMonthsInYears: DaysInMonthsInYears;
+  repairCategories: RepairCategory[];
+  storeLocation: StoreLocation;
+  yearUnitsRepairedSpread: LocationYearSpread;
+};
+type CreateRandomRepairMetricsOutput = Promise<RepairMetric[]>;
+
+async function createRandomRepairMetrics({
+  daysInMonthsInYears,
+  repairCategories,
+  storeLocation,
+  yearUnitsRepairedSpread,
+}: CreateRandomRepairMetricsInput): CreateRandomRepairMetricsOutput {
+  return repairCategories.map((repairCategory) => {
+    const yearlyRepairMetrics = Array.from(daysInMonthsInYears).map((yearTuple) => {
+      const [year, daysInMonthsMap] = yearTuple;
+
+      const monthlyRepairMetrics = Array.from(daysInMonthsMap).map((monthTuple) => {
+        const [month, daysRange] = monthTuple;
+
+        const dailyRepairMetrics = daysRange.map((day) => {
+          const [dailyRepairUnits, dailyRepairRevenue] = returnUnitsRepairedRevenueTuple({
+            categoryType: repairCategory,
+            storeLocation,
+            year,
+            yearUnitsRepairedSpread,
+          });
+
+          const dailyRepairMetric: RepairDailyMetric = {
+            day,
+            unitsRepaired: dailyRepairUnits,
+            revenue: dailyRepairRevenue,
+          };
+
+          return dailyRepairMetric;
+        });
+
+        const [monthlyRepairTotalUnitsRepaired, monthlyRepairTotalRevenue] =
+          dailyRepairMetrics.reduce(
+            (monthlyRepairMetricsAcc, dailyRepairMetric) => {
+              monthlyRepairMetricsAcc[0] += dailyRepairMetric.unitsRepaired;
+              monthlyRepairMetricsAcc[1] += dailyRepairMetric.revenue;
+
+              return monthlyRepairMetricsAcc;
+            },
+            [0, 0]
+          );
+
+        const monthlyRepairMetric: RepairMonthlyMetric = {
+          month,
+          unitsRepaired: monthlyRepairTotalUnitsRepaired,
+          revenue: monthlyRepairTotalRevenue,
+          dailyMetrics: dailyRepairMetrics,
+        };
+
+        return monthlyRepairMetric;
+      });
+
+      const [yearlyRepairTotalUnitsRepaired, yearlyRepairTotalRevenue] =
+        monthlyRepairMetrics.reduce(
+          (yearlyRepairMetricsAcc, monthlyRepairMetric) => {
+            yearlyRepairMetricsAcc[0] += monthlyRepairMetric.unitsRepaired;
+            yearlyRepairMetricsAcc[1] += monthlyRepairMetric.revenue;
+
+            return yearlyRepairMetricsAcc;
+          },
+          [0, 0]
+        );
+
+      const yearlyRepairMetric: RepairYearlyMetric = {
+        year,
+        unitsRepaired: yearlyRepairTotalUnitsRepaired,
+        revenue: yearlyRepairTotalRevenue,
+        monthlyMetrics: monthlyRepairMetrics,
+      };
+
+      return yearlyRepairMetric;
+    });
+
+    const randomRepairMetrics: RepairMetric = {
+      name: repairCategory,
+      yearlyMetrics: yearlyRepairMetrics,
+    };
+
+    return randomRepairMetrics;
   });
 }
