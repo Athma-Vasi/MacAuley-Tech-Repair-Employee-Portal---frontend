@@ -18,7 +18,20 @@ import {
   returnDaysInMonthsInYears,
 } from "../dashboard/utils";
 import { STORE_LOCATION_DATA } from "../register/constants";
+import {
+  BUSINESS_METRICS_TEMPLATE,
+  FINANCIAL_METRICS_DAILY_TEMPLATE,
+  FINANCIAL_METRICS_MONTHLY_TEMPLATE,
+  FINANCIAL_METRICS_YEARLY_TEMPLATE,
+  YEAR_ONLINE_TRANSACTIONS_SPREAD,
+  YEAR_UNITS_SOLD_SPREAD,
+} from "./constantsDashboard";
 import { devTestingAction, devTestingReducer, initialDevTestingState } from "./state";
+import {
+  createAggregatedProductMetrics,
+  createAllLocationsAggregatedProductMetrics,
+  createRandomProductMetrics,
+} from "./utilsDashboard";
 
 function DevTesting() {
   const [devTestingState, devTestingDispatch] = useReducer(
@@ -35,25 +48,31 @@ function DevTesting() {
   const { wrappedFetch } = useWrapFetch();
 
   useEffect(() => {
-    // const businessMetrics = createRandomBusinessMetrics({
-    //   daysPerMonth: DAYS_PER_MONTH,
-    //   months: MONTHS,
-    //   productCategories: PRODUCT_CATEGORIES,
-    //   repairCategories: REPAIR_CATEGORIES,
-    //   storeLocations: STORE_LOCATION_DATA,
-    // });
+    console.group("Dev Testing");
 
-    // console.log("BUSINESS METRICS", businessMetrics);
+    const businessMetrics = STORE_LOCATION_DATA.map((storeLocation) => {
+      const daysInMonthsInYears = returnDaysInMonthsInYears({
+        daysPerMonth: DAYS_PER_MONTH,
+        months: MONTHS,
+        yearStart: 2020,
+        yearEnd: 2022,
+      });
 
-    const yearsMonthDaysMap = returnDaysInMonthsInYears({
-      daysPerMonth: DAYS_PER_MONTH,
-      months: MONTHS,
-      yearEnd: 2021,
-      yearStart: 2020,
+      const productMetrics = createRandomProductMetrics({
+        daysInMonthsInYears,
+        productCategories: PRODUCT_CATEGORIES,
+        storeLocation,
+        yearOnlineTransactionsSpread: YEAR_ONLINE_TRANSACTIONS_SPREAD,
+        yearUnitsSoldSpread: YEAR_UNITS_SOLD_SPREAD,
+      });
+
+      console.log({ productMetrics });
+
+      const aggregatedProductMetrics = createAggregatedProductMetrics(productMetrics);
+
+      console.log({ aggregatedProductMetrics });
     });
 
-    console.group("YEARS MONTHS DAYS MAP");
-    console.log(yearsMonthDaysMap);
     console.groupEnd();
   }, []);
 

@@ -191,16 +191,6 @@ type CustomerMetrics = {
   yearlyMetrics: CustomerYearlyMetric[];
 };
 
-type CustomerMetricCategory = {
-  total: number;
-  sales: {
-    total: number;
-    online: number;
-    inStore: number;
-  };
-  repair: number;
-};
-
 type CustomerYearlyMetric = {
   year: Year;
   customers: {
@@ -211,6 +201,16 @@ type CustomerYearlyMetric = {
     retentionRate: number;
   };
   monthlyMetrics: CustomerMonthlyMetric[];
+};
+
+type CustomerMetricCategory = {
+  total: number;
+  sales: {
+    total: number;
+    online: number;
+    inStore: number;
+  };
+  repair: number;
 };
 
 type CustomerMonthlyMetric = {

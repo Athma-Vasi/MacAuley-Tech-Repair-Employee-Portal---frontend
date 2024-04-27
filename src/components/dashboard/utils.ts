@@ -1113,97 +1113,93 @@ function returnProductMetricsWithAggregatedAllProducts(
   return productMetrics.reduce((productMetricsAcc, productMetric) => {
     const { yearlyMetrics } = productMetric;
 
-    const aggregatedYearlyProductMetrics = yearlyMetrics.map(
-      (productYearlyMetric, productYearlyMetricIdx) => {
-        const { year, revenue, unitsSold, monthlyMetrics } = productYearlyMetric;
-        // find the corresponding yearly metric in the aggregated product metric
-        const existingYearlyMetric = productMetricsAcc.yearlyMetrics.find(
-          (productYearlyMetricAcc) => productYearlyMetricAcc.year === year
-        ) ?? { ...PRODUCT_METRIC_TEMPLATE_YEARLY, year };
+    const aggregatedYearlyProductMetrics = yearlyMetrics.map((productYearlyMetric) => {
+      const { year, revenue, unitsSold, monthlyMetrics } = productYearlyMetric;
+      // find the corresponding yearly metric in the aggregated product metric
+      const existingYearlyMetric = productMetricsAcc.yearlyMetrics.find(
+        (productYearlyMetricAcc) => productYearlyMetricAcc.year === year
+      ) ?? { ...PRODUCT_METRIC_TEMPLATE_YEARLY, year };
 
-        // aggregate yearly metrics
-        const aggregatedYearlyMetric = {
-          ...existingYearlyMetric,
-          revenue: {
-            ...existingYearlyMetric.revenue,
-            total: existingYearlyMetric.revenue.total + revenue.total,
-            online: existingYearlyMetric.revenue.online + revenue.online,
-            inStore: existingYearlyMetric.revenue.inStore + revenue.inStore,
-          },
-          unitsSold: {
-            ...existingYearlyMetric.unitsSold,
-            total: existingYearlyMetric.unitsSold.total + unitsSold.total,
-            online: existingYearlyMetric.unitsSold.online + unitsSold.online,
-            inStore: existingYearlyMetric.unitsSold.inStore + unitsSold.inStore,
-          },
-        };
+      // aggregate yearly metrics
+      const aggregatedYearlyMetric = {
+        ...existingYearlyMetric,
+        revenue: {
+          ...existingYearlyMetric.revenue,
+          total: existingYearlyMetric.revenue.total + revenue.total,
+          online: existingYearlyMetric.revenue.online + revenue.online,
+          inStore: existingYearlyMetric.revenue.inStore + revenue.inStore,
+        },
+        unitsSold: {
+          ...existingYearlyMetric.unitsSold,
+          total: existingYearlyMetric.unitsSold.total + unitsSold.total,
+          online: existingYearlyMetric.unitsSold.online + unitsSold.online,
+          inStore: existingYearlyMetric.unitsSold.inStore + unitsSold.inStore,
+        },
+      };
 
-        // find the corresponding monthly metric in the aggregated product metric
-        const aggregatedMonthlyProductMetrics = monthlyMetrics.map(
-          (productMonthlyMetric, productMonthlyMetricIdx) => {
-            const { month, dailyMetrics, revenue, unitsSold } = productMonthlyMetric;
+      // find the corresponding monthly metric in the aggregated product metric
+      const aggregatedMonthlyProductMetrics = monthlyMetrics.map(
+        (productMonthlyMetric) => {
+          const { month, dailyMetrics, revenue, unitsSold } = productMonthlyMetric;
 
-            const existingMonthlyMetric = aggregatedYearlyMetric.monthlyMetrics.find(
-              (productMonthlyMetricAcc) => productMonthlyMetricAcc.month === month
-            ) ?? { ...PRODUCT_METRIC_TEMPLATE_MONTHLY, month };
+          const existingMonthlyMetric = aggregatedYearlyMetric.monthlyMetrics.find(
+            (productMonthlyMetricAcc) => productMonthlyMetricAcc.month === month
+          ) ?? { ...PRODUCT_METRIC_TEMPLATE_MONTHLY, month };
 
-            // find the corresponding daily metric in the aggregated product metric
-            const aggregatedDailyRepairMetrics = dailyMetrics.map(
-              (productDailyMetric, productDailyMetricIdx) => {
-                const { day, revenue, unitsSold } = productDailyMetric;
+          // find the corresponding daily metric in the aggregated product metric
+          const aggregatedDailyRepairMetrics = dailyMetrics.map((productDailyMetric) => {
+            const { day, revenue, unitsSold } = productDailyMetric;
 
-                const existingDailyMetric = existingMonthlyMetric.dailyMetrics.find(
-                  (productDailyMetricAcc) => productDailyMetricAcc.day === day
-                ) ?? { ...PRODUCT_METRIC_TEMPLATE_DAILY, day };
+            const existingDailyMetric = existingMonthlyMetric.dailyMetrics.find(
+              (productDailyMetricAcc) => productDailyMetricAcc.day === day
+            ) ?? { ...PRODUCT_METRIC_TEMPLATE_DAILY, day };
 
-                // aggregate daily metrics
-                const aggregatedDailyMetric = {
-                  ...existingDailyMetric,
-                  revenue: {
-                    ...existingDailyMetric.revenue,
-                    total: existingDailyMetric.revenue.total + revenue.total,
-                    online: existingDailyMetric.revenue.online + revenue.online,
-                    inStore: existingDailyMetric.revenue.inStore + revenue.inStore,
-                  },
-                  unitsSold: {
-                    ...existingDailyMetric.unitsSold,
-                    total: existingDailyMetric.unitsSold.total + unitsSold.total,
-                    online: existingDailyMetric.unitsSold.online + unitsSold.online,
-                    inStore: existingDailyMetric.unitsSold.inStore + unitsSold.inStore,
-                  },
-                };
-
-                return aggregatedDailyMetric;
-              }
-            );
-
-            // aggregate monthly metrics
-            const aggregatedMonthlyMetric = {
-              ...existingMonthlyMetric,
+            // aggregate daily metrics
+            const aggregatedDailyMetric = {
+              ...existingDailyMetric,
               revenue: {
-                ...existingMonthlyMetric.revenue,
-                total: existingMonthlyMetric.revenue.total + revenue.total,
-                online: existingMonthlyMetric.revenue.online + revenue.online,
-                inStore: existingMonthlyMetric.revenue.inStore + revenue.inStore,
+                ...existingDailyMetric.revenue,
+                total: existingDailyMetric.revenue.total + revenue.total,
+                online: existingDailyMetric.revenue.online + revenue.online,
+                inStore: existingDailyMetric.revenue.inStore + revenue.inStore,
               },
               unitsSold: {
-                ...existingMonthlyMetric.unitsSold,
-                total: existingMonthlyMetric.unitsSold.total + unitsSold.total,
-                online: existingMonthlyMetric.unitsSold.online + unitsSold.online,
-                inStore: existingMonthlyMetric.unitsSold.inStore + unitsSold.inStore,
+                ...existingDailyMetric.unitsSold,
+                total: existingDailyMetric.unitsSold.total + unitsSold.total,
+                online: existingDailyMetric.unitsSold.online + unitsSold.online,
+                inStore: existingDailyMetric.unitsSold.inStore + unitsSold.inStore,
               },
-              dailyMetrics: aggregatedDailyRepairMetrics,
             };
 
-            return aggregatedMonthlyMetric;
-          }
-        );
+            return aggregatedDailyMetric;
+          });
 
-        aggregatedYearlyMetric.monthlyMetrics = aggregatedMonthlyProductMetrics;
+          // aggregate monthly metrics
+          const aggregatedMonthlyMetric = {
+            ...existingMonthlyMetric,
+            revenue: {
+              ...existingMonthlyMetric.revenue,
+              total: existingMonthlyMetric.revenue.total + revenue.total,
+              online: existingMonthlyMetric.revenue.online + revenue.online,
+              inStore: existingMonthlyMetric.revenue.inStore + revenue.inStore,
+            },
+            unitsSold: {
+              ...existingMonthlyMetric.unitsSold,
+              total: existingMonthlyMetric.unitsSold.total + unitsSold.total,
+              online: existingMonthlyMetric.unitsSold.online + unitsSold.online,
+              inStore: existingMonthlyMetric.unitsSold.inStore + unitsSold.inStore,
+            },
+            dailyMetrics: aggregatedDailyRepairMetrics,
+          };
 
-        return aggregatedYearlyMetric;
-      }
-    );
+          return aggregatedMonthlyMetric;
+        }
+      );
+
+      aggregatedYearlyMetric.monthlyMetrics = aggregatedMonthlyProductMetrics;
+
+      return aggregatedYearlyMetric;
+    });
 
     productMetricsAcc.yearlyMetrics = aggregatedYearlyProductMetrics;
 
@@ -3146,6 +3142,8 @@ function returnAllLocationsAggregatedProductMetrics(
       storeLocationBusinessMetrics.storeLocation === "Edmonton"
   ) as BusinessMetric; // edmonton store is guaranteed to exist
 
+  console.log("edmontonStore.productMetrics", edmontonStore.productMetrics);
+
   // clone edmonton store product metrics
   const clonedEdmontonProductMetrics = structuredClone(
     edmontonStore.productMetrics
@@ -4031,6 +4029,9 @@ export {
   createRandomBusinessMetrics,
   returnChartTitleNavigateLinks,
   returnDaysInMonthsInYears,
+  returnRandomChurnRate,
+  returnRandomCustomers,
+  returnRandomNewCustomers,
   returnRandomOnlineTransactions,
   returnStatistics,
   returnUnitsRepairedRevenueTuple,
