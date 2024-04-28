@@ -322,6 +322,7 @@ export type {
   DashboardRepairMetric,
   DashboardState,
   DaysInMonthsInYears,
+  FinancialMetricCategory,
   LocationYearSpread,
   Month,
   MonthlyFinancialMetric,

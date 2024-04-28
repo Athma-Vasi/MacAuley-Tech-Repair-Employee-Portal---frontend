@@ -50,28 +50,26 @@ function DevTesting() {
   useEffect(() => {
     console.group("Dev Testing");
 
-    const businessMetrics = STORE_LOCATION_DATA.map((storeLocation) => {
-      const daysInMonthsInYears = returnDaysInMonthsInYears({
-        daysPerMonth: DAYS_PER_MONTH,
-        months: MONTHS,
-        yearStart: 2020,
-        yearEnd: 2022,
-      });
-
-      const productMetrics = createRandomProductMetrics({
-        daysInMonthsInYears,
-        productCategories: PRODUCT_CATEGORIES,
-        storeLocation,
-        yearOnlineTransactionsSpread: YEAR_ONLINE_TRANSACTIONS_SPREAD,
-        yearUnitsSoldSpread: YEAR_UNITS_SOLD_SPREAD,
-      });
-
-      console.log({ productMetrics });
-
-      const aggregatedProductMetrics = createAggregatedProductMetrics(productMetrics);
-
-      console.log({ aggregatedProductMetrics });
+    const daysInMonthsInYears = returnDaysInMonthsInYears({
+      daysPerMonth: DAYS_PER_MONTH,
+      months: MONTHS,
+      yearStart: 2020,
+      yearEnd: 2022,
     });
+
+    const productMetrics = createRandomProductMetrics({
+      daysInMonthsInYears,
+      productCategories: PRODUCT_CATEGORIES,
+      storeLocation: "Calgary",
+      yearOnlineTransactionsSpread: YEAR_ONLINE_TRANSACTIONS_SPREAD,
+      yearUnitsSoldSpread: YEAR_UNITS_SOLD_SPREAD,
+    });
+
+    console.log({ productMetrics });
+
+    const aggregatedProductMetrics = createAggregatedProductMetrics(productMetrics);
+
+    console.log({ aggregatedProductMetrics });
 
     console.groupEnd();
   }, []);
