@@ -314,25 +314,9 @@ async function createRandomProductMetrics({
           const [month, daysRange] = monthTuple;
 
           const dailyProductMetrics = daysRange.map((day) => {
-            /**
-     *  dailyMetrics: {
-          day: string;
-          unitsSold: {
-            total: number;
-            online: number;
-            inStore: number;
-          };
-          revenue: {
-            total: number;
-            online: number;
-            inStore: number;
-          };
-        }[];
-     */
-
             const [dailyProductUnitsSold, dailyProductSalesRevenue] =
               createProductCategoryUnitsRevenueTuple({
-                categoryType: productCategory,
+                productCategory,
                 storeLocation,
                 year,
                 yearUnitsSoldSpread: YEAR_UNITS_SOLD_SPREAD,
@@ -838,7 +822,7 @@ async function createRandomRepairMetrics({
           const dailyRepairMetrics = daysRange.map((day) => {
             const [dailyRepairUnits, dailyRepairRevenue] =
               createRepairCategoryUnitsRepairedRevenueTuple({
-                categoryType: repairCategory,
+                repairCategory,
                 storeLocation,
                 year,
                 yearUnitsRepairedSpread: YEAR_UNITS_REPAIRED_SPREAD,
@@ -1337,33 +1321,6 @@ async function createRandomCustomerMetrics({
         const [month, daysRange] = monthTuple;
 
         const dailyCustomersMetrics = daysRange.map((day) => {
-          /**
-        dailyMetrics: {
-          day: string;
-          customers: {
-            total: number;
-            new: {
-              total: number;
-              sales: {
-                total: number;
-                online: number;
-                inStore: number;
-              };
-              repair: number;
-            };
-            returning: {
-              total: number;
-              sales: {
-                total: number;
-                online: number;
-                inStore: number;
-              };
-              repair: number;
-            };
-          };
-        }[]
-        */
-
           const dailyTotalCustomers = createRandomNumber({
             storeLocation,
             year,
@@ -2950,7 +2907,7 @@ function createRandomNumber({
 }
 
 type CreateProductCategoryUnitsRevenueTupleInput = {
-  categoryType: ProductCategory;
+  productCategory: ProductCategory;
   storeLocation: StoreLocation;
   year: string;
   yearUnitsSoldSpread: LocationYearSpread;
@@ -2959,30 +2916,30 @@ type CreateProductCategoryUnitsRevenueTupleInput = {
  * - calculates the number of unitsSold and revenue for a specific product category and store location
  */
 function createProductCategoryUnitsRevenueTuple({
-  categoryType,
+  productCategory,
   storeLocation,
   year,
   yearUnitsSoldSpread,
 }: CreateProductCategoryUnitsRevenueTupleInput) {
   const unitsSold =
-    categoryType === "Desktop Computer" ||
-    categoryType === "Laptop" ||
-    categoryType === "Smartphone" ||
-    categoryType === "Tablet"
+    productCategory === "Desktop Computer" ||
+    productCategory === "Laptop" ||
+    productCategory === "Smartphone" ||
+    productCategory === "Tablet"
       ? createRandomNumber({ storeLocation, year, yearUnitsSpread: yearUnitsSoldSpread })
-      : categoryType === "Central Processing Unit (CPU)" ||
-        categoryType === "Graphics Processing Unit (GPU)" ||
-        categoryType === "Motherboard" ||
-        categoryType === "Headphone" ||
-        categoryType === "Speaker" ||
-        categoryType === "Display" ||
-        categoryType === "Power Supply Unit (PSU)"
+      : productCategory === "Central Processing Unit (CPU)" ||
+        productCategory === "Graphics Processing Unit (GPU)" ||
+        productCategory === "Motherboard" ||
+        productCategory === "Headphone" ||
+        productCategory === "Speaker" ||
+        productCategory === "Display" ||
+        productCategory === "Power Supply Unit (PSU)"
       ? createRandomNumber({
           storeLocation,
           year,
           yearUnitsSpread: yearUnitsSoldSpread,
         }) + 5
-      : categoryType === "Accessory"
+      : productCategory === "Accessory"
       ? createRandomNumber({
           storeLocation,
           year,
@@ -2994,40 +2951,44 @@ function createProductCategoryUnitsRevenueTuple({
           yearUnitsSpread: yearUnitsSoldSpread,
         }) + 7;
 
-  const revenue =
-    categoryType === "Desktop Computer" ||
-    categoryType === "Laptop" ||
-    categoryType === "Smartphone" ||
-    categoryType === "Tablet"
-      ? unitsSold * Math.round(Math.random() * (2200 - 300) + 300)
-      : categoryType === "Central Processing Unit (CPU)" ||
-        categoryType === "Graphics Processing Unit (GPU)"
-      ? unitsSold * Math.round(Math.random() * (900 - 150) + 150)
-      : categoryType === "Motherboard" ||
-        categoryType === "Headphone" ||
-        categoryType === "Speaker" ||
-        categoryType === "Display" ||
-        categoryType === "Power Supply Unit (PSU)"
-      ? unitsSold * Math.round(Math.random() * (700 - 150) + 150)
-      : categoryType === "Keyboard" ||
-        categoryType === "Memory (RAM)" ||
-        categoryType === "Mouse" ||
-        categoryType === "Storage"
-      ? unitsSold * Math.round(Math.random() * (300 - 100) + 100)
-      : unitsSold * Math.round(Math.random() * (100 - 50) + 50);
+  const spread: Record<ProductCategory, [number, number]> = {
+    "Central Processing Unit (CPU)": [150, 400],
+    "Computer Case": [50, 150],
+    "Desktop Computer": [700, 2200],
+    Display: [150, 750],
+    "Graphics Processing Unit (GPU)": [150, 900],
+    "Memory (RAM)": [50, 300],
+    "Power Supply Unit (PSU)": [75, 400],
+    Accessory: [10, 100],
+    Headphone: [50, 500],
+    Keyboard: [50, 200],
+    Laptop: [500, 2200],
+    Microphone: [50, 300],
+    Motherboard: [150, 700],
+    Mouse: [50, 200],
+    Smartphone: [300, 1500],
+    Speaker: [100, 600],
+    Storage: [75, 500],
+    Tablet: [400, 1500],
+    Webcam: [100, 300],
+  };
+
+  const [min, max] = spread[productCategory];
+
+  const revenue = unitsSold * Math.round(Math.random() * (max - min) + min);
 
   return [unitsSold, revenue];
 }
 
 type CreateRepairCategoryUnitsRepairedRevenueTupleInput = {
-  categoryType: RepairCategory;
+  repairCategory: RepairCategory;
   storeLocation: StoreLocation;
   year: string;
   yearUnitsRepairedSpread: LocationYearSpread;
 };
 
 function createRepairCategoryUnitsRepairedRevenueTuple({
-  categoryType,
+  repairCategory,
   storeLocation,
   year,
   yearUnitsRepairedSpread,
@@ -3038,12 +2999,18 @@ function createRepairCategoryUnitsRepairedRevenueTuple({
     yearUnitsSpread: yearUnitsRepairedSpread,
   });
 
-  const revenue =
-    categoryType === "Computer Component" || categoryType === "Electronic Device"
-      ? unitsSold * Math.round(Math.random() * (400 - 150) + 150)
-      : categoryType === "Mobile Device"
-      ? unitsSold * Math.round(Math.random() * (200 - 125) + 125)
-      : unitsSold * Math.round(Math.random() * (150 - 50) + 50);
+  const spread: Record<RepairCategory, [number, number]> = {
+    "Computer Component": [150, 400],
+    "Electronic Device": [150, 400],
+    "Mobile Device": [125, 200],
+    "Audio/Video": [50, 150],
+    Accessory: [50, 150],
+    Peripheral: [50, 150],
+  };
+
+  const [min, max] = spread[repairCategory];
+
+  const revenue = unitsSold * Math.round(Math.random() * (max - min) + min);
 
   return [unitsSold, revenue];
 }
