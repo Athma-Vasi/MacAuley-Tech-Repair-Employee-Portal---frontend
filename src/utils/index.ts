@@ -2465,7 +2465,7 @@ function addCommaSeparator(numStr: string | number): string {
   return numStr.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
-function returnToFixedFloat(num: number, precision = 4): number {
+function toFixedFloat(num: number, precision = 4): number {
   return Number(num.toFixed(precision));
 }
 
@@ -2536,7 +2536,7 @@ export {
   returnThemeColors,
   returnTimeRailwayValidationText,
   returnTimeRemaining,
-  returnToFixedFloat,
+  toFixedFloat,
   returnUrlValidationText,
   returnUserDefinedFieldValueValidationText,
   returnUsernameRegexValidationText,

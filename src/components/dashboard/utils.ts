@@ -9,7 +9,7 @@ import {
 } from "simple-statistics";
 
 import { StoreLocation } from "../../types";
-import { returnToFixedFloat, splitCamelCase } from "../../utils";
+import { toFixedFloat, splitCamelCase } from "../../utils";
 import { BarChartData } from "../charts/responsiveBarChart/types";
 import {
   BusinessMetric,
@@ -614,30 +614,25 @@ type ReturnDaysInMonthsInYearsInput = {
   months: Month[];
   monthEnd?: number;
   monthStart?: number;
-  yearEnd: number;
-  yearStart: number;
+  storeLocation: StoreLocation | "All Locations";
+  yearEnd?: number;
+  yearStart?: number;
 };
 /**
  * Generate a map of days in months for a range of years.
- * @param {ReturnDaysInMonthsInYearsInput} options - The options for generating the map.
- * @returns {DaysInMonthsInYears} - A map of days in months for each year.
- *
- * @param {number[]} options.daysPerMonth - The number of days in each month.
- * @param {Month[]} options.months - The months in a year.
- * @param {number} options.monthEnd - The end month (0-11) of the range (default: 11, December).
- * @param {number} options.monthStart - The start month (0-11) of the range (default: 0, January).
- * @param {number} options.yearEnd - The end year of the range.
- * @param {number} options.yearStart - The start year of the range.
- *
- * @throws {RangeError} When `yearStart` is greater than `yearEnd`.
  */
 function returnDaysInMonthsInYears({
   daysPerMonth,
   months,
   monthEnd = 11,
   monthStart = 0,
-  yearEnd,
-  yearStart,
+  storeLocation,
+  yearEnd = new Date().getFullYear(),
+  yearStart = storeLocation === "Calgary"
+    ? 2017
+    : storeLocation === "Vancouver"
+    ? 2019
+    : 2013,
 }: ReturnDaysInMonthsInYearsInput): DaysInMonthsInYears {
   const yearsRange = Array.from(
     { length: yearEnd - yearStart + 1 },
@@ -1831,7 +1826,7 @@ function returnFinancialMetrics({
             );
 
             // daily -> average order value
-            const dailyAverageOrderValue = returnToFixedFloat(
+            const dailyAverageOrderValue = toFixedFloat(
               revenue.total / dailyTransactions
             );
             // daily -> conversion rate
@@ -1840,7 +1835,7 @@ function returnFinancialMetrics({
               year,
               yearConversionRateSpread,
             });
-            dailyConversionRate = returnToFixedFloat(dailyConversionRate);
+            dailyConversionRate = toFixedFloat(dailyConversionRate);
 
             const aggregatedDailyFinancialMetric: DailyFinancialMetric = {
               ...dailyFinancialMetric,
@@ -1903,7 +1898,7 @@ function returnFinancialMetrics({
             (acc, dailyConversionRate) => acc + dailyConversionRate,
             0
           ) / dailyConversionRates.length;
-        monthlyConversionRate = returnToFixedFloat(monthlyConversionRate);
+        monthlyConversionRate = toFixedFloat(monthlyConversionRate);
 
         const [
           // expenses
@@ -1950,9 +1945,7 @@ function returnFinancialMetrics({
           [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         );
 
-        const monthlyNetProfitMargin = returnToFixedFloat(
-          monthlyProfit / monthlyExpenses
-        );
+        const monthlyNetProfitMargin = toFixedFloat(monthlyProfit / monthlyExpenses);
 
         const aggregatedMonthlyFinancialMetric: MonthlyFinancialMetric = {
           ...monthlyFinancialMetric,
@@ -2007,7 +2000,7 @@ function returnFinancialMetrics({
         (acc, monthlyAverageOrderValue) => acc + monthlyAverageOrderValue,
         0
       ) / monthlyAverageOrderValues.length;
-    yearlyAverageOrderValue = returnToFixedFloat(yearlyAverageOrderValue);
+    yearlyAverageOrderValue = toFixedFloat(yearlyAverageOrderValue);
 
     const monthlyConversionRates = aggregatedMonthlyFinancialMetrics.map(
       (monthlyFinancialMetric) => monthlyFinancialMetric.conversionRate
@@ -2017,7 +2010,7 @@ function returnFinancialMetrics({
         (acc, monthlyConversionRate) => acc + monthlyConversionRate,
         0
       ) / monthlyConversionRates.length;
-    yearlyConversionRate = returnToFixedFloat(yearlyConversionRate);
+    yearlyConversionRate = toFixedFloat(yearlyConversionRate);
 
     const [
       // expenses
@@ -2065,7 +2058,7 @@ function returnFinancialMetrics({
       [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     );
 
-    const yearlyNetProfitMargin = returnToFixedFloat(yearlyProfit / yearlyExpenses);
+    const yearlyNetProfitMargin = toFixedFloat(yearlyProfit / yearlyExpenses);
 
     const newFinancialMetric: YearlyFinancialMetric = {
       ...financialMetric,
@@ -2827,7 +2820,7 @@ function returnAllLocationsAggregatedFinancialMetrics(
         const averageConversionRate =
           conversionRates.reduce((acc, conversionRate) => acc + conversionRate, 0) /
           conversionRates.length;
-        existingFinancialMetric.conversionRate = returnToFixedFloat(
+        existingFinancialMetric.conversionRate = toFixedFloat(
           (existingFinancialMetric.conversionRate + averageConversionRate) / 2
         );
 
@@ -2838,7 +2831,7 @@ function returnAllLocationsAggregatedFinancialMetrics(
         const averageNetProfitMargin =
           netProfitMargins.reduce((acc, netProfitMargin) => acc + netProfitMargin, 0) /
           netProfitMargins.length;
-        existingFinancialMetric.netProfitMargin = returnToFixedFloat(
+        existingFinancialMetric.netProfitMargin = toFixedFloat(
           (existingFinancialMetric.netProfitMargin + averageNetProfitMargin) / 2
         );
 
@@ -2938,7 +2931,7 @@ function returnAllLocationsAggregatedFinancialMetrics(
           const averageMonthlyConversionRate =
             conversionRates.reduce((acc, conversionRate) => acc + conversionRate, 0) /
             conversionRates.length;
-          existingMonthlyFinancialMetric.conversionRate = returnToFixedFloat(
+          existingMonthlyFinancialMetric.conversionRate = toFixedFloat(
             (existingMonthlyFinancialMetric.conversionRate +
               averageMonthlyConversionRate) /
               2
@@ -2953,7 +2946,7 @@ function returnAllLocationsAggregatedFinancialMetrics(
               (acc, netProfitMargin) => acc + netProfitMargin,
               0
             ) / averageNetProfitMargins.length;
-          existingMonthlyFinancialMetric.netProfitMargin = returnToFixedFloat(
+          existingMonthlyFinancialMetric.netProfitMargin = toFixedFloat(
             (existingMonthlyFinancialMetric.netProfitMargin +
               averageMonthlyNetProfitMargin) /
               2
@@ -3048,7 +3041,7 @@ function returnAllLocationsAggregatedFinancialMetrics(
             const averageDailyConversionRate =
               conversionRates.reduce((acc, conversionRate) => acc + conversionRate, 0) /
               conversionRates.length;
-            existingDailyFinancialMetric.conversionRate = returnToFixedFloat(
+            existingDailyFinancialMetric.conversionRate = toFixedFloat(
               (existingDailyFinancialMetric.conversionRate + averageDailyConversionRate) /
                 2
             );
@@ -3062,7 +3055,7 @@ function returnAllLocationsAggregatedFinancialMetrics(
                 (acc, netProfitMargin) => acc + netProfitMargin,
                 0
               ) / averageNetProfitMargins.length;
-            existingDailyFinancialMetric.netProfitMargin = returnToFixedFloat(
+            existingDailyFinancialMetric.netProfitMargin = toFixedFloat(
               existingDailyFinancialMetric.netProfitMargin +
                 averageDailyNetProfitMargin / 2
             );
@@ -3911,11 +3904,7 @@ function createRandomBusinessMetrics({
     const daysInMonthsInYears = returnDaysInMonthsInYears({
       daysPerMonth,
       months,
-      yearStart:
-        storeLocation === "Edmonton" ? 2013 : storeLocation === "Calgary" ? 2017 : 2019,
-      yearEnd: 2024,
-      // yearStart: 2019,
-      // yearEnd: 2019,
+      storeLocation,
     });
 
     const createdProductMetrics = returnProductMetrics({

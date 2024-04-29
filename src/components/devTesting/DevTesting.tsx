@@ -27,11 +27,7 @@ import {
   YEAR_UNITS_SOLD_SPREAD,
 } from "./constantsDashboard";
 import { devTestingAction, devTestingReducer, initialDevTestingState } from "./state";
-import {
-  createAggregatedProductMetrics,
-  createAllLocationsAggregatedProductMetrics,
-  createRandomProductMetrics,
-} from "./utilsDashboard";
+import { createRandomBusinessMetrics2 } from "./utilsDashboard";
 
 function DevTesting() {
   const [devTestingState, devTestingDispatch] = useReducer(
@@ -48,30 +44,36 @@ function DevTesting() {
   const { wrappedFetch } = useWrapFetch();
 
   useEffect(() => {
-    console.group("Dev Testing");
+    async function helper() {
+      console.group("Dev Testing");
 
-    const daysInMonthsInYears = returnDaysInMonthsInYears({
-      daysPerMonth: DAYS_PER_MONTH,
-      months: MONTHS,
-      yearStart: 2020,
-      yearEnd: 2022,
-    });
+      console.time("createRandomBusinessMetrics");
+      createRandomBusinessMetrics({
+        daysPerMonth: DAYS_PER_MONTH,
+        months: MONTHS,
+        productCategories: PRODUCT_CATEGORIES,
+        repairCategories: REPAIR_CATEGORIES,
+        storeLocations: STORE_LOCATION_DATA,
+      });
+      console.timeEnd("createRandomBusinessMetrics");
 
-    const productMetrics = createRandomProductMetrics({
-      daysInMonthsInYears,
-      productCategories: PRODUCT_CATEGORIES,
-      storeLocation: "Calgary",
-      yearOnlineTransactionsSpread: YEAR_ONLINE_TRANSACTIONS_SPREAD,
-      yearUnitsSoldSpread: YEAR_UNITS_SOLD_SPREAD,
-    });
+      console.time("createRandomBusinessMetrics2");
+      await createRandomBusinessMetrics2({
+        daysPerMonth: DAYS_PER_MONTH,
+        months: MONTHS,
+        productCategories: PRODUCT_CATEGORIES,
+        repairCategories: REPAIR_CATEGORIES,
+        storeLocations: STORE_LOCATION_DATA,
+      }).then((businessMetrics) => {
+        console.timeEnd("createRandomBusinessMetrics2");
 
-    console.log({ productMetrics });
+        console.log({ businessMetrics });
+      });
 
-    const aggregatedProductMetrics = createAggregatedProductMetrics(productMetrics);
+      console.groupEnd();
+    }
 
-    console.log({ aggregatedProductMetrics });
-
-    console.groupEnd();
+    helper();
   }, []);
 
   useEffect(() => {
