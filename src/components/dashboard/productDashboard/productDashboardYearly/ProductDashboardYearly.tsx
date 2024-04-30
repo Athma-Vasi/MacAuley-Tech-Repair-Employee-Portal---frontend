@@ -1,74 +1,95 @@
-import { MantineNumberSize, Stack } from '@mantine/core';
-import { ChangeEvent, useReducer } from 'react';
-import { LuExpand } from 'react-icons/lu';
-import { useNavigate } from 'react-router-dom';
+import { Stack } from "@mantine/core";
+import { ChangeEvent, useReducer } from "react";
+import { LuExpand } from "react-icons/lu";
+import { useNavigate } from "react-router-dom";
 
-import { globalAction } from '../../../../context/globalProvider/state';
-import { useGlobalState } from '../../../../hooks';
+import { COLORS_SWATCHES } from "../../../../constants/data";
+import { globalAction } from "../../../../context/globalProvider/state";
+import { useGlobalState } from "../../../../hooks";
 import {
   returnAccessibleButtonElements,
   returnAccessibleSelectInputElements,
-} from '../../../../jsxCreators';
-import { addCommaSeparator, splitCamelCase } from '../../../../utils';
+} from "../../../../jsxCreators";
+import { addCommaSeparator, returnThemeColors, splitCamelCase } from "../../../../utils";
 import {
   ResponsiveBarChart,
   ResponsiveLineChart,
   ResponsivePieChart,
-} from '../../../charts';
-import { MONTHS } from '../../constants';
-import DashboardMetricsLayout from '../../DashboardMetricsLayout';
-import { ProductMetricsCards } from '../../jsxHelpers';
-import {
-  BusinessMetric,
-  BusinessMetricStoreLocation,
-  DashboardProductMetric,
-  Year,
-} from '../../types';
-import { returnChartTitleNavigateLinks, returnStatistics } from '../../utils';
-import { PRODUCT_METRIC_LINE_BAR_Y_AXIS_DATA } from '../constants';
+} from "../../../charts";
+import { MONTHS } from "../../constants";
+import DashboardMetricsLayout from "../../DashboardMetricsLayout";
+import { returnProductMetricsCards } from "../../jsxHelpers";
+import { returnChartTitleNavigateLinks, returnStatistics } from "../../utils";
+import { PRODUCT_METRIC_LINE_BAR_Y_AXIS_DATA } from "../constants";
+import { ProductDashboardChildrenProps } from "../types";
 import {
   ProductMetricBarLineChartObjKey,
-  ProductMetricsCharts,
-} from '../utils';
+  returnProductMetricsCharts,
+  returnSelectedDateProductMetrics,
+} from "../utils";
 import {
   initialProductDashboardYearlyState,
   productDashboardYearlyAction,
   productDashboardYearlyReducer,
-} from './state';
+} from "./state";
 
 function ProductDashboardYearly({
-  borderColor,
   businessMetrics,
-  yearlyCards,
-  yearlyCharts,
   day,
-  productMetric,
   month,
-  padding,
+  selectedDate,
+  selectedMonth,
+  selectedYear,
   storeLocation,
-  width,
+  storeLocationView,
   year,
-}: {
-  borderColor: string;
-  businessMetrics: BusinessMetric[];
-  yearlyCards: ProductMetricsCards['yearlyCards'];
-  yearlyCharts: ProductMetricsCharts['yearlyCharts'];
-  day: string;
-  productMetric: DashboardProductMetric;
-  month: string;
-  padding: MantineNumberSize;
-  storeLocation: BusinessMetricStoreLocation;
-  width: number;
-  year: Year;
-}) {
-  const { globalDispatch } = useGlobalState();
+  productMetric,
+}: ProductDashboardChildrenProps) {
+  const {
+    globalState: { padding, width, themeObject },
+    globalDispatch,
+  } = useGlobalState();
+
   const navigate = useNavigate();
 
-  const [productDashboardYearlyState, productDashboardYearlyDispatch] =
-    useReducer(
-      productDashboardYearlyReducer,
-      initialProductDashboardYearlyState
-    );
+  const {
+    appThemeColors: { borderColor },
+    generalColors: { redColorShade, greenColorShade },
+  } = returnThemeColors({
+    colorsSwatches: COLORS_SWATCHES,
+    themeObject,
+  });
+
+  const selectedDateProductMetrics = returnSelectedDateProductMetrics({
+    businessMetrics,
+    day: selectedDate,
+    month: selectedMonth,
+    months: MONTHS,
+    selectedProductCategory: productMetric,
+    storeLocation: storeLocationView,
+    year: selectedYear,
+  });
+
+  const { yearlyCharts } = returnProductMetricsCharts({
+    businessMetrics,
+    months: MONTHS,
+    selectedDateProductMetrics,
+    storeLocation: storeLocationView,
+    selectedProductCategory: productMetric,
+  });
+
+  const { yearlyCards } = returnProductMetricsCards({
+    greenColorShade,
+    padding,
+    redColorShade,
+    selectedDateProductMetrics,
+    width,
+  });
+
+  const [productDashboardYearlyState, productDashboardYearlyDispatch] = useReducer(
+    productDashboardYearlyReducer,
+    initialProductDashboardYearlyState
+  );
 
   const {
     revenueBarChartYAxisVariable,
@@ -93,17 +114,15 @@ function ProductDashboardYearly({
       width < 1200
       ? (width - 225) * 0.8
       : 900 - 40;
-  const chartHeight =
-    width < 1024 ? componentWidth * 0.618 : componentWidth * 0.382;
+  const chartHeight = width < 1024 ? componentWidth * 0.618 : componentWidth * 0.382;
   const chartWidth = componentWidth;
 
   // revenue
 
   // revenue -> statistics
-  const yearlyRevenueStatistics =
-    returnStatistics<ProductMetricBarLineChartObjKey>(
-      yearlyCharts.revenue.barChartsObj
-    );
+  const yearlyRevenueStatistics = returnStatistics<ProductMetricBarLineChartObjKey>(
+    yearlyCharts.revenue.barChartsObj
+  );
 
   // revenue -> charts
 
@@ -116,9 +135,9 @@ function ProductDashboardYearly({
     pieChartHeading: pieChartRevenueHeading,
     expandPieChartNavigateLink: expandPieChartNavigateLinkRevenue,
   } = returnChartTitleNavigateLinks({
-    calendarView: 'Yearly',
-    metricCategory: 'Revenue',
-    metricsView: 'Products',
+    calendarView: "Yearly",
+    metricCategory: "Revenue",
+    metricsView: "Products",
     productMetric,
     storeLocation,
     yAxisBarChartVariable: revenueBarChartYAxisVariable,
@@ -134,17 +153,17 @@ function ProductDashboardYearly({
   // revenue -> charts -> pie -> expand chart button
   const [createdExpandRevenuePieChartButton] = returnAccessibleButtonElements([
     {
-      buttonLabel: 'Expand',
+      buttonLabel: "Expand",
       semanticDescription: `Expand and customize ${pieChartRevenueHeading}`,
-      semanticName: 'Expand Pie Chart',
+      semanticName: "Expand Pie Chart",
       buttonOnClick: () => {
         globalDispatch({
           type: globalAction.setCustomizeChartsPageData,
           payload: {
             chartData: yearlyCharts.revenue.pieChartObj,
             chartTitle: pieChartRevenueHeading,
-            chartKind: 'pie',
-            chartUnitKind: 'currency',
+            chartKind: "pie",
+            chartUnitKind: "currency",
           },
         });
 
@@ -169,18 +188,17 @@ function ProductDashboardYearly({
   // revenue -> charts -> bar -> expand chart button
   const [createdExpandRevenueBarChartButton] = returnAccessibleButtonElements([
     {
-      buttonLabel: 'Expand',
+      buttonLabel: "Expand",
       semanticDescription: `Expand and customize ${revenueBarChartHeading}`,
-      semanticName: 'Expand Bar Chart',
+      semanticName: "Expand Bar Chart",
       buttonOnClick: () => {
         globalDispatch({
           type: globalAction.setCustomizeChartsPageData,
           payload: {
-            chartData:
-              yearlyCharts.revenue.barChartsObj[revenueBarChartYAxisVariable],
+            chartData: yearlyCharts.revenue.barChartsObj[revenueBarChartYAxisVariable],
             chartTitle: revenueBarChartHeading,
-            chartKind: 'bar',
-            chartUnitKind: 'currency',
+            chartKind: "bar",
+            chartUnitKind: "currency",
           },
         });
 
@@ -195,12 +213,11 @@ function ProductDashboardYearly({
     returnAccessibleSelectInputElements([
       {
         data: PRODUCT_METRIC_LINE_BAR_Y_AXIS_DATA,
-        label: 'Y-Axis Bar',
+        label: "Y-Axis Bar",
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           productDashboardYearlyDispatch({
             type: productDashboardYearlyAction.setRevenueBarChartYAxisVariable,
-            payload: event.currentTarget
-              .value as ProductMetricBarLineChartObjKey,
+            payload: event.currentTarget.value as ProductMetricBarLineChartObjKey,
           });
         },
         value: revenueBarChartYAxisVariable,
@@ -212,9 +229,7 @@ function ProductDashboardYearly({
     <ResponsiveBarChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
-      barChartData={
-        yearlyCharts.revenue.barChartsObj[revenueBarChartYAxisVariable]
-      }
+      barChartData={yearlyCharts.revenue.barChartsObj[revenueBarChartYAxisVariable]}
       hideControls
       indexBy="Years"
       keys={PRODUCT_METRIC_LINE_BAR_Y_AXIS_DATA.map((obj) => obj.label)}
@@ -226,18 +241,17 @@ function ProductDashboardYearly({
   // revenue -> charts -> line -> expand chart button
   const [createdExpandRevenueLineChartButton] = returnAccessibleButtonElements([
     {
-      buttonLabel: 'Expand',
+      buttonLabel: "Expand",
       semanticDescription: `Expand and customize ${revenueLineChartHeading}`,
-      semanticName: 'Expand Line Chart',
+      semanticName: "Expand Line Chart",
       buttonOnClick: () => {
         globalDispatch({
           type: globalAction.setCustomizeChartsPageData,
           payload: {
-            chartData:
-              yearlyCharts.revenue.lineChartsObj[revenueLineChartYAxisVariable],
+            chartData: yearlyCharts.revenue.lineChartsObj[revenueLineChartYAxisVariable],
             chartTitle: revenueLineChartHeading,
-            chartKind: 'line',
-            chartUnitKind: 'currency',
+            chartKind: "line",
+            chartUnitKind: "currency",
           },
         });
 
@@ -252,12 +266,11 @@ function ProductDashboardYearly({
     returnAccessibleSelectInputElements([
       {
         data: PRODUCT_METRIC_LINE_BAR_Y_AXIS_DATA,
-        label: 'Y-Axis Line',
+        label: "Y-Axis Line",
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           productDashboardYearlyDispatch({
             type: productDashboardYearlyAction.setRevenueLineChartYAxisVariable,
-            payload: event.currentTarget
-              .value as ProductMetricBarLineChartObjKey,
+            payload: event.currentTarget.value as ProductMetricBarLineChartObjKey,
           });
         },
         value: revenueLineChartYAxisVariable,
@@ -269,9 +282,7 @@ function ProductDashboardYearly({
     <ResponsiveLineChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
-      lineChartData={
-        yearlyCharts.revenue.lineChartsObj[revenueLineChartYAxisVariable]
-      }
+      lineChartData={yearlyCharts.revenue.lineChartsObj[revenueLineChartYAxisVariable]}
       hideControls
       xFormat={(x) => `Year - ${x}`}
       yFormat={(y) => `$${addCommaSeparator(y)}`}
@@ -291,16 +302,12 @@ function ProductDashboardYearly({
       isMoney
       lineChart={displayRevenueLineChart}
       lineChartHeading={revenueLineChartHeading}
-      lineChartYAxisSelectInput={
-        createdRevenueLineChartYAxisVariablesSelectInput
-      }
+      lineChartYAxisSelectInput={createdRevenueLineChartYAxisVariablesSelectInput}
       overviewCards={yearlyCards.revenue}
       padding={padding}
       pieChart={displayPieChart}
       pieChartHeading={pieChartRevenueHeading}
-      sectionHeading={`${splitCamelCase(
-        storeLocation
-      )} Yearly ${productMetric} Revenue`}
+      sectionHeading={`${splitCamelCase(storeLocation)} Yearly ${productMetric} Revenue`}
       semanticLabel={`${productMetric} Revenue`}
       statisticsMap={yearlyRevenueStatistics}
       width={width}
@@ -310,10 +317,9 @@ function ProductDashboardYearly({
   // units sold
 
   // units sold -> statistics
-  const yearlyUnitsSoldStatistics =
-    returnStatistics<ProductMetricBarLineChartObjKey>(
-      yearlyCharts.unitsSold.barChartsObj
-    );
+  const yearlyUnitsSoldStatistics = returnStatistics<ProductMetricBarLineChartObjKey>(
+    yearlyCharts.unitsSold.barChartsObj
+  );
 
   // units sold -> charts
 
@@ -326,9 +332,9 @@ function ProductDashboardYearly({
     pieChartHeading: pieChartUnitsSoldHeading,
     expandPieChartNavigateLink: expandPieChartNavigateLinkUnitsSold,
   } = returnChartTitleNavigateLinks({
-    calendarView: 'Yearly',
-    metricCategory: 'Units Sold',
-    metricsView: 'Products',
+    calendarView: "Yearly",
+    metricCategory: "Units Sold",
+    metricsView: "Products",
     productMetric,
     storeLocation,
     yAxisBarChartVariable: unitsSoldBarChartYAxisVariable,
@@ -342,29 +348,27 @@ function ProductDashboardYearly({
   // units sold -> charts -> pie
 
   // units sold -> charts -> pie -> expand chart button
-  const [createdExpandUnitsSoldPieChartButton] = returnAccessibleButtonElements(
-    [
-      {
-        buttonLabel: 'Expand',
-        semanticDescription: `Expand and customize ${pieChartUnitsSoldHeading}`,
-        semanticName: 'Expand Pie Chart',
-        buttonOnClick: () => {
-          globalDispatch({
-            type: globalAction.setCustomizeChartsPageData,
-            payload: {
-              chartData: yearlyCharts.unitsSold.pieChartObj,
-              chartTitle: pieChartUnitsSoldHeading,
-              chartKind: 'pie',
-              chartUnitKind: 'number',
-            },
-          });
+  const [createdExpandUnitsSoldPieChartButton] = returnAccessibleButtonElements([
+    {
+      buttonLabel: "Expand",
+      semanticDescription: `Expand and customize ${pieChartUnitsSoldHeading}`,
+      semanticName: "Expand Pie Chart",
+      buttonOnClick: () => {
+        globalDispatch({
+          type: globalAction.setCustomizeChartsPageData,
+          payload: {
+            chartData: yearlyCharts.unitsSold.pieChartObj,
+            chartTitle: pieChartUnitsSoldHeading,
+            chartKind: "pie",
+            chartUnitKind: "number",
+          },
+        });
 
-          navigate(expandPieChartNavigateLinkUnitsSold);
-        },
-        leftIcon: <LuExpand />,
+        navigate(expandPieChartNavigateLinkUnitsSold);
       },
-    ]
-  );
+      leftIcon: <LuExpand />,
+    },
+  ]);
 
   // units sold -> charts -> pie -> display
   const displayUnitsSoldPieChart = (
@@ -380,44 +384,39 @@ function ProductDashboardYearly({
   // units sold -> charts -> bar
 
   // units sold -> charts -> bar -> expand chart button
-  const [createdExpandUnitsSoldBarChartButton] = returnAccessibleButtonElements(
-    [
-      {
-        buttonLabel: 'Expand',
-        semanticDescription: `Expand and customize ${barChartUnitsSoldHeading}`,
-        semanticName: 'Expand Bar Chart',
-        buttonOnClick: () => {
-          globalDispatch({
-            type: globalAction.setCustomizeChartsPageData,
-            payload: {
-              chartData:
-                yearlyCharts.unitsSold.barChartsObj[
-                  unitsSoldBarChartYAxisVariable
-                ],
-              chartTitle: barChartUnitsSoldHeading,
-              chartKind: 'bar',
-              chartUnitKind: 'number',
-            },
-          });
+  const [createdExpandUnitsSoldBarChartButton] = returnAccessibleButtonElements([
+    {
+      buttonLabel: "Expand",
+      semanticDescription: `Expand and customize ${barChartUnitsSoldHeading}`,
+      semanticName: "Expand Bar Chart",
+      buttonOnClick: () => {
+        globalDispatch({
+          type: globalAction.setCustomizeChartsPageData,
+          payload: {
+            chartData:
+              yearlyCharts.unitsSold.barChartsObj[unitsSoldBarChartYAxisVariable],
+            chartTitle: barChartUnitsSoldHeading,
+            chartKind: "bar",
+            chartUnitKind: "number",
+          },
+        });
 
-          navigate(expandBarChartNavigateLinkUnitsSold);
-        },
-        leftIcon: <LuExpand />,
+        navigate(expandBarChartNavigateLinkUnitsSold);
       },
-    ]
-  );
+      leftIcon: <LuExpand />,
+    },
+  ]);
 
   // units sold -> charts -> bar -> y-axis select input
   const [createdUnitsSoldBarChartYAxisVariablesSelectInput] =
     returnAccessibleSelectInputElements([
       {
         data: PRODUCT_METRIC_LINE_BAR_Y_AXIS_DATA,
-        label: 'Y-Axis Bar',
+        label: "Y-Axis Bar",
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           productDashboardYearlyDispatch({
             type: productDashboardYearlyAction.setUnitsSoldBarChartYAxisVariable,
-            payload: event.currentTarget
-              .value as ProductMetricBarLineChartObjKey,
+            payload: event.currentTarget.value as ProductMetricBarLineChartObjKey,
           });
         },
         value: unitsSoldBarChartYAxisVariable,
@@ -429,9 +428,7 @@ function ProductDashboardYearly({
     <ResponsiveBarChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
-      barChartData={
-        yearlyCharts.unitsSold.barChartsObj[unitsSoldBarChartYAxisVariable]
-      }
+      barChartData={yearlyCharts.unitsSold.barChartsObj[unitsSoldBarChartYAxisVariable]}
       hideControls
       indexBy="Years"
       keys={PRODUCT_METRIC_LINE_BAR_Y_AXIS_DATA.map((obj) => obj.label)}
@@ -442,43 +439,39 @@ function ProductDashboardYearly({
   // units sold -> charts -> line
 
   // units sold -> charts -> line -> expand chart button
-  const [createdExpandUnitsSoldLineChartButton] =
-    returnAccessibleButtonElements([
-      {
-        buttonLabel: 'Expand',
-        semanticDescription: `Expand and customize ${lineChartUnitsSoldHeading}`,
-        semanticName: 'Expand Line Chart',
-        buttonOnClick: () => {
-          globalDispatch({
-            type: globalAction.setCustomizeChartsPageData,
-            payload: {
-              chartData:
-                yearlyCharts.unitsSold.lineChartsObj[
-                  unitsSoldLineChartYAxisVariable
-                ],
-              chartTitle: lineChartUnitsSoldHeading,
-              chartKind: 'line',
-              chartUnitKind: 'number',
-            },
-          });
+  const [createdExpandUnitsSoldLineChartButton] = returnAccessibleButtonElements([
+    {
+      buttonLabel: "Expand",
+      semanticDescription: `Expand and customize ${lineChartUnitsSoldHeading}`,
+      semanticName: "Expand Line Chart",
+      buttonOnClick: () => {
+        globalDispatch({
+          type: globalAction.setCustomizeChartsPageData,
+          payload: {
+            chartData:
+              yearlyCharts.unitsSold.lineChartsObj[unitsSoldLineChartYAxisVariable],
+            chartTitle: lineChartUnitsSoldHeading,
+            chartKind: "line",
+            chartUnitKind: "number",
+          },
+        });
 
-          navigate(expandLineChartNavigateLinkUnitsSold);
-        },
-        leftIcon: <LuExpand />,
+        navigate(expandLineChartNavigateLinkUnitsSold);
       },
-    ]);
+      leftIcon: <LuExpand />,
+    },
+  ]);
 
   // units sold -> charts -> line -> y-axis select input
   const [createdUnitsSoldLineChartYAxisVariablesSelectInput] =
     returnAccessibleSelectInputElements([
       {
         data: PRODUCT_METRIC_LINE_BAR_Y_AXIS_DATA,
-        label: 'Y-Axis Line',
+        label: "Y-Axis Line",
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           productDashboardYearlyDispatch({
             type: productDashboardYearlyAction.setUnitsSoldLineChartYAxisVariable,
-            payload: event.currentTarget
-              .value as ProductMetricBarLineChartObjKey,
+            payload: event.currentTarget.value as ProductMetricBarLineChartObjKey,
           });
         },
         value: unitsSoldLineChartYAxisVariable,
@@ -505,18 +498,14 @@ function ProductDashboardYearly({
     <DashboardMetricsLayout
       barChart={displayUnitsSoldBarChart}
       barChartHeading={barChartUnitsSoldHeading}
-      barChartYAxisSelectInput={
-        createdUnitsSoldBarChartYAxisVariablesSelectInput
-      }
+      barChartYAxisSelectInput={createdUnitsSoldBarChartYAxisVariablesSelectInput}
       borderColor={borderColor}
       expandBarChartButton={createdExpandUnitsSoldBarChartButton}
       expandLineChartButton={createdExpandUnitsSoldLineChartButton}
       expandPieChartButton={createdExpandUnitsSoldPieChartButton}
       lineChart={displayUnitsSoldLineChart}
       lineChartHeading={lineChartUnitsSoldHeading}
-      lineChartYAxisSelectInput={
-        createdUnitsSoldLineChartYAxisVariablesSelectInput
-      }
+      lineChartYAxisSelectInput={createdUnitsSoldLineChartYAxisVariablesSelectInput}
       overviewCards={yearlyCards.unitsSold}
       padding={padding}
       pieChart={displayUnitsSoldPieChart}
