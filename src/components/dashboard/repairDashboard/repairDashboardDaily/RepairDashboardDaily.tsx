@@ -1,77 +1,68 @@
-import { MantineNumberSize, Stack } from '@mantine/core';
-import { ChangeEvent, useReducer } from 'react';
-import { LuExpand } from 'react-icons/lu';
-import { useNavigate } from 'react-router-dom';
+import { Stack } from "@mantine/core";
+import { ChangeEvent, useReducer } from "react";
+import { LuExpand } from "react-icons/lu";
+import { useNavigate } from "react-router-dom";
 
-import { globalAction } from '../../../../context/globalProvider/state';
-import { useGlobalState } from '../../../../hooks';
+import { COLORS_SWATCHES } from "../../../../constants/data";
+import { globalAction } from "../../../../context/globalProvider/state";
+import { useGlobalState } from "../../../../hooks";
 import {
   returnAccessibleButtonElements,
   returnAccessibleSelectInputElements,
-} from '../../../../jsxCreators';
-import { addCommaSeparator, splitCamelCase } from '../../../../utils';
+} from "../../../../jsxCreators";
+import { addCommaSeparator, returnThemeColors, splitCamelCase } from "../../../../utils";
 import {
   ResponsiveBarChart,
   ResponsiveCalendarChart,
   ResponsiveLineChart,
-} from '../../../charts';
-import { MONTHS } from '../../constants';
-import DashboardMetricsLayout from '../../DashboardMetricsLayout';
-import { RepairMetricsCards } from '../../jsxHelpers';
+} from "../../../charts";
+import { MONTHS } from "../../constants";
+import DashboardMetricsLayout from "../../DashboardMetricsLayout";
+import { returnRepairMetricsCards } from "../../jsxHelpers";
+import { returnChartTitleNavigateLinks, returnStatistics } from "../../utils";
+import { REPAIR_METRIC_Y_AXIS_DATA } from "../constants";
+import { RepairDashboardChildrenProps } from "../types";
 import {
-  BusinessMetric,
-  BusinessMetricStoreLocation,
-  DashboardRepairMetric,
-  Year,
-} from '../../types';
-import { returnChartTitleNavigateLinks, returnStatistics } from '../../utils';
-import { REPAIR_METRIC_Y_AXIS_DATA } from '../constants';
-import { RepairMetricChartsObjKey, RepairMetricsCharts } from '../utils';
-import {
-  initialRepairDashboardDailyState,
-  repairDashboardDailyReducer,
-} from './state';
+  RepairMetricChartsObjKey,
+  returnRepairMetricsCharts,
+  returnSelectedDateRepairMetrics,
+} from "../utils";
+import { initialRepairDashboardDailyState, repairDashboardDailyReducer } from "./state";
 
 function RepairDashboardDaily({
-  borderColor,
   businessMetrics,
-  dailyCards,
-  dailyCharts,
   day,
-  repairMetric,
   month,
-  padding,
+  repairMetric,
   storeLocation,
-  width,
   year,
-}: {
-  borderColor: string;
-  businessMetrics: BusinessMetric[];
-  dailyCards: RepairMetricsCards['dailyCards'];
-  dailyCharts: RepairMetricsCharts['dailyCharts'];
-  day: string;
-  repairMetric: DashboardRepairMetric;
-  month: string;
-  padding: MantineNumberSize;
-  storeLocation: BusinessMetricStoreLocation;
-  width: number;
-  year: Year;
-}) {
-  const { globalDispatch } = useGlobalState();
+  selectedDate,
+  selectedMonth,
+  selectedYear,
+  storeLocationView,
+}: RepairDashboardChildrenProps) {
+  const {
+    globalState: { padding, width, themeObject },
+    globalDispatch,
+  } = useGlobalState();
+
   const navigate = useNavigate();
 
-  const [repairDashboardDailyState, dispatchRepairDashboardDailyState] =
-    useReducer(repairDashboardDailyReducer, initialRepairDashboardDailyState);
+  const [repairDashboardDailyState, dispatchRepairDashboardDailyState] = useReducer(
+    repairDashboardDailyReducer,
+    initialRepairDashboardDailyState
+  );
+
+  const { barChartYAxisVariable, calendarChartYAxisVariable, lineChartYAxisVariable } =
+    repairDashboardDailyState;
 
   const {
-    barChartYAxisVariable,
-    calendarChartYAxisVariable,
-    lineChartYAxisVariable,
-  } = repairDashboardDailyState;
-
-  if (!businessMetrics.length) {
-    return null;
-  }
+    appThemeColors: { borderColor },
+    generalColors: { redColorShade, greenColorShade },
+  } = returnThemeColors({
+    colorsSwatches: COLORS_SWATCHES,
+    themeObject,
+  });
 
   const componentWidth =
     width < 480 // for iPhone 5/SE
@@ -85,9 +76,34 @@ function RepairDashboardDaily({
       width < 1200
       ? (width - 225) * 0.8
       : 900 - 40;
-  const chartHeight =
-    width < 1024 ? componentWidth * 0.618 : componentWidth * 0.382;
+  const chartHeight = width < 1024 ? componentWidth * 0.618 : componentWidth * 0.382;
   const chartWidth = componentWidth;
+
+  const selectedDateRepairMetrics = returnSelectedDateRepairMetrics({
+    businessMetrics,
+    day: selectedDate,
+    month: selectedMonth,
+    months: MONTHS,
+    selectedRepairCategory: repairMetric,
+    storeLocation: storeLocationView,
+    year: selectedYear,
+  });
+
+  const { dailyCharts } = returnRepairMetricsCharts({
+    businessMetrics,
+    months: MONTHS,
+    selectedDateRepairMetrics,
+    storeLocation: storeLocationView,
+    selectedRepairCategory: repairMetric,
+  });
+
+  const { dailyCards } = returnRepairMetricsCards({
+    greenColorShade,
+    padding,
+    redColorShade,
+    selectedDateRepairMetrics,
+    width,
+  });
 
   // statistics
   const dailyStatistics = returnStatistics<RepairMetricChartsObjKey>(
@@ -105,9 +121,9 @@ function RepairDashboardDaily({
     expandLineChartNavigateLink,
     lineChartHeading,
   } = returnChartTitleNavigateLinks({
-    calendarView: 'Daily',
+    calendarView: "Daily",
     metricCategory: splitCamelCase(repairMetric),
-    metricsView: 'Repairs',
+    metricsView: "Repairs",
     // repairMetric,
     storeLocation,
     yAxisBarChartVariable: barChartYAxisVariable,
@@ -124,18 +140,17 @@ function RepairDashboardDaily({
   // charts -> bar -> expand chart button
   const [createdExpandChartButton] = returnAccessibleButtonElements([
     {
-      buttonLabel: 'Expand',
+      buttonLabel: "Expand",
       semanticDescription: `Expand and customize ${barChartHeading}`,
-      semanticName: 'Expand Bar Chart',
+      semanticName: "Expand Bar Chart",
       buttonOnClick: () => {
         globalDispatch({
           type: globalAction.setCustomizeChartsPageData,
           payload: {
             chartData: dailyCharts.barChartsObj[barChartYAxisVariable],
             chartTitle: barChartHeading,
-            chartKind: 'bar',
-            chartUnitKind:
-              barChartYAxisVariable === 'revenue' ? 'currency' : 'number',
+            chartKind: "bar",
+            chartUnitKind: barChartYAxisVariable === "revenue" ? "currency" : "number",
           },
         });
 
@@ -146,20 +161,19 @@ function RepairDashboardDaily({
   ]);
 
   // charts -> bar -> y-axis select input
-  const [createdBarChartYAxisVariablesSelectInput] =
-    returnAccessibleSelectInputElements([
-      {
-        data: REPAIR_METRIC_Y_AXIS_DATA,
-        label: 'Y-Axis Bar',
-        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-          dispatchRepairDashboardDailyState({
-            type: 'setBarChartYAxisVariable',
-            payload: event.currentTarget.value as RepairMetricChartsObjKey,
-          });
-        },
-        value: barChartYAxisVariable,
+  const [createdBarChartYAxisVariablesSelectInput] = returnAccessibleSelectInputElements([
+    {
+      data: REPAIR_METRIC_Y_AXIS_DATA,
+      label: "Y-Axis Bar",
+      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+        dispatchRepairDashboardDailyState({
+          type: "setBarChartYAxisVariable",
+          payload: event.currentTarget.value as RepairMetricChartsObjKey,
+        });
       },
-    ]);
+      value: barChartYAxisVariable,
+    },
+  ]);
 
   // charts -> bar -> display
   const displayBarChart = (
@@ -170,7 +184,7 @@ function RepairDashboardDaily({
       hideControls
       indexBy="Days"
       keys={REPAIR_METRIC_Y_AXIS_DATA.map((obj) => obj.label)}
-      unitKind={barChartYAxisVariable === 'revenue' ? 'currency' : 'number'}
+      unitKind={barChartYAxisVariable === "revenue" ? "currency" : "number"}
     />
   );
 
@@ -179,18 +193,17 @@ function RepairDashboardDaily({
   // charts -> line -> expand chart button
   const [createdExpandLineChartButton] = returnAccessibleButtonElements([
     {
-      buttonLabel: 'Expand',
+      buttonLabel: "Expand",
       semanticDescription: `Expand and customize ${lineChartHeading}`,
-      semanticName: 'Expand Line Chart',
+      semanticName: "Expand Line Chart",
       buttonOnClick: () => {
         globalDispatch({
           type: globalAction.setCustomizeChartsPageData,
           payload: {
             chartData: dailyCharts.lineChartsObj[lineChartYAxisVariable],
             chartTitle: lineChartHeading,
-            chartKind: 'line',
-            chartUnitKind:
-              lineChartYAxisVariable === 'revenue' ? 'currency' : 'number',
+            chartKind: "line",
+            chartUnitKind: lineChartYAxisVariable === "revenue" ? "currency" : "number",
           },
         });
 
@@ -201,20 +214,21 @@ function RepairDashboardDaily({
   ]);
 
   // charts -> line -> y-axis select input
-  const [createdLineChartYAxisVariablesSelectInput] =
-    returnAccessibleSelectInputElements([
+  const [createdLineChartYAxisVariablesSelectInput] = returnAccessibleSelectInputElements(
+    [
       {
         data: REPAIR_METRIC_Y_AXIS_DATA,
-        label: 'Y-Axis Line',
+        label: "Y-Axis Line",
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           dispatchRepairDashboardDailyState({
-            type: 'setLineChartYAxisVariable',
+            type: "setLineChartYAxisVariable",
             payload: event.currentTarget.value as RepairMetricChartsObjKey,
           });
         },
         value: lineChartYAxisVariable,
       },
-    ]);
+    ]
+  );
 
   // charts -> line -> display
   const displayLineChart = (
@@ -225,11 +239,9 @@ function RepairDashboardDaily({
       hideControls
       xFormat={(x) => `Day - ${x}`}
       yFormat={(y) =>
-        `${lineChartYAxisVariable === 'revenue' ? '$' : ''}${addCommaSeparator(
-          y
-        )}`
+        `${lineChartYAxisVariable === "revenue" ? "$" : ""}${addCommaSeparator(y)}`
       }
-      unitKind={lineChartYAxisVariable === 'revenue' ? 'currency' : 'number'}
+      unitKind={lineChartYAxisVariable === "revenue" ? "currency" : "number"}
     />
   );
 
@@ -238,19 +250,18 @@ function RepairDashboardDaily({
   // charts -> calendar -> expand chart button
   const [createdExpandCalendarChartButton] = returnAccessibleButtonElements([
     {
-      buttonLabel: 'Expand',
+      buttonLabel: "Expand",
       semanticDescription: `Expand and customize ${calendarChartHeading}`,
-      semanticName: 'Expand Calendar Chart',
+      semanticName: "Expand Calendar Chart",
       buttonOnClick: () => {
         globalDispatch({
           type: globalAction.setCustomizeChartsPageData,
           payload: {
-            chartData:
-              dailyCharts.calendarChartsObj[calendarChartYAxisVariable],
+            chartData: dailyCharts.calendarChartsObj[calendarChartYAxisVariable],
             chartTitle: calendarChartHeading,
-            chartKind: 'calendar',
+            chartKind: "calendar",
             chartUnitKind:
-              calendarChartYAxisVariable === 'revenue' ? 'currency' : 'number',
+              calendarChartYAxisVariable === "revenue" ? "currency" : "number",
           },
         });
 
@@ -265,10 +276,10 @@ function RepairDashboardDaily({
     returnAccessibleSelectInputElements([
       {
         data: REPAIR_METRIC_Y_AXIS_DATA,
-        label: 'Y-Axis Calendar',
+        label: "Y-Axis Calendar",
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           dispatchRepairDashboardDailyState({
-            type: 'setCalendarChartYAxisVariable',
+            type: "setCalendarChartYAxisVariable",
             payload: event.currentTarget.value as RepairMetricChartsObjKey,
           });
         },
@@ -279,9 +290,7 @@ function RepairDashboardDaily({
   // charts -> calendar -> display
   const displayCalendarChart = (
     <ResponsiveCalendarChart
-      calendarChartData={
-        dailyCharts.calendarChartsObj[calendarChartYAxisVariable]
-      }
+      calendarChartData={dailyCharts.calendarChartsObj[calendarChartYAxisVariable]}
       chartHeight={chartHeight}
       chartWidth={chartWidth}
       from={`${year}-${month}-01`}
@@ -311,15 +320,11 @@ function RepairDashboardDaily({
       width={width}
       calendarChart={displayCalendarChart}
       calendarChartHeading={calendarChartHeading}
-      calendarChartYAxisSelectInput={
-        createdCalendarChartYAxisVariablesSelectInput
-      }
+      calendarChartYAxisSelectInput={createdCalendarChartYAxisVariablesSelectInput}
     />
   );
 
-  const displayRepairDashboardDaily = (
-    <Stack>{displayRepairMetricsSection}</Stack>
-  );
+  const displayRepairDashboardDaily = <Stack>{displayRepairMetricsSection}</Stack>;
 
   return displayRepairDashboardDaily;
 }
