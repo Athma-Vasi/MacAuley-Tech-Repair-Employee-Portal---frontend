@@ -5,13 +5,7 @@ import { useGlobalState } from "../../../../hooks";
 import { returnThemeColors } from "../../../../utils";
 import { MONTHS } from "../../constants";
 import { returnFinancialMetricsCards } from "../../jsxHelpers";
-import {
-  BusinessMetric,
-  BusinessMetricStoreLocation,
-  DashboardFinancialMetric,
-  Month,
-  Year,
-} from "../../types";
+import { FinancialDashboardChildrenProps } from "../types";
 import {
   returnFinancialMetricsCharts,
   returnSelectedDateFinancialMetrics,
@@ -33,18 +27,7 @@ function FinancialDashboardMonthly({
   storeLocation,
   storeLocationView,
   year,
-}: {
-  businessMetrics: BusinessMetric[];
-  day: string;
-  financialMetric: DashboardFinancialMetric;
-  month: string;
-  selectedDate: string;
-  selectedMonth: Month;
-  selectedYear: Year;
-  storeLocation: BusinessMetricStoreLocation;
-  storeLocationView: BusinessMetricStoreLocation;
-  year: Year;
-}) {
+}: FinancialDashboardChildrenProps) {
   const {
     globalState: { padding, width, themeObject },
   } = useGlobalState();
