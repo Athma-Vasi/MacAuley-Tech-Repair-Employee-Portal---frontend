@@ -1,36 +1,33 @@
-import { MantineNumberSize } from '@mantine/core';
-import { ChangeEvent, useReducer } from 'react';
-import { LuExpand } from 'react-icons/lu';
-import { useNavigate } from 'react-router-dom';
+import { MantineNumberSize } from "@mantine/core";
+import { ChangeEvent, useReducer } from "react";
+import { LuExpand } from "react-icons/lu";
+import { useNavigate } from "react-router-dom";
 
-import { globalAction } from '../../../../../context/globalProvider/state';
-import { useGlobalState } from '../../../../../hooks';
+import { globalAction } from "../../../../../context/globalProvider/state";
+import { useGlobalState } from "../../../../../hooks";
 import {
   returnAccessibleButtonElements,
   returnAccessibleSelectInputElements,
-} from '../../../../../jsxCreators';
-import { addCommaSeparator } from '../../../../../utils';
+} from "../../../../../jsxCreators";
+import { addCommaSeparator } from "../../../../../utils";
 import {
   ResponsiveBarChart,
   ResponsiveCalendarChart,
   ResponsiveLineChart,
   ResponsivePieChart,
-} from '../../../../charts';
-import { MONTHS } from '../../../constants';
-import DashboardMetricsLayout from '../../../DashboardMetricsLayout';
-import { CustomerMetricsCards } from '../../../jsxHelpers';
-import { BusinessMetricStoreLocation, Year } from '../../../types';
-import {
-  returnChartTitleNavigateLinks,
-  returnStatistics,
-} from '../../../utils';
-import { CUSTOMER_OVERVIEW_Y_AXIS_DATA } from '../../constants';
-import { CustomerMetricsCharts, CustomerOverviewObjKey } from '../../utils';
+} from "../../../../charts";
+import { MONTHS } from "../../../constants";
+import DashboardMetricsLayout from "../../../DashboardMetricsLayout";
+import { CustomerMetricsCards } from "../../../jsxHelpers";
+import { BusinessMetricStoreLocation, Year } from "../../../types";
+import { returnChartTitleNavigateLinks, returnStatistics } from "../../../utils";
+import { CUSTOMER_OVERVIEW_Y_AXIS_DATA } from "../../constants";
+import { CustomerMetricsCharts, CustomerOverviewObjKey } from "../../utils";
 import {
   customerDashboardDailyOverviewAction,
   customerDashboardDailyOverviewReducer,
   initialCustomerDashboardDailyOverviewState,
-} from './state';
+} from "./state";
 
 function CustomerDashboardDailyOverview({
   borderColor,
@@ -48,8 +45,8 @@ function CustomerDashboardDailyOverview({
   borderColor: string;
   chartHeight: number;
   chartWidth: number;
-  dailyCardsOverview: CustomerMetricsCards['dailyCards']['overview'];
-  dailyChartsOverview: CustomerMetricsCharts['dailyCharts']['overview'];
+  dailyCardsOverview: CustomerMetricsCards["dailyCards"]["overview"];
+  dailyChartsOverview: CustomerMetricsCharts["dailyCharts"]["overview"];
   day: string;
   month: string;
   padding: MantineNumberSize;
@@ -60,13 +57,11 @@ function CustomerDashboardDailyOverview({
   const { globalDispatch } = useGlobalState();
   const navigate = useNavigate();
 
-  const [
-    customerDashboardDailyOverviewState,
-    customerDashboardDailyOverviewDispatch,
-  ] = useReducer(
-    customerDashboardDailyOverviewReducer,
-    initialCustomerDashboardDailyOverviewState
-  );
+  const [customerDashboardDailyOverviewState, customerDashboardDailyOverviewDispatch] =
+    useReducer(
+      customerDashboardDailyOverviewReducer,
+      initialCustomerDashboardDailyOverviewState
+    );
 
   const {
     overviewBarChartYAxisVariable,
@@ -92,9 +87,9 @@ function CustomerDashboardDailyOverview({
     lineChartHeading,
     pieChartHeading,
   } = returnChartTitleNavigateLinks({
-    calendarView: 'Daily',
-    metricCategory: 'Overview',
-    metricsView: 'Customers',
+    calendarView: "Daily",
+    metricCategory: "Overview",
+    metricsView: "Customers",
     storeLocation,
     yAxisBarChartVariable: overviewBarChartYAxisVariable,
     yAxisCalendarChartVariable: overviewCalendarChartYAxisVariable,
@@ -110,17 +105,17 @@ function CustomerDashboardDailyOverview({
   // overview -> charts -> pie -> expand chart button
   const [createdExpandPieChartButton] = returnAccessibleButtonElements([
     {
-      buttonLabel: 'Expand',
+      buttonLabel: "Expand",
       semanticDescription: `Expand and customize ${pieChartHeading}`,
-      semanticName: 'Expand Pie Chart',
+      semanticName: "Expand Pie Chart",
       buttonOnClick: () => {
         globalDispatch({
           type: globalAction.setCustomizeChartsPageData,
           payload: {
-            chartKind: 'pie',
+            chartKind: "pie",
             chartData: dailyChartsOverview.pieChartObj,
             chartTitle: pieChartHeading,
-            chartUnitKind: 'number',
+            chartUnitKind: "number",
           },
         });
 
@@ -146,18 +141,17 @@ function CustomerDashboardDailyOverview({
   // overview -> charts -> bar -> expand chart button
   const [createdExpandBarChartButton] = returnAccessibleButtonElements([
     {
-      buttonLabel: 'Expand',
+      buttonLabel: "Expand",
       semanticDescription: `Expand and customize ${barChartHeading}`,
-      semanticName: 'Expand Bar Chart',
+      semanticName: "Expand Bar Chart",
       buttonOnClick: () => {
         globalDispatch({
           type: globalAction.setCustomizeChartsPageData,
           payload: {
-            chartKind: 'bar',
-            chartData:
-              dailyChartsOverview.barChartsObj[overviewBarChartYAxisVariable],
+            chartKind: "bar",
+            chartData: dailyChartsOverview.barChartsObj[overviewBarChartYAxisVariable],
             chartTitle: barChartHeading,
-            chartUnitKind: 'number',
+            chartUnitKind: "number",
           },
         });
 
@@ -172,7 +166,7 @@ function CustomerDashboardDailyOverview({
     returnAccessibleSelectInputElements([
       {
         data: CUSTOMER_OVERVIEW_Y_AXIS_DATA,
-        label: 'Y-Axis Bar',
+        label: "Y-Axis Bar",
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           customerDashboardDailyOverviewDispatch({
             type: customerDashboardDailyOverviewAction.setOverviewBarChartYAxisVariable,
@@ -188,9 +182,7 @@ function CustomerDashboardDailyOverview({
     <ResponsiveBarChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
-      barChartData={
-        dailyChartsOverview.barChartsObj[overviewBarChartYAxisVariable]
-      }
+      barChartData={dailyChartsOverview.barChartsObj[overviewBarChartYAxisVariable]}
       hideControls
       indexBy="Days"
       keys={CUSTOMER_OVERVIEW_Y_AXIS_DATA.map((obj) => obj.label)}
@@ -203,18 +195,17 @@ function CustomerDashboardDailyOverview({
   // overview -> charts -> line -> expand chart button
   const [createdExpandLineChartButton] = returnAccessibleButtonElements([
     {
-      buttonLabel: 'Expand',
+      buttonLabel: "Expand",
       semanticDescription: `Expand and customize ${lineChartHeading}`,
-      semanticName: 'Expand Line Chart',
+      semanticName: "Expand Line Chart",
       buttonOnClick: () => {
         globalDispatch({
           type: globalAction.setCustomizeChartsPageData,
           payload: {
-            chartKind: 'line',
-            chartData:
-              dailyChartsOverview.lineChartsObj[overviewLineChartYAxisVariable],
+            chartKind: "line",
+            chartData: dailyChartsOverview.lineChartsObj[overviewLineChartYAxisVariable],
             chartTitle: lineChartHeading,
-            chartUnitKind: 'number',
+            chartUnitKind: "number",
           },
         });
 
@@ -229,7 +220,7 @@ function CustomerDashboardDailyOverview({
     returnAccessibleSelectInputElements([
       {
         data: CUSTOMER_OVERVIEW_Y_AXIS_DATA,
-        label: 'Y-Axis Line',
+        label: "Y-Axis Line",
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           customerDashboardDailyOverviewDispatch({
             type: customerDashboardDailyOverviewAction.setOverviewLineChartYAxisVariable,
@@ -245,9 +236,7 @@ function CustomerDashboardDailyOverview({
     <ResponsiveLineChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
-      lineChartData={
-        dailyChartsOverview.lineChartsObj[overviewLineChartYAxisVariable]
-      }
+      lineChartData={dailyChartsOverview.lineChartsObj[overviewLineChartYAxisVariable]}
       hideControls
       xFormat={(x) => `Day - ${x}`}
       yFormat={(y) => `${addCommaSeparator(y)} Customers`}
@@ -260,20 +249,18 @@ function CustomerDashboardDailyOverview({
   // overview -> charts -> calendar -> expand chart button
   const [createdExpandCalendarChartButton] = returnAccessibleButtonElements([
     {
-      buttonLabel: 'Expand',
+      buttonLabel: "Expand",
       semanticDescription: `Expand and customize ${calendarChartHeading}`,
-      semanticName: 'Expand Calendar Chart',
+      semanticName: "Expand Calendar Chart",
       buttonOnClick: () => {
         globalDispatch({
           type: globalAction.setCustomizeChartsPageData,
           payload: {
-            chartKind: 'calendar',
+            chartKind: "calendar",
             chartData:
-              dailyChartsOverview.calendarChartsObj[
-                overviewCalendarChartYAxisVariable
-              ],
+              dailyChartsOverview.calendarChartsObj[overviewCalendarChartYAxisVariable],
             chartTitle: calendarChartHeading,
-            chartUnitKind: 'number',
+            chartUnitKind: "number",
           },
         });
 
@@ -288,7 +275,7 @@ function CustomerDashboardDailyOverview({
     returnAccessibleSelectInputElements([
       {
         data: CUSTOMER_OVERVIEW_Y_AXIS_DATA,
-        label: 'Y-Axis Calendar',
+        label: "Y-Axis Calendar",
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           customerDashboardDailyOverviewDispatch({
             type: customerDashboardDailyOverviewAction.setOverviewCalendarChartYAxisVariable,
@@ -303,9 +290,7 @@ function CustomerDashboardDailyOverview({
   const displayOverviewCalendarChart = (
     <ResponsiveCalendarChart
       calendarChartData={
-        dailyChartsOverview.calendarChartsObj[
-          overviewCalendarChartYAxisVariable
-        ]
+        dailyChartsOverview.calendarChartsObj[overviewCalendarChartYAxisVariable]
       }
       chartHeight={chartHeight}
       chartWidth={chartWidth}
@@ -319,9 +304,7 @@ function CustomerDashboardDailyOverview({
     <DashboardMetricsLayout
       barChart={displayOverviewBarChart}
       barChartHeading={barChartHeading}
-      barChartYAxisSelectInput={
-        createdOverviewBarChartYAxisVariablesSelectInput
-      }
+      barChartYAxisSelectInput={createdOverviewBarChartYAxisVariablesSelectInput}
       borderColor={borderColor}
       expandBarChartButton={createdExpandBarChartButton}
       expandLineChartButton={createdExpandLineChartButton}
@@ -329,9 +312,7 @@ function CustomerDashboardDailyOverview({
       expandPieChartButton={createdExpandPieChartButton}
       lineChart={displayOverviewLineChart}
       lineChartHeading={lineChartHeading}
-      lineChartYAxisSelectInput={
-        createdOverviewLineChartYAxisVariablesSelectInput
-      }
+      lineChartYAxisSelectInput={createdOverviewLineChartYAxisVariablesSelectInput}
       overviewCards={dailyCardsOverview}
       padding={padding}
       pieChart={displayOverviewPieChart}

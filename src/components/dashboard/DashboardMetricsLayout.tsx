@@ -8,11 +8,11 @@ import {
   Text,
   Title,
   Tooltip,
-} from '@mantine/core';
+} from "@mantine/core";
 
-import { addCommaSeparator } from '../../utils';
-import { DashboardCardInfo, returnDashboardCardElement } from './jsxHelpers';
-import { StatisticsObject } from './utils';
+import { addCommaSeparator } from "../../utils";
+import { DashboardCardInfo, returnDashboardCardElement } from "./jsxHelpers";
+import { StatisticsObject } from "./utils";
 
 type DashboardMetricsLayoutProps<MetricObjKey extends string = string> = {
   barChart: React.JSX.Element;
@@ -63,7 +63,7 @@ function DashboardMetricsLayout({
   pieChartHeading,
   pieChartYAxisSelectInput,
   sectionHeading,
-  semanticLabel = 'customers',
+  semanticLabel = "customers",
   statisticsMap,
   width,
 }: DashboardMetricsLayoutProps) {
@@ -225,9 +225,7 @@ function DashboardMetricsLayout({
         } = statisticsObject;
 
         const unitSymbol =
-          isMoney || key === 'Revenue' || key === 'Average Order Value'
-            ? '$'
-            : '';
+          isMoney || key === "Revenue" || key === "Average Order Value" ? "$" : "";
 
         const statisticsAccordion = (
           <Accordion

@@ -5,7 +5,6 @@ const initialSelectedMonth = (new Date().getMonth() + 1).toString().padStart(2, 
 const initialSelectedYear = new Date().getFullYear().toString() as Year;
 
 const initialDashboardState: DashboardState = {
-  triggerReRender: false,
   businessMetrics: [],
   calendarView: "Daily",
   customerMetric: "Overview",
@@ -22,7 +21,6 @@ const initialDashboardState: DashboardState = {
 };
 
 const dashboardAction: DashboardAction = {
-  triggerReRender: "triggerReRender",
   setBusinessMetrics: "setBusinessMetrics",
   setCalendarView: "setCalendarView",
   setCustomerMetric: "setCustomerMetric",
@@ -39,12 +37,6 @@ function dashboardReducer(
   action: DashboardDispatch
 ): DashboardState {
   switch (action.type) {
-    case dashboardAction.triggerReRender:
-      return {
-        ...state,
-        triggerReRender: !state.triggerReRender,
-      };
-
     case dashboardAction.setBusinessMetrics:
       return {
         ...state,

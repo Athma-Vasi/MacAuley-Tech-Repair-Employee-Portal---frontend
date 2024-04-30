@@ -13,7 +13,6 @@ type DashboardProductMetric = ProductCategory | "All Products";
 type DashboardRepairMetric = RepairCategory | "All Repairs";
 
 type DashboardState = {
-  triggerReRender: boolean;
   businessMetrics: BusinessMetric[];
   calendarView: DashboardCalendarView;
   customerMetric: DashboardCustomerMetric;
@@ -26,7 +25,6 @@ type DashboardState = {
 };
 
 type DashboardAction = {
-  triggerReRender: "triggerReRender";
   setBusinessMetrics: "setBusinessMetrics";
   setCalendarView: "setCalendarView";
   setCustomerMetric: "setCustomerMetric";
@@ -39,9 +37,6 @@ type DashboardAction = {
 };
 
 type DashboardDispatch =
-  | {
-      type: DashboardAction["triggerReRender"];
-    }
   | {
       type: DashboardAction["setBusinessMetrics"];
       payload: BusinessMetric[];

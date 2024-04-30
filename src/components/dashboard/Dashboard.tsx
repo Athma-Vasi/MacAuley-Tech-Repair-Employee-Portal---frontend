@@ -1,13 +1,4 @@
-import {
-  Accordion,
-  Flex,
-  Group,
-  Stack,
-  Tabs,
-  Text,
-  TextInput,
-  Title,
-} from "@mantine/core";
+import { Accordion, Group, Stack, Tabs, Text, TextInput, Title } from "@mantine/core";
 import { ChangeEvent, useEffect, useReducer } from "react";
 
 import { COLORS_SWATCHES, STORE_LOCATION_DATA } from "../../constants/data";
@@ -35,7 +26,6 @@ import ProductDashboard from "./productDashboard/ProductDashboard";
 import RepairDashboard from "./repairDashboard/RepairDashboard";
 import { dashboardAction, dashboardReducer, initialDashboardState } from "./state";
 import {
-  BusinessMetric,
   BusinessMetricStoreLocation,
   DashboardCalendarView,
   DashboardCustomerMetric,
@@ -45,7 +35,6 @@ import {
   DashboardRepairMetric,
 } from "./types";
 import { createRandomBusinessMetrics, splitSelectedCalendarDate } from "./utils";
-import { createRandomBusinessMetrics2 } from "./utils";
 
 function Dashboard() {
   const [dashboardState, dashboardDispatch] = useReducer(
@@ -54,7 +43,7 @@ function Dashboard() {
   );
 
   const {
-    globalState: { padding, themeObject },
+    globalState: { themeObject },
     globalDispatch,
   } = useGlobalState();
 
@@ -66,7 +55,6 @@ function Dashboard() {
   });
 
   const {
-    triggerReRender,
     businessMetrics,
     calendarView,
     customerMetric,
@@ -95,7 +83,7 @@ function Dashboard() {
 
   useEffect(() => {
     async function createBusinessMetrics() {
-      const businessMetrics = await createRandomBusinessMetrics2({
+      const businessMetrics = await createRandomBusinessMetrics({
         daysPerMonth: DAYS_PER_MONTH,
         months: MONTHS,
         productCategories: PRODUCT_CATEGORIES,

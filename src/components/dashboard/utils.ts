@@ -105,17 +105,22 @@ function returnDaysInMonthsInYears({
   }, new Map<Year, Map<Month, string[]>>());
 }
 
-function splitSelectedCalendarDate({
-  calendarDate,
-  months,
-}: {
+type SplitSelectedCalendarDateInput = {
   calendarDate: string;
   months: Month[];
-}): {
+};
+type SplitSelectedCalendarDateOutput = {
   selectedDate: string;
   selectedMonth: Month;
   selectedYear: Year;
-} {
+};
+/**
+ * Split selected calendar date into its components.
+ */
+function splitSelectedCalendarDate({
+  calendarDate,
+  months,
+}: SplitSelectedCalendarDateInput): SplitSelectedCalendarDateOutput {
   const [year, month, date] = calendarDate.split("-") as [Year, string, string];
 
   return {
@@ -3375,3 +3380,4 @@ export {
   returnStatistics,
   splitSelectedCalendarDate,
 };
+export type { StatisticsObject };

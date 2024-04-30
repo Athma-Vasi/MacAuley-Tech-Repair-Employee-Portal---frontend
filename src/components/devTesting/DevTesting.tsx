@@ -13,10 +13,7 @@ import {
   PRODUCT_CATEGORIES,
   REPAIR_CATEGORIES,
 } from "../dashboard/constants";
-import {
-  createRandomBusinessMetrics,
-  returnDaysInMonthsInYears,
-} from "../dashboard/utils";
+
 import { STORE_LOCATION_DATA } from "../register/constants";
 import {
   BUSINESS_METRICS_TEMPLATE,
@@ -27,7 +24,7 @@ import {
   YEAR_UNITS_SOLD_SPREAD,
 } from "./constantsDashboard";
 import { devTestingAction, devTestingReducer, initialDevTestingState } from "./state";
-import { createRandomBusinessMetrics2 } from "../dashboard/utils";
+import { createRandomBusinessMetrics } from "../dashboard/utils";
 
 function DevTesting() {
   const [devTestingState, devTestingDispatch] = useReducer(
@@ -42,39 +39,6 @@ function DevTesting() {
   } = useAuth();
 
   const { wrappedFetch } = useWrapFetch();
-
-  useEffect(() => {
-    async function helper() {
-      console.group("Dev Testing");
-
-      console.time("createRandomBusinessMetrics");
-      createRandomBusinessMetrics({
-        daysPerMonth: DAYS_PER_MONTH,
-        months: MONTHS,
-        productCategories: PRODUCT_CATEGORIES,
-        repairCategories: REPAIR_CATEGORIES,
-        storeLocations: STORE_LOCATION_DATA,
-      });
-      console.timeEnd("createRandomBusinessMetrics");
-
-      console.time("createRandomBusinessMetrics2");
-      await createRandomBusinessMetrics2({
-        daysPerMonth: DAYS_PER_MONTH,
-        months: MONTHS,
-        productCategories: PRODUCT_CATEGORIES,
-        repairCategories: REPAIR_CATEGORIES,
-        storeLocations: STORE_LOCATION_DATA,
-      }).then((businessMetrics) => {
-        console.timeEnd("createRandomBusinessMetrics2");
-
-        console.log({ businessMetrics });
-      });
-
-      console.groupEnd();
-    }
-
-    helper();
-  }, []);
 
   useEffect(() => {
     let isMounted = true;
