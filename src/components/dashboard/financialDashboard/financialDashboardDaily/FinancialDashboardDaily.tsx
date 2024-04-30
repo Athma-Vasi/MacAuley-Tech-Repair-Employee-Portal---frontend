@@ -1,13 +1,21 @@
-import { MantineNumberSize, Stack } from "@mantine/core";
+import { Stack } from "@mantine/core";
 
-import { FinancialMetricsCards } from "../../jsxHelpers";
+import { COLORS_SWATCHES } from "../../../../constants/data";
+import { useGlobalState } from "../../../../hooks";
+import { returnThemeColors } from "../../../../utils";
+import { MONTHS } from "../../constants";
+import { returnFinancialMetricsCards } from "../../jsxHelpers";
 import {
   BusinessMetric,
   BusinessMetricStoreLocation,
   DashboardFinancialMetric,
+  Month,
   Year,
 } from "../../types";
-import { FinancialMetricsCharts } from "../utils";
+import {
+  returnFinancialMetricsCharts,
+  returnSelectedDateFinancialMetrics,
+} from "../utils";
 import FinancialDashboardDailyExpenses from "./financialDashboardDailyExpenses/FinancialDashboardDailyExpenses";
 import FinancialDashboardDailyOtherMetrics from "./financialDashboardDailyOtherMetrics/FinancialDashboardDailyOtherMetrics";
 import FinancialDashboardDailyProfit from "./financialDashboardDailyProfit/FinancialDashboardDailyProfit";
@@ -15,30 +23,32 @@ import FinancialDashboardDailyRevenue from "./financialDashboardDailyRevenue/Fin
 import FinancialDashboardDailyTransactions from "./financialDashboardDailyTransactions/FinancialDashboardDailyTransactions";
 
 function FinancialDashboardDaily({
-  borderColor,
   businessMetrics,
-  dailyCards,
-  dailyCharts,
   day,
   financialMetric,
   month,
-  padding,
+  selectedDate,
+  selectedMonth,
+  selectedYear,
   storeLocation,
-  width,
+  storeLocationView,
   year,
 }: {
-  borderColor: string;
   businessMetrics: BusinessMetric[];
-  dailyCards: FinancialMetricsCards["dailyCards"];
-  dailyCharts: FinancialMetricsCharts["dailyCharts"];
   day: string;
   financialMetric: DashboardFinancialMetric;
   month: string;
-  padding: MantineNumberSize;
+  selectedDate: string;
+  selectedMonth: Month;
+  selectedYear: Year;
   storeLocation: BusinessMetricStoreLocation;
-  width: number;
+  storeLocationView: BusinessMetricStoreLocation;
   year: Year;
 }) {
+  const {
+    globalState: { padding, width, themeObject },
+  } = useGlobalState();
+
   const componentWidth =
     width < 480 // for iPhone 5/SE
       ? width * 0.93
@@ -53,6 +63,38 @@ function FinancialDashboardDaily({
       : 900 - 40;
   const chartHeight = width < 1024 ? componentWidth * 0.618 : componentWidth * 0.382;
   const chartWidth = componentWidth;
+
+  const {
+    appThemeColors: { borderColor },
+    generalColors: { redColorShade, greenColorShade },
+  } = returnThemeColors({
+    colorsSwatches: COLORS_SWATCHES,
+    themeObject,
+  });
+
+  const selectedDateFinancialMetrics = returnSelectedDateFinancialMetrics({
+    businessMetrics,
+    day: selectedDate,
+    month: selectedMonth,
+    months: MONTHS,
+    storeLocation: storeLocationView,
+    year: selectedYear,
+  });
+
+  const { dailyCharts } = returnFinancialMetricsCharts({
+    businessMetrics,
+    months: MONTHS,
+    selectedDateFinancialMetrics,
+    storeLocation: storeLocationView,
+  });
+
+  const { dailyCards } = returnFinancialMetricsCards({
+    greenColorShade,
+    padding,
+    redColorShade,
+    selectedDateFinancialMetrics,
+    width,
+  });
 
   const displayFinancialMetricCategory =
     financialMetric === "Profit" ? (

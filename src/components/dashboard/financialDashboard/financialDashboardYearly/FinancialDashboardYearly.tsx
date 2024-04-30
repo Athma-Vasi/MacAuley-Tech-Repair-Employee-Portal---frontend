@@ -1,47 +1,61 @@
-import { MantineNumberSize, Stack } from '@mantine/core';
+import { Stack } from "@mantine/core";
 
-import { FinancialMetricsCards } from '../../jsxHelpers';
+import { COLORS_SWATCHES } from "../../../../constants/data";
+import { useGlobalState } from "../../../../hooks";
+import { returnThemeColors } from "../../../../utils";
+import { MONTHS } from "../../constants";
+import { returnFinancialMetricsCards } from "../../jsxHelpers";
 import {
   BusinessMetric,
   BusinessMetricStoreLocation,
   DashboardFinancialMetric,
+  Month,
   Year,
-} from '../../types';
-import { FinancialMetricsCharts } from '../utils';
-import FinancialDashboardYearlyExpenses from './financialDashboardYearlyExpenses/FinancialDashboardYearlyExpenses';
-import FinancialDashboardYearlyOtherMetrics from './financialDashboardYearlyOtherMetrics/FinancialDashboardYearlyOtherMetrics';
-import FinancialDashboardYearlyProfit from './financialDashboardYearlyProfit/FinancialDashboardYearlyProfit';
-import FinancialDashboardYearlyRevenue from './financialDashboardYearlyRevenue/FinancialDashboardYearlyRevenue';
-import FinancialDashboardYearlyTransactions from './financialDashboardYearlyTransactions/FinancialDashboardYearlyTransactions';
+} from "../../types";
+import {
+  returnFinancialMetricsCharts,
+  returnSelectedDateFinancialMetrics,
+} from "../utils";
+import FinancialDashboardYearlyExpenses from "./financialDashboardYearlyExpenses/FinancialDashboardYearlyExpenses";
+import FinancialDashboardYearlyOtherMetrics from "./financialDashboardYearlyOtherMetrics/FinancialDashboardYearlyOtherMetrics";
+import FinancialDashboardYearlyProfit from "./financialDashboardYearlyProfit/FinancialDashboardYearlyProfit";
+import FinancialDashboardYearlyRevenue from "./financialDashboardYearlyRevenue/FinancialDashboardYearlyRevenue";
+import FinancialDashboardYearlyTransactions from "./financialDashboardYearlyTransactions/FinancialDashboardYearlyTransactions";
 
 function FinancialDashboardYearly({
-  borderColor,
   businessMetrics,
-  yearlyCards,
-  yearlyCharts,
   day,
   financialMetric,
   month,
-  padding,
+  selectedDate,
+  selectedMonth,
+  selectedYear,
   storeLocation,
-  width,
+  storeLocationView,
   year,
 }: {
-  borderColor: string;
   businessMetrics: BusinessMetric[];
-  yearlyCards: FinancialMetricsCards['yearlyCards'];
-  yearlyCharts: FinancialMetricsCharts['yearlyCharts'];
   day: string;
   financialMetric: DashboardFinancialMetric;
   month: string;
-  padding: MantineNumberSize;
+  selectedDate: string;
+  selectedMonth: Month;
+  selectedYear: Year;
   storeLocation: BusinessMetricStoreLocation;
-  width: number;
+  storeLocationView: BusinessMetricStoreLocation;
   year: Year;
 }) {
-  if (!businessMetrics.length) {
-    return null;
-  }
+  const {
+    globalState: { padding, width, themeObject },
+  } = useGlobalState();
+
+  const {
+    appThemeColors: { borderColor },
+    generalColors: { redColorShade, greenColorShade },
+  } = returnThemeColors({
+    colorsSwatches: COLORS_SWATCHES,
+    themeObject,
+  });
 
   const componentWidth =
     width < 480 // for iPhone 5/SE
@@ -55,12 +69,35 @@ function FinancialDashboardYearly({
       width < 1200
       ? (width - 225) * 0.8
       : 900 - 40;
-  const chartHeight =
-    width < 1024 ? componentWidth * 0.618 : componentWidth * 0.382;
+  const chartHeight = width < 1024 ? componentWidth * 0.618 : componentWidth * 0.382;
   const chartWidth = componentWidth;
 
+  const selectedDateFinancialMetrics = returnSelectedDateFinancialMetrics({
+    businessMetrics,
+    day: selectedDate,
+    month: selectedMonth,
+    months: MONTHS,
+    storeLocation: storeLocationView,
+    year: selectedYear,
+  });
+
+  const { yearlyCharts } = returnFinancialMetricsCharts({
+    businessMetrics,
+    months: MONTHS,
+    selectedDateFinancialMetrics,
+    storeLocation: storeLocationView,
+  });
+
+  const { yearlyCards } = returnFinancialMetricsCards({
+    greenColorShade,
+    padding,
+    redColorShade,
+    selectedDateFinancialMetrics,
+    width,
+  });
+
   const displayFinancialMetricCategory =
-    financialMetric === 'Profit' ? (
+    financialMetric === "Profit" ? (
       <FinancialDashboardYearlyProfit
         borderColor={borderColor}
         chartHeight={chartHeight}
@@ -74,7 +111,7 @@ function FinancialDashboardYearly({
         width={width}
         year={year}
       />
-    ) : financialMetric === 'Revenue' ? (
+    ) : financialMetric === "Revenue" ? (
       <FinancialDashboardYearlyRevenue
         borderColor={borderColor}
         chartHeight={chartHeight}
@@ -88,7 +125,7 @@ function FinancialDashboardYearly({
         width={width}
         year={year}
       />
-    ) : financialMetric === 'Expenses' ? (
+    ) : financialMetric === "Expenses" ? (
       <FinancialDashboardYearlyExpenses
         borderColor={borderColor}
         chartHeight={chartHeight}
@@ -102,7 +139,7 @@ function FinancialDashboardYearly({
         width={width}
         year={year}
       />
-    ) : financialMetric === 'Transactions' ? (
+    ) : financialMetric === "Transactions" ? (
       <FinancialDashboardYearlyTransactions
         borderColor={borderColor}
         chartHeight={chartHeight}

@@ -47,10 +47,6 @@ function RepairDashboard({
     themeObject,
   });
 
-  if (!businessMetrics.length) {
-    return null;
-  }
-
   const selectedDateRepairMetrics = returnSelectedDateRepairMetrics({
     businessMetrics,
     day: selectedDate,

@@ -49,10 +49,6 @@ function CustomerDashboard({
     themeObject,
   });
 
-  if (!businessMetrics.length) {
-    return null;
-  }
-
   const selectedDateCustomerMetrics = returnSelectedDateCustomerMetrics({
     businessMetrics,
     day: selectedDate,

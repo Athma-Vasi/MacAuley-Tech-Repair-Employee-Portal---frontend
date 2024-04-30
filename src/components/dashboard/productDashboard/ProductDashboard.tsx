@@ -47,10 +47,6 @@ function ProductDashboard({
     themeObject,
   });
 
-  if (!businessMetrics.length) {
-    return null;
-  }
-
   const selectedDateProductMetrics = returnSelectedDateProductMetrics({
     businessMetrics,
     day: selectedDate,

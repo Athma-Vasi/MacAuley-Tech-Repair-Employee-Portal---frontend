@@ -35,6 +35,7 @@ import ProductDashboard from "./productDashboard/ProductDashboard";
 import RepairDashboard from "./repairDashboard/RepairDashboard";
 import { dashboardAction, dashboardReducer, initialDashboardState } from "./state";
 import {
+  BusinessMetric,
   BusinessMetricStoreLocation,
   DashboardCalendarView,
   DashboardCustomerMetric,
@@ -44,6 +45,7 @@ import {
   DashboardRepairMetric,
 } from "./types";
 import { createRandomBusinessMetrics, splitSelectedCalendarDate } from "./utils";
+import { createRandomBusinessMetrics2 } from "../devTesting/utilsDashboard";
 
 function Dashboard() {
   const [dashboardState, dashboardDispatch] = useReducer(
@@ -64,7 +66,8 @@ function Dashboard() {
   });
 
   const {
-    // businessMetrics,
+    triggerReRender,
+    businessMetrics,
     calendarView,
     customerMetric,
     financialMetric,
@@ -75,25 +78,55 @@ function Dashboard() {
     selectedYYYYMMDD,
   } = dashboardState;
 
+  // useEffect(() => {
+  //   dashboardDispatch({
+  //     type: dashboardAction.triggerReRender,
+  //   });
+  // }, []);
+
   useEffect(() => {
-    // const businessMetrics = createRandomBusinessMetrics({
-    //   daysPerMonth: DAYS_PER_MONTH,
-    //   months: MONTHS,
-    //   productCategories: PRODUCT_CATEGORIES,
-    //   repairCategories: REPAIR_CATEGORIES,
-    //   storeLocations: STORE_LOCATION_DATA,
-    // });
-
-    // dashboardDispatch({
-    //   type: dashboardAction.setBusinessMetrics,
-    //   payload: businessMetrics,
-    // });
-
     globalDispatch({
       type: globalAction.setCustomizeChartsPageDataSelectedYYYYMMDD,
       payload: initialDashboardState.selectedYYYYMMDD,
     });
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    async function createBusinessMetrics() {
+      const businessMetrics = await createRandomBusinessMetrics2({
+        daysPerMonth: DAYS_PER_MONTH,
+        months: MONTHS,
+        productCategories: PRODUCT_CATEGORIES,
+        repairCategories: REPAIR_CATEGORIES,
+        storeLocations: STORE_LOCATION_DATA,
+      });
+
+      dashboardDispatch({
+        type: dashboardAction.setBusinessMetrics,
+        payload: businessMetrics,
+      });
+    }
+
+    createBusinessMetrics();
+
+    // let businessMetrics: BusinessMetric[] = [];
+
+    // window.queueMicrotask(async () => {
+    //   businessMetrics = await createRandomBusinessMetrics2({
+    //     daysPerMonth: DAYS_PER_MONTH,
+    //     months: MONTHS,
+    //     productCategories: PRODUCT_CATEGORIES,
+    //     repairCategories: REPAIR_CATEGORIES,
+    //     storeLocations: STORE_LOCATION_DATA,
+    //   });
+
+    //   dashboardDispatch({
+    //     type: dashboardAction.setBusinessMetrics,
+    //     payload: businessMetrics,
+    //   });
+    // });
   }, []);
 
   useEffect(() => {
@@ -101,39 +134,19 @@ function Dashboard() {
       state: dashboardState,
       groupLabel: "Dashboard State",
     });
-
-    // businessMetrics?.forEach((businessMetric) => {
-    //   businessMetric.productMetrics.forEach((productMetric) => {
-    //     const total = productMetric.yearlyMetrics.reduce(
-    //       (acc, yearlyMetric) => {
-    //         if (yearlyMetric.year === '2013') {
-    //           console.group(businessMetric.storeLocation, productMetric.name);
-    //           console.log(
-    //             'yearlyMetric.revenue.total',
-    //             yearlyMetric.revenue.total
-    //           );
-    //           console.groupEnd();
-
-    //           acc += yearlyMetric.revenue.total;
-    //         }
-
-    //         return acc;
-    //       },
-    //       0
-    //     );
-
-    //     console.log('total', total);
-    //   });
-    // });
   }, [dashboardState]);
 
-  const businessMetrics = createRandomBusinessMetrics({
-    daysPerMonth: DAYS_PER_MONTH,
-    months: MONTHS,
-    productCategories: PRODUCT_CATEGORIES,
-    repairCategories: REPAIR_CATEGORIES,
-    storeLocations: STORE_LOCATION_DATA,
-  });
+  // const businessMetrics = createRandomBusinessMetrics({
+  //   daysPerMonth: DAYS_PER_MONTH,
+  //   months: MONTHS,
+  //   productCategories: PRODUCT_CATEGORIES,
+  //   repairCategories: REPAIR_CATEGORIES,
+  //   storeLocations: STORE_LOCATION_DATA,
+  // });
+
+  if (!businessMetrics || !businessMetrics.length) {
+    return null;
+  }
 
   // metrics tabs
   const createdMetricsTabs = (
