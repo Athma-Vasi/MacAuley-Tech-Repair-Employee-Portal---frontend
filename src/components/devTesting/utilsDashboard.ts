@@ -2503,6 +2503,8 @@ async function createRandomFinancialMetrics({
           const monthlyFinancialMetric =
             dailyFinancialMetrics.reduce<MonthlyFinancialMetric>(
               (monthlyFinancialMetricAcc, dailyFinancialMetric) => {
+                monthlyFinancialMetricAcc.month = month;
+
                 monthlyFinancialMetricAcc.averageOrderValue +=
                   dailyFinancialMetric.averageOrderValue;
                 monthlyFinancialMetricAcc.conversionRate +=
@@ -2569,7 +2571,6 @@ async function createRandomFinancialMetrics({
             monthlyFinancialMetric.netProfitMargin / dailyFinancialMetrics.length,
             2
           );
-
           monthlyFinancialMetric.dailyMetrics = dailyFinancialMetrics;
 
           return monthlyFinancialMetric;
@@ -2580,6 +2581,8 @@ async function createRandomFinancialMetrics({
         const yearlyFinancialMetric =
           monthlyFinancialMetrics.reduce<YearlyFinancialMetric>(
             (yearlyFinancialMetricAcc, monthlyFinancialMetric) => {
+              yearlyFinancialMetricAcc.year = year;
+
               yearlyFinancialMetricAcc.averageOrderValue +=
                 monthlyFinancialMetric.averageOrderValue;
               yearlyFinancialMetricAcc.conversionRate +=
@@ -2646,7 +2649,6 @@ async function createRandomFinancialMetrics({
           yearlyFinancialMetric.netProfitMargin / monthlyFinancialMetrics.length,
           2
         );
-
         yearlyFinancialMetric.monthlyMetrics = monthlyFinancialMetrics;
 
         return yearlyFinancialMetric;
