@@ -110,23 +110,6 @@ function Dashboard() {
     }
 
     createBusinessMetrics();
-
-    // let businessMetrics: BusinessMetric[] = [];
-
-    // window.queueMicrotask(async () => {
-    //   businessMetrics = await createRandomBusinessMetrics2({
-    //     daysPerMonth: DAYS_PER_MONTH,
-    //     months: MONTHS,
-    //     productCategories: PRODUCT_CATEGORIES,
-    //     repairCategories: REPAIR_CATEGORIES,
-    //     storeLocations: STORE_LOCATION_DATA,
-    //   });
-
-    //   dashboardDispatch({
-    //     type: dashboardAction.setBusinessMetrics,
-    //     payload: businessMetrics,
-    //   });
-    // });
   }, []);
 
   useEffect(() => {

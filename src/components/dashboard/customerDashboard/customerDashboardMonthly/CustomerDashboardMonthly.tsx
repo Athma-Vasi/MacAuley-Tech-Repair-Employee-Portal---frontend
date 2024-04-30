@@ -1,40 +1,39 @@
-import { MantineNumberSize } from '@mantine/core';
-
-import { CustomerMetricsCards } from '../../jsxHelpers';
-import {
-  BusinessMetricStoreLocation,
-  DashboardCustomerMetric,
-  Year,
-} from '../../types';
-import { CustomerMetricsCharts } from '../utils';
-import CustomerDashboardMonthlyNew from './customerDashboardMonthlyNew/CustomerDashboardMonthlyNew';
-import CustomerDashboardMonthlyOtherMetrics from './customerDashboardMonthlyOtherMetrics/CustomerDashboardMonthlyOtherMetrics';
-import CustomerDashboardMonthlyOverview from './customerDashboardMonthlyOverview/CustomerDashboardMonthlyOverview';
-import CustomerDashboardMonthlyReturning from './customerDashboardMonthlyReturning/CustomerDashboardMonthlyReturning';
+import { COLORS_SWATCHES } from "../../../../constants/data";
+import { useGlobalState } from "../../../../hooks";
+import { returnThemeColors } from "../../../../utils";
+import { MONTHS } from "../../constants";
+import { returnCustomerMetricsCards } from "../../jsxHelpers";
+import { CustomerDashboardChildrenProps } from "../types";
+import { returnCustomerMetricsCharts, returnSelectedDateCustomerMetrics } from "../utils";
+import CustomerDashboardMonthlyNew from "./customerDashboardMonthlyNew/CustomerDashboardMonthlyNew";
+import CustomerDashboardMonthlyOtherMetrics from "./customerDashboardMonthlyOtherMetrics/CustomerDashboardMonthlyOtherMetrics";
+import CustomerDashboardMonthlyOverview from "./customerDashboardMonthlyOverview/CustomerDashboardMonthlyOverview";
+import CustomerDashboardMonthlyReturning from "./customerDashboardMonthlyReturning/CustomerDashboardMonthlyReturning";
 
 function CustomerDashboardMonthly({
-  borderColor,
+  businessMetrics,
   customerMetric,
-  monthlyCards,
-  monthlyCharts,
   day,
   month,
-  padding,
+  selectedDate,
+  selectedMonth,
+  selectedYear,
   storeLocation,
-  width,
+  storeLocationView,
   year,
-}: {
-  borderColor: string;
-  customerMetric: DashboardCustomerMetric;
-  monthlyCards: CustomerMetricsCards['monthlyCards'];
-  monthlyCharts: CustomerMetricsCharts['monthlyCharts'];
-  day: string;
-  month: string;
-  padding: MantineNumberSize;
-  storeLocation: BusinessMetricStoreLocation;
-  width: number;
-  year: Year;
-}) {
+}: CustomerDashboardChildrenProps) {
+  const {
+    globalState: { padding, width, themeObject },
+  } = useGlobalState();
+
+  const {
+    appThemeColors: { borderColor },
+    generalColors: { redColorShade, greenColorShade },
+  } = returnThemeColors({
+    colorsSwatches: COLORS_SWATCHES,
+    themeObject,
+  });
+
   const componentWidth =
     width < 480 // for iPhone 5/SE
       ? width * 0.93
@@ -47,12 +46,35 @@ function CustomerDashboardMonthly({
       width < 1200
       ? (width - 225) * 0.8
       : 900 - 40;
-  const chartHeight =
-    width < 1024 ? componentWidth * 0.618 : componentWidth * 0.382;
+  const chartHeight = width < 1024 ? componentWidth * 0.618 : componentWidth * 0.382;
   const chartWidth = componentWidth;
 
+  const selectedDateCustomerMetrics = returnSelectedDateCustomerMetrics({
+    businessMetrics,
+    day: selectedDate,
+    month: selectedMonth,
+    months: MONTHS,
+    storeLocation: storeLocationView,
+    year: selectedYear,
+  });
+
+  const { monthlyCharts } = returnCustomerMetricsCharts({
+    businessMetrics,
+    months: MONTHS,
+    selectedDateCustomerMetrics,
+    storeLocation: storeLocationView,
+  });
+
+  const { monthlyCards } = returnCustomerMetricsCards({
+    greenColorShade,
+    padding,
+    redColorShade,
+    selectedDateCustomerMetrics,
+    width,
+  });
+
   const displayCustomerDashboardMonthly =
-    customerMetric === 'Overview' ? (
+    customerMetric === "Overview" ? (
       <CustomerDashboardMonthlyOverview
         borderColor={borderColor}
         chartHeight={chartHeight}
@@ -66,7 +88,7 @@ function CustomerDashboardMonthly({
         width={width}
         year={year}
       />
-    ) : customerMetric === 'New' ? (
+    ) : customerMetric === "New" ? (
       <CustomerDashboardMonthlyNew
         borderColor={borderColor}
         chartHeight={chartHeight}
@@ -80,7 +102,7 @@ function CustomerDashboardMonthly({
         width={width}
         year={year}
       />
-    ) : customerMetric === 'Returning' ? (
+    ) : customerMetric === "Returning" ? (
       <CustomerDashboardMonthlyReturning
         borderColor={borderColor}
         chartHeight={chartHeight}

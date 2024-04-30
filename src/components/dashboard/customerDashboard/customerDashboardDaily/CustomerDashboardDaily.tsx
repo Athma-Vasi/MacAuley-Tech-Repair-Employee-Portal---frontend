@@ -1,39 +1,38 @@
-import { MantineNumberSize } from '@mantine/core';
-
-import { CustomerMetricsCards } from '../../jsxHelpers';
-import {
-  BusinessMetricStoreLocation,
-  DashboardCustomerMetric,
-  Year,
-} from '../../types';
-import { CustomerMetricsCharts } from '../utils';
-import CustomerDashboardDailyNew from './customerDashboardDailyNew/CustomerDashboardDailyNew';
-import CustomerDashboardDailyOverview from './customerDashboardDailyOverview/CustomerDashboardDailyOverview';
-import CustomerDashboardDailyReturning from './customerDashboardDailyReturning/CustomerDashboardDailyReturning';
+import { COLORS_SWATCHES } from "../../../../constants/data";
+import { useGlobalState } from "../../../../hooks";
+import { returnThemeColors } from "../../../../utils";
+import { MONTHS } from "../../constants";
+import { returnCustomerMetricsCards } from "../../jsxHelpers";
+import { CustomerDashboardChildrenProps } from "../types";
+import { returnCustomerMetricsCharts, returnSelectedDateCustomerMetrics } from "../utils";
+import CustomerDashboardDailyNew from "./customerDashboardDailyNew/CustomerDashboardDailyNew";
+import CustomerDashboardDailyOverview from "./customerDashboardDailyOverview/CustomerDashboardDailyOverview";
+import CustomerDashboardDailyReturning from "./customerDashboardDailyReturning/CustomerDashboardDailyReturning";
 
 function CustomerDashboardDaily({
-  borderColor,
+  businessMetrics,
   customerMetric,
-  dailyCards,
-  dailyCharts,
   day,
   month,
-  padding,
+  selectedDate,
+  selectedMonth,
+  selectedYear,
   storeLocation,
-  width,
+  storeLocationView,
   year,
-}: {
-  borderColor: string;
-  customerMetric: DashboardCustomerMetric;
-  dailyCards: CustomerMetricsCards['dailyCards'];
-  dailyCharts: CustomerMetricsCharts['dailyCharts'];
-  day: string;
-  month: string;
-  padding: MantineNumberSize;
-  storeLocation: BusinessMetricStoreLocation;
-  width: number;
-  year: Year;
-}) {
+}: CustomerDashboardChildrenProps) {
+  const {
+    globalState: { padding, width, themeObject },
+  } = useGlobalState();
+
+  const {
+    appThemeColors: { borderColor },
+    generalColors: { redColorShade, greenColorShade },
+  } = returnThemeColors({
+    colorsSwatches: COLORS_SWATCHES,
+    themeObject,
+  });
+
   const componentWidth =
     width < 480 // for iPhone 5/SE
       ? width * 0.93
@@ -46,12 +45,35 @@ function CustomerDashboardDaily({
       width < 1200
       ? (width - 225) * 0.8
       : 900 - 40;
-  const chartHeight =
-    width < 1024 ? componentWidth * 0.618 : componentWidth * 0.382;
+  const chartHeight = width < 1024 ? componentWidth * 0.618 : componentWidth * 0.382;
   const chartWidth = componentWidth;
 
+  const selectedDateCustomerMetrics = returnSelectedDateCustomerMetrics({
+    businessMetrics,
+    day: selectedDate,
+    month: selectedMonth,
+    months: MONTHS,
+    storeLocation: storeLocationView,
+    year: selectedYear,
+  });
+
+  const { dailyCharts } = returnCustomerMetricsCharts({
+    businessMetrics,
+    months: MONTHS,
+    selectedDateCustomerMetrics,
+    storeLocation: storeLocationView,
+  });
+
+  const { dailyCards } = returnCustomerMetricsCards({
+    greenColorShade,
+    padding,
+    redColorShade,
+    selectedDateCustomerMetrics,
+    width,
+  });
+
   const displayCustomerDashboardDaily =
-    customerMetric === 'Overview' ? (
+    customerMetric === "Overview" ? (
       <CustomerDashboardDailyOverview
         borderColor={borderColor}
         chartHeight={chartHeight}
@@ -65,7 +87,7 @@ function CustomerDashboardDaily({
         width={width}
         year={year}
       />
-    ) : customerMetric === 'New' ? (
+    ) : customerMetric === "New" ? (
       <CustomerDashboardDailyNew
         borderColor={borderColor}
         chartHeight={chartHeight}
