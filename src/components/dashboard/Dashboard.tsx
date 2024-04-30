@@ -45,7 +45,7 @@ import {
   DashboardRepairMetric,
 } from "./types";
 import { createRandomBusinessMetrics, splitSelectedCalendarDate } from "./utils";
-import { createRandomBusinessMetrics2 } from "../devTesting/utilsDashboard";
+import { createRandomBusinessMetrics2 } from "./utils";
 
 function Dashboard() {
   const [dashboardState, dashboardDispatch] = useReducer(

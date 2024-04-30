@@ -27,7 +27,7 @@ import {
   YEAR_UNITS_SOLD_SPREAD,
 } from "./constantsDashboard";
 import { devTestingAction, devTestingReducer, initialDevTestingState } from "./state";
-import { createRandomBusinessMetrics2 } from "./utilsDashboard";
+import { createRandomBusinessMetrics2 } from "../dashboard/utils";
 
 function DevTesting() {
   const [devTestingState, devTestingDispatch] = useReducer(
