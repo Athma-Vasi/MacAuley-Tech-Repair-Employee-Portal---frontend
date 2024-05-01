@@ -1,5 +1,17 @@
-import { Accordion, Group, Stack, Tabs, Text, TextInput, Title } from "@mantine/core";
+import {
+  Accordion,
+  Group,
+  Loader,
+  LoadingOverlay,
+  Stack,
+  Tabs,
+  Text,
+  TextInput,
+  Title,
+} from "@mantine/core";
 import { ChangeEvent, useEffect, useReducer } from "react";
+import { useErrorBoundary } from "react-error-boundary";
+import { useNavigate } from "react-router-dom";
 
 import { COLORS_SWATCHES, STORE_LOCATION_DATA } from "../../constants/data";
 import { globalAction } from "../../context/globalProvider/state";
@@ -47,6 +59,10 @@ function Dashboard() {
     globalDispatch,
   } = useGlobalState();
 
+  const navigate = useNavigate();
+
+  const { showBoundary } = useErrorBoundary();
+
   const {
     appThemeColors: { backgroundColor },
   } = returnThemeColors({
@@ -64,13 +80,9 @@ function Dashboard() {
     repairMetric,
     storeLocationView,
     selectedYYYYMMDD,
+    isLoading,
+    loadingMessage,
   } = dashboardState;
-
-  // useEffect(() => {
-  //   dashboardDispatch({
-  //     type: dashboardAction.triggerReRender,
-  //   });
-  // }, []);
 
   useEffect(() => {
     globalDispatch({
@@ -83,21 +95,51 @@ function Dashboard() {
 
   useEffect(() => {
     async function createBusinessMetrics() {
-      const businessMetrics = await createRandomBusinessMetrics({
-        daysPerMonth: DAYS_PER_MONTH,
-        months: MONTHS,
-        productCategories: PRODUCT_CATEGORIES,
-        repairCategories: REPAIR_CATEGORIES,
-        storeLocations: STORE_LOCATION_DATA,
-      });
+      try {
+        const businessMetrics = await createRandomBusinessMetrics({
+          daysPerMonth: DAYS_PER_MONTH,
+          months: MONTHS,
+          productCategories: PRODUCT_CATEGORIES,
+          repairCategories: REPAIR_CATEGORIES,
+          storeLocations: STORE_LOCATION_DATA,
+        });
 
-      dashboardDispatch({
-        type: dashboardAction.setBusinessMetrics,
-        payload: businessMetrics,
-      });
+        dashboardDispatch({
+          type: dashboardAction.setBusinessMetrics,
+          payload: businessMetrics,
+        });
+
+        dashboardDispatch({
+          type: dashboardAction.setIsLoading,
+          payload: false,
+        });
+      } catch (error: any) {
+        globalDispatch({
+          type: globalAction.setErrorState,
+          payload: {
+            isError: true,
+            errorMessage: error.message ?? "Unknown error occured. Please try again.",
+            errorCallback: () => {
+              navigate("/home");
+
+              globalDispatch({
+                type: globalAction.setErrorState,
+                payload: {
+                  isError: false,
+                  errorMessage: "",
+                  errorCallback: () => {},
+                },
+              });
+            },
+          },
+        });
+
+        showBoundary(error);
+      }
     }
 
     createBusinessMetrics();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -115,8 +157,24 @@ function Dashboard() {
   //   storeLocations: STORE_LOCATION_DATA,
   // });
 
+  const displayLoadingOverlay = (
+    <LoadingOverlay
+      visible={isLoading}
+      zIndex={2}
+      overlayBlur={9}
+      overlayOpacity={0.99}
+      radius={4}
+      loader={
+        <Stack align="center">
+          <Text>{loadingMessage}</Text>
+          <Loader />
+        </Stack>
+      }
+    />
+  );
+
   if (!businessMetrics || !businessMetrics.length) {
-    return null;
+    return displayLoadingOverlay;
   }
 
   // metrics tabs
@@ -374,6 +432,7 @@ function Dashboard() {
     <Stack w="100%">
       <Title order={2}>Dashboard</Title>
       <Text size="sm">Welcome to your dashboard</Text>
+      {displayLoadingOverlay}
       {createdStoreLocationTabs}
       {displayMetricsView}
     </Stack>

@@ -9,15 +9,13 @@ const initialDashboardState: DashboardState = {
   calendarView: "Daily",
   customerMetric: "Overview",
   financialMetric: "Profit",
-  metricsView: "Financials",
+  metricsView: "Repairs",
   productMetric: "All Products",
   repairMetric: "All Repairs",
   storeLocationView: "All Locations",
   selectedYYYYMMDD: `${initialSelectedYear}-${initialSelectedMonth}-${initialSelectedDate}`,
-  // selectedYear: '2019',
-  // selectedYYYYMMDD: `${2019}-${
-  //   new Date().getMonth() + 1
-  // }-${initialSelectedDate}`,
+  isLoading: true,
+  loadingMessage: "Please wait... generating metrics...",
 };
 
 const dashboardAction: DashboardAction = {
@@ -30,6 +28,8 @@ const dashboardAction: DashboardAction = {
   setRepairMetric: "setRepairMetric",
   setStoreLocationView: "setStoreLocationView",
   setSelectedYYYYMMDD: "setSelectedYYYYMMDD",
+  setIsLoading: "setIsLoading",
+  setLoadingMessage: "setLoadingMessage",
 };
 
 function dashboardReducer(
@@ -89,6 +89,18 @@ function dashboardReducer(
       return {
         ...state,
         selectedYYYYMMDD: action.payload,
+      };
+
+    case dashboardAction.setIsLoading:
+      return {
+        ...state,
+        isLoading: action.payload,
+      };
+
+    case dashboardAction.setLoadingMessage:
+      return {
+        ...state,
+        loadingMessage: action.payload,
       };
 
     default:

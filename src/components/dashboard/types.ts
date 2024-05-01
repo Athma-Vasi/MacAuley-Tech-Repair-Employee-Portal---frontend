@@ -22,6 +22,8 @@ type DashboardState = {
   repairMetric: DashboardRepairMetric;
   selectedYYYYMMDD: string;
   storeLocationView: BusinessMetricStoreLocation;
+  isLoading: boolean;
+  loadingMessage: string;
 };
 
 type DashboardAction = {
@@ -34,6 +36,8 @@ type DashboardAction = {
   setRepairMetric: "setRepairMetric";
   setSelectedYYYYMMDD: "setSelectedYYYYMMDD";
   setStoreLocationView: "setStoreLocationView";
+  setIsLoading: "setIsLoading";
+  setLoadingMessage: "setLoadingMessage";
 };
 
 type DashboardDispatch =
@@ -71,6 +75,14 @@ type DashboardDispatch =
     }
   | {
       type: DashboardAction["setSelectedYYYYMMDD"];
+      payload: string;
+    }
+  | {
+      type: DashboardAction["setIsLoading"];
+      payload: boolean;
+    }
+  | {
+      type: DashboardAction["setLoadingMessage"];
       payload: string;
     };
 
