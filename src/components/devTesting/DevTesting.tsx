@@ -25,6 +25,8 @@ import {
 } from "./constantsDashboard";
 import { devTestingAction, devTestingReducer, initialDevTestingState } from "./state";
 import { createRandomBusinessMetrics } from "../dashboard/utils";
+import { returnRepairMetricsCharts2 } from "../dashboard/repairDashboard/utilsTemp";
+import { returnSelectedDateRepairMetrics } from "../dashboard/repairDashboard/utils";
 
 function DevTesting() {
   const [devTestingState, devTestingDispatch] = useReducer(
@@ -39,6 +41,40 @@ function DevTesting() {
   } = useAuth();
 
   const { wrappedFetch } = useWrapFetch();
+
+  useEffect(() => {
+    async function helper() {
+      const businessMetrics = await createRandomBusinessMetrics({
+        daysPerMonth: DAYS_PER_MONTH,
+        months: MONTHS,
+        productCategories: PRODUCT_CATEGORIES,
+        repairCategories: REPAIR_CATEGORIES,
+        storeLocations: STORE_LOCATION_DATA,
+      });
+
+      const selectedDateRepairMetrics = returnSelectedDateRepairMetrics({
+        businessMetrics,
+        day: "01",
+        month: "January",
+        months: MONTHS,
+        selectedRepairCategory: REPAIR_CATEGORIES[0],
+        storeLocation: STORE_LOCATION_DATA[0],
+        year: "2021",
+      });
+
+      const repairMetricsCharts = await returnRepairMetricsCharts2({
+        businessMetrics,
+        months: MONTHS,
+        selectedDateRepairMetrics,
+        selectedRepairCategory: REPAIR_CATEGORIES[0],
+        storeLocation: STORE_LOCATION_DATA[0],
+      });
+
+      console.log("repairMetricsCharts", repairMetricsCharts);
+    }
+
+    helper();
+  }, []);
 
   useEffect(() => {
     let isMounted = true;
