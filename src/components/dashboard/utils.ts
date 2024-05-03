@@ -1,9 +1,7 @@
 import {
   interquartileRange,
-  max,
   mean,
   median,
-  min,
   mode,
   standardDeviation,
 } from "simple-statistics";
@@ -103,31 +101,6 @@ function returnDaysInMonthsInYears({
 
     return yearsAcc;
   }, new Map<Year, Map<Month, string[]>>());
-}
-
-type SplitSelectedCalendarDateInput = {
-  calendarDate: string;
-  months: Month[];
-};
-type SplitSelectedCalendarDateOutput = {
-  selectedDate: string;
-  selectedMonth: Month;
-  selectedYear: Year;
-};
-/**
- * Split selected calendar date into its components.
- */
-function splitSelectedCalendarDate({
-  calendarDate,
-  months,
-}: SplitSelectedCalendarDateInput): SplitSelectedCalendarDateOutput {
-  const [year, month, date] = calendarDate.split("-") as [Year, string, string];
-
-  return {
-    selectedDate: date.toString().padStart(2, "0"),
-    selectedMonth: months[parseInt(month) - 1],
-    selectedYear: year,
-  };
 }
 
 type CreateRandomMetricsInput = {
@@ -407,147 +380,155 @@ async function createRandomProductMetrics({
 
   return await Promise.all(
     productCategories.map(async (productCategory) => {
-      const yearlyProductMetrics = Array.from(daysInMonthsInYears).map((yearTuple) => {
-        const [year, daysInMonthsMap] = yearTuple;
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          const yearlyProductMetrics = Array.from(daysInMonthsInYears).map(
+            (yearTuple) => {
+              const [year, daysInMonthsMap] = yearTuple;
 
-        const monthlyProductMetrics = Array.from(daysInMonthsMap).map((monthTuple) => {
-          const [month, daysRange] = monthTuple;
+              const monthlyProductMetrics = Array.from(daysInMonthsMap).map(
+                (monthTuple) => {
+                  const [month, daysRange] = monthTuple;
 
-          const dailyProductMetrics = daysRange.map((day) => {
-            const [dailyProductUnitsSold, dailyProductSalesRevenue] =
-              createProductCategoryUnitsRevenueTuple({
-                productCategory,
-                storeLocation,
+                  const dailyProductMetrics = daysRange.map((day) => {
+                    const [dailyProductUnitsSold, dailyProductSalesRevenue] =
+                      createProductCategoryUnitsRevenueTuple({
+                        productCategory,
+                        storeLocation,
+                        year,
+                        yearUnitsSoldSpread: YEAR_UNITS_SOLD_SPREAD,
+                      });
+
+                    const randomOnlineFraction = createRandomNumber({
+                      storeLocation,
+                      year,
+                      yearUnitsSpread: YEAR_ONLINE_TRANSACTIONS_SPREAD,
+                      defaultMax: 0.3,
+                      defaultMin: 0.1,
+                      isFraction: true,
+                    });
+
+                    const dailyProductOnlineUnitsSold = Math.round(
+                      dailyProductUnitsSold * randomOnlineFraction
+                    );
+
+                    const dailyProductInStoreUnitsSold = Math.round(
+                      dailyProductUnitsSold - dailyProductOnlineUnitsSold
+                    );
+
+                    const dailyProductOnlineRevenue = Math.round(
+                      dailyProductSalesRevenue * randomOnlineFraction
+                    );
+
+                    const dailyProductInStoreRevenue = Math.round(
+                      dailyProductSalesRevenue - dailyProductOnlineRevenue
+                    );
+
+                    const dailyProductMetric: ProductDailyMetric = {
+                      day,
+                      unitsSold: {
+                        inStore: dailyProductInStoreUnitsSold,
+                        online: dailyProductOnlineUnitsSold,
+                        total: dailyProductUnitsSold,
+                      },
+                      revenue: {
+                        inStore: dailyProductInStoreRevenue,
+                        online: dailyProductOnlineRevenue,
+                        total: dailyProductSalesRevenue,
+                      },
+                    };
+
+                    return dailyProductMetric;
+                  });
+
+                  const [
+                    monthlyProductTotalUnitsSold,
+                    monthlyProductOnlineUnitsSold,
+                    monthlyProductInStoreUnitsSold,
+                    monthlyProductTotalRevenue,
+                    monthlyProductOnlineRevenue,
+                    monthlyProductInStoreRevenue,
+                  ] = dailyProductMetrics.reduce(
+                    (monthlyProductMetricsAcc, dailyProductMetric) => {
+                      monthlyProductMetricsAcc[0] += dailyProductMetric.unitsSold.total;
+                      monthlyProductMetricsAcc[1] += dailyProductMetric.unitsSold.online;
+                      monthlyProductMetricsAcc[2] += dailyProductMetric.unitsSold.inStore;
+                      monthlyProductMetricsAcc[3] += dailyProductMetric.revenue.total;
+                      monthlyProductMetricsAcc[4] += dailyProductMetric.revenue.online;
+                      monthlyProductMetricsAcc[5] += dailyProductMetric.revenue.inStore;
+
+                      return monthlyProductMetricsAcc;
+                    },
+                    [0, 0, 0, 0, 0, 0]
+                  );
+
+                  const monthlyProductMetric: ProductMonthlyMetric = {
+                    month,
+                    unitsSold: {
+                      inStore: monthlyProductInStoreUnitsSold,
+                      online: monthlyProductOnlineUnitsSold,
+                      total: monthlyProductTotalUnitsSold,
+                    },
+                    revenue: {
+                      inStore: monthlyProductInStoreRevenue,
+                      online: monthlyProductOnlineRevenue,
+                      total: monthlyProductTotalRevenue,
+                    },
+                    dailyMetrics: dailyProductMetrics,
+                  };
+
+                  return monthlyProductMetric;
+                }
+              );
+
+              const [
+                yearlyProductTotalUnitsSold,
+                yearlyProductOnlineUnitsSold,
+                yearlyProductInStoreUnitsSold,
+                yearlyProductTotalRevenue,
+                yearlyProductOnlineRevenue,
+                yearlyProductInStoreRevenue,
+              ] = monthlyProductMetrics.reduce(
+                (yearlyProductMetricsAcc, monthlyProductMetric) => {
+                  yearlyProductMetricsAcc[0] += monthlyProductMetric.unitsSold.total;
+                  yearlyProductMetricsAcc[1] += monthlyProductMetric.unitsSold.online;
+                  yearlyProductMetricsAcc[2] += monthlyProductMetric.unitsSold.inStore;
+                  yearlyProductMetricsAcc[3] += monthlyProductMetric.revenue.total;
+                  yearlyProductMetricsAcc[4] += monthlyProductMetric.revenue.online;
+                  yearlyProductMetricsAcc[5] += monthlyProductMetric.revenue.inStore;
+
+                  return yearlyProductMetricsAcc;
+                },
+                [0, 0, 0, 0, 0, 0]
+              );
+
+              const yearlyProductMetric: ProductYearlyMetric = {
                 year,
-                yearUnitsSoldSpread: YEAR_UNITS_SOLD_SPREAD,
-              });
+                unitsSold: {
+                  inStore: yearlyProductInStoreUnitsSold,
+                  online: yearlyProductOnlineUnitsSold,
+                  total: yearlyProductTotalUnitsSold,
+                },
+                revenue: {
+                  inStore: yearlyProductInStoreRevenue,
+                  online: yearlyProductOnlineRevenue,
+                  total: yearlyProductTotalRevenue,
+                },
+                monthlyMetrics: monthlyProductMetrics,
+              };
 
-            const randomOnlineFraction = createRandomNumber({
-              storeLocation,
-              year,
-              yearUnitsSpread: YEAR_ONLINE_TRANSACTIONS_SPREAD,
-              defaultMax: 0.3,
-              defaultMin: 0.1,
-              isFraction: true,
-            });
-
-            const dailyProductOnlineUnitsSold = Math.round(
-              dailyProductUnitsSold * randomOnlineFraction
-            );
-
-            const dailyProductInStoreUnitsSold = Math.round(
-              dailyProductUnitsSold - dailyProductOnlineUnitsSold
-            );
-
-            const dailyProductOnlineRevenue = Math.round(
-              dailyProductSalesRevenue * randomOnlineFraction
-            );
-
-            const dailyProductInStoreRevenue = Math.round(
-              dailyProductSalesRevenue - dailyProductOnlineRevenue
-            );
-
-            const dailyProductMetric: ProductDailyMetric = {
-              day,
-              unitsSold: {
-                inStore: dailyProductInStoreUnitsSold,
-                online: dailyProductOnlineUnitsSold,
-                total: dailyProductUnitsSold,
-              },
-              revenue: {
-                inStore: dailyProductInStoreRevenue,
-                online: dailyProductOnlineRevenue,
-                total: dailyProductSalesRevenue,
-              },
-            };
-
-            return dailyProductMetric;
-          });
-
-          const [
-            monthlyProductTotalUnitsSold,
-            monthlyProductOnlineUnitsSold,
-            monthlyProductInStoreUnitsSold,
-            monthlyProductTotalRevenue,
-            monthlyProductOnlineRevenue,
-            monthlyProductInStoreRevenue,
-          ] = dailyProductMetrics.reduce(
-            (monthlyProductMetricsAcc, dailyProductMetric) => {
-              monthlyProductMetricsAcc[0] += dailyProductMetric.unitsSold.total;
-              monthlyProductMetricsAcc[1] += dailyProductMetric.unitsSold.online;
-              monthlyProductMetricsAcc[2] += dailyProductMetric.unitsSold.inStore;
-              monthlyProductMetricsAcc[3] += dailyProductMetric.revenue.total;
-              monthlyProductMetricsAcc[4] += dailyProductMetric.revenue.online;
-              monthlyProductMetricsAcc[5] += dailyProductMetric.revenue.inStore;
-
-              return monthlyProductMetricsAcc;
-            },
-            [0, 0, 0, 0, 0, 0]
+              return yearlyProductMetric;
+            }
           );
 
-          const monthlyProductMetric: ProductMonthlyMetric = {
-            month,
-            unitsSold: {
-              inStore: monthlyProductInStoreUnitsSold,
-              online: monthlyProductOnlineUnitsSold,
-              total: monthlyProductTotalUnitsSold,
-            },
-            revenue: {
-              inStore: monthlyProductInStoreRevenue,
-              online: monthlyProductOnlineRevenue,
-              total: monthlyProductTotalRevenue,
-            },
-            dailyMetrics: dailyProductMetrics,
+          const randomProductMetrics: ProductMetric = {
+            name: productCategory,
+            yearlyMetrics: yearlyProductMetrics,
           };
 
-          return monthlyProductMetric;
-        });
-
-        const [
-          yearlyProductTotalUnitsSold,
-          yearlyProductOnlineUnitsSold,
-          yearlyProductInStoreUnitsSold,
-          yearlyProductTotalRevenue,
-          yearlyProductOnlineRevenue,
-          yearlyProductInStoreRevenue,
-        ] = monthlyProductMetrics.reduce(
-          (yearlyProductMetricsAcc, monthlyProductMetric) => {
-            yearlyProductMetricsAcc[0] += monthlyProductMetric.unitsSold.total;
-            yearlyProductMetricsAcc[1] += monthlyProductMetric.unitsSold.online;
-            yearlyProductMetricsAcc[2] += monthlyProductMetric.unitsSold.inStore;
-            yearlyProductMetricsAcc[3] += monthlyProductMetric.revenue.total;
-            yearlyProductMetricsAcc[4] += monthlyProductMetric.revenue.online;
-            yearlyProductMetricsAcc[5] += monthlyProductMetric.revenue.inStore;
-
-            return yearlyProductMetricsAcc;
-          },
-          [0, 0, 0, 0, 0, 0]
-        );
-
-        const yearlyProductMetric: ProductYearlyMetric = {
-          year,
-          unitsSold: {
-            inStore: yearlyProductInStoreUnitsSold,
-            online: yearlyProductOnlineUnitsSold,
-            total: yearlyProductTotalUnitsSold,
-          },
-          revenue: {
-            inStore: yearlyProductInStoreRevenue,
-            online: yearlyProductOnlineRevenue,
-            total: yearlyProductTotalRevenue,
-          },
-          monthlyMetrics: monthlyProductMetrics,
-        };
-
-        return yearlyProductMetric;
+          resolve(randomProductMetrics);
+        }, 0);
       });
-
-      const randomProductMetrics: ProductMetric = {
-        name: productCategory,
-        yearlyMetrics: yearlyProductMetrics,
-      };
-
-      return randomProductMetrics;
     })
   );
 }
@@ -913,78 +894,82 @@ async function createRandomRepairMetrics({
 
   return await Promise.all(
     repairCategories.map(async (repairCategory) => {
-      const yearlyRepairMetrics = Array.from(daysInMonthsInYears).map((yearTuple) => {
-        const [year, daysInMonthsMap] = yearTuple;
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          const yearlyRepairMetrics = Array.from(daysInMonthsInYears).map((yearTuple) => {
+            const [year, daysInMonthsMap] = yearTuple;
 
-        const monthlyRepairMetrics = Array.from(daysInMonthsMap).map((monthTuple) => {
-          const [month, daysRange] = monthTuple;
+            const monthlyRepairMetrics = Array.from(daysInMonthsMap).map((monthTuple) => {
+              const [month, daysRange] = monthTuple;
 
-          const dailyRepairMetrics = daysRange.map((day) => {
-            const [dailyRepairUnits, dailyRepairRevenue] =
-              createRepairCategoryUnitsRepairedRevenueTuple({
-                repairCategory,
-                storeLocation,
-                year,
-                yearUnitsRepairedSpread: YEAR_UNITS_REPAIRED_SPREAD,
+              const dailyRepairMetrics = daysRange.map((day) => {
+                const [dailyRepairUnits, dailyRepairRevenue] =
+                  createRepairCategoryUnitsRepairedRevenueTuple({
+                    repairCategory,
+                    storeLocation,
+                    year,
+                    yearUnitsRepairedSpread: YEAR_UNITS_REPAIRED_SPREAD,
+                  });
+
+                const dailyRepairMetric: RepairDailyMetric = {
+                  day,
+                  unitsRepaired: dailyRepairUnits,
+                  revenue: dailyRepairRevenue,
+                };
+
+                return dailyRepairMetric;
               });
 
-            const dailyRepairMetric: RepairDailyMetric = {
-              day,
-              unitsRepaired: dailyRepairUnits,
-              revenue: dailyRepairRevenue,
+              const [monthlyRepairTotalUnitsRepaired, monthlyRepairTotalRevenue] =
+                dailyRepairMetrics.reduce(
+                  (monthlyRepairMetricsAcc, dailyRepairMetric) => {
+                    monthlyRepairMetricsAcc[0] += dailyRepairMetric.unitsRepaired;
+                    monthlyRepairMetricsAcc[1] += dailyRepairMetric.revenue;
+
+                    return monthlyRepairMetricsAcc;
+                  },
+                  [0, 0]
+                );
+
+              const monthlyRepairMetric: RepairMonthlyMetric = {
+                month,
+                unitsRepaired: monthlyRepairTotalUnitsRepaired,
+                revenue: monthlyRepairTotalRevenue,
+                dailyMetrics: dailyRepairMetrics,
+              };
+
+              return monthlyRepairMetric;
+            });
+
+            const [yearlyRepairTotalUnitsRepaired, yearlyRepairTotalRevenue] =
+              monthlyRepairMetrics.reduce(
+                (yearlyRepairMetricsAcc, monthlyRepairMetric) => {
+                  yearlyRepairMetricsAcc[0] += monthlyRepairMetric.unitsRepaired;
+                  yearlyRepairMetricsAcc[1] += monthlyRepairMetric.revenue;
+
+                  return yearlyRepairMetricsAcc;
+                },
+                [0, 0]
+              );
+
+            const yearlyRepairMetric: RepairYearlyMetric = {
+              year,
+              unitsRepaired: yearlyRepairTotalUnitsRepaired,
+              revenue: yearlyRepairTotalRevenue,
+              monthlyMetrics: monthlyRepairMetrics,
             };
 
-            return dailyRepairMetric;
+            return yearlyRepairMetric;
           });
 
-          const [monthlyRepairTotalUnitsRepaired, monthlyRepairTotalRevenue] =
-            dailyRepairMetrics.reduce(
-              (monthlyRepairMetricsAcc, dailyRepairMetric) => {
-                monthlyRepairMetricsAcc[0] += dailyRepairMetric.unitsRepaired;
-                monthlyRepairMetricsAcc[1] += dailyRepairMetric.revenue;
-
-                return monthlyRepairMetricsAcc;
-              },
-              [0, 0]
-            );
-
-          const monthlyRepairMetric: RepairMonthlyMetric = {
-            month,
-            unitsRepaired: monthlyRepairTotalUnitsRepaired,
-            revenue: monthlyRepairTotalRevenue,
-            dailyMetrics: dailyRepairMetrics,
+          const randomRepairMetrics: RepairMetric = {
+            name: repairCategory,
+            yearlyMetrics: yearlyRepairMetrics,
           };
 
-          return monthlyRepairMetric;
-        });
-
-        const [yearlyRepairTotalUnitsRepaired, yearlyRepairTotalRevenue] =
-          monthlyRepairMetrics.reduce(
-            (yearlyRepairMetricsAcc, monthlyRepairMetric) => {
-              yearlyRepairMetricsAcc[0] += monthlyRepairMetric.unitsRepaired;
-              yearlyRepairMetricsAcc[1] += monthlyRepairMetric.revenue;
-
-              return yearlyRepairMetricsAcc;
-            },
-            [0, 0]
-          );
-
-        const yearlyRepairMetric: RepairYearlyMetric = {
-          year,
-          unitsRepaired: yearlyRepairTotalUnitsRepaired,
-          revenue: yearlyRepairTotalRevenue,
-          monthlyMetrics: monthlyRepairMetrics,
-        };
-
-        return yearlyRepairMetric;
+          resolve(randomRepairMetrics);
+        }, 0);
       });
-
-      const randomRepairMetrics: RepairMetric = {
-        name: repairCategory,
-        yearlyMetrics: yearlyRepairMetrics,
-      };
-
-      return randomRepairMetrics;
     })
   );
 }
@@ -1415,248 +1400,258 @@ async function createRandomCustomerMetrics({
 
   const yearlyCustomersMetrics = await Promise.all(
     Array.from(daysInMonthsInYears).map(async (yearTuple) => {
-      const [year, daysInMonthsMap] = yearTuple;
+      return new Promise<CustomerYearlyMetric>((resolve) => {
+        setTimeout(() => {
+          const [year, daysInMonthsMap] = yearTuple;
 
-      const monthlyCustomersMetrics = Array.from(daysInMonthsMap).map((monthTuple) => {
-        const [month, daysRange] = monthTuple;
+          const monthlyCustomersMetrics = Array.from(daysInMonthsMap).map(
+            (monthTuple) => {
+              const [month, daysRange] = monthTuple;
 
-        const dailyCustomersMetrics = daysRange.map((day) => {
-          const dailyTotalCustomers = createRandomNumber({
-            storeLocation,
-            year,
-            yearUnitsSpread: YEAR_CUSTOMERS_SPREAD,
-            defaultMax: 15,
-            defaultMin: 5,
-          });
+              const dailyCustomersMetrics = daysRange.map((day) => {
+                const dailyTotalCustomers = createRandomNumber({
+                  storeLocation,
+                  year,
+                  yearUnitsSpread: YEAR_CUSTOMERS_SPREAD,
+                  defaultMax: 15,
+                  defaultMin: 5,
+                });
 
-          const dailyNewCustomersFraction = createRandomNumber({
-            storeLocation,
-            year,
-            yearUnitsSpread: YEAR_NEW_CUSTOMERS_SPREAD,
-            defaultMax: 0.2,
-            defaultMin: 0.1,
-            isFraction: true,
-          });
-          const dailyNewCustomers = Math.round(
-            dailyTotalCustomers * dailyNewCustomersFraction
-          );
+                const dailyNewCustomersFraction = createRandomNumber({
+                  storeLocation,
+                  year,
+                  yearUnitsSpread: YEAR_NEW_CUSTOMERS_SPREAD,
+                  defaultMax: 0.2,
+                  defaultMin: 0.1,
+                  isFraction: true,
+                });
+                const dailyNewCustomers = Math.round(
+                  dailyTotalCustomers * dailyNewCustomersFraction
+                );
 
-          const dailyNewCustomersRepairFraction = Math.random() * (0.15 - 0.05) + 0.05;
-          const dailyNewCustomersRepair = Math.round(
-            dailyNewCustomers * dailyNewCustomersRepairFraction
-          );
+                const dailyNewCustomersRepairFraction =
+                  Math.random() * (0.15 - 0.05) + 0.05;
+                const dailyNewCustomersRepair = Math.round(
+                  dailyNewCustomers * dailyNewCustomersRepairFraction
+                );
 
-          const dailyNewCustomersSales = dailyNewCustomers - dailyNewCustomersRepair;
+                const dailyNewCustomersSales =
+                  dailyNewCustomers - dailyNewCustomersRepair;
 
-          const dailyNewCustomersOnlineFraction = Math.random() * (0.9 - 0.7) + 0.7;
-          const dailyNewCustomersOnline = Math.round(
-            dailyNewCustomersSales * dailyNewCustomersOnlineFraction
-          );
+                const dailyNewCustomersOnlineFraction = Math.random() * (0.9 - 0.7) + 0.7;
+                const dailyNewCustomersOnline = Math.round(
+                  dailyNewCustomersSales * dailyNewCustomersOnlineFraction
+                );
 
-          const dailyNewCustomersInStore =
-            dailyNewCustomersSales - dailyNewCustomersOnline;
+                const dailyNewCustomersInStore =
+                  dailyNewCustomersSales - dailyNewCustomersOnline;
 
-          const dailyReturningCustomers = dailyTotalCustomers - dailyNewCustomers;
+                const dailyReturningCustomers = dailyTotalCustomers - dailyNewCustomers;
 
-          const dailyReturningCustomersRepairFraction =
-            Math.random() * (0.15 - 0.05) + 0.05;
-          const dailyReturningCustomersRepair = Math.round(
-            dailyReturningCustomers * dailyReturningCustomersRepairFraction
-          );
+                const dailyReturningCustomersRepairFraction =
+                  Math.random() * (0.15 - 0.05) + 0.05;
+                const dailyReturningCustomersRepair = Math.round(
+                  dailyReturningCustomers * dailyReturningCustomersRepairFraction
+                );
 
-          const dailyReturningCustomersSales =
-            dailyReturningCustomers - dailyReturningCustomersRepair;
+                const dailyReturningCustomersSales =
+                  dailyReturningCustomers - dailyReturningCustomersRepair;
 
-          const dailyReturningCustomersOnlineFraction = Math.random() * (0.9 - 0.7) + 0.7;
-          const dailyReturningCustomersOnline = Math.round(
-            dailyReturningCustomersSales * dailyReturningCustomersOnlineFraction
-          );
+                const dailyReturningCustomersOnlineFraction =
+                  Math.random() * (0.9 - 0.7) + 0.7;
+                const dailyReturningCustomersOnline = Math.round(
+                  dailyReturningCustomersSales * dailyReturningCustomersOnlineFraction
+                );
 
-          const dailyReturningCustomersInStore =
-            dailyReturningCustomersSales - dailyReturningCustomersOnline;
+                const dailyReturningCustomersInStore =
+                  dailyReturningCustomersSales - dailyReturningCustomersOnline;
 
-          const dailyCustomersMetric: CustomerDailyMetric = {
-            day,
-            customers: {
-              total: dailyTotalCustomers,
-              new: {
-                total: dailyNewCustomers,
-                sales: {
-                  total: dailyNewCustomersSales,
-                  online: dailyNewCustomersOnline,
-                  inStore: dailyNewCustomersInStore,
+                const dailyCustomersMetric: CustomerDailyMetric = {
+                  day,
+                  customers: {
+                    total: dailyTotalCustomers,
+                    new: {
+                      total: dailyNewCustomers,
+                      sales: {
+                        total: dailyNewCustomersSales,
+                        online: dailyNewCustomersOnline,
+                        inStore: dailyNewCustomersInStore,
+                      },
+                      repair: dailyNewCustomersRepair,
+                    },
+                    returning: {
+                      total: dailyReturningCustomers,
+                      sales: {
+                        total: dailyReturningCustomersSales,
+                        online: dailyReturningCustomersOnline,
+                        inStore: dailyReturningCustomersInStore,
+                      },
+                      repair: dailyReturningCustomersRepair,
+                    },
+                  },
+                };
+
+                return dailyCustomersMetric;
+              });
+
+              const initialMonthlyCustomersMetrics: CustomerMonthlyMetric = {
+                month,
+                customers: {
+                  new: {
+                    repair: 0,
+                    sales: {
+                      inStore: 0,
+                      online: 0,
+                      total: 0,
+                    },
+                    total: 0,
+                  },
+                  returning: {
+                    repair: 0,
+                    sales: {
+                      inStore: 0,
+                      online: 0,
+                      total: 0,
+                    },
+                    total: 0,
+                  },
+                  total: 0,
+                  churnRate: 0,
+                  retentionRate: 0,
                 },
-                repair: dailyNewCustomersRepair,
+                dailyMetrics: dailyCustomersMetrics,
+              };
+
+              const monthlyCustomersMetrics = dailyCustomersMetrics.reduce(
+                (monthlyCustomersMetricsAcc, dailyCustomersMetric) => {
+                  monthlyCustomersMetricsAcc.customers.total +=
+                    dailyCustomersMetric.customers.total;
+
+                  monthlyCustomersMetricsAcc.customers.new.total +=
+                    dailyCustomersMetric.customers.new.total;
+                  monthlyCustomersMetricsAcc.customers.new.repair +=
+                    dailyCustomersMetric.customers.new.repair;
+                  monthlyCustomersMetricsAcc.customers.new.sales.total +=
+                    dailyCustomersMetric.customers.new.sales.total;
+                  monthlyCustomersMetricsAcc.customers.new.sales.online +=
+                    dailyCustomersMetric.customers.new.sales.online;
+                  monthlyCustomersMetricsAcc.customers.new.sales.inStore +=
+                    dailyCustomersMetric.customers.new.sales.inStore;
+
+                  monthlyCustomersMetricsAcc.customers.returning.total +=
+                    dailyCustomersMetric.customers.returning.total;
+                  monthlyCustomersMetricsAcc.customers.returning.repair +=
+                    dailyCustomersMetric.customers.returning.repair;
+                  monthlyCustomersMetricsAcc.customers.returning.sales.total +=
+                    dailyCustomersMetric.customers.returning.sales.total;
+                  monthlyCustomersMetricsAcc.customers.returning.sales.online +=
+                    dailyCustomersMetric.customers.returning.sales.online;
+                  monthlyCustomersMetricsAcc.customers.returning.sales.inStore +=
+                    dailyCustomersMetric.customers.returning.sales.inStore;
+
+                  return monthlyCustomersMetricsAcc;
+                },
+                initialMonthlyCustomersMetrics
+              );
+
+              const monthlyCustomersChurnRate = createRandomNumber({
+                storeLocation,
+                year,
+                yearUnitsSpread: YEAR_CHURN_RATE_SPREAD,
+                defaultMax: 0.3,
+                defaultMin: 0.1,
+                isFraction: true,
+              });
+              monthlyCustomersMetrics.customers.churnRate = toFixedFloat(
+                monthlyCustomersChurnRate
+              );
+
+              const monthlyCustomersRetentionRate = 1 - monthlyCustomersChurnRate;
+              monthlyCustomersMetrics.customers.retentionRate = toFixedFloat(
+                monthlyCustomersRetentionRate
+              );
+
+              return monthlyCustomersMetrics;
+            }
+          );
+
+          const initialYearlyCustomersMetrics: CustomerYearlyMetric = {
+            year,
+            customers: {
+              total: 0,
+              new: {
+                repair: 0,
+                sales: {
+                  inStore: 0,
+                  online: 0,
+                  total: 0,
+                },
+                total: 0,
               },
               returning: {
-                total: dailyReturningCustomers,
+                repair: 0,
                 sales: {
-                  total: dailyReturningCustomersSales,
-                  online: dailyReturningCustomersOnline,
-                  inStore: dailyReturningCustomersInStore,
+                  inStore: 0,
+                  online: 0,
+                  total: 0,
                 },
-                repair: dailyReturningCustomersRepair,
+                total: 0,
               },
+              churnRate: 0,
+              retentionRate: 0,
             },
+            monthlyMetrics: monthlyCustomersMetrics,
           };
 
-          return dailyCustomersMetric;
-        });
+          const yearlyCustomersMetrics = monthlyCustomersMetrics.reduce(
+            (yearlyCustomersMetricsAcc, monthlyCustomersMetric) => {
+              yearlyCustomersMetricsAcc.customers.total +=
+                monthlyCustomersMetric.customers.total;
 
-        const initialMonthlyCustomersMetrics: CustomerMonthlyMetric = {
-          month,
-          customers: {
-            new: {
-              repair: 0,
-              sales: {
-                inStore: 0,
-                online: 0,
-                total: 0,
-              },
-              total: 0,
+              yearlyCustomersMetricsAcc.customers.new.total +=
+                monthlyCustomersMetric.customers.new.total;
+              yearlyCustomersMetricsAcc.customers.new.repair +=
+                monthlyCustomersMetric.customers.new.repair;
+              yearlyCustomersMetricsAcc.customers.new.sales.total +=
+                monthlyCustomersMetric.customers.new.sales.total;
+              yearlyCustomersMetricsAcc.customers.new.sales.online +=
+                monthlyCustomersMetric.customers.new.sales.online;
+              yearlyCustomersMetricsAcc.customers.new.sales.inStore +=
+                monthlyCustomersMetric.customers.new.sales.inStore;
+
+              yearlyCustomersMetricsAcc.customers.returning.total +=
+                monthlyCustomersMetric.customers.returning.total;
+              yearlyCustomersMetricsAcc.customers.returning.repair +=
+                monthlyCustomersMetric.customers.returning.repair;
+              yearlyCustomersMetricsAcc.customers.returning.sales.total +=
+                monthlyCustomersMetric.customers.returning.sales.total;
+              yearlyCustomersMetricsAcc.customers.returning.sales.online +=
+                monthlyCustomersMetric.customers.returning.sales.online;
+              yearlyCustomersMetricsAcc.customers.returning.sales.inStore +=
+                monthlyCustomersMetric.customers.returning.sales.inStore;
+              return yearlyCustomersMetricsAcc;
             },
-            returning: {
-              repair: 0,
-              sales: {
-                inStore: 0,
-                online: 0,
-                total: 0,
-              },
-              total: 0,
-            },
-            total: 0,
-            churnRate: 0,
-            retentionRate: 0,
-          },
-          dailyMetrics: dailyCustomersMetrics,
-        };
+            initialYearlyCustomersMetrics
+          );
 
-        const monthlyCustomersMetrics = dailyCustomersMetrics.reduce(
-          (monthlyCustomersMetricsAcc, dailyCustomersMetric) => {
-            monthlyCustomersMetricsAcc.customers.total +=
-              dailyCustomersMetric.customers.total;
+          const yearlyCustomersChurnRate = monthlyCustomersMetrics.reduce(
+            (yearlyCustomersChurnRateAcc, monthlyCustomersMetric) =>
+              (yearlyCustomersChurnRateAcc += monthlyCustomersMetric.customers.churnRate),
+            0
+          );
+          yearlyCustomersMetrics.customers.churnRate = toFixedFloat(
+            yearlyCustomersChurnRate / 12
+          );
 
-            monthlyCustomersMetricsAcc.customers.new.total +=
-              dailyCustomersMetric.customers.new.total;
-            monthlyCustomersMetricsAcc.customers.new.repair +=
-              dailyCustomersMetric.customers.new.repair;
-            monthlyCustomersMetricsAcc.customers.new.sales.total +=
-              dailyCustomersMetric.customers.new.sales.total;
-            monthlyCustomersMetricsAcc.customers.new.sales.online +=
-              dailyCustomersMetric.customers.new.sales.online;
-            monthlyCustomersMetricsAcc.customers.new.sales.inStore +=
-              dailyCustomersMetric.customers.new.sales.inStore;
+          const yearlyCustomersRetentionRate =
+            1 - yearlyCustomersMetrics.customers.churnRate;
+          yearlyCustomersMetrics.customers.retentionRate = toFixedFloat(
+            yearlyCustomersRetentionRate
+          );
 
-            monthlyCustomersMetricsAcc.customers.returning.total +=
-              dailyCustomersMetric.customers.returning.total;
-            monthlyCustomersMetricsAcc.customers.returning.repair +=
-              dailyCustomersMetric.customers.returning.repair;
-            monthlyCustomersMetricsAcc.customers.returning.sales.total +=
-              dailyCustomersMetric.customers.returning.sales.total;
-            monthlyCustomersMetricsAcc.customers.returning.sales.online +=
-              dailyCustomersMetric.customers.returning.sales.online;
-            monthlyCustomersMetricsAcc.customers.returning.sales.inStore +=
-              dailyCustomersMetric.customers.returning.sales.inStore;
-
-            return monthlyCustomersMetricsAcc;
-          },
-          initialMonthlyCustomersMetrics
-        );
-
-        const monthlyCustomersChurnRate = createRandomNumber({
-          storeLocation,
-          year,
-          yearUnitsSpread: YEAR_CHURN_RATE_SPREAD,
-          defaultMax: 0.3,
-          defaultMin: 0.1,
-          isFraction: true,
-        });
-        monthlyCustomersMetrics.customers.churnRate = toFixedFloat(
-          monthlyCustomersChurnRate
-        );
-
-        const monthlyCustomersRetentionRate = 1 - monthlyCustomersChurnRate;
-        monthlyCustomersMetrics.customers.retentionRate = toFixedFloat(
-          monthlyCustomersRetentionRate
-        );
-
-        return monthlyCustomersMetrics;
+          resolve(yearlyCustomersMetrics);
+        }, 0);
       });
-
-      const initialYearlyCustomersMetrics: CustomerYearlyMetric = {
-        year,
-        customers: {
-          total: 0,
-          new: {
-            repair: 0,
-            sales: {
-              inStore: 0,
-              online: 0,
-              total: 0,
-            },
-            total: 0,
-          },
-          returning: {
-            repair: 0,
-            sales: {
-              inStore: 0,
-              online: 0,
-              total: 0,
-            },
-            total: 0,
-          },
-          churnRate: 0,
-          retentionRate: 0,
-        },
-        monthlyMetrics: monthlyCustomersMetrics,
-      };
-
-      const yearlyCustomersMetrics = monthlyCustomersMetrics.reduce(
-        (yearlyCustomersMetricsAcc, monthlyCustomersMetric) => {
-          yearlyCustomersMetricsAcc.customers.total +=
-            monthlyCustomersMetric.customers.total;
-
-          yearlyCustomersMetricsAcc.customers.new.total +=
-            monthlyCustomersMetric.customers.new.total;
-          yearlyCustomersMetricsAcc.customers.new.repair +=
-            monthlyCustomersMetric.customers.new.repair;
-          yearlyCustomersMetricsAcc.customers.new.sales.total +=
-            monthlyCustomersMetric.customers.new.sales.total;
-          yearlyCustomersMetricsAcc.customers.new.sales.online +=
-            monthlyCustomersMetric.customers.new.sales.online;
-          yearlyCustomersMetricsAcc.customers.new.sales.inStore +=
-            monthlyCustomersMetric.customers.new.sales.inStore;
-
-          yearlyCustomersMetricsAcc.customers.returning.total +=
-            monthlyCustomersMetric.customers.returning.total;
-          yearlyCustomersMetricsAcc.customers.returning.repair +=
-            monthlyCustomersMetric.customers.returning.repair;
-          yearlyCustomersMetricsAcc.customers.returning.sales.total +=
-            monthlyCustomersMetric.customers.returning.sales.total;
-          yearlyCustomersMetricsAcc.customers.returning.sales.online +=
-            monthlyCustomersMetric.customers.returning.sales.online;
-          yearlyCustomersMetricsAcc.customers.returning.sales.inStore +=
-            monthlyCustomersMetric.customers.returning.sales.inStore;
-          return yearlyCustomersMetricsAcc;
-        },
-        initialYearlyCustomersMetrics
-      );
-
-      const yearlyCustomersChurnRate = monthlyCustomersMetrics.reduce(
-        (yearlyCustomersChurnRateAcc, monthlyCustomersMetric) =>
-          (yearlyCustomersChurnRateAcc += monthlyCustomersMetric.customers.churnRate),
-        0
-      );
-      yearlyCustomersMetrics.customers.churnRate = toFixedFloat(
-        yearlyCustomersChurnRate / 12
-      );
-
-      const yearlyCustomersRetentionRate = 1 - yearlyCustomersMetrics.customers.churnRate;
-      yearlyCustomersMetrics.customers.retentionRate = toFixedFloat(
-        yearlyCustomersRetentionRate
-      );
-
-      return yearlyCustomersMetrics;
     })
   );
 
@@ -2394,367 +2389,399 @@ async function createRandomFinancialMetrics({
 
   return await Promise.all(
     storeLocations.map(async (storeLocation) => {
-      // for this store location, find the created product and repair metrics
-      const businessMetric = businessMetrics.find(
-        (businessMetric) => businessMetric.storeLocation === storeLocation
-      );
-      if (!businessMetric) {
-        return [];
-      }
-
-      const { productMetrics, repairMetrics } = businessMetric;
-
-      // 'All Products' category in productMetrics is already aggregated from other product categories
-      const allProductsCategory = productMetrics.find(
-        (productMetric) => productMetric.name === "All Products"
-      );
-      // 'All Repairs' category in repairMetrics is already aggregated from other repair categories
-      const allRepairsCategory = repairMetrics.find(
-        (repairMetric) => repairMetric.name === "All Repairs"
-      );
-      if (!allProductsCategory || !allRepairsCategory) {
-        return [];
-      }
-
-      const daysInMonthsInYears = returnDaysInMonthsInYears({
-        daysPerMonth: DAYS_PER_MONTH,
-        months: MONTHS,
-        storeLocation,
-      });
-
-      const yearlyFinancialMetrics = Array.from(daysInMonthsInYears).map((yearTuple) => {
-        const [year, daysInMonthsMap] = yearTuple;
-
-        const yearlyProductMetrics = allProductsCategory.yearlyMetrics.find(
-          (yearlyProductMetric) => yearlyProductMetric.year === year
-        );
-        const yearlyRepairMetrics = allRepairsCategory.yearlyMetrics.find(
-          (yearlyRepairMetric) => yearlyRepairMetric.year === year
-        );
-        if (!yearlyProductMetrics || !yearlyRepairMetrics) {
-          return YEARLY_FINANCIAL_METRICS_TEMPLATE;
-        }
-
-        const monthlyFinancialMetrics = Array.from(daysInMonthsMap).map((monthTuple) => {
-          const [month, daysRange] = monthTuple;
-
-          const monthlyProductMetrics = yearlyProductMetrics.monthlyMetrics.find(
-            (monthlyProductMetric) => monthlyProductMetric.month === month
+      return new Promise<[StoreLocation, YearlyFinancialMetric[]]>((resolve) => {
+        setTimeout(async () => {
+          // for this store location, find the created product and repair metrics
+          const businessMetric = businessMetrics.find(
+            (businessMetric) => businessMetric.storeLocation === storeLocation
           );
-          const monthlyRepairMetrics = yearlyRepairMetrics.monthlyMetrics.find(
-            (monthlyRepairMetric) => monthlyRepairMetric.month === month
-          );
-          if (!monthlyProductMetrics || !monthlyRepairMetrics) {
-            return MONTHLY_FINANCIAL_METRICS_TEMPLATE;
+          if (!businessMetric) {
+            return [];
           }
 
-          const dailyFinancialMetrics = daysRange.map((day) => {
-            const dailyProductMetrics = monthlyProductMetrics.dailyMetrics.find(
-              (dailyProductMetric) => dailyProductMetric.day === day
-            );
-            const dailyRepairMetrics = monthlyRepairMetrics.dailyMetrics.find(
-              (dailyRepairMetric) => dailyRepairMetric.day === day
-            );
-            if (!dailyProductMetrics || !dailyRepairMetrics) {
-              return DAILY_FINANCIAL_METRICS_TEMPLATE;
-            }
+          const { productMetrics, repairMetrics } = businessMetric;
 
-            const dailyTransactions: FinancialMetricCategory = {
-              total:
-                dailyProductMetrics.unitsSold.total + dailyRepairMetrics.unitsRepaired,
-              repair: dailyRepairMetrics.unitsRepaired,
-              sales: {
-                total: dailyProductMetrics.unitsSold.total,
-                inStore: dailyProductMetrics.unitsSold.inStore,
-                online: dailyProductMetrics.unitsSold.online,
-              },
-            };
+          // 'All Products' category in productMetrics is already aggregated from other product categories
+          const allProductsCategory = productMetrics.find(
+            (productMetric) => productMetric.name === "All Products"
+          );
+          // 'All Repairs' category in repairMetrics is already aggregated from other repair categories
+          const allRepairsCategory = repairMetrics.find(
+            (repairMetric) => repairMetric.name === "All Repairs"
+          );
+          if (!allProductsCategory || !allRepairsCategory) {
+            return [];
+          }
 
-            const dailyRevenues: FinancialMetricCategory = {
-              total: dailyProductMetrics.revenue.total + dailyRepairMetrics.revenue,
-              repair: dailyRepairMetrics.revenue,
-              sales: {
-                total: dailyProductMetrics.revenue.total,
-                inStore: dailyProductMetrics.revenue.inStore,
-                online: dailyProductMetrics.revenue.inStore,
-              },
-            };
-
-            const dailyAverageOrderValue = Math.round(
-              dailyRevenues.total / dailyTransactions.total
-            );
-
-            let dailyConversionRate = createRandomNumber({
-              storeLocation,
-              year,
-              yearUnitsSpread: YEAR_CONVERSION_RATE_SPREAD,
-              defaultMax: 0.03,
-              defaultMin: 0.01,
-              isFraction: true,
-            });
-            dailyConversionRate = toFixedFloat(dailyConversionRate);
-
-            // generate expenses to calculate profit
-
-            let dailyNetProfitMargin = createRandomNumber({
-              storeLocation,
-              year,
-              yearUnitsSpread: YEAR_PROFIT_MARGIN_SPREAD,
-              defaultMax: 0.3,
-              defaultMin: 0.1,
-              isFraction: true,
-            });
-            dailyNetProfitMargin = toFixedFloat(dailyNetProfitMargin);
-
-            const dailyProfit = Math.round(dailyRevenues.total * dailyNetProfitMargin);
-
-            const dailyRepairProfitFraction = createRandomNumber({
-              storeLocation,
-              year,
-              yearUnitsSpread: YEAR_REPAIR_PROFIT_SPREAD,
-              defaultMax: 0.3,
-              defaultMin: 0.1,
-              isFraction: true,
-            });
-            const dailyRepairProfit = Math.round(dailyRepairProfitFraction * dailyProfit);
-
-            const dailySalesProfit = Math.round(dailyProfit - dailyRepairProfit);
-
-            const dailyOnlineProfitFraction = createRandomNumber({
-              storeLocation,
-              year,
-              yearUnitsSpread: YEAR_ONLINE_PROFIT_SPREAD,
-              defaultMax: 0.03,
-              defaultMin: 0.01,
-              isFraction: true,
-            });
-            const dailyOnlineProfit = Math.round(
-              dailySalesProfit * dailyOnlineProfitFraction
-            );
-
-            const dailyInStoreProfit = dailySalesProfit - dailyOnlineProfit;
-
-            const dailyProfits: FinancialMetricCategory = {
-              total: dailyProfit,
-              repair: dailyRepairProfit,
-              sales: {
-                total: dailySalesProfit,
-                inStore: dailyInStoreProfit,
-                online: dailyOnlineProfit,
-              },
-            };
-
-            const dailyExpense = Math.round(dailyRevenues.total - dailyProfit);
-
-            const dailyRepairExpenseFraction = createRandomNumber({
-              storeLocation,
-              year,
-              yearUnitsSpread: YEAR_REPAIR_EXPENSES_SPREAD,
-              defaultMax: 0.3,
-              defaultMin: 0.1,
-              isFraction: true,
-            });
-            const dailyRepairExpense = Math.round(
-              dailyRepairExpenseFraction * dailyExpense
-            );
-
-            const dailySalesExpense = dailyExpense - dailyRepairExpense;
-
-            const dailyOnlineExpenseFraction = createRandomNumber({
-              storeLocation,
-              year,
-              yearUnitsSpread: YEAR_ONLINE_EXPENSES_SPREAD,
-              defaultMax: 0.03,
-              defaultMin: 0.01,
-              isFraction: true,
-            });
-            const dailyOnlineExpense = Math.round(
-              dailySalesExpense * dailyOnlineExpenseFraction
-            );
-
-            const dailyInStoreExpense = dailySalesExpense - dailyOnlineExpense;
-
-            const dailyExpenses: FinancialMetricCategory = {
-              total: dailyExpense,
-              repair: dailyRepairExpense,
-              sales: {
-                total: dailySalesExpense,
-                inStore: dailyInStoreExpense,
-                online: dailyOnlineExpense,
-              },
-            };
-
-            const dailyFinancialMetric: DailyFinancialMetric = {
-              day,
-              averageOrderValue: dailyAverageOrderValue,
-              conversionRate: dailyConversionRate,
-              netProfitMargin: dailyNetProfitMargin,
-              expenses: dailyExpenses,
-              profit: dailyProfits,
-              revenue: dailyRevenues,
-              transactions: dailyTransactions,
-            };
-
-            return dailyFinancialMetric;
+          const daysInMonthsInYears = returnDaysInMonthsInYears({
+            daysPerMonth: DAYS_PER_MONTH,
+            months: MONTHS,
+            storeLocation,
           });
 
-          // aggregate created daily financial metrics into monthly financial metrics
+          const yearlyFinancialMetrics = await Promise.all(
+            Array.from(daysInMonthsInYears).map(async (yearTuple) => {
+              return new Promise<YearlyFinancialMetric>((resolve_) => {
+                setTimeout(() => {
+                  const [year, daysInMonthsMap] = yearTuple;
 
-          const monthlyFinancialMetric =
-            dailyFinancialMetrics.reduce<MonthlyFinancialMetric>(
-              (monthlyFinancialMetricAcc, dailyFinancialMetric) => {
-                monthlyFinancialMetricAcc.month = month;
+                  const yearlyProductMetrics = allProductsCategory.yearlyMetrics.find(
+                    (yearlyProductMetric) => yearlyProductMetric.year === year
+                  );
+                  const yearlyRepairMetrics = allRepairsCategory.yearlyMetrics.find(
+                    (yearlyRepairMetric) => yearlyRepairMetric.year === year
+                  );
+                  if (!yearlyProductMetrics || !yearlyRepairMetrics) {
+                    return YEARLY_FINANCIAL_METRICS_TEMPLATE;
+                  }
 
-                monthlyFinancialMetricAcc.averageOrderValue +=
-                  dailyFinancialMetric.averageOrderValue;
-                monthlyFinancialMetricAcc.conversionRate +=
-                  dailyFinancialMetric.conversionRate;
-                monthlyFinancialMetricAcc.netProfitMargin +=
-                  dailyFinancialMetric.netProfitMargin;
+                  const monthlyFinancialMetrics = Array.from(daysInMonthsMap).map(
+                    (monthTuple) => {
+                      const [month, daysRange] = monthTuple;
 
-                monthlyFinancialMetricAcc.expenses.total +=
-                  dailyFinancialMetric.expenses.total;
-                monthlyFinancialMetricAcc.expenses.repair +=
-                  dailyFinancialMetric.expenses.repair;
-                monthlyFinancialMetricAcc.expenses.sales.total +=
-                  dailyFinancialMetric.expenses.sales.total;
-                monthlyFinancialMetricAcc.expenses.sales.inStore +=
-                  dailyFinancialMetric.expenses.sales.inStore;
-                monthlyFinancialMetricAcc.expenses.sales.online +=
-                  dailyFinancialMetric.expenses.sales.online;
+                      const monthlyProductMetrics =
+                        yearlyProductMetrics.monthlyMetrics.find(
+                          (monthlyProductMetric) => monthlyProductMetric.month === month
+                        );
+                      const monthlyRepairMetrics =
+                        yearlyRepairMetrics.monthlyMetrics.find(
+                          (monthlyRepairMetric) => monthlyRepairMetric.month === month
+                        );
+                      if (!monthlyProductMetrics || !monthlyRepairMetrics) {
+                        return MONTHLY_FINANCIAL_METRICS_TEMPLATE;
+                      }
 
-                monthlyFinancialMetricAcc.profit.total +=
-                  dailyFinancialMetric.profit.total;
-                monthlyFinancialMetricAcc.profit.repair +=
-                  dailyFinancialMetric.profit.repair;
-                monthlyFinancialMetricAcc.profit.sales.total +=
-                  dailyFinancialMetric.profit.sales.total;
-                monthlyFinancialMetricAcc.profit.sales.inStore +=
-                  dailyFinancialMetric.profit.sales.inStore;
-                monthlyFinancialMetricAcc.profit.sales.online +=
-                  dailyFinancialMetric.profit.sales.online;
+                      const dailyFinancialMetrics = daysRange.map((day) => {
+                        const dailyProductMetrics =
+                          monthlyProductMetrics.dailyMetrics.find(
+                            (dailyProductMetric) => dailyProductMetric.day === day
+                          );
+                        const dailyRepairMetrics = monthlyRepairMetrics.dailyMetrics.find(
+                          (dailyRepairMetric) => dailyRepairMetric.day === day
+                        );
+                        if (!dailyProductMetrics || !dailyRepairMetrics) {
+                          return DAILY_FINANCIAL_METRICS_TEMPLATE;
+                        }
 
-                monthlyFinancialMetricAcc.revenue.total +=
-                  dailyFinancialMetric.revenue.total;
-                monthlyFinancialMetricAcc.revenue.repair +=
-                  dailyFinancialMetric.revenue.repair;
-                monthlyFinancialMetricAcc.revenue.sales.total +=
-                  dailyFinancialMetric.revenue.sales.total;
-                monthlyFinancialMetricAcc.revenue.sales.inStore +=
-                  dailyFinancialMetric.revenue.sales.inStore;
-                monthlyFinancialMetricAcc.revenue.sales.online +=
-                  dailyFinancialMetric.revenue.sales.online;
+                        const dailyTransactions: FinancialMetricCategory = {
+                          total:
+                            dailyProductMetrics.unitsSold.total +
+                            dailyRepairMetrics.unitsRepaired,
+                          repair: dailyRepairMetrics.unitsRepaired,
+                          sales: {
+                            total: dailyProductMetrics.unitsSold.total,
+                            inStore: dailyProductMetrics.unitsSold.inStore,
+                            online: dailyProductMetrics.unitsSold.online,
+                          },
+                        };
 
-                monthlyFinancialMetricAcc.transactions.total +=
-                  dailyFinancialMetric.transactions.total;
-                monthlyFinancialMetricAcc.transactions.repair +=
-                  dailyFinancialMetric.transactions.repair;
-                monthlyFinancialMetricAcc.transactions.sales.total +=
-                  dailyFinancialMetric.transactions.sales.total;
-                monthlyFinancialMetricAcc.transactions.sales.inStore +=
-                  dailyFinancialMetric.transactions.sales.inStore;
-                monthlyFinancialMetricAcc.transactions.sales.online +=
-                  dailyFinancialMetric.transactions.sales.online;
+                        const dailyRevenues: FinancialMetricCategory = {
+                          total:
+                            dailyProductMetrics.revenue.total +
+                            dailyRepairMetrics.revenue,
+                          repair: dailyRepairMetrics.revenue,
+                          sales: {
+                            total: dailyProductMetrics.revenue.total,
+                            inStore: dailyProductMetrics.revenue.inStore,
+                            online: dailyProductMetrics.revenue.inStore,
+                          },
+                        };
 
-                return monthlyFinancialMetricAcc;
-              },
-              structuredClone(MONTHLY_FINANCIAL_METRICS_TEMPLATE)
-            );
+                        const dailyAverageOrderValue = Math.round(
+                          dailyRevenues.total / dailyTransactions.total
+                        );
 
-          monthlyFinancialMetric.averageOrderValue = Math.round(
-            monthlyFinancialMetric.averageOrderValue / dailyFinancialMetrics.length
+                        let dailyConversionRate = createRandomNumber({
+                          storeLocation,
+                          year,
+                          yearUnitsSpread: YEAR_CONVERSION_RATE_SPREAD,
+                          defaultMax: 0.03,
+                          defaultMin: 0.01,
+                          isFraction: true,
+                        });
+                        dailyConversionRate = toFixedFloat(dailyConversionRate);
+
+                        // generate expenses to calculate profit
+
+                        let dailyNetProfitMargin = createRandomNumber({
+                          storeLocation,
+                          year,
+                          yearUnitsSpread: YEAR_PROFIT_MARGIN_SPREAD,
+                          defaultMax: 0.3,
+                          defaultMin: 0.1,
+                          isFraction: true,
+                        });
+                        dailyNetProfitMargin = toFixedFloat(dailyNetProfitMargin);
+
+                        const dailyProfit = Math.round(
+                          dailyRevenues.total * dailyNetProfitMargin
+                        );
+
+                        const dailyRepairProfitFraction = createRandomNumber({
+                          storeLocation,
+                          year,
+                          yearUnitsSpread: YEAR_REPAIR_PROFIT_SPREAD,
+                          defaultMax: 0.3,
+                          defaultMin: 0.1,
+                          isFraction: true,
+                        });
+                        const dailyRepairProfit = Math.round(
+                          dailyRepairProfitFraction * dailyProfit
+                        );
+
+                        const dailySalesProfit = Math.round(
+                          dailyProfit - dailyRepairProfit
+                        );
+
+                        const dailyOnlineProfitFraction = createRandomNumber({
+                          storeLocation,
+                          year,
+                          yearUnitsSpread: YEAR_ONLINE_PROFIT_SPREAD,
+                          defaultMax: 0.03,
+                          defaultMin: 0.01,
+                          isFraction: true,
+                        });
+                        const dailyOnlineProfit = Math.round(
+                          dailySalesProfit * dailyOnlineProfitFraction
+                        );
+
+                        const dailyInStoreProfit = dailySalesProfit - dailyOnlineProfit;
+
+                        const dailyProfits: FinancialMetricCategory = {
+                          total: dailyProfit,
+                          repair: dailyRepairProfit,
+                          sales: {
+                            total: dailySalesProfit,
+                            inStore: dailyInStoreProfit,
+                            online: dailyOnlineProfit,
+                          },
+                        };
+
+                        const dailyExpense = Math.round(
+                          dailyRevenues.total - dailyProfit
+                        );
+
+                        const dailyRepairExpenseFraction = createRandomNumber({
+                          storeLocation,
+                          year,
+                          yearUnitsSpread: YEAR_REPAIR_EXPENSES_SPREAD,
+                          defaultMax: 0.3,
+                          defaultMin: 0.1,
+                          isFraction: true,
+                        });
+                        const dailyRepairExpense = Math.round(
+                          dailyRepairExpenseFraction * dailyExpense
+                        );
+
+                        const dailySalesExpense = dailyExpense - dailyRepairExpense;
+
+                        const dailyOnlineExpenseFraction = createRandomNumber({
+                          storeLocation,
+                          year,
+                          yearUnitsSpread: YEAR_ONLINE_EXPENSES_SPREAD,
+                          defaultMax: 0.03,
+                          defaultMin: 0.01,
+                          isFraction: true,
+                        });
+                        const dailyOnlineExpense = Math.round(
+                          dailySalesExpense * dailyOnlineExpenseFraction
+                        );
+
+                        const dailyInStoreExpense =
+                          dailySalesExpense - dailyOnlineExpense;
+
+                        const dailyExpenses: FinancialMetricCategory = {
+                          total: dailyExpense,
+                          repair: dailyRepairExpense,
+                          sales: {
+                            total: dailySalesExpense,
+                            inStore: dailyInStoreExpense,
+                            online: dailyOnlineExpense,
+                          },
+                        };
+
+                        const dailyFinancialMetric: DailyFinancialMetric = {
+                          day,
+                          averageOrderValue: dailyAverageOrderValue,
+                          conversionRate: dailyConversionRate,
+                          netProfitMargin: dailyNetProfitMargin,
+                          expenses: dailyExpenses,
+                          profit: dailyProfits,
+                          revenue: dailyRevenues,
+                          transactions: dailyTransactions,
+                        };
+
+                        return dailyFinancialMetric;
+                      });
+
+                      // aggregate created daily financial metrics into monthly financial metrics
+
+                      const monthlyFinancialMetric =
+                        dailyFinancialMetrics.reduce<MonthlyFinancialMetric>(
+                          (monthlyFinancialMetricAcc, dailyFinancialMetric) => {
+                            monthlyFinancialMetricAcc.month = month;
+
+                            monthlyFinancialMetricAcc.averageOrderValue +=
+                              dailyFinancialMetric.averageOrderValue;
+                            monthlyFinancialMetricAcc.conversionRate +=
+                              dailyFinancialMetric.conversionRate;
+                            monthlyFinancialMetricAcc.netProfitMargin +=
+                              dailyFinancialMetric.netProfitMargin;
+
+                            monthlyFinancialMetricAcc.expenses.total +=
+                              dailyFinancialMetric.expenses.total;
+                            monthlyFinancialMetricAcc.expenses.repair +=
+                              dailyFinancialMetric.expenses.repair;
+                            monthlyFinancialMetricAcc.expenses.sales.total +=
+                              dailyFinancialMetric.expenses.sales.total;
+                            monthlyFinancialMetricAcc.expenses.sales.inStore +=
+                              dailyFinancialMetric.expenses.sales.inStore;
+                            monthlyFinancialMetricAcc.expenses.sales.online +=
+                              dailyFinancialMetric.expenses.sales.online;
+
+                            monthlyFinancialMetricAcc.profit.total +=
+                              dailyFinancialMetric.profit.total;
+                            monthlyFinancialMetricAcc.profit.repair +=
+                              dailyFinancialMetric.profit.repair;
+                            monthlyFinancialMetricAcc.profit.sales.total +=
+                              dailyFinancialMetric.profit.sales.total;
+                            monthlyFinancialMetricAcc.profit.sales.inStore +=
+                              dailyFinancialMetric.profit.sales.inStore;
+                            monthlyFinancialMetricAcc.profit.sales.online +=
+                              dailyFinancialMetric.profit.sales.online;
+
+                            monthlyFinancialMetricAcc.revenue.total +=
+                              dailyFinancialMetric.revenue.total;
+                            monthlyFinancialMetricAcc.revenue.repair +=
+                              dailyFinancialMetric.revenue.repair;
+                            monthlyFinancialMetricAcc.revenue.sales.total +=
+                              dailyFinancialMetric.revenue.sales.total;
+                            monthlyFinancialMetricAcc.revenue.sales.inStore +=
+                              dailyFinancialMetric.revenue.sales.inStore;
+                            monthlyFinancialMetricAcc.revenue.sales.online +=
+                              dailyFinancialMetric.revenue.sales.online;
+
+                            monthlyFinancialMetricAcc.transactions.total +=
+                              dailyFinancialMetric.transactions.total;
+                            monthlyFinancialMetricAcc.transactions.repair +=
+                              dailyFinancialMetric.transactions.repair;
+                            monthlyFinancialMetricAcc.transactions.sales.total +=
+                              dailyFinancialMetric.transactions.sales.total;
+                            monthlyFinancialMetricAcc.transactions.sales.inStore +=
+                              dailyFinancialMetric.transactions.sales.inStore;
+                            monthlyFinancialMetricAcc.transactions.sales.online +=
+                              dailyFinancialMetric.transactions.sales.online;
+
+                            return monthlyFinancialMetricAcc;
+                          },
+                          structuredClone(MONTHLY_FINANCIAL_METRICS_TEMPLATE)
+                        );
+
+                      monthlyFinancialMetric.averageOrderValue = Math.round(
+                        monthlyFinancialMetric.averageOrderValue /
+                          dailyFinancialMetrics.length
+                      );
+                      monthlyFinancialMetric.conversionRate = toFixedFloat(
+                        monthlyFinancialMetric.conversionRate /
+                          dailyFinancialMetrics.length
+                      );
+                      monthlyFinancialMetric.netProfitMargin = toFixedFloat(
+                        monthlyFinancialMetric.netProfitMargin /
+                          dailyFinancialMetrics.length,
+                        2
+                      );
+                      monthlyFinancialMetric.dailyMetrics = dailyFinancialMetrics;
+
+                      return monthlyFinancialMetric;
+                    }
+                  );
+
+                  // aggregate created monthly financial metrics into yearly financial metrics
+
+                  const yearlyFinancialMetric =
+                    monthlyFinancialMetrics.reduce<YearlyFinancialMetric>(
+                      (yearlyFinancialMetricAcc, monthlyFinancialMetric) => {
+                        yearlyFinancialMetricAcc.year = year;
+
+                        yearlyFinancialMetricAcc.averageOrderValue +=
+                          monthlyFinancialMetric.averageOrderValue;
+                        yearlyFinancialMetricAcc.conversionRate +=
+                          monthlyFinancialMetric.conversionRate;
+                        yearlyFinancialMetricAcc.netProfitMargin +=
+                          monthlyFinancialMetric.netProfitMargin;
+
+                        yearlyFinancialMetricAcc.expenses.total +=
+                          monthlyFinancialMetric.expenses.total;
+                        yearlyFinancialMetricAcc.expenses.repair +=
+                          monthlyFinancialMetric.expenses.repair;
+                        yearlyFinancialMetricAcc.expenses.sales.total +=
+                          monthlyFinancialMetric.expenses.sales.total;
+                        yearlyFinancialMetricAcc.expenses.sales.inStore +=
+                          monthlyFinancialMetric.expenses.sales.inStore;
+                        yearlyFinancialMetricAcc.expenses.sales.online +=
+                          monthlyFinancialMetric.expenses.sales.online;
+
+                        yearlyFinancialMetricAcc.profit.total +=
+                          monthlyFinancialMetric.profit.total;
+                        yearlyFinancialMetricAcc.profit.repair +=
+                          monthlyFinancialMetric.profit.repair;
+                        yearlyFinancialMetricAcc.profit.sales.total +=
+                          monthlyFinancialMetric.profit.sales.total;
+                        yearlyFinancialMetricAcc.profit.sales.inStore +=
+                          monthlyFinancialMetric.profit.sales.inStore;
+                        yearlyFinancialMetricAcc.profit.sales.online +=
+                          monthlyFinancialMetric.profit.sales.online;
+
+                        yearlyFinancialMetricAcc.revenue.total +=
+                          monthlyFinancialMetric.revenue.total;
+                        yearlyFinancialMetricAcc.revenue.repair +=
+                          monthlyFinancialMetric.revenue.repair;
+                        yearlyFinancialMetricAcc.revenue.sales.total +=
+                          monthlyFinancialMetric.revenue.sales.total;
+                        yearlyFinancialMetricAcc.revenue.sales.inStore +=
+                          monthlyFinancialMetric.revenue.sales.inStore;
+                        yearlyFinancialMetricAcc.revenue.sales.online +=
+                          monthlyFinancialMetric.revenue.sales.online;
+
+                        yearlyFinancialMetricAcc.transactions.total +=
+                          monthlyFinancialMetric.transactions.total;
+                        yearlyFinancialMetricAcc.transactions.repair +=
+                          monthlyFinancialMetric.transactions.repair;
+                        yearlyFinancialMetricAcc.transactions.sales.total +=
+                          monthlyFinancialMetric.transactions.sales.total;
+                        yearlyFinancialMetricAcc.transactions.sales.inStore +=
+                          monthlyFinancialMetric.transactions.sales.inStore;
+                        yearlyFinancialMetricAcc.transactions.sales.online +=
+                          monthlyFinancialMetric.transactions.sales.online;
+
+                        return yearlyFinancialMetricAcc;
+                      },
+                      structuredClone(YEARLY_FINANCIAL_METRICS_TEMPLATE)
+                    );
+
+                  yearlyFinancialMetric.averageOrderValue = Math.round(
+                    yearlyFinancialMetric.averageOrderValue /
+                      monthlyFinancialMetrics.length
+                  );
+                  yearlyFinancialMetric.conversionRate = toFixedFloat(
+                    yearlyFinancialMetric.conversionRate / monthlyFinancialMetrics.length
+                  );
+                  yearlyFinancialMetric.netProfitMargin = toFixedFloat(
+                    yearlyFinancialMetric.netProfitMargin /
+                      monthlyFinancialMetrics.length,
+                    2
+                  );
+                  yearlyFinancialMetric.monthlyMetrics = monthlyFinancialMetrics;
+
+                  resolve_(yearlyFinancialMetric);
+                });
+              });
+            })
           );
-          monthlyFinancialMetric.conversionRate = toFixedFloat(
-            monthlyFinancialMetric.conversionRate / dailyFinancialMetrics.length
-          );
-          monthlyFinancialMetric.netProfitMargin = toFixedFloat(
-            monthlyFinancialMetric.netProfitMargin / dailyFinancialMetrics.length,
-            2
-          );
-          monthlyFinancialMetric.dailyMetrics = dailyFinancialMetrics;
 
-          return monthlyFinancialMetric;
+          resolve([storeLocation, yearlyFinancialMetrics]);
         });
-
-        // aggregate created monthly financial metrics into yearly financial metrics
-
-        const yearlyFinancialMetric =
-          monthlyFinancialMetrics.reduce<YearlyFinancialMetric>(
-            (yearlyFinancialMetricAcc, monthlyFinancialMetric) => {
-              yearlyFinancialMetricAcc.year = year;
-
-              yearlyFinancialMetricAcc.averageOrderValue +=
-                monthlyFinancialMetric.averageOrderValue;
-              yearlyFinancialMetricAcc.conversionRate +=
-                monthlyFinancialMetric.conversionRate;
-              yearlyFinancialMetricAcc.netProfitMargin +=
-                monthlyFinancialMetric.netProfitMargin;
-
-              yearlyFinancialMetricAcc.expenses.total +=
-                monthlyFinancialMetric.expenses.total;
-              yearlyFinancialMetricAcc.expenses.repair +=
-                monthlyFinancialMetric.expenses.repair;
-              yearlyFinancialMetricAcc.expenses.sales.total +=
-                monthlyFinancialMetric.expenses.sales.total;
-              yearlyFinancialMetricAcc.expenses.sales.inStore +=
-                monthlyFinancialMetric.expenses.sales.inStore;
-              yearlyFinancialMetricAcc.expenses.sales.online +=
-                monthlyFinancialMetric.expenses.sales.online;
-
-              yearlyFinancialMetricAcc.profit.total +=
-                monthlyFinancialMetric.profit.total;
-              yearlyFinancialMetricAcc.profit.repair +=
-                monthlyFinancialMetric.profit.repair;
-              yearlyFinancialMetricAcc.profit.sales.total +=
-                monthlyFinancialMetric.profit.sales.total;
-              yearlyFinancialMetricAcc.profit.sales.inStore +=
-                monthlyFinancialMetric.profit.sales.inStore;
-              yearlyFinancialMetricAcc.profit.sales.online +=
-                monthlyFinancialMetric.profit.sales.online;
-
-              yearlyFinancialMetricAcc.revenue.total +=
-                monthlyFinancialMetric.revenue.total;
-              yearlyFinancialMetricAcc.revenue.repair +=
-                monthlyFinancialMetric.revenue.repair;
-              yearlyFinancialMetricAcc.revenue.sales.total +=
-                monthlyFinancialMetric.revenue.sales.total;
-              yearlyFinancialMetricAcc.revenue.sales.inStore +=
-                monthlyFinancialMetric.revenue.sales.inStore;
-              yearlyFinancialMetricAcc.revenue.sales.online +=
-                monthlyFinancialMetric.revenue.sales.online;
-
-              yearlyFinancialMetricAcc.transactions.total +=
-                monthlyFinancialMetric.transactions.total;
-              yearlyFinancialMetricAcc.transactions.repair +=
-                monthlyFinancialMetric.transactions.repair;
-              yearlyFinancialMetricAcc.transactions.sales.total +=
-                monthlyFinancialMetric.transactions.sales.total;
-              yearlyFinancialMetricAcc.transactions.sales.inStore +=
-                monthlyFinancialMetric.transactions.sales.inStore;
-              yearlyFinancialMetricAcc.transactions.sales.online +=
-                monthlyFinancialMetric.transactions.sales.online;
-
-              return yearlyFinancialMetricAcc;
-            },
-            structuredClone(YEARLY_FINANCIAL_METRICS_TEMPLATE)
-          );
-
-        yearlyFinancialMetric.averageOrderValue = Math.round(
-          yearlyFinancialMetric.averageOrderValue / monthlyFinancialMetrics.length
-        );
-        yearlyFinancialMetric.conversionRate = toFixedFloat(
-          yearlyFinancialMetric.conversionRate / monthlyFinancialMetrics.length
-        );
-        yearlyFinancialMetric.netProfitMargin = toFixedFloat(
-          yearlyFinancialMetric.netProfitMargin / monthlyFinancialMetrics.length,
-          2
-        );
-        yearlyFinancialMetric.monthlyMetrics = monthlyFinancialMetrics;
-
-        return yearlyFinancialMetric;
       });
-
-      return [storeLocation, yearlyFinancialMetrics];
     })
   );
 }
@@ -3260,7 +3287,7 @@ type StatisticsObject = {
     value: number;
     occurred: string;
   };
-  arithmeticMean: number;
+  mean: number;
   mode: number;
   median: number;
   standardDeviation: number;
@@ -3300,17 +3327,17 @@ function returnStatistics<
         Array.from(filteredBarObjsArr).forEach((filteredBarObj) => {
           const [key, value] = filteredBarObj as [BarObjKeys, number[]];
 
-          const min_ = min(value);
-          const max_ = max(value);
+          const min = Math.min(...value);
+          const max_ = Math.max(...value);
 
           // find the first barObj that has the min value
           const minOccurenceBarObj = barObjsArr.find((barObj) =>
-            Object.entries(barObj).find(([_, val]) => val === min_)
+            Object.entries(barObj).find(([_, val]) => val === min)
           );
           // return the keyVal that has the min value
           const [minOccurenceKey, minOccurenceVal] = Object.entries(
             minOccurenceBarObj
-          ).filter(([_, val]) => val !== min_)[0];
+          ).filter(([_, val]) => val !== min)[0];
           // format the date (key will be either 'Days', 'Months', or 'Years')
           const minOccurenceDate = `${minOccurenceKey.slice(
             0,
@@ -3328,7 +3355,7 @@ function returnStatistics<
             maxOccurenceKey.length - 1
           )} - ${maxOccurenceVal}`;
 
-          const arithmeticMean = mean(value);
+          const mean_ = mean(value);
           const mode_ = mode(value);
           const median_ = median(value);
           const standardDeviation_ = standardDeviation(value);
@@ -3336,14 +3363,14 @@ function returnStatistics<
 
           const statisticsObj: StatisticsObject = {
             min: {
-              value: min_,
+              value: min,
               occurred: minOccurenceDate ?? "",
             },
             max: {
               value: max_,
               occurred: maxOccurenceDate ?? "",
             },
-            arithmeticMean,
+            mean: mean_,
             mode: mode_,
             median: median_,
             standardDeviation: standardDeviation_,
@@ -3358,6 +3385,31 @@ function returnStatistics<
     },
     new Map<BarObjKeys, StatisticsObject>()
   );
+}
+
+type SplitSelectedCalendarDateInput = {
+  calendarDate: string;
+  months: Month[];
+};
+type SplitSelectedCalendarDateOutput = {
+  selectedDate: string;
+  selectedMonth: Month;
+  selectedYear: Year;
+};
+/**
+ * Split selected calendar date into its components.
+ */
+function splitSelectedCalendarDate({
+  calendarDate,
+  months,
+}: SplitSelectedCalendarDateInput): SplitSelectedCalendarDateOutput {
+  const [year, month, date] = calendarDate.split("-") as [Year, string, string];
+
+  return {
+    selectedDate: date.toString().padStart(2, "0"),
+    selectedMonth: months[parseInt(month) - 1],
+    selectedYear: year,
+  };
 }
 
 export {

@@ -43,37 +43,65 @@ function DevTesting() {
   const { wrappedFetch } = useWrapFetch();
 
   useEffect(() => {
-    async function helper() {
-      const businessMetrics = await createRandomBusinessMetrics({
-        daysPerMonth: DAYS_PER_MONTH,
-        months: MONTHS,
-        productCategories: PRODUCT_CATEGORIES,
-        repairCategories: REPAIR_CATEGORIES,
-        storeLocations: STORE_LOCATION_DATA,
-      });
+    console.group("Promise Testing");
+    console.log("Start");
+    const promise1 = new Promise((resolve, reject) => {
+      console.log("Promise 1 before resolve");
+      setTimeout(() => {
+        resolve("Promise 1 after resolve");
+      }, 2000);
+    });
 
-      const selectedDateRepairMetrics = returnSelectedDateRepairMetrics({
-        businessMetrics,
-        day: "01",
-        month: "January",
-        months: MONTHS,
-        selectedRepairCategory: REPAIR_CATEGORIES[0],
-        storeLocation: STORE_LOCATION_DATA[0],
-        year: "2021",
-      });
+    const promise2 = new Promise((resolve, reject) => {
+      console.log("Promise 2 before resolve");
+      setTimeout(() => {
+        resolve("Promise 2 after resolve");
+      }, 1000);
+    });
 
-      const repairMetricsCharts = await returnRepairMetricsCharts2({
-        businessMetrics,
-        months: MONTHS,
-        selectedDateRepairMetrics,
-        selectedRepairCategory: REPAIR_CATEGORIES[0],
-        storeLocation: STORE_LOCATION_DATA[0],
-      });
+    console.log("Promise 1", promise1);
+    console.log("Promise 2", promise2);
 
-      console.log("repairMetricsCharts", repairMetricsCharts);
-    }
+    Promise.all([promise1, promise2]).then((values) => {
+      console.log("Promise.all values", values);
+    });
 
-    helper();
+    console.log("End");
+    console.groupEnd();
+
+    // async function helper() {
+    //   console.time("businessMetrics");
+    //   const businessMetrics = await createRandomBusinessMetrics({
+    //     daysPerMonth: DAYS_PER_MONTH,
+    //     months: MONTHS,
+    //     productCategories: PRODUCT_CATEGORIES,
+    //     repairCategories: REPAIR_CATEGORIES,
+    //     storeLocations: STORE_LOCATION_DATA,
+    //   });
+    //   console.timeEnd("businessMetrics");
+
+    //   const selectedDateRepairMetrics = returnSelectedDateRepairMetrics({
+    //     businessMetrics,
+    //     day: "01",
+    //     month: "January",
+    //     months: MONTHS,
+    //     selectedRepairCategory: REPAIR_CATEGORIES[0],
+    //     storeLocation: STORE_LOCATION_DATA[0],
+    //     year: "2021",
+    //   });
+
+    //   const repairMetricsCharts = await returnRepairMetricsCharts2({
+    //     businessMetrics,
+    //     months: MONTHS,
+    //     selectedDateRepairMetrics,
+    //     selectedRepairCategory: REPAIR_CATEGORIES[0],
+    //     storeLocation: STORE_LOCATION_DATA[0],
+    //   });
+
+    //   console.log("repairMetricsCharts", repairMetricsCharts);
+    // }
+
+    // helper();
   }, []);
 
   useEffect(() => {

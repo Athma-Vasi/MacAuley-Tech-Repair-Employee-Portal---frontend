@@ -214,15 +214,8 @@ function DashboardMetricsLayout({
   // statistics section
   const createdStatisticsAccordions = statisticsMap
     ? Array.from(statisticsMap).map(([key, statisticsObject], idx) => {
-        const {
-          arithmeticMean,
-          interquartileRange,
-          max,
-          median,
-          min,
-          mode,
-          standardDeviation,
-        } = statisticsObject;
+        const { mean, interquartileRange, max, median, min, mode, standardDeviation } =
+          statisticsObject;
 
         const unitSymbol =
           isMoney || key === "Revenue" || key === "Average Order Value" ? "$" : "";
@@ -230,7 +223,7 @@ function DashboardMetricsLayout({
         const statisticsAccordion = (
           <Accordion
             w={350}
-            key={`${idx}-${min}-${max}-${median}-${mode}-${arithmeticMean}-${interquartileRange}-${standardDeviation}`}
+            key={`${idx}-${min}-${max}-${median}-${mode}-${mean}-${interquartileRange}-${standardDeviation}`}
           >
             <Accordion.Item value={key}>
               <Accordion.Control>
@@ -257,7 +250,7 @@ function DashboardMetricsLayout({
                   )}`}</Text>
 
                   <Text>{`Arithmetic Mean: ${unitSymbol} ${addCommaSeparator(
-                    arithmeticMean.toFixed(2)
+                    mean.toFixed(2)
                   )}`}</Text>
 
                   <Text>{`Interquartile Range: ${unitSymbol} ${addCommaSeparator(

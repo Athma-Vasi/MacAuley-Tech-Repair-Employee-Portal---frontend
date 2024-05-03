@@ -15,7 +15,7 @@ const initialDashboardState: DashboardState = {
   storeLocationView: "All Locations",
   selectedYYYYMMDD: `${initialSelectedYear}-${initialSelectedMonth}-${initialSelectedDate}`,
   isLoading: true,
-  loadingMessage: "Please wait... generating metrics...",
+  loadingMessage: "Generating metrics... Please wait...",
 };
 
 const dashboardAction: DashboardAction = {

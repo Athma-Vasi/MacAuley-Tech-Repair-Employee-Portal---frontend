@@ -18,7 +18,7 @@ import { globalAction } from "../../context/globalProvider/state";
 import { useGlobalState } from "../../hooks";
 import { returnAccessibleSelectInputElements } from "../../jsxCreators";
 import { logState, returnThemeColors } from "../../utils";
-import { AccessibleSelectInputCreatorInfo } from "../wrappers";
+import { AccessibleSelectInputCreatorInfo, ImageWrapper } from "../wrappers";
 import {
   CALENDAR_VIEW_TABS_DATA,
   CUSTOMER_METRICS_SELECT_INPUT_DATA,
@@ -96,6 +96,8 @@ function Dashboard() {
   useEffect(() => {
     async function createBusinessMetrics() {
       try {
+        console.time("createRandomBusinessMetrics");
+
         const businessMetrics = await createRandomBusinessMetrics({
           daysPerMonth: DAYS_PER_MONTH,
           months: MONTHS,
@@ -103,6 +105,8 @@ function Dashboard() {
           repairCategories: REPAIR_CATEGORIES,
           storeLocations: STORE_LOCATION_DATA,
         });
+
+        console.timeEnd("createRandomBusinessMetrics");
 
         dashboardDispatch({
           type: dashboardAction.setBusinessMetrics,
@@ -166,6 +170,15 @@ function Dashboard() {
       radius={4}
       loader={
         <Stack align="center">
+          <ImageWrapper
+            creatorInfoObject={{
+              customHeight: 100,
+              customWidth: 100,
+              imageAlt: "intense generation...",
+              imageSrc: "https://media1.tenor.com/m/H4b3ave7P08AAAAC/typing-busy.gif",
+              fit: "contain",
+            }}
+          />
           <Text>{loadingMessage}</Text>
           <Loader />
         </Stack>
