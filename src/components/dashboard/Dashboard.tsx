@@ -9,6 +9,7 @@ import {
   TextInput,
   Title,
 } from "@mantine/core";
+import localforage from "localforage";
 import { ChangeEvent, useEffect, useReducer } from "react";
 import { useErrorBoundary } from "react-error-boundary";
 import { useNavigate } from "react-router-dom";
@@ -48,7 +49,6 @@ import {
   DashboardRepairMetric,
 } from "./types";
 import { createRandomBusinessMetrics, splitSelectedCalendarDate } from "./utils";
-import localforage from "localforage";
 
 function Dashboard() {
   const [dashboardState, dashboardDispatch] = useReducer(
@@ -98,8 +98,6 @@ function Dashboard() {
   useEffect(() => {
     async function createBusinessMetrics() {
       try {
-        console.time("createRandomBusinessMetrics");
-
         const existingMetrics = await localforage.getItem<BusinessMetric[]>(
           "businessMetrics"
         );
@@ -116,6 +114,8 @@ function Dashboard() {
 
           return;
         }
+
+        console.time("createRandomBusinessMetrics");
 
         const businessMetrics = await createRandomBusinessMetrics({
           daysPerMonth: DAYS_PER_MONTH,

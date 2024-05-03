@@ -1,4 +1,4 @@
-import { RepairMetricChartsObjKey } from '../utils';
+import { RepairMetricChartsObjKey } from "../utils";
 
 type RepairDashboardDailyState = {
   barChartYAxisVariable: RepairMetricChartsObjKey;
@@ -7,16 +7,16 @@ type RepairDashboardDailyState = {
 };
 
 type RepairDashboardDailyAction = {
-  setBarChartYAxisVariable: 'setBarChartYAxisVariable';
-  setCalendarChartYAxisVariable: 'setCalendarChartYAxisVariable';
-  setLineChartYAxisVariable: 'setLineChartYAxisVariable';
+  setBarChartYAxisVariable: "setBarChartYAxisVariable";
+  setCalendarChartYAxisVariable: "setCalendarChartYAxisVariable";
+  setLineChartYAxisVariable: "setLineChartYAxisVariable";
 };
 
 type RepairDashboardDailyDispatch = {
   type:
-    | RepairDashboardDailyAction['setBarChartYAxisVariable']
-    | RepairDashboardDailyAction['setLineChartYAxisVariable']
-    | RepairDashboardDailyAction['setCalendarChartYAxisVariable'];
+    | RepairDashboardDailyAction["setBarChartYAxisVariable"]
+    | RepairDashboardDailyAction["setLineChartYAxisVariable"]
+    | RepairDashboardDailyAction["setCalendarChartYAxisVariable"];
 
   payload: RepairMetricChartsObjKey;
 };

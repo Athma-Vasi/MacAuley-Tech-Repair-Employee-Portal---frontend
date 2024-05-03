@@ -14,6 +14,7 @@ import {
   REPAIR_CATEGORIES,
 } from "../dashboard/constants";
 
+import { createRandomBusinessMetrics } from "../dashboard/utils";
 import { STORE_LOCATION_DATA } from "../register/constants";
 import {
   BUSINESS_METRICS_TEMPLATE,
@@ -24,9 +25,6 @@ import {
   YEAR_UNITS_SOLD_SPREAD,
 } from "./constantsDashboard";
 import { devTestingAction, devTestingReducer, initialDevTestingState } from "./state";
-import { createRandomBusinessMetrics } from "../dashboard/utils";
-import { returnRepairMetricsCharts2 } from "../dashboard/repairDashboard/utilsTemp";
-import { returnSelectedDateRepairMetrics } from "../dashboard/repairDashboard/utils";
 
 function DevTesting() {
   const [devTestingState, devTestingDispatch] = useReducer(

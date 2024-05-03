@@ -11,7 +11,6 @@ import {
   RepairYearlyMetric,
   Year,
 } from "../types";
-import { SelectedDateRepairMetrics } from "./utils";
 
 type RepairMetricChartsKey = "unitsRepaired" | "revenue";
 type RepairMetricBarCharts = Record<RepairMetricChartsKey, BarChartData[]>;
@@ -20,6 +19,115 @@ type RepairMetricLineCharts = {
   revenue: { id: "Revenue"; data: { x: string; y: number }[] }[];
   unitsRepaired: { id: "Units Repaired"; data: { x: string; y: number }[] }[];
 };
+
+type ReturnSelectedDateRepairMetricsInput = {
+  businessMetrics: BusinessMetric[];
+  day: string;
+  month: Month;
+  months: Month[];
+  selectedRepairCategory: RepairCategory | "All Repairs";
+  storeLocation: BusinessMetricStoreLocation;
+  year: Year;
+};
+
+type SelectedDateRepairMetrics = {
+  dayRepairMetrics: {
+    selectedDayMetrics?: RepairDailyMetric;
+    prevDayMetrics?: RepairDailyMetric;
+  };
+  monthRepairMetrics: {
+    selectedMonthMetrics?: RepairMonthlyMetric;
+    prevMonthMetrics?: RepairMonthlyMetric;
+  };
+  yearRepairMetrics: {
+    selectedYearMetrics?: RepairYearlyMetric;
+    prevYearMetrics?: RepairYearlyMetric;
+  };
+};
+
+function returnSelectedDateRepairMetrics2({
+  businessMetrics,
+  day,
+  month,
+  months,
+  selectedRepairCategory,
+  storeLocation,
+  year,
+}: ReturnSelectedDateRepairMetricsInput): SelectedDateRepairMetrics {
+  // selected store's business metrics
+  const currentStoreMetrics = businessMetrics.find(
+    (businessMetric) => businessMetric.storeLocation === storeLocation
+  );
+
+  // selected business metrics' repair category
+  const selectedRepairMetrics = currentStoreMetrics?.repairMetrics.find(
+    (repairMetric) => repairMetric.name === selectedRepairCategory
+  );
+
+  // selected year's repair metrics
+  const selectedYearMetrics = selectedRepairMetrics?.yearlyMetrics.find(
+    (yearlyMetric) => yearlyMetric.year === year
+  );
+  const prevYearMetrics = selectedRepairMetrics?.yearlyMetrics.find(
+    (yearlyMetric) => yearlyMetric.year === (parseInt(year) - 1).toString()
+  );
+
+  const yearRepairMetrics = {
+    selectedYearMetrics,
+    prevYearMetrics,
+  };
+
+  // selected month's repair metrics
+  const selectedMonthMetrics = selectedYearMetrics?.monthlyMetrics.find(
+    (monthlyMetric) => monthlyMetric.month === month
+  );
+  const prevPrevYearMetrics = selectedRepairMetrics?.yearlyMetrics.find(
+    (yearlyMetric) => yearlyMetric.year === (parseInt(year) - 2).toString()
+  );
+  const prevMonthMetrics =
+    month === "January"
+      ? prevPrevYearMetrics?.monthlyMetrics.find(
+          (monthlyMetric) => monthlyMetric.month === "December"
+        )
+      : selectedYearMetrics?.monthlyMetrics.find(
+          (monthlyMetric) => monthlyMetric.month === months[months.indexOf(month) - 1]
+        );
+
+  const monthRepairMetrics = {
+    selectedMonthMetrics,
+    prevMonthMetrics,
+  };
+
+  // selected day's repair metrics
+  const selectedDayMetrics = selectedMonthMetrics?.dailyMetrics.find(
+    (dailyMetric) => dailyMetric.day === day
+  );
+
+  const prevDayMetrics =
+    day === "01"
+      ? monthRepairMetrics.prevMonthMetrics?.dailyMetrics.find(
+          (dailyMetric) =>
+            dailyMetric.day === "31" ||
+            dailyMetric.day === "30" ||
+            dailyMetric.day === "29" ||
+            dailyMetric.day === "28"
+        )
+      : selectedMonthMetrics?.dailyMetrics.find(
+          (dailyMetric) =>
+            dailyMetric.day === (parseInt(day) - 1).toString().padStart(2, "0")
+        );
+
+  const dayRepairMetrics = {
+    selectedDayMetrics,
+    prevDayMetrics,
+  };
+
+  return {
+    dayRepairMetrics,
+    monthRepairMetrics,
+    yearRepairMetrics,
+  };
+}
 
 type ReturnRepairChartsInput = {
   businessMetrics: BusinessMetric[];
@@ -169,7 +277,7 @@ async function createDailyRepairCharts({
   lineChartsTemplate,
   monthNumber,
   selectedYear,
-}: CreateDailyRepairChartsInput) {
+}: CreateDailyRepairChartsInput): Promise<RepairMetricsCharts["daily"]> {
   if (!dailyMetrics) {
     return {
       bar: barChartsTemplate,
@@ -441,4 +549,12 @@ function createYearlyRepairCharts({
   });
 }
 
-export { returnRepairMetricsCharts2 };
+export { returnRepairMetricsCharts2, returnSelectedDateRepairMetrics2 };
+export type {
+  RepairMetricBarCharts,
+  RepairMetricCalendarCharts,
+  RepairMetricChartsKey,
+  RepairMetricLineCharts,
+  RepairMetricsCharts,
+  SelectedDateRepairMetrics,
+};

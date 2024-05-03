@@ -1,4 +1,4 @@
-import { RepairMetricChartsObjKey } from '../utils';
+import { RepairMetricChartsObjKey } from "../utils";
 
 type RepairDashboardYearlyState = {
   barChartYAxisVariable: RepairMetricChartsObjKey;
@@ -6,14 +6,14 @@ type RepairDashboardYearlyState = {
 };
 
 type RepairDashboardYearlyAction = {
-  setBarChartYAxisVariable: 'setBarChartYAxisVariable';
-  setLineChartYAxisVariable: 'setLineChartYAxisVariable';
+  setBarChartYAxisVariable: "setBarChartYAxisVariable";
+  setLineChartYAxisVariable: "setLineChartYAxisVariable";
 };
 
 type RepairDashboardYearlyDispatch = {
   type:
-    | RepairDashboardYearlyAction['setBarChartYAxisVariable']
-    | RepairDashboardYearlyAction['setLineChartYAxisVariable'];
+    | RepairDashboardYearlyAction["setBarChartYAxisVariable"]
+    | RepairDashboardYearlyAction["setLineChartYAxisVariable"];
 
   payload: RepairMetricChartsObjKey;
 };
