@@ -10,41 +10,33 @@ import {
   Text,
   Title,
   Tooltip,
-} from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
-import { compress } from 'image-conversion';
-import localforage from 'localforage';
-import { useEffect, useReducer } from 'react';
-import { useErrorBoundary } from 'react-error-boundary';
-import { BiReset } from 'react-icons/bi';
-import { LuRotate3D } from 'react-icons/lu';
-import { TbTrash } from 'react-icons/tb';
-import { useNavigate } from 'react-router-dom';
+} from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
+import { compress } from "image-conversion";
+import localforage from "localforage";
+import { useEffect, useReducer } from "react";
+import { useErrorBoundary } from "react-error-boundary";
+import { BiReset } from "react-icons/bi";
+import { LuRotate3D } from "react-icons/lu";
+import { TbTrash } from "react-icons/tb";
+import { useNavigate } from "react-router-dom";
 
-import { COLORS_SWATCHES } from '../../constants/data';
-import { globalAction } from '../../context/globalProvider/state';
-import { useGlobalState } from '../../hooks';
+import { COLORS_SWATCHES } from "../../constants/data";
+import { globalAction } from "../../context/globalProvider/state";
+import { useGlobalState } from "../../hooks";
 import {
   AccessibleErrorValidTextElementsForDynamicImageUploads,
   returnAccessibleButtonElements,
-} from '../../jsxCreators';
-import {
-  logState,
-  returnImageValidationText,
-  returnThemeColors,
-} from '../../utils';
-import { NotificationModal } from '../notificationModal';
+} from "../../jsxCreators";
+import { logState, returnImageValidationText, returnThemeColors } from "../../utils";
+import { NotificationModal } from "../notificationModal";
 import {
   displayOrientationLabel,
   IMG_ORIENTATION_SLIDER_DATA,
   IMG_QUALITY_SLIDER_DATA,
-} from './constants';
-import {
-  imageUploadAction,
-  imageUploadReducer,
-  initialImageUploadState,
-} from './state';
-import { ImageUploadLocalForage, ImageUploadProps } from './types';
+} from "./constants";
+import { imageUploadAction, imageUploadReducer, initialImageUploadState } from "./state";
+import { ImageUploadLocalForage, ImageUploadProps } from "./types";
 
 /**
  *  TODO: when user logs out, flush localforage
@@ -107,15 +99,14 @@ function ImageUpload({
       });
       imageUploadDispatch({
         type: imageUploadAction.setLoadingMessage,
-        payload: 'Retrieving images from storage ...',
+        payload: "Retrieving images from storage ...",
       });
       openSubmitSuccessNotificationModal();
 
       try {
-        const imageUploadState =
-          await localforage.getItem<ImageUploadLocalForage>(
-            `${parentComponentName}-imageUploadState`
-          );
+        const imageUploadState = await localforage.getItem<ImageUploadLocalForage>(
+          `${parentComponentName}-imageUploadState`
+        );
 
         if (!isMounted || !imageUploadState) {
           return;
@@ -174,7 +165,7 @@ function ImageUpload({
         }
 
         const errorMessage =
-          error?.message ?? 'Unknown error occurred. Please try again.';
+          error?.message ?? "Unknown error occurred. Please try again.";
 
         globalDispatch({
           type: globalAction.setErrorState,
@@ -182,13 +173,13 @@ function ImageUpload({
             isError: true,
             errorMessage,
             errorCallback: () => {
-              navigate('/home');
+              navigate("/home");
 
               globalDispatch({
                 type: globalAction.setErrorState,
                 payload: {
                   isError: false,
-                  errorMessage: '',
+                  errorMessage: "",
                   errorCallback: () => {},
                 },
               });
@@ -205,7 +196,7 @@ function ImageUpload({
           });
           imageUploadDispatch({
             type: imageUploadAction.setLoadingMessage,
-            payload: '',
+            payload: "",
           });
           closeSubmitSuccessNotificationModal();
         }
@@ -229,37 +220,19 @@ function ImageUpload({
       qualities,
       orientations,
     });
-  }, [
-    imageCount,
-    images,
-    imagePreviews,
-    qualities,
-    orientations,
-    parentComponentName,
-  ]);
-
-  // flush local forage when page refreshes
-  useEffect(() => {
-    window.addEventListener('beforeunload', () => {
-      localforage.removeItem(`${parentComponentName}-imageUploadState`);
-    });
-
-    return () => {
-      window.removeEventListener('beforeunload', () => {});
-    };
-  }, [parentComponentName]);
+  }, [imageCount, images, imagePreviews, qualities, orientations, parentComponentName]);
 
   // flush local forage when parent component submits form
   useEffect(() => {
     if (isParentComponentFormSubmitted) {
-      console.log('flushing localforage');
+      console.log("flushing localforage");
       localforage.removeItem(`${parentComponentName}-imageUploadState`);
     }
   }, [isParentComponentFormSubmitted, parentComponentName]);
 
   // validate image kinds, types, sizes on every image upload
   useEffect(() => {
-    const validImageTypes = new Set(['jpeg', 'png']);
+    const validImageTypes = new Set(["jpeg", "png"]);
 
     imagePreviews.forEach((image, index) => {
       // validate image sizes
@@ -273,7 +246,7 @@ function ImageUpload({
       });
 
       // validate image kinds
-      const isImageValidKind = image.type.split('/')[0] === 'image';
+      const isImageValidKind = image.type.split("/")[0] === "image";
       imageUploadDispatch({
         type: imageUploadAction.setAreValidImageKinds,
         payload: {
@@ -283,7 +256,7 @@ function ImageUpload({
       });
 
       // validate image types
-      const isImageValidType = validImageTypes.has(image.type.split('/')[1]);
+      const isImageValidType = validImageTypes.has(image.type.split("/")[1]);
       imageUploadDispatch({
         type: imageUploadAction.setAreValidImageTypes,
         payload: {
@@ -352,7 +325,7 @@ function ImageUpload({
         }
 
         const errorMessage =
-          error?.message ?? 'Unknown error occurred. Please try again.';
+          error?.message ?? "Unknown error occurred. Please try again.";
 
         globalDispatch({
           type: globalAction.setErrorState,
@@ -360,13 +333,13 @@ function ImageUpload({
             isError: true,
             errorMessage,
             errorCallback: () => {
-              navigate('/home');
+              navigate("/home");
 
               globalDispatch({
                 type: globalAction.setErrorState,
                 payload: {
                   isError: false,
-                  errorMessage: '',
+                  errorMessage: "",
                   errorCallback: () => {},
                 },
               });
@@ -383,6 +356,7 @@ function ImageUpload({
     return () => {
       isMounted = false;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [qualities, orientations]);
 
   // on every change to image previews or images, set and dispatch formdata
@@ -400,7 +374,7 @@ function ImageUpload({
       (formDataArray: FormData[], image: File | Blob, idx) => {
         const formData = new FormData();
         // because the Blob type returned by compress() does not have a name property
-        formData.append('file', image, images[idx].name);
+        formData.append("file", image, images[idx].name);
 
         formDataArray.push(formData);
         return formDataArray;
@@ -418,12 +392,13 @@ function ImageUpload({
       type: setImgFormDataArray,
       payload: formDataArray,
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [images, imagePreviews]);
 
   useEffect(() => {
     logState({
       state: imageUploadState,
-      groupLabel: 'ImageUpload',
+      groupLabel: "ImageUpload",
     });
   }, [imageUploadState]);
 
@@ -434,7 +409,7 @@ function ImageUpload({
       areValidImageTypes,
       images,
       imagePreviews,
-      semanticName: 'image',
+      semanticName: "image",
       validationFunction: returnImageValidationText,
     });
 
@@ -446,7 +421,7 @@ function ImageUpload({
           <Text>
             {maxImages - imageCount > 0
               ? `Upload an image. Available: ${maxImages - imageCount}`
-              : 'Maximum images amount reached.'}
+              : "Maximum images amount reached."}
           </Text>
         }
         onChange={(file: File | null) => {
@@ -475,9 +450,7 @@ function ImageUpload({
           });
         }}
         placeholder={`${
-          imageCount >= maxImages
-            ? 'Max image count reached'
-            : 'Click to select an image'
+          imageCount >= maxImages ? "Max image count reached" : "Click to select an image"
         }`}
         value={images[imageCount]}
         w={350}
@@ -499,15 +472,15 @@ function ImageUpload({
               ? URL.createObjectURL(imagePreviews[index])
               : undefined
           }
-          alt={areValidImageKinds[index] ? images[index].name : 'Invalid kind'}
+          alt={areValidImageKinds[index] ? images[index].name : "Invalid kind"}
           withPlaceholder
           placeholder={
             <Flex
               align="center"
               justify="center"
               style={{
-                height: '100%',
-                width: '100%',
+                height: "100%",
+                width: "100%",
               }}
             >
               <Text>Invalid image</Text>
@@ -516,59 +489,51 @@ function ImageUpload({
         />
       );
 
-      const [createdResetButton, createdRemoveButton] =
-        returnAccessibleButtonElements([
-          {
-            buttonLabel: 'Reset',
-            buttonDisabled:
-              !areValidImageKinds[index] || !areValidImageTypes[index],
-            semanticDescription: `Reset values of ${images[index].name} to default`,
-            semanticName: `reset ${images[index].name} to default values`,
-            leftIcon: <BiReset />,
-            buttonOnClick: () => {
-              imageUploadDispatch({
-                type: imageUploadAction.resetImageToDefault,
-                payload: index,
-              });
-              // set the image preview to the original image
-              imageUploadDispatch({
-                type: imageUploadAction.setImagePreviews,
-                payload: {
-                  index,
-                  imagePreview: images[index],
-                },
-              });
-            },
+      const [createdResetButton, createdRemoveButton] = returnAccessibleButtonElements([
+        {
+          buttonLabel: "Reset",
+          buttonDisabled: !areValidImageKinds[index] || !areValidImageTypes[index],
+          semanticDescription: `Reset values of ${images[index].name} to default`,
+          semanticName: `reset ${images[index].name} to default values`,
+          leftIcon: <BiReset />,
+          buttonOnClick: () => {
+            imageUploadDispatch({
+              type: imageUploadAction.resetImageToDefault,
+              payload: index,
+            });
+            // set the image preview to the original image
+            imageUploadDispatch({
+              type: imageUploadAction.setImagePreviews,
+              payload: {
+                index,
+                imagePreview: images[index],
+              },
+            });
           },
-          {
-            buttonLabel: 'Remove',
-            semanticDescription: `Remove ${images[index].name} from selection`,
-            semanticName: `remove ${images[index].name} from selection`,
-            leftIcon: <TbTrash />,
-            buttonOnClick: () => {
-              imageUploadDispatch({
-                type: imageUploadAction.removeImage,
-                payload: index,
-              });
-            },
+        },
+        {
+          buttonLabel: "Remove",
+          semanticDescription: `Remove ${images[index].name} from selection`,
+          semanticName: `remove ${images[index].name} from selection`,
+          leftIcon: <TbTrash />,
+          buttonOnClick: () => {
+            imageUploadDispatch({
+              type: imageUploadAction.removeImage,
+              payload: index,
+            });
           },
-        ]);
+        },
+      ]);
 
       const errorValidTexts = (
-        <Flex
-          align="center"
-          justify="space-between"
-          wrap="wrap"
-          w="100%"
-          rowGap={rowGap}
-        >
+        <Flex align="center" justify="space-between" wrap="wrap" w="100%" rowGap={rowGap}>
           {imageFileUploadErrorTexts[index]}
           {imageFileUploadValidTexts[index]}
         </Flex>
       );
 
       const {
-        appThemeColors: { borderColor, redBorderColor },
+        appThemeColors: { borderColor },
         generalColors: { redColorShade, textColor },
       } = returnThemeColors({
         themeObject,
@@ -608,7 +573,7 @@ function ImageUpload({
           style={{ borderBottom: borderColor }}
         >
           <Text color={areValidImageSizes[index] ? textColor : redColorShade}>
-            Size:{' '}
+            Size:{" "}
           </Text>
           <Text>{(imagePreviews[index].size / 1_000).toFixed(2)} KB</Text>
         </Flex>
@@ -623,9 +588,9 @@ function ImageUpload({
           style={{ borderBottom: borderColor }}
         >
           <Text color={areValidImageKinds[index] ? textColor : redColorShade}>
-            Kind:{' '}
+            Kind:{" "}
           </Text>
-          <Text>{images[index].type.split('/')[0]}</Text>
+          <Text>{images[index].type.split("/")[0]}</Text>
         </Flex>
       );
 
@@ -638,9 +603,9 @@ function ImageUpload({
           style={{ borderBottom: borderColor }}
         >
           <Text color={areValidImageTypes[index] ? textColor : redColorShade}>
-            Type:{' '}
+            Type:{" "}
           </Text>
-          <Text>{images[index].type.split('/')[1]}</Text>
+          <Text>{images[index].type.split("/")[1]}</Text>
         </Flex>
       );
 
@@ -649,7 +614,7 @@ function ImageUpload({
           <Tooltip
             label={
               !areValidImageKinds[index] || !areValidImageTypes[index]
-                ? 'Please select a valid image'
+                ? "Please select a valid image"
                 : `Reset values of ${images[index].name} to default`
             }
           >
@@ -688,8 +653,8 @@ function ImageUpload({
         <Stack w="100%">
           <Text>
             {!qualities[index] || qualities[index] >= 8
-              ? 'To enable orientation slider, set quality to less than 80%'
-              : 'Orientation:'}
+              ? "To enable orientation slider, set quality to less than 80%"
+              : "Orientation:"}
           </Text>
           <Slider
             aria-label={`Orientation slider for ${images[index].name}`}
@@ -720,20 +685,18 @@ function ImageUpload({
           <Accordion.Item
             value={
               areValidImageKinds[index] || areValidImageTypes[index]
-                ? 'Adjust compression and orientation'
-                : 'Can only modify images'
+                ? "Adjust compression and orientation"
+                : "Can only modify images"
             }
           >
             <Accordion.Control
-              disabled={
-                !areValidImageKinds[index] || !areValidImageTypes[index]
-              }
+              disabled={!areValidImageKinds[index] || !areValidImageTypes[index]}
               w="100%"
             >
               <Text>
                 {areValidImageKinds[index] || areValidImageTypes[index]
-                  ? 'Adjust compression and orientation'
-                  : 'Can only modify images'}
+                  ? "Adjust compression and orientation"
+                  : "Can only modify images"}
               </Text>
             </Accordion.Control>
             <Accordion.Panel w="100%" pb={padding}>
@@ -763,7 +726,7 @@ function ImageUpload({
           p={padding}
           style={{
             border: borderColor,
-            borderRadius: '4px',
+            borderRadius: "4px",
           }}
         >
           {imagePreview}

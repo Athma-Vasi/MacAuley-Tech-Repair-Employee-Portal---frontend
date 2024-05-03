@@ -12,11 +12,12 @@ import {
   Text,
   Title,
   UnstyledButton,
-} from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
-import { InvalidTokenError } from 'jwt-decode';
-import { useEffect, useReducer } from 'react';
-import { useErrorBoundary } from 'react-error-boundary';
+} from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
+import { InvalidTokenError } from "jwt-decode";
+import localforage from "localforage";
+import { useEffect, useReducer } from "react";
+import { useErrorBoundary } from "react-error-boundary";
 import {
   TbCheck,
   TbColorFilter,
@@ -24,33 +25,24 @@ import {
   TbMoon,
   TbSun,
   TbUserCircle,
-} from 'react-icons/tb';
-import { useNavigate } from 'react-router-dom';
+} from "react-icons/tb";
+import { useNavigate } from "react-router-dom";
 
-import { COLORS_SWATCHES } from '../../../constants/data';
-import { authAction } from '../../../context/authProvider';
-import { globalAction } from '../../../context/globalProvider/state';
-import { Shade } from '../../../context/globalProvider/types';
-import { useAuth, useGlobalState, useWrapFetch } from '../../../hooks';
+import { COLORS_SWATCHES } from "../../../constants/data";
+import { authAction } from "../../../context/authProvider";
+import { globalAction } from "../../../context/globalProvider/state";
+import { Shade } from "../../../context/globalProvider/types";
+import { useAuth, useGlobalState, useWrapFetch } from "../../../hooks";
 import {
   returnAccessibleNavLinkElements,
   returnAccessibleSliderInputElements,
-} from '../../../jsxCreators';
-import {
-  logState,
-  returnThemeColors,
-  splitCamelCase,
-  urlBuilder,
-} from '../../../utils';
-import { ChartsAndGraphsControlsStacker } from '../../charts/utils';
-import { NotificationModal } from '../../notificationModal';
-import { AccessibleNavLinkCreatorInfo } from '../../wrappers';
-import { UserInfo } from '../userInfo/UserInfo';
-import {
-  initialUserAvatarState,
-  userAvatarAction,
-  userAvatarReducer,
-} from './state';
+} from "../../../jsxCreators";
+import { logState, returnThemeColors, splitCamelCase, urlBuilder } from "../../../utils";
+import { ChartsAndGraphsControlsStacker } from "../../charts/utils";
+import { NotificationModal } from "../../notificationModal";
+import { AccessibleNavLinkCreatorInfo } from "../../wrappers";
+import { UserInfo } from "../userInfo/UserInfo";
+import { initialUserAvatarState, userAvatarAction, userAvatarReducer } from "./state";
 
 function UserAvatar() {
   const {
@@ -60,9 +52,8 @@ function UserAvatar() {
 
   const modifiedInitialUserAvatarState = {
     ...initialUserAvatarState,
-    prefersReducedMotionSwitchChecked:
-      userDocument?.isPrefersReducedMotion ?? false,
-    colorSchemeSwitchChecked: themeObject.colorScheme === 'light',
+    prefersReducedMotionSwitchChecked: userDocument?.isPrefersReducedMotion ?? false,
+    colorSchemeSwitchChecked: themeObject.colorScheme === "light",
   };
   const [userAvatarState, userAvatarDispatch] = useReducer(
     userAvatarReducer,
@@ -81,10 +72,8 @@ function UserAvatar() {
 
   const [openedThemeModal, { open: openThemeModal, close: closeThemeModal }] =
     useDisclosure(false);
-  const [
-    openedUserInfoModal,
-    { open: openUserInfoModal, close: closeUserInfoModal },
-  ] = useDisclosure(false);
+  const [openedUserInfoModal, { open: openUserInfoModal, close: closeUserInfoModal }] =
+    useDisclosure(false);
 
   const {
     colorSchemeSwitchChecked,
@@ -113,19 +102,19 @@ function UserAvatar() {
       });
       userAvatarDispatch({
         type: userAvatarAction.setSubmitMessage,
-        payload: 'Please wait while we securely log you out.',
+        payload: "Please wait while we securely log you out.",
       });
 
-      const url: URL = new URL('http://localhost:5500/auth/logout');
+      const url: URL = new URL("http://localhost:5500/auth/logout");
 
       const requestInit: RequestInit = {
         body: JSON.stringify({ sessionId }),
-        credentials: 'include',
+        credentials: "include",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        method: 'POST',
-        mode: 'cors',
+        method: "POST",
+        mode: "cors",
       };
 
       try {
@@ -157,21 +146,21 @@ function UserAvatar() {
         });
         userAvatarDispatch({
           type: userAvatarAction.setSuccessMessage,
-          payload: 'Successfully logged out!',
+          payload: "Successfully logged out!",
         });
 
-        navigate('/');
+        navigate("/");
       } catch (error: any) {
-        if (!isMounted || error.name === 'AbortError') {
+        if (!isMounted || error.name === "AbortError") {
           return;
         }
 
         const errorMessage =
           error instanceof InvalidTokenError
-            ? 'Invalid token. Please login again.'
+            ? "Invalid token. Please login again."
             : !error.response
-            ? 'Network error. Please try again.'
-            : error?.message ?? 'Unknown error occurred. Please try again.';
+            ? "Network error. Please try again."
+            : error?.message ?? "Unknown error occurred. Please try again.";
 
         globalDispatch({
           type: globalAction.setErrorState,
@@ -179,13 +168,13 @@ function UserAvatar() {
             isError: true,
             errorMessage,
             errorCallback: () => {
-              navigate('/');
+              navigate("/");
 
               globalDispatch({
                 type: globalAction.setErrorState,
                 payload: {
                   isError: false,
-                  errorMessage: '',
+                  errorMessage: "",
                   errorCallback: () => {},
                 },
               });
@@ -201,12 +190,15 @@ function UserAvatar() {
         });
         userAvatarDispatch({
           type: userAvatarAction.setSubmitMessage,
-          payload: '',
+          payload: "",
         });
         userAvatarDispatch({
           type: userAvatarAction.setTriggerLogoutSubmit,
           payload: false,
         });
+
+        // flush local forage
+        localforage.clear();
       }
     }
 
@@ -228,7 +220,7 @@ function UserAvatar() {
 
     async function updatePrefersReducedMotion() {
       const url: URL = urlBuilder({
-        path: '/user',
+        path: "/user",
       });
 
       const body = JSON.stringify({
@@ -240,9 +232,9 @@ function UserAvatar() {
       const requestInit: RequestInit = {
         body,
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        method: 'PATCH',
+        method: "PATCH",
       };
 
       try {
@@ -267,16 +259,16 @@ function UserAvatar() {
           payload: prefersReducedMotionSwitchChecked,
         });
       } catch (error: any) {
-        if (!isMounted || error.name === 'AbortError') {
+        if (!isMounted || error.name === "AbortError") {
           return;
         }
 
         const errorMessage =
           error instanceof InvalidTokenError
-            ? 'Invalid token. Please login again.'
+            ? "Invalid token. Please login again."
             : !error.response
-            ? 'Network error. Please try again.'
-            : error?.message ?? 'Unknown error occurred. Please try again.';
+            ? "Network error. Please try again."
+            : error?.message ?? "Unknown error occurred. Please try again.";
 
         globalDispatch({
           type: globalAction.setErrorState,
@@ -284,13 +276,13 @@ function UserAvatar() {
             isError: true,
             errorMessage,
             errorCallback: () => {
-              navigate('/');
+              navigate("/");
 
               globalDispatch({
                 type: globalAction.setErrorState,
                 payload: {
                   isError: false,
-                  errorMessage: '',
+                  errorMessage: "",
                   errorCallback: () => {},
                 },
               });
@@ -320,12 +312,7 @@ function UserAvatar() {
 
   const {
     appThemeColors: { borderColor },
-    generalColors: {
-      sliderLabelColor,
-      grayColorShade,
-      themeColorShade,
-      iconGray,
-    },
+    generalColors: { sliderLabelColor, grayColorShade, themeColorShade, iconGray },
   } = returnThemeColors({
     colorsSwatches: COLORS_SWATCHES,
     themeObject,
@@ -337,11 +324,11 @@ function UserAvatar() {
       onChange={() => {
         userAvatarDispatch({
           type: userAvatarAction.setColorSchemeSwitchChecked,
-          payload: colorScheme === 'light' ? true : false,
+          payload: colorScheme === "light" ? true : false,
         });
         globalDispatch({
           type: globalAction.setColorScheme,
-          payload: colorScheme === 'light' ? 'dark' : 'light',
+          payload: colorScheme === "light" ? "dark" : "light",
         });
       }}
       onLabel={<TbSun size={18} />}
@@ -362,17 +349,14 @@ function UserAvatar() {
 
   // color swatches section
   const colorSwatches = Object.entries(COLORS_SWATCHES)
-    .filter(([colorName, colorShades]) => colorName !== 'dark')
+    .filter(([colorName, colorShades]) => colorName !== "dark")
     .map(([colorName, colorShades], idx) => {
-      const shade =
-        colorScheme === 'light' ? primaryShade.light : primaryShade.dark;
+      const shade = colorScheme === "light" ? primaryShade.light : primaryShade.dark;
       const colorValue = colorShades[shade];
 
       const colorSwatch = (
         <ColorSwatch color={colorValue}>
-          {colorName === primaryColor ? (
-            <TbCheck size={20} color="white" />
-          ) : null}
+          {colorName === primaryColor ? <TbCheck size={20} color="white" /> : null}
         </ColorSwatch>
       );
 
@@ -421,9 +405,9 @@ function UserAvatar() {
         <Text
           aria-live="polite"
           style={{
-            padding: '0.5rem 0.75rem',
+            padding: "0.5rem 0.75rem",
             border: borderColor,
-            borderRadius: '4px',
+            borderRadius: "4px",
           }}
           w="fit-content"
         >
@@ -445,14 +429,14 @@ function UserAvatar() {
     </Stack>
   );
 
-  const SLIDER_WIDTH = width < 480 ? '217px' : '350px';
+  const SLIDER_WIDTH = width < 480 ? "217px" : "350px";
   const [lightSchemeShadeSlider, darkSchemeShadeSlider] =
     returnAccessibleSliderInputElements([
       // light scheme shade slider
       {
-        ariaLabel: 'Select light scheme shade',
-        disabled: colorScheme === 'dark',
-        kind: 'slider',
+        ariaLabel: "Select light scheme shade",
+        disabled: colorScheme === "dark",
+        kind: "slider",
         label: (value) => <Text color={sliderLabelColor}>{value}</Text>,
         max: 9,
         min: 0,
@@ -472,9 +456,9 @@ function UserAvatar() {
       },
       // dark scheme shade slider
       {
-        ariaLabel: 'Select dark scheme shade',
-        disabled: colorScheme === 'light',
-        kind: 'slider',
+        ariaLabel: "Select dark scheme shade",
+        disabled: colorScheme === "light",
+        kind: "slider",
         label: (value) => <Text color={sliderLabelColor}>{value}</Text>,
         max: 9,
         min: 0,
@@ -543,7 +527,7 @@ function UserAvatar() {
     <ChartsAndGraphsControlsStacker
       input={reducedMotionSwitch}
       label="Reduced motion"
-      value={prefersReducedMotionSwitchChecked ? 'On' : 'Off'}
+      value={prefersReducedMotionSwitchChecked ? "On" : "Off"}
       symbol=""
     />
   );
@@ -552,9 +536,9 @@ function UserAvatar() {
   const fontFamilySegmentedControl = (
     <SegmentedControl
       data={[
-        { value: 'sans-serif', label: 'Sans' },
-        { value: 'serif', label: 'Serif' },
-        { value: 'Open-Dyslexic', label: 'Dyslexic' },
+        { value: "sans-serif", label: "Sans" },
+        { value: "serif", label: "Serif" },
+        { value: "Open-Dyslexic", label: "Dyslexic" },
       ]}
       value={fontFamily}
       onChange={(value) => {
@@ -571,22 +555,18 @@ function UserAvatar() {
     <ChartsAndGraphsControlsStacker
       input={fontFamilySegmentedControl}
       label="Font family"
-      value={
-        fontFamily === 'Open-Dyslexic' ? 'Dyslexic' : splitCamelCase(fontFamily)
-      }
+      value={fontFamily === "Open-Dyslexic" ? "Dyslexic" : splitCamelCase(fontFamily)}
       symbol=""
     />
   );
 
   const appearanceNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
     active: isAppearanceNavLinkActive,
-    ariaLabel: 'Select color scheme, primary color, and font family',
+    ariaLabel: "Select color scheme, primary color, and font family",
     icon: (
-      <TbColorFilter
-        color={isAppearanceNavLinkActive ? themeColorShade : iconGray}
-      />
+      <TbColorFilter color={isAppearanceNavLinkActive ? themeColorShade : iconGray} />
     ),
-    label: 'Appearance',
+    label: "Appearance",
     onClick: () => {
       userAvatarDispatch({
         type: userAvatarAction.setIsAppearanceNavLinkActive,
@@ -598,13 +578,9 @@ function UserAvatar() {
 
   const profileNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
     active: isProfileNavLinkActive,
-    ariaLabel: 'View profile',
-    icon: (
-      <TbUserCircle
-        color={isProfileNavLinkActive ? themeColorShade : iconGray}
-      />
-    ),
-    label: 'Profile',
+    ariaLabel: "View profile",
+    icon: <TbUserCircle color={isProfileNavLinkActive ? themeColorShade : iconGray} />,
+    label: "Profile",
     onClick: () => {
       userAvatarDispatch({
         type: userAvatarAction.setIsProfileNavLinkActive,
@@ -616,11 +592,9 @@ function UserAvatar() {
 
   const logoutNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
     active: isLogoutNavLinkActive,
-    ariaLabel: 'Sign out',
-    icon: (
-      <TbLogout color={isLogoutNavLinkActive ? themeColorShade : iconGray} />
-    ),
-    label: 'Sign out',
+    ariaLabel: "Sign out",
+    icon: <TbLogout color={isLogoutNavLinkActive ? themeColorShade : iconGray} />,
+    label: "Sign out",
     onClick: () => {
       userAvatarDispatch({
         type: userAvatarAction.setTriggerLogoutSubmit,
@@ -629,15 +603,12 @@ function UserAvatar() {
     },
   };
 
-  const [
-    createdAppearanceNavLink,
-    createdProfileNavLink,
-    createdLogoutNavLink,
-  ] = returnAccessibleNavLinkElements([
-    appearanceNavLinkCreatorInfo,
-    profileNavLinkCreatorInfo,
-    logoutNavLinkCreatorInfo,
-  ]);
+  const [createdAppearanceNavLink, createdProfileNavLink, createdLogoutNavLink] =
+    returnAccessibleNavLinkElements([
+      appearanceNavLinkCreatorInfo,
+      profileNavLinkCreatorInfo,
+      logoutNavLinkCreatorInfo,
+    ]);
 
   const modalSize =
     width < 480 // for iPhone 5/SE
@@ -699,13 +670,9 @@ function UserAvatar() {
   );
 
   const displayAvatar = (
-    <Group style={{ cursor: 'pointer' }}>
+    <Group style={{ cursor: "pointer" }}>
       {accessToken && isLoggedIn ? (
-        <Avatar
-          src={userDocument?.profilePictureUrl}
-          alt="profile pic"
-          radius={9999}
-        />
+        <Avatar src={userDocument?.profilePictureUrl} alt="profile pic" radius={9999} />
       ) : null}
     </Group>
   );
@@ -732,9 +699,7 @@ function UserAvatar() {
         loading: isSubmitting,
         text: isSubmitting ? submitMessage : successMessage,
       }}
-      title={
-        <Title order={4}>{isSuccessful ? 'Success!' : 'Submitting...'}</Title>
-      }
+      title={<Title order={4}>{isSuccessful ? "Success!" : "Submitting..."}</Title>}
     />
   );
 
@@ -750,7 +715,7 @@ function UserAvatar() {
   useEffect(() => {
     logState({
       state: userAvatarState,
-      groupLabel: 'user avatar state in UserAvatar',
+      groupLabel: "user avatar state in UserAvatar",
     });
   }, [userAvatarState]);
 

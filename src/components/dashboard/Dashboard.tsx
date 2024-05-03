@@ -38,6 +38,7 @@ import ProductDashboard from "./productDashboard/ProductDashboard";
 import RepairDashboard from "./repairDashboard/RepairDashboard";
 import { dashboardAction, dashboardReducer, initialDashboardState } from "./state";
 import {
+  BusinessMetric,
   BusinessMetricStoreLocation,
   DashboardCalendarView,
   DashboardCustomerMetric,
@@ -47,6 +48,7 @@ import {
   DashboardRepairMetric,
 } from "./types";
 import { createRandomBusinessMetrics, splitSelectedCalendarDate } from "./utils";
+import localforage from "localforage";
 
 function Dashboard() {
   const [dashboardState, dashboardDispatch] = useReducer(
@@ -98,6 +100,23 @@ function Dashboard() {
       try {
         console.time("createRandomBusinessMetrics");
 
+        const existingMetrics = await localforage.getItem<BusinessMetric[]>(
+          "businessMetrics"
+        );
+        if (existingMetrics) {
+          dashboardDispatch({
+            type: dashboardAction.setBusinessMetrics,
+            payload: existingMetrics,
+          });
+
+          dashboardDispatch({
+            type: dashboardAction.setIsLoading,
+            payload: false,
+          });
+
+          return;
+        }
+
         const businessMetrics = await createRandomBusinessMetrics({
           daysPerMonth: DAYS_PER_MONTH,
           months: MONTHS,
@@ -112,6 +131,8 @@ function Dashboard() {
           type: dashboardAction.setBusinessMetrics,
           payload: businessMetrics,
         });
+
+        localforage.setItem<BusinessMetric[]>("businessMetrics", businessMetrics);
 
         dashboardDispatch({
           type: dashboardAction.setIsLoading,
@@ -176,7 +197,6 @@ function Dashboard() {
               customWidth: 100,
               imageAlt: "intense generation...",
               imageSrc: "https://media1.tenor.com/m/H4b3ave7P08AAAAC/typing-busy.gif",
-              fit: "contain",
             }}
           />
           <Text>{loadingMessage}</Text>
