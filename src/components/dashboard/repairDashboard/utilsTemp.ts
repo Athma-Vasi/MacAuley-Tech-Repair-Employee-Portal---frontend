@@ -279,11 +279,13 @@ async function createDailyRepairCharts({
   selectedYear,
 }: CreateDailyRepairChartsInput): Promise<RepairMetricsCharts["daily"]> {
   if (!dailyMetrics) {
-    return {
-      bar: barChartsTemplate,
-      calendar: calendarChartsTemplate,
-      line: lineChartsTemplate,
-    };
+    return new Promise((resolve) => {
+      resolve({
+        bar: barChartsTemplate,
+        calendar: calendarChartsTemplate,
+        line: lineChartsTemplate,
+      });
+    });
   }
 
   return new Promise<RepairMetricsCharts["daily"]>((resolve) => {
@@ -371,20 +373,22 @@ type CreateMonthlyRepairChartsInput = {
   selectedYear: Year;
 };
 
-function createMonthlyRepairCharts({
+async function createMonthlyRepairCharts({
   barChartsTemplate,
   calendarChartsTemplate,
   lineChartsTemplate,
   monthlyMetrics,
   months,
   selectedYear,
-}: CreateMonthlyRepairChartsInput) {
+}: CreateMonthlyRepairChartsInput): Promise<RepairMetricsCharts["monthly"]> {
   if (!monthlyMetrics) {
-    return {
-      bar: barChartsTemplate,
-      calendar: calendarChartsTemplate,
-      line: lineChartsTemplate,
-    };
+    return new Promise((resolve) => {
+      resolve({
+        bar: barChartsTemplate,
+        calendar: calendarChartsTemplate,
+        line: lineChartsTemplate,
+      });
+    });
   }
 
   return new Promise<RepairMetricsCharts["monthly"]>((resolve) => {
@@ -482,16 +486,18 @@ type CreateYearlyRepairChartsInput = {
   yearlyMetrics?: RepairYearlyMetric[];
 };
 
-function createYearlyRepairCharts({
+async function createYearlyRepairCharts({
   barChartsTemplate,
   lineChartsTemplate,
   yearlyMetrics,
-}: CreateYearlyRepairChartsInput) {
+}: CreateYearlyRepairChartsInput): Promise<RepairMetricsCharts["yearly"]> {
   if (!yearlyMetrics) {
-    return {
-      bar: barChartsTemplate,
-      line: lineChartsTemplate,
-    };
+    return new Promise((resolve) => {
+      resolve({
+        bar: barChartsTemplate,
+        line: lineChartsTemplate,
+      });
+    });
   }
 
   return new Promise<RepairMetricsCharts["yearly"]>((resolve) => {
