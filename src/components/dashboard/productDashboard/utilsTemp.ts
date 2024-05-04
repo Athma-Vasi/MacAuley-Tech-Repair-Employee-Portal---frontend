@@ -233,7 +233,7 @@ async function returnProductMetricsCharts2({
     monthProductMetrics: { selectedMonthMetrics },
   } = selectedDateProductMetrics;
   const selectedMonth = selectedMonthMetrics?.month ?? "January";
-  const monthNumber = (months.indexOf(selectedMonth) + 1).toString().padStart(2, "0");
+  const monthIndex = (months.indexOf(selectedMonth) + 1).toString().padStart(2, "0");
 
   const {
     dayProductMetrics: { selectedDayMetrics },
@@ -282,7 +282,7 @@ async function returnProductMetricsCharts2({
         calendarChartsTemplate: CALENDAR_CHART_OBJ_TEMPLATE,
         dailyMetrics: selectedMonthMetrics?.dailyMetrics,
         lineChartsTemplate: LINE_CHART_OBJ_TEMPLATE,
-        monthNumber,
+        monthIndex,
         pieChartsTemplate: PIE_CHART_OBJ_TEMPLATE,
         selectedDayMetrics,
         selectedYear,
@@ -318,7 +318,7 @@ type CreateDailyProductChartsInput = {
   calendarChartsTemplate: ProductMetricCalendarCharts;
   dailyMetrics?: ProductDailyMetric[];
   lineChartsTemplate: ProductMetricLineCharts;
-  monthNumber: string;
+  monthIndex: string;
   pieChartsTemplate: PieChartData[];
   selectedDayMetrics?: ProductDailyMetric;
   selectedYear: Year;
@@ -329,7 +329,7 @@ async function createDailyProductCharts({
   calendarChartsTemplate,
   dailyMetrics,
   lineChartsTemplate,
-  monthNumber,
+  monthIndex,
   pieChartsTemplate,
   selectedDayMetrics,
   selectedYear,
@@ -407,19 +407,19 @@ async function createDailyProductCharts({
           // daily.unitsSold.calendar
 
           const dailyUnitsSoldTotalCalendarChart: CalendarChartData = {
-            day: `${selectedYear}-${monthNumber}-${day}`,
+            day: `${selectedYear}-${monthIndex}-${day}`,
             value: unitsSold.total,
           };
           dailyUnitsSoldCalendarChartsAcc.total.push(dailyUnitsSoldTotalCalendarChart);
 
           const dailyUnitsSoldOnlineCalendarChart: CalendarChartData = {
-            day: `${selectedYear}-${monthNumber}-${day}`,
+            day: `${selectedYear}-${monthIndex}-${day}`,
             value: unitsSold.online,
           };
           dailyUnitsSoldCalendarChartsAcc.online.push(dailyUnitsSoldOnlineCalendarChart);
 
           const dailyUnitsSoldInStoreCalendarChart: CalendarChartData = {
-            day: `${selectedYear}-${monthNumber}-${day}`,
+            day: `${selectedYear}-${monthIndex}-${day}`,
             value: unitsSold.inStore,
           };
           dailyUnitsSoldCalendarChartsAcc.inStore.push(
@@ -498,19 +498,19 @@ async function createDailyProductCharts({
           // daily.revenue.calendar
 
           const dailyRevenueTotalCalendarChart: CalendarChartData = {
-            day: `${selectedYear}-${monthNumber}-${day}`,
+            day: `${selectedYear}-${monthIndex}-${day}`,
             value: revenue.total,
           };
           dailyRevenueCalendarChartsAcc.total.push(dailyRevenueTotalCalendarChart);
 
           const dailyRevenueOnlineCalendarChart: CalendarChartData = {
-            day: `${selectedYear}-${monthNumber}-${day}`,
+            day: `${selectedYear}-${monthIndex}-${day}`,
             value: revenue.online,
           };
           dailyRevenueCalendarChartsAcc.online.push(dailyRevenueOnlineCalendarChart);
 
           const dailyRevenueInStoreCalendarChart: CalendarChartData = {
-            day: `${selectedYear}-${monthNumber}-${day}`,
+            day: `${selectedYear}-${monthIndex}-${day}`,
             value: revenue.inStore,
           };
           dailyRevenueCalendarChartsAcc.inStore.push(dailyRevenueInStoreCalendarChart);
@@ -677,7 +677,7 @@ function createMonthlyProductCharts({
           ] = monthlyProductChartsAcc;
 
           const { month, unitsSold, revenue, dailyMetrics } = monthlyProductMetrics;
-          const monthNumberStr = (months.indexOf(month) + 1).toString().padStart(2, "0");
+          const monthIndexStr = (months.indexOf(month) + 1).toString().padStart(2, "0");
 
           // prevents current month of current year from being added to charts
           const currentYear = new Date().getFullYear().toString();
@@ -722,7 +722,7 @@ function createMonthlyProductCharts({
             const { day, unitsSold } = dailyMetric;
 
             const monthlyUnitsSoldTotalCalendarChart: CalendarChartData = {
-              day: `${selectedYear}-${monthNumberStr}-${day}`,
+              day: `${selectedYear}-${monthIndexStr}-${day}`,
               value: unitsSold.total,
             };
             monthlyUnitsSoldCalendarChartsAcc.total.push(
@@ -730,7 +730,7 @@ function createMonthlyProductCharts({
             );
 
             const monthlyUnitsSoldOnlineCalendarChart: CalendarChartData = {
-              day: `${selectedYear}-${monthNumberStr}-${day}`,
+              day: `${selectedYear}-${monthIndexStr}-${day}`,
               value: unitsSold.online,
             };
             monthlyUnitsSoldCalendarChartsAcc.online.push(
@@ -738,7 +738,7 @@ function createMonthlyProductCharts({
             );
 
             const monthlyUnitsSoldInStoreCalendarChart: CalendarChartData = {
-              day: `${selectedYear}-${monthNumberStr}-${day}`,
+              day: `${selectedYear}-${monthIndexStr}-${day}`,
               value: unitsSold.inStore,
             };
             monthlyUnitsSoldCalendarChartsAcc.inStore.push(
@@ -821,13 +821,13 @@ function createMonthlyProductCharts({
             const { day, revenue } = dailyMetric;
 
             const monthlyRevenueTotalCalendarChart: CalendarChartData = {
-              day: `${selectedYear}-${monthNumberStr}-${day}`,
+              day: `${selectedYear}-${monthIndexStr}-${day}`,
               value: revenue.total,
             };
             monthlyRevenueCalendarChartsAcc.total.push(monthlyRevenueTotalCalendarChart);
 
             const monthlyRevenueOnlineCalendarChart: CalendarChartData = {
-              day: `${selectedYear}-${monthNumberStr}-${day}`,
+              day: `${selectedYear}-${monthIndexStr}-${day}`,
               value: revenue.online,
             };
             monthlyRevenueCalendarChartsAcc.online.push(
@@ -835,7 +835,7 @@ function createMonthlyProductCharts({
             );
 
             const monthlyRevenueInStoreCalendarChart: CalendarChartData = {
-              day: `${selectedYear}-${monthNumberStr}-${day}`,
+              day: `${selectedYear}-${monthIndexStr}-${day}`,
               value: revenue.inStore,
             };
             monthlyRevenueCalendarChartsAcc.inStore.push(

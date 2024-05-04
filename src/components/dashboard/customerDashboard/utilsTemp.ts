@@ -294,7 +294,7 @@ async function returnCustomerMetricsCharts2({
     monthCustomerMetrics: { selectedMonthMetrics },
   } = selectedDateCustomerMetrics;
   const selectedMonth = selectedMonthMetrics?.month ?? "January";
-  const monthNumber = (months.indexOf(selectedMonth) + 1).toString().padStart(2, "0");
+  const monthIndex = (months.indexOf(selectedMonth) + 1).toString().padStart(2, "0");
 
   const {
     dayCustomerMetrics: { selectedDayMetrics },
@@ -382,7 +382,7 @@ async function returnCustomerMetricsCharts2({
     await Promise.all([
       createDailyCustomerCharts({
         dailyMetrics: selectedMonthMetrics?.dailyMetrics,
-        monthNumber,
+        monthIndex,
         newBarChartsTemplate: NEW_RETURNING_BAR_CHART_TEMPLATE,
         newCalendarChartsTemplate: NEW_RETURNING_CALENDAR_CHART_TEMPLATE,
         newLineChartsTemplate: NEW_RETURNING_LINE_CHART_TEMPLATE,
@@ -435,7 +435,7 @@ async function returnCustomerMetricsCharts2({
 
 type CreateDailyCustomerChartsInput = {
   dailyMetrics?: CustomerDailyMetric[];
-  monthNumber: string;
+  monthIndex: string;
   newBarChartsTemplate: CustomerNewReturningBarCharts;
   newCalendarChartsTemplate: CustomerNewReturningCalendarCharts;
   newLineChartsTemplate: CustomerNewReturningLineCharts;
@@ -451,7 +451,7 @@ type CreateDailyCustomerChartsInput = {
 
 async function createDailyCustomerCharts({
   dailyMetrics,
-  monthNumber,
+  monthIndex,
   newBarChartsTemplate,
   newCalendarChartsTemplate,
   newLineChartsTemplate,
@@ -543,19 +543,19 @@ async function createDailyCustomerCharts({
           dailyOverviewBarChartsAcc.returning.push(dailyReturningBarChart);
 
           const dailyOverviewCalendarChart = {
-            day: `${selectedYear}-${monthNumber}-${day}`,
+            day: `${selectedYear}-${monthIndex}-${day}`,
             value: customers.total,
           };
           dailyOverviewCalendarChartsAcc.overview.push(dailyOverviewCalendarChart);
 
           const dailyNewCalendarChart = {
-            day: `${selectedYear}-${monthNumber}-${day}`,
+            day: `${selectedYear}-${monthIndex}-${day}`,
             value: customers.new.total,
           };
           dailyOverviewCalendarChartsAcc.new.push(dailyNewCalendarChart);
 
           const dailyReturningCalendarChart = {
-            day: `${selectedYear}-${monthNumber}-${day}`,
+            day: `${selectedYear}-${monthIndex}-${day}`,
             value: customers.returning.total,
           };
           dailyOverviewCalendarChartsAcc.returning.push(dailyReturningCalendarChart);
@@ -647,31 +647,31 @@ async function createDailyCustomerCharts({
           // new -> calendar chart obj
 
           const dailyNewTotalCalendarChart = {
-            day: `${selectedYear}-${monthNumber}-${day}`,
+            day: `${selectedYear}-${monthIndex}-${day}`,
             value: customers.new.total,
           };
           dailyNewCalendarChartsAcc.total.push(dailyNewTotalCalendarChart);
 
           const dailyNewSalesCalendarChart = {
-            day: `${selectedYear}-${monthNumber}-${day}`,
+            day: `${selectedYear}-${monthIndex}-${day}`,
             value: customers.new.sales.total,
           };
           dailyNewCalendarChartsAcc.sales.push(dailyNewSalesCalendarChart);
 
           const dailyNewOnlineCalendarChart = {
-            day: `${selectedYear}-${monthNumber}-${day}`,
+            day: `${selectedYear}-${monthIndex}-${day}`,
             value: customers.new.sales.online,
           };
           dailyNewCalendarChartsAcc.online.push(dailyNewOnlineCalendarChart);
 
           const dailyNewInStoreCalendarChart = {
-            day: `${selectedYear}-${monthNumber}-${day}`,
+            day: `${selectedYear}-${monthIndex}-${day}`,
             value: customers.new.sales.inStore,
           };
           dailyNewCalendarChartsAcc.inStore.push(dailyNewInStoreCalendarChart);
 
           const dailyNewRepairCalendarChart = {
-            day: `${selectedYear}-${monthNumber}-${day}`,
+            day: `${selectedYear}-${monthIndex}-${day}`,
             value: customers.new.repair,
           };
           dailyNewCalendarChartsAcc.repair.push(dailyNewRepairCalendarChart);
@@ -819,25 +819,25 @@ async function createDailyCustomerCharts({
           // returning -> calendar chart obj
 
           const dailyReturningTotalCalendarChart = {
-            day: `${selectedYear}-${monthNumber}-${day}`,
+            day: `${selectedYear}-${monthIndex}-${day}`,
             value: customers.returning.total,
           };
           dailyReturningCalendarChartsAcc.total.push(dailyReturningTotalCalendarChart);
 
           const dailyReturningSalesCalendarChart = {
-            day: `${selectedYear}-${monthNumber}-${day}`,
+            day: `${selectedYear}-${monthIndex}-${day}`,
             value: customers.returning.sales.total,
           };
           dailyReturningCalendarChartsAcc.sales.push(dailyReturningSalesCalendarChart);
 
           const dailyReturningOnlineCalendarChart = {
-            day: `${selectedYear}-${monthNumber}-${day}`,
+            day: `${selectedYear}-${monthIndex}-${day}`,
             value: customers.returning.sales.online,
           };
           dailyReturningCalendarChartsAcc.online.push(dailyReturningOnlineCalendarChart);
 
           const dailyReturningInStoreCalendarChart = {
-            day: `${selectedYear}-${monthNumber}-${day}`,
+            day: `${selectedYear}-${monthIndex}-${day}`,
             value: customers.returning.sales.inStore,
           };
           dailyReturningCalendarChartsAcc.inStore.push(
@@ -845,7 +845,7 @@ async function createDailyCustomerCharts({
           );
 
           const dailyReturningRepairCalendarChart = {
-            day: `${selectedYear}-${monthNumber}-${day}`,
+            day: `${selectedYear}-${monthIndex}-${day}`,
             value: customers.returning.repair,
           };
           dailyReturningCalendarChartsAcc.repair.push(dailyReturningRepairCalendarChart);

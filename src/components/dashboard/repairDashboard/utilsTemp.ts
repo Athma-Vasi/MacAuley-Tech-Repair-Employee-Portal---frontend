@@ -54,17 +54,14 @@ function returnSelectedDateRepairMetrics2({
   storeLocation,
   year,
 }: ReturnSelectedDateRepairMetricsInput): SelectedDateRepairMetrics {
-  // selected store's business metrics
   const currentStoreMetrics = businessMetrics.find(
     (businessMetric) => businessMetric.storeLocation === storeLocation
   );
 
-  // selected business metrics' repair category
   const selectedRepairMetrics = currentStoreMetrics?.repairMetrics.find(
     (repairMetric) => repairMetric.name === selectedRepairCategory
   );
 
-  // selected year's repair metrics
   const selectedYearMetrics = selectedRepairMetrics?.yearlyMetrics.find(
     (yearlyMetric) => yearlyMetric.year === year
   );
@@ -77,7 +74,6 @@ function returnSelectedDateRepairMetrics2({
     prevYearMetrics,
   };
 
-  // selected month's repair metrics
   const selectedMonthMetrics = selectedYearMetrics?.monthlyMetrics.find(
     (monthlyMetric) => monthlyMetric.month === month
   );
@@ -98,7 +94,6 @@ function returnSelectedDateRepairMetrics2({
     prevMonthMetrics,
   };
 
-  // selected day's repair metrics
   const selectedDayMetrics = selectedMonthMetrics?.dailyMetrics.find(
     (dailyMetric) => dailyMetric.day === day
   );
@@ -184,31 +179,25 @@ async function returnRepairMetricsCharts2({
   selectedRepairCategory,
   storeLocation,
 }: ReturnRepairChartsInput): Promise<RepairMetricsCharts> {
-  // selected year's metrics
   const {
     yearRepairMetrics: { selectedYearMetrics },
   } = selectedDateRepairMetrics;
   const selectedYear =
     selectedYearMetrics?.year ?? (new Date().getFullYear().toString() as Year);
 
-  // selected month's metrics
   const {
     monthRepairMetrics: { selectedMonthMetrics },
   } = selectedDateRepairMetrics;
   const selectedMonth = selectedMonthMetrics?.month ?? "January";
   const monthNumber = (months.indexOf(selectedMonth) + 1).toString().padStart(2, "0");
 
-  // selected store's business metrics
   const currentStoreMetrics = businessMetrics.find(
     (businessMetric) => businessMetric.storeLocation === storeLocation
   );
 
-  // selected business metrics' repair category
   const repairMetrics = currentStoreMetrics?.repairMetrics.find(
     (repairMetric) => repairMetric.name === selectedRepairCategory
   );
-
-  // templates used to create charts data
 
   const BAR_CHART_DATA_TEMPLATE: RepairMetricBarCharts = {
     revenue: [],
@@ -224,8 +213,6 @@ async function returnRepairMetricsCharts2({
     revenue: [{ id: "Revenue", data: [] }],
     unitsRepaired: [{ id: "Units Repaired", data: [] }],
   };
-
-  console.log("before await");
 
   const [dailyRepairMetrics, monthlyRepairMetrics, yearlyRepairMetrics] =
     await Promise.all([
@@ -251,8 +238,6 @@ async function returnRepairMetricsCharts2({
         yearlyMetrics: repairMetrics?.yearlyMetrics,
       }),
     ]);
-
-  console.log("after await");
 
   return {
     daily: dailyRepairMetrics,
@@ -406,7 +391,7 @@ async function createMonthlyRepairCharts({
           ] = monthlyRepairChartsAcc;
 
           const { month, revenue, unitsRepaired } = monthlyRepairMetric;
-          const monthNumberStr = (months.indexOf(month) + 1).toString().padStart(2, "0");
+          const monthIndex = (months.indexOf(month) + 1).toString().padStart(2, "0");
 
           // prevents current month of current year from being added to charts
           const currentYear = new Date().getFullYear().toString();
@@ -433,7 +418,7 @@ async function createMonthlyRepairCharts({
           monthlyRepairMetricBarChartsAcc.revenue.push(monthlyRevenueBarChart);
 
           const monthlyUnitsRepairedCalendarChart: CalendarChartData = {
-            day: `${selectedYear}-${monthNumberStr}-01`,
+            day: `${selectedYear}-${monthIndex}-01`,
             value: unitsRepaired,
           };
           monthlyRepairMetricCalendarChartsAcc.unitsRepaired.push(
@@ -441,7 +426,7 @@ async function createMonthlyRepairCharts({
           );
 
           const monthlyRevenueCalendarChart: CalendarChartData = {
-            day: `${selectedYear}-${monthNumberStr}-01`,
+            day: `${selectedYear}-${monthIndex}-01`,
             value: revenue,
           };
           monthlyRepairMetricCalendarChartsAcc.revenue.push(monthlyRevenueCalendarChart);
