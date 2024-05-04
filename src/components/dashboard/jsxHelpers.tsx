@@ -3,7 +3,7 @@ import { ReactNode } from "react";
 import { MdCalendarMonth, MdDateRange } from "react-icons/md";
 import { RiCalendarLine } from "react-icons/ri";
 
-import { addCommaSeparator } from "../../utils";
+import { addCommaSeparator, toFixedFloat } from "../../utils";
 import { SelectedDateCustomerMetrics } from "./customerDashboard/utils";
 import { SelectedDateFinancialMetrics } from "./financialDashboard/utils";
 import { SelectedDateProductMetrics } from "./productDashboard/utils";
@@ -116,10 +116,18 @@ function createDashboardMetricsCards({
       <RiCalendarLine size={20} />
     );
 
-  const deltaPercentage = ((selectedValue - prevValue) / prevValue) * 100;
+  // const deltaPercentage = ((selectedValue - prevValue) / prevValue) * 100;
 
+  // const deltaFormatted = Number.isFinite(deltaPercentage)
+  //   ? `${deltaPercentage > 0 ? "+" : ""} ${deltaPercentage.toFixed(2)} %`
+  //   : "N/A";
+
+  const deltaPercentage = toFixedFloat(
+    ((selectedValue - prevValue) / prevValue) * 100,
+    2
+  );
   const deltaFormatted = Number.isFinite(deltaPercentage)
-    ? `${deltaPercentage > 0 ? "+" : ""} ${deltaPercentage.toFixed(2)} %`
+    ? `${deltaPercentage > 0 ? "+" : ""} ${toFixedFloat(deltaPercentage, 2)} %`
     : "N/A";
 
   const deltaTextColor =
@@ -133,20 +141,24 @@ function createDashboardMetricsCards({
         : redColorShade
       : "inherit";
 
-  const date =
-    deltaFormatted === "N/A"
-      ? "N/A"
-      : `Since ${kind === "day" ? prevDay : kind === "month" ? prevMonth : prevYear} ${
-          kind === "day" ? currentMonth : kind === "month" ? currentYear : ""
-        }`;
+  // const date =
+  //   deltaFormatted === "N/A"
+  //     ? "N/A"
+  //     : `Since ${kind === "day" ? prevDay : kind === "month" ? prevMonth : prevYear} ${
+  //         kind === "day" ? currentMonth : kind === "month" ? currentYear : ""
+  //       }`;
+
+  const date = `Since ${
+    kind === "day" ? prevDay : kind === "month" ? prevMonth : prevYear
+  } ${kind === "day" ? currentMonth : kind === "month" ? currentYear : ""}`;
 
   const displayValue = isDisplayValueAsPercentage
     ? `${isDisplayValueAsCurrency ? "CAD" : ""} ${addCommaSeparator(
-        (selectedValue * 100).toFixed(2)
+        toFixedFloat(selectedValue * 100, 2)
       )} %`
     : `${isDisplayValueAsCurrency ? "CAD" : ""} ${
         selectedValue.toString().includes(".")
-          ? addCommaSeparator(selectedValue.toFixed(0))
+          ? addCommaSeparator(toFixedFloat(selectedValue, 0))
           : addCommaSeparator(selectedValue.toString())
       }`;
 

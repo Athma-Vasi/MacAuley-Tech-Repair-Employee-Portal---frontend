@@ -1,3 +1,4 @@
+import { RepairMetricsCards } from "../jsxHelpers";
 import {
   BusinessMetric,
   BusinessMetricStoreLocation,
@@ -5,6 +6,7 @@ import {
   Month,
   Year,
 } from "../types";
+import { RepairMetricsCharts } from "./utilsTemp";
 
 type RepairDashboardChildrenProps = {
   businessMetrics: BusinessMetric[];
@@ -19,4 +21,26 @@ type RepairDashboardChildrenProps = {
   storeLocationView: BusinessMetricStoreLocation;
 };
 
-export type { RepairDashboardChildrenProps };
+type RepairDashboardState = {
+  repairMetricsCards: RepairMetricsCards;
+  repairMetricsCharts: RepairMetricsCharts;
+};
+
+type RepairDashboardAction = {
+  setRepairMetricsCards: "setRepairMetricsCards";
+  setRepairMetricsCharts: "setRepairMetricsCharts";
+};
+
+type RepairDashboardDispatch =
+  | { type: RepairDashboardAction["setRepairMetricsCards"]; payload: RepairMetricsCards }
+  | {
+      type: RepairDashboardAction["setRepairMetricsCharts"];
+      payload: RepairMetricsCharts;
+    };
+
+export type {
+  RepairDashboardAction,
+  RepairDashboardChildrenProps,
+  RepairDashboardDispatch,
+  RepairDashboardState,
+};
