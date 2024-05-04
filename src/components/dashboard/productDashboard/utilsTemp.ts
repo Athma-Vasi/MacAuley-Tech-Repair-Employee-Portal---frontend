@@ -1,4 +1,3 @@
-import { StoreLocation } from "../../../types";
 import { BarChartData } from "../../charts/responsiveBarChart/types";
 import { CalendarChartData } from "../../charts/responsiveCalendarChart/types";
 import { LineChartData } from "../../charts/responsiveLineChart/types";
@@ -29,7 +28,7 @@ type SelectedDateProductMetrics = {
   };
 };
 
-function returnSelectedDateProductMetrics({
+function returnSelectedDateProductMetrics2({
   businessMetrics,
   day,
   month,
@@ -46,17 +45,14 @@ function returnSelectedDateProductMetrics({
   storeLocation: BusinessMetricStoreLocation;
   year: Year;
 }): SelectedDateProductMetrics {
-  // selected store's business metrics
   const currentStoreMetrics = businessMetrics.find(
     (businessMetric) => businessMetric.storeLocation === storeLocation
   );
 
-  // selected business metrics' product category
   const selectedDateProductMetrics = currentStoreMetrics?.productMetrics.find(
     (productMetric) => productMetric.name === selectedProductCategory
   );
 
-  // selected year's product metrics
   const selectedYearMetrics = selectedDateProductMetrics?.yearlyMetrics.find(
     (yearlyMetric) => yearlyMetric.year === year
   );
@@ -69,7 +65,6 @@ function returnSelectedDateProductMetrics({
     prevYearMetrics,
   };
 
-  // selected month's product metrics
   const selectedMonthMetrics = selectedYearMetrics?.monthlyMetrics.find(
     (monthlyMetric) => monthlyMetric.month === month
   );
@@ -90,7 +85,6 @@ function returnSelectedDateProductMetrics({
     prevMonthMetrics,
   };
 
-  // selected day's product metrics
   const selectedDayMetrics = selectedMonthMetrics?.dailyMetrics.find(
     (dailyMetric) => dailyMetric.day === day
   );
@@ -230,25 +224,20 @@ async function returnProductMetricsCharts2({
   selectedDateProductMetrics,
   storeLocation,
 }: ReturnProductMetricsChartsInput): Promise<ProductMetricsCharts> {
-  // selected year's metrics
   const {
     yearProductMetrics: { selectedYearMetrics },
   } = selectedDateProductMetrics;
   const selectedYear = selectedYearMetrics?.year ?? "2023";
 
-  // selected month's metrics
   const {
     monthProductMetrics: { selectedMonthMetrics },
   } = selectedDateProductMetrics;
   const selectedMonth = selectedMonthMetrics?.month ?? "January";
   const monthNumber = (months.indexOf(selectedMonth) + 1).toString().padStart(2, "0");
 
-  // selected day's metrics
   const {
     dayProductMetrics: { selectedDayMetrics },
   } = selectedDateProductMetrics;
-
-  // templates
 
   const BAR_CHART_OBJ_TEMPLATE: ProductMetricBarCharts = {
     total: [],
@@ -278,12 +267,10 @@ async function returnProductMetricsCharts2({
     { id: "Online", label: "Online", value: 0 },
   ];
 
-  // selected store's business metrics
   const currentStoreMetrics = businessMetrics.find(
     (businessMetric) => businessMetric.storeLocation === storeLocation
   );
 
-  // selected business metrics' product category
   const productMetrics = currentStoreMetrics?.productMetrics.find(
     (productMetric) => productMetric.name === selectedProductCategory
   );
@@ -573,11 +560,10 @@ async function createDailyProductCharts({
           return dailyProductChartsAcc;
         },
         [
-          // units sold
           structuredClone(barChartsTemplate),
           structuredClone(calendarChartsTemplate),
           structuredClone(lineChartsTemplate),
-          // revenue
+
           structuredClone(barChartsTemplate),
           structuredClone(calendarChartsTemplate),
           structuredClone(lineChartsTemplate),
@@ -902,11 +888,10 @@ function createMonthlyProductCharts({
           return monthlyProductChartsAcc;
         },
         [
-          // unitsSold
           structuredClone(barChartsTemplate),
           structuredClone(calendarChartsTemplate),
           structuredClone(lineChartsTemplate),
-          // revenue
+
           structuredClone(barChartsTemplate),
           structuredClone(calendarChartsTemplate),
           structuredClone(lineChartsTemplate),
@@ -1154,10 +1139,9 @@ function createYearlyProductCharts({
           return yearlyProductChartsAcc;
         },
         [
-          // unitsSold
           structuredClone(barChartsTemplate),
           structuredClone(lineChartsTemplate),
-          // revenue
+
           structuredClone(barChartsTemplate),
           structuredClone(lineChartsTemplate),
         ]
@@ -1204,3 +1188,14 @@ function createYearlyProductCharts({
     }, 0);
   });
 }
+
+export { returnProductMetricsCharts2, returnSelectedDateProductMetrics2 };
+export type {
+  ProductMetricBarCharts,
+  ProductMetricCalendarCharts,
+  ProductMetricCalendarKey,
+  ProductMetricChartKey,
+  ProductMetricLineCharts,
+  ProductMetricsCharts,
+  SelectedDateProductMetrics,
+};
