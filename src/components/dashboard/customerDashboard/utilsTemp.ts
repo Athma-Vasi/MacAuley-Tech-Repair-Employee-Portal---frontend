@@ -43,12 +43,10 @@ function returnSelectedDateCustomerMetrics2({
   storeLocation: BusinessMetricStoreLocation;
   year: Year;
 }): SelectedDateCustomerMetrics {
-  // selected store's business metrics
   const currentStoreMetrics = businessMetrics.find(
     (businessMetric) => businessMetric.storeLocation === storeLocation
   );
 
-  // selected year's customer metrics
   const selectedYearMetrics = currentStoreMetrics?.customerMetrics.yearlyMetrics.find(
     (yearlyMetric) => yearlyMetric.year === year
   );
@@ -61,7 +59,6 @@ function returnSelectedDateCustomerMetrics2({
     prevYearMetrics,
   };
 
-  // selected month's customer metrics
   const selectedMonthMetrics = selectedYearMetrics?.monthlyMetrics.find(
     (monthlyMetric) => monthlyMetric.month === month
   );
@@ -82,7 +79,6 @@ function returnSelectedDateCustomerMetrics2({
     prevMonthMetrics,
   };
 
-  // selected day's customer metrics
   const selectedDayMetrics = selectedMonthMetrics?.dailyMetrics.find(
     (dailyMetric) => dailyMetric.day === day
   );
@@ -378,7 +374,6 @@ async function returnCustomerMetricsCharts2({
     retentionRate: [{ id: "Retention Rate", data: [] }],
   };
 
-  // selected store's business metrics
   const currentStoreMetrics = businessMetrics.find(
     (businessMetric) => businessMetric.storeLocation === storeLocation
   );
@@ -528,7 +523,6 @@ async function createDailyCustomerCharts({
 
           // overview section y-axis variables: overview, new, returning
 
-          // overview -> bar chart obj -> overview
           const dailyOverviewBarChart = {
             Days: day,
             New: customers.new.total,
@@ -536,35 +530,30 @@ async function createDailyCustomerCharts({
           };
           dailyOverviewBarChartsAcc.overview.push(dailyOverviewBarChart);
 
-          // overview -> bar chart obj -> new
           const dailyNewBarChart = {
             Days: day,
             New: customers.new.total,
           };
           dailyOverviewBarChartsAcc.new.push(dailyNewBarChart);
 
-          // overview -> bar chart obj -> returning
           const dailyReturningBarChart = {
             Days: day,
             Returning: customers.returning.total,
           };
           dailyOverviewBarChartsAcc.returning.push(dailyReturningBarChart);
 
-          // overview -> calendar chart obj -> overview
           const dailyOverviewCalendarChart = {
             day: `${selectedYear}-${monthNumber}-${day}`,
             value: customers.total,
           };
           dailyOverviewCalendarChartsAcc.overview.push(dailyOverviewCalendarChart);
 
-          // overview -> calendar chart obj -> new
           const dailyNewCalendarChart = {
             day: `${selectedYear}-${monthNumber}-${day}`,
             value: customers.new.total,
           };
           dailyOverviewCalendarChartsAcc.new.push(dailyNewCalendarChart);
 
-          // overview -> calendar chart obj -> returning
           const dailyReturningCalendarChart = {
             day: `${selectedYear}-${monthNumber}-${day}`,
             value: customers.returning.total,
@@ -573,7 +562,6 @@ async function createDailyCustomerCharts({
 
           // overview -> line chart obj
 
-          // overview -> line chart obj -> new
           const dailyOverviewNewLineChart = {
             x: day,
             y: customers.new.total,
@@ -582,7 +570,6 @@ async function createDailyCustomerCharts({
             .find((lineChartData: LineChartData) => lineChartData.id === "New")
             ?.data.push(dailyOverviewNewLineChart);
 
-          // overview -> line chart obj -> returning
           const dailyOverviewReturningLineChart = {
             x: day,
             y: customers.returning.total,
@@ -591,7 +578,6 @@ async function createDailyCustomerCharts({
             .find((lineChartData: LineChartData) => lineChartData.id === "Returning")
             ?.data.push(dailyOverviewReturningLineChart);
 
-          // overview -> line chart obj -> new
           const dailyNewNewLineChart = {
             x: day,
             y: customers.new.total,
@@ -600,7 +586,6 @@ async function createDailyCustomerCharts({
             .find((lineChartData: LineChartData) => lineChartData.id === "New")
             ?.data.push(dailyNewNewLineChart);
 
-          // overview -> line chart obj -> returning
           const dailyReturningReturningLineChart = {
             x: day,
             y: customers.returning.total,
@@ -613,14 +598,12 @@ async function createDailyCustomerCharts({
 
           // new -> bar chart obj
 
-          // new -> bar chart obj -> total
           const dailyNewTotalBarChart = {
             Days: day,
             Total: customers.new.total,
           };
           dailyNewBarChartsAcc.total.push(dailyNewTotalBarChart);
 
-          // new -> bar chart obj -> all
           const dailyNewAllBarChart = {
             Days: day,
             "In-Store": customers.new.sales.inStore,
@@ -629,7 +612,6 @@ async function createDailyCustomerCharts({
           };
           dailyNewBarChartsAcc.all.push(dailyNewAllBarChart);
 
-          // new -> bar chart obj -> overview
           const dailyNewOverviewBarChart = {
             Days: day,
             Sales: customers.new.sales.total,
@@ -637,7 +619,6 @@ async function createDailyCustomerCharts({
           };
           dailyNewBarChartsAcc.overview.push(dailyNewOverviewBarChart);
 
-          // new -> bar chart obj -> sales
           const dailyNewSalesBarChart = {
             Days: day,
             "In-Store": customers.new.sales.inStore,
@@ -645,21 +626,18 @@ async function createDailyCustomerCharts({
           };
           dailyNewBarChartsAcc.sales.push(dailyNewSalesBarChart);
 
-          // new -> bar chart obj -> online
           const dailyNewOnlineBarChart = {
             Days: day,
             Online: customers.new.sales.online,
           };
           dailyNewBarChartsAcc.online.push(dailyNewOnlineBarChart);
 
-          // new -> bar chart obj -> in-store
           const dailyNewInStoreBarChart = {
             Days: day,
             "In-Store": customers.new.sales.inStore,
           };
           dailyNewBarChartsAcc.inStore.push(dailyNewInStoreBarChart);
 
-          // new -> bar chart obj -> repair
           const dailyNewRepairBarChart = {
             Days: day,
             Repair: customers.new.repair,
@@ -668,35 +646,30 @@ async function createDailyCustomerCharts({
 
           // new -> calendar chart obj
 
-          // new -> calendar chart obj -> total
           const dailyNewTotalCalendarChart = {
             day: `${selectedYear}-${monthNumber}-${day}`,
             value: customers.new.total,
           };
           dailyNewCalendarChartsAcc.total.push(dailyNewTotalCalendarChart);
 
-          // new -> calendar chart obj -> sales
           const dailyNewSalesCalendarChart = {
             day: `${selectedYear}-${monthNumber}-${day}`,
             value: customers.new.sales.total,
           };
           dailyNewCalendarChartsAcc.sales.push(dailyNewSalesCalendarChart);
 
-          // new -> calendar chart obj -> online
           const dailyNewOnlineCalendarChart = {
             day: `${selectedYear}-${monthNumber}-${day}`,
             value: customers.new.sales.online,
           };
           dailyNewCalendarChartsAcc.online.push(dailyNewOnlineCalendarChart);
 
-          // new -> calendar chart obj -> in-store
           const dailyNewInStoreCalendarChart = {
             day: `${selectedYear}-${monthNumber}-${day}`,
             value: customers.new.sales.inStore,
           };
           dailyNewCalendarChartsAcc.inStore.push(dailyNewInStoreCalendarChart);
 
-          // new -> calendar chart obj -> repair
           const dailyNewRepairCalendarChart = {
             day: `${selectedYear}-${monthNumber}-${day}`,
             value: customers.new.repair,
@@ -705,7 +678,6 @@ async function createDailyCustomerCharts({
 
           // new -> line chart obj
 
-          // new -> line chart obj -> total
           const dailyNewTotalLineChart = {
             x: day,
             y: customers.new.total,
@@ -714,7 +686,6 @@ async function createDailyCustomerCharts({
             .find((lineChartData: LineChartData) => lineChartData.id === "Total")
             ?.data.push(dailyNewTotalLineChart);
 
-          // new -> line chart obj -> all -> in-store
           const dailyNewAllInStoreLineChart = {
             x: day,
             y: customers.new.sales.inStore,
@@ -723,7 +694,6 @@ async function createDailyCustomerCharts({
             .find((lineChartData: LineChartData) => lineChartData.id === "In-Store")
             ?.data.push(dailyNewAllInStoreLineChart);
 
-          // new -> line chart obj -> all -> online
           const dailyNewAllOnlineLineChart = {
             x: day,
             y: customers.new.sales.online,
@@ -732,7 +702,6 @@ async function createDailyCustomerCharts({
             .find((lineChartData: LineChartData) => lineChartData.id === "Online")
             ?.data.push(dailyNewAllOnlineLineChart);
 
-          // new -> line chart obj -> all -> repair
           const dailyNewAllRepairLineChart = {
             x: day,
             y: customers.new.repair,
@@ -741,7 +710,6 @@ async function createDailyCustomerCharts({
             .find((lineChartData: LineChartData) => lineChartData.id === "Repair")
             ?.data.push(dailyNewAllRepairLineChart);
 
-          // new -> line chart obj -> overview -> sales
           const dailyNewOverviewSalesLineChart = {
             x: day,
             y: customers.new.sales.total,
@@ -750,7 +718,6 @@ async function createDailyCustomerCharts({
             .find((lineChartData: LineChartData) => lineChartData.id === "Sales")
             ?.data.push(dailyNewOverviewSalesLineChart);
 
-          // new -> line chart obj -> overview -> repair
           const dailyNewOverviewRepairLineChart = {
             x: day,
             y: customers.new.repair,
@@ -759,7 +726,6 @@ async function createDailyCustomerCharts({
             .find((lineChartData: LineChartData) => lineChartData.id === "Repair")
             ?.data.push(dailyNewOverviewRepairLineChart);
 
-          // new -> line chart obj -> sales -> online
           const dailyNewSalesOnlineLineChart = {
             x: day,
             y: customers.new.sales.online,
@@ -768,7 +734,6 @@ async function createDailyCustomerCharts({
             .find((lineChartData: LineChartData) => lineChartData.id === "Online")
             ?.data.push(dailyNewSalesOnlineLineChart);
 
-          // new -> line chart obj -> sales -> in-store
           const dailyNewSalesInStoreLineChart = {
             x: day,
             y: customers.new.sales.inStore,
@@ -777,7 +742,6 @@ async function createDailyCustomerCharts({
             .find((lineChartData: LineChartData) => lineChartData.id === "In-Store")
             ?.data.push(dailyNewSalesInStoreLineChart);
 
-          // new -> line chart obj -> online
           const dailyNewOnlineLineChart = {
             x: day,
             y: customers.new.sales.online,
@@ -786,7 +750,6 @@ async function createDailyCustomerCharts({
             .find((lineChartData: LineChartData) => lineChartData.id === "Online")
             ?.data.push(dailyNewOnlineLineChart);
 
-          // new -> line chart obj -> in-store
           const dailyNewInStoreLineChart = {
             x: day,
             y: customers.new.sales.inStore,
@@ -795,7 +758,6 @@ async function createDailyCustomerCharts({
             .find((lineChartData: LineChartData) => lineChartData.id === "In-Store")
             ?.data.push(dailyNewInStoreLineChart);
 
-          // new -> line chart obj -> repair
           const dailyNewRepairLineChart = {
             x: day,
             y: customers.new.repair,
@@ -808,14 +770,12 @@ async function createDailyCustomerCharts({
 
           // returning -> bar chart obj
 
-          // returning -> bar chart obj -> total
           const dailyReturningTotalBarChart = {
             Days: day,
             Total: customers.returning.total,
           };
           dailyReturningBarChartsAcc.total.push(dailyReturningTotalBarChart);
 
-          // returning -> bar chart obj -> all
           const dailyReturningAllBarChart = {
             Days: day,
             "In-Store": customers.returning.sales.inStore,
@@ -824,7 +784,6 @@ async function createDailyCustomerCharts({
           };
           dailyReturningBarChartsAcc.all.push(dailyReturningAllBarChart);
 
-          // returning -> bar chart obj -> overview
           const dailyReturningOverviewBarChart = {
             Days: day,
             Sales: customers.returning.sales.total,
@@ -832,7 +791,6 @@ async function createDailyCustomerCharts({
           };
           dailyReturningBarChartsAcc.overview.push(dailyReturningOverviewBarChart);
 
-          // returning -> bar chart obj -> sales
           const dailyReturningSalesBarChart = {
             Days: day,
             "In-Store": customers.returning.sales.inStore,
@@ -840,21 +798,18 @@ async function createDailyCustomerCharts({
           };
           dailyReturningBarChartsAcc.sales.push(dailyReturningSalesBarChart);
 
-          // returning -> bar chart obj -> online
           const dailyReturningOnlineBarChart = {
             Days: day,
             Online: customers.returning.sales.online,
           };
           dailyReturningBarChartsAcc.online.push(dailyReturningOnlineBarChart);
 
-          // returning -> bar chart obj -> in-store
           const dailyReturningInStoreBarChart = {
             Days: day,
             "In-Store": customers.returning.sales.inStore,
           };
           dailyReturningBarChartsAcc.inStore.push(dailyReturningInStoreBarChart);
 
-          // returning -> bar chart obj -> repair
           const dailyReturningRepairBarChart = {
             Days: day,
             Repair: customers.returning.repair,
@@ -863,28 +818,24 @@ async function createDailyCustomerCharts({
 
           // returning -> calendar chart obj
 
-          // returning -> calendar chart obj -> total
           const dailyReturningTotalCalendarChart = {
             day: `${selectedYear}-${monthNumber}-${day}`,
             value: customers.returning.total,
           };
           dailyReturningCalendarChartsAcc.total.push(dailyReturningTotalCalendarChart);
 
-          // returning -> calendar chart obj -> sales
           const dailyReturningSalesCalendarChart = {
             day: `${selectedYear}-${monthNumber}-${day}`,
             value: customers.returning.sales.total,
           };
           dailyReturningCalendarChartsAcc.sales.push(dailyReturningSalesCalendarChart);
 
-          // returning -> calendar chart obj -> online
           const dailyReturningOnlineCalendarChart = {
             day: `${selectedYear}-${monthNumber}-${day}`,
             value: customers.returning.sales.online,
           };
           dailyReturningCalendarChartsAcc.online.push(dailyReturningOnlineCalendarChart);
 
-          // returning -> calendar chart obj -> in-store
           const dailyReturningInStoreCalendarChart = {
             day: `${selectedYear}-${monthNumber}-${day}`,
             value: customers.returning.sales.inStore,
@@ -893,7 +844,6 @@ async function createDailyCustomerCharts({
             dailyReturningInStoreCalendarChart
           );
 
-          // returning -> calendar chart obj -> repair
           const dailyReturningRepairCalendarChart = {
             day: `${selectedYear}-${monthNumber}-${day}`,
             value: customers.returning.repair,
@@ -902,7 +852,6 @@ async function createDailyCustomerCharts({
 
           // returning -> line chart obj
 
-          // returning -> line chart obj -> total
           const dailyReturningTotalLineChart = {
             x: day,
             y: customers.returning.total,
@@ -911,7 +860,6 @@ async function createDailyCustomerCharts({
             .find((lineChartData: LineChartData) => lineChartData.id === "Total")
             ?.data.push(dailyReturningTotalLineChart);
 
-          // returning -> line chart obj -> all -> in-store
           const dailyReturningAllInStoreLineChart = {
             x: day,
             y: customers.returning.sales.inStore,
@@ -920,7 +868,6 @@ async function createDailyCustomerCharts({
             .find((lineChartData: LineChartData) => lineChartData.id === "In-Store")
             ?.data.push(dailyReturningAllInStoreLineChart);
 
-          // returning -> line chart obj -> all -> online
           const dailyReturningAllOnlineLineChart = {
             x: day,
             y: customers.returning.sales.online,
@@ -929,7 +876,6 @@ async function createDailyCustomerCharts({
             .find((lineChartData: LineChartData) => lineChartData.id === "Online")
             ?.data.push(dailyReturningAllOnlineLineChart);
 
-          // returning -> line chart obj -> all -> repair
           const dailyReturningAllRepairLineChart = {
             x: day,
             y: customers.returning.repair,
@@ -938,7 +884,6 @@ async function createDailyCustomerCharts({
             .find((lineChartData: LineChartData) => lineChartData.id === "Repair")
             ?.data.push(dailyReturningAllRepairLineChart);
 
-          // returning -> line chart obj -> overview -> sales
           const dailyReturningOverviewSalesLineChart = {
             x: day,
             y: customers.returning.sales.total,
@@ -947,7 +892,6 @@ async function createDailyCustomerCharts({
             .find((lineChartData: LineChartData) => lineChartData.id === "Sales")
             ?.data.push(dailyReturningOverviewSalesLineChart);
 
-          // returning -> line chart obj -> overview -> repair
           const dailyReturningOverviewRepairLineChart = {
             x: day,
             y: customers.returning.repair,
@@ -956,7 +900,6 @@ async function createDailyCustomerCharts({
             .find((lineChartData: LineChartData) => lineChartData.id === "Repair")
             ?.data.push(dailyReturningOverviewRepairLineChart);
 
-          // returning -> line chart obj -> sales -> online
           const dailyReturningSalesOnlineLineChart = {
             x: day,
             y: customers.returning.sales.online,
@@ -965,7 +908,6 @@ async function createDailyCustomerCharts({
             .find((lineChartData: LineChartData) => lineChartData.id === "Online")
             ?.data.push(dailyReturningSalesOnlineLineChart);
 
-          // returning -> line chart obj -> sales -> in-store
           const dailyReturningSalesInStoreLineChart = {
             x: day,
             y: customers.returning.sales.inStore,
@@ -974,7 +916,6 @@ async function createDailyCustomerCharts({
             .find((lineChartData: LineChartData) => lineChartData.id === "In-Store")
             ?.data.push(dailyReturningSalesInStoreLineChart);
 
-          // returning -> line chart obj -> online
           const dailyReturningOnlineLineChart = {
             x: day,
             y: customers.returning.sales.online,
@@ -983,7 +924,6 @@ async function createDailyCustomerCharts({
             .find((lineChartData: LineChartData) => lineChartData.id === "Online")
             ?.data.push(dailyReturningOnlineLineChart);
 
-          // returning -> line chart obj -> in-store
           const dailyReturningInStoreLineChart = {
             x: day,
             y: customers.returning.sales.inStore,
@@ -992,7 +932,6 @@ async function createDailyCustomerCharts({
             .find((lineChartData: LineChartData) => lineChartData.id === "In-Store")
             ?.data.push(dailyReturningInStoreLineChart);
 
-          // returning -> line chart obj -> repair
           const dailyReturningRepairLineChart = {
             x: day,
             y: customers.returning.repair,
@@ -1236,7 +1175,6 @@ async function createMonthlyCustomerCharts({
 
           // overview -> bar chart obj
 
-          // overview -> bar chart obj -> new & returning
           const overviewNewReturningBarChart = {
             Months: month,
             New: customers.new.total,
@@ -1244,14 +1182,12 @@ async function createMonthlyCustomerCharts({
           };
           overviewBarChartsAcc.overview.push(overviewNewReturningBarChart);
 
-          // overview -> bar chart obj -> new
           const overviewNewBarChart = {
             Months: month,
             New: customers.new.total,
           };
           overviewBarChartsAcc.new.push(overviewNewBarChart);
 
-          // overview -> bar chart obj -> returning
           const overviewReturningBarChart = {
             Months: month,
             Returning: customers.returning.total,
@@ -1263,21 +1199,18 @@ async function createMonthlyCustomerCharts({
           dailyMetrics.forEach((dailyMetric) => {
             const { day, customers } = dailyMetric;
 
-            // overview -> calendar chart obj -> total
             const overviewCalendarChart = {
               day: `${selectedYear}-${monthIndexStr}-${day}`,
               value: customers.total,
             };
             overviewCalendarChartsAcc.overview.push(overviewCalendarChart);
 
-            // overview -> calendar chart obj -> new
             const overviewNewCalendarChart = {
               day: `${selectedYear}-${monthIndexStr}-${day}`,
               value: customers.new.total,
             };
             overviewCalendarChartsAcc.new.push(overviewNewCalendarChart);
 
-            // overview -> calendar chart obj -> returning
             const overviewReturningCalendarChart = {
               day: `${selectedYear}-${monthIndexStr}-${day}`,
               value: customers.returning.total,
@@ -1287,7 +1220,6 @@ async function createMonthlyCustomerCharts({
 
           // overview -> line chart obj
 
-          // overview -> line chart obj -> overview -> new
           const overviewNewLineChart = {
             x: month,
             y: customers.new.total,
@@ -1296,7 +1228,6 @@ async function createMonthlyCustomerCharts({
             .find((lineChartData: LineChartData) => lineChartData.id === "New")
             ?.data.push(overviewNewLineChart);
 
-          // overview -> line chart obj -> overview -> returning
           const overviewReturningLineChart = {
             x: month,
             y: customers.returning.total,
@@ -1305,7 +1236,6 @@ async function createMonthlyCustomerCharts({
             .find((lineChartData: LineChartData) => lineChartData.id === "Returning")
             ?.data.push(overviewReturningLineChart);
 
-          // overview -> line chart obj -> new -> new
           const monthlyNewNewLineChart = {
             x: month,
             y: customers.new.total,
@@ -1314,7 +1244,6 @@ async function createMonthlyCustomerCharts({
             .find((lineChartData: LineChartData) => lineChartData.id === "New")
             ?.data.push(monthlyNewNewLineChart);
 
-          // overview -> line chart obj -> returning -> returning
           const monthlyReturningReturningLineChart = {
             x: month,
             y: customers.returning.total,
@@ -1327,14 +1256,12 @@ async function createMonthlyCustomerCharts({
 
           // new -> bar chart obj
 
-          // new -> bar chart obj -> total
           const monthlyNewTotalBarChart = {
             Months: month,
             Total: customers.new.total,
           };
           monthlyNewBarChartsAcc.total.push(monthlyNewTotalBarChart);
 
-          // new -> bar chart obj -> all
           const monthlyNewAllBarChart = {
             Months: month,
             "In-Store": customers.new.sales.inStore,
@@ -1343,7 +1270,6 @@ async function createMonthlyCustomerCharts({
           };
           monthlyNewBarChartsAcc.all.push(monthlyNewAllBarChart);
 
-          // new -> bar chart obj -> overview
           const monthlyNewOverviewBarChart = {
             Months: month,
             Sales: customers.new.sales.total,
@@ -1351,7 +1277,6 @@ async function createMonthlyCustomerCharts({
           };
           monthlyNewBarChartsAcc.overview.push(monthlyNewOverviewBarChart);
 
-          // new -> bar chart obj -> sales
           const monthlyNewSalesBarChart = {
             Months: month,
             "In-Store": customers.new.sales.inStore,
@@ -1359,21 +1284,18 @@ async function createMonthlyCustomerCharts({
           };
           monthlyNewBarChartsAcc.sales.push(monthlyNewSalesBarChart);
 
-          // new -> bar chart obj -> online
           const monthlyNewOnlineBarChart = {
             Months: month,
             Online: customers.new.sales.online,
           };
           monthlyNewBarChartsAcc.online.push(monthlyNewOnlineBarChart);
 
-          // new -> bar chart obj -> in-store
           const monthlyNewInStoreBarChart = {
             Months: month,
             "In-Store": customers.new.sales.inStore,
           };
           monthlyNewBarChartsAcc.inStore.push(monthlyNewInStoreBarChart);
 
-          // new -> bar chart obj -> repair
           const monthlyNewRepairBarChart = {
             Months: month,
             Repair: customers.new.repair,
@@ -1385,35 +1307,30 @@ async function createMonthlyCustomerCharts({
           dailyMetrics.forEach((dailyMetric) => {
             const { day, customers } = dailyMetric;
 
-            // new -> calendar chart obj -> total
             const monthlyNewTotalCalendarChart = {
               day: `${selectedYear}-${monthIndexStr}-${day}`,
               value: customers.new.total,
             };
             monthlyNewCalendarChartsAcc.total.push(monthlyNewTotalCalendarChart);
 
-            // new -> calendar chart obj -> sales
             const monthlyNewSalesCalendarChart = {
               day: `${selectedYear}-${monthIndexStr}-${day}`,
               value: customers.new.sales.total,
             };
             monthlyNewCalendarChartsAcc.sales.push(monthlyNewSalesCalendarChart);
 
-            // new -> calendar chart obj -> online
             const monthlyNewOnlineCalendarChart = {
               day: `${selectedYear}-${monthIndexStr}-${day}`,
               value: customers.new.sales.online,
             };
             monthlyNewCalendarChartsAcc.online.push(monthlyNewOnlineCalendarChart);
 
-            // new -> calendar chart obj -> in-store
             const monthlyNewInStoreCalendarChart = {
               day: `${selectedYear}-${monthIndexStr}-${day}`,
               value: customers.new.sales.inStore,
             };
             monthlyNewCalendarChartsAcc.inStore.push(monthlyNewInStoreCalendarChart);
 
-            // new -> calendar chart obj -> repair
             const monthlyNewRepairCalendarChart = {
               day: `${selectedYear}-${monthIndexStr}-${day}`,
               value: customers.new.repair,
@@ -1423,7 +1340,6 @@ async function createMonthlyCustomerCharts({
 
           // new -> line chart obj
 
-          // new -> line chart obj -> total
           const monthlyNewTotalLineChart = {
             x: month,
             y: customers.new.total,
@@ -1432,7 +1348,6 @@ async function createMonthlyCustomerCharts({
             .find((lineChartData: LineChartData) => lineChartData.id === "Total")
             ?.data.push(monthlyNewTotalLineChart);
 
-          // new -> line chart obj -> all -> in-store
           const monthlyNewAllInStoreLineChart = {
             x: month,
             y: customers.new.sales.inStore,
@@ -1441,7 +1356,6 @@ async function createMonthlyCustomerCharts({
             .find((lineChartData: LineChartData) => lineChartData.id === "In-Store")
             ?.data.push(monthlyNewAllInStoreLineChart);
 
-          // new -> line chart obj -> all -> online
           const monthlyNewAllOnlineLineChart = {
             x: month,
             y: customers.new.sales.online,
@@ -1450,7 +1364,6 @@ async function createMonthlyCustomerCharts({
             .find((lineChartData: LineChartData) => lineChartData.id === "Online")
             ?.data.push(monthlyNewAllOnlineLineChart);
 
-          // new -> line chart obj -> all -> repair
           const monthlyNewAllRepairLineChart = {
             x: month,
             y: customers.new.repair,
@@ -1459,7 +1372,6 @@ async function createMonthlyCustomerCharts({
             .find((lineChartData: LineChartData) => lineChartData.id === "Repair")
             ?.data.push(monthlyNewAllRepairLineChart);
 
-          // new -> line chart obj -> overview -> sales
           const monthlyNewOverviewSalesLineChart = {
             x: month,
             y: customers.new.sales.total,
@@ -1468,7 +1380,6 @@ async function createMonthlyCustomerCharts({
             .find((lineChartData: LineChartData) => lineChartData.id === "Sales")
             ?.data.push(monthlyNewOverviewSalesLineChart);
 
-          // new -> line chart obj -> overview -> repair
           const monthlyNewOverviewRepairLineChart = {
             x: month,
             y: customers.new.repair,
@@ -1477,7 +1388,6 @@ async function createMonthlyCustomerCharts({
             .find((lineChartData: LineChartData) => lineChartData.id === "Repair")
             ?.data.push(monthlyNewOverviewRepairLineChart);
 
-          // new -> line chart obj -> sales -> online
           const monthlyNewSalesOnlineLineChart = {
             x: month,
             y: customers.new.sales.online,
@@ -1486,7 +1396,6 @@ async function createMonthlyCustomerCharts({
             .find((lineChartData: LineChartData) => lineChartData.id === "Online")
             ?.data.push(monthlyNewSalesOnlineLineChart);
 
-          // new -> line chart obj -> sales -> in-store
           const monthlyNewSalesInStoreLineChart = {
             x: month,
             y: customers.new.sales.inStore,
@@ -1495,7 +1404,6 @@ async function createMonthlyCustomerCharts({
             .find((lineChartData: LineChartData) => lineChartData.id === "In-Store")
             ?.data.push(monthlyNewSalesInStoreLineChart);
 
-          // new -> line chart obj -> online
           const monthlyNewOnlineLineChart = {
             x: month,
             y: customers.new.sales.online,
@@ -1504,7 +1412,6 @@ async function createMonthlyCustomerCharts({
             .find((lineChartData: LineChartData) => lineChartData.id === "Online")
             ?.data.push(monthlyNewOnlineLineChart);
 
-          // new -> line chart obj -> in-store
           const monthlyNewInStoreLineChart = {
             x: month,
             y: customers.new.sales.inStore,
@@ -1513,7 +1420,6 @@ async function createMonthlyCustomerCharts({
             .find((lineChartData: LineChartData) => lineChartData.id === "In-Store")
             ?.data.push(monthlyNewInStoreLineChart);
 
-          // new -> line chart obj -> repair
           const monthlyNewRepairLineChart = {
             x: month,
             y: customers.new.repair,
@@ -1526,14 +1432,12 @@ async function createMonthlyCustomerCharts({
 
           // returning -> bar chart obj
 
-          // returning -> bar chart obj -> total
           const monthlyReturningTotalBarChart = {
             Months: month,
             Total: customers.returning.total,
           };
           monthlyReturningBarChartsAcc.total.push(monthlyReturningTotalBarChart);
 
-          // returning -> bar chart obj -> all
           const monthlyReturningAllBarChart = {
             Months: month,
             "In-Store": customers.returning.sales.inStore,
@@ -1542,7 +1446,6 @@ async function createMonthlyCustomerCharts({
           };
           monthlyReturningBarChartsAcc.all.push(monthlyReturningAllBarChart);
 
-          // returning -> bar chart obj -> overview
           const monthlyReturningOverviewBarChart = {
             Months: month,
             Sales: customers.returning.sales.total,
@@ -1550,7 +1453,6 @@ async function createMonthlyCustomerCharts({
           };
           monthlyReturningBarChartsAcc.overview.push(monthlyReturningOverviewBarChart);
 
-          // returning -> bar chart obj -> sales
           const monthlyReturningSalesBarChart = {
             Months: month,
             "In-Store": customers.returning.sales.inStore,
@@ -1558,21 +1460,18 @@ async function createMonthlyCustomerCharts({
           };
           monthlyReturningBarChartsAcc.sales.push(monthlyReturningSalesBarChart);
 
-          // returning -> bar chart obj -> online
           const monthlyReturningOnlineBarChart = {
             Months: month,
             Online: customers.returning.sales.online,
           };
           monthlyReturningBarChartsAcc.online.push(monthlyReturningOnlineBarChart);
 
-          // returning -> bar chart obj -> in-store
           const monthlyReturningInStoreBarChart = {
             Months: month,
             "In-Store": customers.returning.sales.inStore,
           };
           monthlyReturningBarChartsAcc.inStore.push(monthlyReturningInStoreBarChart);
 
-          // returning -> bar chart obj -> repair
           const monthlyReturningRepairBarChart = {
             Months: month,
             Repair: customers.returning.repair,
@@ -1584,7 +1483,6 @@ async function createMonthlyCustomerCharts({
           dailyMetrics.forEach((dailyMetric) => {
             const { day, customers } = dailyMetric;
 
-            // returning -> calendar chart obj -> total
             const monthlyReturningTotalCalendarChart = {
               day: `${selectedYear}-${monthIndexStr}-${day}`,
               value: customers.returning.total,
@@ -1593,7 +1491,6 @@ async function createMonthlyCustomerCharts({
               monthlyReturningTotalCalendarChart
             );
 
-            // returning -> calendar chart obj -> sales
             const monthlyReturningSalesCalendarChart = {
               day: `${selectedYear}-${monthIndexStr}-${day}`,
               value: customers.returning.sales.total,
@@ -1602,7 +1499,6 @@ async function createMonthlyCustomerCharts({
               monthlyReturningSalesCalendarChart
             );
 
-            // returning -> calendar chart obj -> online
             const monthlyReturningOnlineCalendarChart = {
               day: `${selectedYear}-${monthIndexStr}-${day}`,
               value: customers.returning.sales.online,
@@ -1611,7 +1507,6 @@ async function createMonthlyCustomerCharts({
               monthlyReturningOnlineCalendarChart
             );
 
-            // returning -> calendar chart obj -> in-store
             const monthlyReturningInStoreCalendarChart = {
               day: `${selectedYear}-${monthIndexStr}-${day}`,
               value: customers.returning.sales.inStore,
@@ -1620,7 +1515,6 @@ async function createMonthlyCustomerCharts({
               monthlyReturningInStoreCalendarChart
             );
 
-            // returning -> calendar chart obj -> repair
             const monthlyReturningRepairCalendarChart = {
               day: `${selectedYear}-${monthIndexStr}-${day}`,
               value: customers.returning.repair,
@@ -1632,7 +1526,6 @@ async function createMonthlyCustomerCharts({
 
           // returning -> line chart obj
 
-          // returning -> line chart obj -> total
           const monthlyReturningTotalLineChart = {
             x: month,
             y: customers.returning.total,
@@ -1641,7 +1534,6 @@ async function createMonthlyCustomerCharts({
             .find((lineChartData: LineChartData) => lineChartData.id === "Total")
             ?.data.push(monthlyReturningTotalLineChart);
 
-          // returning -> line chart obj -> all -> in-store
           const monthlyReturningAllInStoreLineChart = {
             x: month,
             y: customers.returning.sales.inStore,
@@ -1650,7 +1542,6 @@ async function createMonthlyCustomerCharts({
             .find((lineChartData: LineChartData) => lineChartData.id === "In-Store")
             ?.data.push(monthlyReturningAllInStoreLineChart);
 
-          // returning -> line chart obj -> all -> online
           const monthlyReturningAllOnlineLineChart = {
             x: month,
             y: customers.returning.sales.online,
@@ -1659,7 +1550,6 @@ async function createMonthlyCustomerCharts({
             .find((lineChartData: LineChartData) => lineChartData.id === "Online")
             ?.data.push(monthlyReturningAllOnlineLineChart);
 
-          // returning -> line chart obj -> all -> repair
           const monthlyReturningAllRepairLineChart = {
             x: month,
             y: customers.returning.repair,
@@ -1668,7 +1558,6 @@ async function createMonthlyCustomerCharts({
             .find((lineChartData: LineChartData) => lineChartData.id === "Repair")
             ?.data.push(monthlyReturningAllRepairLineChart);
 
-          // returning -> line chart obj -> overview -> sales
           const monthlyReturningOverviewSalesLineChart = {
             x: month,
             y: customers.returning.sales.total,
@@ -1677,7 +1566,6 @@ async function createMonthlyCustomerCharts({
             .find((lineChartData: LineChartData) => lineChartData.id === "Sales")
             ?.data.push(monthlyReturningOverviewSalesLineChart);
 
-          // returning -> line chart obj -> overview -> repair
           const monthlyReturningOverviewRepairLineChart = {
             x: month,
             y: customers.returning.repair,
@@ -1686,7 +1574,6 @@ async function createMonthlyCustomerCharts({
             .find((lineChartData: LineChartData) => lineChartData.id === "Repair")
             ?.data.push(monthlyReturningOverviewRepairLineChart);
 
-          // returning -> line chart obj -> sales -> online
           const monthlyReturningSalesOnlineLineChart = {
             x: month,
             y: customers.returning.sales.online,
@@ -1695,7 +1582,6 @@ async function createMonthlyCustomerCharts({
             .find((lineChartData: LineChartData) => lineChartData.id === "Online")
             ?.data.push(monthlyReturningSalesOnlineLineChart);
 
-          // returning -> line chart obj -> sales -> in-store
           const monthlyReturningSalesInStoreLineChart = {
             x: month,
             y: customers.returning.sales.inStore,
@@ -1704,7 +1590,6 @@ async function createMonthlyCustomerCharts({
             .find((lineChartData: LineChartData) => lineChartData.id === "In-Store")
             ?.data.push(monthlyReturningSalesInStoreLineChart);
 
-          // returning -> line chart obj -> online
           const monthlyReturningOnlineLineChart = {
             x: month,
             y: customers.returning.sales.online,
@@ -1713,7 +1598,6 @@ async function createMonthlyCustomerCharts({
             .find((lineChartData: LineChartData) => lineChartData.id === "Online")
             ?.data.push(monthlyReturningOnlineLineChart);
 
-          // returning -> line chart obj -> in-store
           const monthlyReturningInStoreLineChart = {
             x: month,
             y: customers.returning.sales.inStore,
@@ -1722,7 +1606,6 @@ async function createMonthlyCustomerCharts({
             .find((lineChartData: LineChartData) => lineChartData.id === "In-Store")
             ?.data.push(monthlyReturningInStoreLineChart);
 
-          // returning -> line chart obj -> repair
           const monthlyReturningRepairLineChart = {
             x: month,
             y: customers.returning.repair,
@@ -1735,7 +1618,6 @@ async function createMonthlyCustomerCharts({
 
           // churn & retention rate -> bar chart obj
 
-          // churn & retention rate -> bar chart obj -> overview
           const overviewChurnRetentionRateBarChart = {
             Months: month,
             "Churn Rate": toFixedFloat(customers.churnRate * 100, 2),
@@ -1745,14 +1627,12 @@ async function createMonthlyCustomerCharts({
             overviewChurnRetentionRateBarChart
           );
 
-          // churn & retention rate -> bar chart obj -> churn rate
           const overviewChurnRateBarChart = {
             Months: month,
             "Churn Rate": toFixedFloat(customers.churnRate * 100, 2),
           };
           monthlyChurnRetentionRateBarChartsAcc.churnRate.push(overviewChurnRateBarChart);
 
-          // churn & retention rate -> bar chart obj -> retention rate
           const monthlyRetentionRateBarChart = {
             Months: month,
             "Retention Rate": toFixedFloat(customers.retentionRate * 100, 2),
@@ -1763,7 +1643,6 @@ async function createMonthlyCustomerCharts({
 
           // churn & retention rate -> line chart obj
 
-          // churn & retention rate -> line chart obj -> overview -> churn rate
           const overviewChurnRetentionRateLineChart = {
             x: month,
             y: toFixedFloat(customers.churnRate * 100, 2),
@@ -1772,7 +1651,6 @@ async function createMonthlyCustomerCharts({
             .find((lineChartData: LineChartData) => lineChartData.id === "Churn Rate")
             ?.data.push(overviewChurnRetentionRateLineChart);
 
-          // churn & retention rate -> line chart obj -> overview -> retention rate
           const overviewRetentionRateLineChart = {
             x: month,
             y: toFixedFloat(customers.retentionRate * 100, 2),
@@ -1781,7 +1659,6 @@ async function createMonthlyCustomerCharts({
             .find((lineChartData: LineChartData) => lineChartData.id === "Retention Rate")
             ?.data.push(overviewRetentionRateLineChart);
 
-          // churn & retention rate -> line chart obj -> churn rate
           const monthlyChurnRateLineChart = {
             x: month,
             y: toFixedFloat(customers.churnRate * 100, 2),
@@ -1790,7 +1667,6 @@ async function createMonthlyCustomerCharts({
             .find((lineChartData: LineChartData) => lineChartData.id === "Churn Rate")
             ?.data.push(monthlyChurnRateLineChart);
 
-          // churn & retention rate -> line chart obj -> retention rate
           const monthlyRetentionRateLineChart = {
             x: month,
             y: toFixedFloat(customers.retentionRate * 100, 2),
@@ -2039,7 +1915,6 @@ async function createYearlyCustomerCharts({
 
           // overview -> bar chart obj
 
-          // overview -> bar chart obj -> total
           const yearlyOverviewTotalBarChart = {
             Years: year,
             New: customers.new.total,
@@ -2047,14 +1922,12 @@ async function createYearlyCustomerCharts({
           };
           yearlyOverviewBarChartsAcc.overview.push(yearlyOverviewTotalBarChart);
 
-          // overview -> bar chart obj -> new
           const yearlyOverviewNewBarChart = {
             Years: year,
             New: customers.new.total,
           };
           yearlyOverviewBarChartsAcc.new.push(yearlyOverviewNewBarChart);
 
-          // overview -> bar chart obj -> returning
           const yearlyOverviewReturningBarChart = {
             Years: year,
             Returning: customers.returning.total,
@@ -2063,7 +1936,6 @@ async function createYearlyCustomerCharts({
 
           // overview -> line chart obj
 
-          // overview -> line chart obj -> overview -> new
           const yearlyOverviewNewLineChart = {
             x: year,
             y: customers.new.total,
@@ -2072,7 +1944,6 @@ async function createYearlyCustomerCharts({
             .find((lineChartData: LineChartData) => lineChartData.id === "New")
             ?.data.push(yearlyOverviewNewLineChart);
 
-          // overview -> line chart obj -> overview -> returning
           const yearlyOverviewReturningLineChart = {
             x: year,
             y: customers.returning.total,
@@ -2081,7 +1952,6 @@ async function createYearlyCustomerCharts({
             .find((lineChartData: LineChartData) => lineChartData.id === "Returning")
             ?.data.push(yearlyOverviewReturningLineChart);
 
-          // overview -> line chart obj -> new -> new
           const yearlyNewNewLineChart = {
             x: year,
             y: customers.new.total,
@@ -2090,7 +1960,6 @@ async function createYearlyCustomerCharts({
             .find((lineChartData: LineChartData) => lineChartData.id === "New")
             ?.data.push(yearlyNewNewLineChart);
 
-          // overview -> line chart obj -> returning -> returning
           const yearlyReturningReturningLineChart = {
             x: year,
             y: customers.returning.total,
@@ -2103,14 +1972,12 @@ async function createYearlyCustomerCharts({
 
           // new -> bar chart obj
 
-          // new -> bar chart obj -> total
           const yearlyNewTotalBarChart = {
             Years: year,
             Total: customers.new.total,
           };
           yearlyNewBarChartsAcc.total.push(yearlyNewTotalBarChart);
 
-          // new -> bar chart obj -> all
           const yearlyNewAllBarChart = {
             Years: year,
             "In-Store": customers.new.sales.inStore,
@@ -2119,7 +1986,6 @@ async function createYearlyCustomerCharts({
           };
           yearlyNewBarChartsAcc.all.push(yearlyNewAllBarChart);
 
-          // new -> bar chart obj -> overview
           const yearlyNewOverviewBarChart = {
             Years: year,
             Sales: customers.new.sales.total,
@@ -2127,7 +1993,6 @@ async function createYearlyCustomerCharts({
           };
           yearlyNewBarChartsAcc.overview.push(yearlyNewOverviewBarChart);
 
-          // new -> bar chart obj -> sales
           const yearlyNewSalesBarChart = {
             Years: year,
             "In-Store": customers.new.sales.inStore,
@@ -2135,21 +2000,18 @@ async function createYearlyCustomerCharts({
           };
           yearlyNewBarChartsAcc.sales.push(yearlyNewSalesBarChart);
 
-          // new -> bar chart obj -> online
           const yearlyNewOnlineBarChart = {
             Years: year,
             Online: customers.new.sales.online,
           };
           yearlyNewBarChartsAcc.online.push(yearlyNewOnlineBarChart);
 
-          // new -> bar chart obj -> in-store
           const yearlyNewInStoreBarChart = {
             Years: year,
             "In-Store": customers.new.sales.inStore,
           };
           yearlyNewBarChartsAcc.inStore.push(yearlyNewInStoreBarChart);
 
-          // new -> bar chart obj -> repair
           const yearlyNewRepairBarChart = {
             Years: year,
             Repair: customers.new.repair,
@@ -2158,7 +2020,6 @@ async function createYearlyCustomerCharts({
 
           // new -> line chart obj
 
-          // new -> line chart obj -> total
           const yearlyNewTotalLineChart = {
             x: year,
             y: customers.new.total,
@@ -2167,7 +2028,6 @@ async function createYearlyCustomerCharts({
             .find((lineChartData: LineChartData) => lineChartData.id === "Total")
             ?.data.push(yearlyNewTotalLineChart);
 
-          // new -> line chart obj -> all -> in-store
           const yearlyNewAllInStoreLineChart = {
             x: year,
             y: customers.new.sales.inStore,
@@ -2176,7 +2036,6 @@ async function createYearlyCustomerCharts({
             .find((lineChartData: LineChartData) => lineChartData.id === "In-Store")
             ?.data.push(yearlyNewAllInStoreLineChart);
 
-          // new -> line chart obj -> all -> online
           const yearlyNewAllOnlineLineChart = {
             x: year,
             y: customers.new.sales.online,
@@ -2185,7 +2044,6 @@ async function createYearlyCustomerCharts({
             .find((lineChartData: LineChartData) => lineChartData.id === "Online")
             ?.data.push(yearlyNewAllOnlineLineChart);
 
-          // new -> line chart obj -> all -> repair
           const yearlyNewAllRepairLineChart = {
             x: year,
             y: customers.new.repair,
@@ -2194,7 +2052,6 @@ async function createYearlyCustomerCharts({
             .find((lineChartData: LineChartData) => lineChartData.id === "Repair")
             ?.data.push(yearlyNewAllRepairLineChart);
 
-          // new -> line chart obj -> overview -> sales
           const yearlyNewOverviewSalesLineChart = {
             x: year,
             y: customers.new.sales.total,
@@ -2203,7 +2060,6 @@ async function createYearlyCustomerCharts({
             .find((lineChartData: LineChartData) => lineChartData.id === "Sales")
             ?.data.push(yearlyNewOverviewSalesLineChart);
 
-          // new -> line chart obj -> overview -> repair
           const yearlyNewOverviewRepairLineChart = {
             x: year,
             y: customers.new.repair,
@@ -2212,7 +2068,6 @@ async function createYearlyCustomerCharts({
             .find((lineChartData: LineChartData) => lineChartData.id === "Repair")
             ?.data.push(yearlyNewOverviewRepairLineChart);
 
-          // new -> line chart obj -> sales -> online
           const yearlyNewSalesOnlineLineChart = {
             x: year,
             y: customers.new.sales.online,
@@ -2221,7 +2076,6 @@ async function createYearlyCustomerCharts({
             .find((lineChartData: LineChartData) => lineChartData.id === "Online")
             ?.data.push(yearlyNewSalesOnlineLineChart);
 
-          // new -> line chart obj -> sales -> in-store
           const yearlyNewSalesInStoreLineChart = {
             x: year,
             y: customers.new.sales.inStore,
@@ -2230,7 +2084,6 @@ async function createYearlyCustomerCharts({
             .find((lineChartData: LineChartData) => lineChartData.id === "In-Store")
             ?.data.push(yearlyNewSalesInStoreLineChart);
 
-          // new -> line chart obj -> online
           const yearlyNewOnlineLineChart = {
             x: year,
             y: customers.new.sales.online,
@@ -2239,7 +2092,6 @@ async function createYearlyCustomerCharts({
             .find((lineChartData: LineChartData) => lineChartData.id === "Online")
             ?.data.push(yearlyNewOnlineLineChart);
 
-          // new -> line chart obj -> in-store
           const yearlyNewInStoreLineChart = {
             x: year,
             y: customers.new.sales.inStore,
@@ -2248,7 +2100,6 @@ async function createYearlyCustomerCharts({
             .find((lineChartData: LineChartData) => lineChartData.id === "In-Store")
             ?.data.push(yearlyNewInStoreLineChart);
 
-          // new -> line chart obj -> repair
           const yearlyNewRepairLineChart = {
             x: year,
             y: customers.new.repair,
@@ -2261,14 +2112,12 @@ async function createYearlyCustomerCharts({
 
           // returning -> bar chart obj
 
-          // returning -> bar chart obj -> total
           const yearlyReturningTotalBarChart = {
             Years: year,
             Total: customers.returning.total,
           };
           yearlyReturningBarChartsAcc.total.push(yearlyReturningTotalBarChart);
 
-          // returning -> bar chart obj -> all
           const yearlyReturningAllBarChart = {
             Years: year,
             "In-Store": customers.returning.sales.inStore,
@@ -2277,7 +2126,6 @@ async function createYearlyCustomerCharts({
           };
           yearlyReturningBarChartsAcc.all.push(yearlyReturningAllBarChart);
 
-          // returning -> bar chart obj -> overview
           const yearlyReturningOverviewBarChart = {
             Years: year,
             Sales: customers.returning.sales.total,
@@ -2285,7 +2133,6 @@ async function createYearlyCustomerCharts({
           };
           yearlyReturningBarChartsAcc.overview.push(yearlyReturningOverviewBarChart);
 
-          // returning -> bar chart obj -> sales
           const yearlyReturningSalesBarChart = {
             Years: year,
             "In-Store": customers.returning.sales.inStore,
@@ -2293,21 +2140,18 @@ async function createYearlyCustomerCharts({
           };
           yearlyReturningBarChartsAcc.sales.push(yearlyReturningSalesBarChart);
 
-          // returning -> bar chart obj -> online
           const yearlyReturningOnlineBarChart = {
             Years: year,
             Online: customers.returning.sales.online,
           };
           yearlyReturningBarChartsAcc.online.push(yearlyReturningOnlineBarChart);
 
-          // returning -> bar chart obj -> in-store
           const yearlyReturningInStoreBarChart = {
             Years: year,
             "In-Store": customers.returning.sales.inStore,
           };
           yearlyReturningBarChartsAcc.inStore.push(yearlyReturningInStoreBarChart);
 
-          // returning -> bar chart obj -> repair
           const yearlyReturningRepairBarChart = {
             Years: year,
             Repair: customers.returning.repair,
@@ -2316,7 +2160,6 @@ async function createYearlyCustomerCharts({
 
           // returning -> line chart obj
 
-          // returning -> line chart obj -> total
           const yearlyReturningTotalLineChart = {
             x: year,
             y: customers.returning.total,
@@ -2325,7 +2168,6 @@ async function createYearlyCustomerCharts({
             .find((lineChartData: LineChartData) => lineChartData.id === "Total")
             ?.data.push(yearlyReturningTotalLineChart);
 
-          // returning -> line chart obj -> all -> in-store
           const yearlyReturningAllInStoreLineChart = {
             x: year,
             y: customers.returning.sales.inStore,
@@ -2334,7 +2176,6 @@ async function createYearlyCustomerCharts({
             .find((lineChartData: LineChartData) => lineChartData.id === "In-Store")
             ?.data.push(yearlyReturningAllInStoreLineChart);
 
-          // returning -> line chart obj -> all -> online
           const yearlyReturningAllOnlineLineChart = {
             x: year,
             y: customers.returning.sales.online,
@@ -2343,7 +2184,6 @@ async function createYearlyCustomerCharts({
             .find((lineChartData: LineChartData) => lineChartData.id === "Online")
             ?.data.push(yearlyReturningAllOnlineLineChart);
 
-          // returning -> line chart obj -> all -> repair
           const yearlyReturningAllRepairLineChart = {
             x: year,
             y: customers.returning.repair,
@@ -2352,7 +2192,6 @@ async function createYearlyCustomerCharts({
             .find((lineChartData: LineChartData) => lineChartData.id === "Repair")
             ?.data.push(yearlyReturningAllRepairLineChart);
 
-          // returning -> line chart obj -> overview -> sales
           const yearlyReturningOverviewSalesLineChart = {
             x: year,
             y: customers.returning.sales.total,
@@ -2361,7 +2200,6 @@ async function createYearlyCustomerCharts({
             .find((lineChartData: LineChartData) => lineChartData.id === "Sales")
             ?.data.push(yearlyReturningOverviewSalesLineChart);
 
-          // returning -> line chart obj -> overview -> repair
           const yearlyReturningOverviewRepairLineChart = {
             x: year,
             y: customers.returning.repair,
@@ -2370,7 +2208,6 @@ async function createYearlyCustomerCharts({
             .find((lineChartData: LineChartData) => lineChartData.id === "Repair")
             ?.data.push(yearlyReturningOverviewRepairLineChart);
 
-          // returning -> line chart obj -> sales -> online
           const yearlyReturningSalesOnlineLineChart = {
             x: year,
             y: customers.returning.sales.online,
@@ -2379,7 +2216,6 @@ async function createYearlyCustomerCharts({
             .find((lineChartData: LineChartData) => lineChartData.id === "Online")
             ?.data.push(yearlyReturningSalesOnlineLineChart);
 
-          // returning -> line chart obj -> sales -> in-store
           const yearlyReturningSalesInStoreLineChart = {
             x: year,
             y: customers.returning.sales.inStore,
@@ -2388,7 +2224,6 @@ async function createYearlyCustomerCharts({
             .find((lineChartData: LineChartData) => lineChartData.id === "In-Store")
             ?.data.push(yearlyReturningSalesInStoreLineChart);
 
-          // returning -> line chart obj -> online
           const yearlyReturningOnlineLineChart = {
             x: year,
             y: customers.returning.sales.online,
@@ -2397,7 +2232,6 @@ async function createYearlyCustomerCharts({
             .find((lineChartData: LineChartData) => lineChartData.id === "Online")
             ?.data.push(yearlyReturningOnlineLineChart);
 
-          // returning -> line chart obj -> in-store
           const yearlyReturningInStoreLineChart = {
             x: year,
             y: customers.returning.sales.inStore,
@@ -2406,7 +2240,6 @@ async function createYearlyCustomerCharts({
             .find((lineChartData: LineChartData) => lineChartData.id === "In-Store")
             ?.data.push(yearlyReturningInStoreLineChart);
 
-          // returning -> line chart obj -> repair
           const yearlyReturningRepairLineChart = {
             x: year,
             y: customers.returning.repair,
@@ -2419,7 +2252,6 @@ async function createYearlyCustomerCharts({
 
           // churn & retention rate -> bar chart obj
 
-          // churn & retention rate -> bar chart obj -> overview
           const yearlyOverviewChurnRetentionRateBarChart = {
             Years: year,
             "Churn Rate": toFixedFloat(customers.churnRate * 100, 2),
@@ -2429,14 +2261,12 @@ async function createYearlyCustomerCharts({
             yearlyOverviewChurnRetentionRateBarChart
           );
 
-          // churn & retention rate -> bar chart obj -> churn rate
           const yearlyChurnRateBarChart = {
             Years: year,
             "Churn Rate": toFixedFloat(customers.churnRate * 100, 2),
           };
           yearlyChurnRetentionRateBarChartsAcc.churnRate.push(yearlyChurnRateBarChart);
 
-          // churn & retention rate -> bar chart obj -> retention rate
           const yearlyRetentionRateBarChart = {
             Years: year,
             "Retention Rate": toFixedFloat(customers.retentionRate * 100, 2),
@@ -2447,7 +2277,6 @@ async function createYearlyCustomerCharts({
 
           // churn & retention rate -> line chart obj
 
-          // churn & retention rate -> line chart obj -> overview -> churn rate
           const yearlyOverviewChurnRetentionRateLineChart = {
             x: year,
             y: toFixedFloat(customers.churnRate * 100, 2),
@@ -2456,7 +2285,6 @@ async function createYearlyCustomerCharts({
             .find((lineChartData: LineChartData) => lineChartData.id === "Churn Rate")
             ?.data.push(yearlyOverviewChurnRetentionRateLineChart);
 
-          // churn & retention rate -> line chart obj -> overview -> retention rate
           const yearlyOverviewRetentionRateLineChart = {
             x: year,
             y: toFixedFloat(customers.retentionRate * 100, 2),
@@ -2465,7 +2293,6 @@ async function createYearlyCustomerCharts({
             .find((lineChartData: LineChartData) => lineChartData.id === "Retention Rate")
             ?.data.push(yearlyOverviewRetentionRateLineChart);
 
-          // churn & retention rate -> line chart obj -> churn rate
           const yearlyChurnRateLineChart = {
             x: year,
             y: toFixedFloat(customers.churnRate * 100, 2),
@@ -2474,7 +2301,6 @@ async function createYearlyCustomerCharts({
             .find((lineChartData: LineChartData) => lineChartData.id === "Churn Rate")
             ?.data.push(yearlyChurnRateLineChart);
 
-          // churn & retention rate -> line chart obj -> retention rate
           const yearlyRetentionRateLineChart = {
             x: year,
             y: toFixedFloat(customers.retentionRate * 100, 2),
