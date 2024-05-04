@@ -70,7 +70,7 @@ function returnDashboardCardElement({
   return createdChartCard;
 }
 
-type ReturnDashboardCardInfoInput = {
+type CreateDashboardMetricsCardsInput = {
   currentMonth: string;
   currentYear: string;
   greenColorShade: string;
@@ -89,7 +89,7 @@ type ReturnDashboardCardInfoInput = {
   width: number;
 };
 
-function returnDashboardCardInfo({
+function createDashboardMetricsCards({
   currentMonth,
   currentYear,
   greenColorShade,
@@ -106,7 +106,7 @@ function returnDashboardCardInfo({
   redColorShade,
   selectedValue,
   width,
-}: ReturnDashboardCardInfoInput): DashboardCardInfo {
+}: CreateDashboardMetricsCardsInput): DashboardCardInfo {
   const icon =
     kind === "day" ? (
       <MdDateRange size={20} />
@@ -212,7 +212,7 @@ function returnCustomerMetricsCards({
   const prevMonth = prevMonthMetrics?.month ?? "January";
   const prevDay = prevDayMetrics?.day ?? "01";
 
-  const DASHBOARD_CARD_INFO_INPUT_TEMPLATE: ReturnDashboardCardInfoInput = {
+  const DASHBOARD_CARD_INFO_INPUT_TEMPLATE: CreateDashboardMetricsCardsInput = {
     currentMonth,
     currentYear,
     greenColorShade,
@@ -233,7 +233,7 @@ function returnCustomerMetricsCards({
   // day -> overview
 
   // day -> overview -> total
-  const dayTotalCustomersCardInfo = returnDashboardCardInfo({
+  const dayTotalCustomersCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Total",
     kind: "day",
@@ -244,7 +244,7 @@ function returnCustomerMetricsCards({
   // day -> overview -> new
 
   // day -> overview -> new -> total
-  const dayTotalNewCustomersCardInfo = returnDashboardCardInfo({
+  const dayTotalNewCustomersCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Total New",
     kind: "day",
@@ -255,7 +255,7 @@ function returnCustomerMetricsCards({
   // day -> overview -> returning
 
   // day -> overview -> returning -> total
-  const dayTotalReturningCustomersCardInfo = returnDashboardCardInfo({
+  const dayTotalReturningCustomersCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Total Returning",
     kind: "day",
@@ -269,7 +269,7 @@ function returnCustomerMetricsCards({
   // already created above
 
   // day -> new -> repair
-  const dayTotalNewRepairCustomersCardInfo = returnDashboardCardInfo({
+  const dayTotalNewRepairCustomersCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Repair",
     kind: "day",
@@ -280,7 +280,7 @@ function returnCustomerMetricsCards({
   // day -> new -> sales
 
   // day -> new -> sales -> total
-  const dayTotalNewSalesCustomersCardInfo = returnDashboardCardInfo({
+  const dayTotalNewSalesCustomersCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Sales",
     kind: "day",
@@ -289,7 +289,7 @@ function returnCustomerMetricsCards({
   });
 
   // day -> new -> sales -> online
-  const dayTotalNewSalesOnlineCustomersCardInfo = returnDashboardCardInfo({
+  const dayTotalNewSalesOnlineCustomersCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Sales Online",
     kind: "day",
@@ -298,7 +298,7 @@ function returnCustomerMetricsCards({
   });
 
   // day -> new -> sales -> in-store
-  const dayTotalNewSalesInStoreCustomersCardInfo = returnDashboardCardInfo({
+  const dayTotalNewSalesInStoreCustomersCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Sales In-Store",
     kind: "day",
@@ -312,7 +312,7 @@ function returnCustomerMetricsCards({
   // already created above
 
   // day -> returning -> repair
-  const dayTotalReturningRepairCustomersCardInfo = returnDashboardCardInfo({
+  const dayTotalReturningRepairCustomersCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Repair",
     kind: "day",
@@ -323,7 +323,7 @@ function returnCustomerMetricsCards({
   // day -> returning -> sales
 
   // day -> returning -> sales -> total
-  const dayTotalReturningSalesCustomersCardInfo = returnDashboardCardInfo({
+  const dayTotalReturningSalesCustomersCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Sales",
     kind: "day",
@@ -332,7 +332,7 @@ function returnCustomerMetricsCards({
   });
 
   // day -> returning -> sales -> online
-  const dayTotalReturningSalesOnlineCustomersCardInfo = returnDashboardCardInfo({
+  const dayTotalReturningSalesOnlineCustomersCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Sales Online",
     kind: "day",
@@ -341,7 +341,7 @@ function returnCustomerMetricsCards({
   });
 
   // day -> returning -> sales -> in-store
-  const dayTotalReturningSalesInStoreCustomersCardInfo = returnDashboardCardInfo({
+  const dayTotalReturningSalesInStoreCustomersCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Sales In-Store",
     kind: "day",
@@ -354,7 +354,7 @@ function returnCustomerMetricsCards({
   // month -> overview
 
   // month -> overview -> total
-  const monthTotalCustomersCardInfo = returnDashboardCardInfo({
+  const monthTotalCustomersCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Total",
     kind: "month",
@@ -365,7 +365,7 @@ function returnCustomerMetricsCards({
   // month -> overview -> new
 
   // month -> overview -> new -> total
-  const monthTotalNewCustomersCardInfo = returnDashboardCardInfo({
+  const monthTotalNewCustomersCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Total New",
     kind: "month",
@@ -376,7 +376,7 @@ function returnCustomerMetricsCards({
   // month -> overview -> returning
 
   // month -> overview -> returning -> total
-  const monthTotalReturningCustomersCardInfo = returnDashboardCardInfo({
+  const monthTotalReturningCustomersCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Total Returning",
     kind: "month",
@@ -390,7 +390,7 @@ function returnCustomerMetricsCards({
   // already created above
 
   // month -> new -> repair
-  const monthTotalNewRepairCustomersCardInfo = returnDashboardCardInfo({
+  const monthTotalNewRepairCustomersCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Repair",
     kind: "month",
@@ -401,7 +401,7 @@ function returnCustomerMetricsCards({
   // month -> new -> sales
 
   // month -> new -> sales -> total
-  const monthTotalNewSalesCustomersCardInfo = returnDashboardCardInfo({
+  const monthTotalNewSalesCustomersCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Sales",
     kind: "month",
@@ -410,7 +410,7 @@ function returnCustomerMetricsCards({
   });
 
   // month -> new -> sales -> online
-  const monthTotalNewSalesOnlineCustomersCardInfo = returnDashboardCardInfo({
+  const monthTotalNewSalesOnlineCustomersCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Sales Online",
     kind: "month",
@@ -419,7 +419,7 @@ function returnCustomerMetricsCards({
   });
 
   // month -> new -> sales -> in-store
-  const monthTotalNewSalesInStoreCustomersCardInfo = returnDashboardCardInfo({
+  const monthTotalNewSalesInStoreCustomersCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Sales In-Store",
     kind: "month",
@@ -433,7 +433,7 @@ function returnCustomerMetricsCards({
   // already created above
 
   // month -> returning -> repair
-  const monthTotalReturningRepairCustomersCardInfo = returnDashboardCardInfo({
+  const monthTotalReturningRepairCustomersCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Repair",
     kind: "month",
@@ -444,7 +444,7 @@ function returnCustomerMetricsCards({
   // month -> returning -> sales
 
   // month -> returning -> sales -> total
-  const monthTotalReturningSalesCustomersCardInfo = returnDashboardCardInfo({
+  const monthTotalReturningSalesCustomersCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Sales",
     kind: "month",
@@ -453,7 +453,7 @@ function returnCustomerMetricsCards({
   });
 
   // month -> returning -> sales -> online
-  const monthTotalReturningSalesOnlineCustomersCardInfo = returnDashboardCardInfo({
+  const monthTotalReturningSalesOnlineCustomersCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Sales Online",
     kind: "month",
@@ -462,7 +462,7 @@ function returnCustomerMetricsCards({
   });
 
   // month -> returning -> sales -> in-store
-  const monthTotalReturningSalesInStoreCustomersCardInfo = returnDashboardCardInfo({
+  const monthTotalReturningSalesInStoreCustomersCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Sales In-Store",
     kind: "month",
@@ -471,7 +471,7 @@ function returnCustomerMetricsCards({
   });
 
   // month -> churn rate
-  const monthChurnRateCardInfo = returnDashboardCardInfo({
+  const monthChurnRateCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Churn Rate",
     isFlipColor: true,
@@ -481,7 +481,7 @@ function returnCustomerMetricsCards({
   });
 
   // month -> retention rate
-  const monthRetentionRateCardInfo = returnDashboardCardInfo({
+  const monthRetentionRateCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Retention Rate",
     kind: "month",
@@ -494,7 +494,7 @@ function returnCustomerMetricsCards({
   // year -> overview
 
   // year -> overview -> total
-  const yearTotalCustomersCardInfo = returnDashboardCardInfo({
+  const yearTotalCustomersCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Total",
     kind: "year",
@@ -505,7 +505,7 @@ function returnCustomerMetricsCards({
   // year -> overview -> new
 
   // year -> overview -> new -> total
-  const yearTotalNewCustomersCardInfo = returnDashboardCardInfo({
+  const yearTotalNewCustomersCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Total New",
     kind: "year",
@@ -516,7 +516,7 @@ function returnCustomerMetricsCards({
   // year -> overview -> returning
 
   // year -> overview -> returning -> total
-  const yearTotalReturningCustomersCardInfo = returnDashboardCardInfo({
+  const yearTotalReturningCustomersCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Total Returning",
     kind: "year",
@@ -532,7 +532,7 @@ function returnCustomerMetricsCards({
   // year -> new -> repair
 
   // year -> new -> repair -> total
-  const yearTotalNewRepairCustomersCardInfo = returnDashboardCardInfo({
+  const yearTotalNewRepairCustomersCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Repair",
     kind: "year",
@@ -543,7 +543,7 @@ function returnCustomerMetricsCards({
   // year -> new -> sales
 
   // year -> new -> sales -> total
-  const yearTotalNewSalesCustomersCardInfo = returnDashboardCardInfo({
+  const yearTotalNewSalesCustomersCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Sales",
     kind: "year",
@@ -552,7 +552,7 @@ function returnCustomerMetricsCards({
   });
 
   // year -> new -> sales -> online
-  const yearTotalNewSalesOnlineCustomersCardInfo = returnDashboardCardInfo({
+  const yearTotalNewSalesOnlineCustomersCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Sales Online",
     kind: "year",
@@ -561,7 +561,7 @@ function returnCustomerMetricsCards({
   });
 
   // year -> new -> sales -> in-store
-  const yearTotalNewSalesInStoreCustomersCardInfo = returnDashboardCardInfo({
+  const yearTotalNewSalesInStoreCustomersCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Sales In-Store",
     kind: "year",
@@ -575,7 +575,7 @@ function returnCustomerMetricsCards({
   // already created above
 
   // year -> returning -> repair
-  const yearTotalReturningRepairCustomersCardInfo = returnDashboardCardInfo({
+  const yearTotalReturningRepairCustomersCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Repair",
     kind: "year",
@@ -586,7 +586,7 @@ function returnCustomerMetricsCards({
   // year -> returning -> sales
 
   // year -> returning -> sales -> total
-  const yearTotalReturningSalesCustomersCardInfo = returnDashboardCardInfo({
+  const yearTotalReturningSalesCustomersCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Sales",
     kind: "year",
@@ -595,7 +595,7 @@ function returnCustomerMetricsCards({
   });
 
   // year -> returning -> sales -> online
-  const yearTotalReturningSalesOnlineCustomersCardInfo = returnDashboardCardInfo({
+  const yearTotalReturningSalesOnlineCustomersCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Sales Online",
     kind: "year",
@@ -604,7 +604,7 @@ function returnCustomerMetricsCards({
   });
 
   // year -> returning -> sales -> in-store
-  const yearTotalReturningSalesInStoreCustomersCardInfo = returnDashboardCardInfo({
+  const yearTotalReturningSalesInStoreCustomersCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Sales In-Store",
     kind: "year",
@@ -613,7 +613,7 @@ function returnCustomerMetricsCards({
   });
 
   // year -> churn rate
-  const yearChurnRateCardInfo = returnDashboardCardInfo({
+  const yearChurnRateCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Churn Rate",
     isFlipColor: true,
@@ -623,7 +623,7 @@ function returnCustomerMetricsCards({
   });
 
   // year -> retention rate
-  const yearRetentionRateCardInfo = returnDashboardCardInfo({
+  const yearRetentionRateCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Retention Rate",
     kind: "year",
@@ -754,7 +754,7 @@ function returnFinancialMetricsCards({
   const prevMonth = prevMonthMetrics?.month ?? "January";
   const prevDay = prevDayMetrics?.day ?? "01";
 
-  const DASHBOARD_CARD_INFO_INPUT_TEMPLATE: ReturnDashboardCardInfoInput = {
+  const DASHBOARD_CARD_INFO_INPUT_TEMPLATE: CreateDashboardMetricsCardsInput = {
     currentMonth,
     currentYear,
     greenColorShade,
@@ -775,7 +775,7 @@ function returnFinancialMetricsCards({
   // day -> profit
 
   // day -> profit -> total
-  const dayProfitTotalCardInfo = returnDashboardCardInfo({
+  const dayProfitTotalCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Total",
     isDisplayValueAsCurrency: true,
@@ -785,7 +785,7 @@ function returnFinancialMetricsCards({
   });
 
   // day -> profit -> repair
-  const dayProfitRepairCardInfo = returnDashboardCardInfo({
+  const dayProfitRepairCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Repair",
     isDisplayValueAsCurrency: true,
@@ -797,7 +797,7 @@ function returnFinancialMetricsCards({
   // day -> profit -> sales
 
   // day -> profit -> sales -> total
-  const dayProfitSalesTotalCardInfo = returnDashboardCardInfo({
+  const dayProfitSalesTotalCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Sales Total",
     isDisplayValueAsCurrency: true,
@@ -807,7 +807,7 @@ function returnFinancialMetricsCards({
   });
 
   // day -> profit -> sales -> online
-  const dayProfitSalesOnlineCardInfo = returnDashboardCardInfo({
+  const dayProfitSalesOnlineCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Sales Online",
     isDisplayValueAsCurrency: true,
@@ -817,7 +817,7 @@ function returnFinancialMetricsCards({
   });
 
   // day -> profit -> sales -> in-store
-  const dayProfitSalesInStoreCardInfo = returnDashboardCardInfo({
+  const dayProfitSalesInStoreCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Sales In-Store",
     isDisplayValueAsCurrency: true,
@@ -829,7 +829,7 @@ function returnFinancialMetricsCards({
   // day -> expenses
 
   // day -> expenses -> total
-  const dayExpensesTotalCardInfo = returnDashboardCardInfo({
+  const dayExpensesTotalCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Total",
     isDisplayValueAsCurrency: true,
@@ -840,7 +840,7 @@ function returnFinancialMetricsCards({
   });
 
   // day -> expenses -> repair
-  const dayExpensesRepairCardInfo = returnDashboardCardInfo({
+  const dayExpensesRepairCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Repair",
     isDisplayValueAsCurrency: true,
@@ -853,7 +853,7 @@ function returnFinancialMetricsCards({
   // day -> expenses -> sales
 
   // day -> expenses -> sales -> total
-  const dayExpensesSalesTotalCardInfo = returnDashboardCardInfo({
+  const dayExpensesSalesTotalCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Sales Total",
     isDisplayValueAsCurrency: true,
@@ -864,7 +864,7 @@ function returnFinancialMetricsCards({
   });
 
   // day -> expenses -> sales -> online
-  const dayExpensesSalesOnlineCardInfo = returnDashboardCardInfo({
+  const dayExpensesSalesOnlineCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Sales Online",
     isDisplayValueAsCurrency: true,
@@ -875,7 +875,7 @@ function returnFinancialMetricsCards({
   });
 
   // day -> expenses -> sales -> in-store
-  const dayExpensesSalesInStoreCardInfo = returnDashboardCardInfo({
+  const dayExpensesSalesInStoreCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Sales In-Store",
     isDisplayValueAsCurrency: true,
@@ -888,7 +888,7 @@ function returnFinancialMetricsCards({
   // day -> transactions
 
   // day -> transactions -> total
-  const dayUnitsSoldTotalCardInfo = returnDashboardCardInfo({
+  const dayUnitsSoldTotalCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Total",
     kind: "day",
@@ -897,7 +897,7 @@ function returnFinancialMetricsCards({
   });
 
   // day -> transactions -> repair
-  const dayUnitsSoldRepairCardInfo = returnDashboardCardInfo({
+  const dayUnitsSoldRepairCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Repair",
     kind: "day",
@@ -908,7 +908,7 @@ function returnFinancialMetricsCards({
   // day -> transactions -> sales
 
   // day -> transactions -> sales -> total
-  const dayUnitsSoldSalesTotalCardInfo = returnDashboardCardInfo({
+  const dayUnitsSoldSalesTotalCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Sales Total",
     kind: "day",
@@ -917,7 +917,7 @@ function returnFinancialMetricsCards({
   });
 
   // day -> transactions -> sales -> online
-  const dayUnitsSoldSalesOnlineCardInfo = returnDashboardCardInfo({
+  const dayUnitsSoldSalesOnlineCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Sales Online",
     kind: "day",
@@ -926,7 +926,7 @@ function returnFinancialMetricsCards({
   });
 
   // day -> transactions -> sales -> in-store
-  const dayUnitsSoldSalesInStoreCardInfo = returnDashboardCardInfo({
+  const dayUnitsSoldSalesInStoreCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Sales In-Store",
     kind: "day",
@@ -937,7 +937,7 @@ function returnFinancialMetricsCards({
   // day -> revenue
 
   // day -> revenue -> total
-  const dayRevenueTotalCardInfo = returnDashboardCardInfo({
+  const dayRevenueTotalCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Total",
     isDisplayValueAsCurrency: true,
@@ -947,7 +947,7 @@ function returnFinancialMetricsCards({
   });
 
   // day -> revenue -> repair
-  const dayRevenueRepairCardInfo = returnDashboardCardInfo({
+  const dayRevenueRepairCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Repair",
     isDisplayValueAsCurrency: true,
@@ -959,7 +959,7 @@ function returnFinancialMetricsCards({
   // day -> revenue -> sales
 
   // day -> revenue -> sales -> total
-  const dayRevenueSalesTotalCardInfo = returnDashboardCardInfo({
+  const dayRevenueSalesTotalCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Sales Total",
     isDisplayValueAsCurrency: true,
@@ -969,7 +969,7 @@ function returnFinancialMetricsCards({
   });
 
   // day -> revenue -> sales -> online
-  const dayRevenueSalesOnlineCardInfo = returnDashboardCardInfo({
+  const dayRevenueSalesOnlineCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Sales Online",
     isDisplayValueAsCurrency: true,
@@ -979,7 +979,7 @@ function returnFinancialMetricsCards({
   });
 
   // day -> revenue -> sales -> in-store
-  const dayRevenueSalesInStoreCardInfo = returnDashboardCardInfo({
+  const dayRevenueSalesInStoreCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Sales In-Store",
     isDisplayValueAsCurrency: true,
@@ -989,7 +989,7 @@ function returnFinancialMetricsCards({
   });
 
   // day -> average order value
-  const dayAverageOrderValueCardInfo = returnDashboardCardInfo({
+  const dayAverageOrderValueCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Average Order Value",
     isDisplayValueAsCurrency: true,
@@ -999,7 +999,7 @@ function returnFinancialMetricsCards({
   });
 
   // day -> conversion rate
-  const dayConversionRateCardInfo = returnDashboardCardInfo({
+  const dayConversionRateCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Conversion Rate",
     isDisplayValueAsPercentage: true,
@@ -1009,7 +1009,7 @@ function returnFinancialMetricsCards({
   });
 
   // day -> net profit margin
-  const dayNetProfitMarginCardInfo = returnDashboardCardInfo({
+  const dayNetProfitMarginCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Net Profit Margin",
     isDisplayValueAsPercentage: true,
@@ -1023,7 +1023,7 @@ function returnFinancialMetricsCards({
   // month -> profit
 
   // month -> profit -> total
-  const monthProfitTotalCardInfo = returnDashboardCardInfo({
+  const monthProfitTotalCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Total",
     isDisplayValueAsCurrency: true,
@@ -1033,7 +1033,7 @@ function returnFinancialMetricsCards({
   });
 
   // month -> profit -> repair
-  const monthProfitRepairCardInfo = returnDashboardCardInfo({
+  const monthProfitRepairCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Repair",
     isDisplayValueAsCurrency: true,
@@ -1045,7 +1045,7 @@ function returnFinancialMetricsCards({
   // month -> profit -> sales
 
   // month -> profit -> sales -> total
-  const monthProfitSalesTotalCardInfo = returnDashboardCardInfo({
+  const monthProfitSalesTotalCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Sales Total",
     isDisplayValueAsCurrency: true,
@@ -1055,7 +1055,7 @@ function returnFinancialMetricsCards({
   });
 
   // month -> profit -> sales -> online
-  const monthProfitSalesOnlineCardInfo = returnDashboardCardInfo({
+  const monthProfitSalesOnlineCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Sales Online",
     isDisplayValueAsCurrency: true,
@@ -1065,7 +1065,7 @@ function returnFinancialMetricsCards({
   });
 
   // month -> profit -> sales -> in-store
-  const monthProfitSalesInStoreCardInfo = returnDashboardCardInfo({
+  const monthProfitSalesInStoreCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Sales In-Store",
     isDisplayValueAsCurrency: true,
@@ -1077,7 +1077,7 @@ function returnFinancialMetricsCards({
   // month -> expenses
 
   // month -> expenses -> total
-  const monthExpensesTotalCardInfo = returnDashboardCardInfo({
+  const monthExpensesTotalCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Total",
     isDisplayValueAsCurrency: true,
@@ -1088,7 +1088,7 @@ function returnFinancialMetricsCards({
   });
 
   // month -> expenses -> repair
-  const monthExpensesRepairCardInfo = returnDashboardCardInfo({
+  const monthExpensesRepairCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Repair",
     isDisplayValueAsCurrency: true,
@@ -1101,7 +1101,7 @@ function returnFinancialMetricsCards({
   // month -> expenses -> sales
 
   // month -> expenses -> sales -> total
-  const monthExpensesSalesTotalCardInfo = returnDashboardCardInfo({
+  const monthExpensesSalesTotalCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Sales Total",
     isDisplayValueAsCurrency: true,
@@ -1112,7 +1112,7 @@ function returnFinancialMetricsCards({
   });
 
   // month -> expenses -> sales -> online
-  const monthExpensesSalesOnlineCardInfo = returnDashboardCardInfo({
+  const monthExpensesSalesOnlineCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Sales Online",
     isDisplayValueAsCurrency: true,
@@ -1123,7 +1123,7 @@ function returnFinancialMetricsCards({
   });
 
   // month -> expenses -> sales -> in-store
-  const monthExpensesSalesInStoreCardInfo = returnDashboardCardInfo({
+  const monthExpensesSalesInStoreCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Sales In-Store",
     isDisplayValueAsCurrency: true,
@@ -1136,7 +1136,7 @@ function returnFinancialMetricsCards({
   // month -> transactions
 
   // month -> transactions -> total
-  const monthUnitsSoldTotalCardInfo = returnDashboardCardInfo({
+  const monthUnitsSoldTotalCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Total",
     kind: "month",
@@ -1145,7 +1145,7 @@ function returnFinancialMetricsCards({
   });
 
   // month -> transactions -> repair
-  const monthUnitsSoldRepairCardInfo = returnDashboardCardInfo({
+  const monthUnitsSoldRepairCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Repair",
     kind: "month",
@@ -1156,7 +1156,7 @@ function returnFinancialMetricsCards({
   // month -> transactions -> sales
 
   // month -> transactions -> sales -> total
-  const monthUnitsSoldSalesTotalCardInfo = returnDashboardCardInfo({
+  const monthUnitsSoldSalesTotalCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Sales Total",
     kind: "month",
@@ -1165,7 +1165,7 @@ function returnFinancialMetricsCards({
   });
 
   // month -> transactions -> sales -> online
-  const monthUnitsSoldSalesOnlineCardInfo = returnDashboardCardInfo({
+  const monthUnitsSoldSalesOnlineCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Sales Online",
     kind: "month",
@@ -1174,7 +1174,7 @@ function returnFinancialMetricsCards({
   });
 
   // month -> transactions -> sales -> in-store
-  const monthUnitsSoldSalesInStoreCardInfo = returnDashboardCardInfo({
+  const monthUnitsSoldSalesInStoreCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Sales In-Store",
     kind: "month",
@@ -1185,7 +1185,7 @@ function returnFinancialMetricsCards({
   // month -> revenue
 
   // month -> revenue -> total
-  const monthRevenueTotalCardInfo = returnDashboardCardInfo({
+  const monthRevenueTotalCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Total",
     isDisplayValueAsCurrency: true,
@@ -1195,7 +1195,7 @@ function returnFinancialMetricsCards({
   });
 
   // month -> revenue -> repair
-  const monthRevenueRepairCardInfo = returnDashboardCardInfo({
+  const monthRevenueRepairCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Repair",
     isDisplayValueAsCurrency: true,
@@ -1207,7 +1207,7 @@ function returnFinancialMetricsCards({
   // month -> revenue -> sales
 
   // month -> revenue -> sales -> total
-  const monthRevenueSalesTotalCardInfo = returnDashboardCardInfo({
+  const monthRevenueSalesTotalCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Sales Total",
     isDisplayValueAsCurrency: true,
@@ -1217,7 +1217,7 @@ function returnFinancialMetricsCards({
   });
 
   // month -> revenue -> sales -> online
-  const monthRevenueSalesOnlineCardInfo = returnDashboardCardInfo({
+  const monthRevenueSalesOnlineCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Sales Online",
     isDisplayValueAsCurrency: true,
@@ -1227,7 +1227,7 @@ function returnFinancialMetricsCards({
   });
 
   // month -> revenue -> sales -> in-store
-  const monthRevenueSalesInStoreCardInfo = returnDashboardCardInfo({
+  const monthRevenueSalesInStoreCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Sales In-Store",
     isDisplayValueAsCurrency: true,
@@ -1237,7 +1237,7 @@ function returnFinancialMetricsCards({
   });
 
   // month -> average order value
-  const monthAverageOrderValueCardInfo = returnDashboardCardInfo({
+  const monthAverageOrderValueCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Average Order Value",
     isDisplayValueAsCurrency: true,
@@ -1247,7 +1247,7 @@ function returnFinancialMetricsCards({
   });
 
   // month -> conversion rate
-  const monthConversionRateCardInfo = returnDashboardCardInfo({
+  const monthConversionRateCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Conversion Rate",
     isDisplayValueAsPercentage: true,
@@ -1257,7 +1257,7 @@ function returnFinancialMetricsCards({
   });
 
   // month -> net profit margin
-  const monthNetProfitMarginCardInfo = returnDashboardCardInfo({
+  const monthNetProfitMarginCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Net Profit Margin",
     isDisplayValueAsPercentage: true,
@@ -1271,7 +1271,7 @@ function returnFinancialMetricsCards({
   // year -> profit
 
   // year -> profit -> total
-  const yearProfitTotalCardInfo = returnDashboardCardInfo({
+  const yearProfitTotalCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Total",
     isDisplayValueAsCurrency: true,
@@ -1281,7 +1281,7 @@ function returnFinancialMetricsCards({
   });
 
   // year -> profit -> repair
-  const yearProfitRepairCardInfo = returnDashboardCardInfo({
+  const yearProfitRepairCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Repair",
     isDisplayValueAsCurrency: true,
@@ -1293,7 +1293,7 @@ function returnFinancialMetricsCards({
   // year -> profit -> sales
 
   // year -> profit -> sales -> total
-  const yearProfitSalesTotalCardInfo = returnDashboardCardInfo({
+  const yearProfitSalesTotalCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Sales Total",
     isDisplayValueAsCurrency: true,
@@ -1303,7 +1303,7 @@ function returnFinancialMetricsCards({
   });
 
   // year -> profit -> sales -> online
-  const yearProfitSalesOnlineCardInfo = returnDashboardCardInfo({
+  const yearProfitSalesOnlineCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Sales Online",
     isDisplayValueAsCurrency: true,
@@ -1313,7 +1313,7 @@ function returnFinancialMetricsCards({
   });
 
   // year -> profit -> sales -> in-store
-  const yearProfitSalesInStoreCardInfo = returnDashboardCardInfo({
+  const yearProfitSalesInStoreCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Sales In-Store",
     isDisplayValueAsCurrency: true,
@@ -1325,7 +1325,7 @@ function returnFinancialMetricsCards({
   // year -> expenses
 
   // year -> expenses -> total
-  const yearExpensesTotalCardInfo = returnDashboardCardInfo({
+  const yearExpensesTotalCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Total",
     isDisplayValueAsCurrency: true,
@@ -1336,7 +1336,7 @@ function returnFinancialMetricsCards({
   });
 
   // year -> expenses -> repair
-  const yearExpensesRepairCardInfo = returnDashboardCardInfo({
+  const yearExpensesRepairCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Repair",
     isDisplayValueAsCurrency: true,
@@ -1349,7 +1349,7 @@ function returnFinancialMetricsCards({
   // year -> expenses -> sales
 
   // year -> expenses -> sales -> total
-  const yearExpensesSalesTotalCardInfo = returnDashboardCardInfo({
+  const yearExpensesSalesTotalCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Sales Total",
     isDisplayValueAsCurrency: true,
@@ -1360,7 +1360,7 @@ function returnFinancialMetricsCards({
   });
 
   // year -> expenses -> sales -> online
-  const yearExpensesSalesOnlineCardInfo = returnDashboardCardInfo({
+  const yearExpensesSalesOnlineCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Sales Online",
     isDisplayValueAsCurrency: true,
@@ -1371,7 +1371,7 @@ function returnFinancialMetricsCards({
   });
 
   // year -> expenses -> sales -> in-store
-  const yearExpensesSalesInStoreCardInfo = returnDashboardCardInfo({
+  const yearExpensesSalesInStoreCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Sales In-Store",
     isDisplayValueAsCurrency: true,
@@ -1384,7 +1384,7 @@ function returnFinancialMetricsCards({
   // year -> transactions
 
   // year -> transactions -> total
-  const yearUnitsSoldTotalCardInfo = returnDashboardCardInfo({
+  const yearUnitsSoldTotalCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Total",
     kind: "year",
@@ -1393,7 +1393,7 @@ function returnFinancialMetricsCards({
   });
 
   // year -> transactions -> repair
-  const yearUnitsSoldRepairCardInfo = returnDashboardCardInfo({
+  const yearUnitsSoldRepairCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Repair",
     kind: "year",
@@ -1404,7 +1404,7 @@ function returnFinancialMetricsCards({
   // year -> transactions -> sales
 
   // year -> transactions -> sales -> total
-  const yearUnitsSoldSalesTotalCardInfo = returnDashboardCardInfo({
+  const yearUnitsSoldSalesTotalCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Sales Total",
     kind: "year",
@@ -1413,7 +1413,7 @@ function returnFinancialMetricsCards({
   });
 
   // year -> transactions -> sales -> online
-  const yearUnitsSoldSalesOnlineCardInfo = returnDashboardCardInfo({
+  const yearUnitsSoldSalesOnlineCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Sales Online",
     kind: "year",
@@ -1422,7 +1422,7 @@ function returnFinancialMetricsCards({
   });
 
   // year -> transactions -> sales -> in-store
-  const yearUnitsSoldSalesInStoreCardInfo = returnDashboardCardInfo({
+  const yearUnitsSoldSalesInStoreCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Sales In-Store",
     kind: "year",
@@ -1433,7 +1433,7 @@ function returnFinancialMetricsCards({
   // year -> revenue
 
   // year -> revenue -> total
-  const yearRevenueTotalCardInfo = returnDashboardCardInfo({
+  const yearRevenueTotalCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Total",
     isDisplayValueAsCurrency: true,
@@ -1443,7 +1443,7 @@ function returnFinancialMetricsCards({
   });
 
   // year -> revenue -> repair
-  const yearRevenueRepairCardInfo = returnDashboardCardInfo({
+  const yearRevenueRepairCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Repair",
     isDisplayValueAsCurrency: true,
@@ -1455,7 +1455,7 @@ function returnFinancialMetricsCards({
   // year -> revenue -> sales
 
   // year -> revenue -> sales -> total
-  const yearRevenueSalesTotalCardInfo = returnDashboardCardInfo({
+  const yearRevenueSalesTotalCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Sales Total",
     isDisplayValueAsCurrency: true,
@@ -1465,7 +1465,7 @@ function returnFinancialMetricsCards({
   });
 
   // year -> revenue -> sales -> online
-  const yearRevenueSalesOnlineCardInfo = returnDashboardCardInfo({
+  const yearRevenueSalesOnlineCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Sales Online",
     isDisplayValueAsCurrency: true,
@@ -1475,7 +1475,7 @@ function returnFinancialMetricsCards({
   });
 
   // year -> revenue -> sales -> in-store
-  const yearRevenueSalesInStoreCardInfo = returnDashboardCardInfo({
+  const yearRevenueSalesInStoreCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Sales In-Store",
     isDisplayValueAsCurrency: true,
@@ -1485,7 +1485,7 @@ function returnFinancialMetricsCards({
   });
 
   // year -> average order value
-  const yearAverageOrderValueCardInfo = returnDashboardCardInfo({
+  const yearAverageOrderValueCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Average Order Value",
     isDisplayValueAsCurrency: true,
@@ -1495,7 +1495,7 @@ function returnFinancialMetricsCards({
   });
 
   // year -> conversion rate
-  const yearConversionRateCardInfo = returnDashboardCardInfo({
+  const yearConversionRateCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Conversion Rate",
     isDisplayValueAsPercentage: true,
@@ -1505,7 +1505,7 @@ function returnFinancialMetricsCards({
   });
 
   // year -> net profit margin
-  const yearNetProfitMarginCardInfo = returnDashboardCardInfo({
+  const yearNetProfitMarginCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Net Profit Margin",
     isDisplayValueAsPercentage: true,
@@ -1666,7 +1666,7 @@ function returnProductMetricsCards({
   const prevMonth = prevMonthMetrics?.month ?? "January";
   const prevDay = prevDayMetrics?.day ?? "01";
 
-  const DASHBOARD_CARD_INFO_INPUT_TEMPLATE: ReturnDashboardCardInfoInput = {
+  const DASHBOARD_CARD_INFO_INPUT_TEMPLATE: CreateDashboardMetricsCardsInput = {
     currentMonth,
     currentYear,
     greenColorShade,
@@ -1687,7 +1687,7 @@ function returnProductMetricsCards({
   // daily -> revenue
 
   // daily -> revenue -> total
-  const dayRevenueTotalCardInfo = returnDashboardCardInfo({
+  const dayRevenueTotalCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     isDisplayValueAsCurrency: true,
     prevValue: prevDayMetrics?.revenue.total ?? 0,
@@ -1695,7 +1695,7 @@ function returnProductMetricsCards({
   });
 
   // daily -> revenue -> inStore
-  const dayRevenueInStoreCardInfo = returnDashboardCardInfo({
+  const dayRevenueInStoreCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "In-Store",
     isDisplayValueAsCurrency: true,
@@ -1704,7 +1704,7 @@ function returnProductMetricsCards({
   });
 
   // daily -> revenue -> online
-  const dayRevenueOnlineCardInfo = returnDashboardCardInfo({
+  const dayRevenueOnlineCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Online",
     isDisplayValueAsCurrency: true,
@@ -1715,7 +1715,7 @@ function returnProductMetricsCards({
   // daily -> unitsSold
 
   // daily -> unitsSold -> total
-  const dayUnitsSoldTotalCardInfo = returnDashboardCardInfo({
+  const dayUnitsSoldTotalCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Total",
     prevValue: prevDayMetrics?.unitsSold.total ?? 0,
@@ -1723,7 +1723,7 @@ function returnProductMetricsCards({
   });
 
   // daily -> unitsSold -> inStore
-  const dayUnitsSoldInStoreCardInfo = returnDashboardCardInfo({
+  const dayUnitsSoldInStoreCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "In-Store",
     prevValue: prevDayMetrics?.unitsSold.inStore ?? 0,
@@ -1731,7 +1731,7 @@ function returnProductMetricsCards({
   });
 
   // daily -> unitsSold -> online
-  const dayUnitsSoldOnlineCardInfo = returnDashboardCardInfo({
+  const dayUnitsSoldOnlineCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Online",
     prevValue: prevDayMetrics?.unitsSold.online ?? 0,
@@ -1743,7 +1743,7 @@ function returnProductMetricsCards({
   // monthly -> revenue
 
   // monthly -> revenue -> total
-  const monthRevenueTotalCardInfo = returnDashboardCardInfo({
+  const monthRevenueTotalCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     isDisplayValueAsCurrency: true,
     kind: "month",
@@ -1752,7 +1752,7 @@ function returnProductMetricsCards({
   });
 
   // monthly -> revenue -> inStore
-  const monthRevenueInStoreCardInfo = returnDashboardCardInfo({
+  const monthRevenueInStoreCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     isDisplayValueAsCurrency: true,
     heading: "In-Store",
@@ -1762,7 +1762,7 @@ function returnProductMetricsCards({
   });
 
   // monthly -> revenue -> online
-  const monthRevenueOnlineCardInfo = returnDashboardCardInfo({
+  const monthRevenueOnlineCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     isDisplayValueAsCurrency: true,
     heading: "Online",
@@ -1774,7 +1774,7 @@ function returnProductMetricsCards({
   // monthly -> unitsSold
 
   // monthly -> unitsSold -> total
-  const monthUnitsSoldTotalCardInfo = returnDashboardCardInfo({
+  const monthUnitsSoldTotalCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Total",
     kind: "month",
@@ -1783,7 +1783,7 @@ function returnProductMetricsCards({
   });
 
   // monthly -> unitsSold -> inStore
-  const monthUnitsSoldInStoreCardInfo = returnDashboardCardInfo({
+  const monthUnitsSoldInStoreCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "In-Store",
     kind: "month",
@@ -1792,7 +1792,7 @@ function returnProductMetricsCards({
   });
 
   // monthly -> unitsSold -> online
-  const monthUnitsSoldOnlineCardInfo = returnDashboardCardInfo({
+  const monthUnitsSoldOnlineCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Online",
     kind: "month",
@@ -1805,7 +1805,7 @@ function returnProductMetricsCards({
   // yearly -> revenue
 
   // yearly -> revenue -> total
-  const yearRevenueTotalCardInfo = returnDashboardCardInfo({
+  const yearRevenueTotalCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     isDisplayValueAsCurrency: true,
     kind: "year",
@@ -1814,7 +1814,7 @@ function returnProductMetricsCards({
   });
 
   // yearly -> revenue -> inStore
-  const yearRevenueInStoreCardInfo = returnDashboardCardInfo({
+  const yearRevenueInStoreCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "In-Store",
     isDisplayValueAsCurrency: true,
@@ -1824,7 +1824,7 @@ function returnProductMetricsCards({
   });
 
   // yearly -> revenue -> online
-  const yearRevenueOnlineCardInfo = returnDashboardCardInfo({
+  const yearRevenueOnlineCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Online",
     isDisplayValueAsCurrency: true,
@@ -1836,7 +1836,7 @@ function returnProductMetricsCards({
   // yearly -> unitsSold
 
   // yearly -> unitsSold -> total
-  const yearUnitsSoldTotalCardInfo = returnDashboardCardInfo({
+  const yearUnitsSoldTotalCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Total",
     kind: "year",
@@ -1845,7 +1845,7 @@ function returnProductMetricsCards({
   });
 
   // yearly -> unitsSold -> inStore
-  const yearUnitsSoldInStoreCardInfo = returnDashboardCardInfo({
+  const yearUnitsSoldInStoreCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "In-Store",
     kind: "year",
@@ -1854,7 +1854,7 @@ function returnProductMetricsCards({
   });
 
   // yearly -> unitsSold -> online
-  const yearUnitsSoldOnlineCardInfo = returnDashboardCardInfo({
+  const yearUnitsSoldOnlineCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Online",
     kind: "year",
@@ -1936,7 +1936,7 @@ function returnRepairMetricsCards({
   const prevMonth = prevMonthMetrics?.month ?? "January";
   const prevDay = prevDayMetrics?.day ?? "01";
 
-  const DASHBOARD_CARD_INFO_INPUT_TEMPLATE: ReturnDashboardCardInfoInput = {
+  const DASHBOARD_CARD_INFO_INPUT_TEMPLATE: CreateDashboardMetricsCardsInput = {
     currentMonth,
     currentYear,
     greenColorShade,
@@ -1955,7 +1955,7 @@ function returnRepairMetricsCards({
   // daily
 
   // daily -> revenue
-  const dayRevenueCardInfo = returnDashboardCardInfo({
+  const dayRevenueCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     isDisplayValueAsCurrency: true,
     prevValue: prevDayMetrics?.revenue ?? 0,
@@ -1963,7 +1963,7 @@ function returnRepairMetricsCards({
   });
 
   // daily -> units repaired
-  const dayUnitsRepairedCardInfo = returnDashboardCardInfo({
+  const dayUnitsRepairedCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Units Repaired",
     prevValue: prevDayMetrics?.unitsRepaired ?? 0,
@@ -1973,7 +1973,7 @@ function returnRepairMetricsCards({
   // monthly
 
   // monthly -> revenue
-  const monthRevenueCardInfo = returnDashboardCardInfo({
+  const monthRevenueCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     kind: "month",
     isDisplayValueAsCurrency: true,
@@ -1982,7 +1982,7 @@ function returnRepairMetricsCards({
   });
 
   // monthly -> units repaired
-  const monthUnitsRepairedCardInfo = returnDashboardCardInfo({
+  const monthUnitsRepairedCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Units Repaired",
     kind: "month",
@@ -1993,7 +1993,7 @@ function returnRepairMetricsCards({
   // yearly
 
   // yearly -> revenue
-  const yearRevenueCardInfo = returnDashboardCardInfo({
+  const yearRevenueCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     kind: "year",
     isDisplayValueAsCurrency: true,
@@ -2002,7 +2002,7 @@ function returnRepairMetricsCards({
   });
 
   // yearly -> units repaired
-  const yearUnitsRepairedCardInfo = returnDashboardCardInfo({
+  const yearUnitsRepairedCardInfo = createDashboardMetricsCards({
     ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
     heading: "Units Repaired",
     kind: "year",
@@ -2020,6 +2020,7 @@ function returnRepairMetricsCards({
 export {
   returnCustomerMetricsCards,
   returnDashboardCardElement,
+  createDashboardMetricsCards,
   returnFinancialMetricsCards,
   returnProductMetricsCards,
   returnRepairMetricsCards,
@@ -2030,4 +2031,5 @@ export type {
   FinancialMetricsCards,
   ProductMetricsCards,
   RepairMetricsCards,
+  CreateDashboardMetricsCardsInput,
 };
