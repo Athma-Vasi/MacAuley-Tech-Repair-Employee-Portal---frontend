@@ -1,7 +1,7 @@
-import { BarChartData } from '../../charts/responsiveBarChart/types';
-import { CalendarChartData } from '../../charts/responsiveCalendarChart/types';
-import { LineChartData } from '../../charts/responsiveLineChart/types';
-import { PieChartData } from '../../charts/responsivePieChart/types';
+import { BarChartData } from "../../charts/responsiveBarChart/types";
+import { CalendarChartData } from "../../charts/responsiveCalendarChart/types";
+import { LineChartData } from "../../charts/responsiveLineChart/types";
+import { PieChartData } from "../../charts/responsivePieChart/types";
 import {
   BusinessMetric,
   BusinessMetricStoreLocation,
@@ -11,7 +11,7 @@ import {
   ProductMonthlyMetric,
   ProductYearlyMetric,
   Year,
-} from '../types';
+} from "../types";
 
 type SelectedDateProductMetrics = {
   dayProductMetrics: {
@@ -28,7 +28,17 @@ type SelectedDateProductMetrics = {
   };
 };
 
-function returnSelectedDateProductMetrics({
+type CreateSelectedDateProductMetricsInput = {
+  businessMetrics: BusinessMetric[];
+  day: string;
+  month: Month;
+  months: Month[];
+  selectedProductCategory: ProductCategory | "All Products";
+  storeLocation: BusinessMetricStoreLocation;
+  year: Year;
+};
+
+function createSelectedDateProductMetrics({
   businessMetrics,
   day,
   month,
@@ -36,26 +46,15 @@ function returnSelectedDateProductMetrics({
   selectedProductCategory,
   storeLocation,
   year,
-}: {
-  businessMetrics: BusinessMetric[];
-  day: string;
-  month: Month;
-  months: Month[];
-  selectedProductCategory: ProductCategory | 'All Products';
-  storeLocation: BusinessMetricStoreLocation;
-  year: Year;
-}): SelectedDateProductMetrics {
-  // selected store's business metrics
+}: CreateSelectedDateProductMetricsInput): SelectedDateProductMetrics {
   const currentStoreMetrics = businessMetrics.find(
     (businessMetric) => businessMetric.storeLocation === storeLocation
   );
 
-  // selected business metrics' product category
   const selectedDateProductMetrics = currentStoreMetrics?.productMetrics.find(
     (productMetric) => productMetric.name === selectedProductCategory
   );
 
-  // selected year's product metrics
   const selectedYearMetrics = selectedDateProductMetrics?.yearlyMetrics.find(
     (yearlyMetric) => yearlyMetric.year === year
   );
@@ -68,7 +67,6 @@ function returnSelectedDateProductMetrics({
     prevYearMetrics,
   };
 
-  // selected month's product metrics
   const selectedMonthMetrics = selectedYearMetrics?.monthlyMetrics.find(
     (monthlyMetric) => monthlyMetric.month === month
   );
@@ -76,13 +74,12 @@ function returnSelectedDateProductMetrics({
     (yearlyMetric) => yearlyMetric.year === (parseInt(year) - 2).toString()
   );
   const prevMonthMetrics =
-    month === 'January'
+    month === "January"
       ? prevPrevYearMetrics?.monthlyMetrics.find(
-          (monthlyMetric) => monthlyMetric.month === 'December'
+          (monthlyMetric) => monthlyMetric.month === "December"
         )
       : selectedYearMetrics?.monthlyMetrics.find(
-          (monthlyMetric) =>
-            monthlyMetric.month === months[months.indexOf(month) - 1]
+          (monthlyMetric) => monthlyMetric.month === months[months.indexOf(month) - 1]
         );
 
   const monthProductMetrics = {
@@ -90,28 +87,22 @@ function returnSelectedDateProductMetrics({
     prevMonthMetrics,
   };
 
-  // selected day's product metrics
   const selectedDayMetrics = selectedMonthMetrics?.dailyMetrics.find(
     (dailyMetric) => dailyMetric.day === day
   );
 
   const prevDayMetrics =
-    day === '01'
+    day === "01"
       ? monthProductMetrics.prevMonthMetrics?.dailyMetrics.find(
-          (dailyMetric) => dailyMetric.day === '31'
-        ) ??
-        monthProductMetrics.prevMonthMetrics?.dailyMetrics.find(
-          (dailyMetric) => dailyMetric.day === '30'
-        ) ??
-        monthProductMetrics.prevMonthMetrics?.dailyMetrics.find(
-          (dailyMetric) => dailyMetric.day === '29'
-        ) ??
-        monthProductMetrics.prevMonthMetrics?.dailyMetrics.find(
-          (dailyMetric) => dailyMetric.day === '28'
+          (dailyMetric) =>
+            dailyMetric.day === "31" ||
+            dailyMetric.day === "30" ||
+            dailyMetric.day === "29" ||
+            dailyMetric.day === "28"
         )
       : selectedMonthMetrics?.dailyMetrics.find(
           (dailyMetric) =>
-            dailyMetric.day === (parseInt(day) - 1).toString().padStart(2, '0')
+            dailyMetric.day === (parseInt(day) - 1).toString().padStart(2, "0")
         );
 
   const dayProductMetrics = {
@@ -126,57 +117,39 @@ function returnSelectedDateProductMetrics({
   };
 }
 
-type ReturnProductMetricsChartsInput = {
+type CreateProductMetricsChartsInput = {
   businessMetrics: BusinessMetric[];
   months: Month[];
-  selectedProductCategory: ProductCategory | 'All Products';
+  selectedProductCategory: ProductCategory | "All Products";
   selectedDateProductMetrics: SelectedDateProductMetrics;
   storeLocation: BusinessMetricStoreLocation;
 };
 
-type ProductMetricBarLineChartObjKey =
-  | 'total' // y-axis variables: total
-  | 'overview' // y-axis variables: online, inStore
-  | 'online' // y-axis variables: online
-  | 'inStore'; // y-axis variables: inStore
+type ProductMetricChartKey =
+  | "total" // y-axis variables: total
+  | "overview" // y-axis variables: online, inStore
+  | "online" // y-axis variables: online
+  | "inStore"; // y-axis variables: inStore
 
-type ProductMetricBarObj = Record<
-  ProductMetricBarLineChartObjKey,
-  BarChartData[]
->; // y-axis variables: total, online, inStore
+type ProductMetricBarCharts = Record<ProductMetricChartKey, BarChartData[]>; // y-axis variables: total, online, inStore
 
-type ProductMetricCalendarObjKey = 'total' | 'online' | 'inStore';
+type ProductMetricCalendarKey = "total" | "online" | "inStore";
 
-type ProductMetricCalendarObj = Record<
-  ProductMetricCalendarObjKey,
-  CalendarChartData[]
->; // y-axis variables: total, online, inStore
+type ProductMetricCalendarCharts = Record<ProductMetricCalendarKey, CalendarChartData[]>; // y-axis variables: total, online, inStore
 
-type ProductMetricLineObj = {
-  total: { id: 'Total'; data: { x: string; y: number }[] }[];
+type ProductMetricLineCharts = {
+  total: { id: "Total"; data: { x: string; y: number }[] }[];
   overview: {
-    id: 'Online' | 'In-Store';
+    id: "Online" | "In-Store";
     data: { x: string; y: number }[];
   }[];
-  online: { id: 'Online'; data: { x: string; y: number }[] }[];
-  inStore: { id: 'In-Store'; data: { x: string; y: number }[] }[];
+  online: { id: "Online"; data: { x: string; y: number }[] }[];
+  inStore: { id: "In-Store"; data: { x: string; y: number }[] }[];
 };
 
 /**
- * monthlyMetrics: {
-    month: string;
-    unitsSold: {
-      total: number;
-      online: number;
-      inStore: number;
-    };
-    revenue: {
-      total: number;
-      online: number;
-      inStore: number;
-    }
-    dailyMetrics: {
-      day: string;
+   * monthlyMetrics: {
+      month: string;
       unitsSold: {
         total: number;
         online: number;
@@ -186,1134 +159,1045 @@ type ProductMetricLineObj = {
         total: number;
         online: number;
         inStore: number;
-      };
+      }
+      dailyMetrics: {
+        day: string;
+        unitsSold: {
+          total: number;
+          online: number;
+          inStore: number;
+        };
+        revenue: {
+          total: number;
+          online: number;
+          inStore: number;
+        };
+      }[];
     }[];
-  }[];
- */
+   */
 
 type ProductMetricsCharts = {
   dailyCharts: {
     unitsSold: {
-      barChartsObj: ProductMetricBarObj;
-      calendarChartsObj: ProductMetricCalendarObj;
-      lineChartsObj: ProductMetricLineObj;
-      pieChartObj: PieChartData[];
+      bar: ProductMetricBarCharts;
+      calendar: ProductMetricCalendarCharts;
+      line: ProductMetricLineCharts;
+      pie: PieChartData[];
     };
     revenue: {
-      barChartsObj: ProductMetricBarObj;
-      calendarChartsObj: ProductMetricCalendarObj;
-      lineChartsObj: ProductMetricLineObj;
-      pieChartObj: PieChartData[];
+      bar: ProductMetricBarCharts;
+      calendar: ProductMetricCalendarCharts;
+      line: ProductMetricLineCharts;
+      pie: PieChartData[];
     };
   };
   monthlyCharts: {
     unitsSold: {
-      barChartsObj: ProductMetricBarObj;
-      calendarChartsObj: ProductMetricCalendarObj;
-      lineChartsObj: ProductMetricLineObj;
-      pieChartObj: PieChartData[];
+      bar: ProductMetricBarCharts;
+      calendar: ProductMetricCalendarCharts;
+      line: ProductMetricLineCharts;
+      pie: PieChartData[];
     };
     revenue: {
-      barChartsObj: ProductMetricBarObj;
-      calendarChartsObj: ProductMetricCalendarObj;
-      lineChartsObj: ProductMetricLineObj;
-      pieChartObj: PieChartData[];
+      bar: ProductMetricBarCharts;
+      calendar: ProductMetricCalendarCharts;
+      line: ProductMetricLineCharts;
+      pie: PieChartData[];
     };
   };
   yearlyCharts: {
     unitsSold: {
-      barChartsObj: ProductMetricBarObj;
-      lineChartsObj: ProductMetricLineObj;
-      pieChartObj: PieChartData[];
+      bar: ProductMetricBarCharts;
+      line: ProductMetricLineCharts;
+      pie: PieChartData[];
     };
     revenue: {
-      barChartsObj: ProductMetricBarObj;
-      lineChartsObj: ProductMetricLineObj;
-      pieChartObj: PieChartData[];
+      bar: ProductMetricBarCharts;
+      line: ProductMetricLineCharts;
+      pie: PieChartData[];
     };
   };
 };
 
-function returnProductMetricsCharts({
+async function createProductMetricsCharts({
   businessMetrics,
   months,
   selectedProductCategory,
   selectedDateProductMetrics,
   storeLocation,
-}: ReturnProductMetricsChartsInput): ProductMetricsCharts {
-  // selected year's metrics
+}: CreateProductMetricsChartsInput): Promise<ProductMetricsCharts> {
   const {
     yearProductMetrics: { selectedYearMetrics },
   } = selectedDateProductMetrics;
-  const selectedYear = selectedYearMetrics?.year ?? '2023';
+  const selectedYear = selectedYearMetrics?.year ?? "2023";
 
-  // selected month's metrics
   const {
     monthProductMetrics: { selectedMonthMetrics },
   } = selectedDateProductMetrics;
-  const selectedMonth = selectedMonthMetrics?.month ?? 'January';
-  const monthNumber = (months.indexOf(selectedMonth) + 1)
-    .toString()
-    .padStart(2, '0');
+  const selectedMonth = selectedMonthMetrics?.month ?? "January";
+  const monthIndex = (months.indexOf(selectedMonth) + 1).toString().padStart(2, "0");
 
-  // selected day's metrics
   const {
     dayProductMetrics: { selectedDayMetrics },
   } = selectedDateProductMetrics;
 
-  // templates
-
-  // templates -> bar chart data
-  const BAR_CHART_OBJ_TEMPLATE: ProductMetricBarObj = {
+  const BAR_CHART_OBJ_TEMPLATE: ProductMetricBarCharts = {
     total: [],
     overview: [],
     online: [],
     inStore: [],
   };
 
-  // templates -> calendar chart data
-  const CALENDAR_CHART_OBJ_TEMPLATE: ProductMetricCalendarObj = {
+  const CALENDAR_CHART_OBJ_TEMPLATE: ProductMetricCalendarCharts = {
     total: [],
     online: [],
     inStore: [],
   };
 
-  // templates -> line chart data
-  const LINE_CHART_OBJ_TEMPLATE: ProductMetricLineObj = {
-    total: [{ id: 'Total', data: [] }],
+  const LINE_CHART_OBJ_TEMPLATE: ProductMetricLineCharts = {
+    total: [{ id: "Total", data: [] }],
     overview: [
-      { id: 'Online', data: [] },
-      { id: 'In-Store', data: [] },
+      { id: "Online", data: [] },
+      { id: "In-Store", data: [] },
     ],
-    online: [{ id: 'Online', data: [] }],
-    inStore: [{ id: 'In-Store', data: [] }],
+    online: [{ id: "Online", data: [] }],
+    inStore: [{ id: "In-Store", data: [] }],
   };
 
-  // daily charts
-
-  // daily charts -> unitsSold
-
-  // daily charts -> unitsSold -> bar chart obj
-  const initialDailyUnitsSoldBarChartsObj = structuredClone(
-    BAR_CHART_OBJ_TEMPLATE
-  );
-  // daily charts -> unitsSold -> calendar chart obj
-  const initialDailyUnitsSoldCalendarChartsObj = structuredClone(
-    CALENDAR_CHART_OBJ_TEMPLATE
-  );
-  // daily charts -> unitsSold -> -> line chart obj
-  const initialDailyUnitsSoldLineChartsObj = structuredClone(
-    LINE_CHART_OBJ_TEMPLATE
-  );
-  // daily charts -> unitsSold -> -> pie chart obj
-  const dailyUnitsSoldPieChartObj: PieChartData[] = [
-    {
-      id: 'In-Store',
-      label: 'In-Store',
-      value: selectedDayMetrics?.unitsSold.inStore ?? 0,
-    },
-    {
-      id: 'Online',
-      label: 'Online',
-      value: selectedDayMetrics?.unitsSold.online ?? 0,
-    },
+  const PIE_CHART_OBJ_TEMPLATE: PieChartData[] = [
+    { id: "In-Store", label: "In-Store", value: 0 },
+    { id: "Online", label: "Online", value: 0 },
   ];
 
-  // daily charts -> revenue
-
-  // daily charts -> revenue -> bar chart obj
-  const initialDailyRevenueBarChartsObj = structuredClone(
-    BAR_CHART_OBJ_TEMPLATE
-  );
-  // daily charts -> revenue -> calendar chart obj
-  const initialDailyRevenueCalendarChartsObj = structuredClone(
-    CALENDAR_CHART_OBJ_TEMPLATE
-  );
-  // daily charts -> revenue -> -> line chart obj
-  const initialDailyRevenueLineChartsObj = structuredClone(
-    LINE_CHART_OBJ_TEMPLATE
-  );
-  // daily charts -> revenue -> -> pie chart obj
-  const dailyRevenuePieChartObj: PieChartData[] = [
-    {
-      id: 'In-Store',
-      label: 'In-Store',
-      value: selectedDayMetrics?.revenue.inStore ?? 0,
-    },
-    {
-      id: 'Online',
-      label: 'Online',
-      value: selectedDayMetrics?.revenue.online ?? 0,
-    },
-  ];
-
-  // daily charts
-
-  const [
-    // unitsSold
-    dailyUnitsSoldBarChartsObj,
-    dailyUnitsSoldCalendarChartsObj,
-    dailyUnitsSoldLineChartsObj,
-    // revenue
-    dailyRevenueBarChartsObj,
-    dailyRevenueCalendarChartsObj,
-    dailyRevenueLineChartsObj,
-  ] = selectedMonthMetrics?.dailyMetrics.reduce(
-    (dailyProductChartsAcc, dailyProductMetrics) => {
-      const [
-        // unitsSold
-        dailyUnitsSoldBarChartsObjAcc,
-        dailyUnitsSoldCalendarChartsObjAcc,
-        dailyUnitsSoldLineChartsObjAcc,
-        // revenue
-        dailyRevenueBarChartsObjAcc,
-        dailyRevenueCalendarChartsObjAcc,
-        dailyRevenueLineChartsObjAcc,
-      ] = dailyProductChartsAcc;
-
-      const { day, unitsSold, revenue } = dailyProductMetrics;
-
-      // unitsSold
-
-      // unitsSold -> bar chart obj
-
-      // unitsSold -> bar chart obj -> total
-      const dailyUnitsSoldTotalBarChartObj: BarChartData = {
-        Days: day,
-        Total: unitsSold.total,
-      };
-      dailyUnitsSoldBarChartsObjAcc.total.push(dailyUnitsSoldTotalBarChartObj);
-
-      // unitsSold -> bar chart obj -> overview
-      const dailyUnitsSoldOverviewBarChartObj: BarChartData = {
-        Days: day,
-        'In-Store': unitsSold.inStore,
-        Online: unitsSold.online,
-      };
-      dailyUnitsSoldBarChartsObjAcc.overview.push(
-        dailyUnitsSoldOverviewBarChartObj
-      );
-
-      // unitsSold -> bar chart obj -> online
-      const dailyUnitsSoldOnlineBarChartObj: BarChartData = {
-        Days: day,
-        Online: unitsSold.online,
-      };
-      dailyUnitsSoldBarChartsObjAcc.online.push(
-        dailyUnitsSoldOnlineBarChartObj
-      );
-
-      // unitsSold -> bar chart obj -> inStore
-      const dailyUnitsSoldInStoreBarChartObj: BarChartData = {
-        Days: day,
-        'In-Store': unitsSold.inStore,
-      };
-      dailyUnitsSoldBarChartsObjAcc.inStore.push(
-        dailyUnitsSoldInStoreBarChartObj
-      );
-
-      // unitsSold -> calendar chart obj
-
-      // unitsSold -> calendar chart obj -> total
-      const dailyUnitsSoldTotalCalendarChartObj: CalendarChartData = {
-        day: `${selectedYear}-${monthNumber}-${day}`,
-        value: unitsSold.total,
-      };
-      dailyUnitsSoldCalendarChartsObjAcc.total.push(
-        dailyUnitsSoldTotalCalendarChartObj
-      );
-
-      // unitsSold -> calendar chart obj -> online
-      const dailyUnitsSoldOnlineCalendarChartObj: CalendarChartData = {
-        day: `${selectedYear}-${monthNumber}-${day}`,
-        value: unitsSold.online,
-      };
-      dailyUnitsSoldCalendarChartsObjAcc.online.push(
-        dailyUnitsSoldOnlineCalendarChartObj
-      );
-
-      // unitsSold -> calendar chart obj -> inStore
-      const dailyUnitsSoldInStoreCalendarChartObj: CalendarChartData = {
-        day: `${selectedYear}-${monthNumber}-${day}`,
-        value: unitsSold.inStore,
-      };
-      dailyUnitsSoldCalendarChartsObjAcc.inStore.push(
-        dailyUnitsSoldInStoreCalendarChartObj
-      );
-
-      // unitsSold -> line chart obj
-
-      // unitsSold -> line chart obj -> total
-      const dailyUnitsSoldTotalLineChartObj = {
-        x: day,
-        y: unitsSold.total,
-      };
-      dailyUnitsSoldLineChartsObjAcc.total
-        .find((lineChartObj: LineChartData) => lineChartObj.id === 'Total')
-        ?.data.push(dailyUnitsSoldTotalLineChartObj);
-
-      // unitsSold -> line chart obj -> overview -> online
-      const dailyUnitsSoldOverviewOnlineLineChartObj = {
-        x: day,
-        y: unitsSold.online,
-      };
-      dailyUnitsSoldLineChartsObjAcc.overview
-        .find((lineChartObj: LineChartData) => lineChartObj.id === 'Online')
-        ?.data.push(dailyUnitsSoldOverviewOnlineLineChartObj);
-
-      // unitsSold -> line chart obj -> overview -> inStore
-      const dailyUnitsSoldOverviewInStoreLineChartObj = {
-        x: day,
-        y: unitsSold.inStore,
-      };
-      dailyUnitsSoldLineChartsObjAcc.overview
-        .find((lineChartObj: LineChartData) => lineChartObj.id === 'In-Store')
-        ?.data.push(dailyUnitsSoldOverviewInStoreLineChartObj);
-
-      // unitsSold -> line chart obj -> online
-      const dailyUnitsSoldOnlineLineChartObj = {
-        x: day,
-        y: unitsSold.online,
-      };
-      dailyUnitsSoldLineChartsObjAcc.online
-        .find((lineChartObj: LineChartData) => lineChartObj.id === 'Online')
-        ?.data.push(dailyUnitsSoldOnlineLineChartObj);
-
-      // unitsSold -> line chart obj -> inStore
-      const dailyUnitsSoldInStoreLineChartObj = {
-        x: day,
-        y: unitsSold.inStore,
-      };
-      dailyUnitsSoldLineChartsObjAcc.inStore
-        .find((lineChartObj: LineChartData) => lineChartObj.id === 'In-Store')
-        ?.data.push(dailyUnitsSoldInStoreLineChartObj);
-
-      // revenue
-
-      // revenue -> bar chart obj
-
-      // revenue -> bar chart obj -> total
-      const dailyRevenueTotalBarChartObj: BarChartData = {
-        Days: day,
-        Total: revenue.total,
-      };
-      dailyRevenueBarChartsObjAcc.total.push(dailyRevenueTotalBarChartObj);
-
-      // revenue -> bar chart obj -> overview
-      const dailyRevenueOverviewBarChartObj: BarChartData = {
-        Days: day,
-        'In-Store': revenue.inStore,
-        Online: revenue.online,
-      };
-      dailyRevenueBarChartsObjAcc.overview.push(
-        dailyRevenueOverviewBarChartObj
-      );
-
-      // revenue -> bar chart obj -> online
-      const dailyRevenueOnlineBarChartObj: BarChartData = {
-        Days: day,
-        Online: revenue.online,
-      };
-      dailyRevenueBarChartsObjAcc.online.push(dailyRevenueOnlineBarChartObj);
-
-      // revenue -> bar chart obj -> inStore
-      const dailyRevenueInStoreBarChartObj: BarChartData = {
-        Days: day,
-        'In-Store': revenue.inStore,
-      };
-      dailyRevenueBarChartsObjAcc.inStore.push(dailyRevenueInStoreBarChartObj);
-
-      // revenue -> calendar chart obj
-
-      // revenue -> calendar chart obj -> total
-      const dailyRevenueTotalCalendarChartObj: CalendarChartData = {
-        day: `${selectedYear}-${monthNumber}-${day}`,
-        value: revenue.total,
-      };
-      dailyRevenueCalendarChartsObjAcc.total.push(
-        dailyRevenueTotalCalendarChartObj
-      );
-
-      // revenue -> calendar chart obj -> online
-      const dailyRevenueOnlineCalendarChartObj: CalendarChartData = {
-        day: `${selectedYear}-${monthNumber}-${day}`,
-        value: revenue.online,
-      };
-      dailyRevenueCalendarChartsObjAcc.online.push(
-        dailyRevenueOnlineCalendarChartObj
-      );
-
-      // revenue -> calendar chart obj -> inStore
-      const dailyRevenueInStoreCalendarChartObj: CalendarChartData = {
-        day: `${selectedYear}-${monthNumber}-${day}`,
-        value: revenue.inStore,
-      };
-      dailyRevenueCalendarChartsObjAcc.inStore.push(
-        dailyRevenueInStoreCalendarChartObj
-      );
-
-      // revenue -> line chart obj
-
-      // revenue -> line chart obj -> total
-      const dailyRevenueTotalLineChartObj = {
-        x: day,
-        y: revenue.total,
-      };
-      dailyRevenueLineChartsObjAcc.total
-        .find((lineChartObj: LineChartData) => lineChartObj.id === 'Total')
-        ?.data.push(dailyRevenueTotalLineChartObj);
-
-      // revenue -> line chart obj -> overview -> online
-      const dailyRevenueOverviewOnlineLineChartObj = {
-        x: day,
-        y: revenue.online,
-      };
-      dailyRevenueLineChartsObjAcc.overview
-        .find((lineChartObj: LineChartData) => lineChartObj.id === 'Online')
-        ?.data.push(dailyRevenueOverviewOnlineLineChartObj);
-
-      // revenue -> line chart obj -> overview -> inStore
-      const dailyRevenueOverviewInStoreLineChartObj = {
-        x: day,
-        y: revenue.inStore,
-      };
-      dailyRevenueLineChartsObjAcc.overview
-        .find((lineChartObj: LineChartData) => lineChartObj.id === 'In-Store')
-        ?.data.push(dailyRevenueOverviewInStoreLineChartObj);
-
-      // revenue -> line chart obj -> online
-      const dailyRevenueOnlineLineChartObj = {
-        x: day,
-        y: revenue.online,
-      };
-      dailyRevenueLineChartsObjAcc.online
-        .find((lineChartObj: LineChartData) => lineChartObj.id === 'Online')
-        ?.data.push(dailyRevenueOnlineLineChartObj);
-
-      // revenue -> line chart obj -> inStore
-      const dailyRevenueInStoreLineChartObj = {
-        x: day,
-        y: revenue.inStore,
-      };
-      dailyRevenueLineChartsObjAcc.inStore
-        .find((lineChartObj: LineChartData) => lineChartObj.id === 'In-Store')
-        ?.data.push(dailyRevenueInStoreLineChartObj);
-
-      return dailyProductChartsAcc;
-    },
-    [
-      // unitsSold
-      initialDailyUnitsSoldBarChartsObj,
-      initialDailyUnitsSoldCalendarChartsObj,
-      initialDailyUnitsSoldLineChartsObj,
-      // revenue
-      initialDailyRevenueBarChartsObj,
-      initialDailyRevenueCalendarChartsObj,
-      initialDailyRevenueLineChartsObj,
-    ]
-  ) ?? [
-    // unitsSold
-    initialDailyUnitsSoldBarChartsObj,
-    initialDailyUnitsSoldCalendarChartsObj,
-    initialDailyUnitsSoldLineChartsObj,
-    // revenue
-    initialDailyRevenueBarChartsObj,
-    initialDailyRevenueCalendarChartsObj,
-    initialDailyRevenueLineChartsObj,
-  ];
-
-  // monthly charts
-
-  // monthly charts -> unitsSold
-
-  // monthly charts -> unitsSold -> bar chart obj
-  const initialMonthlyUnitsSoldBarChartsObj = structuredClone(
-    BAR_CHART_OBJ_TEMPLATE
-  );
-  // monthly charts -> unitsSold -> calendar chart obj
-  const initialMonthlyUnitsSoldCalendarChartsObj = structuredClone(
-    CALENDAR_CHART_OBJ_TEMPLATE
-  );
-  // monthly charts -> unitsSold -> -> line chart obj
-  const initialMonthlyUnitsSoldLineChartsObj = structuredClone(
-    LINE_CHART_OBJ_TEMPLATE
-  );
-  // monthly charts -> unitsSold -> -> pie chart obj
-  const monthlyUnitsSoldPieChartObj: PieChartData[] = [
-    {
-      id: 'In-Store',
-      label: 'In-Store',
-      value: selectedMonthMetrics?.unitsSold.inStore ?? 0,
-    },
-    {
-      id: 'Online',
-      label: 'Online',
-      value: selectedMonthMetrics?.unitsSold.online ?? 0,
-    },
-  ];
-
-  // monthly charts -> revenue
-
-  // monthly charts -> revenue -> bar chart obj
-  const initialMonthlyRevenueBarChartsObj = structuredClone(
-    BAR_CHART_OBJ_TEMPLATE
-  );
-  // monthly charts -> revenue -> calendar chart obj
-  const initialMonthlyRevenueCalendarChartsObj = structuredClone(
-    CALENDAR_CHART_OBJ_TEMPLATE
-  );
-  // monthly charts -> revenue -> -> line chart obj
-  const initialMonthlyRevenueLineChartsObj = structuredClone(
-    LINE_CHART_OBJ_TEMPLATE
-  );
-  // monthly charts -> revenue -> -> pie chart obj
-  const monthlyRevenuePieChartObj: PieChartData[] = [
-    {
-      id: 'In-Store',
-      label: 'In-Store',
-      value: selectedMonthMetrics?.revenue.inStore ?? 0,
-    },
-    {
-      id: 'Online',
-      label: 'Online',
-      value: selectedMonthMetrics?.revenue.online ?? 0,
-    },
-  ];
-
-  // monthly charts
-
-  const [
-    // unitsSold
-    monthlyUnitsSoldBarChartsObj,
-    monthlyUnitsSoldCalendarChartsObj,
-    monthlyUnitsSoldLineChartsObj,
-    // revenue
-    monthlyRevenueBarChartsObj,
-    monthlyRevenueCalendarChartsObj,
-    monthlyRevenueLineChartsObj,
-  ] = selectedYearMetrics?.monthlyMetrics.reduce(
-    (monthlyProductChartsAcc, monthlyProductMetrics) => {
-      const [
-        // unitsSold
-        monthlyUnitsSoldBarChartsObjAcc,
-        monthlyUnitsSoldCalendarChartsObjAcc,
-        monthlyUnitsSoldLineChartsObjAcc,
-        // revenue
-        monthlyRevenueBarChartsObjAcc,
-        monthlyRevenueCalendarChartsObjAcc,
-        monthlyRevenueLineChartsObjAcc,
-      ] = monthlyProductChartsAcc;
-
-      const { month, unitsSold, revenue, dailyMetrics } = monthlyProductMetrics;
-      const monthNumberStr = (months.indexOf(month) + 1)
-        .toString()
-        .padStart(2, '0');
-
-      // prevents current month of current year from being added to charts
-      const currentYear = new Date().getFullYear().toString();
-      const isCurrentYear = selectedYear === currentYear;
-      const currentMonth = new Date().toLocaleString('default', {
-        month: 'long',
-      });
-      const isCurrentMonth = month === currentMonth;
-
-      if (isCurrentYear && isCurrentMonth) {
-        return monthlyProductChartsAcc;
-      }
-
-      // unitsSold
-
-      // unitsSold -> bar chart obj
-
-      // unitsSold -> bar chart obj -> total
-      const monthlyUnitsSoldTotalBarChartObj: BarChartData = {
-        Months: month,
-        Total: unitsSold.total,
-      };
-      monthlyUnitsSoldBarChartsObjAcc.total.push(
-        monthlyUnitsSoldTotalBarChartObj
-      );
-
-      // unitsSold -> bar chart obj -> overview
-      const monthlyUnitsSoldOverviewBarChartObj: BarChartData = {
-        Months: month,
-        'In-Store': unitsSold.inStore,
-        Online: unitsSold.online,
-      };
-      monthlyUnitsSoldBarChartsObjAcc.overview.push(
-        monthlyUnitsSoldOverviewBarChartObj
-      );
-
-      // unitsSold -> bar chart obj -> online
-      const monthlyUnitsSoldOnlineBarChartObj: BarChartData = {
-        Months: month,
-        Online: unitsSold.online,
-      };
-      monthlyUnitsSoldBarChartsObjAcc.online.push(
-        monthlyUnitsSoldOnlineBarChartObj
-      );
-
-      // unitsSold -> bar chart obj -> inStore
-      const monthlyUnitsSoldInStoreBarChartObj: BarChartData = {
-        Months: month,
-        'In-Store': unitsSold.inStore,
-      };
-      monthlyUnitsSoldBarChartsObjAcc.inStore.push(
-        monthlyUnitsSoldInStoreBarChartObj
-      );
-
-      // unitsSold -> calendar chart obj
-
-      dailyMetrics.forEach((dailyMetric) => {
-        const { day, unitsSold } = dailyMetric;
-
-        // unitsSold -> calendar chart obj -> total
-        const monthlyUnitsSoldTotalCalendarChartObj: CalendarChartData = {
-          day: `${selectedYear}-${monthNumberStr}-${day}`,
-          value: unitsSold.total,
-        };
-        monthlyUnitsSoldCalendarChartsObjAcc.total.push(
-          monthlyUnitsSoldTotalCalendarChartObj
-        );
-
-        // unitsSold -> calendar chart obj -> online
-        const monthlyUnitsSoldOnlineCalendarChartObj: CalendarChartData = {
-          day: `${selectedYear}-${monthNumberStr}-${day}`,
-          value: unitsSold.online,
-        };
-        monthlyUnitsSoldCalendarChartsObjAcc.online.push(
-          monthlyUnitsSoldOnlineCalendarChartObj
-        );
-
-        // unitsSold -> calendar chart obj -> inStore
-        const monthlyUnitsSoldInStoreCalendarChartObj: CalendarChartData = {
-          day: `${selectedYear}-${monthNumberStr}-${day}`,
-          value: unitsSold.inStore,
-        };
-        monthlyUnitsSoldCalendarChartsObjAcc.inStore.push(
-          monthlyUnitsSoldInStoreCalendarChartObj
-        );
-      });
-
-      // unitsSold -> line chart obj
-
-      // unitsSold -> line chart obj -> total
-      const monthlyUnitsSoldTotalLineChartObj = {
-        x: month,
-        y: unitsSold.total,
-      };
-      monthlyUnitsSoldLineChartsObjAcc.total
-        .find((lineChartObj: LineChartData) => lineChartObj.id === 'Total')
-        ?.data.push(monthlyUnitsSoldTotalLineChartObj);
-
-      // unitsSold -> line chart obj -> overview -> online
-      const monthlyUnitsSoldOverviewOnlineLineChartObj = {
-        x: month,
-        y: unitsSold.online,
-      };
-      monthlyUnitsSoldLineChartsObjAcc.overview
-        .find((lineChartObj: LineChartData) => lineChartObj.id === 'Online')
-        ?.data.push(monthlyUnitsSoldOverviewOnlineLineChartObj);
-
-      // unitsSold -> line chart obj -> overview -> inStore
-      const monthlyUnitsSoldOverviewInStoreLineChartObj = {
-        x: month,
-        y: unitsSold.inStore,
-      };
-      monthlyUnitsSoldLineChartsObjAcc.overview
-        .find((lineChartObj: LineChartData) => lineChartObj.id === 'In-Store')
-        ?.data.push(monthlyUnitsSoldOverviewInStoreLineChartObj);
-
-      // unitsSold -> line chart obj -> online
-      const monthlyUnitsSoldOnlineLineChartObj = {
-        x: month,
-        y: unitsSold.online,
-      };
-      monthlyUnitsSoldLineChartsObjAcc.online
-        .find((lineChartObj: LineChartData) => lineChartObj.id === 'Online')
-        ?.data.push(monthlyUnitsSoldOnlineLineChartObj);
-
-      // unitsSold -> line chart obj -> inStore
-      const monthlyUnitsSoldInStoreLineChartObj = {
-        x: month,
-        y: unitsSold.inStore,
-      };
-      monthlyUnitsSoldLineChartsObjAcc.inStore
-        .find((lineChartObj: LineChartData) => lineChartObj.id === 'In-Store')
-        ?.data.push(monthlyUnitsSoldInStoreLineChartObj);
-
-      // revenue
-
-      // revenue -> bar chart obj
-
-      // revenue -> bar chart obj -> total
-      const monthlyRevenueTotalBarChartObj: BarChartData = {
-        Months: month,
-        Total: revenue.total,
-      };
-      monthlyRevenueBarChartsObjAcc.total.push(monthlyRevenueTotalBarChartObj);
-
-      // revenue -> bar chart obj -> overview
-      const monthlyRevenueOverviewBarChartObj: BarChartData = {
-        Months: month,
-        'In-Store': revenue.inStore,
-        Online: revenue.online,
-      };
-      monthlyRevenueBarChartsObjAcc.overview.push(
-        monthlyRevenueOverviewBarChartObj
-      );
-
-      // revenue -> bar chart obj -> online
-      const monthlyRevenueOnlineBarChartObj: BarChartData = {
-        Months: month,
-        Online: revenue.online,
-      };
-      monthlyRevenueBarChartsObjAcc.online.push(
-        monthlyRevenueOnlineBarChartObj
-      );
-
-      // revenue -> bar chart obj -> inStore
-      const monthlyRevenueInStoreBarChartObj: BarChartData = {
-        Months: month,
-        'In-Store': revenue.inStore,
-      };
-      monthlyRevenueBarChartsObjAcc.inStore.push(
-        monthlyRevenueInStoreBarChartObj
-      );
-
-      // revenue -> calendar chart obj
-
-      dailyMetrics.forEach((dailyMetric) => {
-        const { day, revenue } = dailyMetric;
-
-        // revenue -> calendar chart obj -> total
-        const monthlyRevenueTotalCalendarChartObj: CalendarChartData = {
-          day: `${selectedYear}-${monthNumberStr}-${day}`,
-          value: revenue.total,
-        };
-        monthlyRevenueCalendarChartsObjAcc.total.push(
-          monthlyRevenueTotalCalendarChartObj
-        );
-
-        // revenue -> calendar chart obj -> online
-        const monthlyRevenueOnlineCalendarChartObj: CalendarChartData = {
-          day: `${selectedYear}-${monthNumberStr}-${day}`,
-          value: revenue.online,
-        };
-        monthlyRevenueCalendarChartsObjAcc.online.push(
-          monthlyRevenueOnlineCalendarChartObj
-        );
-
-        // revenue -> calendar chart obj -> inStore
-        const monthlyRevenueInStoreCalendarChartObj: CalendarChartData = {
-          day: `${selectedYear}-${monthNumberStr}-${day}`,
-          value: revenue.inStore,
-        };
-        monthlyRevenueCalendarChartsObjAcc.inStore.push(
-          monthlyRevenueInStoreCalendarChartObj
-        );
-      });
-
-      // revenue -> line chart obj
-
-      // revenue -> line chart obj -> total
-      const monthlyRevenueTotalLineChartObj = {
-        x: month,
-        y: revenue.total,
-      };
-      monthlyRevenueLineChartsObjAcc.total
-        .find((lineChartObj: LineChartData) => lineChartObj.id === 'Total')
-        ?.data.push(monthlyRevenueTotalLineChartObj);
-
-      // revenue -> line chart obj -> overview -> online
-      const monthlyRevenueOverviewOnlineLineChartObj = {
-        x: month,
-        y: revenue.online,
-      };
-      monthlyRevenueLineChartsObjAcc.overview
-        .find((lineChartObj: LineChartData) => lineChartObj.id === 'Online')
-        ?.data.push(monthlyRevenueOverviewOnlineLineChartObj);
-
-      // revenue -> line chart obj -> overview -> inStore
-      const monthlyRevenueOverviewInStoreLineChartObj = {
-        x: month,
-        y: revenue.inStore,
-      };
-      monthlyRevenueLineChartsObjAcc.overview
-        .find((lineChartObj: LineChartData) => lineChartObj.id === 'In-Store')
-        ?.data.push(monthlyRevenueOverviewInStoreLineChartObj);
-
-      // revenue -> line chart obj -> online
-      const monthlyRevenueOnlineLineChartObj = {
-        x: month,
-        y: revenue.online,
-      };
-      monthlyRevenueLineChartsObjAcc.online
-        .find((lineChartObj: LineChartData) => lineChartObj.id === 'Online')
-        ?.data.push(monthlyRevenueOnlineLineChartObj);
-
-      // revenue -> line chart obj -> inStore
-      const monthlyRevenueInStoreLineChartObj = {
-        x: month,
-        y: revenue.inStore,
-      };
-      monthlyRevenueLineChartsObjAcc.inStore
-        .find((lineChartObj: LineChartData) => lineChartObj.id === 'In-Store')
-        ?.data.push(monthlyRevenueInStoreLineChartObj);
-
-      return monthlyProductChartsAcc;
-    },
-    [
-      // unitsSold
-      initialMonthlyUnitsSoldBarChartsObj,
-      initialMonthlyUnitsSoldCalendarChartsObj,
-      initialMonthlyUnitsSoldLineChartsObj,
-      // revenue
-      initialMonthlyRevenueBarChartsObj,
-      initialMonthlyRevenueCalendarChartsObj,
-      initialMonthlyRevenueLineChartsObj,
-    ]
-  ) ?? [
-    // unitsSold
-    initialMonthlyUnitsSoldBarChartsObj,
-    initialMonthlyUnitsSoldCalendarChartsObj,
-    initialMonthlyUnitsSoldLineChartsObj,
-    // revenue
-    initialMonthlyRevenueBarChartsObj,
-    initialMonthlyRevenueCalendarChartsObj,
-    initialMonthlyRevenueLineChartsObj,
-  ];
-
-  // yearly charts
-
-  // yearly charts -> unitsSold
-
-  // yearly charts -> unitsSold -> bar chart obj
-  const initialYearlyUnitsSoldBarChartsObj = structuredClone(
-    BAR_CHART_OBJ_TEMPLATE
-  );
-  // yearly charts -> unitsSold -> -> line chart obj
-  const initialYearlyUnitsSoldLineChartsObj = structuredClone(
-    LINE_CHART_OBJ_TEMPLATE
-  );
-  // yearly charts -> unitsSold -> -> pie chart obj
-  const yearlyUnitsSoldPieChartObj: PieChartData[] = [
-    {
-      id: 'In-Store',
-      label: 'In-Store',
-      value: selectedYearMetrics?.unitsSold.inStore ?? 0,
-    },
-    {
-      id: 'Online',
-      label: 'Online',
-      value: selectedYearMetrics?.unitsSold.online ?? 0,
-    },
-  ];
-
-  // yearly charts -> revenue
-
-  // yearly charts -> revenue -> bar chart obj
-  const initialYearlyRevenueBarChartsObj = structuredClone(
-    BAR_CHART_OBJ_TEMPLATE
-  );
-  // yearly charts -> revenue -> -> line chart obj
-  const initialYearlyRevenueLineChartsObj = structuredClone(
-    LINE_CHART_OBJ_TEMPLATE
-  );
-  // yearly charts -> revenue -> -> pie chart obj
-  const yearlyRevenuePieChartObj: PieChartData[] = [
-    {
-      id: 'In-Store',
-      label: 'In-Store',
-      value: selectedYearMetrics?.revenue.inStore ?? 0,
-    },
-    {
-      id: 'Online',
-      label: 'Online',
-      value: selectedYearMetrics?.revenue.online ?? 0,
-    },
-  ];
-
-  // yearly charts
-
-  // selected store's business metrics
   const currentStoreMetrics = businessMetrics.find(
     (businessMetric) => businessMetric.storeLocation === storeLocation
   );
 
-  // selected business metrics' product category
   const productMetrics = currentStoreMetrics?.productMetrics.find(
     (productMetric) => productMetric.name === selectedProductCategory
   );
 
-  const [
-    // unitsSold
-    yearlyUnitsSoldBarChartsObj,
-    yearlyUnitsSoldLineChartsObj,
-    // revenue
-    yearlyRevenueBarChartsObj,
-    yearlyRevenueLineChartsObj,
-  ] = productMetrics?.yearlyMetrics.reduce(
-    (yearlyProductChartsAcc, yearlyProductMetrics) => {
-      const [
-        // unitsSold
-        yearlyUnitsSoldBarChartsObjAcc,
-        yearlyUnitsSoldLineChartsObjAcc,
-        // revenue
-        yearlyRevenueBarChartsObjAcc,
-        yearlyRevenueLineChartsObjAcc,
-      ] = yearlyProductChartsAcc;
-
-      const { year, unitsSold, revenue } = yearlyProductMetrics;
-
-      // prevents current year from being added to charts
-      const currentYear = new Date().getFullYear();
-      if (year === currentYear.toString()) {
-        return yearlyProductChartsAcc;
-      }
-
-      // unitsSold
-
-      // unitsSold -> bar chart obj
-
-      // unitsSold -> bar chart obj -> total
-      const yearlyUnitsSoldTotalBarChartObj: BarChartData = {
-        Years: year,
-        Total: unitsSold.total,
-      };
-      yearlyUnitsSoldBarChartsObjAcc.total.push(
-        yearlyUnitsSoldTotalBarChartObj
-      );
-
-      // unitsSold -> bar chart obj -> overview
-      const yearlyUnitsSoldOverviewBarChartObj: BarChartData = {
-        Years: year,
-        'In-Store': unitsSold.inStore,
-        Online: unitsSold.online,
-      };
-      yearlyUnitsSoldBarChartsObjAcc.overview.push(
-        yearlyUnitsSoldOverviewBarChartObj
-      );
-
-      // unitsSold -> bar chart obj -> online
-      const yearlyUnitsSoldOnlineBarChartObj: BarChartData = {
-        Years: year,
-        Online: unitsSold.online,
-      };
-      yearlyUnitsSoldBarChartsObjAcc.online.push(
-        yearlyUnitsSoldOnlineBarChartObj
-      );
-
-      // unitsSold -> bar chart obj -> inStore
-      const yearlyUnitsSoldInStoreBarChartObj: BarChartData = {
-        Years: year,
-        'In-Store': unitsSold.inStore,
-      };
-      yearlyUnitsSoldBarChartsObjAcc.inStore.push(
-        yearlyUnitsSoldInStoreBarChartObj
-      );
-
-      // unitsSold -> line chart obj
-
-      // unitsSold -> line chart obj -> total
-      const yearlyUnitsSoldTotalLineChartObj = {
-        x: year,
-        y: unitsSold.total,
-      };
-      yearlyUnitsSoldLineChartsObjAcc.total
-        .find((lineChartObj: LineChartData) => lineChartObj.id === 'Total')
-        ?.data.push(yearlyUnitsSoldTotalLineChartObj);
-
-      // unitsSold -> line chart obj -> overview -> online
-      const yearlyUnitsSoldOverviewOnlineLineChartObj = {
-        x: year,
-        y: unitsSold.online,
-      };
-      yearlyUnitsSoldLineChartsObjAcc.overview
-        .find((lineChartObj: LineChartData) => lineChartObj.id === 'Online')
-        ?.data.push(yearlyUnitsSoldOverviewOnlineLineChartObj);
-
-      // unitsSold -> line chart obj -> overview -> inStore
-      const yearlyUnitsSoldOverviewInStoreLineChartObj = {
-        x: year,
-        y: unitsSold.inStore,
-      };
-      yearlyUnitsSoldLineChartsObjAcc.overview
-        .find((lineChartObj: LineChartData) => lineChartObj.id === 'In-Store')
-        ?.data.push(yearlyUnitsSoldOverviewInStoreLineChartObj);
-
-      // unitsSold -> line chart obj -> online
-      const yearlyUnitsSoldOnlineLineChartObj = {
-        x: year,
-        y: unitsSold.online,
-      };
-      yearlyUnitsSoldLineChartsObjAcc.online
-        .find((lineChartObj: LineChartData) => lineChartObj.id === 'Online')
-        ?.data.push(yearlyUnitsSoldOnlineLineChartObj);
-
-      // unitsSold -> line chart obj -> inStore
-      const yearlyUnitsSoldInStoreLineChartObj = {
-        x: year,
-        y: unitsSold.inStore,
-      };
-      yearlyUnitsSoldLineChartsObjAcc.inStore
-        .find((lineChartObj: LineChartData) => lineChartObj.id === 'In-Store')
-        ?.data.push(yearlyUnitsSoldInStoreLineChartObj);
-
-      // revenue
-
-      // revenue -> bar chart obj
-
-      // revenue -> bar chart obj -> total
-      const yearlyRevenueTotalBarChartObj: BarChartData = {
-        Years: year,
-        Total: revenue.total,
-      };
-      yearlyRevenueBarChartsObjAcc.total.push(yearlyRevenueTotalBarChartObj);
-
-      // revenue -> bar chart obj -> overview
-      const yearlyRevenueOverviewBarChartObj: BarChartData = {
-        Years: year,
-        'In-Store': revenue.inStore,
-        Online: revenue.online,
-      };
-      yearlyRevenueBarChartsObjAcc.overview.push(
-        yearlyRevenueOverviewBarChartObj
-      );
-
-      // revenue -> bar chart obj -> online
-      const yearlyRevenueOnlineBarChartObj: BarChartData = {
-        Years: year,
-        Online: revenue.online,
-      };
-      yearlyRevenueBarChartsObjAcc.online.push(yearlyRevenueOnlineBarChartObj);
-
-      // revenue -> bar chart obj -> inStore
-      const yearlyRevenueInStoreBarChartObj: BarChartData = {
-        Years: year,
-        'In-Store': revenue.inStore,
-      };
-      yearlyRevenueBarChartsObjAcc.inStore.push(
-        yearlyRevenueInStoreBarChartObj
-      );
-
-      // revenue -> line chart obj
-
-      // revenue -> line chart obj -> total
-      const yearlyRevenueTotalLineChartObj = {
-        x: year,
-        y: revenue.total,
-      };
-      yearlyRevenueLineChartsObjAcc.total
-        .find((lineChartObj: LineChartData) => lineChartObj.id === 'Total')
-        ?.data.push(yearlyRevenueTotalLineChartObj);
-
-      // revenue -> line chart obj -> overview -> online
-      const yearlyRevenueOverviewOnlineLineChartObj = {
-        x: year,
-        y: revenue.online,
-      };
-      yearlyRevenueLineChartsObjAcc.overview
-        .find((lineChartObj: LineChartData) => lineChartObj.id === 'Online')
-        ?.data.push(yearlyRevenueOverviewOnlineLineChartObj);
-
-      // revenue -> line chart obj -> overview -> inStore
-      const yearlyRevenueOverviewInStoreLineChartObj = {
-        x: year,
-        y: revenue.inStore,
-      };
-      yearlyRevenueLineChartsObjAcc.overview
-        .find((lineChartObj: LineChartData) => lineChartObj.id === 'In-Store')
-        ?.data.push(yearlyRevenueOverviewInStoreLineChartObj);
-
-      // revenue -> line chart obj -> online
-      const yearlyRevenueOnlineLineChartObj = {
-        x: year,
-        y: revenue.online,
-      };
-      yearlyRevenueLineChartsObjAcc.online
-        .find((lineChartObj: LineChartData) => lineChartObj.id === 'Online')
-        ?.data.push(yearlyRevenueOnlineLineChartObj);
-
-      // revenue -> line chart obj -> inStore
-      const yearlyRevenueInStoreLineChartObj = {
-        x: year,
-        y: revenue.inStore,
-      };
-      yearlyRevenueLineChartsObjAcc.inStore
-        .find((lineChartObj: LineChartData) => lineChartObj.id === 'In-Store')
-        ?.data.push(yearlyRevenueInStoreLineChartObj);
-
-      return yearlyProductChartsAcc;
-    },
-    [
-      // unitsSold
-      initialYearlyUnitsSoldBarChartsObj,
-      initialYearlyUnitsSoldLineChartsObj,
-      // revenue
-      initialYearlyRevenueBarChartsObj,
-      initialYearlyRevenueLineChartsObj,
-    ]
-  ) ?? [
-    // unitsSold
-    initialYearlyUnitsSoldBarChartsObj,
-    initialYearlyUnitsSoldLineChartsObj,
-    // revenue
-    initialYearlyRevenueBarChartsObj,
-    initialYearlyRevenueLineChartsObj,
-  ];
+  const [dailyProductCharts, monthlyProductCharts, yearlyProductCharts] =
+    await Promise.all([
+      createDailyProductCharts({
+        barChartsTemplate: BAR_CHART_OBJ_TEMPLATE,
+        calendarChartsTemplate: CALENDAR_CHART_OBJ_TEMPLATE,
+        dailyMetrics: selectedMonthMetrics?.dailyMetrics,
+        lineChartsTemplate: LINE_CHART_OBJ_TEMPLATE,
+        monthIndex,
+        pieChartsTemplate: PIE_CHART_OBJ_TEMPLATE,
+        selectedDayMetrics,
+        selectedYear,
+      }),
+      createMonthlyProductCharts({
+        barChartsTemplate: BAR_CHART_OBJ_TEMPLATE,
+        calendarChartsTemplate: CALENDAR_CHART_OBJ_TEMPLATE,
+        lineChartsTemplate: LINE_CHART_OBJ_TEMPLATE,
+        months,
+        monthlyMetrics: selectedYearMetrics?.monthlyMetrics,
+        pieChartsTemplate: PIE_CHART_OBJ_TEMPLATE,
+        selectedMonthMetrics,
+        selectedYear,
+      }),
+      createYearlyProductCharts({
+        barChartsTemplate: BAR_CHART_OBJ_TEMPLATE,
+        lineChartsTemplate: LINE_CHART_OBJ_TEMPLATE,
+        pieChartsTemplate: PIE_CHART_OBJ_TEMPLATE,
+        selectedYearMetrics,
+        yearlyMetrics: productMetrics?.yearlyMetrics,
+      }),
+    ]);
 
   return {
-    dailyCharts: {
-      revenue: {
-        barChartsObj: dailyRevenueBarChartsObj,
-        calendarChartsObj: dailyRevenueCalendarChartsObj,
-        lineChartsObj: dailyRevenueLineChartsObj,
-        pieChartObj: dailyRevenuePieChartObj,
-      },
-      unitsSold: {
-        barChartsObj: dailyUnitsSoldBarChartsObj,
-        calendarChartsObj: dailyUnitsSoldCalendarChartsObj,
-        lineChartsObj: dailyUnitsSoldLineChartsObj,
-        pieChartObj: dailyUnitsSoldPieChartObj,
-      },
-    },
-    monthlyCharts: {
-      revenue: {
-        barChartsObj: monthlyRevenueBarChartsObj,
-        calendarChartsObj: monthlyRevenueCalendarChartsObj,
-        lineChartsObj: monthlyRevenueLineChartsObj,
-        pieChartObj: monthlyRevenuePieChartObj,
-      },
-      unitsSold: {
-        barChartsObj: monthlyUnitsSoldBarChartsObj,
-        calendarChartsObj: monthlyUnitsSoldCalendarChartsObj,
-        lineChartsObj: monthlyUnitsSoldLineChartsObj,
-        pieChartObj: monthlyUnitsSoldPieChartObj,
-      },
-    },
-    yearlyCharts: {
-      revenue: {
-        barChartsObj: yearlyRevenueBarChartsObj,
-        lineChartsObj: yearlyRevenueLineChartsObj,
-        pieChartObj: yearlyRevenuePieChartObj,
-      },
-      unitsSold: {
-        barChartsObj: yearlyUnitsSoldBarChartsObj,
-        lineChartsObj: yearlyUnitsSoldLineChartsObj,
-        pieChartObj: yearlyUnitsSoldPieChartObj,
-      },
-    },
+    dailyCharts: dailyProductCharts,
+    monthlyCharts: monthlyProductCharts,
+    yearlyCharts: yearlyProductCharts,
   };
 }
 
-export { returnProductMetricsCharts, returnSelectedDateProductMetrics };
+type CreateDailyProductChartsInput = {
+  barChartsTemplate: ProductMetricBarCharts;
+  calendarChartsTemplate: ProductMetricCalendarCharts;
+  dailyMetrics?: ProductDailyMetric[];
+  lineChartsTemplate: ProductMetricLineCharts;
+  monthIndex: string;
+  pieChartsTemplate: PieChartData[];
+  selectedDayMetrics?: ProductDailyMetric;
+  selectedYear: Year;
+};
+
+async function createDailyProductCharts({
+  barChartsTemplate,
+  calendarChartsTemplate,
+  dailyMetrics,
+  lineChartsTemplate,
+  monthIndex,
+  pieChartsTemplate,
+  selectedDayMetrics,
+  selectedYear,
+}: CreateDailyProductChartsInput): Promise<ProductMetricsCharts["dailyCharts"]> {
+  if (!dailyMetrics || !selectedDayMetrics) {
+    return new Promise((resolve) => {
+      resolve({
+        unitsSold: {
+          bar: barChartsTemplate,
+          calendar: calendarChartsTemplate,
+          line: lineChartsTemplate,
+          pie: pieChartsTemplate,
+        },
+        revenue: {
+          bar: barChartsTemplate,
+          calendar: calendarChartsTemplate,
+          line: lineChartsTemplate,
+          pie: pieChartsTemplate,
+        },
+      });
+    });
+  }
+
+  return new Promise<ProductMetricsCharts["dailyCharts"]>((resolve) => {
+    setTimeout(() => {
+      const [
+        dailyUnitsSoldBarCharts,
+        dailyUnitsSoldCalendarCharts,
+        dailyUnitsSoldLineCharts,
+
+        dailyRevenueBarCharts,
+        dailyRevenueCalendarCharts,
+        dailyRevenueLineCharts,
+      ] = dailyMetrics.reduce(
+        (dailyProductChartsAcc, dailyProductMetrics) => {
+          const [
+            dailyUnitsSoldBarChartsAcc,
+            dailyUnitsSoldCalendarChartsAcc,
+            dailyUnitsSoldLineChartsAcc,
+
+            dailyRevenueBarChartsAcc,
+            dailyRevenueCalendarChartsAcc,
+            dailyRevenueLineChartsAcc,
+          ] = dailyProductChartsAcc;
+
+          const { day, unitsSold, revenue } = dailyProductMetrics;
+
+          // daily.unitsSold.bar
+
+          const dailyUnitsSoldTotalBarChart: BarChartData = {
+            Days: day,
+            Total: unitsSold.total,
+          };
+          dailyUnitsSoldBarChartsAcc.total.push(dailyUnitsSoldTotalBarChart);
+
+          const dailyUnitsSoldOverviewBarChart: BarChartData = {
+            Days: day,
+            "In-Store": unitsSold.inStore,
+            Online: unitsSold.online,
+          };
+          dailyUnitsSoldBarChartsAcc.overview.push(dailyUnitsSoldOverviewBarChart);
+
+          const dailyUnitsSoldOnlineBarChart: BarChartData = {
+            Days: day,
+            Online: unitsSold.online,
+          };
+          dailyUnitsSoldBarChartsAcc.online.push(dailyUnitsSoldOnlineBarChart);
+
+          const dailyUnitsSoldInStoreBarChart: BarChartData = {
+            Days: day,
+            "In-Store": unitsSold.inStore,
+          };
+          dailyUnitsSoldBarChartsAcc.inStore.push(dailyUnitsSoldInStoreBarChart);
+
+          // daily.unitsSold.calendar
+
+          const dailyUnitsSoldTotalCalendarChart: CalendarChartData = {
+            day: `${selectedYear}-${monthIndex}-${day}`,
+            value: unitsSold.total,
+          };
+          dailyUnitsSoldCalendarChartsAcc.total.push(dailyUnitsSoldTotalCalendarChart);
+
+          const dailyUnitsSoldOnlineCalendarChart: CalendarChartData = {
+            day: `${selectedYear}-${monthIndex}-${day}`,
+            value: unitsSold.online,
+          };
+          dailyUnitsSoldCalendarChartsAcc.online.push(dailyUnitsSoldOnlineCalendarChart);
+
+          const dailyUnitsSoldInStoreCalendarChart: CalendarChartData = {
+            day: `${selectedYear}-${monthIndex}-${day}`,
+            value: unitsSold.inStore,
+          };
+          dailyUnitsSoldCalendarChartsAcc.inStore.push(
+            dailyUnitsSoldInStoreCalendarChart
+          );
+
+          // daily.unitsSold.line
+
+          const dailyUnitsSoldTotalLineChart = {
+            x: day,
+            y: unitsSold.total,
+          };
+          dailyUnitsSoldLineChartsAcc.total
+            .find((lineChartObj: LineChartData) => lineChartObj.id === "Total")
+            ?.data.push(dailyUnitsSoldTotalLineChart);
+
+          const dailyUnitsSoldOverviewOnlineLineChart = {
+            x: day,
+            y: unitsSold.online,
+          };
+          dailyUnitsSoldLineChartsAcc.overview
+            .find((lineChartObj: LineChartData) => lineChartObj.id === "Online")
+            ?.data.push(dailyUnitsSoldOverviewOnlineLineChart);
+
+          const dailyUnitsSoldOverviewInStoreLineChart = {
+            x: day,
+            y: unitsSold.inStore,
+          };
+          dailyUnitsSoldLineChartsAcc.overview
+            .find((lineChartObj: LineChartData) => lineChartObj.id === "In-Store")
+            ?.data.push(dailyUnitsSoldOverviewInStoreLineChart);
+
+          const dailyUnitsSoldOnlineLineChart = {
+            x: day,
+            y: unitsSold.online,
+          };
+          dailyUnitsSoldLineChartsAcc.online
+            .find((lineChartObj: LineChartData) => lineChartObj.id === "Online")
+            ?.data.push(dailyUnitsSoldOnlineLineChart);
+
+          const dailyUnitsSoldInStoreLineChart = {
+            x: day,
+            y: unitsSold.inStore,
+          };
+          dailyUnitsSoldLineChartsAcc.inStore
+            .find((lineChartObj: LineChartData) => lineChartObj.id === "In-Store")
+            ?.data.push(dailyUnitsSoldInStoreLineChart);
+
+          // daily.revenue.bar
+
+          const dailyRevenueTotalBarChart: BarChartData = {
+            Days: day,
+            Total: revenue.total,
+          };
+          dailyRevenueBarChartsAcc.total.push(dailyRevenueTotalBarChart);
+
+          const dailyRevenueOverviewBarChart: BarChartData = {
+            Days: day,
+            "In-Store": revenue.inStore,
+            Online: revenue.online,
+          };
+          dailyRevenueBarChartsAcc.overview.push(dailyRevenueOverviewBarChart);
+
+          const dailyRevenueOnlineBarChart: BarChartData = {
+            Days: day,
+            Online: revenue.online,
+          };
+          dailyRevenueBarChartsAcc.online.push(dailyRevenueOnlineBarChart);
+
+          const dailyRevenueInStoreBarChart: BarChartData = {
+            Days: day,
+            "In-Store": revenue.inStore,
+          };
+          dailyRevenueBarChartsAcc.inStore.push(dailyRevenueInStoreBarChart);
+
+          // daily.revenue.calendar
+
+          const dailyRevenueTotalCalendarChart: CalendarChartData = {
+            day: `${selectedYear}-${monthIndex}-${day}`,
+            value: revenue.total,
+          };
+          dailyRevenueCalendarChartsAcc.total.push(dailyRevenueTotalCalendarChart);
+
+          const dailyRevenueOnlineCalendarChart: CalendarChartData = {
+            day: `${selectedYear}-${monthIndex}-${day}`,
+            value: revenue.online,
+          };
+          dailyRevenueCalendarChartsAcc.online.push(dailyRevenueOnlineCalendarChart);
+
+          const dailyRevenueInStoreCalendarChart: CalendarChartData = {
+            day: `${selectedYear}-${monthIndex}-${day}`,
+            value: revenue.inStore,
+          };
+          dailyRevenueCalendarChartsAcc.inStore.push(dailyRevenueInStoreCalendarChart);
+
+          // daily.revenue.line
+
+          const dailyRevenueTotalLineChart = {
+            x: day,
+            y: revenue.total,
+          };
+          dailyRevenueLineChartsAcc.total
+            .find((lineChartObj: LineChartData) => lineChartObj.id === "Total")
+            ?.data.push(dailyRevenueTotalLineChart);
+
+          const dailyRevenueOverviewOnlineLineChart = {
+            x: day,
+            y: revenue.online,
+          };
+          dailyRevenueLineChartsAcc.overview
+            .find((lineChartObj: LineChartData) => lineChartObj.id === "Online")
+            ?.data.push(dailyRevenueOverviewOnlineLineChart);
+
+          const dailyRevenueOverviewInStoreLineChart = {
+            x: day,
+            y: revenue.inStore,
+          };
+          dailyRevenueLineChartsAcc.overview
+            .find((lineChartObj: LineChartData) => lineChartObj.id === "In-Store")
+            ?.data.push(dailyRevenueOverviewInStoreLineChart);
+
+          const dailyRevenueOnlineLineChart = {
+            x: day,
+            y: revenue.online,
+          };
+          dailyRevenueLineChartsAcc.online
+            .find((lineChartObj: LineChartData) => lineChartObj.id === "Online")
+            ?.data.push(dailyRevenueOnlineLineChart);
+
+          const dailyRevenueInStoreLineChart = {
+            x: day,
+            y: revenue.inStore,
+          };
+          dailyRevenueLineChartsAcc.inStore
+            .find((lineChartObj: LineChartData) => lineChartObj.id === "In-Store")
+            ?.data.push(dailyRevenueInStoreLineChart);
+
+          return dailyProductChartsAcc;
+        },
+        [
+          structuredClone(barChartsTemplate),
+          structuredClone(calendarChartsTemplate),
+          structuredClone(lineChartsTemplate),
+
+          structuredClone(barChartsTemplate),
+          structuredClone(calendarChartsTemplate),
+          structuredClone(lineChartsTemplate),
+        ]
+      );
+
+      const dailyRevenuePieCharts: PieChartData[] = [
+        {
+          id: "In-Store",
+          label: "In-Store",
+          value: selectedDayMetrics.revenue.inStore,
+        },
+        {
+          id: "Online",
+          label: "Online",
+          value: selectedDayMetrics.revenue.online,
+        },
+      ];
+
+      const dailyUnitsSoldPieCharts: PieChartData[] = [
+        {
+          id: "In-Store",
+          label: "In-Store",
+          value: selectedDayMetrics.unitsSold.inStore,
+        },
+        {
+          id: "Online",
+          label: "Online",
+          value: selectedDayMetrics.unitsSold.online,
+        },
+      ];
+
+      resolve({
+        revenue: {
+          bar: dailyRevenueBarCharts,
+          calendar: dailyRevenueCalendarCharts,
+          line: dailyRevenueLineCharts,
+          pie: dailyRevenuePieCharts,
+        },
+        unitsSold: {
+          bar: dailyUnitsSoldBarCharts,
+          calendar: dailyUnitsSoldCalendarCharts,
+          line: dailyUnitsSoldLineCharts,
+          pie: dailyUnitsSoldPieCharts,
+        },
+      });
+    }, 0);
+  });
+}
+
+type CreateMonthlyProductChartsInput = {
+  barChartsTemplate: ProductMetricBarCharts;
+  calendarChartsTemplate: ProductMetricCalendarCharts;
+  lineChartsTemplate: ProductMetricLineCharts;
+  months: Month[];
+  monthlyMetrics?: ProductMonthlyMetric[];
+  pieChartsTemplate: PieChartData[];
+  selectedMonthMetrics?: ProductMonthlyMetric;
+  selectedYear: Year;
+};
+
+function createMonthlyProductCharts({
+  barChartsTemplate,
+  calendarChartsTemplate,
+  lineChartsTemplate,
+  months,
+  monthlyMetrics,
+  pieChartsTemplate,
+  selectedMonthMetrics,
+  selectedYear,
+}: CreateMonthlyProductChartsInput): Promise<ProductMetricsCharts["monthlyCharts"]> {
+  if (!monthlyMetrics || !selectedMonthMetrics) {
+    return new Promise((resolve) => {
+      resolve({
+        unitsSold: {
+          bar: barChartsTemplate,
+          calendar: calendarChartsTemplate,
+          line: lineChartsTemplate,
+          pie: pieChartsTemplate,
+        },
+        revenue: {
+          bar: barChartsTemplate,
+          calendar: calendarChartsTemplate,
+          line: lineChartsTemplate,
+          pie: pieChartsTemplate,
+        },
+      });
+    });
+  }
+
+  return new Promise<ProductMetricsCharts["monthlyCharts"]>((resolve) => {
+    setTimeout(() => {
+      const [
+        monthlyUnitsSoldBarChartsObj,
+        monthlyUnitsSoldCalendarChartsObj,
+        monthlyUnitsSoldLineChartsObj,
+
+        monthlyRevenueBarChartsObj,
+        monthlyRevenueCalendarChartsObj,
+        monthlyRevenueLineChartsObj,
+      ] = monthlyMetrics.reduce(
+        (monthlyProductChartsAcc, monthlyProductMetrics) => {
+          const [
+            monthlyUnitsSoldBarChartsAcc,
+            monthlyUnitsSoldCalendarChartsAcc,
+            monthlyUnitsSoldLineChartsAcc,
+
+            monthlyRevenueBarChartsAcc,
+            monthlyRevenueCalendarChartsAcc,
+            monthlyRevenueLineChartsAcc,
+          ] = monthlyProductChartsAcc;
+
+          const { month, unitsSold, revenue, dailyMetrics } = monthlyProductMetrics;
+          const monthIndexStr = (months.indexOf(month) + 1).toString().padStart(2, "0");
+
+          // prevents current month of current year from being added to charts
+          const currentYear = new Date().getFullYear().toString();
+          const isCurrentYear = selectedYear === currentYear;
+          const currentMonth = new Date().toLocaleString("default", { month: "long" });
+          const isCurrentMonth = month === currentMonth;
+
+          if (isCurrentYear && isCurrentMonth) {
+            return monthlyProductChartsAcc;
+          }
+
+          // monthly.unitsSold.bar
+
+          const monthlyUnitsSoldTotalBarChart: BarChartData = {
+            Months: month,
+            Total: unitsSold.total,
+          };
+          monthlyUnitsSoldBarChartsAcc.total.push(monthlyUnitsSoldTotalBarChart);
+
+          const monthlyUnitsSoldOverviewBarChart: BarChartData = {
+            Months: month,
+            "In-Store": unitsSold.inStore,
+            Online: unitsSold.online,
+          };
+          monthlyUnitsSoldBarChartsAcc.overview.push(monthlyUnitsSoldOverviewBarChart);
+
+          const monthlyUnitsSoldOnlineBarChart: BarChartData = {
+            Months: month,
+            Online: unitsSold.online,
+          };
+          monthlyUnitsSoldBarChartsAcc.online.push(monthlyUnitsSoldOnlineBarChart);
+
+          const monthlyUnitsSoldInStoreBarChart: BarChartData = {
+            Months: month,
+            "In-Store": unitsSold.inStore,
+          };
+          monthlyUnitsSoldBarChartsAcc.inStore.push(monthlyUnitsSoldInStoreBarChart);
+
+          // monthly.unitsSold.calendar
+
+          dailyMetrics.forEach((dailyMetric) => {
+            const { day, unitsSold } = dailyMetric;
+
+            const monthlyUnitsSoldTotalCalendarChart: CalendarChartData = {
+              day: `${selectedYear}-${monthIndexStr}-${day}`,
+              value: unitsSold.total,
+            };
+            monthlyUnitsSoldCalendarChartsAcc.total.push(
+              monthlyUnitsSoldTotalCalendarChart
+            );
+
+            const monthlyUnitsSoldOnlineCalendarChart: CalendarChartData = {
+              day: `${selectedYear}-${monthIndexStr}-${day}`,
+              value: unitsSold.online,
+            };
+            monthlyUnitsSoldCalendarChartsAcc.online.push(
+              monthlyUnitsSoldOnlineCalendarChart
+            );
+
+            const monthlyUnitsSoldInStoreCalendarChart: CalendarChartData = {
+              day: `${selectedYear}-${monthIndexStr}-${day}`,
+              value: unitsSold.inStore,
+            };
+            monthlyUnitsSoldCalendarChartsAcc.inStore.push(
+              monthlyUnitsSoldInStoreCalendarChart
+            );
+          });
+
+          // monthly.unitsSold.line
+
+          const monthlyUnitsSoldTotalLineChart = {
+            x: month,
+            y: unitsSold.total,
+          };
+          monthlyUnitsSoldLineChartsAcc.total
+            .find((lineChartObj: LineChartData) => lineChartObj.id === "Total")
+            ?.data.push(monthlyUnitsSoldTotalLineChart);
+
+          const monthlyUnitsSoldOverviewOnlineLineChart = {
+            x: month,
+            y: unitsSold.online,
+          };
+          monthlyUnitsSoldLineChartsAcc.overview
+            .find((lineChartObj: LineChartData) => lineChartObj.id === "Online")
+            ?.data.push(monthlyUnitsSoldOverviewOnlineLineChart);
+
+          const monthlyUnitsSoldOverviewInStoreLineChart = {
+            x: month,
+            y: unitsSold.inStore,
+          };
+          monthlyUnitsSoldLineChartsAcc.overview
+            .find((lineChartObj: LineChartData) => lineChartObj.id === "In-Store")
+            ?.data.push(monthlyUnitsSoldOverviewInStoreLineChart);
+
+          const monthlyUnitsSoldOnlineLineChart = {
+            x: month,
+            y: unitsSold.online,
+          };
+          monthlyUnitsSoldLineChartsAcc.online
+            .find((lineChartObj: LineChartData) => lineChartObj.id === "Online")
+            ?.data.push(monthlyUnitsSoldOnlineLineChart);
+
+          const monthlyUnitsSoldInStoreLineChart = {
+            x: month,
+            y: unitsSold.inStore,
+          };
+          monthlyUnitsSoldLineChartsAcc.inStore
+            .find((lineChartObj: LineChartData) => lineChartObj.id === "In-Store")
+            ?.data.push(monthlyUnitsSoldInStoreLineChart);
+
+          // monthly.revenue.bar
+
+          const monthlyRevenueTotalBarChart: BarChartData = {
+            Months: month,
+            Total: revenue.total,
+          };
+          monthlyRevenueBarChartsAcc.total.push(monthlyRevenueTotalBarChart);
+
+          const monthlyRevenueOverviewBarChart: BarChartData = {
+            Months: month,
+            "In-Store": revenue.inStore,
+            Online: revenue.online,
+          };
+          monthlyRevenueBarChartsAcc.overview.push(monthlyRevenueOverviewBarChart);
+
+          const monthlyRevenueOnlineBarChart: BarChartData = {
+            Months: month,
+            Online: revenue.online,
+          };
+          monthlyRevenueBarChartsAcc.online.push(monthlyRevenueOnlineBarChart);
+
+          const monthlyRevenueInStoreBarChart: BarChartData = {
+            Months: month,
+            "In-Store": revenue.inStore,
+          };
+          monthlyRevenueBarChartsAcc.inStore.push(monthlyRevenueInStoreBarChart);
+
+          // monthly.revenue.calendar
+
+          dailyMetrics.forEach((dailyMetric) => {
+            const { day, revenue } = dailyMetric;
+
+            const monthlyRevenueTotalCalendarChart: CalendarChartData = {
+              day: `${selectedYear}-${monthIndexStr}-${day}`,
+              value: revenue.total,
+            };
+            monthlyRevenueCalendarChartsAcc.total.push(monthlyRevenueTotalCalendarChart);
+
+            const monthlyRevenueOnlineCalendarChart: CalendarChartData = {
+              day: `${selectedYear}-${monthIndexStr}-${day}`,
+              value: revenue.online,
+            };
+            monthlyRevenueCalendarChartsAcc.online.push(
+              monthlyRevenueOnlineCalendarChart
+            );
+
+            const monthlyRevenueInStoreCalendarChart: CalendarChartData = {
+              day: `${selectedYear}-${monthIndexStr}-${day}`,
+              value: revenue.inStore,
+            };
+            monthlyRevenueCalendarChartsAcc.inStore.push(
+              monthlyRevenueInStoreCalendarChart
+            );
+          });
+
+          // monthly.revenue.line
+
+          const monthlyRevenueTotalLineChart = {
+            x: month,
+            y: revenue.total,
+          };
+          monthlyRevenueLineChartsAcc.total
+            .find((lineChartObj: LineChartData) => lineChartObj.id === "Total")
+            ?.data.push(monthlyRevenueTotalLineChart);
+
+          const monthlyRevenueOverviewOnlineLineChart = {
+            x: month,
+            y: revenue.online,
+          };
+          monthlyRevenueLineChartsAcc.overview
+            .find((lineChartObj: LineChartData) => lineChartObj.id === "Online")
+            ?.data.push(monthlyRevenueOverviewOnlineLineChart);
+
+          const monthlyRevenueOverviewInStoreLineChart = {
+            x: month,
+            y: revenue.inStore,
+          };
+          monthlyRevenueLineChartsAcc.overview
+            .find((lineChartObj: LineChartData) => lineChartObj.id === "In-Store")
+            ?.data.push(monthlyRevenueOverviewInStoreLineChart);
+
+          const monthlyRevenueOnlineLineChart = {
+            x: month,
+            y: revenue.online,
+          };
+          monthlyRevenueLineChartsAcc.online
+            .find((lineChartObj: LineChartData) => lineChartObj.id === "Online")
+            ?.data.push(monthlyRevenueOnlineLineChart);
+
+          const monthlyRevenueInStoreLineChart = {
+            x: month,
+            y: revenue.inStore,
+          };
+          monthlyRevenueLineChartsAcc.inStore
+            .find((lineChartObj: LineChartData) => lineChartObj.id === "In-Store")
+            ?.data.push(monthlyRevenueInStoreLineChart);
+
+          return monthlyProductChartsAcc;
+        },
+        [
+          structuredClone(barChartsTemplate),
+          structuredClone(calendarChartsTemplate),
+          structuredClone(lineChartsTemplate),
+
+          structuredClone(barChartsTemplate),
+          structuredClone(calendarChartsTemplate),
+          structuredClone(lineChartsTemplate),
+        ]
+      );
+
+      const monthlyRevenuePieCharts: PieChartData[] = [
+        {
+          id: "In-Store",
+          label: "In-Store",
+          value: selectedMonthMetrics.revenue.inStore,
+        },
+        {
+          id: "Online",
+          label: "Online",
+          value: selectedMonthMetrics.revenue.online,
+        },
+      ];
+
+      const monthlyUnitsSoldPieCharts: PieChartData[] = [
+        {
+          id: "In-Store",
+          label: "In-Store",
+          value: selectedMonthMetrics.unitsSold.inStore,
+        },
+        {
+          id: "Online",
+          label: "Online",
+          value: selectedMonthMetrics.unitsSold.online,
+        },
+      ];
+
+      resolve({
+        revenue: {
+          bar: monthlyRevenueBarChartsObj,
+          calendar: monthlyRevenueCalendarChartsObj,
+          line: monthlyRevenueLineChartsObj,
+          pie: monthlyRevenuePieCharts,
+        },
+        unitsSold: {
+          bar: monthlyUnitsSoldBarChartsObj,
+          calendar: monthlyUnitsSoldCalendarChartsObj,
+          line: monthlyUnitsSoldLineChartsObj,
+          pie: monthlyUnitsSoldPieCharts,
+        },
+      });
+    }, 0);
+  });
+}
+
+type CreateYearlyProductChartsInput = {
+  barChartsTemplate: ProductMetricBarCharts;
+  lineChartsTemplate: ProductMetricLineCharts;
+  pieChartsTemplate: PieChartData[];
+  selectedYearMetrics?: ProductYearlyMetric;
+  yearlyMetrics?: ProductYearlyMetric[];
+};
+
+function createYearlyProductCharts({
+  barChartsTemplate,
+  lineChartsTemplate,
+  pieChartsTemplate,
+  selectedYearMetrics,
+  yearlyMetrics,
+}: CreateYearlyProductChartsInput): Promise<ProductMetricsCharts["yearlyCharts"]> {
+  if (!yearlyMetrics || !selectedYearMetrics) {
+    return new Promise((resolve) => {
+      resolve({
+        unitsSold: {
+          bar: barChartsTemplate,
+          line: lineChartsTemplate,
+          pie: pieChartsTemplate,
+        },
+        revenue: {
+          bar: barChartsTemplate,
+          line: lineChartsTemplate,
+          pie: pieChartsTemplate,
+        },
+      });
+    });
+  }
+
+  return new Promise<ProductMetricsCharts["yearlyCharts"]>((resolve) => {
+    setTimeout(() => {
+      const [
+        yearlyUnitsSoldBarChartsObj,
+        yearlyUnitsSoldLineChartsObj,
+        yearlyRevenueBarChartsObj,
+        yearlyRevenueLineChartsObj,
+      ] = yearlyMetrics.reduce(
+        (yearlyProductChartsAcc, yearlyProductMetrics) => {
+          const [
+            yearlyUnitsSoldBarChartsAcc,
+            yearlyUnitsSoldLineChartsAcc,
+            yearlyRevenueBarChartsAcc,
+            yearlyRevenueLineChartsAcc,
+          ] = yearlyProductChartsAcc;
+
+          const { year, unitsSold, revenue } = yearlyProductMetrics;
+
+          // prevents current year from being added to charts
+          const currentYear = new Date().getFullYear();
+          if (year === currentYear.toString()) {
+            return yearlyProductChartsAcc;
+          }
+
+          // yearly.unitsSold.bar
+
+          const yearlyUnitsSoldTotalBarChart: BarChartData = {
+            Years: year,
+            Total: unitsSold.total,
+          };
+          yearlyUnitsSoldBarChartsAcc.total.push(yearlyUnitsSoldTotalBarChart);
+
+          const yearlyUnitsSoldOverviewBarChart: BarChartData = {
+            Years: year,
+            "In-Store": unitsSold.inStore,
+            Online: unitsSold.online,
+          };
+          yearlyUnitsSoldBarChartsAcc.overview.push(yearlyUnitsSoldOverviewBarChart);
+
+          const yearlyUnitsSoldOnlineBarChart: BarChartData = {
+            Years: year,
+            Online: unitsSold.online,
+          };
+          yearlyUnitsSoldBarChartsAcc.online.push(yearlyUnitsSoldOnlineBarChart);
+
+          const yearlyUnitsSoldInStoreBarChart: BarChartData = {
+            Years: year,
+            "In-Store": unitsSold.inStore,
+          };
+          yearlyUnitsSoldBarChartsAcc.inStore.push(yearlyUnitsSoldInStoreBarChart);
+
+          // yearly.unitsSold.line
+
+          const yearlyUnitsSoldTotalLineChart = {
+            x: year,
+            y: unitsSold.total,
+          };
+          yearlyUnitsSoldLineChartsAcc.total
+            .find((lineChartObj: LineChartData) => lineChartObj.id === "Total")
+            ?.data.push(yearlyUnitsSoldTotalLineChart);
+
+          const yearlyUnitsSoldOverviewOnlineLineChart = {
+            x: year,
+            y: unitsSold.online,
+          };
+          yearlyUnitsSoldLineChartsAcc.overview
+            .find((lineChartObj: LineChartData) => lineChartObj.id === "Online")
+            ?.data.push(yearlyUnitsSoldOverviewOnlineLineChart);
+
+          const yearlyUnitsSoldOverviewInStoreLineChart = {
+            x: year,
+            y: unitsSold.inStore,
+          };
+          yearlyUnitsSoldLineChartsAcc.overview
+            .find((lineChartObj: LineChartData) => lineChartObj.id === "In-Store")
+            ?.data.push(yearlyUnitsSoldOverviewInStoreLineChart);
+
+          const yearlyUnitsSoldOnlineLineChart = {
+            x: year,
+            y: unitsSold.online,
+          };
+          yearlyUnitsSoldLineChartsAcc.online
+            .find((lineChartObj: LineChartData) => lineChartObj.id === "Online")
+            ?.data.push(yearlyUnitsSoldOnlineLineChart);
+
+          const yearlyUnitsSoldInStoreLineChart = {
+            x: year,
+            y: unitsSold.inStore,
+          };
+          yearlyUnitsSoldLineChartsAcc.inStore
+            .find((lineChartObj: LineChartData) => lineChartObj.id === "In-Store")
+            ?.data.push(yearlyUnitsSoldInStoreLineChart);
+
+          // yearly.revenue.bar
+
+          const yearlyRevenueTotalBarChart: BarChartData = {
+            Years: year,
+            Total: revenue.total,
+          };
+          yearlyRevenueBarChartsAcc.total.push(yearlyRevenueTotalBarChart);
+
+          const yearlyRevenueOverviewBarChart: BarChartData = {
+            Years: year,
+            "In-Store": revenue.inStore,
+            Online: revenue.online,
+          };
+          yearlyRevenueBarChartsAcc.overview.push(yearlyRevenueOverviewBarChart);
+
+          const yearlyRevenueOnlineBarChart: BarChartData = {
+            Years: year,
+            Online: revenue.online,
+          };
+          yearlyRevenueBarChartsAcc.online.push(yearlyRevenueOnlineBarChart);
+
+          const yearlyRevenueInStoreBarChart: BarChartData = {
+            Years: year,
+            "In-Store": revenue.inStore,
+          };
+          yearlyRevenueBarChartsAcc.inStore.push(yearlyRevenueInStoreBarChart);
+
+          // yearly.revenue.line
+
+          const yearlyRevenueTotalLineChart = {
+            x: year,
+            y: revenue.total,
+          };
+          yearlyRevenueLineChartsAcc.total
+            .find((lineChartObj: LineChartData) => lineChartObj.id === "Total")
+            ?.data.push(yearlyRevenueTotalLineChart);
+
+          const yearlyRevenueOverviewOnlineLineChart = {
+            x: year,
+            y: revenue.online,
+          };
+          yearlyRevenueLineChartsAcc.overview
+            .find((lineChartObj: LineChartData) => lineChartObj.id === "Online")
+            ?.data.push(yearlyRevenueOverviewOnlineLineChart);
+
+          const yearlyRevenueOverviewInStoreLineChart = {
+            x: year,
+            y: revenue.inStore,
+          };
+          yearlyRevenueLineChartsAcc.overview
+            .find((lineChartObj: LineChartData) => lineChartObj.id === "In-Store")
+            ?.data.push(yearlyRevenueOverviewInStoreLineChart);
+
+          const yearlyRevenueOnlineLineChart = {
+            x: year,
+            y: revenue.online,
+          };
+          yearlyRevenueLineChartsAcc.online
+            .find((lineChartObj: LineChartData) => lineChartObj.id === "Online")
+            ?.data.push(yearlyRevenueOnlineLineChart);
+
+          const yearlyRevenueInStoreLineChart = {
+            x: year,
+            y: revenue.inStore,
+          };
+          yearlyRevenueLineChartsAcc.inStore
+            .find((lineChartObj: LineChartData) => lineChartObj.id === "In-Store")
+            ?.data.push(yearlyRevenueInStoreLineChart);
+
+          return yearlyProductChartsAcc;
+        },
+        [
+          structuredClone(barChartsTemplate),
+          structuredClone(lineChartsTemplate),
+
+          structuredClone(barChartsTemplate),
+          structuredClone(lineChartsTemplate),
+        ]
+      );
+
+      const yearlyRevenuePieCharts: PieChartData[] = [
+        {
+          id: "In-Store",
+          label: "In-Store",
+          value: selectedYearMetrics.revenue.inStore,
+        },
+        {
+          id: "Online",
+          label: "Online",
+          value: selectedYearMetrics.revenue.online,
+        },
+      ];
+
+      const yearlyUnitsSoldPieCharts: PieChartData[] = [
+        {
+          id: "In-Store",
+          label: "In-Store",
+          value: selectedYearMetrics.unitsSold.inStore,
+        },
+        {
+          id: "Online",
+          label: "Online",
+          value: selectedYearMetrics.unitsSold.online,
+        },
+      ];
+
+      resolve({
+        revenue: {
+          bar: yearlyRevenueBarChartsObj,
+          line: yearlyRevenueLineChartsObj,
+          pie: yearlyRevenuePieCharts,
+        },
+        unitsSold: {
+          bar: yearlyUnitsSoldBarChartsObj,
+          line: yearlyUnitsSoldLineChartsObj,
+          pie: yearlyUnitsSoldPieCharts,
+        },
+      });
+    }, 0);
+  });
+}
+
+export { createProductMetricsCharts, createSelectedDateProductMetrics };
 export type {
-  ProductMetricBarLineChartObjKey,
-  ProductMetricBarObj,
-  ProductMetricCalendarObj,
-  ProductMetricCalendarObjKey,
-  ProductMetricLineObj,
+  ProductMetricBarCharts,
+  ProductMetricCalendarCharts,
+  ProductMetricCalendarKey,
+  ProductMetricChartKey,
+  ProductMetricLineCharts,
   ProductMetricsCharts,
   SelectedDateProductMetrics,
 };

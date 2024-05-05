@@ -6,7 +6,7 @@ import { RiCalendarLine } from "react-icons/ri";
 import { addCommaSeparator, toFixedFloat } from "../../utils";
 import { SelectedDateCustomerMetrics } from "./customerDashboard/utils";
 import { SelectedDateFinancialMetrics } from "./financialDashboard/utils";
-import { SelectedDateProductMetrics } from "./productDashboard/utils";
+import { SelectedDateProductMetrics } from "./productDashboard/utilsOld";
 import { SelectedDateRepairMetrics } from "./repairDashboard/utils";
 
 type DashboardCardInfo = {

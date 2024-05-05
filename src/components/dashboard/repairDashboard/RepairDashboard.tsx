@@ -27,6 +27,17 @@ import {
 import { createRepairMetricsCharts, createSelectedDateRepairMetrics } from "./utils";
 import { returnRepairMetricsCards2 } from "./utilsTSX";
 
+type RepairDashboardProps = {
+  businessMetrics: BusinessMetric[];
+  calendarView: DashboardCalendarView;
+  selectedDate: string;
+  repairMetric: DashboardRepairMetric;
+  selectedMonth: Month;
+  storeLocationView: BusinessMetricStoreLocation;
+  selectedYear: Year;
+  selectedYYYYMMDD: string;
+};
+
 function RepairDashboard({
   businessMetrics,
   calendarView,
@@ -36,16 +47,7 @@ function RepairDashboard({
   storeLocationView,
   selectedYear,
   selectedYYYYMMDD,
-}: {
-  businessMetrics: BusinessMetric[];
-  calendarView: DashboardCalendarView;
-  selectedDate: string;
-  repairMetric: DashboardRepairMetric;
-  selectedMonth: Month;
-  storeLocationView: BusinessMetricStoreLocation;
-  selectedYear: Year;
-  selectedYYYYMMDD: string;
-}) {
+}: RepairDashboardProps) {
   const [repairDashboardState, repairDashboardDispatch] = useReducer(
     repairDashboardReducer,
     initialRepairDashboardState

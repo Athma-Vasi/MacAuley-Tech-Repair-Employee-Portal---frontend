@@ -1,44 +1,41 @@
-import {
-  ProductMetricBarLineChartObjKey,
-  ProductMetricCalendarObjKey,
-} from '../utils';
+import { ProductMetricChartKey, ProductMetricCalendarObjKey } from "../utilsOld";
 
 type ProductDashboardDailyState = {
   // revenue
-  revenueBarChartYAxisVariable: ProductMetricBarLineChartObjKey;
+  revenueBarChartYAxisVariable: ProductMetricChartKey;
   revenueCalendarChartYAxisVariable: ProductMetricCalendarObjKey;
-  revenueLineChartYAxisVariable: ProductMetricBarLineChartObjKey;
+  revenueLineChartYAxisVariable: ProductMetricChartKey;
 
   // units sold
-  unitsSoldBarChartYAxisVariable: ProductMetricBarLineChartObjKey;
+  unitsSoldBarChartYAxisVariable: ProductMetricChartKey;
   unitsSoldCalendarChartYAxisVariable: ProductMetricCalendarObjKey;
-  unitsSoldLineChartYAxisVariable: ProductMetricBarLineChartObjKey;
+  unitsSoldLineChartYAxisVariable: ProductMetricChartKey;
 };
 
 type ProductDashboardDailyAction = {
-  setRevenueBarChartYAxisVariable: 'setRevenueBarChartYAxisVariable';
-  setRevenueCalendarChartYAxisVariable: 'setRevenueCalendarChartYAxisVariable';
-  setRevenueLineChartYAxisVariable: 'setRevenueLineChartYAxisVariable';
+  setRevenueBarChartYAxisVariable: "setRevenueBarChartYAxisVariable";
+  setRevenueCalendarChartYAxisVariable: "setRevenueCalendarChartYAxisVariable";
+  setRevenueLineChartYAxisVariable: "setRevenueLineChartYAxisVariable";
 
-  setUnitsSoldBarChartYAxisVariable: 'setUnitsSoldBarChartYAxisVariable';
-  setUnitsSoldCalendarChartYAxisVariable: 'setUnitsSoldCalendarChartYAxisVariable';
-  setUnitsSoldLineChartYAxisVariable: 'setUnitsSoldLineChartYAxisVariable';
+  setUnitsSoldBarChartYAxisVariable: "setUnitsSoldBarChartYAxisVariable";
+  setUnitsSoldCalendarChartYAxisVariable: "setUnitsSoldCalendarChartYAxisVariable";
+  setUnitsSoldLineChartYAxisVariable: "setUnitsSoldLineChartYAxisVariable";
 };
 
 type ProductDashboardDailyDispatch =
   | {
       type:
-        | ProductDashboardDailyAction['setRevenueBarChartYAxisVariable']
-        | ProductDashboardDailyAction['setRevenueLineChartYAxisVariable']
-        | ProductDashboardDailyAction['setUnitsSoldBarChartYAxisVariable']
-        | ProductDashboardDailyAction['setUnitsSoldLineChartYAxisVariable'];
+        | ProductDashboardDailyAction["setRevenueBarChartYAxisVariable"]
+        | ProductDashboardDailyAction["setRevenueLineChartYAxisVariable"]
+        | ProductDashboardDailyAction["setUnitsSoldBarChartYAxisVariable"]
+        | ProductDashboardDailyAction["setUnitsSoldLineChartYAxisVariable"];
 
-      payload: ProductMetricBarLineChartObjKey;
+      payload: ProductMetricChartKey;
     }
   | {
       type:
-        | ProductDashboardDailyAction['setRevenueCalendarChartYAxisVariable']
-        | ProductDashboardDailyAction['setUnitsSoldCalendarChartYAxisVariable'];
+        | ProductDashboardDailyAction["setRevenueCalendarChartYAxisVariable"]
+        | ProductDashboardDailyAction["setUnitsSoldCalendarChartYAxisVariable"];
 
       payload: ProductMetricCalendarObjKey;
     };

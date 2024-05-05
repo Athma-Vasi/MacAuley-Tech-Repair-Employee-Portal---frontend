@@ -31,7 +31,7 @@ import {
   ProductMetricCalendarObjKey,
   returnProductMetricsCharts,
   returnSelectedDateProductMetrics,
-} from "../utils";
+} from "../utilsOld";
 import {
   initialProductDashboardMonthlyState,
   productDashboardMonthlyAction,

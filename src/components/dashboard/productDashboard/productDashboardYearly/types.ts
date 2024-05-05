@@ -1,31 +1,31 @@
-import { ProductMetricBarLineChartObjKey } from '../utils';
+import { ProductMetricChartKey } from "../utils";
 
 type ProductDashboardYearlyState = {
   // revenue
-  revenueBarChartYAxisVariable: ProductMetricBarLineChartObjKey;
-  revenueLineChartYAxisVariable: ProductMetricBarLineChartObjKey;
+  revenueBarChartYAxisVariable: ProductMetricChartKey;
+  revenueLineChartYAxisVariable: ProductMetricChartKey;
 
   // units sold
-  unitsSoldBarChartYAxisVariable: ProductMetricBarLineChartObjKey;
-  unitsSoldLineChartYAxisVariable: ProductMetricBarLineChartObjKey;
+  unitsSoldBarChartYAxisVariable: ProductMetricChartKey;
+  unitsSoldLineChartYAxisVariable: ProductMetricChartKey;
 };
 
 type ProductDashboardYearlyAction = {
-  setRevenueBarChartYAxisVariable: 'setRevenueBarChartYAxisVariable';
-  setRevenueLineChartYAxisVariable: 'setRevenueLineChartYAxisVariable';
+  setRevenueBarChartYAxisVariable: "setRevenueBarChartYAxisVariable";
+  setRevenueLineChartYAxisVariable: "setRevenueLineChartYAxisVariable";
 
-  setUnitsSoldBarChartYAxisVariable: 'setUnitsSoldBarChartYAxisVariable';
-  setUnitsSoldLineChartYAxisVariable: 'setUnitsSoldLineChartYAxisVariable';
+  setUnitsSoldBarChartYAxisVariable: "setUnitsSoldBarChartYAxisVariable";
+  setUnitsSoldLineChartYAxisVariable: "setUnitsSoldLineChartYAxisVariable";
 };
 
 type ProductDashboardYearlyDispatch = {
   type:
-    | ProductDashboardYearlyAction['setRevenueBarChartYAxisVariable']
-    | ProductDashboardYearlyAction['setRevenueLineChartYAxisVariable']
-    | ProductDashboardYearlyAction['setUnitsSoldBarChartYAxisVariable']
-    | ProductDashboardYearlyAction['setUnitsSoldLineChartYAxisVariable'];
+    | ProductDashboardYearlyAction["setRevenueBarChartYAxisVariable"]
+    | ProductDashboardYearlyAction["setRevenueLineChartYAxisVariable"]
+    | ProductDashboardYearlyAction["setUnitsSoldBarChartYAxisVariable"]
+    | ProductDashboardYearlyAction["setUnitsSoldLineChartYAxisVariable"];
 
-  payload: ProductMetricBarLineChartObjKey;
+  payload: ProductMetricChartKey;
 };
 
 export type {

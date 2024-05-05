@@ -5,7 +5,7 @@ import {
   CreateDashboardMetricsCardsInput,
   DashboardCardInfo,
 } from "../jsxHelpers";
-import { SelectedDateProductMetrics } from "./utilsTemp";
+import { SelectedDateProductMetrics } from "./utils";
 
 type ReturnProductMetricsCardsInput = {
   greenColorShade: string;

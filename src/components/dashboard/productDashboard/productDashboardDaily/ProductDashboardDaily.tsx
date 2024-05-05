@@ -27,11 +27,11 @@ import {
 } from "../constants";
 import { ProductDashboardChildrenProps } from "../types";
 import {
-  ProductMetricBarLineChartObjKey,
+  ProductMetricChartKey,
   ProductMetricCalendarObjKey,
   returnProductMetricsCharts,
   returnSelectedDateProductMetrics,
-} from "../utils";
+} from "../utilsOld";
 import {
   initialProductDashboardDailyState,
   productDashboardDailyAction,
@@ -123,7 +123,7 @@ function ProductDashboardDaily({
   // revenue
 
   // revenue -> statistics
-  const dailyRevenueStatistics = returnStatistics<ProductMetricBarLineChartObjKey>(
+  const dailyRevenueStatistics = returnStatistics<ProductMetricChartKey>(
     dailyCharts.revenue.barChartsObj
   );
 
@@ -223,7 +223,7 @@ function ProductDashboardDaily({
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           productDashboardDailyDispatch({
             type: productDashboardDailyAction.setRevenueBarChartYAxisVariable,
-            payload: event.currentTarget.value as ProductMetricBarLineChartObjKey,
+            payload: event.currentTarget.value as ProductMetricChartKey,
           });
         },
         value: revenueBarChartYAxisVariable,
@@ -276,7 +276,7 @@ function ProductDashboardDaily({
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           productDashboardDailyDispatch({
             type: productDashboardDailyAction.setRevenueLineChartYAxisVariable,
-            payload: event.currentTarget.value as ProductMetricBarLineChartObjKey,
+            payload: event.currentTarget.value as ProductMetricChartKey,
           });
         },
         value: revenueLineChartYAxisVariable,
@@ -383,7 +383,7 @@ function ProductDashboardDaily({
   // units sold
 
   // units sold -> statistics
-  const dailyUnitsSoldStatistics = returnStatistics<ProductMetricBarLineChartObjKey>(
+  const dailyUnitsSoldStatistics = returnStatistics<ProductMetricChartKey>(
     dailyCharts.unitsSold.barChartsObj
   );
 
@@ -484,7 +484,7 @@ function ProductDashboardDaily({
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           productDashboardDailyDispatch({
             type: productDashboardDailyAction.setUnitsSoldBarChartYAxisVariable,
-            payload: event.currentTarget.value as ProductMetricBarLineChartObjKey,
+            payload: event.currentTarget.value as ProductMetricChartKey,
           });
         },
         value: unitsSoldBarChartYAxisVariable,
@@ -539,7 +539,7 @@ function ProductDashboardDaily({
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           productDashboardDailyDispatch({
             type: productDashboardDailyAction.setUnitsSoldLineChartYAxisVariable,
-            payload: event.currentTarget.value as ProductMetricBarLineChartObjKey,
+            payload: event.currentTarget.value as ProductMetricChartKey,
           });
         },
         value: unitsSoldLineChartYAxisVariable,
