@@ -91,7 +91,17 @@ function Dashboard() {
       type: globalAction.setCustomizeChartsPageDataSelectedYYYYMMDD,
       payload: initialDashboardState.selectedYYYYMMDD,
     });
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    globalDispatch({
+      type: globalAction.setCustomizeChartsPageDataSelectedYYYYMMDD,
+      payload: initialDashboardState.selectedYYYYMMDD,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedYYYYMMDD]);
 
   useEffect(() => {
     async function createBusinessMetrics() {
@@ -171,6 +181,7 @@ function Dashboard() {
     }
 
     createBusinessMetrics();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
