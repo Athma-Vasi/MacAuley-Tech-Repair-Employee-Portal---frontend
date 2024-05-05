@@ -1,39 +1,38 @@
 import {
-  FinancialMetricBarLineObjKey,
-  FinancialMetricCalendarObjKey,
-  FinancialMetricPieObjKey,
-} from '../../utils';
+  FinancialMetricsBarLineChartsKey,
+  FinancialMetricsCalendarChartsKey,
+  FinancialMetricsPieChartsKey,
+} from "../../utils";
 
 type FinancialDashboardMonthlyExpensesState = {
-  expensesBarChartYAxisVariable: FinancialMetricBarLineObjKey;
-  expensesCalendarChartYAxisVariable: FinancialMetricCalendarObjKey;
-  expensesLineChartYAxisVariable: FinancialMetricBarLineObjKey;
-  expensesPieChartYAxisVariable: FinancialMetricPieObjKey;
+  expensesBarChartYAxisVariable: FinancialMetricsBarLineChartsKey;
+  expensesCalendarChartYAxisVariable: FinancialMetricsCalendarChartsKey;
+  expensesLineChartYAxisVariable: FinancialMetricsBarLineChartsKey;
+  expensesPieChartYAxisVariable: FinancialMetricsPieChartsKey;
 };
 
 type FinancialDashboardMonthlyExpensesAction = {
-  setExpensesBarChartYAxisVariable: 'setExpensesBarChartYAxisVariable';
-  setExpensesCalendarChartYAxisVariable: 'setExpensesCalendarChartYAxisVariable';
-  setExpensesLineChartYAxisVariable: 'setExpensesLineChartYAxisVariable';
-  setExpensesPieChartYAxisVariable: 'setExpensesPieChartYAxisVariable';
+  setExpensesBarChartYAxisVariable: "setExpensesBarChartYAxisVariable";
+  setExpensesCalendarChartYAxisVariable: "setExpensesCalendarChartYAxisVariable";
+  setExpensesLineChartYAxisVariable: "setExpensesLineChartYAxisVariable";
+  setExpensesPieChartYAxisVariable: "setExpensesPieChartYAxisVariable";
 };
 
 type FinancialDashboardMonthlyExpensesDispatch =
   | {
       type:
-        | FinancialDashboardMonthlyExpensesAction['setExpensesBarChartYAxisVariable']
-        | FinancialDashboardMonthlyExpensesAction['setExpensesLineChartYAxisVariable'];
-      payload: FinancialMetricBarLineObjKey;
+        | FinancialDashboardMonthlyExpensesAction["setExpensesBarChartYAxisVariable"]
+        | FinancialDashboardMonthlyExpensesAction["setExpensesLineChartYAxisVariable"];
+      payload: FinancialMetricsBarLineChartsKey;
     }
   | {
       type:
-        | FinancialDashboardMonthlyExpensesAction['setExpensesCalendarChartYAxisVariable'];
-      payload: FinancialMetricCalendarObjKey;
+        | FinancialDashboardMonthlyExpensesAction["setExpensesCalendarChartYAxisVariable"];
+      payload: FinancialMetricsCalendarChartsKey;
     }
   | {
-      type:
-        | FinancialDashboardMonthlyExpensesAction['setExpensesPieChartYAxisVariable'];
-      payload: FinancialMetricPieObjKey;
+      type: FinancialDashboardMonthlyExpensesAction["setExpensesPieChartYAxisVariable"];
+      payload: FinancialMetricsPieChartsKey;
     };
 
 export type {

@@ -1,31 +1,30 @@
 import {
-  FinancialMetricBarLineObjKey,
-  FinancialMetricPieObjKey,
-} from '../../utils';
+  FinancialMetricsBarLineChartsKey,
+  FinancialMetricsPieChartsKey,
+} from "../../utils";
 
 type FinancialDashboardYearlyProfitState = {
-  profitBarChartYAxisVariable: FinancialMetricBarLineObjKey;
-  profitLineChartYAxisVariable: FinancialMetricBarLineObjKey;
-  profitPieChartYAxisVariable: FinancialMetricPieObjKey;
+  profitBarChartYAxisVariable: FinancialMetricsBarLineChartsKey;
+  profitLineChartYAxisVariable: FinancialMetricsBarLineChartsKey;
+  profitPieChartYAxisVariable: FinancialMetricsPieChartsKey;
 };
 
 type FinancialDashboardYearlyProfitAction = {
-  setProfitBarChartYAxisVariable: 'setProfitBarChartYAxisVariable';
-  setProfitLineChartYAxisVariable: 'setProfitLineChartYAxisVariable';
-  setProfitPieChartYAxisVariable: 'setProfitPieChartYAxisVariable';
+  setProfitBarChartYAxisVariable: "setProfitBarChartYAxisVariable";
+  setProfitLineChartYAxisVariable: "setProfitLineChartYAxisVariable";
+  setProfitPieChartYAxisVariable: "setProfitPieChartYAxisVariable";
 };
 
 type FinancialDashboardYearlyProfitDispatch =
   | {
       type:
-        | FinancialDashboardYearlyProfitAction['setProfitBarChartYAxisVariable']
-        | FinancialDashboardYearlyProfitAction['setProfitLineChartYAxisVariable'];
-      payload: FinancialMetricBarLineObjKey;
+        | FinancialDashboardYearlyProfitAction["setProfitBarChartYAxisVariable"]
+        | FinancialDashboardYearlyProfitAction["setProfitLineChartYAxisVariable"];
+      payload: FinancialMetricsBarLineChartsKey;
     }
   | {
-      type:
-        | FinancialDashboardYearlyProfitAction['setProfitPieChartYAxisVariable'];
-      payload: FinancialMetricPieObjKey;
+      type: FinancialDashboardYearlyProfitAction["setProfitPieChartYAxisVariable"];
+      payload: FinancialMetricsPieChartsKey;
     };
 
 export type {

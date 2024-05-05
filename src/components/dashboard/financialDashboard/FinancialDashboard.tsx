@@ -197,45 +197,44 @@ function FinancialDashboard({
   const { dailyCards, monthlyCards, yearlyCards } = financialMetricsCards;
   const { dailyCharts, monthlyCharts, yearlyCharts } = financialMetricsCharts;
 
-  return calendarView === "Daily" ? (
-    <FinancialDashboardDaily
-      businessMetrics={businessMetrics}
-      day={selectedDate}
-      financialMetric={financialMetric}
-      month={selectedYYYYMMDD.split("-")[1]}
-      selectedDate={selectedDate}
-      selectedMonth={selectedMonth}
-      selectedYear={selectedYear}
-      storeLocation={storeLocationView}
-      storeLocationView={storeLocationView}
-      year={selectedYear}
-    />
-  ) : calendarView === "Monthly" ? (
-    <FinancialDashboardMonthly
-      businessMetrics={businessMetrics}
-      day={selectedDate}
-      financialMetric={financialMetric}
-      month={selectedYYYYMMDD.split("-")[1]}
-      selectedDate={selectedDate}
-      selectedMonth={selectedMonth}
-      selectedYear={selectedYear}
-      storeLocation={storeLocationView}
-      storeLocationView={storeLocationView}
-      year={selectedYear}
-    />
-  ) : (
-    <FinancialDashboardYearly
-      businessMetrics={businessMetrics}
-      day={selectedDate}
-      financialMetric={financialMetric}
-      month={selectedYYYYMMDD.split("-")[1]}
-      selectedDate={selectedDate}
-      selectedMonth={selectedMonth}
-      selectedYear={selectedYear}
-      storeLocation={storeLocationView}
-      storeLocationView={storeLocationView}
-      year={selectedYear}
-    />
+  const financialDashboard =
+    calendarView === "Daily" ? (
+      <FinancialDashboardDaily
+        day={selectedDate}
+        financialMetric={financialMetric}
+        month={selectedYYYYMMDD.split("-")[1]}
+        year={selectedYear}
+        dailyCards={dailyCards}
+        dailyCharts={dailyCharts}
+        storeLocation={storeLocationView}
+      />
+    ) : calendarView === "Monthly" ? (
+      <FinancialDashboardMonthly
+        day={selectedDate}
+        financialMetric={financialMetric}
+        month={selectedYYYYMMDD.split("-")[1]}
+        storeLocation={storeLocationView}
+        year={selectedYear}
+        monthlyCards={monthlyCards}
+        monthlyCharts={monthlyCharts}
+      />
+    ) : (
+      <FinancialDashboardYearly
+        day={selectedDate}
+        financialMetric={financialMetric}
+        month={selectedYYYYMMDD.split("-")[1]}
+        storeLocation={storeLocationView}
+        year={selectedYear}
+        yearlyCards={yearlyCards}
+        yearlyCharts={yearlyCharts}
+      />
+    );
+
+  return (
+    <Stack>
+      {loadingOverlay}
+      {financialDashboard}
+    </Stack>
   );
 }
 

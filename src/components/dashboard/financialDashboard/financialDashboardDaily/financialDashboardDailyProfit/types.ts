@@ -1,39 +1,37 @@
 import {
-  FinancialMetricBarLineObjKey,
-  FinancialMetricCalendarObjKey,
-  FinancialMetricPieObjKey,
-} from '../../utils';
+  FinancialMetricsBarLineChartsKey,
+  FinancialMetricsCalendarChartsKey,
+  FinancialMetricsPieChartsKey,
+} from "../../utils";
 
 type FinancialDashboardDailyProfitState = {
-  profitBarChartYAxisVariable: FinancialMetricBarLineObjKey;
-  profitCalendarChartYAxisVariable: FinancialMetricCalendarObjKey;
-  profitLineChartYAxisVariable: FinancialMetricBarLineObjKey;
-  profitPieChartYAxisVariable: FinancialMetricPieObjKey;
+  profitBarChartYAxisVariable: FinancialMetricsBarLineChartsKey;
+  profitCalendarChartYAxisVariable: FinancialMetricsCalendarChartsKey;
+  profitLineChartYAxisVariable: FinancialMetricsBarLineChartsKey;
+  profitPieChartYAxisVariable: FinancialMetricsPieChartsKey;
 };
 
 type FinancialDashboardDailyProfitAction = {
-  setProfitBarChartYAxisVariable: 'setProfitBarChartYAxisVariable';
-  setProfitCalendarChartYAxisVariable: 'setProfitCalendarChartYAxisVariable';
-  setProfitLineChartYAxisVariable: 'setProfitLineChartYAxisVariable';
-  setProfitPieChartYAxisVariable: 'setProfitPieChartYAxisVariable';
+  setProfitBarChartYAxisVariable: "setProfitBarChartYAxisVariable";
+  setProfitCalendarChartYAxisVariable: "setProfitCalendarChartYAxisVariable";
+  setProfitLineChartYAxisVariable: "setProfitLineChartYAxisVariable";
+  setProfitPieChartYAxisVariable: "setProfitPieChartYAxisVariable";
 };
 
 type FinancialDashboardDailyProfitDispatch =
   | {
       type:
-        | FinancialDashboardDailyProfitAction['setProfitBarChartYAxisVariable']
-        | FinancialDashboardDailyProfitAction['setProfitLineChartYAxisVariable'];
-      payload: FinancialMetricBarLineObjKey;
+        | FinancialDashboardDailyProfitAction["setProfitBarChartYAxisVariable"]
+        | FinancialDashboardDailyProfitAction["setProfitLineChartYAxisVariable"];
+      payload: FinancialMetricsBarLineChartsKey;
     }
   | {
-      type:
-        | FinancialDashboardDailyProfitAction['setProfitCalendarChartYAxisVariable'];
-      payload: FinancialMetricCalendarObjKey;
+      type: FinancialDashboardDailyProfitAction["setProfitCalendarChartYAxisVariable"];
+      payload: FinancialMetricsCalendarChartsKey;
     }
   | {
-      type:
-        | FinancialDashboardDailyProfitAction['setProfitPieChartYAxisVariable'];
-      payload: FinancialMetricPieObjKey;
+      type: FinancialDashboardDailyProfitAction["setProfitPieChartYAxisVariable"];
+      payload: FinancialMetricsPieChartsKey;
     };
 
 export type {

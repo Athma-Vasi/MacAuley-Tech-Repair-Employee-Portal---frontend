@@ -3,30 +3,22 @@ import { Stack } from "@mantine/core";
 import { COLORS_SWATCHES } from "../../../../constants/data";
 import { useGlobalState } from "../../../../hooks";
 import { returnThemeColors } from "../../../../utils";
-import { MONTHS } from "../../constants";
-import { returnFinancialMetricsCards } from "../../utilsTSX";
-import { FinancialDashboardChildrenProps } from "../types";
-import {
-  returnFinancialMetricsCharts,
-  returnSelectedDateFinancialMetrics,
-} from "../utils";
+import { BusinessMetricStoreLocation, DashboardFinancialMetric, Year } from "../../types";
+import { FinancialMetricsCharts } from "../utils";
+import { FinancialMetricsCards } from "../utilsTSX";
 import FinancialDashboardMonthlyExpenses from "./financialDashboardMonthlyExpenses/FinancialDashboardMonthlyExpenses";
 import FinancialDashboardMonthlyOtherMetrics from "./financialDashboardMonthlyOtherMetrics/FinancialDashboardMonthlyOtherMetrics";
 import FinancialDashboardMonthlyProfit from "./financialDashboardMonthlyProfit/FinancialDashboardMonthlyProfit";
 import FinancialDashboardMonthlyRevenue from "./financialDashboardMonthlyRevenue/FinancialDashboardMonthlyRevenue";
 import FinancialDashboardMonthlyTransactions from "./financialDashboardMonthlyTransactions/FinancialDashboardMonthlyTransactions";
-import { DashboardFinancialMetric, Month, Year } from "../../types";
-import { StoreLocation } from "../../../../types";
-import { FinancialMetricsCharts } from "../utils";
-import { FinancialMetricsCards } from "../utilsTSX";
 
 type FinancialDashboardMonthlyProps = {
   day: string;
   financialMetric: DashboardFinancialMetric;
-  month: Month;
+  month: string;
   monthlyCards: FinancialMetricsCards["monthlyCards"];
   monthlyCharts: FinancialMetricsCharts["monthlyCharts"];
-  storeLocation: StoreLocation;
+  storeLocation: BusinessMetricStoreLocation;
   year: Year;
 };
 

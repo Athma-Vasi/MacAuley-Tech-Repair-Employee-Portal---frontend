@@ -207,13 +207,13 @@ type FinancialMetricCalendarCharts = Record<
   CalendarChartData[]
 >; // y-axis variables: total, repair, in-store, online
 
-type FinancialOtherMetricsChartsKey =
+type FinancialMetricsOtherMetricsChartsKey =
   | "averageOrderValue" // y-axis variables: average order value
   | "conversionRate" // y-axis variables: conversion rate
   | "netProfitMargin"; // y-axis variables: net profit margin
 
 type FinancialOtherMetricsBarCharts = Record<
-  FinancialOtherMetricsChartsKey,
+  FinancialMetricsOtherMetricsChartsKey,
   BarChartData[]
 >; // y-axis variables: average order value, conversion rate, net profit margin
 
@@ -230,7 +230,7 @@ type FinancialOtherMetricsLineCharts = {
 }; // y-axis variables: average order value, conversion rate, net profit margin
 
 type FinancialOtherMetricsCalendarCharts = Record<
-  FinancialOtherMetricsChartsKey,
+  FinancialMetricsOtherMetricsChartsKey,
   CalendarChartData[]
 >; // y-axis variables: average order value, conversion rate, net profit margin
 
@@ -3723,9 +3723,9 @@ export type {
   FinancialMetricsBarLineChartsKey,
   FinancialMetricsCalendarChartsKey,
   FinancialMetricsCharts,
+  FinancialMetricsOtherMetricsChartsKey,
   FinancialMetricsPieCharts,
   FinancialMetricsPieChartsKey,
-  FinancialOtherMetricsChartsKey,
   ReturnFinancialMetricsChartsInput,
   SelectedDateFinancialMetrics,
 };

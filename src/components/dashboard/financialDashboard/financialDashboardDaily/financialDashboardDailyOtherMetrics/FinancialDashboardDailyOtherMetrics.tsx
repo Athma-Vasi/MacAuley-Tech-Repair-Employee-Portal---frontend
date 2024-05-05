@@ -17,11 +17,14 @@ import {
 } from "../../../../charts";
 import { MONTHS } from "../../../constants";
 import DashboardMetricsLayout from "../../../DashboardMetricsLayout";
-import { FinancialMetricsCards } from "../../../utilsTSX";
 import { BusinessMetricStoreLocation, Year } from "../../../types";
 import { returnChartTitleNavigateLinks, returnStatistics } from "../../../utils";
 import { FINANCIAL_OTHER_METRICS_Y_AXIS_DATA } from "../../constants";
-import { FinancialMetricsCharts, FinancialOtherMetricsObjKey } from "../../utils";
+import {
+  FinancialMetricsCharts,
+  FinancialMetricsOtherMetricsChartsKey,
+} from "../../utils";
+import { FinancialMetricsCards } from "../../utilsTSX";
 import {
   financialDashboardDailyOtherMetricsAction,
   financialDashboardDailyOtherMetricsReducer,
@@ -70,16 +73,10 @@ function FinancialDashboardDailyOtherMetrics({
     otherMetricsLineChartYAxisVariable,
   } = financialDashboardDailyOtherMetricsState;
 
-  // otherMetrics
-
-  // otherMetrics -> statistics
-  const statisticsOtherMetrics = returnStatistics<FinancialOtherMetricsObjKey>(
-    dailyChartsOtherMetrics.barChartsObj
+  const statisticsOtherMetrics = returnStatistics<FinancialMetricsOtherMetricsChartsKey>(
+    dailyChartsOtherMetrics.bar
   );
 
-  // otherMetrics -> charts
-
-  // otherMetrics  -> charts -> titles & navlinks
   const {
     barChartHeading,
     calendarChartHeading,
@@ -101,10 +98,7 @@ function FinancialDashboardDailyOtherMetrics({
     months: MONTHS,
   });
 
-  // otherMetrics -> charts -> bar
-
-  // otherMetrics -> charts -> bar -> expand chart button
-  const [createdExpandBarChartButton] = returnAccessibleButtonElements([
+  const [expandBarChartButton] = returnAccessibleButtonElements([
     {
       buttonLabel: "Expand",
       semanticDescription: `Expand and customize ${barChartHeading}`,
@@ -113,8 +107,7 @@ function FinancialDashboardDailyOtherMetrics({
         globalDispatch({
           type: globalAction.setCustomizeChartsPageData,
           payload: {
-            chartData:
-              dailyChartsOtherMetrics.barChartsObj[otherMetricsBarChartYAxisVariable],
+            chartData: dailyChartsOtherMetrics.bar[otherMetricsBarChartYAxisVariable],
             chartTitle: barChartHeading,
             chartKind: "bar",
             chartUnitKind:
@@ -130,8 +123,7 @@ function FinancialDashboardDailyOtherMetrics({
     },
   ]);
 
-  // otherMetrics -> charts -> bar -> y-axis select input
-  const [createdOtherMetricsBarChartYAxisVariablesSelectInput] =
+  const [otherMetricsBarChartYAxisVariablesSelectInput] =
     returnAccessibleSelectInputElements([
       {
         data: FINANCIAL_OTHER_METRICS_Y_AXIS_DATA,
@@ -139,19 +131,16 @@ function FinancialDashboardDailyOtherMetrics({
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           financialDashboardDailyOtherMetricsDispatch({
             type: financialDashboardDailyOtherMetricsAction.setOtherMetricsBarChartYAxisVariable,
-            payload: event.currentTarget.value as FinancialOtherMetricsObjKey,
+            payload: event.currentTarget.value as FinancialMetricsOtherMetricsChartsKey,
           });
         },
         value: otherMetricsBarChartYAxisVariable,
       },
     ]);
 
-  // otherMetrics -> charts -> bar -> display
-  const displayOtherMetricsBarChart = (
+  const otherMetricsBarChart = (
     <ResponsiveBarChart
-      barChartData={
-        dailyChartsOtherMetrics.barChartsObj[otherMetricsBarChartYAxisVariable]
-      }
+      barChartData={dailyChartsOtherMetrics.bar[otherMetricsBarChartYAxisVariable]}
       indexBy="Days"
       keys={FINANCIAL_OTHER_METRICS_Y_AXIS_DATA.map((obj) => obj.label)}
       chartHeight={chartHeight}
@@ -163,9 +152,6 @@ function FinancialDashboardDailyOtherMetrics({
     />
   );
 
-  // otherMetrics -> charts -> line
-
-  // otherMetrics -> charts -> line -> expand chart button
   const [expandLineChartButton] = returnAccessibleButtonElements([
     {
       buttonLabel: "Expand",
@@ -175,8 +161,7 @@ function FinancialDashboardDailyOtherMetrics({
         globalDispatch({
           type: globalAction.setCustomizeChartsPageData,
           payload: {
-            chartData:
-              dailyChartsOtherMetrics.lineChartsObj[otherMetricsLineChartYAxisVariable],
+            chartData: dailyChartsOtherMetrics.line[otherMetricsLineChartYAxisVariable],
             chartTitle: lineChartHeading,
             chartKind: "line",
             chartUnitKind:
@@ -192,8 +177,7 @@ function FinancialDashboardDailyOtherMetrics({
     },
   ]);
 
-  // otherMetrics -> charts -> line -> y-axis select input
-  const [createdOtherMetricsLineChartYAxisVariablesSelectInput] =
+  const [otherMetricsLineChartYAxisVariablesSelectInput] =
     returnAccessibleSelectInputElements([
       {
         data: FINANCIAL_OTHER_METRICS_Y_AXIS_DATA,
@@ -201,21 +185,18 @@ function FinancialDashboardDailyOtherMetrics({
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           financialDashboardDailyOtherMetricsDispatch({
             type: financialDashboardDailyOtherMetricsAction.setOtherMetricsLineChartYAxisVariable,
-            payload: event.currentTarget.value as FinancialOtherMetricsObjKey,
+            payload: event.currentTarget.value as FinancialMetricsOtherMetricsChartsKey,
           });
         },
         value: otherMetricsLineChartYAxisVariable,
       },
     ]);
 
-  // otherMetrics -> charts -> line -> display
-  const displayOtherMetricsLineChart = (
+  const otherMetricsLineChart = (
     <ResponsiveLineChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
-      lineChartData={
-        dailyChartsOtherMetrics.lineChartsObj[otherMetricsLineChartYAxisVariable]
-      }
+      lineChartData={dailyChartsOtherMetrics.line[otherMetricsLineChartYAxisVariable]}
       hideControls
       xFormat={(x) => `Day - ${x}`}
       yFormat={(y) =>
@@ -231,9 +212,6 @@ function FinancialDashboardDailyOtherMetrics({
     />
   );
 
-  // otherMetrics -> charts -> calendar
-
-  // otherMetrics -> charts -> calendar -> expand chart button
   const [expandCalendarChartButton] = returnAccessibleButtonElements([
     {
       buttonLabel: "Expand",
@@ -244,9 +222,7 @@ function FinancialDashboardDailyOtherMetrics({
           type: globalAction.setCustomizeChartsPageData,
           payload: {
             chartData:
-              dailyChartsOtherMetrics.calendarChartsObj[
-                otherMetricsCalendarChartYAxisVariable
-              ],
+              dailyChartsOtherMetrics.calendar[otherMetricsCalendarChartYAxisVariable],
             chartTitle: calendarChartHeading,
             chartKind: "calendar",
             chartUnitKind:
@@ -262,8 +238,7 @@ function FinancialDashboardDailyOtherMetrics({
     },
   ]);
 
-  // otherMetrics -> charts -> calendar -> y-axis select input
-  const [createdOtherMetricsCalendarChartYAxisVariablesSelectInput] =
+  const [otherMetricsCalendarChartYAxisVariablesSelectInput] =
     returnAccessibleSelectInputElements([
       {
         data: FINANCIAL_OTHER_METRICS_Y_AXIS_DATA,
@@ -271,18 +246,17 @@ function FinancialDashboardDailyOtherMetrics({
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           financialDashboardDailyOtherMetricsDispatch({
             type: financialDashboardDailyOtherMetricsAction.setOtherMetricsCalendarChartYAxisVariable,
-            payload: event.currentTarget.value as FinancialOtherMetricsObjKey,
+            payload: event.currentTarget.value as FinancialMetricsOtherMetricsChartsKey,
           });
         },
         value: otherMetricsCalendarChartYAxisVariable,
       },
     ]);
 
-  // otherMetrics -> charts -> calendar -> display
-  const displayOtherMetricsCalendarChart = (
+  const otherMetricsCalendarChart = (
     <ResponsiveCalendarChart
       calendarChartData={
-        dailyChartsOtherMetrics.calendarChartsObj[otherMetricsCalendarChartYAxisVariable]
+        dailyChartsOtherMetrics.calendar[otherMetricsCalendarChartYAxisVariable]
       }
       from={`${year}-${month}-01`}
       chartHeight={chartHeight}
@@ -292,33 +266,31 @@ function FinancialDashboardDailyOtherMetrics({
     />
   );
 
-  const displayOtherMetricsSection = (
+  const financialDashboardDailyOtherMetrics = (
     <DashboardMetricsLayout
-      barChart={displayOtherMetricsBarChart}
+      barChart={otherMetricsBarChart}
       barChartHeading={barChartHeading}
-      barChartYAxisSelectInput={createdOtherMetricsBarChartYAxisVariablesSelectInput}
+      barChartYAxisSelectInput={otherMetricsBarChartYAxisVariablesSelectInput}
       borderColor={borderColor}
-      expandBarChartButton={createdExpandBarChartButton}
+      expandBarChartButton={expandBarChartButton}
       expandLineChartButton={expandLineChartButton}
       expandCalendarChartButton={expandCalendarChartButton}
-      lineChart={displayOtherMetricsLineChart}
+      lineChart={otherMetricsLineChart}
       lineChartHeading={lineChartHeading}
-      lineChartYAxisSelectInput={createdOtherMetricsLineChartYAxisVariablesSelectInput}
+      lineChartYAxisSelectInput={otherMetricsLineChartYAxisVariablesSelectInput}
       overviewCards={dailyCardsOtherMetrics}
       padding={padding}
       sectionHeading={`${splitCamelCase(storeLocation)} Daily Other Metrics`}
       semanticLabel=""
       statisticsMap={statisticsOtherMetrics}
       width={width}
-      calendarChart={displayOtherMetricsCalendarChart}
+      calendarChart={otherMetricsCalendarChart}
       calendarChartHeading={calendarChartHeading}
-      calendarChartYAxisSelectInput={
-        createdOtherMetricsCalendarChartYAxisVariablesSelectInput
-      }
+      calendarChartYAxisSelectInput={otherMetricsCalendarChartYAxisVariablesSelectInput}
     />
   );
 
-  return displayOtherMetricsSection;
+  return financialDashboardDailyOtherMetrics;
 }
 
 export default FinancialDashboardDailyOtherMetrics;

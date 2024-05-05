@@ -1,39 +1,39 @@
 import {
-  FinancialMetricBarLineObjKey,
-  FinancialMetricCalendarObjKey,
-  FinancialMetricPieObjKey,
-} from '../../utils';
+  FinancialMetricsBarLineChartsKey,
+  FinancialMetricsCalendarChartsKey,
+  FinancialMetricsPieChartsKey,
+} from "../../utils";
 
 type FinancialDashboardMonthlyTransactionsState = {
-  transactionsBarChartYAxisVariable: FinancialMetricBarLineObjKey;
-  transactionsCalendarChartYAxisVariable: FinancialMetricCalendarObjKey;
-  transactionsLineChartYAxisVariable: FinancialMetricBarLineObjKey;
-  transactionsPieChartYAxisVariable: FinancialMetricPieObjKey;
+  transactionsBarChartYAxisVariable: FinancialMetricsBarLineChartsKey;
+  transactionsCalendarChartYAxisVariable: FinancialMetricsCalendarChartsKey;
+  transactionsLineChartYAxisVariable: FinancialMetricsBarLineChartsKey;
+  transactionsPieChartYAxisVariable: FinancialMetricsPieChartsKey;
 };
 
 type FinancialDashboardMonthlyTransactionsAction = {
-  setTransactionsBarChartYAxisVariable: 'setTransactionsBarChartYAxisVariable';
-  setTransactionsCalendarChartYAxisVariable: 'setTransactionsCalendarChartYAxisVariable';
-  setTransactionsLineChartYAxisVariable: 'setTransactionsLineChartYAxisVariable';
-  setTransactionsPieChartYAxisVariable: 'setTransactionsPieChartYAxisVariable';
+  setTransactionsBarChartYAxisVariable: "setTransactionsBarChartYAxisVariable";
+  setTransactionsCalendarChartYAxisVariable: "setTransactionsCalendarChartYAxisVariable";
+  setTransactionsLineChartYAxisVariable: "setTransactionsLineChartYAxisVariable";
+  setTransactionsPieChartYAxisVariable: "setTransactionsPieChartYAxisVariable";
 };
 
 type FinancialDashboardMonthlyTransactionsDispatch =
   | {
       type:
-        | FinancialDashboardMonthlyTransactionsAction['setTransactionsBarChartYAxisVariable']
-        | FinancialDashboardMonthlyTransactionsAction['setTransactionsLineChartYAxisVariable'];
-      payload: FinancialMetricBarLineObjKey;
+        | FinancialDashboardMonthlyTransactionsAction["setTransactionsBarChartYAxisVariable"]
+        | FinancialDashboardMonthlyTransactionsAction["setTransactionsLineChartYAxisVariable"];
+      payload: FinancialMetricsBarLineChartsKey;
     }
   | {
       type:
-        | FinancialDashboardMonthlyTransactionsAction['setTransactionsCalendarChartYAxisVariable'];
-      payload: FinancialMetricCalendarObjKey;
+        | FinancialDashboardMonthlyTransactionsAction["setTransactionsCalendarChartYAxisVariable"];
+      payload: FinancialMetricsCalendarChartsKey;
     }
   | {
       type:
-        | FinancialDashboardMonthlyTransactionsAction['setTransactionsPieChartYAxisVariable'];
-      payload: FinancialMetricPieObjKey;
+        | FinancialDashboardMonthlyTransactionsAction["setTransactionsPieChartYAxisVariable"];
+      payload: FinancialMetricsPieChartsKey;
     };
 
 export type {

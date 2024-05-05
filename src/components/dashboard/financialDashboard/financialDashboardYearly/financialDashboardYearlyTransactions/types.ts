@@ -1,31 +1,31 @@
 import {
-  FinancialMetricBarLineObjKey,
-  FinancialMetricPieObjKey,
-} from '../../utils';
+  FinancialMetricsBarLineChartsKey,
+  FinancialMetricsPieChartsKey,
+} from "../../utils";
 
 type FinancialDashboardYearlyTransactionsState = {
-  transactionsBarChartYAxisVariable: FinancialMetricBarLineObjKey;
-  transactionsLineChartYAxisVariable: FinancialMetricBarLineObjKey;
-  transactionsPieChartYAxisVariable: FinancialMetricPieObjKey;
+  transactionsBarChartYAxisVariable: FinancialMetricsBarLineChartsKey;
+  transactionsLineChartYAxisVariable: FinancialMetricsBarLineChartsKey;
+  transactionsPieChartYAxisVariable: FinancialMetricsPieChartsKey;
 };
 
 type FinancialDashboardYearlyTransactionsAction = {
-  setTransactionsBarChartYAxisVariable: 'setTransactionsBarChartYAxisVariable';
-  setTransactionsLineChartYAxisVariable: 'setTransactionsLineChartYAxisVariable';
-  setTransactionsPieChartYAxisVariable: 'setTransactionsPieChartYAxisVariable';
+  setTransactionsBarChartYAxisVariable: "setTransactionsBarChartYAxisVariable";
+  setTransactionsLineChartYAxisVariable: "setTransactionsLineChartYAxisVariable";
+  setTransactionsPieChartYAxisVariable: "setTransactionsPieChartYAxisVariable";
 };
 
 type FinancialDashboardYearlyTransactionsDispatch =
   | {
       type:
-        | FinancialDashboardYearlyTransactionsAction['setTransactionsBarChartYAxisVariable']
-        | FinancialDashboardYearlyTransactionsAction['setTransactionsLineChartYAxisVariable'];
-      payload: FinancialMetricBarLineObjKey;
+        | FinancialDashboardYearlyTransactionsAction["setTransactionsBarChartYAxisVariable"]
+        | FinancialDashboardYearlyTransactionsAction["setTransactionsLineChartYAxisVariable"];
+      payload: FinancialMetricsBarLineChartsKey;
     }
   | {
       type:
-        | FinancialDashboardYearlyTransactionsAction['setTransactionsPieChartYAxisVariable'];
-      payload: FinancialMetricPieObjKey;
+        | FinancialDashboardYearlyTransactionsAction["setTransactionsPieChartYAxisVariable"];
+      payload: FinancialMetricsPieChartsKey;
     };
 
 export type {

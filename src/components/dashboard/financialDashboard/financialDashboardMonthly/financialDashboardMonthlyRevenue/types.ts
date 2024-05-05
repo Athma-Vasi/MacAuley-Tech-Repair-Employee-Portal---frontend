@@ -1,39 +1,38 @@
 import {
-  FinancialMetricBarLineObjKey,
-  FinancialMetricCalendarObjKey,
-  FinancialMetricPieObjKey,
-} from '../../utils';
+  FinancialMetricsBarLineChartsKey,
+  FinancialMetricsCalendarChartsKey,
+  FinancialMetricsPieChartsKey,
+} from "../../utils";
 
 type FinancialDashboardMonthlyRevenueState = {
-  revenueBarChartYAxisVariable: FinancialMetricBarLineObjKey;
-  revenueCalendarChartYAxisVariable: FinancialMetricCalendarObjKey;
-  revenueLineChartYAxisVariable: FinancialMetricBarLineObjKey;
-  revenuePieChartYAxisVariable: FinancialMetricPieObjKey;
+  revenueBarChartYAxisVariable: FinancialMetricsBarLineChartsKey;
+  revenueCalendarChartYAxisVariable: FinancialMetricsCalendarChartsKey;
+  revenueLineChartYAxisVariable: FinancialMetricsBarLineChartsKey;
+  revenuePieChartYAxisVariable: FinancialMetricsPieChartsKey;
 };
 
 type FinancialDashboardMonthlyRevenueAction = {
-  setRevenueBarChartYAxisVariable: 'setRevenueBarChartYAxisVariable';
-  setRevenueCalendarChartYAxisVariable: 'setRevenueCalendarChartYAxisVariable';
-  setRevenueLineChartYAxisVariable: 'setRevenueLineChartYAxisVariable';
-  setRevenuePieChartYAxisVariable: 'setRevenuePieChartYAxisVariable';
+  setRevenueBarChartYAxisVariable: "setRevenueBarChartYAxisVariable";
+  setRevenueCalendarChartYAxisVariable: "setRevenueCalendarChartYAxisVariable";
+  setRevenueLineChartYAxisVariable: "setRevenueLineChartYAxisVariable";
+  setRevenuePieChartYAxisVariable: "setRevenuePieChartYAxisVariable";
 };
 
 type FinancialDashboardMonthlyRevenueDispatch =
   | {
       type:
-        | FinancialDashboardMonthlyRevenueAction['setRevenueBarChartYAxisVariable']
-        | FinancialDashboardMonthlyRevenueAction['setRevenueLineChartYAxisVariable'];
-      payload: FinancialMetricBarLineObjKey;
+        | FinancialDashboardMonthlyRevenueAction["setRevenueBarChartYAxisVariable"]
+        | FinancialDashboardMonthlyRevenueAction["setRevenueLineChartYAxisVariable"];
+      payload: FinancialMetricsBarLineChartsKey;
     }
   | {
       type:
-        | FinancialDashboardMonthlyRevenueAction['setRevenueCalendarChartYAxisVariable'];
-      payload: FinancialMetricCalendarObjKey;
+        | FinancialDashboardMonthlyRevenueAction["setRevenueCalendarChartYAxisVariable"];
+      payload: FinancialMetricsCalendarChartsKey;
     }
   | {
-      type:
-        | FinancialDashboardMonthlyRevenueAction['setRevenuePieChartYAxisVariable'];
-      payload: FinancialMetricPieObjKey;
+      type: FinancialDashboardMonthlyRevenueAction["setRevenuePieChartYAxisVariable"];
+      payload: FinancialMetricsPieChartsKey;
     };
 
 export type {

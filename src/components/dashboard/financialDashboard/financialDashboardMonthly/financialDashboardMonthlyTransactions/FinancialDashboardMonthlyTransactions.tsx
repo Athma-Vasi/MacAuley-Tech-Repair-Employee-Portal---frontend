@@ -18,7 +18,6 @@ import {
 } from "../../../../charts";
 import { MONTHS } from "../../../constants";
 import DashboardMetricsLayout from "../../../DashboardMetricsLayout";
-import { FinancialMetricsCards } from "../../../utilsTSX";
 import { BusinessMetricStoreLocation, Year } from "../../../types";
 import { returnChartTitleNavigateLinks, returnStatistics } from "../../../utils";
 import {
@@ -27,11 +26,12 @@ import {
   FINANCIAL_PIE_Y_AXIS_DATA,
 } from "../../constants";
 import {
-  FinancialMetricBarLineObjKey,
-  FinancialMetricCalendarObjKey,
-  FinancialMetricPieObjKey,
+  FinancialMetricsBarLineChartsKey,
+  FinancialMetricsCalendarChartsKey,
   FinancialMetricsCharts,
+  FinancialMetricsPieChartsKey,
 } from "../../utils";
+import { FinancialMetricsCards } from "../../utilsTSX";
 import {
   financialDashboardMonthlyTransactionsAction,
   financialDashboardMonthlyTransactionsReducer,
@@ -81,16 +81,10 @@ function FinancialDashboardMonthlyTransactions({
     transactionsPieChartYAxisVariable,
   } = financialDashboardMonthlyTransactionsState;
 
-  // transactions
-
-  // transactions -> statistics
-  const statisticsTransactions = returnStatistics<FinancialMetricBarLineObjKey>(
-    monthlyChartsTransactions.barChartsObj
+  const statisticsTransactions = returnStatistics<FinancialMetricsBarLineChartsKey>(
+    monthlyChartsTransactions.bar
   );
 
-  // transactions -> charts
-
-  // transactions  -> charts -> titles & navlinks
   const {
     barChartHeading,
     calendarChartHeading,
@@ -115,10 +109,7 @@ function FinancialDashboardMonthlyTransactions({
     months: MONTHS,
   });
 
-  // transactions -> charts -> pie
-
-  // transactions -> charts -> pie -> expand chart button
-  const [createdExpandPieChartButton] = returnAccessibleButtonElements([
+  const [expandPieChartButton] = returnAccessibleButtonElements([
     {
       buttonLabel: "Expand",
       semanticDescription: `Expand and customize ${pieChartHeading}`,
@@ -127,8 +118,7 @@ function FinancialDashboardMonthlyTransactions({
         globalDispatch({
           type: globalAction.setCustomizeChartsPageData,
           payload: {
-            chartData:
-              monthlyChartsTransactions.pieChartsObj[transactionsPieChartYAxisVariable],
+            chartData: monthlyChartsTransactions.pie[transactionsPieChartYAxisVariable],
             chartTitle: pieChartHeading,
             chartKind: "pie",
             chartUnitKind: "number",
@@ -141,8 +131,7 @@ function FinancialDashboardMonthlyTransactions({
     },
   ]);
 
-  //  transactions -> charts -> pie -> y-axis select input
-  const [createdTransactionsPieChartYAxisVariablesSelectInput] =
+  const [transactionsPieChartYAxisVariablesSelectInput] =
     returnAccessibleSelectInputElements([
       {
         data: FINANCIAL_PIE_Y_AXIS_DATA,
@@ -150,30 +139,24 @@ function FinancialDashboardMonthlyTransactions({
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           financialDashboardMonthlyTransactionsDispatch({
             type: financialDashboardMonthlyTransactionsAction.setTransactionsPieChartYAxisVariable,
-            payload: event.currentTarget.value as FinancialMetricPieObjKey,
+            payload: event.currentTarget.value as FinancialMetricsPieChartsKey,
           });
         },
         value: transactionsPieChartYAxisVariable,
       },
     ]);
 
-  // transactions -> charts -> pie -> display
-  const displayTransactionsPieChart = (
+  const transactionsPieChart = (
     <ResponsivePieChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
-      pieChartData={
-        monthlyChartsTransactions.pieChartsObj[transactionsPieChartYAxisVariable]
-      }
+      pieChartData={monthlyChartsTransactions.pie[transactionsPieChartYAxisVariable]}
       hideControls
       unitKind="number"
     />
   );
 
-  // transactions -> charts -> bar
-
-  // transactions -> charts -> bar -> expand chart button
-  const [createdExpandBarChartButton] = returnAccessibleButtonElements([
+  const [expandBarChartButton] = returnAccessibleButtonElements([
     {
       buttonLabel: "Expand",
       semanticDescription: `Expand and customize ${barChartHeading}`,
@@ -182,8 +165,7 @@ function FinancialDashboardMonthlyTransactions({
         globalDispatch({
           type: globalAction.setCustomizeChartsPageData,
           payload: {
-            chartData:
-              monthlyChartsTransactions.barChartsObj[transactionsBarChartYAxisVariable],
+            chartData: monthlyChartsTransactions.bar[transactionsBarChartYAxisVariable],
             chartTitle: barChartHeading,
             chartKind: "bar",
             chartUnitKind: "number",
@@ -196,8 +178,7 @@ function FinancialDashboardMonthlyTransactions({
     },
   ]);
 
-  // transactions -> charts -> bar -> y-axis select input
-  const [createdTransactionsBarChartYAxisVariablesSelectInput] =
+  const [transactionsBarChartYAxisVariablesSelectInput] =
     returnAccessibleSelectInputElements([
       {
         data: FINANCIAL_LINE_BAR_Y_AXIS_DATA,
@@ -205,19 +186,16 @@ function FinancialDashboardMonthlyTransactions({
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           financialDashboardMonthlyTransactionsDispatch({
             type: financialDashboardMonthlyTransactionsAction.setTransactionsBarChartYAxisVariable,
-            payload: event.currentTarget.value as FinancialMetricBarLineObjKey,
+            payload: event.currentTarget.value as FinancialMetricsBarLineChartsKey,
           });
         },
         value: transactionsBarChartYAxisVariable,
       },
     ]);
 
-  // transactions -> charts -> bar -> display
-  const displayTransactionsBarChart = (
+  const transactionsBarChart = (
     <ResponsiveBarChart
-      barChartData={
-        monthlyChartsTransactions.barChartsObj[transactionsBarChartYAxisVariable]
-      }
+      barChartData={monthlyChartsTransactions.bar[transactionsBarChartYAxisVariable]}
       chartHeight={chartHeight}
       chartWidth={chartWidth}
       hideControls
@@ -227,9 +205,6 @@ function FinancialDashboardMonthlyTransactions({
     />
   );
 
-  // transactions -> charts -> line
-
-  // transactions -> charts -> line -> expand chart button
   const [expandLineChartButton] = returnAccessibleButtonElements([
     {
       buttonLabel: "Expand",
@@ -239,8 +214,7 @@ function FinancialDashboardMonthlyTransactions({
         globalDispatch({
           type: globalAction.setCustomizeChartsPageData,
           payload: {
-            chartData:
-              monthlyChartsTransactions.lineChartsObj[transactionsLineChartYAxisVariable],
+            chartData: monthlyChartsTransactions.line[transactionsLineChartYAxisVariable],
             chartTitle: lineChartHeading,
             chartKind: "line",
             chartUnitKind: "number",
@@ -253,8 +227,7 @@ function FinancialDashboardMonthlyTransactions({
     },
   ]);
 
-  // transactions -> charts -> line -> y-axis select input
-  const [createdTransactionsLineChartYAxisVariablesSelectInput] =
+  const [transactionsLineChartYAxisVariablesSelectInput] =
     returnAccessibleSelectInputElements([
       {
         data: FINANCIAL_LINE_BAR_Y_AXIS_DATA,
@@ -262,30 +235,24 @@ function FinancialDashboardMonthlyTransactions({
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           financialDashboardMonthlyTransactionsDispatch({
             type: financialDashboardMonthlyTransactionsAction.setTransactionsLineChartYAxisVariable,
-            payload: event.currentTarget.value as FinancialMetricBarLineObjKey,
+            payload: event.currentTarget.value as FinancialMetricsBarLineChartsKey,
           });
         },
         value: transactionsLineChartYAxisVariable,
       },
     ]);
 
-  // transactions -> charts -> line -> display
-  const displayTransactionsLineChart = (
+  const transactionsLineChart = (
     <ResponsiveLineChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
-      lineChartData={
-        monthlyChartsTransactions.lineChartsObj[transactionsLineChartYAxisVariable]
-      }
+      lineChartData={monthlyChartsTransactions.line[transactionsLineChartYAxisVariable]}
       hideControls
       yFormat={(y) => `${addCommaSeparator(y)}`}
       unitKind="number"
     />
   );
 
-  // transactions -> charts -> calendar
-
-  // transactions -> charts -> calendar -> expand chart button
   const [expandCalendarChartButton] = returnAccessibleButtonElements([
     {
       buttonLabel: "Expand",
@@ -296,9 +263,7 @@ function FinancialDashboardMonthlyTransactions({
           type: globalAction.setCustomizeChartsPageData,
           payload: {
             chartData:
-              monthlyChartsTransactions.calendarChartsObj[
-                transactionsCalendarChartYAxisVariable
-              ],
+              monthlyChartsTransactions.calendar[transactionsCalendarChartYAxisVariable],
             chartTitle: calendarChartHeading,
             chartKind: "calendar",
             chartUnitKind: "number",
@@ -311,8 +276,7 @@ function FinancialDashboardMonthlyTransactions({
     },
   ]);
 
-  // transactions -> charts -> calendar -> y-axis select input
-  const [createdTransactionsCalendarChartYAxisVariablesSelectInput] =
+  const [transactionsCalendarChartYAxisVariablesSelectInput] =
     returnAccessibleSelectInputElements([
       {
         data: FINANCIAL_CALENDAR_Y_AXIS_DATA,
@@ -320,20 +284,17 @@ function FinancialDashboardMonthlyTransactions({
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           financialDashboardMonthlyTransactionsDispatch({
             type: financialDashboardMonthlyTransactionsAction.setTransactionsCalendarChartYAxisVariable,
-            payload: event.currentTarget.value as FinancialMetricCalendarObjKey,
+            payload: event.currentTarget.value as FinancialMetricsCalendarChartsKey,
           });
         },
         value: transactionsCalendarChartYAxisVariable,
       },
     ]);
 
-  // transactions -> charts -> calendar -> display
-  const displayTransactionsCalendarChart = (
+  const transactionsCalendarChart = (
     <ResponsiveCalendarChart
       calendarChartData={
-        monthlyChartsTransactions.calendarChartsObj[
-          transactionsCalendarChartYAxisVariable
-        ]
+        monthlyChartsTransactions.calendar[transactionsCalendarChartYAxisVariable]
       }
       from={`${year}-${month}-01`}
       chartHeight={chartHeight}
@@ -343,37 +304,35 @@ function FinancialDashboardMonthlyTransactions({
     />
   );
 
-  const displayTransactionsSection = (
+  const financialDashboardMonthlyTransactions = (
     <DashboardMetricsLayout
-      barChart={displayTransactionsBarChart}
+      barChart={transactionsBarChart}
       barChartHeading={barChartHeading}
-      barChartYAxisSelectInput={createdTransactionsBarChartYAxisVariablesSelectInput}
+      barChartYAxisSelectInput={transactionsBarChartYAxisVariablesSelectInput}
       borderColor={borderColor}
-      expandBarChartButton={createdExpandBarChartButton}
+      expandBarChartButton={expandBarChartButton}
       expandLineChartButton={expandLineChartButton}
       expandCalendarChartButton={expandCalendarChartButton}
-      expandPieChartButton={createdExpandPieChartButton}
-      lineChart={displayTransactionsLineChart}
+      expandPieChartButton={expandPieChartButton}
+      lineChart={transactionsLineChart}
       lineChartHeading={lineChartHeading}
-      lineChartYAxisSelectInput={createdTransactionsLineChartYAxisVariablesSelectInput}
+      lineChartYAxisSelectInput={transactionsLineChartYAxisVariablesSelectInput}
       overviewCards={monthlyCardsTransactions}
       padding={padding}
-      pieChart={displayTransactionsPieChart}
+      pieChart={transactionsPieChart}
       pieChartHeading={pieChartHeading}
-      pieChartYAxisSelectInput={createdTransactionsPieChartYAxisVariablesSelectInput}
+      pieChartYAxisSelectInput={transactionsPieChartYAxisVariablesSelectInput}
       sectionHeading={`${splitCamelCase(storeLocation)} Monthly Transactions`}
       semanticLabel="transactions"
       statisticsMap={statisticsTransactions}
       width={width}
-      calendarChart={displayTransactionsCalendarChart}
+      calendarChart={transactionsCalendarChart}
       calendarChartHeading={calendarChartHeading}
-      calendarChartYAxisSelectInput={
-        createdTransactionsCalendarChartYAxisVariablesSelectInput
-      }
+      calendarChartYAxisSelectInput={transactionsCalendarChartYAxisVariablesSelectInput}
     />
   );
 
-  return displayTransactionsSection;
+  return financialDashboardMonthlyTransactions;
 }
 
 export default FinancialDashboardMonthlyTransactions;

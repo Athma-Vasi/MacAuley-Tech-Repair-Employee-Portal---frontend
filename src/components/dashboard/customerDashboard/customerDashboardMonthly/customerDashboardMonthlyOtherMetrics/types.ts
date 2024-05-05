@@ -1,8 +1,8 @@
-import { CustomerChurnRetentionObjKey } from "../../utilsOld";
+import { CustomerMetricsChurnRetentionChartsKey } from "../../utils";
 
 type CustomerDashboardMonthlyOtherMetricsState = {
-  otherMetricsBarChartYAxisVariable: CustomerChurnRetentionObjKey;
-  otherMetricsLineChartYAxisVariable: CustomerChurnRetentionObjKey;
+  otherMetricsBarChartYAxisVariable: CustomerMetricsChurnRetentionChartsKey;
+  otherMetricsLineChartYAxisVariable: CustomerMetricsChurnRetentionChartsKey;
 };
 
 type CustomerDashboardMonthlyOtherMetricsAction = {
@@ -13,11 +13,11 @@ type CustomerDashboardMonthlyOtherMetricsAction = {
 type CustomerDashboardMonthlyOtherMetricsDispatch =
   | {
       type: CustomerDashboardMonthlyOtherMetricsAction["setOtherMetricsBarChartYAxisVariable"];
-      payload: CustomerChurnRetentionObjKey;
+      payload: CustomerMetricsChurnRetentionChartsKey;
     }
   | {
       type: CustomerDashboardMonthlyOtherMetricsAction["setOtherMetricsLineChartYAxisVariable"];
-      payload: CustomerChurnRetentionObjKey;
+      payload: CustomerMetricsChurnRetentionChartsKey;
     };
 
 export type {

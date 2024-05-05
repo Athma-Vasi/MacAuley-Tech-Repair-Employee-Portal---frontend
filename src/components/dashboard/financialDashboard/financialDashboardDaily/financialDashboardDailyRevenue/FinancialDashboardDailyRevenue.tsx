@@ -18,7 +18,6 @@ import {
 } from "../../../../charts";
 import { MONTHS } from "../../../constants";
 import DashboardMetricsLayout from "../../../DashboardMetricsLayout";
-import { FinancialMetricsCards } from "../../../utilsTSX";
 import { BusinessMetricStoreLocation, Year } from "../../../types";
 import { returnChartTitleNavigateLinks, returnStatistics } from "../../../utils";
 import {
@@ -27,11 +26,12 @@ import {
   FINANCIAL_PIE_Y_AXIS_DATA,
 } from "../../constants";
 import {
-  FinancialMetricBarLineObjKey,
-  FinancialMetricCalendarObjKey,
-  FinancialMetricPieObjKey,
+  FinancialMetricsBarLineChartsKey,
+  FinancialMetricsCalendarChartsKey,
   FinancialMetricsCharts,
+  FinancialMetricsPieChartsKey,
 } from "../../utils";
+import { FinancialMetricsCards } from "../../utilsTSX";
 import {
   financialDashboardDailyRevenueAction,
   financialDashboardDailyRevenueReducer,
@@ -79,16 +79,10 @@ function FinancialDashboardDailyRevenue({
     revenuePieChartYAxisVariable,
   } = financialDashboardDailyRevenueState;
 
-  // revenue
-
-  // revenue -> statistics
-  const statisticsRevenue = returnStatistics<FinancialMetricBarLineObjKey>(
-    dailyChartsRevenue.barChartsObj
+  const statisticsRevenue = returnStatistics<FinancialMetricsBarLineChartsKey>(
+    dailyChartsRevenue.bar
   );
 
-  // revenue -> charts
-
-  // revenue  -> charts -> titles & navlinks
   const {
     barChartHeading,
     calendarChartHeading,
@@ -113,10 +107,7 @@ function FinancialDashboardDailyRevenue({
     months: MONTHS,
   });
 
-  // revenue -> charts -> pie
-
-  // revenue -> charts -> pie -> expand chart button
-  const [createdExpandPieChartButton] = returnAccessibleButtonElements([
+  const [expandPieChartButton] = returnAccessibleButtonElements([
     {
       buttonLabel: "Expand",
       semanticDescription: `Expand and customize ${pieChartHeading}`,
@@ -125,7 +116,7 @@ function FinancialDashboardDailyRevenue({
         globalDispatch({
           type: globalAction.setCustomizeChartsPageData,
           payload: {
-            chartData: dailyChartsRevenue.pieChartsObj[revenuePieChartYAxisVariable],
+            chartData: dailyChartsRevenue.pie[revenuePieChartYAxisVariable],
             chartTitle: pieChartHeading,
             chartKind: "pie",
             chartUnitKind: "currency",
@@ -138,36 +129,30 @@ function FinancialDashboardDailyRevenue({
     },
   ]);
 
-  //  revenue -> charts -> pie -> y-axis select input
-  const [createdRevenuePieChartYAxisVariablesSelectInput] =
-    returnAccessibleSelectInputElements([
-      {
-        data: FINANCIAL_PIE_Y_AXIS_DATA,
-        label: "Y-Axis Pie",
-        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-          financialDashboardDailyRevenueDispatch({
-            type: financialDashboardDailyRevenueAction.setRevenuePieChartYAxisVariable,
-            payload: event.currentTarget.value as FinancialMetricPieObjKey,
-          });
-        },
-        value: revenuePieChartYAxisVariable,
+  const [revenuePieChartYAxisVariablesSelectInput] = returnAccessibleSelectInputElements([
+    {
+      data: FINANCIAL_PIE_Y_AXIS_DATA,
+      label: "Y-Axis Pie",
+      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+        financialDashboardDailyRevenueDispatch({
+          type: financialDashboardDailyRevenueAction.setRevenuePieChartYAxisVariable,
+          payload: event.currentTarget.value as FinancialMetricsPieChartsKey,
+        });
       },
-    ]);
+      value: revenuePieChartYAxisVariable,
+    },
+  ]);
 
-  // revenue -> charts -> pie -> display
-  const displayRevenuePieChart = (
+  const revenuePieChart = (
     <ResponsivePieChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
-      pieChartData={dailyChartsRevenue.pieChartsObj[revenuePieChartYAxisVariable]}
+      pieChartData={dailyChartsRevenue.pie[revenuePieChartYAxisVariable]}
       hideControls
     />
   );
 
-  // revenue -> charts -> bar
-
-  // revenue -> charts -> bar -> expand chart button
-  const [createdExpandBarChartButton] = returnAccessibleButtonElements([
+  const [expandBarChartButton] = returnAccessibleButtonElements([
     {
       buttonLabel: "Expand",
       semanticDescription: `Expand and customize ${barChartHeading}`,
@@ -176,7 +161,7 @@ function FinancialDashboardDailyRevenue({
         globalDispatch({
           type: globalAction.setCustomizeChartsPageData,
           payload: {
-            chartData: dailyChartsRevenue.barChartsObj[revenueBarChartYAxisVariable],
+            chartData: dailyChartsRevenue.bar[revenueBarChartYAxisVariable],
             chartTitle: barChartHeading,
             chartKind: "bar",
             chartUnitKind: "currency",
@@ -189,26 +174,23 @@ function FinancialDashboardDailyRevenue({
     },
   ]);
 
-  // revenue -> charts -> bar -> y-axis select input
-  const [createdRevenueBarChartYAxisVariablesSelectInput] =
-    returnAccessibleSelectInputElements([
-      {
-        data: FINANCIAL_LINE_BAR_Y_AXIS_DATA,
-        label: "Y-Axis Bar",
-        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-          financialDashboardDailyRevenueDispatch({
-            type: financialDashboardDailyRevenueAction.setRevenueBarChartYAxisVariable,
-            payload: event.currentTarget.value as FinancialMetricBarLineObjKey,
-          });
-        },
-        value: revenueBarChartYAxisVariable,
+  const [revenueBarChartYAxisVariablesSelectInput] = returnAccessibleSelectInputElements([
+    {
+      data: FINANCIAL_LINE_BAR_Y_AXIS_DATA,
+      label: "Y-Axis Bar",
+      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+        financialDashboardDailyRevenueDispatch({
+          type: financialDashboardDailyRevenueAction.setRevenueBarChartYAxisVariable,
+          payload: event.currentTarget.value as FinancialMetricsBarLineChartsKey,
+        });
       },
-    ]);
+      value: revenueBarChartYAxisVariable,
+    },
+  ]);
 
-  // revenue -> charts -> bar -> display
-  const displayRevenueBarChart = (
+  const revenueBarChart = (
     <ResponsiveBarChart
-      barChartData={dailyChartsRevenue.barChartsObj[revenueBarChartYAxisVariable]}
+      barChartData={dailyChartsRevenue.bar[revenueBarChartYAxisVariable]}
       indexBy="Days"
       keys={FINANCIAL_LINE_BAR_Y_AXIS_DATA.map((obj) => obj.label)}
       chartHeight={chartHeight}
@@ -217,9 +199,6 @@ function FinancialDashboardDailyRevenue({
     />
   );
 
-  // revenue -> charts -> line
-
-  // revenue -> charts -> line -> expand chart button
   const [expandLineChartButton] = returnAccessibleButtonElements([
     {
       buttonLabel: "Expand",
@@ -229,7 +208,7 @@ function FinancialDashboardDailyRevenue({
         globalDispatch({
           type: globalAction.setCustomizeChartsPageData,
           payload: {
-            chartData: dailyChartsRevenue.lineChartsObj[revenueLineChartYAxisVariable],
+            chartData: dailyChartsRevenue.line[revenueLineChartYAxisVariable],
             chartTitle: lineChartHeading,
             chartKind: "line",
             chartUnitKind: "currency",
@@ -242,37 +221,33 @@ function FinancialDashboardDailyRevenue({
     },
   ]);
 
-  // revenue -> charts -> line -> y-axis select input
-  const [createdRevenueLineChartYAxisVariablesSelectInput] =
-    returnAccessibleSelectInputElements([
+  const [revenueLineChartYAxisVariablesSelectInput] = returnAccessibleSelectInputElements(
+    [
       {
         data: FINANCIAL_LINE_BAR_Y_AXIS_DATA,
         label: "Y-Axis Line",
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           financialDashboardDailyRevenueDispatch({
             type: financialDashboardDailyRevenueAction.setRevenueLineChartYAxisVariable,
-            payload: event.currentTarget.value as FinancialMetricBarLineObjKey,
+            payload: event.currentTarget.value as FinancialMetricsBarLineChartsKey,
           });
         },
         value: revenueLineChartYAxisVariable,
       },
-    ]);
+    ]
+  );
 
-  // revenue -> charts -> line -> display
-  const displayRevenueLineChart = (
+  const revenueLineChart = (
     <ResponsiveLineChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
-      lineChartData={dailyChartsRevenue.lineChartsObj[revenueLineChartYAxisVariable]}
+      lineChartData={dailyChartsRevenue.line[revenueLineChartYAxisVariable]}
       hideControls
       xFormat={(x) => `Day - ${x}`}
       yFormat={(y) => `$${addCommaSeparator(y)}`}
     />
   );
 
-  // revenue -> charts -> calendar
-
-  // revenue -> charts -> calendar -> expand chart button
   const [expandCalendarChartButton] = returnAccessibleButtonElements([
     {
       buttonLabel: "Expand",
@@ -282,8 +257,7 @@ function FinancialDashboardDailyRevenue({
         globalDispatch({
           type: globalAction.setCustomizeChartsPageData,
           payload: {
-            chartData:
-              dailyChartsRevenue.calendarChartsObj[revenueCalendarChartYAxisVariable],
+            chartData: dailyChartsRevenue.calendar[revenueCalendarChartYAxisVariable],
             chartTitle: calendarChartHeading,
             chartKind: "calendar",
             chartUnitKind: "currency",
@@ -296,8 +270,7 @@ function FinancialDashboardDailyRevenue({
     },
   ]);
 
-  // revenue -> charts -> calendar -> y-axis select input
-  const [createdRevenueCalendarChartYAxisVariablesSelectInput] =
+  const [revenueCalendarChartYAxisVariablesSelectInput] =
     returnAccessibleSelectInputElements([
       {
         data: FINANCIAL_CALENDAR_Y_AXIS_DATA,
@@ -305,19 +278,16 @@ function FinancialDashboardDailyRevenue({
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           financialDashboardDailyRevenueDispatch({
             type: financialDashboardDailyRevenueAction.setRevenueCalendarChartYAxisVariable,
-            payload: event.currentTarget.value as FinancialMetricCalendarObjKey,
+            payload: event.currentTarget.value as FinancialMetricsCalendarChartsKey,
           });
         },
         value: revenueCalendarChartYAxisVariable,
       },
     ]);
 
-  // revenue -> charts -> calendar -> display
-  const displayRevenueCalendarChart = (
+  const revenueCalendarChart = (
     <ResponsiveCalendarChart
-      calendarChartData={
-        dailyChartsRevenue.calendarChartsObj[revenueCalendarChartYAxisVariable]
-      }
+      calendarChartData={dailyChartsRevenue.calendar[revenueCalendarChartYAxisVariable]}
       from={`${year}-${month}-01`}
       chartHeight={chartHeight}
       chartWidth={chartWidth}
@@ -326,36 +296,36 @@ function FinancialDashboardDailyRevenue({
     />
   );
 
-  const displayRevenueSection = (
+  const financialDashboardDailyRevenue = (
     <DashboardMetricsLayout
-      barChart={displayRevenueBarChart}
+      barChart={revenueBarChart}
       barChartHeading={barChartHeading}
-      barChartYAxisSelectInput={createdRevenueBarChartYAxisVariablesSelectInput}
+      barChartYAxisSelectInput={revenueBarChartYAxisVariablesSelectInput}
       borderColor={borderColor}
-      expandBarChartButton={createdExpandBarChartButton}
+      expandBarChartButton={expandBarChartButton}
       expandLineChartButton={expandLineChartButton}
       expandCalendarChartButton={expandCalendarChartButton}
-      expandPieChartButton={createdExpandPieChartButton}
+      expandPieChartButton={expandPieChartButton}
       isMoney
-      lineChart={displayRevenueLineChart}
+      lineChart={revenueLineChart}
       lineChartHeading={lineChartHeading}
-      lineChartYAxisSelectInput={createdRevenueLineChartYAxisVariablesSelectInput}
+      lineChartYAxisSelectInput={revenueLineChartYAxisVariablesSelectInput}
       overviewCards={dailyCardsRevenue}
       padding={padding}
-      pieChart={displayRevenuePieChart}
+      pieChart={revenuePieChart}
       pieChartHeading={pieChartHeading}
-      pieChartYAxisSelectInput={createdRevenuePieChartYAxisVariablesSelectInput}
+      pieChartYAxisSelectInput={revenuePieChartYAxisVariablesSelectInput}
       sectionHeading={`${splitCamelCase(storeLocation)} Daily Revenue`}
       semanticLabel="revenue"
       statisticsMap={statisticsRevenue}
       width={width}
-      calendarChart={displayRevenueCalendarChart}
+      calendarChart={revenueCalendarChart}
       calendarChartHeading={calendarChartHeading}
-      calendarChartYAxisSelectInput={createdRevenueCalendarChartYAxisVariablesSelectInput}
+      calendarChartYAxisSelectInput={revenueCalendarChartYAxisVariablesSelectInput}
     />
   );
 
-  return displayRevenueSection;
+  return financialDashboardDailyRevenue;
 }
 
 export default FinancialDashboardDailyRevenue;

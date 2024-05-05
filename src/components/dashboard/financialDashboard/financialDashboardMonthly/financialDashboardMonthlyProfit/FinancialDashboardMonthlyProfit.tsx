@@ -18,7 +18,6 @@ import {
 } from "../../../../charts";
 import { MONTHS } from "../../../constants";
 import DashboardMetricsLayout from "../../../DashboardMetricsLayout";
-import { FinancialMetricsCards } from "../../../utilsTSX";
 import { BusinessMetricStoreLocation, Year } from "../../../types";
 import { returnChartTitleNavigateLinks, returnStatistics } from "../../../utils";
 import {
@@ -27,11 +26,12 @@ import {
   FINANCIAL_PIE_Y_AXIS_DATA,
 } from "../../constants";
 import {
-  FinancialMetricBarLineObjKey,
-  FinancialMetricCalendarObjKey,
-  FinancialMetricPieObjKey,
+  FinancialMetricsBarLineChartsKey,
+  FinancialMetricsCalendarChartsKey,
   FinancialMetricsCharts,
+  FinancialMetricsPieChartsKey,
 } from "../../utils";
+import { FinancialMetricsCards } from "../../utilsTSX";
 import {
   financialDashboardMonthlyProfitAction,
   financialDashboardMonthlyProfitReducer,
@@ -79,16 +79,10 @@ function FinancialDashboardMonthlyProfit({
     profitPieChartYAxisVariable,
   } = financialDashboardMonthlyProfitState;
 
-  // profit
-
-  // profit -> statistics
-  const statisticsProfit = returnStatistics<FinancialMetricBarLineObjKey>(
-    monthlyChartsProfit.barChartsObj
+  const statisticsProfit = returnStatistics<FinancialMetricsBarLineChartsKey>(
+    monthlyChartsProfit.bar
   );
 
-  // profit -> charts
-
-  // profit  -> charts -> titles & navlinks
   const {
     barChartHeading,
     calendarChartHeading,
@@ -113,10 +107,7 @@ function FinancialDashboardMonthlyProfit({
     months: MONTHS,
   });
 
-  // profit -> charts -> pie
-
-  // profit -> charts -> pie -> expand chart button
-  const [createdExpandPieChartButton] = returnAccessibleButtonElements([
+  const [expandPieChartButton] = returnAccessibleButtonElements([
     {
       buttonLabel: "Expand",
       semanticDescription: `Expand and customize ${pieChartHeading}`,
@@ -125,7 +116,7 @@ function FinancialDashboardMonthlyProfit({
         globalDispatch({
           type: globalAction.setCustomizeChartsPageData,
           payload: {
-            chartData: monthlyChartsProfit.pieChartsObj[profitPieChartYAxisVariable],
+            chartData: monthlyChartsProfit.pie[profitPieChartYAxisVariable],
             chartTitle: pieChartHeading,
             chartKind: "pie",
             chartUnitKind: "currency",
@@ -138,36 +129,30 @@ function FinancialDashboardMonthlyProfit({
     },
   ]);
 
-  //  profit -> charts -> pie -> y-axis select input
-  const [createdProfitPieChartYAxisVariablesSelectInput] =
-    returnAccessibleSelectInputElements([
-      {
-        data: FINANCIAL_PIE_Y_AXIS_DATA,
-        label: "Y-Axis Pie",
-        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-          financialDashboardMonthlyProfitDispatch({
-            type: financialDashboardMonthlyProfitAction.setProfitPieChartYAxisVariable,
-            payload: event.currentTarget.value as FinancialMetricPieObjKey,
-          });
-        },
-        value: profitPieChartYAxisVariable,
+  const [profitPieChartYAxisVariablesSelectInput] = returnAccessibleSelectInputElements([
+    {
+      data: FINANCIAL_PIE_Y_AXIS_DATA,
+      label: "Y-Axis Pie",
+      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+        financialDashboardMonthlyProfitDispatch({
+          type: financialDashboardMonthlyProfitAction.setProfitPieChartYAxisVariable,
+          payload: event.currentTarget.value as FinancialMetricsPieChartsKey,
+        });
       },
-    ]);
+      value: profitPieChartYAxisVariable,
+    },
+  ]);
 
-  // profit -> charts -> pie -> display
-  const displayProfitPieChart = (
+  const profitPieChart = (
     <ResponsivePieChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
-      pieChartData={monthlyChartsProfit.pieChartsObj[profitPieChartYAxisVariable]}
+      pieChartData={monthlyChartsProfit.pie[profitPieChartYAxisVariable]}
       hideControls
     />
   );
 
-  // profit -> charts -> bar
-
-  // profit -> charts -> bar -> expand chart button
-  const [createdExpandBarChartButton] = returnAccessibleButtonElements([
+  const [expandBarChartButton] = returnAccessibleButtonElements([
     {
       buttonLabel: "Expand",
       semanticDescription: `Expand and customize ${barChartHeading}`,
@@ -176,7 +161,7 @@ function FinancialDashboardMonthlyProfit({
         globalDispatch({
           type: globalAction.setCustomizeChartsPageData,
           payload: {
-            chartData: monthlyChartsProfit.barChartsObj[profitBarChartYAxisVariable],
+            chartData: monthlyChartsProfit.bar[profitBarChartYAxisVariable],
             chartTitle: barChartHeading,
             chartKind: "bar",
             chartUnitKind: "currency",
@@ -189,26 +174,23 @@ function FinancialDashboardMonthlyProfit({
     },
   ]);
 
-  // profit -> charts -> bar -> y-axis select input
-  const [createdProfitBarChartYAxisVariablesSelectInput] =
-    returnAccessibleSelectInputElements([
-      {
-        data: FINANCIAL_LINE_BAR_Y_AXIS_DATA,
-        label: "Y-Axis Bar",
-        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-          financialDashboardMonthlyProfitDispatch({
-            type: financialDashboardMonthlyProfitAction.setProfitBarChartYAxisVariable,
-            payload: event.currentTarget.value as FinancialMetricBarLineObjKey,
-          });
-        },
-        value: profitBarChartYAxisVariable,
+  const [profitBarChartYAxisVariablesSelectInput] = returnAccessibleSelectInputElements([
+    {
+      data: FINANCIAL_LINE_BAR_Y_AXIS_DATA,
+      label: "Y-Axis Bar",
+      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+        financialDashboardMonthlyProfitDispatch({
+          type: financialDashboardMonthlyProfitAction.setProfitBarChartYAxisVariable,
+          payload: event.currentTarget.value as FinancialMetricsBarLineChartsKey,
+        });
       },
-    ]);
+      value: profitBarChartYAxisVariable,
+    },
+  ]);
 
-  // profit -> charts -> bar -> display
-  const displayProfitBarChart = (
+  const profitBarChart = (
     <ResponsiveBarChart
-      barChartData={monthlyChartsProfit.barChartsObj[profitBarChartYAxisVariable]}
+      barChartData={monthlyChartsProfit.bar[profitBarChartYAxisVariable]}
       indexBy="Months"
       keys={FINANCIAL_LINE_BAR_Y_AXIS_DATA.map((obj) => obj.label)}
       chartHeight={chartHeight}
@@ -217,9 +199,6 @@ function FinancialDashboardMonthlyProfit({
     />
   );
 
-  // profit -> charts -> line
-
-  // profit -> charts -> line -> expand chart button
   const [expandChartButton] = returnAccessibleButtonElements([
     {
       buttonLabel: "Expand",
@@ -229,7 +208,7 @@ function FinancialDashboardMonthlyProfit({
         globalDispatch({
           type: globalAction.setCustomizeChartsPageData,
           payload: {
-            chartData: monthlyChartsProfit.lineChartsObj[profitLineChartYAxisVariable],
+            chartData: monthlyChartsProfit.line[profitLineChartYAxisVariable],
             chartTitle: lineChartHeading,
             chartKind: "line",
             chartUnitKind: "currency",
@@ -242,36 +221,30 @@ function FinancialDashboardMonthlyProfit({
     },
   ]);
 
-  // profit -> charts -> line -> y-axis select input
-  const [createdProfitLineChartYAxisVariablesSelectInput] =
-    returnAccessibleSelectInputElements([
-      {
-        data: FINANCIAL_LINE_BAR_Y_AXIS_DATA,
-        label: "Y-Axis Line",
-        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-          financialDashboardMonthlyProfitDispatch({
-            type: financialDashboardMonthlyProfitAction.setProfitLineChartYAxisVariable,
-            payload: event.currentTarget.value as FinancialMetricBarLineObjKey,
-          });
-        },
-        value: profitLineChartYAxisVariable,
+  const [profitLineChartYAxisVariablesSelectInput] = returnAccessibleSelectInputElements([
+    {
+      data: FINANCIAL_LINE_BAR_Y_AXIS_DATA,
+      label: "Y-Axis Line",
+      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+        financialDashboardMonthlyProfitDispatch({
+          type: financialDashboardMonthlyProfitAction.setProfitLineChartYAxisVariable,
+          payload: event.currentTarget.value as FinancialMetricsBarLineChartsKey,
+        });
       },
-    ]);
+      value: profitLineChartYAxisVariable,
+    },
+  ]);
 
-  // profit -> charts -> line -> display
-  const displayProfitLineChart = (
+  const profitLineChart = (
     <ResponsiveLineChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
-      lineChartData={monthlyChartsProfit.lineChartsObj[profitLineChartYAxisVariable]}
+      lineChartData={monthlyChartsProfit.line[profitLineChartYAxisVariable]}
       hideControls
       yFormat={(y) => `$${addCommaSeparator(y)}`}
     />
   );
 
-  // profit -> charts -> calendar
-
-  // profit -> charts -> calendar -> expand chart button
   const [expandCalendarChartButton] = returnAccessibleButtonElements([
     {
       buttonLabel: "Expand",
@@ -281,8 +254,7 @@ function FinancialDashboardMonthlyProfit({
         globalDispatch({
           type: globalAction.setCustomizeChartsPageData,
           payload: {
-            chartData:
-              monthlyChartsProfit.calendarChartsObj[profitCalendarChartYAxisVariable],
+            chartData: monthlyChartsProfit.calendar[profitCalendarChartYAxisVariable],
             chartTitle: calendarChartHeading,
             chartKind: "calendar",
             chartUnitKind: "currency",
@@ -295,8 +267,7 @@ function FinancialDashboardMonthlyProfit({
     },
   ]);
 
-  // profit -> charts -> calendar -> y-axis select input
-  const [createdProfitCalendarChartYAxisVariablesSelectInput] =
+  const [profitCalendarChartYAxisVariablesSelectInput] =
     returnAccessibleSelectInputElements([
       {
         data: FINANCIAL_CALENDAR_Y_AXIS_DATA,
@@ -304,19 +275,16 @@ function FinancialDashboardMonthlyProfit({
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           financialDashboardMonthlyProfitDispatch({
             type: financialDashboardMonthlyProfitAction.setProfitCalendarChartYAxisVariable,
-            payload: event.currentTarget.value as FinancialMetricCalendarObjKey,
+            payload: event.currentTarget.value as FinancialMetricsCalendarChartsKey,
           });
         },
         value: profitCalendarChartYAxisVariable,
       },
     ]);
 
-  // profit -> charts -> calendar -> display
-  const displayProfitCalendarChart = (
+  const profitCalendarChart = (
     <ResponsiveCalendarChart
-      calendarChartData={
-        monthlyChartsProfit.calendarChartsObj[profitCalendarChartYAxisVariable]
-      }
+      calendarChartData={monthlyChartsProfit.calendar[profitCalendarChartYAxisVariable]}
       from={`${year}-${month}-01`}
       chartHeight={chartHeight}
       chartWidth={chartWidth}
@@ -325,36 +293,36 @@ function FinancialDashboardMonthlyProfit({
     />
   );
 
-  const displayProfitSection = (
+  const financialDashboardMonthlyProfit = (
     <DashboardMetricsLayout
-      barChart={displayProfitBarChart}
+      barChart={profitBarChart}
       barChartHeading={barChartHeading}
-      barChartYAxisSelectInput={createdProfitBarChartYAxisVariablesSelectInput}
+      barChartYAxisSelectInput={profitBarChartYAxisVariablesSelectInput}
       borderColor={borderColor}
-      expandBarChartButton={createdExpandBarChartButton}
+      expandBarChartButton={expandBarChartButton}
       expandLineChartButton={expandChartButton}
       expandCalendarChartButton={expandCalendarChartButton}
-      expandPieChartButton={createdExpandPieChartButton}
+      expandPieChartButton={expandPieChartButton}
       isMoney
-      lineChart={displayProfitLineChart}
+      lineChart={profitLineChart}
       lineChartHeading={lineChartHeading}
-      lineChartYAxisSelectInput={createdProfitLineChartYAxisVariablesSelectInput}
+      lineChartYAxisSelectInput={profitLineChartYAxisVariablesSelectInput}
       overviewCards={monthlyCardsProfit}
       padding={padding}
-      pieChart={displayProfitPieChart}
+      pieChart={profitPieChart}
       pieChartHeading={pieChartHeading}
-      pieChartYAxisSelectInput={createdProfitPieChartYAxisVariablesSelectInput}
+      pieChartYAxisSelectInput={profitPieChartYAxisVariablesSelectInput}
       sectionHeading={`${splitCamelCase(storeLocation)} Monthly Profit`}
       semanticLabel="profit"
       statisticsMap={statisticsProfit}
       width={width}
-      calendarChart={displayProfitCalendarChart}
+      calendarChart={profitCalendarChart}
       calendarChartHeading={calendarChartHeading}
-      calendarChartYAxisSelectInput={createdProfitCalendarChartYAxisVariablesSelectInput}
+      calendarChartYAxisSelectInput={profitCalendarChartYAxisVariablesSelectInput}
     />
   );
 
-  return displayProfitSection;
+  return financialDashboardMonthlyProfit;
 }
 
 export default FinancialDashboardMonthlyProfit;

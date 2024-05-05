@@ -2,9 +2,8 @@ import { Stack } from "@mantine/core";
 
 import { COLORS_SWATCHES } from "../../../../constants/data";
 import { useGlobalState } from "../../../../hooks";
-import { StoreLocation } from "../../../../types";
 import { returnThemeColors } from "../../../../utils";
-import { DashboardFinancialMetric, Month, Year } from "../../types";
+import { BusinessMetricStoreLocation, DashboardFinancialMetric, Year } from "../../types";
 import { FinancialMetricsCharts } from "../utils";
 import { FinancialMetricsCards } from "../utilsTSX";
 import FinancialDashboardDailyExpenses from "./financialDashboardDailyExpenses/FinancialDashboardDailyExpenses";
@@ -18,8 +17,8 @@ type FinancialDashboardDailyProps = {
   dailyCharts: FinancialMetricsCharts["dailyCharts"];
   day: string;
   financialMetric: DashboardFinancialMetric;
-  month: Month;
-  storeLocation: StoreLocation;
+  month: string;
+  storeLocation: BusinessMetricStoreLocation;
   year: Year;
 };
 

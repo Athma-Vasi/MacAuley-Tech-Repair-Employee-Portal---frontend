@@ -1,11 +1,4 @@
 import { SelectInputData } from "../../../types";
-import {
-  CustomerChurnRetentionObjKey,
-  CustomerMetricsNewReturningCalendarChartsKey,
-  CustomerMetricsNewReturningChartsKey,
-  CustomerMetricsNewReturningPieChartsKey,
-  CustomerMetricsOverviewChartsKey,
-} from "./utilsOld";
 
 const CUSTOMER_OVERVIEW_Y_AXIS_DATA: SelectInputData = [
   { label: "Overview", value: "overview" },

@@ -202,20 +202,20 @@ type CustomerNewReturningPieObj = Record<
 // churn & retention
 
 // churn & retention -> keys
-type CustomerChurnRetentionObjKey =
+type CustomerMetricsChurnRetentionChartsKey =
   | 'overview' // y-axis variables: churn rate, retention rate
   | 'churnRate' // y-axis variables: churn rate
   | 'retentionRate'; // y-axis variables: retention rate
 
 // churn & retention -> bar chart obj
 type CustomerChurnRetentionBarObj = Record<
-  CustomerChurnRetentionObjKey,
+  CustomerMetricsChurnRetentionChartsKey,
   BarChartData[]
 >; // y-axis variables: churn rate, retention rate
 
 // churn & retention -> line chart obj
 type CustomerChurnRetentionLineObj = Record<
-  CustomerChurnRetentionObjKey,
+  CustomerMetricsChurnRetentionChartsKey,
   LineChartData[]
 >; // y-axis variables: churn rate, retention rate
 
@@ -2748,7 +2748,7 @@ function returnCustomerMetricsCharts({
 
 export { returnCustomerMetricsCharts, returnSelectedDateCustomerMetrics };
 export type {
-  CustomerChurnRetentionObjKey,
+  CustomerMetricsChurnRetentionChartsKey,
   CustomerMetricsNewReturningCalendarChartsKey,
   CustomerMetricsNewReturningChartsKey,
   CustomerMetricsNewReturningPieChartsKey,

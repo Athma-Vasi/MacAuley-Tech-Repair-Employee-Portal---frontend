@@ -13,11 +13,14 @@ import { addCommaSeparator, splitCamelCase } from "../../../../../utils";
 import { ResponsiveBarChart, ResponsiveLineChart } from "../../../../charts";
 import { MONTHS } from "../../../constants";
 import DashboardMetricsLayout from "../../../DashboardMetricsLayout";
-import { FinancialMetricsCards } from "../../../utilsTSX";
 import { BusinessMetricStoreLocation, Year } from "../../../types";
 import { returnChartTitleNavigateLinks, returnStatistics } from "../../../utils";
 import { FINANCIAL_OTHER_METRICS_Y_AXIS_DATA } from "../../constants";
-import { FinancialMetricsCharts, FinancialOtherMetricsObjKey } from "../../utils";
+import {
+  FinancialMetricsCharts,
+  FinancialMetricsOtherMetricsChartsKey,
+} from "../../utils";
+import { FinancialMetricsCards } from "../../utilsTSX";
 import {
   financialDashboardYearlyOtherMetricsAction,
   financialDashboardYearlyOtherMetricsReducer,
@@ -63,16 +66,10 @@ function FinancialDashboardYearlyOtherMetrics({
   const { otherMetricsBarChartYAxisVariable, otherMetricsLineChartYAxisVariable } =
     financialDashboardYearlyOtherMetricsState;
 
-  // otherMetrics
-
-  // otherMetrics -> statistics
-  const statisticsOtherMetrics = returnStatistics<FinancialOtherMetricsObjKey>(
-    yearlyChartsOtherMetrics.barChartsObj
+  const statisticsOtherMetrics = returnStatistics<FinancialMetricsOtherMetricsChartsKey>(
+    yearlyChartsOtherMetrics.bar
   );
 
-  // otherMetrics -> charts
-
-  // otherMetrics  -> charts -> titles & navlinks
   const {
     barChartHeading,
     expandBarChartNavigateLink,
@@ -91,10 +88,7 @@ function FinancialDashboardYearlyOtherMetrics({
     months: MONTHS,
   });
 
-  // otherMetrics -> charts -> bar
-
-  // otherMetrics -> charts -> bar -> expand chart button
-  const [createdExpandBarChartButton] = returnAccessibleButtonElements([
+  const [expandBarChartButton] = returnAccessibleButtonElements([
     {
       buttonLabel: "Expand",
       semanticDescription: `Expand and customize ${barChartHeading}`,
@@ -103,8 +97,7 @@ function FinancialDashboardYearlyOtherMetrics({
         globalDispatch({
           type: globalAction.setCustomizeChartsPageData,
           payload: {
-            chartData:
-              yearlyChartsOtherMetrics.barChartsObj[otherMetricsBarChartYAxisVariable],
+            chartData: yearlyChartsOtherMetrics.bar[otherMetricsBarChartYAxisVariable],
             chartTitle: barChartHeading,
             chartKind: "bar",
             chartUnitKind:
@@ -120,8 +113,7 @@ function FinancialDashboardYearlyOtherMetrics({
     },
   ]);
 
-  // otherMetrics -> charts -> bar -> y-axis select input
-  const [createdOtherMetricsBarChartYAxisVariablesSelectInput] =
+  const [otherMetricsBarChartYAxisVariablesSelectInput] =
     returnAccessibleSelectInputElements([
       {
         data: FINANCIAL_OTHER_METRICS_Y_AXIS_DATA,
@@ -129,19 +121,16 @@ function FinancialDashboardYearlyOtherMetrics({
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           financialDashboardYearlyOtherMetricsDispatch({
             type: financialDashboardYearlyOtherMetricsAction.setOtherMetricsBarChartYAxisVariable,
-            payload: event.currentTarget.value as FinancialOtherMetricsObjKey,
+            payload: event.currentTarget.value as FinancialMetricsOtherMetricsChartsKey,
           });
         },
         value: otherMetricsBarChartYAxisVariable,
       },
     ]);
 
-  // otherMetrics -> charts -> bar -> display
-  const displayOtherMetricsBarChart = (
+  const otherMetricsBarChart = (
     <ResponsiveBarChart
-      barChartData={
-        yearlyChartsOtherMetrics.barChartsObj[otherMetricsBarChartYAxisVariable]
-      }
+      barChartData={yearlyChartsOtherMetrics.bar[otherMetricsBarChartYAxisVariable]}
       indexBy="Years"
       keys={FINANCIAL_OTHER_METRICS_Y_AXIS_DATA.map((obj) => obj.label)}
       chartHeight={chartHeight}
@@ -153,9 +142,6 @@ function FinancialDashboardYearlyOtherMetrics({
     />
   );
 
-  // otherMetrics -> charts -> line
-
-  // otherMetrics -> charts -> line -> expand chart button
   const [expandLineChartButton] = returnAccessibleButtonElements([
     {
       buttonLabel: "Expand",
@@ -165,8 +151,7 @@ function FinancialDashboardYearlyOtherMetrics({
         globalDispatch({
           type: globalAction.setCustomizeChartsPageData,
           payload: {
-            chartData:
-              yearlyChartsOtherMetrics.lineChartsObj[otherMetricsLineChartYAxisVariable],
+            chartData: yearlyChartsOtherMetrics.line[otherMetricsLineChartYAxisVariable],
             chartTitle: lineChartHeading,
             chartKind: "line",
             chartUnitKind:
@@ -182,8 +167,7 @@ function FinancialDashboardYearlyOtherMetrics({
     },
   ]);
 
-  // otherMetrics -> charts -> line -> y-axis select input
-  const [createdOtherMetricsLineChartYAxisVariablesSelectInput] =
+  const [otherMetricsLineChartYAxisVariablesSelectInput] =
     returnAccessibleSelectInputElements([
       {
         data: FINANCIAL_OTHER_METRICS_Y_AXIS_DATA,
@@ -191,21 +175,18 @@ function FinancialDashboardYearlyOtherMetrics({
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           financialDashboardYearlyOtherMetricsDispatch({
             type: financialDashboardYearlyOtherMetricsAction.setOtherMetricsLineChartYAxisVariable,
-            payload: event.currentTarget.value as FinancialOtherMetricsObjKey,
+            payload: event.currentTarget.value as FinancialMetricsOtherMetricsChartsKey,
           });
         },
         value: otherMetricsLineChartYAxisVariable,
       },
     ]);
 
-  // otherMetrics -> charts -> line -> display
-  const displayOtherMetricsLineChart = (
+  const otherMetricsLineChart = (
     <ResponsiveLineChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
-      lineChartData={
-        yearlyChartsOtherMetrics.lineChartsObj[otherMetricsLineChartYAxisVariable]
-      }
+      lineChartData={yearlyChartsOtherMetrics.line[otherMetricsLineChartYAxisVariable]}
       hideControls
       yFormat={(y) =>
         otherMetricsLineChartYAxisVariable === "averageOrderValue"
@@ -220,17 +201,17 @@ function FinancialDashboardYearlyOtherMetrics({
     />
   );
 
-  const displayOtherMetricsSection = (
+  const financialDashboardYearlyOtherMetrics = (
     <DashboardMetricsLayout
-      barChart={displayOtherMetricsBarChart}
+      barChart={otherMetricsBarChart}
       barChartHeading={barChartHeading}
-      barChartYAxisSelectInput={createdOtherMetricsBarChartYAxisVariablesSelectInput}
+      barChartYAxisSelectInput={otherMetricsBarChartYAxisVariablesSelectInput}
       borderColor={borderColor}
-      expandBarChartButton={createdExpandBarChartButton}
+      expandBarChartButton={expandBarChartButton}
       expandLineChartButton={expandLineChartButton}
-      lineChart={displayOtherMetricsLineChart}
+      lineChart={otherMetricsLineChart}
       lineChartHeading={lineChartHeading}
-      lineChartYAxisSelectInput={createdOtherMetricsLineChartYAxisVariablesSelectInput}
+      lineChartYAxisSelectInput={otherMetricsLineChartYAxisVariablesSelectInput}
       overviewCards={yearlyCardsOtherMetrics}
       padding={padding}
       sectionHeading={`${splitCamelCase(storeLocation)} Yearly Other Metrics`}
@@ -240,7 +221,7 @@ function FinancialDashboardYearlyOtherMetrics({
     />
   );
 
-  return displayOtherMetricsSection;
+  return financialDashboardYearlyOtherMetrics;
 }
 
 export default FinancialDashboardYearlyOtherMetrics;

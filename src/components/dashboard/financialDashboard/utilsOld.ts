@@ -126,7 +126,7 @@ type ReturnFinancialMetricsChartsInput = {
 };
 
 
-type FinancialMetricBarLineObjKey =
+type FinancialMetricsBarLineChartsKey =
   | "total" // y-axis variables: total
   | "all" // y-axis variables: repair, in-store, online
   | "overview" // y-axis variables: sales, repair
@@ -135,7 +135,7 @@ type FinancialMetricBarLineObjKey =
   | "inStore" // y-axis variables: in-store
   | "online"; // y-axis variables: online
 
-type FinancialMetricBarObj = Record<FinancialMetricBarLineObjKey, BarChartData[]>; // y-axis variables: total, repair, in-store, online
+type FinancialMetricBarObj = Record<FinancialMetricsBarLineChartsKey, BarChartData[]>; // y-axis variables: total, repair, in-store, online
 
 type FinancialMetricLineObj = {
   total: { id: "Total"; data: { x: string; y: number }[] }[];
@@ -156,7 +156,7 @@ type FinancialMetricLineObj = {
   online: { id: "Online"; data: { x: string; y: number }[] }[];
 }; // y-axis variables: total, repair, in-store, online
 
-type FinancialMetricCalendarObjKey =
+type FinancialMetricsCalendarChartsKey =
   | "total" // y-axis variables: total
   | "repair" // y-axis variables: repair
   | "sales" // y-axis variables: sales
@@ -164,16 +164,16 @@ type FinancialMetricCalendarObjKey =
   | "online"; // y-axis variables: online
 
 type FinancialMetricCalendarObj = Record<
-  FinancialMetricCalendarObjKey,
+  FinancialMetricsCalendarChartsKey,
   CalendarChartData[]
 >; // y-axis variables: total, repair, in-store, online
 
-type FinancialOtherMetricsObjKey =
+type FinancialMetricsOtherMetricsChartsKey =
   | "averageOrderValue" // y-axis variables: average order value
   | "conversionRate" // y-axis variables: conversion rate
   | "netProfitMargin"; // y-axis variables: net profit margin
 
-type FinancialOtherMetricsBarObj = Record<FinancialOtherMetricsObjKey, BarChartData[]>; // y-axis variables: average order value, conversion rate, net profit margin
+type FinancialOtherMetricsBarObj = Record<FinancialMetricsOtherMetricsChartsKey, BarChartData[]>; // y-axis variables: average order value, conversion rate, net profit margin
 
 type FinancialOtherMetricsLineObj = {
   averageOrderValue: {
@@ -188,16 +188,16 @@ type FinancialOtherMetricsLineObj = {
 }; // y-axis variables: average order value, conversion rate, net profit margin
 
 type FinancialOtherMetricsCalendarObj = Record<
-  FinancialOtherMetricsObjKey,
+  FinancialMetricsOtherMetricsChartsKey,
   CalendarChartData[]
 >; // y-axis variables: average order value, conversion rate, net profit margin
 
-type FinancialMetricPieObjKey =
+type FinancialMetricsPieChartsKey =
   | "overview" // y-axis variables: repair, sales
   | "all" // y-axis variables: repair, in-store, online
   | "sales"; // y-axis variables: in-store, online
 
-type FinancialMetricsPieChartsObj = Record<FinancialMetricPieObjKey, PieChartData[]>; // y-axis variables: repair, sales, in-store, online
+type FinancialMetricsPieChartsObj = Record<FinancialMetricsPieChartsKey, PieChartData[]>; // y-axis variables: repair, sales, in-store, online
 
 type FinancialMetricsCharts = {
   dailyCharts: {
@@ -3977,13 +3977,13 @@ function returnFinancialMetricsCharts({
 
 export { returnFinancialMetricsCharts, returnSelectedDateFinancialMetrics };
 export type {
-  FinancialMetricBarLineObjKey,
+  FinancialMetricsBarLineChartsKey,
   FinancialMetricBarObj,
-  FinancialMetricCalendarObjKey,
-  FinancialMetricPieObjKey,
+  FinancialMetricsCalendarChartsKey,
+  FinancialMetricsPieChartsKey,
   FinancialMetricsCharts,
   FinancialMetricsPieChartsObj,
-  FinancialOtherMetricsObjKey,
+  FinancialMetricsOtherMetricsChartsKey,
   ReturnFinancialMetricsChartsInput,
   SelectedDateFinancialMetrics,
 };

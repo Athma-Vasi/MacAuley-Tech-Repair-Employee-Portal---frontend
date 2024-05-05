@@ -1,21 +1,21 @@
-import { FinancialOtherMetricsObjKey } from '../../utils';
+import { FinancialMetricsOtherMetricsChartsKey } from "../../utils";
 
 type FinancialDashboardYearlyOtherMetricsState = {
-  otherMetricsBarChartYAxisVariable: FinancialOtherMetricsObjKey;
-  otherMetricsLineChartYAxisVariable: FinancialOtherMetricsObjKey;
+  otherMetricsBarChartYAxisVariable: FinancialMetricsOtherMetricsChartsKey;
+  otherMetricsLineChartYAxisVariable: FinancialMetricsOtherMetricsChartsKey;
 };
 
 type FinancialDashboardYearlyOtherMetricsAction = {
-  setOtherMetricsBarChartYAxisVariable: 'setOtherMetricsBarChartYAxisVariable';
-  setOtherMetricsLineChartYAxisVariable: 'setOtherMetricsLineChartYAxisVariable';
+  setOtherMetricsBarChartYAxisVariable: "setOtherMetricsBarChartYAxisVariable";
+  setOtherMetricsLineChartYAxisVariable: "setOtherMetricsLineChartYAxisVariable";
 };
 
 type FinancialDashboardYearlyOtherMetricsDispatch = {
   type:
-    | FinancialDashboardYearlyOtherMetricsAction['setOtherMetricsBarChartYAxisVariable']
-    | FinancialDashboardYearlyOtherMetricsAction['setOtherMetricsLineChartYAxisVariable'];
+    | FinancialDashboardYearlyOtherMetricsAction["setOtherMetricsBarChartYAxisVariable"]
+    | FinancialDashboardYearlyOtherMetricsAction["setOtherMetricsLineChartYAxisVariable"];
 
-  payload: FinancialOtherMetricsObjKey;
+  payload: FinancialMetricsOtherMetricsChartsKey;
 };
 
 export type {

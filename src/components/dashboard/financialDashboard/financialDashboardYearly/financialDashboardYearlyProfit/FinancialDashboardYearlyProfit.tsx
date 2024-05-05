@@ -17,7 +17,6 @@ import {
 } from "../../../../charts";
 import { MONTHS } from "../../../constants";
 import DashboardMetricsLayout from "../../../DashboardMetricsLayout";
-import { FinancialMetricsCards } from "../../../utilsTSX";
 import { BusinessMetricStoreLocation, Year } from "../../../types";
 import { returnChartTitleNavigateLinks, returnStatistics } from "../../../utils";
 import {
@@ -25,10 +24,11 @@ import {
   FINANCIAL_PIE_Y_AXIS_DATA,
 } from "../../constants";
 import {
-  FinancialMetricBarLineObjKey,
-  FinancialMetricPieObjKey,
+  FinancialMetricsBarLineChartsKey,
   FinancialMetricsCharts,
+  FinancialMetricsPieChartsKey,
 } from "../../utils";
+import { FinancialMetricsCards } from "../../utilsTSX";
 import {
   financialDashboardYearlyProfitAction,
   financialDashboardYearlyProfitReducer,
@@ -75,16 +75,10 @@ function FinancialDashboardYearlyProfit({
     profitPieChartYAxisVariable,
   } = financialDashboardYearlyProfitState;
 
-  // profit
-
-  // profit -> statistics
-  const statisticsProfit = returnStatistics<FinancialMetricBarLineObjKey>(
-    yearlyChartsProfit.barChartsObj
+  const statisticsProfit = returnStatistics<FinancialMetricsBarLineChartsKey>(
+    yearlyChartsProfit.bar
   );
 
-  // profit -> charts
-
-  // profit  -> charts -> titles & navlinks
   const {
     barChartHeading,
     expandBarChartNavigateLink,
@@ -106,10 +100,7 @@ function FinancialDashboardYearlyProfit({
     months: MONTHS,
   });
 
-  // profit -> charts -> pie
-
-  // profit -> charts -> pie -> expand chart button
-  const [createdExpandPieChartButton] = returnAccessibleButtonElements([
+  const [expandPieChartButton] = returnAccessibleButtonElements([
     {
       buttonLabel: "Expand",
       semanticDescription: `Expand and customize ${pieChartHeading}`,
@@ -118,7 +109,7 @@ function FinancialDashboardYearlyProfit({
         globalDispatch({
           type: globalAction.setCustomizeChartsPageData,
           payload: {
-            chartData: yearlyChartsProfit.pieChartsObj[profitPieChartYAxisVariable],
+            chartData: yearlyChartsProfit.pie[profitPieChartYAxisVariable],
             chartTitle: pieChartHeading,
             chartKind: "pie",
             chartUnitKind: "currency",
@@ -131,36 +122,30 @@ function FinancialDashboardYearlyProfit({
     },
   ]);
 
-  //  profit -> charts -> pie -> y-axis select input
-  const [createdProfitPieChartYAxisVariablesSelectInput] =
-    returnAccessibleSelectInputElements([
-      {
-        data: FINANCIAL_PIE_Y_AXIS_DATA,
-        label: "Y-Axis Pie",
-        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-          financialDashboardYearlyProfitDispatch({
-            type: financialDashboardYearlyProfitAction.setProfitPieChartYAxisVariable,
-            payload: event.currentTarget.value as FinancialMetricPieObjKey,
-          });
-        },
-        value: profitPieChartYAxisVariable,
+  const [profitPieChartYAxisVariablesSelectInput] = returnAccessibleSelectInputElements([
+    {
+      data: FINANCIAL_PIE_Y_AXIS_DATA,
+      label: "Y-Axis Pie",
+      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+        financialDashboardYearlyProfitDispatch({
+          type: financialDashboardYearlyProfitAction.setProfitPieChartYAxisVariable,
+          payload: event.currentTarget.value as FinancialMetricsPieChartsKey,
+        });
       },
-    ]);
+      value: profitPieChartYAxisVariable,
+    },
+  ]);
 
-  // profit -> charts -> pie -> display
-  const displayProfitPieChart = (
+  const profitPieChart = (
     <ResponsivePieChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
-      pieChartData={yearlyChartsProfit.pieChartsObj[profitPieChartYAxisVariable]}
+      pieChartData={yearlyChartsProfit.pie[profitPieChartYAxisVariable]}
       hideControls
     />
   );
 
-  // profit -> charts -> bar
-
-  // profit -> charts -> bar -> expand chart button
-  const [createdExpandBarChartButton] = returnAccessibleButtonElements([
+  const [expandBarChartButton] = returnAccessibleButtonElements([
     {
       buttonLabel: "Expand",
       semanticDescription: `Expand and customize ${barChartHeading}`,
@@ -169,7 +154,7 @@ function FinancialDashboardYearlyProfit({
         globalDispatch({
           type: globalAction.setCustomizeChartsPageData,
           payload: {
-            chartData: yearlyChartsProfit.barChartsObj[profitBarChartYAxisVariable],
+            chartData: yearlyChartsProfit.bar[profitBarChartYAxisVariable],
             chartTitle: barChartHeading,
             chartKind: "bar",
             chartUnitKind: "currency",
@@ -182,26 +167,23 @@ function FinancialDashboardYearlyProfit({
     },
   ]);
 
-  // profit -> charts -> bar -> y-axis select input
-  const [createdProfitBarChartYAxisVariablesSelectInput] =
-    returnAccessibleSelectInputElements([
-      {
-        data: FINANCIAL_LINE_BAR_Y_AXIS_DATA,
-        label: "Y-Axis Bar",
-        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-          financialDashboardYearlyProfitDispatch({
-            type: financialDashboardYearlyProfitAction.setProfitBarChartYAxisVariable,
-            payload: event.currentTarget.value as FinancialMetricBarLineObjKey,
-          });
-        },
-        value: profitBarChartYAxisVariable,
+  const [profitBarChartYAxisVariablesSelectInput] = returnAccessibleSelectInputElements([
+    {
+      data: FINANCIAL_LINE_BAR_Y_AXIS_DATA,
+      label: "Y-Axis Bar",
+      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+        financialDashboardYearlyProfitDispatch({
+          type: financialDashboardYearlyProfitAction.setProfitBarChartYAxisVariable,
+          payload: event.currentTarget.value as FinancialMetricsBarLineChartsKey,
+        });
       },
-    ]);
+      value: profitBarChartYAxisVariable,
+    },
+  ]);
 
-  // profit -> charts -> bar -> display
-  const displayProfitBarChart = (
+  const profitBarChart = (
     <ResponsiveBarChart
-      barChartData={yearlyChartsProfit.barChartsObj[profitBarChartYAxisVariable]}
+      barChartData={yearlyChartsProfit.bar[profitBarChartYAxisVariable]}
       indexBy="Years"
       keys={FINANCIAL_LINE_BAR_Y_AXIS_DATA.map((obj) => obj.label)}
       chartHeight={chartHeight}
@@ -210,9 +192,6 @@ function FinancialDashboardYearlyProfit({
     />
   );
 
-  // profit -> charts -> line
-
-  // profit -> charts -> line -> expand chart button
   const [expandChartButton] = returnAccessibleButtonElements([
     {
       buttonLabel: "Expand",
@@ -222,7 +201,7 @@ function FinancialDashboardYearlyProfit({
         globalDispatch({
           type: globalAction.setCustomizeChartsPageData,
           payload: {
-            chartData: yearlyChartsProfit.lineChartsObj[profitLineChartYAxisVariable],
+            chartData: yearlyChartsProfit.line[profitLineChartYAxisVariable],
             chartTitle: lineChartHeading,
             chartKind: "line",
             chartUnitKind: "currency",
@@ -235,51 +214,48 @@ function FinancialDashboardYearlyProfit({
     },
   ]);
 
-  // profit -> charts -> line -> y-axis select input
-  const [createdProfitLineChartYAxisVariablesSelectInput] =
-    returnAccessibleSelectInputElements([
-      {
-        data: FINANCIAL_LINE_BAR_Y_AXIS_DATA,
-        label: "Y-Axis Line",
-        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-          financialDashboardYearlyProfitDispatch({
-            type: financialDashboardYearlyProfitAction.setProfitLineChartYAxisVariable,
-            payload: event.currentTarget.value as FinancialMetricBarLineObjKey,
-          });
-        },
-        value: profitLineChartYAxisVariable,
+  const [profitLineChartYAxisVariablesSelectInput] = returnAccessibleSelectInputElements([
+    {
+      data: FINANCIAL_LINE_BAR_Y_AXIS_DATA,
+      label: "Y-Axis Line",
+      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+        financialDashboardYearlyProfitDispatch({
+          type: financialDashboardYearlyProfitAction.setProfitLineChartYAxisVariable,
+          payload: event.currentTarget.value as FinancialMetricsBarLineChartsKey,
+        });
       },
-    ]);
+      value: profitLineChartYAxisVariable,
+    },
+  ]);
 
-  // profit -> charts -> line -> display
-  const displayProfitLineChart = (
+  const profitLineChart = (
     <ResponsiveLineChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
-      lineChartData={yearlyChartsProfit.lineChartsObj[profitLineChartYAxisVariable]}
+      lineChartData={yearlyChartsProfit.line[profitLineChartYAxisVariable]}
       hideControls
       yFormat={(y) => `$${addCommaSeparator(y)}`}
     />
   );
 
-  const displayProfitSection = (
+  const financialDashboardYearlyProfit = (
     <DashboardMetricsLayout
-      barChart={displayProfitBarChart}
+      barChart={profitBarChart}
       barChartHeading={barChartHeading}
-      barChartYAxisSelectInput={createdProfitBarChartYAxisVariablesSelectInput}
+      barChartYAxisSelectInput={profitBarChartYAxisVariablesSelectInput}
       borderColor={borderColor}
-      expandBarChartButton={createdExpandBarChartButton}
+      expandBarChartButton={expandBarChartButton}
       expandLineChartButton={expandChartButton}
-      expandPieChartButton={createdExpandPieChartButton}
+      expandPieChartButton={expandPieChartButton}
       isMoney
-      lineChart={displayProfitLineChart}
+      lineChart={profitLineChart}
       lineChartHeading={lineChartHeading}
-      lineChartYAxisSelectInput={createdProfitLineChartYAxisVariablesSelectInput}
+      lineChartYAxisSelectInput={profitLineChartYAxisVariablesSelectInput}
       overviewCards={yearlyCardsProfit}
       padding={padding}
-      pieChart={displayProfitPieChart}
+      pieChart={profitPieChart}
       pieChartHeading={pieChartHeading}
-      pieChartYAxisSelectInput={createdProfitPieChartYAxisVariablesSelectInput}
+      pieChartYAxisSelectInput={profitPieChartYAxisVariablesSelectInput}
       sectionHeading={`${splitCamelCase(storeLocation)} Yearly Profit`}
       semanticLabel="profit"
       statisticsMap={statisticsProfit}
@@ -287,7 +263,7 @@ function FinancialDashboardYearlyProfit({
     />
   );
 
-  return displayProfitSection;
+  return financialDashboardYearlyProfit;
 }
 
 export default FinancialDashboardYearlyProfit;

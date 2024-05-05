@@ -1,24 +1,24 @@
-import { FinancialOtherMetricsObjKey } from '../../utils';
+import { FinancialMetricsOtherMetricsChartsKey } from "../../utils";
 
 type FinancialDashboardDailyOtherMetricsState = {
-  otherMetricsBarChartYAxisVariable: FinancialOtherMetricsObjKey;
-  otherMetricsCalendarChartYAxisVariable: FinancialOtherMetricsObjKey;
-  otherMetricsLineChartYAxisVariable: FinancialOtherMetricsObjKey;
+  otherMetricsBarChartYAxisVariable: FinancialMetricsOtherMetricsChartsKey;
+  otherMetricsCalendarChartYAxisVariable: FinancialMetricsOtherMetricsChartsKey;
+  otherMetricsLineChartYAxisVariable: FinancialMetricsOtherMetricsChartsKey;
 };
 
 type FinancialDashboardDailyOtherMetricsAction = {
-  setOtherMetricsBarChartYAxisVariable: 'setOtherMetricsBarChartYAxisVariable';
-  setOtherMetricsCalendarChartYAxisVariable: 'setOtherMetricsCalendarChartYAxisVariable';
-  setOtherMetricsLineChartYAxisVariable: 'setOtherMetricsLineChartYAxisVariable';
+  setOtherMetricsBarChartYAxisVariable: "setOtherMetricsBarChartYAxisVariable";
+  setOtherMetricsCalendarChartYAxisVariable: "setOtherMetricsCalendarChartYAxisVariable";
+  setOtherMetricsLineChartYAxisVariable: "setOtherMetricsLineChartYAxisVariable";
 };
 
 type FinancialDashboardDailyOtherMetricsDispatch = {
   type:
-    | FinancialDashboardDailyOtherMetricsAction['setOtherMetricsBarChartYAxisVariable']
-    | FinancialDashboardDailyOtherMetricsAction['setOtherMetricsCalendarChartYAxisVariable']
-    | FinancialDashboardDailyOtherMetricsAction['setOtherMetricsLineChartYAxisVariable'];
+    | FinancialDashboardDailyOtherMetricsAction["setOtherMetricsBarChartYAxisVariable"]
+    | FinancialDashboardDailyOtherMetricsAction["setOtherMetricsCalendarChartYAxisVariable"]
+    | FinancialDashboardDailyOtherMetricsAction["setOtherMetricsLineChartYAxisVariable"];
 
-  payload: FinancialOtherMetricsObjKey;
+  payload: FinancialMetricsOtherMetricsChartsKey;
 };
 
 export type {

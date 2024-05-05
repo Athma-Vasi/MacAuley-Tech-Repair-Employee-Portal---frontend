@@ -1,31 +1,30 @@
 import {
-  FinancialMetricBarLineObjKey,
-  FinancialMetricPieObjKey,
-} from '../../utils';
+  FinancialMetricsBarLineChartsKey,
+  FinancialMetricsPieChartsKey,
+} from "../../utils";
 
 type FinancialDashboardYearlyExpensesState = {
-  expensesBarChartYAxisVariable: FinancialMetricBarLineObjKey;
-  expensesLineChartYAxisVariable: FinancialMetricBarLineObjKey;
-  expensesPieChartYAxisVariable: FinancialMetricPieObjKey;
+  expensesBarChartYAxisVariable: FinancialMetricsBarLineChartsKey;
+  expensesLineChartYAxisVariable: FinancialMetricsBarLineChartsKey;
+  expensesPieChartYAxisVariable: FinancialMetricsPieChartsKey;
 };
 
 type FinancialDashboardYearlyExpensesAction = {
-  setExpensesBarChartYAxisVariable: 'setExpensesBarChartYAxisVariable';
-  setExpensesLineChartYAxisVariable: 'setExpensesLineChartYAxisVariable';
-  setExpensesPieChartYAxisVariable: 'setExpensesPieChartYAxisVariable';
+  setExpensesBarChartYAxisVariable: "setExpensesBarChartYAxisVariable";
+  setExpensesLineChartYAxisVariable: "setExpensesLineChartYAxisVariable";
+  setExpensesPieChartYAxisVariable: "setExpensesPieChartYAxisVariable";
 };
 
 type FinancialDashboardYearlyExpensesDispatch =
   | {
       type:
-        | FinancialDashboardYearlyExpensesAction['setExpensesBarChartYAxisVariable']
-        | FinancialDashboardYearlyExpensesAction['setExpensesLineChartYAxisVariable'];
-      payload: FinancialMetricBarLineObjKey;
+        | FinancialDashboardYearlyExpensesAction["setExpensesBarChartYAxisVariable"]
+        | FinancialDashboardYearlyExpensesAction["setExpensesLineChartYAxisVariable"];
+      payload: FinancialMetricsBarLineChartsKey;
     }
   | {
-      type:
-        | FinancialDashboardYearlyExpensesAction['setExpensesPieChartYAxisVariable'];
-      payload: FinancialMetricPieObjKey;
+      type: FinancialDashboardYearlyExpensesAction["setExpensesPieChartYAxisVariable"];
+      payload: FinancialMetricsPieChartsKey;
     };
 
 export type {
