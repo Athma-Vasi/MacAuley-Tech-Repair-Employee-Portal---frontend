@@ -9,12 +9,12 @@ const initialDashboardState: DashboardState = {
   calendarView: "Daily",
   customerMetric: "Overview",
   financialMetric: "Profit",
-  metricsView: "Repairs",
+  metricsView: "Financials",
   productMetric: "All Products",
   repairMetric: "All Repairs",
   storeLocationView: "All Locations",
   selectedYYYYMMDD: `${initialSelectedYear}-${initialSelectedMonth}-${initialSelectedDate}`,
-  isLoading: true,
+  isLoading: false,
   loadingMessage: "Generating metrics... Please wait...",
 };
 

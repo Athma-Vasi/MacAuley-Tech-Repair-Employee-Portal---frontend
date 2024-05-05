@@ -102,6 +102,11 @@ function Dashboard() {
           return;
         }
 
+        dashboardDispatch({
+          type: dashboardAction.setIsLoading,
+          payload: true,
+        });
+
         const existingMetrics = await localforage.getItem<BusinessMetric[]>(
           "businessMetrics"
         );
@@ -178,14 +183,6 @@ function Dashboard() {
     });
   }, [dashboardState]);
 
-  // const businessMetrics = createRandomBusinessMetrics({
-  //   daysPerMonth: DAYS_PER_MONTH,
-  //   months: MONTHS,
-  //   productCategories: PRODUCT_CATEGORIES,
-  //   repairCategories: REPAIR_CATEGORIES,
-  //   storeLocations: STORE_LOCATION_DATA,
-  // });
-
   const displayLoadingOverlay = (
     <LoadingOverlay
       visible={isLoading}
@@ -211,7 +208,7 @@ function Dashboard() {
     />
   );
 
-  if (!businessMetrics || !businessMetrics.length) {
+  if (!businessMetrics?.length) {
     return displayLoadingOverlay;
   }
 
