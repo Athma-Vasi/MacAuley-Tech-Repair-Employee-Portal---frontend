@@ -27,7 +27,7 @@ import {
   CustomerMetricsCharts,
   CustomerNewReturningObjKey,
   CustomerNewReturningPieObjKey,
-} from "../../utils";
+} from "../../utilsOld";
 import {
   customerDashboardYearlyReturningAction,
   customerDashboardYearlyReturningReducer,

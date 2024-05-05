@@ -1,4 +1,4 @@
-import { CustomerOverviewObjKey } from '../../utils';
+import { CustomerOverviewObjKey } from "../../utilsOld";
 
 type CustomerDashboardYearlyOverviewState = {
   overviewBarChartYAxisVariable: CustomerOverviewObjKey;
@@ -6,14 +6,14 @@ type CustomerDashboardYearlyOverviewState = {
 };
 
 type CustomerDashboardYearlyOverviewAction = {
-  setOverviewBarChartYAxisVariable: 'setOverviewBarChartYAxisVariable';
-  setOverviewLineChartYAxisVariable: 'setOverviewLineChartYAxisVariable';
+  setOverviewBarChartYAxisVariable: "setOverviewBarChartYAxisVariable";
+  setOverviewLineChartYAxisVariable: "setOverviewLineChartYAxisVariable";
 };
 
 type CustomerDashboardYearlyOverviewDispatch = {
   type:
-    | CustomerDashboardYearlyOverviewAction['setOverviewBarChartYAxisVariable']
-    | CustomerDashboardYearlyOverviewAction['setOverviewLineChartYAxisVariable'];
+    | CustomerDashboardYearlyOverviewAction["setOverviewBarChartYAxisVariable"]
+    | CustomerDashboardYearlyOverviewAction["setOverviewLineChartYAxisVariable"];
   payload: CustomerOverviewObjKey;
 };
 

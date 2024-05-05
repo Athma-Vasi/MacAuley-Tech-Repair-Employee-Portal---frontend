@@ -2,7 +2,7 @@ import {
   CustomerNewReturningCalendarObjKey,
   CustomerNewReturningObjKey,
   CustomerNewReturningPieObjKey,
-} from '../../utils';
+} from "../../utilsOld";
 
 type CustomerDashboardDailyNewState = {
   newBarChartYAxisVariable: CustomerNewReturningObjKey;
@@ -12,25 +12,25 @@ type CustomerDashboardDailyNewState = {
 };
 
 type CustomerDashboardDailyNewAction = {
-  setNewBarChartYAxisVariable: 'setNewBarChartYAxisVariable';
-  setNewCalendarChartYAxisVariable: 'setNewCalendarChartYAxisVariable';
-  setNewLineChartYAxisVariable: 'setNewLineChartYAxisVariable';
-  setNewPieChartYAxisVariable: 'setNewPieChartYAxisVariable';
+  setNewBarChartYAxisVariable: "setNewBarChartYAxisVariable";
+  setNewCalendarChartYAxisVariable: "setNewCalendarChartYAxisVariable";
+  setNewLineChartYAxisVariable: "setNewLineChartYAxisVariable";
+  setNewPieChartYAxisVariable: "setNewPieChartYAxisVariable";
 };
 
 type CustomerDashboardDailyNewDispatch =
   | {
       type:
-        | CustomerDashboardDailyNewAction['setNewBarChartYAxisVariable']
-        | CustomerDashboardDailyNewAction['setNewLineChartYAxisVariable'];
+        | CustomerDashboardDailyNewAction["setNewBarChartYAxisVariable"]
+        | CustomerDashboardDailyNewAction["setNewLineChartYAxisVariable"];
       payload: CustomerNewReturningObjKey;
     }
   | {
-      type: CustomerDashboardDailyNewAction['setNewCalendarChartYAxisVariable'];
+      type: CustomerDashboardDailyNewAction["setNewCalendarChartYAxisVariable"];
       payload: CustomerNewReturningCalendarObjKey;
     }
   | {
-      type: CustomerDashboardDailyNewAction['setNewPieChartYAxisVariable'];
+      type: CustomerDashboardDailyNewAction["setNewPieChartYAxisVariable"];
       payload: CustomerNewReturningPieObjKey;
     };
 

@@ -1,3 +1,13 @@
+import { Loader, LoadingOverlay, Stack, Text } from "@mantine/core";
+import { useEffect, useReducer } from "react";
+import { useErrorBoundary } from "react-error-boundary";
+import { useNavigate } from "react-router-dom";
+
+import { COLORS_SWATCHES } from "../../../constants/data";
+import { globalAction } from "../../../context/globalProvider/state";
+import { useGlobalState } from "../../../hooks";
+import { returnThemeColors } from "../../../utils";
+import { MONTHS } from "../constants";
 import {
   BusinessMetric,
   BusinessMetricStoreLocation,
@@ -9,6 +19,24 @@ import {
 import CustomerDashboardDaily from "./customerDashboardDaily/CustomerDashboardDaily";
 import CustomerDashboardMonthly from "./customerDashboardMonthly/CustomerDashboardMonthly";
 import CustomerDashboardYearly from "./customerDashboardYearly/CustomerDashboardYearly";
+import {
+  customerDashboardAction,
+  customerDashboardReducer,
+  initialCustomerDashboardState,
+} from "./state";
+import { createCustomerMetricsCharts, returnSelectedDateCustomerMetrics } from "./utils";
+import { createCustomerMetricsCards } from "./utilsTSX";
+
+type CustomerDashboardProps = {
+  businessMetrics: BusinessMetric[];
+  calendarView: DashboardCalendarView;
+  selectedDate: string;
+  customerMetric: DashboardCustomerMetric;
+  selectedMonth: Month;
+  storeLocationView: BusinessMetricStoreLocation;
+  selectedYear: Year;
+  selectedYYYYMMDD: string;
+};
 
 function CustomerDashboard({
   businessMetrics,
@@ -19,55 +47,196 @@ function CustomerDashboard({
   storeLocationView,
   selectedYear,
   selectedYYYYMMDD,
-}: {
-  businessMetrics: BusinessMetric[];
-  calendarView: DashboardCalendarView;
-  customerMetric: DashboardCustomerMetric;
-  selectedDate: string;
-  selectedMonth: Month;
-  storeLocationView: BusinessMetricStoreLocation;
-  selectedYear: Year;
-  selectedYYYYMMDD: string;
-}) {
-  return calendarView === "Daily" ? (
-    <CustomerDashboardDaily
-      businessMetrics={businessMetrics}
-      customerMetric={customerMetric}
-      day={selectedDate}
-      month={selectedYYYYMMDD.split("-")[1]}
-      selectedDate={selectedDate}
-      selectedMonth={selectedMonth}
-      selectedYear={selectedYear}
-      storeLocation={storeLocationView}
-      storeLocationView={storeLocationView}
-      year={selectedYear}
+}: CustomerDashboardProps) {
+  const [customerDashboardState, customerDashboardDispatch] = useReducer(
+    customerDashboardReducer,
+    initialCustomerDashboardState
+  );
+  const { customerMetricsCards, customerMetricsCharts, isLoading, loadingMessage } =
+    customerDashboardState;
+
+  const {
+    globalState: { themeObject, padding, width },
+    globalDispatch,
+  } = useGlobalState();
+
+  const navigate = useNavigate();
+  const { showBoundary } = useErrorBoundary();
+
+  const {
+    generalColors: { redColorShade, greenColorShade },
+  } = returnThemeColors({
+    colorsSwatches: COLORS_SWATCHES,
+    themeObject,
+  });
+
+  useEffect(() => {
+    let isMounted = true;
+
+    async function generateCustomerChartsCards() {
+      customerDashboardDispatch({
+        type: customerDashboardAction.setIsLoading,
+        payload: true,
+      });
+      customerDashboardDispatch({
+        type: customerDashboardAction.setLoadingMessage,
+        payload: "Loading repair metrics...",
+      });
+
+      try {
+        const selectedDateCustomerMetrics = returnSelectedDateCustomerMetrics({
+          businessMetrics,
+          day: selectedDate,
+          month: selectedMonth,
+          months: MONTHS,
+          storeLocation: storeLocationView,
+          year: selectedYear,
+        });
+
+        console.log("selectedDateCustomerMetrics", selectedDateCustomerMetrics);
+
+        const customerMetricsCharts = await createCustomerMetricsCharts({
+          businessMetrics,
+          months: MONTHS,
+          selectedDateCustomerMetrics,
+          storeLocation: storeLocationView,
+        });
+
+        const customerMetricsCards = await createCustomerMetricsCards({
+          greenColorShade,
+          padding,
+          redColorShade,
+          selectedDateCustomerMetrics,
+          width,
+        });
+
+        if (!isMounted) {
+          return;
+        }
+
+        customerDashboardDispatch({
+          type: customerDashboardAction.setCustomerMetricsCards,
+          payload: customerMetricsCards,
+        });
+
+        customerDashboardDispatch({
+          type: customerDashboardAction.setCustomerMetricsCharts,
+          payload: customerMetricsCharts,
+        });
+
+        customerDashboardDispatch({
+          type: customerDashboardAction.setIsLoading,
+          payload: false,
+        });
+
+        customerDashboardDispatch({
+          type: customerDashboardAction.setLoadingMessage,
+          payload: "",
+        });
+      } catch (error: any) {
+        if (!isMounted) {
+          return;
+        }
+
+        globalDispatch({
+          type: globalAction.setErrorState,
+          payload: {
+            isError: true,
+            errorMessage: error?.message ?? "Unknown error occurred. Please try again.",
+            errorCallback: () => {
+              navigate("/home");
+
+              globalDispatch({
+                type: globalAction.setErrorState,
+                payload: {
+                  isError: false,
+                  errorMessage: "",
+                  errorCallback: () => {},
+                },
+              });
+            },
+          },
+        });
+
+        showBoundary(error);
+      }
+    }
+
+    if (businessMetrics?.length || !customerMetricsCards || !customerMetricsCharts) {
+      generateCustomerChartsCards();
+    }
+
+    return () => {
+      isMounted = false;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedYYYYMMDD]);
+
+  if (!businessMetrics?.length || !customerMetricsCards || !customerMetricsCharts) {
+    return null;
+  }
+
+  const loadingOverlay = (
+    <LoadingOverlay
+      visible={isLoading}
+      zIndex={2}
+      overlayBlur={9}
+      overlayOpacity={0.99}
+      radius={4}
+      loader={
+        <Stack align="center">
+          <Loader />
+          <Text>{loadingMessage}</Text>
+        </Stack>
+      }
+      transitionDuration={500}
     />
-  ) : calendarView === "Monthly" ? (
-    <CustomerDashboardMonthly
-      businessMetrics={businessMetrics}
-      customerMetric={customerMetric}
-      day={selectedDate}
-      month={selectedYYYYMMDD.split("-")[1]}
-      selectedDate={selectedDate}
-      selectedMonth={selectedMonth}
-      selectedYear={selectedYear}
-      storeLocation={storeLocationView}
-      storeLocationView={storeLocationView}
-      year={selectedYear}
-    />
-  ) : (
-    <CustomerDashboardYearly
-      businessMetrics={businessMetrics}
-      customerMetric={customerMetric}
-      day={selectedDate}
-      month={selectedYYYYMMDD.split("-")[1]}
-      selectedDate={selectedDate}
-      selectedMonth={selectedMonth}
-      selectedYear={selectedYear}
-      storeLocation={storeLocationView}
-      storeLocationView={storeLocationView}
-      year={selectedYear}
-    />
+  );
+
+  const customerDashboard =
+    calendarView === "Daily" ? (
+      <CustomerDashboardDaily
+        customerMetric={customerMetric}
+        day={selectedDate}
+        month={selectedYYYYMMDD.split("-")[1]}
+        dailyCards={customerMetricsCards.dailyCards}
+        dailyCharts={customerMetricsCharts.dailyCharts}
+        storeLocation={storeLocationView}
+        year={selectedYear}
+      />
+    ) : calendarView === "Monthly" ? (
+      <CustomerDashboardMonthly
+        businessMetrics={businessMetrics}
+        customerMetric={customerMetric}
+        day={selectedDate}
+        month={selectedYYYYMMDD.split("-")[1]}
+        selectedDate={selectedDate}
+        selectedMonth={selectedMonth}
+        selectedYear={selectedYear}
+        storeLocation={storeLocationView}
+        storeLocationView={storeLocationView}
+        year={selectedYear}
+      />
+    ) : (
+      <CustomerDashboardYearly
+        businessMetrics={businessMetrics}
+        customerMetric={customerMetric}
+        day={selectedDate}
+        month={selectedYYYYMMDD.split("-")[1]}
+        selectedDate={selectedDate}
+        selectedMonth={selectedMonth}
+        selectedYear={selectedYear}
+        storeLocation={storeLocationView}
+        storeLocationView={storeLocationView}
+        year={selectedYear}
+      />
+    );
+
+  return (
+    <Stack>
+      {loadingOverlay}
+      {customerDashboard}
+    </Stack>
   );
 }
 

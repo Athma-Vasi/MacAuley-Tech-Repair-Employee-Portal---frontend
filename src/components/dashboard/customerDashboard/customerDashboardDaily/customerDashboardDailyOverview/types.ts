@@ -1,4 +1,4 @@
-import { CustomerOverviewObjKey } from '../../utils';
+import { CustomerOverviewObjKey } from "../../utilsOld";
 
 type CustomerDashboardDailyOverviewState = {
   overviewBarChartYAxisVariable: CustomerOverviewObjKey;
@@ -7,16 +7,16 @@ type CustomerDashboardDailyOverviewState = {
 };
 
 type CustomerDashboardDailyOverviewAction = {
-  setOverviewBarChartYAxisVariable: 'setOverviewBarChartYAxisVariable';
-  setOverviewCalendarChartYAxisVariable: 'setOverviewCalendarChartYAxisVariable';
-  setOverviewLineChartYAxisVariable: 'setOverviewLineChartYAxisVariable';
+  setOverviewBarChartYAxisVariable: "setOverviewBarChartYAxisVariable";
+  setOverviewCalendarChartYAxisVariable: "setOverviewCalendarChartYAxisVariable";
+  setOverviewLineChartYAxisVariable: "setOverviewLineChartYAxisVariable";
 };
 
 type CustomerDashboardDailyOverviewDispatch = {
   type:
-    | CustomerDashboardDailyOverviewAction['setOverviewBarChartYAxisVariable']
-    | CustomerDashboardDailyOverviewAction['setOverviewCalendarChartYAxisVariable']
-    | CustomerDashboardDailyOverviewAction['setOverviewLineChartYAxisVariable'];
+    | CustomerDashboardDailyOverviewAction["setOverviewBarChartYAxisVariable"]
+    | CustomerDashboardDailyOverviewAction["setOverviewCalendarChartYAxisVariable"]
+    | CustomerDashboardDailyOverviewAction["setOverviewLineChartYAxisVariable"];
   payload: CustomerOverviewObjKey;
 };
 

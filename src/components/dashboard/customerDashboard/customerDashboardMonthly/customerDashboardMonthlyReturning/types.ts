@@ -2,7 +2,7 @@ import {
   CustomerNewReturningCalendarObjKey,
   CustomerNewReturningObjKey,
   CustomerNewReturningPieObjKey,
-} from '../../utils';
+} from "../../utilsOld";
 
 type CustomerDashboardMonthlyReturningState = {
   returningBarChartYAxisVariable: CustomerNewReturningObjKey;
@@ -12,26 +12,26 @@ type CustomerDashboardMonthlyReturningState = {
 };
 
 type CustomerDashboardMonthlyReturningAction = {
-  setReturningBarChartYAxisVariable: 'setReturningBarChartYAxisVariable';
-  setReturningCalendarChartYAxisVariable: 'setReturningCalendarChartYAxisVariable';
-  setReturningLineChartYAxisVariable: 'setReturningLineChartYAxisVariable';
-  setReturningPieChartYAxisVariable: 'setReturningPieChartYAxisVariable';
+  setReturningBarChartYAxisVariable: "setReturningBarChartYAxisVariable";
+  setReturningCalendarChartYAxisVariable: "setReturningCalendarChartYAxisVariable";
+  setReturningLineChartYAxisVariable: "setReturningLineChartYAxisVariable";
+  setReturningPieChartYAxisVariable: "setReturningPieChartYAxisVariable";
 };
 
 type CustomerDashboardMonthlyReturningDispatch =
   | {
       type:
-        | CustomerDashboardMonthlyReturningAction['setReturningBarChartYAxisVariable']
-        | CustomerDashboardMonthlyReturningAction['setReturningLineChartYAxisVariable'];
+        | CustomerDashboardMonthlyReturningAction["setReturningBarChartYAxisVariable"]
+        | CustomerDashboardMonthlyReturningAction["setReturningLineChartYAxisVariable"];
 
       payload: CustomerNewReturningObjKey;
     }
   | {
-      type: CustomerDashboardMonthlyReturningAction['setReturningCalendarChartYAxisVariable'];
+      type: CustomerDashboardMonthlyReturningAction["setReturningCalendarChartYAxisVariable"];
       payload: CustomerNewReturningCalendarObjKey;
     }
   | {
-      type: CustomerDashboardMonthlyReturningAction['setReturningPieChartYAxisVariable'];
+      type: CustomerDashboardMonthlyReturningAction["setReturningPieChartYAxisVariable"];
       payload: CustomerNewReturningPieObjKey;
     };
 

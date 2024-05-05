@@ -18,13 +18,13 @@ import {
 } from "../../../charts";
 import { MONTHS } from "../../constants";
 import DashboardMetricsLayout from "../../DashboardMetricsLayout";
-import { RepairMetricsCards } from "../../utilsTSX";
 import { BusinessMetricStoreLocation, DashboardRepairMetric, Year } from "../../types";
 import { returnChartTitleNavigateLinks, returnStatistics } from "../../utils";
 import { REPAIR_METRIC_Y_AXIS_DATA } from "../constants";
 import {} from "../types";
 import { RepairMetricChartsKey } from "../utils";
 import { RepairMetricsCharts } from "../utils";
+import { RepairMetricsCards } from "../utilsTSX";
 import { initialRepairDashboardDailyState, repairDashboardDailyReducer } from "./state";
 
 type RepairDashboardDailyProps = {

@@ -20,7 +20,7 @@ import { CustomerMetricsCards } from "../../../utilsTSX";
 import { BusinessMetricStoreLocation, Year } from "../../../types";
 import { returnChartTitleNavigateLinks, returnStatistics } from "../../../utils";
 import { CUSTOMER_CHURN_RETENTION_Y_AXIS_DATA } from "../../constants";
-import { CustomerChurnRetentionObjKey, CustomerMetricsCharts } from "../../utils";
+import { CustomerChurnRetentionObjKey, CustomerMetricsCharts } from "../../utilsOld";
 import {
   customerDashboardYearlyOtherMetricsAction,
   customerDashboardYearlyOtherMetricsReducer,

@@ -22,7 +22,7 @@ import { CustomerMetricsCards } from "../../../utilsTSX";
 import { BusinessMetricStoreLocation, Year } from "../../../types";
 import { returnChartTitleNavigateLinks, returnStatistics } from "../../../utils";
 import { CUSTOMER_OVERVIEW_Y_AXIS_DATA } from "../../constants";
-import { CustomerMetricsCharts, CustomerOverviewObjKey } from "../../utils";
+import { CustomerMetricsCharts, CustomerOverviewObjKey } from "../../utilsOld";
 import {
   customerDashboardMonthlyOverviewAction,
   customerDashboardMonthlyOverviewReducer,

@@ -1,5 +1,5 @@
-import { RepairMetricsCards } from "../utilsTSX";
 import { RepairMetricsCharts } from "./utils";
+import { RepairMetricsCards } from "./utilsTSX";
 
 type RepairDashboardState = {
   repairMetricsCards: RepairMetricsCards | null;

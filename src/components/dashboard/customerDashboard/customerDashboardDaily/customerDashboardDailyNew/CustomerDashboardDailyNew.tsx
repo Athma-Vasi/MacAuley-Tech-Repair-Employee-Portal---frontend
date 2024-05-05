@@ -31,7 +31,7 @@ import {
   CustomerNewReturningCalendarObjKey,
   CustomerNewReturningObjKey,
   CustomerNewReturningPieObjKey,
-} from "../../utils";
+} from "../../utilsOld";
 import {
   customerDashboardDailyNewAction,
   customerDashboardDailyNewReducer,

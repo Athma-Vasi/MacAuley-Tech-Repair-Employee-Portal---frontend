@@ -1,7 +1,8 @@
-import { BarChartData } from '../../charts/responsiveBarChart/types';
-import { CalendarChartData } from '../../charts/responsiveCalendarChart/types';
-import { LineChartData } from '../../charts/responsiveLineChart/types';
-import { PieChartData } from '../../charts/responsivePieChart/types';
+import { toFixedFloat } from "../../../utils";
+import { BarChartData } from "../../charts/responsiveBarChart/types";
+import { CalendarChartData } from "../../charts/responsiveCalendarChart/types";
+import { LineChartData } from "../../charts/responsiveLineChart/types";
+import { PieChartData } from "../../charts/responsivePieChart/types";
 import {
   BusinessMetric,
   BusinessMetricStoreLocation,
@@ -10,7 +11,7 @@ import {
   CustomerYearlyMetric,
   Month,
   Year,
-} from '../types';
+} from "../types";
 
 type SelectedDateCustomerMetrics = {
   dayCustomerMetrics: {
@@ -42,42 +43,35 @@ function returnSelectedDateCustomerMetrics({
   storeLocation: BusinessMetricStoreLocation;
   year: Year;
 }): SelectedDateCustomerMetrics {
-  // selected store's business metrics
   const currentStoreMetrics = businessMetrics.find(
     (businessMetric) => businessMetric.storeLocation === storeLocation
   );
 
-  // selected year's customer metrics
-  const selectedYearMetrics =
-    currentStoreMetrics?.customerMetrics.yearlyMetrics.find(
-      (yearlyMetric) => yearlyMetric.year === year
-    );
-  const prevYearMetrics =
-    currentStoreMetrics?.customerMetrics.yearlyMetrics.find(
-      (yearlyMetric) => yearlyMetric.year === (parseInt(year) - 1).toString()
-    );
+  const selectedYearMetrics = currentStoreMetrics?.customerMetrics.yearlyMetrics.find(
+    (yearlyMetric) => yearlyMetric.year === year
+  );
+  const prevYearMetrics = currentStoreMetrics?.customerMetrics.yearlyMetrics.find(
+    (yearlyMetric) => yearlyMetric.year === (parseInt(year) - 1).toString()
+  );
 
   const yearCustomerMetrics = {
     selectedYearMetrics,
     prevYearMetrics,
   };
 
-  // selected month's customer metrics
   const selectedMonthMetrics = selectedYearMetrics?.monthlyMetrics.find(
     (monthlyMetric) => monthlyMetric.month === month
   );
-  const prevPrevYearMetrics =
-    currentStoreMetrics?.customerMetrics.yearlyMetrics.find(
-      (yearlyMetric) => yearlyMetric.year === (parseInt(year) - 2).toString()
-    );
+  const prevPrevYearMetrics = currentStoreMetrics?.customerMetrics.yearlyMetrics.find(
+    (yearlyMetric) => yearlyMetric.year === (parseInt(year) - 2).toString()
+  );
   const prevMonthMetrics =
-    month === 'January'
+    month === "January"
       ? prevPrevYearMetrics?.monthlyMetrics.find(
-          (monthlyMetric) => monthlyMetric.month === 'December'
+          (monthlyMetric) => monthlyMetric.month === "December"
         )
       : selectedYearMetrics?.monthlyMetrics.find(
-          (monthlyMetric) =>
-            monthlyMetric.month === months[months.indexOf(month) - 1]
+          (monthlyMetric) => monthlyMetric.month === months[months.indexOf(month) - 1]
         );
 
   const monthCustomerMetrics = {
@@ -85,27 +79,21 @@ function returnSelectedDateCustomerMetrics({
     prevMonthMetrics,
   };
 
-  // selected day's customer metrics
   const selectedDayMetrics = selectedMonthMetrics?.dailyMetrics.find(
     (dailyMetric) => dailyMetric.day === day
   );
   const prevDayMetrics =
-    day === '01'
+    day === "01"
       ? monthCustomerMetrics.prevMonthMetrics?.dailyMetrics.find(
-          (dailyMetric) => dailyMetric.day === '31'
-        ) ??
-        monthCustomerMetrics.prevMonthMetrics?.dailyMetrics.find(
-          (dailyMetric) => dailyMetric.day === '30'
-        ) ??
-        monthCustomerMetrics.prevMonthMetrics?.dailyMetrics.find(
-          (dailyMetric) => dailyMetric.day === '29'
-        ) ??
-        monthCustomerMetrics.prevMonthMetrics?.dailyMetrics.find(
-          (dailyMetric) => dailyMetric.day === '28'
+          (dailyMetric) =>
+            dailyMetric.day === "31" ||
+            dailyMetric.day === "30" ||
+            dailyMetric.day === "29" ||
+            dailyMetric.day === "28"
         )
       : selectedMonthMetrics?.dailyMetrics.find(
           (dailyMetric) =>
-            dailyMetric.day === (parseInt(day) - 1).toString().padStart(2, '0')
+            dailyMetric.day === (parseInt(day) - 1).toString().padStart(2, "0")
         );
 
   const dayCustomerMetrics = {
@@ -120,6 +108,73 @@ function returnSelectedDateCustomerMetrics({
   };
 }
 
+// overview
+
+type CustomerOverviewObjKey =
+  | "overview" // y-axis variables: new, returning
+  | "new" // y-axis variables: new
+  | "returning"; // y-axis variables: returning
+
+type CustomerOverviewBarCharts = Record<CustomerOverviewObjKey, BarChartData[]>; // y-axis variables: new, returning
+
+type CustomerOverviewCalendarCharts = Record<CustomerOverviewObjKey, CalendarChartData[]>; // y-axis variables: new, returning
+
+type CustomerOverviewLineCharts = Record<CustomerOverviewObjKey, LineChartData[]>; // y-axis variables: new, returning
+
+// new & returning
+
+type CustomerNewReturningObjKey =
+  | "total" // y-axis variables: total
+  | "all" // y-axis variables: sales, in-store, repair
+  | "overview" // y-axis variables: sales, repair
+  | "sales" // y-axis variables: online, in-store
+  | "online" // y-axis variables: online
+  | "inStore" // y-axis variables: in-store
+  | "repair"; // y-axis variables: repair
+
+type CustomerNewReturningBarCharts = Record<CustomerNewReturningObjKey, BarChartData[]>; // y-axis variables: total, online, in-store, repair, all
+
+type CustomerNewReturningCalendarChartsKey =
+  | "total" // y-axis variables: total
+  | "sales" // y-axis variables: sales
+  | "online" // y-axis variables: online
+  | "inStore" // y-axis variables: in-store
+  | "repair"; // y-axis variables: repair
+
+type CustomerNewReturningCalendarCharts = Record<
+  CustomerNewReturningCalendarChartsKey,
+  CalendarChartData[]
+>; // y-axis variables: total, online, in-store, repair, all
+
+type CustomerNewReturningLineCharts = Record<CustomerNewReturningObjKey, LineChartData[]>; // y-axis variables: total, online, in-store, repair, all
+
+type CustomerNewReturningPieChartsKey =
+  | "overview" // y-axis variables: sales, repair
+  | "all" // y-axis variables: sales, in-store, repair
+  | "sales"; // y-axis variables: online, in-store
+
+type CustomerNewReturningPieCharts = Record<
+  CustomerNewReturningPieChartsKey,
+  PieChartData[]
+>; // y-axis variables: sales, repair, online, in-store, all
+
+// churn & retention
+
+type CustomerChurnRetentionObjKey =
+  | "overview" // y-axis variables: churn rate, retention rate
+  | "churnRate" // y-axis variables: churn rate
+  | "retentionRate"; // y-axis variables: retention rate
+
+type CustomerChurnRetentionBarCharts = Record<
+  CustomerChurnRetentionObjKey,
+  BarChartData[]
+>; // y-axis variables: churn rate, retention rate
+
+type CustomerChurnRetentionLineCharts = Record<
+  CustomerChurnRetentionObjKey,
+  LineChartData[]
+>; // y-axis variables: churn rate, retention rate
+
 type ReturnCustomerMetricsChartsInput = {
   businessMetrics: BusinessMetric[];
   months: Month[];
@@ -127,247 +182,146 @@ type ReturnCustomerMetricsChartsInput = {
   storeLocation: BusinessMetricStoreLocation;
 };
 
-/**
- * dailyMetrics: {
-    day: string;
-    customers: {
-      total: number;
-      new: {
-        total: number;
-        sales: {
-          total: number;
-          online: number;
-          inStore: number;
-        };
-        repair: number;
-      };
-      returning: {
-        total: number;
-        sales: {
-          total: number;
-          online: number;
-          inStore: number;
-        };
-        repair: number;
-      };
-    };
-  }[];  
- */
-
-// overview
-
-// overview -> keys
-type CustomerOverviewObjKey =
-  | 'overview' // y-axis variables: new, returning
-  | 'new' // y-axis variables: new
-  | 'returning'; // y-axis variables: returning
-
-// overview -> bar chart -> obj
-
-type CustomerOverviewBarObj = Record<CustomerOverviewObjKey, BarChartData[]>; // y-axis variables: new, returning
-
-// overview -> calendar chart -> obj
-type CustomerOverviewCalendarObj = Record<
-  CustomerOverviewObjKey,
-  CalendarChartData[]
->; // y-axis variables: new, returning
-
-// overview -> line chart -> obj
-type CustomerOverviewLineObj = Record<CustomerOverviewObjKey, LineChartData[]>; // y-axis variables: new, returning
-
-// new & returning
-
-// new & returning -> keys
-type CustomerNewReturningObjKey =
-  | 'total' // y-axis variables: total
-  | 'all' // y-axis variables: sales, in-store, repair
-  | 'overview' // y-axis variables: sales, repair
-  | 'sales' // y-axis variables: online, in-store
-  | 'online' // y-axis variables: online
-  | 'inStore' // y-axis variables: in-store
-  | 'repair'; // y-axis variables: repair
-
-// new & returning -> bar chart -> obj
-type CustomerNewReturningBarObj = Record<
-  CustomerNewReturningObjKey,
-  BarChartData[]
->; // y-axis variables: total, online, in-store, repair, all
-
-// new & returning -> calendar chart -> keys
-type CustomerNewReturningCalendarObjKey =
-  | 'total' // y-axis variables: total
-  | 'sales' // y-axis variables: sales
-  | 'online' // y-axis variables: online
-  | 'inStore' // y-axis variables: in-store
-  | 'repair'; // y-axis variables: repair
-
-// new & returning -> calendar chart -> obj
-type CustomerNewReturningCalendarObj = Record<
-  CustomerNewReturningCalendarObjKey,
-  CalendarChartData[]
->; // y-axis variables: total, online, in-store, repair, all
-
-// new & returning -> line chart obj
-type CustomerNewReturningLineObj = Record<
-  CustomerNewReturningObjKey,
-  LineChartData[]
->; // y-axis variables: total, online, in-store, repair, all
-
-// new & returning -> pie chart obj -> keys
-type CustomerNewReturningPieObjKey =
-  | 'overview' // y-axis variables: sales, repair
-  | 'all' // y-axis variables: sales, in-store, repair
-  | 'sales'; // y-axis variables: online, in-store
-
-type CustomerNewReturningPieObj = Record<
-  CustomerNewReturningPieObjKey,
-  PieChartData[]
->; // y-axis variables: sales, repair, online, in-store, all
-
-// churn & retention
-
-// churn & retention -> keys
-type CustomerChurnRetentionObjKey =
-  | 'overview' // y-axis variables: churn rate, retention rate
-  | 'churnRate' // y-axis variables: churn rate
-  | 'retentionRate'; // y-axis variables: retention rate
-
-// churn & retention -> bar chart obj
-type CustomerChurnRetentionBarObj = Record<
-  CustomerChurnRetentionObjKey,
-  BarChartData[]
->; // y-axis variables: churn rate, retention rate
-
-// churn & retention -> line chart obj
-type CustomerChurnRetentionLineObj = Record<
-  CustomerChurnRetentionObjKey,
-  LineChartData[]
->; // y-axis variables: churn rate, retention rate
-
 type CustomerMetricsCharts = {
   dailyCharts: {
     overview: {
-      barChartsObj: CustomerOverviewBarObj;
-      calendarChartsObj: CustomerOverviewCalendarObj;
-      lineChartsObj: CustomerOverviewLineObj;
-      pieChartObj: PieChartData[];
+      bar: CustomerOverviewBarCharts;
+      calendar: CustomerOverviewCalendarCharts;
+      line: CustomerOverviewLineCharts;
+      pie: PieChartData[];
     };
     new: {
-      barChartsObj: CustomerNewReturningBarObj;
-      calendarChartsObj: CustomerNewReturningCalendarObj;
-      lineChartsObj: CustomerNewReturningLineObj;
-      pieChartObj: CustomerNewReturningPieObj;
+      bar: CustomerNewReturningBarCharts;
+      calendar: CustomerNewReturningCalendarCharts;
+      line: CustomerNewReturningLineCharts;
+      pie: CustomerNewReturningPieCharts;
     };
     returning: {
-      barChartsObj: CustomerNewReturningBarObj;
-      calendarChartsObj: CustomerNewReturningCalendarObj;
-      lineChartsObj: CustomerNewReturningLineObj;
-      pieChartObj: CustomerNewReturningPieObj;
+      bar: CustomerNewReturningBarCharts;
+      calendar: CustomerNewReturningCalendarCharts;
+      line: CustomerNewReturningLineCharts;
+      pie: CustomerNewReturningPieCharts;
     };
   };
   monthlyCharts: {
     overview: {
-      barChartsObj: CustomerOverviewBarObj;
-      calendarChartsObj: CustomerOverviewCalendarObj;
-      lineChartsObj: CustomerOverviewLineObj;
-      pieChartObj: PieChartData[];
+      bar: CustomerOverviewBarCharts;
+      calendar: CustomerOverviewCalendarCharts;
+      line: CustomerOverviewLineCharts;
+      pie: PieChartData[];
     };
     new: {
-      barChartsObj: CustomerNewReturningBarObj;
-      calendarChartsObj: CustomerNewReturningCalendarObj;
-      lineChartsObj: CustomerNewReturningLineObj;
-      pieChartObj: CustomerNewReturningPieObj;
+      bar: CustomerNewReturningBarCharts;
+      calendar: CustomerNewReturningCalendarCharts;
+      line: CustomerNewReturningLineCharts;
+      pie: CustomerNewReturningPieCharts;
     };
     returning: {
-      barChartsObj: CustomerNewReturningBarObj;
-      calendarChartsObj: CustomerNewReturningCalendarObj;
-      lineChartsObj: CustomerNewReturningLineObj;
-      pieChartObj: CustomerNewReturningPieObj;
+      bar: CustomerNewReturningBarCharts;
+      calendar: CustomerNewReturningCalendarCharts;
+      line: CustomerNewReturningLineCharts;
+      pie: CustomerNewReturningPieCharts;
     };
     churnRetention: {
-      barChartsObj: CustomerChurnRetentionBarObj;
-      lineChartsObj: CustomerChurnRetentionLineObj;
-      pieChartObj: PieChartData[];
+      bar: CustomerChurnRetentionBarCharts;
+      line: CustomerChurnRetentionLineCharts;
+      pie: PieChartData[];
     };
   };
   yearlyCharts: {
     overview: {
-      barChartsObj: CustomerOverviewBarObj;
-      lineChartsObj: CustomerOverviewLineObj;
-      pieChartObj: PieChartData[];
+      bar: CustomerOverviewBarCharts;
+      line: CustomerOverviewLineCharts;
+      pie: PieChartData[];
     };
     new: {
-      barChartsObj: CustomerNewReturningBarObj;
-      lineChartsObj: CustomerNewReturningLineObj;
-      pieChartObj: CustomerNewReturningPieObj;
+      bar: CustomerNewReturningBarCharts;
+      line: CustomerNewReturningLineCharts;
+      pie: CustomerNewReturningPieCharts;
     };
     returning: {
-      barChartsObj: CustomerNewReturningBarObj;
-      lineChartsObj: CustomerNewReturningLineObj;
-      pieChartObj: CustomerNewReturningPieObj;
+      bar: CustomerNewReturningBarCharts;
+      line: CustomerNewReturningLineCharts;
+      pie: CustomerNewReturningPieCharts;
     };
     churnRetention: {
-      barChartsObj: CustomerChurnRetentionBarObj;
-      lineChartsObj: CustomerChurnRetentionLineObj;
-      pieChartObj: PieChartData[];
+      bar: CustomerChurnRetentionBarCharts;
+      line: CustomerChurnRetentionLineCharts;
+      pie: PieChartData[];
     };
   };
 };
 
-function returnCustomerMetricsCharts({
+/**
+   * dailyMetrics: {
+      day: string;
+      customers: {
+        total: number;
+        new: {
+          total: number;
+          sales: {
+            total: number;
+            online: number;
+            inStore: number;
+          };
+          repair: number;
+        };
+        returning: {
+          total: number;
+          sales: {
+            total: number;
+            online: number;
+            inStore: number;
+          };
+          repair: number;
+        };
+      };
+    }[];  
+   */
+
+async function createCustomerMetricsCharts({
   businessMetrics,
   months,
   selectedDateCustomerMetrics,
   storeLocation,
-}: ReturnCustomerMetricsChartsInput): CustomerMetricsCharts {
-  // selected year's metrics
+}: ReturnCustomerMetricsChartsInput): Promise<CustomerMetricsCharts> {
   const {
     yearCustomerMetrics: { selectedYearMetrics },
   } = selectedDateCustomerMetrics;
-  const selectedYear = selectedYearMetrics?.year ?? '2023';
+  const selectedYear = selectedYearMetrics?.year ?? "2023";
 
-  // selected month's metrics
   const {
     monthCustomerMetrics: { selectedMonthMetrics },
   } = selectedDateCustomerMetrics;
-  const selectedMonth = selectedMonthMetrics?.month ?? 'January';
-  const monthNumber = (months.indexOf(selectedMonth) + 1)
-    .toString()
-    .padStart(2, '0');
+  const selectedMonth = selectedMonthMetrics?.month ?? "January";
+  const monthIndex = (months.indexOf(selectedMonth) + 1).toString().padStart(2, "0");
 
-  // selected day's metrics
   const {
     dayCustomerMetrics: { selectedDayMetrics },
   } = selectedDateCustomerMetrics;
 
-  // templates
-
-  // templates -> overview -> bar chart obj
-  const OVERVIEW_BAR_CHART_TEMPLATE: CustomerOverviewBarObj = {
+  const OVERVIEW_BAR_CHART_TEMPLATE: CustomerOverviewBarCharts = {
     overview: [],
     new: [],
     returning: [],
   };
 
-  // templates -> overview -> calendar chart obj
-  const OVERVIEW_CALENDAR_CHART_TEMPLATE: CustomerOverviewCalendarObj = {
+  const OVERVIEW_CALENDAR_CHART_TEMPLATE: CustomerOverviewCalendarCharts = {
     overview: [],
     new: [],
     returning: [],
   };
 
-  // templates -> overview -> line chart obj
-  const OVERVIEW_LINE_CHART_TEMPLATE: CustomerOverviewLineObj = {
+  const OVERVIEW_LINE_CHART_TEMPLATE: CustomerOverviewLineCharts = {
     overview: [
-      { id: 'New', data: [] },
-      { id: 'Returning', data: [] },
+      { id: "New", data: [] },
+      { id: "Returning", data: [] },
     ],
-    new: [{ id: 'New', data: [] }],
-    returning: [{ id: 'Returning', data: [] }],
+    new: [{ id: "New", data: [] }],
+    returning: [{ id: "Returning", data: [] }],
   };
 
-  // templates -> new & returning -> bar chart obj
-  const NEW_RETURNING_BAR_CHART_TEMPLATE: CustomerNewReturningBarObj = {
+  const NEW_RETURNING_BAR_CHART_TEMPLATE: CustomerNewReturningBarCharts = {
     total: [],
     all: [],
     overview: [],
@@ -377,2407 +331,2130 @@ function returnCustomerMetricsCharts({
     repair: [],
   };
 
-  // templates -> new & returning -> calendar chart obj
-  const NEW_RETURNING_CALENDAR_CHART_TEMPLATE: CustomerNewReturningCalendarObj =
-    {
-      total: [],
-      sales: [],
-      online: [],
-      inStore: [],
-      repair: [],
-    };
-
-  // templates -> new & returning -> line chart obj
-  const NEW_RETURNING_LINE_CHART_TEMPLATE: CustomerNewReturningLineObj = {
-    total: [{ id: 'Total', data: [] }],
-    all: [
-      { id: 'Online', data: [] },
-      { id: 'In-Store', data: [] },
-      { id: 'Repair', data: [] },
-    ],
-    overview: [
-      { id: 'Repair', data: [] },
-      { id: 'Sales', data: [] },
-    ],
-    sales: [
-      { id: 'Online', data: [] },
-      { id: 'In-Store', data: [] },
-    ],
-    online: [{ id: 'Online', data: [] }],
-    inStore: [{ id: 'In-Store', data: [] }],
-    repair: [{ id: 'Repair', data: [] }],
+  const NEW_RETURNING_CALENDAR_CHART_TEMPLATE: CustomerNewReturningCalendarCharts = {
+    total: [],
+    sales: [],
+    online: [],
+    inStore: [],
+    repair: [],
   };
 
-  // templates -> churn & retention -> bar chart obj
-  const CHURN_RETENTION_BAR_CHART_TEMPLATE: CustomerChurnRetentionBarObj = {
+  const NEW_RETURNING_LINE_CHART_TEMPLATE: CustomerNewReturningLineCharts = {
+    total: [{ id: "Total", data: [] }],
+    all: [
+      { id: "Online", data: [] },
+      { id: "In-Store", data: [] },
+      { id: "Repair", data: [] },
+    ],
+    overview: [
+      { id: "Repair", data: [] },
+      { id: "Sales", data: [] },
+    ],
+    sales: [
+      { id: "Online", data: [] },
+      { id: "In-Store", data: [] },
+    ],
+    online: [{ id: "Online", data: [] }],
+    inStore: [{ id: "In-Store", data: [] }],
+    repair: [{ id: "Repair", data: [] }],
+  };
+
+  const CHURN_RETENTION_BAR_CHART_TEMPLATE: CustomerChurnRetentionBarCharts = {
     overview: [],
     churnRate: [],
     retentionRate: [],
   };
 
-  // templates -> churn & retention -> line chart obj
-  const CHURN_RETENTION_LINE_CHART_TEMPLATE: CustomerChurnRetentionLineObj = {
+  const CHURN_RETENTION_LINE_CHART_TEMPLATE: CustomerChurnRetentionLineCharts = {
     overview: [
-      { id: 'Churn Rate', data: [] },
-      { id: 'Retention Rate', data: [] },
+      { id: "Churn Rate", data: [] },
+      { id: "Retention Rate", data: [] },
     ],
-    churnRate: [{ id: 'Churn Rate', data: [] }],
-    retentionRate: [{ id: 'Retention Rate', data: [] }],
+    churnRate: [{ id: "Churn Rate", data: [] }],
+    retentionRate: [{ id: "Retention Rate", data: [] }],
   };
 
-  // daily
-
-  // daily -> overview
-
-  // daily -> overview -> bar chart obj
-  const initialDailyOverviewBarChartsObj = structuredClone(
-    OVERVIEW_BAR_CHART_TEMPLATE
-  );
-  // daily -> overview -> calendar chart obj
-  const initialDailyOverviewCalendarChartsObj = structuredClone(
-    OVERVIEW_CALENDAR_CHART_TEMPLATE
-  );
-  // daily -> overview -> line chart obj
-  const initialDailyOverviewLineChartsObj = structuredClone(
-    OVERVIEW_LINE_CHART_TEMPLATE
-  );
-  // daily -> overview -> pie chart obj
-  const dailyOverviewPieChartData: PieChartData[] = [
-    {
-      id: 'New',
-      label: 'New',
-      value: selectedDayMetrics?.customers.new.total ?? 0,
-    },
-    {
-      id: 'Returning',
-      label: 'Returning',
-      value: selectedDayMetrics?.customers.returning.total ?? 0,
-    },
-  ];
-
-  // daily -> new
-
-  // daily -> new -> bar chart obj
-  const initialDailyNewBarChartsObj = structuredClone(
-    NEW_RETURNING_BAR_CHART_TEMPLATE
-  );
-  // daily -> new -> calendar chart obj
-  const initialDailyNewCalendarChartsObj = structuredClone(
-    NEW_RETURNING_CALENDAR_CHART_TEMPLATE
-  );
-  // daily -> new -> line chart obj
-  const initialDailyNewLineChartsObj = structuredClone(
-    NEW_RETURNING_LINE_CHART_TEMPLATE
-  );
-
-  // daily -> new -> pie chart obj
-  const newSalesPieChartData: PieChartData = {
-    id: 'Sales',
-    label: 'Sales',
-    value: selectedDayMetrics?.customers.new.sales.total ?? 0,
-  };
-  const newRepairPieChartData: PieChartData = {
-    id: 'Repair',
-    label: 'Repair',
-    value: selectedDayMetrics?.customers.new.repair ?? 0,
-  };
-  const newSalesOnlinePieChartData: PieChartData = {
-    id: 'Online',
-    label: 'Online',
-    value: selectedDayMetrics?.customers.new.sales.online ?? 0,
-  };
-  const newSalesInStorePieChartData: PieChartData = {
-    id: 'In-Store',
-    label: 'In-Store',
-    value: selectedDayMetrics?.customers.new.sales.inStore ?? 0,
-  };
-
-  const dailyNewPieChartData: CustomerNewReturningPieObj = {
-    overview: [newSalesPieChartData, newRepairPieChartData],
-    all: [
-      newSalesOnlinePieChartData,
-      newSalesInStorePieChartData,
-      newRepairPieChartData,
-    ],
-    sales: [newSalesOnlinePieChartData, newSalesInStorePieChartData],
-  };
-
-  // daily -> returning
-
-  // daily -> returning -> bar chart obj
-  const initialDailyReturningBarChartsObj = structuredClone(
-    NEW_RETURNING_BAR_CHART_TEMPLATE
-  );
-  // daily -> returning -> calendar chart obj
-  const initialDailyReturningCalendarChartsObj = structuredClone(
-    NEW_RETURNING_CALENDAR_CHART_TEMPLATE
-  );
-  // daily -> returning -> line chart obj
-  const initialDailyReturningLineChartsObj = structuredClone(
-    NEW_RETURNING_LINE_CHART_TEMPLATE
-  );
-
-  // daily -> returning -> pie chart obj
-  const returningSalesPieChartData: PieChartData = {
-    id: 'Sales',
-    label: 'Sales',
-    value: selectedDayMetrics?.customers.returning.sales.total ?? 0,
-  };
-  const returningRepairPieChartData: PieChartData = {
-    id: 'Repair',
-    label: 'Repair',
-    value: selectedDayMetrics?.customers.returning.repair ?? 0,
-  };
-  const returningSalesOnlinePieChartData: PieChartData = {
-    id: 'Online',
-    label: 'Online',
-    value: selectedDayMetrics?.customers.returning.sales.online ?? 0,
-  };
-  const returningSalesInStorePieChartData: PieChartData = {
-    id: 'In-Store',
-    label: 'In-Store',
-    value: selectedDayMetrics?.customers.returning.sales.inStore ?? 0,
-  };
-
-  const dailyReturningPieChartData: CustomerNewReturningPieObj = {
-    overview: [returningSalesPieChartData, returningRepairPieChartData],
-    all: [
-      returningSalesOnlinePieChartData,
-      returningSalesInStorePieChartData,
-      returningRepairPieChartData,
-    ],
-    sales: [
-      returningSalesOnlinePieChartData,
-      returningSalesInStorePieChartData,
-    ],
-  };
-
-  // daily charts
-
-  const [
-    // overview
-    dailyOverviewBarChartsObj,
-    dailyOverviewCalendarChartsObj,
-    dailyOverviewLineChartsObj,
-    // new
-    dailyNewBarChartsObj,
-    dailyNewCalendarChartsObj,
-    dailyNewLineChartsObj,
-    // returning
-    dailyReturningBarChartsObj,
-    dailyReturningCalendarChartsObj,
-    dailyReturningLineChartsObj,
-  ] = selectedMonthMetrics?.dailyMetrics.reduce(
-    (dailyCustomerChartsAcc, dailyMetric) => {
-      const [
-        // overview
-        dailyOverviewBarChartsObjAcc,
-        dailyOverviewCalendarChartsObjAcc,
-        dailyOverviewLineChartsObjAcc,
-        // new
-        dailyNewBarChartsObjAcc,
-        dailyNewCalendarChartsObjAcc,
-        dailyNewLineChartsObjAcc,
-        // returning
-        dailyReturningBarChartsObjAcc,
-        dailyReturningCalendarChartsObjAcc,
-        dailyReturningLineChartsObjAcc,
-      ] = dailyCustomerChartsAcc;
-
-      const { day, customers } = dailyMetric;
-
-      // overview
-
-      // overview -> bar chart obj -> overview
-      const dailyOverviewBarChartObj = {
-        Days: day,
-        New: customers.new.total,
-        Returning: customers.returning.total,
-      };
-      dailyOverviewBarChartsObjAcc.overview.push(dailyOverviewBarChartObj);
-
-      // overview -> bar chart obj -> new
-      const dailyNewBarChartObj = {
-        Days: day,
-        New: customers.new.total,
-      };
-      dailyOverviewBarChartsObjAcc.new.push(dailyNewBarChartObj);
-
-      // overview -> bar chart obj -> returning
-      const dailyReturningBarChartObj = {
-        Days: day,
-        Returning: customers.returning.total,
-      };
-      dailyOverviewBarChartsObjAcc.returning.push(dailyReturningBarChartObj);
-
-      // overview -> calendar chart obj -> overview
-      const dailyOverviewCalendarChartObj = {
-        day: `${selectedYear}-${monthNumber}-${day}`,
-        value: customers.total,
-      };
-      dailyOverviewCalendarChartsObjAcc.overview.push(
-        dailyOverviewCalendarChartObj
-      );
-
-      // overview -> calendar chart obj -> new
-      const dailyNewCalendarChartObj = {
-        day: `${selectedYear}-${monthNumber}-${day}`,
-        value: customers.new.total,
-      };
-      dailyOverviewCalendarChartsObjAcc.new.push(dailyNewCalendarChartObj);
-
-      // overview -> calendar chart obj -> returning
-      const dailyReturningCalendarChartObj = {
-        day: `${selectedYear}-${monthNumber}-${day}`,
-        value: customers.returning.total,
-      };
-      dailyOverviewCalendarChartsObjAcc.returning.push(
-        dailyReturningCalendarChartObj
-      );
-
-      // overview -> line chart obj
-
-      // overview -> line chart obj -> new
-      const dailyOverviewNewLineChartObj = {
-        x: day,
-        y: customers.new.total,
-      };
-      dailyOverviewLineChartsObjAcc.overview
-        .find((lineChartData: LineChartData) => lineChartData.id === 'New')
-        ?.data.push(dailyOverviewNewLineChartObj);
-
-      // overview -> line chart obj -> returning
-      const dailyOverviewReturningLineChartObj = {
-        x: day,
-        y: customers.returning.total,
-      };
-      dailyOverviewLineChartsObjAcc.overview
-        .find(
-          (lineChartData: LineChartData) => lineChartData.id === 'Returning'
-        )
-        ?.data.push(dailyOverviewReturningLineChartObj);
-
-      // overview -> line chart obj -> new
-      const dailyNewNewLineChartObj = {
-        x: day,
-        y: customers.new.total,
-      };
-      dailyOverviewLineChartsObjAcc.new
-        .find((lineChartData: LineChartData) => lineChartData.id === 'New')
-        ?.data.push(dailyNewNewLineChartObj);
-
-      // overview -> line chart obj -> returning
-      const dailyReturningReturningLineChartObj = {
-        x: day,
-        y: customers.returning.total,
-      };
-      dailyOverviewLineChartsObjAcc.returning
-        .find(
-          (lineChartData: LineChartData) => lineChartData.id === 'Returning'
-        )
-        ?.data.push(dailyReturningReturningLineChartObj);
-
-      // new
-
-      // new -> bar chart obj
-
-      // new -> bar chart obj -> total
-      const dailyNewTotalBarChartObj = {
-        Days: day,
-        Total: customers.new.total,
-      };
-      dailyNewBarChartsObjAcc.total.push(dailyNewTotalBarChartObj);
-
-      // new -> bar chart obj -> all
-      const dailyNewAllBarChartObj = {
-        Days: day,
-        'In-Store': customers.new.sales.inStore,
-        Online: customers.new.sales.online,
-        Repair: customers.new.repair,
-      };
-      dailyNewBarChartsObjAcc.all.push(dailyNewAllBarChartObj);
-
-      // new -> bar chart obj -> overview
-      const dailyNewOverviewBarChartObj = {
-        Days: day,
-        Sales: customers.new.sales.total,
-        Repair: customers.new.repair,
-      };
-      dailyNewBarChartsObjAcc.overview.push(dailyNewOverviewBarChartObj);
-
-      // new -> bar chart obj -> sales
-      const dailyNewSalesBarChartObj = {
-        Days: day,
-        'In-Store': customers.new.sales.inStore,
-        Online: customers.new.sales.online,
-      };
-      dailyNewBarChartsObjAcc.sales.push(dailyNewSalesBarChartObj);
-
-      // new -> bar chart obj -> online
-      const dailyNewOnlineBarChartObj = {
-        Days: day,
-        Online: customers.new.sales.online,
-      };
-      dailyNewBarChartsObjAcc.online.push(dailyNewOnlineBarChartObj);
-
-      // new -> bar chart obj -> in-store
-      const dailyNewInStoreBarChartObj = {
-        Days: day,
-        'In-Store': customers.new.sales.inStore,
-      };
-      dailyNewBarChartsObjAcc.inStore.push(dailyNewInStoreBarChartObj);
-
-      // new -> bar chart obj -> repair
-      const dailyNewRepairBarChartObj = {
-        Days: day,
-        Repair: customers.new.repair,
-      };
-      dailyNewBarChartsObjAcc.repair.push(dailyNewRepairBarChartObj);
-
-      // new -> calendar chart obj
-
-      // new -> calendar chart obj -> total
-      const dailyNewTotalCalendarChartObj = {
-        day: `${selectedYear}-${monthNumber}-${day}`,
-        value: customers.new.total,
-      };
-      dailyNewCalendarChartsObjAcc.total.push(dailyNewTotalCalendarChartObj);
-
-      // new -> calendar chart obj -> sales
-      const dailyNewSalesCalendarChartObj = {
-        day: `${selectedYear}-${monthNumber}-${day}`,
-        value: customers.new.sales.total,
-      };
-      dailyNewCalendarChartsObjAcc.sales.push(dailyNewSalesCalendarChartObj);
-
-      // new -> calendar chart obj -> online
-      const dailyNewOnlineCalendarChartObj = {
-        day: `${selectedYear}-${monthNumber}-${day}`,
-        value: customers.new.sales.online,
-      };
-      dailyNewCalendarChartsObjAcc.online.push(dailyNewOnlineCalendarChartObj);
-
-      // new -> calendar chart obj -> in-store
-      const dailyNewInStoreCalendarChartObj = {
-        day: `${selectedYear}-${monthNumber}-${day}`,
-        value: customers.new.sales.inStore,
-      };
-      dailyNewCalendarChartsObjAcc.inStore.push(
-        dailyNewInStoreCalendarChartObj
-      );
-
-      // new -> calendar chart obj -> repair
-      const dailyNewRepairCalendarChartObj = {
-        day: `${selectedYear}-${monthNumber}-${day}`,
-        value: customers.new.repair,
-      };
-      dailyNewCalendarChartsObjAcc.repair.push(dailyNewRepairCalendarChartObj);
-
-      // new -> line chart obj
-
-      // new -> line chart obj -> total
-      const dailyNewTotalLineChartObj = {
-        x: day,
-        y: customers.new.total,
-      };
-      dailyNewLineChartsObjAcc.total
-        .find((lineChartData: LineChartData) => lineChartData.id === 'Total')
-        ?.data.push(dailyNewTotalLineChartObj);
-
-      // new -> line chart obj -> all -> in-store
-      const dailyNewAllInStoreLineChartObj = {
-        x: day,
-        y: customers.new.sales.inStore,
-      };
-      dailyNewLineChartsObjAcc.all
-        .find((lineChartData: LineChartData) => lineChartData.id === 'In-Store')
-        ?.data.push(dailyNewAllInStoreLineChartObj);
-
-      // new -> line chart obj -> all -> online
-      const dailyNewAllOnlineLineChartObj = {
-        x: day,
-        y: customers.new.sales.online,
-      };
-      dailyNewLineChartsObjAcc.all
-        .find((lineChartData: LineChartData) => lineChartData.id === 'Online')
-        ?.data.push(dailyNewAllOnlineLineChartObj);
-
-      // new -> line chart obj -> all -> repair
-      const dailyNewAllRepairLineChartObj = {
-        x: day,
-        y: customers.new.repair,
-      };
-      dailyNewLineChartsObjAcc.all
-        .find((lineChartData: LineChartData) => lineChartData.id === 'Repair')
-        ?.data.push(dailyNewAllRepairLineChartObj);
-
-      // new -> line chart obj -> overview -> sales
-      const dailyNewOverviewSalesLineChartObj = {
-        x: day,
-        y: customers.new.sales.total,
-      };
-      dailyNewLineChartsObjAcc.overview
-        .find((lineChartData: LineChartData) => lineChartData.id === 'Sales')
-        ?.data.push(dailyNewOverviewSalesLineChartObj);
-
-      // new -> line chart obj -> overview -> repair
-      const dailyNewOverviewRepairLineChartObj = {
-        x: day,
-        y: customers.new.repair,
-      };
-      dailyNewLineChartsObjAcc.overview
-        .find((lineChartData: LineChartData) => lineChartData.id === 'Repair')
-        ?.data.push(dailyNewOverviewRepairLineChartObj);
-
-      // new -> line chart obj -> sales -> online
-      const dailyNewSalesOnlineLineChartObj = {
-        x: day,
-        y: customers.new.sales.online,
-      };
-      dailyNewLineChartsObjAcc.sales
-        .find((lineChartData: LineChartData) => lineChartData.id === 'Online')
-        ?.data.push(dailyNewSalesOnlineLineChartObj);
-
-      // new -> line chart obj -> sales -> in-store
-      const dailyNewSalesInStoreLineChartObj = {
-        x: day,
-        y: customers.new.sales.inStore,
-      };
-      dailyNewLineChartsObjAcc.sales
-        .find((lineChartData: LineChartData) => lineChartData.id === 'In-Store')
-        ?.data.push(dailyNewSalesInStoreLineChartObj);
-
-      // new -> line chart obj -> online
-      const dailyNewOnlineLineChartObj = {
-        x: day,
-        y: customers.new.sales.online,
-      };
-      dailyNewLineChartsObjAcc.online
-        .find((lineChartData: LineChartData) => lineChartData.id === 'Online')
-        ?.data.push(dailyNewOnlineLineChartObj);
-
-      // new -> line chart obj -> in-store
-      const dailyNewInStoreLineChartObj = {
-        x: day,
-        y: customers.new.sales.inStore,
-      };
-      dailyNewLineChartsObjAcc.inStore
-        .find((lineChartData: LineChartData) => lineChartData.id === 'In-Store')
-        ?.data.push(dailyNewInStoreLineChartObj);
-
-      // new -> line chart obj -> repair
-      const dailyNewRepairLineChartObj = {
-        x: day,
-        y: customers.new.repair,
-      };
-      dailyNewLineChartsObjAcc.repair
-        .find((lineChartData: LineChartData) => lineChartData.id === 'Repair')
-        ?.data.push(dailyNewRepairLineChartObj);
-
-      // returning
-
-      // returning -> bar chart obj
-
-      // returning -> bar chart obj -> total
-      const dailyReturningTotalBarChartObj = {
-        Days: day,
-        Total: customers.returning.total,
-      };
-      dailyReturningBarChartsObjAcc.total.push(dailyReturningTotalBarChartObj);
-
-      // returning -> bar chart obj -> all
-      const dailyReturningAllBarChartObj = {
-        Days: day,
-        'In-Store': customers.returning.sales.inStore,
-        Online: customers.returning.sales.online,
-        Repair: customers.returning.repair,
-      };
-      dailyReturningBarChartsObjAcc.all.push(dailyReturningAllBarChartObj);
-
-      // returning -> bar chart obj -> overview
-      const dailyReturningOverviewBarChartObj = {
-        Days: day,
-        Sales: customers.returning.sales.total,
-        Repair: customers.returning.repair,
-      };
-      dailyReturningBarChartsObjAcc.overview.push(
-        dailyReturningOverviewBarChartObj
-      );
-
-      // returning -> bar chart obj -> sales
-      const dailyReturningSalesBarChartObj = {
-        Days: day,
-        'In-Store': customers.returning.sales.inStore,
-        Online: customers.returning.sales.online,
-      };
-      dailyReturningBarChartsObjAcc.sales.push(dailyReturningSalesBarChartObj);
-
-      // returning -> bar chart obj -> online
-      const dailyReturningOnlineBarChartObj = {
-        Days: day,
-        Online: customers.returning.sales.online,
-      };
-      dailyReturningBarChartsObjAcc.online.push(
-        dailyReturningOnlineBarChartObj
-      );
-
-      // returning -> bar chart obj -> in-store
-      const dailyReturningInStoreBarChartObj = {
-        Days: day,
-        'In-Store': customers.returning.sales.inStore,
-      };
-      dailyReturningBarChartsObjAcc.inStore.push(
-        dailyReturningInStoreBarChartObj
-      );
-
-      // returning -> bar chart obj -> repair
-      const dailyReturningRepairBarChartObj = {
-        Days: day,
-        Repair: customers.returning.repair,
-      };
-      dailyReturningBarChartsObjAcc.repair.push(
-        dailyReturningRepairBarChartObj
-      );
-
-      // returning -> calendar chart obj
-
-      // returning -> calendar chart obj -> total
-      const dailyReturningTotalCalendarChartObj = {
-        day: `${selectedYear}-${monthNumber}-${day}`,
-        value: customers.returning.total,
-      };
-      dailyReturningCalendarChartsObjAcc.total.push(
-        dailyReturningTotalCalendarChartObj
-      );
-
-      // returning -> calendar chart obj -> sales
-      const dailyReturningSalesCalendarChartObj = {
-        day: `${selectedYear}-${monthNumber}-${day}`,
-        value: customers.returning.sales.total,
-      };
-      dailyReturningCalendarChartsObjAcc.sales.push(
-        dailyReturningSalesCalendarChartObj
-      );
-
-      // returning -> calendar chart obj -> online
-      const dailyReturningOnlineCalendarChartObj = {
-        day: `${selectedYear}-${monthNumber}-${day}`,
-        value: customers.returning.sales.online,
-      };
-      dailyReturningCalendarChartsObjAcc.online.push(
-        dailyReturningOnlineCalendarChartObj
-      );
-
-      // returning -> calendar chart obj -> in-store
-      const dailyReturningInStoreCalendarChartObj = {
-        day: `${selectedYear}-${monthNumber}-${day}`,
-        value: customers.returning.sales.inStore,
-      };
-      dailyReturningCalendarChartsObjAcc.inStore.push(
-        dailyReturningInStoreCalendarChartObj
-      );
-
-      // returning -> calendar chart obj -> repair
-      const dailyReturningRepairCalendarChartObj = {
-        day: `${selectedYear}-${monthNumber}-${day}`,
-        value: customers.returning.repair,
-      };
-      dailyReturningCalendarChartsObjAcc.repair.push(
-        dailyReturningRepairCalendarChartObj
-      );
-
-      // returning -> line chart obj
-
-      // returning -> line chart obj -> total
-      const dailyReturningTotalLineChartObj = {
-        x: day,
-        y: customers.returning.total,
-      };
-      dailyReturningLineChartsObjAcc.total
-        .find((lineChartData: LineChartData) => lineChartData.id === 'Total')
-        ?.data.push(dailyReturningTotalLineChartObj);
-
-      // returning -> line chart obj -> all -> in-store
-      const dailyReturningAllInStoreLineChartObj = {
-        x: day,
-        y: customers.returning.sales.inStore,
-      };
-      dailyReturningLineChartsObjAcc.all
-        .find((lineChartData: LineChartData) => lineChartData.id === 'In-Store')
-        ?.data.push(dailyReturningAllInStoreLineChartObj);
-
-      // returning -> line chart obj -> all -> online
-      const dailyReturningAllOnlineLineChartObj = {
-        x: day,
-        y: customers.returning.sales.online,
-      };
-      dailyReturningLineChartsObjAcc.all
-        .find((lineChartData: LineChartData) => lineChartData.id === 'Online')
-        ?.data.push(dailyReturningAllOnlineLineChartObj);
-
-      // returning -> line chart obj -> all -> repair
-      const dailyReturningAllRepairLineChartObj = {
-        x: day,
-        y: customers.returning.repair,
-      };
-      dailyReturningLineChartsObjAcc.all
-        .find((lineChartData: LineChartData) => lineChartData.id === 'Repair')
-        ?.data.push(dailyReturningAllRepairLineChartObj);
-
-      // returning -> line chart obj -> overview -> sales
-      const dailyReturningOverviewSalesLineChartObj = {
-        x: day,
-        y: customers.returning.sales.total,
-      };
-      dailyReturningLineChartsObjAcc.overview
-        .find((lineChartData: LineChartData) => lineChartData.id === 'Sales')
-        ?.data.push(dailyReturningOverviewSalesLineChartObj);
-
-      // returning -> line chart obj -> overview -> repair
-      const dailyReturningOverviewRepairLineChartObj = {
-        x: day,
-        y: customers.returning.repair,
-      };
-      dailyReturningLineChartsObjAcc.overview
-        .find((lineChartData: LineChartData) => lineChartData.id === 'Repair')
-        ?.data.push(dailyReturningOverviewRepairLineChartObj);
-
-      // returning -> line chart obj -> sales -> online
-      const dailyReturningSalesOnlineLineChartObj = {
-        x: day,
-        y: customers.returning.sales.online,
-      };
-      dailyReturningLineChartsObjAcc.sales
-        .find((lineChartData: LineChartData) => lineChartData.id === 'Online')
-        ?.data.push(dailyReturningSalesOnlineLineChartObj);
-
-      // returning -> line chart obj -> sales -> in-store
-      const dailyReturningSalesInStoreLineChartObj = {
-        x: day,
-        y: customers.returning.sales.inStore,
-      };
-      dailyReturningLineChartsObjAcc.sales
-        .find((lineChartData: LineChartData) => lineChartData.id === 'In-Store')
-        ?.data.push(dailyReturningSalesInStoreLineChartObj);
-
-      // returning -> line chart obj -> online
-      const dailyReturningOnlineLineChartObj = {
-        x: day,
-        y: customers.returning.sales.online,
-      };
-      dailyReturningLineChartsObjAcc.online
-        .find((lineChartData: LineChartData) => lineChartData.id === 'Online')
-        ?.data.push(dailyReturningOnlineLineChartObj);
-
-      // returning -> line chart obj -> in-store
-      const dailyReturningInStoreLineChartObj = {
-        x: day,
-        y: customers.returning.sales.inStore,
-      };
-      dailyReturningLineChartsObjAcc.inStore
-        .find((lineChartData: LineChartData) => lineChartData.id === 'In-Store')
-        ?.data.push(dailyReturningInStoreLineChartObj);
-
-      // returning -> line chart obj -> repair
-      const dailyReturningRepairLineChartObj = {
-        x: day,
-        y: customers.returning.repair,
-      };
-      dailyReturningLineChartsObjAcc.repair
-        .find((lineChartData: LineChartData) => lineChartData.id === 'Repair')
-        ?.data.push(dailyReturningRepairLineChartObj);
-
-      return dailyCustomerChartsAcc;
-    },
-    [
-      // overview
-      initialDailyOverviewBarChartsObj,
-      initialDailyOverviewCalendarChartsObj,
-      initialDailyOverviewLineChartsObj,
-      // new
-      initialDailyNewBarChartsObj,
-      initialDailyNewCalendarChartsObj,
-      initialDailyNewLineChartsObj,
-      // returning
-      initialDailyReturningBarChartsObj,
-      initialDailyReturningCalendarChartsObj,
-      initialDailyReturningLineChartsObj,
-    ]
-  ) ?? [
-    // overview
-    initialDailyOverviewBarChartsObj,
-    initialDailyOverviewCalendarChartsObj,
-    initialDailyOverviewLineChartsObj,
-    // new
-    initialDailyNewBarChartsObj,
-    initialDailyNewCalendarChartsObj,
-    initialDailyNewLineChartsObj,
-    // returning
-    initialDailyReturningBarChartsObj,
-    initialDailyReturningCalendarChartsObj,
-    initialDailyReturningLineChartsObj,
-  ];
-
-  // monthly
-
-  // monthly -> overview
-
-  // monthly -> overview -> bar chart obj
-  const initialMonthlyOverviewBarChartsObj = structuredClone(
-    OVERVIEW_BAR_CHART_TEMPLATE
-  );
-  // monthly -> overview -> calendar chart obj
-  const initialMonthlyOverviewCalendarChartsObj = structuredClone(
-    OVERVIEW_CALENDAR_CHART_TEMPLATE
-  );
-  // monthly -> overview -> line chart obj
-  const initialMonthlyOverviewLineChartsObj = structuredClone(
-    OVERVIEW_LINE_CHART_TEMPLATE
-  );
-  // monthly -> overview -> pie chart obj
-  const monthlyOverviewPieChartData: PieChartData[] = [
-    {
-      id: 'New',
-      label: 'New',
-      value: selectedMonthMetrics?.customers.new.total ?? 0,
-    },
-    {
-      id: 'Returning',
-      label: 'Returning',
-      value: selectedMonthMetrics?.customers.returning.total ?? 0,
-    },
-  ];
-
-  // monthly -> new
-
-  // monthly -> new -> bar chart obj
-  const initialMonthlyNewBarChartsObj = structuredClone(
-    NEW_RETURNING_BAR_CHART_TEMPLATE
-  );
-  // monthly -> new -> calendar chart obj
-  const initialMonthlyNewCalendarChartsObj = structuredClone(
-    NEW_RETURNING_CALENDAR_CHART_TEMPLATE
-  );
-  // monthly -> new -> line chart obj
-  const initialMonthlyNewLineChartsObj = structuredClone(
-    NEW_RETURNING_LINE_CHART_TEMPLATE
-  );
-
-  // monthly -> new -> pie chart obj
-  const monthlyNewSalesPieChartData: PieChartData = {
-    id: 'Sales',
-    label: 'Sales',
-    value: selectedMonthMetrics?.customers.new.sales.total ?? 0,
-  };
-  const monthlyNewRepairPieChartData: PieChartData = {
-    id: 'Repair',
-    label: 'Repair',
-    value: selectedMonthMetrics?.customers.new.repair ?? 0,
-  };
-  const monthlyNewSalesOnlinePieChartData: PieChartData = {
-    id: 'Online',
-    label: 'Online',
-    value: selectedMonthMetrics?.customers.new.sales.online ?? 0,
-  };
-  const monthlyNewSalesInStorePieChartData: PieChartData = {
-    id: 'In-Store',
-    label: 'In-Store',
-    value: selectedMonthMetrics?.customers.new.sales.inStore ?? 0,
-  };
-
-  const monthlyNewPieChartData: CustomerNewReturningPieObj = {
-    overview: [monthlyNewSalesPieChartData, monthlyNewRepairPieChartData],
-    all: [
-      monthlyNewSalesOnlinePieChartData,
-      monthlyNewSalesInStorePieChartData,
-      monthlyNewRepairPieChartData,
-    ],
-    sales: [
-      monthlyNewSalesOnlinePieChartData,
-      monthlyNewSalesInStorePieChartData,
-    ],
-  };
-
-  // monthly -> returning
-
-  // monthly -> returning -> bar chart obj
-  const initialMonthlyReturningBarChartsObj = structuredClone(
-    NEW_RETURNING_BAR_CHART_TEMPLATE
-  );
-  // monthly -> returning -> calendar chart obj
-  const initialMonthlyReturningCalendarChartsObj = structuredClone(
-    NEW_RETURNING_CALENDAR_CHART_TEMPLATE
-  );
-  // monthly -> returning -> line chart obj
-  const initialMonthlyReturningLineChartsObj = structuredClone(
-    NEW_RETURNING_LINE_CHART_TEMPLATE
-  );
-
-  // monthly -> returning -> pie chart obj
-  const monthlyReturningSalesPieChartData: PieChartData = {
-    id: 'Sales',
-    label: 'Sales',
-    value: selectedMonthMetrics?.customers.returning.sales.total ?? 0,
-  };
-  const monthlyReturningRepairPieChartData: PieChartData = {
-    id: 'Repair',
-    label: 'Repair',
-    value: selectedMonthMetrics?.customers.returning.repair ?? 0,
-  };
-  const monthlyReturningSalesOnlinePieChartData: PieChartData = {
-    id: 'Online',
-    label: 'Online',
-    value: selectedMonthMetrics?.customers.returning.sales.online ?? 0,
-  };
-  const monthlyReturningSalesInStorePieChartData: PieChartData = {
-    id: 'In-Store',
-    label: 'In-Store',
-    value: selectedMonthMetrics?.customers.returning.sales.inStore ?? 0,
-  };
-
-  const monthlyReturningPieChartData: CustomerNewReturningPieObj = {
-    overview: [
-      monthlyReturningSalesPieChartData,
-      monthlyReturningRepairPieChartData,
-    ],
-    all: [
-      monthlyReturningSalesOnlinePieChartData,
-      monthlyReturningSalesInStorePieChartData,
-      monthlyReturningRepairPieChartData,
-    ],
-    sales: [
-      monthlyReturningSalesOnlinePieChartData,
-      monthlyReturningSalesInStorePieChartData,
-    ],
-  };
-
-  // monthly -> churn & retention rate -> bar chart obj
-  const initialMonthlyChurnRetentionRateBarChartsObj = structuredClone(
-    CHURN_RETENTION_BAR_CHART_TEMPLATE
-  );
-  // monthly -> churn & retention rate -> line chart obj
-  const initialMonthlyChurnRetentionRateLineChartsObj = structuredClone(
-    CHURN_RETENTION_LINE_CHART_TEMPLATE
-  );
-
-  // monthly -> churn & retention rate -> pie chart obj
-  const monthlyChurnRetentionRatePieChartData: PieChartData[] = [
-    {
-      id: 'Churn Rate',
-      label: 'Churn Rate',
-      value:
-        Number(
-          (selectedMonthMetrics?.customers.churnRate ?? 0).toPrecision(4)
-        ) * 100,
-    },
-    {
-      id: 'Retention Rate',
-      label: 'Retention Rate',
-      value:
-        Number(
-          (selectedMonthMetrics?.customers.retentionRate ?? 0).toPrecision(4)
-        ) * 100,
-    },
-  ];
-
-  // monthly charts
-
-  const [
-    // overview
-    monthlyOverviewBarChartsObj,
-    monthlyOverviewCalendarChartsObj,
-    monthlyOverviewLineChartsObj,
-    // new
-    monthlyNewBarChartsObj,
-    monthlyNewCalendarChartsObj,
-    monthlyNewLineChartsObj,
-    // returning
-    monthlyReturningBarChartsObj,
-    monthlyReturningCalendarChartsObj,
-    monthlyReturningLineChartsObj,
-    // churn & retention rate
-    monthlyChurnRetentionRateBarChartsObj,
-    monthlyChurnRetentionRateLineChartsObj,
-  ] = selectedYearMetrics?.monthlyMetrics.reduce(
-    (monthlyCustomerChartsAcc, monthlyMetric) => {
-      const [
-        // overview
-        monthlyOverviewBarChartsObjAcc,
-        monthlyOverviewCalendarChartsObjAcc,
-        monthlyOverviewLineChartsObjAcc,
-        // new
-        monthlyNewBarChartsObjAcc,
-        monthlyNewCalendarChartsObjAcc,
-        monthlyNewLineChartsObjAcc,
-        // returning
-        monthlyReturningBarChartsObjAcc,
-        monthlyReturningCalendarChartsObjAcc,
-        monthlyReturningLineChartsObjAcc,
-        // churn & retention rate
-        monthlyChurnRetentionRateBarChartsObjAcc,
-        monthlyChurnRetentionRateLineChartsObjAcc,
-      ] = monthlyCustomerChartsAcc;
-
-      const { month, customers, dailyMetrics } = monthlyMetric;
-
-      // prevents current month of current year from being added to charts
-      const currentYear = new Date().getFullYear().toString();
-      const isCurrentYear = selectedYear === currentYear;
-      const currentMonth = new Date().toLocaleString('default', {
-        month: 'long',
-      });
-      const isCurrentMonth = month === currentMonth;
-
-      if (isCurrentYear && isCurrentMonth) {
-        return monthlyCustomerChartsAcc;
-      }
-
-      const monthNumberStr = (months.indexOf(month) + 1)
-        .toString()
-        .padStart(2, '0');
-
-      // overview
-
-      // overview -> bar chart obj
-
-      // overview -> bar chart obj -> overview
-      const monthlyOverviewBarChartObj = {
-        Months: month,
-        New: customers.new.total,
-        Returning: customers.returning.total,
-      };
-      monthlyOverviewBarChartsObjAcc.overview.push(monthlyOverviewBarChartObj);
-
-      // overview -> bar chart obj -> new
-      const monthlyOverviewNewBarChartObj = {
-        Months: month,
-        New: customers.new.total,
-      };
-      monthlyOverviewBarChartsObjAcc.new.push(monthlyOverviewNewBarChartObj);
-
-      // overview -> bar chart obj -> returning
-      const monthlyOverviewReturningBarChartObj = {
-        Months: month,
-        Returning: customers.returning.total,
-      };
-      monthlyOverviewBarChartsObjAcc.returning.push(
-        monthlyOverviewReturningBarChartObj
-      );
-
-      // overview -> calendar chart obj
-
-      dailyMetrics.forEach((dailyMetric) => {
-        const { day, customers } = dailyMetric;
-
-        // overview -> calendar chart obj -> total
-        const monthlyOverviewCalendarChartObj = {
-          day: `${selectedYear}-${monthNumberStr}-${day}`,
-          value: customers.total,
-        };
-        monthlyOverviewCalendarChartsObjAcc.overview.push(
-          monthlyOverviewCalendarChartObj
-        );
-
-        // overview -> calendar chart obj -> new
-        const monthlyOverviewNewCalendarChartObj = {
-          day: `${selectedYear}-${monthNumberStr}-${day}`,
-          value: customers.new.total,
-        };
-        monthlyOverviewCalendarChartsObjAcc.new.push(
-          monthlyOverviewNewCalendarChartObj
-        );
-
-        // overview -> calendar chart obj -> returning
-        const monthlyOverviewReturningCalendarChartObj = {
-          day: `${selectedYear}-${monthNumberStr}-${day}`,
-          value: customers.returning.total,
-        };
-        monthlyOverviewCalendarChartsObjAcc.returning.push(
-          monthlyOverviewReturningCalendarChartObj
-        );
-      });
-
-      // overview -> line chart obj
-
-      // overview -> line chart obj -> overview -> new
-      const monthlyOverviewNewLineChartObj = {
-        x: month,
-        y: customers.new.total,
-      };
-      monthlyOverviewLineChartsObjAcc.overview
-        .find((lineChartData: LineChartData) => lineChartData.id === 'New')
-        ?.data.push(monthlyOverviewNewLineChartObj);
-
-      // overview -> line chart obj -> overview -> returning
-      const monthlyOverviewReturningLineChartObj = {
-        x: month,
-        y: customers.returning.total,
-      };
-      monthlyOverviewLineChartsObjAcc.overview
-        .find(
-          (lineChartData: LineChartData) => lineChartData.id === 'Returning'
-        )
-        ?.data.push(monthlyOverviewReturningLineChartObj);
-
-      // overview -> line chart obj -> new -> new
-      const monthlyNewNewLineChartObj = {
-        x: month,
-        y: customers.new.total,
-      };
-      monthlyOverviewLineChartsObjAcc.new
-        .find((lineChartData: LineChartData) => lineChartData.id === 'New')
-        ?.data.push(monthlyNewNewLineChartObj);
-
-      // overview -> line chart obj -> returning -> returning
-      const monthlyReturningReturningLineChartObj = {
-        x: month,
-        y: customers.returning.total,
-      };
-      monthlyOverviewLineChartsObjAcc.returning
-        .find(
-          (lineChartData: LineChartData) => lineChartData.id === 'Returning'
-        )
-        ?.data.push(monthlyReturningReturningLineChartObj);
-
-      // new
-
-      // new -> bar chart obj
-
-      // new -> bar chart obj -> total
-      const monthlyNewTotalBarChartObj = {
-        Months: month,
-        Total: customers.new.total,
-      };
-      monthlyNewBarChartsObjAcc.total.push(monthlyNewTotalBarChartObj);
-
-      // new -> bar chart obj -> all
-      const monthlyNewAllBarChartObj = {
-        Months: month,
-        'In-Store': customers.new.sales.inStore,
-        Online: customers.new.sales.online,
-        Repair: customers.new.repair,
-      };
-      monthlyNewBarChartsObjAcc.all.push(monthlyNewAllBarChartObj);
-
-      // new -> bar chart obj -> overview
-      const monthlyNewOverviewBarChartObj = {
-        Months: month,
-        Sales: customers.new.sales.total,
-        Repair: customers.new.repair,
-      };
-      monthlyNewBarChartsObjAcc.overview.push(monthlyNewOverviewBarChartObj);
-
-      // new -> bar chart obj -> sales
-      const monthlyNewSalesBarChartObj = {
-        Months: month,
-        'In-Store': customers.new.sales.inStore,
-        Online: customers.new.sales.online,
-      };
-      monthlyNewBarChartsObjAcc.sales.push(monthlyNewSalesBarChartObj);
-
-      // new -> bar chart obj -> online
-      const monthlyNewOnlineBarChartObj = {
-        Months: month,
-        Online: customers.new.sales.online,
-      };
-      monthlyNewBarChartsObjAcc.online.push(monthlyNewOnlineBarChartObj);
-
-      // new -> bar chart obj -> in-store
-      const monthlyNewInStoreBarChartObj = {
-        Months: month,
-        'In-Store': customers.new.sales.inStore,
-      };
-      monthlyNewBarChartsObjAcc.inStore.push(monthlyNewInStoreBarChartObj);
-
-      // new -> bar chart obj -> repair
-      const monthlyNewRepairBarChartObj = {
-        Months: month,
-        Repair: customers.new.repair,
-      };
-      monthlyNewBarChartsObjAcc.repair.push(monthlyNewRepairBarChartObj);
-
-      // new -> calendar chart obj
-
-      dailyMetrics.forEach((dailyMetric) => {
-        const { day, customers } = dailyMetric;
-
-        // new -> calendar chart obj -> total
-        const monthlyNewTotalCalendarChartObj = {
-          day: `${selectedYear}-${monthNumberStr}-${day}`,
-          value: customers.new.total,
-        };
-        monthlyNewCalendarChartsObjAcc.total.push(
-          monthlyNewTotalCalendarChartObj
-        );
-
-        // new -> calendar chart obj -> sales
-        const monthlyNewSalesCalendarChartObj = {
-          day: `${selectedYear}-${monthNumberStr}-${day}`,
-          value: customers.new.sales.total,
-        };
-        monthlyNewCalendarChartsObjAcc.sales.push(
-          monthlyNewSalesCalendarChartObj
-        );
-
-        // new -> calendar chart obj -> online
-        const monthlyNewOnlineCalendarChartObj = {
-          day: `${selectedYear}-${monthNumberStr}-${day}`,
-          value: customers.new.sales.online,
-        };
-        monthlyNewCalendarChartsObjAcc.online.push(
-          monthlyNewOnlineCalendarChartObj
-        );
-
-        // new -> calendar chart obj -> in-store
-        const monthlyNewInStoreCalendarChartObj = {
-          day: `${selectedYear}-${monthNumberStr}-${day}`,
-          value: customers.new.sales.inStore,
-        };
-        monthlyNewCalendarChartsObjAcc.inStore.push(
-          monthlyNewInStoreCalendarChartObj
-        );
-
-        // new -> calendar chart obj -> repair
-        const monthlyNewRepairCalendarChartObj = {
-          day: `${selectedYear}-${monthNumberStr}-${day}`,
-          value: customers.new.repair,
-        };
-        monthlyNewCalendarChartsObjAcc.repair.push(
-          monthlyNewRepairCalendarChartObj
-        );
-      });
-
-      // new -> line chart obj
-
-      // new -> line chart obj -> total
-      const monthlyNewTotalLineChartObj = {
-        x: month,
-        y: customers.new.total,
-      };
-      monthlyNewLineChartsObjAcc.total
-        .find((lineChartData: LineChartData) => lineChartData.id === 'Total')
-        ?.data.push(monthlyNewTotalLineChartObj);
-
-      // new -> line chart obj -> all -> in-store
-      const monthlyNewAllInStoreLineChartObj = {
-        x: month,
-        y: customers.new.sales.inStore,
-      };
-      monthlyNewLineChartsObjAcc.all
-        .find((lineChartData: LineChartData) => lineChartData.id === 'In-Store')
-        ?.data.push(monthlyNewAllInStoreLineChartObj);
-
-      // new -> line chart obj -> all -> online
-      const monthlyNewAllOnlineLineChartObj = {
-        x: month,
-        y: customers.new.sales.online,
-      };
-      monthlyNewLineChartsObjAcc.all
-        .find((lineChartData: LineChartData) => lineChartData.id === 'Online')
-        ?.data.push(monthlyNewAllOnlineLineChartObj);
-
-      // new -> line chart obj -> all -> repair
-      const monthlyNewAllRepairLineChartObj = {
-        x: month,
-        y: customers.new.repair,
-      };
-      monthlyNewLineChartsObjAcc.all
-        .find((lineChartData: LineChartData) => lineChartData.id === 'Repair')
-        ?.data.push(monthlyNewAllRepairLineChartObj);
-
-      // new -> line chart obj -> overview -> sales
-      const monthlyNewOverviewSalesLineChartObj = {
-        x: month,
-        y: customers.new.sales.total,
-      };
-      monthlyNewLineChartsObjAcc.overview
-        .find((lineChartData: LineChartData) => lineChartData.id === 'Sales')
-        ?.data.push(monthlyNewOverviewSalesLineChartObj);
-
-      // new -> line chart obj -> overview -> repair
-      const monthlyNewOverviewRepairLineChartObj = {
-        x: month,
-        y: customers.new.repair,
-      };
-      monthlyNewLineChartsObjAcc.overview
-        .find((lineChartData: LineChartData) => lineChartData.id === 'Repair')
-        ?.data.push(monthlyNewOverviewRepairLineChartObj);
-
-      // new -> line chart obj -> sales -> online
-      const monthlyNewSalesOnlineLineChartObj = {
-        x: month,
-        y: customers.new.sales.online,
-      };
-      monthlyNewLineChartsObjAcc.sales
-        .find((lineChartData: LineChartData) => lineChartData.id === 'Online')
-        ?.data.push(monthlyNewSalesOnlineLineChartObj);
-
-      // new -> line chart obj -> sales -> in-store
-      const monthlyNewSalesInStoreLineChartObj = {
-        x: month,
-        y: customers.new.sales.inStore,
-      };
-      monthlyNewLineChartsObjAcc.sales
-        .find((lineChartData: LineChartData) => lineChartData.id === 'In-Store')
-        ?.data.push(monthlyNewSalesInStoreLineChartObj);
-
-      // new -> line chart obj -> online
-      const monthlyNewOnlineLineChartObj = {
-        x: month,
-        y: customers.new.sales.online,
-      };
-      monthlyNewLineChartsObjAcc.online
-        .find((lineChartData: LineChartData) => lineChartData.id === 'Online')
-        ?.data.push(monthlyNewOnlineLineChartObj);
-
-      // new -> line chart obj -> in-store
-      const monthlyNewInStoreLineChartObj = {
-        x: month,
-        y: customers.new.sales.inStore,
-      };
-      monthlyNewLineChartsObjAcc.inStore
-        .find((lineChartData: LineChartData) => lineChartData.id === 'In-Store')
-        ?.data.push(monthlyNewInStoreLineChartObj);
-
-      // new -> line chart obj -> repair
-      const monthlyNewRepairLineChartObj = {
-        x: month,
-        y: customers.new.repair,
-      };
-      monthlyNewLineChartsObjAcc.repair
-        .find((lineChartData: LineChartData) => lineChartData.id === 'Repair')
-        ?.data.push(monthlyNewRepairLineChartObj);
-
-      // returning
-
-      // returning -> bar chart obj
-
-      // returning -> bar chart obj -> total
-      const monthlyReturningTotalBarChartObj = {
-        Months: month,
-        Total: customers.returning.total,
-      };
-      monthlyReturningBarChartsObjAcc.total.push(
-        monthlyReturningTotalBarChartObj
-      );
-
-      // returning -> bar chart obj -> all
-      const monthlyReturningAllBarChartObj = {
-        Months: month,
-        'In-Store': customers.returning.sales.inStore,
-        Online: customers.returning.sales.online,
-        Repair: customers.returning.repair,
-      };
-      monthlyReturningBarChartsObjAcc.all.push(monthlyReturningAllBarChartObj);
-
-      // returning -> bar chart obj -> overview
-      const monthlyReturningOverviewBarChartObj = {
-        Months: month,
-        Sales: customers.returning.sales.total,
-        Repair: customers.returning.repair,
-      };
-      monthlyReturningBarChartsObjAcc.overview.push(
-        monthlyReturningOverviewBarChartObj
-      );
-
-      // returning -> bar chart obj -> sales
-      const monthlyReturningSalesBarChartObj = {
-        Months: month,
-        'In-Store': customers.returning.sales.inStore,
-        Online: customers.returning.sales.online,
-      };
-      monthlyReturningBarChartsObjAcc.sales.push(
-        monthlyReturningSalesBarChartObj
-      );
-
-      // returning -> bar chart obj -> online
-      const monthlyReturningOnlineBarChartObj = {
-        Months: month,
-        Online: customers.returning.sales.online,
-      };
-      monthlyReturningBarChartsObjAcc.online.push(
-        monthlyReturningOnlineBarChartObj
-      );
-
-      // returning -> bar chart obj -> in-store
-      const monthlyReturningInStoreBarChartObj = {
-        Months: month,
-        'In-Store': customers.returning.sales.inStore,
-      };
-      monthlyReturningBarChartsObjAcc.inStore.push(
-        monthlyReturningInStoreBarChartObj
-      );
-
-      // returning -> bar chart obj -> repair
-      const monthlyReturningRepairBarChartObj = {
-        Months: month,
-        Repair: customers.returning.repair,
-      };
-      monthlyReturningBarChartsObjAcc.repair.push(
-        monthlyReturningRepairBarChartObj
-      );
-
-      // returning -> calendar chart obj
-
-      dailyMetrics.forEach((dailyMetric) => {
-        const { day, customers } = dailyMetric;
-
-        // returning -> calendar chart obj -> total
-        const monthlyReturningTotalCalendarChartObj = {
-          day: `${selectedYear}-${monthNumberStr}-${day}`,
-          value: customers.returning.total,
-        };
-        monthlyReturningCalendarChartsObjAcc.total.push(
-          monthlyReturningTotalCalendarChartObj
-        );
-
-        // returning -> calendar chart obj -> sales
-        const monthlyReturningSalesCalendarChartObj = {
-          day: `${selectedYear}-${monthNumberStr}-${day}`,
-          value: customers.returning.sales.total,
-        };
-        monthlyReturningCalendarChartsObjAcc.sales.push(
-          monthlyReturningSalesCalendarChartObj
-        );
-
-        // returning -> calendar chart obj -> online
-        const monthlyReturningOnlineCalendarChartObj = {
-          day: `${selectedYear}-${monthNumberStr}-${day}`,
-          value: customers.returning.sales.online,
-        };
-        monthlyReturningCalendarChartsObjAcc.online.push(
-          monthlyReturningOnlineCalendarChartObj
-        );
-
-        // returning -> calendar chart obj -> in-store
-        const monthlyReturningInStoreCalendarChartObj = {
-          day: `${selectedYear}-${monthNumberStr}-${day}`,
-          value: customers.returning.sales.inStore,
-        };
-        monthlyReturningCalendarChartsObjAcc.inStore.push(
-          monthlyReturningInStoreCalendarChartObj
-        );
-
-        // returning -> calendar chart obj -> repair
-        const monthlyReturningRepairCalendarChartObj = {
-          day: `${selectedYear}-${monthNumberStr}-${day}`,
-          value: customers.returning.repair,
-        };
-        monthlyReturningCalendarChartsObjAcc.repair.push(
-          monthlyReturningRepairCalendarChartObj
-        );
-      });
-
-      // returning -> line chart obj
-
-      // returning -> line chart obj -> total
-      const monthlyReturningTotalLineChartObj = {
-        x: month,
-        y: customers.returning.total,
-      };
-      monthlyReturningLineChartsObjAcc.total
-        .find((lineChartData: LineChartData) => lineChartData.id === 'Total')
-        ?.data.push(monthlyReturningTotalLineChartObj);
-
-      // returning -> line chart obj -> all -> in-store
-      const monthlyReturningAllInStoreLineChartObj = {
-        x: month,
-        y: customers.returning.sales.inStore,
-      };
-      monthlyReturningLineChartsObjAcc.all
-        .find((lineChartData: LineChartData) => lineChartData.id === 'In-Store')
-        ?.data.push(monthlyReturningAllInStoreLineChartObj);
-
-      // returning -> line chart obj -> all -> online
-      const monthlyReturningAllOnlineLineChartObj = {
-        x: month,
-        y: customers.returning.sales.online,
-      };
-      monthlyReturningLineChartsObjAcc.all
-        .find((lineChartData: LineChartData) => lineChartData.id === 'Online')
-        ?.data.push(monthlyReturningAllOnlineLineChartObj);
-
-      // returning -> line chart obj -> all -> repair
-      const monthlyReturningAllRepairLineChartObj = {
-        x: month,
-        y: customers.returning.repair,
-      };
-      monthlyReturningLineChartsObjAcc.all
-        .find((lineChartData: LineChartData) => lineChartData.id === 'Repair')
-        ?.data.push(monthlyReturningAllRepairLineChartObj);
-
-      // returning -> line chart obj -> overview -> sales
-      const monthlyReturningOverviewSalesLineChartObj = {
-        x: month,
-        y: customers.returning.sales.total,
-      };
-      monthlyReturningLineChartsObjAcc.overview
-        .find((lineChartData: LineChartData) => lineChartData.id === 'Sales')
-        ?.data.push(monthlyReturningOverviewSalesLineChartObj);
-
-      // returning -> line chart obj -> overview -> repair
-      const monthlyReturningOverviewRepairLineChartObj = {
-        x: month,
-        y: customers.returning.repair,
-      };
-      monthlyReturningLineChartsObjAcc.overview
-        .find((lineChartData: LineChartData) => lineChartData.id === 'Repair')
-        ?.data.push(monthlyReturningOverviewRepairLineChartObj);
-
-      // returning -> line chart obj -> sales -> online
-      const monthlyReturningSalesOnlineLineChartObj = {
-        x: month,
-        y: customers.returning.sales.online,
-      };
-      monthlyReturningLineChartsObjAcc.sales
-        .find((lineChartData: LineChartData) => lineChartData.id === 'Online')
-        ?.data.push(monthlyReturningSalesOnlineLineChartObj);
-
-      // returning -> line chart obj -> sales -> in-store
-      const monthlyReturningSalesInStoreLineChartObj = {
-        x: month,
-        y: customers.returning.sales.inStore,
-      };
-      monthlyReturningLineChartsObjAcc.sales
-        .find((lineChartData: LineChartData) => lineChartData.id === 'In-Store')
-        ?.data.push(monthlyReturningSalesInStoreLineChartObj);
-
-      // returning -> line chart obj -> online
-      const monthlyReturningOnlineLineChartObj = {
-        x: month,
-        y: customers.returning.sales.online,
-      };
-      monthlyReturningLineChartsObjAcc.online
-        .find((lineChartData: LineChartData) => lineChartData.id === 'Online')
-        ?.data.push(monthlyReturningOnlineLineChartObj);
-
-      // returning -> line chart obj -> in-store
-      const monthlyReturningInStoreLineChartObj = {
-        x: month,
-        y: customers.returning.sales.inStore,
-      };
-      monthlyReturningLineChartsObjAcc.inStore
-        .find((lineChartData: LineChartData) => lineChartData.id === 'In-Store')
-        ?.data.push(monthlyReturningInStoreLineChartObj);
-
-      // returning -> line chart obj -> repair
-      const monthlyReturningRepairLineChartObj = {
-        x: month,
-        y: customers.returning.repair,
-      };
-      monthlyReturningLineChartsObjAcc.repair
-        .find((lineChartData: LineChartData) => lineChartData.id === 'Repair')
-        ?.data.push(monthlyReturningRepairLineChartObj);
-
-      // churn & retention rate
-
-      // churn & retention rate -> bar chart obj
-
-      // churn & retention rate -> bar chart obj -> overview
-      const monthlyOverviewChurnRetentionRateBarChartObj = {
-        Months: month,
-        'Churn Rate': Number((customers.churnRate * 100).toPrecision(4)),
-        'Retention Rate': Number(
-          (customers.retentionRate * 100).toPrecision(4)
-        ),
-      };
-      monthlyChurnRetentionRateBarChartsObjAcc.overview.push(
-        monthlyOverviewChurnRetentionRateBarChartObj
-      );
-
-      // churn & retention rate -> bar chart obj -> churn rate
-      const monthlyOverviewChurnRateBarChartObj = {
-        Months: month,
-        'Churn Rate': Number((customers.churnRate * 100).toPrecision(4)),
-      };
-      monthlyChurnRetentionRateBarChartsObjAcc.churnRate.push(
-        monthlyOverviewChurnRateBarChartObj
-      );
-
-      // churn & retention rate -> bar chart obj -> retention rate
-      const monthlyRetentionRateBarChartObj = {
-        Months: month,
-        'Retention Rate': Number(
-          (customers.retentionRate * 100).toPrecision(4)
-        ),
-      };
-      monthlyChurnRetentionRateBarChartsObjAcc.retentionRate.push(
-        monthlyRetentionRateBarChartObj
-      );
-
-      // churn & retention rate -> line chart obj
-
-      // churn & retention rate -> line chart obj -> overview -> churn rate
-      const monthlyOverviewChurnRetentionRateLineChartObj = {
-        x: month,
-        y: Number((customers.churnRate * 100).toPrecision(4)),
-      };
-      monthlyChurnRetentionRateLineChartsObjAcc.overview
-        .find(
-          (lineChartData: LineChartData) => lineChartData.id === 'Churn Rate'
-        )
-        ?.data.push(monthlyOverviewChurnRetentionRateLineChartObj);
-
-      // churn & retention rate -> line chart obj -> overview -> retention rate
-      const monthlyOverviewRetentionRateLineChartObj = {
-        x: month,
-        y: Number((customers.retentionRate * 100).toPrecision(4)),
-      };
-      monthlyChurnRetentionRateLineChartsObjAcc.overview
-        .find(
-          (lineChartData: LineChartData) =>
-            lineChartData.id === 'Retention Rate'
-        )
-        ?.data.push(monthlyOverviewRetentionRateLineChartObj);
-
-      // churn & retention rate -> line chart obj -> churn rate
-      const monthlyChurnRateLineChartObj = {
-        x: month,
-        y: Number((customers.churnRate * 100).toPrecision(4)),
-      };
-      monthlyChurnRetentionRateLineChartsObjAcc.churnRate
-        .find(
-          (lineChartData: LineChartData) => lineChartData.id === 'Churn Rate'
-        )
-        ?.data.push(monthlyChurnRateLineChartObj);
-
-      // churn & retention rate -> line chart obj -> retention rate
-      const monthlyRetentionRateLineChartObj = {
-        x: month,
-        y: Number((customers.retentionRate * 100).toPrecision(4)),
-      };
-      monthlyChurnRetentionRateLineChartsObjAcc.retentionRate
-        .find(
-          (lineChartData: LineChartData) =>
-            lineChartData.id === 'Retention Rate'
-        )
-        ?.data.push(monthlyRetentionRateLineChartObj);
-
-      return monthlyCustomerChartsAcc;
-    },
-    [
-      // overview
-      initialMonthlyOverviewBarChartsObj,
-      initialMonthlyOverviewCalendarChartsObj,
-      initialMonthlyOverviewLineChartsObj,
-      // new
-      initialMonthlyNewBarChartsObj,
-      initialMonthlyNewCalendarChartsObj,
-      initialMonthlyNewLineChartsObj,
-      // returning
-      initialMonthlyReturningBarChartsObj,
-      initialMonthlyReturningCalendarChartsObj,
-      initialMonthlyReturningLineChartsObj,
-      // churn & retention rate
-      initialMonthlyChurnRetentionRateBarChartsObj,
-      initialMonthlyChurnRetentionRateLineChartsObj,
-    ]
-  ) ?? [
-    // overview
-    initialMonthlyOverviewBarChartsObj,
-    initialMonthlyOverviewCalendarChartsObj,
-    initialMonthlyOverviewLineChartsObj,
-    // new
-    initialMonthlyNewBarChartsObj,
-    initialMonthlyNewCalendarChartsObj,
-    initialMonthlyNewLineChartsObj,
-    // returning
-    initialMonthlyReturningBarChartsObj,
-    initialMonthlyReturningCalendarChartsObj,
-    initialMonthlyReturningLineChartsObj,
-    // churn & retention rate
-    initialMonthlyChurnRetentionRateBarChartsObj,
-    initialMonthlyChurnRetentionRateLineChartsObj,
-  ];
-
-  // yearly
-
-  // yearly -> overview
-
-  // yearly -> overview -> bar chart obj
-  const initialYearlyOverviewBarChartsObj = structuredClone(
-    OVERVIEW_BAR_CHART_TEMPLATE
-  );
-  // yearly -> overview -> line chart obj
-  const initialYearlyOverviewLineChartsObj = structuredClone(
-    OVERVIEW_LINE_CHART_TEMPLATE
-  );
-  // yearly -> overview -> pie chart obj
-  const yearlyOverviewPieChartData: PieChartData[] = [
-    {
-      id: 'New',
-      label: 'New',
-      value: selectedYearMetrics?.customers.new.total ?? 0,
-    },
-    {
-      id: 'Returning',
-      label: 'Returning',
-      value: selectedYearMetrics?.customers.returning.total ?? 0,
-    },
-  ];
-
-  // yearly -> new
-
-  // yearly -> new -> bar chart obj
-  const initialYearlyNewBarChartsObj = structuredClone(
-    NEW_RETURNING_BAR_CHART_TEMPLATE
-  );
-  // yearly -> new -> line chart obj
-  const initialYearlyNewLineChartsObj = structuredClone(
-    NEW_RETURNING_LINE_CHART_TEMPLATE
-  );
-
-  // yearly -> new -> pie chart obj
-  const yearlyNewSalesPieChartData: PieChartData = {
-    id: 'Sales',
-    label: 'Sales',
-    value: selectedYearMetrics?.customers.new.sales.total ?? 0,
-  };
-  const yearlyNewRepairPieChartData: PieChartData = {
-    id: 'Repair',
-    label: 'Repair',
-    value: selectedYearMetrics?.customers.new.repair ?? 0,
-  };
-  const yearlyNewSalesOnlinePieChartData: PieChartData = {
-    id: 'Online',
-    label: 'Online',
-    value: selectedYearMetrics?.customers.new.sales.online ?? 0,
-  };
-  const yearlyNewSalesInStorePieChartData: PieChartData = {
-    id: 'In-Store',
-    label: 'In-Store',
-    value: selectedYearMetrics?.customers.new.sales.inStore ?? 0,
-  };
-
-  const yearlyNewPieChartData: CustomerNewReturningPieObj = {
-    overview: [yearlyNewSalesPieChartData, yearlyNewRepairPieChartData],
-    all: [
-      yearlyNewSalesOnlinePieChartData,
-      yearlyNewSalesInStorePieChartData,
-      yearlyNewRepairPieChartData,
-    ],
-    sales: [
-      yearlyNewSalesOnlinePieChartData,
-      yearlyNewSalesInStorePieChartData,
-    ],
-  };
-
-  // yearly -> returning
-
-  // yearly -> returning -> bar chart obj
-  const initialYearlyReturningBarChartsObj = structuredClone(
-    NEW_RETURNING_BAR_CHART_TEMPLATE
-  );
-  // yearly -> returning -> line chart obj
-  const initialYearlyReturningLineChartsObj = structuredClone(
-    NEW_RETURNING_LINE_CHART_TEMPLATE
-  );
-
-  // yearly -> returning -> pie chart obj
-  const yearlyReturningSalesPieChartData: PieChartData = {
-    id: 'Sales',
-    label: 'Sales',
-    value: selectedYearMetrics?.customers.returning.sales.total ?? 0,
-  };
-  const yearlyReturningRepairPieChartData: PieChartData = {
-    id: 'Repair',
-    label: 'Repair',
-    value: selectedYearMetrics?.customers.returning.repair ?? 0,
-  };
-  const yearlyReturningSalesOnlinePieChartData: PieChartData = {
-    id: 'Online',
-    label: 'Online',
-    value: selectedYearMetrics?.customers.returning.sales.online ?? 0,
-  };
-  const yearlyReturningSalesInStorePieChartData: PieChartData = {
-    id: 'In-Store',
-    label: 'In-Store',
-    value: selectedYearMetrics?.customers.returning.sales.inStore ?? 0,
-  };
-
-  const yearlyReturningPieChartData: CustomerNewReturningPieObj = {
-    overview: [
-      yearlyReturningSalesPieChartData,
-      yearlyReturningRepairPieChartData,
-    ],
-    all: [
-      yearlyReturningSalesOnlinePieChartData,
-      yearlyReturningSalesInStorePieChartData,
-      yearlyReturningRepairPieChartData,
-    ],
-    sales: [
-      yearlyReturningSalesOnlinePieChartData,
-      yearlyReturningSalesInStorePieChartData,
-    ],
-  };
-
-  // yearly -> churn & retention rate
-
-  // yearly -> churn & retention rate -> bar chart obj
-  const initialYearlyChurnRetentionRateBarChartsObj = structuredClone(
-    CHURN_RETENTION_BAR_CHART_TEMPLATE
-  );
-  // yearly -> churn & retention rate -> line chart obj
-  const initialYearlyChurnRetentionRateLineChartsObj = structuredClone(
-    CHURN_RETENTION_LINE_CHART_TEMPLATE
-  );
-  // yearly -> churn & retention rate -> pie chart obj
-  const yearlyChurnRetentionRatePieChartData: PieChartData[] = [
-    {
-      id: 'Churn Rate',
-      label: 'Churn Rate',
-      value: Number(
-        (selectedYearMetrics?.customers.churnRate ?? 0).toPrecision(4)
-      ),
-    },
-    {
-      id: 'Retention Rate',
-      label: 'Retention Rate',
-      value:
-        Number(
-          (selectedYearMetrics?.customers.retentionRate ?? 0).toPrecision(4)
-        ) * 100,
-    },
-  ];
-
-  // selected store's business metrics
   const currentStoreMetrics = businessMetrics.find(
     (businessMetric) => businessMetric.storeLocation === storeLocation
   );
 
-  // yearly charts
-
-  const [
-    // overview
-    yearlyOverviewBarChartsObj,
-    yearlyOverviewLineChartsObj,
-    // new
-    yearlyNewBarChartsObj,
-    yearlyNewLineChartsObj,
-    // returning
-    yearlyReturningBarChartsObj,
-    yearlyReturningLineChartsObj,
-    // churn & retention rate
-    yearlyChurnRetentionRateBarChartsObj,
-    yearlyChurnRetentionRateLineChartsObj,
-  ] = currentStoreMetrics?.customerMetrics.yearlyMetrics.reduce(
-    (yearlyCustomerChartsAcc, yearlyMetric) => {
-      const [
-        // overview
-        yearlyOverviewBarChartsObjAcc,
-        yearlyOverviewLineChartsObjAcc,
-        // new
-        yearlyNewBarChartsObjAcc,
-        yearlyNewLineChartsObjAcc,
-        // returning
-        yearlyReturningBarChartsObjAcc,
-        yearlyReturningLineChartsObjAcc,
-        // churn & retention rate
-        yearlyChurnRetentionRateBarChartsObjAcc,
-        yearlyChurnRetentionRateLineChartsObjAcc,
-      ] = yearlyCustomerChartsAcc;
-
-      const { year, customers } = yearlyMetric;
-
-      // prevents current year from being added to charts
-      const currentYear = new Date().getFullYear();
-      if (year === currentYear.toString()) {
-        return yearlyCustomerChartsAcc;
-      }
-
-      // overview
-
-      // overview -> bar chart obj
-
-      // overview -> bar chart obj -> total
-      const yearlyOverviewTotalBarChartObj = {
-        Years: year,
-        New: customers.new.total,
-        Returning: customers.returning.total,
-      };
-      yearlyOverviewBarChartsObjAcc.overview.push(
-        yearlyOverviewTotalBarChartObj
-      );
-
-      // overview -> bar chart obj -> new
-      const yearlyOverviewNewBarChartObj = {
-        Years: year,
-        New: customers.new.total,
-      };
-      yearlyOverviewBarChartsObjAcc.new.push(yearlyOverviewNewBarChartObj);
-
-      // overview -> bar chart obj -> returning
-      const yearlyOverviewReturningBarChartObj = {
-        Years: year,
-        Returning: customers.returning.total,
-      };
-      yearlyOverviewBarChartsObjAcc.returning.push(
-        yearlyOverviewReturningBarChartObj
-      );
-
-      // overview -> line chart obj
-
-      // overview -> line chart obj -> overview -> new
-      const yearlyOverviewNewLineChartObj = {
-        x: year,
-        y: customers.new.total,
-      };
-      yearlyOverviewLineChartsObjAcc.overview
-        .find((lineChartData: LineChartData) => lineChartData.id === 'New')
-        ?.data.push(yearlyOverviewNewLineChartObj);
-
-      // overview -> line chart obj -> overview -> returning
-      const yearlyOverviewReturningLineChartObj = {
-        x: year,
-        y: customers.returning.total,
-      };
-      yearlyOverviewLineChartsObjAcc.overview
-        .find(
-          (lineChartData: LineChartData) => lineChartData.id === 'Returning'
-        )
-        ?.data.push(yearlyOverviewReturningLineChartObj);
-
-      // overview -> line chart obj -> new -> new
-      const yearlyNewNewLineChartObj = {
-        x: year,
-        y: customers.new.total,
-      };
-      yearlyOverviewLineChartsObjAcc.new
-        .find((lineChartData: LineChartData) => lineChartData.id === 'New')
-        ?.data.push(yearlyNewNewLineChartObj);
-
-      // overview -> line chart obj -> returning -> returning
-      const yearlyReturningReturningLineChartObj = {
-        x: year,
-        y: customers.returning.total,
-      };
-      yearlyOverviewLineChartsObjAcc.returning
-        .find(
-          (lineChartData: LineChartData) => lineChartData.id === 'Returning'
-        )
-        ?.data.push(yearlyReturningReturningLineChartObj);
-
-      // new
-
-      // new -> bar chart obj
-
-      // new -> bar chart obj -> total
-      const yearlyNewTotalBarChartObj = {
-        Years: year,
-        Total: customers.new.total,
-      };
-      yearlyNewBarChartsObjAcc.total.push(yearlyNewTotalBarChartObj);
-
-      // new -> bar chart obj -> all
-      const yearlyNewAllBarChartObj = {
-        Years: year,
-        'In-Store': customers.new.sales.inStore,
-        Online: customers.new.sales.online,
-        Repair: customers.new.repair,
-      };
-      yearlyNewBarChartsObjAcc.all.push(yearlyNewAllBarChartObj);
-
-      // new -> bar chart obj -> overview
-      const yearlyNewOverviewBarChartObj = {
-        Years: year,
-        Sales: customers.new.sales.total,
-        Repair: customers.new.repair,
-      };
-      yearlyNewBarChartsObjAcc.overview.push(yearlyNewOverviewBarChartObj);
-
-      // new -> bar chart obj -> sales
-      const yearlyNewSalesBarChartObj = {
-        Years: year,
-        'In-Store': customers.new.sales.inStore,
-        Online: customers.new.sales.online,
-      };
-      yearlyNewBarChartsObjAcc.sales.push(yearlyNewSalesBarChartObj);
-
-      // new -> bar chart obj -> online
-      const yearlyNewOnlineBarChartObj = {
-        Years: year,
-        Online: customers.new.sales.online,
-      };
-      yearlyNewBarChartsObjAcc.online.push(yearlyNewOnlineBarChartObj);
-
-      // new -> bar chart obj -> in-store
-      const yearlyNewInStoreBarChartObj = {
-        Years: year,
-        'In-Store': customers.new.sales.inStore,
-      };
-      yearlyNewBarChartsObjAcc.inStore.push(yearlyNewInStoreBarChartObj);
-
-      // new -> bar chart obj -> repair
-      const yearlyNewRepairBarChartObj = {
-        Years: year,
-        Repair: customers.new.repair,
-      };
-      yearlyNewBarChartsObjAcc.repair.push(yearlyNewRepairBarChartObj);
-
-      // new -> line chart obj
-
-      // new -> line chart obj -> total
-      const yearlyNewTotalLineChartObj = {
-        x: year,
-        y: customers.new.total,
-      };
-      yearlyNewLineChartsObjAcc.total
-        .find((lineChartData: LineChartData) => lineChartData.id === 'Total')
-        ?.data.push(yearlyNewTotalLineChartObj);
-
-      // new -> line chart obj -> all -> in-store
-      const yearlyNewAllInStoreLineChartObj = {
-        x: year,
-        y: customers.new.sales.inStore,
-      };
-      yearlyNewLineChartsObjAcc.all
-        .find((lineChartData: LineChartData) => lineChartData.id === 'In-Store')
-        ?.data.push(yearlyNewAllInStoreLineChartObj);
-
-      // new -> line chart obj -> all -> online
-      const yearlyNewAllOnlineLineChartObj = {
-        x: year,
-        y: customers.new.sales.online,
-      };
-      yearlyNewLineChartsObjAcc.all
-        .find((lineChartData: LineChartData) => lineChartData.id === 'Online')
-        ?.data.push(yearlyNewAllOnlineLineChartObj);
-
-      // new -> line chart obj -> all -> repair
-      const yearlyNewAllRepairLineChartObj = {
-        x: year,
-        y: customers.new.repair,
-      };
-      yearlyNewLineChartsObjAcc.all
-        .find((lineChartData: LineChartData) => lineChartData.id === 'Repair')
-        ?.data.push(yearlyNewAllRepairLineChartObj);
-
-      // new -> line chart obj -> overview -> sales
-      const yearlyNewOverviewSalesLineChartObj = {
-        x: year,
-        y: customers.new.sales.total,
-      };
-      yearlyNewLineChartsObjAcc.overview
-        .find((lineChartData: LineChartData) => lineChartData.id === 'Sales')
-        ?.data.push(yearlyNewOverviewSalesLineChartObj);
-
-      // new -> line chart obj -> overview -> repair
-      const yearlyNewOverviewRepairLineChartObj = {
-        x: year,
-        y: customers.new.repair,
-      };
-      yearlyNewLineChartsObjAcc.overview
-        .find((lineChartData: LineChartData) => lineChartData.id === 'Repair')
-        ?.data.push(yearlyNewOverviewRepairLineChartObj);
-
-      // new -> line chart obj -> sales -> online
-      const yearlyNewSalesOnlineLineChartObj = {
-        x: year,
-        y: customers.new.sales.online,
-      };
-      yearlyNewLineChartsObjAcc.sales
-        .find((lineChartData: LineChartData) => lineChartData.id === 'Online')
-        ?.data.push(yearlyNewSalesOnlineLineChartObj);
-
-      // new -> line chart obj -> sales -> in-store
-      const yearlyNewSalesInStoreLineChartObj = {
-        x: year,
-        y: customers.new.sales.inStore,
-      };
-      yearlyNewLineChartsObjAcc.sales
-        .find((lineChartData: LineChartData) => lineChartData.id === 'In-Store')
-        ?.data.push(yearlyNewSalesInStoreLineChartObj);
-
-      // new -> line chart obj -> online
-      const yearlyNewOnlineLineChartObj = {
-        x: year,
-        y: customers.new.sales.online,
-      };
-      yearlyNewLineChartsObjAcc.online
-        .find((lineChartData: LineChartData) => lineChartData.id === 'Online')
-        ?.data.push(yearlyNewOnlineLineChartObj);
-
-      // new -> line chart obj -> in-store
-      const yearlyNewInStoreLineChartObj = {
-        x: year,
-        y: customers.new.sales.inStore,
-      };
-      yearlyNewLineChartsObjAcc.inStore
-        .find((lineChartData: LineChartData) => lineChartData.id === 'In-Store')
-        ?.data.push(yearlyNewInStoreLineChartObj);
-
-      // new -> line chart obj -> repair
-      const yearlyNewRepairLineChartObj = {
-        x: year,
-        y: customers.new.repair,
-      };
-      yearlyNewLineChartsObjAcc.repair
-        .find((lineChartData: LineChartData) => lineChartData.id === 'Repair')
-        ?.data.push(yearlyNewRepairLineChartObj);
-
-      // returning
-
-      // returning -> bar chart obj
-
-      // returning -> bar chart obj -> total
-      const yearlyReturningTotalBarChartObj = {
-        Years: year,
-        Total: customers.returning.total,
-      };
-      yearlyReturningBarChartsObjAcc.total.push(
-        yearlyReturningTotalBarChartObj
-      );
-
-      // returning -> bar chart obj -> all
-      const yearlyReturningAllBarChartObj = {
-        Years: year,
-        'In-Store': customers.returning.sales.inStore,
-        Online: customers.returning.sales.online,
-        Repair: customers.returning.repair,
-      };
-      yearlyReturningBarChartsObjAcc.all.push(yearlyReturningAllBarChartObj);
-
-      // returning -> bar chart obj -> overview
-      const yearlyReturningOverviewBarChartObj = {
-        Years: year,
-        Sales: customers.returning.sales.total,
-        Repair: customers.returning.repair,
-      };
-      yearlyReturningBarChartsObjAcc.overview.push(
-        yearlyReturningOverviewBarChartObj
-      );
-
-      // returning -> bar chart obj -> sales
-      const yearlyReturningSalesBarChartObj = {
-        Years: year,
-        'In-Store': customers.returning.sales.inStore,
-        Online: customers.returning.sales.online,
-      };
-      yearlyReturningBarChartsObjAcc.sales.push(
-        yearlyReturningSalesBarChartObj
-      );
-
-      // returning -> bar chart obj -> online
-      const yearlyReturningOnlineBarChartObj = {
-        Years: year,
-        Online: customers.returning.sales.online,
-      };
-      yearlyReturningBarChartsObjAcc.online.push(
-        yearlyReturningOnlineBarChartObj
-      );
-
-      // returning -> bar chart obj -> in-store
-      const yearlyReturningInStoreBarChartObj = {
-        Years: year,
-        'In-Store': customers.returning.sales.inStore,
-      };
-      yearlyReturningBarChartsObjAcc.inStore.push(
-        yearlyReturningInStoreBarChartObj
-      );
-
-      // returning -> bar chart obj -> repair
-      const yearlyReturningRepairBarChartObj = {
-        Years: year,
-        Repair: customers.returning.repair,
-      };
-      yearlyReturningBarChartsObjAcc.repair.push(
-        yearlyReturningRepairBarChartObj
-      );
-
-      // returning -> line chart obj
-
-      // returning -> line chart obj -> total
-      const yearlyReturningTotalLineChartObj = {
-        x: year,
-        y: customers.returning.total,
-      };
-      yearlyReturningLineChartsObjAcc.total
-        .find((lineChartData: LineChartData) => lineChartData.id === 'Total')
-        ?.data.push(yearlyReturningTotalLineChartObj);
-
-      // returning -> line chart obj -> all -> in-store
-      const yearlyReturningAllInStoreLineChartObj = {
-        x: year,
-        y: customers.returning.sales.inStore,
-      };
-      yearlyReturningLineChartsObjAcc.all
-        .find((lineChartData: LineChartData) => lineChartData.id === 'In-Store')
-        ?.data.push(yearlyReturningAllInStoreLineChartObj);
-
-      // returning -> line chart obj -> all -> online
-      const yearlyReturningAllOnlineLineChartObj = {
-        x: year,
-        y: customers.returning.sales.online,
-      };
-      yearlyReturningLineChartsObjAcc.all
-        .find((lineChartData: LineChartData) => lineChartData.id === 'Online')
-        ?.data.push(yearlyReturningAllOnlineLineChartObj);
-
-      // returning -> line chart obj -> all -> repair
-      const yearlyReturningAllRepairLineChartObj = {
-        x: year,
-        y: customers.returning.repair,
-      };
-      yearlyReturningLineChartsObjAcc.all
-        .find((lineChartData: LineChartData) => lineChartData.id === 'Repair')
-        ?.data.push(yearlyReturningAllRepairLineChartObj);
-
-      // returning -> line chart obj -> overview -> sales
-      const yearlyReturningOverviewSalesLineChartObj = {
-        x: year,
-        y: customers.returning.sales.total,
-      };
-      yearlyReturningLineChartsObjAcc.overview
-        .find((lineChartData: LineChartData) => lineChartData.id === 'Sales')
-        ?.data.push(yearlyReturningOverviewSalesLineChartObj);
-
-      // returning -> line chart obj -> overview -> repair
-      const yearlyReturningOverviewRepairLineChartObj = {
-        x: year,
-        y: customers.returning.repair,
-      };
-      yearlyReturningLineChartsObjAcc.overview
-        .find((lineChartData: LineChartData) => lineChartData.id === 'Repair')
-        ?.data.push(yearlyReturningOverviewRepairLineChartObj);
-
-      // returning -> line chart obj -> sales -> online
-      const yearlyReturningSalesOnlineLineChartObj = {
-        x: year,
-        y: customers.returning.sales.online,
-      };
-      yearlyReturningLineChartsObjAcc.sales
-        .find((lineChartData: LineChartData) => lineChartData.id === 'Online')
-        ?.data.push(yearlyReturningSalesOnlineLineChartObj);
-
-      // returning -> line chart obj -> sales -> in-store
-      const yearlyReturningSalesInStoreLineChartObj = {
-        x: year,
-        y: customers.returning.sales.inStore,
-      };
-      yearlyReturningLineChartsObjAcc.sales
-        .find((lineChartData: LineChartData) => lineChartData.id === 'In-Store')
-        ?.data.push(yearlyReturningSalesInStoreLineChartObj);
-
-      // returning -> line chart obj -> online
-      const yearlyReturningOnlineLineChartObj = {
-        x: year,
-        y: customers.returning.sales.online,
-      };
-      yearlyReturningLineChartsObjAcc.online
-        .find((lineChartData: LineChartData) => lineChartData.id === 'Online')
-        ?.data.push(yearlyReturningOnlineLineChartObj);
-
-      // returning -> line chart obj -> in-store
-      const yearlyReturningInStoreLineChartObj = {
-        x: year,
-        y: customers.returning.sales.inStore,
-      };
-      yearlyReturningLineChartsObjAcc.inStore
-        .find((lineChartData: LineChartData) => lineChartData.id === 'In-Store')
-        ?.data.push(yearlyReturningInStoreLineChartObj);
-
-      // returning -> line chart obj -> repair
-      const yearlyReturningRepairLineChartObj = {
-        x: year,
-        y: customers.returning.repair,
-      };
-      yearlyReturningLineChartsObjAcc.repair
-        .find((lineChartData: LineChartData) => lineChartData.id === 'Repair')
-        ?.data.push(yearlyReturningRepairLineChartObj);
-
-      // churn & retention rate
-
-      // churn & retention rate -> bar chart obj
-
-      // churn & retention rate -> bar chart obj -> overview
-      const yearlyOverviewChurnRetentionRateBarChartObj = {
-        Years: year,
-        'Churn Rate': Number((customers.churnRate * 100).toPrecision(4)),
-        'Retention Rate': Number(
-          (customers.retentionRate * 100).toPrecision(4)
-        ),
-      };
-      yearlyChurnRetentionRateBarChartsObjAcc.overview.push(
-        yearlyOverviewChurnRetentionRateBarChartObj
-      );
-
-      // churn & retention rate -> bar chart obj -> churn rate
-      const yearlyChurnRateBarChartObj = {
-        Years: year,
-        'Churn Rate': Number((customers.churnRate * 100).toPrecision(4)),
-      };
-      yearlyChurnRetentionRateBarChartsObjAcc.churnRate.push(
-        yearlyChurnRateBarChartObj
-      );
-
-      // churn & retention rate -> bar chart obj -> retention rate
-      const yearlyRetentionRateBarChartObj = {
-        Years: year,
-        'Retention Rate': Number(
-          (customers.retentionRate * 100).toPrecision(4)
-        ),
-      };
-      yearlyChurnRetentionRateBarChartsObjAcc.retentionRate.push(
-        yearlyRetentionRateBarChartObj
-      );
-
-      // churn & retention rate -> line chart obj
-
-      // churn & retention rate -> line chart obj -> overview -> churn rate
-      const yearlyOverviewChurnRetentionRateLineChartObj = {
-        x: year,
-        y: Number((customers.churnRate * 100).toPrecision(4)),
-      };
-      yearlyChurnRetentionRateLineChartsObjAcc.overview
-        .find(
-          (lineChartData: LineChartData) => lineChartData.id === 'Churn Rate'
-        )
-        ?.data.push(yearlyOverviewChurnRetentionRateLineChartObj);
-
-      // churn & retention rate -> line chart obj -> overview -> retention rate
-      const yearlyOverviewRetentionRateLineChartObj = {
-        x: year,
-        y: Number((customers.retentionRate * 100).toPrecision(4)),
-      };
-      yearlyChurnRetentionRateLineChartsObjAcc.overview
-        .find(
-          (lineChartData: LineChartData) =>
-            lineChartData.id === 'Retention Rate'
-        )
-        ?.data.push(yearlyOverviewRetentionRateLineChartObj);
-
-      // churn & retention rate -> line chart obj -> churn rate
-      const yearlyChurnRateLineChartObj = {
-        x: year,
-        y: Number((customers.churnRate * 100).toPrecision(4)),
-      };
-      yearlyChurnRetentionRateLineChartsObjAcc.churnRate
-        .find(
-          (lineChartData: LineChartData) => lineChartData.id === 'Churn Rate'
-        )
-        ?.data.push(yearlyChurnRateLineChartObj);
-
-      // churn & retention rate -> line chart obj -> retention rate
-      const yearlyRetentionRateLineChartObj = {
-        x: year,
-        y: Number((customers.retentionRate * 100).toPrecision(4)),
-      };
-      yearlyChurnRetentionRateLineChartsObjAcc.retentionRate
-        .find(
-          (lineChartData: LineChartData) =>
-            lineChartData.id === 'Retention Rate'
-        )
-        ?.data.push(yearlyRetentionRateLineChartObj);
-
-      return yearlyCustomerChartsAcc;
-    },
-    [
-      // overview
-      initialYearlyOverviewBarChartsObj,
-      initialYearlyOverviewLineChartsObj,
-      // new
-      initialYearlyNewBarChartsObj,
-      initialYearlyNewLineChartsObj,
-      // returning
-      initialYearlyReturningBarChartsObj,
-      initialYearlyReturningLineChartsObj,
-      // churn & retention rate
-      initialYearlyChurnRetentionRateBarChartsObj,
-      initialYearlyChurnRetentionRateLineChartsObj,
-    ]
-  ) ?? [
-    // overview
-    initialYearlyOverviewBarChartsObj,
-    initialYearlyOverviewLineChartsObj,
-    // new
-    initialYearlyNewBarChartsObj,
-    initialYearlyNewLineChartsObj,
-    // returning
-    initialYearlyReturningBarChartsObj,
-    initialYearlyReturningLineChartsObj,
-    // churn & retention rate
-    initialYearlyChurnRetentionRateBarChartsObj,
-    initialYearlyChurnRetentionRateLineChartsObj,
-  ];
+  const [dailyCustomerCharts, monthlyCustomerCharts, yearlyCustomerCharts] =
+    await Promise.all([
+      createDailyCustomerCharts({
+        dailyMetrics: selectedMonthMetrics?.dailyMetrics,
+        monthIndex,
+        newBarChartsTemplate: NEW_RETURNING_BAR_CHART_TEMPLATE,
+        newCalendarChartsTemplate: NEW_RETURNING_CALENDAR_CHART_TEMPLATE,
+        newLineChartsTemplate: NEW_RETURNING_LINE_CHART_TEMPLATE,
+        overviewBarChartsTemplate: OVERVIEW_BAR_CHART_TEMPLATE,
+        overviewCalendarChartsTemplate: OVERVIEW_CALENDAR_CHART_TEMPLATE,
+        overviewLineChartsTemplate: OVERVIEW_LINE_CHART_TEMPLATE,
+        returningBarChartsTemplate: NEW_RETURNING_BAR_CHART_TEMPLATE,
+        returningCalendarChartsTemplate: NEW_RETURNING_CALENDAR_CHART_TEMPLATE,
+        returningLineChartsTemplate: NEW_RETURNING_LINE_CHART_TEMPLATE,
+        selectedDayMetrics,
+        selectedYear,
+      }),
+      createMonthlyCustomerCharts({
+        monthlyMetrics: selectedYearMetrics?.monthlyMetrics,
+        newBarChartsTemplate: NEW_RETURNING_BAR_CHART_TEMPLATE,
+        newCalendarChartsTemplate: NEW_RETURNING_CALENDAR_CHART_TEMPLATE,
+        newLineChartsTemplate: NEW_RETURNING_LINE_CHART_TEMPLATE,
+        overviewBarChartsTemplate: OVERVIEW_BAR_CHART_TEMPLATE,
+        overviewCalendarChartsTemplate: OVERVIEW_CALENDAR_CHART_TEMPLATE,
+        overviewLineChartsTemplate: OVERVIEW_LINE_CHART_TEMPLATE,
+        returningBarChartsTemplate: NEW_RETURNING_BAR_CHART_TEMPLATE,
+        returningCalendarChartsTemplate: NEW_RETURNING_CALENDAR_CHART_TEMPLATE,
+        returningLineChartsTemplate: NEW_RETURNING_LINE_CHART_TEMPLATE,
+        churnRetentionBarChartsTemplate: CHURN_RETENTION_BAR_CHART_TEMPLATE,
+        churnRetentionLineChartsTemplate: CHURN_RETENTION_LINE_CHART_TEMPLATE,
+        months,
+        selectedYear,
+        selectedMonthMetrics,
+      }),
+      createYearlyCustomerCharts({
+        yearlyMetrics: currentStoreMetrics?.customerMetrics.yearlyMetrics,
+        newBarChartsTemplate: NEW_RETURNING_BAR_CHART_TEMPLATE,
+        newLineChartsTemplate: NEW_RETURNING_LINE_CHART_TEMPLATE,
+        overviewBarChartsTemplate: OVERVIEW_BAR_CHART_TEMPLATE,
+        overviewLineChartsTemplate: OVERVIEW_LINE_CHART_TEMPLATE,
+        returningBarChartsTemplate: NEW_RETURNING_BAR_CHART_TEMPLATE,
+        returningLineChartsTemplate: NEW_RETURNING_LINE_CHART_TEMPLATE,
+        churnRetentionBarChartsTemplate: CHURN_RETENTION_BAR_CHART_TEMPLATE,
+        churnRetentionLineChartsTemplate: CHURN_RETENTION_LINE_CHART_TEMPLATE,
+        selectedYearMetrics,
+      }),
+    ]);
 
   return {
-    dailyCharts: {
-      overview: {
-        barChartsObj: dailyOverviewBarChartsObj,
-        calendarChartsObj: dailyOverviewCalendarChartsObj,
-        lineChartsObj: dailyOverviewLineChartsObj,
-        pieChartObj: dailyOverviewPieChartData,
-      },
-      new: {
-        barChartsObj: dailyNewBarChartsObj,
-        calendarChartsObj: dailyNewCalendarChartsObj,
-        lineChartsObj: dailyNewLineChartsObj,
-        pieChartObj: dailyNewPieChartData,
-      },
-      returning: {
-        barChartsObj: dailyReturningBarChartsObj,
-        calendarChartsObj: dailyReturningCalendarChartsObj,
-        lineChartsObj: dailyReturningLineChartsObj,
-        pieChartObj: dailyReturningPieChartData,
-      },
-    },
-    monthlyCharts: {
-      overview: {
-        barChartsObj: monthlyOverviewBarChartsObj,
-        calendarChartsObj: monthlyOverviewCalendarChartsObj,
-        lineChartsObj: monthlyOverviewLineChartsObj,
-        pieChartObj: monthlyOverviewPieChartData,
-      },
-      new: {
-        barChartsObj: monthlyNewBarChartsObj,
-        calendarChartsObj: monthlyNewCalendarChartsObj,
-        lineChartsObj: monthlyNewLineChartsObj,
-        pieChartObj: monthlyNewPieChartData,
-      },
-      returning: {
-        barChartsObj: monthlyReturningBarChartsObj,
-        calendarChartsObj: monthlyReturningCalendarChartsObj,
-        lineChartsObj: monthlyReturningLineChartsObj,
-        pieChartObj: monthlyReturningPieChartData,
-      },
-      churnRetention: {
-        barChartsObj: monthlyChurnRetentionRateBarChartsObj,
-        lineChartsObj: monthlyChurnRetentionRateLineChartsObj,
-        pieChartObj: monthlyChurnRetentionRatePieChartData,
-      },
-    },
-    yearlyCharts: {
-      overview: {
-        barChartsObj: yearlyOverviewBarChartsObj,
-        lineChartsObj: yearlyOverviewLineChartsObj,
-        pieChartObj: yearlyOverviewPieChartData,
-      },
-      new: {
-        barChartsObj: yearlyNewBarChartsObj,
-        lineChartsObj: yearlyNewLineChartsObj,
-        pieChartObj: yearlyNewPieChartData,
-      },
-      returning: {
-        barChartsObj: yearlyReturningBarChartsObj,
-        lineChartsObj: yearlyReturningLineChartsObj,
-        pieChartObj: yearlyReturningPieChartData,
-      },
-      churnRetention: {
-        barChartsObj: yearlyChurnRetentionRateBarChartsObj,
-        lineChartsObj: yearlyChurnRetentionRateLineChartsObj,
-        pieChartObj: yearlyChurnRetentionRatePieChartData,
-      },
-    },
+    dailyCharts: dailyCustomerCharts,
+    monthlyCharts: monthlyCustomerCharts,
+    yearlyCharts: yearlyCustomerCharts,
   };
 }
 
-export { returnCustomerMetricsCharts, returnSelectedDateCustomerMetrics };
+type CreateDailyCustomerChartsInput = {
+  dailyMetrics?: CustomerDailyMetric[];
+  monthIndex: string;
+  newBarChartsTemplate: CustomerNewReturningBarCharts;
+  newCalendarChartsTemplate: CustomerNewReturningCalendarCharts;
+  newLineChartsTemplate: CustomerNewReturningLineCharts;
+  overviewBarChartsTemplate: CustomerOverviewBarCharts;
+  overviewCalendarChartsTemplate: CustomerOverviewCalendarCharts;
+  overviewLineChartsTemplate: CustomerOverviewLineCharts;
+  returningBarChartsTemplate: CustomerNewReturningBarCharts;
+  returningCalendarChartsTemplate: CustomerNewReturningCalendarCharts;
+  returningLineChartsTemplate: CustomerNewReturningLineCharts;
+  selectedDayMetrics?: CustomerDailyMetric;
+  selectedYear: Year;
+};
+
+async function createDailyCustomerCharts({
+  dailyMetrics,
+  monthIndex,
+  newBarChartsTemplate,
+  newCalendarChartsTemplate,
+  newLineChartsTemplate,
+  overviewBarChartsTemplate,
+  overviewCalendarChartsTemplate,
+  overviewLineChartsTemplate,
+  returningBarChartsTemplate,
+  returningCalendarChartsTemplate,
+  returningLineChartsTemplate,
+  selectedDayMetrics,
+  selectedYear,
+}: CreateDailyCustomerChartsInput): Promise<CustomerMetricsCharts["dailyCharts"]> {
+  if (!dailyMetrics || !selectedDayMetrics) {
+    return new Promise((resolve) => {
+      resolve({
+        overview: {
+          bar: overviewBarChartsTemplate,
+          calendar: overviewCalendarChartsTemplate,
+          line: overviewLineChartsTemplate,
+          pie: [],
+        },
+        new: {
+          bar: newBarChartsTemplate,
+          calendar: newCalendarChartsTemplate,
+          line: newLineChartsTemplate,
+          pie: { overview: [], all: [], sales: [] },
+        },
+        returning: {
+          bar: returningBarChartsTemplate,
+          calendar: returningCalendarChartsTemplate,
+          line: returningLineChartsTemplate,
+          pie: { overview: [], all: [], sales: [] },
+        },
+      });
+    });
+  }
+
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const [
+        dailyOverviewBarCharts,
+        dailyOverviewCalendarCharts,
+        dailyOverviewLineCharts,
+
+        dailyNewBarCharts,
+        dailyNewCalendarCharts,
+        dailyNewLineCharts,
+
+        dailyReturningBarCharts,
+        dailyReturningCalendarCharts,
+        dailyReturningLineCharts,
+      ] = dailyMetrics.reduce(
+        (dailyCustomerChartsAcc, dailyMetric) => {
+          const [
+            dailyOverviewBarChartsAcc,
+            dailyOverviewCalendarChartsAcc,
+            dailyOverviewLineChartsAcc,
+
+            dailyNewBarChartsAcc,
+            dailyNewCalendarChartsAcc,
+            dailyNewLineChartsAcc,
+
+            dailyReturningBarChartsAcc,
+            dailyReturningCalendarChartsAcc,
+            dailyReturningLineChartsAcc,
+          ] = dailyCustomerChartsAcc;
+
+          const { day, customers } = dailyMetric;
+
+          // overview section y-axis variables: overview, new, returning
+
+          const dailyOverviewBarChart = {
+            Days: day,
+            New: customers.new.total,
+            Returning: customers.returning.total,
+          };
+          dailyOverviewBarChartsAcc.overview.push(dailyOverviewBarChart);
+
+          const dailyNewBarChart = {
+            Days: day,
+            New: customers.new.total,
+          };
+          dailyOverviewBarChartsAcc.new.push(dailyNewBarChart);
+
+          const dailyReturningBarChart = {
+            Days: day,
+            Returning: customers.returning.total,
+          };
+          dailyOverviewBarChartsAcc.returning.push(dailyReturningBarChart);
+
+          const dailyOverviewCalendarChart = {
+            day: `${selectedYear}-${monthIndex}-${day}`,
+            value: customers.total,
+          };
+          dailyOverviewCalendarChartsAcc.overview.push(dailyOverviewCalendarChart);
+
+          const dailyNewCalendarChart = {
+            day: `${selectedYear}-${monthIndex}-${day}`,
+            value: customers.new.total,
+          };
+          dailyOverviewCalendarChartsAcc.new.push(dailyNewCalendarChart);
+
+          const dailyReturningCalendarChart = {
+            day: `${selectedYear}-${monthIndex}-${day}`,
+            value: customers.returning.total,
+          };
+          dailyOverviewCalendarChartsAcc.returning.push(dailyReturningCalendarChart);
+
+          // overview -> line chart obj
+
+          const dailyOverviewNewLineChart = {
+            x: day,
+            y: customers.new.total,
+          };
+          dailyOverviewLineChartsAcc.overview
+            .find((lineChartData: LineChartData) => lineChartData.id === "New")
+            ?.data.push(dailyOverviewNewLineChart);
+
+          const dailyOverviewReturningLineChart = {
+            x: day,
+            y: customers.returning.total,
+          };
+          dailyOverviewLineChartsAcc.overview
+            .find((lineChartData: LineChartData) => lineChartData.id === "Returning")
+            ?.data.push(dailyOverviewReturningLineChart);
+
+          const dailyNewNewLineChart = {
+            x: day,
+            y: customers.new.total,
+          };
+          dailyOverviewLineChartsAcc.new
+            .find((lineChartData: LineChartData) => lineChartData.id === "New")
+            ?.data.push(dailyNewNewLineChart);
+
+          const dailyReturningReturningLineChart = {
+            x: day,
+            y: customers.returning.total,
+          };
+          dailyOverviewLineChartsAcc.returning
+            .find((lineChartData: LineChartData) => lineChartData.id === "Returning")
+            ?.data.push(dailyReturningReturningLineChart);
+
+          // new section y-axis variables: total, all, overview, sales, online, in-store, repair
+
+          // new -> bar chart obj
+
+          const dailyNewTotalBarChart = {
+            Days: day,
+            Total: customers.new.total,
+          };
+          dailyNewBarChartsAcc.total.push(dailyNewTotalBarChart);
+
+          const dailyNewAllBarChart = {
+            Days: day,
+            "In-Store": customers.new.sales.inStore,
+            Online: customers.new.sales.online,
+            Repair: customers.new.repair,
+          };
+          dailyNewBarChartsAcc.all.push(dailyNewAllBarChart);
+
+          const dailyNewOverviewBarChart = {
+            Days: day,
+            Sales: customers.new.sales.total,
+            Repair: customers.new.repair,
+          };
+          dailyNewBarChartsAcc.overview.push(dailyNewOverviewBarChart);
+
+          const dailyNewSalesBarChart = {
+            Days: day,
+            "In-Store": customers.new.sales.inStore,
+            Online: customers.new.sales.online,
+          };
+          dailyNewBarChartsAcc.sales.push(dailyNewSalesBarChart);
+
+          const dailyNewOnlineBarChart = {
+            Days: day,
+            Online: customers.new.sales.online,
+          };
+          dailyNewBarChartsAcc.online.push(dailyNewOnlineBarChart);
+
+          const dailyNewInStoreBarChart = {
+            Days: day,
+            "In-Store": customers.new.sales.inStore,
+          };
+          dailyNewBarChartsAcc.inStore.push(dailyNewInStoreBarChart);
+
+          const dailyNewRepairBarChart = {
+            Days: day,
+            Repair: customers.new.repair,
+          };
+          dailyNewBarChartsAcc.repair.push(dailyNewRepairBarChart);
+
+          // new -> calendar chart obj
+
+          const dailyNewTotalCalendarChart = {
+            day: `${selectedYear}-${monthIndex}-${day}`,
+            value: customers.new.total,
+          };
+          dailyNewCalendarChartsAcc.total.push(dailyNewTotalCalendarChart);
+
+          const dailyNewSalesCalendarChart = {
+            day: `${selectedYear}-${monthIndex}-${day}`,
+            value: customers.new.sales.total,
+          };
+          dailyNewCalendarChartsAcc.sales.push(dailyNewSalesCalendarChart);
+
+          const dailyNewOnlineCalendarChart = {
+            day: `${selectedYear}-${monthIndex}-${day}`,
+            value: customers.new.sales.online,
+          };
+          dailyNewCalendarChartsAcc.online.push(dailyNewOnlineCalendarChart);
+
+          const dailyNewInStoreCalendarChart = {
+            day: `${selectedYear}-${monthIndex}-${day}`,
+            value: customers.new.sales.inStore,
+          };
+          dailyNewCalendarChartsAcc.inStore.push(dailyNewInStoreCalendarChart);
+
+          const dailyNewRepairCalendarChart = {
+            day: `${selectedYear}-${monthIndex}-${day}`,
+            value: customers.new.repair,
+          };
+          dailyNewCalendarChartsAcc.repair.push(dailyNewRepairCalendarChart);
+
+          // new -> line chart obj
+
+          const dailyNewTotalLineChart = {
+            x: day,
+            y: customers.new.total,
+          };
+          dailyNewLineChartsAcc.total
+            .find((lineChartData: LineChartData) => lineChartData.id === "Total")
+            ?.data.push(dailyNewTotalLineChart);
+
+          const dailyNewAllInStoreLineChart = {
+            x: day,
+            y: customers.new.sales.inStore,
+          };
+          dailyNewLineChartsAcc.all
+            .find((lineChartData: LineChartData) => lineChartData.id === "In-Store")
+            ?.data.push(dailyNewAllInStoreLineChart);
+
+          const dailyNewAllOnlineLineChart = {
+            x: day,
+            y: customers.new.sales.online,
+          };
+          dailyNewLineChartsAcc.all
+            .find((lineChartData: LineChartData) => lineChartData.id === "Online")
+            ?.data.push(dailyNewAllOnlineLineChart);
+
+          const dailyNewAllRepairLineChart = {
+            x: day,
+            y: customers.new.repair,
+          };
+          dailyNewLineChartsAcc.all
+            .find((lineChartData: LineChartData) => lineChartData.id === "Repair")
+            ?.data.push(dailyNewAllRepairLineChart);
+
+          const dailyNewOverviewSalesLineChart = {
+            x: day,
+            y: customers.new.sales.total,
+          };
+          dailyNewLineChartsAcc.overview
+            .find((lineChartData: LineChartData) => lineChartData.id === "Sales")
+            ?.data.push(dailyNewOverviewSalesLineChart);
+
+          const dailyNewOverviewRepairLineChart = {
+            x: day,
+            y: customers.new.repair,
+          };
+          dailyNewLineChartsAcc.overview
+            .find((lineChartData: LineChartData) => lineChartData.id === "Repair")
+            ?.data.push(dailyNewOverviewRepairLineChart);
+
+          const dailyNewSalesOnlineLineChart = {
+            x: day,
+            y: customers.new.sales.online,
+          };
+          dailyNewLineChartsAcc.sales
+            .find((lineChartData: LineChartData) => lineChartData.id === "Online")
+            ?.data.push(dailyNewSalesOnlineLineChart);
+
+          const dailyNewSalesInStoreLineChart = {
+            x: day,
+            y: customers.new.sales.inStore,
+          };
+          dailyNewLineChartsAcc.sales
+            .find((lineChartData: LineChartData) => lineChartData.id === "In-Store")
+            ?.data.push(dailyNewSalesInStoreLineChart);
+
+          const dailyNewOnlineLineChart = {
+            x: day,
+            y: customers.new.sales.online,
+          };
+          dailyNewLineChartsAcc.online
+            .find((lineChartData: LineChartData) => lineChartData.id === "Online")
+            ?.data.push(dailyNewOnlineLineChart);
+
+          const dailyNewInStoreLineChart = {
+            x: day,
+            y: customers.new.sales.inStore,
+          };
+          dailyNewLineChartsAcc.inStore
+            .find((lineChartData: LineChartData) => lineChartData.id === "In-Store")
+            ?.data.push(dailyNewInStoreLineChart);
+
+          const dailyNewRepairLineChart = {
+            x: day,
+            y: customers.new.repair,
+          };
+          dailyNewLineChartsAcc.repair
+            .find((lineChartData: LineChartData) => lineChartData.id === "Repair")
+            ?.data.push(dailyNewRepairLineChart);
+
+          // returning section y-axis variables: total, all, overview, sales, online, in-store, repair
+
+          // returning -> bar chart obj
+
+          const dailyReturningTotalBarChart = {
+            Days: day,
+            Total: customers.returning.total,
+          };
+          dailyReturningBarChartsAcc.total.push(dailyReturningTotalBarChart);
+
+          const dailyReturningAllBarChart = {
+            Days: day,
+            "In-Store": customers.returning.sales.inStore,
+            Online: customers.returning.sales.online,
+            Repair: customers.returning.repair,
+          };
+          dailyReturningBarChartsAcc.all.push(dailyReturningAllBarChart);
+
+          const dailyReturningOverviewBarChart = {
+            Days: day,
+            Sales: customers.returning.sales.total,
+            Repair: customers.returning.repair,
+          };
+          dailyReturningBarChartsAcc.overview.push(dailyReturningOverviewBarChart);
+
+          const dailyReturningSalesBarChart = {
+            Days: day,
+            "In-Store": customers.returning.sales.inStore,
+            Online: customers.returning.sales.online,
+          };
+          dailyReturningBarChartsAcc.sales.push(dailyReturningSalesBarChart);
+
+          const dailyReturningOnlineBarChart = {
+            Days: day,
+            Online: customers.returning.sales.online,
+          };
+          dailyReturningBarChartsAcc.online.push(dailyReturningOnlineBarChart);
+
+          const dailyReturningInStoreBarChart = {
+            Days: day,
+            "In-Store": customers.returning.sales.inStore,
+          };
+          dailyReturningBarChartsAcc.inStore.push(dailyReturningInStoreBarChart);
+
+          const dailyReturningRepairBarChart = {
+            Days: day,
+            Repair: customers.returning.repair,
+          };
+          dailyReturningBarChartsAcc.repair.push(dailyReturningRepairBarChart);
+
+          // returning -> calendar chart obj
+
+          const dailyReturningTotalCalendarChart = {
+            day: `${selectedYear}-${monthIndex}-${day}`,
+            value: customers.returning.total,
+          };
+          dailyReturningCalendarChartsAcc.total.push(dailyReturningTotalCalendarChart);
+
+          const dailyReturningSalesCalendarChart = {
+            day: `${selectedYear}-${monthIndex}-${day}`,
+            value: customers.returning.sales.total,
+          };
+          dailyReturningCalendarChartsAcc.sales.push(dailyReturningSalesCalendarChart);
+
+          const dailyReturningOnlineCalendarChart = {
+            day: `${selectedYear}-${monthIndex}-${day}`,
+            value: customers.returning.sales.online,
+          };
+          dailyReturningCalendarChartsAcc.online.push(dailyReturningOnlineCalendarChart);
+
+          const dailyReturningInStoreCalendarChart = {
+            day: `${selectedYear}-${monthIndex}-${day}`,
+            value: customers.returning.sales.inStore,
+          };
+          dailyReturningCalendarChartsAcc.inStore.push(
+            dailyReturningInStoreCalendarChart
+          );
+
+          const dailyReturningRepairCalendarChart = {
+            day: `${selectedYear}-${monthIndex}-${day}`,
+            value: customers.returning.repair,
+          };
+          dailyReturningCalendarChartsAcc.repair.push(dailyReturningRepairCalendarChart);
+
+          // returning -> line chart obj
+
+          const dailyReturningTotalLineChart = {
+            x: day,
+            y: customers.returning.total,
+          };
+          dailyReturningLineChartsAcc.total
+            .find((lineChartData: LineChartData) => lineChartData.id === "Total")
+            ?.data.push(dailyReturningTotalLineChart);
+
+          const dailyReturningAllInStoreLineChart = {
+            x: day,
+            y: customers.returning.sales.inStore,
+          };
+          dailyReturningLineChartsAcc.all
+            .find((lineChartData: LineChartData) => lineChartData.id === "In-Store")
+            ?.data.push(dailyReturningAllInStoreLineChart);
+
+          const dailyReturningAllOnlineLineChart = {
+            x: day,
+            y: customers.returning.sales.online,
+          };
+          dailyReturningLineChartsAcc.all
+            .find((lineChartData: LineChartData) => lineChartData.id === "Online")
+            ?.data.push(dailyReturningAllOnlineLineChart);
+
+          const dailyReturningAllRepairLineChart = {
+            x: day,
+            y: customers.returning.repair,
+          };
+          dailyReturningLineChartsAcc.all
+            .find((lineChartData: LineChartData) => lineChartData.id === "Repair")
+            ?.data.push(dailyReturningAllRepairLineChart);
+
+          const dailyReturningOverviewSalesLineChart = {
+            x: day,
+            y: customers.returning.sales.total,
+          };
+          dailyReturningLineChartsAcc.overview
+            .find((lineChartData: LineChartData) => lineChartData.id === "Sales")
+            ?.data.push(dailyReturningOverviewSalesLineChart);
+
+          const dailyReturningOverviewRepairLineChart = {
+            x: day,
+            y: customers.returning.repair,
+          };
+          dailyReturningLineChartsAcc.overview
+            .find((lineChartData: LineChartData) => lineChartData.id === "Repair")
+            ?.data.push(dailyReturningOverviewRepairLineChart);
+
+          const dailyReturningSalesOnlineLineChart = {
+            x: day,
+            y: customers.returning.sales.online,
+          };
+          dailyReturningLineChartsAcc.sales
+            .find((lineChartData: LineChartData) => lineChartData.id === "Online")
+            ?.data.push(dailyReturningSalesOnlineLineChart);
+
+          const dailyReturningSalesInStoreLineChart = {
+            x: day,
+            y: customers.returning.sales.inStore,
+          };
+          dailyReturningLineChartsAcc.sales
+            .find((lineChartData: LineChartData) => lineChartData.id === "In-Store")
+            ?.data.push(dailyReturningSalesInStoreLineChart);
+
+          const dailyReturningOnlineLineChart = {
+            x: day,
+            y: customers.returning.sales.online,
+          };
+          dailyReturningLineChartsAcc.online
+            .find((lineChartData: LineChartData) => lineChartData.id === "Online")
+            ?.data.push(dailyReturningOnlineLineChart);
+
+          const dailyReturningInStoreLineChart = {
+            x: day,
+            y: customers.returning.sales.inStore,
+          };
+          dailyReturningLineChartsAcc.inStore
+            .find((lineChartData: LineChartData) => lineChartData.id === "In-Store")
+            ?.data.push(dailyReturningInStoreLineChart);
+
+          const dailyReturningRepairLineChart = {
+            x: day,
+            y: customers.returning.repair,
+          };
+          dailyReturningLineChartsAcc.repair
+            .find((lineChartData: LineChartData) => lineChartData.id === "Repair")
+            ?.data.push(dailyReturningRepairLineChart);
+
+          return dailyCustomerChartsAcc;
+        },
+        [
+          structuredClone(overviewBarChartsTemplate),
+          structuredClone(overviewCalendarChartsTemplate),
+          structuredClone(overviewLineChartsTemplate),
+
+          structuredClone(newBarChartsTemplate),
+          structuredClone(newCalendarChartsTemplate),
+          structuredClone(newLineChartsTemplate),
+
+          structuredClone(returningBarChartsTemplate),
+          structuredClone(returningCalendarChartsTemplate),
+          structuredClone(returningLineChartsTemplate),
+        ]
+      );
+
+      const dailyOverviewPieChartData: PieChartData[] = [
+        {
+          id: "New",
+          label: "New",
+          value: selectedDayMetrics.customers.new.total,
+        },
+        {
+          id: "Returning",
+          label: "Returning",
+          value: selectedDayMetrics.customers.returning.total,
+        },
+      ];
+
+      const newSalesPieChartData: PieChartData = {
+        id: "Sales",
+        label: "Sales",
+        value: selectedDayMetrics.customers.new.sales.total,
+      };
+      const newRepairPieChartData: PieChartData = {
+        id: "Repair",
+        label: "Repair",
+        value: selectedDayMetrics.customers.new.repair,
+      };
+      const newSalesOnlinePieChartData: PieChartData = {
+        id: "Online",
+        label: "Online",
+        value: selectedDayMetrics.customers.new.sales.online,
+      };
+      const newSalesInStorePieChartData: PieChartData = {
+        id: "In-Store",
+        label: "In-Store",
+        value: selectedDayMetrics.customers.new.sales.inStore,
+      };
+
+      const dailyNewPieChartData: CustomerNewReturningPieCharts = {
+        overview: [newSalesPieChartData, newRepairPieChartData],
+        all: [
+          newSalesOnlinePieChartData,
+          newSalesInStorePieChartData,
+          newRepairPieChartData,
+        ],
+        sales: [newSalesOnlinePieChartData, newSalesInStorePieChartData],
+      };
+
+      const returningSalesPieChartData: PieChartData = {
+        id: "Sales",
+        label: "Sales",
+        value: selectedDayMetrics.customers.returning.sales.total,
+      };
+      const returningRepairPieChartData: PieChartData = {
+        id: "Repair",
+        label: "Repair",
+        value: selectedDayMetrics.customers.returning.repair,
+      };
+      const returningSalesOnlinePieChartData: PieChartData = {
+        id: "Online",
+        label: "Online",
+        value: selectedDayMetrics.customers.returning.sales.online,
+      };
+      const returningSalesInStorePieChartData: PieChartData = {
+        id: "In-Store",
+        label: "In-Store",
+        value: selectedDayMetrics.customers.returning.sales.inStore,
+      };
+
+      const dailyReturningPieChartData: CustomerNewReturningPieCharts = {
+        overview: [returningSalesPieChartData, returningRepairPieChartData],
+        all: [
+          returningSalesOnlinePieChartData,
+          returningSalesInStorePieChartData,
+          returningRepairPieChartData,
+        ],
+        sales: [returningSalesOnlinePieChartData, returningSalesInStorePieChartData],
+      };
+
+      resolve({
+        overview: {
+          bar: dailyOverviewBarCharts,
+          calendar: dailyOverviewCalendarCharts,
+          line: dailyOverviewLineCharts,
+          pie: dailyOverviewPieChartData,
+        },
+        new: {
+          bar: dailyNewBarCharts,
+          calendar: dailyNewCalendarCharts,
+          line: dailyNewLineCharts,
+          pie: dailyNewPieChartData,
+        },
+        returning: {
+          bar: dailyReturningBarCharts,
+          calendar: dailyReturningCalendarCharts,
+          line: dailyReturningLineCharts,
+          pie: dailyReturningPieChartData,
+        },
+      });
+    }, 0);
+  });
+}
+
+type CreateMonthlyCustomerChartsInput = {
+  churnRetentionBarChartsTemplate: CustomerChurnRetentionBarCharts;
+  churnRetentionLineChartsTemplate: CustomerChurnRetentionLineCharts;
+  monthlyMetrics?: CustomerMonthlyMetric[];
+  months: Month[];
+  newBarChartsTemplate: CustomerNewReturningBarCharts;
+  newCalendarChartsTemplate: CustomerNewReturningCalendarCharts;
+  newLineChartsTemplate: CustomerNewReturningLineCharts;
+  overviewBarChartsTemplate: CustomerOverviewBarCharts;
+  overviewCalendarChartsTemplate: CustomerOverviewCalendarCharts;
+  overviewLineChartsTemplate: CustomerOverviewLineCharts;
+  returningBarChartsTemplate: CustomerNewReturningBarCharts;
+  returningCalendarChartsTemplate: CustomerNewReturningCalendarCharts;
+  returningLineChartsTemplate: CustomerNewReturningLineCharts;
+  selectedMonthMetrics?: CustomerMonthlyMetric;
+  selectedYear: Year;
+};
+
+async function createMonthlyCustomerCharts({
+  churnRetentionBarChartsTemplate,
+  churnRetentionLineChartsTemplate,
+  monthlyMetrics,
+  months,
+  newBarChartsTemplate,
+  newCalendarChartsTemplate,
+  newLineChartsTemplate,
+  overviewBarChartsTemplate,
+  overviewCalendarChartsTemplate,
+  overviewLineChartsTemplate,
+  returningBarChartsTemplate,
+  returningCalendarChartsTemplate,
+  returningLineChartsTemplate,
+  selectedMonthMetrics,
+  selectedYear,
+}: CreateMonthlyCustomerChartsInput): Promise<CustomerMetricsCharts["monthlyCharts"]> {
+  if (!monthlyMetrics || !selectedMonthMetrics) {
+    return new Promise((resolve) => {
+      resolve({
+        overview: {
+          bar: overviewBarChartsTemplate,
+          calendar: overviewCalendarChartsTemplate,
+          line: overviewLineChartsTemplate,
+          pie: [],
+        },
+        new: {
+          bar: newBarChartsTemplate,
+          calendar: newCalendarChartsTemplate,
+          line: newLineChartsTemplate,
+          pie: { overview: [], all: [], sales: [] },
+        },
+        returning: {
+          bar: returningBarChartsTemplate,
+          calendar: returningCalendarChartsTemplate,
+          line: returningLineChartsTemplate,
+          pie: { overview: [], all: [], sales: [] },
+        },
+        churnRetention: {
+          bar: churnRetentionBarChartsTemplate,
+          line: churnRetentionLineChartsTemplate,
+          pie: [],
+        },
+      });
+    });
+  }
+
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const [
+        overviewBarCharts,
+        overviewCalendarCharts,
+        overviewLineCharts,
+
+        monthlyNewBarCharts,
+        monthlyNewCalendarCharts,
+        monthlyNewLineCharts,
+
+        monthlyReturningBarCharts,
+        monthlyReturningCalendarCharts,
+        monthlyReturningLineCharts,
+
+        monthlyChurnRetentionRateBarCharts,
+        monthlyChurnRetentionRateLineCharts,
+      ] = monthlyMetrics.reduce(
+        (monthlyCustomerChartsAcc, monthlyMetric) => {
+          const [
+            overviewBarChartsAcc,
+            overviewCalendarChartsAcc,
+            overviewLineChartsAcc,
+
+            monthlyNewBarChartsAcc,
+            monthlyNewCalendarChartsAcc,
+            monthlyNewLineChartsAcc,
+
+            monthlyReturningBarChartsAcc,
+            monthlyReturningCalendarChartsAcc,
+            monthlyReturningLineChartsAcc,
+
+            monthlyChurnRetentionRateBarChartsAcc,
+            monthlyChurnRetentionRateLineChartsAcc,
+          ] = monthlyCustomerChartsAcc;
+
+          const { month, customers, dailyMetrics } = monthlyMetric;
+
+          // prevents current month of current year from being added to charts
+          const currentYear = new Date().getFullYear().toString();
+          const isCurrentYear = selectedYear === currentYear;
+          const currentMonth = new Date().toLocaleString("default", { month: "long" });
+          const isCurrentMonth = month === currentMonth;
+
+          if (isCurrentYear && isCurrentMonth) {
+            return monthlyCustomerChartsAcc;
+          }
+
+          const monthIndexStr = (months.indexOf(month) + 1).toString().padStart(2, "0");
+
+          // overview section y-axis variables: new, returning, total
+
+          // overview -> bar chart obj
+
+          const overviewNewReturningBarChart = {
+            Months: month,
+            New: customers.new.total,
+            Returning: customers.returning.total,
+          };
+          overviewBarChartsAcc.overview.push(overviewNewReturningBarChart);
+
+          const overviewNewBarChart = {
+            Months: month,
+            New: customers.new.total,
+          };
+          overviewBarChartsAcc.new.push(overviewNewBarChart);
+
+          const overviewReturningBarChart = {
+            Months: month,
+            Returning: customers.returning.total,
+          };
+          overviewBarChartsAcc.returning.push(overviewReturningBarChart);
+
+          // overview -> calendar chart obj
+
+          dailyMetrics.forEach((dailyMetric) => {
+            const { day, customers } = dailyMetric;
+
+            const overviewCalendarChart = {
+              day: `${selectedYear}-${monthIndexStr}-${day}`,
+              value: customers.total,
+            };
+            overviewCalendarChartsAcc.overview.push(overviewCalendarChart);
+
+            const overviewNewCalendarChart = {
+              day: `${selectedYear}-${monthIndexStr}-${day}`,
+              value: customers.new.total,
+            };
+            overviewCalendarChartsAcc.new.push(overviewNewCalendarChart);
+
+            const overviewReturningCalendarChart = {
+              day: `${selectedYear}-${monthIndexStr}-${day}`,
+              value: customers.returning.total,
+            };
+            overviewCalendarChartsAcc.returning.push(overviewReturningCalendarChart);
+          });
+
+          // overview -> line chart obj
+
+          const overviewNewLineChart = {
+            x: month,
+            y: customers.new.total,
+          };
+          overviewLineChartsAcc.overview
+            .find((lineChartData: LineChartData) => lineChartData.id === "New")
+            ?.data.push(overviewNewLineChart);
+
+          const overviewReturningLineChart = {
+            x: month,
+            y: customers.returning.total,
+          };
+          overviewLineChartsAcc.overview
+            .find((lineChartData: LineChartData) => lineChartData.id === "Returning")
+            ?.data.push(overviewReturningLineChart);
+
+          const monthlyNewNewLineChart = {
+            x: month,
+            y: customers.new.total,
+          };
+          overviewLineChartsAcc.new
+            .find((lineChartData: LineChartData) => lineChartData.id === "New")
+            ?.data.push(monthlyNewNewLineChart);
+
+          const monthlyReturningReturningLineChart = {
+            x: month,
+            y: customers.returning.total,
+          };
+          overviewLineChartsAcc.returning
+            .find((lineChartData: LineChartData) => lineChartData.id === "Returning")
+            ?.data.push(monthlyReturningReturningLineChart);
+
+          // new section y-axis variables: total, all, overview, sales, online, in-store, repair
+
+          // new -> bar chart obj
+
+          const monthlyNewTotalBarChart = {
+            Months: month,
+            Total: customers.new.total,
+          };
+          monthlyNewBarChartsAcc.total.push(monthlyNewTotalBarChart);
+
+          const monthlyNewAllBarChart = {
+            Months: month,
+            "In-Store": customers.new.sales.inStore,
+            Online: customers.new.sales.online,
+            Repair: customers.new.repair,
+          };
+          monthlyNewBarChartsAcc.all.push(monthlyNewAllBarChart);
+
+          const monthlyNewOverviewBarChart = {
+            Months: month,
+            Sales: customers.new.sales.total,
+            Repair: customers.new.repair,
+          };
+          monthlyNewBarChartsAcc.overview.push(monthlyNewOverviewBarChart);
+
+          const monthlyNewSalesBarChart = {
+            Months: month,
+            "In-Store": customers.new.sales.inStore,
+            Online: customers.new.sales.online,
+          };
+          monthlyNewBarChartsAcc.sales.push(monthlyNewSalesBarChart);
+
+          const monthlyNewOnlineBarChart = {
+            Months: month,
+            Online: customers.new.sales.online,
+          };
+          monthlyNewBarChartsAcc.online.push(monthlyNewOnlineBarChart);
+
+          const monthlyNewInStoreBarChart = {
+            Months: month,
+            "In-Store": customers.new.sales.inStore,
+          };
+          monthlyNewBarChartsAcc.inStore.push(monthlyNewInStoreBarChart);
+
+          const monthlyNewRepairBarChart = {
+            Months: month,
+            Repair: customers.new.repair,
+          };
+          monthlyNewBarChartsAcc.repair.push(monthlyNewRepairBarChart);
+
+          // new -> calendar chart obj
+
+          dailyMetrics.forEach((dailyMetric) => {
+            const { day, customers } = dailyMetric;
+
+            const monthlyNewTotalCalendarChart = {
+              day: `${selectedYear}-${monthIndexStr}-${day}`,
+              value: customers.new.total,
+            };
+            monthlyNewCalendarChartsAcc.total.push(monthlyNewTotalCalendarChart);
+
+            const monthlyNewSalesCalendarChart = {
+              day: `${selectedYear}-${monthIndexStr}-${day}`,
+              value: customers.new.sales.total,
+            };
+            monthlyNewCalendarChartsAcc.sales.push(monthlyNewSalesCalendarChart);
+
+            const monthlyNewOnlineCalendarChart = {
+              day: `${selectedYear}-${monthIndexStr}-${day}`,
+              value: customers.new.sales.online,
+            };
+            monthlyNewCalendarChartsAcc.online.push(monthlyNewOnlineCalendarChart);
+
+            const monthlyNewInStoreCalendarChart = {
+              day: `${selectedYear}-${monthIndexStr}-${day}`,
+              value: customers.new.sales.inStore,
+            };
+            monthlyNewCalendarChartsAcc.inStore.push(monthlyNewInStoreCalendarChart);
+
+            const monthlyNewRepairCalendarChart = {
+              day: `${selectedYear}-${monthIndexStr}-${day}`,
+              value: customers.new.repair,
+            };
+            monthlyNewCalendarChartsAcc.repair.push(monthlyNewRepairCalendarChart);
+          });
+
+          // new -> line chart obj
+
+          const monthlyNewTotalLineChart = {
+            x: month,
+            y: customers.new.total,
+          };
+          monthlyNewLineChartsAcc.total
+            .find((lineChartData: LineChartData) => lineChartData.id === "Total")
+            ?.data.push(monthlyNewTotalLineChart);
+
+          const monthlyNewAllInStoreLineChart = {
+            x: month,
+            y: customers.new.sales.inStore,
+          };
+          monthlyNewLineChartsAcc.all
+            .find((lineChartData: LineChartData) => lineChartData.id === "In-Store")
+            ?.data.push(monthlyNewAllInStoreLineChart);
+
+          const monthlyNewAllOnlineLineChart = {
+            x: month,
+            y: customers.new.sales.online,
+          };
+          monthlyNewLineChartsAcc.all
+            .find((lineChartData: LineChartData) => lineChartData.id === "Online")
+            ?.data.push(monthlyNewAllOnlineLineChart);
+
+          const monthlyNewAllRepairLineChart = {
+            x: month,
+            y: customers.new.repair,
+          };
+          monthlyNewLineChartsAcc.all
+            .find((lineChartData: LineChartData) => lineChartData.id === "Repair")
+            ?.data.push(monthlyNewAllRepairLineChart);
+
+          const monthlyNewOverviewSalesLineChart = {
+            x: month,
+            y: customers.new.sales.total,
+          };
+          monthlyNewLineChartsAcc.overview
+            .find((lineChartData: LineChartData) => lineChartData.id === "Sales")
+            ?.data.push(monthlyNewOverviewSalesLineChart);
+
+          const monthlyNewOverviewRepairLineChart = {
+            x: month,
+            y: customers.new.repair,
+          };
+          monthlyNewLineChartsAcc.overview
+            .find((lineChartData: LineChartData) => lineChartData.id === "Repair")
+            ?.data.push(monthlyNewOverviewRepairLineChart);
+
+          const monthlyNewSalesOnlineLineChart = {
+            x: month,
+            y: customers.new.sales.online,
+          };
+          monthlyNewLineChartsAcc.sales
+            .find((lineChartData: LineChartData) => lineChartData.id === "Online")
+            ?.data.push(monthlyNewSalesOnlineLineChart);
+
+          const monthlyNewSalesInStoreLineChart = {
+            x: month,
+            y: customers.new.sales.inStore,
+          };
+          monthlyNewLineChartsAcc.sales
+            .find((lineChartData: LineChartData) => lineChartData.id === "In-Store")
+            ?.data.push(monthlyNewSalesInStoreLineChart);
+
+          const monthlyNewOnlineLineChart = {
+            x: month,
+            y: customers.new.sales.online,
+          };
+          monthlyNewLineChartsAcc.online
+            .find((lineChartData: LineChartData) => lineChartData.id === "Online")
+            ?.data.push(monthlyNewOnlineLineChart);
+
+          const monthlyNewInStoreLineChart = {
+            x: month,
+            y: customers.new.sales.inStore,
+          };
+          monthlyNewLineChartsAcc.inStore
+            .find((lineChartData: LineChartData) => lineChartData.id === "In-Store")
+            ?.data.push(monthlyNewInStoreLineChart);
+
+          const monthlyNewRepairLineChart = {
+            x: month,
+            y: customers.new.repair,
+          };
+          monthlyNewLineChartsAcc.repair
+            .find((lineChartData: LineChartData) => lineChartData.id === "Repair")
+            ?.data.push(monthlyNewRepairLineChart);
+
+          // returning section y-axis variables: total, all, overview, sales, online, in-store, repair
+
+          // returning -> bar chart obj
+
+          const monthlyReturningTotalBarChart = {
+            Months: month,
+            Total: customers.returning.total,
+          };
+          monthlyReturningBarChartsAcc.total.push(monthlyReturningTotalBarChart);
+
+          const monthlyReturningAllBarChart = {
+            Months: month,
+            "In-Store": customers.returning.sales.inStore,
+            Online: customers.returning.sales.online,
+            Repair: customers.returning.repair,
+          };
+          monthlyReturningBarChartsAcc.all.push(monthlyReturningAllBarChart);
+
+          const monthlyReturningOverviewBarChart = {
+            Months: month,
+            Sales: customers.returning.sales.total,
+            Repair: customers.returning.repair,
+          };
+          monthlyReturningBarChartsAcc.overview.push(monthlyReturningOverviewBarChart);
+
+          const monthlyReturningSalesBarChart = {
+            Months: month,
+            "In-Store": customers.returning.sales.inStore,
+            Online: customers.returning.sales.online,
+          };
+          monthlyReturningBarChartsAcc.sales.push(monthlyReturningSalesBarChart);
+
+          const monthlyReturningOnlineBarChart = {
+            Months: month,
+            Online: customers.returning.sales.online,
+          };
+          monthlyReturningBarChartsAcc.online.push(monthlyReturningOnlineBarChart);
+
+          const monthlyReturningInStoreBarChart = {
+            Months: month,
+            "In-Store": customers.returning.sales.inStore,
+          };
+          monthlyReturningBarChartsAcc.inStore.push(monthlyReturningInStoreBarChart);
+
+          const monthlyReturningRepairBarChart = {
+            Months: month,
+            Repair: customers.returning.repair,
+          };
+          monthlyReturningBarChartsAcc.repair.push(monthlyReturningRepairBarChart);
+
+          // returning -> calendar chart obj
+
+          dailyMetrics.forEach((dailyMetric) => {
+            const { day, customers } = dailyMetric;
+
+            const monthlyReturningTotalCalendarChart = {
+              day: `${selectedYear}-${monthIndexStr}-${day}`,
+              value: customers.returning.total,
+            };
+            monthlyReturningCalendarChartsAcc.total.push(
+              monthlyReturningTotalCalendarChart
+            );
+
+            const monthlyReturningSalesCalendarChart = {
+              day: `${selectedYear}-${monthIndexStr}-${day}`,
+              value: customers.returning.sales.total,
+            };
+            monthlyReturningCalendarChartsAcc.sales.push(
+              monthlyReturningSalesCalendarChart
+            );
+
+            const monthlyReturningOnlineCalendarChart = {
+              day: `${selectedYear}-${monthIndexStr}-${day}`,
+              value: customers.returning.sales.online,
+            };
+            monthlyReturningCalendarChartsAcc.online.push(
+              monthlyReturningOnlineCalendarChart
+            );
+
+            const monthlyReturningInStoreCalendarChart = {
+              day: `${selectedYear}-${monthIndexStr}-${day}`,
+              value: customers.returning.sales.inStore,
+            };
+            monthlyReturningCalendarChartsAcc.inStore.push(
+              monthlyReturningInStoreCalendarChart
+            );
+
+            const monthlyReturningRepairCalendarChart = {
+              day: `${selectedYear}-${monthIndexStr}-${day}`,
+              value: customers.returning.repair,
+            };
+            monthlyReturningCalendarChartsAcc.repair.push(
+              monthlyReturningRepairCalendarChart
+            );
+          });
+
+          // returning -> line chart obj
+
+          const monthlyReturningTotalLineChart = {
+            x: month,
+            y: customers.returning.total,
+          };
+          monthlyReturningLineChartsAcc.total
+            .find((lineChartData: LineChartData) => lineChartData.id === "Total")
+            ?.data.push(monthlyReturningTotalLineChart);
+
+          const monthlyReturningAllInStoreLineChart = {
+            x: month,
+            y: customers.returning.sales.inStore,
+          };
+          monthlyReturningLineChartsAcc.all
+            .find((lineChartData: LineChartData) => lineChartData.id === "In-Store")
+            ?.data.push(monthlyReturningAllInStoreLineChart);
+
+          const monthlyReturningAllOnlineLineChart = {
+            x: month,
+            y: customers.returning.sales.online,
+          };
+          monthlyReturningLineChartsAcc.all
+            .find((lineChartData: LineChartData) => lineChartData.id === "Online")
+            ?.data.push(monthlyReturningAllOnlineLineChart);
+
+          const monthlyReturningAllRepairLineChart = {
+            x: month,
+            y: customers.returning.repair,
+          };
+          monthlyReturningLineChartsAcc.all
+            .find((lineChartData: LineChartData) => lineChartData.id === "Repair")
+            ?.data.push(monthlyReturningAllRepairLineChart);
+
+          const monthlyReturningOverviewSalesLineChart = {
+            x: month,
+            y: customers.returning.sales.total,
+          };
+          monthlyReturningLineChartsAcc.overview
+            .find((lineChartData: LineChartData) => lineChartData.id === "Sales")
+            ?.data.push(monthlyReturningOverviewSalesLineChart);
+
+          const monthlyReturningOverviewRepairLineChart = {
+            x: month,
+            y: customers.returning.repair,
+          };
+          monthlyReturningLineChartsAcc.overview
+            .find((lineChartData: LineChartData) => lineChartData.id === "Repair")
+            ?.data.push(monthlyReturningOverviewRepairLineChart);
+
+          const monthlyReturningSalesOnlineLineChart = {
+            x: month,
+            y: customers.returning.sales.online,
+          };
+          monthlyReturningLineChartsAcc.sales
+            .find((lineChartData: LineChartData) => lineChartData.id === "Online")
+            ?.data.push(monthlyReturningSalesOnlineLineChart);
+
+          const monthlyReturningSalesInStoreLineChart = {
+            x: month,
+            y: customers.returning.sales.inStore,
+          };
+          monthlyReturningLineChartsAcc.sales
+            .find((lineChartData: LineChartData) => lineChartData.id === "In-Store")
+            ?.data.push(monthlyReturningSalesInStoreLineChart);
+
+          const monthlyReturningOnlineLineChart = {
+            x: month,
+            y: customers.returning.sales.online,
+          };
+          monthlyReturningLineChartsAcc.online
+            .find((lineChartData: LineChartData) => lineChartData.id === "Online")
+            ?.data.push(monthlyReturningOnlineLineChart);
+
+          const monthlyReturningInStoreLineChart = {
+            x: month,
+            y: customers.returning.sales.inStore,
+          };
+          monthlyReturningLineChartsAcc.inStore
+            .find((lineChartData: LineChartData) => lineChartData.id === "In-Store")
+            ?.data.push(monthlyReturningInStoreLineChart);
+
+          const monthlyReturningRepairLineChart = {
+            x: month,
+            y: customers.returning.repair,
+          };
+          monthlyReturningLineChartsAcc.repair
+            .find((lineChartData: LineChartData) => lineChartData.id === "Repair")
+            ?.data.push(monthlyReturningRepairLineChart);
+
+          // churn & retention rate section y-axis variables: overview, churn rate, retention rate
+
+          // churn & retention rate -> bar chart obj
+
+          const overviewChurnRetentionRateBarChart = {
+            Months: month,
+            "Churn Rate": toFixedFloat(customers.churnRate * 100, 2),
+            "Retention Rate": toFixedFloat(customers.retentionRate * 100, 2),
+          };
+          monthlyChurnRetentionRateBarChartsAcc.overview.push(
+            overviewChurnRetentionRateBarChart
+          );
+
+          const overviewChurnRateBarChart = {
+            Months: month,
+            "Churn Rate": toFixedFloat(customers.churnRate * 100, 2),
+          };
+          monthlyChurnRetentionRateBarChartsAcc.churnRate.push(overviewChurnRateBarChart);
+
+          const monthlyRetentionRateBarChart = {
+            Months: month,
+            "Retention Rate": toFixedFloat(customers.retentionRate * 100, 2),
+          };
+          monthlyChurnRetentionRateBarChartsAcc.retentionRate.push(
+            monthlyRetentionRateBarChart
+          );
+
+          // churn & retention rate -> line chart obj
+
+          const overviewChurnRetentionRateLineChart = {
+            x: month,
+            y: toFixedFloat(customers.churnRate * 100, 2),
+          };
+          monthlyChurnRetentionRateLineChartsAcc.overview
+            .find((lineChartData: LineChartData) => lineChartData.id === "Churn Rate")
+            ?.data.push(overviewChurnRetentionRateLineChart);
+
+          const overviewRetentionRateLineChart = {
+            x: month,
+            y: toFixedFloat(customers.retentionRate * 100, 2),
+          };
+          monthlyChurnRetentionRateLineChartsAcc.overview
+            .find((lineChartData: LineChartData) => lineChartData.id === "Retention Rate")
+            ?.data.push(overviewRetentionRateLineChart);
+
+          const monthlyChurnRateLineChart = {
+            x: month,
+            y: toFixedFloat(customers.churnRate * 100, 2),
+          };
+          monthlyChurnRetentionRateLineChartsAcc.churnRate
+            .find((lineChartData: LineChartData) => lineChartData.id === "Churn Rate")
+            ?.data.push(monthlyChurnRateLineChart);
+
+          const monthlyRetentionRateLineChart = {
+            x: month,
+            y: toFixedFloat(customers.retentionRate * 100, 2),
+          };
+          monthlyChurnRetentionRateLineChartsAcc.retentionRate
+            .find((lineChartData: LineChartData) => lineChartData.id === "Retention Rate")
+            ?.data.push(monthlyRetentionRateLineChart);
+
+          return monthlyCustomerChartsAcc;
+        },
+        [
+          structuredClone(overviewBarChartsTemplate),
+          structuredClone(overviewCalendarChartsTemplate),
+          structuredClone(overviewLineChartsTemplate),
+
+          structuredClone(newBarChartsTemplate),
+          structuredClone(newCalendarChartsTemplate),
+          structuredClone(newLineChartsTemplate),
+
+          structuredClone(returningBarChartsTemplate),
+          structuredClone(returningCalendarChartsTemplate),
+          structuredClone(returningLineChartsTemplate),
+
+          structuredClone(churnRetentionBarChartsTemplate),
+          structuredClone(churnRetentionLineChartsTemplate),
+        ]
+      );
+
+      // monthly -> overview -> pie chart obj
+      const overviewPieChartData: PieChartData[] = [
+        {
+          id: "New",
+          label: "New",
+          value: selectedMonthMetrics.customers.new.total,
+        },
+        {
+          id: "Returning",
+          label: "Returning",
+          value: selectedMonthMetrics.customers.returning.total,
+        },
+      ];
+
+      // monthly -> new -> pie chart obj
+      const monthlyNewSalesPieChartData: PieChartData = {
+        id: "Sales",
+        label: "Sales",
+        value: selectedMonthMetrics.customers.new.sales.total,
+      };
+      const monthlyNewRepairPieChartData: PieChartData = {
+        id: "Repair",
+        label: "Repair",
+        value: selectedMonthMetrics.customers.new.repair,
+      };
+      const monthlyNewSalesOnlinePieChartData: PieChartData = {
+        id: "Online",
+        label: "Online",
+        value: selectedMonthMetrics.customers.new.sales.online,
+      };
+      const monthlyNewSalesInStorePieChartData: PieChartData = {
+        id: "In-Store",
+        label: "In-Store",
+        value: selectedMonthMetrics.customers.new.sales.inStore,
+      };
+
+      const monthlyNewPieChartData: CustomerNewReturningPieCharts = {
+        overview: [monthlyNewSalesPieChartData, monthlyNewRepairPieChartData],
+        all: [
+          monthlyNewSalesOnlinePieChartData,
+          monthlyNewSalesInStorePieChartData,
+          monthlyNewRepairPieChartData,
+        ],
+        sales: [monthlyNewSalesOnlinePieChartData, monthlyNewSalesInStorePieChartData],
+      };
+
+      // monthly -> returning
+
+      // monthly -> returning -> pie chart obj
+      const monthlyReturningSalesPieChartData: PieChartData = {
+        id: "Sales",
+        label: "Sales",
+        value: selectedMonthMetrics.customers.returning.sales.total,
+      };
+      const monthlyReturningRepairPieChartData: PieChartData = {
+        id: "Repair",
+        label: "Repair",
+        value: selectedMonthMetrics.customers.returning.repair,
+      };
+      const monthlyReturningSalesOnlinePieChartData: PieChartData = {
+        id: "Online",
+        label: "Online",
+        value: selectedMonthMetrics.customers.returning.sales.online,
+      };
+      const monthlyReturningSalesInStorePieChartData: PieChartData = {
+        id: "In-Store",
+        label: "In-Store",
+        value: selectedMonthMetrics.customers.returning.sales.inStore,
+      };
+
+      const monthlyReturningPieChartData: CustomerNewReturningPieCharts = {
+        overview: [monthlyReturningSalesPieChartData, monthlyReturningRepairPieChartData],
+        all: [
+          monthlyReturningSalesOnlinePieChartData,
+          monthlyReturningSalesInStorePieChartData,
+          monthlyReturningRepairPieChartData,
+        ],
+        sales: [
+          monthlyReturningSalesOnlinePieChartData,
+          monthlyReturningSalesInStorePieChartData,
+        ],
+      };
+
+      // monthly -> churn & retention rate -> pie chart obj
+      const monthlyChurnRetentionRatePieChartData: PieChartData[] = [
+        {
+          id: "Churn Rate",
+          label: "Churn Rate",
+          value: toFixedFloat(selectedMonthMetrics.customers.churnRate * 100, 2),
+        },
+        {
+          id: "Retention Rate",
+          label: "Retention Rate",
+          value: toFixedFloat(selectedMonthMetrics.customers.retentionRate * 100, 2),
+        },
+      ];
+
+      resolve({
+        overview: {
+          bar: overviewBarCharts,
+          calendar: overviewCalendarCharts,
+          line: overviewLineCharts,
+          pie: overviewPieChartData,
+        },
+        new: {
+          bar: monthlyNewBarCharts,
+          calendar: monthlyNewCalendarCharts,
+          line: monthlyNewLineCharts,
+          pie: monthlyNewPieChartData,
+        },
+        returning: {
+          bar: monthlyReturningBarCharts,
+          calendar: monthlyReturningCalendarCharts,
+          line: monthlyReturningLineCharts,
+          pie: monthlyReturningPieChartData,
+        },
+        churnRetention: {
+          bar: monthlyChurnRetentionRateBarCharts,
+          line: monthlyChurnRetentionRateLineCharts,
+          pie: monthlyChurnRetentionRatePieChartData,
+        },
+      });
+    }, 0);
+  });
+}
+
+type CreateYearlyCustomerChartsInput = {
+  churnRetentionBarChartsTemplate: CustomerChurnRetentionBarCharts;
+  churnRetentionLineChartsTemplate: CustomerChurnRetentionLineCharts;
+  newBarChartsTemplate: CustomerNewReturningBarCharts;
+  newLineChartsTemplate: CustomerNewReturningLineCharts;
+  overviewBarChartsTemplate: CustomerOverviewBarCharts;
+  overviewLineChartsTemplate: CustomerOverviewLineCharts;
+  returningBarChartsTemplate: CustomerNewReturningBarCharts;
+  returningLineChartsTemplate: CustomerNewReturningLineCharts;
+  selectedYearMetrics?: CustomerYearlyMetric;
+  yearlyMetrics?: CustomerYearlyMetric[];
+};
+
+async function createYearlyCustomerCharts({
+  churnRetentionBarChartsTemplate,
+  churnRetentionLineChartsTemplate,
+  newBarChartsTemplate,
+  newLineChartsTemplate,
+  overviewBarChartsTemplate,
+  overviewLineChartsTemplate,
+  returningBarChartsTemplate,
+  returningLineChartsTemplate,
+  selectedYearMetrics,
+  yearlyMetrics,
+}: CreateYearlyCustomerChartsInput): Promise<CustomerMetricsCharts["yearlyCharts"]> {
+  if (!yearlyMetrics || !selectedYearMetrics) {
+    return new Promise((resolve) => {
+      resolve({
+        overview: {
+          bar: overviewBarChartsTemplate,
+          line: overviewLineChartsTemplate,
+          pie: [],
+        },
+        new: {
+          bar: newBarChartsTemplate,
+          line: newLineChartsTemplate,
+          pie: { overview: [], all: [], sales: [] },
+        },
+        returning: {
+          bar: returningBarChartsTemplate,
+          line: returningLineChartsTemplate,
+          pie: { overview: [], all: [], sales: [] },
+        },
+        churnRetention: {
+          bar: churnRetentionBarChartsTemplate,
+          line: churnRetentionLineChartsTemplate,
+          pie: [],
+        },
+      });
+    });
+  }
+
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const [
+        yearlyOverviewBarCharts,
+        yearlyOverviewLineCharts,
+
+        yearlyNewBarCharts,
+        yearlyNewLineCharts,
+
+        yearlyReturningBarCharts,
+        yearlyReturningLineCharts,
+
+        yearlyChurnRetentionRateBarCharts,
+        yearlyChurnRetentionRateLineCharts,
+      ] = yearlyMetrics.reduce(
+        (yearlyCustomerChartsAcc, yearlyMetric) => {
+          const [
+            yearlyOverviewBarChartsAcc,
+            yearlyOverviewLineChartsAcc,
+
+            yearlyNewBarChartsAcc,
+            yearlyNewLineChartsAcc,
+
+            yearlyReturningBarChartsAcc,
+            yearlyReturningLineChartsAcc,
+
+            yearlyChurnRetentionRateBarChartsAcc,
+            yearlyChurnRetentionRateLineChartsAcc,
+          ] = yearlyCustomerChartsAcc;
+
+          const { year, customers } = yearlyMetric;
+
+          // prevents current year from being added to charts
+          const currentYear = new Date().getFullYear();
+          if (year === currentYear.toString()) {
+            return yearlyCustomerChartsAcc;
+          }
+
+          // overview section y-axis variables: new, returning, total
+
+          // overview -> bar chart obj
+
+          const yearlyOverviewTotalBarChart = {
+            Years: year,
+            New: customers.new.total,
+            Returning: customers.returning.total,
+          };
+          yearlyOverviewBarChartsAcc.overview.push(yearlyOverviewTotalBarChart);
+
+          const yearlyOverviewNewBarChart = {
+            Years: year,
+            New: customers.new.total,
+          };
+          yearlyOverviewBarChartsAcc.new.push(yearlyOverviewNewBarChart);
+
+          const yearlyOverviewReturningBarChart = {
+            Years: year,
+            Returning: customers.returning.total,
+          };
+          yearlyOverviewBarChartsAcc.returning.push(yearlyOverviewReturningBarChart);
+
+          // overview -> line chart obj
+
+          const yearlyOverviewNewLineChart = {
+            x: year,
+            y: customers.new.total,
+          };
+          yearlyOverviewLineChartsAcc.overview
+            .find((lineChartData: LineChartData) => lineChartData.id === "New")
+            ?.data.push(yearlyOverviewNewLineChart);
+
+          const yearlyOverviewReturningLineChart = {
+            x: year,
+            y: customers.returning.total,
+          };
+          yearlyOverviewLineChartsAcc.overview
+            .find((lineChartData: LineChartData) => lineChartData.id === "Returning")
+            ?.data.push(yearlyOverviewReturningLineChart);
+
+          const yearlyNewNewLineChart = {
+            x: year,
+            y: customers.new.total,
+          };
+          yearlyOverviewLineChartsAcc.new
+            .find((lineChartData: LineChartData) => lineChartData.id === "New")
+            ?.data.push(yearlyNewNewLineChart);
+
+          const yearlyReturningReturningLineChart = {
+            x: year,
+            y: customers.returning.total,
+          };
+          yearlyOverviewLineChartsAcc.returning
+            .find((lineChartData: LineChartData) => lineChartData.id === "Returning")
+            ?.data.push(yearlyReturningReturningLineChart);
+
+          // new section y-axis variables: total, all, overview, sales, online, in-store, repair
+
+          // new -> bar chart obj
+
+          const yearlyNewTotalBarChart = {
+            Years: year,
+            Total: customers.new.total,
+          };
+          yearlyNewBarChartsAcc.total.push(yearlyNewTotalBarChart);
+
+          const yearlyNewAllBarChart = {
+            Years: year,
+            "In-Store": customers.new.sales.inStore,
+            Online: customers.new.sales.online,
+            Repair: customers.new.repair,
+          };
+          yearlyNewBarChartsAcc.all.push(yearlyNewAllBarChart);
+
+          const yearlyNewOverviewBarChart = {
+            Years: year,
+            Sales: customers.new.sales.total,
+            Repair: customers.new.repair,
+          };
+          yearlyNewBarChartsAcc.overview.push(yearlyNewOverviewBarChart);
+
+          const yearlyNewSalesBarChart = {
+            Years: year,
+            "In-Store": customers.new.sales.inStore,
+            Online: customers.new.sales.online,
+          };
+          yearlyNewBarChartsAcc.sales.push(yearlyNewSalesBarChart);
+
+          const yearlyNewOnlineBarChart = {
+            Years: year,
+            Online: customers.new.sales.online,
+          };
+          yearlyNewBarChartsAcc.online.push(yearlyNewOnlineBarChart);
+
+          const yearlyNewInStoreBarChart = {
+            Years: year,
+            "In-Store": customers.new.sales.inStore,
+          };
+          yearlyNewBarChartsAcc.inStore.push(yearlyNewInStoreBarChart);
+
+          const yearlyNewRepairBarChart = {
+            Years: year,
+            Repair: customers.new.repair,
+          };
+          yearlyNewBarChartsAcc.repair.push(yearlyNewRepairBarChart);
+
+          // new -> line chart obj
+
+          const yearlyNewTotalLineChart = {
+            x: year,
+            y: customers.new.total,
+          };
+          yearlyNewLineChartsAcc.total
+            .find((lineChartData: LineChartData) => lineChartData.id === "Total")
+            ?.data.push(yearlyNewTotalLineChart);
+
+          const yearlyNewAllInStoreLineChart = {
+            x: year,
+            y: customers.new.sales.inStore,
+          };
+          yearlyNewLineChartsAcc.all
+            .find((lineChartData: LineChartData) => lineChartData.id === "In-Store")
+            ?.data.push(yearlyNewAllInStoreLineChart);
+
+          const yearlyNewAllOnlineLineChart = {
+            x: year,
+            y: customers.new.sales.online,
+          };
+          yearlyNewLineChartsAcc.all
+            .find((lineChartData: LineChartData) => lineChartData.id === "Online")
+            ?.data.push(yearlyNewAllOnlineLineChart);
+
+          const yearlyNewAllRepairLineChart = {
+            x: year,
+            y: customers.new.repair,
+          };
+          yearlyNewLineChartsAcc.all
+            .find((lineChartData: LineChartData) => lineChartData.id === "Repair")
+            ?.data.push(yearlyNewAllRepairLineChart);
+
+          const yearlyNewOverviewSalesLineChart = {
+            x: year,
+            y: customers.new.sales.total,
+          };
+          yearlyNewLineChartsAcc.overview
+            .find((lineChartData: LineChartData) => lineChartData.id === "Sales")
+            ?.data.push(yearlyNewOverviewSalesLineChart);
+
+          const yearlyNewOverviewRepairLineChart = {
+            x: year,
+            y: customers.new.repair,
+          };
+          yearlyNewLineChartsAcc.overview
+            .find((lineChartData: LineChartData) => lineChartData.id === "Repair")
+            ?.data.push(yearlyNewOverviewRepairLineChart);
+
+          const yearlyNewSalesOnlineLineChart = {
+            x: year,
+            y: customers.new.sales.online,
+          };
+          yearlyNewLineChartsAcc.sales
+            .find((lineChartData: LineChartData) => lineChartData.id === "Online")
+            ?.data.push(yearlyNewSalesOnlineLineChart);
+
+          const yearlyNewSalesInStoreLineChart = {
+            x: year,
+            y: customers.new.sales.inStore,
+          };
+          yearlyNewLineChartsAcc.sales
+            .find((lineChartData: LineChartData) => lineChartData.id === "In-Store")
+            ?.data.push(yearlyNewSalesInStoreLineChart);
+
+          const yearlyNewOnlineLineChart = {
+            x: year,
+            y: customers.new.sales.online,
+          };
+          yearlyNewLineChartsAcc.online
+            .find((lineChartData: LineChartData) => lineChartData.id === "Online")
+            ?.data.push(yearlyNewOnlineLineChart);
+
+          const yearlyNewInStoreLineChart = {
+            x: year,
+            y: customers.new.sales.inStore,
+          };
+          yearlyNewLineChartsAcc.inStore
+            .find((lineChartData: LineChartData) => lineChartData.id === "In-Store")
+            ?.data.push(yearlyNewInStoreLineChart);
+
+          const yearlyNewRepairLineChart = {
+            x: year,
+            y: customers.new.repair,
+          };
+          yearlyNewLineChartsAcc.repair
+            .find((lineChartData: LineChartData) => lineChartData.id === "Repair")
+            ?.data.push(yearlyNewRepairLineChart);
+
+          // returning section y-axis variables: total, all, overview, sales, online, in-store, repair
+
+          // returning -> bar chart obj
+
+          const yearlyReturningTotalBarChart = {
+            Years: year,
+            Total: customers.returning.total,
+          };
+          yearlyReturningBarChartsAcc.total.push(yearlyReturningTotalBarChart);
+
+          const yearlyReturningAllBarChart = {
+            Years: year,
+            "In-Store": customers.returning.sales.inStore,
+            Online: customers.returning.sales.online,
+            Repair: customers.returning.repair,
+          };
+          yearlyReturningBarChartsAcc.all.push(yearlyReturningAllBarChart);
+
+          const yearlyReturningOverviewBarChart = {
+            Years: year,
+            Sales: customers.returning.sales.total,
+            Repair: customers.returning.repair,
+          };
+          yearlyReturningBarChartsAcc.overview.push(yearlyReturningOverviewBarChart);
+
+          const yearlyReturningSalesBarChart = {
+            Years: year,
+            "In-Store": customers.returning.sales.inStore,
+            Online: customers.returning.sales.online,
+          };
+          yearlyReturningBarChartsAcc.sales.push(yearlyReturningSalesBarChart);
+
+          const yearlyReturningOnlineBarChart = {
+            Years: year,
+            Online: customers.returning.sales.online,
+          };
+          yearlyReturningBarChartsAcc.online.push(yearlyReturningOnlineBarChart);
+
+          const yearlyReturningInStoreBarChart = {
+            Years: year,
+            "In-Store": customers.returning.sales.inStore,
+          };
+          yearlyReturningBarChartsAcc.inStore.push(yearlyReturningInStoreBarChart);
+
+          const yearlyReturningRepairBarChart = {
+            Years: year,
+            Repair: customers.returning.repair,
+          };
+          yearlyReturningBarChartsAcc.repair.push(yearlyReturningRepairBarChart);
+
+          // returning -> line chart obj
+
+          const yearlyReturningTotalLineChart = {
+            x: year,
+            y: customers.returning.total,
+          };
+          yearlyReturningLineChartsAcc.total
+            .find((lineChartData: LineChartData) => lineChartData.id === "Total")
+            ?.data.push(yearlyReturningTotalLineChart);
+
+          const yearlyReturningAllInStoreLineChart = {
+            x: year,
+            y: customers.returning.sales.inStore,
+          };
+          yearlyReturningLineChartsAcc.all
+            .find((lineChartData: LineChartData) => lineChartData.id === "In-Store")
+            ?.data.push(yearlyReturningAllInStoreLineChart);
+
+          const yearlyReturningAllOnlineLineChart = {
+            x: year,
+            y: customers.returning.sales.online,
+          };
+          yearlyReturningLineChartsAcc.all
+            .find((lineChartData: LineChartData) => lineChartData.id === "Online")
+            ?.data.push(yearlyReturningAllOnlineLineChart);
+
+          const yearlyReturningAllRepairLineChart = {
+            x: year,
+            y: customers.returning.repair,
+          };
+          yearlyReturningLineChartsAcc.all
+            .find((lineChartData: LineChartData) => lineChartData.id === "Repair")
+            ?.data.push(yearlyReturningAllRepairLineChart);
+
+          const yearlyReturningOverviewSalesLineChart = {
+            x: year,
+            y: customers.returning.sales.total,
+          };
+          yearlyReturningLineChartsAcc.overview
+            .find((lineChartData: LineChartData) => lineChartData.id === "Sales")
+            ?.data.push(yearlyReturningOverviewSalesLineChart);
+
+          const yearlyReturningOverviewRepairLineChart = {
+            x: year,
+            y: customers.returning.repair,
+          };
+          yearlyReturningLineChartsAcc.overview
+            .find((lineChartData: LineChartData) => lineChartData.id === "Repair")
+            ?.data.push(yearlyReturningOverviewRepairLineChart);
+
+          const yearlyReturningSalesOnlineLineChart = {
+            x: year,
+            y: customers.returning.sales.online,
+          };
+          yearlyReturningLineChartsAcc.sales
+            .find((lineChartData: LineChartData) => lineChartData.id === "Online")
+            ?.data.push(yearlyReturningSalesOnlineLineChart);
+
+          const yearlyReturningSalesInStoreLineChart = {
+            x: year,
+            y: customers.returning.sales.inStore,
+          };
+          yearlyReturningLineChartsAcc.sales
+            .find((lineChartData: LineChartData) => lineChartData.id === "In-Store")
+            ?.data.push(yearlyReturningSalesInStoreLineChart);
+
+          const yearlyReturningOnlineLineChart = {
+            x: year,
+            y: customers.returning.sales.online,
+          };
+          yearlyReturningLineChartsAcc.online
+            .find((lineChartData: LineChartData) => lineChartData.id === "Online")
+            ?.data.push(yearlyReturningOnlineLineChart);
+
+          const yearlyReturningInStoreLineChart = {
+            x: year,
+            y: customers.returning.sales.inStore,
+          };
+          yearlyReturningLineChartsAcc.inStore
+            .find((lineChartData: LineChartData) => lineChartData.id === "In-Store")
+            ?.data.push(yearlyReturningInStoreLineChart);
+
+          const yearlyReturningRepairLineChart = {
+            x: year,
+            y: customers.returning.repair,
+          };
+          yearlyReturningLineChartsAcc.repair
+            .find((lineChartData: LineChartData) => lineChartData.id === "Repair")
+            ?.data.push(yearlyReturningRepairLineChart);
+
+          // churn & retention rate section y-axis variables: overview, churn rate, retention rate
+
+          // churn & retention rate -> bar chart obj
+
+          const yearlyOverviewChurnRetentionRateBarChart = {
+            Years: year,
+            "Churn Rate": toFixedFloat(customers.churnRate * 100, 2),
+            "Retention Rate": toFixedFloat(customers.retentionRate * 100, 2),
+          };
+          yearlyChurnRetentionRateBarChartsAcc.overview.push(
+            yearlyOverviewChurnRetentionRateBarChart
+          );
+
+          const yearlyChurnRateBarChart = {
+            Years: year,
+            "Churn Rate": toFixedFloat(customers.churnRate * 100, 2),
+          };
+          yearlyChurnRetentionRateBarChartsAcc.churnRate.push(yearlyChurnRateBarChart);
+
+          const yearlyRetentionRateBarChart = {
+            Years: year,
+            "Retention Rate": toFixedFloat(customers.retentionRate * 100, 2),
+          };
+          yearlyChurnRetentionRateBarChartsAcc.retentionRate.push(
+            yearlyRetentionRateBarChart
+          );
+
+          // churn & retention rate -> line chart obj
+
+          const yearlyOverviewChurnRetentionRateLineChart = {
+            x: year,
+            y: toFixedFloat(customers.churnRate * 100, 2),
+          };
+          yearlyChurnRetentionRateLineChartsAcc.overview
+            .find((lineChartData: LineChartData) => lineChartData.id === "Churn Rate")
+            ?.data.push(yearlyOverviewChurnRetentionRateLineChart);
+
+          const yearlyOverviewRetentionRateLineChart = {
+            x: year,
+            y: toFixedFloat(customers.retentionRate * 100, 2),
+          };
+          yearlyChurnRetentionRateLineChartsAcc.overview
+            .find((lineChartData: LineChartData) => lineChartData.id === "Retention Rate")
+            ?.data.push(yearlyOverviewRetentionRateLineChart);
+
+          const yearlyChurnRateLineChart = {
+            x: year,
+            y: toFixedFloat(customers.churnRate * 100, 2),
+          };
+          yearlyChurnRetentionRateLineChartsAcc.churnRate
+            .find((lineChartData: LineChartData) => lineChartData.id === "Churn Rate")
+            ?.data.push(yearlyChurnRateLineChart);
+
+          const yearlyRetentionRateLineChart = {
+            x: year,
+            y: toFixedFloat(customers.retentionRate * 100, 2),
+          };
+          yearlyChurnRetentionRateLineChartsAcc.retentionRate
+            .find((lineChartData: LineChartData) => lineChartData.id === "Retention Rate")
+            ?.data.push(yearlyRetentionRateLineChart);
+
+          return yearlyCustomerChartsAcc;
+        },
+        [
+          structuredClone(overviewBarChartsTemplate),
+          structuredClone(overviewLineChartsTemplate),
+
+          structuredClone(newBarChartsTemplate),
+          structuredClone(newLineChartsTemplate),
+
+          structuredClone(returningBarChartsTemplate),
+          structuredClone(returningLineChartsTemplate),
+
+          structuredClone(churnRetentionBarChartsTemplate),
+          structuredClone(churnRetentionLineChartsTemplate),
+        ]
+      );
+
+      // yearly -> overview -> pie chart obj
+      const yearlyOverviewPieChartData: PieChartData[] = [
+        {
+          id: "New",
+          label: "New",
+          value: selectedYearMetrics.customers.new.total,
+        },
+        {
+          id: "Returning",
+          label: "Returning",
+          value: selectedYearMetrics.customers.returning.total,
+        },
+      ];
+
+      // yearly -> new -> pie chart obj
+      const yearlyNewSalesPieChartData: PieChartData = {
+        id: "Sales",
+        label: "Sales",
+        value: selectedYearMetrics.customers.new.sales.total,
+      };
+      const yearlyNewRepairPieChartData: PieChartData = {
+        id: "Repair",
+        label: "Repair",
+        value: selectedYearMetrics.customers.new.repair,
+      };
+      const yearlyNewSalesOnlinePieChartData: PieChartData = {
+        id: "Online",
+        label: "Online",
+        value: selectedYearMetrics.customers.new.sales.online,
+      };
+      const yearlyNewSalesInStorePieChartData: PieChartData = {
+        id: "In-Store",
+        label: "In-Store",
+        value: selectedYearMetrics.customers.new.sales.inStore,
+      };
+
+      const yearlyNewPieChartData: CustomerNewReturningPieCharts = {
+        overview: [yearlyNewSalesPieChartData, yearlyNewRepairPieChartData],
+        all: [
+          yearlyNewSalesOnlinePieChartData,
+          yearlyNewSalesInStorePieChartData,
+          yearlyNewRepairPieChartData,
+        ],
+        sales: [yearlyNewSalesOnlinePieChartData, yearlyNewSalesInStorePieChartData],
+      };
+
+      // yearly -> returning -> pie chart obj
+      const yearlyReturningSalesPieChartData: PieChartData = {
+        id: "Sales",
+        label: "Sales",
+        value: selectedYearMetrics.customers.returning.sales.total,
+      };
+      const yearlyReturningRepairPieChartData: PieChartData = {
+        id: "Repair",
+        label: "Repair",
+        value: selectedYearMetrics.customers.returning.repair,
+      };
+      const yearlyReturningSalesOnlinePieChartData: PieChartData = {
+        id: "Online",
+        label: "Online",
+        value: selectedYearMetrics.customers.returning.sales.online,
+      };
+      const yearlyReturningSalesInStorePieChartData: PieChartData = {
+        id: "In-Store",
+        label: "In-Store",
+        value: selectedYearMetrics.customers.returning.sales.inStore,
+      };
+
+      const yearlyReturningPieChartData: CustomerNewReturningPieCharts = {
+        overview: [yearlyReturningSalesPieChartData, yearlyReturningRepairPieChartData],
+        all: [
+          yearlyReturningSalesOnlinePieChartData,
+          yearlyReturningSalesInStorePieChartData,
+          yearlyReturningRepairPieChartData,
+        ],
+        sales: [
+          yearlyReturningSalesOnlinePieChartData,
+          yearlyReturningSalesInStorePieChartData,
+        ],
+      };
+
+      // yearly -> churn & retention rate -> pie chart obj
+      const yearlyChurnRetentionRatePieChartData: PieChartData[] = [
+        {
+          id: "Churn Rate",
+          label: "Churn Rate",
+          value: toFixedFloat(selectedYearMetrics.customers.churnRate * 100, 2),
+        },
+        {
+          id: "Retention Rate",
+          label: "Retention Rate",
+
+          value: toFixedFloat(selectedYearMetrics.customers.retentionRate * 100, 2),
+        },
+      ];
+
+      resolve({
+        overview: {
+          bar: yearlyOverviewBarCharts,
+          line: yearlyOverviewLineCharts,
+          pie: yearlyOverviewPieChartData,
+        },
+        new: {
+          bar: yearlyNewBarCharts,
+          line: yearlyNewLineCharts,
+          pie: yearlyNewPieChartData,
+        },
+        returning: {
+          bar: yearlyReturningBarCharts,
+          line: yearlyReturningLineCharts,
+          pie: yearlyReturningPieChartData,
+        },
+        churnRetention: {
+          bar: yearlyChurnRetentionRateBarCharts,
+          line: yearlyChurnRetentionRateLineCharts,
+          pie: yearlyChurnRetentionRatePieChartData,
+        },
+      });
+    }, 0);
+  });
+}
+
+export { createCustomerMetricsCharts, returnSelectedDateCustomerMetrics };
 export type {
   CustomerChurnRetentionObjKey,
-  CustomerNewReturningCalendarObjKey,
-  CustomerNewReturningObjKey,
-  CustomerNewReturningPieObjKey,
-  CustomerOverviewObjKey,
   CustomerMetricsCharts,
+  CustomerNewReturningCalendarChartsKey,
+  CustomerNewReturningObjKey,
+  CustomerNewReturningPieChartsKey,
+  CustomerOverviewObjKey,
   SelectedDateCustomerMetrics,
 };

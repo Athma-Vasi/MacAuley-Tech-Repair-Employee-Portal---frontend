@@ -5,9 +5,9 @@ import {
   CreateDashboardMetricsCardsInput,
   DashboardCardInfo,
 } from "../utilsTSX";
-import { SelectedDateCustomerMetrics } from "./utilsTemp";
+import { SelectedDateCustomerMetrics } from "./utils";
 
-type ReturnCustomerMetricsCardsInput = {
+type CreateCustomerMetricsCardsInput = {
   greenColorShade: string;
   padding: MantineNumberSize;
   redColorShade: string;
@@ -37,13 +37,13 @@ type CustomerMetricsCards = {
   };
 };
 
-function returnCustomerMetricsCards2({
+function createCustomerMetricsCards({
   greenColorShade,
   padding,
   redColorShade,
   selectedDateCustomerMetrics,
   width,
-}: ReturnCustomerMetricsCardsInput): Promise<CustomerMetricsCards> {
+}: CreateCustomerMetricsCardsInput): Promise<CustomerMetricsCards> {
   const {
     dayCustomerMetrics: { prevDayMetrics, selectedDayMetrics },
     monthCustomerMetrics: { prevMonthMetrics, selectedMonthMetrics },
@@ -523,4 +523,5 @@ function returnCustomerMetricsCards2({
   });
 }
 
-export { returnCustomerMetricsCards2 };
+export { createCustomerMetricsCards };
+export type { CustomerMetricsCards };

@@ -21,7 +21,7 @@ type RepairMetricsCards = {
   yearlyCards: DashboardCardInfo[];
 };
 
-function returnRepairMetricsCards2({
+function returnRepairMetricsCards({
   greenColorShade,
   padding,
   redColorShade,
@@ -130,4 +130,5 @@ function returnRepairMetricsCards2({
   });
 }
 
-export { returnRepairMetricsCards2 };
+export { returnRepairMetricsCards };
+export type { RepairMetricsCards };

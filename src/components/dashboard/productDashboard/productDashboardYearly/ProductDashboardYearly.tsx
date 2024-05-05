@@ -18,11 +18,11 @@ import {
 } from "../../../charts";
 import { MONTHS } from "../../constants";
 import DashboardMetricsLayout from "../../DashboardMetricsLayout";
-import { ProductMetricsCards } from "../../utilsTSX";
 import { BusinessMetricStoreLocation, DashboardProductMetric, Year } from "../../types";
 import { returnChartTitleNavigateLinks, returnStatistics } from "../../utils";
 import { PRODUCT_METRIC_LINE_BAR_Y_AXIS_DATA } from "../constants";
 import { ProductMetricsChartKey, ProductMetricsCharts } from "../utils";
+import { ProductMetricsCards } from "../utilsTSX";
 import {
   initialProductDashboardYearlyState,
   productDashboardYearlyAction,

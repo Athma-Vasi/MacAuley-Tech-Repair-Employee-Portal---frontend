@@ -25,7 +25,7 @@ import {
   repairDashboardReducer,
 } from "./state";
 import { createRepairMetricsCharts, createSelectedDateRepairMetrics } from "./utils";
-import { returnRepairMetricsCards2 } from "./utilsTSX";
+import { returnRepairMetricsCards } from "./utilsTSX";
 
 type RepairDashboardProps = {
   businessMetrics: BusinessMetric[];
@@ -105,15 +105,13 @@ function RepairDashboard({
             selectedRepairCategory: repairMetric,
           });
 
-        const { dailyCards, monthlyCards, yearlyCards } = await returnRepairMetricsCards2(
-          {
-            greenColorShade,
-            padding,
-            redColorShade,
-            selectedDateRepairMetrics,
-            width,
-          }
-        );
+        const { dailyCards, monthlyCards, yearlyCards } = await returnRepairMetricsCards({
+          greenColorShade,
+          padding,
+          redColorShade,
+          selectedDateRepairMetrics,
+          width,
+        });
 
         if (!isMounted) {
           return;

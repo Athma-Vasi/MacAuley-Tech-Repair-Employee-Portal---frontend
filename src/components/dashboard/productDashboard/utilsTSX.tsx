@@ -298,3 +298,4 @@ function returnProductMetricsCards({
 }
 
 export { returnProductMetricsCards };
+export type { ProductMetricsCards };
