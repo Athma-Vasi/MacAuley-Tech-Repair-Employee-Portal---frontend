@@ -19,43 +19,47 @@ import {
 } from "../../../charts";
 import { MONTHS } from "../../constants";
 import DashboardMetricsLayout from "../../DashboardMetricsLayout";
-import { returnProductMetricsCards } from "../../jsxHelpers";
+import { ProductMetricsCards } from "../../jsxHelpers";
+import { BusinessMetricStoreLocation, DashboardProductMetric, Year } from "../../types";
 import { returnChartTitleNavigateLinks, returnStatistics } from "../../utils";
 import {
   PRODUCT_METRIC_CALENDAR_Y_AXIS_DATA,
   PRODUCT_METRIC_LINE_BAR_Y_AXIS_DATA,
 } from "../constants";
-import { ProductDashboardChildrenProps } from "../types";
 import {
+  ProductMetricsCalendarKey,
   ProductMetricsChartKey,
-  ProductMetricCalendarObjKey,
-  returnProductMetricsCharts,
-  returnSelectedDateProductMetrics,
-} from "../utilsOld";
+  ProductMetricsCharts,
+} from "../utils";
 import {
   initialProductDashboardDailyState,
   productDashboardDailyAction,
   productDashboardDailyReducer,
 } from "./state";
 
+type ProductDashboardDailyProps = {
+  day: string;
+  productMetric: DashboardProductMetric;
+  month: string;
+  storeLocation: BusinessMetricStoreLocation;
+  year: Year;
+  dailyCharts: ProductMetricsCharts["dailyCharts"];
+  dailyCards: ProductMetricsCards["dailyCards"];
+};
+
 function ProductDashboardDaily({
-  businessMetrics,
   day,
+  dailyCards,
+  dailyCharts,
   month,
   productMetric,
-  selectedDate,
-  selectedMonth,
-  selectedYear,
   storeLocation,
-  storeLocationView,
   year,
-}: ProductDashboardChildrenProps) {
+}: ProductDashboardDailyProps) {
   const {
     globalState: { padding, width, themeObject },
     globalDispatch,
   } = useGlobalState();
-
-  const navigate = useNavigate();
 
   const [productDashboardDailyState, productDashboardDailyDispatch] = useReducer(
     productDashboardDailyReducer,
@@ -71,16 +75,16 @@ function ProductDashboardDaily({
     unitsSoldLineChartYAxisVariable,
   } = productDashboardDailyState;
 
+  const navigate = useNavigate();
+
   const componentWidth =
-    width < 480 // for iPhone 5/SE
+    width < 480
       ? width * 0.93
-      : width < 768 // for iPhones 6 - 15
+      : width < 768
       ? width - 40
-      : // at 768vw the navbar appears at width of 225px
-      width < 1024
+      : width < 1024
       ? (width - 225) * 0.8
-      : // at >= 1200vw the navbar width is 300px
-      width < 1200
+      : width < 1200
       ? (width - 225) * 0.8
       : 900 - 40;
   const chartHeight = width < 1024 ? componentWidth * 0.618 : componentWidth * 0.382;
@@ -88,48 +92,15 @@ function ProductDashboardDaily({
 
   const {
     appThemeColors: { borderColor },
-    generalColors: { redColorShade, greenColorShade },
   } = returnThemeColors({
     colorsSwatches: COLORS_SWATCHES,
     themeObject,
   });
 
-  const selectedDateProductMetrics = returnSelectedDateProductMetrics({
-    businessMetrics,
-    day: selectedDate,
-    month: selectedMonth,
-    months: MONTHS,
-    selectedProductCategory: productMetric,
-    storeLocation: storeLocationView,
-    year: selectedYear,
-  });
-
-  const { dailyCharts } = returnProductMetricsCharts({
-    businessMetrics,
-    months: MONTHS,
-    selectedDateProductMetrics,
-    storeLocation: storeLocationView,
-    selectedProductCategory: productMetric,
-  });
-
-  const { dailyCards } = returnProductMetricsCards({
-    greenColorShade,
-    padding,
-    redColorShade,
-    selectedDateProductMetrics,
-    width,
-  });
-
-  // revenue
-
-  // revenue -> statistics
   const dailyRevenueStatistics = returnStatistics<ProductMetricsChartKey>(
-    dailyCharts.revenue.barChartsObj
+    dailyCharts.revenue.bar
   );
 
-  // revenue -> charts
-
-  // revenue -> charts -> titles & navlinks
   const {
     barChartHeading: revenueBarChartHeading,
     calendarChartHeading: revenueCalendarChartHeading,
@@ -154,9 +125,6 @@ function ProductDashboardDaily({
     months: MONTHS,
   });
 
-  // revenue -> charts -> pie
-
-  // revenue -> charts -> pie -> expand chart button
   const [expandRevenuePieChartButton] = returnAccessibleButtonElements([
     {
       buttonLabel: "Expand",
@@ -166,7 +134,7 @@ function ProductDashboardDaily({
         globalDispatch({
           type: globalAction.setCustomizeChartsPageData,
           payload: {
-            chartData: dailyCharts.revenue.pieChartObj,
+            chartData: dailyCharts.revenue.pie,
             chartTitle: pieChartRevenueHeading,
             chartKind: "pie",
             chartUnitKind: "currency",
@@ -179,19 +147,15 @@ function ProductDashboardDaily({
     },
   ]);
 
-  // revenue -> charts -> pie -> display
   const displayPieChart = (
     <ResponsivePieChart
-      pieChartData={dailyCharts.revenue.pieChartObj}
+      pieChartData={dailyCharts.revenue.pie}
       chartHeight={chartHeight}
       chartWidth={chartWidth}
       hideControls
     />
   );
 
-  // revenue -> charts -> bar
-
-  // revenue -> charts -> bar -> expand chart button
   const [expandRevenueBarChartButton] = returnAccessibleButtonElements([
     {
       buttonLabel: "Expand",
@@ -201,7 +165,7 @@ function ProductDashboardDaily({
         globalDispatch({
           type: globalAction.setCustomizeChartsPageData,
           payload: {
-            chartData: dailyCharts.revenue.barChartsObj[revenueBarChartYAxisVariable],
+            chartData: dailyCharts.revenue.bar[revenueBarChartYAxisVariable],
             chartTitle: revenueBarChartHeading,
             chartKind: "bar",
             chartUnitKind: "currency",
@@ -214,7 +178,6 @@ function ProductDashboardDaily({
     },
   ]);
 
-  // revenue -> charts -> bar -> y-axis select input
   const [revenueBarChartYAxisVariablesSelectInput] = returnAccessibleSelectInputElements([
     {
       data: PRODUCT_METRIC_LINE_BAR_Y_AXIS_DATA,
@@ -229,21 +192,17 @@ function ProductDashboardDaily({
     },
   ]);
 
-  // revenue -> charts -> bar -> display
   const displayRevenueBarChart = (
     <ResponsiveBarChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
-      barChartData={dailyCharts.revenue.barChartsObj[revenueBarChartYAxisVariable]}
+      barChartData={dailyCharts.revenue.bar[revenueBarChartYAxisVariable]}
       hideControls
       indexBy="Days"
       keys={PRODUCT_METRIC_LINE_BAR_Y_AXIS_DATA.map((obj) => obj.label)}
     />
   );
 
-  // revenue -> charts -> line
-
-  // revenue -> charts -> line -> expand chart button
   const [expandRevenueLineChartButton] = returnAccessibleButtonElements([
     {
       buttonLabel: "Expand",
@@ -253,7 +212,7 @@ function ProductDashboardDaily({
         globalDispatch({
           type: globalAction.setCustomizeChartsPageData,
           payload: {
-            chartData: dailyCharts.revenue.lineChartsObj[revenueLineChartYAxisVariable],
+            chartData: dailyCharts.revenue.line[revenueLineChartYAxisVariable],
             chartTitle: revenueLineChartHeading,
             chartKind: "line",
             chartUnitKind: "currency",
@@ -266,7 +225,6 @@ function ProductDashboardDaily({
     },
   ]);
 
-  // revenue -> charts -> line -> y-axis select input
   const [revenueLineChartYAxisVariablesSelectInput] = returnAccessibleSelectInputElements(
     [
       {
@@ -283,21 +241,17 @@ function ProductDashboardDaily({
     ]
   );
 
-  // revenue -> charts -> line -> display
   const displayRevenueLineChart = (
     <ResponsiveLineChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
-      lineChartData={dailyCharts.revenue.lineChartsObj[revenueLineChartYAxisVariable]}
+      lineChartData={dailyCharts.revenue.line[revenueLineChartYAxisVariable]}
       hideControls
       xFormat={(x) => `Day - ${x}`}
       yFormat={(y) => `$${addCommaSeparator(y)}`}
     />
   );
 
-  // revenue -> charts -> calendar
-
-  // revenue -> charts -> calendar -> expand chart button
   const [expandRevenueCalendarChartButton] = returnAccessibleButtonElements([
     {
       buttonLabel: "Expand",
@@ -307,8 +261,7 @@ function ProductDashboardDaily({
         globalDispatch({
           type: globalAction.setCustomizeChartsPageData,
           payload: {
-            chartData:
-              dailyCharts.revenue.calendarChartsObj[revenueCalendarChartYAxisVariable],
+            chartData: dailyCharts.revenue.calendar[revenueCalendarChartYAxisVariable],
             chartTitle: revenueCalendarChartHeading,
             chartKind: "calendar",
             chartUnitKind: "currency",
@@ -321,7 +274,6 @@ function ProductDashboardDaily({
     },
   ]);
 
-  // revenue -> charts -> calendar -> y-axis select input
   const [revenueCalendarChartYAxisVariablesSelectInput] =
     returnAccessibleSelectInputElements([
       {
@@ -330,19 +282,16 @@ function ProductDashboardDaily({
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           productDashboardDailyDispatch({
             type: productDashboardDailyAction.setRevenueCalendarChartYAxisVariable,
-            payload: event.currentTarget.value as ProductMetricCalendarObjKey,
+            payload: event.currentTarget.value as ProductMetricsCalendarKey,
           });
         },
         value: revenueCalendarChartYAxisVariable,
       },
     ]);
 
-  // revenue -> charts -> calendar -> display
   const displayRevenueCalendarChart = (
     <ResponsiveCalendarChart
-      calendarChartData={
-        dailyCharts.revenue.calendarChartsObj[revenueCalendarChartYAxisVariable]
-      }
+      calendarChartData={dailyCharts.revenue.calendar[revenueCalendarChartYAxisVariable]}
       chartHeight={chartHeight}
       chartWidth={chartWidth}
       from={`${year}-${month}-01`}
@@ -351,7 +300,6 @@ function ProductDashboardDaily({
     />
   );
 
-  // charts -> revenue -> display
   const displayRevenueSection = (
     <DashboardMetricsLayout
       barChart={displayRevenueBarChart}
@@ -380,16 +328,10 @@ function ProductDashboardDaily({
     />
   );
 
-  // units sold
-
-  // units sold -> statistics
   const dailyUnitsSoldStatistics = returnStatistics<ProductMetricsChartKey>(
-    dailyCharts.unitsSold.barChartsObj
+    dailyCharts.unitsSold.bar
   );
 
-  // units sold -> charts
-
-  // units sold -> charts -> titles & navlinks
   const {
     barChartHeading: barChartUnitsSoldHeading,
     calendarChartHeading: calendarChartUnitsSoldHeading,
@@ -414,9 +356,6 @@ function ProductDashboardDaily({
     months: MONTHS,
   });
 
-  // units sold -> charts -> pie
-
-  // units sold -> charts -> pie -> expand chart button
   const [expandUnitsSoldPieChartButton] = returnAccessibleButtonElements([
     {
       buttonLabel: "Expand",
@@ -426,7 +365,7 @@ function ProductDashboardDaily({
         globalDispatch({
           type: globalAction.setCustomizeChartsPageData,
           payload: {
-            chartData: dailyCharts.unitsSold.pieChartObj,
+            chartData: dailyCharts.unitsSold.pie,
             chartTitle: pieChartUnitsSoldHeading,
             chartKind: "pie",
             chartUnitKind: "number",
@@ -439,10 +378,9 @@ function ProductDashboardDaily({
     },
   ]);
 
-  // units sold -> charts -> pie -> display
   const displayUnitsSoldPieChart = (
     <ResponsivePieChart
-      pieChartData={dailyCharts.unitsSold.pieChartObj}
+      pieChartData={dailyCharts.unitsSold.pie}
       chartHeight={chartHeight}
       chartWidth={chartWidth}
       hideControls
@@ -450,9 +388,6 @@ function ProductDashboardDaily({
     />
   );
 
-  // units sold -> charts -> bar
-
-  // units sold -> charts -> bar -> expand chart button
   const [expandUnitsSoldBarChartButton] = returnAccessibleButtonElements([
     {
       buttonLabel: "Expand",
@@ -462,7 +397,7 @@ function ProductDashboardDaily({
         globalDispatch({
           type: globalAction.setCustomizeChartsPageData,
           payload: {
-            chartData: dailyCharts.unitsSold.barChartsObj[unitsSoldBarChartYAxisVariable],
+            chartData: dailyCharts.unitsSold.bar[unitsSoldBarChartYAxisVariable],
             chartTitle: barChartUnitsSoldHeading,
             chartKind: "bar",
             chartUnitKind: "number",
@@ -475,7 +410,6 @@ function ProductDashboardDaily({
     },
   ]);
 
-  // units sold -> charts -> bar -> y-axis select input
   const [unitsSoldBarChartYAxisVariablesSelectInput] =
     returnAccessibleSelectInputElements([
       {
@@ -491,12 +425,11 @@ function ProductDashboardDaily({
       },
     ]);
 
-  // units sold -> charts -> bar -> display
   const displayUnitsSoldBarChart = (
     <ResponsiveBarChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
-      barChartData={dailyCharts.unitsSold.barChartsObj[unitsSoldBarChartYAxisVariable]}
+      barChartData={dailyCharts.unitsSold.bar[unitsSoldBarChartYAxisVariable]}
       hideControls
       indexBy="Days"
       keys={PRODUCT_METRIC_LINE_BAR_Y_AXIS_DATA.map((obj) => obj.label)}
@@ -504,9 +437,6 @@ function ProductDashboardDaily({
     />
   );
 
-  // units sold -> charts -> line
-
-  // units sold -> charts -> line -> expand chart button
   const [expandUnitsSoldLineChartButton] = returnAccessibleButtonElements([
     {
       buttonLabel: "Expand",
@@ -516,8 +446,7 @@ function ProductDashboardDaily({
         globalDispatch({
           type: globalAction.setCustomizeChartsPageData,
           payload: {
-            chartData:
-              dailyCharts.unitsSold.lineChartsObj[unitsSoldLineChartYAxisVariable],
+            chartData: dailyCharts.unitsSold.line[unitsSoldLineChartYAxisVariable],
             chartTitle: lineChartUnitsSoldHeading,
             chartKind: "line",
             chartUnitKind: "number",
@@ -530,7 +459,6 @@ function ProductDashboardDaily({
     },
   ]);
 
-  // units sold -> charts -> line -> y-axis select input
   const [unitsSoldLineChartYAxisVariablesSelectInput] =
     returnAccessibleSelectInputElements([
       {
@@ -546,12 +474,11 @@ function ProductDashboardDaily({
       },
     ]);
 
-  // units sold -> charts -> line -> display
   const displayUnitsSoldLineChart = (
     <ResponsiveLineChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
-      lineChartData={dailyCharts.unitsSold.lineChartsObj[unitsSoldLineChartYAxisVariable]}
+      lineChartData={dailyCharts.unitsSold.line[unitsSoldLineChartYAxisVariable]}
       hideControls
       xFormat={(x) => `Day - ${x}`}
       yFormat={(y) => `${addCommaSeparator(y)} Units Sold`}
@@ -559,9 +486,6 @@ function ProductDashboardDaily({
     />
   );
 
-  // units sold -> charts -> calendar
-
-  // units sold -> charts -> calendar -> expand chart button
   const [expandUnitsSoldCalendarChartButton] = returnAccessibleButtonElements([
     {
       buttonLabel: "Expand",
@@ -572,9 +496,7 @@ function ProductDashboardDaily({
           type: globalAction.setCustomizeChartsPageData,
           payload: {
             chartData:
-              dailyCharts.unitsSold.calendarChartsObj[
-                unitsSoldCalendarChartYAxisVariable
-              ],
+              dailyCharts.unitsSold.calendar[unitsSoldCalendarChartYAxisVariable],
             chartTitle: calendarChartUnitsSoldHeading,
             chartKind: "calendar",
             chartUnitKind: "number",
@@ -587,7 +509,6 @@ function ProductDashboardDaily({
     },
   ]);
 
-  // units sold -> charts -> calendar -> y-axis select input
   const [unitsSoldCalendarChartYAxisVariablesSelectInput] =
     returnAccessibleSelectInputElements([
       {
@@ -596,18 +517,17 @@ function ProductDashboardDaily({
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           productDashboardDailyDispatch({
             type: productDashboardDailyAction.setUnitsSoldCalendarChartYAxisVariable,
-            payload: event.currentTarget.value as ProductMetricCalendarObjKey,
+            payload: event.currentTarget.value as ProductMetricsCalendarKey,
           });
         },
         value: unitsSoldCalendarChartYAxisVariable,
       },
     ]);
 
-  // units sold -> charts -> calendar -> display
   const displayUnitsSoldCalendarChart = (
     <ResponsiveCalendarChart
       calendarChartData={
-        dailyCharts.unitsSold.calendarChartsObj[unitsSoldCalendarChartYAxisVariable]
+        dailyCharts.unitsSold.calendar[unitsSoldCalendarChartYAxisVariable]
       }
       chartHeight={chartHeight}
       chartWidth={chartWidth}
@@ -617,7 +537,6 @@ function ProductDashboardDaily({
     />
   );
 
-  // charts -> units sold -> display
   const displayUnitsSoldSection = (
     <DashboardMetricsLayout
       barChart={displayUnitsSoldBarChart}
