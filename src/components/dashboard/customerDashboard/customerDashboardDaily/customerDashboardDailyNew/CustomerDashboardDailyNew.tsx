@@ -18,7 +18,6 @@ import {
 } from "../../../../charts";
 import { MONTHS } from "../../../constants";
 import DashboardMetricsLayout from "../../../DashboardMetricsLayout";
-import { CustomerMetricsCards } from "../../../utilsTSX";
 import { BusinessMetricStoreLocation, Year } from "../../../types";
 import { returnChartTitleNavigateLinks, returnStatistics } from "../../../utils";
 import {
@@ -28,10 +27,11 @@ import {
 } from "../../constants";
 import {
   CustomerMetricsCharts,
-  CustomerNewReturningCalendarObjKey,
-  CustomerNewReturningObjKey,
-  CustomerNewReturningPieObjKey,
-} from "../../utilsOld";
+  CustomerMetricsNewReturningCalendarChartsKey,
+  CustomerMetricsNewReturningChartsKey,
+  CustomerMetricsNewReturningPieChartsKey,
+} from "../../utils";
+import { CustomerMetricsCards } from "../../utilsTSX";
 import {
   customerDashboardDailyNewAction,
   customerDashboardDailyNewReducer,
@@ -78,16 +78,10 @@ function CustomerDashboardDailyNew({
     newPieChartYAxisVariable,
   } = customerDashboardDailyNewState;
 
-  // new
-
-  // new -> statistics
-  const statisticsDailyNew = returnStatistics<CustomerNewReturningObjKey>(
-    dailyChartsNew.barChartsObj
+  const statisticsDailyNew = returnStatistics<CustomerMetricsNewReturningChartsKey>(
+    dailyChartsNew.bar
   );
 
-  // new  -> charts
-
-  // new  -> charts -> titles & navlinks
   const {
     barChartHeading,
     calendarChartHeading,
@@ -112,10 +106,7 @@ function CustomerDashboardDailyNew({
     months: MONTHS,
   });
 
-  // new -> charts -> pie
-
-  // new -> charts -> pie -> expand chart button
-  const [createdExpandPieChartButton] = returnAccessibleButtonElements([
+  const [expandPieChartButton] = returnAccessibleButtonElements([
     {
       buttonLabel: "Expand",
       semanticDescription: `Expand and customize ${pieChartHeading}`,
@@ -125,7 +116,7 @@ function CustomerDashboardDailyNew({
           type: globalAction.setCustomizeChartsPageData,
           payload: {
             chartKind: "pie",
-            chartData: dailyChartsNew.pieChartObj[newPieChartYAxisVariable],
+            chartData: dailyChartsNew.pie[newPieChartYAxisVariable],
             chartTitle: pieChartHeading,
             chartUnitKind: "number",
           },
@@ -137,37 +128,31 @@ function CustomerDashboardDailyNew({
     },
   ]);
 
-  // new -> charts -> pie -> y axis variables
-  const [createdNewPieChartYAxisVariablesSelectInput] =
-    returnAccessibleSelectInputElements([
-      {
-        data: CUSTOMER_NEW_RETURNING_PIE_Y_AXIS_DATA,
-        label: "Y-Axis Pie",
-        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-          customerDashboardDailyNewDispatch({
-            type: customerDashboardDailyNewAction.setNewPieChartYAxisVariable,
-            payload: event.currentTarget.value as CustomerNewReturningPieObjKey,
-          });
-        },
-        value: newPieChartYAxisVariable,
+  const [newPieChartYAxisVariablesSelectInput] = returnAccessibleSelectInputElements([
+    {
+      data: CUSTOMER_NEW_RETURNING_PIE_Y_AXIS_DATA,
+      label: "Y-Axis Pie",
+      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+        customerDashboardDailyNewDispatch({
+          type: customerDashboardDailyNewAction.setNewPieChartYAxisVariable,
+          payload: event.currentTarget.value as CustomerMetricsNewReturningPieChartsKey,
+        });
       },
-    ]);
+      value: newPieChartYAxisVariable,
+    },
+  ]);
 
-  // new -> charts -> pie -> display
-  const displayNewPieChart = (
+  const newPieChart = (
     <ResponsivePieChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
-      pieChartData={dailyChartsNew.pieChartObj[newPieChartYAxisVariable]}
+      pieChartData={dailyChartsNew.pie[newPieChartYAxisVariable]}
       hideControls
       unitKind="number"
     />
   );
 
-  // new -> charts -> bar
-
-  // new -> charts -> bar -> expand chart button
-  const [createdExpandBarChartButton] = returnAccessibleButtonElements([
+  const [expandBarChartButton] = returnAccessibleButtonElements([
     {
       buttonLabel: "Expand",
       semanticDescription: `Expand and customize ${barChartHeading}`,
@@ -177,7 +162,7 @@ function CustomerDashboardDailyNew({
           type: globalAction.setCustomizeChartsPageData,
           payload: {
             chartKind: "bar",
-            chartData: dailyChartsNew.barChartsObj[newBarChartYAxisVariable],
+            chartData: dailyChartsNew.bar[newBarChartYAxisVariable],
             chartTitle: barChartHeading,
             chartUnitKind: "number",
           },
@@ -189,28 +174,25 @@ function CustomerDashboardDailyNew({
     },
   ]);
 
-  // new -> charts -> bar -> y axis variables
-  const [createdNewBarChartYAxisVariablesSelectInput] =
-    returnAccessibleSelectInputElements([
-      {
-        data: CUSTOMER_NEW_RETURNING_LINE_BAR_Y_AXIS_DATA,
-        label: "Y-Axis Bar",
-        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-          customerDashboardDailyNewDispatch({
-            type: customerDashboardDailyNewAction.setNewBarChartYAxisVariable,
-            payload: event.currentTarget.value as CustomerNewReturningObjKey,
-          });
-        },
-        value: newBarChartYAxisVariable,
+  const [newBarChartYAxisVariablesSelectInput] = returnAccessibleSelectInputElements([
+    {
+      data: CUSTOMER_NEW_RETURNING_LINE_BAR_Y_AXIS_DATA,
+      label: "Y-Axis Bar",
+      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+        customerDashboardDailyNewDispatch({
+          type: customerDashboardDailyNewAction.setNewBarChartYAxisVariable,
+          payload: event.currentTarget.value as CustomerMetricsNewReturningChartsKey,
+        });
       },
-    ]);
+      value: newBarChartYAxisVariable,
+    },
+  ]);
 
-  // new -> charts -> bar -> display
-  const displayNewBarChart = (
+  const newBarChart = (
     <ResponsiveBarChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
-      barChartData={dailyChartsNew.barChartsObj[newBarChartYAxisVariable]}
+      barChartData={dailyChartsNew.bar[newBarChartYAxisVariable]}
       hideControls
       indexBy="Days"
       keys={CUSTOMER_NEW_RETURNING_LINE_BAR_Y_AXIS_DATA.map((obj) => obj.label)}
@@ -218,9 +200,6 @@ function CustomerDashboardDailyNew({
     />
   );
 
-  // new -> charts -> line
-
-  // new -> charts -> line -> expand chart button
   const [expandChartButton] = returnAccessibleButtonElements([
     {
       buttonLabel: "Expand",
@@ -231,7 +210,7 @@ function CustomerDashboardDailyNew({
           type: globalAction.setCustomizeChartsPageData,
           payload: {
             chartKind: "line",
-            chartData: dailyChartsNew.lineChartsObj[newLineChartYAxisVariable],
+            chartData: dailyChartsNew.line[newLineChartYAxisVariable],
             chartTitle: lineChartHeading,
             chartUnitKind: "number",
           },
@@ -243,28 +222,25 @@ function CustomerDashboardDailyNew({
     },
   ]);
 
-  // new -> charts -> line -> y axis variables
-  const [createdNewLineChartYAxisVariablesSelectInput] =
-    returnAccessibleSelectInputElements([
-      {
-        data: CUSTOMER_NEW_RETURNING_LINE_BAR_Y_AXIS_DATA,
-        label: "Y-Axis Line",
-        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-          customerDashboardDailyNewDispatch({
-            type: customerDashboardDailyNewAction.setNewLineChartYAxisVariable,
-            payload: event.currentTarget.value as CustomerNewReturningObjKey,
-          });
-        },
-        value: newLineChartYAxisVariable,
+  const [newLineChartYAxisVariablesSelectInput] = returnAccessibleSelectInputElements([
+    {
+      data: CUSTOMER_NEW_RETURNING_LINE_BAR_Y_AXIS_DATA,
+      label: "Y-Axis Line",
+      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+        customerDashboardDailyNewDispatch({
+          type: customerDashboardDailyNewAction.setNewLineChartYAxisVariable,
+          payload: event.currentTarget.value as CustomerMetricsNewReturningChartsKey,
+        });
       },
-    ]);
+      value: newLineChartYAxisVariable,
+    },
+  ]);
 
-  // new -> charts -> line -> display
-  const displayNewLineChart = (
+  const newLineChart = (
     <ResponsiveLineChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
-      lineChartData={dailyChartsNew.lineChartsObj[newLineChartYAxisVariable]}
+      lineChartData={dailyChartsNew.line[newLineChartYAxisVariable]}
       hideControls
       xFormat={(x) => `Day - ${x}`}
       yFormat={(y) => `${addCommaSeparator(y)} Customers`}
@@ -272,9 +248,6 @@ function CustomerDashboardDailyNew({
     />
   );
 
-  // new -> charts -> calendar
-
-  // new -> charts -> calendar -> expand chart button
   const [expandCalendarChartButton] = returnAccessibleButtonElements([
     {
       buttonLabel: "Expand",
@@ -285,7 +258,7 @@ function CustomerDashboardDailyNew({
           type: globalAction.setCustomizeChartsPageData,
           payload: {
             chartKind: "calendar",
-            chartData: dailyChartsNew.calendarChartsObj[newCalendarChartYAxisVariable],
+            chartData: dailyChartsNew.calendar[newCalendarChartYAxisVariable],
             chartTitle: calendarChartHeading,
             chartUnitKind: "number",
           },
@@ -297,26 +270,26 @@ function CustomerDashboardDailyNew({
     },
   ]);
 
-  // new -> charts -> calendar -> y axis variables
-  const [createdNewCalendarChartYAxisVariablesSelectInput] =
-    returnAccessibleSelectInputElements([
+  const [newCalendarChartYAxisVariablesSelectInput] = returnAccessibleSelectInputElements(
+    [
       {
         data: CUSTOMER_NEW_RETURNING_CALENDAR_Y_AXIS_DATA,
         label: "Y-Axis Calendar",
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           customerDashboardDailyNewDispatch({
             type: customerDashboardDailyNewAction.setNewCalendarChartYAxisVariable,
-            payload: event.currentTarget.value as CustomerNewReturningCalendarObjKey,
+            payload: event.currentTarget
+              .value as CustomerMetricsNewReturningCalendarChartsKey,
           });
         },
         value: newCalendarChartYAxisVariable,
       },
-    ]);
+    ]
+  );
 
-  // new -> charts -> calendar -> display
-  const displayNewCalendarChart = (
+  const newCalendarChart = (
     <ResponsiveCalendarChart
-      calendarChartData={dailyChartsNew.calendarChartsObj[newCalendarChartYAxisVariable]}
+      calendarChartData={dailyChartsNew.calendar[newCalendarChartYAxisVariable]}
       chartHeight={chartHeight}
       chartWidth={chartWidth}
       from={`${year}-${month}-01`}
@@ -325,34 +298,34 @@ function CustomerDashboardDailyNew({
     />
   );
 
-  const displayNewSection = (
+  const customerDashboardDailyNew = (
     <DashboardMetricsLayout
-      barChart={displayNewBarChart}
+      barChart={newBarChart}
       barChartHeading={barChartHeading}
-      barChartYAxisSelectInput={createdNewBarChartYAxisVariablesSelectInput}
+      barChartYAxisSelectInput={newBarChartYAxisVariablesSelectInput}
       borderColor={borderColor}
-      expandBarChartButton={createdExpandBarChartButton}
+      expandBarChartButton={expandBarChartButton}
       expandLineChartButton={expandChartButton}
       expandCalendarChartButton={expandCalendarChartButton}
-      expandPieChartButton={createdExpandPieChartButton}
-      lineChart={displayNewLineChart}
+      expandPieChartButton={expandPieChartButton}
+      lineChart={newLineChart}
       lineChartHeading={lineChartHeading}
-      lineChartYAxisSelectInput={createdNewLineChartYAxisVariablesSelectInput}
+      lineChartYAxisSelectInput={newLineChartYAxisVariablesSelectInput}
       overviewCards={dailyCardsNew}
       padding={padding}
-      pieChart={displayNewPieChart}
+      pieChart={newPieChart}
       pieChartHeading={pieChartHeading}
-      pieChartYAxisSelectInput={createdNewPieChartYAxisVariablesSelectInput}
+      pieChartYAxisSelectInput={newPieChartYAxisVariablesSelectInput}
       sectionHeading={`${storeLocation} Daily New Customers`}
       statisticsMap={statisticsDailyNew}
       width={width}
-      calendarChart={displayNewCalendarChart}
+      calendarChart={newCalendarChart}
       calendarChartHeading={calendarChartHeading}
-      calendarChartYAxisSelectInput={createdNewCalendarChartYAxisVariablesSelectInput}
+      calendarChartYAxisSelectInput={newCalendarChartYAxisVariablesSelectInput}
     />
   );
 
-  return displayNewSection;
+  return customerDashboardDailyNew;
 }
 
 export default CustomerDashboardDailyNew;

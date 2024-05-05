@@ -18,11 +18,11 @@ import {
 } from "../../../../charts";
 import { MONTHS } from "../../../constants";
 import DashboardMetricsLayout from "../../../DashboardMetricsLayout";
-import { CustomerMetricsCards } from "../../../utilsTSX";
 import { BusinessMetricStoreLocation, Year } from "../../../types";
 import { returnChartTitleNavigateLinks, returnStatistics } from "../../../utils";
 import { CUSTOMER_OVERVIEW_Y_AXIS_DATA } from "../../constants";
-import { CustomerMetricsCharts, CustomerOverviewObjKey } from "../../utilsOld";
+import { CustomerMetricsCharts, CustomerMetricsOverviewChartsKey } from "../../utils";
+import { CustomerMetricsCards } from "../../utilsTSX";
 import {
   customerDashboardMonthlyOverviewAction,
   customerDashboardMonthlyOverviewReducer,
@@ -71,16 +71,10 @@ function CustomerDashboardMonthlyOverview({
     overviewLineChartYAxisVariable,
   } = customerDashboardMonthlyOverviewState;
 
-  // overview
-
-  // overview -> statistics
-  const statisticsMonthlyOverview = returnStatistics<CustomerOverviewObjKey>(
-    monthlyChartsOverview.barChartsObj
+  const statisticsMonthlyOverview = returnStatistics<CustomerMetricsOverviewChartsKey>(
+    monthlyChartsOverview.bar
   );
 
-  // overview -> charts
-
-  // overview  -> charts -> titles & navlinks
   const {
     barChartHeading,
     calendarChartHeading,
@@ -104,10 +98,7 @@ function CustomerDashboardMonthlyOverview({
     months: MONTHS,
   });
 
-  // overview -> charts -> pie
-
-  // overview -> charts -> pie -> expand chart button
-  const [createdExpandPieChartButton] = returnAccessibleButtonElements([
+  const [expandPieChartButton] = returnAccessibleButtonElements([
     {
       buttonLabel: "Expand",
       semanticDescription: `Expand and customize ${pieChartHeading}`,
@@ -116,7 +107,7 @@ function CustomerDashboardMonthlyOverview({
         globalDispatch({
           type: globalAction.setCustomizeChartsPageData,
           payload: {
-            chartData: monthlyChartsOverview.pieChartObj,
+            chartData: monthlyChartsOverview.pie,
             chartTitle: pieChartHeading,
             chartKind: "pie",
             chartUnitKind: "number",
@@ -129,21 +120,17 @@ function CustomerDashboardMonthlyOverview({
     },
   ]);
 
-  // overview -> charts -> pie -> display
-  const displayOverviewPieChart = (
+  const overviewPieChart = (
     <ResponsivePieChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
-      pieChartData={monthlyChartsOverview.pieChartObj}
+      pieChartData={monthlyChartsOverview.pie}
       hideControls
       unitKind="number"
     />
   );
 
-  // overview -> charts -> bar
-
-  // overview -> charts -> bar -> expand chart button
-  const [createdExpandBarChartButton] = returnAccessibleButtonElements([
+  const [expandBarChartButton] = returnAccessibleButtonElements([
     {
       buttonLabel: "Expand",
       semanticDescription: `Expand and customize ${barChartHeading}`,
@@ -152,7 +139,7 @@ function CustomerDashboardMonthlyOverview({
         globalDispatch({
           type: globalAction.setCustomizeChartsPageData,
           payload: {
-            chartData: monthlyChartsOverview.barChartsObj[overviewBarChartYAxisVariable],
+            chartData: monthlyChartsOverview.bar[overviewBarChartYAxisVariable],
             chartTitle: barChartHeading,
             chartKind: "bar",
             chartUnitKind: "number",
@@ -165,28 +152,27 @@ function CustomerDashboardMonthlyOverview({
     },
   ]);
 
-  // overview -> charts -> bar -> y axis variables
-  const [createdOverviewBarChartYAxisVariablesSelectInput] =
-    returnAccessibleSelectInputElements([
+  const [overviewBarChartYAxisVariablesSelectInput] = returnAccessibleSelectInputElements(
+    [
       {
         data: CUSTOMER_OVERVIEW_Y_AXIS_DATA,
         label: "Y-Axis Bar",
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           customerDashboardMonthlyOverviewDispatch({
             type: customerDashboardMonthlyOverviewAction.setOverviewBarChartYAxisVariable,
-            payload: event.currentTarget.value as CustomerOverviewObjKey,
+            payload: event.currentTarget.value as CustomerMetricsOverviewChartsKey,
           });
         },
         value: overviewBarChartYAxisVariable,
       },
-    ]);
+    ]
+  );
 
-  // overview -> charts -> bar -> display
-  const displayOverviewBarChart = (
+  const overviewBarChart = (
     <ResponsiveBarChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
-      barChartData={monthlyChartsOverview.barChartsObj[overviewBarChartYAxisVariable]}
+      barChartData={monthlyChartsOverview.bar[overviewBarChartYAxisVariable]}
       hideControls
       indexBy="Months"
       keys={CUSTOMER_OVERVIEW_Y_AXIS_DATA.map((obj) => obj.label)}
@@ -194,9 +180,6 @@ function CustomerDashboardMonthlyOverview({
     />
   );
 
-  // overview -> charts -> line
-
-  // overview -> charts -> line -> expand chart button
   const [expandLineChartButton] = returnAccessibleButtonElements([
     {
       buttonLabel: "Expand",
@@ -206,8 +189,7 @@ function CustomerDashboardMonthlyOverview({
         globalDispatch({
           type: globalAction.setCustomizeChartsPageData,
           payload: {
-            chartData:
-              monthlyChartsOverview.lineChartsObj[overviewLineChartYAxisVariable],
+            chartData: monthlyChartsOverview.line[overviewLineChartYAxisVariable],
             chartTitle: lineChartHeading,
             chartKind: "line",
             chartUnitKind: "number",
@@ -220,8 +202,7 @@ function CustomerDashboardMonthlyOverview({
     },
   ]);
 
-  // overview -> charts -> line -> y axis variables
-  const [createdOverviewLineChartYAxisVariablesSelectInput] =
+  const [overviewLineChartYAxisVariablesSelectInput] =
     returnAccessibleSelectInputElements([
       {
         data: CUSTOMER_OVERVIEW_Y_AXIS_DATA,
@@ -229,28 +210,24 @@ function CustomerDashboardMonthlyOverview({
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           customerDashboardMonthlyOverviewDispatch({
             type: customerDashboardMonthlyOverviewAction.setOverviewLineChartYAxisVariable,
-            payload: event.currentTarget.value as CustomerOverviewObjKey,
+            payload: event.currentTarget.value as CustomerMetricsOverviewChartsKey,
           });
         },
         value: overviewLineChartYAxisVariable,
       },
     ]);
 
-  // overview -> charts -> line -> display
-  const displayOverviewLineChart = (
+  const overviewLineChart = (
     <ResponsiveLineChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
-      lineChartData={monthlyChartsOverview.lineChartsObj[overviewLineChartYAxisVariable]}
+      lineChartData={monthlyChartsOverview.line[overviewLineChartYAxisVariable]}
       hideControls
       yFormat={(y) => `${addCommaSeparator(y)} Customers`}
       unitKind="number"
     />
   );
 
-  // overview -> charts -> calendar
-
-  // overview -> charts -> calendar -> expand chart button
   const [expandCalendarChartButton] = returnAccessibleButtonElements([
     {
       buttonLabel: "Expand",
@@ -260,8 +237,7 @@ function CustomerDashboardMonthlyOverview({
         globalDispatch({
           type: globalAction.setCustomizeChartsPageData,
           payload: {
-            chartData:
-              monthlyChartsOverview.calendarChartsObj[overviewCalendarChartYAxisVariable],
+            chartData: monthlyChartsOverview.calendar[overviewCalendarChartYAxisVariable],
             chartTitle: calendarChartHeading,
             chartKind: "calendar",
             chartUnitKind: "number",
@@ -274,8 +250,7 @@ function CustomerDashboardMonthlyOverview({
     },
   ]);
 
-  // overview -> charts -> calendar -> y axis variables
-  const [createdOverviewCalendarChartYAxisVariablesSelectInput] =
+  const [overviewCalendarChartYAxisVariablesSelectInput] =
     returnAccessibleSelectInputElements([
       {
         data: CUSTOMER_OVERVIEW_Y_AXIS_DATA,
@@ -283,18 +258,17 @@ function CustomerDashboardMonthlyOverview({
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           customerDashboardMonthlyOverviewDispatch({
             type: customerDashboardMonthlyOverviewAction.setOverviewCalendarChartYAxisVariable,
-            payload: event.currentTarget.value as CustomerOverviewObjKey,
+            payload: event.currentTarget.value as CustomerMetricsOverviewChartsKey,
           });
         },
         value: overviewCalendarChartYAxisVariable,
       },
     ]);
 
-  // overview -> charts -> calendar -> display
-  const displayOverviewCalendarChart = (
+  const overviewCalendarChart = (
     <ResponsiveCalendarChart
       calendarChartData={
-        monthlyChartsOverview.calendarChartsObj[overviewCalendarChartYAxisVariable]
+        monthlyChartsOverview.calendar[overviewCalendarChartYAxisVariable]
       }
       chartHeight={chartHeight}
       chartWidth={chartWidth}
@@ -304,35 +278,33 @@ function CustomerDashboardMonthlyOverview({
     />
   );
 
-  const displayOverviewSection = (
+  const customerDashboardMonthlyOverview = (
     <DashboardMetricsLayout
-      barChart={displayOverviewBarChart}
+      barChart={overviewBarChart}
       barChartHeading={barChartHeading}
-      barChartYAxisSelectInput={createdOverviewBarChartYAxisVariablesSelectInput}
+      barChartYAxisSelectInput={overviewBarChartYAxisVariablesSelectInput}
       borderColor={borderColor}
-      expandBarChartButton={createdExpandBarChartButton}
+      expandBarChartButton={expandBarChartButton}
       expandLineChartButton={expandLineChartButton}
       expandCalendarChartButton={expandCalendarChartButton}
-      expandPieChartButton={createdExpandPieChartButton}
-      lineChart={displayOverviewLineChart}
+      expandPieChartButton={expandPieChartButton}
+      lineChart={overviewLineChart}
       lineChartHeading={lineChartHeading}
-      lineChartYAxisSelectInput={createdOverviewLineChartYAxisVariablesSelectInput}
+      lineChartYAxisSelectInput={overviewLineChartYAxisVariablesSelectInput}
       overviewCards={monthlyCardsOverview}
       padding={padding}
-      pieChart={displayOverviewPieChart}
+      pieChart={overviewPieChart}
       pieChartHeading={pieChartHeading}
       sectionHeading={`${splitCamelCase(storeLocation)} Monthly Overview`}
       statisticsMap={statisticsMonthlyOverview}
       width={width}
-      calendarChart={displayOverviewCalendarChart}
+      calendarChart={overviewCalendarChart}
       calendarChartHeading={calendarChartHeading}
-      calendarChartYAxisSelectInput={
-        createdOverviewCalendarChartYAxisVariablesSelectInput
-      }
+      calendarChartYAxisSelectInput={overviewCalendarChartYAxisVariablesSelectInput}
     />
   );
 
-  return displayOverviewSection;
+  return customerDashboardMonthlyOverview;
 }
 
 export default CustomerDashboardMonthlyOverview;

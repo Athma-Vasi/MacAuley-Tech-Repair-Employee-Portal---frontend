@@ -18,7 +18,6 @@ import {
 } from "../../../../charts";
 import { MONTHS } from "../../../constants";
 import DashboardMetricsLayout from "../../../DashboardMetricsLayout";
-import { CustomerMetricsCards } from "../../../utilsTSX";
 import { BusinessMetricStoreLocation, Year } from "../../../types";
 import { returnChartTitleNavigateLinks, returnStatistics } from "../../../utils";
 import {
@@ -28,10 +27,11 @@ import {
 } from "../../constants";
 import {
   CustomerMetricsCharts,
-  CustomerNewReturningCalendarObjKey,
-  CustomerNewReturningObjKey,
-  CustomerNewReturningPieObjKey,
-} from "../../utilsOld";
+  CustomerMetricsNewReturningCalendarChartsKey,
+  CustomerMetricsNewReturningChartsKey,
+  CustomerMetricsNewReturningPieChartsKey,
+} from "../../utils";
+import { CustomerMetricsCards } from "../../utilsTSX";
 import {
   customerDashboardMonthlyNewAction,
   customerDashboardMonthlyNewReducer,
@@ -83,8 +83,8 @@ function CustomerDashboardMonthlyNew({
   // new
 
   // new -> statistics
-  const statisticsMonthlyNew = returnStatistics<CustomerNewReturningObjKey>(
-    monthlyChartsNew.barChartsObj
+  const statisticsMonthlyNew = returnStatistics<CustomerMetricsNewReturningChartsKey>(
+    monthlyChartsNew.bar
   );
 
   // new -> charts
@@ -117,7 +117,7 @@ function CustomerDashboardMonthlyNew({
   // new -> charts -> pie
 
   // new -> charts -> pie -> expand chart button
-  const [createdExpandPieChartButton] = returnAccessibleButtonElements([
+  const [expandPieChartButton] = returnAccessibleButtonElements([
     {
       buttonLabel: "Expand",
       semanticDescription: `Expand and customize ${pieChartHeading}`,
@@ -126,7 +126,7 @@ function CustomerDashboardMonthlyNew({
         globalDispatch({
           type: globalAction.setCustomizeChartsPageData,
           payload: {
-            chartData: monthlyChartsNew.pieChartObj[newPieChartYAxisVariable],
+            chartData: monthlyChartsNew.pie[newPieChartYAxisVariable],
             chartTitle: pieChartHeading,
             chartKind: "pie",
             chartUnitKind: "number",
@@ -140,27 +140,26 @@ function CustomerDashboardMonthlyNew({
   ]);
 
   // new -> charts -> pie -> y axis variables
-  const [createdNewPieChartYAxisVariablesSelectInput] =
-    returnAccessibleSelectInputElements([
-      {
-        data: CUSTOMER_NEW_RETURNING_PIE_Y_AXIS_DATA,
-        label: "Y-Axis Pie",
-        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-          customerDashboardMonthlyNewDispatch({
-            type: customerDashboardMonthlyNewAction.setNewPieChartYAxisVariable,
-            payload: event.currentTarget.value as CustomerNewReturningPieObjKey,
-          });
-        },
-        value: newPieChartYAxisVariable,
+  const [newPieChartYAxisVariablesSelectInput] = returnAccessibleSelectInputElements([
+    {
+      data: CUSTOMER_NEW_RETURNING_PIE_Y_AXIS_DATA,
+      label: "Y-Axis Pie",
+      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+        customerDashboardMonthlyNewDispatch({
+          type: customerDashboardMonthlyNewAction.setNewPieChartYAxisVariable,
+          payload: event.currentTarget.value as CustomerMetricsNewReturningPieChartsKey,
+        });
       },
-    ]);
+      value: newPieChartYAxisVariable,
+    },
+  ]);
 
   // new -> charts -> pie -> display
-  const displayNewPieChart = (
+  const newPieChart = (
     <ResponsivePieChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
-      pieChartData={monthlyChartsNew.pieChartObj[newPieChartYAxisVariable]}
+      pieChartData={monthlyChartsNew.pie[newPieChartYAxisVariable]}
       hideControls
       unitKind="number"
     />
@@ -169,7 +168,7 @@ function CustomerDashboardMonthlyNew({
   // new -> charts -> bar
 
   // new -> charts -> bar -> expand chart button
-  const [createdExpandBarChartButton] = returnAccessibleButtonElements([
+  const [expandBarChartButton] = returnAccessibleButtonElements([
     {
       buttonLabel: "Expand",
       semanticDescription: `Expand and customize ${barChartHeading}`,
@@ -178,7 +177,7 @@ function CustomerDashboardMonthlyNew({
         globalDispatch({
           type: globalAction.setCustomizeChartsPageData,
           payload: {
-            chartData: monthlyChartsNew.barChartsObj[newBarChartYAxisVariable],
+            chartData: monthlyChartsNew.bar[newBarChartYAxisVariable],
             chartTitle: barChartHeading,
             chartKind: "bar",
             chartUnitKind: "number",
@@ -192,27 +191,26 @@ function CustomerDashboardMonthlyNew({
   ]);
 
   // new -> charts -> bar -> y axis variables
-  const [createdNewBarChartYAxisVariablesSelectInput] =
-    returnAccessibleSelectInputElements([
-      {
-        data: CUSTOMER_NEW_RETURNING_LINE_BAR_Y_AXIS_DATA,
-        label: "Y-Axis Bar",
-        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-          customerDashboardMonthlyNewDispatch({
-            type: customerDashboardMonthlyNewAction.setNewBarChartYAxisVariable,
-            payload: event.currentTarget.value as CustomerNewReturningObjKey,
-          });
-        },
-        value: newBarChartYAxisVariable,
+  const [newBarChartYAxisVariablesSelectInput] = returnAccessibleSelectInputElements([
+    {
+      data: CUSTOMER_NEW_RETURNING_LINE_BAR_Y_AXIS_DATA,
+      label: "Y-Axis Bar",
+      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+        customerDashboardMonthlyNewDispatch({
+          type: customerDashboardMonthlyNewAction.setNewBarChartYAxisVariable,
+          payload: event.currentTarget.value as CustomerMetricsNewReturningChartsKey,
+        });
       },
-    ]);
+      value: newBarChartYAxisVariable,
+    },
+  ]);
 
   // new -> charts -> bar -> display
-  const displayNewBarChart = (
+  const newBarChart = (
     <ResponsiveBarChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
-      barChartData={monthlyChartsNew.barChartsObj[newBarChartYAxisVariable]}
+      barChartData={monthlyChartsNew.bar[newBarChartYAxisVariable]}
       hideControls
       indexBy="Months"
       keys={CUSTOMER_NEW_RETURNING_LINE_BAR_Y_AXIS_DATA.map((obj) => obj.label)}
@@ -232,7 +230,7 @@ function CustomerDashboardMonthlyNew({
         globalDispatch({
           type: globalAction.setCustomizeChartsPageData,
           payload: {
-            chartData: monthlyChartsNew.lineChartsObj[newLineChartYAxisVariable],
+            chartData: monthlyChartsNew.line[newLineChartYAxisVariable],
             chartTitle: lineChartHeading,
             chartKind: "line",
             chartUnitKind: "number",
@@ -246,27 +244,26 @@ function CustomerDashboardMonthlyNew({
   ]);
 
   // new -> charts -> line -> y axis variables
-  const [createdNewLineChartYAxisVariablesSelectInput] =
-    returnAccessibleSelectInputElements([
-      {
-        data: CUSTOMER_NEW_RETURNING_LINE_BAR_Y_AXIS_DATA,
-        label: "Y-Axis Line",
-        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-          customerDashboardMonthlyNewDispatch({
-            type: customerDashboardMonthlyNewAction.setNewLineChartYAxisVariable,
-            payload: event.currentTarget.value as CustomerNewReturningObjKey,
-          });
-        },
-        value: newLineChartYAxisVariable,
+  const [newLineChartYAxisVariablesSelectInput] = returnAccessibleSelectInputElements([
+    {
+      data: CUSTOMER_NEW_RETURNING_LINE_BAR_Y_AXIS_DATA,
+      label: "Y-Axis Line",
+      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+        customerDashboardMonthlyNewDispatch({
+          type: customerDashboardMonthlyNewAction.setNewLineChartYAxisVariable,
+          payload: event.currentTarget.value as CustomerMetricsNewReturningChartsKey,
+        });
       },
-    ]);
+      value: newLineChartYAxisVariable,
+    },
+  ]);
 
   // new -> charts -> line -> display
-  const displayNewLineChart = (
+  const newLineChart = (
     <ResponsiveLineChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
-      lineChartData={monthlyChartsNew.lineChartsObj[newLineChartYAxisVariable]}
+      lineChartData={monthlyChartsNew.line[newLineChartYAxisVariable]}
       hideControls
       yFormat={(y) => `${addCommaSeparator(y)} Customers`}
       unitKind="number"
@@ -285,7 +282,7 @@ function CustomerDashboardMonthlyNew({
         globalDispatch({
           type: globalAction.setCustomizeChartsPageData,
           payload: {
-            chartData: monthlyChartsNew.calendarChartsObj[newCalendarChartYAxisVariable],
+            chartData: monthlyChartsNew.calendar[newCalendarChartYAxisVariable],
             chartTitle: calendarChartHeading,
             chartKind: "calendar",
             chartUnitKind: "number",
@@ -299,27 +296,27 @@ function CustomerDashboardMonthlyNew({
   ]);
 
   // new -> charts -> calendar -> y axis variables
-  const [createdNewCalendarChartYAxisVariablesSelectInput] =
-    returnAccessibleSelectInputElements([
+  const [newCalendarChartYAxisVariablesSelectInput] = returnAccessibleSelectInputElements(
+    [
       {
         data: CUSTOMER_NEW_RETURNING_CALENDAR_Y_AXIS_DATA,
         label: "Y-Axis Calendar",
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           customerDashboardMonthlyNewDispatch({
             type: customerDashboardMonthlyNewAction.setNewCalendarChartYAxisVariable,
-            payload: event.currentTarget.value as CustomerNewReturningCalendarObjKey,
+            payload: event.currentTarget
+              .value as CustomerMetricsNewReturningCalendarChartsKey,
           });
         },
         value: newCalendarChartYAxisVariable,
       },
-    ]);
+    ]
+  );
 
   // new -> charts -> calendar -> display
-  const displayNewCalendarChart = (
+  const newCalendarChart = (
     <ResponsiveCalendarChart
-      calendarChartData={
-        monthlyChartsNew.calendarChartsObj[newCalendarChartYAxisVariable]
-      }
+      calendarChartData={monthlyChartsNew.calendar[newCalendarChartYAxisVariable]}
       chartHeight={chartHeight}
       chartWidth={chartWidth}
       from={`${year}-${month}-01`}
@@ -330,28 +327,28 @@ function CustomerDashboardMonthlyNew({
 
   const displayNewSection = (
     <DashboardMetricsLayout
-      barChart={displayNewBarChart}
+      barChart={newBarChart}
       barChartHeading={barChartHeading}
-      barChartYAxisSelectInput={createdNewBarChartYAxisVariablesSelectInput}
+      barChartYAxisSelectInput={newBarChartYAxisVariablesSelectInput}
       borderColor={borderColor}
-      expandBarChartButton={createdExpandBarChartButton}
+      expandBarChartButton={expandBarChartButton}
       expandLineChartButton={expandChartButton}
       expandCalendarChartButton={expandCalendarChartButton}
-      expandPieChartButton={createdExpandPieChartButton}
-      lineChart={displayNewLineChart}
+      expandPieChartButton={expandPieChartButton}
+      lineChart={newLineChart}
       lineChartHeading={lineChartHeading}
-      lineChartYAxisSelectInput={createdNewLineChartYAxisVariablesSelectInput}
+      lineChartYAxisSelectInput={newLineChartYAxisVariablesSelectInput}
       overviewCards={monthlyCardsNew}
       padding={padding}
-      pieChart={displayNewPieChart}
+      pieChart={newPieChart}
       pieChartHeading={pieChartHeading}
-      pieChartYAxisSelectInput={createdNewPieChartYAxisVariablesSelectInput}
+      pieChartYAxisSelectInput={newPieChartYAxisVariablesSelectInput}
       sectionHeading={`${storeLocation} Monthly New Customers`}
       statisticsMap={statisticsMonthlyNew}
       width={width}
-      calendarChart={displayNewCalendarChart}
+      calendarChart={newCalendarChart}
       calendarChartHeading={calendarChartHeading}
-      calendarChartYAxisSelectInput={createdNewCalendarChartYAxisVariablesSelectInput}
+      calendarChartYAxisSelectInput={newCalendarChartYAxisVariablesSelectInput}
     />
   );
 

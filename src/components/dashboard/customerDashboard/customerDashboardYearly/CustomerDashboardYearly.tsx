@@ -10,9 +10,7 @@ import CustomerDashboardYearlyOverview from "./customerDashboardYearlyOverview/C
 import CustomerDashboardYearlyReturning from "./customerDashboardYearlyReturning/CustomerDashboardYearlyReturning";
 
 type CustomerDashboardYearlyProps = {
-  day: string;
   customerMetric: DashboardCustomerMetric;
-  month: string;
   storeLocation: BusinessMetricStoreLocation;
   year: Year;
   yearlyCharts: CustomerMetricsCharts["yearlyCharts"];
@@ -21,8 +19,6 @@ type CustomerDashboardYearlyProps = {
 
 function CustomerDashboardYearly({
   customerMetric,
-  day,
-  month,
   yearlyCards,
   yearlyCharts,
   storeLocation,

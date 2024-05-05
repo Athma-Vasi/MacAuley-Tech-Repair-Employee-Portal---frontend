@@ -1,22 +1,34 @@
-import {
-  BusinessMetric,
-  BusinessMetricStoreLocation,
-  DashboardFinancialMetric,
-  Month,
-  Year,
-} from "../types";
+import { FinancialMetricsCharts } from "./utils";
+import { FinancialMetricsCards } from "./utilsTSX";
 
-type FinancialDashboardChildrenProps = {
-  businessMetrics: BusinessMetric[];
-  day: string;
-  financialMetric: DashboardFinancialMetric;
-  month: string;
-  selectedDate: string;
-  selectedMonth: Month;
-  selectedYear: Year;
-  storeLocation: BusinessMetricStoreLocation;
-  storeLocationView: BusinessMetricStoreLocation;
-  year: Year;
+type FinancialDashboardState = {
+  financialMetricsCards: FinancialMetricsCards | null;
+  financialMetricsCharts: FinancialMetricsCharts | null;
+  isLoading: boolean;
+  loadingMessage: string;
 };
 
-export type { FinancialDashboardChildrenProps };
+type FinancialDashboardAction = {
+  setFinancialMetricsCards: "setFinancialMetricsCards";
+  setFinancialMetricsCharts: "setFinancialMetricsCharts";
+  setIsLoading: "setIsLoading";
+  setLoadingMessage: "setLoadingMessage";
+};
+
+type FinancialDashboardDispatch =
+  | {
+      type: FinancialDashboardAction["setFinancialMetricsCards"];
+      payload: FinancialMetricsCards;
+    }
+  | {
+      type: FinancialDashboardAction["setFinancialMetricsCharts"];
+      payload: FinancialMetricsCharts;
+    }
+  | { type: FinancialDashboardAction["setIsLoading"]; payload: boolean }
+  | { type: FinancialDashboardAction["setLoadingMessage"]; payload: string };
+
+export type {
+  FinancialDashboardAction,
+  FinancialDashboardDispatch,
+  FinancialDashboardState,
+};

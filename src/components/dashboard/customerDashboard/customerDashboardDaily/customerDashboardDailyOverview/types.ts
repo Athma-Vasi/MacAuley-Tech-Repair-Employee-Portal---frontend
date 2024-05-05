@@ -1,9 +1,9 @@
-import { CustomerOverviewObjKey } from "../../utilsOld";
+import { CustomerMetricsOverviewChartsKey } from "../../utils";
 
 type CustomerDashboardDailyOverviewState = {
-  overviewBarChartYAxisVariable: CustomerOverviewObjKey;
-  overviewCalendarChartYAxisVariable: CustomerOverviewObjKey;
-  overviewLineChartYAxisVariable: CustomerOverviewObjKey;
+  overviewBarChartYAxisVariable: CustomerMetricsOverviewChartsKey;
+  overviewCalendarChartYAxisVariable: CustomerMetricsOverviewChartsKey;
+  overviewLineChartYAxisVariable: CustomerMetricsOverviewChartsKey;
 };
 
 type CustomerDashboardDailyOverviewAction = {
@@ -17,7 +17,7 @@ type CustomerDashboardDailyOverviewDispatch = {
     | CustomerDashboardDailyOverviewAction["setOverviewBarChartYAxisVariable"]
     | CustomerDashboardDailyOverviewAction["setOverviewCalendarChartYAxisVariable"]
     | CustomerDashboardDailyOverviewAction["setOverviewLineChartYAxisVariable"];
-  payload: CustomerOverviewObjKey;
+  payload: CustomerMetricsOverviewChartsKey;
 };
 
 export type {

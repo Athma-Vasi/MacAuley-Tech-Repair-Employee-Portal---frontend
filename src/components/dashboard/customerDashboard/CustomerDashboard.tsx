@@ -203,8 +203,6 @@ function CustomerDashboard({
     ) : (
       <CustomerDashboardYearly
         customerMetric={customerMetric}
-        day={selectedDate}
-        month={selectedYYYYMMDD.split("-")[1]}
         yearlyCards={yearlyCards}
         yearlyCharts={yearlyCharts}
         storeLocation={storeLocationView}

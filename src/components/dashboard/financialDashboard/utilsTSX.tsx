@@ -5,7 +5,7 @@ import {
   CreateDashboardMetricsCardsInput,
   DashboardCardInfo,
 } from "../utilsTSX";
-import { SelectedDateFinancialMetrics } from "./utilsTemp";
+import { SelectedDateFinancialMetrics } from "./utils";
 
 type CreateFinancialMetricsCardsInput = {
   selectedDateFinancialMetrics: SelectedDateFinancialMetrics;
@@ -39,7 +39,7 @@ type FinancialMetricsCards = {
   };
 };
 
-function createFinancialMetricsCards2({
+function createFinancialMetricsCards({
   padding,
   selectedDateFinancialMetrics,
   greenColorShade,
@@ -882,4 +882,5 @@ function createFinancialMetricsCards2({
   });
 }
 
-export { createFinancialMetricsCards2 };
+export { createFinancialMetricsCards };
+export type { FinancialMetricsCards };

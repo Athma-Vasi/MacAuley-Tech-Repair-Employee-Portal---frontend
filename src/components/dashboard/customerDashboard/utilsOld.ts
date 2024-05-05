@@ -132,28 +132,28 @@ type ReturnCustomerMetricsChartsInput = {
 // overview
 
 // overview -> keys
-type CustomerOverviewObjKey =
+type CustomerMetricsOverviewChartsKey =
   | 'overview' // y-axis variables: new, returning
   | 'new' // y-axis variables: new
   | 'returning'; // y-axis variables: returning
 
 // overview -> bar chart -> obj
 
-type CustomerOverviewBarObj = Record<CustomerOverviewObjKey, BarChartData[]>; // y-axis variables: new, returning
+type CustomerOverviewBarObj = Record<CustomerMetricsOverviewChartsKey, BarChartData[]>; // y-axis variables: new, returning
 
 // overview -> calendar chart -> obj
 type CustomerOverviewCalendarObj = Record<
-  CustomerOverviewObjKey,
+  CustomerMetricsOverviewChartsKey,
   CalendarChartData[]
 >; // y-axis variables: new, returning
 
 // overview -> line chart -> obj
-type CustomerOverviewLineObj = Record<CustomerOverviewObjKey, LineChartData[]>; // y-axis variables: new, returning
+type CustomerOverviewLineObj = Record<CustomerMetricsOverviewChartsKey, LineChartData[]>; // y-axis variables: new, returning
 
 // new & returning
 
 // new & returning -> keys
-type CustomerNewReturningObjKey =
+type CustomerMetricsNewReturningChartsKey =
   | 'total' // y-axis variables: total
   | 'all' // y-axis variables: sales, in-store, repair
   | 'overview' // y-axis variables: sales, repair
@@ -164,12 +164,12 @@ type CustomerNewReturningObjKey =
 
 // new & returning -> bar chart -> obj
 type CustomerNewReturningBarObj = Record<
-  CustomerNewReturningObjKey,
+  CustomerMetricsNewReturningChartsKey,
   BarChartData[]
 >; // y-axis variables: total, online, in-store, repair, all
 
 // new & returning -> calendar chart -> keys
-type CustomerNewReturningCalendarObjKey =
+type CustomerMetricsNewReturningCalendarChartsKey =
   | 'total' // y-axis variables: total
   | 'sales' // y-axis variables: sales
   | 'online' // y-axis variables: online
@@ -178,24 +178,24 @@ type CustomerNewReturningCalendarObjKey =
 
 // new & returning -> calendar chart -> obj
 type CustomerNewReturningCalendarObj = Record<
-  CustomerNewReturningCalendarObjKey,
+  CustomerMetricsNewReturningCalendarChartsKey,
   CalendarChartData[]
 >; // y-axis variables: total, online, in-store, repair, all
 
 // new & returning -> line chart obj
 type CustomerNewReturningLineObj = Record<
-  CustomerNewReturningObjKey,
+  CustomerMetricsNewReturningChartsKey,
   LineChartData[]
 >; // y-axis variables: total, online, in-store, repair, all
 
 // new & returning -> pie chart obj -> keys
-type CustomerNewReturningPieObjKey =
+type CustomerMetricsNewReturningPieChartsKey =
   | 'overview' // y-axis variables: sales, repair
   | 'all' // y-axis variables: sales, in-store, repair
   | 'sales'; // y-axis variables: online, in-store
 
 type CustomerNewReturningPieObj = Record<
-  CustomerNewReturningPieObjKey,
+  CustomerMetricsNewReturningPieChartsKey,
   PieChartData[]
 >; // y-axis variables: sales, repair, online, in-store, all
 
@@ -2749,10 +2749,10 @@ function returnCustomerMetricsCharts({
 export { returnCustomerMetricsCharts, returnSelectedDateCustomerMetrics };
 export type {
   CustomerChurnRetentionObjKey,
-  CustomerNewReturningCalendarObjKey,
-  CustomerNewReturningObjKey,
-  CustomerNewReturningPieObjKey,
-  CustomerOverviewObjKey,
+  CustomerMetricsNewReturningCalendarChartsKey,
+  CustomerMetricsNewReturningChartsKey,
+  CustomerMetricsNewReturningPieChartsKey,
+  CustomerMetricsOverviewChartsKey,
   CustomerMetricsCharts,
   SelectedDateCustomerMetrics,
 };

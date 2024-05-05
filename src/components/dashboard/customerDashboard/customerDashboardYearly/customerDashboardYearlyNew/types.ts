@@ -1,12 +1,12 @@
 import {
-  CustomerNewReturningObjKey,
-  CustomerNewReturningPieObjKey,
-} from "../../utilsOld";
+  CustomerMetricsNewReturningChartsKey,
+  CustomerMetricsNewReturningPieChartsKey,
+} from "../../utils";
 
 type CustomerDashboardYearlyNewState = {
-  newBarChartYAxisVariable: CustomerNewReturningObjKey;
-  newLineChartYAxisVariable: CustomerNewReturningObjKey;
-  newPieChartYAxisVariable: CustomerNewReturningPieObjKey;
+  newBarChartYAxisVariable: CustomerMetricsNewReturningChartsKey;
+  newLineChartYAxisVariable: CustomerMetricsNewReturningChartsKey;
+  newPieChartYAxisVariable: CustomerMetricsNewReturningPieChartsKey;
 };
 
 type CustomerDashboardYearlyNewAction = {
@@ -20,11 +20,11 @@ type CustomerDashboardYearlyNewDispatch =
       type:
         | CustomerDashboardYearlyNewAction["setNewBarChartYAxisVariable"]
         | CustomerDashboardYearlyNewAction["setNewLineChartYAxisVariable"];
-      payload: CustomerNewReturningObjKey;
+      payload: CustomerMetricsNewReturningChartsKey;
     }
   | {
       type: CustomerDashboardYearlyNewAction["setNewPieChartYAxisVariable"];
-      payload: CustomerNewReturningPieObjKey;
+      payload: CustomerMetricsNewReturningPieChartsKey;
     };
 
 export type {

@@ -1,25 +1,5 @@
-import {
-  BusinessMetric,
-  BusinessMetricStoreLocation,
-  DashboardProductMetric,
-  Month,
-  Year,
-} from "../types";
 import { ProductMetricsCharts } from "./utils";
 import { ProductMetricsCards } from "./utilsTSX";
-
-type ProductDashboardChildrenProps = {
-  businessMetrics: BusinessMetric[];
-  day: string;
-  month: string;
-  productMetric: DashboardProductMetric;
-  selectedDate: string;
-  selectedMonth: Month;
-  selectedYear: Year;
-  storeLocation: BusinessMetricStoreLocation;
-  storeLocationView: BusinessMetricStoreLocation;
-  year: Year;
-};
 
 type ProductDashboardState = {
   productMetricsCards: ProductMetricsCards | null;
@@ -47,9 +27,4 @@ type ProductDashboardDispatch =
   | { type: ProductDashboardAction["setIsLoading"]; payload: boolean }
   | { type: ProductDashboardAction["setLoadingMessage"]; payload: string };
 
-export type {
-  ProductDashboardAction,
-  ProductDashboardChildrenProps,
-  ProductDashboardDispatch,
-  ProductDashboardState,
-};
+export type { ProductDashboardAction, ProductDashboardDispatch, ProductDashboardState };

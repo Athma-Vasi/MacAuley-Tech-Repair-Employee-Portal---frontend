@@ -91,7 +91,7 @@ function CustomerDashboardYearlyOtherMetrics({
   });
 
   // churn & retention rate -> charts -> pie -> expand chart button
-  const [createdExpandPieChartButton] = returnAccessibleButtonElements([
+  const [expandPieChartButton] = returnAccessibleButtonElements([
     {
       buttonLabel: "Expand",
       semanticDescription: `Expand and customize ${pieChartHeading}`,
@@ -127,7 +127,7 @@ function CustomerDashboardYearlyOtherMetrics({
   // churn & retention rate -> charts -> bar
 
   // churn & retention rate -> charts -> bar -> expand chart button
-  const [createdExpandBarChartButton] = returnAccessibleButtonElements([
+  const [expandBarChartButton] = returnAccessibleButtonElements([
     {
       buttonLabel: "Expand",
       semanticDescription: `Expand and customize ${barChartHeading}`,
@@ -244,9 +244,9 @@ function CustomerDashboardYearlyOtherMetrics({
       barChartHeading={barChartHeading}
       barChartYAxisSelectInput={createdChurnRetentionBarChartYAxisVariablesSelectInput}
       borderColor={borderColor}
-      expandBarChartButton={createdExpandBarChartButton}
+      expandBarChartButton={expandBarChartButton}
       expandLineChartButton={expandLineChartButton}
-      expandPieChartButton={createdExpandPieChartButton}
+      expandPieChartButton={expandPieChartButton}
       lineChart={displayChurnRetentionLineChart}
       lineChartHeading={lineChartHeading}
       lineChartYAxisSelectInput={createdChurnRetentionLineChartYAxisVariablesSelectInput}

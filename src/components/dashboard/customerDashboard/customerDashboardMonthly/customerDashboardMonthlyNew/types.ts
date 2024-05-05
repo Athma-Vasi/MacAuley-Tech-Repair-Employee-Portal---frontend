@@ -1,14 +1,14 @@
 import {
-  CustomerNewReturningCalendarObjKey,
-  CustomerNewReturningObjKey,
-  CustomerNewReturningPieObjKey,
-} from "../../utilsOld";
+  CustomerMetricsNewReturningCalendarChartsKey,
+  CustomerMetricsNewReturningChartsKey,
+  CustomerMetricsNewReturningPieChartsKey,
+} from "../../utils";
 
 type CustomerDashboardMonthlyNewState = {
-  newBarChartYAxisVariable: CustomerNewReturningObjKey;
-  newCalendarChartYAxisVariable: CustomerNewReturningCalendarObjKey;
-  newLineChartYAxisVariable: CustomerNewReturningObjKey;
-  newPieChartYAxisVariable: CustomerNewReturningPieObjKey;
+  newBarChartYAxisVariable: CustomerMetricsNewReturningChartsKey;
+  newCalendarChartYAxisVariable: CustomerMetricsNewReturningCalendarChartsKey;
+  newLineChartYAxisVariable: CustomerMetricsNewReturningChartsKey;
+  newPieChartYAxisVariable: CustomerMetricsNewReturningPieChartsKey;
 };
 
 type CustomerDashboardMonthlyNewAction = {
@@ -23,15 +23,15 @@ type CustomerDashboardMonthlyNewDispatch =
       type:
         | CustomerDashboardMonthlyNewAction["setNewBarChartYAxisVariable"]
         | CustomerDashboardMonthlyNewAction["setNewLineChartYAxisVariable"];
-      payload: CustomerNewReturningObjKey;
+      payload: CustomerMetricsNewReturningChartsKey;
     }
   | {
       type: CustomerDashboardMonthlyNewAction["setNewCalendarChartYAxisVariable"];
-      payload: CustomerNewReturningCalendarObjKey;
+      payload: CustomerMetricsNewReturningCalendarChartsKey;
     }
   | {
       type: CustomerDashboardMonthlyNewAction["setNewPieChartYAxisVariable"];
-      payload: CustomerNewReturningPieObjKey;
+      payload: CustomerMetricsNewReturningPieChartsKey;
     };
 
 export type {

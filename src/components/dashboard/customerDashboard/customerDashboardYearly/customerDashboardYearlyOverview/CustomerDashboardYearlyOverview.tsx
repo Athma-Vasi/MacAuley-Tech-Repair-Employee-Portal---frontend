@@ -16,11 +16,11 @@ import {
   ResponsivePieChart,
 } from "../../../../charts";
 import DashboardMetricsLayout from "../../../DashboardMetricsLayout";
-import { CustomerMetricsCards } from "../../../utilsTSX";
 import { BusinessMetricStoreLocation, Year } from "../../../types";
 import { returnChartTitleNavigateLinks, returnStatistics } from "../../../utils";
 import { CUSTOMER_OVERVIEW_Y_AXIS_DATA } from "../../constants";
-import { CustomerMetricsCharts, CustomerOverviewObjKey } from "../../utilsOld";
+import { CustomerMetricsCharts, CustomerMetricsOverviewChartsKey } from "../../utils";
+import { CustomerMetricsCards } from "../../utilsTSX";
 import {
   customerDashboardYearlyOverviewAction,
   customerDashboardYearlyOverviewReducer,
@@ -60,16 +60,10 @@ function CustomerDashboardYearlyOverview({
   const { overviewBarChartYAxisVariable, overviewLineChartYAxisVariable } =
     customerDashboardYearlyOverviewState;
 
-  // overview
-
-  // overview -> statistics
-  const statisticsYearlyOverview = returnStatistics<CustomerOverviewObjKey>(
-    yearlyChartsOverview.barChartsObj
+  const statisticsYearlyOverview = returnStatistics<CustomerMetricsOverviewChartsKey>(
+    yearlyChartsOverview.bar
   );
 
-  // overview -> charts
-
-  // overview  -> charts -> titles & navlinks
   const {
     barChartHeading,
     expandBarChartNavigateLink,
@@ -87,10 +81,7 @@ function CustomerDashboardYearlyOverview({
     year,
   });
 
-  // overview -> charts -> pie
-
-  // overview -> charts -> pie -> expand chart button
-  const [createdExpandPieChartButton] = returnAccessibleButtonElements([
+  const [expandPieChartButton] = returnAccessibleButtonElements([
     {
       buttonLabel: "Expand",
       semanticDescription: `Expand and customize ${pieChartHeading}`,
@@ -99,7 +90,7 @@ function CustomerDashboardYearlyOverview({
         globalDispatch({
           type: globalAction.setCustomizeChartsPageData,
           payload: {
-            chartData: yearlyChartsOverview.pieChartObj,
+            chartData: yearlyChartsOverview.pie,
             chartTitle: pieChartHeading,
             chartKind: "pie",
             chartUnitKind: "number",
@@ -112,19 +103,17 @@ function CustomerDashboardYearlyOverview({
     },
   ]);
 
-  // overview -> charts -> pie -> display
-  const displayOverviewPieChart = (
+  const overviewPieChart = (
     <ResponsivePieChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
-      pieChartData={yearlyChartsOverview.pieChartObj}
+      pieChartData={yearlyChartsOverview.pie}
       hideControls
       unitKind="number"
     />
   );
 
-  // overview -> charts -> bar -> expand chart button
-  const [createdExpandBarChartButton] = returnAccessibleButtonElements([
+  const [expandBarChartButton] = returnAccessibleButtonElements([
     {
       buttonLabel: "Expand",
       semanticDescription: `Expand and customize ${barChartHeading}`,
@@ -133,7 +122,7 @@ function CustomerDashboardYearlyOverview({
         globalDispatch({
           type: globalAction.setCustomizeChartsPageData,
           payload: {
-            chartData: yearlyChartsOverview.barChartsObj[overviewBarChartYAxisVariable],
+            chartData: yearlyChartsOverview.bar[overviewBarChartYAxisVariable],
             chartTitle: barChartHeading,
             chartKind: "bar",
             chartUnitKind: "number",
@@ -146,28 +135,27 @@ function CustomerDashboardYearlyOverview({
     },
   ]);
 
-  // overview -> charts -> bar -> y axis variables
-  const [createdOverviewBarChartYAxisVariablesSelectInput] =
-    returnAccessibleSelectInputElements([
+  const [overviewBarChartYAxisVariablesSelectInput] = returnAccessibleSelectInputElements(
+    [
       {
         data: CUSTOMER_OVERVIEW_Y_AXIS_DATA,
         label: "Y-Axis Bar",
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           customerDashboardYearlyOverviewDispatch({
             type: customerDashboardYearlyOverviewAction.setOverviewBarChartYAxisVariable,
-            payload: event.currentTarget.value as CustomerOverviewObjKey,
+            payload: event.currentTarget.value as CustomerMetricsOverviewChartsKey,
           });
         },
         value: overviewBarChartYAxisVariable,
       },
-    ]);
+    ]
+  );
 
-  // overview -> charts -> bar -> display
-  const displayOverviewBarChart = (
+  const overviewBarChart = (
     <ResponsiveBarChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
-      barChartData={yearlyChartsOverview.barChartsObj[overviewBarChartYAxisVariable]}
+      barChartData={yearlyChartsOverview.bar[overviewBarChartYAxisVariable]}
       hideControls
       indexBy="Years"
       keys={CUSTOMER_OVERVIEW_Y_AXIS_DATA.map((obj) => obj.label)}
@@ -175,7 +163,6 @@ function CustomerDashboardYearlyOverview({
     />
   );
 
-  // overview -> charts -> line -> expand chart button
   const [expandLineChartButton] = returnAccessibleButtonElements([
     {
       buttonLabel: "Expand",
@@ -185,7 +172,7 @@ function CustomerDashboardYearlyOverview({
         globalDispatch({
           type: globalAction.setCustomizeChartsPageData,
           payload: {
-            chartData: yearlyChartsOverview.lineChartsObj[overviewLineChartYAxisVariable],
+            chartData: yearlyChartsOverview.line[overviewLineChartYAxisVariable],
             chartTitle: lineChartHeading,
             chartKind: "line",
             chartUnitKind: "number",
@@ -198,8 +185,7 @@ function CustomerDashboardYearlyOverview({
     },
   ]);
 
-  // overview -> charts -> line -> y axis variables
-  const [createdOverviewLineChartYAxisVariablesSelectInput] =
+  const [overviewLineChartYAxisVariablesSelectInput] =
     returnAccessibleSelectInputElements([
       {
         data: CUSTOMER_OVERVIEW_Y_AXIS_DATA,
@@ -207,19 +193,18 @@ function CustomerDashboardYearlyOverview({
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           customerDashboardYearlyOverviewDispatch({
             type: customerDashboardYearlyOverviewAction.setOverviewLineChartYAxisVariable,
-            payload: event.currentTarget.value as CustomerOverviewObjKey,
+            payload: event.currentTarget.value as CustomerMetricsOverviewChartsKey,
           });
         },
         value: overviewLineChartYAxisVariable,
       },
     ]);
 
-  // overview -> charts -> line -> display
-  const displayOverviewLineChart = (
+  const overviewLineChart = (
     <ResponsiveLineChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
-      lineChartData={yearlyChartsOverview.lineChartsObj[overviewLineChartYAxisVariable]}
+      lineChartData={yearlyChartsOverview.line[overviewLineChartYAxisVariable]}
       hideControls
       xFormat={(x) => `Year - ${x}`}
       yFormat={(y) => `${addCommaSeparator(y)} Customers`}
@@ -227,21 +212,21 @@ function CustomerDashboardYearlyOverview({
     />
   );
 
-  const displayOverviewSection = (
+  const customerDashboardYearlyOverview = (
     <DashboardMetricsLayout
-      barChart={displayOverviewBarChart}
+      barChart={overviewBarChart}
       barChartHeading={barChartHeading}
-      barChartYAxisSelectInput={createdOverviewBarChartYAxisVariablesSelectInput}
+      barChartYAxisSelectInput={overviewBarChartYAxisVariablesSelectInput}
       borderColor={borderColor}
-      expandBarChartButton={createdExpandBarChartButton}
+      expandBarChartButton={expandBarChartButton}
       expandLineChartButton={expandLineChartButton}
-      expandPieChartButton={createdExpandPieChartButton}
-      lineChart={displayOverviewLineChart}
+      expandPieChartButton={expandPieChartButton}
+      lineChart={overviewLineChart}
       lineChartHeading={lineChartHeading}
-      lineChartYAxisSelectInput={createdOverviewLineChartYAxisVariablesSelectInput}
+      lineChartYAxisSelectInput={overviewLineChartYAxisVariablesSelectInput}
       overviewCards={yearlyCardsOverview}
       padding={padding}
-      pieChart={displayOverviewPieChart}
+      pieChart={overviewPieChart}
       pieChartHeading={pieChartHeading}
       sectionHeading={`${splitCamelCase(storeLocation)} Overview`}
       statisticsMap={statisticsYearlyOverview}
@@ -249,7 +234,7 @@ function CustomerDashboardYearlyOverview({
     />
   );
 
-  return displayOverviewSection;
+  return customerDashboardYearlyOverview;
 }
 
 export default CustomerDashboardYearlyOverview;

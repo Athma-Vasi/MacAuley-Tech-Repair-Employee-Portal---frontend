@@ -2,46 +2,48 @@ import { Stack } from "@mantine/core";
 
 import { COLORS_SWATCHES } from "../../../../constants/data";
 import { useGlobalState } from "../../../../hooks";
+import { StoreLocation } from "../../../../types";
 import { returnThemeColors } from "../../../../utils";
-import { MONTHS } from "../../constants";
-import { returnFinancialMetricsCards } from "../../utilsTSX";
-import { FinancialDashboardChildrenProps } from "../types";
-import {
-  returnFinancialMetricsCharts,
-  returnSelectedDateFinancialMetrics,
-} from "../utils";
+import { DashboardFinancialMetric, Month, Year } from "../../types";
+import { FinancialMetricsCharts } from "../utils";
+import { FinancialMetricsCards } from "../utilsTSX";
 import FinancialDashboardDailyExpenses from "./financialDashboardDailyExpenses/FinancialDashboardDailyExpenses";
 import FinancialDashboardDailyOtherMetrics from "./financialDashboardDailyOtherMetrics/FinancialDashboardDailyOtherMetrics";
 import FinancialDashboardDailyProfit from "./financialDashboardDailyProfit/FinancialDashboardDailyProfit";
 import FinancialDashboardDailyRevenue from "./financialDashboardDailyRevenue/FinancialDashboardDailyRevenue";
 import FinancialDashboardDailyTransactions from "./financialDashboardDailyTransactions/FinancialDashboardDailyTransactions";
 
+type FinancialDashboardDailyProps = {
+  dailyCards: FinancialMetricsCards["dailyCards"];
+  dailyCharts: FinancialMetricsCharts["dailyCharts"];
+  day: string;
+  financialMetric: DashboardFinancialMetric;
+  month: Month;
+  storeLocation: StoreLocation;
+  year: Year;
+};
+
 function FinancialDashboardDaily({
-  businessMetrics,
+  dailyCards,
+  dailyCharts,
   day,
   financialMetric,
   month,
-  selectedDate,
-  selectedMonth,
-  selectedYear,
   storeLocation,
-  storeLocationView,
   year,
-}: FinancialDashboardChildrenProps) {
+}: FinancialDashboardDailyProps) {
   const {
     globalState: { padding, width, themeObject },
   } = useGlobalState();
 
   const componentWidth =
-    width < 480 // for iPhone 5/SE
+    width < 480
       ? width * 0.93
-      : width < 768 // for iPhones 6 - 15
+      : width < 768
       ? width - 40
-      : // at 768vw the navbar appears at width of 225px
-      width < 1024
+      : width < 1024
       ? (width - 225) * 0.8
-      : // at >= 1200vw the navbar width is 300px
-      width < 1200
+      : width < 1200
       ? (width - 225) * 0.8
       : 900 - 40;
   const chartHeight = width < 1024 ? componentWidth * 0.618 : componentWidth * 0.382;
@@ -49,37 +51,12 @@ function FinancialDashboardDaily({
 
   const {
     appThemeColors: { borderColor },
-    generalColors: { redColorShade, greenColorShade },
   } = returnThemeColors({
     colorsSwatches: COLORS_SWATCHES,
     themeObject,
   });
 
-  const selectedDateFinancialMetrics = returnSelectedDateFinancialMetrics({
-    businessMetrics,
-    day: selectedDate,
-    month: selectedMonth,
-    months: MONTHS,
-    storeLocation: storeLocationView,
-    year: selectedYear,
-  });
-
-  const { dailyCharts } = returnFinancialMetricsCharts({
-    businessMetrics,
-    months: MONTHS,
-    selectedDateFinancialMetrics,
-    storeLocation: storeLocationView,
-  });
-
-  const { dailyCards } = returnFinancialMetricsCards({
-    greenColorShade,
-    padding,
-    redColorShade,
-    selectedDateFinancialMetrics,
-    width,
-  });
-
-  const displayFinancialMetricCategory =
+  const financialDashboardDaily =
     financialMetric === "Profit" ? (
       <FinancialDashboardDailyProfit
         borderColor={borderColor}
@@ -152,11 +129,7 @@ function FinancialDashboardDaily({
       />
     );
 
-  const displayFinancialDashboardDaily = (
-    <Stack w="100%">{displayFinancialMetricCategory}</Stack>
-  );
-
-  return displayFinancialDashboardDaily;
+  return <Stack w="100%">{financialDashboardDaily}</Stack>;
 }
 
 export default FinancialDashboardDaily;

@@ -110,20 +110,26 @@ function returnSelectedDateCustomerMetrics({
 
 // overview
 
-type CustomerOverviewObjKey =
+type CustomerMetricsOverviewChartsKey =
   | "overview" // y-axis variables: new, returning
   | "new" // y-axis variables: new
   | "returning"; // y-axis variables: returning
 
-type CustomerOverviewBarCharts = Record<CustomerOverviewObjKey, BarChartData[]>; // y-axis variables: new, returning
+type CustomerOverviewBarCharts = Record<CustomerMetricsOverviewChartsKey, BarChartData[]>; // y-axis variables: new, returning
 
-type CustomerOverviewCalendarCharts = Record<CustomerOverviewObjKey, CalendarChartData[]>; // y-axis variables: new, returning
+type CustomerOverviewCalendarCharts = Record<
+  CustomerMetricsOverviewChartsKey,
+  CalendarChartData[]
+>; // y-axis variables: new, returning
 
-type CustomerOverviewLineCharts = Record<CustomerOverviewObjKey, LineChartData[]>; // y-axis variables: new, returning
+type CustomerOverviewLineCharts = Record<
+  CustomerMetricsOverviewChartsKey,
+  LineChartData[]
+>; // y-axis variables: new, returning
 
 // new & returning
 
-type CustomerNewReturningObjKey =
+type CustomerMetricsNewReturningChartsKey =
   | "total" // y-axis variables: total
   | "all" // y-axis variables: sales, in-store, repair
   | "overview" // y-axis variables: sales, repair
@@ -132,9 +138,12 @@ type CustomerNewReturningObjKey =
   | "inStore" // y-axis variables: in-store
   | "repair"; // y-axis variables: repair
 
-type CustomerNewReturningBarCharts = Record<CustomerNewReturningObjKey, BarChartData[]>; // y-axis variables: total, online, in-store, repair, all
+type CustomerNewReturningBarCharts = Record<
+  CustomerMetricsNewReturningChartsKey,
+  BarChartData[]
+>; // y-axis variables: total, online, in-store, repair, all
 
-type CustomerNewReturningCalendarChartsKey =
+type CustomerMetricsNewReturningCalendarChartsKey =
   | "total" // y-axis variables: total
   | "sales" // y-axis variables: sales
   | "online" // y-axis variables: online
@@ -142,36 +151,39 @@ type CustomerNewReturningCalendarChartsKey =
   | "repair"; // y-axis variables: repair
 
 type CustomerNewReturningCalendarCharts = Record<
-  CustomerNewReturningCalendarChartsKey,
+  CustomerMetricsNewReturningCalendarChartsKey,
   CalendarChartData[]
 >; // y-axis variables: total, online, in-store, repair, all
 
-type CustomerNewReturningLineCharts = Record<CustomerNewReturningObjKey, LineChartData[]>; // y-axis variables: total, online, in-store, repair, all
+type CustomerNewReturningLineCharts = Record<
+  CustomerMetricsNewReturningChartsKey,
+  LineChartData[]
+>; // y-axis variables: total, online, in-store, repair, all
 
-type CustomerNewReturningPieChartsKey =
+type CustomerMetricsNewReturningPieChartsKey =
   | "overview" // y-axis variables: sales, repair
   | "all" // y-axis variables: sales, in-store, repair
   | "sales"; // y-axis variables: online, in-store
 
 type CustomerNewReturningPieCharts = Record<
-  CustomerNewReturningPieChartsKey,
+  CustomerMetricsNewReturningPieChartsKey,
   PieChartData[]
 >; // y-axis variables: sales, repair, online, in-store, all
 
 // churn & retention
 
-type CustomerChurnRetentionObjKey =
+type CustomerMetricsChurnRetentionChartsKey =
   | "overview" // y-axis variables: churn rate, retention rate
   | "churnRate" // y-axis variables: churn rate
   | "retentionRate"; // y-axis variables: retention rate
 
 type CustomerChurnRetentionBarCharts = Record<
-  CustomerChurnRetentionObjKey,
+  CustomerMetricsChurnRetentionChartsKey,
   BarChartData[]
 >; // y-axis variables: churn rate, retention rate
 
 type CustomerChurnRetentionLineCharts = Record<
-  CustomerChurnRetentionObjKey,
+  CustomerMetricsChurnRetentionChartsKey,
   LineChartData[]
 >; // y-axis variables: churn rate, retention rate
 
@@ -2450,11 +2462,11 @@ async function createYearlyCustomerCharts({
 
 export { createCustomerMetricsCharts, returnSelectedDateCustomerMetrics };
 export type {
-  CustomerChurnRetentionObjKey,
   CustomerMetricsCharts,
-  CustomerNewReturningCalendarChartsKey,
-  CustomerNewReturningObjKey,
-  CustomerNewReturningPieChartsKey,
-  CustomerOverviewObjKey,
+  CustomerMetricsChurnRetentionChartsKey,
+  CustomerMetricsNewReturningCalendarChartsKey,
+  CustomerMetricsNewReturningChartsKey,
+  CustomerMetricsNewReturningPieChartsKey,
+  CustomerMetricsOverviewChartsKey,
   SelectedDateCustomerMetrics,
 };
