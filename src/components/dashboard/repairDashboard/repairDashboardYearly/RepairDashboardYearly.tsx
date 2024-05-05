@@ -13,7 +13,7 @@ import {
 import { addCommaSeparator, returnThemeColors, splitCamelCase } from "../../../../utils";
 import { ResponsiveBarChart, ResponsiveLineChart } from "../../../charts";
 import DashboardMetricsLayout from "../../DashboardMetricsLayout";
-import { RepairMetricsCards } from "../../jsxHelpers";
+import { RepairMetricsCards } from "../../utilsTSX";
 import { BusinessMetricStoreLocation, DashboardRepairMetric, Year } from "../../types";
 import { returnChartTitleNavigateLinks, returnStatistics } from "../../utils";
 import { REPAIR_METRIC_Y_AXIS_DATA } from "../constants";

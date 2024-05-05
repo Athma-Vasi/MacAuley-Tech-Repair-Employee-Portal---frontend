@@ -4,7 +4,7 @@ import { COLORS_SWATCHES } from "../../../../constants/data";
 import { useGlobalState } from "../../../../hooks";
 import { returnThemeColors } from "../../../../utils";
 import { MONTHS } from "../../constants";
-import { returnFinancialMetricsCards } from "../../jsxHelpers";
+import { returnFinancialMetricsCards } from "../../utilsTSX";
 import { FinancialDashboardChildrenProps } from "../types";
 import {
   returnFinancialMetricsCharts,

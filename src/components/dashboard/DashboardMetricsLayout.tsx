@@ -11,7 +11,7 @@ import {
 } from "@mantine/core";
 
 import { addCommaSeparator } from "../../utils";
-import { DashboardCardInfo, returnDashboardCardElement } from "./jsxHelpers";
+import { DashboardCardInfo, returnDashboardCardElement } from "./utilsTSX";
 import { StatisticsObject } from "./utils";
 
 type DashboardMetricsLayoutProps<MetricObjKey extends string = string> = {

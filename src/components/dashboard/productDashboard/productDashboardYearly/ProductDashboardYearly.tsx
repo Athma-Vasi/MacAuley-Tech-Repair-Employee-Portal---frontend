@@ -18,7 +18,7 @@ import {
 } from "../../../charts";
 import { MONTHS } from "../../constants";
 import DashboardMetricsLayout from "../../DashboardMetricsLayout";
-import { ProductMetricsCards } from "../../jsxHelpers";
+import { ProductMetricsCards } from "../../utilsTSX";
 import { BusinessMetricStoreLocation, DashboardProductMetric, Year } from "../../types";
 import { returnChartTitleNavigateLinks, returnStatistics } from "../../utils";
 import { PRODUCT_METRIC_LINE_BAR_Y_AXIS_DATA } from "../constants";

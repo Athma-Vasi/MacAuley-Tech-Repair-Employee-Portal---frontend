@@ -16,7 +16,7 @@ import {
   ResponsivePieChart,
 } from "../../../../charts";
 import DashboardMetricsLayout from "../../../DashboardMetricsLayout";
-import { CustomerMetricsCards } from "../../../jsxHelpers";
+import { CustomerMetricsCards } from "../../../utilsTSX";
 import { BusinessMetricStoreLocation, Year } from "../../../types";
 import { returnChartTitleNavigateLinks, returnStatistics } from "../../../utils";
 import { CUSTOMER_OVERVIEW_Y_AXIS_DATA } from "../../constants";

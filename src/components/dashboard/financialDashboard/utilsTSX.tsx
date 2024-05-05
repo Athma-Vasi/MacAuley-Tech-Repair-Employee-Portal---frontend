@@ -4,7 +4,7 @@ import {
   createDashboardMetricsCards,
   CreateDashboardMetricsCardsInput,
   DashboardCardInfo,
-} from "../jsxHelpers";
+} from "../utilsTSX";
 import { SelectedDateFinancialMetrics } from "./utilsTemp";
 
 type CreateFinancialMetricsCardsInput = {

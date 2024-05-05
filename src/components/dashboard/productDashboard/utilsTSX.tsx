@@ -4,7 +4,7 @@ import {
   createDashboardMetricsCards,
   CreateDashboardMetricsCardsInput,
   DashboardCardInfo,
-} from "../jsxHelpers";
+} from "../utilsTSX";
 import { SelectedDateProductMetrics } from "./utils";
 
 type ReturnProductMetricsCardsInput = {
@@ -30,7 +30,7 @@ type ProductMetricsCards = {
   };
 };
 
-function returnProductMetricsCards2({
+function returnProductMetricsCards({
   greenColorShade,
   padding,
   redColorShade,
@@ -297,4 +297,4 @@ function returnProductMetricsCards2({
   });
 }
 
-export { returnProductMetricsCards2 };
+export { returnProductMetricsCards };

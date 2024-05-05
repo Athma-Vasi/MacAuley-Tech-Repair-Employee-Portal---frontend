@@ -4,10 +4,6 @@ import { MdCalendarMonth, MdDateRange } from "react-icons/md";
 import { RiCalendarLine } from "react-icons/ri";
 
 import { addCommaSeparator, toFixedFloat } from "../../utils";
-import { SelectedDateCustomerMetrics } from "./customerDashboard/utils";
-import { SelectedDateFinancialMetrics } from "./financialDashboard/utils";
-import { SelectedDateProductMetrics } from "./productDashboard/utilsOld";
-import { SelectedDateRepairMetrics } from "./repairDashboard/utils";
 
 type DashboardCardInfo = {
   date?: string;
@@ -174,7 +170,11 @@ function createDashboardMetricsCards({
   };
 }
 
-type ReturnCustomerMetricsCardsInput = {
+export { createDashboardMetricsCards, returnDashboardCardElement };
+export type { CreateDashboardMetricsCardsInput, DashboardCardInfo };
+
+/**
+ * type ReturnCustomerMetricsCardsInput = {
   greenColorShade: string;
   padding: MantineNumberSize;
   redColorShade: string;
@@ -2028,20 +2028,4 @@ function returnRepairMetricsCards({
     yearlyCards: [yearRevenueCardInfo, yearUnitsRepairedCardInfo],
   };
 }
-
-export {
-  createDashboardMetricsCards,
-  returnCustomerMetricsCards,
-  returnDashboardCardElement,
-  returnFinancialMetricsCards,
-  returnProductMetricsCards,
-  returnRepairMetricsCards,
-};
-export type {
-  CreateDashboardMetricsCardsInput,
-  CustomerMetricsCards,
-  DashboardCardInfo,
-  FinancialMetricsCards,
-  ProductMetricsCards,
-  RepairMetricsCards,
-};
+ */

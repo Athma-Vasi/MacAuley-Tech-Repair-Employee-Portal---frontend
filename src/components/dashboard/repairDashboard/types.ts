@@ -1,4 +1,4 @@
-import { RepairMetricsCards } from "../jsxHelpers";
+import { RepairMetricsCards } from "../utilsTSX";
 import { RepairMetricsCharts } from "./utils";
 
 type RepairDashboardState = {

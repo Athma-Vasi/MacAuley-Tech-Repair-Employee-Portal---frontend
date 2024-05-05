@@ -25,7 +25,7 @@ import {
   productDashboardReducer,
 } from "./state";
 import { createProductMetricsCharts, createSelectedDateProductMetrics } from "./utils";
-import { returnProductMetricsCards2 } from "./utilsTSX";
+import { returnProductMetricsCards } from "./utilsTSX";
 
 type ProductDashboardProps = {
   businessMetrics: BusinessMetric[];
@@ -96,23 +96,21 @@ function ProductDashboard({
 
         console.log("selectedDateProductMetrics", selectedDateProductMetrics);
 
-        const { dailyCharts, monthlyCharts, yearlyCharts } =
-          await createProductMetricsCharts({
-            businessMetrics,
-            months: MONTHS,
-            selectedDateProductMetrics,
-            storeLocation: storeLocationView,
-            selectedProductCategory: productMetric,
-          });
+        const productMetricsCharts = await createProductMetricsCharts({
+          businessMetrics,
+          months: MONTHS,
+          selectedDateProductMetrics,
+          storeLocation: storeLocationView,
+          selectedProductCategory: productMetric,
+        });
 
-        const { dailyCards, monthlyCards, yearlyCards } =
-          await returnProductMetricsCards2({
-            greenColorShade,
-            padding,
-            redColorShade,
-            selectedDateProductMetrics,
-            width,
-          });
+        const productMetricsCards = await returnProductMetricsCards({
+          greenColorShade,
+          padding,
+          redColorShade,
+          selectedDateProductMetrics,
+          width,
+        });
 
         if (!isMounted) {
           return;
@@ -120,20 +118,12 @@ function ProductDashboard({
 
         productDashboardDispatch({
           type: productDashboardAction.setProductMetricsCards,
-          payload: {
-            dailyCards,
-            monthlyCards,
-            yearlyCards,
-          },
+          payload: productMetricsCards,
         });
 
         productDashboardDispatch({
           type: productDashboardAction.setProductMetricsCharts,
-          payload: {
-            dailyCharts,
-            monthlyCharts,
-            yearlyCharts,
-          },
+          payload: productMetricsCharts,
         });
 
         productDashboardDispatch({
@@ -205,45 +195,44 @@ function ProductDashboard({
     />
   );
 
-  return calendarView === "Daily" ? (
-    <ProductDashboardDaily
-      businessMetrics={businessMetrics}
-      day={selectedDate}
-      month={selectedYYYYMMDD.split("-")[1]}
-      productMetric={productMetric}
-      selectedDate={selectedDate}
-      selectedMonth={selectedMonth}
-      selectedYear={selectedYear}
-      storeLocation={storeLocationView}
-      storeLocationView={storeLocationView}
-      year={selectedYear}
-    />
-  ) : calendarView === "Monthly" ? (
-    <ProductDashboardMonthly
-      businessMetrics={businessMetrics}
-      day={selectedDate}
-      month={selectedYYYYMMDD.split("-")[1]}
-      productMetric={productMetric}
-      selectedDate={selectedDate}
-      selectedMonth={selectedMonth}
-      selectedYear={selectedYear}
-      storeLocation={storeLocationView}
-      storeLocationView={storeLocationView}
-      year={selectedYear}
-    />
-  ) : (
-    <ProductDashboardYearly
-      businessMetrics={businessMetrics}
-      day={selectedDate}
-      month={selectedYYYYMMDD.split("-")[1]}
-      productMetric={productMetric}
-      selectedDate={selectedDate}
-      selectedMonth={selectedMonth}
-      selectedYear={selectedYear}
-      storeLocation={storeLocationView}
-      storeLocationView={storeLocationView}
-      year={selectedYear}
-    />
+  const productDashboard =
+    calendarView === "Daily" ? (
+      <ProductDashboardDaily
+        day={selectedDate}
+        month={selectedYYYYMMDD.split("-")[1]}
+        productMetric={productMetric}
+        storeLocation={storeLocationView}
+        year={selectedYear}
+        dailyCards={productMetricsCards.dailyCards}
+        dailyCharts={productMetricsCharts.dailyCharts}
+      />
+    ) : calendarView === "Monthly" ? (
+      <ProductDashboardMonthly
+        day={selectedDate}
+        month={selectedYYYYMMDD.split("-")[1]}
+        productMetric={productMetric}
+        storeLocation={storeLocationView}
+        year={selectedYear}
+        monthlyCards={productMetricsCards.monthlyCards}
+        monthlyCharts={productMetricsCharts.monthlyCharts}
+      />
+    ) : (
+      <ProductDashboardYearly
+        day={selectedDate}
+        month={selectedYYYYMMDD.split("-")[1]}
+        productMetric={productMetric}
+        storeLocation={storeLocationView}
+        year={selectedYear}
+        yearlyCards={productMetricsCards.yearlyCards}
+        yearlyCharts={productMetricsCharts.yearlyCharts}
+      />
+    );
+
+  return (
+    <Stack>
+      {loadingOverlay}
+      {productDashboard}
+    </Stack>
   );
 }
 

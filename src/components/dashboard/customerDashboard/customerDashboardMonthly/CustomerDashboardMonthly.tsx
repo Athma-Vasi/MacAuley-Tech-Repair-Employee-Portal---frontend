@@ -2,7 +2,7 @@ import { COLORS_SWATCHES } from "../../../../constants/data";
 import { useGlobalState } from "../../../../hooks";
 import { returnThemeColors } from "../../../../utils";
 import { MONTHS } from "../../constants";
-import { returnCustomerMetricsCards } from "../../jsxHelpers";
+import { returnCustomerMetricsCards } from "../../utilsTSX";
 import { CustomerDashboardChildrenProps } from "../types";
 import { returnCustomerMetricsCharts, returnSelectedDateCustomerMetrics } from "../utils";
 import CustomerDashboardMonthlyNew from "./customerDashboardMonthlyNew/CustomerDashboardMonthlyNew";

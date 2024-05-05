@@ -98,6 +98,10 @@ function Dashboard() {
   useEffect(() => {
     async function createBusinessMetrics() {
       try {
+        if (businessMetrics?.length) {
+          return;
+        }
+
         const existingMetrics = await localforage.getItem<BusinessMetric[]>(
           "businessMetrics"
         );
@@ -117,7 +121,7 @@ function Dashboard() {
 
         console.time("createRandomBusinessMetrics");
 
-        const businessMetrics = await createRandomBusinessMetrics({
+        const createdBusinessMetrics = await createRandomBusinessMetrics({
           daysPerMonth: DAYS_PER_MONTH,
           months: MONTHS,
           productCategories: PRODUCT_CATEGORIES,
@@ -129,10 +133,10 @@ function Dashboard() {
 
         dashboardDispatch({
           type: dashboardAction.setBusinessMetrics,
-          payload: businessMetrics,
+          payload: createdBusinessMetrics,
         });
 
-        localforage.setItem<BusinessMetric[]>("businessMetrics", businessMetrics);
+        localforage.setItem<BusinessMetric[]>("businessMetrics", createdBusinessMetrics);
 
         dashboardDispatch({
           type: dashboardAction.setIsLoading,
