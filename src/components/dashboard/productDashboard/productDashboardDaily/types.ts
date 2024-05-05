@@ -1,15 +1,15 @@
-import { ProductMetricChartKey, ProductMetricCalendarObjKey } from "../utilsOld";
+import { ProductMetricsChartKey, ProductMetricCalendarObjKey } from "../utilsOld";
 
 type ProductDashboardDailyState = {
   // revenue
-  revenueBarChartYAxisVariable: ProductMetricChartKey;
+  revenueBarChartYAxisVariable: ProductMetricsChartKey;
   revenueCalendarChartYAxisVariable: ProductMetricCalendarObjKey;
-  revenueLineChartYAxisVariable: ProductMetricChartKey;
+  revenueLineChartYAxisVariable: ProductMetricsChartKey;
 
   // units sold
-  unitsSoldBarChartYAxisVariable: ProductMetricChartKey;
+  unitsSoldBarChartYAxisVariable: ProductMetricsChartKey;
   unitsSoldCalendarChartYAxisVariable: ProductMetricCalendarObjKey;
-  unitsSoldLineChartYAxisVariable: ProductMetricChartKey;
+  unitsSoldLineChartYAxisVariable: ProductMetricsChartKey;
 };
 
 type ProductDashboardDailyAction = {
@@ -30,7 +30,7 @@ type ProductDashboardDailyDispatch =
         | ProductDashboardDailyAction["setUnitsSoldBarChartYAxisVariable"]
         | ProductDashboardDailyAction["setUnitsSoldLineChartYAxisVariable"];
 
-      payload: ProductMetricChartKey;
+      payload: ProductMetricsChartKey;
     }
   | {
       type:

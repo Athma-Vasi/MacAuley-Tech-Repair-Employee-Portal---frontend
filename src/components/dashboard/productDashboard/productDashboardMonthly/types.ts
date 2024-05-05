@@ -1,15 +1,13 @@
-import { ProductMetricChartKey, ProductMetricCalendarObjKey } from "../utilsOld";
+import { ProductMetricsCalendarKey, ProductMetricsChartKey } from "../utils";
 
 type ProductDashboardMonthlyState = {
-  // revenue
-  revenueBarChartYAxisVariable: ProductMetricChartKey;
-  revenueCalendarChartYAxisVariable: ProductMetricCalendarObjKey;
-  revenueLineChartYAxisVariable: ProductMetricChartKey;
+  revenueBarChartYAxisVariable: ProductMetricsChartKey;
+  revenueCalendarChartYAxisVariable: ProductMetricsCalendarKey;
+  revenueLineChartYAxisVariable: ProductMetricsChartKey;
 
-  // units sold
-  unitsSoldBarChartYAxisVariable: ProductMetricChartKey;
-  unitsSoldCalendarChartYAxisVariable: ProductMetricCalendarObjKey;
-  unitsSoldLineChartYAxisVariable: ProductMetricChartKey;
+  unitsSoldBarChartYAxisVariable: ProductMetricsChartKey;
+  unitsSoldCalendarChartYAxisVariable: ProductMetricsCalendarKey;
+  unitsSoldLineChartYAxisVariable: ProductMetricsChartKey;
 };
 
 type ProductDashboardMonthlyAction = {
@@ -30,14 +28,14 @@ type ProductDashboardMonthlyDispatch =
         | ProductDashboardMonthlyAction["setUnitsSoldBarChartYAxisVariable"]
         | ProductDashboardMonthlyAction["setUnitsSoldLineChartYAxisVariable"];
 
-      payload: ProductMetricChartKey;
+      payload: ProductMetricsChartKey;
     }
   | {
       type:
         | ProductDashboardMonthlyAction["setRevenueCalendarChartYAxisVariable"]
         | ProductDashboardMonthlyAction["setUnitsSoldCalendarChartYAxisVariable"];
 
-      payload: ProductMetricCalendarObjKey;
+      payload: ProductMetricsCalendarKey;
     };
 
 export type {

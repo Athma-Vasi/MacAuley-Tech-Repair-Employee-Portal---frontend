@@ -135,14 +135,14 @@ type ReturnProductMetricsChartsInput = {
   storeLocation: BusinessMetricStoreLocation;
 };
 
-type ProductMetricChartKey =
+type ProductMetricsChartKey =
   | 'total' // y-axis variables: total
   | 'overview' // y-axis variables: online, inStore
   | 'online' // y-axis variables: online
   | 'inStore'; // y-axis variables: inStore
 
 type ProductMetricBarObj = Record<
-  ProductMetricChartKey,
+  ProductMetricsChartKey,
   BarChartData[]
 >; // y-axis variables: total, online, inStore
 
@@ -1283,7 +1283,7 @@ function returnProductMetricsCharts({
 
 export { returnProductMetricsCharts, returnSelectedDateProductMetrics };
 export type {
-  ProductMetricChartKey,
+  ProductMetricsChartKey,
   ProductMetricBarObj,
   ProductMetricCalendarObj,
   ProductMetricCalendarObjKey,

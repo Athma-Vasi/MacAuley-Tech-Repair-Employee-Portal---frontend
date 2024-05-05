@@ -125,19 +125,22 @@ type CreateProductMetricsChartsInput = {
   storeLocation: BusinessMetricStoreLocation;
 };
 
-type ProductMetricChartKey =
+type ProductMetricsChartKey =
   | "total" // y-axis variables: total
   | "overview" // y-axis variables: online, inStore
   | "online" // y-axis variables: online
   | "inStore"; // y-axis variables: inStore
 
-type ProductMetricBarCharts = Record<ProductMetricChartKey, BarChartData[]>; // y-axis variables: total, online, inStore
+type ProductMetricsBarCharts = Record<ProductMetricsChartKey, BarChartData[]>; // y-axis variables: total, online, inStore
 
-type ProductMetricCalendarKey = "total" | "online" | "inStore";
+type ProductMetricsCalendarKey = "total" | "online" | "inStore";
 
-type ProductMetricCalendarCharts = Record<ProductMetricCalendarKey, CalendarChartData[]>; // y-axis variables: total, online, inStore
+type ProductMetricsCalendarCharts = Record<
+  ProductMetricsCalendarKey,
+  CalendarChartData[]
+>; // y-axis variables: total, online, inStore
 
-type ProductMetricLineCharts = {
+type ProductMetricsLineCharts = {
   total: { id: "Total"; data: { x: string; y: number }[] }[];
   overview: {
     id: "Online" | "In-Store";
@@ -179,41 +182,41 @@ type ProductMetricLineCharts = {
 type ProductMetricsCharts = {
   dailyCharts: {
     unitsSold: {
-      bar: ProductMetricBarCharts;
-      calendar: ProductMetricCalendarCharts;
-      line: ProductMetricLineCharts;
+      bar: ProductMetricsBarCharts;
+      calendar: ProductMetricsCalendarCharts;
+      line: ProductMetricsLineCharts;
       pie: PieChartData[];
     };
     revenue: {
-      bar: ProductMetricBarCharts;
-      calendar: ProductMetricCalendarCharts;
-      line: ProductMetricLineCharts;
+      bar: ProductMetricsBarCharts;
+      calendar: ProductMetricsCalendarCharts;
+      line: ProductMetricsLineCharts;
       pie: PieChartData[];
     };
   };
   monthlyCharts: {
     unitsSold: {
-      bar: ProductMetricBarCharts;
-      calendar: ProductMetricCalendarCharts;
-      line: ProductMetricLineCharts;
+      bar: ProductMetricsBarCharts;
+      calendar: ProductMetricsCalendarCharts;
+      line: ProductMetricsLineCharts;
       pie: PieChartData[];
     };
     revenue: {
-      bar: ProductMetricBarCharts;
-      calendar: ProductMetricCalendarCharts;
-      line: ProductMetricLineCharts;
+      bar: ProductMetricsBarCharts;
+      calendar: ProductMetricsCalendarCharts;
+      line: ProductMetricsLineCharts;
       pie: PieChartData[];
     };
   };
   yearlyCharts: {
     unitsSold: {
-      bar: ProductMetricBarCharts;
-      line: ProductMetricLineCharts;
+      bar: ProductMetricsBarCharts;
+      line: ProductMetricsLineCharts;
       pie: PieChartData[];
     };
     revenue: {
-      bar: ProductMetricBarCharts;
-      line: ProductMetricLineCharts;
+      bar: ProductMetricsBarCharts;
+      line: ProductMetricsLineCharts;
       pie: PieChartData[];
     };
   };
@@ -241,20 +244,20 @@ async function createProductMetricsCharts({
     dayProductMetrics: { selectedDayMetrics },
   } = selectedDateProductMetrics;
 
-  const BAR_CHART_OBJ_TEMPLATE: ProductMetricBarCharts = {
+  const BAR_CHART_OBJ_TEMPLATE: ProductMetricsBarCharts = {
     total: [],
     overview: [],
     online: [],
     inStore: [],
   };
 
-  const CALENDAR_CHART_OBJ_TEMPLATE: ProductMetricCalendarCharts = {
+  const CALENDAR_CHART_OBJ_TEMPLATE: ProductMetricsCalendarCharts = {
     total: [],
     online: [],
     inStore: [],
   };
 
-  const LINE_CHART_OBJ_TEMPLATE: ProductMetricLineCharts = {
+  const LINE_CHART_OBJ_TEMPLATE: ProductMetricsLineCharts = {
     total: [{ id: "Total", data: [] }],
     overview: [
       { id: "Online", data: [] },
@@ -316,10 +319,10 @@ async function createProductMetricsCharts({
 }
 
 type CreateDailyProductChartsInput = {
-  barChartsTemplate: ProductMetricBarCharts;
-  calendarChartsTemplate: ProductMetricCalendarCharts;
+  barChartsTemplate: ProductMetricsBarCharts;
+  calendarChartsTemplate: ProductMetricsCalendarCharts;
   dailyMetrics?: ProductDailyMetric[];
-  lineChartsTemplate: ProductMetricLineCharts;
+  lineChartsTemplate: ProductMetricsLineCharts;
   monthIndex: string;
   pieChartsTemplate: PieChartData[];
   selectedDayMetrics?: ProductDailyMetric;
@@ -617,9 +620,9 @@ async function createDailyProductCharts({
 }
 
 type CreateMonthlyProductChartsInput = {
-  barChartsTemplate: ProductMetricBarCharts;
-  calendarChartsTemplate: ProductMetricCalendarCharts;
-  lineChartsTemplate: ProductMetricLineCharts;
+  barChartsTemplate: ProductMetricsBarCharts;
+  calendarChartsTemplate: ProductMetricsCalendarCharts;
+  lineChartsTemplate: ProductMetricsLineCharts;
   months: Month[];
   monthlyMetrics?: ProductMonthlyMetric[];
   pieChartsTemplate: PieChartData[];
@@ -945,8 +948,8 @@ function createMonthlyProductCharts({
 }
 
 type CreateYearlyProductChartsInput = {
-  barChartsTemplate: ProductMetricBarCharts;
-  lineChartsTemplate: ProductMetricLineCharts;
+  barChartsTemplate: ProductMetricsBarCharts;
+  lineChartsTemplate: ProductMetricsLineCharts;
   pieChartsTemplate: PieChartData[];
   selectedYearMetrics?: ProductYearlyMetric;
   yearlyMetrics?: ProductYearlyMetric[];
@@ -1193,11 +1196,11 @@ function createYearlyProductCharts({
 
 export { createProductMetricsCharts, createSelectedDateProductMetrics };
 export type {
-  ProductMetricBarCharts,
-  ProductMetricCalendarCharts,
-  ProductMetricCalendarKey,
-  ProductMetricChartKey,
-  ProductMetricLineCharts,
+  ProductMetricsBarCharts,
+  ProductMetricsCalendarCharts,
+  ProductMetricsCalendarKey,
+  ProductMetricsChartKey,
   ProductMetricsCharts,
+  ProductMetricsLineCharts,
   SelectedDateProductMetrics,
 };

@@ -1,13 +1,13 @@
-import { ProductMetricChartKey } from "../utils";
+import { ProductMetricsChartKey } from "../utils";
 
 type ProductDashboardYearlyState = {
   // revenue
-  revenueBarChartYAxisVariable: ProductMetricChartKey;
-  revenueLineChartYAxisVariable: ProductMetricChartKey;
+  revenueBarChartYAxisVariable: ProductMetricsChartKey;
+  revenueLineChartYAxisVariable: ProductMetricsChartKey;
 
   // units sold
-  unitsSoldBarChartYAxisVariable: ProductMetricChartKey;
-  unitsSoldLineChartYAxisVariable: ProductMetricChartKey;
+  unitsSoldBarChartYAxisVariable: ProductMetricsChartKey;
+  unitsSoldLineChartYAxisVariable: ProductMetricsChartKey;
 };
 
 type ProductDashboardYearlyAction = {
@@ -25,7 +25,7 @@ type ProductDashboardYearlyDispatch = {
     | ProductDashboardYearlyAction["setUnitsSoldBarChartYAxisVariable"]
     | ProductDashboardYearlyAction["setUnitsSoldLineChartYAxisVariable"];
 
-  payload: ProductMetricChartKey;
+  payload: ProductMetricsChartKey;
 };
 
 export type {
