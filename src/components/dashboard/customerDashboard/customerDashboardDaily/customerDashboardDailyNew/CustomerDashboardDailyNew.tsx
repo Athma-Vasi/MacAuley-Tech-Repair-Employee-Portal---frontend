@@ -221,7 +221,7 @@ function CustomerDashboardDailyNew({
   // new -> charts -> line
 
   // new -> charts -> line -> expand chart button
-  const [createdExpandChartButton] = returnAccessibleButtonElements([
+  const [expandChartButton] = returnAccessibleButtonElements([
     {
       buttonLabel: "Expand",
       semanticDescription: `Expand and customize ${lineChartHeading}`,
@@ -275,7 +275,7 @@ function CustomerDashboardDailyNew({
   // new -> charts -> calendar
 
   // new -> charts -> calendar -> expand chart button
-  const [createdExpandCalendarChartButton] = returnAccessibleButtonElements([
+  const [expandCalendarChartButton] = returnAccessibleButtonElements([
     {
       buttonLabel: "Expand",
       semanticDescription: `Expand and customize ${calendarChartHeading}`,
@@ -332,8 +332,8 @@ function CustomerDashboardDailyNew({
       barChartYAxisSelectInput={createdNewBarChartYAxisVariablesSelectInput}
       borderColor={borderColor}
       expandBarChartButton={createdExpandBarChartButton}
-      expandLineChartButton={createdExpandChartButton}
-      expandCalendarChartButton={createdExpandCalendarChartButton}
+      expandLineChartButton={expandChartButton}
+      expandCalendarChartButton={expandCalendarChartButton}
       expandPieChartButton={createdExpandPieChartButton}
       lineChart={displayNewLineChart}
       lineChartHeading={lineChartHeading}

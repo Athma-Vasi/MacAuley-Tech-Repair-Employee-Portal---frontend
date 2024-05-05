@@ -1,45 +1,42 @@
-import { MantineNumberSize } from '@mantine/core';
-import { ChangeEvent, useReducer } from 'react';
-import { LuExpand } from 'react-icons/lu';
-import { useNavigate } from 'react-router-dom';
+import { MantineNumberSize } from "@mantine/core";
+import { ChangeEvent, useReducer } from "react";
+import { LuExpand } from "react-icons/lu";
+import { useNavigate } from "react-router-dom";
 
-import { globalAction } from '../../../../../context/globalProvider/state';
-import { useGlobalState } from '../../../../../hooks';
+import { globalAction } from "../../../../../context/globalProvider/state";
+import { useGlobalState } from "../../../../../hooks";
 import {
   returnAccessibleButtonElements,
   returnAccessibleSelectInputElements,
-} from '../../../../../jsxCreators';
-import { addCommaSeparator, splitCamelCase } from '../../../../../utils';
+} from "../../../../../jsxCreators";
+import { addCommaSeparator, splitCamelCase } from "../../../../../utils";
 import {
   ResponsiveBarChart,
   ResponsiveCalendarChart,
   ResponsiveLineChart,
   ResponsivePieChart,
-} from '../../../../charts';
-import { MONTHS } from '../../../constants';
-import DashboardMetricsLayout from '../../../DashboardMetricsLayout';
-import { FinancialMetricsCards } from '../../../jsxHelpers';
-import { BusinessMetricStoreLocation, Year } from '../../../types';
-import {
-  returnChartTitleNavigateLinks,
-  returnStatistics,
-} from '../../../utils';
+} from "../../../../charts";
+import { MONTHS } from "../../../constants";
+import DashboardMetricsLayout from "../../../DashboardMetricsLayout";
+import { FinancialMetricsCards } from "../../../jsxHelpers";
+import { BusinessMetricStoreLocation, Year } from "../../../types";
+import { returnChartTitleNavigateLinks, returnStatistics } from "../../../utils";
 import {
   FINANCIAL_CALENDAR_Y_AXIS_DATA,
   FINANCIAL_LINE_BAR_Y_AXIS_DATA,
   FINANCIAL_PIE_Y_AXIS_DATA,
-} from '../../constants';
+} from "../../constants";
 import {
   FinancialMetricBarLineObjKey,
   FinancialMetricCalendarObjKey,
   FinancialMetricPieObjKey,
   FinancialMetricsCharts,
-} from '../../utils';
+} from "../../utils";
 import {
   financialDashboardDailyProfitAction,
   financialDashboardDailyProfitReducer,
   initialFinancialDashboardDailyProfitState,
-} from './state';
+} from "./state";
 
 function FinancialDashboardDailyProfit({
   borderColor,
@@ -57,8 +54,8 @@ function FinancialDashboardDailyProfit({
   borderColor: string;
   chartHeight: number;
   chartWidth: number;
-  dailyCardsProfit: FinancialMetricsCards['dailyCards']['profit'];
-  dailyChartsProfit: FinancialMetricsCharts['dailyCharts']['profit'];
+  dailyCardsProfit: FinancialMetricsCards["dailyCards"]["profit"];
+  dailyChartsProfit: FinancialMetricsCharts["dailyCharts"]["profit"];
   day: string;
   month: string;
   padding: MantineNumberSize;
@@ -69,13 +66,11 @@ function FinancialDashboardDailyProfit({
   const { globalDispatch } = useGlobalState();
   const navigate = useNavigate();
 
-  const [
-    financialDashboardDailyProfitState,
-    financialDashboardDailyProfitDispatch,
-  ] = useReducer(
-    financialDashboardDailyProfitReducer,
-    initialFinancialDashboardDailyProfitState
-  );
+  const [financialDashboardDailyProfitState, financialDashboardDailyProfitDispatch] =
+    useReducer(
+      financialDashboardDailyProfitReducer,
+      initialFinancialDashboardDailyProfitState
+    );
 
   const {
     profitBarChartYAxisVariable,
@@ -104,9 +99,9 @@ function FinancialDashboardDailyProfit({
     lineChartHeading,
     pieChartHeading,
   } = returnChartTitleNavigateLinks({
-    calendarView: 'Daily',
-    metricCategory: 'Profit',
-    metricsView: 'Financials',
+    calendarView: "Daily",
+    metricCategory: "Profit",
+    metricsView: "Financials",
     storeLocation,
     yAxisBarChartVariable: profitBarChartYAxisVariable,
     yAxisCalendarChartVariable: profitCalendarChartYAxisVariable,
@@ -123,18 +118,17 @@ function FinancialDashboardDailyProfit({
   // profit -> charts -> pie -> expand chart button
   const [createdExpandPieChartButton] = returnAccessibleButtonElements([
     {
-      buttonLabel: 'Expand',
+      buttonLabel: "Expand",
       semanticDescription: `Expand and customize ${pieChartHeading}`,
-      semanticName: 'Expand Profit Pie Chart',
+      semanticName: "Expand Profit Pie Chart",
       buttonOnClick: () => {
         globalDispatch({
           type: globalAction.setCustomizeChartsPageData,
           payload: {
-            chartData:
-              dailyChartsProfit.pieChartsObj[profitPieChartYAxisVariable],
+            chartData: dailyChartsProfit.pieChartsObj[profitPieChartYAxisVariable],
             chartTitle: pieChartHeading,
-            chartKind: 'pie',
-            chartUnitKind: 'currency',
+            chartKind: "pie",
+            chartUnitKind: "currency",
           },
         });
 
@@ -149,7 +143,7 @@ function FinancialDashboardDailyProfit({
     returnAccessibleSelectInputElements([
       {
         data: FINANCIAL_PIE_Y_AXIS_DATA,
-        label: 'Y-Axis Pie',
+        label: "Y-Axis Pie",
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           financialDashboardDailyProfitDispatch({
             type: financialDashboardDailyProfitAction.setProfitPieChartYAxisVariable,
@@ -175,18 +169,17 @@ function FinancialDashboardDailyProfit({
   // profit -> charts -> bar -> expand chart button
   const [createdExpandBarChartButton] = returnAccessibleButtonElements([
     {
-      buttonLabel: 'Expand',
+      buttonLabel: "Expand",
       semanticDescription: `Expand and customize ${barChartHeading}`,
-      semanticName: 'Expand Profit Bar Chart',
+      semanticName: "Expand Profit Bar Chart",
       buttonOnClick: () => {
         globalDispatch({
           type: globalAction.setCustomizeChartsPageData,
           payload: {
-            chartData:
-              dailyChartsProfit.barChartsObj[profitBarChartYAxisVariable],
+            chartData: dailyChartsProfit.barChartsObj[profitBarChartYAxisVariable],
             chartTitle: barChartHeading,
-            chartKind: 'bar',
-            chartUnitKind: 'currency',
+            chartKind: "bar",
+            chartUnitKind: "currency",
           },
         });
 
@@ -201,7 +194,7 @@ function FinancialDashboardDailyProfit({
     returnAccessibleSelectInputElements([
       {
         data: FINANCIAL_LINE_BAR_Y_AXIS_DATA,
-        label: 'Y-Axis Bar',
+        label: "Y-Axis Bar",
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           financialDashboardDailyProfitDispatch({
             type: financialDashboardDailyProfitAction.setProfitBarChartYAxisVariable,
@@ -227,20 +220,19 @@ function FinancialDashboardDailyProfit({
   // profit -> charts -> line
 
   // profit -> charts -> line -> expand chart button
-  const [createdExpandChartButton] = returnAccessibleButtonElements([
+  const [expandChartButton] = returnAccessibleButtonElements([
     {
-      buttonLabel: 'Expand',
+      buttonLabel: "Expand",
       semanticDescription: `Expand and customize ${lineChartHeading}`,
-      semanticName: 'Expand Profit Line Chart',
+      semanticName: "Expand Profit Line Chart",
       buttonOnClick: () => {
         globalDispatch({
           type: globalAction.setCustomizeChartsPageData,
           payload: {
-            chartData:
-              dailyChartsProfit.lineChartsObj[profitLineChartYAxisVariable],
+            chartData: dailyChartsProfit.lineChartsObj[profitLineChartYAxisVariable],
             chartTitle: lineChartHeading,
-            chartKind: 'line',
-            chartUnitKind: 'currency',
+            chartKind: "line",
+            chartUnitKind: "currency",
           },
         });
 
@@ -255,7 +247,7 @@ function FinancialDashboardDailyProfit({
     returnAccessibleSelectInputElements([
       {
         data: FINANCIAL_LINE_BAR_Y_AXIS_DATA,
-        label: 'Y-Axis Line',
+        label: "Y-Axis Line",
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           financialDashboardDailyProfitDispatch({
             type: financialDashboardDailyProfitAction.setProfitLineChartYAxisVariable,
@@ -271,9 +263,7 @@ function FinancialDashboardDailyProfit({
     <ResponsiveLineChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
-      lineChartData={
-        dailyChartsProfit.lineChartsObj[profitLineChartYAxisVariable]
-      }
+      lineChartData={dailyChartsProfit.lineChartsObj[profitLineChartYAxisVariable]}
       hideControls
       xFormat={(x) => `Day - ${x}`}
       yFormat={(y) => `$${addCommaSeparator(y)}`}
@@ -283,22 +273,20 @@ function FinancialDashboardDailyProfit({
   // profit -> charts -> calendar
 
   // profit -> charts -> calendar -> expand chart button
-  const [createdExpandCalendarChartButton] = returnAccessibleButtonElements([
+  const [expandCalendarChartButton] = returnAccessibleButtonElements([
     {
-      buttonLabel: 'Expand',
+      buttonLabel: "Expand",
       semanticDescription: `Expand and customize ${calendarChartHeading}`,
-      semanticName: 'Expand Profit Calendar Chart',
+      semanticName: "Expand Profit Calendar Chart",
       buttonOnClick: () => {
         globalDispatch({
           type: globalAction.setCustomizeChartsPageData,
           payload: {
             chartData:
-              dailyChartsProfit.calendarChartsObj[
-                profitCalendarChartYAxisVariable
-              ],
+              dailyChartsProfit.calendarChartsObj[profitCalendarChartYAxisVariable],
             chartTitle: calendarChartHeading,
-            chartKind: 'calendar',
-            chartUnitKind: 'currency',
+            chartKind: "calendar",
+            chartUnitKind: "currency",
           },
         });
 
@@ -313,7 +301,7 @@ function FinancialDashboardDailyProfit({
     returnAccessibleSelectInputElements([
       {
         data: FINANCIAL_CALENDAR_Y_AXIS_DATA,
-        label: 'Y-Axis Calendar',
+        label: "Y-Axis Calendar",
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           financialDashboardDailyProfitDispatch({
             type: financialDashboardDailyProfitAction.setProfitCalendarChartYAxisVariable,
@@ -345,15 +333,13 @@ function FinancialDashboardDailyProfit({
       barChartYAxisSelectInput={createdProfitBarChartYAxisVariablesSelectInput}
       borderColor={borderColor}
       expandBarChartButton={createdExpandBarChartButton}
-      expandLineChartButton={createdExpandChartButton}
-      expandCalendarChartButton={createdExpandCalendarChartButton}
+      expandLineChartButton={expandChartButton}
+      expandCalendarChartButton={expandCalendarChartButton}
       expandPieChartButton={createdExpandPieChartButton}
       isMoney
       lineChart={displayProfitLineChart}
       lineChartHeading={lineChartHeading}
-      lineChartYAxisSelectInput={
-        createdProfitLineChartYAxisVariablesSelectInput
-      }
+      lineChartYAxisSelectInput={createdProfitLineChartYAxisVariablesSelectInput}
       overviewCards={dailyCardsProfit}
       padding={padding}
       pieChart={displayProfitPieChart}
@@ -365,9 +351,7 @@ function FinancialDashboardDailyProfit({
       width={width}
       calendarChart={displayProfitCalendarChart}
       calendarChartHeading={calendarChartHeading}
-      calendarChartYAxisSelectInput={
-        createdProfitCalendarChartYAxisVariablesSelectInput
-      }
+      calendarChartYAxisSelectInput={createdProfitCalendarChartYAxisVariablesSelectInput}
     />
   );
 

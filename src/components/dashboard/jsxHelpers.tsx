@@ -2030,18 +2030,18 @@ function returnRepairMetricsCards({
 }
 
 export {
+  createDashboardMetricsCards,
   returnCustomerMetricsCards,
   returnDashboardCardElement,
-  createDashboardMetricsCards,
   returnFinancialMetricsCards,
   returnProductMetricsCards,
   returnRepairMetricsCards,
 };
 export type {
+  CreateDashboardMetricsCardsInput,
   CustomerMetricsCards,
   DashboardCardInfo,
   FinancialMetricsCards,
   ProductMetricsCards,
   RepairMetricsCards,
-  CreateDashboardMetricsCardsInput,
 };

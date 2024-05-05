@@ -5,7 +5,7 @@ import {
   CreateDashboardMetricsCardsInput,
   DashboardCardInfo,
 } from "../jsxHelpers";
-import { SelectedDateRepairMetrics } from "./utilsTemp";
+import { SelectedDateRepairMetrics } from "./utils";
 
 type ReturnRepairMetricsCardsInput = {
   greenColorShade: string;

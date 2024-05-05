@@ -1,42 +1,39 @@
-import { MantineNumberSize } from '@mantine/core';
-import { ChangeEvent, useReducer } from 'react';
-import { LuExpand } from 'react-icons/lu';
-import { useNavigate } from 'react-router-dom';
+import { MantineNumberSize } from "@mantine/core";
+import { ChangeEvent, useReducer } from "react";
+import { LuExpand } from "react-icons/lu";
+import { useNavigate } from "react-router-dom";
 
-import { globalAction } from '../../../../../context/globalProvider/state';
-import { useGlobalState } from '../../../../../hooks';
+import { globalAction } from "../../../../../context/globalProvider/state";
+import { useGlobalState } from "../../../../../hooks";
 import {
   returnAccessibleButtonElements,
   returnAccessibleSelectInputElements,
-} from '../../../../../jsxCreators';
-import { addCommaSeparator, splitCamelCase } from '../../../../../utils';
+} from "../../../../../jsxCreators";
+import { addCommaSeparator, splitCamelCase } from "../../../../../utils";
 import {
   ResponsiveBarChart,
   ResponsiveLineChart,
   ResponsivePieChart,
-} from '../../../../charts';
-import { MONTHS } from '../../../constants';
-import DashboardMetricsLayout from '../../../DashboardMetricsLayout';
-import { FinancialMetricsCards } from '../../../jsxHelpers';
-import { BusinessMetricStoreLocation, Year } from '../../../types';
-import {
-  returnChartTitleNavigateLinks,
-  returnStatistics,
-} from '../../../utils';
+} from "../../../../charts";
+import { MONTHS } from "../../../constants";
+import DashboardMetricsLayout from "../../../DashboardMetricsLayout";
+import { FinancialMetricsCards } from "../../../jsxHelpers";
+import { BusinessMetricStoreLocation, Year } from "../../../types";
+import { returnChartTitleNavigateLinks, returnStatistics } from "../../../utils";
 import {
   FINANCIAL_LINE_BAR_Y_AXIS_DATA,
   FINANCIAL_PIE_Y_AXIS_DATA,
-} from '../../constants';
+} from "../../constants";
 import {
   FinancialMetricBarLineObjKey,
   FinancialMetricPieObjKey,
   FinancialMetricsCharts,
-} from '../../utils';
+} from "../../utils";
 import {
   financialDashboardYearlyRevenueAction,
   financialDashboardYearlyRevenueReducer,
   initialFinancialDashboardYearlyRevenueState,
-} from './state';
+} from "./state";
 
 function FinancialDashboardYearlyRevenue({
   borderColor,
@@ -54,8 +51,8 @@ function FinancialDashboardYearlyRevenue({
   borderColor: string;
   chartHeight: number;
   chartWidth: number;
-  yearlyCardsRevenue: FinancialMetricsCards['yearlyCards']['revenue'];
-  yearlyChartsRevenue: FinancialMetricsCharts['yearlyCharts']['revenue'];
+  yearlyCardsRevenue: FinancialMetricsCards["yearlyCards"]["revenue"];
+  yearlyChartsRevenue: FinancialMetricsCharts["yearlyCharts"]["revenue"];
   day: string;
   month: string;
   padding: MantineNumberSize;
@@ -66,13 +63,11 @@ function FinancialDashboardYearlyRevenue({
   const { globalDispatch } = useGlobalState();
   const navigate = useNavigate();
 
-  const [
-    financialDashboardYearlyRevenueState,
-    financialDashboardYearlyRevenueDispatch,
-  ] = useReducer(
-    financialDashboardYearlyRevenueReducer,
-    initialFinancialDashboardYearlyRevenueState
-  );
+  const [financialDashboardYearlyRevenueState, financialDashboardYearlyRevenueDispatch] =
+    useReducer(
+      financialDashboardYearlyRevenueReducer,
+      initialFinancialDashboardYearlyRevenueState
+    );
 
   const {
     revenueBarChartYAxisVariable,
@@ -98,9 +93,9 @@ function FinancialDashboardYearlyRevenue({
     lineChartHeading,
     pieChartHeading,
   } = returnChartTitleNavigateLinks({
-    calendarView: 'Yearly',
-    metricCategory: 'Revenue',
-    metricsView: 'Financials',
+    calendarView: "Yearly",
+    metricCategory: "Revenue",
+    metricsView: "Financials",
     storeLocation,
     yAxisBarChartVariable: revenueBarChartYAxisVariable,
     yAxisLineChartVariable: revenueLineChartYAxisVariable,
@@ -116,18 +111,17 @@ function FinancialDashboardYearlyRevenue({
   // revenue -> charts -> pie -> expand chart button
   const [createdExpandPieChartButton] = returnAccessibleButtonElements([
     {
-      buttonLabel: 'Expand',
+      buttonLabel: "Expand",
       semanticDescription: `Expand and customize ${pieChartHeading}`,
-      semanticName: 'Expand Revenue Pie Chart',
+      semanticName: "Expand Revenue Pie Chart",
       buttonOnClick: () => {
         globalDispatch({
           type: globalAction.setCustomizeChartsPageData,
           payload: {
-            chartData:
-              yearlyChartsRevenue.pieChartsObj[revenuePieChartYAxisVariable],
+            chartData: yearlyChartsRevenue.pieChartsObj[revenuePieChartYAxisVariable],
             chartTitle: pieChartHeading,
-            chartKind: 'pie',
-            chartUnitKind: 'currency',
+            chartKind: "pie",
+            chartUnitKind: "currency",
           },
         });
 
@@ -142,7 +136,7 @@ function FinancialDashboardYearlyRevenue({
     returnAccessibleSelectInputElements([
       {
         data: FINANCIAL_PIE_Y_AXIS_DATA,
-        label: 'Y-Axis Pie',
+        label: "Y-Axis Pie",
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           financialDashboardYearlyRevenueDispatch({
             type: financialDashboardYearlyRevenueAction.setRevenuePieChartYAxisVariable,
@@ -158,9 +152,7 @@ function FinancialDashboardYearlyRevenue({
     <ResponsivePieChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
-      pieChartData={
-        yearlyChartsRevenue.pieChartsObj[revenuePieChartYAxisVariable]
-      }
+      pieChartData={yearlyChartsRevenue.pieChartsObj[revenuePieChartYAxisVariable]}
       hideControls
     />
   );
@@ -170,18 +162,17 @@ function FinancialDashboardYearlyRevenue({
   // revenue -> charts -> bar -> expand chart button
   const [createdExpandBarChartButton] = returnAccessibleButtonElements([
     {
-      buttonLabel: 'Expand',
+      buttonLabel: "Expand",
       semanticDescription: `Expand and customize ${barChartHeading}`,
-      semanticName: 'Expand Revenue Bar Chart',
+      semanticName: "Expand Revenue Bar Chart",
       buttonOnClick: () => {
         globalDispatch({
           type: globalAction.setCustomizeChartsPageData,
           payload: {
-            chartData:
-              yearlyChartsRevenue.barChartsObj[revenueBarChartYAxisVariable],
+            chartData: yearlyChartsRevenue.barChartsObj[revenueBarChartYAxisVariable],
             chartTitle: barChartHeading,
-            chartKind: 'bar',
-            chartUnitKind: 'currency',
+            chartKind: "bar",
+            chartUnitKind: "currency",
           },
         });
 
@@ -196,7 +187,7 @@ function FinancialDashboardYearlyRevenue({
     returnAccessibleSelectInputElements([
       {
         data: FINANCIAL_LINE_BAR_Y_AXIS_DATA,
-        label: 'Y-Axis Bar',
+        label: "Y-Axis Bar",
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           financialDashboardYearlyRevenueDispatch({
             type: financialDashboardYearlyRevenueAction.setRevenueBarChartYAxisVariable,
@@ -210,9 +201,7 @@ function FinancialDashboardYearlyRevenue({
   // revenue -> charts -> bar -> display
   const displayRevenueBarChart = (
     <ResponsiveBarChart
-      barChartData={
-        yearlyChartsRevenue.barChartsObj[revenueBarChartYAxisVariable]
-      }
+      barChartData={yearlyChartsRevenue.barChartsObj[revenueBarChartYAxisVariable]}
       indexBy="Years"
       keys={FINANCIAL_LINE_BAR_Y_AXIS_DATA.map((obj) => obj.label)}
       chartHeight={chartHeight}
@@ -224,20 +213,19 @@ function FinancialDashboardYearlyRevenue({
   // revenue -> charts -> line
 
   // revenue -> charts -> line -> expand chart button
-  const [createdExpandLineChartButton] = returnAccessibleButtonElements([
+  const [expandLineChartButton] = returnAccessibleButtonElements([
     {
-      buttonLabel: 'Expand',
+      buttonLabel: "Expand",
       semanticDescription: `Expand and customize ${lineChartHeading}`,
-      semanticName: 'Expand Revenue Line Chart',
+      semanticName: "Expand Revenue Line Chart",
       buttonOnClick: () => {
         globalDispatch({
           type: globalAction.setCustomizeChartsPageData,
           payload: {
-            chartData:
-              yearlyChartsRevenue.lineChartsObj[revenueLineChartYAxisVariable],
+            chartData: yearlyChartsRevenue.lineChartsObj[revenueLineChartYAxisVariable],
             chartTitle: lineChartHeading,
-            chartKind: 'line',
-            chartUnitKind: 'currency',
+            chartKind: "line",
+            chartUnitKind: "currency",
           },
         });
 
@@ -252,7 +240,7 @@ function FinancialDashboardYearlyRevenue({
     returnAccessibleSelectInputElements([
       {
         data: FINANCIAL_LINE_BAR_Y_AXIS_DATA,
-        label: 'Y-Axis Line',
+        label: "Y-Axis Line",
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           financialDashboardYearlyRevenueDispatch({
             type: financialDashboardYearlyRevenueAction.setRevenueLineChartYAxisVariable,
@@ -268,9 +256,7 @@ function FinancialDashboardYearlyRevenue({
     <ResponsiveLineChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
-      lineChartData={
-        yearlyChartsRevenue.lineChartsObj[revenueLineChartYAxisVariable]
-      }
+      lineChartData={yearlyChartsRevenue.lineChartsObj[revenueLineChartYAxisVariable]}
       hideControls
       yFormat={(y) => `$${addCommaSeparator(y)}`}
     />
@@ -283,14 +269,12 @@ function FinancialDashboardYearlyRevenue({
       barChartYAxisSelectInput={createdRevenueBarChartYAxisVariablesSelectInput}
       borderColor={borderColor}
       expandBarChartButton={createdExpandBarChartButton}
-      expandLineChartButton={createdExpandLineChartButton}
+      expandLineChartButton={expandLineChartButton}
       expandPieChartButton={createdExpandPieChartButton}
       isMoney
       lineChart={displayRevenueLineChart}
       lineChartHeading={lineChartHeading}
-      lineChartYAxisSelectInput={
-        createdRevenueLineChartYAxisVariablesSelectInput
-      }
+      lineChartYAxisSelectInput={createdRevenueLineChartYAxisVariablesSelectInput}
       overviewCards={yearlyCardsRevenue}
       padding={padding}
       pieChart={displayRevenuePieChart}

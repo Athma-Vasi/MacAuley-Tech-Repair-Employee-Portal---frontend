@@ -1,37 +1,31 @@
-import { MantineNumberSize } from '@mantine/core';
-import { ChangeEvent, useReducer } from 'react';
-import { LuExpand } from 'react-icons/lu';
-import { useNavigate } from 'react-router-dom';
+import { MantineNumberSize } from "@mantine/core";
+import { ChangeEvent, useReducer } from "react";
+import { LuExpand } from "react-icons/lu";
+import { useNavigate } from "react-router-dom";
 
-import { globalAction } from '../../../../../context/globalProvider/state';
-import { useGlobalState } from '../../../../../hooks';
+import { globalAction } from "../../../../../context/globalProvider/state";
+import { useGlobalState } from "../../../../../hooks";
 import {
   returnAccessibleButtonElements,
   returnAccessibleSelectInputElements,
-} from '../../../../../jsxCreators';
-import { splitCamelCase } from '../../../../../utils';
+} from "../../../../../jsxCreators";
+import { splitCamelCase } from "../../../../../utils";
 import {
   ResponsiveBarChart,
   ResponsiveLineChart,
   ResponsivePieChart,
-} from '../../../../charts';
-import DashboardMetricsLayout from '../../../DashboardMetricsLayout';
-import { CustomerMetricsCards } from '../../../jsxHelpers';
-import { BusinessMetricStoreLocation, Year } from '../../../types';
-import {
-  returnChartTitleNavigateLinks,
-  returnStatistics,
-} from '../../../utils';
-import { CUSTOMER_CHURN_RETENTION_Y_AXIS_DATA } from '../../constants';
-import {
-  CustomerChurnRetentionObjKey,
-  CustomerMetricsCharts,
-} from '../../utils';
+} from "../../../../charts";
+import DashboardMetricsLayout from "../../../DashboardMetricsLayout";
+import { CustomerMetricsCards } from "../../../jsxHelpers";
+import { BusinessMetricStoreLocation, Year } from "../../../types";
+import { returnChartTitleNavigateLinks, returnStatistics } from "../../../utils";
+import { CUSTOMER_CHURN_RETENTION_Y_AXIS_DATA } from "../../constants";
+import { CustomerChurnRetentionObjKey, CustomerMetricsCharts } from "../../utils";
 import {
   customerDashboardYearlyOtherMetricsAction,
   customerDashboardYearlyOtherMetricsReducer,
   initialCustomerDashboardYearlyOtherMetricsState,
-} from './state';
+} from "./state";
 
 function CustomerDashboardYearlyOtherMetrics({
   borderColor,
@@ -47,11 +41,10 @@ function CustomerDashboardYearlyOtherMetrics({
   borderColor: string;
   chartHeight: number;
   chartWidth: number;
-  yearlyCardsOtherMetrics: CustomerMetricsCards['yearlyCards'][
-    | 'churnRate'
-    | 'retentionRate'];
-  yearlyChartsOtherMetrics: CustomerMetricsCharts['yearlyCharts'][
-    | 'churnRetention'];
+  yearlyCardsOtherMetrics: CustomerMetricsCards["yearlyCards"][
+    | "churnRate"
+    | "retentionRate"];
+  yearlyChartsOtherMetrics: CustomerMetricsCharts["yearlyCharts"]["churnRetention"];
   padding: MantineNumberSize;
   storeLocation: BusinessMetricStoreLocation;
   width: number;
@@ -68,18 +61,15 @@ function CustomerDashboardYearlyOtherMetrics({
     initialCustomerDashboardYearlyOtherMetricsState
   );
 
-  const {
-    otherMetricsBarChartYAxisVariable,
-    otherMetricsLineChartYAxisVariable,
-  } = customerDashboardYearlyOtherMetricsState;
+  const { otherMetricsBarChartYAxisVariable, otherMetricsLineChartYAxisVariable } =
+    customerDashboardYearlyOtherMetricsState;
 
   // churn & retention rate
 
   // churn & retention rate -> statistics
-  const statisticsYearlyChurnRetention =
-    returnStatistics<CustomerChurnRetentionObjKey>(
-      yearlyChartsOtherMetrics.barChartsObj
-    );
+  const statisticsYearlyChurnRetention = returnStatistics<CustomerChurnRetentionObjKey>(
+    yearlyChartsOtherMetrics.barChartsObj
+  );
 
   // churn & retention rate -> charts -> headings & navlinks
   const {
@@ -90,30 +80,30 @@ function CustomerDashboardYearlyOtherMetrics({
     lineChartHeading,
     pieChartHeading,
   } = returnChartTitleNavigateLinks({
-    calendarView: 'Yearly',
-    metricCategory: '',
-    metricsView: 'Customers',
+    calendarView: "Yearly",
+    metricCategory: "",
+    metricsView: "Customers",
     storeLocation,
     yAxisBarChartVariable: otherMetricsBarChartYAxisVariable,
     yAxisLineChartVariable: otherMetricsLineChartYAxisVariable,
-    yAxisPieChartVariable: 'Churn and Retention Rates',
+    yAxisPieChartVariable: "Churn and Retention Rates",
     year,
   });
 
   // churn & retention rate -> charts -> pie -> expand chart button
   const [createdExpandPieChartButton] = returnAccessibleButtonElements([
     {
-      buttonLabel: 'Expand',
+      buttonLabel: "Expand",
       semanticDescription: `Expand and customize ${pieChartHeading}`,
-      semanticName: 'Expand Churn And Retention Rate Pie Chart',
+      semanticName: "Expand Churn And Retention Rate Pie Chart",
       buttonOnClick: () => {
         globalDispatch({
           type: globalAction.setCustomizeChartsPageData,
           payload: {
             chartData: yearlyChartsOtherMetrics.pieChartObj,
             chartTitle: pieChartHeading,
-            chartKind: 'pie',
-            chartUnitKind: 'percent',
+            chartKind: "pie",
+            chartUnitKind: "percent",
           },
         });
 
@@ -139,20 +129,18 @@ function CustomerDashboardYearlyOtherMetrics({
   // churn & retention rate -> charts -> bar -> expand chart button
   const [createdExpandBarChartButton] = returnAccessibleButtonElements([
     {
-      buttonLabel: 'Expand',
+      buttonLabel: "Expand",
       semanticDescription: `Expand and customize ${barChartHeading}`,
-      semanticName: 'Expand Churn And Retention Rate Bar Chart',
+      semanticName: "Expand Churn And Retention Rate Bar Chart",
       buttonOnClick: () => {
         globalDispatch({
           type: globalAction.setCustomizeChartsPageData,
           payload: {
             chartData:
-              yearlyChartsOtherMetrics.barChartsObj[
-                otherMetricsBarChartYAxisVariable
-              ],
+              yearlyChartsOtherMetrics.barChartsObj[otherMetricsBarChartYAxisVariable],
             chartTitle: barChartHeading,
-            chartKind: 'bar',
-            chartUnitKind: 'percent',
+            chartKind: "bar",
+            chartUnitKind: "percent",
           },
         });
 
@@ -167,7 +155,7 @@ function CustomerDashboardYearlyOtherMetrics({
     returnAccessibleSelectInputElements([
       {
         data: CUSTOMER_CHURN_RETENTION_Y_AXIS_DATA,
-        label: 'Y-Axis Bar',
+        label: "Y-Axis Bar",
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           customerDashboardYearlyOtherMetricsDispatch({
             type: customerDashboardYearlyOtherMetricsAction.setOtherMetricsBarChartYAxisVariable,
@@ -196,22 +184,20 @@ function CustomerDashboardYearlyOtherMetrics({
   // churn & retention rate -> charts -> line
 
   // churn & retention rate -> charts -> line -> expand chart button
-  const [createdExpandLineChartButton] = returnAccessibleButtonElements([
+  const [expandLineChartButton] = returnAccessibleButtonElements([
     {
-      buttonLabel: 'Expand',
+      buttonLabel: "Expand",
       semanticDescription: `Expand and customize ${lineChartHeading}`,
-      semanticName: 'Expand Churn And Retention Rate Line Chart',
+      semanticName: "Expand Churn And Retention Rate Line Chart",
       buttonOnClick: () => {
         globalDispatch({
           type: globalAction.setCustomizeChartsPageData,
           payload: {
             chartData:
-              yearlyChartsOtherMetrics.lineChartsObj[
-                otherMetricsLineChartYAxisVariable
-              ],
+              yearlyChartsOtherMetrics.lineChartsObj[otherMetricsLineChartYAxisVariable],
             chartTitle: lineChartHeading,
-            chartKind: 'line',
-            chartUnitKind: 'percent',
+            chartKind: "line",
+            chartUnitKind: "percent",
           },
         });
 
@@ -226,7 +212,7 @@ function CustomerDashboardYearlyOtherMetrics({
     returnAccessibleSelectInputElements([
       {
         data: CUSTOMER_CHURN_RETENTION_Y_AXIS_DATA,
-        label: 'Y-Axis Line',
+        label: "Y-Axis Line",
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           customerDashboardYearlyOtherMetricsDispatch({
             type: customerDashboardYearlyOtherMetricsAction.setOtherMetricsLineChartYAxisVariable,
@@ -243,9 +229,7 @@ function CustomerDashboardYearlyOtherMetrics({
       chartHeight={chartHeight}
       chartWidth={chartWidth}
       lineChartData={
-        yearlyChartsOtherMetrics.lineChartsObj[
-          otherMetricsLineChartYAxisVariable
-        ]
+        yearlyChartsOtherMetrics.lineChartsObj[otherMetricsLineChartYAxisVariable]
       }
       hideControls
       xFormat={(x) => `Year - ${x}`}
@@ -258,25 +242,19 @@ function CustomerDashboardYearlyOtherMetrics({
     <DashboardMetricsLayout
       barChart={displayChurnRetentionBarChart}
       barChartHeading={barChartHeading}
-      barChartYAxisSelectInput={
-        createdChurnRetentionBarChartYAxisVariablesSelectInput
-      }
+      barChartYAxisSelectInput={createdChurnRetentionBarChartYAxisVariablesSelectInput}
       borderColor={borderColor}
       expandBarChartButton={createdExpandBarChartButton}
-      expandLineChartButton={createdExpandLineChartButton}
+      expandLineChartButton={expandLineChartButton}
       expandPieChartButton={createdExpandPieChartButton}
       lineChart={displayChurnRetentionLineChart}
       lineChartHeading={lineChartHeading}
-      lineChartYAxisSelectInput={
-        createdChurnRetentionLineChartYAxisVariablesSelectInput
-      }
+      lineChartYAxisSelectInput={createdChurnRetentionLineChartYAxisVariablesSelectInput}
       overviewCards={[...yearlyCardsOtherMetrics]}
       padding={padding}
       pieChart={displayChurnRetentionPieChart}
       pieChartHeading={pieChartHeading}
-      sectionHeading={`${splitCamelCase(
-        storeLocation
-      )} Churn and Retention Rates`}
+      sectionHeading={`${splitCamelCase(storeLocation)} Churn and Retention Rates`}
       statisticsMap={statisticsYearlyChurnRetention}
       width={width}
     />

@@ -193,7 +193,7 @@ function CustomerDashboardDailyOverview({
   // overview -> charts -> line
 
   // overview -> charts -> line -> expand chart button
-  const [createdExpandLineChartButton] = returnAccessibleButtonElements([
+  const [expandLineChartButton] = returnAccessibleButtonElements([
     {
       buttonLabel: "Expand",
       semanticDescription: `Expand and customize ${lineChartHeading}`,
@@ -247,7 +247,7 @@ function CustomerDashboardDailyOverview({
   // overview -> charts -> calendar
 
   // overview -> charts -> calendar -> expand chart button
-  const [createdExpandCalendarChartButton] = returnAccessibleButtonElements([
+  const [expandCalendarChartButton] = returnAccessibleButtonElements([
     {
       buttonLabel: "Expand",
       semanticDescription: `Expand and customize ${calendarChartHeading}`,
@@ -307,8 +307,8 @@ function CustomerDashboardDailyOverview({
       barChartYAxisSelectInput={createdOverviewBarChartYAxisVariablesSelectInput}
       borderColor={borderColor}
       expandBarChartButton={createdExpandBarChartButton}
-      expandLineChartButton={createdExpandLineChartButton}
-      expandCalendarChartButton={createdExpandCalendarChartButton}
+      expandLineChartButton={expandLineChartButton}
+      expandCalendarChartButton={expandCalendarChartButton}
       expandPieChartButton={createdExpandPieChartButton}
       lineChart={displayOverviewLineChart}
       lineChartHeading={lineChartHeading}

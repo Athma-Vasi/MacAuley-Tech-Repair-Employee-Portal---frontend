@@ -102,7 +102,7 @@ function DashboardMetricsLayout({
     </Tooltip>
   );
 
-  const displayBarChartSection = (
+  const barChartSection = (
     <Stack pb={padding} style={{ borderBottom: borderColor }} align="center">
       <Title order={4}>Bar Chart</Title>
       <Group w="100%" position="center" align="flex-end">
@@ -128,7 +128,7 @@ function DashboardMetricsLayout({
     </Tooltip>
   );
 
-  const displayCalendarChartSection = calendarChart ? (
+  const calendarChartSection = calendarChart ? (
     <Stack pb={padding} style={{ borderBottom: borderColor }} align="center">
       <Title order={4}>Calendar Chart</Title>
       <Group w="100%" position="center" align="flex-end">
@@ -154,7 +154,7 @@ function DashboardMetricsLayout({
     </Tooltip>
   );
 
-  const displayLineChartSection = (
+  const lineChartSection = (
     <Stack pb={padding} style={{ borderBottom: borderColor }} align="center">
       <Title order={4}>Line Chart</Title>
       <Group w="100%" position="center" align="flex-end">
@@ -287,9 +287,9 @@ function DashboardMetricsLayout({
       {displayCards}
       {displayStatisticsSection}
       {displayPieChartSection}
-      {displayBarChartSection}
-      {displayLineChartSection}
-      {displayCalendarChartSection}
+      {barChartSection}
+      {lineChartSection}
+      {calendarChartSection}
     </Stack>
   );
 

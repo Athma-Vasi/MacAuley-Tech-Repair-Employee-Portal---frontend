@@ -1,38 +1,32 @@
-import { MantineNumberSize } from '@mantine/core';
-import { ChangeEvent, useReducer } from 'react';
-import { LuExpand } from 'react-icons/lu';
-import { useNavigate } from 'react-router-dom';
+import { MantineNumberSize } from "@mantine/core";
+import { ChangeEvent, useReducer } from "react";
+import { LuExpand } from "react-icons/lu";
+import { useNavigate } from "react-router-dom";
 
-import { globalAction } from '../../../../../context/globalProvider/state';
-import { useGlobalState } from '../../../../../hooks';
+import { globalAction } from "../../../../../context/globalProvider/state";
+import { useGlobalState } from "../../../../../hooks";
 import {
   returnAccessibleButtonElements,
   returnAccessibleSelectInputElements,
-} from '../../../../../jsxCreators';
-import { addCommaSeparator, splitCamelCase } from '../../../../../utils';
+} from "../../../../../jsxCreators";
+import { addCommaSeparator, splitCamelCase } from "../../../../../utils";
 import {
   ResponsiveBarChart,
   ResponsiveCalendarChart,
   ResponsiveLineChart,
-} from '../../../../charts';
-import { MONTHS } from '../../../constants';
-import DashboardMetricsLayout from '../../../DashboardMetricsLayout';
-import { FinancialMetricsCards } from '../../../jsxHelpers';
-import { BusinessMetricStoreLocation, Year } from '../../../types';
-import {
-  returnChartTitleNavigateLinks,
-  returnStatistics,
-} from '../../../utils';
-import { FINANCIAL_OTHER_METRICS_Y_AXIS_DATA } from '../../constants';
-import {
-  FinancialMetricsCharts,
-  FinancialOtherMetricsObjKey,
-} from '../../utils';
+} from "../../../../charts";
+import { MONTHS } from "../../../constants";
+import DashboardMetricsLayout from "../../../DashboardMetricsLayout";
+import { FinancialMetricsCards } from "../../../jsxHelpers";
+import { BusinessMetricStoreLocation, Year } from "../../../types";
+import { returnChartTitleNavigateLinks, returnStatistics } from "../../../utils";
+import { FINANCIAL_OTHER_METRICS_Y_AXIS_DATA } from "../../constants";
+import { FinancialMetricsCharts, FinancialOtherMetricsObjKey } from "../../utils";
 import {
   financialDashboardDailyOtherMetricsAction,
   financialDashboardDailyOtherMetricsReducer,
   initialFinancialDashboardDailyOtherMetricsState,
-} from './state';
+} from "./state";
 
 function FinancialDashboardDailyOtherMetrics({
   borderColor,
@@ -50,8 +44,8 @@ function FinancialDashboardDailyOtherMetrics({
   borderColor: string;
   chartHeight: number;
   chartWidth: number;
-  dailyCardsOtherMetrics: FinancialMetricsCards['dailyCards']['otherMetrics'];
-  dailyChartsOtherMetrics: FinancialMetricsCharts['dailyCharts']['otherMetrics'];
+  dailyCardsOtherMetrics: FinancialMetricsCards["dailyCards"]["otherMetrics"];
+  dailyChartsOtherMetrics: FinancialMetricsCharts["dailyCharts"]["otherMetrics"];
   day: string;
   month: string;
   padding: MantineNumberSize;
@@ -94,9 +88,9 @@ function FinancialDashboardDailyOtherMetrics({
     expandLineChartNavigateLink,
     lineChartHeading,
   } = returnChartTitleNavigateLinks({
-    calendarView: 'Daily',
-    metricCategory: '',
-    metricsView: 'Financials',
+    calendarView: "Daily",
+    metricCategory: "",
+    metricsView: "Financials",
     storeLocation,
     yAxisBarChartVariable: otherMetricsBarChartYAxisVariable,
     yAxisCalendarChartVariable: otherMetricsCalendarChartYAxisVariable,
@@ -112,23 +106,21 @@ function FinancialDashboardDailyOtherMetrics({
   // otherMetrics -> charts -> bar -> expand chart button
   const [createdExpandBarChartButton] = returnAccessibleButtonElements([
     {
-      buttonLabel: 'Expand',
+      buttonLabel: "Expand",
       semanticDescription: `Expand and customize ${barChartHeading}`,
-      semanticName: 'Expand Other Metrics Bar Chart',
+      semanticName: "Expand Other Metrics Bar Chart",
       buttonOnClick: () => {
         globalDispatch({
           type: globalAction.setCustomizeChartsPageData,
           payload: {
             chartData:
-              dailyChartsOtherMetrics.barChartsObj[
-                otherMetricsBarChartYAxisVariable
-              ],
+              dailyChartsOtherMetrics.barChartsObj[otherMetricsBarChartYAxisVariable],
             chartTitle: barChartHeading,
-            chartKind: 'bar',
+            chartKind: "bar",
             chartUnitKind:
-              otherMetricsBarChartYAxisVariable === 'averageOrderValue'
-                ? 'currency'
-                : 'percent',
+              otherMetricsBarChartYAxisVariable === "averageOrderValue"
+                ? "currency"
+                : "percent",
           },
         });
 
@@ -143,7 +135,7 @@ function FinancialDashboardDailyOtherMetrics({
     returnAccessibleSelectInputElements([
       {
         data: FINANCIAL_OTHER_METRICS_Y_AXIS_DATA,
-        label: 'Y-Axis Bar',
+        label: "Y-Axis Bar",
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           financialDashboardDailyOtherMetricsDispatch({
             type: financialDashboardDailyOtherMetricsAction.setOtherMetricsBarChartYAxisVariable,
@@ -166,9 +158,7 @@ function FinancialDashboardDailyOtherMetrics({
       chartWidth={chartWidth}
       hideControls
       unitKind={
-        otherMetricsBarChartYAxisVariable === 'averageOrderValue'
-          ? 'currency'
-          : 'percent'
+        otherMetricsBarChartYAxisVariable === "averageOrderValue" ? "currency" : "percent"
       }
     />
   );
@@ -176,25 +166,23 @@ function FinancialDashboardDailyOtherMetrics({
   // otherMetrics -> charts -> line
 
   // otherMetrics -> charts -> line -> expand chart button
-  const [createdExpandLineChartButton] = returnAccessibleButtonElements([
+  const [expandLineChartButton] = returnAccessibleButtonElements([
     {
-      buttonLabel: 'Expand',
+      buttonLabel: "Expand",
       semanticDescription: `Expand and customize ${lineChartHeading}`,
-      semanticName: 'Expand Other Metrics Line Chart',
+      semanticName: "Expand Other Metrics Line Chart",
       buttonOnClick: () => {
         globalDispatch({
           type: globalAction.setCustomizeChartsPageData,
           payload: {
             chartData:
-              dailyChartsOtherMetrics.lineChartsObj[
-                otherMetricsLineChartYAxisVariable
-              ],
+              dailyChartsOtherMetrics.lineChartsObj[otherMetricsLineChartYAxisVariable],
             chartTitle: lineChartHeading,
-            chartKind: 'line',
+            chartKind: "line",
             chartUnitKind:
-              otherMetricsLineChartYAxisVariable === 'averageOrderValue'
-                ? 'currency'
-                : 'percent',
+              otherMetricsLineChartYAxisVariable === "averageOrderValue"
+                ? "currency"
+                : "percent",
           },
         });
 
@@ -209,7 +197,7 @@ function FinancialDashboardDailyOtherMetrics({
     returnAccessibleSelectInputElements([
       {
         data: FINANCIAL_OTHER_METRICS_Y_AXIS_DATA,
-        label: 'Y-Axis Line',
+        label: "Y-Axis Line",
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           financialDashboardDailyOtherMetricsDispatch({
             type: financialDashboardDailyOtherMetricsAction.setOtherMetricsLineChartYAxisVariable,
@@ -226,21 +214,19 @@ function FinancialDashboardDailyOtherMetrics({
       chartHeight={chartHeight}
       chartWidth={chartWidth}
       lineChartData={
-        dailyChartsOtherMetrics.lineChartsObj[
-          otherMetricsLineChartYAxisVariable
-        ]
+        dailyChartsOtherMetrics.lineChartsObj[otherMetricsLineChartYAxisVariable]
       }
       hideControls
       xFormat={(x) => `Day - ${x}`}
       yFormat={(y) =>
-        otherMetricsLineChartYAxisVariable === 'averageOrderValue'
+        otherMetricsLineChartYAxisVariable === "averageOrderValue"
           ? `$${addCommaSeparator(y)}`
           : `${addCommaSeparator(y)} %`
       }
       unitKind={
-        otherMetricsLineChartYAxisVariable === 'averageOrderValue'
-          ? 'currency'
-          : 'percent'
+        otherMetricsLineChartYAxisVariable === "averageOrderValue"
+          ? "currency"
+          : "percent"
       }
     />
   );
@@ -248,11 +234,11 @@ function FinancialDashboardDailyOtherMetrics({
   // otherMetrics -> charts -> calendar
 
   // otherMetrics -> charts -> calendar -> expand chart button
-  const [createdExpandCalendarChartButton] = returnAccessibleButtonElements([
+  const [expandCalendarChartButton] = returnAccessibleButtonElements([
     {
-      buttonLabel: 'Expand',
+      buttonLabel: "Expand",
       semanticDescription: `Expand and customize ${calendarChartHeading}`,
-      semanticName: 'Expand Other Metrics Calendar Chart',
+      semanticName: "Expand Other Metrics Calendar Chart",
       buttonOnClick: () => {
         globalDispatch({
           type: globalAction.setCustomizeChartsPageData,
@@ -262,11 +248,11 @@ function FinancialDashboardDailyOtherMetrics({
                 otherMetricsCalendarChartYAxisVariable
               ],
             chartTitle: calendarChartHeading,
-            chartKind: 'calendar',
+            chartKind: "calendar",
             chartUnitKind:
-              otherMetricsCalendarChartYAxisVariable === 'averageOrderValue'
-                ? 'currency'
-                : 'percent',
+              otherMetricsCalendarChartYAxisVariable === "averageOrderValue"
+                ? "currency"
+                : "percent",
           },
         });
 
@@ -281,7 +267,7 @@ function FinancialDashboardDailyOtherMetrics({
     returnAccessibleSelectInputElements([
       {
         data: FINANCIAL_OTHER_METRICS_Y_AXIS_DATA,
-        label: 'Y-Axis Calendar',
+        label: "Y-Axis Calendar",
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           financialDashboardDailyOtherMetricsDispatch({
             type: financialDashboardDailyOtherMetricsAction.setOtherMetricsCalendarChartYAxisVariable,
@@ -296,9 +282,7 @@ function FinancialDashboardDailyOtherMetrics({
   const displayOtherMetricsCalendarChart = (
     <ResponsiveCalendarChart
       calendarChartData={
-        dailyChartsOtherMetrics.calendarChartsObj[
-          otherMetricsCalendarChartYAxisVariable
-        ]
+        dailyChartsOtherMetrics.calendarChartsObj[otherMetricsCalendarChartYAxisVariable]
       }
       from={`${year}-${month}-01`}
       chartHeight={chartHeight}
@@ -312,18 +296,14 @@ function FinancialDashboardDailyOtherMetrics({
     <DashboardMetricsLayout
       barChart={displayOtherMetricsBarChart}
       barChartHeading={barChartHeading}
-      barChartYAxisSelectInput={
-        createdOtherMetricsBarChartYAxisVariablesSelectInput
-      }
+      barChartYAxisSelectInput={createdOtherMetricsBarChartYAxisVariablesSelectInput}
       borderColor={borderColor}
       expandBarChartButton={createdExpandBarChartButton}
-      expandLineChartButton={createdExpandLineChartButton}
-      expandCalendarChartButton={createdExpandCalendarChartButton}
+      expandLineChartButton={expandLineChartButton}
+      expandCalendarChartButton={expandCalendarChartButton}
       lineChart={displayOtherMetricsLineChart}
       lineChartHeading={lineChartHeading}
-      lineChartYAxisSelectInput={
-        createdOtherMetricsLineChartYAxisVariablesSelectInput
-      }
+      lineChartYAxisSelectInput={createdOtherMetricsLineChartYAxisVariablesSelectInput}
       overviewCards={dailyCardsOtherMetrics}
       padding={padding}
       sectionHeading={`${splitCamelCase(storeLocation)} Daily Other Metrics`}

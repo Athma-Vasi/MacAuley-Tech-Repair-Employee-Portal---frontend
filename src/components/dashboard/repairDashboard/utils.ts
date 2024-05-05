@@ -12,7 +12,15 @@ import {
   Year,
 } from "../types";
 
-type ReturnSelectedDateRepairMetricsInput = {
+type RepairMetricChartsKey = "unitsRepaired" | "revenue";
+type RepairMetricBarCharts = Record<RepairMetricChartsKey, BarChartData[]>;
+type RepairMetricCalendarCharts = Record<RepairMetricChartsKey, CalendarChartData[]>;
+type RepairMetricLineCharts = {
+  revenue: { id: "Revenue"; data: { x: string; y: number }[] }[];
+  unitsRepaired: { id: "Units Repaired"; data: { x: string; y: number }[] }[];
+};
+
+type CreateSelectedDateRepairMetricsInput = {
   businessMetrics: BusinessMetric[];
   day: string;
   month: Month;
@@ -37,7 +45,7 @@ type SelectedDateRepairMetrics = {
   };
 };
 
-function returnSelectedDateRepairMetrics({
+function createSelectedDateRepairMetrics({
   businessMetrics,
   day,
   month,
@@ -45,18 +53,15 @@ function returnSelectedDateRepairMetrics({
   selectedRepairCategory,
   storeLocation,
   year,
-}: ReturnSelectedDateRepairMetricsInput): SelectedDateRepairMetrics {
-  // selected store's business metrics
+}: CreateSelectedDateRepairMetricsInput): SelectedDateRepairMetrics {
   const currentStoreMetrics = businessMetrics.find(
     (businessMetric) => businessMetric.storeLocation === storeLocation
   );
 
-  // selected business metrics' repair category
   const selectedRepairMetrics = currentStoreMetrics?.repairMetrics.find(
     (repairMetric) => repairMetric.name === selectedRepairCategory
   );
 
-  // selected year's repair metrics
   const selectedYearMetrics = selectedRepairMetrics?.yearlyMetrics.find(
     (yearlyMetric) => yearlyMetric.year === year
   );
@@ -69,13 +74,13 @@ function returnSelectedDateRepairMetrics({
     prevYearMetrics,
   };
 
-  // selected month's repair metrics
   const selectedMonthMetrics = selectedYearMetrics?.monthlyMetrics.find(
     (monthlyMetric) => monthlyMetric.month === month
   );
   const prevPrevYearMetrics = selectedRepairMetrics?.yearlyMetrics.find(
     (yearlyMetric) => yearlyMetric.year === (parseInt(year) - 2).toString()
   );
+
   const prevMonthMetrics =
     month === "January"
       ? prevPrevYearMetrics?.monthlyMetrics.find(
@@ -90,7 +95,6 @@ function returnSelectedDateRepairMetrics({
     prevMonthMetrics,
   };
 
-  // selected day's repair metrics
   const selectedDayMetrics = selectedMonthMetrics?.dailyMetrics.find(
     (dailyMetric) => dailyMetric.day === day
   );
@@ -121,7 +125,7 @@ function returnSelectedDateRepairMetrics({
   };
 }
 
-type ReturnRepairChartsDataInput = {
+type ReturnRepairChartsInput = {
   businessMetrics: BusinessMetric[];
   months: Month[];
   selectedRepairCategory: RepairCategory | "All Repairs";
@@ -129,15 +133,21 @@ type ReturnRepairChartsDataInput = {
   storeLocation: BusinessMetricStoreLocation;
 };
 
-type RepairMetricChartsObjKey = "unitsRepaired" | "revenue";
-type RepairMetricBarChartsObj = Record<RepairMetricChartsObjKey, BarChartData[]>;
-type RepairMetricCalendarChartsObj = Record<
-  RepairMetricChartsObjKey,
-  CalendarChartData[]
->;
-type RepairMetricLineChartsObj = {
-  revenue: { id: "Revenue"; data: { x: string; y: number }[] }[];
-  unitsRepaired: { id: "Units Repaired"; data: { x: string; y: number }[] }[];
+type RepairMetricsCharts = {
+  dailyCharts: {
+    bar: RepairMetricBarCharts;
+    calendar: RepairMetricCalendarCharts;
+    line: RepairMetricLineCharts;
+  };
+  monthlyCharts: {
+    bar: RepairMetricBarCharts;
+    calendar: RepairMetricCalendarCharts;
+    line: RepairMetricLineCharts;
+  };
+  yearlyCharts: {
+    bar: RepairMetricBarCharts;
+    line: RepairMetricLineCharts;
+  };
 };
 
 /**
@@ -163,391 +173,380 @@ type RepairMetricLineChartsObj = {
   }[]
  */
 
-type RepairMetricsCharts = {
-  dailyCharts: {
-    barChartsObj: RepairMetricBarChartsObj;
-    calendarChartsObj: RepairMetricCalendarChartsObj;
-    lineChartsObj: RepairMetricLineChartsObj;
-  };
-  monthlyCharts: {
-    barChartsObj: RepairMetricBarChartsObj;
-    calendarChartsObj: RepairMetricCalendarChartsObj;
-    lineChartsObj: RepairMetricLineChartsObj;
-  };
-  yearlyCharts: {
-    barChartsObj: RepairMetricBarChartsObj;
-    lineChartsObj: RepairMetricLineChartsObj;
-  };
-};
-
-function returnRepairMetricsCharts({
+async function createRepairMetricsCharts({
   businessMetrics,
   months,
-  selectedRepairCategory,
   selectedDateRepairMetrics,
+  selectedRepairCategory,
   storeLocation,
-}: ReturnRepairChartsDataInput): RepairMetricsCharts {
-  // selected year's metrics
+}: ReturnRepairChartsInput): Promise<RepairMetricsCharts> {
   const {
     yearRepairMetrics: { selectedYearMetrics },
   } = selectedDateRepairMetrics;
-  const selectedYear = selectedYearMetrics?.year ?? "2023";
+  const selectedYear =
+    selectedYearMetrics?.year ?? (new Date().getFullYear().toString() as Year);
 
-  // selected month's metrics
   const {
     monthRepairMetrics: { selectedMonthMetrics },
   } = selectedDateRepairMetrics;
   const selectedMonth = selectedMonthMetrics?.month ?? "January";
   const monthNumber = (months.indexOf(selectedMonth) + 1).toString().padStart(2, "0");
 
-  // templates
-
-  // templates -> bar charts obj
-  const BAR_CHART_OBJ_TEMPLATE: RepairMetricBarChartsObj = {
-    revenue: [],
-    unitsRepaired: [],
-  };
-
-  // templates -> calendar charts obj
-  const CALENDAR_CHART_OBJ_TEMPLATE: RepairMetricCalendarChartsObj = {
-    revenue: [],
-    unitsRepaired: [],
-  };
-
-  // templates -> line charts obj
-  const LINE_CHART_OBJ_TEMPLATE: RepairMetricLineChartsObj = {
-    revenue: [{ id: "Revenue", data: [] }],
-    unitsRepaired: [{ id: "Units Repaired", data: [] }],
-  };
-
-  // daily charts
-
-  // daily charts -> bar charts obj
-  const initialDailyRepairRepairMetricBarChartsObj =
-    structuredClone(BAR_CHART_OBJ_TEMPLATE);
-  // daily charts -> calendar charts obj
-  const initialDailyRepairRepairMetricCalendarChartsObj = structuredClone(
-    CALENDAR_CHART_OBJ_TEMPLATE
-  );
-  // daily charts -> line charts obj
-  const initialDailyRepairRepairMetricLineChartsObj = structuredClone(
-    LINE_CHART_OBJ_TEMPLATE
-  );
-
-  const [
-    dailyRepairRepairMetricBarChartsObj,
-    dailyRepairRepairMetricCalendarChartsObj,
-    dailyRepairRepairMetricLineChartsObj,
-  ] = selectedMonthMetrics?.dailyMetrics.reduce(
-    (dailyRepairChartsAcc, dailyRepairMetric) => {
-      const [
-        dailyRepairRepairMetricBarChartsObjAcc,
-        dailyRepairRepairMetricCalendarChartsObjAcc,
-        dailyRepairRepairMetricLineChartsObjAcc,
-      ] = dailyRepairChartsAcc;
-
-      const { day, revenue, unitsRepaired } = dailyRepairMetric;
-
-      // bar charts
-
-      // bar charts -> unitsRepaired
-      const dailyRepairUnitsRepairedBarChart: BarChartData = {
-        Days: day,
-        "Units Repaired": unitsRepaired,
-      };
-      dailyRepairRepairMetricBarChartsObjAcc.unitsRepaired.push(
-        dailyRepairUnitsRepairedBarChart
-      );
-
-      // bar charts -> revenue
-      const dailyRepairRevenueBarChart: BarChartData = {
-        Days: day,
-        Revenue: revenue,
-      };
-      dailyRepairRepairMetricBarChartsObjAcc.revenue.push(dailyRepairRevenueBarChart);
-
-      // calendar charts
-
-      // calendar charts -> unitsRepaired
-      const dailyRepairUnitsRepairedCalendarChart: CalendarChartData = {
-        day: `${selectedYear}-${monthNumber}-${day}`,
-        value: unitsRepaired,
-      };
-      dailyRepairRepairMetricCalendarChartsObjAcc.unitsRepaired.push(
-        dailyRepairUnitsRepairedCalendarChart
-      );
-
-      // calendar charts -> revenue
-      const dailyRepairRevenueCalendarChart: CalendarChartData = {
-        day: `${selectedYear}-${monthNumber}-${day}`,
-        value: revenue,
-      };
-      dailyRepairRepairMetricCalendarChartsObjAcc.revenue.push(
-        dailyRepairRevenueCalendarChart
-      );
-
-      // line charts
-
-      // line charts -> unitsRepaired
-      const dailyRepairUnitsRepairedLineChart = {
-        x: day,
-        y: unitsRepaired,
-      };
-      dailyRepairRepairMetricLineChartsObjAcc.unitsRepaired
-        .find((lineChartData: LineChartData) => lineChartData.id === "Units Repaired")
-        ?.data.push(dailyRepairUnitsRepairedLineChart);
-
-      // line charts -> revenue
-      const dailyRepairRevenueLineChart = {
-        x: day,
-        y: revenue,
-      };
-      dailyRepairRepairMetricLineChartsObjAcc.revenue
-        .find((lineChartData: LineChartData) => lineChartData.id === "Revenue")
-        ?.data.push(dailyRepairRevenueLineChart);
-
-      return dailyRepairChartsAcc;
-    },
-    [
-      initialDailyRepairRepairMetricBarChartsObj,
-      initialDailyRepairRepairMetricCalendarChartsObj,
-      initialDailyRepairRepairMetricLineChartsObj,
-    ]
-  ) ?? [
-    initialDailyRepairRepairMetricBarChartsObj,
-    initialDailyRepairRepairMetricCalendarChartsObj,
-    initialDailyRepairRepairMetricLineChartsObj,
-  ];
-
-  // monthly
-
-  // monthly -> bar charts obj
-  const initialMonthlyRepairRepairMetricBarChartsObj =
-    structuredClone(BAR_CHART_OBJ_TEMPLATE);
-  // monthly -> calendar charts obj
-  const initialMonthlyRepairRepairMetricCalendarChartsObj = structuredClone(
-    CALENDAR_CHART_OBJ_TEMPLATE
-  );
-  // monthly -> line charts obj
-  const initialMonthlyRepairRepairMetricLineChartsObj = structuredClone(
-    LINE_CHART_OBJ_TEMPLATE
-  );
-
-  const [
-    monthlyRepairRepairMetricBarChartsObj,
-    monthlyRepairRepairMetricCalendarChartsObj,
-    monthlyRepairRepairMetricLineChartsObj,
-  ] = selectedYearMetrics?.monthlyMetrics.reduce(
-    (monthlyRepairChartsAcc, monthlyRepairMetric) => {
-      const [
-        monthlyRepairRepairMetricBarChartsObjAcc,
-        monthlyRepairRepairMetricCalendarChartsObjAcc,
-        monthlyRepairRepairMetricLineChartsObjAcc,
-      ] = monthlyRepairChartsAcc;
-
-      const { month, revenue, unitsRepaired } = monthlyRepairMetric;
-      const monthNumberStr = (months.indexOf(month) + 1).toString().padStart(2, "0");
-
-      // prevents current month of current year from being added to charts
-      const currentYear = new Date().getFullYear().toString();
-      const isCurrentYear = selectedYear === currentYear;
-      const currentMonth = new Date().toLocaleString("default", {
-        month: "long",
-      });
-      const isCurrentMonth = month === currentMonth;
-
-      if (isCurrentYear && isCurrentMonth) {
-        return monthlyRepairChartsAcc;
-      }
-
-      // bar charts
-
-      // bar charts -> unitsRepaired
-      const monthlyRepairUnitsRepairedBarChart: BarChartData = {
-        Months: month,
-        "Units Repaired": unitsRepaired,
-      };
-      monthlyRepairRepairMetricBarChartsObjAcc.unitsRepaired.push(
-        monthlyRepairUnitsRepairedBarChart
-      );
-
-      // bar charts -> revenue
-      const monthlyRepairRevenueBarChart: BarChartData = {
-        Months: month,
-        Revenue: revenue,
-      };
-      monthlyRepairRepairMetricBarChartsObjAcc.revenue.push(monthlyRepairRevenueBarChart);
-
-      // calendar charts
-
-      const { dailyMetrics } = monthlyRepairMetric;
-
-      dailyMetrics.forEach((dailyRepairMetric) => {
-        const { day, revenue, unitsRepaired } = dailyRepairMetric;
-
-        // calendar charts -> unitsRepaired
-        const monthlyRepairUnitsRepairedCalendarChart: CalendarChartData = {
-          day: `${selectedYear}-${monthNumberStr}-${day}`,
-          value: unitsRepaired,
-        };
-        monthlyRepairRepairMetricCalendarChartsObjAcc.unitsRepaired.push(
-          monthlyRepairUnitsRepairedCalendarChart
-        );
-
-        // calendar charts -> revenue
-        const monthlyRepairRevenueCalendarChart: CalendarChartData = {
-          day: `${selectedYear}-${monthNumberStr}-${day}`,
-          value: revenue,
-        };
-        monthlyRepairRepairMetricCalendarChartsObjAcc.revenue.push(
-          monthlyRepairRevenueCalendarChart
-        );
-      });
-
-      // line charts
-
-      // line charts -> unitsRepaired
-      const monthlyRepairUnitsRepairedLineChart = {
-        x: month,
-        y: unitsRepaired,
-      };
-      monthlyRepairRepairMetricLineChartsObjAcc.unitsRepaired
-        ?.find((lineChartData: LineChartData) => lineChartData.id === "Units Repaired")
-        ?.data.push(monthlyRepairUnitsRepairedLineChart);
-
-      // line charts -> revenue
-      const monthlyRepairRevenueLineChart = {
-        x: month,
-        y: revenue,
-      };
-      monthlyRepairRepairMetricLineChartsObjAcc.revenue
-        ?.find((lineChartData: LineChartData) => lineChartData.id === "Revenue")
-        ?.data.push(monthlyRepairRevenueLineChart);
-
-      return monthlyRepairChartsAcc;
-    },
-    [
-      initialMonthlyRepairRepairMetricBarChartsObj,
-      initialMonthlyRepairRepairMetricCalendarChartsObj,
-      initialMonthlyRepairRepairMetricLineChartsObj,
-    ]
-  ) ?? [
-    initialMonthlyRepairRepairMetricBarChartsObj,
-    initialMonthlyRepairRepairMetricCalendarChartsObj,
-    initialMonthlyRepairRepairMetricLineChartsObj,
-  ];
-
-  // yearly
-
-  // yearly -> bar charts obj
-  const initialYearlyRepairRepairMetricBarChartsObj =
-    structuredClone(BAR_CHART_OBJ_TEMPLATE);
-  // yearly -> line charts obj
-  const initialYearlyRepairRepairMetricLineChartsObj = structuredClone(
-    LINE_CHART_OBJ_TEMPLATE
-  );
-
-  // selected store's business metrics
   const currentStoreMetrics = businessMetrics.find(
     (businessMetric) => businessMetric.storeLocation === storeLocation
   );
 
-  // selected business metrics' repair category
   const repairMetrics = currentStoreMetrics?.repairMetrics.find(
     (repairMetric) => repairMetric.name === selectedRepairCategory
   );
 
-  const [yearlyRepairRepairMetricBarChartsObj, yearlyRepairRepairMetricLineChartsObj] =
-    repairMetrics?.yearlyMetrics.reduce(
-      (yearlyRepairChartsAcc, yearlyRepairMetric) => {
-        const [
-          yearlyRepairRepairMetricBarChartsObjAcc,
-          yearlyRepairRepairMetricLineChartsObjAcc,
-        ] = yearlyRepairChartsAcc;
+  const BAR_CHART_DATA_TEMPLATE: RepairMetricBarCharts = {
+    revenue: [],
+    unitsRepaired: [],
+  };
 
-        const { year, revenue, unitsRepaired } = yearlyRepairMetric;
+  const CALENDAR_CHART_DATA_TEMPLATE: RepairMetricCalendarCharts = {
+    revenue: [],
+    unitsRepaired: [],
+  };
 
-        // prevents current year from being added to charts
-        const currentYear = new Date().getFullYear();
-        if (year === currentYear.toString()) {
-          return yearlyRepairChartsAcc;
-        }
+  const LINE_CHART_DATA_TEMPLATE: RepairMetricLineCharts = {
+    revenue: [{ id: "Revenue", data: [] }],
+    unitsRepaired: [{ id: "Units Repaired", data: [] }],
+  };
 
-        // bar charts
-
-        // bar charts -> unitsRepaired
-        const yearlyRepairUnitsRepairedBarChart: BarChartData = {
-          Years: year,
-          "Units Repaired": unitsRepaired,
-        };
-        yearlyRepairRepairMetricBarChartsObjAcc.unitsRepaired.push(
-          yearlyRepairUnitsRepairedBarChart
-        );
-
-        // bar charts -> revenue
-        const yearlyRepairRevenueBarChart: BarChartData = {
-          Years: year,
-          Revenue: revenue,
-        };
-        yearlyRepairRepairMetricBarChartsObjAcc.revenue.push(yearlyRepairRevenueBarChart);
-
-        // line charts
-
-        // line charts -> unitsRepaired
-        const yearlyRepairUnitsRepairedLineChart = {
-          x: year,
-          y: unitsRepaired,
-        };
-        yearlyRepairRepairMetricLineChartsObjAcc.unitsRepaired
-          ?.find((lineChartData: LineChartData) => lineChartData.id === "Units Repaired")
-          ?.data.push(yearlyRepairUnitsRepairedLineChart);
-
-        // line charts -> revenue
-        const yearlyRepairRevenueLineChart = {
-          x: year,
-          y: revenue,
-        };
-        yearlyRepairRepairMetricLineChartsObjAcc.revenue
-          ?.find((lineChartData: LineChartData) => lineChartData.id === "Revenue")
-          ?.data.push(yearlyRepairRevenueLineChart);
-
-        return yearlyRepairChartsAcc;
-      },
-      [
-        initialYearlyRepairRepairMetricBarChartsObj,
-        initialYearlyRepairRepairMetricLineChartsObj,
-      ]
-    ) ?? [
-      initialYearlyRepairRepairMetricBarChartsObj,
-      initialYearlyRepairRepairMetricLineChartsObj,
-    ];
+  const [dailyRepairMetrics, monthlyRepairMetrics, yearlyRepairMetrics] =
+    await Promise.all([
+      createDailyRepairCharts({
+        barChartsTemplate: BAR_CHART_DATA_TEMPLATE,
+        calendarChartsTemplate: CALENDAR_CHART_DATA_TEMPLATE,
+        dailyMetrics: selectedMonthMetrics?.dailyMetrics,
+        lineChartsTemplate: LINE_CHART_DATA_TEMPLATE,
+        monthNumber,
+        selectedYear,
+      }),
+      createMonthlyRepairCharts({
+        barChartsTemplate: BAR_CHART_DATA_TEMPLATE,
+        calendarChartsTemplate: CALENDAR_CHART_DATA_TEMPLATE,
+        lineChartsTemplate: LINE_CHART_DATA_TEMPLATE,
+        monthlyMetrics: selectedYearMetrics?.monthlyMetrics,
+        months,
+        selectedYear,
+      }),
+      createYearlyRepairCharts({
+        barChartsTemplate: BAR_CHART_DATA_TEMPLATE,
+        lineChartsTemplate: LINE_CHART_DATA_TEMPLATE,
+        yearlyMetrics: repairMetrics?.yearlyMetrics,
+      }),
+    ]);
 
   return {
-    dailyCharts: {
-      barChartsObj: dailyRepairRepairMetricBarChartsObj,
-      calendarChartsObj: dailyRepairRepairMetricCalendarChartsObj,
-      lineChartsObj: dailyRepairRepairMetricLineChartsObj,
-    },
-    monthlyCharts: {
-      barChartsObj: monthlyRepairRepairMetricBarChartsObj,
-      calendarChartsObj: monthlyRepairRepairMetricCalendarChartsObj,
-      lineChartsObj: monthlyRepairRepairMetricLineChartsObj,
-    },
-    yearlyCharts: {
-      barChartsObj: yearlyRepairRepairMetricBarChartsObj,
-      lineChartsObj: yearlyRepairRepairMetricLineChartsObj,
-    },
+    dailyCharts: dailyRepairMetrics,
+    monthlyCharts: monthlyRepairMetrics,
+    yearlyCharts: yearlyRepairMetrics,
   };
 }
 
-export { returnRepairMetricsCharts, returnSelectedDateRepairMetrics };
+type CreateDailyRepairChartsInput = {
+  barChartsTemplate: RepairMetricBarCharts;
+  calendarChartsTemplate: RepairMetricCalendarCharts;
+  dailyMetrics?: RepairDailyMetric[];
+  lineChartsTemplate: RepairMetricLineCharts;
+  monthNumber: string;
+  selectedYear: Year;
+};
 
+async function createDailyRepairCharts({
+  barChartsTemplate,
+  calendarChartsTemplate,
+  dailyMetrics,
+  lineChartsTemplate,
+  monthNumber,
+  selectedYear,
+}: CreateDailyRepairChartsInput): Promise<RepairMetricsCharts["dailyCharts"]> {
+  if (!dailyMetrics) {
+    return new Promise((resolve) => {
+      resolve({
+        bar: barChartsTemplate,
+        calendar: calendarChartsTemplate,
+        line: lineChartsTemplate,
+      });
+    });
+  }
+
+  return new Promise<RepairMetricsCharts["dailyCharts"]>((resolve) => {
+    setTimeout(() => {
+      const [
+        dailyRepairMetricsBarCharts,
+        dailyRepairMetricsCalendarCharts,
+        dailyRepairMetricsLineCharts,
+      ] = dailyMetrics.reduce(
+        (dailyRepairChartsAcc, dailyRepairMetric) => {
+          const [
+            dailyRepairMetricBarChartsAcc,
+            dailyRepairMetricCalendarChartsAcc,
+            dailyRepairMetricLineChartsAcc,
+          ] = dailyRepairChartsAcc;
+
+          const { day, revenue, unitsRepaired } = dailyRepairMetric;
+
+          const dailyUnitsRepairedBarChart: BarChartData = {
+            Days: day,
+            "Units Repaired": unitsRepaired,
+          };
+          dailyRepairMetricBarChartsAcc.unitsRepaired.push(dailyUnitsRepairedBarChart);
+
+          const dailyRevenueBarChart: BarChartData = {
+            Days: day,
+            Revenue: revenue,
+          };
+          dailyRepairMetricBarChartsAcc.revenue.push(dailyRevenueBarChart);
+
+          const dailyUnitsRepairedCalendarChart: CalendarChartData = {
+            day: `${selectedYear}-${monthNumber}-${day}`,
+            value: unitsRepaired,
+          };
+          dailyRepairMetricCalendarChartsAcc.unitsRepaired.push(
+            dailyUnitsRepairedCalendarChart
+          );
+
+          const dailyRevenueCalendarChart: CalendarChartData = {
+            day: `${selectedYear}-${monthNumber}-${day}`,
+            value: revenue,
+          };
+          dailyRepairMetricCalendarChartsAcc.revenue.push(dailyRevenueCalendarChart);
+
+          const dailyRepairUnitsRepairedLineChart = {
+            x: day,
+            y: unitsRepaired,
+          };
+          dailyRepairMetricLineChartsAcc.unitsRepaired
+            .find((lineChartData: LineChartData) => lineChartData.id === "Units Repaired")
+            ?.data.push(dailyRepairUnitsRepairedLineChart);
+
+          const dailyRepairRevenueLineChart = {
+            x: day,
+            y: revenue,
+          };
+          dailyRepairMetricLineChartsAcc.revenue
+            .find((lineChartData: LineChartData) => lineChartData.id === "Revenue")
+            ?.data.push(dailyRepairRevenueLineChart);
+
+          return dailyRepairChartsAcc;
+        },
+        [
+          structuredClone(barChartsTemplate),
+          structuredClone(calendarChartsTemplate),
+          structuredClone(lineChartsTemplate),
+        ]
+      );
+
+      resolve({
+        bar: dailyRepairMetricsBarCharts,
+        calendar: dailyRepairMetricsCalendarCharts,
+        line: dailyRepairMetricsLineCharts,
+      });
+    }, 0);
+  });
+}
+
+type CreateMonthlyRepairChartsInput = {
+  barChartsTemplate: RepairMetricBarCharts;
+  calendarChartsTemplate: RepairMetricCalendarCharts;
+  lineChartsTemplate: RepairMetricLineCharts;
+  monthlyMetrics?: RepairMonthlyMetric[];
+  months: Month[];
+  selectedYear: Year;
+};
+
+async function createMonthlyRepairCharts({
+  barChartsTemplate,
+  calendarChartsTemplate,
+  lineChartsTemplate,
+  monthlyMetrics,
+  months,
+  selectedYear,
+}: CreateMonthlyRepairChartsInput): Promise<RepairMetricsCharts["monthlyCharts"]> {
+  if (!monthlyMetrics) {
+    return new Promise((resolve) => {
+      resolve({
+        bar: barChartsTemplate,
+        calendar: calendarChartsTemplate,
+        line: lineChartsTemplate,
+      });
+    });
+  }
+
+  return new Promise<RepairMetricsCharts["monthlyCharts"]>((resolve) => {
+    setTimeout(() => {
+      const [
+        monthlyRepairMetricsBarCharts,
+        monthlyRepairMetricsCalendarCharts,
+        monthlyRepairMetricsLineCharts,
+      ] = monthlyMetrics.reduce(
+        (monthlyRepairChartsAcc, monthlyRepairMetric) => {
+          const [
+            monthlyRepairMetricBarChartsAcc,
+            monthlyRepairMetricCalendarChartsAcc,
+            monthlyRepairMetricLineChartsAcc,
+          ] = monthlyRepairChartsAcc;
+
+          const { month, revenue, unitsRepaired } = monthlyRepairMetric;
+          const monthIndex = (months.indexOf(month) + 1).toString().padStart(2, "0");
+
+          // prevents current month of current year from being added to charts
+          const currentYear = new Date().getFullYear().toString();
+          const isCurrentYear = selectedYear === currentYear;
+          const currentMonth = new Date().toLocaleString("default", { month: "long" });
+          const isCurrentMonth = month === currentMonth;
+
+          if (isCurrentYear && isCurrentMonth) {
+            return monthlyRepairChartsAcc;
+          }
+
+          const monthlyUnitsRepairedBarChart: BarChartData = {
+            Months: month,
+            "Units Repaired": unitsRepaired,
+          };
+          monthlyRepairMetricBarChartsAcc.unitsRepaired.push(
+            monthlyUnitsRepairedBarChart
+          );
+
+          const monthlyRevenueBarChart: BarChartData = {
+            Months: month,
+            Revenue: revenue,
+          };
+          monthlyRepairMetricBarChartsAcc.revenue.push(monthlyRevenueBarChart);
+
+          const monthlyUnitsRepairedCalendarChart: CalendarChartData = {
+            day: `${selectedYear}-${monthIndex}-01`,
+            value: unitsRepaired,
+          };
+          monthlyRepairMetricCalendarChartsAcc.unitsRepaired.push(
+            monthlyUnitsRepairedCalendarChart
+          );
+
+          const monthlyRevenueCalendarChart: CalendarChartData = {
+            day: `${selectedYear}-${monthIndex}-01`,
+            value: revenue,
+          };
+          monthlyRepairMetricCalendarChartsAcc.revenue.push(monthlyRevenueCalendarChart);
+
+          const monthlyRepairUnitsRepairedLineChart = {
+            x: month,
+            y: unitsRepaired,
+          };
+          monthlyRepairMetricLineChartsAcc.unitsRepaired
+            .find((lineChartData: LineChartData) => lineChartData.id === "Units Repaired")
+            ?.data.push(monthlyRepairUnitsRepairedLineChart);
+
+          const monthlyRepairRevenueLineChart = {
+            x: month,
+            y: revenue,
+          };
+          monthlyRepairMetricLineChartsAcc.revenue
+            .find((lineChartData: LineChartData) => lineChartData.id === "Revenue")
+            ?.data.push(monthlyRepairRevenueLineChart);
+
+          return monthlyRepairChartsAcc;
+        },
+        [
+          structuredClone(barChartsTemplate),
+          structuredClone(calendarChartsTemplate),
+          structuredClone(lineChartsTemplate),
+        ]
+      );
+
+      resolve({
+        bar: monthlyRepairMetricsBarCharts,
+        calendar: monthlyRepairMetricsCalendarCharts,
+        line: monthlyRepairMetricsLineCharts,
+      });
+    }, 0);
+  });
+}
+
+type CreateYearlyRepairChartsInput = {
+  barChartsTemplate: RepairMetricBarCharts;
+  lineChartsTemplate: RepairMetricLineCharts;
+  yearlyMetrics?: RepairYearlyMetric[];
+};
+
+async function createYearlyRepairCharts({
+  barChartsTemplate,
+  lineChartsTemplate,
+  yearlyMetrics,
+}: CreateYearlyRepairChartsInput): Promise<RepairMetricsCharts["yearlyCharts"]> {
+  if (!yearlyMetrics) {
+    return new Promise((resolve) => {
+      resolve({
+        bar: barChartsTemplate,
+        line: lineChartsTemplate,
+      });
+    });
+  }
+
+  return new Promise<RepairMetricsCharts["yearlyCharts"]>((resolve) => {
+    setTimeout(() => {
+      const [yearlyRepairMetricsBarCharts, yearlyRepairMetricsLineCharts] =
+        yearlyMetrics.reduce(
+          (yearlyRepairChartsAcc, yearlyRepairMetric) => {
+            const [yearlyRepairMetricBarChartsAcc, yearlyRepairMetricLineChartsAcc] =
+              yearlyRepairChartsAcc;
+
+            const { year, revenue, unitsRepaired } = yearlyRepairMetric;
+
+            const yearlyUnitsRepairedBarChart: BarChartData = {
+              Years: year,
+              "Units Repaired": unitsRepaired,
+            };
+            yearlyRepairMetricBarChartsAcc.unitsRepaired.push(
+              yearlyUnitsRepairedBarChart
+            );
+
+            const yearlyRevenueBarChart: BarChartData = {
+              Years: year,
+              Revenue: revenue,
+            };
+            yearlyRepairMetricBarChartsAcc.revenue.push(yearlyRevenueBarChart);
+
+            const yearlyRepairUnitsRepairedLineChart = {
+              x: year,
+              y: unitsRepaired,
+            };
+            yearlyRepairMetricLineChartsAcc.unitsRepaired
+              .find(
+                (lineChartData: LineChartData) => lineChartData.id === "Units Repaired"
+              )
+              ?.data.push(yearlyRepairUnitsRepairedLineChart);
+
+            const yearlyRepairRevenueLineChart = {
+              x: year,
+              y: revenue,
+            };
+            yearlyRepairMetricLineChartsAcc.revenue
+              .find((lineChartData: LineChartData) => lineChartData.id === "Revenue")
+              ?.data.push(yearlyRepairRevenueLineChart);
+
+            return yearlyRepairChartsAcc;
+          },
+          [structuredClone(barChartsTemplate), structuredClone(lineChartsTemplate)]
+        );
+
+      resolve({
+        bar: yearlyRepairMetricsBarCharts,
+        line: yearlyRepairMetricsLineCharts,
+      });
+    }, 0);
+  });
+}
+
+export { createRepairMetricsCharts, createSelectedDateRepairMetrics };
 export type {
-  RepairMetricBarChartsObj,
-  RepairMetricCalendarChartsObj,
-  RepairMetricChartsObjKey,
-  RepairMetricLineChartsObj,
+  RepairMetricBarCharts,
+  RepairMetricCalendarCharts,
+  RepairMetricChartsKey,
+  RepairMetricLineCharts,
   RepairMetricsCharts,
-  ReturnRepairChartsDataInput,
   SelectedDateRepairMetrics,
 };

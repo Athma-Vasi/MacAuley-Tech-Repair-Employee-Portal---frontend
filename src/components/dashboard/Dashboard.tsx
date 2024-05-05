@@ -203,6 +203,7 @@ function Dashboard() {
           <Loader />
         </Stack>
       }
+      transitionDuration={500}
     />
   );
 

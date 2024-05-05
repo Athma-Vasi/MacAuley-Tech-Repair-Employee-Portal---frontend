@@ -1,8 +1,8 @@
-import { RepairMetricChartsObjKey } from "../utils";
+import { RepairMetricChartsKey } from "../utils";
 
 type RepairDashboardYearlyState = {
-  barChartYAxisVariable: RepairMetricChartsObjKey;
-  lineChartYAxisVariable: RepairMetricChartsObjKey;
+  barChartYAxisVariable: RepairMetricChartsKey;
+  lineChartYAxisVariable: RepairMetricChartsKey;
 };
 
 type RepairDashboardYearlyAction = {
@@ -15,7 +15,7 @@ type RepairDashboardYearlyDispatch = {
     | RepairDashboardYearlyAction["setBarChartYAxisVariable"]
     | RepairDashboardYearlyAction["setLineChartYAxisVariable"];
 
-  payload: RepairMetricChartsObjKey;
+  payload: RepairMetricChartsKey;
 };
 
 export type {

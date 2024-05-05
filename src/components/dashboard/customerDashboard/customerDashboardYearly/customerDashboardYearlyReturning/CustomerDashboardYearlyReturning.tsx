@@ -1,41 +1,38 @@
-import { MantineNumberSize } from '@mantine/core';
-import { ChangeEvent, useReducer } from 'react';
-import { LuExpand } from 'react-icons/lu';
-import { useNavigate } from 'react-router-dom';
+import { MantineNumberSize } from "@mantine/core";
+import { ChangeEvent, useReducer } from "react";
+import { LuExpand } from "react-icons/lu";
+import { useNavigate } from "react-router-dom";
 
-import { globalAction } from '../../../../../context/globalProvider/state';
-import { useGlobalState } from '../../../../../hooks';
+import { globalAction } from "../../../../../context/globalProvider/state";
+import { useGlobalState } from "../../../../../hooks";
 import {
   returnAccessibleButtonElements,
   returnAccessibleSelectInputElements,
-} from '../../../../../jsxCreators';
-import { addCommaSeparator, splitCamelCase } from '../../../../../utils';
+} from "../../../../../jsxCreators";
+import { addCommaSeparator, splitCamelCase } from "../../../../../utils";
 import {
   ResponsiveBarChart,
   ResponsiveLineChart,
   ResponsivePieChart,
-} from '../../../../charts';
-import DashboardMetricsLayout from '../../../DashboardMetricsLayout';
-import { CustomerMetricsCards } from '../../../jsxHelpers';
-import { BusinessMetricStoreLocation, Year } from '../../../types';
-import {
-  returnChartTitleNavigateLinks,
-  returnStatistics,
-} from '../../../utils';
+} from "../../../../charts";
+import DashboardMetricsLayout from "../../../DashboardMetricsLayout";
+import { CustomerMetricsCards } from "../../../jsxHelpers";
+import { BusinessMetricStoreLocation, Year } from "../../../types";
+import { returnChartTitleNavigateLinks, returnStatistics } from "../../../utils";
 import {
   CUSTOMER_NEW_RETURNING_LINE_BAR_Y_AXIS_DATA,
   CUSTOMER_NEW_RETURNING_PIE_Y_AXIS_DATA,
-} from '../../constants';
+} from "../../constants";
 import {
   CustomerMetricsCharts,
   CustomerNewReturningObjKey,
   CustomerNewReturningPieObjKey,
-} from '../../utils';
+} from "../../utils";
 import {
   customerDashboardYearlyReturningAction,
   customerDashboardYearlyReturningReducer,
   initialCustomerDashboardYearlyReturningState,
-} from './state';
+} from "./state";
 
 function CustomerDashboardYearlyReturning({
   borderColor,
@@ -51,8 +48,8 @@ function CustomerDashboardYearlyReturning({
   borderColor: string;
   chartHeight: number;
   chartWidth: number;
-  yearlyCardsReturning: CustomerMetricsCards['yearlyCards']['returning'];
-  yearlyChartsReturning: CustomerMetricsCharts['yearlyCharts']['returning'];
+  yearlyCardsReturning: CustomerMetricsCards["yearlyCards"]["returning"];
+  yearlyChartsReturning: CustomerMetricsCharts["yearlyCharts"]["returning"];
   padding: MantineNumberSize;
   storeLocation: BusinessMetricStoreLocation;
   width: number;
@@ -78,10 +75,9 @@ function CustomerDashboardYearlyReturning({
   // returning
 
   // returning -> statistics
-  const statisticsYearlyReturning =
-    returnStatistics<CustomerNewReturningObjKey>(
-      yearlyChartsReturning.barChartsObj
-    );
+  const statisticsYearlyReturning = returnStatistics<CustomerNewReturningObjKey>(
+    yearlyChartsReturning.barChartsObj
+  );
 
   // returning -> charts
 
@@ -94,9 +90,9 @@ function CustomerDashboardYearlyReturning({
     lineChartHeading,
     pieChartHeading,
   } = returnChartTitleNavigateLinks({
-    calendarView: 'Yearly',
-    metricCategory: 'Returning',
-    metricsView: 'Customers',
+    calendarView: "Yearly",
+    metricCategory: "Returning",
+    metricsView: "Customers",
     storeLocation,
     yAxisBarChartVariable: returningBarChartYAxisVariable,
     yAxisLineChartVariable: returningLineChartYAxisVariable,
@@ -107,20 +103,19 @@ function CustomerDashboardYearlyReturning({
   // returning -> charts -> pie
 
   // returning -> charts -> pie -> expand chart button
-  const [createdExpandChartButton] = returnAccessibleButtonElements([
+  const [expandChartButton] = returnAccessibleButtonElements([
     {
-      buttonLabel: 'Expand',
+      buttonLabel: "Expand",
       semanticDescription: `Expand and customize ${pieChartHeading}`,
-      semanticName: 'Expand Returning Customers Pie Chart',
+      semanticName: "Expand Returning Customers Pie Chart",
       buttonOnClick: () => {
         globalDispatch({
           type: globalAction.setCustomizeChartsPageData,
           payload: {
-            chartKind: 'pie',
-            chartData:
-              yearlyChartsReturning.pieChartObj[returningPieChartYAxisVariable],
+            chartKind: "pie",
+            chartData: yearlyChartsReturning.pieChartObj[returningPieChartYAxisVariable],
             chartTitle: pieChartHeading,
-            chartUnitKind: 'number',
+            chartUnitKind: "number",
           },
         });
 
@@ -135,7 +130,7 @@ function CustomerDashboardYearlyReturning({
     returnAccessibleSelectInputElements([
       {
         data: CUSTOMER_NEW_RETURNING_PIE_Y_AXIS_DATA,
-        label: 'Y-Axis Pie',
+        label: "Y-Axis Pie",
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           customerDashboardYearlyReturningDispatch({
             type: customerDashboardYearlyReturningAction.setReturningPieChartYAxisVariable,
@@ -151,9 +146,7 @@ function CustomerDashboardYearlyReturning({
     <ResponsivePieChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
-      pieChartData={
-        yearlyChartsReturning.pieChartObj[returningPieChartYAxisVariable]
-      }
+      pieChartData={yearlyChartsReturning.pieChartObj[returningPieChartYAxisVariable]}
       hideControls
       unitKind="number"
     />
@@ -164,20 +157,17 @@ function CustomerDashboardYearlyReturning({
   // returning -> charts -> bar -> expand chart button
   const [createdExpandBarChartButton] = returnAccessibleButtonElements([
     {
-      buttonLabel: 'Expand',
+      buttonLabel: "Expand",
       semanticDescription: `Expand and customize ${barChartHeading}`,
-      semanticName: 'Expand Returning Customers Bar Chart',
+      semanticName: "Expand Returning Customers Bar Chart",
       buttonOnClick: () => {
         globalDispatch({
           type: globalAction.setCustomizeChartsPageData,
           payload: {
-            chartKind: 'bar',
-            chartData:
-              yearlyChartsReturning.barChartsObj[
-                returningBarChartYAxisVariable
-              ],
+            chartKind: "bar",
+            chartData: yearlyChartsReturning.barChartsObj[returningBarChartYAxisVariable],
             chartTitle: barChartHeading,
-            chartUnitKind: 'number',
+            chartUnitKind: "number",
           },
         });
 
@@ -192,7 +182,7 @@ function CustomerDashboardYearlyReturning({
     returnAccessibleSelectInputElements([
       {
         data: CUSTOMER_NEW_RETURNING_LINE_BAR_Y_AXIS_DATA,
-        label: 'Y-Axis Bar',
+        label: "Y-Axis Bar",
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           customerDashboardYearlyReturningDispatch({
             type: customerDashboardYearlyReturningAction.setReturningBarChartYAxisVariable,
@@ -208,9 +198,7 @@ function CustomerDashboardYearlyReturning({
     <ResponsiveBarChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
-      barChartData={
-        yearlyChartsReturning.barChartsObj[returningBarChartYAxisVariable]
-      }
+      barChartData={yearlyChartsReturning.barChartsObj[returningBarChartYAxisVariable]}
       hideControls
       indexBy="Years"
       keys={CUSTOMER_NEW_RETURNING_LINE_BAR_Y_AXIS_DATA.map((obj) => obj.label)}
@@ -221,22 +209,20 @@ function CustomerDashboardYearlyReturning({
   // returning -> charts -> line
 
   // returning -> charts -> line -> expand chart button
-  const [createdExpandLineChartButton] = returnAccessibleButtonElements([
+  const [expandLineChartButton] = returnAccessibleButtonElements([
     {
-      buttonLabel: 'Expand',
+      buttonLabel: "Expand",
       semanticDescription: `Expand and customize ${lineChartHeading}`,
-      semanticName: 'Expand Returning Customers Line Chart',
+      semanticName: "Expand Returning Customers Line Chart",
       buttonOnClick: () => {
         globalDispatch({
           type: globalAction.setCustomizeChartsPageData,
           payload: {
-            chartKind: 'line',
+            chartKind: "line",
             chartData:
-              yearlyChartsReturning.lineChartsObj[
-                returningLineChartYAxisVariable
-              ],
+              yearlyChartsReturning.lineChartsObj[returningLineChartYAxisVariable],
             chartTitle: lineChartHeading,
-            chartUnitKind: 'number',
+            chartUnitKind: "number",
           },
         });
 
@@ -251,7 +237,7 @@ function CustomerDashboardYearlyReturning({
     returnAccessibleSelectInputElements([
       {
         data: CUSTOMER_NEW_RETURNING_LINE_BAR_Y_AXIS_DATA,
-        label: 'Y-Axis Line',
+        label: "Y-Axis Line",
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           customerDashboardYearlyReturningDispatch({
             type: customerDashboardYearlyReturningAction.setReturningLineChartYAxisVariable,
@@ -267,9 +253,7 @@ function CustomerDashboardYearlyReturning({
     <ResponsiveLineChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
-      lineChartData={
-        yearlyChartsReturning.lineChartsObj[returningLineChartYAxisVariable]
-      }
+      lineChartData={yearlyChartsReturning.lineChartsObj[returningLineChartYAxisVariable]}
       hideControls
       xFormat={(x) => `Year - ${x}`}
       yFormat={(y) => `${addCommaSeparator(y)} Customers`}
@@ -281,25 +265,19 @@ function CustomerDashboardYearlyReturning({
     <DashboardMetricsLayout
       barChart={displayReturningBarChart}
       barChartHeading={barChartHeading}
-      barChartYAxisSelectInput={
-        createdReturningBarChartYAxisVariablesSelectInput
-      }
+      barChartYAxisSelectInput={createdReturningBarChartYAxisVariablesSelectInput}
       borderColor={borderColor}
       expandBarChartButton={createdExpandBarChartButton}
-      expandLineChartButton={createdExpandLineChartButton}
-      expandPieChartButton={createdExpandChartButton}
+      expandLineChartButton={expandLineChartButton}
+      expandPieChartButton={expandChartButton}
       lineChart={displayReturningLineChart}
       lineChartHeading={lineChartHeading}
-      lineChartYAxisSelectInput={
-        createdReturningLineChartYAxisVariablesSelectInput
-      }
+      lineChartYAxisSelectInput={createdReturningLineChartYAxisVariablesSelectInput}
       overviewCards={yearlyCardsReturning}
       padding={padding}
       pieChart={displayReturningPieChart}
       pieChartHeading={pieChartHeading}
-      pieChartYAxisSelectInput={
-        createdReturningPieChartYAxisVariablesSelectInput
-      }
+      pieChartYAxisSelectInput={createdReturningPieChartYAxisVariablesSelectInput}
       sectionHeading={`${splitCamelCase(storeLocation)} Returning Customers`}
       statisticsMap={statisticsYearlyReturning}
       width={width}

@@ -222,7 +222,7 @@ function CustomerDashboardDailyReturning({
   // returning -> charts -> line
 
   // returning -> charts -> line -> expand chart button
-  const [createdExpandLineChartButton] = returnAccessibleButtonElements([
+  const [expandLineChartButton] = returnAccessibleButtonElements([
     {
       buttonLabel: "Expand",
       semanticDescription: `Expand and customize ${lineChartHeading}`,
@@ -277,7 +277,7 @@ function CustomerDashboardDailyReturning({
   // returning -> charts -> calendar
 
   // returning -> charts -> calendar -> expand chart button
-  const [createdExpandCalendarChartButton] = returnAccessibleButtonElements([
+  const [expandCalendarChartButton] = returnAccessibleButtonElements([
     {
       buttonLabel: "Expand",
       semanticDescription: `Expand and customize ${calendarChartHeading}`,
@@ -337,8 +337,8 @@ function CustomerDashboardDailyReturning({
       barChartYAxisSelectInput={createdReturningBarChartYAxisVariablesSelectInput}
       borderColor={borderColor}
       expandBarChartButton={createdExpandBarChartButton}
-      expandLineChartButton={createdExpandLineChartButton}
-      expandCalendarChartButton={createdExpandCalendarChartButton}
+      expandLineChartButton={expandLineChartButton}
+      expandCalendarChartButton={expandCalendarChartButton}
       expandPieChartButton={createdExpandPieChartButton}
       lineChart={displayReturningLineChart}
       lineChartHeading={lineChartHeading}

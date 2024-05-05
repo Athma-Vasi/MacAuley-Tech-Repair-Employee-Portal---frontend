@@ -1,45 +1,42 @@
-import { MantineNumberSize } from '@mantine/core';
-import { ChangeEvent, useReducer } from 'react';
-import { LuExpand } from 'react-icons/lu';
-import { useNavigate } from 'react-router-dom';
+import { MantineNumberSize } from "@mantine/core";
+import { ChangeEvent, useReducer } from "react";
+import { LuExpand } from "react-icons/lu";
+import { useNavigate } from "react-router-dom";
 
-import { globalAction } from '../../../../../context/globalProvider/state';
-import { useGlobalState } from '../../../../../hooks';
+import { globalAction } from "../../../../../context/globalProvider/state";
+import { useGlobalState } from "../../../../../hooks";
 import {
   returnAccessibleButtonElements,
   returnAccessibleSelectInputElements,
-} from '../../../../../jsxCreators';
-import { addCommaSeparator, splitCamelCase } from '../../../../../utils';
+} from "../../../../../jsxCreators";
+import { addCommaSeparator, splitCamelCase } from "../../../../../utils";
 import {
   ResponsiveBarChart,
   ResponsiveCalendarChart,
   ResponsiveLineChart,
   ResponsivePieChart,
-} from '../../../../charts';
-import { MONTHS } from '../../../constants';
-import DashboardMetricsLayout from '../../../DashboardMetricsLayout';
-import { FinancialMetricsCards } from '../../../jsxHelpers';
-import { BusinessMetricStoreLocation, Year } from '../../../types';
-import {
-  returnChartTitleNavigateLinks,
-  returnStatistics,
-} from '../../../utils';
+} from "../../../../charts";
+import { MONTHS } from "../../../constants";
+import DashboardMetricsLayout from "../../../DashboardMetricsLayout";
+import { FinancialMetricsCards } from "../../../jsxHelpers";
+import { BusinessMetricStoreLocation, Year } from "../../../types";
+import { returnChartTitleNavigateLinks, returnStatistics } from "../../../utils";
 import {
   FINANCIAL_CALENDAR_Y_AXIS_DATA,
   FINANCIAL_LINE_BAR_Y_AXIS_DATA,
   FINANCIAL_PIE_Y_AXIS_DATA,
-} from '../../constants';
+} from "../../constants";
 import {
   FinancialMetricBarLineObjKey,
   FinancialMetricCalendarObjKey,
   FinancialMetricPieObjKey,
   FinancialMetricsCharts,
-} from '../../utils';
+} from "../../utils";
 import {
   financialDashboardDailyExpensesAction,
   financialDashboardDailyExpensesReducer,
   initialFinancialDashboardDailyExpensesState,
-} from './state';
+} from "./state";
 
 function FinancialDashboardDailyExpenses({
   borderColor,
@@ -57,8 +54,8 @@ function FinancialDashboardDailyExpenses({
   borderColor: string;
   chartHeight: number;
   chartWidth: number;
-  dailyCardsExpenses: FinancialMetricsCards['dailyCards']['expenses'];
-  dailyChartsExpenses: FinancialMetricsCharts['dailyCharts']['expenses'];
+  dailyCardsExpenses: FinancialMetricsCards["dailyCards"]["expenses"];
+  dailyChartsExpenses: FinancialMetricsCharts["dailyCharts"]["expenses"];
   day: string;
   month: string;
   padding: MantineNumberSize;
@@ -69,13 +66,11 @@ function FinancialDashboardDailyExpenses({
   const { globalDispatch } = useGlobalState();
   const navigate = useNavigate();
 
-  const [
-    financialDashboardDailyExpensesState,
-    financialDashboardDailyExpensesDispatch,
-  ] = useReducer(
-    financialDashboardDailyExpensesReducer,
-    initialFinancialDashboardDailyExpensesState
-  );
+  const [financialDashboardDailyExpensesState, financialDashboardDailyExpensesDispatch] =
+    useReducer(
+      financialDashboardDailyExpensesReducer,
+      initialFinancialDashboardDailyExpensesState
+    );
 
   const {
     expensesBarChartYAxisVariable,
@@ -104,9 +99,9 @@ function FinancialDashboardDailyExpenses({
     lineChartHeading,
     pieChartHeading,
   } = returnChartTitleNavigateLinks({
-    calendarView: 'Daily',
-    metricCategory: 'Expenses',
-    metricsView: 'Financials',
+    calendarView: "Daily",
+    metricCategory: "Expenses",
+    metricsView: "Financials",
     storeLocation,
     yAxisBarChartVariable: expensesBarChartYAxisVariable,
     yAxisCalendarChartVariable: expensesCalendarChartYAxisVariable,
@@ -123,18 +118,17 @@ function FinancialDashboardDailyExpenses({
   // expenses -> charts -> pie -> expand chart button
   const [createdExpandPieChartButton] = returnAccessibleButtonElements([
     {
-      buttonLabel: 'Expand',
+      buttonLabel: "Expand",
       semanticDescription: `Expand and customize ${pieChartHeading}`,
-      semanticName: 'Expand Expenses Pie Chart',
+      semanticName: "Expand Expenses Pie Chart",
       buttonOnClick: () => {
         globalDispatch({
           type: globalAction.setCustomizeChartsPageData,
           payload: {
-            chartData:
-              dailyChartsExpenses.pieChartsObj[expensesPieChartYAxisVariable],
+            chartData: dailyChartsExpenses.pieChartsObj[expensesPieChartYAxisVariable],
             chartTitle: pieChartHeading,
-            chartKind: 'pie',
-            chartUnitKind: 'currency',
+            chartKind: "pie",
+            chartUnitKind: "currency",
           },
         });
 
@@ -149,7 +143,7 @@ function FinancialDashboardDailyExpenses({
     returnAccessibleSelectInputElements([
       {
         data: FINANCIAL_PIE_Y_AXIS_DATA,
-        label: 'Y-Axis Pie',
+        label: "Y-Axis Pie",
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           financialDashboardDailyExpensesDispatch({
             type: financialDashboardDailyExpensesAction.setExpensesPieChartYAxisVariable,
@@ -165,9 +159,7 @@ function FinancialDashboardDailyExpenses({
     <ResponsivePieChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
-      pieChartData={
-        dailyChartsExpenses.pieChartsObj[expensesPieChartYAxisVariable]
-      }
+      pieChartData={dailyChartsExpenses.pieChartsObj[expensesPieChartYAxisVariable]}
       hideControls
     />
   );
@@ -177,18 +169,17 @@ function FinancialDashboardDailyExpenses({
   // expenses -> charts -> bar -> expand chart button
   const [createdExpandBarChartButton] = returnAccessibleButtonElements([
     {
-      buttonLabel: 'Expand',
+      buttonLabel: "Expand",
       semanticDescription: `Expand and customize ${barChartHeading}`,
-      semanticName: 'Expand Expenses Bar Chart',
+      semanticName: "Expand Expenses Bar Chart",
       buttonOnClick: () => {
         globalDispatch({
           type: globalAction.setCustomizeChartsPageData,
           payload: {
-            chartData:
-              dailyChartsExpenses.barChartsObj[expensesBarChartYAxisVariable],
+            chartData: dailyChartsExpenses.barChartsObj[expensesBarChartYAxisVariable],
             chartTitle: barChartHeading,
-            chartKind: 'bar',
-            chartUnitKind: 'currency',
+            chartKind: "bar",
+            chartUnitKind: "currency",
           },
         });
 
@@ -203,7 +194,7 @@ function FinancialDashboardDailyExpenses({
     returnAccessibleSelectInputElements([
       {
         data: FINANCIAL_LINE_BAR_Y_AXIS_DATA,
-        label: 'Y-Axis Bar',
+        label: "Y-Axis Bar",
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           financialDashboardDailyExpensesDispatch({
             type: financialDashboardDailyExpensesAction.setExpensesBarChartYAxisVariable,
@@ -217,9 +208,7 @@ function FinancialDashboardDailyExpenses({
   // expenses -> charts -> bar -> display
   const displayExpensesBarChart = (
     <ResponsiveBarChart
-      barChartData={
-        dailyChartsExpenses.barChartsObj[expensesBarChartYAxisVariable]
-      }
+      barChartData={dailyChartsExpenses.barChartsObj[expensesBarChartYAxisVariable]}
       indexBy="Days"
       keys={FINANCIAL_LINE_BAR_Y_AXIS_DATA.map((obj) => obj.label)}
       chartHeight={chartHeight}
@@ -231,20 +220,19 @@ function FinancialDashboardDailyExpenses({
   // expenses -> charts -> line
 
   // expenses -> charts -> line -> expand chart button
-  const [createdExpandLineChartButton] = returnAccessibleButtonElements([
+  const [expandLineChartButton] = returnAccessibleButtonElements([
     {
-      buttonLabel: 'Expand',
+      buttonLabel: "Expand",
       semanticDescription: `Expand and customize ${lineChartHeading}`,
-      semanticName: 'Expand Expenses Line Chart',
+      semanticName: "Expand Expenses Line Chart",
       buttonOnClick: () => {
         globalDispatch({
           type: globalAction.setCustomizeChartsPageData,
           payload: {
-            chartData:
-              dailyChartsExpenses.lineChartsObj[expensesLineChartYAxisVariable],
+            chartData: dailyChartsExpenses.lineChartsObj[expensesLineChartYAxisVariable],
             chartTitle: lineChartHeading,
-            chartKind: 'line',
-            chartUnitKind: 'currency',
+            chartKind: "line",
+            chartUnitKind: "currency",
           },
         });
 
@@ -259,7 +247,7 @@ function FinancialDashboardDailyExpenses({
     returnAccessibleSelectInputElements([
       {
         data: FINANCIAL_LINE_BAR_Y_AXIS_DATA,
-        label: 'Y-Axis Line',
+        label: "Y-Axis Line",
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           financialDashboardDailyExpensesDispatch({
             type: financialDashboardDailyExpensesAction.setExpensesLineChartYAxisVariable,
@@ -275,9 +263,7 @@ function FinancialDashboardDailyExpenses({
     <ResponsiveLineChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
-      lineChartData={
-        dailyChartsExpenses.lineChartsObj[expensesLineChartYAxisVariable]
-      }
+      lineChartData={dailyChartsExpenses.lineChartsObj[expensesLineChartYAxisVariable]}
       hideControls
       xFormat={(x) => `Day - ${x}`}
       yFormat={(y) => `$${addCommaSeparator(y)}`}
@@ -287,22 +273,20 @@ function FinancialDashboardDailyExpenses({
   // expenses -> charts -> calendar
 
   // expenses -> charts -> calendar -> expand chart button
-  const [createdExpandChartButton] = returnAccessibleButtonElements([
+  const [expandChartButton] = returnAccessibleButtonElements([
     {
-      buttonLabel: 'Expand',
+      buttonLabel: "Expand",
       semanticDescription: `Expand and customize ${calendarChartHeading}`,
-      semanticName: 'Expand Expenses Calendar Chart',
+      semanticName: "Expand Expenses Calendar Chart",
       buttonOnClick: () => {
         globalDispatch({
           type: globalAction.setCustomizeChartsPageData,
           payload: {
             chartData:
-              dailyChartsExpenses.calendarChartsObj[
-                expensesCalendarChartYAxisVariable
-              ],
+              dailyChartsExpenses.calendarChartsObj[expensesCalendarChartYAxisVariable],
             chartTitle: calendarChartHeading,
-            chartKind: 'calendar',
-            chartUnitKind: 'currency',
+            chartKind: "calendar",
+            chartUnitKind: "currency",
           },
         });
 
@@ -317,7 +301,7 @@ function FinancialDashboardDailyExpenses({
     returnAccessibleSelectInputElements([
       {
         data: FINANCIAL_CALENDAR_Y_AXIS_DATA,
-        label: 'Y-Axis Calendar',
+        label: "Y-Axis Calendar",
         onChange: (event: ChangeEvent<HTMLSelectElement>) => {
           financialDashboardDailyExpensesDispatch({
             type: financialDashboardDailyExpensesAction.setExpensesCalendarChartYAxisVariable,
@@ -332,9 +316,7 @@ function FinancialDashboardDailyExpenses({
   const displayExpensesCalendarChart = (
     <ResponsiveCalendarChart
       calendarChartData={
-        dailyChartsExpenses.calendarChartsObj[
-          expensesCalendarChartYAxisVariable
-        ]
+        dailyChartsExpenses.calendarChartsObj[expensesCalendarChartYAxisVariable]
       }
       from={`${year}-${month}-01`}
       chartHeight={chartHeight}
@@ -348,27 +330,21 @@ function FinancialDashboardDailyExpenses({
     <DashboardMetricsLayout
       barChart={displayExpensesBarChart}
       barChartHeading={barChartHeading}
-      barChartYAxisSelectInput={
-        createdExpensesBarChartYAxisVariablesSelectInput
-      }
+      barChartYAxisSelectInput={createdExpensesBarChartYAxisVariablesSelectInput}
       borderColor={borderColor}
       expandBarChartButton={createdExpandBarChartButton}
-      expandLineChartButton={createdExpandLineChartButton}
-      expandCalendarChartButton={createdExpandChartButton}
+      expandLineChartButton={expandLineChartButton}
+      expandCalendarChartButton={expandChartButton}
       expandPieChartButton={createdExpandPieChartButton}
       isMoney
       lineChart={displayExpensesLineChart}
       lineChartHeading={lineChartHeading}
-      lineChartYAxisSelectInput={
-        createdExpensesLineChartYAxisVariablesSelectInput
-      }
+      lineChartYAxisSelectInput={createdExpensesLineChartYAxisVariablesSelectInput}
       overviewCards={dailyCardsExpenses}
       padding={padding}
       pieChart={displayExpensesPieChart}
       pieChartHeading={pieChartHeading}
-      pieChartYAxisSelectInput={
-        createdExpensesPieChartYAxisVariablesSelectInput
-      }
+      pieChartYAxisSelectInput={createdExpensesPieChartYAxisVariablesSelectInput}
       sectionHeading={`${splitCamelCase(storeLocation)} Daily Expenses`}
       semanticLabel="expenses"
       statisticsMap={statisticsExpenses}

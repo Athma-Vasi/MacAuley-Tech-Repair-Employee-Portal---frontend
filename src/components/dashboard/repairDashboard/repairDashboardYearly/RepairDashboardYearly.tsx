@@ -12,29 +12,33 @@ import {
 } from "../../../../jsxCreators";
 import { addCommaSeparator, returnThemeColors, splitCamelCase } from "../../../../utils";
 import { ResponsiveBarChart, ResponsiveLineChart } from "../../../charts";
-import { MONTHS } from "../../constants";
 import DashboardMetricsLayout from "../../DashboardMetricsLayout";
-import { returnRepairMetricsCards } from "../../jsxHelpers";
+import { RepairMetricsCards } from "../../jsxHelpers";
+import { BusinessMetricStoreLocation, DashboardRepairMetric, Year } from "../../types";
 import { returnChartTitleNavigateLinks, returnStatistics } from "../../utils";
 import { REPAIR_METRIC_Y_AXIS_DATA } from "../constants";
-import { RepairDashboardChildrenProps } from "../types";
-import {
-  RepairMetricChartsObjKey,
-  returnRepairMetricsCharts,
-  returnSelectedDateRepairMetrics,
-} from "../utils";
+import { RepairMetricChartsKey, RepairMetricsCharts } from "../utils";
 import { initialRepairDashboardYearlyState, repairDashboardYearlyReducer } from "./state";
 
+type RepairDashboardYearlyProps = {
+  day: string;
+  repairMetric: DashboardRepairMetric;
+  month: string;
+  storeLocation: BusinessMetricStoreLocation;
+  year: Year;
+  yearlyCharts: RepairMetricsCharts["yearlyCharts"];
+  yearlyCards: RepairMetricsCards["yearlyCards"];
+};
+
 function RepairDashboardYearly({
-  businessMetrics,
   repairMetric,
-  selectedDate,
-  selectedMonth,
-  selectedYear,
+  day,
+  month,
+  yearlyCards,
+  yearlyCharts,
   storeLocation,
-  storeLocationView,
   year,
-}: RepairDashboardChildrenProps) {
+}: RepairDashboardYearlyProps) {
   const {
     globalState: { padding, width, themeObject },
     globalDispatch,
@@ -50,15 +54,13 @@ function RepairDashboardYearly({
   const { barChartYAxisVariable, lineChartYAxisVariable } = repairDashboardYearlyState;
 
   const componentWidth =
-    width < 480 // for iPhone 5/SE
+    width < 480
       ? width * 0.93
-      : width < 768 // for iPhones 6 - 15
+      : width < 768
       ? width - 40
-      : // at 768vw the navbar appears at width of 225px
-      width < 1024
+      : width < 1024
       ? (width - 225) * 0.8
-      : // at >= 1200vw the navbar width is 300px
-      width < 1200
+      : width < 1200
       ? (width - 225) * 0.8
       : 900 - 40;
   const chartHeight = width < 1024 ? componentWidth * 0.618 : componentWidth * 0.382;
@@ -66,46 +68,13 @@ function RepairDashboardYearly({
 
   const {
     appThemeColors: { borderColor },
-    generalColors: { redColorShade, greenColorShade },
   } = returnThemeColors({
     colorsSwatches: COLORS_SWATCHES,
     themeObject,
   });
 
-  const selectedDateRepairMetrics = returnSelectedDateRepairMetrics({
-    businessMetrics,
-    day: selectedDate,
-    month: selectedMonth,
-    months: MONTHS,
-    selectedRepairCategory: repairMetric,
-    storeLocation: storeLocationView,
-    year: selectedYear,
-  });
+  const yearlyStatistics = returnStatistics<RepairMetricChartsKey>(yearlyCharts.bar);
 
-  const { yearlyCharts } = returnRepairMetricsCharts({
-    businessMetrics,
-    months: MONTHS,
-    selectedDateRepairMetrics,
-    storeLocation: storeLocationView,
-    selectedRepairCategory: repairMetric,
-  });
-
-  const { yearlyCards } = returnRepairMetricsCards({
-    greenColorShade,
-    padding,
-    redColorShade,
-    selectedDateRepairMetrics,
-    width,
-  });
-
-  // statistics
-  const yearlyStatistics = returnStatistics<RepairMetricChartsObjKey>(
-    yearlyCharts.barChartsObj
-  );
-
-  // charts
-
-  // charts -> titles & navlinks
   const {
     barChartHeading,
     expandBarChartNavigateLink,
@@ -121,10 +90,7 @@ function RepairDashboardYearly({
     year,
   });
 
-  // charts -> bar
-
-  // charts -> bar -> expand chart button
-  const [createdExpandChartButton] = returnAccessibleButtonElements([
+  const [expandChartButton] = returnAccessibleButtonElements([
     {
       buttonLabel: "Expand",
       semanticDescription: `Expand and customize ${barChartHeading}`,
@@ -133,7 +99,7 @@ function RepairDashboardYearly({
         globalDispatch({
           type: globalAction.setCustomizeChartsPageData,
           payload: {
-            chartData: yearlyCharts.barChartsObj[barChartYAxisVariable],
+            chartData: yearlyCharts.bar[barChartYAxisVariable],
             chartTitle: barChartHeading,
             chartKind: "bar",
             chartUnitKind: barChartYAxisVariable === "revenue" ? "currency" : "number",
@@ -146,27 +112,25 @@ function RepairDashboardYearly({
     },
   ]);
 
-  // charts -> bar -> y-axis select input
-  const [createdBarChartYAxisVariablesSelectInput] = returnAccessibleSelectInputElements([
+  const [barChartYAxisVariablesSelectInput] = returnAccessibleSelectInputElements([
     {
       data: REPAIR_METRIC_Y_AXIS_DATA,
       label: "Y-Axis Bar",
       onChange: (event: ChangeEvent<HTMLSelectElement>) => {
         dispatchRepairDashboardYearlyState({
           type: "setBarChartYAxisVariable",
-          payload: event.currentTarget.value as RepairMetricChartsObjKey,
+          payload: event.currentTarget.value as RepairMetricChartsKey,
         });
       },
       value: barChartYAxisVariable,
     },
   ]);
 
-  // charts -> bar -> display
-  const displayBarChart = (
+  const barChart = (
     <ResponsiveBarChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
-      barChartData={yearlyCharts.barChartsObj[barChartYAxisVariable]}
+      barChartData={yearlyCharts.bar[barChartYAxisVariable]}
       hideControls
       indexBy="Years"
       keys={REPAIR_METRIC_Y_AXIS_DATA.map((obj) => obj.label)}
@@ -174,10 +138,7 @@ function RepairDashboardYearly({
     />
   );
 
-  // charts -> line
-
-  // charts -> line -> expand chart button
-  const [createdExpandLineChartButton] = returnAccessibleButtonElements([
+  const [expandLineChartButton] = returnAccessibleButtonElements([
     {
       buttonLabel: "Expand",
       semanticDescription: `Expand and customize ${lineChartHeading}`,
@@ -186,7 +147,7 @@ function RepairDashboardYearly({
         globalDispatch({
           type: globalAction.setCustomizeChartsPageData,
           payload: {
-            chartData: yearlyCharts.lineChartsObj[lineChartYAxisVariable],
+            chartData: yearlyCharts.line[lineChartYAxisVariable],
             chartTitle: lineChartHeading,
             chartKind: "line",
             chartUnitKind: lineChartYAxisVariable === "revenue" ? "currency" : "number",
@@ -199,29 +160,25 @@ function RepairDashboardYearly({
     },
   ]);
 
-  // charts -> line -> y-axis select input
-  const [createdLineChartYAxisVariablesSelectInput] = returnAccessibleSelectInputElements(
-    [
-      {
-        data: REPAIR_METRIC_Y_AXIS_DATA,
-        label: "Y-Axis Line",
-        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-          dispatchRepairDashboardYearlyState({
-            type: "setLineChartYAxisVariable",
-            payload: event.currentTarget.value as RepairMetricChartsObjKey,
-          });
-        },
-        value: lineChartYAxisVariable,
+  const [lineChartYAxisVariablesSelectInput] = returnAccessibleSelectInputElements([
+    {
+      data: REPAIR_METRIC_Y_AXIS_DATA,
+      label: "Y-Axis Line",
+      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+        dispatchRepairDashboardYearlyState({
+          type: "setLineChartYAxisVariable",
+          payload: event.currentTarget.value as RepairMetricChartsKey,
+        });
       },
-    ]
-  );
+      value: lineChartYAxisVariable,
+    },
+  ]);
 
-  // charts -> line -> display
-  const displayLineChart = (
+  const lineChart = (
     <ResponsiveLineChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
-      lineChartData={yearlyCharts.lineChartsObj[lineChartYAxisVariable]}
+      lineChartData={yearlyCharts.line[lineChartYAxisVariable]}
       hideControls
       xFormat={(x) => `Year - ${x}`}
       yFormat={(y) =>
@@ -231,18 +188,17 @@ function RepairDashboardYearly({
     />
   );
 
-  // charts -> display
-  const displayRepairMetricsSection = (
+  const repairDashboardYearly = (
     <DashboardMetricsLayout
-      barChart={displayBarChart}
+      barChart={barChart}
       barChartHeading={barChartHeading}
-      barChartYAxisSelectInput={createdBarChartYAxisVariablesSelectInput}
+      barChartYAxisSelectInput={barChartYAxisVariablesSelectInput}
       borderColor={borderColor}
-      expandBarChartButton={createdExpandChartButton}
-      expandLineChartButton={createdExpandLineChartButton}
-      lineChart={displayLineChart}
+      expandBarChartButton={expandChartButton}
+      expandLineChartButton={expandLineChartButton}
+      lineChart={lineChart}
       lineChartHeading={lineChartHeading}
-      lineChartYAxisSelectInput={createdLineChartYAxisVariablesSelectInput}
+      lineChartYAxisSelectInput={lineChartYAxisVariablesSelectInput}
       overviewCards={yearlyCards}
       padding={padding}
       sectionHeading={`Yearly ${repairMetric} Metrics`}
@@ -252,9 +208,7 @@ function RepairDashboardYearly({
     />
   );
 
-  const displayRepairDashboardYearly = <Stack>{displayRepairMetricsSection}</Stack>;
-
-  return displayRepairDashboardYearly;
+  return <Stack>{repairDashboardYearly}</Stack>;
 }
 
 export default RepairDashboardYearly;
