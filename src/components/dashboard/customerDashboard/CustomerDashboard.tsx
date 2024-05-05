@@ -176,6 +176,42 @@ function CustomerDashboard({
     return null;
   }
 
+  const { dailyCards, monthlyCards, yearlyCards } = customerMetricsCards;
+  const { dailyCharts, monthlyCharts, yearlyCharts } = customerMetricsCharts;
+
+  const customerDashboard =
+    calendarView === "Daily" ? (
+      <CustomerDashboardDaily
+        customerMetric={customerMetric}
+        day={selectedDate}
+        month={selectedYYYYMMDD.split("-")[1]}
+        dailyCards={dailyCards}
+        dailyCharts={dailyCharts}
+        storeLocation={storeLocationView}
+        year={selectedYear}
+      />
+    ) : calendarView === "Monthly" ? (
+      <CustomerDashboardMonthly
+        customerMetric={customerMetric}
+        day={selectedDate}
+        month={selectedYYYYMMDD.split("-")[1]}
+        monthlyCards={monthlyCards}
+        monthlyCharts={monthlyCharts}
+        storeLocation={storeLocationView}
+        year={selectedYear}
+      />
+    ) : (
+      <CustomerDashboardYearly
+        customerMetric={customerMetric}
+        day={selectedDate}
+        month={selectedYYYYMMDD.split("-")[1]}
+        yearlyCards={yearlyCards}
+        yearlyCharts={yearlyCharts}
+        storeLocation={storeLocationView}
+        year={selectedYear}
+      />
+    );
+
   const loadingOverlay = (
     <LoadingOverlay
       visible={isLoading}
@@ -192,45 +228,6 @@ function CustomerDashboard({
       transitionDuration={500}
     />
   );
-
-  const customerDashboard =
-    calendarView === "Daily" ? (
-      <CustomerDashboardDaily
-        customerMetric={customerMetric}
-        day={selectedDate}
-        month={selectedYYYYMMDD.split("-")[1]}
-        dailyCards={customerMetricsCards.dailyCards}
-        dailyCharts={customerMetricsCharts.dailyCharts}
-        storeLocation={storeLocationView}
-        year={selectedYear}
-      />
-    ) : calendarView === "Monthly" ? (
-      <CustomerDashboardMonthly
-        businessMetrics={businessMetrics}
-        customerMetric={customerMetric}
-        day={selectedDate}
-        month={selectedYYYYMMDD.split("-")[1]}
-        selectedDate={selectedDate}
-        selectedMonth={selectedMonth}
-        selectedYear={selectedYear}
-        storeLocation={storeLocationView}
-        storeLocationView={storeLocationView}
-        year={selectedYear}
-      />
-    ) : (
-      <CustomerDashboardYearly
-        businessMetrics={businessMetrics}
-        customerMetric={customerMetric}
-        day={selectedDate}
-        month={selectedYYYYMMDD.split("-")[1]}
-        selectedDate={selectedDate}
-        selectedMonth={selectedMonth}
-        selectedYear={selectedYear}
-        storeLocation={storeLocationView}
-        storeLocationView={storeLocationView}
-        year={selectedYear}
-      />
-    );
 
   return (
     <Stack>

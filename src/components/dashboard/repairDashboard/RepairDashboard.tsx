@@ -204,11 +204,14 @@ function RepairDashboard({
     />
   );
 
+  const { dailyCards, monthlyCards, yearlyCards } = repairMetricsCards;
+  const { dailyCharts, monthlyCharts, yearlyCharts } = repairMetricsCharts;
+
   const repairDashboard =
     calendarView === "Daily" ? (
       <RepairDashboardDaily
-        dailyCards={repairMetricsCards.dailyCards}
-        dailyCharts={repairMetricsCharts.dailyCharts}
+        dailyCards={dailyCards}
+        dailyCharts={dailyCharts}
         day={selectedDate}
         month={selectedYYYYMMDD.split("-")[1]}
         repairMetric={repairMetric}
@@ -217,8 +220,8 @@ function RepairDashboard({
       />
     ) : calendarView === "Monthly" ? (
       <RepairDashboardMonthly
-        monthlyCards={repairMetricsCards.monthlyCards}
-        monthlyCharts={repairMetricsCharts.monthlyCharts}
+        monthlyCards={monthlyCards}
+        monthlyCharts={monthlyCharts}
         day={selectedDate}
         month={selectedYYYYMMDD.split("-")[1]}
         repairMetric={repairMetric}
@@ -227,8 +230,8 @@ function RepairDashboard({
       />
     ) : (
       <RepairDashboardYearly
-        yearlyCards={repairMetricsCards.yearlyCards}
-        yearlyCharts={repairMetricsCharts.yearlyCharts}
+        yearlyCards={yearlyCards}
+        yearlyCharts={yearlyCharts}
         day={selectedDate}
         month={selectedYYYYMMDD.split("-")[1]}
         repairMetric={repairMetric}

@@ -1,4 +1,3 @@
-import { ProductMetricsCards } from "../utilsTSX";
 import {
   BusinessMetric,
   BusinessMetricStoreLocation,
@@ -7,6 +6,7 @@ import {
   Year,
 } from "../types";
 import { ProductMetricsCharts } from "./utils";
+import { ProductMetricsCards } from "./utilsTSX";
 
 type ProductDashboardChildrenProps = {
   businessMetrics: BusinessMetric[];

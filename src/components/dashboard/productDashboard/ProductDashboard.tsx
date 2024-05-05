@@ -195,6 +195,9 @@ function ProductDashboard({
     />
   );
 
+  const { dailyCards, monthlyCards, yearlyCards } = productMetricsCards;
+  const { dailyCharts, monthlyCharts, yearlyCharts } = productMetricsCharts;
+
   const productDashboard =
     calendarView === "Daily" ? (
       <ProductDashboardDaily
@@ -203,8 +206,8 @@ function ProductDashboard({
         productMetric={productMetric}
         storeLocation={storeLocationView}
         year={selectedYear}
-        dailyCards={productMetricsCards.dailyCards}
-        dailyCharts={productMetricsCharts.dailyCharts}
+        dailyCards={dailyCards}
+        dailyCharts={dailyCharts}
       />
     ) : calendarView === "Monthly" ? (
       <ProductDashboardMonthly
@@ -213,8 +216,8 @@ function ProductDashboard({
         productMetric={productMetric}
         storeLocation={storeLocationView}
         year={selectedYear}
-        monthlyCards={productMetricsCards.monthlyCards}
-        monthlyCharts={productMetricsCharts.monthlyCharts}
+        monthlyCards={monthlyCards}
+        monthlyCharts={monthlyCharts}
       />
     ) : (
       <ProductDashboardYearly
@@ -223,8 +226,8 @@ function ProductDashboard({
         productMetric={productMetric}
         storeLocation={storeLocationView}
         year={selectedYear}
-        yearlyCards={productMetricsCards.yearlyCards}
-        yearlyCharts={productMetricsCharts.yearlyCharts}
+        yearlyCards={yearlyCards}
+        yearlyCharts={yearlyCharts}
       />
     );
 
