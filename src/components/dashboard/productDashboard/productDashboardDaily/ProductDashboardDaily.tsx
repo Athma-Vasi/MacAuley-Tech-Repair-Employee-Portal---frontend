@@ -147,7 +147,7 @@ function ProductDashboardDaily({
     },
   ]);
 
-  const displayPieChart = (
+  const pieChart = (
     <ResponsivePieChart
       pieChartData={dailyCharts.revenue.pie}
       chartHeight={chartHeight}
@@ -192,7 +192,7 @@ function ProductDashboardDaily({
     },
   ]);
 
-  const displayRevenueBarChart = (
+  const revenueBarChart = (
     <ResponsiveBarChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
@@ -241,7 +241,7 @@ function ProductDashboardDaily({
     ]
   );
 
-  const displayRevenueLineChart = (
+  const revenueLineChart = (
     <ResponsiveLineChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
@@ -289,7 +289,7 @@ function ProductDashboardDaily({
       },
     ]);
 
-  const displayRevenueCalendarChart = (
+  const revenueCalendarChart = (
     <ResponsiveCalendarChart
       calendarChartData={dailyCharts.revenue.calendar[revenueCalendarChartYAxisVariable]}
       chartHeight={chartHeight}
@@ -300,9 +300,9 @@ function ProductDashboardDaily({
     />
   );
 
-  const displayRevenueSection = (
+  const productDashboardDailyRevenue = (
     <DashboardMetricsLayout
-      barChart={displayRevenueBarChart}
+      barChart={revenueBarChart}
       barChartHeading={revenueBarChartHeading}
       barChartYAxisSelectInput={revenueBarChartYAxisVariablesSelectInput}
       borderColor={borderColor}
@@ -311,18 +311,18 @@ function ProductDashboardDaily({
       expandCalendarChartButton={expandRevenueCalendarChartButton}
       expandPieChartButton={expandRevenuePieChartButton}
       isMoney
-      lineChart={displayRevenueLineChart}
+      lineChart={revenueLineChart}
       lineChartHeading={revenueLineChartHeading}
       lineChartYAxisSelectInput={revenueLineChartYAxisVariablesSelectInput}
       overviewCards={dailyCards.revenue}
       padding={padding}
-      pieChart={displayPieChart}
+      pieChart={pieChart}
       pieChartHeading={pieChartRevenueHeading}
       sectionHeading={`${splitCamelCase(storeLocation)} Daily ${productMetric} Revenue`}
       semanticLabel={`${productMetric} Revenue`}
       statisticsMap={dailyRevenueStatistics}
       width={width}
-      calendarChart={displayRevenueCalendarChart}
+      calendarChart={revenueCalendarChart}
       calendarChartHeading={revenueCalendarChartHeading}
       calendarChartYAxisSelectInput={revenueCalendarChartYAxisVariablesSelectInput}
     />
@@ -378,7 +378,7 @@ function ProductDashboardDaily({
     },
   ]);
 
-  const displayUnitsSoldPieChart = (
+  const unitsSoldPieChart = (
     <ResponsivePieChart
       pieChartData={dailyCharts.unitsSold.pie}
       chartHeight={chartHeight}
@@ -425,7 +425,7 @@ function ProductDashboardDaily({
       },
     ]);
 
-  const displayUnitsSoldBarChart = (
+  const unitsSoldBarChart = (
     <ResponsiveBarChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
@@ -474,7 +474,7 @@ function ProductDashboardDaily({
       },
     ]);
 
-  const displayUnitsSoldLineChart = (
+  const unitsSoldLineChart = (
     <ResponsiveLineChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
@@ -524,7 +524,7 @@ function ProductDashboardDaily({
       },
     ]);
 
-  const displayUnitsSoldCalendarChart = (
+  const unitsSoldCalendarChart = (
     <ResponsiveCalendarChart
       calendarChartData={
         dailyCharts.unitsSold.calendar[unitsSoldCalendarChartYAxisVariable]
@@ -537,9 +537,9 @@ function ProductDashboardDaily({
     />
   );
 
-  const displayUnitsSoldSection = (
+  const productDashboardDailyUnitsSold = (
     <DashboardMetricsLayout
-      barChart={displayUnitsSoldBarChart}
+      barChart={unitsSoldBarChart}
       barChartHeading={barChartUnitsSoldHeading}
       barChartYAxisSelectInput={unitsSoldBarChartYAxisVariablesSelectInput}
       borderColor={borderColor}
@@ -547,12 +547,12 @@ function ProductDashboardDaily({
       expandLineChartButton={expandUnitsSoldLineChartButton}
       expandCalendarChartButton={expandUnitsSoldCalendarChartButton}
       expandPieChartButton={expandUnitsSoldPieChartButton}
-      lineChart={displayUnitsSoldLineChart}
+      lineChart={unitsSoldLineChart}
       lineChartHeading={lineChartUnitsSoldHeading}
       lineChartYAxisSelectInput={unitsSoldLineChartYAxisVariablesSelectInput}
       overviewCards={dailyCards.unitsSold}
       padding={padding}
-      pieChart={displayUnitsSoldPieChart}
+      pieChart={unitsSoldPieChart}
       pieChartHeading={pieChartUnitsSoldHeading}
       sectionHeading={`${splitCamelCase(
         storeLocation
@@ -560,20 +560,20 @@ function ProductDashboardDaily({
       semanticLabel={`${productMetric} Units Sold`}
       statisticsMap={dailyUnitsSoldStatistics}
       width={width}
-      calendarChart={displayUnitsSoldCalendarChart}
+      calendarChart={unitsSoldCalendarChart}
       calendarChartHeading={calendarChartUnitsSoldHeading}
       calendarChartYAxisSelectInput={unitsSoldCalendarChartYAxisVariablesSelectInput}
     />
   );
 
-  const displayProductDashboardDaily = (
+  const productDashboardDaily = (
     <Stack>
-      {displayRevenueSection}
-      {displayUnitsSoldSection}
+      {productDashboardDailyRevenue}
+      {productDashboardDailyUnitsSold}
     </Stack>
   );
 
-  return displayProductDashboardDaily;
+  return productDashboardDaily;
 }
 
 export default ProductDashboardDaily;

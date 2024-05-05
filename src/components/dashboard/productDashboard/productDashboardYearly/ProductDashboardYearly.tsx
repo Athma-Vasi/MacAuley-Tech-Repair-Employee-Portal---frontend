@@ -134,7 +134,7 @@ function ProductDashboardYearly({
     },
   ]);
 
-  const displayPieChart = (
+  const pieChart = (
     <ResponsivePieChart
       pieChartData={yearlyCharts.revenue.pie}
       chartHeight={chartHeight}
@@ -179,7 +179,7 @@ function ProductDashboardYearly({
     },
   ]);
 
-  const displayRevenueBarChart = (
+  const revenueBarChart = (
     <ResponsiveBarChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
@@ -228,7 +228,7 @@ function ProductDashboardYearly({
     ]
   );
 
-  const displayRevenueLineChart = (
+  const revenueLineChart = (
     <ResponsiveLineChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
@@ -239,9 +239,9 @@ function ProductDashboardYearly({
     />
   );
 
-  const displayRevenueSection = (
+  const productDashboardYearlyRevenue = (
     <DashboardMetricsLayout
-      barChart={displayRevenueBarChart}
+      barChart={revenueBarChart}
       barChartHeading={revenueBarChartHeading}
       barChartYAxisSelectInput={revenueBarChartYAxisVariablesSelectInput}
       borderColor={borderColor}
@@ -249,12 +249,12 @@ function ProductDashboardYearly({
       expandLineChartButton={expandRevenueLineChartButton}
       expandPieChartButton={expandRevenuePieChartButton}
       isMoney
-      lineChart={displayRevenueLineChart}
+      lineChart={revenueLineChart}
       lineChartHeading={revenueLineChartHeading}
       lineChartYAxisSelectInput={revenueLineChartYAxisVariablesSelectInput}
       overviewCards={yearlyCards.revenue}
       padding={padding}
-      pieChart={displayPieChart}
+      pieChart={pieChart}
       pieChartHeading={pieChartRevenueHeading}
       sectionHeading={`${splitCamelCase(storeLocation)} Yearly ${productMetric} Revenue`}
       semanticLabel={`${productMetric} Revenue`}
@@ -310,7 +310,7 @@ function ProductDashboardYearly({
     },
   ]);
 
-  const displayUnitsSoldPieChart = (
+  const unitsSoldPieChart = (
     <ResponsivePieChart
       pieChartData={yearlyCharts.unitsSold.pie}
       chartHeight={chartHeight}
@@ -357,7 +357,7 @@ function ProductDashboardYearly({
       },
     ]);
 
-  const displayUnitsSoldBarChart = (
+  const unitsSoldBarChart = (
     <ResponsiveBarChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
@@ -406,7 +406,7 @@ function ProductDashboardYearly({
       },
     ]);
 
-  const displayUnitsSoldLineChart = (
+  const unitsSoldLineChart = (
     <ResponsiveLineChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
@@ -418,21 +418,21 @@ function ProductDashboardYearly({
     />
   );
 
-  const displayUnitsSoldSection = (
+  const productDashboardYearlyUnitsSold = (
     <DashboardMetricsLayout
-      barChart={displayUnitsSoldBarChart}
+      barChart={unitsSoldBarChart}
       barChartHeading={barChartUnitsSoldHeading}
       barChartYAxisSelectInput={unitsSoldBarChartYAxisVariablesSelectInput}
       borderColor={borderColor}
       expandBarChartButton={expandUnitsSoldBarChartButton}
       expandLineChartButton={expandUnitsSoldLineChartButton}
       expandPieChartButton={expandUnitsSoldPieChartButton}
-      lineChart={displayUnitsSoldLineChart}
+      lineChart={unitsSoldLineChart}
       lineChartHeading={lineChartUnitsSoldHeading}
       lineChartYAxisSelectInput={unitsSoldLineChartYAxisVariablesSelectInput}
       overviewCards={yearlyCards.unitsSold}
       padding={padding}
-      pieChart={displayUnitsSoldPieChart}
+      pieChart={unitsSoldPieChart}
       pieChartHeading={pieChartUnitsSoldHeading}
       sectionHeading={`${splitCamelCase(
         storeLocation
@@ -445,8 +445,8 @@ function ProductDashboardYearly({
 
   const productDashboardYearly = (
     <Stack>
-      {displayRevenueSection}
-      {displayUnitsSoldSection}
+      {productDashboardYearlyRevenue}
+      {productDashboardYearlyUnitsSold}
     </Stack>
   );
 

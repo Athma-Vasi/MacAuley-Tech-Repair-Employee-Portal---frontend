@@ -91,8 +91,6 @@ function Dashboard() {
       type: globalAction.setCustomizeChartsPageDataSelectedYYYYMMDD,
       payload: initialDashboardState.selectedYYYYMMDD,
     });
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -173,7 +171,6 @@ function Dashboard() {
     }
 
     createBusinessMetrics();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -212,7 +209,6 @@ function Dashboard() {
     return displayLoadingOverlay;
   }
 
-  // metrics tabs
   const createdMetricsTabs = (
     <Tabs
       value={metricsView}
@@ -233,7 +229,6 @@ function Dashboard() {
     </Tabs>
   );
 
-  // calendar tabs
   const createdCalendarTabs = (
     <Tabs
       value={calendarView}
@@ -285,7 +280,6 @@ function Dashboard() {
   );
   const displayYYYYMMDDInput = <Group w={330}>{createdYYYYMMDDInput}</Group>;
 
-  // financial metric select input
   const financialMetricCategorySelectInputCreatorInfo: AccessibleSelectInputCreatorInfo =
     {
       data: FINANCIALS_METRICS_SELECT_INPUT_DATA,
@@ -300,7 +294,6 @@ function Dashboard() {
       value: financialMetric,
     };
 
-  // customer metric select input
   const filteredCustomerMetricsSelectInputData =
     CUSTOMER_METRICS_SELECT_INPUT_DATA.filter((data) =>
       calendarView === "Daily" ? data !== "Other Metrics" : data
@@ -319,7 +312,6 @@ function Dashboard() {
     value: customerMetric,
   };
 
-  // product metric select input
   const productMetricCategorySelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
     data: PRODUCT_METRICS_SELECT_INPUT_DATA,
     description: "Select product metric category to view.",
@@ -333,7 +325,6 @@ function Dashboard() {
     value: productMetric,
   };
 
-  // repair metric select input
   const repairMetricCategorySelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
     data: REPAIR_METRICS_SELECT_INPUT_DATA,
     description: "Select repair metric category to view.",
