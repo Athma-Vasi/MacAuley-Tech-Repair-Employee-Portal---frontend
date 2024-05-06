@@ -318,6 +318,7 @@ function createCustomerMetricsCards({
         kind: "month",
         prevValue: prevMonthMetrics.customers.churnRate,
         selectedValue: selectedMonthMetrics.customers.churnRate,
+        isDisplayValueAsPercentage: true,
       });
 
       // month -> retention rate
@@ -327,6 +328,7 @@ function createCustomerMetricsCards({
         kind: "month",
         prevValue: prevMonthMetrics.customers.retentionRate,
         selectedValue: selectedMonthMetrics.customers.retentionRate,
+        isDisplayValueAsPercentage: true,
       });
 
       // year
@@ -439,6 +441,7 @@ function createCustomerMetricsCards({
         kind: "year",
         prevValue: prevYearMetrics.customers.churnRate,
         selectedValue: selectedYearMetrics.customers.churnRate,
+        isDisplayValueAsPercentage: true,
       });
 
       // year -> retention rate
@@ -448,6 +451,7 @@ function createCustomerMetricsCards({
         kind: "year",
         prevValue: prevYearMetrics.customers.retentionRate,
         selectedValue: selectedYearMetrics.customers.retentionRate,
+        isDisplayValueAsPercentage: true,
       });
 
       resolve({

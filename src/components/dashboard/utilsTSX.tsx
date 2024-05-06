@@ -112,12 +112,6 @@ function createDashboardMetricsCards({
       <RiCalendarLine size={20} />
     );
 
-  // const deltaPercentage = ((selectedValue - prevValue) / prevValue) * 100;
-
-  // const deltaFormatted = Number.isFinite(deltaPercentage)
-  //   ? `${deltaPercentage > 0 ? "+" : ""} ${deltaPercentage.toFixed(2)} %`
-  //   : "N/A";
-
   const deltaPercentage = toFixedFloat(
     ((selectedValue - prevValue) / prevValue) * 100,
     2
@@ -137,24 +131,22 @@ function createDashboardMetricsCards({
         : redColorShade
       : "inherit";
 
-  // const date =
-  //   deltaFormatted === "N/A"
-  //     ? "N/A"
-  //     : `Since ${kind === "day" ? prevDay : kind === "month" ? prevMonth : prevYear} ${
-  //         kind === "day" ? currentMonth : kind === "month" ? currentYear : ""
-  //       }`;
-
   const date = `Since ${
     kind === "day" ? prevDay : kind === "month" ? prevMonth : prevYear
   } ${kind === "day" ? currentMonth : kind === "month" ? currentYear : ""}`;
 
+  const valueStr = addCommaSeparator(
+    toFixedFloat(
+      selectedValue < 1 ? selectedValue * 100 : selectedValue,
+      selectedValue < 1 ? 4 : 2
+    )
+  );
+
   const displayValue = isDisplayValueAsPercentage
-    ? `${isDisplayValueAsCurrency ? "CAD" : ""} ${addCommaSeparator(
-        toFixedFloat(selectedValue * 100, 2)
-      )} %`
+    ? `${valueStr} %`
     : `${isDisplayValueAsCurrency ? "CAD" : ""} ${
         selectedValue.toString().includes(".")
-          ? addCommaSeparator(toFixedFloat(selectedValue, 0))
+          ? valueStr
           : addCommaSeparator(selectedValue.toString())
       }`;
 
