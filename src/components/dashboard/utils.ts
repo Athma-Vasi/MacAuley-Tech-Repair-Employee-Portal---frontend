@@ -140,48 +140,47 @@ async function createRandomBusinessMetrics({
           storeLocation,
         });
 
-        const productMetrics: ProductMetric[] = await createRandomProductMetrics({
-          daysInMonthsInYears,
-          productCategories,
-          storeLocation,
-        });
-        businessMetric.productMetrics = productMetrics;
+        const [productMetrics, repairMetrics, customerMetrics] = await Promise.all([
+          createRandomProductMetrics({
+            daysInMonthsInYears,
+            productCategories,
+            storeLocation,
+          }),
+          createRandomRepairMetrics({
+            daysInMonthsInYears,
+            repairCategories,
+            storeLocation,
+          }),
+          createRandomCustomerMetrics({
+            daysInMonthsInYears,
+            storeLocation,
+          }),
+        ]);
 
-        const repairMetrics: RepairMetric[] = await createRandomRepairMetrics({
-          daysInMonthsInYears,
-          repairCategories,
-          storeLocation,
-        });
-        businessMetric.repairMetrics = repairMetrics;
+        // aggregate product and repair metrics into 'All Products' and 'All Repairs' metrics
+        const [aggregatedProductMetrics, aggregatedRepairMetrics] = await Promise.all([
+          createAggregatedProductMetrics(productMetrics),
+          createAggregatedRepairMetrics(repairMetrics),
+        ]);
 
-        const customerMetrics: CustomerMetrics = await createRandomCustomerMetrics({
-          daysInMonthsInYears,
-          storeLocation,
-        });
+        businessMetric.productMetrics = [aggregatedProductMetrics, ...productMetrics];
+        businessMetric.repairMetrics = [aggregatedRepairMetrics, ...repairMetrics];
         businessMetric.customerMetrics = customerMetrics;
-
-        // aggregate created product metrics into 'All Products' metrics
-        const aggregatedProductMetrics: ProductMetric =
-          createAggregatedProductMetrics(productMetrics);
-        businessMetric.productMetrics.unshift(aggregatedProductMetrics);
-
-        // aggregate created repair metrics into 'All Repairs' metrics
-        const aggregatedRepairMetrics: RepairMetric =
-          createAggregatedRepairMetrics(repairMetrics);
-        businessMetric.repairMetrics.unshift(aggregatedRepairMetrics);
 
         return businessMetric;
       })
     );
 
     // aggregate product, repair and customer metrics for each store location into a separate 'All Locations' store
-    const allLocationsAggregatedProductMetrics =
-      createAllLocationsAggregatedProductMetrics(incompleteBusinessMetrics);
-    const allLocationsAggregatedRepairMetrics = createAllLocationsAggregatedRepairMetrics(
-      incompleteBusinessMetrics
-    );
-    const allLocationsAggregatedCustomerMetrics =
-      createAllLocationsAggregatedCustomerMetrics(incompleteBusinessMetrics);
+    const [
+      allLocationsAggregatedProductMetrics,
+      allLocationsAggregatedRepairMetrics,
+      allLocationsAggregatedCustomerMetrics,
+    ] = await Promise.all([
+      createAllLocationsAggregatedProductMetrics(incompleteBusinessMetrics),
+      createAllLocationsAggregatedRepairMetrics(incompleteBusinessMetrics),
+      createAllLocationsAggregatedCustomerMetrics(incompleteBusinessMetrics),
+    ]);
 
     const allLocationsBusinessMetric: BusinessMetric = {
       storeLocation: "All Locations",
@@ -202,7 +201,7 @@ async function createRandomBusinessMetrics({
       storeLocations,
     });
 
-    // missing 'All Locations' financial metrics atm
+    // empty 'All Locations' financial metrics atm
     const businessMetricsWithIncompleteFinancials = financialMetrics.reduce<
       BusinessMetric[]
     >((businessMetricsAcc, tuple) => {
@@ -538,286 +537,309 @@ async function createRandomProductMetrics({
  */
 function createAggregatedProductMetrics(
   productMetrics: Omit<ProductMetric[], "All Products">
-): ProductMetric {
-  const PRODUCT_METRIC_TEMPLATE: ProductMetric = {
-    name: "All Products",
-    yearlyMetrics: [],
-  };
-
-  return productMetrics.reduce<ProductMetric>((productMetricsAcc, productMetric) => {
-    const PRODUCT_METRIC_TEMPLATE_DAILY: ProductDailyMetric = {
-      day: "",
-      unitsSold: {
-        inStore: 0,
-        online: 0,
-        total: 0,
-      },
-      revenue: {
-        inStore: 0,
-        online: 0,
-        total: 0,
-      },
-    };
-    const PRODUCT_METRIC_TEMPLATE_MONTHLY: ProductMonthlyMetric = {
-      month: "January",
-      unitsSold: {
-        inStore: 0,
-        online: 0,
-        total: 0,
-      },
-      revenue: {
-        inStore: 0,
-        online: 0,
-        total: 0,
-      },
-      dailyMetrics: [],
-    };
-
-    const PRODUCT_METRIC_TEMPLATE_YEARLY: ProductYearlyMetric = {
-      year: "2021",
-      unitsSold: {
-        inStore: 0,
-        online: 0,
-        total: 0,
-      },
-      revenue: {
-        inStore: 0,
-        online: 0,
-        total: 0,
-      },
-      monthlyMetrics: [],
-    };
-
-    const { yearlyMetrics } = productMetric;
-
-    const aggregatedYearlyProductMetrics = yearlyMetrics.map((productYearlyMetric) => {
-      const { year, revenue, unitsSold, monthlyMetrics } = productYearlyMetric;
-
-      const existingYearlyMetric = productMetricsAcc.yearlyMetrics.find(
-        (productYearlyMetricAcc) => productYearlyMetricAcc.year === year
-      ) ?? { ...PRODUCT_METRIC_TEMPLATE_YEARLY, year };
-
-      const aggregatedYearlyMetric = {
-        ...existingYearlyMetric,
-        revenue: {
-          ...existingYearlyMetric.revenue,
-          total: existingYearlyMetric.revenue.total + revenue.total,
-          online: existingYearlyMetric.revenue.online + revenue.online,
-          inStore: existingYearlyMetric.revenue.inStore + revenue.inStore,
-        },
-        unitsSold: {
-          ...existingYearlyMetric.unitsSold,
-          total: existingYearlyMetric.unitsSold.total + unitsSold.total,
-          online: existingYearlyMetric.unitsSold.online + unitsSold.online,
-          inStore: existingYearlyMetric.unitsSold.inStore + unitsSold.inStore,
-        },
+): Promise<ProductMetric> {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const PRODUCT_METRIC_TEMPLATE: ProductMetric = {
+        name: "All Products",
+        yearlyMetrics: [],
       };
 
-      const aggregatedMonthlyProductMetrics = monthlyMetrics.map(
-        (productMonthlyMetric) => {
-          const { month, dailyMetrics, revenue, unitsSold } = productMonthlyMetric;
-
-          const existingMonthlyMetric = aggregatedYearlyMetric.monthlyMetrics.find(
-            (productMonthlyMetricAcc) => productMonthlyMetricAcc.month === month
-          ) ?? { ...PRODUCT_METRIC_TEMPLATE_MONTHLY, month };
-
-          const aggregatedDailyRepairMetrics = dailyMetrics.map((productDailyMetric) => {
-            const { day, revenue, unitsSold } = productDailyMetric;
-
-            const existingDailyMetric = existingMonthlyMetric.dailyMetrics.find(
-              (productDailyMetricAcc) => productDailyMetricAcc.day === day
-            ) ?? { ...PRODUCT_METRIC_TEMPLATE_DAILY, day };
-
-            const aggregatedDailyMetric = {
-              ...existingDailyMetric,
-              revenue: {
-                ...existingDailyMetric.revenue,
-                total: existingDailyMetric.revenue.total + revenue.total,
-                online: existingDailyMetric.revenue.online + revenue.online,
-                inStore: existingDailyMetric.revenue.inStore + revenue.inStore,
-              },
-              unitsSold: {
-                ...existingDailyMetric.unitsSold,
-                total: existingDailyMetric.unitsSold.total + unitsSold.total,
-                online: existingDailyMetric.unitsSold.online + unitsSold.online,
-                inStore: existingDailyMetric.unitsSold.inStore + unitsSold.inStore,
-              },
-            };
-
-            return aggregatedDailyMetric;
-          });
-
-          const aggregatedMonthlyMetric = {
-            ...existingMonthlyMetric,
-            revenue: {
-              ...existingMonthlyMetric.revenue,
-              total: existingMonthlyMetric.revenue.total + revenue.total,
-              online: existingMonthlyMetric.revenue.online + revenue.online,
-              inStore: existingMonthlyMetric.revenue.inStore + revenue.inStore,
-            },
+      const aggregatedProductMetrics = productMetrics.reduce<ProductMetric>(
+        (productMetricsAcc, productMetric) => {
+          const PRODUCT_METRIC_TEMPLATE_DAILY: ProductDailyMetric = {
+            day: "",
             unitsSold: {
-              ...existingMonthlyMetric.unitsSold,
-              total: existingMonthlyMetric.unitsSold.total + unitsSold.total,
-              online: existingMonthlyMetric.unitsSold.online + unitsSold.online,
-              inStore: existingMonthlyMetric.unitsSold.inStore + unitsSold.inStore,
+              inStore: 0,
+              online: 0,
+              total: 0,
             },
-            dailyMetrics: aggregatedDailyRepairMetrics,
+            revenue: {
+              inStore: 0,
+              online: 0,
+              total: 0,
+            },
+          };
+          const PRODUCT_METRIC_TEMPLATE_MONTHLY: ProductMonthlyMetric = {
+            month: "January",
+            unitsSold: {
+              inStore: 0,
+              online: 0,
+              total: 0,
+            },
+            revenue: {
+              inStore: 0,
+              online: 0,
+              total: 0,
+            },
+            dailyMetrics: [],
           };
 
-          return aggregatedMonthlyMetric;
-        }
+          const PRODUCT_METRIC_TEMPLATE_YEARLY: ProductYearlyMetric = {
+            year: "2021",
+            unitsSold: {
+              inStore: 0,
+              online: 0,
+              total: 0,
+            },
+            revenue: {
+              inStore: 0,
+              online: 0,
+              total: 0,
+            },
+            monthlyMetrics: [],
+          };
+
+          const { yearlyMetrics } = productMetric;
+
+          const aggregatedYearlyProductMetrics = yearlyMetrics.map(
+            (productYearlyMetric) => {
+              const { year, revenue, unitsSold, monthlyMetrics } = productYearlyMetric;
+
+              const existingYearlyMetric = productMetricsAcc.yearlyMetrics.find(
+                (productYearlyMetricAcc) => productYearlyMetricAcc.year === year
+              ) ?? { ...PRODUCT_METRIC_TEMPLATE_YEARLY, year };
+
+              const aggregatedYearlyMetric = {
+                ...existingYearlyMetric,
+                revenue: {
+                  ...existingYearlyMetric.revenue,
+                  total: existingYearlyMetric.revenue.total + revenue.total,
+                  online: existingYearlyMetric.revenue.online + revenue.online,
+                  inStore: existingYearlyMetric.revenue.inStore + revenue.inStore,
+                },
+                unitsSold: {
+                  ...existingYearlyMetric.unitsSold,
+                  total: existingYearlyMetric.unitsSold.total + unitsSold.total,
+                  online: existingYearlyMetric.unitsSold.online + unitsSold.online,
+                  inStore: existingYearlyMetric.unitsSold.inStore + unitsSold.inStore,
+                },
+              };
+
+              const aggregatedMonthlyProductMetrics = monthlyMetrics.map(
+                (productMonthlyMetric) => {
+                  const { month, dailyMetrics, revenue, unitsSold } =
+                    productMonthlyMetric;
+
+                  const existingMonthlyMetric =
+                    aggregatedYearlyMetric.monthlyMetrics.find(
+                      (productMonthlyMetricAcc) => productMonthlyMetricAcc.month === month
+                    ) ?? { ...PRODUCT_METRIC_TEMPLATE_MONTHLY, month };
+
+                  const aggregatedDailyRepairMetrics = dailyMetrics.map(
+                    (productDailyMetric) => {
+                      const { day, revenue, unitsSold } = productDailyMetric;
+
+                      const existingDailyMetric = existingMonthlyMetric.dailyMetrics.find(
+                        (productDailyMetricAcc) => productDailyMetricAcc.day === day
+                      ) ?? { ...PRODUCT_METRIC_TEMPLATE_DAILY, day };
+
+                      const aggregatedDailyMetric = {
+                        ...existingDailyMetric,
+                        revenue: {
+                          ...existingDailyMetric.revenue,
+                          total: existingDailyMetric.revenue.total + revenue.total,
+                          online: existingDailyMetric.revenue.online + revenue.online,
+                          inStore: existingDailyMetric.revenue.inStore + revenue.inStore,
+                        },
+                        unitsSold: {
+                          ...existingDailyMetric.unitsSold,
+                          total: existingDailyMetric.unitsSold.total + unitsSold.total,
+                          online: existingDailyMetric.unitsSold.online + unitsSold.online,
+                          inStore:
+                            existingDailyMetric.unitsSold.inStore + unitsSold.inStore,
+                        },
+                      };
+
+                      return aggregatedDailyMetric;
+                    }
+                  );
+
+                  const aggregatedMonthlyMetric = {
+                    ...existingMonthlyMetric,
+                    revenue: {
+                      ...existingMonthlyMetric.revenue,
+                      total: existingMonthlyMetric.revenue.total + revenue.total,
+                      online: existingMonthlyMetric.revenue.online + revenue.online,
+                      inStore: existingMonthlyMetric.revenue.inStore + revenue.inStore,
+                    },
+                    unitsSold: {
+                      ...existingMonthlyMetric.unitsSold,
+                      total: existingMonthlyMetric.unitsSold.total + unitsSold.total,
+                      online: existingMonthlyMetric.unitsSold.online + unitsSold.online,
+                      inStore:
+                        existingMonthlyMetric.unitsSold.inStore + unitsSold.inStore,
+                    },
+                    dailyMetrics: aggregatedDailyRepairMetrics,
+                  };
+
+                  return aggregatedMonthlyMetric;
+                }
+              );
+
+              aggregatedYearlyMetric.monthlyMetrics = aggregatedMonthlyProductMetrics;
+
+              return aggregatedYearlyMetric;
+            }
+          );
+
+          productMetricsAcc.yearlyMetrics = aggregatedYearlyProductMetrics;
+
+          return productMetricsAcc;
+        },
+        PRODUCT_METRIC_TEMPLATE
       );
 
-      aggregatedYearlyMetric.monthlyMetrics = aggregatedMonthlyProductMetrics;
-
-      return aggregatedYearlyMetric;
-    });
-
-    productMetricsAcc.yearlyMetrics = aggregatedYearlyProductMetrics;
-
-    return productMetricsAcc;
-  }, PRODUCT_METRIC_TEMPLATE);
+      resolve(aggregatedProductMetrics);
+    }, 0);
+  });
 }
 
 /**
  * - aggregate all store locations' product metrics into a separate 'All Locations' store
  */
-function createAllLocationsAggregatedProductMetrics(businessMetrics: BusinessMetric[]) {
-  // find all product metrics for each store location
-  const initialProductMetrics: Record<string, ProductMetric[]> = {
-    edmontonProductMetrics: [],
-    calgaryProductMetrics: [],
-    vancouverProductMetrics: [],
-  };
+function createAllLocationsAggregatedProductMetrics(
+  businessMetrics: BusinessMetric[]
+): Promise<ProductMetric[]> {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      // find all product metrics for each store location
+      const initialProductMetrics: Record<string, ProductMetric[]> = {
+        edmontonProductMetrics: [],
+        calgaryProductMetrics: [],
+        vancouverProductMetrics: [],
+      };
 
-  const { calgaryProductMetrics, edmontonProductMetrics, vancouverProductMetrics } =
-    businessMetrics.reduce((productMetricsAcc, businessMetric) => {
-      const { storeLocation, productMetrics } = businessMetric;
+      const { calgaryProductMetrics, edmontonProductMetrics, vancouverProductMetrics } =
+        businessMetrics.reduce((productMetricsAcc, businessMetric) => {
+          const { storeLocation, productMetrics } = businessMetric;
 
-      switch (storeLocation) {
-        case "Calgary": {
-          productMetricsAcc.calgaryProductMetrics = productMetrics;
-          break;
-        }
-        case "Edmonton": {
-          productMetricsAcc.edmontonProductMetrics = structuredClone(productMetrics);
-          break;
-        }
-        // case "Vancouver"
-        default: {
-          productMetricsAcc.vancouverProductMetrics = productMetrics;
-          break;
-        }
-      }
-
-      return productMetricsAcc;
-    }, initialProductMetrics);
-
-  // as edmonton metrics are a superset of all other stores' metrics, it is being used as
-  // the base to which all other store locations' metrics are aggregated into
-
-  const aggregatedBaseProductMetrics = aggregateStoresIntoBaseProductMetrics({
-    baseProductMetrics: edmontonProductMetrics,
-    storeProductMetrics: calgaryProductMetrics,
-  });
-
-  const aggregatedAllLocationsProductMetrics = aggregateStoresIntoBaseProductMetrics({
-    baseProductMetrics: aggregatedBaseProductMetrics,
-    storeProductMetrics: vancouverProductMetrics,
-  });
-
-  function aggregateStoresIntoBaseProductMetrics({
-    baseProductMetrics,
-    storeProductMetrics,
-  }: {
-    baseProductMetrics: ProductMetric[];
-    storeProductMetrics: ProductMetric[];
-  }) {
-    return storeProductMetrics.reduce<ProductMetric[]>(
-      (baseProductMetricsAcc, storeProductMetric) => {
-        const { name, yearlyMetrics } = storeProductMetric;
-
-        const baseProductMetric = baseProductMetricsAcc.find(
-          (baseProductMetric) => baseProductMetric.name === name
-        );
-        if (!baseProductMetric) {
-          return baseProductMetricsAcc;
-        }
-
-        yearlyMetrics.forEach((storeYearlyMetric) => {
-          const {
-            year,
-            revenue: yearlyRevenue,
-            unitsSold: yearlyUnitsSold,
-            monthlyMetrics,
-          } = storeYearlyMetric;
-
-          const baseYearlyMetric = baseProductMetric.yearlyMetrics.find(
-            (baseYearlyMetric) => baseYearlyMetric.year === year
-          );
-          if (!baseYearlyMetric) {
-            return baseProductMetricsAcc;
+          switch (storeLocation) {
+            case "Calgary": {
+              productMetricsAcc.calgaryProductMetrics = productMetrics;
+              break;
+            }
+            case "Edmonton": {
+              productMetricsAcc.edmontonProductMetrics = structuredClone(productMetrics);
+              break;
+            }
+            // case "Vancouver"
+            default: {
+              productMetricsAcc.vancouverProductMetrics = productMetrics;
+              break;
+            }
           }
 
-          baseYearlyMetric.revenue.total += yearlyRevenue.total;
-          baseYearlyMetric.revenue.online += yearlyRevenue.online;
-          baseYearlyMetric.revenue.inStore += yearlyRevenue.inStore;
+          return productMetricsAcc;
+        }, initialProductMetrics);
 
-          baseYearlyMetric.unitsSold.total += yearlyUnitsSold.total;
-          baseYearlyMetric.unitsSold.online += yearlyUnitsSold.online;
-          baseYearlyMetric.unitsSold.inStore += yearlyUnitsSold.inStore;
+      // as edmonton metrics are a superset of all other stores' metrics, it is being used as
+      // the base to which all other store locations' metrics are aggregated into
 
-          monthlyMetrics.forEach((storeMonthlyMetric) => {
-            const {
-              month,
-              revenue: monthlyRevenue,
-              unitsSold: monthlyUnitsSold,
-              dailyMetrics,
-            } = storeMonthlyMetric;
+      const aggregatedBaseProductMetrics = aggregateStoresIntoBaseProductMetrics({
+        baseProductMetrics: edmontonProductMetrics,
+        storeProductMetrics: calgaryProductMetrics,
+      });
 
-            const baseMonthlyMetric = baseYearlyMetric.monthlyMetrics.find(
-              (baseMonthlyMetric) => baseMonthlyMetric.month === month
+      const aggregatedAllLocationsProductMetrics = aggregateStoresIntoBaseProductMetrics({
+        baseProductMetrics: aggregatedBaseProductMetrics,
+        storeProductMetrics: vancouverProductMetrics,
+      });
+
+      function aggregateStoresIntoBaseProductMetrics({
+        baseProductMetrics,
+        storeProductMetrics,
+      }: {
+        baseProductMetrics: ProductMetric[];
+        storeProductMetrics: ProductMetric[];
+      }) {
+        return storeProductMetrics.reduce<ProductMetric[]>(
+          (baseProductMetricsAcc, storeProductMetric) => {
+            const { name, yearlyMetrics } = storeProductMetric;
+
+            const baseProductMetric = baseProductMetricsAcc.find(
+              (baseProductMetric) => baseProductMetric.name === name
             );
-            if (!baseMonthlyMetric) {
+            if (!baseProductMetric) {
               return baseProductMetricsAcc;
             }
 
-            baseMonthlyMetric.revenue.total += monthlyRevenue.total;
-            baseMonthlyMetric.revenue.online += monthlyRevenue.online;
-            baseMonthlyMetric.revenue.inStore += monthlyRevenue.inStore;
+            yearlyMetrics.forEach((storeYearlyMetric) => {
+              const {
+                year,
+                revenue: yearlyRevenue,
+                unitsSold: yearlyUnitsSold,
+                monthlyMetrics,
+              } = storeYearlyMetric;
 
-            baseMonthlyMetric.unitsSold.total += monthlyUnitsSold.total;
-            baseMonthlyMetric.unitsSold.online += monthlyUnitsSold.online;
-            baseMonthlyMetric.unitsSold.inStore += monthlyUnitsSold.inStore;
-
-            dailyMetrics.forEach((storeDailyMetric) => {
-              const { day, revenue, unitsSold } = storeDailyMetric;
-
-              const baseDailyMetric = baseMonthlyMetric.dailyMetrics.find(
-                (baseDailyMetric) => baseDailyMetric.day === day
+              const baseYearlyMetric = baseProductMetric.yearlyMetrics.find(
+                (baseYearlyMetric) => baseYearlyMetric.year === year
               );
-              if (!baseDailyMetric) {
+              if (!baseYearlyMetric) {
                 return baseProductMetricsAcc;
               }
 
-              baseDailyMetric.revenue.total += revenue.total;
-              baseDailyMetric.revenue.online += revenue.online;
-              baseDailyMetric.revenue.inStore += revenue.inStore;
+              baseYearlyMetric.revenue.total += yearlyRevenue.total;
+              baseYearlyMetric.revenue.online += yearlyRevenue.online;
+              baseYearlyMetric.revenue.inStore += yearlyRevenue.inStore;
 
-              baseDailyMetric.unitsSold.total += unitsSold.total;
-              baseDailyMetric.unitsSold.online += unitsSold.online;
-              baseDailyMetric.unitsSold.inStore += unitsSold.inStore;
+              baseYearlyMetric.unitsSold.total += yearlyUnitsSold.total;
+              baseYearlyMetric.unitsSold.online += yearlyUnitsSold.online;
+              baseYearlyMetric.unitsSold.inStore += yearlyUnitsSold.inStore;
+
+              monthlyMetrics.forEach((storeMonthlyMetric) => {
+                const {
+                  month,
+                  revenue: monthlyRevenue,
+                  unitsSold: monthlyUnitsSold,
+                  dailyMetrics,
+                } = storeMonthlyMetric;
+
+                const baseMonthlyMetric = baseYearlyMetric.monthlyMetrics.find(
+                  (baseMonthlyMetric) => baseMonthlyMetric.month === month
+                );
+                if (!baseMonthlyMetric) {
+                  return baseProductMetricsAcc;
+                }
+
+                baseMonthlyMetric.revenue.total += monthlyRevenue.total;
+                baseMonthlyMetric.revenue.online += monthlyRevenue.online;
+                baseMonthlyMetric.revenue.inStore += monthlyRevenue.inStore;
+
+                baseMonthlyMetric.unitsSold.total += monthlyUnitsSold.total;
+                baseMonthlyMetric.unitsSold.online += monthlyUnitsSold.online;
+                baseMonthlyMetric.unitsSold.inStore += monthlyUnitsSold.inStore;
+
+                dailyMetrics.forEach((storeDailyMetric) => {
+                  const { day, revenue, unitsSold } = storeDailyMetric;
+
+                  const baseDailyMetric = baseMonthlyMetric.dailyMetrics.find(
+                    (baseDailyMetric) => baseDailyMetric.day === day
+                  );
+                  if (!baseDailyMetric) {
+                    return baseProductMetricsAcc;
+                  }
+
+                  baseDailyMetric.revenue.total += revenue.total;
+                  baseDailyMetric.revenue.online += revenue.online;
+                  baseDailyMetric.revenue.inStore += revenue.inStore;
+
+                  baseDailyMetric.unitsSold.total += unitsSold.total;
+                  baseDailyMetric.unitsSold.online += unitsSold.online;
+                  baseDailyMetric.unitsSold.inStore += unitsSold.inStore;
+                });
+              });
             });
-          });
-        });
 
-        return baseProductMetricsAcc;
-      },
-      baseProductMetrics
-    );
-  }
+            return baseProductMetricsAcc;
+          },
+          baseProductMetrics
+        );
+      }
 
-  return aggregatedAllLocationsProductMetrics;
+      resolve(aggregatedAllLocationsProductMetrics);
+    }, 0);
+  });
 }
 
 /**
@@ -979,212 +1001,233 @@ async function createRandomRepairMetrics({
  */
 function createAggregatedRepairMetrics(
   repairMetrics: Omit<RepairMetric[], "All Repairs">
-): RepairMetric {
-  const REPAIR_METRIC_TEMPLATE: RepairMetric = {
-    name: "All Repairs",
-    yearlyMetrics: [],
-  };
-
-  return repairMetrics.reduce<RepairMetric>((repairMetricsAcc, repairMetric) => {
-    const REPAIR_METRIC_TEMPLATE_DAILY: RepairDailyMetric = {
-      day: "",
-      revenue: 0,
-      unitsRepaired: 0,
-    };
-    const REPAIR_METRIC_TEMPLATE_MONTHLY: RepairMonthlyMetric = {
-      month: "January",
-      revenue: 0,
-      unitsRepaired: 0,
-      dailyMetrics: [],
-    };
-    const REPAIR_METRIC_TEMPLATE_YEARLY: RepairYearlyMetric = {
-      year: "2021",
-      revenue: 0,
-      unitsRepaired: 0,
-      monthlyMetrics: [],
-    };
-
-    const { yearlyMetrics } = repairMetric;
-
-    const aggregatedYearlyRepairMetrics = yearlyMetrics.map((repairYearlyMetric) => {
-      const { year, revenue, unitsRepaired, monthlyMetrics } = repairYearlyMetric;
-
-      const existingYearlyMetric = repairMetricsAcc.yearlyMetrics.find(
-        (repairYearlyMetricAcc) => repairYearlyMetricAcc.year === year
-      ) ?? { ...REPAIR_METRIC_TEMPLATE_YEARLY, year };
-
-      const aggregatedYearlyMetric = {
-        ...existingYearlyMetric,
-        revenue: existingYearlyMetric.revenue + revenue,
-        unitsRepaired: existingYearlyMetric.unitsRepaired + unitsRepaired,
+): Promise<RepairMetric> {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      const REPAIR_METRIC_TEMPLATE: RepairMetric = {
+        name: "All Repairs",
+        yearlyMetrics: [],
       };
 
-      const aggregatedMonthlyRepairMetrics = monthlyMetrics.map((repairMonthlyMetric) => {
-        const { month, dailyMetrics, revenue, unitsRepaired } = repairMonthlyMetric;
-
-        const existingMonthlyMetric = aggregatedYearlyMetric.monthlyMetrics.find(
-          (repairMonthlyMetricAcc) => repairMonthlyMetricAcc.month === month
-        ) ?? { ...REPAIR_METRIC_TEMPLATE_MONTHLY, month };
-
-        const aggregatedDailyRepairMetrics = dailyMetrics.map((repairDailyMetric) => {
-          const { day, revenue, unitsRepaired } = repairDailyMetric;
-
-          const existingDailyMetric = existingMonthlyMetric.dailyMetrics.find(
-            (repairDailyMetricAcc) => repairDailyMetricAcc.day === day
-          ) ?? { ...REPAIR_METRIC_TEMPLATE_DAILY, day };
-
-          const aggregatedDailyMetric = {
-            ...existingDailyMetric,
-            revenue: existingDailyMetric.revenue + revenue,
-            unitsRepaired: existingDailyMetric.unitsRepaired + unitsRepaired,
+      const aggregatedRepairMetrics = repairMetrics.reduce<RepairMetric>(
+        (repairMetricsAcc, repairMetric) => {
+          const REPAIR_METRIC_TEMPLATE_DAILY: RepairDailyMetric = {
+            day: "",
+            revenue: 0,
+            unitsRepaired: 0,
+          };
+          const REPAIR_METRIC_TEMPLATE_MONTHLY: RepairMonthlyMetric = {
+            month: "January",
+            revenue: 0,
+            unitsRepaired: 0,
+            dailyMetrics: [],
+          };
+          const REPAIR_METRIC_TEMPLATE_YEARLY: RepairYearlyMetric = {
+            year: "2021",
+            revenue: 0,
+            unitsRepaired: 0,
+            monthlyMetrics: [],
           };
 
-          return aggregatedDailyMetric;
-        });
+          const { yearlyMetrics } = repairMetric;
 
-        const aggregatedMonthlyMetric = {
-          ...existingMonthlyMetric,
-          revenue: existingMonthlyMetric.revenue + revenue,
-          unitsRepaired: existingMonthlyMetric.unitsRepaired + unitsRepaired,
-          dailyMetrics: aggregatedDailyRepairMetrics,
-        };
+          const aggregatedYearlyRepairMetrics = yearlyMetrics.map(
+            (repairYearlyMetric) => {
+              const { year, revenue, unitsRepaired, monthlyMetrics } = repairYearlyMetric;
 
-        return aggregatedMonthlyMetric;
-      });
-      aggregatedYearlyMetric.monthlyMetrics = aggregatedMonthlyRepairMetrics;
+              const existingYearlyMetric = repairMetricsAcc.yearlyMetrics.find(
+                (repairYearlyMetricAcc) => repairYearlyMetricAcc.year === year
+              ) ?? { ...REPAIR_METRIC_TEMPLATE_YEARLY, year };
 
-      return aggregatedYearlyMetric;
-    });
+              const aggregatedYearlyMetric = {
+                ...existingYearlyMetric,
+                revenue: existingYearlyMetric.revenue + revenue,
+                unitsRepaired: existingYearlyMetric.unitsRepaired + unitsRepaired,
+              };
 
-    repairMetricsAcc.yearlyMetrics = aggregatedYearlyRepairMetrics;
+              const aggregatedMonthlyRepairMetrics = monthlyMetrics.map(
+                (repairMonthlyMetric) => {
+                  const { month, dailyMetrics, revenue, unitsRepaired } =
+                    repairMonthlyMetric;
 
-    return repairMetricsAcc;
-  }, REPAIR_METRIC_TEMPLATE);
+                  const existingMonthlyMetric =
+                    aggregatedYearlyMetric.monthlyMetrics.find(
+                      (repairMonthlyMetricAcc) => repairMonthlyMetricAcc.month === month
+                    ) ?? { ...REPAIR_METRIC_TEMPLATE_MONTHLY, month };
+
+                  const aggregatedDailyRepairMetrics = dailyMetrics.map(
+                    (repairDailyMetric) => {
+                      const { day, revenue, unitsRepaired } = repairDailyMetric;
+
+                      const existingDailyMetric = existingMonthlyMetric.dailyMetrics.find(
+                        (repairDailyMetricAcc) => repairDailyMetricAcc.day === day
+                      ) ?? { ...REPAIR_METRIC_TEMPLATE_DAILY, day };
+
+                      const aggregatedDailyMetric = {
+                        ...existingDailyMetric,
+                        revenue: existingDailyMetric.revenue + revenue,
+                        unitsRepaired: existingDailyMetric.unitsRepaired + unitsRepaired,
+                      };
+
+                      return aggregatedDailyMetric;
+                    }
+                  );
+
+                  const aggregatedMonthlyMetric = {
+                    ...existingMonthlyMetric,
+                    revenue: existingMonthlyMetric.revenue + revenue,
+                    unitsRepaired: existingMonthlyMetric.unitsRepaired + unitsRepaired,
+                    dailyMetrics: aggregatedDailyRepairMetrics,
+                  };
+
+                  return aggregatedMonthlyMetric;
+                }
+              );
+              aggregatedYearlyMetric.monthlyMetrics = aggregatedMonthlyRepairMetrics;
+
+              return aggregatedYearlyMetric;
+            }
+          );
+
+          repairMetricsAcc.yearlyMetrics = aggregatedYearlyRepairMetrics;
+
+          return repairMetricsAcc;
+        },
+        REPAIR_METRIC_TEMPLATE
+      );
+
+      resolve(aggregatedRepairMetrics);
+    }, 0);
+  });
 }
 
 function createAllLocationsAggregatedRepairMetrics(
   businessMetrics: BusinessMetric[]
-): RepairMetric[] {
-  // find all repair metrics for each store location
-  const initialRepairMetrics: Record<string, RepairMetric[]> = {
-    edmontonRepairMetrics: [],
-    calgaryRepairMetrics: [],
-    vancouverRepairMetrics: [],
-  };
+): Promise<RepairMetric[]> {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      // find all repair metrics for each store location
+      const initialRepairMetrics: Record<string, RepairMetric[]> = {
+        edmontonRepairMetrics: [],
+        calgaryRepairMetrics: [],
+        vancouverRepairMetrics: [],
+      };
 
-  const { calgaryRepairMetrics, edmontonRepairMetrics, vancouverRepairMetrics } =
-    businessMetrics.reduce((repairMetricsAcc, businessMetric) => {
-      const { storeLocation, repairMetrics } = businessMetric;
+      const { calgaryRepairMetrics, edmontonRepairMetrics, vancouverRepairMetrics } =
+        businessMetrics.reduce((repairMetricsAcc, businessMetric) => {
+          const { storeLocation, repairMetrics } = businessMetric;
 
-      switch (storeLocation) {
-        case "Calgary": {
-          repairMetricsAcc.calgaryRepairMetrics = repairMetrics;
-          break;
-        }
-        case "Edmonton": {
-          repairMetricsAcc.edmontonRepairMetrics = structuredClone(repairMetrics);
-          break;
-        }
-        // case "Vancouver"
-        default: {
-          repairMetricsAcc.vancouverRepairMetrics = repairMetrics;
-          break;
-        }
-      }
-
-      return repairMetricsAcc;
-    }, initialRepairMetrics);
-
-  // as edmonton metrics are a superset of all other stores' metrics, it is being used as
-  // the base to which all other store locations' metrics are aggregated into
-
-  const aggregatedBaseRepairMetrics = aggregateStoresIntoBaseRepairMetrics({
-    baseRepairMetrics: edmontonRepairMetrics,
-    storeRepairMetrics: calgaryRepairMetrics,
-  });
-
-  const aggregatedAllLocationsRepairMetrics = aggregateStoresIntoBaseRepairMetrics({
-    baseRepairMetrics: aggregatedBaseRepairMetrics,
-    storeRepairMetrics: vancouverRepairMetrics,
-  });
-
-  function aggregateStoresIntoBaseRepairMetrics({
-    baseRepairMetrics,
-    storeRepairMetrics,
-  }: {
-    baseRepairMetrics: RepairMetric[];
-    storeRepairMetrics: RepairMetric[];
-  }) {
-    return storeRepairMetrics.reduce<RepairMetric[]>(
-      (baseRepairMetricsAcc, storeRepairMetric) => {
-        const { name, yearlyMetrics } = storeRepairMetric;
-
-        const baseRepairMetric = baseRepairMetricsAcc.find(
-          (baseRepairMetric) => baseRepairMetric.name === name
-        );
-        if (!baseRepairMetric) {
-          return baseRepairMetricsAcc;
-        }
-
-        yearlyMetrics.forEach((storeYearlyMetric) => {
-          const {
-            year,
-            revenue: yearlyRevenue,
-            unitsRepaired: yearlyUnitsRepaired,
-            monthlyMetrics,
-          } = storeYearlyMetric;
-
-          const baseYearlyMetric = baseRepairMetric.yearlyMetrics.find(
-            (baseYearlyMetric) => baseYearlyMetric.year === year
-          );
-          if (!baseYearlyMetric) {
-            return baseRepairMetricsAcc;
+          switch (storeLocation) {
+            case "Calgary": {
+              repairMetricsAcc.calgaryRepairMetrics = repairMetrics;
+              break;
+            }
+            case "Edmonton": {
+              repairMetricsAcc.edmontonRepairMetrics = structuredClone(repairMetrics);
+              break;
+            }
+            // case "Vancouver"
+            default: {
+              repairMetricsAcc.vancouverRepairMetrics = repairMetrics;
+              break;
+            }
           }
 
-          baseYearlyMetric.revenue += yearlyRevenue;
-          baseYearlyMetric.unitsRepaired += yearlyUnitsRepaired;
+          return repairMetricsAcc;
+        }, initialRepairMetrics);
 
-          monthlyMetrics.forEach((storeMonthlyMetric) => {
-            const {
-              month,
-              revenue: monthlyRevenue,
-              unitsRepaired: monthlyUnitsRepaired,
-              dailyMetrics,
-            } = storeMonthlyMetric;
+      // as edmonton metrics are a superset of all other stores' metrics, it is being used as
+      // the base to which all other store locations' metrics are aggregated into
 
-            const baseMonthlyMetric = baseYearlyMetric.monthlyMetrics.find(
-              (baseMonthlyMetric) => baseMonthlyMetric.month === month
+      const aggregatedBaseRepairMetrics = aggregateStoresIntoBaseRepairMetrics({
+        baseRepairMetrics: edmontonRepairMetrics,
+        storeRepairMetrics: calgaryRepairMetrics,
+      });
+
+      const aggregatedAllLocationsRepairMetrics = aggregateStoresIntoBaseRepairMetrics({
+        baseRepairMetrics: aggregatedBaseRepairMetrics,
+        storeRepairMetrics: vancouverRepairMetrics,
+      });
+
+      function aggregateStoresIntoBaseRepairMetrics({
+        baseRepairMetrics,
+        storeRepairMetrics,
+      }: {
+        baseRepairMetrics: RepairMetric[];
+        storeRepairMetrics: RepairMetric[];
+      }) {
+        return storeRepairMetrics.reduce<RepairMetric[]>(
+          (baseRepairMetricsAcc, storeRepairMetric) => {
+            const { name, yearlyMetrics } = storeRepairMetric;
+
+            const baseRepairMetric = baseRepairMetricsAcc.find(
+              (baseRepairMetric) => baseRepairMetric.name === name
             );
-            if (!baseMonthlyMetric) {
+            if (!baseRepairMetric) {
               return baseRepairMetricsAcc;
             }
 
-            baseMonthlyMetric.revenue += monthlyRevenue;
-            baseMonthlyMetric.unitsRepaired += monthlyUnitsRepaired;
+            yearlyMetrics.forEach((storeYearlyMetric) => {
+              const {
+                year,
+                revenue: yearlyRevenue,
+                unitsRepaired: yearlyUnitsRepaired,
+                monthlyMetrics,
+              } = storeYearlyMetric;
 
-            dailyMetrics.forEach((storeDailyMetric) => {
-              const { day, revenue, unitsRepaired } = storeDailyMetric;
-
-              const baseDailyMetric = baseMonthlyMetric.dailyMetrics.find(
-                (baseDailyMetric) => baseDailyMetric.day === day
+              const baseYearlyMetric = baseRepairMetric.yearlyMetrics.find(
+                (baseYearlyMetric) => baseYearlyMetric.year === year
               );
-              if (!baseDailyMetric) {
+              if (!baseYearlyMetric) {
                 return baseRepairMetricsAcc;
               }
 
-              baseDailyMetric.revenue += revenue;
-              baseDailyMetric.unitsRepaired += unitsRepaired;
+              baseYearlyMetric.revenue += yearlyRevenue;
+              baseYearlyMetric.unitsRepaired += yearlyUnitsRepaired;
+
+              monthlyMetrics.forEach((storeMonthlyMetric) => {
+                const {
+                  month,
+                  revenue: monthlyRevenue,
+                  unitsRepaired: monthlyUnitsRepaired,
+                  dailyMetrics,
+                } = storeMonthlyMetric;
+
+                const baseMonthlyMetric = baseYearlyMetric.monthlyMetrics.find(
+                  (baseMonthlyMetric) => baseMonthlyMetric.month === month
+                );
+                if (!baseMonthlyMetric) {
+                  return baseRepairMetricsAcc;
+                }
+
+                baseMonthlyMetric.revenue += monthlyRevenue;
+                baseMonthlyMetric.unitsRepaired += monthlyUnitsRepaired;
+
+                dailyMetrics.forEach((storeDailyMetric) => {
+                  const { day, revenue, unitsRepaired } = storeDailyMetric;
+
+                  const baseDailyMetric = baseMonthlyMetric.dailyMetrics.find(
+                    (baseDailyMetric) => baseDailyMetric.day === day
+                  );
+                  if (!baseDailyMetric) {
+                    return baseRepairMetricsAcc;
+                  }
+
+                  baseDailyMetric.revenue += revenue;
+                  baseDailyMetric.unitsRepaired += unitsRepaired;
+                });
+              });
             });
-          });
-        });
 
-        return baseRepairMetricsAcc;
-      },
-      baseRepairMetrics
-    );
-  }
+            return baseRepairMetricsAcc;
+          },
+          baseRepairMetrics
+        );
+      }
 
-  return aggregatedAllLocationsRepairMetrics;
+      resolve(aggregatedAllLocationsRepairMetrics);
+    }, 0);
+  });
 }
 
 /**
@@ -1671,188 +1714,202 @@ async function createRandomCustomerMetrics({
   return randomCustomerMetrics;
 }
 
-function createAllLocationsAggregatedCustomerMetrics(businessMetrics: BusinessMetric[]) {
-  // find all customer metrics for each store location
-  const initialCustomerMetrics: Record<string, CustomerMetrics> = {
-    edmontonCustomerMetrics: {
-      lifetimeValue: 0,
-      totalCustomers: 0,
-      yearlyMetrics: [],
-    },
-    calgaryCustomerMetrics: {
-      lifetimeValue: 0,
-      totalCustomers: 0,
-      yearlyMetrics: [],
-    },
-    vancouverCustomerMetrics: {
-      lifetimeValue: 0,
-      totalCustomers: 0,
-      yearlyMetrics: [],
-    },
-  };
+function createAllLocationsAggregatedCustomerMetrics(
+  businessMetrics: BusinessMetric[]
+): Promise<CustomerMetrics> {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      // find all customer metrics for each store location
+      const initialCustomerMetrics: Record<string, CustomerMetrics> = {
+        edmontonCustomerMetrics: {
+          lifetimeValue: 0,
+          totalCustomers: 0,
+          yearlyMetrics: [],
+        },
+        calgaryCustomerMetrics: {
+          lifetimeValue: 0,
+          totalCustomers: 0,
+          yearlyMetrics: [],
+        },
+        vancouverCustomerMetrics: {
+          lifetimeValue: 0,
+          totalCustomers: 0,
+          yearlyMetrics: [],
+        },
+      };
 
-  const { calgaryCustomerMetrics, edmontonCustomerMetrics, vancouverCustomerMetrics } =
-    businessMetrics.reduce((customerMetricsAcc, businessMetric) => {
-      const { storeLocation, customerMetrics } = businessMetric;
+      const {
+        calgaryCustomerMetrics,
+        edmontonCustomerMetrics,
+        vancouverCustomerMetrics,
+      } = businessMetrics.reduce((customerMetricsAcc, businessMetric) => {
+        const { storeLocation, customerMetrics } = businessMetric;
 
-      switch (storeLocation) {
-        case "Calgary": {
-          customerMetricsAcc.calgaryCustomerMetrics = customerMetrics;
-          break;
-        }
-        case "Edmonton": {
-          customerMetricsAcc.edmontonCustomerMetrics = structuredClone(customerMetrics);
-          break;
-        }
-        // case "Vancouver"
-        default: {
-          customerMetricsAcc.vancouverCustomerMetrics = customerMetrics;
-          break;
-        }
-      }
-
-      return customerMetricsAcc;
-    }, initialCustomerMetrics);
-
-  // as edmonton metrics are a superset of all other stores' metrics, it is being used as
-  // the base to which all other store locations' metrics are aggregated into
-
-  const aggregatedBaseCustomerMetrics = aggregateStoresIntoBaseCustomerMetrics({
-    baseCustomerMetrics: edmontonCustomerMetrics,
-    storeCustomerMetrics: calgaryCustomerMetrics,
-  });
-
-  const aggregatedAllLocationsCustomerMetrics = aggregateStoresIntoBaseCustomerMetrics({
-    baseCustomerMetrics: aggregatedBaseCustomerMetrics,
-    storeCustomerMetrics: vancouverCustomerMetrics,
-  });
-
-  function aggregateStoresIntoBaseCustomerMetrics({
-    baseCustomerMetrics,
-    storeCustomerMetrics,
-  }: {
-    baseCustomerMetrics: CustomerMetrics;
-    storeCustomerMetrics: CustomerMetrics;
-  }) {
-    const { lifetimeValue, totalCustomers, yearlyMetrics } = storeCustomerMetrics;
-
-    baseCustomerMetrics.lifetimeValue =
-      (baseCustomerMetrics.lifetimeValue + lifetimeValue) / 2;
-    baseCustomerMetrics.totalCustomers += totalCustomers;
-
-    return yearlyMetrics.reduce<CustomerMetrics>(
-      (baseCustomerMetricsAcc, storeCustomerMetric) => {
-        const { year, customers, monthlyMetrics } = storeCustomerMetric;
-        const {
-          total,
-          new: newCustomers,
-          returning: returningCustomers,
-          churnRate,
-          retentionRate,
-        } = customers;
-
-        const baseYearlyMetric = baseCustomerMetricsAcc.yearlyMetrics.find(
-          (baseYearlyMetric) => baseYearlyMetric.year === year
-        );
-        if (!baseYearlyMetric) {
-          return baseCustomerMetricsAcc;
-        }
-
-        baseYearlyMetric.customers.total += total;
-        baseYearlyMetric.customers.new.total += newCustomers.total;
-        baseYearlyMetric.customers.new.repair += newCustomers.repair;
-        baseYearlyMetric.customers.new.sales.total += newCustomers.sales.total;
-        baseYearlyMetric.customers.new.sales.online += newCustomers.sales.online;
-        baseYearlyMetric.customers.new.sales.inStore += newCustomers.sales.inStore;
-
-        baseYearlyMetric.customers.returning.total += returningCustomers.total;
-        baseYearlyMetric.customers.returning.repair += returningCustomers.repair;
-        baseYearlyMetric.customers.returning.sales.total +=
-          returningCustomers.sales.total;
-        baseYearlyMetric.customers.returning.sales.online +=
-          returningCustomers.sales.online;
-        baseYearlyMetric.customers.returning.sales.inStore +=
-          returningCustomers.sales.inStore;
-
-        baseYearlyMetric.customers.churnRate =
-          (baseYearlyMetric.customers.churnRate + churnRate) / 2;
-        baseYearlyMetric.customers.retentionRate =
-          (baseYearlyMetric.customers.retentionRate + retentionRate) / 2;
-
-        monthlyMetrics.forEach((storeMonthlyMetric) => {
-          const { month, customers, dailyMetrics } = storeMonthlyMetric;
-          const {
-            total,
-            new: newCustomers,
-            returning: returningCustomers,
-            churnRate,
-            retentionRate,
-          } = customers;
-
-          const baseMonthlyMetric = baseYearlyMetric.monthlyMetrics.find(
-            (baseMonthlyMetric) => baseMonthlyMetric.month === month
-          );
-          if (!baseMonthlyMetric) {
-            return baseCustomerMetricsAcc;
+        switch (storeLocation) {
+          case "Calgary": {
+            customerMetricsAcc.calgaryCustomerMetrics = customerMetrics;
+            break;
           }
+          case "Edmonton": {
+            customerMetricsAcc.edmontonCustomerMetrics = structuredClone(customerMetrics);
+            break;
+          }
+          // case "Vancouver"
+          default: {
+            customerMetricsAcc.vancouverCustomerMetrics = customerMetrics;
+            break;
+          }
+        }
 
-          baseMonthlyMetric.customers.total += total;
-          baseMonthlyMetric.customers.new.total += newCustomers.total;
-          baseMonthlyMetric.customers.new.repair += newCustomers.repair;
-          baseMonthlyMetric.customers.new.sales.total += newCustomers.sales.total;
-          baseMonthlyMetric.customers.new.sales.online += newCustomers.sales.online;
-          baseMonthlyMetric.customers.new.sales.inStore += newCustomers.sales.inStore;
+        return customerMetricsAcc;
+      }, initialCustomerMetrics);
 
-          baseMonthlyMetric.customers.returning.total += returningCustomers.total;
-          baseMonthlyMetric.customers.returning.repair += returningCustomers.repair;
-          baseMonthlyMetric.customers.returning.sales.total +=
-            returningCustomers.sales.total;
-          baseMonthlyMetric.customers.returning.sales.online +=
-            returningCustomers.sales.online;
-          baseMonthlyMetric.customers.returning.sales.inStore +=
-            returningCustomers.sales.inStore;
+      // as edmonton metrics are a superset of all other stores' metrics, it is being used as
+      // the base to which all other store locations' metrics are aggregated into
 
-          baseMonthlyMetric.customers.churnRate =
-            (baseMonthlyMetric.customers.churnRate + churnRate) / 2;
-          baseMonthlyMetric.customers.retentionRate =
-            (baseMonthlyMetric.customers.retentionRate + retentionRate) / 2;
+      const aggregatedBaseCustomerMetrics = aggregateStoresIntoBaseCustomerMetrics({
+        baseCustomerMetrics: edmontonCustomerMetrics,
+        storeCustomerMetrics: calgaryCustomerMetrics,
+      });
 
-          dailyMetrics.forEach((storeDailyMetric) => {
-            const { day, customers } = storeDailyMetric;
-            const { total, new: newCustomers, returning: returningCustomers } = customers;
+      const aggregatedAllLocationsCustomerMetrics =
+        aggregateStoresIntoBaseCustomerMetrics({
+          baseCustomerMetrics: aggregatedBaseCustomerMetrics,
+          storeCustomerMetrics: vancouverCustomerMetrics,
+        });
 
-            const baseDailyMetric = baseMonthlyMetric.dailyMetrics.find(
-              (baseDailyMetric) => baseDailyMetric.day === day
+      function aggregateStoresIntoBaseCustomerMetrics({
+        baseCustomerMetrics,
+        storeCustomerMetrics,
+      }: {
+        baseCustomerMetrics: CustomerMetrics;
+        storeCustomerMetrics: CustomerMetrics;
+      }) {
+        const { lifetimeValue, totalCustomers, yearlyMetrics } = storeCustomerMetrics;
+
+        baseCustomerMetrics.lifetimeValue =
+          (baseCustomerMetrics.lifetimeValue + lifetimeValue) / 2;
+        baseCustomerMetrics.totalCustomers += totalCustomers;
+
+        return yearlyMetrics.reduce<CustomerMetrics>(
+          (baseCustomerMetricsAcc, storeCustomerMetric) => {
+            const { year, customers, monthlyMetrics } = storeCustomerMetric;
+            const {
+              total,
+              new: newCustomers,
+              returning: returningCustomers,
+              churnRate,
+              retentionRate,
+            } = customers;
+
+            const baseYearlyMetric = baseCustomerMetricsAcc.yearlyMetrics.find(
+              (baseYearlyMetric) => baseYearlyMetric.year === year
             );
-            if (!baseDailyMetric) {
+            if (!baseYearlyMetric) {
               return baseCustomerMetricsAcc;
             }
 
-            baseDailyMetric.customers.total += total;
-            baseDailyMetric.customers.new.total += newCustomers.total;
-            baseDailyMetric.customers.new.repair += newCustomers.repair;
-            baseDailyMetric.customers.new.sales.total += newCustomers.sales.total;
-            baseDailyMetric.customers.new.sales.online += newCustomers.sales.online;
-            baseDailyMetric.customers.new.sales.inStore += newCustomers.sales.inStore;
+            baseYearlyMetric.customers.total += total;
+            baseYearlyMetric.customers.new.total += newCustomers.total;
+            baseYearlyMetric.customers.new.repair += newCustomers.repair;
+            baseYearlyMetric.customers.new.sales.total += newCustomers.sales.total;
+            baseYearlyMetric.customers.new.sales.online += newCustomers.sales.online;
+            baseYearlyMetric.customers.new.sales.inStore += newCustomers.sales.inStore;
 
-            baseDailyMetric.customers.returning.total += returningCustomers.total;
-            baseDailyMetric.customers.returning.repair += returningCustomers.repair;
-            baseDailyMetric.customers.returning.sales.total +=
+            baseYearlyMetric.customers.returning.total += returningCustomers.total;
+            baseYearlyMetric.customers.returning.repair += returningCustomers.repair;
+            baseYearlyMetric.customers.returning.sales.total +=
               returningCustomers.sales.total;
-            baseDailyMetric.customers.returning.sales.online +=
+            baseYearlyMetric.customers.returning.sales.online +=
               returningCustomers.sales.online;
-            baseDailyMetric.customers.returning.sales.inStore +=
+            baseYearlyMetric.customers.returning.sales.inStore +=
               returningCustomers.sales.inStore;
-          });
-        });
 
-        return baseCustomerMetricsAcc;
-      },
-      baseCustomerMetrics
-    );
-  }
+            baseYearlyMetric.customers.churnRate =
+              (baseYearlyMetric.customers.churnRate + churnRate) / 2;
+            baseYearlyMetric.customers.retentionRate =
+              (baseYearlyMetric.customers.retentionRate + retentionRate) / 2;
 
-  return aggregatedAllLocationsCustomerMetrics;
+            monthlyMetrics.forEach((storeMonthlyMetric) => {
+              const { month, customers, dailyMetrics } = storeMonthlyMetric;
+              const {
+                total,
+                new: newCustomers,
+                returning: returningCustomers,
+                churnRate,
+                retentionRate,
+              } = customers;
+
+              const baseMonthlyMetric = baseYearlyMetric.monthlyMetrics.find(
+                (baseMonthlyMetric) => baseMonthlyMetric.month === month
+              );
+              if (!baseMonthlyMetric) {
+                return baseCustomerMetricsAcc;
+              }
+
+              baseMonthlyMetric.customers.total += total;
+              baseMonthlyMetric.customers.new.total += newCustomers.total;
+              baseMonthlyMetric.customers.new.repair += newCustomers.repair;
+              baseMonthlyMetric.customers.new.sales.total += newCustomers.sales.total;
+              baseMonthlyMetric.customers.new.sales.online += newCustomers.sales.online;
+              baseMonthlyMetric.customers.new.sales.inStore += newCustomers.sales.inStore;
+
+              baseMonthlyMetric.customers.returning.total += returningCustomers.total;
+              baseMonthlyMetric.customers.returning.repair += returningCustomers.repair;
+              baseMonthlyMetric.customers.returning.sales.total +=
+                returningCustomers.sales.total;
+              baseMonthlyMetric.customers.returning.sales.online +=
+                returningCustomers.sales.online;
+              baseMonthlyMetric.customers.returning.sales.inStore +=
+                returningCustomers.sales.inStore;
+
+              baseMonthlyMetric.customers.churnRate =
+                (baseMonthlyMetric.customers.churnRate + churnRate) / 2;
+              baseMonthlyMetric.customers.retentionRate =
+                (baseMonthlyMetric.customers.retentionRate + retentionRate) / 2;
+
+              dailyMetrics.forEach((storeDailyMetric) => {
+                const { day, customers } = storeDailyMetric;
+                const {
+                  total,
+                  new: newCustomers,
+                  returning: returningCustomers,
+                } = customers;
+
+                const baseDailyMetric = baseMonthlyMetric.dailyMetrics.find(
+                  (baseDailyMetric) => baseDailyMetric.day === day
+                );
+                if (!baseDailyMetric) {
+                  return baseCustomerMetricsAcc;
+                }
+
+                baseDailyMetric.customers.total += total;
+                baseDailyMetric.customers.new.total += newCustomers.total;
+                baseDailyMetric.customers.new.repair += newCustomers.repair;
+                baseDailyMetric.customers.new.sales.total += newCustomers.sales.total;
+                baseDailyMetric.customers.new.sales.online += newCustomers.sales.online;
+                baseDailyMetric.customers.new.sales.inStore += newCustomers.sales.inStore;
+
+                baseDailyMetric.customers.returning.total += returningCustomers.total;
+                baseDailyMetric.customers.returning.repair += returningCustomers.repair;
+                baseDailyMetric.customers.returning.sales.total +=
+                  returningCustomers.sales.total;
+                baseDailyMetric.customers.returning.sales.online +=
+                  returningCustomers.sales.online;
+                baseDailyMetric.customers.returning.sales.inStore +=
+                  returningCustomers.sales.inStore;
+              });
+            });
+
+            return baseCustomerMetricsAcc;
+          },
+          baseCustomerMetrics
+        );
+      }
+
+      resolve(aggregatedAllLocationsCustomerMetrics);
+    }, 0);
+  });
 }
 
 /**
