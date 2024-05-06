@@ -172,7 +172,7 @@ function ProductDashboard({
       isMounted = false;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedYYYYMMDD]);
+  }, [selectedYYYYMMDD, storeLocationView, productMetric]);
 
   if (!businessMetrics?.length || !productMetricsCards || !productMetricsCharts) {
     return null;

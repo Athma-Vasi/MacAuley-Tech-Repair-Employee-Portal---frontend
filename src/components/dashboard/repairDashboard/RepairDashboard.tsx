@@ -96,16 +96,15 @@ function RepairDashboard({
 
         console.log("selectedDateRepairMetrics", selectedDateRepairMetrics);
 
-        const { dailyCharts, monthlyCharts, yearlyCharts } =
-          await createRepairMetricsCharts({
-            businessMetrics,
-            months: MONTHS,
-            selectedDateRepairMetrics,
-            storeLocation: storeLocationView,
-            selectedRepairCategory: repairMetric,
-          });
+        const repairMetricsCharts = await createRepairMetricsCharts({
+          businessMetrics,
+          months: MONTHS,
+          selectedDateRepairMetrics,
+          storeLocation: storeLocationView,
+          selectedRepairCategory: repairMetric,
+        });
 
-        const { dailyCards, monthlyCards, yearlyCards } = await returnRepairMetricsCards({
+        const repairMetricsCards = await returnRepairMetricsCards({
           greenColorShade,
           padding,
           redColorShade,
@@ -119,20 +118,12 @@ function RepairDashboard({
 
         repairDashboardDispatch({
           type: repairDashboardAction.setRepairMetricsCards,
-          payload: {
-            dailyCards,
-            monthlyCards,
-            yearlyCards,
-          },
+          payload: repairMetricsCards,
         });
 
         repairDashboardDispatch({
           type: repairDashboardAction.setRepairMetricsCharts,
-          payload: {
-            dailyCharts,
-            monthlyCharts,
-            yearlyCharts,
-          },
+          payload: repairMetricsCharts,
         });
 
         repairDashboardDispatch({
@@ -181,7 +172,7 @@ function RepairDashboard({
       isMounted = false;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedYYYYMMDD]);
+  }, [selectedYYYYMMDD, storeLocationView, repairMetric]);
 
   if (!businessMetrics?.length || !repairMetricsCards || !repairMetricsCharts) {
     return null;

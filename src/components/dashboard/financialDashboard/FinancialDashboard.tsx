@@ -171,7 +171,7 @@ function FinancialDashboard({
       isMounted = false;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedYYYYMMDD]);
+  }, [selectedYYYYMMDD, storeLocationView, financialMetric]);
 
   if (!businessMetrics?.length || !financialMetricsCards || !financialMetricsCharts) {
     return null;

@@ -170,7 +170,7 @@ function CustomerDashboard({
       isMounted = false;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedYYYYMMDD]);
+  }, [selectedYYYYMMDD, storeLocationView, customerMetric]);
 
   if (!businessMetrics?.length || !customerMetricsCards || !customerMetricsCharts) {
     return null;

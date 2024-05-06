@@ -465,7 +465,7 @@ function Dashboard() {
       />
     );
 
-  const displayDashboardComponent = (
+  const dashboard = (
     <Stack w="100%">
       <Title order={2}>Dashboard</Title>
       <Text size="sm">Welcome to your dashboard</Text>
@@ -475,7 +475,7 @@ function Dashboard() {
     </Stack>
   );
 
-  return displayDashboardComponent;
+  return dashboard;
 }
 
 export default Dashboard;
