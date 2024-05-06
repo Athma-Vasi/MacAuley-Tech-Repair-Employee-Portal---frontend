@@ -131,9 +131,20 @@ function createDashboardMetricsCards({
         : redColorShade
       : "inherit";
 
-  const date = `Since ${
-    kind === "day" ? prevDay : kind === "month" ? prevMonth : prevYear
-  } ${kind === "day" ? currentMonth : kind === "month" ? currentYear : ""}`;
+  const dateEndMonthSet = new Set(["31", "30", "29", "28"]);
+
+  const date =
+    kind === "day"
+      ? `Since ${prevDay} ${
+          // display the previous month if the previous day is the last day of the month
+          dateEndMonthSet.has(prevDay) ? prevMonth : currentMonth
+        } ${
+          // display the previous year if the previous day is 31st December of the previous year
+          currentMonth === "January" ? prevYear : currentYear
+        }`
+      : kind === "month"
+      ? `Since ${prevMonth} ${currentMonth === "January" ? prevYear : currentYear}`
+      : `Since ${prevYear}`;
 
   const valueStr = addCommaSeparator(
     toFixedFloat(

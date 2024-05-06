@@ -62,11 +62,6 @@ function createSelectedDateProductMetrics({
     (yearlyMetric) => yearlyMetric.year === (parseInt(year) - 1).toString()
   );
 
-  const yearProductMetrics = {
-    selectedYearMetrics,
-    prevYearMetrics,
-  };
-
   const selectedMonthMetrics = selectedYearMetrics?.monthlyMetrics.find(
     (monthlyMetric) => monthlyMetric.month === month
   );
@@ -82,38 +77,38 @@ function createSelectedDateProductMetrics({
           (monthlyMetric) => monthlyMetric.month === months[months.indexOf(month) - 1]
         );
 
-  const monthProductMetrics = {
-    selectedMonthMetrics,
-    prevMonthMetrics,
-  };
-
   const selectedDayMetrics = selectedMonthMetrics?.dailyMetrics.find(
     (dailyMetric) => dailyMetric.day === day
   );
 
   const prevDayMetrics =
     day === "01"
-      ? monthProductMetrics.prevMonthMetrics?.dailyMetrics.find(
-          (dailyMetric) =>
-            dailyMetric.day === "31" ||
-            dailyMetric.day === "30" ||
-            dailyMetric.day === "29" ||
-            dailyMetric.day === "28"
+      ? prevMonthMetrics?.dailyMetrics.reduce<ProductDailyMetric | undefined>(
+          (acc, prevMonthDailyMetric) => {
+            const { day: prevDay } = prevMonthDailyMetric;
+
+            if (
+              prevDay === "31" ||
+              prevDay === "30" ||
+              prevDay === "29" ||
+              prevDay === "28"
+            ) {
+              acc = prevMonthDailyMetric;
+            }
+
+            return acc;
+          },
+          void 0
         )
       : selectedMonthMetrics?.dailyMetrics.find(
           (dailyMetric) =>
             dailyMetric.day === (parseInt(day) - 1).toString().padStart(2, "0")
         );
 
-  const dayProductMetrics = {
-    selectedDayMetrics,
-    prevDayMetrics,
-  };
-
   return {
-    dayProductMetrics,
-    monthProductMetrics,
-    yearProductMetrics,
+    dayProductMetrics: { prevDayMetrics, selectedDayMetrics },
+    monthProductMetrics: { prevMonthMetrics, selectedMonthMetrics },
+    yearProductMetrics: { prevYearMetrics, selectedYearMetrics },
   };
 }
 

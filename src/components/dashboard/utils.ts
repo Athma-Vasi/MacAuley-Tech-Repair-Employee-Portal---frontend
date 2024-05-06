@@ -134,6 +134,7 @@ async function createRandomBusinessMetrics({
           repairMetrics: [],
         };
 
+        // seed data containing the number of days in each month for each year
         const daysInMonthsInYears: DaysInMonthsInYears = returnDaysInMonthsInYears({
           daysPerMonth,
           months,
