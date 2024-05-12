@@ -526,16 +526,6 @@ function returnAccessibleTextInputElements(
   });
 }
 
-function createAccessibleTextInputs(attributesArr: AccessibleTextInputAttributes[]) {
-  return attributesArr.map((attributes, index) => {
-    const createdTextInput = (
-      <AccessibleTextInput key={`${index}${attributes.label}`} attributes={attributes} />
-    );
-
-    return createdTextInput;
-  });
-}
-
 function returnAccessibleSelectInputElements(
   creatorInfoObjectArray: AccessibleSelectInputCreatorInfo[]
 ): React.JSX.Element[] {
@@ -926,7 +916,6 @@ export {
   AccessibleErrorValidTextElementsForDynamicImageUploads,
   AccessibleErrorValidTextElementsForDynamicInputs,
   AccessibleSelectedDeselectedTextElements,
-  createAccessibleTextInputs,
   returnAccessibleButtonElements,
   returnAccessibleCheckboxGroupInputsElements,
   returnAccessibleCheckboxSingleInputElements,

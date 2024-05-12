@@ -809,12 +809,20 @@ function AddressChange() {
     <AccessibleTextInput
       attributes={{
         inputText: addressLine,
-        onChange: (event: ChangeEvent<HTMLInputElement>) => {
-          addressChangeDispatch({
-            type: addressChangeAction.setAddressLine,
-            payload: event.currentTarget.value,
-          });
-        },
+        // onChange: (event: ChangeEvent<HTMLInputElement>) => {
+        //   addressChangeDispatch({
+        //     type: addressChangeAction.setAddressLine,
+        //     payload: event.currentTarget.value,
+        //   });
+        // },
+        onChangeCallbacks: [
+          (event: ChangeEvent<HTMLInputElement>) => {
+            addressChangeDispatch({
+              type: addressChangeAction.setAddressLine,
+              payload: event.currentTarget.value,
+            });
+          },
+        ],
         placeholder: "Enter your address",
         regex: ADDRESS_LINE_REGEX,
         regexValidationText: returnAddressValidationText({

@@ -1,6 +1,12 @@
 import { Group, MantineSize, Popover, Stack, Text, TextInput } from "@mantine/core";
-import { ReactNode, useEffect, useState } from "react";
-import React from "react";
+import {
+  ChangeEvent,
+  KeyboardEvent,
+  ReactNode,
+  RefObject,
+  useEffect,
+  useState,
+} from "react";
 import { TbCheck, TbRefresh } from "react-icons/tb";
 
 import { COLORS_SWATCHES } from "../../constants/data";
@@ -24,10 +30,12 @@ type AccessibleTextInputAttributes = {
   maxLength?: number;
   minLength?: number;
   name?: string;
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  onKeyDown?: (event: React.KeyboardEvent<HTMLInputElement>) => void;
+  onBlurCallbacks?: Array<() => void>;
+  onChangeCallbacks: Array<(event: ChangeEvent<HTMLInputElement>) => void>;
+  onFocusCallbacks?: Array<() => void>;
+  onKeyDownCallbacks?: Array<(event: KeyboardEvent<HTMLInputElement>) => void>;
   placeholder: string;
-  ref?: React.RefObject<HTMLInputElement> | null;
+  ref?: RefObject<HTMLInputElement> | null;
   regex: RegExp;
   regexValidationText: string;
   required?: boolean;
@@ -66,8 +74,10 @@ function AccessibleTextInput({ attributes }: AccessibleTextInputsProps) {
     maxLength = 75,
     minLength = 2,
     name = semanticName,
-    onChange,
-    onKeyDown = () => {},
+    onChangeCallbacks,
+    onBlurCallbacks = [],
+    onFocusCallbacks = [],
+    onKeyDownCallbacks = [],
     placeholder,
     ref = null,
     regex,
@@ -166,10 +176,23 @@ function AccessibleTextInput({ attributes }: AccessibleTextInputsProps) {
             maxLength={maxLength}
             minLength={minLength}
             name={name}
-            onBlur={() => setIsInputTextFocused(false)}
-            onChange={onChange}
-            onFocus={() => setIsInputTextFocused(true)}
-            onKeyDown={onKeyDown}
+            onBlur={() => {
+              onBlurCallbacks.length && onBlurCallbacks.forEach((callback) => callback());
+              setIsInputTextFocused(false);
+            }}
+            onChange={(event: ChangeEvent<HTMLInputElement>) => {
+              onChangeCallbacks.length &&
+                onChangeCallbacks.forEach((callback) => callback(event));
+            }}
+            onFocus={() => {
+              onFocusCallbacks.length &&
+                onFocusCallbacks.forEach((callback) => callback());
+              setIsInputTextFocused(true);
+            }}
+            onKeyDown={(event: KeyboardEvent<HTMLInputElement>) => {
+              onKeyDownCallbacks.length &&
+                onKeyDownCallbacks.forEach((callback) => callback(event));
+            }}
             placeholder={placeholder}
             ref={ref}
             required={required}

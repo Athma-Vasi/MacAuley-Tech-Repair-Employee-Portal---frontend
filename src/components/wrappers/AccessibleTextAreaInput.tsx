@@ -1,5 +1,5 @@
 import { Group, MantineSize, Popover, Stack, Text, Textarea } from "@mantine/core";
-import { ReactNode, useEffect, useState } from "react";
+import { ChangeEvent, KeyboardEvent, ReactNode, useEffect, useState } from "react";
 import React from "react";
 import { TbCheck, TbRefresh } from "react-icons/tb";
 
@@ -22,8 +22,10 @@ type AccessibleTextAreaInputAttributes = {
   minLength?: number;
   minRows?: number;
   name?: string;
-  onChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
-  onKeyDown?: (event: React.KeyboardEvent<HTMLTextAreaElement>) => void;
+  onBlurCallbacks?: Array<() => void>;
+  onChangeCallbacks: Array<(event: ChangeEvent<HTMLTextAreaElement>) => void>;
+  onFocusCallbacks?: Array<() => void>;
+  onKeyDownCallbacks?: Array<(event: KeyboardEvent<HTMLTextAreaElement>) => void>;
   placeholder: string;
   ref?: React.RefObject<HTMLTextAreaElement> | null;
   regex: RegExp;
@@ -38,11 +40,11 @@ type AccessibleTextAreaInputAttributes = {
   withAsterisk?: boolean;
 };
 
-type AccessibleTextAreaInputsProps = {
+type AccessibleTextAreaInputProps = {
   attributes: AccessibleTextAreaInputAttributes;
 };
 
-function AccessibleTextAreaInput({ attributes }: AccessibleTextAreaInputsProps) {
+function AccessibleTextAreaInput({ attributes }: AccessibleTextAreaInputProps) {
   const [popoverOpened, setPopoverOpened] = useState(false);
   const [isInputTextValid, setIsInputTextValid] = useState(false);
   const [isInputTextFocused, setIsInputTextFocused] = useState(false);
@@ -66,8 +68,10 @@ function AccessibleTextAreaInput({ attributes }: AccessibleTextAreaInputsProps) 
     minLength = 2,
     minRows = 3,
     name = semanticName,
-    onChange,
-    onKeyDown = () => {},
+    onBlurCallbacks = [],
+    onChangeCallbacks,
+    onFocusCallbacks = [],
+    onKeyDownCallbacks = [],
     placeholder,
     ref = null,
     regex,
@@ -168,10 +172,23 @@ function AccessibleTextAreaInput({ attributes }: AccessibleTextAreaInputsProps) 
             minLength={minLength}
             minRows={minRows}
             name={name}
-            onBlur={() => setIsInputTextFocused(false)}
-            onChange={onChange}
-            onFocus={() => setIsInputTextFocused(true)}
-            onKeyDown={onKeyDown}
+            onBlur={() => {
+              onBlurCallbacks.length && onBlurCallbacks.forEach((callback) => callback());
+              setIsInputTextFocused(false);
+            }}
+            onChange={(event: ChangeEvent<HTMLTextAreaElement>) => {
+              onChangeCallbacks.length &&
+                onChangeCallbacks.forEach((callback) => callback(event));
+            }}
+            onFocus={() => {
+              onFocusCallbacks.length &&
+                onFocusCallbacks.forEach((callback) => callback());
+              setIsInputTextFocused(true);
+            }}
+            onKeyDown={(event: KeyboardEvent<HTMLTextAreaElement>) => {
+              onKeyDownCallbacks.length &&
+                onKeyDownCallbacks.forEach((callback) => callback(event));
+            }}
             placeholder={placeholder}
             ref={ref}
             required={required}

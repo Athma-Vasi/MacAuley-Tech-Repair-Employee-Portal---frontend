@@ -6,19 +6,27 @@ import { TbCheck, TbExclamationCircle } from "react-icons/tb";
 import { COLORS_SWATCHES } from "../../constants/data";
 import { useGlobalState } from "../../hooks";
 import { returnThemeColors } from "../../utils";
+import {
+  AccessibleTextAreaInput,
+  AccessibleTextAreaInputAttributes,
+} from "./AccessibleTextAreaInput";
+import {
+  AccessibleTextInput,
+  AccessibleTextInputAttributes,
+} from "./AccessibleTextInput";
 
 type AccessibleErrorValidTextElemProps = {
-  inputElementKind: string;
+  semanticName: string;
   inputText: string;
-  isValidInputText: boolean;
+  isInputTextValid: boolean;
   isInputTextFocused: boolean;
   regexValidationText?: string | undefined;
 };
 
 function AccessibleErrorValidTextElements({
-  inputElementKind,
+  semanticName,
   inputText,
-  isValidInputText,
+  isInputTextValid,
   isInputTextFocused,
   regexValidationText,
 }: AccessibleErrorValidTextElemProps): [React.JSX.Element, React.JSX.Element] {
@@ -32,9 +40,9 @@ function AccessibleErrorValidTextElements({
 
   const errorTextElement = (
     <Text
-      id={`${inputElementKind.split(" ").join("-")}-input-note-error`}
+      id={`${semanticName.split(" ").join("-")}-input-note-error`}
       style={{
-        display: isInputTextFocused && inputText && !isValidInputText ? "block" : "none",
+        display: isInputTextFocused && inputText && !isInputTextValid ? "block" : "none",
       }}
       w="100%"
       aria-live="polite"
@@ -56,9 +64,9 @@ function AccessibleErrorValidTextElements({
 
   const validTextElement = (
     <Text
-      id={`${inputElementKind.split(" ").join("-")}-input-note-valid`}
+      id={`${semanticName.split(" ").join("-")}-input-note-valid`}
       style={{
-        display: isInputTextFocused && inputText && isValidInputText ? "block" : "none",
+        display: isInputTextFocused && inputText && isInputTextValid ? "block" : "none",
       }}
       color={greenColorShade}
       w="100%"
@@ -73,10 +81,8 @@ function AccessibleErrorValidTextElements({
         <Grid.Col span={12}>
           <Group position="left">
             <Text size="sm">
-              {inputElementKind.length > 0
-                ? `${inputElementKind[0].toUpperCase()}${inputElementKind.slice(
-                    1
-                  )} is valid`
+              {semanticName.length > 0
+                ? `${semanticName[0].toUpperCase()}${semanticName.slice(1)} is valid`
                 : ""}
             </Text>
           </Group>
@@ -88,7 +94,7 @@ function AccessibleErrorValidTextElements({
   return [errorTextElement, validTextElement];
 }
 
-type ReturnAccessibleSelectedDeselectedTextElementsProps = {
+type AccessibleSelectedDeselectedTextElementsProps = {
   semanticName: string;
   isSelected: boolean;
   selectedDescription?: string;
@@ -102,7 +108,7 @@ function AccessibleSelectedDeselectedTextElements({
   selectedDescription = "",
   deselectedDescription = "",
   theme = "default",
-}: ReturnAccessibleSelectedDeselectedTextElementsProps): [
+}: AccessibleSelectedDeselectedTextElementsProps): [
   React.JSX.Element,
   React.JSX.Element
 ] {
@@ -157,4 +163,102 @@ function AccessibleSelectedDeselectedTextElements({
   ];
 }
 
-export { AccessibleErrorValidTextElements, AccessibleSelectedDeselectedTextElements };
+type AccessibleEnabledDisabledTextElemProps = {
+  semanticName: string;
+  isEnabled: boolean;
+  enabledAccessibleText?: string;
+  disabledAccessibleText?: string;
+  theme?: "muted" | "default";
+};
+
+function AccessibleEnabledDisabledButtonTextElements({
+  semanticName,
+  isEnabled,
+  disabledAccessibleText,
+  enabledAccessibleText,
+  theme = "default",
+}: AccessibleEnabledDisabledTextElemProps): [React.JSX.Element, React.JSX.Element] {
+  const {
+    globalState: { themeObject },
+  } = useGlobalState();
+
+  const {
+    generalColors: { greenColorShade, textColor, grayColorShade, redColorShade },
+  } = returnThemeColors({
+    themeObject,
+    colorsSwatches: COLORS_SWATCHES,
+  });
+
+  return [
+    // enabled text elem
+    <Text
+      id={`${semanticName.split(" ").join("-")}-enabled`}
+      style={{ display: isEnabled ? "block" : "none" }}
+      color={theme === "muted" ? textColor : greenColorShade}
+      w="100%"
+      aria-live="polite"
+    >
+      {theme === "default" ? (
+        <FontAwesomeIcon icon={faCheck} color={greenColorShade} />
+      ) : null}{" "}
+      {enabledAccessibleText ??
+        `All form inputs are valid. ${semanticName[0].toUpperCase()}${semanticName.slice(
+          1
+        )} is enabled. You may submit the form.`}
+    </Text>,
+    // disabled text elem
+    <Text
+      id={`${semanticName.split(" ").join("-")}-disabled`}
+      style={{ display: !isEnabled ? "block" : "none" }}
+      color={
+        theme === "default" ? (!isEnabled ? redColorShade : textColor) : grayColorShade
+      }
+      w="100%"
+      aria-live="polite"
+    >
+      {theme === "default" ? (
+        <FontAwesomeIcon icon={faInfoCircle} color={redColorShade} />
+      ) : null}{" "}
+      {disabledAccessibleText ??
+        `One or more inputs are in error. ${semanticName[0].toUpperCase()}${semanticName.slice(
+          1
+        )} disabled. Please fix errors before submitting the form.`}
+    </Text>,
+  ];
+}
+
+function createAccessibleTextInputs(attributesArray: AccessibleTextInputAttributes[]) {
+  return attributesArray.map((attributes, index) => {
+    const createdTextInput = (
+      <AccessibleTextInput
+        key={`${index}-${attributes.semanticName}`}
+        attributes={attributes}
+      />
+    );
+
+    return createdTextInput;
+  });
+}
+
+function createAccessibleTextAreaInputs(
+  attributesArray: AccessibleTextAreaInputAttributes[]
+) {
+  return attributesArray.map((attributes, index) => {
+    const createdTextAreaInput = (
+      <AccessibleTextAreaInput
+        key={`${index}-${attributes.semanticName}`}
+        attributes={attributes}
+      />
+    );
+
+    return createdTextAreaInput;
+  });
+}
+
+export {
+  AccessibleEnabledDisabledButtonTextElements,
+  AccessibleErrorValidTextElements,
+  AccessibleSelectedDeselectedTextElements,
+  createAccessibleTextAreaInputs,
+  createAccessibleTextInputs,
+};
