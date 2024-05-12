@@ -1,7 +1,7 @@
 import { GlobalAction, GlobalDispatch, GlobalState, ThemeObject } from "./types";
 
 const initialThemeObject: ThemeObject = {
-  colorScheme: "light",
+  colorScheme: "dark",
   respectReducedMotion: true,
 
   // white: '#f8f9fa', // gray.0
@@ -65,6 +65,8 @@ const initialGlobalState: GlobalState = {
     chartUnitKind: "currency",
     selectedYYYYMMDD: new Date().toISOString().slice(0, 10),
   },
+
+  componentsErrorState: new Map(),
 };
 
 const globalAction: GlobalAction = {
@@ -93,6 +95,9 @@ const globalAction: GlobalAction = {
   setCustomizeChartsPageData: "setCustomizeChartsPageData",
   setCustomizeChartsPageDataSelectedYYYYMMDD:
     "setCustomizeChartsPageDataSelectedYYYYMMDD",
+
+  // error state
+  setComponentsErrorState: "setComponentsErrorState",
 };
 
 function globalReducer(state: GlobalState, action: GlobalDispatch): GlobalState {
@@ -258,6 +263,34 @@ function globalReducer(state: GlobalState, action: GlobalDispatch): GlobalState 
         ...state,
         customizeChartsPageData: clonedCustomizeChartsPageData,
       };
+    }
+
+    // error state
+    case globalAction.setComponentsErrorState: {
+      const { componentsErrorState } = state;
+      const { componentName, beforeErrorState, kind } = action.payload;
+
+      switch (kind) {
+        case "add": {
+          const clonedComponentsErrorState = new Map(componentsErrorState);
+          clonedComponentsErrorState.set(componentName, beforeErrorState);
+
+          return {
+            ...state,
+            componentsErrorState: clonedComponentsErrorState,
+          };
+        }
+        // case 'remove'
+        default: {
+          const clonedComponentsErrorState = new Map(componentsErrorState);
+          clonedComponentsErrorState.delete(componentName);
+
+          return {
+            ...state,
+            componentsErrorState: clonedComponentsErrorState,
+          };
+        }
+      }
     }
 
     default:

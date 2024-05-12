@@ -15,6 +15,7 @@ import {
 import React from "react";
 import { TbArrowDown, TbArrowUp, TbCheck, TbExclamationCircle } from "react-icons/tb";
 
+import { returnFormattedDocValue } from "../components/displayQuery/utils";
 import type {
   AccessibleButtonCreatorInfo,
   AccessibleCheckboxGroupInputCreatorInfo,
@@ -48,6 +49,10 @@ import {
   TextInputWrapper,
   TextWrapper,
 } from "../components/wrappers";
+import {
+  AccessibleTextInput,
+  AccessibleTextInputAttributes,
+} from "../components/wrappers/AccessibleTextInput";
 import { COLORS_SWATCHES, PROPERTY_DESCRIPTOR } from "../constants/data";
 import { useGlobalState } from "../hooks";
 import {
@@ -57,7 +62,6 @@ import {
   returnThemeColors,
   splitCamelCase,
 } from "../utils";
-import { returnFormattedDocValue } from "../components/displayQuery/utils";
 
 // The functions : AccessibleErrorValidTextElements and AccessibleErrorValidTextElementsForDynamicInputs return a tuple [error, valid] or tuple[error[], valid[]] of accessible text elements for screen readers to read out based on the state of the controlled input
 
@@ -522,6 +526,16 @@ function returnAccessibleTextInputElements(
   });
 }
 
+function createAccessibleTextInputs(attributesArr: AccessibleTextInputAttributes[]) {
+  return attributesArr.map((attributes, index) => {
+    const createdTextInput = (
+      <AccessibleTextInput key={`${index}${attributes.label}`} attributes={attributes} />
+    );
+
+    return createdTextInput;
+  });
+}
+
 function returnAccessibleSelectInputElements(
   creatorInfoObjectArray: AccessibleSelectInputCreatorInfo[]
 ): React.JSX.Element[] {
@@ -912,6 +926,7 @@ export {
   AccessibleErrorValidTextElementsForDynamicImageUploads,
   AccessibleErrorValidTextElementsForDynamicInputs,
   AccessibleSelectedDeselectedTextElements,
+  createAccessibleTextInputs,
   returnAccessibleButtonElements,
   returnAccessibleCheckboxGroupInputsElements,
   returnAccessibleCheckboxSingleInputElements,

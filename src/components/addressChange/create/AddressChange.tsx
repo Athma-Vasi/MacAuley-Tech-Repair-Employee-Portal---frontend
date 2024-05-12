@@ -15,7 +15,7 @@ import {
   POSTAL_CODE_REGEX_US,
 } from "../../../constants/regex";
 import { globalAction } from "../../../context/globalProvider/state";
-import { useAuth, useGlobalState, useWrapFetch } from "../../../hooks";
+import { useGlobalState, useWrapFetch } from "../../../hooks";
 import {
   AccessibleErrorValidTextElements,
   AccessibleSelectedDeselectedTextElements,
@@ -32,6 +32,7 @@ import {
   StatesUS,
 } from "../../../types";
 import {
+  logState,
   returnAddressValidationText,
   returnCityValidationText,
   returnPhoneNumberValidationText,
@@ -62,6 +63,7 @@ import {
   initialAddressChangeState,
 } from "./state";
 import { AddressChangeDocument } from "./types";
+import { AccessibleTextInput } from "../../wrappers/AccessibleTextInput";
 
 function AddressChange() {
   const [addressChangeState, addressChangeDispatch] = useReducer(
@@ -102,9 +104,26 @@ function AddressChange() {
     loadingMessage,
   } = addressChangeState;
 
-  const { wrappedFetch } = useWrapFetch();
+  const { globalState, globalDispatch } = useGlobalState();
 
-  const { globalDispatch } = useGlobalState();
+  ////
+
+  useEffect(() => {
+    if (province === "British Columbia") {
+      throw new Error("ERROR from AddressChange");
+    }
+  }, [province]);
+
+  useEffect(() => {
+    logState({
+      state: addressChangeState,
+      groupLabel: "AddressChange",
+    });
+  }, [addressChangeState]);
+
+  ////
+
+  const { wrappedFetch } = useWrapFetch();
 
   const navigate = useNavigate();
   const { showBoundary } = useErrorBoundary();
@@ -126,10 +145,12 @@ function AddressChange() {
         type: addressChangeAction.setIsSubmitting,
         payload: true,
       });
+
       addressChangeDispatch({
         type: addressChangeAction.setSubmitMessage,
         payload: "Address change request is on the way!",
       });
+
       openSubmitSuccessNotificationModal();
 
       const url: URL = urlBuilder({
@@ -161,9 +182,7 @@ function AddressChange() {
 
       const requestInit: RequestInit = {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body,
       };
 
@@ -174,6 +193,7 @@ function AddressChange() {
           signal: controller.signal,
           url,
         });
+
         const data: ResourceRequestServerResponse<AddressChangeDocument> =
           await response.json();
 
@@ -188,6 +208,7 @@ function AddressChange() {
           type: addressChangeAction.setIsSuccessful,
           payload: true,
         });
+
         addressChangeDispatch({
           type: addressChangeAction.setSuccessMessage,
           payload: data.message ?? "Address change request successful!",
@@ -196,33 +217,6 @@ function AddressChange() {
         if (!isMounted || error.name === "AbortError") {
           return;
         }
-
-        const errorMessage =
-          error instanceof InvalidTokenError
-            ? "Invalid token. Please login again."
-            : !error.response
-            ? "Network error. Please try again."
-            : error?.message ?? "Unknown error occurred. Please try again.";
-
-        globalDispatch({
-          type: globalAction.setErrorState,
-          payload: {
-            isError: true,
-            errorMessage,
-            errorCallback: () => {
-              navigate("/home");
-
-              globalDispatch({
-                type: globalAction.setErrorState,
-                payload: {
-                  isError: false,
-                  errorMessage: "",
-                  errorCallback: () => {},
-                },
-              });
-            },
-          },
-        });
 
         showBoundary(error);
       } finally {
@@ -811,11 +805,35 @@ function AddressChange() {
     />
   );
 
+  const textInputAccessible = (
+    <AccessibleTextInput
+      attributes={{
+        inputText: addressLine,
+        onChange: (event: ChangeEvent<HTMLInputElement>) => {
+          addressChangeDispatch({
+            type: addressChangeAction.setAddressLine,
+            payload: event.currentTarget.value,
+          });
+        },
+        placeholder: "Enter your address",
+        regex: ADDRESS_LINE_REGEX,
+        regexValidationText: returnAddressValidationText({
+          content: addressLine,
+          contentKind: "address line",
+          minLength: 2,
+          maxLength: 75,
+        }),
+        semanticName: "address line",
+      }}
+    />
+  );
+
   const createdAddressChangeForm = (
     <FormLayoutWrapper>
       {createdContactNumberTextInput}
       {createdCountrySelectInput}
-      {createdAddressLineTextInput}
+      {/* {createdAddressLineTextInput} */}
+      {textInputAccessible}
       {createdCityTextInput}
       {createdProvinceOrStateSelectInput}
       {createdZipOrPostalCodeTextInput}
@@ -830,7 +848,7 @@ function AddressChange() {
       ? displayAddressChangeReviewPage
       : displaySubmitButton;
 
-  const displayAddressChangeComponent = (
+  const addressChange = (
     <StepperWrapper
       childrenTitle="Address change"
       currentStepperPosition={currentStepperPosition}
@@ -845,7 +863,7 @@ function AddressChange() {
     </StepperWrapper>
   );
 
-  return displayAddressChangeComponent;
+  return addressChange;
 }
 
 export default AddressChange;

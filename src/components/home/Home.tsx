@@ -302,18 +302,7 @@ function Home() {
           payload: {
             isError: true,
             errorMessage,
-            errorCallback: () => {
-              navigate("/");
-
-              globalDispatch({
-                type: globalAction.setErrorState,
-                payload: {
-                  isError: false,
-                  errorMessage: "",
-                  errorCallback: () => {},
-                },
-              });
-            },
+            errorCallback: () => {},
           },
         });
 

@@ -12,7 +12,7 @@ import { useGlobalState } from "./useGlobalState";
 
 /**
  * - inspired by axios interceptors, the wrappedFetch fn will check access token expiration before calling fetch
- * - if the access token is expired, it will attempt to retrieve new access & refresh tokens
+ * - if the access token is expired, it will attempt to retrieve new access & refresh tokens and call fetch with the new access token
  * - else it will call fetch with the unexpired access token
  */
 function useWrapFetch() {

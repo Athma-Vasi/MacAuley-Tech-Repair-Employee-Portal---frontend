@@ -2,26 +2,26 @@ import type {
   AddressChangeAction,
   AddressChangeDispatch,
   AddressChangeState,
-} from './types';
+} from "./types";
 
 const initialAddressChangeState: AddressChangeState = {
-  contactNumber: '+(1)',
+  contactNumber: "+(1)",
   isValidContactNumber: false,
   isContactNumberFocused: false,
 
-  addressLine: '',
+  addressLine: "",
   isValidAddressLine: false,
   isAddressLineFocused: false,
 
-  city: '',
+  city: "",
   isValidCity: false,
   isCityFocused: false,
 
-  province: 'Alberta',
-  state: 'Alabama',
-  country: 'Canada',
+  province: "Alberta",
+  state: "Alabama",
+  country: "Canada",
 
-  postalCode: '',
+  postalCode: "",
   isValidPostalCode: false,
   isPostalCodeFocused: false,
   isAcknowledged: false,
@@ -31,45 +31,47 @@ const initialAddressChangeState: AddressChangeState = {
   stepsInError: new Set<number>(),
 
   isSubmitting: false,
-  submitMessage: '',
+  submitMessage: "",
   isSuccessful: false,
-  successMessage: '',
+  successMessage: "",
   isLoading: false,
-  loadingMessage: '',
+  loadingMessage: "",
 };
 
 const addressChangeAction: AddressChangeAction = {
-  setContactNumber: 'setContactNumber',
-  setIsValidContactNumber: 'setIsValidContactNumber',
-  setIsContactNumberFocused: 'setIsContactNumberFocused',
+  setContactNumber: "setContactNumber",
+  setIsValidContactNumber: "setIsValidContactNumber",
+  setIsContactNumberFocused: "setIsContactNumberFocused",
 
-  setAddressLine: 'setAddressLine',
-  setIsAddressLineFocused: 'setIsAddressLineFocused',
-  setIsValidAddressLine: 'setIsValidAddressLine',
+  setAddressLine: "setAddressLine",
+  setIsAddressLineFocused: "setIsAddressLineFocused",
+  setIsValidAddressLine: "setIsValidAddressLine",
 
-  setCity: 'setCity',
-  setIsValidCity: 'setIsValidCity',
-  setIsCityFocused: 'setIsCityFocused',
+  setCity: "setCity",
+  setIsValidCity: "setIsValidCity",
+  setIsCityFocused: "setIsCityFocused",
 
-  setProvince: 'setProvince',
-  setState: 'setState',
-  setCountry: 'setCountry',
+  setProvince: "setProvince",
+  setState: "setState",
+  setCountry: "setCountry",
 
-  setPostalCode: 'setPostalCode',
-  setIsValidPostalCode: 'setIsValidPostalCode',
-  setIsPostalCodeFocused: 'setIsPostalCodeFocused',
-  setIsAcknowledged: 'setIsAcknowledged',
+  setPostalCode: "setPostalCode",
+  setIsValidPostalCode: "setIsValidPostalCode",
+  setIsPostalCodeFocused: "setIsPostalCodeFocused",
+  setIsAcknowledged: "setIsAcknowledged",
 
-  setTriggerFormSubmit: 'setTriggerFormSubmit',
-  setCurrentStepperPosition: 'setCurrentStepperPosition',
-  setStepsInError: 'setStepsInError',
+  setTriggerFormSubmit: "setTriggerFormSubmit",
+  setCurrentStepperPosition: "setCurrentStepperPosition",
+  setStepsInError: "setStepsInError",
 
-  setIsSubmitting: 'setIsSubmitting',
-  setSubmitMessage: 'setSubmitMessage',
-  setIsSuccessful: 'setIsSuccessful',
-  setSuccessMessage: 'setSuccessMessage',
-  setIsLoading: 'setIsLoading',
-  setLoadingMessage: 'setLoadingMessage',
+  setIsSubmitting: "setIsSubmitting",
+  setSubmitMessage: "setSubmitMessage",
+  setIsSuccessful: "setIsSuccessful",
+  setSuccessMessage: "setSuccessMessage",
+  setIsLoading: "setIsLoading",
+  setLoadingMessage: "setLoadingMessage",
+
+  setAll: "setAll",
 };
 
 function addressChangeReducer(
@@ -175,7 +177,7 @@ function addressChangeReducer(
     case addressChangeAction.setStepsInError: {
       const { kind, step } = action.payload;
       const stepsInError = new Set(state.stepsInError);
-      kind === 'add' ? stepsInError.add(step) : stepsInError.delete(step);
+      kind === "add" ? stepsInError.add(step) : stepsInError.delete(step);
 
       return {
         ...state,
@@ -213,6 +215,13 @@ function addressChangeReducer(
         ...state,
         loadingMessage: action.payload,
       };
+
+    case addressChangeAction.setAll:
+      return {
+        ...state,
+        ...action.payload,
+      };
+
     default:
       return state;
   }

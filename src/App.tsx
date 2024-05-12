@@ -225,9 +225,7 @@ const DisplayRMA = lazy(() => import("./components/rma/DisplayRMA"));
 // ╭─────────────────────────────────────────────────────────────────╮
 //    ADDRESS CHANGE
 // ╰─────────────────────────────────────────────────────────────────╯
-const AddressChange = lazy(
-  () => import("./components/addressChange/create/AddressChange")
-);
+const CreateAddressChange = lazy(() => import("./components/addressChange/create"));
 
 const DisplayAddressChanges = lazy(
   () => import("./components/addressChange/DisplayAddressChanges")
@@ -364,7 +362,10 @@ const NotFound = lazy(() => import("./components/notFound/NotFound"));
 
 function App() {
   const {
-    globalState: { themeObject, errorState },
+    globalState: {
+      themeObject,
+      errorState: { errorCallback, errorMessage, isError },
+    },
   } = useGlobalState();
 
   // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
@@ -381,7 +382,15 @@ function App() {
   // @route  /
   // @access public
   const rootIndexWrapper = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+    <ErrorBoundary
+      fallback={
+        <ErrorFallback
+          isError={isError}
+          errorCallback={errorCallback}
+          errorMessage={errorMessage}
+        />
+      }
+    >
       <Suspense fallback={<div>Generic Loading message...</div>}>
         <PublicLayout />
       </Suspense>
@@ -396,7 +405,15 @@ function App() {
   // @route  /login
   // @access public
   const loginElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+    <ErrorBoundary
+      fallback={
+        <ErrorFallback
+          isError={isError}
+          errorCallback={errorCallback}
+          errorMessage={errorMessage}
+        />
+      }
+    >
       <Suspense fallback={<div>Generic Loading message...</div>}>
         <Login />
       </Suspense>
@@ -411,7 +428,15 @@ function App() {
   // @route  /register
   // @access public
   const registerElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+    <ErrorBoundary
+      fallback={
+        <ErrorFallback
+          isError={isError}
+          errorCallback={errorCallback}
+          errorMessage={errorMessage}
+        />
+      }
+    >
       <Suspense fallback={<div>Generic Loading message...</div>}>
         <Register />
       </Suspense>
@@ -426,7 +451,15 @@ function App() {
   // @route  /home
   // @access private
   const homeIndexWrapper = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+    <ErrorBoundary
+      fallback={
+        <ErrorFallback
+          isError={isError}
+          errorCallback={errorCallback}
+          errorMessage={errorMessage}
+        />
+      }
+    >
       <Suspense fallback={<div>Generic Loading message...</div>}>
         <PortalLayout />
       </Suspense>
@@ -441,7 +474,15 @@ function App() {
   // @route  /home
   // @access private
   const homeElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+    <ErrorBoundary
+      fallback={
+        <ErrorFallback
+          isError={isError}
+          errorCallback={errorCallback}
+          errorMessage={errorMessage}
+        />
+      }
+    >
       <Suspense fallback={<div>Generic Loading message...</div>}>
         <Home />
       </Suspense>
@@ -456,7 +497,15 @@ function App() {
   // @route  /home/dashboard
   // @access private
   const dashboardElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+    <ErrorBoundary
+      fallback={
+        <ErrorFallback
+          isError={isError}
+          errorCallback={errorCallback}
+          errorMessage={errorMessage}
+        />
+      }
+    >
       <Suspense fallback={<div>Generic Loading message...</div>}>
         <Dashboard />
       </Suspense>
@@ -467,7 +516,15 @@ function App() {
   // @route  /home/dashboard/responsive-chart
   // @access private
   const displayResponsiveChartElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+    <ErrorBoundary
+      fallback={
+        <ErrorFallback
+          isError={isError}
+          errorCallback={errorCallback}
+          errorMessage={errorMessage}
+        />
+      }
+    >
       <Suspense fallback={<div>Generic Loading message...</div>}>
         <DisplayResponsiveChart />
       </Suspense>
@@ -482,7 +539,15 @@ function App() {
   // @route  /home/customer (index) and /home/customer/display
   // @access private
   const displayCustomersElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+    <ErrorBoundary
+      fallback={
+        <ErrorFallback
+          isError={isError}
+          errorCallback={errorCallback}
+          errorMessage={errorMessage}
+        />
+      }
+    >
       <Suspense fallback={<div>Generic Loading message...</div>}>
         <DisplayCustomer />
       </Suspense>
@@ -493,7 +558,15 @@ function App() {
   // @route  /home/customer/create
   // @access private
   const createCustomerElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+    <ErrorBoundary
+      fallback={
+        <ErrorFallback
+          isError={isError}
+          errorCallback={errorCallback}
+          errorMessage={errorMessage}
+        />
+      }
+    >
       <Suspense fallback={<div>Generic Loading message...</div>}>
         <CreateCustomer />
       </Suspense>
@@ -508,7 +581,15 @@ function App() {
   // @route  /home/product/comment (index) and /home/product/comment/display
   // @access private
   const displayCommentsElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+    <ErrorBoundary
+      fallback={
+        <ErrorFallback
+          isError={isError}
+          errorCallback={errorCallback}
+          errorMessage={errorMessage}
+        />
+      }
+    >
       <Suspense fallback={<div>Generic Loading message...</div>}>
         <DisplayComment />
       </Suspense>
@@ -523,7 +604,15 @@ function App() {
   // @route  /home/file-upload (index) and /home/file-upload/display
   // @access private
   const displayFileUploadsElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+    <ErrorBoundary
+      fallback={
+        <ErrorFallback
+          isError={isError}
+          errorCallback={errorCallback}
+          errorMessage={errorMessage}
+        />
+      }
+    >
       <Suspense fallback={<div>Generic Loading message...</div>}>
         <DisplayFileUpload />
       </Suspense>
@@ -538,7 +627,15 @@ function App() {
   // @route  /home/product/create
   // @access private
   const createProductElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+    <ErrorBoundary
+      fallback={
+        <ErrorFallback
+          isError={isError}
+          errorCallback={errorCallback}
+          errorMessage={errorMessage}
+        />
+      }
+    >
       <Suspense fallback={<div>Generic Loading message...</div>}>
         <CreateProduct />
       </Suspense>
@@ -553,7 +650,15 @@ function App() {
   // @route  /home/product/accessory (index) and /home/product/accessory/display
   // @access private
   const displayAccessoriesElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+    <ErrorBoundary
+      fallback={
+        <ErrorFallback
+          isError={isError}
+          errorCallback={errorCallback}
+          errorMessage={errorMessage}
+        />
+      }
+    >
       <Suspense fallback={<div>Generic Loading message...</div>}>
         <DisplayAccessory />
       </Suspense>
@@ -568,7 +673,15 @@ function App() {
   // @route  /home/product/cpu (index) and /home/product/cpu/display
   // @access private
   const displayCPUsElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+    <ErrorBoundary
+      fallback={
+        <ErrorFallback
+          isError={isError}
+          errorCallback={errorCallback}
+          errorMessage={errorMessage}
+        />
+      }
+    >
       <Suspense fallback={<div>Generic Loading message...</div>}>
         <DisplayCPU />
       </Suspense>
@@ -583,7 +696,15 @@ function App() {
   // @route  /home/product/case (index) and /home/product/case/display
   // @access private
   const displayCasesElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+    <ErrorBoundary
+      fallback={
+        <ErrorFallback
+          isError={isError}
+          errorCallback={errorCallback}
+          errorMessage={errorMessage}
+        />
+      }
+    >
       <Suspense fallback={<div>Generic Loading message...</div>}>
         <DisplayCase />
       </Suspense>
@@ -598,7 +719,15 @@ function App() {
   // @route  /home/product/desktop-computer (index) and /home/product/desktop-computer/display
   // @access private
   const displayDesktopComputersElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+    <ErrorBoundary
+      fallback={
+        <ErrorFallback
+          isError={isError}
+          errorCallback={errorCallback}
+          errorMessage={errorMessage}
+        />
+      }
+    >
       <Suspense fallback={<div>Generic Loading message...</div>}>
         <DisplayDesktopComputer />
       </Suspense>
@@ -613,7 +742,15 @@ function App() {
   // @route  /home/product/display (index) and /home/product/display/display
   // @access private
   const displayDisplaysElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+    <ErrorBoundary
+      fallback={
+        <ErrorFallback
+          isError={isError}
+          errorCallback={errorCallback}
+          errorMessage={errorMessage}
+        />
+      }
+    >
       <Suspense fallback={<div>Generic Loading message...</div>}>
         <DisplayDisplay />
       </Suspense>
@@ -628,7 +765,15 @@ function App() {
   // @route  /home/product/gpu (index) and /home/product/gpu/display
   // @access private
   const displayGPUsElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+    <ErrorBoundary
+      fallback={
+        <ErrorFallback
+          isError={isError}
+          errorCallback={errorCallback}
+          errorMessage={errorMessage}
+        />
+      }
+    >
       <Suspense fallback={<div>Generic Loading message...</div>}>
         <DisplayGPU />
       </Suspense>
@@ -643,7 +788,15 @@ function App() {
   // @route  /home/product/headphone (index) and /home/product/headphone/display
   // @access private
   const displayHeadphonesElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+    <ErrorBoundary
+      fallback={
+        <ErrorFallback
+          isError={isError}
+          errorCallback={errorCallback}
+          errorMessage={errorMessage}
+        />
+      }
+    >
       <Suspense fallback={<div>Generic Loading message...</div>}>
         <DisplayHeadphone />
       </Suspense>
@@ -658,7 +811,15 @@ function App() {
   // @route  /home/product/keyboard (index) and /home/product/keyboard/display
   // @access private
   const displayKeyboardsElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+    <ErrorBoundary
+      fallback={
+        <ErrorFallback
+          isError={isError}
+          errorCallback={errorCallback}
+          errorMessage={errorMessage}
+        />
+      }
+    >
       <Suspense fallback={<div>Generic Loading message...</div>}>
         <DisplayKeyboard />
       </Suspense>
@@ -673,7 +834,15 @@ function App() {
   // @route  /home/product/laptop (index) and /home/product/laptop/display
   // @access private
   const displayLaptopsElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+    <ErrorBoundary
+      fallback={
+        <ErrorFallback
+          isError={isError}
+          errorCallback={errorCallback}
+          errorMessage={errorMessage}
+        />
+      }
+    >
       <Suspense fallback={<div>Generic Loading message...</div>}>
         <DisplayLaptop />
       </Suspense>
@@ -688,7 +857,15 @@ function App() {
   // @route  /home/product/ram (index) and /home/product/ram/display
   // @access private
   const displayRAMsElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+    <ErrorBoundary
+      fallback={
+        <ErrorFallback
+          isError={isError}
+          errorCallback={errorCallback}
+          errorMessage={errorMessage}
+        />
+      }
+    >
       <Suspense fallback={<div>Generic Loading message...</div>}>
         <DisplayRAM />
       </Suspense>
@@ -703,7 +880,15 @@ function App() {
   // @route  /home/product/microphone (index) and /home/product/microphone/display
   // @access private
   const displayMicrophonesElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+    <ErrorBoundary
+      fallback={
+        <ErrorFallback
+          isError={isError}
+          errorCallback={errorCallback}
+          errorMessage={errorMessage}
+        />
+      }
+    >
       <Suspense fallback={<div>Generic Loading message...</div>}>
         <DisplayMicrophone />
       </Suspense>
@@ -718,7 +903,15 @@ function App() {
   // @route  /home/product/motherboard (index) and /home/product/motherboard/display
   // @access private
   const displayMotherboardsElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+    <ErrorBoundary
+      fallback={
+        <ErrorFallback
+          isError={isError}
+          errorCallback={errorCallback}
+          errorMessage={errorMessage}
+        />
+      }
+    >
       <Suspense fallback={<div>Generic Loading message...</div>}>
         <DisplayMotherboard />
       </Suspense>
@@ -733,7 +926,15 @@ function App() {
   // @route  /home/product/mouse (index) and /home/product/mouse/display
   // @access private
   const displayMousesElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+    <ErrorBoundary
+      fallback={
+        <ErrorFallback
+          isError={isError}
+          errorCallback={errorCallback}
+          errorMessage={errorMessage}
+        />
+      }
+    >
       <Suspense fallback={<div>Generic Loading message...</div>}>
         <DisplayMouse />
       </Suspense>
@@ -748,7 +949,15 @@ function App() {
   // @route  /home/product/psu (index) and /home/product/psu/display
   // @access private
   const displayPSUsElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+    <ErrorBoundary
+      fallback={
+        <ErrorFallback
+          isError={isError}
+          errorCallback={errorCallback}
+          errorMessage={errorMessage}
+        />
+      }
+    >
       <Suspense fallback={<div>Generic Loading message...</div>}>
         <DisplayPSU />
       </Suspense>
@@ -763,7 +972,15 @@ function App() {
   // @route  /home/product/smartphone (index) and /home/product/smartphone/display
   // @access private
   const displaySmartphonesElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+    <ErrorBoundary
+      fallback={
+        <ErrorFallback
+          isError={isError}
+          errorCallback={errorCallback}
+          errorMessage={errorMessage}
+        />
+      }
+    >
       <Suspense fallback={<div>Generic Loading message...</div>}>
         <DisplaySmartphone />
       </Suspense>
@@ -778,7 +995,15 @@ function App() {
   // @route  /home/product/speaker (index) and /home/product/speaker/display
   // @access private
   const displaySpeakersElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+    <ErrorBoundary
+      fallback={
+        <ErrorFallback
+          isError={isError}
+          errorCallback={errorCallback}
+          errorMessage={errorMessage}
+        />
+      }
+    >
       <Suspense fallback={<div>Generic Loading message...</div>}>
         <DisplaySpeaker />
       </Suspense>
@@ -793,7 +1018,15 @@ function App() {
   // @route  /home/product/storage (index) and /home/product/storage/display
   // @access private
   const displayStoragesElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+    <ErrorBoundary
+      fallback={
+        <ErrorFallback
+          isError={isError}
+          errorCallback={errorCallback}
+          errorMessage={errorMessage}
+        />
+      }
+    >
       <Suspense fallback={<div>Generic Loading message...</div>}>
         <DisplayStorage />
       </Suspense>
@@ -808,7 +1041,15 @@ function App() {
   // @route  /home/product/tablet (index) and /home/product/tablet/display
   // @access private
   const displayTabletsElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+    <ErrorBoundary
+      fallback={
+        <ErrorFallback
+          isError={isError}
+          errorCallback={errorCallback}
+          errorMessage={errorMessage}
+        />
+      }
+    >
       <Suspense fallback={<div>Generic Loading message...</div>}>
         <DisplayTablet />
       </Suspense>
@@ -823,7 +1064,15 @@ function App() {
   // @route  /home/product/webcam (index) and /home/product/webcam/display
   // @access private
   const displayWebcamsElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+    <ErrorBoundary
+      fallback={
+        <ErrorFallback
+          isError={isError}
+          errorCallback={errorCallback}
+          errorMessage={errorMessage}
+        />
+      }
+    >
       <Suspense fallback={<div>Generic Loading message...</div>}>
         <DisplayWebcam />
       </Suspense>
@@ -838,7 +1087,15 @@ function App() {
   // @route  /home/product-review (index) and /home/product-review/display
   // @access private
   const displayProductReviewsElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+    <ErrorBoundary
+      fallback={
+        <ErrorFallback
+          isError={isError}
+          errorCallback={errorCallback}
+          errorMessage={errorMessage}
+        />
+      }
+    >
       <Suspense fallback={<div>Generic Loading message...</div>}>
         <DisplayProductReview />
       </Suspense>
@@ -853,7 +1110,15 @@ function App() {
   // @route  /home/repair-note/create
   // @access private
   const createRepairTicketElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+    <ErrorBoundary
+      fallback={
+        <ErrorFallback
+          isError={isError}
+          errorCallback={errorCallback}
+          errorMessage={errorMessage}
+        />
+      }
+    >
       <Suspense fallback={<div>Generic Loading message...</div>}>
         <CreateRepairTicket />
       </Suspense>
@@ -864,7 +1129,15 @@ function App() {
   // @route  /home/repair-note (index) and /home/repair-note/display
   // @access private
   const displayRepairTicketsElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+    <ErrorBoundary
+      fallback={
+        <ErrorFallback
+          isError={isError}
+          errorCallback={errorCallback}
+          errorMessage={errorMessage}
+        />
+      }
+    >
       <Suspense fallback={<div>Generic Loading message...</div>}>
         <DisplayRepairTicket />
       </Suspense>
@@ -883,7 +1156,15 @@ function App() {
   // @route  /home/purchase (index) and /home/purchase/display
   // @access private
   const displayPurchasesElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+    <ErrorBoundary
+      fallback={
+        <ErrorFallback
+          isError={isError}
+          errorCallback={errorCallback}
+          errorMessage={errorMessage}
+        />
+      }
+    >
       <Suspense fallback={<div>Generic Loading message...</div>}>
         <DisplayPurchase />
       </Suspense>
@@ -898,7 +1179,15 @@ function App() {
   // @route  /home/rma (index) and /home/rma/display
   // @access private
   const displayRMAsElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+    <ErrorBoundary
+      fallback={
+        <ErrorFallback
+          isError={isError}
+          errorCallback={errorCallback}
+          errorMessage={errorMessage}
+        />
+      }
+    >
       <Suspense fallback={<div>Generic Loading message...</div>}>
         <DisplayRMA />
       </Suspense>
@@ -917,7 +1206,15 @@ function App() {
   // @route  /home/company/address-change (index) and /home/company/address-change/display
   // @access private
   const displayAddressChangesElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+    <ErrorBoundary
+      fallback={
+        <ErrorFallback
+          isError={isError}
+          errorCallback={errorCallback}
+          errorMessage={errorMessage}
+        />
+      }
+    >
       <Suspense fallback={<div>Generic Loading message...</div>}>
         <DisplayAddressChanges />
       </Suspense>
@@ -927,13 +1224,7 @@ function App() {
   // @desc   address-change page (create)
   // @route  /home/company/address-change/create
   // @access private
-  const addressChangeElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
-      <Suspense fallback={<div>Generic Loading message...</div>}>
-        <AddressChange />
-      </Suspense>
-    </ErrorBoundary>
-  );
+  const addressChangeElement = <CreateAddressChange />;
 
   // ╭─────────────────────────────────────────────────────────────────╮
   //   BENEFIT
@@ -943,7 +1234,15 @@ function App() {
   // @route  /home/company/benefit (index) and /home/company/benefit/display
   // @access private
   const displayBenefitsElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+    <ErrorBoundary
+      fallback={
+        <ErrorFallback
+          isError={isError}
+          errorCallback={errorCallback}
+          errorMessage={errorMessage}
+        />
+      }
+    >
       <Suspense fallback={<div>Generic Loading message...</div>}>
         <DisplayBenefits />
       </Suspense>
@@ -954,7 +1253,15 @@ function App() {
   // @route  /home/company/benefit/create
   // @access private
   const createBenefitElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+    <ErrorBoundary
+      fallback={
+        <ErrorFallback
+          isError={isError}
+          errorCallback={errorCallback}
+          errorMessage={errorMessage}
+        />
+      }
+    >
       <Suspense fallback={<div>Generic Loading message...</div>}>
         <CreateBenefit />
       </Suspense>
@@ -969,7 +1276,15 @@ function App() {
   // @route  /home/company/leave-request (index) and /home/company/leave-request/display
   // @access private
   const displayLeaveRequestsElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+    <ErrorBoundary
+      fallback={
+        <ErrorFallback
+          isError={isError}
+          errorCallback={errorCallback}
+          errorMessage={errorMessage}
+        />
+      }
+    >
       <Suspense fallback={<div>Generic Loading message...</div>}>
         <DisplayLeaveRequests />
       </Suspense>
@@ -980,7 +1295,15 @@ function App() {
   // @route  /home/company/leave-request/create
   // @access private
   const createLeaveRequestElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+    <ErrorBoundary
+      fallback={
+        <ErrorFallback
+          isError={isError}
+          errorCallback={errorCallback}
+          errorMessage={errorMessage}
+        />
+      }
+    >
       <Suspense fallback={<div>Generic Loading message...</div>}>
         <CreateLeaveRequest />
       </Suspense>
@@ -995,7 +1318,15 @@ function App() {
   // @route  /home/company/request-resource (index) and /home/company/request-resource/display
   // @access private
   const displayRequestResourcesElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+    <ErrorBoundary
+      fallback={
+        <ErrorFallback
+          isError={isError}
+          errorCallback={errorCallback}
+          errorMessage={errorMessage}
+        />
+      }
+    >
       <Suspense fallback={<div>Generic Loading message...</div>}>
         <DisplayRequestResources />
       </Suspense>
@@ -1006,7 +1337,15 @@ function App() {
   // @route  /home/company/request-resource/create
   // @access private
   const requestResourceElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+    <ErrorBoundary
+      fallback={
+        <ErrorFallback
+          isError={isError}
+          errorCallback={errorCallback}
+          errorMessage={errorMessage}
+        />
+      }
+    >
       <Suspense fallback={<div>Generic Loading message...</div>}>
         <RequestResource />
       </Suspense>
@@ -1021,7 +1360,15 @@ function App() {
   // @route  /home/company/expense-claim (index) and /home/company/expense-claim/display
   // @access private
   const displayExpenseClaimsElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+    <ErrorBoundary
+      fallback={
+        <ErrorFallback
+          isError={isError}
+          errorCallback={errorCallback}
+          errorMessage={errorMessage}
+        />
+      }
+    >
       <Suspense fallback={<div>Generic Loading message...</div>}>
         <DisplayExpenseClaims />
       </Suspense>
@@ -1032,7 +1379,15 @@ function App() {
   // @route  /home/company/expense-claim/create
   // @access private
   const createExpenseClaimElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+    <ErrorBoundary
+      fallback={
+        <ErrorFallback
+          isError={isError}
+          errorCallback={errorCallback}
+          errorMessage={errorMessage}
+        />
+      }
+    >
       <Suspense fallback={<div>Generic Loading message...</div>}>
         <CreateExpenseClaim />
       </Suspense>
@@ -1051,7 +1406,15 @@ function App() {
   // @route  /home/general/anonymous-request (index) and /home/general/anonymous-request/display
   // @access private
   const displayAnonymousRequestsElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+    <ErrorBoundary
+      fallback={
+        <ErrorFallback
+          isError={isError}
+          errorCallback={errorCallback}
+          errorMessage={errorMessage}
+        />
+      }
+    >
       <Suspense fallback={<div>Generic Loading message...</div>}>
         <DisplayAnonymousRequests />
       </Suspense>
@@ -1062,7 +1425,15 @@ function App() {
   // @route  /home/general/anonymous-request/create
   // @access private
   const createAnonymousRequestElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+    <ErrorBoundary
+      fallback={
+        <ErrorFallback
+          isError={isError}
+          errorCallback={errorCallback}
+          errorMessage={errorMessage}
+        />
+      }
+    >
       <Suspense fallback={<div>Generic Loading message...</div>}>
         <CreateAnonymousRequest />
       </Suspense>
@@ -1077,7 +1448,15 @@ function App() {
   // @route  /home/general/endorsement (index) and /home/general/endorsement/display
   // @access private
   const displayEndorsementsElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+    <ErrorBoundary
+      fallback={
+        <ErrorFallback
+          isError={isError}
+          errorCallback={errorCallback}
+          errorMessage={errorMessage}
+        />
+      }
+    >
       <Suspense fallback={<div>Generic Loading message...</div>}>
         <DisplayEndorsements />
       </Suspense>
@@ -1088,7 +1467,15 @@ function App() {
   // @route  /home/general/endorsement/create
   // @access private
   const createEndorsementElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+    <ErrorBoundary
+      fallback={
+        <ErrorFallback
+          isError={isError}
+          errorCallback={errorCallback}
+          errorMessage={errorMessage}
+        />
+      }
+    >
       <Suspense fallback={<div>Generic Loading message...</div>}>
         <CreateEndorsement />
       </Suspense>
@@ -1103,7 +1490,15 @@ function App() {
   // @route  /home/general/printer-issue (index) and /home/general/printer-issue/display
   // @access private
   const displayPrinterIssuesElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+    <ErrorBoundary
+      fallback={
+        <ErrorFallback
+          isError={isError}
+          errorCallback={errorCallback}
+          errorMessage={errorMessage}
+        />
+      }
+    >
       <Suspense fallback={<div>Generic Loading message...</div>}>
         <DisplayPrinterIssues />
       </Suspense>
@@ -1114,7 +1509,15 @@ function App() {
   // @route  /home/general/printer-issue/create
   // @access private
   const createPrinterIssueElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+    <ErrorBoundary
+      fallback={
+        <ErrorFallback
+          isError={isError}
+          errorCallback={errorCallback}
+          errorMessage={errorMessage}
+        />
+      }
+    >
       <Suspense fallback={<div>Generic Loading message...</div>}>
         <CreatePrinterIssue />
       </Suspense>
@@ -1129,7 +1532,15 @@ function App() {
   // @route  /home/general/referment (index) and /home/general/referment/display
   // @access private
   const displayRefermentsElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+    <ErrorBoundary
+      fallback={
+        <ErrorFallback
+          isError={isError}
+          errorCallback={errorCallback}
+          errorMessage={errorMessage}
+        />
+      }
+    >
       <Suspense fallback={<div>Generic Loading message...</div>}>
         <DisplayReferments />
       </Suspense>
@@ -1140,7 +1551,15 @@ function App() {
   // @route  /home/general/referment/create
   // @access private
   const createRefermentElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+    <ErrorBoundary
+      fallback={
+        <ErrorFallback
+          isError={isError}
+          errorCallback={errorCallback}
+          errorMessage={errorMessage}
+        />
+      }
+    >
       <Suspense fallback={<div>Generic Loading message...</div>}>
         <CreateReferment />
       </Suspense>
@@ -1159,7 +1578,15 @@ function App() {
   // @route  /home/outreach/announcement (index) and /home/outreach/announcement/display
   // @access private
   const displayAnnouncementsElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+    <ErrorBoundary
+      fallback={
+        <ErrorFallback
+          isError={isError}
+          errorCallback={errorCallback}
+          errorMessage={errorMessage}
+        />
+      }
+    >
       <Suspense fallback={<div>Generic Loading message...</div>}>
         <DisplayAnnouncements />
       </Suspense>
@@ -1170,7 +1597,15 @@ function App() {
   // @route  /home/outreach/announcement/create
   // @access private
   const createAnnouncementElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+    <ErrorBoundary
+      fallback={
+        <ErrorFallback
+          isError={isError}
+          errorCallback={errorCallback}
+          errorMessage={errorMessage}
+        />
+      }
+    >
       <Suspense fallback={<div>Generic Loading message...</div>}>
         <CreateAnnouncement />
       </Suspense>
@@ -1181,7 +1616,15 @@ function App() {
   // @route  /home/outreach/announcement/display/:announcementId
   // @access private
   const displayAnnouncementElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+    <ErrorBoundary
+      fallback={
+        <ErrorFallback
+          isError={isError}
+          errorCallback={errorCallback}
+          errorMessage={errorMessage}
+        />
+      }
+    >
       <Suspense fallback={<div>Generic Loading message...</div>}>
         <DisplayAnnouncement />
       </Suspense>
@@ -1196,7 +1639,15 @@ function App() {
   // @route  /home/outreach/event-creator (index) and /home/outreach/event-creator/display
   // @access private
   const displayEventsElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+    <ErrorBoundary
+      fallback={
+        <ErrorFallback
+          isError={isError}
+          errorCallback={errorCallback}
+          errorMessage={errorMessage}
+        />
+      }
+    >
       <Suspense fallback={<div>Generic Loading message...</div>}>
         <DisplayEvents />
       </Suspense>
@@ -1207,7 +1658,15 @@ function App() {
   // @route  /home/outreach/event-creator/create
   // @access private
   const eventCreatorElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+    <ErrorBoundary
+      fallback={
+        <ErrorFallback
+          isError={isError}
+          errorCallback={errorCallback}
+          errorMessage={errorMessage}
+        />
+      }
+    >
       <Suspense fallback={<div>Generic Loading message...</div>}>
         <EventCreator />
       </Suspense>
@@ -1222,7 +1681,15 @@ function App() {
   // @route  /home/outreach/survey-builder (index) and /home/outreach/survey-builder/display
   // @access private
   const displaySurveysElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+    <ErrorBoundary
+      fallback={
+        <ErrorFallback
+          isError={isError}
+          errorCallback={errorCallback}
+          errorMessage={errorMessage}
+        />
+      }
+    >
       <Suspense fallback={<div>Generic Loading message...</div>}>
         <DisplaySurveys />
       </Suspense>
@@ -1233,7 +1700,15 @@ function App() {
   // @route  /home/outreach/survey-builder/create
   // @access private
   const surveyBuilderElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+    <ErrorBoundary
+      fallback={
+        <ErrorFallback
+          isError={isError}
+          errorCallback={errorCallback}
+          errorMessage={errorMessage}
+        />
+      }
+    >
       <Suspense fallback={<div>Generic Loading message...</div>}>
         <SurveyBuilder />
       </Suspense>
@@ -1248,7 +1723,15 @@ function App() {
   // @route  /home/directory
   // @access private
   const directoryElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+    <ErrorBoundary
+      fallback={
+        <ErrorFallback
+          isError={isError}
+          errorCallback={errorCallback}
+          errorMessage={errorMessage}
+        />
+      }
+    >
       <Suspense fallback={<div>Generic Loading message...</div>}>
         <Directory />
       </Suspense>
@@ -1263,7 +1746,15 @@ function App() {
   // @route  *
   // @access public
   const notFoundElement = (
-    <ErrorBoundary fallback={<ErrorFallback errorState={errorState} />}>
+    <ErrorBoundary
+      fallback={
+        <ErrorFallback
+          isError={isError}
+          errorCallback={errorCallback}
+          errorMessage={errorMessage}
+        />
+      }
+    >
       <Suspense fallback={<div>Generic Loading message...</div>}>
         <NotFound />
       </Suspense>

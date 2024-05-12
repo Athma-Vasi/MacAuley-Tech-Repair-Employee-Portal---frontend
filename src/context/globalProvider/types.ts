@@ -8,7 +8,10 @@ import {
 } from "@mantine/core";
 import { ReactNode } from "react";
 
-import { AddressChangeDocument } from "../../components/addressChange/create/types";
+import {
+  AddressChangeDocument,
+  AddressChangeState,
+} from "../../components/addressChange/create/types";
 import { AnnouncementDocument } from "../../components/announcement/create/types";
 import { AnonymousRequestDocument } from "../../components/anonymousRequest/create/types";
 import { BenefitsDocument } from "../../components/benefits/create/types";
@@ -156,6 +159,14 @@ type CustomizeChartsPageData = {
     }
 );
 
+// Map of components with their before error states
+type ComponentsErrorState = Map<string, Record<string, any>>;
+type ComponentsErrorStatePayload = {
+  componentName: string;
+  beforeErrorState: Record<string, any>;
+  kind: "add" | "remove";
+};
+
 type GlobalState = {
   width: number;
   height: number;
@@ -174,6 +185,9 @@ type GlobalState = {
   errorState: ErrorState;
 
   customizeChartsPageData: CustomizeChartsPageData | null;
+
+  // error state
+  componentsErrorState: ComponentsErrorState;
 };
 
 type GlobalAction = {
@@ -201,6 +215,9 @@ type GlobalAction = {
   setErrorState: "setErrorState";
   setCustomizeChartsPageData: "setCustomizeChartsPageData";
   setCustomizeChartsPageDataSelectedYYYYMMDD: "setCustomizeChartsPageDataSelectedYYYYMMDD";
+
+  // error state
+  setComponentsErrorState: "setComponentsErrorState";
 };
 
 type WindowDimensions = {
@@ -273,7 +290,6 @@ type GlobalDispatch =
       type: GlobalAction["setAnnouncementDocument"];
       payload: QueryResponseData<AnnouncementDocument>;
     }
-
   // error state
   | {
       type: GlobalAction["setErrorState"];
@@ -287,6 +303,11 @@ type GlobalDispatch =
   | {
       type: GlobalAction["setCustomizeChartsPageDataSelectedYYYYMMDD"];
       payload: string;
+    }
+  // error state
+  | {
+      type: GlobalAction["setComponentsErrorState"];
+      payload: ComponentsErrorStatePayload;
     };
 
 type GlobalReducer = (state: GlobalState, action: GlobalDispatch) => GlobalState;

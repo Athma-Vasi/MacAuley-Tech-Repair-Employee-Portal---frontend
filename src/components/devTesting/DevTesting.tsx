@@ -13,7 +13,6 @@ import {
   PRODUCT_CATEGORIES,
   REPAIR_CATEGORIES,
 } from "../dashboard/constants";
-
 import { createRandomBusinessMetrics } from "../dashboard/utils";
 import { STORE_LOCATION_DATA } from "../register/constants";
 import {
@@ -39,68 +38,6 @@ function DevTesting() {
   } = useAuth();
 
   const { wrappedFetch } = useWrapFetch();
-
-  useEffect(() => {
-    console.group("Promise Testing");
-    console.log("Start");
-    const promise1 = new Promise((resolve, reject) => {
-      console.log("Promise 1 before resolve");
-      setTimeout(() => {
-        resolve("Promise 1 after resolve");
-      }, 2000);
-    });
-
-    const promise2 = new Promise((resolve, reject) => {
-      console.log("Promise 2 before resolve");
-      setTimeout(() => {
-        resolve("Promise 2 after resolve");
-      }, 1000);
-    });
-
-    console.log("Promise 1", promise1);
-    console.log("Promise 2", promise2);
-
-    Promise.all([promise1, promise2]).then((values) => {
-      console.log("Promise.all values", values);
-    });
-
-    console.log("End");
-    console.groupEnd();
-
-    // async function helper() {
-    //   console.time("businessMetrics");
-    //   const businessMetrics = await createRandomBusinessMetrics({
-    //     daysPerMonth: DAYS_PER_MONTH,
-    //     months: MONTHS,
-    //     productCategories: PRODUCT_CATEGORIES,
-    //     repairCategories: REPAIR_CATEGORIES,
-    //     storeLocations: STORE_LOCATION_DATA,
-    //   });
-    //   console.timeEnd("businessMetrics");
-
-    //   const selectedDateRepairMetrics = returnSelectedDateRepairMetrics({
-    //     businessMetrics,
-    //     day: "01",
-    //     month: "January",
-    //     months: MONTHS,
-    //     selectedRepairCategory: REPAIR_CATEGORIES[0],
-    //     storeLocation: STORE_LOCATION_DATA[0],
-    //     year: "2021",
-    //   });
-
-    //   const repairMetricsCharts = await returnRepairMetricsCharts2({
-    //     businessMetrics,
-    //     months: MONTHS,
-    //     selectedDateRepairMetrics,
-    //     selectedRepairCategory: REPAIR_CATEGORIES[0],
-    //     storeLocation: STORE_LOCATION_DATA[0],
-    //   });
-
-    //   console.log("repairMetricsCharts", repairMetricsCharts);
-    // }
-
-    // helper();
-  }, []);
 
   useEffect(() => {
     let isMounted = true;
@@ -281,26 +218,110 @@ function DevTesting() {
 
 export default DevTesting;
 
-/**
- * const productCategoryDocuments = [
-      ...ACCESSORY_DOCUMENTS,
-      ...CASE_DOCUMENTS,
-      ...CPU_DOCUMENTS,
-      ...DESKTOP_COMPUTER_DOCUMENTS,
-      ...DISPLAY_DOCUMENTS,
-      ...GPU_DOCUMENTS,
-      ...HEADPHONE_DOCUMENTS,
-      ...KEYBOARD_DOCUMENTS,
-      ...LAPTOP_DOCUMENTS,
-      ...MICROPHONE_DOCUMENTS,
-      ...MOTHERBOARD_DOCUMENTS,
-      ...MOUSE_DOCUMENTS,
-      ...PSU_DOCUMENTS,
-      ...RAM_DOCUMENTS,
-      ...SMARTPHONE_DOCUMENTS,
-      ...SPEAKER_DOCUMENTS,
-      ...STORAGE_DOCUMENTS,
-      ...TABLET_DOCUMENTS,
-      ...WEBCAM_DOCUMENTS,
-    ];
- */
+// useEffect(() => {
+//   console.group("Promise Testing Sync useEffect");
+//   console.log("Start");
+//   const promise1 = () =>
+//     new Promise((resolve, reject) => {
+//       for (let idx = 0; idx < 3; idx += 1) {
+//         console.log("Promise 1 before resolve with index: " + idx);
+//       }
+
+//       setTimeout(() => {
+//         console.log("Promise 1 timeout");
+//       }, 2000);
+
+//       const value1 = () =>
+//         new Promise((resolve, reject) => resolve("Promise 1 after resolve with value"));
+
+//       resolve(value1());
+//     });
+
+//   console.log("Between Promises");
+
+//   const promise2 = () =>
+//     new Promise((resolve, reject) => {
+//       for (let idx = 0; idx < 3; idx += 1) {
+//         console.log("Promise 2 before resolve with index: " + idx);
+//       }
+
+//       setTimeout(() => {
+//         console.log("Promise 2 timeout");
+//       }, 1000);
+
+//       const value2 = () => {
+//         for (let idx = 0; idx < 3; idx += 1) {
+//           console.log("Promise 2 after resolve with index: " + idx);
+//         }
+//       };
+
+//       resolve(value2());
+//     });
+
+//   const nonPromise1 = () => {
+//     for (let idx = 0; idx < 3; idx += 1) {
+//       console.log("Non-promise 1 with index: " + idx);
+//     }
+//     return "Non-Promise 1";
+//   };
+
+//   console.log("Middle");
+
+//   Promise.all([promise1(), promise2(), nonPromise1()]).then((values) => {
+//     console.log("Promise.all values", values);
+//   });
+
+//   console.log("End");
+//   console.groupEnd();
+
+//   async function helper() {
+//     console.group("Async Testing Sync useEffect");
+//     console.log("Start");
+//     const async1 = async () => {
+//       for (let idx = 0; idx < 3; idx += 1) {
+//         console.log("Async 1 before resolve with index: " + idx);
+//       }
+//       const value1 = await new Promise((resolve, reject) => {
+//         setTimeout(() => {
+//           console.log("Async 1 timeout");
+//         }, 2000);
+//         resolve("Async 1 after resolve");
+//       });
+//       return value1;
+//     };
+
+//     console.log("Between Async");
+
+//     const async2 = async () => {
+//       for (let idx = 0; idx < 3; idx += 1) {
+//         console.log("Async 2 before resolve with index: " + idx);
+//       }
+//       const value2 = await new Promise((resolve, reject) => {
+//         setTimeout(() => {
+//           console.log("Async 2 timeout");
+//         }, 1000);
+//         resolve("Async 2 after resolve");
+//       });
+//       return value2;
+//     };
+
+//     const nonAsync1 = () => {
+//       console.log("Non-Async 1");
+//       return "Non-Async 1";
+//     };
+
+//     console.log("Middle");
+
+//     const [asyncValue1, asyncValue2, nonAsyncValue1] = await Promise.all([
+//       async1(),
+//       async2(),
+//       nonAsync1(),
+//     ]);
+//     console.log({ asyncValue1, asyncValue2, nonAsyncValue1 });
+
+//     console.log("End");
+//     console.groupEnd();
+//   }
+
+//   helper();
+// }, []);

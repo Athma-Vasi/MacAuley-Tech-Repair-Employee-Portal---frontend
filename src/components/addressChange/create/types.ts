@@ -101,6 +101,8 @@ type AddressChangeAction = {
   setSuccessMessage: "setSuccessMessage";
   setIsLoading: "setIsLoading";
   setLoadingMessage: "setLoadingMessage";
+
+  setAll: "setAll";
 };
 
 type AddressChangeDispatch =
@@ -157,6 +159,10 @@ type AddressChangeDispatch =
   | {
       type: AddressChangeAction["setStepsInError"];
       payload: SetStepsInErrorPayload;
+    }
+  | {
+      type: AddressChangeAction["setAll"];
+      payload: AddressChangeState;
     };
 
 type AddressChangeReducer = (
