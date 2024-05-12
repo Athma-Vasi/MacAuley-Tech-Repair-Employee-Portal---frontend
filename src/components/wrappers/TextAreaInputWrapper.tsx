@@ -7,23 +7,20 @@ import {
   Text,
   Textarea,
   useMantineTheme,
-} from '@mantine/core';
-import { ReactNode, useState } from 'react';
-import { TbCheck } from 'react-icons/tb';
+} from "@mantine/core";
+import { ReactNode, useState } from "react";
+import { TbCheck } from "react-icons/tb";
 
-import { useGlobalState } from '../../hooks';
+import { useGlobalState } from "../../hooks";
 
 type AccessibleTextAreaInputCreatorInfo = {
-  ariaAutoComplete?: 'both' | 'list' | 'none' | 'inline';
+  ariaAutoComplete?: "both" | "list" | "none" | "inline";
   ariaRequired?: boolean;
-  autoComplete?: 'on' | 'off';
+  autoComplete?: "on" | "off";
   autosize?: boolean;
   description: { error: JSX.Element; valid: JSX.Element };
   dropdownWidth?: MantineNumberSize;
-  /**
-   * This is for dynamic inputs, such as the ones in the survey builder. Typically a delete button, though it can be anything.
-   */
-  dynamicInputs?: ReactNode[];
+  dynamicInputs?: ReactNode[]; // inputs created by the user (ex: buttons in the survey builder)
   icon?: ReactNode;
   initialInputValue?: string;
   inputText: string;
@@ -49,9 +46,7 @@ type TextAreaInputWrapperProps = {
   creatorInfoObject: AccessibleTextAreaInputCreatorInfo;
 };
 
-function TextAreaInputWrapper({
-  creatorInfoObject,
-}: TextAreaInputWrapperProps) {
+function TextAreaInputWrapper({ creatorInfoObject }: TextAreaInputWrapperProps) {
   const [popoverOpened, setPopoverOpened] = useState(false);
   const { colors } = useMantineTheme();
   const {
@@ -62,14 +57,14 @@ function TextAreaInputWrapper({
   } = useGlobalState();
 
   const {
-    ariaAutoComplete = 'none',
-    autoComplete = 'off',
+    ariaAutoComplete = "none",
+    autoComplete = "off",
     autosize = true,
     description,
     dropdownWidth,
     dynamicInputs = null,
     icon = null,
-    initialInputValue = '',
+    initialInputValue = "",
     inputText,
     isValidInputText,
     maxLength = 2000,
@@ -86,7 +81,7 @@ function TextAreaInputWrapper({
     withAsterisk = required,
     semanticName,
     label = semanticName,
-    size = 'sm',
+    size = "sm",
     textAreaWidth = 330,
   } = creatorInfoObject;
 
@@ -101,8 +96,7 @@ function TextAreaInputWrapper({
     label
   );
 
-  const colorShade =
-    colorScheme === 'light' ? primaryShade.light : primaryShade.dark;
+  const colorShade = colorScheme === "light" ? primaryShade.light : primaryShade.dark;
 
   const leftIcon = isValidInputText ? (
     icon ? (
@@ -117,8 +111,8 @@ function TextAreaInputWrapper({
       opened={inputText ? popoverOpened : false}
       position="bottom"
       shadow="md"
-      transitionProps={{ transition: 'pop' }}
-      width={dropdownWidth ? dropdownWidth : 'target'}
+      transitionProps={{ transition: "pop" }}
+      width={dropdownWidth ? dropdownWidth : "target"}
       withArrow
     >
       <Popover.Target>
@@ -131,8 +125,8 @@ function TextAreaInputWrapper({
             aria-autocomplete={ariaAutoComplete}
             aria-describedby={
               isValidInputText
-                ? `${semanticName.split(' ').join('-')}-input-note-valid`
-                : `${semanticName.split(' ').join('-')}-input-note-error`
+                ? `${semanticName.split(" ").join("-")}-input-note-valid`
+                : `${semanticName.split(" ").join("-")}-input-note-error`
             }
             aria-invalid={isValidInputText ? false : true}
             aria-required={ariaRequired}
@@ -146,7 +140,7 @@ function TextAreaInputWrapper({
             maxRows={maxRows}
             minLength={minLength}
             minRows={minRows}
-            name={semanticName.split(' ').join('-')}
+            name={semanticName.split(" ").join("-")}
             onBlur={onBlur}
             onChange={onChange}
             onFocus={onFocus}
@@ -162,9 +156,7 @@ function TextAreaInputWrapper({
       </Popover.Target>
 
       <Popover.Dropdown>
-        <Stack>
-          {isValidInputText ? description.valid : description.error}
-        </Stack>
+        <Stack>{isValidInputText ? description.valid : description.error}</Stack>
       </Popover.Dropdown>
     </Popover>
   );
