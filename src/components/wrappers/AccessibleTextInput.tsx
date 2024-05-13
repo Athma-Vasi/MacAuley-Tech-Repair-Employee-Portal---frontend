@@ -11,8 +11,8 @@ import { TbCheck, TbRefresh } from "react-icons/tb";
 
 import { COLORS_SWATCHES } from "../../constants/data";
 import { useGlobalState } from "../../hooks";
-import { AccessibleErrorValidTextElements } from "../../jsxCreators";
 import { returnThemeColors, splitCamelCase } from "../../utils";
+import { AccessibleErrorValidTextElements } from "./utils";
 
 type AccessibleTextInputAttributes = {
   ariaAutoComplete?: "both" | "list" | "none" | "inline";
@@ -133,9 +133,9 @@ function AccessibleTextInput({ attributes }: AccessibleTextInputsProps) {
 
   const [inputErrorTextElement, inputValidTextElement] = AccessibleErrorValidTextElements(
     {
-      inputElementKind: semanticName,
+      semanticName,
       inputText,
-      isValidInputText: isInputTextValid,
+      isInputTextValid,
       isInputTextFocused,
       regexValidationText,
     }

@@ -9,8 +9,8 @@ import {
 } from "react";
 import { TbUpload } from "react-icons/tb";
 
-import { useGlobalState } from "../../../hooks";
-import { AccessibleEnabledDisabledButtonTextElements } from "../utils";
+import { useGlobalState } from "../../hooks";
+import { AccessibleEnabledDisabledButtonTextElements } from "./utils";
 
 type AccessibleButtonAttributes = {
   label: ReactNode;

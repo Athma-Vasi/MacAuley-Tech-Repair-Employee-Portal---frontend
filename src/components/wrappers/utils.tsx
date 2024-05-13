@@ -97,16 +97,16 @@ function AccessibleErrorValidTextElements({
 type AccessibleSelectedDeselectedTextElementsProps = {
   semanticName: string;
   isSelected: boolean;
-  selectedDescription?: string;
-  deselectedDescription?: string;
+  selectedDescription: string;
+  deselectedDescription: string;
   theme?: "muted" | "default";
 };
 
 function AccessibleSelectedDeselectedTextElements({
   semanticName,
   isSelected,
-  selectedDescription = "",
-  deselectedDescription = "",
+  selectedDescription,
+  deselectedDescription,
   theme = "default",
 }: AccessibleSelectedDeselectedTextElementsProps): [
   React.JSX.Element,
@@ -123,6 +123,26 @@ function AccessibleSelectedDeselectedTextElements({
     colorsSwatches: COLORS_SWATCHES,
   });
 
+  const selectedIcon =
+    theme === "default" ? (
+      <FontAwesomeIcon icon={faCheck} color={greenColorShade} />
+    ) : null;
+
+  const selectedText = `${semanticName[0].toUpperCase()}${semanticName.slice(
+    1
+  )}, ${selectedDescription} ${
+    selectedDescription.split(",").length > 1 ? "is" : "are"
+  } selected.`;
+
+  const deselectedIcon =
+    theme === "default" ? (
+      <FontAwesomeIcon icon={faInfoCircle} color={redColorShade} />
+    ) : null;
+
+  const deselectedText = `${semanticName[0].toUpperCase()}${semanticName.slice(
+    1
+  )} deselected. ${deselectedDescription}`;
+
   return [
     // selected text elem
     <Text
@@ -132,12 +152,8 @@ function AccessibleSelectedDeselectedTextElements({
       w="100%"
       aria-live="polite"
     >
-      {theme === "default" ? (
-        <FontAwesomeIcon icon={faCheck} color={greenColorShade} />
-      ) : null}{" "}
-      {`${semanticName[0].toUpperCase()}${semanticName.slice(1)} selected${
-        selectedDescription.length > 0 ? ` - ${selectedDescription}` : ""
-      }`}
+      {selectedIcon}
+      {selectedText}
     </Text>,
     // deselected text elem
     <Text
@@ -153,12 +169,8 @@ function AccessibleSelectedDeselectedTextElements({
       w="100%"
       aria-live="polite"
     >
-      {theme === "default" ? (
-        <FontAwesomeIcon icon={faInfoCircle} color={redColorShade} />
-      ) : null}{" "}
-      {`${semanticName[0].toUpperCase()}${semanticName.slice(1)} deselected${
-        deselectedDescription.length > 0 ? ` - ${deselectedDescription}` : ""
-      }`}
+      {deselectedIcon}
+      {deselectedText}
     </Text>,
   ];
 }
@@ -189,6 +201,24 @@ function AccessibleEnabledDisabledButtonTextElements({
     colorsSwatches: COLORS_SWATCHES,
   });
 
+  const enabledIcon =
+    theme === "default" ? (
+      <FontAwesomeIcon icon={faCheck} color={greenColorShade} />
+    ) : null;
+
+  const enabledText = `All form inputs are valid. ${semanticName[0].toUpperCase()}${semanticName.slice(
+    1
+  )} is enabled. You may submit the form.`;
+
+  const disabledIcon =
+    theme === "default" ? (
+      <FontAwesomeIcon icon={faInfoCircle} color={redColorShade} />
+    ) : null;
+
+  const disabledText = `One or more inputs are in error. ${semanticName[0].toUpperCase()}${semanticName.slice(
+    1
+  )} disabled. Please fix errors before submitting the form.`;
+
   return [
     // enabled text elem
     <Text
@@ -198,13 +228,8 @@ function AccessibleEnabledDisabledButtonTextElements({
       w="100%"
       aria-live="polite"
     >
-      {theme === "default" ? (
-        <FontAwesomeIcon icon={faCheck} color={greenColorShade} />
-      ) : null}{" "}
-      {enabledAccessibleText ??
-        `All form inputs are valid. ${semanticName[0].toUpperCase()}${semanticName.slice(
-          1
-        )} is enabled. You may submit the form.`}
+      {enabledIcon}
+      {enabledAccessibleText ?? enabledText}
     </Text>,
     // disabled text elem
     <Text
@@ -216,43 +241,30 @@ function AccessibleEnabledDisabledButtonTextElements({
       w="100%"
       aria-live="polite"
     >
-      {theme === "default" ? (
-        <FontAwesomeIcon icon={faInfoCircle} color={redColorShade} />
-      ) : null}{" "}
-      {disabledAccessibleText ??
-        `One or more inputs are in error. ${semanticName[0].toUpperCase()}${semanticName.slice(
-          1
-        )} disabled. Please fix errors before submitting the form.`}
+      {disabledIcon}
+      {disabledAccessibleText ?? disabledText}
     </Text>,
   ];
 }
 
 function createAccessibleTextInputs(attributesArray: AccessibleTextInputAttributes[]) {
-  return attributesArray.map((attributes, index) => {
-    const createdTextInput = (
-      <AccessibleTextInput
-        key={`${index}-${attributes.semanticName}`}
-        attributes={attributes}
-      />
-    );
-
-    return createdTextInput;
-  });
+  return attributesArray.map((attributes, index) => (
+    <AccessibleTextInput
+      key={`${index}-${attributes.semanticName}`}
+      attributes={attributes}
+    />
+  ));
 }
 
 function createAccessibleTextAreaInputs(
   attributesArray: AccessibleTextAreaInputAttributes[]
 ) {
-  return attributesArray.map((attributes, index) => {
-    const createdTextAreaInput = (
-      <AccessibleTextAreaInput
-        key={`${index}-${attributes.semanticName}`}
-        attributes={attributes}
-      />
-    );
-
-    return createdTextAreaInput;
-  });
+  return attributesArray.map((attributes, index) => (
+    <AccessibleTextAreaInput
+      key={`${index}-${attributes.semanticName}`}
+      attributes={attributes}
+    />
+  ));
 }
 
 export {
