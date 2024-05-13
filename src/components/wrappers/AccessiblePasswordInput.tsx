@@ -17,9 +17,9 @@ type AccessiblePasswordInputAttributes = {
   label: string;
   maxLength?: number;
   minLength?: number;
-  onBlurCallbacks?: Array<() => void>;
-  onChangeCallbacks: Array<(event: ChangeEvent<HTMLInputElement>) => void>;
-  onFocusCallbacks?: Array<() => void>;
+  onBlur?: () => void;
+  onChange: (event: ChangeEvent<HTMLInputElement>) => void;
+  onFocus?: () => void;
   placeholder: string;
   ref?: RefObject<HTMLInputElement>;
   regex: RegExp;
@@ -54,9 +54,9 @@ function AccessiblePasswordInput({ attributes }: AccessiblePasswordInputProps) {
     label,
     maxLength = 32,
     minLength = 8,
-    onBlurCallbacks = [],
-    onChangeCallbacks,
-    onFocusCallbacks = [],
+    onBlur = () => {},
+    onChange,
+    onFocus = () => {},
     placeholder,
     ref = null,
     regex,
@@ -126,18 +126,14 @@ function AccessiblePasswordInput({ attributes }: AccessiblePasswordInputProps) {
             maxLength={maxLength}
             minLength={minLength}
             name={semanticName.split(" ").join("-")}
-            onChange={(event: ChangeEvent<HTMLInputElement>) => {
-              onChangeCallbacks.length &&
-                onChangeCallbacks.forEach((callback) => callback(event));
-            }}
-            onFocus={() => {
-              setIsInputTextFocused(true);
-              onFocusCallbacks.length &&
-                onFocusCallbacks.forEach((callback) => callback());
-            }}
             onBlur={() => {
               setIsInputTextFocused(false);
-              onBlurCallbacks.length && onBlurCallbacks.forEach((callback) => callback());
+              onBlur();
+            }}
+            onChange={onChange}
+            onFocus={() => {
+              setIsInputTextFocused(true);
+              onFocus();
             }}
             placeholder={placeholder}
             ref={ref}

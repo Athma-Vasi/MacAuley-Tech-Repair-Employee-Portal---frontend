@@ -12,7 +12,7 @@ type AccessibleCheckboxInputAttributes = {
   disabled?: boolean;
   key?: string;
   label?: ReactNode | string;
-  onChangeCallbacks: Array<(event: ChangeEvent<HTMLInputElement>) => void>;
+  onChange: (event: ChangeEvent<HTMLInputElement>) => void;
   ref?: RefObject<HTMLInputElement> | null;
   required?: boolean;
   selectedDescription: string;
@@ -34,7 +34,7 @@ function AccessibleCheckboxInputSingle({
     checked,
     deselectedDescription,
     selectedDescription,
-    onChangeCallbacks,
+    onChange,
     key = semanticName,
     label = `${semanticName.charAt(0).toUpperCase()}${semanticName.slice(1)}`,
     disabled = false,
@@ -70,10 +70,7 @@ function AccessibleCheckboxInputSingle({
       key={key}
       label={label}
       name={semanticName.split(" ").join("-")}
-      onChange={(event: ChangeEvent<HTMLInputElement>) => {
-        onChangeCallbacks.length &&
-          onChangeCallbacks.forEach((callback) => callback(event));
-      }}
+      onChange={onChange}
       ref={ref}
       required={required}
       size={size}
@@ -94,7 +91,7 @@ type AccessibleCheckboxInputGroupAttributes = {
   key?: string;
   label?: ReactNode | string;
   name?: string;
-  onChangeCallbacks: Array<(value: string[]) => void>;
+  onChange: (value: string[]) => void;
   ref?: RefObject<HTMLInputElement> | null;
   required?: boolean;
   selectedDescription: string;
@@ -116,7 +113,7 @@ function CheckboxGroupInputsWrapper({ attributes }: AccessibleCheckboxInputGroup
     ariaLabel = splitCamelCase(semanticName),
     deselectedDescription,
     disabledValuesSet = new Set(),
-    onChangeCallbacks,
+    onChange,
     key = semanticName,
     label = `${semanticName.charAt(0).toUpperCase()}${semanticName.slice(1)}`,
     ariaRequired = false,
@@ -153,10 +150,7 @@ function CheckboxGroupInputsWrapper({ attributes }: AccessibleCheckboxInputGroup
       description={value.length > 0 ? selectedTextElement : deselectedTextElement}
       key={key}
       label={label}
-      onChange={(values: string[]) => {
-        onChangeCallbacks.length &&
-          onChangeCallbacks.forEach((callback) => callback(values));
-      }}
+      onChange={onChange}
       ref={ref}
       required={required}
       size={size}

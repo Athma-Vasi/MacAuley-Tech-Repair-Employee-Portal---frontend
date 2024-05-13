@@ -30,9 +30,9 @@ type AccessibleTextInputAttributes = {
   maxLength?: number;
   minLength?: number;
   name?: string;
-  onBlurCallbacks?: Array<() => void>;
-  onChangeCallbacks: Array<(event: ChangeEvent<HTMLInputElement>) => void>;
-  onFocusCallbacks?: Array<() => void>;
+  onBlur?: () => void;
+  onChange: (event: ChangeEvent<HTMLInputElement>) => void;
+  onFocus?: () => void;
   onKeyDownCallbacks?: Array<(event: KeyboardEvent<HTMLInputElement>) => void>;
   placeholder: string;
   ref?: RefObject<HTMLInputElement> | null;
@@ -74,9 +74,9 @@ function AccessibleTextInput({ attributes }: AccessibleTextInputsProps) {
     maxLength = 75,
     minLength = 2,
     name = semanticName,
-    onChangeCallbacks,
-    onBlurCallbacks = [],
-    onFocusCallbacks = [],
+    onChange,
+    onBlur = () => {},
+    onFocus = () => {},
     onKeyDownCallbacks = [],
     placeholder,
     ref = null,
@@ -182,18 +182,14 @@ function AccessibleTextInput({ attributes }: AccessibleTextInputsProps) {
             maxLength={maxLength}
             minLength={minLength}
             name={name}
-            onBlur={() => {
-              setIsInputTextFocused(false);
-              onBlurCallbacks.length && onBlurCallbacks.forEach((callback) => callback());
-            }}
-            onChange={(event: ChangeEvent<HTMLInputElement>) => {
-              onChangeCallbacks.length &&
-                onChangeCallbacks.forEach((callback) => callback(event));
-            }}
+            onChange={onChange}
             onFocus={() => {
               setIsInputTextFocused(true);
-              onFocusCallbacks.length &&
-                onFocusCallbacks.forEach((callback) => callback());
+              onFocus();
+            }}
+            onBlur={() => {
+              setIsInputTextFocused(false);
+              onBlur();
             }}
             onKeyDown={(event: KeyboardEvent<HTMLInputElement>) => {
               onKeyDownCallbacks.length &&

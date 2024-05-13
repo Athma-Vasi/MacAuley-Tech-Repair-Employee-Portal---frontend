@@ -10,7 +10,7 @@ type AccessibleSelectInputAttributes = {
   disabled?: boolean;
   label?: string;
   name?: string;
-  onChangeCallbacks: Array<(event: ChangeEvent<HTMLSelectElement>) => void>;
+  onChange: (event: ChangeEvent<HTMLSelectElement>) => void;
   ref?: RefObject<HTMLSelectElement>;
   required?: boolean;
   size?: MantineSize;
@@ -31,7 +31,7 @@ function AccessibleSelectInput({ attributes }: AccessibleSelectInputProps) {
     disabled = false,
     label = "",
     name = label,
-    onChangeCallbacks,
+    onChange,
     ref = null,
     required = false,
     size = "sm",
@@ -49,9 +49,7 @@ function AccessibleSelectInput({ attributes }: AccessibleSelectInputProps) {
       disabled={disabled}
       label={`${label.charAt(0).toUpperCase() + label.slice(1)}`}
       name={name}
-      onChange={(event) => {
-        onChangeCallbacks.forEach((callback) => callback(event));
-      }}
+      onChange={onChange}
       ref={ref}
       required={required}
       size={size}

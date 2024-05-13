@@ -22,10 +22,10 @@ type AccessibleTextAreaInputAttributes = {
   minLength?: number;
   minRows?: number;
   name?: string;
-  onBlurCallbacks?: Array<() => void>;
-  onChangeCallbacks: Array<(event: ChangeEvent<HTMLTextAreaElement>) => void>;
-  onFocusCallbacks?: Array<() => void>;
-  onKeyDownCallbacks?: Array<(event: KeyboardEvent<HTMLTextAreaElement>) => void>;
+  onBlur?: () => void;
+  onChange: (event: ChangeEvent<HTMLTextAreaElement>) => void;
+  onFocus?: () => void;
+  onKeyDown?: (event: KeyboardEvent<HTMLTextAreaElement>) => void;
   placeholder: string;
   ref?: React.RefObject<HTMLTextAreaElement> | null;
   regex: RegExp;
@@ -68,10 +68,10 @@ function AccessibleTextAreaInput({ attributes }: AccessibleTextAreaInputProps) {
     minLength = 2,
     minRows = 3,
     name = semanticName,
-    onBlurCallbacks = [],
-    onChangeCallbacks,
-    onFocusCallbacks = [],
-    onKeyDownCallbacks = [],
+    onBlur = () => {},
+    onChange,
+    onFocus = () => {},
+    onKeyDown = () => {},
     placeholder,
     ref = null,
     regex,
@@ -174,21 +174,14 @@ function AccessibleTextAreaInput({ attributes }: AccessibleTextAreaInputProps) {
             name={name}
             onBlur={() => {
               setIsInputTextFocused(false);
-              onBlurCallbacks.length && onBlurCallbacks.forEach((callback) => callback());
+              onBlur();
             }}
-            onChange={(event: ChangeEvent<HTMLTextAreaElement>) => {
-              onChangeCallbacks.length &&
-                onChangeCallbacks.forEach((callback) => callback(event));
-            }}
+            onChange={onChange}
             onFocus={() => {
               setIsInputTextFocused(true);
-              onFocusCallbacks.length &&
-                onFocusCallbacks.forEach((callback) => callback());
+              onFocus();
             }}
-            onKeyDown={(event: KeyboardEvent<HTMLTextAreaElement>) => {
-              onKeyDownCallbacks.length &&
-                onKeyDownCallbacks.forEach((callback) => callback(event));
-            }}
+            onKeyDown={onKeyDown}
             placeholder={placeholder}
             ref={ref}
             required={required}

@@ -21,9 +21,9 @@ type AccessibleDateTimeInputAttributes = {
   maxLength?: number;
   min?: string;
   minLength?: number;
-  onBlurCallbacks?: Array<() => void>;
-  onChangeCallbacks: Array<(event: React.ChangeEvent<HTMLInputElement>) => void>;
-  onFocusCallbacks?: Array<() => void>;
+  onBlur?: () => void;
+  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onFocus?: () => void;
   placeholder: string;
   ref?: React.RefObject<HTMLInputElement>;
   regex: RegExp;
@@ -61,9 +61,9 @@ function AccessibleDateTimeInput({ attributes }: AccessibleDateTimeInputProps) {
     maxLength = inputKind === "date" ? 10 : 5,
     min = new Date().toISOString().split("T")[0], // current date
     minLength = inputKind === "date" ? 10 : 5,
-    onBlurCallbacks = [],
-    onChangeCallbacks,
-    onFocusCallbacks = [],
+    onBlur = () => {},
+    onChange,
+    onFocus = () => {},
     placeholder,
     ref = null,
     regex,
@@ -165,17 +165,14 @@ function AccessibleDateTimeInput({ attributes }: AccessibleDateTimeInputProps) {
             min={min_}
             minLength={inputKind === "date" ? 10 : inputKind === "time" ? 5 : minLength}
             name={semanticName.split(" ").join("-")}
-            onChange={(event: ChangeEvent<HTMLInputElement>) => {
-              onChangeCallbacks.forEach((callback) => callback(event));
-            }}
-            onFocus={() => {
-              setIsInputTextFocused(true);
-              onFocusCallbacks.length &&
-                onFocusCallbacks.forEach((callback) => callback());
-            }}
             onBlur={() => {
               setIsInputTextFocused(false);
-              onBlurCallbacks.length && onBlurCallbacks.forEach((callback) => callback());
+              onBlur();
+            }}
+            onChange={onChange}
+            onFocus={() => {
+              setIsInputTextFocused(true);
+              onFocus();
             }}
             placeholder={placeholder}
             ref={ref}
