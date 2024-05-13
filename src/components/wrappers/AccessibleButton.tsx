@@ -43,21 +43,21 @@ function AccessibleButton({ attributes }: AccessibleButtonProps) {
   const { defaultGradient, colorScheme } = themeObject;
 
   const {
+    compact = false,
     disabled = false,
+    disabledAccessibleText,
+    enabledAccessibleText,
     label = "Button",
+    type = "button",
+    leftIcon = type === "submit" ? <TbUpload /> : null,
     onClickCallbacks = [],
     onKeyDownCallbacks = [],
     ref = null,
-    style = {},
-    type = "button",
-    variant = colorScheme === "dark" ? "outline" : "subtle",
-    compact = false,
-    enabledAccessibleText,
-    disabledAccessibleText,
-    leftIcon = type === "submit" ? <TbUpload /> : null,
     rightIcon = null,
     semanticName,
     size = "xs",
+    style = {},
+    variant = colorScheme === "dark" ? "outline" : "subtle",
   } = attributes;
 
   const [buttonEnabledTextElement, buttonDisabledTextElement] =
@@ -71,7 +71,19 @@ function AccessibleButton({ attributes }: AccessibleButtonProps) {
   return (
     <Box>
       <Button
-        style={style}
+        aria-describedby={
+          disabled
+            ? // id of buttonDisabledTextElement
+              `${semanticName.split(" ").join("-")}-disabled`
+            : // id of buttonEnabledTextElement
+              `${semanticName.split(" ").join("-")}-enabled`
+        }
+        aria-label={semanticName}
+        compact={compact}
+        disabled={disabled}
+        gradient={variant === "gradient" ? defaultGradient : void 0}
+        leftIcon={leftIcon}
+        name={semanticName.split(" ").join("-")}
         onClick={(
           event: MouseEvent<HTMLButtonElement> | PointerEvent<HTMLButtonElement>
         ) => {
@@ -82,24 +94,12 @@ function AccessibleButton({ attributes }: AccessibleButtonProps) {
           onKeyDownCallbacks.length &&
             onKeyDownCallbacks.forEach((callback) => callback(event));
         }}
-        disabled={disabled}
         ref={ref}
-        type={type}
-        variant={variant}
-        compact={compact}
-        gradient={variant === "gradient" ? defaultGradient : void 0}
-        leftIcon={leftIcon}
-        name={semanticName.split(" ").join("-")}
         rightIcon={rightIcon}
         size={size}
-        aria-label={semanticName}
-        aria-describedby={
-          disabled
-            ? // id of buttonDisabledTextElement
-              `${semanticName.split(" ").join("-")}-disabled`
-            : // id of buttonEnabledTextElement
-              `${semanticName.split(" ").join("-")}-enabled`
-        }
+        style={style}
+        type={type}
+        variant={variant}
       >
         {label}
       </Button>

@@ -22,7 +22,9 @@ type AccessibleErrorValidTextElemProps = {
   isInputTextFocused: boolean;
   regexValidationText?: string | undefined;
 };
-
+/**
+ * @returns [errorTextElement, validTextElement]
+ */
 function AccessibleErrorValidTextElements({
   semanticName,
   inputText,
@@ -40,7 +42,7 @@ function AccessibleErrorValidTextElements({
 
   const errorTextElement = (
     <Text
-      id={`${semanticName.split(" ").join("-")}-input-note-error`}
+      id={`${semanticName.split(" ").join("-")}-error`}
       style={{
         display: isInputTextFocused && inputText && !isInputTextValid ? "block" : "none",
       }}
@@ -64,7 +66,7 @@ function AccessibleErrorValidTextElements({
 
   const validTextElement = (
     <Text
-      id={`${semanticName.split(" ").join("-")}-input-note-valid`}
+      id={`${semanticName.split(" ").join("-")}-valid`}
       style={{
         display: isInputTextFocused && inputText && isInputTextValid ? "block" : "none",
       }}

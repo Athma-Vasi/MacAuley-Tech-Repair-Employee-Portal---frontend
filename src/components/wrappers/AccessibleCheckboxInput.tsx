@@ -149,20 +149,20 @@ function CheckboxGroupInputsWrapper({ attributes }: AccessibleCheckboxInputGroup
             `${semanticName.split(" ").join("-")}-deselected`
       }
       aria-label={ariaLabel}
-      size={size}
-      label={label}
-      key={key}
-      description={value.length > 0 ? selectedTextElement : deselectedTextElement}
       aria-required={ariaRequired}
-      value={value}
+      description={value.length > 0 ? selectedTextElement : deselectedTextElement}
+      key={key}
+      label={label}
       onChange={(values: string[]) => {
         onChangeCallbacks.length &&
           onChangeCallbacks.forEach((callback) => callback(values));
       }}
-      required={required}
       ref={ref}
-      withAsterisk={withAsterisk}
+      required={required}
+      size={size}
+      value={value}
       w={widthCheckbox}
+      withAsterisk={withAsterisk}
     >
       {inputData?.map(({ value, label }) => (
         <Checkbox

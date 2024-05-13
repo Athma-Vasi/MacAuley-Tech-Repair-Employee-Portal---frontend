@@ -161,9 +161,9 @@ function AccessibleTextInput({ attributes }: AccessibleTextInputsProps) {
             aria-describedby={
               isInputTextValid
                 ? // id of inputValidTextElement
-                  `${semanticName.split(" ").join("-")}-input-note-valid`
+                  `${semanticName.split(" ").join("-")}-valid`
                 : // id of inputErrorTextElement
-                  `${semanticName.split(" ").join("-")}-input-note-error`
+                  `${semanticName.split(" ").join("-")}-error`
             }
             aria-invalid={isInputTextValid ? false : true}
             aria-required={required}
@@ -177,17 +177,16 @@ function AccessibleTextInput({ attributes }: AccessibleTextInputsProps) {
             minLength={minLength}
             name={name}
             onBlur={() => {
-              onBlurCallbacks.length && onBlurCallbacks.forEach((callback) => callback());
               setIsInputTextFocused(false);
+              onBlurCallbacks.length && onBlurCallbacks.forEach((callback) => callback());
             }}
             onChange={(event: ChangeEvent<HTMLInputElement>) => {
               onChangeCallbacks.length &&
                 onChangeCallbacks.forEach((callback) => callback(event));
             }}
             onFocus={() => {
-              onFocusCallbacks.length &&
-                onFocusCallbacks.forEach((callback) => callback());
-              setIsInputTextFocused(true);
+              onFocusCallbacks.length && setIsInputTextFocused(true);
+              onFocusCallbacks.forEach((callback) => callback());
             }}
             onKeyDown={(event: KeyboardEvent<HTMLInputElement>) => {
               onKeyDownCallbacks.length &&

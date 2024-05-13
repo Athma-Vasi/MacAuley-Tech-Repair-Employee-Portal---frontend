@@ -5,7 +5,6 @@ import { TbCheck, TbRefresh } from "react-icons/tb";
 
 import { COLORS_SWATCHES } from "../../constants/data";
 import { useGlobalState } from "../../hooks";
-
 import { returnThemeColors, splitCamelCase } from "../../utils";
 import { AccessibleErrorValidTextElements } from "./utils";
 
@@ -147,8 +146,8 @@ function AccessibleTextAreaInput({ attributes }: AccessibleTextAreaInputProps) {
     >
       <Popover.Target>
         <div
-          onFocusCapture={() => setPopoverOpened(true)}
           onBlurCapture={() => setPopoverOpened(false)}
+          onFocusCapture={() => setPopoverOpened(true)}
           style={{ width: textAreaInputWidth }}
         >
           <Textarea
@@ -156,9 +155,9 @@ function AccessibleTextAreaInput({ attributes }: AccessibleTextAreaInputProps) {
             aria-describedby={
               isInputTextValid
                 ? // id of inputValidTextElement
-                  `${semanticName.split(" ").join("-")}-input-note-valid`
+                  `${semanticName.split(" ").join("-")}-valid`
                 : // id of inputErrorTextElement
-                  `${semanticName.split(" ").join("-")}-input-note-error`
+                  `${semanticName.split(" ").join("-")}-error`
             }
             aria-invalid={isInputTextValid ? false : true}
             aria-required={required}
@@ -174,17 +173,17 @@ function AccessibleTextAreaInput({ attributes }: AccessibleTextAreaInputProps) {
             minRows={minRows}
             name={name}
             onBlur={() => {
-              onBlurCallbacks.length && onBlurCallbacks.forEach((callback) => callback());
               setIsInputTextFocused(false);
+              onBlurCallbacks.length && onBlurCallbacks.forEach((callback) => callback());
             }}
             onChange={(event: ChangeEvent<HTMLTextAreaElement>) => {
               onChangeCallbacks.length &&
                 onChangeCallbacks.forEach((callback) => callback(event));
             }}
             onFocus={() => {
+              setIsInputTextFocused(true);
               onFocusCallbacks.length &&
                 onFocusCallbacks.forEach((callback) => callback());
-              setIsInputTextFocused(true);
             }}
             onKeyDown={(event: KeyboardEvent<HTMLTextAreaElement>) => {
               onKeyDownCallbacks.length &&
