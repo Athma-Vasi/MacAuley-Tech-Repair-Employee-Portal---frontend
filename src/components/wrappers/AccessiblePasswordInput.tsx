@@ -37,7 +37,7 @@ type AccessiblePasswordInputProps = {
 function AccessiblePasswordInput({ attributes }: AccessiblePasswordInputProps) {
   const [popoverOpened, setPopoverOpened] = useState(false);
   const [isInputTextValid, setIsInputTextValid] = useState(false);
-  const [isInputTextFocused, setIsInputTextFocused] = useState(false);
+  const [isInputFocused, setIsInputFocused] = useState(false);
 
   const {
     globalState: { themeObject },
@@ -87,7 +87,7 @@ function AccessiblePasswordInput({ attributes }: AccessiblePasswordInputProps) {
       semanticName,
       inputText,
       isInputTextValid,
-      isInputTextFocused,
+      isInputFocused,
       regexValidationText,
     }
   );
@@ -127,12 +127,12 @@ function AccessiblePasswordInput({ attributes }: AccessiblePasswordInputProps) {
             minLength={minLength}
             name={semanticName.split(" ").join("-")}
             onBlur={() => {
-              setIsInputTextFocused(false);
+              setIsInputFocused(false);
               onBlur();
             }}
             onChange={onChange}
             onFocus={() => {
-              setIsInputTextFocused(true);
+              setIsInputFocused(true);
               onFocus();
             }}
             placeholder={placeholder}

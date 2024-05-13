@@ -47,7 +47,7 @@ type AccessibleTextAreaInputProps = {
 function AccessibleTextAreaInput({ attributes }: AccessibleTextAreaInputProps) {
   const [popoverOpened, setPopoverOpened] = useState(false);
   const [isInputTextValid, setIsInputTextValid] = useState(false);
-  const [isInputTextFocused, setIsInputTextFocused] = useState(false);
+  const [isInputFocused, setIsInputFocused] = useState(false);
 
   const {
     globalState: { themeObject, padding },
@@ -130,7 +130,7 @@ function AccessibleTextAreaInput({ attributes }: AccessibleTextAreaInputProps) {
       semanticName,
       inputText,
       isInputTextValid,
-      isInputTextFocused,
+      isInputFocused,
       regexValidationText,
     }
   );
@@ -173,12 +173,12 @@ function AccessibleTextAreaInput({ attributes }: AccessibleTextAreaInputProps) {
             minRows={minRows}
             name={name}
             onBlur={() => {
-              setIsInputTextFocused(false);
+              setIsInputFocused(false);
               onBlur();
             }}
             onChange={onChange}
             onFocus={() => {
-              setIsInputTextFocused(true);
+              setIsInputFocused(true);
               onFocus();
             }}
             onKeyDown={onKeyDown}

@@ -1,12 +1,5 @@
-import { Group, MantineSize, Popover, Stack, Text, TextInput } from "@mantine/core";
-import {
-  ChangeEvent,
-  KeyboardEvent,
-  ReactNode,
-  RefObject,
-  useEffect,
-  useState,
-} from "react";
+import { Group, MantineSize, Popover, Stack, TextInput, Tooltip } from "@mantine/core";
+import { ReactNode, useEffect, useState } from "react";
 import { TbCheck, TbRefresh } from "react-icons/tb";
 
 import { COLORS_SWATCHES } from "../../constants/data";
@@ -14,28 +7,22 @@ import { useGlobalState } from "../../hooks";
 import { returnThemeColors, splitCamelCase } from "../../utils";
 import { AccessibleErrorValidTextElements } from "./utils";
 
-type AccessibleTextInputAttributes = {
-  ariaAutoComplete?: "both" | "list" | "none" | "inline";
+type AccessibleTextInputPhoneAttributes = {
+  ariaRequired?: boolean;
   autoComplete?: "on" | "off";
-
-  /**
-   * This is for dynamic inputs, such as the ones in the survey builder. Typically a delete button, though it can be anything.
-   */
-  disabled?: boolean;
-  dynamicInputs?: ReactNode[];
   icon?: ReactNode;
   initialInputValue?: string;
   inputText: string;
-  label?: ReactNode | string;
+  label: string;
   maxLength?: number;
   minLength?: number;
   name?: string;
-  onBlur?: () => void;
-  onChange: (event: ChangeEvent<HTMLInputElement>) => void;
-  onFocus?: () => void;
-  onKeyDown?: (event: KeyboardEvent<HTMLInputElement>) => void;
+  onBlur: () => void;
+  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onFocus: () => void;
+  onKeyDown: (event: React.KeyboardEvent<HTMLInputElement>) => void;
   placeholder: string;
-  ref?: RefObject<HTMLInputElement> | null;
+  ref?: React.RefObject<HTMLInputElement>;
   regex: RegExp;
   regexValidationText: string;
   required?: boolean;
@@ -44,40 +31,30 @@ type AccessibleTextInputAttributes = {
   rightSectionOnClick?: () => void;
   semanticName: string;
   size?: MantineSize;
-  textInputWidth?: string | number;
+  width?: string | number;
   withAsterisk?: boolean;
 };
 
-type AccessibleTextInputsProps = {
-  attributes: AccessibleTextInputAttributes;
+type AccessibleTextInputPhoneProps = {
+  attributes: AccessibleTextInputPhoneAttributes;
 };
 
-function AccessibleTextInput({ attributes }: AccessibleTextInputsProps) {
-  const [popoverOpened, setPopoverOpened] = useState(false);
-  const [isInputTextValid, setIsInputTextValid] = useState(false);
-  const [isInputFocused, setIsInputFocused] = useState(false);
-
+function AccessibleTextInputPhone({ attributes }: AccessibleTextInputPhoneProps) {
   const {
-    globalState: { themeObject, padding },
-  } = useGlobalState();
-
-  const {
-    ariaAutoComplete = "none",
+    ariaRequired = false,
     autoComplete = "off",
-    disabled = false,
-    dynamicInputs = null,
     icon = null,
-    initialInputValue = "",
+    initialInputValue = "+(1)",
     inputText,
+    label,
+    maxLength = 18,
+    minLength = 18,
     semanticName,
-    label = semanticName,
-    maxLength = 75,
-    minLength = 2,
-    name = semanticName,
+    name = splitCamelCase(semanticName),
+    onBlur,
     onChange,
-    onBlur = () => {},
-    onFocus = () => {},
-    onKeyDown = () => {},
+    onFocus,
+    onKeyDown,
     placeholder,
     ref = null,
     regex,
@@ -87,28 +64,25 @@ function AccessibleTextInput({ attributes }: AccessibleTextInputsProps) {
     rightSectionIcon = null,
     rightSectionOnClick = () => {},
     size = "sm",
-    textInputWidth = 330,
-    withAsterisk = required,
+    width = 330,
+    withAsterisk = false,
   } = attributes;
+
+  const [popoverOpened, setPopoverOpened] = useState(false);
+  const [isInputTextValid, setIsInputTextValid] = useState(false);
+  const [isInputFocused, setIsInputFocused] = useState(false);
+
+  const {
+    globalState: { themeObject },
+  } = useGlobalState();
 
   useEffect(() => {
     setIsInputTextValid(regex.test(inputText));
   }, [inputText, regex]);
 
   const {
-    generalColors: { greenColorShade, grayColorShade },
-  } = returnThemeColors({ themeObject, colorsSwatches: COLORS_SWATCHES });
-
-  const dynamicInputLabel = dynamicInputs ? (
-    <Group w="100%" position="apart" py={padding}>
-      <Text size="sm">{label}</Text>
-      {dynamicInputs.map((input, index) => (
-        <Group key={`${index}`}>{input}</Group>
-      ))}
-    </Group>
-  ) : (
-    label
-  );
+    generalColors: { greenColorShade, iconGray },
+  } = returnThemeColors({ colorsSwatches: COLORS_SWATCHES, themeObject });
 
   const leftIcon = isInputTextValid ? (
     icon ? (
@@ -122,12 +96,18 @@ function AccessibleTextInput({ attributes }: AccessibleTextInputsProps) {
     rightSectionIcon ? (
       rightSectionIcon
     ) : (
-      <TbRefresh
-        aria-label={`Reset ${splitCamelCase(semanticName)} value to ${initialInputValue}`}
-        color={grayColorShade}
-        size={18}
-        onClick={rightSectionOnClick}
-      />
+      <Tooltip label={`Reset ${splitCamelCase(semanticName)} to ${initialInputValue}`}>
+        <Group style={{ cursor: "pointer" }}>
+          <TbRefresh
+            aria-label={`Reset ${splitCamelCase(
+              semanticName
+            )} value to ${initialInputValue}`}
+            color={iconGray}
+            size={18}
+            onClick={rightSectionOnClick}
+          />
+        </Group>
+      </Tooltip>
     )
   ) : null;
 
@@ -141,13 +121,7 @@ function AccessibleTextInput({ attributes }: AccessibleTextInputsProps) {
     }
   );
 
-  console.group("AccessibleTextInput");
-  console.log("inputText:", inputText);
-  console.log("isInputFocused:", isInputFocused);
-  console.log("isInputTextValid:", isInputTextValid);
-  console.groupEnd();
-
-  const accessibleTextInput = (
+  const inputWithPopover = (
     <Popover
       opened={inputText ? popoverOpened : false}
       position="bottom"
@@ -158,12 +132,11 @@ function AccessibleTextInput({ attributes }: AccessibleTextInputsProps) {
     >
       <Popover.Target>
         <div
-          onFocusCapture={() => setPopoverOpened(true)}
           onBlurCapture={() => setPopoverOpened(false)}
-          style={{ width: textInputWidth }}
+          onFocusCapture={() => setPopoverOpened(true)}
+          style={{ width }}
         >
           <TextInput
-            aria-autocomplete={ariaAutoComplete}
             aria-describedby={
               isInputTextValid
                 ? // id of inputValidTextElement
@@ -172,24 +145,23 @@ function AccessibleTextInput({ attributes }: AccessibleTextInputsProps) {
                   `${semanticName.split(" ").join("-")}-error`
             }
             aria-invalid={isInputTextValid ? false : true}
-            aria-required={required}
+            aria-required={ariaRequired}
             autoComplete={autoComplete}
-            color={grayColorShade}
-            disabled={disabled}
+            color="dark"
             error={!isInputTextValid && inputText !== initialInputValue}
             icon={leftIcon}
-            label={dynamicInputLabel}
+            label={label}
             maxLength={maxLength}
             minLength={minLength}
             name={name}
+            onBlur={() => {
+              setIsInputFocused(false);
+              onBlur();
+            }}
             onChange={onChange}
             onFocus={() => {
               setIsInputFocused(true);
               onFocus();
-            }}
-            onBlur={() => {
-              setIsInputFocused(false);
-              onBlur();
             }}
             onKeyDown={onKeyDown}
             placeholder={placeholder}
@@ -209,9 +181,9 @@ function AccessibleTextInput({ attributes }: AccessibleTextInputsProps) {
     </Popover>
   );
 
-  return accessibleTextInput;
+  return inputWithPopover;
 }
 
-export { AccessibleTextInput };
+export { AccessibleTextInputPhone };
 
-export type { AccessibleTextInputAttributes };
+export type { AccessibleTextInputPhoneAttributes };

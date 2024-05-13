@@ -19,7 +19,7 @@ type AccessibleErrorValidTextElemProps = {
   semanticName: string;
   inputText: string;
   isInputTextValid: boolean;
-  isInputTextFocused: boolean;
+  isInputFocused: boolean;
   regexValidationText?: string | undefined;
 };
 /**
@@ -29,7 +29,7 @@ function AccessibleErrorValidTextElements({
   semanticName,
   inputText,
   isInputTextValid,
-  isInputTextFocused,
+  isInputFocused,
   regexValidationText,
 }: AccessibleErrorValidTextElemProps): [React.JSX.Element, React.JSX.Element] {
   const {
@@ -44,7 +44,7 @@ function AccessibleErrorValidTextElements({
     <Text
       id={`${semanticName.split(" ").join("-")}-error`}
       style={{
-        display: isInputTextFocused && inputText && !isInputTextValid ? "block" : "none",
+        display: isInputFocused && inputText && !isInputTextValid ? "block" : "none",
       }}
       w="100%"
       aria-live="polite"
@@ -68,7 +68,7 @@ function AccessibleErrorValidTextElements({
     <Text
       id={`${semanticName.split(" ").join("-")}-valid`}
       style={{
-        display: isInputTextFocused && inputText && isInputTextValid ? "block" : "none",
+        display: isInputFocused && inputText && isInputTextValid ? "block" : "none",
       }}
       color={greenColorShade}
       w="100%"

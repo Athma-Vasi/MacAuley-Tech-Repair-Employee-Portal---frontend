@@ -41,7 +41,7 @@ type AccessibleDateTimeInputProps = {
 function AccessibleDateTimeInput({ attributes }: AccessibleDateTimeInputProps) {
   const [popoverOpened, setPopoverOpened] = useState(false);
   const [isInputTextValid, setIsInputTextValid] = useState(false);
-  const [isInputTextFocused, setIsInputTextFocused] = useState(false);
+  const [isInputFocused, setIsInputFocused] = useState(false);
 
   const {
     globalState: { themeObject },
@@ -92,7 +92,7 @@ function AccessibleDateTimeInput({ attributes }: AccessibleDateTimeInputProps) {
 
   const [errorTextElement, validTextElement] = AccessibleErrorValidTextElements({
     inputText,
-    isInputTextFocused,
+    isInputFocused,
     isInputTextValid,
     semanticName,
     regexValidationText,
@@ -166,12 +166,12 @@ function AccessibleDateTimeInput({ attributes }: AccessibleDateTimeInputProps) {
             minLength={inputKind === "date" ? 10 : inputKind === "time" ? 5 : minLength}
             name={semanticName.split(" ").join("-")}
             onBlur={() => {
-              setIsInputTextFocused(false);
+              setIsInputFocused(false);
               onBlur();
             }}
             onChange={onChange}
             onFocus={() => {
-              setIsInputTextFocused(true);
+              setIsInputFocused(true);
               onFocus();
             }}
             placeholder={placeholder}
