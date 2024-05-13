@@ -64,6 +64,7 @@ import {
 } from "./state";
 import { AddressChangeDocument } from "./types";
 import { AccessibleTextInput } from "../../wrappers/AccessibleTextInput";
+import { NumberInputWrapper } from "../../wrappers/NumberInputWrapper";
 
 function AddressChange() {
   const [addressChangeState, addressChangeDispatch] = useReducer(

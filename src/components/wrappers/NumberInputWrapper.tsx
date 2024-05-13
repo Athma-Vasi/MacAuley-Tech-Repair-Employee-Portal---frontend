@@ -1,26 +1,26 @@
 import {
   DefaultProps,
+  NumberInput,
+  NumberInputHandlers,
   NumberInputStylesNames,
   TextInput,
-  NumberInputHandlers,
-  NumberInput,
-} from '@mantine/core';
+} from "@mantine/core";
 
-type Formatter = (value: string | '') => string;
-type Parser = (value: string | '') => string;
+type Formatter = (value: string | "") => string;
+type Parser = (value: string | "") => string;
 
 interface NumberInputProps
   extends DefaultProps<NumberInputStylesNames>,
     Omit<
       React.ComponentPropsWithoutRef<typeof TextInput>,
-      'onChange' | 'value' | 'classNames' | 'styles' | 'type'
+      "onChange" | "value" | "classNames" | "styles" | "type"
     > {
   /** Called when value changes */
-  onChange?(value: number | ''): void;
+  onChange?(value: number | ""): void;
   /** Input value for controlled component */
-  value?: number | '';
+  value?: number | "";
   /** Default value for uncontrolled component */
-  defaultValue?: number | '';
+  defaultValue?: number | "";
   /** The decimal separator */
   decimalSeparator?: string;
   /** The thousands separator */
@@ -52,7 +52,7 @@ interface NumberInputProps
   /** Parses the value from formatter, should be used with formatter at the same time */
   parser?: Parser;
   /** Input type, defaults to text */
-  type?: 'text' | 'number';
+  type?: "text" | "number";
 }
 
 type AccessibleNumberInputCreatorInfo = NumberInputProps;
@@ -63,8 +63,8 @@ type NumberInputWrapperProps = {
 
 function NumberInputWrapper({ creatorInfoObject }: NumberInputWrapperProps) {
   const {
-    label = '',
-    description = '',
+    label = "",
+    description = "",
     required = false,
     value,
     onChange,
@@ -72,11 +72,11 @@ function NumberInputWrapper({ creatorInfoObject }: NumberInputWrapperProps) {
     max = 100,
     step = 1,
     hideControls = false,
-    placeholder = '',
-    radius = 'sm',
-    size = 'sm',
+    placeholder = "",
+    radius = "sm",
+    size = "sm",
     style = {},
-    type = 'number',
+    type = "number",
     ...others
   } = creatorInfoObject;
 
@@ -100,3 +100,5 @@ function NumberInputWrapper({ creatorInfoObject }: NumberInputWrapperProps) {
     />
   );
 }
+
+export { NumberInputWrapper };

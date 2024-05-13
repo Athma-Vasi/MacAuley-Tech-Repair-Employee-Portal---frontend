@@ -103,7 +103,9 @@ type AccessibleSelectedDeselectedTextElementsProps = {
   deselectedDescription: string;
   theme?: "muted" | "default";
 };
-
+/**
+ * @returns [selectedTextElement, deselctedTextElement]
+ */
 function AccessibleSelectedDeselectedTextElements({
   semanticName,
   isSelected,
@@ -184,7 +186,9 @@ type AccessibleEnabledDisabledTextElemProps = {
   disabledAccessibleText?: string;
   theme?: "muted" | "default";
 };
-
+/**
+ * @returns [enabledTextElement, disabledTextElement]
+ */
 function AccessibleEnabledDisabledButtonTextElements({
   semanticName,
   isEnabled,
