@@ -7,7 +7,7 @@ import { useGlobalState } from "../../hooks";
 import { returnThemeColors, splitCamelCase } from "../../utils";
 import { AccessibleErrorValidTextElements } from "./utils";
 
-type AccessiblePasswordInputCreatorInfo = {
+type AccessiblePasswordInputAttributes = {
   ariaRequired?: boolean;
   ariaLabel?: string;
   icon?: ReactNode;
@@ -30,11 +30,11 @@ type AccessiblePasswordInputCreatorInfo = {
   withAsterisk?: boolean;
 };
 
-type PasswordInputWrapperProps = {
-  creatorInfoObject: AccessiblePasswordInputCreatorInfo;
+type AccessiblePasswordInputProps = {
+  attributes: AccessiblePasswordInputAttributes;
 };
 
-function PasswordInputWrapper({ creatorInfoObject }: PasswordInputWrapperProps) {
+function AccessiblePasswordInput({ attributes }: AccessiblePasswordInputProps) {
   const [popoverOpened, setPopoverOpened] = useState(false);
   const [isInputTextValid, setIsInputTextValid] = useState(false);
   const [isInputTextFocused, setIsInputTextFocused] = useState(false);
@@ -64,7 +64,7 @@ function PasswordInputWrapper({ creatorInfoObject }: PasswordInputWrapperProps) 
     required = false,
     size = "sm",
     withAsterisk = false,
-  } = creatorInfoObject;
+  } = attributes;
 
   useEffect(() => {
     setIsInputTextValid(regex.test(inputText));
@@ -159,6 +159,6 @@ function PasswordInputWrapper({ creatorInfoObject }: PasswordInputWrapperProps) 
   return inputWithPopover;
 }
 
-export { PasswordInputWrapper };
+export { AccessiblePasswordInput };
 
-export type { AccessiblePasswordInputCreatorInfo };
+export type { AccessiblePasswordInputAttributes };

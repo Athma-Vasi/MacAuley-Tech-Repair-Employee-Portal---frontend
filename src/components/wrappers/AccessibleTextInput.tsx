@@ -141,6 +141,12 @@ function AccessibleTextInput({ attributes }: AccessibleTextInputsProps) {
     }
   );
 
+  console.group("AccessibleTextInput");
+  console.log("inputText:", inputText);
+  console.log("isInputTextFocused:", isInputTextFocused);
+  console.log("isInputTextValid:", isInputTextValid);
+  console.groupEnd();
+
   const accessibleTextInput = (
     <Popover
       opened={inputText ? popoverOpened : false}
@@ -185,8 +191,9 @@ function AccessibleTextInput({ attributes }: AccessibleTextInputsProps) {
                 onChangeCallbacks.forEach((callback) => callback(event));
             }}
             onFocus={() => {
-              onFocusCallbacks.length && setIsInputTextFocused(true);
-              onFocusCallbacks.forEach((callback) => callback());
+              setIsInputTextFocused(true);
+              onFocusCallbacks.length &&
+                onFocusCallbacks.forEach((callback) => callback());
             }}
             onKeyDown={(event: KeyboardEvent<HTMLInputElement>) => {
               onKeyDownCallbacks.length &&
