@@ -80,9 +80,7 @@ function createAccessibleValueValidationTextElements({
         </Grid.Col>
         <Grid.Col span={12}>
           <Group position="left">
-            <Text size="sm">
-              {name.length > 0 ? `${name[0].toUpperCase()}${name.slice(1)} is valid` : ""}
-            </Text>
+            <Text size="sm">{`${name[0].toUpperCase()}${name.slice(1)} is valid`}</Text>
           </Group>
         </Grid.Col>
       </Grid>
@@ -133,15 +131,7 @@ function createAccessibleCheckboxSelectionsTextElements({
           Array.isArray(value) ? value.join(", ") : value
         )} ${value.length > 1 ? "are" : "is"} selected.`;
 
-  const deselectedIcon =
-    theme === "default" ? (
-      <FontAwesomeIcon icon={faInfoCircle} color={redColorShade} />
-    ) : null;
-
-  const deselectedText = `For ${name}, no selection made.`;
-
-  return [
-    // selected text elem
+  const selectedTextElement = (
     <Text
       id={`${name}-selected`}
       style={{ display: checked ? "block" : "none" }}
@@ -151,8 +141,17 @@ function createAccessibleCheckboxSelectionsTextElements({
     >
       {selectedIcon}
       {selectedText}
-    </Text>,
-    // deselected text elem
+    </Text>
+  );
+
+  const deselectedIcon =
+    theme === "default" ? (
+      <FontAwesomeIcon icon={faInfoCircle} color={redColorShade} />
+    ) : null;
+
+  const deselectedText = `For ${name}, no selection made.`;
+
+  const deselectedTextElement = (
     <Text
       id={`${name}-deselected`}
       style={{ display: !checked ? "block" : "none" }}
@@ -162,8 +161,10 @@ function createAccessibleCheckboxSelectionsTextElements({
     >
       {deselectedIcon}
       {deselectedText}
-    </Text>,
-  ];
+    </Text>
+  );
+
+  return [selectedTextElement, deselectedTextElement];
 }
 
 type CreateAccessibleRadioSelectionTextElements = {
@@ -174,13 +175,17 @@ type CreateAccessibleRadioSelectionTextElements = {
   value: string;
 };
 
+type CreateAccessibleSelectionTextElementsOutput = {
+  screenreaderTextElement: React.JSX.Element;
+};
+
 function createAccessibleRadioScreenreaderTextElements({
   checked,
   name,
   themeObject,
   value,
   theme = "default",
-}: CreateAccessibleRadioSelectionTextElements) {
+}: CreateAccessibleRadioSelectionTextElements): CreateAccessibleSelectionTextElementsOutput {
   const {
     generalColors: { greenColorShade, textColor },
   } = returnThemeColors({
@@ -193,8 +198,6 @@ function createAccessibleRadioScreenreaderTextElements({
       <FontAwesomeIcon icon={faCheck} color={greenColorShade} />
     ) : null;
 
-  const text = `For ${name}, ${value} selected.`;
-
   const screenreaderTextElement = (
     <Text
       id={`${name}-selected`}
@@ -204,7 +207,7 @@ function createAccessibleRadioScreenreaderTextElements({
       aria-live="polite"
     >
       {icon}
-      {text}
+      {`For ${name}, ${value} selected.`}
     </Text>
   );
 
@@ -247,15 +250,7 @@ function createAccessibleButtonScreenreaderTextElements({
 
   const defaultEnabledText = `All form inputs are valid. ${name} is enabled. You may submit the form.`;
 
-  const disabledIcon =
-    theme === "default" ? (
-      <FontAwesomeIcon icon={faInfoCircle} color={redColorShade} />
-    ) : null;
-
-  const defaultDisabledText = `One or more inputs are in error. ${name} disabled. Please fix errors before submitting form.`;
-
-  return [
-    // enabled text elem
+  const enabledTextElement = (
     <Text
       id={`${name}-enabled`}
       style={{ display: isEnabled ? "block" : "none" }}
@@ -265,8 +260,17 @@ function createAccessibleButtonScreenreaderTextElements({
     >
       {enabledIcon}
       {customEnabledText ?? defaultEnabledText}
-    </Text>,
-    // disabled text elem
+    </Text>
+  );
+
+  const disabledIcon =
+    theme === "default" ? (
+      <FontAwesomeIcon icon={faInfoCircle} color={redColorShade} />
+    ) : null;
+
+  const defaultDisabledText = `One or more inputs are in error. ${name} disabled. Please fix errors before submitting form.`;
+
+  const disabledTextElement = (
     <Text
       id={`${name}-disabled`}
       style={{ display: !isEnabled ? "block" : "none" }}
@@ -278,8 +282,10 @@ function createAccessibleButtonScreenreaderTextElements({
     >
       {disabledIcon}
       {customDisabledText ?? defaultDisabledText}
-    </Text>,
-  ];
+    </Text>
+  );
+
+  return [enabledTextElement, disabledTextElement];
 }
 
 type CreateAccessibleSliderSelectionTextElements = {
@@ -294,7 +300,7 @@ function createAccessibleSliderScreenreaderTextElements({
   theme = "default",
   themeObject,
   value,
-}: CreateAccessibleSliderSelectionTextElements) {
+}: CreateAccessibleSliderSelectionTextElements): CreateAccessibleSelectionTextElementsOutput {
   const {
     generalColors: { greenColorShade, textColor },
   } = returnThemeColors({
@@ -307,8 +313,6 @@ function createAccessibleSliderScreenreaderTextElements({
       <FontAwesomeIcon icon={faCheck} color={greenColorShade} />
     ) : null;
 
-  const text = `For ${name}, ${value} selected.`;
-
   const screenreaderTextElement = (
     <Text
       id={`${name}-selected`}
@@ -317,11 +321,76 @@ function createAccessibleSliderScreenreaderTextElements({
       aria-live="polite"
     >
       {icon}
-      {text}
+      {`For ${name}, ${value} selected.`}
     </Text>
   );
 
   return { screenreaderTextElement };
+}
+
+type CreateAccessibleSwitchSelectionTextElements = {
+  checked: boolean;
+  name: string;
+  switchOffDescription?: string;
+  switchOnDescription?: string;
+  theme?: "muted" | "default";
+  themeObject: ThemeObject;
+};
+/**
+ * @returns [switchOnTextElement, switchOffTextElement]
+ */
+function createAccessibleSwitchOnOffTextElements({
+  checked,
+  name,
+  switchOffDescription,
+  switchOnDescription,
+  themeObject,
+  theme = "default",
+}: CreateAccessibleSwitchSelectionTextElements): [React.JSX.Element, React.JSX.Element] {
+  const {
+    generalColors: { themeColorShade, textColor, grayColorShade },
+  } = returnThemeColors({
+    themeObject,
+    colorsSwatches: COLORS_SWATCHES,
+  });
+
+  const switchOnIcon =
+    theme === "default" ? (
+      <FontAwesomeIcon icon={faCheck} color={themeColorShade} />
+    ) : null;
+
+  const switchOnTextElement = (
+    <Text
+      id={`${name}-on`}
+      style={{ display: checked ? "block" : "none" }}
+      color={theme === "muted" ? textColor : themeColorShade}
+      w="100%"
+      aria-live="polite"
+    >
+      {switchOnIcon}
+      {`${name} is on. ${switchOnDescription}`}
+    </Text>
+  );
+
+  const switchOffIcon =
+    theme === "default" ? (
+      <FontAwesomeIcon icon={faInfoCircle} color={grayColorShade} />
+    ) : null;
+
+  const switchOffTextElement = (
+    <Text
+      id={`${name}-off`}
+      style={{ display: !checked ? "block" : "none" }}
+      color={theme === "default" ? textColor : grayColorShade}
+      w="100%"
+      aria-live="polite"
+    >
+      {switchOffIcon}
+      {`${name} is off. ${switchOffDescription}`}
+    </Text>
+  );
+
+  return [switchOnTextElement, switchOffTextElement];
 }
 
 function createAccessibleTextInputs(attributesArray: AccessibleTextInputAttributes[]) {
@@ -346,6 +415,7 @@ export {
   createAccessibleCheckboxSelectionsTextElements,
   createAccessibleRadioScreenreaderTextElements,
   createAccessibleSliderScreenreaderTextElements,
+  createAccessibleSwitchOnOffTextElements,
   createAccessibleTextAreaInputs,
   createAccessibleTextInputs,
   createAccessibleValueValidationTextElements,
