@@ -1,13 +1,17 @@
 import { MantineSize, PasswordInput, Popover, Stack } from "@mantine/core";
-import { ChangeEvent, ReactNode, RefObject, useEffect, useState } from "react";
+import { ChangeEvent, Dispatch, ReactNode, RefObject, useState } from "react";
 import { TbCheck } from "react-icons/tb";
 
 import { COLORS_SWATCHES } from "../../constants/data";
 import { useGlobalState } from "../../hooks";
+import { SetStepsInErrorPayload } from "../../types";
 import { returnThemeColors, splitCamelCase } from "../../utils";
 import { AccessibleErrorValidTextElements } from "./utils";
 
-type AccessiblePasswordInputAttributes = {
+type AccessiblePasswordInputAttributes<
+  OnChangeAction extends string = string,
+  OnErrorAction extends string = string
+> = {
   ariaRequired?: boolean;
   ariaLabel?: string;
   icon?: ReactNode;
@@ -20,6 +24,18 @@ type AccessiblePasswordInputAttributes = {
   onBlur?: () => void;
   onChange: (event: ChangeEvent<HTMLInputElement>) => void;
   onFocus?: () => void;
+  parentDispatch: Dispatch<
+    | {
+        type: OnChangeAction;
+        payload: string;
+      }
+    | {
+        type: OnErrorAction;
+        payload: SetStepsInErrorPayload;
+      }
+  >;
+  parentOnChangeAction: OnChangeAction;
+  parentOnErrorAction: OnErrorAction;
   placeholder: string;
   ref?: RefObject<HTMLInputElement>;
   regex: RegExp;
@@ -27,6 +43,7 @@ type AccessiblePasswordInputAttributes = {
   required?: boolean;
   semanticName: string;
   size?: MantineSize;
+  step: number; // stepper page location of input
   withAsterisk?: boolean;
 };
 
@@ -35,14 +52,6 @@ type AccessiblePasswordInputProps = {
 };
 
 function AccessiblePasswordInput({ attributes }: AccessiblePasswordInputProps) {
-  const [popoverOpened, setPopoverOpened] = useState(false);
-  const [isInputTextValid, setIsInputTextValid] = useState(false);
-  const [isInputFocused, setIsInputFocused] = useState(false);
-
-  const {
-    globalState: { themeObject },
-  } = useGlobalState();
-
   const {
     semanticName,
     ariaLabel = splitCamelCase(semanticName),
@@ -57,22 +66,32 @@ function AccessiblePasswordInput({ attributes }: AccessiblePasswordInputProps) {
     onBlur = () => {},
     onChange,
     onFocus = () => {},
+    parentDispatch,
+    parentOnChangeAction,
+    parentOnErrorAction,
     placeholder,
     ref = null,
     regex,
     regexValidationText,
     required = false,
     size = "sm",
+    step,
     withAsterisk = false,
   } = attributes;
 
-  useEffect(() => {
-    setIsInputTextValid(regex.test(inputText));
-  }, [inputText, regex]);
+  const [inputTextBuffer, setInputTextBuffer] = useState(inputText);
+  const [popoverOpened, setPopoverOpened] = useState(false);
+  const [isInputFocused, setIsInputFocused] = useState(false);
+
+  const {
+    globalState: { themeObject },
+  } = useGlobalState();
 
   const {
     generalColors: { greenColorShade },
   } = returnThemeColors({ themeObject, colorsSwatches: COLORS_SWATCHES });
+
+  const isInputTextValid = regex.test(inputText);
 
   const leftIcon = isValidInputText ? (
     icon ? (
@@ -126,14 +145,30 @@ function AccessiblePasswordInput({ attributes }: AccessiblePasswordInputProps) {
             maxLength={maxLength}
             minLength={minLength}
             name={semanticName.split(" ").join("-")}
-            onBlur={() => {
-              setIsInputFocused(false);
-              onBlur();
+            onChange={(event: ChangeEvent<HTMLInputElement>) => {
+              setInputTextBuffer(event.currentTarget.value);
+              onChange(event);
             }}
-            onChange={onChange}
             onFocus={() => {
               setIsInputFocused(true);
               onFocus();
+            }}
+            onBlur={() => {
+              parentDispatch({
+                type: parentOnErrorAction,
+                payload: {
+                  kind: isInputTextValid ? "delete" : "add",
+                  step,
+                },
+              });
+
+              parentDispatch({
+                type: parentOnChangeAction,
+                payload: inputTextBuffer,
+              });
+
+              setIsInputFocused(false);
+              onBlur();
             }}
             placeholder={placeholder}
             ref={ref}
