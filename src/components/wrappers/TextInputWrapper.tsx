@@ -1,26 +1,16 @@
-import {
-  Group,
-  MantineSize,
-  Popover,
-  Stack,
-  Text,
-  TextInput,
-} from '@mantine/core';
-import { ReactNode, useState } from 'react';
-import React from 'react';
-import { TbCheck, TbRefresh } from 'react-icons/tb';
+import { Group, MantineSize, Popover, Stack, Text, TextInput } from "@mantine/core";
+import { ChangeEvent, KeyboardEvent, ReactNode, RefObject, useState } from "react";
+import React from "react";
+import { TbCheck, TbRefresh } from "react-icons/tb";
 
-import { COLORS_SWATCHES } from '../../constants/data';
-import { useGlobalState } from '../../hooks';
-import { returnThemeColors, splitCamelCase } from '../../utils';
+import { COLORS_SWATCHES } from "../../constants/data";
+import { useGlobalState } from "../../hooks";
+import { returnThemeColors, splitCamelCase } from "../../utils";
 
 type AccessibleTextInputCreatorInfo = {
-  ariaAutoComplete?: 'both' | 'list' | 'none' | 'inline';
-  autoComplete?: 'on' | 'off';
+  ariaAutoComplete?: "both" | "list" | "none" | "inline";
+  autoComplete?: "on" | "off";
   description: { error: React.JSX.Element; valid: React.JSX.Element };
-  /**
-   * This is for dynamic inputs, such as the ones in the survey builder. Typically a delete button, though it can be anything.
-   */
   disabled?: boolean;
   dynamicInputs?: ReactNode[];
   icon?: ReactNode;
@@ -32,11 +22,11 @@ type AccessibleTextInputCreatorInfo = {
   minLength?: number;
   name?: string;
   onBlur: () => void;
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange: (event: ChangeEvent<HTMLInputElement>) => void;
   onFocus: () => void;
-  onKeyDown?: (event: React.KeyboardEvent<HTMLInputElement>) => void;
+  onKeyDown?: (event: KeyboardEvent<HTMLInputElement>) => void;
   placeholder: string;
-  ref?: React.RefObject<HTMLInputElement> | null;
+  ref?: RefObject<HTMLInputElement> | null;
   required?: boolean;
   rightSection?: boolean;
   rightSectionIcon?: ReactNode;
@@ -62,20 +52,20 @@ function TextInputWrapper({ creatorInfoObject }: TextInputWrapperProps) {
   } = returnThemeColors({ themeObject, colorsSwatches: COLORS_SWATCHES });
 
   const {
-    ariaAutoComplete = 'none',
-    autoComplete = 'off',
+    ariaAutoComplete = "none",
+    autoComplete = "off",
     description,
     disabled = false,
     dynamicInputs = null,
     icon = null,
-    initialInputValue = '',
+    initialInputValue = "",
     inputText,
     isValidInputText,
     semanticName,
-    label = semanticName,
+    label = splitCamelCase(semanticName),
     maxLength = 75,
     minLength = 2,
-    name = semanticName,
+    name = splitCamelCase(semanticName),
     onBlur,
     onChange,
     onFocus,
@@ -86,7 +76,7 @@ function TextInputWrapper({ creatorInfoObject }: TextInputWrapperProps) {
     rightSection = false,
     rightSectionIcon = null,
     rightSectionOnClick = () => {},
-    size = 'sm',
+    size = "sm",
     textInputWidth = 330,
     withAsterisk = required,
   } = creatorInfoObject;
@@ -115,9 +105,7 @@ function TextInputWrapper({ creatorInfoObject }: TextInputWrapperProps) {
       rightSectionIcon
     ) : (
       <TbRefresh
-        aria-label={`Reset ${splitCamelCase(
-          semanticName
-        )} value to ${initialInputValue}`}
+        aria-label={`Reset ${splitCamelCase(semanticName)} value to ${initialInputValue}`}
         color={grayColorShade}
         size={18}
         onClick={rightSectionOnClick}
@@ -130,7 +118,7 @@ function TextInputWrapper({ creatorInfoObject }: TextInputWrapperProps) {
       opened={inputText ? popoverOpened : false}
       position="bottom"
       shadow="md"
-      transitionProps={{ transition: 'pop' }}
+      transitionProps={{ transition: "pop" }}
       width="target"
       withArrow
     >
@@ -144,8 +132,8 @@ function TextInputWrapper({ creatorInfoObject }: TextInputWrapperProps) {
             aria-autocomplete={ariaAutoComplete}
             aria-describedby={
               isValidInputText
-                ? `${semanticName.split(' ').join('-')}-input-note-valid`
-                : `${semanticName.split(' ').join('-')}-input-note-error`
+                ? `${semanticName.split(" ").join("-")}-valid`
+                : `${semanticName.split(" ").join("-")}-error`
             }
             aria-invalid={isValidInputText ? false : true}
             aria-required={required}
@@ -174,9 +162,7 @@ function TextInputWrapper({ creatorInfoObject }: TextInputWrapperProps) {
       </Popover.Target>
 
       <Popover.Dropdown>
-        <Stack>
-          {isValidInputText ? description.valid : description.error}
-        </Stack>
+        <Stack>{isValidInputText ? description.valid : description.error}</Stack>
       </Popover.Dropdown>
     </Popover>
   );

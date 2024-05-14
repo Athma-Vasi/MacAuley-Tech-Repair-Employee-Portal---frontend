@@ -1,14 +1,18 @@
 import { Group, MantineSize, Popover, Stack, Text, Textarea } from "@mantine/core";
-import { ChangeEvent, KeyboardEvent, ReactNode, useEffect, useState } from "react";
+import { ChangeEvent, Dispatch, KeyboardEvent, ReactNode, useState } from "react";
 import React from "react";
 import { TbCheck, TbRefresh } from "react-icons/tb";
 
 import { COLORS_SWATCHES } from "../../constants/data";
 import { useGlobalState } from "../../hooks";
+import { SetStepsInErrorPayload } from "../../types";
 import { returnThemeColors, splitCamelCase } from "../../utils";
 import { AccessibleErrorValidTextElements } from "./utils";
 
-type AccessibleTextAreaInputAttributes = {
+type AccessibleTextAreaInputAttributes<
+  OnChangeAction extends string = string,
+  OnErrorAction extends string = string
+> = {
   ariaAutoComplete?: "both" | "list" | "none" | "inline";
   autoComplete?: "on" | "off";
   disabled?: boolean;
@@ -26,6 +30,18 @@ type AccessibleTextAreaInputAttributes = {
   onChange: (event: ChangeEvent<HTMLTextAreaElement>) => void;
   onFocus?: () => void;
   onKeyDown?: (event: KeyboardEvent<HTMLTextAreaElement>) => void;
+  parentDispatch: Dispatch<
+    | {
+        type: OnChangeAction;
+        payload: string;
+      }
+    | {
+        type: OnErrorAction;
+        payload: SetStepsInErrorPayload;
+      }
+  >;
+  parentOnChangeAction: OnChangeAction;
+  parentOnErrorAction: OnErrorAction;
   placeholder: string;
   ref?: React.RefObject<HTMLTextAreaElement> | null;
   regex: RegExp;
@@ -36,6 +52,7 @@ type AccessibleTextAreaInputAttributes = {
   rightSectionOnClick?: () => void;
   semanticName: string;
   size?: MantineSize;
+  step: number; // stepper page location of input
   textAreaInputWidth?: string | number;
   withAsterisk?: boolean;
 };
@@ -45,14 +62,6 @@ type AccessibleTextAreaInputProps = {
 };
 
 function AccessibleTextAreaInput({ attributes }: AccessibleTextAreaInputProps) {
-  const [popoverOpened, setPopoverOpened] = useState(false);
-  const [isInputTextValid, setIsInputTextValid] = useState(false);
-  const [isInputFocused, setIsInputFocused] = useState(false);
-
-  const {
-    globalState: { themeObject, padding },
-  } = useGlobalState();
-
   const {
     ariaAutoComplete = "none",
     autoComplete = "off",
@@ -72,6 +81,9 @@ function AccessibleTextAreaInput({ attributes }: AccessibleTextAreaInputProps) {
     onChange,
     onFocus = () => {},
     onKeyDown = () => {},
+    parentDispatch,
+    parentOnChangeAction,
+    parentOnErrorAction,
     placeholder,
     ref = null,
     regex,
@@ -81,13 +93,18 @@ function AccessibleTextAreaInput({ attributes }: AccessibleTextAreaInputProps) {
     rightSectionIcon = null,
     rightSectionOnClick = () => {},
     size = "sm",
+    step,
     textAreaInputWidth = 330,
     withAsterisk = required,
   } = attributes;
 
-  useEffect(() => {
-    setIsInputTextValid(regex.test(inputText));
-  }, [inputText, regex]);
+  const [inputTextBuffer, setInputTextBuffer] = useState(inputText);
+  const [popoverOpened, setPopoverOpened] = useState(false);
+  const [isInputFocused, setIsInputFocused] = useState(false);
+
+  const {
+    globalState: { themeObject, padding },
+  } = useGlobalState();
 
   const {
     generalColors: { greenColorShade, grayColorShade },
@@ -103,6 +120,8 @@ function AccessibleTextAreaInput({ attributes }: AccessibleTextAreaInputProps) {
   ) : (
     label
   );
+
+  const isInputTextValid = regex.test(inputText);
 
   const leftIcon = isInputTextValid ? (
     icon ? (
@@ -135,7 +154,7 @@ function AccessibleTextAreaInput({ attributes }: AccessibleTextAreaInputProps) {
     }
   );
 
-  const accessibleTextAreaInput = (
+  return (
     <Popover
       opened={inputText ? popoverOpened : false}
       position="bottom"
@@ -172,14 +191,30 @@ function AccessibleTextAreaInput({ attributes }: AccessibleTextAreaInputProps) {
             minLength={minLength}
             minRows={minRows}
             name={name}
-            onBlur={() => {
-              setIsInputFocused(false);
-              onBlur();
+            onChange={(event: ChangeEvent<HTMLTextAreaElement>) => {
+              setInputTextBuffer(event.currentTarget.value);
+              onChange(event);
             }}
-            onChange={onChange}
             onFocus={() => {
               setIsInputFocused(true);
               onFocus();
+            }}
+            onBlur={() => {
+              parentDispatch({
+                type: parentOnErrorAction,
+                payload: {
+                  kind: isInputTextValid ? "delete" : "add",
+                  step,
+                },
+              });
+
+              parentDispatch({
+                type: parentOnChangeAction,
+                payload: inputTextBuffer,
+              });
+
+              setIsInputFocused(false);
+              onBlur();
             }}
             onKeyDown={onKeyDown}
             placeholder={placeholder}
@@ -198,8 +233,6 @@ function AccessibleTextAreaInput({ attributes }: AccessibleTextAreaInputProps) {
       </Popover.Dropdown>
     </Popover>
   );
-
-  return accessibleTextAreaInput;
 }
 
 export { AccessibleTextAreaInput };

@@ -136,7 +136,7 @@ function CheckboxGroupInputsWrapper({ attributes }: AccessibleCheckboxInputGroup
       deselectedDescription,
     });
 
-  const createdCheckboxGroupInputs = (
+  return (
     <Checkbox.Group
       aria-describedby={
         value.length > 0
@@ -169,8 +169,6 @@ function CheckboxGroupInputsWrapper({ attributes }: AccessibleCheckboxInputGroup
       ))}
     </Checkbox.Group>
   );
-
-  return createdCheckboxGroupInputs;
 }
 
 export { AccessibleCheckboxInputSingle, CheckboxGroupInputsWrapper };

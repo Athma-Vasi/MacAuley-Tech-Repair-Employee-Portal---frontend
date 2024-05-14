@@ -57,55 +57,34 @@ import {
   ADDRESS_CHANGE_MAX_STEPPER_POSITION,
   COUNTRIES_DATA,
 } from "../constants";
-import {
-  addressChangeAction,
-  addressChangeReducer,
-  initialAddressChangeState,
-} from "./state";
+import { initialAddressChangeState } from "./state";
 import { AddressChangeDocument } from "./types";
 import { AccessibleTextInput } from "../../wrappers/AccessibleTextInput";
 import { NumberInputWrapper } from "../../wrappers/NumberInputWrapper";
+import { addressChangeReducer } from "./reducers";
+import { addressChangeAction } from "./actions";
 
 function AddressChange() {
   const [addressChangeState, addressChangeDispatch] = useReducer(
     addressChangeReducer,
     initialAddressChangeState
   );
+
   const {
     contactNumber,
-    isValidContactNumber,
-    isContactNumberFocused,
-
     addressLine,
-    isValidAddressLine,
-    isAddressLineFocused,
-
     city,
-    isValidCity,
-    isCityFocused,
-
     province,
     state,
     country,
-
     postalCode,
-    isValidPostalCode,
-    isPostalCodeFocused,
     isAcknowledged,
-
     triggerFormSubmit,
     currentStepperPosition,
     stepsInError,
-
     isSubmitting,
-    submitMessage,
     isSuccessful,
-    successMessage,
-    isLoading,
-    loadingMessage,
   } = addressChangeState;
-
-  const { globalState, globalDispatch } = useGlobalState();
 
   ////
 
@@ -145,11 +124,6 @@ function AddressChange() {
       addressChangeDispatch({
         type: addressChangeAction.setIsSubmitting,
         payload: true,
-      });
-
-      addressChangeDispatch({
-        type: addressChangeAction.setSubmitMessage,
-        payload: "Address change request is on the way!",
       });
 
       openSubmitSuccessNotificationModal();
@@ -209,11 +183,6 @@ function AddressChange() {
           type: addressChangeAction.setIsSuccessful,
           payload: true,
         });
-
-        addressChangeDispatch({
-          type: addressChangeAction.setSuccessMessage,
-          payload: data.message ?? "Address change request successful!",
-        });
       } catch (error: any) {
         if (!isMounted || error.name === "AbortError") {
           return;
@@ -225,10 +194,6 @@ function AddressChange() {
           addressChangeDispatch({
             type: addressChangeAction.setIsSubmitting,
             payload: false,
-          });
-          addressChangeDispatch({
-            type: addressChangeAction.setSubmitMessage,
-            payload: "",
           });
           addressChangeDispatch({
             type: addressChangeAction.setTriggerFormSubmit,
@@ -249,82 +214,6 @@ function AddressChange() {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [triggerFormSubmit]);
-
-  // used to validate address line on every change
-  useEffect(() => {
-    const isValidAddress = ADDRESS_LINE_REGEX.test(addressLine);
-
-    addressChangeDispatch({
-      type: addressChangeAction.setIsValidAddressLine,
-      payload: isValidAddress,
-    });
-  }, [addressLine]);
-
-  // used to validate city on every change
-  useEffect(() => {
-    const isValidPlace = CITY_REGEX.test(city);
-
-    addressChangeDispatch({
-      type: addressChangeAction.setIsValidCity,
-      payload: isValidPlace,
-    });
-  }, [city]);
-
-  // resets addressline, city & postalcode if country is changed
-  useEffect(() => {
-    addressChangeDispatch({
-      type: addressChangeAction.setAddressLine,
-      payload: "",
-    });
-    addressChangeDispatch({
-      type: addressChangeAction.setCity,
-      payload: "",
-    });
-    addressChangeDispatch({
-      type: addressChangeAction.setPostalCode,
-      payload: "",
-    });
-  }, [country]);
-
-  // used to validate contact number on every change
-  useEffect(() => {
-    const isValidContact = PHONE_NUMBER_REGEX.test(contactNumber);
-
-    const contactLength = contactNumber.length;
-    if (isContactNumberFocused) {
-      switch (contactLength) {
-        case 4: {
-          addressChangeDispatch({
-            type: addressChangeAction.setContactNumber,
-            payload: `${contactNumber}(`,
-          });
-          break;
-        }
-        case 8: {
-          addressChangeDispatch({
-            type: addressChangeAction.setContactNumber,
-            payload: `${contactNumber}) `,
-          });
-          break;
-        }
-        case 13: {
-          addressChangeDispatch({
-            type: addressChangeAction.setContactNumber,
-            payload: `${contactNumber}-`,
-          });
-          break;
-        }
-
-        default:
-          break;
-      }
-    }
-
-    addressChangeDispatch({
-      type: addressChangeAction.setIsValidContactNumber,
-      payload: isValidContact,
-    });
-  }, [contactNumber, isContactNumberFocused]);
 
   // used to validate postal code on every change
   useEffect(() => {
@@ -457,6 +346,18 @@ function AddressChange() {
         type: addressChangeAction.setCountry,
         payload: event.currentTarget.value as Country,
       });
+      addressChangeDispatch({
+        type: addressChangeAction.setAddressLine,
+        payload: "",
+      });
+      addressChangeDispatch({
+        type: addressChangeAction.setCity,
+        payload: "",
+      });
+      addressChangeDispatch({
+        type: addressChangeAction.setPostalCode,
+        payload: "",
+      });
     },
     required: true,
     withAsterisk: true,
@@ -556,6 +457,34 @@ function AddressChange() {
     isValidInputText: isValidPostalCode,
     label: country === "Canada" ? "Postal Code" : "Zip Code",
     onChange: (event: ChangeEvent<HTMLInputElement>) => {
+      const isValidPostal =
+        country === "Canada"
+          ? POSTAL_CODE_REGEX_CANADA.test(postalCode)
+          : POSTAL_CODE_REGEX_US.test(postalCode);
+
+      if (country === "Canada") {
+        const postalCodeLength = postalCode.length;
+        if (postalCodeLength === 3) {
+          addressChangeDispatch({
+            type: addressChangeAction.setPostalCode,
+            payload: `${postalCode} `,
+          });
+        } else if (postalCodeLength === 7) {
+          addressChangeDispatch({
+            type: addressChangeAction.setPostalCode,
+            payload: postalCode.trim(),
+          });
+        }
+      } else {
+        const postalCodeLength = postalCode.length;
+        if (postalCodeLength === 6) {
+          addressChangeDispatch({
+            type: addressChangeAction.setPostalCode,
+            payload: `${postalCode.slice(0, 5)}-${postalCode.slice(5)}`,
+          });
+        }
+      }
+
       addressChangeDispatch({
         type: addressChangeAction.setPostalCode,
         payload:
@@ -620,6 +549,36 @@ function AddressChange() {
     isValidInputText: isValidContactNumber,
     label: "Personal Contact Number",
     onChange: (event: ChangeEvent<HTMLInputElement>) => {
+      const isValidContact = PHONE_NUMBER_REGEX.test(contactNumber);
+
+      const contactLength = contactNumber.length;
+      switch (contactLength) {
+        case 4: {
+          addressChangeDispatch({
+            type: addressChangeAction.setContactNumber,
+            payload: `${contactNumber}(`,
+          });
+          break;
+        }
+        case 8: {
+          addressChangeDispatch({
+            type: addressChangeAction.setContactNumber,
+            payload: `${contactNumber}) `,
+          });
+          break;
+        }
+        case 13: {
+          addressChangeDispatch({
+            type: addressChangeAction.setContactNumber,
+            payload: `${contactNumber}-`,
+          });
+          break;
+        }
+
+        default:
+          break;
+      }
+
       addressChangeDispatch({
         type: addressChangeAction.setContactNumber,
         payload: event.currentTarget.value,
@@ -810,20 +769,12 @@ function AddressChange() {
     <AccessibleTextInput
       attributes={{
         inputText: addressLine,
-        // onChange: (event: ChangeEvent<HTMLInputElement>) => {
-        //   addressChangeDispatch({
-        //     type: addressChangeAction.setAddressLine,
-        //     payload: event.currentTarget.value,
-        //   });
-        // },
-        onChangeCallbacks: [
-          (event: ChangeEvent<HTMLInputElement>) => {
-            addressChangeDispatch({
-              type: addressChangeAction.setAddressLine,
-              payload: event.currentTarget.value,
-            });
-          },
-        ],
+        onChange: (event: ChangeEvent<HTMLInputElement>) => {
+          addressChangeDispatch({
+            type: addressChangeAction.setAddressLine,
+            payload: event.currentTarget.value,
+          });
+        },
         placeholder: "Enter your address",
         regex: ADDRESS_LINE_REGEX,
         regexValidationText: returnAddressValidationText({

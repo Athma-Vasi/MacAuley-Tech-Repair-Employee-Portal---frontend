@@ -1,13 +1,17 @@
 import { MantineSize, Popover, Stack, TextInput } from "@mantine/core";
-import { ChangeEvent, ReactNode, useEffect, useState } from "react";
+import { ChangeEvent, Dispatch, ReactNode, RefObject, useState } from "react";
 import { TbCheck } from "react-icons/tb";
 
 import { COLORS_SWATCHES } from "../../constants/data";
 import { useGlobalState } from "../../hooks";
+import { SetStepsInErrorPayload } from "../../types";
 import { returnThemeColors, splitCamelCase } from "../../utils";
 import { AccessibleErrorValidTextElements } from "./utils";
 
-type AccessibleDateTimeInputAttributes = {
+type AccessibleDateTimeInputAttributes<
+  OnChangeAction extends string = string,
+  OnErrorAction extends string = string
+> = {
   ariaAutoComplete?: "both" | "list" | "none" | "inline";
   autoComplete?: "on" | "off";
   dateKind?: "date near future" | "date near past" | "full date";
@@ -22,15 +26,28 @@ type AccessibleDateTimeInputAttributes = {
   min?: string;
   minLength?: number;
   onBlur?: () => void;
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange: (event: ChangeEvent<HTMLInputElement>) => void;
   onFocus?: () => void;
+  parentDispatch: Dispatch<
+    | {
+        type: OnChangeAction;
+        payload: string;
+      }
+    | {
+        type: OnErrorAction;
+        payload: SetStepsInErrorPayload;
+      }
+  >;
+  parentOnChangeAction: OnChangeAction;
+  parentOnErrorAction: OnErrorAction;
   placeholder: string;
-  ref?: React.RefObject<HTMLInputElement>;
+  ref?: RefObject<HTMLInputElement>;
   regex: RegExp;
   regexValidationText: string;
   required?: boolean;
   semanticName: string;
   size?: MantineSize;
+  step: number; // stepper page location of input
   withAsterisk?: boolean;
 };
 
@@ -39,14 +56,6 @@ type AccessibleDateTimeInputProps = {
 };
 
 function AccessibleDateTimeInput({ attributes }: AccessibleDateTimeInputProps) {
-  const [popoverOpened, setPopoverOpened] = useState(false);
-  const [isInputTextValid, setIsInputTextValid] = useState(false);
-  const [isInputFocused, setIsInputFocused] = useState(false);
-
-  const {
-    globalState: { themeObject },
-  } = useGlobalState();
-
   const {
     ariaAutoComplete = "none",
     autoComplete = "off",
@@ -64,6 +73,9 @@ function AccessibleDateTimeInput({ attributes }: AccessibleDateTimeInputProps) {
     onBlur = () => {},
     onChange,
     onFocus = () => {},
+    parentDispatch,
+    parentOnChangeAction,
+    parentOnErrorAction,
     placeholder,
     ref = null,
     regex,
@@ -71,16 +83,23 @@ function AccessibleDateTimeInput({ attributes }: AccessibleDateTimeInputProps) {
     required = false,
     semanticName,
     size = "sm",
+    step,
     withAsterisk = required,
   } = attributes;
 
-  useEffect(() => {
-    setIsInputTextValid(regex.test(inputText));
-  }, [inputText, regex]);
+  const [inputTextBuffer, setInputTextBuffer] = useState(inputText);
+  const [popoverOpened, setPopoverOpened] = useState(false);
+  const [isInputFocused, setIsInputFocused] = useState(false);
+
+  const {
+    globalState: { themeObject },
+  } = useGlobalState();
 
   const {
     generalColors: { greenColorShade },
   } = returnThemeColors({ colorsSwatches: COLORS_SWATCHES, themeObject });
+
+  const isInputTextValid = regex.test(inputText);
 
   const leftIcon = isInputTextValid ? (
     icon ? (
@@ -128,7 +147,7 @@ function AccessibleDateTimeInput({ attributes }: AccessibleDateTimeInputProps) {
       ? new Date(2026, 11, 31).toISOString().split("T")[0]
       : max;
 
-  const inputWithPopover = (
+  return (
     <Popover
       opened={inputText ? popoverOpened : false}
       position="bottom"
@@ -165,14 +184,30 @@ function AccessibleDateTimeInput({ attributes }: AccessibleDateTimeInputProps) {
             min={min_}
             minLength={inputKind === "date" ? 10 : inputKind === "time" ? 5 : minLength}
             name={semanticName.split(" ").join("-")}
-            onBlur={() => {
-              setIsInputFocused(false);
-              onBlur();
+            onChange={(event: ChangeEvent<HTMLInputElement>) => {
+              setInputTextBuffer(event.currentTarget.value);
+              onChange(event);
             }}
-            onChange={onChange}
             onFocus={() => {
               setIsInputFocused(true);
               onFocus();
+            }}
+            onBlur={() => {
+              parentDispatch({
+                type: parentOnErrorAction,
+                payload: {
+                  kind: isInputTextValid ? "delete" : "add",
+                  step,
+                },
+              });
+
+              parentDispatch({
+                type: parentOnChangeAction,
+                payload: inputTextBuffer,
+              });
+
+              setIsInputFocused(false);
+              onBlur();
             }}
             placeholder={placeholder}
             ref={ref}
@@ -190,8 +225,6 @@ function AccessibleDateTimeInput({ attributes }: AccessibleDateTimeInputProps) {
       </Popover.Dropdown>
     </Popover>
   );
-
-  return inputWithPopover;
 }
 
 export { AccessibleDateTimeInput };

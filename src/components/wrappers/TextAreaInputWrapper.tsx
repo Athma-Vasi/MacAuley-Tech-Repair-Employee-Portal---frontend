@@ -12,6 +12,7 @@ import { ReactNode, useState } from "react";
 import { TbCheck } from "react-icons/tb";
 
 import { useGlobalState } from "../../hooks";
+import { splitCamelCase } from "../../utils";
 
 type AccessibleTextAreaInputCreatorInfo = {
   ariaAutoComplete?: "both" | "list" | "none" | "inline";
@@ -80,7 +81,7 @@ function TextAreaInputWrapper({ creatorInfoObject }: TextAreaInputWrapperProps) 
     ariaRequired = required,
     withAsterisk = required,
     semanticName,
-    label = semanticName,
+    label = splitCamelCase(semanticName),
     size = "sm",
     textAreaWidth = 330,
   } = creatorInfoObject;
@@ -106,7 +107,7 @@ function TextAreaInputWrapper({ creatorInfoObject }: TextAreaInputWrapperProps) 
     )
   ) : null;
 
-  const inputWithPopover = (
+  return (
     <Popover
       opened={inputText ? popoverOpened : false}
       position="bottom"
@@ -125,8 +126,8 @@ function TextAreaInputWrapper({ creatorInfoObject }: TextAreaInputWrapperProps) 
             aria-autocomplete={ariaAutoComplete}
             aria-describedby={
               isValidInputText
-                ? `${semanticName.split(" ").join("-")}-input-note-valid`
-                : `${semanticName.split(" ").join("-")}-input-note-error`
+                ? `${semanticName.split(" ").join("-")}-valid`
+                : `${semanticName.split(" ").join("-")}-error`
             }
             aria-invalid={isValidInputText ? false : true}
             aria-required={ariaRequired}
@@ -160,8 +161,6 @@ function TextAreaInputWrapper({ creatorInfoObject }: TextAreaInputWrapperProps) 
       </Popover.Dropdown>
     </Popover>
   );
-
-  return inputWithPopover;
 }
 
 export { TextAreaInputWrapper };

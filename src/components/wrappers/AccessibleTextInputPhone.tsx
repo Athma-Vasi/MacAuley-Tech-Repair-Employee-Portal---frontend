@@ -1,5 +1,5 @@
 import { Group, MantineSize, Popover, Stack, TextInput, Tooltip } from "@mantine/core";
-import { ReactNode, useEffect, useState } from "react";
+import { ChangeEvent, ReactNode, useEffect, useState } from "react";
 import { TbCheck, TbRefresh } from "react-icons/tb";
 
 import { COLORS_SWATCHES } from "../../constants/data";
@@ -7,7 +7,13 @@ import { useGlobalState } from "../../hooks";
 import { returnThemeColors, splitCamelCase } from "../../utils";
 import { AccessibleErrorValidTextElements } from "./utils";
 
-type AccessibleTextInputPhoneAttributes = {
+type AccessibleTextInputPhoneAttributes<
+  ParentAction extends string = string,
+  ParentDispatch extends { type: ParentAction; payload: unknown } = {
+    type: ParentAction;
+    payload: unknown;
+  }
+> = {
   ariaRequired?: boolean;
   autoComplete?: "on" | "off";
   icon?: ReactNode;
@@ -21,6 +27,8 @@ type AccessibleTextInputPhoneAttributes = {
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onFocus: () => void;
   onKeyDown: (event: React.KeyboardEvent<HTMLInputElement>) => void;
+  parentAction: ParentAction;
+  parentDispatch: React.Dispatch<ParentDispatch>;
   placeholder: string;
   ref?: React.RefObject<HTMLInputElement>;
   regex: RegExp;
@@ -55,6 +63,8 @@ function AccessibleTextInputPhone({ attributes }: AccessibleTextInputPhoneProps)
     onChange,
     onFocus,
     onKeyDown,
+    parentAction,
+    parentDispatch,
     placeholder,
     ref = null,
     regex,
@@ -121,7 +131,7 @@ function AccessibleTextInputPhone({ attributes }: AccessibleTextInputPhoneProps)
     }
   );
 
-  const inputWithPopover = (
+  return (
     <Popover
       opened={inputText ? popoverOpened : false}
       position="bottom"
@@ -158,7 +168,41 @@ function AccessibleTextInputPhone({ attributes }: AccessibleTextInputPhoneProps)
               setIsInputFocused(false);
               onBlur();
             }}
-            onChange={onChange}
+            onChange={(event: ChangeEvent<HTMLInputElement>) => {
+              switch (inputText.length) {
+                case 4: {
+                  parentDispatch({
+                    type: parentAction,
+                    payload: `${inputText}(`,
+                  });
+                  break;
+                }
+                case 8: {
+                  parentDispatch({
+                    type: parentAction,
+                    payload: `${inputText}) `,
+                  });
+                  break;
+                }
+                case 13: {
+                  parentDispatch({
+                    type: parentAction,
+                    payload: `${inputText}-`,
+                  });
+                  break;
+                }
+
+                default: {
+                  parentDispatch({
+                    type: parentAction,
+                    payload: inputText,
+                  });
+                  break;
+                }
+              }
+
+              onChange(event);
+            }}
             onFocus={() => {
               setIsInputFocused(true);
               onFocus();
@@ -180,8 +224,6 @@ function AccessibleTextInputPhone({ attributes }: AccessibleTextInputPhoneProps)
       </Popover.Dropdown>
     </Popover>
   );
-
-  return inputWithPopover;
 }
 
 export { AccessibleTextInputPhone };

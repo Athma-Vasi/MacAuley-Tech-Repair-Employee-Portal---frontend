@@ -1852,6 +1852,30 @@ function addFieldsToObject<
   }, structuredClone(object));
 }
 
+/**
+ * - pure function. only works on 1st level of object
+ */
+function updateObjectPure<
+  Obj extends Record<string | number | symbol, unknown> = Record<
+    string | number | symbol,
+    unknown
+  >
+>(oldObject: Obj, keyValueTuples: Array<[string, unknown]>): Obj {
+  return Object.entries(oldObject).reduce<Obj>((newObject, [oldObjKey, oldObjValue]) => {
+    const [key, value] = keyValueTuples.find(([key]) => key === oldObjKey) ?? [
+      oldObjKey,
+      oldObjValue,
+    ];
+
+    Object.defineProperty(newObject, key, {
+      value,
+      ...PROPERTY_DESCRIPTOR,
+    });
+
+    return newObject;
+  }, Object.create(null));
+}
+
 type UrlBuilderInput = {
   protocol?: string;
   host?: string;
@@ -2536,7 +2560,6 @@ export {
   returnThemeColors,
   returnTimeRailwayValidationText,
   returnTimeRemaining,
-  toFixedFloat,
   returnUrlValidationText,
   returnUserDefinedFieldValueValidationText,
   returnUsernameRegexValidationText,
@@ -2544,7 +2567,9 @@ export {
   shuffleArray,
   splitCamelCase,
   splitWordIntoUpperCasedSentence,
+  toFixedFloat,
   toggleNavlinksActive,
+  updateObjectPure,
   urlBuilder,
 };
 

@@ -94,7 +94,7 @@ function AccessiblePasswordInput({ attributes }: AccessiblePasswordInputProps) {
 
   const inputWidth = 330;
 
-  const inputWithPopover = (
+  return (
     <Popover
       opened={inputText ? popoverOpened : false}
       position="bottom"
@@ -151,8 +151,6 @@ function AccessiblePasswordInput({ attributes }: AccessiblePasswordInputProps) {
       </Popover.Dropdown>
     </Popover>
   );
-
-  return inputWithPopover;
 }
 
 export { AccessiblePasswordInput };
