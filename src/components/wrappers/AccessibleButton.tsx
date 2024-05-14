@@ -10,26 +10,26 @@ import {
 import { TbUpload } from "react-icons/tb";
 
 import { useGlobalState } from "../../hooks";
-import { AccessibleEnabledDisabledButtonTextElements } from "./utils";
+import { createAccessibleButtonScreenreaderTextElements } from "./utils";
 
 type AccessibleButtonAttributes = {
-  label: ReactNode;
-  onClickCallbacks?: Array<
-    (event: MouseEvent<HTMLButtonElement> | PointerEvent<HTMLButtonElement>) => void
-  >;
-  onKeyDownCallbacks?: Array<(event: KeyboardEvent<HTMLButtonElement>) => void>;
-  style?: CSSProperties;
+  compact?: boolean;
   disabled?: boolean;
+  customDisabledText?: string;
+  customEnabledText?: string;
+  label: ReactNode;
+  leftIcon?: ReactNode;
+  name: string;
+  onClick: (
+    event: MouseEvent<HTMLButtonElement> | PointerEvent<HTMLButtonElement>
+  ) => void;
+  onKeyDown?: (event: KeyboardEvent<HTMLButtonElement>) => void;
   ref?: RefObject<HTMLButtonElement>;
+  rightIcon?: ReactNode;
+  size?: MantineSize;
+  style?: CSSProperties;
   type?: "button" | "submit" | "reset";
   variant?: "outline" | "white" | "light" | "default" | "filled" | "gradient" | "subtle";
-  compact?: boolean;
-  enabledAccessibleText?: string;
-  disabledAccessibleText?: string;
-  leftIcon?: ReactNode;
-  rightIcon?: ReactNode;
-  semanticName: string;
-  size?: MantineSize;
 };
 
 type AccessibleButtonProps = {
@@ -44,28 +44,29 @@ function AccessibleButton({ attributes }: AccessibleButtonProps) {
 
   const {
     compact = false,
+    customDisabledText,
+    customEnabledText,
     disabled = false,
-    disabledAccessibleText,
-    enabledAccessibleText,
-    label = "Button",
+    label,
     type = "button",
     leftIcon = type === "submit" ? <TbUpload /> : null,
-    onClickCallbacks = [],
-    onKeyDownCallbacks = [],
+    name,
+    onClick,
+    onKeyDown = () => {},
     ref = null,
     rightIcon = null,
-    semanticName,
     size = "xs",
     style = {},
     variant = colorScheme === "dark" ? "outline" : "subtle",
   } = attributes;
 
   const [buttonEnabledTextElement, buttonDisabledTextElement] =
-    AccessibleEnabledDisabledButtonTextElements({
-      semanticName,
+    createAccessibleButtonScreenreaderTextElements({
       isEnabled: !disabled,
-      enabledAccessibleText,
-      disabledAccessibleText,
+      customDisabledText,
+      customEnabledText,
+      name,
+      themeObject,
     });
 
   return (
@@ -74,26 +75,18 @@ function AccessibleButton({ attributes }: AccessibleButtonProps) {
         aria-describedby={
           disabled
             ? // id of buttonDisabledTextElement
-              `${semanticName.split(" ").join("-")}-disabled`
+              `${name}-disabled`
             : // id of buttonEnabledTextElement
-              `${semanticName.split(" ").join("-")}-enabled`
+              `${name}-enabled`
         }
-        aria-label={semanticName}
+        aria-label={name}
         compact={compact}
         disabled={disabled}
         gradient={variant === "gradient" ? defaultGradient : void 0}
         leftIcon={leftIcon}
-        name={semanticName.split(" ").join("-")}
-        onClick={(
-          event: MouseEvent<HTMLButtonElement> | PointerEvent<HTMLButtonElement>
-        ) => {
-          onClickCallbacks.length &&
-            onClickCallbacks.forEach((callback) => callback(event));
-        }}
-        onKeyDown={(event: KeyboardEvent<HTMLButtonElement>) => {
-          onKeyDownCallbacks.length &&
-            onKeyDownCallbacks.forEach((callback) => callback(event));
-        }}
+        name={name}
+        onClick={onClick}
+        onKeyDown={onKeyDown}
         ref={ref}
         rightIcon={rightIcon}
         size={size}

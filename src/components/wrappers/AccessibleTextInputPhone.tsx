@@ -6,41 +6,41 @@ import { COLORS_SWATCHES } from "../../constants/data";
 import { useGlobalState } from "../../hooks";
 import { SetStepsInErrorPayload } from "../../types";
 import { returnThemeColors, splitCamelCase } from "../../utils";
-import { AccessibleErrorValidTextElements } from "./utils";
+import { createAccessibleValueValidationTextElements } from "./utils";
 
 type AccessibleTextInputPhoneAttributes<
-  OnChangeAction extends string = string,
-  OnErrorAction extends string = string
+  ValueValidAction extends string = string,
+  ValueInvalidAction extends string = string
 > = {
   ariaRequired?: boolean;
   autoComplete?: "on" | "off";
   icon?: ReactNode;
   initialInputValue?: string;
-  inputText: string;
-  label: string;
+  value: string;
+  label: ReactNode;
   maxLength?: number;
   minLength?: number;
-  name?: string;
+  name: string;
   onBlur: () => void;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onFocus: () => void;
   onKeyDown: (event: React.KeyboardEvent<HTMLInputElement>) => void;
   parentDispatch: Dispatch<
     | {
-        type: OnChangeAction;
+        type: ValueValidAction;
         payload: string;
       }
     | {
-        type: OnErrorAction;
+        type: ValueInvalidAction;
         payload: SetStepsInErrorPayload;
       }
   >;
-  parentOnChangeAction: OnChangeAction;
-  parentOnErrorAction: OnErrorAction;
+  parentValueValidAction: ValueValidAction;
+  parentValueInvalidAction: ValueInvalidAction;
   placeholder: string;
   ref?: React.RefObject<HTMLInputElement>;
   regex: RegExp;
-  regexValidationText: string;
+  validationText: string;
   required?: boolean;
   rightSection?: boolean;
   rightSectionIcon?: ReactNode;
@@ -48,7 +48,6 @@ type AccessibleTextInputPhoneAttributes<
   semanticName: string;
   size?: MantineSize;
   step: number; // stepper page location of input
-  width?: string | number;
   withAsterisk?: boolean;
 };
 
@@ -62,7 +61,7 @@ function AccessibleTextInputPhone({ attributes }: AccessibleTextInputPhoneProps)
     autoComplete = "off",
     icon = null,
     initialInputValue = "+(1)",
-    inputText,
+    value,
     label,
     maxLength = 18,
     minLength = 18,
@@ -73,23 +72,22 @@ function AccessibleTextInputPhone({ attributes }: AccessibleTextInputPhoneProps)
     onFocus,
     onKeyDown,
     parentDispatch,
-    parentOnChangeAction,
-    parentOnErrorAction,
+    parentValueValidAction,
+    parentValueInvalidAction,
     placeholder,
     ref = null,
     regex,
-    regexValidationText,
+    validationText,
     required = false,
     rightSection = false,
     rightSectionIcon = null,
     rightSectionOnClick = () => {},
     size = "sm",
-    width = 330,
     step,
     withAsterisk = false,
   } = attributes;
 
-  const [inputTextBuffer, setInputTextBuffer] = useState(inputText);
+  const [valueBuffer, setValueBuffer] = useState(value);
   const [popoverOpened, setPopoverOpened] = useState(false);
   const [isInputFocused, setIsInputFocused] = useState(false);
 
@@ -101,9 +99,9 @@ function AccessibleTextInputPhone({ attributes }: AccessibleTextInputPhoneProps)
     generalColors: { greenColorShade, iconGray },
   } = returnThemeColors({ colorsSwatches: COLORS_SWATCHES, themeObject });
 
-  const isInputTextValid = regex.test(inputText);
+  const isValueBufferValid = regex.test(valueBuffer);
 
-  const leftIcon = isInputTextValid ? (
+  const leftIcon = isValueBufferValid ? (
     icon ? (
       icon
     ) : (
@@ -130,19 +128,19 @@ function AccessibleTextInputPhone({ attributes }: AccessibleTextInputPhoneProps)
     )
   ) : null;
 
-  const [inputErrorTextElement, inputValidTextElement] = AccessibleErrorValidTextElements(
-    {
-      semanticName,
-      inputText,
-      isInputTextValid,
+  const [valueValidTextElement, valueInvalidTextElement] =
+    createAccessibleValueValidationTextElements({
       isInputFocused,
-      regexValidationText,
-    }
-  );
+      isValueBufferValid,
+      name,
+      themeObject,
+      valueBuffer,
+      validationText,
+    });
 
   return (
     <Popover
-      opened={inputText ? popoverOpened : false}
+      opened={valueBuffer ? popoverOpened : false}
       position="bottom"
       shadow="md"
       transitionProps={{ transition: "pop" }}
@@ -153,21 +151,20 @@ function AccessibleTextInputPhone({ attributes }: AccessibleTextInputPhoneProps)
         <div
           onBlurCapture={() => setPopoverOpened(false)}
           onFocusCapture={() => setPopoverOpened(true)}
-          style={{ width }}
         >
           <TextInput
             aria-describedby={
-              isInputTextValid
-                ? // id of inputValidTextElement
-                  `${semanticName.split(" ").join("-")}-valid`
-                : // id of inputErrorTextElement
-                  `${semanticName.split(" ").join("-")}-error`
+              isValueBufferValid
+                ? // id of valueValidTextElement
+                  `${name}-valid`
+                : // id of valueInvalidTextElement
+                  `${name}-invalid`
             }
-            aria-invalid={isInputTextValid ? false : true}
+            aria-invalid={isValueBufferValid ? false : true}
+            aria-label={name}
             aria-required={ariaRequired}
             autoComplete={autoComplete}
-            color="dark"
-            error={!isInputTextValid && inputText !== initialInputValue}
+            error={!isValueBufferValid && value !== initialInputValue}
             icon={leftIcon}
             label={label}
             maxLength={maxLength}
@@ -175,37 +172,34 @@ function AccessibleTextInputPhone({ attributes }: AccessibleTextInputPhoneProps)
             name={name}
             onBlur={() => {
               parentDispatch({
-                type: parentOnErrorAction,
+                type: parentValueInvalidAction,
                 payload: {
-                  kind: isInputTextValid ? "delete" : "add",
+                  kind: isValueBufferValid ? "delete" : "add",
                   step,
                 },
               });
 
               parentDispatch({
-                type: parentOnChangeAction,
-                payload: inputTextBuffer,
+                type: parentValueValidAction,
+                payload: valueBuffer,
               });
 
               setIsInputFocused(false);
               onBlur();
             }}
             onChange={(event: ChangeEvent<HTMLInputElement>) => {
-              switch (inputText.length) {
-                case 4: {
-                  setInputTextBuffer(`${inputText}(`);
-                  break;
-                }
-                case 8: {
-                  setInputTextBuffer(`${inputText}) `);
-                  break;
-                }
-                case 13: {
-                  setInputTextBuffer(`${inputText}-`);
-                  break;
-                }
-                default:
-                  break;
+              const length = valueBuffer.length;
+
+              if (length === 4) {
+                setValueBuffer(`${valueBuffer}(`);
+              }
+
+              if (length === 8) {
+                setValueBuffer(`${valueBuffer}) `);
+              }
+
+              if (length === 13) {
+                setValueBuffer(`${valueBuffer}-`);
               }
 
               onChange(event);
@@ -220,14 +214,16 @@ function AccessibleTextInputPhone({ attributes }: AccessibleTextInputPhoneProps)
             required={required}
             rightSection={rightIcon}
             size={size}
-            value={inputText}
+            value={valueBuffer}
             withAsterisk={withAsterisk}
           />
         </div>
       </Popover.Target>
 
       <Popover.Dropdown>
-        <Stack>{isInputTextValid ? inputValidTextElement : inputErrorTextElement}</Stack>
+        <Stack>
+          {isValueBufferValid ? valueValidTextElement : valueInvalidTextElement}
+        </Stack>
       </Popover.Dropdown>
     </Popover>
   );

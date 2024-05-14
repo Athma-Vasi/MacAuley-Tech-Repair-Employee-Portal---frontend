@@ -5,43 +5,40 @@ import { TbCheck } from "react-icons/tb";
 import { COLORS_SWATCHES } from "../../constants/data";
 import { useGlobalState } from "../../hooks";
 import { SetStepsInErrorPayload } from "../../types";
-import { returnThemeColors, splitCamelCase } from "../../utils";
-import { AccessibleErrorValidTextElements } from "./utils";
+import { returnThemeColors } from "../../utils";
+import { createAccessibleValueValidationTextElements } from "./utils";
 
 type AccessiblePasswordInputAttributes<
-  OnChangeAction extends string = string,
-  OnErrorAction extends string = string
+  ValueValidAction extends string = string,
+  ValueInvalidAction extends string = string
 > = {
-  ariaRequired?: boolean;
-  ariaLabel?: string;
   icon?: ReactNode;
   initialInputValue?: string;
-  inputText: string;
-  isValidInputText: boolean;
-  label: string;
+  value: string;
+  label: ReactNode;
   maxLength?: number;
   minLength?: number;
+  name: string;
   onBlur?: () => void;
   onChange: (event: ChangeEvent<HTMLInputElement>) => void;
   onFocus?: () => void;
   parentDispatch: Dispatch<
     | {
-        type: OnChangeAction;
+        type: ValueValidAction;
         payload: string;
       }
     | {
-        type: OnErrorAction;
+        type: ValueInvalidAction;
         payload: SetStepsInErrorPayload;
       }
   >;
-  parentOnChangeAction: OnChangeAction;
-  parentOnErrorAction: OnErrorAction;
+  parentValueValidAction: ValueValidAction;
+  parentValueInvalidAction: ValueInvalidAction;
   placeholder: string;
   ref?: RefObject<HTMLInputElement>;
   regex: RegExp;
-  regexValidationText: string;
+  validationText: string;
   required?: boolean;
-  semanticName: string;
   size?: MantineSize;
   step: number; // stepper page location of input
   withAsterisk?: boolean;
@@ -53,13 +50,10 @@ type AccessiblePasswordInputProps = {
 
 function AccessiblePasswordInput({ attributes }: AccessiblePasswordInputProps) {
   const {
-    semanticName,
-    ariaLabel = splitCamelCase(semanticName),
-    ariaRequired = false,
+    name,
     icon = null,
     initialInputValue = "",
-    inputText,
-    isValidInputText,
+    value,
     label,
     maxLength = 32,
     minLength = 8,
@@ -67,19 +61,19 @@ function AccessiblePasswordInput({ attributes }: AccessiblePasswordInputProps) {
     onChange,
     onFocus = () => {},
     parentDispatch,
-    parentOnChangeAction,
-    parentOnErrorAction,
+    parentValueValidAction,
+    parentValueInvalidAction,
     placeholder,
     ref = null,
     regex,
-    regexValidationText,
+    validationText,
     required = false,
     size = "sm",
     step,
     withAsterisk = false,
   } = attributes;
 
-  const [inputTextBuffer, setInputTextBuffer] = useState(inputText);
+  const [valueBuffer, setValueBuffer] = useState(value);
   const [popoverOpened, setPopoverOpened] = useState(false);
   const [isInputFocused, setIsInputFocused] = useState(false);
 
@@ -91,9 +85,9 @@ function AccessiblePasswordInput({ attributes }: AccessiblePasswordInputProps) {
     generalColors: { greenColorShade },
   } = returnThemeColors({ themeObject, colorsSwatches: COLORS_SWATCHES });
 
-  const isInputTextValid = regex.test(inputText);
+  const isValueBufferValid = regex.test(valueBuffer);
 
-  const leftIcon = isValidInputText ? (
+  const leftIcon = isValueBufferValid ? (
     icon ? (
       icon
     ) : (
@@ -101,21 +95,21 @@ function AccessiblePasswordInput({ attributes }: AccessiblePasswordInputProps) {
     )
   ) : null;
 
-  const [inputErrorTextElement, inputValidTextElement] = AccessibleErrorValidTextElements(
-    {
-      semanticName,
-      inputText,
-      isInputTextValid,
+  const [valueValidTextElement, valueInvalidTextElement] =
+    createAccessibleValueValidationTextElements({
       isInputFocused,
-      regexValidationText,
-    }
-  );
+      isValueBufferValid,
+      name,
+      themeObject,
+      valueBuffer,
+      validationText,
+    });
 
   const inputWidth = 330;
 
   return (
     <Popover
-      opened={inputText ? popoverOpened : false}
+      opened={valueBuffer ? popoverOpened : false}
       position="bottom"
       shadow="md"
       transitionProps={{ transition: "pop" }}
@@ -128,25 +122,24 @@ function AccessiblePasswordInput({ attributes }: AccessiblePasswordInputProps) {
           onBlurCapture={() => setPopoverOpened(false)}
         >
           <PasswordInput
-            aria-label={ariaLabel}
-            aria-invalid={isValidInputText ? false : true}
-            // color="dark"
-            aria-required={ariaRequired}
             aria-describedby={
-              isValidInputText
-                ? // id of validTextElement
-                  `${semanticName.split(" ").join("-")}-valid`
-                : // id of errorTextElement
-                  `${semanticName.split(" ").join("-")}-error`
+              isValueBufferValid
+                ? // id of valueValidTextElement
+                  `${name}-valid`
+                : // id of valueInvalidTextElement
+                  `${name}-invalid`
             }
-            error={!isValidInputText && inputText !== initialInputValue}
+            aria-invalid={isValueBufferValid ? false : true}
+            aria-label={name}
+            aria-required={required}
+            error={!isValueBufferValid && value !== initialInputValue}
             icon={leftIcon}
             label={label}
             maxLength={maxLength}
             minLength={minLength}
-            name={semanticName.split(" ").join("-")}
+            name={name}
             onChange={(event: ChangeEvent<HTMLInputElement>) => {
-              setInputTextBuffer(event.currentTarget.value);
+              setValueBuffer(event.currentTarget.value);
               onChange(event);
             }}
             onFocus={() => {
@@ -155,16 +148,16 @@ function AccessiblePasswordInput({ attributes }: AccessiblePasswordInputProps) {
             }}
             onBlur={() => {
               parentDispatch({
-                type: parentOnErrorAction,
+                type: parentValueInvalidAction,
                 payload: {
-                  kind: isInputTextValid ? "delete" : "add",
+                  kind: isValueBufferValid ? "delete" : "add",
                   step,
                 },
               });
 
               parentDispatch({
-                type: parentOnChangeAction,
-                payload: inputTextBuffer,
+                type: parentValueValidAction,
+                payload: valueBuffer,
               });
 
               setIsInputFocused(false);
@@ -174,7 +167,7 @@ function AccessiblePasswordInput({ attributes }: AccessiblePasswordInputProps) {
             ref={ref}
             required={required}
             size={size}
-            value={inputText}
+            value={valueBuffer}
             w={inputWidth}
             withAsterisk={withAsterisk}
           />
@@ -182,7 +175,9 @@ function AccessiblePasswordInput({ attributes }: AccessiblePasswordInputProps) {
       </Popover.Target>
 
       <Popover.Dropdown>
-        <Stack>{isValidInputText ? inputValidTextElement : inputErrorTextElement}</Stack>
+        <Stack>
+          {isValueBufferValid ? valueValidTextElement : valueInvalidTextElement}
+        </Stack>
       </Popover.Dropdown>
     </Popover>
   );

@@ -6,12 +6,12 @@ import { TbCheck, TbRefresh } from "react-icons/tb";
 import { COLORS_SWATCHES } from "../../constants/data";
 import { useGlobalState } from "../../hooks";
 import { SetStepsInErrorPayload } from "../../types";
-import { returnThemeColors, splitCamelCase } from "../../utils";
-import { AccessibleErrorValidTextElements } from "./utils";
+import { returnThemeColors } from "../../utils";
+import { createAccessibleValueValidationTextElements } from "./utils";
 
 type AccessibleTextAreaInputAttributes<
-  OnChangeAction extends string = string,
-  OnErrorAction extends string = string
+  ValueValidAction extends string = string,
+  ValueInvalidAction extends string = string
 > = {
   ariaAutoComplete?: "both" | "list" | "none" | "inline";
   autoComplete?: "on" | "off";
@@ -19,41 +19,39 @@ type AccessibleTextAreaInputAttributes<
   dynamicInputs?: ReactNode[]; // inputs created by the user (ex: buttons in the survey builder)
   icon?: ReactNode;
   initialInputValue?: string;
-  inputText: string;
-  label?: ReactNode | string;
+  value: string;
+  label: ReactNode;
   maxLength?: number;
   maxRows?: number;
   minLength?: number;
   minRows?: number;
-  name?: string;
+  name: string;
   onBlur?: () => void;
   onChange: (event: ChangeEvent<HTMLTextAreaElement>) => void;
   onFocus?: () => void;
   onKeyDown?: (event: KeyboardEvent<HTMLTextAreaElement>) => void;
   parentDispatch: Dispatch<
     | {
-        type: OnChangeAction;
+        type: ValueValidAction;
         payload: string;
       }
     | {
-        type: OnErrorAction;
+        type: ValueInvalidAction;
         payload: SetStepsInErrorPayload;
       }
   >;
-  parentOnChangeAction: OnChangeAction;
-  parentOnErrorAction: OnErrorAction;
+  parentValueValidAction: ValueValidAction;
+  parentValueInvalidAction: ValueInvalidAction;
   placeholder: string;
   ref?: React.RefObject<HTMLTextAreaElement> | null;
   regex: RegExp;
-  regexValidationText: string;
+  validationText: string;
   required?: boolean;
   rightSection?: boolean;
   rightSectionIcon?: ReactNode;
   rightSectionOnClick?: () => void;
-  semanticName: string;
   size?: MantineSize;
   step: number; // stepper page location of input
-  textAreaInputWidth?: string | number;
   withAsterisk?: boolean;
 };
 
@@ -69,36 +67,34 @@ function AccessibleTextAreaInput({ attributes }: AccessibleTextAreaInputProps) {
     dynamicInputs = null,
     icon = null,
     initialInputValue = "",
-    inputText,
-    semanticName,
-    label = semanticName,
+    value,
+    label,
     maxLength = 2000,
     maxRows = 7,
     minLength = 2,
     minRows = 3,
-    name = semanticName,
+    name,
     onBlur = () => {},
     onChange,
     onFocus = () => {},
     onKeyDown = () => {},
     parentDispatch,
-    parentOnChangeAction,
-    parentOnErrorAction,
+    parentValueValidAction,
+    parentValueInvalidAction,
     placeholder,
     ref = null,
     regex,
-    regexValidationText,
+    validationText,
     required = false,
     rightSection = false,
     rightSectionIcon = null,
     rightSectionOnClick = () => {},
     size = "sm",
     step,
-    textAreaInputWidth = 330,
     withAsterisk = required,
   } = attributes;
 
-  const [inputTextBuffer, setInputTextBuffer] = useState(inputText);
+  const [valueBuffer, setValueBuffer] = useState(value);
   const [popoverOpened, setPopoverOpened] = useState(false);
   const [isInputFocused, setIsInputFocused] = useState(false);
 
@@ -121,9 +117,9 @@ function AccessibleTextAreaInput({ attributes }: AccessibleTextAreaInputProps) {
     label
   );
 
-  const isInputTextValid = regex.test(inputText);
+  const isValueBufferValid = regex.test(value);
 
-  const leftIcon = isInputTextValid ? (
+  const leftIcon = isValueBufferValid ? (
     icon ? (
       icon
     ) : (
@@ -136,7 +132,7 @@ function AccessibleTextAreaInput({ attributes }: AccessibleTextAreaInputProps) {
       rightSectionIcon
     ) : (
       <TbRefresh
-        aria-label={`Reset ${splitCamelCase(semanticName)} value to ${initialInputValue}`}
+        aria-label={`Reset ${name} value to ${initialInputValue}`}
         color={grayColorShade}
         size={18}
         onClick={rightSectionOnClick}
@@ -144,19 +140,19 @@ function AccessibleTextAreaInput({ attributes }: AccessibleTextAreaInputProps) {
     )
   ) : null;
 
-  const [inputErrorTextElement, inputValidTextElement] = AccessibleErrorValidTextElements(
-    {
-      semanticName,
-      inputText,
-      isInputTextValid,
+  const [valueValidTextElement, valueInvalidTextElement] =
+    createAccessibleValueValidationTextElements({
+      name,
       isInputFocused,
-      regexValidationText,
-    }
-  );
+      isValueBufferValid,
+      themeObject,
+      valueBuffer,
+      validationText,
+    });
 
   return (
     <Popover
-      opened={inputText ? popoverOpened : false}
+      opened={valueBuffer ? popoverOpened : false}
       position="bottom"
       shadow="md"
       transitionProps={{ transition: "pop" }}
@@ -167,23 +163,23 @@ function AccessibleTextAreaInput({ attributes }: AccessibleTextAreaInputProps) {
         <div
           onBlurCapture={() => setPopoverOpened(false)}
           onFocusCapture={() => setPopoverOpened(true)}
-          style={{ width: textAreaInputWidth }}
         >
           <Textarea
             aria-autocomplete={ariaAutoComplete}
             aria-describedby={
-              isInputTextValid
-                ? // id of inputValidTextElement
-                  `${semanticName.split(" ").join("-")}-valid`
-                : // id of inputErrorTextElement
-                  `${semanticName.split(" ").join("-")}-error`
+              isValueBufferValid
+                ? // id of valueValidTextElement
+                  `${name}-valid`
+                : // id of valueInvalidTextElement
+                  `${name}-invalid`
             }
-            aria-invalid={isInputTextValid ? false : true}
+            aria-invalid={isValueBufferValid ? false : true}
+            aria-label={name}
             aria-required={required}
             autoComplete={autoComplete}
             color={grayColorShade}
             disabled={disabled}
-            error={!isInputTextValid && inputText !== initialInputValue}
+            error={!isValueBufferValid && value !== initialInputValue}
             icon={leftIcon}
             label={dynamicInputLabel}
             maxLength={maxLength}
@@ -192,7 +188,7 @@ function AccessibleTextAreaInput({ attributes }: AccessibleTextAreaInputProps) {
             minRows={minRows}
             name={name}
             onChange={(event: ChangeEvent<HTMLTextAreaElement>) => {
-              setInputTextBuffer(event.currentTarget.value);
+              setValueBuffer(event.currentTarget.value);
               onChange(event);
             }}
             onFocus={() => {
@@ -201,16 +197,16 @@ function AccessibleTextAreaInput({ attributes }: AccessibleTextAreaInputProps) {
             }}
             onBlur={() => {
               parentDispatch({
-                type: parentOnErrorAction,
+                type: parentValueInvalidAction,
                 payload: {
-                  kind: isInputTextValid ? "delete" : "add",
+                  kind: isValueBufferValid ? "delete" : "add",
                   step,
                 },
               });
 
               parentDispatch({
-                type: parentOnChangeAction,
-                payload: inputTextBuffer,
+                type: parentValueValidAction,
+                payload: valueBuffer,
               });
 
               setIsInputFocused(false);
@@ -222,14 +218,16 @@ function AccessibleTextAreaInput({ attributes }: AccessibleTextAreaInputProps) {
             required={required}
             rightSection={rightIcon}
             size={size}
-            value={inputText}
+            value={valueBuffer}
             withAsterisk={withAsterisk}
           />
         </div>
       </Popover.Target>
 
       <Popover.Dropdown>
-        <Stack>{isInputTextValid ? inputValidTextElement : inputErrorTextElement}</Stack>
+        <Stack>
+          {isValueBufferValid ? valueValidTextElement : valueInvalidTextElement}
+        </Stack>
       </Popover.Dropdown>
     </Popover>
   );

@@ -12,12 +12,12 @@ import { TbCheck, TbRefresh } from "react-icons/tb";
 import { COLORS_SWATCHES } from "../../constants/data";
 import { useGlobalState } from "../../hooks";
 import { SetStepsInErrorPayload } from "../../types";
-import { returnThemeColors, splitCamelCase } from "../../utils";
-import { AccessibleErrorValidTextElements } from "./utils";
+import { returnThemeColors } from "../../utils";
+import { createAccessibleValueValidationTextElements } from "./utils";
 
 type AccessibleTextInputAttributes<
-  OnChangeAction extends string = string,
-  OnErrorAction extends string = string
+  ValidValueAction extends string = string,
+  InvalidValueAction extends string = string
 > = {
   ariaAutoComplete?: "both" | "list" | "none" | "inline";
   autoComplete?: "on" | "off";
@@ -25,39 +25,37 @@ type AccessibleTextInputAttributes<
   dynamicInputs?: ReactNode[]; // inputs created on demand by user
   icon?: ReactNode;
   initialInputValue?: string;
-  inputText: string;
-  label?: ReactNode | string;
+  value: string;
+  label: ReactNode;
   maxLength?: number;
   minLength?: number;
-  name?: string;
+  name: string;
   onBlur?: () => void;
   onChange: (event: ChangeEvent<HTMLInputElement>) => void;
   onFocus?: () => void;
   onKeyDown?: (event: KeyboardEvent<HTMLInputElement>) => void;
   parentDispatch: Dispatch<
     | {
-        type: OnChangeAction;
+        type: ValidValueAction;
         payload: string;
       }
     | {
-        type: OnErrorAction;
+        type: InvalidValueAction;
         payload: SetStepsInErrorPayload;
       }
   >;
-  parentOnChangeAction: OnChangeAction;
-  parentOnErrorAction: OnErrorAction;
+  parentValidValueAction: ValidValueAction;
+  parentInvalidValueAction: InvalidValueAction;
   placeholder: string;
   ref?: RefObject<HTMLInputElement> | null;
   regex: RegExp;
-  regexValidationText: string;
+  validationText: string;
   required?: boolean;
   rightSection?: boolean;
   rightSectionIcon?: ReactNode;
   rightSectionOnClick?: () => void;
-  semanticName: string;
   size?: MantineSize;
   step: number; // stepper page location of input
-  textInputWidth?: string | number;
   withAsterisk?: boolean;
 };
 
@@ -73,34 +71,32 @@ function AccessibleTextInput({ attributes }: AccessibleTextInputsProps) {
     dynamicInputs = null,
     icon = null,
     initialInputValue = "",
-    inputText,
-    semanticName,
-    label = semanticName,
+    value,
+    name,
+    label,
     maxLength = 75,
     minLength = 2,
-    name = semanticName,
     onChange,
     onBlur = () => {},
     onFocus = () => {},
     onKeyDown = () => {},
-    parentOnChangeAction,
+    parentValidValueAction,
     parentDispatch,
-    parentOnErrorAction,
+    parentInvalidValueAction,
     placeholder,
     ref = null,
     regex,
-    regexValidationText,
+    validationText,
     required = false,
     rightSection = false,
     rightSectionIcon = null,
     rightSectionOnClick = () => {},
     size = "sm",
     step,
-    textInputWidth = 330,
     withAsterisk = required,
   } = attributes;
 
-  const [inputTextBuffer, setInputTextBuffer] = useState(inputText);
+  const [valueBuffer, setValueBuffer] = useState(value);
   const [popoverOpened, setPopoverOpened] = useState(false);
   const [isInputFocused, setIsInputFocused] = useState(false);
 
@@ -122,9 +118,9 @@ function AccessibleTextInput({ attributes }: AccessibleTextInputsProps) {
   ) : (
     label
   );
-  const isInputTextValid = regex.test(inputText);
+  const isValueBufferValid = regex.test(valueBuffer);
 
-  const leftIcon = isInputTextValid ? (
+  const leftIcon = isValueBufferValid ? (
     icon ? (
       icon
     ) : (
@@ -137,7 +133,7 @@ function AccessibleTextInput({ attributes }: AccessibleTextInputsProps) {
       rightSectionIcon
     ) : (
       <TbRefresh
-        aria-label={`Reset ${splitCamelCase(semanticName)} value to ${initialInputValue}`}
+        aria-label={`Reset ${name} value to ${initialInputValue}`}
         color={grayColorShade}
         size={18}
         onClick={rightSectionOnClick}
@@ -145,19 +141,19 @@ function AccessibleTextInput({ attributes }: AccessibleTextInputsProps) {
     )
   ) : null;
 
-  const [inputErrorTextElement, inputValidTextElement] = AccessibleErrorValidTextElements(
-    {
-      semanticName,
-      inputText,
-      isInputTextValid,
+  const [valueValidTextElement, valueInvalidTextElement] =
+    createAccessibleValueValidationTextElements({
       isInputFocused,
-      regexValidationText,
-    }
-  );
+      isValueBufferValid,
+      name,
+      themeObject,
+      validationText,
+      valueBuffer,
+    });
 
   return (
     <Popover
-      opened={inputText ? popoverOpened : false}
+      opened={valueBuffer ? popoverOpened : false}
       position="bottom"
       shadow="md"
       transitionProps={{ transition: "pop" }}
@@ -166,32 +162,32 @@ function AccessibleTextInput({ attributes }: AccessibleTextInputsProps) {
     >
       <Popover.Target>
         <div
-          onFocusCapture={() => setPopoverOpened(true)}
           onBlurCapture={() => setPopoverOpened(false)}
-          style={{ width: textInputWidth }}
+          onFocusCapture={() => setPopoverOpened(true)}
         >
           <TextInput
             aria-autocomplete={ariaAutoComplete}
             aria-describedby={
-              isInputTextValid
-                ? // id of inputValidTextElement
-                  `${semanticName.split(" ").join("-")}-valid`
-                : // id of inputErrorTextElement
-                  `${semanticName.split(" ").join("-")}-error`
+              isValueBufferValid
+                ? // id of valueValidTextElement
+                  `${name}-valid`
+                : // id of valueInvalidTextElement
+                  `${name}-invalid`
             }
-            aria-invalid={isInputTextValid ? false : true}
+            aria-invalid={isValueBufferValid ? false : true}
+            aria-label={name}
             aria-required={required}
             autoComplete={autoComplete}
             color={grayColorShade}
             disabled={disabled}
-            error={!isInputTextValid && inputText !== initialInputValue}
+            error={!isValueBufferValid && valueBuffer !== initialInputValue}
             icon={leftIcon}
             label={dynamicInputLabel}
             maxLength={maxLength}
             minLength={minLength}
             name={name}
             onChange={(event: ChangeEvent<HTMLInputElement>) => {
-              setInputTextBuffer(event.currentTarget.value);
+              setValueBuffer(event.currentTarget.value);
               onChange(event);
             }}
             onFocus={() => {
@@ -200,16 +196,16 @@ function AccessibleTextInput({ attributes }: AccessibleTextInputsProps) {
             }}
             onBlur={() => {
               parentDispatch({
-                type: parentOnErrorAction,
+                type: parentInvalidValueAction,
                 payload: {
-                  kind: isInputTextValid ? "delete" : "add",
+                  kind: isValueBufferValid ? "delete" : "add",
                   step,
                 },
               });
 
               parentDispatch({
-                type: parentOnChangeAction,
-                payload: inputTextBuffer,
+                type: parentValidValueAction,
+                payload: valueBuffer,
               });
 
               setIsInputFocused(false);
@@ -221,14 +217,16 @@ function AccessibleTextInput({ attributes }: AccessibleTextInputsProps) {
             required={required}
             rightSection={rightIcon}
             size={size}
-            value={inputText}
+            value={valueBuffer}
             withAsterisk={withAsterisk}
           />
         </div>
       </Popover.Target>
 
       <Popover.Dropdown>
-        <Stack>{isInputTextValid ? inputValidTextElement : inputErrorTextElement}</Stack>
+        <Stack>
+          {isValueBufferValid ? valueValidTextElement : valueInvalidTextElement}
+        </Stack>
       </Popover.Dropdown>
     </Popover>
   );

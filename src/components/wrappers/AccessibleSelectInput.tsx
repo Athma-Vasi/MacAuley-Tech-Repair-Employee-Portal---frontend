@@ -1,5 +1,5 @@
-import { MantineNumberSize, MantineSize, NativeSelect } from "@mantine/core";
-import { ChangeEvent, RefObject } from "react";
+import { MantineSize, NativeSelect } from "@mantine/core";
+import { ChangeEvent, ReactNode, RefObject } from "react";
 
 import { SelectInputData } from "../../types";
 
@@ -8,14 +8,13 @@ type AccessibleSelectInputAttributes = {
   describedBy?: string;
   description?: string;
   disabled?: boolean;
-  label?: string;
-  name?: string;
+  label: ReactNode;
+  name: string;
   onChange: (event: ChangeEvent<HTMLSelectElement>) => void;
   ref?: RefObject<HTMLSelectElement>;
   required?: boolean;
   size?: MantineSize;
   value?: string;
-  width?: MantineNumberSize;
   withAsterisk?: boolean;
 };
 
@@ -29,14 +28,13 @@ function AccessibleSelectInput({ attributes }: AccessibleSelectInputProps) {
     describedBy = "",
     description,
     disabled = false,
-    label = "",
-    name = label,
+    label,
+    name,
     onChange,
     ref = null,
     required = false,
     size = "sm",
     value,
-    width = 330,
     withAsterisk = required,
   } = attributes;
 
@@ -47,14 +45,13 @@ function AccessibleSelectInput({ attributes }: AccessibleSelectInputProps) {
       aria-required={required}
       data={data}
       disabled={disabled}
-      label={`${label.charAt(0).toUpperCase() + label.slice(1)}`}
+      label={label}
       name={name}
       onChange={onChange}
       ref={ref}
       required={required}
       size={size}
       value={value}
-      w={width}
       withAsterisk={withAsterisk}
     />
   );

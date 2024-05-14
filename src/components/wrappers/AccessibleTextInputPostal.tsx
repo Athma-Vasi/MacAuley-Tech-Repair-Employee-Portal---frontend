@@ -1,55 +1,53 @@
 import { Group, MantineSize, Popover, Stack, TextInput, Tooltip } from "@mantine/core";
-import { ChangeEvent, Dispatch, ReactNode, useEffect, useState } from "react";
+import { ChangeEvent, Dispatch, ReactNode, useState } from "react";
 import { TbCheck, TbRefresh } from "react-icons/tb";
 
 import { COLORS_SWATCHES } from "../../constants/data";
 import { useGlobalState } from "../../hooks";
 import { Country, SetStepsInErrorPayload } from "../../types";
 import { returnThemeColors, splitCamelCase } from "../../utils";
-import { AccessibleErrorValidTextElements } from "./utils";
+import { createAccessibleValueValidationTextElements } from "./utils";
 
 type AccessibleTextInputPostalAttributes<
-  OnChangeAction extends string = string,
-  OnErrorAction extends string = string
+  ValidValueAction extends string = string,
+  InvalidValueAction extends string = string
 > = {
   ariaRequired?: boolean;
   autoComplete?: "on" | "off";
   country: Country;
   icon?: ReactNode;
   initialInputValue?: string;
-  inputText: string;
+  value: string;
   label: string;
   maxLength?: number;
   minLength?: number;
-  name?: string;
   onBlur: () => void;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onFocus: () => void;
   onKeyDown: (event: React.KeyboardEvent<HTMLInputElement>) => void;
   parentDispatch: Dispatch<
     | {
-        type: OnChangeAction;
+        type: ValidValueAction;
         payload: string;
       }
     | {
-        type: OnErrorAction;
+        type: InvalidValueAction;
         payload: SetStepsInErrorPayload;
       }
   >;
-  parentOnChangeAction: OnChangeAction;
-  parentOnErrorAction: OnErrorAction;
+  parentValidValueAction: ValidValueAction;
+  parentInvalidValueAction: InvalidValueAction;
   placeholder: string;
   ref?: React.RefObject<HTMLInputElement>;
   regex: RegExp;
-  regexValidationText: string;
+  validationText: string;
   required?: boolean;
   rightSection?: boolean;
   rightSectionIcon?: ReactNode;
   rightSectionOnClick?: () => void;
-  semanticName: string;
+  name: string;
   size?: MantineSize;
   step: number; // stepper page location of input
-  width?: string | number;
   withAsterisk?: boolean;
 };
 
@@ -64,34 +62,32 @@ function AccessibleTextInputPostal({ attributes }: AccessibleTextInputPostalProp
     country,
     icon = null,
     initialInputValue = "+(1)",
-    inputText,
+    value,
     label,
     maxLength = 18,
     minLength = 18,
-    semanticName,
-    name = splitCamelCase(semanticName),
+    name,
     onBlur,
     onChange,
     onFocus,
     onKeyDown,
     parentDispatch,
-    parentOnChangeAction,
-    parentOnErrorAction,
+    parentValidValueAction,
+    parentInvalidValueAction,
     placeholder,
     ref = null,
     regex,
-    regexValidationText,
+    validationText,
     required = false,
     rightSection = false,
     rightSectionIcon = null,
     rightSectionOnClick = () => {},
     size = "sm",
     step,
-    width = 330,
     withAsterisk = false,
   } = attributes;
 
-  const [inputTextBuffer, setInputTextBuffer] = useState(inputText);
+  const [valueBuffer, setValueBuffer] = useState(value);
   const [popoverOpened, setPopoverOpened] = useState(false);
   const [isInputFocused, setIsInputFocused] = useState(false);
 
@@ -103,9 +99,9 @@ function AccessibleTextInputPostal({ attributes }: AccessibleTextInputPostalProp
     generalColors: { greenColorShade, iconGray },
   } = returnThemeColors({ colorsSwatches: COLORS_SWATCHES, themeObject });
 
-  const isInputTextBufferValid = regex.test(inputText);
+  const isValueBufferValid = regex.test(value);
 
-  const leftIcon = isInputTextBufferValid ? (
+  const leftIcon = isValueBufferValid ? (
     icon ? (
       icon
     ) : (
@@ -117,12 +113,10 @@ function AccessibleTextInputPostal({ attributes }: AccessibleTextInputPostalProp
     rightSectionIcon ? (
       rightSectionIcon
     ) : (
-      <Tooltip label={`Reset ${splitCamelCase(semanticName)} to ${initialInputValue}`}>
+      <Tooltip label={`Reset ${splitCamelCase(name)} to ${initialInputValue}`}>
         <Group style={{ cursor: "pointer" }}>
           <TbRefresh
-            aria-label={`Reset ${splitCamelCase(
-              semanticName
-            )} value to ${initialInputValue}`}
+            aria-label={`Reset ${splitCamelCase(name)} value to ${initialInputValue}`}
             color={iconGray}
             size={18}
             onClick={rightSectionOnClick}
@@ -132,19 +126,19 @@ function AccessibleTextInputPostal({ attributes }: AccessibleTextInputPostalProp
     )
   ) : null;
 
-  const [inputErrorTextElement, inputValidTextElement] = AccessibleErrorValidTextElements(
-    {
-      semanticName,
-      inputTextBuffer,
-      isInputTextBufferValid,
+  const [valueValidTextElement, valueInvalidTextElement] =
+    createAccessibleValueValidationTextElements({
       isInputFocused,
-      regexValidationText,
-    }
-  );
+      isValueBufferValid,
+      name,
+      themeObject,
+      valueBuffer,
+      validationText,
+    });
 
   return (
     <Popover
-      opened={inputText ? popoverOpened : false}
+      opened={valueBuffer ? popoverOpened : false}
       position="bottom"
       shadow="md"
       transitionProps={{ transition: "pop" }}
@@ -155,21 +149,20 @@ function AccessibleTextInputPostal({ attributes }: AccessibleTextInputPostalProp
         <div
           onBlurCapture={() => setPopoverOpened(false)}
           onFocusCapture={() => setPopoverOpened(true)}
-          style={{ width }}
         >
           <TextInput
             aria-describedby={
-              isInputTextBufferValid
-                ? // id of inputValidTextElement
-                  `${semanticName.split(" ").join("-")}-valid`
-                : // id of inputErrorTextElement
-                  `${semanticName.split(" ").join("-")}-error`
+              isValueBufferValid
+                ? // id of valueValidTextElement
+                  `${name}-valid`
+                : // id of valueInvalidTextElement
+                  `${name}-invalid`
             }
-            aria-invalid={isInputTextBufferValid ? false : true}
+            aria-invalid={isValueBufferValid ? false : true}
+            aria-label={name}
             aria-required={ariaRequired}
             autoComplete={autoComplete}
-            color="dark"
-            error={!isInputTextBufferValid && inputText !== initialInputValue}
+            error={!isValueBufferValid && value !== initialInputValue}
             icon={leftIcon}
             label={label}
             maxLength={maxLength}
@@ -177,37 +170,37 @@ function AccessibleTextInputPostal({ attributes }: AccessibleTextInputPostalProp
             name={name}
             onBlur={() => {
               parentDispatch({
-                type: parentOnErrorAction,
+                type: parentInvalidValueAction,
                 payload: {
-                  kind: isInputTextBufferValid ? "delete" : "add",
+                  kind: isValueBufferValid ? "delete" : "add",
                   step,
                 },
               });
 
               parentDispatch({
-                type: parentOnChangeAction,
-                payload: inputTextBuffer,
+                type: parentValidValueAction,
+                payload: valueBuffer,
               });
 
               setIsInputFocused(false);
               onBlur();
             }}
             onChange={(event: ChangeEvent<HTMLInputElement>) => {
-              const len = inputText.length;
+              const length = value.length;
 
               if (country === "Canada") {
-                if (len === 3) {
-                  setInputTextBuffer(`${inputText} `);
+                if (length === 3) {
+                  setValueBuffer(`${value} `);
                 }
 
-                if (len === 7) {
-                  setInputTextBuffer(inputText.trim());
+                if (length === 7) {
+                  setValueBuffer(value.trim());
                 }
               }
 
               if (country === "United States") {
-                if (len === 6) {
-                  setInputTextBuffer(`${inputText.slice(0, 5)}-${inputText.slice(5)}`);
+                if (length === 6) {
+                  setValueBuffer(`${value.slice(0, 5)}-${value.slice(5)}`);
                 }
               }
 
@@ -223,7 +216,7 @@ function AccessibleTextInputPostal({ attributes }: AccessibleTextInputPostalProp
             required={required}
             rightSection={rightIcon}
             size={size}
-            value={inputText}
+            value={valueBuffer}
             withAsterisk={withAsterisk}
           />
         </div>
@@ -231,7 +224,7 @@ function AccessibleTextInputPostal({ attributes }: AccessibleTextInputPostalProp
 
       <Popover.Dropdown>
         <Stack>
-          {isInputTextBufferValid ? inputValidTextElement : inputErrorTextElement}
+          {isValueBufferValid ? valueValidTextElement : valueInvalidTextElement}
         </Stack>
       </Popover.Dropdown>
     </Popover>

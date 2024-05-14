@@ -1,56 +1,53 @@
-import { Checkbox, MantineNumberSize, MantineSize, Text } from "@mantine/core";
+import { Checkbox, MantineSize, Text } from "@mantine/core";
 import { ChangeEvent, ReactNode, RefObject } from "react";
 
-import { splitCamelCase } from "../../utils";
-import { AccessibleSelectedDeselectedTextElements } from "./utils";
+import { useGlobalState } from "../../hooks";
+import { createAccessibleCheckboxSelectionsTextElements } from "./utils";
 
-type AccessibleCheckboxInputAttributes = {
-  ariaRequired?: boolean;
-  ariaLabel?: string;
+type AccessibleCheckboxInputSingleAttributes = {
   checked: boolean;
-  deselectedDescription: string;
   disabled?: boolean;
   key?: string;
-  label?: ReactNode | string;
+  label: ReactNode;
   onChange: (event: ChangeEvent<HTMLInputElement>) => void;
   ref?: RefObject<HTMLInputElement> | null;
   required?: boolean;
-  selectedDescription: string;
-  semanticName: string;
+  name: string;
   size?: MantineSize;
-  width?: MantineNumberSize;
+  value: string;
 };
 
 type AccessibleCheckboxInputSingleProps = {
-  attributes: AccessibleCheckboxInputAttributes;
+  attributes: AccessibleCheckboxInputSingleAttributes;
 };
 
 function AccessibleCheckboxInputSingle({
   attributes,
 }: AccessibleCheckboxInputSingleProps) {
   const {
-    semanticName,
-    ariaLabel = splitCamelCase(semanticName),
+    label,
+    name,
     checked,
-    deselectedDescription,
-    selectedDescription,
     onChange,
-    key = semanticName,
-    label = `${semanticName.charAt(0).toUpperCase()}${semanticName.slice(1)}`,
+    key = name,
     disabled = false,
     ref = null,
     required = false,
-    ariaRequired = required,
     size = "sm",
-    width = "auto",
+    value,
   } = attributes;
 
+  const {
+    globalState: { themeObject },
+  } = useGlobalState();
+
   const [selectedTextElement, deselectedTextElement] =
-    AccessibleSelectedDeselectedTextElements({
-      isSelected: checked,
-      semanticName,
-      selectedDescription,
-      deselectedDescription,
+    createAccessibleCheckboxSelectionsTextElements({
+      checked,
+      kind: "single",
+      name,
+      themeObject,
+      value,
     });
 
   return (
@@ -58,47 +55,41 @@ function AccessibleCheckboxInputSingle({
       aria-describedby={
         checked
           ? // id of selectedTextElement
-            `${semanticName.split(" ").join("-")}-selected`
+            `${name}-selected`
           : // id of deselectedTextElement
-            `${semanticName.split(" ").join("-")}-deselected`
+            `${name}-deselected`
       }
-      aria-label={ariaLabel}
-      aria-required={ariaRequired}
+      aria-label={name}
+      aria-required={required}
       checked={checked}
       description={checked ? selectedTextElement : deselectedTextElement}
       disabled={disabled}
       key={key}
       label={label}
-      name={semanticName.split(" ").join("-")}
+      name={name}
       onChange={onChange}
       ref={ref}
       required={required}
       size={size}
-      w={width}
+      value={value}
     />
   );
 }
 
 type AccessibleCheckboxInputGroupAttributes = {
-  ariaRequired?: boolean;
-  ariaLabel?: string;
-  deselectedDescription: string;
   /**
    * Set of values that should be disabled. Used by QueryBuilder component to disable values from projection exclusion if they have already been queued for inclusion (by Filter, Sort, or Search).
    */
   disabledValuesSet?: Set<string>;
   inputData: Array<{ value: string; label: string }>;
   key?: string;
-  label?: ReactNode | string;
-  name?: string;
+  label: ReactNode;
   onChange: (value: string[]) => void;
   ref?: RefObject<HTMLInputElement> | null;
   required?: boolean;
-  selectedDescription: string;
-  semanticName: string;
+  name: string;
   size?: MantineSize;
   value: string[];
-  widthCheckbox?: MantineNumberSize;
   withAsterisk?: boolean;
 };
 
@@ -108,32 +99,30 @@ type AccessibleCheckboxInputGroupProps = {
 
 function CheckboxGroupInputsWrapper({ attributes }: AccessibleCheckboxInputGroupProps) {
   const {
-    semanticName,
-    inputData,
-    ariaLabel = splitCamelCase(semanticName),
-    deselectedDescription,
     disabledValuesSet = new Set(),
+    inputData,
+    label,
+    name,
+    key = name + " - key",
     onChange,
-    key = semanticName,
-    label = `${semanticName.charAt(0).toUpperCase()}${semanticName.slice(1)}`,
-    ariaRequired = false,
-    value,
-    required = false,
     ref = null,
-    selectedDescription,
+    required = false,
     size = "sm",
+    value,
     withAsterisk = required,
-    widthCheckbox = "100%",
   } = attributes;
 
-  const inputWidth = 330;
+  const {
+    globalState: { themeObject },
+  } = useGlobalState();
 
   const [selectedTextElement, deselectedTextElement] =
-    AccessibleSelectedDeselectedTextElements({
-      isSelected: value.length > 0,
-      semanticName,
-      selectedDescription,
-      deselectedDescription,
+    createAccessibleCheckboxSelectionsTextElements({
+      checked: value.length > 0,
+      name,
+      kind: "group",
+      value,
+      themeObject,
     });
 
   return (
@@ -141,12 +130,12 @@ function CheckboxGroupInputsWrapper({ attributes }: AccessibleCheckboxInputGroup
       aria-describedby={
         value.length > 0
           ? // id of selectedTextElement
-            `${semanticName.split(" ").join("-")}-selected`
+            `${name}-selected`
           : // id of deselectedTextElement
-            `${semanticName.split(" ").join("-")}-deselected`
+            `${name}-deselected`
       }
-      aria-label={ariaLabel}
-      aria-required={ariaRequired}
+      aria-label={name}
+      aria-required={required}
       description={value.length > 0 ? selectedTextElement : deselectedTextElement}
       key={key}
       label={label}
@@ -154,8 +143,6 @@ function CheckboxGroupInputsWrapper({ attributes }: AccessibleCheckboxInputGroup
       ref={ref}
       required={required}
       size={size}
-      value={value}
-      w={widthCheckbox}
       withAsterisk={withAsterisk}
     >
       {inputData?.map(({ value, label }) => (
@@ -164,7 +151,6 @@ function CheckboxGroupInputsWrapper({ attributes }: AccessibleCheckboxInputGroup
           label={<Text>{label}</Text>}
           name={value}
           value={value}
-          w={inputWidth}
         />
       ))}
     </Checkbox.Group>
@@ -173,4 +159,7 @@ function CheckboxGroupInputsWrapper({ attributes }: AccessibleCheckboxInputGroup
 
 export { AccessibleCheckboxInputSingle, CheckboxGroupInputsWrapper };
 
-export type { AccessibleCheckboxInputAttributes, AccessibleCheckboxInputGroupAttributes };
+export type {
+  AccessibleCheckboxInputGroupAttributes,
+  AccessibleCheckboxInputSingleAttributes,
+};
