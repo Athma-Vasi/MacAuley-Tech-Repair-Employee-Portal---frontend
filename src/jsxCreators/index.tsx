@@ -52,7 +52,7 @@ import {
 import {
   AccessibleTextInput,
   AccessibleTextInputAttributes,
-} from "../components/wrappers/AccessibleTextInput";
+} from "../components/accessibleInputs/text/AccessibleTextInput";
 import { COLORS_SWATCHES, PROPERTY_DESCRIPTOR } from "../constants/data";
 import { useGlobalState } from "../hooks";
 import {

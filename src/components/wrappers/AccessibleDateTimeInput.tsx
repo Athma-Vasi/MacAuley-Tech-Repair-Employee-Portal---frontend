@@ -1,4 +1,5 @@
-import { MantineSize, Popover, Stack, TextInput } from "@mantine/core";
+import { Container, MantineSize, Popover, Stack, TextInput } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
 import { ChangeEvent, Dispatch, ReactNode, RefObject, useState } from "react";
 import { TbCheck } from "react-icons/tb";
 
@@ -27,7 +28,7 @@ type AccessibleDateTimeInputAttributes<
   minLength?: number;
   name: string;
   onBlur?: () => void;
-  onChange: (event: ChangeEvent<HTMLInputElement>) => void;
+  onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
   onFocus?: () => void;
   parentDispatch: Dispatch<
     | {
@@ -70,9 +71,9 @@ function AccessibleDateTimeInput({ attributes }: AccessibleDateTimeInputProps) {
     min = new Date().toISOString().split("T")[0], // current date
     minLength = inputKind === "date" ? 10 : 5,
     name,
-    onBlur = () => {},
+    onBlur,
     onChange,
-    onFocus = () => {},
+    onFocus,
     parentDispatch,
     validValueAction,
     invalidValueAction,
@@ -87,8 +88,9 @@ function AccessibleDateTimeInput({ attributes }: AccessibleDateTimeInputProps) {
   } = attributes;
 
   const [valueBuffer, setValueBuffer] = useState(value);
-  const [popoverOpened, setPopoverOpened] = useState(false);
-  const [isInputFocused, setIsInputFocused] = useState(false);
+  const [isPopoverOpened, { open: openPopover, close: closePopover }] =
+    useDisclosure(false);
+  // const [isInputFocused, setIsInputFocused] = useState(false);
 
   const {
     globalState: { themeObject },
@@ -110,11 +112,11 @@ function AccessibleDateTimeInput({ attributes }: AccessibleDateTimeInputProps) {
 
   const { validValueTextElement, invalidValueTextElement } =
     createAccessibleValueValidationTextElements({
-      isInputFocused,
+      isPopoverOpened,
       isValueBufferValid,
       name,
       themeObject,
-      valueBuffer,
+      value,
       validationTexts,
     });
 
@@ -149,19 +151,16 @@ function AccessibleDateTimeInput({ attributes }: AccessibleDateTimeInputProps) {
       : max;
 
   return (
-    <Popover
-      opened={valueBuffer ? popoverOpened : false}
-      position="bottom"
-      shadow="md"
-      transitionProps={{ transition: "pop" }}
-      width="target"
-      withArrow
-    >
-      <Popover.Target>
-        <div
-          onBlurCapture={() => setPopoverOpened(false)}
-          onFocusCapture={() => setPopoverOpened(true)}
-        >
+    <Container w={350}>
+      <Popover
+        opened={isPopoverOpened}
+        position="bottom"
+        shadow="md"
+        transitionProps={{ transition: "pop" }}
+        width="target"
+        withArrow
+      >
+        <Popover.Target>
           <TextInput
             aria-autocomplete={ariaAutoComplete}
             aria-describedby={
@@ -176,7 +175,7 @@ function AccessibleDateTimeInput({ attributes }: AccessibleDateTimeInputProps) {
             aria-required={required}
             autoComplete={autoComplete}
             color="dark"
-            error={!isValueBufferValid && value !== initialInputValue}
+            error={!isValueBufferValid && valueBuffer !== initialInputValue}
             icon={leftIcon}
             label={label}
             max={max_}
@@ -184,14 +183,6 @@ function AccessibleDateTimeInput({ attributes }: AccessibleDateTimeInputProps) {
             min={min_}
             minLength={inputKind === "date" ? 10 : inputKind === "time" ? 5 : minLength}
             name={name}
-            onChange={(event: ChangeEvent<HTMLInputElement>) => {
-              setValueBuffer(event.currentTarget.value);
-              onChange(event);
-            }}
-            onFocus={() => {
-              setIsInputFocused(true);
-              onFocus();
-            }}
             onBlur={() => {
               parentDispatch({
                 type: invalidValueAction,
@@ -206,8 +197,16 @@ function AccessibleDateTimeInput({ attributes }: AccessibleDateTimeInputProps) {
                 payload: valueBuffer,
               });
 
-              setIsInputFocused(false);
-              onBlur();
+              onBlur?.();
+              closePopover();
+            }}
+            onChange={(event: ChangeEvent<HTMLInputElement>) => {
+              setValueBuffer(event.currentTarget.value);
+              onChange?.(event);
+            }}
+            onFocus={() => {
+              openPopover();
+              onFocus?.();
             }}
             placeholder={placeholder}
             ref={ref}
@@ -217,15 +216,17 @@ function AccessibleDateTimeInput({ attributes }: AccessibleDateTimeInputProps) {
             value={valueBuffer}
             withAsterisk={withAsterisk}
           />
-        </div>
-      </Popover.Target>
+        </Popover.Target>
 
-      <Popover.Dropdown>
-        <Stack>
-          {isValueBufferValid ? validValueTextElement : invalidValueTextElement}
-        </Stack>
-      </Popover.Dropdown>
-    </Popover>
+        {isPopoverOpened && valueBuffer.length ? (
+          <Popover.Dropdown>
+            <Stack>
+              {isValueBufferValid ? validValueTextElement : invalidValueTextElement}
+            </Stack>
+          </Popover.Dropdown>
+        ) : null}
+      </Popover>
+    </Container>
   );
 }
 

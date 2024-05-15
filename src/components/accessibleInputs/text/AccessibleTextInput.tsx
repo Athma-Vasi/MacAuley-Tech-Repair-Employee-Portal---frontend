@@ -1,20 +1,35 @@
-import { Group, MantineSize, Popover, Stack, Text, TextInput } from "@mantine/core";
+import {
+  Box,
+  Container,
+  Group,
+  MantineSize,
+  Popover,
+  Stack,
+  Text,
+  TextInput,
+} from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
 import {
   ChangeEvent,
   Dispatch,
   KeyboardEvent,
   ReactNode,
   RefObject,
+  useReducer,
   useState,
 } from "react";
 import { TbCheck, TbRefresh } from "react-icons/tb";
 
-import { COLORS_SWATCHES } from "../../constants/data";
-import { useGlobalState } from "../../hooks";
-import { SetStepsInErrorPayload } from "../../types";
-import { capitalizeAll, returnThemeColors } from "../../utils";
-import { ValidationTexts } from "../../utils/validations";
-import { createAccessibleValueValidationTextElements } from "./utils";
+import { COLORS_SWATCHES } from "../../../constants/data";
+import { ThemeObject } from "../../../context/globalProvider/types";
+import { useGlobalState } from "../../../hooks";
+import { SetStepsInErrorPayload } from "../../../types";
+import { capitalizeAll, returnThemeColors } from "../../../utils";
+import { ValidationTexts } from "../../../utils/validations";
+import { createAccessibleValueValidationTextElements } from "../../wrappers/utils";
+import { accessibleTextInputAction } from "./actions";
+import { accessibleTextInputReducer } from "./reducers";
+import { initialAccessibleTextInputState } from "./state";
 
 type AccessibleTextInputAttributes<
   ValidValueAction extends string = string,
@@ -57,6 +72,7 @@ type AccessibleTextInputAttributes<
   rightSectionOnClick?: () => void;
   size?: MantineSize;
   step: number; // stepper page location of input
+  themeObject: ThemeObject;
   withAsterisk?: boolean;
 };
 
@@ -83,10 +99,10 @@ function AccessibleTextInput<
     label = capitalizeAll(name),
     maxLength = 75,
     minLength = 2,
-    onChange = () => {},
-    onBlur = () => {},
-    onFocus = () => {},
-    onKeyDown = () => {},
+    onChange,
+    onBlur,
+    onFocus,
+    onKeyDown,
     validValueAction,
     parentDispatch,
     invalidValueAction,
@@ -100,23 +116,20 @@ function AccessibleTextInput<
     rightSectionOnClick = () => {},
     size = "sm",
     step,
+    themeObject,
     withAsterisk = required,
   } = attributes;
 
   const [valueBuffer, setValueBuffer] = useState(value);
-  const [popoverOpened, setPopoverOpened] = useState(false);
-  const [isInputFocused, setIsInputFocused] = useState(false);
-
-  const {
-    globalState: { themeObject, padding },
-  } = useGlobalState();
+  const [isPopoverOpened, { open: openPopover, close: closePopover }] =
+    useDisclosure(false);
 
   const {
     generalColors: { greenColorShade, grayColorShade },
   } = returnThemeColors({ themeObject, colorsSwatches: COLORS_SWATCHES });
 
   const dynamicInputLabel = dynamicInputs ? (
-    <Group w="100%" position="apart" py={padding}>
+    <Group w="100%" position="apart" py="sm">
       <Text size="sm">{label}</Text>
       {dynamicInputs.map((input, index) => (
         <Group key={`${index}`}>{input}</Group>
@@ -150,28 +163,25 @@ function AccessibleTextInput<
 
   const { invalidValueTextElement, validValueTextElement } =
     createAccessibleValueValidationTextElements({
-      isInputFocused,
+      isPopoverOpened,
       isValueBufferValid,
       name,
       themeObject,
       validationTexts,
-      valueBuffer,
+      value: valueBuffer,
     });
 
   return (
-    <Popover
-      opened={valueBuffer ? popoverOpened : false}
-      position="bottom"
-      shadow="md"
-      transitionProps={{ transition: "pop" }}
-      width="target"
-      withArrow
-    >
-      <Popover.Target>
-        <div
-          onBlurCapture={() => setPopoverOpened(false)}
-          onFocusCapture={() => setPopoverOpened(true)}
-        >
+    <Container w={350}>
+      <Popover
+        opened={isPopoverOpened}
+        position="bottom"
+        shadow="md"
+        transitionProps={{ transition: "pop" }}
+        width="target"
+        withArrow
+      >
+        <Popover.Target>
           <TextInput
             aria-autocomplete={ariaAutoComplete}
             aria-describedby={
@@ -193,14 +203,6 @@ function AccessibleTextInput<
             maxLength={maxLength}
             minLength={minLength}
             name={name}
-            onChange={(event: ChangeEvent<HTMLInputElement>) => {
-              setValueBuffer(event.currentTarget.value);
-              onChange(event);
-            }}
-            onFocus={() => {
-              setIsInputFocused(true);
-              onFocus();
-            }}
             onBlur={() => {
               parentDispatch({
                 type: invalidValueAction,
@@ -215,8 +217,18 @@ function AccessibleTextInput<
                 payload: valueBuffer,
               });
 
-              setIsInputFocused(false);
-              onBlur();
+              onBlur?.();
+
+              closePopover();
+            }}
+            onChange={(event: ChangeEvent<HTMLInputElement>) => {
+              setValueBuffer(event.currentTarget.value);
+
+              onChange?.(event);
+            }}
+            onFocus={() => {
+              openPopover();
+              onFocus?.();
             }}
             onKeyDown={onKeyDown}
             placeholder={placeholder}
@@ -225,17 +237,20 @@ function AccessibleTextInput<
             rightSection={rightIcon}
             size={size}
             value={valueBuffer}
+            width={300}
             withAsterisk={withAsterisk}
           />
-        </div>
-      </Popover.Target>
+        </Popover.Target>
 
-      <Popover.Dropdown>
-        <Stack>
-          {isValueBufferValid ? validValueTextElement : invalidValueTextElement}
-        </Stack>
-      </Popover.Dropdown>
-    </Popover>
+        {isPopoverOpened && valueBuffer.length ? (
+          <Popover.Dropdown>
+            <Stack>
+              {isValueBufferValid ? validValueTextElement : invalidValueTextElement}
+            </Stack>
+          </Popover.Dropdown>
+        ) : null}
+      </Popover>
+    </Container>
   );
 }
 

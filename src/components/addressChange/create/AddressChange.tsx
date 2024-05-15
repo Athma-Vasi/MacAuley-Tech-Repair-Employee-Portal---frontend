@@ -54,7 +54,7 @@ import { AddressChangeDocument, AddressChangeState } from "./types";
 import {
   AccessibleTextInput,
   AccessibleTextInputAttributes,
-} from "../../wrappers/AccessibleTextInput";
+} from "../../accessibleInputs/text/AccessibleTextInput";
 import { NumberInputWrapper } from "../../wrappers/NumberInputWrapper";
 import { addressChangeReducer } from "./reducers";
 import { AddressChangeAction, addressChangeAction } from "./actions";
@@ -64,9 +64,18 @@ import {
   createPhoneNumberValidationTexts,
   createPostalCodeValidationTexts,
 } from "../../../utils/validations";
-import { AccessibleSelectInputAttributes } from "../../wrappers/AccessibleSelectInput";
-import { AccessibleCheckboxInputSingleAttributes } from "../../wrappers/AccessibleCheckboxInput";
-import { AccessibleButtonAttributes } from "../../wrappers/AccessibleButton";
+import {
+  AccessibleSelectInput,
+  AccessibleSelectInputAttributes,
+} from "../../wrappers/AccessibleSelectInput";
+import {
+  AccessibleCheckboxInputSingle,
+  AccessibleCheckboxInputSingleAttributes,
+} from "../../wrappers/AccessibleCheckboxInput";
+import {
+  AccessibleButton,
+  AccessibleButtonAttributes,
+} from "../../wrappers/AccessibleButton";
 import {
   createAccessibleButtons,
   createAccessibleCheckboxSingleInputs,
@@ -75,6 +84,7 @@ import {
   createAccessibleTextInputsPostal,
 } from "../../wrappers/utils";
 import { AccessibleTextInputPostal } from "../../wrappers/AccessibleTextInputPostal";
+import { AccessibleTextInputPhone } from "../../wrappers/AccessibleTextInputPhone";
 
 function AddressChange() {
   const [addressChangeState, addressChangeDispatch] = useReducer(
@@ -100,11 +110,11 @@ function AddressChange() {
 
   ////
 
-  useEffect(() => {
-    if (province === "British Columbia") {
-      throw new Error("ERROR from AddressChange");
-    }
-  }, [province]);
+  // useEffect(() => {
+  //   if (province === "British Columbia") {
+  //     throw new Error("ERROR from AddressChange");
+  //   }
+  // }, [province]);
 
   useEffect(() => {
     logState({
@@ -114,6 +124,10 @@ function AddressChange() {
   }, [addressChangeState]);
 
   ////
+
+  const {
+    globalState: { themeObject },
+  } = useGlobalState();
 
   const { wrappedFetch } = useWrapFetch();
 
@@ -229,166 +243,193 @@ function AddressChange() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [triggerFormSubmit]);
 
-  const postalCodeInputAttributes: AccessibleTextInputAttributes<
-    AddressChangeAction["setPostalCode"],
-    AddressChangeAction["setStepsInError"]
-  > = {
-    name: "postal code",
-    value: postalCode,
-    parentDispatch: addressChangeDispatch,
-    invalidValueAction: addressChangeAction.setStepsInError,
-    validValueAction: addressChangeAction.setPostalCode,
-    regex: POSTAL_CODE_REGEX_CANADA,
-    step: 0,
-    validationTexts: createPostalCodeValidationTexts({
-      country,
-      name: "postal code",
-      value: postalCode,
-    }),
-  };
-
-  const contactNumberInputAttributes: AccessibleTextInputAttributes<
-    AddressChangeAction["setContactNumber"],
-    AddressChangeAction["setStepsInError"]
-  > = {
-    name: "contact number",
-    value: contactNumber,
-    parentDispatch: addressChangeDispatch,
-    invalidValueAction: addressChangeAction.setStepsInError,
-    validValueAction: addressChangeAction.setContactNumber,
-    regex: PHONE_NUMBER_REGEX,
-    step: 0,
-    validationTexts: createPhoneNumberValidationTexts({
-      name: "contact number",
-      value: contactNumber,
-    }),
-  };
-
-  const provinceSelectInputAttributes: AccessibleSelectInputAttributes<
-    AddressChangeAction["setProvince"],
-    Province
-  > = {
-    data: PROVINCES,
-    name: "province",
-    parentDispatch: addressChangeDispatch,
-    validValueAction: addressChangeAction.setProvince,
-    value: province,
-  };
-
-  const stateSelectInputAttributes: AccessibleSelectInputAttributes<
-    AddressChangeAction["setState"],
-    StatesUS
-  > = {
-    data: STATES_US,
-    name: "state",
-    parentDispatch: addressChangeDispatch,
-    validValueAction: addressChangeAction.setState,
-    value: state,
-  };
-
-  const countrySelectInputAttributes: AccessibleSelectInputAttributes<
-    AddressChangeAction["setCountry"],
-    Country
-  > = {
-    data: COUNTRIES_DATA,
-    name: "country",
-    parentDispatch: addressChangeDispatch,
-    validValueAction: addressChangeAction.setCountry,
-    value: country,
-  };
-
-  const submitButtonAttributes: AccessibleButtonAttributes = {
-    name: "submit button",
-    onClick: (_event: MouseEvent<HTMLButtonElement>) => {
-      addressChangeDispatch({
-        type: addressChangeAction.setTriggerFormSubmit,
-        payload: true,
-      });
-    },
-    disabled: stepsInError.size > 0 || triggerFormSubmit,
-  };
-
-  const [addressLineTextInput, cityTextInput] = createAccessibleTextInputs([
-    {
-      name: "address line",
-      value: addressLine,
-      parentDispatch: addressChangeDispatch,
-      invalidValueAction: addressChangeAction.setStepsInError,
-      validValueAction: addressChangeAction.setAddressLine,
-      regex: ADDRESS_LINE_REGEX,
-      step: 0,
-      validationTexts: createAddressValidationTexts({
+  const addressLineTextInput = (
+    <AccessibleTextInput
+      attributes={{
         name: "address line",
         value: addressLine,
-      }),
-    },
-    {
-      name: "city",
-      value: city,
-      parentDispatch: addressChangeDispatch,
-      invalidValueAction: addressChangeAction.setStepsInError,
-      validValueAction: addressChangeAction.setCity,
-      regex: CITY_REGEX,
-      step: 0,
-      validationTexts: createCityValidationTexts({
+        parentDispatch: addressChangeDispatch,
+        invalidValueAction: addressChangeAction.setStepsInError,
+        validValueAction: addressChangeAction.setAddressLine,
+        regex: ADDRESS_LINE_REGEX,
+        step: 0,
+        themeObject,
+        validationTexts: createAddressValidationTexts({
+          name: "address line",
+          value: addressLine,
+        }),
+      }}
+    />
+  );
+
+  const cityTextInput = (
+    <AccessibleTextInput
+      attributes={{
         name: "city",
         value: city,
-      }),
-    },
-  ]);
+        parentDispatch: addressChangeDispatch,
+        invalidValueAction: addressChangeAction.setStepsInError,
+        validValueAction: addressChangeAction.setCity,
+        regex: CITY_REGEX,
+        step: 0,
+        themeObject,
+        validationTexts: createCityValidationTexts({
+          name: "city",
+          value: city,
+        }),
+      }}
+    />
+  );
 
-  const [acknowledgementCheckbox] = createAccessibleCheckboxSingleInputs([
-    {
-      checked: isAcknowledged,
-      name: "acknowledgement",
-      parentDispatch: addressChangeDispatch,
-      validValueAction: addressChangeAction.setIsAcknowledged,
-      value: isAcknowledged ? "true" : "false",
-    },
-  ]);
+  const contactNumberInput = (
+    <AccessibleTextInputPhone
+      attributes={{
+        invalidValueAction: addressChangeAction.setStepsInError,
+        name: "contact number",
+        parentDispatch: addressChangeDispatch,
+        regex: PHONE_NUMBER_REGEX,
+        rightSection: true,
+        rightSectionOnClick: () => {
+          addressChangeDispatch({
+            type: addressChangeAction.setContactNumber,
+            payload: "+(1)",
+          });
+        },
+        step: 0,
+        validationTexts: createPhoneNumberValidationTexts({
+          name: "contact number",
+          value: contactNumber,
+        }),
+        validValueAction: addressChangeAction.setContactNumber,
+        value: contactNumber,
+      }}
+    />
+  );
 
-  const [countrySelectInput] = createAccessibleSelectInputs<
-    AddressChangeAction["setCountry"],
-    Country
-  >([
-    {
-      data: COUNTRIES_DATA,
-      name: "country",
-      parentDispatch: addressChangeDispatch,
-      validValueAction: addressChangeAction.setCountry,
-    },
-  ]);
+  const postalCodeInput = (
+    <AccessibleTextInputPostal
+      attributes={{
+        country,
+        invalidValueAction: addressChangeAction.setStepsInError,
+        name: "postal code",
+        parentDispatch: addressChangeDispatch,
+        regex: POSTAL_CODE_REGEX_CANADA,
+        step: 0,
+        validationTexts: createPostalCodeValidationTexts({
+          country,
+          name: "postal code",
+          value: postalCode,
+        }),
+        validValueAction: addressChangeAction.setPostalCode,
+        value: postalCode,
+      }}
+    />
+  );
 
-  const [provinceOrStateSelectInput] =
-    country === "Canada"
-      ? createAccessibleSelectInputs<AddressChangeAction["setProvince"], Province>([
-          {
-            data: PROVINCES,
-            name: "province",
-            parentDispatch: addressChangeDispatch,
-            validValueAction: addressChangeAction.setProvince,
-          },
-        ])
-      : createAccessibleSelectInputs<AddressChangeAction["setState"], StatesUS>([
-          {
-            data: STATES_US,
-            name: "state",
-            parentDispatch: addressChangeDispatch,
-            validValueAction: addressChangeAction.setState,
-          },
-        ]);
+  const acknowledgementCheckbox = (
+    <AccessibleCheckboxInputSingle
+      attributes={{
+        checked: isAcknowledged,
+        name: "acknowledgement",
+        parentDispatch: addressChangeDispatch,
+        validValueAction: addressChangeAction.setIsAcknowledged,
+        value: isAcknowledged ? "true" : "false",
+      }}
+    />
+  );
 
-  const [submitButton] = createAccessibleButtons([
-    {
-      name: "submit",
-      onClick: (_event: MouseEvent<HTMLButtonElement>) => {
-        addressChangeDispatch({
-          type: addressChangeAction.setTriggerFormSubmit,
-          payload: true,
-        });
-      },
-    },
-  ]);
+  const countrySelectInput = (
+    <AccessibleSelectInput<AddressChangeAction["setCountry"], Country>
+      attributes={{
+        data: COUNTRIES_DATA,
+        name: "country",
+        parentDispatch: addressChangeDispatch,
+        validValueAction: addressChangeAction.setCountry,
+      }}
+    />
+  );
+
+  const provinceOrStateSelectInput =
+    country === "Canada" ? (
+      <AccessibleSelectInput<AddressChangeAction["setProvince"], Province>
+        attributes={{
+          data: PROVINCES,
+          name: "province",
+          parentDispatch: addressChangeDispatch,
+          validValueAction: addressChangeAction.setProvince,
+        }}
+      />
+    ) : (
+      <AccessibleSelectInput<AddressChangeAction["setState"], StatesUS>
+        attributes={{
+          data: STATES_US,
+          name: "state",
+          parentDispatch: addressChangeDispatch,
+          validValueAction: addressChangeAction.setState,
+        }}
+      />
+    );
+
+  const submitButton = (
+    <AccessibleButton
+      attributes={{
+        name: "submit",
+        onClick: (_event: MouseEvent<HTMLButtonElement>) => {
+          addressChangeDispatch({
+            type: addressChangeAction.setTriggerFormSubmit,
+            payload: true,
+          });
+        },
+        disabled: stepsInError.size > 0 || triggerFormSubmit,
+      }}
+    />
+  );
+
+  const submitButtonWithTooltip =
+    currentStepperPosition === ADDRESS_CHANGE_MAX_STEPPER_POSITION ? (
+      <Tooltip
+        label={
+          stepsInError.size > 0
+            ? "Please fix errors before submitting form"
+            : "Submit Address Change form"
+        }
+      >
+        <Group w="100%" position="center">
+          {submitButton}
+        </Group>
+      </Tooltip>
+    ) : null;
+
+  const createdAddressChangeForm = (
+    <FormLayoutWrapper>
+      {contactNumberInput}
+      {/* {countrySelectInput} */}
+      {addressLineTextInput}
+      {cityTextInput}
+      {/* {provinceOrStateSelectInput} */}
+      {/* {postalCodeInput} */}
+      {/* {acknowledgementCheckbox} */}
+    </FormLayoutWrapper>
+  );
+
+  const displayAddressChangeForm =
+    currentStepperPosition === 0 ? createdAddressChangeForm : submitButtonWithTooltip;
+
+  const addressChange = (
+    <StepperWrapper
+      childrenTitle="Address change"
+      currentStepperPosition={currentStepperPosition}
+      setCurrentStepperPosition={addressChangeAction.setCurrentStepperPosition}
+      descriptionObjectsArray={ADDRESS_CHANGE_DESCRIPTION_OBJECTS}
+      maxStepperPosition={ADDRESS_CHANGE_MAX_STEPPER_POSITION}
+      parentComponentDispatch={addressChangeDispatch}
+      stepsInError={stepsInError}
+    >
+      {displayAddressChangeForm}
+    </StepperWrapper>
+  );
+
+  return addressChange;
 
   //
   //

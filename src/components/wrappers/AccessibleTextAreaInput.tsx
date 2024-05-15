@@ -1,4 +1,12 @@
-import { Group, MantineSize, Popover, Stack, Text, Textarea } from "@mantine/core";
+import {
+  Container,
+  Group,
+  MantineSize,
+  Popover,
+  Stack,
+  Text,
+  Textarea,
+} from "@mantine/core";
 import { ChangeEvent, Dispatch, KeyboardEvent, ReactNode, useState } from "react";
 import React from "react";
 import { TbCheck, TbRefresh } from "react-icons/tb";
@@ -9,6 +17,7 @@ import { SetStepsInErrorPayload } from "../../types";
 import { capitalizeAll, returnThemeColors } from "../../utils";
 import { ValidationTexts } from "../../utils/validations";
 import { createAccessibleValueValidationTextElements } from "./utils";
+import { useDisclosure } from "@mantine/hooks";
 
 type AccessibleTextAreaInputAttributes<
   ValidValueAction extends string = string,
@@ -81,10 +90,10 @@ function AccessibleTextAreaInput<
     minLength = 2,
     minRows = 3,
     name,
-    onBlur = () => {},
+    onBlur,
     onChange,
-    onFocus = () => {},
-    onKeyDown = () => {},
+    onFocus,
+    onKeyDown,
     parentDispatch,
     validValueAction,
     invalidValueAction,
@@ -102,8 +111,8 @@ function AccessibleTextAreaInput<
   } = attributes;
 
   const [valueBuffer, setValueBuffer] = useState(value);
-  const [popoverOpened, setPopoverOpened] = useState(false);
-  const [isInputFocused, setIsInputFocused] = useState(false);
+  const [isPopoverOpened, { open: openPopover, close: closePopover }] =
+    useDisclosure(false);
 
   const {
     globalState: { themeObject, padding },
@@ -124,7 +133,7 @@ function AccessibleTextAreaInput<
     label
   );
 
-  const isValueBufferValid = regex.test(value);
+  const isValueBufferValid = regex.test(valueBuffer);
 
   const leftIcon = isValueBufferValid ? (
     icon ? (
@@ -149,94 +158,95 @@ function AccessibleTextAreaInput<
 
   const { invalidValueTextElement, validValueTextElement } =
     createAccessibleValueValidationTextElements({
-      name,
-      isInputFocused,
+      isPopoverOpened,
       isValueBufferValid,
+      name,
       themeObject,
-      valueBuffer,
       validationTexts,
+      value,
     });
 
   return (
-    <Popover
-      opened={valueBuffer ? popoverOpened : false}
-      position="bottom"
-      shadow="md"
-      transitionProps={{ transition: "pop" }}
-      width="target"
-      withArrow
-    >
-      <Popover.Target>
-        <div
-          onBlurCapture={() => setPopoverOpened(false)}
-          onFocusCapture={() => setPopoverOpened(true)}
-        >
-          <Textarea
-            aria-autocomplete={ariaAutoComplete}
-            aria-describedby={
-              isValueBufferValid
-                ? // id of validValueTextElement
-                  `${name}-valid`
-                : // id of invalidValueTextElement
-                  `${name}-invalid`
-            }
-            aria-invalid={isValueBufferValid ? false : true}
-            aria-label={name}
-            aria-required={required}
-            autoComplete={autoComplete}
-            color={grayColorShade}
-            disabled={disabled}
-            error={!isValueBufferValid && value !== initialInputValue}
-            icon={leftIcon}
-            label={dynamicInputLabel}
-            maxLength={maxLength}
-            maxRows={maxRows}
-            minLength={minLength}
-            minRows={minRows}
-            name={name}
-            onChange={(event: ChangeEvent<HTMLTextAreaElement>) => {
-              setValueBuffer(event.currentTarget.value);
-              onChange(event);
-            }}
-            onFocus={() => {
-              setIsInputFocused(true);
-              onFocus();
-            }}
-            onBlur={() => {
-              parentDispatch({
-                type: invalidValueAction,
-                payload: {
-                  kind: isValueBufferValid ? "delete" : "add",
-                  step,
-                },
-              });
+    <Container w={350}>
+      <Popover
+        opened={isPopoverOpened}
+        position="bottom"
+        shadow="md"
+        transitionProps={{ transition: "pop" }}
+        width="target"
+        withArrow
+      >
+        <Popover.Target>
+          <div onBlurCapture={() => openPopover()} onFocusCapture={() => closePopover()}>
+            <Textarea
+              aria-autocomplete={ariaAutoComplete}
+              aria-describedby={
+                isValueBufferValid
+                  ? // id of validValueTextElement
+                    `${name}-valid`
+                  : // id of invalidValueTextElement
+                    `${name}-invalid`
+              }
+              aria-invalid={isValueBufferValid ? false : true}
+              aria-label={name}
+              aria-required={required}
+              autoComplete={autoComplete}
+              color={grayColorShade}
+              disabled={disabled}
+              error={!isValueBufferValid && value !== initialInputValue}
+              icon={leftIcon}
+              label={dynamicInputLabel}
+              maxLength={maxLength}
+              maxRows={maxRows}
+              minLength={minLength}
+              minRows={minRows}
+              name={name}
+              onBlur={() => {
+                parentDispatch({
+                  type: invalidValueAction,
+                  payload: {
+                    kind: isValueBufferValid ? "delete" : "add",
+                    step,
+                  },
+                });
 
-              parentDispatch({
-                type: validValueAction,
-                payload: valueBuffer,
-              });
+                parentDispatch({
+                  type: validValueAction,
+                  payload: valueBuffer,
+                });
 
-              setIsInputFocused(false);
-              onBlur();
-            }}
-            onKeyDown={onKeyDown}
-            placeholder={placeholder}
-            ref={ref}
-            required={required}
-            rightSection={rightIcon}
-            size={size}
-            value={valueBuffer}
-            withAsterisk={withAsterisk}
-          />
-        </div>
-      </Popover.Target>
+                onBlur?.();
+                closePopover();
+              }}
+              onChange={(event: ChangeEvent<HTMLTextAreaElement>) => {
+                setValueBuffer(event.currentTarget.value);
+                onChange?.(event);
+              }}
+              onFocus={() => {
+                openPopover();
+                onFocus?.();
+              }}
+              onKeyDown={onKeyDown}
+              placeholder={placeholder}
+              ref={ref}
+              required={required}
+              rightSection={rightIcon}
+              size={size}
+              value={valueBuffer}
+              withAsterisk={withAsterisk}
+            />
+          </div>
+        </Popover.Target>
 
-      <Popover.Dropdown>
-        <Stack>
-          {isValueBufferValid ? validValueTextElement : invalidValueTextElement}
-        </Stack>
-      </Popover.Dropdown>
-    </Popover>
+        {isPopoverOpened && valueBuffer.length ? (
+          <Popover.Dropdown>
+            <Stack>
+              {isValueBufferValid ? validValueTextElement : invalidValueTextElement}
+            </Stack>
+          </Popover.Dropdown>
+        ) : null}
+      </Popover>
+    </Container>
   );
 }
 

@@ -6,6 +6,10 @@ import { TbCheck, TbExclamationCircle } from "react-icons/tb";
 import { COLORS_SWATCHES } from "../../constants/data";
 import { ThemeObject } from "../../context/globalProvider/types";
 import { replaceLastCommaWithAnd, returnThemeColors } from "../../utils";
+import {
+  AccessibleTextInput,
+  AccessibleTextInputAttributes,
+} from "../accessibleInputs/text/AccessibleTextInput";
 import { AccessibleButton, AccessibleButtonAttributes } from "./AccessibleButton";
 import {
   AccessibleCheckboxInputGroup,
@@ -28,20 +32,20 @@ import {
   AccessibleTextAreaInputAttributes,
 } from "./AccessibleTextAreaInput";
 import {
-  AccessibleTextInput,
-  AccessibleTextInputAttributes,
-} from "./AccessibleTextInput";
+  AccessibleTextInputPhone,
+  AccessibleTextInputPhoneAttributes,
+} from "./AccessibleTextInputPhone";
 import {
   AccessibleTextInputPostal,
   AccessibleTextInputPostalAttributes,
 } from "./AccessibleTextInputPostal";
 
 type CreateAccessibleValueValidationTextElements = {
-  isInputFocused: boolean;
+  isPopoverOpened: boolean;
   isValueBufferValid: boolean;
   name: string;
   themeObject: ThemeObject;
-  valueBuffer: string;
+  value: string;
   validationTexts: {
     valueInvalidText: string;
     valueValidText: string;
@@ -49,11 +53,11 @@ type CreateAccessibleValueValidationTextElements = {
 };
 
 function createAccessibleValueValidationTextElements({
-  isInputFocused,
+  isPopoverOpened,
   isValueBufferValid,
   name,
   themeObject,
-  valueBuffer,
+  value,
   validationTexts: { valueInvalidText, valueValidText },
 }: CreateAccessibleValueValidationTextElements): {
   validValueTextElement: React.JSX.Element;
@@ -67,7 +71,7 @@ function createAccessibleValueValidationTextElements({
     <Text
       id={`${name}-invalid`}
       style={{
-        display: isInputFocused && valueBuffer && !isValueBufferValid ? "block" : "none",
+        display: isPopoverOpened && value && !isValueBufferValid ? "block" : "none",
       }}
       w="100%"
       aria-live="polite"
@@ -80,7 +84,7 @@ function createAccessibleValueValidationTextElements({
         </Grid.Col>
         <Grid.Col span={12}>
           <Group position="right">
-            <Text>{valueInvalidText}</Text>valueValidText,
+            <Text>{valueInvalidText}</Text>
           </Group>
         </Grid.Col>
       </Grid>
@@ -91,7 +95,7 @@ function createAccessibleValueValidationTextElements({
     <Text
       id={`${name}-valid`}
       style={{
-        display: isInputFocused && valueBuffer && isValueBufferValid ? "block" : "none",
+        display: isPopoverOpened && value && isValueBufferValid ? "block" : "none",
       }}
       color={greenColorShade}
       w="100%"
@@ -528,6 +532,23 @@ function createAccessibleTextInputsPostal<
   ));
 }
 
+function createAccessibleTextInputsPhone<
+  ValidValueAction extends string = string,
+  InvalidValueAction extends string = string
+>(
+  attributesArray: AccessibleTextInputPhoneAttributes<
+    ValidValueAction,
+    InvalidValueAction
+  >[]
+): React.JSX.Element[] {
+  return attributesArray.map((attributes, index) => (
+    <AccessibleTextInputPhone
+      key={`${index}-${attributes.name}`}
+      attributes={attributes}
+    />
+  ));
+}
+
 export {
   createAccessibleButtons,
   createAccessibleButtonScreenreaderTextElements,
@@ -542,6 +563,7 @@ export {
   createAccessibleSwitchOnOffTextElements,
   createAccessibleTextAreaInputs,
   createAccessibleTextInputs,
+  createAccessibleTextInputsPhone,
   createAccessibleTextInputsPostal,
   createAccessibleValueValidationTextElements,
 };

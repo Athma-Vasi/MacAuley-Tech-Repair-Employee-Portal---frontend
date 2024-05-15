@@ -1,4 +1,13 @@
-import { Group, MantineSize, Popover, Stack, TextInput, Tooltip } from "@mantine/core";
+import {
+  Container,
+  Group,
+  MantineSize,
+  Popover,
+  Stack,
+  TextInput,
+  Tooltip,
+} from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
 import { ChangeEvent, Dispatch, ReactNode, useState } from "react";
 import { TbCheck, TbRefresh } from "react-icons/tb";
 
@@ -21,10 +30,10 @@ type AccessibleTextInputPostalAttributes<
   label?: ReactNode;
   maxLength?: number;
   minLength?: number;
-  onBlur: () => void;
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  onFocus: () => void;
-  onKeyDown: (event: React.KeyboardEvent<HTMLInputElement>) => void;
+  onBlur?: () => void;
+  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onFocus?: () => void;
+  onKeyDown?: (event: React.KeyboardEvent<HTMLInputElement>) => void;
   parentDispatch: Dispatch<
     | {
         type: ValidValueAction;
@@ -37,7 +46,7 @@ type AccessibleTextInputPostalAttributes<
   >;
   validValueAction: ValidValueAction;
   invalidValueAction: InvalidValueAction;
-  placeholder: string;
+  placeholder?: string;
   ref?: React.RefObject<HTMLInputElement>;
   regex: RegExp;
   validationTexts: ValidationTexts;
@@ -93,8 +102,8 @@ function AccessibleTextInputPostal<
   } = attributes;
 
   const [valueBuffer, setValueBuffer] = useState(value);
-  const [popoverOpened, setPopoverOpened] = useState(false);
-  const [isInputFocused, setIsInputFocused] = useState(false);
+  const [isPopoverOpened, { open: openPopover, close: closePopover }] =
+    useDisclosure(false);
 
   const {
     globalState: { themeObject },
@@ -104,7 +113,7 @@ function AccessibleTextInputPostal<
     generalColors: { greenColorShade, iconGray },
   } = returnThemeColors({ colorsSwatches: COLORS_SWATCHES, themeObject });
 
-  const isValueBufferValid = regex.test(value);
+  const isValueBufferValid = regex.test(valueBuffer);
 
   const leftIcon = isValueBufferValid ? (
     icon ? (
@@ -133,28 +142,25 @@ function AccessibleTextInputPostal<
 
   const { validValueTextElement, invalidValueTextElement } =
     createAccessibleValueValidationTextElements({
-      isInputFocused,
+      isPopoverOpened,
       isValueBufferValid,
       name,
       themeObject,
-      valueBuffer,
+      value,
       validationTexts,
     });
 
   return (
-    <Popover
-      opened={valueBuffer ? popoverOpened : false}
-      position="bottom"
-      shadow="md"
-      transitionProps={{ transition: "pop" }}
-      width="target"
-      withArrow
-    >
-      <Popover.Target>
-        <div
-          onBlurCapture={() => setPopoverOpened(false)}
-          onFocusCapture={() => setPopoverOpened(true)}
-        >
+    <Container w={350}>
+      <Popover
+        opened={isPopoverOpened}
+        position="bottom"
+        shadow="md"
+        transitionProps={{ transition: "pop" }}
+        width="target"
+        withArrow
+      >
+        <Popover.Target>
           <TextInput
             aria-describedby={
               isValueBufferValid
@@ -167,13 +173,40 @@ function AccessibleTextInputPostal<
             aria-label={name}
             aria-required={required}
             autoComplete={autoComplete}
-            error={!isValueBufferValid && value !== initialInputValue}
+            error={!isValueBufferValid && valueBuffer !== initialInputValue}
             icon={leftIcon}
             label={label}
             maxLength={maxLength}
             minLength={minLength}
             name={name}
             onBlur={() => {
+              const length = valueBuffer.length;
+
+              if (country === "Canada") {
+                if (length === 3) {
+                  parentDispatch({
+                    type: validValueAction,
+                    payload: `${valueBuffer} `,
+                  });
+                }
+
+                if (length === 7) {
+                  parentDispatch({
+                    type: validValueAction,
+                    payload: valueBuffer.trim(),
+                  });
+                }
+              }
+
+              if (country === "United States") {
+                if (length === 6) {
+                  parentDispatch({
+                    type: validValueAction,
+                    payload: `${valueBuffer.slice(0, 5)}-${valueBuffer.slice(5)}`,
+                  });
+                }
+              }
+
               parentDispatch({
                 type: invalidValueAction,
                 payload: {
@@ -187,33 +220,16 @@ function AccessibleTextInputPostal<
                 payload: valueBuffer,
               });
 
-              setIsInputFocused(false);
-              onBlur();
+              onBlur?.();
+              closePopover();
             }}
             onChange={(event: ChangeEvent<HTMLInputElement>) => {
-              const length = value.length;
-
-              if (country === "Canada") {
-                if (length === 3) {
-                  setValueBuffer(`${value} `);
-                }
-
-                if (length === 7) {
-                  setValueBuffer(value.trim());
-                }
-              }
-
-              if (country === "United States") {
-                if (length === 6) {
-                  setValueBuffer(`${value.slice(0, 5)}-${value.slice(5)}`);
-                }
-              }
-
-              onChange(event);
+              setValueBuffer(event.currentTarget.value);
+              onChange?.(event);
             }}
             onFocus={() => {
-              setIsInputFocused(true);
-              onFocus();
+              openPopover();
+              onFocus?.();
             }}
             onKeyDown={onKeyDown}
             placeholder={placeholder}
@@ -224,15 +240,17 @@ function AccessibleTextInputPostal<
             value={valueBuffer}
             withAsterisk={withAsterisk}
           />
-        </div>
-      </Popover.Target>
+        </Popover.Target>
 
-      <Popover.Dropdown>
-        <Stack>
-          {isValueBufferValid ? validValueTextElement : invalidValueTextElement}
-        </Stack>
-      </Popover.Dropdown>
-    </Popover>
+        {isPopoverOpened && valueBuffer.length ? (
+          <Popover.Dropdown>
+            <Stack>
+              {isValueBufferValid ? validValueTextElement : invalidValueTextElement}
+            </Stack>
+          </Popover.Dropdown>
+        ) : null}
+      </Popover>
+    </Container>
   );
 }
 

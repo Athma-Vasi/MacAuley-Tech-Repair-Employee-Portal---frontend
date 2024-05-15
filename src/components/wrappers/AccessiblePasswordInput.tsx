@@ -1,4 +1,5 @@
-import { MantineSize, PasswordInput, Popover, Stack } from "@mantine/core";
+import { Container, MantineSize, PasswordInput, Popover, Stack } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
 import { ChangeEvent, Dispatch, ReactNode, RefObject, useState } from "react";
 import { TbCheck } from "react-icons/tb";
 
@@ -21,7 +22,7 @@ type AccessiblePasswordInputAttributes<
   minLength?: number;
   name: string;
   onBlur?: () => void;
-  onChange: (event: ChangeEvent<HTMLInputElement>) => void;
+  onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
   onFocus?: () => void;
   parentDispatch: Dispatch<
     | {
@@ -58,9 +59,9 @@ function AccessiblePasswordInput({ attributes }: AccessiblePasswordInputProps) {
     label = capitalizeAll(name),
     maxLength = 32,
     minLength = 8,
-    onBlur = () => {},
+    onBlur,
     onChange,
-    onFocus = () => {},
+    onFocus,
     parentDispatch,
     validValueAction,
     invalidValueAction,
@@ -75,8 +76,9 @@ function AccessiblePasswordInput({ attributes }: AccessiblePasswordInputProps) {
   } = attributes;
 
   const [valueBuffer, setValueBuffer] = useState(value);
-  const [popoverOpened, setPopoverOpened] = useState(false);
-  const [isInputFocused, setIsInputFocused] = useState(false);
+  const [isPopoverOpened, { open: openPopover, close: closePopover }] =
+    useDisclosure(false);
+  // const [isInputFocused, setIsInputFocused] = useState(false);
 
   const {
     globalState: { themeObject },
@@ -98,30 +100,27 @@ function AccessiblePasswordInput({ attributes }: AccessiblePasswordInputProps) {
 
   const { validValueTextElement, invalidValueTextElement } =
     createAccessibleValueValidationTextElements({
-      isInputFocused,
+      isPopoverOpened,
       isValueBufferValid,
       name,
       themeObject,
-      valueBuffer,
       validationTexts,
+      value,
     });
 
   const inputWidth = 330;
 
   return (
-    <Popover
-      opened={valueBuffer ? popoverOpened : false}
-      position="bottom"
-      shadow="md"
-      transitionProps={{ transition: "pop" }}
-      width="target"
-      withArrow
-    >
-      <Popover.Target>
-        <div
-          onFocusCapture={() => setPopoverOpened(true)}
-          onBlurCapture={() => setPopoverOpened(false)}
-        >
+    <Container w={350}>
+      <Popover
+        opened={isPopoverOpened}
+        position="bottom"
+        shadow="md"
+        transitionProps={{ transition: "pop" }}
+        width="target"
+        withArrow
+      >
+        <Popover.Target>
           <PasswordInput
             aria-describedby={
               isValueBufferValid
@@ -139,14 +138,6 @@ function AccessiblePasswordInput({ attributes }: AccessiblePasswordInputProps) {
             maxLength={maxLength}
             minLength={minLength}
             name={name}
-            onChange={(event: ChangeEvent<HTMLInputElement>) => {
-              setValueBuffer(event.currentTarget.value);
-              onChange(event);
-            }}
-            onFocus={() => {
-              setIsInputFocused(true);
-              onFocus();
-            }}
             onBlur={() => {
               parentDispatch({
                 type: invalidValueAction,
@@ -161,8 +152,16 @@ function AccessiblePasswordInput({ attributes }: AccessiblePasswordInputProps) {
                 payload: valueBuffer,
               });
 
-              setIsInputFocused(false);
-              onBlur();
+              onBlur?.();
+              closePopover();
+            }}
+            onChange={(event: ChangeEvent<HTMLInputElement>) => {
+              setValueBuffer(event.currentTarget.value);
+              onChange?.(event);
+            }}
+            onFocus={() => {
+              openPopover();
+              onFocus?.();
             }}
             placeholder={placeholder}
             ref={ref}
@@ -172,15 +171,17 @@ function AccessiblePasswordInput({ attributes }: AccessiblePasswordInputProps) {
             w={inputWidth}
             withAsterisk={withAsterisk}
           />
-        </div>
-      </Popover.Target>
+        </Popover.Target>
 
-      <Popover.Dropdown>
-        <Stack>
-          {isValueBufferValid ? validValueTextElement : invalidValueTextElement}
-        </Stack>
-      </Popover.Dropdown>
-    </Popover>
+        {isPopoverOpened && valueBuffer.length ? (
+          <Popover.Dropdown>
+            <Stack>
+              {isValueBufferValid ? validValueTextElement : invalidValueTextElement}
+            </Stack>
+          </Popover.Dropdown>
+        ) : null}
+      </Popover>
+    </Container>
   );
 }
 
