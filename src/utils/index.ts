@@ -2497,9 +2497,15 @@ function removeUndefinedAndNull<T>(value: T | undefined | null): value is T {
   return value !== undefined && value !== null;
 }
 
+function capitalizeAll(str: string): string {
+  return str.replace(/\b\w/g, (char) => char.toUpperCase());
+}
+
+
 export {
   addCommaSeparator,
   addFieldsToObject,
+  capitalizeAll,
   captureScreenshot,
   filterFieldsFromObject,
   flattenObjectIterative,

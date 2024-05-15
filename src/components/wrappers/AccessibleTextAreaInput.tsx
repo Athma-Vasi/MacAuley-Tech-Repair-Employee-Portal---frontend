@@ -6,12 +6,13 @@ import { TbCheck, TbRefresh } from "react-icons/tb";
 import { COLORS_SWATCHES } from "../../constants/data";
 import { useGlobalState } from "../../hooks";
 import { SetStepsInErrorPayload } from "../../types";
-import { returnThemeColors } from "../../utils";
+import { capitalizeAll, returnThemeColors } from "../../utils";
+import { ValidationTexts } from "../../utils/validations";
 import { createAccessibleValueValidationTextElements } from "./utils";
 
 type AccessibleTextAreaInputAttributes<
-  ValueValidAction extends string = string,
-  ValueInvalidAction extends string = string
+  ValidValueAction extends string = string,
+  InvalidValueAction extends string = string
 > = {
   ariaAutoComplete?: "both" | "list" | "none" | "inline";
   autoComplete?: "on" | "off";
@@ -20,7 +21,7 @@ type AccessibleTextAreaInputAttributes<
   icon?: ReactNode;
   initialInputValue?: string;
   value: string;
-  label: ReactNode;
+  label?: ReactNode;
   maxLength?: number;
   maxRows?: number;
   minLength?: number;
@@ -32,20 +33,20 @@ type AccessibleTextAreaInputAttributes<
   onKeyDown?: (event: KeyboardEvent<HTMLTextAreaElement>) => void;
   parentDispatch: Dispatch<
     | {
-        type: ValueValidAction;
+        type: ValidValueAction;
         payload: string;
       }
     | {
-        type: ValueInvalidAction;
+        type: InvalidValueAction;
         payload: SetStepsInErrorPayload;
       }
   >;
-  parentValueValidAction: ValueValidAction;
-  parentValueInvalidAction: ValueInvalidAction;
+  validValueAction: ValidValueAction;
+  invalidValueAction: InvalidValueAction;
   placeholder: string;
   ref?: React.RefObject<HTMLTextAreaElement> | null;
   regex: RegExp;
-  validationText: string;
+  validationTexts: ValidationTexts;
   required?: boolean;
   rightSection?: boolean;
   rightSectionIcon?: ReactNode;
@@ -55,11 +56,17 @@ type AccessibleTextAreaInputAttributes<
   withAsterisk?: boolean;
 };
 
-type AccessibleTextAreaInputProps = {
-  attributes: AccessibleTextAreaInputAttributes;
+type AccessibleTextAreaInputProps<
+  ValidValueAction extends string = string,
+  InvalidValueAction extends string = string
+> = {
+  attributes: AccessibleTextAreaInputAttributes<ValidValueAction, InvalidValueAction>;
 };
 
-function AccessibleTextAreaInput({ attributes }: AccessibleTextAreaInputProps) {
+function AccessibleTextAreaInput<
+  ValidValueAction extends string = string,
+  InvalidValueAction extends string = string
+>({ attributes }: AccessibleTextAreaInputProps<ValidValueAction, InvalidValueAction>) {
   const {
     ariaAutoComplete = "none",
     autoComplete = "off",
@@ -68,7 +75,7 @@ function AccessibleTextAreaInput({ attributes }: AccessibleTextAreaInputProps) {
     icon = null,
     initialInputValue = "",
     value,
-    label,
+    label = capitalizeAll(attributes.name),
     maxLength = 2000,
     maxRows = 7,
     minLength = 2,
@@ -79,12 +86,12 @@ function AccessibleTextAreaInput({ attributes }: AccessibleTextAreaInputProps) {
     onFocus = () => {},
     onKeyDown = () => {},
     parentDispatch,
-    parentValueValidAction,
-    parentValueInvalidAction,
+    validValueAction,
+    invalidValueAction,
     placeholder,
     ref = null,
     regex,
-    validationText,
+    validationTexts,
     required = false,
     rightSection = false,
     rightSectionIcon = null,
@@ -140,14 +147,14 @@ function AccessibleTextAreaInput({ attributes }: AccessibleTextAreaInputProps) {
     )
   ) : null;
 
-  const [valueValidTextElement, valueInvalidTextElement] =
+  const { invalidValueTextElement, validValueTextElement } =
     createAccessibleValueValidationTextElements({
       name,
       isInputFocused,
       isValueBufferValid,
       themeObject,
       valueBuffer,
-      validationText,
+      validationTexts,
     });
 
   return (
@@ -168,9 +175,9 @@ function AccessibleTextAreaInput({ attributes }: AccessibleTextAreaInputProps) {
             aria-autocomplete={ariaAutoComplete}
             aria-describedby={
               isValueBufferValid
-                ? // id of valueValidTextElement
+                ? // id of validValueTextElement
                   `${name}-valid`
-                : // id of valueInvalidTextElement
+                : // id of invalidValueTextElement
                   `${name}-invalid`
             }
             aria-invalid={isValueBufferValid ? false : true}
@@ -197,7 +204,7 @@ function AccessibleTextAreaInput({ attributes }: AccessibleTextAreaInputProps) {
             }}
             onBlur={() => {
               parentDispatch({
-                type: parentValueInvalidAction,
+                type: invalidValueAction,
                 payload: {
                   kind: isValueBufferValid ? "delete" : "add",
                   step,
@@ -205,7 +212,7 @@ function AccessibleTextAreaInput({ attributes }: AccessibleTextAreaInputProps) {
               });
 
               parentDispatch({
-                type: parentValueValidAction,
+                type: validValueAction,
                 payload: valueBuffer,
               });
 
@@ -226,7 +233,7 @@ function AccessibleTextAreaInput({ attributes }: AccessibleTextAreaInputProps) {
 
       <Popover.Dropdown>
         <Stack>
-          {isValueBufferValid ? valueValidTextElement : valueInvalidTextElement}
+          {isValueBufferValid ? validValueTextElement : invalidValueTextElement}
         </Stack>
       </Popover.Dropdown>
     </Popover>

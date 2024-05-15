@@ -2,38 +2,55 @@ import { MantineSize, NativeSelect } from "@mantine/core";
 import { ChangeEvent, ReactNode, RefObject } from "react";
 
 import { SelectInputData } from "../../types";
+import { capitalizeAll } from "../../utils";
 
-type AccessibleSelectInputAttributes = {
+type AccessibleSelectInputAttributes<
+  ValidValueAction extends string = string,
+  Payload extends string = string
+> = {
   data: string[] | SelectInputData;
   describedBy?: string;
   description?: string;
   disabled?: boolean;
-  label: ReactNode;
+  label?: ReactNode;
   name: string;
-  onChange: (event: ChangeEvent<HTMLSelectElement>) => void;
+  onChange?: (event: ChangeEvent<HTMLSelectElement>) => void;
+  parentDispatch: React.Dispatch<{
+    type: ValidValueAction;
+    payload: Payload;
+  }>;
   ref?: RefObject<HTMLSelectElement>;
   required?: boolean;
   size?: MantineSize;
+  validValueAction: ValidValueAction;
   value?: string;
   withAsterisk?: boolean;
 };
 
-type AccessibleSelectInputProps = {
-  attributes: AccessibleSelectInputAttributes;
+type AccessibleSelectInputProps<
+  ValidValueAction extends string = string,
+  Payload extends string = string
+> = {
+  attributes: AccessibleSelectInputAttributes<ValidValueAction, Payload>;
 };
 
-function AccessibleSelectInput({ attributes }: AccessibleSelectInputProps) {
+function AccessibleSelectInput<
+  ValidValueAction extends string = string,
+  Payload extends string = string
+>({ attributes }: AccessibleSelectInputProps<ValidValueAction, Payload>) {
   const {
     data,
     describedBy = "",
     description,
     disabled = false,
-    label,
+    label = capitalizeAll(attributes.name),
     name,
     onChange,
+    parentDispatch,
     ref = null,
     required = false,
     size = "sm",
+    validValueAction,
     value,
     withAsterisk = required,
   } = attributes;
@@ -47,7 +64,16 @@ function AccessibleSelectInput({ attributes }: AccessibleSelectInputProps) {
       disabled={disabled}
       label={label}
       name={name}
-      onChange={onChange}
+      onChange={(event: ChangeEvent<HTMLSelectElement>) => {
+        parentDispatch({
+          type: validValueAction,
+          payload: event.currentTarget.value as Payload,
+        });
+
+        if (onChange) {
+          onChange(event);
+        }
+      }}
       ref={ref}
       required={required}
       size={size}

@@ -10,6 +10,7 @@ import {
 import { TbUpload } from "react-icons/tb";
 
 import { useGlobalState } from "../../hooks";
+import { capitalizeAll } from "../../utils";
 import { createAccessibleButtonScreenreaderTextElements } from "./utils";
 
 type AccessibleButtonAttributes = {
@@ -17,7 +18,7 @@ type AccessibleButtonAttributes = {
   disabled?: boolean;
   customDisabledText?: string;
   customEnabledText?: string;
-  label: ReactNode;
+  label?: ReactNode;
   leftIcon?: ReactNode;
   name: string;
   onClick: (
@@ -47,7 +48,7 @@ function AccessibleButton({ attributes }: AccessibleButtonProps) {
     customDisabledText,
     customEnabledText,
     disabled = false,
-    label,
+    label = capitalizeAll(attributes.name),
     type = "button",
     leftIcon = type === "submit" ? <TbUpload /> : null,
     name,
@@ -60,7 +61,7 @@ function AccessibleButton({ attributes }: AccessibleButtonProps) {
     variant = colorScheme === "dark" ? "outline" : "subtle",
   } = attributes;
 
-  const [buttonEnabledTextElement, buttonDisabledTextElement] =
+  const { disabledTextElement, enabledTextElement } =
     createAccessibleButtonScreenreaderTextElements({
       isEnabled: !disabled,
       customDisabledText,
@@ -74,9 +75,9 @@ function AccessibleButton({ attributes }: AccessibleButtonProps) {
       <Button
         aria-describedby={
           disabled
-            ? // id of buttonDisabledTextElement
+            ? // id of disabledTextElement
               `${name}-disabled`
-            : // id of buttonEnabledTextElement
+            : // id of enabledTextElement
               `${name}-enabled`
         }
         aria-label={name}
@@ -98,8 +99,8 @@ function AccessibleButton({ attributes }: AccessibleButtonProps) {
       </Button>
 
       <Box style={{ display: "hidden" }}>
-        {buttonEnabledTextElement}
-        {buttonDisabledTextElement}
+        {disabledTextElement}
+        {enabledTextElement}
       </Box>
     </Box>
   );

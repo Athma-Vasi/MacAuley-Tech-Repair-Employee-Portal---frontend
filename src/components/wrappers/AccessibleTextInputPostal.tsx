@@ -5,20 +5,20 @@ import { TbCheck, TbRefresh } from "react-icons/tb";
 import { COLORS_SWATCHES } from "../../constants/data";
 import { useGlobalState } from "../../hooks";
 import { Country, SetStepsInErrorPayload } from "../../types";
-import { returnThemeColors, splitCamelCase } from "../../utils";
+import { capitalizeAll, returnThemeColors, splitCamelCase } from "../../utils";
+import { ValidationTexts } from "../../utils/validations";
 import { createAccessibleValueValidationTextElements } from "./utils";
 
 type AccessibleTextInputPostalAttributes<
   ValidValueAction extends string = string,
   InvalidValueAction extends string = string
 > = {
-  ariaRequired?: boolean;
   autoComplete?: "on" | "off";
   country: Country;
   icon?: ReactNode;
   initialInputValue?: string;
   value: string;
-  label: string;
+  label?: ReactNode;
   maxLength?: number;
   minLength?: number;
   onBlur: () => void;
@@ -35,12 +35,12 @@ type AccessibleTextInputPostalAttributes<
         payload: SetStepsInErrorPayload;
       }
   >;
-  parentValidValueAction: ValidValueAction;
-  parentInvalidValueAction: InvalidValueAction;
+  validValueAction: ValidValueAction;
+  invalidValueAction: InvalidValueAction;
   placeholder: string;
   ref?: React.RefObject<HTMLInputElement>;
   regex: RegExp;
-  validationText: string;
+  validationTexts: ValidationTexts;
   required?: boolean;
   rightSection?: boolean;
   rightSectionIcon?: ReactNode;
@@ -51,19 +51,24 @@ type AccessibleTextInputPostalAttributes<
   withAsterisk?: boolean;
 };
 
-type AccessibleTextInputPostalProps = {
-  attributes: AccessibleTextInputPostalAttributes;
+type AccessibleTextInputPostalProps<
+  ValidValueAction extends string = string,
+  InvalidValueAction extends string = string
+> = {
+  attributes: AccessibleTextInputPostalAttributes<ValidValueAction, InvalidValueAction>;
 };
 
-function AccessibleTextInputPostal({ attributes }: AccessibleTextInputPostalProps) {
+function AccessibleTextInputPostal<
+  ValidValueAction extends string = string,
+  InvalidValueAction extends string = string
+>({ attributes }: AccessibleTextInputPostalProps<ValidValueAction, InvalidValueAction>) {
   const {
-    ariaRequired = false,
     autoComplete = "off",
     country,
     icon = null,
     initialInputValue = "+(1)",
     value,
-    label,
+    label = capitalizeAll(attributes.name),
     maxLength = 18,
     minLength = 18,
     name,
@@ -72,12 +77,12 @@ function AccessibleTextInputPostal({ attributes }: AccessibleTextInputPostalProp
     onFocus,
     onKeyDown,
     parentDispatch,
-    parentValidValueAction,
-    parentInvalidValueAction,
+    validValueAction,
+    invalidValueAction,
     placeholder,
     ref = null,
     regex,
-    validationText,
+    validationTexts,
     required = false,
     rightSection = false,
     rightSectionIcon = null,
@@ -126,14 +131,14 @@ function AccessibleTextInputPostal({ attributes }: AccessibleTextInputPostalProp
     )
   ) : null;
 
-  const [valueValidTextElement, valueInvalidTextElement] =
+  const { validValueTextElement, invalidValueTextElement } =
     createAccessibleValueValidationTextElements({
       isInputFocused,
       isValueBufferValid,
       name,
       themeObject,
       valueBuffer,
-      validationText,
+      validationTexts,
     });
 
   return (
@@ -153,14 +158,14 @@ function AccessibleTextInputPostal({ attributes }: AccessibleTextInputPostalProp
           <TextInput
             aria-describedby={
               isValueBufferValid
-                ? // id of valueValidTextElement
+                ? // id of validValueTextElement
                   `${name}-valid`
-                : // id of valueInvalidTextElement
+                : // id of invalidValueTextElement
                   `${name}-invalid`
             }
             aria-invalid={isValueBufferValid ? false : true}
             aria-label={name}
-            aria-required={ariaRequired}
+            aria-required={required}
             autoComplete={autoComplete}
             error={!isValueBufferValid && value !== initialInputValue}
             icon={leftIcon}
@@ -170,7 +175,7 @@ function AccessibleTextInputPostal({ attributes }: AccessibleTextInputPostalProp
             name={name}
             onBlur={() => {
               parentDispatch({
-                type: parentInvalidValueAction,
+                type: invalidValueAction,
                 payload: {
                   kind: isValueBufferValid ? "delete" : "add",
                   step,
@@ -178,7 +183,7 @@ function AccessibleTextInputPostal({ attributes }: AccessibleTextInputPostalProp
               });
 
               parentDispatch({
-                type: parentValidValueAction,
+                type: validValueAction,
                 payload: valueBuffer,
               });
 
@@ -224,7 +229,7 @@ function AccessibleTextInputPostal({ attributes }: AccessibleTextInputPostalProp
 
       <Popover.Dropdown>
         <Stack>
-          {isValueBufferValid ? valueValidTextElement : valueInvalidTextElement}
+          {isValueBufferValid ? validValueTextElement : invalidValueTextElement}
         </Stack>
       </Popover.Dropdown>
     </Popover>

@@ -5,12 +5,13 @@ import { TbCheck } from "react-icons/tb";
 import { COLORS_SWATCHES } from "../../constants/data";
 import { useGlobalState } from "../../hooks";
 import { SetStepsInErrorPayload } from "../../types";
-import { returnThemeColors } from "../../utils";
+import { capitalizeAll, returnThemeColors } from "../../utils";
+import { ValidationTexts } from "../../utils/validations";
 import { createAccessibleValueValidationTextElements } from "./utils";
 
 type AccessibleDateTimeInputAttributes<
-  ValueValidAction extends string = string,
-  ValueInvalidAction extends string = string
+  ValidValueAction extends string = string,
+  InvalidValueAction extends string = string
 > = {
   ariaAutoComplete?: "both" | "list" | "none" | "inline";
   autoComplete?: "on" | "off";
@@ -19,7 +20,7 @@ type AccessibleDateTimeInputAttributes<
   initialInputValue?: string;
   inputKind: "date" | "time";
   value: string;
-  label: ReactNode;
+  label?: ReactNode;
   max?: string;
   maxLength?: number;
   min?: string;
@@ -30,20 +31,20 @@ type AccessibleDateTimeInputAttributes<
   onFocus?: () => void;
   parentDispatch: Dispatch<
     | {
-        type: ValueValidAction;
+        type: ValidValueAction;
         payload: string;
       }
     | {
-        type: ValueInvalidAction;
+        type: InvalidValueAction;
         payload: SetStepsInErrorPayload;
       }
   >;
-  parentValueValidAction: ValueValidAction;
-  parentValueInvalidAction: ValueInvalidAction;
+  validValueAction: ValidValueAction;
+  invalidValueAction: InvalidValueAction;
   placeholder: string;
   ref?: RefObject<HTMLInputElement>;
   regex: RegExp;
-  validationText: string;
+  validationTexts: ValidationTexts;
   required?: boolean;
   size?: MantineSize;
   step: number; // stepper page location of input
@@ -63,7 +64,7 @@ function AccessibleDateTimeInput({ attributes }: AccessibleDateTimeInputProps) {
     initialInputValue = "",
     inputKind,
     value,
-    label,
+    label = capitalizeAll(attributes.name),
     max = new Date(2024, 11, 31).toISOString().split("T")[0], // 31.12.2024
     maxLength = inputKind === "date" ? 10 : 5,
     min = new Date().toISOString().split("T")[0], // current date
@@ -73,12 +74,12 @@ function AccessibleDateTimeInput({ attributes }: AccessibleDateTimeInputProps) {
     onChange,
     onFocus = () => {},
     parentDispatch,
-    parentValueValidAction,
-    parentValueInvalidAction,
+    validValueAction,
+    invalidValueAction,
     placeholder,
     ref = null,
     regex,
-    validationText,
+    validationTexts,
     required = false,
     size = "sm",
     step,
@@ -107,14 +108,14 @@ function AccessibleDateTimeInput({ attributes }: AccessibleDateTimeInputProps) {
     )
   ) : null;
 
-  const [valueValidTextElement, valueInvalidTextElement] =
+  const { validValueTextElement, invalidValueTextElement } =
     createAccessibleValueValidationTextElements({
       isInputFocused,
       isValueBufferValid,
       name,
       themeObject,
       valueBuffer,
-      validationText,
+      validationTexts,
     });
 
   const ariaLabel = `Please enter ${name} in format "${
@@ -165,9 +166,9 @@ function AccessibleDateTimeInput({ attributes }: AccessibleDateTimeInputProps) {
             aria-autocomplete={ariaAutoComplete}
             aria-describedby={
               isValueBufferValid
-                ? // id of valueValidTextElement
+                ? // id of validValueTextElement
                   `${name}-valid`
-                : // id of valueInvalidTextElement
+                : // id of invalidValueTextElement
                   `${name}-invalid`
             }
             aria-invalid={isValueBufferValid ? false : true}
@@ -193,7 +194,7 @@ function AccessibleDateTimeInput({ attributes }: AccessibleDateTimeInputProps) {
             }}
             onBlur={() => {
               parentDispatch({
-                type: parentValueInvalidAction,
+                type: invalidValueAction,
                 payload: {
                   kind: isValueBufferValid ? "delete" : "add",
                   step,
@@ -201,7 +202,7 @@ function AccessibleDateTimeInput({ attributes }: AccessibleDateTimeInputProps) {
               });
 
               parentDispatch({
-                type: parentValueValidAction,
+                type: validValueAction,
                 payload: valueBuffer,
               });
 
@@ -221,7 +222,7 @@ function AccessibleDateTimeInput({ attributes }: AccessibleDateTimeInputProps) {
 
       <Popover.Dropdown>
         <Stack>
-          {isValueBufferValid ? valueValidTextElement : valueInvalidTextElement}
+          {isValueBufferValid ? validValueTextElement : invalidValueTextElement}
         </Stack>
       </Popover.Dropdown>
     </Popover>

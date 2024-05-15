@@ -2,37 +2,47 @@ import { Box, MantineSize, Radio } from "@mantine/core";
 import React, { ReactNode } from "react";
 
 import { useGlobalState } from "../../hooks";
+import { capitalizeAll } from "../../utils";
 import { createAccessibleRadioScreenreaderTextElements } from "./utils";
 
-type AccessibleRadioInputSingleAttributes = {
+type AccessibleRadioInputSingleAttributes<ValidValueAction extends string = string> = {
   checked: boolean;
   description: string;
   disabled?: boolean;
   key?: string;
-  label: ReactNode;
+  label?: ReactNode;
   name: string;
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  parentDispatch: React.Dispatch<{
+    type: ValidValueAction;
+    payload: string;
+  }>;
   ref?: React.RefObject<HTMLInputElement> | null;
   required?: boolean;
   size?: MantineSize;
+  validValueAction: ValidValueAction;
   value: string;
 };
-type AccessibleRadioInputSingleProps = {
-  attributes: AccessibleRadioInputSingleAttributes;
+type AccessibleRadioInputSingleProps<ValidValueAction extends string = string> = {
+  attributes: AccessibleRadioInputSingleAttributes<ValidValueAction>;
 };
 
-function AccessibleRadioInputSingle({ attributes }: AccessibleRadioInputSingleProps) {
+function AccessibleRadioInputSingle<ValidValueAction extends string = string>({
+  attributes,
+}: AccessibleRadioInputSingleProps<ValidValueAction>) {
   const {
     checked,
     description,
     disabled = false,
     name,
     key = name + " - radio single",
-    label,
+    label = capitalizeAll(name),
     onChange,
+    parentDispatch,
     ref = null,
     required = false,
     size = "sm",
+    validValueAction,
     value,
   } = attributes;
 
@@ -59,7 +69,16 @@ function AccessibleRadioInputSingle({ attributes }: AccessibleRadioInputSinglePr
         key={key}
         label={label}
         name={name}
-        onChange={onChange}
+        onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+          parentDispatch({
+            type: validValueAction,
+            payload: event.currentTarget.value,
+          });
+
+          if (onChange) {
+            onChange(event);
+          }
+        }}
         ref={ref}
         required={required}
         size={size}
@@ -71,26 +90,33 @@ function AccessibleRadioInputSingle({ attributes }: AccessibleRadioInputSinglePr
   );
 }
 
-type AccessibleRadioInputGroupAttributes = {
+type AccessibleRadioInputGroupAttributes<ValidValueAction extends string = string> = {
   checked: boolean;
   dataObjectArray: Array<{ value: string; label: string }>;
   description?: ReactNode | string;
   key?: string;
   label: ReactNode;
   name: string;
-  onChange: (value: string) => void;
+  onChange?: (value: string) => void;
+  parentDispatch: React.Dispatch<{
+    type: ValidValueAction;
+    payload: string;
+  }>;
   ref?: React.RefObject<HTMLInputElement> | null;
   required?: boolean;
   size?: MantineSize;
   value: string;
+  validValueAction: ValidValueAction;
   withAsterisk?: boolean;
 };
 
-type AccessibleRadioInputGroupProps = {
-  attributes: AccessibleRadioInputGroupAttributes;
+type AccessibleRadioInputGroupProps<ValidValueAction extends string = string> = {
+  attributes: AccessibleRadioInputGroupAttributes<ValidValueAction>;
 };
 
-function AccessibleRadioInputGroup({ attributes }: AccessibleRadioInputGroupProps) {
+function AccessibleRadioInputGroup<ValidValueAction extends string = string>({
+  attributes,
+}: AccessibleRadioInputGroupProps<ValidValueAction>) {
   const {
     checked,
     dataObjectArray,
@@ -99,9 +125,11 @@ function AccessibleRadioInputGroup({ attributes }: AccessibleRadioInputGroupProp
     key = name + " - radio group",
     label,
     onChange,
+    parentDispatch,
     ref = null,
     required = false,
     size = "sm",
+    validValueAction,
     value,
     withAsterisk = required,
   } = attributes;
@@ -128,7 +156,16 @@ function AccessibleRadioInputGroup({ attributes }: AccessibleRadioInputGroupProp
         key={key}
         label={label}
         name={name}
-        onChange={onChange}
+        onChange={(value: string) => {
+          parentDispatch({
+            type: validValueAction,
+            payload: value,
+          });
+
+          if (onChange) {
+            onChange(value);
+          }
+        }}
         ref={ref}
         required={required}
         size={size}

@@ -5,17 +5,18 @@ import { TbCheck } from "react-icons/tb";
 import { COLORS_SWATCHES } from "../../constants/data";
 import { useGlobalState } from "../../hooks";
 import { SetStepsInErrorPayload } from "../../types";
-import { returnThemeColors } from "../../utils";
+import { capitalizeAll, returnThemeColors } from "../../utils";
+import { ValidationTexts } from "../../utils/validations";
 import { createAccessibleValueValidationTextElements } from "./utils";
 
 type AccessiblePasswordInputAttributes<
-  ValueValidAction extends string = string,
-  ValueInvalidAction extends string = string
+  ValidValueAction extends string = string,
+  InvalidValueAction extends string = string
 > = {
   icon?: ReactNode;
   initialInputValue?: string;
   value: string;
-  label: ReactNode;
+  label?: ReactNode;
   maxLength?: number;
   minLength?: number;
   name: string;
@@ -24,20 +25,20 @@ type AccessiblePasswordInputAttributes<
   onFocus?: () => void;
   parentDispatch: Dispatch<
     | {
-        type: ValueValidAction;
+        type: ValidValueAction;
         payload: string;
       }
     | {
-        type: ValueInvalidAction;
+        type: InvalidValueAction;
         payload: SetStepsInErrorPayload;
       }
   >;
-  parentValueValidAction: ValueValidAction;
-  parentValueInvalidAction: ValueInvalidAction;
+  validValueAction: ValidValueAction;
+  invalidValueAction: InvalidValueAction;
   placeholder: string;
   ref?: RefObject<HTMLInputElement>;
   regex: RegExp;
-  validationText: string;
+  validationTexts: ValidationTexts;
   required?: boolean;
   size?: MantineSize;
   step: number; // stepper page location of input
@@ -54,19 +55,19 @@ function AccessiblePasswordInput({ attributes }: AccessiblePasswordInputProps) {
     icon = null,
     initialInputValue = "",
     value,
-    label,
+    label = capitalizeAll(name),
     maxLength = 32,
     minLength = 8,
     onBlur = () => {},
     onChange,
     onFocus = () => {},
     parentDispatch,
-    parentValueValidAction,
-    parentValueInvalidAction,
+    validValueAction,
+    invalidValueAction,
     placeholder,
     ref = null,
     regex,
-    validationText,
+    validationTexts,
     required = false,
     size = "sm",
     step,
@@ -95,14 +96,14 @@ function AccessiblePasswordInput({ attributes }: AccessiblePasswordInputProps) {
     )
   ) : null;
 
-  const [valueValidTextElement, valueInvalidTextElement] =
+  const { validValueTextElement, invalidValueTextElement } =
     createAccessibleValueValidationTextElements({
       isInputFocused,
       isValueBufferValid,
       name,
       themeObject,
       valueBuffer,
-      validationText,
+      validationTexts,
     });
 
   const inputWidth = 330;
@@ -124,9 +125,9 @@ function AccessiblePasswordInput({ attributes }: AccessiblePasswordInputProps) {
           <PasswordInput
             aria-describedby={
               isValueBufferValid
-                ? // id of valueValidTextElement
+                ? // id of validValueTextElement
                   `${name}-valid`
-                : // id of valueInvalidTextElement
+                : // id of invalidValueTextElement
                   `${name}-invalid`
             }
             aria-invalid={isValueBufferValid ? false : true}
@@ -148,7 +149,7 @@ function AccessiblePasswordInput({ attributes }: AccessiblePasswordInputProps) {
             }}
             onBlur={() => {
               parentDispatch({
-                type: parentValueInvalidAction,
+                type: invalidValueAction,
                 payload: {
                   kind: isValueBufferValid ? "delete" : "add",
                   step,
@@ -156,7 +157,7 @@ function AccessiblePasswordInput({ attributes }: AccessiblePasswordInputProps) {
               });
 
               parentDispatch({
-                type: parentValueValidAction,
+                type: validValueAction,
                 payload: valueBuffer,
               });
 
@@ -176,7 +177,7 @@ function AccessiblePasswordInput({ attributes }: AccessiblePasswordInputProps) {
 
       <Popover.Dropdown>
         <Stack>
-          {isValueBufferValid ? valueValidTextElement : valueInvalidTextElement}
+          {isValueBufferValid ? validValueTextElement : invalidValueTextElement}
         </Stack>
       </Popover.Dropdown>
     </Popover>

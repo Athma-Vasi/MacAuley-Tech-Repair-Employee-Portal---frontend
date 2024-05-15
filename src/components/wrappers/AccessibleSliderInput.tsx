@@ -6,7 +6,7 @@ import { SliderInputData } from "../../types";
 import { returnSliderMarks } from "../../utils";
 import { createAccessibleSliderScreenreaderTextElements } from "./utils";
 
-type AccessibleSliderInputAttributes = {
+type AccessibleSliderInputAttributes<ValidValueAction extends string = string> = {
   color?: string;
   disabled?: boolean;
   kind?: "slider" | "range-slider";
@@ -22,6 +22,10 @@ type AccessibleSliderInputAttributes = {
   onChangeRangeSlider?: (value: [number, number]) => void;
   /** use with slider */
   onChangeSlider?: (value: number) => void;
+  parentDispatch: React.Dispatch<{
+    type: ValidValueAction;
+    payload: number | [number, number];
+  }>;
   precision?: number;
   rangeSliderDefaultValues?: [number, number];
   size?: MantineSize;
@@ -33,6 +37,7 @@ type AccessibleSliderInputAttributes = {
   /** use with slider */
   thumbLabel?: string;
   thumbSize?: number;
+  validValueAction: ValidValueAction;
   value: number;
 };
 
@@ -53,8 +58,9 @@ function AccessibleSliderInput({ attributes }: AccessibleSliderInputProps) {
     max,
     min,
     name,
-    onChangeRangeSlider = () => {},
-    onChangeSlider = () => {},
+    onChangeRangeSlider,
+    onChangeSlider,
+    parentDispatch,
     precision = 1,
     rangeSliderDefaultValues = [min, max],
     size = "sm",
@@ -64,6 +70,7 @@ function AccessibleSliderInput({ attributes }: AccessibleSliderInputProps) {
     thumbFromLabel,
     thumbLabel,
     thumbSize,
+    validValueAction,
     value,
   } = attributes;
 
@@ -95,7 +102,16 @@ function AccessibleSliderInput({ attributes }: AccessibleSliderInputProps) {
         max={max}
         min={min}
         name={name}
-        onChange={onChangeSlider}
+        onChange={(value: number) => {
+          parentDispatch({
+            type: validValueAction,
+            payload: value,
+          });
+
+          if (onChangeSlider) {
+            onChangeSlider(value);
+          }
+        }}
         precision={precision}
         size={size}
         step={step}
@@ -117,7 +133,16 @@ function AccessibleSliderInput({ attributes }: AccessibleSliderInputProps) {
         max={max}
         min={min}
         name={name}
-        onChange={onChangeRangeSlider}
+        onChange={(value: [number, number]) => {
+          parentDispatch({
+            type: validValueAction,
+            payload: value,
+          });
+
+          if (onChangeRangeSlider) {
+            onChangeRangeSlider(value);
+          }
+        }}
         precision={precision}
         size={size}
         step={step}
