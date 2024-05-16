@@ -111,15 +111,17 @@ const FULL_NAME_REGEX = /^[A-Za-z\s.\-']{2,100}$/i;
 const URL_REGEX =
   /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/;
 
-/**
- * - \+\(1\) matches "+(1)".
- * - \(\d{3}\) matches exactly 3 digits surrounded by parentheses.
- * - [ ] matches a space.
- * - \d{3}-\d{4} matches exactly 3 digits, followed by a hyphen, followed by exactly 4 digits.
- * - ^ and $ ensure that the entire string matches the regex.
- */
-const PHONE_NUMBER_REGEX = /^\+\(1\)\(\d{3}\)[ ]\d{3}-\d{4}$/;
+// /**
+//  * - \+\(1\) matches "+(1)".
+//  * - \(\d{3}\) matches exactly 3 digits surrounded by parentheses.
+//  * - [ ] matches a space.
+//  * - \d{3}-\d{4} matches exactly 3 digits, followed by a hyphen, followed by exactly 4 digits.
+//  * - ^ and $ ensure that the entire string matches the regex.
+//  */
+// const PHONE_NUMBER_REGEX = /^\+\(1\)\(\d{3}\)[ ]\d{3}-\d{4}$/;
 
+// regex for 10-15 digit phone number
+const PHONE_NUMBER_REGEX = /^\d{10,15}$/;
 /**
  * - /^[A-Za-z0-9\s.,#-]{2,75}$/i
  * - [A-Za-z0-9\s.,#-] matches any letter, number, whitespace, period, comma, hash, or hyphen.

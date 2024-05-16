@@ -101,7 +101,9 @@ function AccessibleTextInputPhone<
     withAsterisk = false,
   } = attributes;
 
-  const [valueBuffer, setValueBuffer] = useState(value);
+  console.log("value", value);
+
+  const [valueBuffer, setValueBuffer] = useState(() => value);
   const [isPopoverOpened, { open: openPopover, close: closePopover }] =
     useDisclosure(false);
 
@@ -146,7 +148,7 @@ function AccessibleTextInputPhone<
       isValueBufferValid,
       name,
       themeObject,
-      value,
+      valueBuffer,
       validationTexts,
     });
 
@@ -169,7 +171,7 @@ function AccessibleTextInputPhone<
                 : // id of invalidValueTextElement
                   `${name}-invalid`
             }
-            aria-invalid={isValueBufferValid ? false : true}
+            aria-invalid={!isValueBufferValid}
             aria-label={name}
             aria-required={ariaRequired}
             autoComplete={autoComplete}
@@ -180,32 +182,6 @@ function AccessibleTextInputPhone<
             minLength={minLength}
             name={name}
             onBlur={() => {
-              const length = valueBuffer.length;
-
-              if (length === 4) {
-                parentDispatch({
-                  type: validValueAction,
-                  payload: `${valueBuffer}(`,
-                });
-                return;
-              }
-
-              if (length === 8) {
-                parentDispatch({
-                  type: validValueAction,
-                  payload: `${valueBuffer}) `,
-                });
-                return;
-              }
-
-              if (length === 13) {
-                parentDispatch({
-                  type: validValueAction,
-                  payload: `${valueBuffer}-`,
-                });
-                return;
-              }
-
               parentDispatch({
                 type: validValueAction,
                 payload: valueBuffer,
@@ -222,6 +198,23 @@ function AccessibleTextInputPhone<
               closePopover();
             }}
             onChange={(event: ChangeEvent<HTMLInputElement>) => {
+              const length = valueBuffer.length;
+
+              if (length === 4) {
+                setValueBuffer(`${valueBuffer}(`);
+                return;
+              }
+
+              if (length === 8) {
+                setValueBuffer(`${valueBuffer}) `);
+                return;
+              }
+
+              if (length === 13) {
+                setValueBuffer(`${valueBuffer}-`);
+                return;
+              }
+
               setValueBuffer(event.currentTarget.value);
               onChange?.(event);
             }}

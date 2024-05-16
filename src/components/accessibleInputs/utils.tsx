@@ -5,11 +5,7 @@ import { TbCheck, TbExclamationCircle } from "react-icons/tb";
 
 import { COLORS_SWATCHES } from "../../constants/data";
 import { ThemeObject } from "../../context/globalProvider/types";
-import { replaceLastCommaWithAnd, returnThemeColors } from "../../utils";
-import {
-  AccessibleTextInput,
-  AccessibleTextInputAttributes,
-} from "../accessibleInputs/text/AccessibleTextInput";
+import { capitalizeAll, replaceLastCommaWithAnd, returnThemeColors } from "../../utils";
 import { AccessibleButton, AccessibleButtonAttributes } from "./AccessibleButton";
 import {
   AccessibleCheckboxInputGroup,
@@ -28,6 +24,10 @@ import {
   AccessibleSelectInputAttributes,
 } from "./AccessibleSelectInput";
 import {
+  AccessibleSwitchInput,
+  AccessibleSwitchInputAttributes,
+} from "./AccessibleSwitchInput";
+import {
   AccessibleTextAreaInput,
   AccessibleTextAreaInputAttributes,
 } from "./AccessibleTextAreaInput";
@@ -39,13 +39,17 @@ import {
   AccessibleTextInputPostal,
   AccessibleTextInputPostalAttributes,
 } from "./AccessibleTextInputPostal";
+import {
+  AccessibleTextInput,
+  AccessibleTextInputAttributes,
+} from "./text/AccessibleTextInput";
 
 type CreateAccessibleValueValidationTextElements = {
   isPopoverOpened: boolean;
   isValueBufferValid: boolean;
   name: string;
   themeObject: ThemeObject;
-  value: string;
+  valueBuffer: string;
   validationTexts: {
     valueInvalidText: string;
     valueValidText: string;
@@ -57,7 +61,7 @@ function createAccessibleValueValidationTextElements({
   isValueBufferValid,
   name,
   themeObject,
-  value,
+  valueBuffer,
   validationTexts: { valueInvalidText, valueValidText },
 }: CreateAccessibleValueValidationTextElements): {
   validValueTextElement: React.JSX.Element;
@@ -71,7 +75,7 @@ function createAccessibleValueValidationTextElements({
     <Text
       id={`${name}-invalid`}
       style={{
-        display: isPopoverOpened && value && !isValueBufferValid ? "block" : "none",
+        display: isPopoverOpened && valueBuffer && !isValueBufferValid ? "block" : "none",
       }}
       w="100%"
       aria-live="polite"
@@ -95,7 +99,7 @@ function createAccessibleValueValidationTextElements({
     <Text
       id={`${name}-valid`}
       style={{
-        display: isPopoverOpened && value && isValueBufferValid ? "block" : "none",
+        display: isPopoverOpened && valueBuffer && isValueBufferValid ? "block" : "none",
       }}
       color={greenColorShade}
       w="100%"
@@ -273,7 +277,9 @@ function createAccessibleButtonScreenreaderTextElements({
       <FontAwesomeIcon icon={faCheck} color={greenColorShade} />
     ) : null;
 
-  const defaultEnabledText = `All form inputs are valid. ${name} is enabled. You may submit the form.`;
+  const defaultEnabledText = `All form inputs are valid. ${capitalizeAll(
+    name
+  )} is enabled. You may submit the form.`;
 
   const enabledTextElement = (
     <Text
@@ -293,7 +299,9 @@ function createAccessibleButtonScreenreaderTextElements({
       <FontAwesomeIcon icon={faInfoCircle} color={redColorShade} />
     ) : null;
 
-  const defaultDisabledText = `One or more inputs are in error. ${name} disabled. Please fix errors before submitting form.`;
+  const defaultDisabledText = `One or more inputs are in error. ${capitalizeAll(
+    name
+  )} disabled. Please fix errors before submitting form.`;
 
   const disabledTextElement = (
     <Text
@@ -387,6 +395,8 @@ function createAccessibleSwitchOnOffTextElements({
       <FontAwesomeIcon icon={faCheck} color={themeColorShade} />
     ) : null;
 
+  const switchOnText = switchOnDescription ?? `${capitalizeAll(name)} is on.`;
+
   const switchOnTextElement = (
     <Text
       id={`${name}-on`}
@@ -395,8 +405,7 @@ function createAccessibleSwitchOnOffTextElements({
       w="100%"
       aria-live="polite"
     >
-      {switchOnIcon}
-      {`${name} is on. ${switchOnDescription}`}
+      {switchOnIcon} {switchOnText}
     </Text>
   );
 
@@ -404,6 +413,8 @@ function createAccessibleSwitchOnOffTextElements({
     theme === "default" ? (
       <FontAwesomeIcon icon={faInfoCircle} color={grayColorShade} />
     ) : null;
+
+  const switchOffText = switchOffDescription ?? `${capitalizeAll(name)} is off.`;
 
   const switchOffTextElement = (
     <Text
@@ -413,8 +424,7 @@ function createAccessibleSwitchOnOffTextElements({
       w="100%"
       aria-live="polite"
     >
-      {switchOffIcon}
-      {`${name} is off. ${switchOffDescription}`}
+      {switchOffIcon} {switchOffText}
     </Text>
   );
 
@@ -449,8 +459,14 @@ function createAccessibleTextAreaInputs<
   ));
 }
 
-function createAccessibleCheckboxSingleInputs<ValidValueAction extends string = string>(
-  attributesArray: AccessibleCheckboxInputSingleAttributes<ValidValueAction>[]
+function createAccessibleCheckboxSingleInputs<
+  ValidValueAction extends string = string,
+  InvalidValueAction extends string = string
+>(
+  attributesArray: AccessibleCheckboxInputSingleAttributes<
+    ValidValueAction,
+    InvalidValueAction
+  >[]
 ): React.JSX.Element[] {
   return attributesArray.map((attributes, index) => (
     <AccessibleCheckboxInputSingle
@@ -549,6 +565,17 @@ function createAccessibleTextInputsPhone<
   ));
 }
 
+function createAccessibleSwitchInputs<
+  ValidValueAction extends string = string,
+  InvalidValueAction extends string = string
+>(
+  attributesArray: AccessibleSwitchInputAttributes<ValidValueAction, InvalidValueAction>[]
+): React.JSX.Element[] {
+  return attributesArray.map((attributes, index) => (
+    <AccessibleSwitchInput key={`${index}-${attributes.name}`} attributes={attributes} />
+  ));
+}
+
 export {
   createAccessibleButtons,
   createAccessibleButtonScreenreaderTextElements,
@@ -560,6 +587,7 @@ export {
   createAccessibleRadioSingleInputs,
   createAccessibleSelectInputs,
   createAccessibleSliderScreenreaderTextElements,
+  createAccessibleSwitchInputs,
   createAccessibleSwitchOnOffTextElements,
   createAccessibleTextAreaInputs,
   createAccessibleTextInputs,

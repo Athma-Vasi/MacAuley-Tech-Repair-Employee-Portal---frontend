@@ -7,6 +7,7 @@ import {
   Text,
   Textarea,
 } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
 import { ChangeEvent, Dispatch, KeyboardEvent, ReactNode, useState } from "react";
 import React from "react";
 import { TbCheck, TbRefresh } from "react-icons/tb";
@@ -17,7 +18,6 @@ import { SetStepsInErrorPayload } from "../../types";
 import { capitalizeAll, returnThemeColors } from "../../utils";
 import { ValidationTexts } from "../../utils/validations";
 import { createAccessibleValueValidationTextElements } from "./utils";
-import { useDisclosure } from "@mantine/hooks";
 
 type AccessibleTextAreaInputAttributes<
   ValidValueAction extends string = string,
@@ -163,7 +163,7 @@ function AccessibleTextAreaInput<
       name,
       themeObject,
       validationTexts,
-      value,
+      valueBuffer,
     });
 
   return (
@@ -187,7 +187,7 @@ function AccessibleTextAreaInput<
                   : // id of invalidValueTextElement
                     `${name}-invalid`
               }
-              aria-invalid={isValueBufferValid ? false : true}
+              aria-invalid={!isValueBufferValid}
               aria-label={name}
               aria-required={required}
               autoComplete={autoComplete}

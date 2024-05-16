@@ -1,4 +1,4 @@
-import { Box, Button, MantineSize } from "@mantine/core";
+import { Box, Button, Container, Group, MantineSize, Tooltip } from "@mantine/core";
 import {
   CSSProperties,
   KeyboardEvent,
@@ -15,9 +15,11 @@ import { createAccessibleButtonScreenreaderTextElements } from "./utils";
 
 type AccessibleButtonAttributes = {
   compact?: boolean;
-  disabled?: boolean;
   customDisabledText?: string;
   customEnabledText?: string;
+  disabled?: boolean;
+  disabledTooltipText?: string;
+  enabledTooltipText?: string;
   label?: ReactNode;
   leftIcon?: ReactNode;
   name: string;
@@ -48,6 +50,8 @@ function AccessibleButton({ attributes }: AccessibleButtonProps) {
     customDisabledText,
     customEnabledText,
     disabled = false,
+    disabledTooltipText,
+    enabledTooltipText,
     label = capitalizeAll(attributes.name),
     type = "button",
     leftIcon = type === "submit" ? <TbUpload /> : null,
@@ -71,38 +75,42 @@ function AccessibleButton({ attributes }: AccessibleButtonProps) {
     });
 
   return (
-    <Box>
-      <Button
-        aria-describedby={
-          disabled
-            ? // id of disabledTextElement
-              `${name}-disabled`
-            : // id of enabledTextElement
-              `${name}-enabled`
-        }
-        aria-label={name}
-        compact={compact}
-        disabled={disabled}
-        gradient={variant === "gradient" ? defaultGradient : void 0}
-        leftIcon={leftIcon}
-        name={name}
-        onClick={onClick}
-        onKeyDown={onKeyDown}
-        ref={ref}
-        rightIcon={rightIcon}
-        size={size}
-        style={style}
-        type={type}
-        variant={variant}
-      >
-        {label}
-      </Button>
+    <Container w={100}>
+      <Tooltip label={disabled ? disabledTooltipText : enabledTooltipText}>
+        <Group>
+          <Button
+            aria-describedby={
+              disabled
+                ? // id of disabledTextElement
+                  `${name}-disabled`
+                : // id of enabledTextElement
+                  `${name}-enabled`
+            }
+            aria-label={name}
+            compact={compact}
+            disabled={disabled}
+            gradient={variant === "gradient" ? defaultGradient : void 0}
+            leftIcon={leftIcon}
+            name={name}
+            onClick={onClick}
+            onKeyDown={onKeyDown}
+            ref={ref}
+            rightIcon={rightIcon}
+            size={size}
+            style={style}
+            type={type}
+            variant={variant}
+          >
+            {label}
+          </Button>
+        </Group>
+      </Tooltip>
 
       <Box style={{ display: "hidden" }}>
         {disabledTextElement}
         {enabledTextElement}
       </Box>
-    </Box>
+    </Container>
   );
 }
 

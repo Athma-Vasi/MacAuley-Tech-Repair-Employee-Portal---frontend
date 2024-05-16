@@ -1,23 +1,23 @@
-import './style.css';
+import "./style.css";
 
-import { Flex, Group, Stepper, Text, Title, Tooltip } from '@mantine/core';
-import { useEffect, useRef } from 'react';
-import { TbCheck, TbX } from 'react-icons/tb';
-import { TiArrowLeftThick, TiArrowRightThick } from 'react-icons/ti';
+import { Flex, Group, Stepper, Text, Title, Tooltip } from "@mantine/core";
+import { useEffect, useRef } from "react";
+import { TbCheck, TbX } from "react-icons/tb";
+import { TiArrowLeftThick, TiArrowRightThick } from "react-icons/ti";
 
-import { COLORS_SWATCHES } from '../../../constants/data';
-import { useGlobalState } from '../../../hooks';
-import { returnAccessibleButtonElements } from '../../../jsxCreators';
-import { replaceLastCommaWithAnd, returnThemeColors } from '../../../utils';
-import { AccessibleButtonCreatorInfo } from '../ButtonWrapper';
-import { TextWrapper } from '../TextWrapper';
-import { numberSpellingMap } from './constants';
-import type { StepperWrapperProps } from './types';
+import { COLORS_SWATCHES } from "../../../constants/data";
+import { useGlobalState } from "../../../hooks";
+import { returnAccessibleButtonElements } from "../../../jsxCreators";
+import { replaceLastCommaWithAnd, returnThemeColors } from "../../../utils";
+import { AccessibleButtonCreatorInfo } from "../ButtonWrapper";
+import { TextWrapper } from "../TextWrapper";
+import { numberSpellingMap } from "./constants";
+import type { StepperWrapperProps } from "./types";
 
 function StepperWrapper({
   allowNextStepsSelect = true,
   children,
-  childrenTitle = '',
+  childrenTitle = "",
   currentStepperPosition,
   descriptionObjectsArray,
   maxStepperPosition,
@@ -38,9 +38,9 @@ function StepperWrapper({
   }, [currentStepperPosition]);
 
   const prevButtonCreatorInfo: AccessibleButtonCreatorInfo = {
-    buttonLabel: 'Back',
-    semanticDescription: 'Back button to navigate to previous step',
-    semanticName: 'back button',
+    buttonLabel: "Back",
+    semanticDescription: "Back button to navigate to previous step",
+    semanticName: "back button",
     buttonOnClick: (_event: React.MouseEvent<HTMLButtonElement>) => {
       if (parentComponentDispatch) {
         parentComponentDispatch({
@@ -54,7 +54,7 @@ function StepperWrapper({
 
       if (dynamicStepperProps) {
         dynamicStepperProps.dynamicSetStepperDispatch({
-          type: 'setCurrentStepperPosition',
+          type: "setCurrentStepperPosition",
           payload: {
             id: dynamicStepperProps.id,
             currentStepperPosition:
@@ -70,9 +70,9 @@ function StepperWrapper({
   };
 
   const nextButtonCreatorInfo: AccessibleButtonCreatorInfo = {
-    buttonLabel: 'Next',
-    semanticDescription: 'Next button to navigate to next step',
-    semanticName: 'next button',
+    buttonLabel: "Next",
+    semanticDescription: "Next button to navigate to next step",
+    semanticName: "next button",
     buttonOnClick: (_event: React.MouseEvent<HTMLButtonElement>) => {
       if (parentComponentDispatch) {
         parentComponentDispatch({
@@ -86,7 +86,7 @@ function StepperWrapper({
 
       if (dynamicStepperProps) {
         dynamicStepperProps.dynamicSetStepperDispatch({
-          type: 'setCurrentStepperPosition',
+          type: "setCurrentStepperPosition",
           payload: {
             id: dynamicStepperProps.id,
             currentStepperPosition:
@@ -101,53 +101,52 @@ function StepperWrapper({
     buttonDisabled: currentStepperPosition === maxStepperPosition,
   };
 
-  const [createdPrevButton, createdNextButton] = returnAccessibleButtonElements(
-    [prevButtonCreatorInfo, nextButtonCreatorInfo]
-  );
+  const [createdPrevButton, createdNextButton] = returnAccessibleButtonElements([
+    prevButtonCreatorInfo,
+    nextButtonCreatorInfo,
+  ]);
 
-  const successMessage = 'Looks great! You are good to go!';
-  const errorMessage = `Oops! Looks like there ${
-    stepsInError.size > 1 ? 'are' : 'is'
-  } ${stepsInError.size > 1 ? 'some' : 'an'} error${
-    stepsInError.size > 1 ? 's' : ''
-  } on step${stepsInError.size > 1 ? 's' : ''}: ${
+  const successMessage = "Looks great! You are good to go!";
+  const errorMessage = `Oops! Looks like there ${stepsInError.size > 1 ? "are" : "is"} ${
+    stepsInError.size > 1 ? "some" : "an"
+  } error${stepsInError.size > 1 ? "s" : ""} on step${
+    stepsInError.size > 1 ? "s" : ""
+  }: ${
     Array.from(stepsInError)
       .sort((a, z) => (a < z ? -1 : a > z ? 1 : 0))
       .map((step) => {
         const numberSpelling = numberSpellingMap.get(step);
-        return `${numberSpelling
-          ?.charAt(0)
-          .toUpperCase()}${numberSpelling?.slice(1)}`;
+        return `${numberSpelling?.charAt(0).toUpperCase()}${numberSpelling?.slice(1)}`;
       })
-      .join(', ') ?? ''
-  }. Please fix the error${stepsInError.size > 1 ? 's' : ''} to proceed!`;
+      .join(", ") ?? ""
+  }. Please fix the error${stepsInError.size > 1 ? "s" : ""} to proceed!`;
   const errorMessageWithAnd = replaceLastCommaWithAnd(errorMessage);
 
   const descObjLen = descriptionObjectsArray.length;
 
   const prevButtonTooltipLabelTruncated =
     currentStepperPosition === 0
-      ? 'You are at the first page'
+      ? "You are at the first page"
       : `Go to ${
-          descriptionObjectsArray[currentStepperPosition - 1]?.description
-            .length > 19
-            ? `${descriptionObjectsArray[
-                currentStepperPosition - 1
-              ]?.description.slice(0, 19)}...`
+          descriptionObjectsArray[currentStepperPosition - 1]?.description.length > 19
+            ? `${descriptionObjectsArray[currentStepperPosition - 1]?.description.slice(
+                0,
+                19
+              )}...`
             : descriptionObjectsArray[currentStepperPosition - 1]?.description
         }`;
 
   const nextButtonTooltipLabelTruncated =
     currentStepperPosition === descriptionObjectsArray.length - 1
-      ? 'Go to submit page'
+      ? "Go to submit page"
       : currentStepperPosition === descriptionObjectsArray.length
-      ? 'You are at the last page'
+      ? "You are at the last page"
       : `Go to ${
-          descriptionObjectsArray[currentStepperPosition + 1]?.description
-            .length > 19
-            ? `${descriptionObjectsArray[
-                currentStepperPosition + 1
-              ]?.description.slice(0, 19)}...`
+          descriptionObjectsArray[currentStepperPosition + 1]?.description.length > 19
+            ? `${descriptionObjectsArray[currentStepperPosition + 1]?.description.slice(
+                0,
+                19
+              )}...`
             : descriptionObjectsArray[currentStepperPosition + 1]?.description
         }`;
 
@@ -196,7 +195,7 @@ function StepperWrapper({
 
           if (dynamicStepperProps) {
             dynamicStepperProps.dynamicSetStepperDispatch({
-              type: 'setCurrentStepperPosition',
+              type: "setCurrentStepperPosition",
               payload: {
                 id: dynamicStepperProps.id,
                 currentStepperPosition: step,
@@ -210,7 +209,7 @@ function StepperWrapper({
         p={padding}
         size="sm"
         style={{
-          borderRadius: '4px',
+          borderRadius: "4px",
           border: borderColor,
         }}
       >
@@ -219,9 +218,9 @@ function StepperWrapper({
 
           const capsLabel = (
             <TextWrapper creatorInfoObj={{}}>
-              {`Step ${numberSpellingMap
-                .get(index)?.[0]
-                .toUpperCase()}${numberSpellingMap.get(index)?.slice(1)}`}
+              {`Step ${numberSpellingMap.get(index)?.[0].toUpperCase()}${numberSpellingMap
+                .get(index)
+                ?.slice(1)}`}
             </TextWrapper>
           );
 
@@ -237,8 +236,7 @@ function StepperWrapper({
               label={capsLabel}
               description={description}
               aria-label={ariaLabel}
-              aria-current={currentStepperPosition === index ? 'step' : void 0}
-              //the mantine stepper uses 0-based indexing
+              aria-current={currentStepperPosition === index ? "step" : void 0}
               ref={currentStepperPosition === index ? stepperRef : void 0}
               className="hide-outline"
               color={stepsInError.has(index) ? redColorShade : greenColorShade}
@@ -262,9 +260,7 @@ function StepperWrapper({
             bg={backgroundColor}
             p={padding}
           >
-            <Text
-              color={stepsInError.size === 0 ? greenColorShade : redColorShade}
-            >
+            <Text color={stepsInError.size === 0 ? greenColorShade : redColorShade}>
               {stepsInError.size === 0 ? successMessage : errorMessageWithAnd}
             </Text>
           </Flex>

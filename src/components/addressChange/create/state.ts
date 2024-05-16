@@ -1,19 +1,19 @@
 import type { AddressChangeDispatch, AddressChangeState } from "./types";
 
 const initialAddressChangeState: AddressChangeState = {
-  contactNumber: "+(1)",
   addressLine: "",
   city: "",
-  province: "Alberta",
-  state: "Alabama",
+  contactNumber: "",
   country: "Canada",
-  postalCode: "",
-  isAcknowledged: false,
-  triggerFormSubmit: false,
   currentStepperPosition: 0,
-  stepsInError: new Set<number>(),
+  isAcknowledged: false,
   isSubmitting: false,
   isSuccessful: false,
+  postalCode: "",
+  province: "Alberta",
+  state: "Alabama",
+  stepsInError: new Set<number>(),
+  triggerFormSubmit: false,
 };
 
 export { initialAddressChangeState };

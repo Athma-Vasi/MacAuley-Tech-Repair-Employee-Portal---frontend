@@ -1,4 +1,4 @@
-import { accessibleTextInputAction } from "./actions";
+import { AccessibleTextInputAction, accessibleTextInputAction } from "./actions";
 import { AccessibleTextInputDispatch, AccessibleTextInputState } from "./types";
 
 function accessibleTextInputReducer(
@@ -10,7 +10,7 @@ function accessibleTextInputReducer(
 }
 
 const accessibleTextInputReducersMap = new Map<
-  AccessibleTextInputDispatch["type"],
+  AccessibleTextInputAction[keyof AccessibleTextInputAction],
   (
     state: AccessibleTextInputState,
     dispatch: AccessibleTextInputDispatch
@@ -33,7 +33,7 @@ function accessibleTextInputReducer_setPopoverOpened(
 ): AccessibleTextInputState {
   return {
     ...state,
-    popoverOpened: dispatch.payload as boolean,
+    isPopoverOpened: dispatch.payload as boolean,
   };
 }
 

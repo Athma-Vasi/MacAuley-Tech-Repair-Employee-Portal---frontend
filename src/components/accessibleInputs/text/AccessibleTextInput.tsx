@@ -1,5 +1,4 @@
 import {
-  Box,
   Container,
   Group,
   MantineSize,
@@ -7,6 +6,7 @@ import {
   Stack,
   Text,
   TextInput,
+  Tooltip,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import {
@@ -15,21 +15,16 @@ import {
   KeyboardEvent,
   ReactNode,
   RefObject,
-  useReducer,
   useState,
 } from "react";
 import { TbCheck, TbRefresh } from "react-icons/tb";
 
 import { COLORS_SWATCHES } from "../../../constants/data";
-import { ThemeObject } from "../../../context/globalProvider/types";
 import { useGlobalState } from "../../../hooks";
 import { SetStepsInErrorPayload } from "../../../types";
 import { capitalizeAll, returnThemeColors } from "../../../utils";
 import { ValidationTexts } from "../../../utils/validations";
-import { createAccessibleValueValidationTextElements } from "../../wrappers/utils";
-import { accessibleTextInputAction } from "./actions";
-import { accessibleTextInputReducer } from "./reducers";
-import { initialAccessibleTextInputState } from "./state";
+import { createAccessibleValueValidationTextElements } from "../utils";
 
 type AccessibleTextInputAttributes<
   ValidValueAction extends string = string,
@@ -72,7 +67,6 @@ type AccessibleTextInputAttributes<
   rightSectionOnClick?: () => void;
   size?: MantineSize;
   step: number; // stepper page location of input
-  themeObject: ThemeObject;
   withAsterisk?: boolean;
 };
 
@@ -116,13 +110,28 @@ function AccessibleTextInput<
     rightSectionOnClick = () => {},
     size = "sm",
     step,
-    themeObject,
     withAsterisk = required,
   } = attributes;
 
-  const [valueBuffer, setValueBuffer] = useState(value);
+  // const initialAccessibleTextInputState: AccessibleTextInputState = {
+  //   isInputFocused: false,
+  //   isPopoverOpened: false,
+  //   valueBuffer: initialInputValue,
+  // };
+
+  // const [accessibleTextInputState, accessibleTextInputDispatch] = useReducer(
+  //   accessibleTextInputReducer,
+  //   initialAccessibleTextInputState
+  // );
+  // const { valueBuffer, isPopoverOpened } = accessibleTextInputState;
+
+  const [valueBuffer, setValueBuffer] = useState<string>(value);
   const [isPopoverOpened, { open: openPopover, close: closePopover }] =
     useDisclosure(false);
+
+  const {
+    globalState: { themeObject },
+  } = useGlobalState();
 
   const {
     generalColors: { greenColorShade, grayColorShade },
@@ -152,12 +161,16 @@ function AccessibleTextInput<
     rightSectionIcon ? (
       rightSectionIcon
     ) : (
-      <TbRefresh
-        aria-label={`Reset ${name} value to ${initialInputValue}`}
-        color={grayColorShade}
-        size={18}
-        onClick={rightSectionOnClick}
-      />
+      <Tooltip label={`Reset ${name} to ${initialInputValue}`}>
+        <Group style={{ cursor: "pointer" }}>
+          <TbRefresh
+            aria-label={`Reset ${name} value to ${initialInputValue}`}
+            color={grayColorShade}
+            size={18}
+            onClick={rightSectionOnClick}
+          />
+        </Group>
+      </Tooltip>
     )
   ) : null;
 
@@ -168,7 +181,7 @@ function AccessibleTextInput<
       name,
       themeObject,
       validationTexts,
-      value: valueBuffer,
+      valueBuffer,
     });
 
   return (
@@ -191,7 +204,7 @@ function AccessibleTextInput<
                 : // id of invalidValueTextElement
                   `${name}-invalid`
             }
-            aria-invalid={isValueBufferValid ? false : true}
+            aria-invalid={!isValueBufferValid}
             aria-label={name}
             aria-required={required}
             autoComplete={autoComplete}
@@ -218,16 +231,29 @@ function AccessibleTextInput<
               });
 
               onBlur?.();
-
               closePopover();
+              // accessibleTextInputDispatch({
+              //   type: accessibleTextInputAction.setPopoverOpened,
+              //   payload: false,
+              // });
             }}
             onChange={(event: ChangeEvent<HTMLInputElement>) => {
               setValueBuffer(event.currentTarget.value);
+              console.log("event", event);
+              // accessibleTextInputDispatch({
+              //   type: accessibleTextInputAction.setValueBuffer,
+              //   payload: event.currentTarget.value,
+              // });
 
               onChange?.(event);
             }}
             onFocus={() => {
               openPopover();
+              // accessibleTextInputDispatch({
+              //   type: accessibleTextInputAction.setPopoverOpened,
+              //   payload: true,
+              // });
+
               onFocus?.();
             }}
             onKeyDown={onKeyDown}

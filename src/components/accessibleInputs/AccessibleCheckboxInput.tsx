@@ -2,45 +2,68 @@ import { Checkbox, MantineSize, Text } from "@mantine/core";
 import { ChangeEvent, ReactNode, RefObject } from "react";
 
 import { useGlobalState } from "../../hooks";
+import { SetStepsInErrorPayload } from "../../types";
 import { capitalizeAll } from "../../utils";
 import { createAccessibleCheckboxSelectionsTextElements } from "./utils";
 
-type AccessibleCheckboxInputSingleAttributes<ValidValueAction extends string = string> = {
+type AccessibleCheckboxInputSingleAttributes<
+  ValidValueAction extends string = string,
+  InvalidValueAction extends string = string
+> = {
   checked: boolean;
   disabled?: boolean;
+  invalidValueAction: InvalidValueAction;
   key?: string;
   label?: ReactNode;
   onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
-  parentDispatch: React.Dispatch<{
-    type: ValidValueAction;
-    payload: boolean;
-  }>;
+  parentDispatch: React.Dispatch<
+    | {
+        type: ValidValueAction;
+        payload: boolean;
+      }
+    | {
+        type: InvalidValueAction;
+        payload: SetStepsInErrorPayload;
+      }
+  >;
   ref?: RefObject<HTMLInputElement> | null;
   required?: boolean;
   name: string;
   size?: MantineSize;
+  step: number; // stepper page location of input
   validValueAction: ValidValueAction;
   value: string;
 };
 
-type AccessibleCheckboxInputSingleProps<ValidValueAction extends string = string> = {
-  attributes: AccessibleCheckboxInputSingleAttributes<ValidValueAction>;
+type AccessibleCheckboxInputSingleProps<
+  ValidValueAction extends string = string,
+  InvalidValueAction extends string = string
+> = {
+  attributes: AccessibleCheckboxInputSingleAttributes<
+    ValidValueAction,
+    InvalidValueAction
+  >;
 };
 
-function AccessibleCheckboxInputSingle<ValidValueAction extends string = string>({
+function AccessibleCheckboxInputSingle<
+  ValidValueAction extends string = string,
+  InvalidValueAction extends string = string
+>({
   attributes,
-}: AccessibleCheckboxInputSingleProps<ValidValueAction>) {
+}: AccessibleCheckboxInputSingleProps<ValidValueAction, InvalidValueAction>) {
   const {
-    label = capitalizeAll(attributes.name),
-    name,
     checked,
+    disabled = false,
+    invalidValueAction,
+    name,
+    key = name,
+    label = capitalizeAll(name),
     onChange,
     parentDispatch,
-    key = name,
-    disabled = false,
     ref = null,
     required = false,
     size = "sm",
+    step,
     validValueAction,
     value,
   } = attributes;
@@ -76,9 +99,19 @@ function AccessibleCheckboxInputSingle<ValidValueAction extends string = string>
       label={label}
       name={name}
       onChange={(event: ChangeEvent<HTMLInputElement>) => {
+        console.log("CHECKED", checked);
+        console.log("VALUE", value);
         parentDispatch({
           type: validValueAction,
           payload: event.currentTarget.checked,
+        });
+
+        parentDispatch({
+          type: attributes.invalidValueAction,
+          payload: {
+            step,
+            kind: checked ? "add" : "delete",
+          },
         });
 
         if (onChange) {

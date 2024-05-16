@@ -1,7 +1,7 @@
 import { AccessibleTextInputAction } from "./actions";
 
 type AccessibleTextInputState = {
-  popoverOpened: boolean;
+  isPopoverOpened: boolean;
   valueBuffer: string;
   isInputFocused: boolean;
 };

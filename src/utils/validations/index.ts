@@ -1,5 +1,15 @@
 import { Country, PostalCode } from "../../types";
 
+type InputsRegexes = Record<
+  string, // input name
+  {
+    /** must be a superset of partialRegexes. input error state is determined by fullRegex test */
+    fullRegex: RegExp;
+    /** must be subset(s) of fullRegex. input popover error messages are determined by partialRegexes tests */
+    partialRegexes: [RegExp, string][]; // [regex, validationErrorMessage]
+  }
+>;
+
 type ValidationTexts = {
   valueValidText: string;
   valueInvalidText: string;
@@ -98,13 +108,12 @@ function createPhoneNumberValidationTexts({
   valueValidText: string;
   valueInvalidText: string;
 } {
-  const phoneNumberRegex = /^\+\(1\)\(\d{3}\)[ ]\d{3}-\d{4}$/;
+  const phoneNumberLengthRegex = /^(?=.{10,15}$)/;
+  const phoneNumberRegex = /^\d{10,15}$/;
 
   const tuples: [boolean, string][] = [
-    [
-      phoneNumberRegex.test(value),
-      "Invalid phone number. Must be a valid North American phone number of format +(1)(234) 567-8901. Only numbers, parentheses, spaces, '+' and hyphens are allowed.",
-    ],
+    [phoneNumberRegex.test(value), "Only numbers are allowed."],
+    [phoneNumberLengthRegex.test(value), "Must be between 10 and 15 digits."],
   ];
 
   return validationTexts(name, tuples);
@@ -390,4 +399,4 @@ export {
   createPostalCodeValidationTexts,
 };
 
-export type { ValidationTexts };
+export type { ValidationTexts, InputsRegexes };

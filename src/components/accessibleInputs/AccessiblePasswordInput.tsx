@@ -1,39 +1,29 @@
-import {
-  Container,
-  Group,
-  MantineSize,
-  Popover,
-  Stack,
-  TextInput,
-  Tooltip,
-} from "@mantine/core";
+import { Container, MantineSize, PasswordInput, Popover, Stack } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { ChangeEvent, Dispatch, ReactNode, useState } from "react";
-import { TbCheck, TbRefresh } from "react-icons/tb";
+import { ChangeEvent, Dispatch, ReactNode, RefObject, useState } from "react";
+import { TbCheck } from "react-icons/tb";
 
 import { COLORS_SWATCHES } from "../../constants/data";
 import { useGlobalState } from "../../hooks";
-import { Country, SetStepsInErrorPayload } from "../../types";
-import { capitalizeAll, returnThemeColors, splitCamelCase } from "../../utils";
+import { SetStepsInErrorPayload } from "../../types";
+import { capitalizeAll, returnThemeColors } from "../../utils";
 import { ValidationTexts } from "../../utils/validations";
 import { createAccessibleValueValidationTextElements } from "./utils";
 
-type AccessibleTextInputPostalAttributes<
+type AccessiblePasswordInputAttributes<
   ValidValueAction extends string = string,
   InvalidValueAction extends string = string
 > = {
-  autoComplete?: "on" | "off";
-  country: Country;
   icon?: ReactNode;
   initialInputValue?: string;
   value: string;
   label?: ReactNode;
   maxLength?: number;
   minLength?: number;
+  name: string;
   onBlur?: () => void;
-  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
   onFocus?: () => void;
-  onKeyDown?: (event: React.KeyboardEvent<HTMLInputElement>) => void;
   parentDispatch: Dispatch<
     | {
         type: ValidValueAction;
@@ -46,45 +36,32 @@ type AccessibleTextInputPostalAttributes<
   >;
   validValueAction: ValidValueAction;
   invalidValueAction: InvalidValueAction;
-  placeholder?: string;
-  ref?: React.RefObject<HTMLInputElement>;
+  placeholder: string;
+  ref?: RefObject<HTMLInputElement>;
   regex: RegExp;
   validationTexts: ValidationTexts;
   required?: boolean;
-  rightSection?: boolean;
-  rightSectionIcon?: ReactNode;
-  rightSectionOnClick?: () => void;
-  name: string;
   size?: MantineSize;
   step: number; // stepper page location of input
   withAsterisk?: boolean;
 };
 
-type AccessibleTextInputPostalProps<
-  ValidValueAction extends string = string,
-  InvalidValueAction extends string = string
-> = {
-  attributes: AccessibleTextInputPostalAttributes<ValidValueAction, InvalidValueAction>;
+type AccessiblePasswordInputProps = {
+  attributes: AccessiblePasswordInputAttributes;
 };
 
-function AccessibleTextInputPostal<
-  ValidValueAction extends string = string,
-  InvalidValueAction extends string = string
->({ attributes }: AccessibleTextInputPostalProps<ValidValueAction, InvalidValueAction>) {
+function AccessiblePasswordInput({ attributes }: AccessiblePasswordInputProps) {
   const {
-    autoComplete = "off",
-    country,
-    icon = null,
-    initialInputValue = "+(1)",
-    value,
-    label = capitalizeAll(attributes.name),
-    maxLength = 18,
-    minLength = 18,
     name,
+    icon = null,
+    initialInputValue = "",
+    value,
+    label = capitalizeAll(name),
+    maxLength = 32,
+    minLength = 8,
     onBlur,
     onChange,
     onFocus,
-    onKeyDown,
     parentDispatch,
     validValueAction,
     invalidValueAction,
@@ -93,9 +70,6 @@ function AccessibleTextInputPostal<
     regex,
     validationTexts,
     required = false,
-    rightSection = false,
-    rightSectionIcon = null,
-    rightSectionOnClick = () => {},
     size = "sm",
     step,
     withAsterisk = false,
@@ -110,8 +84,8 @@ function AccessibleTextInputPostal<
   } = useGlobalState();
 
   const {
-    generalColors: { greenColorShade, iconGray },
-  } = returnThemeColors({ colorsSwatches: COLORS_SWATCHES, themeObject });
+    generalColors: { greenColorShade },
+  } = returnThemeColors({ themeObject, colorsSwatches: COLORS_SWATCHES });
 
   const isValueBufferValid = regex.test(valueBuffer);
 
@@ -123,32 +97,17 @@ function AccessibleTextInputPostal<
     )
   ) : null;
 
-  const rightIcon = rightSection ? (
-    rightSectionIcon ? (
-      rightSectionIcon
-    ) : (
-      <Tooltip label={`Reset ${splitCamelCase(name)} to ${initialInputValue}`}>
-        <Group style={{ cursor: "pointer" }}>
-          <TbRefresh
-            aria-label={`Reset ${splitCamelCase(name)} value to ${initialInputValue}`}
-            color={iconGray}
-            size={18}
-            onClick={rightSectionOnClick}
-          />
-        </Group>
-      </Tooltip>
-    )
-  ) : null;
-
   const { validValueTextElement, invalidValueTextElement } =
     createAccessibleValueValidationTextElements({
       isPopoverOpened,
       isValueBufferValid,
       name,
       themeObject,
-      value,
       validationTexts,
+      valueBuffer,
     });
+
+  const inputWidth = 330;
 
   return (
     <Container w={350}>
@@ -161,7 +120,7 @@ function AccessibleTextInputPostal<
         withArrow
       >
         <Popover.Target>
-          <TextInput
+          <PasswordInput
             aria-describedby={
               isValueBufferValid
                 ? // id of validValueTextElement
@@ -169,44 +128,16 @@ function AccessibleTextInputPostal<
                 : // id of invalidValueTextElement
                   `${name}-invalid`
             }
-            aria-invalid={isValueBufferValid ? false : true}
+            aria-invalid={!isValueBufferValid}
             aria-label={name}
             aria-required={required}
-            autoComplete={autoComplete}
-            error={!isValueBufferValid && valueBuffer !== initialInputValue}
+            error={!isValueBufferValid && value !== initialInputValue}
             icon={leftIcon}
             label={label}
             maxLength={maxLength}
             minLength={minLength}
             name={name}
             onBlur={() => {
-              const length = valueBuffer.length;
-
-              if (country === "Canada") {
-                if (length === 3) {
-                  parentDispatch({
-                    type: validValueAction,
-                    payload: `${valueBuffer} `,
-                  });
-                }
-
-                if (length === 7) {
-                  parentDispatch({
-                    type: validValueAction,
-                    payload: valueBuffer.trim(),
-                  });
-                }
-              }
-
-              if (country === "United States") {
-                if (length === 6) {
-                  parentDispatch({
-                    type: validValueAction,
-                    payload: `${valueBuffer.slice(0, 5)}-${valueBuffer.slice(5)}`,
-                  });
-                }
-              }
-
               parentDispatch({
                 type: invalidValueAction,
                 payload: {
@@ -231,13 +162,12 @@ function AccessibleTextInputPostal<
               openPopover();
               onFocus?.();
             }}
-            onKeyDown={onKeyDown}
             placeholder={placeholder}
             ref={ref}
             required={required}
-            rightSection={rightIcon}
             size={size}
             value={valueBuffer}
+            w={inputWidth}
             withAsterisk={withAsterisk}
           />
         </Popover.Target>
@@ -254,6 +184,6 @@ function AccessibleTextInputPostal<
   );
 }
 
-export { AccessibleTextInputPostal };
+export { AccessiblePasswordInput };
 
-export type { AccessibleTextInputPostalAttributes };
+export type { AccessiblePasswordInputAttributes };
