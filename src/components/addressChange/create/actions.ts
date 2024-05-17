@@ -8,7 +8,6 @@ type AddressChangeAction = {
   setPostalCode: "setPostalCode";
   setIsAcknowledged: "setIsAcknowledged";
   setTriggerFormSubmit: "setTriggerFormSubmit";
-  setCurrentStepperPosition: "setCurrentStepperPosition";
   setStepsInError: "setStepsInError";
   setIsSubmitting: "setIsSubmitting";
   setIsSuccessful: "setIsSuccessful";
@@ -24,7 +23,6 @@ const addressChangeAction: AddressChangeAction = {
   setPostalCode: "setPostalCode",
   setIsAcknowledged: "setIsAcknowledged",
   setTriggerFormSubmit: "setTriggerFormSubmit",
-  setCurrentStepperPosition: "setCurrentStepperPosition",
   setStepsInError: "setStepsInError",
   setIsSubmitting: "setIsSubmitting",
   setIsSuccessful: "setIsSuccessful",

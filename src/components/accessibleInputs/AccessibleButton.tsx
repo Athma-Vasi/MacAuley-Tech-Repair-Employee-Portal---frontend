@@ -18,8 +18,7 @@ type AccessibleButtonAttributes = {
   customDisabledText?: string;
   customEnabledText?: string;
   disabled?: boolean;
-  disabledTooltipText?: string;
-  enabledTooltipText?: string;
+  isTooltip?: boolean;
   label?: ReactNode;
   leftIcon?: ReactNode;
   name: string;
@@ -50,8 +49,7 @@ function AccessibleButton({ attributes }: AccessibleButtonProps) {
     customDisabledText,
     customEnabledText,
     disabled = false,
-    disabledTooltipText,
-    enabledTooltipText,
+    isTooltip = true,
     label = capitalizeAll(attributes.name),
     type = "button",
     leftIcon = type === "submit" ? <TbUpload /> : null,
@@ -74,39 +72,57 @@ function AccessibleButton({ attributes }: AccessibleButtonProps) {
       themeObject,
     });
 
+  const button = (
+    <Button
+      aria-describedby={
+        disabled
+          ? // id of disabledTextElement
+            `${name}-disabled`
+          : // id of enabledTextElement
+            `${name}-enabled`
+      }
+      aria-label={name}
+      compact={compact}
+      disabled={disabled}
+      gradient={variant === "gradient" ? defaultGradient : void 0}
+      leftIcon={leftIcon}
+      name={name}
+      onClick={onClick}
+      onKeyDown={onKeyDown}
+      ref={ref}
+      rightIcon={rightIcon}
+      size={size}
+      style={style}
+      type={type}
+      variant={variant}
+    >
+      {label}
+    </Button>
+  );
+
   return (
     <Container w={100}>
-      <Tooltip label={disabled ? disabledTooltipText : enabledTooltipText}>
-        <Group>
-          <Button
-            aria-describedby={
-              disabled
-                ? // id of disabledTextElement
-                  `${name}-disabled`
-                : // id of enabledTextElement
-                  `${name}-enabled`
-            }
-            aria-label={name}
-            compact={compact}
-            disabled={disabled}
-            gradient={variant === "gradient" ? defaultGradient : void 0}
-            leftIcon={leftIcon}
-            name={name}
-            onClick={onClick}
-            onKeyDown={onKeyDown}
-            ref={ref}
-            rightIcon={rightIcon}
-            size={size}
-            style={style}
-            type={type}
-            variant={variant}
-          >
-            {label}
-          </Button>
-        </Group>
-      </Tooltip>
+      {isTooltip ? (
+        <Tooltip label={disabled ? customDisabledText : customEnabledText}>
+          <Group>{button}</Group>
+        </Tooltip>
+      ) : (
+        button
+      )}
 
-      <Box style={{ display: "hidden" }}>
+      <Box
+        style={
+          // This is an invisible element that is used to provide screen reader users with additional information
+          // @see https://webaim.org/techniques/css/invisiblecontent/
+          {
+            height: "1px",
+            left: "-9999px",
+            position: "absolute",
+            top: "auto",
+            width: "1px",
+          }
+        }
+      >
         {disabledTextElement}
         {enabledTextElement}
       </Box>

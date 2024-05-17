@@ -44,7 +44,6 @@ type AddressChangeState = {
   postalCode: PostalCode;
   isAcknowledged: boolean;
   triggerFormSubmit: boolean;
-  currentStepperPosition: number;
   stepsInError: Set<number>;
   isSubmitting: boolean;
   isSuccessful: boolean;
@@ -82,10 +81,6 @@ type AddressChangeDispatch =
   | {
       type: AddressChangeAction["setPostalCode"];
       payload: PostalCode;
-    }
-  | {
-      type: AddressChangeAction["setCurrentStepperPosition"];
-      payload: number;
     }
   | {
       type: AddressChangeAction["setStepsInError"];

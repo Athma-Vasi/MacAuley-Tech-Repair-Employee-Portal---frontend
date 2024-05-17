@@ -3,18 +3,82 @@ import {
   ADDRESS_LINE_REGEX,
   CITY_REGEX,
   DATE_FULL_RANGE_REGEX,
+  POSTAL_CODE_REGEX_CANADA,
+  POSTAL_CODE_REGEX_US,
   USERNAME_REGEX,
 } from "../../constants/regex";
-import { ResourceRoutePaths } from "../../types";
+import { Country, ResourceRoutePaths } from "../../types";
 import {
   returnAddressValidationText,
   returnCityValidationText,
   returnDateFullRangeValidationText,
   returnUsernameRegexValidationText,
 } from "../../utils";
-
+import { InputsRegexes } from "../../utils/validations";
 import { ComponentQueryData } from "../queryBuilder";
 import { DescriptionObjectsArray } from "../wrappers";
+
+function returnAddressChangeInputsRegexes(country: Country): InputsRegexes {
+  return {
+    "address line": {
+      fullRegex: ADDRESS_LINE_REGEX,
+      partialRegexes: [
+        [
+          // (?=.{2,75}$) - positive lookahead assertion ensures that the string is between 2 and 75 characters long
+          /^(?=.{2,75}$)/,
+          "Address line must be between 2 and 75 characters length",
+        ],
+        [
+          /^[A-Za-z0-9\s.,#-]+$/,
+          "Address line must contain only letters, numbers, spaces, and special characters: . , # -",
+        ],
+      ],
+    },
+    city: {
+      fullRegex: CITY_REGEX,
+      partialRegexes: [
+        [/^(?=.{2,75}$)/, "City must be between 2 and 75 characters length"],
+        [
+          /^[A-Za-z\s.\-']+$/,
+          "Can only contain alphabetical characters, spaces, periods, or hyphens.",
+        ],
+      ],
+    },
+    "contact number": {
+      fullRegex: /^(?=.{10,15}$)/,
+      partialRegexes: [
+        [/^(?=.{10,15}$)/, "Contact number must be between 10 and 15 digits length."],
+        [/^\d{10,15}$/, "Contact number must only contain numbers."],
+      ],
+    },
+    "postal code":
+      country === "Canada"
+        ? {
+            fullRegex: POSTAL_CODE_REGEX_CANADA,
+            partialRegexes: [
+              [POSTAL_CODE_REGEX_CANADA, "Postal code must be in the format A1A 1A1."],
+              [/^[A-Za-z0-9]+$/, "Must only contain letters and numbers."],
+            ],
+          }
+        : {
+            fullRegex: POSTAL_CODE_REGEX_US,
+            partialRegexes: [
+              [/^\d{5}$/, "Must be a valid US zip code of five digits."],
+              [
+                /^\d{5}[-]\d{4}$/,
+                "Must be a valid US zip code of the ZIP+4 format with five digits, a hyphen, and four additional digits.",
+              ],
+              [/^[0-9-]+$/, "Must only contain numbers and a hyphen."],
+            ],
+          },
+    acknowledgement: {
+      fullRegex: /^(true)$/,
+      partialRegexes: [
+        [/^(true)$/, "Must acknowledge that the information entered is correct."],
+      ],
+    },
+  };
+}
 
 const ADDRESS_CHANGE_DESCRIPTION_OBJECTS: DescriptionObjectsArray = [
   {
@@ -119,4 +183,5 @@ export {
   ADDRESS_CHANGE_PATHS,
   ADDRESS_CHANGE_QUERY_DATA,
   COUNTRIES_DATA,
+  returnAddressChangeInputsRegexes,
 };

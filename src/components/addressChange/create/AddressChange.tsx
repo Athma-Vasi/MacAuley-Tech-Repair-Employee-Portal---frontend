@@ -29,33 +29,29 @@ import {
   StatesUS,
 } from "../../../types";
 import { logState, urlBuilder } from "../../../utils";
-import {
-  InputsRegexes,
-  createAddressValidationTexts,
-  createCityValidationTexts,
-  createPhoneNumberValidationTexts,
-  createPostalCodeValidationTexts,
-} from "../../../utils/validations";
+import { InputsRegexes, returnValidationTexts } from "../../../utils/validations";
 import { AccessibleButton } from "../../accessibleInputs/AccessibleButton";
 import { AccessibleCheckboxInputSingle } from "../../accessibleInputs/AccessibleCheckboxInput";
 import { AccessibleSelectInput } from "../../accessibleInputs/AccessibleSelectInput";
+import { AccessibleStepper } from "../../accessibleInputs/AccessibleStepper";
+import { AccessibleSwitchInput } from "../../accessibleInputs/AccessibleSwitchInput";
+import { AccessibleTextInputPhone } from "../../accessibleInputs/AccessibleTextInputPhone";
+import { AccessibleTextInputPostal } from "../../accessibleInputs/AccessibleTextInputPostal";
 import {
   AccessibleTextInput,
   AccessibleTextInputAttributes,
 } from "../../accessibleInputs/text/AccessibleTextInput";
-import { AccessibleTextInputPhone } from "../../accessibleInputs/AccessibleTextInputPhone";
-import { AccessibleTextInputPostal } from "../../accessibleInputs/AccessibleTextInputPostal";
 import { FormLayoutWrapper, StepperWrapper } from "../../wrappers";
 import {
   ADDRESS_CHANGE_DESCRIPTION_OBJECTS,
   ADDRESS_CHANGE_MAX_STEPPER_POSITION,
   COUNTRIES_DATA,
+  returnAddressChangeInputsRegexes,
 } from "../constants";
 import { AddressChangeAction, addressChangeAction } from "./actions";
 import { addressChangeReducer } from "./reducers";
 import { initialAddressChangeState } from "./state";
 import { AddressChangeDocument } from "./types";
-import { AccessibleSwitchInput } from "../../accessibleInputs/AccessibleSwitchInput";
 
 function AddressChange() {
   const [addressChangeState, addressChangeDispatch] = useReducer(
@@ -73,7 +69,6 @@ function AddressChange() {
     postalCode,
     isAcknowledged,
     triggerFormSubmit,
-    currentStepperPosition,
     stepsInError,
     isSubmitting,
     isSuccessful,
@@ -214,23 +209,25 @@ function AddressChange() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [triggerFormSubmit]);
 
-  useEffect(() => {
-    const isStepInError =
-      !addressLine.length ||
-      !city.length ||
-      !postalCode.length ||
-      !contactNumber ||
-      !isAcknowledged;
+  // useEffect(() => {
+  //   const isStepInError =
+  //     !addressLine.length ||
+  //     !city.length ||
+  //     !postalCode.length ||
+  //     !contactNumber ||
+  //     !isAcknowledged;
 
-    addressChangeDispatch({
-      type: addressChangeAction.setStepsInError,
-      payload: {
-        kind: isStepInError ? "add" : "delete",
-        step: 0,
-      },
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  //   addressChangeDispatch({
+  //     type: addressChangeAction.setStepsInError,
+  //     payload: {
+  //       kind: isStepInError ? "add" : "delete",
+  //       step: 0,
+  //     },
+  //   });
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
+
+  const ADDRESS_CHANGE_INPUTS_REGEXES = returnAddressChangeInputsRegexes(country);
 
   const addressLineTextInput = (
     <AccessibleTextInput
@@ -242,9 +239,10 @@ function AddressChange() {
         validValueAction: addressChangeAction.setAddressLine,
         regex: ADDRESS_LINE_REGEX,
         step: 0,
-        validationTexts: createAddressValidationTexts({
+        validationTexts: returnValidationTexts({
           name: "address line",
           value: addressLine,
+          partialRegexes: ADDRESS_CHANGE_INPUTS_REGEXES["address line"].partialRegexes,
         }),
       }}
     />
@@ -260,9 +258,10 @@ function AddressChange() {
         validValueAction: addressChangeAction.setCity,
         regex: CITY_REGEX,
         step: 0,
-        validationTexts: createCityValidationTexts({
+        validationTexts: returnValidationTexts({
           name: "city",
           value: city,
+          partialRegexes: ADDRESS_CHANGE_INPUTS_REGEXES.city.partialRegexes,
         }),
       }}
     />
@@ -276,9 +275,10 @@ function AddressChange() {
         parentDispatch: addressChangeDispatch,
         regex: PHONE_NUMBER_REGEX,
         step: 0,
-        validationTexts: createPhoneNumberValidationTexts({
+        validationTexts: returnValidationTexts({
           name: "contact number",
           value: contactNumber,
+          partialRegexes: ADDRESS_CHANGE_INPUTS_REGEXES["contact number"].partialRegexes,
         }),
         validValueAction: addressChangeAction.setContactNumber,
         value: contactNumber,
@@ -292,12 +292,12 @@ function AddressChange() {
         invalidValueAction: addressChangeAction.setStepsInError,
         name: "postal code",
         parentDispatch: addressChangeDispatch,
-        regex: country === "Canada" ? POSTAL_CODE_REGEX_CANADA : POSTAL_CODE_REGEX_US,
+        regex: ADDRESS_CHANGE_INPUTS_REGEXES["postal code"].fullRegex,
         step: 0,
-        validationTexts: createPostalCodeValidationTexts({
-          country,
+        validationTexts: returnValidationTexts({
           name: "postal code",
           value: postalCode,
+          partialRegexes: ADDRESS_CHANGE_INPUTS_REGEXES["postal code"].partialRegexes,
         }),
         validValueAction: addressChangeAction.setPostalCode,
         value: postalCode,
@@ -305,19 +305,6 @@ function AddressChange() {
     />
   );
 
-  // const acknowledgementCheckbox = (
-  //   <AccessibleCheckboxInputSingle
-  //     attributes={{
-  //       checked: isAcknowledged,
-  //       invalidValueAction: addressChangeAction.setStepsInError,
-  //       name: "acknowledgement",
-  //       parentDispatch: addressChangeDispatch,
-  //       step: 0,
-  //       validValueAction: addressChangeAction.setIsAcknowledged,
-  //       value: isAcknowledged ? "true" : "false",
-  //     }}
-  //   />
-  // );
   const acknowledgementSwitch = (
     <AccessibleSwitchInput<
       AddressChangeAction["setIsAcknowledged"],
@@ -374,6 +361,9 @@ function AddressChange() {
   const submitButton = (
     <AccessibleButton
       attributes={{
+        customEnabledText: "All inputs are valid. Click to submit form",
+        customDisabledText: "Please fix errors before submitting form",
+        disabled: stepsInError.size > 0 || triggerFormSubmit,
         name: "submit",
         onClick: (_event: MouseEvent<HTMLButtonElement>) => {
           addressChangeDispatch({
@@ -381,14 +371,11 @@ function AddressChange() {
             payload: true,
           });
         },
-        disabled: stepsInError.size > 0 || triggerFormSubmit,
-        enabledTooltipText: "All inputs are valid. Click to submit form",
-        disabledTooltipText: "Please fix errors before submitting form",
       }}
     />
   );
 
-  const createdAddressChangeForm = (
+  const addressChangeForm = (
     <FormLayoutWrapper>
       {contactNumberInput}
       {countrySelectInput}
@@ -400,88 +387,62 @@ function AddressChange() {
     </FormLayoutWrapper>
   );
 
-  const displayAddressChangeForm =
-    currentStepperPosition === 0 ? createdAddressChangeForm : submitButton;
+  // const addressChange = (
+  //   <StepperWrapper
+  //     childrenTitle="Address change"
+  //     currentStepperPosition={currentStepperPosition}
+  //     setCurrentStepperPosition={addressChangeAction.setCurrentStepperPosition}
+  //     descriptionObjectsArray={ADDRESS_CHANGE_DESCRIPTION_OBJECTS}
+  //     maxStepperPosition={ADDRESS_CHANGE_MAX_STEPPER_POSITION}
+  //     parentComponentDispatch={addressChangeDispatch}
+  //     stepsInError={stepsInError}
+  //   >
+  //     {displayAddressChangeForm}
+  //   </StepperWrapper>
+  // );
 
-  // declared here as postal code regex is dependent on country
-  const ADDRESS_CHANGE_INPUTS_REGEXES: InputsRegexes = {
-    "address line": {
-      fullRegex: ADDRESS_LINE_REGEX,
-      partialRegexes: [
-        [
-          // (?=.{2,75}$) - positive lookahead assertion ensures that the string is between 2 and 75 characters long
-          /^(?=.{2,75}$)/,
-          "Address line must be between 2 and 75 characters length",
-        ],
-        [
-          /^[A-Za-z0-9\s.,#-]+$/,
-          "Address line must contain only letters, numbers, spaces, and special characters: . , # -",
-        ],
-      ],
-    },
-    city: {
-      fullRegex: CITY_REGEX,
-      partialRegexes: [
-        [/^(?=.{2,75}$)/, "City must be between 2 and 75 characters length"],
-        [
-          /^[A-Za-z\s.\-']+$/,
-          "Can only contain alphabetical characters, spaces, periods, or hyphens.",
-        ],
-      ],
-    },
-    "contact number": {
-      fullRegex: /^(?=.{10,15}$)/,
-      partialRegexes: [
-        [/^(?=.{10,15}$)/, "Contact number must be between 10 and 15 digits length."],
-        [/^\d{10,15}$/, "Contact number must only contain numbers."],
-      ],
-    },
-    "postal code":
-      country === "Canada"
-        ? {
-            fullRegex: /^[A-Za-z]\d[A-Za-z][ ]?\d[A-Za-z]\d$/i,
-            partialRegexes: [
-              [
-                /^[A-Za-z]\d[A-Za-z][ ]?\d[A-Za-z]\d$/i,
-                "Postal code must be in the format A1A 1A1.",
-              ],
-              [/^[A-Za-z0-9]+$/, "Must only contain letters and numbers."],
-            ],
-          }
-        : {
-            fullRegex: /^\d{5}(?:[-]\d{4})?$/,
-            partialRegexes: [
-              [/^\d{5}$/, "Must be a valid US zip code of five digits."],
-              [
-                /^\d{5}[-]\d{4}$/,
-                "Must be a valid US zip code of the ZIP+4 format with five digits, a hyphen, and four additional digits.",
-              ],
-              [/^[0-9-]+$/, "Must only contain numbers and a hyphen."],
+  const stepper = (
+    <AccessibleStepper
+      attributes={{
+        accessibleStepperData: [
+          {
+            children: addressChangeForm,
+            description: "Update your address",
+            valuesRegexes: [
+              {
+                value: addressLine,
+                fullRegex: ADDRESS_CHANGE_INPUTS_REGEXES["address line"].fullRegex,
+              },
+              {
+                value: city,
+                fullRegex: ADDRESS_CHANGE_INPUTS_REGEXES.city.fullRegex,
+              },
+              {
+                value: contactNumber,
+                fullRegex: ADDRESS_CHANGE_INPUTS_REGEXES["contact number"].fullRegex,
+              },
+              {
+                value: postalCode,
+                fullRegex: ADDRESS_CHANGE_INPUTS_REGEXES["postal code"].fullRegex,
+              },
+              {
+                value: isAcknowledged,
+                fullRegex: ADDRESS_CHANGE_INPUTS_REGEXES.acknowledgement.fullRegex,
+              },
             ],
           },
-    acknowledgement: {
-      fullRegex: /^(true)$/,
-      partialRegexes: [
-        [/^(true)$/, "Must acknowledge that the information entered is correct."],
-      ],
-    },
-  };
-
-  const addressChange = (
-    <StepperWrapper
-      childrenTitle="Address change"
-      currentStepperPosition={currentStepperPosition}
-      setCurrentStepperPosition={addressChangeAction.setCurrentStepperPosition}
-      descriptionObjectsArray={ADDRESS_CHANGE_DESCRIPTION_OBJECTS}
-      maxStepperPosition={ADDRESS_CHANGE_MAX_STEPPER_POSITION}
-      parentComponentDispatch={addressChangeDispatch}
-      stepsInError={stepsInError}
-    >
-      {displayAddressChangeForm}
-    </StepperWrapper>
+          {
+            children: null,
+            description: "Review your address changes",
+            kind: "review",
+          },
+        ],
+        submitButton,
+      }}
+    />
   );
 
-  return addressChange;
+  return stepper;
 
   //
   //

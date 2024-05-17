@@ -30,10 +30,6 @@ const addressChangeReducersMap = new Map<
   [addressChangeAction.setPostalCode, addressChangeReducer_setPostalCode],
   [addressChangeAction.setIsAcknowledged, addressChangeReducer_setIsAcknowledged],
   [addressChangeAction.setTriggerFormSubmit, addressChangeReducer_setTriggerFormSubmit],
-  [
-    addressChangeAction.setCurrentStepperPosition,
-    addressChangeReducer_setCurrentStepperPosition,
-  ],
   [addressChangeAction.setStepsInError, addressChangeReducer_setStepsInError],
   [addressChangeAction.setIsSubmitting, addressChangeReducer_setIsSubmitting],
   [addressChangeAction.setIsSuccessful, addressChangeReducer_setIsSuccessful],
@@ -126,16 +122,6 @@ function addressChangeReducer_setTriggerFormSubmit(
   return {
     ...state,
     triggerFormSubmit: dispatch.payload as boolean,
-  };
-}
-
-function addressChangeReducer_setCurrentStepperPosition(
-  state: AddressChangeState,
-  dispatch: AddressChangeDispatch
-): AddressChangeState {
-  return {
-    ...state,
-    currentStepperPosition: dispatch.payload as number,
   };
 }
 
