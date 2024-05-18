@@ -14,10 +14,12 @@ import { TbCheck, TbRefresh } from "react-icons/tb";
 
 import { COLORS_SWATCHES } from "../../constants/data";
 import { useGlobalState } from "../../hooks";
-import { SetStepsInErrorPayload } from "../../types";
-import { capitalizeAll, returnThemeColors } from "../../utils";
-import { ValidationTexts } from "../../utils/validations";
-import { createAccessibleValueValidationTextElements } from "./utils";
+import { StepperPage, StepperChild, SetStepsInErrorPayload } from "../../types";
+import { returnThemeColors, splitCamelCase } from "../../utils";
+import {
+  createAccessibleValueValidationTextElements,
+  returnValidationTexts,
+} from "./utils";
 
 type AccessibleTextAreaInputAttributes<
   ValidValueAction extends string = string,
@@ -25,6 +27,7 @@ type AccessibleTextAreaInputAttributes<
 > = {
   ariaAutoComplete?: "both" | "list" | "none" | "inline";
   autoComplete?: "on" | "off";
+  componentScaffolding: StepperPage[];
   disabled?: boolean;
   dynamicInputs?: ReactNode[]; // inputs created by the user (ex: buttons in the survey builder)
   icon?: ReactNode;
@@ -54,14 +57,12 @@ type AccessibleTextAreaInputAttributes<
   invalidValueAction: InvalidValueAction;
   placeholder: string;
   ref?: React.RefObject<HTMLTextAreaElement> | null;
-  regex: RegExp;
-  validationTexts: ValidationTexts;
   required?: boolean;
   rightSection?: boolean;
   rightSectionIcon?: ReactNode;
   rightSectionOnClick?: () => void;
   size?: MantineSize;
-  step: number; // stepper page location of input
+  /** stepper page location of input. default 0 */ step?: number;
   withAsterisk?: boolean;
 };
 
@@ -79,17 +80,18 @@ function AccessibleTextAreaInput<
   const {
     ariaAutoComplete = "none",
     autoComplete = "off",
+    componentScaffolding,
     disabled = false,
     dynamicInputs = null,
     icon = null,
     initialInputValue = "",
     value,
-    label = capitalizeAll(attributes.name),
+    name = splitCamelCase(attributes.name),
+    label = splitCamelCase(attributes.name),
     maxLength = 2000,
     maxRows = 7,
     minLength = 2,
     minRows = 3,
-    name,
     onBlur,
     onChange,
     onFocus,
@@ -99,14 +101,12 @@ function AccessibleTextAreaInput<
     invalidValueAction,
     placeholder,
     ref = null,
-    regex,
-    validationTexts,
     required = false,
     rightSection = false,
     rightSectionIcon = null,
     rightSectionOnClick = () => {},
     size = "sm",
-    step,
+    step = 0,
     withAsterisk = required,
   } = attributes;
 
@@ -133,7 +133,18 @@ function AccessibleTextAreaInput<
     label
   );
 
-  const isValueBufferValid = regex.test(valueBuffer);
+  const component = componentScaffolding[step];
+  const { full: fullRegex, partials } = component.children.find(
+    (child: StepperChild) => child.name === name
+  )?.regexes ?? { full: /** matches any char zero or more times */ /.*/, partials: [] };
+
+  const validationTexts = returnValidationTexts({
+    name,
+    partials,
+    value,
+  });
+
+  const isValueBufferValid = fullRegex.test(valueBuffer);
 
   const leftIcon = isValueBufferValid ? (
     icon ? (

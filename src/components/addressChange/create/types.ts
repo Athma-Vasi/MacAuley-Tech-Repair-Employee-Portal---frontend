@@ -42,7 +42,7 @@ type AddressChangeState = {
   state: StatesUS;
   country: Country;
   postalCode: PostalCode;
-  isAcknowledged: boolean;
+  acknowledgement: boolean;
   triggerFormSubmit: boolean;
   stepsInError: Set<number>;
   isSubmitting: boolean;
@@ -56,7 +56,7 @@ type AddressChangeDispatch =
     }
   | {
       type:
-        | AddressChangeAction["setIsAcknowledged"]
+        | AddressChangeAction["setAcknowledgement"]
         | AddressChangeAction["setTriggerFormSubmit"]
         | AddressChangeAction["setIsSuccessful"]
         | AddressChangeAction["setIsSubmitting"];

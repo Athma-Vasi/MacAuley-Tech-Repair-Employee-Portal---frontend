@@ -5,7 +5,7 @@ import { TbCheck, TbExclamationCircle } from "react-icons/tb";
 
 import { COLORS_SWATCHES } from "../../constants/data";
 import { ThemeObject } from "../../context/globalProvider/types";
-import { capitalizeAll, replaceLastCommaWithAnd, returnThemeColors } from "../../utils";
+import { replaceLastCommaWithAnd, returnThemeColors, splitCamelCase } from "../../utils";
 import { AccessibleButton, AccessibleButtonAttributes } from "./AccessibleButton";
 import {
   AccessibleCheckboxInputGroup,
@@ -244,8 +244,8 @@ function createAccessibleRadioScreenreaderTextElements({
 }
 
 type CreateAccessibleButtonScreenreaderTextElements = {
-  customDisabledText?: string;
-  customEnabledText?: string;
+  disabledScreenreaderText?: string;
+  enabledScreenreaderText?: string;
   isEnabled: boolean;
   name: string;
   theme?: "muted" | "default";
@@ -254,8 +254,8 @@ type CreateAccessibleButtonScreenreaderTextElements = {
 };
 
 function createAccessibleButtonScreenreaderTextElements({
-  customDisabledText,
-  customEnabledText,
+  disabledScreenreaderText,
+  enabledScreenreaderText,
   isEnabled,
   name,
   theme = "default",
@@ -277,9 +277,7 @@ function createAccessibleButtonScreenreaderTextElements({
       <FontAwesomeIcon icon={faCheck} color={greenColorShade} />
     ) : null;
 
-  const defaultEnabledText = `All form inputs are valid. ${capitalizeAll(
-    name
-  )} is enabled. You may submit the form.`;
+  const defaultEnabledText = `All form inputs are valid. ${name} is enabled. You may submit the form.`;
 
   const enabledTextElement = (
     <Text
@@ -290,7 +288,7 @@ function createAccessibleButtonScreenreaderTextElements({
       aria-live="polite"
     >
       {enabledIcon}
-      {customEnabledText ?? defaultEnabledText}
+      {enabledScreenreaderText ?? defaultEnabledText}
     </Text>
   );
 
@@ -299,9 +297,7 @@ function createAccessibleButtonScreenreaderTextElements({
       <FontAwesomeIcon icon={faInfoCircle} color={redColorShade} />
     ) : null;
 
-  const defaultDisabledText = `One or more inputs are in error. ${capitalizeAll(
-    name
-  )} disabled. Please fix errors before submitting form.`;
+  const defaultDisabledText = `One or more inputs are in error. ${name} disabled. Please fix errors before submitting form.`;
 
   const disabledTextElement = (
     <Text
@@ -314,7 +310,7 @@ function createAccessibleButtonScreenreaderTextElements({
       aria-live="polite"
     >
       {disabledIcon}
-      {customDisabledText ?? defaultDisabledText}
+      {disabledScreenreaderText ?? defaultDisabledText}
     </Text>
   );
 
@@ -395,7 +391,7 @@ function createAccessibleSwitchOnOffTextElements({
       <FontAwesomeIcon icon={faCheck} color={themeColorShade} />
     ) : null;
 
-  const switchOnText = switchOnDescription ?? `${capitalizeAll(name)} is on.`;
+  const switchOnText = switchOnDescription ?? `${name} is on.`;
 
   const switchOnTextElement = (
     <Text
@@ -414,7 +410,7 @@ function createAccessibleSwitchOnOffTextElements({
       <FontAwesomeIcon icon={faInfoCircle} color={grayColorShade} />
     ) : null;
 
-  const switchOffText = switchOffDescription ?? `${capitalizeAll(name)} is off.`;
+  const switchOffText = switchOffDescription ?? `${name} is off.`;
 
   const switchOffTextElement = (
     <Text
@@ -576,6 +572,34 @@ function createAccessibleSwitchInputs<
   ));
 }
 
+type ValidationTexts = {
+  valueValidText: string;
+  valueInvalidText: string;
+};
+
+function returnValidationTexts({
+  name,
+  partials,
+  value,
+}: {
+  name: string;
+  value: string;
+  partials: [RegExp, string][];
+}): ValidationTexts {
+  const splitName = splitCamelCase(name);
+
+  let valueInvalidText = partials
+    .map(([regex, errorMessage]) => (regex.test(value) ? "" : errorMessage))
+    .join(" ");
+
+  valueInvalidText = `${splitName} is invalid. ${valueInvalidText}`;
+
+  return {
+    valueValidText: `${splitName} is valid.`,
+    valueInvalidText,
+  };
+}
+
 export {
   createAccessibleButtons,
   createAccessibleButtonScreenreaderTextElements,
@@ -594,4 +618,5 @@ export {
   createAccessibleTextInputsPhone,
   createAccessibleTextInputsPostal,
   createAccessibleValueValidationTextElements,
+  returnValidationTexts,
 };

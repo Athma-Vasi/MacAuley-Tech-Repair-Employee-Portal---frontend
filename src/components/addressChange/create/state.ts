@@ -5,7 +5,7 @@ const initialAddressChangeState: AddressChangeState = {
   city: "",
   contactNumber: "",
   country: "Canada",
-  isAcknowledged: false,
+  acknowledgement: false,
   isSubmitting: false,
   isSuccessful: false,
   postalCode: "",

@@ -13,16 +13,19 @@ import { TbCheck, TbRefresh } from "react-icons/tb";
 
 import { COLORS_SWATCHES } from "../../constants/data";
 import { useGlobalState } from "../../hooks";
-import { Country, SetStepsInErrorPayload } from "../../types";
-import { capitalizeAll, returnThemeColors, splitCamelCase } from "../../utils";
-import { ValidationTexts } from "../../utils/validations";
-import { createAccessibleValueValidationTextElements } from "./utils";
+import { StepperPage, Country, StepperChild, SetStepsInErrorPayload } from "../../types";
+import { returnThemeColors, splitCamelCase } from "../../utils";
+import {
+  createAccessibleValueValidationTextElements,
+  returnValidationTexts,
+} from "./utils";
 
 type AccessibleTextInputPostalAttributes<
   ValidValueAction extends string = string,
   InvalidValueAction extends string = string
 > = {
   autoComplete?: "on" | "off";
+  componentScaffolding: StepperPage[];
   country: Country;
   icon?: ReactNode;
   initialInputValue?: string;
@@ -48,15 +51,13 @@ type AccessibleTextInputPostalAttributes<
   invalidValueAction: InvalidValueAction;
   placeholder?: string;
   ref?: React.RefObject<HTMLInputElement>;
-  regex: RegExp;
-  validationTexts: ValidationTexts;
   required?: boolean;
   rightSection?: boolean;
   rightSectionIcon?: ReactNode;
   rightSectionOnClick?: () => void;
   name: string;
   size?: MantineSize;
-  step: number; // stepper page location of input
+  /** stepper page location of input. default 0 */ step?: number;
   withAsterisk?: boolean;
 };
 
@@ -73,14 +74,15 @@ function AccessibleTextInputPostal<
 >({ attributes }: AccessibleTextInputPostalProps<ValidValueAction, InvalidValueAction>) {
   const {
     autoComplete = "off",
+    componentScaffolding,
     country,
     icon = null,
     initialInputValue = "",
     value,
-    label = capitalizeAll(attributes.name),
+    label = splitCamelCase(attributes.name),
     maxLength = 18,
     minLength = 18,
-    name,
+    name = splitCamelCase(attributes.name),
     onBlur,
     onChange,
     onFocus,
@@ -90,14 +92,12 @@ function AccessibleTextInputPostal<
     invalidValueAction,
     placeholder,
     ref = null,
-    regex,
-    validationTexts,
     required = false,
     rightSection = false,
     rightSectionIcon = null,
     rightSectionOnClick = () => {},
     size = "sm",
-    step,
+    step = 0,
     withAsterisk = false,
   } = attributes;
 
@@ -113,7 +113,18 @@ function AccessibleTextInputPostal<
     generalColors: { greenColorShade, iconGray },
   } = returnThemeColors({ colorsSwatches: COLORS_SWATCHES, themeObject });
 
-  const isValueBufferValid = regex.test(valueBuffer);
+  const component = componentScaffolding[step];
+  const { full: fullRegex, partials } = component.children.find(
+    (child: StepperChild) => child.name === name
+  )?.regexes ?? { full: /** matches any char zero or more times */ /.*/, partials: [] };
+
+  const validationTexts = returnValidationTexts({
+    name,
+    partials,
+    value,
+  });
+
+  const isValueBufferValid = fullRegex.test(valueBuffer);
 
   const leftIcon = isValueBufferValid ? (
     icon ? (

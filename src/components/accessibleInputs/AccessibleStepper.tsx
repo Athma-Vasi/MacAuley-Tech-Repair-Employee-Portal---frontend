@@ -1,26 +1,22 @@
-import { MantineSize, Stack, Stepper, Text } from "@mantine/core";
+import { Group, MantineSize, Stack, Stepper, Text, Title } from "@mantine/core";
 import { ReactNode, useState } from "react";
 import { TbCheck, TbX } from "react-icons/tb";
 import { TiArrowLeftThick } from "react-icons/ti";
 
 import { COLORS_SWATCHES } from "../../constants/data";
 import { useGlobalState } from "../../hooks";
+import { StepperPage } from "../../types";
 import { returnThemeColors } from "../../utils";
 import { createAccessibleButtons } from "./utils";
 
-type AccessibleStepperData = {
-  children?: ReactNode;
-  description: string;
-  kind?: "form" | "review";
-  valuesRegexes?: Array<{ value: string | boolean; fullRegex: RegExp }>;
-};
-
 type AccessibleStepperAttributes = {
-  /** last item in array must be form review page */
-  accessibleStepperData: AccessibleStepperData[];
   allowNextStepsSelect?: boolean;
+  componentState: Record<string, unknown>;
+  pageElements: React.JSX.Element[];
   size?: MantineSize;
+  stepperPages: StepperPage[];
   submitButton?: JSX.Element;
+  title?: ReactNode;
 };
 
 type AccessibleStepperProps = {
@@ -29,10 +25,13 @@ type AccessibleStepperProps = {
 
 function AccessibleStepper({ attributes }: AccessibleStepperProps) {
   const {
-    accessibleStepperData,
     allowNextStepsSelect,
+    componentState,
+    pageElements,
     size = "md",
+    stepperPages,
     submitButton = null,
+    title,
   } = attributes;
 
   const {
@@ -41,35 +40,35 @@ function AccessibleStepper({ attributes }: AccessibleStepperProps) {
 
   const [activeStep, setActiveStep] = useState(0);
   const [stepsInError, setStepsInError] = useState<boolean[]>(
-    accessibleStepperData.map(() => false)
+    stepperPages.map((page) => false)
   );
 
-  const maxStep = accessibleStepperData.length;
+  const maxStep = stepperPages.length;
 
   const [backButton, nextButton] = createAccessibleButtons([
     {
-      customDisabledText: "You are on the first step",
-      customEnabledText: `Go back to ${
-        accessibleStepperData[activeStep - 1]?.description ?? "the beginning"
+      disabledScreenreaderText: "You are on the first step",
+      enabledScreenreaderText: `Go back to ${
+        stepperPages[activeStep - 1]?.description ?? "the beginning"
       }`,
       disabled: activeStep === 0,
       leftIcon: <TiArrowLeftThick />,
       name: "Back",
       onClick: () => {
-        setStepsInError(returnStepsInError(accessibleStepperData));
+        setStepsInError(returnStepsInError(stepperPages, componentState));
 
         setActiveStep(activeStep <= maxStep ? activeStep - 1 : activeStep);
       },
     },
     {
-      customEnabledText: `Go to ${
-        accessibleStepperData[activeStep + 1]?.description ?? "the end"
+      enabledScreenreaderText: `Go to ${
+        stepperPages[activeStep + 1]?.description ?? "the end"
       }`,
-      customDisabledText: "You are on the last step",
+      disabledScreenreaderText: "You are on the last step",
       disabled: activeStep === maxStep,
       name: "Next",
       onClick: () => {
-        setStepsInError(returnStepsInError(accessibleStepperData));
+        setStepsInError(returnStepsInError(stepperPages, componentState));
 
         setActiveStep(activeStep < maxStep + 1 ? activeStep + 1 : activeStep);
       },
@@ -91,14 +90,16 @@ function AccessibleStepper({ attributes }: AccessibleStepperProps) {
     themeObject,
   });
 
-  const stepperSteps = accessibleStepperData.map((step, stepIndex) => {
+  const stepperSteps = pageElements.map((elements, pageIndex) => {
     const description = (
-      <Text color={stepsInError[stepIndex] ? redColorShade : grayColorShade}>
-        {step.description}
+      <Text color={stepsInError[pageIndex] ? redColorShade : grayColorShade}>
+        {stepperPages[pageIndex].kind === "review"
+          ? "Review your changes"
+          : stepperPages[pageIndex].description}
       </Text>
     );
 
-    const completedIcon = stepsInError[stepIndex] ? (
+    const completedIcon = stepsInError[pageIndex] ? (
       <TbX size={26} />
     ) : (
       <TbCheck size={26} />
@@ -107,12 +108,12 @@ function AccessibleStepper({ attributes }: AccessibleStepperProps) {
     return (
       <Stepper.Step
         aria-label={screenreaderText}
-        color={stepsInError[stepIndex] ? redColorShade : themeColorShade}
+        color={stepsInError[pageIndex] ? redColorShade : themeColorShade}
         completedIcon={completedIcon}
         description={description}
-        key={`step-${stepIndex}`}
+        key={`step-${pageIndex}`}
       >
-        {step.children ?? null}
+        {elements ?? null}
       </Stepper.Step>
     );
   });
@@ -130,37 +131,88 @@ function AccessibleStepper({ attributes }: AccessibleStepperProps) {
 
   return (
     <Stack>
+      {title ? <Title order={4}>{title}</Title> : null}
       {stepper}
-      {backButton}
-      {nextButton}
+      <Group>
+        {backButton}
+        {nextButton}
+      </Group>
     </Stack>
   );
 }
 
-function returnStepsInError(accessibleStepperData: AccessibleStepperData[]): boolean[] {
-  return accessibleStepperData.reduce<boolean[]>(
-    (acc, step, index) => {
-      const { valuesRegexes, kind } = step;
+function returnStepsInError(
+  stepperPages: StepperPage[],
+  componentState: Record<string, unknown>
+): boolean[] {
+  return stepperPages.reduce<boolean[]>(
+    (stepsAcc, step, index) => {
+      const { children, kind } = step;
 
       if (kind && kind === "review") {
-        return acc;
-      }
-      if (!valuesRegexes) {
-        return acc;
+        return stepsAcc;
       }
 
-      valuesRegexes.forEach(({ value, fullRegex }) => {
-        const isValid = fullRegex.test(value.toString());
+      children.forEach((child) => {
+        const { name: childName } = child;
 
-        if (!isValid) {
-          acc[index] = true;
-        }
+        Object.entries(componentState).forEach(([stateKey, stateValue]) => {
+          if (childName === stateKey) {
+            const { full: fullRegex } = child.regexes ?? { full: /.*/ };
+
+            const isStepValid = fullRegex.test(
+              typeof stateValue === "string" ? stateValue : stateValue?.toString() ?? ""
+            );
+
+            if (!isStepValid) {
+              stepsAcc[index] = true;
+            }
+          }
+        });
       });
 
-      return acc;
+      return stepsAcc;
     },
-    accessibleStepperData.map(() => false)
+    stepperPages.map((page) => false)
   );
 }
 
 export { AccessibleStepper };
+
+/**
+ * function createValuesRegexes<
+    ComponentState extends Record<string, unknown> = Record<string, unknown>
+  >(stepperPages: StepperPage[], state: ComponentState): ValuesRegexes[] {
+    return stepperPages.reduce<ValuesRegexes[]>((valuesRegexesAcc, page) => {
+      const pageValues = page.children.reduce<ValuesRegexes>((pageAcc, child) => {
+        if (child.regexes) {
+          const {
+            regexes: { full },
+            name: childName,
+          } = child;
+
+          const value = Object.entries(state).reduce(
+            (valueAcc, [stateKey, stateValue]) => {
+              if (stateKey === childName) {
+                typeof stateValue === "string" || typeof stateValue === "boolean"
+                  ? (valueAcc = stateValue.toString())
+                  : (valueAcc = "");
+              }
+
+              return valueAcc;
+            },
+            ""
+          );
+
+          pageAcc.push({ fullRegex: full, value });
+        }
+
+        return pageAcc;
+      }, []);
+
+      valuesRegexesAcc.push(pageValues);
+
+      return valuesRegexesAcc;
+    }, []);
+  }
+ */

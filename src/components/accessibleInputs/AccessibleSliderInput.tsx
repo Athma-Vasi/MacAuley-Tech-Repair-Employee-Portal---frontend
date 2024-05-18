@@ -3,7 +3,7 @@ import { ReactNode } from "react";
 
 import { useGlobalState } from "../../hooks";
 import { SliderInputData } from "../../types";
-import { returnSliderMarks } from "../../utils";
+import { returnSliderMarks, splitCamelCase } from "../../utils";
 import { createAccessibleSliderScreenreaderTextElements } from "./utils";
 
 type AccessibleSliderInputAttributes<ValidValueAction extends string = string> = {
@@ -30,7 +30,7 @@ type AccessibleSliderInputAttributes<ValidValueAction extends string = string> =
   rangeSliderDefaultValues?: [number, number];
   size?: MantineSize;
   sliderDefaultValue?: number;
-  step: number;
+  step?: number;
   thumbChildren?: ReactNode;
   /** use with range-slider */
   thumbFromLabel?: string;
@@ -57,7 +57,7 @@ function AccessibleSliderInput({ attributes }: AccessibleSliderInputProps) {
     marks,
     max,
     min,
-    name,
+    name = splitCamelCase(attributes.name),
     onChangeRangeSlider,
     onChangeSlider,
     parentDispatch,

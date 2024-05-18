@@ -7,62 +7,97 @@ import {
   POSTAL_CODE_REGEX_US,
   USERNAME_REGEX,
 } from "../../constants/regex";
-import { Country, ResourceRoutePaths } from "../../types";
+import { Country, ResourceRoutePaths, StepperChild, StepperPage } from "../../types";
 import {
   returnAddressValidationText,
   returnCityValidationText,
   returnDateFullRangeValidationText,
   returnUsernameRegexValidationText,
 } from "../../utils";
-import { InputsRegexes } from "../../utils/validations";
 import { ComponentQueryData } from "../queryBuilder";
 import { DescriptionObjectsArray } from "../wrappers";
 
-function returnAddressChangeInputsRegexes(country: Country): InputsRegexes {
-  return {
-    "address line": {
-      fullRegex: ADDRESS_LINE_REGEX,
-      partialRegexes: [
-        [
-          // (?=.{2,75}$) - positive lookahead assertion ensures that the string is between 2 and 75 characters long
-          /^(?=.{2,75}$)/,
-          "Address line must be between 2 and 75 characters length",
-        ],
+/** this function exists because country is state field ... */
+function returnAddressChangeStepperPages(country: Country): StepperPage[] {
+  const countryInput: StepperChild = {
+    inputType: "select",
+    selectInputData: COUNTRIES_DATA,
+    name: "country",
+  };
+
+  const province: StepperChild = {
+    inputType: "select",
+    name: "province",
+    selectInputData: PROVINCES,
+  };
+
+  const state: StepperChild = {
+    inputType: "select",
+    name: "state",
+    selectInputData: STATES_US,
+  };
+
+  const addressLine: StepperChild = {
+    inputType: "text",
+    name: "addressLine",
+    regexes: {
+      full: ADDRESS_LINE_REGEX,
+      partials: [
+        [/^(?=.{2,75}$)/, "Must be between 2 and 75 characters length"],
         [
           /^[A-Za-z0-9\s.,#-]+$/,
-          "Address line must contain only letters, numbers, spaces, and special characters: . , # -",
+          "Must contain only letters, numbers, spaces, and special characters: . , # -",
         ],
       ],
     },
-    city: {
-      fullRegex: CITY_REGEX,
-      partialRegexes: [
-        [/^(?=.{2,75}$)/, "City must be between 2 and 75 characters length"],
+  };
+
+  const city: StepperChild = {
+    inputType: "text",
+    name: "city",
+    regexes: {
+      full: CITY_REGEX,
+      partials: [
+        [/^(?=.{2,75}$)/, "Must be between 2 and 75 characters length"],
         [
           /^[A-Za-z\s.\-']+$/,
           "Can only contain alphabetical characters, spaces, periods, or hyphens.",
         ],
       ],
     },
-    "contact number": {
-      fullRegex: /^(?=.{10,15}$)/,
-      partialRegexes: [
-        [/^(?=.{10,15}$)/, "Contact number must be between 10 and 15 digits length."],
-        [/^\d{10,15}$/, "Contact number must only contain numbers."],
+  };
+
+  const contactNumber: StepperChild = {
+    inputType: "text",
+    name: "contactNumber",
+    regexes: {
+      full: /^(?=.{10,15}$)/,
+      partials: [
+        [/^(?=.{10,15}$)/, "Must be between 10 and 15 digits length."],
+        [/^\d{10,15}$/, "Must only contain numbers."],
       ],
     },
-    "postal code":
-      country === "Canada"
-        ? {
-            fullRegex: POSTAL_CODE_REGEX_CANADA,
-            partialRegexes: [
-              [POSTAL_CODE_REGEX_CANADA, "Postal code must be in the format A1A 1A1."],
+  };
+
+  const postalCode: StepperChild =
+    country === "Canada"
+      ? {
+          inputType: "text",
+          name: "postalCode",
+          regexes: {
+            full: POSTAL_CODE_REGEX_CANADA,
+            partials: [
+              [POSTAL_CODE_REGEX_CANADA, "Must be in the format A1A 1A1."],
               [/^[A-Za-z0-9]+$/, "Must only contain letters and numbers."],
             ],
-          }
-        : {
-            fullRegex: POSTAL_CODE_REGEX_US,
-            partialRegexes: [
+          },
+        }
+      : {
+          inputType: "text",
+          name: "postalCode",
+          regexes: {
+            full: POSTAL_CODE_REGEX_US,
+            partials: [
               [/^\d{5}$/, "Must be a valid US zip code of five digits."],
               [
                 /^\d{5}[-]\d{4}$/,
@@ -71,13 +106,41 @@ function returnAddressChangeInputsRegexes(country: Country): InputsRegexes {
               [/^[0-9-]+$/, "Must only contain numbers and a hyphen."],
             ],
           },
-    acknowledgement: {
-      fullRegex: /^(true)$/,
-      partialRegexes: [
+        };
+
+  const acknowledgement: StepperChild = {
+    inputType: "select",
+    name: "acknowledgement",
+    regexes: {
+      full: /^(true)$/,
+      partials: [
         [/^(true)$/, "Must acknowledge that the information entered is correct."],
       ],
     },
   };
+
+  const stepperPage: StepperPage[] = [
+    {
+      children: [
+        addressLine,
+        city,
+        countryInput,
+        province,
+        state,
+        postalCode,
+        contactNumber,
+        acknowledgement,
+      ],
+      description: "Update your contact details",
+    },
+    {
+      children: [],
+      description: "Review your information before proceeding",
+      kind: "review",
+    },
+  ];
+
+  return stepperPage;
 }
 
 const ADDRESS_CHANGE_DESCRIPTION_OBJECTS: DescriptionObjectsArray = [
@@ -183,5 +246,5 @@ export {
   ADDRESS_CHANGE_PATHS,
   ADDRESS_CHANGE_QUERY_DATA,
   COUNTRIES_DATA,
-  returnAddressChangeInputsRegexes,
+  returnAddressChangeStepperPages,
 };

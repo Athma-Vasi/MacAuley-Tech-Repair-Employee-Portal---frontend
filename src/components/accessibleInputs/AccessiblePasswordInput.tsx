@@ -5,15 +5,18 @@ import { TbCheck } from "react-icons/tb";
 
 import { COLORS_SWATCHES } from "../../constants/data";
 import { useGlobalState } from "../../hooks";
-import { SetStepsInErrorPayload } from "../../types";
-import { capitalizeAll, returnThemeColors } from "../../utils";
-import { ValidationTexts } from "../../utils/validations";
-import { createAccessibleValueValidationTextElements } from "./utils";
+import { StepperPage, StepperChild, SetStepsInErrorPayload } from "../../types";
+import { returnThemeColors, splitCamelCase } from "../../utils";
+import {
+  createAccessibleValueValidationTextElements,
+  returnValidationTexts,
+} from "./utils";
 
 type AccessiblePasswordInputAttributes<
   ValidValueAction extends string = string,
   InvalidValueAction extends string = string
 > = {
+  componentScaffolding: StepperPage[];
   icon?: ReactNode;
   initialInputValue?: string;
   value: string;
@@ -38,11 +41,9 @@ type AccessiblePasswordInputAttributes<
   invalidValueAction: InvalidValueAction;
   placeholder: string;
   ref?: RefObject<HTMLInputElement>;
-  regex: RegExp;
-  validationTexts: ValidationTexts;
   required?: boolean;
   size?: MantineSize;
-  step: number; // stepper page location of input
+  /** stepper page location of input. default 0 */ step?: number;
   withAsterisk?: boolean;
 };
 
@@ -52,26 +53,25 @@ type AccessiblePasswordInputProps = {
 
 function AccessiblePasswordInput({ attributes }: AccessiblePasswordInputProps) {
   const {
-    name,
+    componentScaffolding,
     icon = null,
     initialInputValue = "",
-    value,
-    label = capitalizeAll(name),
+    invalidValueAction,
+    name = splitCamelCase(attributes.name),
+    label = splitCamelCase(attributes.name),
     maxLength = 32,
     minLength = 8,
     onBlur,
     onChange,
     onFocus,
     parentDispatch,
-    validValueAction,
-    invalidValueAction,
     placeholder,
     ref = null,
-    regex,
-    validationTexts,
     required = false,
     size = "sm",
-    step,
+    step = 0,
+    validValueAction,
+    value,
     withAsterisk = false,
   } = attributes;
 
@@ -87,7 +87,18 @@ function AccessiblePasswordInput({ attributes }: AccessiblePasswordInputProps) {
     generalColors: { greenColorShade },
   } = returnThemeColors({ themeObject, colorsSwatches: COLORS_SWATCHES });
 
-  const isValueBufferValid = regex.test(valueBuffer);
+  const component = componentScaffolding[step];
+  const { full: fullRegex, partials } = component.children.find(
+    (child: StepperChild) => child.name === name
+  )?.regexes ?? { full: /** matches any char zero or more times */ /.*/, partials: [] };
+
+  const validationTexts = returnValidationTexts({
+    name,
+    partials,
+    value,
+  });
+
+  const isValueBufferValid = fullRegex.test(valueBuffer);
 
   const leftIcon = isValueBufferValid ? (
     icon ? (

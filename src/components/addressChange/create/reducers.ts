@@ -28,7 +28,7 @@ const addressChangeReducersMap = new Map<
   [addressChangeAction.setState, addressChangeReducer_setState],
   [addressChangeAction.setCountry, addressChangeReducer_setCountry],
   [addressChangeAction.setPostalCode, addressChangeReducer_setPostalCode],
-  [addressChangeAction.setIsAcknowledged, addressChangeReducer_setIsAcknowledged],
+  [addressChangeAction.setAcknowledgement, addressChangeReducer_setIsAcknowledged],
   [addressChangeAction.setTriggerFormSubmit, addressChangeReducer_setTriggerFormSubmit],
   [addressChangeAction.setStepsInError, addressChangeReducer_setStepsInError],
   [addressChangeAction.setIsSubmitting, addressChangeReducer_setIsSubmitting],
@@ -111,7 +111,7 @@ function addressChangeReducer_setIsAcknowledged(
 ): AddressChangeState {
   return {
     ...state,
-    isAcknowledged: dispatch.payload as boolean,
+    acknowledgement: dispatch.payload as boolean,
   };
 }
 

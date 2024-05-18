@@ -2,7 +2,7 @@ import { Box, MantineSize, Radio } from "@mantine/core";
 import React, { ReactNode } from "react";
 
 import { useGlobalState } from "../../hooks";
-import { capitalizeAll } from "../../utils";
+import { splitCamelCase } from "../../utils";
 import { createAccessibleRadioScreenreaderTextElements } from "./utils";
 
 type AccessibleRadioInputSingleAttributes<ValidValueAction extends string = string> = {
@@ -34,9 +34,9 @@ function AccessibleRadioInputSingle<ValidValueAction extends string = string>({
     checked,
     description,
     disabled = false,
-    name,
+    name = splitCamelCase(attributes.name),
     key = name + " - radio single",
-    label = capitalizeAll(name),
+    label = splitCamelCase(attributes.name),
     onChange,
     parentDispatch,
     ref = null,

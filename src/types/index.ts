@@ -216,6 +216,34 @@ type AllowedFileMimeTypes = "image/jpg" | "image/jpeg" | "image/png" | "image/we
 
 type AllowedFileEncodings = "7bit" | "8bit" | "binary" | "base64" | "quoted-printable";
 
+type InputType =
+  | "date"
+  | "time"
+  | "number"
+  | "select"
+  | "text"
+  | "boolean"
+  | "checkbox"
+  | "switch";
+
+type StepperChild = {
+  inputType: InputType;
+  name: string;
+  regexes?: {
+    /** must be a superset of partials. input error state is determined by full regex test */
+    full: RegExp;
+    /** must be subset(s) of full. input popover error messages are determined by partials regex tests */
+    partials: [RegExp, string][];
+  };
+  selectInputData?: string[];
+};
+
+type StepperPage = {
+  kind?: "form" | "review";
+  description: string;
+  children: Array<StepperChild>;
+};
+
 export type {
   Action,
   ActionsCompany,
@@ -227,10 +255,13 @@ export type {
   ArrayOperators,
   CanadianPostalCode,
   CheckboxInputData,
+  StepperPage,
   Country,
   Department,
   DocumentUpdateOperation,
   FieldOperators,
+  StepperChild,
+  InputType,
   JobPosition,
   PhoneNumber,
   PostalCode,

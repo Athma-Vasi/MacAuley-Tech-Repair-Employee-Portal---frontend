@@ -15,8 +15,8 @@ import { createAccessibleButtonScreenreaderTextElements } from "./utils";
 
 type AccessibleButtonAttributes = {
   compact?: boolean;
-  customDisabledText?: string;
-  customEnabledText?: string;
+  disabledScreenreaderText?: string;
+  enabledScreenreaderText?: string;
   disabled?: boolean;
   isTooltip?: boolean;
   label?: ReactNode;
@@ -46,8 +46,8 @@ function AccessibleButton({ attributes }: AccessibleButtonProps) {
 
   const {
     compact = false,
-    customDisabledText,
-    customEnabledText,
+    disabledScreenreaderText,
+    enabledScreenreaderText,
     disabled = false,
     isTooltip = true,
     label = capitalizeAll(attributes.name),
@@ -66,8 +66,8 @@ function AccessibleButton({ attributes }: AccessibleButtonProps) {
   const { disabledTextElement, enabledTextElement } =
     createAccessibleButtonScreenreaderTextElements({
       isEnabled: !disabled,
-      customDisabledText,
-      customEnabledText,
+      disabledScreenreaderText,
+      enabledScreenreaderText,
       name,
       themeObject,
     });
@@ -103,7 +103,7 @@ function AccessibleButton({ attributes }: AccessibleButtonProps) {
   return (
     <Container w={100}>
       {isTooltip ? (
-        <Tooltip label={disabled ? customDisabledText : customEnabledText}>
+        <Tooltip label={disabled ? disabledScreenreaderText : enabledScreenreaderText}>
           <Group>{button}</Group>
         </Tooltip>
       ) : (

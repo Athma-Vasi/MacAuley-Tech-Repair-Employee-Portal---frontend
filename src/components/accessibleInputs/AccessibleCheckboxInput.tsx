@@ -3,7 +3,7 @@ import { ChangeEvent, ReactNode, RefObject } from "react";
 
 import { useGlobalState } from "../../hooks";
 import { SetStepsInErrorPayload } from "../../types";
-import { capitalizeAll } from "../../utils";
+import { splitCamelCase } from "../../utils";
 import { createAccessibleCheckboxSelectionsTextElements } from "./utils";
 
 type AccessibleCheckboxInputSingleAttributes<
@@ -30,7 +30,7 @@ type AccessibleCheckboxInputSingleAttributes<
   required?: boolean;
   name: string;
   size?: MantineSize;
-  step: number; // stepper page location of input
+  /** stepper page location of input. default 0 */ step?: number;
   validValueAction: ValidValueAction;
   value: string;
 };
@@ -55,15 +55,15 @@ function AccessibleCheckboxInputSingle<
     checked,
     disabled = false,
     invalidValueAction,
-    name,
+    name = splitCamelCase(attributes.name),
     key = name,
-    label = capitalizeAll(name),
+    label = splitCamelCase(attributes.name),
     onChange,
     parentDispatch,
     ref = null,
     required = false,
     size = "sm",
-    step,
+    step = 0,
     validValueAction,
     value,
   } = attributes;
@@ -107,7 +107,7 @@ function AccessibleCheckboxInputSingle<
         });
 
         parentDispatch({
-          type: attributes.invalidValueAction,
+          type: invalidValueAction,
           payload: {
             step,
             kind: checked ? "add" : "delete",

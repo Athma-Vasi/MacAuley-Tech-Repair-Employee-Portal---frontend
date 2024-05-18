@@ -1,53 +1,28 @@
-import { Group, Title, Tooltip } from "@mantine/core";
+import { Group, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { InvalidTokenError } from "jwt-decode";
-import {
-  ChangeEvent,
-  KeyboardEvent,
-  MouseEvent,
-  useEffect,
-  useReducer,
-  useRef,
-} from "react";
+import { MouseEvent, useEffect, useReducer, useRef } from "react";
 import { useErrorBoundary } from "react-error-boundary";
-import { TbUpload } from "react-icons/tb";
 import { useNavigate } from "react-router-dom";
 
 import { PROVINCES, STATES_US } from "../../../constants/data";
-import {
-  ADDRESS_LINE_REGEX,
-  CITY_REGEX,
-  PHONE_NUMBER_REGEX,
-  POSTAL_CODE_REGEX_CANADA,
-  POSTAL_CODE_REGEX_US,
-} from "../../../constants/regex";
+
 import { useGlobalState, useWrapFetch } from "../../../hooks";
 import {
   Country,
   Province,
   ResourceRequestServerResponse,
   StatesUS,
+  StepperPage,
 } from "../../../types";
 import { logState, urlBuilder } from "../../../utils";
-import { InputsRegexes, returnValidationTexts } from "../../../utils/validations";
 import { AccessibleButton } from "../../accessibleInputs/AccessibleButton";
-import { AccessibleCheckboxInputSingle } from "../../accessibleInputs/AccessibleCheckboxInput";
 import { AccessibleSelectInput } from "../../accessibleInputs/AccessibleSelectInput";
 import { AccessibleStepper } from "../../accessibleInputs/AccessibleStepper";
 import { AccessibleSwitchInput } from "../../accessibleInputs/AccessibleSwitchInput";
-import { AccessibleTextInputPhone } from "../../accessibleInputs/AccessibleTextInputPhone";
-import { AccessibleTextInputPostal } from "../../accessibleInputs/AccessibleTextInputPostal";
-import {
-  AccessibleTextInput,
-  AccessibleTextInputAttributes,
-} from "../../accessibleInputs/text/AccessibleTextInput";
-import { FormLayoutWrapper, StepperWrapper } from "../../wrappers";
-import {
-  ADDRESS_CHANGE_DESCRIPTION_OBJECTS,
-  ADDRESS_CHANGE_MAX_STEPPER_POSITION,
-  COUNTRIES_DATA,
-  returnAddressChangeInputsRegexes,
-} from "../constants";
+import { AccessibleTextInput } from "../../accessibleInputs/text/AccessibleTextInput";
+import { FormReview, FormReviewArray } from "../../formReview/FormReview";
+import { FormReviewObject } from "../../formReviewPage/FormReviewPage";
+import { COUNTRIES_DATA, returnAddressChangeStepperPages } from "../constants";
 import { AddressChangeAction, addressChangeAction } from "./actions";
 import { addressChangeReducer } from "./reducers";
 import { initialAddressChangeState } from "./state";
@@ -67,7 +42,7 @@ function AddressChange() {
     state,
     country,
     postalCode,
-    isAcknowledged,
+    acknowledgement,
     triggerFormSubmit,
     stepsInError,
     isSubmitting,
@@ -140,7 +115,7 @@ function AddressChange() {
                   province,
                   country,
                   postalCode,
-                  acknowledgement: isAcknowledged,
+                  acknowledgement: acknowledgement,
                 }
               : {
                   contactNumber,
@@ -149,7 +124,7 @@ function AddressChange() {
                   state,
                   country,
                   postalCode,
-                  acknowledgement: isAcknowledged,
+                  acknowledgement: acknowledgement,
                 },
         });
 
@@ -215,7 +190,7 @@ function AddressChange() {
   //     !city.length ||
   //     !postalCode.length ||
   //     !contactNumber ||
-  //     !isAcknowledged;
+  //     !acknowledgement;
 
   //   addressChangeDispatch({
   //     type: addressChangeAction.setStepsInError,
@@ -227,23 +202,18 @@ function AddressChange() {
   //   // eslint-disable-next-line react-hooks/exhaustive-deps
   // }, []);
 
-  const ADDRESS_CHANGE_INPUTS_REGEXES = returnAddressChangeInputsRegexes(country);
+  const ADDRESS_CHANGE_STEPPER_PAGES: StepperPage[] =
+    returnAddressChangeStepperPages(country);
 
   const addressLineTextInput = (
     <AccessibleTextInput
       attributes={{
-        name: "address line",
-        value: addressLine,
-        parentDispatch: addressChangeDispatch,
+        componentScaffolding: ADDRESS_CHANGE_STEPPER_PAGES,
         invalidValueAction: addressChangeAction.setStepsInError,
+        name: "addressLine",
+        parentDispatch: addressChangeDispatch,
         validValueAction: addressChangeAction.setAddressLine,
-        regex: ADDRESS_LINE_REGEX,
-        step: 0,
-        validationTexts: returnValidationTexts({
-          name: "address line",
-          value: addressLine,
-          partialRegexes: ADDRESS_CHANGE_INPUTS_REGEXES["address line"].partialRegexes,
-        }),
+        value: addressLine,
       }}
     />
   );
@@ -251,18 +221,12 @@ function AddressChange() {
   const cityTextInput = (
     <AccessibleTextInput
       attributes={{
-        name: "city",
-        value: city,
-        parentDispatch: addressChangeDispatch,
+        componentScaffolding: ADDRESS_CHANGE_STEPPER_PAGES,
         invalidValueAction: addressChangeAction.setStepsInError,
+        name: "city",
+        parentDispatch: addressChangeDispatch,
         validValueAction: addressChangeAction.setCity,
-        regex: CITY_REGEX,
-        step: 0,
-        validationTexts: returnValidationTexts({
-          name: "city",
-          value: city,
-          partialRegexes: ADDRESS_CHANGE_INPUTS_REGEXES.city.partialRegexes,
-        }),
+        value: city,
       }}
     />
   );
@@ -270,16 +234,10 @@ function AddressChange() {
   const contactNumberInput = (
     <AccessibleTextInput
       attributes={{
+        componentScaffolding: ADDRESS_CHANGE_STEPPER_PAGES,
         invalidValueAction: addressChangeAction.setStepsInError,
-        name: "contact number",
+        name: "contactNumber",
         parentDispatch: addressChangeDispatch,
-        regex: PHONE_NUMBER_REGEX,
-        step: 0,
-        validationTexts: returnValidationTexts({
-          name: "contact number",
-          value: contactNumber,
-          partialRegexes: ADDRESS_CHANGE_INPUTS_REGEXES["contact number"].partialRegexes,
-        }),
         validValueAction: addressChangeAction.setContactNumber,
         value: contactNumber,
       }}
@@ -289,17 +247,11 @@ function AddressChange() {
   const postalCodeInput = (
     <AccessibleTextInput
       attributes={{
-        invalidValueAction: addressChangeAction.setStepsInError,
-        name: "postal code",
-        parentDispatch: addressChangeDispatch,
-        regex: ADDRESS_CHANGE_INPUTS_REGEXES["postal code"].fullRegex,
-        step: 0,
-        validationTexts: returnValidationTexts({
-          name: "postal code",
-          value: postalCode,
-          partialRegexes: ADDRESS_CHANGE_INPUTS_REGEXES["postal code"].partialRegexes,
-        }),
         validValueAction: addressChangeAction.setPostalCode,
+        componentScaffolding: ADDRESS_CHANGE_STEPPER_PAGES,
+        invalidValueAction: addressChangeAction.setStepsInError,
+        name: "postalCode",
+        parentDispatch: addressChangeDispatch,
         value: postalCode,
       }}
     />
@@ -307,21 +259,20 @@ function AddressChange() {
 
   const acknowledgementSwitch = (
     <AccessibleSwitchInput<
-      AddressChangeAction["setIsAcknowledged"],
+      AddressChangeAction["setAcknowledgement"],
       AddressChangeAction["setStepsInError"]
     >
       attributes={{
-        checked: isAcknowledged,
+        checked: acknowledgement,
         invalidValueAction: addressChangeAction.setStepsInError,
         name: "acknowledgement",
         offLabel: "No",
         onLabel: "Yes",
         parentDispatch: addressChangeDispatch,
-        step: 0,
         switchOffDescription: "I do not acknowledge",
         switchOnDescription: "I acknowledge that the information entered is correct",
-        validValueAction: addressChangeAction.setIsAcknowledged,
-        value: isAcknowledged ? "Yes" : "No",
+        validValueAction: addressChangeAction.setAcknowledgement,
+        value: acknowledgement ? "Yes" : "No",
       }}
     />
   );
@@ -361,8 +312,8 @@ function AddressChange() {
   const submitButton = (
     <AccessibleButton
       attributes={{
-        customEnabledText: "All inputs are valid. Click to submit form",
-        customDisabledText: "Please fix errors before submitting form",
+        enabledScreenreaderText: "All inputs are valid. Click to submit form",
+        disabledScreenreaderText: "Please fix errors before submitting form",
         disabled: stepsInError.size > 0 || triggerFormSubmit,
         name: "submit",
         onClick: (_event: MouseEvent<HTMLButtonElement>) => {
@@ -376,7 +327,7 @@ function AddressChange() {
   );
 
   const addressChangeForm = (
-    <FormLayoutWrapper>
+    <Group w="100%">
       {contactNumberInput}
       {countrySelectInput}
       {addressLineTextInput}
@@ -384,60 +335,62 @@ function AddressChange() {
       {provinceOrStateSelectInput}
       {postalCodeInput}
       {acknowledgementSwitch}
-    </FormLayoutWrapper>
+    </Group>
   );
 
-  // const addressChange = (
-  //   <StepperWrapper
-  //     childrenTitle="Address change"
-  //     currentStepperPosition={currentStepperPosition}
-  //     setCurrentStepperPosition={addressChangeAction.setCurrentStepperPosition}
-  //     descriptionObjectsArray={ADDRESS_CHANGE_DESCRIPTION_OBJECTS}
-  //     maxStepperPosition={ADDRESS_CHANGE_MAX_STEPPER_POSITION}
-  //     parentComponentDispatch={addressChangeDispatch}
-  //     stepsInError={stepsInError}
-  //   >
-  //     {displayAddressChangeForm}
-  //   </StepperWrapper>
+  // const ADDRESS_CHANGE_FORM_REVIEW: FormReviewArray = {
+  //   "Contact Details": [
+  //     {
+  //       name: "contactNumber",
+  //       value: contactNumber,
+  //       isValueValid:
+  //         ADDRESS_CHANGE_REGEXES["contactNumber"].fullRegex.test(contactNumber),
+  //     },
+  //     {
+  //       name: "country",
+  //       value: country,
+  //       isValueValid: true,
+  //     },
+  //     {
+  //       name: "addressLine",
+  //       value: addressLine,
+  //       isValueValid: ADDRESS_CHANGE_REGEXES["addressLine"].fullRegex.test(addressLine),
+  //     },
+  //     {
+  //       name: "city",
+  //       value: city,
+  //       isValueValid: ADDRESS_CHANGE_REGEXES.city.fullRegex.test(city),
+  //     },
+  //     {
+  //       name: country === "Canada" ? "province" : "state",
+  //       value: country === "Canada" ? province : state,
+  //       isValueValid: true,
+  //     },
+  //     {
+  //       name: "postalCode",
+  //       value: postalCode,
+  //       isValueValid: ADDRESS_CHANGE_REGEXES["postalCode"].fullRegex.test(postalCode),
+  //     },
+  //     {
+  //       name: "acknowledgement",
+  //       value: acknowledgement ? "Yes" : "No",
+  //       isValueValid: acknowledgement,
+  //     },
+  //   ],
+  // };
+
+  // const formReview = (
+  //   <FormReview formReviewObject={ADDRESS_CHANGE_FORM_REVIEW} formName="Address Change" />
   // );
 
   const stepper = (
     <AccessibleStepper
       attributes={{
-        accessibleStepperData: [
-          {
-            children: addressChangeForm,
-            description: "Update your address",
-            valuesRegexes: [
-              {
-                value: addressLine,
-                fullRegex: ADDRESS_CHANGE_INPUTS_REGEXES["address line"].fullRegex,
-              },
-              {
-                value: city,
-                fullRegex: ADDRESS_CHANGE_INPUTS_REGEXES.city.fullRegex,
-              },
-              {
-                value: contactNumber,
-                fullRegex: ADDRESS_CHANGE_INPUTS_REGEXES["contact number"].fullRegex,
-              },
-              {
-                value: postalCode,
-                fullRegex: ADDRESS_CHANGE_INPUTS_REGEXES["postal code"].fullRegex,
-              },
-              {
-                value: isAcknowledged,
-                fullRegex: ADDRESS_CHANGE_INPUTS_REGEXES.acknowledgement.fullRegex,
-              },
-            ],
-          },
-          {
-            children: null,
-            description: "Review your address changes",
-            kind: "review",
-          },
-        ],
+        componentState: addressChangeState,
+        pageElements: [addressChangeForm, <Text>Review page</Text>],
+        stepperPages: ADDRESS_CHANGE_STEPPER_PAGES,
         submitButton,
+        title: "Address Change",
       }}
     />
   );
@@ -454,13 +407,13 @@ export default AddressChange;
  * // following are the accessible text elements for screen readers to read out based on the state of the input
   const [addressLineInputErrorText, addressLineInputValidText] =
     AccessibleErrorValidTextElements({
-      inputElementKind: "address line",
+      inputElementKind: "addressLine",
       inputText: addressLine,
       isValidInputText: isValidAddressLine,
       isInputTextFocused: isAddressLineFocused,
       regexValidationText: returnAddressValidationText({
         content: addressLine,
-        contentKind: "address line",
+        contentKind: "addressLine",
         minLength: 2,
         maxLength: 75,
       }),
@@ -481,7 +434,7 @@ export default AddressChange;
 
   const [postalCodeInputErrorText, postalCodeInputValidText] =
     AccessibleErrorValidTextElements({
-      inputElementKind: "postal code",
+      inputElementKind: "postalCode",
       inputText: postalCode,
       isValidInputText: isValidPostalCode,
       isInputTextFocused: isPostalCodeFocused,
@@ -493,19 +446,19 @@ export default AddressChange;
 
   const [contactNumberInputErrorText, contactNumberInputValidText] =
     AccessibleErrorValidTextElements({
-      inputElementKind: "contact number",
+      inputElementKind: "contactNumber",
       inputText: contactNumber,
       isValidInputText: isValidContactNumber,
       isInputTextFocused: isContactNumberFocused,
       regexValidationText: returnPhoneNumberValidationText({
         content: contactNumber,
-        contentKind: "contact number",
+        contentKind: "contactNumber",
       }),
     });
 
   const [acknowledgementInputSelectedText, acknowledgementInputDeselectedText] =
     AccessibleSelectedDeselectedTextElements({
-      isSelected: isAcknowledged,
+      isSelected: acknowledgement,
       semanticName: "acknowledgement",
       selectedDescription: "I acknowledge that the information is correct",
       deselectedDescription: "I do not acknowledge",
@@ -585,7 +538,7 @@ export default AddressChange;
     placeholder: "Enter your address",
     required: true,
     withAsterisk: true,
-    semanticName: "address line",
+    semanticName: "addressLine",
   };
 
   const cityTextInputCreatorInfo: AccessibleTextInputCreatorInfo = {
@@ -705,8 +658,8 @@ export default AddressChange;
       }
     },
     placeholder:
-      country === "Canada" ? "Enter Canadian postal code" : "Enter US postal code",
-    semanticName: "postal code",
+      country === "Canada" ? "Enter Canadian postalCode" : "Enter US postalCode",
+    semanticName: "postalCode",
 
     minLength: country === "Canada" ? 6 : 5,
     maxLength: country === "Canada" ? 7 : 10,
@@ -786,7 +739,7 @@ export default AddressChange;
         }
       }
     },
-    placeholder: "Enter personal contact number",
+    placeholder: "Enter personal contactNumber",
     rightSection: true,
     rightSectionOnClick: () => {
       addressChangeDispatch({
@@ -794,7 +747,7 @@ export default AddressChange;
         payload: "+(1)",
       });
     },
-    semanticName: "contact number",
+    semanticName: "contactNumber",
     minLength: 18,
     maxLength: 18,
 
@@ -808,10 +761,10 @@ export default AddressChange;
       selected: acknowledgementInputSelectedText,
       deselected: acknowledgementInputDeselectedText,
     },
-    checked: isAcknowledged,
+    checked: acknowledgement,
     onChange: (event: ChangeEvent<HTMLInputElement>) => {
       addressChangeDispatch({
-        type: addressChangeAction.setIsAcknowledged,
+        type: addressChangeAction.setAcknowledgement,
         payload: event.currentTarget.checked,
       });
     },
@@ -894,8 +847,8 @@ export default AddressChange;
       },
       {
         inputName: "Acknowledgement",
-        inputValue: isAcknowledged ? "Yes" : "No",
-        isInputValueValid: isAcknowledged,
+        inputValue: acknowledgement ? "Yes" : "No",
+        isInputValueValid: acknowledgement,
       },
     ],
   };
@@ -954,11 +907,11 @@ export default AddressChange;
         regex: ADDRESS_LINE_REGEX,
         regexValidationText: returnAddressValidationText({
           content: addressLine,
-          contentKind: "address line",
+          contentKind: "addressLine",
           minLength: 2,
           maxLength: 75,
         }),
-        semanticName: "address line",
+        semanticName: "addressLine",
       }}
     />
   );

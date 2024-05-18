@@ -3,7 +3,7 @@ import { ChangeEvent, ReactNode, RefObject } from "react";
 
 import { useGlobalState } from "../../hooks";
 import { SetStepsInErrorPayload } from "../../types";
-import { capitalizeAll } from "../../utils";
+import { splitCamelCase } from "../../utils";
 import { createAccessibleSwitchOnOffTextElements } from "./utils";
 
 type AccessibleSwitchInputAttributes<
@@ -33,7 +33,7 @@ type AccessibleSwitchInputAttributes<
   ref?: RefObject<HTMLInputElement>;
   required?: boolean;
   size?: MantineSize;
-  step: number;
+  step?: number;
   /** Will be added to end of `${name} is off.` */
   switchOffDescription?: string;
   /** Will be added to end of `${name} is on.` */
@@ -58,9 +58,9 @@ function AccessibleSwitchInput<
     checked,
     disabled = false,
     invalidValueAction,
-    label = capitalizeAll(attributes.name),
+    name = splitCamelCase(attributes.name),
+    label = splitCamelCase(attributes.name),
     labelPosition = "right",
-    name,
     onChange,
     offLabel,
     onLabel,
@@ -68,8 +68,8 @@ function AccessibleSwitchInput<
     radius = "lg",
     ref = null,
     required = false,
-    size = "md",
-    step,
+    size = "sm",
+    step = 0,
     switchOffDescription = "",
     switchOnDescription = "",
     thumbIcon = null,

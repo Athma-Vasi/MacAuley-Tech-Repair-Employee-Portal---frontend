@@ -21,10 +21,12 @@ import { TbCheck, TbRefresh } from "react-icons/tb";
 
 import { COLORS_SWATCHES } from "../../../constants/data";
 import { useGlobalState } from "../../../hooks";
-import { SetStepsInErrorPayload } from "../../../types";
-import { capitalizeAll, returnThemeColors } from "../../../utils";
-import { ValidationTexts } from "../../../utils/validations";
-import { createAccessibleValueValidationTextElements } from "../utils";
+import { StepperPage, StepperChild, SetStepsInErrorPayload } from "../../../types";
+import { returnThemeColors, splitCamelCase } from "../../../utils";
+import {
+  createAccessibleValueValidationTextElements,
+  returnValidationTexts,
+} from "../utils";
 
 type AccessibleTextInputAttributes<
   ValidValueAction extends string = string,
@@ -32,6 +34,7 @@ type AccessibleTextInputAttributes<
 > = {
   ariaAutoComplete?: "both" | "list" | "none" | "inline";
   autoComplete?: "on" | "off";
+  componentScaffolding: StepperPage[];
   disabled?: boolean;
   dynamicInputs?: ReactNode[]; // inputs created on demand by user
   icon?: ReactNode;
@@ -59,14 +62,13 @@ type AccessibleTextInputAttributes<
   invalidValueAction: InvalidValueAction;
   placeholder?: string;
   ref?: RefObject<HTMLInputElement> | null;
-  regex: RegExp;
-  validationTexts: ValidationTexts;
   required?: boolean;
   rightSection?: boolean;
   rightSectionIcon?: ReactNode;
   rightSectionOnClick?: () => void;
   size?: MantineSize;
-  step: number; // stepper page location of input
+  /** stepper page location of input. default 0 */
+  step?: number;
   withAsterisk?: boolean;
 };
 
@@ -84,46 +86,33 @@ function AccessibleTextInput<
   const {
     ariaAutoComplete = "none",
     autoComplete = "off",
+    componentScaffolding,
     disabled = false,
     dynamicInputs = null,
     icon = null,
     initialInputValue = "",
-    value,
-    name,
-    label = capitalizeAll(name),
+    invalidValueAction,
+    label = splitCamelCase(attributes.name),
     maxLength = 75,
     minLength = 2,
-    onChange,
+    name = splitCamelCase(attributes.name),
     onBlur,
+    onChange,
     onFocus,
     onKeyDown,
-    validValueAction,
     parentDispatch,
-    invalidValueAction,
     placeholder = "",
     ref = null,
-    regex,
-    validationTexts,
     required = false,
     rightSection = false,
     rightSectionIcon = null,
     rightSectionOnClick = () => {},
     size = "sm",
-    step,
+    step = 0,
+    validValueAction,
+    value,
     withAsterisk = required,
   } = attributes;
-
-  // const initialAccessibleTextInputState: AccessibleTextInputState = {
-  //   isInputFocused: false,
-  //   isPopoverOpened: false,
-  //   valueBuffer: initialInputValue,
-  // };
-
-  // const [accessibleTextInputState, accessibleTextInputDispatch] = useReducer(
-  //   accessibleTextInputReducer,
-  //   initialAccessibleTextInputState
-  // );
-  // const { valueBuffer, isPopoverOpened } = accessibleTextInputState;
 
   const [valueBuffer, setValueBuffer] = useState<string>(value);
   const [isPopoverOpened, { open: openPopover, close: closePopover }] =
@@ -147,15 +136,19 @@ function AccessibleTextInput<
   ) : (
     label
   );
-  const isValueBufferValid = regex.test(valueBuffer);
 
-  const leftIcon = isValueBufferValid ? (
-    icon ? (
-      icon
-    ) : (
-      <TbCheck color={greenColorShade} size={18} />
-    )
-  ) : null;
+  const component = componentScaffolding[step];
+  const { full: fullRegex, partials } = component.children.find(
+    (child: StepperChild) => child.name === name
+  )?.regexes ?? { full: /.*/, partials: [] };
+
+  const validationTexts = returnValidationTexts({
+    name,
+    partials,
+    value,
+  });
+
+  const isValueBufferValid = fullRegex.test(valueBuffer);
 
   const rightIcon = rightSection ? (
     rightSectionIcon ? (
@@ -171,6 +164,14 @@ function AccessibleTextInput<
           />
         </Group>
       </Tooltip>
+    )
+  ) : null;
+
+  const leftIcon = isValueBufferValid ? (
+    icon ? (
+      icon
+    ) : (
+      <TbCheck color={greenColorShade} size={18} />
     )
   ) : null;
 

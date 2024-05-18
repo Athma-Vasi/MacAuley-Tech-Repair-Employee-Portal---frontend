@@ -2,7 +2,7 @@ import { MantineSize, NativeSelect } from "@mantine/core";
 import { ChangeEvent, ReactNode, RefObject } from "react";
 
 import { SelectInputData } from "../../types";
-import { capitalizeAll } from "../../utils";
+import { splitCamelCase } from "../../utils";
 
 type AccessibleSelectInputAttributes<
   ValidValueAction extends string = string,
@@ -43,8 +43,8 @@ function AccessibleSelectInput<
     describedBy = "",
     description,
     disabled = false,
-    label = capitalizeAll(attributes.name),
-    name,
+    name = splitCamelCase(attributes.name),
+    label = splitCamelCase(attributes.name),
     onChange,
     parentDispatch,
     ref = null,

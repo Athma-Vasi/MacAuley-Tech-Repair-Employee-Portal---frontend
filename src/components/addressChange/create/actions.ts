@@ -6,7 +6,7 @@ type AddressChangeAction = {
   setState: "setState";
   setCountry: "setCountry";
   setPostalCode: "setPostalCode";
-  setIsAcknowledged: "setIsAcknowledged";
+  setAcknowledgement: "setAcknowledgement";
   setTriggerFormSubmit: "setTriggerFormSubmit";
   setStepsInError: "setStepsInError";
   setIsSubmitting: "setIsSubmitting";
@@ -21,7 +21,7 @@ const addressChangeAction: AddressChangeAction = {
   setState: "setState",
   setCountry: "setCountry",
   setPostalCode: "setPostalCode",
-  setIsAcknowledged: "setIsAcknowledged",
+  setAcknowledgement: "setAcknowledgement",
   setTriggerFormSubmit: "setTriggerFormSubmit",
   setStepsInError: "setStepsInError",
   setIsSubmitting: "setIsSubmitting",

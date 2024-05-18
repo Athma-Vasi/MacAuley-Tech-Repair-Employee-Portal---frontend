@@ -5,10 +5,12 @@ import { TbCheck } from "react-icons/tb";
 
 import { COLORS_SWATCHES } from "../../constants/data";
 import { useGlobalState } from "../../hooks";
-import { SetStepsInErrorPayload } from "../../types";
-import { capitalizeAll, returnThemeColors } from "../../utils";
-import { ValidationTexts } from "../../utils/validations";
-import { createAccessibleValueValidationTextElements } from "./utils";
+import { StepperPage, StepperChild, SetStepsInErrorPayload } from "../../types";
+import { returnThemeColors, splitCamelCase } from "../../utils";
+import {
+  createAccessibleValueValidationTextElements,
+  returnValidationTexts,
+} from "./utils";
 
 type AccessibleDateTimeInputAttributes<
   ValidValueAction extends string = string,
@@ -16,6 +18,7 @@ type AccessibleDateTimeInputAttributes<
 > = {
   ariaAutoComplete?: "both" | "list" | "none" | "inline";
   autoComplete?: "on" | "off";
+  componentScaffolding: StepperPage[];
   dateKind?: "date near future" | "date near past" | "full date";
   icon?: ReactNode;
   initialInputValue?: string;
@@ -44,11 +47,10 @@ type AccessibleDateTimeInputAttributes<
   invalidValueAction: InvalidValueAction;
   placeholder: string;
   ref?: RefObject<HTMLInputElement>;
-  regex: RegExp;
-  validationTexts: ValidationTexts;
   required?: boolean;
   size?: MantineSize;
-  step: number; // stepper page location of input
+  /** stepper page location of input. default 0 */
+  step?: number;
   withAsterisk?: boolean;
 };
 
@@ -60,30 +62,29 @@ function AccessibleDateTimeInput({ attributes }: AccessibleDateTimeInputProps) {
   const {
     ariaAutoComplete = "none",
     autoComplete = "off",
+    componentScaffolding,
     dateKind = "full date",
     icon = null,
     initialInputValue = "",
     inputKind,
-    value,
-    label = capitalizeAll(attributes.name),
+    invalidValueAction,
+    name = splitCamelCase(attributes.name),
+    label = splitCamelCase(attributes.name),
     max = new Date(2024, 11, 31).toISOString().split("T")[0], // 31.12.2024
     maxLength = inputKind === "date" ? 10 : 5,
     min = new Date().toISOString().split("T")[0], // current date
     minLength = inputKind === "date" ? 10 : 5,
-    name,
     onBlur,
     onChange,
     onFocus,
     parentDispatch,
-    validValueAction,
-    invalidValueAction,
     placeholder,
     ref = null,
-    regex,
-    validationTexts,
     required = false,
     size = "sm",
-    step,
+    step = 0,
+    validValueAction,
+    value,
     withAsterisk = required,
   } = attributes;
 
@@ -100,7 +101,18 @@ function AccessibleDateTimeInput({ attributes }: AccessibleDateTimeInputProps) {
     generalColors: { greenColorShade },
   } = returnThemeColors({ colorsSwatches: COLORS_SWATCHES, themeObject });
 
-  const isValueBufferValid = regex.test(valueBuffer);
+  const component = componentScaffolding[step];
+  const { full: fullRegex, partials } = component.children.find(
+    (child: StepperChild) => child.name === name
+  )?.regexes ?? { full: /.*/, partials: [] };
+
+  const validationTexts = returnValidationTexts({
+    name,
+    partials,
+    value,
+  });
+
+  const isValueBufferValid = fullRegex.test(valueBuffer);
 
   const leftIcon = isValueBufferValid ? (
     icon ? (
