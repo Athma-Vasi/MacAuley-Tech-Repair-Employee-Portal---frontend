@@ -68,7 +68,7 @@ function AccessibleDateTimeInput({ attributes }: AccessibleDateTimeInputProps) {
     initialInputValue = "",
     inputKind,
     invalidValueAction,
-    name = splitCamelCase(attributes.name),
+    name,
     label = splitCamelCase(attributes.name),
     max = new Date(2024, 11, 31).toISOString().split("T")[0], // 31.12.2024
     maxLength = inputKind === "date" ? 10 : 5,

@@ -95,7 +95,7 @@ function AccessibleTextInput<
     label = splitCamelCase(attributes.name),
     maxLength = 75,
     minLength = 2,
-    name = splitCamelCase(attributes.name),
+    name,
     onBlur,
     onChange,
     onFocus,
@@ -157,6 +157,14 @@ function AccessibleTextInput<
 
   const { fullRegex } = returnFullRegex(name, stepperPages);
   const isValueBufferValid = fullRegex.test(valueBuffer);
+
+  console.group("AccessibleTextInput");
+  console.log("name", name);
+  console.log("label", label);
+  console.log("fullRegex:", fullRegex);
+  console.log("valueBuffer:", valueBuffer);
+  console.log("isValueBufferValid:", isValueBufferValid);
+  console.groupEnd();
 
   const leftIcon = isValueBufferValid ? (
     icon ? (

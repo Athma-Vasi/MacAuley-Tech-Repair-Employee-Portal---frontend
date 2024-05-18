@@ -87,7 +87,7 @@ function AccessibleTextAreaInput<
     icon = null,
     initialInputValue = "",
     value,
-    name = splitCamelCase(attributes.name),
+    name,
     label = splitCamelCase(attributes.name),
     maxLength = 2000,
     maxRows = 7,

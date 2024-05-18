@@ -624,7 +624,7 @@ function returnValidationTexts({
         return;
       }
 
-      if (splitCamelCase(inputName) === name) {
+      if (inputName === name) {
         const { partials } = regexes;
 
         let valueInvalidText = partials
@@ -663,7 +663,7 @@ function returnFullRegex(
           return;
         }
 
-        if (splitCamelCase(inputName) === name) {
+        if (inputName === name) {
           const { full: fullRegex } = regexes;
           regexAcc.fullRegex = fullRegex;
         }

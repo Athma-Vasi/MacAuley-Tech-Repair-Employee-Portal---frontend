@@ -57,7 +57,7 @@ function AccessibleSliderInput({ attributes }: AccessibleSliderInputProps) {
     marks,
     max,
     min,
-    name = splitCamelCase(attributes.name),
+    name,
     onChangeRangeSlider,
     onChangeSlider,
     parentDispatch,

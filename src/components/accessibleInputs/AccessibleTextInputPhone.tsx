@@ -83,7 +83,7 @@ function AccessibleTextInputPhone<
     label = splitCamelCase(attributes.name),
     maxLength = 18,
     minLength = 18,
-    name = splitCamelCase(attributes.name),
+    name,
     onBlur,
     onChange,
     onFocus,

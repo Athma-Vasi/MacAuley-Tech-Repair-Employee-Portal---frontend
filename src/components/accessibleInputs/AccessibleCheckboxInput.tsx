@@ -55,7 +55,7 @@ function AccessibleCheckboxInputSingle<
     checked,
     disabled = false,
     invalidValueAction,
-    name = splitCamelCase(attributes.name),
+    name,
     key = name,
     label = splitCamelCase(attributes.name),
     onChange,

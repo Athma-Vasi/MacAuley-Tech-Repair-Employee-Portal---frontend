@@ -43,7 +43,7 @@ function AccessibleSelectInput<
     describedBy = "",
     description,
     disabled = false,
-    name = splitCamelCase(attributes.name),
+    name,
     label = splitCamelCase(attributes.name),
     onChange,
     parentDispatch,

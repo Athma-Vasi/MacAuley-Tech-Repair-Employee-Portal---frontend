@@ -59,7 +59,7 @@ function AccessiblePasswordInput({ attributes }: AccessiblePasswordInputProps) {
     icon = null,
     initialInputValue = "",
     invalidValueAction,
-    name = splitCamelCase(attributes.name),
+    name,
     label = splitCamelCase(attributes.name),
     maxLength = 32,
     minLength = 8,

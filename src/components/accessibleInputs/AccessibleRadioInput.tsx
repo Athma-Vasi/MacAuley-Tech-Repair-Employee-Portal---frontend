@@ -34,7 +34,7 @@ function AccessibleRadioInputSingle<ValidValueAction extends string = string>({
     checked,
     description,
     disabled = false,
-    name = splitCamelCase(attributes.name),
+    name,
     key = name + " - radio single",
     label = splitCamelCase(attributes.name),
     onChange,

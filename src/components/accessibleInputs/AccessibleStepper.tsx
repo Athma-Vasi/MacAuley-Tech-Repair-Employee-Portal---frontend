@@ -85,7 +85,7 @@ function AccessibleStepper({ attributes }: AccessibleStepperProps) {
   }`;
 
   const {
-    generalColors: { themeColorShade, grayColorShade, redColorShade },
+    generalColors: { grayColorShade, redColorShade, greenColorShade },
   } = returnThemeColors({
     colorsSwatches: COLORS_SWATCHES,
     themeObject,
@@ -115,7 +115,7 @@ function AccessibleStepper({ attributes }: AccessibleStepperProps) {
     return (
       <Stepper.Step
         aria-label={screenreaderText}
-        color={stepsInError[pageIndex] ? redColorShade : themeColorShade}
+        color={stepsInError[pageIndex] ? redColorShade : greenColorShade}
         completedIcon={completedIcon}
         description={description}
         key={`step-${pageIndex}`}

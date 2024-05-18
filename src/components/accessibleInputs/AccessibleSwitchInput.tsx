@@ -58,7 +58,7 @@ function AccessibleSwitchInput<
     checked,
     disabled = false,
     invalidValueAction,
-    name = splitCamelCase(attributes.name),
+    name,
     label = splitCamelCase(attributes.name),
     labelPosition = "right",
     onChange,
