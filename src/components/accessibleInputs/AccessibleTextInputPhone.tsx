@@ -13,7 +13,7 @@ import { TbCheck, TbRefresh } from "react-icons/tb";
 
 import { COLORS_SWATCHES } from "../../constants/data";
 import { useGlobalState } from "../../hooks";
-import { SetStepsInErrorPayload, StepperPage } from "../../types";
+import { SetPagesInErrorPayload, StepperPage } from "../../types";
 import { returnThemeColors, splitCamelCase } from "../../utils";
 import {
   createAccessibleValueValidationTextElements,
@@ -38,6 +38,8 @@ type AccessibleTextInputPhoneAttributes<
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onFocus?: () => void;
   onKeyDown?: (event: React.KeyboardEvent<HTMLInputElement>) => void;
+  /** stepper page location of input. default 0 = first page = step 0 */
+  page?: number;
   parentDispatch: Dispatch<
     | {
         type: ValidValueAction;
@@ -45,7 +47,7 @@ type AccessibleTextInputPhoneAttributes<
       }
     | {
         type: InvalidValueAction;
-        payload: SetStepsInErrorPayload;
+        payload: SetPagesInErrorPayload;
       }
   >;
   validValueAction: ValidValueAction;
@@ -57,8 +59,6 @@ type AccessibleTextInputPhoneAttributes<
   rightSectionIcon?: ReactNode;
   rightSectionOnClick?: () => void;
   size?: MantineSize;
-  /** stepper page location of input. default 0 */
-  step?: number;
   stepperPages: StepperPage[];
   withAsterisk?: boolean;
 };
@@ -91,6 +91,7 @@ function AccessibleTextInputPhone<
     parentDispatch,
     validValueAction,
     invalidValueAction,
+    page = 0,
     placeholder,
     ref = null,
     required = false,
@@ -98,7 +99,6 @@ function AccessibleTextInputPhone<
     rightSectionIcon = null,
     rightSectionOnClick = () => {},
     size = "sm",
-    step = 0,
     withAsterisk = false,
     stepperPages,
   } = attributes;
@@ -197,8 +197,8 @@ function AccessibleTextInputPhone<
               parentDispatch({
                 type: invalidValueAction,
                 payload: {
-                  kind: isValueBufferValid ? "delete" : "add",
-                  step,
+                  kind: isValueBufferValid ? "remove" : "add",
+                  page,
                 },
               });
               onBlur?.();

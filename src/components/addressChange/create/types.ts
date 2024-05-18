@@ -6,7 +6,7 @@ import type {
   PostalCode,
   Province,
   RequestStatus,
-  SetStepsInErrorPayload,
+  SetPagesInErrorPayload,
   StatesUS,
 } from "../../../types";
 import { AddressChangeAction } from "./actions";
@@ -44,7 +44,7 @@ type AddressChangeState = {
   postalCode: PostalCode;
   acknowledgement: boolean;
   triggerFormSubmit: boolean;
-  stepsInError: Set<number>;
+  pagesInError: Set<number>;
   isSubmitting: boolean;
   isSuccessful: boolean;
 };
@@ -83,8 +83,8 @@ type AddressChangeDispatch =
       payload: PostalCode;
     }
   | {
-      type: AddressChangeAction["setStepsInError"];
-      payload: SetStepsInErrorPayload;
+      type: AddressChangeAction["setPagesInError"];
+      payload: SetPagesInErrorPayload;
     };
 
 type AddressChangeReducer = (

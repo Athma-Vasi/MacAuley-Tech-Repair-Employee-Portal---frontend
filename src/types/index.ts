@@ -244,6 +244,11 @@ type StepperPage = {
   children: Array<StepperChild>;
 };
 
+type SetPagesInErrorPayload = {
+  kind: "add" | "remove";
+  page: number;
+};
+
 export type {
   Action,
   ActionsCompany,
@@ -255,12 +260,10 @@ export type {
   ArrayOperators,
   CanadianPostalCode,
   CheckboxInputData,
-  StepperPage,
   Country,
   Department,
   DocumentUpdateOperation,
   FieldOperators,
-  StepperChild,
   InputType,
   JobPosition,
   PhoneNumber,
@@ -269,7 +272,10 @@ export type {
   Province,
   ResourceRoutePaths,
   ScreenshotImageType,
+  SetPagesInErrorPayload,
   StatesUS,
+  StepperChild,
+  StepperPage,
   StoreLocation,
   Urgency,
   User,

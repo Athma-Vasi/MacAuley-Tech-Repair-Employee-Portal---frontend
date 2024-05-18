@@ -13,7 +13,7 @@ import { TbCheck, TbRefresh } from "react-icons/tb";
 
 import { COLORS_SWATCHES } from "../../constants/data";
 import { useGlobalState } from "../../hooks";
-import { Country, SetStepsInErrorPayload, StepperPage } from "../../types";
+import { Country, SetPagesInErrorPayload, StepperPage } from "../../types";
 import { returnThemeColors, splitCamelCase } from "../../utils";
 import {
   createAccessibleValueValidationTextElements,
@@ -37,6 +37,8 @@ type AccessibleTextInputPostalAttributes<
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onFocus?: () => void;
   onKeyDown?: (event: React.KeyboardEvent<HTMLInputElement>) => void;
+  /** stepper page location of input. default 0 = first page = step 0 */
+  page?: number;
   parentDispatch: Dispatch<
     | {
         type: ValidValueAction;
@@ -44,7 +46,7 @@ type AccessibleTextInputPostalAttributes<
       }
     | {
         type: InvalidValueAction;
-        payload: SetStepsInErrorPayload;
+        payload: SetPagesInErrorPayload;
       }
   >;
   validValueAction: ValidValueAction;
@@ -57,8 +59,6 @@ type AccessibleTextInputPostalAttributes<
   rightSectionOnClick?: () => void;
   name: string;
   size?: MantineSize;
-  /** stepper page location of input. default 0 */
-  step?: number;
   stepperPages: StepperPage[];
   withAsterisk?: boolean;
 };
@@ -91,6 +91,7 @@ function AccessibleTextInputPostal<
     parentDispatch,
     validValueAction,
     invalidValueAction,
+    page = 0,
     placeholder,
     ref = null,
     required = false,
@@ -98,7 +99,6 @@ function AccessibleTextInputPostal<
     rightSectionIcon = null,
     rightSectionOnClick = () => {},
     size = "sm",
-    step = 0,
     stepperPages,
     withAsterisk = false,
   } = attributes;
@@ -192,8 +192,8 @@ function AccessibleTextInputPostal<
               parentDispatch({
                 type: invalidValueAction,
                 payload: {
-                  kind: isValueBufferValid ? "delete" : "add",
-                  step,
+                  kind: isValueBufferValid ? "remove" : "add",
+                  page,
                 },
               });
 

@@ -153,8 +153,8 @@ function returnStepsInError(
   componentState: Record<string, unknown>
 ): boolean[] {
   return stepperPages.reduce<boolean[]>(
-    (stepsAcc, step, index) => {
-      const { children, kind } = step;
+    (stepsAcc, page, index) => {
+      const { children, kind } = page;
 
       if (kind && kind === "review") {
         return stepsAcc;

@@ -1,4 +1,4 @@
-import type { AddressChangeDispatch, AddressChangeState } from "./types";
+import type { AddressChangeState } from "./types";
 
 const initialAddressChangeState: AddressChangeState = {
   addressLine: "",
@@ -11,7 +11,7 @@ const initialAddressChangeState: AddressChangeState = {
   postalCode: "",
   province: "Alberta",
   state: "Alabama",
-  stepsInError: new Set<number>(),
+  pagesInError: new Set<number>(),
   triggerFormSubmit: false,
 };
 

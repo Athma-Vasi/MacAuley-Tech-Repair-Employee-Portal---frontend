@@ -21,7 +21,7 @@ import { TbCheck, TbRefresh } from "react-icons/tb";
 
 import { COLORS_SWATCHES } from "../../../constants/data";
 import { useGlobalState } from "../../../hooks";
-import { SetStepsInErrorPayload, StepperPage } from "../../../types";
+import { SetPagesInErrorPayload, StepperPage } from "../../../types";
 import { returnThemeColors, splitCamelCase } from "../../../utils";
 import {
   createAccessibleValueValidationTextElements,
@@ -55,11 +55,13 @@ type AccessibleTextInputAttributes<
       }
     | {
         type: InvalidValueAction;
-        payload: SetStepsInErrorPayload;
+        payload: SetPagesInErrorPayload;
       }
   >;
   validValueAction: ValidValueAction;
   invalidValueAction: InvalidValueAction;
+  /** stepper page location of input. default 0 = first page = step 0 */
+  page?: number;
   placeholder?: string;
   ref?: RefObject<HTMLInputElement> | null;
   required?: boolean;
@@ -67,8 +69,6 @@ type AccessibleTextInputAttributes<
   rightSectionIcon?: ReactNode;
   rightSectionOnClick?: () => void;
   size?: MantineSize;
-  /** stepper page location of input. default 0 */
-  step?: number;
   stepperPages: StepperPage[];
   withAsterisk?: boolean;
 };
@@ -100,6 +100,7 @@ function AccessibleTextInput<
     onChange,
     onFocus,
     onKeyDown,
+    page = 0,
     parentDispatch,
     placeholder = "",
     ref = null,
@@ -108,7 +109,6 @@ function AccessibleTextInput<
     rightSectionIcon = null,
     rightSectionOnClick = () => {},
     size = "sm",
-    step = 0,
     stepperPages,
     validValueAction,
     value,
@@ -218,8 +218,8 @@ function AccessibleTextInput<
               parentDispatch({
                 type: invalidValueAction,
                 payload: {
-                  kind: isValueBufferValid ? "delete" : "add",
-                  step,
+                  kind: isValueBufferValid ? "remove" : "add",
+                  page,
                 },
               });
 
@@ -230,28 +230,13 @@ function AccessibleTextInput<
 
               onBlur?.();
               closePopover();
-              // accessibleTextInputDispatch({
-              //   type: accessibleTextInputAction.setPopoverOpened,
-              //   payload: false,
-              // });
             }}
             onChange={(event: ChangeEvent<HTMLInputElement>) => {
               setValueBuffer(event.currentTarget.value);
-              console.log("event", event);
-              // accessibleTextInputDispatch({
-              //   type: accessibleTextInputAction.setValueBuffer,
-              //   payload: event.currentTarget.value,
-              // });
-
               onChange?.(event);
             }}
             onFocus={() => {
               openPopover();
-              // accessibleTextInputDispatch({
-              //   type: accessibleTextInputAction.setPopoverOpened,
-              //   payload: true,
-              // });
-
               onFocus?.();
             }}
             onKeyDown={onKeyDown}

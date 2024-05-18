@@ -192,7 +192,7 @@ function AddressChange() {
   //     !acknowledgement;
 
   //   addressChangeDispatch({
-  //     type: addressChangeAction.setStepsInError,
+  //     type: addressChangeAction.setPagesInError,
   //     payload: {
   //       kind: isStepInError ? "add" : "delete",
   //       step: 0,
@@ -207,8 +207,8 @@ function AddressChange() {
   const addressLineTextInput = (
     <AccessibleTextInput
       attributes={{
-        componentScaffolding: ADDRESS_CHANGE_STEPPER_PAGES,
-        invalidValueAction: addressChangeAction.setStepsInError,
+        stepperPages: ADDRESS_CHANGE_STEPPER_PAGES,
+        invalidValueAction: addressChangeAction.setPagesInError,
         name: "addressLine",
         parentDispatch: addressChangeDispatch,
         validValueAction: addressChangeAction.setAddressLine,
@@ -220,8 +220,8 @@ function AddressChange() {
   const cityTextInput = (
     <AccessibleTextInput
       attributes={{
-        componentScaffolding: ADDRESS_CHANGE_STEPPER_PAGES,
-        invalidValueAction: addressChangeAction.setStepsInError,
+        stepperPages: ADDRESS_CHANGE_STEPPER_PAGES,
+        invalidValueAction: addressChangeAction.setPagesInError,
         name: "city",
         parentDispatch: addressChangeDispatch,
         validValueAction: addressChangeAction.setCity,
@@ -233,8 +233,8 @@ function AddressChange() {
   const contactNumberInput = (
     <AccessibleTextInput
       attributes={{
-        componentScaffolding: ADDRESS_CHANGE_STEPPER_PAGES,
-        invalidValueAction: addressChangeAction.setStepsInError,
+        stepperPages: ADDRESS_CHANGE_STEPPER_PAGES,
+        invalidValueAction: addressChangeAction.setPagesInError,
         name: "contactNumber",
         parentDispatch: addressChangeDispatch,
         validValueAction: addressChangeAction.setContactNumber,
@@ -247,8 +247,8 @@ function AddressChange() {
     <AccessibleTextInput
       attributes={{
         validValueAction: addressChangeAction.setPostalCode,
-        componentScaffolding: ADDRESS_CHANGE_STEPPER_PAGES,
-        invalidValueAction: addressChangeAction.setStepsInError,
+        stepperPages: ADDRESS_CHANGE_STEPPER_PAGES,
+        invalidValueAction: addressChangeAction.setPagesInError,
         name: "postalCode",
         parentDispatch: addressChangeDispatch,
         value: postalCode,
@@ -259,11 +259,11 @@ function AddressChange() {
   const acknowledgementSwitch = (
     <AccessibleSwitchInput<
       AddressChangeAction["setAcknowledgement"],
-      AddressChangeAction["setStepsInError"]
+      AddressChangeAction["setPagesInError"]
     >
       attributes={{
         checked: acknowledgement,
-        invalidValueAction: addressChangeAction.setStepsInError,
+        invalidValueAction: addressChangeAction.setPagesInError,
         name: "acknowledgement",
         offLabel: "No",
         onLabel: "Yes",

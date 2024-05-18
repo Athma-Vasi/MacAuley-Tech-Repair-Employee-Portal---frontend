@@ -2,7 +2,7 @@ import { Box, MantineSize, Switch } from "@mantine/core";
 import { ChangeEvent, ReactNode, RefObject } from "react";
 
 import { useGlobalState } from "../../hooks";
-import { SetStepsInErrorPayload } from "../../types";
+import { SetPagesInErrorPayload } from "../../types";
 import { splitCamelCase } from "../../utils";
 import { createAccessibleSwitchOnOffTextElements } from "./utils";
 
@@ -26,14 +26,14 @@ type AccessibleSwitchInputAttributes<
       }
     | {
         type: InvalidValueAction;
-        payload: SetStepsInErrorPayload;
+        payload: SetPagesInErrorPayload;
       }
   >;
   radius?: MantineSize;
   ref?: RefObject<HTMLInputElement>;
   required?: boolean;
   size?: MantineSize;
-  step?: number;
+  page?: number;
   /** Will be added to end of `${name} is off.` */
   switchOffDescription?: string;
   /** Will be added to end of `${name} is on.` */
@@ -69,7 +69,7 @@ function AccessibleSwitchInput<
     ref = null,
     required = false,
     size = "sm",
-    step = 0,
+    page = 0,
     switchOffDescription = "",
     switchOnDescription = "",
     thumbIcon = null,
@@ -110,16 +110,20 @@ function AccessibleSwitchInput<
         name={name}
         offLabel={offLabel}
         onChange={(event: ChangeEvent<HTMLInputElement>) => {
+          const {
+            currentTarget: { checked },
+          } = event;
+
           parentDispatch({
             type: validValueAction,
-            payload: event.currentTarget.checked,
+            payload: checked,
           });
 
           parentDispatch({
             type: invalidValueAction,
             payload: {
-              kind: event.currentTarget.checked ? "delete" : "add",
-              step,
+              kind: checked ? "remove" : "add",
+              page,
             },
           });
 

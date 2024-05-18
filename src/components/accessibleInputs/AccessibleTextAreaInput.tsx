@@ -14,7 +14,7 @@ import { TbCheck, TbRefresh } from "react-icons/tb";
 
 import { COLORS_SWATCHES } from "../../constants/data";
 import { useGlobalState } from "../../hooks";
-import { SetStepsInErrorPayload, StepperPage } from "../../types";
+import { SetPagesInErrorPayload, StepperPage } from "../../types";
 import { returnThemeColors, splitCamelCase } from "../../utils";
 import {
   createAccessibleValueValidationTextElements,
@@ -43,6 +43,8 @@ type AccessibleTextAreaInputAttributes<
   onChange: (event: ChangeEvent<HTMLTextAreaElement>) => void;
   onFocus?: () => void;
   onKeyDown?: (event: KeyboardEvent<HTMLTextAreaElement>) => void;
+  /** stepper page location of input. default 0 = first page = step 0 */
+  page?: number;
   parentDispatch: Dispatch<
     | {
         type: ValidValueAction;
@@ -50,7 +52,7 @@ type AccessibleTextAreaInputAttributes<
       }
     | {
         type: InvalidValueAction;
-        payload: SetStepsInErrorPayload;
+        payload: SetPagesInErrorPayload;
       }
   >;
   validValueAction: ValidValueAction;
@@ -62,8 +64,6 @@ type AccessibleTextAreaInputAttributes<
   rightSectionIcon?: ReactNode;
   rightSectionOnClick?: () => void;
   size?: MantineSize;
-  /** stepper page location of input. default 0 */
-  step?: number;
   stepperPages: StepperPage[];
   withAsterisk?: boolean;
 };
@@ -100,6 +100,7 @@ function AccessibleTextAreaInput<
     parentDispatch,
     validValueAction,
     invalidValueAction,
+    page = 0,
     placeholder,
     ref = null,
     required = false,
@@ -107,7 +108,6 @@ function AccessibleTextAreaInput<
     rightSectionIcon = null,
     rightSectionOnClick = () => {},
     size = "sm",
-    step = 0,
     stepperPages,
     withAsterisk = required,
   } = attributes;
@@ -214,8 +214,8 @@ function AccessibleTextAreaInput<
                 parentDispatch({
                   type: invalidValueAction,
                   payload: {
-                    kind: isValueBufferValid ? "delete" : "add",
-                    step,
+                    kind: isValueBufferValid ? "remove" : "add",
+                    page,
                   },
                 });
 

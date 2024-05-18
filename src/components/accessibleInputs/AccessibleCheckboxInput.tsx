@@ -2,7 +2,7 @@ import { Checkbox, MantineSize, Text } from "@mantine/core";
 import { ChangeEvent, ReactNode, RefObject } from "react";
 
 import { useGlobalState } from "../../hooks";
-import { SetStepsInErrorPayload } from "../../types";
+import { SetPagesInErrorPayload } from "../../types";
 import { splitCamelCase } from "../../utils";
 import { createAccessibleCheckboxSelectionsTextElements } from "./utils";
 
@@ -23,14 +23,14 @@ type AccessibleCheckboxInputSingleAttributes<
       }
     | {
         type: InvalidValueAction;
-        payload: SetStepsInErrorPayload;
+        payload: SetPagesInErrorPayload;
       }
   >;
   ref?: RefObject<HTMLInputElement> | null;
   required?: boolean;
   name: string;
   size?: MantineSize;
-  /** stepper page location of input. default 0 */ step?: number;
+  /** stepper page location of input. default 0 */ page?: number;
   validValueAction: ValidValueAction;
   value: string;
 };
@@ -63,7 +63,7 @@ function AccessibleCheckboxInputSingle<
     ref = null,
     required = false,
     size = "sm",
-    step = 0,
+    page = 0,
     validValueAction,
     value,
   } = attributes;
@@ -99,8 +99,6 @@ function AccessibleCheckboxInputSingle<
       label={label}
       name={name}
       onChange={(event: ChangeEvent<HTMLInputElement>) => {
-        console.log("CHECKED", checked);
-        console.log("VALUE", value);
         parentDispatch({
           type: validValueAction,
           payload: event.currentTarget.checked,
@@ -109,8 +107,8 @@ function AccessibleCheckboxInputSingle<
         parentDispatch({
           type: invalidValueAction,
           payload: {
-            step,
-            kind: checked ? "add" : "delete",
+            page,
+            kind: checked ? "add" : "remove",
           },
         });
 

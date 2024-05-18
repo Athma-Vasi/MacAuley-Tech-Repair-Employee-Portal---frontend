@@ -5,7 +5,7 @@ import { TbCheck } from "react-icons/tb";
 
 import { COLORS_SWATCHES } from "../../constants/data";
 import { useGlobalState } from "../../hooks";
-import { SetStepsInErrorPayload, StepperPage } from "../../types";
+import { SetPagesInErrorPayload, StepperPage } from "../../types";
 import { returnThemeColors, splitCamelCase } from "../../utils";
 import {
   createAccessibleValueValidationTextElements,
@@ -27,6 +27,8 @@ type AccessiblePasswordInputAttributes<
   onBlur?: () => void;
   onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
   onFocus?: () => void;
+  /** stepper page location of input. default 0 = first page = step 0 */
+  page?: number;
   parentDispatch: Dispatch<
     | {
         type: ValidValueAction;
@@ -34,7 +36,7 @@ type AccessiblePasswordInputAttributes<
       }
     | {
         type: InvalidValueAction;
-        payload: SetStepsInErrorPayload;
+        payload: SetPagesInErrorPayload;
       }
   >;
   validValueAction: ValidValueAction;
@@ -43,8 +45,6 @@ type AccessiblePasswordInputAttributes<
   required?: boolean;
   size?: MantineSize;
   stepperPages: StepperPage[];
-  /** stepper page location of input. default 0 */
-  step?: number;
   value: string;
   withAsterisk?: boolean;
 };
@@ -66,12 +66,12 @@ function AccessiblePasswordInput({ attributes }: AccessiblePasswordInputProps) {
     onBlur,
     onChange,
     onFocus,
+    page = 0,
     parentDispatch,
     placeholder,
     ref = null,
     required = false,
     size = "sm",
-    step = 0,
     validValueAction,
     value,
     withAsterisk = false,
@@ -150,8 +150,8 @@ function AccessiblePasswordInput({ attributes }: AccessiblePasswordInputProps) {
               parentDispatch({
                 type: invalidValueAction,
                 payload: {
-                  kind: isValueBufferValid ? "delete" : "add",
-                  step,
+                  kind: isValueBufferValid ? "remove" : "add",
+                  page,
                 },
               });
 
