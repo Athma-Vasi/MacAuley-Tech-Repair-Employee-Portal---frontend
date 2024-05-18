@@ -1,11 +1,11 @@
-import { Container, Group, Text } from "@mantine/core";
+import { Container, Group, Stack, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { MouseEvent, useEffect, useReducer, useRef } from "react";
 import { useErrorBoundary } from "react-error-boundary";
 import { useNavigate } from "react-router-dom";
 
 import { PROVINCES, STATES_US } from "../../../constants/data";
-import { useGlobalState, useWrapFetch } from "../../../hooks";
+import { useFetchInterceptor } from "../../../hooks/useFetchInterceptor";
 import {
   Country,
   Province,
@@ -19,8 +19,7 @@ import { AccessibleSelectInput } from "../../accessibleInputs/AccessibleSelectIn
 import { AccessibleStepper } from "../../accessibleInputs/AccessibleStepper";
 import { AccessibleSwitchInput } from "../../accessibleInputs/AccessibleSwitchInput";
 import { AccessibleTextInput } from "../../accessibleInputs/text/AccessibleTextInput";
-import { FormReviews, FormReviewStep } from "../../formReview/FormReview";
-import FormReviewPage, { FormReviewObject } from "../../formReviewPage/FormReviewPage";
+import { NotificationModal } from "../../notificationModal";
 import { COUNTRIES_DATA, returnAddressChangeStepperPages } from "../constants";
 import { AddressChangeAction, addressChangeAction } from "./actions";
 import { addressChangeReducer } from "./reducers";
@@ -48,14 +47,6 @@ function AddressChange() {
     isSuccessful,
   } = addressChangeState;
 
-  ////
-
-  // useEffect(() => {
-  //   if (province === "British Columbia") {
-  //     throw new Error("ERROR from AddressChange");
-  //   }
-  // }, [province]);
-
   useEffect(() => {
     logState({
       state: addressChangeState,
@@ -63,33 +54,23 @@ function AddressChange() {
     });
   }, [addressChangeState]);
 
-  ////
-
-  const {
-    globalState: { themeObject },
-  } = useGlobalState();
-
-  const { wrappedFetch } = useWrapFetch();
-
-  const navigate = useNavigate();
+  const { fetchInterceptor } = useFetchInterceptor();
   const { showBoundary } = useErrorBoundary();
+  const navigate = useNavigate();
 
-  const [
-    openedSubmitSuccessNotificationModal,
-    {
-      open: openSubmitSuccessNotificationModal,
-      close: closeSubmitSuccessNotificationModal,
-    },
-  ] = useDisclosure(false);
-
-  const abortControllerRef = useRef<AbortController | null>(null);
+  const fetchAbortControllerRef = useRef<AbortController | null>(null);
+  const preFetchAbortControllerRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
+    fetchAbortControllerRef.current?.abort();
+    fetchAbortControllerRef.current = new AbortController();
+    const fetchAbortController = fetchAbortControllerRef.current;
+
+    preFetchAbortControllerRef.current?.abort();
+    preFetchAbortControllerRef.current = new AbortController();
+    const preFetchAbortController = preFetchAbortControllerRef.current;
+
     let isMounted = true;
-    // TODO UNCOMMENT BELOW AFTER USEWRAPFETCH REFACTOR
-    // abortControllerRef.current?.abort();
-    // abortControllerRef.current = new AbortController();
-    const controller = new AbortController();
 
     async function addressChangeFormSubmit() {
       try {
@@ -97,8 +78,6 @@ function AddressChange() {
           type: addressChangeAction.setIsSubmitting,
           payload: true,
         });
-
-        openSubmitSuccessNotificationModal();
 
         const url: URL = urlBuilder({
           path: "actions/company/address-change",
@@ -133,10 +112,11 @@ function AddressChange() {
           body,
         };
 
-        const response: Response = await wrappedFetch({
+        const response: Response = await fetchInterceptor({
+          fetchAbortController,
           isMounted,
+          preFetchAbortController,
           requestInit,
-          signal: controller.signal,
           url,
         });
 
@@ -177,11 +157,41 @@ function AddressChange() {
 
     return () => {
       isMounted = false;
-      controller.abort();
+      fetchAbortController?.abort();
+      preFetchAbortController?.abort();
     };
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [triggerFormSubmit]);
+
+  useEffect(() => {
+    if (isSuccessful) {
+      setTimeout(() => {
+        navigate("/home/company/address-change");
+      }, 3000);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isSuccessful]);
+
+  const submittingState = (
+    <Stack>
+      <Text size="md">Submitting address changes! Please wait...</Text>
+    </Stack>
+  );
+
+  if (isSubmitting) {
+    return submittingState;
+  }
+
+  const successfulState = (
+    <Stack>
+      <Text size="md">Address changes submitted successfully!</Text>
+    </Stack>
+  );
+
+  if (isSuccessful) {
+    return successfulState;
+  }
 
   const ADDRESS_CHANGE_STEPPER_PAGES: StepperPage[] =
     returnAddressChangeStepperPages(country);

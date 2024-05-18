@@ -1974,6 +1974,7 @@ function App() {
             {/* address change */}
             <Route path="address-change">
               <Route index element={displayAddressChangesElement} />
+              <Route path="display" element={displayAddressChangesElement} />
               <Route path="create" element={addressChangeElement} />
             </Route>
 
