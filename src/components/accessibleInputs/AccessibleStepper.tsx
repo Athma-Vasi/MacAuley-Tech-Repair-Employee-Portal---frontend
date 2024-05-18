@@ -7,8 +7,8 @@ import { COLORS_SWATCHES } from "../../constants/data";
 import { useGlobalState } from "../../hooks";
 import { StepperPage } from "../../types";
 import { returnThemeColors } from "../../utils";
-import { createAccessibleButtons } from "./utils";
 import { FormReviewStep } from "../formReview/FormReview";
+import { createAccessibleButtons } from "./utils";
 
 type AccessibleStepperAttributes = {
   allowNextStepsSelect?: boolean;
@@ -96,11 +96,13 @@ function AccessibleStepper({ attributes }: AccessibleStepperProps) {
   );
 
   const stepperSteps = [pageElements, formReviewPage].map((elements, pageIndex) => {
+    const page = stepperPages[pageIndex];
+
     const description = (
       <Text color={stepsInError[pageIndex] ? redColorShade : grayColorShade}>
-        {stepperPages[pageIndex].kind === "review"
-          ? "Review your changes"
-          : stepperPages[pageIndex].description}
+        {page.kind === "review"
+          ? page.description ?? "Review your changes"
+          : page.description}
       </Text>
     );
 

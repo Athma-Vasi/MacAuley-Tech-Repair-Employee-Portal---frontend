@@ -5,6 +5,7 @@ import { TbCheck, TbExclamationCircle } from "react-icons/tb";
 
 import { COLORS_SWATCHES } from "../../constants/data";
 import { ThemeObject } from "../../context/globalProvider/types";
+import { StepperPage } from "../../types";
 import { replaceLastCommaWithAnd, returnThemeColors, splitCamelCase } from "../../utils";
 import { AccessibleButton, AccessibleButtonAttributes } from "./AccessibleButton";
 import {
@@ -380,13 +381,7 @@ function createAccessibleSwitchOnOffTextElements({
   switchOffTextElement: React.JSX.Element;
 } {
   const {
-    generalColors: {
-      themeColorShade,
-      textColor,
-      grayColorShade,
-      redColorShade,
-      greenColorShade,
-    },
+    generalColors: { grayColorShade, redColorShade, greenColorShade },
   } = returnThemeColors({
     themeObject,
     colorsSwatches: COLORS_SWATCHES,
@@ -583,27 +578,102 @@ type ValidationTexts = {
   valueInvalidText: string;
 };
 
+// function returnValidationTexts({
+//   name,
+//   partials,
+//   value,
+// }: {
+//   name: string;
+//   value: string;
+//   partials: [RegExp, string][];
+// }): ValidationTexts {
+//   const splitName = splitCamelCase(name);
+
+//   let valueInvalidText = partials
+//     .map(([regex, errorMessage]) => (regex.test(value) ? "" : errorMessage))
+//     .join(" ");
+
+//   valueInvalidText = `${splitName} is invalid. ${valueInvalidText}`;
+
+//   return {
+//     valueValidText: `${splitName} is valid.`,
+//     valueInvalidText,
+//   };
+// }
+
 function returnValidationTexts({
   name,
-  partials,
+  stepperPages,
   value,
 }: {
   name: string;
+  stepperPages: StepperPage[];
   value: string;
-  partials: [RegExp, string][];
 }): ValidationTexts {
-  const splitName = splitCamelCase(name);
+  return stepperPages.reduce<ValidationTexts>((validationTextsAcc, page) => {
+    const { kind, children } = page;
 
-  let valueInvalidText = partials
-    .map(([regex, errorMessage]) => (regex.test(value) ? "" : errorMessage))
-    .join(" ");
+    if (kind && kind === "review") {
+      return validationTextsAcc;
+    }
 
-  valueInvalidText = `${splitName} is invalid. ${valueInvalidText}`;
+    children.forEach((child) => {
+      const { name: inputName, regexes } = child;
 
-  return {
-    valueValidText: `${splitName} is valid.`,
-    valueInvalidText,
-  };
+      if (!regexes) {
+        return;
+      }
+
+      if (splitCamelCase(inputName) === name) {
+        const { partials } = regexes;
+
+        let valueInvalidText = partials
+          .map(([regex, errorMessage]) => (regex.test(value) ? "" : errorMessage))
+          .join(" ");
+
+        valueInvalidText = `${splitCamelCase(name)} is invalid. ${valueInvalidText}`;
+
+        validationTextsAcc = {
+          valueValidText: `${splitCamelCase(name)} is valid.`,
+          valueInvalidText,
+        };
+      }
+    });
+
+    return validationTextsAcc;
+  }, {} as ValidationTexts);
+}
+
+function returnFullRegex(
+  name: string,
+  stepperPages: StepperPage[]
+): { fullRegex: RegExp } {
+  return stepperPages.reduce<{ fullRegex: RegExp }>(
+    (regexAcc, page) => {
+      const { children, kind } = page;
+
+      if (kind && kind === "review") {
+        return regexAcc;
+      }
+
+      children.forEach((child) => {
+        const { name: inputName, regexes } = child;
+
+        if (!regexes) {
+          return;
+        }
+
+        if (splitCamelCase(inputName) === name) {
+          const { full: fullRegex } = regexes;
+          regexAcc.fullRegex = fullRegex;
+        }
+      });
+
+      return regexAcc;
+    },
+    // /.*/ is a catch-all regex that will always return true
+    { fullRegex: new RegExp(".*") }
+  );
 }
 
 export {
@@ -624,5 +694,6 @@ export {
   createAccessibleTextInputsPhone,
   createAccessibleTextInputsPostal,
   createAccessibleValueValidationTextElements,
+  returnFullRegex,
   returnValidationTexts,
 };

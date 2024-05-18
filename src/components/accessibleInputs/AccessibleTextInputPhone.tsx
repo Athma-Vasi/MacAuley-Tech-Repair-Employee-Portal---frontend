@@ -13,10 +13,11 @@ import { TbCheck, TbRefresh } from "react-icons/tb";
 
 import { COLORS_SWATCHES } from "../../constants/data";
 import { useGlobalState } from "../../hooks";
-import { StepperPage, StepperChild, SetStepsInErrorPayload } from "../../types";
+import { SetStepsInErrorPayload, StepperPage } from "../../types";
 import { returnThemeColors, splitCamelCase } from "../../utils";
 import {
   createAccessibleValueValidationTextElements,
+  returnFullRegex,
   returnValidationTexts,
 } from "./utils";
 
@@ -26,7 +27,6 @@ type AccessibleTextInputPhoneAttributes<
 > = {
   ariaRequired?: boolean;
   autoComplete?: "on" | "off";
-  componentScaffolding: StepperPage[];
   icon?: ReactNode;
   initialInputValue?: string;
   value: string;
@@ -57,7 +57,9 @@ type AccessibleTextInputPhoneAttributes<
   rightSectionIcon?: ReactNode;
   rightSectionOnClick?: () => void;
   size?: MantineSize;
-  /** stepper page location of input. default 0 */ step?: number;
+  /** stepper page location of input. default 0 */
+  step?: number;
+  stepperPages: StepperPage[];
   withAsterisk?: boolean;
 };
 
@@ -75,7 +77,6 @@ function AccessibleTextInputPhone<
   const {
     ariaRequired = false,
     autoComplete = "off",
-    componentScaffolding,
     icon = null,
     initialInputValue = "+(1)",
     value,
@@ -99,6 +100,7 @@ function AccessibleTextInputPhone<
     size = "sm",
     step = 0,
     withAsterisk = false,
+    stepperPages,
   } = attributes;
 
   const [valueBuffer, setValueBuffer] = useState(() => value);
@@ -113,17 +115,7 @@ function AccessibleTextInputPhone<
     generalColors: { greenColorShade, iconGray },
   } = returnThemeColors({ colorsSwatches: COLORS_SWATCHES, themeObject });
 
-  const component = componentScaffolding[step];
-  const { full: fullRegex, partials } = component.children.find(
-    (child: StepperChild) => child.name === name
-  )?.regexes ?? { full: /** matches any char zero or more times */ /.*/, partials: [] };
-
-  const validationTexts = returnValidationTexts({
-    name,
-    partials,
-    value,
-  });
-
+  const { fullRegex } = returnFullRegex(name, stepperPages);
   const isValueBufferValid = fullRegex.test(valueBuffer);
 
   const leftIcon = isValueBufferValid ? (
@@ -133,6 +125,12 @@ function AccessibleTextInputPhone<
       <TbCheck color={greenColorShade} size={18} />
     )
   ) : null;
+
+  const validationTexts = returnValidationTexts({
+    name,
+    stepperPages,
+    value,
+  });
 
   const rightIcon = rightSection ? (
     rightSectionIcon ? (

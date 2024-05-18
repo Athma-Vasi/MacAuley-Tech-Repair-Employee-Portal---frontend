@@ -5,10 +5,11 @@ import { TbCheck } from "react-icons/tb";
 
 import { COLORS_SWATCHES } from "../../constants/data";
 import { useGlobalState } from "../../hooks";
-import { StepperPage, StepperChild, SetStepsInErrorPayload } from "../../types";
+import { SetStepsInErrorPayload, StepperPage } from "../../types";
 import { returnThemeColors, splitCamelCase } from "../../utils";
 import {
   createAccessibleValueValidationTextElements,
+  returnFullRegex,
   returnValidationTexts,
 } from "./utils";
 
@@ -18,7 +19,6 @@ type AccessibleDateTimeInputAttributes<
 > = {
   ariaAutoComplete?: "both" | "list" | "none" | "inline";
   autoComplete?: "on" | "off";
-  componentScaffolding: StepperPage[];
   dateKind?: "date near future" | "date near past" | "full date";
   icon?: ReactNode;
   initialInputValue?: string;
@@ -51,6 +51,7 @@ type AccessibleDateTimeInputAttributes<
   size?: MantineSize;
   /** stepper page location of input. default 0 */
   step?: number;
+  stepperPages: StepperPage[];
   withAsterisk?: boolean;
 };
 
@@ -62,7 +63,6 @@ function AccessibleDateTimeInput({ attributes }: AccessibleDateTimeInputProps) {
   const {
     ariaAutoComplete = "none",
     autoComplete = "off",
-    componentScaffolding,
     dateKind = "full date",
     icon = null,
     initialInputValue = "",
@@ -83,6 +83,7 @@ function AccessibleDateTimeInput({ attributes }: AccessibleDateTimeInputProps) {
     required = false,
     size = "sm",
     step = 0,
+    stepperPages,
     validValueAction,
     value,
     withAsterisk = required,
@@ -101,17 +102,7 @@ function AccessibleDateTimeInput({ attributes }: AccessibleDateTimeInputProps) {
     generalColors: { greenColorShade },
   } = returnThemeColors({ colorsSwatches: COLORS_SWATCHES, themeObject });
 
-  const component = componentScaffolding[step];
-  const { full: fullRegex, partials } = component.children.find(
-    (child: StepperChild) => child.name === name
-  )?.regexes ?? { full: /.*/, partials: [] };
-
-  const validationTexts = returnValidationTexts({
-    name,
-    partials,
-    value,
-  });
-
+  const { fullRegex } = returnFullRegex(name, stepperPages);
   const isValueBufferValid = fullRegex.test(valueBuffer);
 
   const leftIcon = isValueBufferValid ? (
@@ -121,6 +112,12 @@ function AccessibleDateTimeInput({ attributes }: AccessibleDateTimeInputProps) {
       <TbCheck color={greenColorShade} size={18} />
     )
   ) : null;
+
+  const validationTexts = returnValidationTexts({
+    name,
+    stepperPages,
+    value,
+  });
 
   const { validValueTextElement, invalidValueTextElement } =
     createAccessibleValueValidationTextElements({

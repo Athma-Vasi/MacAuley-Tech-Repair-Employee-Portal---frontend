@@ -21,10 +21,11 @@ import { TbCheck, TbRefresh } from "react-icons/tb";
 
 import { COLORS_SWATCHES } from "../../../constants/data";
 import { useGlobalState } from "../../../hooks";
-import { StepperPage, StepperChild, SetStepsInErrorPayload } from "../../../types";
+import { SetStepsInErrorPayload, StepperPage } from "../../../types";
 import { returnThemeColors, splitCamelCase } from "../../../utils";
 import {
   createAccessibleValueValidationTextElements,
+  returnFullRegex,
   returnValidationTexts,
 } from "../utils";
 
@@ -34,7 +35,6 @@ type AccessibleTextInputAttributes<
 > = {
   ariaAutoComplete?: "both" | "list" | "none" | "inline";
   autoComplete?: "on" | "off";
-  componentScaffolding: StepperPage[];
   disabled?: boolean;
   dynamicInputs?: ReactNode[]; // inputs created on demand by user
   icon?: ReactNode;
@@ -69,6 +69,7 @@ type AccessibleTextInputAttributes<
   size?: MantineSize;
   /** stepper page location of input. default 0 */
   step?: number;
+  stepperPages: StepperPage[];
   withAsterisk?: boolean;
 };
 
@@ -86,7 +87,6 @@ function AccessibleTextInput<
   const {
     ariaAutoComplete = "none",
     autoComplete = "off",
-    componentScaffolding,
     disabled = false,
     dynamicInputs = null,
     icon = null,
@@ -109,6 +109,7 @@ function AccessibleTextInput<
     rightSectionOnClick = () => {},
     size = "sm",
     step = 0,
+    stepperPages,
     validValueAction,
     value,
     withAsterisk = required,
@@ -137,19 +138,6 @@ function AccessibleTextInput<
     label
   );
 
-  const component = componentScaffolding[step];
-  const { full: fullRegex, partials } = component.children.find(
-    (child: StepperChild) => child.name === name
-  )?.regexes ?? { full: /.*/, partials: [] };
-
-  const validationTexts = returnValidationTexts({
-    name,
-    partials,
-    value,
-  });
-
-  const isValueBufferValid = fullRegex.test(valueBuffer);
-
   const rightIcon = rightSection ? (
     rightSectionIcon ? (
       rightSectionIcon
@@ -167,6 +155,9 @@ function AccessibleTextInput<
     )
   ) : null;
 
+  const { fullRegex } = returnFullRegex(name, stepperPages);
+  const isValueBufferValid = fullRegex.test(valueBuffer);
+
   const leftIcon = isValueBufferValid ? (
     icon ? (
       icon
@@ -174,6 +165,12 @@ function AccessibleTextInput<
       <TbCheck color={greenColorShade} size={18} />
     )
   ) : null;
+
+  const validationTexts = returnValidationTexts({
+    name,
+    stepperPages,
+    value,
+  });
 
   const { invalidValueTextElement, validValueTextElement } =
     createAccessibleValueValidationTextElements({

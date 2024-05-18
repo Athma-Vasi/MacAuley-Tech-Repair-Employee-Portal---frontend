@@ -13,10 +13,11 @@ import { TbCheck, TbRefresh } from "react-icons/tb";
 
 import { COLORS_SWATCHES } from "../../constants/data";
 import { useGlobalState } from "../../hooks";
-import { StepperPage, Country, StepperChild, SetStepsInErrorPayload } from "../../types";
+import { Country, SetStepsInErrorPayload, StepperPage } from "../../types";
 import { returnThemeColors, splitCamelCase } from "../../utils";
 import {
   createAccessibleValueValidationTextElements,
+  returnFullRegex,
   returnValidationTexts,
 } from "./utils";
 
@@ -25,7 +26,6 @@ type AccessibleTextInputPostalAttributes<
   InvalidValueAction extends string = string
 > = {
   autoComplete?: "on" | "off";
-  componentScaffolding: StepperPage[];
   country: Country;
   icon?: ReactNode;
   initialInputValue?: string;
@@ -57,7 +57,9 @@ type AccessibleTextInputPostalAttributes<
   rightSectionOnClick?: () => void;
   name: string;
   size?: MantineSize;
-  /** stepper page location of input. default 0 */ step?: number;
+  /** stepper page location of input. default 0 */
+  step?: number;
+  stepperPages: StepperPage[];
   withAsterisk?: boolean;
 };
 
@@ -74,7 +76,6 @@ function AccessibleTextInputPostal<
 >({ attributes }: AccessibleTextInputPostalProps<ValidValueAction, InvalidValueAction>) {
   const {
     autoComplete = "off",
-    componentScaffolding,
     country,
     icon = null,
     initialInputValue = "",
@@ -98,6 +99,7 @@ function AccessibleTextInputPostal<
     rightSectionOnClick = () => {},
     size = "sm",
     step = 0,
+    stepperPages,
     withAsterisk = false,
   } = attributes;
 
@@ -113,17 +115,7 @@ function AccessibleTextInputPostal<
     generalColors: { greenColorShade, iconGray },
   } = returnThemeColors({ colorsSwatches: COLORS_SWATCHES, themeObject });
 
-  const component = componentScaffolding[step];
-  const { full: fullRegex, partials } = component.children.find(
-    (child: StepperChild) => child.name === name
-  )?.regexes ?? { full: /** matches any char zero or more times */ /.*/, partials: [] };
-
-  const validationTexts = returnValidationTexts({
-    name,
-    partials,
-    value,
-  });
-
+  const { fullRegex } = returnFullRegex(name, stepperPages);
   const isValueBufferValid = fullRegex.test(valueBuffer);
 
   const leftIcon = isValueBufferValid ? (
@@ -133,6 +125,12 @@ function AccessibleTextInputPostal<
       <TbCheck color={greenColorShade} size={18} />
     )
   ) : null;
+
+  const validationTexts = returnValidationTexts({
+    name,
+    stepperPages,
+    value,
+  });
 
   const rightIcon = rightSection ? (
     rightSectionIcon ? (
