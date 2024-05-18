@@ -21,7 +21,7 @@ import { TbCheck, TbRefresh } from "react-icons/tb";
 
 import { COLORS_SWATCHES } from "../../../constants/data";
 import { useGlobalState } from "../../../hooks";
-import { SetPagesInErrorPayload, StepperPage } from "../../../types";
+import { SetPageInErrorPayload, StepperPage } from "../../../types";
 import { returnThemeColors, splitCamelCase } from "../../../utils";
 import {
   createAccessibleValueValidationTextElements,
@@ -55,7 +55,7 @@ type AccessibleTextInputAttributes<
       }
     | {
         type: InvalidValueAction;
-        payload: SetPagesInErrorPayload;
+        payload: SetPageInErrorPayload;
       }
   >;
   validValueAction: ValidValueAction;

@@ -8,7 +8,7 @@ type AddressChangeAction = {
   setPostalCode: "setPostalCode";
   setAcknowledgement: "setAcknowledgement";
   setTriggerFormSubmit: "setTriggerFormSubmit";
-  setPagesInError: "setPagesInError";
+  setPageInError: "setPageInError";
   setIsSubmitting: "setIsSubmitting";
   setIsSuccessful: "setIsSuccessful";
 };
@@ -23,7 +23,7 @@ const addressChangeAction: AddressChangeAction = {
   setPostalCode: "setPostalCode",
   setAcknowledgement: "setAcknowledgement",
   setTriggerFormSubmit: "setTriggerFormSubmit",
-  setPagesInError: "setPagesInError",
+  setPageInError: "setPageInError",
   setIsSubmitting: "setIsSubmitting",
   setIsSuccessful: "setIsSuccessful",
 };

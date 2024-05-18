@@ -13,7 +13,7 @@ import { TbCheck, TbRefresh } from "react-icons/tb";
 
 import { COLORS_SWATCHES } from "../../constants/data";
 import { useGlobalState } from "../../hooks";
-import { Country, SetPagesInErrorPayload, StepperPage } from "../../types";
+import { Country, SetPageInErrorPayload, StepperPage } from "../../types";
 import { returnThemeColors, splitCamelCase } from "../../utils";
 import {
   createAccessibleValueValidationTextElements,
@@ -46,7 +46,7 @@ type AccessibleTextInputPostalAttributes<
       }
     | {
         type: InvalidValueAction;
-        payload: SetPagesInErrorPayload;
+        payload: SetPageInErrorPayload;
       }
   >;
   validValueAction: ValidValueAction;

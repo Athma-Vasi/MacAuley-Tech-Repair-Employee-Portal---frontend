@@ -3,7 +3,7 @@ import {
   PhoneNumber,
   PostalCode,
   Province,
-  SetStepsInErrorPayload,
+  SetPageInErrorPayload,
   StatesUS,
 } from "../../../types";
 import { AddressChangeAction, addressChangeAction } from "./actions";
@@ -30,7 +30,7 @@ const addressChangeReducersMap = new Map<
   [addressChangeAction.setPostalCode, addressChangeReducer_setPostalCode],
   [addressChangeAction.setAcknowledgement, addressChangeReducer_setIsAcknowledged],
   [addressChangeAction.setTriggerFormSubmit, addressChangeReducer_setTriggerFormSubmit],
-  [addressChangeAction.setStepsInError, addressChangeReducer_setStepsInError],
+  [addressChangeAction.setPageInError, addressChangeReducer_setPageInError],
   [addressChangeAction.setIsSubmitting, addressChangeReducer_setIsSubmitting],
   [addressChangeAction.setIsSuccessful, addressChangeReducer_setIsSuccessful],
 ]);
@@ -125,17 +125,17 @@ function addressChangeReducer_setTriggerFormSubmit(
   };
 }
 
-function addressChangeReducer_setStepsInError(
+function addressChangeReducer_setPageInError(
   state: AddressChangeState,
   dispatch: AddressChangeDispatch
 ): AddressChangeState {
-  const { kind, step } = dispatch.payload as SetStepsInErrorPayload;
-  const stepsInError = new Set(state.stepsInError);
-  kind === "add" ? stepsInError.add(step) : stepsInError.delete(step);
+  const { kind, page } = dispatch.payload as SetPageInErrorPayload;
+  const pagesInError = new Set(state.pagesInError);
+  kind === "add" ? pagesInError.add(page) : pagesInError.delete(page);
 
   return {
     ...state,
-    stepsInError,
+    pagesInError,
   };
 }
 

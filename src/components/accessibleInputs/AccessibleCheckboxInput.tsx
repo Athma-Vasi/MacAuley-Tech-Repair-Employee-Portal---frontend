@@ -2,7 +2,7 @@ import { Checkbox, MantineSize, Text } from "@mantine/core";
 import { ChangeEvent, ReactNode, RefObject } from "react";
 
 import { useGlobalState } from "../../hooks";
-import { SetPagesInErrorPayload } from "../../types";
+import { SetPageInErrorPayload } from "../../types";
 import { splitCamelCase } from "../../utils";
 import { createAccessibleCheckboxSelectionsTextElements } from "./utils";
 
@@ -23,7 +23,7 @@ type AccessibleCheckboxInputSingleAttributes<
       }
     | {
         type: InvalidValueAction;
-        payload: SetPagesInErrorPayload;
+        payload: SetPageInErrorPayload;
       }
   >;
   ref?: RefObject<HTMLInputElement> | null;

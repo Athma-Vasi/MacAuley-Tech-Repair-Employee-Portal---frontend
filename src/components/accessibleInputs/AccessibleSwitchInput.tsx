@@ -2,7 +2,7 @@ import { Box, MantineSize, Switch } from "@mantine/core";
 import { ChangeEvent, ReactNode, RefObject } from "react";
 
 import { useGlobalState } from "../../hooks";
-import { SetPagesInErrorPayload } from "../../types";
+import { SetPageInErrorPayload } from "../../types";
 import { splitCamelCase } from "../../utils";
 import { createAccessibleSwitchOnOffTextElements } from "./utils";
 
@@ -26,7 +26,7 @@ type AccessibleSwitchInputAttributes<
       }
     | {
         type: InvalidValueAction;
-        payload: SetPagesInErrorPayload;
+        payload: SetPageInErrorPayload;
       }
   >;
   radius?: MantineSize;

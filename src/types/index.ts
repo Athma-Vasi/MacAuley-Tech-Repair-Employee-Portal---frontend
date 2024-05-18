@@ -244,7 +244,7 @@ type StepperPage = {
   children: Array<StepperChild>;
 };
 
-type SetPagesInErrorPayload = {
+type SetPageInErrorPayload = {
   kind: "add" | "remove";
   page: number;
 };
@@ -272,7 +272,7 @@ export type {
   Province,
   ResourceRoutePaths,
   ScreenshotImageType,
-  SetPagesInErrorPayload,
+  SetPageInErrorPayload,
   StatesUS,
   StepperChild,
   StepperPage,
