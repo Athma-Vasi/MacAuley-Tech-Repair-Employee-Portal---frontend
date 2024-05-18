@@ -8,6 +8,7 @@ import { useGlobalState } from "../../hooks";
 import { StepperPage } from "../../types";
 import { returnThemeColors } from "../../utils";
 import { createAccessibleButtons } from "./utils";
+import { FormReviewStep } from "../formReview/FormReview";
 
 type AccessibleStepperAttributes = {
   allowNextStepsSelect?: boolean;
@@ -90,7 +91,11 @@ function AccessibleStepper({ attributes }: AccessibleStepperProps) {
     themeObject,
   });
 
-  const stepperSteps = pageElements.map((elements, pageIndex) => {
+  const formReviewPage = (
+    <FormReviewStep componentState={componentState} stepperPages={stepperPages} />
+  );
+
+  const stepperSteps = [pageElements, formReviewPage].map((elements, pageIndex) => {
     const description = (
       <Text color={stepsInError[pageIndex] ? redColorShade : grayColorShade}>
         {stepperPages[pageIndex].kind === "review"

@@ -22,7 +22,7 @@ type AccessibleButtonAttributes = {
   label?: ReactNode;
   leftIcon?: ReactNode;
   name: string;
-  onClick: (
+  onClick?: (
     event: MouseEvent<HTMLButtonElement> | PointerEvent<HTMLButtonElement>
   ) => void;
   onKeyDown?: (event: KeyboardEvent<HTMLButtonElement>) => void;

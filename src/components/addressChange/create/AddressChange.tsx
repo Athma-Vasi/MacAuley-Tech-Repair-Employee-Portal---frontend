@@ -1,11 +1,10 @@
-import { Group, Text } from "@mantine/core";
+import { Container, Group, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { MouseEvent, useEffect, useReducer, useRef } from "react";
 import { useErrorBoundary } from "react-error-boundary";
 import { useNavigate } from "react-router-dom";
 
 import { PROVINCES, STATES_US } from "../../../constants/data";
-
 import { useGlobalState, useWrapFetch } from "../../../hooks";
 import {
   Country,
@@ -20,8 +19,8 @@ import { AccessibleSelectInput } from "../../accessibleInputs/AccessibleSelectIn
 import { AccessibleStepper } from "../../accessibleInputs/AccessibleStepper";
 import { AccessibleSwitchInput } from "../../accessibleInputs/AccessibleSwitchInput";
 import { AccessibleTextInput } from "../../accessibleInputs/text/AccessibleTextInput";
-import { FormReview, FormReviewArray } from "../../formReview/FormReview";
-import { FormReviewObject } from "../../formReviewPage/FormReviewPage";
+import { FormReviews, FormReviewStep } from "../../formReview/FormReview";
+import FormReviewPage, { FormReviewObject } from "../../formReviewPage/FormReviewPage";
 import { COUNTRIES_DATA, returnAddressChangeStepperPages } from "../constants";
 import { AddressChangeAction, addressChangeAction } from "./actions";
 import { addressChangeReducer } from "./reducers";
@@ -338,56 +337,11 @@ function AddressChange() {
     </Group>
   );
 
-  // const ADDRESS_CHANGE_FORM_REVIEW: FormReviewArray = {
-  //   "Contact Details": [
-  //     {
-  //       name: "contactNumber",
-  //       value: contactNumber,
-  //       isValueValid:
-  //         ADDRESS_CHANGE_REGEXES["contactNumber"].fullRegex.test(contactNumber),
-  //     },
-  //     {
-  //       name: "country",
-  //       value: country,
-  //       isValueValid: true,
-  //     },
-  //     {
-  //       name: "addressLine",
-  //       value: addressLine,
-  //       isValueValid: ADDRESS_CHANGE_REGEXES["addressLine"].fullRegex.test(addressLine),
-  //     },
-  //     {
-  //       name: "city",
-  //       value: city,
-  //       isValueValid: ADDRESS_CHANGE_REGEXES.city.fullRegex.test(city),
-  //     },
-  //     {
-  //       name: country === "Canada" ? "province" : "state",
-  //       value: country === "Canada" ? province : state,
-  //       isValueValid: true,
-  //     },
-  //     {
-  //       name: "postalCode",
-  //       value: postalCode,
-  //       isValueValid: ADDRESS_CHANGE_REGEXES["postalCode"].fullRegex.test(postalCode),
-  //     },
-  //     {
-  //       name: "acknowledgement",
-  //       value: acknowledgement ? "Yes" : "No",
-  //       isValueValid: acknowledgement,
-  //     },
-  //   ],
-  // };
-
-  // const formReview = (
-  //   <FormReview formReviewObject={ADDRESS_CHANGE_FORM_REVIEW} formName="Address Change" />
-  // );
-
   const stepper = (
     <AccessibleStepper
       attributes={{
         componentState: addressChangeState,
-        pageElements: [addressChangeForm, <Text>Review page</Text>],
+        pageElements: [addressChangeForm],
         stepperPages: ADDRESS_CHANGE_STEPPER_PAGES,
         submitButton,
         title: "Address Change",
@@ -395,7 +349,7 @@ function AddressChange() {
     />
   );
 
-  return stepper;
+  return <Container w={700}>{stepper}</Container>;
 
   //
   //

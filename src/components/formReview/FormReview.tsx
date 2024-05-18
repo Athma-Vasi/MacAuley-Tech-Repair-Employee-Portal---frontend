@@ -1,15 +1,13 @@
 import { Grid, Group, Spoiler, Stack, Text, Title } from "@mantine/core";
+import { ReactNode } from "react";
 import { TbArrowDown, TbArrowUp } from "react-icons/tb";
 
-import { COLORS_SWATCHES } from "../../constants/data";
+import { COLORS_SWATCHES, PROPERTY_DESCRIPTOR } from "../../constants/data";
 import { useGlobalState } from "../../hooks";
 import { returnAccessibleButtonElements } from "../../jsxCreators";
-import {
-  capitalizeAll,
-  replaceLastCommaWithAnd,
-  returnThemeColors,
-  splitCamelCase,
-} from "../../utils";
+import { StepperPage } from "../../types";
+import { replaceLastCommaWithAnd, returnThemeColors, splitCamelCase } from "../../utils";
+import { createAccessibleButtons } from "../accessibleInputs/utils";
 
 type FormReview = {
   name: string;
@@ -17,17 +15,18 @@ type FormReview = {
   isValueValid?: boolean;
 };
 
-type FormReviewArray = Record<
+type FormReviews = Record<
   string, // page name
   Array<FormReview>
 >;
 
 type FormReviewProps = {
-  formReviewObject: FormReviewArray;
-  formName?: string;
+  componentState: Record<string, unknown>;
+  stepperPages: StepperPage[];
+  title?: ReactNode;
 };
 
-function FormReview({ formReviewObject, formName = "Form review" }: FormReviewProps) {
+function FormReviewStep({ componentState, stepperPages, title }: FormReviewProps) {
   const {
     globalState: { themeObject, padding, rowGap },
   } = useGlobalState();
@@ -39,6 +38,8 @@ function FormReview({ formReviewObject, formName = "Form review" }: FormReviewPr
     colorsSwatches: COLORS_SWATCHES,
     themeObject,
   });
+
+  const formReviewObject = returnFormReviewData(stepperPages, componentState);
 
   const displayFormReviewStack = Object.entries(formReviewObject).map(
     ([pageName, pageObjectArr], index) => {
@@ -53,7 +54,9 @@ function FormReview({ formReviewObject, formName = "Form review" }: FormReviewPr
         const { value = isValueValid ? "Yes" : "No" } = pageObject;
 
         const displayInputName = (
-          <Text color={isValueValid ? void 0 : redColorShade}>{capitalizeAll(name)}</Text>
+          <Text color={isValueValid ? void 0 : redColorShade}>
+            {splitCamelCase(name)}
+          </Text>
         );
 
         const rowBackgroundColorLight = index % 2 === 0 ? "#f9f9f9" : "transparent";
@@ -63,17 +66,15 @@ function FormReview({ formReviewObject, formName = "Form review" }: FormReviewPr
             ? rowBackgroundColorDark
             : rowBackgroundColorLight;
 
-        const [showLabelButton, hideLabelButton] = returnAccessibleButtonElements([
+        const [showLabelButton, hideLabelButton] = createAccessibleButtons([
           {
-            buttonLabel: "Show",
-            semanticDescription: "Show button to show the hidden text",
-            semanticName: `button to show ${name} input text`,
+            name: "show",
+            enabledScreenreaderText: "Click to show the hidden text",
             leftIcon: <TbArrowDown />,
           },
           {
-            buttonLabel: "Hide",
-            semanticDescription: "Hide button to hide the shown text",
-            semanticName: `button to hide ${name} input text`,
+            name: "hide",
+            enabledScreenreaderText: "Click to hide the shown text",
             leftIcon: <TbArrowUp />,
           },
         ]);
@@ -84,11 +85,7 @@ function FormReview({ formReviewObject, formName = "Form review" }: FormReviewPr
             showLabel={showLabelButton}
             hideLabel={hideLabelButton}
           >
-            <Text>
-              {Array.isArray(value)
-                ? replaceLastCommaWithAnd(value.join(", "))
-                : value.toString()}
-            </Text>
+            <Text>{value}</Text>
           </Spoiler>
         );
 
@@ -123,11 +120,11 @@ function FormReview({ formReviewObject, formName = "Form review" }: FormReviewPr
     }
   );
 
-  const displayTitle = (
+  const displayTitle = title ? (
     <Group w="100%" position="center">
-      <Title order={4}>{formName}</Title>
+      <Title order={4}>{title}</Title>
     </Group>
-  );
+  ) : null;
 
   const displayFormReview = (
     <Stack w="100%" p={padding} style={{ border: borderColor, borderRadius: 4 }}>
@@ -139,5 +136,43 @@ function FormReview({ formReviewObject, formName = "Form review" }: FormReviewPr
   return displayFormReview;
 }
 
-export { FormReview };
-export type { FormReviewArray };
+function returnFormReviewData<
+  State extends Record<string, unknown> = Record<string, unknown>
+>(stepperPages: StepperPage[], componentState: State) {
+  return stepperPages.reduce<FormReviews>((acc, stepperPage) => {
+    const { description, kind, children } = stepperPage;
+
+    if (kind && kind === "review") {
+      return acc;
+    }
+
+    const formReviews = children.map((child) => {
+      const { name, regexes } = child;
+
+      const stateValue = componentState[name];
+      const value = Array.isArray(stateValue)
+        ? replaceLastCommaWithAnd(stateValue.join(", "))
+        : typeof stateValue === "boolean"
+        ? stateValue
+          ? "Yes"
+          : "No"
+        : stateValue?.toString() ?? "";
+
+      return {
+        name,
+        value,
+        isValueValid: regexes ? regexes.full.test(value) : true,
+      };
+    });
+
+    Object.defineProperty(acc, description, {
+      value: formReviews,
+      ...PROPERTY_DESCRIPTOR,
+    });
+
+    return acc;
+  }, Object.create(null));
+}
+
+export { FormReviewStep };
+export type { FormReviews };

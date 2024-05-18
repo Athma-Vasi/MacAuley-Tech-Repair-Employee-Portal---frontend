@@ -380,7 +380,13 @@ function createAccessibleSwitchOnOffTextElements({
   switchOffTextElement: React.JSX.Element;
 } {
   const {
-    generalColors: { themeColorShade, textColor, grayColorShade },
+    generalColors: {
+      themeColorShade,
+      textColor,
+      grayColorShade,
+      redColorShade,
+      greenColorShade,
+    },
   } = returnThemeColors({
     themeObject,
     colorsSwatches: COLORS_SWATCHES,
@@ -388,7 +394,7 @@ function createAccessibleSwitchOnOffTextElements({
 
   const switchOnIcon =
     theme === "default" ? (
-      <FontAwesomeIcon icon={faCheck} color={themeColorShade} />
+      <FontAwesomeIcon icon={faCheck} color={greenColorShade} />
     ) : null;
 
   const switchOnText = switchOnDescription ?? `${name} is on.`;
@@ -397,7 +403,7 @@ function createAccessibleSwitchOnOffTextElements({
     <Text
       id={`${name}-on`}
       style={{ display: checked ? "block" : "none" }}
-      color={theme === "muted" ? textColor : themeColorShade}
+      color={grayColorShade}
       w="100%"
       aria-live="polite"
     >
@@ -407,7 +413,7 @@ function createAccessibleSwitchOnOffTextElements({
 
   const switchOffIcon =
     theme === "default" ? (
-      <FontAwesomeIcon icon={faInfoCircle} color={grayColorShade} />
+      <FontAwesomeIcon icon={faInfoCircle} color={redColorShade} />
     ) : null;
 
   const switchOffText = switchOffDescription ?? `${name} is off.`;
@@ -416,7 +422,7 @@ function createAccessibleSwitchOnOffTextElements({
     <Text
       id={`${name}-off`}
       style={{ display: !checked ? "block" : "none" }}
-      color={theme === "default" ? textColor : grayColorShade}
+      color={theme === "default" ? redColorShade : grayColorShade}
       w="100%"
       aria-live="polite"
     >
