@@ -73,7 +73,7 @@ type AccessibleTextInputAttributes<
   withAsterisk?: boolean;
 };
 
-type AccessibleTextInputsProps<
+type AccessibleTextInputProps<
   ValidValueAction extends string = string,
   InvalidValueAction extends string = string
 > = {
@@ -83,7 +83,7 @@ type AccessibleTextInputsProps<
 function AccessibleTextInput<
   ValidValueAction extends string = string,
   InvalidValueAction extends string = string
->({ attributes }: AccessibleTextInputsProps<ValidValueAction, InvalidValueAction>) {
+>({ attributes }: AccessibleTextInputProps<ValidValueAction, InvalidValueAction>) {
   const {
     ariaAutoComplete = "none",
     autoComplete = "off",
