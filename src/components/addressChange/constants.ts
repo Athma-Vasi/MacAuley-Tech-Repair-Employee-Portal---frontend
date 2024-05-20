@@ -27,7 +27,7 @@ import {
   CITY_REGEXES,
   CONTACT_NUMBER_REGEXES,
   US_POSTAL_CODE_REGEXES,
-} from "./regexes";
+} from "./create/regexes";
 
 const ADDRESS_CHANGE_ROLE_PATHS: RoleResourceRoutePaths = {
   manager: "actions/company/address-change",

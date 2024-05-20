@@ -1,4 +1,4 @@
-import { Regexes } from "../../constants/regexes";
+import { Regexes } from "../../../constants/regexes";
 
 /**
  * - /^[A-Za-z0-9\s.,#-]{2,75}$/i

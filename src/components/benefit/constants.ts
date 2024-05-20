@@ -24,8 +24,8 @@ import {
 } from "../../utils";
 import { ComponentQueryData } from "../queryBuilder";
 import { DescriptionObjectsArray } from "../wrappers";
+import { PLAN_DESCRIPTION_REGEXES, PLAN_NAME_REGEXES } from "./create/regexes";
 import { BenefitsPlanKind } from "./create/types";
-import { PLAN_DESCRIPTION_REGEXES, PLAN_NAME_REGEXES } from "./regexes";
 
 const CREATE_BENEFIT_ROLE_PATHS: RoleResourceRoutePaths = {
   manager: "actions/company/benefit",

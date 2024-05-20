@@ -1,4 +1,4 @@
-import { Regexes } from "../../constants/regexes";
+import { Regexes } from "../../../constants/regexes";
 
 /**
  * - (?=.*[A-Za-z0-9]) ensures that there is at least one alphanumeric character, preventing the input from consisting entirely of whitespace.
