@@ -7,7 +7,13 @@ import {
   POSTAL_CODE_REGEX_US,
   USERNAME_REGEX,
 } from "../../constants/regex";
-import { Country, ResourceRoutePaths, StepperChild, StepperPage } from "../../types";
+import {
+  Country,
+  ResourceRoutePaths,
+  RoleResourceRoutePaths,
+  StepperChild,
+  StepperPage,
+} from "../../types";
 import {
   returnAddressValidationText,
   returnCityValidationText,
@@ -16,6 +22,14 @@ import {
 } from "../../utils";
 import { ComponentQueryData } from "../queryBuilder";
 import { DescriptionObjectsArray } from "../wrappers";
+
+const ADDRESS_CHANGE_ROLE_PATHS: RoleResourceRoutePaths = {
+  manager: "actions/company/address-change",
+  admin: "actions/general/address-change",
+  employee: "actions/employee/address-change/user",
+};
+
+const ADDRESS_CHANGE_DISPLAY_LOCATION = "/home/company/address-change";
 
 /** this function exists because country is state field ... */
 function returnAddressChangeStepperPages(country: Country): StepperPage[] {
@@ -135,7 +149,7 @@ function returnAddressChangeStepperPages(country: Country): StepperPage[] {
     },
     {
       children: [],
-      description: "Review your information before proceeding",
+      description: "Review contact details before proceeding",
       kind: "review",
     },
   ];
@@ -245,6 +259,8 @@ export {
   ADDRESS_CHANGE_MAX_STEPPER_POSITION,
   ADDRESS_CHANGE_PATHS,
   ADDRESS_CHANGE_QUERY_DATA,
+  ADDRESS_CHANGE_ROLE_PATHS,
   COUNTRIES_DATA,
   returnAddressChangeStepperPages,
+  ADDRESS_CHANGE_DISPLAY_LOCATION,
 };

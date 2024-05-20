@@ -14,13 +14,11 @@ import { AddressChangeAction } from "./actions";
 type AddressChangeSchema = {
   userId: string;
   username: string;
-  action: Action;
-  category: ActionsCompany;
   contactNumber: PhoneNumber;
   addressLine: string;
   city: string;
-  province: Province;
-  state: StatesUS;
+  province: Province | "Not Applicable";
+  state: StatesUS | "Not Applicable";
   postalCode: PostalCode;
   country: Country;
   acknowledgement: boolean;

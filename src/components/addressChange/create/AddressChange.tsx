@@ -1,30 +1,50 @@
 import { Container, Group, Stack, Text } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
-import { MouseEvent, useEffect, useReducer, useRef } from "react";
+import localforage from "localforage";
+import {
+  Dispatch,
+  MouseEvent,
+  MutableRefObject,
+  useEffect,
+  useReducer,
+  useRef,
+} from "react";
 import { useErrorBoundary } from "react-error-boundary";
 import { useNavigate } from "react-router-dom";
 
 import { PROVINCES, STATES_US } from "../../../constants/data";
-import { useFetchInterceptor } from "../../../hooks/useFetchInterceptor";
+import {
+  FetchInterceptor,
+  useFetchInterceptor,
+} from "../../../hooks/useFetchInterceptor";
 import {
   Country,
   Province,
   ResourceRequestServerResponse,
+  ResourceRoutePaths,
+  RoleResourceRoutePaths,
   StatesUS,
   StepperPage,
+  UserRole,
+  UserRoles,
 } from "../../../types";
-import { logState, urlBuilder } from "../../../utils";
+import { formSubmitPOST, logState, urlBuilder } from "../../../utils";
 import { AccessibleButton } from "../../accessibleInputs/AccessibleButton";
 import { AccessibleSelectInput } from "../../accessibleInputs/AccessibleSelectInput";
 import { AccessibleStepper } from "../../accessibleInputs/AccessibleStepper";
 import { AccessibleSwitchInput } from "../../accessibleInputs/AccessibleSwitchInput";
 import { AccessibleTextInput } from "../../accessibleInputs/text/AccessibleTextInput";
-import { NotificationModal } from "../../notificationModal";
-import { COUNTRIES_DATA, returnAddressChangeStepperPages } from "../constants";
+import {
+  ADDRESS_CHANGE_DISPLAY_LOCATION,
+  ADDRESS_CHANGE_PATHS,
+  ADDRESS_CHANGE_ROLE_PATHS,
+  COUNTRIES_DATA,
+  returnAddressChangeStepperPages,
+} from "../constants";
 import { AddressChangeAction, addressChangeAction } from "./actions";
 import { addressChangeReducer } from "./reducers";
 import { initialAddressChangeState } from "./state";
 import { AddressChangeDocument } from "./types";
+import { useAuth } from "../../../hooks";
 
 function AddressChange() {
   const [addressChangeState, addressChangeDispatch] = useReducer(
@@ -54,12 +74,16 @@ function AddressChange() {
     });
   }, [addressChangeState]);
 
+  const {
+    authState: { sessionId, userId, username },
+  } = useAuth();
   const { fetchInterceptor } = useFetchInterceptor();
   const { showBoundary } = useErrorBoundary();
   const navigate = useNavigate();
 
   const fetchAbortControllerRef = useRef<AbortController | null>(null);
   const preFetchAbortControllerRef = useRef<AbortController | null>(null);
+  const isComponentMountedRef = useRef(false);
 
   useEffect(() => {
     fetchAbortControllerRef.current?.abort();
@@ -70,95 +94,56 @@ function AddressChange() {
     preFetchAbortControllerRef.current = new AbortController();
     const preFetchAbortController = preFetchAbortControllerRef.current;
 
-    let isMounted = true;
+    isComponentMountedRef.current = true;
+    let isComponentMounted = isComponentMountedRef.current;
 
-    async function addressChangeFormSubmit() {
-      try {
-        addressChangeDispatch({
-          type: addressChangeAction.setIsSubmitting,
-          payload: true,
-        });
-
-        const url: URL = urlBuilder({
-          path: "actions/company/address-change",
-        });
-
-        const body = JSON.stringify({
-          addressChangeSchema:
-            country === "Canada"
-              ? {
-                  contactNumber,
-                  addressLine,
-                  city,
-                  province,
-                  country,
-                  postalCode,
-                  acknowledgement: acknowledgement,
-                }
-              : {
-                  contactNumber,
-                  addressLine,
-                  city,
-                  state,
-                  country,
-                  postalCode,
-                  acknowledgement: acknowledgement,
-                },
-        });
-
-        const requestInit: RequestInit = {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body,
-        };
-
-        const response: Response = await fetchInterceptor({
-          fetchAbortController,
-          isMounted,
-          preFetchAbortController,
-          requestInit,
-          url,
-        });
-
-        const data: ResourceRequestServerResponse<AddressChangeDocument> =
-          await response.json();
-
-        if (!isMounted) {
-          return;
-        }
-        if (!response.ok) {
-          throw new Error(data?.message ?? "Unknown error. Please try again later.");
-        }
-
-        addressChangeDispatch({
-          type: addressChangeAction.setIsSuccessful,
-          payload: true,
-        });
-        addressChangeDispatch({
-          type: addressChangeAction.setIsSubmitting,
-          payload: false,
-        });
-        addressChangeDispatch({
-          type: addressChangeAction.setTriggerFormSubmit,
-          payload: false,
-        });
-      } catch (error: any) {
-        if (!isMounted || error?.name === "AbortError") {
-          return;
-        }
-
-        showBoundary(error);
-      }
-    }
+    const schema =
+      country === "Canada"
+        ? {
+            contactNumber,
+            addressLine,
+            city,
+            province,
+            country,
+            postalCode,
+            acknowledgement: acknowledgement,
+          }
+        : {
+            contactNumber,
+            addressLine,
+            city,
+            state,
+            country,
+            postalCode,
+            acknowledgement: acknowledgement,
+          };
 
     if (triggerFormSubmit) {
-      addressChangeFormSubmit();
+      formSubmitPOST({
+        dispatch: addressChangeDispatch,
+        fetchAbortController,
+        fetchInterceptor,
+        isComponentMounted,
+        isSubmittingAction: addressChangeAction.setIsSubmitting,
+        isSuccessfulAction: addressChangeAction.setIsSuccessful,
+        navigate,
+        preFetchAbortController,
+        roleResourceRoutePaths: ADDRESS_CHANGE_ROLE_PATHS,
+        schema,
+        schemaName: "addressChangeSchema",
+        sessionId,
+        showBoundary,
+        toLocation: ADDRESS_CHANGE_DISPLAY_LOCATION,
+        userId,
+        username,
+        userRole: "manager",
+      });
     }
 
     return () => {
-      isMounted = false;
-      fetchAbortController?.abort();
+      isComponentMountedRef.current = false;
       preFetchAbortController?.abort();
+      fetchAbortController?.abort();
     };
 
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -216,6 +216,18 @@ type AllowedFileMimeTypes = "image/jpg" | "image/jpeg" | "image/png" | "image/we
 
 type AllowedFileEncodings = "7bit" | "8bit" | "binary" | "base64" | "quoted-printable";
 
+type ErrorLogSchema = {
+  expireAt?: Date;
+  userId: string;
+  username: string;
+  sessionId: string;
+  message: string;
+  stack: string;
+  requestBody: string;
+  status: number;
+  timestamp: string;
+};
+
 type InputType =
   | "date"
   | "time"
@@ -249,56 +261,60 @@ type SetPageInErrorPayload = {
   page: number;
 };
 
+type UserRole = "admin" | "manager" | "employee";
+
+type RoleResourceRoutePaths = Record<UserRole, string>;
+
 export type {
   Action,
   ActionsCompany,
   ActionsGeneral,
   ActionsOutreach,
+  ActionsResourceRequestServerResponse,
   AllowedFileEncodings,
   AllowedFileExtensions,
   AllowedFileMimeTypes,
   ArrayOperators,
+  BreakPoints,
   CanadianPostalCode,
   CheckboxInputData,
+  CheckBoxMultipleData,
   Country,
+  Currency,
   Department,
   DocumentUpdateOperation,
+  ErrorLogSchema,
   FieldOperators,
+  FileUploadDocument,
+  FileUploadSchema,
+  GetQueriedResourceRequestServerResponse,
   InputType,
   JobPosition,
   PhoneNumber,
   PostalCode,
   PreferredPronouns,
   Province,
-  ResourceRoutePaths,
-  ScreenshotImageType,
-  SetPageInErrorPayload,
-  StatesUS,
-  StepperChild,
-  StepperPage,
-  StoreLocation,
-  Urgency,
-  User,
-  UserDocument,
-  UserRoles,
-  UserSchema,
-  USPostalCode,
-};
-
-export type {
-  ActionsResourceRequestServerResponse,
-  BreakPoints,
-  CheckBoxMultipleData,
-  Currency,
-  FileUploadDocument,
-  FileUploadSchema,
-  GetQueriedResourceRequestServerResponse,
   QueryResponseData,
   RadioGroupInputData,
   RequestStatus,
   ResourceRequestServerResponse,
+  ResourceRoutePaths,
+  RoleResourceRoutePaths,
+  ScreenshotImageType,
   SelectInputData,
+  SetPageInErrorPayload,
   SetStepsInErrorPayload,
   SliderInputData,
+  StatesUS,
+  StepperChild,
+  StepperPage,
+  StoreLocation,
   TimeRailway,
+  Urgency,
+  User,
+  UserDocument,
+  UserRole,
+  UserRoles,
+  UserSchema,
+  USPostalCode,
 };

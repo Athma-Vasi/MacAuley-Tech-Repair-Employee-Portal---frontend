@@ -3,9 +3,22 @@ import jwtDecode from "jwt-decode";
 import { v4 as uuidv4 } from "uuid";
 
 import { DecodedToken } from "../components/login/types";
-import { ColorsSwatches, PROPERTY_DESCRIPTOR } from "../constants/data";
+import {
+  ColorsSwatches,
+  ERROR_LOG_ROUTE_PATH,
+  PROPERTY_DESCRIPTOR,
+} from "../constants/data";
 import { ThemeObject } from "../context/globalProvider/types";
-import type { Country, PostalCode, QueryResponseData } from "../types";
+import { FetchInterceptor } from "../hooks/useFetchInterceptor";
+import type {
+  Country,
+  ErrorLogSchema,
+  PostalCode,
+  QueryResponseData,
+  RoleResourceRoutePaths,
+  UserRole,
+} from "../types";
+import { NavigateFunction } from "react-router-dom";
 
 /**
  * contentKind is used to specify the semantic html input label, and is used in the returned validation error string for improved accessibility.
@@ -2501,6 +2514,146 @@ function capitalizeAll(str: string): string {
   return str.replace(/\b\w/g, (char) => char.toUpperCase());
 }
 
+type FormSubmitPOST<
+  IsSubmittingAction extends string = string,
+  IsSuccessfulAction extends string = string
+> = {
+  /** dispatch function from component reducer */
+  dispatch: React.Dispatch<{
+    type: IsSubmittingAction | IsSuccessfulAction;
+    payload: boolean;
+  }>;
+  /** must be defined outside useEffect and inside component */
+  fetchAbortController: AbortController;
+  /** before request, function refreshes tokens and if refreshed, fetches request */
+  fetchInterceptor: FetchInterceptor;
+  /** must be defined outside useEffect and inside component */
+  isComponentMounted: boolean;
+  /** sets component submit state */
+  isSubmittingAction: IsSubmittingAction;
+  /** sets component success state */
+  isSuccessfulAction: IsSuccessfulAction;
+  /** from react-router-dom */
+  navigate?: NavigateFunction;
+  /** must be defined outside useEffect and inside component */
+  preFetchAbortController: AbortController;
+  /** default : JSON.stringify({ [schemaName]: schema }) */
+  requestBody?: string;
+  /** backend resource route paths for each role */
+  roleResourceRoutePaths: RoleResourceRoutePaths;
+  /** must correspond to backend schema model */
+  schema: Record<string, unknown>;
+  /** must correspond to name defined in backend POST request type. typically '${component}Schema' */
+  schemaName: string;
+  /** from auth state */
+  sessionId: string;
+  /** from react-error-boundary  */
+  showBoundary: (error: any) => void;
+  /** location to navigate */
+  toLocation?: string;
+  /** from auth state */
+  userId: string;
+  /** from auth state */
+  username: string;
+  /** user role found in auth state */
+  userRole: UserRole;
+};
+
+async function formSubmitPOST<
+  IsSubmittingAction extends string = string,
+  IsSuccessfulAction extends string = string
+>({
+  dispatch,
+  fetchAbortController,
+  fetchInterceptor,
+  isComponentMounted,
+  isSubmittingAction,
+  isSuccessfulAction,
+  navigate,
+  preFetchAbortController,
+  requestBody,
+  roleResourceRoutePaths,
+  schema,
+  schemaName,
+  sessionId,
+  showBoundary,
+  toLocation = "/",
+  userId,
+  username,
+  userRole,
+}: FormSubmitPOST<IsSubmittingAction, IsSuccessfulAction>): Promise<void> {
+  try {
+    dispatch({
+      type: isSubmittingAction,
+      payload: true,
+    });
+
+    const url: URL = urlBuilder({ path: roleResourceRoutePaths[userRole] });
+
+    const body =
+      requestBody ??
+      JSON.stringify({
+        [schemaName]: schema,
+      });
+
+    const requestInit: RequestInit = {
+      body,
+      headers: { "Content-Type": "application/json" },
+      method: "POST",
+    };
+
+    const response: Response = await fetchInterceptor({
+      fetchAbortController,
+      preFetchAbortController,
+      requestInit,
+      url,
+    });
+
+    if (!isComponentMounted) {
+      return;
+    }
+
+    if (!response.ok) {
+      const { status, statusText } = response;
+
+      const errorLogSchema: ErrorLogSchema = {
+        message: statusText,
+        requestBody: body,
+        sessionId,
+        stack: "",
+        status,
+        timestamp: new Date().toISOString(),
+        userId,
+        username,
+      };
+
+      return Promise.reject(errorLogSchema);
+
+      // if (status === 401) {
+      // throw new Error("Unauthorized");
+      // }
+      // throw new Error(`${status} : ${statusText}`);
+    }
+
+    dispatch({
+      type: isSuccessfulAction,
+      payload: true,
+    });
+
+    dispatch({
+      type: isSubmittingAction,
+      payload: false,
+    });
+  } catch (error: any) {
+    if (!isComponentMounted || error?.name === "AbortError") {
+      return;
+    }
+
+    showBoundary(error);
+  } finally {
+    navigate?.(toLocation);
+  }
+}
 
 export {
   addCommaSeparator,
@@ -2510,6 +2663,7 @@ export {
   filterFieldsFromObject,
   flattenObjectIterative,
   formatDate,
+  formSubmitPOST,
   groupByField,
   groupQueryResponse,
   isAgeOver18,

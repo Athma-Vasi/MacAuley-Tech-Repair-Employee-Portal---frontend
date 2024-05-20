@@ -5,6 +5,15 @@ import { REFRESH_URL } from "../components/portalHeader/constants";
 import { authAction } from "../context/authProvider";
 import { useAuth } from "./useAuth";
 
+type FetchInterceptorInput = {
+  fetchAbortController: AbortController | null;
+  preFetchAbortController: AbortController | null;
+  requestInit: RequestInit;
+  url: URL | string;
+};
+
+type FetchInterceptor = (input: FetchInterceptorInput) => Promise<Response>;
+
 /**
  * - inspired by axios interceptors, the fetchInterceptor fn will check access token expiration before calling fetch
  * - if the access token is expired, it will attempt to retrieve new access & refresh tokens and call fetch with the new access token
@@ -21,13 +30,11 @@ function useFetchInterceptor() {
 
   async function fetchInterceptor({
     fetchAbortController,
-    isMounted,
     preFetchAbortController,
     requestInit,
     url,
   }: {
     fetchAbortController: AbortController | null;
-    isMounted: boolean;
     preFetchAbortController: AbortController | null;
     requestInit: RequestInit;
     url: URL | string;
@@ -36,15 +43,21 @@ function useFetchInterceptor() {
       let newAccessToken = "";
       if (isAccessTokenExpired) {
         newAccessToken =
-          (await fetchAccessAndRefreshTokens(isMounted, preFetchAbortController)) ?? "";
+          (await fetchAccessAndRefreshTokens(preFetchAbortController)) ?? "";
       }
 
-      if (!isMounted || !fetchAbortController || !preFetchAbortController) {
-        return new Response(null, { status: 400 });
+      if (!fetchAbortController || !preFetchAbortController) {
+        return new Response(null, {
+          status: 400,
+          statusText: "Bad Request. Controllers not found",
+        });
       }
 
-      if (!newAccessToken.length) {
-        throw new Error("Unable to refresh tokens. Please try again later.");
+      if (!newAccessToken) {
+        return new Response(null, { status: 401, statusText: "Unauthorized" });
+        // return Promise.reject(
+        //   new Response(null, { status: 401, statusText: "Unauthorized" })
+        // );
       }
 
       const requestInitWithNewAccessToken: RequestInit = {
@@ -58,21 +71,21 @@ function useFetchInterceptor() {
 
       const request = new Request(url.toString(), {
         ...requestInitWithNewAccessToken,
-        signal: fetchAbortController?.signal,
       });
-      const response = fetch(request);
+
+      const response = await fetch(request);
+
       return response;
     } catch (error: any) {
-      throw new Error("Unable to process request. Please try again later.");
+      return new Response(null, { status: 500, statusText: "Internal Server Error" });
     }
   }
 
   async function fetchAccessAndRefreshTokens(
-    isMounted: boolean,
     preFetchRequestAbortController: AbortController | null
-  ): Promise<string> {
+  ): Promise<string | undefined> {
     try {
-      if (!isMounted || !preFetchRequestAbortController) {
+      if (!preFetchRequestAbortController) {
         return Promise.resolve("");
       }
 
@@ -123,3 +136,4 @@ function useFetchInterceptor() {
 }
 
 export { useFetchInterceptor };
+export type { FetchInterceptor, FetchInterceptorInput };
