@@ -81,13 +81,7 @@ const US_POSTAL_CODE_REGEXES = {
   ],
 } as Regexes;
 
-const ACKNOWLEDGEMENT_REGEXES = {
-  full: /^(true)$/,
-  partials: [[/^(true)$/, "Must acknowledge that the information entered is correct."]],
-} as Regexes;
-
 export {
-  ACKNOWLEDGEMENT_REGEXES,
   ADDRESS_LINE_REGEXES,
   CANADIAN_POSTAL_CODE_REGEXES,
   CITY_REGEXES,

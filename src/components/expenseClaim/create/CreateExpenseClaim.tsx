@@ -1,117 +1,125 @@
-import { Group, Title, Tooltip } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
-import { InvalidTokenError } from "jwt-decode";
-import { ChangeEvent, MouseEvent, useEffect, useReducer } from "react";
+import { Stack, Text } from "@mantine/core";
+import { useEffect, useReducer, useRef } from "react";
 import { useErrorBoundary } from "react-error-boundary";
-import {
-  TbCurrencyDollar,
-  TbCurrencyEuro,
-  TbCurrencyPound,
-  TbCurrencyRenminbi,
-  TbCurrencyYen,
-  TbUpload,
-} from "react-icons/tb";
-import { useNavigate } from "react-router-dom";
 
-import { COLORS_SWATCHES } from "../../../constants/data";
-import {
-  DATE_NEAR_PAST_REGEX,
-  GRAMMAR_TEXTAREA_INPUT_REGEX,
-  MONEY_REGEX,
-} from "../../../constants/regex";
-import { globalAction } from "../../../context/globalProvider/state";
-import { useGlobalState, useWrapFetch } from "../../../hooks";
-import {
-  AccessibleErrorValidTextElements,
-  AccessibleSelectedDeselectedTextElements,
-  returnAccessibleButtonElements,
-  returnAccessibleCheckboxSingleInputElements,
-  returnAccessibleDateTimeElements,
-  returnAccessibleSelectInputElements,
-  returnAccessibleTextAreaInputElements,
-  returnAccessibleTextInputElements,
-} from "../../../jsxCreators";
-import type { Currency, ResourceRequestServerResponse } from "../../../types";
-import {
-  logState,
-  returnDateNearPastValidationText,
-  returnFloatAmountValidationText,
-  returnGrammarValidationText,
-  returnThemeColors,
-  urlBuilder,
-} from "../../../utils";
-import { CURRENCY_DATA } from "../../benefit/constants";
-import FormReviewPage, {
-  FormReviewObjectArray,
-} from "../../formReviewPage/FormReviewPage";
-import { ImageUpload } from "../../imageUpload";
-import { NotificationModal } from "../../notificationModal";
-import {
-  AccessibleButtonCreatorInfo,
-  AccessibleCheckboxSingleInputCreatorInfo,
-  AccessibleDateTimeInputCreatorInfo,
-  AccessibleSelectInputCreatorInfo,
-  AccessibleTextAreaInputCreatorInfo,
-  AccessibleTextInputCreatorInfo,
-  FormLayoutWrapper,
-  StepperWrapper,
-} from "../../wrappers";
-import {
-  EXPENSE_CLAIM_DESCRIPTION_OBJECTS,
-  EXPENSE_CLAIM_KIND_DATA,
-  EXPENSE_CLAIM_MAX_IMG_AMOUNT,
-  EXPENSE_CLAIM_MAX_IMG_SIZE,
-  EXPENSE_CLAIM_MAX_STEPPER_POSITION,
-} from "../constants";
-import {
-  createExpenseClaimAction,
-  createExpenseClaimReducer,
-  initialCreateExpenseClaimState,
-} from "./state";
-import type { ExpenseClaimDocument, ExpenseClaimKind } from "./types";
+import { useAuth } from "../../../hooks";
+
+import { logState } from "../../../utils";
+
+import { useFetchInterceptor } from "../../../hooks/useFetchInterceptor";
+import { createExpenseClaimReducer } from "./reducers";
+import { initialCreateExpenseClaimState } from "./state";
 
 function CreateExpenseClaim() {
   const [createExpenseClaimState, createExpenseClaimDispatch] = useReducer(
     createExpenseClaimReducer,
     initialCreateExpenseClaimState
   );
+
   const {
-    expenseClaimAmount,
-    isValidExpenseClaimAmount,
-    isExpenseClaimAmountFocused,
-
-    expenseClaimKind,
-    expenseClaimCurrency,
-
-    expenseClaimDate,
-    isValidExpenseClaimDate,
-    isExpenseClaimDateFocused,
-
-    expenseClaimDescription,
-    isValidExpenseClaimDescription,
-    isExpenseClaimDescriptionFocused,
-
-    additionalComments,
-    isValidAdditionalComments,
-    isAdditionalCommentsFocused,
     acknowledgement,
-
-    imgFormDataArray,
+    additionalComments,
     areImagesValid,
-    triggerFormSubmit,
-
-    currentStepperPosition,
-    stepsInError,
-
+    expenseClaimAmount,
+    expenseClaimCurrency,
+    expenseClaimDate,
+    expenseClaimDescription,
+    expenseClaimKind,
+    files,
     isSubmitting,
-    submitMessage,
     isSuccessful,
-    successMessage,
-    isLoading,
-    loadingMessage,
+    pagesInError,
+    triggerFormSubmit,
   } = createExpenseClaimState;
 
   const {
+    authState: { sessionId, userId, username },
+  } = useAuth();
+  const { fetchInterceptor } = useFetchInterceptor();
+  const { showBoundary } = useErrorBoundary();
+
+  const fetchAbortControllerRef = useRef<AbortController | null>(null);
+  const preFetchAbortControllerRef = useRef<AbortController | null>(null);
+  const isComponentMountedRef = useRef(false);
+
+  useEffect(() => {
+    fetchAbortControllerRef.current?.abort();
+    fetchAbortControllerRef.current = new AbortController();
+    const fetchAbortController = fetchAbortControllerRef.current;
+
+    preFetchAbortControllerRef.current?.abort();
+    preFetchAbortControllerRef.current = new AbortController();
+    const preFetchAbortController = preFetchAbortControllerRef.current;
+
+    isComponentMountedRef.current = true;
+    let isComponentMounted = isComponentMountedRef.current;
+
+    // if (triggerFormSubmit) {
+    //   formSubmitPOST({
+    //     dispatch: createExpenseClaimDispatch,
+    //     fetchAbortController,
+    //     fetchInterceptor,
+    //     isComponentMounted,
+    //     isSubmittingAction: createExpenseClaimAction.setIsSubmitting,
+    //     isSuccessfulAction: createExpenseClaimAction.setIsSuccessful,
+    //     preFetchAbortController,
+    //     roleResourceRoutePaths: CREATE_BENEFIT_ROLE_PATHS,
+    //     schema: benefitsSchema,
+    //     schemaName: "createExpenseClaimSchema",
+    //     sessionId,
+    //     showBoundary,
+    //     userId,
+    //     username,
+    //     userRole: "manager",
+    //   });
+    // }
+
+    return () => {
+      isComponentMountedRef.current = false;
+      preFetchAbortController?.abort();
+      fetchAbortController?.abort();
+    };
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [triggerFormSubmit]);
+
+  useEffect(() => {
+    logState({
+      state: createExpenseClaimState,
+      groupLabel: "Create ExpenseClaim State",
+    });
+  }, [createExpenseClaimState]);
+
+  if (isSubmitting) {
+    const submittingState = (
+      <Stack>
+        <Text size="md">Submitting benefit! Please wait...</Text>
+      </Stack>
+    );
+
+    return submittingState;
+  }
+
+  if (isSuccessful) {
+    const successfulState = (
+      <Stack>
+        <Text size="md">ExpenseClaim submitted successfully!</Text>
+      </Stack>
+    );
+
+    return successfulState;
+  }
+
+  // const CREATE_BENEFIT_STEPPER_PAGES: StepperPage[] =
+  //   returnCreateExpenseClaimStepperPages();
+
+  return <></>;
+}
+
+export default CreateExpenseClaim;
+
+/**
+ * const {
     globalState: { themeObject },
     globalDispatch,
   } = useGlobalState();
@@ -144,12 +152,12 @@ function CreateExpenseClaim() {
       });
       openSubmitSuccessNotificationModal();
 
-      if (imgFormDataArray.length === 0) {
+      if (files.length === 0) {
         return;
       }
 
       await Promise.all(
-        imgFormDataArray.map(async (formData) => {
+        files.map(async (formData) => {
           const fileUploadUrl: URL = urlBuilder({
             path: "file-upload",
           });
@@ -366,7 +374,7 @@ function CreateExpenseClaim() {
       });
     }
 
-    if (triggerFormSubmit && imgFormDataArray.length > 0) {
+    if (triggerFormSubmit && files.length > 0) {
       imagesUploadRequest();
     }
 
@@ -441,7 +449,7 @@ function CreateExpenseClaim() {
     const isStepInError = areRequiredInputsInError || isOptionalInputInError;
 
     createExpenseClaimDispatch({
-      type: createExpenseClaimAction.setStepsInError,
+      type: createExpenseClaimAction.setPageInError,
       payload: {
         kind: isStepInError ? "add" : "delete",
         step: 0,
@@ -459,16 +467,16 @@ function CreateExpenseClaim() {
 
   // update stepper wrapper state on every change
   useEffect(() => {
-    const isStepInError = !areImagesValid || imgFormDataArray.length === 0;
+    const isStepInError = !areImagesValid || files.length === 0;
 
     createExpenseClaimDispatch({
-      type: createExpenseClaimAction.setStepsInError,
+      type: createExpenseClaimAction.setPageInError,
       payload: {
         kind: isStepInError ? "add" : "delete",
         step: 1,
       },
     });
-  }, [areImagesValid, imgFormDataArray]);
+  }, [areImagesValid, files]);
 
   // following are the accessible text elements for screen readers to read out based on the state of the input
   const [expenseClaimAmountInputErrorText, expenseClaimAmountInputValidText] =
@@ -734,7 +742,7 @@ function CreateExpenseClaim() {
       });
     },
     // ensures form submit happens only once
-    buttonDisabled: stepsInError.size > 0 || triggerFormSubmit,
+    buttonDisabled: pagesInError.size > 0 || triggerFormSubmit,
   };
 
   const [createdExpenseClaimAmountTextInput] = returnAccessibleTextInputElements([
@@ -767,7 +775,7 @@ function CreateExpenseClaim() {
     currentStepperPosition === EXPENSE_CLAIM_MAX_STEPPER_POSITION ? (
       <Tooltip
         label={
-          stepsInError.size > 0
+          pagesInError.size > 0
             ? "Please fix errors before submitting form."
             : "Submit expense claim form"
         }
@@ -814,8 +822,8 @@ function CreateExpenseClaim() {
     "Upload Receipts": [
       {
         inputName: "Receipts",
-        inputValue: stepsInError.has(1) ? "Error" : "Valid",
-        isInputValueValid: !stepsInError.has(1),
+        inputValue: pagesInError.has(1) ? "Error" : "Valid",
+        isInputValueValid: !pagesInError.has(1),
       },
     ],
   };
@@ -880,7 +888,7 @@ function CreateExpenseClaim() {
       maxStepperPosition={EXPENSE_CLAIM_MAX_STEPPER_POSITION}
       parentComponentDispatch={createExpenseClaimDispatch}
       setCurrentStepperPosition={createExpenseClaimAction.setCurrentStepperPosition}
-      stepsInError={stepsInError}
+      pagesInError={pagesInError}
     >
       {displaySubmitSuccessNotificationModal}
       {displayExpenseClaimForm}
@@ -888,6 +896,5 @@ function CreateExpenseClaim() {
   );
 
   return displayExpenseClaimComponent;
-}
 
-export default CreateExpenseClaim;
+ */

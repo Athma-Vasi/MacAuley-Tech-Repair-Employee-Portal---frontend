@@ -230,14 +230,15 @@ type ErrorLogSchema = {
 };
 
 type InputType =
-  | "date"
-  | "time"
-  | "number"
-  | "select"
-  | "text"
   | "boolean"
   | "checkbox"
-  | "switch";
+  | "date"
+  | "file"
+  | "number"
+  | "select"
+  | "switch"
+  | "text"
+  | "time";
 
 type StepperChild = {
   inputType: InputType;

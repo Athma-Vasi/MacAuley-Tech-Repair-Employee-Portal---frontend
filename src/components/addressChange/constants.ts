@@ -5,6 +5,7 @@ import {
   DATE_FULL_RANGE_REGEX,
   USERNAME_REGEX,
 } from "../../constants/regex";
+import { ACKNOWLEDGEMENT_REGEXES } from "../../constants/regexes";
 import {
   Country,
   ResourceRoutePaths,
@@ -21,7 +22,6 @@ import {
 import { ComponentQueryData } from "../queryBuilder";
 import { DescriptionObjectsArray } from "../wrappers";
 import {
-  ACKNOWLEDGEMENT_REGEXES,
   ADDRESS_LINE_REGEXES,
   CANADIAN_POSTAL_CODE_REGEXES,
   CITY_REGEXES,
@@ -88,7 +88,7 @@ function returnAddressChangeStepperPages(country: Country): StepperPage[] {
         };
 
   const acknowledgement: StepperChild = {
-    inputType: "select",
+    inputType: "checkbox",
     name: "acknowledgement",
     regexes: ACKNOWLEDGEMENT_REGEXES,
   };

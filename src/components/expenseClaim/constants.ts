@@ -6,7 +6,13 @@ import {
   MONEY_REGEX,
   USERNAME_REGEX,
 } from "../../constants/regex";
-import { ResourceRoutePaths } from "../../types";
+import {
+  ACKNOWLEDGEMENT_REGEXES,
+  DATE_NEAR_PAST_REGEXES,
+  MONEY_REGEXES,
+  TEXT_AREA_INPUT_REGEXES,
+} from "../../constants/regexes";
+import { ResourceRoutePaths, RoleResourceRoutePaths, StepperChild } from "../../types";
 import {
   returnDateFullRangeValidationText,
   returnDateNearPastValidationText,
@@ -17,6 +23,80 @@ import {
 import { CURRENCY_DATA } from "../benefit/constants";
 import { ComponentQueryData } from "../queryBuilder";
 import { DescriptionObjectsArray } from "../wrappers";
+import { ExpenseClaimKind } from "./create/types";
+
+const CREATE_EXPENSE_CLAIM_ROLE_PATHS: RoleResourceRoutePaths = {
+  manager: "actions/company/expense-claim",
+  admin: "actions/company/expense-claim",
+  employee: "actions/company/expense-claim/user",
+};
+
+function returnExpenseClaimStepperPages() {
+  /**
+   * type CreateExpenseClaimState = {
+  acknowledgement: boolean;
+  additionalComments: string;
+  areImagesValid: boolean;
+  expenseClaimAmount: string;
+  expenseClaimCurrency: Currency;
+  expenseClaimDate: string;
+  expenseClaimDescription: string;
+  expenseClaimKind: ExpenseClaimKind;
+  files: FormData[];
+  isSubmitting: boolean;
+  isSuccessful: boolean;
+  pagesInError: Set<number>;
+  triggerFormSubmit: boolean;
+};
+   */
+
+  const acknowledgementSwitchInput: StepperChild = {
+    inputType: "checkbox",
+    name: "acknowledgement",
+    regexes: ACKNOWLEDGEMENT_REGEXES,
+  };
+
+  const additionalCommentsTextInput: StepperChild = {
+    inputType: "text",
+    name: "additionalComments",
+    regexes: TEXT_AREA_INPUT_REGEXES,
+  };
+
+  const expenseClaimAmountInput: StepperChild = {
+    inputType: "text",
+    name: "expenseClaimAmount",
+    regexes: MONEY_REGEXES,
+  };
+
+  const expenseClaimCurrencyInput: StepperChild = {
+    inputType: "select",
+    name: "expenseClaimCurrency",
+    selectInputData: CURRENCY_DATA,
+  };
+
+  const expenseClaimDateInput: StepperChild = {
+    inputType: "date",
+    name: "expenseClaimDate",
+    regexes: DATE_NEAR_PAST_REGEXES,
+  };
+
+  const expenseClaimDescriptionInput: StepperChild = {
+    inputType: "text",
+    name: "expenseClaimDescription",
+    regexes: TEXT_AREA_INPUT_REGEXES,
+  };
+
+  const expenseClaimKindInput: StepperChild = {
+    inputType: "select",
+    name: "expenseClaimKind",
+    selectInputData: EXPENSE_CLAIM_KIND_DATA,
+  };
+
+  const imgFormDataArrayInput: StepperChild = {
+    inputType: "file",
+    name: "files",
+  };
+}
 
 const EXPENSE_CLAIM_DESCRIPTION_OBJECTS: DescriptionObjectsArray = [
   {
@@ -36,17 +116,17 @@ const EXPENSE_CLAIM_DESCRIPTION_OBJECTS: DescriptionObjectsArray = [
 
 const EXPENSE_CLAIM_MAX_STEPPER_POSITION = 3;
 
-const EXPENSE_CLAIM_KIND_DATA = [
-  "Travel and Accommodation",
-  "Equipment and Supplies",
-  "Communication and Utilities",
-  "Training and Certifications",
-  "Software and Licenses",
-  "Marketing and Advertising",
-  "Insurance",
-  "Rent and Leasing",
-  "Legal and Professional Fees",
+const EXPENSE_CLAIM_KIND_DATA: ExpenseClaimKind[] = [
+  "Travel and Accomodation",
   "Miscellaneous",
+  "Rent and Leasing",
+  "Software and Licenses",
+  "Training and Certifications",
+  "Communication and Utilities",
+  "Equipment and Supplies",
+  "Insurance",
+  "Legal and Professional Fees",
+  "Marketing and Advertising",
 ];
 
 const EXPENSE_CLAIM_MAX_IMG_AMOUNT = 3;
