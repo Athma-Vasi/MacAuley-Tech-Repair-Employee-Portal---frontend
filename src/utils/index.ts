@@ -2627,6 +2627,9 @@ async function formSubmitPOST<
         username,
       };
 
+      console.log("errorLogSchema inside try", errorLogSchema);
+
+      // throw new Error(JSON.stringify(errorLogSchema));
       return Promise.reject(errorLogSchema);
 
       // if (status === 401) {
@@ -2645,6 +2648,8 @@ async function formSubmitPOST<
       payload: false,
     });
   } catch (error: any) {
+    console.log("error inside catch", error);
+
     if (!isComponentMounted || error?.name === "AbortError") {
       return;
     }

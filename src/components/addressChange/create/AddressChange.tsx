@@ -1,33 +1,13 @@
 import { Container, Group, Stack, Text } from "@mantine/core";
-import localforage from "localforage";
-import {
-  Dispatch,
-  MouseEvent,
-  MutableRefObject,
-  useEffect,
-  useReducer,
-  useRef,
-} from "react";
+import { MouseEvent, useEffect, useReducer, useRef } from "react";
 import { useErrorBoundary } from "react-error-boundary";
 import { useNavigate } from "react-router-dom";
 
 import { PROVINCES, STATES_US } from "../../../constants/data";
-import {
-  FetchInterceptor,
-  useFetchInterceptor,
-} from "../../../hooks/useFetchInterceptor";
-import {
-  Country,
-  Province,
-  ResourceRequestServerResponse,
-  ResourceRoutePaths,
-  RoleResourceRoutePaths,
-  StatesUS,
-  StepperPage,
-  UserRole,
-  UserRoles,
-} from "../../../types";
-import { formSubmitPOST, logState, urlBuilder } from "../../../utils";
+import { useAuth } from "../../../hooks";
+import { useFetchInterceptor } from "../../../hooks/useFetchInterceptor";
+import { Country, Province, StatesUS, StepperPage } from "../../../types";
+import { formSubmitPOST, logState } from "../../../utils";
 import { AccessibleButton } from "../../accessibleInputs/AccessibleButton";
 import { AccessibleSelectInput } from "../../accessibleInputs/AccessibleSelectInput";
 import { AccessibleStepper } from "../../accessibleInputs/AccessibleStepper";
@@ -35,7 +15,6 @@ import { AccessibleSwitchInput } from "../../accessibleInputs/AccessibleSwitchIn
 import { AccessibleTextInput } from "../../accessibleInputs/text/AccessibleTextInput";
 import {
   ADDRESS_CHANGE_DISPLAY_LOCATION,
-  ADDRESS_CHANGE_PATHS,
   ADDRESS_CHANGE_ROLE_PATHS,
   COUNTRIES_DATA,
   returnAddressChangeStepperPages,
@@ -43,8 +22,6 @@ import {
 import { AddressChangeAction, addressChangeAction } from "./actions";
 import { addressChangeReducer } from "./reducers";
 import { initialAddressChangeState } from "./state";
-import { AddressChangeDocument } from "./types";
-import { useAuth } from "../../../hooks";
 
 function AddressChange() {
   const [addressChangeState, addressChangeDispatch] = useReducer(
@@ -149,32 +126,32 @@ function AddressChange() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [triggerFormSubmit]);
 
-  useEffect(() => {
-    if (isSuccessful) {
-      setTimeout(() => {
-        navigate("/home/company/address-change");
-      }, 3000);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isSuccessful]);
-
-  const submittingState = (
-    <Stack>
-      <Text size="md">Submitting address changes! Please wait...</Text>
-    </Stack>
-  );
+  // useEffect(() => {
+  //   if (isSuccessful) {
+  //     setTimeout(() => {
+  //       navigate("/home/company/address-change");
+  //     }, 3000);
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [isSuccessful]);
 
   if (isSubmitting) {
+    const submittingState = (
+      <Stack>
+        <Text size="md">Submitting address changes! Please wait...</Text>
+      </Stack>
+    );
+
     return submittingState;
   }
 
-  const successfulState = (
-    <Stack>
-      <Text size="md">Address changes submitted successfully!</Text>
-    </Stack>
-  );
-
   if (isSuccessful) {
+    const successfulState = (
+      <Stack>
+        <Text size="md">Address changes submitted successfully!</Text>
+      </Stack>
+    );
+
     return successfulState;
   }
 
