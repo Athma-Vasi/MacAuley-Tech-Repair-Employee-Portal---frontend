@@ -11,7 +11,7 @@ import {
   returnGrammarValidationText,
   returnSerialIdValidationText,
 } from "../../utils";
-import { CURRENCY_DATA } from "../benefits/constants";
+import { CURRENCY_DATA } from "../benefit/constants";
 import { PRODUCT_CATEGORIES } from "../dashboard/constants";
 import { ComponentQueryData } from "../queryBuilder";
 

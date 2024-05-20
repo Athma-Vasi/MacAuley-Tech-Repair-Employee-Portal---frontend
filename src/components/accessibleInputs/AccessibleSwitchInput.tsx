@@ -34,6 +34,7 @@ type AccessibleSwitchInputAttributes<
   required?: boolean;
   size?: MantineSize;
   page?: number;
+  preventErrorStateWhenOff?: boolean;
   /** Will be added to end of `${name} is off.` */
   switchOffDescription?: string;
   /** Will be added to end of `${name} is on.` */
@@ -65,6 +66,7 @@ function AccessibleSwitchInput<
     offLabel,
     onLabel,
     parentDispatch,
+    preventErrorStateWhenOff = false,
     radius = "lg",
     ref = null,
     required = false,
@@ -103,7 +105,13 @@ function AccessibleSwitchInput<
               `${name}-off`
         }
         checked={checked}
-        description={checked ? switchOnTextElement : switchOffTextElement}
+        description={
+          preventErrorStateWhenOff
+            ? ""
+            : checked
+            ? switchOnTextElement
+            : switchOffTextElement
+        }
         disabled={disabled}
         label={label}
         labelPosition={labelPosition}
@@ -119,13 +127,15 @@ function AccessibleSwitchInput<
             payload: checked,
           });
 
-          parentDispatch({
-            action: invalidValueAction,
-            payload: {
-              kind: checked ? "delete" : "add",
-              page,
-            },
-          });
+          if (preventErrorStateWhenOff) {
+            parentDispatch({
+              action: invalidValueAction,
+              payload: {
+                kind: checked ? "delete" : "add",
+                page,
+              },
+            });
+          }
 
           onChange?.(event);
         }}

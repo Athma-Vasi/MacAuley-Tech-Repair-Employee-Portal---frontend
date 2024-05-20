@@ -1,117 +1,304 @@
-import { Group, Text, Title, Tooltip } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
-import { InvalidTokenError } from "jwt-decode";
-import { ChangeEvent, MouseEvent, useEffect, useMemo, useReducer, useRef } from "react";
+import { Container, Group, Stack, Text } from "@mantine/core";
+import { MouseEvent, useEffect, useReducer, useRef } from "react";
 import { useErrorBoundary } from "react-error-boundary";
-import {
-  TbCurrencyDollar,
-  TbCurrencyEuro,
-  TbCurrencyPound,
-  TbCurrencyRenminbi,
-  TbCurrencyYen,
-  TbUpload,
-} from "react-icons/tb";
-import { useNavigate } from "react-router-dom";
 
-import { COLORS_SWATCHES } from "../../../constants/data";
-import { DATE_REGEX, MONEY_REGEX, USERNAME_REGEX } from "../../../constants/regex";
-import { globalAction } from "../../../context/globalProvider/state";
-import { useGlobalState, useWrapFetch } from "../../../hooks";
-import {
-  AccessibleErrorValidTextElements,
-  AccessibleSelectedDeselectedTextElements,
-  returnAccessibleButtonElements,
-  returnAccessibleCheckboxSingleInputElements,
-  returnAccessibleDateTimeElements,
-  returnAccessibleSelectInputElements,
-  returnAccessibleTextAreaInputElements,
-  returnAccessibleTextInputElements,
-} from "../../../jsxCreators";
-import { ResourceRequestServerResponse } from "../../../types";
-import {
-  returnDateValidationText,
-  returnFloatAmountValidationText,
-  returnGrammarValidationText,
-  returnThemeColors,
-  returnUsernameRegexValidationText,
-  urlBuilder,
-} from "../../../utils";
-import FormReviewPage, {
-  FormReviewObjectArray,
-} from "../../formReviewPage/FormReviewPage";
-import { NotificationModal } from "../../notificationModal";
-import {
-  AccessibleButtonCreatorInfo,
-  AccessibleCheckboxSingleInputCreatorInfo,
-  AccessibleDateTimeInputCreatorInfo,
-  AccessibleSelectInputCreatorInfo,
-  AccessibleTextAreaInputCreatorInfo,
-  AccessibleTextInputCreatorInfo,
-  FormLayoutWrapper,
-  StepperWrapper,
-} from "../../wrappers";
+import { useAuth } from "../../../hooks";
+import { useFetchInterceptor } from "../../../hooks/useFetchInterceptor";
+import { StepperPage } from "../../../types";
+import { formSubmitPOST, logState } from "../../../utils";
+import { AccessibleButton } from "../../accessibleInputs/AccessibleButton";
+import { AccessibleDateTimeInput } from "../../accessibleInputs/AccessibleDateTimeInput";
+import { AccessibleSelectInput } from "../../accessibleInputs/AccessibleSelectInput";
+import { AccessibleStepper } from "../../accessibleInputs/AccessibleStepper";
+import { AccessibleSwitchInput } from "../../accessibleInputs/AccessibleSwitchInput";
+import { AccessibleTextAreaInput } from "../../accessibleInputs/AccessibleTextAreaInput";
+import { AccessibleTextInput } from "../../accessibleInputs/text/AccessibleTextInput";
 import {
   BENEFIT_PLAN_DATA,
-  CREATE_BENEFIT_DESCRIPTION_OBJECTS,
-  CREATE_BENEFIT_MAX_STEPPER_POSITION,
+  CREATE_BENEFIT_ROLE_PATHS,
   CURRENCY_DATA,
-  PLAN_DESCRIPTION_REGEX,
-  PLAN_NAME_REGEX,
+  returnCreateBenefitStepperPages,
 } from "../constants";
-import {
-  createBenefitAction,
-  createBenefitReducer,
-  initialCreateBenefitState,
-} from "./state";
-import { BenefitsDocument, BenefitsPlanKind, Currency } from "./types";
+import { CreateBenefitAction, createBenefitAction } from "./actions";
+import { createBenefitReducer } from "./reducers";
+import { initialCreateBenefitState } from "./state";
+import { BenefitsPlanKind, BenefitsSchema } from "./types";
 
 function CreateBenefit() {
   const [createBenefitState, createBenefitDispatch] = useReducer(
     createBenefitReducer,
     initialCreateBenefitState
   );
+
   const {
-    benefitUsername,
-    isValidBenefitUsername,
-    isBenefitUsernameFocused,
-
     planName,
-    isValidPlanName,
-    isPlanNameFocused,
-
     planDescription,
-    isValidPlanDescription,
-    isPlanDescriptionFocused,
-
     planStartDate,
-    isValidPlanStartDate,
-    isPlanStartDateFocused,
-
     planKind,
     isPlanActive,
     currency,
-
     employerContribution,
-    isValidEmployerContribution,
-    isEmployerContributionFocused,
-
     employeeContribution,
-    isValidEmployeeContribution,
-    isEmployeeContributionFocused,
-
     triggerFormSubmit,
-    currentStepperPosition,
     pagesInError,
-
     isSubmitting,
-    submitMessage,
     isSuccessful,
-    successMessage,
-    isLoading,
-    loadingMessage,
   } = createBenefitState;
 
   const {
+    authState: { sessionId, userId, username },
+  } = useAuth();
+  const { fetchInterceptor } = useFetchInterceptor();
+  const { showBoundary } = useErrorBoundary();
+
+  const fetchAbortControllerRef = useRef<AbortController | null>(null);
+  const preFetchAbortControllerRef = useRef<AbortController | null>(null);
+  const isComponentMountedRef = useRef(false);
+
+  useEffect(() => {
+    fetchAbortControllerRef.current?.abort();
+    fetchAbortControllerRef.current = new AbortController();
+    const fetchAbortController = fetchAbortControllerRef.current;
+
+    preFetchAbortControllerRef.current?.abort();
+    preFetchAbortControllerRef.current = new AbortController();
+    const preFetchAbortController = preFetchAbortControllerRef.current;
+
+    isComponentMountedRef.current = true;
+    let isComponentMounted = isComponentMountedRef.current;
+
+    const benefitsSchema: BenefitsSchema = {
+      currency,
+      employeeContribution: Number(employeeContribution),
+      employerContribution: Number(employerContribution),
+      isPlanActive,
+      monthlyPremium: Number(employeeContribution) + Number(employerContribution),
+      planDescription,
+      planKind,
+      planName,
+      planStartDate,
+      requestStatus: "pending",
+      userId,
+      username,
+    };
+
+    if (triggerFormSubmit) {
+      formSubmitPOST({
+        dispatch: createBenefitDispatch,
+        fetchAbortController,
+        fetchInterceptor,
+        isComponentMounted,
+        isSubmittingAction: createBenefitAction.setIsSubmitting,
+        isSuccessfulAction: createBenefitAction.setIsSuccessful,
+        preFetchAbortController,
+        roleResourceRoutePaths: CREATE_BENEFIT_ROLE_PATHS,
+        schema: benefitsSchema,
+        schemaName: "createBenefitSchema",
+        sessionId,
+        showBoundary,
+        userId,
+        username,
+        userRole: "manager",
+      });
+    }
+
+    return () => {
+      isComponentMountedRef.current = false;
+      preFetchAbortController?.abort();
+      fetchAbortController?.abort();
+    };
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [triggerFormSubmit]);
+
+  useEffect(() => {
+    logState({
+      state: createBenefitState,
+      groupLabel: "Create Benefit State",
+    });
+  }, [createBenefitState]);
+
+  if (isSubmitting) {
+    const submittingState = (
+      <Stack>
+        <Text size="md">Submitting benefit! Please wait...</Text>
+      </Stack>
+    );
+
+    return submittingState;
+  }
+
+  if (isSuccessful) {
+    const successfulState = (
+      <Stack>
+        <Text size="md">Benefit submitted successfully!</Text>
+      </Stack>
+    );
+
+    return successfulState;
+  }
+
+  const CREATE_BENEFIT_STEPPER_PAGES: StepperPage[] = returnCreateBenefitStepperPages();
+
+  const currencySelectInput = (
+    <AccessibleSelectInput
+      attributes={{
+        data: CURRENCY_DATA,
+        name: "currency",
+        parentDispatch: createBenefitDispatch,
+        validValueAction: createBenefitAction.setCurrency,
+      }}
+    />
+  );
+
+  const employeeContributionTextInput = (
+    <AccessibleTextInput
+      attributes={{
+        invalidValueAction: createBenefitAction.setPageInError,
+        name: "employeeContribution",
+        parentDispatch: createBenefitDispatch,
+        stepperPages: CREATE_BENEFIT_STEPPER_PAGES,
+        validValueAction: createBenefitAction.setEmployeeContribution,
+        value: employeeContribution,
+      }}
+    />
+  );
+
+  const employerContributionTextInput = (
+    <AccessibleTextInput
+      attributes={{
+        invalidValueAction: createBenefitAction.setPageInError,
+        name: "employerContribution",
+        parentDispatch: createBenefitDispatch,
+        stepperPages: CREATE_BENEFIT_STEPPER_PAGES,
+        validValueAction: createBenefitAction.setEmployerContribution,
+        value: employerContribution,
+      }}
+    />
+  );
+
+  const isPlanActiveCheckbox = (
+    <AccessibleSwitchInput
+      attributes={{
+        checked: isPlanActive,
+        invalidValueAction: createBenefitAction.setPageInError,
+        name: "isPlanActive",
+        offLabel: "Inactive",
+        onLabel: "Active",
+        parentDispatch: createBenefitDispatch,
+        preventErrorStateWhenOff: true,
+        validValueAction: createBenefitAction.setIsPlanActive,
+        value: isPlanActive.toString(),
+      }}
+    />
+  );
+
+  const planDescriptionTextArea = (
+    <AccessibleTextAreaInput
+      attributes={{
+        invalidValueAction: createBenefitAction.setPageInError,
+        name: "planDescription",
+        parentDispatch: createBenefitDispatch,
+        stepperPages: CREATE_BENEFIT_STEPPER_PAGES,
+        validValueAction: createBenefitAction.setPlanDescription,
+        value: planDescription,
+      }}
+    />
+  );
+
+  const planKindSelectInput = (
+    <AccessibleSelectInput<CreateBenefitAction["setPlanKind"], BenefitsPlanKind>
+      attributes={{
+        data: BENEFIT_PLAN_DATA,
+        name: "planKind",
+        parentDispatch: createBenefitDispatch,
+        validValueAction: createBenefitAction.setPlanKind,
+      }}
+    />
+  );
+
+  const planNameTextInput = (
+    <AccessibleTextInput
+      attributes={{
+        invalidValueAction: createBenefitAction.setPageInError,
+        name: "planName",
+        parentDispatch: createBenefitDispatch,
+        stepperPages: CREATE_BENEFIT_STEPPER_PAGES,
+        validValueAction: createBenefitAction.setPlanName,
+        value: planName,
+      }}
+    />
+  );
+
+  const planStartDateInput = (
+    <AccessibleDateTimeInput
+      attributes={{
+        dateKind: "full date",
+        inputKind: "date",
+        invalidValueAction: createBenefitAction.setPageInError,
+        name: "planStartDate",
+        parentDispatch: createBenefitDispatch,
+        stepperPages: CREATE_BENEFIT_STEPPER_PAGES,
+        validValueAction: createBenefitAction.setPlanStartDate,
+        value: planStartDate,
+      }}
+    />
+  );
+
+  const submitButton = (
+    <AccessibleButton
+      attributes={{
+        enabledScreenreaderText: "All inputs are valid. Click to submit form",
+        disabledScreenreaderText: "Please fix errors before submitting form",
+        disabled: pagesInError.size > 0 || triggerFormSubmit,
+        name: "submit",
+        onClick: (_event: MouseEvent<HTMLButtonElement>) => {
+          createBenefitDispatch({
+            action: createBenefitAction.setTriggerFormSubmit,
+            payload: true,
+          });
+        },
+      }}
+    />
+  );
+
+  const createBenefitForm = (
+    <Group>
+      {planNameTextInput}
+      {planDescriptionTextArea}
+      {planStartDateInput}
+      {planKindSelectInput}
+    </Group>
+  );
+
+  const createBenefitContributionsForm = (
+    <Group>
+      {currencySelectInput}
+      {employeeContributionTextInput}
+      {employerContributionTextInput}
+      {isPlanActiveCheckbox}
+    </Group>
+  );
+
+  const stepper = (
+    <AccessibleStepper
+      attributes={{
+        componentState: createBenefitState,
+        pageElements: [createBenefitForm, createBenefitContributionsForm],
+        stepperPages: CREATE_BENEFIT_STEPPER_PAGES,
+        submitButton,
+        title: "Create Benefit",
+      }}
+    />
+  );
+
+  return <Container w={700}>{stepper}</Container>;
+}
+
+export default CreateBenefit;
+
+/**
+ * const {
     globalState: { themeObject },
     globalDispatch,
   } = useGlobalState();
@@ -995,6 +1182,4 @@ function CreateBenefit() {
   );
 
   return displayCreateBenefitComponent;
-}
-
-export default CreateBenefit;
+ */

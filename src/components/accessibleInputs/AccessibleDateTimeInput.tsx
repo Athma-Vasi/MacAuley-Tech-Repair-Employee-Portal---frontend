@@ -47,7 +47,7 @@ type AccessibleDateTimeInputAttributes<
   >;
   validValueAction: ValidValueAction;
   invalidValueAction: InvalidValueAction;
-  placeholder: string;
+  placeholder?: string;
   ref?: RefObject<HTMLInputElement>;
   required?: boolean;
   size?: MantineSize;
@@ -55,11 +55,17 @@ type AccessibleDateTimeInputAttributes<
   withAsterisk?: boolean;
 };
 
-type AccessibleDateTimeInputProps = {
-  attributes: AccessibleDateTimeInputAttributes;
+type AccessibleDateTimeInputProps<
+  ValidValueAction extends string = string,
+  InvalidValueAction extends string = string
+> = {
+  attributes: AccessibleDateTimeInputAttributes<ValidValueAction, InvalidValueAction>;
 };
 
-function AccessibleDateTimeInput({ attributes }: AccessibleDateTimeInputProps) {
+function AccessibleDateTimeInput<
+  ValidValueAction extends string = string,
+  InvalidValueAction extends string = string
+>({ attributes }: AccessibleDateTimeInputProps<ValidValueAction, InvalidValueAction>) {
   const {
     ariaAutoComplete = "none",
     autoComplete = "off",
@@ -79,7 +85,7 @@ function AccessibleDateTimeInput({ attributes }: AccessibleDateTimeInputProps) {
     onFocus,
     page = 0,
     parentDispatch,
-    placeholder,
+    placeholder = "",
     ref = null,
     required = false,
     size = "sm",

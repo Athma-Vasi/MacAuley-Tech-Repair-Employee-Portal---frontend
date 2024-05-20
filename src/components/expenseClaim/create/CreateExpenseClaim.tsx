@@ -40,7 +40,7 @@ import {
   returnThemeColors,
   urlBuilder,
 } from "../../../utils";
-import { CURRENCY_DATA } from "../../benefits/constants";
+import { CURRENCY_DATA } from "../../benefit/constants";
 import FormReviewPage, {
   FormReviewObjectArray,
 } from "../../formReviewPage/FormReviewPage";
@@ -395,32 +395,6 @@ function CreateExpenseClaim() {
     });
   }, [expenseClaimAmount]);
 
-  // insert comma if currency is EUR
-  useEffect(() => {
-    // if currency is EUR, replace decimal with comma and remove leading zeros
-    if (expenseClaimCurrency === "EUR") {
-      const expenseClaimAmountWithCommaAndNoLeadingZero = expenseClaimAmount
-        .replace(".", ",")
-        .replace(/^0+(?=\d)/, ""); // removes leading zeros if amount !== '0.00'
-
-      createExpenseClaimDispatch({
-        type: createExpenseClaimAction.setExpenseClaimAmount,
-        payload: expenseClaimAmountWithCommaAndNoLeadingZero,
-      });
-    }
-    // if currency is not EUR, replace comma with decimal and remove leading zeros
-    else {
-      const expenseClaimAmountWithDecimalAndNoLeadingZero = expenseClaimAmount
-        .replace(",", ".")
-        .replace(/^0+(?=\d)/, "");
-
-      createExpenseClaimDispatch({
-        type: createExpenseClaimAction.setExpenseClaimAmount,
-        payload: expenseClaimAmountWithDecimalAndNoLeadingZero,
-      });
-    }
-  }, [expenseClaimCurrency, expenseClaimAmount]);
-
   // validate expenseClaimDate on every change
   useEffect(() => {
     const isValid =
@@ -567,18 +541,6 @@ function CreateExpenseClaim() {
     themeObject,
     colorsSwatches: COLORS_SWATCHES,
   });
-  const currencyIcon =
-    expenseClaimCurrency === "CNY" ? (
-      <TbCurrencyRenminbi size={14} color={grayColorShade} />
-    ) : expenseClaimCurrency === "GBP" ? (
-      <TbCurrencyPound size={14} color={grayColorShade} />
-    ) : expenseClaimCurrency === "EUR" ? (
-      <TbCurrencyEuro size={14} color={grayColorShade} />
-    ) : expenseClaimCurrency === "JPY" ? (
-      <TbCurrencyYen size={14} color={grayColorShade} />
-    ) : (
-      <TbCurrencyDollar size={14} color={grayColorShade} />
-    );
 
   const expenseClaimAmountTextInputCreatorInfo: AccessibleTextInputCreatorInfo = {
     description: {
@@ -607,7 +569,6 @@ function CreateExpenseClaim() {
       });
     },
     rightSection: true,
-    rightSectionIcon: currencyIcon,
     placeholder: "Enter expense claim amount",
     semanticName: "expense claim amount",
     minLength: 3,

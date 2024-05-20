@@ -30,7 +30,7 @@ import {
   returnThemeColors,
   urlBuilder,
 } from "../../../utils";
-import { CURRENCY_DATA } from "../../benefits/constants";
+import { CURRENCY_DATA } from "../../benefit/constants";
 import FormReviewPage, {
   FormReviewObjectArray,
 } from "../../formReviewPage/FormReviewPage";
@@ -289,36 +289,6 @@ function EditRepairTicket({
     });
   }, [finalRepairCost]);
 
-  // insert comma if currency is EUR
-  useEffect(() => {
-    // if currency is EUR, replace decimal with comma and remove leading zeros
-
-    const stringifiedFinalRepairCost = finalRepairCost.toString();
-
-    if (finalRepairCostCurrency === "EUR") {
-      const finalRepairCostWithCommaAndNoLeadingZero = stringifiedFinalRepairCost
-        .replace(".", ",")
-        .replace(/^0+(?=\d)/, ""); // removes leading zeros if amount !== '0.00'
-
-      editRepairTicketDispatch({
-        type: editRepairTicketAction.setFinalRepairCost,
-        payload: finalRepairCostWithCommaAndNoLeadingZero,
-      });
-    }
-
-    // if currency is not EUR, replace comma with decimal and remove leading zeros
-    else {
-      const finalRepairCostWithDecimalAndNoLeadingZero = stringifiedFinalRepairCost
-        .replace(",", ".")
-        .replace(/^0+(?=\d)/, "");
-
-      editRepairTicketDispatch({
-        type: editRepairTicketAction.setFinalRepairCost,
-        payload: finalRepairCostWithDecimalAndNoLeadingZero,
-      });
-    }
-  }, [finalRepairCostCurrency, finalRepairCost]);
-
   // update stepper wrapper state on every change
   useEffect(() => {
     const areOptionalInputsInError =
@@ -474,18 +444,6 @@ function EditRepairTicket({
     themeObject,
     colorsSwatches: COLORS_SWATCHES,
   });
-  const currencyIcon =
-    finalRepairCostCurrency === "CNY" ? (
-      <TbCurrencyRenminbi size={14} color={grayColorShade} />
-    ) : finalRepairCostCurrency === "GBP" ? (
-      <TbCurrencyPound size={14} color={grayColorShade} />
-    ) : finalRepairCostCurrency === "EUR" ? (
-      <TbCurrencyEuro size={14} color={grayColorShade} />
-    ) : finalRepairCostCurrency === "JPY" ? (
-      <TbCurrencyYen size={14} color={grayColorShade} />
-    ) : (
-      <TbCurrencyDollar size={14} color={grayColorShade} />
-    );
 
   const finalRepairCostTextInputCreatorInfo: AccessibleTextInputCreatorInfo = {
     description: {
@@ -514,7 +472,6 @@ function EditRepairTicket({
       });
     },
     rightSection: true,
-    rightSectionIcon: currencyIcon,
     placeholder: "Enter final repair cost",
     semanticName: "final repair cost",
     minLength: 3,

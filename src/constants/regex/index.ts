@@ -74,10 +74,10 @@ const NOTE_TEXT_AREA_REGEX = /^(?=.*[A-Za-z0-9])[\w\s.,!?():;"'-]{2,2000}$/i;
  * - ^ asserts that the string starts with a digit.
  * - (?=.*[0-9]) is a positive lookahead assertion that requires the presence of at least one digit. This ensures that the string contains at least one digit.
  * - \d{1,6} matches between 1 and 6 digits. This represents the whole number part of a number, allowing for a range of digit lengths from 1 to 6.
- * - (?:[,.]\d{0,2})? is a non-capturing group that matches a decimal point or comma followed by between 0 and 2 digits. This represents the decimal part of a number, allowing for a range of digit lengths from 0 to 2. The entire group is optional, allowing for whole numbers.
+ * - (?:[.]\d{0,2})? is a non-capturing group that matches a decimal point followed by between 0 and 2 digits. This represents the decimal part of a number, allowing for a range of digit lengths from 0 to 2. The entire group is optional, allowing for whole numbers.
  * - $ asserts that the string ends with a digit.
  */
-const MONEY_REGEX = /^(?=.*[0-9])\d{1,6}(?:[,.]\d{0,2})?$/;
+const MONEY_REGEX = /^(?=.*[0-9])\d{1,6}(?:[.]\d{0,2})?$/;
 
 /**
  * - /^[A-Za-z\s.\-']{2,30}$/i
@@ -354,6 +354,24 @@ const FILE_MIME_TYPES_REGEX = /^image\/(jpeg|png|webp)$/;
  */
 const FILE_ENCODING_REGEX = /^(7bit|8bit|binary|quoted-printable|base64)$/;
 
+/**
+ * - /^(?=.*[A-Za-z0-9])[\w\s.,!?():;"'-]{1,50}$/i
+ * - (?=.*[A-Za-z0-9]) is a positive lookahead assertion that requires the presence of at least one alphanumeric character. This ensures that the string contains at least one letter or digit.
+ * - [\w\s.,!?():;"'-]{1,50} matches any word character, whitespace, or punctuation character between 1 and 50 times. This ensures that the string contains between 1 and 50 word characters, whitespace, or punctuation characters.
+ * - The ^ and $ anchors ensure that the entire string is matched.
+ * - The i flag makes the regex case insensitive.
+ */
+const PLAN_NAME_REGEX = /^(?=.*[A-Za-z0-9])[\w\s.,!?():;"'-]{1,50}$/i;
+
+/**
+ * - (?=.*[A-Za-z0-9]) ensures that there is at least one alphanumeric character, preventing the input from consisting entirely of whitespace.
+ * - [\w\s.,!?():;"'-] matches any word characters (\w includes alphanumeric characters and underscores), whitespace, and a range of allowed punctuation marks commonly used in grammar and punctuation: ., ,, !, ?, (, ), :, ;, ", ', -. The hyphen is placed at the end of the list to prevent it from being interpreted as a range of characters.
+ * - {1,300} ensures that the text is between 1 and 300 characters long.
+ * - ^ and $ ensure that the entire string matches the regex.
+ * - i makes the regex case-insensitive.
+ */
+const PLAN_DESCRIPTION_REGEX = /^(?=.*[A-Za-z0-9])[\w\s.,!?():;"'-]{1,300}$/i;
+
 export {
   ACKNOWLEDGEMENT_TEXT_INPUT_REGEX,
   ADDRESS_LINE_REGEX,
@@ -383,6 +401,8 @@ export {
   NOTE_TEXT_REGEX,
   PASSWORD_REGEX,
   PHONE_NUMBER_REGEX,
+  PLAN_DESCRIPTION_REGEX,
+  PLAN_NAME_REGEX,
   POSTAL_CODE_REGEX_CANADA,
   POSTAL_CODE_REGEX_US,
   PRINTER_MAKE_MODEL_REGEX,

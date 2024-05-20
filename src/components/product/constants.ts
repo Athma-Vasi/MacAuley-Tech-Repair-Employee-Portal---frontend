@@ -25,7 +25,7 @@ import {
   returnUsernameRegexValidationText,
   returnWeightValidationText,
 } from "../../utils";
-import { CURRENCY_DATA } from "../benefits/constants";
+import { CURRENCY_DATA } from "../benefit/constants";
 import { ProductCategory } from "../dashboard/types";
 import { ComponentQueryData } from "../queryBuilder";
 import { DescriptionObjectsArray } from "../wrappers";

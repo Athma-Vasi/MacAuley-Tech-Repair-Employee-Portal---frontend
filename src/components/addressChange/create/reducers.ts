@@ -21,18 +21,18 @@ const addressChangeReducersMap = new Map<
   AddressChangeAction[keyof AddressChangeAction],
   (state: AddressChangeState, dispatch: AddressChangeDispatch) => AddressChangeState
 >([
-  [addressChangeAction.setContactNumber, addressChangeReducer_setContactNumber],
+  [addressChangeAction.setAcknowledgement, addressChangeReducer_setIsAcknowledged],
   [addressChangeAction.setAddressLine, addressChangeReducer_setAddressLine],
   [addressChangeAction.setCity, addressChangeReducer_setCity],
-  [addressChangeAction.setProvince, addressChangeReducer_setProvince],
-  [addressChangeAction.setState, addressChangeReducer_setState],
+  [addressChangeAction.setContactNumber, addressChangeReducer_setContactNumber],
   [addressChangeAction.setCountry, addressChangeReducer_setCountry],
-  [addressChangeAction.setPostalCode, addressChangeReducer_setPostalCode],
-  [addressChangeAction.setAcknowledgement, addressChangeReducer_setIsAcknowledged],
-  [addressChangeAction.setTriggerFormSubmit, addressChangeReducer_setTriggerFormSubmit],
-  [addressChangeAction.setPageInError, addressChangeReducer_setPageInError],
   [addressChangeAction.setIsSubmitting, addressChangeReducer_setIsSubmitting],
   [addressChangeAction.setIsSuccessful, addressChangeReducer_setIsSuccessful],
+  [addressChangeAction.setPageInError, addressChangeReducer_setPageInError],
+  [addressChangeAction.setPostalCode, addressChangeReducer_setPostalCode],
+  [addressChangeAction.setProvince, addressChangeReducer_setProvince],
+  [addressChangeAction.setState, addressChangeReducer_setState],
+  [addressChangeAction.setTriggerFormSubmit, addressChangeReducer_setTriggerFormSubmit],
 ]);
 
 function addressChangeReducer_setContactNumber(

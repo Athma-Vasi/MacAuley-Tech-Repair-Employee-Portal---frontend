@@ -1,19 +1,18 @@
 import type { CreateBenefitState } from "./types";
 
 const initialCreateBenefitState: CreateBenefitState = {
-  benefitUsername: "",
-  planName: "",
-  planDescription: "",
-  planKind: "Other",
-  planStartDate: "",
-  isPlanActive: false,
   currency: "CAD",
-  employerContribution: "0",
   employeeContribution: "0",
-  triggerFormSubmit: false,
-  pagesInError: new Set(),
+  employerContribution: "0",
+  isPlanActive: false,
   isSubmitting: false,
   isSuccessful: false,
+  pagesInError: new Set(),
+  planDescription: "",
+  planKind: "Other",
+  planName: "",
+  planStartDate: "",
+  triggerFormSubmit: false,
 };
 
 export { initialCreateBenefitState };

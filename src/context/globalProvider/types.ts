@@ -14,7 +14,7 @@ import {
 } from "../../components/addressChange/create/types";
 import { AnnouncementDocument } from "../../components/announcement/create/types";
 import { AnonymousRequestDocument } from "../../components/anonymousRequest/create/types";
-import { BenefitsDocument } from "../../components/benefits/create/types";
+import { BenefitsDocument } from "../../components/benefit/create/types";
 import { BarChartData } from "../../components/charts/responsiveBarChart/types";
 import { CalendarChartData } from "../../components/charts/responsiveCalendarChart/types";
 import { LineChartData } from "../../components/charts/responsiveLineChart/types";

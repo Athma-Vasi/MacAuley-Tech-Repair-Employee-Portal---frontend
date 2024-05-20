@@ -40,7 +40,7 @@ type AccessibleTextAreaInputAttributes<
   minRows?: number;
   name: string;
   onBlur?: () => void;
-  onChange: (event: ChangeEvent<HTMLTextAreaElement>) => void;
+  onChange?: (event: ChangeEvent<HTMLTextAreaElement>) => void;
   onFocus?: () => void;
   onKeyDown?: (event: KeyboardEvent<HTMLTextAreaElement>) => void;
   /** stepper page location of input. default 0 = first page = step 0 */
@@ -57,7 +57,7 @@ type AccessibleTextAreaInputAttributes<
   >;
   validValueAction: ValidValueAction;
   invalidValueAction: InvalidValueAction;
-  placeholder: string;
+  placeholder?: string;
   ref?: React.RefObject<HTMLTextAreaElement> | null;
   required?: boolean;
   rightSection?: boolean;
@@ -101,7 +101,7 @@ function AccessibleTextAreaInput<
     validValueAction,
     invalidValueAction,
     page = 0,
-    placeholder,
+    placeholder = "",
     ref = null,
     required = false,
     rightSection = false,

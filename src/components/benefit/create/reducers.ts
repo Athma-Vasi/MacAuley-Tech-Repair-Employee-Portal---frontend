@@ -20,36 +20,25 @@ const createBenefitReducersMap = new Map<
   CreateBenefitAction[keyof CreateBenefitAction],
   (state: CreateBenefitState, dispatch: CreateBenefitDispatch) => CreateBenefitState
 >([
-  [createBenefitAction.setBenefitUsername, createBenefitReducer_setBenefitUsername],
-  [createBenefitAction.setPlanName, createBenefitReducer_setPlanName],
-  [createBenefitAction.setPlanDescription, createBenefitReducer_setPlanDescription],
-  [createBenefitAction.setPlanStartDate, createBenefitReducer_setPlanStartDate],
-  [createBenefitAction.setPlanKind, createBenefitReducer_setPlanKind],
-  [createBenefitAction.setIsPlanActive, createBenefitReducer_setIsPlanActive],
   [createBenefitAction.setCurrency, createBenefitReducer_setCurrency],
-  [
-    createBenefitAction.setEmployerContribution,
-    createBenefitReducer_setEmployerContribution,
-  ],
   [
     createBenefitAction.setEmployeeContribution,
     createBenefitReducer_setEmployeeContribution,
   ],
-  [createBenefitAction.setTriggerFormSubmit, createBenefitReducer_setTriggerFormSubmit],
-  [createBenefitAction.setPageInError, createBenefitReducer_setPageInError],
+  [
+    createBenefitAction.setEmployerContribution,
+    createBenefitReducer_setEmployerContribution,
+  ],
+  [createBenefitAction.setIsPlanActive, createBenefitReducer_setIsPlanActive],
   [createBenefitAction.setIsSubmitting, createBenefitReducer_setIsSubmitting],
   [createBenefitAction.setIsSuccessful, createBenefitReducer_setIsSuccessful],
+  [createBenefitAction.setPageInError, createBenefitReducer_setPageInError],
+  [createBenefitAction.setPlanDescription, createBenefitReducer_setPlanDescription],
+  [createBenefitAction.setPlanKind, createBenefitReducer_setPlanKind],
+  [createBenefitAction.setPlanName, createBenefitReducer_setPlanName],
+  [createBenefitAction.setPlanStartDate, createBenefitReducer_setPlanStartDate],
+  [createBenefitAction.setTriggerFormSubmit, createBenefitReducer_setTriggerFormSubmit],
 ]);
-
-function createBenefitReducer_setBenefitUsername(
-  state: CreateBenefitState,
-  dispatch: CreateBenefitDispatch
-): CreateBenefitState {
-  return {
-    ...state,
-    benefitUsername: dispatch.payload as string,
-  };
-}
 
 function createBenefitReducer_setPlanName(
   state: CreateBenefitState,

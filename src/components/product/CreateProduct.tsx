@@ -35,7 +35,7 @@ import {
   returnWeightValidationText,
   urlBuilder,
 } from "../../utils";
-import { CURRENCY_DATA } from "../benefits/constants";
+import { CURRENCY_DATA } from "../benefit/constants";
 import { PRODUCT_CATEGORIES } from "../dashboard/constants";
 import { ProductCategory } from "../dashboard/types";
 import FormReviewPage, { FormReviewObjectArray } from "../formReviewPage/FormReviewPage";
@@ -1657,32 +1657,6 @@ function CreateProduct() {
   // ╭─────────────────────────────────────────────────────────────────╮
   //     CURRENCY
   // ╰─────────────────────────────────────────────────────────────────╯
-
-  // insert comma if currency is EUR
-  useEffect(() => {
-    // if currency is EUR, replace decimal with comma and remove leading zeros
-    if (currency === "EUR") {
-      const priceWithCommaAndNoLeadingZero = price
-        .replace(".", ",")
-        .replace(/^0+(?=\d)/, ""); // removes leading zeros if amount !== '0.00'
-
-      createProductDispatch({
-        type: createProductAction.setPrice,
-        payload: priceWithCommaAndNoLeadingZero,
-      });
-    }
-    // if currency is not EUR, replace comma with decimal and remove leading zeros
-    else {
-      const priceWithDecimalAndNoLeadingZero = price
-        .replace(",", ".")
-        .replace(/^0+(?=\d)/, "");
-
-      createProductDispatch({
-        type: createProductAction.setPrice,
-        payload: priceWithDecimalAndNoLeadingZero,
-      });
-    }
-  }, [currency, price]);
 
   // ╭─────────────────────────────────────────────────────────────────╮
   //     DIMENSION LENGTH UNIT

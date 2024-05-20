@@ -1,17 +1,17 @@
 import type { AddressChangeState } from "./types";
 
 const initialAddressChangeState: AddressChangeState = {
+  acknowledgement: false,
   addressLine: "",
   city: "",
   contactNumber: "",
   country: "Canada",
-  acknowledgement: false,
   isSubmitting: false,
   isSuccessful: false,
+  pagesInError: new Set<number>(),
   postalCode: "",
   province: "Alberta",
   state: "Alabama",
-  pagesInError: new Set<number>(),
   triggerFormSubmit: false,
 };
 

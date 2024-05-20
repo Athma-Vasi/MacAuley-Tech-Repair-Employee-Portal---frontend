@@ -234,9 +234,9 @@ const DisplayAddressChanges = lazy(
 // ╭─────────────────────────────────────────────────────────────────╮
 //    BENEFIT
 // ╰─────────────────────────────────────────────────────────────────╯
-const CreateBenefit = lazy(() => import("./components/benefits/create/CreateBenefit"));
+const CreateBenefit = lazy(() => import("./components/benefit/create/CreateBenefit"));
 
-const DisplayBenefits = lazy(() => import("./components/benefits/DisplayBenefits"));
+const DisplayBenefits = lazy(() => import("./components/benefit/DisplayBenefits"));
 
 // ╭─────────────────────────────────────────────────────────────────╮
 //    LEAVE REQUEST

@@ -1,31 +1,31 @@
 type AddressChangeAction = {
-  setContactNumber: "setContactNumber";
+  setAcknowledgement: "setAcknowledgement";
   setAddressLine: "setAddressLine";
   setCity: "setCity";
-  setProvince: "setProvince";
-  setState: "setState";
+  setContactNumber: "setContactNumber";
   setCountry: "setCountry";
-  setPostalCode: "setPostalCode";
-  setAcknowledgement: "setAcknowledgement";
-  setTriggerFormSubmit: "setTriggerFormSubmit";
-  setPageInError: "setPageInError";
   setIsSubmitting: "setIsSubmitting";
   setIsSuccessful: "setIsSuccessful";
+  setPageInError: "setPageInError";
+  setPostalCode: "setPostalCode";
+  setProvince: "setProvince";
+  setState: "setState";
+  setTriggerFormSubmit: "setTriggerFormSubmit";
 };
 
 const addressChangeAction: AddressChangeAction = {
-  setContactNumber: "setContactNumber",
+  setAcknowledgement: "setAcknowledgement",
   setAddressLine: "setAddressLine",
   setCity: "setCity",
-  setProvince: "setProvince",
-  setState: "setState",
+  setContactNumber: "setContactNumber",
   setCountry: "setCountry",
-  setPostalCode: "setPostalCode",
-  setAcknowledgement: "setAcknowledgement",
-  setTriggerFormSubmit: "setTriggerFormSubmit",
-  setPageInError: "setPageInError",
   setIsSubmitting: "setIsSubmitting",
   setIsSuccessful: "setIsSuccessful",
+  setPageInError: "setPageInError",
+  setPostalCode: "setPostalCode",
+  setProvince: "setProvince",
+  setState: "setState",
+  setTriggerFormSubmit: "setTriggerFormSubmit",
 };
 
 export { addressChangeAction };

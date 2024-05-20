@@ -2533,8 +2533,6 @@ type FormSubmitPOST<
   isSubmittingAction: IsSubmittingAction;
   /** sets component success state */
   isSuccessfulAction: IsSuccessfulAction;
-  /** from react-router-dom */
-  navigate?: NavigateFunction;
   /** must be defined outside useEffect and inside component */
   preFetchAbortController: AbortController;
   /** default : JSON.stringify({ [schemaName]: schema }) */
@@ -2549,8 +2547,6 @@ type FormSubmitPOST<
   sessionId: string;
   /** from react-error-boundary  */
   showBoundary: (error: any) => void;
-  /** location to navigate */
-  toLocation?: string;
   /** from auth state */
   userId: string;
   /** from auth state */
@@ -2569,7 +2565,6 @@ async function formSubmitPOST<
   isComponentMounted,
   isSubmittingAction,
   isSuccessfulAction,
-  navigate,
   preFetchAbortController,
   requestBody,
   roleResourceRoutePaths,
@@ -2577,7 +2572,6 @@ async function formSubmitPOST<
   schemaName,
   sessionId,
   showBoundary,
-  toLocation = "/",
   userId,
   username,
   userRole,
@@ -2655,8 +2649,6 @@ async function formSubmitPOST<
     }
 
     showBoundary(error);
-  } finally {
-    navigate?.(toLocation);
   }
 }
 

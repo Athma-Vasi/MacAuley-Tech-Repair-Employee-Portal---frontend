@@ -1,7 +1,6 @@
 import { Container, Group, Stack, Text } from "@mantine/core";
 import { MouseEvent, useEffect, useReducer, useRef } from "react";
 import { useErrorBoundary } from "react-error-boundary";
-import { useNavigate } from "react-router-dom";
 
 import { PROVINCES, STATES_US } from "../../../constants/data";
 import { useAuth } from "../../../hooks";
@@ -14,7 +13,6 @@ import { AccessibleStepper } from "../../accessibleInputs/AccessibleStepper";
 import { AccessibleSwitchInput } from "../../accessibleInputs/AccessibleSwitchInput";
 import { AccessibleTextInput } from "../../accessibleInputs/text/AccessibleTextInput";
 import {
-  ADDRESS_CHANGE_DISPLAY_LOCATION,
   ADDRESS_CHANGE_ROLE_PATHS,
   COUNTRIES_DATA,
   returnAddressChangeStepperPages,
@@ -30,18 +28,18 @@ function AddressChange() {
   );
 
   const {
-    contactNumber,
+    acknowledgement,
     addressLine,
     city,
-    province,
-    state,
+    contactNumber,
     country,
-    postalCode,
-    acknowledgement,
-    triggerFormSubmit,
-    pagesInError,
     isSubmitting,
     isSuccessful,
+    pagesInError,
+    postalCode,
+    province,
+    state,
+    triggerFormSubmit,
   } = addressChangeState;
 
   useEffect(() => {
@@ -56,7 +54,6 @@ function AddressChange() {
   } = useAuth();
   const { fetchInterceptor } = useFetchInterceptor();
   const { showBoundary } = useErrorBoundary();
-  const navigate = useNavigate();
 
   const fetchAbortControllerRef = useRef<AbortController | null>(null);
   const preFetchAbortControllerRef = useRef<AbortController | null>(null);
@@ -103,14 +100,12 @@ function AddressChange() {
         isComponentMounted,
         isSubmittingAction: addressChangeAction.setIsSubmitting,
         isSuccessfulAction: addressChangeAction.setIsSuccessful,
-        navigate,
         preFetchAbortController,
         roleResourceRoutePaths: ADDRESS_CHANGE_ROLE_PATHS,
         schema,
         schemaName: "addressChangeSchema",
         sessionId,
         showBoundary,
-        toLocation: ADDRESS_CHANGE_DISPLAY_LOCATION,
         userId,
         username,
         userRole: "manager",
@@ -271,7 +266,7 @@ function AddressChange() {
         name: "submit",
         onClick: (_event: MouseEvent<HTMLButtonElement>) => {
           addressChangeDispatch({
-            type: addressChangeAction.setTriggerFormSubmit,
+            action: addressChangeAction.setTriggerFormSubmit,
             payload: true,
           });
         },

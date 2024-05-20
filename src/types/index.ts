@@ -10,7 +10,7 @@ import { MantineSize } from "@mantine/core";
 import { AddressChangeDocument } from "../components/addressChange/create/types";
 import { AnnouncementDocument } from "../components/announcement/create/types";
 import { AnonymousRequestDocument } from "../components/anonymousRequest/create/types";
-import { BenefitsDocument } from "../components/benefits/create/types";
+import { BenefitsDocument } from "../components/benefit/create/types";
 import { CustomerDocument } from "../components/customer/types";
 import { EndorsementDocument } from "../components/endorsements/create/types";
 import { EventCreatorDocument } from "../components/event/create/types";
@@ -55,7 +55,8 @@ type CheckBoxMultipleData = {
   label: string;
   value: string;
 }[];
-type Currency = "USD" | "EUR" | "GBP" | "CAD" | "AUD" | "JPY" | "CNY";
+
+type Currency = "USD" | "CAD";
 
 type SelectInputData = Array<{
   label: string;

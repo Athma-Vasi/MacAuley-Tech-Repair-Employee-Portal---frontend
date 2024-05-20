@@ -3,8 +3,6 @@ import {
   ADDRESS_LINE_REGEX,
   CITY_REGEX,
   DATE_FULL_RANGE_REGEX,
-  POSTAL_CODE_REGEX_CANADA,
-  POSTAL_CODE_REGEX_US,
   USERNAME_REGEX,
 } from "../../constants/regex";
 import {
@@ -22,6 +20,14 @@ import {
 } from "../../utils";
 import { ComponentQueryData } from "../queryBuilder";
 import { DescriptionObjectsArray } from "../wrappers";
+import {
+  ACKNOWLEDGEMENT_REGEXES,
+  ADDRESS_LINE_REGEXES,
+  CANADIAN_POSTAL_CODE_REGEXES,
+  CITY_REGEXES,
+  CONTACT_NUMBER_REGEXES,
+  US_POSTAL_CODE_REGEXES,
+} from "./regexes";
 
 const ADDRESS_CHANGE_ROLE_PATHS: RoleResourceRoutePaths = {
   manager: "actions/company/address-change",
@@ -31,7 +37,6 @@ const ADDRESS_CHANGE_ROLE_PATHS: RoleResourceRoutePaths = {
 
 const ADDRESS_CHANGE_DISPLAY_LOCATION = "/home/company/address-change";
 
-/** this function exists because country is state field ... */
 function returnAddressChangeStepperPages(country: Country): StepperPage[] {
   const countryInput: StepperChild = {
     inputType: "select",
@@ -54,43 +59,19 @@ function returnAddressChangeStepperPages(country: Country): StepperPage[] {
   const addressLine: StepperChild = {
     inputType: "text",
     name: "addressLine",
-    regexes: {
-      full: ADDRESS_LINE_REGEX,
-      partials: [
-        [/^(?=.{2,75}$)/, "Must be between 2 and 75 characters length"],
-        [
-          /^[A-Za-z0-9\s.,#-]+$/,
-          "Must contain only letters, numbers, spaces, and special characters: . , # -",
-        ],
-      ],
-    },
+    regexes: ADDRESS_LINE_REGEXES,
   };
 
   const city: StepperChild = {
     inputType: "text",
     name: "city",
-    regexes: {
-      full: CITY_REGEX,
-      partials: [
-        [/^(?=.{2,75}$)/, "Must be between 2 and 75 characters length"],
-        [
-          /^[A-Za-z\s.\-']+$/,
-          "Can only contain alphabetical characters, spaces, periods, or hyphens.",
-        ],
-      ],
-    },
+    regexes: CITY_REGEXES,
   };
 
   const contactNumber: StepperChild = {
     inputType: "text",
     name: "contactNumber",
-    regexes: {
-      full: /^(?=.{10,15}$)/,
-      partials: [
-        [/^(?=.{10,15}$)/, "Must be between 10 and 15 digits length."],
-        [/^\d{10,15}$/, "Must only contain numbers."],
-      ],
-    },
+    regexes: CONTACT_NUMBER_REGEXES,
   };
 
   const postalCode: StepperChild =
@@ -98,42 +79,21 @@ function returnAddressChangeStepperPages(country: Country): StepperPage[] {
       ? {
           inputType: "text",
           name: "postalCode",
-          regexes: {
-            full: POSTAL_CODE_REGEX_CANADA,
-            partials: [
-              [POSTAL_CODE_REGEX_CANADA, "Must be in the format A1A 1A1."],
-              [/^[A-Za-z0-9]+$/, "Must only contain letters and numbers."],
-            ],
-          },
+          regexes: CANADIAN_POSTAL_CODE_REGEXES,
         }
       : {
           inputType: "text",
           name: "postalCode",
-          regexes: {
-            full: POSTAL_CODE_REGEX_US,
-            partials: [
-              [/^\d{5}$/, "Must be a valid US zip code of five digits."],
-              [
-                /^\d{5}[-]\d{4}$/,
-                "Must be a valid US zip code of the ZIP+4 format with five digits, a hyphen, and four additional digits.",
-              ],
-              [/^[0-9-]+$/, "Must only contain numbers and a hyphen."],
-            ],
-          },
+          regexes: US_POSTAL_CODE_REGEXES,
         };
 
   const acknowledgement: StepperChild = {
     inputType: "select",
     name: "acknowledgement",
-    regexes: {
-      full: /^(true)$/,
-      partials: [
-        [/^(true)$/, "Must acknowledge that the information entered is correct."],
-      ],
-    },
+    regexes: ACKNOWLEDGEMENT_REGEXES,
   };
 
-  const stepperPage: StepperPage[] = [
+  const stepperPages: StepperPage[] = [
     {
       children: [
         addressLine,
@@ -154,7 +114,7 @@ function returnAddressChangeStepperPages(country: Country): StepperPage[] {
     },
   ];
 
-  return stepperPage;
+  return stepperPages;
 }
 
 const ADDRESS_CHANGE_DESCRIPTION_OBJECTS: DescriptionObjectsArray = [
@@ -256,11 +216,11 @@ const ADDRESS_CHANGE_PATHS: ResourceRoutePaths = {
 
 export {
   ADDRESS_CHANGE_DESCRIPTION_OBJECTS,
+  ADDRESS_CHANGE_DISPLAY_LOCATION,
   ADDRESS_CHANGE_MAX_STEPPER_POSITION,
   ADDRESS_CHANGE_PATHS,
   ADDRESS_CHANGE_QUERY_DATA,
   ADDRESS_CHANGE_ROLE_PATHS,
   COUNTRIES_DATA,
   returnAddressChangeStepperPages,
-  ADDRESS_CHANGE_DISPLAY_LOCATION,
 };

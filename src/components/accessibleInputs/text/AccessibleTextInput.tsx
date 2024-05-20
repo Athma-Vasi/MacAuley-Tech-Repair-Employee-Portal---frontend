@@ -158,14 +158,6 @@ function AccessibleTextInput<
   const { fullRegex } = returnFullRegex(name, stepperPages);
   const isValueBufferValid = fullRegex.test(valueBuffer);
 
-  console.group("AccessibleTextInput");
-  console.log("name", name);
-  console.log("label", label);
-  console.log("fullRegex:", fullRegex);
-  console.log("valueBuffer:", valueBuffer);
-  console.log("isValueBufferValid:", isValueBufferValid);
-  console.groupEnd();
-
   const leftIcon = isValueBufferValid ? (
     icon ? (
       icon

@@ -17,7 +17,7 @@ import {
   returnSerialIdValidationText,
   returnWeightValidationText,
 } from "../../../utils";
-import { CURRENCY_DATA } from "../../benefits/constants";
+import { CURRENCY_DATA } from "../../benefit/constants";
 import { ComponentQueryData } from "../../queryBuilder";
 import {
   BRAND_REGEX,

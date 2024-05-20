@@ -34,7 +34,7 @@ import {
   returnFloatAmountValidationText,
   returnNoteTextValidationText,
 } from "../../../../utils";
-import { CURRENCY_DATA } from "../../../benefits/constants";
+import { CURRENCY_DATA } from "../../../benefit/constants";
 import {
   AccessibleCheckboxGroupInputCreatorInfo,
   AccessibleCheckboxSingleInputCreatorInfo,
@@ -105,37 +105,6 @@ function RepairTicketStepDetail(parentState: RepairTicketStepDetailsProps) {
       payload: isValid,
     });
   }, [estimatedRepairCost, createRepairTicketDispatch, createRepairTicketAction]);
-
-  // insert comma if currency is EUR
-  useEffect(() => {
-    // if currency is EUR, replace decimal with comma and remove leading zeros
-    if (estimatedRepairCostCurrency === "EUR") {
-      const estimatedRepairCostWithCommaAndNoLeadingZero = estimatedRepairCost
-        .replace(".", ",")
-        .replace(/^0+(?=\d)/, ""); // removes leading zeros if amount !== '0.00'
-
-      createRepairTicketDispatch({
-        type: createRepairTicketAction.setEstimatedRepairCost,
-        payload: estimatedRepairCostWithCommaAndNoLeadingZero,
-      });
-    }
-    // if currency is not EUR, replace comma with decimal and remove leading zeros
-    else {
-      const estimatedRepairCostWithDecimalAndNoLeadingZero = estimatedRepairCost
-        .replace(",", ".")
-        .replace(/^0+(?=\d)/, "");
-
-      createRepairTicketDispatch({
-        type: createRepairTicketAction.setEstimatedRepairCost,
-        payload: estimatedRepairCostWithDecimalAndNoLeadingZero,
-      });
-    }
-  }, [
-    estimatedRepairCost,
-    estimatedRepairCostCurrency,
-    createRepairTicketDispatch,
-    createRepairTicketAction,
-  ]);
 
   // validate estimatedCompletionDate on every change
   useEffect(() => {
@@ -347,20 +316,6 @@ function RepairTicketStepDetail(parentState: RepairTicketStepDetailsProps) {
       required: true,
     };
 
-  const colorShade = colorScheme === "light" ? primaryShade.light : primaryShade.dark;
-  const currencyIcon =
-    estimatedRepairCostCurrency === "CNY" ? (
-      <TbCurrencyRenminbi size={14} color={colors.gray[colorShade]} />
-    ) : estimatedRepairCostCurrency === "GBP" ? (
-      <TbCurrencyPound size={14} color={colors.gray[colorShade]} />
-    ) : estimatedRepairCostCurrency === "EUR" ? (
-      <TbCurrencyEuro size={14} color={colors.gray[colorShade]} />
-    ) : estimatedRepairCostCurrency === "JPY" ? (
-      <TbCurrencyYen size={14} color={colors.gray[colorShade]} />
-    ) : (
-      <TbCurrencyDollar size={14} color={colors.gray[colorShade]} />
-    );
-
   const estimatedRepairCostCurrencySelectInputCreatorInfo: AccessibleSelectInputCreatorInfo =
     {
       data: CURRENCY_DATA,
@@ -404,7 +359,6 @@ function RepairTicketStepDetail(parentState: RepairTicketStepDetailsProps) {
       });
     },
     rightSection: true,
-    rightSectionIcon: currencyIcon,
     placeholder: "Enter estimated repair cost",
     semanticName: "estimated repair cost",
     minLength: 3,

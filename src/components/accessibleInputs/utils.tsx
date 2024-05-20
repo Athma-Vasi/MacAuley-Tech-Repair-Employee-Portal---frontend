@@ -15,6 +15,10 @@ import {
   AccessibleCheckboxInputSingleAttributes,
 } from "./AccessibleCheckboxInput";
 import {
+  AccessibleDateTimeInput,
+  AccessibleDateTimeInputAttributes,
+} from "./AccessibleDateTimeInput";
+import {
   AccessibleRadioInputGroup,
   AccessibleRadioInputGroupAttributes,
   AccessibleRadioInputSingle,
@@ -397,7 +401,7 @@ function createAccessibleSwitchOnOffTextElements({
   const switchOnTextElement = (
     <Text
       id={`${name}-on`}
-      style={{ display: checked ? "block" : "none" }}
+      // style={{ display: checked ? "block" : "none" }}
       color={grayColorShade}
       w="100%"
       aria-live="polite"
@@ -416,7 +420,7 @@ function createAccessibleSwitchOnOffTextElements({
   const switchOffTextElement = (
     <Text
       id={`${name}-off`}
-      style={{ display: !checked ? "block" : "none" }}
+      // style={{ display: !checked ? "block" : "none" }}
       color={theme === "default" ? redColorShade : grayColorShade}
       w="100%"
       aria-live="polite"
@@ -573,6 +577,23 @@ function createAccessibleSwitchInputs<
   ));
 }
 
+function createAccessibleDateTimeInputs<
+  ValidValueAction extends string = string,
+  InvalidValueAction extends string = string
+>(
+  attributesArray: AccessibleDateTimeInputAttributes<
+    ValidValueAction,
+    InvalidValueAction
+  >[]
+): React.JSX.Element[] {
+  return attributesArray.map((attributes, index) => (
+    <AccessibleDateTimeInput
+      key={`${index}-${attributes.name}`}
+      attributes={attributes}
+    />
+  ));
+}
+
 type ValidationTexts = {
   valueValidText: string;
   valueInvalidText: string;
@@ -682,6 +703,7 @@ export {
   createAccessibleCheckboxGroupInputs,
   createAccessibleCheckboxSelectionsTextElements,
   createAccessibleCheckboxSingleInputs,
+  createAccessibleDateTimeInputs,
   createAccessibleRadioGroupInputs,
   createAccessibleRadioScreenreaderTextElements,
   createAccessibleRadioSingleInputs,

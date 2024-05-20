@@ -10,17 +10,17 @@ import type {
 import { AddressChangeAction } from "./actions";
 
 type AddressChangeSchema = {
-  userId: string;
-  username: string;
-  contactNumber: PhoneNumber;
+  acknowledgement: boolean;
   addressLine: string;
   city: string;
-  province: Province | "Not Applicable";
-  state: StatesUS | "Not Applicable";
-  postalCode: PostalCode;
+  contactNumber: PhoneNumber;
   country: Country;
-  acknowledgement: boolean;
+  postalCode: PostalCode;
+  province: Province | "Not Applicable";
   requestStatus: RequestStatus;
+  state: StatesUS | "Not Applicable";
+  userId: string;
+  username: string;
 };
 
 type AddressChangeDocument = AddressChangeSchema & {
@@ -47,28 +47,20 @@ type AddressChangeState = {
 
 type AddressChangeDispatch =
   | {
-      action: AddressChangeAction["setAddressLine"] | AddressChangeAction["setCity"];
+      action: AddressChangeAction["setAcknowledgement"];
+      payload: boolean;
+    }
+  | {
+      action: AddressChangeAction["setAddressLine"];
       payload: string;
     }
   | {
-      action:
-        | AddressChangeAction["setAcknowledgement"]
-        | AddressChangeAction["setTriggerFormSubmit"]
-        | AddressChangeAction["setIsSuccessful"]
-        | AddressChangeAction["setIsSubmitting"];
-      payload: boolean;
+      action: AddressChangeAction["setCity"];
+      payload: string;
     }
   | {
       action: AddressChangeAction["setContactNumber"];
       payload: PhoneNumber | string;
-    }
-  | {
-      action: AddressChangeAction["setProvince"];
-      payload: Province;
-    }
-  | {
-      action: AddressChangeAction["setState"];
-      payload: StatesUS;
     }
   | {
       action: AddressChangeAction["setCountry"];
@@ -79,8 +71,28 @@ type AddressChangeDispatch =
       payload: PostalCode;
     }
   | {
+      action: AddressChangeAction["setProvince"];
+      payload: Province;
+    }
+  | {
+      action: AddressChangeAction["setState"];
+      payload: StatesUS;
+    }
+  | {
+      action: AddressChangeAction["setTriggerFormSubmit"];
+      payload: boolean;
+    }
+  | {
       action: AddressChangeAction["setPageInError"];
       payload: SetPageInErrorPayload;
+    }
+  | {
+      action: AddressChangeAction["setIsSubmitting"];
+      payload: boolean;
+    }
+  | {
+      action: AddressChangeAction["setIsSuccessful"];
+      payload: boolean;
     };
 
 type AddressChangeReducer = (

@@ -3,9 +3,18 @@ import {
   DATE_FULL_RANGE_REGEX,
   DATE_REGEX,
   MONEY_REGEX,
+  PLAN_DESCRIPTION_REGEX,
+  PLAN_NAME_REGEX,
   USERNAME_REGEX,
 } from "../../constants/regex";
-import { ResourceRoutePaths } from "../../types";
+import { DATE_REGEXES, MONEY_REGEXES } from "../../constants/regexes";
+import {
+  Currency,
+  ResourceRoutePaths,
+  RoleResourceRoutePaths,
+  StepperChild,
+  StepperPage,
+} from "../../types";
 import {
   returnDateFullRangeValidationText,
   returnDateValidationText,
@@ -15,8 +24,90 @@ import {
 } from "../../utils";
 import { ComponentQueryData } from "../queryBuilder";
 import { DescriptionObjectsArray } from "../wrappers";
+import { BenefitsPlanKind } from "./create/types";
+import { PLAN_DESCRIPTION_REGEXES, PLAN_NAME_REGEXES } from "./regexes";
 
-const BENEFIT_PLAN_DATA = [
+const CREATE_BENEFIT_ROLE_PATHS: RoleResourceRoutePaths = {
+  manager: "actions/company/benefit",
+  admin: "actions/company/benefit",
+  employee: "actions/company/benefit/user",
+};
+
+const CREATE_BENEFIT_DISPLAY_LOCATION = "/home/company/benefit";
+
+function returnCreateBenefitStepperPages() {
+  const currencyInput: StepperChild = {
+    inputType: "select",
+    name: "currency",
+    selectInputData: CURRENCY_DATA,
+  };
+
+  const employerContributionInput: StepperChild = {
+    inputType: "text",
+    name: "employerContribution",
+    regexes: MONEY_REGEXES,
+  };
+
+  const employeeContributionInput: StepperChild = {
+    inputType: "text",
+    name: "employeeContribution",
+    regexes: MONEY_REGEXES,
+  };
+
+  const isPlanActiveInput: StepperChild = {
+    inputType: "boolean",
+    name: "isPlanActive",
+  };
+
+  const planDescriptionInput: StepperChild = {
+    inputType: "text",
+    name: "planDescription",
+    regexes: PLAN_DESCRIPTION_REGEXES,
+  };
+
+  const planKindInput: StepperChild = {
+    inputType: "select",
+    name: "planKind",
+    selectInputData: BENEFIT_PLAN_DATA,
+  };
+
+  const planNameInput: StepperChild = {
+    inputType: "text",
+    name: "planName",
+    regexes: PLAN_NAME_REGEXES,
+  };
+
+  const planStartDateInput: StepperChild = {
+    inputType: "date",
+    name: "planStartDate",
+    regexes: DATE_REGEXES,
+  };
+
+  const stepperPages: StepperPage[] = [
+    {
+      children: [
+        planNameInput,
+        planDescriptionInput,
+        planKindInput,
+        planStartDateInput,
+        currencyInput,
+        employerContributionInput,
+        employeeContributionInput,
+        isPlanActiveInput,
+      ],
+      description: "Plan Details",
+    },
+    {
+      children: [],
+      description: "Review plan details",
+      kind: "review",
+    },
+  ];
+
+  return stepperPages;
+}
+
+const BENEFIT_PLAN_DATA: BenefitsPlanKind[] = [
   "Health",
   "Dental",
   "Vision",
@@ -27,24 +118,7 @@ const BENEFIT_PLAN_DATA = [
   "Other",
 ];
 
-const CURRENCY_DATA = ["USD", "EUR", "GBP", "CAD", "AUD", "JPY", "CNY"];
-
-/**
- * - (?=.*[A-Za-z0-9]) is a positive lookahead assertion that requires the presence of at least one alphanumeric character. This ensures that the string contains at least one letter or digit.
- * - [\w\s.,!?():;"'-]{1,50} matches any word character, whitespace, or punctuation character between 1 and 50 times. This ensures that the string contains between 1 and 50 word characters, whitespace, or punctuation characters.
- * - The ^ and $ anchors ensure that the entire string is matched.
- * - The i flag makes the regex case insensitive.
- */
-const PLAN_NAME_REGEX = /^(?=.*[A-Za-z0-9])[\w\s.,!?():;"'-]{1,50}$/i;
-
-/**
- * - (?=.*[A-Za-z0-9]) ensures that there is at least one alphanumeric character, preventing the input from consisting entirely of whitespace.
- * - [\w\s.,!?():;"'-] matches any word characters (\w includes alphanumeric characters and underscores), whitespace, and a range of allowed punctuation marks commonly used in grammar and punctuation: ., ,, !, ?, (, ), :, ;, ", ', -. The hyphen is placed at the end of the list to prevent it from being interpreted as a range of characters.
- * - {1,300} ensures that the text is between 1 and 300 characters long.
- * - ^ and $ ensure that the entire string matches the regex.
- * - i makes the regex case-insensitive.
- */
-const PLAN_DESCRIPTION_REGEX = /^(?=.*[A-Za-z0-9])[\w\s.,!?():;"'-]{1,300}$/i;
+const CURRENCY_DATA: Currency[] = ["USD", "CAD"];
 
 const CREATE_BENEFIT_DESCRIPTION_OBJECTS: DescriptionObjectsArray = [
   {
@@ -167,8 +241,11 @@ export {
   BENEFIT_QUERY_DATA,
   BENEFIT_RESOURCE_PATHS,
   CREATE_BENEFIT_DESCRIPTION_OBJECTS,
+  CREATE_BENEFIT_DISPLAY_LOCATION,
   CREATE_BENEFIT_MAX_STEPPER_POSITION,
+  CREATE_BENEFIT_ROLE_PATHS,
   CURRENCY_DATA,
   PLAN_DESCRIPTION_REGEX,
   PLAN_NAME_REGEX,
+  returnCreateBenefitStepperPages,
 };
