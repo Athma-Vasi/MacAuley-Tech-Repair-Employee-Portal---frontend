@@ -14,7 +14,7 @@ type AccessibleRadioInputSingleAttributes<ValidValueAction extends string = stri
   name: string;
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   parentDispatch: React.Dispatch<{
-    type: ValidValueAction;
+    action: ValidValueAction;
     payload: string;
   }>;
   ref?: React.RefObject<HTMLInputElement> | null;
@@ -71,7 +71,7 @@ function AccessibleRadioInputSingle<ValidValueAction extends string = string>({
         name={name}
         onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
           parentDispatch({
-            type: validValueAction,
+            action: validValueAction,
             payload: event.currentTarget.value,
           });
 
@@ -99,7 +99,7 @@ type AccessibleRadioInputGroupAttributes<ValidValueAction extends string = strin
   name: string;
   onChange?: (value: string) => void;
   parentDispatch: React.Dispatch<{
-    type: ValidValueAction;
+    action: ValidValueAction;
     payload: string;
   }>;
   ref?: React.RefObject<HTMLInputElement> | null;
@@ -158,7 +158,7 @@ function AccessibleRadioInputGroup<ValidValueAction extends string = string>({
         name={name}
         onChange={(value: string) => {
           parentDispatch({
-            type: validValueAction,
+            action: validValueAction,
             payload: value,
           });
 

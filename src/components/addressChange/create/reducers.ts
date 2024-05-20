@@ -13,13 +13,13 @@ function addressChangeReducer(
   state: AddressChangeState,
   dispatch: AddressChangeDispatch
 ): AddressChangeState {
-  const reducer = addressChangeReducersMap.get(dispatch.type);
+  const reducer = addressChangeReducersMap.get(dispatch.action);
   return reducer ? reducer(state, dispatch) : state;
 }
 
 const addressChangeReducersMap = new Map<
   AddressChangeAction[keyof AddressChangeAction],
-  (state: AddressChangeState, action: AddressChangeDispatch) => AddressChangeState
+  (state: AddressChangeState, dispatch: AddressChangeDispatch) => AddressChangeState
 >([
   [addressChangeAction.setContactNumber, addressChangeReducer_setContactNumber],
   [addressChangeAction.setAddressLine, addressChangeReducer_setAddressLine],

@@ -37,11 +37,11 @@ type AccessibleDateTimeInputAttributes<
   page?: number;
   parentDispatch: Dispatch<
     | {
-        type: ValidValueAction;
+        action: ValidValueAction;
         payload: string;
       }
     | {
-        type: InvalidValueAction;
+        action: InvalidValueAction;
         payload: SetPageInErrorPayload;
       }
   >;
@@ -194,15 +194,15 @@ function AccessibleDateTimeInput({ attributes }: AccessibleDateTimeInputProps) {
             name={name}
             onBlur={() => {
               parentDispatch({
-                type: invalidValueAction,
+                action: invalidValueAction,
                 payload: {
-                  kind: isValueBufferValid ? "remove" : "add",
+                  kind: isValueBufferValid ? "delete" : "add",
                   page,
                 },
               });
 
               parentDispatch({
-                type: validValueAction,
+                action: validValueAction,
                 payload: valueBuffer,
               });
 

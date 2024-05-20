@@ -2520,7 +2520,7 @@ type FormSubmitPOST<
 > = {
   /** dispatch function from component reducer */
   dispatch: React.Dispatch<{
-    type: IsSubmittingAction | IsSuccessfulAction;
+    action: IsSubmittingAction | IsSuccessfulAction;
     payload: boolean;
   }>;
   /** must be defined outside useEffect and inside component */
@@ -2584,7 +2584,7 @@ async function formSubmitPOST<
 }: FormSubmitPOST<IsSubmittingAction, IsSuccessfulAction>): Promise<void> {
   try {
     dispatch({
-      type: isSubmittingAction,
+      action: isSubmittingAction,
       payload: true,
     });
 
@@ -2639,12 +2639,12 @@ async function formSubmitPOST<
     }
 
     dispatch({
-      type: isSuccessfulAction,
+      action: isSuccessfulAction,
       payload: true,
     });
 
     dispatch({
-      type: isSubmittingAction,
+      action: isSubmittingAction,
       payload: false,
     });
   } catch (error: any) {

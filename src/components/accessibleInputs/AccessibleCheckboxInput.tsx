@@ -18,11 +18,11 @@ type AccessibleCheckboxInputSingleAttributes<
   onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
   parentDispatch: React.Dispatch<
     | {
-        type: ValidValueAction;
+        action: ValidValueAction;
         payload: boolean;
       }
     | {
-        type: InvalidValueAction;
+        action: InvalidValueAction;
         payload: SetPageInErrorPayload;
       }
   >;
@@ -100,15 +100,15 @@ function AccessibleCheckboxInputSingle<
       name={name}
       onChange={(event: ChangeEvent<HTMLInputElement>) => {
         parentDispatch({
-          type: validValueAction,
+          action: validValueAction,
           payload: event.currentTarget.checked,
         });
 
         parentDispatch({
-          type: invalidValueAction,
+          action: invalidValueAction,
           payload: {
             page,
-            kind: checked ? "add" : "remove",
+            kind: checked ? "add" : "delete",
           },
         });
 
@@ -137,7 +137,7 @@ type AccessibleCheckboxInputGroupAttributes<
   label: ReactNode;
   onChange?: (value: string[]) => void;
   parentDispatch: React.Dispatch<{
-    type: ValidValueAction;
+    action: ValidValueAction;
     payload: Payload;
   }>;
   ref?: RefObject<HTMLInputElement> | null;

@@ -16,7 +16,7 @@ type AccessibleSelectInputAttributes<
   name: string;
   onChange?: (event: ChangeEvent<HTMLSelectElement>) => void;
   parentDispatch: React.Dispatch<{
-    type: ValidValueAction;
+    action: ValidValueAction;
     payload: Payload;
   }>;
   ref?: RefObject<HTMLSelectElement>;
@@ -66,7 +66,7 @@ function AccessibleSelectInput<
       name={name}
       onChange={(event: ChangeEvent<HTMLSelectElement>) => {
         parentDispatch({
-          type: validValueAction,
+          action: validValueAction,
           payload: event.currentTarget.value as Payload,
         });
 

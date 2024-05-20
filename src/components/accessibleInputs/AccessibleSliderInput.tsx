@@ -3,7 +3,7 @@ import { ReactNode } from "react";
 
 import { useGlobalState } from "../../hooks";
 import { SliderInputData } from "../../types";
-import { returnSliderMarks, splitCamelCase } from "../../utils";
+import { returnSliderMarks } from "../../utils";
 import { createAccessibleSliderScreenreaderTextElements } from "./utils";
 
 type AccessibleSliderInputAttributes<ValidValueAction extends string = string> = {
@@ -23,7 +23,7 @@ type AccessibleSliderInputAttributes<ValidValueAction extends string = string> =
   /** use with slider */
   onChangeSlider?: (value: number) => void;
   parentDispatch: React.Dispatch<{
-    type: ValidValueAction;
+    action: ValidValueAction;
     payload: number | [number, number];
   }>;
   precision?: number;
@@ -104,7 +104,7 @@ function AccessibleSliderInput({ attributes }: AccessibleSliderInputProps) {
         name={name}
         onChange={(value: number) => {
           parentDispatch({
-            type: validValueAction,
+            action: validValueAction,
             payload: value,
           });
 
@@ -135,7 +135,7 @@ function AccessibleSliderInput({ attributes }: AccessibleSliderInputProps) {
         name={name}
         onChange={(value: [number, number]) => {
           parentDispatch({
-            type: validValueAction,
+            action: validValueAction,
             payload: value,
           });
 

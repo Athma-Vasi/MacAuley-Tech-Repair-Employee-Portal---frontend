@@ -31,11 +31,11 @@ type AccessiblePasswordInputAttributes<
   page?: number;
   parentDispatch: Dispatch<
     | {
-        type: ValidValueAction;
+        action: ValidValueAction;
         payload: string;
       }
     | {
-        type: InvalidValueAction;
+        action: InvalidValueAction;
         payload: SetPageInErrorPayload;
       }
   >;
@@ -148,15 +148,15 @@ function AccessiblePasswordInput({ attributes }: AccessiblePasswordInputProps) {
             name={name}
             onBlur={() => {
               parentDispatch({
-                type: invalidValueAction,
+                action: invalidValueAction,
                 payload: {
-                  kind: isValueBufferValid ? "remove" : "add",
+                  kind: isValueBufferValid ? "delete" : "add",
                   page,
                 },
               });
 
               parentDispatch({
-                type: validValueAction,
+                action: validValueAction,
                 payload: valueBuffer,
               });
 

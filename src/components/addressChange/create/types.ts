@@ -1,6 +1,4 @@
 import type {
-  Action,
-  ActionsCompany,
   Country,
   PhoneNumber,
   PostalCode,
@@ -49,11 +47,11 @@ type AddressChangeState = {
 
 type AddressChangeDispatch =
   | {
-      type: AddressChangeAction["setAddressLine"] | AddressChangeAction["setCity"];
+      action: AddressChangeAction["setAddressLine"] | AddressChangeAction["setCity"];
       payload: string;
     }
   | {
-      type:
+      action:
         | AddressChangeAction["setAcknowledgement"]
         | AddressChangeAction["setTriggerFormSubmit"]
         | AddressChangeAction["setIsSuccessful"]
@@ -61,27 +59,27 @@ type AddressChangeDispatch =
       payload: boolean;
     }
   | {
-      type: AddressChangeAction["setContactNumber"];
+      action: AddressChangeAction["setContactNumber"];
       payload: PhoneNumber | string;
     }
   | {
-      type: AddressChangeAction["setProvince"];
+      action: AddressChangeAction["setProvince"];
       payload: Province;
     }
   | {
-      type: AddressChangeAction["setState"];
+      action: AddressChangeAction["setState"];
       payload: StatesUS;
     }
   | {
-      type: AddressChangeAction["setCountry"];
+      action: AddressChangeAction["setCountry"];
       payload: Country;
     }
   | {
-      type: AddressChangeAction["setPostalCode"];
+      action: AddressChangeAction["setPostalCode"];
       payload: PostalCode;
     }
   | {
-      type: AddressChangeAction["setPageInError"];
+      action: AddressChangeAction["setPageInError"];
       payload: SetPageInErrorPayload;
     };
 

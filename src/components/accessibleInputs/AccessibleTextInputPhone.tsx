@@ -42,11 +42,11 @@ type AccessibleTextInputPhoneAttributes<
   page?: number;
   parentDispatch: Dispatch<
     | {
-        type: ValidValueAction;
+        action: ValidValueAction;
         payload: string;
       }
     | {
-        type: InvalidValueAction;
+        action: InvalidValueAction;
         payload: SetPageInErrorPayload;
       }
   >;
@@ -190,14 +190,14 @@ function AccessibleTextInputPhone<
             name={name}
             onBlur={() => {
               parentDispatch({
-                type: validValueAction,
+                action: validValueAction,
                 payload: valueBuffer,
               });
 
               parentDispatch({
-                type: invalidValueAction,
+                action: invalidValueAction,
                 payload: {
-                  kind: isValueBufferValid ? "remove" : "add",
+                  kind: isValueBufferValid ? "delete" : "add",
                   page,
                 },
               });

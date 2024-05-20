@@ -101,7 +101,7 @@ function CreateBenefit() {
 
     triggerFormSubmit,
     currentStepperPosition,
-    stepsInError,
+    pagesInError,
 
     isSubmitting,
     submitMessage,
@@ -804,7 +804,7 @@ function CreateBenefit() {
       });
     },
     // ensures form submit happens only once
-    buttonDisabled: stepsInError.size > 0 || triggerFormSubmit,
+    buttonDisabled: pagesInError.size > 0 || triggerFormSubmit,
   };
 
   const [
@@ -842,7 +842,7 @@ function CreateBenefit() {
     currentStepperPosition === CREATE_BENEFIT_MAX_STEPPER_POSITION ? (
       <Tooltip
         label={
-          stepsInError.size > 0
+          pagesInError.size > 0
             ? "Please fix errors before submitting form"
             : "Submit Benefit form"
         }
@@ -987,7 +987,7 @@ function CreateBenefit() {
       maxStepperPosition={CREATE_BENEFIT_MAX_STEPPER_POSITION}
       parentComponentDispatch={createBenefitDispatch}
       setCurrentStepperPosition={createBenefitAction.setCurrentStepperPosition}
-      stepsInError={stepsInError}
+      pagesInError={pagesInError}
     >
       {displaySubmitSuccessNotificationModal}
       {displayCreateBenefitForm}

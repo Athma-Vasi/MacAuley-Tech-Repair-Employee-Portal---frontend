@@ -21,11 +21,11 @@ type AccessibleSwitchInputAttributes<
   onLabel: ReactNode;
   parentDispatch: React.Dispatch<
     | {
-        type: ValidValueAction;
+        action: ValidValueAction;
         payload: boolean;
       }
     | {
-        type: InvalidValueAction;
+        action: InvalidValueAction;
         payload: SetPageInErrorPayload;
       }
   >;
@@ -115,14 +115,14 @@ function AccessibleSwitchInput<
           } = event;
 
           parentDispatch({
-            type: validValueAction,
+            action: validValueAction,
             payload: checked,
           });
 
           parentDispatch({
-            type: invalidValueAction,
+            action: invalidValueAction,
             payload: {
-              kind: checked ? "remove" : "add",
+              kind: checked ? "delete" : "add",
               page,
             },
           });

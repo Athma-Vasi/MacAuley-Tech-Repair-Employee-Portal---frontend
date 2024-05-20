@@ -257,7 +257,7 @@ type StepperPage = {
 };
 
 type SetPageInErrorPayload = {
-  kind: "add" | "remove";
+  kind: "add" | "delete";
   page: number;
 };
 
