@@ -1,5 +1,5 @@
 import { Box, MantineSize, MantineTransition, RangeSlider, Slider } from "@mantine/core";
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
 
 import { useGlobalState } from "../../hooks";
 import { SliderInputData } from "../../types";
@@ -18,10 +18,12 @@ type AccessibleSliderInputAttributes<ValidValueAction extends string = string> =
   max: number;
   min: number;
   name: string;
+  onBlur?: () => void;
   /** use with range-slider */
   onChangeRangeSlider?: (value: [number, number]) => void;
   /** use with slider */
   onChangeSlider?: (value: number) => void;
+  onFocus?: () => void;
   parentDispatch: React.Dispatch<{
     action: ValidValueAction;
     payload: number | [number, number];
@@ -58,8 +60,10 @@ function AccessibleSliderInput({ attributes }: AccessibleSliderInputProps) {
     max,
     min,
     name,
+    onBlur,
     onChangeRangeSlider,
     onChangeSlider,
+    onFocus,
     parentDispatch,
     precision = 1,
     rangeSliderDefaultValues = [min, max],
@@ -77,6 +81,11 @@ function AccessibleSliderInput({ attributes }: AccessibleSliderInputProps) {
   const {
     globalState: { themeObject },
   } = useGlobalState();
+
+  const [valueBuffer, setValueBuffer] = useState<number>(value);
+  const [rangeValueBuffer, setRangeValueBuffer] = useState<[number, number]>(
+    rangeSliderDefaultValues
+  );
 
   const sliderMarks = marks ? marks : disabled ? void 0 : returnSliderMarks({ max, min });
 
@@ -102,16 +111,19 @@ function AccessibleSliderInput({ attributes }: AccessibleSliderInputProps) {
         max={max}
         min={min}
         name={name}
-        onChange={(value: number) => {
+        onBlur={() => {
           parentDispatch({
             action: validValueAction,
-            payload: value,
+            payload: valueBuffer,
           });
 
-          if (onChangeSlider) {
-            onChangeSlider(value);
-          }
+          onBlur?.();
         }}
+        onChange={(value: number) => {
+          setValueBuffer(value);
+          onChangeSlider?.(value);
+        }}
+        onFocus={onFocus}
         precision={precision}
         size={size}
         step={step}
@@ -119,7 +131,7 @@ function AccessibleSliderInput({ attributes }: AccessibleSliderInputProps) {
         thumbChildren={thumbChildren}
         thumbLabel={thumbLabel}
         thumbSize={thumbSize}
-        value={value}
+        value={valueBuffer}
       />
     ) : (
       <RangeSlider
@@ -133,16 +145,19 @@ function AccessibleSliderInput({ attributes }: AccessibleSliderInputProps) {
         max={max}
         min={min}
         name={name}
-        onChange={(value: [number, number]) => {
+        onBlur={() => {
           parentDispatch({
             action: validValueAction,
-            payload: value,
+            payload: valueBuffer,
           });
 
-          if (onChangeRangeSlider) {
-            onChangeRangeSlider(value);
-          }
+          onBlur?.();
         }}
+        onChange={(value: [number, number]) => {
+          setRangeValueBuffer(value);
+          onChangeRangeSlider?.(value);
+        }}
+        onFocus={onFocus}
         precision={precision}
         size={size}
         step={step}
@@ -150,7 +165,7 @@ function AccessibleSliderInput({ attributes }: AccessibleSliderInputProps) {
         thumbChildren={thumbChildren}
         thumbFromLabel={thumbFromLabel}
         thumbSize={thumbSize}
-        value={rangeSliderDefaultValues}
+        value={rangeValueBuffer}
       />
     );
 
