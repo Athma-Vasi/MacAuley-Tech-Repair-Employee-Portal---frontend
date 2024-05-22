@@ -30,6 +30,7 @@ type AccessibleImageInputState = {
   currentImageIndex: number;
   imagesBuffer: File[];
   imageFileBlobs: (File | Blob | null)[];
+  isLoading: boolean;
   qualities: number[];
   orientations: number[];
 };
@@ -53,6 +54,10 @@ type AccessibleImageInputDispatch =
         index: number;
         fileBlob: File | Blob | null;
       };
+    }
+  | {
+      action: AccessibleImageInputAction["setIsLoading"];
+      payload: boolean;
     }
   | {
       action: AccessibleImageInputAction["setQualities"];

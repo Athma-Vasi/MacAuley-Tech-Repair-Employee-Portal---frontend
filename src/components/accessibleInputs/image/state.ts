@@ -5,6 +5,7 @@ const initialAccessibleImageInputState: AccessibleImageInputState = {
   currentImageIndex: 0,
   imagesBuffer: [],
   imageFileBlobs: [],
+  isLoading: false,
   orientations: Array.from({ length: MAX_IMAGES }, () => 1),
   qualities: Array.from({ length: MAX_IMAGES }, () => 10),
 };

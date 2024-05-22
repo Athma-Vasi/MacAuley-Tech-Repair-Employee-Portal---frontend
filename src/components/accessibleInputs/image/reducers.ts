@@ -37,6 +37,7 @@ const accessibleImageInputReducersMap = new Map<
     accessibleImageInputAction.setImageFileBlobs,
     accessibleImageInputReducer_setImageFileBlobs,
   ],
+  [accessibleImageInputAction.setIsLoading, accessibleImageInputReducer_setIsLoading],
   [accessibleImageInputAction.setQualities, accessibleImageInputReducer_setQualities],
   [
     accessibleImageInputAction.setOrientations,
@@ -130,6 +131,16 @@ function accessibleImageInputReducer_setImageFileBlobs(
   return {
     ...state,
     imageFileBlobs,
+  };
+}
+
+function accessibleImageInputReducer_setIsLoading(
+  state: AccessibleImageInputState,
+  dispatch: AccessibleImageInputDispatch
+): AccessibleImageInputState {
+  return {
+    ...state,
+    isLoading: dispatch.payload as boolean,
   };
 }
 

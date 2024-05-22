@@ -22,6 +22,9 @@ import { accessibleImageInputReducer } from "./reducers";
 import { initialAccessibleImageInputState } from "./state";
 import { AccessibleImageInputAttributes } from "./types";
 import { GoldenGrid } from "../GoldenGrid";
+import localforage from "localforage";
+import { all } from "axios";
+import { validateImages } from "./utils";
 
 function AccessibleImageInput<
   ValidValueAction extends string = string,
@@ -62,13 +65,97 @@ function AccessibleImageInput<
     });
   }, [accessibleImageInputState]);
 
-  const isComponentMountedRef = useRef(false);
-
+  const isMountedRetrieveImagesRef = useRef(false);
   useEffect(() => {
-    isComponentMountedRef.current = true;
-    const isMounted = isComponentMountedRef.current;
+    isMountedRetrieveImagesRef.current = true;
+    const isMounted = isMountedRetrieveImagesRef.current;
 
-    async function compressAndRotateImage() {
+    async function retrieveImages(): Promise<void> {
+      try {
+        accessibleImageInputDispatch({
+          action: accessibleImageInputAction.setIsLoading,
+          payload: true,
+        });
+
+        const images = await localforage.getItem<Array<File | null>>("images");
+
+        if (!isMounted || !images) {
+          return;
+        }
+
+        if (images) {
+          images.forEach((image: File | null, index) => {
+            if (image) {
+              if (image.name !== imagesBuffer[index]?.name) {
+                accessibleImageInputDispatch({
+                  action: accessibleImageInputAction.addImageToBuffer,
+                  payload: image,
+                });
+              }
+            }
+          });
+        }
+
+        accessibleImageInputDispatch({
+          action: accessibleImageInputAction.setIsLoading,
+          payload: false,
+        });
+      } catch (error: any) {
+        if (!isMounted) {
+          return;
+        }
+
+        showBoundary(error);
+      }
+    }
+
+    retrieveImages();
+
+    return () => {
+      isMountedRetrieveImagesRef.current = false;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const isMountedStoreImagesRef = useRef(false);
+  useEffect(() => {
+    isMountedStoreImagesRef.current = true;
+    const isMounted = isMountedStoreImagesRef.current;
+
+    async function storeImages(): Promise<void> {
+      try {
+        const newImages = structuredClone(
+          (await localforage.getItem<Array<File | null>>("images")) ?? []
+        );
+        if (!isMounted || newImages.length === imagesBuffer.length) {
+          return;
+        }
+
+        if (newImages.length > imagesBuffer.length) {
+          newImages.pop();
+        }
+
+        newImages.push(imagesBuffer.at(-1) ?? new File([], "image"));
+        await localforage.setItem("images", newImages);
+      } catch (error: any) {
+        showBoundary(error);
+      }
+    }
+
+    storeImages();
+
+    return () => {
+      isMountedStoreImagesRef.current = false;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [imagesBuffer.length]);
+
+  const isMountedModifyImagesRef = useRef(false);
+  useEffect(() => {
+    isMountedModifyImagesRef.current = true;
+    const isMounted = isMountedModifyImagesRef.current;
+
+    async function modifyImage(): Promise<void> {
       try {
         const imageToModify = structuredClone(imagesBuffer[currentImageIndex]);
 
@@ -98,27 +185,12 @@ function AccessibleImageInput<
           },
         });
 
-        const areImagesInvalid = imageFileBlobs.reduce((invalidAcc, fileBlob) => {
-          if (fileBlob === null) {
-            return true;
-          }
-
-          const { size, type } = fileBlob;
-          if (size > maxImageSize) {
-            return true;
-          }
-
-          if (!type.length) {
-            return true;
-          }
-
-          const extension = type.split("/")[1];
-          if (!ALLOWED_FILE_EXTENSIONS_REGEX.test(extension)) {
-            return true;
-          }
-
-          return invalidAcc;
-        }, false);
+        const { areImagesInvalid } = validateImages({
+          allowedFileExtensionsRegex: ALLOWED_FILE_EXTENSIONS_REGEX,
+          imageFileBlobs,
+          maxImages,
+          maxImageSize,
+        });
 
         parentDispatch({
           action: invalidValueAction,
@@ -154,10 +226,10 @@ function AccessibleImageInput<
       }
     }
 
-    compressAndRotateImage();
+    modifyImage();
 
     return () => {
-      isComponentMountedRef.current = false;
+      isMountedModifyImagesRef.current = false;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentImageIndex, qualities, orientations]);
