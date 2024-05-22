@@ -27,10 +27,12 @@ type AccessibleSliderInputAttributes<ValidValueAction extends string = string> =
   onBlur?: () => void;
   onChange?: (value: number) => void;
   onFocus?: () => void;
+  /** default dispatch for non-user-created inputs */
   parentDispatch?: React.Dispatch<{
     action: ValidValueAction;
     payload: number;
   }>;
+  /** default dispatch for user-created dynamic inputs */
   parentDynamicDispatch?: React.Dispatch<{
     action: ValidValueAction;
     payload: DynamicSliderInputPayload;
@@ -40,7 +42,6 @@ type AccessibleSliderInputAttributes<ValidValueAction extends string = string> =
   sliderDefaultValue?: number;
   step?: number;
   thumbChildren?: ReactNode;
-  /** use with slider */
   thumbLabel?: string;
   thumbSize?: number;
   validValueAction: ValidValueAction;
@@ -136,7 +137,7 @@ function AccessibleSliderInput<ValidValueAction extends string = string>({
   );
 
   return (
-    <Container w={350}>
+    <Container w={300}>
       {accessibleSliderInput}
       <Box
         style={

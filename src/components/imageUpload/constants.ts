@@ -1,5 +1,4 @@
 const IMG_QUALITY_SLIDER_DATA = [
-  { value: 1, label: "10%" },
   { value: 2, label: "20%" },
   { value: 4, label: "40%" },
   { value: 6, label: "60%" },

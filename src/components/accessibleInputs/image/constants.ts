@@ -1,4 +1,4 @@
-const MAX_IMAGE_SIZE = 5_000_000; // 5 MB
+const MAX_IMAGE_SIZE = 3_000_000; // 3 MB
 const MAX_IMAGES = 5;
 
 // ".jpg" | ".jpeg" | ".png" | ".webp"

@@ -30,6 +30,10 @@ const accessibleImageInputReducersMap = new Map<
     accessibleImageInputReducer_removeImageFromBuffer,
   ],
   [
+    accessibleImageInputAction.resetImageFileBlob,
+    accessibleImageInputReducer_resetImageFileBlob,
+  ],
+  [
     accessibleImageInputAction.setImageFileBlobs,
     accessibleImageInputReducer_setImageFileBlobs,
   ],
@@ -60,9 +64,9 @@ function accessibleImageInputReducer_addImageToBuffer(
     return state;
   }
 
-  const imagesBuffer = state.imagesBuffer.slice();
+  const imagesBuffer = structuredClone(state.imagesBuffer);
   imagesBuffer.push(image);
-  const imageFileBlobs = state.imageFileBlobs.slice();
+  const imageFileBlobs = structuredClone(state.imageFileBlobs);
   imageFileBlobs.push(image);
 
   return {
@@ -77,15 +81,37 @@ function accessibleImageInputReducer_removeImageFromBuffer(
   dispatch: AccessibleImageInputDispatch
 ): AccessibleImageInputState {
   const index = dispatch.payload as number;
-  const imagesBuffer = state.imagesBuffer.slice();
+  const imagesBuffer = structuredClone(state.imagesBuffer);
   imagesBuffer.splice(index, 1);
-  const imageFileBlobs = state.imageFileBlobs.slice();
+  const imageFileBlobs = structuredClone(state.imageFileBlobs);
   imageFileBlobs.splice(index, 1);
 
   return {
     ...state,
     imagesBuffer,
     imageFileBlobs,
+  };
+}
+
+function accessibleImageInputReducer_resetImageFileBlob(
+  state: AccessibleImageInputState,
+  dispatch: AccessibleImageInputDispatch
+): AccessibleImageInputState {
+  const index = dispatch.payload as number;
+  const clonedImage = structuredClone(state.imagesBuffer[index]);
+  const imageFileBlobs = structuredClone(state.imageFileBlobs);
+  imageFileBlobs[index] = clonedImage;
+
+  const qualities = state.qualities.slice();
+  qualities[index] = 10;
+  const orientations = state.orientations.slice();
+  orientations[index] = 1;
+
+  return {
+    ...state,
+    imageFileBlobs,
+    qualities,
+    orientations,
   };
 }
 
@@ -98,7 +124,7 @@ function accessibleImageInputReducer_setImageFileBlobs(
     fileBlob: File | Blob | null;
   };
 
-  const imageFileBlobs = state.imageFileBlobs.slice();
+  const imageFileBlobs = structuredClone(state.imageFileBlobs);
   imageFileBlobs[index] = fileBlob;
 
   return {

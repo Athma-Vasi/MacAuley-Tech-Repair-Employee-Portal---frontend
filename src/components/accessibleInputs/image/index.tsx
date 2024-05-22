@@ -1,22 +1,27 @@
-import { Dispatch, useEffect, useReducer, useRef, useState } from "react";
+import { Card, Grid, Group, Image, Space, Stack, Text, Tooltip } from "@mantine/core";
+import { compress, EImageType } from "image-conversion";
+import { useEffect, useReducer, useRef } from "react";
+import { useErrorBoundary } from "react-error-boundary";
+import { BiReset } from "react-icons/bi";
+import { TbCheck, TbExclamationCircle, TbTrash } from "react-icons/tb";
 
+import { COLORS_SWATCHES } from "../../../constants/data";
+import { useGlobalState } from "../../../hooks";
+import { logState, returnThemeColors } from "../../../utils";
+import {
+  displayOrientationLabel,
+  IMG_ORIENTATION_SLIDER_DATA,
+  IMG_QUALITY_SLIDER_DATA,
+} from "../../imageUpload/constants";
 import { AccessibleFileInput } from "../AccessibleFileInput";
+import { AccessibleSliderInput } from "../AccessibleSliderInput";
+import { createAccessibleButtons } from "../utils";
 import { AccessibleImageInputAction, accessibleImageInputAction } from "./actions";
+import { ALLOWED_FILE_EXTENSIONS_REGEX, MAX_IMAGE_SIZE, MAX_IMAGES } from "./constants";
 import { accessibleImageInputReducer } from "./reducers";
 import { initialAccessibleImageInputState } from "./state";
 import { AccessibleImageInputAttributes } from "./types";
-import { logState } from "../../../utils";
-import { Group, Image, Space, Stack, Text } from "@mantine/core";
-import { createAccessibleButtons } from "../utils";
-import { AccessibleSliderInput } from "../AccessibleSliderInput";
-import {
-  IMG_ORIENTATION_SLIDER_DATA,
-  IMG_QUALITY_SLIDER_DATA,
-  displayOrientationLabel,
-} from "../../imageUpload/constants";
-import { ALLOWED_FILE_EXTENSIONS_REGEX, MAX_IMAGES, MAX_IMAGE_SIZE } from "./constants";
-import { EImageType, compress } from "image-conversion";
-import { useErrorBoundary } from "react-error-boundary";
+import { GoldenGrid } from "../GoldenGrid";
 
 function AccessibleImageInput<
   ValidValueAction extends string = string,
@@ -39,9 +44,16 @@ function AccessibleImageInput<
   const { currentImageIndex, imageFileBlobs, imagesBuffer, orientations, qualities } =
     accessibleImageInputState;
 
-  const [imageName, setImageName] = useState<string | null>(null);
+  const {
+    globalState: { themeObject },
+  } = useGlobalState();
 
   const { showBoundary } = useErrorBoundary();
+
+  const {
+    generalColors: { redColorShade, textColor, greenColorShade },
+    appThemeColors: { borderColor },
+  } = returnThemeColors({ themeObject, colorsSwatches: COLORS_SWATCHES });
 
   useEffect(() => {
     logState({
@@ -68,7 +80,7 @@ function AccessibleImageInput<
         const orientation = orientations[currentImageIndex];
         const type = imageToModify?.type as EImageType;
 
-        const fileBlob = await compress(imageToModify, {
+        const fileBlob: Blob = await compress(imageToModify, {
           quality,
           orientation,
           type,
@@ -92,11 +104,15 @@ function AccessibleImageInput<
           }
 
           const { size, type } = fileBlob;
-          const extension = type.split("/")[1];
-
           if (size > maxImageSize) {
             return true;
           }
+
+          if (!type.length) {
+            return true;
+          }
+
+          const extension = type.split("/")[1];
           if (!ALLOWED_FILE_EXTENSIONS_REGEX.test(extension)) {
             return true;
           }
@@ -115,11 +131,7 @@ function AccessibleImageInput<
         const formData = imageFileBlobs.reduce<FormData>(
           (formDataAcc, imageFileBlob, index) => {
             if (imageFileBlob) {
-              formDataAcc.append(
-                `images-${index}`,
-                imageFileBlob,
-                imagesBuffer[index].name
-              );
+              formDataAcc.append("images", imageFileBlob, imagesBuffer[index].name);
             }
 
             return formDataAcc;
@@ -132,7 +144,7 @@ function AccessibleImageInput<
           payload: formData,
         });
 
-        console.log("formData.get(images)", formData.get("images-1"));
+        console.log("formData.getAll(images)", formData.getAll("images"));
       } catch (error: any) {
         if (!isMounted) {
           return;
@@ -161,30 +173,129 @@ function AccessibleImageInput<
     />
   );
 
-  const images = imageFileBlobs.map((fileBlob: File | Blob | null, index) => {
+  const fileBlobCards = imageFileBlobs.map((fileBlob: File | Blob | null, index) => {
+    const { size, type } = fileBlob ?? new Blob([]);
+
+    const isImageSizeInvalid = size > maxImageSize;
+    const isImageTypeInvalid = !ALLOWED_FILE_EXTENSIONS_REGEX.test(type.split("/")[1]);
+    const isImageInvalid = isImageSizeInvalid || isImageTypeInvalid;
+
+    const validScreenreaderTextElement = (
+      <GoldenGrid>
+        <Group position="right">
+          <TbCheck color={greenColorShade} size={22} />
+        </Group>
+        <Text color={greenColorShade} aria-live="polite">
+          Image is valid
+        </Text>
+      </GoldenGrid>
+    );
+    const invalidImageDescription = isImageSizeInvalid
+      ? `Image is too large. Must be less than ${maxImageSize / 1000} KB.`
+      : !ALLOWED_FILE_EXTENSIONS_REGEX.test(type.split("/")[1])
+      ? "Image contains disallowed file type. Must only contain .jpg, .jpeg or .png file types."
+      : "Image is invalid.";
+
+    const invalidScreenreaderTextElement = (
+      <GoldenGrid>
+        <Group position="right">
+          <TbExclamationCircle color={redColorShade} size={22} />
+        </Group>
+        <Text color={redColorShade} aria-live="polite">
+          {invalidImageDescription}
+        </Text>
+      </GoldenGrid>
+    );
+
     const img = (
       <Image
+        alt={isImageInvalid ? "Invalid image" : imagesBuffer[index]?.name ?? "Image"}
         key={index}
+        maw={300}
         src={URL.createObjectURL(fileBlob ?? new Blob([]))}
-        alt="image preview"
+        withPlaceholder
       />
+    );
+
+    const imageName = (
+      <GoldenGrid>
+        <Text color={textColor}>Name:</Text>
+        <Text color={textColor}>{imagesBuffer[index]?.name ?? "Image"}</Text>
+      </GoldenGrid>
+    );
+
+    const imageSizeColor = isImageSizeInvalid ? redColorShade : textColor;
+    const imageSize = (
+      <GoldenGrid>
+        <Text color={imageSizeColor}>Size:</Text>
+        <Text color={imageSizeColor}>{Math.round(size / 1000)} KB</Text>
+      </GoldenGrid>
+    );
+
+    const imageTypeColor = isImageTypeInvalid ? redColorShade : textColor;
+    const imageType = (
+      <GoldenGrid>
+        <Text color={imageTypeColor}>Type:</Text>
+        <Text color={imageTypeColor}>
+          {type.length
+            ? type.split("/")[1]
+            : imagesBuffer[index]?.name.split(".")[1] ?? "Unknown"}
+        </Text>
+      </GoldenGrid>
     );
 
     const [removeButton, resetButton] = createAccessibleButtons([
       {
+        disabledScreenreaderText: "Image is invalid",
+        enabledScreenreaderText: "Remove image",
+        leftIcon: <TbTrash />,
         name: "remove",
+        onClick: (
+          _event:
+            | React.MouseEvent<HTMLButtonElement, MouseEvent>
+            | React.PointerEvent<HTMLButtonElement>
+        ) => {
+          accessibleImageInputDispatch({
+            action: accessibleImageInputAction.removeImageFromBuffer,
+            payload: index,
+          });
+        },
       },
-      { name: "reset" },
+      {
+        disabled: isImageInvalid,
+        disabledScreenreaderText: "Image is invalid",
+        enabledScreenreaderText: "Reset image",
+        leftIcon: <BiReset />,
+        name: "reset",
+        onClick: (
+          _event:
+            | React.MouseEvent<HTMLButtonElement, MouseEvent>
+            | React.PointerEvent<HTMLButtonElement>
+        ) => {
+          accessibleImageInputDispatch({
+            action: accessibleImageInputAction.resetImageFileBlob,
+            payload: index,
+          });
+        },
+      },
     ]);
 
-    const imageFile = fileBlob ?? new Blob([]);
+    const removeButtonWithTooltip = isImageInvalid ? (
+      <Tooltip label={`${imageName} is invalid`}>{removeButton}</Tooltip>
+    ) : (
+      removeButton
+    );
 
-    const imageSize = <Text>{imageFile?.size}</Text>;
-    const imageType = <Text>{imageFile?.type}</Text>;
+    const resetButtonWithTooltip = isImageInvalid ? (
+      <Tooltip label={invalidImageDescription}>{resetButton}</Tooltip>
+    ) : (
+      resetButton
+    );
 
     const imageQualitySlider = (
       <AccessibleSliderInput
         attributes={{
+          disabled: isImageInvalid,
           index,
           marks: IMG_QUALITY_SLIDER_DATA,
           max: 10,
@@ -198,9 +309,19 @@ function AccessibleImageInput<
       />
     );
 
+    const imageQualityStack = (
+      <Stack spacing="md">
+        {imageQualitySlider}
+        <Group position="center">
+          <Text>Quality</Text>
+        </Group>
+      </Stack>
+    );
+
     const imageOrientationSlider = (
       <AccessibleSliderInput
         attributes={{
+          disabled: isImageInvalid || qualities[index] > 7,
           index,
           label: (value) => displayOrientationLabel(value),
           marks: IMG_ORIENTATION_SLIDER_DATA,
@@ -215,30 +336,51 @@ function AccessibleImageInput<
       />
     );
 
-    return (
-      <Stack w={350}>
-        {img}
-        <Group>
-          {imageSize}
-          {imageType}
-        </Group>
-        <Stack>
-          {imageQualitySlider}
-          <Space h="md" />
-          {imageOrientationSlider}
-        </Stack>
-        <Group>
-          {removeButton}
-          {resetButton}
+    const imageOrientationSliderWithTooltip =
+      qualities[index] > 7 ? (
+        <Tooltip label="Quality must be less than 80% to rotate image">
+          <Group>{imageOrientationSlider}</Group>
+        </Tooltip>
+      ) : (
+        imageOrientationSlider
+      );
+
+    const imageOrientationStack = (
+      <Stack spacing="md">
+        {imageOrientationSliderWithTooltip}
+        <Group position="center">
+          <Text>Orientation</Text>
         </Group>
       </Stack>
+    );
+
+    return (
+      <Card w={325} style={{ outline: borderColor, borderRadius: 4 }}>
+        <Stack spacing="sm">
+          {img}
+          {isImageInvalid ? invalidScreenreaderTextElement : validScreenreaderTextElement}
+          <Stack>
+            {imageName}
+            {imageSize}
+            {imageType}
+          </Stack>
+          <Group w="100%" position="apart">
+            <Group position="left">{removeButtonWithTooltip}</Group>
+            <Group position="right">{resetButtonWithTooltip}</Group>
+          </Group>
+          <Stack spacing="sm" style={{ outline: "1px solid blue" }}>
+            {imageQualityStack}
+            {imageOrientationStack}
+          </Stack>
+        </Stack>
+      </Card>
     );
   });
 
   return (
     <Stack w={700}>
       {fileInput}
-      {images}
+      {fileBlobCards}
     </Stack>
   );
 }

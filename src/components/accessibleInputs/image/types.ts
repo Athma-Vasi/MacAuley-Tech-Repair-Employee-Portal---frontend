@@ -44,6 +44,10 @@ type AccessibleImageInputDispatch =
       payload: number;
     }
   | {
+      action: AccessibleImageInputAction["resetImageFileBlob"];
+      payload: number;
+    }
+  | {
       action: AccessibleImageInputAction["setImageFileBlobs"];
       payload: {
         index: number;
