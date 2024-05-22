@@ -45,13 +45,12 @@ type ExpenseClaimDocument = ExpenseClaimSchema & {
 type CreateExpenseClaimState = {
   acknowledgement: boolean;
   additionalComments: string;
-  areImagesValid: boolean;
   expenseClaimAmount: string;
   expenseClaimCurrency: Currency;
   expenseClaimDate: string;
   expenseClaimDescription: string;
   expenseClaimKind: ExpenseClaimKind;
-  files: FormData[];
+  formData: FormData;
   isSubmitting: boolean;
   isSuccessful: boolean;
   pagesInError: Set<number>;
@@ -66,10 +65,6 @@ type CreateExpenseClaimDispatch =
   | {
       action: CreateExpenseClaimAction["setAdditionalComments"];
       payload: string;
-    }
-  | {
-      action: CreateExpenseClaimAction["setAreImagesValid"];
-      payload: boolean;
     }
   | {
       action: CreateExpenseClaimAction["setExpenseClaimAmount"];
@@ -92,8 +87,8 @@ type CreateExpenseClaimDispatch =
       payload: ExpenseClaimKind;
     }
   | {
-      action: CreateExpenseClaimAction["setImgFormDataArray"];
-      payload: FormData[];
+      action: CreateExpenseClaimAction["setFormData"];
+      payload: FormData;
     }
   | {
       action: CreateExpenseClaimAction["setIsSubmitting"];

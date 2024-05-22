@@ -32,7 +32,6 @@ type AccessibleTextAreaInputAttributes<
   dynamicInputs?: ReactNode[]; // inputs created by the user (ex: buttons in the survey builder)
   icon?: ReactNode;
   initialInputValue?: string;
-  value: string;
   label?: ReactNode;
   maxLength?: number;
   maxRows?: number;
@@ -65,6 +64,7 @@ type AccessibleTextAreaInputAttributes<
   rightSectionOnClick?: () => void;
   size?: MantineSize;
   stepperPages: StepperPage[];
+  value: string;
   withAsterisk?: boolean;
 };
 
@@ -86,9 +86,6 @@ function AccessibleTextAreaInput<
     dynamicInputs = null,
     icon = null,
     initialInputValue = "",
-    value,
-    name,
-    label = splitCamelCase(attributes.name),
     maxLength = 2000,
     maxRows = 7,
     minLength = 2,
@@ -109,8 +106,11 @@ function AccessibleTextAreaInput<
     rightSectionOnClick = () => {},
     size = "sm",
     stepperPages,
+    value,
     withAsterisk = required,
   } = attributes;
+  const name = splitCamelCase(attributes.name);
+  const label = attributes.label ?? name;
 
   const [valueBuffer, setValueBuffer] = useState(value);
   const [isPopoverOpened, { open: openPopover, close: closePopover }] =

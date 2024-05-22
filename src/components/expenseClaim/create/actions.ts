@@ -1,13 +1,12 @@
 type CreateExpenseClaimAction = {
   setAcknowledgement: "setAcknowledgement";
   setAdditionalComments: "setAdditionalComments";
-  setAreImagesValid: "setAreImagesValid";
   setExpenseClaimAmount: "setExpenseClaimAmount";
   setExpenseClaimCurrency: "setExpenseClaimCurrency";
   setExpenseClaimDate: "setExpenseClaimDate";
   setExpenseClaimDescription: "setExpenseClaimDescription";
   setExpenseClaimKind: "setExpenseClaimKind";
-  setImgFormDataArray: "setImgFormDataArray";
+  setFormData: "setFormData";
   setIsSubmitting: "setIsSubmitting";
   setIsSuccessful: "setIsSuccessful";
   setPageInError: "setPageInError";
@@ -17,13 +16,12 @@ type CreateExpenseClaimAction = {
 const createExpenseClaimAction: CreateExpenseClaimAction = {
   setAcknowledgement: "setAcknowledgement",
   setAdditionalComments: "setAdditionalComments",
-  setAreImagesValid: "setAreImagesValid",
   setExpenseClaimAmount: "setExpenseClaimAmount",
   setExpenseClaimCurrency: "setExpenseClaimCurrency",
   setExpenseClaimDate: "setExpenseClaimDate",
   setExpenseClaimDescription: "setExpenseClaimDescription",
   setExpenseClaimKind: "setExpenseClaimKind",
-  setImgFormDataArray: "setImgFormDataArray",
+  setFormData: "setFormData",
   setIsSubmitting: "setIsSubmitting",
   setIsSuccessful: "setIsSuccessful",
   setPageInError: "setPageInError",

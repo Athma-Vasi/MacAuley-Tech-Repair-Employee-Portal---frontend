@@ -3,12 +3,14 @@ import { useEffect, useReducer, useRef } from "react";
 import { useErrorBoundary } from "react-error-boundary";
 
 import { useAuth } from "../../../hooks";
-
-import { logState } from "../../../utils";
-
 import { useFetchInterceptor } from "../../../hooks/useFetchInterceptor";
+import { logState } from "../../../utils";
+import { AccessibleImageInput } from "../../accessibleInputs/image";
+import { createExpenseClaimAction } from "./actions";
 import { createExpenseClaimReducer } from "./reducers";
 import { initialCreateExpenseClaimState } from "./state";
+import { StepperPage } from "../../../types";
+import { returnCreateBenefitStepperPages } from "../../benefit/constants";
 
 function CreateExpenseClaim() {
   const [createExpenseClaimState, createExpenseClaimDispatch] = useReducer(
@@ -19,13 +21,12 @@ function CreateExpenseClaim() {
   const {
     acknowledgement,
     additionalComments,
-    areImagesValid,
     expenseClaimAmount,
     expenseClaimCurrency,
     expenseClaimDate,
     expenseClaimDescription,
     expenseClaimKind,
-    files,
+    formData,
     isSubmitting,
     isSuccessful,
     pagesInError,
@@ -110,10 +111,18 @@ function CreateExpenseClaim() {
     return successfulState;
   }
 
-  // const CREATE_BENEFIT_STEPPER_PAGES: StepperPage[] =
-  //   returnCreateExpenseClaimStepperPages();
+  const CREATE_BENEFIT_STEPPER_PAGES: StepperPage[] = returnCreateBenefitStepperPages();
 
-  return <></>;
+  return (
+    <AccessibleImageInput
+      formData={formData}
+      invalidValueAction={createExpenseClaimAction.setPageInError}
+      page={1}
+      parentDispatch={createExpenseClaimDispatch}
+      stepperPages={CREATE_BENEFIT_STEPPER_PAGES}
+      validValueAction={createExpenseClaimAction.setFormData}
+    />
+  );
 }
 
 export default CreateExpenseClaim;

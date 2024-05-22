@@ -29,7 +29,6 @@ type AccessibleTextInputPhoneAttributes<
   autoComplete?: "on" | "off";
   icon?: ReactNode;
   initialInputValue?: string;
-  value: string;
   label?: ReactNode;
   maxLength?: number;
   minLength?: number;
@@ -60,6 +59,7 @@ type AccessibleTextInputPhoneAttributes<
   rightSectionOnClick?: () => void;
   size?: MantineSize;
   stepperPages: StepperPage[];
+  value: string;
   withAsterisk?: boolean;
 };
 
@@ -79,11 +79,8 @@ function AccessibleTextInputPhone<
     autoComplete = "off",
     icon = null,
     initialInputValue = "+(1)",
-    value,
-    label = splitCamelCase(attributes.name),
     maxLength = 18,
     minLength = 18,
-    name,
     onBlur,
     onChange,
     onFocus,
@@ -99,9 +96,12 @@ function AccessibleTextInputPhone<
     rightSectionIcon = null,
     rightSectionOnClick = () => {},
     size = "sm",
-    withAsterisk = false,
     stepperPages,
+    value,
+    withAsterisk = false,
   } = attributes;
+  const name = splitCamelCase(attributes.name);
+  const label = attributes.label ?? name;
 
   const [valueBuffer, setValueBuffer] = useState(() => value);
   const [isPopoverOpened, { open: openPopover, close: closePopover }] =

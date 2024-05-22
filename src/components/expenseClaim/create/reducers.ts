@@ -31,10 +31,6 @@ const createExpenseClaimReducersMap = new Map<
     createExpenseClaimReducer_setAdditionalComments,
   ],
   [
-    createExpenseClaimAction.setAreImagesValid,
-    createExpenseClaimReducer_setAreImagesValid,
-  ],
-  [
     createExpenseClaimAction.setExpenseClaimAmount,
     createExpenseClaimReducer_setExpenseClaimAmount,
   ],
@@ -54,10 +50,7 @@ const createExpenseClaimReducersMap = new Map<
     createExpenseClaimAction.setExpenseClaimKind,
     createExpenseClaimReducer_setExpenseClaimKind,
   ],
-  [
-    createExpenseClaimAction.setImgFormDataArray,
-    createExpenseClaimReducer_setImgFormDataArray,
-  ],
+  [createExpenseClaimAction.setFormData, createExpenseClaimReducer_setFormData],
   [createExpenseClaimAction.setIsSubmitting, createExpenseClaimReducer_setIsSubmitting],
   [createExpenseClaimAction.setIsSuccessful, createExpenseClaimReducer_setIsSuccessful],
   [createExpenseClaimAction.setPageInError, createExpenseClaimReducer_setStepsInError],
@@ -84,16 +77,6 @@ function createExpenseClaimReducer_setAdditionalComments(
   return {
     ...state,
     additionalComments: dispatch.payload as string,
-  };
-}
-
-function createExpenseClaimReducer_setAreImagesValid(
-  state: CreateExpenseClaimState,
-  dispatch: CreateExpenseClaimDispatch
-): CreateExpenseClaimState {
-  return {
-    ...state,
-    areImagesValid: dispatch.payload as boolean,
   };
 }
 
@@ -147,13 +130,13 @@ function createExpenseClaimReducer_setExpenseClaimKind(
   };
 }
 
-function createExpenseClaimReducer_setImgFormDataArray(
+function createExpenseClaimReducer_setFormData(
   state: CreateExpenseClaimState,
   dispatch: CreateExpenseClaimDispatch
 ): CreateExpenseClaimState {
   return {
     ...state,
-    files: dispatch.payload as FormData[],
+    formData: dispatch.payload as FormData,
   };
 }
 

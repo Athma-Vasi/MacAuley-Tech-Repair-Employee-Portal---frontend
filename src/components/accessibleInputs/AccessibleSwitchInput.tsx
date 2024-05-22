@@ -59,8 +59,6 @@ function AccessibleSwitchInput<
     checked,
     disabled = false,
     invalidValueAction,
-    name,
-    label = splitCamelCase(attributes.name),
     labelPosition = "right",
     onChange,
     offLabel,
@@ -78,6 +76,8 @@ function AccessibleSwitchInput<
     validValueAction,
     value,
   } = attributes;
+  const name = splitCamelCase(attributes.name);
+  const label = attributes.label ?? name;
 
   const {
     globalState: { themeObject },

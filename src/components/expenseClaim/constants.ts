@@ -16,8 +16,8 @@ import { ResourceRoutePaths, RoleResourceRoutePaths, StepperChild } from "../../
 import {
   returnDateFullRangeValidationText,
   returnDateNearPastValidationText,
-  returnGrammarValidationText,
   returnFloatAmountValidationText,
+  returnGrammarValidationText,
   returnUsernameRegexValidationText,
 } from "../../utils";
 import { CURRENCY_DATA } from "../benefit/constants";
@@ -92,9 +92,16 @@ function returnExpenseClaimStepperPages() {
     selectInputData: EXPENSE_CLAIM_KIND_DATA,
   };
 
-  const imgFormDataArrayInput: StepperChild = {
+  const formData: StepperChild = {
     inputType: "file",
-    name: "files",
+    name: "formData",
+    // regexes: {
+    //   files: {
+    //     fileName: /^.*$/,
+    //     fileType: /^image\/(jpeg|png|webp)$/,
+    //     maxFileSize: 1 * 1024 * 1024,
+    //   },
+    // },
   };
 }
 
@@ -218,12 +225,14 @@ const EXPENSE_CLAIM_ROUTE_PATHS: ResourceRoutePaths = {
 const EXPENSE_CLAIMS_EXCLUDED_FIELDS_FROM_DISPLAY = new Set(["fileUploads"]);
 
 export {
-  EXPENSE_CLAIM_ROUTE_PATHS,
+  CREATE_EXPENSE_CLAIM_ROLE_PATHS,
   EXPENSE_CLAIM_DESCRIPTION_OBJECTS,
   EXPENSE_CLAIM_KIND_DATA,
   EXPENSE_CLAIM_MAX_IMG_AMOUNT,
   EXPENSE_CLAIM_MAX_IMG_SIZE,
   EXPENSE_CLAIM_MAX_STEPPER_POSITION,
   EXPENSE_CLAIM_QUERY_DATA,
+  EXPENSE_CLAIM_ROUTE_PATHS,
   EXPENSE_CLAIMS_EXCLUDED_FIELDS_FROM_DISPLAY,
+  returnExpenseClaimStepperPages,
 };

@@ -248,6 +248,11 @@ type StepperChild = {
     full: RegExp;
     /** must be subset(s) of full. input popover error messages are determined by partials regex tests */
     partials: [RegExp, string][];
+    files?: {
+      fileName: RegExp;
+      maxFileSize: number;
+      fileType: RegExp;
+    };
   };
   selectInputData?: string[];
 };

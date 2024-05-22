@@ -29,7 +29,6 @@ type AccessibleTextInputPostalAttributes<
   country: Country;
   icon?: ReactNode;
   initialInputValue?: string;
-  value: string;
   label?: ReactNode;
   maxLength?: number;
   minLength?: number;
@@ -60,6 +59,7 @@ type AccessibleTextInputPostalAttributes<
   name: string;
   size?: MantineSize;
   stepperPages: StepperPage[];
+  value: string;
   withAsterisk?: boolean;
 };
 
@@ -79,11 +79,8 @@ function AccessibleTextInputPostal<
     country,
     icon = null,
     initialInputValue = "",
-    value,
-    label = splitCamelCase(attributes.name),
     maxLength = 18,
     minLength = 18,
-    name,
     onBlur,
     onChange,
     onFocus,
@@ -100,8 +97,11 @@ function AccessibleTextInputPostal<
     rightSectionOnClick = () => {},
     size = "sm",
     stepperPages,
+    value,
     withAsterisk = false,
   } = attributes;
+  const name = splitCamelCase(attributes.name);
+  const label = attributes.label ?? name;
 
   const [valueBuffer, setValueBuffer] = useState(value);
   const [isPopoverOpened, { open: openPopover, close: closePopover }] =

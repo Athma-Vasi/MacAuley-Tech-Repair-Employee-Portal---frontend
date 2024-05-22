@@ -10,7 +10,7 @@ import {
 import { TbUpload } from "react-icons/tb";
 
 import { useGlobalState } from "../../hooks";
-import { capitalizeAll } from "../../utils";
+import { splitCamelCase } from "../../utils";
 import { createAccessibleButtonScreenreaderTextElements } from "./utils";
 
 type AccessibleButtonAttributes = {
@@ -50,10 +50,8 @@ function AccessibleButton({ attributes }: AccessibleButtonProps) {
     enabledScreenreaderText,
     disabled = false,
     isTooltip = true,
-    label = capitalizeAll(attributes.name),
     type = "button",
     leftIcon = type === "submit" ? <TbUpload /> : null,
-    name,
     onClick,
     onKeyDown = () => {},
     ref = null,
@@ -62,6 +60,8 @@ function AccessibleButton({ attributes }: AccessibleButtonProps) {
     style = {},
     variant = colorScheme === "dark" ? "outline" : "subtle",
   } = attributes;
+  const name = splitCamelCase(attributes.name);
+  const label = attributes.label ?? name;
 
   const { disabledTextElement, enabledTextElement } =
     createAccessibleButtonScreenreaderTextElements({

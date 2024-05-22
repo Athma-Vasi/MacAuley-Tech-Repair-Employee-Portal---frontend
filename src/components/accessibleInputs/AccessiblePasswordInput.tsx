@@ -59,8 +59,6 @@ function AccessiblePasswordInput({ attributes }: AccessiblePasswordInputProps) {
     icon = null,
     initialInputValue = "",
     invalidValueAction,
-    name,
-    label = splitCamelCase(attributes.name),
     maxLength = 32,
     minLength = 8,
     onBlur,
@@ -76,6 +74,8 @@ function AccessiblePasswordInput({ attributes }: AccessiblePasswordInputProps) {
     value,
     withAsterisk = false,
   } = attributes;
+  const name = splitCamelCase(attributes.name);
+  const label = attributes.label ?? name;
 
   const [valueBuffer, setValueBuffer] = useState(value);
   const [isPopoverOpened, { open: openPopover, close: closePopover }] =

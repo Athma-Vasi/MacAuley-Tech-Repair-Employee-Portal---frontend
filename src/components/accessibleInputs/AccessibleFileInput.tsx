@@ -29,8 +29,6 @@ function AccessibleFileInput<ValidValueAction extends string = string>({
 }: AccessibleFileInputProps<ValidValueAction>) {
   const {
     disabled = false,
-    label = splitCamelCase(attributes.name),
-    name,
     onBlur,
     onChange,
     onFocus,
@@ -43,6 +41,8 @@ function AccessibleFileInput<ValidValueAction extends string = string>({
     value,
     variant = "default",
   } = attributes;
+  const name = splitCamelCase(attributes.name);
+  const label = attributes.label ?? name;
 
   return (
     <FileInput

@@ -92,10 +92,8 @@ function AccessibleTextInput<
     icon = null,
     initialInputValue = "",
     invalidValueAction,
-    label = splitCamelCase(attributes.name),
     maxLength = 75,
     minLength = 2,
-    name,
     onBlur,
     onChange,
     onFocus,
@@ -114,6 +112,8 @@ function AccessibleTextInput<
     value,
     withAsterisk = required,
   } = attributes;
+  const name = splitCamelCase(attributes.name);
+  const label = attributes.label ?? name;
 
   const [valueBuffer, setValueBuffer] = useState<string>(value);
   const [isPopoverOpened, { open: openPopover, close: closePopover }] =
