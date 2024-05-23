@@ -12,7 +12,12 @@ import {
   MONEY_REGEXES,
   TEXT_AREA_INPUT_REGEXES,
 } from "../../constants/regexes";
-import { ResourceRoutePaths, RoleResourceRoutePaths, StepperChild } from "../../types";
+import {
+  ResourceRoutePaths,
+  RoleResourceRoutePaths,
+  StepperChild,
+  StepperPage,
+} from "../../types";
 import {
   returnDateFullRangeValidationText,
   returnDateNearPastValidationText,
@@ -50,59 +55,73 @@ function returnExpenseClaimStepperPages() {
 };
    */
 
-  const acknowledgementSwitchInput: StepperChild = {
+  const acknowledgementSwitchChild: StepperChild = {
     inputType: "checkbox",
     name: "acknowledgement",
     regexes: ACKNOWLEDGEMENT_REGEXES,
   };
 
-  const additionalCommentsTextInput: StepperChild = {
+  const additionalCommentsTextChild: StepperChild = {
     inputType: "text",
     name: "additionalComments",
     regexes: TEXT_AREA_INPUT_REGEXES,
   };
 
-  const expenseClaimAmountInput: StepperChild = {
+  const expenseClaimAmountChild: StepperChild = {
     inputType: "text",
     name: "expenseClaimAmount",
     regexes: MONEY_REGEXES,
   };
 
-  const expenseClaimCurrencyInput: StepperChild = {
+  const expenseClaimCurrencyChild: StepperChild = {
     inputType: "select",
     name: "expenseClaimCurrency",
     selectInputData: CURRENCY_DATA,
   };
 
-  const expenseClaimDateInput: StepperChild = {
+  const expenseClaimDateChild: StepperChild = {
     inputType: "date",
     name: "expenseClaimDate",
     regexes: DATE_NEAR_PAST_REGEXES,
   };
 
-  const expenseClaimDescriptionInput: StepperChild = {
+  const expenseClaimDescriptionChild: StepperChild = {
     inputType: "text",
     name: "expenseClaimDescription",
     regexes: TEXT_AREA_INPUT_REGEXES,
   };
 
-  const expenseClaimKindInput: StepperChild = {
+  const expenseClaimKindChild: StepperChild = {
     inputType: "select",
     name: "expenseClaimKind",
     selectInputData: EXPENSE_CLAIM_KIND_DATA,
   };
 
-  const formData: StepperChild = {
-    inputType: "file",
-    name: "formData",
-    // regexes: {
-    //   files: {
-    //     fileName: /^.*$/,
-    //     fileType: /^image\/(jpeg|png|webp)$/,
-    //     maxFileSize: 1 * 1024 * 1024,
-    //   },
-    // },
-  };
+  const stepperPages: StepperPage[] = [
+    {
+      children: [
+        expenseClaimKindChild,
+        expenseClaimAmountChild,
+        expenseClaimCurrencyChild,
+        expenseClaimDateChild,
+        expenseClaimDescriptionChild,
+        additionalCommentsTextChild,
+        acknowledgementSwitchChild,
+      ],
+      description: "Expense Details",
+    },
+    {
+      children: [],
+      description: "Upload Receipts",
+    },
+    {
+      children: [],
+      description: "Review and Proceed",
+      kind: "review",
+    },
+  ];
+
+  return stepperPages;
 }
 
 const EXPENSE_CLAIM_DESCRIPTION_OBJECTS: DescriptionObjectsArray = [

@@ -325,7 +325,7 @@ function AccessibleImageInput<
       {
         disabledScreenreaderText: "Image is invalid",
         enabledScreenreaderText: "Remove image",
-        leftIcon: <TbTrash />,
+        kind: "delete",
         name: "remove",
         onClick: (
           _event:
@@ -342,7 +342,7 @@ function AccessibleImageInput<
         disabled: isImageInvalid,
         disabledScreenreaderText: "Image is invalid",
         enabledScreenreaderText: "Reset image",
-        leftIcon: <BiReset />,
+        kind: "refresh",
         name: "reset",
         onClick: (
           _event:
@@ -432,11 +432,11 @@ function AccessibleImageInput<
             {imageSize}
             {imageType}
           </Stack>
-          <Group w="100%" position="apart" style={{ outline: "1px solid red" }}>
+          <Group w="100%" position="apart">
             {removeButtonWithTooltip}
             {resetButtonWithTooltip}
           </Group>
-          <Stack spacing="xl" style={{ outline: "1px solid blue" }}>
+          <Stack spacing="xl">
             {imageQualityStack}
             {imageOrientationStack}
           </Stack>

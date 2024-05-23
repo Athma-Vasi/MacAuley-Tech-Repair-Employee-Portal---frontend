@@ -90,6 +90,7 @@ function AccessibleTextAreaInput<
     maxRows = 7,
     minLength = 2,
     minRows = 3,
+    name,
     onBlur,
     onChange,
     onFocus,
@@ -109,8 +110,8 @@ function AccessibleTextAreaInput<
     value,
     withAsterisk = required,
   } = attributes;
-  const name = splitCamelCase(attributes.name);
-  const label = attributes.label ?? name;
+
+  const label = attributes.label ?? splitCamelCase(name);
 
   const [valueBuffer, setValueBuffer] = useState(value);
   const [isPopoverOpened, { open: openPopover, close: closePopover }] =

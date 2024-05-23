@@ -43,6 +43,7 @@ function AccessibleSelectInput<
     describedBy = "",
     description,
     disabled = false,
+    name,
     onChange,
     parentDispatch,
     ref = null,
@@ -52,8 +53,8 @@ function AccessibleSelectInput<
     value,
     withAsterisk = required,
   } = attributes;
-  const name = splitCamelCase(attributes.name);
-  const label = attributes.label ?? name;
+
+  const label = attributes.label ?? splitCamelCase(name);
 
   return (
     <NativeSelect

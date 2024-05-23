@@ -8,6 +8,8 @@ import {
   RefObject,
 } from "react";
 import {
+  TbArrowDown,
+  TbArrowUp,
   TbDownload,
   TbEdit,
   TbFilter,
@@ -21,6 +23,7 @@ import {
 import { useGlobalState } from "../../hooks";
 import { splitCamelCase } from "../../utils";
 import { createAccessibleButtonScreenreaderTextElements } from "./utils";
+import { TiArrowLeftThick, TiArrowRightThick } from "react-icons/ti";
 
 type AccessibleButtonKind =
   | "add"
@@ -29,8 +32,12 @@ type AccessibleButtonKind =
   | "download"
   | "edit"
   | "filter"
+  | "hide"
+  | "next"
+  | "previous"
   | "refresh"
   | "search"
+  | "show"
   | "submit";
 
 type AccessibleButtonAttributes = {
@@ -80,9 +87,10 @@ function AccessibleButton({ attributes }: AccessibleButtonProps) {
     size = "sm",
     style = {},
     variant = colorScheme === "dark" ? "outline" : "subtle",
+    name,
   } = attributes;
-  const name = splitCamelCase(attributes.name);
-  const label = attributes.label ?? name;
+
+  const label = attributes.label ?? splitCamelCase(name);
 
   const leftIconTable: Record<AccessibleButtonKind, ReactNode> = {
     add: <TbPlus />,
@@ -91,8 +99,12 @@ function AccessibleButton({ attributes }: AccessibleButtonProps) {
     download: <TbDownload />,
     edit: <TbEdit />,
     filter: <TbFilter />,
+    hide: <TbArrowDown />,
+    next: <TiArrowRightThick />,
+    previous: <TiArrowLeftThick />,
     refresh: <TbRefresh />,
     search: <TbSearch />,
+    show: <TbArrowUp />,
     submit: <TbUpload />,
   };
 

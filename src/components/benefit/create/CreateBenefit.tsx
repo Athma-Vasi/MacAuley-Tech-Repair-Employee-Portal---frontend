@@ -251,6 +251,7 @@ function CreateBenefit() {
         enabledScreenreaderText: "All inputs are valid. Click to submit form",
         disabledScreenreaderText: "Please fix errors before submitting form",
         disabled: pagesInError.size > 0 || triggerFormSubmit,
+        kind: "submit",
         name: "submit",
         onClick: (_event: MouseEvent<HTMLButtonElement>) => {
           createBenefitDispatch({

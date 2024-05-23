@@ -34,6 +34,7 @@ function AccessibleRadioInputSingle<ValidValueAction extends string = string>({
     checked,
     description,
     disabled = false,
+    name,
     onChange,
     parentDispatch,
     ref = null,
@@ -42,8 +43,8 @@ function AccessibleRadioInputSingle<ValidValueAction extends string = string>({
     validValueAction,
     value,
   } = attributes;
-  const name = splitCamelCase(attributes.name);
-  const label = attributes.label ?? name;
+
+  const label = attributes.label ?? splitCamelCase(name);
   const key = attributes.key ?? name + " - radio";
 
   const {

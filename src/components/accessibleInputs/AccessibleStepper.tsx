@@ -1,7 +1,6 @@
 import { Group, MantineSize, Stack, Stepper, Text, Title } from "@mantine/core";
 import { ReactNode, useState } from "react";
 import { TbCheck, TbX } from "react-icons/tb";
-import { TiArrowLeftThick } from "react-icons/ti";
 
 import { COLORS_SWATCHES } from "../../constants/data";
 import { useGlobalState } from "../../hooks";
@@ -53,7 +52,7 @@ function AccessibleStepper({ attributes }: AccessibleStepperProps) {
         stepperPages[activeStep - 1]?.description ?? "the beginning"
       }`,
       disabled: activeStep === 0,
-      leftIcon: <TiArrowLeftThick />,
+      kind: "previous",
       name: "Back",
       onClick: () => {
         setStepsInError(returnStepsInError(stepperPages, componentState));
@@ -67,6 +66,7 @@ function AccessibleStepper({ attributes }: AccessibleStepperProps) {
       }`,
       disabledScreenreaderText: "You are on the last step",
       disabled: activeStep === maxStep,
+      kind: "next",
       name: "Next",
       onClick: () => {
         setStepsInError(returnStepsInError(stepperPages, componentState));
@@ -95,7 +95,7 @@ function AccessibleStepper({ attributes }: AccessibleStepperProps) {
     <FormReviewStep componentState={componentState} stepperPages={stepperPages} />
   );
 
-  const stepperSteps = [pageElements, formReviewPage].map((elements, pageIndex) => {
+  const stepperSteps = [...pageElements, formReviewPage].map((elements, pageIndex) => {
     const page = stepperPages[pageIndex];
 
     const description = (

@@ -74,12 +74,12 @@ function FormReviewStep({ componentState, stepperPages, title }: FormReviewProps
           {
             name: "show",
             enabledScreenreaderText: "Click to show the hidden text",
-            leftIcon: <TbArrowDown />,
+            kind: "show",
           },
           {
             name: "hide",
             enabledScreenreaderText: "Click to hide the shown text",
-            leftIcon: <TbArrowUp />,
+            kind: "hide",
           },
         ]);
 

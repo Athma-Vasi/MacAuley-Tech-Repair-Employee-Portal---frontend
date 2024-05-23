@@ -3,7 +3,7 @@ import { ReactNode } from "react";
 
 import { useGlobalState } from "../../hooks";
 import { SliderInputData } from "../../types";
-import { returnSliderMarks, splitCamelCase } from "../../utils";
+import { returnSliderMarks } from "../../utils";
 import { createAccessibleSliderScreenreaderTextElements } from "./utils";
 
 type DynamicSliderInputPayload = {
@@ -66,6 +66,7 @@ function AccessibleSliderInput<ValidValueAction extends string = string>({
     marks,
     max,
     min,
+    name,
     onBlur,
     onChange,
     onFocus,
@@ -81,7 +82,6 @@ function AccessibleSliderInput<ValidValueAction extends string = string>({
     validValueAction,
     value,
   } = attributes;
-  const name = splitCamelCase(attributes.name);
 
   const {
     globalState: { themeObject },

@@ -94,6 +94,7 @@ function AccessibleTextInput<
     invalidValueAction,
     maxLength = 75,
     minLength = 2,
+    name,
     onBlur,
     onChange,
     onFocus,
@@ -112,8 +113,8 @@ function AccessibleTextInput<
     value,
     withAsterisk = required,
   } = attributes;
-  const name = splitCamelCase(attributes.name);
-  const label = attributes.label ?? name;
+
+  const label = attributes.label ?? splitCamelCase(name);
 
   const [valueBuffer, setValueBuffer] = useState<string>(value);
   const [isPopoverOpened, { open: openPopover, close: closePopover }] =
@@ -156,6 +157,11 @@ function AccessibleTextInput<
   ) : null;
 
   const { fullRegex } = returnFullRegex(name, stepperPages);
+  console.group("AccessibleTextInput");
+  console.log("name", name);
+  console.log("fullRegex", fullRegex);
+  console.log("valueBuffer", valueBuffer);
+  console.groupEnd();
   const isValueBufferValid = fullRegex.test(valueBuffer);
 
   const leftIcon = isValueBufferValid ? (

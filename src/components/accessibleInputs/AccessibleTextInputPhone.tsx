@@ -81,6 +81,7 @@ function AccessibleTextInputPhone<
     initialInputValue = "+(1)",
     maxLength = 18,
     minLength = 18,
+    name,
     onBlur,
     onChange,
     onFocus,
@@ -100,8 +101,8 @@ function AccessibleTextInputPhone<
     value,
     withAsterisk = false,
   } = attributes;
-  const name = splitCamelCase(attributes.name);
-  const label = attributes.label ?? name;
+
+  const label = attributes.label ?? splitCamelCase(name);
 
   const [valueBuffer, setValueBuffer] = useState(() => value);
   const [isPopoverOpened, { open: openPopover, close: closePopover }] =

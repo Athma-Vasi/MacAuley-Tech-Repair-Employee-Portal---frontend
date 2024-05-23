@@ -21,9 +21,7 @@ type ExpenseClaimKind =
 
 type ExpenseClaimSchema = {
   acknowledgement: boolean;
-  action: Action;
   additionalComments: string;
-  category: ActionsCompany;
   expenseClaimAmount: number;
   expenseClaimCurrency: Currency;
   expenseClaimDate: string;

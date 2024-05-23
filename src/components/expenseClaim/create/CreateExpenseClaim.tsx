@@ -4,13 +4,26 @@ import { useErrorBoundary } from "react-error-boundary";
 
 import { useAuth } from "../../../hooks";
 import { useFetchInterceptor } from "../../../hooks/useFetchInterceptor";
-import { logState } from "../../../utils";
+import { formSubmitPOST, logState } from "../../../utils";
 import { AccessibleImageInput } from "../../accessibleInputs/image";
-import { createExpenseClaimAction } from "./actions";
+import { CreateExpenseClaimAction, createExpenseClaimAction } from "./actions";
 import { createExpenseClaimReducer } from "./reducers";
 import { initialCreateExpenseClaimState } from "./state";
-import { StepperPage } from "../../../types";
+import { Currency, StepperPage } from "../../../types";
 import { returnCreateBenefitStepperPages } from "../../benefit/constants";
+import { AccessibleSelectInput } from "../../accessibleInputs/AccessibleSelectInput";
+import {
+  CREATE_EXPENSE_CLAIM_ROLE_PATHS,
+  EXPENSE_CLAIM_KIND_DATA,
+  returnExpenseClaimStepperPages,
+} from "../constants";
+import { ExpenseClaimKind, ExpenseClaimSchema } from "./types";
+import { AccessibleTextInput } from "../../accessibleInputs/text/AccessibleTextInput";
+import { AccessibleDateTimeInput } from "../../accessibleInputs/AccessibleDateTimeInput";
+import { AccessibleTextAreaInput } from "../../accessibleInputs/AccessibleTextAreaInput";
+import { AccessibleSwitchInput } from "../../accessibleInputs/AccessibleSwitchInput";
+import { AccessibleStepper } from "../../accessibleInputs/AccessibleStepper";
+import { AccessibleButton } from "../../accessibleInputs/AccessibleButton";
 
 function CreateExpenseClaim() {
   const [createExpenseClaimState, createExpenseClaimDispatch] = useReducer(
@@ -55,25 +68,39 @@ function CreateExpenseClaim() {
     isComponentMountedRef.current = true;
     let isComponentMounted = isComponentMountedRef.current;
 
-    // if (triggerFormSubmit) {
-    //   formSubmitPOST({
-    //     dispatch: createExpenseClaimDispatch,
-    //     fetchAbortController,
-    //     fetchInterceptor,
-    //     isComponentMounted,
-    //     isSubmittingAction: createExpenseClaimAction.setIsSubmitting,
-    //     isSuccessfulAction: createExpenseClaimAction.setIsSuccessful,
-    //     preFetchAbortController,
-    //     roleResourceRoutePaths: CREATE_BENEFIT_ROLE_PATHS,
-    //     schema: benefitsSchema,
-    //     schemaName: "createExpenseClaimSchema",
-    //     sessionId,
-    //     showBoundary,
-    //     userId,
-    //     username,
-    //     userRole: "manager",
-    //   });
-    // }
+    if (triggerFormSubmit) {
+      const expenseClaimSchema: ExpenseClaimSchema = {
+        acknowledgement,
+        additionalComments,
+        expenseClaimAmount: Number(expenseClaimAmount),
+        expenseClaimCurrency,
+        expenseClaimDate,
+        expenseClaimDescription,
+        expenseClaimKind,
+        requestStatus: "pending",
+        uploadedFilesIds: [],
+        userId,
+        username,
+      };
+
+      formSubmitPOST({
+        dispatch: createExpenseClaimDispatch,
+        fetchAbortController,
+        fetchInterceptor,
+        isComponentMounted,
+        isSubmittingAction: createExpenseClaimAction.setIsSubmitting,
+        isSuccessfulAction: createExpenseClaimAction.setIsSuccessful,
+        preFetchAbortController,
+        roleResourceRoutePaths: CREATE_EXPENSE_CLAIM_ROLE_PATHS,
+        schema: expenseClaimSchema,
+        schemaName: "createExpenseClaimSchema",
+        sessionId,
+        showBoundary,
+        userId,
+        username,
+        userRole: "manager",
+      });
+    }
 
     return () => {
       isComponentMountedRef.current = false;
@@ -111,18 +138,157 @@ function CreateExpenseClaim() {
     return successfulState;
   }
 
-  const CREATE_BENEFIT_STEPPER_PAGES: StepperPage[] = returnCreateBenefitStepperPages();
+  const CREATE_EXPENSE_CLAIM_STEPPER_PAGES: StepperPage[] =
+    returnExpenseClaimStepperPages();
 
-  return (
+  const expenseClaimKindSelectInput = (
+    <AccessibleSelectInput<
+      CreateExpenseClaimAction["setExpenseClaimKind"],
+      ExpenseClaimKind
+    >
+      attributes={{
+        data:
+          CREATE_EXPENSE_CLAIM_STEPPER_PAGES[0].children.find(
+            (child) => child.name === "expenseClaimKind"
+          )?.selectInputData ?? [],
+        name: "expenseClaimKind",
+        parentDispatch: createExpenseClaimDispatch,
+        validValueAction: createExpenseClaimAction.setExpenseClaimKind,
+        value: expenseClaimKind,
+      }}
+    />
+  );
+
+  const expenseClaimCurrencySelectInput = (
+    <AccessibleSelectInput<CreateExpenseClaimAction["setExpenseClaimCurrency"], Currency>
+      attributes={{
+        data:
+          CREATE_EXPENSE_CLAIM_STEPPER_PAGES[0].children.find(
+            (child) => child.name === "expenseClaimCurrency"
+          )?.selectInputData ?? [],
+        name: "expenseClaimCurrency",
+        parentDispatch: createExpenseClaimDispatch,
+        validValueAction: createExpenseClaimAction.setExpenseClaimCurrency,
+        value: expenseClaimCurrency,
+      }}
+    />
+  );
+
+  const expenseClaimAmountTextInput = (
+    <AccessibleTextInput
+      attributes={{
+        name: "expenseClaimAmount",
+        parentDispatch: createExpenseClaimDispatch,
+        validValueAction: createExpenseClaimAction.setExpenseClaimAmount,
+        value: expenseClaimAmount,
+        invalidValueAction: createExpenseClaimAction.setPageInError,
+        stepperPages: CREATE_EXPENSE_CLAIM_STEPPER_PAGES,
+      }}
+    />
+  );
+
+  const expenseClaimDateTextInput = (
+    <AccessibleDateTimeInput
+      attributes={{
+        dateKind: "date near past",
+        inputKind: "date",
+        invalidValueAction: createExpenseClaimAction.setPageInError,
+        name: "expenseClaimDate",
+        parentDispatch: createExpenseClaimDispatch,
+        stepperPages: CREATE_EXPENSE_CLAIM_STEPPER_PAGES,
+        validValueAction: createExpenseClaimAction.setExpenseClaimDate,
+        value: expenseClaimDate,
+      }}
+    />
+  );
+
+  const expenseClaimDescriptionTextAreaInput = (
+    <AccessibleTextAreaInput
+      attributes={{
+        invalidValueAction: createExpenseClaimAction.setPageInError,
+        name: "expenseClaimDescription",
+        parentDispatch: createExpenseClaimDispatch,
+        stepperPages: CREATE_EXPENSE_CLAIM_STEPPER_PAGES,
+        validValueAction: createExpenseClaimAction.setExpenseClaimDescription,
+        value: expenseClaimDescription,
+      }}
+    />
+  );
+
+  const expenseClaimAdditionalCommentsTextAreaInput = (
+    <AccessibleTextAreaInput
+      attributes={{
+        invalidValueAction: createExpenseClaimAction.setPageInError,
+        name: "additionalComments",
+        parentDispatch: createExpenseClaimDispatch,
+        stepperPages: CREATE_EXPENSE_CLAIM_STEPPER_PAGES,
+        validValueAction: createExpenseClaimAction.setAdditionalComments,
+        value: additionalComments,
+      }}
+    />
+  );
+
+  const acknowledgementSwitchInput = (
+    <AccessibleSwitchInput
+      attributes={{
+        checked: acknowledgement,
+        invalidValueAction: createExpenseClaimAction.setPageInError,
+        name: "acknowledgement",
+        offLabel: "No",
+        onLabel: "Yes",
+        parentDispatch: createExpenseClaimDispatch,
+        switchOffDescription: "I do not acknowledge.",
+        switchOnDescription: "I acknowledge that the information is correct.",
+        validValueAction: createExpenseClaimAction.setAcknowledgement,
+        value: acknowledgement.toString(),
+      }}
+    />
+  );
+
+  const firstPageElements = (
+    <Stack>
+      {expenseClaimKindSelectInput}
+      {expenseClaimAmountTextInput}
+      {expenseClaimCurrencySelectInput}
+      {expenseClaimDateTextInput}
+      {expenseClaimDescriptionTextAreaInput}
+      {expenseClaimAdditionalCommentsTextAreaInput}
+      {acknowledgementSwitchInput}
+    </Stack>
+  );
+
+  const imageInput = (
     <AccessibleImageInput
       formData={formData}
       invalidValueAction={createExpenseClaimAction.setPageInError}
       page={1}
       parentDispatch={createExpenseClaimDispatch}
-      stepperPages={CREATE_BENEFIT_STEPPER_PAGES}
+      stepperPages={CREATE_EXPENSE_CLAIM_STEPPER_PAGES}
       validValueAction={createExpenseClaimAction.setFormData}
     />
   );
+
+  const submitButton = (
+    <AccessibleButton
+      attributes={{
+        kind: "submit",
+        name: "submit",
+      }}
+    />
+  );
+
+  const stepper = (
+    <AccessibleStepper
+      attributes={{
+        componentState: createExpenseClaimState,
+        pageElements: [firstPageElements, imageInput],
+        stepperPages: CREATE_EXPENSE_CLAIM_STEPPER_PAGES,
+        submitButton,
+      }}
+    />
+  );
+
+  return stepper;
 }
 
 export default CreateExpenseClaim;

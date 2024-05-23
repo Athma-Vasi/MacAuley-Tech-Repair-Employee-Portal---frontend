@@ -56,6 +56,7 @@ function AccessibleCheckboxInputSingle<
     disabled = false,
     invalidValueAction,
     onChange,
+    name,
     parentDispatch,
     ref = null,
     required = false,
@@ -64,9 +65,9 @@ function AccessibleCheckboxInputSingle<
     validValueAction,
     value,
   } = attributes;
-  const name = splitCamelCase(attributes.name);
+
   const key = attributes.key ?? name + " - key";
-  const label = attributes.label ?? name;
+  const label = attributes.label ?? splitCamelCase(name);
 
   const {
     globalState: { themeObject },

@@ -78,6 +78,7 @@ function AccessibleDateTimeInput<
     maxLength = inputKind === "date" ? 10 : 5,
     min = new Date().toISOString().split("T")[0], // current date
     minLength = inputKind === "date" ? 10 : 5,
+    name,
     onBlur,
     onChange,
     onFocus,
@@ -92,8 +93,8 @@ function AccessibleDateTimeInput<
     value,
     withAsterisk = required,
   } = attributes;
-  const name = splitCamelCase(attributes.name);
-  const label = attributes.label ?? name;
+
+  const label = attributes.label ?? splitCamelCase(name);
 
   const [valueBuffer, setValueBuffer] = useState(value);
   const [isPopoverOpened, { open: openPopover, close: closePopover }] =
