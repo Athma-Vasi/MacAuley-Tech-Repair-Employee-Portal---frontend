@@ -3,7 +3,7 @@ import type { LeaveRequestState } from "./types";
 const initialLeaveRequestState: LeaveRequestState = {
   acknowledgement: false,
   additionalComments: "",
-  areValidLeaveDates: false,
+  areValidLeaveDates: { startDate: false, endDate: false },
   delegatedResponsibilities: "",
   delegatedToEmployee: "",
   endDate: "",
