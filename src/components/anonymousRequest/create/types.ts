@@ -1,33 +1,36 @@
 import {
-  Action,
-  ActionsGeneral,
   PhoneNumber,
   RequestStatus,
-  SetStepsInErrorPayload,
+  SetPageInErrorPayload,
   Urgency,
 } from "../../../types";
+import { AnonymousRequestAction } from "./actions";
 
 type AnonymousRequestKind =
-  | "Workplace safety"
-  | "Employee conflict"
-  | "Workplace harassment"
+  | "Benefits and compensation"
+  | "Bullying and intimidation"
   | "Company security"
+  | "Customer service"
+  | "Discrimination"
   | "Diversity and inclusion"
-  | "LGBTQIA+";
+  | "Employee conflict"
+  | "Ethical concerns"
+  | "LGBTQIA+"
+  | "Managerial issues"
+  | "Environmental concerns"
+  | "Workload and stress"
+  | "Workplace safety"
+  | "Workplace harassment";
 
 type AnonymousRequestSchema = {
-  // action and category are added in the create handler
-  action: Action;
-  category: ActionsGeneral;
-
-  title: string;
-  secureContactNumber: string;
-  secureContactEmail: string;
-  requestKind: AnonymousRequestKind;
-  requestDescription: string;
   additionalInformation: string;
-  urgency: Urgency;
+  requestDescription: string;
+  requestKind: AnonymousRequestKind;
   requestStatus: RequestStatus;
+  secureContactEmail: string;
+  secureContactNumber: string;
+  title: string;
+  urgency: Urgency;
 };
 
 type AnonymousRequestDocument = AnonymousRequestSchema & {
@@ -37,139 +40,70 @@ type AnonymousRequestDocument = AnonymousRequestSchema & {
   __v: number;
 };
 
-type CreateAnonymousRequestState = {
-  title: string;
-  isValidTitle: boolean;
-  isTitleFocused: boolean;
-
-  secureContactNumber: PhoneNumber | string;
-  isValidSecureContactNumber: boolean;
-  isSecureContactNumberFocused: boolean;
-
-  secureContactEmail: string;
-  isValidSecureContactEmail: boolean;
-  isSecureContactEmailFocused: boolean;
-
-  requestKind: AnonymousRequestKind;
-
-  requestDescription: string;
-  isValidRequestDescription: boolean;
-  isRequestDescriptionFocused: boolean;
-
+type AnonymousRequestState = {
   additionalInformation: string;
-  isValidAdditionalInformation: boolean;
-  isAdditionalInformationFocused: boolean;
-
-  urgency: Urgency;
-
-  triggerFormSubmit: boolean;
-  currentStepperPosition: number;
-  stepsInError: Set<number>;
-
   isSubmitting: boolean;
-  submitMessage: string;
   isSuccessful: boolean;
-  successMessage: string;
-  isLoading: boolean;
-  loadingMessage: string;
+  pagesInError: Set<number>;
+  requestDescription: string;
+  requestKind: AnonymousRequestKind;
+  secureContactEmail: string;
+  secureContactNumber: PhoneNumber | string;
+  title: string;
+  triggerFormSubmit: boolean;
+  urgency: Urgency;
 };
 
-type CreateAnonymousRequestAction = {
-  setTitle: "setTitle";
-  setIsValidTitle: "setIsValidTitle";
-  setIsTitleFocused: "setIsTitleFocused";
-
-  setSecureContactNumber: "setSecureContactNumber";
-  setIsValidSecureContactNumber: "setIsValidSecureContactNumber";
-  setIsSecureContactNumberFocused: "setIsSecureContactNumberFocused";
-
-  setSecureContactEmail: "setSecureContactEmail";
-  setIsValidSecureContactEmail: "setIsValidSecureContactEmail";
-  setIsSecureContactEmailFocused: "setIsSecureContactEmailFocused";
-
-  setRequestKind: "setRequestKind";
-
-  setRequestDescription: "setRequestDescription";
-  setIsValidRequestDescription: "setIsValidRequestDescription";
-  setIsRequestDescriptionFocused: "setIsRequestDescriptionFocused";
-
-  setAdditionalInformation: "setAdditionalInformation";
-  setIsValidAdditionalInformation: "setIsValidAdditionalInformation";
-  setIsAdditionalInformationFocused: "setIsAdditionalInformationFocused";
-
-  setUrgency: "setUrgency";
-
-  setTriggerFormSubmit: "setTriggerFormSubmit";
-  setCurrentStepperPosition: "setCurrentStepperPosition";
-  setStepsInError: "setStepsInError";
-
-  setIsSubmitting: "setIsSubmitting";
-  setSubmitMessage: "setSubmitMessage";
-  setIsSuccessful: "setIsSuccessful";
-  setSuccessMessage: "setSuccessMessage";
-  setIsLoading: "setIsLoading";
-  setLoadingMessage: "setLoadingMessage";
-};
-
-type CreateAnonymousRequestDispatch =
+type AnonymousRequestDispatch =
   | {
-      type:
-        | CreateAnonymousRequestAction["setTitle"]
-        | CreateAnonymousRequestAction["setSecureContactNumber"]
-        | CreateAnonymousRequestAction["setSecureContactEmail"]
-        | CreateAnonymousRequestAction["setRequestDescription"]
-        | CreateAnonymousRequestAction["setAdditionalInformation"]
-        | CreateAnonymousRequestAction["setLoadingMessage"]
-        | CreateAnonymousRequestAction["setSubmitMessage"]
-        | CreateAnonymousRequestAction["setSuccessMessage"];
+      action: AnonymousRequestAction["setAdditionalInformation"];
       payload: string;
     }
   | {
-      type:
-        | CreateAnonymousRequestAction["setIsValidTitle"]
-        | CreateAnonymousRequestAction["setIsTitleFocused"]
-        | CreateAnonymousRequestAction["setIsValidSecureContactNumber"]
-        | CreateAnonymousRequestAction["setIsSecureContactNumberFocused"]
-        | CreateAnonymousRequestAction["setIsValidSecureContactEmail"]
-        | CreateAnonymousRequestAction["setIsSecureContactEmailFocused"]
-        | CreateAnonymousRequestAction["setIsValidRequestDescription"]
-        | CreateAnonymousRequestAction["setIsRequestDescriptionFocused"]
-        | CreateAnonymousRequestAction["setIsValidAdditionalInformation"]
-        | CreateAnonymousRequestAction["setIsAdditionalInformationFocused"]
-        | CreateAnonymousRequestAction["setTriggerFormSubmit"]
-        | CreateAnonymousRequestAction["setIsSubmitting"]
-        | CreateAnonymousRequestAction["setIsSuccessful"]
-        | CreateAnonymousRequestAction["setIsLoading"];
+      action: AnonymousRequestAction["setIsSubmitting"];
       payload: boolean;
     }
   | {
-      type: CreateAnonymousRequestAction["setRequestKind"];
+      action: AnonymousRequestAction["setIsSuccessful"];
+      payload: boolean;
+    }
+  | {
+      action: AnonymousRequestAction["setPageInError"];
+      payload: SetPageInErrorPayload;
+    }
+  | {
+      action: AnonymousRequestAction["setRequestDescription"];
+      payload: string;
+    }
+  | {
+      action: AnonymousRequestAction["setRequestKind"];
       payload: AnonymousRequestKind;
     }
   | {
-      type: CreateAnonymousRequestAction["setUrgency"];
+      action: AnonymousRequestAction["setSecureContactEmail"];
+      payload: string;
+    }
+  | {
+      action: AnonymousRequestAction["setSecureContactNumber"];
+      payload: PhoneNumber | string;
+    }
+  | {
+      action: AnonymousRequestAction["setTitle"];
+      payload: string;
+    }
+  | {
+      action: AnonymousRequestAction["setTriggerFormSubmit"];
+      payload: boolean;
+    }
+  | {
+      action: AnonymousRequestAction["setUrgency"];
       payload: Urgency;
-    }
-  | {
-      type: CreateAnonymousRequestAction["setCurrentStepperPosition"];
-      payload: number;
-    }
-  | {
-      type: CreateAnonymousRequestAction["setStepsInError"];
-      payload: SetStepsInErrorPayload;
     };
 
-type CreateAnonymousRequestReducer = (
-  state: CreateAnonymousRequestState,
-  action: CreateAnonymousRequestDispatch
-) => CreateAnonymousRequestState;
-
 export type {
+  AnonymousRequestDispatch,
   AnonymousRequestDocument,
   AnonymousRequestKind,
   AnonymousRequestSchema,
-  CreateAnonymousRequestAction,
-  CreateAnonymousRequestDispatch,
-  CreateAnonymousRequestReducer,
-  CreateAnonymousRequestState,
+  AnonymousRequestState,
 };

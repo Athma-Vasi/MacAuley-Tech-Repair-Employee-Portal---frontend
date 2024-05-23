@@ -283,7 +283,7 @@ const DisplayAnonymousRequests = lazy(
 );
 
 const CreateAnonymousRequest = lazy(
-  () => import("./components/anonymousRequest/create/CreateAnonymousRequest")
+  () => import("./components/anonymousRequest/create/AnonymousRequest")
 );
 
 // ╭─────────────────────────────────────────────────────────────────╮

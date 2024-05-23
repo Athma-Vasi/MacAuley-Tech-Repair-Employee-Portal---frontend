@@ -1,102 +1,285 @@
-import { Group, Title, Tooltip } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
-import { InvalidTokenError } from "jwt-decode";
-import { ChangeEvent, KeyboardEvent, MouseEvent, useEffect, useReducer } from "react";
+import { Container, Stack, Text } from "@mantine/core";
+import { useEffect, useReducer, useRef } from "react";
 import { useErrorBoundary } from "react-error-boundary";
-import { TbUpload } from "react-icons/tb";
-import { useNavigate } from "react-router-dom";
 
 import { URGENCY_DATA } from "../../../constants/data";
-import {
-  EMAIL_REGEX,
-  GRAMMAR_TEXT_INPUT_REGEX,
-  GRAMMAR_TEXTAREA_INPUT_REGEX,
-  PHONE_NUMBER_REGEX,
-} from "../../../constants/regex";
-import { globalAction } from "../../../context/globalProvider/state";
-import { useGlobalState, useWrapFetch } from "../../../hooks";
-import {
-  AccessibleErrorValidTextElements,
-  returnAccessibleButtonElements,
-  returnAccessiblePhoneNumberTextInputElements,
-  returnAccessibleSelectInputElements,
-  returnAccessibleTextAreaInputElements,
-  returnAccessibleTextInputElements,
-} from "../../../jsxCreators";
-import { PhoneNumber, ResourceRequestServerResponse, Urgency } from "../../../types";
-import {
-  returnEmailValidationText,
-  returnGrammarValidationText,
-  returnPhoneNumberValidationText,
-  urlBuilder,
-} from "../../../utils";
-import FormReviewPage, {
-  FormReviewObjectArray,
-} from "../../formReviewPage/FormReviewPage";
-import { NotificationModal } from "../../notificationModal";
-import {
-  AccessibleButtonCreatorInfo,
-  AccessiblePhoneNumberTextInputCreatorInfo,
-  AccessibleSelectInputCreatorInfo,
-  AccessibleTextAreaInputCreatorInfo,
-  AccessibleTextInputCreatorInfo,
-  FormLayoutWrapper,
-  StepperWrapper,
-} from "../../wrappers";
+import { useAuth } from "../../../hooks";
+import { useFetchInterceptor } from "../../../hooks/useFetchInterceptor";
+import { StepperPage, Urgency } from "../../../types";
+import { formSubmitPOST } from "../../../utils";
+import { AccessibleButton } from "../../accessibleInputs/AccessibleButton";
+import { AccessibleSelectInput } from "../../accessibleInputs/AccessibleSelectInput";
+import { AccessibleStepper } from "../../accessibleInputs/AccessibleStepper";
+import { AccessibleTextAreaInput } from "../../accessibleInputs/AccessibleTextAreaInput";
+import { AccessibleTextInput } from "../../accessibleInputs/text/AccessibleTextInput";
 import {
   ANONYMOUS_REQUEST_KINDS,
-  CREATE_ANON_REQUEST_DESCRIPTION_OBJECTS,
-  CREATE_ANON_REQUEST_MAX_STEPPER_POSITION,
+  ANONYMOUS_REQUEST_ROLE_PATHS,
+  returnAnonymousRequestStepperPages,
 } from "../constants";
-import {
-  createAnonymousRequestAction,
-  createAnonymousRequestReducer,
-  initialCreateAnonymousRequestState,
-} from "./state";
-import { AnonymousRequestDocument, AnonymousRequestKind } from "./types";
+import { AnonymousRequestAction, anonymousRequestAction } from "./actions";
+import { anonymousRequestReducer } from "./reducers";
+import { initialAnonymousRequestState } from "./state";
+import { AnonymousRequestKind, AnonymousRequestSchema } from "./types";
 
-function CreateAnonymousRequest() {
-  const [createAnonymousRequestState, createAnonymousRequestDispatch] = useReducer(
-    createAnonymousRequestReducer,
-    initialCreateAnonymousRequestState
+function AnonymousRequest() {
+  const [anonymousRequestState, anonymousRequestDispatch] = useReducer(
+    anonymousRequestReducer,
+    initialAnonymousRequestState
   );
+
   const {
     title,
-    isValidTitle,
-    isTitleFocused,
-
     secureContactNumber,
-    isValidSecureContactNumber,
-    isSecureContactNumberFocused,
-
     secureContactEmail,
-    isValidSecureContactEmail,
-    isSecureContactEmailFocused,
-
     requestKind,
-
     requestDescription,
-    isValidRequestDescription,
-    isRequestDescriptionFocused,
-
     additionalInformation,
-    isValidAdditionalInformation,
-    isAdditionalInformationFocused,
-
     urgency,
-
     triggerFormSubmit,
-    currentStepperPosition,
-    stepsInError,
-
+    pagesInError,
     isSubmitting,
-    submitMessage,
     isSuccessful,
-    successMessage,
-    isLoading,
-    loadingMessage,
-  } = createAnonymousRequestState;
+  } = anonymousRequestState;
 
+  const {
+    authState: { sessionId, userId, username },
+  } = useAuth();
+  const { fetchInterceptor } = useFetchInterceptor();
+  const { showBoundary } = useErrorBoundary();
+
+  const fetchAbortControllerRef = useRef<AbortController | null>(null);
+  const preFetchAbortControllerRef = useRef<AbortController | null>(null);
+  const isComponentMountedRef = useRef(false);
+
+  useEffect(() => {
+    fetchAbortControllerRef.current?.abort();
+    fetchAbortControllerRef.current = new AbortController();
+    const fetchAbortController = fetchAbortControllerRef.current;
+
+    preFetchAbortControllerRef.current?.abort();
+    preFetchAbortControllerRef.current = new AbortController();
+    const preFetchAbortController = preFetchAbortControllerRef.current;
+
+    isComponentMountedRef.current = true;
+    let isComponentMounted = isComponentMountedRef.current;
+
+    if (triggerFormSubmit) {
+      const anonymousRequestSchema: AnonymousRequestSchema = {
+        additionalInformation,
+        requestDescription,
+        requestKind,
+        requestStatus: "pending",
+        secureContactEmail,
+        secureContactNumber,
+        title,
+        urgency,
+      };
+
+      formSubmitPOST({
+        dispatch: anonymousRequestDispatch,
+        fetchAbortController,
+        fetchInterceptor,
+        isComponentMounted,
+        isSubmittingAction: anonymousRequestAction.setIsSubmitting,
+        isSuccessfulAction: anonymousRequestAction.setIsSuccessful,
+        preFetchAbortController,
+        roleResourceRoutePaths: ANONYMOUS_REQUEST_ROLE_PATHS,
+        schema: anonymousRequestSchema,
+        schemaName: "anonymousRequestSchema",
+        sessionId,
+        showBoundary,
+        userId,
+        username,
+        userRole: "manager",
+      });
+    }
+
+    return () => {
+      isComponentMountedRef.current = false;
+      preFetchAbortController?.abort();
+      fetchAbortController?.abort();
+    };
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [triggerFormSubmit]);
+
+  if (isSubmitting) {
+    const submittingState = (
+      <Stack>
+        <Text size="md">Submitting address changes! Please wait...</Text>
+      </Stack>
+    );
+
+    return submittingState;
+  }
+
+  if (isSuccessful) {
+    const successfulState = (
+      <Stack>
+        <Text size="md">Address changes submitted successfully!</Text>
+      </Stack>
+    );
+
+    return successfulState;
+  }
+
+  const ANONYMOUS_REQUEST_STEPPER_PAGES: StepperPage[] =
+    returnAnonymousRequestStepperPages();
+
+  /**
+   * type AnonymousRequestState = {
+  additionalInformation: string;
+  isSubmitting: boolean;
+  isSuccessful: boolean;
+  pagesInError: Set<number>;
+  requestDescription: string;
+  requestKind: AnonymousRequestKind;
+  secureContactEmail: string;
+  secureContactNumber: PhoneNumber | string;
+  title: string;
+  triggerFormSubmit: boolean;
+  urgency: Urgency;
+};
+   */
+
+  const additionalInformationTextAreaInput = (
+    <AccessibleTextAreaInput
+      attributes={{
+        invalidValueAction: anonymousRequestAction.setPageInError,
+        name: "additionalInformation",
+        parentDispatch: anonymousRequestDispatch,
+        stepperPages: ANONYMOUS_REQUEST_STEPPER_PAGES,
+        validValueAction: anonymousRequestAction.setAdditionalInformation,
+        value: additionalInformation,
+      }}
+    />
+  );
+
+  const requestDescriptionTextAreaInput = (
+    <AccessibleTextAreaInput
+      attributes={{
+        invalidValueAction: anonymousRequestAction.setPageInError,
+        name: "requestDescription",
+        parentDispatch: anonymousRequestDispatch,
+        stepperPages: ANONYMOUS_REQUEST_STEPPER_PAGES,
+        validValueAction: anonymousRequestAction.setRequestDescription,
+        value: requestDescription,
+      }}
+    />
+  );
+
+  const requestKindSelectInput = (
+    <AccessibleSelectInput<AnonymousRequestAction["setRequestKind"], AnonymousRequestKind>
+      attributes={{
+        data: ANONYMOUS_REQUEST_KINDS,
+        name: "requestKind",
+        parentDispatch: anonymousRequestDispatch,
+        value: requestKind,
+        validValueAction: anonymousRequestAction.setRequestKind,
+      }}
+    />
+  );
+
+  const secureContactEmailTextInput = (
+    <AccessibleTextInput
+      attributes={{
+        invalidValueAction: anonymousRequestAction.setPageInError,
+        name: "secureContactEmail",
+        parentDispatch: anonymousRequestDispatch,
+        stepperPages: ANONYMOUS_REQUEST_STEPPER_PAGES,
+        validValueAction: anonymousRequestAction.setSecureContactEmail,
+        value: secureContactEmail,
+      }}
+    />
+  );
+
+  const secureContactNumberTextInput = (
+    <AccessibleTextInput
+      attributes={{
+        invalidValueAction: anonymousRequestAction.setPageInError,
+        name: "secureContactNumber",
+        parentDispatch: anonymousRequestDispatch,
+        stepperPages: ANONYMOUS_REQUEST_STEPPER_PAGES,
+        validValueAction: anonymousRequestAction.setSecureContactNumber,
+        value: secureContactNumber,
+      }}
+    />
+  );
+
+  const titleTextInput = (
+    <AccessibleTextInput
+      attributes={{
+        invalidValueAction: anonymousRequestAction.setPageInError,
+        name: "title",
+        parentDispatch: anonymousRequestDispatch,
+        stepperPages: ANONYMOUS_REQUEST_STEPPER_PAGES,
+        validValueAction: anonymousRequestAction.setTitle,
+        value: title,
+      }}
+    />
+  );
+
+  const urgencySelectInput = (
+    <AccessibleSelectInput<AnonymousRequestAction["setUrgency"], Urgency>
+      attributes={{
+        data: URGENCY_DATA,
+        name: "urgency",
+        parentDispatch: anonymousRequestDispatch,
+        value: urgency,
+        validValueAction: anonymousRequestAction.setUrgency,
+      }}
+    />
+  );
+
+  const anonymousRequest = (
+    <Stack>
+      {titleTextInput}
+      {secureContactNumberTextInput}
+      {secureContactEmailTextInput}
+      {requestKindSelectInput}
+      {requestDescriptionTextAreaInput}
+      {additionalInformationTextAreaInput}
+      {urgencySelectInput}
+    </Stack>
+  );
+
+  const submitButton = (
+    <AccessibleButton
+      attributes={{
+        enabledScreenreaderText: "All inputs are valid. Click to submit form",
+        disabledScreenreaderText: "Please fix errors before submitting form",
+        disabled: pagesInError.size > 0 || triggerFormSubmit,
+        kind: "submit",
+        name: "submit",
+        onClick: (_event: React.MouseEvent<HTMLButtonElement>) => {
+          anonymousRequestDispatch({
+            action: anonymousRequestAction.setTriggerFormSubmit,
+            payload: true,
+          });
+        },
+      }}
+    />
+  );
+
+  const stepper = (
+    <AccessibleStepper
+      attributes={{
+        componentState: anonymousRequestState,
+        pageElements: [anonymousRequest],
+        stepperPages: ANONYMOUS_REQUEST_STEPPER_PAGES,
+        submitButton,
+      }}
+    />
+  );
+
+  return <Container w={750}>{stepper}</Container>;
+}
+
+export default AnonymousRequest;
+
+/**
+ * 
   const { globalDispatch } = useGlobalState();
   const { wrappedFetch } = useWrapFetch();
 
@@ -115,13 +298,13 @@ function CreateAnonymousRequest() {
     let isMounted = true;
     const controller = new AbortController();
 
-    async function handleCreateAnonymousRequestFormSubmit() {
-      createAnonymousRequestDispatch({
-        type: createAnonymousRequestAction.setIsSubmitting,
+    async function handleAnonymousRequestFormSubmit() {
+      anonymousRequestDispatch({
+        type: anonymousRequestAction.setIsSubmitting,
         payload: true,
       });
-      createAnonymousRequestDispatch({
-        type: createAnonymousRequestAction.setSubmitMessage,
+      anonymousRequestDispatch({
+        type: anonymousRequestAction.setSubmitMessage,
         payload: "Your anonymous request is being submitted...",
       });
       openSubmitSuccessNotificationModal();
@@ -168,12 +351,12 @@ function CreateAnonymousRequest() {
           throw new Error(data.message);
         }
 
-        createAnonymousRequestDispatch({
-          type: createAnonymousRequestAction.setIsSuccessful,
+        anonymousRequestDispatch({
+          type: anonymousRequestAction.setIsSuccessful,
           payload: true,
         });
-        createAnonymousRequestDispatch({
-          type: createAnonymousRequestAction.setSuccessMessage,
+        anonymousRequestDispatch({
+          type: anonymousRequestAction.setSuccessMessage,
           payload:
             data.message ?? "Your anonymous request has been submitted successfully!",
         });
@@ -212,16 +395,16 @@ function CreateAnonymousRequest() {
         showBoundary(error);
       } finally {
         if (isMounted) {
-          createAnonymousRequestDispatch({
-            type: createAnonymousRequestAction.setIsSubmitting,
+          anonymousRequestDispatch({
+            type: anonymousRequestAction.setIsSubmitting,
             payload: false,
           });
-          createAnonymousRequestDispatch({
-            type: createAnonymousRequestAction.setSubmitMessage,
+          anonymousRequestDispatch({
+            type: anonymousRequestAction.setSubmitMessage,
             payload: "",
           });
-          createAnonymousRequestDispatch({
-            type: createAnonymousRequestAction.setTriggerFormSubmit,
+          anonymousRequestDispatch({
+            type: anonymousRequestAction.setTriggerFormSubmit,
             payload: false,
           });
         }
@@ -229,7 +412,7 @@ function CreateAnonymousRequest() {
     }
 
     if (triggerFormSubmit) {
-      handleCreateAnonymousRequestFormSubmit();
+      handleAnonymousRequestFormSubmit();
     }
 
     return () => {
@@ -244,8 +427,8 @@ function CreateAnonymousRequest() {
   useEffect(() => {
     const isValid = GRAMMAR_TEXT_INPUT_REGEX.test(title);
 
-    createAnonymousRequestDispatch({
-      type: createAnonymousRequestAction.setIsValidTitle,
+    anonymousRequestDispatch({
+      type: anonymousRequestAction.setIsValidTitle,
       payload: isValid,
     });
   }, [title]);
@@ -258,22 +441,22 @@ function CreateAnonymousRequest() {
     if (isSecureContactNumberFocused) {
       switch (contactLength) {
         case 4: {
-          createAnonymousRequestDispatch({
-            type: createAnonymousRequestAction.setSecureContactNumber,
+          anonymousRequestDispatch({
+            type: anonymousRequestAction.setSecureContactNumber,
             payload: `${secureContactNumber}(` as PhoneNumber | string,
           });
           break;
         }
         case 8: {
-          createAnonymousRequestDispatch({
-            type: createAnonymousRequestAction.setSecureContactNumber,
+          anonymousRequestDispatch({
+            type: anonymousRequestAction.setSecureContactNumber,
             payload: `${secureContactNumber}) ` as PhoneNumber | string,
           });
           break;
         }
         case 13: {
-          createAnonymousRequestDispatch({
-            type: createAnonymousRequestAction.setSecureContactNumber,
+          anonymousRequestDispatch({
+            type: anonymousRequestAction.setSecureContactNumber,
             payload: `${secureContactNumber}-` as PhoneNumber | string,
           });
           break;
@@ -284,8 +467,8 @@ function CreateAnonymousRequest() {
       }
     }
 
-    createAnonymousRequestDispatch({
-      type: createAnonymousRequestAction.setIsValidSecureContactNumber,
+    anonymousRequestDispatch({
+      type: anonymousRequestAction.setIsValidSecureContactNumber,
       payload: isValid,
     });
   }, [secureContactNumber, isSecureContactNumberFocused]);
@@ -294,8 +477,8 @@ function CreateAnonymousRequest() {
   useEffect(() => {
     const isValid = EMAIL_REGEX.test(secureContactEmail);
 
-    createAnonymousRequestDispatch({
-      type: createAnonymousRequestAction.setIsValidSecureContactEmail,
+    anonymousRequestDispatch({
+      type: anonymousRequestAction.setIsValidSecureContactEmail,
       payload: isValid,
     });
   }, [secureContactEmail]);
@@ -304,8 +487,8 @@ function CreateAnonymousRequest() {
   useEffect(() => {
     const isValid = GRAMMAR_TEXTAREA_INPUT_REGEX.test(requestDescription);
 
-    createAnonymousRequestDispatch({
-      type: createAnonymousRequestAction.setIsValidRequestDescription,
+    anonymousRequestDispatch({
+      type: anonymousRequestAction.setIsValidRequestDescription,
       payload: isValid,
     });
   }, [requestDescription]);
@@ -314,8 +497,8 @@ function CreateAnonymousRequest() {
   useEffect(() => {
     const isValid = GRAMMAR_TEXTAREA_INPUT_REGEX.test(additionalInformation);
 
-    createAnonymousRequestDispatch({
-      type: createAnonymousRequestAction.setIsValidAdditionalInformation,
+    anonymousRequestDispatch({
+      type: anonymousRequestAction.setIsValidAdditionalInformation,
       payload: isValid,
     });
   }, [additionalInformation]);
@@ -329,8 +512,8 @@ function CreateAnonymousRequest() {
     const isStepInError = areRequiredInputsInError || isOptionalInputInError;
 
     // if any of the steps are in error, set the stepper position 1
-    createAnonymousRequestDispatch({
-      type: createAnonymousRequestAction.setStepsInError,
+    anonymousRequestDispatch({
+      type: anonymousRequestAction.setPageInError,
       payload: {
         kind: isStepInError ? "add" : "delete",
         step: 0,
@@ -351,8 +534,8 @@ function CreateAnonymousRequest() {
     const isStepInError = isRequiredInputInError || isOptionalInputInError;
 
     // if any of the steps are in error, set the stepper position 2
-    createAnonymousRequestDispatch({
-      type: createAnonymousRequestAction.setStepsInError,
+    anonymousRequestDispatch({
+      type: anonymousRequestAction.setPageInError,
       payload: {
         kind: isStepInError ? "add" : "delete",
         step: 1,
@@ -435,20 +618,20 @@ function CreateAnonymousRequest() {
     isValidInputText: isValidTitle,
     label: "Title",
     onBlur: () => {
-      createAnonymousRequestDispatch({
-        type: createAnonymousRequestAction.setIsTitleFocused,
+      anonymousRequestDispatch({
+        type: anonymousRequestAction.setIsTitleFocused,
         payload: false,
       });
     },
     onChange: (event: ChangeEvent<HTMLInputElement>) => {
-      createAnonymousRequestDispatch({
-        type: createAnonymousRequestAction.setTitle,
+      anonymousRequestDispatch({
+        type: anonymousRequestAction.setTitle,
         payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
-      createAnonymousRequestDispatch({
-        type: createAnonymousRequestAction.setIsTitleFocused,
+      anonymousRequestDispatch({
+        type: anonymousRequestAction.setIsTitleFocused,
         payload: true,
       });
     },
@@ -468,28 +651,28 @@ function CreateAnonymousRequest() {
       isValidInputText: isValidSecureContactNumber,
       label: "Secure Contact Number",
       onBlur: () => {
-        createAnonymousRequestDispatch({
-          type: createAnonymousRequestAction.setIsSecureContactNumberFocused,
+        anonymousRequestDispatch({
+          type: anonymousRequestAction.setIsSecureContactNumberFocused,
           payload: false,
         });
       },
       onChange: (event: ChangeEvent<HTMLInputElement>) => {
-        createAnonymousRequestDispatch({
-          type: createAnonymousRequestAction.setSecureContactNumber,
+        anonymousRequestDispatch({
+          type: anonymousRequestAction.setSecureContactNumber,
           payload: event.currentTarget.value,
         });
       },
       onFocus: () => {
-        createAnonymousRequestDispatch({
-          type: createAnonymousRequestAction.setIsSecureContactNumberFocused,
+        anonymousRequestDispatch({
+          type: anonymousRequestAction.setIsSecureContactNumberFocused,
           payload: true,
         });
       },
       onKeyDown: (event: KeyboardEvent<HTMLInputElement>) => {
         if (event.key === "Backspace") {
           if (secureContactNumber.length === 14 || secureContactNumber.length === 9) {
-            createAnonymousRequestDispatch({
-              type: createAnonymousRequestAction.setSecureContactNumber,
+            anonymousRequestDispatch({
+              type: anonymousRequestAction.setSecureContactNumber,
               payload: secureContactNumber.slice(0, -1) as PhoneNumber | string,
             });
           }
@@ -498,8 +681,8 @@ function CreateAnonymousRequest() {
       placeholder: "Enter secure contact number",
       rightSection: true,
       rightSectionOnClick: () => {
-        createAnonymousRequestDispatch({
-          type: createAnonymousRequestAction.setSecureContactNumber,
+        anonymousRequestDispatch({
+          type: anonymousRequestAction.setSecureContactNumber,
           payload: "+(1)",
         });
       },
@@ -516,20 +699,20 @@ function CreateAnonymousRequest() {
     isValidInputText: isValidSecureContactEmail,
     label: "Secure Contact Email",
     onBlur: () => {
-      createAnonymousRequestDispatch({
-        type: createAnonymousRequestAction.setIsSecureContactEmailFocused,
+      anonymousRequestDispatch({
+        type: anonymousRequestAction.setIsSecureContactEmailFocused,
         payload: false,
       });
     },
     onChange: (event: ChangeEvent<HTMLInputElement>) => {
-      createAnonymousRequestDispatch({
-        type: createAnonymousRequestAction.setSecureContactEmail,
+      anonymousRequestDispatch({
+        type: anonymousRequestAction.setSecureContactEmail,
         payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
-      createAnonymousRequestDispatch({
-        type: createAnonymousRequestAction.setIsSecureContactEmailFocused,
+      anonymousRequestDispatch({
+        type: anonymousRequestAction.setIsSecureContactEmailFocused,
         payload: true,
       });
     },
@@ -544,8 +727,8 @@ function CreateAnonymousRequest() {
     description: "Select the kind of request",
     label: "Request Kind",
     onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-      createAnonymousRequestDispatch({
-        type: createAnonymousRequestAction.setRequestKind,
+      anonymousRequestDispatch({
+        type: anonymousRequestAction.setRequestKind,
         payload: event.currentTarget.value as AnonymousRequestKind,
       });
     },
@@ -563,20 +746,20 @@ function CreateAnonymousRequest() {
     isValidInputText: isValidRequestDescription,
     label: "Description",
     onBlur: () => {
-      createAnonymousRequestDispatch({
-        type: createAnonymousRequestAction.setIsRequestDescriptionFocused,
+      anonymousRequestDispatch({
+        type: anonymousRequestAction.setIsRequestDescriptionFocused,
         payload: false,
       });
     },
     onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
-      createAnonymousRequestDispatch({
-        type: createAnonymousRequestAction.setRequestDescription,
+      anonymousRequestDispatch({
+        type: anonymousRequestAction.setRequestDescription,
         payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
-      createAnonymousRequestDispatch({
-        type: createAnonymousRequestAction.setIsRequestDescriptionFocused,
+      anonymousRequestDispatch({
+        type: anonymousRequestAction.setIsRequestDescriptionFocused,
         payload: true,
       });
     },
@@ -597,20 +780,20 @@ function CreateAnonymousRequest() {
       isValidInputText: isValidAdditionalInformation,
       label: "Additional Information",
       onBlur: () => {
-        createAnonymousRequestDispatch({
-          type: createAnonymousRequestAction.setIsAdditionalInformationFocused,
+        anonymousRequestDispatch({
+          type: anonymousRequestAction.setIsAdditionalInformationFocused,
           payload: false,
         });
       },
       onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
-        createAnonymousRequestDispatch({
-          type: createAnonymousRequestAction.setAdditionalInformation,
+        anonymousRequestDispatch({
+          type: anonymousRequestAction.setAdditionalInformation,
           payload: event.currentTarget.value,
         });
       },
       onFocus: () => {
-        createAnonymousRequestDispatch({
-          type: createAnonymousRequestAction.setIsAdditionalInformationFocused,
+        anonymousRequestDispatch({
+          type: anonymousRequestAction.setIsAdditionalInformationFocused,
           payload: true,
         });
       },
@@ -624,8 +807,8 @@ function CreateAnonymousRequest() {
     description: "Select the urgency of request",
     label: "Urgency",
     onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-      createAnonymousRequestDispatch({
-        type: createAnonymousRequestAction.setUrgency,
+      anonymousRequestDispatch({
+        type: anonymousRequestAction.setUrgency,
         payload: event.currentTarget.value as Urgency,
       });
     },
@@ -640,13 +823,13 @@ function CreateAnonymousRequest() {
     semanticName: "submit button",
     leftIcon: <TbUpload />,
     buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
-      createAnonymousRequestDispatch({
-        type: createAnonymousRequestAction.setTriggerFormSubmit,
+      anonymousRequestDispatch({
+        type: anonymousRequestAction.setTriggerFormSubmit,
         payload: true,
       });
     },
     // ensures form submit happens only once
-    buttonDisabled: stepsInError.size > 0 || triggerFormSubmit,
+    buttonDisabled: pagesInError.size > 0 || triggerFormSubmit,
   };
 
   const [createdTitleTextInput, createdSecureContactEmailTextInput] =
@@ -679,7 +862,7 @@ function CreateAnonymousRequest() {
     currentStepperPosition === CREATE_ANON_REQUEST_MAX_STEPPER_POSITION ? (
       <Tooltip
         label={
-          stepsInError.size > 0
+          pagesInError.size > 0
             ? "Please fix errors before submitting form"
             : "Submit Anonymous Request form"
         }
@@ -773,7 +956,7 @@ function CreateAnonymousRequest() {
     />
   );
 
-  const displayCreateAnonymousRequestForm =
+  const displayAnonymousRequestForm =
     currentStepperPosition === 0
       ? displayAnonRequestFirstPage
       : currentStepperPosition === 1
@@ -782,22 +965,21 @@ function CreateAnonymousRequest() {
       ? displayReviewFormPage
       : displaySubmitButton;
 
-  const displayCreateAnonymousRequestComponent = (
+  const displayAnonymousRequestComponent = (
     <StepperWrapper
       childrenTitle="Anonymous Request"
       currentStepperPosition={currentStepperPosition}
       descriptionObjectsArray={CREATE_ANON_REQUEST_DESCRIPTION_OBJECTS}
       maxStepperPosition={CREATE_ANON_REQUEST_MAX_STEPPER_POSITION}
-      parentComponentDispatch={createAnonymousRequestDispatch}
-      setCurrentStepperPosition={createAnonymousRequestAction.setCurrentStepperPosition}
-      stepsInError={stepsInError}
+      parentComponentDispatch={anonymousRequestDispatch}
+      setCurrentStepperPosition={anonymousRequestAction.setCurrentStepperPosition}
+      pagesInError={pagesInError}
     >
       {displaySubmitSuccessNotificationModal}
-      {displayCreateAnonymousRequestForm}
+      {displayAnonymousRequestForm}
     </StepperWrapper>
   );
 
-  return displayCreateAnonymousRequestComponent;
-}
+  return displayAnonymousRequestComponent;
 
-export default CreateAnonymousRequest;
+ */
