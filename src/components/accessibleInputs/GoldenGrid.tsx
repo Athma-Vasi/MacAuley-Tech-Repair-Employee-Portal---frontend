@@ -2,10 +2,11 @@ import { Grid } from "@mantine/core";
 
 function GoldenGrid({
   children,
-  columns = 100,
-  leftSpan = 38,
-  rightSpan = 62,
+  columns = 50,
+  leftSpan = 19,
+  rightSpan = 31,
 }: {
+  /** must be a tuple: [left side, right side] */
   children: [React.ReactNode, React.ReactNode];
   columns?: number;
   leftSpan?: number;

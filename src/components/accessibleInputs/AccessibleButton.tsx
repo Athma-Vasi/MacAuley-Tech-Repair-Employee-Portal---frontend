@@ -7,11 +7,31 @@ import {
   ReactNode,
   RefObject,
 } from "react";
-import { TbUpload } from "react-icons/tb";
+import {
+  TbDownload,
+  TbEdit,
+  TbFilter,
+  TbPlus,
+  TbRefresh,
+  TbSearch,
+  TbTrash,
+  TbUpload,
+} from "react-icons/tb";
 
 import { useGlobalState } from "../../hooks";
 import { splitCamelCase } from "../../utils";
 import { createAccessibleButtonScreenreaderTextElements } from "./utils";
+
+type AccessibleButtonKind =
+  | "add"
+  | "default"
+  | "delete"
+  | "download"
+  | "edit"
+  | "filter"
+  | "refresh"
+  | "search"
+  | "submit";
 
 type AccessibleButtonAttributes = {
   compact?: boolean;
@@ -20,6 +40,7 @@ type AccessibleButtonAttributes = {
   disabled?: boolean;
   isTooltip?: boolean;
   label?: ReactNode;
+  kind: AccessibleButtonKind;
   leftIcon?: ReactNode;
   name: string;
   onClick?: (
@@ -50,18 +71,32 @@ function AccessibleButton({ attributes }: AccessibleButtonProps) {
     enabledScreenreaderText,
     disabled = false,
     isTooltip = true,
+    kind,
     type = "button",
-    leftIcon = type === "submit" ? <TbUpload /> : null,
     onClick,
     onKeyDown = () => {},
     ref = null,
     rightIcon = null,
-    size = "xs",
+    size = "sm",
     style = {},
     variant = colorScheme === "dark" ? "outline" : "subtle",
   } = attributes;
   const name = splitCamelCase(attributes.name);
   const label = attributes.label ?? name;
+
+  const leftIconTable: Record<AccessibleButtonKind, ReactNode> = {
+    add: <TbPlus />,
+    default: null,
+    delete: <TbTrash />,
+    download: <TbDownload />,
+    edit: <TbEdit />,
+    filter: <TbFilter />,
+    refresh: <TbRefresh />,
+    search: <TbSearch />,
+    submit: <TbUpload />,
+  };
+
+  const leftIcon = attributes.leftIcon ?? leftIconTable[kind];
 
   const { disabledTextElement, enabledTextElement } =
     createAccessibleButtonScreenreaderTextElements({
@@ -132,4 +167,4 @@ function AccessibleButton({ attributes }: AccessibleButtonProps) {
 
 export { AccessibleButton };
 
-export type { AccessibleButtonAttributes };
+export type { AccessibleButtonAttributes, AccessibleButtonKind };

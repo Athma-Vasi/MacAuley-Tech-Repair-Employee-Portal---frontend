@@ -1,5 +1,6 @@
-import { Card, Grid, Group, Image, Space, Stack, Text, Tooltip } from "@mantine/core";
+import { Card, Group, Image, LoadingOverlay, Stack, Text, Tooltip } from "@mantine/core";
 import { compress, EImageType } from "image-conversion";
+import localforage from "localforage";
 import { useEffect, useReducer, useRef } from "react";
 import { useErrorBoundary } from "react-error-boundary";
 import { BiReset } from "react-icons/bi";
@@ -15,15 +16,13 @@ import {
 } from "../../imageUpload/constants";
 import { AccessibleFileInput } from "../AccessibleFileInput";
 import { AccessibleSliderInput } from "../AccessibleSliderInput";
+import { GoldenGrid } from "../GoldenGrid";
 import { createAccessibleButtons } from "../utils";
 import { AccessibleImageInputAction, accessibleImageInputAction } from "./actions";
 import { ALLOWED_FILE_EXTENSIONS_REGEX, MAX_IMAGE_SIZE, MAX_IMAGES } from "./constants";
 import { accessibleImageInputReducer } from "./reducers";
 import { initialAccessibleImageInputState } from "./state";
 import { AccessibleImageInputAttributes } from "./types";
-import { GoldenGrid } from "../GoldenGrid";
-import localforage from "localforage";
-import { all } from "axios";
 import { validateImages } from "./utils";
 
 function AccessibleImageInput<
@@ -44,8 +43,14 @@ function AccessibleImageInput<
     initialAccessibleImageInputState
   );
 
-  const { currentImageIndex, imageFileBlobs, imagesBuffer, orientations, qualities } =
-    accessibleImageInputState;
+  const {
+    currentImageIndex,
+    imageFileBlobs,
+    imagesBuffer,
+    isLoading,
+    orientations,
+    qualities,
+  } = accessibleImageInputState;
 
   const {
     globalState: { themeObject },
@@ -79,22 +84,22 @@ function AccessibleImageInput<
 
         const images = await localforage.getItem<Array<File | null>>("images");
 
-        if (!isMounted || !images) {
+        if (!isMounted) {
           return;
         }
 
-        if (images) {
-          images.forEach((image: File | null, index) => {
-            if (image) {
-              if (image.name !== imagesBuffer[index]?.name) {
-                accessibleImageInputDispatch({
-                  action: accessibleImageInputAction.addImageToBuffer,
-                  payload: image,
-                });
-              }
-            }
-          });
-        }
+        images?.forEach((image: File | null, index) => {
+          if (!image) {
+            return;
+          }
+
+          if (image.name !== imagesBuffer[index]?.name) {
+            accessibleImageInputDispatch({
+              action: accessibleImageInputAction.addImageToBuffer,
+              payload: image,
+            });
+          }
+        });
 
         accessibleImageInputDispatch({
           action: accessibleImageInputAction.setIsLoading,
@@ -382,7 +387,7 @@ function AccessibleImageInput<
     );
 
     const imageQualityStack = (
-      <Stack spacing="md">
+      <Stack spacing="xl">
         {imageQualitySlider}
         <Group position="center">
           <Text>Quality</Text>
@@ -393,7 +398,7 @@ function AccessibleImageInput<
     const imageOrientationSlider = (
       <AccessibleSliderInput
         attributes={{
-          disabled: isImageInvalid || qualities[index] > 7,
+          disabled: isImageInvalid,
           index,
           label: (value) => displayOrientationLabel(value),
           marks: IMG_ORIENTATION_SLIDER_DATA,
@@ -408,18 +413,9 @@ function AccessibleImageInput<
       />
     );
 
-    const imageOrientationSliderWithTooltip =
-      qualities[index] > 7 ? (
-        <Tooltip label="Quality must be less than 80% to rotate image">
-          <Group>{imageOrientationSlider}</Group>
-        </Tooltip>
-      ) : (
-        imageOrientationSlider
-      );
-
     const imageOrientationStack = (
-      <Stack spacing="md">
-        {imageOrientationSliderWithTooltip}
+      <Stack spacing="xl">
+        {imageOrientationSlider}
         <Group position="center">
           <Text>Orientation</Text>
         </Group>
@@ -428,7 +424,7 @@ function AccessibleImageInput<
 
     return (
       <Card w={325} style={{ outline: borderColor, borderRadius: 4 }}>
-        <Stack spacing="sm">
+        <Stack spacing="xl">
           {img}
           {isImageInvalid ? invalidScreenreaderTextElement : validScreenreaderTextElement}
           <Stack>
@@ -436,11 +432,11 @@ function AccessibleImageInput<
             {imageSize}
             {imageType}
           </Stack>
-          <Group w="100%" position="apart">
-            <Group position="left">{removeButtonWithTooltip}</Group>
-            <Group position="right">{resetButtonWithTooltip}</Group>
+          <Group w="100%" position="apart" style={{ outline: "1px solid red" }}>
+            {removeButtonWithTooltip}
+            {resetButtonWithTooltip}
           </Group>
-          <Stack spacing="sm" style={{ outline: "1px solid blue" }}>
+          <Stack spacing="xl" style={{ outline: "1px solid blue" }}>
             {imageQualityStack}
             {imageOrientationStack}
           </Stack>
@@ -449,8 +445,11 @@ function AccessibleImageInput<
     );
   });
 
+  const loadingOverlay = <LoadingOverlay visible={isLoading} />;
+
   return (
     <Stack w={700}>
+      {loadingOverlay}
       {fileInput}
       {fileBlobCards}
     </Stack>
