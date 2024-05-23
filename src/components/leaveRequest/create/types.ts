@@ -5,7 +5,6 @@ import { LeaveRequestAction } from "./actions";
 type LeaveRequestState = {
   acknowledgement: boolean;
   additionalComments: string;
-  areValidLeaveDates: { startDate: boolean; endDate: boolean };
   delegatedResponsibilities: string;
   delegatedToEmployee: string;
   endDate: string;
@@ -25,10 +24,6 @@ type LeaveRequestDispatch =
   | {
       action: LeaveRequestAction["setAdditionalComments"];
       payload: string;
-    }
-  | {
-      action: LeaveRequestAction["setAreValidLeaveDates"];
-      payload: null;
     }
   | {
       action: LeaveRequestAction["setDelegatedResponsibilities"];

@@ -1,5 +1,3 @@
-import { isValid } from "date-fns";
-
 import { SetPageInErrorPayload } from "../../../types";
 import { ReasonForLeave } from "../types";
 import { LeaveRequestAction, leaveRequestAction } from "./actions";
@@ -19,7 +17,6 @@ const leaveRequestReducers = new Map<
 >([
   [leaveRequestAction.setAcknowledgement, leaveRequestReducer_setAcknowledgement],
   [leaveRequestAction.setAdditionalComments, leaveRequestReducer_setAdditionalComments],
-  [leaveRequestAction.setAreValidLeaveDates, leaveRequestReducer_setAreValidLeaveDates],
   [
     leaveRequestAction.setDelegatedResponsibilities,
     leaveRequestReducer_setDelegatedResponsibilities,
@@ -46,24 +43,6 @@ function leaveRequestReducer_setAdditionalComments(
   dispatch: LeaveRequestDispatch
 ): LeaveRequestState {
   return { ...state, additionalComments: dispatch.payload as string };
-}
-
-function leaveRequestReducer_setAreValidLeaveDates(
-  state: LeaveRequestState,
-  _dispatch: LeaveRequestDispatch
-): LeaveRequestState {
-  const isStartDateValid = isValid(state.startDate);
-  const isEndDateValid = isValid(state.endDate);
-  const areDatesChronological =
-    isStartDateValid && isEndDateValid && state.startDate <= state.endDate;
-
-  return {
-    ...state,
-    areValidLeaveDates: {
-      startDate: isStartDateValid,
-      endDate: isEndDateValid && areDatesChronological,
-    },
-  };
 }
 
 function leaveRequestReducer_setDelegatedResponsibilities(

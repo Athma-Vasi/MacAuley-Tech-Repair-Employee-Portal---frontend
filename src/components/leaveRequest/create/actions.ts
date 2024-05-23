@@ -1,6 +1,5 @@
 type LeaveRequestAction = {
   setAdditionalComments: "setAdditionalComments";
-  setAreValidLeaveDates: "setAreValidLeaveDates";
   setDelegatedResponsibilities: "setDelegatedResponsibilities";
   setDelegatedToEmployee: "setDelegatedToEmployee";
   setEndDate: "setEndDate";
@@ -15,7 +14,6 @@ type LeaveRequestAction = {
 
 const leaveRequestAction: LeaveRequestAction = {
   setAdditionalComments: "setAdditionalComments",
-  setAreValidLeaveDates: "setAreValidLeaveDates",
   setDelegatedResponsibilities: "setDelegatedResponsibilities",
   setDelegatedToEmployee: "setDelegatedToEmployee",
   setEndDate: "setEndDate",

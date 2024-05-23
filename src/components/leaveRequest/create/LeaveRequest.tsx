@@ -29,7 +29,6 @@ function LeaveRequest() {
   const {
     startDate,
     endDate,
-    areValidLeaveDates,
     reasonForLeave,
     delegatedToEmployee,
     delegatedResponsibilities,
