@@ -135,7 +135,7 @@ type AccessibleCheckboxInputGroupAttributes<
   disabledValuesSet?: Set<string>;
   inputData: Array<{ value: string; label: string }>;
   key?: string;
-  label: ReactNode;
+  label?: ReactNode;
   onChange?: (value: string[]) => void;
   parentDispatch: React.Dispatch<{
     action: ValidValueAction;
@@ -145,6 +145,7 @@ type AccessibleCheckboxInputGroupAttributes<
   required?: boolean;
   name: string;
   size?: MantineSize;
+  validValueAction: ValidValueAction;
   value: string[];
   withAsterisk?: boolean;
 };
@@ -163,16 +164,18 @@ function AccessibleCheckboxInputGroup<
   const {
     disabledValuesSet = new Set(),
     inputData,
-    label,
     name,
     key = name + " - key",
     onChange,
+    parentDispatch,
     ref = null,
     required = false,
     size = "sm",
+    validValueAction,
     value,
     withAsterisk = required,
   } = attributes;
+  const label = attributes.label ?? splitCamelCase(name);
 
   const {
     globalState: { themeObject },
@@ -201,7 +204,14 @@ function AccessibleCheckboxInputGroup<
       description={value.length > 0 ? selectedTextElement : deselectedTextElement}
       key={key}
       label={label}
-      onChange={onChange}
+      onChange={(value: Payload) => {
+        parentDispatch({
+          action: validValueAction,
+          payload: value,
+        });
+
+        onChange?.(value);
+      }}
       ref={ref}
       required={required}
       size={size}

@@ -1,5 +1,5 @@
 import { Country, PostalCode, PreferredPronouns, Province, StatesUS } from "../../types";
-import { StepsInErrorPayload } from "../endorsements/create/types";
+import { StepsInErrorPayload } from "../endorsement/create/types";
 import { CreateCustomerAction, createCustomerAction } from "./actions";
 import { CreateCustomerDispatch } from "./dispatch";
 import { CreateCustomerState } from "./types";

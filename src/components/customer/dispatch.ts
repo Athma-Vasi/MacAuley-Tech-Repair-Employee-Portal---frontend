@@ -1,4 +1,4 @@
-import { StepsInErrorPayload } from "../endorsements/create/types";
+import { StepsInErrorPayload } from "../endorsement/create/types";
 import { CreateCustomerAction } from "./actions";
 import { CreateCustomerState } from "./types";
 

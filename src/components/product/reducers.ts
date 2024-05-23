@@ -1,6 +1,6 @@
 import { Currency } from "../../types";
 import { ProductCategory } from "../dashboard/types";
-import { StepsInErrorPayload } from "../endorsements/create/types";
+import { StepsInErrorPayload } from "../endorsement/create/types";
 import {
   AdditionalFieldsAdd,
   AdditionalFieldsPayload,

@@ -1,12 +1,17 @@
 import { faCheck, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Grid, Group, Text } from "@mantine/core";
+import { Grid, Group, Space, Text } from "@mantine/core";
 import { TbCheck, TbExclamationCircle } from "react-icons/tb";
 
 import { COLORS_SWATCHES } from "../../constants/data";
 import { ThemeObject } from "../../context/globalProvider/types";
 import { StepperPage } from "../../types";
-import { replaceLastCommaWithAnd, returnThemeColors, splitCamelCase } from "../../utils";
+import {
+  capitalizeAll,
+  replaceLastCommaWithAnd,
+  returnThemeColors,
+  splitCamelCase,
+} from "../../utils";
 import { AccessibleButton, AccessibleButtonAttributes } from "./AccessibleButton";
 import {
   AccessibleCheckboxInputGroup,
@@ -130,6 +135,7 @@ function createAccessibleValueValidationTextElements({
 
 type CreateAccessibleCheckboxSelectionsTextElements = {
   checked: boolean;
+  isIcons?: boolean;
   kind: "single" | "group";
   name: string;
   theme?: "muted" | "default";
@@ -139,6 +145,7 @@ type CreateAccessibleCheckboxSelectionsTextElements = {
 
 function createAccessibleCheckboxSelectionsTextElements({
   checked,
+  isIcons = false,
   kind,
   name,
   theme = "default",
@@ -149,7 +156,7 @@ function createAccessibleCheckboxSelectionsTextElements({
   deselectedTextElement: React.JSX.Element;
 } {
   const {
-    generalColors: { greenColorShade, textColor, grayColorShade, redColorShade },
+    generalColors: { greenColorShade, grayColorShade, redColorShade, darkSchemeGray },
   } = returnThemeColors({
     themeObject,
     colorsSwatches: COLORS_SWATCHES,
@@ -160,23 +167,26 @@ function createAccessibleCheckboxSelectionsTextElements({
       <FontAwesomeIcon icon={faCheck} color={greenColorShade} />
     ) : null;
 
+  const stringifiedValue = Array.isArray(value)
+    ? replaceLastCommaWithAnd(
+        value.map((v) => v.charAt(0).toUpperCase() + v.slice(1)).join(", ")
+      )
+    : value;
+
   const selectedText =
     kind === "single"
-      ? `For ${name}, ${value} selected.`
-      : `For ${name}, ${replaceLastCommaWithAnd(
-          Array.isArray(value) ? value.join(", ") : value
-        )} ${value.length > 1 ? "are" : "is"} selected.`;
+      ? `${value} selected.`
+      : `${stringifiedValue} ${value.length > 1 ? "are" : "is"} selected.`;
 
   const selectedTextElement = (
     <Text
       id={`${name}-selected`}
       style={{ display: checked ? "block" : "none" }}
-      color={theme === "muted" ? textColor : greenColorShade}
+      color={darkSchemeGray}
       w="100%"
       aria-live="polite"
     >
-      {selectedIcon}
-      {selectedText}
+      {isIcons ? selectedIcon : null} {selectedText}
     </Text>
   );
 
@@ -185,18 +195,17 @@ function createAccessibleCheckboxSelectionsTextElements({
       <FontAwesomeIcon icon={faInfoCircle} color={redColorShade} />
     ) : null;
 
-  const deselectedText = `For ${name}, no selection made.`;
+  const deselectedText = "No selection made.";
 
   const deselectedTextElement = (
     <Text
       id={`${name}-deselected`}
       style={{ display: !checked ? "block" : "none" }}
-      color={theme === "default" ? textColor : grayColorShade}
+      color={theme === "default" ? darkSchemeGray : grayColorShade}
       w="100%"
       aria-live="polite"
     >
-      {deselectedIcon}
-      {deselectedText}
+      {isIcons ? deselectedIcon : null} {deselectedText}
     </Text>
   );
 

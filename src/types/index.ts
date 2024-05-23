@@ -12,7 +12,7 @@ import { AnnouncementDocument } from "../components/announcement/create/types";
 import { AnonymousRequestDocument } from "../components/anonymousRequest/create/types";
 import { BenefitsDocument } from "../components/benefit/create/types";
 import { CustomerDocument } from "../components/customer/types";
-import { EndorsementDocument } from "../components/endorsements/create/types";
+import { EndorsementDocument } from "../components/endorsement/create/types";
 import { EventCreatorDocument } from "../components/event/create/types";
 import { ExpenseClaimDocument } from "../components/expenseClaim/create/types";
 import { LeaveRequestDocument } from "../components/leaveRequest/types";
@@ -245,6 +245,7 @@ type StepperChild = {
   name: string;
   validations?: Validations;
   selectInputData?: string[];
+  checkboxInputData?: CheckBoxMultipleData;
 };
 
 type Validations = {

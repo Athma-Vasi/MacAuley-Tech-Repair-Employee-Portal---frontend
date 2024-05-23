@@ -290,11 +290,11 @@ const CreateAnonymousRequest = lazy(
 //   ENDORSEMENT
 // ╰─────────────────────────────────────────────────────────────────╯
 const DisplayEndorsements = lazy(
-  () => import("./components/endorsements/DisplayEndorsements")
+  () => import("./components/endorsement/DisplayEndorsements")
 );
 
 const CreateEndorsement = lazy(
-  () => import("./components/endorsements/create/CreateEndorsement")
+  () => import("./components/endorsement/create/Endorsement")
 );
 
 // ╭─────────────────────────────────────────────────────────────────╮

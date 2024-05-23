@@ -1416,7 +1416,7 @@ function Home() {
       const {
         _id,
         title,
-        userToBeEndorsed,
+        personToBeEndorsed,
         username,
         attributeEndorsed,
         requestStatus,
@@ -1428,7 +1428,7 @@ function Home() {
       const displayUserToBeEndorsed = (
         <Flex wrap="wrap">
           <Text>Endorsed:</Text>
-          <Text pl={padding}>{userToBeEndorsed}</Text>
+          <Text pl={padding}>{personToBeEndorsed}</Text>
         </Flex>
       );
 

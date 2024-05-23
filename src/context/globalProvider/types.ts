@@ -23,7 +23,7 @@ import { RadialBarChartData } from "../../components/charts/responsiveRadialBarC
 import { SunburstChartData } from "../../components/charts/responsiveSunburstChart/types";
 import { NivoChartUnitKind } from "../../components/charts/types";
 import { CustomerDocument } from "../../components/customer/types";
-import { EndorsementDocument } from "../../components/endorsements/create/types";
+import { EndorsementDocument } from "../../components/endorsement/create/types";
 import { EventCreatorDocument } from "../../components/event/create/types";
 import { ExpenseClaimDocument } from "../../components/expenseClaim/create/types";
 import { LeaveRequestDocument } from "../../components/leaveRequest/types";
