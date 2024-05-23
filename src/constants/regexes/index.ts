@@ -181,6 +181,26 @@ const TEXT_INPUT_REGEXES = {
   ],
 } as Regexes;
 
+/**
+ * - /^[A-Za-z\s.\-']{2,100}$/i
+ * - [A-Za-z\s.\-'] matches any letter, whitespace, period, hyphen, or apostrophe.
+ * - {2,100} ensures that the text is between 2 and 100 characters long.
+ * - ^ and $ ensure that the entire string matches the regex.
+ * - i makes the regex case-insensitive.
+ */
+const FULL_NAME_REGEX = /^[A-Za-z\s.\-']{2,100}$/i;
+
+const FULL_NAME_REGEXES = {
+  full: FULL_NAME_REGEX,
+  partials: [
+    [
+      /^[A-Za-z\s.\-']{2,100}$/,
+      "Must contain only letters, spaces, periods, hyphens, and apostrophes",
+    ],
+    [/^[A-Za-z\s.\-']{2,100}$/, "Must be between 2 and 100 characters length"],
+  ],
+} as Regexes;
+
 export {
   ACKNOWLEDGEMENT_REGEXES,
   DATE_FULL_RANGE_REGEXES,
@@ -188,6 +208,7 @@ export {
   DATE_NEAR_PAST_REGEXES,
   DATE_OF_BIRTH_REGEXES,
   DATE_REGEXES,
+  FULL_NAME_REGEXES,
   MONEY_REGEXES,
   TEXT_AREA_INPUT_REGEXES,
   TEXT_INPUT_REGEXES,

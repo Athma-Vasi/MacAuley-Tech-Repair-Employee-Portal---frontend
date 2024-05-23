@@ -242,7 +242,7 @@ const DisplayBenefits = lazy(() => import("./components/benefit/DisplayBenefits"
 //    LEAVE REQUEST
 // ╰─────────────────────────────────────────────────────────────────╯
 const CreateLeaveRequest = lazy(
-  () => import("./components/leaveRequest/create/CreateLeaveRequest")
+  () => import("./components/leaveRequest/create/LeaveRequest")
 );
 
 const DisplayLeaveRequests = lazy(

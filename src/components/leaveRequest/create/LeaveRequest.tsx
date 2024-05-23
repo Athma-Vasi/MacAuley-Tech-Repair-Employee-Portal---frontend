@@ -1,103 +1,284 @@
-import { Group, Title, Tooltip } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
-import { InvalidTokenError } from "jwt-decode";
-import { ChangeEvent, MouseEvent, useEffect, useReducer } from "react";
+import { Stack, Text } from "@mantine/core";
+import { useEffect, useReducer, useRef } from "react";
 import { useErrorBoundary } from "react-error-boundary";
-import { TbUpload } from "react-icons/tb";
-import { useNavigate } from "react-router-dom";
 
-import {
-  DATE_NEAR_FUTURE_REGEX,
-  FULL_NAME_REGEX,
-  GRAMMAR_TEXTAREA_INPUT_REGEX,
-} from "../../../constants/regex";
-import { globalAction } from "../../../context/globalProvider/state";
-import { useAuth, useGlobalState, useWrapFetch } from "../../../hooks";
-import {
-  AccessibleErrorValidTextElements,
-  AccessibleSelectedDeselectedTextElements,
-  returnAccessibleButtonElements,
-  returnAccessibleCheckboxSingleInputElements,
-  returnAccessibleDateTimeElements,
-  returnAccessibleSelectInputElements,
-  returnAccessibleTextAreaInputElements,
-  returnAccessibleTextInputElements,
-} from "../../../jsxCreators";
-import { ResourceRequestServerResponse } from "../../../types";
-import {
-  returnDateNearFutureValidationText,
-  returnGrammarValidationText,
-  urlBuilder,
-} from "../../../utils";
-import FormReviewPage, {
-  FormReviewObjectArray,
-} from "../../formReviewPage/FormReviewPage";
-import { NotificationModal } from "../../notificationModal";
-import {
-  AccessibleButtonCreatorInfo,
-  AccessibleCheckboxSingleInputCreatorInfo,
-  AccessibleDateTimeInputCreatorInfo,
-  AccessibleSelectInputCreatorInfo,
-  AccessibleTextAreaInputCreatorInfo,
-  AccessibleTextInputCreatorInfo,
-  FormLayoutWrapper,
-  StepperWrapper,
-} from "../../wrappers";
-import { LeaveRequestDocument, ReasonForLeave } from "../types";
-import {
-  LEAVE_REQUEST_DESCRIPTION_OBJECTS,
-  LEAVE_REQUEST_MAX_STEPPER_POSITION,
-  REASON_FOR_LEAVE_DATA,
-} from "./constants";
-import {
-  createLeaveRequestAction,
-  createLeaveRequestReducer,
-  initialCreateLeaveRequestState,
-} from "./state";
+import { useAuth } from "../../../hooks";
+import { useFetchInterceptor } from "../../../hooks/useFetchInterceptor";
+import { StepperPage } from "../../../types";
+import { formSubmitPOST, logState } from "../../../utils";
+import { AccessibleButton } from "../../accessibleInputs/AccessibleButton";
+import { AccessibleDateTimeInput } from "../../accessibleInputs/AccessibleDateTimeInput";
+import { AccessibleSelectInput } from "../../accessibleInputs/AccessibleSelectInput";
+import { AccessibleStepper } from "../../accessibleInputs/AccessibleStepper";
+import { AccessibleSwitchInput } from "../../accessibleInputs/AccessibleSwitchInput";
+import { AccessibleTextAreaInput } from "../../accessibleInputs/AccessibleTextAreaInput";
+import { AccessibleTextInput } from "../../accessibleInputs/text/AccessibleTextInput";
+import { LEAVE_REQUESTS_ROLE_PATHS, returnLeaveRequestStepperPages } from "../constants";
+import { LeaveRequestSchema, ReasonForLeave } from "../types";
+import { LeaveRequestAction, leaveRequestAction } from "./actions";
+import { REASON_FOR_LEAVE_DATA } from "./constants";
+import { leaveRequestReducer } from "./reducers";
+import { initialLeaveRequestState } from "./state";
 
-function CreateLeaveRequest() {
-  const [leaveRequestState, createLeaveRequestDispatch] = useReducer(
-    createLeaveRequestReducer,
-    initialCreateLeaveRequestState
+function LeaveRequest() {
+  const [leaveRequestState, leaveRequestDispatch] = useReducer(
+    leaveRequestReducer,
+    initialLeaveRequestState
   );
 
   const {
     startDate,
-    isValidStartDate,
-    isStartDateFocused,
-
     endDate,
-    isValidEndDate,
-    isEndDateFocused,
-
     areValidLeaveDates,
     reasonForLeave,
-
     delegatedToEmployee,
-    isValidDelegatedToEmployee,
-    isDelegatedToEmployeeFocused,
-
     delegatedResponsibilities,
-    isValidDelegatedResponsibilities,
-    isDelegatedResponsibilitiesFocused,
-
     additionalComments,
-    isValidAdditionalComments,
-    isAdditionalCommentsFocused,
-
-    isAcknowledged,
+    acknowledgement,
     triggerFormSubmit,
-    currentStepperPosition,
-    stepsInError,
-
+    pagesInError,
     isSubmitting,
-    submitMessage,
     isSuccessful,
-    successMessage,
-    isLoading,
-    loadingMessage,
   } = leaveRequestState;
 
+  useEffect(() => {
+    logState({
+      state: leaveRequestState,
+      groupLabel: "Leave Request",
+    });
+  }, [leaveRequestState]);
+
+  const {
+    authState: { sessionId, userId, username },
+  } = useAuth();
+  const { fetchInterceptor } = useFetchInterceptor();
+  const { showBoundary } = useErrorBoundary();
+
+  const fetchAbortControllerRef = useRef<AbortController | null>(null);
+  const preFetchAbortControllerRef = useRef<AbortController | null>(null);
+  const isComponentMountedRef = useRef(false);
+
+  useEffect(() => {
+    fetchAbortControllerRef.current?.abort();
+    fetchAbortControllerRef.current = new AbortController();
+    const fetchAbortController = fetchAbortControllerRef.current;
+
+    preFetchAbortControllerRef.current?.abort();
+    preFetchAbortControllerRef.current = new AbortController();
+    const preFetchAbortController = preFetchAbortControllerRef.current;
+
+    isComponentMountedRef.current = true;
+    let isComponentMounted = isComponentMountedRef.current;
+
+    if (triggerFormSubmit) {
+      const leaveRequestSchema: LeaveRequestSchema = {
+        acknowledgement,
+        additionalComments,
+        delegatedResponsibilities,
+        delegatedToEmployee,
+        endDate,
+        reasonForLeave,
+        requestStatus: "pending",
+        startDate,
+        userId,
+        username,
+      };
+
+      formSubmitPOST({
+        dispatch: leaveRequestDispatch,
+        fetchAbortController,
+        fetchInterceptor,
+        isComponentMounted,
+        isSubmittingAction: leaveRequestAction.setIsSubmitting,
+        isSuccessfulAction: leaveRequestAction.setIsSuccessful,
+        preFetchAbortController,
+        roleResourceRoutePaths: LEAVE_REQUESTS_ROLE_PATHS,
+        schema: leaveRequestSchema,
+        schemaName: "leaveRequestSchema",
+        sessionId,
+        showBoundary,
+        userId,
+        username,
+        userRole: "manager",
+      });
+    }
+
+    return () => {
+      isComponentMountedRef.current = false;
+      preFetchAbortController?.abort();
+      fetchAbortController?.abort();
+    };
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [triggerFormSubmit]);
+
+  if (isSubmitting) {
+    const submittingState = (
+      <Stack>
+        <Text size="md">Submitting address changes! Please wait...</Text>
+      </Stack>
+    );
+
+    return submittingState;
+  }
+
+  if (isSuccessful) {
+    const successfulState = (
+      <Stack>
+        <Text size="md">Address changes submitted successfully!</Text>
+      </Stack>
+    );
+
+    return successfulState;
+  }
+
+  const CREATE_LEAVE_REQUEST_PAGES: StepperPage[] = returnLeaveRequestStepperPages();
+
+  const acknowledgementSwitch = (
+    <AccessibleSwitchInput
+      attributes={{
+        checked: acknowledgement,
+        invalidValueAction: leaveRequestAction.setPageInError,
+        name: "acknowledgement",
+        offLabel: "No",
+        onLabel: "Yes",
+        parentDispatch: leaveRequestDispatch,
+        switchOffDescription: "I do not acknowledge",
+        switchOnDescription: "I acknowledge that the information is correct",
+        validValueAction: leaveRequestAction.setAcknowledgement,
+        value: acknowledgement.toString(),
+      }}
+    />
+  );
+
+  const additionalCommentsTextInput = (
+    <AccessibleTextInput
+      attributes={{
+        invalidValueAction: leaveRequestAction.setPageInError,
+        name: "additionalComments",
+        parentDispatch: leaveRequestDispatch,
+        stepperPages: CREATE_LEAVE_REQUEST_PAGES,
+        validValueAction: leaveRequestAction.setAdditionalComments,
+        value: additionalComments,
+      }}
+    />
+  );
+
+  const delegatedResponsibilitiesTextAreaInput = (
+    <AccessibleTextAreaInput
+      attributes={{
+        invalidValueAction: leaveRequestAction.setPageInError,
+        name: "delegatedResponsibilities",
+        parentDispatch: leaveRequestDispatch,
+        stepperPages: CREATE_LEAVE_REQUEST_PAGES,
+        validValueAction: leaveRequestAction.setDelegatedResponsibilities,
+        value: delegatedResponsibilities,
+      }}
+    />
+  );
+
+  const delegatedToEmployeeTextInput = (
+    <AccessibleTextInput
+      attributes={{
+        invalidValueAction: leaveRequestAction.setPageInError,
+        name: "delegatedToEmployee",
+        parentDispatch: leaveRequestDispatch,
+        stepperPages: CREATE_LEAVE_REQUEST_PAGES,
+        validValueAction: leaveRequestAction.setDelegatedToEmployee,
+        value: delegatedToEmployee,
+      }}
+    />
+  );
+
+  const endDateTextInput = (
+    <AccessibleDateTimeInput
+      attributes={{
+        dateKind: "date near future",
+        inputKind: "date",
+        invalidValueAction: leaveRequestAction.setPageInError,
+        name: "endDate",
+        parentDispatch: leaveRequestDispatch,
+        stepperPages: CREATE_LEAVE_REQUEST_PAGES,
+        validValueAction: leaveRequestAction.setEndDate,
+        value: endDate,
+      }}
+    />
+  );
+
+  const reasonForLeaveSelectInput = (
+    <AccessibleSelectInput<LeaveRequestAction["setReasonForLeave"], ReasonForLeave>
+      attributes={{
+        data: REASON_FOR_LEAVE_DATA,
+        name: "reasonForLeave",
+        parentDispatch: leaveRequestDispatch,
+        validValueAction: leaveRequestAction.setReasonForLeave,
+      }}
+    />
+  );
+
+  const startDateTextInput = (
+    <AccessibleDateTimeInput
+      attributes={{
+        dateKind: "date near future",
+        inputKind: "date",
+        invalidValueAction: leaveRequestAction.setPageInError,
+        name: "startDate",
+        parentDispatch: leaveRequestDispatch,
+        stepperPages: CREATE_LEAVE_REQUEST_PAGES,
+        validValueAction: leaveRequestAction.setStartDate,
+        value: startDate,
+      }}
+    />
+  );
+
+  const firstPage = (
+    <Stack>
+      {startDateTextInput}
+      {endDateTextInput}
+      {reasonForLeaveSelectInput}
+      {delegatedToEmployeeTextInput}
+      {delegatedResponsibilitiesTextAreaInput}
+      {additionalCommentsTextInput}
+      {acknowledgementSwitch}
+    </Stack>
+  );
+
+  const submitButton = (
+    <AccessibleButton
+      attributes={{
+        enabledScreenreaderText: "All inputs are valid. Click to submit form",
+        disabledScreenreaderText: "Please fix errors before submitting form",
+        disabled: pagesInError.size > 0 || triggerFormSubmit,
+        kind: "submit",
+        name: "submit",
+        onClick: (_event: React.MouseEvent<HTMLButtonElement>) => {
+          leaveRequestDispatch({
+            action: leaveRequestAction.setTriggerFormSubmit,
+            payload: true,
+          });
+        },
+      }}
+    />
+  );
+
+  const stepper = (
+    <AccessibleStepper
+      attributes={{
+        componentState: leaveRequestState,
+        pageElements: [firstPage],
+        stepperPages: CREATE_LEAVE_REQUEST_PAGES,
+        submitButton,
+      }}
+    />
+  );
+
+  return stepper;
+}
+
+export default LeaveRequest;
+
+/**
+ * 
   const { globalDispatch } = useGlobalState();
 
   const { wrappedFetch } = useWrapFetch();
@@ -118,12 +299,12 @@ function CreateLeaveRequest() {
     const controller = new AbortController();
 
     async function handleCreateLeaveRequestFormSubmit() {
-      createLeaveRequestDispatch({
-        type: createLeaveRequestAction.setIsSubmitting,
+      leaveRequestDispatch({
+        type: leaveRequestAction.setIsSubmitting,
         payload: true,
       });
-      createLeaveRequestDispatch({
-        type: createLeaveRequestAction.setSubmitMessage,
+      leaveRequestDispatch({
+        type: leaveRequestAction.setSubmitMessage,
         payload: `Submitting ${reasonForLeave} leave request form`,
       });
       openSubmitSuccessNotificationModal();
@@ -168,12 +349,12 @@ function CreateLeaveRequest() {
           throw new Error(data.message);
         }
 
-        createLeaveRequestDispatch({
-          type: createLeaveRequestAction.setIsSuccessful,
+        leaveRequestDispatch({
+          type: leaveRequestAction.setIsSuccessful,
           payload: true,
         });
-        createLeaveRequestDispatch({
-          type: createLeaveRequestAction.setSuccessMessage,
+        leaveRequestDispatch({
+          type: leaveRequestAction.setSuccessMessage,
           payload:
             data.message ?? `Successfully created ${reasonForLeave} leave request form`,
         });
@@ -212,16 +393,16 @@ function CreateLeaveRequest() {
         showBoundary(error);
       } finally {
         if (isMounted) {
-          createLeaveRequestDispatch({
-            type: createLeaveRequestAction.setIsSubmitting,
+          leaveRequestDispatch({
+            type: leaveRequestAction.setIsSubmitting,
             payload: false,
           });
-          createLeaveRequestDispatch({
-            type: createLeaveRequestAction.setSubmitMessage,
+          leaveRequestDispatch({
+            type: leaveRequestAction.setSubmitMessage,
             payload: "",
           });
-          createLeaveRequestDispatch({
-            type: createLeaveRequestAction.setTriggerFormSubmit,
+          leaveRequestDispatch({
+            type: leaveRequestAction.setTriggerFormSubmit,
             payload: false,
           });
         }
@@ -244,8 +425,8 @@ function CreateLeaveRequest() {
   useEffect(() => {
     const isValid = DATE_NEAR_FUTURE_REGEX.test(startDate);
 
-    createLeaveRequestDispatch({
-      type: createLeaveRequestAction.setIsValidStartDate,
+    leaveRequestDispatch({
+      type: leaveRequestAction.setIsValidStartDate,
       payload: isValid,
     });
   }, [startDate]);
@@ -254,8 +435,8 @@ function CreateLeaveRequest() {
   useEffect(() => {
     const isValid = DATE_NEAR_FUTURE_REGEX.test(endDate);
 
-    createLeaveRequestDispatch({
-      type: createLeaveRequestAction.setIsValidEndDate,
+    leaveRequestDispatch({
+      type: leaveRequestAction.setIsValidEndDate,
       payload: isValid,
     });
   }, [endDate]);
@@ -267,8 +448,8 @@ function CreateLeaveRequest() {
     const isValid =
       new Date(startDate) < new Date(endDate) && new Date(endDate) > currDate;
 
-    createLeaveRequestDispatch({
-      type: createLeaveRequestAction.setAreValidLeaveDates,
+    leaveRequestDispatch({
+      type: leaveRequestAction.setAreValidLeaveDates,
       payload: isValid,
     });
   }, [startDate, endDate, isValidStartDate, isValidEndDate]);
@@ -277,8 +458,8 @@ function CreateLeaveRequest() {
   useEffect(() => {
     const isValid = FULL_NAME_REGEX.test(delegatedToEmployee);
 
-    createLeaveRequestDispatch({
-      type: createLeaveRequestAction.setIsValidDelegatedToEmployee,
+    leaveRequestDispatch({
+      type: leaveRequestAction.setIsValidDelegatedToEmployee,
       payload: isValid,
     });
   }, [delegatedToEmployee]);
@@ -287,8 +468,8 @@ function CreateLeaveRequest() {
   useEffect(() => {
     const isValid = GRAMMAR_TEXTAREA_INPUT_REGEX.test(delegatedResponsibilities);
 
-    createLeaveRequestDispatch({
-      type: createLeaveRequestAction.setIsValidDelegatedResponsibilities,
+    leaveRequestDispatch({
+      type: leaveRequestAction.setIsValidDelegatedResponsibilities,
       payload: isValid,
     });
   }, [delegatedResponsibilities]);
@@ -297,8 +478,8 @@ function CreateLeaveRequest() {
   useEffect(() => {
     const isValid = GRAMMAR_TEXTAREA_INPUT_REGEX.test(additionalComments);
 
-    createLeaveRequestDispatch({
-      type: createLeaveRequestAction.setIsValidAdditionalComments,
+    leaveRequestDispatch({
+      type: leaveRequestAction.setIsValidAdditionalComments,
       payload: isValid,
     });
   }, [additionalComments]);
@@ -314,8 +495,8 @@ function CreateLeaveRequest() {
 
     const isStepInError = areRequiredInputsInError || areOptionalInputsInError;
 
-    createLeaveRequestDispatch({
-      type: createLeaveRequestAction.setStepsInError,
+    leaveRequestDispatch({
+      type: leaveRequestAction.setPageInError,
       payload: {
         kind: isStepInError ? "add" : "delete",
         step: 0,
@@ -425,20 +606,20 @@ function CreateLeaveRequest() {
     isValidInputText: isValidStartDate && areValidLeaveDates,
     label: "Leave start date",
     onBlur: () => {
-      createLeaveRequestDispatch({
-        type: createLeaveRequestAction.setIsStartDateFocused,
+      leaveRequestDispatch({
+        type: leaveRequestAction.setIsStartDateFocused,
         payload: false,
       });
     },
     onChange: (event: ChangeEvent<HTMLInputElement>) => {
-      createLeaveRequestDispatch({
-        type: createLeaveRequestAction.setStartDate,
+      leaveRequestDispatch({
+        type: leaveRequestAction.setStartDate,
         payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
-      createLeaveRequestDispatch({
-        type: createLeaveRequestAction.setIsStartDateFocused,
+      leaveRequestDispatch({
+        type: leaveRequestAction.setIsStartDateFocused,
         payload: true,
       });
     },
@@ -459,20 +640,20 @@ function CreateLeaveRequest() {
     isValidInputText: isValidEndDate && areValidLeaveDates,
     label: "Leave end date",
     onBlur: () => {
-      createLeaveRequestDispatch({
-        type: createLeaveRequestAction.setIsEndDateFocused,
+      leaveRequestDispatch({
+        type: leaveRequestAction.setIsEndDateFocused,
         payload: false,
       });
     },
     onChange: (event: ChangeEvent<HTMLInputElement>) => {
-      createLeaveRequestDispatch({
-        type: createLeaveRequestAction.setEndDate,
+      leaveRequestDispatch({
+        type: leaveRequestAction.setEndDate,
         payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
-      createLeaveRequestDispatch({
-        type: createLeaveRequestAction.setIsEndDateFocused,
+      leaveRequestDispatch({
+        type: leaveRequestAction.setIsEndDateFocused,
         payload: true,
       });
     },
@@ -487,8 +668,8 @@ function CreateLeaveRequest() {
     description: "Select reason for leave",
     label: "Reason for leave",
     onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-      createLeaveRequestDispatch({
-        type: createLeaveRequestAction.setReasonForLeave,
+      leaveRequestDispatch({
+        type: leaveRequestAction.setReasonForLeave,
         payload: event.currentTarget.value as ReasonForLeave,
       });
     },
@@ -506,20 +687,20 @@ function CreateLeaveRequest() {
     isValidInputText: isValidDelegatedToEmployee,
     label: "Delegated to employee",
     onBlur: () => {
-      createLeaveRequestDispatch({
-        type: createLeaveRequestAction.setIsDelegatedToEmployeeFocused,
+      leaveRequestDispatch({
+        type: leaveRequestAction.setIsDelegatedToEmployeeFocused,
         payload: false,
       });
     },
     onChange: (event: ChangeEvent<HTMLInputElement>) => {
-      createLeaveRequestDispatch({
-        type: createLeaveRequestAction.setDelegatedToEmployee,
+      leaveRequestDispatch({
+        type: leaveRequestAction.setDelegatedToEmployee,
         payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
-      createLeaveRequestDispatch({
-        type: createLeaveRequestAction.setIsDelegatedToEmployeeFocused,
+      leaveRequestDispatch({
+        type: leaveRequestAction.setIsDelegatedToEmployeeFocused,
         payload: true,
       });
     },
@@ -539,20 +720,20 @@ function CreateLeaveRequest() {
       isValidInputText: isValidDelegatedResponsibilities,
       label: "Delegated responsibilities",
       onBlur: () => {
-        createLeaveRequestDispatch({
-          type: createLeaveRequestAction.setIsDelegatedResponsibilitiesFocused,
+        leaveRequestDispatch({
+          type: leaveRequestAction.setIsDelegatedResponsibilitiesFocused,
           payload: false,
         });
       },
       onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
-        createLeaveRequestDispatch({
-          type: createLeaveRequestAction.setDelegatedResponsibilities,
+        leaveRequestDispatch({
+          type: leaveRequestAction.setDelegatedResponsibilities,
           payload: event.currentTarget.value,
         });
       },
       onFocus: () => {
-        createLeaveRequestDispatch({
-          type: createLeaveRequestAction.setIsDelegatedResponsibilitiesFocused,
+        leaveRequestDispatch({
+          type: leaveRequestAction.setIsDelegatedResponsibilitiesFocused,
           payload: true,
         });
       },
@@ -569,20 +750,20 @@ function CreateLeaveRequest() {
     isValidInputText: isValidAdditionalComments,
     label: "Additional comments",
     onBlur: () => {
-      createLeaveRequestDispatch({
-        type: createLeaveRequestAction.setIsAdditionalCommentsFocused,
+      leaveRequestDispatch({
+        type: leaveRequestAction.setIsAdditionalCommentsFocused,
         payload: false,
       });
     },
     onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
-      createLeaveRequestDispatch({
-        type: createLeaveRequestAction.setAdditionalComments,
+      leaveRequestDispatch({
+        type: leaveRequestAction.setAdditionalComments,
         payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
-      createLeaveRequestDispatch({
-        type: createLeaveRequestAction.setIsAdditionalCommentsFocused,
+      leaveRequestDispatch({
+        type: leaveRequestAction.setIsAdditionalCommentsFocused,
         payload: true,
       });
     },
@@ -597,8 +778,8 @@ function CreateLeaveRequest() {
     },
     checked: isAcknowledged,
     onChange: (event: ChangeEvent<HTMLInputElement>) => {
-      createLeaveRequestDispatch({
-        type: createLeaveRequestAction.setIsAcknowledged,
+      leaveRequestDispatch({
+        type: leaveRequestAction.setAcknowledgement,
         payload: event.currentTarget.checked,
       });
     },
@@ -613,8 +794,8 @@ function CreateLeaveRequest() {
     semanticName: "submit button",
     leftIcon: <TbUpload />,
     buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
-      createLeaveRequestDispatch({
-        type: createLeaveRequestAction.setTriggerFormSubmit,
+      leaveRequestDispatch({
+        type: leaveRequestAction.setTriggerFormSubmit,
         payload: true,
       });
     },
@@ -750,8 +931,8 @@ function CreateLeaveRequest() {
       currentStepperPosition={currentStepperPosition}
       descriptionObjectsArray={LEAVE_REQUEST_DESCRIPTION_OBJECTS}
       maxStepperPosition={LEAVE_REQUEST_MAX_STEPPER_POSITION}
-      parentComponentDispatch={createLeaveRequestDispatch}
-      setCurrentStepperPosition={createLeaveRequestAction.setCurrentStepperPosition}
+      parentComponentDispatch={leaveRequestDispatch}
+      setCurrentStepperPosition={leaveRequestAction.setCurrentStepperPosition}
       stepsInError={stepsInError}
     >
       {displaySubmitSuccessNotificationModal}
@@ -760,6 +941,5 @@ function CreateLeaveRequest() {
   );
 
   return displayCreateLeaveRequestComponent;
-}
 
-export default CreateLeaveRequest;
+ */
