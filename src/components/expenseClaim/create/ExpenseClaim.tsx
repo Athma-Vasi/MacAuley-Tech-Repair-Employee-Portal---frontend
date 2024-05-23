@@ -4,31 +4,26 @@ import { useErrorBoundary } from "react-error-boundary";
 
 import { useAuth } from "../../../hooks";
 import { useFetchInterceptor } from "../../../hooks/useFetchInterceptor";
-import { formSubmitPOST, logState } from "../../../utils";
-import { AccessibleImageInput } from "../../accessibleInputs/image";
-import { CreateExpenseClaimAction, createExpenseClaimAction } from "./actions";
-import { createExpenseClaimReducer } from "./reducers";
-import { initialCreateExpenseClaimState } from "./state";
 import { Currency, StepperPage } from "../../../types";
-import { returnCreateBenefitStepperPages } from "../../benefit/constants";
-import { AccessibleSelectInput } from "../../accessibleInputs/AccessibleSelectInput";
-import {
-  CREATE_EXPENSE_CLAIM_ROLE_PATHS,
-  EXPENSE_CLAIM_KIND_DATA,
-  returnExpenseClaimStepperPages,
-} from "../constants";
-import { ExpenseClaimKind, ExpenseClaimSchema } from "./types";
-import { AccessibleTextInput } from "../../accessibleInputs/text/AccessibleTextInput";
-import { AccessibleDateTimeInput } from "../../accessibleInputs/AccessibleDateTimeInput";
-import { AccessibleTextAreaInput } from "../../accessibleInputs/AccessibleTextAreaInput";
-import { AccessibleSwitchInput } from "../../accessibleInputs/AccessibleSwitchInput";
-import { AccessibleStepper } from "../../accessibleInputs/AccessibleStepper";
+import { formSubmitPOST, logState } from "../../../utils";
 import { AccessibleButton } from "../../accessibleInputs/AccessibleButton";
+import { AccessibleDateTimeInput } from "../../accessibleInputs/AccessibleDateTimeInput";
+import { AccessibleSelectInput } from "../../accessibleInputs/AccessibleSelectInput";
+import { AccessibleStepper } from "../../accessibleInputs/AccessibleStepper";
+import { AccessibleSwitchInput } from "../../accessibleInputs/AccessibleSwitchInput";
+import { AccessibleTextAreaInput } from "../../accessibleInputs/AccessibleTextAreaInput";
+import { AccessibleImageInput } from "../../accessibleInputs/image";
+import { AccessibleTextInput } from "../../accessibleInputs/text/AccessibleTextInput";
+import { EXPENSE_CLAIM_ROLE_PATHS, returnExpenseClaimStepperPages } from "../constants";
+import { ExpenseClaimAction, expenseClaimAction } from "./actions";
+import { expenseClaimReducer } from "./reducers";
+import { initialExpenseClaimState } from "./state";
+import { ExpenseClaimKind, ExpenseClaimSchema } from "./types";
 
-function CreateExpenseClaim() {
-  const [createExpenseClaimState, createExpenseClaimDispatch] = useReducer(
-    createExpenseClaimReducer,
-    initialCreateExpenseClaimState
+function ExpenseClaim() {
+  const [expenseClaimState, expenseClaimDispatch] = useReducer(
+    expenseClaimReducer,
+    initialExpenseClaimState
   );
 
   const {
@@ -44,7 +39,7 @@ function CreateExpenseClaim() {
     isSuccessful,
     pagesInError,
     triggerFormSubmit,
-  } = createExpenseClaimState;
+  } = expenseClaimState;
 
   const {
     authState: { sessionId, userId, username },
@@ -84,16 +79,16 @@ function CreateExpenseClaim() {
       };
 
       formSubmitPOST({
-        dispatch: createExpenseClaimDispatch,
+        dispatch: expenseClaimDispatch,
         fetchAbortController,
         fetchInterceptor,
         isComponentMounted,
-        isSubmittingAction: createExpenseClaimAction.setIsSubmitting,
-        isSuccessfulAction: createExpenseClaimAction.setIsSuccessful,
+        isSubmittingAction: expenseClaimAction.setIsSubmitting,
+        isSuccessfulAction: expenseClaimAction.setIsSuccessful,
         preFetchAbortController,
-        roleResourceRoutePaths: CREATE_EXPENSE_CLAIM_ROLE_PATHS,
+        roleResourceRoutePaths: EXPENSE_CLAIM_ROLE_PATHS,
         schema: expenseClaimSchema,
-        schemaName: "createExpenseClaimSchema",
+        schemaName: "expenseClaimSchema",
         sessionId,
         showBoundary,
         userId,
@@ -113,10 +108,10 @@ function CreateExpenseClaim() {
 
   useEffect(() => {
     logState({
-      state: createExpenseClaimState,
+      state: expenseClaimState,
       groupLabel: "Create ExpenseClaim State",
     });
-  }, [createExpenseClaimState]);
+  }, [expenseClaimState]);
 
   if (isSubmitting) {
     const submittingState = (
@@ -138,37 +133,33 @@ function CreateExpenseClaim() {
     return successfulState;
   }
 
-  const CREATE_EXPENSE_CLAIM_STEPPER_PAGES: StepperPage[] =
-    returnExpenseClaimStepperPages();
+  const EXPENSE_CLAIM_STEPPER_PAGES: StepperPage[] = returnExpenseClaimStepperPages();
 
   const expenseClaimKindSelectInput = (
-    <AccessibleSelectInput<
-      CreateExpenseClaimAction["setExpenseClaimKind"],
-      ExpenseClaimKind
-    >
+    <AccessibleSelectInput<ExpenseClaimAction["setExpenseClaimKind"], ExpenseClaimKind>
       attributes={{
         data:
-          CREATE_EXPENSE_CLAIM_STEPPER_PAGES[0].children.find(
+          EXPENSE_CLAIM_STEPPER_PAGES[0].children.find(
             (child) => child.name === "expenseClaimKind"
           )?.selectInputData ?? [],
         name: "expenseClaimKind",
-        parentDispatch: createExpenseClaimDispatch,
-        validValueAction: createExpenseClaimAction.setExpenseClaimKind,
+        parentDispatch: expenseClaimDispatch,
+        validValueAction: expenseClaimAction.setExpenseClaimKind,
         value: expenseClaimKind,
       }}
     />
   );
 
   const expenseClaimCurrencySelectInput = (
-    <AccessibleSelectInput<CreateExpenseClaimAction["setExpenseClaimCurrency"], Currency>
+    <AccessibleSelectInput<ExpenseClaimAction["setExpenseClaimCurrency"], Currency>
       attributes={{
         data:
-          CREATE_EXPENSE_CLAIM_STEPPER_PAGES[0].children.find(
+          EXPENSE_CLAIM_STEPPER_PAGES[0].children.find(
             (child) => child.name === "expenseClaimCurrency"
           )?.selectInputData ?? [],
         name: "expenseClaimCurrency",
-        parentDispatch: createExpenseClaimDispatch,
-        validValueAction: createExpenseClaimAction.setExpenseClaimCurrency,
+        parentDispatch: expenseClaimDispatch,
+        validValueAction: expenseClaimAction.setExpenseClaimCurrency,
         value: expenseClaimCurrency,
       }}
     />
@@ -178,11 +169,11 @@ function CreateExpenseClaim() {
     <AccessibleTextInput
       attributes={{
         name: "expenseClaimAmount",
-        parentDispatch: createExpenseClaimDispatch,
-        validValueAction: createExpenseClaimAction.setExpenseClaimAmount,
+        parentDispatch: expenseClaimDispatch,
+        validValueAction: expenseClaimAction.setExpenseClaimAmount,
         value: expenseClaimAmount,
-        invalidValueAction: createExpenseClaimAction.setPageInError,
-        stepperPages: CREATE_EXPENSE_CLAIM_STEPPER_PAGES,
+        invalidValueAction: expenseClaimAction.setPageInError,
+        stepperPages: EXPENSE_CLAIM_STEPPER_PAGES,
       }}
     />
   );
@@ -192,11 +183,11 @@ function CreateExpenseClaim() {
       attributes={{
         dateKind: "date near past",
         inputKind: "date",
-        invalidValueAction: createExpenseClaimAction.setPageInError,
+        invalidValueAction: expenseClaimAction.setPageInError,
         name: "expenseClaimDate",
-        parentDispatch: createExpenseClaimDispatch,
-        stepperPages: CREATE_EXPENSE_CLAIM_STEPPER_PAGES,
-        validValueAction: createExpenseClaimAction.setExpenseClaimDate,
+        parentDispatch: expenseClaimDispatch,
+        stepperPages: EXPENSE_CLAIM_STEPPER_PAGES,
+        validValueAction: expenseClaimAction.setExpenseClaimDate,
         value: expenseClaimDate,
       }}
     />
@@ -205,11 +196,11 @@ function CreateExpenseClaim() {
   const expenseClaimDescriptionTextAreaInput = (
     <AccessibleTextAreaInput
       attributes={{
-        invalidValueAction: createExpenseClaimAction.setPageInError,
+        invalidValueAction: expenseClaimAction.setPageInError,
         name: "expenseClaimDescription",
-        parentDispatch: createExpenseClaimDispatch,
-        stepperPages: CREATE_EXPENSE_CLAIM_STEPPER_PAGES,
-        validValueAction: createExpenseClaimAction.setExpenseClaimDescription,
+        parentDispatch: expenseClaimDispatch,
+        stepperPages: EXPENSE_CLAIM_STEPPER_PAGES,
+        validValueAction: expenseClaimAction.setExpenseClaimDescription,
         value: expenseClaimDescription,
       }}
     />
@@ -218,11 +209,11 @@ function CreateExpenseClaim() {
   const expenseClaimAdditionalCommentsTextAreaInput = (
     <AccessibleTextAreaInput
       attributes={{
-        invalidValueAction: createExpenseClaimAction.setPageInError,
+        invalidValueAction: expenseClaimAction.setPageInError,
         name: "additionalComments",
-        parentDispatch: createExpenseClaimDispatch,
-        stepperPages: CREATE_EXPENSE_CLAIM_STEPPER_PAGES,
-        validValueAction: createExpenseClaimAction.setAdditionalComments,
+        parentDispatch: expenseClaimDispatch,
+        stepperPages: EXPENSE_CLAIM_STEPPER_PAGES,
+        validValueAction: expenseClaimAction.setAdditionalComments,
         value: additionalComments,
       }}
     />
@@ -232,14 +223,14 @@ function CreateExpenseClaim() {
     <AccessibleSwitchInput
       attributes={{
         checked: acknowledgement,
-        invalidValueAction: createExpenseClaimAction.setPageInError,
+        invalidValueAction: expenseClaimAction.setPageInError,
         name: "acknowledgement",
         offLabel: "No",
         onLabel: "Yes",
-        parentDispatch: createExpenseClaimDispatch,
+        parentDispatch: expenseClaimDispatch,
         switchOffDescription: "I do not acknowledge.",
         switchOnDescription: "I acknowledge that the information is correct.",
-        validValueAction: createExpenseClaimAction.setAcknowledgement,
+        validValueAction: expenseClaimAction.setAcknowledgement,
         value: acknowledgement.toString(),
       }}
     />
@@ -260,19 +251,28 @@ function CreateExpenseClaim() {
   const imageInput = (
     <AccessibleImageInput
       formData={formData}
-      invalidValueAction={createExpenseClaimAction.setPageInError}
+      invalidValueAction={expenseClaimAction.setPageInError}
       page={1}
-      parentDispatch={createExpenseClaimDispatch}
-      stepperPages={CREATE_EXPENSE_CLAIM_STEPPER_PAGES}
-      validValueAction={createExpenseClaimAction.setFormData}
+      parentDispatch={expenseClaimDispatch}
+      stepperPages={EXPENSE_CLAIM_STEPPER_PAGES}
+      validValueAction={expenseClaimAction.setFormData}
     />
   );
 
   const submitButton = (
     <AccessibleButton
       attributes={{
+        enabledScreenreaderText: "All inputs are valid. Click to submit form",
+        disabledScreenreaderText: "Please fix errors before submitting form",
+        disabled: pagesInError.size > 0 || triggerFormSubmit,
         kind: "submit",
         name: "submit",
+        onClick: (_event: React.MouseEvent<HTMLButtonElement>) => {
+          expenseClaimDispatch({
+            action: expenseClaimAction.setTriggerFormSubmit,
+            payload: true,
+          });
+        },
       }}
     />
   );
@@ -280,9 +280,9 @@ function CreateExpenseClaim() {
   const stepper = (
     <AccessibleStepper
       attributes={{
-        componentState: createExpenseClaimState,
+        componentState: expenseClaimState,
         pageElements: [firstPageElements, imageInput],
-        stepperPages: CREATE_EXPENSE_CLAIM_STEPPER_PAGES,
+        stepperPages: EXPENSE_CLAIM_STEPPER_PAGES,
         submitButton,
       }}
     />
@@ -291,7 +291,7 @@ function CreateExpenseClaim() {
   return stepper;
 }
 
-export default CreateExpenseClaim;
+export default ExpenseClaim;
 
 /**
  * const {
@@ -317,12 +317,12 @@ export default CreateExpenseClaim;
     const controller = new AbortController();
 
     async function imagesUploadRequest() {
-      createExpenseClaimDispatch({
-        type: createExpenseClaimAction.setIsSubmitting,
+      expenseClaimDispatch({
+        type: expenseClaimAction.setIsSubmitting,
         payload: true,
       });
-      createExpenseClaimDispatch({
-        type: createExpenseClaimAction.setSubmitMessage,
+      expenseClaimDispatch({
+        type: expenseClaimAction.setSubmitMessage,
         payload: "File uploads are being processed...",
       });
       openSubmitSuccessNotificationModal();
@@ -365,21 +365,21 @@ export default CreateExpenseClaim;
               throw new Error(imgUploadResponseData.message);
             }
 
-            createExpenseClaimDispatch({
-              type: createExpenseClaimAction.setIsSubmitting,
+            expenseClaimDispatch({
+              type: expenseClaimAction.setIsSubmitting,
               payload: false,
             });
-            createExpenseClaimDispatch({
-              type: createExpenseClaimAction.setSubmitMessage,
+            expenseClaimDispatch({
+              type: expenseClaimAction.setSubmitMessage,
               payload: "",
             });
 
-            createExpenseClaimDispatch({
-              type: createExpenseClaimAction.setIsSuccessful,
+            expenseClaimDispatch({
+              type: expenseClaimAction.setIsSuccessful,
               payload: true,
             });
-            createExpenseClaimDispatch({
-              type: createExpenseClaimAction.setSuccessMessage,
+            expenseClaimDispatch({
+              type: expenseClaimAction.setSuccessMessage,
               payload: imgUploadResponseData.message ?? "File uploads successful.",
             });
 
@@ -425,12 +425,12 @@ export default CreateExpenseClaim;
         }
 
         async function expenseClaimFormRequest() {
-          createExpenseClaimDispatch({
-            type: createExpenseClaimAction.setIsSubmitting,
+          expenseClaimDispatch({
+            type: expenseClaimAction.setIsSubmitting,
             payload: true,
           });
-          createExpenseClaimDispatch({
-            type: createExpenseClaimAction.setSubmitMessage,
+          expenseClaimDispatch({
+            type: expenseClaimAction.setSubmitMessage,
             payload: `Expense claim: ${expenseClaimKind} is being processed...`,
           });
 
@@ -480,12 +480,12 @@ export default CreateExpenseClaim;
               throw new Error(expenseClaimResponseData.message);
             }
 
-            createExpenseClaimDispatch({
-              type: createExpenseClaimAction.setIsSuccessful,
+            expenseClaimDispatch({
+              type: expenseClaimAction.setIsSuccessful,
               payload: true,
             });
-            createExpenseClaimDispatch({
-              type: createExpenseClaimAction.setSuccessMessage,
+            expenseClaimDispatch({
+              type: expenseClaimAction.setSuccessMessage,
               payload: expenseClaimResponseData.message ?? "Expense claim successful.",
             });
           } catch (error: any) {
@@ -523,20 +523,20 @@ export default CreateExpenseClaim;
             showBoundary(error);
           } finally {
             if (isMounted) {
-              createExpenseClaimDispatch({
-                type: createExpenseClaimAction.setIsSubmitting,
+              expenseClaimDispatch({
+                type: expenseClaimAction.setIsSubmitting,
                 payload: false,
               });
-              createExpenseClaimDispatch({
-                type: createExpenseClaimAction.setSubmitMessage,
+              expenseClaimDispatch({
+                type: expenseClaimAction.setSubmitMessage,
                 payload: "",
               });
-              createExpenseClaimDispatch({
-                type: createExpenseClaimAction.setImgFormDataArray,
+              expenseClaimDispatch({
+                type: expenseClaimAction.setImgFormDataArray,
                 payload: [],
               });
-              createExpenseClaimDispatch({
-                type: createExpenseClaimAction.setTriggerFormSubmit,
+              expenseClaimDispatch({
+                type: expenseClaimAction.setTriggerFormSubmit,
                 payload: false,
               });
             }
@@ -563,17 +563,17 @@ export default CreateExpenseClaim;
 
   useEffect(() => {
     logState({
-      state: createExpenseClaimState,
+      state: expenseClaimState,
       groupLabel: "create expense claim state",
     });
-  }, [createExpenseClaimState]);
+  }, [expenseClaimState]);
 
   // validate expenseClaimAmount on every change
   useEffect(() => {
     const isValid = MONEY_REGEX.test(expenseClaimAmount);
 
-    createExpenseClaimDispatch({
-      type: createExpenseClaimAction.setIsValidExpenseClaimAmount,
+    expenseClaimDispatch({
+      type: expenseClaimAction.setIsValidExpenseClaimAmount,
       payload: isValid,
     });
   }, [expenseClaimAmount]);
@@ -584,8 +584,8 @@ export default CreateExpenseClaim;
       DATE_NEAR_PAST_REGEX.test(expenseClaimDate) &&
       new Date(expenseClaimDate) <= new Date();
 
-    createExpenseClaimDispatch({
-      type: createExpenseClaimAction.setIsValidExpenseClaimDate,
+    expenseClaimDispatch({
+      type: expenseClaimAction.setIsValidExpenseClaimDate,
       payload: isValid,
     });
   }, [expenseClaimDate]);
@@ -594,8 +594,8 @@ export default CreateExpenseClaim;
   useEffect(() => {
     const isValid = GRAMMAR_TEXTAREA_INPUT_REGEX.test(expenseClaimDescription);
 
-    createExpenseClaimDispatch({
-      type: createExpenseClaimAction.setIsValidExpenseClaimDescription,
+    expenseClaimDispatch({
+      type: expenseClaimAction.setIsValidExpenseClaimDescription,
       payload: isValid,
     });
   }, [expenseClaimDescription]);
@@ -604,8 +604,8 @@ export default CreateExpenseClaim;
   useEffect(() => {
     const isValid = GRAMMAR_TEXTAREA_INPUT_REGEX.test(additionalComments);
 
-    createExpenseClaimDispatch({
-      type: createExpenseClaimAction.setIsValidAdditionalComments,
+    expenseClaimDispatch({
+      type: expenseClaimAction.setIsValidAdditionalComments,
       payload: isValid,
     });
   }, [additionalComments]);
@@ -623,8 +623,8 @@ export default CreateExpenseClaim;
 
     const isStepInError = areRequiredInputsInError || isOptionalInputInError;
 
-    createExpenseClaimDispatch({
-      type: createExpenseClaimAction.setPageInError,
+    expenseClaimDispatch({
+      type: expenseClaimAction.setPageInError,
       payload: {
         kind: isStepInError ? "add" : "delete",
         step: 0,
@@ -644,8 +644,8 @@ export default CreateExpenseClaim;
   useEffect(() => {
     const isStepInError = !areImagesValid || files.length === 0;
 
-    createExpenseClaimDispatch({
-      type: createExpenseClaimAction.setPageInError,
+    expenseClaimDispatch({
+      type: expenseClaimAction.setPageInError,
       payload: {
         kind: isStepInError ? "add" : "delete",
         step: 1,
@@ -734,20 +734,20 @@ export default CreateExpenseClaim;
     isValidInputText: isValidExpenseClaimAmount,
     label: "Expense Claim Amount",
     onBlur: () => {
-      createExpenseClaimDispatch({
-        type: createExpenseClaimAction.setIsExpenseClaimAmountFocused,
+      expenseClaimDispatch({
+        type: expenseClaimAction.setIsExpenseClaimAmountFocused,
         payload: false,
       });
     },
     onChange: (event: ChangeEvent<HTMLInputElement>) => {
-      createExpenseClaimDispatch({
-        type: createExpenseClaimAction.setExpenseClaimAmount,
+      expenseClaimDispatch({
+        type: expenseClaimAction.setExpenseClaimAmount,
         payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
-      createExpenseClaimDispatch({
-        type: createExpenseClaimAction.setIsExpenseClaimAmountFocused,
+      expenseClaimDispatch({
+        type: expenseClaimAction.setIsExpenseClaimAmountFocused,
         payload: true,
       });
     },
@@ -765,8 +765,8 @@ export default CreateExpenseClaim;
     description: "Select a category for your expense claim.",
     label: "Expense Claim Kind",
     onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-      createExpenseClaimDispatch({
-        type: createExpenseClaimAction.setExpenseClaimKind,
+      expenseClaimDispatch({
+        type: expenseClaimAction.setExpenseClaimKind,
         payload: event.currentTarget.value as ExpenseClaimKind,
       });
     },
@@ -780,8 +780,8 @@ export default CreateExpenseClaim;
     description: "Select the currency for your expense claim.",
     label: "Expense Claim Currency",
     onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-      createExpenseClaimDispatch({
-        type: createExpenseClaimAction.setExpenseClaimCurrency,
+      expenseClaimDispatch({
+        type: expenseClaimAction.setExpenseClaimCurrency,
         payload: event.currentTarget.value as Currency,
       });
     },
@@ -799,20 +799,20 @@ export default CreateExpenseClaim;
     isValidInputText: isValidExpenseClaimDate,
     label: "Expense Claim Date",
     onBlur: () => {
-      createExpenseClaimDispatch({
-        type: createExpenseClaimAction.setIsExpenseClaimDateFocused,
+      expenseClaimDispatch({
+        type: expenseClaimAction.setIsExpenseClaimDateFocused,
         payload: false,
       });
     },
     onChange: (event: ChangeEvent<HTMLInputElement>) => {
-      createExpenseClaimDispatch({
-        type: createExpenseClaimAction.setExpenseClaimDate,
+      expenseClaimDispatch({
+        type: expenseClaimAction.setExpenseClaimDate,
         payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
-      createExpenseClaimDispatch({
-        type: createExpenseClaimAction.setIsExpenseClaimDateFocused,
+      expenseClaimDispatch({
+        type: expenseClaimAction.setIsExpenseClaimDateFocused,
         payload: true,
       });
     },
@@ -834,20 +834,20 @@ export default CreateExpenseClaim;
       isValidInputText: isValidExpenseClaimDescription,
       label: "Expense Claim Description",
       onBlur: () => {
-        createExpenseClaimDispatch({
-          type: createExpenseClaimAction.setIsExpenseClaimDescriptionFocused,
+        expenseClaimDispatch({
+          type: expenseClaimAction.setIsExpenseClaimDescriptionFocused,
           payload: false,
         });
       },
       onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
-        createExpenseClaimDispatch({
-          type: createExpenseClaimAction.setExpenseClaimDescription,
+        expenseClaimDispatch({
+          type: expenseClaimAction.setExpenseClaimDescription,
           payload: event.currentTarget.value,
         });
       },
       onFocus: () => {
-        createExpenseClaimDispatch({
-          type: createExpenseClaimAction.setIsExpenseClaimDescriptionFocused,
+        expenseClaimDispatch({
+          type: expenseClaimAction.setIsExpenseClaimDescriptionFocused,
           payload: true,
         });
       },
@@ -866,20 +866,20 @@ export default CreateExpenseClaim;
     isValidInputText: isValidAdditionalComments,
     label: "Additional Comments",
     onBlur: () => {
-      createExpenseClaimDispatch({
-        type: createExpenseClaimAction.setIsAdditionalCommentsFocused,
+      expenseClaimDispatch({
+        type: expenseClaimAction.setIsAdditionalCommentsFocused,
         payload: false,
       });
     },
     onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
-      createExpenseClaimDispatch({
-        type: createExpenseClaimAction.setAdditionalComments,
+      expenseClaimDispatch({
+        type: expenseClaimAction.setAdditionalComments,
         payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
-      createExpenseClaimDispatch({
-        type: createExpenseClaimAction.setIsAdditionalCommentsFocused,
+      expenseClaimDispatch({
+        type: expenseClaimAction.setIsAdditionalCommentsFocused,
         payload: true,
       });
     },
@@ -895,8 +895,8 @@ export default CreateExpenseClaim;
       },
       checked: acknowledgement,
       onChange: (event: ChangeEvent<HTMLInputElement>) => {
-        createExpenseClaimDispatch({
-          type: createExpenseClaimAction.setAcknowledgement,
+        expenseClaimDispatch({
+          type: expenseClaimAction.setAcknowledgement,
           payload: event.currentTarget.checked,
         });
       },
@@ -911,8 +911,8 @@ export default CreateExpenseClaim;
     semanticName: "submit button",
     leftIcon: <TbUpload />,
     buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
-      createExpenseClaimDispatch({
-        type: createExpenseClaimAction.setTriggerFormSubmit,
+      expenseClaimDispatch({
+        type: expenseClaimAction.setTriggerFormSubmit,
         payload: true,
       });
     },
@@ -1044,10 +1044,10 @@ export default CreateExpenseClaim;
         parentComponentName="create expense claim form"
         maxImageSize={EXPENSE_CLAIM_MAX_IMG_SIZE}
         maxImages={EXPENSE_CLAIM_MAX_IMG_AMOUNT}
-        setImgFormDataArray={createExpenseClaimAction.setImgFormDataArray}
-        setImgFormDataArrayDispatch={createExpenseClaimDispatch}
-        setAreImagesValid={createExpenseClaimAction.setAreImagesValid}
-        setAreImagesValidDispatch={createExpenseClaimDispatch}
+        setImgFormDataArray={expenseClaimAction.setImgFormDataArray}
+        setImgFormDataArrayDispatch={expenseClaimDispatch}
+        setAreImagesValid={expenseClaimAction.setAreImagesValid}
+        setAreImagesValidDispatch={expenseClaimDispatch}
       />
     ) : currentStepperPosition === 2 ? (
       displayExpenseClaimReviewPage
@@ -1061,8 +1061,8 @@ export default CreateExpenseClaim;
       currentStepperPosition={currentStepperPosition}
       descriptionObjectsArray={EXPENSE_CLAIM_DESCRIPTION_OBJECTS}
       maxStepperPosition={EXPENSE_CLAIM_MAX_STEPPER_POSITION}
-      parentComponentDispatch={createExpenseClaimDispatch}
-      setCurrentStepperPosition={createExpenseClaimAction.setCurrentStepperPosition}
+      parentComponentDispatch={expenseClaimDispatch}
+      setCurrentStepperPosition={expenseClaimAction.setCurrentStepperPosition}
       pagesInError={pagesInError}
     >
       {displaySubmitSuccessNotificationModal}

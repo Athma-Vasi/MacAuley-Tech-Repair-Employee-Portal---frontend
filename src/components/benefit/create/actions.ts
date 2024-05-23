@@ -1,4 +1,4 @@
-type CreateBenefitAction = {
+type BenefitAction = {
   setCurrency: "setCurrency";
   setEmployeeContribution: "setEmployeeContribution";
   setEmployerContribution: "setEmployerContribution";
@@ -13,7 +13,7 @@ type CreateBenefitAction = {
   setTriggerFormSubmit: "setTriggerFormSubmit";
 };
 
-const createBenefitAction: CreateBenefitAction = {
+const benefitAction: BenefitAction = {
   setCurrency: "setCurrency",
   setEmployeeContribution: "setEmployeeContribution",
   setEmployerContribution: "setEmployerContribution",
@@ -28,5 +28,5 @@ const createBenefitAction: CreateBenefitAction = {
   setTriggerFormSubmit: "setTriggerFormSubmit",
 };
 
-export { createBenefitAction };
-export type { CreateBenefitAction };
+export { benefitAction };
+export type { BenefitAction };

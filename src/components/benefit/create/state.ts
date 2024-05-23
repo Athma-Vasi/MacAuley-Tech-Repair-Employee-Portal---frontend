@@ -1,6 +1,6 @@
-import type { CreateBenefitState } from "./types";
+import type { BenefitState } from "./types";
 
-const initialCreateBenefitState: CreateBenefitState = {
+const initialBenefitState: BenefitState = {
   currency: "CAD",
   employeeContribution: "0",
   employerContribution: "0",
@@ -15,4 +15,4 @@ const initialCreateBenefitState: CreateBenefitState = {
   triggerFormSubmit: false,
 };
 
-export { initialCreateBenefitState };
+export { initialBenefitState };

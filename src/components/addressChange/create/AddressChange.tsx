@@ -71,28 +71,28 @@ function AddressChange() {
     isComponentMountedRef.current = true;
     let isComponentMounted = isComponentMountedRef.current;
 
-    const schema =
-      country === "Canada"
-        ? {
-            contactNumber,
-            addressLine,
-            city,
-            province,
-            country,
-            postalCode,
-            acknowledgement: acknowledgement,
-          }
-        : {
-            contactNumber,
-            addressLine,
-            city,
-            state,
-            country,
-            postalCode,
-            acknowledgement: acknowledgement,
-          };
-
     if (triggerFormSubmit) {
+      const schema =
+        country === "Canada"
+          ? {
+              contactNumber,
+              addressLine,
+              city,
+              province,
+              country,
+              postalCode,
+              acknowledgement: acknowledgement,
+            }
+          : {
+              contactNumber,
+              addressLine,
+              city,
+              state,
+              country,
+              postalCode,
+              acknowledgement: acknowledgement,
+            };
+
       formSubmitPOST({
         dispatch: addressChangeDispatch,
         fetchAbortController,

@@ -1,4 +1,4 @@
-type CreateExpenseClaimAction = {
+type ExpenseClaimAction = {
   setAcknowledgement: "setAcknowledgement";
   setAdditionalComments: "setAdditionalComments";
   setExpenseClaimAmount: "setExpenseClaimAmount";
@@ -13,7 +13,7 @@ type CreateExpenseClaimAction = {
   setTriggerFormSubmit: "setTriggerFormSubmit";
 };
 
-const createExpenseClaimAction: CreateExpenseClaimAction = {
+const expenseClaimAction: ExpenseClaimAction = {
   setAcknowledgement: "setAcknowledgement",
   setAdditionalComments: "setAdditionalComments",
   setExpenseClaimAmount: "setExpenseClaimAmount",
@@ -28,5 +28,5 @@ const createExpenseClaimAction: CreateExpenseClaimAction = {
   setTriggerFormSubmit: "setTriggerFormSubmit",
 };
 
-export { createExpenseClaimAction };
-export type { CreateExpenseClaimAction };
+export { expenseClaimAction };
+export type { ExpenseClaimAction };

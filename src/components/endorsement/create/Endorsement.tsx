@@ -1,20 +1,25 @@
-import { useEffect, useReducer, useRef } from "react";
-import { initialEndorsementState } from "./state";
-import { endorsementReducer } from "./reducers";
 import { Container, Stack, Text } from "@mantine/core";
+import { useEffect, useReducer, useRef } from "react";
 import { useErrorBoundary } from "react-error-boundary";
+
 import { useAuth } from "../../../hooks";
 import { useFetchInterceptor } from "../../../hooks/useFetchInterceptor";
 import { StepperPage } from "../../../types";
-import { logState } from "../../../utils";
-import { EMPLOYEE_ATTRIBUTES_DATA, returnEndorsementStepperPages } from "../constants";
-import { AccessibleSelectInput } from "../../accessibleInputs/AccessibleSelectInput";
-import { endorsementAction } from "./actions";
-import { AccessibleCheckboxInputGroup } from "../../accessibleInputs/AccessibleCheckboxInput";
-import { AccessibleTextInput } from "../../accessibleInputs/text/AccessibleTextInput";
-import { AccessibleTextAreaInput } from "../../accessibleInputs/AccessibleTextAreaInput";
+import { formSubmitPOST, logState } from "../../../utils";
 import { AccessibleButton } from "../../accessibleInputs/AccessibleButton";
+import { AccessibleCheckboxInputGroup } from "../../accessibleInputs/AccessibleCheckboxInput";
 import { AccessibleStepper } from "../../accessibleInputs/AccessibleStepper";
+import { AccessibleTextAreaInput } from "../../accessibleInputs/AccessibleTextAreaInput";
+import { AccessibleTextInput } from "../../accessibleInputs/text/AccessibleTextInput";
+import {
+  EMPLOYEE_ATTRIBUTES_DATA,
+  ENDORSEMENT_ROLE_PATHS,
+  returnEndorsementStepperPages,
+} from "../constants";
+import { endorsementAction } from "./actions";
+import { endorsementReducer } from "./reducers";
+import { initialEndorsementState } from "./state";
+import { EndorsementSchema } from "./types";
 
 function Endorsement() {
   const [endorsementState, endorsementDispatch] = useReducer(
@@ -56,37 +61,33 @@ function Endorsement() {
     let isComponentMounted = isComponentMountedRef.current;
 
     if (triggerFormSubmit) {
-      // const benefitsSchema: BenefitsSchema = {
-      //   currency,
-      //   employeeContribution: Number(employeeContribution),
-      //   employerContribution: Number(employerContribution),
-      //   isPlanActive,
-      //   monthlyPremium: Number(employeeContribution) + Number(employerContribution),
-      //   planDescription,
-      //   planKind,
-      //   planName,
-      //   planStartDate,
-      //   requestStatus: "pending",
-      //   userId,
-      //   username,
-      // };
-      // formSubmitPOST({
-      //   dispatch: endorsementDispatch,
-      //   fetchAbortController,
-      //   fetchInterceptor,
-      //   isComponentMounted,
-      //   isSubmittingAction: endorsementAction.setIsSubmitting,
-      //   isSuccessfulAction: endorsementAction.setIsSuccessful,
-      //   preFetchAbortController,
-      //   roleResourceRoutePaths: CREATE_BENEFIT_ROLE_PATHS,
-      //   schema: benefitsSchema,
-      //   schemaName: "endorsementSchema",
-      //   sessionId,
-      //   showBoundary,
-      //   userId,
-      //   username,
-      //   userRole: "manager",
-      // });
+      const endorsementSchema: EndorsementSchema = {
+        attributeEndorsed,
+        personToBeEndorsed,
+        requestStatus: "pending",
+        summaryOfEndorsement,
+        title,
+        userId,
+        username,
+      };
+
+      formSubmitPOST({
+        dispatch: endorsementDispatch,
+        fetchAbortController,
+        fetchInterceptor,
+        isComponentMounted,
+        isSubmittingAction: endorsementAction.setIsSubmitting,
+        isSuccessfulAction: endorsementAction.setIsSuccessful,
+        preFetchAbortController,
+        roleResourceRoutePaths: ENDORSEMENT_ROLE_PATHS,
+        schema: endorsementSchema,
+        schemaName: "endorsementSchema",
+        sessionId,
+        showBoundary,
+        userId,
+        username,
+        userRole: "manager",
+      });
     }
 
     return () => {

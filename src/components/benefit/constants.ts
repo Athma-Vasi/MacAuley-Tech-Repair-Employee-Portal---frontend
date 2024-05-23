@@ -30,15 +30,15 @@ import {
   PLAN_NAME_VALIDATIONS,
 } from "./create/validations";
 
-const CREATE_BENEFIT_ROLE_PATHS: RoleResourceRoutePaths = {
+const BENEFIT_ROLE_PATHS: RoleResourceRoutePaths = {
   manager: "actions/company/benefit",
   admin: "actions/company/benefit",
   employee: "actions/company/benefit/user",
 };
 
-const CREATE_BENEFIT_DISPLAY_LOCATION = "/home/company/benefit";
+const BENEFIT_DISPLAY_LOCATION = "/home/company/benefit";
 
-function returnCreateBenefitStepperPages() {
+function returnBenefitStepperPages() {
   const currencyInput: StepperChild = {
     inputType: "select",
     name: "currency",
@@ -123,7 +123,7 @@ const BENEFIT_PLAN_DATA: BenefitsPlanKind[] = [
 
 const CURRENCY_DATA: Currency[] = ["USD", "CAD"];
 
-const CREATE_BENEFIT_DESCRIPTION_OBJECTS: DescriptionObjectsArray = [
+const BENEFIT_DESCRIPTION_OBJECTS: DescriptionObjectsArray = [
   {
     description: "Plan Details",
     ariaLabel: "Enter plan name, description, start date, and plan kind",
@@ -141,7 +141,7 @@ const CREATE_BENEFIT_DESCRIPTION_OBJECTS: DescriptionObjectsArray = [
   },
 ];
 
-const CREATE_BENEFIT_MAX_STEPPER_POSITION = 3;
+const BENEFIT_MAX_STEPPER_POSITION = 3;
 
 const BENEFIT_QUERY_DATA: ComponentQueryData[] = [
   {
@@ -240,15 +240,15 @@ const BENEFIT_RESOURCE_PATHS: ResourceRoutePaths = {
 };
 
 export {
+  BENEFIT_DESCRIPTION_OBJECTS,
+  BENEFIT_DISPLAY_LOCATION,
+  BENEFIT_MAX_STEPPER_POSITION,
   BENEFIT_PLAN_DATA,
   BENEFIT_QUERY_DATA,
   BENEFIT_RESOURCE_PATHS,
-  CREATE_BENEFIT_DESCRIPTION_OBJECTS,
-  CREATE_BENEFIT_DISPLAY_LOCATION,
-  CREATE_BENEFIT_MAX_STEPPER_POSITION,
-  CREATE_BENEFIT_ROLE_PATHS,
+  BENEFIT_ROLE_PATHS,
   CURRENCY_DATA,
   PLAN_DESCRIPTION_REGEX,
   PLAN_NAME_REGEX,
-  returnCreateBenefitStepperPages,
+  returnBenefitStepperPages,
 };

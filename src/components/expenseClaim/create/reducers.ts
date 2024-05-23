@@ -1,169 +1,148 @@
 import { Currency, SetPageInErrorPayload } from "../../../types";
-import { createExpenseClaimAction } from "./actions";
+import { expenseClaimAction } from "./actions";
 import {
-  CreateExpenseClaimAction,
-  CreateExpenseClaimDispatch,
-  CreateExpenseClaimState,
+  ExpenseClaimAction,
+  ExpenseClaimDispatch,
+  ExpenseClaimState,
   ExpenseClaimKind,
 } from "./types";
 
-function createExpenseClaimReducer(
-  state: CreateExpenseClaimState,
-  dispatch: CreateExpenseClaimDispatch
-): CreateExpenseClaimState {
-  const reducer = createExpenseClaimReducersMap.get(dispatch.action);
+function expenseClaimReducer(
+  state: ExpenseClaimState,
+  dispatch: ExpenseClaimDispatch
+): ExpenseClaimState {
+  const reducer = expenseClaimReducersMap.get(dispatch.action);
   return reducer ? reducer(state, dispatch) : state;
 }
 
-const createExpenseClaimReducersMap = new Map<
-  CreateExpenseClaimAction[keyof CreateExpenseClaimAction],
-  (
-    state: CreateExpenseClaimState,
-    dispatch: CreateExpenseClaimDispatch
-  ) => CreateExpenseClaimState
+const expenseClaimReducersMap = new Map<
+  ExpenseClaimAction[keyof ExpenseClaimAction],
+  (state: ExpenseClaimState, dispatch: ExpenseClaimDispatch) => ExpenseClaimState
 >([
+  [expenseClaimAction.setAcknowledgement, expenseClaimReducer_setAcknowledgement],
+  [expenseClaimAction.setAdditionalComments, expenseClaimReducer_setAdditionalComments],
+  [expenseClaimAction.setExpenseClaimAmount, expenseClaimReducer_setExpenseClaimAmount],
   [
-    createExpenseClaimAction.setAcknowledgement,
-    createExpenseClaimReducer_setAcknowledgement,
+    expenseClaimAction.setExpenseClaimCurrency,
+    expenseClaimReducer_setExpenseClaimCurrency,
   ],
+  [expenseClaimAction.setExpenseClaimDate, expenseClaimReducer_setExpenseClaimDate],
   [
-    createExpenseClaimAction.setAdditionalComments,
-    createExpenseClaimReducer_setAdditionalComments,
+    expenseClaimAction.setExpenseClaimDescription,
+    expenseClaimReducer_setExpenseClaimDescription,
   ],
-  [
-    createExpenseClaimAction.setExpenseClaimAmount,
-    createExpenseClaimReducer_setExpenseClaimAmount,
-  ],
-  [
-    createExpenseClaimAction.setExpenseClaimCurrency,
-    createExpenseClaimReducer_setExpenseClaimCurrency,
-  ],
-  [
-    createExpenseClaimAction.setExpenseClaimDate,
-    createExpenseClaimReducer_setExpenseClaimDate,
-  ],
-  [
-    createExpenseClaimAction.setExpenseClaimDescription,
-    createExpenseClaimReducer_setExpenseClaimDescription,
-  ],
-  [
-    createExpenseClaimAction.setExpenseClaimKind,
-    createExpenseClaimReducer_setExpenseClaimKind,
-  ],
-  [createExpenseClaimAction.setFormData, createExpenseClaimReducer_setFormData],
-  [createExpenseClaimAction.setIsSubmitting, createExpenseClaimReducer_setIsSubmitting],
-  [createExpenseClaimAction.setIsSuccessful, createExpenseClaimReducer_setIsSuccessful],
-  [createExpenseClaimAction.setPageInError, createExpenseClaimReducer_setStepsInError],
-  [
-    createExpenseClaimAction.setTriggerFormSubmit,
-    createExpenseClaimReducer_setTriggerFormSubmit,
-  ],
+  [expenseClaimAction.setExpenseClaimKind, expenseClaimReducer_setExpenseClaimKind],
+  [expenseClaimAction.setFormData, expenseClaimReducer_setFormData],
+  [expenseClaimAction.setIsSubmitting, expenseClaimReducer_setIsSubmitting],
+  [expenseClaimAction.setIsSuccessful, expenseClaimReducer_setIsSuccessful],
+  [expenseClaimAction.setPageInError, expenseClaimReducer_setStepsInError],
+  [expenseClaimAction.setTriggerFormSubmit, expenseClaimReducer_setTriggerFormSubmit],
 ]);
 
-function createExpenseClaimReducer_setAcknowledgement(
-  state: CreateExpenseClaimState,
-  dispatch: CreateExpenseClaimDispatch
-): CreateExpenseClaimState {
+function expenseClaimReducer_setAcknowledgement(
+  state: ExpenseClaimState,
+  dispatch: ExpenseClaimDispatch
+): ExpenseClaimState {
   return {
     ...state,
     acknowledgement: dispatch.payload as boolean,
   };
 }
 
-function createExpenseClaimReducer_setAdditionalComments(
-  state: CreateExpenseClaimState,
-  dispatch: CreateExpenseClaimDispatch
-): CreateExpenseClaimState {
+function expenseClaimReducer_setAdditionalComments(
+  state: ExpenseClaimState,
+  dispatch: ExpenseClaimDispatch
+): ExpenseClaimState {
   return {
     ...state,
     additionalComments: dispatch.payload as string,
   };
 }
 
-function createExpenseClaimReducer_setExpenseClaimAmount(
-  state: CreateExpenseClaimState,
-  dispatch: CreateExpenseClaimDispatch
-): CreateExpenseClaimState {
+function expenseClaimReducer_setExpenseClaimAmount(
+  state: ExpenseClaimState,
+  dispatch: ExpenseClaimDispatch
+): ExpenseClaimState {
   return {
     ...state,
     expenseClaimAmount: dispatch.payload as string,
   };
 }
 
-function createExpenseClaimReducer_setExpenseClaimCurrency(
-  state: CreateExpenseClaimState,
-  dispatch: CreateExpenseClaimDispatch
-): CreateExpenseClaimState {
+function expenseClaimReducer_setExpenseClaimCurrency(
+  state: ExpenseClaimState,
+  dispatch: ExpenseClaimDispatch
+): ExpenseClaimState {
   return {
     ...state,
     expenseClaimCurrency: dispatch.payload as Currency,
   };
 }
 
-function createExpenseClaimReducer_setExpenseClaimDate(
-  state: CreateExpenseClaimState,
-  dispatch: CreateExpenseClaimDispatch
-): CreateExpenseClaimState {
+function expenseClaimReducer_setExpenseClaimDate(
+  state: ExpenseClaimState,
+  dispatch: ExpenseClaimDispatch
+): ExpenseClaimState {
   return {
     ...state,
     expenseClaimDate: dispatch.payload as string,
   };
 }
 
-function createExpenseClaimReducer_setExpenseClaimDescription(
-  state: CreateExpenseClaimState,
-  dispatch: CreateExpenseClaimDispatch
-): CreateExpenseClaimState {
+function expenseClaimReducer_setExpenseClaimDescription(
+  state: ExpenseClaimState,
+  dispatch: ExpenseClaimDispatch
+): ExpenseClaimState {
   return {
     ...state,
     expenseClaimDescription: dispatch.payload as string,
   };
 }
 
-function createExpenseClaimReducer_setExpenseClaimKind(
-  state: CreateExpenseClaimState,
-  dispatch: CreateExpenseClaimDispatch
-): CreateExpenseClaimState {
+function expenseClaimReducer_setExpenseClaimKind(
+  state: ExpenseClaimState,
+  dispatch: ExpenseClaimDispatch
+): ExpenseClaimState {
   return {
     ...state,
     expenseClaimKind: dispatch.payload as ExpenseClaimKind,
   };
 }
 
-function createExpenseClaimReducer_setFormData(
-  state: CreateExpenseClaimState,
-  dispatch: CreateExpenseClaimDispatch
-): CreateExpenseClaimState {
+function expenseClaimReducer_setFormData(
+  state: ExpenseClaimState,
+  dispatch: ExpenseClaimDispatch
+): ExpenseClaimState {
   return {
     ...state,
     formData: dispatch.payload as FormData,
   };
 }
 
-function createExpenseClaimReducer_setIsSubmitting(
-  state: CreateExpenseClaimState,
-  dispatch: CreateExpenseClaimDispatch
-): CreateExpenseClaimState {
+function expenseClaimReducer_setIsSubmitting(
+  state: ExpenseClaimState,
+  dispatch: ExpenseClaimDispatch
+): ExpenseClaimState {
   return {
     ...state,
     isSubmitting: dispatch.payload as boolean,
   };
 }
 
-function createExpenseClaimReducer_setIsSuccessful(
-  state: CreateExpenseClaimState,
-  dispatch: CreateExpenseClaimDispatch
-): CreateExpenseClaimState {
+function expenseClaimReducer_setIsSuccessful(
+  state: ExpenseClaimState,
+  dispatch: ExpenseClaimDispatch
+): ExpenseClaimState {
   return {
     ...state,
     isSuccessful: dispatch.payload as boolean,
   };
 }
 
-function createExpenseClaimReducer_setStepsInError(
-  state: CreateExpenseClaimState,
-  dispatch: CreateExpenseClaimDispatch
-): CreateExpenseClaimState {
+function expenseClaimReducer_setStepsInError(
+  state: ExpenseClaimState,
+  dispatch: ExpenseClaimDispatch
+): ExpenseClaimState {
   const { kind, page } = dispatch.payload as SetPageInErrorPayload;
   const pagesInError = new Set(state.pagesInError);
   kind === "add" ? pagesInError.add(page) : pagesInError.delete(page);
@@ -174,14 +153,14 @@ function createExpenseClaimReducer_setStepsInError(
   };
 }
 
-function createExpenseClaimReducer_setTriggerFormSubmit(
-  state: CreateExpenseClaimState,
-  dispatch: CreateExpenseClaimDispatch
-): CreateExpenseClaimState {
+function expenseClaimReducer_setTriggerFormSubmit(
+  state: ExpenseClaimState,
+  dispatch: ExpenseClaimDispatch
+): ExpenseClaimState {
   return {
     ...state,
     triggerFormSubmit: dispatch.payload as boolean,
   };
 }
 
-export { createExpenseClaimReducer, createExpenseClaimReducersMap };
+export { expenseClaimReducer, expenseClaimReducersMap };

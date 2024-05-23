@@ -30,7 +30,7 @@ import { ComponentQueryData } from "../queryBuilder";
 import { DescriptionObjectsArray } from "../wrappers";
 import { ExpenseClaimKind } from "./create/types";
 
-const CREATE_EXPENSE_CLAIM_ROLE_PATHS: RoleResourceRoutePaths = {
+const EXPENSE_CLAIM_ROLE_PATHS: RoleResourceRoutePaths = {
   manager: "actions/company/expense-claim",
   admin: "actions/company/expense-claim",
   employee: "actions/company/expense-claim/user",
@@ -226,7 +226,7 @@ const EXPENSE_CLAIM_ROUTE_PATHS: ResourceRoutePaths = {
 const EXPENSE_CLAIMS_EXCLUDED_FIELDS_FROM_DISPLAY = new Set(["fileUploads"]);
 
 export {
-  CREATE_EXPENSE_CLAIM_ROLE_PATHS,
+  EXPENSE_CLAIM_ROLE_PATHS,
   EXPENSE_CLAIM_DESCRIPTION_OBJECTS,
   EXPENSE_CLAIM_KIND_DATA,
   EXPENSE_CLAIM_MAX_IMG_AMOUNT,

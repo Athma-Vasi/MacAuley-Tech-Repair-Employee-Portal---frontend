@@ -15,7 +15,6 @@ import {
   KeyboardEvent,
   ReactNode,
   RefObject,
-  useReducer,
   useState,
 } from "react";
 import { TbCheck, TbRefresh } from "react-icons/tb";
@@ -29,10 +28,6 @@ import {
   returnFullValidation,
   returnValidationTexts,
 } from "../utils";
-import { accessibleTextInputReducer } from "./reducers";
-import { initialAccessibleImageInputState } from "../image/state";
-import { AccessibleTextInputState } from "./types";
-import { accessibleTextInputAction } from "./actions";
 
 type AccessibleTextInputAttributes<
   ValidValueAction extends string = string,

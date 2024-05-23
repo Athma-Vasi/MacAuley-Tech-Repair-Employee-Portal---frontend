@@ -1,5 +1,5 @@
 import { Currency, RequestStatus, SetPageInErrorPayload } from "../../../types";
-import { CreateBenefitAction } from "./actions";
+import { BenefitAction } from "./actions";
 
 type BenefitsPlanKind =
   | "Dental"
@@ -33,7 +33,7 @@ type BenefitsDocument = BenefitsSchema & {
   __v: number;
 };
 
-type CreateBenefitState = {
+type BenefitState = {
   currency: Currency;
   employeeContribution: string;
   employerContribution: string;
@@ -48,62 +48,62 @@ type CreateBenefitState = {
   triggerFormSubmit: boolean;
 };
 
-type CreateBenefitDispatch =
+type BenefitDispatch =
   | {
-      action: CreateBenefitAction["setCurrency"];
+      action: BenefitAction["setCurrency"];
       payload: Currency;
     }
   | {
-      action: CreateBenefitAction["setEmployeeContribution"];
+      action: BenefitAction["setEmployeeContribution"];
       payload: string;
     }
   | {
-      action: CreateBenefitAction["setEmployerContribution"];
+      action: BenefitAction["setEmployerContribution"];
       payload: string;
     }
   | {
-      action: CreateBenefitAction["setIsPlanActive"];
+      action: BenefitAction["setIsPlanActive"];
       payload: boolean;
     }
   | {
-      action: CreateBenefitAction["setIsSubmitting"];
+      action: BenefitAction["setIsSubmitting"];
       payload: boolean;
     }
   | {
-      action: CreateBenefitAction["setIsSuccessful"];
+      action: BenefitAction["setIsSuccessful"];
       payload: boolean;
     }
   | {
-      action: CreateBenefitAction["setPageInError"];
+      action: BenefitAction["setPageInError"];
       payload: SetPageInErrorPayload;
     }
   | {
-      action: CreateBenefitAction["setPlanDescription"];
+      action: BenefitAction["setPlanDescription"];
       payload: string;
     }
   | {
-      action: CreateBenefitAction["setPlanKind"];
+      action: BenefitAction["setPlanKind"];
       payload: BenefitsPlanKind;
     }
   | {
-      action: CreateBenefitAction["setPlanName"];
+      action: BenefitAction["setPlanName"];
       payload: string;
     }
   | {
-      action: CreateBenefitAction["setPlanStartDate"];
+      action: BenefitAction["setPlanStartDate"];
       payload: string;
     }
   | {
-      action: CreateBenefitAction["setTriggerFormSubmit"];
+      action: BenefitAction["setTriggerFormSubmit"];
       payload: boolean;
     };
 
 export type {
+  BenefitAction,
+  BenefitDispatch,
   BenefitsDocument,
   BenefitsPlanKind,
   BenefitsSchema,
-  CreateBenefitAction,
-  CreateBenefitDispatch,
-  CreateBenefitState,
+  BenefitState,
   Currency,
 };

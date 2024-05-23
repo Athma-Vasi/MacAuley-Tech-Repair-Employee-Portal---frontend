@@ -1,139 +1,130 @@
 import { SetPageInErrorPayload } from "../../../types";
-import { createBenefitAction } from "./actions";
+import { benefitAction } from "./actions";
 import {
+  BenefitAction,
+  BenefitDispatch,
   BenefitsPlanKind,
-  CreateBenefitAction,
-  CreateBenefitDispatch,
-  CreateBenefitState,
+  BenefitState,
   Currency,
 } from "./types";
 
-function createBenefitReducer(
-  state: CreateBenefitState,
-  dispatch: CreateBenefitDispatch
-): CreateBenefitState {
-  const reducer = createBenefitReducers.get(dispatch.action);
+function benefitReducer(state: BenefitState, dispatch: BenefitDispatch): BenefitState {
+  const reducer = benefitReducers.get(dispatch.action);
   return reducer ? reducer(state, dispatch) : state;
 }
 
-const createBenefitReducers = new Map<
-  CreateBenefitAction[keyof CreateBenefitAction],
-  (state: CreateBenefitState, dispatch: CreateBenefitDispatch) => CreateBenefitState
+const benefitReducers = new Map<
+  BenefitAction[keyof BenefitAction],
+  (state: BenefitState, dispatch: BenefitDispatch) => BenefitState
 >([
-  [createBenefitAction.setCurrency, createBenefitReducer_setCurrency],
-  [
-    createBenefitAction.setEmployeeContribution,
-    createBenefitReducer_setEmployeeContribution,
-  ],
-  [
-    createBenefitAction.setEmployerContribution,
-    createBenefitReducer_setEmployerContribution,
-  ],
-  [createBenefitAction.setIsPlanActive, createBenefitReducer_setIsPlanActive],
-  [createBenefitAction.setIsSubmitting, createBenefitReducer_setIsSubmitting],
-  [createBenefitAction.setIsSuccessful, createBenefitReducer_setIsSuccessful],
-  [createBenefitAction.setPageInError, createBenefitReducer_setPageInError],
-  [createBenefitAction.setPlanDescription, createBenefitReducer_setPlanDescription],
-  [createBenefitAction.setPlanKind, createBenefitReducer_setPlanKind],
-  [createBenefitAction.setPlanName, createBenefitReducer_setPlanName],
-  [createBenefitAction.setPlanStartDate, createBenefitReducer_setPlanStartDate],
-  [createBenefitAction.setTriggerFormSubmit, createBenefitReducer_setTriggerFormSubmit],
+  [benefitAction.setCurrency, benefitReducer_setCurrency],
+  [benefitAction.setEmployeeContribution, benefitReducer_setEmployeeContribution],
+  [benefitAction.setEmployerContribution, benefitReducer_setEmployerContribution],
+  [benefitAction.setIsPlanActive, benefitReducer_setIsPlanActive],
+  [benefitAction.setIsSubmitting, benefitReducer_setIsSubmitting],
+  [benefitAction.setIsSuccessful, benefitReducer_setIsSuccessful],
+  [benefitAction.setPageInError, benefitReducer_setPageInError],
+  [benefitAction.setPlanDescription, benefitReducer_setPlanDescription],
+  [benefitAction.setPlanKind, benefitReducer_setPlanKind],
+  [benefitAction.setPlanName, benefitReducer_setPlanName],
+  [benefitAction.setPlanStartDate, benefitReducer_setPlanStartDate],
+  [benefitAction.setTriggerFormSubmit, benefitReducer_setTriggerFormSubmit],
 ]);
 
-function createBenefitReducer_setPlanName(
-  state: CreateBenefitState,
-  dispatch: CreateBenefitDispatch
-): CreateBenefitState {
+function benefitReducer_setPlanName(
+  state: BenefitState,
+  dispatch: BenefitDispatch
+): BenefitState {
   return {
     ...state,
     planName: dispatch.payload as string,
   };
 }
 
-function createBenefitReducer_setPlanDescription(
-  state: CreateBenefitState,
-  dispatch: CreateBenefitDispatch
-): CreateBenefitState {
+function benefitReducer_setPlanDescription(
+  state: BenefitState,
+  dispatch: BenefitDispatch
+): BenefitState {
   return {
     ...state,
     planDescription: dispatch.payload as string,
   };
 }
 
-function createBenefitReducer_setPlanStartDate(
-  state: CreateBenefitState,
-  dispatch: CreateBenefitDispatch
-): CreateBenefitState {
+function benefitReducer_setPlanStartDate(
+  state: BenefitState,
+  dispatch: BenefitDispatch
+): BenefitState {
   return {
     ...state,
     planStartDate: dispatch.payload as string,
   };
 }
 
-function createBenefitReducer_setPlanKind(
-  state: CreateBenefitState,
-  dispatch: CreateBenefitDispatch
-): CreateBenefitState {
+function benefitReducer_setPlanKind(
+  state: BenefitState,
+  dispatch: BenefitDispatch
+): BenefitState {
   return {
     ...state,
     planKind: dispatch.payload as BenefitsPlanKind,
   };
 }
 
-function createBenefitReducer_setIsPlanActive(
-  state: CreateBenefitState,
-  dispatch: CreateBenefitDispatch
-): CreateBenefitState {
+function benefitReducer_setIsPlanActive(
+  state: BenefitState,
+  dispatch: BenefitDispatch
+): BenefitState {
   return {
     ...state,
     isPlanActive: dispatch.payload as boolean,
   };
 }
 
-function createBenefitReducer_setCurrency(
-  state: CreateBenefitState,
-  dispatch: CreateBenefitDispatch
-): CreateBenefitState {
+function benefitReducer_setCurrency(
+  state: BenefitState,
+  dispatch: BenefitDispatch
+): BenefitState {
   return {
     ...state,
     currency: dispatch.payload as Currency,
   };
 }
 
-function createBenefitReducer_setEmployerContribution(
-  state: CreateBenefitState,
-  dispatch: CreateBenefitDispatch
-): CreateBenefitState {
+function benefitReducer_setEmployerContribution(
+  state: BenefitState,
+  dispatch: BenefitDispatch
+): BenefitState {
   return {
     ...state,
     employerContribution: dispatch.payload as string,
   };
 }
 
-function createBenefitReducer_setEmployeeContribution(
-  state: CreateBenefitState,
-  dispatch: CreateBenefitDispatch
-): CreateBenefitState {
+function benefitReducer_setEmployeeContribution(
+  state: BenefitState,
+  dispatch: BenefitDispatch
+): BenefitState {
   return {
     ...state,
     employeeContribution: dispatch.payload as string,
   };
 }
 
-function createBenefitReducer_setTriggerFormSubmit(
-  state: CreateBenefitState,
-  dispatch: CreateBenefitDispatch
-): CreateBenefitState {
+function benefitReducer_setTriggerFormSubmit(
+  state: BenefitState,
+  dispatch: BenefitDispatch
+): BenefitState {
   return {
     ...state,
     triggerFormSubmit: dispatch.payload as boolean,
   };
 }
 
-function createBenefitReducer_setPageInError(
-  state: CreateBenefitState,
-  dispatch: CreateBenefitDispatch
-): CreateBenefitState {
+function benefitReducer_setPageInError(
+  state: BenefitState,
+  dispatch: BenefitDispatch
+): BenefitState {
   const { kind, page } = dispatch.payload as SetPageInErrorPayload;
   const pagesInError = new Set(state.pagesInError);
   kind === "add" ? pagesInError.add(page) : pagesInError.delete(page);
@@ -144,24 +135,24 @@ function createBenefitReducer_setPageInError(
   };
 }
 
-function createBenefitReducer_setIsSubmitting(
-  state: CreateBenefitState,
-  dispatch: CreateBenefitDispatch
-): CreateBenefitState {
+function benefitReducer_setIsSubmitting(
+  state: BenefitState,
+  dispatch: BenefitDispatch
+): BenefitState {
   return {
     ...state,
     isSubmitting: dispatch.payload as boolean,
   };
 }
 
-function createBenefitReducer_setIsSuccessful(
-  state: CreateBenefitState,
-  dispatch: CreateBenefitDispatch
-): CreateBenefitState {
+function benefitReducer_setIsSuccessful(
+  state: BenefitState,
+  dispatch: BenefitDispatch
+): BenefitState {
   return {
     ...state,
     isSuccessful: dispatch.payload as boolean,
   };
 }
 
-export { createBenefitReducer };
+export { benefitReducer };

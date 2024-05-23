@@ -1,6 +1,6 @@
-import type { CreateExpenseClaimState } from "./types";
+import type { ExpenseClaimState } from "./types";
 
-const initialCreateExpenseClaimState: CreateExpenseClaimState = {
+const initialExpenseClaimState: ExpenseClaimState = {
   acknowledgement: false,
   additionalComments: "",
   expenseClaimAmount: "",
@@ -15,4 +15,4 @@ const initialCreateExpenseClaimState: CreateExpenseClaimState = {
   triggerFormSubmit: false,
 };
 
-export { initialCreateExpenseClaimState };
+export { initialExpenseClaimState };

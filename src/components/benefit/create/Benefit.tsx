@@ -15,20 +15,17 @@ import { AccessibleTextAreaInput } from "../../accessibleInputs/AccessibleTextAr
 import { AccessibleTextInput } from "../../accessibleInputs/text/AccessibleTextInput";
 import {
   BENEFIT_PLAN_DATA,
-  CREATE_BENEFIT_ROLE_PATHS,
+  BENEFIT_ROLE_PATHS,
   CURRENCY_DATA,
-  returnCreateBenefitStepperPages,
+  returnBenefitStepperPages,
 } from "../constants";
-import { CreateBenefitAction, createBenefitAction } from "./actions";
-import { createBenefitReducer } from "./reducers";
-import { initialCreateBenefitState } from "./state";
+import { BenefitAction, benefitAction } from "./actions";
+import { benefitReducer } from "./reducers";
+import { initialBenefitState } from "./state";
 import { BenefitsPlanKind, BenefitsSchema } from "./types";
 
-function CreateBenefit() {
-  const [createBenefitState, createBenefitDispatch] = useReducer(
-    createBenefitReducer,
-    initialCreateBenefitState
-  );
+function Benefit() {
+  const [benefitState, benefitDispatch] = useReducer(benefitReducer, initialBenefitState);
 
   const {
     planName,
@@ -43,7 +40,7 @@ function CreateBenefit() {
     pagesInError,
     isSubmitting,
     isSuccessful,
-  } = createBenefitState;
+  } = benefitState;
 
   const {
     authState: { sessionId, userId, username },
@@ -67,33 +64,34 @@ function CreateBenefit() {
     isComponentMountedRef.current = true;
     let isComponentMounted = isComponentMountedRef.current;
 
-    const benefitsSchema: BenefitsSchema = {
-      currency,
-      employeeContribution: Number(employeeContribution),
-      employerContribution: Number(employerContribution),
-      isPlanActive,
-      monthlyPremium: Number(employeeContribution) + Number(employerContribution),
-      planDescription,
-      planKind,
-      planName,
-      planStartDate,
-      requestStatus: "pending",
-      userId,
-      username,
-    };
-
     if (triggerFormSubmit) {
+      const benefitsSchema: BenefitsSchema = {
+        currency,
+        employeeContribution: parseFloat(employeeContribution),
+        employerContribution: parseFloat(employerContribution),
+        isPlanActive,
+        monthlyPremium:
+          parseFloat(employeeContribution) + parseFloat(employerContribution),
+        planDescription,
+        planKind,
+        planName,
+        planStartDate,
+        requestStatus: "pending",
+        userId,
+        username,
+      };
+
       formSubmitPOST({
-        dispatch: createBenefitDispatch,
+        dispatch: benefitDispatch,
         fetchAbortController,
         fetchInterceptor,
         isComponentMounted,
-        isSubmittingAction: createBenefitAction.setIsSubmitting,
-        isSuccessfulAction: createBenefitAction.setIsSuccessful,
+        isSubmittingAction: benefitAction.setIsSubmitting,
+        isSuccessfulAction: benefitAction.setIsSuccessful,
         preFetchAbortController,
-        roleResourceRoutePaths: CREATE_BENEFIT_ROLE_PATHS,
+        roleResourceRoutePaths: BENEFIT_ROLE_PATHS,
         schema: benefitsSchema,
-        schemaName: "createBenefitSchema",
+        schemaName: "benefitSchema",
         sessionId,
         showBoundary,
         userId,
@@ -113,10 +111,10 @@ function CreateBenefit() {
 
   useEffect(() => {
     logState({
-      state: createBenefitState,
+      state: benefitState,
       groupLabel: "Create Benefit State",
     });
-  }, [createBenefitState]);
+  }, [benefitState]);
 
   if (isSubmitting) {
     const submittingState = (
@@ -138,15 +136,15 @@ function CreateBenefit() {
     return successfulState;
   }
 
-  const CREATE_BENEFIT_STEPPER_PAGES: StepperPage[] = returnCreateBenefitStepperPages();
+  const BENEFIT_STEPPER_PAGES: StepperPage[] = returnBenefitStepperPages();
 
   const currencySelectInput = (
     <AccessibleSelectInput
       attributes={{
         data: CURRENCY_DATA,
         name: "currency",
-        parentDispatch: createBenefitDispatch,
-        validValueAction: createBenefitAction.setCurrency,
+        parentDispatch: benefitDispatch,
+        validValueAction: benefitAction.setCurrency,
       }}
     />
   );
@@ -154,11 +152,11 @@ function CreateBenefit() {
   const employeeContributionTextInput = (
     <AccessibleTextInput
       attributes={{
-        invalidValueAction: createBenefitAction.setPageInError,
+        invalidValueAction: benefitAction.setPageInError,
         name: "employeeContribution",
-        parentDispatch: createBenefitDispatch,
-        stepperPages: CREATE_BENEFIT_STEPPER_PAGES,
-        validValueAction: createBenefitAction.setEmployeeContribution,
+        parentDispatch: benefitDispatch,
+        stepperPages: BENEFIT_STEPPER_PAGES,
+        validValueAction: benefitAction.setEmployeeContribution,
         value: employeeContribution,
       }}
     />
@@ -167,11 +165,11 @@ function CreateBenefit() {
   const employerContributionTextInput = (
     <AccessibleTextInput
       attributes={{
-        invalidValueAction: createBenefitAction.setPageInError,
+        invalidValueAction: benefitAction.setPageInError,
         name: "employerContribution",
-        parentDispatch: createBenefitDispatch,
-        stepperPages: CREATE_BENEFIT_STEPPER_PAGES,
-        validValueAction: createBenefitAction.setEmployerContribution,
+        parentDispatch: benefitDispatch,
+        stepperPages: BENEFIT_STEPPER_PAGES,
+        validValueAction: benefitAction.setEmployerContribution,
         value: employerContribution,
       }}
     />
@@ -181,13 +179,13 @@ function CreateBenefit() {
     <AccessibleSwitchInput
       attributes={{
         checked: isPlanActive,
-        invalidValueAction: createBenefitAction.setPageInError,
+        invalidValueAction: benefitAction.setPageInError,
         name: "isPlanActive",
         offLabel: "Inactive",
         onLabel: "Active",
-        parentDispatch: createBenefitDispatch,
+        parentDispatch: benefitDispatch,
         preventErrorStateWhenOff: true,
-        validValueAction: createBenefitAction.setIsPlanActive,
+        validValueAction: benefitAction.setIsPlanActive,
         value: isPlanActive.toString(),
       }}
     />
@@ -196,23 +194,23 @@ function CreateBenefit() {
   const planDescriptionTextArea = (
     <AccessibleTextAreaInput
       attributes={{
-        invalidValueAction: createBenefitAction.setPageInError,
+        invalidValueAction: benefitAction.setPageInError,
         name: "planDescription",
-        parentDispatch: createBenefitDispatch,
-        stepperPages: CREATE_BENEFIT_STEPPER_PAGES,
-        validValueAction: createBenefitAction.setPlanDescription,
+        parentDispatch: benefitDispatch,
+        stepperPages: BENEFIT_STEPPER_PAGES,
+        validValueAction: benefitAction.setPlanDescription,
         value: planDescription,
       }}
     />
   );
 
   const planKindSelectInput = (
-    <AccessibleSelectInput<CreateBenefitAction["setPlanKind"], BenefitsPlanKind>
+    <AccessibleSelectInput<BenefitAction["setPlanKind"], BenefitsPlanKind>
       attributes={{
         data: BENEFIT_PLAN_DATA,
         name: "planKind",
-        parentDispatch: createBenefitDispatch,
-        validValueAction: createBenefitAction.setPlanKind,
+        parentDispatch: benefitDispatch,
+        validValueAction: benefitAction.setPlanKind,
       }}
     />
   );
@@ -220,11 +218,11 @@ function CreateBenefit() {
   const planNameTextInput = (
     <AccessibleTextInput
       attributes={{
-        invalidValueAction: createBenefitAction.setPageInError,
+        invalidValueAction: benefitAction.setPageInError,
         name: "planName",
-        parentDispatch: createBenefitDispatch,
-        stepperPages: CREATE_BENEFIT_STEPPER_PAGES,
-        validValueAction: createBenefitAction.setPlanName,
+        parentDispatch: benefitDispatch,
+        stepperPages: BENEFIT_STEPPER_PAGES,
+        validValueAction: benefitAction.setPlanName,
         value: planName,
       }}
     />
@@ -235,11 +233,11 @@ function CreateBenefit() {
       attributes={{
         dateKind: "full date",
         inputKind: "date",
-        invalidValueAction: createBenefitAction.setPageInError,
+        invalidValueAction: benefitAction.setPageInError,
         name: "planStartDate",
-        parentDispatch: createBenefitDispatch,
-        stepperPages: CREATE_BENEFIT_STEPPER_PAGES,
-        validValueAction: createBenefitAction.setPlanStartDate,
+        parentDispatch: benefitDispatch,
+        stepperPages: BENEFIT_STEPPER_PAGES,
+        validValueAction: benefitAction.setPlanStartDate,
         value: planStartDate,
       }}
     />
@@ -254,8 +252,8 @@ function CreateBenefit() {
         kind: "submit",
         name: "submit",
         onClick: (_event: MouseEvent<HTMLButtonElement>) => {
-          createBenefitDispatch({
-            action: createBenefitAction.setTriggerFormSubmit,
+          benefitDispatch({
+            action: benefitAction.setTriggerFormSubmit,
             payload: true,
           });
         },
@@ -263,7 +261,7 @@ function CreateBenefit() {
     />
   );
 
-  const createBenefitForm = (
+  const benefitForm = (
     <Group>
       {planNameTextInput}
       {planDescriptionTextArea}
@@ -272,7 +270,7 @@ function CreateBenefit() {
     </Group>
   );
 
-  const createBenefitContributionsForm = (
+  const benefitContributionsForm = (
     <Group>
       {currencySelectInput}
       {employeeContributionTextInput}
@@ -284,9 +282,9 @@ function CreateBenefit() {
   const stepper = (
     <AccessibleStepper
       attributes={{
-        componentState: createBenefitState,
-        pageElements: [createBenefitForm, createBenefitContributionsForm],
-        stepperPages: CREATE_BENEFIT_STEPPER_PAGES,
+        componentState: benefitState,
+        pageElements: [benefitForm, benefitContributionsForm],
+        stepperPages: BENEFIT_STEPPER_PAGES,
         submitButton,
         title: "Create Benefit",
       }}
@@ -296,7 +294,7 @@ function CreateBenefit() {
   return <Container w={700}>{stepper}</Container>;
 }
 
-export default CreateBenefit;
+export default Benefit;
 
 /**
  * const {
@@ -326,13 +324,13 @@ export default CreateBenefit;
     // create new abort controller for current request
     abortControllerRef.current = new AbortController();
 
-    async function createBenefitFormSubmit() {
-      createBenefitDispatch({
-        type: createBenefitAction.setIsSubmitting,
+    async function benefitFormSubmit() {
+      benefitDispatch({
+        type: benefitAction.setIsSubmitting,
         payload: true,
       });
-      createBenefitDispatch({
-        type: createBenefitAction.setSubmitMessage,
+      benefitDispatch({
+        type: benefitAction.setSubmitMessage,
         payload: "Submitting new benefit to be created...",
       });
       openSubmitSuccessNotificationModal();
@@ -382,12 +380,12 @@ export default CreateBenefit;
           throw new Error(data.message);
         }
 
-        createBenefitDispatch({
-          type: createBenefitAction.setIsSuccessful,
+        benefitDispatch({
+          type: benefitAction.setIsSuccessful,
           payload: true,
         });
-        createBenefitDispatch({
-          type: createBenefitAction.setSuccessMessage,
+        benefitDispatch({
+          type: benefitAction.setSuccessMessage,
           payload: data.message ?? "Benefit successfully created!",
         });
       } catch (error: any) {
@@ -425,16 +423,16 @@ export default CreateBenefit;
         showBoundary(error);
       } finally {
         if (isMounted) {
-          createBenefitDispatch({
-            type: createBenefitAction.setIsSubmitting,
+          benefitDispatch({
+            type: benefitAction.setIsSubmitting,
             payload: false,
           });
-          createBenefitDispatch({
-            type: createBenefitAction.setSubmitMessage,
+          benefitDispatch({
+            type: benefitAction.setSubmitMessage,
             payload: "",
           });
-          createBenefitDispatch({
-            type: createBenefitAction.setTriggerFormSubmit,
+          benefitDispatch({
+            type: benefitAction.setTriggerFormSubmit,
             payload: false,
           });
         }
@@ -442,7 +440,7 @@ export default CreateBenefit;
     }
 
     if (triggerFormSubmit) {
-      createBenefitFormSubmit();
+      benefitFormSubmit();
     }
 
     return () => {
@@ -457,8 +455,8 @@ export default CreateBenefit;
   useEffect(() => {
     const isValid = USERNAME_REGEX.test(benefitUsername);
 
-    createBenefitDispatch({
-      type: createBenefitAction.setIsValidBenefitUsername,
+    benefitDispatch({
+      type: benefitAction.setIsValidBenefitUsername,
       payload: isValid,
     });
   }, [benefitUsername]);
@@ -467,8 +465,8 @@ export default CreateBenefit;
   useEffect(() => {
     const isValid = PLAN_NAME_REGEX.test(planName);
 
-    createBenefitDispatch({
-      type: createBenefitAction.setIsValidPlanName,
+    benefitDispatch({
+      type: benefitAction.setIsValidPlanName,
       payload: isValid,
     });
   }, [planName]);
@@ -477,8 +475,8 @@ export default CreateBenefit;
   useEffect(() => {
     const isValid = PLAN_DESCRIPTION_REGEX.test(planDescription);
 
-    createBenefitDispatch({
-      type: createBenefitAction.setIsValidPlanDescription,
+    benefitDispatch({
+      type: benefitAction.setIsValidPlanDescription,
       payload: isValid,
     });
   }, [planDescription]);
@@ -487,8 +485,8 @@ export default CreateBenefit;
   useEffect(() => {
     const isValid = DATE_REGEX.test(planStartDate);
 
-    createBenefitDispatch({
-      type: createBenefitAction.setIsValidPlanStartDate,
+    benefitDispatch({
+      type: benefitAction.setIsValidPlanStartDate,
       payload: isValid,
     });
   }, [planStartDate]);
@@ -497,8 +495,8 @@ export default CreateBenefit;
   useEffect(() => {
     const isValid = MONEY_REGEX.test(employeeContribution);
 
-    createBenefitDispatch({
-      type: createBenefitAction.setIsValidEmployeeContribution,
+    benefitDispatch({
+      type: benefitAction.setIsValidEmployeeContribution,
       payload: isValid,
     });
   }, [employeeContribution]);
@@ -507,8 +505,8 @@ export default CreateBenefit;
   useEffect(() => {
     const isValid = MONEY_REGEX.test(employerContribution);
 
-    createBenefitDispatch({
-      type: createBenefitAction.setIsValidEmployerContribution,
+    benefitDispatch({
+      type: benefitAction.setIsValidEmployerContribution,
       payload: isValid,
     });
   }, [employerContribution]);
@@ -524,13 +522,13 @@ export default CreateBenefit;
         .replace(".", ",")
         .replace(/^0+(?=\d)/, "");
 
-      createBenefitDispatch({
-        type: createBenefitAction.setEmployeeContribution,
+      benefitDispatch({
+        type: benefitAction.setEmployeeContribution,
         payload: employeeContributionWithCommaAndNoLeadingZero,
       });
 
-      createBenefitDispatch({
-        type: createBenefitAction.setEmployerContribution,
+      benefitDispatch({
+        type: benefitAction.setEmployerContribution,
         payload: employerContributionWithCommaAndNoLeadingZero,
       });
     }
@@ -543,13 +541,13 @@ export default CreateBenefit;
         .replace(",", ".")
         .replace(/^0+(?=\d)/, "");
 
-      createBenefitDispatch({
-        type: createBenefitAction.setEmployeeContribution,
+      benefitDispatch({
+        type: benefitAction.setEmployeeContribution,
         payload: employeeContributionWithDecimalAndNoLeadingZero,
       });
 
-      createBenefitDispatch({
-        type: createBenefitAction.setEmployerContribution,
+      benefitDispatch({
+        type: benefitAction.setEmployerContribution,
         payload: employerContributionWithDecimalAndNoLeadingZero,
       });
     }
@@ -594,8 +592,8 @@ export default CreateBenefit;
 
     const isStepInError = areRequiredInputsInError || isOptionalInputInError;
 
-    createBenefitDispatch({
-      type: createBenefitAction.setStepsInError,
+    benefitDispatch({
+      type: benefitAction.setStepsInError,
       payload: {
         kind: isStepInError ? "add" : "delete",
         step: 0,
@@ -613,8 +611,8 @@ export default CreateBenefit;
   useEffect(() => {
     const isStepInError = !isValidEmployeeContribution || !isValidEmployerContribution;
 
-    createBenefitDispatch({
-      type: createBenefitAction.setStepsInError,
+    benefitDispatch({
+      type: benefitAction.setStepsInError,
       payload: {
         kind: isStepInError ? "add" : "delete",
         step: 1,
@@ -717,20 +715,20 @@ export default CreateBenefit;
     isValidInputText: isValidBenefitUsername,
     label: "Benefit Username",
     onBlur: () => {
-      createBenefitDispatch({
-        type: createBenefitAction.setIsBenefitUsernameFocused,
+      benefitDispatch({
+        type: benefitAction.setIsBenefitUsernameFocused,
         payload: false,
       });
     },
     onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
-      createBenefitDispatch({
-        type: createBenefitAction.setBenefitUsername,
+      benefitDispatch({
+        type: benefitAction.setBenefitUsername,
         payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
-      createBenefitDispatch({
-        type: createBenefitAction.setIsBenefitUsernameFocused,
+      benefitDispatch({
+        type: benefitAction.setIsBenefitUsernameFocused,
         payload: true,
       });
     },
@@ -751,20 +749,20 @@ export default CreateBenefit;
     isValidInputText: isValidPlanName,
     label: "Plan Name",
     onBlur: () => {
-      createBenefitDispatch({
-        type: createBenefitAction.setIsPlanNameFocused,
+      benefitDispatch({
+        type: benefitAction.setIsPlanNameFocused,
         payload: false,
       });
     },
     onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
-      createBenefitDispatch({
-        type: createBenefitAction.setPlanName,
+      benefitDispatch({
+        type: benefitAction.setPlanName,
         payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
-      createBenefitDispatch({
-        type: createBenefitAction.setIsPlanNameFocused,
+      benefitDispatch({
+        type: benefitAction.setIsPlanNameFocused,
         payload: true,
       });
     },
@@ -785,20 +783,20 @@ export default CreateBenefit;
     isValidInputText: isValidPlanDescription,
     label: "Plan Description",
     onBlur: () => {
-      createBenefitDispatch({
-        type: createBenefitAction.setIsPlanDescriptionFocused,
+      benefitDispatch({
+        type: benefitAction.setIsPlanDescriptionFocused,
         payload: false,
       });
     },
     onChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-      createBenefitDispatch({
-        type: createBenefitAction.setPlanDescription,
+      benefitDispatch({
+        type: benefitAction.setPlanDescription,
         payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
-      createBenefitDispatch({
-        type: createBenefitAction.setIsPlanDescriptionFocused,
+      benefitDispatch({
+        type: benefitAction.setIsPlanDescriptionFocused,
         payload: true,
       });
     },
@@ -817,20 +815,20 @@ export default CreateBenefit;
     isValidInputText: isValidPlanStartDate,
     label: "Plan Start Date",
     onBlur: () => {
-      createBenefitDispatch({
-        type: createBenefitAction.setIsPlanStartDateFocused,
+      benefitDispatch({
+        type: benefitAction.setIsPlanStartDateFocused,
         payload: false,
       });
     },
     onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
-      createBenefitDispatch({
-        type: createBenefitAction.setPlanStartDate,
+      benefitDispatch({
+        type: benefitAction.setPlanStartDate,
         payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
-      createBenefitDispatch({
-        type: createBenefitAction.setIsPlanStartDateFocused,
+      benefitDispatch({
+        type: benefitAction.setIsPlanStartDateFocused,
         payload: true,
       });
     },
@@ -847,8 +845,8 @@ export default CreateBenefit;
     data: BENEFIT_PLAN_DATA,
     label: "Plan Kind",
     onChange: (event: React.ChangeEvent<HTMLSelectElement>) => {
-      createBenefitDispatch({
-        type: createBenefitAction.setPlanKind,
+      benefitDispatch({
+        type: benefitAction.setPlanKind,
         payload: event.currentTarget.value as BenefitsPlanKind,
       });
     },
@@ -862,8 +860,8 @@ export default CreateBenefit;
     data: CURRENCY_DATA,
     label: "Currency",
     onChange: (event: React.ChangeEvent<HTMLSelectElement>) => {
-      createBenefitDispatch({
-        type: createBenefitAction.setCurrency,
+      benefitDispatch({
+        type: benefitAction.setCurrency,
         payload: event.currentTarget.value as Currency,
       });
     },
@@ -900,20 +898,20 @@ export default CreateBenefit;
     isValidInputText: isValidEmployeeContribution,
     label: "Employee Contribution",
     onBlur: () => {
-      createBenefitDispatch({
-        type: createBenefitAction.setIsEmployeeContributionFocused,
+      benefitDispatch({
+        type: benefitAction.setIsEmployeeContributionFocused,
         payload: false,
       });
     },
     onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
-      createBenefitDispatch({
-        type: createBenefitAction.setEmployeeContribution,
+      benefitDispatch({
+        type: benefitAction.setEmployeeContribution,
         payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
-      createBenefitDispatch({
-        type: createBenefitAction.setIsEmployeeContributionFocused,
+      benefitDispatch({
+        type: benefitAction.setIsEmployeeContributionFocused,
         payload: true,
       });
     },
@@ -936,20 +934,20 @@ export default CreateBenefit;
     isValidInputText: isValidEmployerContribution,
     label: "Employer Contribution",
     onBlur: () => {
-      createBenefitDispatch({
-        type: createBenefitAction.setIsEmployerContributionFocused,
+      benefitDispatch({
+        type: benefitAction.setIsEmployerContributionFocused,
         payload: false,
       });
     },
     onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
-      createBenefitDispatch({
-        type: createBenefitAction.setEmployerContribution,
+      benefitDispatch({
+        type: benefitAction.setEmployerContribution,
         payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
-      createBenefitDispatch({
-        type: createBenefitAction.setIsEmployerContributionFocused,
+      benefitDispatch({
+        type: benefitAction.setIsEmployerContributionFocused,
         payload: true,
       });
     },
@@ -971,8 +969,8 @@ export default CreateBenefit;
     label: "Plan Status",
     checked: isPlanActive,
     onChange: (event: ChangeEvent<HTMLInputElement>) => {
-      createBenefitDispatch({
-        type: createBenefitAction.setIsPlanActive,
+      benefitDispatch({
+        type: benefitAction.setIsPlanActive,
         payload: event.currentTarget.checked,
       });
     },
@@ -986,8 +984,8 @@ export default CreateBenefit;
     semanticName: "submit button",
     leftIcon: <TbUpload />,
     buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
-      createBenefitDispatch({
-        type: createBenefitAction.setTriggerFormSubmit,
+      benefitDispatch({
+        type: benefitAction.setTriggerFormSubmit,
         payload: true,
       });
     },
@@ -1027,7 +1025,7 @@ export default CreateBenefit;
 
   const [createdSubmitButton] = returnAccessibleButtonElements([submitButtonCreatorInfo]);
   const displaySubmitButton =
-    currentStepperPosition === CREATE_BENEFIT_MAX_STEPPER_POSITION ? (
+    currentStepperPosition === BENEFIT_MAX_STEPPER_POSITION ? (
       <Tooltip
         label={
           pagesInError.size > 0
@@ -1082,7 +1080,7 @@ export default CreateBenefit;
     </FormLayoutWrapper>
   );
 
-  const CREATE_BENEFIT_REVIEW_OBJECT: FormReviewObjectArray = {
+  const BENEFIT_REVIEW_OBJECT: FormReviewObjectArray = {
     "Plan Details": [
       {
         inputName: "Benefit Username",
@@ -1136,7 +1134,7 @@ export default CreateBenefit;
 
   const displayReviewPage = (
     <FormReviewPage
-      formReviewObject={CREATE_BENEFIT_REVIEW_OBJECT}
+      formReviewObject={BENEFIT_REVIEW_OBJECT}
       formName="Create Benefit"
     />
   );
@@ -1158,7 +1156,7 @@ export default CreateBenefit;
     />
   );
 
-  const displayCreateBenefitForm =
+  const displayBenefitForm =
     currentStepperPosition === 0
       ? displayPlanDetailsFormPage
       : currentStepperPosition === 1
@@ -1167,20 +1165,20 @@ export default CreateBenefit;
       ? displayReviewPage
       : displaySubmitButton;
 
-  const displayCreateBenefitComponent = (
+  const displayBenefitComponent = (
     <StepperWrapper
       childrenTitle="Create Benefit"
       currentStepperPosition={currentStepperPosition}
-      descriptionObjectsArray={CREATE_BENEFIT_DESCRIPTION_OBJECTS}
-      maxStepperPosition={CREATE_BENEFIT_MAX_STEPPER_POSITION}
-      parentComponentDispatch={createBenefitDispatch}
-      setCurrentStepperPosition={createBenefitAction.setCurrentStepperPosition}
+      descriptionObjectsArray={BENEFIT_DESCRIPTION_OBJECTS}
+      maxStepperPosition={BENEFIT_MAX_STEPPER_POSITION}
+      parentComponentDispatch={benefitDispatch}
+      setCurrentStepperPosition={benefitAction.setCurrentStepperPosition}
       pagesInError={pagesInError}
     >
       {displaySubmitSuccessNotificationModal}
-      {displayCreateBenefitForm}
+      {displayBenefitForm}
     </StepperWrapper>
   );
 
-  return displayCreateBenefitComponent;
+  return displayBenefitComponent;
  */
