@@ -1,17 +1,12 @@
 import { faCheck, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Grid, Group, Space, Text } from "@mantine/core";
+import { Grid, Group, Text } from "@mantine/core";
 import { TbCheck, TbExclamationCircle } from "react-icons/tb";
 
 import { COLORS_SWATCHES } from "../../constants/data";
 import { ThemeObject } from "../../context/globalProvider/types";
 import { StepperPage } from "../../types";
-import {
-  capitalizeAll,
-  replaceLastCommaWithAnd,
-  returnThemeColors,
-  splitCamelCase,
-} from "../../utils";
+import { capitalizeJoinWithAnd, returnThemeColors, splitCamelCase } from "../../utils";
 import { AccessibleButton, AccessibleButtonAttributes } from "./AccessibleButton";
 import {
   AccessibleCheckboxInputGroup,
@@ -167,11 +162,7 @@ function createAccessibleCheckboxSelectionsTextElements({
       <FontAwesomeIcon icon={faCheck} color={greenColorShade} />
     ) : null;
 
-  const stringifiedValue = Array.isArray(value)
-    ? replaceLastCommaWithAnd(
-        value.map((v) => v.charAt(0).toUpperCase() + v.slice(1)).join(", ")
-      )
-    : value;
+  const stringifiedValue = Array.isArray(value) ? capitalizeJoinWithAnd(value) : value;
 
   const selectedText =
     kind === "single"

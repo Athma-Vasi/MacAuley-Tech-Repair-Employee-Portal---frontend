@@ -215,6 +215,7 @@ function AccessibleCheckboxInputGroup<
       ref={ref}
       required={required}
       size={size}
+      value={value}
       withAsterisk={withAsterisk}
     >
       {inputData?.map(({ value, label }) => (

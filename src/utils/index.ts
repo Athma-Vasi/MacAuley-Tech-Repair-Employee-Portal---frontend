@@ -1,5 +1,6 @@
 import html2canvas from "html2canvas";
 import jwtDecode from "jwt-decode";
+import { NavigateFunction } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 
 import { DecodedToken } from "../components/login/types";
@@ -18,7 +19,6 @@ import type {
   RoleResourceRoutePaths,
   UserRole,
 } from "../types";
-import { NavigateFunction } from "react-router-dom";
 
 /**
  * contentKind is used to specify the semantic html input label, and is used in the returned validation error string for improved accessibility.
@@ -2514,6 +2514,13 @@ function capitalizeAll(str: string): string {
   return str.replace(/\b\w/g, (char) => char.toUpperCase());
 }
 
+function capitalizeJoinWithAnd(strings: string[]): string {
+  const joined = strings
+    .map((string) => string.charAt(0).toUpperCase() + string.slice(1))
+    .join(", ");
+  return replaceLastCommaWithAnd(joined);
+}
+
 type FormSubmitPOST<
   IsSubmittingAction extends string = string,
   IsSuccessfulAction extends string = string
@@ -2656,6 +2663,7 @@ export {
   addCommaSeparator,
   addFieldsToObject,
   capitalizeAll,
+  capitalizeJoinWithAnd,
   captureScreenshot,
   filterFieldsFromObject,
   flattenObjectIterative,

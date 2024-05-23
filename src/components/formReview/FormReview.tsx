@@ -4,7 +4,7 @@ import { ReactNode } from "react";
 import { COLORS_SWATCHES, PROPERTY_DESCRIPTOR } from "../../constants/data";
 import { useGlobalState } from "../../hooks";
 import { StepperPage } from "../../types";
-import { replaceLastCommaWithAnd, returnThemeColors, splitCamelCase } from "../../utils";
+import { capitalizeJoinWithAnd, returnThemeColors, splitCamelCase } from "../../utils";
 import { createAccessibleButtons } from "../accessibleInputs/utils";
 
 type FormReview = {
@@ -37,7 +37,7 @@ function FormReviewStep({ componentState, stepperPages, title }: FormReviewProps
     themeObject,
   });
 
-  const formReviewObject = returnFormReviewData(stepperPages, componentState);
+  const formReviewObject = returnFormReviews(stepperPages, componentState);
 
   const displayFormReviewStack = Object.entries(formReviewObject).map(
     ([pageName, pageObjectArr], index) => {
@@ -88,15 +88,7 @@ function FormReviewStep({ componentState, stepperPages, title }: FormReviewProps
             showLabel={showLabelButton}
             hideLabel={hideLabelButton}
           >
-            <Text>
-              {Array.isArray(value)
-                ? replaceLastCommaWithAnd(value.join(", "))
-                : typeof value === "boolean"
-                ? value
-                  ? "Yes"
-                  : "No"
-                : value?.toString() ?? ""}
-            </Text>
+            <Text>{value}</Text>
           </Spoiler>
         );
 
@@ -147,38 +139,47 @@ function FormReviewStep({ componentState, stepperPages, title }: FormReviewProps
   return displayFormReview;
 }
 
-function returnFormReviewData<
+function returnFormReviews<
   State extends Record<string, unknown> = Record<string, unknown>
->(stepperPages: StepperPage[], componentState: State) {
-  return stepperPages.reduce<FormReviews>((acc, stepperPage) => {
+>(stepperPages: StepperPage[], componentState: State): FormReviews {
+  return stepperPages.reduce<FormReviews>((formReviewsAcc, stepperPage) => {
     const { description, kind, children } = stepperPage;
 
     if (kind && kind === "review") {
-      return acc;
+      return formReviewsAcc;
     }
 
     const formReviews = children.map((child) => {
       const { name, validations } = child;
-      const value = componentState[name]?.toString() ?? "";
+      const value = componentState[name];
+
+      const stringifiedValue = Array.isArray(value)
+        ? capitalizeJoinWithAnd(value)
+        : typeof value === "boolean"
+        ? value
+          ? "Yes"
+          : "No"
+        : value?.toString() ?? "";
+
       const isValueValid = validations
         ? typeof validations.full === "function"
-          ? validations.full(value)
-          : validations.full.test(value)
+          ? validations.full(stringifiedValue)
+          : validations.full.test(stringifiedValue)
         : true;
 
       return {
         name,
-        value,
+        value: stringifiedValue,
         isValueValid,
       };
     });
 
-    Object.defineProperty(acc, description, {
+    Object.defineProperty(formReviewsAcc, description, {
       value: formReviews,
       ...PROPERTY_DESCRIPTOR,
     });
 
-    return acc;
+    return formReviewsAcc;
   }, Object.create(null));
 }
 
