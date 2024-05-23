@@ -305,7 +305,7 @@ const DisplayPrinterIssues = lazy(
 );
 
 const CreatePrinterIssue = lazy(
-  () => import("./components/printerIssue/create/CreatePrinterIssue")
+  () => import("./components/printerIssue/create/PrinterIssue")
 );
 
 // ╭─────────────────────────────────────────────────────────────────╮

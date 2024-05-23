@@ -1,127 +1,361 @@
-import { Group, Title, Tooltip } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
-import { InvalidTokenError } from "jwt-decode";
-import { ChangeEvent, KeyboardEvent, MouseEvent, useEffect, useReducer } from "react";
+import { Container, Stack, Text } from "@mantine/core";
+import { useEffect, useReducer, useRef } from "react";
 import { useErrorBoundary } from "react-error-boundary";
-import { TbUpload } from "react-icons/tb";
-import { useNavigate } from "react-router-dom";
 
 import { URGENCY_DATA } from "../../../constants/data";
+import { useAuth } from "../../../hooks";
+import { useFetchInterceptor } from "../../../hooks/useFetchInterceptor";
+import { StepperPage, TimeRailway, Urgency } from "../../../types";
+import { formSubmitPOST } from "../../../utils";
+import { AccessibleButton } from "../../accessibleInputs/AccessibleButton";
+import { AccessibleDateTimeInput } from "../../accessibleInputs/AccessibleDateTimeInput";
+import { AccessibleSelectInput } from "../../accessibleInputs/AccessibleSelectInput";
+import { AccessibleStepper } from "../../accessibleInputs/AccessibleStepper";
+import { AccessibleTextAreaInput } from "../../accessibleInputs/AccessibleTextAreaInput";
+import { AccessibleTextInput } from "../../accessibleInputs/text/AccessibleTextInput";
 import {
-  DATE_NEAR_PAST_REGEX,
-  EMAIL_REGEX,
-  GRAMMAR_TEXT_INPUT_REGEX,
-  GRAMMAR_TEXTAREA_INPUT_REGEX,
-  PHONE_NUMBER_REGEX,
-  PRINTER_MAKE_MODEL_REGEX,
-  PRINTER_SERIAL_NUMBER_REGEX,
-  TIME_RAILWAY_REGEX,
-} from "../../../constants/regex";
-import { globalAction } from "../../../context/globalProvider/state";
-import { useGlobalState, useWrapFetch } from "../../../hooks";
-import {
-  AccessibleErrorValidTextElements,
-  returnAccessibleButtonElements,
-  returnAccessibleDateTimeElements,
-  returnAccessiblePhoneNumberTextInputElements,
-  returnAccessibleSelectInputElements,
-  returnAccessibleTextAreaInputElements,
-  returnAccessibleTextInputElements,
-} from "../../../jsxCreators";
-import { PhoneNumber, ResourceRequestServerResponse, Urgency } from "../../../types";
-import {
-  returnDateNearPastValidationText,
-  returnEmailValidationText,
-  returnGrammarValidationText,
-  returnPhoneNumberValidationText,
-  returnPrinterMakeModelValidationText,
-  returnPrinterSerialNumberValidationText,
-  returnTimeRailwayValidationText,
-  urlBuilder,
-} from "../../../utils";
-import FormReviewPage, {
-  FormReviewObjectArray,
-} from "../../formReviewPage/FormReviewPage";
-import { NotificationModal } from "../../notificationModal";
-import {
-  AccessibleButtonCreatorInfo,
-  AccessibleDateTimeInputCreatorInfo,
-  AccessiblePhoneNumberTextInputCreatorInfo,
-  AccessibleSelectInputCreatorInfo,
-  AccessibleTextAreaInputCreatorInfo,
-  AccessibleTextInputCreatorInfo,
-  FormLayoutWrapper,
-  StepperWrapper,
-} from "../../wrappers";
-import {
-  CREATE_PRINTER_ISSUE_DESCRIPTION_OBJECTS,
-  CREATE_PRINTER_ISSUE_MAX_STEPPER_POSITION,
+  PRINTER_ISSUE_ROLE_PATHS,
   PRINTER_MAKE_SELECT_OPTIONS,
+  returnPrinterIssueStepperPages,
 } from "../constants";
-import {
-  createPrinterIssueAction,
-  createPrinterIssueReducer,
-  initialCreatePrinterIssueState,
-} from "./state";
-import { PrinterIssueDocument, PrinterMake } from "./types";
+import { PrinterIssueAction, printerIssueAction } from "./actions";
+import { printerIssueReducer } from "./reducers";
+import { initialPrinterIssueState } from "./state";
+import { PrinterIssueSchema } from "./types";
 
-function CreatePrinterIssue() {
-  const [createPrinterIssueState, createPrinterIssueDispatch] = useReducer(
-    createPrinterIssueReducer,
-    initialCreatePrinterIssueState
+function PrinterIssue() {
+  const [printerIssueState, printerIssueDispatch] = useReducer(
+    printerIssueReducer,
+    initialPrinterIssueState
   );
   const {
     title,
-    isValidTitle,
-    isTitleFocused,
-
     contactNumber,
-    isValidContactNumber,
-    isContactNumberFocused,
-
     contactEmail,
-    isValidContactEmail,
-    isContactEmailFocused,
-
     dateOfOccurrence,
-    isValidDateOfOccurrence,
-    isDateOfOccurrenceFocused,
-
     timeOfOccurrence,
-    isValidTimeOfOccurrence,
-    isTimeOfOccurrenceFocused,
-
     printerMake,
     printerModel,
-    isValidPrinterModel,
-    isPrinterModelFocused,
-
     printerSerialNumber,
-    isValidPrinterSerialNumber,
-    isPrinterSerialNumberFocused,
-
     printerIssueDescription,
-    isValidPrinterIssueDescription,
-    isPrinterIssueDescriptionFocused,
-
     urgency,
-
     additionalInformation,
-    isValidAdditionalInformation,
-    isAdditionalInformationFocused,
-
     triggerFormSubmit,
-    currentStepperPosition,
-    stepsInError,
-
+    pagesInError,
     isSubmitting,
-    submitMessage,
     isSuccessful,
-    successMessage,
-    isLoading,
-    loadingMessage,
-  } = createPrinterIssueState;
+  } = printerIssueState;
 
+  const {
+    authState: { sessionId, userId, username },
+  } = useAuth();
+  const { fetchInterceptor } = useFetchInterceptor();
+  const { showBoundary } = useErrorBoundary();
+
+  const fetchAbortControllerRef = useRef<AbortController | null>(null);
+  const preFetchAbortControllerRef = useRef<AbortController | null>(null);
+  const isComponentMountedRef = useRef(false);
+
+  useEffect(() => {
+    fetchAbortControllerRef.current?.abort();
+    fetchAbortControllerRef.current = new AbortController();
+    const fetchAbortController = fetchAbortControllerRef.current;
+
+    preFetchAbortControllerRef.current?.abort();
+    preFetchAbortControllerRef.current = new AbortController();
+    const preFetchAbortController = preFetchAbortControllerRef.current;
+
+    isComponentMountedRef.current = true;
+    let isComponentMounted = isComponentMountedRef.current;
+
+    if (triggerFormSubmit) {
+      const printerIssueSchema: PrinterIssueSchema = {
+        additionalInformation,
+        contactEmail,
+        contactNumber,
+        dateOfOccurrence,
+        printerIssueDescription,
+        printerMake,
+        printerModel,
+        printerSerialNumber,
+        requestStatus: "pending",
+        timeOfOccurrence: timeOfOccurrence as TimeRailway,
+        title,
+        urgency,
+        userId,
+        username,
+      };
+
+      formSubmitPOST({
+        dispatch: printerIssueDispatch,
+        fetchAbortController,
+        fetchInterceptor,
+        isComponentMounted,
+        isSubmittingAction: printerIssueAction.setIsSubmitting,
+        isSuccessfulAction: printerIssueAction.setIsSuccessful,
+        preFetchAbortController,
+        roleResourceRoutePaths: PRINTER_ISSUE_ROLE_PATHS,
+        schema: printerIssueSchema,
+        schemaName: "printerIssueSchema",
+        sessionId,
+        showBoundary,
+        userId,
+        username,
+        userRole: "manager",
+      });
+    }
+
+    return () => {
+      isComponentMountedRef.current = false;
+      preFetchAbortController?.abort();
+      fetchAbortController?.abort();
+    };
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [triggerFormSubmit]);
+
+  if (isSubmitting) {
+    const submittingState = (
+      <Stack>
+        <Text size="md">Submitting address changes! Please wait...</Text>
+      </Stack>
+    );
+
+    return submittingState;
+  }
+
+  if (isSuccessful) {
+    const successfulState = (
+      <Stack>
+        <Text size="md">Address changes submitted successfully!</Text>
+      </Stack>
+    );
+
+    return successfulState;
+  }
+
+  const PRINTER_ISSUE_STEPPER_PAGES: StepperPage[] = returnPrinterIssueStepperPages();
+
+  /**
+   * type PrinterIssueState = {
+  additionalInformation: string;
+  contactEmail: string;
+  contactNumber: PhoneNumber | string;
+  dateOfOccurrence: string;
+  isSubmitting: boolean;
+  isSuccessful: boolean;
+  pagesInError: Set<number>;
+  printerIssueDescription: string;
+  printerMake: PrinterMake;
+  printerModel: string;
+  printerSerialNumber: string;
+  timeOfOccurrence: TimeRailway | string;
+  title: string;
+  triggerFormSubmit: boolean;
+  urgency: Urgency;
+};
+
+   */
+
+  const additionalInformationTextAreaInput = (
+    <AccessibleTextAreaInput
+      attributes={{
+        invalidValueAction: printerIssueAction.setPageInError,
+        name: "additionalInformation",
+        parentDispatch: printerIssueDispatch,
+        stepperPages: PRINTER_ISSUE_STEPPER_PAGES,
+        validValueAction: printerIssueAction.setAdditionalInformation,
+        value: additionalInformation,
+      }}
+    />
+  );
+
+  const contactEmailTextInput = (
+    <AccessibleTextInput
+      attributes={{
+        invalidValueAction: printerIssueAction.setPageInError,
+        name: "contactEmail",
+        parentDispatch: printerIssueDispatch,
+        stepperPages: PRINTER_ISSUE_STEPPER_PAGES,
+        validValueAction: printerIssueAction.setContactEmail,
+        value: contactEmail,
+      }}
+    />
+  );
+
+  const contactNumberTextInput = (
+    <AccessibleTextInput
+      attributes={{
+        invalidValueAction: printerIssueAction.setPageInError,
+        name: "contactNumber",
+        parentDispatch: printerIssueDispatch,
+        stepperPages: PRINTER_ISSUE_STEPPER_PAGES,
+        validValueAction: printerIssueAction.setContactNumber,
+        value: contactNumber,
+      }}
+    />
+  );
+
+  const dateOfOccurrenceTextInput = (
+    <AccessibleDateTimeInput
+      attributes={{
+        dateKind: "date near past",
+        invalidValueAction: printerIssueAction.setPageInError,
+        inputKind: "date",
+        name: "dateOfOccurrence",
+        parentDispatch: printerIssueDispatch,
+        stepperPages: PRINTER_ISSUE_STEPPER_PAGES,
+        validValueAction: printerIssueAction.setDateOfOccurrence,
+        value: dateOfOccurrence,
+      }}
+    />
+  );
+
+  const printerIssueDescriptionTextAreaInput = (
+    <AccessibleTextAreaInput
+      attributes={{
+        invalidValueAction: printerIssueAction.setPageInError,
+        name: "printerIssueDescription",
+        parentDispatch: printerIssueDispatch,
+        stepperPages: PRINTER_ISSUE_STEPPER_PAGES,
+        validValueAction: printerIssueAction.setPrinterIssueDescription,
+        value: printerIssueDescription,
+      }}
+    />
+  );
+
+  const printerMakeSelectInput = (
+    <AccessibleSelectInput
+      attributes={{
+        data: PRINTER_MAKE_SELECT_OPTIONS,
+        name: "printerMake",
+        parentDispatch: printerIssueDispatch,
+        validValueAction: printerIssueAction.setPrinterMake,
+      }}
+    />
+  );
+
+  const printerModelTextInput = (
+    <AccessibleTextInput
+      attributes={{
+        invalidValueAction: printerIssueAction.setPageInError,
+        name: "printerModel",
+        parentDispatch: printerIssueDispatch,
+        stepperPages: PRINTER_ISSUE_STEPPER_PAGES,
+        validValueAction: printerIssueAction.setPrinterModel,
+        value: printerModel,
+      }}
+    />
+  );
+
+  const printerSerialNumberTextInput = (
+    <AccessibleTextInput
+      attributes={{
+        invalidValueAction: printerIssueAction.setPageInError,
+        name: "printerSerialNumber",
+        parentDispatch: printerIssueDispatch,
+        stepperPages: PRINTER_ISSUE_STEPPER_PAGES,
+        validValueAction: printerIssueAction.setPrinterSerialNumber,
+        value: printerSerialNumber,
+      }}
+    />
+  );
+
+  const timeOfOccurrenceTextInput = (
+    <AccessibleDateTimeInput
+      attributes={{
+        invalidValueAction: printerIssueAction.setPageInError,
+        inputKind: "time",
+        name: "timeOfOccurrence",
+        parentDispatch: printerIssueDispatch,
+        stepperPages: PRINTER_ISSUE_STEPPER_PAGES,
+        validValueAction: printerIssueAction.setTimeOfOccurrence,
+        value: timeOfOccurrence,
+      }}
+    />
+  );
+
+  const titleTextInput = (
+    <AccessibleTextInput
+      attributes={{
+        invalidValueAction: printerIssueAction.setPageInError,
+        name: "title",
+        parentDispatch: printerIssueDispatch,
+        stepperPages: PRINTER_ISSUE_STEPPER_PAGES,
+        validValueAction: printerIssueAction.setTitle,
+        value: title,
+      }}
+    />
+  );
+
+  const urgencySelectInput = (
+    <AccessibleSelectInput<PrinterIssueAction["setUrgency"], Urgency>
+      attributes={{
+        data: URGENCY_DATA,
+        name: "urgency",
+        parentDispatch: printerIssueDispatch,
+        validValueAction: printerIssueAction.setUrgency,
+      }}
+    />
+  );
+
+  const firstPage = (
+    <Stack>
+      {printerMakeSelectInput}
+      {printerModelTextInput}
+      {printerSerialNumberTextInput}
+      {printerIssueDescriptionTextAreaInput}
+      {additionalInformationTextAreaInput}
+    </Stack>
+  );
+
+  const secondPage = (
+    <Stack>
+      {titleTextInput}
+      {contactNumberTextInput}
+      {contactEmailTextInput}
+      {dateOfOccurrenceTextInput}
+      {timeOfOccurrenceTextInput}
+      {urgencySelectInput}
+    </Stack>
+  );
+
+  const submitButton = (
+    <AccessibleButton
+      attributes={{
+        enabledScreenreaderText: "All inputs are valid. Click to submit form",
+        disabledScreenreaderText: "Please fix errors before submitting form",
+        disabled: pagesInError.size > 0 || triggerFormSubmit,
+        kind: "submit",
+        name: "submit",
+        onClick: (_event: React.MouseEvent<HTMLButtonElement>) => {
+          printerIssueDispatch({
+            action: printerIssueAction.setTriggerFormSubmit,
+            payload: true,
+          });
+        },
+      }}
+    />
+  );
+
+  const stepper = (
+    <AccessibleStepper
+      attributes={{
+        componentState: printerIssueState,
+        pageElements: [firstPage, secondPage],
+        stepperPages: PRINTER_ISSUE_STEPPER_PAGES,
+        submitButton,
+      }}
+    />
+  );
+
+  return <Container w={700}>{stepper}</Container>;
+}
+
+export default PrinterIssue;
+
+/**
+ * 
   const { globalDispatch } = useGlobalState();
 
   const { wrappedFetch } = useWrapFetch();
@@ -141,13 +375,13 @@ function CreatePrinterIssue() {
     let isMounted = true;
     const controller = new AbortController();
 
-    async function handleCreatePrinterIssueFormSubmit() {
-      createPrinterIssueDispatch({
-        type: createPrinterIssueAction.setIsSubmitting,
+    async function handlePrinterIssueFormSubmit() {
+      printerIssueDispatch({
+        type: printerIssueAction.setIsSubmitting,
         payload: true,
       });
-      createPrinterIssueDispatch({
-        type: createPrinterIssueAction.setSubmitMessage,
+      printerIssueDispatch({
+        type: printerIssueAction.setSubmitMessage,
         payload: `Submitting ${title} printer issue form...`,
       });
       openSubmitSuccessNotificationModal();
@@ -196,12 +430,12 @@ function CreatePrinterIssue() {
           throw new Error(data.message);
         }
 
-        createPrinterIssueDispatch({
-          type: createPrinterIssueAction.setIsSuccessful,
+        printerIssueDispatch({
+          type: printerIssueAction.setIsSuccessful,
           payload: true,
         });
-        createPrinterIssueDispatch({
-          type: createPrinterIssueAction.setSuccessMessage,
+        printerIssueDispatch({
+          type: printerIssueAction.setSuccessMessage,
           payload: data.message ?? `Successfully submitted: ${title} form`,
         });
       } catch (error: any) {
@@ -239,16 +473,16 @@ function CreatePrinterIssue() {
         showBoundary(error);
       } finally {
         if (isMounted) {
-          createPrinterIssueDispatch({
-            type: createPrinterIssueAction.setIsSubmitting,
+          printerIssueDispatch({
+            type: printerIssueAction.setIsSubmitting,
             payload: false,
           });
-          createPrinterIssueDispatch({
-            type: createPrinterIssueAction.setSubmitMessage,
+          printerIssueDispatch({
+            type: printerIssueAction.setSubmitMessage,
             payload: "",
           });
-          createPrinterIssueDispatch({
-            type: createPrinterIssueAction.setTriggerFormSubmit,
+          printerIssueDispatch({
+            type: printerIssueAction.setTriggerFormSubmit,
             payload: false,
           });
         }
@@ -256,7 +490,7 @@ function CreatePrinterIssue() {
     }
 
     if (triggerFormSubmit) {
-      handleCreatePrinterIssueFormSubmit();
+      handlePrinterIssueFormSubmit();
     }
 
     return () => {
@@ -271,8 +505,8 @@ function CreatePrinterIssue() {
   useEffect(() => {
     const isValid = GRAMMAR_TEXT_INPUT_REGEX.test(title);
 
-    createPrinterIssueDispatch({
-      type: createPrinterIssueAction.setIsValidTitle,
+    printerIssueDispatch({
+      type: printerIssueAction.setIsValidTitle,
       payload: isValid,
     });
   }, [title]);
@@ -285,22 +519,22 @@ function CreatePrinterIssue() {
     if (isContactNumberFocused) {
       switch (contactLength) {
         case 4: {
-          createPrinterIssueDispatch({
-            type: createPrinterIssueAction.setContactNumber,
+          printerIssueDispatch({
+            type: printerIssueAction.setContactNumber,
             payload: `${contactNumber}(` as PhoneNumber | string,
           });
           break;
         }
         case 8: {
-          createPrinterIssueDispatch({
-            type: createPrinterIssueAction.setContactNumber,
+          printerIssueDispatch({
+            type: printerIssueAction.setContactNumber,
             payload: `${contactNumber}) ` as PhoneNumber | string,
           });
           break;
         }
         case 13: {
-          createPrinterIssueDispatch({
-            type: createPrinterIssueAction.setContactNumber,
+          printerIssueDispatch({
+            type: printerIssueAction.setContactNumber,
             payload: `${contactNumber}-` as PhoneNumber | string,
           });
           break;
@@ -311,8 +545,8 @@ function CreatePrinterIssue() {
       }
     }
 
-    createPrinterIssueDispatch({
-      type: createPrinterIssueAction.setIsValidContactNumber,
+    printerIssueDispatch({
+      type: printerIssueAction.setIsValidContactNumber,
       payload: isValid,
     });
   }, [contactNumber, isContactNumberFocused]);
@@ -321,8 +555,8 @@ function CreatePrinterIssue() {
   useEffect(() => {
     const isValid = EMAIL_REGEX.test(contactEmail);
 
-    createPrinterIssueDispatch({
-      type: createPrinterIssueAction.setIsValidContactEmail,
+    printerIssueDispatch({
+      type: printerIssueAction.setIsValidContactEmail,
       payload: isValid,
     });
   }, [contactEmail]);
@@ -333,8 +567,8 @@ function CreatePrinterIssue() {
       DATE_NEAR_PAST_REGEX.test(dateOfOccurrence) &&
       new Date(dateOfOccurrence) <= new Date();
 
-    createPrinterIssueDispatch({
-      type: createPrinterIssueAction.setIsValidDateOfOccurrence,
+    printerIssueDispatch({
+      type: printerIssueAction.setIsValidDateOfOccurrence,
       payload: isValid,
     });
   }, [dateOfOccurrence]);
@@ -343,8 +577,8 @@ function CreatePrinterIssue() {
   useEffect(() => {
     const isValid = TIME_RAILWAY_REGEX.test(timeOfOccurrence);
 
-    createPrinterIssueDispatch({
-      type: createPrinterIssueAction.setIsValidTimeOfOccurrence,
+    printerIssueDispatch({
+      type: printerIssueAction.setIsValidTimeOfOccurrence,
       payload: isValid,
     });
   }, [timeOfOccurrence, isTimeOfOccurrenceFocused]);
@@ -353,8 +587,8 @@ function CreatePrinterIssue() {
   useEffect(() => {
     const isValid = PRINTER_SERIAL_NUMBER_REGEX.test(printerSerialNumber);
 
-    createPrinterIssueDispatch({
-      type: createPrinterIssueAction.setIsValidPrinterSerialNumber,
+    printerIssueDispatch({
+      type: printerIssueAction.setIsValidPrinterSerialNumber,
       payload: isValid,
     });
   }, [printerSerialNumber]);
@@ -363,8 +597,8 @@ function CreatePrinterIssue() {
   useEffect(() => {
     const isValid = PRINTER_MAKE_MODEL_REGEX.test(printerModel);
 
-    createPrinterIssueDispatch({
-      type: createPrinterIssueAction.setIsValidPrinterModel,
+    printerIssueDispatch({
+      type: printerIssueAction.setIsValidPrinterModel,
       payload: isValid,
     });
   }, [printerModel]);
@@ -373,8 +607,8 @@ function CreatePrinterIssue() {
   useEffect(() => {
     const isValid = GRAMMAR_TEXTAREA_INPUT_REGEX.test(printerIssueDescription);
 
-    createPrinterIssueDispatch({
-      type: createPrinterIssueAction.setIsValidPrinterIssueDescription,
+    printerIssueDispatch({
+      type: printerIssueAction.setIsValidPrinterIssueDescription,
       payload: isValid,
     });
   }, [printerIssueDescription]);
@@ -383,8 +617,8 @@ function CreatePrinterIssue() {
   useEffect(() => {
     const isValid = GRAMMAR_TEXTAREA_INPUT_REGEX.test(additionalInformation);
 
-    createPrinterIssueDispatch({
-      type: createPrinterIssueAction.setIsValidAdditionalInformation,
+    printerIssueDispatch({
+      type: printerIssueAction.setIsValidAdditionalInformation,
       payload: isValid,
     });
   }, [additionalInformation]);
@@ -401,9 +635,9 @@ function CreatePrinterIssue() {
 
     const isStepInError = areRequiredInputsInError || isOptionalInputInError;
 
-    // if current step is in error, add it to stepsInError Set else remove it
-    createPrinterIssueDispatch({
-      type: createPrinterIssueAction.setStepsInError,
+    // if current step is in error, add it to pagesInError Set else remove it
+    printerIssueDispatch({
+      type: printerIssueAction.setPageInError,
       payload: {
         kind: isStepInError ? "add" : "delete",
         step: 0,
@@ -430,8 +664,8 @@ function CreatePrinterIssue() {
 
     const isStepInError = areRequiredInputsInError || isOptionalInputInError;
 
-    createPrinterIssueDispatch({
-      type: createPrinterIssueAction.setStepsInError,
+    printerIssueDispatch({
+      type: printerIssueAction.setPageInError,
       payload: {
         kind: isStepInError ? "add" : "delete",
         step: 1,
@@ -574,20 +808,20 @@ function CreatePrinterIssue() {
     isValidInputText: isValidTitle,
     label: "Title",
     onBlur: () => {
-      createPrinterIssueDispatch({
-        type: createPrinterIssueAction.setIsTitleFocused,
+      printerIssueDispatch({
+        type: printerIssueAction.setIsTitleFocused,
         payload: false,
       });
     },
     onChange: (event: ChangeEvent<HTMLInputElement>) => {
-      createPrinterIssueDispatch({
-        type: createPrinterIssueAction.setTitle,
+      printerIssueDispatch({
+        type: printerIssueAction.setTitle,
         payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
-      createPrinterIssueDispatch({
-        type: createPrinterIssueAction.setIsTitleFocused,
+      printerIssueDispatch({
+        type: printerIssueAction.setIsTitleFocused,
         payload: true,
       });
     },
@@ -606,28 +840,28 @@ function CreatePrinterIssue() {
     isValidInputText: isValidContactNumber,
     label: "Contact Number",
     onBlur: () => {
-      createPrinterIssueDispatch({
-        type: createPrinterIssueAction.setIsContactNumberFocused,
+      printerIssueDispatch({
+        type: printerIssueAction.setIsContactNumberFocused,
         payload: false,
       });
     },
     onChange: (event: ChangeEvent<HTMLInputElement>) => {
-      createPrinterIssueDispatch({
-        type: createPrinterIssueAction.setContactNumber,
+      printerIssueDispatch({
+        type: printerIssueAction.setContactNumber,
         payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
-      createPrinterIssueDispatch({
-        type: createPrinterIssueAction.setIsContactNumberFocused,
+      printerIssueDispatch({
+        type: printerIssueAction.setIsContactNumberFocused,
         payload: true,
       });
     },
     onKeyDown: (event: KeyboardEvent<HTMLInputElement>) => {
       if (event.key === "Backspace") {
         if (contactNumber.length === 14 || contactNumber.length === 9) {
-          createPrinterIssueDispatch({
-            type: createPrinterIssueAction.setContactNumber,
+          printerIssueDispatch({
+            type: printerIssueAction.setContactNumber,
             payload: contactNumber.slice(0, -1) as PhoneNumber | string,
           });
         }
@@ -646,20 +880,20 @@ function CreatePrinterIssue() {
     isValidInputText: isValidContactEmail,
     label: "Contact Email",
     onBlur: () => {
-      createPrinterIssueDispatch({
-        type: createPrinterIssueAction.setIsContactEmailFocused,
+      printerIssueDispatch({
+        type: printerIssueAction.setIsContactEmailFocused,
         payload: false,
       });
     },
     onChange: (event: ChangeEvent<HTMLInputElement>) => {
-      createPrinterIssueDispatch({
-        type: createPrinterIssueAction.setContactEmail,
+      printerIssueDispatch({
+        type: printerIssueAction.setContactEmail,
         payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
-      createPrinterIssueDispatch({
-        type: createPrinterIssueAction.setIsContactEmailFocused,
+      printerIssueDispatch({
+        type: printerIssueAction.setIsContactEmailFocused,
         payload: true,
       });
     },
@@ -680,20 +914,20 @@ function CreatePrinterIssue() {
     isValidInputText: isValidDateOfOccurrence,
     label: "Date of Occurrence",
     onBlur: () => {
-      createPrinterIssueDispatch({
-        type: createPrinterIssueAction.setIsDateOfOccurrenceFocused,
+      printerIssueDispatch({
+        type: printerIssueAction.setIsDateOfOccurrenceFocused,
         payload: false,
       });
     },
     onChange: (event: ChangeEvent<HTMLInputElement>) => {
-      createPrinterIssueDispatch({
-        type: createPrinterIssueAction.setDateOfOccurrence,
+      printerIssueDispatch({
+        type: printerIssueAction.setDateOfOccurrence,
         payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
-      createPrinterIssueDispatch({
-        type: createPrinterIssueAction.setIsDateOfOccurrenceFocused,
+      printerIssueDispatch({
+        type: printerIssueAction.setIsDateOfOccurrenceFocused,
         payload: true,
       });
     },
@@ -713,20 +947,20 @@ function CreatePrinterIssue() {
     isValidInputText: isValidTimeOfOccurrence,
     label: "Time of Occurrence",
     onBlur: () => {
-      createPrinterIssueDispatch({
-        type: createPrinterIssueAction.setIsTimeOfOccurrenceFocused,
+      printerIssueDispatch({
+        type: printerIssueAction.setIsTimeOfOccurrenceFocused,
         payload: false,
       });
     },
     onChange: (event: ChangeEvent<HTMLInputElement>) => {
-      createPrinterIssueDispatch({
-        type: createPrinterIssueAction.setTimeOfOccurrence,
+      printerIssueDispatch({
+        type: printerIssueAction.setTimeOfOccurrence,
         payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
-      createPrinterIssueDispatch({
-        type: createPrinterIssueAction.setIsTimeOfOccurrenceFocused,
+      printerIssueDispatch({
+        type: printerIssueAction.setIsTimeOfOccurrenceFocused,
         payload: true,
       });
     },
@@ -745,20 +979,20 @@ function CreatePrinterIssue() {
     isValidInputText: isValidPrinterSerialNumber,
     label: "Printer Serial Number",
     onBlur: () => {
-      createPrinterIssueDispatch({
-        type: createPrinterIssueAction.setIsPrinterSerialNumberFocused,
+      printerIssueDispatch({
+        type: printerIssueAction.setIsPrinterSerialNumberFocused,
         payload: false,
       });
     },
     onChange: (event: ChangeEvent<HTMLInputElement>) => {
-      createPrinterIssueDispatch({
-        type: createPrinterIssueAction.setPrinterSerialNumber,
+      printerIssueDispatch({
+        type: printerIssueAction.setPrinterSerialNumber,
         payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
-      createPrinterIssueDispatch({
-        type: createPrinterIssueAction.setIsPrinterSerialNumberFocused,
+      printerIssueDispatch({
+        type: printerIssueAction.setIsPrinterSerialNumberFocused,
         payload: true,
       });
     },
@@ -777,20 +1011,20 @@ function CreatePrinterIssue() {
     isValidInputText: isValidPrinterModel,
     label: "Printer Model",
     onBlur: () => {
-      createPrinterIssueDispatch({
-        type: createPrinterIssueAction.setIsPrinterModelFocused,
+      printerIssueDispatch({
+        type: printerIssueAction.setIsPrinterModelFocused,
         payload: false,
       });
     },
     onChange: (event: ChangeEvent<HTMLInputElement>) => {
-      createPrinterIssueDispatch({
-        type: createPrinterIssueAction.setPrinterModel,
+      printerIssueDispatch({
+        type: printerIssueAction.setPrinterModel,
         payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
-      createPrinterIssueDispatch({
-        type: createPrinterIssueAction.setIsPrinterModelFocused,
+      printerIssueDispatch({
+        type: printerIssueAction.setIsPrinterModelFocused,
         payload: true,
       });
     },
@@ -805,8 +1039,8 @@ function CreatePrinterIssue() {
     data: PRINTER_MAKE_SELECT_OPTIONS,
     label: "Printer Make",
     onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-      createPrinterIssueDispatch({
-        type: createPrinterIssueAction.setPrinterMake,
+      printerIssueDispatch({
+        type: printerIssueAction.setPrinterMake,
         payload: event.currentTarget.value as PrinterMake,
       });
     },
@@ -824,20 +1058,20 @@ function CreatePrinterIssue() {
     isValidInputText: isValidPrinterIssueDescription,
     label: "Printer Issue Description",
     onBlur: () => {
-      createPrinterIssueDispatch({
-        type: createPrinterIssueAction.setIsPrinterIssueDescriptionFocused,
+      printerIssueDispatch({
+        type: printerIssueAction.setIsPrinterIssueDescriptionFocused,
         payload: false,
       });
     },
     onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
-      createPrinterIssueDispatch({
-        type: createPrinterIssueAction.setPrinterIssueDescription,
+      printerIssueDispatch({
+        type: printerIssueAction.setPrinterIssueDescription,
         payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
-      createPrinterIssueDispatch({
-        type: createPrinterIssueAction.setIsPrinterIssueDescriptionFocused,
+      printerIssueDispatch({
+        type: printerIssueAction.setIsPrinterIssueDescriptionFocused,
         payload: true,
       });
     },
@@ -856,20 +1090,20 @@ function CreatePrinterIssue() {
     isValidInputText: isValidAdditionalInformation,
     label: "Additional Information",
     onBlur: () => {
-      createPrinterIssueDispatch({
-        type: createPrinterIssueAction.setIsAdditionalInformationFocused,
+      printerIssueDispatch({
+        type: printerIssueAction.setIsAdditionalInformationFocused,
         payload: false,
       });
     },
     onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
-      createPrinterIssueDispatch({
-        type: createPrinterIssueAction.setAdditionalInformation,
+      printerIssueDispatch({
+        type: printerIssueAction.setAdditionalInformation,
         payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
-      createPrinterIssueDispatch({
-        type: createPrinterIssueAction.setIsAdditionalInformationFocused,
+      printerIssueDispatch({
+        type: printerIssueAction.setIsAdditionalInformationFocused,
         payload: true,
       });
     },
@@ -881,8 +1115,8 @@ function CreatePrinterIssue() {
     description: "Select an urgency",
     label: "Urgency",
     onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-      createPrinterIssueDispatch({
-        type: createPrinterIssueAction.setUrgency,
+      printerIssueDispatch({
+        type: printerIssueAction.setUrgency,
         payload: event.currentTarget.value as Urgency,
       });
     },
@@ -898,13 +1132,13 @@ function CreatePrinterIssue() {
     semanticName: "submit button",
     leftIcon: <TbUpload />,
     buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
-      createPrinterIssueDispatch({
-        type: createPrinterIssueAction.setTriggerFormSubmit,
+      printerIssueDispatch({
+        type: printerIssueAction.setTriggerFormSubmit,
         payload: true,
       });
     },
     // ensures form submit happens only once
-    buttonDisabled: stepsInError.size > 0 || triggerFormSubmit,
+    buttonDisabled: pagesInError.size > 0 || triggerFormSubmit,
   };
 
   const [
@@ -943,10 +1177,10 @@ function CreatePrinterIssue() {
 
   const [createdSubmitButton] = returnAccessibleButtonElements([submitButtonCreatorInfo]);
   const displaySubmitButton =
-    currentStepperPosition === CREATE_PRINTER_ISSUE_MAX_STEPPER_POSITION ? (
+    currentStepperPosition === PRINTER_ISSUE_MAX_STEPPER_POSITION ? (
       <Tooltip
         label={
-          stepsInError.size > 0
+          pagesInError.size > 0
             ? "Please fix errors before submitting"
             : "Submit Printer Issue form"
         }
@@ -1064,7 +1298,7 @@ function CreatePrinterIssue() {
     />
   );
 
-  const displayCreatePrinterIssueForm =
+  const displayPrinterIssueForm =
     currentStepperPosition === 0
       ? displayPrinterIssueFormFirstPage
       : currentStepperPosition === 1
@@ -1073,22 +1307,21 @@ function CreatePrinterIssue() {
       ? displayReviewFormPage
       : displaySubmitButton;
 
-  const displayCreatePrinterIssueComponent = (
+  const displayPrinterIssueComponent = (
     <StepperWrapper
       childrenTitle="Printer issue"
       currentStepperPosition={currentStepperPosition}
-      descriptionObjectsArray={CREATE_PRINTER_ISSUE_DESCRIPTION_OBJECTS}
-      maxStepperPosition={CREATE_PRINTER_ISSUE_MAX_STEPPER_POSITION}
-      parentComponentDispatch={createPrinterIssueDispatch}
-      setCurrentStepperPosition={createPrinterIssueAction.setCurrentStepperPosition}
-      stepsInError={stepsInError}
+      descriptionObjectsArray={PRINTER_ISSUE_DESCRIPTION_OBJECTS}
+      maxStepperPosition={PRINTER_ISSUE_MAX_STEPPER_POSITION}
+      parentComponentDispatch={printerIssueDispatch}
+      setCurrentStepperPosition={printerIssueAction.setCurrentStepperPosition}
+      pagesInError={pagesInError}
     >
       {displaySubmitSuccessNotificationModal}
-      {displayCreatePrinterIssueForm}
+      {displayPrinterIssueForm}
     </StepperWrapper>
   );
 
-  return displayCreatePrinterIssueComponent;
-}
+  return displayPrinterIssueComponent;
 
-export default CreatePrinterIssue;
+ */

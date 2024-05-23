@@ -121,15 +121,6 @@ function AddressChange() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [triggerFormSubmit]);
 
-  // useEffect(() => {
-  //   if (isSuccessful) {
-  //     setTimeout(() => {
-  //       navigate("/home/company/address-change");
-  //     }, 3000);
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [isSuccessful]);
-
   if (isSubmitting) {
     const submittingState = (
       <Stack>

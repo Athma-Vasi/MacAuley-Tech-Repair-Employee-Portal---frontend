@@ -85,15 +85,15 @@ const DATE_NEAR_FUTURE_VALIDATIONS = {
 } as Validations;
 
 /**
- * - /^(?:202[0-3])-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])/
- * - 202[0-3] matches the years from 2020 to 2023.
+ * - /^(?:202[0-4])-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])/
+ * - 202[0-3] matches the years from 2020 to 2024.
  * - - matches a hyphen.
  * - (0[1-9]|1[0-2]) month: matches either 0 followed by a digit between 1 and 9, or 1 followed by a digit between 0 and 2.
  * - - matches a hyphen.
  * - (0[1-9]|[12][0-9]|3[01]) day: matches either 0 followed by a digit between 1 and 9, or 1 or 2 followed by a digit between 0 and 9, or 3 followed by a digit between 0 and 1.
  * - ^ and $ ensure that the entire string matches the regex.
  */
-const DATE_NEAR_PAST_REGEX = /^(?:202[0-3])-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])/;
+const DATE_NEAR_PAST_REGEX = /^(?:202[0-4])-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])/;
 
 const DATE_NEAR_PAST_VALIDATIONS = {
   full: (value: string) => {
@@ -102,7 +102,7 @@ const DATE_NEAR_PAST_VALIDATIONS = {
     return isDateInFuture && isStringValid;
   },
   partials: [
-    [/^(?:202[0-3])$/, "Must be a valid year in the range 2020-2023."],
+    [/^(?:202[0-4])$/, "Must be a valid year in the range 2020-2024."],
     [/-(0[1-9]|1[0-2])-/, "Must be a valid month in the range 01-12."],
     [/-(0[1-9]|[12][0-9]|3[01])$/, "Must be a valid day in the range 01-31."],
     [/^.{10}$/, "Must be 10 characters length."],
@@ -259,6 +259,52 @@ const FULL_NAME_VALIDATIONS = {
   ],
 } as Validations;
 
+/**
+ * Per the W3C HTML5 specification: https://html.spec.whatwg.org/multipage/forms.html#valid-e-mail-address
+ * - Note: This requirement is a willful violation of RFC 5322, which defines a syntax for e-mail addresses that is simultaneously too strict (before the “@” character), too vague (after the “@” character), and too lax (allowing comments, whitespace characters, and quoted strings in manners unfamiliar to most users) to be of practical use here.
+ *
+ * - [a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]  Captures one or more characters that are allowed in the username part of the email address. This includes alphanumeric characters, special characters, and certain punctuation marks.
+ * - @ Matches the @ symbol that separates the username and domain.
+ * - [a-zA-Z0-9] Captures a single alphanumeric character, representing the first character of the domain name.
+ * - (?: Starts a non-capturing group for optional domain sections.
+ * - [a-zA-Z0-9-]{0,61}[a-zA-Z0-9]  Captures a domain section that consists of alphanumeric characters and hyphens. It allows between 0 and 61 characters, ensuring that the total length does not exceed 63 characters.
+ * - )?  Ends the non-capturing group for the optional domain section, making it optional.
+ * - (?:  Starts a non-capturing group for optional subdomains.
+ * - \.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?  Captures a subdomain section that starts with a dot (.) followed by an alphanumeric character. It allows between 0 and 61 characters of alphanumeric characters and hyphens. The entire subdomain section is optional.
+ * - )*  Ends the non-capturing group for the optional subdomains. This allows for zero or more occurrences of subdomain sections.
+ */
+const EMAIL_REGEX =
+  /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+
+const EMAIL_VALIDATIONS = {
+  full: EMAIL_REGEX,
+  partials: [
+    [/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+$/, "Must be a valid username."],
+    [/^[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?$/, "Must be a valid domain name."],
+    [/^\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?$/, "Must be a valid subdomain."],
+  ],
+} as Validations;
+
+// /**
+//  * - \+\(1\) matches "+(1)".
+//  * - \(\d{3}\) matches exactly 3 digits surrounded by parentheses.
+//  * - [ ] matches a space.
+//  * - \d{3}-\d{4} matches exactly 3 digits, followed by a hyphen, followed by exactly 4 digits.
+//  * - ^ and $ ensure that the entire string matches the regex.
+//  */
+// const PHONE_NUMBER_REGEX = /^\+\(1\)\(\d{3}\)[ ]\d{3}-\d{4}$/;
+
+// regex for 10-15 digit phone number
+const PHONE_NUMBER_REGEX = /^\d{10,15}$/;
+
+const PHONE_NUMBER_VALIDATIONS = {
+  full: PHONE_NUMBER_REGEX,
+  partials: [
+    [/^\d{10,15}$/, "Must be a valid phone number."],
+    [/^.{10,15}$/, "Must be between 10 and 15 characters length."],
+  ],
+} as Validations;
+
 export {
   ACKNOWLEDGEMENT_VALIDATIONS,
   DATE_FULL_RANGE_VALIDATIONS,
@@ -266,8 +312,10 @@ export {
   DATE_NEAR_PAST_VALIDATIONS,
   DATE_OF_BIRTH_VALIDATIONS,
   DATE_VALIDATIONS,
+  EMAIL_VALIDATIONS,
   FULL_NAME_VALIDATIONS,
   MONEY_VALIDATIONS,
+  PHONE_NUMBER_VALIDATIONS,
   TEXT_AREA_INPUT_VALIDATIONS,
   TEXT_INPUT_VALIDATIONS,
 };
