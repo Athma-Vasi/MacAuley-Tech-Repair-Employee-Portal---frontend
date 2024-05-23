@@ -599,37 +599,14 @@ type ValidationTexts = {
   valueInvalidText: string;
 };
 
-// function returnValidationTexts({
-//   name,
-//   partials,
-//   value,
-// }: {
-//   name: string;
-//   value: string;
-//   partials: [RegExp, string][];
-// }): ValidationTexts {
-//   const splitName = splitCamelCase(name);
-
-//   let valueInvalidText = partials
-//     .map(([regex, errorMessage]) => (regex.test(value) ? "" : errorMessage))
-//     .join(" ");
-
-//   valueInvalidText = `${splitName} is invalid. ${valueInvalidText}`;
-
-//   return {
-//     valueValidText: `${splitName} is valid.`,
-//     valueInvalidText,
-//   };
-// }
-
 function returnValidationTexts({
   name,
   stepperPages,
-  value,
+  valueBuffer,
 }: {
   name: string;
   stepperPages: StepperPage[];
-  value: string;
+  valueBuffer: string;
 }): ValidationTexts {
   return stepperPages.reduce<ValidationTexts>((validationTextsAcc, page) => {
     const { kind, children } = page;
@@ -639,18 +616,46 @@ function returnValidationTexts({
     }
 
     children.forEach((child) => {
-      const { name: inputName, regexes } = child;
+      const { name: inputName, validations } = child;
 
-      if (!regexes) {
+      if (!validations) {
         return;
       }
 
       if (inputName === name) {
-        const { partials } = regexes;
+        const { partials } = validations;
 
         let valueInvalidText = partials
-          .map(([regex, errorMessage]) => (regex.test(value) ? "" : errorMessage))
+          .map(([regexOrFunc, errorMessage]) =>
+            typeof regexOrFunc === "function"
+              ? regexOrFunc(valueBuffer)
+                ? ""
+                : errorMessage
+              : regexOrFunc.test(valueBuffer)
+              ? ""
+              : errorMessage
+          )
           .join(" ");
+
+        console.group("returnValidationTexts");
+        console.log("name", name);
+        console.log("inputName", inputName);
+        console.log("valueBuffer", valueBuffer);
+        console.log("valueBuffer length", valueBuffer.length);
+        console.log("partials", partials);
+        console.log(
+          "regexOrFunc",
+          partials.map(([regexOrFunc, errorMessage]) =>
+            typeof regexOrFunc === "function"
+              ? regexOrFunc(valueBuffer)
+                ? ""
+                : errorMessage
+              : regexOrFunc.test(valueBuffer)
+              ? ""
+              : errorMessage
+          )
+        );
+        console.groupEnd();
 
         valueInvalidText = `${splitCamelCase(name)} is invalid. ${valueInvalidText}`;
 
@@ -665,11 +670,11 @@ function returnValidationTexts({
   }, {} as ValidationTexts);
 }
 
-function returnFullRegex(
+function returnFullValidation(
   name: string,
   stepperPages: StepperPage[]
-): { fullRegex: RegExp } {
-  return stepperPages.reduce<{ fullRegex: RegExp }>(
+): { fullValidation: RegExp | ((value: string) => boolean) } {
+  return stepperPages.reduce<{ fullValidation: RegExp | ((value: string) => boolean) }>(
     (regexAcc, page) => {
       const { children, kind } = page;
 
@@ -678,22 +683,23 @@ function returnFullRegex(
       }
 
       children.forEach((child) => {
-        const { name: inputName, regexes } = child;
+        const { name: inputName, validations } = child;
 
-        if (!regexes) {
+        if (!validations) {
           return;
         }
 
         if (inputName === name) {
-          const { full: fullRegex } = regexes;
-          regexAcc.fullRegex = fullRegex;
+          const { full } = validations;
+          regexAcc.fullValidation = full;
         }
       });
 
       return regexAcc;
     },
-    // /.*/ is a catch-all regex that will always return true
-    { fullRegex: new RegExp(".*") }
+    {
+      fullValidation: new RegExp(""),
+    }
   );
 }
 
@@ -716,6 +722,6 @@ export {
   createAccessibleTextInputsPhone,
   createAccessibleTextInputsPostal,
   createAccessibleValueValidationTextElements,
-  returnFullRegex,
+  returnFullValidation,
   returnValidationTexts,
 };

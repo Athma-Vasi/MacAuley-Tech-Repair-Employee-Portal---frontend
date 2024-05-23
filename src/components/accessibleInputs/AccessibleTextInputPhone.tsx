@@ -17,7 +17,7 @@ import { SetPageInErrorPayload, StepperPage } from "../../types";
 import { returnThemeColors, splitCamelCase } from "../../utils";
 import {
   createAccessibleValueValidationTextElements,
-  returnFullRegex,
+  returnFullValidation,
   returnValidationTexts,
 } from "./utils";
 
@@ -104,7 +104,7 @@ function AccessibleTextInputPhone<
 
   const label = attributes.label ?? splitCamelCase(name);
 
-  const [valueBuffer, setValueBuffer] = useState(() => value);
+  const [valueBuffer, setValueBuffer] = useState(value);
   const [isPopoverOpened, { open: openPopover, close: closePopover }] =
     useDisclosure(false);
 
@@ -116,8 +116,11 @@ function AccessibleTextInputPhone<
     generalColors: { greenColorShade, iconGray },
   } = returnThemeColors({ colorsSwatches: COLORS_SWATCHES, themeObject });
 
-  const { fullRegex } = returnFullRegex(name, stepperPages);
-  const isValueBufferValid = fullRegex.test(valueBuffer);
+  const { fullValidation } = returnFullValidation(name, stepperPages);
+  const isValueBufferValid =
+    typeof fullValidation === "function"
+      ? fullValidation(valueBuffer)
+      : fullValidation.test(valueBuffer);
 
   const leftIcon = isValueBufferValid ? (
     icon ? (
@@ -130,7 +133,7 @@ function AccessibleTextInputPhone<
   const validationTexts = returnValidationTexts({
     name,
     stepperPages,
-    value,
+    valueBuffer,
   });
 
   const rightIcon = rightSection ? (

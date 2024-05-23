@@ -18,7 +18,7 @@ import { SetPageInErrorPayload, StepperPage } from "../../types";
 import { returnThemeColors, splitCamelCase } from "../../utils";
 import {
   createAccessibleValueValidationTextElements,
-  returnFullRegex,
+  returnFullValidation,
   returnValidationTexts,
 } from "./utils";
 
@@ -149,8 +149,11 @@ function AccessibleTextAreaInput<
     )
   ) : null;
 
-  const { fullRegex } = returnFullRegex(name, stepperPages);
-  const isValueBufferValid = fullRegex.test(valueBuffer);
+  const { fullValidation } = returnFullValidation(name, stepperPages);
+  const isValueBufferValid =
+    typeof fullValidation === "function"
+      ? fullValidation(valueBuffer)
+      : fullValidation.test(valueBuffer);
 
   const leftIcon = isValueBufferValid ? (
     icon ? (
@@ -163,7 +166,7 @@ function AccessibleTextAreaInput<
   const validationTexts = returnValidationTexts({
     name,
     stepperPages,
-    value,
+    valueBuffer,
   });
 
   const { invalidValueTextElement, validValueTextElement } =

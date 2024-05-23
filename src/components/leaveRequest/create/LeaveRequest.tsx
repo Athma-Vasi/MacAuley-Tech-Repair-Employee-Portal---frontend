@@ -151,8 +151,8 @@ function LeaveRequest() {
     />
   );
 
-  const additionalCommentsTextInput = (
-    <AccessibleTextInput
+  const additionalCommentsTextAreaInput = (
+    <AccessibleTextAreaInput
       attributes={{
         invalidValueAction: leaveRequestAction.setPageInError,
         name: "additionalComments",
@@ -238,7 +238,7 @@ function LeaveRequest() {
       {reasonForLeaveSelectInput}
       {delegatedToEmployeeTextInput}
       {delegatedResponsibilitiesTextAreaInput}
-      {additionalCommentsTextInput}
+      {additionalCommentsTextAreaInput}
       {acknowledgementSwitch}
     </Stack>
   );

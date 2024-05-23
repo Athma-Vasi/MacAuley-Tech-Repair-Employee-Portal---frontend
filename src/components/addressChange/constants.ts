@@ -5,7 +5,7 @@ import {
   DATE_FULL_RANGE_REGEX,
   USERNAME_REGEX,
 } from "../../constants/regex";
-import { ACKNOWLEDGEMENT_REGEXES } from "../../constants/regexes";
+import { ACKNOWLEDGEMENT_VALIDATIONS } from "../../constants/validations";
 import {
   Country,
   ResourceRoutePaths,
@@ -22,12 +22,12 @@ import {
 import { ComponentQueryData } from "../queryBuilder";
 import { DescriptionObjectsArray } from "../wrappers";
 import {
-  ADDRESS_LINE_REGEXES,
-  CANADIAN_POSTAL_CODE_REGEXES,
-  CITY_REGEXES,
-  CONTACT_NUMBER_REGEXES,
-  US_POSTAL_CODE_REGEXES,
-} from "./create/regexes";
+  ADDRESS_LINE_VALIDATIONS,
+  CANADIAN_POSTAL_CODE_VALIDATIONS,
+  CITY_VALIDATIONS,
+  CONTACT_NUMBER_VALIDATIONS,
+  US_POSTAL_CODE_VALIDATIONS,
+} from "./create/validations";
 
 const ADDRESS_CHANGE_ROLE_PATHS: RoleResourceRoutePaths = {
   manager: "actions/company/address-change",
@@ -59,19 +59,19 @@ function returnAddressChangeStepperPages(country: Country): StepperPage[] {
   const addressLine: StepperChild = {
     inputType: "text",
     name: "addressLine",
-    regexes: ADDRESS_LINE_REGEXES,
+    validations: ADDRESS_LINE_VALIDATIONS,
   };
 
   const city: StepperChild = {
     inputType: "text",
     name: "city",
-    regexes: CITY_REGEXES,
+    validations: CITY_VALIDATIONS,
   };
 
   const contactNumber: StepperChild = {
     inputType: "text",
     name: "contactNumber",
-    regexes: CONTACT_NUMBER_REGEXES,
+    validations: CONTACT_NUMBER_VALIDATIONS,
   };
 
   const postalCode: StepperChild =
@@ -79,18 +79,18 @@ function returnAddressChangeStepperPages(country: Country): StepperPage[] {
       ? {
           inputType: "text",
           name: "postalCode",
-          regexes: CANADIAN_POSTAL_CODE_REGEXES,
+          validations: CANADIAN_POSTAL_CODE_VALIDATIONS,
         }
       : {
           inputType: "text",
           name: "postalCode",
-          regexes: US_POSTAL_CODE_REGEXES,
+          validations: US_POSTAL_CODE_VALIDATIONS,
         };
 
   const acknowledgement: StepperChild = {
     inputType: "checkbox",
     name: "acknowledgement",
-    regexes: ACKNOWLEDGEMENT_REGEXES,
+    validations: ACKNOWLEDGEMENT_VALIDATIONS,
   };
 
   const stepperPages: StepperPage[] = [

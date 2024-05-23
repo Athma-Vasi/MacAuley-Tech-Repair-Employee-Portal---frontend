@@ -243,18 +243,15 @@ type InputType =
 type StepperChild = {
   inputType: InputType;
   name: string;
-  regexes?: {
-    /** must be a superset of partials. input error state is determined by full regex test */
-    full: RegExp;
-    /** must be subset(s) of full. input popover error messages are determined by partials regex tests */
-    partials: [RegExp, string][];
-    files?: {
-      fileName: RegExp;
-      maxFileSize: number;
-      fileType: RegExp;
-    };
-  };
+  validations?: Validations;
   selectInputData?: string[];
+};
+
+type Validations = {
+  /** must be a superset of partials. input error state is determined by full test */
+  full: RegExp | ((value: string) => boolean);
+  /** must be subset(s) of full. input popover error messages are determined by partials tests */
+  partials: [RegExp | ((value: string) => boolean), string][];
 };
 
 type StepperPage = {
@@ -324,4 +321,5 @@ export type {
   UserRoles,
   UserSchema,
   USPostalCode,
+  Validations,
 };

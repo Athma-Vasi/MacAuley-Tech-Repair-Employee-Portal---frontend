@@ -7,11 +7,11 @@ import {
   USERNAME_REGEX,
 } from "../../constants/regex";
 import {
-  ACKNOWLEDGEMENT_REGEXES,
-  DATE_NEAR_PAST_REGEXES,
-  MONEY_REGEXES,
-  TEXT_AREA_INPUT_REGEXES,
-} from "../../constants/regexes";
+  ACKNOWLEDGEMENT_VALIDATIONS,
+  DATE_NEAR_PAST_VALIDATIONS,
+  MONEY_VALIDATIONS,
+  TEXT_AREA_INPUT_VALIDATIONS,
+} from "../../constants/validations";
 import {
   ResourceRoutePaths,
   RoleResourceRoutePaths,
@@ -37,40 +37,22 @@ const CREATE_EXPENSE_CLAIM_ROLE_PATHS: RoleResourceRoutePaths = {
 };
 
 function returnExpenseClaimStepperPages() {
-  /**
-   * type CreateExpenseClaimState = {
-  acknowledgement: boolean;
-  additionalComments: string;
-  areImagesValid: boolean;
-  expenseClaimAmount: string;
-  expenseClaimCurrency: Currency;
-  expenseClaimDate: string;
-  expenseClaimDescription: string;
-  expenseClaimKind: ExpenseClaimKind;
-  files: FormData[];
-  isSubmitting: boolean;
-  isSuccessful: boolean;
-  pagesInError: Set<number>;
-  triggerFormSubmit: boolean;
-};
-   */
-
   const acknowledgementSwitchChild: StepperChild = {
     inputType: "checkbox",
     name: "acknowledgement",
-    regexes: ACKNOWLEDGEMENT_REGEXES,
+    validations: ACKNOWLEDGEMENT_VALIDATIONS,
   };
 
   const additionalCommentsTextChild: StepperChild = {
     inputType: "text",
     name: "additionalComments",
-    regexes: TEXT_AREA_INPUT_REGEXES,
+    validations: TEXT_AREA_INPUT_VALIDATIONS,
   };
 
   const expenseClaimAmountChild: StepperChild = {
     inputType: "text",
     name: "expenseClaimAmount",
-    regexes: MONEY_REGEXES,
+    validations: MONEY_VALIDATIONS,
   };
 
   const expenseClaimCurrencyChild: StepperChild = {
@@ -82,13 +64,13 @@ function returnExpenseClaimStepperPages() {
   const expenseClaimDateChild: StepperChild = {
     inputType: "date",
     name: "expenseClaimDate",
-    regexes: DATE_NEAR_PAST_REGEXES,
+    validations: DATE_NEAR_PAST_VALIDATIONS,
   };
 
   const expenseClaimDescriptionChild: StepperChild = {
     inputType: "text",
     name: "expenseClaimDescription",
-    regexes: TEXT_AREA_INPUT_REGEXES,
+    validations: TEXT_AREA_INPUT_VALIDATIONS,
   };
 
   const expenseClaimKindChild: StepperChild = {

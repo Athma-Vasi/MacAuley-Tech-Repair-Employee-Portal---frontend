@@ -7,7 +7,7 @@ import {
   PLAN_NAME_REGEX,
   USERNAME_REGEX,
 } from "../../constants/regex";
-import { DATE_REGEXES, MONEY_REGEXES } from "../../constants/regexes";
+import { DATE_VALIDATIONS, MONEY_VALIDATIONS } from "../../constants/validations";
 import {
   Currency,
   ResourceRoutePaths,
@@ -24,8 +24,11 @@ import {
 } from "../../utils";
 import { ComponentQueryData } from "../queryBuilder";
 import { DescriptionObjectsArray } from "../wrappers";
-import { PLAN_DESCRIPTION_REGEXES, PLAN_NAME_REGEXES } from "./create/regexes";
 import { BenefitsPlanKind } from "./create/types";
+import {
+  PLAN_DESCRIPTION_VALIDATIONS,
+  PLAN_NAME_VALIDATIONS,
+} from "./create/validations";
 
 const CREATE_BENEFIT_ROLE_PATHS: RoleResourceRoutePaths = {
   manager: "actions/company/benefit",
@@ -45,13 +48,13 @@ function returnCreateBenefitStepperPages() {
   const employerContributionInput: StepperChild = {
     inputType: "text",
     name: "employerContribution",
-    regexes: MONEY_REGEXES,
+    validations: MONEY_VALIDATIONS,
   };
 
   const employeeContributionInput: StepperChild = {
     inputType: "text",
     name: "employeeContribution",
-    regexes: MONEY_REGEXES,
+    validations: MONEY_VALIDATIONS,
   };
 
   const isPlanActiveInput: StepperChild = {
@@ -62,7 +65,7 @@ function returnCreateBenefitStepperPages() {
   const planDescriptionInput: StepperChild = {
     inputType: "text",
     name: "planDescription",
-    regexes: PLAN_DESCRIPTION_REGEXES,
+    validations: PLAN_DESCRIPTION_VALIDATIONS,
   };
 
   const planKindInput: StepperChild = {
@@ -74,13 +77,13 @@ function returnCreateBenefitStepperPages() {
   const planNameInput: StepperChild = {
     inputType: "text",
     name: "planName",
-    regexes: PLAN_NAME_REGEXES,
+    validations: PLAN_NAME_VALIDATIONS,
   };
 
   const planStartDateInput: StepperChild = {
     inputType: "date",
     name: "planStartDate",
-    regexes: DATE_REGEXES,
+    validations: DATE_VALIDATIONS,
   };
 
   const stepperPages: StepperPage[] = [

@@ -19,11 +19,11 @@ import {
   TbTrash,
   TbUpload,
 } from "react-icons/tb";
+import { TiArrowLeftThick, TiArrowRightThick } from "react-icons/ti";
 
 import { useGlobalState } from "../../hooks";
 import { splitCamelCase } from "../../utils";
 import { createAccessibleButtonScreenreaderTextElements } from "./utils";
-import { TiArrowLeftThick, TiArrowRightThick } from "react-icons/ti";
 
 type AccessibleButtonKind =
   | "add"

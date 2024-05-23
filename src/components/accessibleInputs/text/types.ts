@@ -1,23 +1,12 @@
 import { AccessibleTextInputAction } from "./actions";
 
 type AccessibleTextInputState = {
-  isPopoverOpened: boolean;
   valueBuffer: string;
-  isInputFocused: boolean;
 };
 
-type AccessibleTextInputDispatch =
-  | {
-      type: AccessibleTextInputAction["setPopoverOpened"];
-      payload: boolean;
-    }
-  | {
-      type: AccessibleTextInputAction["setValueBuffer"];
-      payload: string;
-    }
-  | {
-      type: AccessibleTextInputAction["setIsInputFocused"];
-      payload: boolean;
-    };
+type AccessibleTextInputDispatch = {
+  action: AccessibleTextInputAction["setValueBuffer"];
+  payload: string;
+};
 
 export type { AccessibleTextInputDispatch, AccessibleTextInputState };

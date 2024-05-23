@@ -5,7 +5,7 @@ function accessibleTextInputReducer(
   state: AccessibleTextInputState,
   dispatch: AccessibleTextInputDispatch
 ): AccessibleTextInputState {
-  const reducer = accessibleTextInputReducersMap.get(dispatch.type);
+  const reducer = accessibleTextInputReducersMap.get(dispatch.action);
   return reducer ? reducer(state, dispatch) : state;
 }
 
@@ -16,26 +16,8 @@ const accessibleTextInputReducersMap = new Map<
     dispatch: AccessibleTextInputDispatch
   ) => AccessibleTextInputState
 >([
-  [
-    accessibleTextInputAction.setPopoverOpened,
-    accessibleTextInputReducer_setPopoverOpened,
-  ],
   [accessibleTextInputAction.setValueBuffer, accessibleTextInputReducer_setValueBuffer],
-  [
-    accessibleTextInputAction.setIsInputFocused,
-    accessibleTextInputReducer_setIsInputFocused,
-  ],
 ]);
-
-function accessibleTextInputReducer_setPopoverOpened(
-  state: AccessibleTextInputState,
-  dispatch: AccessibleTextInputDispatch
-): AccessibleTextInputState {
-  return {
-    ...state,
-    isPopoverOpened: dispatch.payload as boolean,
-  };
-}
 
 function accessibleTextInputReducer_setValueBuffer(
   state: AccessibleTextInputState,
@@ -44,16 +26,6 @@ function accessibleTextInputReducer_setValueBuffer(
   return {
     ...state,
     valueBuffer: dispatch.payload as string,
-  };
-}
-
-function accessibleTextInputReducer_setIsInputFocused(
-  state: AccessibleTextInputState,
-  dispatch: AccessibleTextInputDispatch
-): AccessibleTextInputState {
-  return {
-    ...state,
-    isInputFocused: dispatch.payload as boolean,
   };
 }
 

@@ -1,6 +1,5 @@
 import { Grid, Group, Spoiler, Stack, Text, Title } from "@mantine/core";
 import { ReactNode } from "react";
-import { TbArrowDown, TbArrowUp } from "react-icons/tb";
 
 import { COLORS_SWATCHES, PROPERTY_DESCRIPTOR } from "../../constants/data";
 import { useGlobalState } from "../../hooks";
@@ -159,14 +158,18 @@ function returnFormReviewData<
     }
 
     const formReviews = children.map((child) => {
-      const { name, regexes } = child;
-
-      const value = componentState[name];
+      const { name, validations } = child;
+      const value = componentState[name]?.toString() ?? "";
+      const isValueValid = validations
+        ? typeof validations.full === "function"
+          ? validations.full(value)
+          : validations.full.test(value)
+        : true;
 
       return {
         name,
         value,
-        isValueValid: regexes ? regexes.full.test(value?.toString() ?? "") : true,
+        isValueValid,
       };
     });
 

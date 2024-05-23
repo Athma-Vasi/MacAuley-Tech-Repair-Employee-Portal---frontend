@@ -7,11 +7,11 @@ import {
   USERNAME_REGEX,
 } from "../../constants/regex";
 import {
-  ACKNOWLEDGEMENT_REGEXES,
-  DATE_NEAR_FUTURE_REGEXES,
-  FULL_NAME_REGEXES,
-  TEXT_AREA_INPUT_REGEXES,
-} from "../../constants/regexes";
+  ACKNOWLEDGEMENT_VALIDATIONS,
+  DATE_NEAR_FUTURE_VALIDATIONS,
+  FULL_NAME_VALIDATIONS,
+  TEXT_AREA_INPUT_VALIDATIONS,
+} from "../../constants/validations";
 import { RoleResourceRoutePaths, StepperChild, StepperPage } from "../../types";
 import {
   returnDateFullRangeValidationText,
@@ -33,31 +33,31 @@ function returnLeaveRequestStepperPages() {
   const acknowledgementChild: StepperChild = {
     inputType: "checkbox",
     name: "acknowledgement",
-    regexes: ACKNOWLEDGEMENT_REGEXES,
+    validations: ACKNOWLEDGEMENT_VALIDATIONS,
   };
 
   const additionalCommentsChild: StepperChild = {
     inputType: "text",
     name: "additionalComments",
-    regexes: TEXT_AREA_INPUT_REGEXES,
+    validations: TEXT_AREA_INPUT_VALIDATIONS,
   };
 
   const delegatedResponsibilitiesChild: StepperChild = {
     inputType: "text",
     name: "delegatedResponsibilities",
-    regexes: TEXT_AREA_INPUT_REGEXES,
+    validations: TEXT_AREA_INPUT_VALIDATIONS,
   };
 
   const delegatedToEmployeeChild: StepperChild = {
     inputType: "text",
     name: "delegatedToEmployee",
-    regexes: FULL_NAME_REGEXES,
+    validations: FULL_NAME_VALIDATIONS,
   };
 
   const endDateChild: StepperChild = {
     inputType: "date",
     name: "endDate",
-    regexes: DATE_NEAR_FUTURE_REGEXES,
+    validations: DATE_NEAR_FUTURE_VALIDATIONS,
   };
 
   const reasonForLeaveChild: StepperChild = {
@@ -69,7 +69,7 @@ function returnLeaveRequestStepperPages() {
   const startDateChild: StepperChild = {
     inputType: "date",
     name: "startDate",
-    regexes: DATE_NEAR_FUTURE_REGEXES,
+    validations: DATE_NEAR_FUTURE_VALIDATIONS,
   };
 
   const stepperPages: StepperPage[] = [

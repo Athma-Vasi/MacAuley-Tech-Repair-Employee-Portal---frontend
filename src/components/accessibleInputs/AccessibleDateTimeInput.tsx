@@ -9,7 +9,7 @@ import { SetPageInErrorPayload, StepperPage } from "../../types";
 import { returnThemeColors, splitCamelCase } from "../../utils";
 import {
   createAccessibleValueValidationTextElements,
-  returnFullRegex,
+  returnFullValidation,
   returnValidationTexts,
 } from "./utils";
 
@@ -99,7 +99,6 @@ function AccessibleDateTimeInput<
   const [valueBuffer, setValueBuffer] = useState(value);
   const [isPopoverOpened, { open: openPopover, close: closePopover }] =
     useDisclosure(false);
-  // const [isInputFocused, setIsInputFocused] = useState(false);
 
   const {
     globalState: { themeObject },
@@ -109,8 +108,11 @@ function AccessibleDateTimeInput<
     generalColors: { greenColorShade },
   } = returnThemeColors({ colorsSwatches: COLORS_SWATCHES, themeObject });
 
-  const { fullRegex } = returnFullRegex(name, stepperPages);
-  const isValueBufferValid = fullRegex.test(valueBuffer);
+  const { fullValidation } = returnFullValidation(name, stepperPages);
+  const isValueBufferValid =
+    typeof fullValidation === "function"
+      ? fullValidation(valueBuffer)
+      : fullValidation.test(valueBuffer);
 
   const leftIcon = isValueBufferValid ? (
     icon ? (
@@ -123,7 +125,7 @@ function AccessibleDateTimeInput<
   const validationTexts = returnValidationTexts({
     name,
     stepperPages,
-    value,
+    valueBuffer,
   });
 
   const { validValueTextElement, invalidValueTextElement } =

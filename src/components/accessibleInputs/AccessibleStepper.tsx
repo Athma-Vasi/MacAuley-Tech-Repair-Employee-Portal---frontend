@@ -165,11 +165,20 @@ function returnStepsInError(
 
         Object.entries(componentState).forEach(([stateKey, stateValue]) => {
           if (childName === stateKey) {
-            const { full: fullRegex } = child.regexes ?? { full: /.*/ };
+            const { validations } = child;
 
-            const isStepValid = fullRegex.test(
-              typeof stateValue === "string" ? stateValue : stateValue?.toString() ?? ""
-            );
+            if (!validations) {
+              return;
+            }
+            const { full: fullValidation } = validations;
+
+            const value =
+              typeof stateValue === "string" ? stateValue : stateValue?.toString() ?? "";
+
+            const isStepValid =
+              typeof fullValidation === "function"
+                ? fullValidation(value)
+                : fullValidation.test(value);
 
             if (!isStepValid) {
               stepsAcc[index] = true;

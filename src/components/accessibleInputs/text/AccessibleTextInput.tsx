@@ -15,6 +15,7 @@ import {
   KeyboardEvent,
   ReactNode,
   RefObject,
+  useReducer,
   useState,
 } from "react";
 import { TbCheck, TbRefresh } from "react-icons/tb";
@@ -25,9 +26,13 @@ import { SetPageInErrorPayload, StepperPage } from "../../../types";
 import { returnThemeColors, splitCamelCase } from "../../../utils";
 import {
   createAccessibleValueValidationTextElements,
-  returnFullRegex,
+  returnFullValidation,
   returnValidationTexts,
 } from "../utils";
+import { accessibleTextInputReducer } from "./reducers";
+import { initialAccessibleImageInputState } from "../image/state";
+import { AccessibleTextInputState } from "./types";
+import { accessibleTextInputAction } from "./actions";
 
 type AccessibleTextInputAttributes<
   ValidValueAction extends string = string,
@@ -116,6 +121,15 @@ function AccessibleTextInput<
 
   const label = attributes.label ?? splitCamelCase(name);
 
+  // const initialAccessibleTextInputState: AccessibleTextInputState = {
+  //   valueBuffer: value,
+  // };
+  // const [accessibleTextInputState, accessibleTextInputDispatch] = useReducer(
+  //   accessibleTextInputReducer,
+  //   initialAccessibleTextInputState
+  // );
+  // const { valueBuffer } = accessibleTextInputState;
+
   const [valueBuffer, setValueBuffer] = useState<string>(value);
   const [isPopoverOpened, { open: openPopover, close: closePopover }] =
     useDisclosure(false);
@@ -156,13 +170,11 @@ function AccessibleTextInput<
     )
   ) : null;
 
-  const { fullRegex } = returnFullRegex(name, stepperPages);
-  console.group("AccessibleTextInput");
-  console.log("name", name);
-  console.log("fullRegex", fullRegex);
-  console.log("valueBuffer", valueBuffer);
-  console.groupEnd();
-  const isValueBufferValid = fullRegex.test(valueBuffer);
+  const { fullValidation } = returnFullValidation(name, stepperPages);
+  const isValueBufferValid =
+    typeof fullValidation === "function"
+      ? fullValidation(valueBuffer)
+      : fullValidation.test(valueBuffer);
 
   const leftIcon = isValueBufferValid ? (
     icon ? (
@@ -175,7 +187,7 @@ function AccessibleTextInput<
   const validationTexts = returnValidationTexts({
     name,
     stepperPages,
-    value,
+    valueBuffer,
   });
 
   const { invalidValueTextElement, validValueTextElement } =
@@ -239,6 +251,10 @@ function AccessibleTextInput<
             }}
             onChange={(event: ChangeEvent<HTMLInputElement>) => {
               setValueBuffer(event.currentTarget.value);
+              // accessibleTextInputDispatch({
+              //   action: accessibleTextInputAction.setValueBuffer,
+              //   payload: event.currentTarget.value,
+              // });
               onChange?.(event);
             }}
             onFocus={() => {

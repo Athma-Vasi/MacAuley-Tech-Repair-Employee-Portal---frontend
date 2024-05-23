@@ -1,4 +1,4 @@
-import { Regexes } from "../../../constants/regexes";
+import { Validations } from "../../../types";
 
 /**
  * - (?=.*[A-Za-z0-9]) ensures that there is at least one alphanumeric character, preventing the input from consisting entirely of whitespace.
@@ -9,17 +9,17 @@ import { Regexes } from "../../../constants/regexes";
  */
 const PLAN_DESCRIPTION_REGEX = /^(?=.*[A-Za-z0-9])[\w\s.,!?():;"'-]{1,300}$/i;
 
-const PLAN_DESCRIPTION_REGEXES = {
+const PLAN_DESCRIPTION_VALIDATIONS = {
   full: PLAN_DESCRIPTION_REGEX,
   partials: [
-    [/^(?=.*[A-Za-z0-9])/, "Must contain at least one alphanumeric character"],
+    [/^(?=.*[A-Za-z0-9])/, "Must contain at least one alphanumeric character."],
     [
       /^[\w\s.,!?():;"'-]+$/,
-      "Must contain only letters, numbers, spaces, and special characters",
+      "Must contain only letters, numbers, spaces, and special characters.",
     ],
-    [/[\w\s.,!?():;"'-]{1,300}$/, "Must be between 1 and 300 characters length"],
+    [/[\w\s.,!?():;"'-]{1,300}$/, "Must be between 1 and 300 characters length."],
   ],
-} as Regexes;
+} as Validations;
 
 /**
  * - /^(?=.*[A-Za-z0-9])[\w\s.,!?():;"'-]{1,50}$/i
@@ -30,16 +30,16 @@ const PLAN_DESCRIPTION_REGEXES = {
  */
 const PLAN_NAME_REGEX = /^(?=.*[A-Za-z0-9])[\w\s.,!?():;"'-]{1,50}$/i;
 
-const PLAN_NAME_REGEXES = {
+const PLAN_NAME_VALIDATIONS = {
   full: PLAN_NAME_REGEX,
   partials: [
-    [/^(?=.*[A-Za-z0-9])/, "Must contain at least one alphanumeric character"],
+    [/^(?=.*[A-Za-z0-9])/, "Must contain at least one alphanumeric character."],
     [
       /^[\w\s.,!?():;"'-]+$/,
-      "Must contain only letters, numbers, spaces, and special characters",
+      "Must contain only letters, numbers, spaces, and special characters.",
     ],
-    [/[\w\s.,!?():;"'-]{1,50}$/, "Must be between 1 and 50 characters length"],
+    [/[\w\s.,!?():;"'-]{1,50}$/, "Must be between 1 and 50 characters length."],
   ],
-} as Regexes;
+} as Validations;
 
-export { PLAN_DESCRIPTION_REGEXES, PLAN_NAME_REGEXES };
+export { PLAN_DESCRIPTION_VALIDATIONS, PLAN_NAME_VALIDATIONS };
