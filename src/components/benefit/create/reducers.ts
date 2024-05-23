@@ -12,11 +12,11 @@ function createBenefitReducer(
   state: CreateBenefitState,
   dispatch: CreateBenefitDispatch
 ): CreateBenefitState {
-  const reducer = createBenefitReducersMap.get(dispatch.action);
+  const reducer = createBenefitReducers.get(dispatch.action);
   return reducer ? reducer(state, dispatch) : state;
 }
 
-const createBenefitReducersMap = new Map<
+const createBenefitReducers = new Map<
   CreateBenefitAction[keyof CreateBenefitAction],
   (state: CreateBenefitState, dispatch: CreateBenefitDispatch) => CreateBenefitState
 >([
