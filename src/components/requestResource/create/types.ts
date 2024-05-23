@@ -1,24 +1,21 @@
-import type {
-  Department,
-  SetStepsInErrorPayload,
-  Urgency,
-} from '../../../types';
-import { RequestStatus } from '../../../types';
+import type { Department, SetPageInErrorPayload, Urgency } from "../../../types";
+import { RequestStatus } from "../../../types";
+import { RequestResourceAction } from "./actions";
 
-type RequestResourceKind = 'Hardware' | 'Software' | 'Access' | 'Other';
+type RequestResourceType = "Hardware" | "Software" | "Access" | "Other";
 
 type RequestResourceSchema = {
+  additionalInformation: string;
+  dateNeededBy: string;
+  department: Department;
+  reasonForRequest: string;
+  requestStatus: RequestStatus;
+  resourceDescription: string;
+  resourceQuantity: number;
+  resourceType: RequestResourceType;
+  urgency: Urgency;
   userId: string;
   username: string;
-  department: Department;
-  resourceType: RequestResourceKind;
-  resourceQuantity: number;
-  resourceDescription: string;
-  reasonForRequest: string;
-  urgency: Urgency;
-  dateNeededBy: string;
-  additionalInformation: string;
-  requestStatus: RequestStatus;
 };
 
 type RequestResourceDocument = RequestResourceSchema & {
@@ -29,158 +26,75 @@ type RequestResourceDocument = RequestResourceSchema & {
 };
 
 type RequestResourceState = {
-  department: Department;
-  resourceType: RequestResourceKind;
-
-  resourceQuantity: string;
-  isValidResourceQuantity: boolean;
-  isResourceQuantityFocused: boolean;
-
-  resourceDescription: string;
-  isValidResourceDescription: boolean;
-  isResourceDescriptionFocused: boolean;
-
-  reasonForRequest: string;
-  isValidReasonForRequest: boolean;
-  isReasonForRequestFocused: boolean;
-
-  urgency: Urgency;
-
-  dateNeededBy: string;
-  isValidDateNeededBy: boolean;
-  isDateNeededByFocused: boolean;
-
   additionalInformation: string;
-  isValidAdditionalInformation: boolean;
-  isAdditionalInformationFocused: boolean;
-
-  triggerFormSubmit: boolean;
-  currentStepperPosition: number;
-  stepsInError: Set<number>;
-
+  dateNeededBy: string;
+  department: Department;
   isSubmitting: boolean;
-  submitMessage: string;
   isSuccessful: boolean;
-  successMessage: string;
-  isLoading: boolean;
-  loadingMessage: string;
+  pagesInError: Set<number>;
+  reasonForRequest: string;
+  resourceDescription: string;
+  resourceQuantity: string;
+  resourceType: RequestResourceType;
+  triggerFormSubmit: boolean;
+  urgency: Urgency;
 };
-
-type RequestResourceAction = {
-  setDepartment: 'setDepartment';
-  setResourceType: 'setResourceType';
-
-  setResourceQuantity: 'setResourceQuantity';
-  setIsValidResourceQuantity: 'setIsValidResourceQuantity';
-  setIsResourceQuantityFocused: 'setIsResourceQuantityFocused';
-
-  setResourceDescription: 'setResourceDescription';
-  setIsValidResourceDescription: 'setIsValidResourceDescription';
-  setIsResourceDescriptionFocused: 'setIsResourceDescriptionFocused';
-
-  setReasonForRequest: 'setReasonForRequest';
-  setIsValidReasonForRequest: 'setIsValidReasonForRequest';
-  setIsReasonForRequestFocused: 'setIsReasonForRequestFocused';
-
-  setUrgency: 'setUrgency';
-
-  setDateNeededBy: 'setDateNeededBy';
-  setIsValidDateNeededBy: 'setIsValidDateNeededBy';
-  setIsDateNeededByFocused: 'setIsDateNeededByFocused';
-
-  setAdditionalInformation: 'setAdditionalInformation';
-  setIsValidAdditionalInformation: 'setIsValidAdditionalInformation';
-  setIsAdditionalInformationFocused: 'setIsAdditionalInformationFocused';
-
-  setTriggerFormSubmit: 'setTriggerFormSubmit';
-  setCurrentStepperPosition: 'setCurrentStepperPosition';
-  setStepsInError: 'setStepsInError';
-
-  setIsSubmitting: 'setIsSubmitting';
-  setSubmitMessage: 'setSubmitMessage';
-  setIsSuccessful: 'setIsSuccessful';
-  setSuccessMessage: 'setSuccessMessage';
-  setIsLoading: 'setIsLoading';
-  setLoadingMessage: 'setLoadingMessage';
-};
-
-// type RequestResourcePayload =
-//   | string
-//   | number
-//   | boolean
-//   | Department
-//   | RequestResourceKind
-//   | Urgency;
-
-// type RequestResourceDispatch = {
-//   type: RequestResourceAction[keyof RequestResourceAction];
-//   payload: RequestResourcePayload;
-// };
 
 type RequestResourceDispatch =
   | {
-      type:
-        | RequestResourceAction['setResourceDescription']
-        | RequestResourceAction['setResourceQuantity']
-        | RequestResourceAction['setReasonForRequest']
-        | RequestResourceAction['setAdditionalInformation']
-        | RequestResourceAction['setDateNeededBy']
-        | RequestResourceAction['setSubmitMessage']
-        | RequestResourceAction['setSuccessMessage']
-        | RequestResourceAction['setLoadingMessage'];
+      action: RequestResourceAction["setAdditionalInformation"];
       payload: string;
     }
   | {
-      type: RequestResourceAction['setDepartment'];
+      action: RequestResourceAction["setDateNeededBy"];
+      payload: string;
+    }
+  | {
+      action: RequestResourceAction["setDepartment"];
       payload: Department;
     }
   | {
-      type: RequestResourceAction['setResourceType'];
-      payload: RequestResourceKind;
-    }
-  | {
-      type:
-        | RequestResourceAction['setIsValidResourceQuantity']
-        | RequestResourceAction['setIsResourceQuantityFocused']
-        | RequestResourceAction['setIsValidResourceDescription']
-        | RequestResourceAction['setIsResourceDescriptionFocused']
-        | RequestResourceAction['setIsValidReasonForRequest']
-        | RequestResourceAction['setIsReasonForRequestFocused']
-        | RequestResourceAction['setIsValidDateNeededBy']
-        | RequestResourceAction['setIsDateNeededByFocused']
-        | RequestResourceAction['setIsValidAdditionalInformation']
-        | RequestResourceAction['setIsAdditionalInformationFocused']
-        | RequestResourceAction['setTriggerFormSubmit']
-        | RequestResourceAction['setIsSubmitting']
-        | RequestResourceAction['setIsSuccessful']
-        | RequestResourceAction['setIsLoading'];
+      action: RequestResourceAction["setIsSubmitting"];
       payload: boolean;
     }
   | {
-      type: RequestResourceAction['setUrgency'];
+      action: RequestResourceAction["setIsSuccessful"];
+      payload: boolean;
+    }
+  | {
+      action: RequestResourceAction["setPageInError"];
+      payload: SetPageInErrorPayload;
+    }
+  | {
+      action: RequestResourceAction["setReasonForRequest"];
+      payload: string;
+    }
+  | {
+      action: RequestResourceAction["setResourceDescription"];
+      payload: string;
+    }
+  | {
+      action: RequestResourceAction["setResourceQuantity"];
+      payload: string;
+    }
+  | {
+      action: RequestResourceAction["setResourceType"];
+      payload: RequestResourceType;
+    }
+  | {
+      action: RequestResourceAction["setTriggerFormSubmit"];
+      payload: boolean;
+    }
+  | {
+      action: RequestResourceAction["setUrgency"];
       payload: Urgency;
-    }
-  | {
-      type: RequestResourceAction['setCurrentStepperPosition'];
-      payload: number;
-    }
-  | {
-      type: RequestResourceAction['setStepsInError'];
-      payload: SetStepsInErrorPayload;
     };
 
-type RequestResourceReducer = (
-  state: RequestResourceState,
-  action: RequestResourceDispatch
-) => RequestResourceState;
-
 export type {
-  RequestResourceAction,
   RequestResourceDispatch,
   RequestResourceDocument,
-  RequestResourceKind,
-  RequestResourceReducer,
   RequestResourceSchema,
   RequestResourceState,
+  RequestResourceType,
   Urgency,
 };

@@ -1,103 +1,311 @@
-import { Group, Title, Tooltip } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
-import { InvalidTokenError } from "jwt-decode";
-import { ChangeEvent, MouseEvent, useEffect, useReducer, useRef } from "react";
+import { Container, Stack, Text } from "@mantine/core";
+import { useEffect, useReducer, useRef } from "react";
 import { useErrorBoundary } from "react-error-boundary";
-import { TbUpload } from "react-icons/tb";
-import { useNavigate } from "react-router-dom";
 
 import { DEPARTMENT_DATA, URGENCY_DATA } from "../../../constants/data";
+import { useAuth } from "../../../hooks";
+import { useFetchInterceptor } from "../../../hooks/useFetchInterceptor";
+import { StepperPage } from "../../../types";
+import { formSubmitPOST, logState } from "../../../utils";
+import { AccessibleButton } from "../../accessibleInputs/AccessibleButton";
+import { AccessibleDateTimeInput } from "../../accessibleInputs/AccessibleDateTimeInput";
+import { AccessibleSelectInput } from "../../accessibleInputs/AccessibleSelectInput";
+import { AccessibleStepper } from "../../accessibleInputs/AccessibleStepper";
+import { AccessibleTextAreaInput } from "../../accessibleInputs/AccessibleTextAreaInput";
+import { AccessibleTextInput } from "../../accessibleInputs/text/AccessibleTextInput";
 import {
-  DATE_NEAR_FUTURE_REGEX,
-  GRAMMAR_TEXT_INPUT_REGEX,
-  GRAMMAR_TEXTAREA_INPUT_REGEX,
-  MONEY_REGEX,
-} from "../../../constants/regex";
-import { globalAction } from "../../../context/globalProvider/state";
-import { useGlobalState, useWrapFetch } from "../../../hooks";
-import {
-  AccessibleErrorValidTextElements,
-  returnAccessibleButtonElements,
-  returnAccessibleDateTimeElements,
-  returnAccessibleSelectInputElements,
-  returnAccessibleTextAreaInputElements,
-  returnAccessibleTextInputElements,
-} from "../../../jsxCreators";
-import { Department, ResourceRequestServerResponse, Urgency } from "../../../types";
-import {
-  returnDateNearFutureValidationText,
-  returnFloatAmountValidationText,
-  returnGrammarValidationText,
-  urlBuilder,
-} from "../../../utils";
-import FormReviewPage, {
-  FormReviewObjectArray,
-} from "../../formReviewPage/FormReviewPage";
-import { NotificationModal } from "../../notificationModal";
-import {
-  AccessibleButtonCreatorInfo,
-  AccessibleDateTimeInputCreatorInfo,
-  AccessibleSelectInputCreatorInfo,
-  AccessibleTextAreaInputCreatorInfo,
-  AccessibleTextInputCreatorInfo,
-  FormLayoutWrapper,
-} from "../../wrappers";
-import { StepperWrapper } from "../../wrappers";
-import {
-  REQUEST_RESOURCE_DESCRIPTION_OBJECTS,
-  REQUEST_RESOURCE_KIND_DATA,
-  REQUEST_RESOURCE_MAX_STEPPER_POSITION,
+  REQUEST_RESOURCE_ROLE_PATHS,
+  REQUEST_RESOURCE_TYPE_DATA,
+  returnRequestResourceStepperPages,
 } from "../constants";
-import {
-  initialRequestResourceState,
-  requestResourceAction,
-  requestResourceReducer,
-} from "./state";
-import { RequestResourceDocument, RequestResourceKind } from "./types";
+import { RequestResourceAction, requestResourceAction } from "./actions";
+import { requestResourceReducer } from "./reducers";
+import { initialRequestResourceState } from "./state";
+import { RequestResourceSchema, RequestResourceType, Urgency } from "./types";
 
 function RequestResource() {
   const [requestResourceState, requestResourceDispatch] = useReducer(
     requestResourceReducer,
     initialRequestResourceState
   );
+
   const {
     department,
     resourceType,
-
     resourceQuantity,
-    isValidResourceQuantity,
-    isResourceQuantityFocused,
-
     resourceDescription,
-    isValidResourceDescription,
-    isResourceDescriptionFocused,
-
     reasonForRequest,
-    isValidReasonForRequest,
-    isReasonForRequestFocused,
-
     urgency,
-
     dateNeededBy,
-    isValidDateNeededBy,
-    isDateNeededByFocused,
-
     additionalInformation,
-    isValidAdditionalInformation,
-    isAdditionalInformationFocused,
-
     triggerFormSubmit,
-    currentStepperPosition,
-    stepsInError,
-
+    pagesInError,
     isSubmitting,
-    submitMessage,
     isSuccessful,
-    successMessage,
-    isLoading,
-    loadingMessage,
   } = requestResourceState;
 
+  const {
+    authState: { sessionId, userId, username },
+  } = useAuth();
+  const { fetchInterceptor } = useFetchInterceptor();
+  const { showBoundary } = useErrorBoundary();
+
+  const fetchAbortControllerRef = useRef<AbortController | null>(null);
+  const preFetchAbortControllerRef = useRef<AbortController | null>(null);
+  const isComponentMountedRef = useRef(false);
+
+  useEffect(() => {
+    fetchAbortControllerRef.current?.abort();
+    fetchAbortControllerRef.current = new AbortController();
+    const fetchAbortController = fetchAbortControllerRef.current;
+
+    preFetchAbortControllerRef.current?.abort();
+    preFetchAbortControllerRef.current = new AbortController();
+    const preFetchAbortController = preFetchAbortControllerRef.current;
+
+    isComponentMountedRef.current = true;
+    let isComponentMounted = isComponentMountedRef.current;
+
+    if (triggerFormSubmit) {
+      const requestResourceSchema: RequestResourceSchema = {
+        additionalInformation,
+        dateNeededBy,
+        department,
+        reasonForRequest,
+        requestStatus: "pending",
+        resourceDescription,
+        resourceQuantity: parseFloat(resourceQuantity),
+        resourceType,
+        urgency,
+        userId,
+        username,
+      };
+
+      formSubmitPOST({
+        dispatch: requestResourceDispatch,
+        fetchAbortController,
+        fetchInterceptor,
+        isComponentMounted,
+        isSubmittingAction: requestResourceAction.setIsSubmitting,
+        isSuccessfulAction: requestResourceAction.setIsSuccessful,
+        preFetchAbortController,
+        roleResourceRoutePaths: REQUEST_RESOURCE_ROLE_PATHS,
+        schema: requestResourceSchema,
+        schemaName: "requestResourceSchema",
+        sessionId,
+        showBoundary,
+        userId,
+        username,
+        userRole: "manager",
+      });
+    }
+
+    return () => {
+      isComponentMountedRef.current = false;
+      preFetchAbortController?.abort();
+      fetchAbortController?.abort();
+    };
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [triggerFormSubmit]);
+
+  useEffect(() => {
+    logState({
+      state: requestResourceState,
+      groupLabel: "Request Resource State",
+    });
+  }, [requestResourceState]);
+
+  if (isSubmitting) {
+    const submittingState = (
+      <Stack>
+        <Text size="md">Submitting benefit! Please wait...</Text>
+      </Stack>
+    );
+
+    return submittingState;
+  }
+
+  if (isSuccessful) {
+    const successfulState = (
+      <Stack>
+        <Text size="md">Benefit submitted successfully!</Text>
+      </Stack>
+    );
+
+    return successfulState;
+  }
+
+  const RESOURCE_REQUEST_STEPPER_PAGES: StepperPage[] =
+    returnRequestResourceStepperPages();
+
+  /**
+     * 
+type RequestResourceState = {
+  additionalInformation: string;
+  dateNeededBy: string;
+  department: Department;
+  isSubmitting: boolean;
+  isSuccessful: boolean;
+  pagesInError: Set<number>;
+  reasonForRequest: string;
+  resourceDescription: string;
+  resourceQuantity: string;
+  resourceType: RequestResourceType;
+  triggerFormSubmit: boolean;
+  urgency: Urgency;
+};
+     */
+
+  const additionalInformationTextAreaInput = (
+    <AccessibleTextAreaInput
+      attributes={{
+        invalidValueAction: requestResourceAction.setPageInError,
+        name: "additionalInformation",
+        parentDispatch: requestResourceDispatch,
+        stepperPages: RESOURCE_REQUEST_STEPPER_PAGES,
+        validValueAction: requestResourceAction.setAdditionalInformation,
+        value: additionalInformation,
+      }}
+    />
+  );
+
+  const dateNeededByDateInput = (
+    <AccessibleDateTimeInput
+      attributes={{
+        dateKind: "date near future",
+        inputKind: "date",
+        invalidValueAction: requestResourceAction.setPageInError,
+        name: "dateNeededBy",
+        parentDispatch: requestResourceDispatch,
+        stepperPages: RESOURCE_REQUEST_STEPPER_PAGES,
+        validValueAction: requestResourceAction.setDateNeededBy,
+        value: dateNeededBy,
+      }}
+    />
+  );
+
+  const departmentSelectInput = (
+    <AccessibleSelectInput
+      attributes={{
+        data: DEPARTMENT_DATA,
+        name: "department",
+        parentDispatch: requestResourceDispatch,
+        validValueAction: requestResourceAction.setDepartment,
+      }}
+    />
+  );
+
+  const reasonForRequestTextInput = (
+    <AccessibleTextInput
+      attributes={{
+        invalidValueAction: requestResourceAction.setPageInError,
+        name: "reasonForRequest",
+        parentDispatch: requestResourceDispatch,
+        stepperPages: RESOURCE_REQUEST_STEPPER_PAGES,
+        validValueAction: requestResourceAction.setReasonForRequest,
+        value: reasonForRequest,
+      }}
+    />
+  );
+
+  const resourceDescriptionTextAreaInput = (
+    <AccessibleTextAreaInput
+      attributes={{
+        invalidValueAction: requestResourceAction.setPageInError,
+        name: "resourceDescription",
+        parentDispatch: requestResourceDispatch,
+        stepperPages: RESOURCE_REQUEST_STEPPER_PAGES,
+        validValueAction: requestResourceAction.setResourceDescription,
+        value: resourceDescription,
+      }}
+    />
+  );
+
+  const resourceQuantityTextInput = (
+    <AccessibleTextInput
+      attributes={{
+        invalidValueAction: requestResourceAction.setPageInError,
+        name: "resourceQuantity",
+        parentDispatch: requestResourceDispatch,
+        stepperPages: RESOURCE_REQUEST_STEPPER_PAGES,
+        validValueAction: requestResourceAction.setResourceQuantity,
+        value: resourceQuantity,
+      }}
+    />
+  );
+
+  const resourceTypeSelectInput = (
+    <AccessibleSelectInput<RequestResourceAction["setResourceType"], RequestResourceType>
+      attributes={{
+        data: REQUEST_RESOURCE_TYPE_DATA,
+        name: "resourceType",
+        parentDispatch: requestResourceDispatch,
+        validValueAction: requestResourceAction.setResourceType,
+      }}
+    />
+  );
+
+  const urgencySelectInput = (
+    <AccessibleSelectInput<RequestResourceAction["setUrgency"], Urgency>
+      attributes={{
+        data: URGENCY_DATA,
+        name: "urgency",
+        parentDispatch: requestResourceDispatch,
+        validValueAction: requestResourceAction.setUrgency,
+      }}
+    />
+  );
+
+  const firstPage = (
+    <Stack>
+      {additionalInformationTextAreaInput}
+      {dateNeededByDateInput}
+      {reasonForRequestTextInput}
+      {departmentSelectInput}
+      {resourceTypeSelectInput}
+      {resourceQuantityTextInput}
+      {resourceDescriptionTextAreaInput}
+      {urgencySelectInput}
+    </Stack>
+  );
+
+  const submitButton = (
+    <AccessibleButton
+      attributes={{
+        enabledScreenreaderText: "All inputs are valid. Click to submit form",
+        disabledScreenreaderText: "Please fix errors before submitting form",
+        disabled: pagesInError.size > 0 || triggerFormSubmit,
+        kind: "submit",
+        name: "submit",
+        onClick: (_event: React.MouseEvent<HTMLButtonElement>) => {
+          requestResourceDispatch({
+            action: requestResourceAction.setTriggerFormSubmit,
+            payload: true,
+          });
+        },
+      }}
+    />
+  );
+
+  const stepper = (
+    <AccessibleStepper
+      attributes={{
+        componentState: requestResourceState,
+        pageElements: [firstPage],
+        stepperPages: RESOURCE_REQUEST_STEPPER_PAGES,
+        submitButton,
+      }}
+    />
+  );
+
+  return <Container w={700}>{stepper}</Container>;
+}
+
+export default RequestResource;
+
+/**
+ * 
   const { globalDispatch } = useGlobalState();
 
   const { wrappedFetch } = useWrapFetch();
@@ -313,7 +521,7 @@ function RequestResource() {
     const isStepInError = !isValidResourceQuantity || !isValidResourceDescription;
 
     requestResourceDispatch({
-      type: requestResourceAction.setStepsInError,
+      type: requestResourceAction.setPageInError,
       payload: {
         kind: isStepInError ? "add" : "delete",
         step: 0,
@@ -330,7 +538,7 @@ function RequestResource() {
     const isStepInError = isRequiredStepInError || areOptionalStepsInError;
 
     requestResourceDispatch({
-      type: requestResourceAction.setStepsInError,
+      type: requestResourceAction.setPageInError,
       payload: {
         kind: isStepInError ? "add" : "delete",
         step: 1,
@@ -427,13 +635,13 @@ function RequestResource() {
   };
 
   const resourceKindSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
-    data: REQUEST_RESOURCE_KIND_DATA,
+    data: REQUEST_RESOURCE_TYPE_DATA,
     description: "Select the kind of resource you are requesting.",
     label: "Resource",
     onChange: (event: ChangeEvent<HTMLSelectElement>) => {
       requestResourceDispatch({
         type: requestResourceAction.setResourceType,
-        payload: event.currentTarget.value as RequestResourceKind,
+        payload: event.currentTarget.value as RequestResourceType,
       });
     },
     value: resourceType,
@@ -790,6 +998,5 @@ function RequestResource() {
   );
 
   return displayRequestResourceComponent;
-}
 
-export default RequestResource;
+ */

@@ -8,6 +8,7 @@ import {
   JobPosition,
   SelectInputData,
   StoreLocation,
+  Urgency,
 } from "../../types";
 
 const PROVINCES = [
@@ -79,7 +80,7 @@ const STATES_US = [
   "Wyoming",
 ];
 
-const URGENCY_DATA = ["low", "medium", "high"];
+const URGENCY_DATA: Urgency[] = ["low", "medium", "high"];
 
 const TEXT_OVERFLOW: CSSProperties = {
   overflow: "hidden",
