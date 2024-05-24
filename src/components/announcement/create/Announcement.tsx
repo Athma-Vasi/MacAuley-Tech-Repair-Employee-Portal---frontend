@@ -1,17 +1,26 @@
+import { Container, Group, Stack, Text } from "@mantine/core";
 import { useEffect, useReducer, useRef } from "react";
-import { initialAnnouncementState } from "./state";
-import { Group, Stack, Text } from "@mantine/core";
 import { useErrorBoundary } from "react-error-boundary";
+
+import { TEXT_AREA_INPUT_VALIDATIONS } from "../../../constants/validations";
 import { useAuth } from "../../../hooks";
 import { useFetchInterceptor } from "../../../hooks/useFetchInterceptor";
 import { StepperPage } from "../../../types";
-import { returnAnnouncementStepperPages } from "./constants";
-import { AccessibleTextAreaInput } from "../../accessibleInputs/AccessibleTextAreaInput";
-import { AnnouncementAction, announcementAction } from "./actions";
-import { createAccessibleButtons } from "../../accessibleInputs/utils";
+import { formSubmitPOST, logState, returnTimeToRead } from "../../../utils";
 import { AccessibleButton } from "../../accessibleInputs/AccessibleButton";
+import { AccessibleStepper } from "../../accessibleInputs/AccessibleStepper";
+import { AccessibleTextAreaInput } from "../../accessibleInputs/AccessibleTextAreaInput";
+import { AccessibleTextInput } from "../../accessibleInputs/text/AccessibleTextInput";
+import { AnnouncementAction, announcementAction } from "./actions";
+import {
+  ANNOUNCEMENT_ROLE_ROUTE_PATHS,
+  MAX_ARTICLE_LENGTH,
+  returnAnnouncementStepperPages,
+} from "./constants";
 import { announcementReducer } from "./reducers";
-import { TEXT_AREA_INPUT_VALIDATIONS } from "../../../constants/validations";
+import { initialAnnouncementState } from "./state";
+import { AnnouncementSchema, RatingResponse } from "./types";
+import { createStateForStepper } from "./utils";
 
 function Announcement() {
   const [announcementState, announcementDispatch] = useReducer(
@@ -54,23 +63,50 @@ function Announcement() {
     let isComponentMounted = isComponentMountedRef.current;
 
     if (triggerFormSubmit) {
-      // formSubmitPOST({
-      //   dispatch: addressChangeDispatch,
-      //   fetchAbortController,
-      //   fetchInterceptor,
-      //   isComponentMounted,
-      //   isSubmittingAction: addressChangeAction.setIsSubmitting,
-      //   isSuccessfulAction: addressChangeAction.setIsSuccessful,
-      //   preFetchAbortController,
-      //   roleResourceRoutePaths: ADDRESS_CHANGE_ROLE_PATHS,
-      //   schema,
-      //   schemaName: "addressChangeSchema",
-      //   sessionId,
-      //   showBoundary,
-      //   userId,
-      //   username,
-      //   userRole: "manager",
-      // });
+      const ratingResponse: RatingResponse = {
+        ratingEmotion: {
+          estatic: 0,
+          happy: 0,
+          neutral: 0,
+          annoyed: 0,
+          devastated: 0,
+        },
+        ratingCount: 0,
+      };
+
+      // https://images.pexels.com/photos/23169741/pexels-photo-23169741/free-photo-of-a-green-plant-growing-on-a-wall.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1
+
+      const announcementSchema: AnnouncementSchema = {
+        article,
+        bannerImageAlt,
+        bannerImageSrc: bannerImageSrc.split("?")[0], // remove pexels query string
+        bannerImageSrcCompressed: bannerImageSrc,
+        ratedUserIds: [],
+        ratingResponse,
+        timeToRead: returnTimeToRead(article.join(" ")),
+        title,
+        userId,
+        username,
+        author,
+      };
+
+      formSubmitPOST({
+        dispatch: announcementDispatch,
+        fetchAbortController,
+        fetchInterceptor,
+        isComponentMounted,
+        isSubmittingAction: announcementAction.setIsSubmitting,
+        isSuccessfulAction: announcementAction.setIsSuccessful,
+        preFetchAbortController,
+        roleResourceRoutePaths: ANNOUNCEMENT_ROLE_ROUTE_PATHS,
+        schema: announcementSchema,
+        schemaName: "announcementSchema",
+        sessionId,
+        showBoundary,
+        userId,
+        username,
+        userRole: "manager",
+      });
     }
 
     return () => {
@@ -81,6 +117,11 @@ function Announcement() {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [triggerFormSubmit]);
+
+  logState({
+    state: announcementState,
+    groupLabel: "announcement state",
+  });
 
   if (isSubmitting) {
     const submittingState = (
@@ -102,21 +143,68 @@ function Announcement() {
     return successfulState;
   }
 
-  /**
-   * type AnnouncementState = {
-  article: string[];
-  author: string;
-  bannerImageAlt: string;
-  bannerImageSrc: string;
-  isSubmitting: boolean;
-  isSuccessful: boolean;
-  pagesInError: Set<number>;
-  title: string;
-  triggerFormSubmit: boolean;
-};
-   */
-
   const ANNOUNCEMENT_STEPPER_PAGES: StepperPage[] = returnAnnouncementStepperPages();
+
+  const authorTextInput = (
+    <AccessibleTextInput
+      attributes={{
+        invalidValueAction: announcementAction.setPageInError,
+        name: "author",
+        parentDispatch: announcementDispatch,
+        stepperPages: ANNOUNCEMENT_STEPPER_PAGES,
+        validValueAction: announcementAction.setAuthor,
+        value: author,
+      }}
+    />
+  );
+
+  const bannerImageSrcTextInput = (
+    <AccessibleTextInput
+      attributes={{
+        invalidValueAction: announcementAction.setPageInError,
+        name: "bannerImageSrc",
+        parentDispatch: announcementDispatch,
+        stepperPages: ANNOUNCEMENT_STEPPER_PAGES,
+        validValueAction: announcementAction.setBannerImageSrc,
+        value: bannerImageSrc,
+      }}
+    />
+  );
+
+  const bannerImageAltTextInput = (
+    <AccessibleTextInput
+      attributes={{
+        invalidValueAction: announcementAction.setPageInError,
+        name: "bannerImageAlt",
+        parentDispatch: announcementDispatch,
+        stepperPages: ANNOUNCEMENT_STEPPER_PAGES,
+        validValueAction: announcementAction.setBannerImageAlt,
+        value: bannerImageAlt,
+      }}
+    />
+  );
+
+  const titleTextInput = (
+    <AccessibleTextInput
+      attributes={{
+        invalidValueAction: announcementAction.setPageInError,
+        name: "title",
+        parentDispatch: announcementDispatch,
+        stepperPages: ANNOUNCEMENT_STEPPER_PAGES,
+        validValueAction: announcementAction.setTitle,
+        value: title,
+      }}
+    />
+  );
+
+  const firstPage = (
+    <Stack>
+      {titleTextInput}
+      {authorTextInput}
+      {bannerImageSrcTextInput}
+      {bannerImageAltTextInput}
+    </Stack>
+  );
 
   const articleTextAreaInputs = article.map((paragraph, index) => {
     // for popover validation linking
@@ -143,35 +231,13 @@ function Announcement() {
       />
     );
 
-    const addParagraphButton = (
-      <AccessibleButton
-        attributes={{
-          // disabled: false,
-          disabledScreenreaderText: "Max article length reached",
-          enabledScreenreaderText: `Add new paragraph: ${index + 1}`,
-          kind: "add",
-          name: "add",
-          onClick: (
-            _event:
-              | React.MouseEvent<HTMLButtonElement, MouseEvent>
-              | React.PointerEvent<HTMLButtonElement>
-          ) => {
-            announcementDispatch({
-              action: announcementAction.addParagraph,
-              payload: null,
-            });
-          },
-        }}
-      />
-    );
-
     const removeParagraphButton = (
       <AccessibleButton
         attributes={{
-          // disabled:false,
           enabledScreenreaderText: `Delete paragraph ${index + 1}`,
-          name: "delete",
+          index,
           kind: "delete",
+          setIconAsLabel: true,
           onClick: (
             _event:
               | React.MouseEvent<HTMLButtonElement, MouseEvent>
@@ -189,10 +255,12 @@ function Announcement() {
     const insertParagraphButton = (
       <AccessibleButton
         attributes={{
-          // disabled: false,
-          enabledScreenreaderText: `Insert paragraph between ${index} and ${index + 1}`,
+          disabled: index === MAX_ARTICLE_LENGTH - 1,
+          disabledScreenreaderText: "Max article length reached",
+          enabledScreenreaderText: `Insert paragraph before ${index + 1}`,
+          index,
           kind: "insert",
-          name: "insert",
+          setIconAsLabel: true,
           onClick: (
             _event:
               | React.MouseEvent<HTMLButtonElement, MouseEvent>
@@ -210,10 +278,12 @@ function Announcement() {
     const slideParagraphUpButton = (
       <AccessibleButton
         attributes={{
-          // disabled: false,
+          disabled: index === 0,
+          disabledScreenreaderText: "Cannot move first paragraph up",
           enabledScreenreaderText: `Move paragraph ${index + 1} up`,
+          index,
           kind: "up",
-          name: "up",
+          setIconAsLabel: true,
           onClick: (
             _event:
               | React.MouseEvent<HTMLButtonElement, MouseEvent>
@@ -231,10 +301,12 @@ function Announcement() {
     const slideParagraphDownButton = (
       <AccessibleButton
         attributes={{
-          // disabled: false,
+          disabled: index === article.length - 1,
+          disabledScreenreaderText: "Cannot move last paragraph down",
           enabledScreenreaderText: `Move paragraph ${index + 1} down`,
+          index,
           kind: "down",
-          name: "down",
+          setIconAsLabel: true,
           onClick: (
             _event:
               | React.MouseEvent<HTMLButtonElement, MouseEvent>
@@ -251,7 +323,6 @@ function Announcement() {
 
     const paragraphButtons = (
       <Group>
-        {addParagraphButton}
         {removeParagraphButton}
         {insertParagraphButton}
         {slideParagraphUpButton}
@@ -260,18 +331,73 @@ function Announcement() {
     );
 
     const paragraphGroup = (
-      <Group>
+      <Stack>
         {paragraphTextAreaInput}
         {paragraphButtons}
-      </Group>
+      </Stack>
     );
 
     return paragraphGroup;
   });
 
-  const announcementForm = <Group>{articleTextAreaInputs}</Group>;
+  const addParagraphButton = (
+    <AccessibleButton
+      attributes={{
+        // disabled: false,
+        disabledScreenreaderText: "Max article length reached",
+        enabledScreenreaderText: `Add new paragraph: ${article.length + 1}`,
+        kind: "add",
+        onClick: (
+          _event:
+            | React.MouseEvent<HTMLButtonElement, MouseEvent>
+            | React.PointerEvent<HTMLButtonElement>
+        ) => {
+          announcementDispatch({
+            action: announcementAction.addParagraph,
+            payload: null,
+          });
+        },
+      }}
+    />
+  );
 
-  return announcementForm;
+  const articlePage = (
+    <Stack>
+      {addParagraphButton}
+      {articleTextAreaInputs}
+    </Stack>
+  );
+
+  const submitButton = (
+    <AccessibleButton
+      attributes={{
+        enabledScreenreaderText: "All inputs are valid. Click to submit form",
+        disabledScreenreaderText: "Please fix errors before submitting form",
+        disabled: pagesInError.size > 0 || triggerFormSubmit,
+        kind: "submit",
+        name: "submit",
+        onClick: (_event: React.MouseEvent<HTMLButtonElement>) => {
+          announcementDispatch({
+            action: announcementAction.setTriggerFormSubmit,
+            payload: true,
+          });
+        },
+      }}
+    />
+  );
+
+  const stepper = (
+    <AccessibleStepper
+      attributes={{
+        componentState: createStateForStepper(announcementState),
+        pageElements: [firstPage, articlePage],
+        stepperPages: ANNOUNCEMENT_STEPPER_PAGES,
+        submitButton,
+      }}
+    />
+  );
+
+  return <Container w={700}>{stepper}</Container>;
 }
 
 export default Announcement;

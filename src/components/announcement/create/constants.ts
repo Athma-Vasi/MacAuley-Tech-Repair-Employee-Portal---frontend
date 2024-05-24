@@ -9,6 +9,7 @@ import {
 import {
   TEXT_AREA_INPUT_VALIDATIONS,
   TEXT_INPUT_VALIDATIONS,
+  URL_VALIDATIONS,
 } from "../../../constants/validations";
 import { RoleResourceRoutePaths, StepperChild, StepperPage } from "../../../types";
 import {
@@ -44,11 +45,11 @@ function returnAnnouncementStepperPages(): StepperPage[] {
 };
    */
 
-  const articleChild: StepperChild = {
-    inputType: "text",
-    name: "article",
-    validations: TEXT_AREA_INPUT_VALIDATIONS,
-  };
+  // const articleChild: StepperChild = {
+  //   inputType: "text",
+  //   name: "article",
+  //   validations: TEXT_AREA_INPUT_VALIDATIONS,
+  // };
 
   const authorChild: StepperChild = {
     inputType: "text",
@@ -65,7 +66,7 @@ function returnAnnouncementStepperPages(): StepperPage[] {
   const bannerImageSrcChild: StepperChild = {
     inputType: "text",
     name: "bannerImageSrc",
-    validations: TEXT_INPUT_VALIDATIONS,
+    validations: URL_VALIDATIONS,
   };
 
   const titleChild: StepperChild = {
@@ -80,7 +81,7 @@ function returnAnnouncementStepperPages(): StepperPage[] {
       description: "Announcement Details",
     },
     {
-      children: [articleChild],
+      children: [],
       description: "Announcement Article",
     },
     {

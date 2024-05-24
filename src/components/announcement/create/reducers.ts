@@ -46,7 +46,9 @@ function announcementReducer_insertParagraph(
 ): AnnouncementState {
   const index = dispatch.payload as number;
   const clonedState = structuredClone(state);
-  clonedState.article.splice(index, 0, "");
+  const left = clonedState.article.slice(0, index);
+  const right = clonedState.article.slice(index);
+  clonedState.article = [...left, "", ...right];
 
   return clonedState;
 }

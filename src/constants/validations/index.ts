@@ -328,8 +328,7 @@ const URL_VALIDATIONS = {
   full: URL_REGEX,
   partials: [
     [/^https?:\/\//, "Must start with 'http://' or 'https://'."],
-    [/^.{1,256}\./, "Must be between 1 and 256 characters length."],
-    [/^[a-zA-Z0-9()]{1,6}\b/, "Must be between 1 and 6 characters length."],
+    [/^.{1,256}/, "Must be between 1 and 256 characters length."],
     [
       /^[-a-zA-Z0-9()@:%_+.~#?&//=]*$/,
       "Must contain only letters, numbers, and special characters.",

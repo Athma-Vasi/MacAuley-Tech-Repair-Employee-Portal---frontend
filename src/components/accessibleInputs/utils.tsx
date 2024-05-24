@@ -637,26 +637,6 @@ function returnValidationTexts({
           )
           .join(" ");
 
-        console.group("returnValidationTexts");
-        console.log("name", name);
-        console.log("inputName", inputName);
-        console.log("valueBuffer", valueBuffer);
-        console.log("valueBuffer length", valueBuffer.length);
-        console.log("partials", partials);
-        console.log(
-          "regexOrFunc",
-          partials.map(([regexOrFunc, errorMessage]) =>
-            typeof regexOrFunc === "function"
-              ? regexOrFunc(valueBuffer)
-                ? ""
-                : errorMessage
-              : regexOrFunc.test(valueBuffer)
-              ? ""
-              : errorMessage
-          )
-        );
-        console.groupEnd();
-
         valueInvalidText = `${splitCamelCase(name)} is invalid. ${valueInvalidText}`;
 
         validationTextsAcc = {

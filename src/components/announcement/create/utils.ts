@@ -1,5 +1,21 @@
 import { FormReviewObjectArray } from "../../formReviewPage/FormReviewPage";
 
+function createStateForStepper(state: Record<string, unknown>): Record<string, unknown> {
+  return Object.entries(state).reduce((acc, [key, value]) => {
+    if (key === "article") {
+      if (Array.isArray(value)) {
+        value.forEach((paragraph, index) => {
+          acc[`paragraph ${index + 1}`] = paragraph;
+        });
+      }
+    }
+
+    acc[key] = value;
+
+    return acc;
+  }, Object.create(null));
+}
+
 type AnnouncementFormReviewObjectInput = {
   initialAnnouncementFormReviewObject: FormReviewObjectArray;
   article: string[];
@@ -43,4 +59,4 @@ function announcementFormReviewObject({
   return formReviewObject;
 }
 
-export { announcementFormReviewObject };
+export { announcementFormReviewObject, createStateForStepper };

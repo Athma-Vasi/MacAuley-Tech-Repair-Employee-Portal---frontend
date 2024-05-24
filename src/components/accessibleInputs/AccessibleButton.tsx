@@ -17,7 +17,7 @@ import {
   TbFilter,
   TbPlus,
   TbRefresh,
-  TbRowInsertBottom,
+  TbRowInsertTop,
   TbSearch,
   TbTrash,
   TbUpload,
@@ -48,14 +48,16 @@ type AccessibleButtonKind =
 
 type AccessibleButtonAttributes = {
   compact?: boolean;
+  disabled?: boolean;
   disabledScreenreaderText?: string;
   enabledScreenreaderText?: string;
-  disabled?: boolean;
+  index?: number;
   isTooltip?: boolean;
-  label?: ReactNode;
   kind: AccessibleButtonKind;
+  label?: ReactNode;
   leftIcon?: ReactNode;
-  name: string;
+  setIconAsLabel?: boolean;
+  name?: string;
   onClick?: (
     event: MouseEvent<HTMLButtonElement> | PointerEvent<HTMLButtonElement>
   ) => void;
@@ -80,23 +82,23 @@ function AccessibleButton({ attributes }: AccessibleButtonProps) {
 
   const {
     compact = false,
+    disabled = false,
     disabledScreenreaderText,
     enabledScreenreaderText,
-    disabled = false,
+    index,
     isTooltip = true,
     kind,
-    type = "button",
+    setIconAsLabel = false,
+    name = kind,
     onClick,
     onKeyDown = () => {},
     ref = null,
     rightIcon = null,
     size = "sm",
     style = {},
+    type = "button",
     variant = colorScheme === "dark" ? "outline" : "subtle",
-    name,
   } = attributes;
-
-  const label = attributes.label ?? splitCamelCase(name);
 
   const leftIconTable: Record<AccessibleButtonKind, ReactNode> = {
     add: <TbPlus />,
@@ -106,7 +108,7 @@ function AccessibleButton({ attributes }: AccessibleButtonProps) {
     download: <TbDownload />,
     edit: <TbEdit />,
     filter: <TbFilter />,
-    insert: <TbRowInsertBottom />,
+    insert: <TbRowInsertTop />,
     hide: <TbArrowDown />,
     next: <TiArrowRightThick />,
     previous: <TiArrowLeftThick />,
@@ -117,7 +119,10 @@ function AccessibleButton({ attributes }: AccessibleButtonProps) {
     up: <TbCircleArrowUp />,
   };
 
-  const leftIcon = attributes.leftIcon ?? leftIconTable[kind];
+  const leftIcon = setIconAsLabel ? null : attributes.leftIcon ?? leftIconTable[kind];
+  const label = setIconAsLabel
+    ? leftIconTable[kind]
+    : attributes.label ?? splitCamelCase(name);
 
   const { disabledTextElement, enabledTextElement } =
     createAccessibleButtonScreenreaderTextElements({
@@ -157,7 +162,7 @@ function AccessibleButton({ attributes }: AccessibleButtonProps) {
   );
 
   return (
-    <Container w={100}>
+    <Container w={100} key={`${name}-${index}`}>
       {isTooltip ? (
         <Tooltip label={disabled ? disabledScreenreaderText : enabledScreenreaderText}>
           <Group>{button}</Group>

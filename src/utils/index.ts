@@ -2521,6 +2521,12 @@ function capitalizeJoinWithAnd(strings: string[]): string {
   return replaceLastCommaWithAnd(joined);
 }
 
+function returnTimeToRead(string: string) {
+  const wordsPerMinute = 200;
+  const textLength = string.split(" ").length;
+  return Math.ceil(textLength / wordsPerMinute);
+}
+
 type FormSubmitPOST<
   IsSubmittingAction extends string = string,
   IsSuccessfulAction extends string = string
@@ -2732,6 +2738,7 @@ export {
   shuffleArray,
   splitCamelCase,
   splitWordIntoUpperCasedSentence,
+  returnTimeToRead,
   toFixedFloat,
   toggleNavlinksActive,
   updateObjectPure,

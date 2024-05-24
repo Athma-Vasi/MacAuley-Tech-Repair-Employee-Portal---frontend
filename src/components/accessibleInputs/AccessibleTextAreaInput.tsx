@@ -1,6 +1,13 @@
 import { Container, MantineSize, Popover, Stack, Textarea } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { ChangeEvent, Dispatch, KeyboardEvent, ReactNode, useState } from "react";
+import {
+  ChangeEvent,
+  Dispatch,
+  KeyboardEvent,
+  ReactNode,
+  useEffect,
+  useState,
+} from "react";
 import React from "react";
 import { TbCheck, TbRefresh } from "react-icons/tb";
 
@@ -116,12 +123,16 @@ function AccessibleTextAreaInput<
     value,
     withAsterisk = required,
   } = attributes;
-
   const label = attributes.label ?? splitCamelCase(name);
 
   const [valueBuffer, setValueBuffer] = useState(value);
   const [isPopoverOpened, { open: openPopover, close: closePopover }] =
     useDisclosure(false);
+
+  // required because valueBuffer still has stale value on dynamic inputs
+  useEffect(() => {
+    index === undefined ? void 0 : setValueBuffer(value);
+  }, [index, value]);
 
   const {
     globalState: { themeObject },
@@ -175,7 +186,7 @@ function AccessibleTextAreaInput<
     });
 
   return (
-    <Container w={350}>
+    <Container w="100%" key={name}>
       <Popover
         opened={isPopoverOpened}
         position="bottom"
@@ -276,3 +287,32 @@ function AccessibleTextAreaInput<
 export { AccessibleTextAreaInput };
 
 export type { AccessibleTextAreaInputAttributes };
+
+/**
+ *   const initialAccessibleTextAreaState = {
+    valueBuffer: value,
+  };
+  type AccessibleTextAreaDispatch = {
+    action: "setValueBuffer";
+    payload: string;
+  };
+  function accessibleTextAreaReducer(
+    state: typeof initialAccessibleTextAreaState,
+    dispatch: AccessibleTextAreaDispatch
+  ) {
+    switch (dispatch.action) {
+      case "setValueBuffer":
+        return {
+          ...state,
+          valueBuffer: dispatch.payload,
+        };
+      default:
+        return state;
+    }
+  }
+  const [accessibleTextAreaState, accessibleTextAreaDispatch] = useReducer(
+    accessibleTextAreaReducer,
+    initialAccessibleTextAreaState
+  );
+  const { valueBuffer } = accessibleTextAreaState;
+ */
