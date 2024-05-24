@@ -1,6 +1,6 @@
-import { FormReviewObjectArray } from '../../formReviewPage/FormReviewPage';
+import { FormReviewObjectArray } from "../../formReviewPage/FormReviewPage";
 
-type CreateAnnouncementFormReviewObjectInput = {
+type AnnouncementFormReviewObjectInput = {
   initialAnnouncementFormReviewObject: FormReviewObjectArray;
   article: string[];
   areValidArticleParagraphs: boolean[];
@@ -8,11 +8,11 @@ type CreateAnnouncementFormReviewObjectInput = {
 /**
  * Pure function. Creates an object (that is added on to an initial first page static input object) that is used to render the form review page. Required as the input creation is dynamic.
  */
-function createAnnouncementFormReviewObject({
+function announcementFormReviewObject({
   initialAnnouncementFormReviewObject,
   article,
   areValidArticleParagraphs,
-}: CreateAnnouncementFormReviewObjectInput) {
+}: AnnouncementFormReviewObjectInput) {
   const formReviewObject = article.reduce(
     (
       formReviewObjectAcc: FormReviewObjectArray,
@@ -29,7 +29,7 @@ function createAnnouncementFormReviewObject({
         isInputValueValid,
       };
 
-      const pageTitle = 'Announcement Article';
+      const pageTitle = "Announcement Article";
       formReviewObjectAcc[pageTitle] = [
         ...(formReviewObjectAcc[pageTitle] || []),
         newObject,
@@ -43,4 +43,4 @@ function createAnnouncementFormReviewObject({
   return formReviewObject;
 }
 
-export { createAnnouncementFormReviewObject };
+export { announcementFormReviewObject };

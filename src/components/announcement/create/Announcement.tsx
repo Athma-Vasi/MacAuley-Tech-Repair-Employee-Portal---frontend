@@ -1,102 +1,286 @@
-import { Group, Text, Title, Tooltip } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
-import { InvalidTokenError } from "jwt-decode";
-import { ChangeEvent, MouseEvent, useEffect, useReducer, useRef } from "react";
+import { useEffect, useReducer, useRef } from "react";
+import { initialAnnouncementState } from "./state";
+import { Group, Stack, Text } from "@mantine/core";
 import { useErrorBoundary } from "react-error-boundary";
-import { TbRowInsertBottom, TbRowInsertTop, TbTrash, TbUpload } from "react-icons/tb";
-import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../../hooks";
+import { useFetchInterceptor } from "../../../hooks/useFetchInterceptor";
+import { StepperPage } from "../../../types";
+import { returnAnnouncementStepperPages } from "./constants";
+import { AccessibleTextAreaInput } from "../../accessibleInputs/AccessibleTextAreaInput";
+import { AnnouncementAction, announcementAction } from "./actions";
+import { createAccessibleButtons } from "../../accessibleInputs/utils";
+import { AccessibleButton } from "../../accessibleInputs/AccessibleButton";
+import { announcementReducer } from "./reducers";
+import { TEXT_AREA_INPUT_VALIDATIONS } from "../../../constants/validations";
 
-import { COLORS_SWATCHES } from "../../../constants/data";
-import {
-  FULL_NAME_REGEX,
-  GRAMMAR_TEXT_INPUT_REGEX,
-  GRAMMAR_TEXTAREA_INPUT_REGEX,
-  URL_REGEX,
-} from "../../../constants/regex";
-import { globalAction } from "../../../context/globalProvider/state";
-import { useGlobalState, useWrapFetch } from "../../../hooks";
-import {
-  AccessibleErrorValidTextElements,
-  AccessibleErrorValidTextElementsForDynamicInputs,
-  returnAccessibleButtonElements,
-  returnAccessibleDynamicTextAreaInputElements,
-  returnAccessibleTextInputElements,
-} from "../../../jsxCreators";
-import { ResourceRequestServerResponse } from "../../../types";
-import {
-  logState,
-  returnGrammarValidationText,
-  returnNameValidationText,
-  returnThemeColors,
-  returnUrlValidationText,
-  urlBuilder,
-} from "../../../utils";
-import FormReviewPage, {
-  FormReviewObjectArray,
-} from "../../formReviewPage/FormReviewPage";
-import { NotificationModal } from "../../notificationModal";
-import {
-  AccessibleButtonCreatorInfo,
-  AccessibleTextAreaInputCreatorInfo,
-  AccessibleTextInputCreatorInfo,
-  FormLayoutWrapper,
-  StepperWrapper,
-} from "../../wrappers";
-import { ARTICLE_TITLE_REGEX } from "../constants";
-import {
-  CREATE_ANNOUNCEMENT_DESCRIPTION_OBJECTS,
-  CREATE_ANNOUNCEMENT_MAX_STEPPER_POSITION,
-  MAX_ARTICLE_LENGTH,
-} from "./constants";
-import {
-  createAnnouncementAction,
-  createAnnouncementReducer,
-  initialCreateAnnouncementState,
-} from "./state";
-import { AnnouncementDocument, RatingResponse } from "./types";
-import { createAnnouncementFormReviewObject } from "./utils";
-
-function CreateAnnouncement() {
-  /** ------------- begin hooks ------------- */
-  const [createAnnouncementState, createAnnouncementDispatch] = useReducer(
-    createAnnouncementReducer,
-    initialCreateAnnouncementState
+function Announcement() {
+  const [announcementState, announcementDispatch] = useReducer(
+    announcementReducer,
+    initialAnnouncementState
   );
+
   const {
     title,
-    isValidTitle,
-    isTitleFocused,
-
     author,
-    isValidAuthor,
-    isAuthorFocused,
-
     bannerImageSrc,
-    isValidBannerImageSrc,
-    isBannerImageSrcFocused,
-
     bannerImageAlt,
-    isValidBannerImageAlt,
-    isBannerImageAltFocused,
-
     article,
-    areValidArticleParagraphs,
-    areArticleParagraphsFocused,
-    isArticleLengthExceeded,
-
-    timeToRead,
     triggerFormSubmit,
-    currentStepperPosition,
-    stepsInError,
-
+    pagesInError,
     isSubmitting,
-    submitMessage,
     isSuccessful,
-    successMessage,
-    isLoading,
-    loadingMessage,
-  } = createAnnouncementState;
+  } = announcementState;
+
   const {
+    authState: { sessionId, userId, username },
+  } = useAuth();
+  const { fetchInterceptor } = useFetchInterceptor();
+  const { showBoundary } = useErrorBoundary();
+
+  const fetchAbortControllerRef = useRef<AbortController | null>(null);
+  const preFetchAbortControllerRef = useRef<AbortController | null>(null);
+  const isComponentMountedRef = useRef(false);
+
+  useEffect(() => {
+    fetchAbortControllerRef.current?.abort();
+    fetchAbortControllerRef.current = new AbortController();
+    const fetchAbortController = fetchAbortControllerRef.current;
+
+    preFetchAbortControllerRef.current?.abort();
+    preFetchAbortControllerRef.current = new AbortController();
+    const preFetchAbortController = preFetchAbortControllerRef.current;
+
+    isComponentMountedRef.current = true;
+    let isComponentMounted = isComponentMountedRef.current;
+
+    if (triggerFormSubmit) {
+      // formSubmitPOST({
+      //   dispatch: addressChangeDispatch,
+      //   fetchAbortController,
+      //   fetchInterceptor,
+      //   isComponentMounted,
+      //   isSubmittingAction: addressChangeAction.setIsSubmitting,
+      //   isSuccessfulAction: addressChangeAction.setIsSuccessful,
+      //   preFetchAbortController,
+      //   roleResourceRoutePaths: ADDRESS_CHANGE_ROLE_PATHS,
+      //   schema,
+      //   schemaName: "addressChangeSchema",
+      //   sessionId,
+      //   showBoundary,
+      //   userId,
+      //   username,
+      //   userRole: "manager",
+      // });
+    }
+
+    return () => {
+      isComponentMountedRef.current = false;
+      preFetchAbortController?.abort();
+      fetchAbortController?.abort();
+    };
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [triggerFormSubmit]);
+
+  if (isSubmitting) {
+    const submittingState = (
+      <Stack>
+        <Text size="md">Submitting address changes! Please wait...</Text>
+      </Stack>
+    );
+
+    return submittingState;
+  }
+
+  if (isSuccessful) {
+    const successfulState = (
+      <Stack>
+        <Text size="md">Address changes submitted successfully!</Text>
+      </Stack>
+    );
+
+    return successfulState;
+  }
+
+  /**
+   * type AnnouncementState = {
+  article: string[];
+  author: string;
+  bannerImageAlt: string;
+  bannerImageSrc: string;
+  isSubmitting: boolean;
+  isSuccessful: boolean;
+  pagesInError: Set<number>;
+  title: string;
+  triggerFormSubmit: boolean;
+};
+   */
+
+  const ANNOUNCEMENT_STEPPER_PAGES: StepperPage[] = returnAnnouncementStepperPages();
+
+  const articleTextAreaInputs = article.map((paragraph, index) => {
+    ANNOUNCEMENT_STEPPER_PAGES[1].children.push({
+      inputType: "text",
+      name: `paragraph ${index + 1}`,
+      validations: TEXT_AREA_INPUT_VALIDATIONS,
+    });
+
+    const paragraphTextAreaInput = (
+      <AccessibleTextAreaInput<
+        AnnouncementAction["setParagraph"],
+        AnnouncementAction["setPageInError"]
+      >
+        attributes={{
+          index,
+          invalidValueAction: announcementAction.setPageInError,
+          name: `paragraph ${index + 1}`,
+          parentDynamicDispatch: announcementDispatch,
+          stepperPages: ANNOUNCEMENT_STEPPER_PAGES,
+          validValueAction: announcementAction.setParagraph,
+          value: paragraph,
+        }}
+      />
+    );
+
+    const addParagraphButton = (
+      <AccessibleButton
+        attributes={{
+          // disabled: false,
+          disabledScreenreaderText: "Max article length reached",
+          enabledScreenreaderText: `Add new paragraph: ${index + 1}`,
+          kind: "add",
+          label: "",
+          name: "add",
+          onClick: (
+            _event:
+              | React.MouseEvent<HTMLButtonElement, MouseEvent>
+              | React.PointerEvent<HTMLButtonElement>
+          ) => {
+            announcementDispatch({
+              action: announcementAction.addParagraph,
+              payload: null,
+            });
+          },
+        }}
+      />
+    );
+
+    const removeParagraphButton = (
+      <AccessibleButton
+        attributes={{
+          // disabled:false,
+          name: "delete",
+          kind: "delete",
+          label: "",
+          onClick: (
+            _event:
+              | React.MouseEvent<HTMLButtonElement, MouseEvent>
+              | React.PointerEvent<HTMLButtonElement>
+          ) => {
+            announcementDispatch({
+              action: announcementAction.removeParagraph,
+              payload: index,
+            });
+          },
+        }}
+      />
+    );
+
+    const insertParagraphButton = (
+      <AccessibleButton
+        attributes={{
+          // disabled: false,
+          enabledScreenreaderText: `Insert paragraph between ${index} and ${index + 1}`,
+          kind: "insert",
+          label: "",
+          name: "insert",
+          onClick: (
+            _event:
+              | React.MouseEvent<HTMLButtonElement, MouseEvent>
+              | React.PointerEvent<HTMLButtonElement>
+          ) => {
+            announcementDispatch({
+              action: announcementAction.insertParagraph,
+              payload: index,
+            });
+          },
+        }}
+      />
+    );
+
+    const slideParagraphUpButton = (
+      <AccessibleButton
+        attributes={{
+          // disabled: false,
+          enabledScreenreaderText: `Move paragraph ${index + 1} up`,
+          kind: "up",
+          label: "",
+          name: "up",
+          onClick: (
+            _event:
+              | React.MouseEvent<HTMLButtonElement, MouseEvent>
+              | React.PointerEvent<HTMLButtonElement>
+          ) => {
+            announcementDispatch({
+              action: announcementAction.slideParagraphUp,
+              payload: index,
+            });
+          },
+        }}
+      />
+    );
+
+    const slideParagraphDownButton = (
+      <AccessibleButton
+        attributes={{
+          // disabled: false,
+          enabledScreenreaderText: `Move paragraph ${index + 1} down`,
+          kind: "down",
+          label: "",
+          name: "down",
+          onClick: (
+            _event:
+              | React.MouseEvent<HTMLButtonElement, MouseEvent>
+              | React.PointerEvent<HTMLButtonElement>
+          ) => {
+            announcementDispatch({
+              action: announcementAction.slideParagraphDown,
+              payload: index,
+            });
+          },
+        }}
+      />
+    );
+
+    const paragraphButtons = (
+      <Group>
+        {addParagraphButton}
+        {removeParagraphButton}
+        {insertParagraphButton}
+        {slideParagraphUpButton}
+        {slideParagraphDownButton}
+      </Group>
+    );
+
+    const paragraphGroup = (
+      <Group>
+        {paragraphTextAreaInput}
+        {paragraphButtons}
+      </Group>
+    );
+
+    return paragraphGroup;
+  });
+
+  const announcementForm = <Group>{articleTextAreaInputs}</Group>;
+
+  return announcementForm;
+}
+
+export default Announcement;
+
+/**
+ * const {
     globalState: { width, themeObject },
     globalDispatch,
   } = useGlobalState();
@@ -113,20 +297,20 @@ function CreateAnnouncement() {
       close: closeSubmitSuccessNotificationModal,
     },
   ] = useDisclosure(false);
-  /** ------------- end hooks ------------- */
+  
 
-  /** ------------- begin useEffects ------------- */
+  
   useEffect(() => {
     let isMounted = true;
     const controller = new AbortController();
 
-    async function createAnnouncementFormSubmit() {
-      createAnnouncementDispatch({
-        type: createAnnouncementAction.setIsSubmitting,
+    async function announcementFormSubmit() {
+      announcementDispatch({
+        type: announcementAction.setIsSubmitting,
         payload: true,
       });
-      createAnnouncementDispatch({
-        type: createAnnouncementAction.setSubmitMessage,
+      announcementDispatch({
+        type: announcementAction.setSubmitMessage,
         payload: "Create announcement request is on the way!",
       });
       openSubmitSuccessNotificationModal();
@@ -189,12 +373,12 @@ function CreateAnnouncement() {
           throw new Error(data.message);
         }
 
-        createAnnouncementDispatch({
-          type: createAnnouncementAction.setIsSuccessful,
+        announcementDispatch({
+          type: announcementAction.setIsSuccessful,
           payload: true,
         });
-        createAnnouncementDispatch({
-          type: createAnnouncementAction.setSuccessMessage,
+        announcementDispatch({
+          type: announcementAction.setSuccessMessage,
           payload: data.message ?? "Success!",
         });
       } catch (error: any) {
@@ -231,23 +415,23 @@ function CreateAnnouncement() {
 
         showBoundary(error);
       } finally {
-        createAnnouncementDispatch({
-          type: createAnnouncementAction.setIsSubmitting,
+        announcementDispatch({
+          type: announcementAction.setIsSubmitting,
           payload: false,
         });
-        createAnnouncementDispatch({
-          type: createAnnouncementAction.setSubmitMessage,
+        announcementDispatch({
+          type: announcementAction.setSubmitMessage,
           payload: "",
         });
-        createAnnouncementDispatch({
-          type: createAnnouncementAction.setTriggerFormSubmit,
+        announcementDispatch({
+          type: announcementAction.setTriggerFormSubmit,
           payload: false,
         });
       }
     }
 
     if (triggerFormSubmit) {
-      createAnnouncementFormSubmit();
+      announcementFormSubmit();
     }
 
     return () => {
@@ -268,8 +452,8 @@ function CreateAnnouncement() {
   useEffect(() => {
     const isValidTtl = ARTICLE_TITLE_REGEX.test(title);
 
-    createAnnouncementDispatch({
-      type: createAnnouncementAction.setIsValidTitle,
+    announcementDispatch({
+      type: announcementAction.setIsValidTitle,
       payload: isValidTtl,
     });
   }, [title]);
@@ -278,8 +462,8 @@ function CreateAnnouncement() {
   useEffect(() => {
     const isValidAuth = FULL_NAME_REGEX.test(author);
 
-    createAnnouncementDispatch({
-      type: createAnnouncementAction.setIsValidAuthor,
+    announcementDispatch({
+      type: announcementAction.setIsValidAuthor,
       payload: isValidAuth,
     });
   }, [author]);
@@ -288,8 +472,8 @@ function CreateAnnouncement() {
   useEffect(() => {
     const isValidBannerUrl = URL_REGEX.test(bannerImageSrc);
 
-    createAnnouncementDispatch({
-      type: createAnnouncementAction.setIsValidBannerImageSrc,
+    announcementDispatch({
+      type: announcementAction.setIsValidBannerImageSrc,
       payload: isValidBannerUrl,
     });
   }, [bannerImageSrc]);
@@ -298,8 +482,8 @@ function CreateAnnouncement() {
   useEffect(() => {
     const isValidBannerAlt = GRAMMAR_TEXT_INPUT_REGEX.test(bannerImageAlt);
 
-    createAnnouncementDispatch({
-      type: createAnnouncementAction.setIsValidBannerImageAlt,
+    announcementDispatch({
+      type: announcementAction.setIsValidBannerImageAlt,
       payload: isValidBannerAlt,
     });
   }, [bannerImageAlt]);
@@ -310,8 +494,8 @@ function CreateAnnouncement() {
       GRAMMAR_TEXTAREA_INPUT_REGEX.test(paragraph)
     );
 
-    createAnnouncementDispatch({
-      type: createAnnouncementAction.setAreValidArticleParagraphs,
+    announcementDispatch({
+      type: announcementAction.setAreValidArticleParagraphs,
       payload: isValidArticleBoolArr,
     });
   }, [article]);
@@ -320,8 +504,8 @@ function CreateAnnouncement() {
   useEffect(() => {
     const isValidArticleLength = article.join(" ").length >= MAX_ARTICLE_LENGTH;
 
-    createAnnouncementDispatch({
-      type: createAnnouncementAction.setIsArticleLengthExceeded,
+    announcementDispatch({
+      type: announcementAction.setIsArticleLengthExceeded,
       payload: isValidArticleLength,
     });
   }, [article]);
@@ -334,8 +518,8 @@ function CreateAnnouncement() {
     // round up to the nearest minute
     const timeToRead = Math.ceil(numberOfWords / wordsPerMinute);
 
-    createAnnouncementDispatch({
-      type: createAnnouncementAction.setTimeToRead,
+    announcementDispatch({
+      type: announcementAction.setTimeToRead,
       payload: timeToRead,
     });
   }, [article]);
@@ -349,8 +533,8 @@ function CreateAnnouncement() {
 
     const isStepInError = isRequiredInputInError || areOptionalInputsInError;
 
-    createAnnouncementDispatch({
-      type: createAnnouncementAction.setStepsInError,
+    announcementDispatch({
+      type: announcementAction.setPageInError,
       payload: {
         kind: isStepInError ? "add" : "delete",
         step: 0,
@@ -370,8 +554,8 @@ function CreateAnnouncement() {
     const isStepInError =
       areValidArticleParagraphs.includes(false) || isArticleLengthExceeded;
 
-    createAnnouncementDispatch({
-      type: createAnnouncementAction.setStepsInError,
+    announcementDispatch({
+      type: announcementAction.setPageInError,
       payload: {
         kind: isStepInError ? "add" : "delete",
         step: 1,
@@ -381,13 +565,13 @@ function CreateAnnouncement() {
 
   useEffect(() => {
     logState({
-      state: createAnnouncementState,
+      state: announcementState,
       groupLabel: "create announcement state",
     });
-  }, [createAnnouncementState]);
-  /** ------------- end useEffects ------------- */
+  }, [announcementState]);
+  
 
-  /** ------------- begin accessible text elements ------------- */
+  
   const [titleInputErrorText, titleInputValidText] = AccessibleErrorValidTextElements({
     inputElementKind: "title",
     inputText: title,
@@ -454,9 +638,9 @@ function CreateAnnouncement() {
       })),
       regexValidationFunction: returnGrammarValidationText,
     });
-  /** ------------- end accessible text elements ------------- */
+  
 
-  /** ------------- begin info objects for input creators ------------- */
+  
   const titleTextInputCreatorInfo: AccessibleTextInputCreatorInfo = {
     description: {
       error: titleInputErrorText,
@@ -466,20 +650,20 @@ function CreateAnnouncement() {
     isValidInputText: isValidTitle,
     label: "Article title",
     onBlur: () => {
-      createAnnouncementDispatch({
-        type: createAnnouncementAction.setIsTitleFocused,
+      announcementDispatch({
+        type: announcementAction.setIsTitleFocused,
         payload: false,
       });
     },
     onChange: (event) => {
-      createAnnouncementDispatch({
-        type: createAnnouncementAction.setTitle,
+      announcementDispatch({
+        type: announcementAction.setTitle,
         payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
-      createAnnouncementDispatch({
-        type: createAnnouncementAction.setIsTitleFocused,
+      announcementDispatch({
+        type: announcementAction.setIsTitleFocused,
         payload: true,
       });
     },
@@ -498,20 +682,20 @@ function CreateAnnouncement() {
     isValidInputText: isValidAuthor,
     label: "Author",
     onBlur: () => {
-      createAnnouncementDispatch({
-        type: createAnnouncementAction.setIsAuthorFocused,
+      announcementDispatch({
+        type: announcementAction.setIsAuthorFocused,
         payload: false,
       });
     },
     onChange: (event) => {
-      createAnnouncementDispatch({
-        type: createAnnouncementAction.setAuthor,
+      announcementDispatch({
+        type: announcementAction.setAuthor,
         payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
-      createAnnouncementDispatch({
-        type: createAnnouncementAction.setIsAuthorFocused,
+      announcementDispatch({
+        type: announcementAction.setIsAuthorFocused,
         payload: true,
       });
     },
@@ -530,20 +714,20 @@ function CreateAnnouncement() {
     isValidInputText: isValidBannerImageSrc,
     label: "Banner image src",
     onBlur: () => {
-      createAnnouncementDispatch({
-        type: createAnnouncementAction.setIsBannerImageSrcFocused,
+      announcementDispatch({
+        type: announcementAction.setIsBannerImageSrcFocused,
         payload: false,
       });
     },
     onChange: (event) => {
-      createAnnouncementDispatch({
-        type: createAnnouncementAction.setBannerImageSrc,
+      announcementDispatch({
+        type: announcementAction.setBannerImageSrc,
         payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
-      createAnnouncementDispatch({
-        type: createAnnouncementAction.setIsBannerImageSrcFocused,
+      announcementDispatch({
+        type: announcementAction.setIsBannerImageSrcFocused,
         payload: true,
       });
     },
@@ -560,20 +744,20 @@ function CreateAnnouncement() {
     isValidInputText: isValidBannerImageAlt,
     label: "Banner image alt text",
     onBlur: () => {
-      createAnnouncementDispatch({
-        type: createAnnouncementAction.setIsBannerImageAltFocused,
+      announcementDispatch({
+        type: announcementAction.setIsBannerImageAltFocused,
         payload: false,
       });
     },
     onChange: (event) => {
-      createAnnouncementDispatch({
-        type: createAnnouncementAction.setBannerImageAlt,
+      announcementDispatch({
+        type: announcementAction.setBannerImageAlt,
         payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
-      createAnnouncementDispatch({
-        type: createAnnouncementAction.setIsBannerImageAltFocused,
+      announcementDispatch({
+        type: announcementAction.setIsBannerImageAltFocused,
         payload: true,
       });
     },
@@ -594,8 +778,8 @@ function CreateAnnouncement() {
           </Tooltip>
         ),
         buttonOnClick: () => {
-          createAnnouncementDispatch({
-            type: createAnnouncementAction.setModifyArticleParagraph,
+          announcementDispatch({
+            type: announcementAction.removeParagraph,
             payload: {
               index,
               kind: "delete",
@@ -616,8 +800,8 @@ function CreateAnnouncement() {
           </Tooltip>
         ),
         buttonOnClick: () => {
-          createAnnouncementDispatch({
-            type: createAnnouncementAction.setModifyArticleParagraph,
+          announcementDispatch({
+            type: announcementAction.removeParagraph,
             payload: {
               index,
               kind: "insert",
@@ -646,8 +830,8 @@ function CreateAnnouncement() {
         inputText: article[index],
         isValidInputText: areValidArticleParagraphs[index],
         onBlur: () => {
-          createAnnouncementDispatch({
-            type: createAnnouncementAction.setAreArticleParagraphsFocused,
+          announcementDispatch({
+            type: announcementAction.setAreArticleParagraphsFocused,
             payload: {
               index,
               value: false,
@@ -655,8 +839,8 @@ function CreateAnnouncement() {
           });
         },
         onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
-          createAnnouncementDispatch({
-            type: createAnnouncementAction.setArticle,
+          announcementDispatch({
+            type: announcementAction.addParagraph,
             payload: {
               index,
               value: event.currentTarget.value,
@@ -664,8 +848,8 @@ function CreateAnnouncement() {
           });
         },
         onFocus: () => {
-          createAnnouncementDispatch({
-            type: createAnnouncementAction.setAreArticleParagraphsFocused,
+          announcementDispatch({
+            type: announcementAction.setAreArticleParagraphsFocused,
             payload: {
               index,
               value: true,
@@ -692,8 +876,8 @@ function CreateAnnouncement() {
       </Tooltip>
     ),
     buttonOnClick: () => {
-      createAnnouncementDispatch({
-        type: createAnnouncementAction.setArticle,
+      announcementDispatch({
+        type: announcementAction.addParagraph,
         payload: {
           index: article.length,
           value: "",
@@ -710,17 +894,17 @@ function CreateAnnouncement() {
     semanticName: "submit button",
     leftIcon: <TbUpload />,
     buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
-      createAnnouncementDispatch({
-        type: createAnnouncementAction.setTriggerFormSubmit,
+      announcementDispatch({
+        type: announcementAction.setTriggerFormSubmit,
         payload: true,
       });
     },
     // ensures form submit happens only once
-    buttonDisabled: stepsInError.size > 0 || triggerFormSubmit,
+    buttonDisabled: pagesInError.size > 0 || triggerFormSubmit,
   };
-  /** ------------- end info objects for input creators ------------- */
+  
 
-  /** ------------- begin input creators ------------- */
+  
   const createdArticleParagraphsTextAreaInputs =
     returnAccessibleDynamicTextAreaInputElements(
       articleParagraphTextAreaInputsCreatorInfo
@@ -743,14 +927,14 @@ function CreateAnnouncement() {
       addNewArticleParagraphButtonCreatorInfo,
       submitButtonCreatorInfo,
     ]);
-  /** ------------- end input creators ------------- */
+  
 
-  /** ------------- begin input display ------------- */
+  
   const displaySubmitButton =
-    currentStepperPosition === CREATE_ANNOUNCEMENT_MAX_STEPPER_POSITION ? (
+    currentStepperPosition === ANNOUNCEMENT_MAX_STEPPER_POSITION ? (
       <Tooltip
         label={
-          stepsInError.size > 0
+          pagesInError.size > 0
             ? "Please fix errors before submitting"
             : "Submit Announcement form"
         }
@@ -801,7 +985,7 @@ function CreateAnnouncement() {
     </FormLayoutWrapper>
   );
 
-  const CREATE_ANNOUNCEMENT_REVIEW_OBJECT: FormReviewObjectArray = {
+  const ANNOUNCEMENT_REVIEW_OBJECT: FormReviewObjectArray = {
     "Announcement Details": [
       {
         inputName: "Article Title",
@@ -826,15 +1010,15 @@ function CreateAnnouncement() {
     ],
   };
 
-  const dynamicCreateAnnouncementFormReviewObject = createAnnouncementFormReviewObject({
-    initialAnnouncementFormReviewObject: CREATE_ANNOUNCEMENT_REVIEW_OBJECT,
+  const dynamicAnnouncementFormReviewObject = announcementFormReviewObject({
+    initialAnnouncementFormReviewObject: ANNOUNCEMENT_REVIEW_OBJECT,
     article,
     areValidArticleParagraphs,
   });
 
-  const displayCreateAnnouncementReviewPage = (
+  const displayAnnouncementReviewPage = (
     <FormReviewPage
-      formReviewObject={dynamicCreateAnnouncementFormReviewObject}
+      formReviewObject={dynamicAnnouncementFormReviewObject}
       formName="Create Announcement"
     />
   );
@@ -856,31 +1040,30 @@ function CreateAnnouncement() {
     />
   );
 
-  const displayCreateAnnouncementForm =
+  const displayAnnouncementForm =
     currentStepperPosition === 0
       ? displayAnnouncementDetailsFormPage
       : currentStepperPosition === 1
       ? displayArticleParagraphsFormPage
       : currentStepperPosition === 2
-      ? displayCreateAnnouncementReviewPage
+      ? displayAnnouncementReviewPage
       : displaySubmitButton;
 
-  const displayCreateAnnouncementComponent = (
+  const displayAnnouncementComponent = (
     <StepperWrapper
       childrenTitle="Create Announcement"
       currentStepperPosition={currentStepperPosition}
-      setCurrentStepperPosition={createAnnouncementAction.setCurrentStepperPosition}
-      descriptionObjectsArray={CREATE_ANNOUNCEMENT_DESCRIPTION_OBJECTS}
-      maxStepperPosition={CREATE_ANNOUNCEMENT_MAX_STEPPER_POSITION}
-      parentComponentDispatch={createAnnouncementDispatch}
-      stepsInError={stepsInError}
+      setCurrentStepperPosition={announcementAction.setCurrentStepperPosition}
+      descriptionObjectsArray={ANNOUNCEMENT_DESCRIPTION_OBJECTS}
+      maxStepperPosition={ANNOUNCEMENT_MAX_STEPPER_POSITION}
+      parentComponentDispatch={announcementDispatch}
+      pagesInError={pagesInError}
     >
       {displaySubmitSuccessNotificationModal}
-      {displayCreateAnnouncementForm}
+      {displayAnnouncementForm}
     </StepperWrapper>
   );
-  /** ------------- end input display ------------- */
-  return displayCreateAnnouncementComponent;
-}
+  
+  return displayAnnouncementComponent;
 
-export default CreateAnnouncement;
+ */

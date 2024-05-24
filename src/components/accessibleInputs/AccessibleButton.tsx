@@ -10,11 +10,14 @@ import {
 import {
   TbArrowDown,
   TbArrowUp,
+  TbCircleArrowDown,
+  TbCircleArrowUp,
   TbDownload,
   TbEdit,
   TbFilter,
   TbPlus,
   TbRefresh,
+  TbRowInsertBottom,
   TbSearch,
   TbTrash,
   TbUpload,
@@ -29,16 +32,19 @@ type AccessibleButtonKind =
   | "add"
   | "default"
   | "delete"
+  | "down"
   | "download"
   | "edit"
   | "filter"
   | "hide"
+  | "insert"
   | "next"
   | "previous"
   | "refresh"
   | "search"
   | "show"
-  | "submit";
+  | "submit"
+  | "up";
 
 type AccessibleButtonAttributes = {
   compact?: boolean;
@@ -96,9 +102,11 @@ function AccessibleButton({ attributes }: AccessibleButtonProps) {
     add: <TbPlus />,
     default: null,
     delete: <TbTrash />,
+    down: <TbCircleArrowDown />,
     download: <TbDownload />,
     edit: <TbEdit />,
     filter: <TbFilter />,
+    insert: <TbRowInsertBottom />,
     hide: <TbArrowDown />,
     next: <TiArrowRightThick />,
     previous: <TiArrowLeftThick />,
@@ -106,6 +114,7 @@ function AccessibleButton({ attributes }: AccessibleButtonProps) {
     search: <TbSearch />,
     show: <TbArrowUp />,
     submit: <TbUpload />,
+    up: <TbCircleArrowUp />,
   };
 
   const leftIcon = attributes.leftIcon ?? leftIconTable[kind];

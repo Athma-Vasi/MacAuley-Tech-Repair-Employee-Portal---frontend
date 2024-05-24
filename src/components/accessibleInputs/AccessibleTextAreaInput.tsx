@@ -1,12 +1,4 @@
-import {
-  Container,
-  Group,
-  MantineSize,
-  Popover,
-  Stack,
-  Text,
-  Textarea,
-} from "@mantine/core";
+import { Container, MantineSize, Popover, Stack, Textarea } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { ChangeEvent, Dispatch, KeyboardEvent, ReactNode, useState } from "react";
 import React from "react";
@@ -29,8 +21,8 @@ type AccessibleTextAreaInputAttributes<
   ariaAutoComplete?: "both" | "list" | "none" | "inline";
   autoComplete?: "on" | "off";
   disabled?: boolean;
-  dynamicInputs?: ReactNode[]; // inputs created by the user (ex: buttons in the survey builder)
   icon?: ReactNode;
+  index?: number;
   initialInputValue?: string;
   label?: ReactNode;
   maxLength?: number;
@@ -44,10 +36,23 @@ type AccessibleTextAreaInputAttributes<
   onKeyDown?: (event: KeyboardEvent<HTMLTextAreaElement>) => void;
   /** stepper page location of input. default 0 = first page = step 0 */
   page?: number;
-  parentDispatch: Dispatch<
+  parentDispatch?: Dispatch<
     | {
         action: ValidValueAction;
         payload: string;
+      }
+    | {
+        action: InvalidValueAction;
+        payload: SetPageInErrorPayload;
+      }
+  >;
+  parentDynamicDispatch?: Dispatch<
+    | {
+        action: ValidValueAction;
+        payload: {
+          index: number;
+          value: string;
+        };
       }
     | {
         action: InvalidValueAction;
@@ -83,8 +88,8 @@ function AccessibleTextAreaInput<
     ariaAutoComplete = "none",
     autoComplete = "off",
     disabled = false,
-    dynamicInputs = null,
     icon = null,
+    index,
     initialInputValue = "",
     maxLength = 2000,
     maxRows = 7,
@@ -96,6 +101,7 @@ function AccessibleTextAreaInput<
     onFocus,
     onKeyDown,
     parentDispatch,
+    parentDynamicDispatch,
     validValueAction,
     invalidValueAction,
     page = 0,
@@ -118,23 +124,12 @@ function AccessibleTextAreaInput<
     useDisclosure(false);
 
   const {
-    globalState: { themeObject, padding },
+    globalState: { themeObject },
   } = useGlobalState();
 
   const {
     generalColors: { greenColorShade, grayColorShade },
   } = returnThemeColors({ themeObject, colorsSwatches: COLORS_SWATCHES });
-
-  const dynamicInputLabel = dynamicInputs ? (
-    <Group w="100%" position="apart" py={padding}>
-      <Text size="sm">{label}</Text>
-      {dynamicInputs.map((input, index) => (
-        <Group key={`${index}`}>{input}</Group>
-      ))}
-    </Group>
-  ) : (
-    label
-  );
 
   const rightIcon = rightSection ? (
     rightSectionIcon ? (
@@ -208,25 +203,40 @@ function AccessibleTextAreaInput<
               disabled={disabled}
               error={!isValueBufferValid && value !== initialInputValue}
               icon={leftIcon}
-              label={dynamicInputLabel}
+              label={label}
               maxLength={maxLength}
               maxRows={maxRows}
               minLength={minLength}
               minRows={minRows}
               name={name}
               onBlur={() => {
-                parentDispatch({
-                  action: invalidValueAction,
-                  payload: {
-                    kind: isValueBufferValid ? "delete" : "add",
-                    page,
-                  },
-                });
+                if (index === undefined) {
+                  parentDispatch?.({
+                    action: invalidValueAction,
+                    payload: {
+                      kind: isValueBufferValid ? "delete" : "add",
+                      page,
+                    },
+                  });
 
-                parentDispatch({
-                  action: validValueAction,
-                  payload: valueBuffer,
-                });
+                  parentDispatch?.({
+                    action: validValueAction,
+                    payload: valueBuffer,
+                  });
+                } else {
+                  parentDynamicDispatch?.({
+                    action: invalidValueAction,
+                    payload: {
+                      kind: isValueBufferValid ? "delete" : "add",
+                      page,
+                    },
+                  });
+
+                  parentDynamicDispatch?.({
+                    action: validValueAction,
+                    payload: { index, value: valueBuffer },
+                  });
+                }
 
                 onBlur?.();
                 closePopover();

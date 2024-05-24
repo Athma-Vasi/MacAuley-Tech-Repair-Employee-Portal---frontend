@@ -327,7 +327,7 @@ const DisplayAnnouncements = lazy(
 );
 
 const CreateAnnouncement = lazy(
-  () => import("./components/announcement/create/CreateAnnouncement")
+  () => import("./components/announcement/create/Announcement")
 );
 
 const DisplayAnnouncement = lazy(
@@ -2042,7 +2042,7 @@ function App() {
 
             {/* announcements */}
             <Route path="announcement">
-              <Route index element={displayAnnouncementsElement} />
+              <Route index element={createAnnouncementElement} />
               <Route path="create" element={createAnnouncementElement} />
               <Route path=":announcementId" element={displayAnnouncementElement} />
             </Route>
