@@ -223,6 +223,7 @@ function AddressChange() {
         name: "country",
         parentDispatch: addressChangeDispatch,
         validValueAction: addressChangeAction.setCountry,
+        value: country,
       }}
     />
   );
@@ -235,6 +236,7 @@ function AddressChange() {
           name: "province",
           parentDispatch: addressChangeDispatch,
           validValueAction: addressChangeAction.setProvince,
+          value: province,
         }}
       />
     ) : (
@@ -244,6 +246,7 @@ function AddressChange() {
           name: "state",
           parentDispatch: addressChangeDispatch,
           validValueAction: addressChangeAction.setState,
+          value: state,
         }}
       />
     );

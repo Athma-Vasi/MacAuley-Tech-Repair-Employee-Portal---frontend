@@ -1,129 +1,356 @@
-import { Group, Title, Tooltip } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
-import { InvalidTokenError } from "jwt-decode";
-import { ChangeEvent, KeyboardEvent, MouseEvent, useEffect, useReducer } from "react";
+import { Container, Stack, Text } from "@mantine/core";
+import { useEffect, useReducer, useRef } from "react";
 import { useErrorBoundary } from "react-error-boundary";
-import { TbUpload } from "react-icons/tb";
-import { useNavigate } from "react-router-dom";
 
-import { DEPARTMENT_DATA, DEPARTMENT_JOB_POSITION_MAP } from "../../../constants/data";
-import {
-  EMAIL_REGEX,
-  FULL_NAME_REGEX,
-  GRAMMAR_TEXT_INPUT_REGEX,
-  GRAMMAR_TEXTAREA_INPUT_REGEX,
-  PHONE_NUMBER_REGEX,
-  URL_REGEX,
-} from "../../../constants/regex";
-import { globalAction } from "../../../context/globalProvider/state";
-import { useGlobalState, useWrapFetch } from "../../../hooks";
-import {
-  AccessibleErrorValidTextElements,
-  AccessibleSelectedDeselectedTextElements,
-  returnAccessibleButtonElements,
-  returnAccessibleCheckboxSingleInputElements,
-  returnAccessiblePhoneNumberTextInputElements,
-  returnAccessibleSelectInputElements,
-  returnAccessibleTextAreaInputElements,
-  returnAccessibleTextInputElements,
-} from "../../../jsxCreators";
-import {
-  Department,
-  JobPosition,
-  PhoneNumber,
-  ResourceRequestServerResponse,
-} from "../../../types";
-import {
-  returnEmailValidationText,
-  returnGrammarValidationText,
-  returnPhoneNumberValidationText,
-  returnUrlValidationText,
-  urlBuilder,
-} from "../../../utils";
-import FormReviewPage, {
-  FormReviewObjectArray,
-} from "../../formReviewPage/FormReviewPage";
-import { NotificationModal } from "../../notificationModal";
-import {
-  AccessibleButtonCreatorInfo,
-  AccessibleCheckboxSingleInputCreatorInfo,
-  AccessiblePhoneNumberTextInputCreatorInfo,
-  AccessibleSelectInputCreatorInfo,
-  AccessibleTextAreaInputCreatorInfo,
-  AccessibleTextInputCreatorInfo,
-  FormLayoutWrapper,
-  StepperWrapper,
-} from "../../wrappers";
-import {
-  CREATE_REFERMENT_DESCRIPTION_OBJECTS,
-  CREATE_REFERMENT_MAX_STEPPER_POSITION,
-} from "../constants";
-import {
-  createRefermentAction,
-  createRefermentReducer,
-  initialCreateRefermentState,
-} from "./state";
-import { RefermentDocument } from "./types";
+import { DEPARTMENT_DATA, JOB_POSITION_DATA } from "../../../constants/data";
+import { useAuth } from "../../../hooks";
+import { useFetchInterceptor } from "../../../hooks/useFetchInterceptor";
+import { JobPosition, PhoneNumber, StepperPage } from "../../../types";
+import { formSubmitPOST } from "../../../utils";
+import { AccessibleButton } from "../../accessibleInputs/AccessibleButton";
+import { AccessibleSelectInput } from "../../accessibleInputs/AccessibleSelectInput";
+import { AccessibleStepper } from "../../accessibleInputs/AccessibleStepper";
+import { AccessibleSwitchInput } from "../../accessibleInputs/AccessibleSwitchInput";
+import { AccessibleTextAreaInput } from "../../accessibleInputs/AccessibleTextAreaInput";
+import { AccessibleTextInput } from "../../accessibleInputs/text/AccessibleTextInput";
+import { REFERMENT_ROLE_ROUTE_PATHS, returnRefermentStepperPages } from "../constants";
+import { RefermentAction, refermentAction } from "./actions";
+import { refermentReducer } from "./reducers";
+import { initialRefermentState } from "./state";
+import { RefermentSchema } from "./types";
 
-function CreateReferment() {
-  const [createRefermentState, createRefermentDispatch] = useReducer(
-    createRefermentReducer,
-    initialCreateRefermentState
+function Referment() {
+  const [refermentState, refermentDispatch] = useReducer(
+    refermentReducer,
+    initialRefermentState
   );
+
   const {
     candidateFullName,
-    isValidCandidateFullName,
-    isCandidateFullNameFocused,
-
     candidateEmail,
-    isValidCandidateEmail,
-    isCandidateEmailFocused,
-
     candidateContactNumber,
-    isValidCandidateContactNumber,
-    isCandidateContactNumberFocused,
-
     candidateCurrentJobTitle,
-    isValidCandidateCurrentJobTitle,
-    isCandidateCurrentJobTitleFocused,
-
     candidateCurrentCompany,
-    isValidCandidateCurrentCompany,
-    isCandidateCurrentCompanyFocused,
-
     candidateProfileUrl,
-    isValidCandidateProfileUrl,
-    isCandidateProfileUrlFocused,
-
     departmentReferredFor,
     positionReferredFor,
-
     positionJobDescription,
-    isValidPositionJobDescription,
-    isPositionJobDescriptionFocused,
-
     referralReason,
-    isValidReferralReason,
-    isReferralReasonFocused,
-
     additionalInformation,
-    isValidAdditionalInformation,
-    isAdditionalInformationFocused,
-
     privacyConsent,
-
     triggerFormSubmit,
-    currentStepperPosition,
-    stepsInError,
-
+    pagesInError,
     isSubmitting,
-    submitMessage,
     isSuccessful,
-    successMessage,
-    isLoading,
-    loadingMessage,
-  } = createRefermentState;
+  } = refermentState;
 
+  const {
+    authState: { sessionId, userId, username },
+  } = useAuth();
+  const { fetchInterceptor } = useFetchInterceptor();
+  const { showBoundary } = useErrorBoundary();
+
+  const fetchAbortControllerRef = useRef<AbortController | null>(null);
+  const preFetchAbortControllerRef = useRef<AbortController | null>(null);
+  const isComponentMountedRef = useRef(false);
+
+  useEffect(() => {
+    fetchAbortControllerRef.current?.abort();
+    fetchAbortControllerRef.current = new AbortController();
+    const fetchAbortController = fetchAbortControllerRef.current;
+
+    preFetchAbortControllerRef.current?.abort();
+    preFetchAbortControllerRef.current = new AbortController();
+    const preFetchAbortController = preFetchAbortControllerRef.current;
+
+    isComponentMountedRef.current = true;
+    let isComponentMounted = isComponentMountedRef.current;
+
+    if (triggerFormSubmit) {
+      const refermentSchema: RefermentSchema = {
+        additionalInformation,
+        candidateContactNumber: candidateContactNumber as PhoneNumber,
+        candidateCurrentCompany,
+        candidateCurrentJobTitle,
+        candidateEmail,
+        candidateFullName,
+        candidateProfileUrl,
+        departmentReferredFor,
+        positionJobDescription,
+        positionReferredFor,
+        privacyConsent,
+        referralReason,
+        userId,
+        username,
+        requestStatus: "pending",
+      };
+
+      formSubmitPOST({
+        dispatch: refermentDispatch,
+        fetchAbortController,
+        fetchInterceptor,
+        isComponentMounted,
+        isSubmittingAction: refermentAction.setIsSubmitting,
+        isSuccessfulAction: refermentAction.setIsSuccessful,
+        preFetchAbortController,
+        roleResourceRoutePaths: REFERMENT_ROLE_ROUTE_PATHS,
+        schema: refermentSchema,
+        schemaName: "refermentSchema",
+        sessionId,
+        showBoundary,
+        userId,
+        username,
+        userRole: "manager",
+      });
+    }
+
+    return () => {
+      isComponentMountedRef.current = false;
+      preFetchAbortController?.abort();
+      fetchAbortController?.abort();
+    };
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [triggerFormSubmit]);
+
+  if (isSubmitting) {
+    const submittingState = (
+      <Stack>
+        <Text size="md">Submitting address changes! Please wait...</Text>
+      </Stack>
+    );
+
+    return submittingState;
+  }
+
+  if (isSuccessful) {
+    const successfulState = (
+      <Stack>
+        <Text size="md">Address changes submitted successfully!</Text>
+      </Stack>
+    );
+
+    return successfulState;
+  }
+
+  const REFERMENT_STEPPER_PAGES: StepperPage[] = returnRefermentStepperPages();
+
+  const additionalInformationTextAreaInput = (
+    <AccessibleTextAreaInput
+      attributes={{
+        invalidValueAction: refermentAction.setPageInError,
+        name: "additionalInformation",
+        parentDispatch: refermentDispatch,
+        stepperPages: REFERMENT_STEPPER_PAGES,
+        validValueAction: refermentAction.setAdditionalInformation,
+        value: additionalInformation,
+      }}
+    />
+  );
+
+  const candidateContactNumberTextInput = (
+    <AccessibleTextInput
+      attributes={{
+        invalidValueAction: refermentAction.setPageInError,
+        name: "candidateContactNumber",
+        parentDispatch: refermentDispatch,
+        stepperPages: REFERMENT_STEPPER_PAGES,
+        validValueAction: refermentAction.setCandidateContactNumber,
+        value: candidateContactNumber,
+      }}
+    />
+  );
+
+  const candidateCurrentCompanyTextInput = (
+    <AccessibleTextInput
+      attributes={{
+        invalidValueAction: refermentAction.setPageInError,
+        name: "candidateCurrentCompany",
+        parentDispatch: refermentDispatch,
+        stepperPages: REFERMENT_STEPPER_PAGES,
+        validValueAction: refermentAction.setCandidateCurrentCompany,
+        value: candidateCurrentCompany,
+      }}
+    />
+  );
+
+  const candidateCurrentJobTitleTextInput = (
+    <AccessibleTextInput
+      attributes={{
+        invalidValueAction: refermentAction.setPageInError,
+        name: "candidateCurrentJobTitle",
+        parentDispatch: refermentDispatch,
+        stepperPages: REFERMENT_STEPPER_PAGES,
+        validValueAction: refermentAction.setCandidateCurrentJobTitle,
+        value: candidateCurrentJobTitle,
+      }}
+    />
+  );
+
+  const candidateEmailTextInput = (
+    <AccessibleTextInput
+      attributes={{
+        invalidValueAction: refermentAction.setPageInError,
+        name: "candidateEmail",
+        parentDispatch: refermentDispatch,
+        stepperPages: REFERMENT_STEPPER_PAGES,
+        validValueAction: refermentAction.setCandidateEmail,
+        value: candidateEmail,
+      }}
+    />
+  );
+
+  const candidateFullNameTextInput = (
+    <AccessibleTextInput
+      attributes={{
+        invalidValueAction: refermentAction.setPageInError,
+        name: "candidateFullName",
+        parentDispatch: refermentDispatch,
+        stepperPages: REFERMENT_STEPPER_PAGES,
+        validValueAction: refermentAction.setCandidateFullName,
+        value: candidateFullName,
+      }}
+    />
+  );
+
+  const candidateProfileUrlTextInput = (
+    <AccessibleTextInput
+      attributes={{
+        invalidValueAction: refermentAction.setPageInError,
+        name: "candidateProfileUrl",
+        parentDispatch: refermentDispatch,
+        stepperPages: REFERMENT_STEPPER_PAGES,
+        validValueAction: refermentAction.setCandidateProfileUrl,
+        value: candidateProfileUrl,
+      }}
+    />
+  );
+
+  const departmentReferredForSelectInput = (
+    <AccessibleSelectInput
+      attributes={{
+        data: DEPARTMENT_DATA,
+        name: "departmentReferredFor",
+        parentDispatch: refermentDispatch,
+        value: departmentReferredFor,
+        validValueAction: refermentAction.setDepartmentReferredFor,
+      }}
+    />
+  );
+
+  const positionReferredForSelectInput = (
+    <AccessibleSelectInput<RefermentAction["setPositionReferredFor"], JobPosition>
+      attributes={{
+        data: JOB_POSITION_DATA,
+        name: "positionReferredFor",
+        parentDispatch: refermentDispatch,
+        value: positionReferredFor,
+        validValueAction: refermentAction.setPositionReferredFor,
+      }}
+    />
+  );
+
+  const positionJobDescriptionTextAreaInput = (
+    <AccessibleTextAreaInput
+      attributes={{
+        invalidValueAction: refermentAction.setPageInError,
+        name: "positionJobDescription",
+        parentDispatch: refermentDispatch,
+        stepperPages: REFERMENT_STEPPER_PAGES,
+        validValueAction: refermentAction.setPositionJobDescription,
+        value: positionJobDescription,
+      }}
+    />
+  );
+
+  const referralReasonTextAreaInput = (
+    <AccessibleTextAreaInput
+      attributes={{
+        invalidValueAction: refermentAction.setPageInError,
+        name: "referralReason",
+        parentDispatch: refermentDispatch,
+        stepperPages: REFERMENT_STEPPER_PAGES,
+        validValueAction: refermentAction.setReferralReason,
+        value: referralReason,
+      }}
+    />
+  );
+
+  const privacyConsentSwitch = (
+    <AccessibleSwitchInput
+      attributes={{
+        checked: privacyConsent,
+        invalidValueAction: refermentAction.setPageInError,
+        name: "privacyConsent",
+        offLabel: "No",
+        onLabel: "Yes",
+        parentDispatch: refermentDispatch,
+        switchOffDescription: "I do not acknowledge.",
+        switchOnDescription: "I acknowledge to share candidate's personal information.",
+        validValueAction: refermentAction.setPrivacyConsent,
+        value: privacyConsent ? "Yes" : "No",
+      }}
+    />
+  );
+
+  const submitButton = (
+    <AccessibleButton
+      attributes={{
+        enabledScreenreaderText: "All inputs are valid. Click to submit form.",
+        disabledScreenreaderText: "Please fix errors before submitting form.",
+        disabled: pagesInError.size > 0 || triggerFormSubmit,
+        kind: "submit",
+        name: "submit",
+        onClick: (_event: React.MouseEvent<HTMLButtonElement>) => {
+          refermentDispatch({
+            action: refermentAction.setTriggerFormSubmit,
+            payload: true,
+          });
+        },
+      }}
+    />
+  );
+
+  const firstPage = (
+    <Stack>
+      {candidateFullNameTextInput}
+      {candidateEmailTextInput}
+      {candidateContactNumberTextInput}
+      {candidateCurrentJobTitleTextInput}
+      {candidateCurrentCompanyTextInput}
+      {candidateProfileUrlTextInput}
+    </Stack>
+  );
+
+  const secondPage = (
+    <Stack>
+      {departmentReferredForSelectInput}
+      {positionReferredForSelectInput}
+      {positionJobDescriptionTextAreaInput}
+      {referralReasonTextAreaInput}
+      {additionalInformationTextAreaInput}
+      {privacyConsentSwitch}
+    </Stack>
+  );
+
+  const stepper = (
+    <AccessibleStepper
+      attributes={{
+        componentState: refermentState,
+        pageElements: [firstPage, secondPage],
+        stepperPages: REFERMENT_STEPPER_PAGES,
+        submitButton,
+      }}
+    />
+  );
+
+  return <Container w={700}>{stepper}</Container>;
+}
+
+export default Referment;
+
+/**
+ * 
   const { globalDispatch } = useGlobalState();
 
   const { wrappedFetch } = useWrapFetch();
@@ -143,13 +370,13 @@ function CreateReferment() {
     let isMounted = true;
     const controller = new AbortController();
 
-    async function handleCreateRefermentFormSubmit() {
-      createRefermentDispatch({
-        type: createRefermentAction.setIsSubmitting,
+    async function handleRefermentFormSubmit() {
+      refermentDispatch({
+        type: refermentAction.setIsSubmitting,
         payload: true,
       });
-      createRefermentDispatch({
-        type: createRefermentAction.setSubmitMessage,
+      refermentDispatch({
+        type: refermentAction.setSubmitMessage,
         payload: `Submitting candidate ${candidateFullName} for referment...`,
       });
       openSubmitSuccessNotificationModal();
@@ -200,12 +427,12 @@ function CreateReferment() {
           throw new Error(data.message);
         }
 
-        createRefermentDispatch({
-          type: createRefermentAction.setIsSuccessful,
+        refermentDispatch({
+          type: refermentAction.setIsSuccessful,
           payload: true,
         });
-        createRefermentDispatch({
-          type: createRefermentAction.setSuccessMessage,
+        refermentDispatch({
+          type: refermentAction.setSuccessMessage,
           payload:
             data.message ??
             `Successfully submitted candidate ${candidateFullName} for referment.`,
@@ -245,16 +472,16 @@ function CreateReferment() {
         showBoundary(error);
       } finally {
         if (isMounted) {
-          createRefermentDispatch({
-            type: createRefermentAction.setIsSubmitting,
+          refermentDispatch({
+            type: refermentAction.setIsSubmitting,
             payload: false,
           });
-          createRefermentDispatch({
-            type: createRefermentAction.setSubmitMessage,
+          refermentDispatch({
+            type: refermentAction.setSubmitMessage,
             payload: "",
           });
-          createRefermentDispatch({
-            type: createRefermentAction.setTriggerFormSubmit,
+          refermentDispatch({
+            type: refermentAction.setTriggerFormSubmit,
             payload: false,
           });
         }
@@ -262,7 +489,7 @@ function CreateReferment() {
     }
 
     if (triggerFormSubmit) {
-      handleCreateRefermentFormSubmit();
+      handleRefermentFormSubmit();
     }
 
     return () => {
@@ -277,8 +504,8 @@ function CreateReferment() {
   useEffect(() => {
     const isValid = FULL_NAME_REGEX.test(candidateFullName);
 
-    createRefermentDispatch({
-      type: createRefermentAction.setIsValidCandidateFullName,
+    refermentDispatch({
+      type: refermentAction.setIsValidCandidateFullName,
       payload: isValid,
     });
   }, [candidateFullName]);
@@ -287,8 +514,8 @@ function CreateReferment() {
   useEffect(() => {
     const isValid = EMAIL_REGEX.test(candidateEmail);
 
-    createRefermentDispatch({
-      type: createRefermentAction.setIsValidCandidateEmail,
+    refermentDispatch({
+      type: refermentAction.setIsValidCandidateEmail,
       payload: isValid,
     });
   }, [candidateEmail]);
@@ -301,22 +528,22 @@ function CreateReferment() {
     if (isCandidateContactNumberFocused) {
       switch (contactLength) {
         case 4: {
-          createRefermentDispatch({
-            type: createRefermentAction.setCandidateContactNumber,
+          refermentDispatch({
+            type: refermentAction.setCandidateContactNumber,
             payload: `${candidateContactNumber}(` as PhoneNumber | string,
           });
           break;
         }
         case 8: {
-          createRefermentDispatch({
-            type: createRefermentAction.setCandidateContactNumber,
+          refermentDispatch({
+            type: refermentAction.setCandidateContactNumber,
             payload: `${candidateContactNumber}) ` as PhoneNumber | string,
           });
           break;
         }
         case 13: {
-          createRefermentDispatch({
-            type: createRefermentAction.setCandidateContactNumber,
+          refermentDispatch({
+            type: refermentAction.setCandidateContactNumber,
             payload: `${candidateContactNumber}-` as PhoneNumber | string,
           });
           break;
@@ -327,8 +554,8 @@ function CreateReferment() {
       }
     }
 
-    createRefermentDispatch({
-      type: createRefermentAction.setIsValidCandidateContactNumber,
+    refermentDispatch({
+      type: refermentAction.setIsValidCandidateContactNumber,
       payload: isValid,
     });
   }, [candidateContactNumber, isCandidateContactNumberFocused]);
@@ -337,8 +564,8 @@ function CreateReferment() {
   useEffect(() => {
     const isValid = GRAMMAR_TEXT_INPUT_REGEX.test(candidateCurrentJobTitle);
 
-    createRefermentDispatch({
-      type: createRefermentAction.setIsValidCandidateCurrentJobTitle,
+    refermentDispatch({
+      type: refermentAction.setIsValidCandidateCurrentJobTitle,
       payload: isValid,
     });
   }, [candidateCurrentJobTitle]);
@@ -347,8 +574,8 @@ function CreateReferment() {
   useEffect(() => {
     const isValid = GRAMMAR_TEXT_INPUT_REGEX.test(candidateCurrentCompany);
 
-    createRefermentDispatch({
-      type: createRefermentAction.setIsValidCandidateCurrentCompany,
+    refermentDispatch({
+      type: refermentAction.setIsValidCandidateCurrentCompany,
       payload: isValid,
     });
   }, [candidateCurrentCompany]);
@@ -357,8 +584,8 @@ function CreateReferment() {
   useEffect(() => {
     const isValid = URL_REGEX.test(candidateProfileUrl);
 
-    createRefermentDispatch({
-      type: createRefermentAction.setIsValidCandidateProfileUrl,
+    refermentDispatch({
+      type: refermentAction.setIsValidCandidateProfileUrl,
       payload: isValid,
     });
   }, [candidateProfileUrl]);
@@ -367,8 +594,8 @@ function CreateReferment() {
   useEffect(() => {
     const isValid = GRAMMAR_TEXTAREA_INPUT_REGEX.test(positionJobDescription);
 
-    createRefermentDispatch({
-      type: createRefermentAction.setIsValidPositionJobDescription,
+    refermentDispatch({
+      type: refermentAction.setIsValidPositionJobDescription,
       payload: isValid,
     });
   }, [positionJobDescription]);
@@ -377,8 +604,8 @@ function CreateReferment() {
   useEffect(() => {
     const isValid = GRAMMAR_TEXTAREA_INPUT_REGEX.test(referralReason);
 
-    createRefermentDispatch({
-      type: createRefermentAction.setIsValidReferralReason,
+    refermentDispatch({
+      type: refermentAction.setIsValidReferralReason,
       payload: isValid,
     });
   }, [referralReason]);
@@ -387,8 +614,8 @@ function CreateReferment() {
   useEffect(() => {
     const isValid = GRAMMAR_TEXTAREA_INPUT_REGEX.test(additionalInformation);
 
-    createRefermentDispatch({
-      type: createRefermentAction.setIsValidAdditionalInformation,
+    refermentDispatch({
+      type: refermentAction.setIsValidAdditionalInformation,
       payload: isValid,
     });
   }, [additionalInformation]);
@@ -407,9 +634,9 @@ function CreateReferment() {
 
     const isStepInError = areRequiredStepsInError || isOptionalStepInError;
 
-    // if any of the steps are in error, add step 1 to the stepsInError set
-    createRefermentDispatch({
-      type: createRefermentAction.setStepsInError,
+    // if any of the steps are in error, add step 1 to the pagesInError set
+    refermentDispatch({
+      type: refermentAction.setPageInError,
       payload: {
         kind: isStepInError ? "add" : "delete",
         step: 0,
@@ -435,9 +662,9 @@ function CreateReferment() {
 
     const isStepInError = areRequiredStepsInError || areOptionalStepsInError;
 
-    // if any of the steps are in error, add step 2 to the stepsInError set
-    createRefermentDispatch({
-      type: createRefermentAction.setStepsInError,
+    // if any of the steps are in error, add step 2 to the pagesInError set
+    refermentDispatch({
+      type: refermentAction.setPageInError,
       payload: {
         kind: isStepInError ? "add" : "delete",
         step: 1,
@@ -592,20 +819,20 @@ function CreateReferment() {
     isValidInputText: isValidCandidateFullName,
     label: "Candidate Name",
     onBlur: () => {
-      createRefermentDispatch({
-        type: createRefermentAction.setIsCandidateFullNameFocused,
+      refermentDispatch({
+        type: refermentAction.setIsCandidateFullNameFocused,
         payload: false,
       });
     },
     onChange: (event: ChangeEvent<HTMLInputElement>) => {
-      createRefermentDispatch({
-        type: createRefermentAction.setCandidateFullName,
+      refermentDispatch({
+        type: refermentAction.setCandidateFullName,
         payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
-      createRefermentDispatch({
-        type: createRefermentAction.setIsCandidateFullNameFocused,
+      refermentDispatch({
+        type: refermentAction.setIsCandidateFullNameFocused,
         payload: true,
       });
     },
@@ -626,20 +853,20 @@ function CreateReferment() {
     isValidInputText: isValidCandidateEmail,
     label: "Candidate Email",
     onBlur: () => {
-      createRefermentDispatch({
-        type: createRefermentAction.setIsCandidateEmailFocused,
+      refermentDispatch({
+        type: refermentAction.setIsCandidateEmailFocused,
         payload: false,
       });
     },
     onChange: (event: ChangeEvent<HTMLInputElement>) => {
-      createRefermentDispatch({
-        type: createRefermentAction.setCandidateEmail,
+      refermentDispatch({
+        type: refermentAction.setCandidateEmail,
         payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
-      createRefermentDispatch({
-        type: createRefermentAction.setIsCandidateEmailFocused,
+      refermentDispatch({
+        type: refermentAction.setIsCandidateEmailFocused,
         payload: true,
       });
     },
@@ -659,20 +886,20 @@ function CreateReferment() {
       isValidInputText: isValidCandidateContactNumber,
       label: "Candidate Contact Number",
       onBlur: () => {
-        createRefermentDispatch({
-          type: createRefermentAction.setIsCandidateContactNumberFocused,
+        refermentDispatch({
+          type: refermentAction.setIsCandidateContactNumberFocused,
           payload: false,
         });
       },
       onChange: (event: ChangeEvent<HTMLInputElement>) => {
-        createRefermentDispatch({
-          type: createRefermentAction.setCandidateContactNumber,
+        refermentDispatch({
+          type: refermentAction.setCandidateContactNumber,
           payload: event.currentTarget.value,
         });
       },
       onFocus: () => {
-        createRefermentDispatch({
-          type: createRefermentAction.setIsCandidateContactNumberFocused,
+        refermentDispatch({
+          type: refermentAction.setIsCandidateContactNumberFocused,
           payload: true,
         });
       },
@@ -682,8 +909,8 @@ function CreateReferment() {
             candidateContactNumber.length === 14 ||
             candidateContactNumber.length === 9
           ) {
-            createRefermentDispatch({
-              type: createRefermentAction.setCandidateContactNumber,
+            refermentDispatch({
+              type: refermentAction.setCandidateContactNumber,
               payload: candidateContactNumber.slice(0, -1) as PhoneNumber | string,
             });
           }
@@ -704,20 +931,20 @@ function CreateReferment() {
     isValidInputText: isValidCandidateProfileUrl,
     label: "Candidate Profile URL",
     onBlur: () => {
-      createRefermentDispatch({
-        type: createRefermentAction.setIsCandidateProfileUrlFocused,
+      refermentDispatch({
+        type: refermentAction.setIsCandidateProfileUrlFocused,
         payload: false,
       });
     },
     onChange: (event: ChangeEvent<HTMLInputElement>) => {
-      createRefermentDispatch({
-        type: createRefermentAction.setCandidateProfileUrl,
+      refermentDispatch({
+        type: refermentAction.setCandidateProfileUrl,
         payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
-      createRefermentDispatch({
-        type: createRefermentAction.setIsCandidateProfileUrlFocused,
+      refermentDispatch({
+        type: refermentAction.setIsCandidateProfileUrlFocused,
         payload: true,
       });
     },
@@ -734,20 +961,20 @@ function CreateReferment() {
     isValidInputText: isValidCandidateCurrentJobTitle,
     label: "Candidate Current Job Title",
     onBlur: () => {
-      createRefermentDispatch({
-        type: createRefermentAction.setIsCandidateCurrentJobTitleFocused,
+      refermentDispatch({
+        type: refermentAction.setIsCandidateCurrentJobTitleFocused,
         payload: false,
       });
     },
     onChange: (event: ChangeEvent<HTMLInputElement>) => {
-      createRefermentDispatch({
-        type: createRefermentAction.setCandidateCurrentJobTitle,
+      refermentDispatch({
+        type: refermentAction.setCandidateCurrentJobTitle,
         payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
-      createRefermentDispatch({
-        type: createRefermentAction.setIsCandidateCurrentJobTitleFocused,
+      refermentDispatch({
+        type: refermentAction.setIsCandidateCurrentJobTitleFocused,
         payload: true,
       });
     },
@@ -766,20 +993,20 @@ function CreateReferment() {
     isValidInputText: isValidCandidateCurrentCompany,
     label: "Candidate Current Company",
     onBlur: () => {
-      createRefermentDispatch({
-        type: createRefermentAction.setIsCandidateCurrentCompanyFocused,
+      refermentDispatch({
+        type: refermentAction.setIsCandidateCurrentCompanyFocused,
         payload: false,
       });
     },
     onChange: (event: ChangeEvent<HTMLInputElement>) => {
-      createRefermentDispatch({
-        type: createRefermentAction.setCandidateCurrentCompany,
+      refermentDispatch({
+        type: refermentAction.setCandidateCurrentCompany,
         payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
-      createRefermentDispatch({
-        type: createRefermentAction.setIsCandidateCurrentCompanyFocused,
+      refermentDispatch({
+        type: refermentAction.setIsCandidateCurrentCompanyFocused,
         payload: true,
       });
     },
@@ -795,8 +1022,8 @@ function CreateReferment() {
     data: DEPARTMENT_DATA,
     value: departmentReferredFor,
     onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-      createRefermentDispatch({
-        type: createRefermentAction.setDepartmentReferredFor,
+      refermentDispatch({
+        type: refermentAction.setDepartmentReferredFor,
         payload: event.currentTarget.value as Department,
       });
     },
@@ -810,8 +1037,8 @@ function CreateReferment() {
     data: DEPARTMENT_JOB_POSITION_MAP.get(departmentReferredFor) ?? [],
     value: positionReferredFor,
     onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-      createRefermentDispatch({
-        type: createRefermentAction.setPositionReferredFor,
+      refermentDispatch({
+        type: refermentAction.setPositionReferredFor,
         payload: event.currentTarget.value as JobPosition,
       });
     },
@@ -829,20 +1056,20 @@ function CreateReferment() {
       isValidInputText: isValidPositionJobDescription,
       label: "Job Description",
       onBlur: () => {
-        createRefermentDispatch({
-          type: createRefermentAction.setIsPositionJobDescriptionFocused,
+        refermentDispatch({
+          type: refermentAction.setIsPositionJobDescriptionFocused,
           payload: false,
         });
       },
       onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
-        createRefermentDispatch({
-          type: createRefermentAction.setPositionJobDescription,
+        refermentDispatch({
+          type: refermentAction.setPositionJobDescription,
           payload: event.currentTarget.value,
         });
       },
       onFocus: () => {
-        createRefermentDispatch({
-          type: createRefermentAction.setIsPositionJobDescriptionFocused,
+        refermentDispatch({
+          type: refermentAction.setIsPositionJobDescriptionFocused,
           payload: true,
         });
       },
@@ -859,20 +1086,20 @@ function CreateReferment() {
     isValidInputText: isValidReferralReason,
     label: "Referral Reason",
     onBlur: () => {
-      createRefermentDispatch({
-        type: createRefermentAction.setIsReferralReasonFocused,
+      refermentDispatch({
+        type: refermentAction.setIsReferralReasonFocused,
         payload: false,
       });
     },
     onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
-      createRefermentDispatch({
-        type: createRefermentAction.setReferralReason,
+      refermentDispatch({
+        type: refermentAction.setReferralReason,
         payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
-      createRefermentDispatch({
-        type: createRefermentAction.setIsReferralReasonFocused,
+      refermentDispatch({
+        type: refermentAction.setIsReferralReasonFocused,
         payload: true,
       });
     },
@@ -892,20 +1119,20 @@ function CreateReferment() {
       isValidInputText: isValidAdditionalInformation,
       label: "Additional Information",
       onBlur: () => {
-        createRefermentDispatch({
-          type: createRefermentAction.setIsAdditionalInformationFocused,
+        refermentDispatch({
+          type: refermentAction.setIsAdditionalInformationFocused,
           payload: false,
         });
       },
       onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
-        createRefermentDispatch({
-          type: createRefermentAction.setAdditionalInformation,
+        refermentDispatch({
+          type: refermentAction.setAdditionalInformation,
           payload: event.currentTarget.value,
         });
       },
       onFocus: () => {
-        createRefermentDispatch({
-          type: createRefermentAction.setIsAdditionalInformationFocused,
+        refermentDispatch({
+          type: refermentAction.setIsAdditionalInformationFocused,
           payload: true,
         });
       },
@@ -921,8 +1148,8 @@ function CreateReferment() {
       },
       checked: privacyConsent,
       onChange: (event: ChangeEvent<HTMLInputElement>) => {
-        createRefermentDispatch({
-          type: createRefermentAction.setPrivacyConsent,
+        refermentDispatch({
+          type: refermentAction.setPrivacyConsent,
           payload: event.currentTarget.checked,
         });
       },
@@ -937,13 +1164,13 @@ function CreateReferment() {
     semanticName: "submit button",
     leftIcon: <TbUpload />,
     buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
-      createRefermentDispatch({
-        type: createRefermentAction.setTriggerFormSubmit,
+      refermentDispatch({
+        type: refermentAction.setTriggerFormSubmit,
         payload: true,
       });
     },
     // ensures form submit happens only once
-    buttonDisabled: stepsInError.size > 0 || triggerFormSubmit,
+    buttonDisabled: pagesInError.size > 0 || triggerFormSubmit,
   };
 
   const [
@@ -989,7 +1216,7 @@ function CreateReferment() {
     currentStepperPosition === CREATE_REFERMENT_MAX_STEPPER_POSITION ? (
       <Tooltip
         label={
-          stepsInError.size > 0
+          pagesInError.size > 0
             ? "Please fix errors before submitting"
             : "Submit Referment form"
         }
@@ -1110,7 +1337,7 @@ function CreateReferment() {
     />
   );
 
-  const displayCreateRefermentForm =
+  const displayRefermentForm =
     currentStepperPosition === 0
       ? displayCandidateDetailsFormPage
       : currentStepperPosition === 1
@@ -1119,22 +1346,21 @@ function CreateReferment() {
       ? displayReviewFormPage
       : displaySubmitButton;
 
-  const displayCreateRefermentComponent = (
+  const displayRefermentComponent = (
     <StepperWrapper
       childrenTitle="Referment"
       currentStepperPosition={currentStepperPosition}
       descriptionObjectsArray={CREATE_REFERMENT_DESCRIPTION_OBJECTS}
       maxStepperPosition={CREATE_REFERMENT_MAX_STEPPER_POSITION}
-      parentComponentDispatch={createRefermentDispatch}
-      setCurrentStepperPosition={createRefermentAction.setCurrentStepperPosition}
-      stepsInError={stepsInError}
+      parentComponentDispatch={refermentDispatch}
+      setCurrentStepperPosition={refermentAction.setCurrentStepperPosition}
+      pagesInError={pagesInError}
     >
       {displaySubmitSuccessNotificationModal}
-      {displayCreateRefermentForm}
+      {displayRefermentForm}
     </StepperWrapper>
   );
 
-  return displayCreateRefermentComponent;
-}
+  return displayRefermentComponent;
 
-export default CreateReferment;
+ */

@@ -313,9 +313,7 @@ const CreatePrinterIssue = lazy(
 // ╰─────────────────────────────────────────────────────────────────╯
 const DisplayReferments = lazy(() => import("./components/referment/DisplayReferments"));
 
-const CreateReferment = lazy(
-  () => import("./components/referment/create/CreateReferment")
-);
+const CreateReferment = lazy(() => import("./components/referment/create/Referment"));
 
 // ╔═════════════════════════════════════════════════════════════════╗
 //   OUTREACH

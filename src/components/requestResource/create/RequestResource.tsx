@@ -191,6 +191,7 @@ type RequestResourceState = {
         data: DEPARTMENT_DATA,
         name: "department",
         parentDispatch: requestResourceDispatch,
+        value: department,
         validValueAction: requestResourceAction.setDepartment,
       }}
     />
@@ -241,6 +242,7 @@ type RequestResourceState = {
         data: REQUEST_RESOURCE_TYPE_DATA,
         name: "resourceType",
         parentDispatch: requestResourceDispatch,
+        value: resourceType,
         validValueAction: requestResourceAction.setResourceType,
       }}
     />
@@ -252,6 +254,7 @@ type RequestResourceState = {
         data: URGENCY_DATA,
         name: "urgency",
         parentDispatch: requestResourceDispatch,
+        value: urgency,
         validValueAction: requestResourceAction.setUrgency,
       }}
     />

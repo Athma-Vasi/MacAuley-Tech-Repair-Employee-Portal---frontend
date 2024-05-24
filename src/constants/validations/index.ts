@@ -195,6 +195,11 @@ const ACKNOWLEDGEMENT_VALIDATIONS = {
   partials: [[/^(true)$/, "Must acknowledge that the information entered is correct."]],
 } as Validations;
 
+const PRIVACY_CONSENT_VALIDATIONS = {
+  full: /^(true)$/,
+  partials: [[/^(true)$/, "Must consent to share details."]],
+} as Validations;
+
 /**
  * - /^(?=.*[A-Za-z0-9])[\w\s.,!?():;"'-]{2,2000}$/i
  * - (?=.*[A-Za-z0-9]) is a positive lookahead assertion that requires the presence of at least one alphanumeric character. This ensures that the string contains at least one letter or digit.
@@ -305,6 +310,33 @@ const PHONE_NUMBER_VALIDATIONS = {
   ],
 } as Validations;
 
+/**
+ * @see https://stackoverflow.com/questions/3809401/what-is-a-good-regular-expression-to-match-a-url
+ * - https? matches "http" or "https". The "?" makes the "s" character optional, allowing for both "http" and "https" protocols.
+ * - :\/\/ matches "://".
+ * - (www\.)? matches "www." or nothing.
+ * - [-a-zA-Z0-9@:%._+~#=]{1,256} matches any letter, number, or symbol in the brackets, between 1 and 256 times.
+ * - \. matches ".".
+ * - [a-zA-Z0-9()]{1,6} matches any letter, number, or symbol in the brackets, between 1 and 6 times.
+ * - \b ensures that the URL ends at a word boundary.
+ * - ([-a-zA-Z0-9()@:%_+.~#?&//=]*) matches any letter, number, or symbol in the brackets, between 0 and infinity times.
+ */
+const URL_REGEX =
+  /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/;
+
+const URL_VALIDATIONS = {
+  full: URL_REGEX,
+  partials: [
+    [/^https?:\/\//, "Must start with 'http://' or 'https://'."],
+    [/^.{1,256}\./, "Must be between 1 and 256 characters length."],
+    [/^[a-zA-Z0-9()]{1,6}\b/, "Must be between 1 and 6 characters length."],
+    [
+      /^[-a-zA-Z0-9()@:%_+.~#?&//=]*$/,
+      "Must contain only letters, numbers, and special characters.",
+    ],
+  ],
+} as Validations;
+
 export {
   ACKNOWLEDGEMENT_VALIDATIONS,
   DATE_FULL_RANGE_VALIDATIONS,
@@ -316,6 +348,8 @@ export {
   FULL_NAME_VALIDATIONS,
   MONEY_VALIDATIONS,
   PHONE_NUMBER_VALIDATIONS,
+  PRIVACY_CONSENT_VALIDATIONS,
   TEXT_AREA_INPUT_VALIDATIONS,
   TEXT_INPUT_VALIDATIONS,
+  URL_VALIDATIONS,
 };

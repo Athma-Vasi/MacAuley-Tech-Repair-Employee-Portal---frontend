@@ -210,6 +210,7 @@ function LeaveRequest() {
         data: REASON_FOR_LEAVE_DATA,
         name: "reasonForLeave",
         parentDispatch: leaveRequestDispatch,
+        value: reasonForLeave,
         validValueAction: leaveRequestAction.setReasonForLeave,
       }}
     />

@@ -144,6 +144,7 @@ function Benefit() {
         data: CURRENCY_DATA,
         name: "currency",
         parentDispatch: benefitDispatch,
+        value: currency,
         validValueAction: benefitAction.setCurrency,
       }}
     />
@@ -210,6 +211,7 @@ function Benefit() {
         data: BENEFIT_PLAN_DATA,
         name: "planKind",
         parentDispatch: benefitDispatch,
+        value: planKind,
         validValueAction: benefitAction.setPlanKind,
       }}
     />

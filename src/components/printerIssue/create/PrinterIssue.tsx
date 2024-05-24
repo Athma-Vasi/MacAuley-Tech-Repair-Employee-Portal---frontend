@@ -230,6 +230,7 @@ function PrinterIssue() {
         data: PRINTER_MAKE_SELECT_OPTIONS,
         name: "printerMake",
         parentDispatch: printerIssueDispatch,
+        value: printerMake,
         validValueAction: printerIssueAction.setPrinterMake,
       }}
     />
@@ -294,6 +295,7 @@ function PrinterIssue() {
         data: URGENCY_DATA,
         name: "urgency",
         parentDispatch: printerIssueDispatch,
+        value: urgency,
         validValueAction: printerIssueAction.setUrgency,
       }}
     />

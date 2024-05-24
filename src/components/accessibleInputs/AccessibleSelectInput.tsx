@@ -23,7 +23,7 @@ type AccessibleSelectInputAttributes<
   required?: boolean;
   size?: MantineSize;
   validValueAction: ValidValueAction;
-  value?: string;
+  value: string;
   withAsterisk?: boolean;
 };
 
