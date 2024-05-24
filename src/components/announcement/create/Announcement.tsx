@@ -119,6 +119,7 @@ function Announcement() {
   const ANNOUNCEMENT_STEPPER_PAGES: StepperPage[] = returnAnnouncementStepperPages();
 
   const articleTextAreaInputs = article.map((paragraph, index) => {
+    // for popover validation linking
     ANNOUNCEMENT_STEPPER_PAGES[1].children.push({
       inputType: "text",
       name: `paragraph ${index + 1}`,
@@ -149,7 +150,6 @@ function Announcement() {
           disabledScreenreaderText: "Max article length reached",
           enabledScreenreaderText: `Add new paragraph: ${index + 1}`,
           kind: "add",
-          label: "",
           name: "add",
           onClick: (
             _event:
@@ -169,9 +169,9 @@ function Announcement() {
       <AccessibleButton
         attributes={{
           // disabled:false,
+          enabledScreenreaderText: `Delete paragraph ${index + 1}`,
           name: "delete",
           kind: "delete",
-          label: "",
           onClick: (
             _event:
               | React.MouseEvent<HTMLButtonElement, MouseEvent>
@@ -192,7 +192,6 @@ function Announcement() {
           // disabled: false,
           enabledScreenreaderText: `Insert paragraph between ${index} and ${index + 1}`,
           kind: "insert",
-          label: "",
           name: "insert",
           onClick: (
             _event:
@@ -214,7 +213,6 @@ function Announcement() {
           // disabled: false,
           enabledScreenreaderText: `Move paragraph ${index + 1} up`,
           kind: "up",
-          label: "",
           name: "up",
           onClick: (
             _event:
@@ -236,7 +234,6 @@ function Announcement() {
           // disabled: false,
           enabledScreenreaderText: `Move paragraph ${index + 1} down`,
           kind: "down",
-          label: "",
           name: "down",
           onClick: (
             _event:

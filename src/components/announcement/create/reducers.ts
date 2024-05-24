@@ -44,9 +44,9 @@ function announcementReducer_insertParagraph(
   state: AnnouncementState,
   dispatch: AnnouncementDispatch
 ): AnnouncementState {
-  const { index, value } = dispatch.payload as ParagraphPayload;
+  const index = dispatch.payload as number;
   const clonedState = structuredClone(state);
-  clonedState.article.splice(index, 0, value);
+  clonedState.article.splice(index, 0, "");
 
   return clonedState;
 }
@@ -55,7 +55,7 @@ function announcementReducer_removeParagraph(
   state: AnnouncementState,
   dispatch: AnnouncementDispatch
 ): AnnouncementState {
-  const { index } = dispatch.payload as ParagraphPayload;
+  const index = dispatch.payload as number;
   const clonedState = structuredClone(state);
   clonedState.article.splice(index, 1);
 
@@ -77,7 +77,7 @@ function announcementReducer_slideParagraphUp(
   state: AnnouncementState,
   dispatch: AnnouncementDispatch
 ): AnnouncementState {
-  const { index } = dispatch.payload as ParagraphPayload;
+  const index = dispatch.payload as number;
   const clonedState = structuredClone(state);
   const [removed] = clonedState.article.splice(index, 1);
   clonedState.article.splice(index - 1, 0, removed);
@@ -89,7 +89,7 @@ function announcementReducer_slideParagraphDown(
   state: AnnouncementState,
   dispatch: AnnouncementDispatch
 ): AnnouncementState {
-  const { index } = dispatch.payload as ParagraphPayload;
+  const index = dispatch.payload as number;
   const clonedState = structuredClone(state);
   const [removed] = clonedState.article.splice(index, 1);
   clonedState.article.splice(index + 1, 0, removed);
