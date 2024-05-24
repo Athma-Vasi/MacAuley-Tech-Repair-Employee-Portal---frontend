@@ -1,124 +1,365 @@
-import { Group, Title, Tooltip } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
-import { InvalidTokenError } from "jwt-decode";
-import { ChangeEvent, MouseEvent, useEffect, useReducer } from "react";
+import { Container, Stack, Text } from "@mantine/core";
+import { useEffect, useReducer, useRef } from "react";
 import { useErrorBoundary } from "react-error-boundary";
-import { TbUpload } from "react-icons/tb";
-import { useNavigate } from "react-router-dom";
 
+import { useAuth } from "../../../hooks";
+import { useFetchInterceptor } from "../../../hooks/useFetchInterceptor";
+import { StepperPage } from "../../../types";
+import { formSubmitPOST } from "../../../utils";
+import { AccessibleButton } from "../../accessibleInputs/AccessibleButton";
+import { AccessibleDateTimeInput } from "../../accessibleInputs/AccessibleDateTimeInput";
+import { AccessibleSelectInput } from "../../accessibleInputs/AccessibleSelectInput";
+import { AccessibleStepper } from "../../accessibleInputs/AccessibleStepper";
+import { AccessibleTextAreaInput } from "../../accessibleInputs/AccessibleTextAreaInput";
+import { AccessibleTextInput } from "../../accessibleInputs/text/AccessibleTextInput";
 import {
-  DATE_NEAR_FUTURE_REGEX,
-  GRAMMAR_TEXT_INPUT_REGEX,
-  GRAMMAR_TEXTAREA_INPUT_REGEX,
-  TIME_RAILWAY_REGEX,
-} from "../../../constants/regex";
-import { globalAction } from "../../../context/globalProvider/state";
-import { useAuth, useGlobalState, useWrapFetch } from "../../../hooks";
-import {
-  AccessibleErrorValidTextElements,
-  returnAccessibleButtonElements,
-  returnAccessibleDateTimeElements,
-  returnAccessibleSelectInputElements,
-  returnAccessibleTextAreaInputElements,
-  returnAccessibleTextInputElements,
-} from "../../../jsxCreators";
-import { ResourceRequestServerResponse } from "../../../types";
-import {
-  returnDateNearFutureValidationText,
-  returnGrammarValidationText,
-  returnTimeRailwayValidationText,
-  urlBuilder,
-} from "../../../utils";
-import FormReviewPage, {
-  FormReviewObjectArray,
-} from "../../formReviewPage/FormReviewPage";
-import { NotificationModal } from "../../notificationModal";
-import {
-  AccessibleButtonCreatorInfo,
-  AccessibleDateTimeInputCreatorInfo,
-  AccessibleSelectInputCreatorInfo,
-  AccessibleTextAreaInputCreatorInfo,
-  AccessibleTextInputCreatorInfo,
-  FormLayoutWrapper,
-  StepperWrapper,
-} from "../../wrappers";
-import {
-  EVENT_CREATOR_DESCRIPTION_OBJECTS,
-  EVENT_CREATOR_MAX_STEPPER_POSITION,
   EVENT_KIND_DATA,
+  EVENT_ROLE_ROUTE_PATHS,
+  returnEventStepperPages,
 } from "../constants";
-import {
-  eventCreatorAction,
-  eventCreatorReducer,
-  initialEventCreatorState,
-} from "./state";
-import { EventCreatorDocument, EventKind } from "./types";
+import { eventAction } from "./actions";
+import { eventReducer } from "./reducers";
+import { initialEventState } from "./state";
+import { EventSchema } from "./types";
 
-function EventCreator() {
-  const [eventCreatorState, eventCreatorDispatch] = useReducer(
-    eventCreatorReducer,
-    initialEventCreatorState
-  );
+function Event() {
+  const [eventCreatorState, eventDispatch] = useReducer(eventReducer, initialEventState);
+
   const {
-    eventTitle,
-    isValidEventTitle,
-    isEventTitleFocused,
-
-    eventKind,
-
-    eventStartDate,
-    isValidEventStartDate,
-    isEventStartDateFocused,
-
-    eventEndDate,
-    isValidEventEndDate,
-    isEventEndDateFocused,
-
-    areValidEventDates,
-
-    eventStartTime,
-    isValidEventStartTime,
-    isEventStartTimeFocused,
-
-    eventEndTime,
-    isValidEventEndTime,
-    isEventEndTimeFocused,
-
-    areValidEventTimes,
-
-    eventLocation,
-    isValidEventLocation,
-    isEventLocationFocused,
-
-    eventDescription,
-    isValidEventDescription,
-    isEventDescriptionFocused,
-
-    eventAttendees,
-    isValidEventAttendees,
-    isEventAttendeesFocused,
-
+    title,
+    kind,
+    startDate,
+    endDate,
+    startTime,
+    endTime,
+    location,
+    description,
+    attendees,
     requiredItems,
-    isValidRequiredItems,
-    isRequiredItemsFocused,
-
     rsvpDeadline,
-    isValidRsvpDeadline,
-    isRsvpDeadlineFocused,
-
     triggerFormSubmit,
-    currentStepperPosition,
-    stepsInError,
-
+    pagesInError,
     isSubmitting,
-    submitMessage,
     isSuccessful,
-    successMessage,
-    isLoading,
-    loadingMessage,
   } = eventCreatorState;
 
-  const { globalDispatch } = useGlobalState();
+  const {
+    authState: { sessionId, userId, username },
+  } = useAuth();
+  const { fetchInterceptor } = useFetchInterceptor();
+  const { showBoundary } = useErrorBoundary();
+
+  const fetchAbortControllerRef = useRef<AbortController | null>(null);
+  const preFetchAbortControllerRef = useRef<AbortController | null>(null);
+  const isComponentMountedRef = useRef(false);
+
+  useEffect(() => {
+    fetchAbortControllerRef.current?.abort();
+    fetchAbortControllerRef.current = new AbortController();
+    const fetchAbortController = fetchAbortControllerRef.current;
+
+    preFetchAbortControllerRef.current?.abort();
+    preFetchAbortControllerRef.current = new AbortController();
+    const preFetchAbortController = preFetchAbortControllerRef.current;
+
+    isComponentMountedRef.current = true;
+    let isComponentMounted = isComponentMountedRef.current;
+
+    if (triggerFormSubmit) {
+      const eventSchema: EventSchema = {
+        attendees,
+        description,
+        endDate,
+        endTime,
+        kind,
+        location,
+        requiredItems,
+        rsvpDeadline,
+        startDate,
+        startTime,
+        title,
+        userId,
+        username,
+        userRole: "manager",
+      };
+
+      formSubmitPOST({
+        dispatch: eventDispatch,
+        fetchAbortController,
+        fetchInterceptor,
+        isComponentMounted,
+        isSubmittingAction: eventAction.setIsSubmitting,
+        isSuccessfulAction: eventAction.setIsSuccessful,
+        preFetchAbortController,
+        roleResourceRoutePaths: EVENT_ROLE_ROUTE_PATHS,
+        schema: eventSchema,
+        schemaName: "eventSchema",
+        sessionId,
+        showBoundary,
+        userId,
+        username,
+        userRole: "manager",
+      });
+    }
+
+    return () => {
+      isComponentMountedRef.current = false;
+      preFetchAbortController?.abort();
+      fetchAbortController?.abort();
+    };
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [triggerFormSubmit]);
+
+  if (isSubmitting) {
+    const submittingState = (
+      <Stack>
+        <Text size="md">Submitting address changes! Please wait...</Text>
+      </Stack>
+    );
+
+    return submittingState;
+  }
+
+  if (isSuccessful) {
+    const successfulState = (
+      <Stack>
+        <Text size="md">Address changes submitted successfully!</Text>
+      </Stack>
+    );
+
+    return successfulState;
+  }
+
+  const EVENT_STEPPER_PAGES: StepperPage[] = returnEventStepperPages();
+
+  /**
+   * type EventState = {
+  attendees: string;
+  description: string;
+  endDate: string;
+  endTime: string;
+  isSubmitting: boolean;
+  isSuccessful: boolean;
+  kind: EventKind;
+  location: string;
+  pagesInError: Set<number>;
+  requiredItems: string;
+  rsvpDeadline: string;
+  startDate: string;
+  startTime: string;
+  title: string;
+  triggerFormSubmit: boolean;
+};
+   */
+
+  const attendeesTextAreaInput = (
+    <AccessibleTextAreaInput
+      attributes={{
+        invalidValueAction: eventAction.setPageInError,
+        name: "attendees",
+        parentDispatch: eventDispatch,
+        stepperPages: EVENT_STEPPER_PAGES,
+        validValueAction: eventAction.setAttendees,
+        value: attendees,
+      }}
+    />
+  );
+
+  const descriptionTextAreaInput = (
+    <AccessibleTextAreaInput
+      attributes={{
+        invalidValueAction: eventAction.setPageInError,
+        name: "description",
+        parentDispatch: eventDispatch,
+        stepperPages: EVENT_STEPPER_PAGES,
+        validValueAction: eventAction.setDescription,
+        value: description,
+      }}
+    />
+  );
+
+  const endDateInput = (
+    <AccessibleDateTimeInput
+      attributes={{
+        dateKind: "date near future",
+        inputKind: "date",
+        invalidValueAction: eventAction.setPageInError,
+        name: "endDate",
+        parentDispatch: eventDispatch,
+        stepperPages: EVENT_STEPPER_PAGES,
+        validValueAction: eventAction.setEndDate,
+        value: endDate,
+      }}
+    />
+  );
+
+  const endTimeInput = (
+    <AccessibleDateTimeInput
+      attributes={{
+        inputKind: "time",
+        invalidValueAction: eventAction.setPageInError,
+        name: "endTime",
+        parentDispatch: eventDispatch,
+        stepperPages: EVENT_STEPPER_PAGES,
+        validValueAction: eventAction.setEndTime,
+        value: endTime,
+      }}
+    />
+  );
+
+  const eventKindSelectInput = (
+    <AccessibleSelectInput
+      attributes={{
+        data: EVENT_KIND_DATA,
+        name: "kind",
+        parentDispatch: eventDispatch,
+        validValueAction: eventAction.setKind,
+        value: kind,
+      }}
+    />
+  );
+
+  const locationTextInput = (
+    <AccessibleTextInput
+      attributes={{
+        invalidValueAction: eventAction.setPageInError,
+        name: "location",
+        parentDispatch: eventDispatch,
+        stepperPages: EVENT_STEPPER_PAGES,
+        validValueAction: eventAction.setLocation,
+        value: location,
+      }}
+    />
+  );
+
+  const requiredItemsTextAreaInput = (
+    <AccessibleTextAreaInput
+      attributes={{
+        invalidValueAction: eventAction.setPageInError,
+        name: "requiredItems",
+        parentDispatch: eventDispatch,
+        stepperPages: EVENT_STEPPER_PAGES,
+        validValueAction: eventAction.setRequiredItems,
+        value: requiredItems,
+      }}
+    />
+  );
+
+  const rsvpDeadlineDateInput = (
+    <AccessibleDateTimeInput
+      attributes={{
+        dateKind: "date near future",
+        inputKind: "date",
+        invalidValueAction: eventAction.setPageInError,
+        name: "rsvpDeadline",
+        parentDispatch: eventDispatch,
+        stepperPages: EVENT_STEPPER_PAGES,
+        validValueAction: eventAction.setRsvpDeadline,
+        value: rsvpDeadline,
+      }}
+    />
+  );
+
+  const startDateInput = (
+    <AccessibleDateTimeInput
+      attributes={{
+        dateKind: "date near future",
+        inputKind: "date",
+        invalidValueAction: eventAction.setPageInError,
+        name: "startDate",
+        parentDispatch: eventDispatch,
+        stepperPages: EVENT_STEPPER_PAGES,
+        validValueAction: eventAction.setStartDate,
+        value: startDate,
+      }}
+    />
+  );
+
+  const startTimeInput = (
+    <AccessibleDateTimeInput
+      attributes={{
+        inputKind: "time",
+        invalidValueAction: eventAction.setPageInError,
+        name: "startTime",
+        parentDispatch: eventDispatch,
+        stepperPages: EVENT_STEPPER_PAGES,
+        validValueAction: eventAction.setStartTime,
+        value: startTime,
+      }}
+    />
+  );
+
+  const titleTextInput = (
+    <AccessibleTextInput
+      attributes={{
+        invalidValueAction: eventAction.setPageInError,
+        name: "title",
+        parentDispatch: eventDispatch,
+        stepperPages: EVENT_STEPPER_PAGES,
+        validValueAction: eventAction.setTitle,
+        value: title,
+      }}
+    />
+  );
+
+  const eventDateAndTimePage = (
+    <Stack>
+      {titleTextInput}
+      {eventKindSelectInput}
+      {startDateInput}
+      {endDateInput}
+      {startTimeInput}
+      {endTimeInput}
+    </Stack>
+  );
+
+  const eventLocationAndDescriptionPage = (
+    <Stack>
+      {descriptionTextAreaInput}
+      {locationTextInput}
+      {attendeesTextAreaInput}
+      {requiredItemsTextAreaInput}
+      {rsvpDeadlineDateInput}
+    </Stack>
+  );
+
+  const submitButton = (
+    <AccessibleButton
+      attributes={{
+        enabledScreenreaderText: "All inputs are valid. Click to submit form",
+        disabledScreenreaderText: "Please fix errors before submitting form",
+        disabled: pagesInError.size > 0 || triggerFormSubmit,
+        kind: "submit",
+        name: "submit",
+        onClick: (_event: React.MouseEvent<HTMLButtonElement>) => {
+          eventDispatch({
+            action: eventAction.setTriggerFormSubmit,
+            payload: true,
+          });
+        },
+      }}
+    />
+  );
+
+  const stepper = (
+    <AccessibleStepper
+      attributes={{
+        componentState: eventCreatorState,
+        pageElements: [eventDateAndTimePage, eventLocationAndDescriptionPage],
+        stepperPages: EVENT_STEPPER_PAGES,
+        submitButton,
+      }}
+    />
+  );
+
+  return <Container w={700}>{stepper}</Container>;
+}
+
+export default Event;
+
+/**
+ *   const { globalDispatch } = useGlobalState();
   const { wrappedFetch } = useWrapFetch();
 
   const navigate = useNavigate();
@@ -136,14 +377,14 @@ function EventCreator() {
     let isMounted = true;
     const controller = new AbortController();
 
-    async function handleEventCreatorFormSubmit() {
-      eventCreatorDispatch({
+    async function handleEventFormSubmit() {
+      eventDispatch({
         type: eventCreatorAction.setIsSubmitting,
         payload: true,
       });
-      eventCreatorDispatch({
+      eventDispatch({
         type: eventCreatorAction.setSubmitMessage,
-        payload: `Creating event: ${eventTitle}`,
+        payload: `Creating event: ${title}`,
       });
       openSubmitSuccessNotificationModal();
 
@@ -153,15 +394,15 @@ function EventCreator() {
 
       const body = JSON.stringify({
         eventSchema: {
-          eventTitle,
-          eventDescription,
-          eventKind,
-          eventStartDate,
-          eventEndDate,
-          eventStartTime,
-          eventEndTime,
-          eventLocation,
-          eventAttendees,
+          title,
+          description,
+          kind,
+          startDate,
+          endDate,
+          startTime,
+          endTime,
+          location,
+          attendees,
           requiredItems,
           rsvpDeadline,
         },
@@ -183,8 +424,7 @@ function EventCreator() {
           url,
         });
 
-        const data: ResourceRequestServerResponse<EventCreatorDocument> =
-          await response.json();
+        const data: ResourceRequestServerResponse<EventDocument> = await response.json();
 
         if (!isMounted) {
           return;
@@ -193,13 +433,13 @@ function EventCreator() {
           throw new Error(data.message);
         }
 
-        eventCreatorDispatch({
+        eventDispatch({
           type: eventCreatorAction.setIsSuccessful,
           payload: true,
         });
-        eventCreatorDispatch({
+        eventDispatch({
           type: eventCreatorAction.setSuccessMessage,
-          payload: data.message ?? `Successfully created event: ${eventTitle}`,
+          payload: data.message ?? `Successfully created event: ${title}`,
         });
       } catch (error: any) {
         if (!isMounted || error.name === "AbortError") {
@@ -236,15 +476,15 @@ function EventCreator() {
         showBoundary(error);
       } finally {
         if (isMounted) {
-          eventCreatorDispatch({
+          eventDispatch({
             type: eventCreatorAction.setIsSubmitting,
             payload: false,
           });
-          eventCreatorDispatch({
+          eventDispatch({
             type: eventCreatorAction.setSubmitMessage,
             payload: "",
           });
-          eventCreatorDispatch({
+          eventDispatch({
             type: eventCreatorAction.setTriggerFormSubmit,
             payload: false,
           });
@@ -253,7 +493,7 @@ function EventCreator() {
     }
 
     if (triggerFormSubmit) {
-      handleEventCreatorFormSubmit();
+      handleEventFormSubmit();
     }
 
     return () => {
@@ -266,75 +506,74 @@ function EventCreator() {
 
   // validate title on every change
   useEffect(() => {
-    const isValid = GRAMMAR_TEXT_INPUT_REGEX.test(eventTitle);
+    const isValid = GRAMMAR_TEXT_INPUT_REGEX.test(title);
 
-    eventCreatorDispatch({
+    eventDispatch({
       type: eventCreatorAction.setIsValidTitle,
       payload: isValid,
     });
-  }, [eventTitle]);
+  }, [title]);
 
   // validate start date on every change
   useEffect(() => {
-    const isValid = DATE_NEAR_FUTURE_REGEX.test(eventStartDate);
+    const isValid = DATE_NEAR_FUTURE_REGEX.test(startDate);
 
-    eventCreatorDispatch({
+    eventDispatch({
       type: eventCreatorAction.setIsValidEventStartDate,
       payload: isValid,
     });
-  }, [eventStartDate]);
+  }, [startDate]);
 
   // validate end date on every change
   useEffect(() => {
-    const isValid = DATE_NEAR_FUTURE_REGEX.test(eventEndDate);
+    const isValid = DATE_NEAR_FUTURE_REGEX.test(endDate);
 
-    eventCreatorDispatch({
+    eventDispatch({
       type: eventCreatorAction.setIsValidEventEndDate,
       payload: isValid,
     });
-  }, [eventEndDate]);
+  }, [endDate]);
 
   // validate event dates on every change
   useEffect(() => {
     const currentMonth = new Date().getMonth() + 1;
     const currDate = new Date(currentMonth);
     const isValid =
-      new Date(eventStartDate) <= new Date(eventEndDate) &&
-      new Date(eventEndDate) > currDate;
+      new Date(startDate) <= new Date(endDate) && new Date(endDate) > currDate;
 
-    eventCreatorDispatch({
+    eventDispatch({
       type: eventCreatorAction.setAreValidEventDates,
       payload: isValid,
     });
-  }, [eventStartDate, eventEndDate, isValidEventStartDate, isValidEventEndDate]);
+  }, [startDate, endDate, isValidEventStartDate, isValidEventEndDate]);
 
   // validate start time on every change
   useEffect(() => {
-    const isValid = TIME_RAILWAY_REGEX.test(eventStartTime);
+    const isValid = TIME_RAILWAY_REGEX.test(startTime);
 
-    eventCreatorDispatch({
+    eventDispatch({
       type: eventCreatorAction.setIsValidEventStartTime,
       payload: isValid,
     });
-  }, [eventStartTime]);
+  }, [startTime]);
 
   // validate end time on every change
   useEffect(() => {
-    const isValid = TIME_RAILWAY_REGEX.test(eventEndTime);
+    const isValid = TIME_RAILWAY_REGEX.test(endTime);
 
-    eventCreatorDispatch({
+    eventDispatch({
       type: eventCreatorAction.setIsValidEventEndTime,
       payload: isValid,
     });
-  }, [eventEndTime]);
+  }, [endTime]);
 
   // validate event times on every change
   useEffect(() => {
-    const startTimeHour = parseInt(eventStartTime.split(":")[0]);
-    const startTimeMinute = parseInt(eventStartTime.split(":")[1]);
+    const startTimeHour = parseInt(startTime.split(":")[0]);
+    const startTimeMinute = parseInt(startTime.split(":")[1]);
 
-    const endTimeHour = parseInt(eventEndTime.split(":")[0]);
-    const endTimeMinute = parseInt(eventEndTime.split(":")[1]);
+    const endTimeHour = parseInt(endTime.split(":")[0]);
+    const endTimeMinute = parseInt(endTime.split(":")[1]);
 
     const isValid = areValidEventDates
       ? startTimeHour === endTimeHour
@@ -342,13 +581,13 @@ function EventCreator() {
         : startTimeHour < endTimeHour
       : false;
 
-    eventCreatorDispatch({
+    eventDispatch({
       type: eventCreatorAction.setAreValidEventTimes,
       payload: isValid,
     });
   }, [
-    eventStartTime,
-    eventEndTime,
+    startTime,
+    endTime,
     isValidEventStartTime,
     isValidEventEndTime,
     areValidEventDates,
@@ -356,39 +595,39 @@ function EventCreator() {
 
   // validate location on every change
   useEffect(() => {
-    const isValid = GRAMMAR_TEXT_INPUT_REGEX.test(eventLocation);
+    const isValid = GRAMMAR_TEXT_INPUT_REGEX.test(location);
 
-    eventCreatorDispatch({
+    eventDispatch({
       type: eventCreatorAction.setIsValidEventLocation,
       payload: isValid,
     });
-  }, [eventLocation]);
+  }, [location]);
 
   // validate description on every change
   useEffect(() => {
-    const isValid = GRAMMAR_TEXTAREA_INPUT_REGEX.test(eventDescription);
+    const isValid = GRAMMAR_TEXTAREA_INPUT_REGEX.test(description);
 
-    eventCreatorDispatch({
+    eventDispatch({
       type: eventCreatorAction.setIsValidEventDescription,
       payload: isValid,
     });
-  }, [eventDescription]);
+  }, [description]);
 
   // validate attendees on every change
   useEffect(() => {
-    const isValid = GRAMMAR_TEXTAREA_INPUT_REGEX.test(eventAttendees);
+    const isValid = GRAMMAR_TEXTAREA_INPUT_REGEX.test(attendees);
 
-    eventCreatorDispatch({
+    eventDispatch({
       type: eventCreatorAction.setIsValidEventAttendees,
       payload: isValid,
     });
-  }, [eventAttendees]);
+  }, [attendees]);
 
   // validate required items on every change
   useEffect(() => {
     const isValid = GRAMMAR_TEXTAREA_INPUT_REGEX.test(requiredItems);
 
-    eventCreatorDispatch({
+    eventDispatch({
       type: eventCreatorAction.setIsValidRequiredItems,
       payload: isValid,
     });
@@ -404,15 +643,15 @@ function EventCreator() {
 
     const isValid =
       DATE_NEAR_FUTURE_REGEX.test(rsvpDeadline) &&
-      new Date(rsvpDeadline) < new Date(eventStartDate) &&
+      new Date(rsvpDeadline) < new Date(startDate) &&
       rsvpMonth === currentMonth &&
       rsvpDate >= currDate;
 
-    eventCreatorDispatch({
+    eventDispatch({
       type: eventCreatorAction.setIsValidRsvpDeadline,
       payload: isValid,
     });
-  }, [rsvpDeadline, eventStartDate]);
+  }, [rsvpDeadline, startDate]);
 
   // update for stepper wrapper state
   useEffect(() => {
@@ -422,9 +661,9 @@ function EventCreator() {
       !areValidEventTimes ||
       !isValidRsvpDeadline;
 
-    // if current step is in error, add it to stepsInError Set else remove it
-    eventCreatorDispatch({
-      type: eventCreatorAction.setStepsInError,
+    // if current step is in error, add it to pagesInError Set else remove it
+    eventDispatch({
+      type: eventCreatorAction.setPageInError,
       payload: {
         kind: isStepInError ? "add" : "delete",
         step: 0,
@@ -436,13 +675,13 @@ function EventCreator() {
   useEffect(() => {
     const isRequiredInputInError = !isValidEventLocation || !isValidEventDescription;
     const areOptionalInputsInError =
-      (!isValidEventAttendees && eventAttendees !== "") ||
+      (!isValidEventAttendees && attendees !== "") ||
       (!isValidRequiredItems && requiredItems !== "");
     const isStepInError = isRequiredInputInError || areOptionalInputsInError;
 
-    // if current step is in error, add it to stepsInError Set else remove it
-    eventCreatorDispatch({
-      type: eventCreatorAction.setStepsInError,
+    // if current step is in error, add it to pagesInError Set else remove it
+    eventDispatch({
+      type: eventCreatorAction.setPageInError,
       payload: {
         kind: isStepInError ? "add" : "delete",
         step: 1,
@@ -453,20 +692,20 @@ function EventCreator() {
     isValidEventDescription,
     isValidEventAttendees,
     isValidRequiredItems,
-    eventDescription,
-    eventAttendees,
+    description,
+    attendees,
     requiredItems,
   ]);
 
   // following are the accessible text elements for screen readers to read out based on the state of the input
   const [eventTitleErrorText, eventTitleValidText] = AccessibleErrorValidTextElements({
     inputElementKind: "event title",
-    inputText: eventTitle,
+    inputText: title,
     isInputTextFocused: isEventTitleFocused,
     isValidInputText: isValidEventTitle,
     regexValidationText: returnGrammarValidationText({
       contentKind: "event title",
-      content: eventTitle,
+      content: title,
       minLength: 2,
       maxLength: 75,
     }),
@@ -478,11 +717,11 @@ function EventCreator() {
   const [eventStartDateErrorText, eventStartDateValidText] =
     AccessibleErrorValidTextElements({
       inputElementKind: "event start date",
-      inputText: eventStartDate,
+      inputText: startDate,
       isInputTextFocused: isEventStartDateFocused,
       isValidInputText: isValidEventStartDate && areValidEventDates,
       regexValidationText: `${eventDatesInvalidText}${returnDateNearFutureValidationText({
-        content: eventStartDate,
+        content: startDate,
         contentKind: "event start date",
       })}`,
     });
@@ -490,11 +729,11 @@ function EventCreator() {
   const [eventEndDateErrorText, eventEndDateValidText] = AccessibleErrorValidTextElements(
     {
       inputElementKind: "event end date",
-      inputText: eventEndDate,
+      inputText: endDate,
       isInputTextFocused: isEventEndDateFocused,
       isValidInputText: isValidEventEndDate && areValidEventDates,
       regexValidationText: `${eventDatesInvalidText}${returnDateNearFutureValidationText({
-        content: eventEndDate,
+        content: endDate,
         contentKind: "event end date",
       })}`,
     }
@@ -507,12 +746,12 @@ function EventCreator() {
   const [eventStartTimeErrorText, eventStartTimeValidText] =
     AccessibleErrorValidTextElements({
       inputElementKind: "event start time",
-      inputText: eventStartTime,
+      inputText: startTime,
       isInputTextFocused: isEventStartTimeFocused,
       isValidInputText: isValidEventStartTime,
       regexValidationText: `${eventTimesInvalidText}${returnTimeRailwayValidationText({
         contentKind: "event start time",
-        content: eventStartTime,
+        content: startTime,
         minLength: 4,
         maxLength: 5,
       })}`,
@@ -521,12 +760,12 @@ function EventCreator() {
   const [eventEndTimeErrorText, eventEndTimeValidText] = AccessibleErrorValidTextElements(
     {
       inputElementKind: "event end time",
-      inputText: eventEndTime,
+      inputText: endTime,
       isInputTextFocused: isEventEndTimeFocused,
       isValidInputText: isValidEventEndTime,
       regexValidationText: `${eventTimesInvalidText}${returnTimeRailwayValidationText({
         contentKind: "event end time",
-        content: eventEndTime,
+        content: endTime,
         minLength: 4,
         maxLength: 5,
       })}`,
@@ -536,12 +775,12 @@ function EventCreator() {
   const [eventLocationErrorText, eventLocationValidText] =
     AccessibleErrorValidTextElements({
       inputElementKind: "event location",
-      inputText: eventLocation,
+      inputText: location,
       isInputTextFocused: isEventLocationFocused,
       isValidInputText: isValidEventLocation,
       regexValidationText: returnGrammarValidationText({
         contentKind: "event location",
-        content: eventLocation,
+        content: location,
         minLength: 2,
         maxLength: 75,
       }),
@@ -550,12 +789,12 @@ function EventCreator() {
   const [eventDescriptionErrorText, eventDescriptionValidText] =
     AccessibleErrorValidTextElements({
       inputElementKind: "event description",
-      inputText: eventDescription,
+      inputText: description,
       isInputTextFocused: isEventDescriptionFocused,
       isValidInputText: isValidEventDescription,
       regexValidationText: returnGrammarValidationText({
         contentKind: "event description",
-        content: eventDescription,
+        content: description,
         minLength: 2,
         maxLength: 2000,
       }),
@@ -564,12 +803,12 @@ function EventCreator() {
   const [eventAttendeesErrorText, eventAttendeesValidText] =
     AccessibleErrorValidTextElements({
       inputElementKind: "event attendees",
-      inputText: eventAttendees,
+      inputText: attendees,
       isInputTextFocused: isEventAttendeesFocused,
       isValidInputText: isValidEventAttendees,
       regexValidationText: returnGrammarValidationText({
         contentKind: "event attendees",
-        content: eventAttendees,
+        content: attendees,
         minLength: 2,
         maxLength: 2000,
       }),
@@ -612,23 +851,23 @@ function EventCreator() {
       error: eventTitleErrorText,
       valid: eventTitleValidText,
     },
-    inputText: eventTitle,
+    inputText: title,
     isValidInputText: isValidEventTitle,
     label: "Event Title",
     onBlur: () => {
-      eventCreatorDispatch({
+      eventDispatch({
         type: eventCreatorAction.setIsTitleFocused,
         payload: false,
       });
     },
     onChange: (event: ChangeEvent<HTMLInputElement>) => {
-      eventCreatorDispatch({
+      eventDispatch({
         type: eventCreatorAction.setTitle,
         payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
-      eventCreatorDispatch({
+      eventDispatch({
         type: eventCreatorAction.setIsTitleFocused,
         payload: true,
       });
@@ -644,23 +883,23 @@ function EventCreator() {
       error: eventLocationErrorText,
       valid: eventLocationValidText,
     },
-    inputText: eventLocation,
+    inputText: location,
     isValidInputText: isValidEventLocation,
     label: "Event Location",
     onBlur: () => {
-      eventCreatorDispatch({
+      eventDispatch({
         type: eventCreatorAction.setIsEventLocationFocused,
         payload: false,
       });
     },
     onChange: (event: ChangeEvent<HTMLInputElement>) => {
-      eventCreatorDispatch({
-        type: eventCreatorAction.setEventLocation,
+      eventDispatch({
+        type: eventCreatorAction.setLocation,
         payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
-      eventCreatorDispatch({
+      eventDispatch({
         type: eventCreatorAction.setIsEventLocationFocused,
         payload: true,
       });
@@ -676,12 +915,12 @@ function EventCreator() {
     description: "Select the kind of event",
     label: "Event Kind",
     onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-      eventCreatorDispatch({
-        type: eventCreatorAction.setEventKind,
+      eventDispatch({
+        type: eventCreatorAction.setKind,
         payload: event.currentTarget.value as EventKind,
       });
     },
-    value: eventKind,
+    value: kind,
     required: true,
     withAsterisk: true,
   };
@@ -692,23 +931,23 @@ function EventCreator() {
       error: eventDescriptionErrorText,
       valid: eventDescriptionValidText,
     },
-    inputText: eventDescription,
+    inputText: description,
     isValidInputText: isValidEventDescription,
     label: "Event Description",
     onBlur: () => {
-      eventCreatorDispatch({
+      eventDispatch({
         type: eventCreatorAction.setIsEventDescriptionFocused,
         payload: false,
       });
     },
     onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
-      eventCreatorDispatch({
-        type: eventCreatorAction.setEventDescription,
+      eventDispatch({
+        type: eventCreatorAction.setDescription,
         payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
-      eventCreatorDispatch({
+      eventDispatch({
         type: eventCreatorAction.setIsEventDescriptionFocused,
         payload: true,
       });
@@ -725,23 +964,23 @@ function EventCreator() {
       error: eventAttendeesErrorText,
       valid: eventAttendeesValidText,
     },
-    inputText: eventAttendees,
+    inputText: attendees,
     isValidInputText: isValidEventAttendees,
     label: "Event Attendees",
     onBlur: () => {
-      eventCreatorDispatch({
+      eventDispatch({
         type: eventCreatorAction.setIsEventAttendeesFocused,
         payload: false,
       });
     },
     onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
-      eventCreatorDispatch({
-        type: eventCreatorAction.setEventAttendees,
+      eventDispatch({
+        type: eventCreatorAction.setAttendees,
         payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
-      eventCreatorDispatch({
+      eventDispatch({
         type: eventCreatorAction.setIsEventAttendeesFocused,
         payload: true,
       });
@@ -759,19 +998,19 @@ function EventCreator() {
     isValidInputText: isValidRequiredItems,
     label: "Required Items",
     onBlur: () => {
-      eventCreatorDispatch({
+      eventDispatch({
         type: eventCreatorAction.setIsRequiredItemsFocused,
         payload: false,
       });
     },
     onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
-      eventCreatorDispatch({
+      eventDispatch({
         type: eventCreatorAction.setRequiredItems,
         payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
-      eventCreatorDispatch({
+      eventDispatch({
         type: eventCreatorAction.setIsRequiredItemsFocused,
         payload: true,
       });
@@ -786,24 +1025,24 @@ function EventCreator() {
       valid: eventStartDateValidText,
     },
     dateKind: "date near future",
-    inputText: eventStartDate,
+    inputText: startDate,
     inputKind: "date",
     isValidInputText: isValidEventStartDate && areValidEventDates,
     label: "Event Start Date",
     onBlur: () => {
-      eventCreatorDispatch({
+      eventDispatch({
         type: eventCreatorAction.setIsEventStartDateFocused,
         payload: false,
       });
     },
     onChange: (event: ChangeEvent<HTMLInputElement>) => {
-      eventCreatorDispatch({
-        type: eventCreatorAction.setEventStartDate,
+      eventDispatch({
+        type: eventCreatorAction.setStartDate,
         payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
-      eventCreatorDispatch({
+      eventDispatch({
         type: eventCreatorAction.setIsEventStartDateFocused,
         payload: true,
       });
@@ -820,24 +1059,24 @@ function EventCreator() {
       valid: eventEndDateValidText,
     },
     dateKind: "date near future",
-    inputText: eventEndDate,
+    inputText: endDate,
     inputKind: "date",
     isValidInputText: isValidEventEndDate && areValidEventDates,
     label: "Event End Date",
     onBlur: () => {
-      eventCreatorDispatch({
+      eventDispatch({
         type: eventCreatorAction.setIsEventEndDateFocused,
         payload: false,
       });
     },
     onChange: (event: ChangeEvent<HTMLInputElement>) => {
-      eventCreatorDispatch({
-        type: eventCreatorAction.setEventEndDate,
+      eventDispatch({
+        type: eventCreatorAction.setEndDate,
         payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
-      eventCreatorDispatch({
+      eventDispatch({
         type: eventCreatorAction.setIsEventEndDateFocused,
         payload: true,
       });
@@ -853,24 +1092,24 @@ function EventCreator() {
       error: eventStartTimeErrorText,
       valid: eventStartTimeValidText,
     },
-    inputText: eventStartTime,
+    inputText: startTime,
     inputKind: "time",
     isValidInputText: isValidEventStartTime && areValidEventTimes,
     label: "Event Start Time",
     onBlur: () => {
-      eventCreatorDispatch({
+      eventDispatch({
         type: eventCreatorAction.setIsEventStartTimeFocused,
         payload: false,
       });
     },
     onChange: (event: ChangeEvent<HTMLInputElement>) => {
-      eventCreatorDispatch({
-        type: eventCreatorAction.setEventStartTime,
+      eventDispatch({
+        type: eventCreatorAction.setStartTime,
         payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
-      eventCreatorDispatch({
+      eventDispatch({
         type: eventCreatorAction.setIsEventStartTimeFocused,
         payload: true,
       });
@@ -886,24 +1125,24 @@ function EventCreator() {
       error: eventEndTimeErrorText,
       valid: eventEndTimeValidText,
     },
-    inputText: eventEndTime,
+    inputText: endTime,
     inputKind: "time",
     isValidInputText: isValidEventEndTime && areValidEventTimes,
     label: "Event End Time",
     onBlur: () => {
-      eventCreatorDispatch({
+      eventDispatch({
         type: eventCreatorAction.setIsEventEndTimeFocused,
         payload: false,
       });
     },
     onChange: (event: ChangeEvent<HTMLInputElement>) => {
-      eventCreatorDispatch({
-        type: eventCreatorAction.setEventEndTime,
+      eventDispatch({
+        type: eventCreatorAction.setEndTime,
         payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
-      eventCreatorDispatch({
+      eventDispatch({
         type: eventCreatorAction.setIsEventEndTimeFocused,
         payload: true,
       });
@@ -914,7 +1153,7 @@ function EventCreator() {
     withAsterisk: true,
   };
 
-  const rsvpDeadlineInputCreatorInfo: AccessibleDateTimeInputCreatorInfo = {
+  const rsvpDeadlineDateInputCreatorInfo: AccessibleDateTimeInputCreatorInfo = {
     description: {
       error: rsvpDeadlineErrorText,
       valid: rsvpDeadlineValidText,
@@ -925,19 +1164,19 @@ function EventCreator() {
     isValidInputText: isValidRsvpDeadline && areValidEventDates,
     label: "RSVP Deadline",
     onBlur: () => {
-      eventCreatorDispatch({
+      eventDispatch({
         type: eventCreatorAction.setIsRsvpDeadlineFocused,
         payload: false,
       });
     },
     onChange: (event: ChangeEvent<HTMLInputElement>) => {
-      eventCreatorDispatch({
+      eventDispatch({
         type: eventCreatorAction.setRsvpDeadline,
         payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
-      eventCreatorDispatch({
+      eventDispatch({
         type: eventCreatorAction.setIsRsvpDeadlineFocused,
         payload: true,
       });
@@ -954,13 +1193,13 @@ function EventCreator() {
     semanticName: "submit button",
     leftIcon: <TbUpload />,
     buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
-      eventCreatorDispatch({
+      eventDispatch({
         type: eventCreatorAction.setTriggerFormSubmit,
         payload: true,
       });
     },
     // ensures form submit happens only once
-    buttonDisabled: stepsInError.size > 0 || triggerFormSubmit,
+    buttonDisabled: pagesInError.size > 0 || triggerFormSubmit,
   };
 
   const [createdTitleTextInput, createdLocationTextInput] =
@@ -991,7 +1230,7 @@ function EventCreator() {
     eventEndDateInputCreatorInfo,
     eventStartTimeInputCreatorInfo,
     eventEndTimeInputCreatorInfo,
-    rsvpDeadlineInputCreatorInfo,
+    rsvpDeadlineDateInputCreatorInfo,
   ]);
 
   const [createdSubmitButton] = returnAccessibleButtonElements([submitButtonCreatorInfo]);
@@ -999,7 +1238,7 @@ function EventCreator() {
     currentStepperPosition === EVENT_CREATOR_MAX_STEPPER_POSITION ? (
       <Tooltip
         label={
-          stepsInError.size > 0
+          pagesInError.size > 0
             ? "Please fix errors before submitting"
             : "Submit Event Creator form"
         }
@@ -1035,27 +1274,27 @@ function EventCreator() {
     "Event Date and Time": [
       {
         inputName: "Event Title",
-        inputValue: eventTitle,
+        inputValue: title,
         isInputValueValid: isValidEventTitle,
       },
       {
         inputName: "Event Start Date",
-        inputValue: eventStartDate,
+        inputValue: startDate,
         isInputValueValid: isValidEventStartDate,
       },
       {
         inputName: "Event End Date",
-        inputValue: eventEndDate,
+        inputValue: endDate,
         isInputValueValid: isValidEventEndDate,
       },
       {
         inputName: "Event Start Time",
-        inputValue: eventStartTime,
+        inputValue: startTime,
         isInputValueValid: isValidEventStartTime,
       },
       {
         inputName: "Event End Time",
-        inputValue: eventEndTime,
+        inputValue: endTime,
         isInputValueValid: isValidEventEndTime,
       },
       {
@@ -1067,22 +1306,22 @@ function EventCreator() {
     "Event Location and Attendees": [
       {
         inputName: "Event Kind",
-        inputValue: eventKind,
+        inputValue: kind,
         isInputValueValid: true,
       },
       {
         inputName: "Event Location",
-        inputValue: eventLocation,
+        inputValue: location,
         isInputValueValid: isValidEventLocation,
       },
       {
         inputName: "Event Description",
-        inputValue: eventDescription,
+        inputValue: description,
         isInputValueValid: isValidEventDescription,
       },
       {
         inputName: "Event Attendees",
-        inputValue: eventAttendees,
+        inputValue: attendees,
         isInputValueValid: isValidEventAttendees,
       },
       {
@@ -1117,7 +1356,7 @@ function EventCreator() {
     />
   );
 
-  const displayEventCreatorForm =
+  const displayEventForm =
     currentStepperPosition === 0
       ? displayEventDatesFormPage
       : currentStepperPosition === 1
@@ -1126,22 +1365,21 @@ function EventCreator() {
       ? displayReviewFormPage
       : displaySubmitButton;
 
-  const displayEventCreatorComponent = (
+  const displayEventComponent = (
     <StepperWrapper
       childrenTitle="Event Creator"
       currentStepperPosition={currentStepperPosition}
       descriptionObjectsArray={EVENT_CREATOR_DESCRIPTION_OBJECTS}
       maxStepperPosition={EVENT_CREATOR_MAX_STEPPER_POSITION}
-      parentComponentDispatch={eventCreatorDispatch}
+      parentComponentDispatch={eventDispatch}
       setCurrentStepperPosition={eventCreatorAction.setCurrentStepperPosition}
-      stepsInError={stepsInError}
+      pagesInError={pagesInError}
     >
       {displaySubmitSuccessNotificationModal}
-      {displayEventCreatorForm}
+      {displayEventForm}
     </StepperWrapper>
   );
 
-  return displayEventCreatorComponent;
-}
+  return displayEventComponent;
 
-export default EventCreator;
+ */

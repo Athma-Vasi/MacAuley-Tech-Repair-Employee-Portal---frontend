@@ -13,7 +13,7 @@ import { AnonymousRequestDocument } from "../components/anonymousRequest/create/
 import { BenefitsDocument } from "../components/benefit/create/types";
 import { CustomerDocument } from "../components/customer/types";
 import { EndorsementDocument } from "../components/endorsement/create/types";
-import { EventCreatorDocument } from "../components/event/create/types";
+import { EventDocument } from "../components/event/create/types";
 import { ExpenseClaimDocument } from "../components/expenseClaim/create/types";
 import { LeaveRequestDocument } from "../components/leaveRequest/types";
 import { PrinterIssueDocument } from "../components/printerIssue/create/types";
@@ -151,7 +151,7 @@ type ActionsResourceRequestServerResponse = {
   outreachData: {
     announcementData: AnnouncementDocument[];
     surveyData: SurveyBuilderDocument[];
-    eventData: EventCreatorDocument[];
+    eventData: EventDocument[];
   };
   employeeData: UserDocument[];
   customerData: Omit<CustomerDocument, "password" | "paymentInformation">[];

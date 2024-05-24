@@ -339,7 +339,7 @@ const DisplayAnnouncement = lazy(
 // ╰─────────────────────────────────────────────────────────────────╯
 const DisplayEvents = lazy(() => import("./components/event/DisplayEvents"));
 
-const EventCreator = lazy(() => import("./components/event/create/EventCreator"));
+const EventCreator = lazy(() => import("./components/event/create/Event"));
 
 // ╭─────────────────────────────────────────────────────────────────╮
 //   SURVEY

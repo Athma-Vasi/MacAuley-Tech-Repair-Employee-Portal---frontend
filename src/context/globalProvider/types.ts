@@ -8,10 +8,7 @@ import {
 } from "@mantine/core";
 import { ReactNode } from "react";
 
-import {
-  AddressChangeDocument,
-  AddressChangeState,
-} from "../../components/addressChange/create/types";
+import { AddressChangeDocument } from "../../components/addressChange/create/types";
 import { AnnouncementDocument } from "../../components/announcement/create/types";
 import { AnonymousRequestDocument } from "../../components/anonymousRequest/create/types";
 import { BenefitsDocument } from "../../components/benefit/create/types";
@@ -24,7 +21,7 @@ import { SunburstChartData } from "../../components/charts/responsiveSunburstCha
 import { NivoChartUnitKind } from "../../components/charts/types";
 import { CustomerDocument } from "../../components/customer/types";
 import { EndorsementDocument } from "../../components/endorsement/create/types";
-import { EventCreatorDocument } from "../../components/event/create/types";
+import { EventDocument } from "../../components/event/create/types";
 import { ExpenseClaimDocument } from "../../components/expenseClaim/create/types";
 import { LeaveRequestDocument } from "../../components/leaveRequest/types";
 import { PrinterIssueDocument } from "../../components/printerIssue/create/types";
@@ -122,7 +119,7 @@ type ActionsDocuments = {
   outreachData: {
     announcementData: AnnouncementDocument[];
     surveyData: SurveyBuilderDocument[];
-    eventData: EventCreatorDocument[];
+    eventData: EventDocument[];
   };
   customerData: Omit<CustomerDocument, "password" | "paymentInformation">[];
   employeeData: Map<string, UserDocument>;

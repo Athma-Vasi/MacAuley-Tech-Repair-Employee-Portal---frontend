@@ -614,28 +614,20 @@ function Home() {
 
   const upcomingEvents =
     actionsDocuments?.outreachData.eventData.filter((event) => {
-      const eventDate = new Date(event.eventStartDate).getTime();
+      const eventDate = new Date(event.startDate).getTime();
       const currentDate = new Date().getTime();
       return eventDate > currentDate;
     }) ?? [];
 
   const sortedUpcomingEvents = upcomingEvents.sort((a, b) => {
-    const aDate = new Date(a.eventStartDate).getTime();
-    const bDate = new Date(b.eventStartDate).getTime();
+    const aDate = new Date(a.startDate).getTime();
+    const bDate = new Date(b.startDate).getTime();
     return aDate - bDate;
   });
 
   const createdUpcomingEventCards = sortedUpcomingEvents.map((event, eventIdx) => {
-    const {
-      _id,
-      eventTitle,
-      eventStartDate,
-      eventEndDate,
-      eventStartTime,
-      eventEndTime,
-      eventLocation,
-      rsvpDeadline,
-    } = event;
+    const { _id, title, startDate, endDate, startTime, endTime, location, rsvpDeadline } =
+      event;
 
     const eventIcon = <TbCalendarEvent size={20} />;
     const heading = (
@@ -646,37 +638,37 @@ function Home() {
     );
 
     const formattedStartDate = formatDate({
-      date: eventStartDate,
+      date: startDate,
       formatOptions: { dateStyle: "full" },
       locale: "en-US",
     });
 
     const formattedEndDate = formatDate({
-      date: eventEndDate,
+      date: endDate,
       formatOptions: { dateStyle: "full" },
       locale: "en-US",
     });
 
-    const title = <Title order={5}>{eventTitle}</Title>;
+    const eventTitle = <Title order={5}>{title}</Title>;
 
-    const startDate = (
+    const eventStartDate = (
       <Flex wrap="wrap">
         <Text>Start:</Text>
-        <Text pl={padding}>{`${formattedStartDate} at ${eventStartTime}`}</Text>
+        <Text pl={padding}>{`${formattedStartDate} at ${startTime}`}</Text>
       </Flex>
     );
 
-    const endDate = (
+    const eventEndDate = (
       <Flex wrap="wrap">
         <Text>End:</Text>
-        <Text pl={padding}>{`${formattedEndDate} at ${eventEndTime}`}</Text>
+        <Text pl={padding}>{`${formattedEndDate} at ${endTime}`}</Text>
       </Flex>
     );
 
-    const location = (
+    const eventLocation = (
       <Flex wrap="wrap">
         <Text>Location:</Text>
-        <Text pl={padding}>{eventLocation}</Text>
+        <Text pl={padding}>{location}</Text>
       </Flex>
     );
 
@@ -695,15 +687,15 @@ function Home() {
 
     const remainingTime = (
       <Group position="right" w="100%">
-        <Text>{returnTimeRemaining(eventStartDate)}</Text>
+        <Text>{returnTimeRemaining(startDate)}</Text>
       </Group>
     );
 
     const displayBody = (
       <Flex direction="column" gap="xs">
-        {startDate}
-        {endDate}
-        {location}
+        {eventStartDate}
+        {eventEndDate}
+        {eventLocation}
         {rsvp}
       </Flex>
     );
@@ -712,7 +704,7 @@ function Home() {
       <Card key={`${_id}-${eventIdx}`} w={350} style={{ border: borderColor }}>
         <Stack>
           {heading}
-          {title}
+          {eventTitle}
           {displayBody}
           {remainingTime}
         </Stack>
