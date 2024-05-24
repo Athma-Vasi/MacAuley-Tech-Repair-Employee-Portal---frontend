@@ -346,7 +346,7 @@ const EventCreator = lazy(() => import("./components/event/create/Event"));
 // ╰─────────────────────────────────────────────────────────────────╯
 const DisplaySurveys = lazy(() => import("./components/survey/display/DisplaySurveys"));
 
-const SurveyBuilder = lazy(() => import("./components/survey/create/SurveyBuilder"));
+const SurveyBuilder = lazy(() => import("./components/survey/create/Survey"));
 
 // ╔═════════════════════════════════════════════════════════════════╗
 //   DIRECTORY

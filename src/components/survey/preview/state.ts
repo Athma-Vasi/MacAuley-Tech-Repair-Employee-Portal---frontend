@@ -1,10 +1,10 @@
-import { addFieldsToObject } from '../../../utils';
+import { addFieldsToObject } from "../../../utils";
 import {
   PreviewSurveyAction,
   PreviewSurveyDispatch,
   PreviewSurveyResponse,
   PreviewSurveyState,
-} from './types';
+} from "./types";
 
 const initialPreviewSurveyState: PreviewSurveyState = {
   surveyQuestions: [],
@@ -12,25 +12,25 @@ const initialPreviewSurveyState: PreviewSurveyState = {
   questionsResponseInputMap: new Map(),
   questionsResponseDataOptionsMap: new Map(),
   genericProps: {
-    question: '',
+    question: "",
     rating: 0,
   },
 
   stepperDescriptionsArray: [],
   currentStepperPosition: 0,
-  stepsInError: new Set(),
+  pagesInError: new Set(),
 };
 
 const previewSurveyAction: PreviewSurveyAction = {
-  setSurveyQuestions: 'setSurveyQuestions',
-  setSurveyResponsesArray: 'setSurveyResponsesArray',
-  setQuestionsResponseInputMap: 'setQuestionsResponseInputMap',
-  setQuestionsResponseDataOptionsMap: 'setQuestionsResponseDataOptionsMap',
-  setGenericProps: 'setGenericProps',
+  setSurveyQuestions: "setSurveyQuestions",
+  setSurveyResponsesArray: "setSurveyResponsesArray",
+  setQuestionsResponseInputMap: "setQuestionsResponseInputMap",
+  setQuestionsResponseDataOptionsMap: "setQuestionsResponseDataOptionsMap",
+  setGenericProps: "setGenericProps",
 
-  setStepperDescriptionsArray: 'setStepperDescriptionsArray',
-  setCurrentStepperPosition: 'setCurrentStepperPosition',
-  setStepsInError: 'setStepsInError',
+  setStepperDescriptionsArray: "setStepperDescriptionsArray",
+  setCurrentStepperPosition: "setCurrentStepperPosition",
+  setStepsInError: "setStepsInError",
 };
 
 function previewSurveyReducer(
@@ -58,8 +58,8 @@ function previewSurveyReducer(
       const newResponse = addFieldsToObject({
         object: Object.create(null),
         fieldValuesTuples: [
-          ['question', question],
-          ['response', response],
+          ["question", question],
+          ["response", response],
         ],
       }) as PreviewSurveyResponse;
 
@@ -105,8 +105,8 @@ function previewSurveyReducer(
       const newResponse = addFieldsToObject({
         object: Object.create(null),
         fieldValuesTuples: [
-          ['question', question],
-          ['response', rating],
+          ["question", question],
+          ["response", rating],
         ],
       }) as PreviewSurveyResponse;
       surveyResponsesArray[questionIndex] = newResponse;
@@ -123,12 +123,12 @@ function previewSurveyReducer(
 
     case previewSurveyAction.setStepsInError: {
       const { kind, step } = action.payload;
-      const stepsInError = new Set(state.stepsInError);
-      kind === 'add' ? stepsInError.add(step) : stepsInError.delete(step);
+      const pagesInError = new Set(state.pagesInError);
+      kind === "add" ? pagesInError.add(step) : pagesInError.delete(step);
 
       return {
         ...state,
-        stepsInError,
+        pagesInError,
       };
     }
 

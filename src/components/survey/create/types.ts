@@ -1,12 +1,12 @@
-import { SetStepsInErrorPayload } from '../../../types';
-import { DescriptionObjectsArray } from '../../wrappers';
-import { PreviewSurveyProps } from '../preview/types';
+import { SetStepsInErrorPayload } from "../../../types";
+import { DescriptionObjectsArray } from "../../wrappers";
+import { PreviewSurveyProps } from "../preview/types";
 import {
   SurveyRecipient,
   SurveyResponseInput,
   SurveyResponseKind,
   SurveyStatistics,
-} from '../types';
+} from "../types";
 
 type SurveyQuestions = {
   question: string;
@@ -15,151 +15,122 @@ type SurveyQuestions = {
   responseDataOptions: string[] | [];
 };
 
-type SurveyBuilderState = {
+type SurveyState = {
   surveyTitle: string;
-  isValidSurveyTitle: boolean;
-  isSurveyTitleFocused: boolean;
-
   surveyDescription: string;
-  isValidSurveyDescription: boolean;
-  isSurveyDescriptionFocused: boolean;
-
   expiryDate: string;
-  isValidExpiryDate: boolean;
-  isExpiryDateFocused: boolean;
-
   surveyRecipients: SurveyRecipient;
-
   questions: Array<string>;
-  areValidQuestions: Array<boolean>;
-  areQuestionsFocused: Array<boolean>;
-  isMaxQuestionsReached: boolean;
-
   responseKinds: Array<string>;
   responseInputHtml: Array<string>;
-
   responseDataOptionsArray: Array<string[]>;
-  areResponseDataOptionsValid: Array<boolean[]>;
-  areResponseDataOptionsFocused: Array<boolean[]>;
-  isMaxResponseDataOptionsReached: Array<boolean>;
-
   surveyStatistics: SurveyStatistics[];
-
   triggerFormSubmit: boolean;
-  submitButtonDisabled: boolean;
   triggerPreviewSurvey: boolean;
   previewSurveyProps: {
     surveyTitle: string;
     surveyDescription: string;
     surveyQuestions: SurveyQuestions[];
   };
-
-  stepperDescriptionObjects: DescriptionObjectsArray;
-  currentStepperPosition: number;
-  stepsInError: Set<number>;
-
+  pagesInError: Set<number>;
   isSubmitting: boolean;
-  submitMessage: string;
   isSuccessful: boolean;
-  successMessage: string;
-  isLoading: boolean;
-  loadingMessage: string;
 };
 
-type SurveyBuilderAction = {
-  setSurveyTitle: 'setSurveyTitle';
-  setIsValidSurveyTitle: 'setIsValidSurveyTitle';
-  setIsSurveyTitleFocused: 'setIsSurveyTitleFocused';
+type SurveyAction = {
+  setSurveyTitle: "setSurveyTitle";
+  setIsValidSurveyTitle: "setIsValidSurveyTitle";
+  setIsSurveyTitleFocused: "setIsSurveyTitleFocused";
 
-  setSurveyDescription: 'setSurveyDescription';
-  setIsValidSurveyDescription: 'setIsValidSurveyDescription';
-  setIsSurveyDescriptionFocused: 'setIsSurveyDescriptionFocused';
+  setSurveyDescription: "setSurveyDescription";
+  setIsValidSurveyDescription: "setIsValidSurveyDescription";
+  setIsSurveyDescriptionFocused: "setIsSurveyDescriptionFocused";
 
-  setExpiryDate: 'setExpiryDate';
-  setIsValidExpiryDate: 'setIsValidExpiryDate';
-  setIsExpiryDateFocused: 'setIsExpiryDateFocused';
+  setExpiryDate: "setExpiryDate";
+  setIsValidExpiryDate: "setIsValidExpiryDate";
+  setIsExpiryDateFocused: "setIsExpiryDateFocused";
 
-  setSurveyRecipients: 'setSurveyRecipients';
+  setSurveyRecipients: "setSurveyRecipients";
 
-  setQuestions: 'setQuestions';
-  setAreValidQuestions: 'setAreValidQuestions';
-  setAreQuestionsFocused: 'setAreQuestionsFocused';
-  setIsMaxQuestionsReached: 'setIsMaxQuestionsReached';
+  setQuestions: "setQuestions";
+  setAreValidQuestions: "setAreValidQuestions";
+  setAreQuestionsFocused: "setAreQuestionsFocused";
+  setIsMaxQuestionsReached: "setIsMaxQuestionsReached";
 
-  deleteQuestionGroup: 'deleteQuestionGroup';
-  addNewQuestionGroup: 'addNewQuestionGroup';
+  deleteQuestionGroup: "deleteQuestionGroup";
+  addNewQuestionGroup: "addNewQuestionGroup";
 
-  setResponseKinds: 'setResponseKinds';
-  setResponseInputHtml: 'setResponseInputHtml';
+  setResponseKinds: "setResponseKinds";
+  setResponseInputHtml: "setResponseInputHtml";
 
-  setResponseDataOptions: 'setResponseDataOptions';
-  setAreResponseDataOptionsValid: 'setAreResponseDataOptionsValid';
-  setAreResponseDataOptionsFocused: 'setAreResponseDataOptionsFocused';
-  setIsMaxResponseDataOptionsReached: 'setIsMaxResponseDataOptionsReached';
+  setResponseDataOptions: "setResponseDataOptions";
+  setAreResponseDataOptionsValid: "setAreResponseDataOptionsValid";
+  setAreResponseDataOptionsFocused: "setAreResponseDataOptionsFocused";
+  setIsMaxResponseDataOptionsReached: "setIsMaxResponseDataOptionsReached";
 
-  deleteResponseDataOption: 'deleteResponseDataOption';
-  addNewResponseDataOption: 'addNewResponseDataOption';
-  deleteAllResponseDataOptionsForQuestion: 'deleteAllResponseDataOptionsForQuestion';
+  deleteResponseDataOption: "deleteResponseDataOption";
+  addNewResponseDataOption: "addNewResponseDataOption";
+  deleteAllResponseDataOptionsForQuestion: "deleteAllResponseDataOptionsForQuestion";
 
-  setSurveyStatistics: 'setSurveyStatistics';
+  setSurveyStatistics: "setSurveyStatistics";
 
-  setTriggerFormSubmit: 'setTriggerFormSubmit';
-  setSubmitButtonDisabled: 'setSubmitButtonDisabled';
-  setTriggerPreviewSurvey: 'setTriggerPreviewSurvey';
-  setPreviewSurveyProps: 'setPreviewSurveyProps';
+  setTriggerFormSubmit: "setTriggerFormSubmit";
+  setSubmitButtonDisabled: "setSubmitButtonDisabled";
+  setTriggerPreviewSurvey: "setTriggerPreviewSurvey";
+  setPreviewSurveyProps: "setPreviewSurveyProps";
 
-  updateStepperDescriptionObjects: 'updateStepperDescriptionObjects';
-  createStepperDescriptionObjects: 'createStepperDescriptionObjects';
-  setCurrentStepperPosition: 'setCurrentStepperPosition';
-  setStepsInError: 'setStepsInError';
+  updateStepperDescriptionObjects: "updateStepperDescriptionObjects";
+  createStepperDescriptionObjects: "createStepperDescriptionObjects";
+  setCurrentStepperPosition: "setCurrentStepperPosition";
+  setStepsInError: "setStepsInError";
 
-  setIsSubmitting: 'setIsSubmitting';
-  setSubmitMessage: 'setSubmitMessage';
-  setIsSuccessful: 'setIsSuccessful';
-  setSuccessMessage: 'setSuccessMessage';
-  setIsLoading: 'setIsLoading';
-  setLoadingMessage: 'setLoadingMessage';
+  setIsSubmitting: "setIsSubmitting";
+  setSubmitMessage: "setSubmitMessage";
+  setIsSuccessful: "setIsSuccessful";
+  setSuccessMessage: "setSuccessMessage";
+  setIsLoading: "setIsLoading";
+  setLoadingMessage: "setLoadingMessage";
 };
 
-type SurveyBuilderDispatch =
+type SurveyDispatch =
   | {
       type:
-        | SurveyBuilderAction['setSurveyTitle']
-        | SurveyBuilderAction['setSurveyDescription']
-        | SurveyBuilderAction['setExpiryDate']
-        | SurveyBuilderAction['setSubmitMessage']
-        | SurveyBuilderAction['setSuccessMessage']
-        | SurveyBuilderAction['setLoadingMessage'];
+        | SurveyAction["setSurveyTitle"]
+        | SurveyAction["setSurveyDescription"]
+        | SurveyAction["setExpiryDate"]
+        | SurveyAction["setSubmitMessage"]
+        | SurveyAction["setSuccessMessage"]
+        | SurveyAction["setLoadingMessage"];
 
       payload: string;
     }
   | {
       type:
-        | SurveyBuilderAction['setIsValidSurveyTitle']
-        | SurveyBuilderAction['setIsSurveyTitleFocused']
-        | SurveyBuilderAction['setIsValidSurveyDescription']
-        | SurveyBuilderAction['setIsSurveyDescriptionFocused']
-        | SurveyBuilderAction['setIsValidExpiryDate']
-        | SurveyBuilderAction['setIsExpiryDateFocused']
-        | SurveyBuilderAction['setIsMaxQuestionsReached']
-        | SurveyBuilderAction['setTriggerFormSubmit']
-        | SurveyBuilderAction['setSubmitButtonDisabled']
-        | SurveyBuilderAction['setTriggerPreviewSurvey']
-        | SurveyBuilderAction['setIsSubmitting']
-        | SurveyBuilderAction['setIsSuccessful']
-        | SurveyBuilderAction['setIsLoading'];
+        | SurveyAction["setIsValidSurveyTitle"]
+        | SurveyAction["setIsSurveyTitleFocused"]
+        | SurveyAction["setIsValidSurveyDescription"]
+        | SurveyAction["setIsSurveyDescriptionFocused"]
+        | SurveyAction["setIsValidExpiryDate"]
+        | SurveyAction["setIsExpiryDateFocused"]
+        | SurveyAction["setIsMaxQuestionsReached"]
+        | SurveyAction["setTriggerFormSubmit"]
+        | SurveyAction["setSubmitButtonDisabled"]
+        | SurveyAction["setTriggerPreviewSurvey"]
+        | SurveyAction["setIsSubmitting"]
+        | SurveyAction["setIsSuccessful"]
+        | SurveyAction["setIsLoading"];
 
       payload: boolean;
     }
   | {
-      type: SurveyBuilderAction['setSurveyRecipients'];
+      type: SurveyAction["setSurveyRecipients"];
       payload: SurveyRecipient;
     }
   | {
       type:
-        | SurveyBuilderAction['setQuestions']
-        | SurveyBuilderAction['setResponseKinds']
-        | SurveyBuilderAction['setResponseInputHtml'];
+        | SurveyAction["setQuestions"]
+        | SurveyAction["setResponseKinds"]
+        | SurveyAction["setResponseInputHtml"];
 
       payload: {
         index: number;
@@ -167,7 +138,7 @@ type SurveyBuilderDispatch =
       };
     }
   | {
-      type: SurveyBuilderAction['setResponseDataOptions'];
+      type: SurveyAction["setResponseDataOptions"];
       payload: {
         questionIdx: number;
         optionIdx: number;
@@ -175,11 +146,11 @@ type SurveyBuilderDispatch =
       };
     }
   | {
-      type: SurveyBuilderAction['setAreResponseDataOptionsValid'];
+      type: SurveyAction["setAreResponseDataOptionsValid"];
       payload: Array<boolean[]>;
     }
   | {
-      type: SurveyBuilderAction['setAreResponseDataOptionsFocused'];
+      type: SurveyAction["setAreResponseDataOptionsFocused"];
       payload: {
         questionIdx: number;
         optionIdx: number;
@@ -187,20 +158,20 @@ type SurveyBuilderDispatch =
       };
     }
   | {
-      type: SurveyBuilderAction['setAreValidQuestions'];
+      type: SurveyAction["setAreValidQuestions"];
       payload: boolean[];
     }
   | {
       type:
-        | SurveyBuilderAction['setAreQuestionsFocused']
-        | SurveyBuilderAction['setIsMaxResponseDataOptionsReached'];
+        | SurveyAction["setAreQuestionsFocused"]
+        | SurveyAction["setIsMaxResponseDataOptionsReached"];
       payload: {
         index: number;
         value: boolean;
       };
     }
   | {
-      type: SurveyBuilderAction['deleteResponseDataOption'];
+      type: SurveyAction["deleteResponseDataOption"];
 
       payload: {
         questionIdx: number;
@@ -209,27 +180,27 @@ type SurveyBuilderDispatch =
     }
   | {
       type:
-        | SurveyBuilderAction['addNewResponseDataOption']
-        | SurveyBuilderAction['deleteAllResponseDataOptionsForQuestion'];
+        | SurveyAction["addNewResponseDataOption"]
+        | SurveyAction["deleteAllResponseDataOptionsForQuestion"];
       payload: {
         questionIdx: number;
       };
     }
   | {
       type:
-        | SurveyBuilderAction['setCurrentStepperPosition']
-        | SurveyBuilderAction['deleteQuestionGroup']
-        | SurveyBuilderAction['addNewQuestionGroup'];
+        | SurveyAction["setCurrentStepperPosition"]
+        | SurveyAction["deleteQuestionGroup"]
+        | SurveyAction["addNewQuestionGroup"];
       payload: number;
     }
   | {
-      type: SurveyBuilderAction['setStepsInError'];
+      type: SurveyAction["setStepsInError"];
       payload: SetStepsInErrorPayload;
     }
   | {
       type:
-        | SurveyBuilderAction['createStepperDescriptionObjects']
-        | SurveyBuilderAction['updateStepperDescriptionObjects'];
+        | SurveyAction["createStepperDescriptionObjects"]
+        | SurveyAction["updateStepperDescriptionObjects"];
       payload: {
         index: number;
         value: {
@@ -239,23 +210,14 @@ type SurveyBuilderDispatch =
       };
     }
   | {
-      type: SurveyBuilderAction['setSurveyStatistics'];
+      type: SurveyAction["setSurveyStatistics"];
       payload: SurveyStatistics[];
     }
   | {
-      type: SurveyBuilderAction['setPreviewSurveyProps'];
-      payload: Omit<PreviewSurveyProps, 'closePreviewSurveyModal'>;
+      type: SurveyAction["setPreviewSurveyProps"];
+      payload: Omit<PreviewSurveyProps, "closePreviewSurveyModal">;
     };
 
-type SurveyBuilderReducer = (
-  state: SurveyBuilderState,
-  action: SurveyBuilderDispatch
-) => SurveyBuilderState;
+type SurveyReducer = (state: SurveyState, action: SurveyDispatch) => SurveyState;
 
-export type {
-  SurveyBuilderAction,
-  SurveyBuilderDispatch,
-  SurveyBuilderReducer,
-  SurveyBuilderState,
-  SurveyQuestions,
-};
+export type { SurveyAction, SurveyDispatch, SurveyReducer, SurveyState, SurveyQuestions };

@@ -28,7 +28,7 @@ import { PrinterIssueDocument } from "../../components/printerIssue/create/types
 import { RefermentDocument } from "../../components/referment/create/types";
 import { RepairTicketDocument } from "../../components/repairTicket/types";
 import { RequestResourceDocument } from "../../components/requestResource/create/types";
-import { SurveyBuilderDocument } from "../../components/survey/types";
+import { SurveyDocument } from "../../components/survey/types";
 import {
   ScrollAxesDirection,
   ScrollXDirection,
@@ -118,7 +118,7 @@ type ActionsDocuments = {
   };
   outreachData: {
     announcementData: AnnouncementDocument[];
-    surveyData: SurveyBuilderDocument[];
+    surveyData: SurveyDocument[];
     eventData: EventDocument[];
   };
   customerData: Omit<CustomerDocument, "password" | "paymentInformation">[];

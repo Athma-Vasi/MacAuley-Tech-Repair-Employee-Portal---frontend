@@ -1,7 +1,7 @@
-import { QueryResponseData, SetStepsInErrorPayload } from '../../../types';
-import { DescriptionObjectsArray } from '../../wrappers';
-import { SurveyBuilderDocument, SurveyResponseKind } from '../types';
-import { SurveyResponseInput } from '../types';
+import { QueryResponseData, SetStepsInErrorPayload } from "../../../types";
+import { DescriptionObjectsArray } from "../../wrappers";
+import { SurveyDocument, SurveyResponseKind } from "../types";
+import { SurveyResponseInput } from "../types";
 
 type SurveyResponse = {
   question: string;
@@ -28,17 +28,17 @@ type SurveySubmissionPayload = {
 };
 
 type DisplaySurveysState = {
-  responseData: SurveyBuilderDocument[];
+  responseData: SurveyDocument[];
   surveySubmissions: Map<string, SurveySubmission>;
   surveyToSubmit: SurveySubmission;
 
-  uncompletedSurveys: SurveyBuilderDocument[];
-  completedSurveys: SurveyBuilderDocument[];
+  uncompletedSurveys: SurveyDocument[];
+  completedSurveys: SurveyDocument[];
   completedSurveyIds: Set<string>;
 
   stepperDescriptionsMap: Map<string, DescriptionObjectsArray>;
   currentStepperPositions: Map<string, number>;
-  stepsInError: Map<string, Set<number>>;
+  pagesInError: Map<string, Set<number>>;
 
   queryBuilderString: string;
   pageQueryString: string;
@@ -58,95 +58,93 @@ type DisplaySurveysState = {
 };
 
 type DisplaySurveysAction = {
-  setResponseData: 'setResponseData';
-  setSurveySubmissions: 'setSurveySubmissions';
-  setSurveyToSubmit: 'setSurveyToSubmit';
+  setResponseData: "setResponseData";
+  setSurveySubmissions: "setSurveySubmissions";
+  setSurveyToSubmit: "setSurveyToSubmit";
 
-  setUncompletedSurveys: 'setUncompletedSurveys';
-  setCompletedSurveys: 'setCompletedSurveys';
-  setCompletedSurveyIds: 'setCompletedSurveyIds';
+  setUncompletedSurveys: "setUncompletedSurveys";
+  setCompletedSurveys: "setCompletedSurveys";
+  setCompletedSurveyIds: "setCompletedSurveyIds";
 
-  setStepperDescriptionsMap: 'setStepperDescriptionsMap';
-  setCurrentStepperPosition: 'setCurrentStepperPosition';
-  setStepsInError: 'setStepsInError';
+  setStepperDescriptionsMap: "setStepperDescriptionsMap";
+  setCurrentStepperPosition: "setCurrentStepperPosition";
+  setStepsInError: "setStepsInError";
 
-  setQueryBuilderString: 'setQueryBuilderString';
-  setPageQueryString: 'setPageQueryString';
-  setNewQueryFlag: 'setNewQueryFlag';
-  setTotalDocuments: 'setTotalDocuments';
-  setPages: 'setPages';
+  setQueryBuilderString: "setQueryBuilderString";
+  setPageQueryString: "setPageQueryString";
+  setNewQueryFlag: "setNewQueryFlag";
+  setTotalDocuments: "setTotalDocuments";
+  setPages: "setPages";
 
-  setTriggerSurveyFetch: 'setTriggerSurveyFetch';
-  setTriggerSurveySubmission: 'setTriggerSurveySubmission';
+  setTriggerSurveyFetch: "setTriggerSurveyFetch";
+  setTriggerSurveySubmission: "setTriggerSurveySubmission";
 
-  setIsSubmitting: 'setIsSubmitting';
-  setSubmitMessage: 'setSubmitMessage';
-  setIsSuccessful: 'setIsSuccessful';
-  setSuccessMessage: 'setSuccessMessage';
-  setIsLoading: 'setIsLoading';
-  setLoadingMessage: 'setLoadingMessage';
+  setIsSubmitting: "setIsSubmitting";
+  setSubmitMessage: "setSubmitMessage";
+  setIsSuccessful: "setIsSuccessful";
+  setSuccessMessage: "setSuccessMessage";
+  setIsLoading: "setIsLoading";
+  setLoadingMessage: "setLoadingMessage";
 };
 
 type DisplaySurveysDispatch =
   | {
       type:
-        | DisplaySurveysAction['setResponseData']
-        | DisplaySurveysAction['setUncompletedSurveys']
-        | DisplaySurveysAction['setCompletedSurveys'];
-      payload: SurveyBuilderDocument[];
+        | DisplaySurveysAction["setResponseData"]
+        | DisplaySurveysAction["setUncompletedSurveys"]
+        | DisplaySurveysAction["setCompletedSurveys"];
+      payload: SurveyDocument[];
     }
   | {
-      type: DisplaySurveysAction['setSurveySubmissions'];
+      type: DisplaySurveysAction["setSurveySubmissions"];
       payload: SurveySubmissionPayload;
     }
   | {
-      type: DisplaySurveysAction['setSurveyToSubmit'];
+      type: DisplaySurveysAction["setSurveyToSubmit"];
       payload: {
         surveyId: string;
       };
     }
   | {
-      type: DisplaySurveysAction['setStepperDescriptionsMap'];
-      payload: SurveyBuilderDocument[];
+      type: DisplaySurveysAction["setStepperDescriptionsMap"];
+      payload: SurveyDocument[];
     }
   | {
-      type: DisplaySurveysAction['setCompletedSurveyIds'];
+      type: DisplaySurveysAction["setCompletedSurveyIds"];
       payload: Array<string>;
     }
   | {
       type:
-        | DisplaySurveysAction['setQueryBuilderString']
-        | DisplaySurveysAction['setPageQueryString']
-        | DisplaySurveysAction['setSubmitMessage']
-        | DisplaySurveysAction['setSuccessMessage']
-        | DisplaySurveysAction['setLoadingMessage'];
+        | DisplaySurveysAction["setQueryBuilderString"]
+        | DisplaySurveysAction["setPageQueryString"]
+        | DisplaySurveysAction["setSubmitMessage"]
+        | DisplaySurveysAction["setSuccessMessage"]
+        | DisplaySurveysAction["setLoadingMessage"];
       payload: string;
     }
   | {
       type:
-        | DisplaySurveysAction['setNewQueryFlag']
-        | DisplaySurveysAction['setTriggerSurveyFetch']
-        | DisplaySurveysAction['setTriggerSurveySubmission']
-        | DisplaySurveysAction['setIsSubmitting']
-        | DisplaySurveysAction['setIsSuccessful']
-        | DisplaySurveysAction['setIsLoading'];
+        | DisplaySurveysAction["setNewQueryFlag"]
+        | DisplaySurveysAction["setTriggerSurveyFetch"]
+        | DisplaySurveysAction["setTriggerSurveySubmission"]
+        | DisplaySurveysAction["setIsSubmitting"]
+        | DisplaySurveysAction["setIsSuccessful"]
+        | DisplaySurveysAction["setIsLoading"];
       payload: boolean;
     }
   | {
-      type:
-        | DisplaySurveysAction['setTotalDocuments']
-        | DisplaySurveysAction['setPages'];
+      type: DisplaySurveysAction["setTotalDocuments"] | DisplaySurveysAction["setPages"];
       payload: number;
     }
   | {
-      type: DisplaySurveysAction['setCurrentStepperPosition'];
+      type: DisplaySurveysAction["setCurrentStepperPosition"];
       payload: {
         id: string;
         currentStepperPosition: number;
       };
     }
   | {
-      type: DisplaySurveysAction['setStepsInError'];
+      type: DisplaySurveysAction["setStepsInError"];
       payload: {
         surveyId: string;
         stepInError: SetStepsInErrorPayload;

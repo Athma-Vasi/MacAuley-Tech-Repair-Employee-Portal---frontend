@@ -1,29 +1,29 @@
-import { Fragment, useEffect, useReducer } from 'react';
+import { Fragment, useEffect, useReducer } from "react";
 import {
   initialPreviewSurveyState,
   previewSurveyAction,
   previewSurveyReducer,
-} from './state';
-import { PreviewSurveyProps } from './types';
+} from "./state";
+import { PreviewSurveyProps } from "./types";
 import {
   AccessibleCheckboxGroupInputCreatorInfo,
   AccessibleRadioGroupInputCreatorInfo,
   DescriptionObjectsArray,
   StepperWrapper,
-} from '../../wrappers';
-import { SurveyQuestion } from '../types';
-import { Card, Group, Stack, Text, Tooltip } from '@mantine/core';
-import { SURVEY_AGREE_DISAGREE_RESPONSE_DATA_OPTIONS } from '../constants';
+} from "../../wrappers";
+import { SurveyQuestion } from "../types";
+import { Card, Group, Stack, Text, Tooltip } from "@mantine/core";
+import { SURVEY_AGREE_DISAGREE_RESPONSE_DATA_OPTIONS } from "../constants";
 import {
   returnAccessibleButtonElements,
   returnAccessibleCheckboxGroupInputsElements,
   returnAccessibleRadioGroupInputsElements,
-} from '../../../jsxCreators';
-import { CheckBoxMultipleData, RadioGroupInputData } from '../../../types';
-import { CustomRating } from '../../customRating/CustomRating';
-import { TbChartPie3, TbChartPie4, TbUpload } from 'react-icons/tb';
-import { useGlobalState } from '../../../hooks';
-import { logState, replaceLastCommaWithAnd } from '../../../utils';
+} from "../../../jsxCreators";
+import { CheckBoxMultipleData, RadioGroupInputData } from "../../../types";
+import { CustomRating } from "../../customRating/CustomRating";
+import { TbChartPie3, TbChartPie4, TbUpload } from "react-icons/tb";
+import { useGlobalState } from "../../../hooks";
+import { logState, replaceLastCommaWithAnd } from "../../../utils";
 
 function PreviewSurvey({
   surveyDescription,
@@ -43,7 +43,7 @@ function PreviewSurvey({
 
     stepperDescriptionsArray,
     currentStepperPosition,
-    stepsInError,
+    pagesInError,
   } = previewSurveyState;
 
   const {
@@ -86,17 +86,18 @@ function PreviewSurvey({
         [new Map(), new Map()]
       );
 
-    const stepperDescriptionsArray: DescriptionObjectsArray =
-      surveyQuestions.map((question) => {
+    const stepperDescriptionsArray: DescriptionObjectsArray = surveyQuestions.map(
+      (question) => {
         const stepperDescriptionObject = {
           ariaLabel: question.question,
           description:
             question.question.length > 23
-              ? question.question.slice(0, 23) + '...'
+              ? question.question.slice(0, 23) + "..."
               : question.question,
         };
         return stepperDescriptionObject;
-      });
+      }
+    );
 
     previewSurveyDispatch({
       type: previewSurveyAction.setQuestionsResponseInputMap,
@@ -120,7 +121,7 @@ function PreviewSurvey({
         previewSurveyDispatch({
           type: previewSurveyAction.setStepsInError,
           payload: {
-            kind: 'add',
+            kind: "add",
             step: idx,
           },
         });
@@ -136,7 +137,7 @@ function PreviewSurvey({
           previewSurveyDispatch({
             type: previewSurveyAction.setStepsInError,
             payload: {
-              kind: 'add',
+              kind: "add",
               step: surveyResponsesArray.length + idx,
             },
           });
@@ -149,14 +150,14 @@ function PreviewSurvey({
 
         // the user did not respond to the question
         if (
-          response === '' || // for 'radio' or 'agreeDisagree'
+          response === "" || // for 'radio' or 'agreeDisagree'
           (Array.isArray(response) && response.length === 0) || // for 'checkbox'
           response === 0 // for 'rating': 'emotion' or 'stars'
         ) {
           previewSurveyDispatch({
             type: previewSurveyAction.setStepsInError,
             payload: {
-              kind: 'add',
+              kind: "add",
               step: idx,
             },
           });
@@ -164,7 +165,7 @@ function PreviewSurvey({
           previewSurveyDispatch({
             type: previewSurveyAction.setStepsInError,
             payload: {
-              kind: 'delete',
+              kind: "delete",
               step: idx,
             },
           });
@@ -176,7 +177,7 @@ function PreviewSurvey({
   useEffect(() => {
     logState({
       state: previewSurveyState,
-      groupLabel: 'previewSurveyState',
+      groupLabel: "previewSurveyState",
     });
   }, [previewSurveyState]);
 
@@ -201,45 +202,39 @@ function PreviewSurvey({
       // every survey's inputs are controlled
       switch (responseInput) {
         // agreeDisagree is a radio group with set values
-        case 'agreeDisagree': {
+        case "agreeDisagree": {
           // const value = surveyResponsesArray.get(question) as string;
-          const value = surveyResponsesArray.find(
-            (q) => q?.question === question
-          )?.response as string;
+          const value = surveyResponsesArray.find((q) => q?.question === question)
+            ?.response as string;
 
           const description = (
-            <Text aria-label="polite">{`You have selected: ${
-              value ?? 'N/A'
-            }`}</Text>
+            <Text aria-label="polite">{`You have selected: ${value ?? "N/A"}`}</Text>
           );
 
-          const radioInputCreatorInfoObj: AccessibleRadioGroupInputCreatorInfo =
-            {
-              dataObjectArray: SURVEY_AGREE_DISAGREE_RESPONSE_DATA_OPTIONS,
-              description,
-              key: `${questionIdx}-${question}-${responseInput}-${responseKind}`,
-              label: question,
-              onChange: (value: string) => {
-                previewSurveyDispatch({
-                  type: previewSurveyAction.setSurveyResponsesArray,
-                  payload: {
-                    question,
-                    response: value,
-                  },
-                });
-              },
-              semanticName: question,
-              value: value ?? '',
-            };
+          const radioInputCreatorInfoObj: AccessibleRadioGroupInputCreatorInfo = {
+            dataObjectArray: SURVEY_AGREE_DISAGREE_RESPONSE_DATA_OPTIONS,
+            description,
+            key: `${questionIdx}-${question}-${responseInput}-${responseKind}`,
+            label: question,
+            onChange: (value: string) => {
+              previewSurveyDispatch({
+                type: previewSurveyAction.setSurveyResponsesArray,
+                payload: {
+                  question,
+                  response: value,
+                },
+              });
+            },
+            semanticName: question,
+            value: value ?? "",
+          };
 
           const [createdRadioInput] = returnAccessibleRadioGroupInputsElements([
             radioInputCreatorInfoObj,
           ]);
 
           const displayRadioInput = (
-            <Fragment
-              key={`${questionIdx}-${question}-${responseInput}-${responseKind}`}
-            >
+            <Fragment key={`${questionIdx}-${question}-${responseInput}-${responseKind}`}>
               {createdRadioInput}
             </Fragment>
           );
@@ -248,49 +243,43 @@ function PreviewSurvey({
           break;
         }
         // radio is a radio group with dynamic values with constrained single selection
-        case 'radio': {
+        case "radio": {
           const dataObjectArray: RadioGroupInputData = responseDataOptions.map(
             (responseDataOption) => ({
               value: responseDataOption,
               label: responseDataOption,
             })
           );
-          const value = surveyResponsesArray.find(
-            (q) => q?.question === question
-          )?.response as string;
+          const value = surveyResponsesArray.find((q) => q?.question === question)
+            ?.response as string;
           const description = (
-            <Text aria-label="polite">{`You have selected: ${
-              value ?? 'N/A'
-            }`}</Text>
+            <Text aria-label="polite">{`You have selected: ${value ?? "N/A"}`}</Text>
           );
 
-          const radioInputCreatorInfoObj: AccessibleRadioGroupInputCreatorInfo =
-            {
-              dataObjectArray,
-              description,
-              key: `${questionIdx}-${question}-${responseInput}-${responseKind}`,
-              label: question,
-              onChange: (value: string) => {
-                previewSurveyDispatch({
-                  type: previewSurveyAction.setSurveyResponsesArray,
-                  payload: {
-                    question,
-                    response: value,
-                  },
-                });
-              },
-              semanticName: question,
-              value: value ?? '',
-            };
+          const radioInputCreatorInfoObj: AccessibleRadioGroupInputCreatorInfo = {
+            dataObjectArray,
+            description,
+            key: `${questionIdx}-${question}-${responseInput}-${responseKind}`,
+            label: question,
+            onChange: (value: string) => {
+              previewSurveyDispatch({
+                type: previewSurveyAction.setSurveyResponsesArray,
+                payload: {
+                  question,
+                  response: value,
+                },
+              });
+            },
+            semanticName: question,
+            value: value ?? "",
+          };
 
           const [createdRadioInput] = returnAccessibleRadioGroupInputsElements([
             radioInputCreatorInfoObj,
           ]);
 
           const displayRadioInput = (
-            <Fragment
-              key={`${questionIdx}-${question}-${responseInput}-${responseKind}`}
-            >
+            <Fragment key={`${questionIdx}-${question}-${responseInput}-${responseKind}`}>
               {createdRadioInput}
             </Fragment>
           );
@@ -299,19 +288,16 @@ function PreviewSurvey({
           break;
         }
         // checkbox is a checkbox group with dynamic values with unconstrained multiple selections (array of strings)
-        case 'checkbox': {
+        case "checkbox": {
           const dataObjectArray: CheckBoxMultipleData = responseDataOptions.map(
             (responseDataOption) => ({
               value: responseDataOption,
               label: responseDataOption,
             })
           );
-          const checkboxValue = surveyResponsesArray.find(
-            (q) => q?.question === question
-          )?.response as string[];
-          const selectedValues = replaceLastCommaWithAnd(
-            checkboxValue?.join(', ') ?? ''
-          );
+          const checkboxValue = surveyResponsesArray.find((q) => q?.question === question)
+            ?.response as string[];
+          const selectedValues = replaceLastCommaWithAnd(checkboxValue?.join(", ") ?? "");
           const description = {
             selected: (
               <Text aria-label="polite">{`You have selected: ${selectedValues}`}</Text>
@@ -321,33 +307,29 @@ function PreviewSurvey({
             ),
           };
 
-          const checkboxInputCreatorInfoObj: AccessibleCheckboxGroupInputCreatorInfo =
-            {
-              dataObjectArray,
-              description,
-              key: `${questionIdx}-${question}-${responseInput}-${responseKind}`,
-              onChange: (value: string[]) => {
-                previewSurveyDispatch({
-                  type: previewSurveyAction.setSurveyResponsesArray,
-                  payload: {
-                    question,
-                    response: value,
-                  },
-                });
-              },
-              semanticName: question,
-              value: checkboxValue ?? [],
-            };
+          const checkboxInputCreatorInfoObj: AccessibleCheckboxGroupInputCreatorInfo = {
+            dataObjectArray,
+            description,
+            key: `${questionIdx}-${question}-${responseInput}-${responseKind}`,
+            onChange: (value: string[]) => {
+              previewSurveyDispatch({
+                type: previewSurveyAction.setSurveyResponsesArray,
+                payload: {
+                  question,
+                  response: value,
+                },
+              });
+            },
+            semanticName: question,
+            value: checkboxValue ?? [],
+          };
 
-          const [createdCheckboxInput] =
-            returnAccessibleCheckboxGroupInputsElements([
-              checkboxInputCreatorInfoObj,
-            ]);
+          const [createdCheckboxInput] = returnAccessibleCheckboxGroupInputsElements([
+            checkboxInputCreatorInfoObj,
+          ]);
 
           const displayCheckboxInput = (
-            <Fragment
-              key={`${questionIdx}-${question}-${responseInput}-${responseKind}`}
-            >
+            <Fragment key={`${questionIdx}-${question}-${responseInput}-${responseKind}`}>
               {createdCheckboxInput}
             </Fragment>
           );
@@ -356,10 +338,9 @@ function PreviewSurvey({
           break;
         }
         // emotion is a rating component with emojis as values from 1-5
-        case 'emotion': {
-          const value = surveyResponsesArray.find(
-            (q) => q?.question === question
-          )?.response as number;
+        case "emotion": {
+          const value = surveyResponsesArray.find((q) => q?.question === question)
+            ?.response as number;
 
           const createdEmotionRatingInput = (
             <CustomRating
@@ -371,9 +352,7 @@ function PreviewSurvey({
           );
 
           const displayEmotionRatingInput = (
-            <Fragment
-              key={`${questionIdx}-${question}-${responseInput}-${responseKind}`}
-            >
+            <Fragment key={`${questionIdx}-${question}-${responseInput}-${responseKind}`}>
               {createdEmotionRatingInput}
             </Fragment>
           );
@@ -382,10 +361,9 @@ function PreviewSurvey({
           break;
         }
         // stars is a rating component with stars as values from 1-5
-        case 'stars': {
-          const value = surveyResponsesArray.find(
-            (q) => q?.question === question
-          )?.response as number;
+        case "stars": {
+          const value = surveyResponsesArray.find((q) => q?.question === question)
+            ?.response as number;
 
           const createdStarsRatingInput = (
             <CustomRating
@@ -397,9 +375,7 @@ function PreviewSurvey({
           );
 
           const displayStarsRatingInput = (
-            <Fragment
-              key={`${questionIdx}-${question}-${responseInput}-${responseKind}`}
-            >
+            <Fragment key={`${questionIdx}-${question}-${responseInput}-${responseKind}`}>
               {createdStarsRatingInput}
             </Fragment>
           );
@@ -427,11 +403,10 @@ function PreviewSurvey({
 
   const createdSubmitButton = returnAccessibleButtonElements([
     {
-      buttonLabel: 'Submit',
-      buttonDisabled:
-        surveyResponsesArray.length === 0 || stepsInError.size !== 0,
-      semanticDescription: 'Submit survey',
-      semanticName: 'Submit survey',
+      buttonLabel: "Submit",
+      buttonDisabled: surveyResponsesArray.length === 0 || pagesInError.size !== 0,
+      semanticDescription: "Submit survey",
+      semanticName: "Submit survey",
       buttonOnClick: () => {
         closePreviewSurveyModal();
       },
@@ -440,7 +415,7 @@ function PreviewSurvey({
     },
   ]);
   const displaySubmitButton = (
-    <Tooltip label={'Closes modal only.'}>
+    <Tooltip label={"Closes modal only."}>
       <Group w="100%" position="center">
         {createdSubmitButton}
       </Group>
@@ -469,7 +444,7 @@ function PreviewSurvey({
       descriptionObjectsArray={stepperDescriptionsArray}
       maxStepperPosition={stepperDescriptionsArray.length}
       setCurrentStepperPosition={previewSurveyAction.setCurrentStepperPosition}
-      stepsInError={stepsInError}
+      stepsInError={pagesInError}
       parentComponentDispatch={previewSurveyDispatch}
       customWidth={customWidth}
     >

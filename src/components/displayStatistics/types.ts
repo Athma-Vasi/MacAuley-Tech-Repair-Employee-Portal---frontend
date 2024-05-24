@@ -1,13 +1,13 @@
-import { BarChartData } from '../charts/responsiveBarChart/types';
-import { PieChartData } from '../charts/responsivePieChart/types';
-import { SurveyBuilderDocument } from '../survey/types';
+import { BarChartData } from "../charts/responsiveBarChart/types";
+import { PieChartData } from "../charts/responsivePieChart/types";
+import { SurveyDocument } from "../survey/types";
 
 type DisplayStatisticsProps = {
-  surveys: SurveyBuilderDocument[];
+  surveys: SurveyDocument[];
 };
 
 type ChartData = PieChartData[] | BarChartData[];
-type ChartKind = 'bar' | 'pie';
+type ChartKind = "bar" | "pie";
 
 type DisplayStatisticsState = {
   chartKindsMap: Map<string, Map<string, ChartKind>>;
@@ -15,49 +15,49 @@ type DisplayStatisticsState = {
   chartTitlesMap: Map<string, string[]>;
   totalResponsesMap: Map<string, Map<string, number>>;
 
-  currentSelectedSurvey: SurveyBuilderDocument | null;
+  currentSelectedSurvey: SurveyDocument | null;
   currentlySelectedPieChartData: PieChartData[] | null;
   modalPage: number;
 };
 
 type DisplayStatisticsAction = {
-  setChartKindsMap: 'setChartKindsMap';
-  setPieChartDataMap: 'setPieChartDataMap';
-  setChartTitlesMap: 'setChartTitlesMap';
-  setTotalResponsesMap: 'setTotalResponsesMap';
+  setChartKindsMap: "setChartKindsMap";
+  setPieChartDataMap: "setPieChartDataMap";
+  setChartTitlesMap: "setChartTitlesMap";
+  setTotalResponsesMap: "setTotalResponsesMap";
 
-  setCurrentSelectedSurvey: 'setCurrentSelectedSurvey';
-  setCurrentlySelectedPieChartData: 'setCurrentlySelectedPieChartData';
-  setModalPage: 'setModalPage';
+  setCurrentSelectedSurvey: "setCurrentSelectedSurvey";
+  setCurrentlySelectedPieChartData: "setCurrentlySelectedPieChartData";
+  setModalPage: "setModalPage";
 };
 
 type DisplayStatisticsDispatch =
   | {
-      type: DisplayStatisticsAction['setChartKindsMap'];
+      type: DisplayStatisticsAction["setChartKindsMap"];
       payload: Map<string, Map<string, ChartKind>>;
     }
   | {
-      type: DisplayStatisticsAction['setPieChartDataMap'];
+      type: DisplayStatisticsAction["setPieChartDataMap"];
       payload: Map<string, Map<string, PieChartData[]>>;
     }
   | {
-      type: DisplayStatisticsAction['setChartTitlesMap'];
+      type: DisplayStatisticsAction["setChartTitlesMap"];
       payload: Map<string, string[]>;
     }
   | {
-      type: DisplayStatisticsAction['setTotalResponsesMap'];
+      type: DisplayStatisticsAction["setTotalResponsesMap"];
       payload: Map<string, Map<string, number>>;
     }
   | {
-      type: DisplayStatisticsAction['setCurrentSelectedSurvey'];
-      payload: SurveyBuilderDocument;
+      type: DisplayStatisticsAction["setCurrentSelectedSurvey"];
+      payload: SurveyDocument;
     }
   | {
-      type: DisplayStatisticsAction['setCurrentlySelectedPieChartData'];
+      type: DisplayStatisticsAction["setCurrentlySelectedPieChartData"];
       payload: PieChartData[];
     }
   | {
-      type: DisplayStatisticsAction['setModalPage'];
+      type: DisplayStatisticsAction["setModalPage"];
       payload: number;
     };
 

@@ -8,52 +8,48 @@ import {
   Text,
   Title,
   Tooltip,
-} from '@mantine/core';
-import { InvalidTokenError } from 'jwt-decode';
-import { Fragment, useEffect, useReducer } from 'react';
-import { useErrorBoundary } from 'react-error-boundary';
-import { TbChartPie3, TbNewSection, TbUpload } from 'react-icons/tb';
-import { useNavigate } from 'react-router-dom';
+} from "@mantine/core";
+import { InvalidTokenError } from "jwt-decode";
+import { Fragment, useEffect, useReducer } from "react";
+import { useErrorBoundary } from "react-error-boundary";
+import { TbChartPie3, TbNewSection, TbUpload } from "react-icons/tb";
+import { useNavigate } from "react-router-dom";
 
-import { COLORS_SWATCHES } from '../../../constants/data';
-import { globalAction } from '../../../context/globalProvider/state';
-import { useAuth, useGlobalState, useWrapFetch } from '../../../hooks';
+import { COLORS_SWATCHES } from "../../../constants/data";
+import { globalAction } from "../../../context/globalProvider/state";
+import { useAuth, useGlobalState, useWrapFetch } from "../../../hooks";
 import {
   returnAccessibleButtonElements,
   returnAccessibleCheckboxGroupInputsElements,
   returnAccessibleRadioGroupInputsElements,
-} from '../../../jsxCreators';
-import {
-  CheckBoxMultipleData,
-  RadioGroupInputData,
-  UserDocument,
-} from '../../../types';
+} from "../../../jsxCreators";
+import { CheckBoxMultipleData, RadioGroupInputData, UserDocument } from "../../../types";
 import {
   filterFieldsFromObject,
   logState,
   replaceLastCommaWithAnd,
   returnThemeColors,
   urlBuilder,
-} from '../../../utils';
-import { NotificationModal } from '../../notificationModal';
-import { CustomRating } from '../../customRating/CustomRating';
-import DisplayResourceHeader from '../../displayResourceHeader/DisplayResourceHeader';
-import { DisplayStatistics } from '../../displayStatistics';
-import { PageBuilder } from '../../pageBuilder';
+} from "../../../utils";
+import { NotificationModal } from "../../notificationModal";
+import { CustomRating } from "../../customRating/CustomRating";
+import DisplayResourceHeader from "../../displayResourceHeader/DisplayResourceHeader";
+import { DisplayStatistics } from "../../displayStatistics";
+import { PageBuilder } from "../../pageBuilder";
 import {
   AccessibleCheckboxGroupInputCreatorInfo,
   AccessibleRadioGroupInputCreatorInfo,
   StepperWrapper,
   TextWrapper,
-} from '../../wrappers';
-import { SURVEY_AGREE_DISAGREE_RESPONSE_DATA_OPTIONS } from '../constants';
-import { SurveyBuilderDocument } from '../types';
+} from "../../wrappers";
+import { SURVEY_AGREE_DISAGREE_RESPONSE_DATA_OPTIONS } from "../constants";
+import { SurveyDocument } from "../types";
 import {
   displaySurveysAction,
   displaySurveysReducer,
   initialDisplaySurveysState,
-} from './state';
-import { useDisclosure } from '@mantine/hooks';
+} from "./state";
+import { useDisclosure } from "@mantine/hooks";
 
 function DisplaySurveys() {
   /** ------------- begin hooks ------------- */
@@ -72,7 +68,7 @@ function DisplaySurveys() {
 
     stepperDescriptionsMap,
     currentStepperPositions,
-    stepsInError,
+    pagesInError,
 
     pageQueryString,
     queryBuilderString,
@@ -126,23 +122,21 @@ function DisplaySurveys() {
         type: displaySurveysAction.setIsLoading,
         payload: true,
       });
-      const pageNumber = pageQueryString.split('=')[1] ?? '1';
+      const pageNumber = pageQueryString.split("=")[1] ?? "1";
       displaySurveysDispatch({
         type: displaySurveysAction.setLoadingMessage,
         payload: `Loading surveys: page ${pageNumber} ...`,
       });
 
       const url: URL = urlBuilder({
-        path: `actions/outreach/survey${
-          roles.includes('Manager') ? '' : '/user'
-        }`,
+        path: `actions/outreach/survey${roles.includes("Manager") ? "" : "/user"}`,
         query: `${queryBuilderString}${pageQueryString}&newQueryFlag=${newQueryFlag}&totalDocuments=${totalDocuments}`,
       });
 
       const requestInit: RequestInit = {
-        method: 'GET',
+        method: "GET",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
       };
 
@@ -156,7 +150,7 @@ function DisplaySurveys() {
 
         const data: {
           message: string;
-          resourceData: SurveyBuilderDocument[];
+          resourceData: SurveyDocument[];
           totalDocuments: number;
           pages: number;
         } = await response.json();
@@ -183,16 +177,16 @@ function DisplaySurveys() {
           payload: data.pages ?? pages,
         });
       } catch (error: any) {
-        if (!isMounted || error.name === 'AbortError') {
+        if (!isMounted || error.name === "AbortError") {
           return;
         }
 
         const errorMessage =
           error instanceof InvalidTokenError
-            ? 'Invalid token. Please login again.'
+            ? "Invalid token. Please login again."
             : !error.response
-            ? 'Network error. Please try again.'
-            : error?.message ?? 'Unknown error occurred. Please try again.';
+            ? "Network error. Please try again."
+            : error?.message ?? "Unknown error occurred. Please try again.";
 
         globalDispatch({
           type: globalAction.setErrorState,
@@ -200,13 +194,13 @@ function DisplaySurveys() {
             isError: true,
             errorMessage,
             errorCallback: () => {
-              navigate('/home');
+              navigate("/home");
 
               globalDispatch({
                 type: globalAction.setErrorState,
                 payload: {
                   isError: false,
-                  errorMessage: '',
+                  errorMessage: "",
                   errorCallback: () => {},
                 },
               });
@@ -223,7 +217,7 @@ function DisplaySurveys() {
           });
           displaySurveysDispatch({
             type: displaySurveysAction.setLoadingMessage,
-            payload: '',
+            payload: "",
           });
           displaySurveysDispatch({
             type: displaySurveysAction.setTriggerSurveyFetch,
@@ -283,7 +277,7 @@ function DisplaySurveys() {
       const filteredSurveyResponses = surveyResponses.map((surveyResponse) => {
         const filteredSurveyResponse = filterFieldsFromObject({
           object: surveyResponse,
-          fieldsToFilter: ['responseKind'],
+          fieldsToFilter: ["responseKind"],
         });
 
         return filteredSurveyResponse;
@@ -294,9 +288,9 @@ function DisplaySurveys() {
       });
 
       const requestInit: RequestInit = {
-        method: 'PATCH',
+        method: "PATCH",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body,
       };
@@ -311,7 +305,7 @@ function DisplaySurveys() {
 
         const data: {
           message: string;
-          resourceData: [SurveyBuilderDocument, UserDocument];
+          resourceData: [SurveyDocument, UserDocument];
         } = await response.json();
 
         if (!isMounted) {
@@ -337,16 +331,16 @@ function DisplaySurveys() {
           payload: data.message,
         });
       } catch (error: any) {
-        if (!isMounted || error.name === 'AbortError') {
+        if (!isMounted || error.name === "AbortError") {
           return;
         }
 
         const errorMessage =
           error instanceof InvalidTokenError
-            ? 'Invalid token. Please login again.'
+            ? "Invalid token. Please login again."
             : !error.response
-            ? 'Network error. Please try again.'
-            : error?.message ?? 'Unknown error occurred. Please try again.';
+            ? "Network error. Please try again."
+            : error?.message ?? "Unknown error occurred. Please try again.";
 
         globalDispatch({
           type: globalAction.setErrorState,
@@ -354,13 +348,13 @@ function DisplaySurveys() {
             isError: true,
             errorMessage,
             errorCallback: () => {
-              navigate('/home');
+              navigate("/home");
 
               globalDispatch({
                 type: globalAction.setErrorState,
                 payload: {
                   isError: false,
-                  errorMessage: '',
+                  errorMessage: "",
                   errorCallback: () => {},
                 },
               });
@@ -377,7 +371,7 @@ function DisplaySurveys() {
           });
           displaySurveysDispatch({
             type: displaySurveysAction.setSubmitMessage,
-            payload: '',
+            payload: "",
           });
           displaySurveysDispatch({
             type: displaySurveysAction.setTriggerSurveySubmission,
@@ -419,11 +413,9 @@ function DisplaySurveys() {
     }
 
     const [completedSurveys, uncompletedSurveys] = responseData.reduce(
-      (acc: [SurveyBuilderDocument[], SurveyBuilderDocument[]], survey) => {
+      (acc: [SurveyDocument[], SurveyDocument[]], survey) => {
         const { _id: surveyId } = survey;
-        completedSurveyIds.has(surveyId)
-          ? acc[0].push(survey)
-          : acc[1].push(survey);
+        completedSurveyIds.has(surveyId) ? acc[0].push(survey) : acc[1].push(survey);
 
         return acc;
       },
@@ -445,7 +437,7 @@ function DisplaySurveys() {
       payload: uncompletedSurveys,
     });
     // set the current stepper positions to the uncompleted surveys
-    uncompletedSurveys.forEach((survey: SurveyBuilderDocument) => {
+    uncompletedSurveys.forEach((survey: SurveyDocument) => {
       displaySurveysDispatch({
         type: displaySurveysAction.setCurrentStepperPosition,
         payload: {
@@ -458,93 +450,91 @@ function DisplaySurveys() {
 
   // set steps in error for each survey's stepper component
   useEffect(() => {
-    Array.from(currentStepperPositions).forEach(
-      ([surveyId, currentStepperPosition]) => {
-        // get the corresponding survey submission
-        const surveySubmission = surveySubmissions.get(surveyId);
-        // if there is no survey submission, then set the steps in error from current stepper position to zero (the beginning of the stepper)
-        if (!surveySubmission) {
-          Array.from({ length: currentStepperPosition }).forEach((_, idx) => {
+    Array.from(currentStepperPositions).forEach(([surveyId, currentStepperPosition]) => {
+      // get the corresponding survey submission
+      const surveySubmission = surveySubmissions.get(surveyId);
+      // if there is no survey submission, then set the steps in error from current stepper position to zero (the beginning of the stepper)
+      if (!surveySubmission) {
+        Array.from({ length: currentStepperPosition }).forEach((_, idx) => {
+          displaySurveysDispatch({
+            type: displaySurveysAction.setStepsInError,
+            payload: {
+              surveyId,
+              stepInError: {
+                kind: "add",
+                step: idx,
+              },
+            },
+          });
+        });
+      }
+      // if there is a survey submission, check if any questions were skipped, or if any responses are empty strings, empty arrays or zero numbers
+      else {
+        const { surveyResponses } = surveySubmission;
+        // the user skipped a question
+        if (surveyResponses.length < currentStepperPosition) {
+          // set the steps in error from the surveyResponses length to the current stepper position
+          Array.from({
+            length: currentStepperPosition - surveyResponses.length,
+          }).forEach((_, idx) => {
             displaySurveysDispatch({
               type: displaySurveysAction.setStepsInError,
               payload: {
                 surveyId,
                 stepInError: {
-                  kind: 'add',
-                  step: idx,
+                  kind: "add",
+                  step: surveyResponses.length + idx,
                 },
               },
             });
           });
         }
-        // if there is a survey submission, check if any questions were skipped, or if any responses are empty strings, empty arrays or zero numbers
-        else {
-          const { surveyResponses } = surveySubmission;
-          // the user skipped a question
-          if (surveyResponses.length < currentStepperPosition) {
-            // set the steps in error from the surveyResponses length to the current stepper position
-            Array.from({
-              length: currentStepperPosition - surveyResponses.length,
-            }).forEach((_, idx) => {
-              displaySurveysDispatch({
-                type: displaySurveysAction.setStepsInError,
-                payload: {
-                  surveyId,
-                  stepInError: {
-                    kind: 'add',
-                    step: surveyResponses.length + idx,
-                  },
+
+        // iterate through responses and add or remove the step from the steps in error
+        surveyResponses.forEach(({ response }, idx) => {
+          // the user did not respond to the question
+          if (
+            response === "" || // for 'radio' or 'agreeDisagree'
+            (Array.isArray(response) && response.length === 0) || // for 'checkbox'
+            response === 0 // for 'rating': 'emotion' or 'stars'
+          ) {
+            displaySurveysDispatch({
+              type: displaySurveysAction.setStepsInError,
+              payload: {
+                surveyId,
+                stepInError: {
+                  kind: "add",
+                  step: idx,
                 },
-              });
+              },
+            });
+          } else {
+            displaySurveysDispatch({
+              type: displaySurveysAction.setStepsInError,
+              payload: {
+                surveyId,
+                stepInError: {
+                  kind: "delete",
+                  step: idx,
+                },
+              },
             });
           }
-
-          // iterate through responses and add or remove the step from the steps in error
-          surveyResponses.forEach(({ response }, idx) => {
-            // the user did not respond to the question
-            if (
-              response === '' || // for 'radio' or 'agreeDisagree'
-              (Array.isArray(response) && response.length === 0) || // for 'checkbox'
-              response === 0 // for 'rating': 'emotion' or 'stars'
-            ) {
-              displaySurveysDispatch({
-                type: displaySurveysAction.setStepsInError,
-                payload: {
-                  surveyId,
-                  stepInError: {
-                    kind: 'add',
-                    step: idx,
-                  },
-                },
-              });
-            } else {
-              displaySurveysDispatch({
-                type: displaySurveysAction.setStepsInError,
-                payload: {
-                  surveyId,
-                  stepInError: {
-                    kind: 'delete',
-                    step: idx,
-                  },
-                },
-              });
-            }
-          });
-        }
+        });
       }
-    );
+    });
   }, [currentStepperPositions, surveySubmissions, stepperDescriptionsMap]);
 
   useEffect(() => {
     logState({
       state: displaySurveysState,
-      groupLabel: 'DisplaySurveys',
+      groupLabel: "DisplaySurveys",
     });
   }, [displaySurveysState]);
 
   // useEffect(() => {
   //   displaySurveysState.responseData.forEach(
-  //     (survey: SurveyBuilderDocument) => {
+  //     (survey: SurveyDocument) => {
   //       const { questions } = survey;
 
   //       console.group(`Survey: ${survey._id}`);
@@ -584,10 +574,7 @@ function DisplaySurveys() {
 
       // every survey's inputs are controlled
       questions?.forEach(
-        (
-          { question, responseDataOptions, responseInput, responseKind },
-          questionIdx
-        ) => {
+        ({ question, responseDataOptions, responseInput, responseKind }, questionIdx) => {
           // uniquely identifiers passed to and received from the rating component
           const dynamicComponentProps = {
             setResponseDispatch: displaySurveysDispatch,
@@ -605,7 +592,7 @@ function DisplaySurveys() {
 
           // agreeDisagree is a radio group with set values
           switch (responseInput) {
-            case 'agreeDisagree': {
+            case "agreeDisagree": {
               const value = surveySubmissions
                 .get(_id)
                 ?.surveyResponses.find(
@@ -614,39 +601,37 @@ function DisplaySurveys() {
 
               const description = (
                 <Text size="sm" aria-label="polite">{`You have selected: ${
-                  value ?? 'N/A'
+                  value ?? "N/A"
                 }`}</Text>
               );
 
-              const radioInputCreatorInfoObj: AccessibleRadioGroupInputCreatorInfo =
-                {
-                  dataObjectArray: SURVEY_AGREE_DISAGREE_RESPONSE_DATA_OPTIONS,
-                  description,
-                  key: `${_id}-${surveyIdx}-${questionIdx}-${question}-${responseInput}-${responseKind}`,
-                  label: question,
-                  onChange: (value: string) => {
-                    displaySurveysDispatch({
-                      type: displaySurveysAction.setSurveySubmissions,
-                      payload: {
-                        surveyId: _id,
-                        surveyTitle,
-                        surveyResponse: {
-                          question,
-                          inputKind: responseInput,
-                          response: value,
-                          responseKind,
-                        },
+              const radioInputCreatorInfoObj: AccessibleRadioGroupInputCreatorInfo = {
+                dataObjectArray: SURVEY_AGREE_DISAGREE_RESPONSE_DATA_OPTIONS,
+                description,
+                key: `${_id}-${surveyIdx}-${questionIdx}-${question}-${responseInput}-${responseKind}`,
+                label: question,
+                onChange: (value: string) => {
+                  displaySurveysDispatch({
+                    type: displaySurveysAction.setSurveySubmissions,
+                    payload: {
+                      surveyId: _id,
+                      surveyTitle,
+                      surveyResponse: {
+                        question,
+                        inputKind: responseInput,
+                        response: value,
+                        responseKind,
                       },
-                    });
-                  },
-                  semanticName: question,
-                  value: value ?? '',
-                };
+                    },
+                  });
+                },
+                semanticName: question,
+                value: value ?? "",
+              };
 
-              const [createdRadioInput] =
-                returnAccessibleRadioGroupInputsElements([
-                  radioInputCreatorInfoObj,
-                ]);
+              const [createdRadioInput] = returnAccessibleRadioGroupInputsElements([
+                radioInputCreatorInfoObj,
+              ]);
 
               const displayRadioInput = (
                 <Fragment
@@ -660,12 +645,13 @@ function DisplaySurveys() {
               break;
             }
             // radio is a radio group with dynamic values with constrained single selection
-            case 'radio': {
-              const dataObjectArray: RadioGroupInputData =
-                responseDataOptions.map((responseDataOption) => ({
+            case "radio": {
+              const dataObjectArray: RadioGroupInputData = responseDataOptions.map(
+                (responseDataOption) => ({
                   value: responseDataOption,
                   label: responseDataOption,
-                }));
+                })
+              );
 
               const value = surveySubmissions
                 .get(_id)
@@ -675,39 +661,37 @@ function DisplaySurveys() {
 
               const description = (
                 <Text size="sm" aria-label="polite">{`You have selected: ${
-                  value ?? 'N/A'
+                  value ?? "N/A"
                 }`}</Text>
               );
 
-              const radioInputCreatorInfoObj: AccessibleRadioGroupInputCreatorInfo =
-                {
-                  dataObjectArray,
-                  description,
-                  key: `${_id}-${surveyIdx}-${questionIdx}-${question}-${responseInput}-${responseKind}`,
-                  label: question,
-                  onChange: (value: string) => {
-                    displaySurveysDispatch({
-                      type: displaySurveysAction.setSurveySubmissions,
-                      payload: {
-                        surveyId: _id,
-                        surveyTitle,
-                        surveyResponse: {
-                          question,
-                          inputKind: responseInput,
-                          response: value,
-                          responseKind,
-                        },
+              const radioInputCreatorInfoObj: AccessibleRadioGroupInputCreatorInfo = {
+                dataObjectArray,
+                description,
+                key: `${_id}-${surveyIdx}-${questionIdx}-${question}-${responseInput}-${responseKind}`,
+                label: question,
+                onChange: (value: string) => {
+                  displaySurveysDispatch({
+                    type: displaySurveysAction.setSurveySubmissions,
+                    payload: {
+                      surveyId: _id,
+                      surveyTitle,
+                      surveyResponse: {
+                        question,
+                        inputKind: responseInput,
+                        response: value,
+                        responseKind,
                       },
-                    });
-                  },
-                  semanticName: question,
-                  value: value ?? '',
-                };
+                    },
+                  });
+                },
+                semanticName: question,
+                value: value ?? "",
+              };
 
-              const [createdRadioInput] =
-                returnAccessibleRadioGroupInputsElements([
-                  radioInputCreatorInfoObj,
-                ]);
+              const [createdRadioInput] = returnAccessibleRadioGroupInputsElements([
+                radioInputCreatorInfoObj,
+              ]);
 
               const displayRadioInput = (
                 <Fragment
@@ -721,12 +705,13 @@ function DisplaySurveys() {
               break;
             }
             // checkbox is a checkbox group with dynamic values with unconstrained multiple selections (array of strings)
-            case 'checkbox': {
-              const dataObjectArray: CheckBoxMultipleData =
-                responseDataOptions.map((responseDataOption) => ({
+            case "checkbox": {
+              const dataObjectArray: CheckBoxMultipleData = responseDataOptions.map(
+                (responseDataOption) => ({
                   value: responseDataOption,
                   label: responseDataOption,
-                }));
+                })
+              );
 
               const surveySubmission = surveySubmissions.get(_id);
               const checkboxValue = surveySubmission?.surveyResponses.find(
@@ -739,7 +724,7 @@ function DisplaySurveys() {
                     size="sm"
                     aria-label="polite"
                   >{`You have selected: ${replaceLastCommaWithAnd(
-                    checkboxValue?.join(', ') ?? ''
+                    checkboxValue?.join(", ") ?? ""
                   )}`}</Text>
                 ),
                 deselected: (
@@ -773,10 +758,9 @@ function DisplaySurveys() {
                   value: checkboxValue ?? [],
                 };
 
-              const [createdCheckboxInput] =
-                returnAccessibleCheckboxGroupInputsElements([
-                  checkboxInputCreatorInfoObj,
-                ]);
+              const [createdCheckboxInput] = returnAccessibleCheckboxGroupInputsElements([
+                checkboxInputCreatorInfoObj,
+              ]);
 
               const displayCheckboxInput = (
                 <Fragment
@@ -790,7 +774,7 @@ function DisplaySurveys() {
               break;
             }
             // emotion is a rating component with emojis as values from 1-5
-            case 'emotion': {
+            case "emotion": {
               const value = surveySubmissions
                 .get(_id)
                 ?.surveyResponses.find(
@@ -818,7 +802,7 @@ function DisplaySurveys() {
               break;
             }
             // stars is a rating component with stars as values from 1-5
-            case 'stars': {
+            case "stars": {
               const value = surveySubmissions
                 .get(_id)
                 ?.surveyResponses.find(
@@ -864,7 +848,7 @@ function DisplaySurveys() {
 
     const currentStepperPosition = currentStepperPositions.get(_id) ?? 0;
     const descriptionObjectsArray = stepperDescriptionsMap.get(_id) ?? [];
-    const stepInError: Set<number> = stepsInError.get(_id) ?? new Set<number>();
+    const stepInError: Set<number> = pagesInError.get(_id) ?? new Set<number>();
     const dynamicStepperProps = {
       id: _id,
       dynamicSetStepperDispatch: displaySurveysDispatch,
@@ -872,21 +856,17 @@ function DisplaySurveys() {
     // display the survey question's input based on the stepper position state
     const displaySurveyQuestion = (
       <Stack w="100%" p={padding}>
-        {createdSurveys[idx].slice(
-          currentStepperPosition,
-          currentStepperPosition + 1
-        )}
+        {createdSurveys[idx].slice(currentStepperPosition, currentStepperPosition + 1)}
       </Stack>
     );
 
     const createdSubmitButton = returnAccessibleButtonElements([
       {
-        buttonLabel: 'Submit',
+        buttonLabel: "Submit",
         buttonDisabled:
-          surveySubmissions.get(_id) === undefined ||
-          stepsInError.get(_id)?.size !== 0,
-        semanticDescription: 'Submit survey',
-        semanticName: 'Submit survey',
+          surveySubmissions.get(_id) === undefined || pagesInError.get(_id)?.size !== 0,
+        semanticDescription: "Submit survey",
+        semanticName: "Submit survey",
         buttonOnClick: () => {
           displaySurveysDispatch({
             type: displaySurveysAction.setSurveyToSubmit,
@@ -908,7 +888,7 @@ function DisplaySurveys() {
       <Tooltip
         label={
           stepInError.size > 0
-            ? 'Please fix errors before submitting'
+            ? "Please fix errors before submitting"
             : `Submit ${surveyTitle}`
         }
       >
@@ -931,9 +911,7 @@ function DisplaySurveys() {
         currentStepperPosition={currentStepperPosition}
         descriptionObjectsArray={descriptionObjectsArray}
         maxStepperPosition={descriptionObjectsArray.length}
-        setCurrentStepperPosition={
-          displaySurveysAction.setCurrentStepperPosition
-        }
+        setCurrentStepperPosition={displaySurveysAction.setCurrentStepperPosition}
         stepsInError={stepInError}
         dynamicStepperProps={dynamicStepperProps}
       >
@@ -956,12 +934,12 @@ function DisplaySurveys() {
 
   const createdSurveyButton = returnAccessibleButtonElements([
     {
-      buttonLabel: 'Create',
-      semanticDescription: 'create surveys form button',
-      semanticName: 'create survey button',
+      buttonLabel: "Create",
+      semanticDescription: "create surveys form button",
+      semanticName: "create survey button",
       leftIcon: <TbNewSection />,
       buttonOnClick: () => {
-        navigate('/home/outreach/survey/create');
+        navigate("/home/outreach/survey/create");
       },
     },
   ]);
@@ -989,11 +967,11 @@ function DisplaySurveys() {
       : 940;
 
   const imageSrc =
-    'https://images.pexels.com/photos/3183153/pexels-photo-3183153.jpeg?auto=compress';
-  const imageAlt = 'Colleagues looking at survey results';
+    "https://images.pexels.com/photos/3183153/pexels-photo-3183153.jpeg?auto=compress";
+  const imageAlt = "Colleagues looking at survey results";
   const resourceDescription =
-    'Help improve our company by completing the following surveys.';
-  const resourceTitle = 'Surveys';
+    "Help improve our company by completing the following surveys.";
+  const resourceTitle = "Surveys";
 
   const displayResourceHeader = (
     <DisplayResourceHeader
@@ -1016,7 +994,7 @@ function DisplaySurveys() {
     <Group
       position="left"
       p={padding}
-      style={{ border: borderColor, borderRadius: '4px' }}
+      style={{ border: borderColor, borderRadius: "4px" }}
     >
       <Text>Total surveys: </Text>
       <Text>{totalDocuments}</Text>
@@ -1069,12 +1047,10 @@ function DisplaySurveys() {
         rowGap={rowGap}
         columnGap={rowGap}
         wrap="wrap"
-        style={{ borderRadius: '4px' }}
+        style={{ borderRadius: "4px" }}
       >
         {!uncompletedSurveys.length && !isLoading ? (
-          <Text>
-            Congragulations! You have completed all available surveys!
-          </Text>
+          <Text>Congragulations! You have completed all available surveys!</Text>
         ) : (
           displayCreatedSurveys
         )}
@@ -1087,7 +1063,7 @@ function DisplaySurveys() {
       onCloseCallbacks={[
         closeSubmitSuccessNotificationModal,
         () => {
-          navigate('/home/outreach/survey-builder/display');
+          navigate("/home/outreach/survey-builder/display");
         },
       ]}
       opened={openedSubmitSuccessNotificationModal}
@@ -1095,9 +1071,7 @@ function DisplaySurveys() {
         loading: isSubmitting,
         text: isSubmitting ? submitMessage : successMessage,
       }}
-      title={
-        <Title order={4}>{isSuccessful ? 'Success!' : 'Submitting ...'}</Title>
-      }
+      title={<Title order={4}>{isSuccessful ? "Success!" : "Submitting ..."}</Title>}
     />
   );
 
@@ -1123,7 +1097,7 @@ function DisplaySurveys() {
       align="center"
       p={padding}
       bg={backgroundColor}
-      style={{ position: 'relative' }}
+      style={{ position: "relative" }}
     >
       {displaySubmitSuccessNotificationModal}
       {displayLoadingOverlay}

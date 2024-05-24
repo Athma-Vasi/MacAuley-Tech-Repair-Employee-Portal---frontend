@@ -1,129 +1,60 @@
-import { Modal, Text, Title } from "@mantine/core";
-import { Group, Tooltip } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
-import { InvalidTokenError } from "jwt-decode";
-import { ChangeEvent, MouseEvent, useEffect, useReducer, useRef } from "react";
-import { useErrorBoundary } from "react-error-boundary";
-import { TbChartPie4, TbEye, TbHelp, TbPlus, TbUpload } from "react-icons/tb";
-import { useNavigate } from "react-router-dom";
+function Survey() {
+  // const [surveyState, surveyDispatch] = useReducer(surveyReducer, initialSurveyState);
 
-import {
-  DATE_NEAR_FUTURE_REGEX,
-  GRAMMAR_TEXT_INPUT_REGEX,
-  GRAMMAR_TEXTAREA_INPUT_REGEX,
-} from "../../../constants/regex";
-import { globalAction } from "../../../context/globalProvider/state";
-import { useAuth, useGlobalState, useWrapFetch } from "../../../hooks";
-import {
-  AccessibleErrorValidTextElements,
-  AccessibleErrorValidTextElementsForDynamicInputs,
-  returnAccessibleButtonElements,
-  returnAccessibleDateTimeElements,
-  returnAccessibleDynamicRadioGroupInputsElements,
-  returnAccessibleDynamicTextInputElements,
-  returnAccessibleSelectInputElements,
-  returnAccessibleTextAreaInputElements,
-  returnAccessibleTextInputElements,
-} from "../../../jsxCreators";
-import { ResourceRequestServerResponse } from "../../../types";
-import {
-  addFieldsToObject,
-  logState,
-  returnDateNearFutureValidationText,
-  returnGrammarValidationText,
-  urlBuilder,
-} from "../../../utils";
-import FormReviewPage, {
-  FormReviewObjectArray,
-} from "../../formReviewPage/FormReviewPage";
-import { NotificationModal } from "../../notificationModal";
-import {
-  AccessibleButtonCreatorInfo,
-  AccessibleDateTimeInputCreatorInfo,
-  AccessibleRadioGroupInputCreatorInfo,
-  AccessibleSelectInputCreatorInfo,
-  AccessibleTextAreaInputCreatorInfo,
-  AccessibleTextInputCreatorInfo,
-  FormLayoutWrapper,
-  StepperWrapper,
-} from "../../wrappers";
-import {
-  SURVEY_BUILDER_INPUT_HTML_DATA,
-  SURVEY_BUILDER_MAX_QUESTION_AMOUNT,
-  SURVEY_BUILDER_RECIPIENT_DATA,
-  SURVEY_BUILDER_RESPONSE_KIND_DATA,
-  SURVEY_MAX_RESPONSE_DATA_OPTIONS,
-} from "../constants";
-import PreviewSurvey from "../preview/PreviewSurvey";
-import { SurveyBuilderDocument, SurveyRecipient, SurveyStatistics } from "../types";
-import {
-  createSurveyFormReviewObject,
-  mergeSurveyQuestionsGroup,
-  setSurveyQuestions,
-} from "../utils";
-import {
-  initialSurveyBuilderState,
-  surveyBuilderAction,
-  surveyBuilderReducer,
-} from "./state";
-import { SURVEY_BUILDER_HELP_TEXT } from "./utils";
+  // const {
+  //   surveyTitle,
+  //   isValidSurveyTitle,
+  //   isSurveyTitleFocused,
 
-function SurveyBuilder() {
-  /** ------------- begin hooks ------------- */
-  const {
-    globalState: { width },
-  } = useGlobalState();
-  const [surveyBuilderState, surveyBuilderDispatch] = useReducer(
-    surveyBuilderReducer,
-    initialSurveyBuilderState
-  );
-  const {
-    surveyTitle,
-    isValidSurveyTitle,
-    isSurveyTitleFocused,
+  //   surveyDescription,
+  //   isValidSurveyDescription,
+  //   isSurveyDescriptionFocused,
 
-    surveyDescription,
-    isValidSurveyDescription,
-    isSurveyDescriptionFocused,
+  //   expiryDate,
+  //   isValidExpiryDate,
+  //   isExpiryDateFocused,
 
-    expiryDate,
-    isValidExpiryDate,
-    isExpiryDateFocused,
+  //   surveyRecipients,
 
-    surveyRecipients,
+  //   questions,
+  //   areValidQuestions,
+  //   areQuestionsFocused,
+  //   isMaxQuestionsReached,
 
-    questions,
-    areValidQuestions,
-    areQuestionsFocused,
-    isMaxQuestionsReached,
+  //   responseKinds,
+  //   responseInputHtml,
 
-    responseKinds,
-    responseInputHtml,
+  //   responseDataOptionsArray,
+  //   areResponseDataOptionsValid,
+  //   areResponseDataOptionsFocused,
+  //   isMaxResponseDataOptionsReached,
 
-    responseDataOptionsArray,
-    areResponseDataOptionsValid,
-    areResponseDataOptionsFocused,
-    isMaxResponseDataOptionsReached,
+  //   surveyStatistics,
 
-    surveyStatistics,
+  //   triggerFormSubmit,
+  //   submitButtonDisabled,
+  //   triggerPreviewSurvey,
+  //   previewSurveyProps,
 
-    triggerFormSubmit,
-    submitButtonDisabled,
-    triggerPreviewSurvey,
-    previewSurveyProps,
+  //   stepperDescriptionObjects,
+  //   currentStepperPosition,
+  //   pagesInError,
 
-    stepperDescriptionObjects,
-    currentStepperPosition,
-    stepsInError,
+  //   isSubmitting,
+  //   submitMessage,
+  //   isSuccessful,
+  //   successMessage,
+  //   isLoading,
+  //   loadingMessage,
+  // } = surveyState;
 
-    isSubmitting,
-    submitMessage,
-    isSuccessful,
-    successMessage,
-    isLoading,
-    loadingMessage,
-  } = surveyBuilderState;
+  return null;
+}
 
+export default Survey;
+
+/**
+ * 
   const { wrappedFetch } = useWrapFetch();
 
   const {
@@ -155,9 +86,9 @@ function SurveyBuilder() {
     },
   ] = useDisclosure(false);
 
-  /** ------------- end hooks ------------- */
+  
 
-  /** ------------- begin useEffects ------------- */
+  
   // submit survey form
   useEffect(() => {
     let isMounted = true;
@@ -170,12 +101,12 @@ function SurveyBuilder() {
     const controller = new AbortController();
 
     async function handleSurveySubmit() {
-      surveyBuilderDispatch({
-        type: surveyBuilderAction.setIsSubmitting,
+      surveyDispatch({
+        type: surveyAction.setIsSubmitting,
         payload: true,
       });
-      surveyBuilderDispatch({
-        type: surveyBuilderAction.setSubmitMessage,
+      surveyDispatch({
+        type: surveyAction.setSubmitMessage,
         payload: `Submitting survey: ${surveyTitle}...`,
       });
       openSubmitSuccessNotificationModal();
@@ -214,8 +145,7 @@ function SurveyBuilder() {
           url,
         });
 
-        const data: ResourceRequestServerResponse<SurveyBuilderDocument> =
-          await response.json();
+        const data: ResourceRequestServerResponse<SurveyDocument> = await response.json();
 
         if (!isMounted) {
           return;
@@ -224,12 +154,12 @@ function SurveyBuilder() {
           throw new Error(data.message);
         }
 
-        surveyBuilderDispatch({
-          type: surveyBuilderAction.setIsSuccessful,
+        surveyDispatch({
+          type: surveyAction.setIsSuccessful,
           payload: true,
         });
-        surveyBuilderDispatch({
-          type: surveyBuilderAction.setSuccessMessage,
+        surveyDispatch({
+          type: surveyAction.setSuccessMessage,
           payload: data.message,
         });
       } catch (error: any) {
@@ -267,12 +197,12 @@ function SurveyBuilder() {
         showBoundary(error);
       } finally {
         if (isMounted) {
-          surveyBuilderDispatch({
-            type: surveyBuilderAction.setTriggerFormSubmit,
+          surveyDispatch({
+            type: surveyAction.setTriggerFormSubmit,
             payload: false,
           });
-          surveyBuilderDispatch({
-            type: surveyBuilderAction.setIsSubmitting,
+          surveyDispatch({
+            type: surveyAction.setIsSubmitting,
             payload: false,
           });
         }
@@ -293,15 +223,15 @@ function SurveyBuilder() {
 
   // allows repeated openings of preview modal
   useEffect(() => {
-    surveyBuilderDispatch({
-      type: surveyBuilderAction.setTriggerPreviewSurvey,
+    surveyDispatch({
+      type: surveyAction.setTriggerPreviewSurvey,
       payload: false,
     });
   }, [openedPreviewSurveyModal]);
 
   useEffect(() => {
-    surveyBuilderDispatch({
-      type: surveyBuilderAction.setIsLoading,
+    surveyDispatch({
+      type: surveyAction.setIsLoading,
       payload: false,
     });
   }, []);
@@ -321,8 +251,8 @@ function SurveyBuilder() {
   useEffect(() => {
     const isValid = GRAMMAR_TEXT_INPUT_REGEX.test(surveyTitle);
 
-    surveyBuilderDispatch({
-      type: surveyBuilderAction.setIsValidSurveyTitle,
+    surveyDispatch({
+      type: surveyAction.setIsValidSurveyTitle,
       payload: isValid,
     });
   }, [surveyTitle]);
@@ -331,8 +261,8 @@ function SurveyBuilder() {
   useEffect(() => {
     const isValid = GRAMMAR_TEXTAREA_INPUT_REGEX.test(surveyDescription);
 
-    surveyBuilderDispatch({
-      type: surveyBuilderAction.setIsValidSurveyDescription,
+    surveyDispatch({
+      type: surveyAction.setIsValidSurveyDescription,
       payload: isValid,
     });
   }, [surveyDescription]);
@@ -343,8 +273,8 @@ function SurveyBuilder() {
     const isValid =
       DATE_NEAR_FUTURE_REGEX.test(expiryDate) && new Date() <= new Date(expiryDate);
 
-    surveyBuilderDispatch({
-      type: surveyBuilderAction.setIsValidExpiryDate,
+    surveyDispatch({
+      type: surveyAction.setIsValidExpiryDate,
       payload: isValid,
     });
   }, [expiryDate]);
@@ -355,8 +285,8 @@ function SurveyBuilder() {
       GRAMMAR_TEXT_INPUT_REGEX.test(surveyQuestion)
     );
 
-    surveyBuilderDispatch({
-      type: surveyBuilderAction.setAreValidQuestions,
+    surveyDispatch({
+      type: surveyAction.setAreValidQuestions,
       payload: isValid,
     });
 
@@ -365,8 +295,8 @@ function SurveyBuilder() {
       const maxSliceLength =
         width < 1440 && stepperDescriptionObjects.length > 4 ? 23 : 11;
 
-      surveyBuilderDispatch({
-        type: surveyBuilderAction.updateStepperDescriptionObjects,
+      surveyDispatch({
+        type: surveyAction.updateStepperDescriptionObjects,
         payload: {
           index: index + 1,
           value: {
@@ -387,10 +317,10 @@ function SurveyBuilder() {
 
   // validate questions length on every change
   useEffect(() => {
-    const isExceeded = questions.length === SURVEY_BUILDER_MAX_QUESTION_AMOUNT;
+    const isExceeded = questions.length === SURVEY_MAX_QUESTION_AMOUNT;
 
-    surveyBuilderDispatch({
-      type: surveyBuilderAction.setIsMaxQuestionsReached,
+    surveyDispatch({
+      type: surveyAction.setIsMaxQuestionsReached,
       payload: isExceeded,
     });
   }, [questions.length]);
@@ -403,8 +333,8 @@ function SurveyBuilder() {
       )
     );
 
-    surveyBuilderDispatch({
-      type: surveyBuilderAction.setAreResponseDataOptionsValid,
+    surveyDispatch({
+      type: surveyAction.setAreResponseDataOptionsValid,
       payload: isValid,
     });
   }, [responseDataOptionsArray, currentStepperPosition]);
@@ -412,8 +342,8 @@ function SurveyBuilder() {
   // validate max response data options on every change
   useEffect(() => {
     responseDataOptionsArray.forEach((responseDataOptions, index) => {
-      surveyBuilderDispatch({
-        type: surveyBuilderAction.setIsMaxResponseDataOptionsReached,
+      surveyDispatch({
+        type: surveyAction.setIsMaxResponseDataOptionsReached,
         payload: {
           index,
           value: responseDataOptions.length === SURVEY_MAX_RESPONSE_DATA_OPTIONS,
@@ -506,8 +436,8 @@ function SurveyBuilder() {
       []
     );
 
-    surveyBuilderDispatch({
-      type: surveyBuilderAction.setSurveyStatistics,
+    surveyDispatch({
+      type: surveyAction.setSurveyStatistics,
       payload: surveyStatistics,
     });
   }, [questions, responseDataOptionsArray, responseInputHtml]);
@@ -517,8 +447,8 @@ function SurveyBuilder() {
     // responseKinds.forEach((responseKind, index) => {
     //   switch (responseKind) {
     //     case 'chooseOne': {
-    //       surveyBuilderDispatch({
-    //         type: surveyBuilderAction.setResponseInputHtml,
+    //       surveyDispatch({
+    //         type: surveyAction.setResponseInputHtml,
     //         payload: {
     //           index,
     //           value: 'radio',
@@ -527,8 +457,8 @@ function SurveyBuilder() {
     //       break;
     //     }
     //     case 'chooseAny': {
-    //       surveyBuilderDispatch({
-    //         type: surveyBuilderAction.setResponseInputHtml,
+    //       surveyDispatch({
+    //         type: surveyAction.setResponseInputHtml,
     //         payload: {
     //           index,
     //           value: 'checkbox',
@@ -537,8 +467,8 @@ function SurveyBuilder() {
     //       break;
     //     }
     //     case 'rating': {
-    //       surveyBuilderDispatch({
-    //         type: surveyBuilderAction.setResponseInputHtml,
+    //       surveyDispatch({
+    //         type: surveyAction.setResponseInputHtml,
     //         payload: {
     //           index,
     //           value: 'emotion',
@@ -562,10 +492,10 @@ function SurveyBuilder() {
       areValidQuestions.includes(false) ||
       responseDataOptionsArray.includes([]) ||
       areResponseDataOptionsValid.flat().includes(false) ||
-      stepsInError.size > 0;
+      pagesInError.size > 0;
 
-    surveyBuilderDispatch({
-      type: surveyBuilderAction.setSubmitButtonDisabled,
+    surveyDispatch({
+      type: surveyAction.setSubmitButtonDisabled,
       payload: isDisabled,
     });
   }, [
@@ -579,7 +509,7 @@ function SurveyBuilder() {
     areValidQuestions,
     areResponseDataOptionsValid,
     isMaxResponseDataOptionsReached,
-    stepsInError.size,
+    pagesInError.size,
   ]);
 
   // validate stepper state on every change
@@ -587,8 +517,8 @@ function SurveyBuilder() {
     const isStepInError =
       !isValidSurveyTitle || !isValidExpiryDate || !isValidSurveyDescription;
 
-    surveyBuilderDispatch({
-      type: surveyBuilderAction.setStepsInError,
+    surveyDispatch({
+      type: surveyAction.setStepsInError,
       payload: {
         kind: isStepInError ? "add" : "delete",
         step: 0,
@@ -608,15 +538,15 @@ function SurveyBuilder() {
           : true;
 
       isValidQuestion && isDataOptionsPresent
-        ? surveyBuilderDispatch({
-            type: surveyBuilderAction.setStepsInError,
+        ? surveyDispatch({
+            type: surveyAction.setStepsInError,
             payload: {
               kind: "delete",
               step: index + 1,
             },
           })
-        : surveyBuilderDispatch({
-            type: surveyBuilderAction.setStepsInError,
+        : surveyDispatch({
+            type: surveyAction.setStepsInError,
             payload: {
               kind: "add",
               step: index + 1,
@@ -640,15 +570,15 @@ function SurveyBuilder() {
       );
 
       isAnyResponseDataForQuestionInError
-        ? surveyBuilderDispatch({
-            type: surveyBuilderAction.setStepsInError,
+        ? surveyDispatch({
+            type: surveyAction.setStepsInError,
             payload: {
               kind: "add",
               step: index + 1,
             },
           })
-        : surveyBuilderDispatch({
-            type: surveyBuilderAction.setStepsInError,
+        : surveyDispatch({
+            type: surveyAction.setStepsInError,
             payload: {
               kind: "delete",
               step: index + 1,
@@ -667,8 +597,8 @@ function SurveyBuilder() {
         responseDataOptionsArray,
       });
 
-      surveyBuilderDispatch({
-        type: surveyBuilderAction.setPreviewSurveyProps,
+      surveyDispatch({
+        type: surveyAction.setPreviewSurveyProps,
         payload: {
           surveyTitle,
           surveyDescription,
@@ -682,17 +612,17 @@ function SurveyBuilder() {
 
   useEffect(() => {
     logState({
-      state: surveyBuilderState,
+      state: surveyState,
       groupLabel: "survey builder state",
     });
-  }, [surveyBuilderState]);
-  /** ------------- end useEffects ------------- */
+  }, [surveyState]);
+  
 
-  /** ------------- begin component render bypass ------------- */
+  
 
-  /** ------------- end component render bypass ------------- */
+  
 
-  /** ------------- begin text inputs validation ------------- */
+  
   const [titleInputErrorText, titleInputValidText] = AccessibleErrorValidTextElements({
     inputElementKind: "survey title",
     inputText: surveyTitle,
@@ -766,9 +696,9 @@ function SurveyBuilder() {
 
       return [responseDataOptionsErrorTexts, responseDataOptionsValidTexts];
     });
-  /** ------------- end text inputs validation ------------- */
+  
 
-  /** ------------- begin input creators info objects */
+  
   const surveyTitleInputCreatorInfo: AccessibleTextInputCreatorInfo = {
     description: {
       error: titleInputErrorText,
@@ -778,20 +708,20 @@ function SurveyBuilder() {
     isValidInputText: isValidSurveyTitle,
     label: "Survey Title",
     onBlur: () => {
-      surveyBuilderDispatch({
-        type: surveyBuilderAction.setIsSurveyTitleFocused,
+      surveyDispatch({
+        type: surveyAction.setIsSurveyTitleFocused,
         payload: false,
       });
     },
     onChange: (event: ChangeEvent<HTMLInputElement>) => {
-      surveyBuilderDispatch({
-        type: surveyBuilderAction.setSurveyTitle,
+      surveyDispatch({
+        type: surveyAction.setSurveyTitle,
         payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
-      surveyBuilderDispatch({
-        type: surveyBuilderAction.setIsSurveyTitleFocused,
+      surveyDispatch({
+        type: surveyAction.setIsSurveyTitleFocused,
         payload: true,
       });
     },
@@ -810,20 +740,20 @@ function SurveyBuilder() {
     isValidInputText: isValidSurveyDescription,
     label: "Survey Description",
     onBlur: () => {
-      surveyBuilderDispatch({
-        type: surveyBuilderAction.setIsSurveyDescriptionFocused,
+      surveyDispatch({
+        type: surveyAction.setIsSurveyDescriptionFocused,
         payload: false,
       });
     },
     onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
-      surveyBuilderDispatch({
-        type: surveyBuilderAction.setSurveyDescription,
+      surveyDispatch({
+        type: surveyAction.setSurveyDescription,
         payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
-      surveyBuilderDispatch({
-        type: surveyBuilderAction.setIsSurveyDescriptionFocused,
+      surveyDispatch({
+        type: surveyAction.setIsSurveyDescriptionFocused,
         payload: true,
       });
     },
@@ -834,12 +764,12 @@ function SurveyBuilder() {
   };
 
   const surveyRecipientsSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
-    data: SURVEY_BUILDER_RECIPIENT_DATA,
+    data: SURVEY_RECIPIENT_DATA,
     description: "Select the target recipients",
     label: "Survey recipients",
     onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-      surveyBuilderDispatch({
-        type: surveyBuilderAction.setSurveyRecipients,
+      surveyDispatch({
+        type: surveyAction.setSurveyRecipients,
         payload: event.currentTarget.value as SurveyRecipient,
       });
     },
@@ -859,20 +789,20 @@ function SurveyBuilder() {
     isValidInputText: isValidExpiryDate,
     label: "Expiry Date",
     onBlur: () => {
-      surveyBuilderDispatch({
-        type: surveyBuilderAction.setIsExpiryDateFocused,
+      surveyDispatch({
+        type: surveyAction.setIsExpiryDateFocused,
         payload: false,
       });
     },
     onChange: (event: ChangeEvent<HTMLInputElement>) => {
-      surveyBuilderDispatch({
-        type: surveyBuilderAction.setExpiryDate,
+      surveyDispatch({
+        type: surveyAction.setExpiryDate,
         payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
-      surveyBuilderDispatch({
-        type: surveyBuilderAction.setIsExpiryDateFocused,
+      surveyDispatch({
+        type: surveyAction.setIsExpiryDateFocused,
         payload: true,
       });
     },
@@ -914,13 +844,13 @@ function SurveyBuilder() {
         semanticName: `question ${index + 1}`,
         buttonDisabled: questions.length === 1,
         buttonOnClick: () => {
-          surveyBuilderDispatch({
-            type: surveyBuilderAction.deleteQuestionGroup,
+          surveyDispatch({
+            type: surveyAction.deleteQuestionGroup,
             payload: index,
           });
           // enables display of the previous stepper page after deletion
-          surveyBuilderDispatch({
-            type: surveyBuilderAction.setCurrentStepperPosition,
+          surveyDispatch({
+            type: surveyAction.setCurrentStepperPosition,
             payload: currentStepperPosition - 1,
           });
         },
@@ -943,8 +873,8 @@ function SurveyBuilder() {
       isValidInputText: areValidQuestions?.[index],
       label: `Question: ${index + 1}`,
       onBlur: () => {
-        surveyBuilderDispatch({
-          type: surveyBuilderAction.setAreQuestionsFocused,
+        surveyDispatch({
+          type: surveyAction.setAreQuestionsFocused,
           payload: {
             index,
             value: false,
@@ -952,8 +882,8 @@ function SurveyBuilder() {
         });
       },
       onChange: (event: ChangeEvent<HTMLInputElement>) => {
-        surveyBuilderDispatch({
-          type: surveyBuilderAction.setQuestions,
+        surveyDispatch({
+          type: surveyAction.setQuestions,
           payload: {
             index,
             value: event.currentTarget.value,
@@ -961,8 +891,8 @@ function SurveyBuilder() {
         });
       },
       onFocus: () => {
-        surveyBuilderDispatch({
-          type: surveyBuilderAction.setAreQuestionsFocused,
+        surveyDispatch({
+          type: surveyAction.setAreQuestionsFocused,
           payload: {
             index,
             value: true,
@@ -980,13 +910,13 @@ function SurveyBuilder() {
       //   buttonDisabled: questions.length === 1,
       //   dynamicLabel: dynamicInputLabel,
       //   dynamicInputOnClick: () => {
-      //     surveyBuilderDispatch({
-      //       type: surveyBuilderAction.deleteQuestionGroup,
+      //     surveyDispatch({
+      //       type: surveyAction.deleteQuestionGroup,
       //       payload: index,
       //     });
       //     // enables display of the previous stepper page after deletion
-      //     surveyBuilderDispatch({
-      //       type: surveyBuilderAction.setCurrentStepperPosition,
+      //     surveyDispatch({
+      //       type: surveyAction.setCurrentStepperPosition,
       //       payload: currentStepperPosition - 1,
       //     });
       //   },
@@ -1003,12 +933,12 @@ function SurveyBuilder() {
     Array.from({ length: questions.length }).map((_, index) => {
       const creatorInfoObject: AccessibleRadioGroupInputCreatorInfo = {
         description: "Choose a response type",
-        dataObjectArray: SURVEY_BUILDER_RESPONSE_KIND_DATA,
+        dataObjectArray: SURVEY_RESPONSE_KIND_DATA,
         label: `Response Type for Question ${index + 1}`,
         name: `response type for question ${index + 1}`,
         onChange: (value: string) => {
-          surveyBuilderDispatch({
-            type: surveyBuilderAction.setResponseKinds,
+          surveyDispatch({
+            type: surveyAction.setResponseKinds,
             payload: {
               index,
               value,
@@ -1028,15 +958,15 @@ function SurveyBuilder() {
     Array.from({ length: questions.length }).map((_, index) => {
       const creatorInfoObject: AccessibleRadioGroupInputCreatorInfo = {
         description: "If radio or checkbox, data options must be present",
-        dataObjectArray: SURVEY_BUILDER_INPUT_HTML_DATA.get(responseKinds?.[index]) as {
+        dataObjectArray: SURVEY_INPUT_HTML_DATA.get(responseKinds?.[index]) as {
           value: string;
           label: string;
         }[],
         label: `Input kind for Question ${index + 1}`,
         name: `html input kind for question ${index + 1}`,
         onChange: (value: string) => {
-          surveyBuilderDispatch({
-            type: surveyBuilderAction.setResponseInputHtml,
+          surveyDispatch({
+            type: surveyAction.setResponseInputHtml,
             payload: {
               index,
               value,
@@ -1080,8 +1010,8 @@ function SurveyBuilder() {
                 questionIdx + 1
               }`,
               buttonOnClick: () => {
-                surveyBuilderDispatch({
-                  type: surveyBuilderAction.deleteResponseDataOption,
+                surveyDispatch({
+                  type: surveyAction.deleteResponseDataOption,
                   payload: {
                     questionIdx,
                     optionIdx,
@@ -1109,8 +1039,8 @@ function SurveyBuilder() {
             isValidInputText: areResponseDataOptionsValid?.[questionIdx]?.[optionIdx],
             label: `Response Option ${optionIdx + 1} for Question ${questionIdx + 1}`,
             onBlur: () => {
-              surveyBuilderDispatch({
-                type: surveyBuilderAction.setAreResponseDataOptionsFocused,
+              surveyDispatch({
+                type: surveyAction.setAreResponseDataOptionsFocused,
                 payload: {
                   questionIdx,
                   optionIdx,
@@ -1119,8 +1049,8 @@ function SurveyBuilder() {
               });
             },
             onChange: (event: ChangeEvent<HTMLInputElement>) => {
-              surveyBuilderDispatch({
-                type: surveyBuilderAction.setResponseDataOptions,
+              surveyDispatch({
+                type: surveyAction.setResponseDataOptions,
                 payload: {
                   questionIdx,
                   optionIdx,
@@ -1129,8 +1059,8 @@ function SurveyBuilder() {
               });
             },
             onFocus: () => {
-              surveyBuilderDispatch({
-                type: surveyBuilderAction.setAreResponseDataOptionsFocused,
+              surveyDispatch({
+                type: surveyAction.setAreResponseDataOptionsFocused,
                 payload: {
                   questionIdx,
                   optionIdx,
@@ -1152,8 +1082,8 @@ function SurveyBuilder() {
             //   dynamicIndex: optionIdx,
             //   dynamicLabel: dynamicInputLabel,
             //   dynamicInputOnClick: () => {
-            //     surveyBuilderDispatch({
-            //       type: surveyBuilderAction.deleteResponseDataOption,
+            //     surveyDispatch({
+            //       type: surveyAction.deleteResponseDataOption,
             //       payload: {
             //         questionIdx,
             //         optionIdx,
@@ -1188,12 +1118,12 @@ function SurveyBuilder() {
     ),
     leftIcon: <TbPlus />,
     buttonOnClick: () => {
-      surveyBuilderDispatch({
-        type: surveyBuilderAction.addNewQuestionGroup,
+      surveyDispatch({
+        type: surveyAction.addNewQuestionGroup,
         payload: questions.length,
       });
-      surveyBuilderDispatch({
-        type: surveyBuilderAction.createStepperDescriptionObjects,
+      surveyDispatch({
+        type: surveyAction.createStepperDescriptionObjects,
         payload: {
           index: currentStepperPosition,
           value: {
@@ -1203,8 +1133,8 @@ function SurveyBuilder() {
         },
       });
       // enables display of the newly created survey question page
-      surveyBuilderDispatch({
-        type: surveyBuilderAction.setCurrentStepperPosition,
+      surveyDispatch({
+        type: surveyAction.setCurrentStepperPosition,
         payload: currentStepperPosition + 1,
       });
     },
@@ -1237,14 +1167,14 @@ function SurveyBuilder() {
         buttonDisabled: isMaxResponseDataOptionsReached?.[index],
         leftIcon: <TbPlus />,
         buttonOnClick: () => {
-          surveyBuilderDispatch({
-            type: surveyBuilderAction.addNewResponseDataOption,
+          surveyDispatch({
+            type: surveyAction.addNewResponseDataOption,
             payload: {
               questionIdx: index,
             },
           });
-          surveyBuilderDispatch({
-            type: surveyBuilderAction.setIsMaxResponseDataOptionsReached,
+          surveyDispatch({
+            type: surveyAction.setIsMaxResponseDataOptionsReached,
             payload: {
               index: index,
               value: false,
@@ -1265,8 +1195,8 @@ function SurveyBuilder() {
     leftIcon: <TbUpload />,
     rightIcon: <TbChartPie4 />,
     buttonOnClick: (_event: MouseEvent<HTMLButtonElement>) => {
-      surveyBuilderDispatch({
-        type: surveyBuilderAction.setTriggerFormSubmit,
+      surveyDispatch({
+        type: surveyAction.setTriggerFormSubmit,
         payload: true,
       });
     },
@@ -1290,17 +1220,17 @@ function SurveyBuilder() {
     leftIcon: <TbEye />,
     rightIcon: <TbChartPie4 />,
     buttonOnClick: () => {
-      surveyBuilderDispatch({
-        type: surveyBuilderAction.setTriggerPreviewSurvey,
+      surveyDispatch({
+        type: surveyAction.setTriggerPreviewSurvey,
         payload: true,
       });
     },
     buttonDisabled: submitButtonDisabled,
   };
 
-  /** ------------- end input creators info objects ------------- */
+  
 
-  /** ------------- begin input creators ------------- */
+  
   const displayHelpTextModal = (
     <Modal
       opened={openedHelpModal}
@@ -1308,7 +1238,7 @@ function SurveyBuilder() {
       centered
       title={<Title order={3}>Survey Builder Help</Title>}
     >
-      {SURVEY_BUILDER_HELP_TEXT}
+      {SURVEY_HELP_TEXT}
     </Modal>
   );
 
@@ -1387,9 +1317,9 @@ function SurveyBuilder() {
     </Modal>
   );
 
-  /** ------------- end input creators ------------- */
+  
 
-  /** ------------- begin layout ------------- */
+  
 
   const maxStepperPosition = stepperDescriptionObjects.length;
   const displayAddNewQuestionButton = isMaxQuestionsReached
@@ -1415,7 +1345,7 @@ function SurveyBuilder() {
     </FormLayoutWrapper>
   );
 
-  const SURVEY_BUILDER_REVIEW_OBJECT: FormReviewObjectArray = {
+  const SURVEY_REVIEW_OBJECT: FormReviewObjectArray = {
     "Survey Details": [
       {
         inputName: "Survey Title",
@@ -1440,8 +1370,8 @@ function SurveyBuilder() {
     ],
   };
 
-  const dynamicSurveyBuilderReviewObject = createSurveyFormReviewObject({
-    initialFormReviewObject: SURVEY_BUILDER_REVIEW_OBJECT,
+  const dynamicSurveyReviewObject = createSurveyFormReviewObject({
+    initialFormReviewObject: SURVEY_REVIEW_OBJECT,
     questions,
     areValidQuestions,
     responseKinds,
@@ -1450,9 +1380,9 @@ function SurveyBuilder() {
     areResponseDataOptionsValid,
   });
 
-  const displaySurveyBuilderReviewPage = (
+  const displaySurveyReviewPage = (
     <FormReviewPage
-      formReviewObject={dynamicSurveyBuilderReviewObject}
+      formReviewObject={dynamicSurveyReviewObject}
       formName="Survey Builder"
     />
   );
@@ -1504,13 +1434,13 @@ function SurveyBuilder() {
 
   const questionsLength = questions.length;
 
-  const displaySurveyBuilderForm =
+  const displaySurveyForm =
     currentStepperPosition === 0 ? (
       displaySurveyDetailsFormPageOne
     ) : currentStepperPosition === 1 ? (
       <FormLayoutWrapper>{mergedSurveyQuestionsGroups.slice(0, 1)}</FormLayoutWrapper>
     ) : currentStepperPosition === maxStepperPosition - 1 ? (
-      displaySurveyBuilderReviewPage
+      displaySurveyReviewPage
     ) : currentStepperPosition === maxStepperPosition ? (
       displaySubmitPreviewButtons
     ) : currentStepperPosition === maxStepperPosition - questionsLength ? (
@@ -1529,25 +1459,24 @@ function SurveyBuilder() {
       </FormLayoutWrapper>
     ) : null;
 
-  const displaySurveyBuilderComponent = (
+  const displaySurveyComponent = (
     <StepperWrapper
       childrenTitle="Survey Builder"
       currentStepperPosition={currentStepperPosition}
       descriptionObjectsArray={stepperDescriptionObjects}
       maxStepperPosition={maxStepperPosition}
-      parentComponentDispatch={surveyBuilderDispatch}
-      setCurrentStepperPosition={surveyBuilderAction.setCurrentStepperPosition}
-      stepsInError={stepsInError}
+      parentComponentDispatch={surveyDispatch}
+      setCurrentStepperPosition={surveyAction.setCurrentStepperPosition}
+      pagesInError={pagesInError}
     >
       {displaySubmitSuccessNotificationModal}
-      {displaySurveyBuilderForm}
+      {displaySurveyForm}
       {previewSurveyModal}
       {displayHelpTextModal}
     </StepperWrapper>
   );
-  /** ------------- end layout ------------- */
+  
 
-  return displaySurveyBuilderComponent;
-}
+  return displaySurveyComponent;
 
-export default SurveyBuilder;
+ */

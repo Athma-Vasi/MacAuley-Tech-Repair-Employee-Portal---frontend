@@ -1,9 +1,9 @@
-import { Group, Stack } from '@mantine/core';
+import { Group, Stack } from "@mantine/core";
 
-import { addFieldsToObject, splitCamelCase } from '../../utils';
-import { FormReviewObjectArray } from '../formReviewPage/FormReviewPage';
-import { SurveyQuestions } from './create/types';
-import { SurveyResponseInput, SurveyResponseKind } from './types';
+import { addFieldsToObject, splitCamelCase } from "../../utils";
+import { FormReviewObjectArray } from "../formReviewPage/FormReviewPage";
+import { SurveyQuestions } from "./create/types";
+import { SurveyResponseInput, SurveyResponseKind } from "./types";
 
 type MergeSurveyQuestionsGroupProps = {
   createdQuestionsTextInputs: JSX.Element[];
@@ -34,7 +34,7 @@ function mergeSurveyQuestionsGroup({
       <Group w="100%" position="apart">
         <Group position="left">{createdHelpButton}</Group>
 
-        <Group position={displayAddNewQuestionButton ? 'left' : 'right'}>
+        <Group position={displayAddNewQuestionButton ? "left" : "right"}>
           {createdAddNewResponseDataOptionButtons?.[index]}
         </Group>
         <Group position="right">{displayAddNewQuestionButton ?? null}</Group>
@@ -84,34 +84,31 @@ function setSurveyQuestions({
   responseDataOptionsArray,
 }: SetSurveyQuestionsInput): SurveyQuestions[] {
   // replace empty values in responseDataOptionsArray with empty array
-  // because dynamic input creation in SurveyBuilder.tsx creates empty values in responseDataOptionsArray, areResponseDataOptions${Valid, Focused}
+  // because dynamic input creation in Survey.tsx creates empty values in responseDataOptionsArray, areResponseDataOptions${Valid, Focused}
   // @see https://stackoverflow.com/questions/61700308/replace-the-empty-element-of-an-array-with-another-array-or-with-another-element
   responseDataOptionsArray = Array.from(responseDataOptionsArray, (arr, idx) =>
     idx in responseDataOptionsArray ? arr : []
   );
 
-  return questions.reduce(
-    (surveyQuestions: SurveyQuestions[], question, questionIdx) => {
-      const surveyObject = addFieldsToObject({
-        object: Object.create(null),
-        fieldValuesTuples: [
-          ['question', question],
-          ['responseKind', responseKinds[questionIdx]],
-          ['responseInput', responseInputHtml[questionIdx]],
-          [
-            'responseDataOptions',
-            questionIdx > responseDataOptionsArray.length - 1
-              ? []
-              : responseDataOptionsArray[questionIdx],
-          ] ?? [],
-        ],
-      }) as SurveyQuestions;
-      surveyQuestions.push(surveyObject);
+  return questions.reduce((surveyQuestions: SurveyQuestions[], question, questionIdx) => {
+    const surveyObject = addFieldsToObject({
+      object: Object.create(null),
+      fieldValuesTuples: [
+        ["question", question],
+        ["responseKind", responseKinds[questionIdx]],
+        ["responseInput", responseInputHtml[questionIdx]],
+        [
+          "responseDataOptions",
+          questionIdx > responseDataOptionsArray.length - 1
+            ? []
+            : responseDataOptionsArray[questionIdx],
+        ] ?? [],
+      ],
+    }) as SurveyQuestions;
+    surveyQuestions.push(surveyObject);
 
-      return surveyQuestions;
-    },
-    []
-  );
+    return surveyQuestions;
+  }, []);
 }
 
 type CreateSurveyFormReviewObjectInput = {
@@ -124,7 +121,7 @@ type CreateSurveyFormReviewObjectInput = {
   areResponseDataOptionsValid: boolean[][];
 };
 /**
- * @description Pure function. Creates a new form review object from dynamically created inputs in SurveyBuilder.tsx.
+ * @description Pure function. Creates a new form review object from dynamically created inputs in Survey.tsx.
  */
 function createSurveyFormReviewObject({
   initialFormReviewObject,
@@ -136,23 +133,19 @@ function createSurveyFormReviewObject({
   areResponseDataOptionsValid,
 }: CreateSurveyFormReviewObjectInput): FormReviewObjectArray {
   // only add to form review object if there are questions
-  if (questions.length === 1 && questions[0] === '') {
+  if (questions.length === 1 && questions[0] === "") {
     return initialFormReviewObject;
   }
 
   const formReviewObject = questions.reduce(
-    (
-      formReviewObjectAcc: FormReviewObjectArray,
-      question: string,
-      questionIdx
-    ) => {
+    (formReviewObjectAcc: FormReviewObjectArray, question: string, questionIdx) => {
       // create question field in form review object
       const modifiedQuestion = `Question ${questionIdx + 1}`;
       formReviewObjectAcc[modifiedQuestion] = [];
 
       // add question to form review object
       {
-        const inputName = 'Question';
+        const inputName = "Question";
         const inputValue = question;
         const isInputValueValid = areValidQuestions[questionIdx];
 
@@ -165,7 +158,7 @@ function createSurveyFormReviewObject({
 
       // add response type to form review object
       {
-        const inputName = 'Response type';
+        const inputName = "Response type";
         const inputValue = splitCamelCase(responseKinds[questionIdx]);
         const isInputValueValid = true;
 
@@ -177,7 +170,7 @@ function createSurveyFormReviewObject({
       }
 
       // add response input to form review object
-      const inputName = 'Response input';
+      const inputName = "Response input";
       const inputValue = splitCamelCase(responseInputHtml[questionIdx]);
       const isInputValueValid = true;
 

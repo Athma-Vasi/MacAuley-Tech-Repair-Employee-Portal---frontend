@@ -1,37 +1,32 @@
-import { UserRoles, Action, ActionsOutreach } from '../../types';
+import { UserRoles, Action, ActionsOutreach } from "../../types";
 
 type SurveyRecipient =
-  | 'All'
-  | 'Executive Management'
-  | 'Administrative'
-  | 'Sales and Marketing'
-  | 'Information Technology'
-  | 'Repair Technicians'
-  | 'Field Service Technicians'
-  | 'Logistics and Inventory'
-  | 'Customer Service'
-  | 'Quality Control'
-  | 'Training and Development'
-  | 'Janitorial and Maintenance'
-  | 'Security';
+  | "All"
+  | "Executive Management"
+  | "Administrative"
+  | "Sales and Marketing"
+  | "Information Technology"
+  | "Repair Technicians"
+  | "Field Service Technicians"
+  | "Logistics and Inventory"
+  | "Customer Service"
+  | "Quality Control"
+  | "Training and Development"
+  | "Janitorial and Maintenance"
+  | "Security";
 
-type SurveyResponseKind = 'chooseOne' | 'chooseAny' | 'rating';
-type SurveyResponseInput =
-  | 'agreeDisagree'
-  | 'radio'
-  | 'checkbox'
-  | 'emotion'
-  | 'stars';
+type SurveyResponseKind = "chooseOne" | "chooseAny" | "rating";
+type SurveyResponseInput = "agreeDisagree" | "radio" | "checkbox" | "emotion" | "stars";
 
 type AgreeDisagreeResponse =
-  | 'Strongly Agree'
-  | 'Agree'
-  | 'Neutral'
-  | 'Disagree'
-  | 'Strongly Disagree';
+  | "Strongly Agree"
+  | "Agree"
+  | "Neutral"
+  | "Disagree"
+  | "Strongly Disagree";
 type RadioResponse = string;
 type CheckboxResponse = Array<string>;
-type EmotionResponse = 'Upset' | 'Annoyed' | 'Neutral' | 'Happy' | 'Ecstatic';
+type EmotionResponse = "Upset" | "Annoyed" | "Neutral" | "Happy" | "Ecstatic";
 type StarsResponse = 1 | 2 | 3 | 4 | 5;
 
 type SurveyResponseDataOptions =
@@ -55,7 +50,7 @@ type SurveyStatistics = {
   responseDistribution: Record<string, number>;
 };
 
-type SurveyBuilderSchema = {
+type SurveySchema = {
   creatorId: string;
   creatorUsername: string;
   creatorRole: UserRoles;
@@ -70,7 +65,7 @@ type SurveyBuilderSchema = {
   surveyStatistics: SurveyStatistics[];
 };
 
-type SurveyBuilderDocument = SurveyBuilderSchema & {
+type SurveyDocument = SurveySchema & {
   _id: string;
   createdAt: string;
   updatedAt: string;
@@ -83,8 +78,8 @@ export type {
   EmotionResponse,
   RadioResponse,
   StarsResponse,
-  SurveyBuilderDocument,
-  SurveyBuilderSchema,
+  SurveyDocument,
+  SurveySchema,
   SurveyQuestion,
   SurveyRecipient,
   SurveyResponseDataOptions,

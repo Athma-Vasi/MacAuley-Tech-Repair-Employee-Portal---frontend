@@ -8,24 +8,24 @@ import {
   Text,
   Title,
   UnstyledButton,
-} from '@mantine/core';
-import { ScrollAreaComponent } from '@mantine/core/lib/Drawer/Drawer.context';
-import { useDisclosure } from '@mantine/hooks';
-import { useEffect, useReducer } from 'react';
-import { TbChartPie4 } from 'react-icons/tb';
+} from "@mantine/core";
+import { ScrollAreaComponent } from "@mantine/core/lib/Drawer/Drawer.context";
+import { useDisclosure } from "@mantine/hooks";
+import { useEffect, useReducer } from "react";
+import { TbChartPie4 } from "react-icons/tb";
 
-import { COLORS_SWATCHES } from '../../constants/data';
-import { useGlobalState } from '../../hooks';
-import { logState, returnThemeColors } from '../../utils';
-import { ResponsivePieChart } from '../charts';
-import { PageBuilder } from '../pageBuilder';
+import { COLORS_SWATCHES } from "../../constants/data";
+import { useGlobalState } from "../../hooks";
+import { logState, returnThemeColors } from "../../utils";
+import { ResponsivePieChart } from "../charts";
+import { PageBuilder } from "../pageBuilder";
 import {
   displayStatisticsAction,
   displayStatisticsReducer,
   initialDisplayStatisticsState,
-} from './state';
-import { ChartKind, DisplayStatisticsProps } from './types';
-import { PieChartData } from '../charts/responsivePieChart/types';
+} from "./state";
+import { ChartKind, DisplayStatisticsProps } from "./types";
+import { PieChartData } from "../charts/responsivePieChart/types";
 
 function DisplayStatistics({ surveys }: DisplayStatisticsProps) {
   const [displayStatisticsState, displayStatisticsDispatch] = useReducer(
@@ -75,36 +75,32 @@ function DisplayStatistics({ surveys }: DisplayStatisticsProps) {
           totalResponsesMap.set(_id, new Map());
 
           surveyStatistics.forEach((surveyStatistic) => {
-            const {
-              question,
-              responseDistribution,
-              totalResponses,
-              responseInput,
-            } = surveyStatistic;
+            const { question, responseDistribution, totalResponses, responseInput } =
+              surveyStatistic;
 
             const chartDataArray = Object.entries(responseDistribution).map(
               ([response, count]) => {
                 switch (responseInput) {
-                  case 'emotion': {
+                  case "emotion": {
                     switch (response) {
-                      case '1': {
-                        response = 'Devastated';
+                      case "1": {
+                        response = "Devastated";
                         break;
                       }
-                      case '2': {
-                        response = 'Annoyed';
+                      case "2": {
+                        response = "Annoyed";
                         break;
                       }
-                      case '3': {
-                        response = 'Neutral';
+                      case "3": {
+                        response = "Neutral";
                         break;
                       }
-                      case '4': {
-                        response = 'Happy';
+                      case "4": {
+                        response = "Happy";
                         break;
                       }
-                      case '5': {
-                        response = 'Estatic';
+                      case "5": {
+                        response = "Estatic";
                         break;
                       }
                       default:
@@ -113,30 +109,30 @@ function DisplayStatistics({ surveys }: DisplayStatisticsProps) {
 
                     break;
                   }
-                  case 'stars': {
+                  case "stars": {
                     switch (response) {
-                      case '0': {
-                        response = 'No response';
+                      case "0": {
+                        response = "No response";
                         break;
                       }
-                      case '1': {
-                        response = '1 Star';
+                      case "1": {
+                        response = "1 Star";
                         break;
                       }
-                      case '2': {
-                        response = '2 Stars';
+                      case "2": {
+                        response = "2 Stars";
                         break;
                       }
-                      case '3': {
-                        response = '3 Stars';
+                      case "3": {
+                        response = "3 Stars";
                         break;
                       }
-                      case '4': {
-                        response = '4 Stars';
+                      case "4": {
+                        response = "4 Stars";
                         break;
                       }
-                      case '5': {
-                        response = '5 Stars';
+                      case "5": {
+                        response = "5 Stars";
                         break;
                       }
                       default:
@@ -158,35 +154,30 @@ function DisplayStatistics({ surveys }: DisplayStatisticsProps) {
             );
             pieChartDataMap.get(_id)?.set(question, chartDataArray);
 
-            chartKindsMap.get(_id)?.set(question, 'pie');
+            chartKindsMap.get(_id)?.set(question, "pie");
             chartTitlesMap.get(_id)?.push(question);
             totalResponsesMap.get(_id)?.set(question, totalResponses);
           });
 
-          return [
-            pieChartDataMap,
-            chartKindsMap,
-            chartTitlesMap,
-            totalResponsesMap,
-          ];
+          return [pieChartDataMap, chartKindsMap, chartTitlesMap, totalResponsesMap];
         },
         [new Map(), new Map(), new Map(), new Map()]
       );
 
     displayStatisticsDispatch({
-      type: 'setPieChartDataMap',
+      type: "setPieChartDataMap",
       payload: pieChartDataMap,
     });
     displayStatisticsDispatch({
-      type: 'setChartKindsMap',
+      type: "setChartKindsMap",
       payload: chartKindsMap,
     });
     displayStatisticsDispatch({
-      type: 'setChartTitlesMap',
+      type: "setChartTitlesMap",
       payload: chartTitlesMap,
     });
     displayStatisticsDispatch({
-      type: 'setTotalResponsesMap',
+      type: "setTotalResponsesMap",
       payload: totalResponsesMap,
     });
   }, [surveys]);
@@ -203,20 +194,20 @@ function DisplayStatistics({ surveys }: DisplayStatisticsProps) {
       return;
     }
 
-    const currentlySelectedSurveyQuestion =
-      chartTitlesMap.get(_id)?.[modalPage - 1];
+    const currentlySelectedSurveyQuestion = chartTitlesMap.get(_id)?.[modalPage - 1];
     if (!currentlySelectedSurveyQuestion) {
       return;
     }
 
-    const currentlySelectedPieChartData =
-      currentlySelectedSurveyPieChartData.get(currentlySelectedSurveyQuestion);
+    const currentlySelectedPieChartData = currentlySelectedSurveyPieChartData.get(
+      currentlySelectedSurveyQuestion
+    );
     if (!currentlySelectedPieChartData) {
       return;
     }
 
     displayStatisticsDispatch({
-      type: 'setCurrentlySelectedPieChartData',
+      type: "setCurrentlySelectedPieChartData",
       payload: currentlySelectedPieChartData,
     });
   }, [chartTitlesMap, currentSelectedSurvey, modalPage, pieChartDataMap]);
@@ -224,7 +215,7 @@ function DisplayStatistics({ surveys }: DisplayStatisticsProps) {
   useEffect(() => {
     logState({
       state: displayStatisticsState,
-      groupLabel: 'DisplayStatistics',
+      groupLabel: "DisplayStatistics",
     });
   }, [displayStatisticsState]);
 
@@ -300,16 +291,10 @@ function DisplayStatistics({ surveys }: DisplayStatisticsProps) {
 
   const createdModalHeadingSection = (
     <Stack w="100%">
-      <Flex
-        w="100%"
-        align="center"
-        justify="space-between"
-        wrap="wrap"
-        rowGap={rowGap}
-      >
+      <Flex w="100%" align="center" justify="space-between" wrap="wrap" rowGap={rowGap}>
         <Group w="100%" position="apart">
           <Group position="left">
-            <Title order={4}>{currentSelectedSurvey?.surveyTitle ?? ''}</Title>
+            <Title order={4}>{currentSelectedSurvey?.surveyTitle ?? ""}</Title>
           </Group>
           <Group position="right">
             <PageBuilder
@@ -338,10 +323,9 @@ function DisplayStatistics({ surveys }: DisplayStatisticsProps) {
             <Text size="md">Total responses: </Text>
             <Text size="md">
               {totalResponsesMap
-                .get(currentSelectedSurvey?._id ?? '')
+                .get(currentSelectedSurvey?._id ?? "")
                 ?.get(
-                  currentSelectedSurvey?.questions?.[modalPage - 1]?.question ??
-                    ''
+                  currentSelectedSurvey?.questions?.[modalPage - 1]?.question ?? ""
                 ) ?? 0}
             </Text>
           </Group>
@@ -353,9 +337,7 @@ function DisplayStatistics({ surveys }: DisplayStatisticsProps) {
   const displayResponsivePieChart = (
     <ScrollArea type="auto" styles={() => scrollBarStyle} offsetScrollbars>
       <Flex w="100%" h="100%" py={padding}>
-        <ResponsivePieChart
-          pieChartData={currentlySelectedPieChartData ?? []}
-        />
+        <ResponsivePieChart pieChartData={currentlySelectedPieChartData ?? []} />
       </Flex>
     </ScrollArea>
   );

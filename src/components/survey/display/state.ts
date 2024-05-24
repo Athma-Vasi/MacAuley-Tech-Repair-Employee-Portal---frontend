@@ -1,19 +1,19 @@
-import { splitCamelCase } from '../../../utils';
-import { DescriptionObjectsArray } from '../../wrappers';
-import { SurveyBuilderDocument, SurveyQuestion } from '../types';
+import { splitCamelCase } from "../../../utils";
+import { DescriptionObjectsArray } from "../../wrappers";
+import { SurveyDocument, SurveyQuestion } from "../types";
 import {
   DisplaySurveysAction,
   DisplaySurveysDispatch,
   DisplaySurveysState,
   SurveyResponse,
-} from './types';
+} from "./types";
 
 const initialDisplaySurveysState: DisplaySurveysState = {
   responseData: [],
   surveySubmissions: new Map(),
   surveyToSubmit: {
-    surveyId: '',
-    surveyTitle: '',
+    surveyId: "",
+    surveyTitle: "",
     surveyResponses: [],
   },
 
@@ -23,10 +23,10 @@ const initialDisplaySurveysState: DisplaySurveysState = {
 
   stepperDescriptionsMap: new Map(),
   currentStepperPositions: new Map(),
-  stepsInError: new Map(),
+  pagesInError: new Map(),
 
-  queryBuilderString: '?',
-  pageQueryString: '',
+  queryBuilderString: "?",
+  pageQueryString: "",
   newQueryFlag: false,
   totalDocuments: 0,
   pages: 0,
@@ -35,41 +35,41 @@ const initialDisplaySurveysState: DisplaySurveysState = {
   triggerSurveySubmission: false,
 
   isSubmitting: false,
-  submitMessage: '',
+  submitMessage: "",
   isSuccessful: false,
-  successMessage: '',
+  successMessage: "",
   isLoading: true,
-  loadingMessage: '',
+  loadingMessage: "",
 };
 
 const displaySurveysAction: DisplaySurveysAction = {
-  setResponseData: 'setResponseData',
-  setSurveySubmissions: 'setSurveySubmissions',
-  setSurveyToSubmit: 'setSurveyToSubmit',
+  setResponseData: "setResponseData",
+  setSurveySubmissions: "setSurveySubmissions",
+  setSurveyToSubmit: "setSurveyToSubmit",
 
-  setUncompletedSurveys: 'setUncompletedSurveys',
-  setCompletedSurveys: 'setCompletedSurveys',
-  setCompletedSurveyIds: 'setCompletedSurveyIds',
+  setUncompletedSurveys: "setUncompletedSurveys",
+  setCompletedSurveys: "setCompletedSurveys",
+  setCompletedSurveyIds: "setCompletedSurveyIds",
 
-  setStepperDescriptionsMap: 'setStepperDescriptionsMap',
-  setCurrentStepperPosition: 'setCurrentStepperPosition',
-  setStepsInError: 'setStepsInError',
+  setStepperDescriptionsMap: "setStepperDescriptionsMap",
+  setCurrentStepperPosition: "setCurrentStepperPosition",
+  setStepsInError: "setStepsInError",
 
-  setQueryBuilderString: 'setQueryBuilderString',
-  setPageQueryString: 'setPageQueryString',
-  setNewQueryFlag: 'setNewQueryFlag',
-  setTotalDocuments: 'setTotalDocuments',
-  setPages: 'setPages',
+  setQueryBuilderString: "setQueryBuilderString",
+  setPageQueryString: "setPageQueryString",
+  setNewQueryFlag: "setNewQueryFlag",
+  setTotalDocuments: "setTotalDocuments",
+  setPages: "setPages",
 
-  setTriggerSurveyFetch: 'setTriggerSurveyFetch',
-  setTriggerSurveySubmission: 'setTriggerSurveySubmission',
+  setTriggerSurveyFetch: "setTriggerSurveyFetch",
+  setTriggerSurveySubmission: "setTriggerSurveySubmission",
 
-  setIsSubmitting: 'setIsSubmitting',
-  setSubmitMessage: 'setSubmitMessage',
-  setIsSuccessful: 'setIsSuccessful',
-  setSuccessMessage: 'setSuccessMessage',
-  setIsLoading: 'setIsLoading',
-  setLoadingMessage: 'setLoadingMessage',
+  setIsSubmitting: "setIsSubmitting",
+  setSubmitMessage: "setSubmitMessage",
+  setIsSuccessful: "setIsSuccessful",
+  setSuccessMessage: "setSuccessMessage",
+  setIsLoading: "setIsLoading",
+  setLoadingMessage: "setLoadingMessage",
 };
 
 function displaySurveysReducer(
@@ -95,10 +95,9 @@ function displaySurveysReducer(
       // find the index of the question in response data
       const surveyFromServer = state.responseData.find(
         (surveys) => surveys._id === surveyId
-      ) as SurveyBuilderDocument;
+      ) as SurveyDocument;
       const responseData = surveyFromServer?.questions.findIndex(
-        (surveyResponse: SurveyQuestion) =>
-          surveyResponse?.question === question
+        (surveyResponse: SurveyQuestion) => surveyResponse?.question === question
       );
 
       // if the surveyId is not in the map, create a new surveySubmission
@@ -128,8 +127,7 @@ function displaySurveysReducer(
 
       // find the index of the question in the surveyResponses array
       const surveyResponses = surveySubmission.surveyResponses.findIndex(
-        (surveyResponse: SurveyResponse) =>
-          surveyResponse?.question === question
+        (surveyResponse: SurveyResponse) => surveyResponse?.question === question
       );
 
       // if the question is not found, add it to surveyResponses (it is a new response) at the same index as in responseData
@@ -164,7 +162,7 @@ function displaySurveysReducer(
 
       const surveySubmission = surveySubmissions.get(surveyId) ?? {
         surveyId,
-        surveyTitle: '',
+        surveyTitle: "",
         surveyResponses: [],
       };
 
@@ -223,9 +221,7 @@ function displaySurveysReducer(
 
     case displaySurveysAction.setCurrentStepperPosition: {
       const { id, currentStepperPosition } = action.payload;
-      const clonedCurrentStepperPositions = new Map(
-        state.currentStepperPositions
-      );
+      const clonedCurrentStepperPositions = new Map(state.currentStepperPositions);
       clonedCurrentStepperPositions.set(id, currentStepperPosition);
 
       return {
@@ -239,16 +235,16 @@ function displaySurveysReducer(
         stepInError: { kind, step },
       } = action.payload;
 
-      const clonedStepsInError = structuredClone(state.stepsInError);
+      const clonedStepsInError = structuredClone(state.pagesInError);
       // find the steps in error for the survey
       const stepInError = clonedStepsInError.get(surveyId) ?? new Set<number>();
       // add or delete the step from the set
-      kind === 'add' ? stepInError.add(step) : stepInError.delete(step);
+      kind === "add" ? stepInError.add(step) : stepInError.delete(step);
       clonedStepsInError.set(surveyId, stepInError);
 
       return {
         ...state,
-        stepsInError: clonedStepsInError,
+        pagesInError: clonedStepsInError,
       };
     }
 
@@ -324,8 +320,4 @@ function displaySurveysReducer(
   }
 }
 
-export {
-  displaySurveysAction,
-  displaySurveysReducer,
-  initialDisplaySurveysState,
-};
+export { displaySurveysAction, displaySurveysReducer, initialDisplaySurveysState };

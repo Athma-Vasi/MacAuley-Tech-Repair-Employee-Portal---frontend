@@ -1,6 +1,6 @@
-import { SetStepsInErrorPayload } from '../../../types';
-import { DescriptionObjectsArray } from '../../wrappers';
-import { SurveyQuestions } from '../create/types';
+import { SetStepsInErrorPayload } from "../../../types";
+import { DescriptionObjectsArray } from "../../wrappers";
+import { SurveyQuestions } from "../create/types";
 
 type PreviewSurveyProps = {
   surveyTitle: string;
@@ -27,58 +27,58 @@ type PreviewSurveyState = {
 
   stepperDescriptionsArray: DescriptionObjectsArray;
   currentStepperPosition: number;
-  stepsInError: Set<number>;
+  pagesInError: Set<number>;
 };
 
 type PreviewSurveyAction = {
-  setSurveyQuestions: 'setSurveyQuestions';
-  setSurveyResponsesArray: 'setSurveyResponsesArray';
-  setQuestionsResponseInputMap: 'setQuestionsResponseInputMap';
-  setQuestionsResponseDataOptionsMap: 'setQuestionsResponseDataOptionsMap';
-  setGenericProps: 'setGenericProps'; // for rating
+  setSurveyQuestions: "setSurveyQuestions";
+  setSurveyResponsesArray: "setSurveyResponsesArray";
+  setQuestionsResponseInputMap: "setQuestionsResponseInputMap";
+  setQuestionsResponseDataOptionsMap: "setQuestionsResponseDataOptionsMap";
+  setGenericProps: "setGenericProps"; // for rating
 
-  setStepperDescriptionsArray: 'setStepperDescriptionsArray';
-  setCurrentStepperPosition: 'setCurrentStepperPosition';
-  setStepsInError: 'setStepsInError';
+  setStepperDescriptionsArray: "setStepperDescriptionsArray";
+  setCurrentStepperPosition: "setCurrentStepperPosition";
+  setStepsInError: "setStepsInError";
 };
 
 type PreviewSurveyDispatch =
   | {
-      type: PreviewSurveyAction['setSurveyQuestions'];
+      type: PreviewSurveyAction["setSurveyQuestions"];
       payload: SurveyQuestions[];
     }
   | {
-      type: PreviewSurveyAction['setSurveyResponsesArray'];
+      type: PreviewSurveyAction["setSurveyResponsesArray"];
       payload: {
         question: string;
         response: string | string[] | number;
       };
     }
   | {
-      type: PreviewSurveyAction['setQuestionsResponseInputMap'];
+      type: PreviewSurveyAction["setQuestionsResponseInputMap"];
       payload: Map<string, string>;
     }
   | {
-      type: PreviewSurveyAction['setQuestionsResponseDataOptionsMap'];
+      type: PreviewSurveyAction["setQuestionsResponseDataOptionsMap"];
       payload: Map<string, string[]>;
     }
   | {
-      type: PreviewSurveyAction['setGenericProps'];
+      type: PreviewSurveyAction["setGenericProps"];
       payload: {
         question: string;
         rating: number;
       };
     }
   | {
-      type: PreviewSurveyAction['setStepperDescriptionsArray'];
+      type: PreviewSurveyAction["setStepperDescriptionsArray"];
       payload: DescriptionObjectsArray;
     }
   | {
-      type: PreviewSurveyAction['setCurrentStepperPosition'];
+      type: PreviewSurveyAction["setCurrentStepperPosition"];
       payload: number;
     }
   | {
-      type: PreviewSurveyAction['setStepsInError'];
+      type: PreviewSurveyAction["setStepsInError"];
       payload: SetStepsInErrorPayload;
     };
 
