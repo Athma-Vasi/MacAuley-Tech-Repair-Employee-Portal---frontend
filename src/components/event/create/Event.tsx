@@ -23,7 +23,7 @@ import { initialEventState } from "./state";
 import { EventSchema } from "./types";
 
 function Event() {
-  const [eventCreatorState, eventDispatch] = useReducer(eventReducer, initialEventState);
+  const [eventState, eventDispatch] = useReducer(eventReducer, initialEventState);
 
   const {
     title,
@@ -41,7 +41,7 @@ function Event() {
     pagesInError,
     isSubmitting,
     isSuccessful,
-  } = eventCreatorState;
+  } = eventState;
 
   const {
     authState: { sessionId, userId, username },
@@ -132,26 +132,6 @@ function Event() {
   }
 
   const EVENT_STEPPER_PAGES: StepperPage[] = returnEventStepperPages();
-
-  /**
-   * type EventState = {
-  attendees: string;
-  description: string;
-  endDate: string;
-  endTime: string;
-  isSubmitting: boolean;
-  isSuccessful: boolean;
-  kind: EventKind;
-  location: string;
-  pagesInError: Set<number>;
-  requiredItems: string;
-  rsvpDeadline: string;
-  startDate: string;
-  startTime: string;
-  title: string;
-  triggerFormSubmit: boolean;
-};
-   */
 
   const attendeesTextAreaInput = (
     <AccessibleTextAreaInput
@@ -345,7 +325,7 @@ function Event() {
   const stepper = (
     <AccessibleStepper
       attributes={{
-        componentState: eventCreatorState,
+        componentState: eventState,
         pageElements: [eventDateAndTimePage, eventLocationAndDescriptionPage],
         stepperPages: EVENT_STEPPER_PAGES,
         submitButton,
