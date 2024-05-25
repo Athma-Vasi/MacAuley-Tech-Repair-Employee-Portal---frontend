@@ -2036,8 +2036,9 @@ function App() {
 
             {/* survey-builder */}
             <Route path="survey">
-              <Route index element={displaySurveysElement} />
+              <Route index element={surveyBuilderElement} />
               <Route path="create" element={surveyBuilderElement} />
+              <Route path="display" element={displaySurveysElement} />
             </Route>
 
             {/* announcements */}

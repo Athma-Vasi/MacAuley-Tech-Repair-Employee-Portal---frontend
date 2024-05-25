@@ -1,4 +1,18 @@
+import { useState } from "react";
+import { BinarySearchTree } from "../../../classes/binarySearchTree";
+import { AccessibleTextSearchInput } from "../../accessibleInputs/textSearch/AccessibleTextSearchInput";
+import { largeCities } from "../../accessibleInputs/textSearch/sampleData";
+
 function Survey() {
+  const bst = new BinarySearchTree<string>(largeCities);
+
+  // const [bst, setBst] = useState<BinarySearchTree<string>>(
+  //   new BinarySearchTree<string>(cities)
+  // );
+
+  console.log(bst.search("C"));
+  // console.log(bst.inOrderChildren("Ottawa"));
+
   // const [surveyState, surveyDispatch] = useReducer(surveyReducer, initialSurveyState);
 
   // const {
