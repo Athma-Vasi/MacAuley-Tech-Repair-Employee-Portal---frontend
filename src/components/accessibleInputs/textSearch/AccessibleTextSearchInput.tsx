@@ -16,6 +16,7 @@ import {
   KeyboardEvent,
   ReactNode,
   RefObject,
+  useRef,
   useState,
 } from "react";
 import { TbCheck, TbRefresh } from "react-icons/tb";
@@ -149,12 +150,43 @@ function AccessibleTextSearchInput<
     )
   ) : null;
 
+  const { fullValidation } = returnFullValidation(name, stepperPages);
+  const isValueBufferValid =
+    typeof fullValidation === "function"
+      ? fullValidation(valueBuffer)
+      : fullValidation.test(valueBuffer);
+
+  const leftIcon = isValueBufferValid ? (
+    icon ? (
+      icon
+    ) : (
+      <TbCheck color={greenColorShade} size={18} />
+    )
+  ) : null;
+
+  const validationTexts = returnValidationTexts({
+    name,
+    stepperPages,
+    valueBuffer,
+  });
+
+  const { invalidValueTextElement, validValueTextElement } =
+    createAccessibleValueValidationTextElements({
+      isPopoverOpened,
+      isValueBufferValid,
+      name,
+      themeObject,
+      validationTexts,
+      valueBuffer,
+    });
+
   const results = valueBuffer.length ? bst.search(valueBuffer) : [];
 
   const dropdown = results.length ? (
     <Flex direction="column" mah={500} pr={2} style={{ overflow: "auto" }}>
       {results.map((result) => (
         <Text
+          aria-live="polite"
           onClick={(event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
             setValueBuffer(event.currentTarget.innerText);
             parentDispatch({
@@ -180,6 +212,7 @@ function AccessibleTextSearchInput<
             borderRadius: 4,
             transition: "background-color 0.15s ease-in-out",
           }}
+          tabIndex={0}
         >
           {result}
         </Text>
@@ -200,21 +233,15 @@ function AccessibleTextSearchInput<
         <Popover.Target>
           <TextInput
             aria-autocomplete={ariaAutoComplete}
-            // aria-describedby={
-            //   isValueBufferValid
-            //     ? // id of validValueTextElement
-            //       `${name}-valid`
-            //     : // id of invalidValueTextElement
-            //       `${name}-invalid`
-            // }
-            // aria-invalid={!isValueBufferValid}
+            aria-describedby={isValueBufferValid ? void 0 : `${name}-invalid`}
+            aria-invalid={!isValueBufferValid}
             aria-label={name}
             aria-required={required}
             autoComplete={autoComplete}
             color={grayColorShade}
             disabled={disabled}
-            // error={!isValueBufferValid && valueBuffer !== initialInputValue}
-            // icon={leftIcon}
+            error={!isValueBufferValid && valueBuffer !== initialInputValue}
+            icon={leftIcon}
             label={label}
             maxLength={maxLength}
             minLength={minLength}
@@ -223,6 +250,14 @@ function AccessibleTextSearchInput<
               parentDispatch({
                 action: validValueAction,
                 payload: valueBuffer,
+              });
+
+              parentDispatch({
+                action: invalidValueAction,
+                payload: {
+                  kind: isValueBufferValid ? "delete" : "add",
+                  page,
+                },
               });
 
               onBlur?.();
@@ -248,9 +283,11 @@ function AccessibleTextSearchInput<
           />
         </Popover.Target>
 
-        {isPopoverOpened && results.length ? (
+        {isPopoverOpened ? (
           <Popover.Dropdown>
-            <Stack>{dropdown}</Stack>
+            <Stack>
+              {isValueBufferValid && results.length ? dropdown : invalidValueTextElement}
+            </Stack>
           </Popover.Dropdown>
         ) : null}
       </Popover>

@@ -41,7 +41,7 @@ function Survey() {
       attributes={{
         data: LARGE_CITIES,
         invalidValueAction: surveyAction.setPageInError,
-        name: "city",
+        name: "surveyTitle",
         parentDispatch: surveyDispatch,
         stepperPages: SURVEY_STEPPER_PAGES,
         validValueAction: surveyAction.setSurveyTitle,
