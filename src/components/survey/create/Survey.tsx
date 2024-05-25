@@ -1,68 +1,56 @@
-import { useState } from "react";
-import { BinarySearchTree } from "../../../classes/binarySearchTree";
+import { useEffect, useReducer } from "react";
+import { surveyReducer } from "./reducers";
+import { initialSurveyState } from "./state";
 import { AccessibleTextSearchInput } from "../../accessibleInputs/textSearch/AccessibleTextSearchInput";
-import { largeCities } from "../../accessibleInputs/textSearch/sampleData";
+import { LARGE_CITIES } from "../../accessibleInputs/textSearch/sampleData";
+import { surveyAction } from "./actions";
+import { returnSurveyStepperPages } from "../constants";
+import { StepperPage } from "../../../types";
+import { logState } from "../../../utils";
 
 function Survey() {
-  const bst = new BinarySearchTree<string>(largeCities);
+  const [surveyState, surveyDispatch] = useReducer(surveyReducer, initialSurveyState);
 
-  // const [bst, setBst] = useState<BinarySearchTree<string>>(
-  //   new BinarySearchTree<string>(cities)
-  // );
+  const {
+    surveyTitle,
+    surveyDescription,
+    expiryDate,
+    surveyRecipients,
+    questions,
+    responseKinds,
+    responseInputHtml,
+    responseDataOptionsArray,
+    surveyStatistics,
+    triggerFormSubmit,
+    triggerPreviewSurvey,
+    previewSurveyProps,
+    pagesInError,
+    isSubmitting,
+    isSuccessful,
+  } = surveyState;
 
-  console.log(bst.search("C"));
-  // console.log(bst.inOrderChildren("Ottawa"));
+  const SURVEY_STEPPER_PAGES: StepperPage[] = returnSurveyStepperPages();
 
-  // const [surveyState, surveyDispatch] = useReducer(surveyReducer, initialSurveyState);
+  logState({
+    state: surveyState,
+    groupLabel: "survey state",
+  });
 
-  // const {
-  //   surveyTitle,
-  //   isValidSurveyTitle,
-  //   isSurveyTitleFocused,
+  const searchInput = (
+    <AccessibleTextSearchInput
+      attributes={{
+        data: LARGE_CITIES,
+        invalidValueAction: surveyAction.setPageInError,
+        name: "city",
+        parentDispatch: surveyDispatch,
+        stepperPages: SURVEY_STEPPER_PAGES,
+        validValueAction: surveyAction.setSurveyTitle,
+        value: surveyTitle,
+      }}
+    />
+  );
 
-  //   surveyDescription,
-  //   isValidSurveyDescription,
-  //   isSurveyDescriptionFocused,
-
-  //   expiryDate,
-  //   isValidExpiryDate,
-  //   isExpiryDateFocused,
-
-  //   surveyRecipients,
-
-  //   questions,
-  //   areValidQuestions,
-  //   areQuestionsFocused,
-  //   isMaxQuestionsReached,
-
-  //   responseKinds,
-  //   responseInputHtml,
-
-  //   responseDataOptionsArray,
-  //   areResponseDataOptionsValid,
-  //   areResponseDataOptionsFocused,
-  //   isMaxResponseDataOptionsReached,
-
-  //   surveyStatistics,
-
-  //   triggerFormSubmit,
-  //   submitButtonDisabled,
-  //   triggerPreviewSurvey,
-  //   previewSurveyProps,
-
-  //   stepperDescriptionObjects,
-  //   currentStepperPosition,
-  //   pagesInError,
-
-  //   isSubmitting,
-  //   submitMessage,
-  //   isSuccessful,
-  //   successMessage,
-  //   isLoading,
-  //   loadingMessage,
-  // } = surveyState;
-
-  return null;
+  return searchInput;
 }
 
 export default Survey;
@@ -532,7 +520,7 @@ export default Survey;
       !isValidSurveyTitle || !isValidExpiryDate || !isValidSurveyDescription;
 
     surveyDispatch({
-      type: surveyAction.setStepsInError,
+      type: surveyAction.setPageInError,
       payload: {
         kind: isStepInError ? "add" : "delete",
         step: 0,
@@ -553,14 +541,14 @@ export default Survey;
 
       isValidQuestion && isDataOptionsPresent
         ? surveyDispatch({
-            type: surveyAction.setStepsInError,
+            type: surveyAction.setPageInError,
             payload: {
               kind: "delete",
               step: index + 1,
             },
           })
         : surveyDispatch({
-            type: surveyAction.setStepsInError,
+            type: surveyAction.setPageInError,
             payload: {
               kind: "add",
               step: index + 1,
@@ -585,14 +573,14 @@ export default Survey;
 
       isAnyResponseDataForQuestionInError
         ? surveyDispatch({
-            type: surveyAction.setStepsInError,
+            type: surveyAction.setPageInError,
             payload: {
               kind: "add",
               step: index + 1,
             },
           })
         : surveyDispatch({
-            type: surveyAction.setStepsInError,
+            type: surveyAction.setPageInError,
             payload: {
               kind: "delete",
               step: index + 1,

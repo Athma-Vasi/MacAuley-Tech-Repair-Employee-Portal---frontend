@@ -1,5 +1,6 @@
 import {
   Container,
+  Flex,
   Group,
   MantineSize,
   Popover,
@@ -118,20 +119,8 @@ function AccessibleTextSearchInput<
 
   const label = attributes.label ?? splitCamelCase(name);
 
-  // const initialAccessibleTextSearchInputState: AccessibleTextSearchInputState = {
-  //   valueBuffer: value,
-  // };
-  // const [accessibleTextInputState, accessibleTextInputDispatch] = useReducer(
-  //   accessibleTextInputReducer,
-  //   initialAccessibleTextSearchInputState
-  // );
-  // const { valueBuffer } = accessibleTextInputState;
-
-  // const [valueBuffer, setValueBuffer] = useState<string>(value);
-
-  const [bst, setBst] = useState<BinarySearchTree<string>>(
-    new BinarySearchTree<string>(data)
-  );
+  const [bst] = useState<BinarySearchTree<string>>(new BinarySearchTree<string>(data));
+  const [valueBuffer, setValueBuffer] = useState<string>(value);
   const [isPopoverOpened, { open: openPopover, close: closePopover }] =
     useDisclosure(false);
 
@@ -140,7 +129,7 @@ function AccessibleTextSearchInput<
   } = useGlobalState();
 
   const {
-    generalColors: { greenColorShade, grayColorShade },
+    generalColors: { greenColorShade, grayColorShade, themeColorShades },
   } = returnThemeColors({ themeObject, colorsSwatches: COLORS_SWATCHES });
 
   const rightIcon = rightSection ? (
@@ -158,6 +147,44 @@ function AccessibleTextSearchInput<
         </Group>
       </Tooltip>
     )
+  ) : null;
+
+  const results = valueBuffer.length ? bst.search(valueBuffer) : [];
+
+  const dropdown = results.length ? (
+    <Flex direction="column" mah={500} pr={2} style={{ overflow: "auto" }}>
+      {results.map((result) => (
+        <Text
+          onClick={(event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+            setValueBuffer(event.currentTarget.innerText);
+            parentDispatch({
+              action: validValueAction,
+              payload: event.currentTarget.innerText,
+            });
+            closePopover();
+          }}
+          onKeyDown={(event: React.KeyboardEvent<HTMLDivElement>) => {
+            if (event.key === "ArrowDown") {
+              console.log("down");
+            }
+          }}
+          onMouseEnter={(event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+            event.currentTarget.style.backgroundColor = themeColorShades?.[1] ?? "";
+          }}
+          onMouseLeave={(event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+            event.currentTarget.style.backgroundColor = "transparent";
+          }}
+          p={8}
+          style={{
+            cursor: "pointer",
+            borderRadius: 4,
+            transition: "background-color 0.15s ease-in-out",
+          }}
+        >
+          {result}
+        </Text>
+      ))}
+    </Flex>
   ) : null;
 
   return (
@@ -193,28 +220,16 @@ function AccessibleTextSearchInput<
             minLength={minLength}
             name={name}
             onBlur={() => {
-              // parentDispatch({
-              //   action: invalidValueAction,
-              //   payload: {
-              //     kind: isValueBufferValid ? "delete" : "add",
-              //     page,
-              //   },
-              // });
-
-              // parentDispatch({
-              //   action: validValueAction,
-              //   payload: valueBuffer,
-              // });
+              parentDispatch({
+                action: validValueAction,
+                payload: valueBuffer,
+              });
 
               onBlur?.();
-              closePopover();
+              // closePopover();
             }}
             onChange={(event: ChangeEvent<HTMLInputElement>) => {
-              // setValueBuffer(event.currentTarget.value);
-              // accessibleTextInputDispatch({
-              //   action: accessibleTextInputAction.setValueBuffer,
-              //   payload: event.currentTarget.value,
-              // });
+              setValueBuffer(event.currentTarget.value);
               onChange?.(event);
             }}
             onFocus={() => {
@@ -227,19 +242,17 @@ function AccessibleTextSearchInput<
             required={required}
             rightSection={rightIcon}
             size={size}
-            // value={valueBuffer}
+            value={valueBuffer}
             width={300}
             withAsterisk={withAsterisk}
           />
         </Popover.Target>
 
-        {/* {isPopoverOpened && valueBuffer.length ? (
+        {isPopoverOpened && results.length ? (
           <Popover.Dropdown>
-            <Stack>
-              {isValueBufferValid ? validValueTextElement : invalidValueTextElement}
-            </Stack>
+            <Stack>{dropdown}</Stack>
           </Popover.Dropdown>
-        ) : null} */}
+        ) : null}
       </Popover>
     </Container>
   );

@@ -68,7 +68,7 @@ type DisplaySurveysAction = {
 
   setStepperDescriptionsMap: "setStepperDescriptionsMap";
   setCurrentStepperPosition: "setCurrentStepperPosition";
-  setStepsInError: "setStepsInError";
+  setPageInError: "setPageInError";
 
   setQueryBuilderString: "setQueryBuilderString";
   setPageQueryString: "setPageQueryString";
@@ -144,7 +144,7 @@ type DisplaySurveysDispatch =
       };
     }
   | {
-      type: DisplaySurveysAction["setStepsInError"];
+      type: DisplaySurveysAction["setPageInError"];
       payload: {
         surveyId: string;
         stepInError: SetStepsInErrorPayload;

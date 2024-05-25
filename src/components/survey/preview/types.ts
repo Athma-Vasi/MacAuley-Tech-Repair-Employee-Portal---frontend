@@ -39,7 +39,7 @@ type PreviewSurveyAction = {
 
   setStepperDescriptionsArray: "setStepperDescriptionsArray";
   setCurrentStepperPosition: "setCurrentStepperPosition";
-  setStepsInError: "setStepsInError";
+  setPageInError: "setPageInError";
 };
 
 type PreviewSurveyDispatch =
@@ -78,7 +78,7 @@ type PreviewSurveyDispatch =
       payload: number;
     }
   | {
-      type: PreviewSurveyAction["setStepsInError"];
+      type: PreviewSurveyAction["setPageInError"];
       payload: SetStepsInErrorPayload;
     };
 

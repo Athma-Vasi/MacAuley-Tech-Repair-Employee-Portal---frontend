@@ -203,20 +203,20 @@ class BinarySearchTree<T extends string | number = string | number> {
     return traverse(node, array);
   }
 
-  search(prefix: string): T[] {
+  search(pattern: string): T[] {
     const results: T[] = [];
-    this.searchNode(this.rootNode, prefix, results);
+    this.searchNode(this.rootNode, pattern, results);
     return results;
   }
 
-  private searchNode(node: TreeNode<T> | undefined, prefix: string, results: T[]): void {
+  private searchNode(node: TreeNode<T> | undefined, pattern: string, results: T[]): void {
     if (!node) {
       return;
     }
 
     if (
       boyerMooreHorspoolSimpleSearch(
-        prefix.toLowerCase(),
+        pattern.toLowerCase(),
         node.data.toString().toLowerCase()
       ) !== -1
     ) {
@@ -224,11 +224,11 @@ class BinarySearchTree<T extends string | number = string | number> {
     }
 
     if (node.leftChild) {
-      this.searchNode(node.leftChild, prefix, results);
+      this.searchNode(node.leftChild, pattern, results);
     }
 
     if (node.rightChild) {
-      this.searchNode(node.rightChild, prefix, results);
+      this.searchNode(node.rightChild, pattern, results);
     }
   }
 }

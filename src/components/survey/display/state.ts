@@ -53,7 +53,7 @@ const displaySurveysAction: DisplaySurveysAction = {
 
   setStepperDescriptionsMap: "setStepperDescriptionsMap",
   setCurrentStepperPosition: "setCurrentStepperPosition",
-  setStepsInError: "setStepsInError",
+  setPageInError: "setPageInError",
 
   setQueryBuilderString: "setQueryBuilderString",
   setPageQueryString: "setPageQueryString",
@@ -229,7 +229,7 @@ function displaySurveysReducer(
         currentStepperPositions: clonedCurrentStepperPositions,
       };
     }
-    case displaySurveysAction.setStepsInError: {
+    case displaySurveysAction.setPageInError: {
       const {
         surveyId,
         stepInError: { kind, step },

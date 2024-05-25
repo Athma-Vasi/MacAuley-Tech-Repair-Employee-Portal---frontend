@@ -1,5 +1,5 @@
 import { DescriptionObjectsArray } from "../../wrappers";
-import { SurveyAction, SurveyDispatch, SurveyState } from "./types";
+import { SurveyState } from "./types";
 
 const initialDescriptionObjects: DescriptionObjectsArray = [
   {

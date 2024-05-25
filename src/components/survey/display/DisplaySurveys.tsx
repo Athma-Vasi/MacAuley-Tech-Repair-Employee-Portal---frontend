@@ -457,7 +457,7 @@ function DisplaySurveys() {
       if (!surveySubmission) {
         Array.from({ length: currentStepperPosition }).forEach((_, idx) => {
           displaySurveysDispatch({
-            type: displaySurveysAction.setStepsInError,
+            type: displaySurveysAction.setPageInError,
             payload: {
               surveyId,
               stepInError: {
@@ -478,7 +478,7 @@ function DisplaySurveys() {
             length: currentStepperPosition - surveyResponses.length,
           }).forEach((_, idx) => {
             displaySurveysDispatch({
-              type: displaySurveysAction.setStepsInError,
+              type: displaySurveysAction.setPageInError,
               payload: {
                 surveyId,
                 stepInError: {
@@ -499,7 +499,7 @@ function DisplaySurveys() {
             response === 0 // for 'rating': 'emotion' or 'stars'
           ) {
             displaySurveysDispatch({
-              type: displaySurveysAction.setStepsInError,
+              type: displaySurveysAction.setPageInError,
               payload: {
                 surveyId,
                 stepInError: {
@@ -510,7 +510,7 @@ function DisplaySurveys() {
             });
           } else {
             displaySurveysDispatch({
-              type: displaySurveysAction.setStepsInError,
+              type: displaySurveysAction.setPageInError,
               payload: {
                 surveyId,
                 stepInError: {

@@ -30,7 +30,7 @@ const previewSurveyAction: PreviewSurveyAction = {
 
   setStepperDescriptionsArray: "setStepperDescriptionsArray",
   setCurrentStepperPosition: "setCurrentStepperPosition",
-  setStepsInError: "setStepsInError",
+  setPageInError: "setPageInError",
 };
 
 function previewSurveyReducer(
@@ -121,7 +121,7 @@ function previewSurveyReducer(
       };
     }
 
-    case previewSurveyAction.setStepsInError: {
+    case previewSurveyAction.setPageInError: {
       const { kind, step } = action.payload;
       const pagesInError = new Set(state.pagesInError);
       kind === "add" ? pagesInError.add(step) : pagesInError.delete(step);

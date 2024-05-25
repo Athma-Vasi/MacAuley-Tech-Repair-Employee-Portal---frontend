@@ -119,7 +119,7 @@ function PreviewSurvey({
     if (surveyResponsesArray.length === 0) {
       Array.from({ length: currentStepperPosition }).forEach((_, idx) => {
         previewSurveyDispatch({
-          type: previewSurveyAction.setStepsInError,
+          type: previewSurveyAction.setPageInError,
           payload: {
             kind: "add",
             step: idx,
@@ -135,7 +135,7 @@ function PreviewSurvey({
           length: currentStepperPosition - surveyResponsesArray.length,
         }).forEach((_, idx) => {
           previewSurveyDispatch({
-            type: previewSurveyAction.setStepsInError,
+            type: previewSurveyAction.setPageInError,
             payload: {
               kind: "add",
               step: surveyResponsesArray.length + idx,
@@ -155,7 +155,7 @@ function PreviewSurvey({
           response === 0 // for 'rating': 'emotion' or 'stars'
         ) {
           previewSurveyDispatch({
-            type: previewSurveyAction.setStepsInError,
+            type: previewSurveyAction.setPageInError,
             payload: {
               kind: "add",
               step: idx,
@@ -163,7 +163,7 @@ function PreviewSurvey({
           });
         } else {
           previewSurveyDispatch({
-            type: previewSurveyAction.setStepsInError,
+            type: previewSurveyAction.setPageInError,
             payload: {
               kind: "delete",
               step: idx,

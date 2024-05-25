@@ -1,4 +1,4 @@
-const largeCities: string[] = [
+const LARGE_CITIES: string[] = [
   "New York",
   "Los Angeles",
   "Chicago",
@@ -1639,4 +1639,4 @@ const largeCities: string[] = [
   "Orange",
 ];
 
-export { largeCities };
+export { LARGE_CITIES };

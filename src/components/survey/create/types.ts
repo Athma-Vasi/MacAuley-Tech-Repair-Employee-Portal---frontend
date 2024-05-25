@@ -1,5 +1,4 @@
-import { SetStepsInErrorPayload } from "../../../types";
-import { DescriptionObjectsArray } from "../../wrappers";
+import { SetPageInErrorPayload } from "../../../types";
 import { PreviewSurveyProps } from "../preview/types";
 import {
   SurveyRecipient,
@@ -7,6 +6,7 @@ import {
   SurveyResponseKind,
   SurveyStatistics,
 } from "../types";
+import { SurveyAction } from "./actions";
 
 type SurveyQuestions = {
   question: string;
@@ -37,187 +37,66 @@ type SurveyState = {
   isSuccessful: boolean;
 };
 
-type SurveyAction = {
-  setSurveyTitle: "setSurveyTitle";
-  setIsValidSurveyTitle: "setIsValidSurveyTitle";
-  setIsSurveyTitleFocused: "setIsSurveyTitleFocused";
-
-  setSurveyDescription: "setSurveyDescription";
-  setIsValidSurveyDescription: "setIsValidSurveyDescription";
-  setIsSurveyDescriptionFocused: "setIsSurveyDescriptionFocused";
-
-  setExpiryDate: "setExpiryDate";
-  setIsValidExpiryDate: "setIsValidExpiryDate";
-  setIsExpiryDateFocused: "setIsExpiryDateFocused";
-
-  setSurveyRecipients: "setSurveyRecipients";
-
-  setQuestions: "setQuestions";
-  setAreValidQuestions: "setAreValidQuestions";
-  setAreQuestionsFocused: "setAreQuestionsFocused";
-  setIsMaxQuestionsReached: "setIsMaxQuestionsReached";
-
-  deleteQuestionGroup: "deleteQuestionGroup";
-  addNewQuestionGroup: "addNewQuestionGroup";
-
-  setResponseKinds: "setResponseKinds";
-  setResponseInputHtml: "setResponseInputHtml";
-
-  setResponseDataOptions: "setResponseDataOptions";
-  setAreResponseDataOptionsValid: "setAreResponseDataOptionsValid";
-  setAreResponseDataOptionsFocused: "setAreResponseDataOptionsFocused";
-  setIsMaxResponseDataOptionsReached: "setIsMaxResponseDataOptionsReached";
-
-  deleteResponseDataOption: "deleteResponseDataOption";
-  addNewResponseDataOption: "addNewResponseDataOption";
-  deleteAllResponseDataOptionsForQuestion: "deleteAllResponseDataOptionsForQuestion";
-
-  setSurveyStatistics: "setSurveyStatistics";
-
-  setTriggerFormSubmit: "setTriggerFormSubmit";
-  setSubmitButtonDisabled: "setSubmitButtonDisabled";
-  setTriggerPreviewSurvey: "setTriggerPreviewSurvey";
-  setPreviewSurveyProps: "setPreviewSurveyProps";
-
-  updateStepperDescriptionObjects: "updateStepperDescriptionObjects";
-  createStepperDescriptionObjects: "createStepperDescriptionObjects";
-  setCurrentStepperPosition: "setCurrentStepperPosition";
-  setStepsInError: "setStepsInError";
-
-  setIsSubmitting: "setIsSubmitting";
-  setSubmitMessage: "setSubmitMessage";
-  setIsSuccessful: "setIsSuccessful";
-  setSuccessMessage: "setSuccessMessage";
-  setIsLoading: "setIsLoading";
-  setLoadingMessage: "setLoadingMessage";
-};
-
 type SurveyDispatch =
   | {
-      type:
-        | SurveyAction["setSurveyTitle"]
-        | SurveyAction["setSurveyDescription"]
-        | SurveyAction["setExpiryDate"]
-        | SurveyAction["setSubmitMessage"]
-        | SurveyAction["setSuccessMessage"]
-        | SurveyAction["setLoadingMessage"];
-
+      action: SurveyAction["addNewQuestionGroup"];
+      payload: SurveyQuestions;
+    }
+  | {
+      action: SurveyAction["setSurveyTitle"];
       payload: string;
     }
   | {
-      type:
-        | SurveyAction["setIsValidSurveyTitle"]
-        | SurveyAction["setIsSurveyTitleFocused"]
-        | SurveyAction["setIsValidSurveyDescription"]
-        | SurveyAction["setIsSurveyDescriptionFocused"]
-        | SurveyAction["setIsValidExpiryDate"]
-        | SurveyAction["setIsExpiryDateFocused"]
-        | SurveyAction["setIsMaxQuestionsReached"]
-        | SurveyAction["setTriggerFormSubmit"]
-        | SurveyAction["setSubmitButtonDisabled"]
-        | SurveyAction["setTriggerPreviewSurvey"]
-        | SurveyAction["setIsSubmitting"]
-        | SurveyAction["setIsSuccessful"]
-        | SurveyAction["setIsLoading"];
-
-      payload: boolean;
+      action: SurveyAction["setSurveyDescription"];
+      payload: string;
     }
   | {
-      type: SurveyAction["setSurveyRecipients"];
+      action: SurveyAction["setExpiryDate"];
+      payload: string;
+    }
+  | {
+      action: SurveyAction["setSurveyRecipients"];
       payload: SurveyRecipient;
     }
   | {
-      type:
-        | SurveyAction["setQuestions"]
-        | SurveyAction["setResponseKinds"]
-        | SurveyAction["setResponseInputHtml"];
-
-      payload: {
-        index: number;
-        value: string;
-      };
+      action: SurveyAction["setQuestions"];
+      payload: string[];
     }
   | {
-      type: SurveyAction["setResponseDataOptions"];
-      payload: {
-        questionIdx: number;
-        optionIdx: number;
-        value: string;
-      };
+      action: SurveyAction["setResponseKinds"];
+      payload: string[];
     }
   | {
-      type: SurveyAction["setAreResponseDataOptionsValid"];
-      payload: Array<boolean[]>;
+      action: SurveyAction["setResponseInputHtml"];
+      payload: string[];
     }
   | {
-      type: SurveyAction["setAreResponseDataOptionsFocused"];
-      payload: {
-        questionIdx: number;
-        optionIdx: number;
-        value: boolean;
-      };
-    }
-  | {
-      type: SurveyAction["setAreValidQuestions"];
-      payload: boolean[];
-    }
-  | {
-      type:
-        | SurveyAction["setAreQuestionsFocused"]
-        | SurveyAction["setIsMaxResponseDataOptionsReached"];
-      payload: {
-        index: number;
-        value: boolean;
-      };
-    }
-  | {
-      type: SurveyAction["deleteResponseDataOption"];
-
-      payload: {
-        questionIdx: number;
-        optionIdx: number;
-      };
-    }
-  | {
-      type:
-        | SurveyAction["addNewResponseDataOption"]
-        | SurveyAction["deleteAllResponseDataOptionsForQuestion"];
-      payload: {
-        questionIdx: number;
-      };
-    }
-  | {
-      type:
-        | SurveyAction["setCurrentStepperPosition"]
-        | SurveyAction["deleteQuestionGroup"]
-        | SurveyAction["addNewQuestionGroup"];
-      payload: number;
-    }
-  | {
-      type: SurveyAction["setStepsInError"];
-      payload: SetStepsInErrorPayload;
-    }
-  | {
-      type:
-        | SurveyAction["createStepperDescriptionObjects"]
-        | SurveyAction["updateStepperDescriptionObjects"];
-      payload: {
-        index: number;
-        value: {
-          description: string;
-          ariaLabel: string;
-        };
-      };
-    }
-  | {
-      type: SurveyAction["setSurveyStatistics"];
+      action: SurveyAction["setSurveyStatistics"];
       payload: SurveyStatistics[];
     }
   | {
-      type: SurveyAction["setPreviewSurveyProps"];
-      payload: Omit<PreviewSurveyProps, "closePreviewSurveyModal">;
+      action: SurveyAction["setTriggerFormSubmit"];
+      payload: boolean;
+    }
+  | {
+      action: SurveyAction["setTriggerPreviewSurvey"];
+      payload: boolean;
+    }
+  | {
+      action: SurveyAction["setPreviewSurveyProps"];
+      payload: PreviewSurveyProps;
+    }
+  | {
+      action: SurveyAction["setPageInError"];
+      payload: SetPageInErrorPayload;
+    }
+  | {
+      action: SurveyAction["setIsSubmitting"];
+      payload: boolean;
+    }
+  | {
+      action: SurveyAction["setIsSuccessful"];
+      payload: boolean;
     };
 
-type SurveyReducer = (state: SurveyState, action: SurveyDispatch) => SurveyState;
-
-export type { SurveyAction, SurveyDispatch, SurveyReducer, SurveyState, SurveyQuestions };
+export type { SurveyDispatch, SurveyQuestions, SurveyState };
