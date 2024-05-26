@@ -3,6 +3,7 @@ import { useDisclosure } from "@mantine/hooks";
 import {
   ChangeEvent,
   Dispatch,
+  FocusEvent,
   KeyboardEvent,
   ReactNode,
   useEffect,
@@ -37,9 +38,9 @@ type AccessibleTextAreaInputAttributes<
   minLength?: number;
   minRows?: number;
   name: string;
-  onBlur?: () => void;
+  onBlur?: (event: FocusEvent<HTMLTextAreaElement>) => void;
   onChange?: (event: ChangeEvent<HTMLTextAreaElement>) => void;
-  onFocus?: () => void;
+  onFocus?: (event: FocusEvent<HTMLTextAreaElement>) => void;
   onKeyDown?: (event: KeyboardEvent<HTMLTextAreaElement>) => void;
   /** stepper page location of input. default 0 = first page = step 0 */
   page?: number;
@@ -169,6 +170,13 @@ function AccessibleTextAreaInput<
     )
   ) : null;
 
+  console.group("AccessibleTextAreaInput");
+  console.log("name", name);
+  console.log("value", value);
+  console.log("valueBuffer", valueBuffer);
+  console.log("isValueBufferValid", isValueBufferValid);
+  console.groupEnd();
+
   const validationTexts = returnValidationTexts({
     name,
     stepperPages,
@@ -196,80 +204,78 @@ function AccessibleTextAreaInput<
         withArrow
       >
         <Popover.Target>
-          <div onBlurCapture={() => openPopover()} onFocusCapture={() => closePopover()}>
-            <Textarea
-              aria-autocomplete={ariaAutoComplete}
-              aria-describedby={
-                isValueBufferValid
-                  ? // id of validValueTextElement
-                    `${name}-valid`
-                  : // id of invalidValueTextElement
-                    `${name}-invalid`
+          <Textarea
+            aria-autocomplete={ariaAutoComplete}
+            aria-describedby={
+              isValueBufferValid
+                ? // id of validValueTextElement
+                  `${name}-valid`
+                : // id of invalidValueTextElement
+                  `${name}-invalid`
+            }
+            aria-invalid={!isValueBufferValid}
+            aria-label={name}
+            aria-required={required}
+            autoComplete={autoComplete}
+            color={grayColorShade}
+            disabled={disabled}
+            error={!isValueBufferValid && value !== initialInputValue}
+            icon={leftIcon}
+            label={label}
+            maxLength={maxLength}
+            maxRows={maxRows}
+            minLength={minLength}
+            minRows={minRows}
+            name={name}
+            onBlur={(event: FocusEvent<HTMLTextAreaElement>) => {
+              if (index === undefined) {
+                parentDispatch?.({
+                  action: invalidValueAction,
+                  payload: {
+                    kind: isValueBufferValid ? "delete" : "add",
+                    page,
+                  },
+                });
+
+                parentDispatch?.({
+                  action: validValueAction,
+                  payload: valueBuffer,
+                });
+              } else {
+                parentDynamicDispatch?.({
+                  action: invalidValueAction,
+                  payload: {
+                    kind: isValueBufferValid ? "delete" : "add",
+                    page,
+                  },
+                });
+
+                parentDynamicDispatch?.({
+                  action: validValueAction,
+                  payload: { index, value: valueBuffer },
+                });
               }
-              aria-invalid={!isValueBufferValid}
-              aria-label={name}
-              aria-required={required}
-              autoComplete={autoComplete}
-              color={grayColorShade}
-              disabled={disabled}
-              error={!isValueBufferValid && value !== initialInputValue}
-              icon={leftIcon}
-              label={label}
-              maxLength={maxLength}
-              maxRows={maxRows}
-              minLength={minLength}
-              minRows={minRows}
-              name={name}
-              onBlur={() => {
-                if (index === undefined) {
-                  parentDispatch?.({
-                    action: invalidValueAction,
-                    payload: {
-                      kind: isValueBufferValid ? "delete" : "add",
-                      page,
-                    },
-                  });
 
-                  parentDispatch?.({
-                    action: validValueAction,
-                    payload: valueBuffer,
-                  });
-                } else {
-                  parentDynamicDispatch?.({
-                    action: invalidValueAction,
-                    payload: {
-                      kind: isValueBufferValid ? "delete" : "add",
-                      page,
-                    },
-                  });
-
-                  parentDynamicDispatch?.({
-                    action: validValueAction,
-                    payload: { index, value: valueBuffer },
-                  });
-                }
-
-                onBlur?.();
-                closePopover();
-              }}
-              onChange={(event: ChangeEvent<HTMLTextAreaElement>) => {
-                setValueBuffer(event.currentTarget.value);
-                onChange?.(event);
-              }}
-              onFocus={() => {
-                openPopover();
-                onFocus?.();
-              }}
-              onKeyDown={onKeyDown}
-              placeholder={placeholder}
-              ref={ref}
-              required={required}
-              rightSection={rightIcon}
-              size={size}
-              value={valueBuffer}
-              withAsterisk={withAsterisk}
-            />
-          </div>
+              onBlur?.(event);
+              closePopover();
+            }}
+            onChange={(event: ChangeEvent<HTMLTextAreaElement>) => {
+              setValueBuffer(event.currentTarget.value);
+              onChange?.(event);
+            }}
+            onFocus={(event: FocusEvent<HTMLTextAreaElement>) => {
+              openPopover();
+              onFocus?.(event);
+            }}
+            onKeyDown={onKeyDown}
+            placeholder={placeholder}
+            ref={ref}
+            required={required}
+            rightSection={rightIcon}
+            size={size}
+            value={valueBuffer}
+            withAsterisk={withAsterisk}
+          />
         </Popover.Target>
 
         {isPopoverOpened && valueBuffer.length ? (

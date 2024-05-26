@@ -9,7 +9,7 @@ import {
   SURVEY_RECIPIENT_DATA,
   returnSurveyStepperPages,
 } from "../constants";
-import { StepperPage } from "../../../types";
+import { StepperChild, StepperPage } from "../../../types";
 import { logState } from "../../../utils";
 import { AccessibleTextInput } from "../../accessibleInputs/text/AccessibleTextInput";
 import { AccessibleTextAreaInput } from "../../accessibleInputs/AccessibleTextAreaInput";
@@ -17,11 +17,12 @@ import { AccessibleDateTimeInput } from "../../accessibleInputs/AccessibleDateTi
 import { AccessibleSelectInput } from "../../accessibleInputs/AccessibleSelectInput";
 import { SurveyRecipient, SurveyResponseKind } from "../types";
 import { AccessibleRadioInputGroup } from "../../accessibleInputs/AccessibleRadioInput";
-import { AccessibleTextInputsDynamic } from "../../accessibleInputs/textsDynamic/AccessibleTextInputsDynamic";
+
 import { AccessibleStepper } from "../../accessibleInputs/AccessibleStepper";
 import { Container, Stack } from "@mantine/core";
 import { AccessibleButton } from "../../accessibleInputs/AccessibleButton";
 import { TEXT_INPUT_VALIDATIONS } from "../../../constants/validations";
+import { AccessibleTextInputs } from "../../accessibleInputs/texts/AccessibleTextInputs";
 
 function Survey() {
   const [surveyState, surveyDispatch] = useReducer(surveyReducer, initialSurveyState);
@@ -103,24 +104,6 @@ function Survey() {
     />
   );
 
-  /**
-   * <AccessibleButton
-      attributes={{
-        enabledScreenreaderText: "All inputs are valid. Click to submit form",
-        disabledScreenreaderText: "Please fix errors before submitting form",
-        disabled: pagesInError.size > 0 || triggerFormSubmit,
-        kind: "submit",
-        name: "submit",
-        onClick: (_event: React.MouseEvent<HTMLButtonElement>) => {
-          surveyDispatch({
-            action: surveyAction.setTriggerFormSubmit,
-            payload: true,
-          });
-        },
-      }}
-    />
-   */
-
   const questionPages = questions.map((question, index) => {
     const addQuestionButton = (
       <AccessibleButton
@@ -139,30 +122,28 @@ function Survey() {
               payload: void 0,
             });
 
-            const first = stepperPages.slice(0, questions.length + 1);
-            const middle: StepperPage = {
-              children: [],
-              description: `Question ${questions.length + 1}`,
+            const newPageChild: StepperChild = {
+              inputType: "text",
+              name: `question ${index + 2}`,
+              validations: TEXT_INPUT_VALIDATIONS,
             };
-            const last = stepperPages.slice(questions.length);
 
-            const updatedStepperPages = [...first, middle, ...last];
+            const newPage: StepperPage = {
+              children: [newPageChild],
+              description: `Enter Question ${questions.length + 1}`,
+            };
 
             surveyDispatch({
-              action: surveyAction.setStepperPages,
-              payload: updatedStepperPages,
+              action: surveyAction.addStepperPage,
+              payload: {
+                parentIndex: questions.length + 1,
+                payload: newPage,
+              },
             });
           },
         }}
       />
     );
-
-    // for popover validation linking
-    stepperPages[index].children.push({
-      inputType: "text",
-      name: `question ${index + 1}`,
-      validations: TEXT_INPUT_VALIDATIONS,
-    });
 
     const questionTextInput = (
       <AccessibleTextInput
@@ -184,7 +165,7 @@ function Survey() {
           data: ["chooseAny", "chooseOne", "rating"],
           index,
           label: "Response Kind",
-          name: `responseKind ${index + 1}`,
+          name: `responseKinds ${index + 1}`,
           parentDynamicDispatch: surveyDispatch,
           validValueAction: surveyAction.setResponseKinds,
           value: responseKinds[index],
@@ -207,10 +188,17 @@ function Survey() {
     );
 
     const responseDataOptions = (
-      <AccessibleTextInputsDynamic
+      <AccessibleTextInputs<
+        SurveyAction["setResponseDataOptions"],
+        SurveyAction["setPageInError"],
+        SurveyAction["addStepperChilds"]
+      >
         attributes={{
+          parentIndex: index,
+          addStepperChildAction: surveyAction.addStepperChilds,
           invalidValueAction: surveyAction.setPageInError,
-          name: "responseOption",
+          parentDynamicDispatch: surveyDispatch,
+          name: `responseDataOption ${index + 1}`,
           page: index,
           stepperPages,
           validValueAction: surveyAction.setResponseDataOptions,

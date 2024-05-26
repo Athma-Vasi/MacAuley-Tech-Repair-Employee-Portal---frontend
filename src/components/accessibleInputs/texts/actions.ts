@@ -1,5 +1,6 @@
-type AccessibleTextInputsDynamicAction = {
+type AccessibleTextInputsAction = {
   addInput: "addInput";
+  addStepperChild: "addStepperChild";
   deleteInput: "deleteInput";
   insertInput: "insertInput";
   setInputValue: "setInputValue";
@@ -8,8 +9,9 @@ type AccessibleTextInputsDynamicAction = {
   slideInputDown: "slideInputDown";
 };
 
-const accessibleTextInputsDynamicAction: AccessibleTextInputsDynamicAction = {
+const accessibleTextInputsAction: AccessibleTextInputsAction = {
   addInput: "addInput",
+  addStepperChild: "addStepperChild",
   deleteInput: "deleteInput",
   insertInput: "insertInput",
   setInputValue: "setInputValue",
@@ -18,5 +20,5 @@ const accessibleTextInputsDynamicAction: AccessibleTextInputsDynamicAction = {
   slideInputDown: "slideInputDown",
 };
 
-export { accessibleTextInputsDynamicAction };
-export type { AccessibleTextInputsDynamicAction };
+export { accessibleTextInputsAction };
+export type { AccessibleTextInputsAction };

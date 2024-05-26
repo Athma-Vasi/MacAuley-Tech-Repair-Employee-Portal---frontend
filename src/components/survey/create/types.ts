@@ -1,4 +1,4 @@
-import { SetPageInErrorPayload, StepperPage } from "../../../types";
+import { SetPageInErrorPayload, StepperChild, StepperPage } from "../../../types";
 import { PreviewSurveyProps } from "../preview/types";
 import {
   SurveyRecipient,
@@ -114,15 +114,33 @@ type SurveyDispatch =
     }
   | {
       action: SurveyAction["deleteResponseDataOption"];
-      payload: { questionIndex: number; responseDataOptionIndex: number };
+      payload: { questionIndex: number; optionsIndex: number };
     }
   | {
-      action: SurveyAction["addResponseDataOption"];
+      action: SurveyAction["addStepperPage"];
+      payload: {
+        parentIndex: number;
+        payload: StepperPage;
+      };
+    }
+  | {
+      action: SurveyAction["addStepperChilds"];
+      payload: {
+        parentIndex: number;
+        value: StepperChild[];
+      };
+    }
+  | {
+      action: SurveyAction["deleteAllResponseDataOptionsForQuestion"];
       payload: number;
     }
   | {
-      action: SurveyAction["setStepperPages"];
-      payload: StepperPage[];
+      action: SurveyAction["setResponseDataOptions"];
+      payload: {
+        parentIndex: number;
+        inputIndex: number;
+        value: string;
+      };
     };
 
 export type { SurveyDispatch, SurveyQuestions, SurveyState };

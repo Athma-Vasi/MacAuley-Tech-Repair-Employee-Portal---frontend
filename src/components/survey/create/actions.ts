@@ -1,6 +1,7 @@
 type SurveyAction = {
   addQuestion: "addQuestion";
-  addResponseDataOption: "addResponseDataOption";
+  addStepperChilds: "addStepperChilds";
+  addStepperPage: "addStepperPage";
   deleteAllResponseDataOptionsForQuestion: "deleteAllResponseDataOptionsForQuestion";
   deleteQuestion: "deleteQuestion";
   deleteResponseDataOption: "deleteResponseDataOption";
@@ -17,14 +18,14 @@ type SurveyAction = {
   setSurveyRecipients: "setSurveyRecipients";
   setSurveyStatistics: "setSurveyStatistics";
   setSurveyTitle: "setSurveyTitle";
-  setStepperPages: "setStepperPages";
   setTriggerFormSubmit: "setTriggerFormSubmit";
   setTriggerPreviewSurvey: "setTriggerPreviewSurvey";
 };
 
 const surveyAction: SurveyAction = {
   addQuestion: "addQuestion",
-  addResponseDataOption: "addResponseDataOption",
+  addStepperChilds: "addStepperChilds",
+  addStepperPage: "addStepperPage",
   deleteAllResponseDataOptionsForQuestion: "deleteAllResponseDataOptionsForQuestion",
   deleteQuestion: "deleteQuestion",
   deleteResponseDataOption: "deleteResponseDataOption",
@@ -41,7 +42,6 @@ const surveyAction: SurveyAction = {
   setSurveyRecipients: "setSurveyRecipients",
   setSurveyStatistics: "setSurveyStatistics",
   setSurveyTitle: "setSurveyTitle",
-  setStepperPages: "setStepperPages",
   setTriggerFormSubmit: "setTriggerFormSubmit",
   setTriggerPreviewSurvey: "setTriggerPreviewSurvey",
 };

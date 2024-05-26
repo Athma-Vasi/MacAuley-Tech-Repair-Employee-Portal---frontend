@@ -13,7 +13,6 @@ import {
 import {
   RadioGroupInputData,
   RoleResourceRoutePaths,
-  SelectInputData,
   StepperChild,
   StepperPage,
 } from "../../types";
@@ -33,30 +32,6 @@ const SURVEY_ROLE_ROUTE_PATHS: RoleResourceRoutePaths = {
 };
 
 function returnSurveyStepperPages(): StepperPage[] {
-  /**
-   * type SurveyState = {
-  surveyTitle: string;
-  surveyDescription: string;
-  expiryDate: string;
-  surveyRecipients: SurveyRecipient;
-  questions: Array<string>;
-  responseKinds: Array<string>;
-  responseInputHtml: Array<string>;
-  responseDataOptionsArray: Array<string[]>;
-  surveyStatistics: SurveyStatistics[];
-  triggerFormSubmit: boolean;
-  triggerPreviewSurvey: boolean;
-  previewSurveyProps: {
-    surveyTitle: string;
-    surveyDescription: string;
-    surveyQuestions: SurveyQuestions[];
-  };
-  pagesInError: Set<number>;
-  isSubmitting: boolean;
-  isSuccessful: boolean;
-};
-   */
-
   const surveyTitleChild: StepperChild = {
     inputType: "text",
     name: "surveyTitle",
@@ -83,26 +58,26 @@ function returnSurveyStepperPages(): StepperPage[] {
 
   const questionsChild: StepperChild = {
     inputType: "text",
-    name: "questions",
+    name: "question 1",
     validations: TEXT_INPUT_VALIDATIONS,
   };
 
   const responseKindsChild: StepperChild = {
     inputType: "select",
-    name: "responseKinds",
+    name: "responseKinds 1",
     selectInputData: SURVEY_RESPONSE_KIND_DATA,
   };
 
   const responseInputHtmlChild: StepperChild = {
     inputType: "select",
-    name: "responseInputHtml",
+    name: "responseInputHtml 1",
     selectInputData: SURVEY_RESPONSE_INPUTS,
   };
 
   const responseDataOptionsArrayChild: StepperChild = {
     inputType: "text",
-    name: "responseDataOptionsArray",
-    validations: TEXT_INPUT_VALIDATIONS,
+    name: "responseDataOption 1 A",
+    validations: TEXT_AREA_INPUT_VALIDATIONS,
   };
 
   return [
@@ -123,7 +98,7 @@ function returnSurveyStepperPages(): StepperPage[] {
         responseInputHtmlChild,
         responseDataOptionsArrayChild,
       ],
-      description: "Enter question 1",
+      description: "Enter Question 1",
     },
 
     {

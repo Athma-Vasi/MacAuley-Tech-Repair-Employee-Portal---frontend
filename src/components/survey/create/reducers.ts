@@ -1,4 +1,4 @@
-import { SetPageInErrorPayload, StepperPage } from "../../../types";
+import { SetPageInErrorPayload, StepperChild, StepperPage } from "../../../types";
 import {
   SurveyRecipient,
   SurveyResponseInput,
@@ -13,24 +13,58 @@ function surveyReducer(state: SurveyState, dispatch: SurveyDispatch): SurveyStat
   return reducer ? reducer(state, dispatch) : state;
 }
 
+/**
+ * type SurveyAction = {
+  addQuestion: "addQuestion";
+  addStepperChilds: "addStepperChilds";
+  addStepperPage: "addStepperPage";
+  deleteAllResponseDataOptionsForQuestion: "deleteAllResponseDataOptionsForQuestion";
+  deleteQuestion: "deleteQuestion";
+  deleteResponseDataOption: "deleteResponseDataOption";
+  setExpiryDate: "setExpiryDate";
+  setIsSubmitting: "setIsSubmitting";
+  setIsSuccessful: "setIsSuccessful";
+  setPageInError: "setPageInError";
+  setPreviewSurveyProps: "setPreviewSurveyProps";
+  setQuestions: "setQuestions";
+  setResponseDataOptions: "setResponseDataOptions";
+  setResponseInputHtml: "setResponseInputHtml";
+  setResponseKinds: "setResponseKinds";
+  setSurveyDescription: "setSurveyDescription";
+  setSurveyRecipients: "setSurveyRecipients";
+  setSurveyStatistics: "setSurveyStatistics";
+  setSurveyTitle: "setSurveyTitle";
+  setTriggerFormSubmit: "setTriggerFormSubmit";
+  setTriggerPreviewSurvey: "setTriggerPreviewSurvey";
+};
+ */
+
 const surveyReducers = new Map<
   SurveyAction[keyof SurveyAction],
   (state: SurveyState, dispatch: SurveyDispatch) => SurveyState
 >([
   [surveyAction.addQuestion, surveyReducer_addQuestion],
+  [surveyAction.addStepperChilds, surveyReducer_addStepperChilds],
+  [surveyAction.addStepperPage, surveyReducer_addStepperPage],
+  [
+    surveyAction.deleteAllResponseDataOptionsForQuestion,
+    surveyReducer_deleteAllResponseDataOptionsForQuestion,
+  ],
+  [surveyAction.deleteQuestion, surveyReducer_deleteQuestion],
+  [surveyAction.deleteResponseDataOption, surveyReducer_deleteResponseDataOption],
   [surveyAction.setExpiryDate, surveyReducer_setExpiryDate],
   [surveyAction.setIsSubmitting, surveyReducer_setIsSubmitting],
   [surveyAction.setIsSuccessful, surveyReducer_setIsSuccessful],
   [surveyAction.setPageInError, surveyReducer_setPageInError],
   [surveyAction.setPreviewSurveyProps, surveyReducer_setPreviewSurveyProps],
   [surveyAction.setQuestions, surveyReducer_setQuestions],
+  [surveyAction.setResponseDataOptions, surveyReducer_setResponseDataOptions],
   [surveyAction.setResponseInputHtml, surveyReducer_setResponseInputHtml],
   [surveyAction.setResponseKinds, surveyReducer_setResponseKinds],
   [surveyAction.setSurveyDescription, surveyReducer_setSurveyDescription],
   [surveyAction.setSurveyRecipients, surveyReducer_setSurveyRecipients],
   [surveyAction.setSurveyStatistics, surveyReducer_setSurveyStatistics],
   [surveyAction.setSurveyTitle, surveyReducer_setSurveyTitle],
-  [surveyAction.setStepperPages, surveyReducer_setStepperPages],
   [surveyAction.setTriggerFormSubmit, surveyReducer_setTriggerFormSubmit],
   [surveyAction.setTriggerPreviewSurvey, surveyReducer_setTriggerPreviewSurvey],
 ]);
@@ -48,13 +82,94 @@ function surveyReducer_addQuestion(
   };
 }
 
-function surveyReducer_setStepperPages(
+function surveyReducer_addStepperChilds(
   state: SurveyState,
   dispatch: SurveyDispatch
 ): SurveyState {
+  const { parentIndex, value } = dispatch.payload as {
+    parentIndex: number;
+    value: StepperChild[];
+  };
+  const stepperPages = [...state.stepperPages];
+  stepperPages[parentIndex].children = value;
+
   return {
     ...state,
-    stepperPages: dispatch.payload as StepperPage[],
+    stepperPages,
+  };
+}
+
+function surveyReducer_addStepperPage(
+  state: SurveyState,
+  dispatch: SurveyDispatch
+): SurveyState {
+  const { parentIndex, payload } = dispatch.payload as {
+    parentIndex: number;
+    payload: StepperPage;
+  };
+  const first = state.stepperPages.slice(0, parentIndex);
+  const last = state.stepperPages.slice(parentIndex);
+
+  return {
+    ...state,
+    stepperPages: [...first, payload, ...last],
+  };
+}
+
+function surveyReducer_deleteAllResponseDataOptionsForQuestion(
+  state: SurveyState,
+  dispatch: SurveyDispatch
+): SurveyState {
+  const index = dispatch.payload as number;
+  const responseDataOptionsArray = [...state.responseDataOptionsArray];
+  responseDataOptionsArray[index] = [];
+
+  return {
+    ...state,
+    responseDataOptionsArray,
+  };
+}
+
+function surveyReducer_deleteQuestion(
+  state: SurveyState,
+  dispatch: SurveyDispatch
+): SurveyState {
+  const index = dispatch.payload as number;
+  const questions = [...state.questions];
+  questions.splice(index, 1);
+
+  const responseKinds = [...state.responseKinds];
+  responseKinds.splice(index, 1);
+
+  const responseInputHtml = [...state.responseInputHtml];
+  responseInputHtml.splice(index, 1);
+
+  const responseDataOptionsArray = [...state.responseDataOptionsArray];
+  responseDataOptionsArray.splice(index, 1);
+
+  return {
+    ...state,
+    questions,
+    responseKinds,
+    responseInputHtml,
+    responseDataOptionsArray,
+  };
+}
+
+function surveyReducer_deleteResponseDataOption(
+  state: SurveyState,
+  dispatch: SurveyDispatch
+): SurveyState {
+  const { questionIndex, optionsIndex } = dispatch.payload as {
+    questionIndex: number;
+    optionsIndex: number;
+  };
+  const responseDataOptionsArray = [...state.responseDataOptionsArray];
+  responseDataOptionsArray[questionIndex].splice(optionsIndex, 1);
+
+  return {
+    ...state,
+    responseDataOptionsArray,
   };
 }
 
@@ -112,6 +227,24 @@ function surveyReducer_setQuestions(
   return {
     ...state,
     questions,
+  };
+}
+
+function surveyReducer_setResponseDataOptions(
+  state: SurveyState,
+  dispatch: SurveyDispatch
+): SurveyState {
+  const { inputIndex, parentIndex, value } = dispatch.payload as {
+    parentIndex: number;
+    inputIndex: number;
+    value: string;
+  };
+  const responseDataOptionsArray = [...state.responseDataOptionsArray];
+  responseDataOptionsArray[parentIndex][inputIndex] = value;
+
+  return {
+    ...state,
+    responseDataOptionsArray,
   };
 }
 

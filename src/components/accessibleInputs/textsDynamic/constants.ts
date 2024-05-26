@@ -1,3 +1,0 @@
-const MAX_INPUTS_AMOUNT = 10;
-
-export { MAX_INPUTS_AMOUNT };
