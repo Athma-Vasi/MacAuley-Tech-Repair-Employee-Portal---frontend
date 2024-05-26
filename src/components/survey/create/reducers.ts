@@ -1,5 +1,10 @@
-import { SetPageInErrorPayload } from "../../../types";
-import { SurveyRecipient, SurveyStatistics } from "../types";
+import { SetPageInErrorPayload, StepperPage } from "../../../types";
+import {
+  SurveyRecipient,
+  SurveyResponseInput,
+  SurveyResponseKind,
+  SurveyStatistics,
+} from "../types";
 import { SurveyAction, surveyAction } from "./actions";
 import { SurveyDispatch, SurveyQuestions, SurveyState } from "./types";
 
@@ -12,21 +17,46 @@ const surveyReducers = new Map<
   SurveyAction[keyof SurveyAction],
   (state: SurveyState, dispatch: SurveyDispatch) => SurveyState
 >([
-  [surveyAction.setSurveyTitle, surveyReducer_setSurveyTitle],
-  [surveyAction.setSurveyDescription, surveyReducer_setSurveyDescription],
+  [surveyAction.addQuestion, surveyReducer_addQuestion],
   [surveyAction.setExpiryDate, surveyReducer_setExpiryDate],
-  [surveyAction.setSurveyRecipients, surveyReducer_setSurveyRecipients],
-  [surveyAction.setQuestions, surveyReducer_setQuestions],
-  [surveyAction.setResponseKinds, surveyReducer_setResponseKinds],
-  [surveyAction.setResponseInputHtml, surveyReducer_setResponseInputHtml],
-  [surveyAction.setSurveyStatistics, surveyReducer_setSurveyStatistics],
-  [surveyAction.setTriggerFormSubmit, surveyReducer_setTriggerFormSubmit],
-  [surveyAction.setTriggerPreviewSurvey, surveyReducer_setTriggerPreviewSurvey],
-  [surveyAction.setPreviewSurveyProps, surveyReducer_setPreviewSurveyProps],
-  [surveyAction.setPageInError, surveyReducer_setPageInError],
   [surveyAction.setIsSubmitting, surveyReducer_setIsSubmitting],
   [surveyAction.setIsSuccessful, surveyReducer_setIsSuccessful],
+  [surveyAction.setPageInError, surveyReducer_setPageInError],
+  [surveyAction.setPreviewSurveyProps, surveyReducer_setPreviewSurveyProps],
+  [surveyAction.setQuestions, surveyReducer_setQuestions],
+  [surveyAction.setResponseInputHtml, surveyReducer_setResponseInputHtml],
+  [surveyAction.setResponseKinds, surveyReducer_setResponseKinds],
+  [surveyAction.setSurveyDescription, surveyReducer_setSurveyDescription],
+  [surveyAction.setSurveyRecipients, surveyReducer_setSurveyRecipients],
+  [surveyAction.setSurveyStatistics, surveyReducer_setSurveyStatistics],
+  [surveyAction.setSurveyTitle, surveyReducer_setSurveyTitle],
+  [surveyAction.setStepperPages, surveyReducer_setStepperPages],
+  [surveyAction.setTriggerFormSubmit, surveyReducer_setTriggerFormSubmit],
+  [surveyAction.setTriggerPreviewSurvey, surveyReducer_setTriggerPreviewSurvey],
 ]);
+
+function surveyReducer_addQuestion(
+  state: SurveyState,
+  _dispatch: SurveyDispatch
+): SurveyState {
+  return {
+    ...state,
+    questions: [...state.questions, ""],
+    responseKinds: [...state.responseKinds, "chooseAny"],
+    responseInputHtml: [...state.responseInputHtml, "checkbox"],
+    responseDataOptionsArray: [...state.responseDataOptionsArray, []],
+  };
+}
+
+function surveyReducer_setStepperPages(
+  state: SurveyState,
+  dispatch: SurveyDispatch
+): SurveyState {
+  return {
+    ...state,
+    stepperPages: dispatch.payload as StepperPage[],
+  };
+}
 
 function surveyReducer_setSurveyTitle(
   state: SurveyState,
@@ -72,9 +102,16 @@ function surveyReducer_setQuestions(
   state: SurveyState,
   dispatch: SurveyDispatch
 ): SurveyState {
+  const { index, payload } = dispatch.payload as {
+    index: number;
+    payload: string;
+  };
+  const questions = [...state.questions];
+  questions[index] = payload;
+
   return {
     ...state,
-    questions: dispatch.payload as string[],
+    questions,
   };
 }
 
@@ -82,9 +119,16 @@ function surveyReducer_setResponseKinds(
   state: SurveyState,
   dispatch: SurveyDispatch
 ): SurveyState {
+  const { index, payload } = dispatch.payload as {
+    index: number;
+    payload: SurveyResponseKind;
+  };
+  const responseKinds = [...state.responseKinds];
+  responseKinds[index] = payload;
+
   return {
     ...state,
-    responseKinds: dispatch.payload as string[],
+    responseKinds,
   };
 }
 
@@ -92,9 +136,16 @@ function surveyReducer_setResponseInputHtml(
   state: SurveyState,
   dispatch: SurveyDispatch
 ): SurveyState {
+  const { index, payload } = dispatch.payload as {
+    index: number;
+    payload: SurveyResponseInput;
+  };
+  const responseInputHtml = [...state.responseInputHtml];
+  responseInputHtml[index] = payload;
+
   return {
     ...state,
-    responseInputHtml: dispatch.payload as string[],
+    responseInputHtml,
   };
 }
 

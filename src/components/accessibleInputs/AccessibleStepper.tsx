@@ -1,5 +1,5 @@
 import { Group, MantineSize, Stack, Stepper, Text, Title } from "@mantine/core";
-import { ReactNode, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { TbCheck, TbX } from "react-icons/tb";
 
 import { COLORS_SWATCHES } from "../../constants/data";
@@ -12,6 +12,8 @@ import { createAccessibleButtons } from "./utils";
 type AccessibleStepperAttributes = {
   allowNextStepsSelect?: boolean;
   componentState: Record<string, unknown>;
+  onPreviousClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  onNextClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
   pageElements: React.JSX.Element[];
   size?: MantineSize;
   stepperPages: StepperPage[];
@@ -27,6 +29,8 @@ function AccessibleStepper({ attributes }: AccessibleStepperProps) {
   const {
     allowNextStepsSelect,
     componentState,
+    onNextClick,
+    onPreviousClick,
     pageElements,
     size = "md",
     stepperPages,
@@ -45,6 +49,11 @@ function AccessibleStepper({ attributes }: AccessibleStepperProps) {
 
   const maxStep = stepperPages.length;
 
+  // useEffect(() => {
+  //   const newActivePage = maxStep - 3;
+  //   setActiveStep(newActivePage);
+  // }, [maxStep]);
+
   const [backButton, nextButton] = createAccessibleButtons([
     {
       disabledScreenreaderText: "You are on the first step",
@@ -54,10 +63,10 @@ function AccessibleStepper({ attributes }: AccessibleStepperProps) {
       disabled: activeStep === 0,
       kind: "previous",
       name: "Back",
-      onClick: () => {
+      onClick: (event: React.MouseEvent<HTMLButtonElement>) => {
         setStepsInError(returnStepsInError(stepperPages, componentState));
-
         setActiveStep(activeStep <= maxStep ? activeStep - 1 : activeStep);
+        onPreviousClick?.(event);
       },
     },
     {
@@ -68,10 +77,10 @@ function AccessibleStepper({ attributes }: AccessibleStepperProps) {
       disabled: activeStep === maxStep,
       kind: "next",
       name: "Next",
-      onClick: () => {
+      onClick: (event: React.MouseEvent<HTMLButtonElement>) => {
         setStepsInError(returnStepsInError(stepperPages, componentState));
-
         setActiveStep(activeStep < maxStep + 1 ? activeStep + 1 : activeStep);
+        onNextClick?.(event);
       },
     },
   ]);

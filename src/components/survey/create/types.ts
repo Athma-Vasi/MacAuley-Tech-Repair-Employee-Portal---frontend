@@ -1,4 +1,4 @@
-import { SetPageInErrorPayload } from "../../../types";
+import { SetPageInErrorPayload, StepperPage } from "../../../types";
 import { PreviewSurveyProps } from "../preview/types";
 import {
   SurveyRecipient,
@@ -16,31 +16,32 @@ type SurveyQuestions = {
 };
 
 type SurveyState = {
-  surveyTitle: string;
-  surveyDescription: string;
   expiryDate: string;
-  surveyRecipients: SurveyRecipient;
-  questions: Array<string>;
-  responseKinds: Array<string>;
-  responseInputHtml: Array<string>;
-  responseDataOptionsArray: Array<string[]>;
-  surveyStatistics: SurveyStatistics[];
-  triggerFormSubmit: boolean;
-  triggerPreviewSurvey: boolean;
+  isSubmitting: boolean;
+  isSuccessful: boolean;
+  pagesInError: Set<number>;
   previewSurveyProps: {
     surveyTitle: string;
     surveyDescription: string;
     surveyQuestions: SurveyQuestions[];
   };
-  pagesInError: Set<number>;
-  isSubmitting: boolean;
-  isSuccessful: boolean;
+  questions: Array<string>;
+  responseDataOptionsArray: Array<string[]>;
+  responseInputHtml: Array<SurveyResponseInput>;
+  responseKinds: Array<SurveyResponseKind>;
+  surveyDescription: string;
+  surveyRecipients: SurveyRecipient;
+  surveyStatistics: SurveyStatistics[];
+  surveyTitle: string;
+  stepperPages: StepperPage[];
+  triggerFormSubmit: boolean;
+  triggerPreviewSurvey: boolean;
 };
 
 type SurveyDispatch =
   | {
-      action: SurveyAction["addNewQuestionGroup"];
-      payload: SurveyQuestions;
+      action: SurveyAction["addQuestion"];
+      payload: undefined;
     }
   | {
       action: SurveyAction["setSurveyTitle"];
@@ -60,15 +61,24 @@ type SurveyDispatch =
     }
   | {
       action: SurveyAction["setQuestions"];
-      payload: string[];
+      payload: {
+        index: number;
+        payload: string;
+      };
     }
   | {
       action: SurveyAction["setResponseKinds"];
-      payload: string[];
+      payload: {
+        index: number;
+        payload: SurveyResponseKind;
+      };
     }
   | {
       action: SurveyAction["setResponseInputHtml"];
-      payload: string[];
+      payload: {
+        index: number;
+        payload: SurveyResponseInput;
+      };
     }
   | {
       action: SurveyAction["setSurveyStatistics"];
@@ -97,6 +107,22 @@ type SurveyDispatch =
   | {
       action: SurveyAction["setIsSuccessful"];
       payload: boolean;
+    }
+  | {
+      action: SurveyAction["deleteQuestion"];
+      payload: number;
+    }
+  | {
+      action: SurveyAction["deleteResponseDataOption"];
+      payload: { questionIndex: number; responseDataOptionIndex: number };
+    }
+  | {
+      action: SurveyAction["addResponseDataOption"];
+      payload: number;
+    }
+  | {
+      action: SurveyAction["setStepperPages"];
+      payload: StepperPage[];
     };
 
 export type { SurveyDispatch, SurveyQuestions, SurveyState };

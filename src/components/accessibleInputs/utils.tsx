@@ -204,7 +204,6 @@ function createAccessibleCheckboxSelectionsTextElements({
 }
 
 type CreateAccessibleRadioSelectionTextElements = {
-  checked: boolean;
   name: string;
   theme?: "muted" | "default";
   themeObject: ThemeObject;
@@ -212,7 +211,6 @@ type CreateAccessibleRadioSelectionTextElements = {
 };
 
 function createAccessibleRadioScreenreaderTextElements({
-  checked,
   name,
   themeObject,
   value,
@@ -235,7 +233,6 @@ function createAccessibleRadioScreenreaderTextElements({
   const screenreaderTextElement = (
     <Text
       id={`${name}-selected`}
-      style={{ display: checked ? "block" : "none" }}
       color={theme === "muted" ? textColor : greenColorShade}
       w="100%"
       aria-live="polite"

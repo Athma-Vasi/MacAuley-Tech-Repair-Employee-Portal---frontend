@@ -52,7 +52,6 @@ function AccessibleRadioInputSingle<ValidValueAction extends string = string>({
   } = useGlobalState();
 
   const { screenreaderTextElement } = createAccessibleRadioScreenreaderTextElements({
-    checked,
     name,
     themeObject,
     value,
@@ -91,42 +90,55 @@ function AccessibleRadioInputSingle<ValidValueAction extends string = string>({
   );
 }
 
-type AccessibleRadioInputGroupAttributes<ValidValueAction extends string = string> = {
-  checked: boolean;
-  dataObjectArray: Array<{ value: string; label: string }>;
+type AccessibleRadioInputGroupAttributes<
+  ValidValueAction extends string = string,
+  Data extends string = string
+> = {
+  // checked: boolean;
+  data: Data[];
   description?: ReactNode | string;
+  index?: number;
   key?: string;
   label: ReactNode;
   name: string;
   onChange?: (value: string) => void;
-  parentDispatch: React.Dispatch<{
+  parentDispatch?: React.Dispatch<{
     action: ValidValueAction;
-    payload: string;
+    payload: Data;
+  }>;
+  parentDynamicDispatch?: React.Dispatch<{
+    action: ValidValueAction;
+    payload: { index: number; payload: Data };
   }>;
   ref?: React.RefObject<HTMLInputElement> | null;
   required?: boolean;
   size?: MantineSize;
-  value: string;
+  value: Data;
   validValueAction: ValidValueAction;
   withAsterisk?: boolean;
 };
 
-type AccessibleRadioInputGroupProps<ValidValueAction extends string = string> = {
-  attributes: AccessibleRadioInputGroupAttributes<ValidValueAction>;
+type AccessibleRadioInputGroupProps<
+  ValidValueAction extends string = string,
+  Data extends string = string
+> = {
+  attributes: AccessibleRadioInputGroupAttributes<ValidValueAction, Data>;
 };
 
-function AccessibleRadioInputGroup<ValidValueAction extends string = string>({
-  attributes,
-}: AccessibleRadioInputGroupProps<ValidValueAction>) {
+function AccessibleRadioInputGroup<
+  ValidValueAction extends string = string,
+  Data extends string = string
+>({ attributes }: AccessibleRadioInputGroupProps<ValidValueAction, Data>) {
   const {
-    checked,
-    dataObjectArray,
+    data,
     description,
+    index,
     name,
     key = name + " - radio group",
     label,
     onChange,
     parentDispatch,
+    parentDynamicDispatch,
     ref = null,
     required = false,
     size = "sm",
@@ -140,7 +152,6 @@ function AccessibleRadioInputGroup<ValidValueAction extends string = string>({
   } = useGlobalState();
 
   const { screenreaderTextElement } = createAccessibleRadioScreenreaderTextElements({
-    checked,
     name,
     themeObject,
     value,
@@ -157,15 +168,18 @@ function AccessibleRadioInputGroup<ValidValueAction extends string = string>({
         key={key}
         label={label}
         name={name}
-        onChange={(value: string) => {
-          parentDispatch({
-            action: validValueAction,
-            payload: value,
-          });
+        onChange={(value: Data) => {
+          index === undefined
+            ? parentDispatch?.({
+                action: validValueAction,
+                payload: value,
+              })
+            : parentDynamicDispatch?.({
+                action: validValueAction,
+                payload: { index, payload: value },
+              });
 
-          if (onChange) {
-            onChange(value);
-          }
+          onChange?.(value);
         }}
         ref={ref}
         required={required}
@@ -173,12 +187,28 @@ function AccessibleRadioInputGroup<ValidValueAction extends string = string>({
         value={value}
         withAsterisk={withAsterisk}
       >
-        {dataObjectArray?.map(({ value, label }, idx) => {
-          return <Radio value={value} label={label} checked={checked} />;
+        {data?.map((name, idx) => {
+          return (
+            <Radio value={name} label={splitCamelCase(name)} key={`${name}-${idx}`} />
+          );
         })}
       </Radio.Group>
 
-      <Box style={{ display: "hidden" }}>{screenreaderTextElement}</Box>
+      <Box
+        style={
+          // This is an invisible element that is used to provide screen reader users with additional information
+          // @see https://webaim.org/techniques/css/invisiblecontent/
+          {
+            height: "1px",
+            left: "-9999px",
+            position: "absolute",
+            top: "auto",
+            width: "1px",
+          }
+        }
+      >
+        {screenreaderTextElement}
+      </Box>
     </Box>
   );
 

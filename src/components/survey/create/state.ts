@@ -1,4 +1,5 @@
 import { DescriptionObjectsArray } from "../../wrappers";
+import { returnSurveyStepperPages } from "../constants";
 import { SurveyState } from "./types";
 
 const initialDescriptionObjects: DescriptionObjectsArray = [
@@ -27,7 +28,7 @@ const initialSurveyState: SurveyState = {
   surveyStatistics: [],
   responseKinds: ["chooseAny"],
   responseInputHtml: ["checkbox"],
-  responseDataOptionsArray: [],
+  responseDataOptionsArray: [[""]],
   triggerFormSubmit: false,
   triggerPreviewSurvey: false,
   previewSurveyProps: {
@@ -36,7 +37,7 @@ const initialSurveyState: SurveyState = {
     surveyQuestions: [],
   },
   pagesInError: new Set(),
-
+  stepperPages: returnSurveyStepperPages(),
   isSubmitting: false,
   isSuccessful: false,
 };

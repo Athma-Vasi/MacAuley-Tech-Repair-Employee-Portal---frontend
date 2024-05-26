@@ -3,54 +3,272 @@ import { surveyReducer } from "./reducers";
 import { initialSurveyState } from "./state";
 import { AccessibleTextSearchInput } from "../../accessibleInputs/textSearch/AccessibleTextSearchInput";
 import { LARGE_CITIES } from "../../accessibleInputs/textSearch/sampleData";
-import { surveyAction } from "./actions";
-import { returnSurveyStepperPages } from "../constants";
+import { SurveyAction, surveyAction } from "./actions";
+import {
+  SURVEY_MAX_QUESTION_AMOUNT,
+  SURVEY_RECIPIENT_DATA,
+  returnSurveyStepperPages,
+} from "../constants";
 import { StepperPage } from "../../../types";
 import { logState } from "../../../utils";
+import { AccessibleTextInput } from "../../accessibleInputs/text/AccessibleTextInput";
+import { AccessibleTextAreaInput } from "../../accessibleInputs/AccessibleTextAreaInput";
+import { AccessibleDateTimeInput } from "../../accessibleInputs/AccessibleDateTimeInput";
+import { AccessibleSelectInput } from "../../accessibleInputs/AccessibleSelectInput";
+import { SurveyRecipient, SurveyResponseKind } from "../types";
+import { AccessibleRadioInputGroup } from "../../accessibleInputs/AccessibleRadioInput";
+import { AccessibleTextInputsDynamic } from "../../accessibleInputs/textsDynamic/AccessibleTextInputsDynamic";
+import { AccessibleStepper } from "../../accessibleInputs/AccessibleStepper";
+import { Container, Stack } from "@mantine/core";
+import { AccessibleButton } from "../../accessibleInputs/AccessibleButton";
+import { TEXT_INPUT_VALIDATIONS } from "../../../constants/validations";
 
 function Survey() {
   const [surveyState, surveyDispatch] = useReducer(surveyReducer, initialSurveyState);
 
   const {
-    surveyTitle,
-    surveyDescription,
     expiryDate,
-    surveyRecipients,
-    questions,
-    responseKinds,
-    responseInputHtml,
-    responseDataOptionsArray,
-    surveyStatistics,
-    triggerFormSubmit,
-    triggerPreviewSurvey,
-    previewSurveyProps,
-    pagesInError,
     isSubmitting,
     isSuccessful,
+    pagesInError,
+    previewSurveyProps,
+    questions,
+    responseDataOptionsArray,
+    responseInputHtml,
+    responseKinds,
+    surveyDescription,
+    surveyRecipients,
+    surveyStatistics,
+    surveyTitle,
+    stepperPages,
+    triggerFormSubmit,
+    triggerPreviewSurvey,
   } = surveyState;
-
-  const SURVEY_STEPPER_PAGES: StepperPage[] = returnSurveyStepperPages();
 
   logState({
     state: surveyState,
     groupLabel: "survey state",
   });
 
-  const searchInput = (
-    <AccessibleTextSearchInput
+  const surveyTitleTextInput = (
+    <AccessibleTextInput
       attributes={{
-        data: LARGE_CITIES,
         invalidValueAction: surveyAction.setPageInError,
         name: "surveyTitle",
         parentDispatch: surveyDispatch,
-        stepperPages: SURVEY_STEPPER_PAGES,
+        stepperPages,
         validValueAction: surveyAction.setSurveyTitle,
         value: surveyTitle,
       }}
     />
   );
 
-  return searchInput;
+  const surveyDescriptionTextAreaInput = (
+    <AccessibleTextAreaInput
+      attributes={{
+        invalidValueAction: surveyAction.setPageInError,
+        name: "surveyDescription",
+        parentDispatch: surveyDispatch,
+        stepperPages,
+        validValueAction: surveyAction.setSurveyDescription,
+        value: surveyDescription,
+      }}
+    />
+  );
+
+  const expiryDateInput = (
+    <AccessibleDateTimeInput
+      attributes={{
+        dateKind: "date near future",
+        inputKind: "date",
+        invalidValueAction: surveyAction.setPageInError,
+        name: "expiryDate",
+        parentDispatch: surveyDispatch,
+        stepperPages,
+        validValueAction: surveyAction.setExpiryDate,
+        value: expiryDate,
+      }}
+    />
+  );
+
+  const surveyRecipientsSelectInput = (
+    <AccessibleSelectInput<SurveyAction["setSurveyRecipients"], SurveyRecipient>
+      attributes={{
+        data: SURVEY_RECIPIENT_DATA,
+        name: "surveyRecipients",
+        parentDispatch: surveyDispatch,
+        validValueAction: surveyAction.setSurveyRecipients,
+        value: surveyRecipients,
+      }}
+    />
+  );
+
+  /**
+   * <AccessibleButton
+      attributes={{
+        enabledScreenreaderText: "All inputs are valid. Click to submit form",
+        disabledScreenreaderText: "Please fix errors before submitting form",
+        disabled: pagesInError.size > 0 || triggerFormSubmit,
+        kind: "submit",
+        name: "submit",
+        onClick: (_event: React.MouseEvent<HTMLButtonElement>) => {
+          surveyDispatch({
+            action: surveyAction.setTriggerFormSubmit,
+            payload: true,
+          });
+        },
+      }}
+    />
+   */
+
+  const questionPages = questions.map((question, index) => {
+    const addQuestionButton = (
+      <AccessibleButton
+        attributes={{
+          enabledScreenreaderText: "Add question",
+          disabledScreenreaderText: "Max question amount reached",
+          disabled: questions.length === SURVEY_MAX_QUESTION_AMOUNT,
+          kind: "add",
+          onClick: (
+            _event:
+              | React.MouseEvent<HTMLButtonElement, MouseEvent>
+              | React.PointerEvent<HTMLButtonElement>
+          ) => {
+            surveyDispatch({
+              action: surveyAction.addQuestion,
+              payload: void 0,
+            });
+
+            const first = stepperPages.slice(0, questions.length + 1);
+            const middle: StepperPage = {
+              children: [],
+              description: `Question ${questions.length + 1}`,
+            };
+            const last = stepperPages.slice(questions.length);
+
+            const updatedStepperPages = [...first, middle, ...last];
+
+            surveyDispatch({
+              action: surveyAction.setStepperPages,
+              payload: updatedStepperPages,
+            });
+          },
+        }}
+      />
+    );
+
+    // for popover validation linking
+    stepperPages[index].children.push({
+      inputType: "text",
+      name: `question ${index + 1}`,
+      validations: TEXT_INPUT_VALIDATIONS,
+    });
+
+    const questionTextInput = (
+      <AccessibleTextInput
+        attributes={{
+          index,
+          invalidValueAction: surveyAction.setPageInError,
+          name: `question ${index + 1}`,
+          parentDynamicDispatch: surveyDispatch,
+          stepperPages,
+          validValueAction: surveyAction.setQuestions,
+          value: question,
+        }}
+      />
+    );
+
+    const responseKindRadioGroup = (
+      <AccessibleRadioInputGroup<SurveyAction["setResponseKinds"], SurveyResponseKind>
+        attributes={{
+          data: ["chooseAny", "chooseOne", "rating"],
+          index,
+          label: "Response Kind",
+          name: `responseKind ${index + 1}`,
+          parentDynamicDispatch: surveyDispatch,
+          validValueAction: surveyAction.setResponseKinds,
+          value: responseKinds[index],
+        }}
+      />
+    );
+
+    const responseInputHtmlRadioGroup = (
+      <AccessibleRadioInputGroup
+        attributes={{
+          data: ["agreeDisagree", "radio", "checkbox", "emotion", "stars"],
+          index,
+          label: "Response Input",
+          name: `responseInputHtml ${index + 1}`,
+          parentDynamicDispatch: surveyDispatch,
+          validValueAction: surveyAction.setResponseInputHtml,
+          value: responseInputHtml[index],
+        }}
+      />
+    );
+
+    const responseDataOptions = (
+      <AccessibleTextInputsDynamic
+        attributes={{
+          invalidValueAction: surveyAction.setPageInError,
+          name: "responseOption",
+          page: index,
+          stepperPages,
+          validValueAction: surveyAction.setResponseDataOptions,
+          values: responseDataOptionsArray[index],
+        }}
+      />
+    );
+
+    return (
+      <Stack key={`${question}-${index}`}>
+        {addQuestionButton}
+        {questionTextInput}
+        {responseKindRadioGroup}
+        {responseInputHtmlRadioGroup}
+        {responseDataOptions}
+      </Stack>
+    );
+  });
+
+  const firstPage = (
+    <Stack>
+      {surveyTitleTextInput}
+      {surveyDescriptionTextAreaInput}
+      {expiryDateInput}
+      {surveyRecipientsSelectInput}
+    </Stack>
+  );
+
+  const submitButton = (
+    <AccessibleButton
+      attributes={{
+        enabledScreenreaderText: "All inputs are valid. Click to submit form",
+        disabledScreenreaderText: "Please fix errors before submitting form",
+        disabled: pagesInError.size > 0 || triggerFormSubmit,
+        kind: "submit",
+        name: "submit",
+        onClick: (_event: React.MouseEvent<HTMLButtonElement>) => {
+          surveyDispatch({
+            action: surveyAction.setTriggerFormSubmit,
+            payload: true,
+          });
+        },
+      }}
+    />
+  );
+
+  const stepper = (
+    <AccessibleStepper
+      attributes={{
+        componentState: surveyState,
+        pageElements: [firstPage, ...questionPages],
+        stepperPages,
+        submitButton,
+      }}
+    />
+  );
+
+  return <Container w={700}>{stepper}</Container>;
 }
 
 export default Survey;
@@ -830,7 +1048,7 @@ export default Survey;
   const questionsInputCreatorInfo: AccessibleTextInputCreatorInfo[] = Array.from({
     length: questions.length,
   }).map((_, index) => {
-    const deleteQuestionGroupLabel =
+    const deleteQuestionLabel =
       questions.length === 1
         ? "Survey must have atleast one question"
         : `Delete ${
@@ -847,7 +1065,7 @@ export default Survey;
         buttonDisabled: questions.length === 1,
         buttonOnClick: () => {
           surveyDispatch({
-            type: surveyAction.deleteQuestionGroup,
+            type: surveyAction.deleteQuestion,
             payload: index,
           });
           // enables display of the previous stepper page after deletion
@@ -860,7 +1078,7 @@ export default Survey;
     ]);
 
     const createdDeleteButtonWithTooltip = (
-      <Tooltip label={deleteQuestionGroupLabel}>
+      <Tooltip label={deleteQuestionLabel}>
         <Group>{createdDeleteQuestionGroupButton}</Group>
       </Tooltip>
     );
@@ -913,7 +1131,7 @@ export default Survey;
       //   dynamicLabel: dynamicInputLabel,
       //   dynamicInputOnClick: () => {
       //     surveyDispatch({
-      //       type: surveyAction.deleteQuestionGroup,
+      //       type: surveyAction.deleteQuestion,
       //       payload: index,
       //     });
       //     // enables display of the previous stepper page after deletion
@@ -1121,7 +1339,7 @@ export default Survey;
     leftIcon: <TbPlus />,
     buttonOnClick: () => {
       surveyDispatch({
-        type: surveyAction.addNewQuestionGroup,
+        type: surveyAction.addQuestion,
         payload: questions.length,
       });
       surveyDispatch({
@@ -1144,7 +1362,7 @@ export default Survey;
     semanticName: "add question button",
   };
 
-  const addNewResponseDataOptionButtonCreatorInfo: AccessibleButtonCreatorInfo[] =
+  const addResponseDataOptionButtonCreatorInfo: AccessibleButtonCreatorInfo[] =
     Array.from({ length: questions.length }).map((_, index) => {
       const creatorInfoObject: AccessibleButtonCreatorInfo = {
         // buttonVariant: 'outline',
@@ -1170,7 +1388,7 @@ export default Survey;
         leftIcon: <TbPlus />,
         buttonOnClick: () => {
           surveyDispatch({
-            type: surveyAction.addNewResponseDataOption,
+            type: surveyAction.addResponseDataOption,
             payload: {
               questionIdx: index,
             },
@@ -1296,10 +1514,10 @@ export default Survey;
   ]);
 
   const createdAddNewResponseDataOptionButtons =
-    addNewResponseDataOptionButtonCreatorInfo.map(
-      (addNewResponseDataOptionButtonCreatorInfo, index) =>
+    addResponseDataOptionButtonCreatorInfo.map(
+      (addResponseDataOptionButtonCreatorInfo, index) =>
         responseInputHtml[index] === "checkbox" || responseInputHtml[index] === "radio"
-          ? returnAccessibleButtonElements([addNewResponseDataOptionButtonCreatorInfo])
+          ? returnAccessibleButtonElements([addResponseDataOptionButtonCreatorInfo])
           : null
     );
 

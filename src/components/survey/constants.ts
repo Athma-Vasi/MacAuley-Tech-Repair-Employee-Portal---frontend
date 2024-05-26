@@ -24,6 +24,7 @@ import {
   returnUsernameRegexValidationText,
 } from "../../utils";
 import { ComponentQueryData } from "../queryBuilder";
+import { SurveyRecipient, SurveyResponseInput, SurveyResponseKind } from "./types";
 
 const SURVEY_ROLE_ROUTE_PATHS: RoleResourceRoutePaths = {
   admin: "actions/outreach/survey",
@@ -89,9 +90,7 @@ function returnSurveyStepperPages(): StepperPage[] {
   const responseKindsChild: StepperChild = {
     inputType: "select",
     name: "responseKinds",
-    selectInputData: SURVEY_RESPONSE_KIND_DATA.map(
-      (responseKindData) => responseKindData.label
-    ),
+    selectInputData: SURVEY_RESPONSE_KIND_DATA,
   };
 
   const responseInputHtmlChild: StepperChild = {
@@ -135,7 +134,7 @@ function returnSurveyStepperPages(): StepperPage[] {
   ];
 }
 
-const SURVEY_RECIPIENT_DATA = [
+const SURVEY_RECIPIENT_DATA: SurveyRecipient[] = [
   "All",
   "Executive Management",
   "Store Administration",
@@ -152,60 +151,17 @@ const SURVEY_RECIPIENT_DATA = [
   "Maintenance",
 ];
 
-const SURVEY_RESPONSE_KIND_DATA: SelectInputData = [
-  {
-    label: "Choose one",
-    value: "chooseOne",
-  },
-  {
-    label: "Choose any",
-    value: "chooseAny",
-  },
-  {
-    label: "Rating",
-    value: "rating",
-  },
+const SURVEY_RESPONSE_KIND_DATA: SurveyResponseKind[] = [
+  "chooseOne",
+  "chooseAny",
+  "rating",
 ];
 
-const SURVEY_INPUT_HTML_DATA = new Map([
-  [
-    "chooseOne",
-    [
-      {
-        label: "Agree/Disagree",
-        value: "agreeDisagree",
-      },
-      {
-        label: "Radio",
-        value: "radio",
-      },
-    ],
-  ],
-
-  [
-    "chooseAny",
-    [
-      {
-        label: "Checkbox",
-        value: "checkbox",
-      },
-    ],
-  ],
-
-  [
-    "rating",
-    [
-      {
-        label: "Emotion",
-        value: "emotion",
-      },
-      {
-        label: "Stars",
-        value: "stars",
-      },
-    ],
-  ],
-]);
+const SURVEY_INPUT_HTML_DATA: Record<SurveyResponseKind, SurveyResponseInput[]> = {
+  chooseOne: ["agreeDisagree", "radio"],
+  chooseAny: ["checkbox"],
+  rating: ["emotion", "stars"],
+};
 
 const SURVEY_MAX_QUESTION_AMOUNT = 3;
 
@@ -296,9 +252,7 @@ const SURVEY_QUERY_DATA: ComponentQueryData[] = [
     label: "Response Kind",
     value: "responseKind",
     inputKind: "selectInput",
-    selectData: SURVEY_RESPONSE_KIND_DATA.map(
-      (responseKindData) => responseKindData.label
-    ),
+    selectData: SURVEY_RESPONSE_KIND_DATA,
   },
   {
     label: "Response Input",

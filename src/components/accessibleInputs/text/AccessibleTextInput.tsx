@@ -38,6 +38,7 @@ type AccessibleTextInputAttributes<
   disabled?: boolean;
   dynamicInputs?: ReactNode[]; // inputs created on demand by user
   icon?: ReactNode;
+  index?: number;
   initialInputValue?: string;
   value: string;
   label?: ReactNode;
@@ -48,10 +49,23 @@ type AccessibleTextInputAttributes<
   onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
   onFocus?: () => void;
   onKeyDown?: (event: KeyboardEvent<HTMLInputElement>) => void;
-  parentDispatch: Dispatch<
+  parentDispatch?: Dispatch<
     | {
         action: ValidValueAction;
         payload: string;
+      }
+    | {
+        action: InvalidValueAction;
+        payload: SetPageInErrorPayload;
+      }
+  >;
+  parentDynamicDispatch?: Dispatch<
+    | {
+        action: ValidValueAction;
+        payload: {
+          index: number;
+          payload: string;
+        };
       }
     | {
         action: InvalidValueAction;
@@ -90,6 +104,7 @@ function AccessibleTextInput<
     disabled = false,
     dynamicInputs = null,
     icon = null,
+    index,
     initialInputValue = "",
     invalidValueAction,
     maxLength = 75,
@@ -101,6 +116,7 @@ function AccessibleTextInput<
     onKeyDown,
     page = 0,
     parentDispatch,
+    parentDynamicDispatch,
     placeholder = "",
     ref = null,
     required = false,
@@ -228,28 +244,40 @@ function AccessibleTextInput<
             minLength={minLength}
             name={name}
             onBlur={() => {
-              parentDispatch({
-                action: invalidValueAction,
-                payload: {
-                  kind: isValueBufferValid ? "delete" : "add",
-                  page,
-                },
-              });
+              if (index === undefined) {
+                parentDispatch?.({
+                  action: invalidValueAction,
+                  payload: {
+                    kind: isValueBufferValid ? "delete" : "add",
+                    page,
+                  },
+                });
 
-              parentDispatch({
-                action: validValueAction,
-                payload: valueBuffer,
-              });
+                parentDispatch?.({
+                  action: validValueAction,
+                  payload: valueBuffer,
+                });
+              } else {
+                parentDynamicDispatch?.({
+                  action: invalidValueAction,
+                  payload: {
+                    kind: isValueBufferValid ? "delete" : "add",
+                    page,
+                    index,
+                  },
+                });
+
+                parentDynamicDispatch?.({
+                  action: validValueAction,
+                  payload: { index, payload: valueBuffer },
+                });
+              }
 
               onBlur?.();
               closePopover();
             }}
             onChange={(event: ChangeEvent<HTMLInputElement>) => {
               setValueBuffer(event.currentTarget.value);
-              // accessibleTextInputDispatch({
-              //   action: accessibleTextInputAction.setValueBuffer,
-              //   payload: event.currentTarget.value,
-              // });
               onChange?.(event);
             }}
             onFocus={() => {

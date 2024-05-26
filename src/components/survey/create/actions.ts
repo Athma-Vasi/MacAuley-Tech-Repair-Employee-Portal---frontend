@@ -1,8 +1,8 @@
 type SurveyAction = {
-  addNewQuestionGroup: "addNewQuestionGroup";
-  addNewResponseDataOption: "addNewResponseDataOption";
+  addQuestion: "addQuestion";
+  addResponseDataOption: "addResponseDataOption";
   deleteAllResponseDataOptionsForQuestion: "deleteAllResponseDataOptionsForQuestion";
-  deleteQuestionGroup: "deleteQuestionGroup";
+  deleteQuestion: "deleteQuestion";
   deleteResponseDataOption: "deleteResponseDataOption";
   setExpiryDate: "setExpiryDate";
   setIsSubmitting: "setIsSubmitting";
@@ -17,15 +17,16 @@ type SurveyAction = {
   setSurveyRecipients: "setSurveyRecipients";
   setSurveyStatistics: "setSurveyStatistics";
   setSurveyTitle: "setSurveyTitle";
+  setStepperPages: "setStepperPages";
   setTriggerFormSubmit: "setTriggerFormSubmit";
   setTriggerPreviewSurvey: "setTriggerPreviewSurvey";
 };
 
 const surveyAction: SurveyAction = {
-  addNewQuestionGroup: "addNewQuestionGroup",
-  addNewResponseDataOption: "addNewResponseDataOption",
+  addQuestion: "addQuestion",
+  addResponseDataOption: "addResponseDataOption",
   deleteAllResponseDataOptionsForQuestion: "deleteAllResponseDataOptionsForQuestion",
-  deleteQuestionGroup: "deleteQuestionGroup",
+  deleteQuestion: "deleteQuestion",
   deleteResponseDataOption: "deleteResponseDataOption",
   setExpiryDate: "setExpiryDate",
   setIsSubmitting: "setIsSubmitting",
@@ -40,6 +41,7 @@ const surveyAction: SurveyAction = {
   setSurveyRecipients: "setSurveyRecipients",
   setSurveyStatistics: "setSurveyStatistics",
   setSurveyTitle: "setSurveyTitle",
+  setStepperPages: "setStepperPages",
   setTriggerFormSubmit: "setTriggerFormSubmit",
   setTriggerPreviewSurvey: "setTriggerPreviewSurvey",
 };

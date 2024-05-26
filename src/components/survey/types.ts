@@ -1,19 +1,21 @@
-import { UserRoles, Action, ActionsOutreach } from "../../types";
+import { Action, ActionsOutreach, UserRoles } from "../../types";
 
-type SurveyRecipient =
-  | "All"
+type Department =
   | "Executive Management"
-  | "Administrative"
-  | "Sales and Marketing"
+  | "Store Administration"
+  | "Office Administration"
+  | "Accounting"
+  | "Human Resources"
+  | "Sales"
+  | "Marketing"
   | "Information Technology"
   | "Repair Technicians"
   | "Field Service Technicians"
   | "Logistics and Inventory"
   | "Customer Service"
-  | "Quality Control"
-  | "Training and Development"
-  | "Janitorial and Maintenance"
-  | "Security";
+  | "Maintenance";
+
+type SurveyRecipient = "All" | Department;
 
 type SurveyResponseKind = "chooseOne" | "chooseAny" | "rating";
 type SurveyResponseInput = "agreeDisagree" | "radio" | "checkbox" | "emotion" | "stars";
@@ -75,15 +77,16 @@ type SurveyDocument = SurveySchema & {
 export type {
   AgreeDisagreeResponse,
   CheckboxResponse,
+  Department,
   EmotionResponse,
   RadioResponse,
   StarsResponse,
   SurveyDocument,
-  SurveySchema,
   SurveyQuestion,
   SurveyRecipient,
   SurveyResponseDataOptions,
   SurveyResponseInput,
   SurveyResponseKind,
+  SurveySchema,
   SurveyStatistics,
 };
