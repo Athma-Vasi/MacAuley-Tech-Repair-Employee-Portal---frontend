@@ -117,7 +117,7 @@ function Survey() {
     const addQuestionButton = (
       <AccessibleButton
         attributes={{
-          enabledScreenreaderText: "Add question",
+          enabledScreenreaderText: `Add new Question ${pageIndex + 1}`,
           disabledScreenreaderText: "Max question amount reached",
           disabled: questions.length === SURVEY_MAX_QUESTION_AMOUNT,
           kind: "add",
@@ -191,6 +191,8 @@ function Survey() {
       />
     );
 
+    const responseKind = responseKinds[questionIndex];
+
     const responseKindRadioGroup = (
       <AccessibleRadioInputGroup<SurveyAction["setResponseKinds"], SurveyResponseKind>
         attributes={{
@@ -201,15 +203,14 @@ function Survey() {
           name: `responseKinds ${pageIndex}`,
           parentDynamicDispatch: surveyDispatch,
           validValueAction: surveyAction.setResponseKinds,
-          value: responseKinds[questionIndex],
+          value: responseKind,
         }}
       />
     );
 
-    const responseInputData = returnCorrectResponseInputData(
-      responseKinds[questionIndex]
-    );
+    const responseInputData = returnCorrectResponseInputData(responseKind);
 
+    const responseInput = responseInputs[questionIndex];
     const responseInputsRadioGroup = (
       <AccessibleRadioInputGroup
         attributes={{
@@ -219,21 +220,17 @@ function Survey() {
           name: `responseInputs ${pageIndex}`,
           parentDynamicDispatch: surveyDispatch,
           validValueAction: surveyAction.setResponseInputs,
-          value: responseInputs[questionIndex],
+          value: responseInput,
         }}
       />
     );
 
-    console.group("responseOptions");
-    console.log("responseOptions", responseOptions);
-    console.log("questionIndex", questionIndex);
-    console.log("responseOptions[questionIndex]", responseOptions[questionIndex]);
-    console.groupEnd();
+    const responseOptionArray = responseOptions[questionIndex];
 
     const responseOptionsTextInputs =
-      responseKinds[questionIndex] === "rating"
+      responseKind === "rating"
         ? null
-        : responseOptions[questionIndex].map((responseOption, optionIndex) => {
+        : responseOptionArray.map((responseOption, optionIndex) => {
             const responseOptionTextAreaInput = (
               <AccessibleTextAreaInput
                 attributes={{
@@ -364,13 +361,14 @@ function Survey() {
           });
 
     const addResponseOptionButton =
-      responseKinds[questionIndex] === "rating" ? null : (
+      responseKind === "rating" ? null : (
         <AccessibleButton
           attributes={{
             disabled: responseOptions.length === MAX_INPUTS_AMOUNT,
             disabledScreenreaderText: "Max inputs amount reached",
             enabledScreenreaderText: `Add new Response Option ${pageIndex} ${
-              INDEX_ALPHABET_TABLE[questions.length] ?? questionIndex + 1
+              INDEX_ALPHABET_TABLE[responseOptionArray.length] ??
+              responseOptionArray.length + 1
             }`,
             kind: "add",
             onClick: (
@@ -387,8 +385,8 @@ function Survey() {
               const responseOptionChild: StepperChild = {
                 inputType: "text",
                 name: `responseOption ${pageIndex} ${
-                  INDEX_ALPHABET_TABLE[responseOptions[questionIndex].length] ??
-                  responseOptions[questionIndex].length - 1
+                  INDEX_ALPHABET_TABLE[responseOptionArray.length] ??
+                  responseOptionArray.length - 1
                 }`,
                 validations: TEXT_AREA_INPUT_VALIDATIONS,
               };
