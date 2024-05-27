@@ -76,7 +76,7 @@ function returnSurveyStepperPages(): StepperPage[] {
 
   const responseOptionsChild: StepperChild = {
     inputType: "text",
-    name: "responseDataOption 1 A",
+    name: "responseOption 1 A",
     validations: TEXT_AREA_INPUT_VALIDATIONS,
   };
 

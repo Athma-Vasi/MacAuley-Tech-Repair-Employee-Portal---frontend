@@ -65,8 +65,13 @@ function surveyReducer_addResponseOption(
   dispatch: SurveyDispatch
 ): SurveyState {
   const [pageIndex] = dispatch.payload as number[];
-  const responseOptions = [...state.responseOptions];
+  const responseOptions = structuredClone(state.responseOptions);
   responseOptions[pageIndex].push("");
+
+  console.group("surveyReducer_addResponseOption");
+  console.log("pageIndex", pageIndex);
+  console.log("responseOptions[pageIndex]", responseOptions[pageIndex]);
+  console.groupEnd();
 
   return {
     ...state,
@@ -102,6 +107,12 @@ function surveyReducer_addStepperChild(
   const stepperPages = [...state.stepperPages];
   stepperPages[pageIndex].children.push(value);
 
+  console.group("surveyReducer_addStepperChild");
+  console.log("pageIndex", pageIndex);
+  console.log("value", value);
+  console.log("stepperPages[pageIndex].children", stepperPages[pageIndex].children);
+  console.groupEnd();
+
   return {
     ...state,
     stepperPages,
@@ -127,7 +138,7 @@ function surveyReducer_addStepperPage(
     dynamicIndexes: [pageIndex],
     value,
   } = dispatch.payload as { dynamicIndexes: number[]; value: StepperPage };
-  const stepperPages = [...state.stepperPages];
+  const stepperPages = structuredClone(state.stepperPages);
   const first = stepperPages.slice(0, pageIndex);
   const last = stepperPages.slice(pageIndex);
 
@@ -157,7 +168,7 @@ function surveyReducer_deleteAllResponseOptionsForQuestion(
   //   responseOptions,
   // };
   const [pageIndex] = dispatch.payload as number[];
-  const responseOptions = [...state.responseOptions];
+  const responseOptions = structuredClone(state.responseOptions);
   responseOptions[pageIndex] = [];
 
   return {
@@ -191,16 +202,16 @@ function surveyReducer_deleteQuestion(
   //   responseOptions,
   // };
   const [pageIndex] = dispatch.payload as number[];
-  const questions = [...state.questions];
+  const questions = structuredClone(state.questions);
   questions.splice(pageIndex, 1);
 
-  const responseKinds = [...state.responseKinds];
+  const responseKinds = structuredClone(state.responseKinds);
   responseKinds.splice(pageIndex, 1);
 
-  const responseInputs = [...state.responseInputs];
+  const responseInputs = structuredClone(state.responseInputs);
   responseInputs.splice(pageIndex, 1);
 
-  const responseOptions = [...state.responseOptions];
+  const responseOptions = structuredClone(state.responseOptions);
   responseOptions.splice(pageIndex, 1);
 
   return {
@@ -229,7 +240,7 @@ function surveyReducer_deleteResponseOption(
   // };
 
   const [pageIndex, optionIndex] = dispatch.payload as number[];
-  const responseOptions = [...state.responseOptions];
+  const responseOptions = structuredClone(state.responseOptions);
   responseOptions[pageIndex].splice(optionIndex, 1);
 
   return {
@@ -243,7 +254,7 @@ function surveyReducer_insertResponseOption(
   dispatch: SurveyDispatch
 ): SurveyState {
   const [pageIndex, optionIndex] = dispatch.payload as number[];
-  const responseOptions = [...state.responseOptions];
+  const responseOptions = structuredClone(state.responseOptions);
   responseOptions[pageIndex].splice(optionIndex, 0, "");
 
   return {
@@ -315,7 +326,7 @@ function surveyReducer_setQuestions(
     value: string;
   };
 
-  const questions = [...state.questions];
+  const questions = structuredClone(state.questions);
   questions[pageIndex] = value;
 
   return {
@@ -392,7 +403,7 @@ function surveyReducer_setResponseKinds(
     dynamicIndexes: number[];
     value: SurveyResponseKind;
   };
-  const responseKinds = [...state.responseKinds];
+  const responseKinds = structuredClone(state.responseKinds);
   responseKinds[pageIndex] = value;
 
   return {
@@ -420,7 +431,7 @@ function surveyReducer_setResponseInputs(
     dynamicIndexes: [pageIndex],
     value,
   } = dispatch.payload as { dynamicIndexes: number[]; value: SurveyResponseInput };
-  const responseInputs = [...state.responseInputs];
+  const responseInputs = structuredClone(state.responseInputs);
   responseInputs[pageIndex] = value;
 
   return {
@@ -512,7 +523,7 @@ function surveyReducer_slideResponseOptionDown(
   dispatch: SurveyDispatch
 ): SurveyState {
   const [pageIndex, optionIndex] = dispatch.payload as number[];
-  const responseOptions = [...state.responseOptions];
+  const responseOptions = structuredClone(state.responseOptions);
   const option = responseOptions[pageIndex].splice(optionIndex, 1)[0];
   responseOptions[pageIndex].splice(optionIndex + 1, 0, option);
 
@@ -527,7 +538,7 @@ function surveyReducer_slideResponseOptionUp(
   dispatch: SurveyDispatch
 ): SurveyState {
   const [pageIndex, optionIndex] = dispatch.payload as number[];
-  const responseOptions = [...state.responseOptions];
+  const responseOptions = structuredClone(state.responseOptions);
   const option = responseOptions[pageIndex].splice(optionIndex, 1)[0];
   responseOptions[pageIndex].splice(optionIndex - 1, 0, option);
 

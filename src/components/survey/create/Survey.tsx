@@ -9,6 +9,8 @@ import {
   MAX_INPUTS_AMOUNT,
   SURVEY_MAX_QUESTION_AMOUNT,
   SURVEY_RECIPIENT_DATA,
+  SURVEY_RESPONSE_INPUTS,
+  SURVEY_RESPONSE_KIND_DATA,
   returnSurveyStepperPages,
 } from "../constants";
 import { StepperChild, StepperPage } from "../../../types";
@@ -22,7 +24,10 @@ import { AccessibleRadioInputGroup } from "../../accessibleInputs/AccessibleRadi
 import { AccessibleStepper } from "../../accessibleInputs/AccessibleStepper";
 import { Container, Group, Stack } from "@mantine/core";
 import { AccessibleButton } from "../../accessibleInputs/AccessibleButton";
-import { TEXT_INPUT_VALIDATIONS } from "../../../constants/validations";
+import {
+  TEXT_AREA_INPUT_VALIDATIONS,
+  TEXT_INPUT_VALIDATIONS,
+} from "../../../constants/validations";
 import { AccessibleTextAreaInput } from "../../accessibleInputs/AccessibleTextAreaInput";
 
 function Survey() {
@@ -125,14 +130,37 @@ function Survey() {
               payload: void 0,
             });
 
-            const newPageChild: StepperChild = {
+            const newQuestion: StepperChild = {
               inputType: "text",
               name: `question ${pageIndex + 1}`,
               validations: TEXT_INPUT_VALIDATIONS,
             };
 
+            const newResponseKind: StepperChild = {
+              inputType: "select",
+              name: `responseKinds ${pageIndex + 1}`,
+              selectInputData: SURVEY_RESPONSE_KIND_DATA,
+            };
+
+            const newResponseInput: StepperChild = {
+              inputType: "select",
+              name: `responseInputs ${pageIndex + 1}`,
+              selectInputData: SURVEY_RESPONSE_INPUTS,
+            };
+
+            const newResponseOptions: StepperChild = {
+              inputType: "text",
+              name: `responseOption ${pageIndex + 1} A`,
+              validations: TEXT_INPUT_VALIDATIONS,
+            };
+
             const newPage: StepperPage = {
-              children: [newPageChild],
+              children: [
+                newQuestion,
+                newResponseKind,
+                newResponseInput,
+                newResponseOptions,
+              ],
               description: `Question ${questions.length + 1}`,
             };
 
@@ -203,7 +231,7 @@ function Survey() {
             attributes={{
               dynamicIndexes: [questionIndex, optionIndex],
               invalidValueAction: surveyAction.setPageInError,
-              name: `Response Option ${pageIndex} ${
+              name: `responseOption ${pageIndex} ${
                 INDEX_ALPHABET_TABLE[optionIndex] ?? optionIndex + 1
               }`,
               parentDynamicDispatch: surveyDispatch,
@@ -313,7 +341,7 @@ function Survey() {
         );
 
         return (
-          <Stack key={`${question}-${pageIndex}-${responseOption}-${optionIndex}`}>
+          <Stack key={`${question}-${questionIndex}-${responseOption}-${optionIndex}`}>
             {responseOptionTextAreaInput}
             <Group>
               {deleteResponseOptionButton}
@@ -326,12 +354,53 @@ function Survey() {
       }
     );
 
+    const addResponseOptionButton = (
+      <AccessibleButton
+        attributes={{
+          disabled: responseOptions.length === MAX_INPUTS_AMOUNT,
+          disabledScreenreaderText: "Max inputs amount reached",
+          enabledScreenreaderText: `Add new Response Option ${pageIndex} ${
+            INDEX_ALPHABET_TABLE[questionIndex] ?? questionIndex + 1
+          }`,
+          kind: "add",
+          onClick: (
+            _event:
+              | React.MouseEvent<HTMLButtonElement, MouseEvent>
+              | React.PointerEvent<HTMLButtonElement>
+          ) => {
+            surveyDispatch({
+              action: surveyAction.addResponseOption,
+              payload: [questionIndex],
+            });
+
+            // required for popover validation linking to stepper component
+            const responseOptionChild: StepperChild = {
+              inputType: "text",
+              name: `responseOption ${pageIndex} ${
+                INDEX_ALPHABET_TABLE[responseOptions.length] ?? responseOptions.length - 1
+              }`,
+              validations: TEXT_AREA_INPUT_VALIDATIONS,
+            };
+
+            surveyDispatch({
+              action: surveyAction.addStepperChild,
+              payload: {
+                dynamicIndexes: [questionIndex],
+                value: responseOptionChild,
+              },
+            });
+          },
+        }}
+      />
+    );
+
     return (
-      <Stack key={`${question}-${pageIndex}`}>
+      <Stack key={`${question}-${questionIndex}`}>
         {addQuestionButton}
         {questionTextInput}
         {responseKindRadioGroup}
         {responseInputsRadioGroup}
+        {addResponseOptionButton}
         {responseOptionsTextInputs}
       </Stack>
     );

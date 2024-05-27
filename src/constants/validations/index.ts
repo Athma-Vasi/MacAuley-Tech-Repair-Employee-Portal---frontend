@@ -63,12 +63,13 @@ const DATE_FULL_RANGE_VALIDATIONS = {
  */
 const DATE_NEAR_FUTURE_REGEX = /^(?:202[4-6])-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])/;
 
+function dateNearFuture(value: string) {
+  const isDateInPast = new Date(value) > new Date();
+  const isStringValid = DATE_NEAR_FUTURE_REGEX.test(value);
+  return isDateInPast && isStringValid;
+}
 const DATE_NEAR_FUTURE_VALIDATIONS = {
-  full: (value: string) => {
-    const isDateInPast = new Date(value) > new Date();
-    const isStringValid = DATE_NEAR_FUTURE_REGEX.test(value);
-    return isDateInPast && isStringValid;
-  },
+  full: dateNearFuture,
   partials: [
     [/^(?:202[4-6])$/, "Must be a valid year in the range 2024-2026."],
     [/-(0[1-9]|1[0-2])-/, "Must be a valid month in the range 01-12."],
@@ -94,13 +95,13 @@ const DATE_NEAR_FUTURE_VALIDATIONS = {
  * - ^ and $ ensure that the entire string matches the regex.
  */
 const DATE_NEAR_PAST_REGEX = /^(?:202[0-4])-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])/;
-
+function dateNearPast(value: string) {
+  const isDateInFuture = new Date(value) < new Date();
+  const isStringValid = DATE_NEAR_PAST_REGEX.test(value);
+  return isDateInFuture && isStringValid;
+}
 const DATE_NEAR_PAST_VALIDATIONS = {
-  full: (value: string) => {
-    const isDateInFuture = new Date(value) < new Date();
-    const isStringValid = DATE_NEAR_PAST_REGEX.test(value);
-    return isDateInFuture && isStringValid;
-  },
+  full: dateNearPast,
   partials: [
     [/^(?:202[0-4])$/, "Must be a valid year in the range 2020-2024."],
     [/-(0[1-9]|1[0-2])-/, "Must be a valid month in the range 01-12."],
@@ -130,7 +131,7 @@ const DATE_OF_BIRTH_REGEX =
   /^(?:19[0-9][0-9]|20[0-1][0-9]|202[0-3])-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])/;
 
 const DATE_OF_BIRTH_VALIDATIONS = {
-  full: (value: string) => {
+  full: function dateOfBirth(value: string) {
     const date = new Date(value);
     const now = new Date();
     let age = now.getFullYear() - date.getFullYear();
