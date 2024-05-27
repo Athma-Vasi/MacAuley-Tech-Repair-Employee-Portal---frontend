@@ -4,10 +4,11 @@ import { TbCheck, TbX } from "react-icons/tb";
 
 import { COLORS_SWATCHES } from "../../constants/data";
 import { useGlobalState } from "../../hooks";
-import { StepperPage } from "../../types";
+import { StepperPage, Validation } from "../../types";
 import { returnThemeColors } from "../../utils";
 import { FormReviewStep } from "../formReview/FormReview";
 import { createAccessibleButtons } from "./utils";
+import { VALIDATION_FUNCTIONS_TABLE } from "../../constants/validations";
 
 type AccessibleStepperAttributes = {
   allowNextStepsSelect?: boolean;
@@ -179,7 +180,17 @@ function returnStepsInError(
             if (!validations) {
               return;
             }
-            const { full: fullValidation } = validations;
+
+            let correctValidations = validations;
+
+            if (typeof validations === "string") {
+              const validationsObj = VALIDATION_FUNCTIONS_TABLE[validations];
+              if (validationsObj) {
+                correctValidations = validationsObj;
+              }
+            }
+
+            const { full: fullValidation } = correctValidations as Validation;
 
             const value =
               typeof stateValue === "string" ? stateValue : stateValue?.toString() ?? "";

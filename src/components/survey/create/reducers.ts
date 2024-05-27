@@ -1,3 +1,4 @@
+import { PROPERTY_DESCRIPTOR } from "../../../constants/data";
 import { SetPageInErrorPayload, StepperChild, StepperPage } from "../../../types";
 import {
   SurveyRecipient,
@@ -64,13 +65,13 @@ function surveyReducer_addResponseOption(
   state: SurveyState,
   dispatch: SurveyDispatch
 ): SurveyState {
-  const [pageIndex] = dispatch.payload as number[];
+  const [questionIndex] = dispatch.payload as number[];
   const responseOptions = structuredClone(state.responseOptions);
-  responseOptions[pageIndex].push("");
+  responseOptions[questionIndex].push("");
 
   console.group("surveyReducer_addResponseOption");
-  console.log("pageIndex", pageIndex);
-  console.log("responseOptions[pageIndex]", responseOptions[pageIndex]);
+  console.log("questionIndex", questionIndex);
+  console.log("responseOptions[questionIndex]", responseOptions[questionIndex]);
   console.groupEnd();
 
   return {
@@ -100,11 +101,13 @@ function surveyReducer_addStepperChild(
   //   ...state,
   //   stepperPages,
   // };
+
   const {
     dynamicIndexes: [pageIndex],
     value,
   } = dispatch.payload as { dynamicIndexes: number[]; value: StepperChild };
-  const stepperPages = [...state.stepperPages];
+
+  const stepperPages = structuredClone(state.stepperPages);
   stepperPages[pageIndex].children.push(value);
 
   console.group("surveyReducer_addStepperChild");

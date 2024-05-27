@@ -48,6 +48,7 @@ import {
   AccessibleTextInput,
   AccessibleTextInputAttributes,
 } from "./text/AccessibleTextInput";
+import { VALIDATION_FUNCTIONS_TABLE } from "../../constants/validations";
 
 type CreateAccessibleValueValidationTextElements = {
   isPopoverOpened: boolean;
@@ -619,28 +620,37 @@ function returnValidationTexts({
         return;
       }
 
-      if (inputName === name) {
-        const { partials } = validations;
+      let partials: [RegExp | ((value: string) => boolean), string][] = [];
 
-        let valueInvalidText = partials
-          .map(([regexOrFunc, errorMessage]) =>
-            typeof regexOrFunc === "function"
-              ? regexOrFunc(valueBuffer)
-                ? ""
-                : errorMessage
-              : regexOrFunc.test(valueBuffer)
+      if (inputName === name) {
+        if (typeof validations === "string") {
+          const validationObj = VALIDATION_FUNCTIONS_TABLE[validations];
+          if (validationObj) {
+            partials = validationObj.partials;
+          }
+        } else {
+          partials = validations.partials;
+        }
+      }
+
+      let valueInvalidText = partials
+        .map(([regexOrFunc, errorMessage]) =>
+          typeof regexOrFunc === "function"
+            ? regexOrFunc(valueBuffer)
               ? ""
               : errorMessage
-          )
-          .join(" ");
+            : regexOrFunc.test(valueBuffer)
+            ? ""
+            : errorMessage
+        )
+        .join(" ");
 
-        valueInvalidText = `${splitCamelCase(name)} is invalid. ${valueInvalidText}`;
+      valueInvalidText = `${splitCamelCase(name)} is invalid. ${valueInvalidText}`;
 
-        validationTextsAcc = {
-          valueValidText: `${splitCamelCase(name)} is valid.`,
-          valueInvalidText,
-        };
-      }
+      validationTextsAcc = {
+        valueValidText: `${splitCamelCase(name)} is valid.`,
+        valueInvalidText,
+      };
     });
 
     return validationTextsAcc;
@@ -667,8 +677,16 @@ function returnFullValidation(
         }
 
         if (inputName === name) {
-          const { full } = validations;
-          regexAcc.fullValidation = full;
+          if (typeof validations === "string") {
+            const validationObj = VALIDATION_FUNCTIONS_TABLE[validations];
+            if (validationObj) {
+              const { full } = validationObj;
+              regexAcc.fullValidation = full;
+            }
+          } else {
+            const { full } = validations;
+            regexAcc.fullValidation = full;
+          }
         }
       });
 

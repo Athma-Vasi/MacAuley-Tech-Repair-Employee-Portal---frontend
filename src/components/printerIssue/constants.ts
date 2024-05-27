@@ -12,7 +12,6 @@ import {
   USERNAME_REGEX,
 } from "../../constants/regex";
 import {
-  DATE_NEAR_PAST_VALIDATIONS,
   EMAIL_VALIDATIONS,
   PHONE_NUMBER_VALIDATIONS,
   TEXT_AREA_INPUT_VALIDATIONS,
@@ -72,7 +71,7 @@ function returnPrinterIssueStepperPages(): StepperPage[] {
   const dateOfOccurrenceChild: StepperChild = {
     inputType: "text",
     name: "dateOfOccurrence",
-    validations: DATE_NEAR_PAST_VALIDATIONS,
+    validations: "dateNearPast",
   };
 
   const printerIssueDescriptionChild: StepperChild = {

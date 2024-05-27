@@ -8,7 +8,6 @@ import {
 } from "../../constants/regex";
 import {
   ACKNOWLEDGEMENT_VALIDATIONS,
-  DATE_NEAR_PAST_VALIDATIONS,
   MONEY_VALIDATIONS,
   TEXT_AREA_INPUT_VALIDATIONS,
 } from "../../constants/validations";
@@ -64,7 +63,7 @@ function returnExpenseClaimStepperPages() {
   const expenseClaimDateChild: StepperChild = {
     inputType: "date",
     name: "expenseClaimDate",
-    validations: DATE_NEAR_PAST_VALIDATIONS,
+    validations: "dateNearPast",
   };
 
   const expenseClaimDescriptionChild: StepperChild = {

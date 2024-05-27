@@ -248,7 +248,14 @@ type StepperChild = {
   checkboxInputData?: CheckBoxMultipleData;
 };
 
-type Validations = {
+type ValidationFunctionsTable = Record<string, Validation>;
+
+/**
+ * - string union is used because some components store the StepperPages in state and function objects cannot be deep cloned by structuredClone. The input validator functions use the string as a key to access the corresponding function from VALIDATION_FUNCTIONS_TABLE.
+ */
+type Validations = string | Validation;
+
+type Validation = {
   /** must be a superset of partials. input error state is determined by full test */
   full: RegExp | ((value: string) => boolean);
   /** must be subset(s) of full. input popover error messages are determined by partials tests */
@@ -322,5 +329,7 @@ export type {
   UserRoles,
   UserSchema,
   USPostalCode,
+  Validation,
+  ValidationFunctionsTable,
   Validations,
 };

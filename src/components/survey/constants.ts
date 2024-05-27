@@ -6,7 +6,6 @@ import {
   USERNAME_REGEX,
 } from "../../constants/regex";
 import {
-  DATE_NEAR_FUTURE_VALIDATIONS,
   TEXT_AREA_INPUT_VALIDATIONS,
   TEXT_INPUT_VALIDATIONS,
 } from "../../constants/validations";
@@ -47,7 +46,7 @@ function returnSurveyStepperPages(): StepperPage[] {
   const expiryDateChild: StepperChild = {
     inputType: "date",
     name: "expiryDate",
-    validations: DATE_NEAR_FUTURE_VALIDATIONS,
+    validations: "dateNearFuture",
   };
 
   const surveyRecipientsChild: StepperChild = {

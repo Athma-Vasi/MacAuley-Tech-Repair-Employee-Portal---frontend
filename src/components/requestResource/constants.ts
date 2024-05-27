@@ -8,7 +8,6 @@ import {
   USERNAME_REGEX,
 } from "../../constants/regex";
 import {
-  DATE_NEAR_FUTURE_VALIDATIONS,
   MONEY_VALIDATIONS,
   TEXT_AREA_INPUT_VALIDATIONS,
   TEXT_INPUT_VALIDATIONS,
@@ -76,7 +75,7 @@ function returnRequestResourceStepperPages(): StepperPage[] {
   const dateNeededByChild: StepperChild = {
     inputType: "date",
     name: "dateNeededBy",
-    validations: DATE_NEAR_FUTURE_VALIDATIONS,
+    validations: "dateNearFuture",
   };
 
   const additionalInformationChild: StepperChild = {

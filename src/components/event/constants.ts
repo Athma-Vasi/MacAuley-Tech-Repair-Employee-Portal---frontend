@@ -7,7 +7,6 @@ import {
   USERNAME_REGEX,
 } from "../../constants/regex";
 import {
-  DATE_NEAR_FUTURE_VALIDATIONS,
   TEXT_AREA_INPUT_VALIDATIONS,
   TEXT_INPUT_VALIDATIONS,
 } from "../../constants/validations";
@@ -71,7 +70,7 @@ function returnEventStepperPages(): StepperPage[] {
   const endDateChild: StepperChild = {
     inputType: "date",
     name: "endDate",
-    validations: DATE_NEAR_FUTURE_VALIDATIONS,
+    validations: "dateNearFuture",
   };
 
   const endTimeChild: StepperChild = {
@@ -101,13 +100,13 @@ function returnEventStepperPages(): StepperPage[] {
   const rsvpDeadlineChild: StepperChild = {
     inputType: "date",
     name: "rsvpDeadline",
-    validations: DATE_NEAR_FUTURE_VALIDATIONS,
+    validations: "dateNearFuture",
   };
 
   const startDateChild: StepperChild = {
     inputType: "date",
     name: "startDate",
-    validations: DATE_NEAR_FUTURE_VALIDATIONS,
+    validations: "dateNearFuture",
   };
 
   const startTimeChild: StepperChild = {

@@ -6,6 +6,7 @@ import { useGlobalState } from "../../hooks";
 import { StepperPage } from "../../types";
 import { capitalizeJoinWithAnd, returnThemeColors, splitCamelCase } from "../../utils";
 import { createAccessibleButtons } from "../accessibleInputs/utils";
+import { VALIDATION_FUNCTIONS_TABLE } from "../../constants/validations";
 
 type FormReview = {
   name: string;
@@ -161,11 +162,22 @@ function returnFormReviews<
           : "No"
         : value?.toString() ?? "";
 
-      const isValueValid = validations
-        ? typeof validations.full === "function"
-          ? validations.full(stringifiedValue)
-          : validations.full.test(stringifiedValue)
-        : true;
+      let isValueValid = true;
+
+      if (typeof validations === "string") {
+        const validationsObj = VALIDATION_FUNCTIONS_TABLE[validations];
+        if (validationsObj) {
+          isValueValid =
+            typeof validationsObj.full === "function"
+              ? validationsObj.full(stringifiedValue)
+              : validationsObj.full.test(stringifiedValue);
+        }
+      } else if (validations) {
+        isValueValid =
+          typeof validations.full === "function"
+            ? validations.full(stringifiedValue)
+            : validations.full.test(stringifiedValue);
+      }
 
       return {
         name,

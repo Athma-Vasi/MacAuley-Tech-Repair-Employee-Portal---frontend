@@ -360,7 +360,7 @@ function Survey() {
           disabled: responseOptions.length === MAX_INPUTS_AMOUNT,
           disabledScreenreaderText: "Max inputs amount reached",
           enabledScreenreaderText: `Add new Response Option ${pageIndex} ${
-            INDEX_ALPHABET_TABLE[questionIndex] ?? questionIndex + 1
+            INDEX_ALPHABET_TABLE[questions.length] ?? questionIndex + 1
           }`,
           kind: "add",
           onClick: (
@@ -377,7 +377,8 @@ function Survey() {
             const responseOptionChild: StepperChild = {
               inputType: "text",
               name: `responseOption ${pageIndex} ${
-                INDEX_ALPHABET_TABLE[responseOptions.length] ?? responseOptions.length - 1
+                INDEX_ALPHABET_TABLE[responseOptions[questionIndex].length] ??
+                responseOptions[questionIndex].length - 1
               }`,
               validations: TEXT_AREA_INPUT_VALIDATIONS,
             };
@@ -385,7 +386,7 @@ function Survey() {
             surveyDispatch({
               action: surveyAction.addStepperChild,
               payload: {
-                dynamicIndexes: [questionIndex],
+                dynamicIndexes: [pageIndex],
                 value: responseOptionChild,
               },
             });

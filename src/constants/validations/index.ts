@@ -1,4 +1,4 @@
-import { Validations } from "../../types";
+import { ValidationFunctionsTable, Validations } from "../../types";
 
 /**
  * - 19[0-9][0-9] matches the years from 1900 to 1999.
@@ -49,126 +49,6 @@ const DATE_FULL_RANGE_VALIDATIONS = {
     [/-(0[1-9]|1[0-2])-/, "Must be a valid month in the range 01-12."],
     [/-(0[1-9]|[12][0-9]|3[01])$/, "Must be a valid day in the range 01-31."],
     [/^.{10}$/, "Must be 10 characters length."],
-  ],
-} as Validations;
-
-/**
- * - /^(?:2024-6])-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])/
- * - 202[4-6] matches the years from 2024 to 2026.
- * - - matches a hyphen.
- * - (0[1-9]|1[0-2]) month: matches either 0 followed by a digit between 1 and 9, or 1 followed by a digit between 0 and 2.
- * - - matches a hyphen.
- * - (0[1-9]|[12][0-9]|3[01]) day: matches either 0 followed by a digit between 1 and 9, or 1 or 2 followed by a digit between 0 and 9, or 3 followed by a digit between 0 and 1.
- * - ^ and $ ensure that the entire string matches the regex.
- */
-const DATE_NEAR_FUTURE_REGEX = /^(?:202[4-6])-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])/;
-
-function dateNearFuture(value: string) {
-  const isDateInPast = new Date(value) > new Date();
-  const isStringValid = DATE_NEAR_FUTURE_REGEX.test(value);
-  return isDateInPast && isStringValid;
-}
-const DATE_NEAR_FUTURE_VALIDATIONS = {
-  full: dateNearFuture,
-  partials: [
-    [/^(?:202[4-6])$/, "Must be a valid year in the range 2024-2026."],
-    [/-(0[1-9]|1[0-2])-/, "Must be a valid month in the range 01-12."],
-    [/-(0[1-9]|[12][0-9]|3[01])$/, "Must be a valid day in the range 01-31."],
-    [/^.{10}$/, "Must be 10 characters length."],
-    [
-      (value: string) => {
-        const date = new Date(value);
-        return date > new Date();
-      },
-      "Must be a valid date in the future.",
-    ],
-  ],
-} as Validations;
-
-/**
- * - /^(?:202[0-4])-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])/
- * - 202[0-3] matches the years from 2020 to 2024.
- * - - matches a hyphen.
- * - (0[1-9]|1[0-2]) month: matches either 0 followed by a digit between 1 and 9, or 1 followed by a digit between 0 and 2.
- * - - matches a hyphen.
- * - (0[1-9]|[12][0-9]|3[01]) day: matches either 0 followed by a digit between 1 and 9, or 1 or 2 followed by a digit between 0 and 9, or 3 followed by a digit between 0 and 1.
- * - ^ and $ ensure that the entire string matches the regex.
- */
-const DATE_NEAR_PAST_REGEX = /^(?:202[0-4])-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])/;
-function dateNearPast(value: string) {
-  const isDateInFuture = new Date(value) < new Date();
-  const isStringValid = DATE_NEAR_PAST_REGEX.test(value);
-  return isDateInFuture && isStringValid;
-}
-const DATE_NEAR_PAST_VALIDATIONS = {
-  full: dateNearPast,
-  partials: [
-    [/^(?:202[0-4])$/, "Must be a valid year in the range 2020-2024."],
-    [/-(0[1-9]|1[0-2])-/, "Must be a valid month in the range 01-12."],
-    [/-(0[1-9]|[12][0-9]|3[01])$/, "Must be a valid day in the range 01-31."],
-    [/^.{10}$/, "Must be 10 characters length."],
-    [
-      (value: string) => {
-        const date = new Date(value);
-        return date < new Date();
-      },
-      "Must be a valid date in the past.",
-    ],
-  ],
-} as Validations;
-
-/**
- * - 19[0-9][0-9] matches the years from 1900 to 1999.
- * - 20[0-1][0-9] matches the years from 2000 to 2019.
- * - 202[0-3] matches the years from 2020 to 2023.
- * - - matches a hyphen.
- * - (0[1-9]|1[0-2]) month: matches either 0 followed by a digit between 1 and 9, or 1 followed by a digit between 0 and 2.
- * - - matches a hyphen.
- * - (0[1-9]|[12][0-9]|3[01]) day: matches either 0 followed by a digit between 1 and 9, or 1 or 2 followed by a digit between 0 and 9, or 3 followed by a digit between 0 and 1.
- * - ^ and $ ensure that the entire string matches the regex.
- */
-const DATE_OF_BIRTH_REGEX =
-  /^(?:19[0-9][0-9]|20[0-1][0-9]|202[0-3])-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])/;
-
-const DATE_OF_BIRTH_VALIDATIONS = {
-  full: function dateOfBirth(value: string) {
-    const date = new Date(value);
-    const now = new Date();
-    let age = now.getFullYear() - date.getFullYear();
-    const m = now.getMonth() - date.getMonth();
-    if (m < 0 || (m === 0 && now.getDate() < date.getDate())) {
-      age -= 1;
-    }
-    return date < now && age >= 18 && DATE_OF_BIRTH_REGEX.test(value);
-  },
-  partials: [
-    [
-      /^(?:19[0-9][0-9]|20[0-1][0-9]|202[0-3])$/,
-      "Must be a valid year in the range 1900-2023.",
-    ],
-    [/-(0[1-9]|1[0-2])-/, "Must be a valid month in the range 01-12."],
-    [/-(0[1-9]|[12][0-9]|3[01])$/, "Must be a valid day in the range 01-31."],
-    [/^.{10}$/, "Must be 10 characters length."],
-    [
-      (value: string) => {
-        const date = new Date(value);
-        return date < new Date();
-      },
-      "Must be a valid date in the past.",
-    ],
-    [
-      (value: string) => {
-        const date = new Date(value);
-        const now = new Date();
-        let age = now.getFullYear() - date.getFullYear();
-        const m = now.getMonth() - date.getMonth();
-        if (m < 0 || (m === 0 && now.getDate() < date.getDate())) {
-          age -= 1;
-        }
-        return age >= 18;
-      },
-      "Must be 18 years or older.",
-    ],
   ],
 } as Validations;
 
@@ -337,12 +217,133 @@ const URL_VALIDATIONS = {
   ],
 } as Validations;
 
+/**
+ * this table contains the validation objects consumed by validator functions in Accessible${Inputs} components, allowing safe deep copying.
+ */
+const VALIDATION_FUNCTIONS_TABLE: ValidationFunctionsTable = {
+  dateNearFuture: {
+    full: function dateNearFuture(value: string) {
+      /**
+       * - /^(?:2024-6])-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])/
+       * - 202[4-6] matches the years from 2024 to 2026.
+       * - - matches a hyphen.
+       * - (0[1-9]|1[0-2]) month: matches either 0 followed by a digit between 1 and 9, or 1 followed by a digit between 0 and 2.
+       * - - matches a hyphen.
+       * - (0[1-9]|[12][0-9]|3[01]) day: matches either 0 followed by a digit between 1 and 9, or 1 or 2 followed by a digit between 0 and 9, or 3 followed by a digit between 0 and 1.
+       * - ^ and $ ensure that the entire string matches the regex.
+       */
+      const DATE_NEAR_FUTURE_REGEX =
+        /^(?:202[4-6])-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])/;
+
+      const isDateInPast = new Date(value) > new Date();
+      const isStringValid = DATE_NEAR_FUTURE_REGEX.test(value);
+      return isDateInPast && isStringValid;
+    },
+    partials: [
+      [/^(?:202[4-6])$/, "Must be a valid year in the range 2024-2026."],
+      [/-(0[1-9]|1[0-2])-/, "Must be a valid month in the range 01-12."],
+      [/-(0[1-9]|[12][0-9]|3[01])$/, "Must be a valid day in the range 01-31."],
+      [/^.{10}$/, "Must be 10 characters length."],
+      [
+        (value: string) => {
+          const date = new Date(value);
+          return date > new Date();
+        },
+        "Must be a valid date in the future.",
+      ],
+    ],
+  },
+  dateNearPast: {
+    full: function dateNearPast(value: string) {
+      /**
+       * - /^(?:202[0-4])-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])/
+       * - 202[0-3] matches the years from 2020 to 2024.
+       * - - matches a hyphen.
+       * - (0[1-9]|1[0-2]) month: matches either 0 followed by a digit between 1 and 9, or 1 followed by a digit between 0 and 2.
+       * - - matches a hyphen.
+       * - (0[1-9]|[12][0-9]|3[01]) day: matches either 0 followed by a digit between 1 and 9, or 1 or 2 followed by a digit between 0 and 9, or 3 followed by a digit between 0 and 1.
+       * - ^ and $ ensure that the entire string matches the regex.
+       */
+      const DATE_NEAR_PAST_REGEX =
+        /^(?:202[0-4])-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])/;
+
+      const isDateInFuture = new Date(value) < new Date();
+      const isStringValid = DATE_NEAR_PAST_REGEX.test(value);
+      return isDateInFuture && isStringValid;
+    },
+    partials: [
+      [/^(?:202[0-4])$/, "Must be a valid year in the range 2020-2024."],
+      [/-(0[1-9]|1[0-2])-/, "Must be a valid month in the range 01-12."],
+      [/-(0[1-9]|[12][0-9]|3[01])$/, "Must be a valid day in the range 01-31."],
+      [/^.{10}$/, "Must be 10 characters length."],
+      [
+        (value: string) => {
+          const date = new Date(value);
+          return date < new Date();
+        },
+        "Must be a valid date in the past.",
+      ],
+    ],
+  },
+  dateOfBirth: {
+    full: function dateOfBirth(value: string) {
+      /**
+       * - 19[0-9][0-9] matches the years from 1900 to 1999.
+       * - 20[0-1][0-9] matches the years from 2000 to 2019.
+       * - 202[0-3] matches the years from 2020 to 2023.
+       * - - matches a hyphen.
+       * - (0[1-9]|1[0-2]) month: matches either 0 followed by a digit between 1 and 9, or 1 followed by a digit between 0 and 2.
+       * - - matches a hyphen.
+       * - (0[1-9]|[12][0-9]|3[01]) day: matches either 0 followed by a digit between 1 and 9, or 1 or 2 followed by a digit between 0 and 9, or 3 followed by a digit between 0 and 1.
+       * - ^ and $ ensure that the entire string matches the regex.
+       */
+      const DATE_OF_BIRTH_REGEX =
+        /^(?:19[0-9][0-9]|20[0-1][0-9]|202[0-3])-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])/;
+
+      const date = new Date(value);
+      const now = new Date();
+      let age = now.getFullYear() - date.getFullYear();
+      const m = now.getMonth() - date.getMonth();
+      if (m < 0 || (m === 0 && now.getDate() < date.getDate())) {
+        age -= 1;
+      }
+      return date < now && age >= 18 && DATE_OF_BIRTH_REGEX.test(value);
+    },
+    partials: [
+      [
+        /^(?:19[0-9][0-9]|20[0-1][0-9]|202[0-3])$/,
+        "Must be a valid year in the range 1900-2023.",
+      ],
+      [/-(0[1-9]|1[0-2])-/, "Must be a valid month in the range 01-12."],
+      [/-(0[1-9]|[12][0-9]|3[01])$/, "Must be a valid day in the range 01-31."],
+      [/^.{10}$/, "Must be 10 characters length."],
+      [
+        (value: string) => {
+          const date = new Date(value);
+          return date < new Date();
+        },
+        "Must be a valid date in the past.",
+      ],
+      [
+        (value: string) => {
+          const date = new Date(value);
+          const now = new Date();
+          let age = now.getFullYear() - date.getFullYear();
+          const m = now.getMonth() - date.getMonth();
+          if (m < 0 || (m === 0 && now.getDate() < date.getDate())) {
+            age -= 1;
+          }
+          return age >= 18;
+        },
+        "Must be 18 years or older.",
+      ],
+    ],
+  },
+};
+
 export {
   ACKNOWLEDGEMENT_VALIDATIONS,
   DATE_FULL_RANGE_VALIDATIONS,
-  DATE_NEAR_FUTURE_VALIDATIONS,
-  DATE_NEAR_PAST_VALIDATIONS,
-  DATE_OF_BIRTH_VALIDATIONS,
   DATE_VALIDATIONS,
   EMAIL_VALIDATIONS,
   FULL_NAME_VALIDATIONS,
@@ -352,4 +353,5 @@ export {
   TEXT_AREA_INPUT_VALIDATIONS,
   TEXT_INPUT_VALIDATIONS,
   URL_VALIDATIONS,
+  VALIDATION_FUNCTIONS_TABLE,
 };

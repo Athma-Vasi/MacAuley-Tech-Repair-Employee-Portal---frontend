@@ -8,7 +8,6 @@ import {
 } from "../../constants/regex";
 import {
   ACKNOWLEDGEMENT_VALIDATIONS,
-  DATE_NEAR_FUTURE_VALIDATIONS,
   FULL_NAME_VALIDATIONS,
   TEXT_AREA_INPUT_VALIDATIONS,
 } from "../../constants/validations";
@@ -57,7 +56,7 @@ function returnLeaveRequestStepperPages() {
   const endDateChild: StepperChild = {
     inputType: "date",
     name: "endDate",
-    validations: DATE_NEAR_FUTURE_VALIDATIONS,
+    validations: "dateNearFuture",
   };
 
   const reasonForLeaveChild: StepperChild = {
@@ -69,7 +68,7 @@ function returnLeaveRequestStepperPages() {
   const startDateChild: StepperChild = {
     inputType: "date",
     name: "startDate",
-    validations: DATE_NEAR_FUTURE_VALIDATIONS,
+    validations: "dateNearFuture",
   };
 
   const stepperPages: StepperPage[] = [
