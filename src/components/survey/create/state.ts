@@ -27,8 +27,8 @@ const initialSurveyState: SurveyState = {
   questions: [""],
   surveyStatistics: [],
   responseKinds: ["chooseAny"],
-  responseInputHtml: ["checkbox"],
-  responseDataOptionsArray: [[""]],
+  responseInputs: ["checkbox"],
+  responseOptions: [[""]],
   triggerFormSubmit: false,
   triggerPreviewSurvey: false,
   previewSurveyProps: {

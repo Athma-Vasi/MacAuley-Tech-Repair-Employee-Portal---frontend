@@ -68,13 +68,13 @@ function returnSurveyStepperPages(): StepperPage[] {
     selectInputData: SURVEY_RESPONSE_KIND_DATA,
   };
 
-  const responseInputHtmlChild: StepperChild = {
+  const responseInputsChild: StepperChild = {
     inputType: "select",
-    name: "responseInputHtml 1",
+    name: "responseInputs 1",
     selectInputData: SURVEY_RESPONSE_INPUTS,
   };
 
-  const responseDataOptionsArrayChild: StepperChild = {
+  const responseOptionsChild: StepperChild = {
     inputType: "text",
     name: "responseDataOption 1 A",
     validations: TEXT_AREA_INPUT_VALIDATIONS,
@@ -95,10 +95,10 @@ function returnSurveyStepperPages(): StepperPage[] {
       children: [
         questionsChild,
         responseKindsChild,
-        responseInputHtmlChild,
-        responseDataOptionsArrayChild,
+        responseInputsChild,
+        responseOptionsChild,
       ],
-      description: "Enter Question 1",
+      description: "Question 1",
     },
 
     {
@@ -108,6 +108,37 @@ function returnSurveyStepperPages(): StepperPage[] {
     },
   ];
 }
+
+const MAX_INPUTS_AMOUNT = 10;
+
+const INDEX_ALPHABET_TABLE: Record<number, string> = {
+  0: "A",
+  1: "B",
+  2: "C",
+  3: "D",
+  4: "E",
+  5: "F",
+  6: "G",
+  7: "H",
+  8: "I",
+  9: "J",
+  10: "K",
+  11: "L",
+  12: "M",
+  13: "N",
+  14: "O",
+  15: "P",
+  16: "Q",
+  17: "R",
+  18: "S",
+  19: "T",
+  20: "U",
+  21: "V",
+  22: "W",
+  23: "X",
+  24: "Y",
+  25: "Z",
+};
 
 const SURVEY_RECIPIENT_DATA: SurveyRecipient[] = [
   "All",
@@ -245,6 +276,8 @@ const SURVEY_QUERY_DATA: ComponentQueryData[] = [
 ];
 
 export {
+  INDEX_ALPHABET_TABLE,
+  MAX_INPUTS_AMOUNT,
   returnSurveyStepperPages,
   SURVEY_AGREE_DISAGREE_RESPONSE_DATA_OPTIONS,
   SURVEY_INPUT_HTML_DATA,

@@ -9,13 +9,18 @@ type AccessibleRadioInputSingleAttributes<ValidValueAction extends string = stri
   checked: boolean;
   description: string;
   disabled?: boolean;
+  dynamicIndexes?: number[];
   key?: string;
   label?: ReactNode;
   name: string;
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  parentDispatch: React.Dispatch<{
+  parentDispatch?: React.Dispatch<{
     action: ValidValueAction;
     payload: string;
+  }>;
+  parentDynamicDispatch?: React.Dispatch<{
+    action: ValidValueAction;
+    payload: { dynamicIndexes: number[]; value: string };
   }>;
   ref?: React.RefObject<HTMLInputElement> | null;
   required?: boolean;
@@ -34,9 +39,11 @@ function AccessibleRadioInputSingle<ValidValueAction extends string = string>({
     checked,
     description,
     disabled = false,
+    dynamicIndexes,
     name,
     onChange,
     parentDispatch,
+    parentDynamicDispatch,
     ref = null,
     required = false,
     size = "sm",
@@ -70,14 +77,21 @@ function AccessibleRadioInputSingle<ValidValueAction extends string = string>({
         label={label}
         name={name}
         onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-          parentDispatch({
-            action: validValueAction,
-            payload: event.currentTarget.value,
-          });
+          const {
+            currentTarget: { value },
+          } = event;
 
-          if (onChange) {
-            onChange(event);
-          }
+          dynamicIndexes === undefined
+            ? parentDispatch?.({
+                action: validValueAction,
+                payload: value,
+              })
+            : parentDynamicDispatch?.({
+                action: validValueAction,
+                payload: { dynamicIndexes, value },
+              });
+
+          onChange?.(event);
         }}
         ref={ref}
         required={required}
@@ -97,7 +111,7 @@ type AccessibleRadioInputGroupAttributes<
   // checked: boolean;
   data: Data[];
   description?: ReactNode | string;
-  index?: number;
+  dynamicIndexes?: number[];
   key?: string;
   label: ReactNode;
   name: string;
@@ -108,7 +122,7 @@ type AccessibleRadioInputGroupAttributes<
   }>;
   parentDynamicDispatch?: React.Dispatch<{
     action: ValidValueAction;
-    payload: { index: number; payload: Data };
+    payload: { dynamicIndexes: number[]; value: Data };
   }>;
   ref?: React.RefObject<HTMLInputElement> | null;
   required?: boolean;
@@ -132,7 +146,7 @@ function AccessibleRadioInputGroup<
   const {
     data,
     description,
-    index,
+    dynamicIndexes,
     name,
     key = name + " - radio group",
     label,
@@ -169,14 +183,14 @@ function AccessibleRadioInputGroup<
         label={label}
         name={name}
         onChange={(value: Data) => {
-          index === undefined
+          dynamicIndexes === undefined
             ? parentDispatch?.({
                 action: validValueAction,
                 payload: value,
               })
             : parentDynamicDispatch?.({
                 action: validValueAction,
-                payload: { index, payload: value },
+                payload: { dynamicIndexes, value },
               });
 
           onChange?.(value);

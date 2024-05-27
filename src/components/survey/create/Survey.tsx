@@ -5,6 +5,8 @@ import { AccessibleTextSearchInput } from "../../accessibleInputs/textSearch/Acc
 import { LARGE_CITIES } from "../../accessibleInputs/textSearch/sampleData";
 import { SurveyAction, surveyAction } from "./actions";
 import {
+  INDEX_ALPHABET_TABLE,
+  MAX_INPUTS_AMOUNT,
   SURVEY_MAX_QUESTION_AMOUNT,
   SURVEY_RECIPIENT_DATA,
   returnSurveyStepperPages,
@@ -12,17 +14,16 @@ import {
 import { StepperChild, StepperPage } from "../../../types";
 import { logState } from "../../../utils";
 import { AccessibleTextInput } from "../../accessibleInputs/text/AccessibleTextInput";
-import { AccessibleTextAreaInput } from "../../accessibleInputs/AccessibleTextAreaInput";
 import { AccessibleDateTimeInput } from "../../accessibleInputs/AccessibleDateTimeInput";
 import { AccessibleSelectInput } from "../../accessibleInputs/AccessibleSelectInput";
 import { SurveyRecipient, SurveyResponseKind } from "../types";
 import { AccessibleRadioInputGroup } from "../../accessibleInputs/AccessibleRadioInput";
 
 import { AccessibleStepper } from "../../accessibleInputs/AccessibleStepper";
-import { Container, Stack } from "@mantine/core";
+import { Container, Group, Stack } from "@mantine/core";
 import { AccessibleButton } from "../../accessibleInputs/AccessibleButton";
 import { TEXT_INPUT_VALIDATIONS } from "../../../constants/validations";
-import { AccessibleTextInputs } from "../../accessibleInputs/texts/AccessibleTextInputs";
+import { AccessibleTextAreaInput } from "../../accessibleInputs/AccessibleTextAreaInput";
 
 function Survey() {
   const [surveyState, surveyDispatch] = useReducer(surveyReducer, initialSurveyState);
@@ -34,8 +35,8 @@ function Survey() {
     pagesInError,
     previewSurveyProps,
     questions,
-    responseDataOptionsArray,
-    responseInputHtml,
+    responseOptions,
+    responseInputs,
     responseKinds,
     surveyDescription,
     surveyRecipients,
@@ -104,7 +105,9 @@ function Survey() {
     />
   );
 
-  const questionPages = questions.map((question, index) => {
+  const questionPages = questions.map(function questionsMapCB(question, questionIndex) {
+    const pageIndex = questionIndex + 1;
+
     const addQuestionButton = (
       <AccessibleButton
         attributes={{
@@ -124,20 +127,20 @@ function Survey() {
 
             const newPageChild: StepperChild = {
               inputType: "text",
-              name: `question ${index + 2}`,
+              name: `question ${pageIndex + 1}`,
               validations: TEXT_INPUT_VALIDATIONS,
             };
 
             const newPage: StepperPage = {
               children: [newPageChild],
-              description: `Enter Question ${questions.length + 1}`,
+              description: `Question ${questions.length + 1}`,
             };
 
             surveyDispatch({
               action: surveyAction.addStepperPage,
               payload: {
-                parentIndex: questions.length + 1,
-                payload: newPage,
+                dynamicIndexes: [pageIndex + 1],
+                value: newPage,
               },
             });
           },
@@ -148,9 +151,9 @@ function Survey() {
     const questionTextInput = (
       <AccessibleTextInput
         attributes={{
-          index,
+          dynamicIndexes: [questionIndex],
           invalidValueAction: surveyAction.setPageInError,
-          name: `question ${index + 1}`,
+          name: `question ${pageIndex}`,
           parentDynamicDispatch: surveyDispatch,
           stepperPages,
           validValueAction: surveyAction.setQuestions,
@@ -163,57 +166,173 @@ function Survey() {
       <AccessibleRadioInputGroup<SurveyAction["setResponseKinds"], SurveyResponseKind>
         attributes={{
           data: ["chooseAny", "chooseOne", "rating"],
-          index,
+          dynamicIndexes: [questionIndex],
           label: "Response Kind",
-          name: `responseKinds ${index + 1}`,
+          name: `responseKinds ${pageIndex}`,
           parentDynamicDispatch: surveyDispatch,
           validValueAction: surveyAction.setResponseKinds,
-          value: responseKinds[index],
+          value: responseKinds[questionIndex],
         }}
       />
     );
 
-    const responseInputHtmlRadioGroup = (
+    const responseInputsRadioGroup = (
       <AccessibleRadioInputGroup
         attributes={{
           data: ["agreeDisagree", "radio", "checkbox", "emotion", "stars"],
-          index,
+          dynamicIndexes: [questionIndex],
           label: "Response Input",
-          name: `responseInputHtml ${index + 1}`,
+          name: `responseInputs ${pageIndex}`,
           parentDynamicDispatch: surveyDispatch,
-          validValueAction: surveyAction.setResponseInputHtml,
-          value: responseInputHtml[index],
+          validValueAction: surveyAction.setResponseInputs,
+          value: responseInputs[questionIndex],
         }}
       />
     );
 
-    const responseDataOptions = (
-      <AccessibleTextInputs<
-        SurveyAction["setResponseDataOptions"],
-        SurveyAction["setPageInError"],
-        SurveyAction["addStepperChilds"]
-      >
-        attributes={{
-          parentIndex: index,
-          addStepperChildAction: surveyAction.addStepperChilds,
-          invalidValueAction: surveyAction.setPageInError,
-          parentDynamicDispatch: surveyDispatch,
-          name: `responseDataOption ${index + 1}`,
-          page: index,
-          stepperPages,
-          validValueAction: surveyAction.setResponseDataOptions,
-          values: responseDataOptionsArray[index],
-        }}
-      />
+    console.group("responseOptions");
+    console.log("responseOptions", responseOptions);
+    console.log("questionIndex", questionIndex);
+    console.log("responseOptions[questionIndex]", responseOptions[questionIndex]);
+    console.groupEnd();
+
+    const responseOptionsTextInputs = responseOptions[questionIndex].map(
+      (responseOption, optionIndex) => {
+        const responseOptionTextAreaInput = (
+          <AccessibleTextAreaInput
+            attributes={{
+              dynamicIndexes: [questionIndex, optionIndex],
+              invalidValueAction: surveyAction.setPageInError,
+              name: `Response Option ${pageIndex} ${
+                INDEX_ALPHABET_TABLE[optionIndex] ?? optionIndex + 1
+              }`,
+              parentDynamicDispatch: surveyDispatch,
+              stepperPages,
+              validValueAction: surveyAction.setResponseOptions,
+              value: responseOption,
+            }}
+          />
+        );
+
+        const deleteResponseOptionButton = (
+          <AccessibleButton
+            attributes={{
+              enabledScreenreaderText: `Delete Response Option ${pageIndex} ${
+                INDEX_ALPHABET_TABLE[optionIndex] ?? optionIndex + 1
+              }`,
+              index: optionIndex,
+              kind: "delete",
+              setIconAsLabel: true,
+              onClick: (
+                _event:
+                  | React.MouseEvent<HTMLButtonElement, MouseEvent>
+                  | React.PointerEvent<HTMLButtonElement>
+              ) => {
+                surveyDispatch({
+                  action: surveyAction.deleteResponseOption,
+                  payload: [questionIndex, optionIndex],
+                });
+              },
+            }}
+          />
+        );
+
+        const insertResponseOptionButton = (
+          <AccessibleButton
+            attributes={{
+              disabled: optionIndex === MAX_INPUTS_AMOUNT - 1,
+              disabledScreenreaderText: "Max input amount reached",
+              enabledScreenreaderText: `Insert input before Response Option${pageIndex} ${
+                INDEX_ALPHABET_TABLE[optionIndex] ?? optionIndex + 1
+              }`,
+              index: optionIndex,
+              kind: "insert",
+              setIconAsLabel: true,
+              onClick: (
+                _event:
+                  | React.MouseEvent<HTMLButtonElement, MouseEvent>
+                  | React.PointerEvent<HTMLButtonElement>
+              ) => {
+                surveyDispatch({
+                  action: surveyAction.insertResponseOption,
+                  payload: [questionIndex, optionIndex],
+                });
+              },
+            }}
+          />
+        );
+
+        const slideResponseOptionUpButton = (
+          <AccessibleButton
+            attributes={{
+              disabled: optionIndex === 0,
+              disabledScreenreaderText: "Cannot move up. Already at the top",
+              enabledScreenreaderText: `Move Response Option $${pageIndex} ${
+                INDEX_ALPHABET_TABLE[optionIndex] ?? optionIndex + 1
+              } up`,
+              index: optionIndex,
+              kind: "up",
+              setIconAsLabel: true,
+              onClick: (
+                _event:
+                  | React.MouseEvent<HTMLButtonElement, MouseEvent>
+                  | React.PointerEvent<HTMLButtonElement>
+              ) => {
+                surveyDispatch({
+                  action: surveyAction.slideResponseOptionUp,
+                  payload: [questionIndex, optionIndex],
+                });
+              },
+            }}
+          />
+        );
+
+        const slideResponseOptionDownButton = (
+          <AccessibleButton
+            attributes={{
+              disabled: optionIndex === responseOptions.length - 1,
+              disabledScreenreaderText: "Cannot move down. Already at the bottom",
+              enabledScreenreaderText: `Move Response Option ${pageIndex} ${
+                INDEX_ALPHABET_TABLE[optionIndex] ?? optionIndex + 1
+              } down`,
+              index: optionIndex,
+              kind: "down",
+              setIconAsLabel: true,
+              onClick: (
+                _event:
+                  | React.MouseEvent<HTMLButtonElement, MouseEvent>
+                  | React.PointerEvent<HTMLButtonElement>
+              ) => {
+                surveyDispatch({
+                  action: surveyAction.slideResponseOptionDown,
+                  payload: [questionIndex, optionIndex],
+                });
+              },
+            }}
+          />
+        );
+
+        return (
+          <Stack key={`${question}-${pageIndex}-${responseOption}-${optionIndex}`}>
+            {responseOptionTextAreaInput}
+            <Group>
+              {deleteResponseOptionButton}
+              {insertResponseOptionButton}
+              {slideResponseOptionUpButton}
+              {slideResponseOptionDownButton}
+            </Group>
+          </Stack>
+        );
+      }
     );
 
     return (
-      <Stack key={`${question}-${index}`}>
+      <Stack key={`${question}-${pageIndex}`}>
         {addQuestionButton}
         {questionTextInput}
         {responseKindRadioGroup}
-        {responseInputHtmlRadioGroup}
-        {responseDataOptions}
+        {responseInputsRadioGroup}
+        {responseOptionsTextInputs}
       </Stack>
     );
   });
@@ -303,8 +422,8 @@ export default Survey;
     const surveyQuestions = setSurveyQuestions({
       questions,
       responseKinds,
-      responseInputHtml,
-      responseDataOptionsArray,
+      responseInputs,
+      responseOptions,
     });
     const controller = new AbortController();
 
@@ -453,7 +572,7 @@ export default Survey;
   // set focus on new response data option input
   useEffect(() => {
     newResponseDataOptionInputRef.current?.focus();
-  }, [responseDataOptionsArray.length]);
+  }, [responseOptions.length]);
 
   // validate survey title on every change
   useEffect(() => {
@@ -535,7 +654,7 @@ export default Survey;
 
   // validate response data options on every change
   useEffect(() => {
-    const isValid = responseDataOptionsArray.map((responseDataOptions: string[]) =>
+    const isValid = responseOptions.map((responseDataOptions: string[]) =>
       responseDataOptions.map((responseDataOption) =>
         GRAMMAR_TEXT_INPUT_REGEX.test(responseDataOption)
       )
@@ -545,11 +664,11 @@ export default Survey;
       type: surveyAction.setAreResponseDataOptionsValid,
       payload: isValid,
     });
-  }, [responseDataOptionsArray, currentStepperPosition]);
+  }, [responseOptions, currentStepperPosition]);
 
   // validate max response data options on every change
   useEffect(() => {
-    responseDataOptionsArray.forEach((responseDataOptions, index) => {
+    responseOptions.forEach((responseDataOptions, index) => {
       surveyDispatch({
         type: surveyAction.setIsMaxResponseDataOptionsReached,
         payload: {
@@ -558,7 +677,7 @@ export default Survey;
         },
       });
     });
-  }, [responseDataOptionsArray]);
+  }, [responseOptions]);
 
   // create surveyStatistics on every responseDataOptions change
   useEffect(() => {
@@ -570,7 +689,7 @@ export default Survey;
     const surveyStatistics = questions.reduce(
       (surveyStatisticsAcc: SurveyStatistics[], question: string, questionIdx) => {
         // the responseDistribution object will differ according to the responseKind
-        const responseInput = responseInputHtml[questionIdx];
+        const responseInput = responseInputs[questionIdx];
 
         // regardless of the responseKind, the surveyStatistics will have the question, totalResponses and responseInput fields
         let surveyStatisticObj = addFieldsToObject({
@@ -583,7 +702,7 @@ export default Survey;
         });
 
         if (responseInput === "checkbox" || responseInput === "radio") {
-          const responseDataOptions = responseDataOptionsArray[questionIdx];
+          const responseDataOptions = responseOptions[questionIdx];
           if (!responseDataOptions) {
             return surveyStatisticsAcc;
           }
@@ -648,7 +767,7 @@ export default Survey;
       type: surveyAction.setSurveyStatistics,
       payload: surveyStatistics,
     });
-  }, [questions, responseDataOptionsArray, responseInputHtml]);
+  }, [questions, responseOptions, responseInputs]);
 
   // ensures 'Add option' button's disabled prop always receives the correct state
   useEffect(() => {
@@ -656,7 +775,7 @@ export default Survey;
     //   switch (responseKind) {
     //     case 'chooseOne': {
     //       surveyDispatch({
-    //         type: surveyAction.setResponseInputHtml,
+    //         type: surveyAction.setResponseInputs,
     //         payload: {
     //           index,
     //           value: 'radio',
@@ -666,7 +785,7 @@ export default Survey;
     //     }
     //     case 'chooseAny': {
     //       surveyDispatch({
-    //         type: surveyAction.setResponseInputHtml,
+    //         type: surveyAction.setResponseInputs,
     //         payload: {
     //           index,
     //           value: 'checkbox',
@@ -676,7 +795,7 @@ export default Survey;
     //     }
     //     case 'rating': {
     //       surveyDispatch({
-    //         type: surveyAction.setResponseInputHtml,
+    //         type: surveyAction.setResponseInputs,
     //         payload: {
     //           index,
     //           value: 'emotion',
@@ -698,7 +817,7 @@ export default Survey;
       !isValidSurveyDescription ||
       questions.length === 0 ||
       areValidQuestions.includes(false) ||
-      responseDataOptionsArray.includes([]) ||
+      responseOptions.includes([]) ||
       areResponseDataOptionsValid.flat().includes(false) ||
       pagesInError.size > 0;
 
@@ -708,8 +827,8 @@ export default Survey;
     });
   }, [
     responseKinds,
-    responseInputHtml,
-    responseDataOptionsArray,
+    responseInputs,
+    responseOptions,
     isValidSurveyTitle,
     isValidExpiryDate,
     isValidSurveyDescription,
@@ -738,8 +857,8 @@ export default Survey;
   useEffect(() => {
     areValidQuestions.forEach((isValidQuestion, index) => {
       // data options must be present for checkbox and radio inputs
-      const currentInputHtml = responseInputHtml[index];
-      const correspondingDataOptions = responseDataOptionsArray?.[index];
+      const currentInputHtml = responseInputs[index];
+      const correspondingDataOptions = responseOptions?.[index];
       const isDataOptionsPresent =
         currentInputHtml === "checkbox" || currentInputHtml === "radio"
           ? correspondingDataOptions?.length > 0
@@ -766,8 +885,8 @@ export default Survey;
     currentStepperPosition,
     areResponseDataOptionsValid,
     responseKinds,
-    responseInputHtml,
-    responseDataOptionsArray,
+    responseInputs,
+    responseOptions,
   ]);
 
   // validate stepper state on every dynamically created response data options input groups
@@ -801,8 +920,8 @@ export default Survey;
       const surveyQuestions = setSurveyQuestions({
         questions,
         responseKinds,
-        responseInputHtml,
-        responseDataOptionsArray,
+        responseInputs,
+        responseOptions,
       });
 
       surveyDispatch({
@@ -886,7 +1005,7 @@ export default Survey;
     });
 
   const responseDataOptionsErrorValidTextArrays: [JSX.Element[], JSX.Element[]][] =
-    responseDataOptionsArray.map((responseDataOptions, questionIdx) => {
+    responseOptions.map((responseDataOptions, questionIdx) => {
       const [responseDataOptionsErrorTexts, responseDataOptionsValidTexts] =
         AccessibleErrorValidTextElementsForDynamicInputs({
           semanticName: `Question ${questionIdx + 1}: option`,
@@ -1162,7 +1281,7 @@ export default Survey;
       return creatorInfoObject;
     });
 
-  const responseInputHtmlRadioGroupCreatorInfo: AccessibleRadioGroupInputCreatorInfo[] =
+  const responseInputsRadioGroupCreatorInfo: AccessibleRadioGroupInputCreatorInfo[] =
     Array.from({ length: questions.length }).map((_, index) => {
       const creatorInfoObject: AccessibleRadioGroupInputCreatorInfo = {
         description: "If radio or checkbox, data options must be present",
@@ -1174,7 +1293,7 @@ export default Survey;
         name: `html input kind for question ${index + 1}`,
         onChange: (value: string) => {
           surveyDispatch({
-            type: surveyAction.setResponseInputHtml,
+            type: surveyAction.setResponseInputs,
             payload: {
               index,
               value,
@@ -1182,7 +1301,7 @@ export default Survey;
           });
         },
         semanticName: `html input kind for question ${index + 1}`,
-        value: responseInputHtml?.[index],
+        value: responseInputs?.[index],
         required: true,
         withAsterisk: true,
       };
@@ -1192,20 +1311,20 @@ export default Survey;
 
   const responseDataOptionsTextInputCreatorInfoArray: AccessibleTextInputCreatorInfo[][] =
     Array.from({
-      length: responseDataOptionsArray?.length,
+      length: responseOptions?.length,
     }).map((_, questionIdx) => {
       const responseDataOptionsTextInputCreatorInfo: AccessibleTextInputCreatorInfo[] =
         Array.from({
-          length: responseDataOptionsArray?.[questionIdx]?.length,
+          length: responseOptions?.[questionIdx]?.length,
         }).map((_, optionIdx) => {
           const deleteResponseDataLabel = `Delete ${
             questions?.[questionIdx]?.length > 11
               ? questions?.[questionIdx].slice(0, 11) + "..."
               : questions?.[questionIdx]
           } ${questions?.[questionIdx]?.length > 0 ? ":" : ""} ${
-            responseDataOptionsArray?.[questionIdx]?.[optionIdx]?.length > 11
-              ? responseDataOptionsArray?.[questionIdx]?.[optionIdx]?.slice(0, 11) + "..."
-              : responseDataOptionsArray?.[questionIdx]?.[optionIdx]
+            responseOptions?.[questionIdx]?.[optionIdx]?.length > 11
+              ? responseOptions?.[questionIdx]?.[optionIdx]?.slice(0, 11) + "..."
+              : responseOptions?.[questionIdx]?.[optionIdx]
           } ?`;
 
           const createdDeleteResponseDataOptionButton = returnAccessibleButtonElements([
@@ -1219,7 +1338,7 @@ export default Survey;
               }`,
               buttonOnClick: () => {
                 surveyDispatch({
-                  type: surveyAction.deleteResponseDataOption,
+                  type: surveyAction.deleteResponseOption,
                   payload: {
                     questionIdx,
                     optionIdx,
@@ -1243,7 +1362,7 @@ export default Survey;
               valid:
                 responseDataOptionsErrorValidTextArrays?.[questionIdx]?.[1]?.[optionIdx],
             },
-            inputText: responseDataOptionsArray?.[questionIdx]?.[optionIdx],
+            inputText: responseOptions?.[questionIdx]?.[optionIdx],
             isValidInputText: areResponseDataOptionsValid?.[questionIdx]?.[optionIdx],
             label: `Response Option ${optionIdx + 1} for Question ${questionIdx + 1}`,
             onBlur: () => {
@@ -1258,7 +1377,7 @@ export default Survey;
             },
             onChange: (event: ChangeEvent<HTMLInputElement>) => {
               surveyDispatch({
-                type: surveyAction.setResponseDataOptions,
+                type: surveyAction.setResponseOptions,
                 payload: {
                   questionIdx,
                   optionIdx,
@@ -1280,7 +1399,7 @@ export default Survey;
             maxLength: 100,
             placeholder: "Enter a response option answer",
             ref:
-              optionIdx === responseDataOptionsArray?.[questionIdx]?.length - 1
+              optionIdx === responseOptions?.[questionIdx]?.length - 1
                 ? newResponseDataOptionInputRef
                 : null,
             semanticName: `Question ${questionIdx + 1}: option-${optionIdx + 1}`,
@@ -1291,7 +1410,7 @@ export default Survey;
             //   dynamicLabel: dynamicInputLabel,
             //   dynamicInputOnClick: () => {
             //     surveyDispatch({
-            //       type: surveyAction.deleteResponseDataOption,
+            //       type: surveyAction.deleteResponseOption,
             //       payload: {
             //         questionIdx,
             //         optionIdx,
@@ -1473,7 +1592,7 @@ export default Survey;
   const createdResponseDataOptionsTextInputs =
     responseDataOptionsTextInputCreatorInfoArray.map(
       (responseDataOptionsTextInputCreatorInfo, index) =>
-        responseInputHtml[index] === "checkbox" || responseInputHtml[index] === "radio"
+        responseInputs[index] === "checkbox" || responseInputs[index] === "radio"
           ? returnAccessibleDynamicTextInputElements(
               responseDataOptionsTextInputCreatorInfo
             )
@@ -1486,7 +1605,7 @@ export default Survey;
 
   const createdResponseInputHtmlRadioGroups =
     returnAccessibleDynamicRadioGroupInputsElements(
-      responseInputHtmlRadioGroupCreatorInfo
+      responseInputsRadioGroupCreatorInfo
     );
 
   const [
@@ -1504,7 +1623,7 @@ export default Survey;
   const createdAddNewResponseDataOptionButtons =
     addResponseDataOptionButtonCreatorInfo.map(
       (addResponseDataOptionButtonCreatorInfo, index) =>
-        responseInputHtml[index] === "checkbox" || responseInputHtml[index] === "radio"
+        responseInputs[index] === "checkbox" || responseInputs[index] === "radio"
           ? returnAccessibleButtonElements([addResponseDataOptionButtonCreatorInfo])
           : null
     );
@@ -1583,8 +1702,8 @@ export default Survey;
     questions,
     areValidQuestions,
     responseKinds,
-    responseInputHtml,
-    responseDataOptionsArray,
+    responseInputs,
+    responseOptions,
     areResponseDataOptionsValid,
   });
 

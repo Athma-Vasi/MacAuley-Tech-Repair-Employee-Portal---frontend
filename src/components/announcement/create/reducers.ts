@@ -68,7 +68,10 @@ function announcementReducer_setParagraph(
   state: AnnouncementState,
   dispatch: AnnouncementDispatch
 ): AnnouncementState {
-  const { index, value } = dispatch.payload as ParagraphPayload;
+  const {
+    dynamicIndexes: [index],
+    value,
+  } = dispatch.payload as ParagraphPayload;
   const clonedState = structuredClone(state);
   clonedState.article[index] = value;
 

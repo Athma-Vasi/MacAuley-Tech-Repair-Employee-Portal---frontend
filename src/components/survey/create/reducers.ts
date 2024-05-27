@@ -13,53 +13,29 @@ function surveyReducer(state: SurveyState, dispatch: SurveyDispatch): SurveyStat
   return reducer ? reducer(state, dispatch) : state;
 }
 
-/**
- * type SurveyAction = {
-  addQuestion: "addQuestion";
-  addStepperChilds: "addStepperChilds";
-  addStepperPage: "addStepperPage";
-  deleteAllResponseDataOptionsForQuestion: "deleteAllResponseDataOptionsForQuestion";
-  deleteQuestion: "deleteQuestion";
-  deleteResponseDataOption: "deleteResponseDataOption";
-  setExpiryDate: "setExpiryDate";
-  setIsSubmitting: "setIsSubmitting";
-  setIsSuccessful: "setIsSuccessful";
-  setPageInError: "setPageInError";
-  setPreviewSurveyProps: "setPreviewSurveyProps";
-  setQuestions: "setQuestions";
-  setResponseDataOptions: "setResponseDataOptions";
-  setResponseInputHtml: "setResponseInputHtml";
-  setResponseKinds: "setResponseKinds";
-  setSurveyDescription: "setSurveyDescription";
-  setSurveyRecipients: "setSurveyRecipients";
-  setSurveyStatistics: "setSurveyStatistics";
-  setSurveyTitle: "setSurveyTitle";
-  setTriggerFormSubmit: "setTriggerFormSubmit";
-  setTriggerPreviewSurvey: "setTriggerPreviewSurvey";
-};
- */
-
 const surveyReducers = new Map<
   SurveyAction[keyof SurveyAction],
   (state: SurveyState, dispatch: SurveyDispatch) => SurveyState
 >([
   [surveyAction.addQuestion, surveyReducer_addQuestion],
-  [surveyAction.addStepperChilds, surveyReducer_addStepperChilds],
+  [surveyAction.addResponseOption, surveyReducer_addResponseOption],
+  [surveyAction.addStepperChild, surveyReducer_addStepperChild],
   [surveyAction.addStepperPage, surveyReducer_addStepperPage],
   [
-    surveyAction.deleteAllResponseDataOptionsForQuestion,
-    surveyReducer_deleteAllResponseDataOptionsForQuestion,
+    surveyAction.deleteAllResponseOptionsForQuestion,
+    surveyReducer_deleteAllResponseOptionsForQuestion,
   ],
   [surveyAction.deleteQuestion, surveyReducer_deleteQuestion],
-  [surveyAction.deleteResponseDataOption, surveyReducer_deleteResponseDataOption],
+  [surveyAction.deleteResponseOption, surveyReducer_deleteResponseOption],
+  [surveyAction.insertResponseOption, surveyReducer_insertResponseOption],
   [surveyAction.setExpiryDate, surveyReducer_setExpiryDate],
   [surveyAction.setIsSubmitting, surveyReducer_setIsSubmitting],
   [surveyAction.setIsSuccessful, surveyReducer_setIsSuccessful],
   [surveyAction.setPageInError, surveyReducer_setPageInError],
   [surveyAction.setPreviewSurveyProps, surveyReducer_setPreviewSurveyProps],
   [surveyAction.setQuestions, surveyReducer_setQuestions],
-  [surveyAction.setResponseDataOptions, surveyReducer_setResponseDataOptions],
-  [surveyAction.setResponseInputHtml, surveyReducer_setResponseInputHtml],
+  [surveyAction.setResponseOptions, surveyReducer_setResponseOptions],
+  [surveyAction.setResponseInputs, surveyReducer_setResponseInputs],
   [surveyAction.setResponseKinds, surveyReducer_setResponseKinds],
   [surveyAction.setSurveyDescription, surveyReducer_setSurveyDescription],
   [surveyAction.setSurveyRecipients, surveyReducer_setSurveyRecipients],
@@ -67,6 +43,8 @@ const surveyReducers = new Map<
   [surveyAction.setSurveyTitle, surveyReducer_setSurveyTitle],
   [surveyAction.setTriggerFormSubmit, surveyReducer_setTriggerFormSubmit],
   [surveyAction.setTriggerPreviewSurvey, surveyReducer_setTriggerPreviewSurvey],
+  [surveyAction.slideResponseOptionDown, surveyReducer_slideResponseOptionDown],
+  [surveyAction.slideResponseOptionUp, surveyReducer_slideResponseOptionUp],
 ]);
 
 function surveyReducer_addQuestion(
@@ -77,21 +55,52 @@ function surveyReducer_addQuestion(
     ...state,
     questions: [...state.questions, ""],
     responseKinds: [...state.responseKinds, "chooseAny"],
-    responseInputHtml: [...state.responseInputHtml, "checkbox"],
-    responseDataOptionsArray: [...state.responseDataOptionsArray, []],
+    responseInputs: [...state.responseInputs, "checkbox"],
+    responseOptions: [...state.responseOptions, [""]],
   };
 }
 
-function surveyReducer_addStepperChilds(
+function surveyReducer_addResponseOption(
   state: SurveyState,
   dispatch: SurveyDispatch
 ): SurveyState {
-  const { parentIndex, value } = dispatch.payload as {
-    parentIndex: number;
-    value: StepperChild[];
+  const [pageIndex] = dispatch.payload as number[];
+  const responseOptions = [...state.responseOptions];
+  responseOptions[pageIndex].push("");
+
+  return {
+    ...state,
+    responseOptions,
   };
+}
+
+function surveyReducer_addStepperChild(
+  state: SurveyState,
+  dispatch: SurveyDispatch
+): SurveyState {
+  // const { parentIndex, value } = dispatch.payload as {
+  //   parentIndex: number;
+  //   value: StepperChild[];
+  // };
+  // const stepperPages = [...state.stepperPages];
+  // stepperPages[parentIndex].children = value;
+
+  // console.group("surveyReducer_addStepperChild");
+  // console.log("parentIndex", parentIndex);
+  // console.log("value", value);
+  // console.log("stepperPages[parentIndex].children", stepperPages[parentIndex].children);
+  // console.groupEnd();
+
+  // return {
+  //   ...state,
+  //   stepperPages,
+  // };
+  const {
+    dynamicIndexes: [pageIndex],
+    value,
+  } = dispatch.payload as { dynamicIndexes: number[]; value: StepperChild };
   const stepperPages = [...state.stepperPages];
-  stepperPages[parentIndex].children = value;
+  stepperPages[pageIndex].children.push(value);
 
   return {
     ...state,
@@ -103,30 +112,57 @@ function surveyReducer_addStepperPage(
   state: SurveyState,
   dispatch: SurveyDispatch
 ): SurveyState {
-  const { parentIndex, payload } = dispatch.payload as {
-    parentIndex: number;
-    payload: StepperPage;
-  };
-  const first = state.stepperPages.slice(0, parentIndex);
-  const last = state.stepperPages.slice(parentIndex);
+  // const { parentIndex, payload } = dispatch.payload as {
+  //   parentIndex: number;
+  //   payload: StepperPage;
+  // };
+  // const first = state.stepperPages.slice(0, parentIndex);
+  // const last = state.stepperPages.slice(parentIndex);
+
+  // return {
+  //   ...state,
+  //   stepperPages: [...first, payload, ...last],
+  // };
+  const {
+    dynamicIndexes: [pageIndex],
+    value,
+  } = dispatch.payload as { dynamicIndexes: number[]; value: StepperPage };
+  const stepperPages = [...state.stepperPages];
+  const first = stepperPages.slice(0, pageIndex);
+  const last = stepperPages.slice(pageIndex);
+
+  console.group("surveyReducer_addStepperPage");
+  console.log("pageIndex", pageIndex);
+  console.log("value", value);
+  console.log("first", first);
+  console.log("last", last);
+  console.groupEnd();
 
   return {
     ...state,
-    stepperPages: [...first, payload, ...last],
+    stepperPages: [...first, value, ...last],
   };
 }
 
-function surveyReducer_deleteAllResponseDataOptionsForQuestion(
+function surveyReducer_deleteAllResponseOptionsForQuestion(
   state: SurveyState,
   dispatch: SurveyDispatch
 ): SurveyState {
-  const index = dispatch.payload as number;
-  const responseDataOptionsArray = [...state.responseDataOptionsArray];
-  responseDataOptionsArray[index] = [];
+  // const index = dispatch.payload as number;
+  // const responseOptions = [...state.responseOptions];
+  // responseOptions[index] = [];
+
+  // return {
+  //   ...state,
+  //   responseOptions,
+  // };
+  const [pageIndex] = dispatch.payload as number[];
+  const responseOptions = [...state.responseOptions];
+  responseOptions[pageIndex] = [];
 
   return {
     ...state,
-    responseDataOptionsArray,
+    responseOptions,
   };
 }
 
@@ -134,42 +170,85 @@ function surveyReducer_deleteQuestion(
   state: SurveyState,
   dispatch: SurveyDispatch
 ): SurveyState {
-  const index = dispatch.payload as number;
+  // const index = dispatch.payload as number;
+  // const questions = [...state.questions];
+  // questions.splice(index, 1);
+
+  // const responseKinds = [...state.responseKinds];
+  // responseKinds.splice(index, 1);
+
+  // const responseInputs = [...state.responseInputs];
+  // responseInputs.splice(index, 1);
+
+  // const responseOptions = [...state.responseOptions];
+  // responseOptions.splice(index, 1);
+
+  // return {
+  //   ...state,
+  //   questions,
+  //   responseKinds,
+  //   responseInputs,
+  //   responseOptions,
+  // };
+  const [pageIndex] = dispatch.payload as number[];
   const questions = [...state.questions];
-  questions.splice(index, 1);
+  questions.splice(pageIndex, 1);
 
   const responseKinds = [...state.responseKinds];
-  responseKinds.splice(index, 1);
+  responseKinds.splice(pageIndex, 1);
 
-  const responseInputHtml = [...state.responseInputHtml];
-  responseInputHtml.splice(index, 1);
+  const responseInputs = [...state.responseInputs];
+  responseInputs.splice(pageIndex, 1);
 
-  const responseDataOptionsArray = [...state.responseDataOptionsArray];
-  responseDataOptionsArray.splice(index, 1);
+  const responseOptions = [...state.responseOptions];
+  responseOptions.splice(pageIndex, 1);
 
   return {
     ...state,
     questions,
     responseKinds,
-    responseInputHtml,
-    responseDataOptionsArray,
+    responseInputs,
+    responseOptions,
   };
 }
 
-function surveyReducer_deleteResponseDataOption(
+function surveyReducer_deleteResponseOption(
   state: SurveyState,
   dispatch: SurveyDispatch
 ): SurveyState {
-  const { questionIndex, optionsIndex } = dispatch.payload as {
-    questionIndex: number;
-    optionsIndex: number;
-  };
-  const responseDataOptionsArray = [...state.responseDataOptionsArray];
-  responseDataOptionsArray[questionIndex].splice(optionsIndex, 1);
+  // const { questionIndex, optionsIndex } = dispatch.payload as {
+  //   questionIndex: number;
+  //   optionsIndex: number;
+  // };
+  // const responseOptions = [...state.responseOptions];
+  // responseOptions[questionIndex].splice(optionsIndex, 1);
+
+  // return {
+  //   ...state,
+  //   responseOptions,
+  // };
+
+  const [pageIndex, optionIndex] = dispatch.payload as number[];
+  const responseOptions = [...state.responseOptions];
+  responseOptions[pageIndex].splice(optionIndex, 1);
 
   return {
     ...state,
-    responseDataOptionsArray,
+    responseOptions,
+  };
+}
+
+function surveyReducer_insertResponseOption(
+  state: SurveyState,
+  dispatch: SurveyDispatch
+): SurveyState {
+  const [pageIndex, optionIndex] = dispatch.payload as number[];
+  const responseOptions = [...state.responseOptions];
+  responseOptions[pageIndex].splice(optionIndex, 0, "");
+
+  return {
+    ...state,
+    responseOptions,
   };
 }
 
@@ -217,12 +296,27 @@ function surveyReducer_setQuestions(
   state: SurveyState,
   dispatch: SurveyDispatch
 ): SurveyState {
-  const { index, payload } = dispatch.payload as {
-    index: number;
-    payload: string;
+  // const { index, payload } = dispatch.payload as {
+  //   index: number;
+  //   payload: string;
+  // };
+  // const questions = [...state.questions];
+  // questions[index] = payload;
+
+  // return {
+  //   ...state,
+  //   questions,
+  // };
+  const {
+    dynamicIndexes: [pageIndex],
+    value,
+  } = dispatch.payload as {
+    dynamicIndexes: number[];
+    value: string;
   };
+
   const questions = [...state.questions];
-  questions[index] = payload;
+  questions[pageIndex] = value;
 
   return {
     ...state,
@@ -230,21 +324,49 @@ function surveyReducer_setQuestions(
   };
 }
 
-function surveyReducer_setResponseDataOptions(
+function surveyReducer_setResponseOptions(
   state: SurveyState,
   dispatch: SurveyDispatch
 ): SurveyState {
-  const { inputIndex, parentIndex, value } = dispatch.payload as {
-    parentIndex: number;
-    inputIndex: number;
-    value: string;
-  };
-  const responseDataOptionsArray = [...state.responseDataOptionsArray];
-  responseDataOptionsArray[parentIndex][inputIndex] = value;
+  // const { inputIndex, parentIndex, value } = dispatch.payload as {
+  //   parentIndex: number;
+  //   inputIndex: number;
+  //   value: string;
+  // };
+  // const responseOptions = [...state.responseOptions];
+  // const prevValue = responseOptions[parentIndex][inputIndex];
+  // Array.isArray(prevValue)
+  //   ? prevValue.push(value)
+  //   : (responseOptions[parentIndex][inputIndex] = value);
+
+  // console.group("surveyReducer_setResponseOptions");
+  // console.log("parentIndex", parentIndex);
+  // console.log("inputIndex", inputIndex);
+  // console.log("value", value);
+  // console.groupEnd();
+
+  // return {
+  //   ...state,
+  //   responseOptions,
+  // };
+
+  const {
+    dynamicIndexes: [questionIndex, optionIndex],
+    value,
+  } = dispatch.payload as { dynamicIndexes: number[]; value: string };
+
+  console.group("surveyReducer_setResponseOptions");
+  console.log("questionIndex", questionIndex);
+  console.log("optionIndex", optionIndex);
+  console.log("value", value);
+  console.groupEnd();
+
+  const responseOptions = structuredClone(state.responseOptions);
+  responseOptions[questionIndex][optionIndex] = value;
 
   return {
     ...state,
-    responseDataOptionsArray,
+    responseOptions,
   };
 }
 
@@ -252,12 +374,26 @@ function surveyReducer_setResponseKinds(
   state: SurveyState,
   dispatch: SurveyDispatch
 ): SurveyState {
-  const { index, payload } = dispatch.payload as {
-    index: number;
-    payload: SurveyResponseKind;
+  // const { index, payload } = dispatch.payload as {
+  //   index: number;
+  //   payload: SurveyResponseKind;
+  // };
+  // const responseKinds = [...state.responseKinds];
+  // responseKinds[index] = payload;
+
+  // return {
+  //   ...state,
+  //   responseKinds,
+  // };
+  const {
+    dynamicIndexes: [pageIndex],
+    value,
+  } = dispatch.payload as {
+    dynamicIndexes: number[];
+    value: SurveyResponseKind;
   };
   const responseKinds = [...state.responseKinds];
-  responseKinds[index] = payload;
+  responseKinds[pageIndex] = value;
 
   return {
     ...state,
@@ -265,20 +401,31 @@ function surveyReducer_setResponseKinds(
   };
 }
 
-function surveyReducer_setResponseInputHtml(
+function surveyReducer_setResponseInputs(
   state: SurveyState,
   dispatch: SurveyDispatch
 ): SurveyState {
-  const { index, payload } = dispatch.payload as {
-    index: number;
-    payload: SurveyResponseInput;
-  };
-  const responseInputHtml = [...state.responseInputHtml];
-  responseInputHtml[index] = payload;
+  // const { index, payload } = dispatch.payload as {
+  //   index: number;
+  //   payload: SurveyResponseInput;
+  // };
+  // const responseInputs = [...state.responseInputs];
+  // responseInputs[index] = payload;
+
+  // return {
+  //   ...state,
+  //   responseInputs,
+  // };
+  const {
+    dynamicIndexes: [pageIndex],
+    value,
+  } = dispatch.payload as { dynamicIndexes: number[]; value: SurveyResponseInput };
+  const responseInputs = [...state.responseInputs];
+  responseInputs[pageIndex] = value;
 
   return {
     ...state,
-    responseInputHtml,
+    responseInputs,
   };
 }
 
@@ -357,6 +504,36 @@ function surveyReducer_setIsSuccessful(
   return {
     ...state,
     isSuccessful: dispatch.payload as boolean,
+  };
+}
+
+function surveyReducer_slideResponseOptionDown(
+  state: SurveyState,
+  dispatch: SurveyDispatch
+): SurveyState {
+  const [pageIndex, optionIndex] = dispatch.payload as number[];
+  const responseOptions = [...state.responseOptions];
+  const option = responseOptions[pageIndex].splice(optionIndex, 1)[0];
+  responseOptions[pageIndex].splice(optionIndex + 1, 0, option);
+
+  return {
+    ...state,
+    responseOptions,
+  };
+}
+
+function surveyReducer_slideResponseOptionUp(
+  state: SurveyState,
+  dispatch: SurveyDispatch
+): SurveyState {
+  const [pageIndex, optionIndex] = dispatch.payload as number[];
+  const responseOptions = [...state.responseOptions];
+  const option = responseOptions[pageIndex].splice(optionIndex, 1)[0];
+  responseOptions[pageIndex].splice(optionIndex - 1, 0, option);
+
+  return {
+    ...state,
+    responseOptions,
   };
 }
 

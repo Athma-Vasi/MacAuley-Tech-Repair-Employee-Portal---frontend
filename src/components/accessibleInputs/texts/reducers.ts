@@ -64,11 +64,12 @@ function accessibleTextInputsReducer_setInputValue(
   state: AccessibleTextInputsState,
   dispatch: AccessibleTextInputsDispatch
 ): AccessibleTextInputsState {
-  const { index, value } = dispatch.payload as { index: number; value: string };
-  const clonedState = structuredClone(state);
-  clonedState.textValues[index] = value;
+  // const { index, value } = dispatch.payload as { dynamicIndexes: number[]; value: string };
+  // const clonedState = structuredClone(state);
+  // clonedState.textValues[index] = value;
 
-  return clonedState;
+  // return clonedState;
+  return state;
 }
 
 function accessibleTextInputsReducer_setPageInError(

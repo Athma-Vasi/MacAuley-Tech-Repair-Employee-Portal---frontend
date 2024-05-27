@@ -9,7 +9,7 @@ type AccessibleTextInputsAttributes<
   AddStepperChildAction extends string = string
 > = {
   disableds?: boolean[];
-  parentIndex?: number;
+  dynamicIndexes: number[];
   invalidValueAction: InvalidValueAction;
   labels?: ReactNode[];
   maxInputsAmount?: number;
@@ -18,27 +18,10 @@ type AccessibleTextInputsAttributes<
   onClicks?: Array<(event: MouseEvent<HTMLInputElement>) => void>;
   onFocuses?: Array<(event: FocusEvent<HTMLInputElement>) => void>;
   page: number;
-  parentDispatch?: Dispatch<
+  parentDynamicDispatch: Dispatch<
     | {
         action: ValidValueAction;
-        payload: {
-          inputIndex: number;
-          value: string;
-        };
-      }
-    | {
-        action: InvalidValueAction;
-        payload: SetPageInErrorPayload;
-      }
-    | {
-        action: AddStepperChildAction;
-        payload: StepperChild[];
-      }
-  >;
-  parentDynamicDispatch?: Dispatch<
-    | {
-        action: ValidValueAction;
-        payload: { parentIndex: number; inputIndex: number; value: string };
+        payload: { dynamicIndexes: number[]; value: string };
       }
     | {
         action: InvalidValueAction;
@@ -47,7 +30,7 @@ type AccessibleTextInputsAttributes<
     | {
         action: AddStepperChildAction;
         payload: {
-          parentIndex: number;
+          dynamicIndexes: number[];
           value: StepperChild[];
         };
       }
@@ -83,10 +66,6 @@ type AccessibleTextInputsDispatch =
   | {
       action: AccessibleTextInputsAction["deleteInput"];
       payload: number;
-    }
-  | {
-      action: AccessibleTextInputsAction["setInputValue"];
-      payload: { index: number; value: string };
     }
   | {
       action: AccessibleTextInputsAction["slideInputUp"];

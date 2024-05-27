@@ -29,8 +29,9 @@ type AccessibleTextAreaInputAttributes<
   ariaAutoComplete?: "both" | "list" | "none" | "inline";
   autoComplete?: "on" | "off";
   disabled?: boolean;
+  /** [pageIndex, pagePositionIndex, ...] */
+  dynamicIndexes?: number[];
   icon?: ReactNode;
-  index?: number;
   initialInputValue?: string;
   label?: ReactNode;
   maxLength?: number;
@@ -54,11 +55,12 @@ type AccessibleTextAreaInputAttributes<
         payload: SetPageInErrorPayload;
       }
   >;
+  /** for inputs created by user */
   parentDynamicDispatch?: Dispatch<
     | {
         action: ValidValueAction;
         payload: {
-          index: number;
+          dynamicIndexes: number[];
           value: string;
         };
       }
@@ -96,8 +98,8 @@ function AccessibleTextAreaInput<
     ariaAutoComplete = "none",
     autoComplete = "off",
     disabled = false,
+    dynamicIndexes,
     icon = null,
-    index,
     initialInputValue = "",
     maxLength = 2000,
     maxRows = 7,
@@ -132,8 +134,8 @@ function AccessibleTextAreaInput<
 
   // required because valueBuffer still has stale value on dynamic inputs
   useEffect(() => {
-    index === undefined ? void 0 : setValueBuffer(value);
-  }, [index, value]);
+    dynamicIndexes === undefined ? void 0 : setValueBuffer(value);
+  }, [dynamicIndexes, value]);
 
   const {
     globalState: { themeObject },
@@ -228,7 +230,7 @@ function AccessibleTextAreaInput<
             minRows={minRows}
             name={name}
             onBlur={(event: FocusEvent<HTMLTextAreaElement>) => {
-              if (index === undefined) {
+              if (dynamicIndexes === undefined) {
                 parentDispatch?.({
                   action: invalidValueAction,
                   payload: {
@@ -252,7 +254,7 @@ function AccessibleTextAreaInput<
 
                 parentDynamicDispatch?.({
                   action: validValueAction,
-                  payload: { index, value: valueBuffer },
+                  payload: { dynamicIndexes, value: valueBuffer },
                 });
               }
 
@@ -293,32 +295,3 @@ function AccessibleTextAreaInput<
 export { AccessibleTextAreaInput };
 
 export type { AccessibleTextAreaInputAttributes };
-
-/**
- *   const initialAccessibleTextAreaState = {
-    valueBuffer: value,
-  };
-  type AccessibleTextAreaDispatch = {
-    action: "setValueBuffer";
-    payload: string;
-  };
-  function accessibleTextAreaReducer(
-    state: typeof initialAccessibleTextAreaState,
-    dispatch: AccessibleTextAreaDispatch
-  ) {
-    switch (dispatch.action) {
-      case "setValueBuffer":
-        return {
-          ...state,
-          valueBuffer: dispatch.payload,
-        };
-      default:
-        return state;
-    }
-  }
-  const [accessibleTextAreaState, accessibleTextAreaDispatch] = useReducer(
-    accessibleTextAreaReducer,
-    initialAccessibleTextAreaState
-  );
-  const { valueBuffer } = accessibleTextAreaState;
- */

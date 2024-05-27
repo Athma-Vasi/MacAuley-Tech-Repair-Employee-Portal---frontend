@@ -220,7 +220,7 @@ function Announcement() {
         AnnouncementAction["setPageInError"]
       >
         attributes={{
-          index,
+          dynamicIndexes: [index],
           invalidValueAction: announcementAction.setPageInError,
           name: `paragraph ${index + 1}`,
           parentDynamicDispatch: announcementDispatch,

@@ -73,21 +73,21 @@ function groupMergedQuestionsByAmount({
 type SetSurveyQuestionsInput = {
   questions: string[];
   responseKinds: string[];
-  responseInputHtml: string[];
-  responseDataOptionsArray: string[][];
+  responseInputs: string[];
+  responseOptions: string[][];
 };
 
 function setSurveyQuestions({
   questions,
   responseKinds,
-  responseInputHtml,
-  responseDataOptionsArray,
+  responseInputs,
+  responseOptions,
 }: SetSurveyQuestionsInput): SurveyQuestions[] {
-  // replace empty values in responseDataOptionsArray with empty array
-  // because dynamic input creation in Survey.tsx creates empty values in responseDataOptionsArray, areResponseDataOptions${Valid, Focused}
+  // replace empty values in responseOptions with empty array
+  // because dynamic input creation in Survey.tsx creates empty values in responseOptions, areResponseDataOptions${Valid, Focused}
   // @see https://stackoverflow.com/questions/61700308/replace-the-empty-element-of-an-array-with-another-array-or-with-another-element
-  responseDataOptionsArray = Array.from(responseDataOptionsArray, (arr, idx) =>
-    idx in responseDataOptionsArray ? arr : []
+  responseOptions = Array.from(responseOptions, (arr, idx) =>
+    idx in responseOptions ? arr : []
   );
 
   return questions.reduce((surveyQuestions: SurveyQuestions[], question, questionIdx) => {
@@ -96,12 +96,10 @@ function setSurveyQuestions({
       fieldValuesTuples: [
         ["question", question],
         ["responseKind", responseKinds[questionIdx]],
-        ["responseInput", responseInputHtml[questionIdx]],
+        ["responseInput", responseInputs[questionIdx]],
         [
           "responseDataOptions",
-          questionIdx > responseDataOptionsArray.length - 1
-            ? []
-            : responseDataOptionsArray[questionIdx],
+          questionIdx > responseOptions.length - 1 ? [] : responseOptions[questionIdx],
         ] ?? [],
       ],
     }) as SurveyQuestions;
@@ -116,8 +114,8 @@ type CreateSurveyFormReviewObjectInput = {
   questions: string[];
   areValidQuestions: boolean[];
   responseKinds: string[];
-  responseInputHtml: string[];
-  responseDataOptionsArray: string[][];
+  responseInputs: string[];
+  responseOptions: string[][];
   areResponseDataOptionsValid: boolean[][];
 };
 /**
@@ -128,8 +126,8 @@ function createSurveyFormReviewObject({
   questions,
   areValidQuestions,
   responseKinds,
-  responseInputHtml,
-  responseDataOptionsArray,
+  responseInputs,
+  responseOptions,
   areResponseDataOptionsValid,
 }: CreateSurveyFormReviewObjectInput): FormReviewObjectArray {
   // only add to form review object if there are questions
@@ -171,7 +169,7 @@ function createSurveyFormReviewObject({
 
       // add response input to form review object
       const inputName = "Response input";
-      const inputValue = splitCamelCase(responseInputHtml[questionIdx]);
+      const inputValue = splitCamelCase(responseInputs[questionIdx]);
       const isInputValueValid = true;
 
       formReviewObjectAcc[modifiedQuestion].push({
@@ -181,12 +179,12 @@ function createSurveyFormReviewObject({
       });
 
       // only add response data options to form review object if there are response data options
-      if (!responseDataOptionsArray[questionIdx]) {
+      if (!responseOptions[questionIdx]) {
         return formReviewObjectAcc;
       }
 
       // add response data options to form review object
-      const questionObjectArray = responseDataOptionsArray[questionIdx].map(
+      const questionObjectArray = responseOptions[questionIdx].map(
         (responseDataOption: string, responseDataOptionIdx) => {
           const inputName = `Option ${responseDataOptionIdx + 1}`;
           const inputValue = responseDataOption;

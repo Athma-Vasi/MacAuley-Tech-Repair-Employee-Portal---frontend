@@ -4,7 +4,6 @@ import {
   MantineSize,
   Popover,
   Stack,
-  Text,
   TextInput,
   Tooltip,
 } from "@mantine/core";
@@ -36,9 +35,9 @@ type AccessibleTextInputAttributes<
   ariaAutoComplete?: "both" | "list" | "none" | "inline";
   autoComplete?: "on" | "off";
   disabled?: boolean;
-  dynamicInputs?: ReactNode[]; // inputs created on demand by user
   icon?: ReactNode;
-  index?: number;
+  /** [pageIndex, pagePositionIndex, ...] */
+  dynamicIndexes?: number[];
   initialInputValue?: string;
   value: string;
   label?: ReactNode;
@@ -59,12 +58,13 @@ type AccessibleTextInputAttributes<
         payload: SetPageInErrorPayload;
       }
   >;
+  /** for inputs created by user */
   parentDynamicDispatch?: Dispatch<
     | {
         action: ValidValueAction;
         payload: {
-          index: number;
-          payload: string;
+          dynamicIndexes: number[];
+          value: string;
         };
       }
     | {
@@ -102,9 +102,8 @@ function AccessibleTextInput<
     ariaAutoComplete = "none",
     autoComplete = "off",
     disabled = false,
-    dynamicInputs = null,
     icon = null,
-    index,
+    dynamicIndexes,
     initialInputValue = "",
     invalidValueAction,
     maxLength = 75,
@@ -132,15 +131,6 @@ function AccessibleTextInput<
 
   const label = attributes.label ?? splitCamelCase(name);
 
-  // const initialAccessibleTextInputState: AccessibleTextInputState = {
-  //   valueBuffer: value,
-  // };
-  // const [accessibleTextInputState, accessibleTextInputDispatch] = useReducer(
-  //   accessibleTextInputReducer,
-  //   initialAccessibleTextInputState
-  // );
-  // const { valueBuffer } = accessibleTextInputState;
-
   const [valueBuffer, setValueBuffer] = useState<string>(value);
   const [isPopoverOpened, { open: openPopover, close: closePopover }] =
     useDisclosure(false);
@@ -152,17 +142,6 @@ function AccessibleTextInput<
   const {
     generalColors: { greenColorShade, grayColorShade },
   } = returnThemeColors({ themeObject, colorsSwatches: COLORS_SWATCHES });
-
-  const dynamicInputLabel = dynamicInputs ? (
-    <Group w="100%" position="apart" py="sm">
-      <Text size="sm">{label}</Text>
-      {dynamicInputs.map((input, index) => (
-        <Group key={`${index}`}>{input}</Group>
-      ))}
-    </Group>
-  ) : (
-    label
-  );
 
   const rightIcon = rightSection ? (
     rightSectionIcon ? (
@@ -239,12 +218,12 @@ function AccessibleTextInput<
             disabled={disabled}
             error={!isValueBufferValid && valueBuffer !== initialInputValue}
             icon={leftIcon}
-            label={dynamicInputLabel}
+            label={label}
             maxLength={maxLength}
             minLength={minLength}
             name={name}
             onBlur={() => {
-              if (index === undefined) {
+              if (dynamicIndexes === undefined) {
                 parentDispatch?.({
                   action: invalidValueAction,
                   payload: {
@@ -263,13 +242,12 @@ function AccessibleTextInput<
                   payload: {
                     kind: isValueBufferValid ? "delete" : "add",
                     page,
-                    index,
                   },
                 });
 
                 parentDynamicDispatch?.({
                   action: validValueAction,
-                  payload: { index, payload: valueBuffer },
+                  payload: { dynamicIndexes, value: valueBuffer },
                 });
               }
 

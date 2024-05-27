@@ -1,49 +1,57 @@
 type SurveyAction = {
   addQuestion: "addQuestion";
-  addStepperChilds: "addStepperChilds";
+  addResponseOption: "addResponseOption";
+  addStepperChild: "addStepperChild";
   addStepperPage: "addStepperPage";
-  deleteAllResponseDataOptionsForQuestion: "deleteAllResponseDataOptionsForQuestion";
+  deleteAllResponseOptionsForQuestion: "deleteAllResponseOptionsForQuestion";
   deleteQuestion: "deleteQuestion";
-  deleteResponseDataOption: "deleteResponseDataOption";
+  deleteResponseOption: "deleteResponseOption";
+  insertResponseOption: "insertResponseOption";
   setExpiryDate: "setExpiryDate";
   setIsSubmitting: "setIsSubmitting";
   setIsSuccessful: "setIsSuccessful";
   setPageInError: "setPageInError";
   setPreviewSurveyProps: "setPreviewSurveyProps";
   setQuestions: "setQuestions";
-  setResponseDataOptions: "setResponseDataOptions";
-  setResponseInputHtml: "setResponseInputHtml";
+  setResponseInputs: "setResponseInputs";
   setResponseKinds: "setResponseKinds";
+  setResponseOptions: "setResponseOptions";
   setSurveyDescription: "setSurveyDescription";
   setSurveyRecipients: "setSurveyRecipients";
   setSurveyStatistics: "setSurveyStatistics";
   setSurveyTitle: "setSurveyTitle";
   setTriggerFormSubmit: "setTriggerFormSubmit";
   setTriggerPreviewSurvey: "setTriggerPreviewSurvey";
+  slideResponseOptionDown: "slideResponseOptionDown";
+  slideResponseOptionUp: "slideResponseOptionUp";
 };
 
 const surveyAction: SurveyAction = {
   addQuestion: "addQuestion",
-  addStepperChilds: "addStepperChilds",
+  addResponseOption: "addResponseOption",
+  addStepperChild: "addStepperChild",
   addStepperPage: "addStepperPage",
-  deleteAllResponseDataOptionsForQuestion: "deleteAllResponseDataOptionsForQuestion",
+  deleteAllResponseOptionsForQuestion: "deleteAllResponseOptionsForQuestion",
   deleteQuestion: "deleteQuestion",
-  deleteResponseDataOption: "deleteResponseDataOption",
+  deleteResponseOption: "deleteResponseOption",
+  insertResponseOption: "insertResponseOption",
   setExpiryDate: "setExpiryDate",
   setIsSubmitting: "setIsSubmitting",
   setIsSuccessful: "setIsSuccessful",
   setPageInError: "setPageInError",
   setPreviewSurveyProps: "setPreviewSurveyProps",
   setQuestions: "setQuestions",
-  setResponseDataOptions: "setResponseDataOptions",
-  setResponseInputHtml: "setResponseInputHtml",
+  setResponseInputs: "setResponseInputs",
   setResponseKinds: "setResponseKinds",
+  setResponseOptions: "setResponseOptions",
   setSurveyDescription: "setSurveyDescription",
   setSurveyRecipients: "setSurveyRecipients",
   setSurveyStatistics: "setSurveyStatistics",
   setSurveyTitle: "setSurveyTitle",
   setTriggerFormSubmit: "setTriggerFormSubmit",
   setTriggerPreviewSurvey: "setTriggerPreviewSurvey",
+  slideResponseOptionDown: "slideResponseOptionDown",
+  slideResponseOptionUp: "slideResponseOptionUp",
 };
 
 export { surveyAction };

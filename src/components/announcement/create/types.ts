@@ -106,7 +106,7 @@ type AnnouncementDispatch =
     };
 
 type ParagraphPayload = {
-  index: number;
+  dynamicIndexes: number[];
   value: string;
 };
 
