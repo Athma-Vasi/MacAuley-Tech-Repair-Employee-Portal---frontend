@@ -50,11 +50,6 @@ function AccessibleStepper({ attributes }: AccessibleStepperProps) {
 
   const maxStep = stepperPages.length;
 
-  // useEffect(() => {
-  //   const newActivePage = maxStep - 3;
-  //   setActiveStep(newActivePage);
-  // }, [maxStep]);
-
   const [backButton, nextButton] = createAccessibleButtons([
     {
       disabledScreenreaderText: "You are on the first step",
@@ -65,7 +60,7 @@ function AccessibleStepper({ attributes }: AccessibleStepperProps) {
       kind: "previous",
       name: "Back",
       onClick: (event: React.MouseEvent<HTMLButtonElement>) => {
-        setStepsInError(returnStepsInError(stepperPages, componentState));
+        setStepsInError(returnStepsInError(componentState, stepperPages));
         setActiveStep(activeStep <= maxStep ? activeStep - 1 : activeStep);
         onPreviousClick?.(event);
       },
@@ -79,7 +74,7 @@ function AccessibleStepper({ attributes }: AccessibleStepperProps) {
       kind: "next",
       name: "Next",
       onClick: (event: React.MouseEvent<HTMLButtonElement>) => {
-        setStepsInError(returnStepsInError(stepperPages, componentState));
+        setStepsInError(returnStepsInError(componentState, stepperPages));
         setActiveStep(activeStep < maxStep + 1 ? activeStep + 1 : activeStep);
         onNextClick?.(event);
       },
@@ -159,8 +154,8 @@ function AccessibleStepper({ attributes }: AccessibleStepperProps) {
 }
 
 function returnStepsInError(
-  stepperPages: StepperPage[],
-  componentState: Record<string, unknown>
+  componentState: Record<string, unknown>,
+  stepperPages: StepperPage[]
 ): boolean[] {
   return stepperPages.reduce<boolean[]>(
     (stepsAcc, page, index) => {
@@ -172,6 +167,9 @@ function returnStepsInError(
 
       children.forEach((child) => {
         const { name: childName } = child;
+        console.group("returnStepsInError() - Child");
+        console.log({ childName });
+        console.groupEnd();
 
         Object.entries(componentState).forEach(([stateKey, stateValue]) => {
           if (childName === stateKey) {
@@ -203,6 +201,10 @@ function returnStepsInError(
             if (!isStepValid) {
               stepsAcc[index] = true;
             }
+
+            console.group("returnStepsInError() - Validation results");
+            console.log({ childName, isStepValid, value });
+            console.groupEnd();
           }
         });
       });
@@ -214,41 +216,3 @@ function returnStepsInError(
 }
 
 export { AccessibleStepper };
-
-/**
- * function createValuesRegexes<
-    ComponentState extends Record<string, unknown> = Record<string, unknown>
-  >(stepperPages: StepperPage[], state: ComponentState): ValuesRegexes[] {
-    return stepperPages.reduce<ValuesRegexes[]>((valuesRegexesAcc, page) => {
-      const pageValues = page.children.reduce<ValuesRegexes>((pageAcc, child) => {
-        if (child.regexes) {
-          const {
-            regexes: { full },
-            name: childName,
-          } = child;
-
-          const value = Object.entries(state).reduce(
-            (valueAcc, [stateKey, stateValue]) => {
-              if (stateKey === childName) {
-                typeof stateValue === "string" || typeof stateValue === "boolean"
-                  ? (valueAcc = stateValue.toString())
-                  : (valueAcc = "");
-              }
-
-              return valueAcc;
-            },
-            ""
-          );
-
-          pageAcc.push({ fullRegex: full, value });
-        }
-
-        return pageAcc;
-      }, []);
-
-      valuesRegexesAcc.push(pageValues);
-
-      return valuesRegexesAcc;
-    }, []);
-  }
- */

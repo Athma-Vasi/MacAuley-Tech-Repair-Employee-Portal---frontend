@@ -195,7 +195,13 @@ const SURVEY_AGREE_DISAGREE_RESPONSE_DATA_OPTIONS: RadioGroupInputData = [
   },
 ];
 
-const SURVEY_RESPONSE_INPUTS = ["agreeDisagree", "radio", "checkbox", "emotion", "stars"];
+const SURVEY_RESPONSE_INPUTS: SurveyResponseInput[] = [
+  "agreeDisagree",
+  "radio",
+  "checkbox",
+  "emotion",
+  "stars",
+];
 
 const SURVEY_QUERY_DATA: ComponentQueryData[] = [
   {

@@ -1,5 +1,11 @@
 import { Flex, Group, Text } from "@mantine/core";
 
+import { PROPERTY_DESCRIPTOR } from "../../../constants/data";
+import { StepperPage } from "../../../types";
+import { INDEX_ALPHABET_TABLE } from "../constants";
+import { SurveyResponseInput, SurveyResponseKind } from "../types";
+import { SurveyState } from "./types";
+
 const SURVEY_HELP_TEXT = (
   <Flex direction="column" align="center" justify="flex-start" rowGap="xs">
     <Text>
@@ -44,4 +50,94 @@ const SURVEY_HELP_TEXT = (
   </Flex>
 );
 
-export { SURVEY_HELP_TEXT };
+function returnCorrectResponseInputData(
+  responseKind: SurveyResponseKind
+): SurveyResponseInput[] {
+  return responseKind === "chooseOne"
+    ? ["radio"]
+    : responseKind === "chooseAny"
+    ? ["checkbox"]
+    : ["emotion", "stars"];
+}
+
+/** flattens state into stepper-friendly format for review page */
+function makeSurveyStateForStepper(state: SurveyState): SurveyState {
+  return Object.entries(state).reduce<SurveyState>((stateAcc, [stateKey, stateValue]) => {
+    switch (stateKey) {
+      case "questions": {
+        Array.isArray(stateValue)
+          ? stateValue.forEach((question, questionIdx) => {
+              Object.defineProperty(stateAcc, `question ${questionIdx + 1}`, {
+                value: question,
+                ...PROPERTY_DESCRIPTOR,
+              });
+            })
+          : void 0;
+
+        break;
+      }
+
+      case "responseKinds": {
+        Array.isArray(stateValue)
+          ? stateValue.forEach((responseKind, responseKindIdx) => {
+              Object.defineProperty(stateAcc, `responseKinds ${responseKindIdx + 1}`, {
+                value: responseKind,
+                ...PROPERTY_DESCRIPTOR,
+              });
+            })
+          : void 0;
+
+        break;
+      }
+
+      case "responseInputs": {
+        Array.isArray(stateValue)
+          ? stateValue.forEach((responseInput, responseInputIdx) => {
+              Object.defineProperty(stateAcc, `responseInputs ${responseInputIdx + 1}`, {
+                value: responseInput,
+                ...PROPERTY_DESCRIPTOR,
+              });
+            })
+          : void 0;
+
+        break;
+      }
+
+      case "responseOptions": {
+        Array.isArray(stateValue)
+          ? stateValue.forEach((responseOptions, responseOptionsIdx) => {
+              Array.isArray(responseOptions)
+                ? responseOptions.forEach((responseOption, responseOptionIdx) => {
+                    Object.defineProperty(
+                      stateAcc,
+                      `responseOption ${responseOptionsIdx + 1} ${
+                        INDEX_ALPHABET_TABLE[responseOptionIdx] ?? responseOptionIdx + 1
+                      }`,
+                      {
+                        value: responseOption,
+                        ...PROPERTY_DESCRIPTOR,
+                      }
+                    );
+                  })
+                : void 0;
+            })
+          : void 0;
+
+        break;
+      }
+
+      default: {
+        Object.defineProperty(stateAcc, stateKey, {
+          value: stateValue,
+          ...PROPERTY_DESCRIPTOR,
+        });
+
+        break;
+      }
+    }
+
+    return stateAcc;
+  }, Object.create(null));
+}
+
+export { makeSurveyStateForStepper, returnCorrectResponseInputData, SURVEY_HELP_TEXT };

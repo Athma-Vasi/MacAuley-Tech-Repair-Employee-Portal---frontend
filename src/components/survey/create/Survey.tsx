@@ -29,6 +29,7 @@ import {
   TEXT_INPUT_VALIDATIONS,
 } from "../../../constants/validations";
 import { AccessibleTextAreaInput } from "../../accessibleInputs/AccessibleTextAreaInput";
+import { makeSurveyStateForStepper, returnCorrectResponseInputData } from "./utils";
 
 function Survey() {
   const [surveyState, surveyDispatch] = useReducer(surveyReducer, initialSurveyState);
@@ -193,7 +194,8 @@ function Survey() {
     const responseKindRadioGroup = (
       <AccessibleRadioInputGroup<SurveyAction["setResponseKinds"], SurveyResponseKind>
         attributes={{
-          data: ["chooseAny", "chooseOne", "rating"],
+          // data: ["chooseAny", "chooseOne", "rating"],
+          data: SURVEY_RESPONSE_KIND_DATA,
           dynamicIndexes: [questionIndex],
           label: "Response Kind",
           name: `responseKinds ${pageIndex}`,
@@ -204,10 +206,14 @@ function Survey() {
       />
     );
 
+    const responseInputData = returnCorrectResponseInputData(
+      responseKinds[questionIndex]
+    );
+
     const responseInputsRadioGroup = (
       <AccessibleRadioInputGroup
         attributes={{
-          data: ["agreeDisagree", "radio", "checkbox", "emotion", "stars"],
+          data: responseInputData,
           dynamicIndexes: [questionIndex],
           label: "Response Input",
           name: `responseInputs ${pageIndex}`,
@@ -224,176 +230,180 @@ function Survey() {
     console.log("responseOptions[questionIndex]", responseOptions[questionIndex]);
     console.groupEnd();
 
-    const responseOptionsTextInputs = responseOptions[questionIndex].map(
-      (responseOption, optionIndex) => {
-        const responseOptionTextAreaInput = (
-          <AccessibleTextAreaInput
-            attributes={{
-              dynamicIndexes: [questionIndex, optionIndex],
-              invalidValueAction: surveyAction.setPageInError,
-              name: `responseOption ${pageIndex} ${
-                INDEX_ALPHABET_TABLE[optionIndex] ?? optionIndex + 1
-              }`,
-              parentDynamicDispatch: surveyDispatch,
-              stepperPages,
-              validValueAction: surveyAction.setResponseOptions,
-              value: responseOption,
-            }}
-          />
-        );
+    const responseOptionsTextInputs =
+      responseKinds[questionIndex] === "rating"
+        ? null
+        : responseOptions[questionIndex].map((responseOption, optionIndex) => {
+            const responseOptionTextAreaInput = (
+              <AccessibleTextAreaInput
+                attributes={{
+                  dynamicIndexes: [questionIndex, optionIndex],
+                  invalidValueAction: surveyAction.setPageInError,
+                  name: `responseOption ${pageIndex} ${
+                    INDEX_ALPHABET_TABLE[optionIndex] ?? optionIndex + 1
+                  }`,
+                  parentDynamicDispatch: surveyDispatch,
+                  stepperPages,
+                  validValueAction: surveyAction.setResponseOptions,
+                  value: responseOption,
+                }}
+              />
+            );
 
-        const deleteResponseOptionButton = (
-          <AccessibleButton
-            attributes={{
-              enabledScreenreaderText: `Delete Response Option ${pageIndex} ${
-                INDEX_ALPHABET_TABLE[optionIndex] ?? optionIndex + 1
-              }`,
-              index: optionIndex,
-              kind: "delete",
-              setIconAsLabel: true,
-              onClick: (
-                _event:
-                  | React.MouseEvent<HTMLButtonElement, MouseEvent>
-                  | React.PointerEvent<HTMLButtonElement>
-              ) => {
-                surveyDispatch({
-                  action: surveyAction.deleteResponseOption,
-                  payload: [questionIndex, optionIndex],
-                });
-              },
-            }}
-          />
-        );
+            const deleteResponseOptionButton = (
+              <AccessibleButton
+                attributes={{
+                  enabledScreenreaderText: `Delete Response Option ${pageIndex} ${
+                    INDEX_ALPHABET_TABLE[optionIndex] ?? optionIndex + 1
+                  }`,
+                  index: optionIndex,
+                  kind: "delete",
+                  setIconAsLabel: true,
+                  onClick: (
+                    _event:
+                      | React.MouseEvent<HTMLButtonElement, MouseEvent>
+                      | React.PointerEvent<HTMLButtonElement>
+                  ) => {
+                    surveyDispatch({
+                      action: surveyAction.deleteResponseOption,
+                      payload: [questionIndex, optionIndex],
+                    });
+                  },
+                }}
+              />
+            );
 
-        const insertResponseOptionButton = (
-          <AccessibleButton
-            attributes={{
-              disabled: optionIndex === MAX_INPUTS_AMOUNT - 1,
-              disabledScreenreaderText: "Max input amount reached",
-              enabledScreenreaderText: `Insert input before Response Option${pageIndex} ${
-                INDEX_ALPHABET_TABLE[optionIndex] ?? optionIndex + 1
-              }`,
-              index: optionIndex,
-              kind: "insert",
-              setIconAsLabel: true,
-              onClick: (
-                _event:
-                  | React.MouseEvent<HTMLButtonElement, MouseEvent>
-                  | React.PointerEvent<HTMLButtonElement>
-              ) => {
-                surveyDispatch({
-                  action: surveyAction.insertResponseOption,
-                  payload: [questionIndex, optionIndex],
-                });
-              },
-            }}
-          />
-        );
+            const insertResponseOptionButton = (
+              <AccessibleButton
+                attributes={{
+                  disabled: optionIndex === MAX_INPUTS_AMOUNT - 1,
+                  disabledScreenreaderText: "Max input amount reached",
+                  enabledScreenreaderText: `Insert input before Response Option${pageIndex} ${
+                    INDEX_ALPHABET_TABLE[optionIndex] ?? optionIndex + 1
+                  }`,
+                  index: optionIndex,
+                  kind: "insert",
+                  setIconAsLabel: true,
+                  onClick: (
+                    _event:
+                      | React.MouseEvent<HTMLButtonElement, MouseEvent>
+                      | React.PointerEvent<HTMLButtonElement>
+                  ) => {
+                    surveyDispatch({
+                      action: surveyAction.insertResponseOption,
+                      payload: [questionIndex, optionIndex],
+                    });
+                  },
+                }}
+              />
+            );
 
-        const slideResponseOptionUpButton = (
-          <AccessibleButton
-            attributes={{
-              disabled: optionIndex === 0,
-              disabledScreenreaderText: "Cannot move up. Already at the top",
-              enabledScreenreaderText: `Move Response Option $${pageIndex} ${
-                INDEX_ALPHABET_TABLE[optionIndex] ?? optionIndex + 1
-              } up`,
-              index: optionIndex,
-              kind: "up",
-              setIconAsLabel: true,
-              onClick: (
-                _event:
-                  | React.MouseEvent<HTMLButtonElement, MouseEvent>
-                  | React.PointerEvent<HTMLButtonElement>
-              ) => {
-                surveyDispatch({
-                  action: surveyAction.slideResponseOptionUp,
-                  payload: [questionIndex, optionIndex],
-                });
-              },
-            }}
-          />
-        );
+            const slideResponseOptionUpButton = (
+              <AccessibleButton
+                attributes={{
+                  disabled: optionIndex === 0,
+                  disabledScreenreaderText: "Cannot move up. Already at the top",
+                  enabledScreenreaderText: `Move Response Option $${pageIndex} ${
+                    INDEX_ALPHABET_TABLE[optionIndex] ?? optionIndex + 1
+                  } up`,
+                  index: optionIndex,
+                  kind: "up",
+                  setIconAsLabel: true,
+                  onClick: (
+                    _event:
+                      | React.MouseEvent<HTMLButtonElement, MouseEvent>
+                      | React.PointerEvent<HTMLButtonElement>
+                  ) => {
+                    surveyDispatch({
+                      action: surveyAction.slideResponseOptionUp,
+                      payload: [questionIndex, optionIndex],
+                    });
+                  },
+                }}
+              />
+            );
 
-        const slideResponseOptionDownButton = (
-          <AccessibleButton
-            attributes={{
-              disabled: optionIndex === responseOptions.length - 1,
-              disabledScreenreaderText: "Cannot move down. Already at the bottom",
-              enabledScreenreaderText: `Move Response Option ${pageIndex} ${
-                INDEX_ALPHABET_TABLE[optionIndex] ?? optionIndex + 1
-              } down`,
-              index: optionIndex,
-              kind: "down",
-              setIconAsLabel: true,
-              onClick: (
-                _event:
-                  | React.MouseEvent<HTMLButtonElement, MouseEvent>
-                  | React.PointerEvent<HTMLButtonElement>
-              ) => {
-                surveyDispatch({
-                  action: surveyAction.slideResponseOptionDown,
-                  payload: [questionIndex, optionIndex],
-                });
-              },
-            }}
-          />
-        );
+            const slideResponseOptionDownButton = (
+              <AccessibleButton
+                attributes={{
+                  disabled: optionIndex === responseOptions.length - 1,
+                  disabledScreenreaderText: "Cannot move down. Already at the bottom",
+                  enabledScreenreaderText: `Move Response Option ${pageIndex} ${
+                    INDEX_ALPHABET_TABLE[optionIndex] ?? optionIndex + 1
+                  } down`,
+                  index: optionIndex,
+                  kind: "down",
+                  setIconAsLabel: true,
+                  onClick: (
+                    _event:
+                      | React.MouseEvent<HTMLButtonElement, MouseEvent>
+                      | React.PointerEvent<HTMLButtonElement>
+                  ) => {
+                    surveyDispatch({
+                      action: surveyAction.slideResponseOptionDown,
+                      payload: [questionIndex, optionIndex],
+                    });
+                  },
+                }}
+              />
+            );
 
-        return (
-          <Stack key={`${question}-${questionIndex}-${responseOption}-${optionIndex}`}>
-            {responseOptionTextAreaInput}
-            <Group>
-              {deleteResponseOptionButton}
-              {insertResponseOptionButton}
-              {slideResponseOptionUpButton}
-              {slideResponseOptionDownButton}
-            </Group>
-          </Stack>
-        );
-      }
-    );
+            return (
+              <Stack
+                key={`${question}-${questionIndex}-${responseOption}-${optionIndex}`}
+              >
+                {responseOptionTextAreaInput}
+                <Group>
+                  {deleteResponseOptionButton}
+                  {insertResponseOptionButton}
+                  {slideResponseOptionUpButton}
+                  {slideResponseOptionDownButton}
+                </Group>
+              </Stack>
+            );
+          });
 
-    const addResponseOptionButton = (
-      <AccessibleButton
-        attributes={{
-          disabled: responseOptions.length === MAX_INPUTS_AMOUNT,
-          disabledScreenreaderText: "Max inputs amount reached",
-          enabledScreenreaderText: `Add new Response Option ${pageIndex} ${
-            INDEX_ALPHABET_TABLE[questions.length] ?? questionIndex + 1
-          }`,
-          kind: "add",
-          onClick: (
-            _event:
-              | React.MouseEvent<HTMLButtonElement, MouseEvent>
-              | React.PointerEvent<HTMLButtonElement>
-          ) => {
-            surveyDispatch({
-              action: surveyAction.addResponseOption,
-              payload: [questionIndex],
-            });
+    const addResponseOptionButton =
+      responseKinds[questionIndex] === "rating" ? null : (
+        <AccessibleButton
+          attributes={{
+            disabled: responseOptions.length === MAX_INPUTS_AMOUNT,
+            disabledScreenreaderText: "Max inputs amount reached",
+            enabledScreenreaderText: `Add new Response Option ${pageIndex} ${
+              INDEX_ALPHABET_TABLE[questions.length] ?? questionIndex + 1
+            }`,
+            kind: "add",
+            onClick: (
+              _event:
+                | React.MouseEvent<HTMLButtonElement, MouseEvent>
+                | React.PointerEvent<HTMLButtonElement>
+            ) => {
+              surveyDispatch({
+                action: surveyAction.addResponseOption,
+                payload: [questionIndex],
+              });
 
-            // required for popover validation linking to stepper component
-            const responseOptionChild: StepperChild = {
-              inputType: "text",
-              name: `responseOption ${pageIndex} ${
-                INDEX_ALPHABET_TABLE[responseOptions[questionIndex].length] ??
-                responseOptions[questionIndex].length - 1
-              }`,
-              validations: TEXT_AREA_INPUT_VALIDATIONS,
-            };
+              // required for popover validation linking to stepper component
+              const responseOptionChild: StepperChild = {
+                inputType: "text",
+                name: `responseOption ${pageIndex} ${
+                  INDEX_ALPHABET_TABLE[responseOptions[questionIndex].length] ??
+                  responseOptions[questionIndex].length - 1
+                }`,
+                validations: TEXT_AREA_INPUT_VALIDATIONS,
+              };
 
-            surveyDispatch({
-              action: surveyAction.addStepperChild,
-              payload: {
-                dynamicIndexes: [pageIndex],
-                value: responseOptionChild,
-              },
-            });
-          },
-        }}
-      />
-    );
+              surveyDispatch({
+                action: surveyAction.addStepperChild,
+                payload: {
+                  dynamicIndexes: [pageIndex],
+                  value: responseOptionChild,
+                },
+              });
+            },
+          }}
+        />
+      );
 
     return (
       <Stack key={`${question}-${questionIndex}`}>
@@ -437,7 +447,7 @@ function Survey() {
   const stepper = (
     <AccessibleStepper
       attributes={{
-        componentState: surveyState,
+        componentState: makeSurveyStateForStepper(surveyState),
         pageElements: [firstPage, ...questionPages],
         stepperPages,
         submitButton,
