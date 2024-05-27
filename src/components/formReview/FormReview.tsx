@@ -160,6 +160,11 @@ function returnFormReviews<
         ? value
           ? "Yes"
           : "No"
+        : // for survey component (ᵕ•_•)
+        value === "chooseAny" || value === "choseOne"
+        ? splitCamelCase(value)
+        : typeof value === "string"
+        ? value.charAt(0).toUpperCase() + value.slice(1)
         : value?.toString() ?? "";
 
       let isValueValid = true;
