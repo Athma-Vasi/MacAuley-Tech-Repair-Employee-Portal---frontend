@@ -1,25 +1,20 @@
-import {
-  MantineSize,
-  MantineTransition,
-  RangeSlider,
-  Slider,
-} from '@mantine/core';
-import { ReactNode } from 'react';
+import { MantineSize, MantineTransition, RangeSlider, Slider } from "@mantine/core";
+import { ReactNode } from "react";
 
-import { SliderInputData } from '../../types';
-import { returnSliderMarks } from '../../utils';
+import { SliderMarksData } from "../../types";
+import { returnSliderMarks } from "../../utils";
 
 type AccessibleSliderInputCreatorInfo = {
   ariaDescribedBy?: string;
   ariaLabel: string;
   color?: string;
   disabled?: boolean;
-  kind?: 'slider' | 'range-slider';
+  kind?: "slider" | "range-slider";
   label?: ReactNode | ((value: number) => ReactNode);
   labelTransition?: MantineTransition;
   labelTransitionDuration?: number;
   labelTransitionTimingFunction?: string;
-  marks?: SliderInputData;
+  marks?: SliderMarksData;
   max: number;
   min: number;
   onChangeRangeSlider?: (value: [number, number]) => void;
@@ -47,11 +42,11 @@ function SliderWrapper({ creatorInfoObject }: SliderWrapperProps) {
     ariaLabel,
     color,
     disabled = false,
-    kind = 'slider',
+    kind = "slider",
     label = null,
-    labelTransition = 'skew-down',
+    labelTransition = "skew-down",
     labelTransitionDuration = 100,
-    labelTransitionTimingFunction = 'ease',
+    labelTransitionTimingFunction = "ease",
     marks,
     max,
     min,
@@ -59,7 +54,7 @@ function SliderWrapper({ creatorInfoObject }: SliderWrapperProps) {
     onChangeSlider = () => {},
     precision = 1,
     rangeSliderDefaultValues = [min, max],
-    size = 'sm',
+    size = "sm",
     sliderDefaultValue = min,
     step,
     thumbChildren,
@@ -67,7 +62,7 @@ function SliderWrapper({ creatorInfoObject }: SliderWrapperProps) {
     thumbLabel,
     thumbSize,
     value,
-    width = '100%',
+    width = "100%",
   } = creatorInfoObject;
 
   const sliderMarks = marks
@@ -79,7 +74,7 @@ function SliderWrapper({ creatorInfoObject }: SliderWrapperProps) {
         min: creatorInfoObject.min,
       });
 
-  return kind === 'slider' ? (
+  return kind === "slider" ? (
     <Slider
       aria-describedby={ariaDescribedBy}
       aria-label={ariaLabel}
@@ -97,7 +92,7 @@ function SliderWrapper({ creatorInfoObject }: SliderWrapperProps) {
       precision={precision}
       size={size}
       step={step}
-      style={{ border: 'none', outline: 'none' }}
+      style={{ border: "none", outline: "none" }}
       thumbChildren={thumbChildren}
       thumbLabel={thumbLabel}
       thumbSize={thumbSize}
@@ -119,7 +114,7 @@ function SliderWrapper({ creatorInfoObject }: SliderWrapperProps) {
       precision={precision}
       size={size}
       step={step}
-      style={{ border: 'none', outline: 'none' }}
+      style={{ border: "none", outline: "none" }}
       thumbChildren={thumbChildren}
       thumbFromLabel={thumbFromLabel}
       thumbSize={thumbSize}

@@ -214,12 +214,8 @@ class BinarySearchTree<T extends string | number = string | number> {
       return;
     }
 
-    if (
-      boyerMooreHorspoolSimpleSearch(
-        pattern.toLowerCase(),
-        node.data.toString().toLowerCase()
-      ) !== -1
-    ) {
+    const text = node.data.toString().toLowerCase();
+    if (boyerMooreHorspoolSimpleSearch(pattern.toLowerCase(), text) !== -1) {
       results.push(node.data);
     }
 

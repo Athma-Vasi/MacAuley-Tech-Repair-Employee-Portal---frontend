@@ -2,7 +2,7 @@ import { Box, Container, MantineSize, MantineTransition, Slider } from "@mantine
 import { ReactNode } from "react";
 
 import { useGlobalState } from "../../hooks";
-import { SliderInputData } from "../../types";
+import { SliderMarksData } from "../../types";
 import { returnSliderMarks } from "../../utils";
 import { createAccessibleSliderScreenreaderTextElements } from "./utils";
 
@@ -20,7 +20,7 @@ type AccessibleSliderInputAttributes<ValidValueAction extends string = string> =
   labelTransition?: MantineTransition;
   labelTransitionDuration?: number;
   labelTransitionTimingFunction?: string;
-  marks?: SliderInputData;
+  marks?: SliderMarksData;
   max: number;
   min: number;
   name: string;

@@ -15,7 +15,7 @@ type FetchInterceptorInput = {
 type FetchInterceptor = (input: FetchInterceptorInput) => Promise<Response>;
 
 /**
- * - inspired by axios interceptors, the fetchInterceptor fn will check access token expiration before calling fetch
+ * - fetchInterceptor will check access token expiration before calling fetch
  * - if the access token is expired, it will attempt to retrieve new access & refresh tokens and call fetch with the new access token
  * - else it will call fetch with the unexpired access token
  */

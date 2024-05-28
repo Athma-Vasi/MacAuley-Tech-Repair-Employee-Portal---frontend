@@ -73,7 +73,7 @@ type CheckboxInputData<Value extends string = string> = Array<{
   value: Value;
 }>;
 
-type SliderInputData = Array<{
+type SliderMarksData = Array<{
   label: string;
   value: number;
 }>;
@@ -236,16 +236,24 @@ type InputType =
   | "file"
   | "number"
   | "select"
+  | "slider"
   | "switch"
   | "text"
   | "time";
+
+type SliderInputData = {
+  marks?: SliderMarksData;
+  max: number;
+  min: number;
+};
 
 type StepperChild = {
   inputType: InputType;
   name: string;
   validations?: Validations;
-  selectInputData?: string[];
+  selectInputData?: string[] | SelectInputData;
   checkboxInputData?: CheckBoxMultipleData;
+  sliderInputData?: SliderInputData;
 };
 
 type ValidationFunctionsTable = Record<string, Validation>;
@@ -316,7 +324,7 @@ export type {
   SelectInputData,
   SetPageInErrorPayload,
   SetStepsInErrorPayload,
-  SliderInputData,
+  SliderMarksData,
   StatesUS,
   StepperChild,
   StepperPage,
