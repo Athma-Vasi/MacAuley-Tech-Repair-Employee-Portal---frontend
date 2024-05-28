@@ -172,13 +172,6 @@ function AccessibleTextAreaInput<
     )
   ) : null;
 
-  console.group("AccessibleTextAreaInput");
-  console.log("name", name);
-  console.log("value", value);
-  console.log("valueBuffer", valueBuffer);
-  console.log("isValueBufferValid", isValueBufferValid);
-  console.groupEnd();
-
   const validationTexts = returnValidationTexts({
     name,
     stepperPages,

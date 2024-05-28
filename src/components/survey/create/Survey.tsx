@@ -275,7 +275,7 @@ function Survey() {
                 attributes={{
                   disabled: optionIndex === MAX_INPUTS_AMOUNT - 1,
                   disabledScreenreaderText: "Max input amount reached",
-                  enabledScreenreaderText: `Insert input before Response Option${pageIndex} ${
+                  enabledScreenreaderText: `Insert option before Response Option ${pageIndex} ${
                     INDEX_ALPHABET_TABLE[optionIndex] ?? optionIndex + 1
                   }`,
                   index: optionIndex,
@@ -300,7 +300,7 @@ function Survey() {
                 attributes={{
                   disabled: optionIndex === 0,
                   disabledScreenreaderText: "Cannot move up. Already at the top",
-                  enabledScreenreaderText: `Move Response Option $${pageIndex} ${
+                  enabledScreenreaderText: `Move Response Option ${pageIndex} ${
                     INDEX_ALPHABET_TABLE[optionIndex] ?? optionIndex + 1
                   } up`,
                   index: optionIndex,
@@ -323,7 +323,7 @@ function Survey() {
             const slideResponseOptionDownButton = (
               <AccessibleButton
                 attributes={{
-                  disabled: optionIndex === responseOptions.length - 1,
+                  disabled: optionIndex === responseOptionArray.length - 1,
                   disabledScreenreaderText: "Cannot move down. Already at the bottom",
                   enabledScreenreaderText: `Move Response Option ${pageIndex} ${
                     INDEX_ALPHABET_TABLE[optionIndex] ?? optionIndex + 1

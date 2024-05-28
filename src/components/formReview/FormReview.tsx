@@ -52,11 +52,6 @@ function FormReviewStep({ componentState, stepperPages, title }: FormReviewProps
         const { name, isValueValid = true } = pageObject;
         const { value } = pageObject;
 
-        console.group("FormReviewStep");
-        console.log("isValueValid", isValueValid);
-        console.log("value", value);
-        console.groupEnd();
-
         const displayInputName = (
           <Text color={isValueValid ? void 0 : redColorShade}>
             {splitCamelCase(name)}
@@ -163,8 +158,6 @@ function returnFormReviews<
         : // for survey component (ᵕ•_•)
         value === "chooseAny" || value === "choseOne"
         ? splitCamelCase(value)
-        : typeof value === "string"
-        ? value.charAt(0).toUpperCase() + value.slice(1)
         : value?.toString() ?? "";
 
       let isValueValid = true;
