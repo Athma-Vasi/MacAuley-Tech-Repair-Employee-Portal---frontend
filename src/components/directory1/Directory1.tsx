@@ -8,7 +8,6 @@ import {
   STORE_LOCATION_DATA,
 } from "../../constants/data";
 import { Directory1Action, directory1Action } from "./actions";
-import { Department } from "../../types";
 import {
   DagreRankAlign,
   DagreRankDir,
@@ -25,7 +24,7 @@ import {
 import { AccessibleSliderInput } from "../accessibleInputs/AccessibleSliderInput";
 import { Container, Stack, Text } from "@mantine/core";
 import { logState } from "../../utils";
-import { generateIdMap, generateTrees, generateTree } from "../../classes/trie";
+import { Trie } from "../../classes/trie";
 
 function Directory1() {
   const [directory1State, directory1Dispatch] = useReducer(
@@ -74,15 +73,9 @@ function Directory1() {
     "Wetaskiwin",
   ];
 
-  const treesArray = generateTrees(towns);
-  const idIndexMap = generateIdMap(treesArray);
-  const tree = generateTree(idIndexMap, treesArray);
-
-  console.group("TRIE");
-  console.log("treesArray", treesArray);
-  console.log("idIndexMap", idIndexMap);
-  console.log("tree", tree);
-  console.groupEnd();
+  const trie = new Trie(towns);
+  console.log({ trie });
+  console.log(trie.autoComplete("Be"));
 
   const departmentSelectInput = (
     <AccessibleSelectInput<Directory1Action["setDepartment"], DepartmentsWithDefaultKey>

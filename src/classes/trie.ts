@@ -1,14 +1,98 @@
-class TrieNode {
-  constructor(
-    public key: string,
-    public parent: TrieNode | null = null,
-    public children: Map<string, TrieNode> = new Map()
-  ) {
-    if (parent) {
-      parent.children.set(key, this);
-    }
+class TrieNode<T extends string = string> {
+  isEndOfWord: boolean;
+  children: Map<T, TrieNode<T>>;
+
+  constructor(public value: T | null) {
+    this.value = value;
+    this.isEndOfWord = false;
+    this.children = new Map();
   }
 }
+
+class Trie {
+  root: TrieNode<string> | null;
+  constructor(public words: string[] = []) {
+    this.root = new TrieNode(null);
+    this.words = words;
+    words.forEach((word) => this.insert(word));
+  }
+
+  insert(word: string) {
+    if (!word.length) {
+      return;
+    }
+
+    let current = this.root;
+
+    for (let char of word) {
+      if (current?.children.get(char) === undefined) {
+        current?.children.set(char, new TrieNode(char));
+      }
+
+      current = current?.children.get(char) ?? null;
+    }
+
+    if (current) {
+      current.isEndOfWord = true;
+    }
+  }
+
+  search(word: string) {
+    if (!word.length) {
+      return false;
+    }
+
+    let current = this.root;
+
+    for (let char of word) {
+      if (current?.children.get(char) === undefined) {
+        return false;
+      }
+
+      current = current?.children.get(char) ?? null;
+    }
+
+    return current?.isEndOfWord ?? false;
+  }
+
+  autoComplete(prefix: string) {
+    let current = this.root;
+
+    for (let char of prefix) {
+      if (current?.children.get(char) === undefined) {
+        return [];
+      }
+
+      current = current?.children.get(char) ?? null;
+    }
+
+    const result: string[] = [];
+    this.findAllWords(current, prefix, result);
+
+    return result;
+  }
+
+  findAllWords(root: TrieNode<string> | null, word: string, result: string[]) {
+    if (!root) {
+      return;
+    }
+
+    const { children, isEndOfWord } = root;
+
+    if (isEndOfWord) {
+      result.push(word);
+    }
+
+    // for (let [key, child] of children) {
+    //   this.findAllWords(child, word + key, result);
+    // }
+    Array.from(children).forEach(([key, child]) => {
+      this.findAllWords(child, word + key, result);
+    });
+  }
+}
+
+export { Trie, TrieNode };
 
 /**
 import { v4 as uuidv4 } from "uuid";
