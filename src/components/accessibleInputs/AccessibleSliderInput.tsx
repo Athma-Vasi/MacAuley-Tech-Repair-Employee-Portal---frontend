@@ -137,7 +137,7 @@ function AccessibleSliderInput<ValidValueAction extends string = string>({
   );
 
   return (
-    <Container w={300}>
+    <Container w="100%">
       {accessibleSliderInput}
       <Box
         style={
