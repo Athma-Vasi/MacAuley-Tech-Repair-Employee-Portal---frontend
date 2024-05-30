@@ -2083,6 +2083,34 @@ function flattenObjectIterative<
   return flatObj;
 }
 
+/**
+ * - less than proficient implementation of Object.groupBy based on mdn docs
+ * - only works on 1st level of object
+ * - complexity: O(n^2)
+ */
+function groupBy<T extends unknown = unknown>(
+  iterable: Iterable<T>,
+  callbackFn: (value: T) => string | symbol
+) {
+  const keysSet = Array.from(iterable).reduce<Set<string | symbol>>((keysAcc, value) => {
+    const key = callbackFn(value);
+    keysAcc.add(key);
+
+    return keysAcc;
+  }, new Set());
+
+  return Array.from(keysSet).reduce<Record<string | symbol, T[]>>((groupedAcc, key) => {
+    const values = Array.from(iterable).filter((value) => callbackFn(value) === key);
+
+    Object.defineProperty(groupedAcc, key, {
+      value: values,
+      ...PROPERTY_DESCRIPTOR,
+    });
+
+    return groupedAcc;
+  }, Object.create(null));
+}
+
 type GroupByFieldInput<
   Obj extends Record<string | symbol | number, any> = Record<
     string | symbol | number,
@@ -2675,6 +2703,7 @@ export {
   flattenObjectIterative,
   formatDate,
   formSubmitPOST,
+  groupBy,
   groupByField,
   groupQueryResponse,
   isAgeOver18,
@@ -2731,6 +2760,7 @@ export {
   returnThemeColors,
   returnTimeRailwayValidationText,
   returnTimeRemaining,
+  returnTimeToRead,
   returnUrlValidationText,
   returnUserDefinedFieldValueValidationText,
   returnUsernameRegexValidationText,
@@ -2738,7 +2768,6 @@ export {
   shuffleArray,
   splitCamelCase,
   splitWordIntoUpperCasedSentence,
-  returnTimeToRead,
   toFixedFloat,
   toggleNavlinksActive,
   updateObjectPure,

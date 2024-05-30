@@ -14,7 +14,9 @@ class Trie {
   constructor(public words: string[] = []) {
     this.root = new TrieNode(null);
     this.words = words;
-    words.forEach((word) => this.insert(word));
+    words
+      .sort((a, b) => (a < b ? -1 : a > b ? 1 : 0))
+      .forEach((word) => this.insert(word));
   }
 
   insert(word: string) {
@@ -24,13 +26,13 @@ class Trie {
 
     let current = this.root;
 
-    for (let char of word) {
+    Array.from(word).forEach((char) => {
       if (current?.children.get(char) === undefined) {
         current?.children.set(char, new TrieNode(char));
       }
 
       current = current?.children.get(char) ?? null;
-    }
+    });
 
     if (current) {
       current.isEndOfWord = true;
@@ -44,13 +46,13 @@ class Trie {
 
     let current = this.root;
 
-    for (let char of word) {
+    Array.from(word).forEach((char) => {
       if (current?.children.get(char) === undefined) {
         return false;
       }
 
       current = current?.children.get(char) ?? null;
-    }
+    });
 
     return current?.isEndOfWord ?? false;
   }
@@ -58,13 +60,13 @@ class Trie {
   autoComplete(prefix: string) {
     let current = this.root;
 
-    for (let char of prefix) {
+    Array.from(prefix).forEach((char) => {
       if (current?.children.get(char) === undefined) {
         return [];
       }
 
       current = current?.children.get(char) ?? null;
-    }
+    });
 
     const result: string[] = [];
     this.findAllWords(current, prefix, result);
@@ -83,9 +85,6 @@ class Trie {
       result.push(word);
     }
 
-    // for (let [key, child] of children) {
-    //   this.findAllWords(child, word + key, result);
-    // }
     Array.from(children).forEach(([key, child]) => {
       this.findAllWords(child, word + key, result);
     });

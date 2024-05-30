@@ -31,6 +31,7 @@ import {
   returnValidationTexts,
 } from "../utils";
 import { BinarySearchTree } from "../../../classes/binarySearchTree";
+import { Trie } from "../../../classes/trie";
 
 type AccessibleTextSearchInputAttributes<
   ValidValueAction extends string = string,
@@ -120,7 +121,7 @@ function AccessibleTextSearchInput<
 
   const label = attributes.label ?? splitCamelCase(name);
 
-  const [bst] = useState<BinarySearchTree<string>>(new BinarySearchTree<string>(data));
+  const [trie] = useState(() => new Trie(data));
   const [valueBuffer, setValueBuffer] = useState<string>(value);
   const [isPopoverOpened, { open: openPopover, close: closePopover }] =
     useDisclosure(false);
@@ -180,7 +181,7 @@ function AccessibleTextSearchInput<
       valueBuffer,
     });
 
-  const results = valueBuffer.length ? bst.search(valueBuffer) : [];
+  const results = valueBuffer.length ? trie.autoComplete(valueBuffer) : [];
 
   const dropdown = results.length ? (
     <Flex direction="column" mah={500} pr={2} style={{ overflow: "auto" }}>

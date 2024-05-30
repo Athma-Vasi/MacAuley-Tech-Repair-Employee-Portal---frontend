@@ -5,6 +5,7 @@ import { AccessibleSelectInput } from "../accessibleInputs/AccessibleSelectInput
 import {
   DEPARTMENT_DATA,
   JOB_POSITION_DATA,
+  PROPERTY_DESCRIPTOR,
   STORE_LOCATION_DATA,
 } from "../../constants/data";
 import { Directory1Action, directory1Action } from "./actions";
@@ -23,8 +24,10 @@ import {
 } from "../directory/constants";
 import { AccessibleSliderInput } from "../accessibleInputs/AccessibleSliderInput";
 import { Container, Stack, Text } from "@mantine/core";
-import { logState } from "../../utils";
+import { groupBy, groupByField, logState } from "../../utils";
 import { Trie } from "../../classes/trie";
+import { USERS_DOCS } from "../devTesting/constants";
+import { DEPARTMENT_JOB_POSITION_TABLE } from "./constants";
 
 function Directory1() {
   const [directory1State, directory1Dispatch] = useReducer(
@@ -75,7 +78,7 @@ function Directory1() {
 
   const trie = new Trie(towns);
   console.log({ trie });
-  console.log(trie.autoComplete("Be"));
+  console.log(trie.autoComplete("L"));
 
   const departmentSelectInput = (
     <AccessibleSelectInput<Directory1Action["setDepartment"], DepartmentsWithDefaultKey>
@@ -92,7 +95,7 @@ function Directory1() {
   const jobPositionSelectInput = (
     <AccessibleSelectInput<Directory1Action["setJobPosition"], JobPositionsWithDefaultKey>
       attributes={{
-        data: ["All Job Positions", ...JOB_POSITION_DATA],
+        data: DEPARTMENT_JOB_POSITION_TABLE[department],
         name: "jobPosition",
         value: jobPosition,
         parentDispatch: directory1Dispatch,
@@ -115,6 +118,9 @@ function Directory1() {
       }}
     />
   );
+
+  const groupedByDepartment = groupBy(USERS_DOCS, (user) => user.department);
+  console.log({ groupedByDepartment });
 
   const rankerAlgorithmSelectInput = (
     <AccessibleSelectInput<Directory1Action["setDagreRanker"], DagreRankerAlgorithm>
