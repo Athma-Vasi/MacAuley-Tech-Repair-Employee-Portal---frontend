@@ -10,6 +10,7 @@ import {
   StatesUS,
   StoreLocation,
   UserRole,
+  UserRoles,
 } from "../../types";
 import { Directory1Action } from "./actions";
 
@@ -35,7 +36,7 @@ type Directory1UserDocument = {
   jobPosition: JobPosition;
   department: Department;
   storeLocation?: StoreLocation;
-  role: UserRole;
+  roles: UserRoles;
   active: boolean;
 };
 

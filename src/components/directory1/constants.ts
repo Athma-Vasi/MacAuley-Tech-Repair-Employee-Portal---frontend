@@ -3,11 +3,7 @@ import {
   JOB_POSITION_DATA,
   STORE_LOCATION_DATA,
 } from "../../constants/data";
-import {
-  SEARCH_INPUT_VALIDATIONS,
-  TEXT_INPUT_VALIDATIONS,
-} from "../../constants/validations";
-import { Department, StepperChild, StepperPage } from "../../types";
+import { StepperChild, StepperPage } from "../../types";
 import {
   DAGRE_LAYOUT_RANKALIGN_SELECT_OPTIONS,
   DAGRE_LAYOUT_RANKDIR_SELECT_OPTIONS,
@@ -38,7 +34,7 @@ function returnDirectory1StepperPages(): StepperPage[] {
   const searchChild: StepperChild = {
     inputType: "text",
     name: "search",
-    validations: SEARCH_INPUT_VALIDATIONS,
+    validations: "search",
   };
 
   const rankerAlgorithmChild: StepperChild = {
@@ -81,6 +77,7 @@ function returnDirectory1StepperPages(): StepperPage[] {
     {
       children: [departmentChild, jobPositionChild, storeLocationChild, searchChild],
       description: "Directory Filters",
+      preventErrorStateDisplay: true,
     },
     {
       children: [

@@ -3,7 +3,7 @@ import { useReducer } from "react";
 
 import { Trie } from "../../classes/trie";
 import { DEPARTMENT_DATA, STORE_LOCATION_DATA } from "../../constants/data";
-import { logState } from "../../utils";
+import { groupBy, logState } from "../../utils";
 import { AccessibleSelectInput } from "../accessibleInputs/AccessibleSelectInput";
 import { AccessibleSliderInput } from "../accessibleInputs/AccessibleSliderInput";
 import { AccessibleStepper } from "../accessibleInputs/AccessibleStepper";
@@ -22,9 +22,12 @@ import {
   DagreRankDir,
   DagreRankerAlgorithm,
   DepartmentsWithDefaultKey,
+  Directory1UserDocument,
   JobPositionsWithDefaultKey,
   StoreLocationsWithDefaultKey,
 } from "./types";
+import { USERS_DOCS } from "../devTesting/constants";
+import { returnSearchInputData } from "./utils";
 
 function Directory1() {
   const [directory1State, directory1Dispatch] = useReducer(
@@ -130,7 +133,7 @@ function Directory1() {
       Directory1Action["setPageInError"]
     >
       attributes={{
-        data: towns,
+        data: returnSearchInputData(USERS_DOCS),
         invalidValueAction: directory1Action.setPageInError,
         name: "search",
         parentDispatch: directory1Dispatch,
@@ -140,9 +143,6 @@ function Directory1() {
       }}
     />
   );
-
-  // const groupedByDepartment = groupBy(USERS_DOCS, (user) => user.department);
-  // console.log({ groupedByDepartment });
 
   const rankerAlgorithmSelectInput = (
     <AccessibleSelectInput<Directory1Action["setDagreRanker"], DagreRankerAlgorithm>

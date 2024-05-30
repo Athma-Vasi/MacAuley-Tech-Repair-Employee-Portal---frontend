@@ -1,5 +1,5 @@
 import { Group, MantineSize, Stack, Stepper, Text, Title } from "@mantine/core";
-import { ReactNode, useEffect, useState } from "react";
+import { Fragment, ReactNode, useEffect, useState } from "react";
 import { TbCheck, TbX } from "react-icons/tb";
 
 import { COLORS_SWATCHES } from "../../constants/data";
@@ -94,7 +94,13 @@ function AccessibleStepper({ attributes }: AccessibleStepperProps) {
   }`;
 
   const {
-    generalColors: { grayColorShade, redColorShade, greenColorShade },
+    generalColors: {
+      grayColorShade,
+      redColorShade,
+      greenColorShade,
+      textColor,
+      themeColorShade,
+    },
   } = returnThemeColors({
     colorsSwatches: COLORS_SWATCHES,
     themeObject,
@@ -111,24 +117,38 @@ function AccessibleStepper({ attributes }: AccessibleStepperProps) {
   const stepperSteps = pages.map((elements, pageIndex) => {
     const page = stepperPages[pageIndex];
 
+    const descriptionColor = page.preventErrorStateDisplay
+      ? textColor
+      : stepsInError[pageIndex]
+      ? redColorShade
+      : textColor;
+
     const description = (
-      <Text color={stepsInError[pageIndex] ? redColorShade : grayColorShade}>
+      <Text color={descriptionColor}>
         {page.kind === "review"
           ? page.description ?? "Review your changes"
           : page.description}
       </Text>
     );
 
-    const completedIcon = stepsInError[pageIndex] ? (
+    const completedIcon = page.preventErrorStateDisplay ? (
+      <Text color="white">{`${pageIndex + 1}`}</Text>
+    ) : stepsInError[pageIndex] ? (
       <TbX size={26} />
     ) : (
       <TbCheck size={26} />
     );
 
+    const stepColor = page.preventErrorStateDisplay
+      ? themeColorShade
+      : stepsInError[pageIndex]
+      ? redColorShade
+      : grayColorShade;
+
     return (
       <Stepper.Step
         aria-label={screenreaderText}
-        color={stepsInError[pageIndex] ? redColorShade : greenColorShade}
+        color={stepColor}
         completedIcon={completedIcon}
         description={description}
         key={`step-${pageIndex}`}

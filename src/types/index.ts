@@ -272,6 +272,7 @@ type Validation = {
 
 type StepperPage = {
   kind?: "form" | "review";
+  preventErrorStateDisplay?: boolean;
   description: string;
   children: Array<StepperChild>;
 };
