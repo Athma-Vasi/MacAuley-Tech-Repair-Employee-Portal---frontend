@@ -8,6 +8,8 @@ type Directory1Action = {
   setDepartment: "setDepartment";
   setIsLoading: "setIsLoading";
   setJobPosition: "setJobPosition";
+  setPageInError: "setPageInError";
+  setSearchValue: "setSearchValue";
   setStoreLocation: "setStoreLocation";
 };
 
@@ -21,6 +23,8 @@ const directory1Action: Directory1Action = {
   setDepartment: "setDepartment",
   setIsLoading: "setIsLoading",
   setJobPosition: "setJobPosition",
+  setPageInError: "setPageInError",
+  setSearchValue: "setSearchValue",
   setStoreLocation: "setStoreLocation",
 };
 

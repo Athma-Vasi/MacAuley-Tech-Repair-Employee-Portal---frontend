@@ -10,6 +10,8 @@ const initialDirectory1State: Directory1State = {
   department: "All Departments",
   isLoading: false,
   jobPosition: "All Job Positions",
+  pagesInError: new Set(),
+  search: "",
   storeLocation: "All Store Locations",
 };
 

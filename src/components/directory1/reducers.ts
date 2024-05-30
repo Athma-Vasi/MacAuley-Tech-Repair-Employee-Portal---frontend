@@ -1,3 +1,4 @@
+import { SetPageInErrorPayload } from "../../types";
 import { directory1Action } from "./actions";
 import {
   DagreRankAlign,
@@ -32,6 +33,7 @@ const directory1Reducers = new Map<
   [directory1Action.setDepartment, directory1Reducer_setDepartment],
   [directory1Action.setIsLoading, directory1Reducer_setIsLoading],
   [directory1Action.setJobPosition, directory1Reducer_setJobPosition],
+  [directory1Action.setSearchValue, directory1Reducer_setSearchValue],
   [directory1Action.setStoreLocation, directory1Reducer_setStoreLocation],
 ]);
 
@@ -122,6 +124,30 @@ function directory1Reducer_setJobPosition(
   return {
     ...state,
     jobPosition: dispatch.payload as JobPositionsWithDefaultKey,
+  };
+}
+
+function directory1Reducer_setPageInError(
+  state: Directory1State,
+  dispatch: Directory1Dispatch
+): Directory1State {
+  const { kind, page } = dispatch.payload as SetPageInErrorPayload;
+  const pagesInError = new Set(state.pagesInError);
+  kind === "add" ? pagesInError.add(page) : pagesInError.delete(page);
+
+  return {
+    ...state,
+    pagesInError,
+  };
+}
+
+function directory1Reducer_setSearchValue(
+  state: Directory1State,
+  dispatch: Directory1Dispatch
+): Directory1State {
+  return {
+    ...state,
+    search: dispatch.payload as string,
   };
 }
 

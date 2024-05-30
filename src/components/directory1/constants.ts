@@ -3,6 +3,10 @@ import {
   JOB_POSITION_DATA,
   STORE_LOCATION_DATA,
 } from "../../constants/data";
+import {
+  SEARCH_INPUT_VALIDATIONS,
+  TEXT_INPUT_VALIDATIONS,
+} from "../../constants/validations";
 import { Department, StepperChild, StepperPage } from "../../types";
 import {
   DAGRE_LAYOUT_RANKALIGN_SELECT_OPTIONS,
@@ -12,7 +16,7 @@ import {
 import { DepartmentsWithDefaultKey } from "./types";
 
 /** Directory does not implement Stepper, the inputs require it however */
-function returnDirectoryStepperPages(): StepperPage[] {
+function returnDirectory1StepperPages(): StepperPage[] {
   const departmentChild: StepperChild = {
     inputType: "select",
     name: "department",
@@ -29,6 +33,12 @@ function returnDirectoryStepperPages(): StepperPage[] {
     inputType: "select",
     name: "storeLocation",
     selectInputData: STORE_LOCATION_DATA,
+  };
+
+  const searchChild: StepperChild = {
+    inputType: "text",
+    name: "search",
+    validations: SEARCH_INPUT_VALIDATIONS,
   };
 
   const rankerAlgorithmChild: StepperChild = {
@@ -69,10 +79,11 @@ function returnDirectoryStepperPages(): StepperPage[] {
 
   return [
     {
+      children: [departmentChild, jobPositionChild, storeLocationChild, searchChild],
+      description: "Directory Filters",
+    },
+    {
       children: [
-        departmentChild,
-        jobPositionChild,
-        storeLocationChild,
         rankerAlgorithmChild,
         rankDirectionChild,
         rankAlignmentChild,
@@ -80,7 +91,7 @@ function returnDirectoryStepperPages(): StepperPage[] {
         rankSeparationChild,
         minLengthChild,
       ],
-      description: "Directory Layout Settings",
+      description: "Layout Filters",
     },
   ];
 }
@@ -220,4 +231,4 @@ const DEPARTMENT_JOB_POSITION_TABLE: Record<DepartmentsWithDefaultKey, string[]>
   Maintenance: ["Maintenance Supervisor", "Maintenance Worker", "Custodian"],
 };
 
-export { DEPARTMENT_JOB_POSITION_TABLE, returnDirectoryStepperPages };
+export { DEPARTMENT_JOB_POSITION_TABLE, returnDirectory1StepperPages };

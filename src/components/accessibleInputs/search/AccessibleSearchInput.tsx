@@ -16,7 +16,6 @@ import {
   KeyboardEvent,
   ReactNode,
   RefObject,
-  useRef,
   useState,
 } from "react";
 import { TbCheck, TbRefresh } from "react-icons/tb";
@@ -30,10 +29,9 @@ import {
   returnFullValidation,
   returnValidationTexts,
 } from "../utils";
-import { BinarySearchTree } from "../../../classes/binarySearchTree";
 import { Trie } from "../../../classes/trie";
 
-type AccessibleTextSearchInputAttributes<
+type AccessibleSearchInputAttributes<
   ValidValueAction extends string = string,
   InvalidValueAction extends string = string
 > = {
@@ -64,7 +62,7 @@ type AccessibleTextSearchInputAttributes<
   >;
 
   validValueAction: ValidValueAction;
-  invalidValueAction: InvalidValueAction;
+  invalidValueAction?: InvalidValueAction;
   /** stepper page location of input. default 0 = first page = step 0 */
   page?: number;
   placeholder?: string;
@@ -78,17 +76,17 @@ type AccessibleTextSearchInputAttributes<
   withAsterisk?: boolean;
 };
 
-type AccessibleTextSearchInputProps<
+type AccessibleSearchInputProps<
   ValidValueAction extends string = string,
   InvalidValueAction extends string = string
 > = {
-  attributes: AccessibleTextSearchInputAttributes<ValidValueAction, InvalidValueAction>;
+  attributes: AccessibleSearchInputAttributes<ValidValueAction, InvalidValueAction>;
 };
 
-function AccessibleTextSearchInput<
+function AccessibleSearchInput<
   ValidValueAction extends string = string,
   InvalidValueAction extends string = string
->({ attributes }: AccessibleTextSearchInputProps<ValidValueAction, InvalidValueAction>) {
+>({ attributes }: AccessibleSearchInputProps<ValidValueAction, InvalidValueAction>) {
   const {
     ariaAutoComplete = "none",
     autoComplete = "off",
@@ -121,7 +119,8 @@ function AccessibleTextSearchInput<
 
   const label = attributes.label ?? splitCamelCase(name);
 
-  const [trie] = useState(() => new Trie(data));
+  const [trie] = useState(() => Trie.buildTrie(data));
+  const [trieResults, setTrieResults] = useState<string[]>([]);
   const [valueBuffer, setValueBuffer] = useState<string>(value);
   const [isPopoverOpened, { open: openPopover, close: closePopover }] =
     useDisclosure(false);
@@ -171,21 +170,18 @@ function AccessibleTextSearchInput<
     valueBuffer,
   });
 
-  const { invalidValueTextElement, validValueTextElement } =
-    createAccessibleValueValidationTextElements({
-      isPopoverOpened,
-      isValueBufferValid,
-      name,
-      themeObject,
-      validationTexts,
-      valueBuffer,
-    });
+  const { invalidValueTextElement } = createAccessibleValueValidationTextElements({
+    isPopoverOpened,
+    isValueBufferValid,
+    name,
+    themeObject,
+    validationTexts,
+    valueBuffer,
+  });
 
-  const results = valueBuffer.length ? trie.autoComplete(valueBuffer) : [];
-
-  const dropdown = results.length ? (
+  const dropdown = trieResults.length ? (
     <Flex direction="column" mah={500} pr={2} style={{ overflow: "auto" }}>
-      {results.map((result) => (
+      {trieResults.map((result) => (
         <Text
           aria-live="polite"
           onClick={(event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -211,7 +207,7 @@ function AccessibleTextSearchInput<
           style={{
             cursor: "pointer",
             borderRadius: 4,
-            transition: "background-color 0.15s ease-in-out",
+            transition: "background-color 0.1s ease-in-out",
           }}
           tabIndex={0}
         >
@@ -219,7 +215,9 @@ function AccessibleTextSearchInput<
         </Text>
       ))}
     </Flex>
-  ) : null;
+  ) : (
+    <Text aria-live="polite">No results found</Text>
+  );
 
   return (
     <Container w={350}>
@@ -253,19 +251,26 @@ function AccessibleTextSearchInput<
                 payload: valueBuffer,
               });
 
-              parentDispatch({
-                action: invalidValueAction,
-                payload: {
-                  kind: isValueBufferValid ? "delete" : "add",
-                  page,
-                },
-              });
+              if (invalidValueAction) {
+                parentDispatch({
+                  action: invalidValueAction,
+                  payload: {
+                    kind: isValueBufferValid ? "delete" : "add",
+                    page,
+                  },
+                });
+              }
 
               onBlur?.();
               // closePopover();
             }}
             onChange={(event: ChangeEvent<HTMLInputElement>) => {
-              setValueBuffer(event.currentTarget.value);
+              const {
+                currentTarget: { value },
+              } = event;
+
+              setValueBuffer(value);
+              setTrieResults(trie.autoComplete(value));
               onChange?.(event);
             }}
             onFocus={() => {
@@ -284,11 +289,9 @@ function AccessibleTextSearchInput<
           />
         </Popover.Target>
 
-        {isPopoverOpened ? (
+        {isPopoverOpened && valueBuffer.length ? (
           <Popover.Dropdown>
-            <Stack>
-              {isValueBufferValid && results.length ? dropdown : invalidValueTextElement}
-            </Stack>
+            <Stack>{isValueBufferValid ? dropdown : invalidValueTextElement}</Stack>
           </Popover.Dropdown>
         ) : null}
       </Popover>
@@ -296,6 +299,6 @@ function AccessibleTextSearchInput<
   );
 }
 
-export { AccessibleTextSearchInput };
+export { AccessibleSearchInput };
 
-export type { AccessibleTextSearchInputAttributes };
+export type { AccessibleSearchInputAttributes };

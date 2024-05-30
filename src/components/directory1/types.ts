@@ -6,6 +6,7 @@ import {
   PreferredPronouns,
   Province,
   ResourceRequestServerResponse,
+  SetPageInErrorPayload,
   StatesUS,
   StoreLocation,
   UserRole,
@@ -48,6 +49,8 @@ type Directory1State = {
   department: DepartmentsWithDefaultKey;
   isLoading: boolean;
   jobPosition: JobPositionsWithDefaultKey;
+  pagesInError: Set<number>;
+  search: string;
   storeLocation: StoreLocationsWithDefaultKey;
 };
 
@@ -96,6 +99,14 @@ type Directory1Dispatch =
   | {
       action: Directory1Action["setJobPosition"];
       payload: JobPositionsWithDefaultKey;
+    }
+  | {
+      action: Directory1Action["setPageInError"];
+      payload: SetPageInErrorPayload;
+    }
+  | {
+      action: Directory1Action["setSearchValue"];
+      payload: string;
     }
   | {
       action: Directory1Action["setStoreLocation"];

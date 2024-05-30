@@ -13,6 +13,8 @@ import { VALIDATION_FUNCTIONS_TABLE } from "../../constants/validations";
 type AccessibleStepperAttributes = {
   allowNextStepsSelect?: boolean;
   componentState: Record<string, unknown>;
+  displayReviewPage?: boolean;
+  displaySubmitPage?: boolean;
   onPreviousClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
   onNextClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
   pageElements: React.JSX.Element[];
@@ -30,6 +32,8 @@ function AccessibleStepper({ attributes }: AccessibleStepperProps) {
   const {
     allowNextStepsSelect,
     componentState,
+    displayReviewPage = true,
+    displaySubmitPage = true,
     onNextClick,
     onPreviousClick,
     pageElements,
@@ -70,7 +74,7 @@ function AccessibleStepper({ attributes }: AccessibleStepperProps) {
         stepperPages[activeStep + 1]?.description ?? "the end"
       }`,
       disabledScreenreaderText: "You are on the last step",
-      disabled: activeStep === maxStep,
+      disabled: displaySubmitPage ? activeStep === maxStep : activeStep === maxStep - 1,
       kind: "next",
       name: "Next",
       onClick: (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -96,11 +100,15 @@ function AccessibleStepper({ attributes }: AccessibleStepperProps) {
     themeObject,
   });
 
-  const formReviewPage = (
+  const formReviewPage = displayReviewPage ? (
     <FormReviewStep componentState={componentState} stepperPages={stepperPages} />
+  ) : (
+    void 0
   );
 
-  const stepperSteps = [...pageElements, formReviewPage].map((elements, pageIndex) => {
+  const pages = formReviewPage ? [...pageElements, formReviewPage] : pageElements;
+
+  const stepperSteps = pages.map((elements, pageIndex) => {
     const page = stepperPages[pageIndex];
 
     const description = (
@@ -134,10 +142,12 @@ function AccessibleStepper({ attributes }: AccessibleStepperProps) {
     <Stepper active={activeStep} allowNextStepsSelect={allowNextStepsSelect} size={size}>
       {stepperSteps}
 
-      <Stepper.Completed>
-        <Text>Stepper completed</Text>
-        {submitButton}
-      </Stepper.Completed>
+      {displaySubmitPage ? (
+        <Stepper.Completed>
+          <Text>Stepper completed</Text>
+          {submitButton}
+        </Stepper.Completed>
+      ) : null}
     </Stepper>
   );
 

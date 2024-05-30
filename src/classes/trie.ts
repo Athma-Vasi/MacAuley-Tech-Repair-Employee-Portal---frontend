@@ -1,3 +1,297 @@
+class Trie {
+  /** check if current node marks a complete word */
+  #isEnd = false;
+
+  /** store subTrie */
+  #children: Map<string, Trie> = new Map();
+
+  public get isEnd(): boolean {
+    return this.#isEnd;
+  }
+
+  public get children(): Map<string, Trie> {
+    return this.#children;
+  }
+
+  /** check if given char is present in current trie */
+  hasChar(char: string): Trie | undefined {
+    return this.#children.get(char) ?? this.#children.get(char.toUpperCase());
+  }
+
+  /** add trie at given char, and return newly added trie */
+  addChar(char: string): Trie {
+    if (!this.#children.has(char)) {
+      this.#children.set(char, new Trie());
+    }
+    return this.#children.get(char)!;
+  }
+
+  /** mark complete word found in current trie */
+  makeEnd(): void {
+    this.#isEnd = true;
+  }
+
+  /** search given word in trie */
+  searchTrie(word: string): boolean {
+    if (word.length === 0) {
+      return this.#isEnd;
+    }
+
+    const subTrie = this.#children.get(word[0]);
+    if (!subTrie) {
+      return false;
+    }
+
+    return subTrie.searchTrie(word.slice(1));
+  }
+
+  /** add word to this trie */
+  addWord(word: string): void {
+    if (word.length === 0) {
+      this.makeEnd();
+      return;
+    }
+
+    const subTrie = this.hasChar(word[0]);
+    if (subTrie !== undefined) {
+      return subTrie.addWord(word.slice(1));
+    } else {
+      const newSubTrie = this.addChar(word[0]);
+      return newSubTrie.addWord(word.slice(1));
+    }
+  }
+
+  /** autocomplete words with given prefix */
+  autoComplete(prefix: string): string[] {
+    const trie = this.findTrie(prefix);
+    if (!trie) {
+      return [];
+    }
+
+    return trie.allWords(prefix);
+  }
+
+  /** find trie with given prefix */
+  private findTrie(prefix: string): Trie | undefined {
+    if (prefix.length === 0) {
+      return this;
+    }
+
+    const subTrie = this.hasChar(prefix[0]);
+    if (!subTrie) {
+      return;
+    }
+
+    return subTrie.findTrie(prefix.slice(1));
+  }
+
+  /** find all words in trie */
+  private allWords(prefix: string): string[] {
+    const words: string[] = [];
+    if (this.#isEnd) {
+      words.push(prefix);
+    }
+
+    Array.from(this.#children).forEach(([char, subTrie]) => {
+      words.push(...subTrie.allWords(prefix + char));
+    });
+
+    return words;
+  }
+
+  /** static constructor to build a trie from an array of words */
+  static buildTrie = (words: string[]): Trie => {
+    const trie = new Trie();
+    words.forEach((word) => trie.addWord(word));
+    return trie;
+  };
+}
+
+export { Trie };
+/**
+  class TrieNode<T extends string = string> {
+  count: number;
+  children: Map<T | null, TrieNode<T>>;
+  parent: TrieNode<T> | null;
+
+  constructor(public key: T | null = null, parent: TrieNode<T> | null = null) {
+    this.key = key;
+    this.count = 0;
+    this.children = new Map();
+    this.parent = parent;
+  }
+}
+
+class Trie<T extends string = string> {
+  root: TrieNode<T> | undefined;
+
+  constructor(public data: T[] = []) {
+    data.forEach((word) => this.insert(word));
+    // create only root with null key and parent
+    this.root = new TrieNode<T>();
+  }
+
+  // recursively finds the occurrence of all words in a given trienode
+  static findAllWords(
+    root: TrieNode | null,
+    word: string,
+    output: Array<{ word: string; count: number }>
+  ) {
+    if (root === null) {
+      return;
+    }
+    if (root.count > 0) {
+      output.push({ word, count: root.count });
+    }
+
+    Array.from(root.children).forEach(([key, _child]) => {
+      word += key;
+      this.findAllWords(root.children.get(key) ?? new TrieNode(), word, output);
+      word = word.slice(0, -1);
+    });
+  }
+
+  insert(word: string) {
+    if (typeof word !== "string") {
+      return;
+    }
+
+    if (word === "") {
+      if (this.root) {
+        this.root.count += 1;
+      }
+      return;
+    }
+
+    let node = this.root;
+    Array.from(word).forEach((char) => {
+      if (node === undefined) {
+        return;
+      }
+
+      if (node.children.get(char as T) === undefined) {
+        node.children.set(char as T, new TrieNode(char as T, node));
+      }
+
+      node = node.children.get(char as T);
+    });
+
+    if (node) {
+      node.count += 1;
+    }
+  }
+
+  findPrefix(word: string) {
+    if (typeof word !== "string") {
+      return;
+    }
+
+    let node = this.root;
+    Array.from(word).forEach((char) => {
+      if (node === undefined) {
+        return;
+      }
+
+      if (node.children.get(char as T) === undefined) {
+        return;
+      }
+
+      node = node.children.get(char as T);
+    });
+
+    return node;
+  }
+
+  remove(word: string, count: number) {
+    if (typeof word !== "string") {
+      return;
+    }
+    if (typeof count !== "number") {
+      count = 1;
+    } else if (count < 1) {
+      return;
+    }
+
+    // for empty string, delete count of root
+    if (word === "") {
+      if (!this.root) {
+        return;
+      }
+
+      if (this.root.count >= count) {
+        this.root.count -= count;
+      } else {
+        this.root.count = 0;
+      }
+
+      return;
+    }
+
+    let child = this.root;
+    Array.from(word).forEach((char) => {
+      if (child === undefined) {
+        return;
+      }
+
+      if (child.children.get(char as T) === undefined) {
+        return;
+      }
+
+      child = child.children.get(char as T);
+    });
+
+    // delete number of occurrences specified
+
+    if (child) {
+      if (child.count >= count) {
+        child.count -= count;
+      } else {
+        child.count = 0;
+      }
+    }
+
+    // if some occurrences remain, do not delete the node
+    // else if the object forms some other object's prefix, do not delete the node
+    // else delete the node and its parent's reference to it
+    if (child) {
+      const { children, count, key, parent } = child;
+      if (count <= 0 && children.size) {
+        parent?.children.delete(key);
+      }
+    }
+  }
+
+  findAllWords(prefix: string) {
+    const output = [] as Array<{ word: string; count: number }>;
+    // find node with provided prefix
+    const node = this.findPrefix(prefix);
+    if (node === undefined) {
+      return output;
+    }
+    Trie.findAllWords(node, prefix, output);
+    return output;
+  }
+
+  contains(word: string) {
+    // find node with given prefix
+    const node = this.findPrefix(word);
+    // no such node exists
+    return node?.count && node.count > 0;
+  }
+
+  findOccurrences(word: string) {
+    // find node with given prefix
+    const node = this.findPrefix(word);
+    // no such node exists
+    return node?.count ?? 0;
+  }
+}
+
+export { Trie, TrieNode };
+
+*/
+
+/**
 class TrieNode<T extends string = string> {
   isEndOfWord: boolean;
   children: Map<T, TrieNode<T>>;
@@ -92,6 +386,8 @@ class Trie {
 }
 
 export { Trie, TrieNode };
+
+*/
 
 /**
 import { v4 as uuidv4 } from "uuid";

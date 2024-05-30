@@ -1,14 +1,22 @@
+import { Container, Stack, Text } from "@mantine/core";
 import { useReducer } from "react";
+
+import { Trie } from "../../classes/trie";
+import { DEPARTMENT_DATA, STORE_LOCATION_DATA } from "../../constants/data";
+import { logState } from "../../utils";
+import { AccessibleSelectInput } from "../accessibleInputs/AccessibleSelectInput";
+import { AccessibleSliderInput } from "../accessibleInputs/AccessibleSliderInput";
+import { AccessibleStepper } from "../accessibleInputs/AccessibleStepper";
+import { AccessibleSearchInput } from "../accessibleInputs/search/AccessibleSearchInput";
+import {
+  DAGRE_LAYOUT_RANKALIGN_SELECT_OPTIONS,
+  DAGRE_LAYOUT_RANKDIR_SELECT_OPTIONS,
+  DAGRE_LAYOUT_RANKER_SELECT_OPTIONS,
+} from "../directory/constants";
+import { Directory1Action, directory1Action } from "./actions";
+import { DEPARTMENT_JOB_POSITION_TABLE, returnDirectory1StepperPages } from "./constants";
 import { directory1Reducer } from "./reducers";
 import { initialDirectory1State } from "./state";
-import { AccessibleSelectInput } from "../accessibleInputs/AccessibleSelectInput";
-import {
-  DEPARTMENT_DATA,
-  JOB_POSITION_DATA,
-  PROPERTY_DESCRIPTOR,
-  STORE_LOCATION_DATA,
-} from "../../constants/data";
-import { Directory1Action, directory1Action } from "./actions";
 import {
   DagreRankAlign,
   DagreRankDir,
@@ -17,17 +25,6 @@ import {
   JobPositionsWithDefaultKey,
   StoreLocationsWithDefaultKey,
 } from "./types";
-import {
-  DAGRE_LAYOUT_RANKALIGN_SELECT_OPTIONS,
-  DAGRE_LAYOUT_RANKDIR_SELECT_OPTIONS,
-  DAGRE_LAYOUT_RANKER_SELECT_OPTIONS,
-} from "../directory/constants";
-import { AccessibleSliderInput } from "../accessibleInputs/AccessibleSliderInput";
-import { Container, Stack, Text } from "@mantine/core";
-import { groupBy, groupByField, logState } from "../../utils";
-import { Trie } from "../../classes/trie";
-import { USERS_DOCS } from "../devTesting/constants";
-import { DEPARTMENT_JOB_POSITION_TABLE } from "./constants";
 
 function Directory1() {
   const [directory1State, directory1Dispatch] = useReducer(
@@ -45,6 +42,8 @@ function Directory1() {
     department,
     isLoading,
     jobPosition,
+    pagesInError,
+    search,
     storeLocation,
   } = directory1State;
 
@@ -76,9 +75,13 @@ function Directory1() {
     "Wetaskiwin",
   ];
 
-  const trie = new Trie(towns);
+  const trie = Trie.buildTrie(towns);
+  console.group("trie");
   console.log({ trie });
+  console.log("trie.searchTrie('A')", trie.searchTrie("A"));
+  console.log("trie.searchTrie('Airdrie')", trie.searchTrie("Airdrie"));
   console.log(trie.autoComplete("L"));
+  console.groupEnd();
 
   const departmentSelectInput = (
     <AccessibleSelectInput<Directory1Action["setDepartment"], DepartmentsWithDefaultKey>
@@ -119,8 +122,27 @@ function Directory1() {
     />
   );
 
-  const groupedByDepartment = groupBy(USERS_DOCS, (user) => user.department);
-  console.log({ groupedByDepartment });
+  const directory1StepperPages = returnDirectory1StepperPages();
+
+  const searchInput = (
+    <AccessibleSearchInput<
+      Directory1Action["setSearchValue"],
+      Directory1Action["setPageInError"]
+    >
+      attributes={{
+        data: towns,
+        invalidValueAction: directory1Action.setPageInError,
+        name: "search",
+        parentDispatch: directory1Dispatch,
+        stepperPages: directory1StepperPages,
+        validValueAction: directory1Action.setSearchValue,
+        value: search,
+      }}
+    />
+  );
+
+  // const groupedByDepartment = groupBy(USERS_DOCS, (user) => user.department);
+  // console.log({ groupedByDepartment });
 
   const rankerAlgorithmSelectInput = (
     <AccessibleSelectInput<Directory1Action["setDagreRanker"], DagreRankerAlgorithm>
@@ -197,11 +219,17 @@ function Directory1() {
     />
   );
 
-  const graphControls = (
+  const directoryFilters = (
     <Stack>
       {departmentSelectInput}
       {jobPositionSelectInput}
       {storeLocationSelectInput}
+      {searchInput}
+    </Stack>
+  );
+
+  const layoutFilters = (
+    <Stack>
       {rankerAlgorithmSelectInput}
       {rankDirectionSelectInput}
       {rankAlignmentSelectInput}
@@ -211,7 +239,19 @@ function Directory1() {
     </Stack>
   );
 
-  return <Container w={700}>{graphControls}</Container>;
+  const stepper = (
+    <AccessibleStepper
+      attributes={{
+        componentState: directory1State,
+        pageElements: [directoryFilters, layoutFilters],
+        stepperPages: directory1StepperPages,
+        displayReviewPage: false,
+        displaySubmitPage: false,
+      }}
+    />
+  );
+
+  return <Container w={700}>{stepper}</Container>;
 }
 
 export default Directory1;

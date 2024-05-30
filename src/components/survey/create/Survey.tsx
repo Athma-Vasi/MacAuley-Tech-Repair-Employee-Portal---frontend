@@ -1,34 +1,32 @@
-import { useEffect, useReducer } from "react";
-import { surveyReducer } from "./reducers";
-import { initialSurveyState } from "./state";
-import { AccessibleTextSearchInput } from "../../accessibleInputs/textSearch/AccessibleTextSearchInput";
-import { LARGE_CITIES } from "../../accessibleInputs/textSearch/sampleData";
-import { SurveyAction, surveyAction } from "./actions";
-import {
-  INDEX_ALPHABET_TABLE,
-  MAX_INPUTS_AMOUNT,
-  SURVEY_MAX_QUESTION_AMOUNT,
-  SURVEY_RECIPIENT_DATA,
-  SURVEY_RESPONSE_INPUTS,
-  SURVEY_RESPONSE_KIND_DATA,
-  returnSurveyStepperPages,
-} from "../constants";
-import { StepperChild, StepperPage } from "../../../types";
-import { logState } from "../../../utils";
-import { AccessibleTextInput } from "../../accessibleInputs/text/AccessibleTextInput";
-import { AccessibleDateTimeInput } from "../../accessibleInputs/AccessibleDateTimeInput";
-import { AccessibleSelectInput } from "../../accessibleInputs/AccessibleSelectInput";
-import { SurveyRecipient, SurveyResponseKind } from "../types";
-import { AccessibleRadioInputGroup } from "../../accessibleInputs/AccessibleRadioInput";
-
-import { AccessibleStepper } from "../../accessibleInputs/AccessibleStepper";
 import { Container, Group, Stack } from "@mantine/core";
-import { AccessibleButton } from "../../accessibleInputs/AccessibleButton";
+import { useEffect, useReducer } from "react";
+
 import {
   TEXT_AREA_INPUT_VALIDATIONS,
   TEXT_INPUT_VALIDATIONS,
 } from "../../../constants/validations";
+import { StepperChild, StepperPage } from "../../../types";
+import { logState } from "../../../utils";
+import { AccessibleButton } from "../../accessibleInputs/AccessibleButton";
+import { AccessibleDateTimeInput } from "../../accessibleInputs/AccessibleDateTimeInput";
+import { AccessibleRadioInputGroup } from "../../accessibleInputs/AccessibleRadioInput";
+import { AccessibleSelectInput } from "../../accessibleInputs/AccessibleSelectInput";
+import { AccessibleStepper } from "../../accessibleInputs/AccessibleStepper";
 import { AccessibleTextAreaInput } from "../../accessibleInputs/AccessibleTextAreaInput";
+import { AccessibleTextInput } from "../../accessibleInputs/text/AccessibleTextInput";
+import {
+  INDEX_ALPHABET_TABLE,
+  MAX_INPUTS_AMOUNT,
+  returnSurveyStepperPages,
+  SURVEY_MAX_QUESTION_AMOUNT,
+  SURVEY_RECIPIENT_DATA,
+  SURVEY_RESPONSE_INPUTS,
+  SURVEY_RESPONSE_KIND_DATA,
+} from "../constants";
+import { SurveyRecipient, SurveyResponseKind } from "../types";
+import { SurveyAction, surveyAction } from "./actions";
+import { surveyReducer } from "./reducers";
+import { initialSurveyState } from "./state";
 import { makeSurveyStateForStepper, returnCorrectResponseInputData } from "./utils";
 
 function Survey() {

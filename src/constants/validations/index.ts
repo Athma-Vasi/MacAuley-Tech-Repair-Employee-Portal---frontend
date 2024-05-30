@@ -126,6 +126,26 @@ const TEXT_INPUT_VALIDATIONS = {
 } as Validations;
 
 /**
+ * - /^(?=.*[A-Za-z0-9])[\w\s.,!?():;"'-]{0,100}$/i
+ * - (?=.*[A-Za-z0-9]) is a positive lookahead assertion that requires the presence of at least one alphanumeric character. This ensures that the string contains at least one letter or digit.
+ * - [\w\s.,!?():;"'-] matches one or more word characters (letters, digits, or underscores), whitespace characters, period, comma, exclamation mark, question mark, parentheses, colon, semicolon, double quotation marks, single quotation marks, or hyphen.
+ * - {0,100} ensures that the text is between 0 and 100 characters long.
+ * - ^ and $ ensure that the entire string matches the regex.
+ */
+const SEARCH_INPUT_REGEX = /^(?=.*[A-Za-z0-9])[\w\s.,!?():;"'-]{0,100}$/i;
+
+const SEARCH_INPUT_VALIDATIONS = {
+  full: SEARCH_INPUT_REGEX,
+  partials: [
+    [/^(?=.*[A-Za-z0-9])/, "Must contain at least one alphanumeric character."],
+    [
+      /^[\w\s.,!?():;"'-]+$/,
+      "Can only contain letters, numbers, spaces, and special characters: . , ! ? ( ) : ; \" ' -",
+    ],
+  ],
+} as Validations;
+
+/**
  * - /^[A-Za-z\s.\-']{2,100}$/i
  * - [A-Za-z\s.\-'] matches any letter, whitespace, period, hyphen, or apostrophe.
  * - {2,100} ensures that the text is between 2 and 100 characters long.
@@ -350,6 +370,7 @@ export {
   MONEY_VALIDATIONS,
   PHONE_NUMBER_VALIDATIONS,
   PRIVACY_CONSENT_VALIDATIONS,
+  SEARCH_INPUT_VALIDATIONS,
   TEXT_AREA_INPUT_VALIDATIONS,
   TEXT_INPUT_VALIDATIONS,
   URL_VALIDATIONS,
