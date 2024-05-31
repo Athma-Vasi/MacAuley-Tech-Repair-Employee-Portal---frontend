@@ -2092,15 +2092,17 @@ function groupBy<T extends unknown = unknown>(
   iterable: Iterable<T>,
   callbackFn: (value: T) => string | symbol
 ) {
-  const keysSet = Array.from(iterable).reduce<Set<string | symbol>>((keysAcc, value) => {
-    const key = callbackFn(value);
+  const clone = structuredClone(iterable);
+
+  const keysSet = Array.from(clone).reduce<Set<string | symbol>>((keysAcc, value) => {
+    const key = callbackFn(value as T);
     keysAcc.add(key);
 
     return keysAcc;
   }, new Set());
 
   return Array.from(keysSet).reduce<Record<string | symbol, T[]>>((groupedAcc, key) => {
-    const values = Array.from(iterable).filter((value) => callbackFn(value) === key);
+    const values = Array.from(clone).filter((value) => callbackFn(value as T) === key);
 
     Object.defineProperty(groupedAcc, key, {
       value: values,

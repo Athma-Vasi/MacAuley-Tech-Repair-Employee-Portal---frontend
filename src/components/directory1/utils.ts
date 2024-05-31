@@ -1,14 +1,16 @@
 import { Directory1UserDocument } from "./types";
 
 function returnSearchInputData(usersDocs: Directory1UserDocument[]) {
-  return usersDocs.reduce<string[]>((acc, user) => {
-    const { firstName, middleName, lastName } = user;
-    acc.push(firstName);
-    acc.push(middleName);
-    acc.push(lastName);
+  return Array.from(
+    usersDocs.reduce<Set<string>>((acc, user) => {
+      const { firstName, middleName, lastName } = user;
+      acc.add(firstName);
+      acc.add(middleName);
+      acc.add(lastName);
 
-    return acc;
-  }, []);
+      return acc;
+    }, new Set<string>())
+  );
 }
 
 export { returnSearchInputData };

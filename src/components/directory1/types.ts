@@ -36,7 +36,7 @@ type Directory1UserDocument = {
   jobPosition: JobPosition;
   department: Department;
   storeLocation?: StoreLocation;
-  roles: UserRoles;
+  role: UserRole;
   active: boolean;
 };
 

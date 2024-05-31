@@ -28,6 +28,8 @@ import {
 } from "./types";
 import { USERS_DOCS } from "../devTesting/constants";
 import { returnSearchInputData } from "./utils";
+import { DIRECTORY_EMPLOYEE_DATA } from "./data";
+import OrgChartTree from "./testing";
 
 function Directory1() {
   const [directory1State, directory1Dispatch] = useReducer(
@@ -133,7 +135,7 @@ function Directory1() {
       Directory1Action["setPageInError"]
     >
       attributes={{
-        data: returnSearchInputData(USERS_DOCS),
+        data: returnSearchInputData(USERS_DOCS as any),
         invalidValueAction: directory1Action.setPageInError,
         name: "search",
         parentDispatch: directory1Dispatch,
@@ -251,7 +253,12 @@ function Directory1() {
     />
   );
 
-  return <Container w={700}>{stepper}</Container>;
+  return (
+    <Container w={700}>
+      {stepper}
+      {<OrgChartTree />}
+    </Container>
+  );
 }
 
 export default Directory1;

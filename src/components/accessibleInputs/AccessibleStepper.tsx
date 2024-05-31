@@ -1,14 +1,14 @@
 import { Group, MantineSize, Stack, Stepper, Text, Title } from "@mantine/core";
-import { Fragment, ReactNode, useEffect, useState } from "react";
+import { ReactNode, useState } from "react";
 import { TbCheck, TbX } from "react-icons/tb";
 
 import { COLORS_SWATCHES } from "../../constants/data";
+import { VALIDATION_FUNCTIONS_TABLE } from "../../constants/validations";
 import { useGlobalState } from "../../hooks";
 import { StepperPage, Validation } from "../../types";
 import { returnThemeColors } from "../../utils";
 import { FormReviewStep } from "../formReview/FormReview";
 import { createAccessibleButtons } from "./utils";
-import { VALIDATION_FUNCTIONS_TABLE } from "../../constants/validations";
 
 type AccessibleStepperAttributes = {
   allowNextStepsSelect?: boolean;
@@ -94,13 +94,7 @@ function AccessibleStepper({ attributes }: AccessibleStepperProps) {
   }`;
 
   const {
-    generalColors: {
-      grayColorShade,
-      redColorShade,
-      greenColorShade,
-      textColor,
-      themeColorShade,
-    },
+    generalColors: { grayColorShade, redColorShade, textColor, themeColorShade },
   } = returnThemeColors({
     colorsSwatches: COLORS_SWATCHES,
     themeObject,
