@@ -27,7 +27,12 @@ import {
   StoreLocationsWithDefaultKey,
 } from "./types";
 import { USERS_DOCS } from "../devTesting/constants";
-import { returnSearchInputData } from "./utils";
+import {
+  addOrgIds,
+  addOrgIdsToUsers,
+  createNewMaintenanceSupervisors,
+  returnSearchInputData,
+} from "./utils";
 import { DIRECTORY_EMPLOYEE_DATA } from "./data";
 import OrgChartTree from "./testing";
 
@@ -80,13 +85,7 @@ function Directory1() {
     "Wetaskiwin",
   ];
 
-  const trie = Trie.buildTrie(towns);
-  console.group("trie");
-  console.log({ trie });
-  console.log("trie.searchTrie('A')", trie.searchTrie("A"));
-  console.log("trie.searchTrie('Airdrie')", trie.searchTrie("Airdrie"));
-  console.log(trie.autoComplete("L"));
-  console.groupEnd();
+  console.log(addOrgIds(DIRECTORY_EMPLOYEE_DATA));
 
   const departmentSelectInput = (
     <AccessibleSelectInput<Directory1Action["setDepartment"], DepartmentsWithDefaultKey>
