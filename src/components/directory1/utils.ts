@@ -1,4 +1,3 @@
-import { PROPERTY_DESCRIPTOR } from "../../constants/data";
 import { EmployeeData } from "./data";
 import { Directory1UserDocument } from "./types";
 
@@ -15,50 +14,36 @@ function returnSearchInputData(usersDocs: Directory1UserDocument[]) {
   );
 }
 
-function addOrgIdsToUsers(usersDocs: EmployeeData) {
-  const maxOrgId = usersDocs.reduce((acc, user) => {
-    const orgId = user.orgId as number;
-    return orgId > acc ? orgId : acc;
-  }, 0);
-}
-
-function createNewMaintenanceSupervisors(usersDocs: EmployeeData) {}
-
-function addOrgIds(usersDocs: EmployeeData) {
-  return usersDocs.reduce<EmployeeData>((acc, user, idx) => {
-    const newUser = Object.entries(user).reduce((userAcc, [key, value]) => {
-      if (key === "orgId") {
-        if (value > 44) {
-          Object.defineProperty(userAcc, key, {
-            value: Number.MIN_SAFE_INTEGER,
-            ...PROPERTY_DESCRIPTOR,
-          });
-        }
-      }
-
-      if (key === "parentOrgId") {
-        if (value > 44) {
-          Object.defineProperty(userAcc, key, {
-            value: Number.MIN_SAFE_INTEGER,
-            ...PROPERTY_DESCRIPTOR,
-          });
-        }
-      }
-
-      userAcc[key] = value;
-
-      return userAcc;
-    }, Object.create(null));
-
-    acc[idx] = newUser;
-
-    return acc;
-  }, Array.from({ length: usersDocs.length }));
-}
-
-export {
-  addOrgIdsToUsers,
-  returnSearchInputData,
-  createNewMaintenanceSupervisors,
-  addOrgIds,
+type D3TreeInput = {
+  attributes: Record<string, string>;
+  children: D3TreeInput[];
+  name: string;
 };
+
+function buildD3Tree(usersDocs: EmployeeData[]): D3TreeInput[] {
+  const nodeMap = usersDocs.reduce<Map<number, D3TreeInput>>((map, employee) => {
+    const name = `${employee.firstName} ${employee.middleName} ${employee.lastName}`;
+    map.set(employee.orgId, { attributes: {}, children: [], name });
+
+    return map;
+  }, new Map<number, D3TreeInput>());
+
+  const result = [] as Array<D3TreeInput>;
+
+  usersDocs.forEach((employee) => {
+    const node = nodeMap.get(employee.orgId);
+    if (!node) {
+      return;
+    }
+
+    if (employee.parentOrgId !== 0) {
+      nodeMap.get(employee.parentOrgId)?.children.push(node);
+    } else {
+      result.push(node);
+    }
+  });
+
+  return result;
+}
+
+export { returnSearchInputData, buildD3Tree };

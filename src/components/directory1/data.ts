@@ -1,4 +1,16 @@
-const DIRECTORY_EMPLOYEE_DATA = [
+import {
+  Country,
+  JobPosition,
+  PhoneNumber,
+  Province,
+  StatesUS,
+  StoreLocation,
+  UserRole,
+} from "../../types";
+import { Department } from "../survey/types";
+import { StoreLocationsWithDefaultKey } from "./types";
+
+const DIRECTORY_EMPLOYEE_DATA: EmployeeData[] = [
   {
     username: "ceo",
     email: "ceo@example.com",
@@ -3741,7 +3753,28 @@ const DIRECTORY_EMPLOYEE_DATA = [
   },
 ];
 
-type EmployeeData = typeof DIRECTORY_EMPLOYEE_DATA;
+type EmployeeData = {
+  username: string;
+  email: string;
+  firstName: string;
+  middleName: string;
+  lastName: string;
+  preferredName: string;
+  preferredPronouns: string;
+  profilePictureUrl: string;
+  contactNumber: PhoneNumber;
+  city: string;
+  province?: Province;
+  state?: StatesUS;
+  country: Country;
+  jobPosition: JobPosition;
+  department: Department;
+  storeLocation: StoreLocation | "All Locations";
+  role: UserRole;
+  active: boolean;
+  orgId: number;
+  parentOrgId: number;
+};
 
 export { DIRECTORY_EMPLOYEE_DATA };
 export type { EmployeeData };

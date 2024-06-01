@@ -1,13 +1,13 @@
 import { Container, Stack, Text } from "@mantine/core";
 import { useReducer } from "react";
 
-import { Trie } from "../../classes/trie";
 import { DEPARTMENT_DATA, STORE_LOCATION_DATA } from "../../constants/data";
-import { groupBy, logState } from "../../utils";
+import { logState } from "../../utils";
 import { AccessibleSelectInput } from "../accessibleInputs/AccessibleSelectInput";
 import { AccessibleSliderInput } from "../accessibleInputs/AccessibleSliderInput";
 import { AccessibleStepper } from "../accessibleInputs/AccessibleStepper";
 import { AccessibleSearchInput } from "../accessibleInputs/search/AccessibleSearchInput";
+import { USERS_DOCS } from "../devTesting/constants";
 import {
   DAGRE_LAYOUT_RANKALIGN_SELECT_OPTIONS,
   DAGRE_LAYOUT_RANKDIR_SELECT_OPTIONS,
@@ -17,24 +17,17 @@ import { Directory1Action, directory1Action } from "./actions";
 import { DEPARTMENT_JOB_POSITION_TABLE, returnDirectory1StepperPages } from "./constants";
 import { directory1Reducer } from "./reducers";
 import { initialDirectory1State } from "./state";
+import OrgChartTree from "./testing";
 import {
   DagreRankAlign,
   DagreRankDir,
   DagreRankerAlgorithm,
   DepartmentsWithDefaultKey,
-  Directory1UserDocument,
   JobPositionsWithDefaultKey,
   StoreLocationsWithDefaultKey,
 } from "./types";
-import { USERS_DOCS } from "../devTesting/constants";
-import {
-  addOrgIds,
-  addOrgIdsToUsers,
-  createNewMaintenanceSupervisors,
-  returnSearchInputData,
-} from "./utils";
+import { buildD3Tree, returnSearchInputData } from "./utils";
 import { DIRECTORY_EMPLOYEE_DATA } from "./data";
-import OrgChartTree from "./testing";
 
 function Directory1() {
   const [directory1State, directory1Dispatch] = useReducer(
@@ -84,8 +77,6 @@ function Directory1() {
     "St. Albert",
     "Wetaskiwin",
   ];
-
-  console.log(addOrgIds(DIRECTORY_EMPLOYEE_DATA));
 
   const departmentSelectInput = (
     <AccessibleSelectInput<Directory1Action["setDepartment"], DepartmentsWithDefaultKey>
