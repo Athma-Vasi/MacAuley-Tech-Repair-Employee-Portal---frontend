@@ -1,7 +1,11 @@
 import { Container, Stack, Text } from "@mantine/core";
 import { useReducer, useState } from "react";
 
-import { DEPARTMENT_DATA, STORE_LOCATION_DATA } from "../../constants/data";
+import {
+  COLORS_SWATCHES,
+  DEPARTMENT_DATA,
+  STORE_LOCATION_DATA,
+} from "../../constants/data";
 import { AccessibleSelectInput } from "../accessibleInputs/AccessibleSelectInput";
 import { Directory1Action, directory1Action } from "./actions";
 import { directory1Reducer } from "./reducers";
@@ -12,14 +16,22 @@ import { StoreLocation } from "../../types";
 import { DIRECTORY_EMPLOYEE_DATA } from "./data";
 import { buildD3Tree } from "../d3Tree/utils";
 import { D3Tree } from "../d3Tree/D3Tree";
+import { useGlobalState } from "../../hooks";
+import { returnThemeColors } from "../../utils";
 
 function Directory1() {
   const [directory1State, directory1Dispatch] = useReducer(
     directory1Reducer,
     initialDirectory1State
   );
-
   const { department, storeLocation } = directory1State;
+
+  const {
+    globalState: { themeObject },
+  } = useGlobalState();
+  const {
+    generalColors: { themeColorShade },
+  } = returnThemeColors({ colorsSwatches: COLORS_SWATCHES, themeObject });
 
   const departmentSelectInput = (
     <AccessibleSelectInput<Directory1Action["setDepartment"], DepartmentsWithDefaultKey>
@@ -44,7 +56,6 @@ function Directory1() {
       StoreLocationsWithDefaultKey
     >
       attributes={{
-        // data: ["All Store Locations", ...STORE_LOCATION_DATA],
         data: storeLocationData,
         disabled: isStoreLocationDisabled,
         name: "storeLocation",
@@ -61,16 +72,7 @@ function Directory1() {
     isStoreLocationDisabled,
     storeLocation,
   });
-
-  const d3TreeInput = buildD3Tree(filteredEmployees);
-  const d3Tree = <D3Tree data={d3TreeInput} />;
-
-  console.group("Directory1");
-  console.log("department", department);
-  console.log("storeLocation", storeLocation);
-  console.log("filteredEmployees", filteredEmployees);
-  console.log("d3TreeInput", d3TreeInput);
-  console.groupEnd();
+  const d3Tree = <D3Tree data={buildD3Tree(filteredEmployees, themeColorShade)} />;
 
   return (
     <Container w={700}>

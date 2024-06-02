@@ -5,33 +5,59 @@ type D3TreeInput = {
   children: Array<D3TreeInput>;
   name: string;
 };
+type TreeHelpers = {
+  nodeMap: Map<number, D3TreeInput>;
+  minOrgId: number;
+};
 
-function createNodeMap(employees: Array<EmployeeDoc>): Map<number, D3TreeInput> {
-  return employees.reduce<Map<number, D3TreeInput>>((map, employee) => {
-    const name = `${employee.firstName} ${employee.middleName} ${employee.lastName}`;
+function createTreeHelpers(
+  employees: Array<EmployeeDoc>,
+  nodeColor: string
+): TreeHelpers {
+  const initialAcc = {
+    nodeMap: new Map<number, D3TreeInput>(),
+    minOrgId: Number.MAX_SAFE_INTEGER,
+  };
+
+  return employees.reduce<TreeHelpers>((helpersAcc, employee) => {
+    const { minOrgId, nodeMap } = helpersAcc;
+    const {
+      city,
+      firstName,
+      jobPosition,
+      lastName,
+      middleName,
+      orgId,
+      country,
+      profilePictureUrl,
+    } = employee;
+    const name = `${firstName} ${middleName} ${lastName}`;
 
     const attributes = {
-      position: employee.jobPosition,
-      city: employee.city,
-      country: employee.country,
-      profilePictureUrl: employee.profilePictureUrl,
+      jobPosition,
+      city,
+      country,
+      nodeColor,
+      profilePictureUrl,
     };
 
-    map.set(employee.orgId, {
+    nodeMap.set(orgId, {
       attributes,
       children: [],
       name,
     });
 
-    return map;
-  }, new Map<number, D3TreeInput>());
+    helpersAcc.minOrgId = Math.min(minOrgId, employee.orgId);
+
+    return helpersAcc;
+  }, initialAcc);
 }
 
-function buildD3Tree(employees: Array<EmployeeDoc>): Array<D3TreeInput> {
-  const nodeMap = createNodeMap(employees);
-  const minOrgId = Math.min(...employees.map((employee) => employee.orgId));
-
-  console.log("minOrgId", minOrgId);
+function buildD3Tree(
+  employees: Array<EmployeeDoc>,
+  nodeColor: string
+): Array<D3TreeInput> {
+  const { minOrgId, nodeMap } = createTreeHelpers(employees, nodeColor);
 
   return employees.reduce<Array<D3TreeInput>>((result, employee) => {
     const { orgId, parentOrgId } = employee;

@@ -1,12 +1,11 @@
-import Tree, { Point } from "react-d3-tree";
-import { DIRECTORY_EMPLOYEE_DATA } from "../directory1/data";
-import "./d3Tree.css";
-import { D3TreeInput, buildD3Tree } from "./utils";
+import { Card, Flex, Stack, Text } from "@mantine/core";
+import Tree, { CustomNodeElementProps, Point } from "react-d3-tree";
+
 import { useCenteredTree } from "../../hooks";
-import { Card, Container, Flex, Group, Stack, Text } from "@mantine/core";
 import { AccessibleButton } from "../accessibleInputs/AccessibleButton";
-import { ImageWrapper } from "../wrappers";
 import { GoldenGrid } from "../accessibleInputs/GoldenGrid";
+import { ImageWrapper } from "../wrappers";
+import { D3TreeInput } from "./utils";
 
 function renderForeignObjectNode({
   nodeDatum,
@@ -54,12 +53,14 @@ function renderForeignObjectNode({
   );
 
   const foreignChild = (
-    <Flex direction="column">
-      {Object.entries(nodeDatum.attributes).map(([key, value]) =>
-        key === "profilePictureUrl" ? null : (
-          <Text key={`${key}-${value}`}>{value as string}</Text>
-        )
-      )}
+    <Flex direction="column" gap={4}>
+      {Object.entries(nodeDatum.attributes).map(([key, value], index) => {
+        const disallowedKeysSet = new Set(["profilePictureUrl", "nodeColor"]);
+
+        return disallowedKeysSet.has(key) ? null : (
+          <Text key={`${key}-${value}-${index}`}>{value as string}</Text>
+        );
+      })}
     </Flex>
   );
 
@@ -69,7 +70,7 @@ function renderForeignObjectNode({
     <Card shadow="sm" padding="md" radius="md" withBorder maw={200} mah={250}>
       <Stack w="100%">
         <GoldenGrid>
-          <Flex h="100%" direction="column" align="center" justify="center">
+          <Flex h="100%" direction="column" align="start" justify="center">
             {profilePic}
           </Flex>
           <Flex direction="column">
@@ -86,7 +87,13 @@ function renderForeignObjectNode({
 
   return (
     <g>
-      <circle r={15} fill={nodeDatum.children.length ? "gray" : "transparent"} />
+      <circle
+        r={15}
+        fill={nodeDatum.attributes.nodeColor ?? "gray"}
+        opacity={nodeDatum.children.length ? 1 : 0.4}
+        stroke="black"
+        strokeWidth={2}
+      />
       {/* `foreignObject` requires width & height to be explicitly set. */}
       <foreignObject {...foreignObjectProps}>{foreignCard}</foreignObject>
     </g>
@@ -102,15 +109,12 @@ function D3Tree({ data }: { data: Array<D3TreeInput> }) {
   return (
     <div style={containerStyles} ref={containerRef as any}>
       <Tree
-        branchNodeClassName="node__branch"
         data={data}
-        leafNodeClassName="node__leaf"
         nodeSize={nodeSize}
         orientation="vertical"
-        renderCustomNodeElement={(rd3tProps) =>
+        renderCustomNodeElement={(rd3tProps: CustomNodeElementProps) =>
           renderForeignObjectNode({ ...rd3tProps, foreignObjectProps })
         }
-        rootNodeClassName="node__root"
         translate={translate as Point}
       />
     </div>
