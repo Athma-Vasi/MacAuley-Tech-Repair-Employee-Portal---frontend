@@ -8,9 +8,8 @@ import {
   UserRole,
 } from "../../types";
 import { Department } from "../survey/types";
-import { StoreLocationsWithDefaultKey } from "./types";
 
-const DIRECTORY_EMPLOYEE_DATA: EmployeeData[] = [
+const DIRECTORY_EMPLOYEE_DATA: EmployeeDoc[] = [
   {
     username: "ceo",
     email: "ceo@example.com",
@@ -3753,7 +3752,7 @@ const DIRECTORY_EMPLOYEE_DATA: EmployeeData[] = [
   },
 ];
 
-type EmployeeData = {
+type EmployeeDoc = {
   username: string;
   email: string;
   firstName: string;
@@ -3777,4 +3776,4 @@ type EmployeeData = {
 };
 
 export { DIRECTORY_EMPLOYEE_DATA };
-export type { EmployeeData };
+export type { EmployeeDoc };

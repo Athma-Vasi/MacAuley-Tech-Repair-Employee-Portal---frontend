@@ -14,11 +14,16 @@ import { AccessibleSwitchInput } from "../../accessibleInputs/AccessibleSwitchIn
 import { AccessibleTextAreaInput } from "../../accessibleInputs/AccessibleTextAreaInput";
 import { AccessibleImageInput } from "../../accessibleInputs/image";
 import { AccessibleTextInput } from "../../accessibleInputs/text/AccessibleTextInput";
-import { EXPENSE_CLAIM_ROLE_PATHS, returnExpenseClaimStepperPages } from "../constants";
+import {
+  EXPENSE_CLAIM_KIND_DATA,
+  EXPENSE_CLAIM_ROLE_PATHS,
+  returnExpenseClaimStepperPages,
+} from "../constants";
 import { ExpenseClaimAction, expenseClaimAction } from "./actions";
 import { expenseClaimReducer } from "./reducers";
 import { initialExpenseClaimState } from "./state";
 import { ExpenseClaimKind, ExpenseClaimSchema } from "./types";
+import { CURRENCY_DATA } from "../../benefit/constants";
 
 function ExpenseClaim() {
   const [expenseClaimState, expenseClaimDispatch] = useReducer(
@@ -138,10 +143,7 @@ function ExpenseClaim() {
   const expenseClaimKindSelectInput = (
     <AccessibleSelectInput<ExpenseClaimAction["setExpenseClaimKind"], ExpenseClaimKind>
       attributes={{
-        data:
-          EXPENSE_CLAIM_STEPPER_PAGES[0].children.find(
-            (child) => child.name === "expenseClaimKind"
-          )?.selectInputData ?? [],
+        data: EXPENSE_CLAIM_KIND_DATA,
         name: "expenseClaimKind",
         parentDispatch: expenseClaimDispatch,
         validValueAction: expenseClaimAction.setExpenseClaimKind,
@@ -153,10 +155,7 @@ function ExpenseClaim() {
   const expenseClaimCurrencySelectInput = (
     <AccessibleSelectInput<ExpenseClaimAction["setExpenseClaimCurrency"], Currency>
       attributes={{
-        data:
-          EXPENSE_CLAIM_STEPPER_PAGES[0].children.find(
-            (child) => child.name === "expenseClaimCurrency"
-          )?.selectInputData ?? [],
+        data: CURRENCY_DATA,
         name: "expenseClaimCurrency",
         parentDispatch: expenseClaimDispatch,
         validValueAction: expenseClaimAction.setExpenseClaimCurrency,

@@ -6,12 +6,14 @@ import {
   AllowedFileMimeTypes,
   Department,
   JobPosition,
+  Province,
   SelectInputData,
+  StatesUS,
   StoreLocation,
   Urgency,
 } from "../../types";
 
-const PROVINCES = [
+const PROVINCES: Province[] = [
   "Alberta",
   "British Columbia",
   "Manitoba",
@@ -27,7 +29,7 @@ const PROVINCES = [
   "Yukon",
 ];
 
-const STATES_US = [
+const STATES_US: StatesUS[] = [
   "Alabama",
   "Alaska",
   "Arizona",

@@ -133,7 +133,7 @@ const ADDRESS_CHANGE_DESCRIPTION_OBJECTS: DescriptionObjectsArray = [
 
 const ADDRESS_CHANGE_MAX_STEPPER_POSITION = 2;
 
-const COUNTRIES_DATA = ["Canada", "United States"];
+const COUNTRIES_DATA: Country[] = ["Canada", "United States"];
 
 const ADDRESS_CHANGE_QUERY_DATA: ComponentQueryData[] = [
   {

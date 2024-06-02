@@ -5,12 +5,9 @@ import {
   PhoneNumber,
   PreferredPronouns,
   Province,
-  ResourceRequestServerResponse,
-  SetPageInErrorPayload,
   StatesUS,
   StoreLocation,
   UserRole,
-  UserRoles,
 } from "../../types";
 import { Directory1Action } from "./actions";
 
@@ -35,96 +32,33 @@ type Directory1UserDocument = {
   };
   jobPosition: JobPosition;
   department: Department;
-  storeLocation?: StoreLocation;
+  storeLocation: StoreLocation;
   role: UserRole;
   active: boolean;
 };
 
 type Directory1State = {
-  dagreMinLen: number; // minimum edge length default: 1
-  dagreNodeSep: number; // default 50
-  dagreRankAlign: DagreRankAlign;
-  dagreRankDir: DagreRankDir;
-  dagreRankSep: number; // default 50
-  dagreRanker: DagreRankerAlgorithm; // default 'network-simplex'
   department: DepartmentsWithDefaultKey;
-  isLoading: boolean;
-  jobPosition: JobPositionsWithDefaultKey;
-  pagesInError: Set<number>;
-  search: string;
-  storeLocation: StoreLocationsWithDefaultKey;
+  storeLocation: StoreLocation;
 };
-
-type DagreRankDir = "TB" | "BT" | "LR" | "RL";
-type DagreRankAlign = "UL" | "UR" | "DL" | "DR" | "undefined";
-type DagreRankerAlgorithm = "network-simplex" | "tight-tree" | "longest-path";
-type DagreLabelPos = "l" | "r" | "c";
-
-type FetchUsersDirectoryResponse = ResourceRequestServerResponse<Directory1UserDocument>;
 
 // default keys needed for select inputs
 type DepartmentsWithDefaultKey = Department | "All Departments";
-type JobPositionsWithDefaultKey = JobPosition | "All Job Positions";
-type StoreLocationsWithDefaultKey = StoreLocation | "All Store Locations";
 
 type Directory1Dispatch =
-  | { action: Directory1Action["setDagreMinLen"]; payload: number }
-  | {
-      action: Directory1Action["setDagreNodeSep"];
-      payload: number;
-    }
-  | {
-      action: Directory1Action["setDagreRankAlign"];
-      payload: DagreRankAlign;
-    }
-  | {
-      action: Directory1Action["setDagreRankDir"];
-      payload: DagreRankDir;
-    }
-  | {
-      action: Directory1Action["setDagreRankSep"];
-      payload: number;
-    }
-  | {
-      action: Directory1Action["setDagreRanker"];
-      payload: DagreRankerAlgorithm;
-    }
   | {
       action: Directory1Action["setDepartment"];
       payload: DepartmentsWithDefaultKey;
     }
   | {
-      action: Directory1Action["setIsLoading"];
-      payload: boolean;
-    }
-  | {
-      action: Directory1Action["setJobPosition"];
-      payload: JobPositionsWithDefaultKey;
-    }
-  | {
-      action: Directory1Action["setPageInError"];
-      payload: SetPageInErrorPayload;
-    }
-  | {
-      action: Directory1Action["setSearchValue"];
-      payload: string;
-    }
-  | {
       action: Directory1Action["setStoreLocation"];
-      payload: StoreLocationsWithDefaultKey;
+      payload: StoreLocation;
     };
 
 export type {
-  DagreLabelPos,
-  DagreRankAlign,
-  DagreRankDir,
-  DagreRankerAlgorithm,
   DepartmentsWithDefaultKey,
   Directory1Action,
   Directory1Dispatch,
   Directory1State,
   Directory1UserDocument,
-  FetchUsersDirectoryResponse,
-  JobPositionsWithDefaultKey,
-  StoreLocationsWithDefaultKey,
 };

@@ -1,14 +1,19 @@
 import { MantineSize, NativeSelect } from "@mantine/core";
 import { ChangeEvent, ReactNode, RefObject } from "react";
 
-import { SelectInputData } from "../../types";
 import { splitCamelCase } from "../../utils";
 
 type AccessibleSelectInputAttributes<
   ValidValueAction extends string = string,
   Payload extends string = string
 > = {
-  data: string[] | SelectInputData;
+  data: Array<
+    | {
+        label: Capitalize<Payload>;
+        value: Payload;
+      }
+    | Payload
+  >;
   describedBy?: string;
   description?: string;
   disabled?: boolean;

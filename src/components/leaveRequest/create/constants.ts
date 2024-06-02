@@ -1,27 +1,28 @@
-import { DescriptionObjectsArray } from '../../wrappers';
+import { DescriptionObjectsArray } from "../../wrappers";
+import { ReasonForLeave } from "../types";
 
-const REASON_FOR_LEAVE_DATA = [
-  'Vacation',
-  'Medical',
-  'Parental',
-  'Bereavement',
-  'Jury Duty',
-  'Military',
-  'Education',
-  'Religious',
-  'Other',
+const REASON_FOR_LEAVE_DATA: ReasonForLeave[] = [
+  "Vacation",
+  "Medical",
+  "Parental",
+  "Bereavement",
+  "Jury Duty",
+  "Military",
+  "Education",
+  "Religious",
+  "Other",
 ];
 
 const LEAVE_REQUEST_DESCRIPTION_OBJECTS: DescriptionObjectsArray = [
   {
-    description: 'Leave Request Details',
+    description: "Leave Request Details",
     ariaLabel:
-      'Enter start date, end date, reason for leave, delegated to employee, delegated responsibilities, additional comments and acknowledgement',
+      "Enter start date, end date, reason for leave, delegated to employee, delegated responsibilities, additional comments and acknowledgement",
   },
 
   {
-    description: 'Review and Proceed',
-    ariaLabel: 'Review accuracy of entered information before proceeding',
+    description: "Review and Proceed",
+    ariaLabel: "Review accuracy of entered information before proceeding",
   },
 ];
 

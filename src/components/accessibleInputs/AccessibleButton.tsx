@@ -27,14 +27,17 @@ import { TiArrowLeftThick, TiArrowRightThick } from "react-icons/ti";
 import { useGlobalState } from "../../hooks";
 import { splitCamelCase } from "../../utils";
 import { createAccessibleButtonScreenreaderTextElements } from "./utils";
+import { VscCollapseAll, VscExpandAll } from "react-icons/vsc";
 
 type AccessibleButtonKind =
   | "add"
+  | "collapse"
   | "default"
   | "delete"
   | "down"
   | "download"
   | "edit"
+  | "expand"
   | "filter"
   | "hide"
   | "insert"
@@ -102,11 +105,13 @@ function AccessibleButton({ attributes }: AccessibleButtonProps) {
 
   const leftIconTable: Record<AccessibleButtonKind, ReactNode> = {
     add: <TbPlus />,
+    collapse: <VscCollapseAll />,
     default: null,
     delete: <TbTrash />,
     down: <TbCircleArrowDown />,
     download: <TbDownload />,
     edit: <TbEdit />,
+    expand: <VscExpandAll />,
     filter: <TbFilter />,
     insert: <TbRowInsertTop />,
     hide: <TbArrowDown />,
