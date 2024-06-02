@@ -7,7 +7,7 @@ import { Directory1Action, directory1Action } from "./actions";
 import { directory1Reducer } from "./reducers";
 import { initialDirectory1State } from "./state";
 import { DepartmentsWithDefaultKey, StoreLocationsWithDefaultKey } from "./types";
-import { returnIsStoreLocationDisabled } from "./utils";
+import { filterEmployees, returnIsStoreLocationDisabled } from "./utils";
 import { StoreLocation } from "../../types";
 import { DIRECTORY_EMPLOYEE_DATA } from "./data";
 import { buildD3Tree } from "../d3Tree/utils";
@@ -55,15 +55,12 @@ function Directory1() {
     />
   );
 
-  const filteredEmployees =
-    department === "All Departments"
-      ? DIRECTORY_EMPLOYEE_DATA
-      : DIRECTORY_EMPLOYEE_DATA.filter((employee) => {
-          return isStoreLocationDisabled
-            ? employee.department === department
-            : employee.department === department &&
-                employee.storeLocation === storeLocation;
-        });
+  const filteredEmployees = filterEmployees({
+    department,
+    employees: DIRECTORY_EMPLOYEE_DATA,
+    isStoreLocationDisabled,
+    storeLocation,
+  });
 
   const d3TreeInput = buildD3Tree(filteredEmployees);
   const d3Tree = <D3Tree data={d3TreeInput} />;

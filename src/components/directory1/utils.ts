@@ -1,5 +1,10 @@
 import { StoreLocation } from "../../types";
-import { DepartmentsWithDefaultKey, Directory1UserDocument } from "./types";
+import { EmployeeDoc } from "./data";
+import {
+  DepartmentsWithDefaultKey,
+  Directory1UserDocument,
+  StoreLocationsWithDefaultKey,
+} from "./types";
 
 function returnSearchInputData(usersDocs: Directory1UserDocument[]) {
   return Array.from(
@@ -30,16 +35,23 @@ function returnIsStoreLocationDisabled(department: DepartmentsWithDefaultKey) {
 
 function filterEmployees({
   department,
+  employees,
+  isStoreLocationDisabled,
   storeLocation,
-  usersDocs,
 }: {
   department: DepartmentsWithDefaultKey;
-  storeLocation: StoreLocation;
-  usersDocs: Directory1UserDocument[];
+  employees: EmployeeDoc[];
+  isStoreLocationDisabled: boolean;
+  storeLocation: StoreLocationsWithDefaultKey;
 }) {
-  return usersDocs.filter((user) => {
-    return user.department === department && user.storeLocation === storeLocation;
-  });
+  return department === "All Departments"
+    ? employees
+    : employees.filter((employee) => {
+        return isStoreLocationDisabled
+          ? employee.department === department
+          : employee.department === department &&
+              employee.storeLocation === storeLocation;
+      });
 }
 
-export { returnIsStoreLocationDisabled, returnSearchInputData };
+export { filterEmployees, returnIsStoreLocationDisabled, returnSearchInputData };
