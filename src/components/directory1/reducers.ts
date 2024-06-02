@@ -1,10 +1,10 @@
-import { StoreLocation } from "../../types";
 import { directory1Action } from "./actions";
 import {
   DepartmentsWithDefaultKey,
   Directory1Action,
   Directory1Dispatch,
   Directory1State,
+  StoreLocationsWithDefaultKey,
 } from "./types";
 
 function directory1Reducer(
@@ -39,7 +39,7 @@ function directory1Reducer_setStoreLocation(
 ): Directory1State {
   return {
     ...state,
-    storeLocation: dispatch.payload as StoreLocation,
+    storeLocation: dispatch.payload as StoreLocationsWithDefaultKey,
   };
 }
 

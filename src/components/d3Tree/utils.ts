@@ -29,14 +29,18 @@ function createNodeMap(employees: Array<EmployeeDoc>): Map<number, D3TreeInput> 
 
 function buildD3Tree(employees: Array<EmployeeDoc>): Array<D3TreeInput> {
   const nodeMap = createNodeMap(employees);
+  const minOrgId = Math.min(...employees.map((employee) => employee.orgId));
+
+  console.log("minOrgId", minOrgId);
 
   return employees.reduce<Array<D3TreeInput>>((result, employee) => {
-    const node = nodeMap.get(employee.orgId);
+    const { orgId, parentOrgId } = employee;
+    const node = nodeMap.get(orgId);
     if (!node) {
       return result;
     }
 
-    employee.parentOrgId === 0 // ceo
+    parentOrgId === 0 || orgId === minOrgId // root node
       ? result.push(node)
       : nodeMap.get(employee.parentOrgId)?.children.push(node);
 

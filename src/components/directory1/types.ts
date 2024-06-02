@@ -39,11 +39,12 @@ type Directory1UserDocument = {
 
 type Directory1State = {
   department: DepartmentsWithDefaultKey;
-  storeLocation: StoreLocation;
+  storeLocation: StoreLocationsWithDefaultKey;
 };
 
 // default keys needed for select inputs
 type DepartmentsWithDefaultKey = Department | "All Departments";
+type StoreLocationsWithDefaultKey = StoreLocation | "All Locations";
 
 type Directory1Dispatch =
   | {
@@ -52,7 +53,7 @@ type Directory1Dispatch =
     }
   | {
       action: Directory1Action["setStoreLocation"];
-      payload: StoreLocation;
+      payload: StoreLocationsWithDefaultKey;
     };
 
 export type {
@@ -61,4 +62,5 @@ export type {
   Directory1Dispatch,
   Directory1State,
   Directory1UserDocument,
+  StoreLocationsWithDefaultKey,
 };

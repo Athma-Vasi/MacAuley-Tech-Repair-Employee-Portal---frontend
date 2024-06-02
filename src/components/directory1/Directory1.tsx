@@ -6,9 +6,12 @@ import { AccessibleSelectInput } from "../accessibleInputs/AccessibleSelectInput
 import { Directory1Action, directory1Action } from "./actions";
 import { directory1Reducer } from "./reducers";
 import { initialDirectory1State } from "./state";
-import { DepartmentsWithDefaultKey } from "./types";
+import { DepartmentsWithDefaultKey, StoreLocationsWithDefaultKey } from "./types";
 import { returnIsStoreLocationDisabled } from "./utils";
 import { StoreLocation } from "../../types";
+import { DIRECTORY_EMPLOYEE_DATA } from "./data";
+import { buildD3Tree } from "../d3Tree/utils";
+import { D3Tree } from "../d3Tree/D3Tree";
 
 function Directory1() {
   const [directory1State, directory1Dispatch] = useReducer(
@@ -17,29 +20,6 @@ function Directory1() {
   );
 
   const { department, storeLocation } = directory1State;
-
-  // list of albertan towns
-  const towns = [
-    "Airdrie",
-    "Beaumont",
-    "Brooks",
-    "Calgary",
-    "Camrose",
-    "Chestermere",
-    "Cold Lake",
-    "Edmonton",
-    "Fort Saskatchewan",
-    "Grande Prairie",
-    "Lacombe",
-    "Leduc",
-    "Lethbridge",
-    "Lloydminster",
-    "Medicine Hat",
-    "Red Deer",
-    "Spruce Grove",
-    "St. Albert",
-    "Wetaskiwin",
-  ];
 
   const departmentSelectInput = (
     <AccessibleSelectInput<Directory1Action["setDepartment"], DepartmentsWithDefaultKey>
@@ -53,11 +33,20 @@ function Directory1() {
     />
   );
 
+  const isStoreLocationDisabled = returnIsStoreLocationDisabled(department);
+  const storeLocationData = isStoreLocationDisabled
+    ? (["All Locations"] as StoreLocationsWithDefaultKey[])
+    : (STORE_LOCATION_DATA as StoreLocationsWithDefaultKey[]);
+
   const storeLocationSelectInput = (
-    <AccessibleSelectInput<Directory1Action["setStoreLocation"], StoreLocation>
+    <AccessibleSelectInput<
+      Directory1Action["setStoreLocation"],
+      StoreLocationsWithDefaultKey
+    >
       attributes={{
-        data: STORE_LOCATION_DATA,
-        disabled: returnIsStoreLocationDisabled(department),
+        // data: ["All Store Locations", ...STORE_LOCATION_DATA],
+        data: storeLocationData,
+        disabled: isStoreLocationDisabled,
         name: "storeLocation",
         value: storeLocation,
         parentDispatch: directory1Dispatch,
@@ -66,10 +55,31 @@ function Directory1() {
     />
   );
 
+  const filteredEmployees =
+    department === "All Departments"
+      ? DIRECTORY_EMPLOYEE_DATA
+      : DIRECTORY_EMPLOYEE_DATA.filter((employee) => {
+          return isStoreLocationDisabled
+            ? employee.department === department
+            : employee.department === department &&
+                employee.storeLocation === storeLocation;
+        });
+
+  const d3TreeInput = buildD3Tree(filteredEmployees);
+  const d3Tree = <D3Tree data={d3TreeInput} />;
+
+  console.group("Directory1");
+  console.log("department", department);
+  console.log("storeLocation", storeLocation);
+  console.log("filteredEmployees", filteredEmployees);
+  console.log("d3TreeInput", d3TreeInput);
+  console.groupEnd();
+
   return (
     <Container w={700}>
       {departmentSelectInput}
       {storeLocationSelectInput}
+      {d3Tree}
     </Container>
   );
 }
