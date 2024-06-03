@@ -6,10 +6,6 @@ import {
   USERNAME_REGEX,
 } from "../../constants/regex";
 import {
-  TEXT_AREA_INPUT_VALIDATIONS,
-  TEXT_INPUT_VALIDATIONS,
-} from "../../constants/validations";
-import {
   RadioGroupInputData,
   RoleResourceRoutePaths,
   StepperChild,
@@ -34,19 +30,19 @@ function returnSurveyStepperPages(): StepperPage[] {
   const surveyTitleChild: StepperChild = {
     inputType: "text",
     name: "surveyTitle",
-    validations: TEXT_INPUT_VALIDATIONS,
+    validationKey: "textInput",
   };
 
   const surveyDescriptionChild: StepperChild = {
     inputType: "text",
     name: "surveyDescription",
-    validations: TEXT_AREA_INPUT_VALIDATIONS,
+    validationKey: "textAreaInput",
   };
 
   const expiryDateChild: StepperChild = {
     inputType: "date",
     name: "expiryDate",
-    validations: "dateNearFuture",
+    validationKey: "dateNearFuture",
   };
 
   const surveyRecipientsChild: StepperChild = {
@@ -58,7 +54,7 @@ function returnSurveyStepperPages(): StepperPage[] {
   const questionsChild: StepperChild = {
     inputType: "text",
     name: "question 1",
-    validations: TEXT_INPUT_VALIDATIONS,
+    validationKey: "textInput",
   };
 
   const responseKindsChild: StepperChild = {
@@ -76,7 +72,7 @@ function returnSurveyStepperPages(): StepperPage[] {
   const responseOptionsChild: StepperChild = {
     inputType: "text",
     name: "responseOption 1 A",
-    validations: TEXT_AREA_INPUT_VALIDATIONS,
+    validationKey: "textAreaInput",
   };
 
   return [

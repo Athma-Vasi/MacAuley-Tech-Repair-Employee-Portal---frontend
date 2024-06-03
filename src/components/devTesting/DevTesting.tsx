@@ -14,7 +14,6 @@ import {
   REPAIR_CATEGORIES,
 } from "../dashboard/constants";
 import { createRandomBusinessMetrics } from "../dashboard/utils";
-import { STORE_LOCATION_DATA } from "../register/constants";
 import {
   BUSINESS_METRICS_TEMPLATE,
   FINANCIAL_METRICS_DAILY_TEMPLATE,

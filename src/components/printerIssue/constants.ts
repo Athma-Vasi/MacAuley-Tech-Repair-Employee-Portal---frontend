@@ -12,12 +12,6 @@ import {
   USERNAME_REGEX,
 } from "../../constants/regex";
 import {
-  EMAIL_VALIDATIONS,
-  PHONE_NUMBER_VALIDATIONS,
-  TEXT_AREA_INPUT_VALIDATIONS,
-  TEXT_INPUT_VALIDATIONS,
-} from "../../constants/validations";
-import {
   ResourceRoutePaths,
   RoleResourceRoutePaths,
   StepperChild,
@@ -37,11 +31,6 @@ import {
 import { ComponentQueryData } from "../queryBuilder";
 import { DescriptionObjectsArray } from "../wrappers";
 import { PrinterMake } from "./create/types";
-import {
-  PRINTER_MAKE_MODEL_VALIDATIONS,
-  PRINTER_SERIAL_NUMBER_VALIDATIONS,
-  TIME_RAILWAY_VALIDATIONS,
-} from "./create/validations";
 
 const PRINTER_ISSUE_ROLE_PATHS: RoleResourceRoutePaths = {
   manager: "actions/general/printer-issue",
@@ -53,31 +42,31 @@ function returnPrinterIssueStepperPages(): StepperPage[] {
   const additionalInformationChild: StepperChild = {
     inputType: "text",
     name: "additionalInformation",
-    validations: TEXT_AREA_INPUT_VALIDATIONS,
+    validationKey: "textAreaInput",
   };
 
   const contactEmailChild: StepperChild = {
     inputType: "text",
     name: "contactEmail",
-    validations: EMAIL_VALIDATIONS,
+    validationKey: "email",
   };
 
   const contactNumberChild: StepperChild = {
     inputType: "text",
     name: "contactNumber",
-    validations: PHONE_NUMBER_VALIDATIONS,
+    validationKey: "phoneNumber",
   };
 
   const dateOfOccurrenceChild: StepperChild = {
     inputType: "text",
     name: "dateOfOccurrence",
-    validations: "dateNearPast",
+    validationKey: "dateNearPast",
   };
 
   const printerIssueDescriptionChild: StepperChild = {
     inputType: "text",
     name: "printerIssueDescription",
-    validations: TEXT_AREA_INPUT_VALIDATIONS,
+    validationKey: "textAreaInput",
   };
 
   const printerMakeChild: StepperChild = {
@@ -89,25 +78,25 @@ function returnPrinterIssueStepperPages(): StepperPage[] {
   const printerModelChild: StepperChild = {
     inputType: "text",
     name: "printerModel",
-    validations: PRINTER_MAKE_MODEL_VALIDATIONS,
+    validationKey: "printerMakeModel",
   };
 
   const printerSerialNumberChild: StepperChild = {
     inputType: "text",
     name: "printerSerialNumber",
-    validations: PRINTER_SERIAL_NUMBER_VALIDATIONS,
+    validationKey: "printerSerial",
   };
 
   const timeOfOccurrenceChild: StepperChild = {
     inputType: "text",
     name: "timeOfOccurrence",
-    validations: TIME_RAILWAY_VALIDATIONS,
+    validationKey: "timeRailway",
   };
 
   const titleChild: StepperChild = {
     inputType: "text",
     name: "title",
-    validations: TEXT_INPUT_VALIDATIONS,
+    validationKey: "textInput",
   };
 
   const urgencyChild: StepperChild = {

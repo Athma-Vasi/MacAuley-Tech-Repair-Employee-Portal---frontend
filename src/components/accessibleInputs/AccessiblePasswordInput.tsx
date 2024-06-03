@@ -40,7 +40,7 @@ type AccessiblePasswordInputAttributes<
       }
   >;
   validValueAction: ValidValueAction;
-  placeholder: string;
+  placeholder?: string;
   ref?: RefObject<HTMLInputElement>;
   required?: boolean;
   size?: MantineSize;
@@ -49,11 +49,17 @@ type AccessiblePasswordInputAttributes<
   withAsterisk?: boolean;
 };
 
-type AccessiblePasswordInputProps = {
-  attributes: AccessiblePasswordInputAttributes;
+type AccessiblePasswordInputProps<
+  ValidValueAction extends string = string,
+  InvalidValueAction extends string = string
+> = {
+  attributes: AccessiblePasswordInputAttributes<ValidValueAction, InvalidValueAction>;
 };
 
-function AccessiblePasswordInput({ attributes }: AccessiblePasswordInputProps) {
+function AccessiblePasswordInput<
+  ValidValueAction extends string = string,
+  InvalidValueAction extends string = string
+>({ attributes }: AccessiblePasswordInputProps<ValidValueAction, InvalidValueAction>) {
   const {
     stepperPages,
     icon = null,
@@ -90,11 +96,9 @@ function AccessiblePasswordInput({ attributes }: AccessiblePasswordInputProps) {
     generalColors: { greenColorShade },
   } = returnThemeColors({ themeObject, colorsSwatches: COLORS_SWATCHES });
 
-  const { fullValidation } = returnFullValidation(name, stepperPages);
+  const { full } = returnFullValidation(name, stepperPages);
   const isValueBufferValid =
-    typeof fullValidation === "function"
-      ? fullValidation(valueBuffer)
-      : fullValidation.test(valueBuffer);
+    typeof full === "function" ? full(valueBuffer) : full.test(valueBuffer);
 
   const leftIcon = isValueBufferValid ? (
     icon ? (

@@ -2,11 +2,11 @@ import { Grid, Group, Spoiler, Stack, Text, Title } from "@mantine/core";
 import { ReactNode } from "react";
 
 import { COLORS_SWATCHES, PROPERTY_DESCRIPTOR } from "../../constants/data";
+import { VALIDATION_FUNCTIONS_TABLE } from "../../constants/validations";
 import { useGlobalState } from "../../hooks";
 import { StepperPage } from "../../types";
 import { capitalizeJoinWithAnd, returnThemeColors, splitCamelCase } from "../../utils";
 import { createAccessibleButtons } from "../accessibleInputs/utils";
-import { VALIDATION_FUNCTIONS_TABLE } from "../../constants/validations";
 
 type FormReview = {
   name: string;
@@ -146,7 +146,7 @@ function returnFormReviews<
     }
 
     const formReviews = children.map((child) => {
-      const { name, validations } = child;
+      const { name, validationKey } = child;
       const value = componentState[name];
 
       const stringifiedValue = Array.isArray(value)
@@ -160,22 +160,28 @@ function returnFormReviews<
         ? splitCamelCase(value)
         : value?.toString() ?? "";
 
-      let isValueValid = true;
+      // let isValueValid = true;
 
-      if (typeof validations === "string") {
-        const validationsObj = VALIDATION_FUNCTIONS_TABLE[validations];
-        if (validationsObj) {
-          isValueValid =
-            typeof validationsObj.full === "function"
-              ? validationsObj.full(stringifiedValue)
-              : validationsObj.full.test(stringifiedValue);
-        }
-      } else if (validations) {
-        isValueValid =
-          typeof validations.full === "function"
-            ? validations.full(stringifiedValue)
-            : validations.full.test(stringifiedValue);
-      }
+      // if (typeof validations === "string") {
+      //   const validationsObj = VALIDATION_FUNCTIONS_TABLE[validations];
+      //   if (validationsObj) {
+      //     isValueValid =
+      //       typeof validationsObj.full === "function"
+      //         ? validationsObj.full(stringifiedValue)
+      //         : validationsObj.full.test(stringifiedValue);
+      //   }
+      // } else if (validations) {
+      //   isValueValid =
+      //     typeof validations.full === "function"
+      //       ? validations.full(stringifiedValue)
+      //       : validations.full.test(stringifiedValue);
+      // }
+
+      const validation = VALIDATION_FUNCTIONS_TABLE[validationKey ?? "allowAll"];
+      const isValueValid =
+        typeof validation.full === "function"
+          ? validation.full(stringifiedValue)
+          : validation.full.test(stringifiedValue);
 
       return {
         name,

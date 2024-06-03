@@ -20,6 +20,7 @@ import {
 } from "react";
 import { TbCheck, TbRefresh } from "react-icons/tb";
 
+import { Trie } from "../../../classes/trie";
 import { COLORS_SWATCHES } from "../../../constants/data";
 import { useGlobalState } from "../../../hooks";
 import { SetPageInErrorPayload, StepperPage } from "../../../types";
@@ -29,7 +30,6 @@ import {
   returnFullValidation,
   returnValidationTexts,
 } from "../utils";
-import { Trie } from "../../../classes/trie";
 
 type AccessibleSearchInputAttributes<
   ValidValueAction extends string = string,
@@ -150,11 +150,9 @@ function AccessibleSearchInput<
     )
   ) : null;
 
-  const { fullValidation } = returnFullValidation(name, stepperPages);
+  const { full } = returnFullValidation(name, stepperPages);
   const isValueBufferValid =
-    typeof fullValidation === "function"
-      ? fullValidation(valueBuffer)
-      : fullValidation.test(valueBuffer);
+    typeof full === "function" ? full(valueBuffer) : full.test(valueBuffer);
 
   const leftIcon = isValueBufferValid ? (
     icon ? (

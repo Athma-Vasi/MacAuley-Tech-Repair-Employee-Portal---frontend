@@ -21,6 +21,7 @@ import { RefermentDocument } from "../components/referment/create/types";
 import { RepairTicketDocument } from "../components/repairTicket/types";
 import { RequestResourceDocument } from "../components/requestResource/create/types";
 import { SurveyDocument } from "../components/survey/types";
+import { ValidationKey } from "../constants/validations";
 import type {
   Action,
   ActionsCompany,
@@ -250,18 +251,13 @@ type SliderInputData = {
 type StepperChild = {
   inputType: InputType;
   name: string;
-  validations?: Validations;
+  validationKey?: ValidationKey;
   selectInputData?: string[] | SelectInputData;
   checkboxInputData?: CheckBoxMultipleData;
   sliderInputData?: SliderInputData;
 };
 
-type ValidationFunctionsTable = Record<string, Validation>;
-
-/**
- * - string union is used because some components store the StepperPages in state and function objects cannot be deep cloned by structuredClone. The input validator functions use the string as a key to access the corresponding function from VALIDATION_FUNCTIONS_TABLE.
- */
-type Validations = string | Validation;
+type ValidationFunctionsTable = Record<ValidationKey, Validation>;
 
 type Validation = {
   /** must be a superset of partials. input error state is determined by full test */
@@ -340,5 +336,4 @@ export type {
   USPostalCode,
   Validation,
   ValidationFunctionsTable,
-  Validations,
 };

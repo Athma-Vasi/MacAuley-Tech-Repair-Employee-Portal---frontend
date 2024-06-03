@@ -6,11 +6,6 @@ import {
   USERNAME_REGEX,
 } from "../../constants/regex";
 import {
-  FULL_NAME_VALIDATIONS,
-  TEXT_AREA_INPUT_VALIDATIONS,
-  TEXT_INPUT_VALIDATIONS,
-} from "../../constants/validations";
-import {
   CheckBoxMultipleData,
   RoleResourceRoutePaths,
   StepperChild,
@@ -32,19 +27,6 @@ const ENDORSEMENT_ROLE_PATHS: RoleResourceRoutePaths = {
 };
 
 function returnEndorsementStepperPages(): StepperPage[] {
-  /**
-   * type EndorsementState = {
-  attributeEndorsed: EmployeeAttributes;
-  personToBeEndorsed: string;
-  isSubmitting: boolean;
-  isSuccessful: boolean;
-  pagesInError: Set<number>;
-  summaryOfEndorsement: string;
-  title: string;
-  triggerFormSubmit: boolean;
-};
-   */
-
   const attributeEndorsedChild: StepperChild = {
     inputType: "checkbox",
     name: "attributeEndorsed",
@@ -54,19 +36,19 @@ function returnEndorsementStepperPages(): StepperPage[] {
   const personToBeEndorsedChild: StepperChild = {
     inputType: "text",
     name: "personToBeEndorsed",
-    validations: FULL_NAME_VALIDATIONS,
+    validationKey: "fullName",
   };
 
   const summaryOfEndorsementChild: StepperChild = {
     inputType: "text",
     name: "summaryOfEndorsement",
-    validations: TEXT_AREA_INPUT_VALIDATIONS,
+    validationKey: "textAreaInput",
   };
 
   const titleChild: StepperChild = {
     inputType: "text",
     name: "title",
-    validations: TEXT_INPUT_VALIDATIONS,
+    validationKey: "textInput",
   };
 
   const stepperPages: StepperPage[] = [

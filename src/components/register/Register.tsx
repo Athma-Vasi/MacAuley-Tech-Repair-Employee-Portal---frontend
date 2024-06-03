@@ -1,49 +1,543 @@
-import "../../index.css";
-
-import { Flex, Text, Title } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
-import { InvalidTokenError } from "jwt-decode";
-import { MouseEvent, useEffect, useReducer, useRef } from "react";
+import { Container, Stack, Text } from "@mantine/core";
+import { useEffect, useReducer, useRef } from "react";
 import { useErrorBoundary } from "react-error-boundary";
-import { TbUpload } from "react-icons/tb";
-import { Link, useNavigate } from "react-router-dom";
 
-import { EMAIL_REGEX, USERNAME_REGEX } from "../../constants/regex";
-import { globalAction } from "../../context/globalProvider/state";
-import { useGlobalState, useWrapFetch } from "../../hooks";
-import { returnAccessibleButtonElements } from "../../jsxCreators";
-import { ResourceRequestServerResponse, UserDocument, UserSchema } from "../../types";
-import { logState, urlBuilder } from "../../utils";
-import { NotificationModal } from "../notificationModal";
-import { AccessibleButtonCreatorInfo, StepperWrapper } from "../wrappers";
-import { REGISTER_DESCRIPTION_OBJECTS, REGISTER_MAX_STEPPER_POSITION } from "./constants";
-import { RegisterStepAdditional } from "./registerStepAdditional/RegisterStepAdditional";
-import { RegisterStepAddress } from "./registerStepAddress/RegisterStepAddress";
-import { RegisterStepAuthentication } from "./registerStepAuthentication/RegisterStepAuthentication";
-import { RegisterStepPersonal } from "./registerStepPersonal/RegisterStepPersonal";
-import { RegisterStepReview } from "./registerStepReview/RegisterStepReview";
-import { initialRegisterState, registerAction, registerReducer } from "./state";
+import {
+  COUNTRIES_DATA,
+  DEPARTMENT_DATA,
+  JOB_POSITION_DATA,
+  PROVINCES,
+  STATES_US,
+  STORE_LOCATION_DATA,
+} from "../../constants/data";
+import { useFetchInterceptor } from "../../hooks/useFetchInterceptor";
+import {
+  Country,
+  Department,
+  JobPosition,
+  PreferredPronouns,
+  Province,
+  StatesUS,
+  StoreLocation,
+} from "../../types";
+import { formSubmitPOST, logState } from "../../utils";
+import { AccessibleButton } from "../accessibleInputs/AccessibleButton";
+import { AccessibleDateTimeInput } from "../accessibleInputs/AccessibleDateTimeInput";
+import { AccessiblePasswordInput } from "../accessibleInputs/AccessiblePasswordInput";
+import { AccessibleSelectInput } from "../accessibleInputs/AccessibleSelectInput";
+import { AccessibleStepper } from "../accessibleInputs/AccessibleStepper";
+import { AccessibleTextInput } from "../accessibleInputs/text/AccessibleTextInput";
+import { RegisterAction, registerAction } from "./actions";
+import { PREFERRED_PRONOUNS_DATA, returnRegisterStepperPages } from "./constants";
+import { registerReducer } from "./reducers";
+import { initialRegisterState } from "./state";
 
 function Register() {
-  const { globalDispatch } = useGlobalState();
-
-  const { showBoundary } = useErrorBoundary();
-  const navigate = useNavigate();
-
-  const [
-    openedSubmitSuccessNotificationModal,
-    {
-      open: openSubmitSuccessNotificationModal,
-      close: closeSubmitSuccessNotificationModal,
-    },
-  ] = useDisclosure(false);
-
   const [registerState, registerDispatch] = useReducer(
     registerReducer,
     initialRegisterState
   );
 
   const {
+    addressLine,
+    city,
+    confirmPassword,
+    contactNumber,
+    country,
+    dateOfBirth,
+    department,
+    email,
+    emergencyContactName,
+    emergencyContactNumber,
+    firstName,
+    isSubmitting,
+    isSuccessful,
+    jobPosition,
+    lastName,
+    middleName,
+    pagesInError,
+    password,
+    postalCode,
+    preferredName,
+    preferredPronouns,
+    profilePictureUrl,
+    province,
+    startDate,
+    state,
+    storeLocation,
+    triggerFormSubmit,
+    username,
+  } = registerState;
+
+  const { fetchInterceptor } = useFetchInterceptor();
+  const { showBoundary } = useErrorBoundary();
+
+  const fetchAbortControllerRef = useRef<AbortController | null>(null);
+  const preFetchAbortControllerRef = useRef<AbortController | null>(null);
+  const isComponentMountedRef = useRef(false);
+
+  useEffect(() => {
+    fetchAbortControllerRef.current?.abort();
+    fetchAbortControllerRef.current = new AbortController();
+    const fetchAbortController = fetchAbortControllerRef.current;
+
+    preFetchAbortControllerRef.current?.abort();
+    preFetchAbortControllerRef.current = new AbortController();
+    const preFetchAbortController = preFetchAbortControllerRef.current;
+
+    isComponentMountedRef.current = true;
+    let isComponentMounted = isComponentMountedRef.current;
+
+    if (triggerFormSubmit) {
+      // const schema =
+      // formSubmitPOST({
+      //   dispatch: registerDispatch,
+      //   fetchAbortController,
+      //   fetchInterceptor,
+      //   isComponentMounted,
+      //   isSubmittingAction: registerAction.setIsSubmitting,
+      //   isSuccessfulAction: registerAction.setIsSuccessful,
+      //   preFetchAbortController,
+      //   roleResourceRoutePaths: ADDRESS_CHANGE_ROLE_PATHS,
+      //   schema,
+      //   schemaName: "registerSchema",
+      //   sessionId,
+      //   showBoundary,
+      //   userId,
+      //   username,
+      //   userRole: "manager",
+      // });
+    }
+
+    return () => {
+      isComponentMountedRef.current = false;
+      preFetchAbortController?.abort();
+      fetchAbortController?.abort();
+    };
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [triggerFormSubmit]);
+
+  if (isSubmitting) {
+    const submittingState = (
+      <Stack>
+        <Text size="md">Submitting address changes! Please wait...</Text>
+      </Stack>
+    );
+
+    return submittingState;
+  }
+
+  if (isSuccessful) {
+    const successfulState = (
+      <Stack>
+        <Text size="md">Address changes submitted successfully!</Text>
+      </Stack>
+    );
+
+    return successfulState;
+  }
+
+  const registerStepperPages = returnRegisterStepperPages(country);
+
+  const addressLineTextInput = (
+    <AccessibleTextInput
+      attributes={{
+        stepperPages: registerStepperPages,
+        invalidValueAction: registerAction.setPageInError,
+        name: "addressLine",
+        parentDispatch: registerDispatch,
+        validValueAction: registerAction.setAddressLine,
+        value: addressLine,
+      }}
+    />
+  );
+
+  const cityTextInput = (
+    <AccessibleTextInput
+      attributes={{
+        stepperPages: registerStepperPages,
+        invalidValueAction: registerAction.setPageInError,
+        name: "city",
+        parentDispatch: registerDispatch,
+        validValueAction: registerAction.setCity,
+        value: city,
+      }}
+    />
+  );
+
+  const confirmPasswordTextInput = (
+    <AccessiblePasswordInput<
+      RegisterAction["setConfirmPassword"],
+      RegisterAction["setPageInError"]
+    >
+      attributes={{
+        stepperPages: registerStepperPages,
+        invalidValueAction: registerAction.setPageInError,
+        name: "confirmPassword",
+        parentDispatch: registerDispatch,
+        validValueAction: registerAction.setConfirmPassword,
+        value: confirmPassword,
+      }}
+    />
+  );
+
+  const contactNumberTextInput = (
+    <AccessibleTextInput
+      attributes={{
+        stepperPages: registerStepperPages,
+        invalidValueAction: registerAction.setPageInError,
+        name: "contactNumber",
+        parentDispatch: registerDispatch,
+        validValueAction: registerAction.setContactNumber,
+        value: contactNumber,
+      }}
+    />
+  );
+
+  const countrySelectInput = (
+    <AccessibleSelectInput<RegisterAction["setCountry"], Country>
+      attributes={{
+        data: COUNTRIES_DATA,
+        name: "country",
+        parentDispatch: registerDispatch,
+        validValueAction: registerAction.setCountry,
+        value: country,
+      }}
+    />
+  );
+
+  const dateOfBirthTextInput = (
+    <AccessibleDateTimeInput
+      attributes={{
+        dateKind: "full date",
+        inputKind: "date",
+        stepperPages: registerStepperPages,
+        invalidValueAction: registerAction.setPageInError,
+        name: "dateOfBirth",
+        parentDispatch: registerDispatch,
+        validValueAction: registerAction.setDateOfBirth,
+        value: dateOfBirth,
+      }}
+    />
+  );
+
+  const departmentSelectInput = (
+    <AccessibleSelectInput<RegisterAction["setDepartment"], Department>
+      attributes={{
+        data: DEPARTMENT_DATA,
+        name: "department",
+        parentDispatch: registerDispatch,
+        validValueAction: registerAction.setDepartment,
+        value: department,
+      }}
+    />
+  );
+
+  const emailTextInput = (
+    <AccessibleTextInput
+      attributes={{
+        stepperPages: registerStepperPages,
+        invalidValueAction: registerAction.setPageInError,
+        name: "email",
+        parentDispatch: registerDispatch,
+        validValueAction: registerAction.setEmail,
+        value: email,
+      }}
+    />
+  );
+
+  const emergencyContactNameTextInput = (
+    <AccessibleTextInput
+      attributes={{
+        stepperPages: registerStepperPages,
+        invalidValueAction: registerAction.setPageInError,
+        name: "emergencyContactName",
+        parentDispatch: registerDispatch,
+        validValueAction: registerAction.setEmergencyContactName,
+        value: emergencyContactName,
+      }}
+    />
+  );
+
+  const emergencyContactNumberTextInput = (
+    <AccessibleTextInput
+      attributes={{
+        stepperPages: registerStepperPages,
+        invalidValueAction: registerAction.setPageInError,
+        name: "emergencyContactNumber",
+        parentDispatch: registerDispatch,
+        validValueAction: registerAction.setEmergencyContactNumber,
+        value: emergencyContactNumber,
+      }}
+    />
+  );
+
+  const firstNameTextInput = (
+    <AccessibleTextInput
+      attributes={{
+        stepperPages: registerStepperPages,
+        invalidValueAction: registerAction.setPageInError,
+        name: "firstName",
+        parentDispatch: registerDispatch,
+        validValueAction: registerAction.setFirstName,
+        value: firstName,
+      }}
+    />
+  );
+
+  const jobPositionSelectInput = (
+    <AccessibleSelectInput<RegisterAction["setJobPosition"], JobPosition>
+      attributes={{
+        data: JOB_POSITION_DATA,
+        name: "jobPosition",
+        parentDispatch: registerDispatch,
+        validValueAction: registerAction.setJobPosition,
+        value: jobPosition,
+      }}
+    />
+  );
+
+  const lastNameTextInput = (
+    <AccessibleTextInput
+      attributes={{
+        stepperPages: registerStepperPages,
+        invalidValueAction: registerAction.setPageInError,
+        name: "lastName",
+        parentDispatch: registerDispatch,
+        validValueAction: registerAction.setLastName,
+        value: lastName,
+      }}
+    />
+  );
+
+  const middleNameTextInput = (
+    <AccessibleTextInput
+      attributes={{
+        stepperPages: registerStepperPages,
+        invalidValueAction: registerAction.setPageInError,
+        name: "middleName",
+        parentDispatch: registerDispatch,
+        validValueAction: registerAction.setMiddleName,
+        value: middleName,
+      }}
+    />
+  );
+
+  const passwordTextInput = (
+    <AccessiblePasswordInput<
+      RegisterAction["setPassword"],
+      RegisterAction["setPageInError"]
+    >
+      attributes={{
+        stepperPages: registerStepperPages,
+        invalidValueAction: registerAction.setPageInError,
+        name: "password",
+        parentDispatch: registerDispatch,
+        validValueAction: registerAction.setPassword,
+        value: password,
+      }}
+    />
+  );
+
+  const postalCodeTextInput = (
+    <AccessibleTextInput
+      attributes={{
+        stepperPages: registerStepperPages,
+        invalidValueAction: registerAction.setPageInError,
+        name: "postalCode",
+        parentDispatch: registerDispatch,
+        validValueAction: registerAction.setPostalCode,
+        value: postalCode,
+      }}
+    />
+  );
+
+  const preferredNameTextInput = (
+    <AccessibleTextInput
+      attributes={{
+        stepperPages: registerStepperPages,
+        invalidValueAction: registerAction.setPageInError,
+        name: "preferredName",
+        parentDispatch: registerDispatch,
+        validValueAction: registerAction.setPreferredName,
+        value: preferredName,
+      }}
+    />
+  );
+
+  const preferredPronounsSelectInput = (
+    <AccessibleSelectInput<RegisterAction["setPreferredPronouns"], PreferredPronouns>
+      attributes={{
+        data: PREFERRED_PRONOUNS_DATA,
+        name: "preferredPronouns",
+        parentDispatch: registerDispatch,
+        validValueAction: registerAction.setPreferredPronouns,
+        value: preferredPronouns,
+      }}
+    />
+  );
+
+  const profilePictureUrlTextInput = (
+    <AccessibleTextInput
+      attributes={{
+        stepperPages: registerStepperPages,
+        invalidValueAction: registerAction.setPageInError,
+        name: "profilePictureUrl",
+        parentDispatch: registerDispatch,
+        validValueAction: registerAction.setProfilePictureUrl,
+        value: profilePictureUrl,
+      }}
+    />
+  );
+
+  const provinceOrStateSelectInput =
+    country === "Canada" ? (
+      <AccessibleSelectInput<RegisterAction["setProvince"], Province>
+        attributes={{
+          data: PROVINCES,
+          name: "province",
+          parentDispatch: registerDispatch,
+          validValueAction: registerAction.setProvince,
+          value: province,
+        }}
+      />
+    ) : (
+      <AccessibleSelectInput<RegisterAction["setState"], StatesUS>
+        attributes={{
+          data: STATES_US,
+          name: "state",
+          parentDispatch: registerDispatch,
+          validValueAction: registerAction.setState,
+          value: state,
+        }}
+      />
+    );
+
+  const startDateTextInput = (
+    <AccessibleDateTimeInput
+      attributes={{
+        dateKind: "date near future",
+        inputKind: "date",
+        stepperPages: registerStepperPages,
+        invalidValueAction: registerAction.setPageInError,
+        name: "startDate",
+        parentDispatch: registerDispatch,
+        validValueAction: registerAction.setStartDate,
+        value: startDate,
+      }}
+    />
+  );
+
+  const storeLocationSelectInput = (
+    <AccessibleSelectInput<RegisterAction["setStoreLocation"], StoreLocation>
+      attributes={{
+        data: STORE_LOCATION_DATA,
+        name: "storeLocation",
+        parentDispatch: registerDispatch,
+        validValueAction: registerAction.setStoreLocation,
+        value: storeLocation,
+      }}
+    />
+  );
+
+  const usernameTextInput = (
+    <AccessibleTextInput
+      attributes={{
+        stepperPages: registerStepperPages,
+        invalidValueAction: registerAction.setPageInError,
+        name: "username",
+        parentDispatch: registerDispatch,
+        validValueAction: registerAction.setUsername,
+        value: username,
+      }}
+    />
+  );
+
+  const authenticationPage = (
+    <Stack>
+      {emailTextInput}
+      {usernameTextInput}
+      {passwordTextInput}
+      {confirmPasswordTextInput}
+    </Stack>
+  );
+
+  const personalPage = (
+    <Stack>
+      {firstNameTextInput}
+      {middleNameTextInput}
+      {lastNameTextInput}
+      {preferredNameTextInput}
+      {preferredPronounsSelectInput}
+      {profilePictureUrlTextInput}
+      {dateOfBirthTextInput}
+    </Stack>
+  );
+
+  const addressPage = (
+    <Stack>
+      {addressLineTextInput}
+      {cityTextInput}
+      {provinceOrStateSelectInput}
+      {postalCodeTextInput}
+      {countrySelectInput}
+      {contactNumberTextInput}
+    </Stack>
+  );
+
+  const additionalPage = (
+    <Stack>
+      {jobPositionSelectInput}
+      {departmentSelectInput}
+      {storeLocationSelectInput}
+      {emergencyContactNameTextInput}
+      {emergencyContactNumberTextInput}
+      {startDateTextInput}
+    </Stack>
+  );
+
+  const submitButton = (
+    <AccessibleButton
+      attributes={{
+        enabledScreenreaderText: "All inputs are valid. Click to Register.",
+        disabledScreenreaderText: "Please fix errors before registering.",
+        disabled: pagesInError.size > 0 || triggerFormSubmit,
+        kind: "submit",
+        name: "submit",
+        onClick: (_event: React.MouseEvent<HTMLButtonElement>) => {
+          registerDispatch({
+            action: registerAction.setTriggerFormSubmit,
+            payload: true,
+          });
+        },
+      }}
+    />
+  );
+
+  const stepper = (
+    <AccessibleStepper
+      attributes={{
+        componentState: registerState,
+        pageElements: [authenticationPage, personalPage, addressPage, additionalPage],
+        stepperPages: registerStepperPages,
+        submitButton,
+      }}
+    />
+  );
+
+  logState({
+    state: registerState,
+    groupLabel: "Register State",
+  });
+
+  return <Container w={700}>{stepper}</Container>;
+}
+
+export default Register;
+
+/**
+ * const {
     email,
     isValidEmail,
     isEmailFocused,
@@ -103,7 +597,7 @@ function Register() {
 
     triggerFormSubmit,
     currentStepperPosition,
-    stepsInError,
+    pagesInError,
 
     isSuccessful,
     successMessage,
@@ -495,7 +989,7 @@ function Register() {
       });
     },
     // ensures form submit happens only once
-    buttonDisabled: stepsInError.size > 0 || triggerFormSubmit,
+    buttonDisabled: pagesInError.size > 0 || triggerFormSubmit,
   };
 
   const [createdSubmitButton] = returnAccessibleButtonElements([submitButtonCreatorInfo]);
@@ -634,7 +1128,7 @@ function Register() {
   const displayRegisterForm = (
     <StepperWrapper
       childrenTitle="Register"
-      stepsInError={stepsInError}
+      pagesInError={pagesInError}
       descriptionObjectsArray={REGISTER_DESCRIPTION_OBJECTS}
       maxStepperPosition={REGISTER_MAX_STEPPER_POSITION}
       currentStepperPosition={currentStepperPosition}
@@ -655,10 +1149,8 @@ function Register() {
       w="100%"
       h="100%"
     >
-      {/* display form */}
       {displayRegisterForm}
 
-      {/* display login link */}
       <Flex align="center" justify="center" columnGap="sm" w="100%">
         <Text color="dark">Already have an account?</Text>
         <Text color="blue">
@@ -669,6 +1161,5 @@ function Register() {
   );
 
   return displayRegisterComponent;
-}
 
-export default Register;
+ */

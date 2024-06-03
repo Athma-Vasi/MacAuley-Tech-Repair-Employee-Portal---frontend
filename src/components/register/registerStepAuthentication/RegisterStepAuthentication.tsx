@@ -16,7 +16,6 @@ import {
   FormLayoutWrapper,
 } from "../../wrappers";
 import { RegisterAction, RegisterDispatch } from "../types";
-import { returnPasswordRegexValidationText } from "../utils";
 
 type RegisterStepAuthenticationProps = {
   email: string;
@@ -59,7 +58,13 @@ function RegisterStepAuthentication({
   registerDispatch,
   registerAction,
 }: RegisterStepAuthenticationProps) {
-  // used to validate email on every change
+  return <></>;
+}
+
+export { RegisterStepAuthentication };
+
+/**
+ * // used to validate email on every change
   useEffect(() => {
     const isValidMail = EMAIL_REGEX.test(email) && !isEmailExists;
 
@@ -101,13 +106,13 @@ function RegisterStepAuthentication({
     registerAction.setIsValidConfirmPassword,
   ]);
 
-  // update the corresponding stepsInError state if any of the inputs are in error
+  // update the corresponding pagesInError state if any of the inputs are in error
   useEffect(() => {
     const isStepInError =
       !isValidEmail || !isValidUsername || !isValidPassword || !isValidConfirmPassword;
 
     registerDispatch({
-      type: registerAction.setStepsInError,
+      type: registerAction.setPageInError,
       payload: {
         kind: isStepInError ? "add" : "delete",
         step: 0,
@@ -119,7 +124,7 @@ function RegisterStepAuthentication({
     isValidPassword,
     isValidConfirmPassword,
     registerDispatch,
-    registerAction.setStepsInError,
+    registerAction.setPageInError,
   ]);
 
   // following are the accessible text elements for screen readers to read out based on the state of the input
@@ -332,6 +337,4 @@ function RegisterStepAuthentication({
   );
 
   return <>{createdAuthenticationPageForm}</>;
-}
-
-export { RegisterStepAuthentication };
+ */

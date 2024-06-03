@@ -1,84 +1,11 @@
-import { Group, Space, Stack, Text, Title, Tooltip } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
-import { InvalidTokenError } from "jwt-decode";
-import {
-  ChangeEvent,
-  KeyboardEvent,
-  MouseEvent,
-  useEffect,
-  useReducer,
-  useRef,
-} from "react";
-import { useErrorBoundary } from "react-error-boundary";
-import { TbUpload } from "react-icons/tb";
-import { useNavigate } from "react-router-dom";
+function Customer() {
+  return <>Customer</>;
+}
 
-import { COLORS_SWATCHES, PROVINCES, STATES_US } from "../../constants/data";
-import {
-  ADDRESS_LINE_REGEX,
-  CITY_REGEX,
-  CREDIT_CARD_CVV_REGEX,
-  CREDIT_CARD_EXPIRATION_DATE_REGEX,
-  CREDIT_CARD_NUMBER_REGEX,
-  DATE_OF_BIRTH_REGEX,
-  EMAIL_REGEX,
-  FULL_NAME_REGEX,
-  NAME_REGEX,
-  PASSWORD_REGEX,
-  PHONE_NUMBER_REGEX,
-  POSTAL_CODE_REGEX_CANADA,
-  POSTAL_CODE_REGEX_US,
-  URL_REGEX,
-  USERNAME_REGEX,
-} from "../../constants/regex";
-import { globalAction } from "../../context/globalProvider/state";
-import { useGlobalState, useWrapFetch } from "../../hooks";
-import {
-  AccessibleErrorValidTextElements,
-  AccessibleSelectedDeselectedTextElements,
-  returnAccessibleButtonElements,
-  returnAccessibleCheckboxSingleInputElements,
-  returnAccessibleDateTimeElements,
-  returnAccessiblePasswordInputElements,
-  returnAccessiblePhoneNumberTextInputElements,
-  returnAccessibleSelectInputElements,
-  returnAccessibleTextInputElements,
-} from "../../jsxCreators";
-import { Country, Province, ResourceRequestServerResponse, StatesUS } from "../../types";
-import {
-  isAgeOver18,
-  returnAddressValidationText,
-  returnCityValidationText,
-  returnCreditCardCvvValidationText,
-  returnCreditCardExpirationDateValidationText,
-  returnCreditCardNumberValidationText,
-  returnDateOfBirthValidationText,
-  returnEmailValidationText,
-  returnIsExpirationDateInPast,
-  returnNameValidationText,
-  returnPhoneNumberValidationText,
-  returnPostalCodeValidationText,
-  returnThemeColors,
-  returnUrlValidationText,
-  returnUsernameRegexValidationText,
-  urlBuilder,
-} from "../../utils";
-import { COUNTRIES_DATA } from "../addressChange/constants";
-import FormReviewPage, { FormReviewObjectArray } from "../formReviewPage/FormReviewPage";
-import { NotificationModal } from "../notificationModal";
-import { returnPasswordRegexValidationText } from "../register/utils";
-import { FormLayoutWrapper, StepperWrapper } from "../wrappers";
-import { createCustomerAction } from "./actions";
-import {
-  CREATE_CUSTOMER_DESCRIPTION_OBJECTS,
-  CREATE_CUSTOMER_MAX_STEPPER_POSITION,
-} from "./constants";
-import { createCustomerReducer } from "./reducers";
-import { initialCreateCustomerState } from "./state";
-import { CustomerDocument, CustomerSchema } from "./types";
+export default Customer;
 
-function CreateCustomer() {
-  // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+/**
+ * // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
   //  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
   //     CREATE CUSTOMER HOOKS
   //  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
@@ -102,9 +29,9 @@ function CreateCustomer() {
     },
   ] = useDisclosure(false);
 
-  const [createCustomerState, createCustomerDispatch] = useReducer(
-    createCustomerReducer,
-    initialCreateCustomerState
+  const [customerState, customerDispatch] = useReducer(
+    customerReducer,
+    initialCustomerState
   );
 
   const {
@@ -222,7 +149,7 @@ function CreateCustomer() {
     stepsInError,
     submitMessage,
     successMessage,
-  } = createCustomerState;
+  } = customerState;
 
   const abortControllerRef = useRef<AbortController | null>(null);
 
@@ -233,9 +160,9 @@ function CreateCustomer() {
     // create new abort controller for current request
     abortControllerRef.current = new AbortController();
 
-    async function createCustomerFormSubmit() {
-      createCustomerDispatch({
-        type: createCustomerAction.setIsSubmitting,
+    async function customerFormSubmit() {
+      customerDispatch({
+        type: customerAction.setIsSubmitting,
         payload: true,
       });
       openSubmitSuccessNotificationModal();
@@ -316,13 +243,13 @@ function CreateCustomer() {
           throw new Error(data.message);
         }
 
-        createCustomerDispatch({
-          type: createCustomerAction.setIsSuccessful,
+        customerDispatch({
+          type: customerAction.setIsSuccessful,
           payload: true,
         });
 
-        createCustomerDispatch({
-          type: createCustomerAction.setSuccessMessage,
+        customerDispatch({
+          type: customerAction.setSuccessMessage,
           payload: data.message ?? "User created successfully!",
         });
       } catch (error: any) {
@@ -360,16 +287,16 @@ function CreateCustomer() {
         showBoundary(error);
       } finally {
         if (isMounted) {
-          createCustomerDispatch({
-            type: createCustomerAction.setIsSubmitting,
+          customerDispatch({
+            type: customerAction.setIsSubmitting,
             payload: false,
           });
-          createCustomerDispatch({
-            type: createCustomerAction.setSubmitMessage,
+          customerDispatch({
+            type: customerAction.setSubmitMessage,
             payload: "",
           });
-          createCustomerDispatch({
-            type: createCustomerAction.setTriggerFormSubmit,
+          customerDispatch({
+            type: customerAction.setTriggerFormSubmit,
             payload: false,
           });
         }
@@ -377,7 +304,7 @@ function CreateCustomer() {
     }
 
     if (triggerFormSubmit) {
-      createCustomerFormSubmit();
+      customerFormSubmit();
     }
 
     return () => {
@@ -396,8 +323,8 @@ function CreateCustomer() {
     abortControllerRef.current = new AbortController();
 
     async function handleCheckUsernameExists() {
-      createCustomerDispatch({
-        type: createCustomerAction.setIsSubmitting,
+      customerDispatch({
+        type: customerAction.setIsSubmitting,
         payload: true,
       });
 
@@ -435,12 +362,12 @@ function CreateCustomer() {
         }
 
         data.status === "error"
-          ? createCustomerDispatch({
-              type: createCustomerAction.setIsUsernameExists,
+          ? customerDispatch({
+              type: customerAction.setIsUsernameExists,
               payload: true,
             })
-          : createCustomerDispatch({
-              type: createCustomerAction.setIsUsernameExists,
+          : customerDispatch({
+              type: customerAction.setIsUsernameExists,
               payload: false,
             });
       } catch (error: any) {
@@ -475,8 +402,8 @@ function CreateCustomer() {
         showBoundary(error);
       } finally {
         if (isMounted) {
-          createCustomerDispatch({
-            type: createCustomerAction.setIsSubmitting,
+          customerDispatch({
+            type: customerAction.setIsSubmitting,
             payload: false,
           });
         }
@@ -502,8 +429,8 @@ function CreateCustomer() {
     abortControllerRef.current = new AbortController();
 
     async function handleCheckEmailExists() {
-      createCustomerDispatch({
-        type: createCustomerAction.setIsSubmitting,
+      customerDispatch({
+        type: customerAction.setIsSubmitting,
         payload: true,
       });
 
@@ -541,12 +468,12 @@ function CreateCustomer() {
         }
 
         data.status === "error"
-          ? createCustomerDispatch({
-              type: createCustomerAction.setIsEmailExists,
+          ? customerDispatch({
+              type: customerAction.setIsEmailExists,
               payload: true,
             })
-          : createCustomerDispatch({
-              type: createCustomerAction.setIsEmailExists,
+          : customerDispatch({
+              type: customerAction.setIsEmailExists,
               payload: false,
             });
       } catch (error: any) {
@@ -581,8 +508,8 @@ function CreateCustomer() {
         showBoundary(error);
       } finally {
         if (isMounted) {
-          createCustomerDispatch({
-            type: createCustomerAction.setIsSubmitting,
+          customerDispatch({
+            type: customerAction.setIsSubmitting,
             payload: false,
           });
         }
@@ -611,8 +538,8 @@ function CreateCustomer() {
   useEffect(() => {
     const isValid = USERNAME_REGEX.test(username) && !isUsernameExists;
 
-    createCustomerDispatch({
-      type: createCustomerAction.setIsUsernameValid,
+    customerDispatch({
+      type: customerAction.setIsUsernameValid,
       payload: isValid,
     });
   }, [isUsernameExists, username]);
@@ -623,8 +550,8 @@ function CreateCustomer() {
   useEffect(() => {
     const isValid = PASSWORD_REGEX.test(password);
 
-    createCustomerDispatch({
-      type: createCustomerAction.setIsPasswordValid,
+    customerDispatch({
+      type: customerAction.setIsPasswordValid,
       payload: isValid,
     });
   }, [password]);
@@ -635,8 +562,8 @@ function CreateCustomer() {
   useEffect(() => {
     const isValid = confirmPassword === password && confirmPassword.length > 0;
 
-    createCustomerDispatch({
-      type: createCustomerAction.setIsConfirmPasswordValid,
+    customerDispatch({
+      type: customerAction.setIsConfirmPasswordValid,
       payload: isValid,
     });
   }, [confirmPassword, password]);
@@ -647,8 +574,8 @@ function CreateCustomer() {
   useEffect(() => {
     const isValid = EMAIL_REGEX.test(email) && !isEmailExists;
 
-    createCustomerDispatch({
-      type: createCustomerAction.setIsEmailValid,
+    customerDispatch({
+      type: customerAction.setIsEmailValid,
       payload: isValid,
     });
   }, [email, isEmailExists]);
@@ -659,8 +586,8 @@ function CreateCustomer() {
   useEffect(() => {
     const isValid = NAME_REGEX.test(firstName);
 
-    createCustomerDispatch({
-      type: createCustomerAction.setIsFirstNameValid,
+    customerDispatch({
+      type: customerAction.setIsFirstNameValid,
       payload: isValid,
     });
   }, [firstName]);
@@ -671,8 +598,8 @@ function CreateCustomer() {
   useEffect(() => {
     const isValid = NAME_REGEX.test(middleName);
 
-    createCustomerDispatch({
-      type: createCustomerAction.setIsMiddleNameValid,
+    customerDispatch({
+      type: customerAction.setIsMiddleNameValid,
       payload: isValid,
     });
   }, [middleName]);
@@ -683,8 +610,8 @@ function CreateCustomer() {
   useEffect(() => {
     const isValid = NAME_REGEX.test(lastName);
 
-    createCustomerDispatch({
-      type: createCustomerAction.setIsLastNameValid,
+    customerDispatch({
+      type: customerAction.setIsLastNameValid,
       payload: isValid,
     });
   }, [lastName]);
@@ -695,8 +622,8 @@ function CreateCustomer() {
   useEffect(() => {
     const isValid = FULL_NAME_REGEX.test(preferredName);
 
-    createCustomerDispatch({
-      type: createCustomerAction.setIsPreferredNameValid,
+    customerDispatch({
+      type: customerAction.setIsPreferredNameValid,
       payload: isValid,
     });
   }, [preferredName]);
@@ -707,8 +634,8 @@ function CreateCustomer() {
   useEffect(() => {
     const isValid = URL_REGEX.test(profilePictureUrl);
 
-    createCustomerDispatch({
-      type: createCustomerAction.setIsProfilePictureUrlValid,
+    customerDispatch({
+      type: customerAction.setIsProfilePictureUrlValid,
       payload: isValid,
     });
   }, [profilePictureUrl]);
@@ -719,8 +646,8 @@ function CreateCustomer() {
   useEffect(() => {
     const isValid = DATE_OF_BIRTH_REGEX.test(dateOfBirth) && isAgeOver18(dateOfBirth);
 
-    createCustomerDispatch({
-      type: createCustomerAction.setIsDateOfBirthValid,
+    customerDispatch({
+      type: customerAction.setIsDateOfBirthValid,
       payload: isValid,
     });
   }, [dateOfBirth]);
@@ -735,22 +662,22 @@ function CreateCustomer() {
     if (isContactNumberFocused) {
       switch (contactLength) {
         case 4: {
-          createCustomerDispatch({
-            type: createCustomerAction.setContactNumber,
+          customerDispatch({
+            type: customerAction.setContactNumber,
             payload: `${contactNumber}(`,
           });
           break;
         }
         case 8: {
-          createCustomerDispatch({
-            type: createCustomerAction.setContactNumber,
+          customerDispatch({
+            type: customerAction.setContactNumber,
             payload: `${contactNumber}) `,
           });
           break;
         }
         case 13: {
-          createCustomerDispatch({
-            type: createCustomerAction.setContactNumber,
+          customerDispatch({
+            type: customerAction.setContactNumber,
             payload: `${contactNumber}-`,
           });
           break;
@@ -761,8 +688,8 @@ function CreateCustomer() {
       }
     }
 
-    createCustomerDispatch({
-      type: createCustomerAction.setIsContactNumberValid,
+    customerDispatch({
+      type: customerAction.setIsContactNumberValid,
       payload: isValidContact,
     });
   }, [contactNumber, isContactNumberFocused]);
@@ -773,8 +700,8 @@ function CreateCustomer() {
   useEffect(() => {
     const isValid = ADDRESS_LINE_REGEX.test(addressLine);
 
-    createCustomerDispatch({
-      type: createCustomerAction.setIsAddressLineValid,
+    customerDispatch({
+      type: customerAction.setIsAddressLineValid,
       payload: isValid,
     });
   }, [addressLine]);
@@ -785,8 +712,8 @@ function CreateCustomer() {
   useEffect(() => {
     const isValid = CITY_REGEX.test(city);
 
-    createCustomerDispatch({
-      type: createCustomerAction.setIsCityValid,
+    customerDispatch({
+      type: customerAction.setIsCityValid,
       payload: isValid,
     });
   }, [city]);
@@ -803,27 +730,27 @@ function CreateCustomer() {
     if (country === "Canada") {
       const postalCodeLength = postalCode.length;
       if (postalCodeLength === 3) {
-        createCustomerDispatch({
-          type: createCustomerAction.setPostalCode,
+        customerDispatch({
+          type: customerAction.setPostalCode,
           payload: `${postalCode} `,
         });
       } else if (postalCodeLength === 7) {
-        createCustomerDispatch({
-          type: createCustomerAction.setPostalCode,
+        customerDispatch({
+          type: customerAction.setPostalCode,
           payload: postalCode.trim(),
         });
       }
     } else {
       const postalCodeLength = postalCode.length;
       if (postalCodeLength === 6) {
-        createCustomerDispatch({
-          type: createCustomerAction.setPostalCode,
+        customerDispatch({
+          type: customerAction.setPostalCode,
           payload: `${postalCode.slice(0, 5)}-${postalCode.slice(5)}`,
         });
       }
     }
-    createCustomerDispatch({
-      type: createCustomerAction.setIsPostalCodeValid,
+    customerDispatch({
+      type: customerAction.setIsPostalCodeValid,
       payload: isValid,
     });
   }, [country, postalCode]);
@@ -834,8 +761,8 @@ function CreateCustomer() {
   useEffect(() => {
     const isValid = FULL_NAME_REGEX.test(cardholderName);
 
-    createCustomerDispatch({
-      type: createCustomerAction.setIsCardholderNameValid,
+    customerDispatch({
+      type: customerAction.setIsCardholderNameValid,
       payload: isValid,
     });
   }, [cardholderName]);
@@ -848,14 +775,14 @@ function CreateCustomer() {
 
     const cardNumberLength = cardNumber.length;
     if (cardNumberLength === 4 || cardNumberLength === 9 || cardNumberLength === 14) {
-      createCustomerDispatch({
-        type: createCustomerAction.setCardNumber,
+      customerDispatch({
+        type: customerAction.setCardNumber,
         payload: `${cardNumber} `,
       });
     }
 
-    createCustomerDispatch({
-      type: createCustomerAction.setIsCardNumberValid,
+    customerDispatch({
+      type: customerAction.setIsCardNumberValid,
       payload: isValid,
     });
   }, [cardNumber]);
@@ -869,8 +796,8 @@ function CreateCustomer() {
     const isValid =
       CREDIT_CARD_EXPIRATION_DATE_REGEX.test(expirationDate) && !isExpirationDateInPast;
 
-    createCustomerDispatch({
-      type: createCustomerAction.setIsExpirationDateValid,
+    customerDispatch({
+      type: customerAction.setIsExpirationDateValid,
       payload: isValid,
     });
   }, [expirationDate]);
@@ -881,8 +808,8 @@ function CreateCustomer() {
   useEffect(() => {
     const isValid = CREDIT_CARD_CVV_REGEX.test(cvv);
 
-    createCustomerDispatch({
-      type: createCustomerAction.setIsCvvValid,
+    customerDispatch({
+      type: customerAction.setIsCvvValid,
       payload: isValid,
     });
   }, [cvv]);
@@ -893,8 +820,8 @@ function CreateCustomer() {
   useEffect(() => {
     const isValid = ADDRESS_LINE_REGEX.test(billingAddressLine);
 
-    createCustomerDispatch({
-      type: createCustomerAction.setIsBillingAddressLineValid,
+    customerDispatch({
+      type: customerAction.setIsBillingAddressLineValid,
       payload: isValid,
     });
   }, [billingAddressLine]);
@@ -905,8 +832,8 @@ function CreateCustomer() {
   useEffect(() => {
     const isValid = CITY_REGEX.test(billingCity);
 
-    createCustomerDispatch({
-      type: createCustomerAction.setIsBillingCityValid,
+    customerDispatch({
+      type: customerAction.setIsBillingCityValid,
       payload: isValid,
     });
   }, [billingCity]);
@@ -923,28 +850,28 @@ function CreateCustomer() {
     if (billingCountry === "Canada") {
       const billingPostalCodeLength = billingPostalCode.length;
       if (billingPostalCodeLength === 3) {
-        createCustomerDispatch({
-          type: createCustomerAction.setPostalCode,
+        customerDispatch({
+          type: customerAction.setPostalCode,
           payload: `${billingPostalCode} `,
         });
       } else if (billingPostalCodeLength === 7) {
-        createCustomerDispatch({
-          type: createCustomerAction.setPostalCode,
+        customerDispatch({
+          type: customerAction.setPostalCode,
           payload: billingPostalCode.trim(),
         });
       }
     } else {
       const billingPostalCodeLength = billingPostalCode.length;
       if (billingPostalCodeLength === 6) {
-        createCustomerDispatch({
-          type: createCustomerAction.setPostalCode,
+        customerDispatch({
+          type: customerAction.setPostalCode,
           payload: `${billingPostalCode.slice(0, 5)}-${billingPostalCode.slice(5)}`,
         });
       }
     }
 
-    createCustomerDispatch({
-      type: createCustomerAction.setIsBillingPostalCodeValid,
+    customerDispatch({
+      type: customerAction.setIsBillingPostalCodeValid,
       payload: isValidPostal,
     });
   }, [billingCountry, billingPostalCode]);
@@ -969,8 +896,8 @@ function CreateCustomer() {
       isDateOfBirthValid,
     ].some((isValid) => !isValid);
 
-    createCustomerDispatch({
-      type: createCustomerAction.setStepsInError,
+    customerDispatch({
+      type: customerAction.setPageInError,
       payload: {
         kind: arePage1FieldsInError ? "add" : "delete",
         step: 0,
@@ -1007,8 +934,8 @@ function CreateCustomer() {
       isBillingPostalCodeValid,
     ].some((isValid) => !isValid);
 
-    createCustomerDispatch({
-      type: createCustomerAction.setStepsInError,
+    customerDispatch({
+      type: customerAction.setPageInError,
       payload: {
         kind: arePage2FieldsInError ? "add" : "delete",
         step: 1,
@@ -1072,20 +999,20 @@ function CreateCustomer() {
       maxLength: 30,
       minLength: 3,
       onBlur: () => {
-        createCustomerDispatch({
-          type: createCustomerAction.setIsUsernameFocused,
+        customerDispatch({
+          type: customerAction.setIsUsernameFocused,
           payload: false,
         });
       },
       onChange: (event: ChangeEvent<HTMLInputElement>) => {
-        createCustomerDispatch({
-          type: createCustomerAction.setUsername,
+        customerDispatch({
+          type: customerAction.setUsername,
           payload: event.currentTarget.value,
         });
       },
       onFocus: () => {
-        createCustomerDispatch({
-          type: createCustomerAction.setIsUsernameFocused,
+        customerDispatch({
+          type: customerAction.setIsUsernameFocused,
           payload: true,
         });
       },
@@ -1127,20 +1054,20 @@ function CreateCustomer() {
       isValidInputText: isPasswordValid,
       label: "Password",
       onBlur: () => {
-        createCustomerDispatch({
-          type: createCustomerAction.setIsPasswordFocused,
+        customerDispatch({
+          type: customerAction.setIsPasswordFocused,
           payload: false,
         });
       },
       onChange: (event: ChangeEvent<HTMLInputElement>) => {
-        createCustomerDispatch({
-          type: createCustomerAction.setPassword,
+        customerDispatch({
+          type: customerAction.setPassword,
           payload: event.currentTarget.value,
         });
       },
       onFocus: () => {
-        createCustomerDispatch({
-          type: createCustomerAction.setIsPasswordFocused,
+        customerDispatch({
+          type: customerAction.setIsPasswordFocused,
           payload: true,
         });
       },
@@ -1175,20 +1102,20 @@ function CreateCustomer() {
       isValidInputText: isConfirmPasswordValid,
       label: "Confirm Password",
       onBlur: () => {
-        createCustomerDispatch({
-          type: createCustomerAction.setIsConfirmPasswordFocused,
+        customerDispatch({
+          type: customerAction.setIsConfirmPasswordFocused,
           payload: false,
         });
       },
       onChange: (event: ChangeEvent<HTMLInputElement>) => {
-        createCustomerDispatch({
-          type: createCustomerAction.setConfirmPassword,
+        customerDispatch({
+          type: customerAction.setConfirmPassword,
           payload: event.currentTarget.value,
         });
       },
       onFocus: () => {
-        createCustomerDispatch({
-          type: createCustomerAction.setIsConfirmPasswordFocused,
+        customerDispatch({
+          type: customerAction.setIsConfirmPasswordFocused,
           payload: true,
         });
       },
@@ -1229,20 +1156,20 @@ function CreateCustomer() {
       isValidInputText: isEmailValid,
       label: "Email",
       onBlur: () => {
-        createCustomerDispatch({
-          type: createCustomerAction.setIsEmailFocused,
+        customerDispatch({
+          type: customerAction.setIsEmailFocused,
           payload: false,
         });
       },
       onChange: (event: ChangeEvent<HTMLInputElement>) => {
-        createCustomerDispatch({
-          type: createCustomerAction.setEmail,
+        customerDispatch({
+          type: customerAction.setEmail,
           payload: event.currentTarget.value,
         });
       },
       onFocus: () => {
-        createCustomerDispatch({
-          type: createCustomerAction.setIsEmailFocused,
+        customerDispatch({
+          type: customerAction.setIsEmailFocused,
           payload: true,
         });
       },
@@ -1284,20 +1211,20 @@ function CreateCustomer() {
       maxLength: 30,
       minLength: 2,
       onBlur: () => {
-        createCustomerDispatch({
-          type: createCustomerAction.setIsFirstNameFocused,
+        customerDispatch({
+          type: customerAction.setIsFirstNameFocused,
           payload: false,
         });
       },
       onChange: (event: ChangeEvent<HTMLInputElement>) => {
-        createCustomerDispatch({
-          type: createCustomerAction.setFirstName,
+        customerDispatch({
+          type: customerAction.setFirstName,
           payload: event.currentTarget.value,
         });
       },
       onFocus: () => {
-        createCustomerDispatch({
-          type: createCustomerAction.setIsFirstNameFocused,
+        customerDispatch({
+          type: customerAction.setIsFirstNameFocused,
           payload: true,
         });
       },
@@ -1339,20 +1266,20 @@ function CreateCustomer() {
       maxLength: 30,
       minLength: 2,
       onBlur: () => {
-        createCustomerDispatch({
-          type: createCustomerAction.setIsMiddleNameFocused,
+        customerDispatch({
+          type: customerAction.setIsMiddleNameFocused,
           payload: false,
         });
       },
       onChange: (event: ChangeEvent<HTMLInputElement>) => {
-        createCustomerDispatch({
-          type: createCustomerAction.setMiddleName,
+        customerDispatch({
+          type: customerAction.setMiddleName,
           payload: event.currentTarget.value,
         });
       },
       onFocus: () => {
-        createCustomerDispatch({
-          type: createCustomerAction.setIsMiddleNameFocused,
+        customerDispatch({
+          type: customerAction.setIsMiddleNameFocused,
           payload: true,
         });
       },
@@ -1394,20 +1321,20 @@ function CreateCustomer() {
       maxLength: 30,
       minLength: 2,
       onBlur: () => {
-        createCustomerDispatch({
-          type: createCustomerAction.setIsLastNameFocused,
+        customerDispatch({
+          type: customerAction.setIsLastNameFocused,
           payload: false,
         });
       },
       onChange: (event: ChangeEvent<HTMLInputElement>) => {
-        createCustomerDispatch({
-          type: createCustomerAction.setLastName,
+        customerDispatch({
+          type: customerAction.setLastName,
           payload: event.currentTarget.value,
         });
       },
       onFocus: () => {
-        createCustomerDispatch({
-          type: createCustomerAction.setIsLastNameFocused,
+        customerDispatch({
+          type: customerAction.setIsLastNameFocused,
           payload: true,
         });
       },
@@ -1449,20 +1376,20 @@ function CreateCustomer() {
       maxLength: 100,
       minLength: 2,
       onBlur: () => {
-        createCustomerDispatch({
-          type: createCustomerAction.setIsPreferredNameFocused,
+        customerDispatch({
+          type: customerAction.setIsPreferredNameFocused,
           payload: false,
         });
       },
       onChange: (event: ChangeEvent<HTMLInputElement>) => {
-        createCustomerDispatch({
-          type: createCustomerAction.setPreferredName,
+        customerDispatch({
+          type: customerAction.setPreferredName,
           payload: event.currentTarget.value,
         });
       },
       onFocus: () => {
-        createCustomerDispatch({
-          type: createCustomerAction.setIsPreferredNameFocused,
+        customerDispatch({
+          type: customerAction.setIsPreferredNameFocused,
           payload: true,
         });
       },
@@ -1500,20 +1427,20 @@ function CreateCustomer() {
       isValidInputText: isProfilePictureUrlValid,
       label: "Profile Picture URL",
       onBlur: () => {
-        createCustomerDispatch({
-          type: createCustomerAction.setIsProfilePictureUrlFocused,
+        customerDispatch({
+          type: customerAction.setIsProfilePictureUrlFocused,
           payload: false,
         });
       },
       onChange: (event: ChangeEvent<HTMLInputElement>) => {
-        createCustomerDispatch({
-          type: createCustomerAction.setProfilePictureUrl,
+        customerDispatch({
+          type: customerAction.setProfilePictureUrl,
           payload: event.currentTarget.value,
         });
       },
       onFocus: () => {
-        createCustomerDispatch({
-          type: createCustomerAction.setIsProfilePictureUrlFocused,
+        customerDispatch({
+          type: customerAction.setIsProfilePictureUrlFocused,
           payload: true,
         });
       },
@@ -1558,20 +1485,20 @@ function CreateCustomer() {
       isValidInputText: isDateOfBirthValid,
       label: "Date of Birth",
       onBlur: () => {
-        createCustomerDispatch({
-          type: createCustomerAction.setIsDateOfBirthFocused,
+        customerDispatch({
+          type: customerAction.setIsDateOfBirthFocused,
           payload: false,
         });
       },
       onChange: (event: ChangeEvent<HTMLInputElement>) => {
-        createCustomerDispatch({
-          type: createCustomerAction.setDateOfBirth,
+        customerDispatch({
+          type: customerAction.setDateOfBirth,
           payload: event.currentTarget.value,
         });
       },
       onFocus: () => {
-        createCustomerDispatch({
-          type: createCustomerAction.setIsDateOfBirthFocused,
+        customerDispatch({
+          type: customerAction.setIsDateOfBirthFocused,
           payload: true,
         });
       },
@@ -1609,20 +1536,20 @@ function CreateCustomer() {
       isValidInputText: isContactNumberValid,
       label: "Contact Number",
       onBlur: () => {
-        createCustomerDispatch({
-          type: createCustomerAction.setIsContactNumberFocused,
+        customerDispatch({
+          type: customerAction.setIsContactNumberFocused,
           payload: false,
         });
       },
       onChange: (event: ChangeEvent<HTMLInputElement>) => {
-        createCustomerDispatch({
-          type: createCustomerAction.setContactNumber,
+        customerDispatch({
+          type: customerAction.setContactNumber,
           payload: event.currentTarget.value,
         });
       },
       onFocus: () => {
-        createCustomerDispatch({
-          type: createCustomerAction.setIsContactNumberFocused,
+        customerDispatch({
+          type: customerAction.setIsContactNumberFocused,
           payload: true,
         });
       },
@@ -1630,8 +1557,8 @@ function CreateCustomer() {
       required: true,
       rightSection: true,
       rightSectionOnClick: () => {
-        createCustomerDispatch({
-          type: createCustomerAction.setContactNumber,
+        customerDispatch({
+          type: customerAction.setContactNumber,
           payload: "+(1)",
         });
       },
@@ -1640,8 +1567,8 @@ function CreateCustomer() {
       onKeyDown: (event: KeyboardEvent<HTMLInputElement>) => {
         if (event.key === "Backspace") {
           if (contactNumber.length === 14 || contactNumber.length === 9) {
-            createCustomerDispatch({
-              type: createCustomerAction.setContactNumber,
+            customerDispatch({
+              type: customerAction.setContactNumber,
               payload: contactNumber.slice(0, -1),
             });
           }
@@ -1678,20 +1605,20 @@ function CreateCustomer() {
       isValidInputText: isAddressLineValid,
       label: "Address Line",
       onBlur: () => {
-        createCustomerDispatch({
-          type: createCustomerAction.setIsAddressLineFocused,
+        customerDispatch({
+          type: customerAction.setIsAddressLineFocused,
           payload: false,
         });
       },
       onChange: (event: ChangeEvent<HTMLInputElement>) => {
-        createCustomerDispatch({
-          type: createCustomerAction.setAddressLine,
+        customerDispatch({
+          type: customerAction.setAddressLine,
           payload: event.currentTarget.value,
         });
       },
       onFocus: () => {
-        createCustomerDispatch({
-          type: createCustomerAction.setIsAddressLineFocused,
+        customerDispatch({
+          type: customerAction.setIsAddressLineFocused,
           payload: true,
         });
       },
@@ -1728,20 +1655,20 @@ function CreateCustomer() {
       isValidInputText: isCityValid,
       label: "City",
       onBlur: () => {
-        createCustomerDispatch({
-          type: createCustomerAction.setIsCityFocused,
+        customerDispatch({
+          type: customerAction.setIsCityFocused,
           payload: false,
         });
       },
       onChange: (event: ChangeEvent<HTMLInputElement>) => {
-        createCustomerDispatch({
-          type: createCustomerAction.setCity,
+        customerDispatch({
+          type: customerAction.setCity,
           payload: event.currentTarget.value,
         });
       },
       onFocus: () => {
-        createCustomerDispatch({
-          type: createCustomerAction.setIsCityFocused,
+        customerDispatch({
+          type: customerAction.setIsCityFocused,
           payload: true,
         });
       },
@@ -1762,12 +1689,12 @@ function CreateCustomer() {
       value: country === "Canada" ? province : state,
       onChange: (event: ChangeEvent<HTMLSelectElement>) => {
         country === "Canada"
-          ? createCustomerDispatch({
-              type: createCustomerAction.setProvince,
+          ? customerDispatch({
+              type: customerAction.setProvince,
               payload: event.currentTarget.value as Province,
             })
-          : createCustomerDispatch({
-              type: createCustomerAction.setState,
+          : customerDispatch({
+              type: customerAction.setState,
               payload: event.currentTarget.value as StatesUS,
             });
       },
@@ -1804,14 +1731,14 @@ function CreateCustomer() {
       maxLength: country === "Canada" ? 7 : 10,
       minLength: country === "Canada" ? 6 : 5,
       onBlur: () => {
-        createCustomerDispatch({
-          type: createCustomerAction.setIsPostalCodeFocused,
+        customerDispatch({
+          type: customerAction.setIsPostalCodeFocused,
           payload: false,
         });
       },
       onChange: (event: ChangeEvent<HTMLInputElement>) => {
-        createCustomerDispatch({
-          type: createCustomerAction.setPostalCode,
+        customerDispatch({
+          type: customerAction.setPostalCode,
           payload:
             country === "Canada"
               ? event.currentTarget.value.toUpperCase()
@@ -1819,8 +1746,8 @@ function CreateCustomer() {
         });
       },
       onFocus: () => {
-        createCustomerDispatch({
-          type: createCustomerAction.setIsPostalCodeFocused,
+        customerDispatch({
+          type: customerAction.setIsPostalCodeFocused,
           payload: true,
         });
       },
@@ -1828,8 +1755,8 @@ function CreateCustomer() {
         switch (country) {
           case "Canada": {
             if (event.key === "Backspace" && postalCode.length === 4) {
-              createCustomerDispatch({
-                type: createCustomerAction.setPostalCode,
+              customerDispatch({
+                type: customerAction.setPostalCode,
                 payload: postalCode.slice(0, 3),
               });
             }
@@ -1837,8 +1764,8 @@ function CreateCustomer() {
           }
           case "United States": {
             if (event.key === "Backspace" && postalCode.length === 7) {
-              createCustomerDispatch({
-                type: createCustomerAction.setPostalCode,
+              customerDispatch({
+                type: customerAction.setPostalCode,
                 payload: postalCode.slice(0, 6),
               });
             }
@@ -1863,8 +1790,8 @@ function CreateCustomer() {
       description: "Select your country",
       label: "Country",
       onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-        createCustomerDispatch({
-          type: createCustomerAction.setCountry,
+        customerDispatch({
+          type: customerAction.setCountry,
           payload: event.currentTarget.value as Country,
         });
       },
@@ -1906,20 +1833,20 @@ function CreateCustomer() {
       maxLength: 100,
       minLength: 2,
       onBlur: () => {
-        createCustomerDispatch({
-          type: createCustomerAction.setIsCardholderNameFocused,
+        customerDispatch({
+          type: customerAction.setIsCardholderNameFocused,
           payload: false,
         });
       },
       onChange: (event: ChangeEvent<HTMLInputElement>) => {
-        createCustomerDispatch({
-          type: createCustomerAction.setCardholderName,
+        customerDispatch({
+          type: customerAction.setCardholderName,
           payload: event.currentTarget.value,
         });
       },
       onFocus: () => {
-        createCustomerDispatch({
-          type: createCustomerAction.setIsCardholderNameFocused,
+        customerDispatch({
+          type: customerAction.setIsCardholderNameFocused,
           payload: true,
         });
       },
@@ -1959,20 +1886,20 @@ function CreateCustomer() {
       maxLength: 19,
       minLength: 19,
       onBlur: () => {
-        createCustomerDispatch({
-          type: createCustomerAction.setIsCardNumberFocused,
+        customerDispatch({
+          type: customerAction.setIsCardNumberFocused,
           payload: false,
         });
       },
       onChange: (event: ChangeEvent<HTMLInputElement>) => {
-        createCustomerDispatch({
-          type: createCustomerAction.setCardNumber,
+        customerDispatch({
+          type: customerAction.setCardNumber,
           payload: event.currentTarget.value,
         });
       },
       onFocus: () => {
-        createCustomerDispatch({
-          type: createCustomerAction.setIsCardNumberFocused,
+        customerDispatch({
+          type: customerAction.setIsCardNumberFocused,
           payload: true,
         });
       },
@@ -2016,20 +1943,20 @@ function CreateCustomer() {
       maxLength: 7,
       minLength: 5,
       onBlur: () => {
-        createCustomerDispatch({
-          type: createCustomerAction.setIsExpirationDateFocused,
+        customerDispatch({
+          type: customerAction.setIsExpirationDateFocused,
           payload: false,
         });
       },
       onChange: (event: ChangeEvent<HTMLInputElement>) => {
-        createCustomerDispatch({
-          type: createCustomerAction.setExpirationDate,
+        customerDispatch({
+          type: customerAction.setExpirationDate,
           payload: event.currentTarget.value,
         });
       },
       onFocus: () => {
-        createCustomerDispatch({
-          type: createCustomerAction.setIsExpirationDateFocused,
+        customerDispatch({
+          type: customerAction.setIsExpirationDateFocused,
           payload: true,
         });
       },
@@ -2068,20 +1995,20 @@ function CreateCustomer() {
       maxLength: 4,
       minLength: 3,
       onBlur: () => {
-        createCustomerDispatch({
-          type: createCustomerAction.setIsCvvFocused,
+        customerDispatch({
+          type: customerAction.setIsCvvFocused,
           payload: false,
         });
       },
       onChange: (event: ChangeEvent<HTMLInputElement>) => {
-        createCustomerDispatch({
-          type: createCustomerAction.setCvv,
+        customerDispatch({
+          type: customerAction.setCvv,
           payload: event.currentTarget.value,
         });
       },
       onFocus: () => {
-        createCustomerDispatch({
-          type: createCustomerAction.setIsCvvFocused,
+        customerDispatch({
+          type: customerAction.setIsCvvFocused,
           payload: true,
         });
       },
@@ -2117,8 +2044,8 @@ function CreateCustomer() {
         },
         label: "",
         onChange: (_event: ChangeEvent<HTMLInputElement>) => {
-          createCustomerDispatch({
-            type: createCustomerAction.setIsBillingAddressSameAsShippingAddress,
+          customerDispatch({
+            type: customerAction.setIsBillingAddressSameAsShippingAddress,
             payload: isBillingAddressSameAsShippingAddress ? false : true,
           });
         },
@@ -2156,20 +2083,20 @@ function CreateCustomer() {
       isValidInputText: isBillingAddressLineValid,
       label: "Address Line",
       onBlur: () => {
-        createCustomerDispatch({
-          type: createCustomerAction.setIsBillingAddressLineFocused,
+        customerDispatch({
+          type: customerAction.setIsBillingAddressLineFocused,
           payload: false,
         });
       },
       onChange: (event: ChangeEvent<HTMLInputElement>) => {
-        createCustomerDispatch({
-          type: createCustomerAction.setBillingAddressLine,
+        customerDispatch({
+          type: customerAction.setBillingAddressLine,
           payload: event.currentTarget.value,
         });
       },
       onFocus: () => {
-        createCustomerDispatch({
-          type: createCustomerAction.setIsBillingAddressLineFocused,
+        customerDispatch({
+          type: customerAction.setIsBillingAddressLineFocused,
           payload: true,
         });
       },
@@ -2207,20 +2134,20 @@ function CreateCustomer() {
       isValidInputText: isBillingCityValid,
       label: "City",
       onBlur: () => {
-        createCustomerDispatch({
-          type: createCustomerAction.setIsBillingCityFocused,
+        customerDispatch({
+          type: customerAction.setIsBillingCityFocused,
           payload: false,
         });
       },
       onChange: (event: ChangeEvent<HTMLInputElement>) => {
-        createCustomerDispatch({
-          type: createCustomerAction.setBillingCity,
+        customerDispatch({
+          type: customerAction.setBillingCity,
           payload: event.currentTarget.value,
         });
       },
       onFocus: () => {
-        createCustomerDispatch({
-          type: createCustomerAction.setIsBillingCityFocused,
+        customerDispatch({
+          type: customerAction.setIsBillingCityFocused,
           payload: true,
         });
       },
@@ -2242,12 +2169,12 @@ function CreateCustomer() {
       value: billingCountry === "Canada" ? billingProvince : billingState,
       onChange: (event: ChangeEvent<HTMLSelectElement>) => {
         billingCountry === "Canada"
-          ? createCustomerDispatch({
-              type: createCustomerAction.setBillingProvince,
+          ? customerDispatch({
+              type: customerAction.setBillingProvince,
               payload: event.currentTarget.value as Province,
             })
-          : createCustomerDispatch({
-              type: createCustomerAction.setBillingState,
+          : customerDispatch({
+              type: customerAction.setBillingState,
               payload: event.currentTarget.value as StatesUS,
             });
       },
@@ -2284,14 +2211,14 @@ function CreateCustomer() {
       maxLength: billingCountry === "Canada" ? 7 : 10,
       minLength: billingCountry === "Canada" ? 6 : 5,
       onBlur: () => {
-        createCustomerDispatch({
-          type: createCustomerAction.setIsBillingPostalCodeFocused,
+        customerDispatch({
+          type: customerAction.setIsBillingPostalCodeFocused,
           payload: false,
         });
       },
       onChange: (event: ChangeEvent<HTMLInputElement>) => {
-        createCustomerDispatch({
-          type: createCustomerAction.setBillingPostalCode,
+        customerDispatch({
+          type: customerAction.setBillingPostalCode,
           payload:
             billingCountry === "Canada"
               ? event.currentTarget.value.toUpperCase()
@@ -2299,8 +2226,8 @@ function CreateCustomer() {
         });
       },
       onFocus: () => {
-        createCustomerDispatch({
-          type: createCustomerAction.setIsBillingPostalCodeFocused,
+        customerDispatch({
+          type: customerAction.setIsBillingPostalCodeFocused,
           payload: true,
         });
       },
@@ -2308,8 +2235,8 @@ function CreateCustomer() {
         switch (billingCountry) {
           case "Canada": {
             if (event.key === "Backspace" && billingPostalCode.length === 4) {
-              createCustomerDispatch({
-                type: createCustomerAction.setBillingPostalCode,
+              customerDispatch({
+                type: customerAction.setBillingPostalCode,
                 payload: billingPostalCode.slice(0, 3),
               });
             }
@@ -2317,8 +2244,8 @@ function CreateCustomer() {
           }
           case "United States": {
             if (event.key === "Backspace" && billingPostalCode.length === 7) {
-              createCustomerDispatch({
-                type: createCustomerAction.setBillingPostalCode,
+              customerDispatch({
+                type: customerAction.setBillingPostalCode,
                 payload: billingPostalCode.slice(0, 6),
               });
             }
@@ -2345,8 +2272,8 @@ function CreateCustomer() {
       description: "Select your country",
       label: "Country",
       onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-        createCustomerDispatch({
-          type: createCustomerAction.setBillingCountry,
+        customerDispatch({
+          type: customerAction.setBillingCountry,
           payload: event.currentTarget.value as Country,
         });
       },
@@ -2380,8 +2307,8 @@ function CreateCustomer() {
         },
         label: "Toggle Animation",
         onChange: (_event: ChangeEvent<HTMLInputElement>) => {
-          createCustomerDispatch({
-            type: createCustomerAction.setIsPrefersReducedMotion,
+          customerDispatch({
+            type: customerAction.setIsPrefersReducedMotion,
             payload: isPrefersReducedMotion ? false : true,
           });
         },
@@ -2398,8 +2325,8 @@ function CreateCustomer() {
     {
       buttonLabel: "Submit",
       buttonOnClick: (event: MouseEvent<HTMLButtonElement>) => {
-        createCustomerDispatch({
-          type: createCustomerAction.setTriggerFormSubmit,
+        customerDispatch({
+          type: customerAction.setTriggerFormSubmit,
           payload: true,
         });
       },
@@ -2431,7 +2358,7 @@ function CreateCustomer() {
   //  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
   // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
-  const displayCreateCustomerFormPage1 = (
+  const displayCustomerFormPage1 = (
     <FormLayoutWrapper>
       {createdUsernameTextInput}
       {createdEmailTextInput}
@@ -2447,7 +2374,7 @@ function CreateCustomer() {
     </FormLayoutWrapper>
   );
 
-  const displayCreateCustomerFormPage2 = (
+  const displayCustomerFormPage2 = (
     <FormLayoutWrapper>
       {createdContactNumberTextInput}
 
@@ -2653,7 +2580,7 @@ function CreateCustomer() {
   //    INPUT DISPLAY
   //  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
   // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
-  const displayCreateCustomerReviewPage = (
+  const displayCustomerReviewPage = (
     <FormReviewPage
       formReviewObject={CREATE_CUSTOMER_FORM_REVIEW_OBJECTS}
       formName="Create Customer"
@@ -2677,31 +2604,29 @@ function CreateCustomer() {
     />
   );
 
-  const displayCreateCustomerForm =
+  const displayCustomerForm =
     currentStepperPosition === 0
-      ? displayCreateCustomerFormPage1
+      ? displayCustomerFormPage1
       : currentStepperPosition === 1
-      ? displayCreateCustomerFormPage2
+      ? displayCustomerFormPage2
       : currentStepperPosition === 2
-      ? displayCreateCustomerReviewPage
+      ? displayCustomerReviewPage
       : createdSubmitButtonWithTooltip;
 
-  const displayCreateCustomerComponent = (
+  const displayCustomerComponent = (
     <StepperWrapper
       currentStepperPosition={currentStepperPosition}
       descriptionObjectsArray={CREATE_CUSTOMER_DESCRIPTION_OBJECTS}
       maxStepperPosition={CREATE_CUSTOMER_MAX_STEPPER_POSITION}
-      setCurrentStepperPosition={createCustomerAction.setCurrentStepperPosition}
+      setCurrentStepperPosition={customerAction.setCurrentStepperPosition}
       stepsInError={stepsInError}
-      parentComponentDispatch={createCustomerDispatch}
+      parentComponentDispatch={customerDispatch}
       childrenTitle="Create Customer"
     >
       {displaySubmitSuccessNotificationModal}
-      {displayCreateCustomerForm}
+      {displayCustomerForm}
     </StepperWrapper>
   );
 
-  return displayCreateCustomerComponent;
-}
-
-export default CreateCustomer;
+  return displayCustomerComponent;
+ */

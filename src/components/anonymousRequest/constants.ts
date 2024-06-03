@@ -8,12 +8,6 @@ import {
   USERNAME_REGEX,
 } from "../../constants/regex";
 import {
-  EMAIL_VALIDATIONS,
-  PHONE_NUMBER_VALIDATIONS,
-  TEXT_AREA_INPUT_VALIDATIONS,
-  TEXT_INPUT_VALIDATIONS,
-} from "../../constants/validations";
-import {
   ResourceRoutePaths,
   RoleResourceRoutePaths,
   StepperChild,
@@ -40,13 +34,13 @@ function returnAnonymousRequestStepperPages(): StepperPage[] {
   const additionalInformationChild: StepperChild = {
     inputType: "text",
     name: "additionalInformation",
-    validations: TEXT_AREA_INPUT_VALIDATIONS,
+    validationKey: "textAreaInput",
   };
 
   const requestDescriptionChild: StepperChild = {
     inputType: "text",
     name: "requestDescription",
-    validations: TEXT_AREA_INPUT_VALIDATIONS,
+    validationKey: "textAreaInput",
   };
 
   const urgencyChild: StepperChild = {
@@ -58,19 +52,19 @@ function returnAnonymousRequestStepperPages(): StepperPage[] {
   const titleChild: StepperChild = {
     inputType: "text",
     name: "title",
-    validations: TEXT_INPUT_VALIDATIONS,
+    validationKey: "textInput",
   };
 
   const secureContactNumberChild: StepperChild = {
     inputType: "text",
     name: "secureContactNumber",
-    validations: PHONE_NUMBER_VALIDATIONS,
+    validationKey: "phoneNumber",
   };
 
   const secureContactEmailChild: StepperChild = {
     inputType: "text",
     name: "secureContactEmail",
-    validations: EMAIL_VALIDATIONS,
+    validationKey: "email",
   };
 
   const requestKindChild: StepperChild = {

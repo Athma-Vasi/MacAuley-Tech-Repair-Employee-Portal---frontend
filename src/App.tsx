@@ -58,7 +58,7 @@ const DisplayResponsiveChart = lazy(
 // ╚═════════════════════════════════════════════════════════════════╝
 const DisplayCustomer = lazy(() => import("./components/customer/DisplayCustomer"));
 
-const CreateCustomer = lazy(() => import("./components/customer/CreateCustomer"));
+const CreateCustomer = lazy(() => import("./components/customer/Customer"));
 
 // ╔═════════════════════════════════════════════════════════════════╗
 //   COMMENT

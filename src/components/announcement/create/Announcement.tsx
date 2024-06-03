@@ -2,7 +2,6 @@ import { Container, Group, Stack, Text } from "@mantine/core";
 import { useEffect, useReducer, useRef } from "react";
 import { useErrorBoundary } from "react-error-boundary";
 
-import { TEXT_AREA_INPUT_VALIDATIONS } from "../../../constants/validations";
 import { useAuth } from "../../../hooks";
 import { useFetchInterceptor } from "../../../hooks/useFetchInterceptor";
 import { StepperPage } from "../../../types";
@@ -211,7 +210,7 @@ function Announcement() {
     ANNOUNCEMENT_STEPPER_PAGES[1].children.push({
       inputType: "text",
       name: `paragraph ${index + 1}`,
-      validations: TEXT_AREA_INPUT_VALIDATIONS,
+      validationKey: "textAreaInput",
     });
 
     const paragraphTextAreaInput = (

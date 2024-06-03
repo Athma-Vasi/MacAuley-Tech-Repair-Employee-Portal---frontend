@@ -8,11 +8,6 @@ import {
   USERNAME_REGEX,
 } from "../../constants/regex";
 import {
-  MONEY_VALIDATIONS,
-  TEXT_AREA_INPUT_VALIDATIONS,
-  TEXT_INPUT_VALIDATIONS,
-} from "../../constants/validations";
-import {
   ResourceRoutePaths,
   RoleResourceRoutePaths,
   StepperChild,
@@ -51,19 +46,19 @@ function returnRequestResourceStepperPages(): StepperPage[] {
   const resourceQuantityChild: StepperChild = {
     inputType: "text",
     name: "resourceQuantity",
-    validations: MONEY_VALIDATIONS,
+    validationKey: "money",
   };
 
   const resourceDescriptionChild: StepperChild = {
     inputType: "text",
     name: "resourceDescription",
-    validations: TEXT_AREA_INPUT_VALIDATIONS,
+    validationKey: "textAreaInput",
   };
 
   const reasonForRequestChild: StepperChild = {
     inputType: "text",
     name: "reasonForRequest",
-    validations: TEXT_INPUT_VALIDATIONS,
+    validationKey: "textInput",
   };
 
   const urgencyChild: StepperChild = {
@@ -75,13 +70,13 @@ function returnRequestResourceStepperPages(): StepperPage[] {
   const dateNeededByChild: StepperChild = {
     inputType: "date",
     name: "dateNeededBy",
-    validations: "dateNearFuture",
+    validationKey: "dateNearFuture",
   };
 
   const additionalInformationChild: StepperChild = {
     inputType: "text",
     name: "additionalInformation",
-    validations: TEXT_AREA_INPUT_VALIDATIONS,
+    validationKey: "textAreaInput",
   };
 
   const stepperPages: StepperPage[] = [

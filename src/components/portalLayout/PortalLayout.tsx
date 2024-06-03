@@ -18,10 +18,6 @@ function PortalLayout() {
 
   const { pathname } = useLocation();
 
-  // useEffect(() => {
-  //   window.scrollTo(0, 0);
-  // }, [pathname]);
-
   const {
     appThemeColors: { backgroundColor, borderColor },
     scrollBarStyle,

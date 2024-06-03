@@ -7,11 +7,6 @@ import {
   USERNAME_REGEX,
 } from "../../constants/regex";
 import {
-  ACKNOWLEDGEMENT_VALIDATIONS,
-  MONEY_VALIDATIONS,
-  TEXT_AREA_INPUT_VALIDATIONS,
-} from "../../constants/validations";
-import {
   ResourceRoutePaths,
   RoleResourceRoutePaths,
   StepperChild,
@@ -39,19 +34,19 @@ function returnExpenseClaimStepperPages() {
   const acknowledgementSwitchChild: StepperChild = {
     inputType: "checkbox",
     name: "acknowledgement",
-    validations: ACKNOWLEDGEMENT_VALIDATIONS,
+    validationKey: "acknowledgement",
   };
 
   const additionalCommentsTextChild: StepperChild = {
     inputType: "text",
     name: "additionalComments",
-    validations: TEXT_AREA_INPUT_VALIDATIONS,
+    validationKey: "textAreaInput",
   };
 
   const expenseClaimAmountChild: StepperChild = {
     inputType: "text",
     name: "expenseClaimAmount",
-    validations: MONEY_VALIDATIONS,
+    validationKey: "money",
   };
 
   const expenseClaimCurrencyChild: StepperChild = {
@@ -63,13 +58,13 @@ function returnExpenseClaimStepperPages() {
   const expenseClaimDateChild: StepperChild = {
     inputType: "date",
     name: "expenseClaimDate",
-    validations: "dateNearPast",
+    validationKey: "dateNearPast",
   };
 
   const expenseClaimDescriptionChild: StepperChild = {
     inputType: "text",
     name: "expenseClaimDescription",
-    validations: TEXT_AREA_INPUT_VALIDATIONS,
+    validationKey: "textAreaInput",
   };
 
   const expenseClaimKindChild: StepperChild = {
@@ -225,13 +220,13 @@ const EXPENSE_CLAIM_ROUTE_PATHS: ResourceRoutePaths = {
 const EXPENSE_CLAIMS_EXCLUDED_FIELDS_FROM_DISPLAY = new Set(["fileUploads"]);
 
 export {
-  EXPENSE_CLAIM_ROLE_PATHS,
   EXPENSE_CLAIM_DESCRIPTION_OBJECTS,
   EXPENSE_CLAIM_KIND_DATA,
   EXPENSE_CLAIM_MAX_IMG_AMOUNT,
   EXPENSE_CLAIM_MAX_IMG_SIZE,
   EXPENSE_CLAIM_MAX_STEPPER_POSITION,
   EXPENSE_CLAIM_QUERY_DATA,
+  EXPENSE_CLAIM_ROLE_PATHS,
   EXPENSE_CLAIM_ROUTE_PATHS,
   EXPENSE_CLAIMS_EXCLUDED_FIELDS_FROM_DISPLAY,
   returnExpenseClaimStepperPages,

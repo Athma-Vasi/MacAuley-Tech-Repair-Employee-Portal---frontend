@@ -6,11 +6,6 @@ import {
   URL_REGEX,
   USERNAME_REGEX,
 } from "../../../constants/regex";
-import {
-  TEXT_AREA_INPUT_VALIDATIONS,
-  TEXT_INPUT_VALIDATIONS,
-  URL_VALIDATIONS,
-} from "../../../constants/validations";
 import { RoleResourceRoutePaths, StepperChild, StepperPage } from "../../../types";
 import {
   returnDateFullRangeValidationText,
@@ -22,7 +17,6 @@ import {
 } from "../../../utils";
 import { ComponentQueryData } from "../../queryBuilder";
 import { DescriptionObjectsArray } from "../../wrappers";
-import { ARTICLE_TITLE_REGEX } from "../constants";
 
 const ANNOUNCEMENT_ROLE_ROUTE_PATHS: RoleResourceRoutePaths = {
   admin: "actions/outreach/announcement",
@@ -31,48 +25,28 @@ const ANNOUNCEMENT_ROLE_ROUTE_PATHS: RoleResourceRoutePaths = {
 };
 
 function returnAnnouncementStepperPages(): StepperPage[] {
-  /**
-   * type AnnouncementState = {
-  article: string[];
-  author: string;
-  bannerImageAlt: string;
-  bannerImageSrc: string;
-  isSubmitting: boolean;
-  isSuccessful: boolean;
-  pagesInError: Set<number>;
-  title: string;
-  triggerFormSubmit: boolean;
-};
-   */
-
-  // const articleChild: StepperChild = {
-  //   inputType: "text",
-  //   name: "article",
-  //   validations: TEXT_AREA_INPUT_VALIDATIONS,
-  // };
-
   const authorChild: StepperChild = {
     inputType: "text",
     name: "author",
-    validations: TEXT_INPUT_VALIDATIONS,
+    validationKey: "textInput",
   };
 
   const bannerImageAltChild: StepperChild = {
     inputType: "text",
     name: "bannerImageAlt",
-    validations: TEXT_INPUT_VALIDATIONS,
+    validationKey: "textInput",
   };
 
   const bannerImageSrcChild: StepperChild = {
     inputType: "text",
     name: "bannerImageSrc",
-    validations: URL_VALIDATIONS,
+    validationKey: "url",
   };
 
   const titleChild: StepperChild = {
     inputType: "text",
     name: "title",
-    validations: TEXT_INPUT_VALIDATIONS,
+    validationKey: "textInput",
   };
 
   return [
@@ -139,7 +113,7 @@ const ANNOUNCEMENT_QUERY_DATA: ComponentQueryData[] = [
     label: "Title",
     value: "title",
     inputKind: "textInput",
-    regex: ARTICLE_TITLE_REGEX,
+    regex: GRAMMAR_TEXT_INPUT_REGEX,
     regexValidationFn: returnGrammarValidationText,
   },
   {

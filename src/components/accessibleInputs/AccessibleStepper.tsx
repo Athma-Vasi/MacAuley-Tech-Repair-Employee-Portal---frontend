@@ -5,7 +5,7 @@ import { TbCheck, TbX } from "react-icons/tb";
 import { COLORS_SWATCHES } from "../../constants/data";
 import { VALIDATION_FUNCTIONS_TABLE } from "../../constants/validations";
 import { useGlobalState } from "../../hooks";
-import { StepperPage, Validation } from "../../types";
+import { StepperPage } from "../../types";
 import { returnThemeColors } from "../../utils";
 import { FormReviewStep } from "../formReview/FormReview";
 import { createAccessibleButtons } from "./utils";
@@ -197,30 +197,25 @@ function returnStepsInError(
 
         Object.entries(componentState).forEach(([stateKey, stateValue]) => {
           if (childName === stateKey) {
-            const { validations } = child;
+            const { validationKey } = child;
 
-            if (!validations) {
-              return;
-            }
+            // let correctValidations = validations;
 
-            let correctValidations = validations;
+            // if (typeof validations === "string") {
+            //   const validationsObj = VALIDATION_FUNCTIONS_TABLE[validations];
+            //   if (validationsObj) {
+            //     correctValidations = validationsObj;
+            //   }
+            // }
 
-            if (typeof validations === "string") {
-              const validationsObj = VALIDATION_FUNCTIONS_TABLE[validations];
-              if (validationsObj) {
-                correctValidations = validationsObj;
-              }
-            }
-
-            const { full: fullValidation } = correctValidations as Validation;
+            // const { full: fullValidation } = correctValidations as Validation;
 
             const value =
               typeof stateValue === "string" ? stateValue : stateValue?.toString() ?? "";
 
+            const { full } = VALIDATION_FUNCTIONS_TABLE[validationKey ?? "allowAll"];
             const isStepValid =
-              typeof fullValidation === "function"
-                ? fullValidation(value)
-                : fullValidation.test(value);
+              typeof full === "function" ? full(value) : full.test(value);
 
             if (!isStepValid) {
               stepsAcc[index] = true;

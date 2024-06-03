@@ -32,7 +32,6 @@ import {
   returnSerialIdValidationText,
   returnUsernameRegexValidationText,
 } from "../../utils";
-import { COUNTRIES_DATA } from "../addressChange/constants";
 import { CURRENCY_DATA } from "../benefit/constants";
 import { ComponentQueryData } from "../queryBuilder";
 import { PartsNeeded } from "./types";

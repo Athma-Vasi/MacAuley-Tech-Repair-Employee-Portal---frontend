@@ -34,7 +34,7 @@ function returnDirectory1StepperPages(): StepperPage[] {
   const searchChild: StepperChild = {
     inputType: "text",
     name: "search",
-    validations: "search",
+    validationKey: "search",
   };
 
   const rankerAlgorithmChild: StepperChild = {

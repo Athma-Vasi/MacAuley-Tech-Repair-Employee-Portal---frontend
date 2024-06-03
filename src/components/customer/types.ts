@@ -62,7 +62,7 @@ type CustomerDocument = CustomerSchema & {
 //  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
 // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
-type CreateCustomerState = {
+type CustomerState = {
   username: string;
   isUsernameFocused: boolean;
   isUsernameValid: boolean;
@@ -183,8 +183,8 @@ type CreateCustomerState = {
 
 export type {
   Address,
-  CreateCustomerState,
   CustomerDocument,
   CustomerSchema,
+  CustomerState,
   PaymentInformation,
 };

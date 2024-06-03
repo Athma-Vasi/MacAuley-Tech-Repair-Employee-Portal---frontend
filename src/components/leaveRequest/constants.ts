@@ -6,11 +6,6 @@ import {
   GRAMMAR_TEXTAREA_INPUT_REGEX,
   USERNAME_REGEX,
 } from "../../constants/regex";
-import {
-  ACKNOWLEDGEMENT_VALIDATIONS,
-  FULL_NAME_VALIDATIONS,
-  TEXT_AREA_INPUT_VALIDATIONS,
-} from "../../constants/validations";
 import { RoleResourceRoutePaths, StepperChild, StepperPage } from "../../types";
 import {
   returnDateFullRangeValidationText,
@@ -32,31 +27,31 @@ function returnLeaveRequestStepperPages() {
   const acknowledgementChild: StepperChild = {
     inputType: "checkbox",
     name: "acknowledgement",
-    validations: ACKNOWLEDGEMENT_VALIDATIONS,
+    validationKey: "acknowledgement",
   };
 
   const additionalCommentsChild: StepperChild = {
     inputType: "text",
     name: "additionalComments",
-    validations: TEXT_AREA_INPUT_VALIDATIONS,
+    validationKey: "textAreaInput",
   };
 
   const delegatedResponsibilitiesChild: StepperChild = {
     inputType: "text",
     name: "delegatedResponsibilities",
-    validations: TEXT_AREA_INPUT_VALIDATIONS,
+    validationKey: "textAreaInput",
   };
 
   const delegatedToEmployeeChild: StepperChild = {
     inputType: "text",
     name: "delegatedToEmployee",
-    validations: FULL_NAME_VALIDATIONS,
+    validationKey: "fullName",
   };
 
   const endDateChild: StepperChild = {
     inputType: "date",
     name: "endDate",
-    validations: "dateNearFuture",
+    validationKey: "dateNearFuture",
   };
 
   const reasonForLeaveChild: StepperChild = {
@@ -68,7 +63,7 @@ function returnLeaveRequestStepperPages() {
   const startDateChild: StepperChild = {
     inputType: "date",
     name: "startDate",
-    validations: "dateNearFuture",
+    validationKey: "dateNearFuture",
   };
 
   const stepperPages: StepperPage[] = [

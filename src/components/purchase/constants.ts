@@ -1,4 +1,9 @@
-import { PROVINCES, STATES_US } from "../../constants/data";
+import {
+  COUNTRIES_DATA,
+  PROVINCES,
+  STATES_US,
+  STORE_LOCATION_DATA,
+} from "../../constants/data";
 import {
   ADDRESS_LINE_REGEX,
   CITY_REGEX,
@@ -15,12 +20,10 @@ import {
   returnSerialIdValidationText,
   returnUsernameRegexValidationText,
 } from "../../utils";
-import { COUNTRIES_DATA } from "../addressChange/constants";
 import { CURRENCY_DATA } from "../benefit/constants";
 import { PRODUCT_CATEGORIES } from "../dashboard/constants";
 import { LARGE_INTEGER_REGEX } from "../product/constants";
 import { ComponentQueryData } from "../queryBuilder";
-import { STORE_LOCATION_DATA } from "../register/constants";
 
 const PURCHASE_QUERY_DATA: ComponentQueryData[] = [
   {

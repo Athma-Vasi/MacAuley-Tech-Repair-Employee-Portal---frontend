@@ -4,6 +4,7 @@ import {
   AllowedFileEncodings,
   AllowedFileExtensions,
   AllowedFileMimeTypes,
+  Country,
   Department,
   JobPosition,
   Province,
@@ -564,11 +565,14 @@ const ALLOWED_FILE_ENCODINGS: AllowedFileEncodings[] = [
 
 const ERROR_LOG_ROUTE_PATH = "/error-log";
 
+const COUNTRIES_DATA: Country[] = ["Canada", "United States"];
+
 export {
   ALLOWED_FILE_ENCODINGS,
   ALLOWED_FILE_EXTENSIONS,
   ALLOWED_FILE_MIME_TYPES,
   COLORS_SWATCHES,
+  COUNTRIES_DATA,
   DEPARTMENT_DATA,
   DEPARTMENT_JOB_POSITION_MAP,
   ERROR_LOG_ROUTE_PATH,

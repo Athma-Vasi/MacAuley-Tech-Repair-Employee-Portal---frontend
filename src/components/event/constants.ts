@@ -7,10 +7,6 @@ import {
   USERNAME_REGEX,
 } from "../../constants/regex";
 import {
-  TEXT_AREA_INPUT_VALIDATIONS,
-  TEXT_INPUT_VALIDATIONS,
-} from "../../constants/validations";
-import {
   ResourceRoutePaths,
   RoleResourceRoutePaths,
   StepperChild,
@@ -23,7 +19,6 @@ import {
   returnTimeRailwayValidationText,
   returnUsernameRegexValidationText,
 } from "../../utils";
-import { TIME_RAILWAY_VALIDATIONS } from "../printerIssue/create/validations";
 import { ComponentQueryData } from "../queryBuilder";
 import { DescriptionObjectsArray } from "../wrappers";
 import { EventKind } from "./create/types";
@@ -35,48 +30,28 @@ const EVENT_ROLE_ROUTE_PATHS: RoleResourceRoutePaths = {
 };
 
 function returnEventStepperPages(): StepperPage[] {
-  /**
-   * type EventState = {
-  attendees: string;
-  description: string;
-  endDate: string;
-  endTime: string;
-  isSubmitting: boolean;
-  isSuccessful: boolean;
-  kind: EventKind;
-  location: string;
-  pagesInError: Set<number>;
-  requiredItems: string;
-  rsvpDeadline: string;
-  startDate: string;
-  startTime: string;
-  title: string;
-  triggerFormSubmit: boolean;
-};
-   */
-
   const attendeesChild: StepperChild = {
     inputType: "text",
     name: "attendees",
-    validations: TEXT_AREA_INPUT_VALIDATIONS,
+    validationKey: "textAreaInput",
   };
 
   const descriptionChild: StepperChild = {
     inputType: "text",
     name: "description",
-    validations: TEXT_AREA_INPUT_VALIDATIONS,
+    validationKey: "textAreaInput",
   };
 
   const endDateChild: StepperChild = {
     inputType: "date",
     name: "endDate",
-    validations: "dateNearFuture",
+    validationKey: "dateNearFuture",
   };
 
   const endTimeChild: StepperChild = {
     inputType: "time",
     name: "endTime",
-    validations: TIME_RAILWAY_VALIDATIONS,
+    validationKey: "timeRailway",
   };
 
   const kindChild: StepperChild = {
@@ -88,37 +63,37 @@ function returnEventStepperPages(): StepperPage[] {
   const locationChild: StepperChild = {
     inputType: "text",
     name: "location",
-    validations: TEXT_INPUT_VALIDATIONS,
+    validationKey: "textInput",
   };
 
   const requiredItemsChild: StepperChild = {
     inputType: "text",
     name: "requiredItems",
-    validations: TEXT_AREA_INPUT_VALIDATIONS,
+    validationKey: "textAreaInput",
   };
 
   const rsvpDeadlineChild: StepperChild = {
     inputType: "date",
     name: "rsvpDeadline",
-    validations: "dateNearFuture",
+    validationKey: "dateNearFuture",
   };
 
   const startDateChild: StepperChild = {
     inputType: "date",
     name: "startDate",
-    validations: "dateNearFuture",
+    validationKey: "dateNearFuture",
   };
 
   const startTimeChild: StepperChild = {
     inputType: "time",
     name: "startTime",
-    validations: TIME_RAILWAY_VALIDATIONS,
+    validationKey: "timeRailway",
   };
 
   const titleChild: StepperChild = {
     inputType: "text",
     name: "title",
-    validations: TEXT_INPUT_VALIDATIONS,
+    validationKey: "textInput",
   };
 
   return [

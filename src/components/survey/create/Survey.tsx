@@ -1,10 +1,6 @@
 import { Container, Group, Stack } from "@mantine/core";
-import { useEffect, useReducer } from "react";
+import { useReducer } from "react";
 
-import {
-  TEXT_AREA_INPUT_VALIDATIONS,
-  TEXT_INPUT_VALIDATIONS,
-} from "../../../constants/validations";
 import { StepperChild, StepperPage } from "../../../types";
 import { logState } from "../../../utils";
 import { AccessibleButton } from "../../accessibleInputs/AccessibleButton";
@@ -17,7 +13,6 @@ import { AccessibleTextInput } from "../../accessibleInputs/text/AccessibleTextI
 import {
   INDEX_ALPHABET_TABLE,
   MAX_INPUTS_AMOUNT,
-  returnSurveyStepperPages,
   SURVEY_MAX_QUESTION_AMOUNT,
   SURVEY_RECIPIENT_DATA,
   SURVEY_RESPONSE_INPUTS,
@@ -132,7 +127,7 @@ function Survey() {
             const newQuestion: StepperChild = {
               inputType: "text",
               name: `question ${pageIndex + 1}`,
-              validations: TEXT_INPUT_VALIDATIONS,
+              validationKey: "textInput",
             };
 
             const newResponseKind: StepperChild = {
@@ -150,7 +145,7 @@ function Survey() {
             const newResponseOptions: StepperChild = {
               inputType: "text",
               name: `responseOption ${pageIndex + 1} A`,
-              validations: TEXT_INPUT_VALIDATIONS,
+              validationKey: "textInput",
             };
 
             const newPage: StepperPage = {
@@ -386,7 +381,7 @@ function Survey() {
                   INDEX_ALPHABET_TABLE[responseOptionArray.length] ??
                   responseOptionArray.length - 1
                 }`,
-                validations: TEXT_AREA_INPUT_VALIDATIONS,
+                validationKey: "textAreaInput",
               };
 
               surveyDispatch({

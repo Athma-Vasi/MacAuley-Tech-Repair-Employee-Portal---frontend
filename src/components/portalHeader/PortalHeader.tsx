@@ -21,13 +21,13 @@ function PortalHeader({ openedHeader, setOpenedHeader }: PortalHeaderProps) {
   } = useGlobalState();
   const matchesPrefersReducedMotion = useMediaQuery("(prefers-reduced-motion: reduce)");
 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
-  useEffect(() => {
-    if (!accessToken) {
-      navigate("/");
-    }
-  }, [accessToken, navigate]);
+  // useEffect(() => {
+  //   if (!accessToken) {
+  //     navigate("/");
+  //   }
+  // }, [accessToken, navigate]);
 
   useEffect(() => {
     if (!matchesPrefersReducedMotion) {

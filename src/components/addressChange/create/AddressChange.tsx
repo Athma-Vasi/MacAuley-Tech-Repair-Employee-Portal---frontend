@@ -2,7 +2,7 @@ import { Container, Group, Stack, Text } from "@mantine/core";
 import { MouseEvent, useEffect, useReducer, useRef } from "react";
 import { useErrorBoundary } from "react-error-boundary";
 
-import { PROVINCES, STATES_US } from "../../../constants/data";
+import { COUNTRIES_DATA, PROVINCES, STATES_US } from "../../../constants/data";
 import { useAuth } from "../../../hooks";
 import { useFetchInterceptor } from "../../../hooks/useFetchInterceptor";
 import { Country, Province, StatesUS, StepperPage } from "../../../types";
@@ -12,11 +12,7 @@ import { AccessibleSelectInput } from "../../accessibleInputs/AccessibleSelectIn
 import { AccessibleStepper } from "../../accessibleInputs/AccessibleStepper";
 import { AccessibleSwitchInput } from "../../accessibleInputs/AccessibleSwitchInput";
 import { AccessibleTextInput } from "../../accessibleInputs/text/AccessibleTextInput";
-import {
-  ADDRESS_CHANGE_ROLE_PATHS,
-  COUNTRIES_DATA,
-  returnAddressChangeStepperPages,
-} from "../constants";
+import { ADDRESS_CHANGE_ROLE_PATHS, returnAddressChangeStepperPages } from "../constants";
 import { AddressChangeAction, addressChangeAction } from "./actions";
 import { addressChangeReducer } from "./reducers";
 import { initialAddressChangeState } from "./state";

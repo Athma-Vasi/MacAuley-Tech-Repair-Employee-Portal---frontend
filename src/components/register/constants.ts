@@ -1,5 +1,217 @@
-import { PreferredPronouns, StoreLocation } from "../../types";
+import {
+  COUNTRIES_DATA,
+  DEPARTMENT_DATA,
+  JOB_POSITION_DATA,
+  PROVINCES,
+  STATES_US,
+  STORE_LOCATION_DATA,
+} from "../../constants/data";
+import { Country, PreferredPronouns, StepperChild, StepperPage } from "../../types";
 import { DescriptionObjectsArray } from "../wrappers";
+
+function returnRegisterStepperPages(country: Country): StepperPage[] {
+  const addressLine: StepperChild = {
+    inputType: "text",
+    name: "addressLine",
+    validationKey: "addressLine",
+  };
+
+  const city: StepperChild = {
+    inputType: "text",
+    name: "city",
+    validationKey: "city",
+  };
+
+  const confirmPassword: StepperChild = {
+    inputType: "text",
+    name: "confirmPassword",
+    validationKey: "password",
+  };
+
+  const contactNumber: StepperChild = {
+    inputType: "text",
+    name: "contactNumber",
+    validationKey: "phoneNumber",
+  };
+
+  const countryChild: StepperChild = {
+    inputType: "select",
+    name: "country",
+    selectInputData: COUNTRIES_DATA,
+  };
+
+  const dateOfBirth: StepperChild = {
+    inputType: "date",
+    name: "dateOfBirth",
+    validationKey: "dateOfBirth",
+  };
+
+  const department: StepperChild = {
+    inputType: "select",
+    name: "department",
+    selectInputData: DEPARTMENT_DATA,
+  };
+
+  const email: StepperChild = {
+    inputType: "text",
+    name: "email",
+    validationKey: "email",
+  };
+
+  const emergencyContactName: StepperChild = {
+    inputType: "text",
+    name: "emergencyContactName",
+    validationKey: "fullName",
+  };
+
+  const emergencyContactNumber: StepperChild = {
+    inputType: "text",
+    name: "emergencyContactNumber",
+    validationKey: "phoneNumber",
+  };
+
+  const firstName: StepperChild = {
+    inputType: "text",
+    name: "firstName",
+    validationKey: "name",
+  };
+
+  const jobPosition: StepperChild = {
+    inputType: "select",
+    name: "jobPosition",
+    selectInputData: JOB_POSITION_DATA,
+  };
+
+  const lastName: StepperChild = {
+    inputType: "text",
+    name: "lastName",
+    validationKey: "name",
+  };
+
+  const middleName: StepperChild = {
+    inputType: "text",
+    name: "middleName",
+    validationKey: "name",
+  };
+
+  const password: StepperChild = {
+    inputType: "text",
+    name: "password",
+    validationKey: "password",
+  };
+
+  const postalCode: StepperChild =
+    country === "Canada"
+      ? {
+          inputType: "text",
+          name: "postalCode",
+          validationKey: "postalCodeCanada",
+        }
+      : {
+          inputType: "text",
+          name: "postalCode",
+          validationKey: "postalCodeUS",
+        };
+
+  const preferredName: StepperChild = {
+    inputType: "text",
+    name: "preferredName",
+    validationKey: "fullName",
+  };
+
+  const preferredPronouns: StepperChild = {
+    inputType: "select",
+    name: "preferredPronouns",
+    selectInputData: PREFERRED_PRONOUNS_DATA,
+  };
+
+  const profilePictureUrl: StepperChild = {
+    inputType: "text",
+    name: "profilePictureUrl",
+    validationKey: "url",
+  };
+
+  const province: StepperChild = {
+    inputType: "select",
+    name: "province",
+    selectInputData: PROVINCES,
+  };
+
+  const startDate: StepperChild = {
+    inputType: "date",
+    name: "startDate",
+    validationKey: "date",
+  };
+
+  const state: StepperChild = {
+    inputType: "select",
+    name: "state",
+    selectInputData: STATES_US,
+  };
+
+  const storeLocation: StepperChild = {
+    inputType: "select",
+    name: "storeLocation",
+    selectInputData: STORE_LOCATION_DATA,
+  };
+
+  const username: StepperChild = {
+    inputType: "text",
+    name: "username",
+    validationKey: "username",
+  };
+
+  return [
+    {
+      children: [username, email, password, confirmPassword],
+      description: "Authentication",
+    },
+
+    {
+      children: [
+        firstName,
+        middleName,
+        lastName,
+        preferredName,
+        preferredPronouns,
+        profilePictureUrl,
+        dateOfBirth,
+      ],
+      description: "Personal information",
+    },
+
+    {
+      children: [
+        countryChild,
+        addressLine,
+        city,
+        province,
+        state,
+        postalCode,
+        contactNumber,
+      ],
+      description: "Contact details",
+    },
+
+    {
+      children: [
+        jobPosition,
+        department,
+        storeLocation,
+        emergencyContactName,
+        emergencyContactNumber,
+        startDate,
+      ],
+      description: "Additional information",
+    },
+
+    {
+      children: [],
+      description: "Review and proceed",
+      kind: "review",
+    },
+  ];
+}
 
 const REGISTER_URL = "http://localhost:5500/api/v1/user";
 
@@ -43,12 +255,10 @@ const PREFERRED_PRONOUNS_DATA: PreferredPronouns[] = [
   "Other",
 ];
 
-const STORE_LOCATION_DATA: StoreLocation[] = ["Calgary", "Edmonton", "Vancouver"];
-
 export {
   PREFERRED_PRONOUNS_DATA,
   REGISTER_DESCRIPTION_OBJECTS,
   REGISTER_MAX_STEPPER_POSITION,
   REGISTER_URL,
-  STORE_LOCATION_DATA,
+  returnRegisterStepperPages,
 };

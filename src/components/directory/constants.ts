@@ -1,6 +1,9 @@
-import { DEPARTMENT_DATA, JOB_POSITION_DATA } from "../../constants/data";
+import {
+  DEPARTMENT_DATA,
+  JOB_POSITION_DATA,
+  STORE_LOCATION_DATA,
+} from "../../constants/data";
 import { Department, JobPosition, SelectInputData, StoreLocation } from "../../types";
-import { STORE_LOCATION_DATA } from "../register/constants";
 
 const DIRECTORY_DEPARTMENT_SELECT_OPTIONS: SelectInputData = DEPARTMENT_DATA.reduce(
   (directoryDepartmentsAcc, department: Department) => {

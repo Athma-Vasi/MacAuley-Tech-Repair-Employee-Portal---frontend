@@ -14,7 +14,12 @@ import { useDisclosure } from "@mantine/hooks";
 import { ChangeEvent, Fragment, KeyboardEvent, MouseEvent, useEffect } from "react";
 import { TbClearAll, TbQuestionMark, TbSearch } from "react-icons/tb";
 
-import { COLORS_SWATCHES, PROVINCES, STATES_US } from "../../../../constants/data";
+import {
+  COLORS_SWATCHES,
+  COUNTRIES_DATA,
+  PROVINCES,
+  STATES_US,
+} from "../../../../constants/data";
 import {
   ADDRESS_LINE_REGEX,
   CITY_REGEX,
@@ -48,7 +53,6 @@ import {
   returnUsernameRegexValidationText,
   splitCamelCase,
 } from "../../../../utils";
-import { COUNTRIES_DATA } from "../../../addressChange/constants";
 import { CustomerDocument } from "../../../customer/types";
 import { FormLayoutWrapper, ImageWrapper } from "../../../wrappers";
 import {

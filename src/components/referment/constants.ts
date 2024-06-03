@@ -10,15 +10,6 @@ import {
   USERNAME_REGEX,
 } from "../../constants/regex";
 import {
-  EMAIL_VALIDATIONS,
-  FULL_NAME_VALIDATIONS,
-  PHONE_NUMBER_VALIDATIONS,
-  PRIVACY_CONSENT_VALIDATIONS,
-  TEXT_AREA_INPUT_VALIDATIONS,
-  TEXT_INPUT_VALIDATIONS,
-  URL_VALIDATIONS,
-} from "../../constants/validations";
-import {
   ResourceRoutePaths,
   RoleResourceRoutePaths,
   StepperChild,
@@ -46,43 +37,43 @@ function returnRefermentStepperPages(): StepperPage[] {
   const additionalInformationChild: StepperChild = {
     inputType: "text",
     name: "additionalInformation",
-    validations: TEXT_AREA_INPUT_VALIDATIONS,
+    validationKey: "textAreaInput",
   };
 
   const candidateContactNumberChild: StepperChild = {
     inputType: "text",
     name: "candidateContactNumber",
-    validations: PHONE_NUMBER_VALIDATIONS,
+    validationKey: "phoneNumber",
   };
 
   const candidateCurrentCompanyChild: StepperChild = {
     inputType: "text",
     name: "candidateCurrentCompany",
-    validations: TEXT_INPUT_VALIDATIONS,
+    validationKey: "textInput",
   };
 
   const candidateCurrentJobTitleChild: StepperChild = {
     inputType: "text",
     name: "candidateCurrentJobTitle",
-    validations: TEXT_INPUT_VALIDATIONS,
+    validationKey: "textInput",
   };
 
   const candidateEmailChild: StepperChild = {
     inputType: "text",
     name: "candidateEmail",
-    validations: EMAIL_VALIDATIONS,
+    validationKey: "email",
   };
 
   const candidateFullNameChild: StepperChild = {
     inputType: "text",
     name: "candidateFullName",
-    validations: FULL_NAME_VALIDATIONS,
+    validationKey: "fullName",
   };
 
   const candidateProfileUrlChild: StepperChild = {
     inputType: "text",
     name: "candidateProfileUrl",
-    validations: URL_VALIDATIONS,
+    validationKey: "url",
   };
 
   const departmentReferredForChild: StepperChild = {
@@ -94,7 +85,7 @@ function returnRefermentStepperPages(): StepperPage[] {
   const positionJobDescriptionChild: StepperChild = {
     inputType: "text",
     name: "positionJobDescription",
-    validations: TEXT_INPUT_VALIDATIONS,
+    validationKey: "textInput",
   };
 
   const positionReferredForChild: StepperChild = {
@@ -106,13 +97,13 @@ function returnRefermentStepperPages(): StepperPage[] {
   const privacyConsentChild: StepperChild = {
     inputType: "boolean",
     name: "privacyConsent",
-    validations: PRIVACY_CONSENT_VALIDATIONS,
+    validationKey: "privacyConsent",
   };
 
   const referralReasonChild: StepperChild = {
     inputType: "text",
     name: "referralReason",
-    validations: TEXT_AREA_INPUT_VALIDATIONS,
+    validationKey: "textAreaInput",
   };
 
   return [

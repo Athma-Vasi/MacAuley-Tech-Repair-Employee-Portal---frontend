@@ -46,8 +46,12 @@ function RegisterStepPersonal({
   isDateOfBirthFocused,
   registerDispatch,
   registerAction,
-}: RegisterStepPersonalProps) {
-  // used to validate first name on every change
+}: RegisterStepPersonalProps) {}
+
+export { RegisterStepPersonal };
+
+/**
+ * // used to validate first name on every change
   useEffect(() => {
     const isValidFirst = NAME_REGEX.test(firstName);
 
@@ -107,7 +111,7 @@ function RegisterStepPersonal({
     });
   }, [dateOfBirth, registerAction.setIsValidDateOfBirth, registerDispatch]);
 
-  // update the corresponding stepsInError state if any of the inputs are in error
+  // update the corresponding pagesInError state if any of the inputs are in error
   useEffect(() => {
     const areOptionalInputsInError =
       (!isValidMiddleName && middleName.length > 0) ||
@@ -118,7 +122,7 @@ function RegisterStepPersonal({
     const isStepInError = areOptionalInputsInError || areRequiredInputsInError;
 
     registerDispatch({
-      type: registerAction.setStepsInError,
+      type: registerAction.setPageInError,
       payload: {
         kind: isStepInError ? "add" : "delete",
         step: 1,
@@ -134,7 +138,7 @@ function RegisterStepPersonal({
     middleName.length,
     preferredName.length,
     profilePictureUrl.length,
-    registerAction.setStepsInError,
+    registerAction.setPageInError,
     registerDispatch,
   ]);
 
@@ -461,6 +465,5 @@ function RegisterStepPersonal({
   );
 
   return <>{createdPersonalInfoForm}</>;
-}
 
-export { RegisterStepPersonal };
+ */

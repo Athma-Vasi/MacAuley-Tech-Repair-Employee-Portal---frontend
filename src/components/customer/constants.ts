@@ -1,4 +1,4 @@
-import { PROVINCES, STATES_US } from "../../constants/data";
+import { COUNTRIES_DATA, PROVINCES, STATES_US } from "../../constants/data";
 import {
   ADDRESS_LINE_REGEX,
   CITY_REGEX,
@@ -22,7 +22,6 @@ import {
   returnUrlValidationText,
   returnUsernameRegexValidationText,
 } from "../../utils";
-import { COUNTRIES_DATA } from "../addressChange/constants";
 import { ComponentQueryData } from "../queryBuilder";
 import { PREFERRED_PRONOUNS_DATA } from "../register/constants";
 import { DescriptionObjectsArray } from "../wrappers";

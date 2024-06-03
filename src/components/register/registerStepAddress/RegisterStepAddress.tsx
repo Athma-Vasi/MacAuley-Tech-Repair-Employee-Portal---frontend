@@ -21,7 +21,6 @@ import {
   returnPhoneNumberValidationText,
   returnPostalCodeValidationText,
 } from "../../../utils";
-import { COUNTRIES_DATA } from "../../addressChange/constants";
 import {
   AccessiblePhoneNumberTextInputCreatorInfo,
   AccessibleSelectInputCreatorInfo,
@@ -48,8 +47,12 @@ function RegisterStepAddress({
   isPostalCodeFocused,
   registerAction,
   registerDispatch,
-}: RegisterStepAddressProps) {
-  // used to validate address line on every change
+}: RegisterStepAddressProps) {}
+
+export { RegisterStepAddress };
+
+/**
+ * // used to validate address line on every change
   useEffect(() => {
     const isValidAddress = ADDRESS_LINE_REGEX.test(addressLine);
 
@@ -179,13 +182,13 @@ function RegisterStepAddress({
     registerAction.setPostalCode,
   ]);
 
-  // update the corresponding stepsInError state if any of the inputs are in error
+  // update the corresponding pagesInError state if any of the inputs are in error
   useEffect(() => {
     const isStepInError =
       !isValidAddressLine || !isValidCity || !isValidPostalCode || !isValidContactNumber;
 
     registerDispatch({
-      type: registerAction.setStepsInError,
+      type: registerAction.setPageInError,
       payload: {
         kind: isStepInError ? "add" : "delete",
         step: 2,
@@ -197,7 +200,7 @@ function RegisterStepAddress({
     isValidPostalCode,
     isValidContactNumber,
     registerDispatch,
-    registerAction.setStepsInError,
+    registerAction.setPageInError,
   ]);
 
   // following are the accessible text elements for screen readers to read out based on the state of the input
@@ -495,6 +498,5 @@ function RegisterStepAddress({
   );
 
   return <>{displayRegisterStepAddress}</>;
-}
 
-export { RegisterStepAddress };
+ */

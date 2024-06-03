@@ -39,7 +39,7 @@ type AccessibleTextInputAttributes<
   /** [pageIndex, pagePositionIndex, ...] */
   dynamicIndexes?: number[];
   initialInputValue?: string;
-  value: string;
+  invalidValueAction: InvalidValueAction;
   label?: ReactNode;
   maxLength?: number;
   minLength?: number;
@@ -73,7 +73,6 @@ type AccessibleTextInputAttributes<
       }
   >;
   validValueAction: ValidValueAction;
-  invalidValueAction: InvalidValueAction;
   /** stepper page location of input. default 0 = first page = step 0 */
   page?: number;
   placeholder?: string;
@@ -84,6 +83,7 @@ type AccessibleTextInputAttributes<
   rightSectionOnClick?: () => void;
   size?: MantineSize;
   stepperPages: StepperPage[];
+  value: string;
   withAsterisk?: boolean;
 };
 
@@ -160,11 +160,9 @@ function AccessibleTextInput<
     )
   ) : null;
 
-  const { fullValidation } = returnFullValidation(name, stepperPages);
+  const { full } = returnFullValidation(name, stepperPages);
   const isValueBufferValid =
-    typeof fullValidation === "function"
-      ? fullValidation(valueBuffer)
-      : fullValidation.test(valueBuffer);
+    typeof full === "function" ? full(valueBuffer) : full.test(valueBuffer);
 
   const leftIcon = isValueBufferValid ? (
     icon ? (
@@ -179,6 +177,12 @@ function AccessibleTextInput<
     stepperPages,
     valueBuffer,
   });
+
+  console.group(`AccessibleTextInput: ${name}`);
+  console.log("valueBuffer:", valueBuffer);
+  console.log("isValueBufferValid:", isValueBufferValid);
+  console.log("validationTexts:", validationTexts);
+  console.groupEnd();
 
   const { invalidValueTextElement, validValueTextElement } =
     createAccessibleValueValidationTextElements({

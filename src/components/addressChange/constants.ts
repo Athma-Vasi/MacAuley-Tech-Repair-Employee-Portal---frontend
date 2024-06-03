@@ -1,11 +1,15 @@
-import { PROVINCES, REQUEST_STATUS, STATES_US } from "../../constants/data";
+import {
+  COUNTRIES_DATA,
+  PROVINCES,
+  REQUEST_STATUS,
+  STATES_US,
+} from "../../constants/data";
 import {
   ADDRESS_LINE_REGEX,
   CITY_REGEX,
   DATE_FULL_RANGE_REGEX,
   USERNAME_REGEX,
 } from "../../constants/regex";
-import { ACKNOWLEDGEMENT_VALIDATIONS } from "../../constants/validations";
 import {
   Country,
   ResourceRoutePaths,
@@ -21,13 +25,6 @@ import {
 } from "../../utils";
 import { ComponentQueryData } from "../queryBuilder";
 import { DescriptionObjectsArray } from "../wrappers";
-import {
-  ADDRESS_LINE_VALIDATIONS,
-  CANADIAN_POSTAL_CODE_VALIDATIONS,
-  CITY_VALIDATIONS,
-  CONTACT_NUMBER_VALIDATIONS,
-  US_POSTAL_CODE_VALIDATIONS,
-} from "./create/validations";
 
 const ADDRESS_CHANGE_ROLE_PATHS: RoleResourceRoutePaths = {
   manager: "actions/company/address-change",
@@ -40,8 +37,8 @@ const ADDRESS_CHANGE_DISPLAY_LOCATION = "/home/company/address-change";
 function returnAddressChangeStepperPages(country: Country): StepperPage[] {
   const countryInput: StepperChild = {
     inputType: "select",
-    selectInputData: COUNTRIES_DATA,
     name: "country",
+    selectInputData: COUNTRIES_DATA,
   };
 
   const province: StepperChild = {
@@ -59,19 +56,19 @@ function returnAddressChangeStepperPages(country: Country): StepperPage[] {
   const addressLine: StepperChild = {
     inputType: "text",
     name: "addressLine",
-    validations: ADDRESS_LINE_VALIDATIONS,
+    validationKey: "addressLine",
   };
 
   const city: StepperChild = {
     inputType: "text",
     name: "city",
-    validations: CITY_VALIDATIONS,
+    validationKey: "city",
   };
 
   const contactNumber: StepperChild = {
     inputType: "text",
     name: "contactNumber",
-    validations: CONTACT_NUMBER_VALIDATIONS,
+    validationKey: "phoneNumber",
   };
 
   const postalCode: StepperChild =
@@ -79,18 +76,18 @@ function returnAddressChangeStepperPages(country: Country): StepperPage[] {
       ? {
           inputType: "text",
           name: "postalCode",
-          validations: CANADIAN_POSTAL_CODE_VALIDATIONS,
+          validationKey: "postalCodeCanada",
         }
       : {
           inputType: "text",
           name: "postalCode",
-          validations: US_POSTAL_CODE_VALIDATIONS,
+          validationKey: "postalCodeUS",
         };
 
   const acknowledgement: StepperChild = {
     inputType: "checkbox",
     name: "acknowledgement",
-    validations: ACKNOWLEDGEMENT_VALIDATIONS,
+    validationKey: "acknowledgement",
   };
 
   const stepperPages: StepperPage[] = [
@@ -132,8 +129,6 @@ const ADDRESS_CHANGE_DESCRIPTION_OBJECTS: DescriptionObjectsArray = [
 ];
 
 const ADDRESS_CHANGE_MAX_STEPPER_POSITION = 2;
-
-const COUNTRIES_DATA: Country[] = ["Canada", "United States"];
 
 const ADDRESS_CHANGE_QUERY_DATA: ComponentQueryData[] = [
   {
@@ -221,6 +216,5 @@ export {
   ADDRESS_CHANGE_PATHS,
   ADDRESS_CHANGE_QUERY_DATA,
   ADDRESS_CHANGE_ROLE_PATHS,
-  COUNTRIES_DATA,
   returnAddressChangeStepperPages,
 };

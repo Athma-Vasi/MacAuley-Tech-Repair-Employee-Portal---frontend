@@ -158,11 +158,9 @@ function AccessibleTextAreaInput<
     )
   ) : null;
 
-  const { fullValidation } = returnFullValidation(name, stepperPages);
+  const { full } = returnFullValidation(name, stepperPages);
   const isValueBufferValid =
-    typeof fullValidation === "function"
-      ? fullValidation(valueBuffer)
-      : fullValidation.test(valueBuffer);
+    typeof full === "function" ? full(valueBuffer) : full.test(valueBuffer);
 
   const leftIcon = isValueBufferValid ? (
     icon ? (
