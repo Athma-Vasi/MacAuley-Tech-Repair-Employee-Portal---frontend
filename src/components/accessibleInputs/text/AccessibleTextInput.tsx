@@ -181,6 +181,7 @@ function AccessibleTextInput<
   console.group(`AccessibleTextInput: ${name}`);
   console.log("valueBuffer:", valueBuffer);
   console.log("isValueBufferValid:", isValueBufferValid);
+  console.log("full", full);
   console.log("validationTexts:", validationTexts);
   console.groupEnd();
 

@@ -4,6 +4,7 @@ import { Grid, Group, Text } from "@mantine/core";
 import { TbCheck, TbExclamationCircle } from "react-icons/tb";
 
 import { COLORS_SWATCHES } from "../../constants/data";
+import { VALIDATION_FUNCTIONS_TABLE } from "../../constants/validations";
 import { ThemeObject } from "../../context/globalProvider/types";
 import { StepperPage, Validation } from "../../types";
 import { capitalizeJoinWithAnd, returnThemeColors, splitCamelCase } from "../../utils";
@@ -48,7 +49,6 @@ import {
   AccessibleTextInput,
   AccessibleTextInputAttributes,
 } from "./text/AccessibleTextInput";
-import { VALIDATION_FUNCTIONS_TABLE } from "../../constants/validations";
 
 type CreateAccessibleValueValidationTextElements = {
   isPopoverOpened: boolean;
@@ -606,6 +606,11 @@ function returnValidationTexts({
   stepperPages: StepperPage[];
   valueBuffer: string;
 }): ValidationTexts {
+  const initialValidationTexts = {
+    valueInvalidText: "",
+    valueValidText: "",
+  };
+
   return stepperPages.reduce<ValidationTexts>((validationTextsAcc, page) => {
     const { kind, children } = page;
 
@@ -614,97 +619,65 @@ function returnValidationTexts({
     }
 
     children.forEach((child) => {
-      const { validationKey } = child;
-
-      if (validationKey === undefined) {
+      const { name: inputName, validationKey } = child;
+      if (inputName !== name) {
         return;
       }
 
-      const validation = VALIDATION_FUNCTIONS_TABLE[validationKey];
+      const validation = VALIDATION_FUNCTIONS_TABLE[validationKey ?? "allowAll"];
       const { partials } = validation;
 
-      // if (inputName === name) {
-      //   if (typeof validations === "string") {
-      //     const validationObj = VALIDATION_FUNCTIONS_TABLE[validations];
-      //     if (validationObj) {
-      //       partials = validationObj.partials;
-      //     }
-      //   } else {
-      //     partials = validations.partials;
-      //   }
-      // }
+      const partialInvalidText = partials.length
+        ? partials
+            .map(([regexOrFunc, errorMessage]) =>
+              typeof regexOrFunc === "function"
+                ? regexOrFunc(valueBuffer)
+                  ? ""
+                  : errorMessage
+                : regexOrFunc.test(valueBuffer)
+                ? ""
+                : errorMessage
+            )
+            .join(" ")
+        : "";
 
-      const partialInvalidText = partials
-        .map(([regexOrFunc, errorMessage]) =>
-          typeof regexOrFunc === "function"
-            ? regexOrFunc(valueBuffer)
-              ? ""
-              : errorMessage
-            : regexOrFunc.test(valueBuffer)
-            ? ""
-            : errorMessage
-        )
-        .join(" ");
-
-      console.group(`returnValidationTexts: ${name}`);
-      console.log({ partials });
-      console.log({ partialInvalidText });
-      console.groupEnd();
-
-      validationTextsAcc = {
-        valueValidText: `${splitCamelCase(name)} is valid.`,
-        valueInvalidText: `${splitCamelCase(name)} is invalid. ${partialInvalidText}`,
-      };
+      validationTextsAcc.valueInvalidText = `${splitCamelCase(
+        name
+      )} is invalid. ${partialInvalidText}`;
+      validationTextsAcc.valueValidText = `${splitCamelCase(name)} is valid.`;
     });
 
     return validationTextsAcc;
-  }, {} as ValidationTexts);
+  }, initialValidationTexts);
 }
 
 function returnFullValidation(
   name: string,
   stepperPages: StepperPage[]
-): { full: RegExp | ((value: string) => boolean) } {
-  return stepperPages.reduce<{ full: RegExp | ((value: string) => boolean) }>(
-    (regexAcc, page) => {
-      const { children, kind } = page;
+): { full: Validation["full"] } {
+  const initialFull = { full: new RegExp("") };
 
-      if (kind && kind === "review") {
-        return regexAcc;
+  return stepperPages.reduce<{ full: Validation["full"] }>((regexAcc, page) => {
+    const { children, kind } = page;
+
+    if (kind && kind === "review") {
+      return regexAcc;
+    }
+
+    children.forEach((child) => {
+      const { name: inputName, validationKey } = child;
+
+      if (inputName !== name) {
+        return;
       }
 
-      children.forEach((child) => {
-        const { validationKey } = child;
+      const validation = VALIDATION_FUNCTIONS_TABLE[validationKey ?? "allowAll"];
+      const { full } = validation;
+      regexAcc.full = full;
+    });
 
-        if (validationKey === undefined) {
-          return;
-        }
-
-        // if (inputName === name) {
-        //   if (typeof validations === "string") {
-        //     const validationObj = VALIDATION_FUNCTIONS_TABLE[validations];
-        //     if (validationObj) {
-        //       const { full } = validationObj;
-        //       regexAcc.fullValidation = full;
-        //     }
-        //   } else {
-        //     const { full } = validations;
-        //     regexAcc.fullValidation = full;
-        //   }
-        // }
-
-        const validation = VALIDATION_FUNCTIONS_TABLE[validationKey];
-        const { full } = validation;
-
-        regexAcc = { full };
-      });
-
-      return regexAcc;
-    },
-    {
-      full: new RegExp(""),
-    }
-  );
+    return regexAcc;
+  }, initialFull);
 }
 
 export {

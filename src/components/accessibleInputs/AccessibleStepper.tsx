@@ -94,7 +94,7 @@ function AccessibleStepper({ attributes }: AccessibleStepperProps) {
   }`;
 
   const {
-    generalColors: { grayColorShade, redColorShade, textColor, themeColorShade },
+    generalColors: { grayColorShade, redColorShade, textColor, greenColorShade },
   } = returnThemeColors({
     colorsSwatches: COLORS_SWATCHES,
     themeObject,
@@ -134,10 +134,10 @@ function AccessibleStepper({ attributes }: AccessibleStepperProps) {
     );
 
     const stepColor = page.preventErrorStateDisplay
-      ? themeColorShade
+      ? grayColorShade
       : stepsInError[pageIndex]
       ? redColorShade
-      : grayColorShade;
+      : greenColorShade;
 
     return (
       <Stepper.Step
@@ -191,46 +191,29 @@ function returnStepsInError(
 
       children.forEach((child) => {
         const { name: childName } = child;
-        console.group("returnStepsInError() - Child");
-        console.log({ childName });
-        console.groupEnd();
 
         Object.entries(componentState).forEach(([stateKey, stateValue]) => {
-          if (childName === stateKey) {
-            const { validationKey } = child;
+          if (childName !== stateKey) {
+            return;
+          }
 
-            // let correctValidations = validations;
+          const { validationKey } = child;
 
-            // if (typeof validations === "string") {
-            //   const validationsObj = VALIDATION_FUNCTIONS_TABLE[validations];
-            //   if (validationsObj) {
-            //     correctValidations = validationsObj;
-            //   }
-            // }
+          const value =
+            typeof stateValue === "string" ? stateValue : stateValue?.toString() ?? "";
 
-            // const { full: fullValidation } = correctValidations as Validation;
+          const { full } = VALIDATION_FUNCTIONS_TABLE[validationKey ?? "allowAll"];
+          const isStepValid = typeof full === "function" ? full(value) : full.test(value);
 
-            const value =
-              typeof stateValue === "string" ? stateValue : stateValue?.toString() ?? "";
-
-            const { full } = VALIDATION_FUNCTIONS_TABLE[validationKey ?? "allowAll"];
-            const isStepValid =
-              typeof full === "function" ? full(value) : full.test(value);
-
-            if (!isStepValid) {
-              stepsAcc[index] = true;
-            }
-
-            console.group("returnStepsInError() - Validation results");
-            console.log({ childName, isStepValid, value });
-            console.groupEnd();
+          if (!isStepValid) {
+            stepsAcc[index] = true;
           }
         });
       });
 
       return stepsAcc;
     },
-    stepperPages.map((page) => false)
+    stepperPages.map(() => false)
   );
 }
 

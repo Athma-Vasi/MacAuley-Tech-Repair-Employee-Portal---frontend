@@ -155,33 +155,20 @@ function returnFormReviews<
         ? value
           ? "Yes"
           : "No"
-        : // for survey component (ᵕ•_•)
+        : // for survey component ...
         value === "chooseAny" || value === "choseOne"
         ? splitCamelCase(value)
         : value?.toString() ?? "";
 
-      // let isValueValid = true;
+      let isValueValid = true;
 
-      // if (typeof validations === "string") {
-      //   const validationsObj = VALIDATION_FUNCTIONS_TABLE[validations];
-      //   if (validationsObj) {
-      //     isValueValid =
-      //       typeof validationsObj.full === "function"
-      //         ? validationsObj.full(stringifiedValue)
-      //         : validationsObj.full.test(stringifiedValue);
-      //   }
-      // } else if (validations) {
-      //   isValueValid =
-      //     typeof validations.full === "function"
-      //       ? validations.full(stringifiedValue)
-      //       : validations.full.test(stringifiedValue);
-      // }
-
-      const validation = VALIDATION_FUNCTIONS_TABLE[validationKey ?? "allowAll"];
-      const isValueValid =
-        typeof validation.full === "function"
-          ? validation.full(stringifiedValue)
-          : validation.full.test(stringifiedValue);
+      if (validationKey) {
+        const validation = VALIDATION_FUNCTIONS_TABLE[validationKey ?? "allowAll"];
+        isValueValid =
+          typeof validation.full === "function"
+            ? validation.full(value?.toString() ?? "")
+            : validation.full.test(value?.toString() ?? "");
+      }
 
       return {
         name,
