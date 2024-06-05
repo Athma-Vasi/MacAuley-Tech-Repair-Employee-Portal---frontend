@@ -1,4 +1,4 @@
-import { Container, MantineSize, Popover, Stack, Textarea } from "@mantine/core";
+import { Container, MantineSize, Popover, Stack, Text, Textarea } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import {
   ChangeEvent,
@@ -126,7 +126,12 @@ function AccessibleTextAreaInput<
     value,
     withAsterisk = required,
   } = attributes;
-  const label = attributes.label ?? splitCamelCase(name);
+
+  const label = (
+    <Text color={disabled ? "gray" : void 0}>
+      {attributes.label ?? splitCamelCase(name)}
+    </Text>
+  );
 
   const [valueBuffer, setValueBuffer] = useState(value);
   const [isPopoverOpened, { open: openPopover, close: closePopover }] =

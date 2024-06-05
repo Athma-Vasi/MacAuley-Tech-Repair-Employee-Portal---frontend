@@ -15,6 +15,7 @@ import { RegisterAddress } from "./RegisterAddress";
 import { RegisterAuthentication } from "./RegisterAuthentication";
 import { RegisterPersonal } from "./RegisterPersonal";
 import { initialRegisterState } from "./state";
+import { RegisterProfilePicture } from "./RegisterProfilePicture";
 
 function Register() {
   const [registerState, registerDispatch] = useReducer(
@@ -44,7 +45,7 @@ function Register() {
     postalCode,
     preferredName,
     preferredPronouns,
-    profilePictureUrl,
+    profilePictureFormData,
     province,
     startDate,
     state,
@@ -73,65 +74,64 @@ function Register() {
     let isComponentMounted = isComponentMountedRef.current;
 
     if (triggerFormSubmit) {
-      const userSchema: UserSchema = {
-        active: true,
-        address:
-          country === "Canada"
-            ? {
-                addressLine,
-                city,
-                country,
-                postalCode,
-                province,
-              }
-            : {
-                addressLine,
-                city,
-                country,
-                postalCode,
-                state,
-              },
-        completedSurveys: [],
-        contactNumber,
-        dateOfBirth,
-        department,
-        email,
-        emergencyContact: {
-          contactNumber: emergencyContactNumber,
-          fullName: emergencyContactName,
-        },
-        firstName,
-        isPrefersReducedMotion: false,
-        jobPosition,
-        lastName,
-        middleName,
-        password,
-        preferredName,
-        preferredPronouns,
-        profilePictureUrl,
-        roles: ["Employee"],
-        startDate,
-        storeLocation,
-        username,
-      };
-
-      formSubmitPOST({
-        dispatch: registerDispatch,
-        fetchAbortController,
-        fetchInterceptor,
-        isComponentMounted,
-        isSubmittingAction: registerAction.setIsSubmitting,
-        isSuccessfulAction: registerAction.setIsSuccessful,
-        preFetchAbortController,
-        roleResourceRoutePaths: REGISTER_ROLE_ROUTE_PATHS,
-        schema: userSchema,
-        schemaName: "userSchema",
-        sessionId: "",
-        showBoundary,
-        userId: "",
-        username,
-        userRole: "manager",
-      });
+      // const userSchema: UserSchema = {
+      //   active: true,
+      //   address:
+      //     country === "Canada"
+      //       ? {
+      //           addressLine,
+      //           city,
+      //           country,
+      //           postalCode,
+      //           province,
+      //         }
+      //       : {
+      //           addressLine,
+      //           city,
+      //           country,
+      //           postalCode,
+      //           state,
+      //         },
+      //   completedSurveys: [],
+      //   contactNumber,
+      //   dateOfBirth,
+      //   department,
+      //   email,
+      //   emergencyContact: {
+      //     contactNumber: emergencyContactNumber,
+      //     fullName: emergencyContactName,
+      //   },
+      //   firstName,
+      //   isPrefersReducedMotion: false,
+      //   jobPosition,
+      //   lastName,
+      //   middleName,
+      //   password,
+      //   preferredName,
+      //   preferredPronouns,
+      //   profilePictureFormData: profilePictureFormData ?? new FormData(),
+      //   roles: ["Employee"],
+      //   startDate,
+      //   storeLocation,
+      //   username,
+      // };
+      // formSubmitPOST({
+      //   dispatch: registerDispatch,
+      //   fetchAbortController,
+      //   fetchInterceptor,
+      //   isComponentMounted,
+      //   isSubmittingAction: registerAction.setIsSubmitting,
+      //   isSuccessfulAction: registerAction.setIsSuccessful,
+      //   preFetchAbortController,
+      //   roleResourceRoutePaths: REGISTER_ROLE_ROUTE_PATHS,
+      //   schema: userSchema,
+      //   schemaName: "userSchema",
+      //   sessionId: "",
+      //   showBoundary,
+      //   userId: "",
+      //   username,
+      //   userRole: "manager",
+      // });
     }
 
     return () => {
@@ -187,7 +187,15 @@ function Register() {
       parentDispatch={registerDispatch}
       preferredName={preferredName}
       preferredPronouns={preferredPronouns}
-      profilePictureUrl={profilePictureUrl}
+      stepperPages={registerStepperPages}
+    />
+  );
+
+  const profilePicturePage = (
+    <RegisterProfilePicture
+      parentAction={registerAction}
+      parentDispatch={registerDispatch}
+      profilePictureFormData={profilePictureFormData}
       stepperPages={registerStepperPages}
     />
   );
@@ -243,7 +251,13 @@ function Register() {
     <AccessibleStepper
       attributes={{
         componentState: registerState,
-        pageElements: [authenticationPage, personalPage, addressPage, additionalPage],
+        pageElements: [
+          authenticationPage,
+          personalPage,
+          profilePicturePage,
+          addressPage,
+          additionalPage,
+        ],
         stepperPages: registerStepperPages,
         submitButton,
       }}

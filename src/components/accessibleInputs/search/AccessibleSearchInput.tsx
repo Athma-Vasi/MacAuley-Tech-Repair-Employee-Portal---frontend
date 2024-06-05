@@ -117,7 +117,11 @@ function AccessibleSearchInput<
     withAsterisk = required,
   } = attributes;
 
-  const label = attributes.label ?? splitCamelCase(name);
+  const label = (
+    <Text color={disabled ? "gray" : void 0}>
+      {attributes.label ?? splitCamelCase(name)}
+    </Text>
+  );
 
   const [trie] = useState(() => Trie.buildTrie(data));
   const [trieResults, setTrieResults] = useState<string[]>([]);

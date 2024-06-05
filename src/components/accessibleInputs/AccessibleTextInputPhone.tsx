@@ -4,6 +4,7 @@ import {
   MantineSize,
   Popover,
   Stack,
+  Text,
   TextInput,
   Tooltip,
 } from "@mantine/core";
@@ -27,6 +28,7 @@ type AccessibleTextInputPhoneAttributes<
 > = {
   ariaRequired?: boolean;
   autoComplete?: "on" | "off";
+  disabled?: boolean;
   icon?: ReactNode;
   initialInputValue?: string;
   label?: ReactNode;
@@ -77,6 +79,7 @@ function AccessibleTextInputPhone<
   const {
     ariaRequired = false,
     autoComplete = "off",
+    disabled = false,
     icon = null,
     initialInputValue = "+(1)",
     maxLength = 18,
@@ -102,7 +105,11 @@ function AccessibleTextInputPhone<
     withAsterisk = false,
   } = attributes;
 
-  const label = attributes.label ?? splitCamelCase(name);
+  const label = (
+    <Text color={disabled ? "gray" : void 0}>
+      {attributes.label ?? splitCamelCase(name)}
+    </Text>
+  );
 
   const [valueBuffer, setValueBuffer] = useState(value);
   const [isPopoverOpened, { open: openPopover, close: closePopover }] =

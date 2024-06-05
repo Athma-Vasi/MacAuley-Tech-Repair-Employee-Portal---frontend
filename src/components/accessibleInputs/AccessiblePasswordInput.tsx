@@ -1,4 +1,11 @@
-import { Container, MantineSize, PasswordInput, Popover, Stack } from "@mantine/core";
+import {
+  Container,
+  MantineSize,
+  PasswordInput,
+  Popover,
+  Stack,
+  Text,
+} from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { ChangeEvent, Dispatch, ReactNode, RefObject, useState } from "react";
 import { TbCheck } from "react-icons/tb";
@@ -17,6 +24,7 @@ type AccessiblePasswordInputAttributes<
   ValidValueAction extends string = string,
   InvalidValueAction extends string = string
 > = {
+  disabled?: boolean;
   icon?: ReactNode;
   initialInputValue?: string;
   invalidValueAction: InvalidValueAction;
@@ -62,7 +70,7 @@ function AccessiblePasswordInput<
   InvalidValueAction extends string = string
 >({ attributes }: AccessiblePasswordInputProps<ValidValueAction, InvalidValueAction>) {
   const {
-    stepperPages,
+    disabled = false,
     icon = null,
     initialInputValue = "",
     invalidValueAction,
@@ -79,12 +87,17 @@ function AccessiblePasswordInput<
     ref = null,
     required = false,
     size = "sm",
+    stepperPages,
     validValueAction,
     value,
     withAsterisk = false,
   } = attributes;
 
-  const label = attributes.label ?? splitCamelCase(name);
+  const label = (
+    <Text color={disabled ? "gray" : void 0}>
+      {attributes.label ?? splitCamelCase(name)}
+    </Text>
+  );
 
   const [valueBuffer, setValueBuffer] = useState(value);
   const [isPopoverOpened, { open: openPopover, close: closePopover }] =

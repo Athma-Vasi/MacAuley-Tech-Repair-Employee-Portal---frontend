@@ -4,6 +4,7 @@ import {
   MantineSize,
   Popover,
   Stack,
+  Text,
   TextInput,
   Tooltip,
 } from "@mantine/core";
@@ -27,6 +28,7 @@ type AccessibleTextInputPostalAttributes<
 > = {
   autoComplete?: "on" | "off";
   country: Country;
+  disabled?: boolean;
   icon?: ReactNode;
   initialInputValue?: string;
   label?: ReactNode;
@@ -77,6 +79,7 @@ function AccessibleTextInputPostal<
   const {
     autoComplete = "off",
     country,
+    disabled = false,
     icon = null,
     initialInputValue = "",
     maxLength = 18,
@@ -102,7 +105,11 @@ function AccessibleTextInputPostal<
     withAsterisk = false,
   } = attributes;
 
-  const label = attributes.label ?? splitCamelCase(name);
+  const label = (
+    <Text color={disabled ? "gray" : void 0}>
+      {attributes.label ?? splitCamelCase(name)}
+    </Text>
+  );
 
   const [valueBuffer, setValueBuffer] = useState(value);
   const [isPopoverOpened, { open: openPopover, close: closePopover }] =

@@ -67,7 +67,11 @@ function AccessibleCheckboxInputSingle<
   } = attributes;
 
   const key = attributes.key ?? name + " - key";
-  const label = attributes.label ?? splitCamelCase(name);
+  const label = (
+    <Text color={disabled ? "gray" : void 0}>
+      {attributes.label ?? splitCamelCase(name)}
+    </Text>
+  );
 
   const {
     globalState: { themeObject },

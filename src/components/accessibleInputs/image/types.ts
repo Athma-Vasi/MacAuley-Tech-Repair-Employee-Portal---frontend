@@ -7,7 +7,8 @@ type AccessibleImageInputAttributes<
   ValidValueAction extends string = string,
   InvalidValueAction extends string = string
 > = {
-  formData: FormData;
+  disabled?: boolean;
+  formData: FormData | undefined;
   invalidValueAction: InvalidValueAction;
   maxImageSize?: number;
   maxImages?: number;
@@ -24,6 +25,13 @@ type AccessibleImageInputAttributes<
   >;
   stepperPages: StepperPage[];
   validValueAction: ValidValueAction;
+};
+
+type AccessibleImageInputProps<
+  ValidValueAction extends string = string,
+  InvalidValueAction extends string = string
+> = {
+  attributes: AccessibleImageInputAttributes<ValidValueAction, InvalidValueAction>;
 };
 
 type AccessibleImageInputState = {
@@ -77,5 +85,6 @@ type AccessibleImageInputDispatch =
 export type {
   AccessibleImageInputAttributes,
   AccessibleImageInputDispatch,
+  AccessibleImageInputProps,
   AccessibleImageInputState,
 };

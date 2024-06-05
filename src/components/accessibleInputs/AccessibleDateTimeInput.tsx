@@ -1,4 +1,4 @@
-import { Container, MantineSize, Popover, Stack, TextInput } from "@mantine/core";
+import { Container, MantineSize, Popover, Stack, Text, TextInput } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { ChangeEvent, Dispatch, ReactNode, RefObject, useState } from "react";
 import { TbCheck } from "react-icons/tb";
@@ -20,6 +20,7 @@ type AccessibleDateTimeInputAttributes<
   ariaAutoComplete?: "both" | "list" | "none" | "inline";
   autoComplete?: "on" | "off";
   dateKind?: "date near future" | "date near past" | "full date";
+  disabled?: boolean;
   icon?: ReactNode;
   initialInputValue?: string;
   inputKind: "date" | "time";
@@ -70,6 +71,7 @@ function AccessibleDateTimeInput<
     ariaAutoComplete = "none",
     autoComplete = "off",
     dateKind = "full date",
+    disabled = false,
     icon = null,
     initialInputValue = "",
     inputKind,
@@ -94,7 +96,11 @@ function AccessibleDateTimeInput<
     withAsterisk = required,
   } = attributes;
 
-  const label = attributes.label ?? splitCamelCase(name);
+  const label = (
+    <Text color={disabled ? "gray" : void 0}>
+      {attributes.label ?? splitCamelCase(name)}
+    </Text>
+  );
 
   const [valueBuffer, setValueBuffer] = useState(value);
   const [isPopoverOpened, { open: openPopover, close: closePopover }] =

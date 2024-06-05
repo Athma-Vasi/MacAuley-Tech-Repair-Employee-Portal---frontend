@@ -1,4 +1,4 @@
-import { Box, MantineSize, Radio } from "@mantine/core";
+import { Box, MantineSize, Radio, Text } from "@mantine/core";
 import React, { ReactNode } from "react";
 
 import { useGlobalState } from "../../hooks";
@@ -51,7 +51,11 @@ function AccessibleRadioInputSingle<ValidValueAction extends string = string>({
     value,
   } = attributes;
 
-  const label = attributes.label ?? splitCamelCase(name);
+  const label = (
+    <Text color={disabled ? "gray" : void 0}>
+      {attributes.label ?? splitCamelCase(name)}
+    </Text>
+  );
   const key = attributes.key ?? name + " - radio";
 
   const {

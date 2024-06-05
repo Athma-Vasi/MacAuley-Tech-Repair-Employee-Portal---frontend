@@ -22,7 +22,7 @@ const initialRegisterState: RegisterState = {
   postalCode: "",
   preferredName: "",
   preferredPronouns: "Prefer not to say",
-  profilePictureUrl: "",
+  profilePictureFormData: void 0,
   province: "Alberta",
   startDate: "",
   state: "Alabama",

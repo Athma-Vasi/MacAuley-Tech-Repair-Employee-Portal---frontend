@@ -4,6 +4,7 @@ import {
   MantineSize,
   Popover,
   Stack,
+  Text,
   TextInput,
   Tooltip,
 } from "@mantine/core";
@@ -14,8 +15,6 @@ import {
   KeyboardEvent,
   ReactNode,
   RefObject,
-  useEffect,
-  useReducer,
   useState,
 } from "react";
 import { TbCheck, TbRefresh } from "react-icons/tb";
@@ -29,7 +28,6 @@ import {
   returnFullValidation,
   returnValidationTexts,
 } from "../utils";
-import { accessibleTextInputReducer } from "./reducers";
 
 type AccessibleTextInputAttributes<
   ValidValueAction extends string = string,
@@ -132,14 +130,11 @@ function AccessibleTextInput<
     withAsterisk = required,
   } = attributes;
 
-  const label = attributes.label ?? splitCamelCase(name);
-
-  // const [{ valueBuffer }, setValueBuffer] = useReducer(
-  //   accessibleTextInputReducer,
-  //   {
-  //     valueBuffer: value,
-  //   }
-  // );
+  const label = (
+    <Text color={disabled ? "gray" : void 0}>
+      {attributes.label ?? splitCamelCase(name)}
+    </Text>
+  );
 
   const [valueBuffer, setValueBuffer] = useState<string>(value);
   const [isPopoverOpened, { open: openPopover, close: closePopover }] =
@@ -230,7 +225,7 @@ function AccessibleTextInput<
             aria-label={name}
             aria-required={required}
             autoComplete={autoComplete}
-            color={grayColorShade}
+            // color={grayColorShade}
             disabled={disabled}
             error={!isValueBufferValid && valueBuffer !== initialInputValue}
             icon={leftIcon}

@@ -16,7 +16,6 @@ type RegisterPersonalProps = {
   parentDispatch: any;
   preferredName: string;
   preferredPronouns: PreferredPronouns;
-  profilePictureUrl: string;
   stepperPages: StepperPage[];
 };
 
@@ -29,7 +28,6 @@ function RegisterPersonal({
   parentDispatch,
   preferredName,
   preferredPronouns,
-  profilePictureUrl,
   stepperPages,
 }: RegisterPersonalProps) {
   const dateOfBirthTextInput = (
@@ -116,20 +114,6 @@ function RegisterPersonal({
     />
   );
 
-  const profilePictureUrlTextInput = (
-    <AccessibleTextInput
-      attributes={{
-        stepperPages,
-        invalidValueAction: parentAction.setPageInError,
-        name: "profilePictureUrl",
-        page: 1,
-        parentDispatch,
-        validValueAction: parentAction.setProfilePictureUrl,
-        value: profilePictureUrl,
-      }}
-    />
-  );
-
   return (
     <Stack>
       {dateOfBirthTextInput}
@@ -138,7 +122,6 @@ function RegisterPersonal({
       {middleNameTextInput}
       {preferredNameTextInput}
       {preferredPronounsSelectInput}
-      {profilePictureUrlTextInput}
     </Stack>
   );
 }

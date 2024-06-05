@@ -22,22 +22,25 @@ import { AccessibleImageInputAction, accessibleImageInputAction } from "./action
 import { ALLOWED_FILE_EXTENSIONS_REGEX, MAX_IMAGE_SIZE, MAX_IMAGES } from "./constants";
 import { accessibleImageInputReducer } from "./reducers";
 import { initialAccessibleImageInputState } from "./state";
-import { AccessibleImageInputAttributes } from "./types";
+import { AccessibleImageInputAttributes, AccessibleImageInputProps } from "./types";
 import { validateImages } from "./utils";
 
 function AccessibleImageInput<
   ValidValueAction extends string = string,
   InvalidValueAction extends string = string
->({
-  formData,
-  invalidValueAction,
-  maxImageSize = MAX_IMAGE_SIZE,
-  maxImages = MAX_IMAGES,
-  page,
-  parentDispatch,
-  stepperPages,
-  validValueAction,
-}: AccessibleImageInputAttributes<ValidValueAction, InvalidValueAction>) {
+>({ attributes }: AccessibleImageInputProps<ValidValueAction, InvalidValueAction>) {
+  const {
+    disabled,
+    formData,
+    invalidValueAction,
+    maxImageSize = MAX_IMAGE_SIZE,
+    maxImages = MAX_IMAGES,
+    page,
+    parentDispatch,
+    stepperPages,
+    validValueAction,
+  } = attributes;
+
   const [accessibleImageInputState, accessibleImageInputDispatch] = useReducer(
     accessibleImageInputReducer,
     initialAccessibleImageInputState
@@ -114,7 +117,9 @@ function AccessibleImageInput<
       }
     }
 
-    retrieveImages();
+    if (formData === undefined) {
+      retrieveImages();
+    }
 
     return () => {
       isMountedRetrieveImagesRef.current = false;
@@ -242,7 +247,23 @@ function AccessibleImageInput<
   const fileInput = (
     <AccessibleFileInput<AccessibleImageInputAction["addImageToBuffer"]>
       attributes={{
+        disabled,
         name: "images",
+        onChange: async (_file: File | null) => {
+          parentDispatch({
+            action: validValueAction,
+            payload: imageFileBlobs.reduce<FormData>(
+              (formDataAcc, imageFileBlob, index) => {
+                if (imageFileBlob) {
+                  formDataAcc.append("file", imageFileBlob, imagesBuffer[index].name);
+                }
+
+                return formDataAcc;
+              },
+              new FormData()
+            ),
+          });
+        },
         parentDispatch: accessibleImageInputDispatch,
         validValueAction: accessibleImageInputAction.addImageToBuffer,
         value: imagesBuffer.at(-1) ?? null,
@@ -327,11 +348,15 @@ function AccessibleImageInput<
         enabledScreenreaderText: "Remove image",
         kind: "delete",
         name: "remove",
-        onClick: (
+        onClick: async (
           _event:
             | React.MouseEvent<HTMLButtonElement, MouseEvent>
             | React.PointerEvent<HTMLButtonElement>
         ) => {
+          const images = await localforage.getItem<Array<File | null>>("images");
+          images?.splice(index, 1);
+          await localforage.setItem("images", images);
+
           accessibleImageInputDispatch({
             action: accessibleImageInputAction.removeImageFromBuffer,
             payload: index,
@@ -339,7 +364,7 @@ function AccessibleImageInput<
         },
       },
       {
-        disabled: isImageInvalid,
+        disabled: isImageTypeInvalid,
         disabledScreenreaderText: "Image is invalid",
         enabledScreenreaderText: "Reset image",
         kind: "refresh",
@@ -372,7 +397,7 @@ function AccessibleImageInput<
     const imageQualitySlider = (
       <AccessibleSliderInput
         attributes={{
-          disabled: isImageInvalid,
+          disabled: isImageTypeInvalid,
           index,
           marks: IMG_QUALITY_SLIDER_DATA,
           max: 10,
@@ -398,7 +423,7 @@ function AccessibleImageInput<
     const imageOrientationSlider = (
       <AccessibleSliderInput
         attributes={{
-          disabled: isImageInvalid,
+          disabled: isImageTypeInvalid,
           index,
           label: (value) => displayOrientationLabel(value),
           marks: IMG_ORIENTATION_SLIDER_DATA,
@@ -423,7 +448,11 @@ function AccessibleImageInput<
     );
 
     return (
-      <Card w={325} style={{ outline: borderColor, borderRadius: 4 }}>
+      <Card
+        w={325}
+        style={{ outline: borderColor, borderRadius: 4 }}
+        key={`${index}-${imagesBuffer[index]?.name}`}
+      >
         <Stack spacing="xl">
           {img}
           {isImageInvalid ? invalidScreenreaderTextElement : validScreenreaderTextElement}
@@ -432,10 +461,10 @@ function AccessibleImageInput<
             {imageSize}
             {imageType}
           </Stack>
-          <Group w="100%" position="apart">
+          <GoldenGrid>
             {removeButtonWithTooltip}
             {resetButtonWithTooltip}
-          </Group>
+          </GoldenGrid>
           <Stack spacing="xl">
             {imageQualityStack}
             {imageOrientationStack}

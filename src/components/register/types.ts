@@ -34,7 +34,7 @@ type RegisterState = {
   postalCode: PostalCode;
   preferredName: string;
   preferredPronouns: PreferredPronouns;
-  profilePictureUrl: string;
+  profilePictureFormData: FormData | undefined;
   province: Province;
   startDate: string;
   state: StatesUS;
@@ -129,8 +129,8 @@ type RegisterDispatch =
       payload: PreferredPronouns;
     }
   | {
-      action: RegisterAction["setProfilePictureUrl"];
-      payload: string;
+      action: RegisterAction["setProfilePictureFormData"];
+      payload: FormData;
     }
   | {
       action: RegisterAction["setProvince"];

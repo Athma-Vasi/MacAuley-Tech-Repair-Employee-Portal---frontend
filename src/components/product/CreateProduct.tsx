@@ -1,135 +1,192 @@
-import { Group, Space, Stack, Title, Tooltip } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
-import { InvalidTokenError } from "jwt-decode";
-import { ChangeEvent, MouseEvent, useEffect, useReducer } from "react";
-import { useErrorBoundary } from "react-error-boundary";
-import { TbUpload } from "react-icons/tb";
-import { useLocation, useNavigate } from "react-router-dom";
-import { v4 as uuidv4 } from "uuid";
-
-import { COLORS_SWATCHES } from "../../constants/data";
-import {
-  GRAMMAR_TEXTAREA_INPUT_REGEX,
-  MONEY_REGEX,
-  SERIAL_ID_REGEX,
-} from "../../constants/regex";
-import { globalAction } from "../../context/globalProvider/state";
-import { useGlobalState, useWrapFetch } from "../../hooks";
-import {
-  AccessibleErrorValidTextElements,
-  returnAccessibleButtonElements,
-  returnAccessibleSelectInputElements,
-  returnAccessibleTextAreaInputElements,
-  returnAccessibleTextInputElements,
-} from "../../jsxCreators";
-import { Currency, ResourceRequestServerResponse } from "../../types";
-import {
-  removeUndefinedAndNull,
-  returnBrandNameValidationText,
-  returnDimensionsValidationText,
-  returnFloatAmountValidationText,
-  returnGrammarValidationText,
-  returnLargeIntegerValidationText,
-  returnSerialIdValidationText,
-  returnThemeColors,
-  returnWeightValidationText,
-  urlBuilder,
-} from "../../utils";
-import { CURRENCY_DATA } from "../benefit/constants";
-import { PRODUCT_CATEGORIES } from "../dashboard/constants";
-import { ProductCategory } from "../dashboard/types";
-import FormReviewPage, { FormReviewObjectArray } from "../formReviewPage/FormReviewPage";
-import { ImageUpload } from "../imageUpload";
-import { NotificationModal } from "../notificationModal";
-import { FormLayoutWrapper, StepperWrapper } from "../wrappers";
-import CreateAccessory from "./accessory/CreateAccessory";
-import CreateCase from "./case/CreateCase";
-import {
-  BRAND_REGEX,
-  CREATE_PRODUCT_DESCRIPTION_OBJECTS,
-  CREATE_PRODUCT_MAX_IMG_AMOUNT,
-  CREATE_PRODUCT_MAX_IMG_SIZE,
-  CREATE_PRODUCT_MAX_STEPPER_POSITION,
-  DIMENSION_UNIT_SELECT_INPUT_DATA,
-  DIMENSIONS_REGEX,
-  LARGE_INTEGER_REGEX,
-  LOCATION_PRODUCT_CATEGORY_OBJ,
-  PRODUCT_AVAILABILITY_DATA,
-  PRODUCT_CATEGORY_ROUTE_NAME_OBJ,
-  WEIGHT_REGEX,
-  WEIGHT_UNIT_SELECT_INPUT_DATA,
-} from "./constants";
-import CreateCpu from "./cpu/CreateCPU";
-import CreateDesktopComputer from "./desktopComputer/CreateDesktopComputer";
-import CreateDisplay from "./display/CreateDisplay";
-import CreateGpu from "./gpu/CreateGPU";
-import CreateHeadphone from "./headphone/CreateHeadphone";
-import CreateKeyboard from "./keyboard/CreateKeyboard";
-import CreateLaptop from "./laptop/CreateLaptop";
-import CreateMicrophone from "./microphone/CreateMicrophone";
-import CreateMotherboard from "./motherboard/CreateMotherboard";
-import CreateMouse from "./mouse/CreateMouse";
-import CreatePsu from "./psu/CreatePSU";
-import CreateRam from "./ram/CreateRAM";
-import { createProductReducer } from "./reducers";
-import CreateSmartphone from "./smartphone/CreateSmartphone";
-import CreateSpeaker from "./speaker/CreateSpeaker";
-import { createProductAction, initialCreateProductState } from "./state";
-import CreateStorage from "./storage/CreateStorage";
-import CreateTablet from "./tablet/CreateTablet";
-import {
-  AccessoryRequestBody,
-  AccessorySpecifications,
-  CaseSpecifications,
-  ComputerCaseRequestBody,
-  CpuRequestBody,
-  CpuSpecifications,
-  DesktopComputerRequestBody,
-  DesktopComputerSpecifications,
-  DimensionUnit,
-  DisplayRequestBody,
-  DisplaySpecifications,
-  GpuRequestBody,
-  GpuSpecifications,
-  HeadphoneRequestBody,
-  HeadphoneSpecifications,
-  KeyboardRequestBody,
-  KeyboardSpecifications,
-  LaptopRequestBody,
-  LaptopSpecifications,
-  MicrophoneRequestBody,
-  MicrophoneSpecifications,
-  MotherboardRequestBody,
-  MotherboardSpecifications,
-  MouseRequestBody,
-  MouseSpecifications,
-  ProductAvailability,
-  ProductCategoryPage1Specifications,
-  ProductDocument,
-  PsuRequestBody,
-  PsuSpecifications,
-  RamRequestBody,
-  RamSpecifications,
-  SmartphoneRequestBody,
-  SmartphoneSpecifications,
-  SpeakerRequestBody,
-  SpeakerSpecifications,
-  StorageRequestBody,
-  StorageSpecifications,
-  TabletRequestBody,
-  TabletSpecifications,
-  WebcamRequestBody,
-  WebcamSpecifications,
-  WeightUnit,
-} from "./types";
-import {
-  returnFormReviewObjectsFromUserDefinedFields,
-  returnRequestBodyfromUserDefinedFields,
-} from "./utils";
-import CreateWebcam from "./webcam/CreateWebcam";
-
 function CreateProduct() {
-  // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+  const [createProductState, createProductDispatch] = useReducer(
+    createProductReducer,
+    initialCreateProductState
+  );
+
+  const {
+    // page 1
+    brand,
+    model,
+    description,
+    price,
+    currency,
+    availability,
+    quantity,
+    weight,
+    weightUnit,
+    dimensionLength,
+    dimensionLengthUnit,
+    dimensionWidth,
+    dimensionWidthUnit,
+    dimensionHeight,
+    dimensionHeightUnit,
+    additionalComments,
+
+    // page 2
+    productCategory,
+
+    accessoryType,
+    accessoryColor,
+    accessoryInterface,
+    accessoryFieldsAdditionalMap,
+
+    cpuSocket,
+    cpuFrequency,
+    cpuCores,
+    cpuL1CacheCapacity,
+    cpuL1CacheCapacityUnit,
+    cpuL2CacheCapacity,
+    cpuL2CacheCapacityUnit,
+    cpuL3CacheCapacity,
+    cpuL3CacheCapacityUnit,
+    cpuWattage,
+    cpuFieldsAdditionalMap,
+
+    caseType,
+    caseColor,
+    caseSidePanel,
+    caseFieldsAdditionalMap,
+
+    displaySize,
+    displayResolutionHorizontal,
+    displayResolutionVertical,
+    displayRefreshRate,
+    displayPanelType,
+    displayResponseTime,
+    displayAspectRatio,
+    displayFieldsAdditionalMap,
+
+    gpuChipset,
+    gpuMemoryCapacity,
+    gpuMemoryCapacityUnit,
+    gpuCoreClock,
+    gpuBoostClock,
+    gpuTdp,
+    gpuFieldsAdditionalMap,
+
+    headphoneType,
+    headphoneColor,
+    headphoneDriver,
+    headphoneFrequencyResponse,
+    headphoneImpedance,
+    headphoneInterface,
+    headphoneFieldsAdditionalMap,
+
+    keyboardSwitch,
+    keyboardLayout,
+    keyboardBacklight,
+    keyboardInterface,
+    keyboardFieldsAdditionalMap,
+
+    ramDataRate,
+    ramModulesQuantity,
+    ramModulesCapacity,
+    ramModulesCapacityUnit,
+    ramType,
+    ramColor,
+    ramVoltage,
+    ramTiming,
+    ramFieldsAdditionalMap,
+
+    mouseSensor,
+    mouseDpi,
+    mouseButtons,
+    mouseColor,
+    mouseInterface,
+    mouseFieldsAdditionalMap,
+
+    microphoneColor,
+    microphoneInterface,
+    microphoneType,
+    microphonePolarPattern,
+    microphoneFrequencyResponse,
+    microphoneFieldsAdditionalMap,
+
+    motherboardSocket,
+    motherboardChipset,
+    motherboardFormFactor,
+    motherboardMemoryMaxCapacity,
+    motherboardMemoryMaxCapacityUnit,
+    motherboardMemorySlots,
+    motherboardMemoryType,
+    motherboardSataPorts,
+    motherboardM2Slots,
+    motherboardPcie3Slots,
+    motherboardPcie4Slots,
+    motherboardPcie5Slots,
+    motherboardFieldsAdditionalMap,
+
+    psuWattage,
+    psuEfficiency,
+    psuModularity,
+    psuFormFactor,
+    psuFieldsAdditionalMap,
+
+    smartphoneBatteryCapacity,
+    smartphoneCamera,
+    smartphoneChipset,
+    smartphoneColor,
+    smartphoneDisplay,
+    smartphoneResolutionHorizontal,
+    smartphoneResolutionVertical,
+    smartphoneOs,
+    smartphoneRamCapacity,
+    smartphoneRamCapacityUnit,
+    smartphoneStorageCapacity,
+    smartphoneFieldsAdditionalMap,
+
+    speakerType,
+    speakerColor,
+    speakerFrequencyResponse,
+    speakerTotalWattage,
+    speakerInterface,
+    speakerFieldsAdditionalMap,
+
+    storageType,
+    storageCapacity,
+    storageCapacityUnit,
+    storageCacheCapacity,
+    storageCacheCapacityUnit,
+    storageFormFactor,
+    storageInterface,
+    storageFieldsAdditionalMap,
+
+    tabletBatteryCapacity,
+    tabletCamera,
+    tabletChipset,
+    tabletColor,
+    tabletDisplay,
+    tabletResolutionHorizontal,
+    tabletResolutionVertical,
+    tabletOs,
+    tabletRamCapacity,
+    tabletRamCapacityUnit,
+    tabletStorageCapacity,
+    tabletFieldsAdditionalMap,
+
+    webcamColor,
+    webcamFrameRate,
+    webcamInterface,
+    webcamMicrophone,
+    webcamResolution,
+    webcamFieldsAdditionalMap,
+
+    // page 3
+    imgFormDataArray,
+
+    triggerFormSubmit,
+    pagesInError,
+    isSubmitting,
+    isSuccessful,
+  } = createProductState;
+}
+
+export default CreateProduct;
+
+/**
+ * 
+ * // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
   //  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
   //     CREATE PRODUCT HOOKS
   //  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
@@ -153,469 +210,8 @@ function CreateProduct() {
     },
   ] = useDisclosure(false);
 
-  const [createProductState, createProductDispatch] = useReducer(
-    createProductReducer,
-    initialCreateProductState
-  );
-
-  const {
-    // ╔═════════════════════════════════════════════════════════════════╗
-    //    PAGE 1
-    // ╚═════════════════════════════════════════════════════════════════╝
-
-    // brand
-    brand,
-    isBrandValid,
-    isBrandFocused,
-    // model
-    model,
-    isModelValid,
-    isModelFocused,
-    // description
-    description,
-    isDescriptionValid,
-    isDescriptionFocused,
-    // price
-    price,
-    isPriceValid,
-    isPriceFocused,
-    // currency
-    currency,
-    // availability
-    availability,
-    // quantity
-    quantity,
-    isQuantityFocused,
-    isQuantityValid,
-    // weight
-    weight,
-    isWeightFocused,
-    isWeightValid,
-    // weight unit
-    weightUnit,
-    // dimension length
-    dimensionLength,
-    isDimensionLengthFocused,
-    isDimensionLengthValid,
-    // dimension length unit
-    dimensionLengthUnit,
-    // dimension width
-    dimensionWidth,
-    isDimensionWidthFocused,
-    isDimensionWidthValid,
-    // dimension width unit
-    dimensionWidthUnit,
-    // dimension height
-    dimensionHeight,
-    isDimensionHeightFocused,
-    isDimensionHeightValid,
-    // dimension height unit
-    dimensionHeightUnit,
-    // additional comments
-    additionalComments,
-    isAdditionalCommentsValid,
-    isAdditionalCommentsFocused,
-
-    // ╔═════════════════════════════════════════════════════════════════╗
-    //    PAGE 2
-    // ╚═════════════════════════════════════════════════════════════════╝
-
-    // product category
-    productCategory,
-
-    // ╭─────────────────────────────────────────────────────────────────╮
-    //    ACCESSORY
-    // ╰─────────────────────────────────────────────────────────────────╯
-    accessoryType,
-    isAccessoryTypeValid,
-    isAccessoryTypeFocused,
-    accessoryColor,
-    isAccessoryColorFocused,
-    isAccessoryColorValid,
-    accessoryInterface,
-    accessoryFieldsAdditionalMap,
-    areAccessoryFieldsAdditionalMapFocused,
-    areAccessoryFieldsAdditionalMapValid,
-
-    // ╭─────────────────────────────────────────────────────────────────╮
-    //    CENTRAL PROCESSING UNIT (CPU)
-    // ╰─────────────────────────────────────────────────────────────────╯
-    cpuSocket,
-    isCpuSocketValid,
-    isCpuSocketFocused,
-    cpuFrequency,
-    isCpuFrequencyFocused,
-    isCpuFrequencyValid,
-    cpuCores,
-    isCpuCoresFocused,
-    isCpuCoresValid,
-    cpuL1CacheCapacity,
-    isCpuL1CacheCapacityFocused,
-    isCpuL1CacheCapacityValid,
-    cpuL1CacheCapacityUnit,
-    cpuL2CacheCapacity,
-    isCpuL2CacheCapacityFocused,
-    isCpuL2CacheCapacityValid,
-    cpuL2CacheCapacityUnit,
-    cpuL3CacheCapacity,
-    isCpuL3CacheCapacityFocused,
-    isCpuL3CacheCapacityValid,
-    cpuL3CacheCapacityUnit,
-    cpuWattage,
-    isCpuWattageFocused,
-    isCpuWattageValid,
-    cpuFieldsAdditionalMap,
-    areCpuFieldsAdditionalMapFocused,
-    areCpuFieldsAdditionalMapValid,
-
-    // ╭─────────────────────────────────────────────────────────────────╮
-    //    COMPUTER CASE
-    // ╰─────────────────────────────────────────────────────────────────╯
-    caseType,
-    caseColor,
-    isCaseColorFocused,
-    isCaseColorValid,
-    caseSidePanel,
-    caseFieldsAdditionalMap,
-    areCaseFieldsAdditionalMapFocused,
-    areCaseFieldsAdditionalMapValid,
-
-    // ╭─────────────────────────────────────────────────────────────────╮
-    //    DISPLAY
-    // ╰─────────────────────────────────────────────────────────────────╯
-    displaySize,
-    isDisplaySizeFocused,
-    isDisplaySizeValid,
-    displayResolutionHorizontal,
-    isDisplayResolutionHorizontalFocused,
-    isDisplayResolutionHorizontalValid,
-    displayResolutionVertical,
-    isDisplayResolutionVerticalFocused,
-    isDisplayResolutionVerticalValid,
-    displayRefreshRate,
-    isDisplayRefreshRateFocused,
-    isDisplayRefreshRateValid,
-    displayPanelType,
-    displayResponseTime,
-    isDisplayResponseTimeFocused,
-    isDisplayResponseTimeValid,
-    displayAspectRatio,
-    isDisplayAspectRatioFocused,
-    isDisplayAspectRatioValid,
-    displayFieldsAdditionalMap,
-    areDisplayFieldsAdditionalMapFocused,
-    areDisplayFieldsAdditionalMapValid,
-
-    // ╭─────────────────────────────────────────────────────────────────╮
-    //    GRAPHICS PROCESSING UNIT (GPU)
-    // ╰─────────────────────────────────────────────────────────────────╯
-    gpuChipset,
-    isGpuChipsetValid,
-    isGpuChipsetFocused,
-    gpuMemoryCapacity,
-    isGpuMemoryCapacityFocused,
-    isGpuMemoryCapacityValid,
-    gpuMemoryCapacityUnit,
-    gpuCoreClock,
-    isGpuCoreClockFocused,
-    isGpuCoreClockValid,
-    gpuBoostClock,
-    isGpuBoostClockFocused,
-    isGpuBoostClockValid,
-    gpuTdp,
-    isGpuTdpFocused,
-    isGpuTdpValid,
-    gpuFieldsAdditionalMap,
-    areGpuFieldsAdditionalMapFocused,
-    areGpuFieldsAdditionalMapValid,
-
-    // ╭─────────────────────────────────────────────────────────────────╮
-    //    HEADPHONE
-    // ╰─────────────────────────────────────────────────────────────────╯
-    headphoneType,
-    headphoneColor,
-    isHeadphoneColorFocused,
-    isHeadphoneColorValid,
-    headphoneDriver,
-    isHeadphoneDriverFocused,
-    isHeadphoneDriverValid,
-    headphoneFrequencyResponse,
-    isHeadphoneFrequencyResponseFocused,
-    isHeadphoneFrequencyResponseValid,
-    headphoneImpedance,
-    isHeadphoneImpedanceFocused,
-    isHeadphoneImpedanceValid,
-    headphoneInterface,
-    headphoneFieldsAdditionalMap,
-    areHeadphoneFieldsAdditionalMapFocused,
-    areHeadphoneFieldsAdditionalMapValid,
-
-    // ╭─────────────────────────────────────────────────────────────────╮
-    //    KEYBOARD
-    // ╰─────────────────────────────────────────────────────────────────╯
-    keyboardSwitch,
-    keyboardLayout,
-    keyboardBacklight,
-    keyboardInterface,
-    keyboardFieldsAdditionalMap,
-    areKeyboardFieldsAdditionalMapFocused,
-    areKeyboardFieldsAdditionalMapValid,
-
-    // ╭─────────────────────────────────────────────────────────────────╮
-    //    MEMORY (RAM)
-    // ╰─────────────────────────────────────────────────────────────────╯
-    ramDataRate,
-    isRamDataRateFocused,
-    isRamDataRateValid,
-    ramModulesQuantity,
-    isRamModulesQuantityFocused,
-    isRamModulesQuantityValid,
-    ramModulesCapacity,
-    isRamModulesCapacityFocused,
-    isRamModulesCapacityValid,
-    ramModulesCapacityUnit,
-    ramType,
-    ramColor,
-    isRamColorFocused,
-    isRamColorValid,
-    ramVoltage,
-    isRamVoltageFocused,
-    isRamVoltageValid,
-    ramTiming,
-    isRamTimingFocused,
-    isRamTimingValid,
-    ramFieldsAdditionalMap,
-    areRamFieldsAdditionalMapFocused,
-    areRamFieldsAdditionalMapValid,
-
-    // ╭─────────────────────────────────────────────────────────────────╮
-    //    MOUSE
-    // ╰─────────────────────────────────────────────────────────────────╯
-    mouseSensor,
-    mouseDpi,
-    isMouseDpiFocused,
-    isMouseDpiValid,
-    mouseButtons,
-    isMouseButtonsFocused,
-    isMouseButtonsValid,
-    mouseColor,
-    isMouseColorFocused,
-    isMouseColorValid,
-    mouseInterface,
-    mouseFieldsAdditionalMap,
-    areMouseFieldsAdditionalMapFocused,
-    areMouseFieldsAdditionalMapValid,
-
-    // ╭─────────────────────────────────────────────────────────────────╮
-    //    MICROPHONE
-    // ╰─────────────────────────────────────────────────────────────────╯
-    microphoneColor,
-    isMicrophoneColorFocused,
-    isMicrophoneColorValid,
-    microphoneInterface,
-    microphoneType,
-    microphonePolarPattern,
-    microphoneFrequencyResponse,
-    isMicrophoneFrequencyResponseFocused,
-    isMicrophoneFrequencyResponseValid,
-    microphoneFieldsAdditionalMap,
-    areMicrophoneFieldsAdditionalMapFocused,
-    areMicrophoneFieldsAdditionalMapValid,
-
-    // ╭─────────────────────────────────────────────────────────────────╮
-    //    MOTHERBOARD
-    // ╰─────────────────────────────────────────────────────────────────╯
-    motherboardSocket,
-    isMotherboardSocketFocused,
-    isMotherboardSocketValid,
-    motherboardChipset,
-    isMotherboardChipsetFocused,
-    isMotherboardChipsetValid,
-    motherboardFormFactor,
-    motherboardMemoryMaxCapacity,
-    isMotherboardMemoryMaxCapacityFocused,
-    isMotherboardMemoryMaxCapacityValid,
-    motherboardMemoryMaxCapacityUnit,
-    motherboardMemorySlots,
-    isMotherboardMemorySlotsFocused,
-    isMotherboardMemorySlotsValid,
-    motherboardMemoryType,
-    motherboardSataPorts,
-    isMotherboardSataPortsFocused,
-    isMotherboardSataPortsValid,
-    motherboardM2Slots,
-    isMotherboardM2SlotsFocused,
-    isMotherboardM2SlotsValid,
-    motherboardPcie3Slots,
-    isMotherboardPcie3SlotsFocused,
-    isMotherboardPcie3SlotsValid,
-    motherboardPcie4Slots,
-    isMotherboardPcie4SlotsFocused,
-    isMotherboardPcie4SlotsValid,
-    motherboardPcie5Slots,
-    isMotherboardPcie5SlotsFocused,
-    isMotherboardPcie5SlotsValid,
-    motherboardFieldsAdditionalMap,
-    areMotherboardFieldsAdditionalMapFocused,
-    areMotherboardFieldsAdditionalMapValid,
-
-    // ╭─────────────────────────────────────────────────────────────────╮
-    //    POWER SUPPLY UNIT (PSU)
-    // ╰─────────────────────────────────────────────────────────────────╯
-    psuWattage,
-    isPsuWattageFocused,
-    isPsuWattageValid,
-    psuEfficiency,
-    psuModularity,
-    psuFormFactor,
-    psuFieldsAdditionalMap,
-    arePsuFieldsAdditionalMapFocused,
-    arePsuFieldsAdditionalMapValid,
-
-    // ╭─────────────────────────────────────────────────────────────────╮
-    //    SMARTPHONE
-    // ╰─────────────────────────────────────────────────────────────────╯
-
-    smartphoneBatteryCapacity,
-    isSmartphoneBatteryCapacityFocused,
-    isSmartphoneBatteryCapacityValid,
-    smartphoneCamera,
-    isSmartphoneCameraFocused,
-    isSmartphoneCameraValid,
-    smartphoneChipset,
-    isSmartphoneChipsetFocused,
-    isSmartphoneChipsetValid,
-    smartphoneColor,
-    isSmartphoneColorFocused,
-    isSmartphoneColorValid,
-    smartphoneDisplay,
-    isSmartphoneDisplayFocused,
-    isSmartphoneDisplayValid,
-    smartphoneResolutionHorizontal,
-    isSmartphoneResolutionHorizontalFocused,
-    isSmartphoneResolutionHorizontalValid,
-    smartphoneResolutionVertical,
-    isSmartphoneResolutionVerticalFocused,
-    isSmartphoneResolutionVerticalValid,
-    smartphoneOs,
-    smartphoneRamCapacity,
-    isSmartphoneRamCapacityFocused,
-    isSmartphoneRamCapacityValid,
-    smartphoneRamCapacityUnit,
-    smartphoneStorageCapacity,
-    isSmartphoneStorageCapacityFocused,
-    isSmartphoneStorageCapacityValid,
-    smartphoneFieldsAdditionalMap,
-    areSmartphoneFieldsAdditionalMapFocused,
-    areSmartphoneFieldsAdditionalMapValid,
-
-    // ╭─────────────────────────────────────────────────────────────────╮
-    //    SPEAKER
-    // ╰─────────────────────────────────────────────────────────────────╯
-    speakerType,
-    speakerColor,
-    isSpeakerColorFocused,
-    isSpeakerColorValid,
-    speakerFrequencyResponse,
-    isSpeakerFrequencyResponseFocused,
-    isSpeakerFrequencyResponseValid,
-    speakerTotalWattage,
-    isSpeakerTotalWattageFocused,
-    isSpeakerTotalWattageValid,
-    speakerInterface,
-    speakerFieldsAdditionalMap,
-    areSpeakerFieldsAdditionalMapFocused,
-    areSpeakerFieldsAdditionalMapValid,
-
-    // ╭─────────────────────────────────────────────────────────────────╮
-    //    STORAGE
-    // ╰─────────────────────────────────────────────────────────────────╯
-    storageType,
-    storageCapacity,
-    isStorageCapacityFocused,
-    isStorageCapacityValid,
-    storageCapacityUnit,
-    storageCacheCapacity,
-    isStorageCacheCapacityFocused,
-    isStorageCacheCapacityValid,
-    storageCacheCapacityUnit,
-    storageFormFactor,
-    storageInterface,
-    storageFieldsAdditionalMap,
-    areStorageFieldsAdditionalMapFocused,
-    areStorageFieldsAdditionalMapValid,
-
-    // ╭─────────────────────────────────────────────────────────────────╮
-    //    TABLET
-    // ╰─────────────────────────────────────────────────────────────────╯
-    tabletBatteryCapacity,
-    isTabletBatteryCapacityFocused,
-    isTabletBatteryCapacityValid,
-    tabletCamera,
-    isTabletCameraFocused,
-    isTabletCameraValid,
-    tabletChipset,
-    isTabletChipsetFocused,
-    isTabletChipsetValid,
-    tabletColor,
-    isTabletColorFocused,
-    isTabletColorValid,
-    tabletDisplay,
-    isTabletDisplayFocused,
-    isTabletDisplayValid,
-    tabletResolutionHorizontal,
-    isTabletResolutionHorizontalFocused,
-    isTabletResolutionHorizontalValid,
-    tabletResolutionVertical,
-    isTabletResolutionVerticalFocused,
-    isTabletResolutionVerticalValid,
-    tabletOs,
-    tabletRamCapacity,
-    isTabletRamCapacityFocused,
-    isTabletRamCapacityValid,
-    tabletRamCapacityUnit,
-    tabletStorageCapacity,
-    isTabletStorageCapacityFocused,
-    isTabletStorageCapacityValid,
-    tabletFieldsAdditionalMap,
-    areTabletFieldsAdditionalMapFocused,
-    areTabletFieldsAdditionalMapValid,
-
-    // ╭─────────────────────────────────────────────────────────────────╮
-    //    WEBCAM
-    // ╰─────────────────────────────────────────────────────────────────╯
-    webcamColor,
-    isWebcamColorFocused,
-    isWebcamColorValid,
-    webcamFrameRate,
-    webcamInterface,
-    webcamMicrophone,
-    webcamResolution,
-    webcamFieldsAdditionalMap,
-    areWebcamFieldsAdditionalMapFocused,
-    areWebcamFieldsAdditionalMapValid,
-
-    // ╔═════════════════════════════════════════════════════════════════╗
-    //    PAGE 3
-    // ╚═════════════════════════════════════════════════════════════════╝
-    imgFormDataArray,
-    areImagesValid,
-
-    // ╔═════════════════════════════════════════════════════════════════╗
-    //    MISC.
-    // ╚═════════════════════════════════════════════════════════════════╝
-    currentlySelectedAdditionalFieldIndex,
-    triggerFormSubmit,
-    currentStepperPosition,
-    stepsInError,
-
-    isSubmitting,
-    submitMessage,
-    isSuccessful,
-    successMessage,
-  } = createProductState;
-
-  const location = useLocation();
+ * 
+ *  const location = useLocation();
 
   // because page 2 of the stepper component is displayed based on productCategory, and by default it will display 'Accessory'. The productCategory is set based on the location.pathname.
   useEffect(() => {
@@ -1749,7 +1345,6 @@ function CreateProduct() {
   const [brandInputErrorText, brandInputValidText] = AccessibleErrorValidTextElements({
     inputElementKind: "brand",
     inputText: brand,
-    isInputTextFocused: isBrandFocused,
     isValidInputText: isBrandValid,
     regexValidationText: returnBrandNameValidationText({
       content: brand,
@@ -1773,7 +1368,6 @@ function CreateProduct() {
       minLength: 2,
       onBlur: () => {
         createProductDispatch({
-          type: createProductAction.setIsBrandFocused,
           payload: false,
         });
       },
@@ -1785,7 +1379,6 @@ function CreateProduct() {
       },
       onFocus: () => {
         createProductDispatch({
-          type: createProductAction.setIsBrandFocused,
           payload: true,
         });
       },
@@ -1803,7 +1396,6 @@ function CreateProduct() {
   const [modelInputErrorText, modelInputValidText] = AccessibleErrorValidTextElements({
     inputElementKind: "model",
     inputText: model,
-    isInputTextFocused: isModelFocused,
     isValidInputText: isModelValid,
     regexValidationText: returnSerialIdValidationText({
       content: model,
@@ -1827,7 +1419,6 @@ function CreateProduct() {
       minLength: 2,
       onBlur: () => {
         createProductDispatch({
-          type: createProductAction.setIsModelFocused,
           payload: false,
         });
       },
@@ -1839,7 +1430,6 @@ function CreateProduct() {
       },
       onFocus: () => {
         createProductDispatch({
-          type: createProductAction.setIsModelFocused,
           payload: true,
         });
       },
@@ -1858,7 +1448,6 @@ function CreateProduct() {
     AccessibleErrorValidTextElements({
       inputElementKind: "description",
       inputText: description,
-      isInputTextFocused: isDescriptionFocused,
       isValidInputText: isDescriptionValid,
       regexValidationText: returnGrammarValidationText({
         content: description,
@@ -1882,7 +1471,6 @@ function CreateProduct() {
       minLength: 2,
       onBlur: () => {
         createProductDispatch({
-          type: createProductAction.setIsDescriptionFocused,
           payload: false,
         });
       },
@@ -1894,7 +1482,6 @@ function CreateProduct() {
       },
       onFocus: () => {
         createProductDispatch({
-          type: createProductAction.setIsDescriptionFocused,
           payload: true,
         });
       },
@@ -1912,7 +1499,6 @@ function CreateProduct() {
   const [priceInputErrorText, priceInputValidText] = AccessibleErrorValidTextElements({
     inputElementKind: "price",
     inputText: price,
-    isInputTextFocused: isPriceFocused,
     isValidInputText: isPriceValid,
     regexValidationText: returnFloatAmountValidationText({
       content: price,
@@ -1932,7 +1518,6 @@ function CreateProduct() {
       label: "Price",
       onBlur: () => {
         createProductDispatch({
-          type: createProductAction.setIsPriceFocused,
           payload: false,
         });
       },
@@ -1944,7 +1529,6 @@ function CreateProduct() {
       },
       onFocus: () => {
         createProductDispatch({
-          type: createProductAction.setIsPriceFocused,
           payload: true,
         });
       },
@@ -2001,7 +1585,6 @@ function CreateProduct() {
     AccessibleErrorValidTextElements({
       inputElementKind: "quantity",
       inputText: quantity,
-      isInputTextFocused: isQuantityFocused,
       isValidInputText: isQuantityValid,
       regexValidationText: returnLargeIntegerValidationText({
         content: quantity,
@@ -2021,7 +1604,6 @@ function CreateProduct() {
       label: "Quantity",
       onBlur: () => {
         createProductDispatch({
-          type: createProductAction.setIsQuantityFocused,
           payload: false,
         });
       },
@@ -2033,7 +1615,6 @@ function CreateProduct() {
       },
       onFocus: () => {
         createProductDispatch({
-          type: createProductAction.setIsQuantityFocused,
           payload: true,
         });
       },
@@ -2051,7 +1632,6 @@ function CreateProduct() {
   const [weightInputErrorText, weightInputValidText] = AccessibleErrorValidTextElements({
     inputElementKind: "weight",
     inputText: weight,
-    isInputTextFocused: isWeightFocused,
     isValidInputText: isWeightValid,
     regexValidationText: returnWeightValidationText({
       content: weight,
@@ -2071,7 +1651,6 @@ function CreateProduct() {
       label: "Weight",
       onBlur: () => {
         createProductDispatch({
-          type: createProductAction.setIsWeightFocused,
           payload: false,
         });
       },
@@ -2083,7 +1662,6 @@ function CreateProduct() {
       },
       onFocus: () => {
         createProductDispatch({
-          type: createProductAction.setIsWeightFocused,
           payload: true,
         });
       },
@@ -2121,7 +1699,6 @@ function CreateProduct() {
     AccessibleErrorValidTextElements({
       inputElementKind: "dimension length",
       inputText: dimensionLength,
-      isInputTextFocused: isDimensionLengthFocused,
       isValidInputText: isDimensionLengthValid,
       regexValidationText: returnDimensionsValidationText({
         content: dimensionLength,
@@ -2141,7 +1718,6 @@ function CreateProduct() {
       label: "Length",
       onBlur: () => {
         createProductDispatch({
-          type: createProductAction.setIsDimensionLengthFocused,
           payload: false,
         });
       },
@@ -2153,7 +1729,6 @@ function CreateProduct() {
       },
       onFocus: () => {
         createProductDispatch({
-          type: createProductAction.setIsDimensionLengthFocused,
           payload: true,
         });
       },
@@ -2191,7 +1766,6 @@ function CreateProduct() {
     AccessibleErrorValidTextElements({
       inputElementKind: "dimension width",
       inputText: dimensionWidth,
-      isInputTextFocused: isDimensionWidthFocused,
       isValidInputText: isDimensionWidthValid,
       regexValidationText: returnDimensionsValidationText({
         content: dimensionWidth,
@@ -2211,7 +1785,6 @@ function CreateProduct() {
       label: "Width",
       onBlur: () => {
         createProductDispatch({
-          type: createProductAction.setIsDimensionWidthFocused,
           payload: false,
         });
       },
@@ -2223,7 +1796,6 @@ function CreateProduct() {
       },
       onFocus: () => {
         createProductDispatch({
-          type: createProductAction.setIsDimensionWidthFocused,
           payload: true,
         });
       },
@@ -2261,7 +1833,6 @@ function CreateProduct() {
     AccessibleErrorValidTextElements({
       inputElementKind: "dimension height",
       inputText: dimensionHeight,
-      isInputTextFocused: isDimensionHeightFocused,
       isValidInputText: isDimensionHeightValid,
       regexValidationText: returnDimensionsValidationText({
         content: dimensionHeight,
@@ -2281,7 +1852,6 @@ function CreateProduct() {
       label: "Height",
       onBlur: () => {
         createProductDispatch({
-          type: createProductAction.setIsDimensionHeightFocused,
           payload: false,
         });
       },
@@ -2293,7 +1863,6 @@ function CreateProduct() {
       },
       onFocus: () => {
         createProductDispatch({
-          type: createProductAction.setIsDimensionHeightFocused,
           payload: true,
         });
       },
@@ -2331,7 +1900,6 @@ function CreateProduct() {
     AccessibleErrorValidTextElements({
       inputElementKind: "additional comments",
       inputText: additionalComments,
-      isInputTextFocused: isAdditionalCommentsFocused,
       isValidInputText: isAdditionalCommentsValid,
       regexValidationText: returnGrammarValidationText({
         content: additionalComments,
@@ -2355,7 +1923,6 @@ function CreateProduct() {
       minLength: 2,
       onBlur: () => {
         createProductDispatch({
-          type: createProductAction.setIsAdditionalCommentsFocused,
           payload: false,
         });
       },
@@ -2367,7 +1934,6 @@ function CreateProduct() {
       },
       onFocus: () => {
         createProductDispatch({
-          type: createProductAction.setIsAdditionalCommentsFocused,
           payload: true,
         });
       },
@@ -3225,10 +2791,7 @@ function CreateProduct() {
 
   const displayCreateProductFormPage2 = (
     <FormLayoutWrapper>
-      {/* <Stack style={{ borderBottom: borderColor }} pb={padding}>
-        {createdProductCategorySelectInput}
-      </Stack> */}
-      {/* <Space h="sm" /> */}
+      
       {displaySelectedProductCategoryInputs}
     </FormLayoutWrapper>
   );
@@ -4263,6 +3826,5 @@ function CreateProduct() {
   );
 
   return displayCreateProductComponent;
-}
 
-export default CreateProduct;
+ */

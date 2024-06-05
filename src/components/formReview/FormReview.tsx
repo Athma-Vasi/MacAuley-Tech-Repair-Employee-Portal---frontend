@@ -146,19 +146,22 @@ function returnFormReviews<
     }
 
     const formReviews = children.map((child) => {
-      const { name, validationKey } = child;
+      const { name, validationKey, inputType } = child;
       const value = componentState[name];
 
-      const stringifiedValue = Array.isArray(value)
-        ? capitalizeJoinWithAnd(value)
-        : typeof value === "boolean"
-        ? value
-          ? "Yes"
-          : "No"
-        : // for survey component ...
-        value === "chooseAny" || value === "choseOne"
-        ? splitCamelCase(value)
-        : value?.toString() ?? "";
+      const stringifiedValue =
+        inputType === "file"
+          ? "Image file"
+          : Array.isArray(value)
+          ? capitalizeJoinWithAnd(value)
+          : typeof value === "boolean"
+          ? value
+            ? "Yes"
+            : "No"
+          : // for survey component ...
+          value === "chooseAny" || value === "choseOne"
+          ? splitCamelCase(value)
+          : value?.toString() ?? "";
 
       let isValueValid = true;
 

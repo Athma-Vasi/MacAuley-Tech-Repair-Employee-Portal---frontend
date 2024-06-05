@@ -46,7 +46,7 @@ const registerReducers = new Map<
   [registerAction.setPostalCode, registerReducer_setPostalCode],
   [registerAction.setPreferredName, registerReducer_setPreferredName],
   [registerAction.setPreferredPronouns, registerReducer_setPreferredPronouns],
-  [registerAction.setProfilePictureUrl, registerReducer_setProfilePictureUrl],
+  [registerAction.setProfilePictureFormData, registerReducer_setProfilePictureFormData],
   [registerAction.setProvince, registerReducer_setProvince],
   [registerAction.setStartDate, registerReducer_setStartDate],
   [registerAction.setState, registerReducer_setState],
@@ -206,11 +206,11 @@ function registerReducer_setPreferredPronouns(
   return { ...state, preferredPronouns: dispatch.payload as PreferredPronouns };
 }
 
-function registerReducer_setProfilePictureUrl(
+function registerReducer_setProfilePictureFormData(
   state: RegisterState,
   dispatch: RegisterDispatch
 ): RegisterState {
-  return { ...state, profilePictureUrl: dispatch.payload as string };
+  return { ...state, profilePictureFormData: dispatch.payload as FormData };
 }
 
 function registerReducer_setProvince(

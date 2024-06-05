@@ -1,4 +1,4 @@
-import { FileInput, MantineNumberSize, MantineSize } from "@mantine/core";
+import { FileInput, MantineNumberSize, MantineSize, Text } from "@mantine/core";
 import { Dispatch } from "react";
 
 import { splitCamelCase } from "../../utils";
@@ -43,12 +43,16 @@ function AccessibleFileInput<ValidValueAction extends string = string>({
     variant = "default",
   } = attributes;
 
-  const label = attributes.label ?? splitCamelCase(name);
+  const label = (
+    <Text color={disabled ? "gray" : void 0}>
+      {attributes.label ?? splitCamelCase(name)}
+    </Text>
+  );
 
   return (
     <FileInput
       aria-disabled={disabled}
-      aria-label={label}
+      aria-label={splitCamelCase(name)}
       aria-required={required}
       disabled={disabled}
       label={label}

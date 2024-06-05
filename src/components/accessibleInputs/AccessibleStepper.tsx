@@ -169,7 +169,7 @@ function AccessibleStepper({ attributes }: AccessibleStepperProps) {
     <Stack>
       {title ? <Title order={4}>{title}</Title> : null}
       {stepper}
-      <Group>
+      <Group w="100%" position="apart">
         {backButton}
         {nextButton}
       </Group>
