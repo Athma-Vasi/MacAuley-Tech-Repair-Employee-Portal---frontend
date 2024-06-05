@@ -655,7 +655,7 @@ function returnFullValidation(
   name: string,
   stepperPages: StepperPage[]
 ): { full: Validation["full"] } {
-  const initialFull = { full: new RegExp("") };
+  const initial = { full: new RegExp("") };
 
   return stepperPages.reduce<{ full: Validation["full"] }>((regexAcc, page) => {
     const { children, kind } = page;
@@ -677,7 +677,7 @@ function returnFullValidation(
     });
 
     return regexAcc;
-  }, initialFull);
+  }, initial);
 }
 
 export {

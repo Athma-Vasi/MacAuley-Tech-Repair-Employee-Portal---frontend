@@ -1,11 +1,11 @@
 import { AccessibleTextInputAction } from "./actions";
 
 type AccessibleTextInputState = {
-  valueBuffer: string;
+  textValueBuffer: string;
 };
 
 type AccessibleTextInputDispatch = {
-  action: AccessibleTextInputAction["setValueBuffer"];
+  action: AccessibleTextInputAction["setTextValueBuffer"];
   payload: string;
 };
 

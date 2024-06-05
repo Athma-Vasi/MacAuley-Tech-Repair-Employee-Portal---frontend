@@ -2,20 +2,17 @@ import { Container, Stack, Text } from "@mantine/core";
 import { useEffect, useReducer, useRef } from "react";
 import { useErrorBoundary } from "react-error-boundary";
 
-import { DEPARTMENT_DATA, JOB_POSITION_DATA } from "../../../constants/data";
 import { useAuth } from "../../../hooks";
 import { useFetchInterceptor } from "../../../hooks/useFetchInterceptor";
-import { JobPosition, PhoneNumber, StepperPage } from "../../../types";
+import { PhoneNumber, StepperPage } from "../../../types";
 import { formSubmitPOST } from "../../../utils";
 import { AccessibleButton } from "../../accessibleInputs/AccessibleButton";
-import { AccessibleSelectInput } from "../../accessibleInputs/AccessibleSelectInput";
 import { AccessibleStepper } from "../../accessibleInputs/AccessibleStepper";
-import { AccessibleSwitchInput } from "../../accessibleInputs/AccessibleSwitchInput";
-import { AccessibleTextAreaInput } from "../../accessibleInputs/AccessibleTextAreaInput";
-import { AccessibleTextInput } from "../../accessibleInputs/text/AccessibleTextInput";
 import { REFERMENT_ROLE_ROUTE_PATHS, returnRefermentStepperPages } from "../constants";
-import { RefermentAction, refermentAction } from "./actions";
+import { refermentAction } from "./actions";
 import { refermentReducer } from "./reducers";
+import { RefermentCandidate } from "./RefermentCandidate";
+import { RefermentPosition } from "./RefermentPosition";
 import { initialRefermentState } from "./state";
 import { RefermentSchema } from "./types";
 
@@ -135,164 +132,6 @@ function Referment() {
 
   const REFERMENT_STEPPER_PAGES: StepperPage[] = returnRefermentStepperPages();
 
-  const additionalInformationTextAreaInput = (
-    <AccessibleTextAreaInput
-      attributes={{
-        invalidValueAction: refermentAction.setPageInError,
-        name: "additionalInformation",
-        parentDispatch: refermentDispatch,
-        stepperPages: REFERMENT_STEPPER_PAGES,
-        validValueAction: refermentAction.setAdditionalInformation,
-        value: additionalInformation,
-      }}
-    />
-  );
-
-  const candidateContactNumberTextInput = (
-    <AccessibleTextInput
-      attributes={{
-        invalidValueAction: refermentAction.setPageInError,
-        name: "candidateContactNumber",
-        parentDispatch: refermentDispatch,
-        stepperPages: REFERMENT_STEPPER_PAGES,
-        validValueAction: refermentAction.setCandidateContactNumber,
-        value: candidateContactNumber,
-      }}
-    />
-  );
-
-  const candidateCurrentCompanyTextInput = (
-    <AccessibleTextInput
-      attributes={{
-        invalidValueAction: refermentAction.setPageInError,
-        name: "candidateCurrentCompany",
-        parentDispatch: refermentDispatch,
-        stepperPages: REFERMENT_STEPPER_PAGES,
-        validValueAction: refermentAction.setCandidateCurrentCompany,
-        value: candidateCurrentCompany,
-      }}
-    />
-  );
-
-  const candidateCurrentJobTitleTextInput = (
-    <AccessibleTextInput
-      attributes={{
-        invalidValueAction: refermentAction.setPageInError,
-        name: "candidateCurrentJobTitle",
-        parentDispatch: refermentDispatch,
-        stepperPages: REFERMENT_STEPPER_PAGES,
-        validValueAction: refermentAction.setCandidateCurrentJobTitle,
-        value: candidateCurrentJobTitle,
-      }}
-    />
-  );
-
-  const candidateEmailTextInput = (
-    <AccessibleTextInput
-      attributes={{
-        invalidValueAction: refermentAction.setPageInError,
-        name: "candidateEmail",
-        parentDispatch: refermentDispatch,
-        stepperPages: REFERMENT_STEPPER_PAGES,
-        validValueAction: refermentAction.setCandidateEmail,
-        value: candidateEmail,
-      }}
-    />
-  );
-
-  const candidateFullNameTextInput = (
-    <AccessibleTextInput
-      attributes={{
-        invalidValueAction: refermentAction.setPageInError,
-        name: "candidateFullName",
-        parentDispatch: refermentDispatch,
-        stepperPages: REFERMENT_STEPPER_PAGES,
-        validValueAction: refermentAction.setCandidateFullName,
-        value: candidateFullName,
-      }}
-    />
-  );
-
-  const candidateProfileUrlTextInput = (
-    <AccessibleTextInput
-      attributes={{
-        invalidValueAction: refermentAction.setPageInError,
-        name: "candidateProfileUrl",
-        parentDispatch: refermentDispatch,
-        stepperPages: REFERMENT_STEPPER_PAGES,
-        validValueAction: refermentAction.setCandidateProfileUrl,
-        value: candidateProfileUrl,
-      }}
-    />
-  );
-
-  const departmentReferredForSelectInput = (
-    <AccessibleSelectInput
-      attributes={{
-        data: DEPARTMENT_DATA,
-        name: "departmentReferredFor",
-        parentDispatch: refermentDispatch,
-        value: departmentReferredFor,
-        validValueAction: refermentAction.setDepartmentReferredFor,
-      }}
-    />
-  );
-
-  const positionReferredForSelectInput = (
-    <AccessibleSelectInput<RefermentAction["setPositionReferredFor"], JobPosition>
-      attributes={{
-        data: JOB_POSITION_DATA,
-        name: "positionReferredFor",
-        parentDispatch: refermentDispatch,
-        value: positionReferredFor,
-        validValueAction: refermentAction.setPositionReferredFor,
-      }}
-    />
-  );
-
-  const positionJobDescriptionTextAreaInput = (
-    <AccessibleTextAreaInput
-      attributes={{
-        invalidValueAction: refermentAction.setPageInError,
-        name: "positionJobDescription",
-        parentDispatch: refermentDispatch,
-        stepperPages: REFERMENT_STEPPER_PAGES,
-        validValueAction: refermentAction.setPositionJobDescription,
-        value: positionJobDescription,
-      }}
-    />
-  );
-
-  const referralReasonTextAreaInput = (
-    <AccessibleTextAreaInput
-      attributes={{
-        invalidValueAction: refermentAction.setPageInError,
-        name: "referralReason",
-        parentDispatch: refermentDispatch,
-        stepperPages: REFERMENT_STEPPER_PAGES,
-        validValueAction: refermentAction.setReferralReason,
-        value: referralReason,
-      }}
-    />
-  );
-
-  const privacyConsentSwitch = (
-    <AccessibleSwitchInput
-      attributes={{
-        checked: privacyConsent,
-        invalidValueAction: refermentAction.setPageInError,
-        name: "privacyConsent",
-        offLabel: "No",
-        onLabel: "Yes",
-        parentDispatch: refermentDispatch,
-        switchOffDescription: "I do not acknowledge.",
-        switchOnDescription: "I acknowledge to share candidate's personal information.",
-        validValueAction: refermentAction.setPrivacyConsent,
-        value: privacyConsent ? "Yes" : "No",
-      }}
-    />
-  );
-
   const submitButton = (
     <AccessibleButton
       attributes={{
@@ -311,33 +150,39 @@ function Referment() {
     />
   );
 
-  const firstPage = (
-    <Stack>
-      {candidateFullNameTextInput}
-      {candidateEmailTextInput}
-      {candidateContactNumberTextInput}
-      {candidateCurrentJobTitleTextInput}
-      {candidateCurrentCompanyTextInput}
-      {candidateProfileUrlTextInput}
-    </Stack>
+  const candidatePage = (
+    <RefermentCandidate
+      candidateContactNumber={candidateContactNumber}
+      candidateCurrentCompany={candidateCurrentCompany}
+      candidateCurrentJobTitle={candidateCurrentJobTitle}
+      candidateEmail={candidateEmail}
+      candidateFullName={candidateFullName}
+      candidateProfileUrl={candidateProfileUrl}
+      parentAction={refermentAction}
+      parentDispatch={refermentDispatch}
+      stepperPages={REFERMENT_STEPPER_PAGES}
+    />
   );
 
-  const secondPage = (
-    <Stack>
-      {departmentReferredForSelectInput}
-      {positionReferredForSelectInput}
-      {positionJobDescriptionTextAreaInput}
-      {referralReasonTextAreaInput}
-      {additionalInformationTextAreaInput}
-      {privacyConsentSwitch}
-    </Stack>
+  const positionPage = (
+    <RefermentPosition
+      additionalInformation={additionalInformation}
+      departmentReferredFor={departmentReferredFor}
+      positionJobDescription={positionJobDescription}
+      positionReferredFor={positionReferredFor}
+      privacyConsent={privacyConsent}
+      referralReason={referralReason}
+      parentAction={refermentAction}
+      parentDispatch={refermentDispatch}
+      stepperPages={REFERMENT_STEPPER_PAGES}
+    />
   );
 
   const stepper = (
     <AccessibleStepper
       attributes={{
         componentState: refermentState,
-        pageElements: [firstPage, secondPage],
+        pageElements: [candidatePage, positionPage],
         stepperPages: REFERMENT_STEPPER_PAGES,
         submitButton,
       }}

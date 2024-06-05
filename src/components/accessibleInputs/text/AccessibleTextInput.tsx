@@ -14,6 +14,8 @@ import {
   KeyboardEvent,
   ReactNode,
   RefObject,
+  useEffect,
+  useReducer,
   useState,
 } from "react";
 import { TbCheck, TbRefresh } from "react-icons/tb";
@@ -27,6 +29,7 @@ import {
   returnFullValidation,
   returnValidationTexts,
 } from "../utils";
+import { accessibleTextInputReducer } from "./reducers";
 
 type AccessibleTextInputAttributes<
   ValidValueAction extends string = string,
@@ -131,6 +134,13 @@ function AccessibleTextInput<
 
   const label = attributes.label ?? splitCamelCase(name);
 
+  // const [{ valueBuffer }, setValueBuffer] = useReducer(
+  //   accessibleTextInputReducer,
+  //   {
+  //     valueBuffer: value,
+  //   }
+  // );
+
   const [valueBuffer, setValueBuffer] = useState<string>(value);
   const [isPopoverOpened, { open: openPopover, close: closePopover }] =
     useDisclosure(false);
@@ -178,13 +188,6 @@ function AccessibleTextInput<
     valueBuffer,
   });
 
-  console.group(`AccessibleTextInput: ${name}`);
-  console.log("valueBuffer:", valueBuffer);
-  console.log("isValueBufferValid:", isValueBufferValid);
-  console.log("full", full);
-  console.log("validationTexts:", validationTexts);
-  console.groupEnd();
-
   const { invalidValueTextElement, validValueTextElement } =
     createAccessibleValueValidationTextElements({
       isPopoverOpened,
@@ -194,6 +197,14 @@ function AccessibleTextInput<
       validationTexts,
       valueBuffer,
     });
+
+  console.group(`AccessibleTextInput: ${name}`);
+  console.log("valueBuffer:", valueBuffer);
+  console.log("page", page);
+  console.log("isValueBufferValid:", isValueBufferValid);
+  console.log("full", full);
+  console.log("validationTexts:", validationTexts);
+  console.groupEnd();
 
   return (
     <Container w={350}>
@@ -229,18 +240,20 @@ function AccessibleTextInput<
             name={name}
             onBlur={() => {
               if (dynamicIndexes === undefined) {
-                parentDispatch?.({
-                  action: invalidValueAction,
-                  payload: {
-                    kind: isValueBufferValid ? "delete" : "add",
-                    page,
-                  },
-                });
+                if (parentDispatch) {
+                  parentDispatch({
+                    action: invalidValueAction,
+                    payload: {
+                      kind: isValueBufferValid ? "delete" : "add",
+                      page,
+                    },
+                  });
 
-                parentDispatch?.({
-                  action: validValueAction,
-                  payload: valueBuffer,
-                });
+                  parentDispatch({
+                    action: validValueAction,
+                    payload: valueBuffer,
+                  });
+                }
               } else {
                 parentDynamicDispatch?.({
                   action: invalidValueAction,
@@ -257,9 +270,14 @@ function AccessibleTextInput<
               }
 
               onBlur?.();
+
               closePopover();
             }}
             onChange={(event: ChangeEvent<HTMLInputElement>) => {
+              // setValueBuffer({
+              //   action: "setValueBuffer",
+              //   payload: event.currentTarget.value,
+              // });
               setValueBuffer(event.currentTarget.value);
               onChange?.(event);
             }}

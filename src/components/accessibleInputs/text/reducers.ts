@@ -16,7 +16,10 @@ const accessibleTextInputReducersMap = new Map<
     dispatch: AccessibleTextInputDispatch
   ) => AccessibleTextInputState
 >([
-  [accessibleTextInputAction.setValueBuffer, accessibleTextInputReducer_setValueBuffer],
+  [
+    accessibleTextInputAction.setTextValueBuffer,
+    accessibleTextInputReducer_setValueBuffer,
+  ],
 ]);
 
 function accessibleTextInputReducer_setValueBuffer(
@@ -25,7 +28,7 @@ function accessibleTextInputReducer_setValueBuffer(
 ): AccessibleTextInputState {
   return {
     ...state,
-    valueBuffer: dispatch.payload as string,
+    textValueBuffer: dispatch.payload as string,
   };
 }
 

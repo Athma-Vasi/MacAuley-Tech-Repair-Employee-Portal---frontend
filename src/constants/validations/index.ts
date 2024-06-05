@@ -234,7 +234,7 @@ const VALIDATION_FUNCTIONS_TABLE: ValidationFunctionsTable = {
     partials: [
       [
         /^(?:19[0-9][0-9]|20[0-1][0-9]|202[0-3])$/,
-        "Must be a valid year in the range 1900-2023.",
+        `Must be a valid year in the range 1900-${new Date().getFullYear() - 18}.`,
       ],
       [/-(0[1-9]|1[0-2])-/, "Must be a valid month in the range 01-12."],
       [/-(0[1-9]|[12][0-9]|3[01])$/, "Must be a valid day in the range 01-31."],

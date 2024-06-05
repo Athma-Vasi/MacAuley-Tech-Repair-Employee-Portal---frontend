@@ -2,23 +2,16 @@ import { Container, Stack, Text } from "@mantine/core";
 import { useEffect, useReducer, useRef } from "react";
 import { useErrorBoundary } from "react-error-boundary";
 
-import { URGENCY_DATA } from "../../../constants/data";
 import { useAuth } from "../../../hooks";
 import { useFetchInterceptor } from "../../../hooks/useFetchInterceptor";
-import { StepperPage, TimeRailway, Urgency } from "../../../types";
-import { formSubmitPOST } from "../../../utils";
+import { StepperPage, TimeRailway } from "../../../types";
+import { formSubmitPOST, logState } from "../../../utils";
 import { AccessibleButton } from "../../accessibleInputs/AccessibleButton";
-import { AccessibleDateTimeInput } from "../../accessibleInputs/AccessibleDateTimeInput";
-import { AccessibleSelectInput } from "../../accessibleInputs/AccessibleSelectInput";
 import { AccessibleStepper } from "../../accessibleInputs/AccessibleStepper";
-import { AccessibleTextAreaInput } from "../../accessibleInputs/AccessibleTextAreaInput";
-import { AccessibleTextInput } from "../../accessibleInputs/text/AccessibleTextInput";
-import {
-  PRINTER_ISSUE_ROLE_PATHS,
-  PRINTER_MAKE_SELECT_OPTIONS,
-  returnPrinterIssueStepperPages,
-} from "../constants";
-import { PrinterIssueAction, printerIssueAction } from "./actions";
+import { PRINTER_ISSUE_ROLE_PATHS, returnPrinterIssueStepperPages } from "../constants";
+import { printerIssueAction } from "./actions";
+import { PrinterIssueContact } from "./PrinterIssueContact";
+import { PrinterIssueDetails } from "./PrinterIssueDetails";
 import { printerIssueReducer } from "./reducers";
 import { initialPrinterIssueState } from "./state";
 import { PrinterIssueSchema } from "./types";
@@ -136,190 +129,31 @@ function PrinterIssue() {
 
   const PRINTER_ISSUE_STEPPER_PAGES: StepperPage[] = returnPrinterIssueStepperPages();
 
-  /**
-   * type PrinterIssueState = {
-  additionalInformation: string;
-  contactEmail: string;
-  contactNumber: PhoneNumber | string;
-  dateOfOccurrence: string;
-  isSubmitting: boolean;
-  isSuccessful: boolean;
-  pagesInError: Set<number>;
-  printerIssueDescription: string;
-  printerMake: PrinterMake;
-  printerModel: string;
-  printerSerialNumber: string;
-  timeOfOccurrence: TimeRailway | string;
-  title: string;
-  triggerFormSubmit: boolean;
-  urgency: Urgency;
-};
-
-   */
-
-  const additionalInformationTextAreaInput = (
-    <AccessibleTextAreaInput
-      attributes={{
-        invalidValueAction: printerIssueAction.setPageInError,
-        name: "additionalInformation",
-        parentDispatch: printerIssueDispatch,
-        stepperPages: PRINTER_ISSUE_STEPPER_PAGES,
-        validValueAction: printerIssueAction.setAdditionalInformation,
-        value: additionalInformation,
-      }}
+  const detailsPage = (
+    <PrinterIssueDetails
+      additionalInformation={additionalInformation}
+      parentDispatch={printerIssueDispatch}
+      printerIssueDescription={printerIssueDescription}
+      printerMake={printerMake}
+      printerModel={printerModel}
+      printerSerialNumber={printerSerialNumber}
+      urgency={urgency}
+      parentAction={printerIssueAction}
+      stepperPages={PRINTER_ISSUE_STEPPER_PAGES}
     />
   );
 
-  const contactEmailTextInput = (
-    <AccessibleTextInput
-      attributes={{
-        invalidValueAction: printerIssueAction.setPageInError,
-        name: "contactEmail",
-        parentDispatch: printerIssueDispatch,
-        stepperPages: PRINTER_ISSUE_STEPPER_PAGES,
-        validValueAction: printerIssueAction.setContactEmail,
-        value: contactEmail,
-      }}
+  const contactPage = (
+    <PrinterIssueContact
+      contactEmail={contactEmail}
+      contactNumber={contactNumber}
+      dateOfOccurrence={dateOfOccurrence}
+      parentDispatch={printerIssueDispatch}
+      parentAction={printerIssueAction}
+      stepperPages={PRINTER_ISSUE_STEPPER_PAGES}
+      timeOfOccurrence={timeOfOccurrence}
+      title={title}
     />
-  );
-
-  const contactNumberTextInput = (
-    <AccessibleTextInput
-      attributes={{
-        invalidValueAction: printerIssueAction.setPageInError,
-        name: "contactNumber",
-        parentDispatch: printerIssueDispatch,
-        stepperPages: PRINTER_ISSUE_STEPPER_PAGES,
-        validValueAction: printerIssueAction.setContactNumber,
-        value: contactNumber,
-      }}
-    />
-  );
-
-  const dateOfOccurrenceTextInput = (
-    <AccessibleDateTimeInput
-      attributes={{
-        dateKind: "date near past",
-        invalidValueAction: printerIssueAction.setPageInError,
-        inputKind: "date",
-        name: "dateOfOccurrence",
-        parentDispatch: printerIssueDispatch,
-        stepperPages: PRINTER_ISSUE_STEPPER_PAGES,
-        validValueAction: printerIssueAction.setDateOfOccurrence,
-        value: dateOfOccurrence,
-      }}
-    />
-  );
-
-  const printerIssueDescriptionTextAreaInput = (
-    <AccessibleTextAreaInput
-      attributes={{
-        invalidValueAction: printerIssueAction.setPageInError,
-        name: "printerIssueDescription",
-        parentDispatch: printerIssueDispatch,
-        stepperPages: PRINTER_ISSUE_STEPPER_PAGES,
-        validValueAction: printerIssueAction.setPrinterIssueDescription,
-        value: printerIssueDescription,
-      }}
-    />
-  );
-
-  const printerMakeSelectInput = (
-    <AccessibleSelectInput
-      attributes={{
-        data: PRINTER_MAKE_SELECT_OPTIONS,
-        name: "printerMake",
-        parentDispatch: printerIssueDispatch,
-        value: printerMake,
-        validValueAction: printerIssueAction.setPrinterMake,
-      }}
-    />
-  );
-
-  const printerModelTextInput = (
-    <AccessibleTextInput
-      attributes={{
-        invalidValueAction: printerIssueAction.setPageInError,
-        name: "printerModel",
-        parentDispatch: printerIssueDispatch,
-        stepperPages: PRINTER_ISSUE_STEPPER_PAGES,
-        validValueAction: printerIssueAction.setPrinterModel,
-        value: printerModel,
-      }}
-    />
-  );
-
-  const printerSerialNumberTextInput = (
-    <AccessibleTextInput
-      attributes={{
-        invalidValueAction: printerIssueAction.setPageInError,
-        name: "printerSerialNumber",
-        parentDispatch: printerIssueDispatch,
-        stepperPages: PRINTER_ISSUE_STEPPER_PAGES,
-        validValueAction: printerIssueAction.setPrinterSerialNumber,
-        value: printerSerialNumber,
-      }}
-    />
-  );
-
-  const timeOfOccurrenceTextInput = (
-    <AccessibleDateTimeInput
-      attributes={{
-        invalidValueAction: printerIssueAction.setPageInError,
-        inputKind: "time",
-        name: "timeOfOccurrence",
-        parentDispatch: printerIssueDispatch,
-        stepperPages: PRINTER_ISSUE_STEPPER_PAGES,
-        validValueAction: printerIssueAction.setTimeOfOccurrence,
-        value: timeOfOccurrence,
-      }}
-    />
-  );
-
-  const titleTextInput = (
-    <AccessibleTextInput
-      attributes={{
-        invalidValueAction: printerIssueAction.setPageInError,
-        name: "title",
-        parentDispatch: printerIssueDispatch,
-        stepperPages: PRINTER_ISSUE_STEPPER_PAGES,
-        validValueAction: printerIssueAction.setTitle,
-        value: title,
-      }}
-    />
-  );
-
-  const urgencySelectInput = (
-    <AccessibleSelectInput<PrinterIssueAction["setUrgency"], Urgency>
-      attributes={{
-        data: URGENCY_DATA,
-        name: "urgency",
-        parentDispatch: printerIssueDispatch,
-        value: urgency,
-        validValueAction: printerIssueAction.setUrgency,
-      }}
-    />
-  );
-
-  const firstPage = (
-    <Stack>
-      {printerMakeSelectInput}
-      {printerModelTextInput}
-      {printerSerialNumberTextInput}
-      {printerIssueDescriptionTextAreaInput}
-      {additionalInformationTextAreaInput}
-    </Stack>
-  );
-
-  const secondPage = (
-    <Stack>
-      {titleTextInput}
-      {contactNumberTextInput}
-      {contactEmailTextInput}
-      {dateOfOccurrenceTextInput}
-      {timeOfOccurrenceTextInput}
-      {urgencySelectInput}
-    </Stack>
   );
 
   const submitButton = (
@@ -344,12 +178,17 @@ function PrinterIssue() {
     <AccessibleStepper
       attributes={{
         componentState: printerIssueState,
-        pageElements: [firstPage, secondPage],
+        pageElements: [detailsPage, contactPage],
         stepperPages: PRINTER_ISSUE_STEPPER_PAGES,
         submitButton,
       }}
     />
   );
+
+  logState({
+    state: printerIssueState,
+    groupLabel: "Printer Issue State",
+  });
 
   return <Container w={700}>{stepper}</Container>;
 }

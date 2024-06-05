@@ -172,7 +172,7 @@ function printerIssueReducer_setTimeOfOccurrence(
 ): PrinterIssueState {
   return {
     ...state,
-    timeOfOccurrence: dispatch.payload as TimeRailway | string,
+    timeOfOccurrence: dispatch.payload as TimeRailway,
   };
 }
 

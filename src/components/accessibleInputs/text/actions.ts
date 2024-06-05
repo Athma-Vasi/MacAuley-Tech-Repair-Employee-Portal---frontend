@@ -1,9 +1,9 @@
 type AccessibleTextInputAction = {
-  setValueBuffer: "setValueBuffer";
+  setTextValueBuffer: "setTextValueBuffer";
 };
 
 const accessibleTextInputAction: AccessibleTextInputAction = {
-  setValueBuffer: "setValueBuffer",
+  setTextValueBuffer: "setTextValueBuffer",
 };
 
 export { accessibleTextInputAction };

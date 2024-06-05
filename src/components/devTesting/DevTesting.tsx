@@ -38,138 +38,138 @@ function DevTesting() {
 
   const { wrappedFetch } = useWrapFetch();
 
-  useEffect(() => {
-    let isMounted = true;
-    const controller = new AbortController();
+  // useEffect(() => {
+  //   let isMounted = true;
+  //   const controller = new AbortController();
 
-    async function submitDevTestingForm() {
-      const url: URL = urlBuilder({
-        path: "username-email-set",
-      });
+  //   async function submitDevTestingForm() {
+  //     const url: URL = urlBuilder({
+  //       path: "username-email-set",
+  //     });
 
-      // const newBodiesArrCount =
-      //   bodiesArr.length - bodiesArrCount > 75 ? bodiesArrCount + 75 : bodiesArr.length;
-      // const slicedBodiesArr = bodiesArr.slice(bodiesArrCount, newBodiesArrCount);
-      const { userInfo } = jwtDecode<{
-        exp: number;
-        iat: number;
-        userInfo: { userId: string; username: string; roles: UserRoles };
-      }>(accessToken);
+  //     // const newBodiesArrCount =
+  //     //   bodiesArr.length - bodiesArrCount > 75 ? bodiesArrCount + 75 : bodiesArr.length;
+  //     // const slicedBodiesArr = bodiesArr.slice(bodiesArrCount, newBodiesArrCount);
+  //     const { userInfo } = jwtDecode<{
+  //       exp: number;
+  //       iat: number;
+  //       userInfo: { userId: string; username: string; roles: UserRoles };
+  //     }>(accessToken);
 
-      const reqBody = {
-        userInfo,
-        username: bodiesArr.username,
-        email: bodiesArr.email,
-      };
+  //     const reqBody = {
+  //       userInfo,
+  //       username: bodiesArr.username,
+  //       email: bodiesArr.email,
+  //     };
 
-      const requestInit: RequestInit = {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(reqBody),
-      };
+  //     const requestInit: RequestInit = {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify(reqBody),
+  //     };
 
-      try {
-        const response: Response = await wrappedFetch({
-          isMounted,
-          requestInit,
-          signal: controller.signal,
-          url,
-        });
-        const data = await response.json();
+  //     try {
+  //       const response: Response = await wrappedFetch({
+  //         isMounted,
+  //         requestInit,
+  //         signal: controller.signal,
+  //         url,
+  //       });
+  //       const data = await response.json();
 
-        if (!isMounted) {
-          return;
-        }
+  //       if (!isMounted) {
+  //         return;
+  //       }
 
-        if (!response.ok) {
-          throw new Error(data.message);
-        }
+  //       if (!response.ok) {
+  //         throw new Error(data.message);
+  //       }
 
-        // devTestingDispatch({
-        //   type: devTestingAction.setBodiesArrCount,
-        //   payload: newBodiesArrCount,
-        // });
+  //       // devTestingDispatch({
+  //       //   type: devTestingAction.setBodiesArrCount,
+  //       //   payload: newBodiesArrCount,
+  //       // });
 
-        console.log({ data });
-      } catch (error: any) {
-        console.error(error);
-      } finally {
-        devTestingDispatch({
-          type: devTestingAction.setTriggerPostFormSubmit,
-          payload: false,
-        });
-      }
-    }
+  //       console.log({ data });
+  //     } catch (error: any) {
+  //       console.error(error);
+  //     } finally {
+  //       devTestingDispatch({
+  //         type: devTestingAction.setTriggerPostFormSubmit,
+  //         payload: false,
+  //       });
+  //     }
+  //   }
 
-    if (triggerPostFormSubmit) {
-      submitDevTestingForm();
-    }
+  //   if (triggerPostFormSubmit) {
+  //     submitDevTestingForm();
+  //   }
 
-    return () => {
-      isMounted = false;
-      controller.abort();
-    };
-  }, [triggerPostFormSubmit]);
+  //   return () => {
+  //     isMounted = false;
+  //     controller.abort();
+  //   };
+  // }, [triggerPostFormSubmit]);
 
-  useEffect(() => {
-    let isMounted = true;
-    const controller = new AbortController();
+  // useEffect(() => {
+  //   let isMounted = true;
+  //   const controller = new AbortController();
 
-    async function getAllResourceDocumentsBulk() {
-      const url: URL = urlBuilder({
-        path: "rma/dev",
-      });
+  //   async function getAllResourceDocumentsBulk() {
+  //     const url: URL = urlBuilder({
+  //       path: "rma/dev",
+  //     });
 
-      const requestInit: RequestInit = {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      };
+  //     const requestInit: RequestInit = {
+  //       method: "GET",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //     };
 
-      try {
-        const response: Response = await wrappedFetch({
-          isMounted,
-          requestInit,
-          signal: controller.signal,
-          url,
-        });
-        const data: { message: string; resourceData: Record<string, any>[] } =
-          await response.json();
+  //     try {
+  //       const response: Response = await wrappedFetch({
+  //         isMounted,
+  //         requestInit,
+  //         signal: controller.signal,
+  //         url,
+  //       });
+  //       const data: { message: string; resourceData: Record<string, any>[] } =
+  //         await response.json();
 
-        if (!isMounted) {
-          return;
-        }
+  //       if (!isMounted) {
+  //         return;
+  //       }
 
-        if (!response.ok) {
-          throw new Error(data.message);
-        }
+  //       if (!response.ok) {
+  //         throw new Error(data.message);
+  //       }
 
-        devTestingDispatch({
-          type: devTestingAction.setResourceDocuments,
-          payload: data.resourceData,
-        });
-      } catch (error: any) {
-        console.error(error);
-      } finally {
-        devTestingDispatch({
-          type: devTestingAction.setTriggerPostFormSubmit,
-          payload: false,
-        });
-      }
-    }
+  //       devTestingDispatch({
+  //         type: devTestingAction.setResourceDocuments,
+  //         payload: data.resourceData,
+  //       });
+  //     } catch (error: any) {
+  //       console.error(error);
+  //     } finally {
+  //       devTestingDispatch({
+  //         type: devTestingAction.setTriggerPostFormSubmit,
+  //         payload: false,
+  //       });
+  //     }
+  //   }
 
-    if (triggerGetRequest) {
-      getAllResourceDocumentsBulk();
-    }
+  //   if (triggerGetRequest) {
+  //     getAllResourceDocumentsBulk();
+  //   }
 
-    return () => {
-      isMounted = false;
-      controller.abort();
-    };
-  }, [triggerGetRequest]);
+  //   return () => {
+  //     isMounted = false;
+  //     controller.abort();
+  //   };
+  // }, [triggerGetRequest]);
 
   // useEffect(() => {
   //   logState({

@@ -40,6 +40,7 @@ type AccessiblePasswordInputAttributes<
       }
   >;
   validValueAction: ValidValueAction;
+  passwordValue?: string;
   placeholder?: string;
   ref?: RefObject<HTMLInputElement>;
   required?: boolean;
@@ -73,6 +74,7 @@ function AccessiblePasswordInput<
     onFocus,
     page = 0,
     parentDispatch,
+    passwordValue,
     placeholder,
     ref = null,
     required = false,
@@ -155,12 +157,19 @@ function AccessiblePasswordInput<
             minLength={minLength}
             name={name}
             onBlur={() => {
+              const kind = passwordValue
+                ? passwordValue === valueBuffer || !isValueBufferValid
+                  ? "add"
+                  : "delete"
+                : isValueBufferValid
+                ? "delete"
+                : "add";
+
+              console.log("kind", kind);
+
               parentDispatch({
                 action: invalidValueAction,
-                payload: {
-                  kind: isValueBufferValid ? "delete" : "add",
-                  page,
-                },
+                payload: { kind, page },
               });
 
               parentDispatch({

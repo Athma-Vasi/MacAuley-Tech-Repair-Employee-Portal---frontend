@@ -1,97 +1,189 @@
-import { ChangeEvent, KeyboardEvent, useEffect } from "react";
+import { Stack } from "@mantine/core";
 
-import { PROVINCES, STATES_US } from "../../../constants/data";
+import { COUNTRIES_DATA, PROVINCES, STATES_US } from "../../constants/data";
 import {
-  ADDRESS_LINE_REGEX,
-  CITY_REGEX,
-  PHONE_NUMBER_REGEX,
-  POSTAL_CODE_REGEX_CANADA,
-  POSTAL_CODE_REGEX_US,
-} from "../../../constants/regex";
-import {
-  AccessibleErrorValidTextElements,
-  returnAccessiblePhoneNumberTextInputElements,
-  returnAccessibleSelectInputElements,
-  returnAccessibleTextInputElements,
-} from "../../../jsxCreators";
-import { Country, Province, StatesUS } from "../../../types";
-import {
-  returnAddressValidationText,
-  returnCityValidationText,
-  returnPhoneNumberValidationText,
-  returnPostalCodeValidationText,
-} from "../../../utils";
-import {
-  AccessiblePhoneNumberTextInputCreatorInfo,
-  AccessibleSelectInputCreatorInfo,
-  AccessibleTextInputCreatorInfo,
-  FormLayoutWrapper,
-} from "../../wrappers";
-import { RegisterStepAddressProps } from "./types";
+  Country,
+  PhoneNumber,
+  PostalCode,
+  Province,
+  StatesUS,
+  StepperPage,
+} from "../../types";
+import { AccessibleSelectInput } from "../accessibleInputs/AccessibleSelectInput";
+import { AccessibleTextInput } from "../accessibleInputs/text/AccessibleTextInput";
+import { RegisterAction } from "./actions";
 
-function RegisterStepAddress({
-  contactNumber,
-  isValidContactNumber,
-  isContactNumberFocused,
+type RegisterAddressProps = {
+  contactNumber: PhoneNumber;
+  addressLine: string;
+  city: string;
+  province: Province;
+  state: StatesUS;
+  postalCode: PostalCode;
+  country: Country;
+  parentAction: RegisterAction;
+  parentDispatch: any;
+  stepperPages: StepperPage[];
+};
+
+function RegisterAddress({
   addressLine,
-  isValidAddressLine,
-  isAddressLineFocused,
   city,
-  isValidCity,
-  isCityFocused,
-  state,
-  province,
+  contactNumber,
   country,
+  parentAction,
+  parentDispatch,
   postalCode,
-  isValidPostalCode,
-  isPostalCodeFocused,
-  registerAction,
-  registerDispatch,
-}: RegisterStepAddressProps) {}
+  province,
+  state,
+  stepperPages,
+}: RegisterAddressProps) {
+  const addressLineTextInput = (
+    <AccessibleTextInput
+      attributes={{
+        stepperPages,
+        invalidValueAction: parentAction.setPageInError,
+        name: "addressLine",
+        page: 2,
+        parentDispatch,
+        validValueAction: parentAction.setAddressLine,
+        value: addressLine,
+      }}
+    />
+  );
 
-export { RegisterStepAddress };
+  const cityTextInput = (
+    <AccessibleTextInput
+      attributes={{
+        stepperPages,
+        invalidValueAction: parentAction.setPageInError,
+        name: "city",
+        page: 2,
+        parentDispatch,
+        validValueAction: parentAction.setCity,
+        value: city,
+      }}
+    />
+  );
+
+  const contactNumberTextInput = (
+    <AccessibleTextInput
+      attributes={{
+        stepperPages,
+        invalidValueAction: parentAction.setPageInError,
+        name: "contactNumber",
+        page: 2,
+        parentDispatch,
+        validValueAction: parentAction.setContactNumber,
+        value: contactNumber,
+      }}
+    />
+  );
+
+  const countrySelectInput = (
+    <AccessibleSelectInput<RegisterAction["setCountry"], Country>
+      attributes={{
+        data: COUNTRIES_DATA,
+        name: "country",
+        parentDispatch,
+        validValueAction: parentAction.setCountry,
+        value: country,
+      }}
+    />
+  );
+
+  const provinceOrStateSelectInput =
+    country === "Canada" ? (
+      <AccessibleSelectInput<RegisterAction["setProvince"], Province>
+        attributes={{
+          data: PROVINCES,
+          name: "province",
+          parentDispatch,
+          validValueAction: parentAction.setProvince,
+          value: province,
+        }}
+      />
+    ) : (
+      <AccessibleSelectInput<RegisterAction["setState"], StatesUS>
+        attributes={{
+          data: STATES_US,
+          name: "state",
+          parentDispatch,
+          validValueAction: parentAction.setState,
+          value: state,
+        }}
+      />
+    );
+
+  const postalCodeTextInput = (
+    <AccessibleTextInput
+      attributes={{
+        stepperPages,
+        invalidValueAction: parentAction.setPageInError,
+        name: "postalCode",
+        page: 2,
+        parentDispatch,
+        validValueAction: parentAction.setPostalCode,
+        value: postalCode,
+      }}
+    />
+  );
+
+  return (
+    <Stack>
+      {countrySelectInput}
+      {contactNumberTextInput}
+      {addressLineTextInput}
+      {cityTextInput}
+      {provinceOrStateSelectInput}
+      {postalCodeTextInput}
+    </Stack>
+  );
+}
+
+export { RegisterAddress };
 
 /**
  * // used to validate address line on every change
   useEffect(() => {
     const isValidAddress = ADDRESS_LINE_REGEX.test(addressLine);
 
-    registerDispatch({
-      type: registerAction.setIsValidAddressLine,
+({
+      type: parentAction.setIsValidAddressLine,
       payload: isValidAddress,
     });
-  }, [addressLine, registerAction.setIsValidAddressLine, registerDispatch]);
+  }, [addressLine, parentAction.setIsValidAddressLine]);
 
   // used to validate city on every change
   useEffect(() => {
     const isValidPlace = CITY_REGEX.test(city);
 
-    registerDispatch({
-      type: registerAction.setIsValidCity,
+({
+      type: parentAction.setIsValidCity,
       payload: isValidPlace,
     });
-  }, [city, registerAction.setIsValidCity, registerDispatch]);
+  }, [city, parentAction.setIsValidCity]);
 
   // // resets address if country is changed
   // useEffect(() => {
-  //   registerDispatch({
-  //     type: registerAction.setAddressLine,
+  // ({
+  //     type: parentAction.setAddressLine,
   //     payload: '',
   //   });
-  //   registerDispatch({
-  //     type: registerAction.setCity,
+  // ({
+  //     type: parentAction.setCity,
   //     payload: '',
   //   });
-  //   registerDispatch({
-  //     type: registerAction.setPostalCode,
+  // ({
+  //     type: parentAction.setPostalCode,
   //     payload: '',
   //   });
   // }, [
   //   country,
-  //   registerAction.setAddressLine,
-  //   registerAction.setCity,
-  //   registerAction.setPostalCode,
-  //   registerDispatch,
+  //   parentAction.setAddressLine,
+  //   parentAction.setCity,
+  //   parentAction.setPostalCode,
+  // ,
   // ]);
 
   // used to validate contact number on every change
@@ -102,22 +194,22 @@ export { RegisterStepAddress };
     if (isContactNumberFocused) {
       switch (contactLength) {
         case 4: {
-          registerDispatch({
-            type: registerAction.setContactNumber,
+      ({
+            type: parentAction.setContactNumber,
             payload: `${contactNumber}(`,
           });
           break;
         }
         case 8: {
-          registerDispatch({
-            type: registerAction.setContactNumber,
+      ({
+            type: parentAction.setContactNumber,
             payload: `${contactNumber}) `,
           });
           break;
         }
         case 13: {
-          registerDispatch({
-            type: registerAction.setContactNumber,
+      ({
+            type: parentAction.setContactNumber,
             payload: `${contactNumber}-`,
           });
           break;
@@ -128,16 +220,16 @@ export { RegisterStepAddress };
       }
     }
 
-    registerDispatch({
-      type: registerAction.setIsValidContactNumber,
+({
+      type: parentAction.setIsValidContactNumber,
       payload: isValidContact,
     });
   }, [
     contactNumber,
     isContactNumberFocused,
-    registerAction.setContactNumber,
-    registerAction.setIsValidContactNumber,
-    registerDispatch,
+    parentAction.setContactNumber,
+    parentAction.setIsValidContactNumber,
+,
   ]);
 
   // used to validate postal code on every change
@@ -150,36 +242,36 @@ export { RegisterStepAddress };
     if (country === "Canada") {
       const postalCodeLength = postalCode.length;
       if (postalCodeLength === 3) {
-        registerDispatch({
-          type: registerAction.setPostalCode,
+    ({
+          type: parentAction.setPostalCode,
           payload: `${postalCode} `,
         });
       } else if (postalCodeLength === 7) {
-        registerDispatch({
-          type: registerAction.setPostalCode,
+    ({
+          type: parentAction.setPostalCode,
           payload: postalCode.trim(),
         });
       }
     } else {
       const postalCodeLength = postalCode.length;
       if (postalCodeLength === 6) {
-        registerDispatch({
-          type: registerAction.setPostalCode,
+    ({
+          type: parentAction.setPostalCode,
           payload: `${postalCode.slice(0, 5)}-${postalCode.slice(5)}`,
         });
       }
     }
 
-    registerDispatch({
-      type: registerAction.setIsValidPostalCode,
+({
+      type: parentAction.setIsValidPostalCode,
       payload: isValidPostal,
     });
   }, [
     postalCode,
     country,
-    registerDispatch,
-    registerAction.setIsValidPostalCode,
-    registerAction.setPostalCode,
+,
+    parentAction.setIsValidPostalCode,
+    parentAction.setPostalCode,
   ]);
 
   // update the corresponding pagesInError state if any of the inputs are in error
@@ -187,8 +279,8 @@ export { RegisterStepAddress };
     const isStepInError =
       !isValidAddressLine || !isValidCity || !isValidPostalCode || !isValidContactNumber;
 
-    registerDispatch({
-      type: registerAction.setPageInError,
+({
+      type: parentAction.setPageInError,
       payload: {
         kind: isStepInError ? "add" : "delete",
         step: 2,
@@ -199,8 +291,8 @@ export { RegisterStepAddress };
     isValidCity,
     isValidPostalCode,
     isValidContactNumber,
-    registerDispatch,
-    registerAction.setPageInError,
+,
+    parentAction.setPageInError,
   ]);
 
   // following are the accessible text elements for screen readers to read out based on the state of the input
@@ -264,20 +356,20 @@ export { RegisterStepAddress };
     isValidInputText: isValidContactNumber,
     label: "Contact number",
     onBlur: () => {
-      registerDispatch({
-        type: registerAction.setIsContactNumberFocused,
+  ({
+        type: parentAction.setIsContactNumberFocused,
         payload: false,
       });
     },
     onChange: (event: ChangeEvent<HTMLInputElement>) => {
-      registerDispatch({
-        type: registerAction.setContactNumber,
+  ({
+        type: parentAction.setContactNumber,
         payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
-      registerDispatch({
-        type: registerAction.setIsContactNumberFocused,
+  ({
+        type: parentAction.setIsContactNumberFocused,
         payload: true,
       });
     },
@@ -285,8 +377,8 @@ export { RegisterStepAddress };
     required: true,
     rightSection: true,
     rightSectionOnClick: () => {
-      registerDispatch({
-        type: registerAction.setContactNumber,
+  ({
+        type: parentAction.setContactNumber,
         payload: "+(1)",
       });
     },
@@ -295,8 +387,8 @@ export { RegisterStepAddress };
     onKeyDown: (event: KeyboardEvent<HTMLInputElement>) => {
       if (event.key === "Backspace") {
         if (contactNumber.length === 14 || contactNumber.length === 9) {
-          registerDispatch({
-            type: registerAction.setContactNumber,
+      ({
+            type: parentAction.setContactNumber,
             payload: contactNumber.slice(0, -1),
           });
         }
@@ -308,8 +400,8 @@ export { RegisterStepAddress };
     description: "Select your country",
     label: "Country",
     onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-      registerDispatch({
-        type: registerAction.setCountry,
+  ({
+        type: parentAction.setCountry,
         payload: event.currentTarget.value as Country,
       });
     },
@@ -328,20 +420,20 @@ export { RegisterStepAddress };
     isValidInputText: isValidAddressLine,
     label: "Address line",
     onBlur: () => {
-      registerDispatch({
-        type: registerAction.setIsAddressLineFocused,
+  ({
+        type: parentAction.setIsAddressLineFocused,
         payload: false,
       });
     },
     onChange: (event: ChangeEvent<HTMLInputElement>) => {
-      registerDispatch({
-        type: registerAction.setAddressLine,
+  ({
+        type: parentAction.setAddressLine,
         payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
-      registerDispatch({
-        type: registerAction.setIsAddressLineFocused,
+  ({
+        type: parentAction.setIsAddressLineFocused,
         payload: true,
       });
     },
@@ -360,20 +452,20 @@ export { RegisterStepAddress };
     isValidInputText: isValidCity,
     label: "City",
     onBlur: () => {
-      registerDispatch({
-        type: registerAction.setIsCityFocused,
+  ({
+        type: parentAction.setIsCityFocused,
         payload: false,
       });
     },
     onChange: (event: ChangeEvent<HTMLInputElement>) => {
-      registerDispatch({
-        type: registerAction.setCity,
+  ({
+        type: parentAction.setCity,
         payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
-      registerDispatch({
-        type: registerAction.setIsCityFocused,
+  ({
+        type: parentAction.setIsCityFocused,
         payload: true,
       });
     },
@@ -393,12 +485,12 @@ export { RegisterStepAddress };
     value: country === "Canada" ? province : state,
     onChange: (event: ChangeEvent<HTMLSelectElement>) => {
       country === "Canada"
-        ? registerDispatch({
-            type: registerAction.setProvince,
+        ({
+            type: parentAction.setProvince,
             payload: event.currentTarget.value as Province,
           })
-        : registerDispatch({
-            type: registerAction.setState,
+        ({
+            type: parentAction.setState,
             payload: event.currentTarget.value as StatesUS,
           });
     },
@@ -415,8 +507,8 @@ export { RegisterStepAddress };
     maxLength: country === "Canada" ? 7 : 10,
     minLength: country === "Canada" ? 6 : 5,
     onChange: (event: ChangeEvent<HTMLInputElement>) => {
-      registerDispatch({
-        type: registerAction.setPostalCode,
+  ({
+        type: parentAction.setPostalCode,
         payload:
           country === "Canada"
             ? event.currentTarget.value.toUpperCase()
@@ -424,14 +516,14 @@ export { RegisterStepAddress };
       });
     },
     onBlur: () => {
-      registerDispatch({
-        type: registerAction.setIsPostalCodeFocused,
+  ({
+        type: parentAction.setIsPostalCodeFocused,
         payload: false,
       });
     },
     onFocus: () => {
-      registerDispatch({
-        type: registerAction.setIsPostalCodeFocused,
+  ({
+        type: parentAction.setIsPostalCodeFocused,
         payload: true,
       });
     },
@@ -439,8 +531,8 @@ export { RegisterStepAddress };
       switch (country) {
         case "Canada": {
           if (event.key === "Backspace" && postalCode.length === 4) {
-            registerDispatch({
-              type: registerAction.setPostalCode,
+        ({
+              type: parentAction.setPostalCode,
               payload: postalCode.slice(0, 3),
             });
           }
@@ -448,8 +540,8 @@ export { RegisterStepAddress };
         }
         case "United States": {
           if (event.key === "Backspace" && postalCode.length === 7) {
-            registerDispatch({
-              type: registerAction.setPostalCode,
+        ({
+              type: parentAction.setPostalCode,
               payload: postalCode.slice(0, 6),
             });
           }
@@ -486,7 +578,7 @@ export { RegisterStepAddress };
       provinceOrStateSelectInputCreatorInfo,
     ]);
 
-  const displayRegisterStepAddress = (
+  const displayRegisterAddress = (
     <FormLayoutWrapper>
       {createdContactNumberTextInput}
       {createdCountrySelectInput}
@@ -497,6 +589,6 @@ export { RegisterStepAddress };
     </FormLayoutWrapper>
   );
 
-  return <>{displayRegisterStepAddress}</>;
+  return <>{displayRegisterAddress}</>;
 
  */

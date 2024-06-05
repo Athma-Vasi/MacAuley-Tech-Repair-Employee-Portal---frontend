@@ -1,9 +1,10 @@
+import { TimeRailway } from "../../../types";
 import { PrinterIssueState } from "./types";
 
 const initialPrinterIssueState: PrinterIssueState = {
   additionalInformation: "",
   contactEmail: "",
-  contactNumber: "+(1)",
+  contactNumber: "",
   dateOfOccurrence: "",
   isSubmitting: false,
   isSuccessful: false,
@@ -12,7 +13,7 @@ const initialPrinterIssueState: PrinterIssueState = {
   printerMake: "Brother",
   printerModel: "",
   printerSerialNumber: "",
-  timeOfOccurrence: "",
+  timeOfOccurrence: "" as TimeRailway,
   title: "",
   triggerFormSubmit: false,
   urgency: "low",

@@ -1,67 +1,103 @@
-import { ChangeEvent, useEffect } from "react";
+import { Stack } from "@mantine/core";
 
-import { EMAIL_REGEX, PASSWORD_REGEX, USERNAME_REGEX } from "../../../constants/regex";
-import {
-  AccessibleErrorValidTextElements,
-  returnAccessiblePasswordInputElements,
-  returnAccessibleTextInputElements,
-} from "../../../jsxCreators";
-import {
-  returnEmailValidationText,
-  returnUsernameRegexValidationText,
-} from "../../../utils";
-import {
-  AccessiblePasswordInputCreatorInfo,
-  AccessibleTextInputCreatorInfo,
-  FormLayoutWrapper,
-} from "../../wrappers";
-import { RegisterAction, RegisterDispatch } from "../types";
+import { StepperPage } from "../../types";
+import { AccessiblePasswordInput } from "../accessibleInputs/AccessiblePasswordInput";
+import { AccessibleTextInput } from "../accessibleInputs/text/AccessibleTextInput";
+import { RegisterAction } from "./types";
 
-type RegisterStepAuthenticationProps = {
-  email: string;
-  isValidEmail: boolean;
-  isEmailFocused: boolean;
-  isEmailExists: boolean;
-
-  username: string;
-  isValidUsername: boolean;
-  isUsernameFocused: boolean;
-  isUsernameExists: boolean;
-
-  password: string;
-  isValidPassword: boolean;
-  isPasswordFocused: boolean;
-
+type RegisterAuthenticationProps = {
   confirmPassword: string;
-  isValidConfirmPassword: boolean;
-  isConfirmPasswordFocused: boolean;
-
-  registerAction: RegisterAction;
-  registerDispatch: React.Dispatch<RegisterDispatch>;
+  email: string;
+  parentAction: RegisterAction;
+  parentDispatch: any;
+  password: string;
+  stepperPages: StepperPage[];
+  username: string;
 };
 
-function RegisterStepAuthentication({
-  email,
-  isEmailFocused,
-  isValidEmail,
-  isEmailExists,
-  username,
-  isUsernameFocused,
-  isValidUsername,
-  isUsernameExists,
-  password,
-  isPasswordFocused,
-  isValidPassword,
+function RegisterAuthentication({
   confirmPassword,
-  isConfirmPasswordFocused,
-  isValidConfirmPassword,
-  registerDispatch,
-  registerAction,
-}: RegisterStepAuthenticationProps) {
-  return <></>;
+  email,
+  parentAction,
+  parentDispatch,
+  password,
+  stepperPages,
+  username,
+}: RegisterAuthenticationProps) {
+  const confirmPasswordTextInput = (
+    <AccessiblePasswordInput<
+      RegisterAction["setConfirmPassword"],
+      RegisterAction["setPageInError"]
+    >
+      attributes={{
+        stepperPages,
+        invalidValueAction: parentAction.setPageInError,
+        name: "confirmPassword",
+        page: 0,
+        parentDispatch,
+        passwordValue: password,
+        validValueAction: parentAction.setConfirmPassword,
+        value: confirmPassword,
+      }}
+    />
+  );
+
+  const emailTextInput = (
+    <AccessibleTextInput
+      attributes={{
+        stepperPages,
+        invalidValueAction: parentAction.setPageInError,
+        name: "email",
+        page: 0,
+        parentDispatch,
+        validValueAction: parentAction.setEmail,
+        value: email,
+      }}
+    />
+  );
+
+  const passwordTextInput = (
+    <AccessiblePasswordInput<
+      RegisterAction["setPassword"],
+      RegisterAction["setPageInError"]
+    >
+      attributes={{
+        stepperPages,
+        invalidValueAction: parentAction.setPageInError,
+        name: "password",
+        page: 0,
+        parentDispatch,
+        validValueAction: parentAction.setPassword,
+        value: password,
+      }}
+    />
+  );
+
+  const usernameTextInput = (
+    <AccessibleTextInput
+      attributes={{
+        stepperPages,
+        invalidValueAction: parentAction.setPageInError,
+        name: "username",
+        page: 0,
+        parentDispatch,
+        validValueAction: parentAction.setUsername,
+        value: username,
+      }}
+    />
+  );
+
+  return (
+    <Stack>
+      {emailTextInput}
+      {usernameTextInput}
+      {passwordTextInput}
+      {confirmPasswordTextInput}
+    </Stack>
+  );
 }
 
-export { RegisterStepAuthentication };
+export { RegisterAuthentication };
 
 /**
  * // used to validate email on every change
@@ -69,41 +105,41 @@ export { RegisterStepAuthentication };
     const isValidMail = EMAIL_REGEX.test(email) && !isEmailExists;
 
     registerDispatch({
-      type: registerAction.setIsValidEmail,
+      type: parentAction.setIsValidEmail,
       payload: isValidMail,
     });
-  }, [email, isEmailExists, registerAction.setIsValidEmail, registerDispatch]);
+  }, [email, isEmailExists, parentAction.setIsValidEmail, registerDispatch]);
 
   // used to validate username on every change
   useEffect(() => {
     const isValidUsr = USERNAME_REGEX.test(username) && !isUsernameExists;
 
     registerDispatch({
-      type: registerAction.setIsValidUsername,
+      type: parentAction.setIsValidUsername,
       payload: isValidUsr,
     });
-  }, [isUsernameExists, registerAction.setIsValidUsername, registerDispatch, username]);
+  }, [isUsernameExists, parentAction.setIsValidUsername, registerDispatch, username]);
 
   // used to validate password on every change and confirm password on every change
   useEffect(() => {
     const isValidPwd = PASSWORD_REGEX.test(password);
 
     registerDispatch({
-      type: registerAction.setIsValidPassword,
+      type: parentAction.setIsValidPassword,
       payload: isValidPwd,
     });
 
     const matchPassword = password === confirmPassword;
     registerDispatch({
-      type: registerAction.setIsValidConfirmPassword,
+      type: parentAction.setIsValidConfirmPassword,
       payload: matchPassword && password.length > 0,
     });
   }, [
     password,
     confirmPassword,
     registerDispatch,
-    registerAction.setIsValidPassword,
-    registerAction.setIsValidConfirmPassword,
+    parentAction.setIsValidPassword,
+    parentAction.setIsValidConfirmPassword,
   ]);
 
   // update the corresponding pagesInError state if any of the inputs are in error
@@ -112,7 +148,7 @@ export { RegisterStepAuthentication };
       !isValidEmail || !isValidUsername || !isValidPassword || !isValidConfirmPassword;
 
     registerDispatch({
-      type: registerAction.setPageInError,
+      type: parentAction.setPageInError,
       payload: {
         kind: isStepInError ? "add" : "delete",
         step: 0,
@@ -124,7 +160,7 @@ export { RegisterStepAuthentication };
     isValidPassword,
     isValidConfirmPassword,
     registerDispatch,
-    registerAction.setPageInError,
+    parentAction.setPageInError,
   ]);
 
   // following are the accessible text elements for screen readers to read out based on the state of the input
@@ -196,19 +232,19 @@ export { RegisterStepAuthentication };
     label: "Email",
     onBlur: () => {
       registerDispatch({
-        type: registerAction.setIsEmailFocused,
+        type: parentAction.setIsEmailFocused,
         payload: false,
       });
     },
     onChange: (event: ChangeEvent<HTMLInputElement>) => {
       registerDispatch({
-        type: registerAction.setEmail,
+        type: parentAction.setEmail,
         payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
       registerDispatch({
-        type: registerAction.setIsEmailFocused,
+        type: parentAction.setIsEmailFocused,
         payload: true,
       });
     },
@@ -228,19 +264,19 @@ export { RegisterStepAuthentication };
     label: "Username",
     onBlur: () => {
       registerDispatch({
-        type: registerAction.setIsUsernameFocused,
+        type: parentAction.setIsUsernameFocused,
         payload: false,
       });
     },
     onChange: (event: ChangeEvent<HTMLInputElement>) => {
       registerDispatch({
-        type: registerAction.setUsername,
+        type: parentAction.setUsername,
         payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
       registerDispatch({
-        type: registerAction.setIsUsernameFocused,
+        type: parentAction.setIsUsernameFocused,
         payload: true,
       });
     },
@@ -260,19 +296,19 @@ export { RegisterStepAuthentication };
     label: "Password",
     onBlur: () => {
       registerDispatch({
-        type: registerAction.setIsPasswordFocused,
+        type: parentAction.setIsPasswordFocused,
         payload: false,
       });
     },
     onChange: (event: ChangeEvent<HTMLInputElement>) => {
       registerDispatch({
-        type: registerAction.setPassword,
+        type: parentAction.setPassword,
         payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
       registerDispatch({
-        type: registerAction.setIsPasswordFocused,
+        type: parentAction.setIsPasswordFocused,
         payload: true,
       });
     },
@@ -292,19 +328,19 @@ export { RegisterStepAuthentication };
     label: "Confirm password",
     onBlur: () => {
       registerDispatch({
-        type: registerAction.setIsConfirmPasswordFocused,
+        type: parentAction.setIsConfirmPasswordFocused,
         payload: false,
       });
     },
     onChange: (event: ChangeEvent<HTMLInputElement>) => {
       registerDispatch({
-        type: registerAction.setConfirmPassword,
+        type: parentAction.setConfirmPassword,
         payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
       registerDispatch({
-        type: registerAction.setIsConfirmPasswordFocused,
+        type: parentAction.setIsConfirmPasswordFocused,
         payload: true,
       });
     },

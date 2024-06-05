@@ -6,10 +6,16 @@ import {
   STATES_US,
   STORE_LOCATION_DATA,
 } from "../../constants/data";
-import { Country, PreferredPronouns, StepperChild, StepperPage } from "../../types";
+import {
+  Country,
+  PreferredPronouns,
+  RoleResourceRoutePaths,
+  StepperChild,
+  StepperPage,
+} from "../../types";
 import { DescriptionObjectsArray } from "../wrappers";
 
-function returnRegisterStepperPages(country: Country): StepperPage[] {
+function returnRegisterperPages(country: Country): StepperPage[] {
   const addressLine: StepperChild = {
     inputType: "text",
     name: "addressLine",
@@ -213,6 +219,12 @@ function returnRegisterStepperPages(country: Country): StepperPage[] {
   ];
 }
 
+const REGISTER_ROLE_ROUTE_PATHS: RoleResourceRoutePaths = {
+  admin: "/user",
+  manager: "/user",
+  employee: "/user",
+};
+
 const REGISTER_URL = "http://localhost:5500/api/v1/user";
 
 const REGISTER_DESCRIPTION_OBJECTS: DescriptionObjectsArray = [
@@ -259,6 +271,7 @@ export {
   PREFERRED_PRONOUNS_DATA,
   REGISTER_DESCRIPTION_OBJECTS,
   REGISTER_MAX_STEPPER_POSITION,
+  REGISTER_ROLE_ROUTE_PATHS,
   REGISTER_URL,
-  returnRegisterStepperPages,
+  returnRegisterperPages,
 };

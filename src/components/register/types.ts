@@ -22,7 +22,7 @@ type RegisterState = {
   department: Department;
   email: string;
   emergencyContactName: string;
-  emergencyContactNumber: PhoneNumber | string;
+  emergencyContactNumber: PhoneNumber;
   firstName: string;
   isSubmitting: boolean;
   isSuccessful: boolean;
@@ -58,7 +58,7 @@ type RegisterDispatch =
     }
   | {
       action: RegisterAction["setContactNumber"];
-      payload: PhoneNumber | string;
+      payload: PhoneNumber;
     }
   | {
       action: RegisterAction["setCountry"];

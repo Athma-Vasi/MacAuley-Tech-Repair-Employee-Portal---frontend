@@ -124,8 +124,8 @@ type CanadianPostalCode = `${string}${string}${string} ${string}${string}${strin
 type USPostalCode = `${string}${string}${string}${string}${string}`;
 type PostalCode = CanadianPostalCode | USPostalCode;
 
-type PhoneNumber =
-  `+(${string})(${string}${string}${string}) ${string}${string}${string}-${string}${string}${string}${string}`;
+type PhoneNumber = string;
+
 type Country = "Canada" | "United States";
 
 type StoreLocation = "Calgary" | "Edmonton" | "Vancouver";

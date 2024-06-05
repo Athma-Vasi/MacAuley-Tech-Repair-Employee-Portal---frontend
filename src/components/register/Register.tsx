@@ -2,34 +2,18 @@ import { Container, Stack, Text } from "@mantine/core";
 import { useEffect, useReducer, useRef } from "react";
 import { useErrorBoundary } from "react-error-boundary";
 
-import {
-  COUNTRIES_DATA,
-  DEPARTMENT_DATA,
-  JOB_POSITION_DATA,
-  PROVINCES,
-  STATES_US,
-  STORE_LOCATION_DATA,
-} from "../../constants/data";
 import { useFetchInterceptor } from "../../hooks/useFetchInterceptor";
-import {
-  Country,
-  Department,
-  JobPosition,
-  PreferredPronouns,
-  Province,
-  StatesUS,
-  StoreLocation,
-} from "../../types";
+import { UserSchema } from "../../types";
 import { formSubmitPOST, logState } from "../../utils";
 import { AccessibleButton } from "../accessibleInputs/AccessibleButton";
-import { AccessibleDateTimeInput } from "../accessibleInputs/AccessibleDateTimeInput";
-import { AccessiblePasswordInput } from "../accessibleInputs/AccessiblePasswordInput";
-import { AccessibleSelectInput } from "../accessibleInputs/AccessibleSelectInput";
 import { AccessibleStepper } from "../accessibleInputs/AccessibleStepper";
-import { AccessibleTextInput } from "../accessibleInputs/text/AccessibleTextInput";
-import { RegisterAction, registerAction } from "./actions";
-import { PREFERRED_PRONOUNS_DATA, returnRegisterStepperPages } from "./constants";
+import { registerAction } from "./actions";
+import { REGISTER_ROLE_ROUTE_PATHS, returnRegisterperPages } from "./constants";
 import { registerReducer } from "./reducers";
+import { RegisterAdditional } from "./RegisterAdditional";
+import { RegisterAddress } from "./RegisterAddress";
+import { RegisterAuthentication } from "./RegisterAuthentication";
+import { RegisterPersonal } from "./RegisterPersonal";
 import { initialRegisterState } from "./state";
 
 function Register() {
@@ -89,24 +73,65 @@ function Register() {
     let isComponentMounted = isComponentMountedRef.current;
 
     if (triggerFormSubmit) {
-      // const schema =
-      // formSubmitPOST({
-      //   dispatch: registerDispatch,
-      //   fetchAbortController,
-      //   fetchInterceptor,
-      //   isComponentMounted,
-      //   isSubmittingAction: registerAction.setIsSubmitting,
-      //   isSuccessfulAction: registerAction.setIsSuccessful,
-      //   preFetchAbortController,
-      //   roleResourceRoutePaths: ADDRESS_CHANGE_ROLE_PATHS,
-      //   schema,
-      //   schemaName: "registerSchema",
-      //   sessionId,
-      //   showBoundary,
-      //   userId,
-      //   username,
-      //   userRole: "manager",
-      // });
+      const userSchema: UserSchema = {
+        active: true,
+        address:
+          country === "Canada"
+            ? {
+                addressLine,
+                city,
+                country,
+                postalCode,
+                province,
+              }
+            : {
+                addressLine,
+                city,
+                country,
+                postalCode,
+                state,
+              },
+        completedSurveys: [],
+        contactNumber,
+        dateOfBirth,
+        department,
+        email,
+        emergencyContact: {
+          contactNumber: emergencyContactNumber,
+          fullName: emergencyContactName,
+        },
+        firstName,
+        isPrefersReducedMotion: false,
+        jobPosition,
+        lastName,
+        middleName,
+        password,
+        preferredName,
+        preferredPronouns,
+        profilePictureUrl,
+        roles: ["Employee"],
+        startDate,
+        storeLocation,
+        username,
+      };
+
+      formSubmitPOST({
+        dispatch: registerDispatch,
+        fetchAbortController,
+        fetchInterceptor,
+        isComponentMounted,
+        isSubmittingAction: registerAction.setIsSubmitting,
+        isSuccessfulAction: registerAction.setIsSuccessful,
+        preFetchAbortController,
+        roleResourceRoutePaths: REGISTER_ROLE_ROUTE_PATHS,
+        schema: userSchema,
+        schemaName: "userSchema",
+        sessionId: "",
+        showBoundary,
+        userId: "",
+        username,
+        userRole: "manager",
+      });
     }
 
     return () => {
@@ -138,363 +163,62 @@ function Register() {
     return successfulState;
   }
 
-  const registerStepperPages = returnRegisterStepperPages(country);
-
-  const addressLineTextInput = (
-    <AccessibleTextInput
-      attributes={{
-        stepperPages: registerStepperPages,
-        invalidValueAction: registerAction.setPageInError,
-        name: "addressLine",
-        parentDispatch: registerDispatch,
-        validValueAction: registerAction.setAddressLine,
-        value: addressLine,
-      }}
-    />
-  );
-
-  const cityTextInput = (
-    <AccessibleTextInput
-      attributes={{
-        stepperPages: registerStepperPages,
-        invalidValueAction: registerAction.setPageInError,
-        name: "city",
-        parentDispatch: registerDispatch,
-        validValueAction: registerAction.setCity,
-        value: city,
-      }}
-    />
-  );
-
-  const confirmPasswordTextInput = (
-    <AccessiblePasswordInput<
-      RegisterAction["setConfirmPassword"],
-      RegisterAction["setPageInError"]
-    >
-      attributes={{
-        stepperPages: registerStepperPages,
-        invalidValueAction: registerAction.setPageInError,
-        name: "confirmPassword",
-        parentDispatch: registerDispatch,
-        validValueAction: registerAction.setConfirmPassword,
-        value: confirmPassword,
-      }}
-    />
-  );
-
-  const contactNumberTextInput = (
-    <AccessibleTextInput
-      attributes={{
-        stepperPages: registerStepperPages,
-        invalidValueAction: registerAction.setPageInError,
-        name: "contactNumber",
-        parentDispatch: registerDispatch,
-        validValueAction: registerAction.setContactNumber,
-        value: contactNumber,
-      }}
-    />
-  );
-
-  const countrySelectInput = (
-    <AccessibleSelectInput<RegisterAction["setCountry"], Country>
-      attributes={{
-        data: COUNTRIES_DATA,
-        name: "country",
-        parentDispatch: registerDispatch,
-        validValueAction: registerAction.setCountry,
-        value: country,
-      }}
-    />
-  );
-
-  const dateOfBirthTextInput = (
-    <AccessibleDateTimeInput
-      attributes={{
-        dateKind: "full date",
-        inputKind: "date",
-        stepperPages: registerStepperPages,
-        invalidValueAction: registerAction.setPageInError,
-        name: "dateOfBirth",
-        parentDispatch: registerDispatch,
-        validValueAction: registerAction.setDateOfBirth,
-        value: dateOfBirth,
-      }}
-    />
-  );
-
-  const departmentSelectInput = (
-    <AccessibleSelectInput<RegisterAction["setDepartment"], Department>
-      attributes={{
-        data: DEPARTMENT_DATA,
-        name: "department",
-        parentDispatch: registerDispatch,
-        validValueAction: registerAction.setDepartment,
-        value: department,
-      }}
-    />
-  );
-
-  const emailTextInput = (
-    <AccessibleTextInput
-      attributes={{
-        stepperPages: registerStepperPages,
-        invalidValueAction: registerAction.setPageInError,
-        name: "email",
-        parentDispatch: registerDispatch,
-        validValueAction: registerAction.setEmail,
-        value: email,
-      }}
-    />
-  );
-
-  const emergencyContactNameTextInput = (
-    <AccessibleTextInput
-      attributes={{
-        stepperPages: registerStepperPages,
-        invalidValueAction: registerAction.setPageInError,
-        name: "emergencyContactName",
-        parentDispatch: registerDispatch,
-        validValueAction: registerAction.setEmergencyContactName,
-        value: emergencyContactName,
-      }}
-    />
-  );
-
-  const emergencyContactNumberTextInput = (
-    <AccessibleTextInput
-      attributes={{
-        stepperPages: registerStepperPages,
-        invalidValueAction: registerAction.setPageInError,
-        name: "emergencyContactNumber",
-        parentDispatch: registerDispatch,
-        validValueAction: registerAction.setEmergencyContactNumber,
-        value: emergencyContactNumber,
-      }}
-    />
-  );
-
-  const firstNameTextInput = (
-    <AccessibleTextInput
-      attributes={{
-        stepperPages: registerStepperPages,
-        invalidValueAction: registerAction.setPageInError,
-        name: "firstName",
-        parentDispatch: registerDispatch,
-        validValueAction: registerAction.setFirstName,
-        value: firstName,
-      }}
-    />
-  );
-
-  const jobPositionSelectInput = (
-    <AccessibleSelectInput<RegisterAction["setJobPosition"], JobPosition>
-      attributes={{
-        data: JOB_POSITION_DATA,
-        name: "jobPosition",
-        parentDispatch: registerDispatch,
-        validValueAction: registerAction.setJobPosition,
-        value: jobPosition,
-      }}
-    />
-  );
-
-  const lastNameTextInput = (
-    <AccessibleTextInput
-      attributes={{
-        stepperPages: registerStepperPages,
-        invalidValueAction: registerAction.setPageInError,
-        name: "lastName",
-        parentDispatch: registerDispatch,
-        validValueAction: registerAction.setLastName,
-        value: lastName,
-      }}
-    />
-  );
-
-  const middleNameTextInput = (
-    <AccessibleTextInput
-      attributes={{
-        stepperPages: registerStepperPages,
-        invalidValueAction: registerAction.setPageInError,
-        name: "middleName",
-        parentDispatch: registerDispatch,
-        validValueAction: registerAction.setMiddleName,
-        value: middleName,
-      }}
-    />
-  );
-
-  const passwordTextInput = (
-    <AccessiblePasswordInput<
-      RegisterAction["setPassword"],
-      RegisterAction["setPageInError"]
-    >
-      attributes={{
-        stepperPages: registerStepperPages,
-        invalidValueAction: registerAction.setPageInError,
-        name: "password",
-        parentDispatch: registerDispatch,
-        validValueAction: registerAction.setPassword,
-        value: password,
-      }}
-    />
-  );
-
-  const postalCodeTextInput = (
-    <AccessibleTextInput
-      attributes={{
-        stepperPages: registerStepperPages,
-        invalidValueAction: registerAction.setPageInError,
-        name: "postalCode",
-        parentDispatch: registerDispatch,
-        validValueAction: registerAction.setPostalCode,
-        value: postalCode,
-      }}
-    />
-  );
-
-  const preferredNameTextInput = (
-    <AccessibleTextInput
-      attributes={{
-        stepperPages: registerStepperPages,
-        invalidValueAction: registerAction.setPageInError,
-        name: "preferredName",
-        parentDispatch: registerDispatch,
-        validValueAction: registerAction.setPreferredName,
-        value: preferredName,
-      }}
-    />
-  );
-
-  const preferredPronounsSelectInput = (
-    <AccessibleSelectInput<RegisterAction["setPreferredPronouns"], PreferredPronouns>
-      attributes={{
-        data: PREFERRED_PRONOUNS_DATA,
-        name: "preferredPronouns",
-        parentDispatch: registerDispatch,
-        validValueAction: registerAction.setPreferredPronouns,
-        value: preferredPronouns,
-      }}
-    />
-  );
-
-  const profilePictureUrlTextInput = (
-    <AccessibleTextInput
-      attributes={{
-        stepperPages: registerStepperPages,
-        invalidValueAction: registerAction.setPageInError,
-        name: "profilePictureUrl",
-        parentDispatch: registerDispatch,
-        validValueAction: registerAction.setProfilePictureUrl,
-        value: profilePictureUrl,
-      }}
-    />
-  );
-
-  const provinceOrStateSelectInput =
-    country === "Canada" ? (
-      <AccessibleSelectInput<RegisterAction["setProvince"], Province>
-        attributes={{
-          data: PROVINCES,
-          name: "province",
-          parentDispatch: registerDispatch,
-          validValueAction: registerAction.setProvince,
-          value: province,
-        }}
-      />
-    ) : (
-      <AccessibleSelectInput<RegisterAction["setState"], StatesUS>
-        attributes={{
-          data: STATES_US,
-          name: "state",
-          parentDispatch: registerDispatch,
-          validValueAction: registerAction.setState,
-          value: state,
-        }}
-      />
-    );
-
-  const startDateTextInput = (
-    <AccessibleDateTimeInput
-      attributes={{
-        dateKind: "date near future",
-        inputKind: "date",
-        stepperPages: registerStepperPages,
-        invalidValueAction: registerAction.setPageInError,
-        name: "startDate",
-        parentDispatch: registerDispatch,
-        validValueAction: registerAction.setStartDate,
-        value: startDate,
-      }}
-    />
-  );
-
-  const storeLocationSelectInput = (
-    <AccessibleSelectInput<RegisterAction["setStoreLocation"], StoreLocation>
-      attributes={{
-        data: STORE_LOCATION_DATA,
-        name: "storeLocation",
-        parentDispatch: registerDispatch,
-        validValueAction: registerAction.setStoreLocation,
-        value: storeLocation,
-      }}
-    />
-  );
-
-  const usernameTextInput = (
-    <AccessibleTextInput
-      attributes={{
-        stepperPages: registerStepperPages,
-        invalidValueAction: registerAction.setPageInError,
-        name: "username",
-        parentDispatch: registerDispatch,
-        validValueAction: registerAction.setUsername,
-        value: username,
-      }}
-    />
-  );
+  const registerStepperPages = returnRegisterperPages(country);
 
   const authenticationPage = (
-    <Stack>
-      {emailTextInput}
-      {usernameTextInput}
-      {passwordTextInput}
-      {confirmPasswordTextInput}
-    </Stack>
+    <RegisterAuthentication
+      confirmPassword={confirmPassword}
+      email={email}
+      parentAction={registerAction}
+      parentDispatch={registerDispatch}
+      password={password}
+      stepperPages={registerStepperPages}
+      username={username}
+    />
   );
 
   const personalPage = (
-    <Stack>
-      {firstNameTextInput}
-      {middleNameTextInput}
-      {lastNameTextInput}
-      {preferredNameTextInput}
-      {preferredPronounsSelectInput}
-      {profilePictureUrlTextInput}
-      {dateOfBirthTextInput}
-    </Stack>
+    <RegisterPersonal
+      dateOfBirth={dateOfBirth}
+      firstName={firstName}
+      middleName={middleName}
+      lastName={lastName}
+      parentAction={registerAction}
+      parentDispatch={registerDispatch}
+      preferredName={preferredName}
+      preferredPronouns={preferredPronouns}
+      profilePictureUrl={profilePictureUrl}
+      stepperPages={registerStepperPages}
+    />
   );
 
   const addressPage = (
-    <Stack>
-      {addressLineTextInput}
-      {cityTextInput}
-      {provinceOrStateSelectInput}
-      {postalCodeTextInput}
-      {countrySelectInput}
-      {contactNumberTextInput}
-    </Stack>
+    <RegisterAddress
+      addressLine={addressLine}
+      city={city}
+      contactNumber={contactNumber}
+      country={country}
+      parentAction={registerAction}
+      parentDispatch={registerDispatch}
+      postalCode={postalCode}
+      province={province}
+      state={state}
+      stepperPages={registerStepperPages}
+    />
   );
 
   const additionalPage = (
-    <Stack>
-      {jobPositionSelectInput}
-      {departmentSelectInput}
-      {storeLocationSelectInput}
-      {emergencyContactNameTextInput}
-      {emergencyContactNumberTextInput}
-      {startDateTextInput}
-    </Stack>
+    <RegisterAdditional
+      department={department}
+      emergencyContactName={emergencyContactName}
+      emergencyContactNumber={emergencyContactNumber}
+      jobPosition={jobPosition}
+      parentAction={registerAction}
+      parentDispatch={registerDispatch}
+      startDate={startDate}
+      stepperPages={registerStepperPages}
+      storeLocation={storeLocation}
+    />
   );
 
   const submitButton = (
@@ -1019,7 +743,7 @@ export default Register;
 
   const displayRegisterComponentPage =
     currentStepperPosition === 0 ? (
-      <RegisterStepAuthentication
+      <RegisterAuthentication
         email={email}
         isValidEmail={isValidEmail}
         isEmailFocused={isEmailFocused}
@@ -1038,7 +762,7 @@ export default Register;
         registerDispatch={registerDispatch}
       />
     ) : currentStepperPosition === 1 ? (
-      <RegisterStepPersonal
+      <RegisterPersonal
         firstName={firstName}
         isValidFirstName={isValidFirstName}
         isFirstNameFocused={isFirstNameFocused}
@@ -1062,7 +786,7 @@ export default Register;
         registerDispatch={registerDispatch}
       />
     ) : currentStepperPosition === 2 ? (
-      <RegisterStepAddress
+      <RegisterAddress
         contactNumber={contactNumber}
         isValidContactNumber={isValidContactNumber}
         isContactNumberFocused={isContactNumberFocused}
@@ -1082,7 +806,7 @@ export default Register;
         registerDispatch={registerDispatch}
       />
     ) : currentStepperPosition === 3 ? (
-      <RegisterStepAdditional
+      <RegisterAdditional
         jobPosition={jobPosition}
         department={department}
         storeLocation={storeLocation}
@@ -1099,7 +823,7 @@ export default Register;
         registerDispatch={registerDispatch}
       />
     ) : currentStepperPosition === 4 ? (
-      <RegisterStepReview
+      <RegisterReview
         email={email}
         username={username}
         firstName={firstName}

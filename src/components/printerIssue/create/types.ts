@@ -61,7 +61,7 @@ type PrinterIssueState = {
   printerMake: PrinterMake;
   printerModel: string;
   printerSerialNumber: string;
-  timeOfOccurrence: TimeRailway | string;
+  timeOfOccurrence: TimeRailway;
   title: string;
   triggerFormSubmit: boolean;
   urgency: Urgency;
@@ -119,7 +119,7 @@ type PrinterIssueDispatch =
     }
   | {
       action: PrinterIssueAction["setTimeOfOccurrence"];
-      payload: TimeRailway | string;
+      payload: TimeRailway;
     }
   | {
       action: PrinterIssueAction["setTitle"];

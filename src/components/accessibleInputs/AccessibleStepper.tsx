@@ -49,7 +49,7 @@ function AccessibleStepper({ attributes }: AccessibleStepperProps) {
 
   const [activeStep, setActiveStep] = useState(0);
   const [stepsInError, setStepsInError] = useState<boolean[]>(
-    stepperPages.map((page) => false)
+    stepperPages.map(() => false)
   );
 
   const maxStep = stepperPages.length;

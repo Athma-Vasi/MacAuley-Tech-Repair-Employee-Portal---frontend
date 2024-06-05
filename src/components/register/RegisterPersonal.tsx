@@ -1,54 +1,149 @@
-import { ChangeEvent, useCallback, useEffect } from "react";
+import { Stack } from "@mantine/core";
 
-import { DATE_OF_BIRTH_REGEX, NAME_REGEX, URL_REGEX } from "../../../constants/regex";
-import {
-  AccessibleErrorValidTextElements,
-  returnAccessibleDateTimeElements,
-  returnAccessibleSelectInputElements,
-  returnAccessibleTextInputElements,
-} from "../../../jsxCreators";
-import { PreferredPronouns } from "../../../types";
-import {
-  isAgeOver18,
-  returnDateOfBirthValidationText,
-  returnDateValidationText,
-  returnNameValidationText,
-  returnUrlValidationText,
-} from "../../../utils";
-import {
-  AccessibleDateTimeInputCreatorInfo,
-  AccessibleSelectInputCreatorInfo,
-  AccessibleTextInputCreatorInfo,
-  FormLayoutWrapper,
-} from "../../wrappers";
-import { PREFERRED_PRONOUNS_DATA } from "../constants";
-import type { RegisterStepPersonalProps } from "./types";
+import { PreferredPronouns, StepperPage } from "../../types";
+import { AccessibleDateTimeInput } from "../accessibleInputs/AccessibleDateTimeInput";
+import { AccessibleSelectInput } from "../accessibleInputs/AccessibleSelectInput";
+import { AccessibleTextInput } from "../accessibleInputs/text/AccessibleTextInput";
+import { RegisterAction } from "./actions";
+import { PREFERRED_PRONOUNS_DATA } from "./constants";
 
-function RegisterStepPersonal({
+type RegisterPersonalProps = {
+  dateOfBirth: string;
+  firstName: string;
+  lastName: string;
+  middleName: string;
+  parentAction: RegisterAction;
+  parentDispatch: any;
+  preferredName: string;
+  preferredPronouns: PreferredPronouns;
+  profilePictureUrl: string;
+  stepperPages: StepperPage[];
+};
+
+function RegisterPersonal({
+  dateOfBirth,
   firstName,
-  isValidFirstName,
-  isFirstNameFocused,
-  middleName,
-  isValidMiddleName,
-  isMiddleNameFocused,
   lastName,
-  isValidLastName,
-  isLastNameFocused,
+  middleName,
+  parentAction,
+  parentDispatch,
   preferredName,
-  isValidPreferredName,
-  isPreferredNameFocused,
   preferredPronouns,
   profilePictureUrl,
-  isValidProfilePictureUrl,
-  isProfilePictureUrlFocused,
-  dateOfBirth,
-  isValidDateOfBirth,
-  isDateOfBirthFocused,
-  registerDispatch,
-  registerAction,
-}: RegisterStepPersonalProps) {}
+  stepperPages,
+}: RegisterPersonalProps) {
+  const dateOfBirthTextInput = (
+    <AccessibleDateTimeInput
+      attributes={{
+        dateKind: "full date",
+        inputKind: "date",
+        invalidValueAction: parentAction.setPageInError,
+        name: "dateOfBirth",
+        page: 1,
+        parentDispatch,
+        stepperPages,
+        validValueAction: parentAction.setDateOfBirth,
+        value: dateOfBirth,
+      }}
+    />
+  );
 
-export { RegisterStepPersonal };
+  const firstNameTextInput = (
+    <AccessibleTextInput
+      attributes={{
+        stepperPages,
+        invalidValueAction: parentAction.setPageInError,
+        name: "firstName",
+        page: 1,
+        parentDispatch,
+        validValueAction: parentAction.setFirstName,
+        value: firstName,
+      }}
+    />
+  );
+
+  const lastNameTextInput = (
+    <AccessibleTextInput
+      attributes={{
+        stepperPages,
+        invalidValueAction: parentAction.setPageInError,
+        name: "lastName",
+        page: 1,
+        parentDispatch,
+        validValueAction: parentAction.setLastName,
+        value: lastName,
+      }}
+    />
+  );
+
+  const middleNameTextInput = (
+    <AccessibleTextInput
+      attributes={{
+        stepperPages,
+        invalidValueAction: parentAction.setPageInError,
+        name: "middleName",
+        page: 1,
+        parentDispatch,
+        validValueAction: parentAction.setMiddleName,
+        value: middleName,
+      }}
+    />
+  );
+
+  const preferredNameTextInput = (
+    <AccessibleTextInput
+      attributes={{
+        stepperPages,
+        invalidValueAction: parentAction.setPageInError,
+        name: "preferredName",
+        page: 1,
+        parentDispatch,
+        validValueAction: parentAction.setPreferredName,
+        value: preferredName,
+      }}
+    />
+  );
+
+  const preferredPronounsSelectInput = (
+    <AccessibleSelectInput<RegisterAction["setPreferredPronouns"], PreferredPronouns>
+      attributes={{
+        data: PREFERRED_PRONOUNS_DATA,
+        name: "preferredPronouns",
+        parentDispatch,
+        validValueAction: parentAction.setPreferredPronouns,
+        value: preferredPronouns,
+      }}
+    />
+  );
+
+  const profilePictureUrlTextInput = (
+    <AccessibleTextInput
+      attributes={{
+        stepperPages,
+        invalidValueAction: parentAction.setPageInError,
+        name: "profilePictureUrl",
+        page: 1,
+        parentDispatch,
+        validValueAction: parentAction.setProfilePictureUrl,
+        value: profilePictureUrl,
+      }}
+    />
+  );
+
+  return (
+    <Stack>
+      {dateOfBirthTextInput}
+      {firstNameTextInput}
+      {lastNameTextInput}
+      {middleNameTextInput}
+      {preferredNameTextInput}
+      {preferredPronounsSelectInput}
+      {profilePictureUrlTextInput}
+    </Stack>
+  );
+}
+
+export { RegisterPersonal };
 
 /**
  * // used to validate first name on every change
@@ -56,60 +151,60 @@ export { RegisterStepPersonal };
     const isValidFirst = NAME_REGEX.test(firstName);
 
     registerDispatch({
-      type: registerAction.setIsValidFirstName,
+      type: parentAction.setIsValidFirstName,
       payload: isValidFirst,
     });
-  }, [firstName, registerAction.setIsValidFirstName, registerDispatch]);
+  }, [firstName, parentAction.setIsValidFirstName, registerDispatch]);
 
   // used to validate middle name on every change
   useEffect(() => {
     const isValidMiddle = NAME_REGEX.test(middleName);
 
     registerDispatch({
-      type: registerAction.setIsValidMiddleName,
+      type: parentAction.setIsValidMiddleName,
       payload: isValidMiddle,
     });
-  }, [middleName, registerAction.setIsValidMiddleName, registerDispatch]);
+  }, [middleName, parentAction.setIsValidMiddleName, registerDispatch]);
 
   // used to validate last name on every change
   useEffect(() => {
     const isValidLast = NAME_REGEX.test(lastName);
 
     registerDispatch({
-      type: registerAction.setIsValidLastName,
+      type: parentAction.setIsValidLastName,
       payload: isValidLast,
     });
-  }, [lastName, registerAction.setIsValidLastName, registerDispatch]);
+  }, [lastName, parentAction.setIsValidLastName, registerDispatch]);
 
   // used to validate profile picture url on every change
   useEffect(() => {
     const isValidPfp = URL_REGEX.test(profilePictureUrl);
 
     registerDispatch({
-      type: registerAction.setIsValidProfilePictureUrl,
+      type: parentAction.setIsValidProfilePictureUrl,
       payload: isValidPfp,
     });
-  }, [profilePictureUrl, registerAction.setIsValidProfilePictureUrl, registerDispatch]);
+  }, [profilePictureUrl, parentAction.setIsValidProfilePictureUrl, registerDispatch]);
 
   // used to validate preferred name on every change
   useEffect(() => {
     const isValidPreferred = NAME_REGEX.test(preferredName);
 
     registerDispatch({
-      type: registerAction.setIsValidPreferredName,
+      type: parentAction.setIsValidPreferredName,
       payload: isValidPreferred,
     });
-  }, [preferredName, registerAction.setIsValidPreferredName, registerDispatch]);
+  }, [preferredName, parentAction.setIsValidPreferredName, registerDispatch]);
 
   // used to validate date of birth on every change
   useEffect(() => {
     const isValidDob = DATE_OF_BIRTH_REGEX.test(dateOfBirth) && isAgeOver18(dateOfBirth);
 
     registerDispatch({
-      type: registerAction.setIsValidDateOfBirth,
+      type: parentAction.setIsValidDateOfBirth,
       payload: isValidDob,
     });
-  }, [dateOfBirth, registerAction.setIsValidDateOfBirth, registerDispatch]);
+  }, [dateOfBirth, parentAction.setIsValidDateOfBirth, registerDispatch]);
 
   // update the corresponding pagesInError state if any of the inputs are in error
   useEffect(() => {
@@ -122,7 +217,7 @@ export { RegisterStepPersonal };
     const isStepInError = areOptionalInputsInError || areRequiredInputsInError;
 
     registerDispatch({
-      type: registerAction.setPageInError,
+      type: parentAction.setPageInError,
       payload: {
         kind: isStepInError ? "add" : "delete",
         step: 1,
@@ -138,7 +233,7 @@ export { RegisterStepPersonal };
     middleName.length,
     preferredName.length,
     profilePictureUrl.length,
-    registerAction.setPageInError,
+    parentAction.setPageInError,
     registerDispatch,
   ]);
 
@@ -240,19 +335,19 @@ export { RegisterStepPersonal };
     label: "First name",
     onBlur: () => {
       registerDispatch({
-        type: registerAction.setIsFirstNameFocused,
+        type: parentAction.setIsFirstNameFocused,
         payload: false,
       });
     },
     onChange: (event: ChangeEvent<HTMLInputElement>) => {
       registerDispatch({
-        type: registerAction.setFirstName,
+        type: parentAction.setFirstName,
         payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
       registerDispatch({
-        type: registerAction.setIsFirstNameFocused,
+        type: parentAction.setIsFirstNameFocused,
         payload: true,
       });
     },
@@ -272,19 +367,19 @@ export { RegisterStepPersonal };
     label: "Middle name",
     onBlur: () => {
       registerDispatch({
-        type: registerAction.setIsMiddleNameFocused,
+        type: parentAction.setIsMiddleNameFocused,
         payload: false,
       });
     },
     onChange: (event: ChangeEvent<HTMLInputElement>) => {
       registerDispatch({
-        type: registerAction.setMiddleName,
+        type: parentAction.setMiddleName,
         payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
       registerDispatch({
-        type: registerAction.setIsMiddleNameFocused,
+        type: parentAction.setIsMiddleNameFocused,
         payload: true,
       });
     },
@@ -302,19 +397,19 @@ export { RegisterStepPersonal };
     label: "Last name",
     onBlur: () => {
       registerDispatch({
-        type: registerAction.setIsLastNameFocused,
+        type: parentAction.setIsLastNameFocused,
         payload: false,
       });
     },
     onChange: (event: ChangeEvent<HTMLInputElement>) => {
       registerDispatch({
-        type: registerAction.setLastName,
+        type: parentAction.setLastName,
         payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
       registerDispatch({
-        type: registerAction.setIsLastNameFocused,
+        type: parentAction.setIsLastNameFocused,
         payload: true,
       });
     },
@@ -334,19 +429,19 @@ export { RegisterStepPersonal };
     label: "Preferred name",
     onBlur: () => {
       registerDispatch({
-        type: registerAction.setIsPreferredNameFocused,
+        type: parentAction.setIsPreferredNameFocused,
         payload: false,
       });
     },
     onChange: (event: ChangeEvent<HTMLInputElement>) => {
       registerDispatch({
-        type: registerAction.setPreferredName,
+        type: parentAction.setPreferredName,
         payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
       registerDispatch({
-        type: registerAction.setIsPreferredNameFocused,
+        type: parentAction.setIsPreferredNameFocused,
         payload: true,
       });
     },
@@ -364,19 +459,19 @@ export { RegisterStepPersonal };
     label: "Profile picture url",
     onBlur: () => {
       registerDispatch({
-        type: registerAction.setIsProfilePictureUrlFocused,
+        type: parentAction.setIsProfilePictureUrlFocused,
         payload: false,
       });
     },
     onChange: (event: ChangeEvent<HTMLInputElement>) => {
       registerDispatch({
-        type: registerAction.setProfilePictureUrl,
+        type: parentAction.setProfilePictureUrl,
         payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
       registerDispatch({
-        type: registerAction.setIsProfilePictureUrlFocused,
+        type: parentAction.setIsProfilePictureUrlFocused,
         payload: true,
       });
     },
@@ -389,7 +484,7 @@ export { RegisterStepPersonal };
     label: "Preferred pronouns",
     onChange: (event: ChangeEvent<HTMLSelectElement>) => {
       registerDispatch({
-        type: registerAction.setPreferredPronouns,
+        type: parentAction.setPreferredPronouns,
         payload: event.currentTarget.value as PreferredPronouns,
       });
     },
@@ -409,19 +504,19 @@ export { RegisterStepPersonal };
     label: "Date of birth",
     onBlur: () => {
       registerDispatch({
-        type: registerAction.setIsDateOfBirthFocused,
+        type: parentAction.setIsDateOfBirthFocused,
         payload: false,
       });
     },
     onChange: (event: ChangeEvent<HTMLInputElement>) => {
       registerDispatch({
-        type: registerAction.setDateOfBirth,
+        type: parentAction.setDateOfBirth,
         payload: event.currentTarget.value,
       });
     },
     onFocus: () => {
       registerDispatch({
-        type: registerAction.setIsDateOfBirthFocused,
+        type: parentAction.setIsDateOfBirthFocused,
         payload: true,
       });
     },
