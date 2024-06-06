@@ -1,38 +1,10 @@
-import { Group, MantineNumberSize, Stack, Text, Title, Tooltip } from "@mantine/core";
-import { ChangeEvent, MouseEvent, useEffect } from "react";
-import { TbPlus, TbTrash } from "react-icons/tb";
+import { MantineNumberSize } from "@mantine/core";
 
-import {
-  AccessibleErrorValidTextElements,
-  returnAccessibleButtonElements,
-  returnAccessibleSelectInputElements,
-  returnAccessibleTextAreaInputElements,
-  returnAccessibleTextInputElements,
-} from "../../../jsxCreators";
-import {
-  returnCpuFrequencyValidationText,
-  returnMediumIntegerValidationText,
-  returnObjectKeyValidationText,
-  returnSmallIntegerValidationText,
-  returnSocketChipsetValidationText,
-  returnUserDefinedFieldValueValidationText,
-} from "../../../utils";
-import { AccessibleTextAreaInputCreatorInfo } from "../../wrappers";
-import {
-  CPU_FREQUENCY_REGEX,
-  CPU_SOCKET_REGEX,
-  MEDIUM_INTEGER_REGEX,
-  MEMORY_UNIT_SELECT_INPUT_DATA,
-  OBJECT_KEY_REGEX,
-  SMALL_INTEGER_REGEX,
-  USER_DEFINED_VALUE_REGEX,
-} from "../constants";
 import { CreateProductDispatch } from "../dispatch";
-import { CreateProductAction, MemoryUnit } from "../types";
+import { MemoryUnit } from "../types";
+import { CreateProductAction } from "../actions";
 
 type CreateCpuProps = {
-  areCpuFieldsAdditionalMapFocused: Map<number, [boolean, boolean]>;
-  areCpuFieldsAdditionalMapValid: Map<number, [boolean, boolean]>;
   cpuCores: string;
   cpuFieldsAdditionalMap: Map<number, [string, string]>;
   cpuFrequency: string;
@@ -46,27 +18,10 @@ type CreateCpuProps = {
   cpuWattage: string;
   createProductAction: CreateProductAction;
   createProductDispatch: React.Dispatch<CreateProductDispatch>;
-  currentlySelectedAdditionalFieldIndex: number;
-  isCpuCoresFocused: boolean;
-  isCpuCoresValid: boolean;
-  isCpuFrequencyFocused: boolean;
-  isCpuFrequencyValid: boolean;
-  isCpuL1CacheCapacityFocused: boolean;
-  isCpuL1CacheCapacityValid: boolean;
-  isCpuL2CacheCapacityFocused: boolean;
-  isCpuL2CacheCapacityValid: boolean;
-  isCpuL3CacheCapacityFocused: boolean;
-  isCpuL3CacheCapacityValid: boolean;
-  isCpuSocketFocused: boolean;
-  isCpuSocketValid: boolean;
-  isCpuWattageFocused: boolean;
-  isCpuWattageValid: boolean;
   padding: MantineNumberSize;
 };
 
 function CreateCpu({
-  areCpuFieldsAdditionalMapFocused,
-  areCpuFieldsAdditionalMapValid,
   cpuCores,
   cpuFieldsAdditionalMap,
   cpuFrequency,
@@ -80,24 +35,14 @@ function CreateCpu({
   cpuWattage,
   createProductAction,
   createProductDispatch,
-  currentlySelectedAdditionalFieldIndex,
-  isCpuCoresFocused,
-  isCpuCoresValid,
-  isCpuFrequencyFocused,
-  isCpuFrequencyValid,
-  isCpuL1CacheCapacityFocused,
-  isCpuL1CacheCapacityValid,
-  isCpuL2CacheCapacityFocused,
-  isCpuL2CacheCapacityValid,
-  isCpuL3CacheCapacityFocused,
-  isCpuL3CacheCapacityValid,
-  isCpuSocketFocused,
-  isCpuSocketValid,
-  isCpuWattageFocused,
-  isCpuWattageValid,
   padding,
 }: CreateCpuProps) {
-  // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+  return null;
+}
+
+export default CreateCpu;
+/**
+ * // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
   //  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
   //    VALIDATION USE EFFECTS
   //  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
@@ -1033,6 +978,5 @@ function CreateCpu({
   );
 
   return displayCpuSpecificationsInputs;
-}
 
-export default CreateCpu;
+ */

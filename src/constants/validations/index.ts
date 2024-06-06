@@ -1,17 +1,29 @@
 import { ValidationFunctionsTable } from "../../types";
 
 type ValidationKey =
+  | "objectKey"
+  | "accessoryType"
   | "acknowledgement"
   | "addressLine"
   | "allowAll"
+  | "brand"
   | "city"
+  | "colorVariant"
+  | "cpuFrequency"
+  | "cpuSocket" // | "gpuChipset" | "motherboardSocket" | "motherboardChipset"
   | "date"
-  | "dateNearFuture"
   | "dateFullRange"
+  | "dateNearFuture"
   | "dateNearPast"
   | "dateOfBirth"
+  | "dimensions"
+  | "displayAspectRatio"
   | "email"
+  | "frequencyResponse"
   | "fullName"
+  | "largeInteger"
+  | "mediumInteger"
+  | "mobileCamera"
   | "money"
   | "name"
   | "password"
@@ -23,17 +35,42 @@ type ValidationKey =
   | "printerMakeModel"
   | "printerSerial"
   | "privacyConsent"
+  | "ramTiming"
+  | "ramVoltage"
   | "search"
-  | "textInput"
+  | "smallInteger"
   | "textAreaInput"
+  | "textInput"
   | "timeRailway"
   | "url"
-  | "username";
+  | "userDefinedValue"
+  | "username"
+  | "weight";
 
 /**
  * this table contains the validation objects consumed by validator functions in Accessible${Inputs} components, allowing safe deep copying in reducers.
  */
 const VALIDATION_FUNCTIONS_TABLE: ValidationFunctionsTable = {
+  accessoryType: {
+    full: function accessoryTypeValidation(value: string) {
+      /**
+       * - /^[a-zA-Z0-9\s-]{2,30}$/
+       * - [a-zA-Z0-9\s-] matches any character between a-z, A-Z, 0-9, whitespace and -.
+       * - {2,30} matches between 2 and 30 of the preceding token.
+       * - ^ and $ ensure that the entire string matches the regex.
+       */
+      return /^[a-zA-Z0-9\s-]{2,30}$/.test(value);
+    },
+
+    partials: [
+      [
+        /^[a-zA-Z0-9\s-]{2,30}$/,
+        "Must contain only letters, numbers, spaces, periods, commas, hyphens, and apostrophes.",
+      ],
+      [/^.{2,30}$/, "Must be between 2 and 30 characters length."],
+    ],
+  },
+
   acknowledgement: {
     full: function acknowledgementValidation(value: string) {
       return /^(true)$/.test(value);
@@ -58,6 +95,26 @@ const VALIDATION_FUNCTIONS_TABLE: ValidationFunctionsTable = {
 
   allowAll: { full: (_value: string) => true, partials: [] },
 
+  brand: {
+    full: function brandValidation(value: string) {
+      /**
+       * - /^[a-zA-Z0-9\s-]{2,30}$/
+       * - [a-zA-Z0-9\s-] matches any character between a-z, A-Z, 0-9, whitespace and -.
+       * - {2,30} matches between 2 and 30 of the preceding token.
+       * - ^ and $ ensure that the entire string matches the regex.
+       */
+      return /^[a-zA-Z0-9\s-]{2,30}$/.test(value);
+    },
+
+    partials: [
+      [
+        /^[a-zA-Z0-9\s-]{2,30}$/,
+        "Must contain only letters, numbers, spaces, periods, commas, hyphens, and apostrophes.",
+      ],
+      [/^.{2,30}$/, "Must be between 2 and 30 characters length."],
+    ],
+  },
+
   city: {
     full: function cityValidation(value: string) {
       /**
@@ -76,6 +133,71 @@ const VALIDATION_FUNCTIONS_TABLE: ValidationFunctionsTable = {
         "Must contain only letters, spaces, periods, hyphens, and apostrophes.",
       ],
       [/^.{2,75}$/, "Must be between 2 and 75 characters length."],
+    ],
+  },
+
+  colorVariant: {
+    full: function colorVariantValidation(value: string) {
+      /**
+       * - /^[a-zA-Z0-9#()%,.\s-]{2,30}$/
+       * - [a-zA-Z0-9#()%,.\s-] matches any character between a-z, A-Z, 0-9, #, (, ), %, ,, ., whitespace and -.
+       * - {2,30} matches between 2 and 30 of the preceding token.
+       * - ^ and $ ensure that the entire string matches the regex.
+       * - ex: #e0e0e0 or hsl(0, 0%, 88%) or rgb(224, 224, 224) or rgba(224, 224, 224, 0.5) or hsla(0, 0%, 88%, 0.5)
+       */
+      return /^[a-zA-Z0-9#()%,.\s-]{2,30}$/.test(value);
+    },
+
+    partials: [
+      [
+        /^[a-zA-Z0-9#()%,.\s-]{2,30}$/,
+        "Must contain only letters, numbers, spaces, periods, commas, hyphens, and apostrophes. Ex: #e0e0e0 or rgb(224, 224, 224) or hsla(0, 0%, 88%, 0.5)",
+      ],
+      [/^.{2,30}$/, "Must be between 2 and 30 characters length."],
+    ],
+  },
+
+  cpuFrequency: {
+    full: function cpuFrequencyValidation(value: string) {
+      /**
+       * - /^(?!^$|^0*$)[0-9]{1}(\.[0-9]{1,2})?$/
+       * - (?!^$|^0*$): Negative lookahead assertion to ensure that the entire string is not empty (^$) or consists entirely of zeroes (^0*$).
+       * - [0-9]{1}: Matches one digit for the integral part of the frequency.
+       * - (\.[0-9]{1,2})?: This part is in a capturing group and is optional (?). It allows for an optional decimal point followed by one or two digits, representing the decimal part of the frequency.
+       * - ^ and $ ensure that the entire string matches the regex.
+       * - ex: 1.2 or 1
+       */
+      return /^(?!^$|^0*$)[0-9]{1}(\.[0-9]{1,2})?$/.test(value);
+    },
+
+    partials: [
+      [/^(?!^$|^0*$)/, "Must not be empty or consist entirely of zeroes."],
+      [/^[0-9]{1}(\.[0-9]{1,2})?$/, "Must contain only numbers."],
+      [/^.{1,4}$/, "Must be between 1 and 4 characters length."],
+      [
+        /^[0-9]{1}(\.[0-9]{1,2})?$/,
+        "Must contain only numbers with an optional decimal point.",
+      ],
+    ],
+  },
+
+  cpuSocket: {
+    full: function cpuSocketValidation(value: string) {
+      /**
+       * - /^[a-zA-Z0-9\s.,'()-]{2,30}$/i;
+       * - [a-zA-Z0-9\s.,'()-] matches any character between a-z, A-Z, 0-9, whitespace, ., ,, ', (, ), -.
+       * - {2,30} matches between 2 and 30 of the preceding token.
+       * - ^ and $ ensure that the entire string matches the regex.
+       */
+      return /^[a-zA-Z0-9\s.,'()-]{2,30}$/i.test(value);
+    },
+
+    partials: [
+      [
+        /^[a-zA-Z0-9\s.,'()-]{2,30}$/,
+        "Must contain only letters, numbers, spaces, periods, commas, hyphens, and apostrophes.",
+      ],
+      [/^.{2,30}$/, "Must be between 2 and 30 characters length."],
     ],
   },
 
@@ -262,6 +384,53 @@ const VALIDATION_FUNCTIONS_TABLE: ValidationFunctionsTable = {
     ],
   },
 
+  dimensions: {
+    full: function dimensionsValidation(value: string) {
+      /**
+       * - /^(?!^$|^0*$)(?!^0*\.?0*$)[0-9]{1,3}(\.[0-9]{1,2})?$/
+       * - (?!^$|^0*$): Negative lookahead assertion to ensure that the entire string is not empty (^$) or consists entirely of zeroes (^0*$).
+       * - (?!^0*\.?0*$): Negative lookahead assertion to ensure that the entire string is not empty (^0*$) or consists entirely of zeroes (^0*), optionally followed by a decimal point (\.?0*$).
+       * - [0-9]{1,3}: Matches one to three digits for the integral part of the length, width, or height.
+       * - (\.[0-9]{1,2})?: This part is in a capturing group and is optional (?). It allows for an optional decimal point followed by one or two digits, representing the decimal part of the length, width, or height.
+       * - ^ and $ ensure that the entire string matches the regex.
+       * - ex: 123.45 or 123
+       */
+      return /^(?!^$|^0*$)(?!^0*\.?0*$)[0-9]{1,3}(\.[0-9]{1,2})?$/.test(value);
+    },
+
+    partials: [
+      [/^(?!^$|^0*$)/, "Must not be empty or consist entirely of zeroes."],
+      [/^(?!^0*\.?0*$)/, "Must not be empty or consist entirely of zeroes."],
+      [/^[0-9]{1,3}(\.[0-9]{1,2})?$/, "Must contain only numbers."],
+      [/^.{1,6}$/, "Must be between 1 and 6 characters length."],
+      [
+        /^[0-9]{1,3}(\.[0-9]{1,2})?$/,
+        "Must contain only numbers with an optional decimal point.",
+      ],
+    ],
+  },
+
+  displayAspectRatio: {
+    full: function displayAspectRatioValidation(value: string) {
+      /**
+       * - /^[0-9]{1,2}:[0-9]{1,2}$/
+       * - [0-9] matches any digit between 0 and 9.
+       * - {1,2} matches the preceding token between 1 and 2 times.
+       * - matches the character : literally.
+       * - ^ and $ ensure that the entire string matches the regex.
+       * - ex: 16:9
+       */
+      return /^[0-9]{1,2}:[0-9]{1,2}$/.test(value);
+    },
+
+    partials: [
+      [
+        /^[0-9]{1,2}:[0-9]{1,2}$/,
+        "Must be a valid display aspect ratio in the format 00:00.",
+      ],
+    ],
+  },
+
   email: {
     full: function emailValidation(value: string) {
       /**
@@ -313,6 +482,91 @@ const VALIDATION_FUNCTIONS_TABLE: ValidationFunctionsTable = {
     ],
   },
 
+  frequencyResponse: {
+    full: function frequencyResponseValidation(value: string) {
+      /**
+       * - /^[0-9]{1,2}[\s]{0,1}Hz[\s]{0,1}-[\s]{0,1}[0-9]{1,2}[\s]{0,1}kHz$/
+       * - [0-9] matches any digit between 0 and 9.
+       * - {1,2} matches the preceding token between 1 and 2 times.
+       * - [\s]{0,1} matches the character whitespace literally between 0 and 1 times.
+       * - matches the character Hz literally.
+       * - matches the character - literally.
+       * - matches the character kHz literally.
+       * - ^ and $ ensure that the entire string matches the regex.
+       * - ex: 20Hz-20kHz or 20 Hz - 20 kHz or 20 Hz-20 kHz or 20Hz - 20kHz
+       */
+      return /^[0-9]{1,2}[\s]{0,1}Hz[\s]{0,1}-[\s]{0,1}[0-9]{1,2}[\s]{0,1}kHz$/.test(
+        value
+      );
+    },
+
+    partials: [
+      [
+        /^[0-9]{1,2}[\s]{0,1}Hz[\s]{0,1}-[\s]{0,1}[0-9]{1,2}[\s]{0,1}kHz$/,
+        "Must be a valid speaker frequency response in the format 00Hz-00kHz with optional single spaces.",
+      ],
+    ],
+  },
+
+  largeInteger: {
+    full: function largeIntegerValidation(value: string) {
+      /**
+       * - /^(?!^$|^0*$)[0-9]{1,6}$/
+       * - (?!^$|^0*$): Negative lookahead assertion to ensure that the entire string is not empty (^$) or consists entirely of zeroes (^0*$).
+       * - [0-9]{1,6}: Matches one to six digits for the integral part of the quantity.
+       * - ^ and $ ensure that the entire string matches the regex.
+       * - ex: 123456
+       */
+      return /^(?!^$|^0*$)[0-9]{1,6}$/.test(value);
+    },
+
+    partials: [
+      [/^(?!^$|^0*$)/, "Must not be empty or consist entirely of zeroes."],
+      [/^[0-9]{1,6}$/, "Must contain only numbers."],
+    ],
+  },
+
+  mediumInteger: {
+    full: function mediumIntegerValidation(value: string) {
+      /**
+       * - /^(?!^$|^0*$)[0-9]{1,4}$/
+       * - (?!^$|^0*$): Negative lookahead assertion to ensure that the entire string is not empty (^$) or consists entirely of zeroes (^0*$).
+       * - [0-9]{1,4}: Matches one to four digits for the integral part
+       * - ^ and $ ensure that the entire string matches the regex.
+       * - ex: 1234
+       */
+      return /^(?!^$|^0*$)[0-9]{1,4}$/.test(value);
+    },
+
+    partials: [
+      [/^(?!^$|^0*$)/, "Must not be empty or consist entirely of zeroes."],
+      [/^[0-9]{1,4}$/, "Must contain only numbers."],
+    ],
+  },
+
+  mobileCamera: {
+    full: function mobileCameraValidation(value: string) {
+      /**
+       * - /^([0-9]{1,3} MP)(?:, ([0-9]{1,3} MP)){1,12}$/
+       * - [0-9] matches any digit between 0 and 9.
+       * - {1,3} matches the preceding token between 1 and 3 times.
+       * - matches the character MP literally.
+       * - (?:, ([0-9]{1,3} MP)) matches the characters , and a space literally, followed by a group of 1 to 3 digits, followed by the character MP literally.
+       * - {1,12} matches the preceding token between 1 and 12 times.
+       * - ^ and $ ensure that the entire string matches the regex.
+       * - ex: '12 MP, 12 MP, 12 MP' or '12 MP'
+       */
+      return /^([0-9]{1,3} MP)(?:, ([0-9]{1,3} MP)){0,12}$/.test(value);
+    },
+
+    partials: [
+      [
+        /^([0-9]{1,3} MP)(?:, ([0-9]{1,3} MP)){0,12}$/,
+        "Must be a valid mobile camera resolution in the format 0 MP, 00 MP, etc.",
+      ],
+    ],
+  },
+
   money: {
     full: function moneyValidation(value: string) {
       /**
@@ -351,6 +605,23 @@ const VALIDATION_FUNCTIONS_TABLE: ValidationFunctionsTable = {
         "Must contain only letters, spaces, periods, hyphens, and apostrophes.",
       ],
       [/^.{2,30}$/, "Must be between 2 and 30 characters length."],
+    ],
+  },
+
+  objectKey: {
+    full: function objectKeyValidation(value: string) {
+      /**
+       * - /^[a-zA-Z0-9_]{1,30}$/
+       * - [a-zA-Z0-9_] matches any character between a-z, A-Z, 0-9, or _.
+       * - {1,30} matches between 1 and 30 of the preceding token.
+       * - ^ and $ ensure that the entire string matches the regex.
+       */
+      return /^[a-zA-Z0-9_]{1,30}$/.test(value);
+    },
+
+    partials: [
+      [/^[a-zA-Z0-9_]$/, "Must contain only letters, numbers, and underscores."],
+      [/^.{1,30}$/, "Must be between 1 and 30 characters length."],
     ],
   },
 
@@ -517,6 +788,57 @@ const VALIDATION_FUNCTIONS_TABLE: ValidationFunctionsTable = {
     partials: [[/^(true)$/, "Must consent to share details."]],
   },
 
+  ramTiming: {
+    full: function ramTimingValidation(value: string) {
+      /**
+       * - /^[0-9]{1,3}[-]{1}[0-9]{1,3}[-]{1}[0-9]{1,3}[-]{1}[0-9]{1,3}$/
+       * - [0-9] matches any digit between 0 and 9.
+       * - {1,3} matches the preceding token between 1 and 3 times.
+       * - [-] matches the character - literally.
+       * - ^ and $ ensure that the entire string matches the regex.
+       * - ex: 16-18-18-38
+       */
+      return /^[0-9]{1,3}[-]{1}[0-9]{1,3}[-]{1}[0-9]{1,3}[-]{1}[0-9]{1,3}$/.test(value);
+    },
+
+    partials: [
+      [
+        /^[0-9]{1,3}[-]{1}[0-9]{1,3}[-]{1}[0-9]{1,3}[-]{1}[0-9]{1,3}$/,
+        "Must be a valid RAM timing in the format 00-00-00-00.",
+      ],
+      [/^.{11}$/, "Must be 11 characters length."],
+    ],
+  },
+
+  ramVoltage: {
+    full: function ramVoltageValidation(value: string) {
+      /**
+       * - /^[0-9]{1}[.]{1}[0-9]{1,2}$/
+       * - [0-9] matches any digit between 0 and 9.
+       * - {1} matches the preceding token exactly 1 time.
+       * - [.] matches the character . literally.
+       * - {1} matches the preceding token exactly 1 time.
+       * - [0-9] matches any digit between 0 and 9.
+       * - {1,2} matches the preceding token between 1 and 2 times.
+       * - ^ and $ ensure that the entire string matches the regex.
+       */
+      return /^[0-9]{1}[.]{1}[0-9]{1,2}$/.test(value);
+    },
+
+    partials: [
+      [
+        /^[0-9]{1}[.]{1}[0-9]{1,2}$/,
+        "Must only contain numbers and a period in the format 0.0 or 0.00.",
+      ],
+      [/^.{4}$/, "Must be 4 characters length."],
+      [/^[0-9]+[.][0-9]+$/, "Must not be empty or have zero value."],
+      [
+        /^[0-9]{1}[.]{1}[0-9]{1,2}$/,
+        "Must only have single digit before decimal and two digits after decimal.",
+      ],
+    ],
+  },
+
   search: {
     full: function searchValidation(value: string) {
       /**
@@ -536,6 +858,24 @@ const VALIDATION_FUNCTIONS_TABLE: ValidationFunctionsTable = {
         /^[\w\s.,!?():;"'-]+$/,
         "Can only contain letters, numbers, spaces, and special characters: . , ! ? ( ) : ; \" ' -",
       ],
+    ],
+  },
+
+  smallInteger: {
+    full: function smallIntegerValidation(value: string) {
+      /**
+       * - /^(?!^$|^0*$)[0-9]{1,2}$/
+       * - (?!^$|^0*$): Negative lookahead assertion to ensure that the entire string is not empty (^$) or consists entirely of zeroes (^0*$).
+       * - [0-9]{1,2}: Matches one to two digits for the integral part of the quantity.
+       * - ^ and $ ensure that the entire string matches the regex.
+       * - ex: 12
+       */
+      return /^(?!^$|^0*$)[0-9]{1,2}$/.test(value);
+    },
+
+    partials: [
+      [/^(?!^$|^0*$)/, "Must not be empty or consist entirely of zeroes."],
+      [/^[0-9]{1,2}$/, "Must contain only numbers."],
     ],
   },
 
@@ -630,6 +970,27 @@ const VALIDATION_FUNCTIONS_TABLE: ValidationFunctionsTable = {
     ],
   },
 
+  userDefinedValue: {
+    full: function userDefinedValueValidation(value: string) {
+      /**
+       * - /^[A-Za-z0-9\s.,#-]{2,75}$/i
+       * - [A-Za-z0-9\s.,#-] matches any letter, number, whitespace, period, comma, hash, or hyphen.
+       * - {2,75} ensures that the text is between 2 and 75 characters long.
+       * - ^ and $ ensure that the entire string matches the regex.
+       * - i makes the regex case-insensitive.
+       */
+      return /^[A-Za-z0-9\s.,#-]{2,75}$/i.test(value);
+    },
+
+    partials: [
+      [
+        /^[A-Za-z0-9\s.,#-]+$/,
+        "Must contain only letters, numbers, spaces, and special characters.",
+      ],
+      [/^.{2,75}$/, "Must be between 2 and 75 characters length."],
+    ],
+  },
+
   username: {
     full: function usernameValidation(value: string) {
       /**
@@ -656,6 +1017,27 @@ const VALIDATION_FUNCTIONS_TABLE: ValidationFunctionsTable = {
         "Can only contain alphanumeric characters, hyphens, underscores, and periods.",
       ],
       [/^(?<![-_.])$/, "Cannot end with a hyphen, underscore, or period."],
+    ],
+  },
+
+  weight: {
+    full: function weightValidation(value: string) {
+      /**
+       * - /^[0-9]{1,3}(\.[0-9]{1,2})?$/
+       * - [0-9]{1,3}: Matches one to three digits for the integral part of the weight.
+       * - (\.[0-9]{1,2})?: This part is in a capturing group and is optional (?). It allows for an optional decimal point followed by one or two digits, representing the decimal part of the weight.
+       * - ^ and $ ensure that the entire string matches the regex.
+       * - ex: 123.45 or 123
+       */
+      return /^[0-9]{1,3}(\.[0-9]{1,2})?$/.test(value);
+    },
+
+    partials: [
+      [
+        /^[0-9]{1,3}(\.[0-9]{1,2})?$/,
+        "Must contain only numbers with an optional decimal point.",
+      ],
+      [/^.{1,6}$/, "Must be between 1 and 6 characters length."],
     ],
   },
 };

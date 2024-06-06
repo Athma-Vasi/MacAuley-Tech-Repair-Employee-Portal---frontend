@@ -1,27 +1,21 @@
-import { Group, MantineNumberSize, Stack, Title } from "@mantine/core";
+import { MantineNumberSize } from "@mantine/core";
 
-import CreateCase from "../case/CreateCase";
-import CreateCpu from "../cpu/CreateCPU";
+import { CreateProductAction } from "../actions";
 import { CreateProductDispatch } from "../dispatch";
-import CreateDisplay from "../display/CreateDisplay";
-import CreateGpu from "../gpu/CreateGPU";
-import CreateKeyboard from "../keyboard/CreateKeyboard";
-import CreateMotherboard from "../motherboard/CreateMotherboard";
-import CreateMouse from "../mouse/CreateMouse";
-import CreatePsu from "../psu/CreatePSU";
-import CreateRam from "../ram/CreateRAM";
-import CreateSpeaker from "../speaker/CreateSpeaker";
-import CreateStorage from "../storage/CreateStorage";
 import {
   CaseSidePanel,
   CaseType,
-  CreateProductAction,
   DisplayPanelType,
+  HeadphoneInterface,
+  HeadphoneType,
   KeyboardBacklight,
   KeyboardLayout,
   KeyboardSwitch,
   MemoryType,
   MemoryUnit,
+  MicrophoneInterface,
+  MicrophonePolarPattern,
+  MicrophoneType,
   MotherboardFormFactor,
   MouseSensor,
   PeripheralsInterface,
@@ -33,26 +27,22 @@ import {
   StorageFormFactor,
   StorageInterface,
   StorageType,
+  WebcamFrameRate,
+  WebcamInterface,
+  WebcamMicrophone,
+  WebcamResolution,
 } from "../types";
 
 type CreateDesktopComputerProps = {
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    CASE INPUTS
-  // ╰─────────────────────────────────────────────────────────────────╯
-  areCaseFieldsAdditionalMapFocused: Map<number, [boolean, boolean]>;
-  areCaseFieldsAdditionalMapValid: Map<number, [boolean, boolean]>;
+  accessoryColor: string;
+  accessoryFieldsAdditionalMap: Map<number, [string, string]>;
+  accessoryInterface: PeripheralsInterface;
+  accessoryType: string;
+  borderColor: string;
   caseColor: string;
   caseFieldsAdditionalMap: Map<number, [string, string]>;
   caseSidePanel: CaseSidePanel;
   caseType: CaseType;
-  isCaseColorFocused: boolean;
-  isCaseColorValid: boolean;
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    CPU INPUTS
-  // ╰─────────────────────────────────────────────────────────────────╯
-  areCpuFieldsAdditionalMapFocused: Map<number, [boolean, boolean]>;
-  areCpuFieldsAdditionalMapValid: Map<number, [boolean, boolean]>;
   cpuCores: string;
   cpuFieldsAdditionalMap: Map<number, [string, string]>;
   cpuFrequency: string;
@@ -64,26 +54,8 @@ type CreateDesktopComputerProps = {
   cpuL3CacheCapacityUnit: MemoryUnit;
   cpuSocket: string;
   cpuWattage: string;
-  isCpuCoresFocused: boolean;
-  isCpuCoresValid: boolean;
-  isCpuFrequencyFocused: boolean;
-  isCpuFrequencyValid: boolean;
-  isCpuL1CacheCapacityFocused: boolean;
-  isCpuL1CacheCapacityValid: boolean;
-  isCpuL2CacheCapacityFocused: boolean;
-  isCpuL2CacheCapacityValid: boolean;
-  isCpuL3CacheCapacityFocused: boolean;
-  isCpuL3CacheCapacityValid: boolean;
-  isCpuSocketFocused: boolean;
-  isCpuSocketValid: boolean;
-  isCpuWattageFocused: boolean;
-  isCpuWattageValid: boolean;
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    DISPLAY INPUTS
-  // ╰─────────────────────────────────────────────────────────────────╯
-  areDisplayFieldsAdditionalMapFocused: Map<number, [boolean, boolean]>;
-  areDisplayFieldsAdditionalMapValid: Map<number, [boolean, boolean]>;
+  createProductAction: CreateProductAction;
+  createProductDispatch: React.Dispatch<CreateProductDispatch>;
   displayAspectRatio: string;
   displayFieldsAdditionalMap: Map<number, [string, string]>;
   displayPanelType: DisplayPanelType;
@@ -91,25 +63,7 @@ type CreateDesktopComputerProps = {
   displayResolutionHorizontal: string;
   displayResolutionVertical: string;
   displayResponseTime: string;
-  displaySize: string; // inches
-  isDisplayAspectRatioFocused: boolean;
-  isDisplayAspectRatioValid: boolean;
-  isDisplayRefreshRateFocused: boolean;
-  isDisplayRefreshRateValid: boolean;
-  isDisplayResolutionHorizontalFocused: boolean;
-  isDisplayResolutionHorizontalValid: boolean;
-  isDisplayResolutionVerticalFocused: boolean;
-  isDisplayResolutionVerticalValid: boolean;
-  isDisplayResponseTimeFocused: boolean;
-  isDisplayResponseTimeValid: boolean;
-  isDisplaySizeFocused: boolean;
-  isDisplaySizeValid: boolean;
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    GPU INPUTS
-  // ╰─────────────────────────────────────────────────────────────────╯
-  areGpuFieldsAdditionalMapFocused: Map<number, [boolean, boolean]>;
-  areGpuFieldsAdditionalMapValid: Map<number, [boolean, boolean]>;
+  displaySize: string;
   gpuBoostClock: string;
   gpuChipset: string;
   gpuCoreClock: string;
@@ -117,51 +71,24 @@ type CreateDesktopComputerProps = {
   gpuMemoryCapacity: string;
   gpuMemoryCapacityUnit: MemoryUnit;
   gpuTdp: string;
-  isGpuBoostClockFocused: boolean;
-  isGpuBoostClockValid: boolean;
-  isGpuChipsetFocused: boolean;
-  isGpuChipsetValid: boolean;
-  isGpuCoreClockFocused: boolean;
-  isGpuCoreClockValid: boolean;
-  isGpuMemoryCapacityFocused: boolean;
-  isGpuMemoryCapacityValid: boolean;
-  isGpuTdpFocused: boolean;
-  isGpuTdpValid: boolean;
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    KEYBOARD INPUTS
-  // ╰─────────────────────────────────────────────────────────────────╯
-  areKeyboardFieldsAdditionalMapFocused: Map<number, [boolean, boolean]>;
-  areKeyboardFieldsAdditionalMapValid: Map<number, [boolean, boolean]>;
+  headphoneColor: string;
+  headphoneDriver: string;
+  headphoneFieldsAdditionalMap: Map<number, [string, string]>;
+  headphoneFrequencyResponse: string;
+  headphoneImpedance: string;
+  headphoneInterface: HeadphoneInterface;
+  headphoneType: HeadphoneType;
   keyboardBacklight: KeyboardBacklight;
   keyboardFieldsAdditionalMap: Map<number, [string, string]>;
   keyboardInterface: PeripheralsInterface;
   keyboardLayout: KeyboardLayout;
   keyboardSwitch: KeyboardSwitch;
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    MOTHERBOARD INPUTS
-  // ╰─────────────────────────────────────────────────────────────────╯
-  areMotherboardFieldsAdditionalMapFocused: Map<number, [boolean, boolean]>;
-  areMotherboardFieldsAdditionalMapValid: Map<number, [boolean, boolean]>;
-  isMotherboardChipsetFocused: boolean;
-  isMotherboardChipsetValid: boolean;
-  isMotherboardM2SlotsFocused: boolean;
-  isMotherboardM2SlotsValid: boolean;
-  isMotherboardMemoryMaxCapacityFocused: boolean;
-  isMotherboardMemoryMaxCapacityValid: boolean;
-  isMotherboardMemorySlotsFocused: boolean;
-  isMotherboardMemorySlotsValid: boolean;
-  isMotherboardPcie3SlotsFocused: boolean;
-  isMotherboardPcie3SlotsValid: boolean;
-  isMotherboardPcie4SlotsFocused: boolean;
-  isMotherboardPcie4SlotsValid: boolean;
-  isMotherboardPcie5SlotsFocused: boolean;
-  isMotherboardPcie5SlotsValid: boolean;
-  isMotherboardSataPortsFocused: boolean;
-  isMotherboardSataPortsValid: boolean;
-  isMotherboardSocketFocused: boolean;
-  isMotherboardSocketValid: boolean;
+  microphoneColor: string;
+  microphoneFieldsAdditionalMap: Map<number, [string, string]>;
+  microphoneFrequencyResponse: string;
+  microphoneInterface: MicrophoneInterface;
+  microphonePolarPattern: MicrophonePolarPattern;
+  microphoneType: MicrophoneType;
   motherboardChipset: string;
   motherboardFieldsAdditionalMap: Map<number, [string, string]>;
   motherboardFormFactor: MotherboardFormFactor;
@@ -175,55 +102,18 @@ type CreateDesktopComputerProps = {
   motherboardPcie5Slots: string;
   motherboardSataPorts: string;
   motherboardSocket: string;
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    MOUSE INPUTS
-  // ╰─────────────────────────────────────────────────────────────────╯
-  areMouseFieldsAdditionalMapFocused: Map<number, [boolean, boolean]>;
-  areMouseFieldsAdditionalMapValid: Map<number, [boolean, boolean]>;
-  isMouseButtonsFocused: boolean;
-  isMouseButtonsValid: boolean;
-  isMouseColorFocused: boolean;
-  isMouseColorValid: boolean;
-  isMouseDpiFocused: boolean;
-  isMouseDpiValid: boolean;
   mouseButtons: string;
   mouseColor: string;
   mouseDpi: string;
   mouseFieldsAdditionalMap: Map<number, [string, string]>;
   mouseInterface: PeripheralsInterface;
   mouseSensor: MouseSensor;
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    PSU INPUTS
-  // ╰─────────────────────────────────────────────────────────────────╯
-  arePsuFieldsAdditionalMapFocused: Map<number, [boolean, boolean]>;
-  arePsuFieldsAdditionalMapValid: Map<number, [boolean, boolean]>;
-  isPsuWattageFocused: boolean;
-  isPsuWattageValid: boolean;
+  padding: MantineNumberSize;
   psuEfficiency: PsuEfficiency;
   psuFieldsAdditionalMap: Map<number, [string, string]>;
   psuFormFactor: PsuFormFactor;
   psuModularity: PsuModularity;
   psuWattage: string;
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    RAM INPUTS
-  // ╰─────────────────────────────────────────────────────────────────╯
-  areRamFieldsAdditionalMapFocused: Map<number, [boolean, boolean]>;
-  areRamFieldsAdditionalMapValid: Map<number, [boolean, boolean]>;
-  isRamColorFocused: boolean;
-  isRamColorValid: boolean;
-  isRamDataRateFocused: boolean;
-  isRamDataRateValid: boolean;
-  isRamModulesCapacityFocused: boolean;
-  isRamModulesCapacityValid: boolean;
-  isRamModulesQuantityFocused: boolean;
-  isRamModulesQuantityValid: boolean;
-  isRamTimingFocused: boolean;
-  isRamTimingValid: boolean;
-  isRamVoltageFocused: boolean;
-  isRamVoltageValid: boolean;
   ramColor: string;
   ramDataRate: string;
   ramFieldsAdditionalMap: Map<number, [string, string]>;
@@ -233,34 +123,12 @@ type CreateDesktopComputerProps = {
   ramTiming: string;
   ramType: MemoryType;
   ramVoltage: string;
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    SPEAKER INPUTS
-  // ╰─────────────────────────────────────────────────────────────────╯
-  areSpeakerFieldsAdditionalMapFocused: Map<number, [boolean, boolean]>;
-  areSpeakerFieldsAdditionalMapValid: Map<number, [boolean, boolean]>;
-  isSpeakerColorFocused: boolean;
-  isSpeakerColorValid: boolean;
-  isSpeakerFrequencyResponseFocused: boolean;
-  isSpeakerFrequencyResponseValid: boolean;
-  isSpeakerTotalWattageFocused: boolean;
-  isSpeakerTotalWattageValid: boolean;
   speakerColor: string;
   speakerFieldsAdditionalMap: Map<number, [string, string]>;
   speakerFrequencyResponse: string;
   speakerInterface: SpeakerInterface;
   speakerTotalWattage: string;
   speakerType: SpeakerType;
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    STORAGE INPUTS
-  // ╰─────────────────────────────────────────────────────────────────╯
-  areStorageFieldsAdditionalMapFocused: Map<number, [boolean, boolean]>;
-  areStorageFieldsAdditionalMapValid: Map<number, [boolean, boolean]>;
-  isStorageCacheCapacityFocused: boolean;
-  isStorageCacheCapacityValid: boolean;
-  isStorageCapacityFocused: boolean;
-  isStorageCapacityValid: boolean;
   storageCacheCapacity: string;
   storageCacheCapacityUnit: MemoryUnit;
   storageCapacity: string;
@@ -269,55 +137,37 @@ type CreateDesktopComputerProps = {
   storageFormFactor: StorageFormFactor;
   storageInterface: StorageInterface;
   storageType: StorageType;
-
-  // misc.
-  borderColor: string;
-  createProductAction: CreateProductAction;
-  createProductDispatch: React.Dispatch<CreateProductDispatch>;
-  currentlySelectedAdditionalFieldIndex: number;
-  padding: MantineNumberSize;
+  webcamColor: string;
+  webcamFieldsAdditionalMap: Map<number, [string, string]>;
+  webcamFrameRate: WebcamFrameRate;
+  webcamInterface: WebcamInterface;
+  webcamMicrophone: WebcamMicrophone;
+  webcamResolution: WebcamResolution;
 };
 
 function CreateDesktopComputer({
-  areCaseFieldsAdditionalMapFocused,
-  areCaseFieldsAdditionalMapValid,
+  accessoryColor,
+  accessoryFieldsAdditionalMap,
+  accessoryInterface,
+  accessoryType,
+  borderColor,
   caseColor,
   caseFieldsAdditionalMap,
   caseSidePanel,
   caseType,
-  isCaseColorFocused,
-  isCaseColorValid,
-
-  isCpuWattageValid,
-  isCpuWattageFocused,
-  isCpuSocketValid,
-  isCpuSocketFocused,
-  isCpuL3CacheCapacityValid,
-  isCpuL3CacheCapacityFocused,
-  isCpuL2CacheCapacityValid,
-  isCpuL2CacheCapacityFocused,
-  isCpuL1CacheCapacityValid,
-  isCpuL1CacheCapacityFocused,
-  isCpuFrequencyValid,
-  isCpuFrequencyFocused,
-  isCpuCoresValid,
-  isCpuCoresFocused,
-  cpuWattage,
-  cpuSocket,
-  cpuL3CacheCapacityUnit,
-  cpuL3CacheCapacity,
-  cpuL2CacheCapacityUnit,
-  cpuL2CacheCapacity,
-  cpuL1CacheCapacityUnit,
-  cpuL1CacheCapacity,
-  cpuFrequency,
-  cpuFieldsAdditionalMap,
   cpuCores,
-  areCpuFieldsAdditionalMapValid,
-  areCpuFieldsAdditionalMapFocused,
-
-  areDisplayFieldsAdditionalMapFocused,
-  areDisplayFieldsAdditionalMapValid,
+  cpuFieldsAdditionalMap,
+  cpuFrequency,
+  cpuL1CacheCapacity,
+  cpuL1CacheCapacityUnit,
+  cpuL2CacheCapacity,
+  cpuL2CacheCapacityUnit,
+  cpuL3CacheCapacity,
+  cpuL3CacheCapacityUnit,
+  cpuSocket,
+  cpuWattage,
+  createProductAction,
+  createProductDispatch,
   displayAspectRatio,
   displayFieldsAdditionalMap,
   displayPanelType,
@@ -326,21 +176,6 @@ function CreateDesktopComputer({
   displayResolutionVertical,
   displayResponseTime,
   displaySize,
-  isDisplayAspectRatioFocused,
-  isDisplayAspectRatioValid,
-  isDisplayRefreshRateFocused,
-  isDisplayRefreshRateValid,
-  isDisplayResolutionHorizontalFocused,
-  isDisplayResolutionHorizontalValid,
-  isDisplayResolutionVerticalFocused,
-  isDisplayResolutionVerticalValid,
-  isDisplayResponseTimeFocused,
-  isDisplayResponseTimeValid,
-  isDisplaySizeFocused,
-  isDisplaySizeValid,
-
-  areGpuFieldsAdditionalMapFocused,
-  areGpuFieldsAdditionalMapValid,
   gpuBoostClock,
   gpuChipset,
   gpuCoreClock,
@@ -348,45 +183,24 @@ function CreateDesktopComputer({
   gpuMemoryCapacity,
   gpuMemoryCapacityUnit,
   gpuTdp,
-  isGpuBoostClockFocused,
-  isGpuBoostClockValid,
-  isGpuChipsetFocused,
-  isGpuChipsetValid,
-  isGpuCoreClockFocused,
-  isGpuCoreClockValid,
-  isGpuMemoryCapacityFocused,
-  isGpuMemoryCapacityValid,
-  isGpuTdpFocused,
-  isGpuTdpValid,
-
-  areKeyboardFieldsAdditionalMapFocused,
-  areKeyboardFieldsAdditionalMapValid,
+  headphoneColor,
+  headphoneDriver,
+  headphoneFieldsAdditionalMap,
+  headphoneFrequencyResponse,
+  headphoneImpedance,
+  headphoneInterface,
+  headphoneType,
   keyboardBacklight,
   keyboardFieldsAdditionalMap,
   keyboardInterface,
   keyboardLayout,
   keyboardSwitch,
-
-  areMotherboardFieldsAdditionalMapFocused,
-  areMotherboardFieldsAdditionalMapValid,
-  isMotherboardChipsetFocused,
-  isMotherboardChipsetValid,
-  isMotherboardM2SlotsFocused,
-  isMotherboardM2SlotsValid,
-  isMotherboardMemoryMaxCapacityFocused,
-  isMotherboardMemoryMaxCapacityValid,
-  isMotherboardMemorySlotsFocused,
-  isMotherboardMemorySlotsValid,
-  isMotherboardPcie3SlotsFocused,
-  isMotherboardPcie3SlotsValid,
-  isMotherboardPcie4SlotsFocused,
-  isMotherboardPcie4SlotsValid,
-  isMotherboardPcie5SlotsFocused,
-  isMotherboardPcie5SlotsValid,
-  isMotherboardSataPortsFocused,
-  isMotherboardSataPortsValid,
-  isMotherboardSocketFocused,
-  isMotherboardSocketValid,
+  microphoneColor,
+  microphoneFieldsAdditionalMap,
+  microphoneFrequencyResponse,
+  microphoneInterface,
+  microphonePolarPattern,
+  microphoneType,
   motherboardChipset,
   motherboardFieldsAdditionalMap,
   motherboardFormFactor,
@@ -400,46 +214,18 @@ function CreateDesktopComputer({
   motherboardPcie5Slots,
   motherboardSataPorts,
   motherboardSocket,
-
-  areMouseFieldsAdditionalMapFocused,
-  areMouseFieldsAdditionalMapValid,
-  isMouseButtonsFocused,
-  isMouseButtonsValid,
-  isMouseColorFocused,
-  isMouseColorValid,
-  isMouseDpiFocused,
-  isMouseDpiValid,
   mouseButtons,
   mouseColor,
   mouseDpi,
   mouseFieldsAdditionalMap,
   mouseInterface,
   mouseSensor,
-
-  arePsuFieldsAdditionalMapFocused,
-  arePsuFieldsAdditionalMapValid,
-  isPsuWattageFocused,
-  isPsuWattageValid,
+  padding,
   psuEfficiency,
   psuFieldsAdditionalMap,
   psuFormFactor,
   psuModularity,
   psuWattage,
-
-  areRamFieldsAdditionalMapFocused,
-  areRamFieldsAdditionalMapValid,
-  isRamColorFocused,
-  isRamColorValid,
-  isRamDataRateFocused,
-  isRamDataRateValid,
-  isRamModulesCapacityFocused,
-  isRamModulesCapacityValid,
-  isRamModulesQuantityFocused,
-  isRamModulesQuantityValid,
-  isRamTimingFocused,
-  isRamTimingValid,
-  isRamVoltageFocused,
-  isRamVoltageValid,
   ramColor,
   ramDataRate,
   ramFieldsAdditionalMap,
@@ -449,28 +235,12 @@ function CreateDesktopComputer({
   ramTiming,
   ramType,
   ramVoltage,
-
-  areSpeakerFieldsAdditionalMapFocused,
-  areSpeakerFieldsAdditionalMapValid,
-  isSpeakerColorFocused,
-  isSpeakerColorValid,
-  isSpeakerFrequencyResponseFocused,
-  isSpeakerFrequencyResponseValid,
-  isSpeakerTotalWattageFocused,
-  isSpeakerTotalWattageValid,
   speakerColor,
   speakerFieldsAdditionalMap,
   speakerFrequencyResponse,
   speakerInterface,
   speakerTotalWattage,
   speakerType,
-
-  areStorageFieldsAdditionalMapFocused,
-  areStorageFieldsAdditionalMapValid,
-  isStorageCacheCapacityFocused,
-  isStorageCacheCapacityValid,
-  isStorageCapacityFocused,
-  isStorageCapacityValid,
   storageCacheCapacity,
   storageCacheCapacityUnit,
   storageCapacity,
@@ -479,23 +249,18 @@ function CreateDesktopComputer({
   storageFormFactor,
   storageInterface,
   storageType,
+  webcamColor,
+  webcamFieldsAdditionalMap,
+  webcamFrameRate,
+  webcamInterface,
+  webcamMicrophone,
+  webcamResolution,
+}: CreateDesktopComputerProps) {}
 
-  borderColor,
-  createProductAction,
-  createProductDispatch,
-  currentlySelectedAdditionalFieldIndex,
-  padding,
-}: CreateDesktopComputerProps) {
-  // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
-  //  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-  //    INPUT DISPLAY
-  //  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
-  // ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+export default CreateDesktopComputer;
 
-  // ╔═════════════════════════════════════════════════════════════════╗
-  //   DISPLAY CASE SPECIFICATIONS INPUTS
-  // ╚═════════════════════════════════════════════════════════════════╝
-  const displayCaseSpecificationsInputs = (
+/**
+ * const displayCaseSpecificationsInputs = (
     <CreateCase
       areCaseFieldsAdditionalMapFocused={areCaseFieldsAdditionalMapFocused}
       areCaseFieldsAdditionalMapValid={areCaseFieldsAdditionalMapValid}
@@ -512,9 +277,6 @@ function CreateDesktopComputer({
     />
   );
 
-  // ╔═════════════════════════════════════════════════════════════════╗
-  //   DISPLAY CPU SPECIFICATIONS INPUTS
-  // ╚═════════════════════════════════════════════════════════════════╝
   const displayCpuSpecificationsInputs = (
     <CreateCpu
       areCpuFieldsAdditionalMapFocused={areCpuFieldsAdditionalMapFocused}
@@ -551,9 +313,6 @@ function CreateDesktopComputer({
     />
   );
 
-  // ╔═════════════════════════════════════════════════════════════════╗
-  //   DISPLAY DISPLAY (MONITOR) SPECIFICATIONS INPUTS
-  // ╚═════════════════════════════════════════════════════════════════╝
   const displayDisplaySpecificationsInputs = (
     <CreateDisplay
       areDisplayFieldsAdditionalMapFocused={areDisplayFieldsAdditionalMapFocused}
@@ -585,9 +344,6 @@ function CreateDesktopComputer({
     />
   );
 
-  // ╔═════════════════════════════════════════════════════════════════╗
-  //   DISPLAY GPU SPECIFICATIONS INPUTS
-  // ╚═════════════════════════════════════════════════════════════════╝
   const displayGpuSpecificationsInputs = (
     <CreateGpu
       areGpuFieldsAdditionalMapFocused={areGpuFieldsAdditionalMapFocused}
@@ -616,9 +372,6 @@ function CreateDesktopComputer({
     />
   );
 
-  // ╔═════════════════════════════════════════════════════════════════╗
-  //   DISPLAY KEYBOARD SPECIFICATIONS INPUTS
-  // ╚═════════════════════════════════════════════════════════════════╝
   const displayKeyboardSpecificationsInputs = (
     <CreateKeyboard
       areKeyboardFieldsAdditionalMapFocused={areKeyboardFieldsAdditionalMapFocused}
@@ -635,9 +388,6 @@ function CreateDesktopComputer({
     />
   );
 
-  // ╔═════════════════════════════════════════════════════════════════╗
-  //   DISPLAY MOTHERBOARD SPECIFICATIONS INPUTS
-  // ╚═════════════════════════════════════════════════════════════════╝
   const displayMotherboardSpecificationsInputs = (
     <CreateMotherboard
       areMotherboardFieldsAdditionalMapFocused={areMotherboardFieldsAdditionalMapFocused}
@@ -680,9 +430,6 @@ function CreateDesktopComputer({
     />
   );
 
-  // ╔═════════════════════════════════════════════════════════════════╗
-  //   DISPLAY MOUSE SPECIFICATIONS INPUTS
-  // ╚═════════════════════════════════════════════════════════════════╝
   const displayMouseSpecificationsInputs = (
     <CreateMouse
       areMouseFieldsAdditionalMapFocused={areMouseFieldsAdditionalMapFocused}
@@ -706,9 +453,6 @@ function CreateDesktopComputer({
     />
   );
 
-  // ╔═════════════════════════════════════════════════════════════════╗
-  //   DISPLAY PSU SPECIFICATIONS INPUTS
-  // ╚═════════════════════════════════════════════════════════════════╝
   const displayPsuSpecificationsInputs = (
     <CreatePsu
       arePsuFieldsAdditionalMapFocused={arePsuFieldsAdditionalMapFocused}
@@ -727,9 +471,6 @@ function CreateDesktopComputer({
     />
   );
 
-  // ╔═════════════════════════════════════════════════════════════════╗
-  //   DISPLAY RAM SPECIFICATIONS INPUTS
-  // ╚═════════════════════════════════════════════════════════════════╝
   const displayRamSpecificationsInputs = (
     <CreateRam
       areRamFieldsAdditionalMapFocused={areRamFieldsAdditionalMapFocused}
@@ -762,9 +503,6 @@ function CreateDesktopComputer({
     />
   );
 
-  // ╔═════════════════════════════════════════════════════════════════╗
-  //   DISPLAY SPEAKER SPECIFICATIONS INPUTS
-  // ╚═════════════════════════════════════════════════════════════════╝
   const displaySpeakerSpecificationsInputs = (
     <CreateSpeaker
       areSpeakerFieldsAdditionalMapFocused={areSpeakerFieldsAdditionalMapFocused}
@@ -788,9 +526,6 @@ function CreateDesktopComputer({
     />
   );
 
-  // ╔═════════════════════════════════════════════════════════════════╗
-  //   DISPLAY STORAGE SPECIFICATIONS INPUTS
-  // ╚═════════════════════════════════════════════════════════════════╝
   const displayStorageSpecificationsInputs = (
     <CreateStorage
       areStorageFieldsAdditionalMapFocused={areStorageFieldsAdditionalMapFocused}
@@ -852,6 +587,5 @@ function CreateDesktopComputer({
   );
 
   return displayDesktopComputerSpecificationsInputs;
-}
 
-export default CreateDesktopComputer;
+ */

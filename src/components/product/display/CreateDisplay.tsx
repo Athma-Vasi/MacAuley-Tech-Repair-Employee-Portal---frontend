@@ -1,41 +1,12 @@
-import { Group, MantineNumberSize, Stack, Text, Title, Tooltip } from "@mantine/core";
-import { ChangeEvent, MouseEvent, useEffect } from "react";
-import { TbPlus, TbTrash } from "react-icons/tb";
+import { MantineNumberSize } from "@mantine/core";
 
-import {
-  AccessibleErrorValidTextElements,
-  returnAccessibleButtonElements,
-  returnAccessibleSelectInputElements,
-  returnAccessibleTextAreaInputElements,
-  returnAccessibleTextInputElements,
-} from "../../../jsxCreators";
-import {
-  returnDimensionsValidationText,
-  returnDisplayAspectRatioValidationText,
-  returnLargeIntegerValidationText,
-  returnMediumIntegerValidationText,
-  returnObjectKeyValidationText,
-  returnUserDefinedFieldValueValidationText,
-} from "../../../utils";
-import { AccessibleTextAreaInputCreatorInfo } from "../../wrappers";
-import {
-  DIMENSIONS_REGEX,
-  DISPLAY_ASPECT_RATIO_REGEX,
-  DISPLAY_PANEL_TYPE_DATA,
-  LARGE_INTEGER_REGEX,
-  MEDIUM_INTEGER_REGEX,
-  OBJECT_KEY_REGEX,
-  USER_DEFINED_VALUE_REGEX,
-} from "../constants";
+import { CreateProductAction } from "../actions";
 import { CreateProductDispatch } from "../dispatch";
-import { CreateProductAction, DisplayPanelType } from "../types";
+import { DisplayPanelType } from "../types";
 
 type CreateDisplayProps = {
-  areDisplayFieldsAdditionalMapFocused: Map<number, [boolean, boolean]>;
-  areDisplayFieldsAdditionalMapValid: Map<number, [boolean, boolean]>;
   createProductAction: CreateProductAction;
   createProductDispatch: React.Dispatch<CreateProductDispatch>;
-  currentlySelectedAdditionalFieldIndex: number;
   displayAspectRatio: string;
   displayFieldsAdditionalMap: Map<number, [string, string]>;
   displayPanelType: DisplayPanelType;
@@ -43,28 +14,13 @@ type CreateDisplayProps = {
   displayResolutionHorizontal: string;
   displayResolutionVertical: string;
   displayResponseTime: string;
-  displaySize: string; // inches
-  isDisplayAspectRatioFocused: boolean;
-  isDisplayAspectRatioValid: boolean;
-  isDisplayRefreshRateFocused: boolean;
-  isDisplayRefreshRateValid: boolean;
-  isDisplayResolutionHorizontalFocused: boolean;
-  isDisplayResolutionHorizontalValid: boolean;
-  isDisplayResolutionVerticalFocused: boolean;
-  isDisplayResolutionVerticalValid: boolean;
-  isDisplayResponseTimeFocused: boolean;
-  isDisplayResponseTimeValid: boolean;
-  isDisplaySizeFocused: boolean;
-  isDisplaySizeValid: boolean;
+  displaySize: string;
   padding: MantineNumberSize;
 };
 
 function CreateDisplay({
-  areDisplayFieldsAdditionalMapFocused,
-  areDisplayFieldsAdditionalMapValid,
   createProductAction,
   createProductDispatch,
-  currentlySelectedAdditionalFieldIndex,
   displayAspectRatio,
   displayFieldsAdditionalMap,
   displayPanelType,
@@ -73,21 +29,12 @@ function CreateDisplay({
   displayResolutionVertical,
   displayResponseTime,
   displaySize,
-  isDisplayAspectRatioFocused,
-  isDisplayAspectRatioValid,
-  isDisplayRefreshRateFocused,
-  isDisplayRefreshRateValid,
-  isDisplayResolutionHorizontalFocused,
-  isDisplayResolutionHorizontalValid,
-  isDisplayResolutionVerticalFocused,
-  isDisplayResolutionVerticalValid,
-  isDisplayResponseTimeFocused,
-  isDisplayResponseTimeValid,
-  isDisplaySizeFocused,
-  isDisplaySizeValid,
   padding,
-}: CreateDisplayProps) {
-  // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+}: CreateDisplayProps) {}
+
+export default CreateDisplay;
+/**
+ *   // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
   //  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
   //    VALIDATION USE EFFECTS
   //  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
@@ -939,6 +886,5 @@ function CreateDisplay({
   );
 
   return displayDisplaySpecificationsInputs;
-}
 
-export default CreateDisplay;
+ */

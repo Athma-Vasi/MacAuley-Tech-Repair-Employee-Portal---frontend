@@ -1,60 +1,33 @@
-import { Group, MantineNumberSize, Stack, Text, Title, Tooltip } from "@mantine/core";
-import { ChangeEvent, MouseEvent, useEffect } from "react";
-import { TbPlus, TbTrash } from "react-icons/tb";
+import { MantineNumberSize } from "@mantine/core";
 
-import {
-  AccessibleErrorValidTextElements,
-  returnAccessibleButtonElements,
-  returnAccessibleSelectInputElements,
-  returnAccessibleTextAreaInputElements,
-  returnAccessibleTextInputElements,
-} from "../../../jsxCreators";
-import {
-  returnColorVariantValidationText,
-  returnObjectKeyValidationText,
-  returnUserDefinedFieldValueValidationText,
-} from "../../../utils";
-import { AccessibleTextAreaInputCreatorInfo } from "../../wrappers";
-import {
-  CASE_SIDE_PANEL_DATA,
-  CASE_TYPE_DATA,
-  COLOR_VARIANT_REGEX,
-  OBJECT_KEY_REGEX,
-  USER_DEFINED_VALUE_REGEX,
-} from "../constants";
+import { CreateProductAction } from "../actions";
 import { CreateProductDispatch } from "../dispatch";
-import { CaseSidePanel, CaseType, CreateProductAction } from "../types";
+import { CaseSidePanel, CaseType } from "../types";
 
 type CreateCaseProps = {
-  areCaseFieldsAdditionalMapFocused: Map<number, [boolean, boolean]>;
-  areCaseFieldsAdditionalMapValid: Map<number, [boolean, boolean]>;
   caseColor: string;
   caseFieldsAdditionalMap: Map<number, [string, string]>;
   caseSidePanel: CaseSidePanel;
   caseType: CaseType;
   createProductAction: CreateProductAction;
   createProductDispatch: React.Dispatch<CreateProductDispatch>;
-  currentlySelectedAdditionalFieldIndex: number;
-  isCaseColorFocused: boolean;
-  isCaseColorValid: boolean;
   padding: MantineNumberSize;
 };
 
 function CreateCase({
-  areCaseFieldsAdditionalMapFocused,
-  areCaseFieldsAdditionalMapValid,
   caseColor,
   caseFieldsAdditionalMap,
   caseSidePanel,
   caseType,
   createProductAction,
   createProductDispatch,
-  currentlySelectedAdditionalFieldIndex,
-  isCaseColorFocused,
-  isCaseColorValid,
   padding,
-}: CreateCaseProps) {
-  // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+}: CreateCaseProps) {}
+
+export default CreateCase;
+
+/**
+ *   // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
   //  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
   //    VALIDATION USE EFFECTS
   //  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
@@ -563,6 +536,5 @@ function CreateCase({
   );
 
   return displayComputerCaseSpecificationsInputs;
-}
 
-export default CreateCase;
+ */

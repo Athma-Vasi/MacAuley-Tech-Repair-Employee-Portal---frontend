@@ -1,9 +1,9 @@
 import { Currency, SetPageInErrorPayload, SetStepsInErrorPayload } from "../../types";
 import { ProductCategory } from "../dashboard/types";
+import { CreateProductAction } from "./actions";
 import {
   CaseSidePanel,
   CaseType,
-  CreateProductAction,
   DimensionUnit,
   DisplayPanelType,
   HeadphoneInterface,

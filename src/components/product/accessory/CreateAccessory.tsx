@@ -1,50 +1,16 @@
-import { Group, MantineNumberSize, Stack, Text, Title, Tooltip } from "@mantine/core";
+import { MantineNumberSize } from "@mantine/core";
 
 import { CreateProductDispatch } from "../dispatch";
-import {
-  CreateProductAction,
-  PeripheralsInterface,
-  ProductCategoryPage1Specifications,
-  ProductCategorySpecifications,
-} from "../types";
-
-type AccessorySpecifications = {
-  accessoryType: string;
-  accessoryColor: string;
-  accessoryInterface: PeripheralsInterface;
-};
-
-type AccessorySchema = ProductCategorySpecifications & AccessorySpecifications;
-
-type AccessoryDocument = AccessorySchema & {
-  _id: string;
-  createdAt: string;
-  updatedAt: string;
-  __v: number;
-};
-
-type AccessoryRequestBody = ProductCategoryPage1Specifications &
-  AccessorySpecifications & {
-    additionalFields: {
-      [key: string]: string;
-    };
-    uploadedFilesIds: string[];
-  };
+import { PeripheralsInterface } from "../types";
+import { CreateProductAction } from "../actions";
 
 type CreateAccessoryProps = {
   accessoryColor: string;
   accessoryFieldsAdditionalMap: Map<number, [string, string]>;
   accessoryInterface: PeripheralsInterface;
   accessoryType: string;
-  areAccessoryFieldsAdditionalMapFocused: Map<number, [boolean, boolean]>;
-  areAccessoryFieldsAdditionalMapValid: Map<number, [boolean, boolean]>;
   createProductAction: CreateProductAction;
   createProductDispatch: React.Dispatch<CreateProductDispatch>;
-  currentlySelectedAdditionalFieldIndex: number;
-  isAccessoryColorFocused: boolean;
-  isAccessoryColorValid: boolean;
-  isAccessoryTypeFocused: boolean;
-  isAccessoryTypeValid: boolean;
   padding: MantineNumberSize;
 };
 
@@ -53,25 +19,14 @@ function CreateAccessory({
   accessoryFieldsAdditionalMap,
   accessoryInterface,
   accessoryType,
-  areAccessoryFieldsAdditionalMapFocused,
-  areAccessoryFieldsAdditionalMapValid,
   createProductAction,
   createProductDispatch,
-  currentlySelectedAdditionalFieldIndex,
-  isAccessoryColorFocused,
-  isAccessoryColorValid,
-  isAccessoryTypeFocused,
-  isAccessoryTypeValid,
   padding,
-}: CreateAccessoryProps) {}
+}: CreateAccessoryProps) {
+  return null;
+}
 
 export default CreateAccessory;
-export type {
-  AccessoryDocument,
-  AccessoryRequestBody,
-  AccessorySchema,
-  CreateAccessoryProps,
-};
 /**
  * // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
   //  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓

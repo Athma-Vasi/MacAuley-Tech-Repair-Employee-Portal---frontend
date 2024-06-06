@@ -5,7 +5,6 @@ function CreateProduct() {
   );
 
   const {
-    // page 1
     brand,
     model,
     description,
@@ -23,7 +22,6 @@ function CreateProduct() {
     dimensionHeightUnit,
     additionalComments,
 
-    // page 2
     productCategory,
 
     accessoryType,
@@ -123,19 +121,6 @@ function CreateProduct() {
     psuFormFactor,
     psuFieldsAdditionalMap,
 
-    smartphoneBatteryCapacity,
-    smartphoneCamera,
-    smartphoneChipset,
-    smartphoneColor,
-    smartphoneDisplay,
-    smartphoneResolutionHorizontal,
-    smartphoneResolutionVertical,
-    smartphoneOs,
-    smartphoneRamCapacity,
-    smartphoneRamCapacityUnit,
-    smartphoneStorageCapacity,
-    smartphoneFieldsAdditionalMap,
-
     speakerType,
     speakerColor,
     speakerFrequencyResponse,
@@ -151,19 +136,6 @@ function CreateProduct() {
     storageFormFactor,
     storageInterface,
     storageFieldsAdditionalMap,
-
-    tabletBatteryCapacity,
-    tabletCamera,
-    tabletChipset,
-    tabletColor,
-    tabletDisplay,
-    tabletResolutionHorizontal,
-    tabletResolutionVertical,
-    tabletOs,
-    tabletRamCapacity,
-    tabletRamCapacityUnit,
-    tabletStorageCapacity,
-    tabletFieldsAdditionalMap,
 
     webcamColor,
     webcamFrameRate,
