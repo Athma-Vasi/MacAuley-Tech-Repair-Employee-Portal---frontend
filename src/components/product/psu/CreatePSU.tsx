@@ -137,7 +137,7 @@ function CreatePsu({
     const arePsuInputsInError = !isPsuWattageValid || arePsuInputsUserDefinedInError;
 
     createProductDispatch({
-      type: createProductAction.setStepsInError,
+      type: createProductAction.setPageInError,
       payload: {
         kind: arePsuInputsInError ? "add" : "delete",
         step: 1,
@@ -145,7 +145,7 @@ function CreatePsu({
     });
   }, [
     arePsuFieldsAdditionalMapValid,
-    createProductAction.setStepsInError,
+    createProductAction.setPageInError,
     createProductDispatch,
     currentlySelectedAdditionalFieldIndex,
     isPsuWattageValid,

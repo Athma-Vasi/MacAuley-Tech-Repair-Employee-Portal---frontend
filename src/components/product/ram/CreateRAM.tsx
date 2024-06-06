@@ -244,7 +244,7 @@ function CreateRam({
       areRamInputsHardcodedInError || areRamInputsUserDefinedInError;
 
     createProductDispatch({
-      type: createProductAction.setStepsInError,
+      type: createProductAction.setPageInError,
       payload: {
         kind: areRamInputsInError ? "add" : "delete",
         step: 1,
@@ -252,7 +252,7 @@ function CreateRam({
     });
   }, [
     areRamFieldsAdditionalMapValid,
-    createProductAction.setStepsInError,
+    createProductAction.setPageInError,
     createProductDispatch,
     isRamColorValid,
     isRamDataRateValid,

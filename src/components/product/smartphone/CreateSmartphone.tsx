@@ -332,7 +332,7 @@ function CreateSmartphone({
       areSmartphoneFieldsAdditionalMapInError;
 
     createProductDispatch({
-      type: createProductAction.setStepsInError,
+      type: createProductAction.setPageInError,
       payload: {
         kind: areSmartphoneInputsInError ? "add" : "delete",
         step: 1,
@@ -340,7 +340,7 @@ function CreateSmartphone({
     });
   }, [
     areSmartphoneFieldsAdditionalMapValid,
-    createProductAction.setStepsInError,
+    createProductAction.setPageInError,
     createProductDispatch,
     isSmartphoneBatteryCapacityValid,
     isSmartphoneCameraValid,

@@ -212,7 +212,7 @@ function CreateHeadphone({
       areHeadphoneInputsHardcodedInError || areHeadphoneInputsUserDefinedInError;
 
     createProductDispatch({
-      type: createProductAction.setStepsInError,
+      type: createProductAction.setPageInError,
       payload: {
         kind: areHeadphoneInputsInError ? "add" : "delete",
         step: 1,
@@ -220,7 +220,7 @@ function CreateHeadphone({
     });
   }, [
     areHeadphoneFieldsAdditionalMapValid,
-    createProductAction.setStepsInError,
+    createProductAction.setPageInError,
     createProductDispatch,
     isHeadphoneColorValid,
     isHeadphoneDriverValid,

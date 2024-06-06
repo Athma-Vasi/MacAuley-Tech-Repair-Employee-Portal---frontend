@@ -251,7 +251,7 @@ function CreateDisplay({
       areDisplayInputsHardcodedInError || areDisplayInputsUserDefinedInError;
 
     createProductDispatch({
-      type: createProductAction.setStepsInError,
+      type: createProductAction.setPageInError,
       payload: {
         kind: areDisplayInputsInError ? "add" : "delete",
         step: 1,
@@ -259,7 +259,7 @@ function CreateDisplay({
     });
   }, [
     areDisplayFieldsAdditionalMapValid,
-    createProductAction.setStepsInError,
+    createProductAction.setPageInError,
     createProductDispatch,
     isDisplayAspectRatioValid,
     isDisplayRefreshRateValid,

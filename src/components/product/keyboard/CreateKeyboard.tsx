@@ -118,7 +118,7 @@ function CreateKeyboard({
     ).some(([_key, value]) => value.includes(false));
 
     createProductDispatch({
-      type: createProductAction.setStepsInError,
+      type: createProductAction.setPageInError,
       payload: {
         kind: areKeyboardInputsUserDefinedInError ? "add" : "delete",
         step: 1,
@@ -126,7 +126,7 @@ function CreateKeyboard({
     });
   }, [
     areKeyboardFieldsAdditionalMapValid,
-    createProductAction.setStepsInError,
+    createProductAction.setPageInError,
     createProductDispatch,
     keyboardBacklight,
     keyboardInterface,

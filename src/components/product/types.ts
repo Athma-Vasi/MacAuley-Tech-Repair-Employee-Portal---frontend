@@ -1,9 +1,9 @@
 import { Currency, FileUploadDocument } from "../../types";
 import { ProductCategory } from "../dashboard/types";
 
-// ╔═════════════════════════════════════════════════════════════════╗
-//    PRODUCT CATEGORY TYPES
-// ╚═════════════════════════════════════════════════════════════════╝
+
+
+
 
 type ProductAvailability =
   | "In Stock"
@@ -28,8 +28,8 @@ type RatingKind =
   | "fiveStars";
 
 type ProductReviewSchema = {
-  userId: string; // customer id
-  username: string; // customer username
+  userId: string; 
+  username: string; 
   productId: string;
   productCategory: ProductCategory;
   productSku: string;
@@ -99,16 +99,9 @@ type StarRatingsCount = {
  *  - all product categories have these properties and their own specifications
  */
 type ProductCategorySpecifications = ProductCategoryPage1Specifications & {
-  // page 1 specifications here
-
-  // product category specifications
-  // with user defined additional fields (page 2) here
   additionalFields: {
     [key: string]: string;
   };
-
-  starRatingsCount: StarRatingsCount;
-  productReviewsIds: string[];
   uploadedFilesIds: string[];
 };
 
@@ -133,49 +126,27 @@ type ProductDocument =
   | TabletDocument
   | WebcamDocument;
 
-// ╭─────────────────────────────────────────────────────────────────╮
-//    ACCESSORY
-// ╰─────────────────────────────────────────────────────────────────╯
 
-type AccessorySpecifications = {
-  accessoryType: string; // Headphones, Speakers, etc.
-  accessoryColor: string; // Black, White, etc.
-  accessoryInterface: PeripheralsInterface; // USB, Bluetooth, etc.
-};
 
-type AccessorySchema = ProductCategorySpecifications & AccessorySpecifications;
 
-type AccessoryDocument = AccessorySchema & {
-  _id: string;
-  createdAt: string;
-  updatedAt: string;
-  __v: number;
-};
 
-type AccessoryRequestBody = ProductCategoryPage1Specifications &
-  AccessorySpecifications & {
-    additionalFields: {
-      [key: string]: string;
-    };
-    productReviewsIds: string[];
-    uploadedFilesIds: string[];
-  };
 
-// ╭─────────────────────────────────────────────────────────────────╮
-//    CENTRAL PROCESSING UNIT (CPU)
-// ╰─────────────────────────────────────────────────────────────────╯
+
+
+
+
 
 type CpuSpecifications = {
-  cpuSocket: string; // LGA 1200, AM4, etc.
-  cpuFrequency: number; // 3.6 GHz, 4.2 GHz, etc.
-  cpuCores: number; // 6 cores, 8 cores, etc.
-  cpuL1Cache: number; // 384, 512, etc.
-  cpuL1CacheUnit: MemoryUnit; // KB, etc.
-  cpuL2Cache: number; // 1.5, 2, etc.
-  cpuL2CacheUnit: MemoryUnit; // MB, etc.
-  cpuL3Cache: number; // 12, 16, etc.
-  cpuL3CacheUnit: MemoryUnit; // MB, etc.
-  cpuWattage: number; // 65 W, 95 W, etc.
+  cpuSocket: string; 
+  cpuFrequency: number; 
+  cpuCores: number; 
+  cpuL1Cache: number; 
+  cpuL1CacheUnit: MemoryUnit; 
+  cpuL2Cache: number; 
+  cpuL2CacheUnit: MemoryUnit; 
+  cpuL3Cache: number; 
+  cpuL3CacheUnit: MemoryUnit; 
+  cpuWattage: number; 
 };
 
 type CpuSchema = ProductCategorySpecifications & CpuSpecifications;
@@ -196,9 +167,9 @@ type CpuRequestBody = ProductCategoryPage1Specifications &
     uploadedFilesIds: string[];
   };
 
-// ╭─────────────────────────────────────────────────────────────────╮
-//    COMPUTER CASE
-// ╰─────────────────────────────────────────────────────────────────╯
+
+
+
 
 type CaseType =
   | "Mid Tower"
@@ -211,9 +182,9 @@ type CaseType =
 type CaseSidePanel = "Windowed" | "Solid";
 
 type CaseSpecifications = {
-  caseType: CaseType; // Mid Tower, Full Tower, etc.
-  caseColor: string; // Black, White, etc.
-  caseSidePanel: CaseSidePanel; // windowed or not
+  caseType: CaseType; 
+  caseColor: string; 
+  caseSidePanel: CaseSidePanel; 
 };
 
 type ComputerCaseSchema = ProductCategorySpecifications & CaseSpecifications;
@@ -234,9 +205,9 @@ type ComputerCaseRequestBody = ProductCategoryPage1Specifications &
     uploadedFilesIds: string[];
   };
 
-// ╭─────────────────────────────────────────────────────────────────╮
-//    DESKTOP COMPUTER
-// ╰─────────────────────────────────────────────────────────────────╯
+
+
+
 
 /**
  * @description - Contains all specifications for a desktop computer.
@@ -284,20 +255,20 @@ type DesktopComputerRequestBody = ProductCategoryPage1Specifications &
     uploadedFilesIds: string[];
   };
 
-// ╭─────────────────────────────────────────────────────────────────╮
-//    DISPLAY
-// ╰─────────────────────────────────────────────────────────────────╯
+
+
+
 
 type DisplayPanelType = "IPS" | "TN" | "VA" | "OLED" | "QLED" | "Other";
 
 type DisplaySpecifications = {
-  displaySize: number; // 24", 27", etc.
+  displaySize: number; 
   displayHorizontalResolution: number;
   displayVerticalResolution: number;
-  displayRefreshRate: number; // 144 Hz, 165 Hz, etc.
-  displayPanelType: DisplayPanelType; // IPS, TN, etc.
-  displayResponseTime: number; // 1 ms, 4 ms, etc.
-  displayAspectRatio: string; // 16:9, 21:9, etc.
+  displayRefreshRate: number; 
+  displayPanelType: DisplayPanelType; 
+  displayResponseTime: number; 
+  displayAspectRatio: string; 
 };
 
 type DisplaySchema = ProductCategorySpecifications & DisplaySpecifications;
@@ -318,17 +289,17 @@ type DisplayRequestBody = ProductCategoryPage1Specifications &
     uploadedFilesIds: string[];
   };
 
-// ╭─────────────────────────────────────────────────────────────────╮
-//    GRAPHICS PROCESSING UNIT (GPU)
-// ╰─────────────────────────────────────────────────────────────────╯
+
+
+
 
 type GpuSpecifications = {
-  gpuChipset: string; // NVIDIA GeForce RTX 3080,
-  gpuMemory: number; // 10 GB, 16 GB, etc.
-  gpuMemoryUnit: MemoryUnit; // GB, etc.
-  gpuCoreClock: number; // 1440 MHz, 1770 MHz, etc.
-  gpuBoostClock: number; // 1710 MHz, 2250 MHz, etc.
-  gpuTdp: number; // 320 W, 350 W, etc.
+  gpuChipset: string; 
+  gpuMemory: number; 
+  gpuMemoryUnit: MemoryUnit; 
+  gpuCoreClock: number; 
+  gpuBoostClock: number; 
+  gpuTdp: number; 
 };
 
 type GpuSchema = ProductCategorySpecifications & GpuSpecifications;
@@ -349,20 +320,20 @@ type GpuRequestBody = ProductCategoryPage1Specifications &
     uploadedFilesIds: string[];
   };
 
-// ╭─────────────────────────────────────────────────────────────────╮
-//    HEADPHONE
-// ╰─────────────────────────────────────────────────────────────────╯
+
+
+
 
 type HeadphoneType = "Over-ear" | "On-ear" | "In-ear" | "Other";
 type HeadphoneInterface = "USB" | "Bluetooth" | "3.5 mm" | "2.5 mm" | "MMCX" | "Other";
 
 type HeadphoneSpecifications = {
-  headphoneType: HeadphoneType; // Over-ear, On-ear, etc.
-  headphoneDriver: number; // 50 mm, 53 mm, etc.
-  headphoneFrequencyResponse: string; // 20 Hz - 20 kHz, etc.
-  headphoneImpedance: number; // 32 Ohm, 64 Ohm, etc.
-  headphoneColor: string; // Black, White, etc.
-  headphoneInterface: HeadphoneInterface; // USB, Bluetooth, etc.
+  headphoneType: HeadphoneType; 
+  headphoneDriver: number; 
+  headphoneFrequencyResponse: string; 
+  headphoneImpedance: number; 
+  headphoneColor: string; 
+  headphoneInterface: HeadphoneInterface; 
 };
 
 type HeadphoneSchema = ProductCategorySpecifications & HeadphoneSpecifications;
@@ -383,9 +354,9 @@ type HeadphoneRequestBody = ProductCategoryPage1Specifications &
     uploadedFilesIds: string[];
   };
 
-// ╭─────────────────────────────────────────────────────────────────╮
-//    KEYBOARD
-// ╰─────────────────────────────────────────────────────────────────╯
+
+
+
 
 type KeyboardSwitch =
   | "Cherry MX Red"
@@ -408,10 +379,10 @@ type KeyboardLayout =
 type KeyboardBacklight = "RGB" | "Single Color" | "None";
 
 type KeyboardSpecifications = {
-  keyboardSwitch: KeyboardSwitch; // Cherry MX Red, Cherry MX Blue, etc.
-  keyboardLayout: KeyboardLayout; // ANSI, ISO, etc.
-  keyboardBacklight: KeyboardBacklight; // RGB, etc.
-  keyboardInterface: PeripheralsInterface; // USB, Bluetooth, etc.
+  keyboardSwitch: KeyboardSwitch; 
+  keyboardLayout: KeyboardLayout; 
+  keyboardBacklight: KeyboardBacklight; 
+  keyboardInterface: PeripheralsInterface; 
 };
 
 type KeyboardSchema = ProductCategorySpecifications & KeyboardSpecifications;
@@ -432,9 +403,9 @@ type KeyboardRequestBody = ProductCategoryPage1Specifications &
     uploadedFilesIds: string[];
   };
 
-// ╭─────────────────────────────────────────────────────────────────╮
-//    LAPTOP
-// ╰─────────────────────────────────────────────────────────────────╯
+
+
+
 
 /**
  * @description - Contains all specifications for a laptop.
@@ -469,19 +440,19 @@ type LaptopRequestBody = ProductCategoryPage1Specifications &
     uploadedFilesIds: string[];
   };
 
-// ╭─────────────────────────────────────────────────────────────────╮
-//    MEMORY (RAM)
-// ╰─────────────────────────────────────────────────────────────────╯
+
+
+
 
 type RamSpecifications = {
-  ramDataRate: number; // 3200 MT/s, 3600 MT/s, etc.
+  ramDataRate: number; 
   ramModulesQuantity: number;
   ramModulesCapacity: number;
-  ramModulesCapacityUnit: MemoryUnit; // GB, etc.
-  ramType: MemoryType; // DDR4, etc.
-  ramColor: string; // Black, White, etc.
-  ramVoltage: number; // 1.35 V, etc.
-  ramTiming: string; // 16-18-18-38, etc.
+  ramModulesCapacityUnit: MemoryUnit; 
+  ramType: MemoryType; 
+  ramColor: string; 
+  ramVoltage: number; 
+  ramTiming: string; 
 };
 
 type RamSchema = ProductCategorySpecifications & RamSpecifications;
@@ -502,9 +473,9 @@ type RamRequestBody = ProductCategoryPage1Specifications &
     uploadedFilesIds: string[];
   };
 
-// ╭─────────────────────────────────────────────────────────────────╮
-//    MICROPHONE
-// ╰─────────────────────────────────────────────────────────────────╯
+
+
+
 
 type MicrophoneType = "Condenser" | "Dynamic" | "Ribbon" | "USB" | "Wireless" | "Other";
 type MicrophonePolarPattern =
@@ -517,11 +488,11 @@ type MicrophonePolarPattern =
 type MicrophoneInterface = "XLR" | "USB" | "3.5mm" | "Wireless" | "Other";
 
 type MicrophoneSpecifications = {
-  microphoneType: MicrophoneType; // Condenser, Dynamic, etc.
-  microphonePolarPattern: MicrophonePolarPattern; // Cardioid, etc.
-  microphoneFrequencyResponse: string; // 20Hz-20kHz, etc.
-  microphoneColor: string; // Black, White, etc.
-  microphoneInterface: MicrophoneInterface; // XLR, USB, etc.
+  microphoneType: MicrophoneType; 
+  microphonePolarPattern: MicrophonePolarPattern; 
+  microphoneFrequencyResponse: string; 
+  microphoneColor: string; 
+  microphoneInterface: MicrophoneInterface; 
 };
 
 type MicrophoneSchema = ProductCategorySpecifications & MicrophoneSpecifications;
@@ -542,25 +513,25 @@ type MicrophoneRequestBody = ProductCategoryPage1Specifications &
     uploadedFilesIds: string[];
   };
 
-// ╭─────────────────────────────────────────────────────────────────╮
-//    MOTHERBOARD
-// ╰─────────────────────────────────────────────────────────────────╯
+
+
+
 
 type MotherboardFormFactor = "ATX" | "Micro ATX" | "Mini ITX" | "E-ATX" | "XL-ATX";
 
 type MotherboardSpecifications = {
-  motherboardSocket: string; // LGA 1200, AM4, etc.
-  motherboardChipset: string; // Intel Z490, AMD B550, etc.
-  motherboardFormFactor: MotherboardFormFactor; // ATX, Micro ATX, etc.
-  motherboardMemoryMax: number; // 128, 256, etc.
-  motherboardMemoryMaxUnit: MemoryUnit; // GB, etc.
-  motherboardMemorySlots: number; // 4, 8, etc.
-  motherboardMemoryType: MemoryType; // DDR4, etc.
-  motherboardSataPorts: number; // 6, 8, etc.
-  motherboardM2Slots: number; // 2, 3, etc.
-  motherboardPcie3Slots: number; // 2, 3, etc.
-  motherboardPcie4Slots: number; // 1, 2, etc.
-  motherboardPcie5Slots: number; // 0, 1, etc.
+  motherboardSocket: string; 
+  motherboardChipset: string; 
+  motherboardFormFactor: MotherboardFormFactor; 
+  motherboardMemoryMax: number; 
+  motherboardMemoryMaxUnit: MemoryUnit; 
+  motherboardMemorySlots: number; 
+  motherboardMemoryType: MemoryType; 
+  motherboardSataPorts: number; 
+  motherboardM2Slots: number; 
+  motherboardPcie3Slots: number; 
+  motherboardPcie4Slots: number; 
+  motherboardPcie5Slots: number; 
 };
 
 type MotherboardSchema = ProductCategorySpecifications & MotherboardSpecifications;
@@ -581,18 +552,18 @@ type MotherboardRequestBody = ProductCategoryPage1Specifications &
     uploadedFilesIds: string[];
   };
 
-// ╭─────────────────────────────────────────────────────────────────╮
-//    MOUSE
-// ╰─────────────────────────────────────────────────────────────────╯
+
+
+
 
 type MouseSensor = "Optical" | "Laser" | "Infrared" | "Other";
 
 type MouseSpecifications = {
-  mouseSensor: MouseSensor; // Optical, Laser, etc.
-  mouseDpi: number; // 800, 1600, etc.
-  mouseButtons: number; // 6, 8, etc.
-  mouseColor: string; // Black, White, etc.
-  mouseInterface: PeripheralsInterface; // USB, Bluetooth, etc.
+  mouseSensor: MouseSensor; 
+  mouseDpi: number; 
+  mouseButtons: number; 
+  mouseColor: string; 
+  mouseInterface: PeripheralsInterface; 
 };
 
 type MouseSchema = ProductCategorySpecifications & MouseSpecifications;
@@ -613,9 +584,9 @@ type MouseRequestBody = ProductCategoryPage1Specifications &
     uploadedFilesIds: string[];
   };
 
-// ╭─────────────────────────────────────────────────────────────────╮
-//    POWER SUPPLY UNIT (PSU)
-// ╰─────────────────────────────────────────────────────────────────╯
+
+
+
 
 type PsuEfficiency =
   | "80+"
@@ -628,10 +599,10 @@ type PsuModularity = "Full" | "Semi" | "None" | "Other";
 type PsuFormFactor = "ATX" | "SFX" | "SFX-L" | "TFX" | "Flex ATX" | "Other";
 
 type PsuSpecifications = {
-  psuWattage: number; // 650 W, 750 W, etc.
-  psuEfficiency: PsuEfficiency; // 80+ Gold, 80+ Platinum, etc.
-  psuFormFactor: PsuFormFactor; // ATX, SFX, etc.
-  psuModularity: PsuModularity; // Full, Semi, etc.
+  psuWattage: number; 
+  psuEfficiency: PsuEfficiency; 
+  psuFormFactor: PsuFormFactor; 
+  psuModularity: PsuModularity; 
 };
 
 type PsuSchema = ProductCategorySpecifications & PsuSpecifications;
@@ -652,22 +623,22 @@ type PsuRequestBody = ProductCategoryPage1Specifications &
     uploadedFilesIds: string[];
   };
 
-// ╭─────────────────────────────────────────────────────────────────╮
-//    SMARTPHONE
-// ╰─────────────────────────────────────────────────────────────────╯
+
+
+
 
 type SmartphoneSpecifications = {
-  smartphoneOs: MobileOs; // Android, iOS, etc.
-  smartphoneChipset: string; // Snapdragon 888, Apple A14 Bionic, etc.
-  smartphoneDisplay: number; // 6.7", 6.9", etc.
+  smartphoneOs: MobileOs; 
+  smartphoneChipset: string; 
+  smartphoneDisplay: number; 
   smartphoneHorizontalResolution: number;
   smartphoneVerticalResolution: number;
-  smartphoneRamCapacity: number; // 12, 16, etc.
-  smartphoneRamCapacityUnit: MemoryUnit; // GB, etc.
-  smartphoneStorage: number; // 128 GB, 256 GB, etc.
-  smartphoneBattery: number; // 5000 mAh, 6000 mAh, etc.
-  smartphoneCamera: string; // 108 MP, 64 MP, etc.
-  smartphoneColor: string; // Black, White, etc.
+  smartphoneRamCapacity: number; 
+  smartphoneRamCapacityUnit: MemoryUnit; 
+  smartphoneStorage: number; 
+  smartphoneBattery: number; 
+  smartphoneCamera: string; 
+  smartphoneColor: string; 
 };
 
 type SmartphoneSchema = ProductCategorySpecifications & SmartphoneSpecifications;
@@ -688,9 +659,9 @@ type SmartphoneRequestBody = ProductCategoryPage1Specifications &
     uploadedFilesIds: string[];
   };
 
-// ╭─────────────────────────────────────────────────────────────────╮
-//    SPEAKER
-// ╰─────────────────────────────────────────────────────────────────╯
+
+
+
 
 type SpeakerType = "2.0" | "2.1" | "3.1" | "4.1" | "5.1" | "7.1" | "Other";
 type SpeakerInterface =
@@ -704,11 +675,11 @@ type SpeakerInterface =
   | "Other";
 
 type SpeakerSpecifications = {
-  speakerType: SpeakerType; // 2.0, 2.1, etc.
-  speakerTotalWattage: number; // 10 W, 20 W, etc.
-  speakerFrequencyResponse: string; // 20 Hz - 20 kHz, etc.
-  speakerColor: string; // Black, White, etc.
-  speakerInterface: SpeakerInterface; // USB, Bluetooth, etc.
+  speakerType: SpeakerType; 
+  speakerTotalWattage: number; 
+  speakerFrequencyResponse: string; 
+  speakerColor: string; 
+  speakerInterface: SpeakerInterface; 
 };
 
 type SpeakerSchema = ProductCategorySpecifications & SpeakerSpecifications;
@@ -729,9 +700,9 @@ type SpeakerRequestBody = ProductCategoryPage1Specifications &
     uploadedFilesIds: string[];
   };
 
-// ╭─────────────────────────────────────────────────────────────────╮
-//    STORAGE
-// ╰─────────────────────────────────────────────────────────────────╯
+
+
+
 
 type StorageType = "SSD" | "HDD" | "SSHD" | "Other";
 type StorageFormFactor =
@@ -755,13 +726,13 @@ type StorageInterface =
   | "Other";
 
 type StorageSpecifications = {
-  storageType: StorageType; // SSD, HDD, etc.
-  storageCapacity: number; // 1, 2, etc.
-  storageCapacityUnit: MemoryUnit; // TB, etc.
-  storageCache: number; // 64 MB, 128 MB, etc.
-  storageCacheUnit: MemoryUnit; // MB, etc.
-  storageFormFactor: StorageFormFactor; // 2.5", M.2 2280, etc.
-  storageInterface: StorageInterface; // SATA III, PCIe 3.0 x4, etc.
+  storageType: StorageType; 
+  storageCapacity: number; 
+  storageCapacityUnit: MemoryUnit; 
+  storageCache: number; 
+  storageCacheUnit: MemoryUnit; 
+  storageFormFactor: StorageFormFactor; 
+  storageInterface: StorageInterface; 
 };
 
 type StorageSchema = ProductCategorySpecifications & StorageSpecifications;
@@ -782,22 +753,22 @@ type StorageRequestBody = ProductCategoryPage1Specifications &
     uploadedFilesIds: string[];
   };
 
-// ╭─────────────────────────────────────────────────────────────────╮
-//    TABLET
-// ╰─────────────────────────────────────────────────────────────────╯
+
+
+
 
 type TabletSpecifications = {
-  tabletOs: MobileOs; // Android, iOS, etc.
-  tabletChipset: string; // Snapdragon 888, Apple A14 Bionic, etc.
-  tabletDisplay: number; // 6.7", 6.9", etc.
+  tabletOs: MobileOs; 
+  tabletChipset: string; 
+  tabletDisplay: number; 
   tabletHorizontalResolution: number;
   tabletVerticalResolution: number;
-  tabletRamCapacity: number; // 12, 16, etc.
-  tabletRamCapacityUnit: MemoryUnit; // GB, etc.
-  tabletStorage: number; // 128 GB, 256 GB, etc.
-  tabletBattery: number; // 5000 mAh, 6000 mAh, etc.
-  tabletCamera: string; // 108 MP, 64 MP, etc.
-  tabletColor: string; // Black, White, etc.
+  tabletRamCapacity: number; 
+  tabletRamCapacityUnit: MemoryUnit; 
+  tabletStorage: number; 
+  tabletBattery: number; 
+  tabletCamera: string; 
+  tabletColor: string; 
 };
 
 type TabletSchema = ProductCategorySpecifications & TabletSpecifications;
@@ -818,9 +789,9 @@ type TabletRequestBody = ProductCategoryPage1Specifications &
     uploadedFilesIds: string[];
   };
 
-// ╭─────────────────────────────────────────────────────────────────╮
-//    WEBCAM
-// ╰─────────────────────────────────────────────────────────────────╯
+
+
+
 
 type WebcamResolution = "720p" | "1080p" | "1440p" | "4K" | "Other";
 type WebcamFrameRate = "30 fps" | "60 fps" | "120 fps" | "240 fps" | "Other";
@@ -828,11 +799,11 @@ type WebcamInterface = "USB" | "Bluetooth" | "Wi-Fi" | "Other";
 type WebcamMicrophone = "Yes" | "No";
 
 type WebcamSpecifications = {
-  webcamResolution: WebcamResolution; // 720p, 1080p, etc.
-  webcamInterface: WebcamInterface; // USB, Bluetooth, etc.
-  webcamMicrophone: WebcamMicrophone; // Yes, No
-  webcamFrameRate: WebcamFrameRate; // 30 fps, 60 fps, etc.
-  webcamColor: string; // Black, White, etc.
+  webcamResolution: WebcamResolution; 
+  webcamInterface: WebcamInterface; 
+  webcamMicrophone: WebcamMicrophone; 
+  webcamFrameRate: WebcamFrameRate; 
+  webcamColor: string; 
 };
 
 type WebcamSchema = ProductCategorySpecifications & WebcamSpecifications;
@@ -853,84 +824,84 @@ type WebcamRequestBody = ProductCategoryPage1Specifications &
     uploadedFilesIds: string[];
   };
 
-// ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
-//  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-//     CREATE PRODUCT STATE TYPES
-//  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
-// ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
 
-type AdditionalFieldsMap = Map<number, [string, string]>; // Map<index, [name, value]>
-type AdditionalFieldsValidMap = Map<number, [boolean, boolean]>; // Map<index, [isNameValid, isValueValid]>
-type AdditionalFieldsFocusedMap = Map<number, [boolean, boolean]>; // Map<index, [isNameFocused, isValueFocused]>
+
+
+
+
+
+type AdditionalFieldsMap = Map<number, [string, string]>; 
+type AdditionalFieldsValidMap = Map<number, [boolean, boolean]>; 
+type AdditionalFieldsFocusedMap = Map<number, [boolean, boolean]>; isValueFocused]>
 
 type CreateProductState = {
-  // ╔═════════════════════════════════════════════════════════════════╗
-  //    PAGE 1
-  // ╚═════════════════════════════════════════════════════════════════╝
+  
+  
+  
 
-  // brand
+  
   brand: string;
   isBrandValid: boolean;
   isBrandFocused: boolean;
-  // model
+  
   model: string;
   isModelValid: boolean;
   isModelFocused: boolean;
-  // description
+  
   description: string;
   isDescriptionValid: boolean;
   isDescriptionFocused: boolean;
-  // price
+  
   price: string;
   isPriceValid: boolean;
   isPriceFocused: boolean;
-  // currency
+  
   currency: Currency;
-  // availability
+  
   availability: ProductAvailability;
-  // quantity
+  
   quantity: string;
   isQuantityValid: boolean;
   isQuantityFocused: boolean;
-  // weight
+  
   weight: string;
   isWeightValid: boolean;
   isWeightFocused: boolean;
   weightUnit: WeightUnit;
-  // dimensions
-  // length
+  
+  
   dimensionLength: string;
   isDimensionLengthValid: boolean;
   isDimensionLengthFocused: boolean;
-  // length unit
+  
   dimensionLengthUnit: DimensionUnit;
-  // width
+  
   dimensionWidth: string;
   isDimensionWidthValid: boolean;
   isDimensionWidthFocused: boolean;
-  // width unit
+  
   dimensionWidthUnit: DimensionUnit;
-  // height
+  
   dimensionHeight: string;
   isDimensionHeightValid: boolean;
   isDimensionHeightFocused: boolean;
-  // height unit
+  
   dimensionHeightUnit: DimensionUnit;
-  // additional comments
+  
   additionalComments: string;
   isAdditionalCommentsValid: boolean;
   isAdditionalCommentsFocused: boolean;
 
-  // ╔═════════════════════════════════════════════════════════════════╗
-  //    PAGE 2
-  // ╚═════════════════════════════════════════════════════════════════╝
+  
+  
+  
 
-  // product category
+  
   productCategory: ProductCategory;
 
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    ACCESSORY
-  // ╰─────────────────────────────────────────────────────────────────╯
+  
+  
+  
   accessoryType: string;
   isAccessoryTypeValid: boolean;
   isAccessoryTypeFocused: boolean;
@@ -942,9 +913,9 @@ type CreateProductState = {
   areAccessoryFieldsAdditionalMapValid: AdditionalFieldsValidMap;
   areAccessoryFieldsAdditionalMapFocused: AdditionalFieldsFocusedMap;
 
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    CENTRAL PROCESSING UNIT (CPU)
-  // ╰─────────────────────────────────────────────────────────────────╯
+  
+  
+  
   cpuSocket: string;
   isCpuSocketValid: boolean;
   isCpuSocketFocused: boolean;
@@ -973,9 +944,9 @@ type CreateProductState = {
   areCpuFieldsAdditionalMapValid: AdditionalFieldsValidMap;
   areCpuFieldsAdditionalMapFocused: AdditionalFieldsFocusedMap;
 
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    COMPUTER CASE
-  // ╰─────────────────────────────────────────────────────────────────╯
+  
+  
+  
   caseType: CaseType;
   caseColor: string;
   isCaseColorValid: boolean;
@@ -985,10 +956,10 @@ type CreateProductState = {
   areCaseFieldsAdditionalMapValid: AdditionalFieldsValidMap;
   areCaseFieldsAdditionalMapFocused: AdditionalFieldsFocusedMap;
 
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    DISPLAY
-  // ╰─────────────────────────────────────────────────────────────────╯
-  displaySize: string; // inches
+  
+  
+  
+  displaySize: string; 
   isDisplaySizeValid: boolean;
   isDisplaySizeFocused: boolean;
   displayResolutionHorizontal: string;
@@ -1011,9 +982,9 @@ type CreateProductState = {
   areDisplayFieldsAdditionalMapValid: AdditionalFieldsValidMap;
   areDisplayFieldsAdditionalMapFocused: AdditionalFieldsFocusedMap;
 
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    GRAPHICS PROCESSING UNIT (GPU)
-  // ╰─────────────────────────────────────────────────────────────────╯
+  
+  
+  
   gpuChipset: string;
   isGpuChipsetValid: boolean;
   isGpuChipsetFocused: boolean;
@@ -1034,9 +1005,9 @@ type CreateProductState = {
   areGpuFieldsAdditionalMapValid: AdditionalFieldsValidMap;
   areGpuFieldsAdditionalMapFocused: AdditionalFieldsFocusedMap;
 
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    HEADPHONE
-  // ╰─────────────────────────────────────────────────────────────────╯
+  
+  
+  
   headphoneType: HeadphoneType;
   headphoneDriver: string;
   isHeadphoneDriverValid: boolean;
@@ -1055,9 +1026,9 @@ type CreateProductState = {
   areHeadphoneFieldsAdditionalMapValid: AdditionalFieldsValidMap;
   areHeadphoneFieldsAdditionalMapFocused: AdditionalFieldsFocusedMap;
 
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    KEYBOARD
-  // ╰─────────────────────────────────────────────────────────────────╯
+  
+  
+  
   keyboardSwitch: KeyboardSwitch;
   keyboardLayout: KeyboardLayout;
   keyboardBacklight: KeyboardBacklight;
@@ -1066,9 +1037,9 @@ type CreateProductState = {
   areKeyboardFieldsAdditionalMapValid: AdditionalFieldsValidMap;
   areKeyboardFieldsAdditionalMapFocused: AdditionalFieldsFocusedMap;
 
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    MEMORY (RAM)
-  // ╰─────────────────────────────────────────────────────────────────╯
+  
+  
+  
   ramDataRate: string;
   isRamDataRateValid: boolean;
   isRamDataRateFocused: boolean;
@@ -1093,9 +1064,9 @@ type CreateProductState = {
   areRamFieldsAdditionalMapValid: AdditionalFieldsValidMap;
   areRamFieldsAdditionalMapFocused: AdditionalFieldsFocusedMap;
 
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    MICROPHONE
-  // ╰─────────────────────────────────────────────────────────────────╯
+  
+  
+  
   microphoneType: MicrophoneType;
   microphonePolarPattern: MicrophonePolarPattern;
   microphoneInterface: MicrophoneInterface;
@@ -1109,9 +1080,9 @@ type CreateProductState = {
   areMicrophoneFieldsAdditionalMapValid: AdditionalFieldsValidMap;
   areMicrophoneFieldsAdditionalMapFocused: AdditionalFieldsFocusedMap;
 
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    MOTHERBOARD
-  // ╰─────────────────────────────────────────────────────────────────╯
+  
+  
+  
   motherboardSocket: string;
   isMotherboardSocketValid: boolean;
   isMotherboardSocketFocused: boolean;
@@ -1146,9 +1117,9 @@ type CreateProductState = {
   areMotherboardFieldsAdditionalMapValid: AdditionalFieldsValidMap;
   areMotherboardFieldsAdditionalMapFocused: AdditionalFieldsFocusedMap;
 
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    MOUSE
-  // ╰─────────────────────────────────────────────────────────────────╯
+  
+  
+  
   mouseSensor: MouseSensor;
   mouseDpi: string;
   isMouseDpiValid: boolean;
@@ -1164,9 +1135,9 @@ type CreateProductState = {
   areMouseFieldsAdditionalMapValid: AdditionalFieldsValidMap;
   areMouseFieldsAdditionalMapFocused: AdditionalFieldsFocusedMap;
 
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    POWER SUPPLY UNIT (PSU)
-  // ╰─────────────────────────────────────────────────────────────────╯
+  
+  
+  
   psuWattage: string;
   isPsuWattageValid: boolean;
   isPsuWattageFocused: boolean;
@@ -1177,9 +1148,9 @@ type CreateProductState = {
   arePsuFieldsAdditionalMapValid: AdditionalFieldsValidMap;
   arePsuFieldsAdditionalMapFocused: AdditionalFieldsFocusedMap;
 
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    SMARTPHONE
-  // ╰─────────────────────────────────────────────────────────────────╯
+  
+  
+  
   smartphoneOs: MobileOs;
   smartphoneChipset: string;
   isSmartphoneChipsetValid: boolean;
@@ -1197,13 +1168,13 @@ type CreateProductState = {
   isSmartphoneRamCapacityValid: boolean;
   isSmartphoneRamCapacityFocused: boolean;
   smartphoneRamCapacityUnit: MemoryUnit;
-  smartphoneStorageCapacity: string; // GB
+  smartphoneStorageCapacity: string; 
   isSmartphoneStorageCapacityValid: boolean;
   isSmartphoneStorageCapacityFocused: boolean;
-  smartphoneBatteryCapacity: string; // mAh
+  smartphoneBatteryCapacity: string; 
   isSmartphoneBatteryCapacityValid: boolean;
   isSmartphoneBatteryCapacityFocused: boolean;
-  smartphoneCamera: string; // 108 MP, 64 MP, etc.
+  smartphoneCamera: string; 
   isSmartphoneCameraValid: boolean;
   isSmartphoneCameraFocused: boolean;
   smartphoneColor: string;
@@ -1213,9 +1184,9 @@ type CreateProductState = {
   areSmartphoneFieldsAdditionalMapValid: AdditionalFieldsValidMap;
   areSmartphoneFieldsAdditionalMapFocused: AdditionalFieldsFocusedMap;
 
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    SPEAKER
-  // ╰─────────────────────────────────────────────────────────────────╯
+  
+  
+  
   speakerType: SpeakerType;
   speakerTotalWattage: string;
   isSpeakerTotalWattageValid: boolean;
@@ -1231,9 +1202,9 @@ type CreateProductState = {
   areSpeakerFieldsAdditionalMapValid: AdditionalFieldsValidMap;
   areSpeakerFieldsAdditionalMapFocused: AdditionalFieldsFocusedMap;
 
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    STORAGE
-  // ╰─────────────────────────────────────────────────────────────────╯
+  
+  
+  
   storageType: StorageType;
   storageCapacity: string;
   isStorageCapacityValid: boolean;
@@ -1249,9 +1220,9 @@ type CreateProductState = {
   areStorageFieldsAdditionalMapValid: AdditionalFieldsValidMap;
   areStorageFieldsAdditionalMapFocused: AdditionalFieldsFocusedMap;
 
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    TABLET
-  // ╰─────────────────────────────────────────────────────────────────╯
+  
+  
+  
   tabletOs: MobileOs;
   tabletChipset: string;
   isTabletChipsetValid: boolean;
@@ -1269,13 +1240,13 @@ type CreateProductState = {
   isTabletRamCapacityValid: boolean;
   isTabletRamCapacityFocused: boolean;
   tabletRamCapacityUnit: MemoryUnit;
-  tabletStorageCapacity: string; // GB
+  tabletStorageCapacity: string; 
   isTabletStorageCapacityValid: boolean;
   isTabletStorageCapacityFocused: boolean;
-  tabletBatteryCapacity: string; // mAh
+  tabletBatteryCapacity: string; 
   isTabletBatteryCapacityValid: boolean;
   isTabletBatteryCapacityFocused: boolean;
-  tabletCamera: string; // 108 MP, 64 MP, etc.
+  tabletCamera: string; 
   isTabletCameraValid: boolean;
   isTabletCameraFocused: boolean;
   tabletColor: string;
@@ -1285,9 +1256,9 @@ type CreateProductState = {
   areTabletFieldsAdditionalMapValid: AdditionalFieldsValidMap;
   areTabletFieldsAdditionalMapFocused: AdditionalFieldsFocusedMap;
 
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    WEBCAM
-  // ╰─────────────────────────────────────────────────────────────────╯
+  
+  
+  
   webcamResolution: WebcamResolution;
   webcamInterface: WebcamInterface;
   webcamMicrophone: WebcamMicrophone;
@@ -1299,16 +1270,16 @@ type CreateProductState = {
   areWebcamFieldsAdditionalMapValid: AdditionalFieldsValidMap;
   areWebcamFieldsAdditionalMapFocused: AdditionalFieldsFocusedMap;
 
-  // ╔═════════════════════════════════════════════════════════════════╗
-  //    PAGE 3
-  // ╚═════════════════════════════════════════════════════════════════╝
+  
+  
+  
   imgFormDataArray: FormData[];
   areImagesValid: boolean;
 
-  // ╔═════════════════════════════════════════════════════════════════╗
-  //    MISC.
-  // ╚═════════════════════════════════════════════════════════════════╝
-  currentlySelectedAdditionalFieldIndex: number; // currently updating idx
+  
+  
+  
+  currentlySelectedAdditionalFieldIndex: number; 
   triggerFormSubmit: boolean;
   currentStepperPosition: number;
   stepsInError: Set<number>;
@@ -1319,80 +1290,80 @@ type CreateProductState = {
   successMessage: string;
 };
 
-// ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
-//  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-//     CREATE PRODUCT ACTION TYPE
-//  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
-// ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+
+
+
+
+
 
 type CreateProductAction = {
-  // ╔═════════════════════════════════════════════════════════════════╗
-  //    PAGE 1
-  // ╚═════════════════════════════════════════════════════════════════╝
+  
+  
+  
 
-  // brand
+  
   setBrand: "setBrand";
   setIsBrandValid: "setIsBrandValid";
   setIsBrandFocused: "setIsBrandFocused";
-  // model
+  
   setModel: "setModel";
   setIsModelValid: "setIsModelValid";
   setIsModelFocused: "setIsModelFocused";
-  // description
+  
   setDescription: "setDescription";
   setIsDescriptionValid: "setIsDescriptionValid";
   setIsDescriptionFocused: "setIsDescriptionFocused";
-  // price
+  
   setPrice: "setPrice";
   setIsPriceValid: "setIsPriceValid";
   setIsPriceFocused: "setIsPriceFocused";
-  // currency
+  
   setCurrency: "setCurrency";
-  // availability
+  
   setAvailability: "setAvailability";
-  // quantity
+  
   setQuantity: "setQuantity";
   setIsQuantityValid: "setIsQuantityValid";
   setIsQuantityFocused: "setIsQuantityFocused";
-  // weight
+  
   setWeight: "setWeight";
   setIsWeightValid: "setIsWeightValid";
   setIsWeightFocused: "setIsWeightFocused";
   setWeightUnit: "setWeightUnit";
-  // dimensions
-  // length
+  
+  
   setDimensionLength: "setDimensionLength";
   setIsDimensionLengthValid: "setIsDimensionLengthValid";
   setIsDimensionLengthFocused: "setIsDimensionLengthFocused";
-  // length unit
+  
   setDimensionLengthUnit: "setDimensionLengthUnit";
-  // width
+  
   setDimensionWidth: "setDimensionWidth";
   setIsDimensionWidthValid: "setIsDimensionWidthValid";
   setIsDimensionWidthFocused: "setIsDimensionWidthFocused";
-  // width unit
+  
   setDimensionWidthUnit: "setDimensionWidthUnit";
-  // height
+  
   setDimensionHeight: "setDimensionHeight";
   setIsDimensionHeightValid: "setIsDimensionHeightValid";
   setIsDimensionHeightFocused: "setIsDimensionHeightFocused";
-  // height unit
+  
   setDimensionHeightUnit: "setDimensionHeightUnit";
-  // additional comments
+  
   setAdditionalComments: "setAdditionalComments";
   setIsAdditionalCommentsValid: "setIsAdditionalCommentsValid";
   setIsAdditionalCommentsFocused: "setIsAdditionalCommentsFocused";
 
-  // ╔═════════════════════════════════════════════════════════════════╗
-  //    PAGE 2
-  // ╚═════════════════════════════════════════════════════════════════╝
+  
+  
+  
 
-  // product category
+  
   setProductCategory: "setProductCategory";
 
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    ACCESSORY
-  // ╰─────────────────────────────────────────────────────────────────╯
+  
+  
+  
   setAccessoryType: "setAccessoryType";
   setIsAccessoryTypeValid: "setIsAccessoryTypeValid";
   setIsAccessoryTypeFocused: "setIsAccessoryTypeFocused";
@@ -1404,9 +1375,9 @@ type CreateProductAction = {
   setAreAccessoryFieldsAdditionalMapValid: "setAreAccessoryFieldsAdditionalMapValid";
   setAreAccessoryFieldsAdditionalMapFocused: "setAreAccessoryFieldsAdditionalMapFocused";
 
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    CENTRAL PROCESSING UNIT (CPU)
-  // ╰─────────────────────────────────────────────────────────────────╯
+  
+  
+  
   setCpuSocket: "setCpuSocket";
   setIsCpuSocketValid: "setIsCpuSocketValid";
   setIsCpuSocketFocused: "setIsCpuSocketFocused";
@@ -1435,9 +1406,9 @@ type CreateProductAction = {
   setAreCpuFieldsAdditionalMapValid: "setAreCpuFieldsAdditionalMapValid";
   setAreCpuFieldsAdditionalMapFocused: "setAreCpuFieldsAdditionalMapFocused";
 
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    COMPUTER CASE
-  // ╰─────────────────────────────────────────────────────────────────╯
+  
+  
+  
   setCaseType: "setCaseType";
   setCaseColor: "setCaseColor";
   setIsCaseColorValid: "setIsCaseColorValid";
@@ -1447,9 +1418,9 @@ type CreateProductAction = {
   setAreCaseFieldsAdditionalMapValid: "setAreCaseFieldsAdditionalMapValid";
   setAreCaseFieldsAdditionalMapFocused: "setAreCaseFieldsAdditionalMapFocused";
 
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    DISPLAY
-  // ╰─────────────────────────────────────────────────────────────────╯
+  
+  
+  
   setDisplaySize: "setDisplaySize";
   setIsDisplaySizeValid: "setIsDisplaySizeValid";
   setIsDisplaySizeFocused: "setIsDisplaySizeFocused";
@@ -1473,9 +1444,9 @@ type CreateProductAction = {
   setAreDisplayFieldsAdditionalMapValid: "setAreDisplayFieldsAdditionalMapValid";
   setAreDisplayFieldsAdditionalMapFocused: "setAreDisplayFieldsAdditionalMapFocused";
 
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    GRAPHICS PROCESSING UNIT (GPU)
-  // ╰─────────────────────────────────────────────────────────────────╯
+  
+  
+  
   setGpuChipset: "setGpuChipset";
   setIsGpuChipsetValid: "setIsGpuChipsetValid";
   setIsGpuChipsetFocused: "setIsGpuChipsetFocused";
@@ -1496,9 +1467,9 @@ type CreateProductAction = {
   setAreGpuFieldsAdditionalMapValid: "setAreGpuFieldsAdditionalMapValid";
   setAreGpuFieldsAdditionalMapFocused: "setAreGpuFieldsAdditionalMapFocused";
 
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    HEADPHONE
-  // ╰─────────────────────────────────────────────────────────────────╯
+  
+  
+  
   setHeadphoneType: "setHeadphoneType";
   setHeadphoneDriver: "setHeadphoneDriver";
   setIsHeadphoneDriverValid: "setIsHeadphoneDriverValid";
@@ -1517,9 +1488,9 @@ type CreateProductAction = {
   setAreHeadphoneFieldsAdditionalMapValid: "setAreHeadphoneFieldsAdditionalMapValid";
   setAreHeadphoneFieldsAdditionalMapFocused: "setAreHeadphoneFieldsAdditionalMapFocused";
 
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    KEYBOARD
-  // ╰─────────────────────────────────────────────────────────────────╯
+  
+  
+  
   setKeyboardSwitch: "setKeyboardSwitch";
   setKeyboardLayout: "setKeyboardLayout";
   setKeyboardBacklight: "setKeyboardBacklight";
@@ -1528,9 +1499,9 @@ type CreateProductAction = {
   setAreKeyboardFieldsAdditionalMapValid: "setAreKeyboardFieldsAdditionalMapValid";
   setAreKeyboardFieldsAdditionalMapFocused: "setAreKeyboardFieldsAdditionalMapFocused";
 
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    MEMORY (RAM)
-  // ╰─────────────────────────────────────────────────────────────────╯
+  
+  
+  
   setRamDataRate: "setRamDataRate";
   setIsRamDataRateValid: "setIsRamDataRateValid";
   setIsRamDataRateFocused: "setIsRamDataRateFocused";
@@ -1555,9 +1526,9 @@ type CreateProductAction = {
   setAreRamFieldsAdditionalMapValid: "setAreRamFieldsAdditionalMapValid";
   setAreRamFieldsAdditionalMapFocused: "setAreRamFieldsAdditionalMapFocused";
 
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    MOUSE
-  // ╰─────────────────────────────────────────────────────────────────╯
+  
+  
+  
   setMouseSensor: "setMouseSensor";
   setMouseDpi: "setMouseDpi";
   setIsMouseDpiValid: "setIsMouseDpiValid";
@@ -1573,9 +1544,9 @@ type CreateProductAction = {
   setAreMouseFieldsAdditionalMapValid: "setAreMouseFieldsAdditionalMapValid";
   setAreMouseFieldsAdditionalMapFocused: "setAreMouseFieldsAdditionalMapFocused";
 
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    MICROPHONE
-  // ╰─────────────────────────────────────────────────────────────────╯
+  
+  
+  
   setMicrophoneType: "setMicrophoneType";
   setMicrophonePolarPattern: "setMicrophonePolarPattern";
   setMicrophoneInterface: "setMicrophoneInterface";
@@ -1589,9 +1560,9 @@ type CreateProductAction = {
   setAreMicrophoneFieldsAdditionalMapValid: "setAreMicrophoneFieldsAdditionalMapValid";
   setAreMicrophoneFieldsAdditionalMapFocused: "setAreMicrophoneFieldsAdditionalMapFocused";
 
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    MOTHERBOARD
-  // ╰─────────────────────────────────────────────────────────────────╯
+  
+  
+  
   setMotherboardSocket: "setMotherboardSocket";
   setIsMotherboardSocketValid: "setIsMotherboardSocketValid";
   setIsMotherboardSocketFocused: "setIsMotherboardSocketFocused";
@@ -1626,9 +1597,9 @@ type CreateProductAction = {
   setAreMotherboardFieldsAdditionalMapValid: "setAreMotherboardFieldsAdditionalMapValid";
   setAreMotherboardFieldsAdditionalMapFocused: "setAreMotherboardFieldsAdditionalMapFocused";
 
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    POWER SUPPLY UNIT (PSU)
-  // ╰─────────────────────────────────────────────────────────────────╯
+  
+  
+  
   setPsuWattage: "setPsuWattage";
   setIsPsuWattageValid: "setIsPsuWattageValid";
   setIsPsuWattageFocused: "setIsPsuWattageFocused";
@@ -1639,9 +1610,9 @@ type CreateProductAction = {
   setArePsuFieldsAdditionalMapValid: "setArePsuFieldsAdditionalMapValid";
   setArePsuFieldsAdditionalMapFocused: "setArePsuFieldsAdditionalMapFocused";
 
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    SMARTPHONE
-  // ╰─────────────────────────────────────────────────────────────────╯
+  
+  
+  
   setSmartphoneOs: "setSmartphoneOs";
   setSmartphoneChipset: "setSmartphoneChipset";
   setIsSmartphoneChipsetValid: "setIsSmartphoneChipsetValid";
@@ -1675,9 +1646,9 @@ type CreateProductAction = {
   setAreSmartphoneFieldsAdditionalMapValid: "setAreSmartphoneFieldsAdditionalMapValid";
   setAreSmartphoneFieldsAdditionalMapFocused: "setAreSmartphoneFieldsAdditionalMapFocused";
 
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    SPEAKER
-  // ╰─────────────────────────────────────────────────────────────────╯
+  
+  
+  
   setSpeakerType: "setSpeakerType";
   setSpeakerTotalWattage: "setSpeakerTotalWattage";
   setIsSpeakerTotalWattageValid: "setIsSpeakerTotalWattageValid";
@@ -1693,9 +1664,9 @@ type CreateProductAction = {
   setAreSpeakerFieldsAdditionalMapValid: "setAreSpeakerFieldsAdditionalMapValid";
   setAreSpeakerFieldsAdditionalMapFocused: "setAreSpeakerFieldsAdditionalMapFocused";
 
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    STORAGE
-  // ╰─────────────────────────────────────────────────────────────────╯
+  
+  
+  
   setStorageType: "setStorageType";
   setStorageCapacity: "setStorageCapacity";
   setIsStorageCapacityValid: "setIsStorageCapacityValid";
@@ -1711,9 +1682,9 @@ type CreateProductAction = {
   setAreStorageFieldsAdditionalMapValid: "setAreStorageFieldsAdditionalMapValid";
   setAreStorageFieldsAdditionalMapFocused: "setAreStorageFieldsAdditionalMapFocused";
 
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    TABLET
-  // ╰─────────────────────────────────────────────────────────────────╯
+  
+  
+  
   setTabletOs: "setTabletOs";
   setTabletChipset: "setTabletChipset";
   setIsTabletChipsetValid: "setIsTabletChipsetValid";
@@ -1747,9 +1718,9 @@ type CreateProductAction = {
   setAreTabletFieldsAdditionalMapValid: "setAreTabletFieldsAdditionalMapValid";
   setAreTabletFieldsAdditionalMapFocused: "setAreTabletFieldsAdditionalMapFocused";
 
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    WEBCAM
-  // ╰─────────────────────────────────────────────────────────────────╯
+  
+  
+  
   setWebcamResolution: "setWebcamResolution";
   setWebcamInterface: "setWebcamInterface";
   setWebcamMicrophone: "setWebcamMicrophone";
@@ -1761,19 +1732,19 @@ type CreateProductAction = {
   setAreWebcamFieldsAdditionalMapValid: "setAreWebcamFieldsAdditionalMapValid";
   setAreWebcamFieldsAdditionalMapFocused: "setAreWebcamFieldsAdditionalMapFocused";
 
-  // ╔═════════════════════════════════════════════════════════════════╗
-  //    PAGE 3
-  // ╚═════════════════════════════════════════════════════════════════╝
+  
+  
+  
   setImgFormDataArray: "setImgFormDataArray";
   setAreImagesValid: "setAreImagesValid";
 
-  // ╔═════════════════════════════════════════════════════════════════╗
-  //    MISC.
-  // ╚═════════════════════════════════════════════════════════════════╝
+  
+  
+  
   setCurrentlySelectedAdditionalFieldIndex: "setCurrentlySelectedAdditionalFieldIndex";
   setTriggerFormSubmit: "setTriggerFormSubmit";
   setCurrentStepperPosition: "setCurrentStepperPosition";
-  setStepsInError: "setStepsInError";
+  setPageInError: "setPageInError";
 
   setIsSubmitting: "setIsSubmitting";
   setSubmitMessage: "setSubmitMessage";

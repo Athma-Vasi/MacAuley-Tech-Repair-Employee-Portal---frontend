@@ -315,7 +315,7 @@ function CreateTablet({
       areTabletHardcodedRequiredInputsInError || areTabletFieldsAdditionalMapInError;
 
     createProductDispatch({
-      type: createProductAction.setStepsInError,
+      type: createProductAction.setPageInError,
       payload: {
         kind: areTabletInputsInError ? "add" : "delete",
         step: 1,
@@ -323,7 +323,7 @@ function CreateTablet({
     });
   }, [
     areTabletFieldsAdditionalMapValid,
-    createProductAction.setStepsInError,
+    createProductAction.setPageInError,
     createProductDispatch,
     isTabletBatteryCapacityValid,
     isTabletCameraValid,

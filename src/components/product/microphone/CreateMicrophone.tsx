@@ -169,7 +169,7 @@ function CreateMicrophone({
       areMicrophoneInputsHardcodedInError || areMicrophoneInputsUserDefinedInError;
 
     createProductDispatch({
-      type: createProductAction.setStepsInError,
+      type: createProductAction.setPageInError,
       payload: {
         kind: areMicrophoneInputsInError ? "add" : "delete",
         step: 1,
@@ -177,7 +177,7 @@ function CreateMicrophone({
     });
   }, [
     areMicrophoneFieldsAdditionalMapValid,
-    createProductAction.setStepsInError,
+    createProductAction.setPageInError,
     createProductDispatch,
     isMicrophoneColorValid,
     isMicrophoneFrequencyResponseValid,

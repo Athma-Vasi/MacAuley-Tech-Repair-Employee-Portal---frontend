@@ -1,30 +1,35 @@
 import { Group, MantineNumberSize, Stack, Text, Title, Tooltip } from "@mantine/core";
-import { ChangeEvent, MouseEvent, useEffect } from "react";
-import { TbPlus, TbTrash } from "react-icons/tb";
 
-import {
-  AccessibleErrorValidTextElements,
-  returnAccessibleButtonElements,
-  returnAccessibleSelectInputElements,
-  returnAccessibleTextAreaInputElements,
-  returnAccessibleTextInputElements,
-} from "../../../jsxCreators";
-import {
-  returnBrandNameValidationText,
-  returnColorVariantValidationText,
-  returnObjectKeyValidationText,
-  returnUserDefinedFieldValueValidationText,
-} from "../../../utils";
-import { AccessibleTextAreaInputCreatorInfo } from "../../wrappers";
-import {
-  ACCESSORY_TYPE_REGEX,
-  COLOR_VARIANT_REGEX,
-  OBJECT_KEY_REGEX,
-  PERIPHERALS_INTERFACE_DATA,
-  USER_DEFINED_VALUE_REGEX,
-} from "../constants";
 import { CreateProductDispatch } from "../dispatch";
-import { CreateProductAction, PeripheralsInterface } from "../types";
+import {
+  CreateProductAction,
+  PeripheralsInterface,
+  ProductCategoryPage1Specifications,
+  ProductCategorySpecifications,
+} from "../types";
+
+type AccessorySpecifications = {
+  accessoryType: string;
+  accessoryColor: string;
+  accessoryInterface: PeripheralsInterface;
+};
+
+type AccessorySchema = ProductCategorySpecifications & AccessorySpecifications;
+
+type AccessoryDocument = AccessorySchema & {
+  _id: string;
+  createdAt: string;
+  updatedAt: string;
+  __v: number;
+};
+
+type AccessoryRequestBody = ProductCategoryPage1Specifications &
+  AccessorySpecifications & {
+    additionalFields: {
+      [key: string]: string;
+    };
+    uploadedFilesIds: string[];
+  };
 
 type CreateAccessoryProps = {
   accessoryColor: string;
@@ -58,8 +63,17 @@ function CreateAccessory({
   isAccessoryTypeFocused,
   isAccessoryTypeValid,
   padding,
-}: CreateAccessoryProps) {
-  // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+}: CreateAccessoryProps) {}
+
+export default CreateAccessory;
+export type {
+  AccessoryDocument,
+  AccessoryRequestBody,
+  AccessorySchema,
+  CreateAccessoryProps,
+};
+/**
+ * // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
   //  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
   //    VALIDATION USE EFFECTS
   //  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
@@ -155,7 +169,7 @@ function CreateAccessory({
       areAccessoryInputsHardcodedInError || areAccessoryInputsUserDefinedInError;
 
     createProductDispatch({
-      type: createProductAction.setStepsInError,
+      type: createProductAction.setPageInError,
       payload: {
         kind: areAccessoryInputsInError ? "add" : "delete",
         step: 1,
@@ -163,7 +177,7 @@ function CreateAccessory({
     });
   }, [
     areAccessoryFieldsAdditionalMapValid,
-    createProductAction.setStepsInError,
+    createProductAction.setPageInError,
     createProductDispatch,
     isAccessoryColorValid,
     isAccessoryTypeValid,
@@ -634,6 +648,5 @@ function CreateAccessory({
   );
 
   return displayAccessorySpecificationsInputs;
-}
 
-export default CreateAccessory;
+ */

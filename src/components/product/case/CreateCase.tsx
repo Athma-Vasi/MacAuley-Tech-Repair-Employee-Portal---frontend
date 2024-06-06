@@ -129,7 +129,7 @@ function CreateCase({
     const areCaseInputsInError = !isCaseColorValid || areCaseFieldsAdditionalMapInError;
 
     createProductDispatch({
-      type: createProductAction.setStepsInError,
+      type: createProductAction.setPageInError,
       payload: {
         kind: areCaseInputsInError ? "add" : "delete",
         step: 1,
@@ -137,7 +137,7 @@ function CreateCase({
     });
   }, [
     areCaseFieldsAdditionalMapValid,
-    createProductAction.setStepsInError,
+    createProductAction.setPageInError,
     createProductDispatch,
     isCaseColorValid,
   ]);

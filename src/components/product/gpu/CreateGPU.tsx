@@ -214,7 +214,7 @@ function CreateGpu({
       areGpuInputsHardcodedInError || areGpuInputsUserDefinedInError;
 
     createProductDispatch({
-      type: createProductAction.setStepsInError,
+      type: createProductAction.setPageInError,
       payload: {
         kind: areGpuInputsInError ? "add" : "delete",
         step: 1,
@@ -222,7 +222,7 @@ function CreateGpu({
     });
   }, [
     areGpuFieldsAdditionalMapValid,
-    createProductAction.setStepsInError,
+    createProductAction.setPageInError,
     createProductDispatch,
     isGpuBoostClockValid,
     isGpuChipsetValid,

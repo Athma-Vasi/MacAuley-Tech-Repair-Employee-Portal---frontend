@@ -264,7 +264,7 @@ function CreateCpu({
       areCpuFieldsAdditionalMapInError;
 
     createProductDispatch({
-      type: createProductAction.setStepsInError,
+      type: createProductAction.setPageInError,
       payload: {
         kind: areCpuInputsInError ? "add" : "delete",
         step: 1,
@@ -272,7 +272,7 @@ function CreateCpu({
     });
   }, [
     areCpuFieldsAdditionalMapValid,
-    createProductAction.setStepsInError,
+    createProductAction.setPageInError,
     createProductDispatch,
     isCpuCoresValid,
     isCpuFrequencyValid,

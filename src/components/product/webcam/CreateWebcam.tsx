@@ -144,7 +144,7 @@ function CreateWebcam({
       areWebcamHardcodedRequiredInputsInError || areWebcamFieldsAdditionalMapInError;
 
     createProductDispatch({
-      type: createProductAction.setStepsInError,
+      type: createProductAction.setPageInError,
       payload: {
         kind: areWebcamInputsInError ? "add" : "delete",
         step: 1,
@@ -152,7 +152,7 @@ function CreateWebcam({
     });
   }, [
     areWebcamFieldsAdditionalMapValid,
-    createProductAction.setStepsInError,
+    createProductAction.setPageInError,
     createProductDispatch,
     isWebcamColorValid,
   ]);

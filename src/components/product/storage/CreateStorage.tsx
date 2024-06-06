@@ -173,7 +173,7 @@ function CreateStorage({
       areStorageHardcodedRequiredInputsInError || areStorageFieldsAdditionalMapInError;
 
     createProductDispatch({
-      type: createProductAction.setStepsInError,
+      type: createProductAction.setPageInError,
       payload: {
         kind: areStorageInputsInError ? "add" : "delete",
         step: 1,
@@ -181,7 +181,7 @@ function CreateStorage({
     });
   }, [
     areStorageFieldsAdditionalMapValid,
-    createProductAction.setStepsInError,
+    createProductAction.setPageInError,
     createProductDispatch,
     isStorageCacheCapacityValid,
     isStorageCapacityValid,

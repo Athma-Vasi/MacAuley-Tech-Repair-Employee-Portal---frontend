@@ -183,7 +183,7 @@ function CreateSpeaker({
       areSpeakerHardcodedRequiredInputsInError || areSpeakerFieldsAdditionalMapInError;
 
     createProductDispatch({
-      type: createProductAction.setStepsInError,
+      type: createProductAction.setPageInError,
       payload: {
         kind: areSpeakerInputsInError ? "add" : "delete",
         step: 1,
@@ -191,7 +191,7 @@ function CreateSpeaker({
     });
   }, [
     areSpeakerFieldsAdditionalMapValid,
-    createProductAction.setStepsInError,
+    createProductAction.setPageInError,
     createProductDispatch,
     isSpeakerColorValid,
     isSpeakerFrequencyResponseValid,

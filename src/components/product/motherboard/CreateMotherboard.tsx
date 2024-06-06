@@ -332,7 +332,7 @@ function CreateMotherboard({
       areMotherboardInputsHardcodedInError || areMotherboardInputsUserDefinedInError;
 
     createProductDispatch({
-      type: createProductAction.setStepsInError,
+      type: createProductAction.setPageInError,
       payload: {
         kind: areMotherboardInputsInError ? "add" : "delete",
         step: 1,
@@ -340,7 +340,7 @@ function CreateMotherboard({
     });
   }, [
     areMotherboardFieldsAdditionalMapValid,
-    createProductAction.setStepsInError,
+    createProductAction.setPageInError,
     createProductDispatch,
     isMotherboardChipsetValid,
     isMotherboardM2SlotsValid,

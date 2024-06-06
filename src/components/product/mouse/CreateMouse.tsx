@@ -173,7 +173,7 @@ function CreateMouse({
       areMouseInputsHardcodedInError || areMouseInputsUserDefinedInError;
 
     createProductDispatch({
-      type: createProductAction.setStepsInError,
+      type: createProductAction.setPageInError,
       payload: {
         kind: areMouseInputsInError ? "add" : "delete",
         step: 1,
@@ -181,7 +181,7 @@ function CreateMouse({
     });
   }, [
     areMouseFieldsAdditionalMapValid,
-    createProductAction.setStepsInError,
+    createProductAction.setPageInError,
     createProductDispatch,
     isMouseButtonsValid,
     isMouseColorValid,

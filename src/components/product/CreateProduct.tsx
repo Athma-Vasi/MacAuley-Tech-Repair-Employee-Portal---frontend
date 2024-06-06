@@ -1288,7 +1288,7 @@ export default CreateProduct;
       arePage1RequiredInputsInError || isPage1OptionalInputInError;
 
     createProductDispatch({
-      type: createProductAction.setStepsInError,
+      type: createProductAction.setPageInError,
       payload: {
         kind: arePage1InputsInError ? "add" : "delete",
         step: 0,
@@ -1315,7 +1315,7 @@ export default CreateProduct;
     const arePage3InputsInError = !areImagesValid || imgFormDataArray.length < 1;
 
     createProductDispatch({
-      type: createProductAction.setStepsInError,
+      type: createProductAction.setPageInError,
       payload: {
         kind: arePage3InputsInError ? "add" : "delete",
         step: 2,
