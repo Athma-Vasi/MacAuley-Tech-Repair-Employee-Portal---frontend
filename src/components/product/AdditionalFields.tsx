@@ -2,105 +2,31 @@ import { Group, Stack } from "@mantine/core";
 
 import { StepperChild, StepperPage } from "../../types";
 import { AccessibleButton } from "../accessibleInputs/AccessibleButton";
-import { AccessibleSelectInput } from "../accessibleInputs/AccessibleSelectInput";
 import { AccessibleTextAreaInput } from "../accessibleInputs/AccessibleTextAreaInput";
 import { AccessibleImageInput } from "../accessibleInputs/image";
-import { AccessibleTextInput } from "../accessibleInputs/text/AccessibleTextInput";
 import { ProductCategory } from "../dashboard/types";
 import { CreateProductAction } from "./actions";
-import {
-  MAX_ADDITIONAL_FIELDS_AMOUNT,
-  PERIPHERALS_INTERFACE_DATA,
-  PRODUCT_CATEGORY_PAGE_TABLE,
-} from "./constants";
+import { MAX_ADDITIONAL_FIELDS_AMOUNT, PRODUCT_CATEGORY_PAGE_TABLE } from "./constants";
 import { CreateProductDispatch } from "./dispatch";
-import { PeripheralsInterface } from "./types";
-import { AdditionalFields } from "./AdditionalFields";
 
-type AccessoryProps = {
-  accessoryColor: string;
-  accessoryInterface: PeripheralsInterface;
-  accessoryType: string;
+type AdditionalFieldsProps = {
   additionalFields: Array<[string, string]>;
   additionalFieldsFormData: FormData;
-  parentAction: CreateProductAction;
   parentDispatch: React.Dispatch<CreateProductDispatch>;
   productCategory: ProductCategory;
   stepperPages: StepperPage[];
+  parentAction: CreateProductAction;
 };
 
-function Accessory({
-  accessoryColor,
-  accessoryInterface,
-  accessoryType,
+function AdditionalFields({
+  stepperPages,
   additionalFields,
-  additionalFieldsFormData,
   parentAction,
   parentDispatch,
+  additionalFieldsFormData,
   productCategory,
-  stepperPages,
-}: AccessoryProps) {
-  const accessoryColorTextInput = (
-    <AccessibleTextInput
-      attributes={{
-        invalidValueAction: parentAction.setPageInError,
-        name: "accessoryColor",
-        stepperPages,
-        validValueAction: parentAction.setAccessoryColor,
-        value: accessoryColor,
-      }}
-    />
-  );
-
-  const accessoryInterfaceSelectInput = (
-    <AccessibleSelectInput
-      attributes={{
-        data: PERIPHERALS_INTERFACE_DATA,
-        name: "accessoryInterface",
-        parentDispatch,
-        validValueAction: parentAction.setAccessoryInterface,
-        value: accessoryInterface,
-      }}
-    />
-  );
-
-  const accessoryTypeTextInput = (
-    <AccessibleTextInput
-      attributes={{
-        invalidValueAction: parentAction.setPageInError,
-        name: "accessoryType",
-        stepperPages,
-        validValueAction: parentAction.setAccessoryType,
-        value: accessoryType,
-      }}
-    />
-  );
-
-  const additionalFieldsAndImage = (
-    <AdditionalFields
-      additionalFields={additionalFields}
-      additionalFieldsFormData={additionalFieldsFormData}
-      parentAction={parentAction}
-      parentDispatch={parentDispatch}
-      productCategory={productCategory}
-      stepperPages={stepperPages}
-    />
-  );
-
-  return (
-    <Stack>
-      {accessoryColorTextInput}
-      {accessoryInterfaceSelectInput}
-      {accessoryTypeTextInput}
-      {additionalFieldsAndImage}
-    </Stack>
-  );
-}
-
-export { Accessory };
-
-/**
- * const addAdditionalFieldButton = (
+}: AdditionalFieldsProps) {
+  const addAdditionalFieldButton = (
     <AccessibleButton
       attributes={{
         disabled: additionalFields.length === MAX_ADDITIONAL_FIELDS_AMOUNT,
@@ -308,8 +234,8 @@ export { Accessory };
         <Group>
           {deleteFieldButton}
           {insertFieldButton}
-          {slideFieldDownButton}
           {slideFieldUpButton}
+          {slideFieldDownButton}
         </Group>
       </Stack>
     );
@@ -328,4 +254,14 @@ export { Accessory };
       }}
     />
   );
- */
+
+  return (
+    <Stack>
+      {imageInput}
+      {addAdditionalFieldButton}
+      {additionalTextInputs}
+    </Stack>
+  );
+}
+
+export { AdditionalFields };

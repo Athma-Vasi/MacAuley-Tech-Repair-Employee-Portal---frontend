@@ -560,7 +560,7 @@ function modifyAdditionalFieldsMap_createProductReducer(
       const tuple = additionalFields[inputIndex];
       kind === "fieldName" ? (tuple[0] = value) : (tuple[1] = value);
 
-      const additionalFieldsMap = state.additionalFieldsMap.set(
+      const additionalFieldsMap = clonedAdditionalFieldsMap.set(
         productCategory,
         additionalFields
       );
@@ -585,7 +585,7 @@ function modifyAdditionalFieldsMap_createProductReducer(
       additionalFields[inputIndex] = belowField;
       additionalFields[inputIndex + 1] = currentField;
 
-      const additionalFieldsMap = state.additionalFieldsMap.set(
+      const additionalFieldsMap = clonedAdditionalFieldsMap.set(
         productCategory,
         additionalFields
       );
@@ -610,7 +610,7 @@ function modifyAdditionalFieldsMap_createProductReducer(
       additionalFields[inputIndex] = aboveField;
       additionalFields[inputIndex - 1] = currentField;
 
-      const additionalFieldsMap = state.additionalFieldsMap.set(
+      const additionalFieldsMap = clonedAdditionalFieldsMap.set(
         productCategory,
         additionalFields
       );
