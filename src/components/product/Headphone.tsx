@@ -11,18 +11,18 @@ import { CreateProductDispatch } from "./dispatch";
 import { HeadphoneInterface, HeadphoneType } from "./types";
 
 type HeadphoneProps = {
+  additionalFields: Array<[string, string]>;
+  additionalFieldsFormData: FormData;
   headphoneColor: string;
   headphoneDriver: string;
   headphoneFrequencyResponse: string;
-  additionalFields: Array<[string, string]>;
-  additionalFieldsFormData: FormData;
+  headphoneImpedance: string;
+  headphoneInterface: HeadphoneInterface;
+  headphoneType: HeadphoneType;
   parentAction: CreateProductAction;
   parentDispatch: React.Dispatch<CreateProductDispatch>;
   productCategory: ProductCategory;
   stepperPages: StepperPage[];
-  headphoneImpedance: string;
-  headphoneInterface: HeadphoneInterface;
-  headphoneType: HeadphoneType;
 };
 
 function Headphone({
