@@ -47,7 +47,6 @@ import {
   ProductReviewSchema,
 } from "../../product/types";
 import { CUSTOMER_DOCUMENTS } from "../customer/customerDocuments";
-import { STAR_RATINGS_OBJ } from "../productReview/review";
 
 const CPUS_ARRAY: Omit<ProductCategorySpecifications & CpuSpecifications, "sku">[] = [
   {
@@ -81,19 +80,6 @@ const CPUS_ARRAY: Omit<ProductCategorySpecifications & CpuSpecifications, "sku">
       warranty: "2 years",
       overclocking: "Supported",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -127,19 +113,6 @@ const CPUS_ARRAY: Omit<ProductCategorySpecifications & CpuSpecifications, "sku">
       warranty: "1 year",
       integratedGraphics: "No",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -173,19 +146,6 @@ const CPUS_ARRAY: Omit<ProductCategorySpecifications & CpuSpecifications, "sku">
       warranty: "3 years",
       hyperThreading: "Yes",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -219,19 +179,6 @@ const CPUS_ARRAY: Omit<ProductCategorySpecifications & CpuSpecifications, "sku">
       warranty: "5 years",
       multitasking: "Optimized",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -265,19 +212,6 @@ const CPUS_ARRAY: Omit<ProductCategorySpecifications & CpuSpecifications, "sku">
       architecture: "Comet Lake",
       integratedGraphics: "UHD Graphics 630",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -311,19 +245,6 @@ const CPUS_ARRAY: Omit<ProductCategorySpecifications & CpuSpecifications, "sku">
       architecture: "Zen 2",
       multithreading: "Yes",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -357,19 +278,6 @@ const CPUS_ARRAY: Omit<ProductCategorySpecifications & CpuSpecifications, "sku">
       architecture: "Zen 3",
       multithreading: "Yes",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -403,19 +311,6 @@ const CPUS_ARRAY: Omit<ProductCategorySpecifications & CpuSpecifications, "sku">
       architecture: "Zen 3",
       multithreading: "Yes",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -449,19 +344,6 @@ const CPUS_ARRAY: Omit<ProductCategorySpecifications & CpuSpecifications, "sku">
       architecture: "Rocket Lake",
       integratedGraphics: "UHD Graphics 730",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -495,19 +377,6 @@ const CPUS_ARRAY: Omit<ProductCategorySpecifications & CpuSpecifications, "sku">
       architecture: "Zen 2",
       multithreading: "Yes",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -540,19 +409,6 @@ const CPUS_ARRAY: Omit<ProductCategorySpecifications & CpuSpecifications, "sku">
     additionalFields: {
       hyperThreading: "Yes",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -585,19 +441,6 @@ const CPUS_ARRAY: Omit<ProductCategorySpecifications & CpuSpecifications, "sku">
     additionalFields: {
       architecture: "Zen 3",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -630,19 +473,6 @@ const CPUS_ARRAY: Omit<ProductCategorySpecifications & CpuSpecifications, "sku">
     additionalFields: {
       eccSupport: "Yes",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -675,19 +505,6 @@ const CPUS_ARRAY: Omit<ProductCategorySpecifications & CpuSpecifications, "sku">
     additionalFields: {
       multitaskingSupport: "Yes",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -720,19 +537,6 @@ const CPUS_ARRAY: Omit<ProductCategorySpecifications & CpuSpecifications, "sku">
     additionalFields: {
       integratedGraphics: "Yes",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -765,19 +569,6 @@ const CPUS_ARRAY: Omit<ProductCategorySpecifications & CpuSpecifications, "sku">
     additionalFields: {
       lowPowerConsumption: "Yes",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -810,19 +601,6 @@ const CPUS_ARRAY: Omit<ProductCategorySpecifications & CpuSpecifications, "sku">
     additionalFields: {
       hyperThreading: "Yes",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -855,19 +633,6 @@ const CPUS_ARRAY: Omit<ProductCategorySpecifications & CpuSpecifications, "sku">
     additionalFields: {
       PCIeGen4Support: "Yes",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -900,19 +665,6 @@ const CPUS_ARRAY: Omit<ProductCategorySpecifications & CpuSpecifications, "sku">
     additionalFields: {
       integratedGraphics: "Yes",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -945,19 +697,6 @@ const CPUS_ARRAY: Omit<ProductCategorySpecifications & CpuSpecifications, "sku">
     additionalFields: {
       architecture: "Zen 3",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -990,19 +729,6 @@ const CPUS_ARRAY: Omit<ProductCategorySpecifications & CpuSpecifications, "sku">
     additionalFields: {
       overclockingSupport: "Yes",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -1035,19 +761,6 @@ const CPUS_ARRAY: Omit<ProductCategorySpecifications & CpuSpecifications, "sku">
     additionalFields: {
       integratedGraphics: "Yes",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -1080,19 +793,6 @@ const CPUS_ARRAY: Omit<ProductCategorySpecifications & CpuSpecifications, "sku">
     additionalFields: {
       overclockingSupport: "Yes",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -1125,19 +825,6 @@ const CPUS_ARRAY: Omit<ProductCategorySpecifications & CpuSpecifications, "sku">
     additionalFields: {
       integratedGraphics: "No",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -1170,19 +857,6 @@ const CPUS_ARRAY: Omit<ProductCategorySpecifications & CpuSpecifications, "sku">
     additionalFields: {
       integratedGraphics: "Yes",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
 ];
@@ -3390,59 +3064,6 @@ const CPU_REVIEWS = [
   },
 ];
 
-function returnCpuProductReviewSchemas({
-  cpuDocuments,
-  cpuReviews,
-  customerDocuments,
-}: {
-  cpuDocuments: typeof CPU_DOCUMENTS;
-  cpuReviews: typeof CPU_REVIEWS;
-  customerDocuments: typeof CUSTOMER_DOCUMENTS;
-}) {
-  return cpuDocuments.flatMap((cpuDocument) => {
-    // random number of reviews
-    const numberOfReviews = Math.round(Math.random() * (3 - 1) + 1);
-    // shuffle customers
-    const shuffledCustomers = shuffleArray(customerDocuments);
-    // random slice of customers
-    const randomCustomers = shuffledCustomers.slice(0, numberOfReviews);
-    // shuffle reviews
-    const shuffledReviews = shuffleArray(cpuReviews);
-    // random slice of reviews
-    const randomReviews = shuffledReviews.slice(0, numberOfReviews);
-
-    const productReviewSchemas: ProductReviewSchema[] = [];
-    randomCustomers.forEach((customer, index) => {
-      const {
-        helpfulVotes,
-        isVerifiedPurchase,
-        productRating,
-        productReview,
-        unhelpfulVotes,
-      } = randomReviews[index];
-
-      const productReviewSchema: ProductReviewSchema = {
-        userId: customer._id,
-        username: customer.username,
-        productId: cpuDocument._id,
-        productCategory: "Central Processing Unit (CPU)",
-        productSku: cpuDocument.sku[Math.floor(Math.random() * cpuDocument.sku.length)],
-        productBrand: cpuDocument.brand,
-        productModel: cpuDocument.model,
-        productReview,
-        productRating: STAR_RATINGS_OBJ[productRating],
-        helpfulVotes,
-        unhelpfulVotes,
-        isVerifiedPurchase,
-      };
-
-      productReviewSchemas.push(productReviewSchema);
-    });
-
-    return productReviewSchemas;
-  });
-}
-
 const CPU_REVIEW_DOCUMENTS: ProductReviewDocument[] = [
   {
     userId: "65684c0501240d69b9093eeb",
@@ -4389,11 +4010,4 @@ const CPU_REVIEW_DOCUMENTS: ProductReviewDocument[] = [
   },
 ];
 
-export {
-  CPU_DOCUMENTS,
-  CPU_REVIEW_DOCUMENTS,
-  CPU_REVIEWS,
-  CPUS_ARRAY,
-  returnCpuProductReviewSchemas,
-  returnCpuSchemas,
-};
+export { CPU_DOCUMENTS, CPU_REVIEW_DOCUMENTS, CPU_REVIEWS, CPUS_ARRAY, returnCpuSchemas };

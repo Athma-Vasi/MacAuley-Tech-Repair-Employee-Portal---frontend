@@ -44,7 +44,6 @@ import {
   ProductReviewSchema,
 } from "../../product/types";
 import { CUSTOMER_DOCUMENTS } from "../customer/customerDocuments";
-import { STAR_RATINGS_OBJ } from "../productReview/review";
 
 const DISPLAYS_ARRAY: Omit<
   ProductCategorySpecifications & DisplaySpecifications,
@@ -78,19 +77,6 @@ const DISPLAYS_ARRAY: Omit<
       color: "Black",
       ports: "HDMI, DisplayPort, USB-C",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -122,19 +108,6 @@ const DISPLAYS_ARRAY: Omit<
       refreshTechnology: "NVIDIA G-Sync",
       colorAccuracy: "98% DCI-P3",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -166,19 +139,6 @@ const DISPLAYS_ARRAY: Omit<
       smartFeatures: "Tizen OS, Voice Assistant",
       connectivity: "4 HDMI, 2 USB",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -209,19 +169,6 @@ const DISPLAYS_ARRAY: Omit<
       gamingFeatures: "AMD FreeSync",
       connectivity: "HDMI, DisplayPort",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -252,19 +199,6 @@ const DISPLAYS_ARRAY: Omit<
       smartFeatures: "Android TV, Google Assistant",
       audioTechnology: "Acoustic Surface Audio+",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -295,19 +229,6 @@ const DISPLAYS_ARRAY: Omit<
       gamingFeatures: "NVIDIA G-Sync",
       colorAccuracy: "99% sRGB",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -339,19 +260,6 @@ const DISPLAYS_ARRAY: Omit<
       smartFeatures: "Art Mode, Quantum Dot Technology",
       connectivity: "4 HDMI, 2 USB",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -383,19 +291,6 @@ const DISPLAYS_ARRAY: Omit<
       connectivity: "HDMI, DisplayPort",
       standType: "Height Adjustable",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -427,19 +322,6 @@ const DISPLAYS_ARRAY: Omit<
       smartFeatures: "AI ThinQ, webOS, Magic Remote",
       audioTechnology: "Dolby Atmos",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -472,19 +354,6 @@ const DISPLAYS_ARRAY: Omit<
       connectivity: "HDMI, DisplayPort",
       colorAccuracy: "99% sRGB",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -517,19 +386,6 @@ const DISPLAYS_ARRAY: Omit<
       smartFeatures: "Google TV, XR Motion Clarity",
       audioTechnology: "Acoustic Surface Audio+",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -562,19 +418,6 @@ const DISPLAYS_ARRAY: Omit<
       gamingFeatures: "NVIDIA G-Sync, ASUS GamePlus",
       adjustableStand: "Height, Swivel, Tilt",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -606,19 +449,6 @@ const DISPLAYS_ARRAY: Omit<
       adjustableArm: "Yes",
       connectivity: "HDMI, Mini DisplayPort",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -651,19 +481,6 @@ const DISPLAYS_ARRAY: Omit<
       gamingFeatures: "NVIDIA G-Sync, Black Stabilizer",
       adjustableStand: "Height, Pivot",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -696,19 +513,6 @@ const DISPLAYS_ARRAY: Omit<
       smartFeatures: "Android TV, Google Assistant",
       audioTechnology: "Dolby Atmos, DTS Digital Surround",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -739,19 +543,6 @@ const DISPLAYS_ARRAY: Omit<
     additionalFields: {
       connectivity: "HDMI, DisplayPort, USB",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -783,19 +574,6 @@ const DISPLAYS_ARRAY: Omit<
       smartFeatures: "Android TV, Google Assistant",
       audioTechnology: "Dolby Atmos, DTS",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -827,19 +605,6 @@ const DISPLAYS_ARRAY: Omit<
     additionalFields: {
       gamingFeatures: "NVIDIA G-Sync, Predator GameView",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -869,19 +634,6 @@ const DISPLAYS_ARRAY: Omit<
     additionalFields: {
       connectivity: "HDMI, Mini DisplayPort",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -913,19 +665,6 @@ const DISPLAYS_ARRAY: Omit<
       smartFeatures: "WebOS, ThinQ AI",
       audioTechnology: "Dolby Atmos",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -957,19 +696,6 @@ const DISPLAYS_ARRAY: Omit<
     additionalFields: {
       gamingFeatures: "AMD FreeSync, Low Input Lag",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
 ];
@@ -2846,60 +2572,6 @@ const DISPLAY_REVIEWS = [
   },
 ];
 
-function returnDisplayProductReviewSchemas({
-  displayDocuments,
-  displayReviews,
-  customerDocuments,
-}: {
-  displayDocuments: typeof DISPLAY_DOCUMENTS;
-  displayReviews: typeof DISPLAY_REVIEWS;
-  customerDocuments: typeof CUSTOMER_DOCUMENTS;
-}) {
-  return displayDocuments.flatMap((displayDocument) => {
-    // random number of reviews
-    const numberOfReviews = Math.round(Math.random() * (3 - 1) + 1);
-    // shuffle customers
-    const shuffledCustomers = shuffleArray(customerDocuments);
-    // random slice of customers
-    const randomCustomers = shuffledCustomers.slice(0, numberOfReviews);
-    // shuffle reviews
-    const shuffledReviews = shuffleArray(displayReviews);
-    // random slice of reviews
-    const randomReviews = shuffledReviews.slice(0, numberOfReviews);
-
-    const productReviewSchemas: ProductReviewSchema[] = [];
-    randomCustomers.forEach((customer, index) => {
-      const {
-        helpfulVotes,
-        isVerifiedPurchase,
-        productRating,
-        productReview,
-        unhelpfulVotes,
-      } = randomReviews[index];
-
-      const productReviewSchema: ProductReviewSchema = {
-        userId: customer._id,
-        username: customer.username,
-        productId: displayDocument._id,
-        productCategory: "Display",
-        productSku:
-          displayDocument.sku[Math.floor(Math.random() * displayDocument.sku.length)],
-        productBrand: displayDocument.brand,
-        productModel: displayDocument.model,
-        productReview,
-        productRating: STAR_RATINGS_OBJ[productRating],
-        helpfulVotes,
-        unhelpfulVotes,
-        isVerifiedPurchase,
-      };
-
-      productReviewSchemas.push(productReviewSchema);
-    });
-
-    return productReviewSchemas;
-  });
-}
-
 const DISPLAY_REVIEW_DOCUMENTS: ProductReviewDocument[] = [
   {
     userId: "65684bdf01240d69b9093931",
@@ -3812,6 +3484,5 @@ export {
   DISPLAY_REVIEW_DOCUMENTS,
   DISPLAY_REVIEWS,
   DISPLAYS_ARRAY,
-  returnDisplayProductReviewSchemas,
   returnDisplaySchemas,
 };

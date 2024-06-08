@@ -36,7 +36,6 @@ uploadedFilesIds:[];
 
 import { v4 as uuidv4 } from "uuid";
 
-import { shuffleArray } from "../../../utils";
 import {
   ProductCategorySpecifications,
   ProductReviewDocument,
@@ -45,7 +44,6 @@ import {
   RamSpecifications,
 } from "../../product/types";
 import { CUSTOMER_DOCUMENTS } from "../customer/customerDocuments";
-import { STAR_RATINGS_OBJ } from "../productReview/review";
 
 const RAMS_ARRAY: Omit<ProductCategorySpecifications & RamSpecifications, "sku">[] = [
   {
@@ -77,19 +75,6 @@ const RAMS_ARRAY: Omit<ProductCategorySpecifications & RamSpecifications, "sku">
       warranty: "2 years",
       casLatency: "CL16",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -120,19 +105,6 @@ const RAMS_ARRAY: Omit<ProductCategorySpecifications & RamSpecifications, "sku">
     additionalFields: {
       heatSpreader: "Aluminum",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -163,19 +135,6 @@ const RAMS_ARRAY: Omit<ProductCategorySpecifications & RamSpecifications, "sku">
     additionalFields: {
       heatSpreader: "Black",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -206,19 +165,6 @@ const RAMS_ARRAY: Omit<ProductCategorySpecifications & RamSpecifications, "sku">
     additionalFields: {
       warranty: "Lifetime",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -249,19 +195,6 @@ const RAMS_ARRAY: Omit<ProductCategorySpecifications & RamSpecifications, "sku">
     additionalFields: {
       warranty: "3 years",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -292,19 +225,6 @@ const RAMS_ARRAY: Omit<ProductCategorySpecifications & RamSpecifications, "sku">
     additionalFields: {
       ledPattern: "Rainbow Wave",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -335,19 +255,6 @@ const RAMS_ARRAY: Omit<ProductCategorySpecifications & RamSpecifications, "sku">
     additionalFields: {
       warranty: "Limited Lifetime",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -378,19 +285,6 @@ const RAMS_ARRAY: Omit<ProductCategorySpecifications & RamSpecifications, "sku">
     additionalFields: {
       RGBLighting: "Customizable",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -421,19 +315,6 @@ const RAMS_ARRAY: Omit<ProductCategorySpecifications & RamSpecifications, "sku">
     additionalFields: {
       certification: "XMP 2.0",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -464,19 +345,6 @@ const RAMS_ARRAY: Omit<ProductCategorySpecifications & RamSpecifications, "sku">
     additionalFields: {
       warranty: "Limited Lifetime",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -507,19 +375,6 @@ const RAMS_ARRAY: Omit<ProductCategorySpecifications & RamSpecifications, "sku">
     additionalFields: {
       lighting: "RGB Fusion",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -550,19 +405,6 @@ const RAMS_ARRAY: Omit<ProductCategorySpecifications & RamSpecifications, "sku">
     additionalFields: {
       warranty: "Lifetime",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -594,19 +436,6 @@ const RAMS_ARRAY: Omit<ProductCategorySpecifications & RamSpecifications, "sku">
     additionalFields: {
       cooling: "Aluminum Heat Spreader",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -637,19 +466,6 @@ const RAMS_ARRAY: Omit<ProductCategorySpecifications & RamSpecifications, "sku">
     additionalFields: {
       compatibility: "XMP 3.0",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -680,19 +496,6 @@ const RAMS_ARRAY: Omit<ProductCategorySpecifications & RamSpecifications, "sku">
     additionalFields: {
       warranty: "Lifetime",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -724,19 +527,6 @@ const RAMS_ARRAY: Omit<ProductCategorySpecifications & RamSpecifications, "sku">
     additionalFields: {
       compatibility: "Intel and AMD platforms",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -768,19 +558,6 @@ const RAMS_ARRAY: Omit<ProductCategorySpecifications & RamSpecifications, "sku">
     additionalFields: {
       lighting: "Addressable RGB",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -812,19 +589,6 @@ const RAMS_ARRAY: Omit<ProductCategorySpecifications & RamSpecifications, "sku">
     additionalFields: {
       warranty: "Limited Lifetime Warranty",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -856,19 +620,6 @@ const RAMS_ARRAY: Omit<ProductCategorySpecifications & RamSpecifications, "sku">
     additionalFields: {
       lightingControl: "Mystic Light Sync",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -901,19 +652,6 @@ const RAMS_ARRAY: Omit<ProductCategorySpecifications & RamSpecifications, "sku">
     additionalFields: {
       compatibility: "AMD Ryzen 3000 Series",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -946,19 +684,6 @@ const RAMS_ARRAY: Omit<ProductCategorySpecifications & RamSpecifications, "sku">
     additionalFields: {
       warranty: "Limited Lifetime Warranty",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -990,19 +715,6 @@ const RAMS_ARRAY: Omit<ProductCategorySpecifications & RamSpecifications, "sku">
     additionalFields: {
       overclocking: "XMP 2.0 support",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -1034,19 +746,6 @@ const RAMS_ARRAY: Omit<ProductCategorySpecifications & RamSpecifications, "sku">
     additionalFields: {
       certification: "T-FORCE CAPTAIN RGB control software",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -1077,19 +776,6 @@ const RAMS_ARRAY: Omit<ProductCategorySpecifications & RamSpecifications, "sku">
     additionalFields: {
       warranty: "Limited Lifetime Warranty",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -1120,19 +806,6 @@ const RAMS_ARRAY: Omit<ProductCategorySpecifications & RamSpecifications, "sku">
     additionalFields: {
       lightingControl: "Mystic Light Sync compatible",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -1163,19 +836,6 @@ const RAMS_ARRAY: Omit<ProductCategorySpecifications & RamSpecifications, "sku">
     additionalFields: {
       compatibility: "AMD Ryzen Ready",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -1207,19 +867,6 @@ const RAMS_ARRAY: Omit<ProductCategorySpecifications & RamSpecifications, "sku">
     additionalFields: {
       warranty: "Limited Lifetime Warranty",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -1251,19 +898,6 @@ const RAMS_ARRAY: Omit<ProductCategorySpecifications & RamSpecifications, "sku">
     additionalFields: {
       certification: "XMP 2.0 Support",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -1295,19 +929,6 @@ const RAMS_ARRAY: Omit<ProductCategorySpecifications & RamSpecifications, "sku">
     additionalFields: {
       heatSpreader: "Low-profile design",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
 ];
@@ -5826,59 +5447,6 @@ const RAM_REVIEWS = [
   },
 ];
 
-function returnRamProductReviewSchemas({
-  ramDocuments,
-  ramReviews,
-  customerDocuments,
-}: {
-  ramDocuments: typeof RAM_DOCUMENTS;
-  ramReviews: typeof RAM_REVIEWS;
-  customerDocuments: typeof CUSTOMER_DOCUMENTS;
-}) {
-  return ramDocuments.flatMap((ramDocument) => {
-    // random number of reviews
-    const numberOfReviews = Math.round(Math.random() * (3 - 1) + 1);
-    // shuffle customers
-    const shuffledCustomers = shuffleArray(customerDocuments);
-    // random slice of customers
-    const randomCustomers = shuffledCustomers.slice(0, numberOfReviews);
-    // shuffle reviews
-    const shuffledReviews = shuffleArray(ramReviews);
-    // random slice of reviews
-    const randomReviews = shuffledReviews.slice(0, numberOfReviews);
-
-    const productReviewSchemas: ProductReviewSchema[] = [];
-    randomCustomers.forEach((customer, index) => {
-      const {
-        helpfulVotes,
-        isVerifiedPurchase,
-        productRating,
-        productReview,
-        unhelpfulVotes,
-      } = randomReviews[index];
-
-      const productReviewSchema: ProductReviewSchema = {
-        userId: customer._id,
-        username: customer.username,
-        productId: ramDocument._id,
-        productCategory: "Memory (RAM)",
-        productSku: ramDocument.sku[Math.floor(Math.random() * ramDocument.sku.length)],
-        productBrand: ramDocument.brand,
-        productModel: ramDocument.model,
-        productReview,
-        productRating: STAR_RATINGS_OBJ[productRating],
-        helpfulVotes,
-        unhelpfulVotes,
-        isVerifiedPurchase,
-      };
-
-      productReviewSchemas.push(productReviewSchema);
-    });
-
-    return productReviewSchemas;
-  });
-}
-
 const RAM_REVIEW_DOCUMENTS: ProductReviewDocument[] = [
   {
     userId: "65684bcd01240d69b90937dd",
@@ -6940,11 +6508,4 @@ const RAM_REVIEW_DOCUMENTS: ProductReviewDocument[] = [
   },
 ];
 
-export {
-  RAM_DOCUMENTS,
-  RAM_REVIEW_DOCUMENTS,
-  RAM_REVIEWS,
-  RAMS_ARRAY,
-  returnRamProductReviewSchemas,
-  returnRamSchemas,
-};
+export { RAM_DOCUMENTS, RAM_REVIEW_DOCUMENTS, RAM_REVIEWS, RAMS_ARRAY, returnRamSchemas };

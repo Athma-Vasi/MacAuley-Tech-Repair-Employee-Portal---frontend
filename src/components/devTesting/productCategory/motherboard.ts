@@ -49,7 +49,6 @@ import {
   ProductReviewSchema,
 } from "../../product/types";
 import { CUSTOMER_DOCUMENTS } from "../customer/customerDocuments";
-import { STAR_RATINGS_OBJ } from "../productReview/review";
 
 const MOTHERBOARDS_ARRAY: Omit<
   ProductCategorySpecifications & MotherboardSpecifications,
@@ -88,19 +87,6 @@ const MOTHERBOARDS_ARRAY: Omit<
       warranty: "2 years",
       compatibleCPUs: "Ryzen 5000 series",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -136,19 +122,6 @@ const MOTHERBOARDS_ARRAY: Omit<
       warranty: "3 years",
       compatibleCPUs: "Ryzen 3000 series",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -184,19 +157,6 @@ const MOTHERBOARDS_ARRAY: Omit<
       warranty: "2 years",
       compatibleCPUs: "Ryzen 5000 series",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -233,19 +193,6 @@ const MOTHERBOARDS_ARRAY: Omit<
       warranty: "5 years",
       compatibleCPUs: "Ryzen 5000 series",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -283,19 +230,6 @@ const MOTHERBOARDS_ARRAY: Omit<
       warranty: "3 years",
       compatibleCPUs: "Intel 10th and 11th gen",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -332,19 +266,6 @@ const MOTHERBOARDS_ARRAY: Omit<
       warranty: "3 years",
       compatibleCPUs: "Ryzen 3000 and 5000 series",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -381,19 +302,6 @@ const MOTHERBOARDS_ARRAY: Omit<
       warranty: "2 years",
       compatibleCPUs: "Ryzen 1000, 2000, 3000 series",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -429,19 +337,6 @@ const MOTHERBOARDS_ARRAY: Omit<
       warranty: "3 years",
       compatibleCPUs: "Ryzen 3000, 5000 series",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -478,19 +373,6 @@ const MOTHERBOARDS_ARRAY: Omit<
       warranty: "2 years",
       compatibleCPUs: "Intel 10th Gen",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -528,19 +410,6 @@ const MOTHERBOARDS_ARRAY: Omit<
       wifiSupport: "Wi-Fi 6",
       warranty: "3 years",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -578,19 +447,6 @@ const MOTHERBOARDS_ARRAY: Omit<
       rgbLighting: "Yes",
       warranty: "2 years",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -628,19 +484,6 @@ const MOTHERBOARDS_ARRAY: Omit<
       wifiSupport: "Wi-Fi 6",
       warranty: "2 years",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -678,19 +521,6 @@ const MOTHERBOARDS_ARRAY: Omit<
       thunderboltSupport: "Yes",
       warranty: "3 years",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -727,19 +557,6 @@ const MOTHERBOARDS_ARRAY: Omit<
       usbPorts: "8x USB 3.1, 6x USB 2.0",
       audioCodec: "Realtek ALC1200",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -776,19 +593,6 @@ const MOTHERBOARDS_ARRAY: Omit<
       wifiSupport: "Wi-Fi 6",
       bluetoothSupport: "Yes",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -825,19 +629,6 @@ const MOTHERBOARDS_ARRAY: Omit<
       rgbLighting: "Mystic Light RGB",
       audioCodec: "Realtek ALC1200",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -875,19 +666,6 @@ const MOTHERBOARDS_ARRAY: Omit<
       wifiSupport: "Wi-Fi 6",
       bluetoothSupport: "Yes",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
 ];
@@ -2647,59 +2425,6 @@ const MOTHERBOARD_REVIEWS = [
   },
 ];
 
-function returnMotherboardProductReviewSchemas({
-  motherboardDocuments,
-  motherboardReviews,
-  customerDocuments,
-}: {
-  motherboardDocuments: typeof MOTHERBOARD_DOCUMENTS;
-  motherboardReviews: typeof MOTHERBOARD_REVIEWS;
-  customerDocuments: typeof CUSTOMER_DOCUMENTS;
-}) {
-  return motherboardDocuments.flatMap((motherboardDocument) => {
-    // random number of reviews
-    const numberOfReviews = Math.round(Math.random() * (3 - 1) + 1);
-    // shuffle customers
-    const shuffledCustomers = shuffleArray(customerDocuments);
-    // random slice of customers
-    const randomCustomers = shuffledCustomers.slice(0, numberOfReviews);
-    // shuffle reviews
-    const shuffledReviews = shuffleArray(motherboardReviews);
-    // random slice of reviews
-    const randomReviews = shuffledReviews.slice(0, numberOfReviews);
-
-    const productReviewSchemas: ProductReviewSchema[] = [];
-    randomCustomers.forEach((customer, index) => {
-      const {
-        helpfulVotes,
-        isVerifiedPurchase,
-        productRating,
-        productReview,
-        unhelpfulVotes,
-      } = randomReviews[index];
-
-      const productReviewSchema: ProductReviewSchema = {
-        userId: customer._id,
-        username: customer.username,
-        productId: motherboardDocument._id,
-        productCategory: "Motherboard",
-        productSku: motherboardDocument.sku[Math.floor(Math.random() * 20)],
-        productBrand: motherboardDocument.brand,
-        productModel: motherboardDocument.model,
-        productReview,
-        productRating: STAR_RATINGS_OBJ[productRating],
-        helpfulVotes,
-        unhelpfulVotes,
-        isVerifiedPurchase,
-      };
-
-      productReviewSchemas.push(productReviewSchema);
-    });
-
-    return productReviewSchemas;
-  });
-}
-
 const MOTHERBOARD_REVIEW_DOCUMENTS: ProductReviewDocument[] = [
   {
     userId: "65684c1501240d69b90941b5",
@@ -3282,6 +3007,5 @@ export {
   MOTHERBOARD_REVIEW_DOCUMENTS,
   MOTHERBOARD_REVIEWS,
   MOTHERBOARDS_ARRAY,
-  returnMotherboardProductReviewSchemas,
   returnMotherboardSchemas,
 };

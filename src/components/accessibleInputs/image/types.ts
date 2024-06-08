@@ -1,6 +1,8 @@
 import { Dispatch } from "react";
 
 import { SetPageInErrorPayload, StepperPage } from "../../../types";
+import { ProductCategory } from "../../dashboard/types";
+import { AdditionalFieldsFormDataPayload } from "../../product/dispatch";
 import { AccessibleImageInputAction } from "./actions";
 
 type AccessibleImageInputAttributes<
@@ -13,10 +15,21 @@ type AccessibleImageInputAttributes<
   maxImageSize?: number;
   maxImages?: number;
   page: number;
-  parentDispatch: Dispatch<
+  parentDispatch?: Dispatch<
     | {
         action: ValidValueAction;
         payload: FormData;
+      }
+    | {
+        action: InvalidValueAction;
+        payload: SetPageInErrorPayload;
+      }
+  >;
+  productCategory?: ProductCategory;
+  productCategoryDispatch?: Dispatch<
+    | {
+        action: ValidValueAction;
+        payload: AdditionalFieldsFormDataPayload;
       }
     | {
         action: InvalidValueAction;

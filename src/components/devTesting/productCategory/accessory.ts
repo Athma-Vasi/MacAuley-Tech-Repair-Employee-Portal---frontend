@@ -38,7 +38,6 @@ import {
   ProductReviewSchema,
 } from "../../product/types";
 import { CUSTOMER_DOCUMENTS } from "../customer/customerDocuments";
-import { STAR_RATINGS_OBJ } from "../productReview/review";
 
 const ACCESSORY_ARRAYS: Omit<
   ProductCategorySpecifications & AccessorySpecifications,
@@ -64,19 +63,6 @@ const ACCESSORY_ARRAYS: Omit<
     accessoryType: "Wireless Charging Pad",
     accessoryColor: "Black",
     accessoryInterface: "Other",
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
     additionalFields: {
       chargingSpeed: "15W",
@@ -103,19 +89,6 @@ const ACCESSORY_ARRAYS: Omit<
     accessoryType: "Gaming Mousepad",
     accessoryColor: "Red",
     accessoryInterface: "USB",
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
     additionalFields: {
       lightingModes: "RGB Spectrum",
@@ -143,19 +116,6 @@ const ACCESSORY_ARRAYS: Omit<
     accessoryType: "USB-C Hub",
     accessoryColor: "Silver",
     accessoryInterface: "USB",
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
     additionalFields: {
       portTypes: "USB-A, USB-C, HDMI, Ethernet",
@@ -182,19 +142,6 @@ const ACCESSORY_ARRAYS: Omit<
     accessoryType: "Surge Protector",
     accessoryColor: "White",
     accessoryInterface: "Other",
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
     additionalFields: {
       outlets: "8",
@@ -221,19 +168,6 @@ const ACCESSORY_ARRAYS: Omit<
     accessoryType: "Fitness Tracker",
     accessoryColor: "Blue",
     accessoryInterface: "Bluetooth",
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
     additionalFields: {
       displayType: "AMOLED",
@@ -260,19 +194,6 @@ const ACCESSORY_ARRAYS: Omit<
     accessoryType: "Smart Home Security Camera",
     accessoryColor: "Gray",
     accessoryInterface: "Other",
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
     additionalFields: {
       resolution: "4K Ultra HD",
@@ -303,19 +224,6 @@ const ACCESSORY_ARRAYS: Omit<
       chargingSpeed: "10W",
       material: "Plastic",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -342,19 +250,6 @@ const ACCESSORY_ARRAYS: Omit<
       surfaceMaterial: "Microfiber",
       antiSlipBase: "Yes",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -381,19 +276,6 @@ const ACCESSORY_ARRAYS: Omit<
       portTypes: "USB-A, USB-C, HDMI",
       dataTransferSpeed: "Up to 10 Gbps",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -420,19 +302,6 @@ const ACCESSORY_ARRAYS: Omit<
       outlets: "6",
       cordLength: "2 meters",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -460,19 +329,6 @@ const ACCESSORY_ARRAYS: Omit<
       displayType: "OLED",
       waterResistance: "IP67",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -499,19 +355,6 @@ const ACCESSORY_ARRAYS: Omit<
       resolution: "1080p",
       nightVision: "Yes",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -538,19 +381,6 @@ const ACCESSORY_ARRAYS: Omit<
       chargingSpeed: "15W",
       material: "Plastic",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -577,19 +407,6 @@ const ACCESSORY_ARRAYS: Omit<
       surfaceMaterial: "Fabric",
       antiSlipBase: "Yes",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -616,19 +433,6 @@ const ACCESSORY_ARRAYS: Omit<
       portTypes: "USB-A, USB-C, HDMI",
       powerDelivery: "60W",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -655,19 +459,6 @@ const ACCESSORY_ARRAYS: Omit<
       outlets: "8",
       cordLength: "3 meters",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -694,19 +485,6 @@ const ACCESSORY_ARRAYS: Omit<
       displayType: "Color OLED",
       waterResistance: "IP68",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -733,19 +511,6 @@ const ACCESSORY_ARRAYS: Omit<
       resolution: "4K UHD",
       nightVision: "Yes",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -772,19 +537,6 @@ const ACCESSORY_ARRAYS: Omit<
       chargingSpeed: "18W",
       material: "Plastic",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -811,19 +563,6 @@ const ACCESSORY_ARRAYS: Omit<
       surfaceMaterial: "Microfiber",
       antiSlipBase: "Yes",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -850,19 +589,6 @@ const ACCESSORY_ARRAYS: Omit<
       portTypes: "USB-A, USB-C, HDMI",
       powerDelivery: "100W",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -889,19 +615,6 @@ const ACCESSORY_ARRAYS: Omit<
       outlets: "10",
       cordLength: "4 meters",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -929,19 +642,6 @@ const ACCESSORY_ARRAYS: Omit<
       displayType: "AMOLED",
       waterResistance: "IP67",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -969,19 +669,6 @@ const ACCESSORY_ARRAYS: Omit<
       resolution: "4K UHD",
       nightVision: "Yes",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
 ];
@@ -2618,60 +2305,6 @@ const ACCESSORY_REVIEWS = [
   },
 ];
 
-function returnAccessoryProductReviewSchemas({
-  accessoryDocuments,
-  accessoryReviews,
-  customerDocuments,
-}: {
-  accessoryDocuments: typeof ACCESSORY_DOCUMENTS;
-  accessoryReviews: typeof ACCESSORY_REVIEWS;
-  customerDocuments: typeof CUSTOMER_DOCUMENTS;
-}) {
-  return accessoryDocuments.flatMap((accessoryDocument) => {
-    // random number of reviews
-    const numberOfReviews = Math.round(Math.random() * (3 - 1) + 1);
-    // shuffle customers
-    const shuffledCustomers = shuffleArray(customerDocuments);
-    // random slice of customers
-    const randomCustomers = shuffledCustomers.slice(0, numberOfReviews);
-    // shuffle reviews
-    const shuffledReviews = shuffleArray(accessoryReviews);
-    // random slice of reviews
-    const randomReviews = shuffledReviews.slice(0, numberOfReviews);
-
-    const productReviewSchemas: ProductReviewSchema[] = [];
-    randomCustomers.forEach((customer, index) => {
-      const {
-        helpfulVotes,
-        isVerifiedPurchase,
-        productRating,
-        productReview,
-        unhelpfulVotes,
-      } = randomReviews[index];
-
-      const productReviewSchema: ProductReviewSchema = {
-        userId: customer._id,
-        username: customer.username,
-        productId: accessoryDocument._id,
-        productCategory: "Accessory",
-        productSku:
-          accessoryDocument.sku[Math.floor(Math.random() * accessoryDocument.sku.length)],
-        productBrand: accessoryDocument.brand,
-        productModel: accessoryDocument.model,
-        productReview,
-        productRating: STAR_RATINGS_OBJ[productRating],
-        helpfulVotes,
-        unhelpfulVotes,
-        isVerifiedPurchase,
-      };
-
-      productReviewSchemas.push(productReviewSchema);
-    });
-
-    return productReviewSchemas;
-  });
-}
-
 const ACCESSORY_REVIEW_DOCUMENTS: ProductReviewDocument[] = [
   {
     userId: "65684c0801240d69b9093f57",
@@ -3532,6 +3165,5 @@ export {
   ACCESSORY_DOCUMENTS,
   ACCESSORY_REVIEW_DOCUMENTS,
   ACCESSORY_REVIEWS,
-  returnAccessoryProductReviewSchemas,
   returnAccessorySchemas,
 };

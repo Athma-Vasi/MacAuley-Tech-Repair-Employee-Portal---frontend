@@ -1,4 +1,9 @@
-import { Currency, SetPageInErrorPayload, SetStepsInErrorPayload } from "../../types";
+import {
+  Currency,
+  SetPageInErrorPayload,
+  SetStepsInErrorPayload,
+  StepperChild,
+} from "../../types";
 import { ProductCategory } from "../dashboard/types";
 import { CreateProductAction } from "./actions";
 import {
@@ -16,7 +21,6 @@ import {
   MicrophoneInterface,
   MicrophonePolarPattern,
   MicrophoneType,
-  MobileOs,
   MotherboardFormFactor,
   MouseSensor,
   PeripheralsInterface,
@@ -36,212 +40,65 @@ import {
   WeightUnit,
 } from "./types";
 
+type AdditionalFieldsOperation =
+  | "add"
+  | "delete"
+  | "insert"
+  | "slideDown"
+  | "slideUp"
+  | "update";
+
 type AdditionalFieldsAdd = {
-  operation: "add";
-  data: [string, string];
+  operation: AdditionalFieldsOperation;
+  productCategory: ProductCategory;
 };
-type AdditionalFieldsRemove = {
-  operation: "remove";
-  index: number;
+
+type AdditionalFieldsDelete = {
+  dynamicIndexes: number[];
+  operation: AdditionalFieldsOperation;
+  productCategory: ProductCategory;
 };
+
+type AdditionalFieldsInsert = AdditionalFieldsDelete;
+type AdditionalFieldsSlideDown = AdditionalFieldsDelete;
+type AdditionalFieldsSlideUp = AdditionalFieldsDelete;
+
 type AdditionalFieldsUpdate = {
-  operation: "update";
-  kind: "key" | "value";
-  index: number;
-  data: string;
+  dynamicIndexes: number[];
+  kind: "fieldName" | "fieldValue";
+  operation: AdditionalFieldsOperation;
+  productCategory: ProductCategory;
+  value: string;
 };
+
 type AdditionalFieldsPayload =
   | AdditionalFieldsAdd
-  | AdditionalFieldsRemove
+  | AdditionalFieldsDelete
+  | AdditionalFieldsInsert
+  | AdditionalFieldsSlideDown
+  | AdditionalFieldsSlideUp
   | AdditionalFieldsUpdate;
 
-type AdditionalFieldsValidFocusedAdd = {
-  operation: "add";
-  data: [boolean, boolean];
+type AdditionalFieldsFormDataPayload = {
+  productCategory: ProductCategory;
+  value: FormData;
 };
-type AdditionalFieldsValidFocusedRemove = {
-  operation: "remove";
-  index: number;
-};
-type AdditionalFieldsValidFocusedUpdate = {
-  operation: "update";
-  kind: "key" | "value";
-  index: number;
-  data: boolean;
-};
-type AdditionalFieldsValidFocusedPayload =
-  | AdditionalFieldsValidFocusedAdd
-  | AdditionalFieldsValidFocusedRemove
-  | AdditionalFieldsValidFocusedUpdate;
-
-/**
-   * type CreateProductAction = {
-  setAccessoryColor: "setAccessoryColor";
-  setAccessoryFieldsAdditionalMap: "setAccessoryFieldsAdditionalMap";
-  setAccessoryInterface: "setAccessoryInterface";
-  setAccessoryType: "setAccessoryType";
-  setAdditionalComments: "setAdditionalComments";
-  setAvailability: "setAvailability";
-  setBrand: "setBrand";
-  setCaseColor: "setCaseColor";
-  setCaseFieldsAdditionalMap: "setCaseFieldsAdditionalMap";
-  setCaseSidePanel: "setCaseSidePanel";
-  setCaseType: "setCaseType";
-  setCpuCores: "setCpuCores";
-  setCpuFieldsAdditionalMap: "setCpuFieldsAdditionalMap";
-  setCpuFrequency: "setCpuFrequency";
-  setCpuL1CacheCapacity: "setCpuL1CacheCapacity";
-  setCpuL1CacheCapacityUnit: "setCpuL1CacheCapacityUnit";
-  setCpuL2CacheCapacity: "setCpuL2CacheCapacity";
-  setCpuL2CacheCapacityUnit: "setCpuL2CacheCapacityUnit";
-  setCpuL3CacheCapacity: "setCpuL3CacheCapacity";
-  setCpuL3CacheCapacityUnit: "setCpuL3CacheCapacityUnit";
-  setCpuSocket: "setCpuSocket";
-  setCpuWattage: "setCpuWattage";
-  setCurrency: "setCurrency";
-  setCurrentStepperPosition: "setCurrentStepperPosition";
-  setCurrentlySelectedAdditionalFieldIndex: "setCurrentlySelectedAdditionalFieldIndex";
-  setDescription: "setDescription";
-  setDimensionHeight: "setDimensionHeight";
-  setDimensionHeightUnit: "setDimensionHeightUnit";
-  setDimensionLength: "setDimensionLength";
-  setDimensionLengthUnit: "setDimensionLengthUnit";
-  setDimensionWidth: "setDimensionWidth";
-  setDimensionWidthUnit: "setDimensionWidthUnit";
-  setDisplayAspectRatio: "setDisplayAspectRatio";
-  setDisplayFieldsAdditionalMap: "setDisplayFieldsAdditionalMap";
-  setDisplayPanelType: "setDisplayPanelType";
-  setDisplayRefreshRate: "setDisplayRefreshRate";
-  setDisplayResolutionHorizontal: "setDisplayResolutionHorizontal";
-  setDisplayResolutionVertical: "setDisplayResolutionVertical";
-  setDisplayResponseTime: "setDisplayResponseTime";
-  setDisplaySize: "setDisplaySize";
-  setGpuBoostClock: "setGpuBoostClock";
-  setGpuChipset: "setGpuChipset";
-  setGpuCoreClock: "setGpuCoreClock";
-  setGpuFieldsAdditionalMap: "setGpuFieldsAdditionalMap";
-  setGpuMemoryCapacity: "setGpuMemoryCapacity";
-  setGpuMemoryCapacityUnit: "setGpuMemoryCapacityUnit";
-  setGpuTdp: "setGpuTdp";
-  setHeadphoneColor: "setHeadphoneColor";
-  setHeadphoneDriver: "setHeadphoneDriver";
-  setHeadphoneFieldsAdditionalMap: "setHeadphoneFieldsAdditionalMap";
-  setHeadphoneFrequencyResponse: "setHeadphoneFrequencyResponse";
-  setHeadphoneImpedance: "setHeadphoneImpedance";
-  setHeadphoneInterface: "setHeadphoneInterface";
-  setHeadphoneType: "setHeadphoneType";
-  setImgFormDataArray: "setImgFormDataArray";
-  setIsSubmitting: "setIsSubmitting";
-  setIsSuccessful: "setIsSuccessful";
-  setKeyboardBacklight: "setKeyboardBacklight";
-  setKeyboardFieldsAdditionalMap: "setKeyboardFieldsAdditionalMap";
-  setKeyboardInterface: "setKeyboardInterface";
-  setKeyboardLayout: "setKeyboardLayout";
-  setKeyboardSwitch: "setKeyboardSwitch";
-  setMicrophoneColor: "setMicrophoneColor";
-  setMicrophoneFieldsAdditionalMap: "setMicrophoneFieldsAdditionalMap";
-  setMicrophoneFrequencyResponse: "setMicrophoneFrequencyResponse";
-  setMicrophoneInterface: "setMicrophoneInterface";
-  setMicrophonePolarPattern: "setMicrophonePolarPattern";
-  setMicrophoneType: "setMicrophoneType";
-  setModel: "setModel";
-  setMotherboardChipset: "setMotherboardChipset";
-  setMotherboardFieldsAdditionalMap: "setMotherboardFieldsAdditionalMap";
-  setMotherboardFormFactor: "setMotherboardFormFactor";
-  setMotherboardM2Slots: "setMotherboardM2Slots";
-  setMotherboardMemoryMaxCapacity: "setMotherboardMemoryMaxCapacity";
-  setMotherboardMemoryMaxCapacityUnit: "setMotherboardMemoryMaxCapacityUnit";
-  setMotherboardMemorySlots: "setMotherboardMemorySlots";
-  setMotherboardMemoryType: "setMotherboardMemoryType";
-  setMotherboardPcie3Slots: "setMotherboardPcie3Slots";
-  setMotherboardPcie4Slots: "setMotherboardPcie4Slots";
-  setMotherboardPcie5Slots: "setMotherboardPcie5Slots";
-  setMotherboardSataPorts: "setMotherboardSataPorts";
-  setMotherboardSocket: "setMotherboardSocket";
-  setMouseButtons: "setMouseButtons";
-  setMouseColor: "setMouseColor";
-  setMouseDpi: "setMouseDpi";
-  setMouseFieldsAdditionalMap: "setMouseFieldsAdditionalMap";
-  setMouseInterface: "setMouseInterface";
-  setMouseSensor: "setMouseSensor";
-  setPrice: "setPrice";
-  setProductCategory: "setProductCategory";
-  setPsuEfficiency: "setPsuEfficiency";
-  setPsuFieldsAdditionalMap: "setPsuFieldsAdditionalMap";
-  setPsuFormFactor: "setPsuFormFactor";
-  setPsuModularity: "setPsuModularity";
-  setPsuWattage: "setPsuWattage";
-  setQuantity: "setQuantity";
-  setRamColor: "setRamColor";
-  setRamDataRate: "setRamDataRate";
-  setRamFieldsAdditionalMap: "setRamFieldsAdditionalMap";
-  setRamModulesCapacity: "setRamModulesCapacity";
-  setRamModulesCapacityUnit: "setRamModulesCapacityUnit";
-  setRamModulesQuantity: "setRamModulesQuantity";
-  setRamTiming: "setRamTiming";
-  setRamType: "setRamType";
-  setRamVoltage: "setRamVoltage";
-  setSmartphoneBatteryCapacity: "setSmartphoneBatteryCapacity";
-  setSmartphoneCamera: "setSmartphoneCamera";
-  setSmartphoneChipset: "setSmartphoneChipset";
-  setSmartphoneColor: "setSmartphoneColor";
-  setSmartphoneDisplay: "setSmartphoneDisplay";
-  setSmartphoneFieldsAdditionalMap: "setSmartphoneFieldsAdditionalMap";
-  setSmartphoneOs: "setSmartphoneOs";
-  setSmartphoneRamCapacity: "setSmartphoneRamCapacity";
-  setSmartphoneRamCapacityUnit: "setSmartphoneRamCapacityUnit";
-  setSmartphoneResolutionHorizontal: "setSmartphoneResolutionHorizontal";
-  setSmartphoneResolutionVertical: "setSmartphoneResolutionVertical";
-  setSmartphoneStorageCapacity: "setSmartphoneStorageCapacity";
-  setSpeakerColor: "setSpeakerColor";
-  setSpeakerFieldsAdditionalMap: "setSpeakerFieldsAdditionalMap";
-  setSpeakerFrequencyResponse: "setSpeakerFrequencyResponse";
-  setSpeakerInterface: "setSpeakerInterface";
-  setSpeakerTotalWattage: "setSpeakerTotalWattage";
-  setSpeakerType: "setSpeakerType";
-  setPageInError: "setPageInError";
-  setStorageCacheCapacity: "setStorageCacheCapacity";
-  setStorageCacheCapacityUnit: "setStorageCacheCapacityUnit";
-  setStorageCapacity: "setStorageCapacity";
-  setStorageCapacityUnit: "setStorageCapacityUnit";
-  setStorageFieldsAdditionalMap: "setStorageFieldsAdditionalMap";
-  setStorageFormFactor: "setStorageFormFactor";
-  setStorageInterface: "setStorageInterface";
-  setStorageType: "setStorageType";
-  setSubmitMessage: "setSubmitMessage";
-  setSuccessMessage: "setSuccessMessage";
-  setTabletBatteryCapacity: "setTabletBatteryCapacity";
-  setTabletCamera: "setTabletCamera";
-  setTabletChipset: "setTabletChipset";
-  setTabletColor: "setTabletColor";
-  setTabletDisplay: "setTabletDisplay";
-  setTabletFieldsAdditionalMap: "setTabletFieldsAdditionalMap";
-  setTabletOs: "setTabletOs";
-  setTabletRamCapacity: "setTabletRamCapacity";
-  setTabletRamCapacityUnit: "setTabletRamCapacityUnit";
-  setTabletResolutionHorizontal: "setTabletResolutionHorizontal";
-  setTabletResolutionVertical: "setTabletResolutionVertical";
-  setTabletStorageCapacity: "setTabletStorageCapacity";
-  setTriggerFormSubmit: "setTriggerFormSubmit";
-  setWebcamColor: "setWebcamColor";
-  setWebcamFieldsAdditionalMap: "setWebcamFieldsAdditionalMap";
-  setWebcamFrameRate: "setWebcamFrameRate";
-  setWebcamInterface: "setWebcamInterface";
-  setWebcamMicrophone: "setWebcamMicrophone";
-  setWebcamResolution: "setWebcamResolution";
-  setWeight: "setWeight";
-  setWeightUnit: "setWeightUnit";
-};
-   */
 
 type CreateProductDispatch =
   | {
-      action: CreateProductAction["setAccessoryColor"];
-      payload: string;
+      action: CreateProductAction["addStepperChild"];
+      payload: {
+        dynamicIndexes: number[];
+        value: StepperChild;
+      };
     }
   | {
-      action: CreateProductAction["setAccessoryFieldsAdditionalMap"];
+      action: CreateProductAction["modifyAdditionalFieldsMap"];
       payload: AdditionalFieldsPayload;
+    }
+  | {
+      action: CreateProductAction["setAccessoryColor"];
+      payload: string;
     }
   | {
       action: CreateProductAction["setAccessoryInterface"];
@@ -256,6 +113,10 @@ type CreateProductDispatch =
       payload: string;
     }
   | {
+      action: CreateProductAction["setAdditionalFieldsFormDataMap"];
+      payload: AdditionalFieldsFormDataPayload;
+    }
+  | {
       action: CreateProductAction["setAvailability"];
       payload: ProductAvailability;
     }
@@ -268,10 +129,6 @@ type CreateProductDispatch =
       payload: string;
     }
   | {
-      action: CreateProductAction["setCaseFieldsAdditionalMap"];
-      payload: AdditionalFieldsPayload;
-    }
-  | {
       action: CreateProductAction["setCaseSidePanel"];
       payload: CaseSidePanel;
     }
@@ -282,10 +139,6 @@ type CreateProductDispatch =
   | {
       action: CreateProductAction["setCpuCores"];
       payload: string;
-    }
-  | {
-      action: CreateProductAction["setCpuFieldsAdditionalMap"];
-      payload: AdditionalFieldsPayload;
     }
   | {
       action: CreateProductAction["setCpuFrequency"];
@@ -328,14 +181,6 @@ type CreateProductDispatch =
       payload: Currency;
     }
   | {
-      action: CreateProductAction["setCurrentStepperPosition"];
-      payload: number;
-    }
-  | {
-      action: CreateProductAction["setCurrentlySelectedAdditionalFieldIndex"];
-      payload: number;
-    }
-  | {
       action: CreateProductAction["setDescription"];
       payload: string;
     }
@@ -358,10 +203,6 @@ type CreateProductDispatch =
   | {
       action: CreateProductAction["setDisplayAspectRatio"];
       payload: string;
-    }
-  | {
-      action: CreateProductAction["setDisplayFieldsAdditionalMap"];
-      payload: AdditionalFieldsPayload;
     }
   | {
       action: CreateProductAction["setDisplayPanelType"];
@@ -400,10 +241,6 @@ type CreateProductDispatch =
       payload: string;
     }
   | {
-      action: CreateProductAction["setGpuFieldsAdditionalMap"];
-      payload: AdditionalFieldsPayload;
-    }
-  | {
       action: CreateProductAction["setGpuMemoryCapacity"];
       payload: string;
     }
@@ -424,10 +261,6 @@ type CreateProductDispatch =
       payload: string;
     }
   | {
-      action: CreateProductAction["setHeadphoneFieldsAdditionalMap"];
-      payload: AdditionalFieldsPayload;
-    }
-  | {
       action: CreateProductAction["setHeadphoneFrequencyResponse"];
       payload: string;
     }
@@ -444,10 +277,6 @@ type CreateProductDispatch =
       payload: HeadphoneType;
     }
   | {
-      action: CreateProductAction["setImgFormDataArray"];
-      payload: FormData[];
-    }
-  | {
       action: CreateProductAction["setIsSubmitting"];
       payload: boolean;
     }
@@ -458,10 +287,6 @@ type CreateProductDispatch =
   | {
       action: CreateProductAction["setKeyboardBacklight"];
       payload: KeyboardBacklight;
-    }
-  | {
-      action: CreateProductAction["setKeyboardFieldsAdditionalMap"];
-      payload: AdditionalFieldsPayload;
     }
   | {
       action: CreateProductAction["setKeyboardInterface"];
@@ -478,10 +303,6 @@ type CreateProductDispatch =
   | {
       action: CreateProductAction["setMicrophoneColor"];
       payload: string;
-    }
-  | {
-      action: CreateProductAction["setMicrophoneFieldsAdditionalMap"];
-      payload: AdditionalFieldsPayload;
     }
   | {
       action: CreateProductAction["setMicrophoneFrequencyResponse"];
@@ -506,10 +327,6 @@ type CreateProductDispatch =
   | {
       action: CreateProductAction["setMotherboardChipset"];
       payload: string;
-    }
-  | {
-      action: CreateProductAction["setMotherboardFieldsAdditionalMap"];
-      payload: AdditionalFieldsPayload;
     }
   | {
       action: CreateProductAction["setMotherboardFormFactor"];
@@ -568,10 +385,6 @@ type CreateProductDispatch =
       payload: string;
     }
   | {
-      action: CreateProductAction["setMouseFieldsAdditionalMap"];
-      payload: AdditionalFieldsPayload;
-    }
-  | {
       action: CreateProductAction["setMouseInterface"];
       payload: PeripheralsInterface;
     }
@@ -590,10 +403,6 @@ type CreateProductDispatch =
   | {
       action: CreateProductAction["setPsuEfficiency"];
       payload: PsuEfficiency;
-    }
-  | {
-      action: CreateProductAction["setPsuFieldsAdditionalMap"];
-      payload: AdditionalFieldsPayload;
     }
   | {
       action: CreateProductAction["setPsuFormFactor"];
@@ -620,10 +429,6 @@ type CreateProductDispatch =
       payload: string;
     }
   | {
-      action: CreateProductAction["setRamFieldsAdditionalMap"];
-      payload: AdditionalFieldsPayload;
-    }
-  | {
       action: CreateProductAction["setRamModulesCapacity"];
       payload: string;
     }
@@ -648,60 +453,8 @@ type CreateProductDispatch =
       payload: string;
     }
   | {
-      action: CreateProductAction["setSmartphoneBatteryCapacity"];
-      payload: string;
-    }
-  | {
-      action: CreateProductAction["setSmartphoneCamera"];
-      payload: string;
-    }
-  | {
-      action: CreateProductAction["setSmartphoneChipset"];
-      payload: string;
-    }
-  | {
-      action: CreateProductAction["setSmartphoneColor"];
-      payload: string;
-    }
-  | {
-      action: CreateProductAction["setSmartphoneDisplay"];
-      payload: string;
-    }
-  | {
-      action: CreateProductAction["setSmartphoneFieldsAdditionalMap"];
-      payload: AdditionalFieldsPayload;
-    }
-  | {
-      action: CreateProductAction["setSmartphoneOs"];
-      payload: MobileOs;
-    }
-  | {
-      action: CreateProductAction["setSmartphoneRamCapacity"];
-      payload: string;
-    }
-  | {
-      action: CreateProductAction["setSmartphoneRamCapacityUnit"];
-      payload: MemoryUnit;
-    }
-  | {
-      action: CreateProductAction["setSmartphoneResolutionHorizontal"];
-      payload: string;
-    }
-  | {
-      action: CreateProductAction["setSmartphoneResolutionVertical"];
-      payload: string;
-    }
-  | {
-      action: CreateProductAction["setSmartphoneStorageCapacity"];
-      payload: string;
-    }
-  | {
       action: CreateProductAction["setSpeakerColor"];
       payload: string;
-    }
-  | {
-      action: CreateProductAction["setSpeakerFieldsAdditionalMap"];
-      payload: AdditionalFieldsPayload;
     }
   | {
       action: CreateProductAction["setSpeakerFrequencyResponse"];
@@ -740,10 +493,6 @@ type CreateProductDispatch =
       payload: MemoryUnit;
     }
   | {
-      action: CreateProductAction["setStorageFieldsAdditionalMap"];
-      payload: AdditionalFieldsPayload;
-    }
-  | {
       action: CreateProductAction["setStorageFormFactor"];
       payload: StorageFormFactor;
     }
@@ -756,72 +505,12 @@ type CreateProductDispatch =
       payload: StorageType;
     }
   | {
-      action: CreateProductAction["setSubmitMessage"];
-      payload: string;
-    }
-  | {
-      action: CreateProductAction["setSuccessMessage"];
-      payload: string;
-    }
-  | {
-      action: CreateProductAction["setTabletBatteryCapacity"];
-      payload: string;
-    }
-  | {
-      action: CreateProductAction["setTabletCamera"];
-      payload: string;
-    }
-  | {
-      action: CreateProductAction["setTabletChipset"];
-      payload: string;
-    }
-  | {
-      action: CreateProductAction["setTabletColor"];
-      payload: string;
-    }
-  | {
-      action: CreateProductAction["setTabletDisplay"];
-      payload: string;
-    }
-  | {
-      action: CreateProductAction["setTabletFieldsAdditionalMap"];
-      payload: AdditionalFieldsPayload;
-    }
-  | {
-      action: CreateProductAction["setTabletOs"];
-      payload: MobileOs;
-    }
-  | {
-      action: CreateProductAction["setTabletRamCapacity"];
-      payload: string;
-    }
-  | {
-      action: CreateProductAction["setTabletRamCapacityUnit"];
-      payload: MemoryUnit;
-    }
-  | {
-      action: CreateProductAction["setTabletResolutionHorizontal"];
-      payload: string;
-    }
-  | {
-      action: CreateProductAction["setTabletResolutionVertical"];
-      payload: string;
-    }
-  | {
-      action: CreateProductAction["setTabletStorageCapacity"];
-      payload: string;
-    }
-  | {
       action: CreateProductAction["setTriggerFormSubmit"];
       payload: boolean;
     }
   | {
       action: CreateProductAction["setWebcamColor"];
       payload: string;
-    }
-  | {
-      action: CreateProductAction["setWebcamFieldsAdditionalMap"];
-      payload: AdditionalFieldsPayload;
     }
   | {
       action: CreateProductAction["setWebcamFrameRate"];
@@ -850,13 +539,14 @@ type CreateProductDispatch =
 
 export type {
   AdditionalFieldsAdd,
+  AdditionalFieldsDelete,
+  AdditionalFieldsFormDataPayload,
+  AdditionalFieldsInsert,
+  AdditionalFieldsOperation,
   AdditionalFieldsPayload,
-  AdditionalFieldsRemove,
+  AdditionalFieldsSlideDown,
+  AdditionalFieldsSlideUp,
   AdditionalFieldsUpdate,
-  AdditionalFieldsValidFocusedAdd,
-  AdditionalFieldsValidFocusedPayload,
-  AdditionalFieldsValidFocusedRemove,
-  AdditionalFieldsValidFocusedUpdate,
   CreateProductDispatch,
   SetStepsInErrorPayload,
 };

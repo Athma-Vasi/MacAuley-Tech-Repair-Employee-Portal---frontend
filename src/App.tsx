@@ -95,13 +95,6 @@ const DisplayCPU = lazy(() => import("./components/product/cpu/DisplayCPU"));
 const DisplayCase = lazy(() => import("./components/product/case/DisplayCase"));
 
 // ╭─────────────────────────────────────────────────────────────────╮
-//    DESKTOP COMPUTER
-// ╰─────────────────────────────────────────────────────────────────╯
-const DisplayDesktopComputer = lazy(
-  () => import("./components/product/desktopComputer/DisplayDestopComputer")
-);
-
-// ╭─────────────────────────────────────────────────────────────────╮
 //    DISPLAY
 // ╰─────────────────────────────────────────────────────────────────╯
 const DisplayDisplay = lazy(() => import("./components/product/display/DisplayDisplay"));
@@ -124,11 +117,6 @@ const DisplayHeadphone = lazy(
 const DisplayKeyboard = lazy(
   () => import("./components/product/keyboard/DisplayKeyboard")
 );
-
-// ╭─────────────────────────────────────────────────────────────────╮
-//    LAPTOP
-// ╰─────────────────────────────────────────────────────────────────╯
-const DisplayLaptop = lazy(() => import("./components/product/laptop/DisplayLaptop"));
 
 // ╭─────────────────────────────────────────────────────────────────╮
 //    RAM
@@ -160,13 +148,6 @@ const DisplayMouse = lazy(() => import("./components/product/mouse/DisplayMouse"
 const DisplayPSU = lazy(() => import("./components/product/psu/DisplayPSU"));
 
 // ╭─────────────────────────────────────────────────────────────────╮
-//    SMARTPHONE
-// ╰─────────────────────────────────────────────────────────────────╯
-const DisplaySmartphone = lazy(
-  () => import("./components/product/smartphone/DisplaySmartphone")
-);
-
-// ╭─────────────────────────────────────────────────────────────────╮
 //    SPEAKER
 // ╰─────────────────────────────────────────────────────────────────╯
 const DisplaySpeaker = lazy(() => import("./components/product/speaker/DisplaySpeaker"));
@@ -175,11 +156,6 @@ const DisplaySpeaker = lazy(() => import("./components/product/speaker/DisplaySp
 //    STORAGE
 // ╰─────────────────────────────────────────────────────────────────╯
 const DisplayStorage = lazy(() => import("./components/product/storage/DisplayStorage"));
-
-// ╭─────────────────────────────────────────────────────────────────╮
-//    TABLET
-// ╰─────────────────────────────────────────────────────────────────╯
-const DisplayTablet = lazy(() => import("./components/product/tablet/DisplayTablet"));
 
 // ╭─────────────────────────────────────────────────────────────────╮
 //    WEBCAM
@@ -203,20 +179,6 @@ const CreateRepairTicket = lazy(
 const DisplayRepairTicket = lazy(
   () => import("./components/repairTicket/display/DisplayRepairTickets")
 );
-
-// ╔═════════════════════════════════════════════════════════════════╗
-//   TRANSACTION
-// ╚═════════════════════════════════════════════════════════════════╝
-
-// ╭─────────────────────────────────────────────────────────────────╮
-//    PURCHASE
-// ╰─────────────────────────────────────────────────────────────────╯
-const DisplayPurchase = lazy(() => import("./components/purchase/DisplayPurchase"));
-
-// ╭─────────────────────────────────────────────────────────────────╮
-//    RMA
-// ╰─────────────────────────────────────────────────────────────────╯
-const DisplayRMA = lazy(() => import("./components/rma/DisplayRMA"));
 
 // ╔═════════════════════════════════════════════════════════════════╗
 //   COMPANY
@@ -711,29 +673,6 @@ function App() {
   );
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //   DESKTOP COMPUTER
-  // ╰─────────────────────────────────────────────────────────────────╯
-
-  // @desc   desktop computer page (index and display)
-  // @route  /home/product/desktop-computer (index) and /home/product/desktop-computer/display
-  // @access private
-  const displayDesktopComputersElement = (
-    <ErrorBoundary
-      fallback={
-        <ErrorFallback
-          isError={isError}
-          errorCallback={errorCallback}
-          errorMessage={errorMessage}
-        />
-      }
-    >
-      <Suspense fallback={<div>Generic Loading message...</div>}>
-        <DisplayDesktopComputer />
-      </Suspense>
-    </ErrorBoundary>
-  );
-
-  // ╭─────────────────────────────────────────────────────────────────╮
   //   DISPLAY
   // ╰─────────────────────────────────────────────────────────────────╯
 
@@ -821,29 +760,6 @@ function App() {
     >
       <Suspense fallback={<div>Generic Loading message...</div>}>
         <DisplayKeyboard />
-      </Suspense>
-    </ErrorBoundary>
-  );
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //   LAPTOP
-  // ╰─────────────────────────────────────────────────────────────────╯
-
-  // @desc   laptop page (index and display)
-  // @route  /home/product/laptop (index) and /home/product/laptop/display
-  // @access private
-  const displayLaptopsElement = (
-    <ErrorBoundary
-      fallback={
-        <ErrorFallback
-          isError={isError}
-          errorCallback={errorCallback}
-          errorMessage={errorMessage}
-        />
-      }
-    >
-      <Suspense fallback={<div>Generic Loading message...</div>}>
-        <DisplayLaptop />
       </Suspense>
     </ErrorBoundary>
   );
@@ -964,29 +880,6 @@ function App() {
   );
 
   // ╭─────────────────────────────────────────────────────────────────╮
-  //   SMARTPHONE
-  // ╰─────────────────────────────────────────────────────────────────╯
-
-  // @desc   smartphone page (index and display)
-  // @route  /home/product/smartphone (index) and /home/product/smartphone/display
-  // @access private
-  const displaySmartphonesElement = (
-    <ErrorBoundary
-      fallback={
-        <ErrorFallback
-          isError={isError}
-          errorCallback={errorCallback}
-          errorMessage={errorMessage}
-        />
-      }
-    >
-      <Suspense fallback={<div>Generic Loading message...</div>}>
-        <DisplaySmartphone />
-      </Suspense>
-    </ErrorBoundary>
-  );
-
-  // ╭─────────────────────────────────────────────────────────────────╮
   //   SPEAKER
   // ╰─────────────────────────────────────────────────────────────────╯
 
@@ -1028,29 +921,6 @@ function App() {
     >
       <Suspense fallback={<div>Generic Loading message...</div>}>
         <DisplayStorage />
-      </Suspense>
-    </ErrorBoundary>
-  );
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //   TABLET
-  // ╰─────────────────────────────────────────────────────────────────╯
-
-  // @desc   tablet page (index and display)
-  // @route  /home/product/tablet (index) and /home/product/tablet/display
-  // @access private
-  const displayTabletsElement = (
-    <ErrorBoundary
-      fallback={
-        <ErrorFallback
-          isError={isError}
-          errorCallback={errorCallback}
-          errorMessage={errorMessage}
-        />
-      }
-    >
-      <Suspense fallback={<div>Generic Loading message...</div>}>
-        <DisplayTablet />
       </Suspense>
     </ErrorBoundary>
   );
@@ -1139,56 +1009,6 @@ function App() {
     >
       <Suspense fallback={<div>Generic Loading message...</div>}>
         <DisplayRepairTicket />
-      </Suspense>
-    </ErrorBoundary>
-  );
-
-  // ╔═════════════════════════════════════════════════════════════════╗
-  //   TRANSACTION
-  // ╚═════════════════════════════════════════════════════════════════╝
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //   PURCHASE
-  // ╰─────────────────────────────────────────────────────────────────╯
-
-  // @desc   purchase page (index and display)
-  // @route  /home/purchase (index) and /home/purchase/display
-  // @access private
-  const displayPurchasesElement = (
-    <ErrorBoundary
-      fallback={
-        <ErrorFallback
-          isError={isError}
-          errorCallback={errorCallback}
-          errorMessage={errorMessage}
-        />
-      }
-    >
-      <Suspense fallback={<div>Generic Loading message...</div>}>
-        <DisplayPurchase />
-      </Suspense>
-    </ErrorBoundary>
-  );
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //   RMA
-  // ╰─────────────────────────────────────────────────────────────────╯
-
-  // @desc   rma page (index and display)
-  // @route  /home/rma (index) and /home/rma/display
-  // @access private
-  const displayRMAsElement = (
-    <ErrorBoundary
-      fallback={
-        <ErrorFallback
-          isError={isError}
-          errorCallback={errorCallback}
-          errorMessage={errorMessage}
-        />
-      }
-    >
-      <Suspense fallback={<div>Generic Loading message...</div>}>
-        <DisplayRMA />
       </Suspense>
     </ErrorBoundary>
   );
@@ -1860,12 +1680,6 @@ function App() {
               <Route path="create" element={createProductElement} />
             </Route>
 
-            {/* desktop-computer */}
-            <Route path="desktop-computer">
-              <Route index element={displayDesktopComputersElement} />
-              <Route path="create" element={createProductElement} />
-            </Route>
-
             {/* display */}
             <Route path="display">
               <Route index element={displayDisplaysElement} />
@@ -1887,12 +1701,6 @@ function App() {
             {/* keyboard */}
             <Route path="keyboard">
               <Route index element={displayKeyboardsElement} />
-              <Route path="create" element={createProductElement} />
-            </Route>
-
-            {/* laptop */}
-            <Route path="laptop">
-              <Route index element={displayLaptopsElement} />
               <Route path="create" element={createProductElement} />
             </Route>
 
@@ -1926,12 +1734,6 @@ function App() {
               <Route path="create" element={createProductElement} />
             </Route>
 
-            {/* smartphone */}
-            <Route path="smartphone">
-              <Route index element={displaySmartphonesElement} />
-              <Route path="create" element={createProductElement} />
-            </Route>
-
             {/* speaker */}
             <Route path="speaker">
               <Route index element={displaySpeakersElement} />
@@ -1941,12 +1743,6 @@ function App() {
             {/* storage */}
             <Route path="storage">
               <Route index element={displayStoragesElement} />
-              <Route path="create" element={createProductElement} />
-            </Route>
-
-            {/* tablet */}
-            <Route path="tablet">
-              <Route index element={displayTabletsElement} />
               <Route path="create" element={createProductElement} />
             </Route>
 
@@ -1961,20 +1757,6 @@ function App() {
           <Route path="product-review">
             <Route index element={displayProductReviewsElement} />
             <Route path="display" element={displayProductReviewsElement} />
-          </Route>
-
-          {/* transactions */}
-
-          {/* purchase */}
-          <Route path="purchase">
-            <Route index element={displayPurchasesElement} />
-            <Route path="display" element={displayPurchasesElement} />
-          </Route>
-
-          {/* rma */}
-          <Route path="rma">
-            <Route index element={displayRMAsElement} />
-            <Route path="display" element={displayRMAsElement} />
           </Route>
 
           {/* repair-ticket */}

@@ -1,5 +1,5 @@
-import { FormReviewObject } from '../formReviewPage/FormReviewPage';
-import { AdditionalFieldsMap } from './types';
+import { FormReviewObject } from "../formReviewPage/FormReviewPage";
+import { AdditionalFieldsMap } from "./types";
 
 type ReturnFormReviewObjectsFromUserDefinedFieldsInput = {
   additionalFieldsMap: Map<number, [string, string]>;
@@ -18,25 +18,25 @@ function returnFormReviewObjectsFromUserDefinedFields({
 }: ReturnFormReviewObjectsFromUserDefinedFieldsInput): FormReviewObject[] {
   return Array.from(additionalFieldsMap).reduce<FormReviewObject[]>(
     (formReviewObjAcc, tuple) => {
-      const [index, [key, value]] = tuple;
+      // const [index, [key, value]] = tuple;
 
-      const keyFormReviewObject: FormReviewObject = {
-        inputName: `Additional ${productCategorySimple} field ${
-          index + 1
-        }: key`,
-        inputValue: key,
-        isInputValueValid: areAdditionalFieldsValidMap.get(index)?.[0] ?? true,
-      };
-      formReviewObjAcc.push(keyFormReviewObject);
+      // const keyFormReviewObject: FormReviewObject = {
+      //   inputName: `Additional ${productCategorySimple} field ${
+      //     index + 1
+      //   }: key`,
+      //   inputValue: key,
+      //   isInputValueValid: areAdditionalFieldsValidMap.get(index)?.[0] ?? true,
+      // };
+      // formReviewObjAcc.push(keyFormReviewObject);
 
-      const valueFormReviewObject: FormReviewObject = {
-        inputName: `Additional ${productCategorySimple} field ${
-          index + 1
-        }: value`,
-        inputValue: value,
-        isInputValueValid: areAdditionalFieldsValidMap.get(index)?.[1] ?? true,
-      };
-      formReviewObjAcc.push(valueFormReviewObject);
+      // const valueFormReviewObject: FormReviewObject = {
+      //   inputName: `Additional ${productCategorySimple} field ${
+      //     index + 1
+      //   }: value`,
+      //   inputValue: value,
+      //   isInputValueValid: areAdditionalFieldsValidMap.get(index)?.[1] ?? true,
+      // };
+      // formReviewObjAcc.push(valueFormReviewObject);
 
       return formReviewObjAcc;
     },
@@ -53,8 +53,8 @@ function returnRequestBodyfromUserDefinedFields(
 ): Record<string, string> {
   return Array.from(additionalFieldsMap).reduce<Record<string, string>>(
     (acc, [_mapIdx, tuple]) => {
-      const [key, value] = tuple;
-      acc[key] = value;
+      // const [key, value] = tuple;
+      // acc[key] = value;
 
       return acc;
     },

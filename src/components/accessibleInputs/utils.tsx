@@ -624,6 +624,11 @@ function returnValidationTexts({
         return;
       }
 
+      console.group("returnValidationTexts");
+      console.log("inputName", inputName);
+      console.log("validationKey", validationKey);
+      console.groupEnd();
+
       const validation = VALIDATION_FUNCTIONS_TABLE[validationKey ?? "allowAll"];
       const { partials } = validation;
 

@@ -37,6 +37,8 @@ function AccessibleImageInput<
     maxImages = MAX_IMAGES,
     page,
     parentDispatch,
+    productCategory,
+    productCategoryDispatch,
     stepperPages,
     validValueAction,
   } = attributes;
@@ -202,7 +204,7 @@ function AccessibleImageInput<
           maxImageSize,
         });
 
-        parentDispatch({
+        parentDispatch?.({
           action: invalidValueAction,
           payload: {
             kind: areImagesInvalid ? "add" : "delete",
@@ -221,7 +223,7 @@ function AccessibleImageInput<
           new FormData()
         );
 
-        parentDispatch({
+        parentDispatch?.({
           action: validValueAction,
           payload: formData,
         });
@@ -250,19 +252,38 @@ function AccessibleImageInput<
         disabled,
         name: "images",
         onChange: async (_file: File | null) => {
-          parentDispatch({
-            action: validValueAction,
-            payload: imageFileBlobs.reduce<FormData>(
-              (formDataAcc, imageFileBlob, index) => {
-                if (imageFileBlob) {
-                  formDataAcc.append("file", imageFileBlob, imagesBuffer[index].name);
-                }
+          if (productCategory && productCategoryDispatch) {
+            productCategoryDispatch({
+              action: validValueAction,
+              payload: {
+                productCategory,
+                value: imageFileBlobs.reduce<FormData>(
+                  (formDataAcc, imageFileBlob, index) => {
+                    if (imageFileBlob) {
+                      formDataAcc.append("file", imageFileBlob, imagesBuffer[index].name);
+                    }
 
-                return formDataAcc;
+                    return formDataAcc;
+                  },
+                  new FormData()
+                ),
               },
-              new FormData()
-            ),
-          });
+            });
+          } else {
+            parentDispatch?.({
+              action: validValueAction,
+              payload: imageFileBlobs.reduce<FormData>(
+                (formDataAcc, imageFileBlob, index) => {
+                  if (imageFileBlob) {
+                    formDataAcc.append("file", imageFileBlob, imagesBuffer[index].name);
+                  }
+
+                  return formDataAcc;
+                },
+                new FormData()
+              ),
+            });
+          }
         },
         parentDispatch: accessibleImageInputDispatch,
         validValueAction: accessibleImageInputAction.addImageToBuffer,

@@ -1,3 +1,12 @@
+import { useReducer } from "react";
+import { createProductReducer } from "./reducers";
+import { createProductAction, initialCreateProductState } from "./state";
+import { Accessory } from "./Accessory";
+import { Container } from "@mantine/core";
+import { AccessibleStepper } from "../accessibleInputs/AccessibleStepper";
+import { AccessibleButton } from "../accessibleInputs/AccessibleButton";
+import { logState } from "../../utils";
+
 function CreateProduct() {
   const [createProductState, createProductDispatch] = useReducer(
     createProductReducer,
@@ -27,7 +36,10 @@ function CreateProduct() {
     accessoryType,
     accessoryColor,
     accessoryInterface,
-    accessoryFieldsAdditionalMap,
+
+    additionalFieldsMap,
+    additionalFieldsFormDataMap,
+    stepperPages, // TODO: implement stepperPages and set it to initial state
 
     cpuSocket,
     cpuFrequency,
@@ -39,12 +51,10 @@ function CreateProduct() {
     cpuL3CacheCapacity,
     cpuL3CacheCapacityUnit,
     cpuWattage,
-    cpuFieldsAdditionalMap,
 
     caseType,
     caseColor,
     caseSidePanel,
-    caseFieldsAdditionalMap,
 
     displaySize,
     displayResolutionHorizontal,
@@ -53,7 +63,6 @@ function CreateProduct() {
     displayPanelType,
     displayResponseTime,
     displayAspectRatio,
-    displayFieldsAdditionalMap,
 
     gpuChipset,
     gpuMemoryCapacity,
@@ -61,7 +70,6 @@ function CreateProduct() {
     gpuCoreClock,
     gpuBoostClock,
     gpuTdp,
-    gpuFieldsAdditionalMap,
 
     headphoneType,
     headphoneColor,
@@ -69,13 +77,11 @@ function CreateProduct() {
     headphoneFrequencyResponse,
     headphoneImpedance,
     headphoneInterface,
-    headphoneFieldsAdditionalMap,
 
     keyboardSwitch,
     keyboardLayout,
     keyboardBacklight,
     keyboardInterface,
-    keyboardFieldsAdditionalMap,
 
     ramDataRate,
     ramModulesQuantity,
@@ -85,21 +91,18 @@ function CreateProduct() {
     ramColor,
     ramVoltage,
     ramTiming,
-    ramFieldsAdditionalMap,
 
     mouseSensor,
     mouseDpi,
     mouseButtons,
     mouseColor,
     mouseInterface,
-    mouseFieldsAdditionalMap,
 
     microphoneColor,
     microphoneInterface,
     microphoneType,
     microphonePolarPattern,
     microphoneFrequencyResponse,
-    microphoneFieldsAdditionalMap,
 
     motherboardSocket,
     motherboardChipset,
@@ -113,20 +116,17 @@ function CreateProduct() {
     motherboardPcie3Slots,
     motherboardPcie4Slots,
     motherboardPcie5Slots,
-    motherboardFieldsAdditionalMap,
 
     psuWattage,
     psuEfficiency,
     psuModularity,
     psuFormFactor,
-    psuFieldsAdditionalMap,
 
     speakerType,
     speakerColor,
     speakerFrequencyResponse,
     speakerTotalWattage,
     speakerInterface,
-    speakerFieldsAdditionalMap,
 
     storageType,
     storageCapacity,
@@ -135,23 +135,70 @@ function CreateProduct() {
     storageCacheCapacityUnit,
     storageFormFactor,
     storageInterface,
-    storageFieldsAdditionalMap,
 
     webcamColor,
     webcamFrameRate,
     webcamInterface,
     webcamMicrophone,
     webcamResolution,
-    webcamFieldsAdditionalMap,
-
-    // page 3
-    imgFormDataArray,
 
     triggerFormSubmit,
     pagesInError,
     isSubmitting,
     isSuccessful,
   } = createProductState;
+
+  const accessoryPage = (
+    <Accessory
+      accessoryColor={accessoryColor}
+      accessoryInterface={accessoryInterface}
+      accessoryType={accessoryType}
+      additionalFields={additionalFieldsMap.get("Accessory") ?? []}
+      additionalFieldsFormData={
+        additionalFieldsFormDataMap.get("Accessory") ?? new FormData()
+      }
+      parentAction={createProductAction}
+      parentDispatch={createProductDispatch}
+      productCategory="Accessory"
+      stepperPages={stepperPages}
+    />
+  );
+
+  const submitButton = (
+    <AccessibleButton
+      attributes={{
+        enabledScreenreaderText: "All inputs are valid. Click to submit form",
+        disabledScreenreaderText: "Please fix errors before submitting form",
+        disabled: pagesInError.size > 0 || triggerFormSubmit,
+        kind: "submit",
+        name: "submit",
+        onClick: (_event: React.MouseEvent<HTMLButtonElement>) => {
+          createProductDispatch({
+            action: createProductAction.setTriggerFormSubmit,
+            payload: true,
+          });
+        },
+      }}
+    />
+  );
+
+  const stepper = (
+    <AccessibleStepper
+      attributes={{
+        componentState: createProductState,
+        pageElements: [accessoryPage],
+        stepperPages,
+        submitButton,
+      }}
+    />
+  );
+
+  logState({
+    state: createProductState,
+    groupLabel: "Create Product State",
+  });
+
+  return <Container w={700}>{stepper}</Container>;
 }
 
 export default CreateProduct;

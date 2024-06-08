@@ -16,6 +16,8 @@ import { COLORS_SWATCHES } from "../../constants/data";
 import { useGlobalState } from "../../hooks";
 import { SetPageInErrorPayload, StepperPage } from "../../types";
 import { returnThemeColors, splitCamelCase } from "../../utils";
+import { ProductCategory } from "../dashboard/types";
+import { AdditionalFieldsOperation, AdditionalFieldsPayload } from "../product/dispatch";
 import {
   createAccessibleValueValidationTextElements,
   returnFullValidation,
@@ -33,6 +35,7 @@ type AccessibleTextAreaInputAttributes<
   dynamicIndexes?: number[];
   icon?: ReactNode;
   initialInputValue?: string;
+  invalidValueAction: InvalidValueAction;
   label?: ReactNode;
   maxLength?: number;
   maxRows?: number;
@@ -55,7 +58,7 @@ type AccessibleTextAreaInputAttributes<
         payload: SetPageInErrorPayload;
       }
   >;
-  /** for inputs created by user */
+  /** default for inputs created by user */
   parentDynamicDispatch?: Dispatch<
     | {
         action: ValidValueAction;
@@ -69,8 +72,22 @@ type AccessibleTextAreaInputAttributes<
         payload: SetPageInErrorPayload;
       }
   >;
-  validValueAction: ValidValueAction;
-  invalidValueAction: InvalidValueAction;
+  /** for product */
+  productDispatchInfo?: {
+    kind: "fieldName" | "fieldValue";
+    operation: AdditionalFieldsOperation;
+    productCategory: ProductCategory;
+    productDispatch: Dispatch<
+      | {
+          action: ValidValueAction;
+          payload: AdditionalFieldsPayload;
+        }
+      | {
+          action: InvalidValueAction;
+          payload: SetPageInErrorPayload;
+        }
+    >;
+  };
   placeholder?: string;
   ref?: React.RefObject<HTMLTextAreaElement> | null;
   required?: boolean;
@@ -79,6 +96,7 @@ type AccessibleTextAreaInputAttributes<
   rightSectionOnClick?: () => void;
   size?: MantineSize;
   stepperPages: StepperPage[];
+  validValueAction: ValidValueAction;
   value: string;
   withAsterisk?: boolean;
 };
@@ -101,6 +119,7 @@ function AccessibleTextAreaInput<
     dynamicIndexes,
     icon = null,
     initialInputValue = "",
+    invalidValueAction,
     maxLength = 2000,
     maxRows = 7,
     minLength = 2,
@@ -110,12 +129,11 @@ function AccessibleTextAreaInput<
     onChange,
     onFocus,
     onKeyDown,
+    page = 0,
     parentDispatch,
     parentDynamicDispatch,
-    validValueAction,
-    invalidValueAction,
-    page = 0,
     placeholder = "",
+    productDispatchInfo,
     ref = null,
     required = false,
     rightSection = false,
@@ -123,6 +141,7 @@ function AccessibleTextAreaInput<
     rightSectionOnClick = () => {},
     size = "sm",
     stepperPages,
+    validValueAction,
     value,
     withAsterisk = required,
   } = attributes;
@@ -226,7 +245,8 @@ function AccessibleTextAreaInput<
             minRows={minRows}
             name={name}
             onBlur={(event: FocusEvent<HTMLTextAreaElement>) => {
-              if (dynamicIndexes === undefined) {
+              // regular inputs
+              if (parentDispatch) {
                 parentDispatch?.({
                   action: invalidValueAction,
                   payload: {
@@ -239,7 +259,14 @@ function AccessibleTextAreaInput<
                   action: validValueAction,
                   payload: valueBuffer,
                 });
-              } else {
+              }
+
+              // dynamic inputs
+              if (parentDynamicDispatch) {
+                if (!dynamicIndexes?.length) {
+                  return;
+                }
+
                 parentDynamicDispatch?.({
                   action: invalidValueAction,
                   payload: {
@@ -251,6 +278,31 @@ function AccessibleTextAreaInput<
                 parentDynamicDispatch?.({
                   action: validValueAction,
                   payload: { dynamicIndexes, value: valueBuffer },
+                });
+              }
+
+              // product dynamic inputs
+              if (productDispatchInfo) {
+                const { kind, operation, productCategory, productDispatch } =
+                  productDispatchInfo;
+
+                productDispatch?.({
+                  action: invalidValueAction,
+                  payload: {
+                    kind: isValueBufferValid ? "delete" : "add",
+                    page,
+                  },
+                });
+
+                productDispatch?.({
+                  action: validValueAction,
+                  payload: {
+                    dynamicIndexes: dynamicIndexes ?? [],
+                    kind,
+                    operation,
+                    productCategory,
+                    value: valueBuffer,
+                  },
                 });
               }
 

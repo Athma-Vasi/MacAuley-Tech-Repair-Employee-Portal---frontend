@@ -1,22 +1,20 @@
-import { Currency, SetPageInErrorPayload } from "../../types";
+import { Currency, SetPageInErrorPayload, StepperChild } from "../../types";
 import { ProductCategory } from "../dashboard/types";
-import { StepsInErrorPayload } from "../endorsement/create/types";
+import { CreateProductAction } from "./actions";
 import {
-  AdditionalFieldsAdd,
+  AdditionalFieldsDelete,
+  AdditionalFieldsFormDataPayload,
+  AdditionalFieldsInsert,
   AdditionalFieldsPayload,
-  AdditionalFieldsRemove,
+  AdditionalFieldsSlideDown,
+  AdditionalFieldsSlideUp,
   AdditionalFieldsUpdate,
-  AdditionalFieldsValidFocusedAdd,
-  AdditionalFieldsValidFocusedPayload,
-  AdditionalFieldsValidFocusedRemove,
-  AdditionalFieldsValidFocusedUpdate,
   CreateProductDispatch,
 } from "./dispatch";
 import { createProductAction } from "./state";
 import {
   CaseSidePanel,
   CaseType,
-  CreateProductAction,
   CreateProductState,
   DimensionUnit,
   DisplayPanelType,
@@ -30,7 +28,6 @@ import {
   MicrophoneInterface,
   MicrophonePolarPattern,
   MicrophoneType,
-  MobileOs,
   MotherboardFormFactor,
   MouseSensor,
   PeripheralsInterface,
@@ -62,350 +59,231 @@ const createProductReducersMap = new Map<
   CreateProductAction[keyof CreateProductAction],
   (state: CreateProductState, dispatch: CreateProductDispatch) => CreateProductState
 >([
-  [createProductAction.setBrand, setBrand_CreateProductReducer],
-  [createProductAction.setModel, setModel_CreateProductReducer],
-  [createProductAction.setDescription, setDescription_CreateProductReducer],
-  [createProductAction.setPrice, setPrice_CreateProductReducer],
-  [createProductAction.setCurrency, setCurrency_CreateProductReducer],
-  [createProductAction.setAvailability, setAvailability_CreateProductReducer],
-  [createProductAction.setQuantity, setQuantity_CreateProductReducer],
-  [createProductAction.setWeight, setWeight_CreateProductReducer],
-  [createProductAction.setWeightUnit, setWeightUnit_CreateProductReducer],
-  [createProductAction.setDimensionHeight, setDimensionHeight_CreateProductReducer],
+  [createProductAction.setBrand, setBrand_createProductReducer],
+  [createProductAction.setModel, setModel_createProductReducer],
+  [createProductAction.setDescription, setDescription_createProductReducer],
+  [createProductAction.setPrice, setPrice_createProductReducer],
+  [createProductAction.setCurrency, setCurrency_createProductReducer],
+  [createProductAction.setAvailability, setAvailability_createProductReducer],
+  [createProductAction.setQuantity, setQuantity_createProductReducer],
+  [createProductAction.setWeight, setWeight_createProductReducer],
+  [createProductAction.setWeightUnit, setWeightUnit_createProductReducer],
+  [createProductAction.setDimensionHeight, setDimensionHeight_createProductReducer],
   [
     createProductAction.setDimensionHeightUnit,
-    setDimensionHeightUnit_CreateProductReducer,
+    setDimensionHeightUnit_createProductReducer,
   ],
-  [createProductAction.setDimensionWidth, setDimensionWidth_CreateProductReducer],
-  [createProductAction.setDimensionWidthUnit, setDimensionWidthUnit_CreateProductReducer],
-  [createProductAction.setDimensionLength, setDimensionLength_CreateProductReducer],
+  [createProductAction.setDimensionWidth, setDimensionWidth_createProductReducer],
+  [createProductAction.setDimensionWidthUnit, setDimensionWidthUnit_createProductReducer],
+  [createProductAction.setDimensionLength, setDimensionLength_createProductReducer],
   [
     createProductAction.setDimensionLengthUnit,
-    setDimensionLengthUnit_CreateProductReducer,
+    setDimensionLengthUnit_createProductReducer,
   ],
-  [createProductAction.setAdditionalComments, setAdditionalComments_CreateProductReducer],
+  [createProductAction.setAdditionalComments, setAdditionalComments_createProductReducer],
 
   // page 2
-  [createProductAction.setProductCategory, setProductCategory_CreateProductReducer],
-
-  [createProductAction.setAccessoryType, setAccessoryType_CreateProductReducer],
-  [createProductAction.setAccessoryColor, setAccessoryColor_CreateProductReducer],
-  [createProductAction.setAccessoryInterface, setAccessoryInterface_CreateProductReducer],
+  [createProductAction.setProductCategory, setProductCategory_createProductReducer],
+  [createProductAction.addStepperChild, addStepperChild_createProductReducer],
   [
-    createProductAction.setAccessoryFieldsAdditionalMap,
-    setAccessoryFieldsAdditionalMap_CreateProductReducer,
+    createProductAction.modifyAdditionalFieldsMap,
+    modifyAdditionalFieldsMap_createProductReducer,
+  ],
+  [
+    createProductAction.setAdditionalFieldsFormDataMap,
+    setAdditionalFieldsFormDataMap_createProductReducer,
   ],
 
-  [createProductAction.setCpuSocket, setCpuSocket_CreateProductReducer],
-  [createProductAction.setCpuFrequency, setCpuFrequency_CreateProductReducer],
-  [createProductAction.setCpuCores, setCpuCores_CreateProductReducer],
-  [createProductAction.setCpuL1CacheCapacity, setCpuL1CacheCapacity_CreateProductReducer],
+  [createProductAction.setAccessoryType, setAccessoryType_createProductReducer],
+  [createProductAction.setAccessoryColor, setAccessoryColor_createProductReducer],
+  [createProductAction.setAccessoryInterface, setAccessoryInterface_createProductReducer],
+
+  [createProductAction.setCpuSocket, setCpuSocket_createProductReducer],
+  [createProductAction.setCpuFrequency, setCpuFrequency_createProductReducer],
+  [createProductAction.setCpuCores, setCpuCores_createProductReducer],
+  [createProductAction.setCpuL1CacheCapacity, setCpuL1CacheCapacity_createProductReducer],
   [
     createProductAction.setCpuL1CacheCapacityUnit,
-    setCpuL1CacheCapacityUnit_CreateProductReducer,
+    setCpuL1CacheCapacityUnit_createProductReducer,
   ],
-  [createProductAction.setCpuL2CacheCapacity, setCpuL2CacheCapacity_CreateProductReducer],
+  [createProductAction.setCpuL2CacheCapacity, setCpuL2CacheCapacity_createProductReducer],
   [
     createProductAction.setCpuL2CacheCapacityUnit,
-    setCpuL2CacheCapacityUnit_CreateProductReducer,
+    setCpuL2CacheCapacityUnit_createProductReducer,
   ],
-  [createProductAction.setCpuL3CacheCapacity, setCpuL3CacheCapacity_CreateProductReducer],
+  [createProductAction.setCpuL3CacheCapacity, setCpuL3CacheCapacity_createProductReducer],
   [
     createProductAction.setCpuL3CacheCapacityUnit,
-    setCpuL3CacheCapacityUnit_CreateProductReducer,
+    setCpuL3CacheCapacityUnit_createProductReducer,
   ],
-  [createProductAction.setCpuWattage, setCpuWattage_CreateProductReducer],
-  [
-    createProductAction.setCpuFieldsAdditionalMap,
-    setCpuFieldsAdditionalMap_CreateProductReducer,
-  ],
+  [createProductAction.setCpuWattage, setCpuWattage_createProductReducer],
 
-  [createProductAction.setCaseType, setCaseType_CreateProductReducer],
-  [createProductAction.setCaseColor, setCaseColor_CreateProductReducer],
-  [createProductAction.setCaseSidePanel, setCaseSidePanel_CreateProductReducer],
-  [
-    createProductAction.setCaseFieldsAdditionalMap,
-    setCaseFieldsAdditionalMap_CreateProductReducer,
-  ],
+  [createProductAction.setCaseType, setCaseType_createProductReducer],
+  [createProductAction.setCaseColor, setCaseColor_createProductReducer],
+  [createProductAction.setCaseSidePanel, setCaseSidePanel_createProductReducer],
 
-  [createProductAction.setDisplaySize, setDisplaySize_CreateProductReducer],
+  [createProductAction.setDisplaySize, setDisplaySize_createProductReducer],
   [
     createProductAction.setDisplayResolutionHorizontal,
-    setDisplayResolutionHorizontal_CreateProductReducer,
+    setDisplayResolutionHorizontal_createProductReducer,
   ],
   [
     createProductAction.setDisplayResolutionVertical,
-    setDisplayResolutionVertical_CreateProductReducer,
+    setDisplayResolutionVertical_createProductReducer,
   ],
-  [createProductAction.setDisplayRefreshRate, setDisplayRefreshRate_CreateProductReducer],
-  [createProductAction.setDisplayPanelType, setDisplayPanelType_CreateProductReducer],
+  [createProductAction.setDisplayRefreshRate, setDisplayRefreshRate_createProductReducer],
+  [createProductAction.setDisplayPanelType, setDisplayPanelType_createProductReducer],
   [
     createProductAction.setDisplayResponseTime,
-    setDisplayResponseTime_CreateProductReducer,
+    setDisplayResponseTime_createProductReducer,
   ],
-  [createProductAction.setDisplayAspectRatio, setDisplayAspectRatio_CreateProductReducer],
-  [
-    createProductAction.setDisplayFieldsAdditionalMap,
-    setDisplayFieldsAdditionalMap_CreateProductReducer,
-  ],
+  [createProductAction.setDisplayAspectRatio, setDisplayAspectRatio_createProductReducer],
 
-  [createProductAction.setGpuChipset, setGpuChipset_CreateProductReducer],
-  [createProductAction.setGpuMemoryCapacity, setGpuMemoryCapacity_CreateProductReducer],
+  [createProductAction.setGpuChipset, setGpuChipset_createProductReducer],
+  [createProductAction.setGpuMemoryCapacity, setGpuMemoryCapacity_createProductReducer],
   [
     createProductAction.setGpuMemoryCapacityUnit,
-    setGpuMemoryCapacityUnit_CreateProductReducer,
+    setGpuMemoryCapacityUnit_createProductReducer,
   ],
-  [createProductAction.setGpuCoreClock, setGpuCoreClock_CreateProductReducer],
-  [createProductAction.setGpuBoostClock, setGpuBoostClock_CreateProductReducer],
-  [createProductAction.setGpuTdp, setGpuTdp_CreateProductReducer],
-  [
-    createProductAction.setGpuFieldsAdditionalMap,
-    setGpuFieldsAdditionalMap_CreateProductReducer,
-  ],
+  [createProductAction.setGpuCoreClock, setGpuCoreClock_createProductReducer],
+  [createProductAction.setGpuBoostClock, setGpuBoostClock_createProductReducer],
+  [createProductAction.setGpuTdp, setGpuTdp_createProductReducer],
 
-  [createProductAction.setHeadphoneType, setHeadphoneType_CreateProductReducer],
-  [createProductAction.setHeadphoneDriver, setHeadphoneDriver_CreateProductReducer],
+  [createProductAction.setHeadphoneType, setHeadphoneType_createProductReducer],
+  [createProductAction.setHeadphoneDriver, setHeadphoneDriver_createProductReducer],
   [
     createProductAction.setHeadphoneFrequencyResponse,
-    setHeadphoneFrequencyResponse_CreateProductReducer,
+    setHeadphoneFrequencyResponse_createProductReducer,
   ],
-  [createProductAction.setHeadphoneImpedance, setHeadphoneImpedance_CreateProductReducer],
-  [createProductAction.setHeadphoneColor, setHeadphoneColor_CreateProductReducer],
-  [createProductAction.setHeadphoneInterface, setHeadphoneInterface_CreateProductReducer],
-  [
-    createProductAction.setHeadphoneFieldsAdditionalMap,
-    setHeadphoneFieldsAdditionalMap_CreateProductReducer,
-  ],
+  [createProductAction.setHeadphoneImpedance, setHeadphoneImpedance_createProductReducer],
+  [createProductAction.setHeadphoneColor, setHeadphoneColor_createProductReducer],
+  [createProductAction.setHeadphoneInterface, setHeadphoneInterface_createProductReducer],
 
-  [createProductAction.setKeyboardSwitch, setKeyboardSwitch_CreateProductReducer],
-  [createProductAction.setKeyboardLayout, setKeyboardLayout_CreateProductReducer],
-  [createProductAction.setKeyboardBacklight, setKeyboardBacklight_CreateProductReducer],
-  [createProductAction.setKeyboardInterface, setKeyboardInterface_CreateProductReducer],
-  [
-    createProductAction.setKeyboardFieldsAdditionalMap,
-    setKeyboardFieldsAdditionalMap_CreateProductReducer,
-  ],
+  [createProductAction.setKeyboardSwitch, setKeyboardSwitch_createProductReducer],
+  [createProductAction.setKeyboardLayout, setKeyboardLayout_createProductReducer],
+  [createProductAction.setKeyboardBacklight, setKeyboardBacklight_createProductReducer],
+  [createProductAction.setKeyboardInterface, setKeyboardInterface_createProductReducer],
 
-  [createProductAction.setMicrophoneType, setMicrophoneType_CreateProductReducer],
+  [createProductAction.setMicrophoneType, setMicrophoneType_createProductReducer],
   [
     createProductAction.setMicrophonePolarPattern,
-    setMicrophonePolarPattern_CreateProductReducer,
+    setMicrophonePolarPattern_createProductReducer,
   ],
   [
     createProductAction.setMicrophoneInterface,
-    setMicrophoneInterface_CreateProductReducer,
+    setMicrophoneInterface_createProductReducer,
   ],
-  [createProductAction.setMicrophoneColor, setMicrophoneColor_CreateProductReducer],
+  [createProductAction.setMicrophoneColor, setMicrophoneColor_createProductReducer],
   [
     createProductAction.setMicrophoneFrequencyResponse,
-    setMicrophoneFrequencyResponse_CreateProductReducer,
-  ],
-  [
-    createProductAction.setMicrophoneFieldsAdditionalMap,
-    setMicrophoneFieldsAdditionalMap_CreateProductReducer,
+    setMicrophoneFrequencyResponse_createProductReducer,
   ],
 
-  [createProductAction.setMotherboardSocket, setMotherboardSocket_CreateProductReducer],
-  [createProductAction.setMotherboardChipset, setMotherboardChipset_CreateProductReducer],
+  [createProductAction.setMotherboardSocket, setMotherboardSocket_createProductReducer],
+  [createProductAction.setMotherboardChipset, setMotherboardChipset_createProductReducer],
   [
     createProductAction.setMotherboardFormFactor,
-    setMotherboardFormFactor_CreateProductReducer,
+    setMotherboardFormFactor_createProductReducer,
   ],
   [
     createProductAction.setMotherboardMemoryMaxCapacity,
-    setMotherboardMemoryMaxCapacity_CreateProductReducer,
+    setMotherboardMemoryMaxCapacity_createProductReducer,
   ],
   [
     createProductAction.setMotherboardMemoryMaxCapacityUnit,
-    setMotherboardMemoryMaxCapacityUnit_CreateProductReducer,
+    setMotherboardMemoryMaxCapacityUnit_createProductReducer,
   ],
   [
     createProductAction.setMotherboardMemorySlots,
-    setMotherboardMemorySlots_CreateProductReducer,
+    setMotherboardMemorySlots_createProductReducer,
   ],
   [
     createProductAction.setMotherboardMemoryType,
-    setMotherboardMemoryType_CreateProductReducer,
+    setMotherboardMemoryType_createProductReducer,
   ],
   [
     createProductAction.setMotherboardSataPorts,
-    setMotherboardSataPorts_CreateProductReducer,
+    setMotherboardSataPorts_createProductReducer,
   ],
-  [createProductAction.setMotherboardM2Slots, setMotherboardM2Slots_CreateProductReducer],
+  [createProductAction.setMotherboardM2Slots, setMotherboardM2Slots_createProductReducer],
   [
     createProductAction.setMotherboardPcie3Slots,
-    setMotherboardPcie3Slots_CreateProductReducer,
+    setMotherboardPcie3Slots_createProductReducer,
   ],
   [
     createProductAction.setMotherboardPcie4Slots,
-    setMotherboardPcie4Slots_CreateProductReducer,
+    setMotherboardPcie4Slots_createProductReducer,
   ],
   [
     createProductAction.setMotherboardPcie5Slots,
-    setMotherboardPcie5Slots_CreateProductReducer,
-  ],
-  [
-    createProductAction.setMotherboardFieldsAdditionalMap,
-    setMotherboardFieldsAdditionalMap_CreateProductReducer,
+    setMotherboardPcie5Slots_createProductReducer,
   ],
 
-  [createProductAction.setMouseSensor, setMouseSensor_CreateProductReducer],
-  [createProductAction.setMouseDpi, setMouseDpi_CreateProductReducer],
-  [createProductAction.setMouseButtons, setMouseButtons_CreateProductReducer],
-  [createProductAction.setMouseColor, setMouseColor_CreateProductReducer],
-  [createProductAction.setMouseInterface, setMouseInterface_CreateProductReducer],
-  [
-    createProductAction.setMouseFieldsAdditionalMap,
-    setMouseFieldsAdditionalMap_CreateProductReducer,
-  ],
+  [createProductAction.setMouseSensor, setMouseSensor_createProductReducer],
+  [createProductAction.setMouseDpi, setMouseDpi_createProductReducer],
+  [createProductAction.setMouseButtons, setMouseButtons_createProductReducer],
+  [createProductAction.setMouseColor, setMouseColor_createProductReducer],
+  [createProductAction.setMouseInterface, setMouseInterface_createProductReducer],
 
-  [createProductAction.setPsuWattage, setPsuWattage_CreateProductReducer],
-  [createProductAction.setPsuEfficiency, setPsuEfficiency_CreateProductReducer],
-  [createProductAction.setPsuFormFactor, setPsuFormFactor_CreateProductReducer],
-  [createProductAction.setPsuModularity, setPsuModularity_CreateProductReducer],
-  [
-    createProductAction.setPsuFieldsAdditionalMap,
-    setPsuFieldsAdditionalMap_CreateProductReducer,
-  ],
+  [createProductAction.setPsuWattage, setPsuWattage_createProductReducer],
+  [createProductAction.setPsuEfficiency, setPsuEfficiency_createProductReducer],
+  [createProductAction.setPsuFormFactor, setPsuFormFactor_createProductReducer],
+  [createProductAction.setPsuModularity, setPsuModularity_createProductReducer],
 
-  [createProductAction.setRamDataRate, setRamDataRate_CreateProductReducer],
-  [createProductAction.setRamModulesQuantity, setRamModulesQuantity_CreateProductReducer],
-  [createProductAction.setRamModulesCapacity, setRamModulesCapacity_CreateProductReducer],
+  [createProductAction.setRamDataRate, setRamDataRate_createProductReducer],
+  [createProductAction.setRamModulesQuantity, setRamModulesQuantity_createProductReducer],
+  [createProductAction.setRamModulesCapacity, setRamModulesCapacity_createProductReducer],
   [
     createProductAction.setRamModulesCapacityUnit,
-    setRamModulesCapacityUnit_CreateProductReducer,
+    setRamModulesCapacityUnit_createProductReducer,
   ],
-  [createProductAction.setRamType, setRamType_CreateProductReducer],
-  [createProductAction.setRamColor, setRamColor_CreateProductReducer],
-  [createProductAction.setRamVoltage, setRamVoltage_CreateProductReducer],
-  [createProductAction.setRamTiming, setRamTiming_CreateProductReducer],
-  [
-    createProductAction.setRamFieldsAdditionalMap,
-    setRamFieldsAdditionalMap_CreateProductReducer,
-  ],
+  [createProductAction.setRamType, setRamType_createProductReducer],
+  [createProductAction.setRamColor, setRamColor_createProductReducer],
+  [createProductAction.setRamVoltage, setRamVoltage_createProductReducer],
+  [createProductAction.setRamTiming, setRamTiming_createProductReducer],
 
-  [createProductAction.setSmartphoneOs, setSmartphoneOs_CreateProductReducer],
-  [createProductAction.setSmartphoneChipset, setSmartphoneChipset_CreateProductReducer],
-  [createProductAction.setSmartphoneDisplay, setSmartphoneDisplay_CreateProductReducer],
-  [
-    createProductAction.setSmartphoneResolutionHorizontal,
-    setSmartphoneResolutionHorizontal_CreateProductReducer,
-  ],
-  [
-    createProductAction.setSmartphoneResolutionVertical,
-    setSmartphoneResolutionVertical_CreateProductReducer,
-  ],
-  [
-    createProductAction.setSmartphoneRamCapacity,
-    setSmartphoneRamCapacity_CreateProductReducer,
-  ],
-  [
-    createProductAction.setSmartphoneRamCapacityUnit,
-    setSmartphoneRamCapacityUnit_CreateProductReducer,
-  ],
-  [
-    createProductAction.setSmartphoneStorageCapacity,
-    setSmartphoneStorageCapacity_CreateProductReducer,
-  ],
-  [
-    createProductAction.setSmartphoneBatteryCapacity,
-    setSmartphoneBatteryCapacity_CreateProductReducer,
-  ],
-  [createProductAction.setSmartphoneCamera, setSmartphoneCamera_CreateProductReducer],
-  [createProductAction.setSmartphoneColor, setSmartphoneColor_CreateProductReducer],
-  [
-    createProductAction.setSmartphoneFieldsAdditionalMap,
-    setSmartphoneFieldsAdditionalMap_CreateProductReducer,
-  ],
-
-  [createProductAction.setSpeakerType, setSpeakerType_CreateProductReducer],
+  [createProductAction.setSpeakerType, setSpeakerType_createProductReducer],
   [
     createProductAction.setSpeakerTotalWattage,
-    setSpeakerTotalWattage_CreateProductReducer,
+    setSpeakerTotalWattage_createProductReducer,
   ],
   [
     createProductAction.setSpeakerFrequencyResponse,
-    setSpeakerFrequencyResponse_CreateProductReducer,
+    setSpeakerFrequencyResponse_createProductReducer,
   ],
-  [createProductAction.setSpeakerColor, setSpeakerColor_CreateProductReducer],
-  [createProductAction.setSpeakerInterface, setSpeakerInterface_CreateProductReducer],
-  [
-    createProductAction.setSpeakerFieldsAdditionalMap,
-    setSpeakerFieldsAdditionalMap_CreateProductReducer,
-  ],
+  [createProductAction.setSpeakerColor, setSpeakerColor_createProductReducer],
+  [createProductAction.setSpeakerInterface, setSpeakerInterface_createProductReducer],
 
-  [createProductAction.setStorageType, setStorageType_CreateProductReducer],
-  [createProductAction.setStorageCapacity, setStorageCapacity_CreateProductReducer],
+  [createProductAction.setStorageType, setStorageType_createProductReducer],
+  [createProductAction.setStorageCapacity, setStorageCapacity_createProductReducer],
   [
     createProductAction.setStorageCapacityUnit,
-    setStorageCapacityUnit_CreateProductReducer,
+    setStorageCapacityUnit_createProductReducer,
   ],
   [
     createProductAction.setStorageCacheCapacity,
-    setStorageCacheCapacity_CreateProductReducer,
+    setStorageCacheCapacity_createProductReducer,
   ],
   [
     createProductAction.setStorageCacheCapacityUnit,
-    setStorageCacheCapacityUnit_CreateProductReducer,
+    setStorageCacheCapacityUnit_createProductReducer,
   ],
-  [createProductAction.setStorageFormFactor, setStorageFormFactor_CreateProductReducer],
-  [createProductAction.setStorageInterface, setStorageInterface_CreateProductReducer],
-  [
-    createProductAction.setStorageFieldsAdditionalMap,
-    setStorageFieldsAdditionalMap_CreateProductReducer,
-  ],
+  [createProductAction.setStorageFormFactor, setStorageFormFactor_createProductReducer],
+  [createProductAction.setStorageInterface, setStorageInterface_createProductReducer],
 
-  [createProductAction.setTabletOs, setTabletOs_CreateProductReducer],
-  [createProductAction.setTabletChipset, setTabletChipset_CreateProductReducer],
-  [createProductAction.setTabletDisplay, setTabletDisplay_CreateProductReducer],
-  [
-    createProductAction.setTabletResolutionHorizontal,
-    setTabletResolutionHorizontal_CreateProductReducer,
-  ],
-  [
-    createProductAction.setTabletResolutionVertical,
-    setTabletResolutionVertical_CreateProductReducer,
-  ],
-  [createProductAction.setTabletRamCapacity, setTabletRamCapacity_CreateProductReducer],
-  [
-    createProductAction.setTabletRamCapacityUnit,
-    setTabletRamCapacityUnit_CreateProductReducer,
-  ],
-  [
-    createProductAction.setTabletStorageCapacity,
-    setTabletStorageCapacity_CreateProductReducer,
-  ],
-  [
-    createProductAction.setTabletBatteryCapacity,
-    setTabletBatteryCapacity_CreateProductReducer,
-  ],
-  [createProductAction.setTabletCamera, setTabletCamera_CreateProductReducer],
-  [createProductAction.setTabletColor, setTabletColor_CreateProductReducer],
-  [
-    createProductAction.setTabletFieldsAdditionalMap,
-    setTabletFieldsAdditionalMap_CreateProductReducer,
-  ],
+  [createProductAction.setWebcamResolution, setWebcamResolution_createProductReducer],
+  [createProductAction.setWebcamInterface, setWebcamInterface_createProductReducer],
+  [createProductAction.setWebcamMicrophone, setWebcamMicrophone_createProductReducer],
+  [createProductAction.setWebcamFrameRate, setWebcamFrameRate_createProductReducer],
+  [createProductAction.setWebcamColor, setWebcamColor_createProductReducer],
 
-  [createProductAction.setWebcamResolution, setWebcamResolution_CreateProductReducer],
-  [createProductAction.setWebcamInterface, setWebcamInterface_CreateProductReducer],
-  [createProductAction.setWebcamMicrophone, setWebcamMicrophone_CreateProductReducer],
-  [createProductAction.setWebcamFrameRate, setWebcamFrameRate_CreateProductReducer],
-  [createProductAction.setWebcamColor, setWebcamColor_CreateProductReducer],
-  [
-    createProductAction.setWebcamFieldsAdditionalMap,
-    setWebcamFieldsAdditionalMap_CreateProductReducer,
-  ],
-
-  // page 3
-  [createProductAction.setImgFormDataArray, setImgFormDataArray_CreateProductReducer],
-
-  [createProductAction.setTriggerFormSubmit, setTriggerFormSubmit_CreateProductReducer],
-  [createProductAction.setPageInError, setPageInError_CreateProductReducer],
-  [createProductAction.setIsSubmitting, setIsSubmitting_CreateProductReducer],
-  [createProductAction.setIsSuccessful, setIsSuccessful_CreateProductReducer],
+  [createProductAction.setTriggerFormSubmit, setTriggerFormSubmit_createProductReducer],
+  [createProductAction.setPageInError, setPageInError_createProductReducer],
+  [createProductAction.setIsSubmitting, setIsSubmitting_createProductReducer],
+  [createProductAction.setIsSuccessful, setIsSuccessful_createProductReducer],
 ]);
 
-function setBrand_CreateProductReducer(
+function setBrand_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -415,7 +293,7 @@ function setBrand_CreateProductReducer(
   };
 }
 
-function setModel_CreateProductReducer(
+function setModel_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -425,7 +303,7 @@ function setModel_CreateProductReducer(
   };
 }
 
-function setDescription_CreateProductReducer(
+function setDescription_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -435,7 +313,7 @@ function setDescription_CreateProductReducer(
   };
 }
 
-function setPrice_CreateProductReducer(
+function setPrice_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -445,7 +323,7 @@ function setPrice_CreateProductReducer(
   };
 }
 
-function setCurrency_CreateProductReducer(
+function setCurrency_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -455,7 +333,7 @@ function setCurrency_CreateProductReducer(
   };
 }
 
-function setAvailability_CreateProductReducer(
+function setAvailability_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -465,7 +343,7 @@ function setAvailability_CreateProductReducer(
   };
 }
 
-function setQuantity_CreateProductReducer(
+function setQuantity_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -475,7 +353,7 @@ function setQuantity_CreateProductReducer(
   };
 }
 
-function setWeight_CreateProductReducer(
+function setWeight_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -485,7 +363,7 @@ function setWeight_CreateProductReducer(
   };
 }
 
-function setWeightUnit_CreateProductReducer(
+function setWeightUnit_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -495,7 +373,7 @@ function setWeightUnit_CreateProductReducer(
   };
 }
 
-function setDimensionHeight_CreateProductReducer(
+function setDimensionHeight_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -505,7 +383,7 @@ function setDimensionHeight_CreateProductReducer(
   };
 }
 
-function setDimensionHeightUnit_CreateProductReducer(
+function setDimensionHeightUnit_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -515,7 +393,7 @@ function setDimensionHeightUnit_CreateProductReducer(
   };
 }
 
-function setDimensionWidth_CreateProductReducer(
+function setDimensionWidth_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -525,7 +403,7 @@ function setDimensionWidth_CreateProductReducer(
   };
 }
 
-function setDimensionWidthUnit_CreateProductReducer(
+function setDimensionWidthUnit_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -535,7 +413,7 @@ function setDimensionWidthUnit_CreateProductReducer(
   };
 }
 
-function setDimensionLength_CreateProductReducer(
+function setDimensionLength_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -545,7 +423,7 @@ function setDimensionLength_CreateProductReducer(
   };
 }
 
-function setDimensionLengthUnit_CreateProductReducer(
+function setDimensionLengthUnit_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -555,7 +433,7 @@ function setDimensionLengthUnit_CreateProductReducer(
   };
 }
 
-function setAdditionalComments_CreateProductReducer(
+function setAdditionalComments_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -565,7 +443,7 @@ function setAdditionalComments_CreateProductReducer(
   };
 }
 
-function setProductCategory_CreateProductReducer(
+function setProductCategory_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -575,7 +453,7 @@ function setProductCategory_CreateProductReducer(
   };
 }
 
-function setAccessoryType_CreateProductReducer(
+function setAccessoryType_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -585,7 +463,7 @@ function setAccessoryType_CreateProductReducer(
   };
 }
 
-function setAccessoryColor_CreateProductReducer(
+function setAccessoryColor_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -595,7 +473,7 @@ function setAccessoryColor_CreateProductReducer(
   };
 }
 
-function setAccessoryInterface_CreateProductReducer(
+function setAccessoryInterface_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -605,76 +483,186 @@ function setAccessoryInterface_CreateProductReducer(
   };
 }
 
-function setAccessoryFieldsAdditionalMap_CreateProductReducer(
+function modifyAdditionalFieldsMap_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
-  const { operation } = dispatch.payload as AdditionalFieldsPayload;
+  const { operation, productCategory } = dispatch.payload as AdditionalFieldsPayload;
+  const clonedAdditionalFieldsMap = new Map(state.additionalFieldsMap);
+  const additionalFields = structuredClone(
+    clonedAdditionalFieldsMap.get(productCategory)
+  );
+
+  if (!additionalFields) {
+    return state;
+  }
+
+  console.group("modifyAdditionalFieldsMap_createProductReducer");
+  console.log("dispatch.payload", dispatch.payload);
+  console.log("additionalFields", additionalFields);
+  console.groupEnd();
 
   switch (operation) {
     case "add": {
-      const accessoryFieldsAdditionalMapClone = structuredClone(
-        state.accessoryFieldsAdditionalMap
+      additionalFields.push(["", ""]);
+      const additionalFieldsMap = clonedAdditionalFieldsMap.set(
+        productCategory,
+        additionalFields
       );
-
-      const { data } = dispatch.payload as AdditionalFieldsAdd;
-      const prevSize = accessoryFieldsAdditionalMapClone.size;
-      accessoryFieldsAdditionalMapClone.set(prevSize, data);
 
       return {
         ...state,
-        accessoryFieldsAdditionalMap: accessoryFieldsAdditionalMapClone,
+        additionalFieldsMap,
       };
     }
 
-    case "remove": {
-      const accessoryFieldsAdditionalMapClone = structuredClone(
-        state.accessoryFieldsAdditionalMap
-      );
-
-      const { index } = dispatch.payload as AdditionalFieldsRemove;
-      accessoryFieldsAdditionalMapClone.delete(index);
-
-      const filteredAccessoryFieldsAdditionalMap = new Map<number, [string, string]>();
-
-      Array.from(accessoryFieldsAdditionalMapClone).forEach((mapIdxKeyVal, arrayIdx) => {
-        const [_mapIdx, keyVal] = mapIdxKeyVal as [number, [string, string]];
-        filteredAccessoryFieldsAdditionalMap.set(arrayIdx, keyVal);
-      });
+    case "delete": {
+      const {
+        dynamicIndexes: [inputIndex],
+      } = dispatch.payload as AdditionalFieldsDelete;
 
       return {
         ...state,
-        accessoryFieldsAdditionalMap: filteredAccessoryFieldsAdditionalMap,
       };
     }
+
+    case "insert": {
+      const {
+        dynamicIndexes: [inputIndex],
+      } = dispatch.payload as AdditionalFieldsInsert;
+
+      return {
+        ...state,
+      };
+    }
+
     case "update": {
-      const accessoryFieldsAdditionalMapClone = structuredClone(
-        state.accessoryFieldsAdditionalMap
+      const {
+        dynamicIndexes: [inputIndex],
+        kind,
+        value,
+      } = dispatch.payload as AdditionalFieldsUpdate;
+
+      const tuple = additionalFields[inputIndex];
+      kind === "fieldName" ? (tuple[0] = value) : (tuple[1] = value);
+
+      const additionalFieldsMap = state.additionalFieldsMap.set(
+        productCategory,
+        additionalFields
       );
-
-      const { data, index, kind } = dispatch.payload as AdditionalFieldsUpdate;
-      const prevKeyVal = accessoryFieldsAdditionalMapClone.get(index);
-
-      if (!prevKeyVal) {
-        return state;
-      }
-
-      const [prevKey, prevValue] = prevKeyVal;
-      kind === "key"
-        ? accessoryFieldsAdditionalMapClone.set(index, [data, prevValue])
-        : accessoryFieldsAdditionalMapClone.set(index, [prevKey, data]);
 
       return {
         ...state,
-        accessoryFieldsAdditionalMap: accessoryFieldsAdditionalMapClone,
+        additionalFieldsMap,
       };
     }
+
+    case "slideDown": {
+      const {
+        dynamicIndexes: [inputIndex],
+      } = dispatch.payload as AdditionalFieldsSlideDown;
+
+      // if (inputIndex === clonedAdditionalFields.length - 1) {
+      //   return state;
+      // }
+
+      // const newAdditionalFields = clonedAdditionalFields.map(
+      //   (field: [string, string], index: number) => {
+      //     if (index === inputIndex) {
+      //       return clonedAdditionalFields[inputIndex + 1];
+      //     } else if (index === inputIndex + 1) {
+      //       return clonedAdditionalFields[inputIndex];
+      //     } else {
+      //       return field;
+      //     }
+      //   }
+      // ) as Array<[string, string]>;
+
+      // const additionalFieldsMap = state.additionalFieldsMap.set(
+      //   productCategory,
+      //   newAdditionalFields
+      // );
+
+      return {
+        ...state,
+        // additionalFieldsMap,
+      };
+    }
+
+    case "slideUp": {
+      const {
+        dynamicIndexes: [inputIndex],
+      } = dispatch.payload as AdditionalFieldsSlideUp;
+
+      // if (inputIndex === 0) {
+      //   return state;
+      // }
+
+      // const newAdditionalFields = clonedAdditionalFields.map(
+      //   (field: [string, string], index: number) => {
+      //     if (index === inputIndex) {
+      //       return clonedAdditionalFields[inputIndex - 1];
+      //     } else if (index === inputIndex - 1) {
+      //       return clonedAdditionalFields[inputIndex];
+      //     } else {
+      //       return field;
+      //     }
+      //   }
+      // ) as Array<[string, string]>;
+
+      // const additionalFieldsMap = state.additionalFieldsMap.set(
+      //   productCategory,
+      //   newAdditionalFields
+      // );
+
+      return {
+        ...state,
+        // additionalFieldsMap,
+      };
+    }
+
     default:
       return state;
   }
 }
 
-function setCpuSocket_CreateProductReducer(
+function setAdditionalFieldsFormDataMap_createProductReducer(
+  state: CreateProductState,
+  dispatch: CreateProductDispatch
+): CreateProductState {
+  const { productCategory, value } = dispatch.payload as AdditionalFieldsFormDataPayload;
+
+  return {
+    ...state,
+    additionalFieldsFormDataMap: state.additionalFieldsFormDataMap.set(
+      productCategory,
+      value
+    ),
+  };
+}
+
+function addStepperChild_createProductReducer(
+  state: CreateProductState,
+  dispatch: CreateProductDispatch
+): CreateProductState {
+  const {
+    dynamicIndexes: [pageIndex],
+    value,
+  } = dispatch.payload as {
+    dynamicIndexes: number[];
+    value: StepperChild;
+  };
+
+  const stepperPages = state.stepperPages;
+  stepperPages[pageIndex].children.push(value);
+
+  return {
+    ...state,
+    stepperPages,
+  };
+}
+
+function setCpuSocket_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -684,7 +672,7 @@ function setCpuSocket_CreateProductReducer(
   };
 }
 
-function setCpuFrequency_CreateProductReducer(
+function setCpuFrequency_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -694,7 +682,7 @@ function setCpuFrequency_CreateProductReducer(
   };
 }
 
-function setCpuCores_CreateProductReducer(
+function setCpuCores_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -704,7 +692,7 @@ function setCpuCores_CreateProductReducer(
   };
 }
 
-function setCpuL1CacheCapacity_CreateProductReducer(
+function setCpuL1CacheCapacity_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -714,7 +702,7 @@ function setCpuL1CacheCapacity_CreateProductReducer(
   };
 }
 
-function setCpuL1CacheCapacityUnit_CreateProductReducer(
+function setCpuL1CacheCapacityUnit_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -724,7 +712,7 @@ function setCpuL1CacheCapacityUnit_CreateProductReducer(
   };
 }
 
-function setCpuL2CacheCapacity_CreateProductReducer(
+function setCpuL2CacheCapacity_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -734,7 +722,7 @@ function setCpuL2CacheCapacity_CreateProductReducer(
   };
 }
 
-function setCpuL2CacheCapacityUnit_CreateProductReducer(
+function setCpuL2CacheCapacityUnit_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -744,7 +732,7 @@ function setCpuL2CacheCapacityUnit_CreateProductReducer(
   };
 }
 
-function setCpuL3CacheCapacity_CreateProductReducer(
+function setCpuL3CacheCapacity_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -754,7 +742,7 @@ function setCpuL3CacheCapacity_CreateProductReducer(
   };
 }
 
-function setCpuL3CacheCapacityUnit_CreateProductReducer(
+function setCpuL3CacheCapacityUnit_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -764,7 +752,7 @@ function setCpuL3CacheCapacityUnit_CreateProductReducer(
   };
 }
 
-function setCpuWattage_CreateProductReducer(
+function setCpuWattage_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -774,70 +762,7 @@ function setCpuWattage_CreateProductReducer(
   };
 }
 
-function setCpuFieldsAdditionalMap_CreateProductReducer(
-  state: CreateProductState,
-  dispatch: CreateProductDispatch
-): CreateProductState {
-  const { operation } = dispatch.payload as AdditionalFieldsPayload;
-
-  switch (operation) {
-    case "add": {
-      const cpuFieldsAdditionalMapClone = structuredClone(state.cpuFieldsAdditionalMap);
-
-      const { data } = dispatch.payload as AdditionalFieldsAdd;
-      const prevSize = cpuFieldsAdditionalMapClone.size;
-      cpuFieldsAdditionalMapClone.set(prevSize, data);
-
-      return {
-        ...state,
-        cpuFieldsAdditionalMap: cpuFieldsAdditionalMapClone,
-      };
-    }
-
-    case "remove": {
-      const cpuFieldsAdditionalMapClone = structuredClone(state.cpuFieldsAdditionalMap);
-
-      const { index } = dispatch.payload as AdditionalFieldsRemove;
-      cpuFieldsAdditionalMapClone.delete(index);
-
-      const filteredCpuFieldsAdditionalMap = new Map<number, [string, string]>();
-
-      Array.from(cpuFieldsAdditionalMapClone).forEach((mapIdxKeyVal, arrayIdx) => {
-        const [_mapIdx, keyVal] = mapIdxKeyVal as [number, [string, string]];
-        filteredCpuFieldsAdditionalMap.set(arrayIdx, keyVal);
-      });
-
-      return {
-        ...state,
-        cpuFieldsAdditionalMap: filteredCpuFieldsAdditionalMap,
-      };
-    }
-    case "update": {
-      const cpuFieldsAdditionalMapClone = structuredClone(state.cpuFieldsAdditionalMap);
-
-      const { data, index, kind } = dispatch.payload as AdditionalFieldsUpdate;
-      const prevKeyVal = cpuFieldsAdditionalMapClone.get(index);
-
-      if (!prevKeyVal) {
-        return state;
-      }
-
-      const [prevKey, prevValue] = prevKeyVal;
-      kind === "key"
-        ? cpuFieldsAdditionalMapClone.set(index, [data, prevValue])
-        : cpuFieldsAdditionalMapClone.set(index, [prevKey, data]);
-
-      return {
-        ...state,
-        cpuFieldsAdditionalMap: cpuFieldsAdditionalMapClone,
-      };
-    }
-    default:
-      return state;
-  }
-}
-
-function setCaseType_CreateProductReducer(
+function setCaseType_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -847,7 +772,7 @@ function setCaseType_CreateProductReducer(
   };
 }
 
-function setCaseColor_CreateProductReducer(
+function setCaseColor_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -857,7 +782,7 @@ function setCaseColor_CreateProductReducer(
   };
 }
 
-function setCaseSidePanel_CreateProductReducer(
+function setCaseSidePanel_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -867,69 +792,7 @@ function setCaseSidePanel_CreateProductReducer(
   };
 }
 
-function setCaseFieldsAdditionalMap_CreateProductReducer(
-  state: CreateProductState,
-  dispatch: CreateProductDispatch
-): CreateProductState {
-  const { operation } = dispatch.payload as AdditionalFieldsPayload;
-
-  switch (operation) {
-    case "add": {
-      const caseFieldsAdditionalMapClone = structuredClone(state.caseFieldsAdditionalMap);
-
-      const { data } = dispatch.payload as AdditionalFieldsAdd;
-      const prevSize = caseFieldsAdditionalMapClone.size;
-      caseFieldsAdditionalMapClone.set(prevSize, data);
-
-      return {
-        ...state,
-        caseFieldsAdditionalMap: caseFieldsAdditionalMapClone,
-      };
-    }
-    case "remove": {
-      const caseFieldsAdditionalMapClone = structuredClone(state.caseFieldsAdditionalMap);
-
-      const { index } = dispatch.payload as AdditionalFieldsRemove;
-      caseFieldsAdditionalMapClone.delete(index);
-
-      const filteredCaseFieldsAdditionalMap = new Map<number, [string, string]>();
-      Array.from(caseFieldsAdditionalMapClone).forEach((mapIdxKeyVal, arrayIdx) => {
-        const [_mapIdx, keyVal] = mapIdxKeyVal as [number, [string, string]];
-
-        filteredCaseFieldsAdditionalMap.set(arrayIdx, keyVal);
-      });
-
-      return {
-        ...state,
-        caseFieldsAdditionalMap: filteredCaseFieldsAdditionalMap,
-      };
-    }
-    case "update": {
-      const caseFieldsAdditionalMapClone = structuredClone(state.caseFieldsAdditionalMap);
-
-      const { data, index, kind } = dispatch.payload as AdditionalFieldsUpdate;
-      const prevKeyVal = caseFieldsAdditionalMapClone.get(index);
-
-      if (!prevKeyVal) {
-        return state;
-      }
-
-      const [prevKey, prevValue] = prevKeyVal;
-      kind === "key"
-        ? caseFieldsAdditionalMapClone.set(index, [data, prevValue])
-        : caseFieldsAdditionalMapClone.set(index, [prevKey, data]);
-
-      return {
-        ...state,
-        caseFieldsAdditionalMap: caseFieldsAdditionalMapClone,
-      };
-    }
-    default:
-      return state;
-  }
-}
-
-function setDisplaySize_CreateProductReducer(
+function setDisplaySize_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -939,7 +802,7 @@ function setDisplaySize_CreateProductReducer(
   };
 }
 
-function setDisplayResolutionHorizontal_CreateProductReducer(
+function setDisplayResolutionHorizontal_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -949,7 +812,7 @@ function setDisplayResolutionHorizontal_CreateProductReducer(
   };
 }
 
-function setDisplayResolutionVertical_CreateProductReducer(
+function setDisplayResolutionVertical_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -959,7 +822,7 @@ function setDisplayResolutionVertical_CreateProductReducer(
   };
 }
 
-function setDisplayRefreshRate_CreateProductReducer(
+function setDisplayRefreshRate_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -969,7 +832,7 @@ function setDisplayRefreshRate_CreateProductReducer(
   };
 }
 
-function setDisplayPanelType_CreateProductReducer(
+function setDisplayPanelType_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -979,7 +842,7 @@ function setDisplayPanelType_CreateProductReducer(
   };
 }
 
-function setDisplayResponseTime_CreateProductReducer(
+function setDisplayResponseTime_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -989,7 +852,7 @@ function setDisplayResponseTime_CreateProductReducer(
   };
 }
 
-function setDisplayAspectRatio_CreateProductReducer(
+function setDisplayAspectRatio_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -999,76 +862,7 @@ function setDisplayAspectRatio_CreateProductReducer(
   };
 }
 
-function setDisplayFieldsAdditionalMap_CreateProductReducer(
-  state: CreateProductState,
-  dispatch: CreateProductDispatch
-): CreateProductState {
-  const { operation } = dispatch.payload as AdditionalFieldsPayload;
-
-  switch (operation) {
-    case "add": {
-      const displayFieldsAdditionalMapClone = structuredClone(
-        state.displayFieldsAdditionalMap
-      );
-
-      const { data } = dispatch.payload as AdditionalFieldsAdd;
-      const prevSize = displayFieldsAdditionalMapClone.size;
-      displayFieldsAdditionalMapClone.set(prevSize, data);
-
-      return {
-        ...state,
-        displayFieldsAdditionalMap: displayFieldsAdditionalMapClone,
-      };
-    }
-
-    case "remove": {
-      const displayFieldsAdditionalMapClone = structuredClone(
-        state.displayFieldsAdditionalMap
-      );
-
-      const { index } = dispatch.payload as AdditionalFieldsRemove;
-      displayFieldsAdditionalMapClone.delete(index);
-
-      const filteredDisplayFieldsAdditionalMap = new Map<number, [string, string]>();
-
-      Array.from(displayFieldsAdditionalMapClone).forEach((mapIdxKeyVal, arrayIdx) => {
-        const [_mapIdx, keyVal] = mapIdxKeyVal as [number, [string, string]];
-        filteredDisplayFieldsAdditionalMap.set(arrayIdx, keyVal);
-      });
-
-      return {
-        ...state,
-        displayFieldsAdditionalMap: filteredDisplayFieldsAdditionalMap,
-      };
-    }
-    case "update": {
-      const displayFieldsAdditionalMapClone = structuredClone(
-        state.displayFieldsAdditionalMap
-      );
-
-      const { data, index, kind } = dispatch.payload as AdditionalFieldsUpdate;
-      const prevKeyVal = displayFieldsAdditionalMapClone.get(index);
-
-      if (!prevKeyVal) {
-        return state;
-      }
-
-      const [prevKey, prevValue] = prevKeyVal;
-      kind === "key"
-        ? displayFieldsAdditionalMapClone.set(index, [data, prevValue])
-        : displayFieldsAdditionalMapClone.set(index, [prevKey, data]);
-
-      return {
-        ...state,
-        displayFieldsAdditionalMap: displayFieldsAdditionalMapClone,
-      };
-    }
-    default:
-      return state;
-  }
-}
-
-function setGpuChipset_CreateProductReducer(
+function setGpuChipset_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -1078,7 +872,7 @@ function setGpuChipset_CreateProductReducer(
   };
 }
 
-function setGpuMemoryCapacity_CreateProductReducer(
+function setGpuMemoryCapacity_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -1088,7 +882,7 @@ function setGpuMemoryCapacity_CreateProductReducer(
   };
 }
 
-function setGpuMemoryCapacityUnit_CreateProductReducer(
+function setGpuMemoryCapacityUnit_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -1098,7 +892,7 @@ function setGpuMemoryCapacityUnit_CreateProductReducer(
   };
 }
 
-function setGpuCoreClock_CreateProductReducer(
+function setGpuCoreClock_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -1108,7 +902,7 @@ function setGpuCoreClock_CreateProductReducer(
   };
 }
 
-function setGpuBoostClock_CreateProductReducer(
+function setGpuBoostClock_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -1118,7 +912,7 @@ function setGpuBoostClock_CreateProductReducer(
   };
 }
 
-function setGpuTdp_CreateProductReducer(
+function setGpuTdp_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -1128,70 +922,7 @@ function setGpuTdp_CreateProductReducer(
   };
 }
 
-function setGpuFieldsAdditionalMap_CreateProductReducer(
-  state: CreateProductState,
-  dispatch: CreateProductDispatch
-): CreateProductState {
-  const { operation } = dispatch.payload as AdditionalFieldsPayload;
-
-  switch (operation) {
-    case "add": {
-      const gpuFieldsAdditionalMapClone = structuredClone(state.gpuFieldsAdditionalMap);
-
-      const { data } = dispatch.payload as AdditionalFieldsAdd;
-      const prevSize = gpuFieldsAdditionalMapClone.size;
-      gpuFieldsAdditionalMapClone.set(prevSize, data);
-
-      return {
-        ...state,
-        gpuFieldsAdditionalMap: gpuFieldsAdditionalMapClone,
-      };
-    }
-
-    case "remove": {
-      const gpuFieldsAdditionalMapClone = structuredClone(state.gpuFieldsAdditionalMap);
-
-      const { index } = dispatch.payload as AdditionalFieldsRemove;
-      gpuFieldsAdditionalMapClone.delete(index);
-
-      const filteredGpuFieldsAdditionalMap = new Map<number, [string, string]>();
-
-      Array.from(gpuFieldsAdditionalMapClone).forEach((mapIdxKeyVal, arrayIdx) => {
-        const [_mapIdx, keyVal] = mapIdxKeyVal as [number, [string, string]];
-        filteredGpuFieldsAdditionalMap.set(arrayIdx, keyVal);
-      });
-
-      return {
-        ...state,
-        gpuFieldsAdditionalMap: filteredGpuFieldsAdditionalMap,
-      };
-    }
-    case "update": {
-      const gpuFieldsAdditionalMapClone = structuredClone(state.gpuFieldsAdditionalMap);
-
-      const { data, index, kind } = dispatch.payload as AdditionalFieldsUpdate;
-      const prevKeyVal = gpuFieldsAdditionalMapClone.get(index);
-
-      if (!prevKeyVal) {
-        return state;
-      }
-
-      const [prevKey, prevValue] = prevKeyVal;
-      kind === "key"
-        ? gpuFieldsAdditionalMapClone.set(index, [data, prevValue])
-        : gpuFieldsAdditionalMapClone.set(index, [prevKey, data]);
-
-      return {
-        ...state,
-        gpuFieldsAdditionalMap: gpuFieldsAdditionalMapClone,
-      };
-    }
-    default:
-      return state;
-  }
-}
-
-function setHeadphoneType_CreateProductReducer(
+function setHeadphoneType_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -1201,7 +932,7 @@ function setHeadphoneType_CreateProductReducer(
   };
 }
 
-function setHeadphoneDriver_CreateProductReducer(
+function setHeadphoneDriver_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -1211,7 +942,7 @@ function setHeadphoneDriver_CreateProductReducer(
   };
 }
 
-function setHeadphoneFrequencyResponse_CreateProductReducer(
+function setHeadphoneFrequencyResponse_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -1221,7 +952,7 @@ function setHeadphoneFrequencyResponse_CreateProductReducer(
   };
 }
 
-function setHeadphoneImpedance_CreateProductReducer(
+function setHeadphoneImpedance_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -1231,7 +962,7 @@ function setHeadphoneImpedance_CreateProductReducer(
   };
 }
 
-function setHeadphoneColor_CreateProductReducer(
+function setHeadphoneColor_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -1241,7 +972,7 @@ function setHeadphoneColor_CreateProductReducer(
   };
 }
 
-function setHeadphoneInterface_CreateProductReducer(
+function setHeadphoneInterface_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -1251,76 +982,7 @@ function setHeadphoneInterface_CreateProductReducer(
   };
 }
 
-function setHeadphoneFieldsAdditionalMap_CreateProductReducer(
-  state: CreateProductState,
-  dispatch: CreateProductDispatch
-): CreateProductState {
-  const { operation } = dispatch.payload as AdditionalFieldsPayload;
-
-  switch (operation) {
-    case "add": {
-      const headphoneFieldsAdditionalMapClone = structuredClone(
-        state.headphoneFieldsAdditionalMap
-      );
-
-      const { data } = dispatch.payload as AdditionalFieldsAdd;
-      const prevSize = headphoneFieldsAdditionalMapClone.size;
-      headphoneFieldsAdditionalMapClone.set(prevSize, data);
-
-      return {
-        ...state,
-        headphoneFieldsAdditionalMap: headphoneFieldsAdditionalMapClone,
-      };
-    }
-
-    case "remove": {
-      const headphoneFieldsAdditionalMapClone = structuredClone(
-        state.headphoneFieldsAdditionalMap
-      );
-
-      const { index } = dispatch.payload as AdditionalFieldsRemove;
-      headphoneFieldsAdditionalMapClone.delete(index);
-
-      const filteredHeadphoneFieldsAdditionalMap = new Map<number, [string, string]>();
-
-      Array.from(headphoneFieldsAdditionalMapClone).forEach((mapIdxKeyVal, arrayIdx) => {
-        const [_mapIdx, keyVal] = mapIdxKeyVal as [number, [string, string]];
-        filteredHeadphoneFieldsAdditionalMap.set(arrayIdx, keyVal);
-      });
-
-      return {
-        ...state,
-        headphoneFieldsAdditionalMap: filteredHeadphoneFieldsAdditionalMap,
-      };
-    }
-    case "update": {
-      const headphoneFieldsAdditionalMapClone = structuredClone(
-        state.headphoneFieldsAdditionalMap
-      );
-
-      const { data, index, kind } = dispatch.payload as AdditionalFieldsUpdate;
-      const prevKeyVal = headphoneFieldsAdditionalMapClone.get(index);
-
-      if (!prevKeyVal) {
-        return state;
-      }
-
-      const [prevKey, prevValue] = prevKeyVal;
-      kind === "key"
-        ? headphoneFieldsAdditionalMapClone.set(index, [data, prevValue])
-        : headphoneFieldsAdditionalMapClone.set(index, [prevKey, data]);
-
-      return {
-        ...state,
-        headphoneFieldsAdditionalMap: headphoneFieldsAdditionalMapClone,
-      };
-    }
-    default:
-      return state;
-  }
-}
-
-function setKeyboardSwitch_CreateProductReducer(
+function setKeyboardSwitch_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -1330,7 +992,7 @@ function setKeyboardSwitch_CreateProductReducer(
   };
 }
 
-function setKeyboardLayout_CreateProductReducer(
+function setKeyboardLayout_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -1340,7 +1002,7 @@ function setKeyboardLayout_CreateProductReducer(
   };
 }
 
-function setKeyboardBacklight_CreateProductReducer(
+function setKeyboardBacklight_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -1350,7 +1012,7 @@ function setKeyboardBacklight_CreateProductReducer(
   };
 }
 
-function setKeyboardInterface_CreateProductReducer(
+function setKeyboardInterface_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -1360,76 +1022,7 @@ function setKeyboardInterface_CreateProductReducer(
   };
 }
 
-function setKeyboardFieldsAdditionalMap_CreateProductReducer(
-  state: CreateProductState,
-  dispatch: CreateProductDispatch
-): CreateProductState {
-  const { operation } = dispatch.payload as AdditionalFieldsPayload;
-
-  switch (operation) {
-    case "add": {
-      const keyboardFieldsAdditionalMapClone = structuredClone(
-        state.keyboardFieldsAdditionalMap
-      );
-
-      const { data } = dispatch.payload as AdditionalFieldsAdd;
-      const prevSize = keyboardFieldsAdditionalMapClone.size;
-      keyboardFieldsAdditionalMapClone.set(prevSize, data);
-
-      return {
-        ...state,
-        keyboardFieldsAdditionalMap: keyboardFieldsAdditionalMapClone,
-      };
-    }
-
-    case "remove": {
-      const keyboardFieldsAdditionalMapClone = structuredClone(
-        state.keyboardFieldsAdditionalMap
-      );
-
-      const { index } = dispatch.payload as AdditionalFieldsRemove;
-      keyboardFieldsAdditionalMapClone.delete(index);
-
-      const filteredKeyboardFieldsAdditionalMap = new Map<number, [string, string]>();
-
-      Array.from(keyboardFieldsAdditionalMapClone).forEach((mapIdxKeyVal, arrayIdx) => {
-        const [_mapIdx, keyVal] = mapIdxKeyVal as [number, [string, string]];
-        filteredKeyboardFieldsAdditionalMap.set(arrayIdx, keyVal);
-      });
-
-      return {
-        ...state,
-        keyboardFieldsAdditionalMap: filteredKeyboardFieldsAdditionalMap,
-      };
-    }
-    case "update": {
-      const keyboardFieldsAdditionalMapClone = structuredClone(
-        state.keyboardFieldsAdditionalMap
-      );
-
-      const { data, index, kind } = dispatch.payload as AdditionalFieldsUpdate;
-      const prevKeyVal = keyboardFieldsAdditionalMapClone.get(index);
-
-      if (!prevKeyVal) {
-        return state;
-      }
-
-      const [prevKey, prevValue] = prevKeyVal;
-      kind === "key"
-        ? keyboardFieldsAdditionalMapClone.set(index, [data, prevValue])
-        : keyboardFieldsAdditionalMapClone.set(index, [prevKey, data]);
-
-      return {
-        ...state,
-        keyboardFieldsAdditionalMap: keyboardFieldsAdditionalMapClone,
-      };
-    }
-    default:
-      return state;
-  }
-}
-
-function setRamDataRate_CreateProductReducer(
+function setRamDataRate_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -1439,7 +1032,7 @@ function setRamDataRate_CreateProductReducer(
   };
 }
 
-function setRamModulesQuantity_CreateProductReducer(
+function setRamModulesQuantity_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -1449,7 +1042,7 @@ function setRamModulesQuantity_CreateProductReducer(
   };
 }
 
-function setRamModulesCapacity_CreateProductReducer(
+function setRamModulesCapacity_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -1459,7 +1052,7 @@ function setRamModulesCapacity_CreateProductReducer(
   };
 }
 
-function setRamModulesCapacityUnit_CreateProductReducer(
+function setRamModulesCapacityUnit_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -1469,7 +1062,7 @@ function setRamModulesCapacityUnit_CreateProductReducer(
   };
 }
 
-function setRamType_CreateProductReducer(
+function setRamType_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -1479,7 +1072,7 @@ function setRamType_CreateProductReducer(
   };
 }
 
-function setRamColor_CreateProductReducer(
+function setRamColor_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -1489,7 +1082,7 @@ function setRamColor_CreateProductReducer(
   };
 }
 
-function setRamVoltage_CreateProductReducer(
+function setRamVoltage_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -1499,7 +1092,7 @@ function setRamVoltage_CreateProductReducer(
   };
 }
 
-function setRamTiming_CreateProductReducer(
+function setRamTiming_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -1509,70 +1102,7 @@ function setRamTiming_CreateProductReducer(
   };
 }
 
-function setRamFieldsAdditionalMap_CreateProductReducer(
-  state: CreateProductState,
-  dispatch: CreateProductDispatch
-): CreateProductState {
-  const { operation } = dispatch.payload as AdditionalFieldsValidFocusedPayload;
-
-  switch (operation) {
-    case "add": {
-      const ramFieldsAdditionalMapClone = structuredClone(state.ramFieldsAdditionalMap);
-
-      const { data } = dispatch.payload as AdditionalFieldsAdd;
-      const prevSize = ramFieldsAdditionalMapClone.size;
-      ramFieldsAdditionalMapClone.set(prevSize, data);
-
-      return {
-        ...state,
-        ramFieldsAdditionalMap: ramFieldsAdditionalMapClone,
-      };
-    }
-
-    case "remove": {
-      const ramFieldsAdditionalMapClone = structuredClone(state.ramFieldsAdditionalMap);
-
-      const { index } = dispatch.payload as AdditionalFieldsRemove;
-      ramFieldsAdditionalMapClone.delete(index);
-
-      const filteredRamFieldsAdditionalMap = new Map<number, [string, string]>();
-
-      Array.from(ramFieldsAdditionalMapClone).forEach((mapIdxKeyVal, arrayIdx) => {
-        const [_mapIdx, keyVal] = mapIdxKeyVal as [number, [string, string]];
-        filteredRamFieldsAdditionalMap.set(arrayIdx, keyVal);
-      });
-
-      return {
-        ...state,
-        ramFieldsAdditionalMap: filteredRamFieldsAdditionalMap,
-      };
-    }
-    case "update": {
-      const ramFieldsAdditionalMapClone = structuredClone(state.ramFieldsAdditionalMap);
-
-      const { data, index, kind } = dispatch.payload as AdditionalFieldsUpdate;
-      const prevKeyVal = ramFieldsAdditionalMapClone.get(index);
-
-      if (!prevKeyVal) {
-        return state;
-      }
-
-      const [prevKey, prevValue] = prevKeyVal;
-      kind === "key"
-        ? ramFieldsAdditionalMapClone.set(index, [data, prevValue])
-        : ramFieldsAdditionalMapClone.set(index, [prevKey, data]);
-
-      return {
-        ...state,
-        ramFieldsAdditionalMap: ramFieldsAdditionalMapClone,
-      };
-    }
-    default:
-      return state;
-  }
-}
-
-function setMicrophoneType_CreateProductReducer(
+function setMicrophoneType_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -1582,7 +1112,7 @@ function setMicrophoneType_CreateProductReducer(
   };
 }
 
-function setMicrophonePolarPattern_CreateProductReducer(
+function setMicrophonePolarPattern_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -1592,7 +1122,7 @@ function setMicrophonePolarPattern_CreateProductReducer(
   };
 }
 
-function setMicrophoneFrequencyResponse_CreateProductReducer(
+function setMicrophoneFrequencyResponse_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -1602,7 +1132,7 @@ function setMicrophoneFrequencyResponse_CreateProductReducer(
   };
 }
 
-function setMicrophoneInterface_CreateProductReducer(
+function setMicrophoneInterface_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -1612,7 +1142,7 @@ function setMicrophoneInterface_CreateProductReducer(
   };
 }
 
-function setMicrophoneColor_CreateProductReducer(
+function setMicrophoneColor_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -1622,76 +1152,7 @@ function setMicrophoneColor_CreateProductReducer(
   };
 }
 
-function setMicrophoneFieldsAdditionalMap_CreateProductReducer(
-  state: CreateProductState,
-  dispatch: CreateProductDispatch
-): CreateProductState {
-  const { operation } = dispatch.payload as AdditionalFieldsPayload;
-
-  switch (operation) {
-    case "add": {
-      const microphoneFieldsAdditionalMapClone = structuredClone(
-        state.microphoneFieldsAdditionalMap
-      );
-
-      const { data } = dispatch.payload as AdditionalFieldsAdd;
-      const prevSize = microphoneFieldsAdditionalMapClone.size;
-      microphoneFieldsAdditionalMapClone.set(prevSize, data);
-
-      return {
-        ...state,
-        microphoneFieldsAdditionalMap: microphoneFieldsAdditionalMapClone,
-      };
-    }
-
-    case "remove": {
-      const microphoneFieldsAdditionalMapClone = structuredClone(
-        state.microphoneFieldsAdditionalMap
-      );
-
-      const { index } = dispatch.payload as AdditionalFieldsRemove;
-      microphoneFieldsAdditionalMapClone.delete(index);
-
-      const filteredMicrophoneFieldsAdditionalMap = new Map<number, [string, string]>();
-
-      Array.from(microphoneFieldsAdditionalMapClone).forEach((mapIdxKeyVal, arrayIdx) => {
-        const [_mapIdx, keyVal] = mapIdxKeyVal as [number, [string, string]];
-        filteredMicrophoneFieldsAdditionalMap.set(arrayIdx, keyVal);
-      });
-
-      return {
-        ...state,
-        microphoneFieldsAdditionalMap: filteredMicrophoneFieldsAdditionalMap,
-      };
-    }
-    case "update": {
-      const microphoneFieldsAdditionalMapClone = structuredClone(
-        state.microphoneFieldsAdditionalMap
-      );
-
-      const { data, index, kind } = dispatch.payload as AdditionalFieldsUpdate;
-      const prevKeyVal = microphoneFieldsAdditionalMapClone.get(index);
-
-      if (!prevKeyVal) {
-        return state;
-      }
-
-      const [prevKey, prevValue] = prevKeyVal;
-      kind === "key"
-        ? microphoneFieldsAdditionalMapClone.set(index, [data, prevValue])
-        : microphoneFieldsAdditionalMapClone.set(index, [prevKey, data]);
-
-      return {
-        ...state,
-        microphoneFieldsAdditionalMap: microphoneFieldsAdditionalMapClone,
-      };
-    }
-    default:
-      return state;
-  }
-}
-
-function setMotherboardSocket_CreateProductReducer(
+function setMotherboardSocket_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -1701,7 +1162,7 @@ function setMotherboardSocket_CreateProductReducer(
   };
 }
 
-function setMotherboardChipset_CreateProductReducer(
+function setMotherboardChipset_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -1711,7 +1172,7 @@ function setMotherboardChipset_CreateProductReducer(
   };
 }
 
-function setMotherboardFormFactor_CreateProductReducer(
+function setMotherboardFormFactor_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -1721,7 +1182,7 @@ function setMotherboardFormFactor_CreateProductReducer(
   };
 }
 
-function setMotherboardMemoryMaxCapacity_CreateProductReducer(
+function setMotherboardMemoryMaxCapacity_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -1731,7 +1192,7 @@ function setMotherboardMemoryMaxCapacity_CreateProductReducer(
   };
 }
 
-function setMotherboardMemoryMaxCapacityUnit_CreateProductReducer(
+function setMotherboardMemoryMaxCapacityUnit_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -1741,7 +1202,7 @@ function setMotherboardMemoryMaxCapacityUnit_CreateProductReducer(
   };
 }
 
-function setMotherboardMemorySlots_CreateProductReducer(
+function setMotherboardMemorySlots_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -1751,7 +1212,7 @@ function setMotherboardMemorySlots_CreateProductReducer(
   };
 }
 
-function setMotherboardMemoryType_CreateProductReducer(
+function setMotherboardMemoryType_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -1761,7 +1222,7 @@ function setMotherboardMemoryType_CreateProductReducer(
   };
 }
 
-function setMotherboardSataPorts_CreateProductReducer(
+function setMotherboardSataPorts_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -1771,7 +1232,7 @@ function setMotherboardSataPorts_CreateProductReducer(
   };
 }
 
-function setMotherboardM2Slots_CreateProductReducer(
+function setMotherboardM2Slots_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -1781,7 +1242,7 @@ function setMotherboardM2Slots_CreateProductReducer(
   };
 }
 
-function setMotherboardPcie3Slots_CreateProductReducer(
+function setMotherboardPcie3Slots_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -1791,7 +1252,7 @@ function setMotherboardPcie3Slots_CreateProductReducer(
   };
 }
 
-function setMotherboardPcie4Slots_CreateProductReducer(
+function setMotherboardPcie4Slots_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -1801,7 +1262,7 @@ function setMotherboardPcie4Slots_CreateProductReducer(
   };
 }
 
-function setMotherboardPcie5Slots_CreateProductReducer(
+function setMotherboardPcie5Slots_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -1811,77 +1272,7 @@ function setMotherboardPcie5Slots_CreateProductReducer(
   };
 }
 
-function setMotherboardFieldsAdditionalMap_CreateProductReducer(
-  state: CreateProductState,
-  dispatch: CreateProductDispatch
-): CreateProductState {
-  const { operation } = dispatch.payload as AdditionalFieldsPayload;
-
-  switch (operation) {
-    case "add": {
-      const motherboardFieldsAdditionalMapClone = structuredClone(
-        state.motherboardFieldsAdditionalMap
-      );
-
-      const { data } = dispatch.payload as AdditionalFieldsAdd;
-      const prevSize = motherboardFieldsAdditionalMapClone.size;
-      motherboardFieldsAdditionalMapClone.set(prevSize, data);
-
-      return {
-        ...state,
-        motherboardFieldsAdditionalMap: motherboardFieldsAdditionalMapClone,
-      };
-    }
-    case "remove": {
-      const motherboardFieldsAdditionalMapClone = structuredClone(
-        state.motherboardFieldsAdditionalMap
-      );
-
-      const { index } = dispatch.payload as AdditionalFieldsRemove;
-      motherboardFieldsAdditionalMapClone.delete(index);
-
-      const filteredMotherboardFieldsAdditionalMap = new Map<number, [string, string]>();
-
-      Array.from(motherboardFieldsAdditionalMapClone).forEach(
-        (mapIdxKeyVal, arrayIdx) => {
-          const [_mapIdx, keyVal] = mapIdxKeyVal as [number, [string, string]];
-          filteredMotherboardFieldsAdditionalMap.set(arrayIdx, keyVal);
-        }
-      );
-
-      return {
-        ...state,
-        motherboardFieldsAdditionalMap: filteredMotherboardFieldsAdditionalMap,
-      };
-    }
-    case "update": {
-      const motherboardFieldsAdditionalMapClone = structuredClone(
-        state.motherboardFieldsAdditionalMap
-      );
-
-      const { data, index, kind } = dispatch.payload as AdditionalFieldsUpdate;
-      const prevKeyVal = motherboardFieldsAdditionalMapClone.get(index);
-
-      if (!prevKeyVal) {
-        return state;
-      }
-
-      const [prevKey, prevValue] = prevKeyVal;
-      kind === "key"
-        ? motherboardFieldsAdditionalMapClone.set(index, [data, prevValue])
-        : motherboardFieldsAdditionalMapClone.set(index, [prevKey, data]);
-
-      return {
-        ...state,
-        motherboardFieldsAdditionalMap: motherboardFieldsAdditionalMapClone,
-      };
-    }
-    default:
-      return state;
-  }
-}
-
-function setMouseSensor_CreateProductReducer(
+function setMouseSensor_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -1891,7 +1282,7 @@ function setMouseSensor_CreateProductReducer(
   };
 }
 
-function setMouseDpi_CreateProductReducer(
+function setMouseDpi_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -1901,7 +1292,7 @@ function setMouseDpi_CreateProductReducer(
   };
 }
 
-function setMouseButtons_CreateProductReducer(
+function setMouseButtons_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -1911,7 +1302,7 @@ function setMouseButtons_CreateProductReducer(
   };
 }
 
-function setMouseColor_CreateProductReducer(
+function setMouseColor_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -1921,7 +1312,7 @@ function setMouseColor_CreateProductReducer(
   };
 }
 
-function setMouseInterface_CreateProductReducer(
+function setMouseInterface_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -1931,76 +1322,7 @@ function setMouseInterface_CreateProductReducer(
   };
 }
 
-function setMouseFieldsAdditionalMap_CreateProductReducer(
-  state: CreateProductState,
-  dispatch: CreateProductDispatch
-): CreateProductState {
-  const { operation } = dispatch.payload as AdditionalFieldsPayload;
-
-  switch (operation) {
-    case "add": {
-      const mouseFieldsAdditionalMapClone = structuredClone(
-        state.mouseFieldsAdditionalMap
-      );
-
-      const { data } = dispatch.payload as AdditionalFieldsAdd;
-      const prevSize = mouseFieldsAdditionalMapClone.size;
-      mouseFieldsAdditionalMapClone.set(prevSize, data);
-
-      return {
-        ...state,
-        mouseFieldsAdditionalMap: mouseFieldsAdditionalMapClone,
-      };
-    }
-
-    case "remove": {
-      const mouseFieldsAdditionalMapClone = structuredClone(
-        state.mouseFieldsAdditionalMap
-      );
-
-      const { index } = dispatch.payload as AdditionalFieldsRemove;
-      mouseFieldsAdditionalMapClone.delete(index);
-
-      const filteredMouseFieldsAdditionalMap = new Map<number, [string, string]>();
-
-      Array.from(mouseFieldsAdditionalMapClone).forEach((mapIdxKeyVal, arrayIdx) => {
-        const [_mapIdx, keyVal] = mapIdxKeyVal as [number, [string, string]];
-        filteredMouseFieldsAdditionalMap.set(arrayIdx, keyVal);
-      });
-
-      return {
-        ...state,
-        mouseFieldsAdditionalMap: filteredMouseFieldsAdditionalMap,
-      };
-    }
-    case "update": {
-      const mouseFieldsAdditionalMapClone = structuredClone(
-        state.mouseFieldsAdditionalMap
-      );
-
-      const { data, index, kind } = dispatch.payload as AdditionalFieldsUpdate;
-      const prevKeyVal = mouseFieldsAdditionalMapClone.get(index);
-
-      if (!prevKeyVal) {
-        return state;
-      }
-
-      const [prevKey, prevValue] = prevKeyVal;
-      kind === "key"
-        ? mouseFieldsAdditionalMapClone.set(index, [data, prevValue])
-        : mouseFieldsAdditionalMapClone.set(index, [prevKey, data]);
-
-      return {
-        ...state,
-        mouseFieldsAdditionalMap: mouseFieldsAdditionalMapClone,
-      };
-    }
-    default:
-      return state;
-  }
-}
-
-function setPsuWattage_CreateProductReducer(
+function setPsuWattage_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -2010,7 +1332,7 @@ function setPsuWattage_CreateProductReducer(
   };
 }
 
-function setPsuEfficiency_CreateProductReducer(
+function setPsuEfficiency_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -2020,7 +1342,7 @@ function setPsuEfficiency_CreateProductReducer(
   };
 }
 
-function setPsuFormFactor_CreateProductReducer(
+function setPsuFormFactor_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -2030,7 +1352,7 @@ function setPsuFormFactor_CreateProductReducer(
   };
 }
 
-function setPsuModularity_CreateProductReducer(
+function setPsuModularity_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -2040,247 +1362,7 @@ function setPsuModularity_CreateProductReducer(
   };
 }
 
-function setPsuFieldsAdditionalMap_CreateProductReducer(
-  state: CreateProductState,
-  dispatch: CreateProductDispatch
-): CreateProductState {
-  const { operation } = dispatch.payload as AdditionalFieldsPayload;
-
-  switch (operation) {
-    case "add": {
-      const psuFieldsAdditionalMapClone = structuredClone(state.psuFieldsAdditionalMap);
-
-      const { data } = dispatch.payload as AdditionalFieldsAdd;
-      const prevSize = psuFieldsAdditionalMapClone.size;
-      psuFieldsAdditionalMapClone.set(prevSize, data);
-
-      return {
-        ...state,
-        psuFieldsAdditionalMap: psuFieldsAdditionalMapClone,
-      };
-    }
-    case "remove": {
-      const psuFieldsAdditionalMapClone = structuredClone(state.psuFieldsAdditionalMap);
-
-      const { index } = dispatch.payload as AdditionalFieldsRemove;
-      psuFieldsAdditionalMapClone.delete(index);
-
-      const filteredPsuFieldsAdditionalMap = new Map<number, [string, string]>();
-      Array.from(psuFieldsAdditionalMapClone).forEach((mapIdxKeyVal, arrayIdx) => {
-        const [_mapIdx, keyVal] = mapIdxKeyVal as [number, [string, string]];
-
-        filteredPsuFieldsAdditionalMap.set(arrayIdx, keyVal);
-      });
-
-      return {
-        ...state,
-        psuFieldsAdditionalMap: filteredPsuFieldsAdditionalMap,
-      };
-    }
-    case "update": {
-      const psuFieldsAdditionalMapClone = structuredClone(state.psuFieldsAdditionalMap);
-
-      const { data, index, kind } = dispatch.payload as AdditionalFieldsUpdate;
-      const prevKeyVal = psuFieldsAdditionalMapClone.get(index);
-
-      if (!prevKeyVal) {
-        return state;
-      }
-
-      const [prevKey, prevValue] = prevKeyVal;
-      kind === "key"
-        ? psuFieldsAdditionalMapClone.set(index, [data, prevValue])
-        : psuFieldsAdditionalMapClone.set(index, [prevKey, data]);
-
-      return {
-        ...state,
-        psuFieldsAdditionalMap: psuFieldsAdditionalMapClone,
-      };
-    }
-    default:
-      return state;
-  }
-}
-
-function setSmartphoneOs_CreateProductReducer(
-  state: CreateProductState,
-  dispatch: CreateProductDispatch
-): CreateProductState {
-  return {
-    ...state,
-    smartphoneOs: dispatch.payload as MobileOs,
-  };
-}
-
-function setSmartphoneChipset_CreateProductReducer(
-  state: CreateProductState,
-  dispatch: CreateProductDispatch
-): CreateProductState {
-  return {
-    ...state,
-    smartphoneChipset: dispatch.payload as string,
-  };
-}
-
-function setSmartphoneDisplay_CreateProductReducer(
-  state: CreateProductState,
-  dispatch: CreateProductDispatch
-): CreateProductState {
-  return {
-    ...state,
-    smartphoneDisplay: dispatch.payload as string,
-  };
-}
-
-function setSmartphoneResolutionHorizontal_CreateProductReducer(
-  state: CreateProductState,
-  dispatch: CreateProductDispatch
-): CreateProductState {
-  return {
-    ...state,
-    smartphoneResolutionHorizontal: dispatch.payload as string,
-  };
-}
-
-function setSmartphoneResolutionVertical_CreateProductReducer(
-  state: CreateProductState,
-  dispatch: CreateProductDispatch
-): CreateProductState {
-  return {
-    ...state,
-    smartphoneResolutionVertical: dispatch.payload as string,
-  };
-}
-
-function setSmartphoneRamCapacity_CreateProductReducer(
-  state: CreateProductState,
-  dispatch: CreateProductDispatch
-): CreateProductState {
-  return {
-    ...state,
-    smartphoneRamCapacity: dispatch.payload as string,
-  };
-}
-
-function setSmartphoneRamCapacityUnit_CreateProductReducer(
-  state: CreateProductState,
-  dispatch: CreateProductDispatch
-): CreateProductState {
-  return {
-    ...state,
-    smartphoneRamCapacityUnit: dispatch.payload as MemoryUnit,
-  };
-}
-
-function setSmartphoneStorageCapacity_CreateProductReducer(
-  state: CreateProductState,
-  dispatch: CreateProductDispatch
-): CreateProductState {
-  return {
-    ...state,
-    smartphoneStorageCapacity: dispatch.payload as string,
-  };
-}
-
-function setSmartphoneBatteryCapacity_CreateProductReducer(
-  state: CreateProductState,
-  dispatch: CreateProductDispatch
-): CreateProductState {
-  return {
-    ...state,
-    smartphoneBatteryCapacity: dispatch.payload as string,
-  };
-}
-
-function setSmartphoneCamera_CreateProductReducer(
-  state: CreateProductState,
-  dispatch: CreateProductDispatch
-): CreateProductState {
-  return {
-    ...state,
-    smartphoneCamera: dispatch.payload as string,
-  };
-}
-
-function setSmartphoneColor_CreateProductReducer(
-  state: CreateProductState,
-  dispatch: CreateProductDispatch
-): CreateProductState {
-  return {
-    ...state,
-    smartphoneColor: dispatch.payload as string,
-  };
-}
-
-function setSmartphoneFieldsAdditionalMap_CreateProductReducer(
-  state: CreateProductState,
-  dispatch: CreateProductDispatch
-): CreateProductState {
-  const { operation } = dispatch.payload as AdditionalFieldsPayload;
-
-  switch (operation) {
-    case "add": {
-      const smartphoneFieldsAdditionalMapClone = structuredClone(
-        state.smartphoneFieldsAdditionalMap
-      );
-
-      const { data } = dispatch.payload as AdditionalFieldsAdd;
-      const prevSize = smartphoneFieldsAdditionalMapClone.size;
-      smartphoneFieldsAdditionalMapClone.set(prevSize, data);
-
-      return {
-        ...state,
-        smartphoneFieldsAdditionalMap: smartphoneFieldsAdditionalMapClone,
-      };
-    }
-    case "remove": {
-      const smartphoneFieldsAdditionalMapClone = structuredClone(
-        state.smartphoneFieldsAdditionalMap
-      );
-
-      const { index } = dispatch.payload as AdditionalFieldsRemove;
-      smartphoneFieldsAdditionalMapClone.delete(index);
-
-      const filteredSmartphoneFieldsAdditionalMap = new Map<number, [string, string]>();
-
-      Array.from(smartphoneFieldsAdditionalMapClone).forEach((mapIdxKeyVal, arrayIdx) => {
-        const [_mapIdx, keyVal] = mapIdxKeyVal as [number, [string, string]];
-        filteredSmartphoneFieldsAdditionalMap.set(arrayIdx, keyVal);
-      });
-
-      return {
-        ...state,
-        smartphoneFieldsAdditionalMap: filteredSmartphoneFieldsAdditionalMap,
-      };
-    }
-    case "update": {
-      const smartphoneFieldsAdditionalMapClone = structuredClone(
-        state.smartphoneFieldsAdditionalMap
-      );
-
-      const { data, index, kind } = dispatch.payload as AdditionalFieldsUpdate;
-      const prevKeyVal = smartphoneFieldsAdditionalMapClone.get(index);
-
-      if (!prevKeyVal) {
-        return state;
-      }
-
-      const [prevKey, prevValue] = prevKeyVal;
-      kind === "key"
-        ? smartphoneFieldsAdditionalMapClone.set(index, [data, prevValue])
-        : smartphoneFieldsAdditionalMapClone.set(index, [prevKey, data]);
-
-      return {
-        ...state,
-        smartphoneFieldsAdditionalMap: smartphoneFieldsAdditionalMapClone,
-      };
-    }
-    default:
-      return state;
-  }
-}
-
-function setSpeakerType_CreateProductReducer(
+function setSpeakerType_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -2290,7 +1372,7 @@ function setSpeakerType_CreateProductReducer(
   };
 }
 
-function setSpeakerTotalWattage_CreateProductReducer(
+function setSpeakerTotalWattage_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -2300,7 +1382,7 @@ function setSpeakerTotalWattage_CreateProductReducer(
   };
 }
 
-function setSpeakerFrequencyResponse_CreateProductReducer(
+function setSpeakerFrequencyResponse_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -2310,7 +1392,7 @@ function setSpeakerFrequencyResponse_CreateProductReducer(
   };
 }
 
-function setSpeakerColor_CreateProductReducer(
+function setSpeakerColor_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -2320,7 +1402,7 @@ function setSpeakerColor_CreateProductReducer(
   };
 }
 
-function setSpeakerInterface_CreateProductReducer(
+function setSpeakerInterface_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -2330,75 +1412,7 @@ function setSpeakerInterface_CreateProductReducer(
   };
 }
 
-function setSpeakerFieldsAdditionalMap_CreateProductReducer(
-  state: CreateProductState,
-  dispatch: CreateProductDispatch
-): CreateProductState {
-  const { operation } = dispatch.payload as AdditionalFieldsPayload;
-
-  switch (operation) {
-    case "add": {
-      const speakerFieldsAdditionalMapClone = structuredClone(
-        state.speakerFieldsAdditionalMap
-      );
-
-      const { data } = dispatch.payload as AdditionalFieldsAdd;
-      const prevSize = speakerFieldsAdditionalMapClone.size;
-      speakerFieldsAdditionalMapClone.set(prevSize, data);
-
-      return {
-        ...state,
-        speakerFieldsAdditionalMap: speakerFieldsAdditionalMapClone,
-      };
-    }
-    case "remove": {
-      const speakerFieldsAdditionalMapClone = structuredClone(
-        state.speakerFieldsAdditionalMap
-      );
-
-      const { index } = dispatch.payload as AdditionalFieldsRemove;
-      speakerFieldsAdditionalMapClone.delete(index);
-
-      const filteredSpeakerFieldsAdditionalMap = new Map<number, [string, string]>();
-
-      Array.from(speakerFieldsAdditionalMapClone).forEach((mapIdxKeyVal, arrayIdx) => {
-        const [_mapIdx, keyVal] = mapIdxKeyVal as [number, [string, string]];
-        filteredSpeakerFieldsAdditionalMap.set(arrayIdx, keyVal);
-      });
-
-      return {
-        ...state,
-        speakerFieldsAdditionalMap: filteredSpeakerFieldsAdditionalMap,
-      };
-    }
-    case "update": {
-      const speakerFieldsAdditionalMapClone = structuredClone(
-        state.speakerFieldsAdditionalMap
-      );
-
-      const { data, index, kind } = dispatch.payload as AdditionalFieldsUpdate;
-      const prevKeyVal = speakerFieldsAdditionalMapClone.get(index);
-
-      if (!prevKeyVal) {
-        return state;
-      }
-
-      const [prevKey, prevValue] = prevKeyVal;
-      kind === "key"
-        ? speakerFieldsAdditionalMapClone.set(index, [data, prevValue])
-        : speakerFieldsAdditionalMapClone.set(index, [prevKey, data]);
-
-      return {
-        ...state,
-        speakerFieldsAdditionalMap: speakerFieldsAdditionalMapClone,
-      };
-    }
-    default:
-      return state;
-  }
-}
-
-function setStorageType_CreateProductReducer(
+function setStorageType_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -2408,7 +1422,7 @@ function setStorageType_CreateProductReducer(
   };
 }
 
-function setStorageCapacity_CreateProductReducer(
+function setStorageCapacity_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -2418,7 +1432,7 @@ function setStorageCapacity_CreateProductReducer(
   };
 }
 
-function setStorageCapacityUnit_CreateProductReducer(
+function setStorageCapacityUnit_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -2428,7 +1442,7 @@ function setStorageCapacityUnit_CreateProductReducer(
   };
 }
 
-function setStorageCacheCapacity_CreateProductReducer(
+function setStorageCacheCapacity_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -2438,7 +1452,7 @@ function setStorageCacheCapacity_CreateProductReducer(
   };
 }
 
-function setStorageCacheCapacityUnit_CreateProductReducer(
+function setStorageCacheCapacityUnit_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -2448,7 +1462,7 @@ function setStorageCacheCapacityUnit_CreateProductReducer(
   };
 }
 
-function setStorageFormFactor_CreateProductReducer(
+function setStorageFormFactor_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -2458,7 +1472,7 @@ function setStorageFormFactor_CreateProductReducer(
   };
 }
 
-function setStorageInterface_CreateProductReducer(
+function setStorageInterface_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -2468,253 +1482,7 @@ function setStorageInterface_CreateProductReducer(
   };
 }
 
-function setStorageFieldsAdditionalMap_CreateProductReducer(
-  state: CreateProductState,
-  dispatch: CreateProductDispatch
-): CreateProductState {
-  const { operation } = dispatch.payload as AdditionalFieldsPayload;
-
-  switch (operation) {
-    case "add": {
-      const storageFieldsAdditionalMapClone = structuredClone(
-        state.storageFieldsAdditionalMap
-      );
-
-      const { data } = dispatch.payload as AdditionalFieldsAdd;
-      const prevSize = storageFieldsAdditionalMapClone.size;
-      storageFieldsAdditionalMapClone.set(prevSize, data);
-
-      return {
-        ...state,
-        storageFieldsAdditionalMap: storageFieldsAdditionalMapClone,
-      };
-    }
-    case "remove": {
-      const storageFieldsAdditionalMapClone = structuredClone(
-        state.storageFieldsAdditionalMap
-      );
-
-      const { index } = dispatch.payload as AdditionalFieldsRemove;
-      storageFieldsAdditionalMapClone.delete(index);
-
-      const filteredStorageFieldsAdditionalMap = new Map<number, [string, string]>();
-
-      Array.from(storageFieldsAdditionalMapClone).forEach((mapIdxKeyVal, arrayIdx) => {
-        const [_mapIdx, keyVal] = mapIdxKeyVal as [number, [string, string]];
-        filteredStorageFieldsAdditionalMap.set(arrayIdx, keyVal);
-      });
-
-      return {
-        ...state,
-        storageFieldsAdditionalMap: filteredStorageFieldsAdditionalMap,
-      };
-    }
-    case "update": {
-      const storageFieldsAdditionalMapClone = structuredClone(
-        state.storageFieldsAdditionalMap
-      );
-
-      const { data, index, kind } = dispatch.payload as AdditionalFieldsUpdate;
-      const prevKeyVal = storageFieldsAdditionalMapClone.get(index);
-
-      if (!prevKeyVal) {
-        return state;
-      }
-
-      const [prevKey, prevValue] = prevKeyVal;
-      kind === "key"
-        ? storageFieldsAdditionalMapClone.set(index, [data, prevValue])
-        : storageFieldsAdditionalMapClone.set(index, [prevKey, data]);
-
-      return {
-        ...state,
-        storageFieldsAdditionalMap: storageFieldsAdditionalMapClone,
-      };
-    }
-    default:
-      return state;
-  }
-}
-
-function setTabletOs_CreateProductReducer(
-  state: CreateProductState,
-  dispatch: CreateProductDispatch
-): CreateProductState {
-  return {
-    ...state,
-    tabletOs: dispatch.payload as MobileOs,
-  };
-}
-
-function setTabletChipset_CreateProductReducer(
-  state: CreateProductState,
-  dispatch: CreateProductDispatch
-): CreateProductState {
-  return {
-    ...state,
-    tabletChipset: dispatch.payload as string,
-  };
-}
-
-function setTabletDisplay_CreateProductReducer(
-  state: CreateProductState,
-  dispatch: CreateProductDispatch
-): CreateProductState {
-  return {
-    ...state,
-    tabletDisplay: dispatch.payload as string,
-  };
-}
-
-function setTabletResolutionHorizontal_CreateProductReducer(
-  state: CreateProductState,
-  dispatch: CreateProductDispatch
-): CreateProductState {
-  return {
-    ...state,
-    tabletResolutionHorizontal: dispatch.payload as string,
-  };
-}
-
-function setTabletResolutionVertical_CreateProductReducer(
-  state: CreateProductState,
-  dispatch: CreateProductDispatch
-): CreateProductState {
-  return {
-    ...state,
-    tabletResolutionVertical: dispatch.payload as string,
-  };
-}
-
-function setTabletRamCapacity_CreateProductReducer(
-  state: CreateProductState,
-  dispatch: CreateProductDispatch
-): CreateProductState {
-  return {
-    ...state,
-    tabletRamCapacity: dispatch.payload as string,
-  };
-}
-
-function setTabletRamCapacityUnit_CreateProductReducer(
-  state: CreateProductState,
-  dispatch: CreateProductDispatch
-): CreateProductState {
-  return {
-    ...state,
-    tabletRamCapacityUnit: dispatch.payload as MemoryUnit,
-  };
-}
-
-function setTabletStorageCapacity_CreateProductReducer(
-  state: CreateProductState,
-  dispatch: CreateProductDispatch
-): CreateProductState {
-  return {
-    ...state,
-    tabletStorageCapacity: dispatch.payload as string,
-  };
-}
-
-function setTabletBatteryCapacity_CreateProductReducer(
-  state: CreateProductState,
-  dispatch: CreateProductDispatch
-): CreateProductState {
-  return {
-    ...state,
-    tabletBatteryCapacity: dispatch.payload as string,
-  };
-}
-
-function setTabletCamera_CreateProductReducer(
-  state: CreateProductState,
-  dispatch: CreateProductDispatch
-): CreateProductState {
-  return {
-    ...state,
-    tabletCamera: dispatch.payload as string,
-  };
-}
-
-function setTabletColor_CreateProductReducer(
-  state: CreateProductState,
-  dispatch: CreateProductDispatch
-): CreateProductState {
-  return {
-    ...state,
-    tabletColor: dispatch.payload as string,
-  };
-}
-
-function setTabletFieldsAdditionalMap_CreateProductReducer(
-  state: CreateProductState,
-  dispatch: CreateProductDispatch
-): CreateProductState {
-  const { operation } = dispatch.payload as AdditionalFieldsPayload;
-
-  switch (operation) {
-    case "add": {
-      const tabletFieldsAdditionalMapClone = structuredClone(
-        state.tabletFieldsAdditionalMap
-      );
-
-      const { data } = dispatch.payload as AdditionalFieldsAdd;
-      const prevSize = tabletFieldsAdditionalMapClone.size;
-      tabletFieldsAdditionalMapClone.set(prevSize, data);
-
-      return {
-        ...state,
-        tabletFieldsAdditionalMap: tabletFieldsAdditionalMapClone,
-      };
-    }
-    case "remove": {
-      const tabletFieldsAdditionalMapClone = structuredClone(
-        state.tabletFieldsAdditionalMap
-      );
-
-      const { index } = dispatch.payload as AdditionalFieldsRemove;
-      tabletFieldsAdditionalMapClone.delete(index);
-
-      const filteredTabletFieldsAdditionalMap = new Map<number, [string, string]>();
-      Array.from(tabletFieldsAdditionalMapClone).forEach((mapIdxKeyVal, arrayIdx) => {
-        const [_mapIdx, keyVal] = mapIdxKeyVal as [number, [string, string]];
-
-        filteredTabletFieldsAdditionalMap.set(arrayIdx, keyVal);
-      });
-
-      return {
-        ...state,
-        tabletFieldsAdditionalMap: filteredTabletFieldsAdditionalMap,
-      };
-    }
-    case "update": {
-      const tabletFieldsAdditionalMapClone = structuredClone(
-        state.tabletFieldsAdditionalMap
-      );
-
-      const { data, index, kind } = dispatch.payload as AdditionalFieldsUpdate;
-      const prevKeyVal = tabletFieldsAdditionalMapClone.get(index);
-
-      if (!prevKeyVal) {
-        return state;
-      }
-
-      const [prevKey, prevValue] = prevKeyVal;
-      kind === "key"
-        ? tabletFieldsAdditionalMapClone.set(index, [data, prevValue])
-        : tabletFieldsAdditionalMapClone.set(index, [prevKey, data]);
-
-      return {
-        ...state,
-        tabletFieldsAdditionalMap: tabletFieldsAdditionalMapClone,
-      };
-    }
-    default:
-      return state;
-  }
-}
-
-function setWebcamResolution_CreateProductReducer(
+function setWebcamResolution_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -2724,7 +1492,7 @@ function setWebcamResolution_CreateProductReducer(
   };
 }
 
-function setWebcamInterface_CreateProductReducer(
+function setWebcamInterface_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -2734,7 +1502,7 @@ function setWebcamInterface_CreateProductReducer(
   };
 }
 
-function setWebcamMicrophone_CreateProductReducer(
+function setWebcamMicrophone_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -2744,7 +1512,7 @@ function setWebcamMicrophone_CreateProductReducer(
   };
 }
 
-function setWebcamFrameRate_CreateProductReducer(
+function setWebcamFrameRate_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -2754,7 +1522,7 @@ function setWebcamFrameRate_CreateProductReducer(
   };
 }
 
-function setWebcamColor_CreateProductReducer(
+function setWebcamColor_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -2764,86 +1532,7 @@ function setWebcamColor_CreateProductReducer(
   };
 }
 
-function setWebcamFieldsAdditionalMap_CreateProductReducer(
-  state: CreateProductState,
-  dispatch: CreateProductDispatch
-): CreateProductState {
-  const { operation } = dispatch.payload as AdditionalFieldsPayload;
-
-  switch (operation) {
-    case "add": {
-      const webcamFieldsAdditionalMapClone = structuredClone(
-        state.webcamFieldsAdditionalMap
-      );
-
-      const { data } = dispatch.payload as AdditionalFieldsAdd;
-      const prevSize = webcamFieldsAdditionalMapClone.size;
-      webcamFieldsAdditionalMapClone.set(prevSize, data);
-
-      return {
-        ...state,
-        webcamFieldsAdditionalMap: webcamFieldsAdditionalMapClone,
-      };
-    }
-    case "remove": {
-      const webcamFieldsAdditionalMapClone = structuredClone(
-        state.webcamFieldsAdditionalMap
-      );
-
-      const { index } = dispatch.payload as AdditionalFieldsRemove;
-      webcamFieldsAdditionalMapClone.delete(index);
-
-      const filteredWebcamFieldsAdditionalMap = new Map<number, [string, string]>();
-      Array.from(webcamFieldsAdditionalMapClone).forEach((mapIdxKeyVal, arrayIdx) => {
-        const [_mapIdx, keyVal] = mapIdxKeyVal as [number, [string, string]];
-
-        filteredWebcamFieldsAdditionalMap.set(arrayIdx, keyVal);
-      });
-
-      return {
-        ...state,
-        webcamFieldsAdditionalMap: filteredWebcamFieldsAdditionalMap,
-      };
-    }
-    case "update": {
-      const webcamFieldsAdditionalMapClone = structuredClone(
-        state.webcamFieldsAdditionalMap
-      );
-
-      const { data, index, kind } = dispatch.payload as AdditionalFieldsUpdate;
-      const prevKeyVal = webcamFieldsAdditionalMapClone.get(index);
-
-      if (!prevKeyVal) {
-        return state;
-      }
-
-      const [prevKey, prevValue] = prevKeyVal;
-      kind === "key"
-        ? webcamFieldsAdditionalMapClone.set(index, [data, prevValue])
-        : webcamFieldsAdditionalMapClone.set(index, [prevKey, data]);
-
-      return {
-        ...state,
-        webcamFieldsAdditionalMap: webcamFieldsAdditionalMapClone,
-      };
-    }
-    default:
-      return state;
-  }
-}
-
-// page 3
-function setImgFormDataArray_CreateProductReducer(
-  state: CreateProductState,
-  dispatch: CreateProductDispatch
-): CreateProductState {
-  return {
-    ...state,
-    imgFormDataArray: dispatch.payload as FormData[],
-  };
-}
-
-function setTriggerFormSubmit_CreateProductReducer(
+function setTriggerFormSubmit_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -2853,7 +1542,7 @@ function setTriggerFormSubmit_CreateProductReducer(
   };
 }
 
-function setPageInError_CreateProductReducer(
+function setPageInError_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -2867,7 +1556,7 @@ function setPageInError_CreateProductReducer(
   };
 }
 
-function setIsSubmitting_CreateProductReducer(
+function setIsSubmitting_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -2877,7 +1566,7 @@ function setIsSubmitting_CreateProductReducer(
   };
 }
 
-function setIsSuccessful_CreateProductReducer(
+function setIsSuccessful_createProductReducer(
   state: CreateProductState,
   dispatch: CreateProductDispatch
 ): CreateProductState {
@@ -2890,140 +1579,103 @@ function setIsSuccessful_CreateProductReducer(
 export {
   createProductReducer,
   createProductReducersMap,
-  setAccessoryColor_CreateProductReducer,
-  setAccessoryFieldsAdditionalMap_CreateProductReducer,
-  setAccessoryInterface_CreateProductReducer,
-  setAccessoryType_CreateProductReducer,
-  setAdditionalComments_CreateProductReducer,
-  setAvailability_CreateProductReducer,
-  setBrand_CreateProductReducer,
-  setCpuCores_CreateProductReducer,
-  setCpuFieldsAdditionalMap_CreateProductReducer,
-  setCpuFrequency_CreateProductReducer,
-  setCpuL1CacheCapacity_CreateProductReducer,
-  setCpuL1CacheCapacityUnit_CreateProductReducer,
-  setCpuL2CacheCapacity_CreateProductReducer,
-  setCpuL2CacheCapacityUnit_CreateProductReducer,
-  setCpuL3CacheCapacity_CreateProductReducer,
-  setCpuL3CacheCapacityUnit_CreateProductReducer,
-  setCpuSocket_CreateProductReducer,
-  setCpuWattage_CreateProductReducer,
-  setCurrency_CreateProductReducer,
-  setDescription_CreateProductReducer,
-  setDimensionHeight_CreateProductReducer,
-  setDimensionHeightUnit_CreateProductReducer,
-  setDimensionLength_CreateProductReducer,
-  setDimensionLengthUnit_CreateProductReducer,
-  setDimensionWidth_CreateProductReducer,
-  setDimensionWidthUnit_CreateProductReducer,
-  setDisplayAspectRatio_CreateProductReducer,
-  setDisplayFieldsAdditionalMap_CreateProductReducer,
-  setDisplayPanelType_CreateProductReducer,
-  setDisplayRefreshRate_CreateProductReducer,
-  setDisplayResolutionHorizontal_CreateProductReducer,
-  setDisplayResolutionVertical_CreateProductReducer,
-  setDisplayResponseTime_CreateProductReducer,
-  setDisplaySize_CreateProductReducer,
-  setGpuBoostClock_CreateProductReducer,
-  setGpuChipset_CreateProductReducer,
-  setGpuCoreClock_CreateProductReducer,
-  setGpuFieldsAdditionalMap_CreateProductReducer,
-  setGpuMemoryCapacity_CreateProductReducer,
-  setGpuMemoryCapacityUnit_CreateProductReducer,
-  setGpuTdp_CreateProductReducer,
-  setHeadphoneColor_CreateProductReducer,
-  setHeadphoneDriver_CreateProductReducer,
-  setHeadphoneFieldsAdditionalMap_CreateProductReducer,
-  setHeadphoneFrequencyResponse_CreateProductReducer,
-  setHeadphoneImpedance_CreateProductReducer,
-  setHeadphoneInterface_CreateProductReducer,
-  setHeadphoneType_CreateProductReducer,
-  setImgFormDataArray_CreateProductReducer,
-  setIsSubmitting_CreateProductReducer,
-  setIsSuccessful_CreateProductReducer,
-  setKeyboardBacklight_CreateProductReducer,
-  setKeyboardFieldsAdditionalMap_CreateProductReducer,
-  setKeyboardInterface_CreateProductReducer,
-  setKeyboardLayout_CreateProductReducer,
-  setKeyboardSwitch_CreateProductReducer,
-  setMicrophoneColor_CreateProductReducer,
-  setMicrophoneFieldsAdditionalMap_CreateProductReducer,
-  setMicrophoneFrequencyResponse_CreateProductReducer,
-  setMicrophoneInterface_CreateProductReducer,
-  setMicrophonePolarPattern_CreateProductReducer,
-  setMicrophoneType_CreateProductReducer,
-  setModel_CreateProductReducer,
-  setMotherboardChipset_CreateProductReducer,
-  setMotherboardFieldsAdditionalMap_CreateProductReducer,
-  setMotherboardFormFactor_CreateProductReducer,
-  setMotherboardM2Slots_CreateProductReducer,
-  setMotherboardMemoryMaxCapacity_CreateProductReducer,
-  setMotherboardMemoryMaxCapacityUnit_CreateProductReducer,
-  setMotherboardMemorySlots_CreateProductReducer,
-  setMotherboardMemoryType_CreateProductReducer,
-  setMotherboardPcie3Slots_CreateProductReducer,
-  setMotherboardPcie4Slots_CreateProductReducer,
-  setMotherboardPcie5Slots_CreateProductReducer,
-  setMotherboardSataPorts_CreateProductReducer,
-  setMotherboardSocket_CreateProductReducer,
-  setMouseButtons_CreateProductReducer,
-  setMouseColor_CreateProductReducer,
-  setMouseDpi_CreateProductReducer,
-  setMouseFieldsAdditionalMap_CreateProductReducer,
-  setMouseInterface_CreateProductReducer,
-  setMouseSensor_CreateProductReducer,
-  setPrice_CreateProductReducer,
-  setProductCategory_CreateProductReducer,
-  setQuantity_CreateProductReducer,
-  setRamColor_CreateProductReducer,
-  setRamDataRate_CreateProductReducer,
-  setRamFieldsAdditionalMap_CreateProductReducer,
-  setRamModulesCapacity_CreateProductReducer,
-  setRamModulesCapacityUnit_CreateProductReducer,
-  setRamModulesQuantity_CreateProductReducer,
-  setRamTiming_CreateProductReducer,
-  setRamType_CreateProductReducer,
-  setRamVoltage_CreateProductReducer,
-  setSmartphoneBatteryCapacity_CreateProductReducer,
-  setSmartphoneCamera_CreateProductReducer,
-  setSmartphoneChipset_CreateProductReducer,
-  setSmartphoneColor_CreateProductReducer,
-  setSmartphoneDisplay_CreateProductReducer,
-  setSmartphoneFieldsAdditionalMap_CreateProductReducer,
-  setSmartphoneOs_CreateProductReducer,
-  setSmartphoneRamCapacity_CreateProductReducer,
-  setSmartphoneRamCapacityUnit_CreateProductReducer,
-  setSmartphoneResolutionHorizontal_CreateProductReducer,
-  setSmartphoneResolutionVertical_CreateProductReducer,
-  setSmartphoneStorageCapacity_CreateProductReducer,
-  setSpeakerColor_CreateProductReducer,
-  setSpeakerFieldsAdditionalMap_CreateProductReducer,
-  setSpeakerFrequencyResponse_CreateProductReducer,
-  setSpeakerInterface_CreateProductReducer,
-  setSpeakerTotalWattage_CreateProductReducer,
-  setSpeakerType_CreateProductReducer,
-  setPageInError_CreateProductReducer,
-  setStorageCacheCapacity_CreateProductReducer,
-  setStorageCacheCapacityUnit_CreateProductReducer,
-  setStorageCapacity_CreateProductReducer,
-  setStorageCapacityUnit_CreateProductReducer,
-  setStorageFieldsAdditionalMap_CreateProductReducer,
-  setStorageFormFactor_CreateProductReducer,
-  setStorageInterface_CreateProductReducer,
-  setStorageType_CreateProductReducer,
-  setTabletBatteryCapacity_CreateProductReducer,
-  setTabletCamera_CreateProductReducer,
-  setTabletChipset_CreateProductReducer,
-  setTabletColor_CreateProductReducer,
-  setTabletDisplay_CreateProductReducer,
-  setTabletFieldsAdditionalMap_CreateProductReducer,
-  setTabletOs_CreateProductReducer,
-  setTabletRamCapacity_CreateProductReducer,
-  setTabletRamCapacityUnit_CreateProductReducer,
-  setTabletResolutionHorizontal_CreateProductReducer,
-  setTabletResolutionVertical_CreateProductReducer,
-  setTabletStorageCapacity_CreateProductReducer,
-  setTriggerFormSubmit_CreateProductReducer,
-  setWeight_CreateProductReducer,
-  setWeightUnit_CreateProductReducer,
+  setAccessoryColor_createProductReducer,
+  setAccessoryInterface_createProductReducer,
+  setAccessoryType_createProductReducer,
+  setAdditionalComments_createProductReducer,
+  setAvailability_createProductReducer,
+  setBrand_createProductReducer,
+  setCpuCores_createProductReducer,
+  setCpuFrequency_createProductReducer,
+  setCpuL1CacheCapacity_createProductReducer,
+  setCpuL1CacheCapacityUnit_createProductReducer,
+  setCpuL2CacheCapacity_createProductReducer,
+  setCpuL2CacheCapacityUnit_createProductReducer,
+  setCpuL3CacheCapacity_createProductReducer,
+  setCpuL3CacheCapacityUnit_createProductReducer,
+  setCpuSocket_createProductReducer,
+  setCpuWattage_createProductReducer,
+  setCurrency_createProductReducer,
+  setDescription_createProductReducer,
+  setDimensionHeight_createProductReducer,
+  setDimensionHeightUnit_createProductReducer,
+  setDimensionLength_createProductReducer,
+  setDimensionLengthUnit_createProductReducer,
+  setDimensionWidth_createProductReducer,
+  setDimensionWidthUnit_createProductReducer,
+  setDisplayAspectRatio_createProductReducer,
+  setDisplayPanelType_createProductReducer,
+  setDisplayRefreshRate_createProductReducer,
+  setDisplayResolutionHorizontal_createProductReducer,
+  setDisplayResolutionVertical_createProductReducer,
+  setDisplayResponseTime_createProductReducer,
+  setDisplaySize_createProductReducer,
+  setGpuBoostClock_createProductReducer,
+  setGpuChipset_createProductReducer,
+  setGpuCoreClock_createProductReducer,
+  setGpuMemoryCapacity_createProductReducer,
+  setGpuMemoryCapacityUnit_createProductReducer,
+  setGpuTdp_createProductReducer,
+  setHeadphoneColor_createProductReducer,
+  setHeadphoneDriver_createProductReducer,
+  setHeadphoneFrequencyResponse_createProductReducer,
+  setHeadphoneImpedance_createProductReducer,
+  setHeadphoneInterface_createProductReducer,
+  setHeadphoneType_createProductReducer,
+  setIsSubmitting_createProductReducer,
+  setIsSuccessful_createProductReducer,
+  setKeyboardBacklight_createProductReducer,
+  setKeyboardInterface_createProductReducer,
+  setKeyboardLayout_createProductReducer,
+  setKeyboardSwitch_createProductReducer,
+  setMicrophoneColor_createProductReducer,
+  setMicrophoneFrequencyResponse_createProductReducer,
+  setMicrophoneInterface_createProductReducer,
+  setMicrophonePolarPattern_createProductReducer,
+  setMicrophoneType_createProductReducer,
+  setModel_createProductReducer,
+  setMotherboardChipset_createProductReducer,
+  setMotherboardFormFactor_createProductReducer,
+  setMotherboardM2Slots_createProductReducer,
+  setMotherboardMemoryMaxCapacity_createProductReducer,
+  setMotherboardMemoryMaxCapacityUnit_createProductReducer,
+  setMotherboardMemorySlots_createProductReducer,
+  setMotherboardMemoryType_createProductReducer,
+  setMotherboardPcie3Slots_createProductReducer,
+  setMotherboardPcie4Slots_createProductReducer,
+  setMotherboardPcie5Slots_createProductReducer,
+  setMotherboardSataPorts_createProductReducer,
+  setMotherboardSocket_createProductReducer,
+  setMouseButtons_createProductReducer,
+  setMouseColor_createProductReducer,
+  setMouseDpi_createProductReducer,
+  setMouseInterface_createProductReducer,
+  setMouseSensor_createProductReducer,
+  setPageInError_createProductReducer,
+  setPrice_createProductReducer,
+  setProductCategory_createProductReducer,
+  setQuantity_createProductReducer,
+  setRamColor_createProductReducer,
+  setRamDataRate_createProductReducer,
+  setRamModulesCapacity_createProductReducer,
+  setRamModulesCapacityUnit_createProductReducer,
+  setRamModulesQuantity_createProductReducer,
+  setRamTiming_createProductReducer,
+  setRamType_createProductReducer,
+  setRamVoltage_createProductReducer,
+  setSpeakerColor_createProductReducer,
+  setSpeakerFrequencyResponse_createProductReducer,
+  setSpeakerInterface_createProductReducer,
+  setSpeakerTotalWattage_createProductReducer,
+  setSpeakerType_createProductReducer,
+  setStorageCacheCapacity_createProductReducer,
+  setStorageCacheCapacityUnit_createProductReducer,
+  setStorageCapacity_createProductReducer,
+  setStorageCapacityUnit_createProductReducer,
+  setStorageFormFactor_createProductReducer,
+  setStorageInterface_createProductReducer,
+  setStorageType_createProductReducer,
+  setTriggerFormSubmit_createProductReducer,
+  setWeight_createProductReducer,
+  setWeightUnit_createProductReducer,
 };

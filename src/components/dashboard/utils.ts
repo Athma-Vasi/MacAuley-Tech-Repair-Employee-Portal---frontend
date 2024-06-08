@@ -3109,18 +3109,13 @@ function createProductCategoryUnitsRevenueTuple({
   yearUnitsSoldSpread,
 }: CreateProductCategoryUnitsRevenueTupleInput) {
   const unitsSold =
-    productCategory === "Desktop Computer" ||
-    productCategory === "Laptop" ||
-    productCategory === "Smartphone" ||
-    productCategory === "Tablet"
-      ? createRandomNumber({ storeLocation, year, yearUnitsSpread: yearUnitsSoldSpread })
-      : productCategory === "Central Processing Unit (CPU)" ||
-        productCategory === "Graphics Processing Unit (GPU)" ||
-        productCategory === "Motherboard" ||
-        productCategory === "Headphone" ||
-        productCategory === "Speaker" ||
-        productCategory === "Display" ||
-        productCategory === "Power Supply Unit (PSU)"
+    productCategory === "Central Processing Unit (CPU)" ||
+    productCategory === "Graphics Processing Unit (GPU)" ||
+    productCategory === "Motherboard" ||
+    productCategory === "Headphone" ||
+    productCategory === "Speaker" ||
+    productCategory === "Display" ||
+    productCategory === "Power Supply Unit (PSU)"
       ? createRandomNumber({
           storeLocation,
           year,
@@ -3141,7 +3136,6 @@ function createProductCategoryUnitsRevenueTuple({
   const spread: Record<ProductCategory, [number, number]> = {
     "Central Processing Unit (CPU)": [150, 400],
     "Computer Case": [50, 150],
-    "Desktop Computer": [700, 2200],
     Display: [150, 750],
     "Graphics Processing Unit (GPU)": [150, 900],
     "Memory (RAM)": [50, 300],
@@ -3149,14 +3143,11 @@ function createProductCategoryUnitsRevenueTuple({
     Accessory: [10, 100],
     Headphone: [50, 500],
     Keyboard: [50, 200],
-    Laptop: [500, 2200],
     Microphone: [50, 300],
     Motherboard: [150, 700],
     Mouse: [50, 200],
-    Smartphone: [300, 1500],
     Speaker: [100, 600],
     Storage: [75, 500],
-    Tablet: [400, 1500],
     Webcam: [100, 300],
   };
 

@@ -1,17 +1,17 @@
 type CreateProductAction = {
+  addStepperChild: "addStepperChild";
+  modifyAdditionalFieldsMap: "modifyAdditionalFieldsMap";
   setAccessoryColor: "setAccessoryColor";
-  setAccessoryFieldsAdditionalMap: "setAccessoryFieldsAdditionalMap";
   setAccessoryInterface: "setAccessoryInterface";
   setAccessoryType: "setAccessoryType";
   setAdditionalComments: "setAdditionalComments";
+  setAdditionalFieldsFormDataMap: "setAdditionalFieldsFormDataMap";
   setAvailability: "setAvailability";
   setBrand: "setBrand";
   setCaseColor: "setCaseColor";
-  setCaseFieldsAdditionalMap: "setCaseFieldsAdditionalMap";
   setCaseSidePanel: "setCaseSidePanel";
   setCaseType: "setCaseType";
   setCpuCores: "setCpuCores";
-  setCpuFieldsAdditionalMap: "setCpuFieldsAdditionalMap";
   setCpuFrequency: "setCpuFrequency";
   setCpuL1CacheCapacity: "setCpuL1CacheCapacity";
   setCpuL1CacheCapacityUnit: "setCpuL1CacheCapacityUnit";
@@ -22,8 +22,6 @@ type CreateProductAction = {
   setCpuSocket: "setCpuSocket";
   setCpuWattage: "setCpuWattage";
   setCurrency: "setCurrency";
-  setCurrentStepperPosition: "setCurrentStepperPosition";
-  setCurrentlySelectedAdditionalFieldIndex: "setCurrentlySelectedAdditionalFieldIndex";
   setDescription: "setDescription";
   setDimensionHeight: "setDimensionHeight";
   setDimensionHeightUnit: "setDimensionHeightUnit";
@@ -32,7 +30,6 @@ type CreateProductAction = {
   setDimensionWidth: "setDimensionWidth";
   setDimensionWidthUnit: "setDimensionWidthUnit";
   setDisplayAspectRatio: "setDisplayAspectRatio";
-  setDisplayFieldsAdditionalMap: "setDisplayFieldsAdditionalMap";
   setDisplayPanelType: "setDisplayPanelType";
   setDisplayRefreshRate: "setDisplayRefreshRate";
   setDisplayResolutionHorizontal: "setDisplayResolutionHorizontal";
@@ -42,34 +39,28 @@ type CreateProductAction = {
   setGpuBoostClock: "setGpuBoostClock";
   setGpuChipset: "setGpuChipset";
   setGpuCoreClock: "setGpuCoreClock";
-  setGpuFieldsAdditionalMap: "setGpuFieldsAdditionalMap";
   setGpuMemoryCapacity: "setGpuMemoryCapacity";
   setGpuMemoryCapacityUnit: "setGpuMemoryCapacityUnit";
   setGpuTdp: "setGpuTdp";
   setHeadphoneColor: "setHeadphoneColor";
   setHeadphoneDriver: "setHeadphoneDriver";
-  setHeadphoneFieldsAdditionalMap: "setHeadphoneFieldsAdditionalMap";
   setHeadphoneFrequencyResponse: "setHeadphoneFrequencyResponse";
   setHeadphoneImpedance: "setHeadphoneImpedance";
   setHeadphoneInterface: "setHeadphoneInterface";
   setHeadphoneType: "setHeadphoneType";
-  setImgFormDataArray: "setImgFormDataArray";
   setIsSubmitting: "setIsSubmitting";
   setIsSuccessful: "setIsSuccessful";
   setKeyboardBacklight: "setKeyboardBacklight";
-  setKeyboardFieldsAdditionalMap: "setKeyboardFieldsAdditionalMap";
   setKeyboardInterface: "setKeyboardInterface";
   setKeyboardLayout: "setKeyboardLayout";
   setKeyboardSwitch: "setKeyboardSwitch";
   setMicrophoneColor: "setMicrophoneColor";
-  setMicrophoneFieldsAdditionalMap: "setMicrophoneFieldsAdditionalMap";
   setMicrophoneFrequencyResponse: "setMicrophoneFrequencyResponse";
   setMicrophoneInterface: "setMicrophoneInterface";
   setMicrophonePolarPattern: "setMicrophonePolarPattern";
   setMicrophoneType: "setMicrophoneType";
   setModel: "setModel";
   setMotherboardChipset: "setMotherboardChipset";
-  setMotherboardFieldsAdditionalMap: "setMotherboardFieldsAdditionalMap";
   setMotherboardFormFactor: "setMotherboardFormFactor";
   setMotherboardM2Slots: "setMotherboardM2Slots";
   setMotherboardMemoryMaxCapacity: "setMotherboardMemoryMaxCapacity";
@@ -84,70 +75,38 @@ type CreateProductAction = {
   setMouseButtons: "setMouseButtons";
   setMouseColor: "setMouseColor";
   setMouseDpi: "setMouseDpi";
-  setMouseFieldsAdditionalMap: "setMouseFieldsAdditionalMap";
   setMouseInterface: "setMouseInterface";
   setMouseSensor: "setMouseSensor";
+  setPageInError: "setPageInError";
   setPrice: "setPrice";
   setProductCategory: "setProductCategory";
   setPsuEfficiency: "setPsuEfficiency";
-  setPsuFieldsAdditionalMap: "setPsuFieldsAdditionalMap";
   setPsuFormFactor: "setPsuFormFactor";
   setPsuModularity: "setPsuModularity";
   setPsuWattage: "setPsuWattage";
   setQuantity: "setQuantity";
   setRamColor: "setRamColor";
   setRamDataRate: "setRamDataRate";
-  setRamFieldsAdditionalMap: "setRamFieldsAdditionalMap";
   setRamModulesCapacity: "setRamModulesCapacity";
   setRamModulesCapacityUnit: "setRamModulesCapacityUnit";
   setRamModulesQuantity: "setRamModulesQuantity";
   setRamTiming: "setRamTiming";
   setRamType: "setRamType";
   setRamVoltage: "setRamVoltage";
-  setSmartphoneBatteryCapacity: "setSmartphoneBatteryCapacity";
-  setSmartphoneCamera: "setSmartphoneCamera";
-  setSmartphoneChipset: "setSmartphoneChipset";
-  setSmartphoneColor: "setSmartphoneColor";
-  setSmartphoneDisplay: "setSmartphoneDisplay";
-  setSmartphoneFieldsAdditionalMap: "setSmartphoneFieldsAdditionalMap";
-  setSmartphoneOs: "setSmartphoneOs";
-  setSmartphoneRamCapacity: "setSmartphoneRamCapacity";
-  setSmartphoneRamCapacityUnit: "setSmartphoneRamCapacityUnit";
-  setSmartphoneResolutionHorizontal: "setSmartphoneResolutionHorizontal";
-  setSmartphoneResolutionVertical: "setSmartphoneResolutionVertical";
-  setSmartphoneStorageCapacity: "setSmartphoneStorageCapacity";
   setSpeakerColor: "setSpeakerColor";
-  setSpeakerFieldsAdditionalMap: "setSpeakerFieldsAdditionalMap";
   setSpeakerFrequencyResponse: "setSpeakerFrequencyResponse";
   setSpeakerInterface: "setSpeakerInterface";
   setSpeakerTotalWattage: "setSpeakerTotalWattage";
   setSpeakerType: "setSpeakerType";
-  setPageInError: "setPageInError";
   setStorageCacheCapacity: "setStorageCacheCapacity";
   setStorageCacheCapacityUnit: "setStorageCacheCapacityUnit";
   setStorageCapacity: "setStorageCapacity";
   setStorageCapacityUnit: "setStorageCapacityUnit";
-  setStorageFieldsAdditionalMap: "setStorageFieldsAdditionalMap";
   setStorageFormFactor: "setStorageFormFactor";
   setStorageInterface: "setStorageInterface";
   setStorageType: "setStorageType";
-  setSubmitMessage: "setSubmitMessage";
-  setSuccessMessage: "setSuccessMessage";
-  setTabletBatteryCapacity: "setTabletBatteryCapacity";
-  setTabletCamera: "setTabletCamera";
-  setTabletChipset: "setTabletChipset";
-  setTabletColor: "setTabletColor";
-  setTabletDisplay: "setTabletDisplay";
-  setTabletFieldsAdditionalMap: "setTabletFieldsAdditionalMap";
-  setTabletOs: "setTabletOs";
-  setTabletRamCapacity: "setTabletRamCapacity";
-  setTabletRamCapacityUnit: "setTabletRamCapacityUnit";
-  setTabletResolutionHorizontal: "setTabletResolutionHorizontal";
-  setTabletResolutionVertical: "setTabletResolutionVertical";
-  setTabletStorageCapacity: "setTabletStorageCapacity";
   setTriggerFormSubmit: "setTriggerFormSubmit";
   setWebcamColor: "setWebcamColor";
-  setWebcamFieldsAdditionalMap: "setWebcamFieldsAdditionalMap";
   setWebcamFrameRate: "setWebcamFrameRate";
   setWebcamInterface: "setWebcamInterface";
   setWebcamMicrophone: "setWebcamMicrophone";
@@ -157,19 +116,19 @@ type CreateProductAction = {
 };
 
 const createProductAction: CreateProductAction = {
+  addStepperChild: "addStepperChild",
+  modifyAdditionalFieldsMap: "modifyAdditionalFieldsMap",
   setAccessoryColor: "setAccessoryColor",
-  setAccessoryFieldsAdditionalMap: "setAccessoryFieldsAdditionalMap",
   setAccessoryInterface: "setAccessoryInterface",
   setAccessoryType: "setAccessoryType",
   setAdditionalComments: "setAdditionalComments",
+  setAdditionalFieldsFormDataMap: "setAdditionalFieldsFormDataMap",
   setAvailability: "setAvailability",
   setBrand: "setBrand",
   setCaseColor: "setCaseColor",
-  setCaseFieldsAdditionalMap: "setCaseFieldsAdditionalMap",
   setCaseSidePanel: "setCaseSidePanel",
   setCaseType: "setCaseType",
   setCpuCores: "setCpuCores",
-  setCpuFieldsAdditionalMap: "setCpuFieldsAdditionalMap",
   setCpuFrequency: "setCpuFrequency",
   setCpuL1CacheCapacity: "setCpuL1CacheCapacity",
   setCpuL1CacheCapacityUnit: "setCpuL1CacheCapacityUnit",
@@ -180,8 +139,6 @@ const createProductAction: CreateProductAction = {
   setCpuSocket: "setCpuSocket",
   setCpuWattage: "setCpuWattage",
   setCurrency: "setCurrency",
-  setCurrentStepperPosition: "setCurrentStepperPosition",
-  setCurrentlySelectedAdditionalFieldIndex: "setCurrentlySelectedAdditionalFieldIndex",
   setDescription: "setDescription",
   setDimensionHeight: "setDimensionHeight",
   setDimensionHeightUnit: "setDimensionHeightUnit",
@@ -190,7 +147,6 @@ const createProductAction: CreateProductAction = {
   setDimensionWidth: "setDimensionWidth",
   setDimensionWidthUnit: "setDimensionWidthUnit",
   setDisplayAspectRatio: "setDisplayAspectRatio",
-  setDisplayFieldsAdditionalMap: "setDisplayFieldsAdditionalMap",
   setDisplayPanelType: "setDisplayPanelType",
   setDisplayRefreshRate: "setDisplayRefreshRate",
   setDisplayResolutionHorizontal: "setDisplayResolutionHorizontal",
@@ -200,34 +156,28 @@ const createProductAction: CreateProductAction = {
   setGpuBoostClock: "setGpuBoostClock",
   setGpuChipset: "setGpuChipset",
   setGpuCoreClock: "setGpuCoreClock",
-  setGpuFieldsAdditionalMap: "setGpuFieldsAdditionalMap",
   setGpuMemoryCapacity: "setGpuMemoryCapacity",
   setGpuMemoryCapacityUnit: "setGpuMemoryCapacityUnit",
   setGpuTdp: "setGpuTdp",
   setHeadphoneColor: "setHeadphoneColor",
   setHeadphoneDriver: "setHeadphoneDriver",
-  setHeadphoneFieldsAdditionalMap: "setHeadphoneFieldsAdditionalMap",
   setHeadphoneFrequencyResponse: "setHeadphoneFrequencyResponse",
   setHeadphoneImpedance: "setHeadphoneImpedance",
   setHeadphoneInterface: "setHeadphoneInterface",
   setHeadphoneType: "setHeadphoneType",
-  setImgFormDataArray: "setImgFormDataArray",
   setIsSubmitting: "setIsSubmitting",
   setIsSuccessful: "setIsSuccessful",
   setKeyboardBacklight: "setKeyboardBacklight",
-  setKeyboardFieldsAdditionalMap: "setKeyboardFieldsAdditionalMap",
   setKeyboardInterface: "setKeyboardInterface",
   setKeyboardLayout: "setKeyboardLayout",
   setKeyboardSwitch: "setKeyboardSwitch",
   setMicrophoneColor: "setMicrophoneColor",
-  setMicrophoneFieldsAdditionalMap: "setMicrophoneFieldsAdditionalMap",
   setMicrophoneFrequencyResponse: "setMicrophoneFrequencyResponse",
   setMicrophoneInterface: "setMicrophoneInterface",
   setMicrophonePolarPattern: "setMicrophonePolarPattern",
   setMicrophoneType: "setMicrophoneType",
   setModel: "setModel",
   setMotherboardChipset: "setMotherboardChipset",
-  setMotherboardFieldsAdditionalMap: "setMotherboardFieldsAdditionalMap",
   setMotherboardFormFactor: "setMotherboardFormFactor",
   setMotherboardM2Slots: "setMotherboardM2Slots",
   setMotherboardMemoryMaxCapacity: "setMotherboardMemoryMaxCapacity",
@@ -242,70 +192,38 @@ const createProductAction: CreateProductAction = {
   setMouseButtons: "setMouseButtons",
   setMouseColor: "setMouseColor",
   setMouseDpi: "setMouseDpi",
-  setMouseFieldsAdditionalMap: "setMouseFieldsAdditionalMap",
   setMouseInterface: "setMouseInterface",
   setMouseSensor: "setMouseSensor",
+  setPageInError: "setPageInError",
   setPrice: "setPrice",
   setProductCategory: "setProductCategory",
   setPsuEfficiency: "setPsuEfficiency",
-  setPsuFieldsAdditionalMap: "setPsuFieldsAdditionalMap",
   setPsuFormFactor: "setPsuFormFactor",
   setPsuModularity: "setPsuModularity",
   setPsuWattage: "setPsuWattage",
   setQuantity: "setQuantity",
   setRamColor: "setRamColor",
   setRamDataRate: "setRamDataRate",
-  setRamFieldsAdditionalMap: "setRamFieldsAdditionalMap",
   setRamModulesCapacity: "setRamModulesCapacity",
   setRamModulesCapacityUnit: "setRamModulesCapacityUnit",
   setRamModulesQuantity: "setRamModulesQuantity",
   setRamTiming: "setRamTiming",
   setRamType: "setRamType",
   setRamVoltage: "setRamVoltage",
-  setSmartphoneBatteryCapacity: "setSmartphoneBatteryCapacity",
-  setSmartphoneCamera: "setSmartphoneCamera",
-  setSmartphoneChipset: "setSmartphoneChipset",
-  setSmartphoneColor: "setSmartphoneColor",
-  setSmartphoneDisplay: "setSmartphoneDisplay",
-  setSmartphoneFieldsAdditionalMap: "setSmartphoneFieldsAdditionalMap",
-  setSmartphoneOs: "setSmartphoneOs",
-  setSmartphoneRamCapacity: "setSmartphoneRamCapacity",
-  setSmartphoneRamCapacityUnit: "setSmartphoneRamCapacityUnit",
-  setSmartphoneResolutionHorizontal: "setSmartphoneResolutionHorizontal",
-  setSmartphoneResolutionVertical: "setSmartphoneResolutionVertical",
-  setSmartphoneStorageCapacity: "setSmartphoneStorageCapacity",
   setSpeakerColor: "setSpeakerColor",
-  setSpeakerFieldsAdditionalMap: "setSpeakerFieldsAdditionalMap",
   setSpeakerFrequencyResponse: "setSpeakerFrequencyResponse",
   setSpeakerInterface: "setSpeakerInterface",
   setSpeakerTotalWattage: "setSpeakerTotalWattage",
   setSpeakerType: "setSpeakerType",
-  setPageInError: "setPageInError",
   setStorageCacheCapacity: "setStorageCacheCapacity",
   setStorageCacheCapacityUnit: "setStorageCacheCapacityUnit",
   setStorageCapacity: "setStorageCapacity",
   setStorageCapacityUnit: "setStorageCapacityUnit",
-  setStorageFieldsAdditionalMap: "setStorageFieldsAdditionalMap",
   setStorageFormFactor: "setStorageFormFactor",
   setStorageInterface: "setStorageInterface",
   setStorageType: "setStorageType",
-  setSubmitMessage: "setSubmitMessage",
-  setSuccessMessage: "setSuccessMessage",
-  setTabletBatteryCapacity: "setTabletBatteryCapacity",
-  setTabletCamera: "setTabletCamera",
-  setTabletChipset: "setTabletChipset",
-  setTabletColor: "setTabletColor",
-  setTabletDisplay: "setTabletDisplay",
-  setTabletFieldsAdditionalMap: "setTabletFieldsAdditionalMap",
-  setTabletOs: "setTabletOs",
-  setTabletRamCapacity: "setTabletRamCapacity",
-  setTabletRamCapacityUnit: "setTabletRamCapacityUnit",
-  setTabletResolutionHorizontal: "setTabletResolutionHorizontal",
-  setTabletResolutionVertical: "setTabletResolutionVertical",
-  setTabletStorageCapacity: "setTabletStorageCapacity",
   setTriggerFormSubmit: "setTriggerFormSubmit",
   setWebcamColor: "setWebcamColor",
-  setWebcamFieldsAdditionalMap: "setWebcamFieldsAdditionalMap",
   setWebcamFrameRate: "setWebcamFrameRate",
   setWebcamInterface: "setWebcamInterface",
   setWebcamMicrophone: "setWebcamMicrophone",

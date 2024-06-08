@@ -119,21 +119,17 @@ type ProductCategory =
   | "Accessory"
   | "Central Processing Unit (CPU)"
   | "Computer Case"
-  | "Desktop Computer"
   | "Display"
   | "Graphics Processing Unit (GPU)"
   | "Headphone"
   | "Keyboard"
-  | "Laptop"
   | "Memory (RAM)"
   | "Microphone"
   | "Motherboard"
   | "Mouse"
   | "Power Supply Unit (PSU)"
-  | "Smartphone"
   | "Speaker"
   | "Storage"
-  | "Tablet"
   | "Webcam";
 
 type RepairCategory =

@@ -5,7 +5,13 @@ import {
   SERIAL_ID_REGEX,
   USERNAME_REGEX,
 } from "../../constants/regex";
-import { ResourceRoutePaths, SelectInputData } from "../../types";
+import {
+  ResourceRoutePaths,
+  RoleResourceRoutePaths,
+  SelectInputData,
+  StepperChild,
+  StepperPage,
+} from "../../types";
 import {
   returnBrandNameValidationText,
   returnColorVariantValidationText,
@@ -26,6 +32,7 @@ import {
   returnWeightValidationText,
 } from "../../utils";
 import { CURRENCY_DATA } from "../benefit/constants";
+import { PRODUCT_CATEGORIES } from "../dashboard/constants";
 import { ProductCategory } from "../dashboard/types";
 import { ComponentQueryData } from "../queryBuilder";
 import { DescriptionObjectsArray } from "../wrappers";
@@ -63,6 +70,876 @@ import {
   WebcamResolution,
   WeightUnit,
 } from "./types";
+
+const PRODUCT_ROLE_RESOURCE_PATHS: RoleResourceRoutePaths = {
+  admin: "/product-category",
+  employee: "/product-category/user",
+  manager: "/product-category",
+};
+
+function createProductStepperPages(): StepperPage[] {
+  const accessoryColor: StepperChild = {
+    inputType: "text",
+    name: "accessoryColor",
+    validationKey: "colorVariant",
+  };
+
+  const accessoryInterface: StepperChild = {
+    inputType: "select",
+    name: "accessoryInterface",
+    selectInputData: PERIPHERALS_INTERFACE_DATA,
+  };
+
+  const accessoryType: StepperChild = {
+    inputType: "text",
+    name: "accessoryType",
+    validationKey: "accessoryType",
+  };
+
+  const accessoryFieldName1: StepperChild = {
+    inputType: "text",
+    name: "accessoryFieldName 1",
+    validationKey: "textAreaInput",
+  };
+
+  const accessoryFieldValue1: StepperChild = {
+    inputType: "text",
+    name: "accessoryFieldValue 1",
+    validationKey: "textAreaInput",
+  };
+
+  const additionalComments: StepperChild = {
+    inputType: "text",
+    name: "additionalComments",
+    validationKey: "textAreaInput",
+  };
+
+  const availability: StepperChild = {
+    inputType: "select",
+    name: "availability",
+    selectInputData: PRODUCT_AVAILABILITY_DATA,
+  };
+
+  const brand: StepperChild = {
+    inputType: "text",
+    name: "brand",
+    validationKey: "brand",
+  };
+
+  const caseColor: StepperChild = {
+    inputType: "text",
+    name: "caseColor",
+    validationKey: "colorVariant",
+  };
+
+  const caseSidePanel: StepperChild = {
+    inputType: "select",
+    name: "caseSidePanel",
+    selectInputData: CASE_SIDE_PANEL_DATA,
+  };
+
+  const caseType: StepperChild = {
+    inputType: "select",
+    name: "caseType",
+    selectInputData: CASE_TYPE_DATA,
+  };
+
+  const cpuCores: StepperChild = {
+    inputType: "number",
+    name: "cpuCores",
+    validationKey: "smallInteger",
+  };
+
+  const cpuFrequency: StepperChild = {
+    inputType: "number",
+    name: "cpuFrequency",
+    validationKey: "cpuFrequency",
+  };
+
+  const cpuL1CacheCapacity: StepperChild = {
+    inputType: "number",
+    name: "cpuL1CacheCapacity",
+    validationKey: "mediumInteger",
+  };
+
+  const cpuL1CacheCapacityUnit: StepperChild = {
+    inputType: "select",
+    name: "cpuL1CacheCapacityUnit",
+    selectInputData: MEMORY_UNIT_DATA,
+  };
+
+  const cpuL2CacheCapacity: StepperChild = {
+    inputType: "number",
+    name: "cpuL2CacheCapacity",
+    validationKey: "mediumInteger",
+  };
+
+  const cpuL2CacheCapacityUnit: StepperChild = {
+    inputType: "select",
+    name: "cpuL2CacheCapacityUnit",
+    selectInputData: MEMORY_UNIT_DATA,
+  };
+
+  const cpuL3CacheCapacity: StepperChild = {
+    inputType: "number",
+    name: "cpuL3CacheCapacity",
+    validationKey: "mediumInteger",
+  };
+
+  const cpuL3CacheCapacityUnit: StepperChild = {
+    inputType: "select",
+    name: "cpuL3CacheCapacityUnit",
+    selectInputData: MEMORY_UNIT_DATA,
+  };
+
+  const cpuSocket: StepperChild = {
+    inputType: "text",
+    name: "cpuSocket",
+    validationKey: "cpuSocket",
+  };
+
+  const cpuWattage: StepperChild = {
+    inputType: "number",
+    name: "cpuWattage",
+    validationKey: "smallInteger",
+  };
+
+  const currency: StepperChild = {
+    inputType: "select",
+    name: "currency",
+    selectInputData: CURRENCY_DATA,
+  };
+
+  const description: StepperChild = {
+    inputType: "text",
+    name: "description",
+    validationKey: "textAreaInput",
+  };
+
+  const dimensionHeight: StepperChild = {
+    inputType: "text",
+    name: "dimensionHeight",
+    validationKey: "dimensions",
+  };
+
+  const dimensionHeightUnit: StepperChild = {
+    inputType: "select",
+    name: "dimensionHeightUnit",
+    selectInputData: DIMENSION_UNIT_DATA,
+  };
+
+  const dimensionLength: StepperChild = {
+    inputType: "text",
+    name: "dimensionLength",
+    validationKey: "dimensions",
+  };
+
+  const dimensionLengthUnit: StepperChild = {
+    inputType: "select",
+    name: "dimensionLengthUnit",
+    selectInputData: DIMENSION_UNIT_DATA,
+  };
+
+  const dimensionWidth: StepperChild = {
+    inputType: "text",
+    name: "dimensionWidth",
+    validationKey: "dimensions",
+  };
+
+  const dimensionWidthUnit: StepperChild = {
+    inputType: "select",
+    name: "dimensionWidthUnit",
+    selectInputData: DIMENSION_UNIT_DATA,
+  };
+
+  const displayAspectRatio: StepperChild = {
+    inputType: "text",
+    name: "displayAspectRatio",
+    validationKey: "displayAspectRatio",
+  };
+
+  const displayPanelType: StepperChild = {
+    inputType: "select",
+    name: "displayPanelType",
+    selectInputData: DISPLAY_PANEL_TYPE_DATA,
+  };
+
+  const displayRefreshRate: StepperChild = {
+    inputType: "text",
+    name: "displayRefreshRate",
+    validationKey: "mediumInteger",
+  };
+
+  const displayResolutionHorizontal: StepperChild = {
+    inputType: "text",
+    name: "displayResolutionHorizontal",
+    validationKey: "smallInteger",
+  };
+
+  const displayResolutionVertical: StepperChild = {
+    inputType: "text",
+    name: "displayResolutionVertical",
+    validationKey: "smallInteger",
+  };
+
+  const displayResponseTime: StepperChild = {
+    inputType: "text",
+    name: "displayResponseTime",
+    validationKey: "smallInteger",
+  };
+
+  const displaySize: StepperChild = {
+    inputType: "text",
+    name: "displaySize",
+    validationKey: "smallInteger",
+  };
+
+  const gpuBoostClock: StepperChild = {
+    inputType: "text",
+    name: "gpuBoostClock",
+    validationKey: "mediumInteger",
+  };
+
+  const gpuChipset: StepperChild = {
+    inputType: "text",
+    name: "gpuChipset",
+    validationKey: "cpuSocket",
+  };
+
+  const gpuCoreClock: StepperChild = {
+    inputType: "text",
+    name: "gpuCoreClock",
+    validationKey: "mediumInteger",
+  };
+
+  const gpuMemoryCapacity: StepperChild = {
+    inputType: "text",
+    name: "gpuMemoryCapacity",
+    validationKey: "smallInteger",
+  };
+
+  const gpuMemoryCapacityUnit: StepperChild = {
+    inputType: "select",
+    name: "gpuMemoryCapacityUnit",
+    selectInputData: MEMORY_UNIT_DATA,
+  };
+
+  const gpuTdp: StepperChild = {
+    inputType: "text",
+    name: "gpuTdp",
+    validationKey: "smallInteger",
+  };
+
+  const headphoneColor: StepperChild = {
+    inputType: "text",
+    name: "headphoneColor",
+    validationKey: "colorVariant",
+  };
+
+  const headphoneDriver: StepperChild = {
+    inputType: "text",
+    name: "headphoneDriver",
+    validationKey: "smallInteger",
+  };
+
+  const headphoneFrequencyResponse: StepperChild = {
+    inputType: "text",
+    name: "headphoneFrequencyResponse",
+    validationKey: "frequencyResponse",
+  };
+
+  const headphoneImpedance: StepperChild = {
+    inputType: "text",
+    name: "headphoneImpedance",
+    validationKey: "smallInteger",
+  };
+
+  const headphoneInterface: StepperChild = {
+    inputType: "select",
+    name: "headphoneInterface",
+    selectInputData: HEADPHONE_INTERFACE_DATA,
+  };
+
+  const headphoneType: StepperChild = {
+    inputType: "select",
+    name: "headphoneType",
+    selectInputData: HEADPHONE_TYPE_DATA,
+  };
+
+  const keyboardBacklight: StepperChild = {
+    inputType: "select",
+    name: "keyboardBacklight",
+    selectInputData: KEYBOARD_BACKLIGHT_DATA,
+  };
+
+  const keyboardInterface: StepperChild = {
+    inputType: "select",
+    name: "keyboardInterface",
+    selectInputData: PERIPHERALS_INTERFACE_DATA,
+  };
+
+  const keyboardLayout: StepperChild = {
+    inputType: "select",
+    name: "keyboardLayout",
+    selectInputData: KEYBOARD_LAYOUT_DATA,
+  };
+
+  const keyboardSwitch: StepperChild = {
+    inputType: "select",
+    name: "keyboardSwitch",
+    selectInputData: KEYBOARD_SWITCH_DATA,
+  };
+
+  const microphoneColor: StepperChild = {
+    inputType: "text",
+    name: "microphoneColor",
+    validationKey: "colorVariant",
+  };
+
+  const microphoneFrequencyResponse: StepperChild = {
+    inputType: "text",
+    name: "microphoneFrequencyResponse",
+    validationKey: "frequencyResponse",
+  };
+
+  const microphoneInterface: StepperChild = {
+    inputType: "select",
+    name: "microphoneInterface",
+    selectInputData: PERIPHERALS_INTERFACE_DATA,
+  };
+
+  const microphonePolarPattern: StepperChild = {
+    inputType: "select",
+    name: "microphonePolarPattern",
+    selectInputData: MICROPHONE_POLAR_PATTERN_DATA,
+  };
+
+  const microphoneType: StepperChild = {
+    inputType: "select",
+    name: "microphoneType",
+    selectInputData: MICROPHONE_TYPE_DATA,
+  };
+
+  const model: StepperChild = {
+    inputType: "text",
+    name: "model",
+    validationKey: "username",
+  };
+
+  const motherboardChipset: StepperChild = {
+    inputType: "text",
+    name: "motherboardChipset",
+    validationKey: "cpuSocket",
+  };
+
+  const motherboardFormFactor: StepperChild = {
+    inputType: "select",
+    name: "motherboardFormFactor",
+    selectInputData: MOTHERBOARD_FORM_FACTOR_DATA,
+  };
+
+  const motherboardM2Slots: StepperChild = {
+    inputType: "number",
+    name: "motherboardM2Slots",
+    validationKey: "smallInteger",
+  };
+
+  const motherboardMemoryMaxCapacity: StepperChild = {
+    inputType: "number",
+    name: "motherboardMemoryMaxCapacity",
+    validationKey: "smallInteger",
+  };
+
+  const motherboardMemoryMaxCapacityUnit: StepperChild = {
+    inputType: "select",
+    name: "motherboardMemoryMaxCapacityUnit",
+    selectInputData: MEMORY_UNIT_DATA,
+  };
+
+  const motherboardMemorySlots: StepperChild = {
+    inputType: "number",
+    name: "motherboardMemorySlots",
+    validationKey: "smallInteger",
+  };
+
+  const motherboardMemoryType: StepperChild = {
+    inputType: "select",
+    name: "motherboardMemoryType",
+    selectInputData: MOTHERBOARD_MEMORY_TYPE_DATA,
+  };
+
+  const motherboardPcie3Slots: StepperChild = {
+    inputType: "number",
+    name: "motherboardPcie3Slots",
+    validationKey: "smallInteger",
+  };
+
+  const motherboardPcie4Slots: StepperChild = {
+    inputType: "number",
+    name: "motherboardPcie4Slots",
+    validationKey: "smallInteger",
+  };
+
+  const motherboardPcie5Slots: StepperChild = {
+    inputType: "number",
+    name: "motherboardPcie5Slots",
+    validationKey: "smallInteger",
+  };
+
+  const motherboardSataPorts: StepperChild = {
+    inputType: "number",
+    name: "motherboardSataPorts",
+    validationKey: "smallInteger",
+  };
+
+  const motherboardSocket: StepperChild = {
+    inputType: "text",
+    name: "motherboardSocket",
+    validationKey: "cpuSocket",
+  };
+
+  const mouseButtons: StepperChild = {
+    inputType: "text",
+    name: "mouseButtons",
+    validationKey: "smallInteger",
+  };
+
+  const mouseColor: StepperChild = {
+    inputType: "text",
+    name: "mouseColor",
+    validationKey: "colorVariant",
+  };
+
+  const mouseDpi: StepperChild = {
+    inputType: "text",
+    name: "mouseDpi",
+    validationKey: "largeInteger",
+  };
+
+  const mouseInterface: StepperChild = {
+    inputType: "select",
+    name: "mouseInterface",
+    selectInputData: PERIPHERALS_INTERFACE_DATA,
+  };
+
+  const mouseSensor: StepperChild = {
+    inputType: "select",
+    name: "mouseSensor",
+    selectInputData: MOUSE_SENSOR_DATA,
+  };
+
+  const price: StepperChild = {
+    inputType: "text",
+    name: "price",
+    validationKey: "money",
+  };
+
+  const productCategory: StepperChild = {
+    inputType: "select",
+    name: "productCategory",
+    selectInputData: PRODUCT_CATEGORIES,
+  };
+
+  const psuEfficiency: StepperChild = {
+    inputType: "select",
+    name: "psuEfficiency",
+    selectInputData: PSU_EFFICIENCY_RATING_DATA,
+  };
+
+  const psuFormFactor: StepperChild = {
+    inputType: "select",
+    name: "psuFormFactor",
+    selectInputData: PSU_FORM_FACTOR_DATA,
+  };
+
+  const psuModularity: StepperChild = {
+    inputType: "select",
+    name: "psuModularity",
+    selectInputData: PSU_MODULARITY_DATA,
+  };
+
+  const psuWattage: StepperChild = {
+    inputType: "text",
+    name: "psuWattage",
+    validationKey: "mediumInteger",
+  };
+
+  const quantity: StepperChild = {
+    inputType: "text",
+    name: "quantity",
+    validationKey: "largeInteger",
+  };
+
+  const ramColor: StepperChild = {
+    inputType: "text",
+    name: "ramColor",
+    validationKey: "colorVariant",
+  };
+
+  const ramDataRate: StepperChild = {
+    inputType: "text",
+    name: "ramDataRate",
+    validationKey: "mediumInteger",
+  };
+
+  const ramModulesCapacity: StepperChild = {
+    inputType: "text",
+    name: "ramModulesCapacity",
+    validationKey: "mediumInteger",
+  };
+
+  const ramModulesCapacityUnit: StepperChild = {
+    inputType: "select",
+    name: "ramModulesCapacityUnit",
+    selectInputData: MEMORY_UNIT_DATA,
+  };
+
+  const ramModulesQuantity: StepperChild = {
+    inputType: "text",
+    name: "ramModulesQuantity",
+    validationKey: "smallInteger",
+  };
+
+  const ramTiming: StepperChild = {
+    inputType: "text",
+    name: "ramTiming",
+    validationKey: "ramTiming",
+  };
+
+  const ramType: StepperChild = {
+    inputType: "select",
+    name: "ramType",
+    selectInputData: RAM_MEMORY_TYPE_DATA,
+  };
+
+  const ramVoltage: StepperChild = {
+    inputType: "text",
+    name: "ramVoltage",
+    validationKey: "ramVoltage",
+  };
+
+  const speakerColor: StepperChild = {
+    inputType: "text",
+    name: "speakerColor",
+    validationKey: "colorVariant",
+  };
+
+  const speakerFrequencyResponse: StepperChild = {
+    inputType: "text",
+    name: "speakerFrequencyResponse",
+    validationKey: "frequencyResponse",
+  };
+
+  const speakerInterface: StepperChild = {
+    inputType: "select",
+    name: "speakerInterface",
+    selectInputData: SPEAKER_INTERFACE_DATA,
+  };
+
+  const speakerTotalWattage: StepperChild = {
+    inputType: "text",
+    name: "speakerTotalWattage",
+    validationKey: "mediumInteger",
+  };
+
+  const speakerType: StepperChild = {
+    inputType: "select",
+    name: "speakerType",
+    selectInputData: SPEAKER_TYPE_DATA,
+  };
+
+  const storageCacheCapacity: StepperChild = {
+    inputType: "text",
+    name: "storageCacheCapacity",
+    validationKey: "mediumInteger",
+  };
+
+  const storageCacheCapacityUnit: StepperChild = {
+    inputType: "select",
+    name: "storageCacheCapacityUnit",
+    selectInputData: MEMORY_UNIT_DATA,
+  };
+
+  const storageCapacity: StepperChild = {
+    inputType: "text",
+    name: "storageCapacity",
+    validationKey: "mediumInteger",
+  };
+
+  const storageCapacityUnit: StepperChild = {
+    inputType: "select",
+    name: "storageCapacityUnit",
+    selectInputData: MEMORY_UNIT_DATA,
+  };
+
+  const storageFormFactor: StepperChild = {
+    inputType: "select",
+    name: "storageFormFactor",
+    selectInputData: STORAGE_FORM_FACTOR_DATA,
+  };
+
+  const storageInterface: StepperChild = {
+    inputType: "select",
+    name: "storageInterface",
+    selectInputData: STORAGE_INTERFACE_DATA,
+  };
+
+  const storageType: StepperChild = {
+    inputType: "select",
+    name: "storageType",
+    selectInputData: STORAGE_TYPE_DATA,
+  };
+
+  const webcamColor: StepperChild = {
+    inputType: "text",
+    name: "webcamColor",
+    validationKey: "colorVariant",
+  };
+
+  const webcamFrameRate: StepperChild = {
+    inputType: "select",
+    name: "webcamFrameRate",
+    selectInputData: WEBCAM_FRAME_RATE_DATA,
+  };
+
+  const webcamInterface: StepperChild = {
+    inputType: "select",
+    name: "webcamInterface",
+    selectInputData: PERIPHERALS_INTERFACE_DATA,
+  };
+
+  const webcamMicrophone: StepperChild = {
+    inputType: "select",
+    name: "webcamMicrophone",
+    selectInputData: WEBCAM_MICROPHONE_DATA,
+  };
+
+  const webcamResolution: StepperChild = {
+    inputType: "select",
+    name: "webcamResolution",
+    selectInputData: WEBCAM_RESOLUTION_DATA,
+  };
+
+  const weight: StepperChild = {
+    inputType: "text",
+    name: "weight",
+    validationKey: "weight",
+  };
+
+  const weightUnit: StepperChild = {
+    inputType: "select",
+    name: "weightUnit",
+    selectInputData: WEIGHT_UNIT_DATA,
+  };
+
+  return [
+    // first page
+    {
+      children: [
+        brand,
+        model,
+        description,
+        price,
+        currency,
+        availability,
+        quantity,
+        weight,
+        weightUnit,
+        dimensionLength,
+        dimensionLengthUnit,
+        dimensionWidth,
+        dimensionWidthUnit,
+        dimensionHeight,
+        dimensionHeightUnit,
+        additionalComments,
+      ],
+      description: "General product information",
+    },
+
+    // accessory
+    {
+      children: [
+        accessoryType,
+        accessoryColor,
+        accessoryInterface,
+        accessoryFieldName1,
+        accessoryFieldValue1,
+      ],
+      description: "Accessory",
+    },
+
+    // cpu
+    {
+      children: [
+        cpuSocket,
+        cpuFrequency,
+        cpuCores,
+        cpuWattage,
+        cpuL1CacheCapacity,
+        cpuL1CacheCapacityUnit,
+        cpuL2CacheCapacity,
+        cpuL2CacheCapacityUnit,
+        cpuL3CacheCapacity,
+        cpuL3CacheCapacityUnit,
+      ],
+      description: "Central Processing Unit (CPU)",
+    },
+
+    // case
+    {
+      children: [caseType, caseColor, caseSidePanel],
+      description: "Computer Case",
+    },
+
+    // display
+    {
+      children: [
+        displaySize,
+        displayResolutionHorizontal,
+        displayResolutionVertical,
+        displayAspectRatio,
+        displayRefreshRate,
+        displayResponseTime,
+        displayPanelType,
+      ],
+      description: "Display",
+    },
+
+    // gpu
+    {
+      children: [
+        gpuChipset,
+        gpuCoreClock,
+        gpuBoostClock,
+        gpuMemoryCapacity,
+        gpuMemoryCapacityUnit,
+        gpuTdp,
+      ],
+      description: "Graphics Processing Unit (GPU)",
+    },
+
+    // headphone
+    {
+      children: [
+        headphoneType,
+        headphoneDriver,
+        headphoneImpedance,
+        headphoneFrequencyResponse,
+        headphoneInterface,
+        headphoneColor,
+      ],
+      description: "Headphone",
+    },
+
+    // keyboard
+    {
+      children: [keyboardLayout, keyboardSwitch, keyboardBacklight, keyboardInterface],
+      description: "Keyboard",
+    },
+
+    // ram
+    {
+      children: [
+        ramType,
+        ramModulesQuantity,
+        ramModulesCapacity,
+        ramModulesCapacityUnit,
+        ramDataRate,
+        ramTiming,
+        ramVoltage,
+        ramColor,
+      ],
+      description: "Memory (RAM)",
+    },
+
+    // psu
+    {
+      children: [psuWattage, psuFormFactor, psuEfficiency, psuModularity],
+      description: "Power Supply Unit (PSU)",
+    },
+
+    // speaker
+    {
+      children: [
+        speakerType,
+        speakerTotalWattage,
+        speakerInterface,
+        speakerFrequencyResponse,
+        speakerColor,
+      ],
+      description: "Speaker",
+    },
+
+    // microphone
+    {
+      children: [
+        microphoneType,
+        microphonePolarPattern,
+        microphoneInterface,
+        microphoneFrequencyResponse,
+        microphoneColor,
+      ],
+      description: "Microphone",
+    },
+
+    // mouse
+    {
+      children: [mouseButtons, mouseDpi, mouseSensor, mouseInterface, mouseColor],
+      description: "Mouse",
+    },
+
+    // motherboard
+    {
+      children: [
+        motherboardSocket,
+        motherboardChipset,
+        motherboardFormFactor,
+        motherboardMemoryType,
+        motherboardMemoryMaxCapacity,
+        motherboardMemoryMaxCapacityUnit,
+        motherboardMemorySlots,
+        motherboardM2Slots,
+        motherboardPcie3Slots,
+        motherboardPcie4Slots,
+        motherboardPcie5Slots,
+        motherboardSataPorts,
+      ],
+      description: "Motherboard",
+    },
+
+    // storage
+    {
+      children: [
+        storageType,
+        storageCapacity,
+        storageCapacityUnit,
+        storageFormFactor,
+        storageInterface,
+        storageCacheCapacity,
+        storageCacheCapacityUnit,
+      ],
+      description: "Storage",
+    },
+
+    // webcam
+    {
+      children: [
+        webcamResolution,
+        webcamFrameRate,
+        webcamInterface,
+        webcamMicrophone,
+        webcamColor,
+      ],
+      description: "Webcam",
+    },
+
+    {
+      children: [],
+      description: "Review",
+      kind: "review",
+    },
+  ];
+}
 
 /**
  * - /^(?![0-9])[^"'\s\\]{1,75}$/;
@@ -233,6 +1110,27 @@ const TABLET_CHIPSET_REGEX = CPU_SOCKET_REGEX;
 const MOBILE_CAMERA_REGEX = /^([0-9]{1,3} MP)(?:, ([0-9]{1,3} MP)){0,12}$/;
 
 const ACCESSORY_TYPE_REGEX = BRAND_REGEX;
+
+const MAX_ADDITIONAL_FIELDS_AMOUNT = 5;
+
+/** stepper page indexes of product categories */
+const PRODUCT_CATEGORY_PAGE_TABLE: Record<ProductCategory, number> = {
+  Accessory: 1,
+  "Central Processing Unit (CPU)": 2,
+  "Computer Case": 3,
+  Display: 4,
+  "Graphics Processing Unit (GPU)": 5,
+  Headphone: 6,
+  Keyboard: 7,
+  "Memory (RAM)": 8,
+  "Power Supply Unit (PSU)": 9,
+  Speaker: 10,
+  Microphone: 11,
+  Motherboard: 12,
+  Mouse: 13,
+  Storage: 14,
+  Webcam: 15,
+};
 
 const WEIGHT_UNIT_SELECT_INPUT_DATA: SelectInputData = [
   { value: "g", label: "gram" },
@@ -489,21 +1387,17 @@ const PRODUCT_CATEGORY_ROUTE_NAME_OBJ: Record<ProductCategory, string> = {
   Accessory: "accessory",
   "Central Processing Unit (CPU)": "cpu",
   "Computer Case": "computer-case",
-  "Desktop Computer": "desktop-computer",
   Display: "display",
   "Graphics Processing Unit (GPU)": "gpu",
   Headphone: "headphone",
   Keyboard: "keyboard",
-  Laptop: "laptop",
   "Memory (RAM)": "ram",
   Mouse: "mouse",
   Microphone: "microphone",
   Motherboard: "motherboard",
   "Power Supply Unit (PSU)": "psu",
-  Smartphone: "smartphone",
   Speaker: "speaker",
   Storage: "storage",
-  Tablet: "tablet",
   Webcam: "webcam",
 };
 
@@ -516,21 +1410,17 @@ const LOCATION_PRODUCT_CATEGORY_OBJ: Record<string, ProductCategory> = {
   accessory: "Accessory",
   cpu: "Central Processing Unit (CPU)",
   "computer-case": "Computer Case",
-  "desktop-computer": "Desktop Computer",
   display: "Display",
   gpu: "Graphics Processing Unit (GPU)",
   headphone: "Headphone",
   keyboard: "Keyboard",
-  laptop: "Laptop",
   ram: "Memory (RAM)",
   mouse: "Mouse",
   microphone: "Microphone",
   motherboard: "Motherboard",
   psu: "Power Supply Unit (PSU)",
-  smartphone: "Smartphone",
   speaker: "Speaker",
   storage: "Storage",
-  tablet: "Tablet",
   webcam: "Webcam",
 };
 
@@ -1474,6 +2364,7 @@ export {
   CREATE_PRODUCT_MAX_IMG_AMOUNT,
   CREATE_PRODUCT_MAX_IMG_SIZE,
   CREATE_PRODUCT_MAX_STEPPER_POSITION,
+  createProductStepperPages,
   DIMENSION_UNIT_DATA,
   DIMENSION_UNIT_SELECT_INPUT_DATA,
   DIMENSIONS_REGEX,
@@ -1488,6 +2379,7 @@ export {
   KEYBOARD_SWITCH_DATA,
   LARGE_INTEGER_REGEX,
   LOCATION_PRODUCT_CATEGORY_OBJ,
+  MAX_ADDITIONAL_FIELDS_AMOUNT,
   MEDIUM_INTEGER_REGEX,
   MEMORY_UNIT_DATA,
   MEMORY_UNIT_SELECT_INPUT_DATA,
@@ -1504,6 +2396,7 @@ export {
   OBJECT_KEY_REGEX,
   PERIPHERALS_INTERFACE_DATA,
   PRODUCT_AVAILABILITY_DATA,
+  PRODUCT_CATEGORY_PAGE_TABLE,
   PRODUCT_CATEGORY_ROUTE_NAME_OBJ,
   PRODUCT_RATING_DATA,
   PRODUCTS_QUERY_DATA,

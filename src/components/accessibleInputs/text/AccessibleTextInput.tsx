@@ -193,14 +193,6 @@ function AccessibleTextInput<
       valueBuffer,
     });
 
-  console.group(`AccessibleTextInput: ${name}`);
-  console.log("valueBuffer:", valueBuffer);
-  console.log("page", page);
-  console.log("isValueBufferValid:", isValueBufferValid);
-  console.log("full", full);
-  console.log("validationTexts:", validationTexts);
-  console.groupEnd();
-
   return (
     <Container w={350}>
       <Popover
@@ -269,10 +261,6 @@ function AccessibleTextInput<
               closePopover();
             }}
             onChange={(event: ChangeEvent<HTMLInputElement>) => {
-              // setValueBuffer({
-              //   action: "setValueBuffer",
-              //   payload: event.currentTarget.value,
-              // });
               setValueBuffer(event.currentTarget.value);
               onChange?.(event);
             }}

@@ -43,7 +43,6 @@ import {
   ProductReviewSchema,
 } from "../../product/types";
 import { CUSTOMER_DOCUMENTS } from "../customer/customerDocuments";
-import { STAR_RATINGS_OBJ } from "../productReview/review";
 
 const GPUS_ARRAY: Omit<ProductCategorySpecifications & GpuSpecifications, "sku">[] = [
   {
@@ -70,19 +69,6 @@ const GPUS_ARRAY: Omit<ProductCategorySpecifications & GpuSpecifications, "sku">
     gpuBoostClock: 1740,
     gpuTdp: 320,
     additionalFields: {},
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -109,19 +95,6 @@ const GPUS_ARRAY: Omit<ProductCategorySpecifications & GpuSpecifications, "sku">
     gpuBoostClock: 2581,
     gpuTdp: 230,
     additionalFields: {},
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -148,19 +121,6 @@ const GPUS_ARRAY: Omit<ProductCategorySpecifications & GpuSpecifications, "sku">
     gpuBoostClock: 1785,
     gpuTdp: 125,
     additionalFields: {},
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -187,19 +147,6 @@ const GPUS_ARRAY: Omit<ProductCategorySpecifications & GpuSpecifications, "sku">
     gpuBoostClock: 2365,
     gpuTdp: 300,
     additionalFields: {},
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -229,19 +176,6 @@ const GPUS_ARRAY: Omit<ProductCategorySpecifications & GpuSpecifications, "sku">
       videoOutputs: "HDMI, DisplayPort",
       coolingSolution: "Single Fan",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -271,19 +205,6 @@ const GPUS_ARRAY: Omit<ProductCategorySpecifications & GpuSpecifications, "sku">
       lightingEffects: "RGB Fusion 2.0",
       powerConnectors: "2x 8-pin",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -313,19 +234,6 @@ const GPUS_ARRAY: Omit<ProductCategorySpecifications & GpuSpecifications, "sku">
       ports: "3x DisplayPort, 1x HDMI",
       formFactor: "Dual-Slot",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -355,19 +263,6 @@ const GPUS_ARRAY: Omit<ProductCategorySpecifications & GpuSpecifications, "sku">
       coolingType: "Triple-Fan",
       backplate: "Yes",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -397,19 +292,6 @@ const GPUS_ARRAY: Omit<ProductCategorySpecifications & GpuSpecifications, "sku">
       lighting: "RGB Fusion",
       coolingSystem: "Triple-Fan",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -439,19 +321,6 @@ const GPUS_ARRAY: Omit<ProductCategorySpecifications & GpuSpecifications, "sku">
       connectors: "3x DisplayPort, 1x HDMI",
       powerRequirement: "650W PSU",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -481,19 +350,6 @@ const GPUS_ARRAY: Omit<ProductCategorySpecifications & GpuSpecifications, "sku">
       backplate: "Yes",
       warranty: "3 years",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -523,19 +379,6 @@ const GPUS_ARRAY: Omit<ProductCategorySpecifications & GpuSpecifications, "sku">
       formFactor: "Dual-Slot",
       VRReady: "Yes",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -565,19 +408,6 @@ const GPUS_ARRAY: Omit<ProductCategorySpecifications & GpuSpecifications, "sku">
       cooling: "Triple-Fan",
       ports: "2x HDMI, 2x DisplayPort",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -607,19 +437,6 @@ const GPUS_ARRAY: Omit<ProductCategorySpecifications & GpuSpecifications, "sku">
       connectors: "3x DisplayPort, 1x HDMI",
       powerRequirement: "500W PSU",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -649,19 +466,6 @@ const GPUS_ARRAY: Omit<ProductCategorySpecifications & GpuSpecifications, "sku">
       lighting: "RGB Fusion 2.0",
       powerConnectors: "3x 8-pin",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -691,19 +495,6 @@ const GPUS_ARRAY: Omit<ProductCategorySpecifications & GpuSpecifications, "sku">
       backplate: "Yes",
       VRReady: "Yes",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -733,19 +524,6 @@ const GPUS_ARRAY: Omit<ProductCategorySpecifications & GpuSpecifications, "sku">
       cooling: "Dual-Fan",
       ports: "1x HDMI, 3x DisplayPort",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -775,19 +553,6 @@ const GPUS_ARRAY: Omit<ProductCategorySpecifications & GpuSpecifications, "sku">
       lighting: "Mystic Light RGB",
       powerConnectors: "1x 8-pin, 1x 6-pin",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -817,19 +582,6 @@ const GPUS_ARRAY: Omit<ProductCategorySpecifications & GpuSpecifications, "sku">
       VRReady: "Yes",
       warranty: "5 years",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -859,19 +611,6 @@ const GPUS_ARRAY: Omit<ProductCategorySpecifications & GpuSpecifications, "sku">
       connectors: "2x HDMI, 2x DisplayPort",
       powerRequirement: "450W PSU",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -901,19 +640,6 @@ const GPUS_ARRAY: Omit<ProductCategorySpecifications & GpuSpecifications, "sku">
       cooling: "Dual-Fan",
       ports: "1x HDMI, 3x DisplayPort",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -943,19 +669,6 @@ const GPUS_ARRAY: Omit<ProductCategorySpecifications & GpuSpecifications, "sku">
       lighting: "RGB Fusion",
       powerConnectors: "2x 8-pin",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -985,19 +698,6 @@ const GPUS_ARRAY: Omit<ProductCategorySpecifications & GpuSpecifications, "sku">
       VRReady: "Yes",
       warranty: "3 years",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -1027,19 +727,6 @@ const GPUS_ARRAY: Omit<ProductCategorySpecifications & GpuSpecifications, "sku">
       powerConnectors: "1x 8-pin",
       outputPorts: "1x HDMI, 1x DisplayPort, 1x DVI",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -1069,19 +756,6 @@ const GPUS_ARRAY: Omit<ProductCategorySpecifications & GpuSpecifications, "sku">
       cooling: "Single-Fan",
       DirectXSupport: "12",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -1111,19 +785,6 @@ const GPUS_ARRAY: Omit<ProductCategorySpecifications & GpuSpecifications, "sku">
       RGBLighting: "Yes",
       FreeSyncSupport: "Yes",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -1153,19 +814,6 @@ const GPUS_ARRAY: Omit<ProductCategorySpecifications & GpuSpecifications, "sku">
       RayTracingCores: "Yes",
       VRReady: "Yes",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
 ];
@@ -3434,59 +3082,6 @@ const GPU_REVIEWS = [
   },
 ];
 
-function returnGpuProductReviewSchemas({
-  gpuDocuments,
-  gpuReviews,
-  customerDocuments,
-}: {
-  gpuDocuments: typeof GPU_DOCUMENTS;
-  gpuReviews: typeof GPU_REVIEWS;
-  customerDocuments: typeof CUSTOMER_DOCUMENTS;
-}) {
-  return gpuDocuments.flatMap((gpuDocument) => {
-    // random number of reviews
-    const numberOfReviews = Math.round(Math.random() * (3 - 1) + 1);
-    // shuffle customers
-    const shuffledCustomers = shuffleArray(customerDocuments);
-    // random slice of customers
-    const randomCustomers = shuffledCustomers.slice(0, numberOfReviews);
-    // shuffle reviews
-    const shuffledReviews = shuffleArray(gpuReviews);
-    // random slice of reviews
-    const randomReviews = shuffledReviews.slice(0, numberOfReviews);
-
-    const productReviewSchemas: ProductReviewSchema[] = [];
-    randomCustomers.forEach((customer, index) => {
-      const {
-        helpfulVotes,
-        isVerifiedPurchase,
-        productRating,
-        productReview,
-        unhelpfulVotes,
-      } = randomReviews[index];
-
-      const productReviewSchema: ProductReviewSchema = {
-        userId: customer._id,
-        username: customer.username,
-        productId: gpuDocument._id,
-        productCategory: "Graphics Processing Unit (GPU)",
-        productSku: gpuDocument.sku[Math.floor(Math.random() * gpuDocument.sku.length)],
-        productBrand: gpuDocument.brand,
-        productModel: gpuDocument.model,
-        productReview,
-        productRating: STAR_RATINGS_OBJ[productRating],
-        helpfulVotes,
-        unhelpfulVotes,
-        isVerifiedPurchase,
-      };
-
-      productReviewSchemas.push(productReviewSchema);
-    });
-
-    return productReviewSchemas;
-  });
-}
-
 const GPU_REVIEW_DOCUMENTS: ProductReviewDocument[] = [
   {
     userId: "65684bdf01240d69b909392f",
@@ -4395,11 +3990,4 @@ const GPU_REVIEW_DOCUMENTS: ProductReviewDocument[] = [
   },
 ];
 
-export {
-  GPU_DOCUMENTS,
-  GPU_REVIEW_DOCUMENTS,
-  GPU_REVIEWS,
-  GPUS_ARRAY,
-  returnGpuProductReviewSchemas,
-  returnGpuSchemas,
-};
+export { GPU_DOCUMENTS, GPU_REVIEW_DOCUMENTS, GPU_REVIEWS, GPUS_ARRAY, returnGpuSchemas };

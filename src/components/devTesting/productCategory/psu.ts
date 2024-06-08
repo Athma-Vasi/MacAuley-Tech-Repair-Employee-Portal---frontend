@@ -41,7 +41,6 @@ import {
   PsuSpecifications,
 } from "../../product/types";
 import { CUSTOMER_DOCUMENTS } from "../customer/customerDocuments";
-import { STAR_RATINGS_OBJ } from "../productReview/review";
 
 const PSUS_ARRAY: Omit<ProductCategorySpecifications & PsuSpecifications, "sku">[] = [
   {
@@ -69,19 +68,6 @@ const PSUS_ARRAY: Omit<ProductCategorySpecifications & PsuSpecifications, "sku">
       color: "Black",
       fanSize: "120mm",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -109,19 +95,6 @@ const PSUS_ARRAY: Omit<ProductCategorySpecifications & PsuSpecifications, "sku">
       color: "Black",
       fanSize: "135mm",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -149,19 +122,6 @@ const PSUS_ARRAY: Omit<ProductCategorySpecifications & PsuSpecifications, "sku">
       color: "White",
       fanSize: "120mm",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -190,19 +150,6 @@ const PSUS_ARRAY: Omit<ProductCategorySpecifications & PsuSpecifications, "sku">
       color: "Black",
       fanSize: "120mm",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -231,19 +178,6 @@ const PSUS_ARRAY: Omit<ProductCategorySpecifications & PsuSpecifications, "sku">
       color: "Black",
       fanSize: "92mm",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -273,19 +207,6 @@ const PSUS_ARRAY: Omit<ProductCategorySpecifications & PsuSpecifications, "sku">
       fanSize: "140mm",
       rgbControl: "Software",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -315,19 +236,6 @@ const PSUS_ARRAY: Omit<ProductCategorySpecifications & PsuSpecifications, "sku">
       fanSize: "140mm",
       warranty: "10 years",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -357,19 +265,6 @@ const PSUS_ARRAY: Omit<ProductCategorySpecifications & PsuSpecifications, "sku">
       fanSize: "120mm",
       warranty: "7 years",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -399,19 +294,6 @@ const PSUS_ARRAY: Omit<ProductCategorySpecifications & PsuSpecifications, "sku">
       fanSize: "120mm",
       warranty: "10 years",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -441,19 +323,6 @@ const PSUS_ARRAY: Omit<ProductCategorySpecifications & PsuSpecifications, "sku">
       fanSize: "120mm",
       warranty: "7 years",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -482,19 +351,6 @@ const PSUS_ARRAY: Omit<ProductCategorySpecifications & PsuSpecifications, "sku">
       fanSize: "140mm",
       warranty: "8 years",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -524,19 +380,6 @@ const PSUS_ARRAY: Omit<ProductCategorySpecifications & PsuSpecifications, "sku">
       fanSize: "120mm",
       warranty: "7 years",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -566,19 +409,6 @@ const PSUS_ARRAY: Omit<ProductCategorySpecifications & PsuSpecifications, "sku">
       fanSize: "120mm",
       warranty: "3 years",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -608,19 +438,6 @@ const PSUS_ARRAY: Omit<ProductCategorySpecifications & PsuSpecifications, "sku">
       fanSize: "140mm",
       warranty: "10 years",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -650,19 +467,6 @@ const PSUS_ARRAY: Omit<ProductCategorySpecifications & PsuSpecifications, "sku">
       fanSize: "120mm",
       warranty: "5 years",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -692,19 +496,6 @@ const PSUS_ARRAY: Omit<ProductCategorySpecifications & PsuSpecifications, "sku">
       fanSize: "120mm",
       warranty: "3 years",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -734,19 +525,6 @@ const PSUS_ARRAY: Omit<ProductCategorySpecifications & PsuSpecifications, "sku">
       fanSize: "120mm",
       warranty: "7 years",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -776,19 +554,6 @@ const PSUS_ARRAY: Omit<ProductCategorySpecifications & PsuSpecifications, "sku">
       fanSize: "140mm",
       warranty: "10 years",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -818,19 +583,6 @@ const PSUS_ARRAY: Omit<ProductCategorySpecifications & PsuSpecifications, "sku">
       fanSize: "120mm",
       warranty: "5 years",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -860,19 +612,6 @@ const PSUS_ARRAY: Omit<ProductCategorySpecifications & PsuSpecifications, "sku">
       fanSize: "120mm",
       warranty: "7 years",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -902,19 +641,6 @@ const PSUS_ARRAY: Omit<ProductCategorySpecifications & PsuSpecifications, "sku">
       fanSize: "140mm",
       warranty: "10 years",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
   {
@@ -944,19 +670,6 @@ const PSUS_ARRAY: Omit<ProductCategorySpecifications & PsuSpecifications, "sku">
       fanSize: "120mm",
       warranty: "5 years",
     },
-    starRatingsCount: {
-      halfStar: 0,
-      oneStar: 0,
-      oneAndHalfStars: 0,
-      twoStars: 0,
-      twoAndHalfStars: 0,
-      threeStars: 0,
-      threeAndHalfStars: 0,
-      fourStars: 0,
-      fourAndHalfStars: 0,
-      fiveStars: 0,
-    },
-    productReviewsIds: [],
     uploadedFilesIds: [],
   },
 ];
@@ -2801,59 +2514,6 @@ const PSU_REVIEWS = [
   },
 ];
 
-function returnPsuProductReviewSchemas({
-  psuDocuments,
-  psuReviews,
-  customerDocuments,
-}: {
-  psuDocuments: typeof PSU_DOCUMENTS;
-  psuReviews: typeof PSU_REVIEWS;
-  customerDocuments: typeof CUSTOMER_DOCUMENTS;
-}) {
-  return psuDocuments.flatMap((psuDocument) => {
-    // random number of reviews
-    const numberOfReviews = Math.round(Math.random() * (3 - 1) + 1);
-    // shuffle customers
-    const shuffledCustomers = shuffleArray(customerDocuments);
-    // random slice of customers
-    const randomCustomers = shuffledCustomers.slice(0, numberOfReviews);
-    // shuffle reviews
-    const shuffledReviews = shuffleArray(psuReviews);
-    // random slice of reviews
-    const randomReviews = shuffledReviews.slice(0, numberOfReviews);
-
-    const productReviewSchemas: ProductReviewSchema[] = [];
-    randomCustomers.forEach((customer, index) => {
-      const {
-        helpfulVotes,
-        isVerifiedPurchase,
-        productRating,
-        productReview,
-        unhelpfulVotes,
-      } = randomReviews[index];
-
-      const productReviewSchema: ProductReviewSchema = {
-        userId: customer._id,
-        username: customer.username,
-        productId: psuDocument._id,
-        productCategory: "Power Supply Unit (PSU)",
-        productSku: psuDocument.sku[Math.floor(Math.random() * psuDocument.sku.length)],
-        productBrand: psuDocument.brand,
-        productModel: psuDocument.model,
-        productReview,
-        productRating: STAR_RATINGS_OBJ[productRating],
-        helpfulVotes,
-        unhelpfulVotes,
-        isVerifiedPurchase,
-      };
-
-      productReviewSchemas.push(productReviewSchema);
-    });
-
-    return productReviewSchemas;
-  });
-}
-
 const PSU_REVIEW_DOCUMENTS: ProductReviewDocument[] = [
   {
     userId: "65684bf701240d69b9093c9f",
@@ -3607,11 +3267,4 @@ const PSU_REVIEW_DOCUMENTS: ProductReviewDocument[] = [
   },
 ];
 
-export {
-  PSU_DOCUMENTS,
-  PSU_REVIEW_DOCUMENTS,
-  PSU_REVIEWS,
-  PSUS_ARRAY,
-  returnPsuProductReviewSchemas,
-  returnPsuSchemas,
-};
+export { PSU_DOCUMENTS, PSU_REVIEW_DOCUMENTS, PSU_REVIEWS, PSUS_ARRAY, returnPsuSchemas };
