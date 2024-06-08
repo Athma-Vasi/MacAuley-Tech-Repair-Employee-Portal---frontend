@@ -6,107 +6,107 @@ import { AccessibleTextInput } from "../accessibleInputs/text/AccessibleTextInpu
 import { ProductCategory } from "../dashboard/types";
 import { CreateProductAction } from "./actions";
 import { AdditionalFields } from "./AdditionalFields";
-import { MEMORY_UNIT_DATA } from "./constants";
+import { HEADPHONE_INTERFACE_DATA } from "./constants";
 import { CreateProductDispatch } from "./dispatch";
-import { MemoryUnit } from "./types";
+import { HeadphoneInterface, HeadphoneType } from "./types";
 
-type GPUProps = {
-  gpuBoostClock: string;
-  gpuChipset: string;
-  gpuCoreClock: string;
-  gpuMemoryCapacity: string;
-  gpuMemoryCapacityUnit: MemoryUnit;
-  gpuTdp: string;
+type HeadphoneProps = {
+  headphoneColor: string;
+  headphoneDriver: string;
+  headphoneFrequencyResponse: string;
   additionalFields: Array<[string, string]>;
   additionalFieldsFormData: FormData;
   parentAction: CreateProductAction;
   parentDispatch: React.Dispatch<CreateProductDispatch>;
   productCategory: ProductCategory;
   stepperPages: StepperPage[];
+  headphoneImpedance: string;
+  headphoneInterface: HeadphoneInterface;
+  headphoneType: HeadphoneType;
 };
 
-function GPU({
-  gpuBoostClock,
-  gpuChipset,
-  gpuCoreClock,
-  gpuMemoryCapacity,
-  gpuMemoryCapacityUnit,
-  gpuTdp,
+function Headphone({
   additionalFields,
   additionalFieldsFormData,
+  headphoneColor,
+  headphoneDriver,
+  headphoneFrequencyResponse,
+  headphoneImpedance,
+  headphoneInterface,
+  headphoneType,
   parentAction,
   parentDispatch,
   productCategory,
   stepperPages,
-}: GPUProps) {
-  const gpuBoostClockTextInput = (
+}: HeadphoneProps) {
+  const headphoneColorTextInput = (
     <AccessibleTextInput
       attributes={{
         invalidValueAction: parentAction.setPageInError,
-        name: "gpuBoostClock",
+        name: "headphoneColor",
         stepperPages,
-        validValueAction: parentAction.setGpuBoostClock,
-        value: gpuBoostClock,
+        validValueAction: parentAction.setHeadphoneColor,
+        value: headphoneColor,
       }}
     />
   );
 
-  const gpuChipsetTextInput = (
+  const headphoneDriverTextInput = (
     <AccessibleTextInput
       attributes={{
         invalidValueAction: parentAction.setPageInError,
-        name: "gpuChipset",
+        name: "headphoneDriver",
         stepperPages,
-        validValueAction: parentAction.setGpuChipset,
-        value: gpuChipset,
+        validValueAction: parentAction.setHeadphoneDriver,
+        value: headphoneDriver,
       }}
     />
   );
 
-  const gpuCoreClockTextInput = (
+  const headphoneFrequencyResponseTextInput = (
     <AccessibleTextInput
       attributes={{
         invalidValueAction: parentAction.setPageInError,
-        name: "gpuCoreClock",
+        name: "headphoneFrequencyResponse",
         stepperPages,
-        validValueAction: parentAction.setGpuCoreClock,
-        value: gpuCoreClock,
+        validValueAction: parentAction.setHeadphoneFrequencyResponse,
+        value: headphoneFrequencyResponse,
       }}
     />
   );
 
-  const gpuMemoryCapacityTextInput = (
+  const headphoneImpedanceTextInput = (
     <AccessibleTextInput
       attributes={{
         invalidValueAction: parentAction.setPageInError,
-        name: "gpuMemoryCapacity",
+        name: "headphoneImpedance",
         stepperPages,
-        validValueAction: parentAction.setGpuMemoryCapacity,
-        value: gpuMemoryCapacity,
+        validValueAction: parentAction.setHeadphoneImpedance,
+        value: headphoneImpedance,
       }}
     />
   );
 
-  const gpuMemoryCapacityUnitSelectInput = (
+  const headphoneInterfaceSelectInput = (
     <AccessibleSelectInput
       attributes={{
-        data: MEMORY_UNIT_DATA,
-        name: "gpuMemoryCapacityUnit",
+        data: HEADPHONE_INTERFACE_DATA,
+        name: "headphoneInterface",
         parentDispatch,
-        validValueAction: parentAction.setGpuMemoryCapacityUnit,
-        value: gpuMemoryCapacityUnit,
+        validValueAction: parentAction.setHeadphoneInterface,
+        value: headphoneInterface,
       }}
     />
   );
 
-  const gpuTdpTextInput = (
+  const headphoneTypeTextInput = (
     <AccessibleTextInput
       attributes={{
         invalidValueAction: parentAction.setPageInError,
-        name: "gpuTdp",
+        name: "headphoneType",
         stepperPages,
-        validValueAction: parentAction.setGpuTdp,
-        value: gpuTdp,
+        validValueAction: parentAction.setHeadphoneType,
+        value: headphoneType,
       }}
     />
   );
@@ -124,15 +124,15 @@ function GPU({
 
   return (
     <Stack>
-      {gpuBoostClockTextInput}
-      {gpuChipsetTextInput}
-      {gpuCoreClockTextInput}
-      {gpuMemoryCapacityTextInput}
-      {gpuMemoryCapacityUnitSelectInput}
-      {gpuTdpTextInput}
+      {headphoneColorTextInput}
+      {headphoneDriverTextInput}
+      {headphoneFrequencyResponseTextInput}
+      {headphoneImpedanceTextInput}
+      {headphoneInterfaceSelectInput}
+      {headphoneTypeTextInput}
       {additionalFieldsAndImage}
     </Stack>
   );
 }
 
-export { GPU };
+export { Headphone };

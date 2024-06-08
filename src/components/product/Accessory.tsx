@@ -1,21 +1,14 @@
-import { Group, Stack } from "@mantine/core";
+import { Stack } from "@mantine/core";
 
-import { StepperChild, StepperPage } from "../../types";
-import { AccessibleButton } from "../accessibleInputs/AccessibleButton";
+import { StepperPage } from "../../types";
 import { AccessibleSelectInput } from "../accessibleInputs/AccessibleSelectInput";
-import { AccessibleTextAreaInput } from "../accessibleInputs/AccessibleTextAreaInput";
-import { AccessibleImageInput } from "../accessibleInputs/image";
 import { AccessibleTextInput } from "../accessibleInputs/text/AccessibleTextInput";
 import { ProductCategory } from "../dashboard/types";
 import { CreateProductAction } from "./actions";
-import {
-  MAX_ADDITIONAL_FIELDS_AMOUNT,
-  PERIPHERALS_INTERFACE_DATA,
-  PRODUCT_CATEGORY_PAGE_TABLE,
-} from "./constants";
+import { AdditionalFields } from "./AdditionalFields";
+import { PERIPHERALS_INTERFACE_DATA } from "./constants";
 import { CreateProductDispatch } from "./dispatch";
 import { PeripheralsInterface } from "./types";
-import { AdditionalFields } from "./AdditionalFields";
 
 type AccessoryProps = {
   accessoryColor: string;
