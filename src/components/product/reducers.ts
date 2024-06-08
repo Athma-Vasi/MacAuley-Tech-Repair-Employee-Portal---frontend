@@ -521,8 +521,15 @@ function modifyAdditionalFieldsMap_createProductReducer(
         dynamicIndexes: [inputIndex],
       } = dispatch.payload as AdditionalFieldsDelete;
 
+      additionalFields.splice(inputIndex, 1);
+      const additionalFieldsMap = clonedAdditionalFieldsMap.set(
+        productCategory,
+        additionalFields
+      );
+
       return {
         ...state,
+        additionalFieldsMap,
       };
     }
 
@@ -531,8 +538,15 @@ function modifyAdditionalFieldsMap_createProductReducer(
         dynamicIndexes: [inputIndex],
       } = dispatch.payload as AdditionalFieldsInsert;
 
+      additionalFields.splice(inputIndex, 0, ["", ""]);
+      const additionalFieldsMap = clonedAdditionalFieldsMap.set(
+        productCategory,
+        additionalFields
+      );
+
       return {
         ...state,
+        additionalFieldsMap,
       };
     }
 
@@ -562,30 +576,23 @@ function modifyAdditionalFieldsMap_createProductReducer(
         dynamicIndexes: [inputIndex],
       } = dispatch.payload as AdditionalFieldsSlideDown;
 
-      // if (inputIndex === clonedAdditionalFields.length - 1) {
-      //   return state;
-      // }
+      if (inputIndex === additionalFields.length - 1) {
+        return state;
+      }
 
-      // const newAdditionalFields = clonedAdditionalFields.map(
-      //   (field: [string, string], index: number) => {
-      //     if (index === inputIndex) {
-      //       return clonedAdditionalFields[inputIndex + 1];
-      //     } else if (index === inputIndex + 1) {
-      //       return clonedAdditionalFields[inputIndex];
-      //     } else {
-      //       return field;
-      //     }
-      //   }
-      // ) as Array<[string, string]>;
+      const belowField = additionalFields[inputIndex + 1];
+      const currentField = additionalFields[inputIndex];
+      additionalFields[inputIndex] = belowField;
+      additionalFields[inputIndex + 1] = currentField;
 
-      // const additionalFieldsMap = state.additionalFieldsMap.set(
-      //   productCategory,
-      //   newAdditionalFields
-      // );
+      const additionalFieldsMap = state.additionalFieldsMap.set(
+        productCategory,
+        additionalFields
+      );
 
       return {
         ...state,
-        // additionalFieldsMap,
+        additionalFieldsMap,
       };
     }
 
@@ -594,30 +601,23 @@ function modifyAdditionalFieldsMap_createProductReducer(
         dynamicIndexes: [inputIndex],
       } = dispatch.payload as AdditionalFieldsSlideUp;
 
-      // if (inputIndex === 0) {
-      //   return state;
-      // }
+      if (inputIndex === 0) {
+        return state;
+      }
 
-      // const newAdditionalFields = clonedAdditionalFields.map(
-      //   (field: [string, string], index: number) => {
-      //     if (index === inputIndex) {
-      //       return clonedAdditionalFields[inputIndex - 1];
-      //     } else if (index === inputIndex - 1) {
-      //       return clonedAdditionalFields[inputIndex];
-      //     } else {
-      //       return field;
-      //     }
-      //   }
-      // ) as Array<[string, string]>;
+      const aboveField = additionalFields[inputIndex - 1];
+      const currentField = additionalFields[inputIndex];
+      additionalFields[inputIndex] = aboveField;
+      additionalFields[inputIndex - 1] = currentField;
 
-      // const additionalFieldsMap = state.additionalFieldsMap.set(
-      //   productCategory,
-      //   newAdditionalFields
-      // );
+      const additionalFieldsMap = state.additionalFieldsMap.set(
+        productCategory,
+        additionalFields
+      );
 
       return {
         ...state,
-        // additionalFieldsMap,
+        additionalFieldsMap,
       };
     }
 

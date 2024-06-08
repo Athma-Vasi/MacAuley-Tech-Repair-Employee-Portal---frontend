@@ -200,6 +200,12 @@ function AccessibleTextAreaInput<
     valueBuffer,
   });
 
+  console.group(`AccessibleTextAreaInput: ${name}`);
+  console.log("valueBuffer:", valueBuffer);
+  console.log("isValueBufferValid:", isValueBufferValid);
+  console.log("validationTexts:", validationTexts);
+  console.groupEnd();
+
   const { invalidValueTextElement, validValueTextElement } =
     createAccessibleValueValidationTextElements({
       isPopoverOpened,

@@ -10,67 +10,165 @@ import { ProductCategory } from "../dashboard/types";
 import { CreateProductAction } from "./actions";
 import {
   MAX_ADDITIONAL_FIELDS_AMOUNT,
-  PERIPHERALS_INTERFACE_DATA,
+  MEMORY_UNIT_DATA,
   PRODUCT_CATEGORY_PAGE_TABLE,
 } from "./constants";
 import { CreateProductDispatch } from "./dispatch";
-import { PeripheralsInterface } from "./types";
+import { MemoryUnit } from "./types";
 
-type AccessoryProps = {
-  accessoryColor: string;
-  accessoryInterface: PeripheralsInterface;
-  accessoryType: string;
+type CPUProps = {
   additionalFields: Array<[string, string]>;
   additionalFieldsFormData: FormData;
+  cpuCores: string;
+  cpuFrequency: string;
+  cpuL1CacheCapacity: string;
+  cpuL1CacheCapacityUnit: MemoryUnit;
+  cpuL2CacheCapacity: string;
+  cpuL2CacheCapacityUnit: MemoryUnit;
+  cpuL3CacheCapacity: string;
+  cpuL3CacheCapacityUnit: MemoryUnit;
+  cpuSocket: string;
+  cpuWattage: string;
   parentAction: CreateProductAction;
   parentDispatch: React.Dispatch<CreateProductDispatch>;
   productCategory: ProductCategory;
   stepperPages: StepperPage[];
 };
 
-function Accessory({
-  accessoryColor,
-  accessoryInterface,
-  accessoryType,
+function CPU({
   additionalFields,
   additionalFieldsFormData,
+  cpuCores,
+  cpuFrequency,
+  cpuL1CacheCapacity,
+  cpuL1CacheCapacityUnit,
+  cpuL2CacheCapacity,
+  cpuL2CacheCapacityUnit,
+  cpuL3CacheCapacity,
+  cpuL3CacheCapacityUnit,
+  cpuSocket,
+  cpuWattage,
   parentAction,
   parentDispatch,
   productCategory,
   stepperPages,
-}: AccessoryProps) {
-  const accessoryColorTextInput = (
+}: CPUProps) {
+  const cpuCoresTextInput = (
     <AccessibleTextInput
       attributes={{
         invalidValueAction: parentAction.setPageInError,
-        name: "accessoryColor",
+        name: "cpuCores",
         stepperPages,
-        validValueAction: parentAction.setAccessoryColor,
-        value: accessoryColor,
+        validValueAction: parentAction.setCpuCores,
+        value: cpuCores,
       }}
     />
   );
 
-  const accessoryInterfaceSelectInput = (
+  const cpuFrequencyTextInput = (
+    <AccessibleTextInput
+      attributes={{
+        invalidValueAction: parentAction.setPageInError,
+        name: "cpuFrequency",
+        stepperPages,
+        validValueAction: parentAction.setCpuFrequency,
+        value: cpuFrequency,
+      }}
+    />
+  );
+
+  const cpuL1CacheCapacityTextInput = (
+    <AccessibleTextInput
+      attributes={{
+        invalidValueAction: parentAction.setPageInError,
+        name: "cpuL1CacheCapacity",
+        stepperPages,
+        validValueAction: parentAction.setCpuL1CacheCapacity,
+        value: cpuL1CacheCapacity,
+      }}
+    />
+  );
+
+  const cpuL1CacheCapacityUnitSelectInput = (
     <AccessibleSelectInput
       attributes={{
-        data: PERIPHERALS_INTERFACE_DATA,
-        name: "accessoryInterface",
+        data: MEMORY_UNIT_DATA,
+        name: "cpuL1CacheCapacityUnit",
         parentDispatch,
-        validValueAction: parentAction.setAccessoryInterface,
-        value: accessoryInterface,
+        validValueAction: parentAction.setCpuL1CacheCapacityUnit,
+        value: cpuL1CacheCapacityUnit,
       }}
     />
   );
 
-  const accessoryTypeTextInput = (
+  const cpuL2CacheCapacityTextInput = (
     <AccessibleTextInput
       attributes={{
         invalidValueAction: parentAction.setPageInError,
-        name: "accessoryType",
+        name: "cpuL2CacheCapacity",
         stepperPages,
-        validValueAction: parentAction.setAccessoryType,
-        value: accessoryType,
+        validValueAction: parentAction.setCpuL2CacheCapacity,
+        value: cpuL2CacheCapacity,
+      }}
+    />
+  );
+
+  const cpuL2CacheCapacityUnitSelectInput = (
+    <AccessibleSelectInput
+      attributes={{
+        data: MEMORY_UNIT_DATA,
+        name: "cpuL2CacheCapacityUnit",
+        parentDispatch,
+        validValueAction: parentAction.setCpuL2CacheCapacityUnit,
+        value: cpuL2CacheCapacityUnit,
+      }}
+    />
+  );
+
+  const cpuL3CacheCapacityTextInput = (
+    <AccessibleTextInput
+      attributes={{
+        invalidValueAction: parentAction.setPageInError,
+        name: "cpuL3CacheCapacity",
+        stepperPages,
+        validValueAction: parentAction.setCpuL3CacheCapacity,
+        value: cpuL3CacheCapacity,
+      }}
+    />
+  );
+
+  const cpuL3CacheCapacityUnitSelectInput = (
+    <AccessibleSelectInput
+      attributes={{
+        data: MEMORY_UNIT_DATA,
+        name: "cpuL3CacheCapacityUnit",
+        parentDispatch,
+        validValueAction: parentAction.setCpuL3CacheCapacityUnit,
+        value: cpuL3CacheCapacityUnit,
+      }}
+    />
+  );
+
+  const cpuSocketTextInput = (
+    <AccessibleTextInput
+      attributes={{
+        invalidValueAction: parentAction.setPageInError,
+        name: "cpuSocket",
+        stepperPages,
+        validValueAction: parentAction.setCpuSocket,
+        value: cpuSocket,
+      }}
+    />
+  );
+
+  const cpuWattageTextInput = (
+    <AccessibleTextInput
+      attributes={{
+        invalidValueAction: parentAction.setPageInError,
+        name: "cpuWattage",
+        stepperPages,
+        validValueAction: parentAction.setCpuWattage,
+        value: cpuWattage,
       }}
     />
   );
@@ -306,14 +404,21 @@ function Accessory({
 
   return (
     <Stack>
-      {accessoryColorTextInput}
-      {accessoryInterfaceSelectInput}
-      {accessoryTypeTextInput}
-      {imageInput}
+      {cpuCoresTextInput}
+      {cpuFrequencyTextInput}
+      {cpuL1CacheCapacityTextInput}
+      {cpuL1CacheCapacityUnitSelectInput}
+      {cpuL2CacheCapacityTextInput}
+      {cpuL2CacheCapacityUnitSelectInput}
+      {cpuL3CacheCapacityTextInput}
+      {cpuL3CacheCapacityUnitSelectInput}
+      {cpuSocketTextInput}
+      {cpuWattageTextInput}
       {addAdditionalFieldButton}
       {additionalTextInputs}
+      {imageInput}
     </Stack>
   );
 }
 
-export { Accessory };
+export { CPU };
