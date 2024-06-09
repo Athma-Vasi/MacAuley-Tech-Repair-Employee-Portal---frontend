@@ -6,7 +6,7 @@ import { AccessibleTextInput } from "../accessibleInputs/text/AccessibleTextInpu
 import { ProductCategory } from "../dashboard/types";
 import { CreateProductAction } from "./actions";
 import { AdditionalFields } from "./AdditionalFields";
-import { HEADPHONE_INTERFACE_DATA } from "./constants";
+import { HEADPHONE_INTERFACE_DATA, HEADPHONE_TYPE_DATA } from "./constants";
 import { CreateProductDispatch } from "./dispatch";
 import { HeadphoneInterface, HeadphoneType } from "./types";
 
@@ -99,12 +99,12 @@ function Headphone({
     />
   );
 
-  const headphoneTypeTextInput = (
-    <AccessibleTextInput
+  const headphoneTypeSelectInput = (
+    <AccessibleSelectInput
       attributes={{
-        invalidValueAction: parentAction.setPageInError,
+        data: HEADPHONE_TYPE_DATA,
         name: "headphoneType",
-        stepperPages,
+        parentDispatch,
         validValueAction: parentAction.setHeadphoneType,
         value: headphoneType,
       }}
@@ -129,7 +129,7 @@ function Headphone({
       {headphoneFrequencyResponseTextInput}
       {headphoneImpedanceTextInput}
       {headphoneInterfaceSelectInput}
-      {headphoneTypeTextInput}
+      {headphoneTypeSelectInput}
       {additionalFieldsAndImage}
     </Stack>
   );

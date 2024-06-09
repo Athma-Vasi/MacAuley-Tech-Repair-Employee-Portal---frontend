@@ -1,5 +1,6 @@
 import {
   COUNTRIES_DATA,
+  CURRENCY_DATA,
   PROVINCES,
   STATES_US,
   STORE_LOCATION_DATA,
@@ -20,7 +21,6 @@ import {
   returnSerialIdValidationText,
   returnUsernameRegexValidationText,
 } from "../../utils";
-import { CURRENCY_DATA } from "../benefit/constants";
 import { PRODUCT_CATEGORIES } from "../dashboard/constants";
 import { LARGE_INTEGER_REGEX } from "../product/constants";
 import { ComponentQueryData } from "../queryBuilder";

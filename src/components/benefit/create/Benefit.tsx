@@ -16,13 +16,13 @@ import { AccessibleTextInput } from "../../accessibleInputs/text/AccessibleTextI
 import {
   BENEFIT_PLAN_DATA,
   BENEFIT_ROLE_PATHS,
-  CURRENCY_DATA,
   returnBenefitStepperPages,
 } from "../constants";
 import { BenefitAction, benefitAction } from "./actions";
 import { benefitReducer } from "./reducers";
 import { initialBenefitState } from "./state";
 import { BenefitsPlanKind, BenefitsSchema } from "./types";
+import { CURRENCY_DATA } from "../../../constants/data";
 
 function Benefit() {
   const [benefitState, benefitDispatch] = useReducer(benefitReducer, initialBenefitState);

@@ -101,7 +101,6 @@ const initialCreateProductState: CreateProductState = {
   mouseSensor: "Optical",
   pagesInError: new Set(),
   price: "",
-  productCategory: "Accessory",
   psuEfficiency: "80+ Bronze",
   psuFormFactor: "ATX",
   psuModularity: "Full",

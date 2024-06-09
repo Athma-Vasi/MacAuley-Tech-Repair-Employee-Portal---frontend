@@ -8,7 +8,7 @@ import {
   TbCurrencyYen,
 } from "react-icons/tb";
 
-import { URGENCY_DATA } from "../../../../constants/data";
+import { CURRENCY_DATA, URGENCY_DATA } from "../../../../constants/data";
 import {
   DATE_NEAR_FUTURE_REGEX,
   MONEY_REGEX,
@@ -34,7 +34,6 @@ import {
   returnFloatAmountValidationText,
   returnNoteTextValidationText,
 } from "../../../../utils";
-import { CURRENCY_DATA } from "../../../benefit/constants";
 import {
   AccessibleCheckboxGroupInputCreatorInfo,
   AccessibleCheckboxSingleInputCreatorInfo,

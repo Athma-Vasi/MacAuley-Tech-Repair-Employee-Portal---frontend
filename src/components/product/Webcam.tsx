@@ -2,6 +2,7 @@ import { Stack } from "@mantine/core";
 
 import { StepperPage } from "../../types";
 import { AccessibleSelectInput } from "../accessibleInputs/AccessibleSelectInput";
+import { AccessibleTextInput } from "../accessibleInputs/text/AccessibleTextInput";
 import { ProductCategory } from "../dashboard/types";
 import { CreateProductAction } from "./actions";
 import { AdditionalFields } from "./AdditionalFields";
@@ -26,6 +27,7 @@ type WebcamProps = {
   parentDispatch: React.Dispatch<CreateProductDispatch>;
   productCategory: ProductCategory;
   stepperPages: StepperPage[];
+  webcamColor: string;
   webcamFrameRate: WebcamFrameRate;
   webcamInterface: WebcamInterface;
   webcamMicrophone: WebcamMicrophone;
@@ -39,11 +41,24 @@ function Webcam({
   parentDispatch,
   productCategory,
   stepperPages,
+  webcamColor,
   webcamFrameRate,
   webcamInterface,
   webcamMicrophone,
   webcamResolution,
 }: WebcamProps) {
+  const webcamColorTextInput = (
+    <AccessibleTextInput
+      attributes={{
+        invalidValueAction: parentAction.setPageInError,
+        name: "webcamColor",
+        stepperPages,
+        validValueAction: parentAction.setWebcamColor,
+        value: webcamColor,
+      }}
+    />
+  );
+
   const webcamFrameRateSelectInput = (
     <AccessibleSelectInput
       attributes={{
@@ -105,6 +120,7 @@ function Webcam({
 
   return (
     <Stack>
+      {webcamColorTextInput}
       {webcamFrameRateSelectInput}
       {webcamInterfaceSelectInput}
       {webcamMicrophoneSelectInput}

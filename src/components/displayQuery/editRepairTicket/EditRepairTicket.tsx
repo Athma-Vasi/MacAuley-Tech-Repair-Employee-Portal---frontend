@@ -12,7 +12,7 @@ import {
 } from "react-icons/tb";
 import { useNavigate } from "react-router-dom";
 
-import { COLORS_SWATCHES } from "../../../constants/data";
+import { COLORS_SWATCHES, CURRENCY_DATA } from "../../../constants/data";
 import { MONEY_REGEX, NOTE_TEXT_AREA_REGEX } from "../../../constants/regex";
 import { globalAction } from "../../../context/globalProvider/state";
 import { useAuth, useGlobalState } from "../../../hooks";
@@ -30,7 +30,6 @@ import {
   returnThemeColors,
   urlBuilder,
 } from "../../../utils";
-import { CURRENCY_DATA } from "../../benefit/constants";
 import FormReviewPage, {
   FormReviewObjectArray,
 } from "../../formReviewPage/FormReviewPage";

@@ -1,4 +1,4 @@
-import { REQUEST_STATUS } from "../../constants/data";
+import { CURRENCY_DATA, REQUEST_STATUS } from "../../constants/data";
 import {
   DATE_FULL_RANGE_REGEX,
   DATE_REGEX,
@@ -115,8 +115,6 @@ const BENEFIT_PLAN_DATA: BenefitsPlanKind[] = [
   "Education",
   "Other",
 ];
-
-const CURRENCY_DATA: Currency[] = ["USD", "CAD"];
 
 const BENEFIT_DESCRIPTION_OBJECTS: DescriptionObjectsArray = [
   {
@@ -242,7 +240,6 @@ export {
   BENEFIT_QUERY_DATA,
   BENEFIT_RESOURCE_PATHS,
   BENEFIT_ROLE_PATHS,
-  CURRENCY_DATA,
   PLAN_DESCRIPTION_REGEX,
   PLAN_NAME_REGEX,
   returnBenefitStepperPages,

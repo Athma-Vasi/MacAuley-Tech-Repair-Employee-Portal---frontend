@@ -1,7 +1,6 @@
-import { REQUEST_STATUS } from "../../../constants/data";
+import { CURRENCY_DATA, REQUEST_STATUS } from "../../../constants/data";
 import { Department } from "../../../types";
 import { groupByField } from "../../../utils";
-import { CURRENCY_DATA } from "../../benefit/constants";
 import { DirectoryUserDocument } from "../../directory/types";
 import { USERS_DOCS } from "../constants";
 

@@ -201,6 +201,14 @@ type CreateProductDispatch =
       payload: DimensionUnit;
     }
   | {
+      action: CreateProductAction["setDimensionWidth"];
+      payload: string;
+    }
+  | {
+      action: CreateProductAction["setDimensionWidthUnit"];
+      payload: DimensionUnit;
+    }
+  | {
       action: CreateProductAction["setDisplayAspectRatio"];
       payload: string;
     }
@@ -395,10 +403,6 @@ type CreateProductDispatch =
   | {
       action: CreateProductAction["setPrice"];
       payload: string;
-    }
-  | {
-      action: CreateProductAction["setProductCategory"];
-      payload: ProductCategory;
     }
   | {
       action: CreateProductAction["setPsuEfficiency"];

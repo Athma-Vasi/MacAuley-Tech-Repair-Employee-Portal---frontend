@@ -1,4 +1,4 @@
-import { REQUEST_STATUS } from "../../constants/data";
+import { CURRENCY_DATA, REQUEST_STATUS } from "../../constants/data";
 import {
   DATE_FULL_RANGE_REGEX,
   DATE_NEAR_PAST_REGEX,
@@ -19,7 +19,6 @@ import {
   returnGrammarValidationText,
   returnUsernameRegexValidationText,
 } from "../../utils";
-import { CURRENCY_DATA } from "../benefit/constants";
 import { ComponentQueryData } from "../queryBuilder";
 import { DescriptionObjectsArray } from "../wrappers";
 import { ExpenseClaimKind } from "./create/types";

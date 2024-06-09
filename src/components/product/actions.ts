@@ -79,7 +79,6 @@ type CreateProductAction = {
   setMouseSensor: "setMouseSensor";
   setPageInError: "setPageInError";
   setPrice: "setPrice";
-  setProductCategory: "setProductCategory";
   setPsuEfficiency: "setPsuEfficiency";
   setPsuFormFactor: "setPsuFormFactor";
   setPsuModularity: "setPsuModularity";
@@ -196,7 +195,6 @@ const createProductAction: CreateProductAction = {
   setMouseSensor: "setMouseSensor",
   setPageInError: "setPageInError",
   setPrice: "setPrice",
-  setProductCategory: "setProductCategory",
   setPsuEfficiency: "setPsuEfficiency",
   setPsuFormFactor: "setPsuFormFactor",
   setPsuModularity: "setPsuModularity",

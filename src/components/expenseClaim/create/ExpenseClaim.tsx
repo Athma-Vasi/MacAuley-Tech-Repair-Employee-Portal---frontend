@@ -23,7 +23,7 @@ import { ExpenseClaimAction, expenseClaimAction } from "./actions";
 import { expenseClaimReducer } from "./reducers";
 import { initialExpenseClaimState } from "./state";
 import { ExpenseClaimKind, ExpenseClaimSchema } from "./types";
-import { CURRENCY_DATA } from "../../benefit/constants";
+import { CURRENCY_DATA } from "../../../constants/data";
 
 function ExpenseClaim() {
   const [expenseClaimState, expenseClaimDispatch] = useReducer(

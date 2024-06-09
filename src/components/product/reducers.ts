@@ -1,5 +1,4 @@
 import { Currency, SetPageInErrorPayload, StepperChild } from "../../types";
-import { ProductCategory } from "../dashboard/types";
 import { CreateProductAction } from "./actions";
 import {
   AdditionalFieldsDelete,
@@ -83,7 +82,6 @@ const createProductReducersMap = new Map<
   [createProductAction.setAdditionalComments, setAdditionalComments_createProductReducer],
 
   // page 2
-  [createProductAction.setProductCategory, setProductCategory_createProductReducer],
   [createProductAction.addStepperChild, addStepperChild_createProductReducer],
   [
     createProductAction.modifyAdditionalFieldsMap,
@@ -440,16 +438,6 @@ function setAdditionalComments_createProductReducer(
   return {
     ...state,
     additionalComments: dispatch.payload as string,
-  };
-}
-
-function setProductCategory_createProductReducer(
-  state: CreateProductState,
-  dispatch: CreateProductDispatch
-): CreateProductState {
-  return {
-    ...state,
-    productCategory: dispatch.payload as ProductCategory,
   };
 }
 
@@ -1653,7 +1641,6 @@ export {
   setMouseSensor_createProductReducer,
   setPageInError_createProductReducer,
   setPrice_createProductReducer,
-  setProductCategory_createProductReducer,
   setQuantity_createProductReducer,
   setRamColor_createProductReducer,
   setRamDataRate_createProductReducer,

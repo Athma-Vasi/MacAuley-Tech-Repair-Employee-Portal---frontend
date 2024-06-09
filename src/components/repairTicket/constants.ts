@@ -1,4 +1,4 @@
-import { PROVINCES, STATES_US, URGENCY_DATA } from "../../constants/data";
+import { CURRENCY_DATA, PROVINCES, STATES_US, URGENCY_DATA } from "../../constants/data";
 import {
   ADDRESS_LINE_REGEX,
   CITY_REGEX,
@@ -32,7 +32,6 @@ import {
   returnSerialIdValidationText,
   returnUsernameRegexValidationText,
 } from "../../utils";
-import { CURRENCY_DATA } from "../benefit/constants";
 import { ComponentQueryData } from "../queryBuilder";
 import { PartsNeeded } from "./types";
 

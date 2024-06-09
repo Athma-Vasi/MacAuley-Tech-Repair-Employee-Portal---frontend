@@ -6,6 +6,21 @@ import { Container } from "@mantine/core";
 import { AccessibleStepper } from "../accessibleInputs/AccessibleStepper";
 import { AccessibleButton } from "../accessibleInputs/AccessibleButton";
 import { logState } from "../../utils";
+import { ProductPageOne } from "./ProductPageOne";
+import { Case } from "./Case";
+import { CPU } from "./CPU";
+import { Display } from "./Display";
+import { GPU } from "./GPU";
+import { Headphone } from "./Headphone";
+import { Keyboard } from "./Keyboard";
+import { Microphone } from "./Microphone";
+import { Motherboard } from "./Motherboard";
+import { Mouse } from "./Mouse";
+import { PSU } from "./PSU";
+import { RAM } from "./RAM";
+import { Speaker } from "./Speaker";
+import { Storage } from "./Storage";
+import { Webcam } from "./Webcam";
 
 function CreateProduct() {
   const [createProductState, createProductDispatch] = useReducer(
@@ -31,15 +46,13 @@ function CreateProduct() {
     dimensionHeightUnit,
     additionalComments,
 
-    productCategory,
-
     accessoryType,
     accessoryColor,
     accessoryInterface,
 
     additionalFieldsMap,
     additionalFieldsFormDataMap,
-    stepperPages, // TODO: implement stepperPages and set it to initial state
+    stepperPages,
 
     cpuSocket,
     cpuFrequency,
@@ -148,6 +161,30 @@ function CreateProduct() {
     isSuccessful,
   } = createProductState;
 
+  const firstPage = (
+    <ProductPageOne
+      additionalComments={additionalComments}
+      availability={availability}
+      brand={brand}
+      currency={currency}
+      description={description}
+      dimensionHeight={dimensionHeight}
+      dimensionHeightUnit={dimensionHeightUnit}
+      dimensionLength={dimensionLength}
+      dimensionLengthUnit={dimensionLengthUnit}
+      dimensionWidth={dimensionWidth}
+      dimensionWidthUnit={dimensionWidthUnit}
+      model={model}
+      parentAction={createProductAction}
+      parentDispatch={createProductDispatch}
+      price={price}
+      quantity={quantity}
+      stepperPages={stepperPages}
+      weight={weight}
+      weightUnit={weightUnit}
+    />
+  );
+
   const accessoryPage = (
     <Accessory
       accessoryColor={accessoryColor}
@@ -160,6 +197,276 @@ function CreateProduct() {
       parentAction={createProductAction}
       parentDispatch={createProductDispatch}
       productCategory="Accessory"
+      stepperPages={stepperPages}
+    />
+  );
+
+  const casePage = (
+    <Case
+      additionalFields={additionalFieldsMap.get("Computer Case") ?? []}
+      additionalFieldsFormData={
+        additionalFieldsFormDataMap.get("Computer Case") ?? new FormData()
+      }
+      caseColor={caseColor}
+      caseSidePanel={caseSidePanel}
+      caseType={caseType}
+      parentAction={createProductAction}
+      parentDispatch={createProductDispatch}
+      productCategory="Computer Case"
+      stepperPages={stepperPages}
+    />
+  );
+
+  const cpuPage = (
+    <CPU
+      additionalFields={additionalFieldsMap.get("Central Processing Unit (CPU)") ?? []}
+      additionalFieldsFormData={
+        additionalFieldsFormDataMap.get("Central Processing Unit (CPU)") ?? new FormData()
+      }
+      cpuCores={cpuCores}
+      cpuFrequency={cpuFrequency}
+      cpuL1CacheCapacity={cpuL1CacheCapacity}
+      cpuL1CacheCapacityUnit={cpuL1CacheCapacityUnit}
+      cpuL2CacheCapacity={cpuL2CacheCapacity}
+      cpuL2CacheCapacityUnit={cpuL2CacheCapacityUnit}
+      cpuL3CacheCapacity={cpuL3CacheCapacity}
+      cpuL3CacheCapacityUnit={cpuL3CacheCapacityUnit}
+      cpuSocket={cpuSocket}
+      cpuWattage={cpuWattage}
+      parentAction={createProductAction}
+      parentDispatch={createProductDispatch}
+      productCategory="Central Processing Unit (CPU)"
+      stepperPages={stepperPages}
+    />
+  );
+
+  const displayPage = (
+    <Display
+      additionalFields={additionalFieldsMap.get("Display") ?? []}
+      additionalFieldsFormData={
+        additionalFieldsFormDataMap.get("Display") ?? new FormData()
+      }
+      displayAspectRatio={displayAspectRatio}
+      displayPanelType={displayPanelType}
+      displayRefreshRate={displayRefreshRate}
+      displayResolutionHorizontal={displayResolutionHorizontal}
+      displayResolutionVertical={displayResolutionVertical}
+      displayResponseTime={displayResponseTime}
+      displaySize={displaySize}
+      parentAction={createProductAction}
+      parentDispatch={createProductDispatch}
+      productCategory="Display"
+      stepperPages={stepperPages}
+    />
+  );
+
+  const gpuPage = (
+    <GPU
+      additionalFields={additionalFieldsMap.get("Graphics Processing Unit (GPU)") ?? []}
+      additionalFieldsFormData={
+        additionalFieldsFormDataMap.get("Graphics Processing Unit (GPU)") ??
+        new FormData()
+      }
+      gpuBoostClock={gpuBoostClock}
+      gpuChipset={gpuChipset}
+      gpuCoreClock={gpuCoreClock}
+      gpuMemoryCapacity={gpuMemoryCapacity}
+      gpuMemoryCapacityUnit={gpuMemoryCapacityUnit}
+      gpuTdp={gpuTdp}
+      parentAction={createProductAction}
+      parentDispatch={createProductDispatch}
+      productCategory="Graphics Processing Unit (GPU)"
+      stepperPages={stepperPages}
+    />
+  );
+
+  const headphonePage = (
+    <Headphone
+      additionalFields={additionalFieldsMap.get("Headphone") ?? []}
+      additionalFieldsFormData={
+        additionalFieldsFormDataMap.get("Headphone") ?? new FormData()
+      }
+      headphoneColor={headphoneColor}
+      headphoneDriver={headphoneDriver}
+      headphoneFrequencyResponse={headphoneFrequencyResponse}
+      headphoneImpedance={headphoneImpedance}
+      headphoneInterface={headphoneInterface}
+      headphoneType={headphoneType}
+      parentAction={createProductAction}
+      parentDispatch={createProductDispatch}
+      productCategory="Headphone"
+      stepperPages={stepperPages}
+    />
+  );
+
+  const keyboardPage = (
+    <Keyboard
+      additionalFields={additionalFieldsMap.get("Keyboard") ?? []}
+      additionalFieldsFormData={
+        additionalFieldsFormDataMap.get("Keyboard") ?? new FormData()
+      }
+      keyboardBacklight={keyboardBacklight}
+      keyboardInterface={keyboardInterface}
+      keyboardLayout={keyboardLayout}
+      keyboardSwitch={keyboardSwitch}
+      parentAction={createProductAction}
+      parentDispatch={createProductDispatch}
+      productCategory="Keyboard"
+      stepperPages={stepperPages}
+    />
+  );
+
+  const microphonePage = (
+    <Microphone
+      additionalFields={additionalFieldsMap.get("Microphone") ?? []}
+      additionalFieldsFormData={
+        additionalFieldsFormDataMap.get("Microphone") ?? new FormData()
+      }
+      microphoneColor={microphoneColor}
+      microphoneFrequencyResponse={microphoneFrequencyResponse}
+      microphoneInterface={microphoneInterface}
+      microphonePolarPattern={microphonePolarPattern}
+      microphoneType={microphoneType}
+      parentAction={createProductAction}
+      parentDispatch={createProductDispatch}
+      productCategory="Microphone"
+      stepperPages={stepperPages}
+    />
+  );
+
+  const motherboardPage = (
+    <Motherboard
+      additionalFields={additionalFieldsMap.get("Motherboard") ?? []}
+      additionalFieldsFormData={
+        additionalFieldsFormDataMap.get("Motherboard") ?? new FormData()
+      }
+      motherboardChipset={motherboardChipset}
+      motherboardFormFactor={motherboardFormFactor}
+      motherboardMemoryMaxCapacity={motherboardMemoryMaxCapacity}
+      motherboardMemoryMaxCapacityUnit={motherboardMemoryMaxCapacityUnit}
+      motherboardMemorySlots={motherboardMemorySlots}
+      motherboardMemoryType={motherboardMemoryType}
+      motherboardPcie3Slots={motherboardPcie3Slots}
+      motherboardPcie4Slots={motherboardPcie4Slots}
+      motherboardPcie5Slots={motherboardPcie5Slots}
+      motherboardSataPorts={motherboardSataPorts}
+      motherboardSocket={motherboardSocket}
+      motherboardM2Slots={motherboardM2Slots}
+      parentAction={createProductAction}
+      parentDispatch={createProductDispatch}
+      productCategory="Motherboard"
+      stepperPages={stepperPages}
+    />
+  );
+
+  const mousePage = (
+    <Mouse
+      additionalFields={additionalFieldsMap.get("Mouse") ?? []}
+      additionalFieldsFormData={
+        additionalFieldsFormDataMap.get("Mouse") ?? new FormData()
+      }
+      mouseButtons={mouseButtons}
+      mouseColor={mouseColor}
+      mouseDpi={mouseDpi}
+      mouseInterface={mouseInterface}
+      mouseSensor={mouseSensor}
+      parentAction={createProductAction}
+      parentDispatch={createProductDispatch}
+      productCategory="Mouse"
+      stepperPages={stepperPages}
+    />
+  );
+
+  const psuPage = (
+    <PSU
+      additionalFields={additionalFieldsMap.get("Power Supply Unit (PSU)") ?? []}
+      additionalFieldsFormData={
+        additionalFieldsFormDataMap.get("Power Supply Unit (PSU)") ?? new FormData()
+      }
+      psuEfficiency={psuEfficiency}
+      psuFormFactor={psuFormFactor}
+      psuModularity={psuModularity}
+      psuWattage={psuWattage}
+      parentAction={createProductAction}
+      parentDispatch={createProductDispatch}
+      productCategory="Power Supply Unit (PSU)"
+      stepperPages={stepperPages}
+    />
+  );
+
+  const ramPage = (
+    <RAM
+      additionalFields={additionalFieldsMap.get("Memory (RAM)") ?? []}
+      additionalFieldsFormData={
+        additionalFieldsFormDataMap.get("Memory (RAM)") ?? new FormData()
+      }
+      ramColor={ramColor}
+      ramDataRate={ramDataRate}
+      ramModulesCapacity={ramModulesCapacity}
+      ramModulesCapacityUnit={ramModulesCapacityUnit}
+      ramModulesQuantity={ramModulesQuantity}
+      ramTiming={ramTiming}
+      ramType={ramType}
+      ramVoltage={ramVoltage}
+      parentAction={createProductAction}
+      parentDispatch={createProductDispatch}
+      productCategory="Memory (RAM)"
+      stepperPages={stepperPages}
+    />
+  );
+
+  const speakerPage = (
+    <Speaker
+      additionalFields={additionalFieldsMap.get("Speaker") ?? []}
+      additionalFieldsFormData={
+        additionalFieldsFormDataMap.get("Speaker") ?? new FormData()
+      }
+      speakerColor={speakerColor}
+      speakerFrequencyResponse={speakerFrequencyResponse}
+      speakerInterface={speakerInterface}
+      speakerTotalWattage={speakerTotalWattage}
+      speakerType={speakerType}
+      parentAction={createProductAction}
+      parentDispatch={createProductDispatch}
+      productCategory="Speaker"
+      stepperPages={stepperPages}
+    />
+  );
+
+  const storagePage = (
+    <Storage
+      additionalFields={additionalFieldsMap.get("Storage") ?? []}
+      additionalFieldsFormData={
+        additionalFieldsFormDataMap.get("Storage") ?? new FormData()
+      }
+      storageCacheCapacity={storageCacheCapacity}
+      storageCacheCapacityUnit={storageCacheCapacityUnit}
+      storageCapacity={storageCapacity}
+      storageCapacityUnit={storageCapacityUnit}
+      storageFormFactor={storageFormFactor}
+      storageInterface={storageInterface}
+      storageType={storageType}
+      parentAction={createProductAction}
+      parentDispatch={createProductDispatch}
+      productCategory="Storage"
+      stepperPages={stepperPages}
+    />
+  );
+
+  const webcamPage = (
+    <Webcam
+      additionalFields={additionalFieldsMap.get("Webcam") ?? []}
+      additionalFieldsFormData={
+        additionalFieldsFormDataMap.get("Webcam") ?? new FormData()
+      }
+      webcamColor={webcamColor}
+      webcamFrameRate={webcamFrameRate}
+      webcamInterface={webcamInterface}
+      webcamMicrophone={webcamMicrophone}
+      webcamResolution={webcamResolution}
+      parentAction={createProductAction}
+      parentDispatch={createProductDispatch}
+      productCategory="Webcam"
       stepperPages={stepperPages}
     />
   );
@@ -186,7 +493,24 @@ function CreateProduct() {
     <AccessibleStepper
       attributes={{
         componentState: createProductState,
-        pageElements: [accessoryPage],
+        pageElements: [
+          firstPage,
+          accessoryPage,
+          casePage,
+          cpuPage,
+          displayPage,
+          gpuPage,
+          headphonePage,
+          keyboardPage,
+          microphonePage,
+          motherboardPage,
+          mousePage,
+          psuPage,
+          ramPage,
+          speakerPage,
+          storagePage,
+          webcamPage,
+        ],
         stepperPages,
         submitButton,
       }}

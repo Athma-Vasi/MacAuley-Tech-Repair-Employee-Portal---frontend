@@ -6,7 +6,11 @@ import { AccessibleTextInput } from "../accessibleInputs/text/AccessibleTextInpu
 import { ProductCategory } from "../dashboard/types";
 import { CreateProductAction } from "./actions";
 import { AdditionalFields } from "./AdditionalFields";
-import { MEMORY_UNIT_DATA, MOTHERBOARD_FORM_FACTOR_DATA } from "./constants";
+import {
+  MEMORY_UNIT_DATA,
+  MOTHERBOARD_FORM_FACTOR_DATA,
+  MOTHERBOARD_MEMORY_TYPE_DATA,
+} from "./constants";
 import { CreateProductDispatch } from "./dispatch";
 import { MemoryType, MemoryUnit, MotherboardFormFactor } from "./types";
 
@@ -123,12 +127,12 @@ function Motherboard({
     />
   );
 
-  const motherboardMemoryTypeTextInput = (
-    <AccessibleTextInput
+  const motherboardMemoryTypeSelectInput = (
+    <AccessibleSelectInput
       attributes={{
-        invalidValueAction: parentAction.setPageInError,
+        data: MOTHERBOARD_MEMORY_TYPE_DATA,
         name: "motherboardMemoryType",
-        stepperPages,
+        parentDispatch,
         validValueAction: parentAction.setMotherboardMemoryType,
         value: motherboardMemoryType,
       }}
@@ -214,7 +218,7 @@ function Motherboard({
       {motherboardMemoryMaxCapacityTextInput}
       {motherboardMemoryMaxCapacityUnitSelectInput}
       {motherboardMemorySlotsTextInput}
-      {motherboardMemoryTypeTextInput}
+      {motherboardMemoryTypeSelectInput}
       {motherboardPcie3SlotsTextInput}
       {motherboardPcie4SlotsTextInput}
       {motherboardPcie5SlotsTextInput}

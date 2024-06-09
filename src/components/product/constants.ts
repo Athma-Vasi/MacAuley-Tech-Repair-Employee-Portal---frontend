@@ -1,3 +1,4 @@
+import { CURRENCY_DATA } from "../../constants/data";
 import {
   DATE_FULL_RANGE_REGEX,
   GRAMMAR_TEXTAREA_INPUT_REGEX,
@@ -31,8 +32,6 @@ import {
   returnUsernameRegexValidationText,
   returnWeightValidationText,
 } from "../../utils";
-import { CURRENCY_DATA } from "../benefit/constants";
-import { PRODUCT_CATEGORIES } from "../dashboard/constants";
 import { ProductCategory } from "../dashboard/types";
 import { ComponentQueryData } from "../queryBuilder";
 import { DescriptionObjectsArray } from "../wrappers";
@@ -55,6 +54,7 @@ import {
   MotherboardFormFactor,
   MouseSensor,
   PeripheralsInterface,
+  ProductAvailability,
   PsuEfficiency,
   PsuFormFactor,
   PsuModularity,
@@ -534,12 +534,6 @@ function createProductStepperPages(): StepperPage[] {
     validationKey: "money",
   };
 
-  const productCategory: StepperChild = {
-    inputType: "select",
-    name: "productCategory",
-    selectInputData: PRODUCT_CATEGORIES,
-  };
-
   const psuEfficiency: StepperChild = {
     inputType: "select",
     name: "psuEfficiency",
@@ -756,7 +750,7 @@ function createProductStepperPages(): StepperPage[] {
       description: "General product information",
     },
 
-    // accessory
+    // second page ...
     {
       children: [
         accessoryType,
@@ -768,7 +762,11 @@ function createProductStepperPages(): StepperPage[] {
       description: "Accessory",
     },
 
-    // cpu
+    {
+      children: [caseType, caseColor, caseSidePanel],
+      description: "Computer Case",
+    },
+
     {
       children: [
         cpuSocket,
@@ -785,13 +783,6 @@ function createProductStepperPages(): StepperPage[] {
       description: "Central Processing Unit (CPU)",
     },
 
-    // case
-    {
-      children: [caseType, caseColor, caseSidePanel],
-      description: "Computer Case",
-    },
-
-    // display
     {
       children: [
         displaySize,
@@ -805,7 +796,6 @@ function createProductStepperPages(): StepperPage[] {
       description: "Display",
     },
 
-    // gpu
     {
       children: [
         gpuChipset,
@@ -818,7 +808,6 @@ function createProductStepperPages(): StepperPage[] {
       description: "Graphics Processing Unit (GPU)",
     },
 
-    // headphone
     {
       children: [
         headphoneType,
@@ -831,13 +820,11 @@ function createProductStepperPages(): StepperPage[] {
       description: "Headphone",
     },
 
-    // keyboard
     {
       children: [keyboardLayout, keyboardSwitch, keyboardBacklight, keyboardInterface],
       description: "Keyboard",
     },
 
-    // ram
     {
       children: [
         ramType,
@@ -852,13 +839,11 @@ function createProductStepperPages(): StepperPage[] {
       description: "Memory (RAM)",
     },
 
-    // psu
     {
       children: [psuWattage, psuFormFactor, psuEfficiency, psuModularity],
       description: "Power Supply Unit (PSU)",
     },
 
-    // speaker
     {
       children: [
         speakerType,
@@ -870,7 +855,6 @@ function createProductStepperPages(): StepperPage[] {
       description: "Speaker",
     },
 
-    // microphone
     {
       children: [
         microphoneType,
@@ -882,13 +866,11 @@ function createProductStepperPages(): StepperPage[] {
       description: "Microphone",
     },
 
-    // mouse
     {
       children: [mouseButtons, mouseDpi, mouseSensor, mouseInterface, mouseColor],
       description: "Mouse",
     },
 
-    // motherboard
     {
       children: [
         motherboardSocket,
@@ -907,7 +889,6 @@ function createProductStepperPages(): StepperPage[] {
       description: "Motherboard",
     },
 
-    // storage
     {
       children: [
         storageType,
@@ -921,7 +902,6 @@ function createProductStepperPages(): StepperPage[] {
       description: "Storage",
     },
 
-    // webcam
     {
       children: [
         webcamResolution,
@@ -1150,7 +1130,7 @@ const DIMENSION_UNIT_SELECT_INPUT_DATA: SelectInputData = [
 
 const DIMENSION_UNIT_DATA: DimensionUnit[] = ["mm", "cm", "m", "in", "ft"];
 
-const PRODUCT_AVAILABILITY_DATA = [
+const PRODUCT_AVAILABILITY_DATA: ProductAvailability[] = [
   "In Stock",
   "Out of Stock",
   "Pre-order",
@@ -1426,7 +1406,7 @@ const LOCATION_PRODUCT_CATEGORY_OBJ: Record<string, ProductCategory> = {
 
 const CREATE_PRODUCT_MAX_STEPPER_POSITION = 4;
 
-const CREATE_PRODUCT_MAX_IMG_SIZE = 1 * 1024 * 1024; // 1MB
+const CREATE_PRODUCT_MAX_IMG_SIZE = 1 * 1024 * 1024; // 1 MB
 
 const CREATE_PRODUCT_MAX_IMG_AMOUNT = 3;
 
@@ -2399,6 +2379,7 @@ export {
   PRODUCT_CATEGORY_PAGE_TABLE,
   PRODUCT_CATEGORY_ROUTE_NAME_OBJ,
   PRODUCT_RATING_DATA,
+  PRODUCT_ROLE_RESOURCE_PATHS,
   PRODUCTS_QUERY_DATA,
   PRODUCTS_RESOURCE_PATHS,
   PSU_EFFICIENCY_RATING_DATA,

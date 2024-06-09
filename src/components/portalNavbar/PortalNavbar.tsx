@@ -67,75 +67,14 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
   );
 
   const {
-    // ╭─────────────────────────────────────────────────────────────────╮
-    //    HOME
-    // ╰─────────────────────────────────────────────────────────────────╯
     isHomeActive,
-
-    // ╭─────────────────────────────────────────────────────────────────╮
-    //    DASHBOARD
-    // ╰─────────────────────────────────────────────────────────────────╯
     isDashboardActive,
-
-    // ╭─────────────────────────────────────────────────────────────────╮
-    //    CUSTOMER
-    // ╰─────────────────────────────────────────────────────────────────╯
     isCustomerActive,
-
-    // ╭─────────────────────────────────────────────────────────────────╮
-    //    COMMENT
-    // ╰─────────────────────────────────────────────────────────────────╯
     isCommentActive,
-
-    // ╭─────────────────────────────────────────────────────────────────╮
-    //    FILE UPLOAD
-    // ╰─────────────────────────────────────────────────────────────────╯
     isFileUploadActive,
-
-    // ╭─────────────────────────────────────────────────────────────────╮
-    //    PRODUCT
-    // ╰─────────────────────────────────────────────────────────────────╯
     isProductActive,
-    isProductAccessoryActive,
-    isCPUActive,
-    isComputerCaseActive,
-    isDesktopComputerActive,
-    isDisplayActive,
-    isGPUActive,
-    isHeadphoneActive,
-    isKeyboardActive,
-    isLaptopActive,
-    isRAMActive,
-    isMicrophoneActive,
-    isMotherboardActive,
-    isMouseActive,
-    isPSUActive,
-    isSmartphoneActive,
-    isSpeakerActive,
-    isStorageActive,
-    isTabletActive,
-    isWebcamActive,
-
-    // ╭─────────────────────────────────────────────────────────────────╮
-    //    PRODUCT REVIEW
-    // ╰─────────────────────────────────────────────────────────────────╯
-    isProductReviewActive,
-
-    // ╭─────────────────────────────────────────────────────────────────╮
-    //    REPAIR
-    // ╰─────────────────────────────────────────────────────────────────╯
     isRepairActive,
 
-    // ╭─────────────────────────────────────────────────────────────────╮
-    //    TRANSACTION
-    // ╰─────────────────────────────────────────────────────────────────╯
-    isTransactionActive,
-    isPurchaseActive,
-    isRMAActive,
-
-    // ╭─────────────────────────────────────────────────────────────────╮
-    //    COMPANY
-    // ╰─────────────────────────────────────────────────────────────────╯
     isCompanyActive,
     isAddressChangeActive,
     isBenefitActive,
@@ -143,56 +82,19 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
     isLeaveRequestActive,
     isRequestResourceActive,
 
-    // ╭─────────────────────────────────────────────────────────────────╮
-    //    GENERAL
-    // ╰─────────────────────────────────────────────────────────────────╯
     isGeneralActive,
     isEndorsementActive,
     isPrinterIssueActive,
     isAnonymousRequestActive,
     isRefermentActive,
 
-    // ╭─────────────────────────────────────────────────────────────────╮
-    //    OUTREACH
-    // ╰─────────────────────────────────────────────────────────────────╯
     isOutreachActive,
     isAnnouncementActive,
     isSurveyActive,
     isEventActive,
 
-    // ╭─────────────────────────────────────────────────────────────────╮
-    //    DIRECTORY
-    // ╰─────────────────────────────────────────────────────────────────╯
     isDirectoryActive,
   } = portalNavbarState;
-
-  // useEffect(() => {
-  //   const splitPathArr = pathname.split("/");
-  //   const currentLocation = splitPathArr.at(-1) ?? "";
-  //   const parentLocation = splitPathArr.at(-2) ?? "";
-
-  //   console.log("PORTAL NAVBAR currentLocation", currentLocation);
-  //   console.log("PORTAL NAVBAR parentLocation", parentLocation);
-
-  //   if (parentLocation.includes("company")) {
-  //   }
-
-  //   const [currentLocationState, currentLocationAction] =
-  //     returnPortalNavbarStateActionTuple({
-  //       pathname: currentLocation,
-  //       portalNavbarAction,
-  //       portalNavbarState,
-  //     });
-
-  //   console.log("PORTAL NAVBAR currentLocationState", currentLocationState);
-  //   console.log("PORTAL NAVBAR currentLocationAction", currentLocationAction);
-
-  //   portalNavbarDispatch({
-  //     type: currentLocationAction,
-  //     payload: !currentLocationState,
-  //   });
-
-  // }, [pathname]);
 
   const {
     scrollBarStyle,
@@ -203,9 +105,6 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
     colorsSwatches: COLORS_SWATCHES,
   });
 
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    HOME
-  // ╰─────────────────────────────────────────────────────────────────╯
   const [createdHomeNavLink] = returnAccessibleNavLinkElements([
     {
       active: isHomeActive,
@@ -222,9 +121,6 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
     },
   ]);
 
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    DASHBOARD
-  // ╰─────────────────────────────────────────────────────────────────╯
   const [createdDashboardNavLink] = returnAccessibleNavLinkElements([
     {
       active: isDashboardActive,
@@ -241,9 +137,6 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
     },
   ]);
 
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    CUSTOMER
-  // ╰─────────────────────────────────────────────────────────────────╯
   const [createdCustomerNavLink] = returnAccessibleNavLinkElements([
     {
       active: isCustomerActive,
@@ -260,9 +153,6 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
     },
   ]);
 
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    COMMENT
-  // ╰─────────────────────────────────────────────────────────────────╯
   const [createdCommentNavLink] = returnAccessibleNavLinkElements([
     {
       active: isCommentActive,
@@ -279,9 +169,6 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
     },
   ]);
 
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    FILE UPLOAD
-  // ╰─────────────────────────────────────────────────────────────────╯
   const [createdFileUploadNavLink] = returnAccessibleNavLinkElements([
     {
       active: isFileUploadActive,
@@ -298,426 +185,9 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
     },
   ]);
 
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    PRODUCT => ACCESSORY
-  // ╰─────────────────────────────────────────────────────────────────╯
-  const productAccessoryNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
-    active: isProductAccessoryActive,
-    ariaLabel: "Will navigate to product accessory page",
-    icon: <TbAffiliate color={isProductAccessoryActive ? themeColorShade : iconGray} />,
-    label: "Accessory",
-    onClick: () => {
-      portalNavbarDispatch({
-        type: portalNavbarAction.setIsProductAccessoryActive,
-        payload: !isProductAccessoryActive,
-      });
-      navigate("/home/product/accessory");
-    },
-  };
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    PRODUCT => CPU
-  // ╰─────────────────────────────────────────────────────────────────╯
-  const cpuNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
-    active: isCPUActive,
-    ariaLabel: "Will navigate to cpu page",
-    icon: <TbCpu color={isCPUActive ? themeColorShade : iconGray} />,
-    label: "CPU",
-    onClick: () => {
-      portalNavbarDispatch({
-        type: portalNavbarAction.setIsCPUActive,
-        payload: !isCPUActive,
-      });
-      navigate("/home/product/cpu");
-    },
-  };
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    PRODUCT => COMPUTER CASE
-  // ╰─────────────────────────────────────────────────────────────────╯
-  const computerCaseNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
-    active: isComputerCaseActive,
-    ariaLabel: "Will navigate to computer case page",
-    icon: <TbBriefcase color={isComputerCaseActive ? themeColorShade : iconGray} />,
-    label: "Computer case",
-    onClick: () => {
-      portalNavbarDispatch({
-        type: portalNavbarAction.setIsComputerCaseActive,
-        payload: !isComputerCaseActive,
-      });
-      navigate("/home/product/computer-case");
-    },
-  };
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    PRODUCT => DESKTOP COMPUTER
-  // ╰─────────────────────────────────────────────────────────────────╯
-  const desktopComputerNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
-    active: isDesktopComputerActive,
-    ariaLabel: "Will navigate to desktop computer page",
-    icon: (
-      <TbDeviceDesktopPlus color={isDesktopComputerActive ? themeColorShade : iconGray} />
-    ),
-    label: "Desktop computer",
-    onClick: () => {
-      portalNavbarDispatch({
-        type: portalNavbarAction.setIsDesktopComputerActive,
-        payload: !isDesktopComputerActive,
-      });
-      navigate("/home/product/desktop-computer");
-    },
-  };
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    PRODUCT => DISPLAY
-  // ╰─────────────────────────────────────────────────────────────────╯
-  const displayNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
-    active: isDisplayActive,
-    ariaLabel: "Will navigate to display page",
-    icon: <MdMonitor color={isDisplayActive ? themeColorShade : iconGray} />,
-    label: "Display",
-    onClick: () => {
-      portalNavbarDispatch({
-        type: portalNavbarAction.setIsDisplayActive,
-        payload: !isDisplayActive,
-      });
-      navigate("/home/product/display");
-    },
-  };
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    PRODUCT => GPU
-  // ╰─────────────────────────────────────────────────────────────────╯
-  const gpuNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
-    active: isGPUActive,
-    ariaLabel: "Will navigate to gpu page",
-    icon: <TbCpu2 color={isGPUActive ? themeColorShade : iconGray} />,
-    label: "GPU",
-    onClick: () => {
-      portalNavbarDispatch({
-        type: portalNavbarAction.setIsGPUActive,
-        payload: !isGPUActive,
-      });
-      navigate("/home/product/gpu");
-    },
-  };
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    PRODUCT => HEADPHONE
-  // ╰─────────────────────────────────────────────────────────────────╯
-  const headphoneNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
-    active: isHeadphoneActive,
-    ariaLabel: "Will navigate to headphone page",
-    icon: <TbHeadphones color={isHeadphoneActive ? themeColorShade : iconGray} />,
-    label: "Headphone",
-    onClick: () => {
-      portalNavbarDispatch({
-        type: portalNavbarAction.setIsHeadphoneActive,
-        payload: !isHeadphoneActive,
-      });
-      navigate("/home/product/headphone");
-    },
-  };
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    PRODUCT => KEYBOARD
-  // ╰─────────────────────────────────────────────────────────────────╯
-  const keyboardNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
-    active: isKeyboardActive,
-    ariaLabel: "Will navigate to keyboard page",
-    icon: <MdOutlineKeyboard color={isKeyboardActive ? themeColorShade : iconGray} />,
-    label: "Keyboard",
-    onClick: () => {
-      portalNavbarDispatch({
-        type: portalNavbarAction.setIsKeyboardActive,
-        payload: !isKeyboardActive,
-      });
-      navigate("/home/product/keyboard");
-    },
-  };
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    PRODUCT => LAPTOP
-  // ╰─────────────────────────────────────────────────────────────────╯
-  const laptopNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
-    active: isLaptopActive,
-    ariaLabel: "Will navigate to laptop page",
-    icon: <TbDeviceLaptop color={isLaptopActive ? themeColorShade : iconGray} />,
-    label: "Laptop",
-    onClick: () => {
-      portalNavbarDispatch({
-        type: portalNavbarAction.setIsLaptopActive,
-        payload: !isLaptopActive,
-      });
-      navigate("/home/product/laptop");
-    },
-  };
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    PRODUCT => RAM
-  // ╰─────────────────────────────────────────────────────────────────╯
-  const ramNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
-    active: isRAMActive,
-    ariaLabel: "Will navigate to ram page",
-    icon: <LuMemoryStick color={isRAMActive ? themeColorShade : iconGray} />,
-    label: "RAM",
-    onClick: () => {
-      portalNavbarDispatch({
-        type: portalNavbarAction.setIsRAMActive,
-        payload: !isRAMActive,
-      });
-      navigate("/home/product/ram");
-    },
-  };
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    PRODUCT => MICROPHONE
-  // ╰─────────────────────────────────────────────────────────────────╯
-  const microphoneNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
-    active: isMicrophoneActive,
-    ariaLabel: "Will navigate to microphone page",
-    icon: <TbMicrophone color={isMicrophoneActive ? themeColorShade : iconGray} />,
-    label: "Microphone",
-    onClick: () => {
-      portalNavbarDispatch({
-        type: portalNavbarAction.setIsMicrophoneActive,
-        payload: !isMicrophoneActive,
-      });
-      navigate("/home/product/microphone");
-    },
-  };
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    PRODUCT => MOTHERBOARD
-  // ╰─────────────────────────────────────────────────────────────────╯
-  const motherboardNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
-    active: isMotherboardActive,
-    ariaLabel: "Will navigate to motherboard page",
-    icon: <BsMotherboard color={isMotherboardActive ? themeColorShade : iconGray} />,
-    label: "Motherboard",
-    onClick: () => {
-      portalNavbarDispatch({
-        type: portalNavbarAction.setIsMotherboardActive,
-        payload: !isMotherboardActive,
-      });
-      navigate("/home/product/motherboard");
-    },
-  };
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    PRODUCT => MOUSE
-  // ╰─────────────────────────────────────────────────────────────────╯
-  const mouseNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
-    active: isMouseActive,
-    ariaLabel: "Will navigate to mouse page",
-    icon: <TbMouse color={isMouseActive ? themeColorShade : iconGray} />,
-    label: "Mouse",
-    onClick: () => {
-      portalNavbarDispatch({
-        type: portalNavbarAction.setIsMouseActive,
-        payload: !isMouseActive,
-      });
-      navigate("/home/product/mouse");
-    },
-  };
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    PRODUCT => PSU
-  // ╰─────────────────────────────────────────────────────────────────╯
-  const psuNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
-    active: isPSUActive,
-    ariaLabel: "Will navigate to psu page",
-    icon: <TbPower color={isPSUActive ? themeColorShade : iconGray} />,
-    label: "PSU",
-    onClick: () => {
-      portalNavbarDispatch({
-        type: portalNavbarAction.setIsPSUActive,
-        payload: !isPSUActive,
-      });
-      navigate("/home/product/psu");
-    },
-  };
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    PRODUCT => SMARTPHONE
-  // ╰─────────────────────────────────────────────────────────────────╯
-  const smartphoneNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
-    active: isSmartphoneActive,
-    ariaLabel: "Will navigate to smartphone page",
-    icon: (
-      <IoPhonePortraitOutline color={isSmartphoneActive ? themeColorShade : iconGray} />
-    ),
-    label: "Smartphone",
-    onClick: () => {
-      portalNavbarDispatch({
-        type: portalNavbarAction.setIsSmartphoneActive,
-        payload: !isSmartphoneActive,
-      });
-      navigate("/home/product/smartphone");
-    },
-  };
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    PRODUCT => SPEAKER
-  // ╰─────────────────────────────────────────────────────────────────╯
-  const speakerNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
-    active: isSpeakerActive,
-    ariaLabel: "Will navigate to speaker page",
-    icon: <TbDeviceSpeaker color={isSpeakerActive ? themeColorShade : iconGray} />,
-    label: "Speaker",
-    onClick: () => {
-      portalNavbarDispatch({
-        type: portalNavbarAction.setIsSpeakerActive,
-        payload: !isSpeakerActive,
-      });
-      navigate("/home/product/speaker");
-    },
-  };
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    PRODUCT => STORAGE
-  // ╰─────────────────────────────────────────────────────────────────╯
-  const storageNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
-    active: isStorageActive,
-    ariaLabel: "Will navigate to storage page",
-    icon: <BsDeviceHdd color={isStorageActive ? themeColorShade : iconGray} />,
-    label: "Storage",
-    onClick: () => {
-      portalNavbarDispatch({
-        type: portalNavbarAction.setIsStorageActive,
-        payload: !isStorageActive,
-      });
-      navigate("/home/product/storage");
-    },
-  };
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    PRODUCT => TABLET
-  // ╰─────────────────────────────────────────────────────────────────╯
-  const tabletNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
-    active: isTabletActive,
-    ariaLabel: "Will navigate to tablet page",
-    icon: <TbDeviceTablet color={isTabletActive ? themeColorShade : iconGray} />,
-    label: "Tablet",
-    onClick: () => {
-      portalNavbarDispatch({
-        type: portalNavbarAction.setIsTabletActive,
-        payload: !isTabletActive,
-      });
-      navigate("/home/product/tablet");
-    },
-  };
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    PRODUCT => WEBCAM
-  // ╰─────────────────────────────────────────────────────────────────╯
-  const webcamNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
-    active: isWebcamActive,
-    ariaLabel: "Will navigate to webcam page",
-    icon: <BsWebcam color={isWebcamActive ? themeColorShade : iconGray} />,
-    label: "Webcam",
-    onClick: () => {
-      portalNavbarDispatch({
-        type: portalNavbarAction.setIsWebcamActive,
-        payload: !isWebcamActive,
-      });
-      navigate("/home/product/webcam");
-    },
-  };
-
-  const [
-    createdProductAccessoryNavLink,
-    createdCPUNavLink,
-    createdComputerCaseNavLink,
-    createdDesktopComputerNavLink,
-    createdDisplayNavLink,
-    createdGPUNavLink,
-    createdHeadphoneNavLink,
-    createdKeyboardNavLink,
-    createdLaptopNavLink,
-    createdRAMNavLink,
-    createdMicrophoneNavLink,
-    createdMotherboardNavLink,
-    createdMouseNavLink,
-    createdPSUNavLink,
-    createdSmartphoneNavLink,
-    createdSpeakerNavLink,
-    createdStorageNavLink,
-    createdTabletNavLink,
-    createdWebcamNavLink,
-  ] = returnAccessibleNavLinkElements([
-    productAccessoryNavLinkCreatorInfo,
-    cpuNavLinkCreatorInfo,
-    computerCaseNavLinkCreatorInfo,
-    desktopComputerNavLinkCreatorInfo,
-    displayNavLinkCreatorInfo,
-    gpuNavLinkCreatorInfo,
-    headphoneNavLinkCreatorInfo,
-    keyboardNavLinkCreatorInfo,
-    laptopNavLinkCreatorInfo,
-    ramNavLinkCreatorInfo,
-    microphoneNavLinkCreatorInfo,
-    motherboardNavLinkCreatorInfo,
-    mouseNavLinkCreatorInfo,
-    psuNavLinkCreatorInfo,
-    smartphoneNavLinkCreatorInfo,
-    speakerNavLinkCreatorInfo,
-    storageNavLinkCreatorInfo,
-    tabletNavLinkCreatorInfo,
-    webcamNavLinkCreatorInfo,
-  ]);
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    PRODUCT
-  // ╰─────────────────────────────────────────────────────────────────╯
-  const isProductNavlinkOpened =
-    isProductActive ||
-    isProductAccessoryActive ||
-    isCPUActive ||
-    isComputerCaseActive ||
-    isDesktopComputerActive ||
-    isDisplayActive ||
-    isGPUActive ||
-    isHeadphoneActive ||
-    isKeyboardActive ||
-    isLaptopActive ||
-    isRAMActive ||
-    isMicrophoneActive ||
-    isMotherboardActive ||
-    isMouseActive ||
-    isPSUActive ||
-    isSmartphoneActive ||
-    isSpeakerActive ||
-    isStorageActive ||
-    isTabletActive ||
-    isWebcamActive
-      ? true
-      : false;
-
   const productNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
     active: isProductActive,
     ariaLabel: "Will navigate to product page",
-    children: [
-      createdProductAccessoryNavLink,
-      createdCPUNavLink,
-      createdComputerCaseNavLink,
-      createdDesktopComputerNavLink,
-      createdDisplayNavLink,
-      createdGPUNavLink,
-      createdHeadphoneNavLink,
-      createdKeyboardNavLink,
-      createdLaptopNavLink,
-      createdRAMNavLink,
-      createdMicrophoneNavLink,
-      createdMotherboardNavLink,
-      createdMouseNavLink,
-      createdPSUNavLink,
-      createdSmartphoneNavLink,
-      createdSpeakerNavLink,
-      createdStorageNavLink,
-      createdTabletNavLink,
-      createdWebcamNavLink,
-    ],
     icon: <TbShoppingCartPlus color={isProductActive ? themeColorShade : iconGray} />,
     label: "Product",
     onClick: () => {
@@ -725,41 +195,13 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
         type: portalNavbarAction.setIsProductActive,
         payload: !isProductActive,
       });
+      navigate("/home/product");
     },
-    opened: isProductNavlinkOpened,
-    rightSection: (
-      <TbChevronRight color={isProductNavlinkOpened ? themeColorShade : iconGray} />
-    ),
   };
 
   const [createdProductNavLink] = returnAccessibleNavLinkElements([
     productNavLinkCreatorInfo,
   ]);
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    PRODUCT REVIEW
-  // ╰─────────────────────────────────────────────────────────────────╯
-  const [createdProductReviewNavLink] = returnAccessibleNavLinkElements([
-    {
-      active: isProductReviewActive,
-      ariaLabel: "Will navigate to product review page",
-      icon: (
-        <TbTimelineEventPlus color={isProductReviewActive ? themeColorShade : iconGray} />
-      ),
-      label: "Product review",
-      onClick: () => {
-        portalNavbarDispatch({
-          type: portalNavbarAction.setIsProductReviewActive,
-          payload: !isProductReviewActive,
-        });
-        navigate("/home/product-review");
-      },
-    },
-  ]);
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    REPAIR
-  // ╰─────────────────────────────────────────────────────────────────╯
 
   const [createdRepairNavLink] = returnAccessibleNavLinkElements([
     {
@@ -777,76 +219,6 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
     },
   ]);
 
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    TRANSACTION => PURCHASE
-  // ╰─────────────────────────────────────────────────────────────────╯
-  const purchaseNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
-    active: isPurchaseActive,
-    ariaLabel: "Will navigate to purchase page",
-    icon: <TbShoppingBag color={isPurchaseActive ? themeColorShade : iconGray} />,
-    label: "Purchase",
-    onClick: () => {
-      portalNavbarDispatch({
-        type: portalNavbarAction.setIsPurchaseActive,
-        payload: !isPurchaseActive,
-      });
-      navigate("/home/purchase");
-    },
-  };
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    TRANSACTION => RMA
-  // ╰─────────────────────────────────────────────────────────────────╯
-  const rmaNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
-    active: isRMAActive,
-    ariaLabel: "Will navigate to rma page",
-    icon: <TbTruckReturn color={isRMAActive ? themeColorShade : iconGray} />,
-    label: "RMA",
-    onClick: () => {
-      portalNavbarDispatch({
-        type: portalNavbarAction.setIsRMAActive,
-        payload: !isRMAActive,
-      });
-      navigate("/home/rma");
-    },
-  };
-
-  const [createdPurchaseNavLink, createdRMANavLink] = returnAccessibleNavLinkElements([
-    purchaseNavLinkCreatorInfo,
-    rmaNavLinkCreatorInfo,
-  ]);
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    TRANSACTION
-  // ╰─────────────────────────────────────────────────────────────────╯
-  const isTransactionNavlinkOpened =
-    isTransactionActive || isPurchaseActive || isRMAActive;
-
-  const transactionNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
-    active: isTransactionActive,
-    ariaLabel: "Will navigate to transaction page",
-    children: [createdPurchaseNavLink, createdRMANavLink],
-    icon: <TbCash color={isTransactionActive ? themeColorShade : iconGray} />,
-    label: "Transaction",
-    onClick: () => {
-      portalNavbarDispatch({
-        type: portalNavbarAction.setIsTransactionActive,
-        payload: !isTransactionActive,
-      });
-    },
-    opened: isTransactionNavlinkOpened,
-    rightSection: (
-      <TbChevronRight color={isTransactionNavlinkOpened ? themeColorShade : iconGray} />
-    ),
-  };
-
-  const [createdTransactionNavLink] = returnAccessibleNavLinkElements([
-    transactionNavLinkCreatorInfo,
-  ]);
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    COMPANY => ADDRESS CHANGE
-  // ╰─────────────────────────────────────────────────────────────────╯
   const addressChangeNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
     active: isAddressChangeActive,
     ariaLabel: "Will navigate to address change page",
@@ -861,9 +233,6 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
     },
   };
 
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    COMPANY => BENEFIT
-  // ╰─────────────────────────────────────────────────────────────────╯
   const benefitNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
     active: isBenefitActive,
     ariaLabel: "Will navigate to benefit page",
@@ -878,9 +247,6 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
     },
   };
 
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    COMPANY => EXPENSE CLAIM
-  // ╰─────────────────────────────────────────────────────────────────╯
   const expenseClaimNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
     active: isExpenseClaimActive,
     ariaLabel: "Will navigate to expense claim page",
@@ -895,9 +261,6 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
     },
   };
 
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    COMPANY => LEAVE REQUEST
-  // ╰─────────────────────────────────────────────────────────────────╯
   const leaveRequestNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
     active: isLeaveRequestActive,
     ariaLabel: "Will navigate to leave request page",
@@ -912,9 +275,6 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
     },
   };
 
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    COMPANY => REQUEST RESOURCE
-  // ╰─────────────────────────────────────────────────────────────────╯
   const requestResourceNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
     active: isRequestResourceActive,
     ariaLabel: "Will navigate to request resource page",
@@ -943,9 +303,6 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
     requestResourceNavLinkCreatorInfo,
   ]);
 
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    COMPANY
-  // ╰─────────────────────────────────────────────────────────────────╯
   const isCompanyNavlinkOpened =
     isCompanyActive ||
     isAddressChangeActive ||
@@ -984,9 +341,6 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
     companyNavLinkCreatorInfo,
   ]);
 
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    GENERAL => ENDORSEMENT
-  // ╰─────────────────────────────────────────────────────────────────╯
   const endorsementNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
     active: isEndorsementActive,
     ariaLabel: "Will navigate to endorsement page",
@@ -1001,9 +355,6 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
     },
   };
 
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    GENERAL => PRINTER ISSUE
-  // ╰─────────────────────────────────────────────────────────────────╯
   const printerIssueNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
     active: isPrinterIssueActive,
     ariaLabel: "Will navigate to printer issue page",
@@ -1018,9 +369,6 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
     },
   };
 
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    GENERAL => ANONYMOUS REQUEST
-  // ╰─────────────────────────────────────────────────────────────────╯
   const anonymousRequestNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
     active: isAnonymousRequestActive,
     ariaLabel: "Will navigate to anonymous request page",
@@ -1037,9 +385,6 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
     },
   };
 
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    GENERAL => REFERMENT
-  // ╰─────────────────────────────────────────────────────────────────╯
   const refermentNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
     active: isRefermentActive,
     ariaLabel: "Will navigate to referment page",
@@ -1066,9 +411,6 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
     refermentNavLinkCreatorInfo,
   ]);
 
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    GENERAL
-  // ╰─────────────────────────────────────────────────────────────────╯
   const isGeneralNavlinkOpened =
     isGeneralActive ||
     isEndorsementActive ||
@@ -1105,9 +447,6 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
     generalNavLinkCreatorInfo,
   ]);
 
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    OUTREACH => ANNOUNCEMENT
-  // ╰─────────────────────────────────────────────────────────────────╯
   const announcementNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
     active: isAnnouncementActive,
     ariaLabel: "Will navigate to announcement page",
@@ -1122,9 +461,6 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
     },
   };
 
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    OUTREACH => SURVEY
-  // ╰─────────────────────────────────────────────────────────────────╯
   const surveyNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
     active: isSurveyActive,
     ariaLabel: "Will navigate to survey page",
@@ -1139,9 +475,6 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
     },
   };
 
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    OUTREACH => EVENT
-  // ╰─────────────────────────────────────────────────────────────────╯
   const eventNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
     active: isEventActive,
     ariaLabel: "Will navigate to event page",
@@ -1163,9 +496,6 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
       eventNavLinkCreatorInfo,
     ]);
 
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    OUTREACH
-  // ╰─────────────────────────────────────────────────────────────────╯
   const isOutreachNavlinkOpened =
     isOutreachActive || isAnnouncementActive || isEventActive || isSurveyActive
       ? true
@@ -1193,9 +523,6 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
     outreachNavLinkCreatorInfo,
   ]);
 
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    DIRECTORY
-  // ╰─────────────────────────────────────────────────────────────────╯
   const [createdDirectoryNavLink] = returnAccessibleNavLinkElements([
     {
       active: isDirectoryActive,
@@ -1222,7 +549,6 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
     },
   ]);
 
-  // dev testing page
   const displayDevTestingNavLink = (
     <NavLink
       label={<Text>Dev testing</Text>}
@@ -1241,7 +567,7 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
       hiddenBreakpoint="sm"
       hidden={!openedNavbar}
       width={{ sm: 225, lg: 300 }}
-      h={width <= 991 ? height - 50 : height - 64} //  vw < 991 ? header height = 50px : header height = 64px
+      h={width <= 991 ? height - 50 : height - 64} //  height = 50px : header height = 64px
       style={width <= 1024 ? { zIndex: 5 } : {}}
     >
       <ScrollArea styles={() => scrollBarStyle} offsetScrollbars>
@@ -1260,11 +586,7 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
 
           {createdProductNavLink}
 
-          {createdProductReviewNavLink}
-
           {createdRepairNavLink}
-
-          {createdTransactionNavLink}
 
           {createdCompanyNavLink}
 

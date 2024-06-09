@@ -810,7 +810,6 @@ type CreateProductState = {
   mouseSensor: MouseSensor;
   pagesInError: Set<number>;
   price: string;
-  productCategory: ProductCategory;
   psuEfficiency: PsuEfficiency;
   psuFormFactor: PsuFormFactor;
   psuModularity: PsuModularity;
