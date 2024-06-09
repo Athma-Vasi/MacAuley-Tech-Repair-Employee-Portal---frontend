@@ -101,6 +101,7 @@ function Speaker({
     <AdditionalFields
       additionalFields={additionalFields}
       additionalFieldsFormData={additionalFieldsFormData}
+      page={13}
       parentAction={parentAction}
       parentDispatch={parentDispatch}
       productCategory={productCategory}

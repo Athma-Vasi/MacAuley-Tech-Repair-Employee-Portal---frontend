@@ -12,6 +12,7 @@ import { CreateProductDispatch } from "./dispatch";
 type AdditionalFieldsProps = {
   additionalFields: Array<[string, string]>;
   additionalFieldsFormData: FormData;
+  page: number;
   parentDispatch: React.Dispatch<CreateProductDispatch>;
   productCategory: ProductCategory;
   stepperPages: StepperPage[];
@@ -21,6 +22,7 @@ type AdditionalFieldsProps = {
 function AdditionalFields({
   stepperPages,
   additionalFields,
+  page,
   parentAction,
   parentDispatch,
   additionalFieldsFormData,
@@ -246,7 +248,7 @@ function AdditionalFields({
       attributes={{
         formData: additionalFieldsFormData,
         invalidValueAction: parentAction.setPageInError,
-        page: 1,
+        page,
         productCategory,
         productCategoryDispatch: parentDispatch,
         stepperPages,

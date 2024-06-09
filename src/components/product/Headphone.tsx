@@ -115,6 +115,7 @@ function Headphone({
     <AdditionalFields
       additionalFields={additionalFields}
       additionalFieldsFormData={additionalFieldsFormData}
+      page={6}
       parentAction={parentAction}
       parentDispatch={parentDispatch}
       productCategory={productCategory}

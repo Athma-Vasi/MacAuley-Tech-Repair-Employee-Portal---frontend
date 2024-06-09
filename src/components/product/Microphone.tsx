@@ -105,6 +105,7 @@ function Microphone({
     <AdditionalFields
       additionalFields={additionalFields}
       additionalFieldsFormData={additionalFieldsFormData}
+      page={8}
       parentAction={parentAction}
       parentDispatch={parentDispatch}
       productCategory={productCategory}

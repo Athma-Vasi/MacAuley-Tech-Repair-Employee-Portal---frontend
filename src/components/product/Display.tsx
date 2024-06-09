@@ -129,6 +129,7 @@ function Display({
     <AdditionalFields
       additionalFields={additionalFields}
       additionalFieldsFormData={additionalFieldsFormData}
+      page={4}
       parentAction={parentAction}
       parentDispatch={parentDispatch}
       productCategory={productCategory}

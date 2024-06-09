@@ -493,6 +493,7 @@ function CreateProduct() {
     <AccessibleStepper
       attributes={{
         componentState: createProductState,
+        invalidValueAction: createProductAction.setPageInError,
         pageElements: [
           firstPage,
           accessoryPage,
@@ -511,6 +512,7 @@ function CreateProduct() {
           storagePage,
           webcamPage,
         ],
+        parentDispatch: createProductDispatch,
         stepperPages,
         submitButton,
       }}

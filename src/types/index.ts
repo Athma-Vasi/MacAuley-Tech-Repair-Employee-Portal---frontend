@@ -250,6 +250,7 @@ type SliderInputData = {
 
 type StepperChild = {
   inputType: InputType;
+  isRequired?: boolean;
   name: string;
   validationKey?: ValidationKey;
   selectInputData?: string[] | SelectInputData;

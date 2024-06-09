@@ -96,6 +96,7 @@ function Keyboard({
     <AdditionalFields
       additionalFields={additionalFields}
       additionalFieldsFormData={additionalFieldsFormData}
+      page={7}
       parentAction={parentAction}
       parentDispatch={parentDispatch}
       productCategory={productCategory}

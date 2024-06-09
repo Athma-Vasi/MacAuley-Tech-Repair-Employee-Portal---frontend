@@ -135,7 +135,7 @@ function AccessibleTextAreaInput<
     placeholder = "",
     productDispatchInfo,
     ref = null,
-    required = false,
+    required = true,
     rightSection = false,
     rightSectionIcon = null,
     rightSectionOnClick = () => {},

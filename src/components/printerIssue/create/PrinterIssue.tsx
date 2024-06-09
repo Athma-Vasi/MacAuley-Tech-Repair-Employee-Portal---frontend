@@ -178,7 +178,9 @@ function PrinterIssue() {
     <AccessibleStepper
       attributes={{
         componentState: printerIssueState,
+        invalidValueAction: printerIssueAction.setPageInError,
         pageElements: [detailsPage, contactPage],
+        parentDispatch: printerIssueDispatch,
         stepperPages: PRINTER_ISSUE_STEPPER_PAGES,
         submitButton,
       }}

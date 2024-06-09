@@ -246,45 +246,76 @@ function AccessibleImageInput<
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentImageIndex, qualities, orientations]);
 
+  useEffect(() => {
+    if (imageFileBlobs.length === 0) {
+      return;
+    }
+
+    imageFileBlobs.forEach((imageFileBlob) => {
+      if (imageFileBlob !== null) {
+        const { size, type } = imageFileBlob;
+
+        const isImageSizeInvalid = size > maxImageSize;
+        const isImageTypeInvalid = !ALLOWED_FILE_EXTENSIONS_REGEX.test(
+          type.split("/")[1]
+        );
+        const isImageInvalid = isImageSizeInvalid || isImageTypeInvalid;
+
+        console.group("Image File Blob");
+        console.log("size", size);
+        console.log("type", type);
+        console.log("isImageSizeInvalid", isImageSizeInvalid);
+        console.log("isImageTypeInvalid", isImageTypeInvalid);
+        console.log("isImageInvalid", isImageInvalid);
+        console.groupEnd();
+
+        if (productCategory && productCategoryDispatch) {
+          productCategoryDispatch({
+            action: invalidValueAction,
+            payload: {
+              kind: isImageInvalid ? "add" : "delete",
+              page,
+            },
+          });
+        } else {
+          parentDispatch?.({
+            action: invalidValueAction,
+            payload: {
+              kind: isImageInvalid ? "add" : "delete",
+              page,
+            },
+          });
+        }
+      }
+    });
+
+    const value = imageFileBlobs.reduce<FormData>((formDataAcc, imageFileBlob, index) => {
+      if (imageFileBlob) {
+        formDataAcc.append("file", imageFileBlob, imagesBuffer[index].name);
+      }
+
+      return formDataAcc;
+    }, new FormData());
+
+    if (productCategory && productCategoryDispatch) {
+      productCategoryDispatch({
+        action: validValueAction,
+        payload: { productCategory, value },
+      });
+    } else {
+      parentDispatch?.({
+        action: validValueAction,
+        payload: value,
+      });
+    }
+  }, [imageFileBlobs.length]);
+
   const fileInput = (
     <AccessibleFileInput<AccessibleImageInputAction["addImageToBuffer"]>
       attributes={{
         disabled,
         name: "images",
-        onChange: async (_file: File | null) => {
-          if (productCategory && productCategoryDispatch) {
-            productCategoryDispatch({
-              action: validValueAction,
-              payload: {
-                productCategory,
-                value: imageFileBlobs.reduce<FormData>(
-                  (formDataAcc, imageFileBlob, index) => {
-                    if (imageFileBlob) {
-                      formDataAcc.append("file", imageFileBlob, imagesBuffer[index].name);
-                    }
-
-                    return formDataAcc;
-                  },
-                  new FormData()
-                ),
-              },
-            });
-          } else {
-            parentDispatch?.({
-              action: validValueAction,
-              payload: imageFileBlobs.reduce<FormData>(
-                (formDataAcc, imageFileBlob, index) => {
-                  if (imageFileBlob) {
-                    formDataAcc.append("file", imageFileBlob, imagesBuffer[index].name);
-                  }
-
-                  return formDataAcc;
-                },
-                new FormData()
-              ),
-            });
-          }
-        },
+        onChange: async (_file: File | null) => {},
         parentDispatch: accessibleImageInputDispatch,
         validValueAction: accessibleImageInputAction.addImageToBuffer,
         value: imagesBuffer.at(-1) ?? null,

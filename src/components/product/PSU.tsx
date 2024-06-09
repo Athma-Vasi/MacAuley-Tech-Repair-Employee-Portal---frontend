@@ -91,6 +91,7 @@ function PSU({
     <AdditionalFields
       additionalFields={additionalFields}
       additionalFieldsFormData={additionalFieldsFormData}
+      page={11}
       parentAction={parentAction}
       parentDispatch={parentDispatch}
       productCategory={productCategory}

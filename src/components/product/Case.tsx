@@ -73,6 +73,7 @@ function Case({
     <AdditionalFields
       additionalFields={additionalFields}
       additionalFieldsFormData={additionalFieldsFormData}
+      page={2}
       parentAction={parentAction}
       parentDispatch={parentDispatch}
       productCategory={productCategory}

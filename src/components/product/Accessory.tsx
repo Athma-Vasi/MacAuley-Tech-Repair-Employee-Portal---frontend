@@ -73,6 +73,7 @@ function Accessory({
     <AdditionalFields
       additionalFields={additionalFields}
       additionalFieldsFormData={additionalFieldsFormData}
+      page={1}
       parentAction={parentAction}
       parentDispatch={parentDispatch}
       productCategory={productCategory}

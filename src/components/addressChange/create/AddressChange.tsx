@@ -281,7 +281,9 @@ function AddressChange() {
     <AccessibleStepper
       attributes={{
         componentState: addressChangeState,
+        invalidValueAction: addressChangeAction.setPageInError,
         pageElements: [addressChangeForm],
+        parentDispatch: addressChangeDispatch,
         stepperPages: ADDRESS_CHANGE_STEPPER_PAGES,
         submitButton,
         title: "Address Change",

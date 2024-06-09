@@ -38,6 +38,7 @@ function returnExpenseClaimStepperPages() {
 
   const additionalCommentsTextChild: StepperChild = {
     inputType: "text",
+    isRequired: false,
     name: "additionalComments",
     validationKey: "textAreaInput",
   };

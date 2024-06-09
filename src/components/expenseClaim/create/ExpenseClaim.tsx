@@ -2,6 +2,7 @@ import { Stack, Text } from "@mantine/core";
 import { useEffect, useReducer, useRef } from "react";
 import { useErrorBoundary } from "react-error-boundary";
 
+import { CURRENCY_DATA } from "../../../constants/data";
 import { useAuth } from "../../../hooks";
 import { useFetchInterceptor } from "../../../hooks/useFetchInterceptor";
 import { Currency, StepperPage } from "../../../types";
@@ -23,7 +24,6 @@ import { ExpenseClaimAction, expenseClaimAction } from "./actions";
 import { expenseClaimReducer } from "./reducers";
 import { initialExpenseClaimState } from "./state";
 import { ExpenseClaimKind, ExpenseClaimSchema } from "./types";
-import { CURRENCY_DATA } from "../../../constants/data";
 
 function ExpenseClaim() {
   const [expenseClaimState, expenseClaimDispatch] = useReducer(
@@ -209,6 +209,7 @@ function ExpenseClaim() {
     <AccessibleTextAreaInput
       attributes={{
         invalidValueAction: expenseClaimAction.setPageInError,
+        required: false,
         name: "additionalComments",
         parentDispatch: expenseClaimDispatch,
         stepperPages: EXPENSE_CLAIM_STEPPER_PAGES,
@@ -282,7 +283,10 @@ function ExpenseClaim() {
     <AccessibleStepper
       attributes={{
         componentState: expenseClaimState,
+        invalidValueAction: expenseClaimAction.setPageInError,
         pageElements: [firstPageElements, imageInput],
+        parentDispatch: expenseClaimDispatch,
+        stepsInError: pagesInError,
         stepperPages: EXPENSE_CLAIM_STEPPER_PAGES,
         submitButton,
       }}

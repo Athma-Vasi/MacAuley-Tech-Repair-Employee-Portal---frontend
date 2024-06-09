@@ -101,6 +101,7 @@ function Mouse({
     <AdditionalFields
       additionalFields={additionalFields}
       additionalFieldsFormData={additionalFieldsFormData}
+      page={10}
       parentAction={parentAction}
       parentDispatch={parentDispatch}
       productCategory={productCategory}

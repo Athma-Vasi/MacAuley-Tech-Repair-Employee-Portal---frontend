@@ -115,6 +115,7 @@ function GPU({
     <AdditionalFields
       additionalFields={additionalFields}
       additionalFieldsFormData={additionalFieldsFormData}
+      page={5}
       parentAction={parentAction}
       parentDispatch={parentDispatch}
       productCategory={productCategory}

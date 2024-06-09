@@ -111,6 +111,7 @@ function Webcam({
     <AdditionalFields
       additionalFields={additionalFields}
       additionalFieldsFormData={additionalFieldsFormData}
+      page={15}
       parentAction={parentAction}
       parentDispatch={parentDispatch}
       productCategory={productCategory}

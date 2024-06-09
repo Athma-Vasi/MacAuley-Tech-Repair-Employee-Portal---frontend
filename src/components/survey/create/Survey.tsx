@@ -439,7 +439,9 @@ function Survey() {
     <AccessibleStepper
       attributes={{
         componentState: makeSurveyStateForStepper(surveyState),
+        invalidValueAction: surveyAction.setPageInError,
         pageElements: [firstPage, ...questionPages],
+        parentDispatch: surveyDispatch,
         stepperPages,
         submitButton,
       }}

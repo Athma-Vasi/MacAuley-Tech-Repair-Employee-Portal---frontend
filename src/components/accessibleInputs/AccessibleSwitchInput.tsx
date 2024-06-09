@@ -128,7 +128,7 @@ function AccessibleSwitchInput<
             payload: checked,
           });
 
-          if (preventErrorStateWhenOff) {
+          if (!preventErrorStateWhenOff) {
             parentDispatch({
               action: invalidValueAction,
               payload: {

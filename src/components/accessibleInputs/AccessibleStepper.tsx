@@ -5,38 +5,49 @@ import { TbCheck, TbX } from "react-icons/tb";
 import { COLORS_SWATCHES } from "../../constants/data";
 import { VALIDATION_FUNCTIONS_TABLE } from "../../constants/validations";
 import { useGlobalState } from "../../hooks";
-import { StepperPage } from "../../types";
+import { SetPageInErrorPayload, StepperPage } from "../../types";
 import { returnThemeColors } from "../../utils";
 import { FormReviewStep } from "../formReview/FormReview";
 import { createAccessibleButtons } from "./utils";
 
-type AccessibleStepperAttributes = {
+type AccessibleStepperAttributes<InvalidValueAction extends string = string> = {
   allowNextStepsSelect?: boolean;
   componentState: Record<string, unknown>;
   displayReviewPage?: boolean;
   displaySubmitPage?: boolean;
+  invalidValueAction: InvalidValueAction;
   onPreviousClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
   onNextClick?: (event: React.MouseEvent<HTMLButtonElement>) => void;
   pageElements: React.JSX.Element[];
+  parentDispatch: React.Dispatch<{
+    action: InvalidValueAction;
+    payload: SetPageInErrorPayload;
+  }>;
+  stepsInError?: Set<number>;
   size?: MantineSize;
   stepperPages: StepperPage[];
   submitButton?: JSX.Element;
   title?: ReactNode;
 };
 
-type AccessibleStepperProps = {
-  attributes: AccessibleStepperAttributes;
+type AccessibleStepperProps<InvalidValueAction extends string = string> = {
+  attributes: AccessibleStepperAttributes<InvalidValueAction>;
 };
 
-function AccessibleStepper({ attributes }: AccessibleStepperProps) {
+function AccessibleStepper<InvalidValueAction extends string = string>({
+  attributes,
+}: AccessibleStepperProps<InvalidValueAction>) {
   const {
     allowNextStepsSelect,
     componentState,
     displayReviewPage = true,
     displaySubmitPage = true,
+    invalidValueAction,
     onNextClick,
     onPreviousClick,
     pageElements,
+    parentDispatch,
+    stepsInError = new Set<number>(),
     size = "md",
     stepperPages,
     submitButton = null,
@@ -48,9 +59,9 @@ function AccessibleStepper({ attributes }: AccessibleStepperProps) {
   } = useGlobalState();
 
   const [activeStep, setActiveStep] = useState(0);
-  const [stepsInError, setStepsInError] = useState<boolean[]>(
-    stepperPages.map(() => false)
-  );
+  // const [stepsInError, setStepsInError] = useState<boolean[]>(
+  //   stepsInError ?? returnStepsInError(componentState, stepperPages)
+  // );
 
   const maxStep = stepperPages.length;
 
@@ -64,8 +75,14 @@ function AccessibleStepper({ attributes }: AccessibleStepperProps) {
       kind: "previous",
       name: "Back",
       onClick: (event: React.MouseEvent<HTMLButtonElement>) => {
-        setStepsInError(returnStepsInError(componentState, stepperPages));
+        // setStepsInError(returnStepsInError(componentState, stepperPages));
         setActiveStep(activeStep <= maxStep ? activeStep - 1 : activeStep);
+        verifyEmptyInputs({
+          componentState,
+          invalidValueAction,
+          parentDispatch,
+          stepperPages,
+        });
         onPreviousClick?.(event);
       },
     },
@@ -78,8 +95,13 @@ function AccessibleStepper({ attributes }: AccessibleStepperProps) {
       kind: "next",
       name: "Next",
       onClick: (event: React.MouseEvent<HTMLButtonElement>) => {
-        setStepsInError(returnStepsInError(componentState, stepperPages));
         setActiveStep(activeStep < maxStep + 1 ? activeStep + 1 : activeStep);
+        verifyEmptyInputs({
+          componentState,
+          invalidValueAction,
+          parentDispatch,
+          stepperPages,
+        });
         onNextClick?.(event);
       },
     },
@@ -111,9 +133,16 @@ function AccessibleStepper({ attributes }: AccessibleStepperProps) {
   const stepperSteps = pages.map((elements, pageIndex) => {
     const page = stepperPages[pageIndex];
 
+    console.group("AccessibleStepper");
+    console.log("activeStep", activeStep);
+    console.log("stepsInError", stepsInError);
+    console.log("pageIndex", pageIndex);
+    console.log("page", page);
+    console.groupEnd();
+
     const descriptionColor = page.preventErrorStateDisplay
       ? textColor
-      : stepsInError[pageIndex]
+      : stepsInError.has(pageIndex)
       ? redColorShade
       : textColor;
 
@@ -127,7 +156,7 @@ function AccessibleStepper({ attributes }: AccessibleStepperProps) {
 
     const completedIcon = page.preventErrorStateDisplay ? (
       <Text color="white">{`${pageIndex + 1}`}</Text>
-    ) : stepsInError[pageIndex] ? (
+    ) : stepsInError.has(pageIndex) ? (
       <TbX size={26} />
     ) : (
       <TbCheck size={26} />
@@ -135,7 +164,7 @@ function AccessibleStepper({ attributes }: AccessibleStepperProps) {
 
     const stepColor = page.preventErrorStateDisplay
       ? grayColorShade
-      : stepsInError[pageIndex]
+      : stepsInError.has(pageIndex)
       ? redColorShade
       : greenColorShade;
 
@@ -175,6 +204,54 @@ function AccessibleStepper({ attributes }: AccessibleStepperProps) {
       </Group>
     </Stack>
   );
+}
+
+function verifyEmptyInputs<InvalidValueAction extends string = string>({
+  invalidValueAction,
+  parentDispatch,
+  stepperPages,
+  componentState,
+}: {
+  componentState: Record<string, unknown>;
+  invalidValueAction: InvalidValueAction;
+  parentDispatch: React.Dispatch<{
+    action: InvalidValueAction;
+    payload: SetPageInErrorPayload;
+  }>;
+  stepperPages: StepperPage[];
+}) {
+  stepperPages.forEach((page, pageIndex) => {
+    const { children, kind } = page;
+
+    if (kind && kind === "review") {
+      return;
+    }
+
+    children.forEach((child) => {
+      const { name: childName, isRequired } = child;
+
+      Object.entries(componentState).forEach(([stateKey, stateValue]) => {
+        if (childName !== stateKey) {
+          return;
+        }
+
+        // input is empty and is required
+        if (stateValue === "" && isRequired === undefined) {
+          console.log("isRequired", isRequired);
+
+          parentDispatch({
+            action: invalidValueAction,
+            payload: { kind: "add", page: pageIndex },
+          });
+        } else if (stateValue === "" && !isRequired) {
+          parentDispatch({
+            action: invalidValueAction,
+            payload: { kind: "delete", page: pageIndex },
+          });
+        }
+      });
+    });
+  });
 }
 
 function returnStepsInError(

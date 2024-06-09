@@ -389,7 +389,9 @@ function Announcement() {
     <AccessibleStepper
       attributes={{
         componentState: createStateForStepper(announcementState),
+        invalidValueAction: announcementAction.setPageInError,
         pageElements: [firstPage, articlePage],
+        parentDispatch: announcementDispatch,
         stepperPages: ANNOUNCEMENT_STEPPER_PAGES,
         submitButton,
       }}

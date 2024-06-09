@@ -182,7 +182,9 @@ function Referment() {
     <AccessibleStepper
       attributes={{
         componentState: refermentState,
+        invalidValueAction: refermentAction.setPageInError,
         pageElements: [candidatePage, positionPage],
+        parentDispatch: refermentDispatch,
         stepperPages: REFERMENT_STEPPER_PAGES,
         submitButton,
       }}

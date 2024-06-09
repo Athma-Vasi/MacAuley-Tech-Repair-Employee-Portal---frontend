@@ -266,7 +266,9 @@ function AnonymousRequest() {
     <AccessibleStepper
       attributes={{
         componentState: anonymousRequestState,
+        invalidValueAction: anonymousRequestAction.setPageInError,
         pageElements: [anonymousRequest],
+        parentDispatch: anonymousRequestDispatch,
         stepperPages: ANONYMOUS_REQUEST_STEPPER_PAGES,
         submitButton,
       }}

@@ -171,6 +171,7 @@ function CPU({
     <AdditionalFields
       additionalFields={additionalFields}
       additionalFieldsFormData={additionalFieldsFormData}
+      page={3}
       parentAction={parentAction}
       parentDispatch={parentDispatch}
       productCategory={productCategory}

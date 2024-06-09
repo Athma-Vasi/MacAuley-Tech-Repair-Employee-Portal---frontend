@@ -326,7 +326,9 @@ function Event() {
     <AccessibleStepper
       attributes={{
         componentState: eventState,
+        invalidValueAction: eventAction.setPageInError,
         pageElements: [eventDateAndTimePage, eventLocationAndDescriptionPage],
+        parentDispatch: eventDispatch,
         stepperPages: EVENT_STEPPER_PAGES,
         submitButton,
       }}

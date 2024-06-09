@@ -143,6 +143,7 @@ function RAM({
     <AdditionalFields
       additionalFields={additionalFields}
       additionalFieldsFormData={additionalFieldsFormData}
+      page={12}
       parentAction={parentAction}
       parentDispatch={parentDispatch}
       productCategory={productCategory}

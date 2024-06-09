@@ -265,7 +265,9 @@ function LeaveRequest() {
     <AccessibleStepper
       attributes={{
         componentState: leaveRequestState,
+        invalidValueAction: leaveRequestAction.setPageInError,
         pageElements: [firstPage],
+        parentDispatch: leaveRequestDispatch,
         stepperPages: CREATE_LEAVE_REQUEST_PAGES,
         submitButton,
       }}

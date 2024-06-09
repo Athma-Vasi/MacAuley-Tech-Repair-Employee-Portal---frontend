@@ -203,6 +203,7 @@ function Motherboard({
     <AdditionalFields
       additionalFields={additionalFields}
       additionalFieldsFormData={additionalFieldsFormData}
+      page={9}
       parentAction={parentAction}
       parentDispatch={parentDispatch}
       productCategory={productCategory}

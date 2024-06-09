@@ -224,7 +224,9 @@ function Endorsement() {
     <AccessibleStepper
       attributes={{
         componentState: endorsementState,
+        invalidValueAction: endorsementAction.setPageInError,
         pageElements: [firstPage],
+        parentDispatch: endorsementDispatch,
         stepperPages: ENDORSEMENT_STEPPER_PAGES,
         submitButton,
       }}

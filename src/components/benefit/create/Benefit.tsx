@@ -285,7 +285,9 @@ function Benefit() {
     <AccessibleStepper
       attributes={{
         componentState: benefitState,
+        invalidValueAction: benefitAction.setPageInError,
         pageElements: [benefitForm, benefitContributionsForm],
+        parentDispatch: benefitDispatch,
         stepperPages: BENEFIT_STEPPER_PAGES,
         submitButton,
         title: "Create Benefit",

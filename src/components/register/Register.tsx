@@ -251,6 +251,7 @@ function Register() {
     <AccessibleStepper
       attributes={{
         componentState: registerState,
+        invalidValueAction: registerAction.setPageInError,
         pageElements: [
           authenticationPage,
           personalPage,
@@ -258,6 +259,7 @@ function Register() {
           addressPage,
           additionalPage,
         ],
+        parentDispatch: registerDispatch,
         stepperPages: registerStepperPages,
         submitButton,
       }}

@@ -134,6 +134,7 @@ function Storage({
     <AdditionalFields
       additionalFields={additionalFields}
       additionalFieldsFormData={additionalFieldsFormData}
+      page={14}
       parentAction={parentAction}
       parentDispatch={parentDispatch}
       productCategory={productCategory}

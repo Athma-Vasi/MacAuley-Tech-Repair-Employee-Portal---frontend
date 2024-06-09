@@ -295,7 +295,9 @@ type RequestResourceState = {
     <AccessibleStepper
       attributes={{
         componentState: requestResourceState,
+        invalidValueAction: requestResourceAction.setPageInError,
         pageElements: [firstPage],
+        parentDispatch: requestResourceDispatch,
         stepperPages: RESOURCE_REQUEST_STEPPER_PAGES,
         submitButton,
       }}
