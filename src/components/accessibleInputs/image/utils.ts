@@ -1,16 +1,18 @@
+import { ModifiedFile } from "../AccessibleFileInput";
+
 function validateImages({
   allowedFileExtensionsRegex,
   imageFileBlobs,
   maxImageSize,
-  maxImages,
+  maxImagesAmount,
 }: {
   allowedFileExtensionsRegex: RegExp;
-  imageFileBlobs: (File | Blob | null)[];
+  imageFileBlobs: Array<ModifiedFile>;
   maxImageSize: number;
-  maxImages: number;
+  maxImagesAmount: number;
 }) {
   const areImagesInvalid =
-    imageFileBlobs.length > maxImages ||
+    imageFileBlobs.length > maxImagesAmount ||
     imageFileBlobs.reduce((invalidAcc, fileBlob) => {
       if (fileBlob === null) {
         return true;

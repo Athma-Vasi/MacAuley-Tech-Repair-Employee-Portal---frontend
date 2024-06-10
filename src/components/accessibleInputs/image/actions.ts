@@ -1,6 +1,7 @@
 type AccessibleImageInputAction = {
-  addImageToBuffer: "addImageToBuffer";
-  removeImageFromBuffer: "removeImageFromBuffer";
+  addFileName: "addFileName";
+  addImageFileBlob: "addImageFileBlob";
+  removeImageFileBlob: "removeImageFileBlob";
   resetImageFileBlob: "resetImageFileBlob";
   setCurrentImageIndex: "setCurrentImageIndex";
   setImageFileBlobs: "setImageFileBlobs";
@@ -10,8 +11,9 @@ type AccessibleImageInputAction = {
 };
 
 const accessibleImageInputAction: AccessibleImageInputAction = {
-  addImageToBuffer: "addImageToBuffer",
-  removeImageFromBuffer: "removeImageFromBuffer",
+  addFileName: "addFileName",
+  addImageFileBlob: "addImageFileBlob",
+  removeImageFileBlob: "removeImageFileBlob",
   resetImageFileBlob: "resetImageFileBlob",
   setCurrentImageIndex: "setCurrentImageIndex",
   setImageFileBlobs: "setImageFileBlobs",

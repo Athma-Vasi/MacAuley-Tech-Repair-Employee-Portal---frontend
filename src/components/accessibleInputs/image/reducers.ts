@@ -1,3 +1,4 @@
+import { ModifiedFile, OriginalFile } from "../AccessibleFileInput";
 import { DynamicSliderInputPayload } from "../AccessibleSliderInput";
 import { AccessibleImageInputAction, accessibleImageInputAction } from "./actions";
 import { AccessibleImageInputDispatch, AccessibleImageInputState } from "./types";
@@ -18,20 +19,21 @@ const accessibleImageInputReducersMap = new Map<
   ) => AccessibleImageInputState
 >([
   [
+    accessibleImageInputAction.addImageFileBlob,
+    accessibleImageInputReducer_addImageFileBlob,
+  ],
+  [accessibleImageInputAction.addFileName, accessibleImageInputReducer_addFileName],
+  [
     accessibleImageInputAction.setCurrentImageIndex,
     accessibleImageInputReducer_setCurrentImageIndex,
   ],
   [
-    accessibleImageInputAction.addImageToBuffer,
-    accessibleImageInputReducer_addImageToBuffer,
-  ],
-  [
-    accessibleImageInputAction.removeImageFromBuffer,
-    accessibleImageInputReducer_removeImageFromBuffer,
-  ],
-  [
     accessibleImageInputAction.resetImageFileBlob,
     accessibleImageInputReducer_resetImageFileBlob,
+  ],
+  [
+    accessibleImageInputAction.removeImageFileBlob,
+    accessibleImageInputReducer_removeImageFileBlob,
   ],
   [
     accessibleImageInputAction.setImageFileBlobs,
@@ -45,6 +47,32 @@ const accessibleImageInputReducersMap = new Map<
   ],
 ]);
 
+function accessibleImageInputReducer_addImageFileBlob(
+  state: AccessibleImageInputState,
+  dispatch: AccessibleImageInputDispatch
+): AccessibleImageInputState {
+  const fileBlob = dispatch.payload as ModifiedFile;
+  const imageFileBlobs = structuredClone(state.imageFileBlobs);
+  imageFileBlobs.push(fileBlob);
+
+  return {
+    ...state,
+    imageFileBlobs,
+  };
+}
+
+function accessibleImageInputReducer_addFileName(
+  state: AccessibleImageInputState,
+  dispatch: AccessibleImageInputDispatch
+): AccessibleImageInputState {
+  const fileName = dispatch.payload as string;
+
+  return {
+    ...state,
+    fileNames: [...state.fileNames, fileName],
+  };
+}
+
 function accessibleImageInputReducer_setCurrentImageIndex(
   state: AccessibleImageInputState,
   dispatch: AccessibleImageInputDispatch
@@ -55,42 +83,29 @@ function accessibleImageInputReducer_setCurrentImageIndex(
   };
 }
 
-function accessibleImageInputReducer_addImageToBuffer(
-  state: AccessibleImageInputState,
-  dispatch: AccessibleImageInputDispatch
-): AccessibleImageInputState {
-  const image = dispatch.payload as File | null;
-
-  if (!image) {
-    return state;
-  }
-
-  const imagesBuffer = structuredClone(state.imagesBuffer);
-  imagesBuffer.push(image);
-  const imageFileBlobs = structuredClone(state.imageFileBlobs);
-  imageFileBlobs.push(image);
-
-  return {
-    ...state,
-    imagesBuffer,
-    imageFileBlobs,
-  };
-}
-
-function accessibleImageInputReducer_removeImageFromBuffer(
+function accessibleImageInputReducer_removeImageFileBlob(
   state: AccessibleImageInputState,
   dispatch: AccessibleImageInputDispatch
 ): AccessibleImageInputState {
   const index = dispatch.payload as number;
-  const imagesBuffer = structuredClone(state.imagesBuffer);
-  imagesBuffer.splice(index, 1);
   const imageFileBlobs = structuredClone(state.imageFileBlobs);
   imageFileBlobs.splice(index, 1);
 
+  const fileNames = state.fileNames.slice();
+  fileNames.splice(index, 1);
+
+  const qualities = state.qualities.slice();
+  qualities.splice(index, 1);
+
+  const orientations = state.orientations.slice();
+  orientations.splice(index, 1);
+
   return {
     ...state,
-    imagesBuffer,
+    fileNames,
     imageFileBlobs,
+    qualities,
+    orientations,
   };
 }
 
@@ -98,10 +113,12 @@ function accessibleImageInputReducer_resetImageFileBlob(
   state: AccessibleImageInputState,
   dispatch: AccessibleImageInputDispatch
 ): AccessibleImageInputState {
-  const index = dispatch.payload as number;
-  const clonedImage = structuredClone(state.imagesBuffer[index]);
+  const { index, value } = dispatch.payload as {
+    index: number;
+    value: OriginalFile;
+  };
   const imageFileBlobs = structuredClone(state.imageFileBlobs);
-  imageFileBlobs[index] = clonedImage;
+  imageFileBlobs[index] = value;
 
   const qualities = state.qualities.slice();
   qualities[index] = 10;
@@ -122,7 +139,7 @@ function accessibleImageInputReducer_setImageFileBlobs(
 ): AccessibleImageInputState {
   const { fileBlob, index } = dispatch.payload as {
     index: number;
-    fileBlob: File | Blob | null;
+    fileBlob: ModifiedFile;
   };
 
   const imageFileBlobs = structuredClone(state.imageFileBlobs);

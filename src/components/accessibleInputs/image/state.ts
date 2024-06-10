@@ -3,7 +3,7 @@ import { AccessibleImageInputState } from "./types";
 
 const initialAccessibleImageInputState: AccessibleImageInputState = {
   currentImageIndex: 0,
-  imagesBuffer: [],
+  fileNames: [],
   imageFileBlobs: [],
   isLoading: false,
   orientations: Array.from({ length: MAX_IMAGES }, () => 1),

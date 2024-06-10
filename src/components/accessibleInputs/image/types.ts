@@ -4,6 +4,7 @@ import { SetPageInErrorPayload, StepperPage } from "../../../types";
 import { ProductCategory } from "../../dashboard/types";
 import { AdditionalFieldsFormDataPayload } from "../../product/dispatch";
 import { AccessibleImageInputAction } from "./actions";
+import { ModifiedFile, OriginalFile } from "../AccessibleFileInput";
 
 type AccessibleImageInputAttributes<
   ValidValueAction extends string = string,
@@ -13,7 +14,7 @@ type AccessibleImageInputAttributes<
   formData: FormData | undefined;
   invalidValueAction: InvalidValueAction;
   maxImageSize?: number;
-  maxImages?: number;
+  maxImagesAmount?: number;
   page: number;
   parentDispatch?: Dispatch<
     | {
@@ -51,8 +52,9 @@ type AccessibleImageInputProps<
 
 type AccessibleImageInputState = {
   currentImageIndex: number;
-  imagesBuffer: File[];
-  imageFileBlobs: (File | Blob | null)[];
+  /** blobs do not have name property */
+  fileNames: string[];
+  imageFileBlobs: Array<ModifiedFile>;
   isLoading: boolean;
   qualities: number[];
   orientations: number[];
@@ -60,22 +62,33 @@ type AccessibleImageInputState = {
 
 type AccessibleImageInputDispatch =
   | {
-      action: AccessibleImageInputAction["addImageToBuffer"];
-      payload: File | null;
+      action: AccessibleImageInputAction["addImageFileBlob"];
+      payload: ModifiedFile;
     }
   | {
-      action: AccessibleImageInputAction["removeImageFromBuffer"];
+      action: AccessibleImageInputAction["removeImageFileBlob"];
+      payload: number;
+    }
+  | {
+      action: AccessibleImageInputAction["addFileName"];
+      payload: string;
+    }
+  | {
+      action: AccessibleImageInputAction["setCurrentImageIndex"];
       payload: number;
     }
   | {
       action: AccessibleImageInputAction["resetImageFileBlob"];
-      payload: number;
+      payload: {
+        index: number;
+        value: OriginalFile;
+      };
     }
   | {
       action: AccessibleImageInputAction["setImageFileBlobs"];
       payload: {
         index: number;
-        fileBlob: File | Blob | null;
+        fileBlob: ModifiedFile;
       };
     }
   | {
