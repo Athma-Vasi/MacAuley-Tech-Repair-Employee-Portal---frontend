@@ -40,6 +40,7 @@ function AccessibleImageInput<
     productCategory,
     productCategoryDispatch,
     stepperPages,
+    storageKey,
     validValueAction,
   } = attributes;
 
@@ -87,7 +88,7 @@ function AccessibleImageInput<
           payload: true,
         });
 
-        const images = await localforage.getItem<Array<File | null>>("images");
+        const images = await localforage.getItem<Array<File | null>>(storageKey);
 
         if (!isMounted) {
           return;
@@ -129,38 +130,38 @@ function AccessibleImageInput<
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const isMountedStoreImagesRef = useRef(false);
-  useEffect(() => {
-    isMountedStoreImagesRef.current = true;
-    const isMounted = isMountedStoreImagesRef.current;
+  // const isMountedStoreImagesRef = useRef(false);
+  // useEffect(() => {
+  //   isMountedStoreImagesRef.current = true;
+  //   const isMounted = isMountedStoreImagesRef.current;
 
-    async function storeImages(): Promise<void> {
-      try {
-        const newImages = structuredClone(
-          (await localforage.getItem<Array<File | null>>("images")) ?? []
-        );
-        if (!isMounted || newImages.length === imagesBuffer.length) {
-          return;
-        }
+  //   async function storeImages(): Promise<void> {
+  //     try {
+  //       const newImages = structuredClone(
+  //         (await localforage.getItem<Array<File | null>>("images")) ?? []
+  //       );
+  //       if (!isMounted || newImages.length === imagesBuffer.length) {
+  //         return;
+  //       }
 
-        if (newImages.length > imagesBuffer.length) {
-          newImages.pop();
-        }
+  //       if (newImages.length > imagesBuffer.length) {
+  //         newImages.pop();
+  //       }
 
-        newImages.push(imagesBuffer.at(-1) ?? new File([], "image"));
-        await localforage.setItem("images", newImages);
-      } catch (error: any) {
-        showBoundary(error);
-      }
-    }
+  //       newImages.push(imagesBuffer.at(-1) ?? new File([], "image"));
+  //       await localforage.setItem("images", newImages);
+  //     } catch (error: any) {
+  //       showBoundary(error);
+  //     }
+  //   }
 
-    storeImages();
+  //   storeImages();
 
-    return () => {
-      isMountedStoreImagesRef.current = false;
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [imagesBuffer.length]);
+  //   return () => {
+  //     isMountedStoreImagesRef.current = false;
+  //   };
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [imagesBuffer.length]);
 
   const isMountedModifyImagesRef = useRef(false);
   useEffect(() => {
@@ -215,7 +216,7 @@ function AccessibleImageInput<
         const formData = imageFileBlobs.reduce<FormData>(
           (formDataAcc, imageFileBlob, index) => {
             if (imageFileBlob) {
-              formDataAcc.append("images", imageFileBlob, imagesBuffer[index].name);
+              formDataAcc.append(storageKey, imageFileBlob, imagesBuffer[index].name);
             }
 
             return formDataAcc;
@@ -291,7 +292,7 @@ function AccessibleImageInput<
 
     const value = imageFileBlobs.reduce<FormData>((formDataAcc, imageFileBlob, index) => {
       if (imageFileBlob) {
-        formDataAcc.append("file", imageFileBlob, imagesBuffer[index].name);
+        formDataAcc.append(storageKey, imageFileBlob, imagesBuffer[index].name);
       }
 
       return formDataAcc;
@@ -315,7 +316,13 @@ function AccessibleImageInput<
       attributes={{
         disabled,
         name: "images",
-        onChange: async (_file: File | null) => {},
+        onChange: async (file: File | null) => {
+          console.log("AccessibleFileInput onChange");
+
+          const images = (await localforage.getItem<Array<File | null>>("images")) ?? [];
+          images.push(file);
+          await localforage.setItem(storageKey, images);
+        },
         parentDispatch: accessibleImageInputDispatch,
         validValueAction: accessibleImageInputAction.addImageToBuffer,
         value: imagesBuffer.at(-1) ?? null,
@@ -405,9 +412,9 @@ function AccessibleImageInput<
             | React.MouseEvent<HTMLButtonElement, MouseEvent>
             | React.PointerEvent<HTMLButtonElement>
         ) => {
-          const images = await localforage.getItem<Array<File | null>>("images");
+          const images = await localforage.getItem<Array<File | null>>(storageKey);
           images?.splice(index, 1);
-          await localforage.setItem("images", images);
+          await localforage.setItem(storageKey, images);
 
           accessibleImageInputDispatch({
             action: accessibleImageInputAction.removeImageFromBuffer,

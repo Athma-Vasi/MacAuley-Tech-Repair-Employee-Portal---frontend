@@ -25,6 +25,7 @@ function RegisterProfilePicture({
         page: 2,
         parentDispatch,
         stepperPages,
+        storageKey: "profilePicture",
         validValueAction: parentAction.setProfilePictureFormData,
       }}
     />

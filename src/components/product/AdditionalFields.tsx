@@ -252,6 +252,7 @@ function AdditionalFields({
         productCategory,
         productCategoryDispatch: parentDispatch,
         stepperPages,
+        storageKey: "additionalFields",
         validValueAction: parentAction.setAdditionalFieldsFormDataMap,
       }}
     />

@@ -37,6 +37,8 @@ type AccessibleImageInputAttributes<
       }
   >;
   stepperPages: StepperPage[];
+  /** unique id for local forage */
+  storageKey: string;
   validValueAction: ValidValueAction;
 };
 
