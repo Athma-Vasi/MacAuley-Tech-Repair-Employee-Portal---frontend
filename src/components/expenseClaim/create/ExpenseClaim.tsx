@@ -251,11 +251,9 @@ function ExpenseClaim() {
   const imageInput = (
     <AccessibleImageInput
       attributes={{
-        formData,
         invalidValueAction: expenseClaimAction.setPageInError,
         page: 1,
         parentDispatch: expenseClaimDispatch,
-        stepperPages: EXPENSE_CLAIM_STEPPER_PAGES,
         storageKey: "expenseClaim",
         validValueAction: expenseClaimAction.setFormData,
       }}

@@ -20,11 +20,9 @@ function RegisterProfilePicture({
   const imageInput = (
     <AccessibleImageInput
       attributes={{
-        formData: profilePictureFormData,
         invalidValueAction: parentAction.setPageInError,
         page: 2,
         parentDispatch,
-        stepperPages,
         storageKey: "profilePicture",
         validValueAction: parentAction.setProfilePictureFormData,
       }}

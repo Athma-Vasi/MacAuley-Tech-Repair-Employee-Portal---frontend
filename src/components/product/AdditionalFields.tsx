@@ -246,12 +246,10 @@ function AdditionalFields({
   const imageInput = (
     <AccessibleImageInput
       attributes={{
-        formData: additionalFieldsFormData,
         invalidValueAction: parentAction.setPageInError,
         page,
         productCategory,
         productCategoryDispatch: parentDispatch,
-        stepperPages,
         storageKey: "additionalFields",
         validValueAction: parentAction.setAdditionalFieldsFormDataMap,
       }}
