@@ -1,39 +1,30 @@
-import { SelectInputData } from "../../../types";
+import {
+  CustomerMetricsChurnRetentionChartsKey,
+  CustomerMetricsNewReturningCalendarChartsKey,
+  CustomerMetricsNewReturningChartsKey,
+  CustomerMetricsNewReturningPieChartsKey,
+  CustomerMetricsOverviewChartsKey,
+} from "./utils";
 
-const CUSTOMER_OVERVIEW_Y_AXIS_DATA: SelectInputData = [
-  { label: "Overview", value: "overview" },
-  { label: "New", value: "new" },
-  { label: "Returning", value: "returning" },
+const CUSTOMER_OVERVIEW_Y_AXIS_DATA: CustomerMetricsOverviewChartsKey[] = [
+  "overview",
+  "new",
+  "returning",
 ];
 
-const CUSTOMER_NEW_RETURNING_LINE_BAR_Y_AXIS_DATA: SelectInputData = [
-  { label: "Total", value: "total" },
-  { label: "All", value: "all" },
-  { label: "Overview", value: "overview" },
-  { label: "Sales", value: "sales" },
-  { label: "Online", value: "online" },
-  { label: "In-Store", value: "inStore" },
-  { label: "Repair", value: "repair" },
-];
+const CUSTOMER_NEW_RETURNING_LINE_BAR_Y_AXIS_DATA: CustomerMetricsNewReturningChartsKey[] =
+  ["total", "all", "overview", "sales", "online", "inStore", "repair"];
 
-const CUSTOMER_NEW_RETURNING_CALENDAR_Y_AXIS_DATA: SelectInputData = [
-  { label: "Total", value: "total" },
-  { label: "Sales", value: "sales" },
-  { label: "Online", value: "online" },
-  { label: "In-Store", value: "inStore" },
-  { label: "Repair", value: "repair" },
-];
+const CUSTOMER_NEW_RETURNING_CALENDAR_Y_AXIS_DATA: CustomerMetricsNewReturningCalendarChartsKey[] =
+  ["total", "sales", "online", "inStore", "repair"];
 
-const CUSTOMER_NEW_RETURNING_PIE_Y_AXIS_DATA: SelectInputData = [
-  { label: "Overview", value: "overview" },
-  { label: "All", value: "all" },
-  { label: "Sales", value: "sales" },
-];
+const CUSTOMER_NEW_RETURNING_PIE_Y_AXIS_DATA: CustomerMetricsNewReturningPieChartsKey[] =
+  ["overview", "all", "sales"];
 
-const CUSTOMER_CHURN_RETENTION_Y_AXIS_DATA: SelectInputData = [
-  { label: "Overview", value: "overview" },
-  { label: "Churn Rate", value: "churnRate" },
-  { label: "Retention Rate", value: "retentionRate" },
+const CUSTOMER_CHURN_RETENTION_Y_AXIS_DATA: CustomerMetricsChurnRetentionChartsKey[] = [
+  "overview",
+  "churnRate",
+  "retentionRate",
 ];
 
 export {
