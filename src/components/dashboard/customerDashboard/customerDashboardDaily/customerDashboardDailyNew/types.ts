@@ -28,8 +28,4 @@ type CustomerDashboardDailyNewDispatch =
       payload: CustomerMetricsNewReturningPieChartsKey;
     };
 
-export type {
-  CustomerDashboardDailyNewAction,
-  CustomerDashboardDailyNewDispatch,
-  CustomerDashboardDailyNewState,
-};
+export type { CustomerDashboardDailyNewDispatch, CustomerDashboardDailyNewState };

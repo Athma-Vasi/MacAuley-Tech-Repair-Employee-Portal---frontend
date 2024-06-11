@@ -3,40 +3,33 @@ import {
   CustomerMetricsNewReturningChartsKey,
   CustomerMetricsNewReturningPieChartsKey,
 } from "../../utils";
+import { CustomerDashboardDailyReturningAction } from "./actions";
 
 type CustomerDashboardDailyReturningState = {
-  returningBarChartYAxisVariable: CustomerMetricsNewReturningChartsKey;
-  returningCalendarChartYAxisVariable: CustomerMetricsNewReturningCalendarChartsKey;
-  returningLineChartYAxisVariable: CustomerMetricsNewReturningChartsKey;
   returningPieChartYAxisVariable: CustomerMetricsNewReturningPieChartsKey;
-};
-
-type CustomerDashboardDailyReturningAction = {
-  setReturningBarChartYAxisVariable: "setReturningBarChartYAxisVariable";
-  setReturningCalendarChartYAxisVariable: "setReturningCalendarChartYAxisVariable";
-  setReturningLineChartYAxisVariable: "setReturningLineChartYAxisVariable";
-  setReturningPieChartYAxisVariable: "setReturningPieChartYAxisVariable";
+  returningLineChartYAxisVariable: CustomerMetricsNewReturningChartsKey;
+  returningCalendarChartYAxisVariable: CustomerMetricsNewReturningCalendarChartsKey;
+  returningBarChartYAxisVariable: CustomerMetricsNewReturningChartsKey;
 };
 
 type CustomerDashboardDailyReturningDispatch =
   | {
-      type:
+      action:
         | CustomerDashboardDailyReturningAction["setReturningBarChartYAxisVariable"]
         | CustomerDashboardDailyReturningAction["setReturningLineChartYAxisVariable"];
 
       payload: CustomerMetricsNewReturningChartsKey;
     }
   | {
-      type: CustomerDashboardDailyReturningAction["setReturningCalendarChartYAxisVariable"];
+      action: CustomerDashboardDailyReturningAction["setReturningCalendarChartYAxisVariable"];
       payload: CustomerMetricsNewReturningCalendarChartsKey;
     }
   | {
-      type: CustomerDashboardDailyReturningAction["setReturningPieChartYAxisVariable"];
+      action: CustomerDashboardDailyReturningAction["setReturningPieChartYAxisVariable"];
       payload: CustomerMetricsNewReturningPieChartsKey;
     };
 
 export type {
-  CustomerDashboardDailyReturningAction,
   CustomerDashboardDailyReturningDispatch,
   CustomerDashboardDailyReturningState,
 };

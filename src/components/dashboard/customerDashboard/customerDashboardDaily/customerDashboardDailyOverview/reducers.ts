@@ -1,7 +1,9 @@
 import { CustomerMetricsOverviewChartsKey } from "../../utils";
-import { customerDashboardDailyOverviewAction } from "./actions";
 import {
   CustomerDashboardDailyOverviewAction,
+  customerDashboardDailyOverviewAction,
+} from "./actions";
+import {
   CustomerDashboardDailyOverviewDispatch,
   CustomerDashboardDailyOverviewState,
 } from "./types";

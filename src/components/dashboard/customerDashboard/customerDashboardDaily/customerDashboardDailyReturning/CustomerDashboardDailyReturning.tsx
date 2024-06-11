@@ -1,15 +1,12 @@
 import { MantineNumberSize } from "@mantine/core";
-import { ChangeEvent, useReducer } from "react";
-import { LuExpand } from "react-icons/lu";
+import { useReducer } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { globalAction } from "../../../../../context/globalProvider/state";
 import { useGlobalState } from "../../../../../hooks";
-import {
-  returnAccessibleButtonElements,
-  returnAccessibleSelectInputElements,
-} from "../../../../../jsxCreators";
 import { addCommaSeparator } from "../../../../../utils";
+import { AccessibleButton } from "../../../../accessibleInputs/AccessibleButton";
+import { AccessibleSelectInput } from "../../../../accessibleInputs/AccessibleSelectInput";
 import {
   ResponsiveBarChart,
   ResponsiveCalendarChart,
@@ -25,18 +22,11 @@ import {
   CUSTOMER_NEW_RETURNING_LINE_BAR_Y_AXIS_DATA,
   CUSTOMER_NEW_RETURNING_PIE_Y_AXIS_DATA,
 } from "../../constants";
-import {
-  CustomerMetricsCharts,
-  CustomerMetricsNewReturningCalendarChartsKey,
-  CustomerMetricsNewReturningChartsKey,
-  CustomerMetricsNewReturningPieChartsKey,
-} from "../../utils";
+import { CustomerMetricsCharts, CustomerMetricsNewReturningChartsKey } from "../../utils";
 import { CustomerMetricsCards } from "../../utilsTSX";
-import {
-  customerDashboardDailyReturningAction,
-  customerDashboardDailyReturningReducer,
-  initialCustomerDashboardDailyReturningState,
-} from "./state";
+import { customerDashboardDailyReturningAction } from "./actions";
+import { customerDashboardDailyReturningReducer } from "./reducers";
+import { initialCustomerDashboardDailyReturningState } from "./state";
 
 function CustomerDashboardDailyReturning({
   borderColor,
@@ -107,42 +97,44 @@ function CustomerDashboardDailyReturning({
     months: MONTHS,
   });
 
-  const [expandPieChartButton] = returnAccessibleButtonElements([
-    {
-      buttonLabel: "Expand",
-      semanticDescription: `Expand and customize ${pieChartHeading}`,
-      semanticName: "Expand Returning Pie Chart",
-      buttonOnClick: () => {
-        globalDispatch({
-          type: globalAction.setCustomizeChartsPageData,
-          payload: {
-            chartKind: "pie",
-            chartData: dailyChartsReturning.pie[returningPieChartYAxisVariable],
-            chartTitle: pieChartHeading,
-            chartUnitKind: "number",
-          },
-        });
-
-        navigate(expandPieChartNavigateLink);
-      },
-      leftIcon: <LuExpand />,
-    },
-  ]);
-
-  const [returningPieChartYAxisVariablesSelectInput] =
-    returnAccessibleSelectInputElements([
-      {
-        data: CUSTOMER_NEW_RETURNING_PIE_Y_AXIS_DATA,
-        label: "Y-Axis Pie",
-        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-          customerDashboardDailyReturningDispatch({
-            type: customerDashboardDailyReturningAction.setReturningPieChartYAxisVariable,
-            payload: event.currentTarget.value as CustomerMetricsNewReturningPieChartsKey,
+  const expandPieChartButton = (
+    <AccessibleButton
+      attributes={{
+        enabledScreenreaderText: `Expand and customize ${pieChartHeading}`,
+        kind: "expand",
+        onClick: (
+          _event:
+            | React.MouseEvent<HTMLButtonElement>
+            | React.PointerEvent<HTMLButtonElement>
+        ) => {
+          globalDispatch({
+            type: globalAction.setCustomizeChartsPageData,
+            payload: {
+              chartKind: "pie",
+              chartData: dailyChartsReturning.pie[returningPieChartYAxisVariable],
+              chartTitle: pieChartHeading,
+              chartUnitKind: "number",
+            },
           });
+
+          navigate(expandPieChartNavigateLink);
         },
+      }}
+    />
+  );
+
+  const returningPieChartYAxisVariablesSelectInput = (
+    <AccessibleSelectInput
+      attributes={{
+        data: CUSTOMER_NEW_RETURNING_PIE_Y_AXIS_DATA,
+        name: "Y-Axis Pie",
+        parentDispatch: customerDashboardDailyReturningDispatch,
+        validValueAction:
+          customerDashboardDailyReturningAction.setReturningPieChartYAxisVariable,
         value: returningPieChartYAxisVariable,
-      },
-    ]);
+      }}
+    />
+  );
 
   const returningPieChart = (
     <ResponsivePieChart
@@ -154,42 +146,44 @@ function CustomerDashboardDailyReturning({
     />
   );
 
-  const [expandBarChartButton] = returnAccessibleButtonElements([
-    {
-      buttonLabel: "Expand",
-      semanticDescription: `Expand and customize ${barChartHeading}`,
-      semanticName: "Expand Returning Bar Chart",
-      buttonOnClick: () => {
-        globalDispatch({
-          type: globalAction.setCustomizeChartsPageData,
-          payload: {
-            chartKind: "bar",
-            chartData: dailyChartsReturning.bar[returningBarChartYAxisVariable],
-            chartTitle: barChartHeading,
-            chartUnitKind: "number",
-          },
-        });
-
-        navigate(expandBarChartNavigateLink);
-      },
-      leftIcon: <LuExpand />,
-    },
-  ]);
-
-  const [returningBarChartYAxisVariablesSelectInput] =
-    returnAccessibleSelectInputElements([
-      {
-        data: CUSTOMER_NEW_RETURNING_LINE_BAR_Y_AXIS_DATA,
-        label: "Y-Axis Bar",
-        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-          customerDashboardDailyReturningDispatch({
-            type: customerDashboardDailyReturningAction.setReturningBarChartYAxisVariable,
-            payload: event.currentTarget.value as CustomerMetricsNewReturningChartsKey,
+  const expandBarChartButton = (
+    <AccessibleButton
+      attributes={{
+        enabledScreenreaderText: `Expand and customize ${barChartHeading}`,
+        kind: "expand",
+        onClick: (
+          _event:
+            | React.MouseEvent<HTMLButtonElement>
+            | React.PointerEvent<HTMLButtonElement>
+        ) => {
+          globalDispatch({
+            type: globalAction.setCustomizeChartsPageData,
+            payload: {
+              chartKind: "bar",
+              chartData: dailyChartsReturning.bar[returningBarChartYAxisVariable],
+              chartTitle: barChartHeading,
+              chartUnitKind: "number",
+            },
           });
+
+          navigate(expandBarChartNavigateLink);
         },
+      }}
+    />
+  );
+
+  const returningBarChartYAxisVariablesSelectInput = (
+    <AccessibleSelectInput
+      attributes={{
+        data: CUSTOMER_NEW_RETURNING_LINE_BAR_Y_AXIS_DATA,
+        name: "Y-Axis Bar",
+        parentDispatch: customerDashboardDailyReturningDispatch,
+        validValueAction:
+          customerDashboardDailyReturningAction.setReturningBarChartYAxisVariable,
         value: returningBarChartYAxisVariable,
-      },
-    ]);
+      }}
+    />
+  );
 
   const returningBarChart = (
     <ResponsiveBarChart
@@ -198,47 +192,49 @@ function CustomerDashboardDailyReturning({
       barChartData={dailyChartsReturning.bar[returningBarChartYAxisVariable]}
       hideControls
       indexBy="Days"
-      keys={CUSTOMER_NEW_RETURNING_LINE_BAR_Y_AXIS_DATA.map((obj) => obj.label)}
+      keys={CUSTOMER_NEW_RETURNING_LINE_BAR_Y_AXIS_DATA}
       unitKind="number"
     />
   );
 
-  const [expandLineChartButton] = returnAccessibleButtonElements([
-    {
-      buttonLabel: "Expand",
-      semanticDescription: `Expand and customize ${lineChartHeading}`,
-      semanticName: "Expand Returning Line Chart",
-      buttonOnClick: () => {
-        globalDispatch({
-          type: globalAction.setCustomizeChartsPageData,
-          payload: {
-            chartKind: "line",
-            chartData: dailyChartsReturning.line[returningLineChartYAxisVariable],
-            chartTitle: lineChartHeading,
-            chartUnitKind: "number",
-          },
-        });
-
-        navigate(expandLineChartNavigateLink);
-      },
-      leftIcon: <LuExpand />,
-    },
-  ]);
-
-  const [returningLineChartYAxisVariablesSelectInput] =
-    returnAccessibleSelectInputElements([
-      {
-        data: CUSTOMER_NEW_RETURNING_LINE_BAR_Y_AXIS_DATA,
-        label: "Y-Axis Line",
-        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-          customerDashboardDailyReturningDispatch({
-            type: customerDashboardDailyReturningAction.setReturningLineChartYAxisVariable,
-            payload: event.currentTarget.value as CustomerMetricsNewReturningChartsKey,
+  const expandLineChartButton = (
+    <AccessibleButton
+      attributes={{
+        enabledScreenreaderText: `Expand and customize ${lineChartHeading}`,
+        kind: "expand",
+        onClick: (
+          _event:
+            | React.MouseEvent<HTMLButtonElement>
+            | React.PointerEvent<HTMLButtonElement>
+        ) => {
+          globalDispatch({
+            type: globalAction.setCustomizeChartsPageData,
+            payload: {
+              chartKind: "line",
+              chartData: dailyChartsReturning.line[returningLineChartYAxisVariable],
+              chartTitle: lineChartHeading,
+              chartUnitKind: "number",
+            },
           });
+
+          navigate(expandLineChartNavigateLink);
         },
+      }}
+    />
+  );
+
+  const returningLineChartYAxisVariablesSelectInput = (
+    <AccessibleSelectInput
+      attributes={{
+        data: CUSTOMER_NEW_RETURNING_LINE_BAR_Y_AXIS_DATA,
+        name: "Y-Axis Line",
+        parentDispatch: customerDashboardDailyReturningDispatch,
+        validValueAction:
+          customerDashboardDailyReturningAction.setReturningLineChartYAxisVariable,
         value: returningLineChartYAxisVariable,
-      },
-    ]);
+      }}
+    />
+  );
 
   const returningLineChart = (
     <ResponsiveLineChart
@@ -252,43 +248,45 @@ function CustomerDashboardDailyReturning({
     />
   );
 
-  const [expandCalendarChartButton] = returnAccessibleButtonElements([
-    {
-      buttonLabel: "Expand",
-      semanticDescription: `Expand and customize ${calendarChartHeading}`,
-      semanticName: "Expand Returning Calendar Chart",
-      buttonOnClick: () => {
-        globalDispatch({
-          type: globalAction.setCustomizeChartsPageData,
-          payload: {
-            chartKind: "calendar",
-            chartData: dailyChartsReturning.calendar[returningCalendarChartYAxisVariable],
-            chartTitle: calendarChartHeading,
-            chartUnitKind: "number",
-          },
-        });
-
-        navigate(expandCalendarChartNavigateLink);
-      },
-      leftIcon: <LuExpand />,
-    },
-  ]);
-
-  const [returningCalendarChartYAxisVariablesSelectInput] =
-    returnAccessibleSelectInputElements([
-      {
-        data: CUSTOMER_NEW_RETURNING_CALENDAR_Y_AXIS_DATA,
-        label: "Y-Axis Calendar",
-        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-          customerDashboardDailyReturningDispatch({
-            type: customerDashboardDailyReturningAction.setReturningCalendarChartYAxisVariable,
-            payload: event.currentTarget
-              .value as CustomerMetricsNewReturningCalendarChartsKey,
+  const expandCalendarChartButton = (
+    <AccessibleButton
+      attributes={{
+        enabledScreenreaderText: `Expand and customize ${calendarChartHeading}`,
+        kind: "expand",
+        onClick: (
+          _event:
+            | React.MouseEvent<HTMLButtonElement>
+            | React.PointerEvent<HTMLButtonElement>
+        ) => {
+          globalDispatch({
+            type: globalAction.setCustomizeChartsPageData,
+            payload: {
+              chartKind: "calendar",
+              chartData:
+                dailyChartsReturning.calendar[returningCalendarChartYAxisVariable],
+              chartTitle: calendarChartHeading,
+              chartUnitKind: "number",
+            },
           });
+
+          navigate(expandCalendarChartNavigateLink);
         },
+      }}
+    />
+  );
+
+  const returningCalendarChartYAxisVariablesSelectInput = (
+    <AccessibleSelectInput
+      attributes={{
+        data: CUSTOMER_NEW_RETURNING_CALENDAR_Y_AXIS_DATA,
+        name: "Y-Axis Calendar",
+        parentDispatch: customerDashboardDailyReturningDispatch,
+        validValueAction:
+          customerDashboardDailyReturningAction.setReturningCalendarChartYAxisVariable,
         value: returningCalendarChartYAxisVariable,
-      },
-    ]);
+      }}
+    />
+  );
 
   const returningCalendarChart = (
     <ResponsiveCalendarChart

@@ -2,9 +2,9 @@ import { CustomerMetricsOverviewChartsKey } from "../../utils";
 import { CustomerDashboardDailyOverviewAction } from "./actions";
 
 type CustomerDashboardDailyOverviewState = {
-  overviewBarChartYAxisVariable: CustomerMetricsOverviewChartsKey;
-  overviewCalendarChartYAxisVariable: CustomerMetricsOverviewChartsKey;
   overviewLineChartYAxisVariable: CustomerMetricsOverviewChartsKey;
+  overviewCalendarChartYAxisVariable: CustomerMetricsOverviewChartsKey;
+  overviewBarChartYAxisVariable: CustomerMetricsOverviewChartsKey;
 };
 
 type CustomerDashboardDailyOverviewDispatch = {
@@ -16,7 +16,6 @@ type CustomerDashboardDailyOverviewDispatch = {
 };
 
 export type {
-  CustomerDashboardDailyOverviewAction,
   CustomerDashboardDailyOverviewDispatch,
   CustomerDashboardDailyOverviewState,
 };

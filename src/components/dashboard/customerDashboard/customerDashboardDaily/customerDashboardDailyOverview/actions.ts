@@ -5,9 +5,9 @@ type CustomerDashboardDailyOverviewAction = {
 };
 
 const customerDashboardDailyOverviewAction: CustomerDashboardDailyOverviewAction = {
-  setOverviewBarChartYAxisVariable: "setOverviewBarChartYAxisVariable",
-  setOverviewCalendarChartYAxisVariable: "setOverviewCalendarChartYAxisVariable",
   setOverviewLineChartYAxisVariable: "setOverviewLineChartYAxisVariable",
+  setOverviewCalendarChartYAxisVariable: "setOverviewCalendarChartYAxisVariable",
+  setOverviewBarChartYAxisVariable: "setOverviewBarChartYAxisVariable",
 };
 
 export { customerDashboardDailyOverviewAction };

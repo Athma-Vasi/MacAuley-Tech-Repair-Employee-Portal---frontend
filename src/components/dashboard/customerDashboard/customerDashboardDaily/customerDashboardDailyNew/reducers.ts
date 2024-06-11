@@ -3,9 +3,11 @@ import {
   CustomerMetricsNewReturningChartsKey,
   CustomerMetricsNewReturningPieChartsKey,
 } from "../../utils";
-import { customerDashboardDailyNewAction } from "./actions";
 import {
   CustomerDashboardDailyNewAction,
+  customerDashboardDailyNewAction,
+} from "./actions";
+import {
   CustomerDashboardDailyNewDispatch,
   CustomerDashboardDailyNewState,
 } from "./types";

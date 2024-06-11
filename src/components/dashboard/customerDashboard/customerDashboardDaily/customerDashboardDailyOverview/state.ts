@@ -1,9 +1,9 @@
 import { CustomerDashboardDailyOverviewState } from "./types";
 
 const initialCustomerDashboardDailyOverviewState: CustomerDashboardDailyOverviewState = {
-  overviewBarChartYAxisVariable: "overview",
-  overviewCalendarChartYAxisVariable: "overview",
   overviewLineChartYAxisVariable: "overview",
+  overviewCalendarChartYAxisVariable: "overview",
+  overviewBarChartYAxisVariable: "overview",
 };
 
 export { initialCustomerDashboardDailyOverviewState };
