@@ -166,12 +166,14 @@ function accessibleImageInputReducer_setQualities(
   dispatch: AccessibleImageInputDispatch
 ): AccessibleImageInputState {
   const { index, value } = dispatch.payload as DynamicSliderInputPayload;
-  const clonedState = structuredClone(state);
-  const qualities = clonedState.qualities;
+  const qualities = state.qualities.slice();
   qualities[index] = value;
-  clonedState.currentImageIndex = index;
 
-  return clonedState;
+  return {
+    ...state,
+    qualities,
+    currentImageIndex: index,
+  };
 }
 
 function accessibleImageInputReducer_setOrientations(
@@ -179,12 +181,14 @@ function accessibleImageInputReducer_setOrientations(
   dispatch: AccessibleImageInputDispatch
 ): AccessibleImageInputState {
   const { index, value } = dispatch.payload as DynamicSliderInputPayload;
-  const clonedState = structuredClone(state);
-  const orientations = clonedState.orientations;
+  const orientations = state.orientations.slice();
   orientations[index] = value;
-  clonedState.currentImageIndex = index;
 
-  return clonedState;
+  return {
+    ...state,
+    orientations,
+    currentImageIndex: index,
+  };
 }
 
 export { accessibleImageInputReducer };

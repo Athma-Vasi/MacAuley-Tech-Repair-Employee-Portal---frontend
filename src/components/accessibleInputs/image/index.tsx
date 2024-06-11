@@ -404,10 +404,13 @@ function AccessibleImageInput<
       </GoldenGrid>
     );
 
+    const fileName = fileNames[index].slice(0, 17);
+    const ellipsis = fileNames[index].length > 17 ? "..." : "";
+
     const [removeButton, resetButton] = createAccessibleButtons([
       {
-        disabledScreenreaderText: "Image is invalid",
-        enabledScreenreaderText: "Remove image",
+        disabledScreenreaderText: `Image ${fileName} ${ellipsis} is invalid`,
+        enabledScreenreaderText: `Remove ${fileName} ${ellipsis}`,
         kind: "delete",
         name: "remove",
         onClick: async (
@@ -435,8 +438,8 @@ function AccessibleImageInput<
       },
       {
         disabled: isImageTypeInvalid,
-        disabledScreenreaderText: "Image is invalid",
-        enabledScreenreaderText: "Reset image",
+        disabledScreenreaderText: `Image ${fileName} ${ellipsis} is invalid`,
+        enabledScreenreaderText: `Reset ${fileName} ${ellipsis}`,
         kind: "refresh",
         name: "reset",
         onClick: async (
@@ -512,7 +515,7 @@ function AccessibleImageInput<
     const imageOrientationSlider = (
       <AccessibleSliderInput
         attributes={{
-          disabled: isImageTypeInvalid,
+          disabled: isImageTypeInvalid || qualities[index] > 8,
           index,
           label: (value) => displayOrientationLabel(value),
           marks: IMG_ORIENTATION_SLIDER_DATA,
@@ -538,7 +541,9 @@ function AccessibleImageInput<
       <Stack spacing="xl">
         {imageOrientationSlider}
         <Group position="center">
-          <Text>Orientation</Text>
+          <Text>
+            {qualities[index] > 8 ? "Quality must be less than 90%" : "Orientation"}
+          </Text>
         </Group>
       </Stack>
     );
