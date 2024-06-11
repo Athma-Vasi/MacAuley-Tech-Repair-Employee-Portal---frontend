@@ -1,15 +1,12 @@
 import { MantineNumberSize } from "@mantine/core";
-import { ChangeEvent, useReducer } from "react";
-import { LuExpand } from "react-icons/lu";
+import { useReducer } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { globalAction } from "../../../../../context/globalProvider/state";
 import { useGlobalState } from "../../../../../hooks";
-import {
-  returnAccessibleButtonElements,
-  returnAccessibleSelectInputElements,
-} from "../../../../../jsxCreators";
 import { addCommaSeparator } from "../../../../../utils";
+import { AccessibleButton } from "../../../../accessibleInputs/AccessibleButton";
+import { AccessibleSelectInput } from "../../../../accessibleInputs/AccessibleSelectInput";
 import {
   ResponsiveBarChart,
   ResponsiveCalendarChart,
@@ -23,11 +20,9 @@ import { returnChartTitleNavigateLinks, returnStatistics } from "../../../utils"
 import { CUSTOMER_OVERVIEW_Y_AXIS_DATA } from "../../constants";
 import { CustomerMetricsCharts, CustomerMetricsOverviewChartsKey } from "../../utils";
 import { CustomerMetricsCards } from "../../utilsTSX";
-import {
-  customerDashboardDailyOverviewAction,
-  customerDashboardDailyOverviewReducer,
-  initialCustomerDashboardDailyOverviewState,
-} from "./state";
+import { customerDashboardDailyOverviewAction } from "./actions";
+import { customerDashboardDailyOverviewReducer } from "./reducers";
+import { initialCustomerDashboardDailyOverviewState } from "./state";
 
 function CustomerDashboardDailyOverview({
   borderColor,
@@ -96,27 +91,31 @@ function CustomerDashboardDailyOverview({
     months: MONTHS,
   });
 
-  const [expandPieChartButton] = returnAccessibleButtonElements([
-    {
-      buttonLabel: "Expand",
-      semanticDescription: `Expand and customize ${pieChartHeading}`,
-      semanticName: "Expand Pie Chart",
-      buttonOnClick: () => {
-        globalDispatch({
-          type: globalAction.setCustomizeChartsPageData,
-          payload: {
-            chartKind: "pie",
-            chartData: dailyChartsOverview.pie,
-            chartTitle: pieChartHeading,
-            chartUnitKind: "number",
-          },
-        });
+  const expandPieChartButton = (
+    <AccessibleButton
+      attributes={{
+        enabledScreenreaderText: `Expand and customize ${pieChartHeading}`,
+        kind: "expand",
+        onClick: (
+          _event:
+            | React.MouseEvent<HTMLButtonElement>
+            | React.PointerEvent<HTMLButtonElement>
+        ) => {
+          globalDispatch({
+            type: globalAction.setCustomizeChartsPageData,
+            payload: {
+              chartKind: "pie",
+              chartData: dailyChartsOverview.pie,
+              chartTitle: pieChartHeading,
+              chartUnitKind: "number",
+            },
+          });
 
-        navigate(expandPieChartNavigateLink);
-      },
-      leftIcon: <LuExpand />,
-    },
-  ]);
+          navigate(expandPieChartNavigateLink);
+        },
+      }}
+    />
+  );
 
   const overviewPieChart = (
     <ResponsivePieChart
@@ -128,42 +127,43 @@ function CustomerDashboardDailyOverview({
     />
   );
 
-  const [expandBarChartButton] = returnAccessibleButtonElements([
-    {
-      buttonLabel: "Expand",
-      semanticDescription: `Expand and customize ${barChartHeading}`,
-      semanticName: "Expand Bar Chart",
-      buttonOnClick: () => {
-        globalDispatch({
-          type: globalAction.setCustomizeChartsPageData,
-          payload: {
-            chartKind: "bar",
-            chartData: dailyChartsOverview.bar[overviewBarChartYAxisVariable],
-            chartTitle: barChartHeading,
-            chartUnitKind: "number",
-          },
-        });
-
-        navigate(expandBarChartNavigateLink);
-      },
-      leftIcon: <LuExpand />,
-    },
-  ]);
-
-  const [overviewBarChartYAxisVariablesSelectInput] = returnAccessibleSelectInputElements(
-    [
-      {
-        data: CUSTOMER_OVERVIEW_Y_AXIS_DATA,
-        label: "Y-Axis Bar",
-        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-          customerDashboardDailyOverviewDispatch({
-            type: customerDashboardDailyOverviewAction.setOverviewBarChartYAxisVariable,
-            payload: event.currentTarget.value as CustomerMetricsOverviewChartsKey,
+  const expandBarChartButton = (
+    <AccessibleButton
+      attributes={{
+        enabledScreenreaderText: `Expand and customize ${barChartHeading}`,
+        kind: "expand",
+        onClick: (
+          _event:
+            | React.MouseEvent<HTMLButtonElement>
+            | React.PointerEvent<HTMLButtonElement>
+        ) => {
+          globalDispatch({
+            type: globalAction.setCustomizeChartsPageData,
+            payload: {
+              chartKind: "bar",
+              chartData: dailyChartsOverview.bar[overviewBarChartYAxisVariable],
+              chartTitle: barChartHeading,
+              chartUnitKind: "number",
+            },
           });
+
+          navigate(expandBarChartNavigateLink);
         },
+      }}
+    />
+  );
+
+  const overviewBarChartYAxisVariablesSelectInput = (
+    <AccessibleSelectInput
+      attributes={{
+        data: CUSTOMER_OVERVIEW_Y_AXIS_DATA,
+        name: "Y-Axis Bar",
+        parentDispatch: customerDashboardDailyOverviewDispatch,
+        validValueAction:
+          customerDashboardDailyOverviewAction.setOverviewBarChartYAxisVariable,
         value: overviewBarChartYAxisVariable,
-      },
-    ]
+      }}
+    />
   );
 
   const overviewBarChart = (
@@ -173,47 +173,49 @@ function CustomerDashboardDailyOverview({
       barChartData={dailyChartsOverview.bar[overviewBarChartYAxisVariable]}
       hideControls
       indexBy="Days"
-      keys={CUSTOMER_OVERVIEW_Y_AXIS_DATA.map((obj) => obj.label)}
+      keys={CUSTOMER_OVERVIEW_Y_AXIS_DATA}
       unitKind="number"
     />
   );
 
-  const [expandLineChartButton] = returnAccessibleButtonElements([
-    {
-      buttonLabel: "Expand",
-      semanticDescription: `Expand and customize ${lineChartHeading}`,
-      semanticName: "Expand Line Chart",
-      buttonOnClick: () => {
-        globalDispatch({
-          type: globalAction.setCustomizeChartsPageData,
-          payload: {
-            chartKind: "line",
-            chartData: dailyChartsOverview.line[overviewLineChartYAxisVariable],
-            chartTitle: lineChartHeading,
-            chartUnitKind: "number",
-          },
-        });
-
-        navigate(expandLineChartNavigateLink);
-      },
-      leftIcon: <LuExpand />,
-    },
-  ]);
-
-  const [overviewLineChartYAxisVariablesSelectInput] =
-    returnAccessibleSelectInputElements([
-      {
-        data: CUSTOMER_OVERVIEW_Y_AXIS_DATA,
-        label: "Y-Axis Line",
-        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-          customerDashboardDailyOverviewDispatch({
-            type: customerDashboardDailyOverviewAction.setOverviewLineChartYAxisVariable,
-            payload: event.currentTarget.value as CustomerMetricsOverviewChartsKey,
+  const expandLineChartButton = (
+    <AccessibleButton
+      attributes={{
+        enabledScreenreaderText: `Expand and customize ${lineChartHeading}`,
+        kind: "expand",
+        onClick: (
+          _event:
+            | React.MouseEvent<HTMLButtonElement>
+            | React.PointerEvent<HTMLButtonElement>
+        ) => {
+          globalDispatch({
+            type: globalAction.setCustomizeChartsPageData,
+            payload: {
+              chartKind: "line",
+              chartData: dailyChartsOverview.line[overviewLineChartYAxisVariable],
+              chartTitle: lineChartHeading,
+              chartUnitKind: "number",
+            },
           });
+
+          navigate(expandLineChartNavigateLink);
         },
+      }}
+    />
+  );
+
+  const overviewLineChartYAxisVariablesSelectInput = (
+    <AccessibleSelectInput
+      attributes={{
+        data: CUSTOMER_OVERVIEW_Y_AXIS_DATA,
+        name: "Y-Axis Line",
+        parentDispatch: customerDashboardDailyOverviewDispatch,
+        validValueAction:
+          customerDashboardDailyOverviewAction.setOverviewLineChartYAxisVariable,
         value: overviewLineChartYAxisVariable,
-      },
-    ]);
+      }}
+    />
+  );
 
   const overviewLineChart = (
     <ResponsiveLineChart
@@ -227,42 +229,44 @@ function CustomerDashboardDailyOverview({
     />
   );
 
-  const [expandCalendarChartButton] = returnAccessibleButtonElements([
-    {
-      buttonLabel: "Expand",
-      semanticDescription: `Expand and customize ${calendarChartHeading}`,
-      semanticName: "Expand Calendar Chart",
-      buttonOnClick: () => {
-        globalDispatch({
-          type: globalAction.setCustomizeChartsPageData,
-          payload: {
-            chartKind: "calendar",
-            chartData: dailyChartsOverview.calendar[overviewCalendarChartYAxisVariable],
-            chartTitle: calendarChartHeading,
-            chartUnitKind: "number",
-          },
-        });
-
-        navigate(expandCalendarChartNavigateLink);
-      },
-      leftIcon: <LuExpand />,
-    },
-  ]);
-
-  const [overviewCalendarChartYAxisVariablesSelectInput] =
-    returnAccessibleSelectInputElements([
-      {
-        data: CUSTOMER_OVERVIEW_Y_AXIS_DATA,
-        label: "Y-Axis Calendar",
-        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-          customerDashboardDailyOverviewDispatch({
-            type: customerDashboardDailyOverviewAction.setOverviewCalendarChartYAxisVariable,
-            payload: event.currentTarget.value as CustomerMetricsOverviewChartsKey,
+  const expandCalendarChartButton = (
+    <AccessibleButton
+      attributes={{
+        enabledScreenreaderText: `Expand and customize ${calendarChartHeading}`,
+        kind: "expand",
+        onClick: (
+          _event:
+            | React.MouseEvent<HTMLButtonElement>
+            | React.PointerEvent<HTMLButtonElement>
+        ) => {
+          globalDispatch({
+            type: globalAction.setCustomizeChartsPageData,
+            payload: {
+              chartKind: "calendar",
+              chartData: dailyChartsOverview.calendar[overviewCalendarChartYAxisVariable],
+              chartTitle: calendarChartHeading,
+              chartUnitKind: "number",
+            },
           });
+
+          navigate(expandCalendarChartNavigateLink);
         },
+      }}
+    />
+  );
+
+  const overviewCalendarChartYAxisVariablesSelectInput = (
+    <AccessibleSelectInput
+      attributes={{
+        data: CUSTOMER_OVERVIEW_Y_AXIS_DATA,
+        name: "Y-Axis Calendar",
+        parentDispatch: customerDashboardDailyOverviewDispatch,
+        validValueAction:
+          customerDashboardDailyOverviewAction.setOverviewCalendarChartYAxisVariable,
         value: overviewCalendarChartYAxisVariable,
-      },
-    ]);
+      }}
+    />
+  );
 
   const overviewCalendarChart = (
     <ResponsiveCalendarChart

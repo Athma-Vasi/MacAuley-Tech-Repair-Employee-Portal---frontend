@@ -1,4 +1,5 @@
 import { CustomerMetricsOverviewChartsKey } from "../../utils";
+import { CustomerDashboardDailyOverviewAction } from "./actions";
 
 type CustomerDashboardDailyOverviewState = {
   overviewBarChartYAxisVariable: CustomerMetricsOverviewChartsKey;
@@ -6,14 +7,8 @@ type CustomerDashboardDailyOverviewState = {
   overviewLineChartYAxisVariable: CustomerMetricsOverviewChartsKey;
 };
 
-type CustomerDashboardDailyOverviewAction = {
-  setOverviewBarChartYAxisVariable: "setOverviewBarChartYAxisVariable";
-  setOverviewCalendarChartYAxisVariable: "setOverviewCalendarChartYAxisVariable";
-  setOverviewLineChartYAxisVariable: "setOverviewLineChartYAxisVariable";
-};
-
 type CustomerDashboardDailyOverviewDispatch = {
-  type:
+  action:
     | CustomerDashboardDailyOverviewAction["setOverviewBarChartYAxisVariable"]
     | CustomerDashboardDailyOverviewAction["setOverviewCalendarChartYAxisVariable"]
     | CustomerDashboardDailyOverviewAction["setOverviewLineChartYAxisVariable"];
