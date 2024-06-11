@@ -133,13 +133,6 @@ function AccessibleStepper<InvalidValueAction extends string = string>({
   const stepperSteps = pages.map((elements, pageIndex) => {
     const page = stepperPages[pageIndex];
 
-    console.group("AccessibleStepper");
-    console.log("activeStep", activeStep);
-    console.log("stepsInError", stepsInError);
-    console.log("pageIndex", pageIndex);
-    console.log("page", page);
-    console.groupEnd();
-
     const descriptionColor = page.preventErrorStateDisplay
       ? textColor
       : stepsInError.has(pageIndex)
@@ -237,27 +230,12 @@ function verifyEmptyInputs<InvalidValueAction extends string = string>({
 
         // input is empty and is required
         if (stateValue === "" && isRequired === undefined) {
-          console.group("verifyEmptyInputs");
-          console.log("stateKey", stateKey);
-          console.log("stateValue", stateValue);
-          console.log("isRequired", isRequired);
-          console.log("childName", childName);
-          console.log("pageIndex", pageIndex);
-          console.log("page", page);
-          console.groupEnd();
-
+          //
           parentDispatch({
             action: invalidValueAction,
             payload: { kind: "add", page: pageIndex },
           });
         }
-
-        // else if (stateValue === "" && !isRequired) {
-        //   parentDispatch({
-        //     action: invalidValueAction,
-        //     payload: { kind: "delete", page: pageIndex },
-        //   });
-        // }
       });
     });
   });

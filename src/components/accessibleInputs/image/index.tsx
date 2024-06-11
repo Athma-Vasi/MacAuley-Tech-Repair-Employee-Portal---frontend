@@ -3,8 +3,7 @@ import { compress, EImageType } from "image-conversion";
 import localforage from "localforage";
 import { useEffect, useReducer, useRef } from "react";
 import { useErrorBoundary } from "react-error-boundary";
-import { BiReset } from "react-icons/bi";
-import { TbCheck, TbExclamationCircle, TbTrash } from "react-icons/tb";
+import { TbCheck, TbExclamationCircle } from "react-icons/tb";
 
 import { COLORS_SWATCHES } from "../../../constants/data";
 import { useGlobalState } from "../../../hooks";
@@ -22,7 +21,7 @@ import { AccessibleImageInputAction, accessibleImageInputAction } from "./action
 import { ALLOWED_FILE_EXTENSIONS_REGEX, MAX_IMAGE_SIZE, MAX_IMAGES } from "./constants";
 import { accessibleImageInputReducer } from "./reducers";
 import { initialAccessibleImageInputState } from "./state";
-import { AccessibleImageInputAttributes, AccessibleImageInputProps } from "./types";
+import { AccessibleImageInputProps } from "./types";
 import { validateImages } from "./utils";
 
 function AccessibleImageInput<
@@ -31,7 +30,6 @@ function AccessibleImageInput<
 >({ attributes }: AccessibleImageInputProps<ValidValueAction, InvalidValueAction>) {
   const {
     disabled,
-    formData,
     invalidValueAction,
     maxImageSize = MAX_IMAGE_SIZE,
     maxImagesAmount = MAX_IMAGES,
@@ -39,7 +37,6 @@ function AccessibleImageInput<
     parentDispatch,
     productCategory,
     productCategoryDispatch,
-    stepperPages,
     storageKey,
     validValueAction,
   } = attributes;
@@ -108,21 +105,10 @@ function AccessibleImageInput<
           return;
         }
 
-        console.group("retrieveStoredValues");
-        console.log("modifiedFiles", modifiedFiles);
-        console.groupEnd();
-
         modifiedFiles?.forEach((modifiedFile: ModifiedFile, index) => {
           if (!modifiedFile) {
             return;
           }
-
-          // if (modifiedFile.name !== fileNames[index]) {
-          //   accessibleImageInputDispatch({
-          //     action: accessibleImageInputAction.addImageToBuffer,
-          //     payload: modifiedFile,
-          //   });
-          // }
 
           accessibleImageInputDispatch({
             action: accessibleImageInputAction.setImageFileBlobs,
@@ -166,39 +152,6 @@ function AccessibleImageInput<
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // const isMountedStoreImagesRef = useRef(false);
-  // useEffect(() => {
-  //   isMountedStoreImagesRef.current = true;
-  //   const isMounted = isMountedStoreImagesRef.current;
-
-  //   async function storeImages(): Promise<void> {
-  //     try {
-  //       const newImages = structuredClone(
-  //         (await localforage.getItem<Array<File | null>>("images")) ?? []
-  //       );
-  //       if (!isMounted || newImages.length === imagesBuffer.length) {
-  //         return;
-  //       }
-
-  //       if (newImages.length > imagesBuffer.length) {
-  //         newImages.pop();
-  //       }
-
-  //       newImages.push(imagesBuffer.at(-1) ?? new File([], "image"));
-  //       await localforage.setItem("images", newImages);
-  //     } catch (error: any) {
-  //       showBoundary(error);
-  //     }
-  //   }
-
-  //   storeImages();
-
-  //   return () => {
-  //     isMountedStoreImagesRef.current = false;
-  //   };
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [imagesBuffer.length]);
-
   const isMountedModifyImagesRef = useRef(false);
   useEffect(() => {
     isMountedModifyImagesRef.current = true;
@@ -206,15 +159,15 @@ function AccessibleImageInput<
 
     async function modifyImage(): Promise<void> {
       try {
-        const modifiedFiles = await localforage.getItem<Array<ModifiedFile>>(
-          `${storageKey}-modifiedFiles`
+        const originalFiles = await localforage.getItem<Array<OriginalFile>>(
+          `${storageKey}-originalFiles`
         );
 
-        if (!modifiedFiles) {
+        if (!originalFiles) {
           return;
         }
 
-        const imageToModify = structuredClone(modifiedFiles[currentImageIndex]);
+        const imageToModify = structuredClone(originalFiles[currentImageIndex]);
 
         if (!imageToModify) {
           return;
@@ -242,13 +195,13 @@ function AccessibleImageInput<
           },
         });
 
-        const updatedModifiedFiles = modifiedFiles.map((modifiedFile, index) => {
+        const updatedModifiedFiles = originalFiles.map((originalFile, index) => {
           if (index === currentImageIndex) {
             return fileBlob;
           }
-
-          return modifiedFile;
+          return originalFile;
         });
+
         await localforage.setItem<Array<ModifiedFile>>(
           `${storageKey}-modifiedFiles`,
           updatedModifiedFiles
@@ -288,8 +241,6 @@ function AccessibleImageInput<
           action: validValueAction,
           payload: formData,
         });
-
-        console.log("formData.getAll(images)", formData.getAll("images"));
       } catch (error: any) {
         if (!isMounted) {
           return;
@@ -321,14 +272,6 @@ function AccessibleImageInput<
           type.split("/")[1]
         );
         const isImageInvalid = isImageSizeInvalid || isImageTypeInvalid;
-
-        console.group("Image File Blob");
-        console.log("size", size);
-        console.log("type", type);
-        console.log("isImageSizeInvalid", isImageSizeInvalid);
-        console.log("isImageTypeInvalid", isImageTypeInvalid);
-        console.log("isImageInvalid", isImageInvalid);
-        console.groupEnd();
 
         if (productCategory && productCategoryDispatch) {
           productCategoryDispatch({
@@ -373,6 +316,7 @@ function AccessibleImageInput<
         payload: value,
       });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [imageFileBlobs.length]);
 
   const fileInput = (
@@ -384,12 +328,6 @@ function AccessibleImageInput<
         addFileNameAction: accessibleImageInputAction.addFileName,
         disabled,
         name: "images",
-        onChange: async (file: File | null) => {
-          // console.log("AccessibleFileInput onChange");
-          // const images = (await localforage.getItem<Array<File | null>>(`${storageKey}-modifiedFiles`)) ?? [];
-          // images.push(file);
-          // await localforage.setItem(`${storageKey}-modifiedFiles`, images);
-        },
         parentDispatch: accessibleImageInputDispatch,
         storageKey,
         validValueAction: accessibleImageInputAction.addImageFileBlob,
@@ -417,7 +355,7 @@ function AccessibleImageInput<
     const invalidImageDescription = isImageSizeInvalid
       ? `Image is too large. Must be less than ${maxImageSize / 1000} KB.`
       : !ALLOWED_FILE_EXTENSIONS_REGEX.test(type.split("/")[1])
-      ? "Image contains disallowed file type. Must only contain .jpg, .jpeg or .png file types."
+      ? "Image contains disallowed file type. Must only contain .jpg, .jpeg, .png, or .webp file types."
       : "Image is invalid.";
 
     const invalidScreenreaderTextElement = (

@@ -1,17 +1,16 @@
 import { Dispatch } from "react";
 
-import { SetPageInErrorPayload, StepperPage } from "../../../types";
+import { SetPageInErrorPayload } from "../../../types";
 import { ProductCategory } from "../../dashboard/types";
 import { AdditionalFieldsFormDataPayload } from "../../product/dispatch";
-import { AccessibleImageInputAction } from "./actions";
 import { ModifiedFile, OriginalFile } from "../AccessibleFileInput";
+import { AccessibleImageInputAction } from "./actions";
 
 type AccessibleImageInputAttributes<
   ValidValueAction extends string = string,
   InvalidValueAction extends string = string
 > = {
   disabled?: boolean;
-  formData: FormData | undefined;
   invalidValueAction: InvalidValueAction;
   maxImageSize?: number;
   maxImagesAmount?: number;
@@ -37,7 +36,6 @@ type AccessibleImageInputAttributes<
         payload: SetPageInErrorPayload;
       }
   >;
-  stepperPages: StepperPage[];
   /** unique id for local forage */
   storageKey: string;
   validValueAction: ValidValueAction;
