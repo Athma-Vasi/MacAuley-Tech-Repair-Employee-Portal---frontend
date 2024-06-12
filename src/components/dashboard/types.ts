@@ -239,6 +239,8 @@ type CustomerDailyMetric = {
     total: number;
     new: CustomerMetricCategory;
     returning: CustomerMetricCategory;
+    churnRate: number;
+    retentionRate: number;
   };
 };
 

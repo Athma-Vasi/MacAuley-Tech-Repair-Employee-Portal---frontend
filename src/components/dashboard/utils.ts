@@ -69,38 +69,43 @@ function returnDaysInMonthsInYears({
     (_, idx) => idx + yearStart
   );
 
-  return yearsRange.reduce((yearsAcc, year) => {
+  return yearsRange.reduce<Map<Year, Map<Month, string[]>>>((yearsAcc, year) => {
     const isCurrentYear = year === new Date().getFullYear();
     const currentMonth = new Date().getMonth();
     const slicedMonths = isCurrentYear
       ? months.slice(0, currentMonth + 1)
       : months.slice(monthStart, monthEnd + 1);
 
-    const daysInMonthsMap = slicedMonths.reduce((monthsAcc, month, monthIdx) => {
-      const days = daysPerMonth[monthIdx];
-      const isCurrentMonth = isCurrentYear && monthIdx === currentMonth;
-      const currentDay = isCurrentYear
-        ? isCurrentMonth
-          ? new Date().getDate()
-          : days
-        : days;
+    const daysInMonthsMap = slicedMonths.reduce<Map<Month, string[]>>(
+      (monthsAcc, month, monthIdx) => {
+        const days = daysPerMonth[monthIdx];
+        const isCurrentMonth = isCurrentYear && monthIdx === currentMonth;
+        const currentDay = isCurrentYear
+          ? isCurrentMonth
+            ? new Date().getDate()
+            : days
+          : days;
 
-      const isLeapYear = (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
-      const daysWithLeapYear = monthIdx === 1 && isLeapYear ? currentDay + 1 : currentDay;
+        const isLeapYear = (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
+        const daysWithLeapYear =
+          monthIdx === 1 && isLeapYear ? currentDay + 1 : currentDay;
 
-      const daysRange = Array.from({ length: daysWithLeapYear }, (_, idx) => idx + 1).map(
-        (day) => day.toString().padStart(2, "0")
-      );
+        const daysRange = Array.from(
+          { length: daysWithLeapYear },
+          (_, idx) => idx + 1
+        ).map((day) => day.toString().padStart(2, "0"));
 
-      monthsAcc.set(month, daysRange);
+        monthsAcc.set(month, daysRange);
 
-      return monthsAcc;
-    }, new Map<Month, string[]>());
+        return monthsAcc;
+      },
+      new Map()
+    );
 
     yearsAcc.set(year.toString() as Year, daysInMonthsMap);
 
     return yearsAcc;
-  }, new Map<Year, Map<Month, string[]>>());
+  }, new Map());
 }
 
 type CreateRandomMetricsInput = {
@@ -1311,6 +1316,8 @@ function createAllLocationsAggregatedRepairMetrics(
               };
               repair: number;
             };
+            churnRate: number;
+            retentionRate: number;
           };
         }[]
       }
@@ -1510,6 +1517,17 @@ async function createRandomCustomerMetrics({
                 const dailyReturningCustomersInStore =
                   dailyReturningCustomersSales - dailyReturningCustomersOnline;
 
+                const dailyCustomersChurnRate = createRandomNumber({
+                  storeLocation,
+                  year,
+                  yearUnitsSpread: YEAR_CHURN_RATE_SPREAD,
+                  defaultMax: 0.3,
+                  defaultMin: 0.1,
+                  isFraction: true,
+                });
+
+                const dailyCustomersRetentionRate = 1 - dailyCustomersChurnRate;
+
                 const dailyCustomersMetric: CustomerDailyMetric = {
                   day,
                   customers: {
@@ -1532,6 +1550,8 @@ async function createRandomCustomerMetrics({
                       },
                       repair: dailyReturningCustomersRepair,
                     },
+                    churnRate: dailyCustomersChurnRate,
+                    retentionRate: dailyCustomersRetentionRate,
                   },
                 };
 
@@ -1593,26 +1613,22 @@ async function createRandomCustomerMetrics({
                   monthlyCustomersMetricsAcc.customers.returning.sales.inStore +=
                     dailyCustomersMetric.customers.returning.sales.inStore;
 
+                  monthlyCustomersMetricsAcc.customers.churnRate +=
+                    dailyCustomersMetric.customers.churnRate;
+                  monthlyCustomersMetricsAcc.customers.retentionRate +=
+                    dailyCustomersMetric.customers.retentionRate;
+
                   return monthlyCustomersMetricsAcc;
                 },
                 initialMonthlyCustomersMetrics
               );
 
-              const monthlyCustomersChurnRate = createRandomNumber({
-                storeLocation,
-                year,
-                yearUnitsSpread: YEAR_CHURN_RATE_SPREAD,
-                defaultMax: 0.3,
-                defaultMin: 0.1,
-                isFraction: true,
-              });
               monthlyCustomersMetrics.customers.churnRate = toFixedFloat(
-                monthlyCustomersChurnRate
+                monthlyCustomersMetrics.customers.churnRate / 12
               );
 
-              const monthlyCustomersRetentionRate = 1 - monthlyCustomersChurnRate;
               monthlyCustomersMetrics.customers.retentionRate = toFixedFloat(
-                monthlyCustomersRetentionRate
+                monthlyCustomersMetrics.customers.retentionRate / 12
               );
 
               return monthlyCustomersMetrics;
@@ -1673,24 +1689,23 @@ async function createRandomCustomerMetrics({
                 monthlyCustomersMetric.customers.returning.sales.online;
               yearlyCustomersMetricsAcc.customers.returning.sales.inStore +=
                 monthlyCustomersMetric.customers.returning.sales.inStore;
+
+              yearlyCustomersMetricsAcc.customers.churnRate +=
+                monthlyCustomersMetric.customers.churnRate;
+              yearlyCustomersMetricsAcc.customers.retentionRate +=
+                monthlyCustomersMetric.customers.retentionRate;
+
               return yearlyCustomersMetricsAcc;
             },
             initialYearlyCustomersMetrics
           );
 
-          const yearlyCustomersChurnRate = monthlyCustomersMetrics.reduce(
-            (yearlyCustomersChurnRateAcc, monthlyCustomersMetric) =>
-              (yearlyCustomersChurnRateAcc += monthlyCustomersMetric.customers.churnRate),
-            0
-          );
           yearlyCustomersMetrics.customers.churnRate = toFixedFloat(
-            yearlyCustomersChurnRate / 12
+            yearlyCustomersMetrics.customers.churnRate / 12
           );
 
-          const yearlyCustomersRetentionRate =
-            1 - yearlyCustomersMetrics.customers.churnRate;
           yearlyCustomersMetrics.customers.retentionRate = toFixedFloat(
-            yearlyCustomersRetentionRate
+            yearlyCustomersMetrics.customers.retentionRate / 12
           );
 
           resolve(yearlyCustomersMetrics);
@@ -1699,16 +1714,16 @@ async function createRandomCustomerMetrics({
     })
   );
 
-  const randomCustomerLifetimeValue = Math.round(Math.random() * (2000 - 1000) + 1000);
-  const randomCustomerTotalCustomers = yearlyCustomersMetrics.reduce(
+  const randomLifetimeValue = Math.round(Math.random() * (2000 - 1000) + 1000);
+  const randomTotalCustomers = yearlyCustomersMetrics.reduce(
     (totalCustomersAcc, yearlyCustomersMetric) =>
       (totalCustomersAcc += yearlyCustomersMetric.customers.total),
     0
   );
 
   const randomCustomerMetrics: CustomerMetrics = {
-    totalCustomers: randomCustomerTotalCustomers,
-    lifetimeValue: randomCustomerLifetimeValue,
+    totalCustomers: randomTotalCustomers,
+    lifetimeValue: randomLifetimeValue,
     yearlyMetrics: yearlyCustomersMetrics,
   };
 
