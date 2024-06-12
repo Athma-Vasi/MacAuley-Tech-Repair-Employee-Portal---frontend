@@ -12,10 +12,10 @@ type CustomerDashboardMonthlyNewState = {
 };
 
 type CustomerDashboardMonthlyNewAction = {
-  setNewBarChartYAxisVariable: "setNewBarChartYAxisVariable";
-  setNewCalendarChartYAxisVariable: "setNewCalendarChartYAxisVariable";
-  setNewLineChartYAxisVariable: "setNewLineChartYAxisVariable";
   setNewPieChartYAxisVariable: "setNewPieChartYAxisVariable";
+  setNewLineChartYAxisVariable: "setNewLineChartYAxisVariable";
+  setNewCalendarChartYAxisVariable: "setNewCalendarChartYAxisVariable";
+  setNewBarChartYAxisVariable: "setNewBarChartYAxisVariable";
 };
 
 type CustomerDashboardMonthlyNewDispatch =

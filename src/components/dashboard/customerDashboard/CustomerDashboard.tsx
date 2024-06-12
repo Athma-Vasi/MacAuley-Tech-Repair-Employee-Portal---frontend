@@ -80,7 +80,7 @@ function CustomerDashboard({
       });
       customerDashboardDispatch({
         type: customerDashboardAction.setLoadingMessage,
-        payload: "Loading repair metrics...",
+        payload: "Loading customer metrics...",
       });
 
       try {

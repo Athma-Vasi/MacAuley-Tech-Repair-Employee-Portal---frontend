@@ -6,10 +6,10 @@ import {
 import { CustomerDashboardDailyNewAction } from "./actions";
 
 type CustomerDashboardDailyNewState = {
-  newPieChartYAxisVariable: CustomerMetricsNewReturningPieChartsKey;
-  newLineChartYAxisVariable: CustomerMetricsNewReturningChartsKey;
-  newCalendarChartYAxisVariable: CustomerMetricsNewReturningCalendarChartsKey;
   newBarChartYAxisVariable: CustomerMetricsNewReturningChartsKey;
+  newCalendarChartYAxisVariable: CustomerMetricsNewReturningCalendarChartsKey;
+  newLineChartYAxisVariable: CustomerMetricsNewReturningChartsKey;
+  newPieChartYAxisVariable: CustomerMetricsNewReturningPieChartsKey;
 };
 
 type CustomerDashboardDailyNewDispatch =
