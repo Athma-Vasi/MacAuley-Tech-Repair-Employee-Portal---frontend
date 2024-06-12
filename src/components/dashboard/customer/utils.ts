@@ -104,20 +104,6 @@ function returnSelectedDateCustomerMetrics({
   };
 }
 
-// overview
-
-type CustomerMetricsOverviewChartsKey =
-  | "overview" // y-axis variables: new, returning
-  | "new" // y-axis variables: new
-  | "returning"; // y-axis variables: returning
-
-type CustomerOverviewBarCharts = Record<CustomerMetricsOverviewChartsKey, BarChartData[]>; // y-axis variables: new, returning
-
-type CustomerOverviewLineCharts = Record<
-  CustomerMetricsOverviewChartsKey,
-  LineChartData[]
->; // y-axis variables: new, returning
-
 // new & returning
 
 type CustomerMetricsNewReturningChartsKey =
@@ -175,11 +161,6 @@ type ReturnCustomerMetricsChartsInput = {
 
 type CustomerMetricsCharts = {
   dailyCharts: {
-    overview: {
-      bar: CustomerOverviewBarCharts;
-      line: CustomerOverviewLineCharts;
-      pie: PieChartData[];
-    };
     new: {
       bar: CustomerNewReturningBarCharts;
       line: CustomerNewReturningLineCharts;
@@ -190,13 +171,13 @@ type CustomerMetricsCharts = {
       line: CustomerNewReturningLineCharts;
       pie: CustomerNewReturningPieCharts;
     };
+    // churnRetention: {
+    //   bar: CustomerChurnRetentionBarCharts;
+    //   line: CustomerChurnRetentionLineCharts;
+    //   pie: PieChartData[];
+    // };
   };
   monthlyCharts: {
-    overview: {
-      bar: CustomerOverviewBarCharts;
-      line: CustomerOverviewLineCharts;
-      pie: PieChartData[];
-    };
     new: {
       bar: CustomerNewReturningBarCharts;
       line: CustomerNewReturningLineCharts;
@@ -214,11 +195,6 @@ type CustomerMetricsCharts = {
     };
   };
   yearlyCharts: {
-    overview: {
-      bar: CustomerOverviewBarCharts;
-      line: CustomerOverviewLineCharts;
-      pie: PieChartData[];
-    };
     new: {
       bar: CustomerNewReturningBarCharts;
       line: CustomerNewReturningLineCharts;
@@ -278,27 +254,10 @@ async function createCustomerMetricsCharts({
   const {
     monthCustomerMetrics: { selectedMonthMetrics },
   } = selectedDateCustomerMetrics;
-  const selectedMonth = selectedMonthMetrics?.month ?? "January";
-  const monthIndex = (months.indexOf(selectedMonth) + 1).toString().padStart(2, "0");
 
   const {
     dayCustomerMetrics: { selectedDayMetrics },
   } = selectedDateCustomerMetrics;
-
-  const OVERVIEW_BAR_CHART_TEMPLATE: CustomerOverviewBarCharts = {
-    overview: [],
-    new: [],
-    returning: [],
-  };
-
-  const OVERVIEW_LINE_CHART_TEMPLATE: CustomerOverviewLineCharts = {
-    overview: [
-      { id: "New", data: [] },
-      { id: "Returning", data: [] },
-    ],
-    new: [{ id: "New", data: [] }],
-    returning: [{ id: "Returning", data: [] }],
-  };
 
   const NEW_RETURNING_BAR_CHART_TEMPLATE: CustomerNewReturningBarCharts = {
     total: [],
@@ -353,22 +312,16 @@ async function createCustomerMetricsCharts({
     await Promise.all([
       createDailyCustomerCharts({
         dailyMetrics: selectedMonthMetrics?.dailyMetrics,
-        monthIndex,
         newBarChartsTemplate: NEW_RETURNING_BAR_CHART_TEMPLATE,
         newLineChartsTemplate: NEW_RETURNING_LINE_CHART_TEMPLATE,
-        overviewBarChartsTemplate: OVERVIEW_BAR_CHART_TEMPLATE,
-        overviewLineChartsTemplate: OVERVIEW_LINE_CHART_TEMPLATE,
         returningBarChartsTemplate: NEW_RETURNING_BAR_CHART_TEMPLATE,
         returningLineChartsTemplate: NEW_RETURNING_LINE_CHART_TEMPLATE,
         selectedDayMetrics,
-        selectedYear,
       }),
       createMonthlyCustomerCharts({
         monthlyMetrics: selectedYearMetrics?.monthlyMetrics,
         newBarChartsTemplate: NEW_RETURNING_BAR_CHART_TEMPLATE,
         newLineChartsTemplate: NEW_RETURNING_LINE_CHART_TEMPLATE,
-        overviewBarChartsTemplate: OVERVIEW_BAR_CHART_TEMPLATE,
-        overviewLineChartsTemplate: OVERVIEW_LINE_CHART_TEMPLATE,
         returningBarChartsTemplate: NEW_RETURNING_BAR_CHART_TEMPLATE,
         returningLineChartsTemplate: NEW_RETURNING_LINE_CHART_TEMPLATE,
         churnRetentionBarChartsTemplate: CHURN_RETENTION_BAR_CHART_TEMPLATE,
@@ -381,8 +334,6 @@ async function createCustomerMetricsCharts({
         yearlyMetrics: currentStoreMetrics?.customerMetrics.yearlyMetrics,
         newBarChartsTemplate: NEW_RETURNING_BAR_CHART_TEMPLATE,
         newLineChartsTemplate: NEW_RETURNING_LINE_CHART_TEMPLATE,
-        overviewBarChartsTemplate: OVERVIEW_BAR_CHART_TEMPLATE,
-        overviewLineChartsTemplate: OVERVIEW_LINE_CHART_TEMPLATE,
         returningBarChartsTemplate: NEW_RETURNING_BAR_CHART_TEMPLATE,
         returningLineChartsTemplate: NEW_RETURNING_LINE_CHART_TEMPLATE,
         churnRetentionBarChartsTemplate: CHURN_RETENTION_BAR_CHART_TEMPLATE,
@@ -400,37 +351,24 @@ async function createCustomerMetricsCharts({
 
 type CreateDailyCustomerChartsInput = {
   dailyMetrics?: CustomerDailyMetric[];
-  monthIndex: string;
   newBarChartsTemplate: CustomerNewReturningBarCharts;
   newLineChartsTemplate: CustomerNewReturningLineCharts;
-  overviewBarChartsTemplate: CustomerOverviewBarCharts;
-  overviewLineChartsTemplate: CustomerOverviewLineCharts;
   returningBarChartsTemplate: CustomerNewReturningBarCharts;
   returningLineChartsTemplate: CustomerNewReturningLineCharts;
   selectedDayMetrics?: CustomerDailyMetric;
-  selectedYear: Year;
 };
 
 async function createDailyCustomerCharts({
   dailyMetrics,
-  monthIndex,
   newBarChartsTemplate,
   newLineChartsTemplate,
-  overviewBarChartsTemplate,
-  overviewLineChartsTemplate,
   returningBarChartsTemplate,
   returningLineChartsTemplate,
   selectedDayMetrics,
-  selectedYear,
 }: CreateDailyCustomerChartsInput): Promise<CustomerMetricsCharts["dailyCharts"]> {
   if (!dailyMetrics || !selectedDayMetrics) {
     return new Promise((resolve) => {
       resolve({
-        overview: {
-          bar: overviewBarChartsTemplate,
-          line: overviewLineChartsTemplate,
-          pie: [],
-        },
         new: {
           bar: newBarChartsTemplate,
           line: newLineChartsTemplate,
@@ -448,9 +386,6 @@ async function createDailyCustomerCharts({
   return new Promise((resolve) => {
     setTimeout(() => {
       const [
-        dailyOverviewBarCharts,
-        dailyOverviewLineCharts,
-
         dailyNewBarCharts,
         dailyNewLineCharts,
 
@@ -459,9 +394,6 @@ async function createDailyCustomerCharts({
       ] = dailyMetrics.reduce(
         (dailyCustomerChartsAcc, dailyMetric) => {
           const [
-            dailyOverviewBarChartsAcc,
-            dailyOverviewLineChartsAcc,
-
             dailyNewBarChartsAcc,
             dailyNewLineChartsAcc,
 
@@ -470,61 +402,6 @@ async function createDailyCustomerCharts({
           ] = dailyCustomerChartsAcc;
 
           const { day, customers } = dailyMetric;
-
-          // overview section y-axis variables: overview, new, returning
-
-          const dailyOverviewBarChart = {
-            Days: day,
-            New: customers.new.total,
-            Returning: customers.returning.total,
-          };
-          dailyOverviewBarChartsAcc.overview.push(dailyOverviewBarChart);
-
-          const dailyNewBarChart = {
-            Days: day,
-            New: customers.new.total,
-          };
-          dailyOverviewBarChartsAcc.new.push(dailyNewBarChart);
-
-          const dailyReturningBarChart = {
-            Days: day,
-            Returning: customers.returning.total,
-          };
-          dailyOverviewBarChartsAcc.returning.push(dailyReturningBarChart);
-
-          // overview -> line chart obj
-
-          const dailyOverviewNewLineChart = {
-            x: day,
-            y: customers.new.total,
-          };
-          dailyOverviewLineChartsAcc.overview
-            .find((lineChartData: LineChartData) => lineChartData.id === "New")
-            ?.data.push(dailyOverviewNewLineChart);
-
-          const dailyOverviewReturningLineChart = {
-            x: day,
-            y: customers.returning.total,
-          };
-          dailyOverviewLineChartsAcc.overview
-            .find((lineChartData: LineChartData) => lineChartData.id === "Returning")
-            ?.data.push(dailyOverviewReturningLineChart);
-
-          const dailyNewNewLineChart = {
-            x: day,
-            y: customers.new.total,
-          };
-          dailyOverviewLineChartsAcc.new
-            .find((lineChartData: LineChartData) => lineChartData.id === "New")
-            ?.data.push(dailyNewNewLineChart);
-
-          const dailyReturningReturningLineChart = {
-            x: day,
-            y: customers.returning.total,
-          };
-          dailyOverviewLineChartsAcc.returning
-            .find((lineChartData: LineChartData) => lineChartData.id === "Returning")
-            ?.data.push(dailyReturningReturningLineChart);
 
           // new section y-axis variables: total, all, overview, sales, online, in-store, repair
 
@@ -809,9 +686,6 @@ async function createDailyCustomerCharts({
           return dailyCustomerChartsAcc;
         },
         [
-          structuredClone(overviewBarChartsTemplate),
-          structuredClone(overviewLineChartsTemplate),
-
           structuredClone(newBarChartsTemplate),
           structuredClone(newLineChartsTemplate),
 
@@ -819,19 +693,6 @@ async function createDailyCustomerCharts({
           structuredClone(returningLineChartsTemplate),
         ]
       );
-
-      const dailyOverviewPieChartData: PieChartData[] = [
-        {
-          id: "New",
-          label: "New",
-          value: selectedDayMetrics.customers.new.total,
-        },
-        {
-          id: "Returning",
-          label: "Returning",
-          value: selectedDayMetrics.customers.returning.total,
-        },
-      ];
 
       const newSalesPieChartData: PieChartData = {
         id: "Sales",
@@ -896,11 +757,6 @@ async function createDailyCustomerCharts({
       };
 
       resolve({
-        overview: {
-          bar: dailyOverviewBarCharts,
-          line: dailyOverviewLineCharts,
-          pie: dailyOverviewPieChartData,
-        },
         new: {
           bar: dailyNewBarCharts,
           line: dailyNewLineCharts,
@@ -923,8 +779,6 @@ type CreateMonthlyCustomerChartsInput = {
   months: Month[];
   newBarChartsTemplate: CustomerNewReturningBarCharts;
   newLineChartsTemplate: CustomerNewReturningLineCharts;
-  overviewBarChartsTemplate: CustomerOverviewBarCharts;
-  overviewLineChartsTemplate: CustomerOverviewLineCharts;
   returningBarChartsTemplate: CustomerNewReturningBarCharts;
   returningLineChartsTemplate: CustomerNewReturningLineCharts;
   selectedMonthMetrics?: CustomerMonthlyMetric;
@@ -937,8 +791,6 @@ async function createMonthlyCustomerCharts({
   monthlyMetrics,
   newBarChartsTemplate,
   newLineChartsTemplate,
-  overviewBarChartsTemplate,
-  overviewLineChartsTemplate,
   returningBarChartsTemplate,
   returningLineChartsTemplate,
   selectedMonthMetrics,
@@ -947,11 +799,6 @@ async function createMonthlyCustomerCharts({
   if (!monthlyMetrics || !selectedMonthMetrics) {
     return new Promise((resolve) => {
       resolve({
-        overview: {
-          bar: overviewBarChartsTemplate,
-          line: overviewLineChartsTemplate,
-          pie: [],
-        },
         new: {
           bar: newBarChartsTemplate,
           line: newLineChartsTemplate,
@@ -974,9 +821,6 @@ async function createMonthlyCustomerCharts({
   return new Promise((resolve) => {
     setTimeout(() => {
       const [
-        overviewBarCharts,
-        overviewLineCharts,
-
         monthlyNewBarCharts,
         monthlyNewLineCharts,
 
@@ -988,9 +832,6 @@ async function createMonthlyCustomerCharts({
       ] = monthlyMetrics.reduce(
         (monthlyCustomerChartsAcc, monthlyMetric) => {
           const [
-            overviewBarChartsAcc,
-            overviewLineChartsAcc,
-
             monthlyNewBarChartsAcc,
             monthlyNewLineChartsAcc,
 
@@ -1012,63 +853,6 @@ async function createMonthlyCustomerCharts({
           if (isCurrentYear && isCurrentMonth) {
             return monthlyCustomerChartsAcc;
           }
-
-          // overview section y-axis variables: new, returning, total
-
-          // overview -> bar chart obj
-
-          const overviewNewReturningBarChart = {
-            Months: month,
-            New: customers.new.total,
-            Returning: customers.returning.total,
-          };
-          overviewBarChartsAcc.overview.push(overviewNewReturningBarChart);
-
-          const overviewNewBarChart = {
-            Months: month,
-            New: customers.new.total,
-          };
-          overviewBarChartsAcc.new.push(overviewNewBarChart);
-
-          const overviewReturningBarChart = {
-            Months: month,
-            Returning: customers.returning.total,
-          };
-          overviewBarChartsAcc.returning.push(overviewReturningBarChart);
-
-          // overview -> line chart obj
-
-          const overviewNewLineChart = {
-            x: month,
-            y: customers.new.total,
-          };
-          overviewLineChartsAcc.overview
-            .find((lineChartData: LineChartData) => lineChartData.id === "New")
-            ?.data.push(overviewNewLineChart);
-
-          const overviewReturningLineChart = {
-            x: month,
-            y: customers.returning.total,
-          };
-          overviewLineChartsAcc.overview
-            .find((lineChartData: LineChartData) => lineChartData.id === "Returning")
-            ?.data.push(overviewReturningLineChart);
-
-          const monthlyNewNewLineChart = {
-            x: month,
-            y: customers.new.total,
-          };
-          overviewLineChartsAcc.new
-            .find((lineChartData: LineChartData) => lineChartData.id === "New")
-            ?.data.push(monthlyNewNewLineChart);
-
-          const monthlyReturningReturningLineChart = {
-            x: month,
-            y: customers.returning.total,
-          };
-          overviewLineChartsAcc.returning
-            .find((lineChartData: LineChartData) => lineChartData.id === "Returning")
-            ?.data.push(monthlyReturningReturningLineChart);
 
           // new section y-axis variables: total, all, overview, sales, online, in-store, repair
 
@@ -1414,9 +1198,6 @@ async function createMonthlyCustomerCharts({
           return monthlyCustomerChartsAcc;
         },
         [
-          structuredClone(overviewBarChartsTemplate),
-          structuredClone(overviewLineChartsTemplate),
-
           structuredClone(newBarChartsTemplate),
           structuredClone(newLineChartsTemplate),
 
@@ -1427,20 +1208,6 @@ async function createMonthlyCustomerCharts({
           structuredClone(churnRetentionLineChartsTemplate),
         ]
       );
-
-      // monthly -> overview -> pie chart obj
-      const overviewPieChartData: PieChartData[] = [
-        {
-          id: "New",
-          label: "New",
-          value: selectedMonthMetrics.customers.new.total,
-        },
-        {
-          id: "Returning",
-          label: "Returning",
-          value: selectedMonthMetrics.customers.returning.total,
-        },
-      ];
 
       // monthly -> new -> pie chart obj
       const monthlyNewSalesPieChartData: PieChartData = {
@@ -1526,11 +1293,6 @@ async function createMonthlyCustomerCharts({
       ];
 
       resolve({
-        overview: {
-          bar: overviewBarCharts,
-          line: overviewLineCharts,
-          pie: overviewPieChartData,
-        },
         new: {
           bar: monthlyNewBarCharts,
           line: monthlyNewLineCharts,
@@ -1556,8 +1318,6 @@ type CreateYearlyCustomerChartsInput = {
   churnRetentionLineChartsTemplate: CustomerChurnRetentionLineCharts;
   newBarChartsTemplate: CustomerNewReturningBarCharts;
   newLineChartsTemplate: CustomerNewReturningLineCharts;
-  overviewBarChartsTemplate: CustomerOverviewBarCharts;
-  overviewLineChartsTemplate: CustomerOverviewLineCharts;
   returningBarChartsTemplate: CustomerNewReturningBarCharts;
   returningLineChartsTemplate: CustomerNewReturningLineCharts;
   selectedYearMetrics?: CustomerYearlyMetric;
@@ -1569,8 +1329,6 @@ async function createYearlyCustomerCharts({
   churnRetentionLineChartsTemplate,
   newBarChartsTemplate,
   newLineChartsTemplate,
-  overviewBarChartsTemplate,
-  overviewLineChartsTemplate,
   returningBarChartsTemplate,
   returningLineChartsTemplate,
   selectedYearMetrics,
@@ -1579,11 +1337,6 @@ async function createYearlyCustomerCharts({
   if (!yearlyMetrics || !selectedYearMetrics) {
     return new Promise((resolve) => {
       resolve({
-        overview: {
-          bar: overviewBarChartsTemplate,
-          line: overviewLineChartsTemplate,
-          pie: [],
-        },
         new: {
           bar: newBarChartsTemplate,
           line: newLineChartsTemplate,
@@ -1606,9 +1359,6 @@ async function createYearlyCustomerCharts({
   return new Promise((resolve) => {
     setTimeout(() => {
       const [
-        yearlyOverviewBarCharts,
-        yearlyOverviewLineCharts,
-
         yearlyNewBarCharts,
         yearlyNewLineCharts,
 
@@ -1620,9 +1370,6 @@ async function createYearlyCustomerCharts({
       ] = yearlyMetrics.reduce(
         (yearlyCustomerChartsAcc, yearlyMetric) => {
           const [
-            yearlyOverviewBarChartsAcc,
-            yearlyOverviewLineChartsAcc,
-
             yearlyNewBarChartsAcc,
             yearlyNewLineChartsAcc,
 
@@ -1640,63 +1387,6 @@ async function createYearlyCustomerCharts({
           if (year === currentYear.toString()) {
             return yearlyCustomerChartsAcc;
           }
-
-          // overview section y-axis variables: new, returning, total
-
-          // overview -> bar chart obj
-
-          const yearlyOverviewTotalBarChart = {
-            Years: year,
-            New: customers.new.total,
-            Returning: customers.returning.total,
-          };
-          yearlyOverviewBarChartsAcc.overview.push(yearlyOverviewTotalBarChart);
-
-          const yearlyOverviewNewBarChart = {
-            Years: year,
-            New: customers.new.total,
-          };
-          yearlyOverviewBarChartsAcc.new.push(yearlyOverviewNewBarChart);
-
-          const yearlyOverviewReturningBarChart = {
-            Years: year,
-            Returning: customers.returning.total,
-          };
-          yearlyOverviewBarChartsAcc.returning.push(yearlyOverviewReturningBarChart);
-
-          // overview -> line chart obj
-
-          const yearlyOverviewNewLineChart = {
-            x: year,
-            y: customers.new.total,
-          };
-          yearlyOverviewLineChartsAcc.overview
-            .find((lineChartData: LineChartData) => lineChartData.id === "New")
-            ?.data.push(yearlyOverviewNewLineChart);
-
-          const yearlyOverviewReturningLineChart = {
-            x: year,
-            y: customers.returning.total,
-          };
-          yearlyOverviewLineChartsAcc.overview
-            .find((lineChartData: LineChartData) => lineChartData.id === "Returning")
-            ?.data.push(yearlyOverviewReturningLineChart);
-
-          const yearlyNewNewLineChart = {
-            x: year,
-            y: customers.new.total,
-          };
-          yearlyOverviewLineChartsAcc.new
-            .find((lineChartData: LineChartData) => lineChartData.id === "New")
-            ?.data.push(yearlyNewNewLineChart);
-
-          const yearlyReturningReturningLineChart = {
-            x: year,
-            y: customers.returning.total,
-          };
-          yearlyOverviewLineChartsAcc.returning
-            .find((lineChartData: LineChartData) => lineChartData.id === "Returning")
-            ?.data.push(yearlyReturningReturningLineChart);
 
           // new section y-axis variables: total, all, overview, sales, online, in-store, repair
 
@@ -2042,9 +1732,6 @@ async function createYearlyCustomerCharts({
           return yearlyCustomerChartsAcc;
         },
         [
-          structuredClone(overviewBarChartsTemplate),
-          structuredClone(overviewLineChartsTemplate),
-
           structuredClone(newBarChartsTemplate),
           structuredClone(newLineChartsTemplate),
 
@@ -2055,20 +1742,6 @@ async function createYearlyCustomerCharts({
           structuredClone(churnRetentionLineChartsTemplate),
         ]
       );
-
-      // yearly -> overview -> pie chart obj
-      const yearlyOverviewPieChartData: PieChartData[] = [
-        {
-          id: "New",
-          label: "New",
-          value: selectedYearMetrics.customers.new.total,
-        },
-        {
-          id: "Returning",
-          label: "Returning",
-          value: selectedYearMetrics.customers.returning.total,
-        },
-      ];
 
       // yearly -> new -> pie chart obj
       const yearlyNewSalesPieChartData: PieChartData = {
@@ -2153,11 +1826,6 @@ async function createYearlyCustomerCharts({
       ];
 
       resolve({
-        overview: {
-          bar: yearlyOverviewBarCharts,
-          line: yearlyOverviewLineCharts,
-          pie: yearlyOverviewPieChartData,
-        },
         new: {
           bar: yearlyNewBarCharts,
           line: yearlyNewLineCharts,
@@ -2211,6 +1879,5 @@ export type {
   CustomerMetricsChurnRetentionChartsKey,
   CustomerMetricsNewReturningChartsKey,
   CustomerMetricsNewReturningPieChartsKey,
-  CustomerMetricsOverviewChartsKey,
   SelectedDateCustomerMetrics,
 };

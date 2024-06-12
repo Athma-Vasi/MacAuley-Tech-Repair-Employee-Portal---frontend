@@ -72,11 +72,8 @@ function CustomerMetricsOverview({
     initialCustomerMetricsOverviewState
   );
 
-  const {
-    overviewBarChartYAxisVariable,
-    overviewCalendarChartYAxisVariable,
-    overviewLineChartYAxisVariable,
-  } = customerMetricsOverviewState;
+  const { overviewBarChartYAxisVariable, overviewLineChartYAxisVariable } =
+    customerMetricsOverviewState;
 
   const { overview } = returnCalendarViewCustomerCharts(
     calendarView,
@@ -100,7 +97,6 @@ function CustomerMetricsOverview({
     metricsView,
     storeLocation,
     yAxisBarChartVariable: overviewBarChartYAxisVariable,
-    yAxisCalendarChartVariable: overviewCalendarChartYAxisVariable,
     yAxisLineChartVariable: overviewLineChartYAxisVariable,
     year,
     day,
