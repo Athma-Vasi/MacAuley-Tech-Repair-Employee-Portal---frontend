@@ -35,9 +35,9 @@ type AccessibleSwitchInputAttributes<
   size?: MantineSize;
   page?: number;
   preventErrorStateWhenOff?: boolean;
-  /** Will be added to end of `${name} is off.` */
+  /** Will be added to end of `${name} is off. ` */
   switchOffDescription?: string;
-  /** Will be added to end of `${name} is on.` */
+  /** Will be added to end of `${name} is on. ` */
   switchOnDescription?: string;
   thumbIcon?: ReactNode;
   validValueAction: ValidValueAction;

@@ -1,7 +1,7 @@
 import {
   CustomerMetricsNewReturningChartsKey,
   CustomerMetricsNewReturningPieChartsKey,
-} from "../utils";
+} from "../chartsData";
 import { CustomerMetricsNewAction } from "./actions";
 
 type CustomerMetricsNewState = {

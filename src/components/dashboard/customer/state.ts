@@ -1,8 +1,9 @@
 import { CustomerMetricsState } from "./types";
 
 const initialCustomerMetricsState: CustomerMetricsState = {
-  customerMetricsCards: null,
-  customerMetricsCharts: null,
+  cards: null,
+  category: "new",
+  charts: null,
   isGenerating: false,
 };
 

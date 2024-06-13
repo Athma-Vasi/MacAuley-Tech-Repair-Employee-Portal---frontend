@@ -16,8 +16,11 @@ import { useGlobalState } from "../../../hooks";
 import { returnThemeColors } from "../../../utils";
 import { MONTHS } from "../constants";
 import { customerMetricsAction } from "./actions";
-import { returnSelectedDateCustomerMetrics, createCustomerMetricsCharts } from "./utils";
-import { createCustomerMetricsCards } from "./utilsTSX";
+import {
+  returnSelectedDateCustomerMetrics,
+  createCustomerMetricsCharts,
+} from "./chartsData";
+import { createCustomerMetricsCards } from "./cards";
 
 type CustomerMetricsProps = {
   businessMetrics: BusinessMetric[];

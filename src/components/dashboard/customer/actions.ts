@@ -1,12 +1,12 @@
 type CustomerMetricsAction = {
-  setCustomerMetricsCards: "setCustomerMetricsCards";
-  setCustomerMetricsCharts: "setCustomerMetricsCharts";
+  setCards: "setCards";
+  setCharts: "setCharts";
   setIsGenerating: "setIsGenerating";
 };
 
 const customerMetricsAction: CustomerMetricsAction = {
-  setCustomerMetricsCards: "setCustomerMetricsCards",
-  setCustomerMetricsCharts: "setCustomerMetricsCharts",
+  setCards: "setCards",
+  setCharts: "setCharts",
   setIsGenerating: "setIsGenerating",
 };
 

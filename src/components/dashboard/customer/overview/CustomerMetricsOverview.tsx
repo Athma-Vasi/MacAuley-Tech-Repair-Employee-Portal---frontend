@@ -22,16 +22,12 @@ import {
   Year,
 } from "../../types";
 import { returnChartTitleNavigateLinks, returnStatistics } from "../../utils";
-import {
-  CustomerMetricsCharts,
-  CustomerMetricsOverviewChartsKey,
-  returnCalendarViewCustomerCards,
-  returnCalendarViewCustomerCharts,
-} from "../utils";
-import { CustomerMetricsCards } from "../utilsTSX";
+import { CustomerMetricsCharts, returnCalendarViewCustomerCharts } from "../chartsData";
+import { CustomerMetricsCards, returnCalendarViewCustomerCards } from "../cards";
 import { customerMetricsOverviewAction } from "./actions";
 import { customerMetricsOverviewReducer } from "./reducers";
 import { initialCustomerMetricsOverviewState } from "./state";
+import { CustomerMetricsOverviewChartsKey } from "../../customerDashboard/utils";
 
 function CustomerMetricsOverview({
   borderColor,

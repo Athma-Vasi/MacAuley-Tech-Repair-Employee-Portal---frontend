@@ -1,11 +1,12 @@
 import { MantineNumberSize } from "@mantine/core";
 
+import { DashboardCalendarView } from "../types";
 import {
   createDashboardMetricsCards,
   CreateDashboardMetricsCardsInput,
   DashboardCardInfo,
 } from "../utilsTSX";
-import { SelectedDateCustomerMetrics } from "./utils";
+import { SelectedDateCustomerMetrics } from "./chartsData";
 
 type CreateCustomerMetricsCardsInput = {
   greenColorShade: string;
@@ -549,5 +550,16 @@ function createCustomerMetricsCards({
   });
 }
 
-export { createCustomerMetricsCards };
+function returnCalendarViewCustomerCards(
+  calendarView: DashboardCalendarView,
+  customerMetricsCards: CustomerMetricsCards
+) {
+  return calendarView === "Daily"
+    ? customerMetricsCards.dailyCards
+    : calendarView === "Monthly"
+    ? customerMetricsCards.monthlyCards
+    : customerMetricsCards.yearlyCards;
+}
+
+export { createCustomerMetricsCards, returnCalendarViewCustomerCards };
 export type { CustomerMetricsCards };

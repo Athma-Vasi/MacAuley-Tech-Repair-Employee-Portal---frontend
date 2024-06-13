@@ -12,7 +12,6 @@ import {
   Month,
   Year,
 } from "../types";
-import { CustomerMetricsCards } from "./utilsTSX";
 
 type SelectedDateCustomerMetrics = {
   dayCustomerMetrics: {
@@ -1857,20 +1856,8 @@ function returnCalendarViewCustomerCharts(
     : customerMetricsCharts.yearlyCharts;
 }
 
-function returnCalendarViewCustomerCards(
-  calendarView: DashboardCalendarView,
-  customerMetricsCards: CustomerMetricsCards
-) {
-  return calendarView === "Daily"
-    ? customerMetricsCards.dailyCards
-    : calendarView === "Monthly"
-    ? customerMetricsCards.monthlyCards
-    : customerMetricsCards.yearlyCards;
-}
-
 export {
   createCustomerMetricsCharts,
-  returnCalendarViewCustomerCards,
   returnCalendarViewCustomerCharts,
   returnSelectedDateCustomerMetrics,
 };

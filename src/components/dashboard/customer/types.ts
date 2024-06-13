@@ -1,20 +1,23 @@
 import { CustomerMetricsAction } from "./actions";
-import { CustomerMetricsCharts } from "./utils";
-import { CustomerMetricsCards } from "./utilsTSX";
+import { CustomerMetricsCards } from "./cards";
+import { CustomerMetricsCharts } from "./chartsData";
+
+type CustomerMetricsCategory = "new" | "returning" | "churn";
 
 type CustomerMetricsState = {
-  customerMetricsCards: CustomerMetricsCards | null;
-  customerMetricsCharts: CustomerMetricsCharts | null;
+  cards: CustomerMetricsCards | null;
+  category: CustomerMetricsCategory;
+  charts: CustomerMetricsCharts | null;
   isGenerating: boolean;
 };
 
 type CustomerMetricsDispatch =
   | {
-      action: CustomerMetricsAction["setCustomerMetricsCards"];
+      action: CustomerMetricsAction["setCards"];
       payload: CustomerMetricsCards;
     }
   | {
-      action: CustomerMetricsAction["setCustomerMetricsCharts"];
+      action: CustomerMetricsAction["setCharts"];
       payload: CustomerMetricsCharts;
     }
   | {
@@ -22,4 +25,4 @@ type CustomerMetricsDispatch =
       payload: boolean;
     };
 
-export type { CustomerMetricsDispatch, CustomerMetricsState };
+export type { CustomerMetricsCategory, CustomerMetricsDispatch, CustomerMetricsState };

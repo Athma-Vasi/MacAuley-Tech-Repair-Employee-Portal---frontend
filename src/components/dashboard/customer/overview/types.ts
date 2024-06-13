@@ -1,4 +1,4 @@
-import { CustomerMetricsOverviewChartsKey } from "../utils";
+import { CustomerMetricsOverviewChartsKey } from "../chartsData";
 import { CustomerMetricsOverviewAction } from "./actions";
 
 type CustomerMetricsOverviewState = {
