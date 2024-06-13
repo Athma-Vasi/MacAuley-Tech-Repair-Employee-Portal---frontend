@@ -12,7 +12,6 @@ import { initialCustomerMetricsState } from "./state";
 import { useErrorBoundary } from "react-error-boundary";
 import { useNavigate } from "react-router-dom";
 import { COLORS_SWATCHES } from "../../../constants/data";
-import { globalAction } from "../../../context/globalProvider/state";
 import { useGlobalState } from "../../../hooks";
 import { returnThemeColors } from "../../../utils";
 import { MONTHS } from "../constants";
@@ -141,4 +140,6 @@ function CustomerMetrics({
   if (!businessMetrics?.length || !customerMetricsCards || !customerMetricsCharts) {
     return null;
   }
+
+  return null;
 }

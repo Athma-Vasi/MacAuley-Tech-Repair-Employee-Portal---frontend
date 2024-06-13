@@ -20,6 +20,8 @@ type CustomerMetricsCards = {
     overview: DashboardCardInfo[];
     new: DashboardCardInfo[];
     returning: DashboardCardInfo[];
+    churnRate: DashboardCardInfo[];
+    retentionRate: DashboardCardInfo[];
   };
   monthlyCards: {
     overview: DashboardCardInfo[];
@@ -64,6 +66,8 @@ function createCustomerMetricsCards({
           overview: [],
           new: [],
           returning: [],
+          churnRate: [],
+          retentionRate: [],
         },
         monthlyCards: {
           overview: [],
@@ -111,7 +115,7 @@ function createCustomerMetricsCards({
 
       // daily -> overview
 
-      const dayTotalCustomersCardInfo = createDashboardMetricsCards({
+      const dayTotalCustomersCard = createDashboardMetricsCards({
         ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
         heading: "Total",
         kind: "day",
@@ -119,7 +123,7 @@ function createCustomerMetricsCards({
         selectedValue: selectedDayMetrics.customers.total,
       });
 
-      const dayTotalNewCustomersCardInfo = createDashboardMetricsCards({
+      const dayTotalNewCustomersCard = createDashboardMetricsCards({
         ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
         heading: "Total New",
         kind: "day",
@@ -127,7 +131,7 @@ function createCustomerMetricsCards({
         selectedValue: selectedDayMetrics.customers.new.total,
       });
 
-      const dayTotalReturningCustomersCardInfo = createDashboardMetricsCards({
+      const dayTotalReturningCustomersCard = createDashboardMetricsCards({
         ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
         heading: "Total Returning",
         kind: "day",
@@ -139,7 +143,7 @@ function createCustomerMetricsCards({
 
       // daily new total already created above
 
-      const dayTotalNewRepairCustomersCardInfo = createDashboardMetricsCards({
+      const dayTotalNewRepairCustomersCard = createDashboardMetricsCards({
         ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
         heading: "Repair",
         kind: "day",
@@ -147,7 +151,7 @@ function createCustomerMetricsCards({
         selectedValue: selectedDayMetrics.customers.new.repair,
       });
 
-      const dayTotalNewSalesCustomersCardInfo = createDashboardMetricsCards({
+      const dayTotalNewSalesCustomersCard = createDashboardMetricsCards({
         ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
         heading: "Sales",
         kind: "day",
@@ -155,7 +159,7 @@ function createCustomerMetricsCards({
         selectedValue: selectedDayMetrics.customers.new.sales.total,
       });
 
-      const dayTotalNewSalesOnlineCustomersCardInfo = createDashboardMetricsCards({
+      const dayTotalNewSalesOnlineCustomersCard = createDashboardMetricsCards({
         ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
         heading: "Sales Online",
         kind: "day",
@@ -163,7 +167,7 @@ function createCustomerMetricsCards({
         selectedValue: selectedDayMetrics.customers.new.sales.online,
       });
 
-      const dayTotalNewSalesInStoreCustomersCardInfo = createDashboardMetricsCards({
+      const dayTotalNewSalesInStoreCustomersCard = createDashboardMetricsCards({
         ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
         heading: "Sales In-Store",
         kind: "day",
@@ -175,7 +179,7 @@ function createCustomerMetricsCards({
 
       // daily returning total already created above
 
-      const dayTotalReturningRepairCustomersCardInfo = createDashboardMetricsCards({
+      const dayTotalReturningRepairCustomersCard = createDashboardMetricsCards({
         ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
         heading: "Repair",
         kind: "day",
@@ -183,7 +187,7 @@ function createCustomerMetricsCards({
         selectedValue: selectedDayMetrics.customers.returning.repair,
       });
 
-      const dayTotalReturningSalesCustomersCardInfo = createDashboardMetricsCards({
+      const dayTotalReturningSalesCustomersCard = createDashboardMetricsCards({
         ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
         heading: "Sales",
         kind: "day",
@@ -191,7 +195,7 @@ function createCustomerMetricsCards({
         selectedValue: selectedDayMetrics.customers.returning.sales.total,
       });
 
-      const dayTotalReturningSalesOnlineCustomersCardInfo = createDashboardMetricsCards({
+      const dayTotalReturningSalesOnlineCustomersCard = createDashboardMetricsCards({
         ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
         heading: "Sales Online",
         kind: "day",
@@ -199,7 +203,7 @@ function createCustomerMetricsCards({
         selectedValue: selectedDayMetrics.customers.returning.sales.online,
       });
 
-      const dayTotalReturningSalesInStoreCustomersCardInfo = createDashboardMetricsCards({
+      const dayTotalReturningSalesInStoreCustomersCard = createDashboardMetricsCards({
         ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
         heading: "Sales In-Store",
         kind: "day",
@@ -207,11 +211,32 @@ function createCustomerMetricsCards({
         selectedValue: selectedDayMetrics.customers.returning.sales.inStore,
       });
 
+      // daily -> churn rate
+      const dayChurnRateCard = createDashboardMetricsCards({
+        ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
+        heading: "Churn Rate",
+        isFlipColor: true,
+        kind: "day",
+        prevValue: prevDayMetrics.customers.churnRate,
+        selectedValue: selectedDayMetrics.customers.churnRate,
+        isDisplayValueAsPercentage: true,
+      });
+
+      // daily -> retention rate
+      const dayRetentionRateCard = createDashboardMetricsCards({
+        ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
+        heading: "Retention Rate",
+        kind: "day",
+        prevValue: prevDayMetrics.customers.retentionRate,
+        selectedValue: selectedDayMetrics.customers.retentionRate,
+        isDisplayValueAsPercentage: true,
+      });
+
       // month
 
       // month -> overview
 
-      const monthTotalCustomersCardInfo = createDashboardMetricsCards({
+      const monthTotalCustomersCard = createDashboardMetricsCards({
         ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
         heading: "Total",
         kind: "month",
@@ -219,7 +244,7 @@ function createCustomerMetricsCards({
         selectedValue: selectedMonthMetrics.customers.total,
       });
 
-      const monthTotalNewCustomersCardInfo = createDashboardMetricsCards({
+      const monthTotalNewCustomersCard = createDashboardMetricsCards({
         ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
         heading: "Total New",
         kind: "month",
@@ -227,7 +252,7 @@ function createCustomerMetricsCards({
         selectedValue: selectedMonthMetrics.customers.new.total,
       });
 
-      const monthTotalReturningCustomersCardInfo = createDashboardMetricsCards({
+      const monthTotalReturningCustomersCard = createDashboardMetricsCards({
         ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
         heading: "Total Returning",
         kind: "month",
@@ -239,7 +264,7 @@ function createCustomerMetricsCards({
 
       // month new total already created above
 
-      const monthTotalNewRepairCustomersCardInfo = createDashboardMetricsCards({
+      const monthTotalNewRepairCustomersCard = createDashboardMetricsCards({
         ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
         heading: "Repair",
         kind: "month",
@@ -247,7 +272,7 @@ function createCustomerMetricsCards({
         selectedValue: selectedMonthMetrics.customers.new.repair,
       });
 
-      const monthTotalNewSalesCustomersCardInfo = createDashboardMetricsCards({
+      const monthTotalNewSalesCustomersCard = createDashboardMetricsCards({
         ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
         heading: "Sales",
         kind: "month",
@@ -255,7 +280,7 @@ function createCustomerMetricsCards({
         selectedValue: selectedMonthMetrics.customers.new.sales.total,
       });
 
-      const monthTotalNewSalesOnlineCustomersCardInfo = createDashboardMetricsCards({
+      const monthTotalNewSalesOnlineCustomersCard = createDashboardMetricsCards({
         ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
         heading: "Sales Online",
         kind: "month",
@@ -263,7 +288,7 @@ function createCustomerMetricsCards({
         selectedValue: selectedMonthMetrics.customers.new.sales.online,
       });
 
-      const monthTotalNewSalesInStoreCustomersCardInfo = createDashboardMetricsCards({
+      const monthTotalNewSalesInStoreCustomersCard = createDashboardMetricsCards({
         ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
         heading: "Sales In-Store",
         kind: "month",
@@ -275,7 +300,7 @@ function createCustomerMetricsCards({
 
       // month returning total already created above
 
-      const monthTotalReturningRepairCustomersCardInfo = createDashboardMetricsCards({
+      const monthTotalReturningRepairCustomersCard = createDashboardMetricsCards({
         ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
         heading: "Repair",
         kind: "month",
@@ -283,7 +308,7 @@ function createCustomerMetricsCards({
         selectedValue: selectedMonthMetrics.customers.returning.repair,
       });
 
-      const monthTotalReturningSalesCustomersCardInfo = createDashboardMetricsCards({
+      const monthTotalReturningSalesCustomersCard = createDashboardMetricsCards({
         ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
         heading: "Sales",
         kind: "month",
@@ -291,27 +316,24 @@ function createCustomerMetricsCards({
         selectedValue: selectedMonthMetrics.customers.returning.sales.total,
       });
 
-      const monthTotalReturningSalesOnlineCustomersCardInfo = createDashboardMetricsCards(
-        {
-          ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
-          heading: "Sales Online",
-          kind: "month",
-          prevValue: prevMonthMetrics.customers.returning.sales.online,
-          selectedValue: selectedMonthMetrics.customers.returning.sales.online,
-        }
-      );
+      const monthTotalReturningSalesOnlineCustomersCard = createDashboardMetricsCards({
+        ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
+        heading: "Sales Online",
+        kind: "month",
+        prevValue: prevMonthMetrics.customers.returning.sales.online,
+        selectedValue: selectedMonthMetrics.customers.returning.sales.online,
+      });
 
-      const monthTotalReturningSalesInStoreCustomersCardInfo =
-        createDashboardMetricsCards({
-          ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
-          heading: "Sales In-Store",
-          kind: "month",
-          prevValue: prevMonthMetrics.customers.returning.sales.inStore,
-          selectedValue: selectedMonthMetrics.customers.returning.sales.inStore,
-        });
+      const monthTotalReturningSalesInStoreCustomersCard = createDashboardMetricsCards({
+        ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
+        heading: "Sales In-Store",
+        kind: "month",
+        prevValue: prevMonthMetrics.customers.returning.sales.inStore,
+        selectedValue: selectedMonthMetrics.customers.returning.sales.inStore,
+      });
 
       // month -> churn rate
-      const monthChurnRateCardInfo = createDashboardMetricsCards({
+      const monthChurnRateCard = createDashboardMetricsCards({
         ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
         heading: "Churn Rate",
         isFlipColor: true,
@@ -322,7 +344,7 @@ function createCustomerMetricsCards({
       });
 
       // month -> retention rate
-      const monthRetentionRateCardInfo = createDashboardMetricsCards({
+      const monthRetentionRateCard = createDashboardMetricsCards({
         ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
         heading: "Retention Rate",
         kind: "month",
@@ -335,7 +357,7 @@ function createCustomerMetricsCards({
 
       // year -> overview
 
-      const yearTotalCustomersCardInfo = createDashboardMetricsCards({
+      const yearTotalCustomersCard = createDashboardMetricsCards({
         ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
         heading: "Total",
         kind: "year",
@@ -343,7 +365,7 @@ function createCustomerMetricsCards({
         selectedValue: selectedYearMetrics.customers.total,
       });
 
-      const yearTotalNewCustomersCardInfo = createDashboardMetricsCards({
+      const yearTotalNewCustomersCard = createDashboardMetricsCards({
         ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
         heading: "Total New",
         kind: "year",
@@ -351,7 +373,7 @@ function createCustomerMetricsCards({
         selectedValue: selectedYearMetrics.customers.new.total,
       });
 
-      const yearTotalReturningCustomersCardInfo = createDashboardMetricsCards({
+      const yearTotalReturningCustomersCard = createDashboardMetricsCards({
         ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
         heading: "Total Returning",
         kind: "year",
@@ -363,7 +385,7 @@ function createCustomerMetricsCards({
 
       // year new total already created above
 
-      const yearTotalNewRepairCustomersCardInfo = createDashboardMetricsCards({
+      const yearTotalNewRepairCustomersCard = createDashboardMetricsCards({
         ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
         heading: "Repair",
         kind: "year",
@@ -371,7 +393,7 @@ function createCustomerMetricsCards({
         selectedValue: selectedYearMetrics.customers.new.repair,
       });
 
-      const yearTotalNewSalesCustomersCardInfo = createDashboardMetricsCards({
+      const yearTotalNewSalesCustomersCard = createDashboardMetricsCards({
         ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
         heading: "Sales",
         kind: "year",
@@ -379,7 +401,7 @@ function createCustomerMetricsCards({
         selectedValue: selectedYearMetrics.customers.new.sales.total,
       });
 
-      const yearTotalNewSalesOnlineCustomersCardInfo = createDashboardMetricsCards({
+      const yearTotalNewSalesOnlineCustomersCard = createDashboardMetricsCards({
         ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
         heading: "Sales Online",
         kind: "year",
@@ -387,7 +409,7 @@ function createCustomerMetricsCards({
         selectedValue: selectedYearMetrics.customers.new.sales.online,
       });
 
-      const yearTotalNewSalesInStoreCustomersCardInfo = createDashboardMetricsCards({
+      const yearTotalNewSalesInStoreCustomersCard = createDashboardMetricsCards({
         ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
         heading: "Sales In-Store",
         kind: "year",
@@ -399,7 +421,7 @@ function createCustomerMetricsCards({
 
       // year returning total already created above
 
-      const yearTotalReturningRepairCustomersCardInfo = createDashboardMetricsCards({
+      const yearTotalReturningRepairCustomersCard = createDashboardMetricsCards({
         ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
         heading: "Repair",
         kind: "year",
@@ -407,7 +429,7 @@ function createCustomerMetricsCards({
         selectedValue: selectedYearMetrics.customers.returning.repair,
       });
 
-      const yearTotalReturningSalesCustomersCardInfo = createDashboardMetricsCards({
+      const yearTotalReturningSalesCustomersCard = createDashboardMetricsCards({
         ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
         heading: "Sales",
         kind: "year",
@@ -415,7 +437,7 @@ function createCustomerMetricsCards({
         selectedValue: selectedYearMetrics.customers.returning.sales.total,
       });
 
-      const yearTotalReturningSalesOnlineCustomersCardInfo = createDashboardMetricsCards({
+      const yearTotalReturningSalesOnlineCustomersCard = createDashboardMetricsCards({
         ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
         heading: "Sales Online",
         kind: "year",
@@ -423,18 +445,16 @@ function createCustomerMetricsCards({
         selectedValue: selectedYearMetrics.customers.returning.sales.online,
       });
 
-      const yearTotalReturningSalesInStoreCustomersCardInfo = createDashboardMetricsCards(
-        {
-          ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
-          heading: "Sales In-Store",
-          kind: "year",
-          prevValue: prevYearMetrics.customers.returning.sales.inStore,
-          selectedValue: selectedYearMetrics.customers.returning.sales.inStore,
-        }
-      );
+      const yearTotalReturningSalesInStoreCustomersCard = createDashboardMetricsCards({
+        ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
+        heading: "Sales In-Store",
+        kind: "year",
+        prevValue: prevYearMetrics.customers.returning.sales.inStore,
+        selectedValue: selectedYearMetrics.customers.returning.sales.inStore,
+      });
 
       // year -> churn rate
-      const yearChurnRateCardInfo = createDashboardMetricsCards({
+      const yearChurnRateCard = createDashboardMetricsCards({
         ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
         heading: "Churn Rate",
         isFlipColor: true,
@@ -445,7 +465,7 @@ function createCustomerMetricsCards({
       });
 
       // year -> retention rate
-      const yearRetentionRateCardInfo = createDashboardMetricsCards({
+      const yearRetentionRateCard = createDashboardMetricsCards({
         ...DASHBOARD_CARD_INFO_INPUT_TEMPLATE,
         heading: "Retention Rate",
         kind: "year",
@@ -457,70 +477,72 @@ function createCustomerMetricsCards({
       resolve({
         dailyCards: {
           overview: [
-            dayTotalCustomersCardInfo,
-            dayTotalNewCustomersCardInfo,
-            dayTotalReturningCustomersCardInfo,
+            dayTotalCustomersCard,
+            dayTotalNewCustomersCard,
+            dayTotalReturningCustomersCard,
           ],
           new: [
-            dayTotalNewCustomersCardInfo,
-            dayTotalNewRepairCustomersCardInfo,
-            dayTotalNewSalesCustomersCardInfo,
-            dayTotalNewSalesOnlineCustomersCardInfo,
-            dayTotalNewSalesInStoreCustomersCardInfo,
+            dayTotalNewCustomersCard,
+            dayTotalNewRepairCustomersCard,
+            dayTotalNewSalesCustomersCard,
+            dayTotalNewSalesOnlineCustomersCard,
+            dayTotalNewSalesInStoreCustomersCard,
           ],
           returning: [
-            dayTotalReturningCustomersCardInfo,
-            dayTotalReturningRepairCustomersCardInfo,
-            dayTotalReturningSalesCustomersCardInfo,
-            dayTotalReturningSalesOnlineCustomersCardInfo,
-            dayTotalReturningSalesInStoreCustomersCardInfo,
+            dayTotalReturningCustomersCard,
+            dayTotalReturningRepairCustomersCard,
+            dayTotalReturningSalesCustomersCard,
+            dayTotalReturningSalesOnlineCustomersCard,
+            dayTotalReturningSalesInStoreCustomersCard,
           ],
+          churnRate: [dayChurnRateCard],
+          retentionRate: [dayRetentionRateCard],
         },
         monthlyCards: {
           overview: [
-            monthTotalCustomersCardInfo,
-            monthTotalNewCustomersCardInfo,
-            monthTotalReturningCustomersCardInfo,
+            monthTotalCustomersCard,
+            monthTotalNewCustomersCard,
+            monthTotalReturningCustomersCard,
           ],
           new: [
-            monthTotalNewCustomersCardInfo,
-            monthTotalNewRepairCustomersCardInfo,
-            monthTotalNewSalesCustomersCardInfo,
-            monthTotalNewSalesOnlineCustomersCardInfo,
-            monthTotalNewSalesInStoreCustomersCardInfo,
+            monthTotalNewCustomersCard,
+            monthTotalNewRepairCustomersCard,
+            monthTotalNewSalesCustomersCard,
+            monthTotalNewSalesOnlineCustomersCard,
+            monthTotalNewSalesInStoreCustomersCard,
           ],
           returning: [
-            monthTotalReturningCustomersCardInfo,
-            monthTotalReturningRepairCustomersCardInfo,
-            monthTotalReturningSalesCustomersCardInfo,
-            monthTotalReturningSalesOnlineCustomersCardInfo,
-            monthTotalReturningSalesInStoreCustomersCardInfo,
+            monthTotalReturningCustomersCard,
+            monthTotalReturningRepairCustomersCard,
+            monthTotalReturningSalesCustomersCard,
+            monthTotalReturningSalesOnlineCustomersCard,
+            monthTotalReturningSalesInStoreCustomersCard,
           ],
-          churnRate: [monthChurnRateCardInfo],
-          retentionRate: [monthRetentionRateCardInfo],
+          churnRate: [monthChurnRateCard],
+          retentionRate: [monthRetentionRateCard],
         },
         yearlyCards: {
           overview: [
-            yearTotalCustomersCardInfo,
-            yearTotalNewCustomersCardInfo,
-            yearTotalReturningCustomersCardInfo,
+            yearTotalCustomersCard,
+            yearTotalNewCustomersCard,
+            yearTotalReturningCustomersCard,
           ],
           new: [
-            yearTotalNewCustomersCardInfo,
-            yearTotalNewRepairCustomersCardInfo,
-            yearTotalNewSalesCustomersCardInfo,
-            yearTotalNewSalesOnlineCustomersCardInfo,
-            yearTotalNewSalesInStoreCustomersCardInfo,
+            yearTotalNewCustomersCard,
+            yearTotalNewRepairCustomersCard,
+            yearTotalNewSalesCustomersCard,
+            yearTotalNewSalesOnlineCustomersCard,
+            yearTotalNewSalesInStoreCustomersCard,
           ],
           returning: [
-            yearTotalReturningCustomersCardInfo,
-            yearTotalReturningRepairCustomersCardInfo,
-            yearTotalReturningSalesCustomersCardInfo,
-            yearTotalReturningSalesOnlineCustomersCardInfo,
-            yearTotalReturningSalesInStoreCustomersCardInfo,
+            yearTotalReturningCustomersCard,
+            yearTotalReturningRepairCustomersCard,
+            yearTotalReturningSalesCustomersCard,
+            yearTotalReturningSalesOnlineCustomersCard,
+            yearTotalReturningSalesInStoreCustomersCard,
           ],
-          churnRate: [yearChurnRateCardInfo],
-          retentionRate: [yearRetentionRateCardInfo],
+          churnRate: [yearChurnRateCard],
+          retentionRate: [yearRetentionRateCard],
         },
       });
     }, 0);
