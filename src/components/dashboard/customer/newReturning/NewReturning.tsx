@@ -1,5 +1,5 @@
 import { MantineNumberSize } from "@mantine/core";
-import { useReducer } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 
 import { globalAction } from "../../../../context/globalProvider/state";
@@ -13,7 +13,6 @@ import {
   ResponsivePieChart,
 } from "../../../charts";
 import { MONTHS } from "../../constants";
-import { CUSTOMER_OVERVIEW_Y_AXIS_DATA } from "../../customerDashboard/constants";
 import DashboardMetricsLayout from "../../DashboardMetricsLayout";
 import {
   BusinessMetricStoreLocation,
@@ -22,14 +21,39 @@ import {
   Year,
 } from "../../types";
 import { returnChartTitleNavigateLinks, returnStatistics } from "../../utils";
-import { CustomerMetricsCharts, returnCalendarViewCustomerCharts } from "../chartsData";
 import { CustomerMetricsCards, returnCalendarViewCustomerCards } from "../cards";
-import { customerMetricsOverviewAction } from "./actions";
-import { customerMetricsOverviewReducer } from "./reducers";
-import { initialCustomerMetricsOverviewState } from "./state";
-import { CustomerMetricsOverviewChartsKey } from "../../customerDashboard/utils";
+import {
+  CustomerMetricsCharts,
+  CustomerMetricsNewReturningChartsKey,
+  returnCalendarViewCustomerCharts,
+} from "../chartsData";
+import {
+  CUSTOMER_NEW_RETURNING_LINE_BAR_Y_AXIS_DATA,
+  CUSTOMER_NEW_RETURNING_PIE_Y_AXIS_DATA,
+} from "../constants";
+import { CustomerMetricsCategory } from "../types";
+import { newReturningAction } from "./actions";
+import { newReturningReducer } from "./reducers";
+import { initialNewReturningState } from "./state";
 
-function CustomerMetricsOverview({
+type NewReturningProps = {
+  borderColor: string;
+  calendarView: DashboardCalendarView;
+  chartHeight: number;
+  chartWidth: number;
+  customerMetricsCards: CustomerMetricsCards;
+  customerMetricsCharts: CustomerMetricsCharts;
+  day: string;
+  metricCategory: CustomerMetricsCategory;
+  metricsView: DashboardMetricsView;
+  month: string;
+  padding: MantineNumberSize;
+  storeLocation: BusinessMetricStoreLocation;
+  width: number;
+  year: Year;
+};
+
+function NewReturning({
   borderColor,
   calendarView,
   chartHeight,
@@ -44,41 +68,35 @@ function CustomerMetricsOverview({
   storeLocation,
   width,
   year,
-}: {
-  borderColor: string;
-  calendarView: DashboardCalendarView;
-  chartHeight: number;
-  chartWidth: number;
-  customerMetricsCards: CustomerMetricsCards;
-  customerMetricsCharts: CustomerMetricsCharts;
-  day: string;
-  metricCategory: CustomerMetricsOverviewChartsKey;
-  metricsView: DashboardMetricsView;
-  month: string;
-  padding: MantineNumberSize;
-  storeLocation: BusinessMetricStoreLocation;
-  width: number;
-  year: Year;
-}) {
+}: NewReturningProps) {
   const { globalDispatch } = useGlobalState();
   const navigate = useNavigate();
 
-  const [customerMetricsOverviewState, customerMetricsOverviewDispatch] = useReducer(
-    customerMetricsOverviewReducer,
-    initialCustomerMetricsOverviewState
+  const [newReturningState, newReturningDispatch] = React.useReducer(
+    newReturningReducer,
+    initialNewReturningState
   );
 
-  const { overviewBarChartYAxisVariable, overviewLineChartYAxisVariable } =
-    customerMetricsOverviewState;
+  const {
+    newReturningBarChartYAxisVariable,
+    newReturningLineChartYAxisVariable,
+    newReturningPieChartYAxisVariable,
+  } = newReturningState;
 
-  const { overview } = returnCalendarViewCustomerCharts(
-    calendarView,
-    customerMetricsCharts
-  );
-  const { bar: barCharts, line: lineCharts, pie: pieCharts } = overview;
+  const charts = returnCalendarViewCustomerCharts(calendarView, customerMetricsCharts);
+  const {
+    bar: barCharts,
+    line: lineCharts,
+    pie: pieCharts,
+  } = metricCategory === "new" ? charts.new : charts.returning;
 
-  const statisticsDailyOverview =
-    returnStatistics<CustomerMetricsOverviewChartsKey>(barCharts);
+  const statistics = returnStatistics<CustomerMetricsNewReturningChartsKey>(barCharts);
+
+  console.group("NewReturning");
+  console.log("newReturningState", newReturningState);
+  console.log("charts", charts);
+  console.log("statistics", statistics);
+  console.groupEnd();
 
   const {
     barChartHeading,
@@ -92,13 +110,25 @@ function CustomerMetricsOverview({
     metricCategory,
     metricsView,
     storeLocation,
-    yAxisBarChartVariable: overviewBarChartYAxisVariable,
-    yAxisLineChartVariable: overviewLineChartYAxisVariable,
+    yAxisBarChartVariable: newReturningBarChartYAxisVariable,
+    yAxisLineChartVariable: newReturningLineChartYAxisVariable,
     year,
     day,
     month,
     months: MONTHS,
   });
+
+  const pieChartYAxisVariableSelectInput = (
+    <AccessibleSelectInput
+      attributes={{
+        data: CUSTOMER_NEW_RETURNING_PIE_Y_AXIS_DATA,
+        name: "Y-Axis Pie",
+        parentDispatch: newReturningDispatch,
+        validValueAction: newReturningAction.setNewReturningPieChartYAxisVariable,
+        value: newReturningPieChartYAxisVariable,
+      }}
+    />
+  );
 
   const expandPieChartButton = (
     <AccessibleButton
@@ -114,7 +144,7 @@ function CustomerMetricsOverview({
             type: globalAction.setCustomizeChartsPageData,
             payload: {
               chartKind: "pie",
-              chartData: pieCharts,
+              chartData: pieCharts[newReturningPieChartYAxisVariable],
               chartTitle: pieChartHeading,
               chartUnitKind: "number",
             },
@@ -130,7 +160,7 @@ function CustomerMetricsOverview({
     <ResponsivePieChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
-      pieChartData={pieCharts}
+      pieChartData={pieCharts[newReturningPieChartYAxisVariable]}
       hideControls
       unitKind="number"
     />
@@ -150,7 +180,7 @@ function CustomerMetricsOverview({
             type: globalAction.setCustomizeChartsPageData,
             payload: {
               chartKind: "bar",
-              chartData: barCharts[overviewBarChartYAxisVariable],
+              chartData: barCharts[newReturningBarChartYAxisVariable],
               chartTitle: barChartHeading,
               chartUnitKind: "number",
             },
@@ -162,14 +192,14 @@ function CustomerMetricsOverview({
     />
   );
 
-  const overviewBarChartYAxisVariablesSelectInput = (
+  const barChartYAxisVariablesSelectInput = (
     <AccessibleSelectInput
       attributes={{
-        data: CUSTOMER_OVERVIEW_Y_AXIS_DATA,
+        data: CUSTOMER_NEW_RETURNING_LINE_BAR_Y_AXIS_DATA,
         name: "Y-Axis Bar",
-        parentDispatch: customerMetricsOverviewDispatch,
-        validValueAction: customerMetricsOverviewAction.setOverviewBarChartYAxisVariable,
-        value: overviewBarChartYAxisVariable,
+        parentDispatch: newReturningDispatch,
+        validValueAction: newReturningAction.setNewReturningBarChartYAxisVariable,
+        value: newReturningBarChartYAxisVariable,
       }}
     />
   );
@@ -178,7 +208,7 @@ function CustomerMetricsOverview({
     <ResponsiveBarChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
-      barChartData={barCharts[overviewBarChartYAxisVariable]}
+      barChartData={barCharts[newReturningBarChartYAxisVariable]}
       hideControls
       indexBy={
         calendarView === "Daily"
@@ -187,7 +217,7 @@ function CustomerMetricsOverview({
           ? "Months"
           : "Years"
       }
-      keys={CUSTOMER_OVERVIEW_Y_AXIS_DATA}
+      keys={CUSTOMER_NEW_RETURNING_LINE_BAR_Y_AXIS_DATA}
       unitKind="number"
     />
   );
@@ -206,7 +236,7 @@ function CustomerMetricsOverview({
             type: globalAction.setCustomizeChartsPageData,
             payload: {
               chartKind: "line",
-              chartData: lineCharts[overviewLineChartYAxisVariable],
+              chartData: lineCharts[newReturningLineChartYAxisVariable],
               chartTitle: lineChartHeading,
               chartUnitKind: "number",
             },
@@ -218,14 +248,14 @@ function CustomerMetricsOverview({
     />
   );
 
-  const overviewLineChartYAxisVariablesSelectInput = (
+  const lineChartYAxisVariablesSelectInput = (
     <AccessibleSelectInput
       attributes={{
-        data: CUSTOMER_OVERVIEW_Y_AXIS_DATA,
+        data: CUSTOMER_NEW_RETURNING_LINE_BAR_Y_AXIS_DATA,
         name: "Y-Axis Line",
-        parentDispatch: customerMetricsOverviewDispatch,
-        validValueAction: customerMetricsOverviewAction.setOverviewLineChartYAxisVariable,
-        value: overviewLineChartYAxisVariable,
+        parentDispatch: newReturningDispatch,
+        validValueAction: newReturningAction.setNewReturningLineChartYAxisVariable,
+        value: newReturningLineChartYAxisVariable,
       }}
     />
   );
@@ -234,7 +264,7 @@ function CustomerMetricsOverview({
     <ResponsiveLineChart
       chartHeight={chartHeight}
       chartWidth={chartWidth}
-      lineChartData={lineCharts[overviewLineChartYAxisVariable]}
+      lineChartData={lineCharts[newReturningLineChartYAxisVariable]}
       hideControls
       xFormat={(x) =>
         `${
@@ -246,29 +276,28 @@ function CustomerMetricsOverview({
     />
   );
 
-  const { overview: overviewCards } = returnCalendarViewCustomerCards(
-    calendarView,
-    customerMetricsCards
-  );
+  const cards = returnCalendarViewCustomerCards(calendarView, customerMetricsCards);
+  const overviewCards = metricCategory === "new" ? cards.new : cards.returning;
 
   const customerMetricsOverview = (
     <DashboardMetricsLayout
       barChart={overviewBarChart}
       barChartHeading={barChartHeading}
-      barChartYAxisSelectInput={overviewBarChartYAxisVariablesSelectInput}
+      barChartYAxisSelectInput={barChartYAxisVariablesSelectInput}
       borderColor={borderColor}
       expandBarChartButton={expandBarChartButton}
       expandLineChartButton={expandLineChartButton}
       expandPieChartButton={expandPieChartButton}
       lineChart={overviewLineChart}
       lineChartHeading={lineChartHeading}
-      lineChartYAxisSelectInput={overviewLineChartYAxisVariablesSelectInput}
+      lineChartYAxisSelectInput={lineChartYAxisVariablesSelectInput}
       overviewCards={overviewCards}
       padding={padding}
       pieChart={overviewPieChart}
       pieChartHeading={pieChartHeading}
-      sectionHeading={`${storeLocation} Daily Overview Customers`}
-      statisticsMap={statisticsDailyOverview}
+      pieChartYAxisSelectInput={pieChartYAxisVariableSelectInput}
+      sectionHeading={`${storeLocation} ${calendarView} Overview Customers`}
+      statisticsMap={statistics}
       width={width}
     />
   );
@@ -276,4 +305,4 @@ function CustomerMetricsOverview({
   return customerMetricsOverview;
 }
 
-export default CustomerMetricsOverview;
+export default NewReturning;

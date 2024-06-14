@@ -17,6 +17,10 @@ type CustomerMetricsDispatch =
       payload: CustomerMetricsCards;
     }
   | {
+      action: CustomerMetricsAction["setCategory"];
+      payload: CustomerMetricsCategory;
+    }
+  | {
       action: CustomerMetricsAction["setCharts"];
       payload: CustomerMetricsCharts;
     }

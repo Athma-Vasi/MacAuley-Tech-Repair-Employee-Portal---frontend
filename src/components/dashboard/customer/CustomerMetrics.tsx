@@ -1,32 +1,35 @@
+import { Loader, LoadingOverlay, Stack, Text } from "@mantine/core";
 import { useEffect, useReducer, useRef } from "react";
+import { useErrorBoundary } from "react-error-boundary";
+
+import { COLORS_SWATCHES } from "../../../constants/data";
+import { useGlobalState } from "../../../hooks";
+import { logState, returnThemeColors } from "../../../utils";
+import { AccessibleSegmentedControl } from "../../accessibleInputs/AccessibleSegmentedControl";
+import { MONTHS } from "../constants";
 import {
   BusinessMetric,
   BusinessMetricStoreLocation,
   DashboardCalendarView,
-  DashboardCustomerMetric,
   Month,
   Year,
 } from "../types";
+import { customerMetricsAction } from "./actions";
+import { createCustomerMetricsCards } from "./cards";
+import {
+  createCustomerMetricsCharts,
+  returnSelectedDateCustomerMetrics,
+} from "./chartsData";
+import { ChurnRetention } from "./churnRetention/ChurnRetention";
+import { CUSTOMER_METRICS_CATEGORY_DATA } from "./constants";
+import NewReturning from "./newReturning/NewReturning";
 import { customerMetricsReducer } from "./reducers";
 import { initialCustomerMetricsState } from "./state";
-import { useErrorBoundary } from "react-error-boundary";
-import { useNavigate } from "react-router-dom";
-import { COLORS_SWATCHES } from "../../../constants/data";
-import { useGlobalState } from "../../../hooks";
-import { returnThemeColors } from "../../../utils";
-import { MONTHS } from "../constants";
-import { customerMetricsAction } from "./actions";
-import {
-  returnSelectedDateCustomerMetrics,
-  createCustomerMetricsCharts,
-} from "./chartsData";
-import { createCustomerMetricsCards } from "./cards";
 
 type CustomerMetricsProps = {
   businessMetrics: BusinessMetric[];
   calendarView: DashboardCalendarView;
   selectedDate: string;
-  customerMetric: DashboardCustomerMetric;
   selectedMonth: Month;
   storeLocationView: BusinessMetricStoreLocation;
   selectedYear: Year;
@@ -36,7 +39,6 @@ type CustomerMetricsProps = {
 function CustomerMetrics({
   businessMetrics,
   calendarView,
-  customerMetric,
   selectedDate,
   selectedMonth,
   selectedYYYYMMDD,
@@ -47,19 +49,17 @@ function CustomerMetrics({
     customerMetricsReducer,
     initialCustomerMetricsState
   );
-  const { customerMetricsCards, customerMetricsCharts, isGenerating } =
-    customerMetricsState;
+  const { cards, category, charts, isGenerating } = customerMetricsState;
 
   const {
     globalState: { themeObject, padding, width },
-    globalDispatch,
   } = useGlobalState();
 
-  const navigate = useNavigate();
   const { showBoundary } = useErrorBoundary();
 
   const {
     generalColors: { redColorShade, greenColorShade },
+    appThemeColors: { borderColor },
   } = returnThemeColors({
     colorsSwatches: COLORS_SWATCHES,
     themeObject,
@@ -108,12 +108,12 @@ function CustomerMetrics({
         }
 
         customerMetricsDispatch({
-          action: customerMetricsAction.setCustomerMetricsCards,
+          action: customerMetricsAction.setCards,
           payload: customerMetricsCards,
         });
 
         customerMetricsDispatch({
-          action: customerMetricsAction.setCustomerMetricsCharts,
+          action: customerMetricsAction.setCharts,
           payload: customerMetricsCharts,
         });
 
@@ -130,7 +130,7 @@ function CustomerMetrics({
       }
     }
 
-    if (businessMetrics?.length || !customerMetricsCards || !customerMetricsCharts) {
+    if (businessMetrics?.length || !cards || !charts) {
       generateCustomerChartsCards();
     }
 
@@ -138,11 +138,93 @@ function CustomerMetrics({
       isComponentMountedRef.current = false;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedYYYYMMDD, storeLocationView, customerMetric]);
+  }, [selectedYYYYMMDD, storeLocationView]);
 
-  if (!businessMetrics?.length || !customerMetricsCards || !customerMetricsCharts) {
+  if (!businessMetrics?.length || !cards || !charts) {
     return null;
   }
 
-  return null;
+  logState({
+    state: customerMetricsState,
+    groupLabel: "CustomerMetrics",
+  });
+
+  const categorySegmentedControl = (
+    <AccessibleSegmentedControl
+      attributes={{
+        data: CUSTOMER_METRICS_CATEGORY_DATA,
+        name: "category",
+        parentDispatch: customerMetricsDispatch,
+        validValueAction: customerMetricsAction.setCategory,
+        value: category,
+      }}
+    />
+  );
+
+  const newReturning = (
+    <NewReturning
+      borderColor={borderColor}
+      calendarView={calendarView}
+      chartHeight={382}
+      chartWidth={612}
+      customerMetricsCards={cards}
+      customerMetricsCharts={charts}
+      day={selectedDate}
+      month={selectedYYYYMMDD.split("-")[1]}
+      padding={padding}
+      metricCategory={category}
+      metricsView="Customers"
+      storeLocation={storeLocationView}
+      width={width}
+      year={selectedYear}
+    />
+  );
+
+  const churnRetention = (
+    <ChurnRetention
+      borderColor={borderColor}
+      calendarView={calendarView}
+      chartHeight={382}
+      chartWidth={612}
+      customerMetricsCards={cards}
+      customerMetricsCharts={charts}
+      day={selectedDate}
+      month={selectedYYYYMMDD.split("-")[1]}
+      padding={padding}
+      metricCategory={category}
+      metricsView="Customers"
+      storeLocation={storeLocationView}
+      width={width}
+      year={selectedYear}
+    />
+  );
+
+  const loadingOverlay = (
+    <LoadingOverlay
+      visible={isGenerating}
+      zIndex={2}
+      overlayBlur={9}
+      overlayOpacity={0.99}
+      radius={4}
+      loader={
+        <Stack align="center">
+          <Loader />
+          <Text>Generating charts ... Please wait ...</Text>
+        </Stack>
+      }
+      transitionDuration={500}
+    />
+  );
+
+  const customerMetrics = (
+    <Stack>
+      {loadingOverlay}
+      {categorySegmentedControl}
+      {category === "new" || category === "returning" ? newReturning : churnRetention}
+    </Stack>
+  );
+
+  return customerMetrics;
 }
+
+export { CustomerMetrics };

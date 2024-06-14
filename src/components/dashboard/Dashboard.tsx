@@ -33,7 +33,7 @@ import {
   REPAIR_METRICS_SELECT_INPUT_DATA,
   STORE_LOCATION_VIEW_TABS_DATA,
 } from "./constants";
-import CustomerDashboard from "./customerDashboard/CustomerDashboard";
+import { CustomerMetrics } from "./customer/CustomerMetrics";
 import FinancialDashboard from "./financialDashboard/FinancialDashboard";
 import ProductDashboard from "./productDashboard/ProductDashboard";
 import RepairDashboard from "./repairDashboard/RepairDashboard";
@@ -431,10 +431,19 @@ function Dashboard() {
         selectedYear={selectedYear}
       />
     ) : metricsView === "Customers" ? (
-      <CustomerDashboard
+      // <CustomerDashboard
+      //   businessMetrics={businessMetrics}
+      //   calendarView={calendarView}
+      //   customerMetric={customerMetric}
+      //   selectedDate={selectedDate}
+      //   selectedMonth={selectedMonth}
+      //   storeLocationView={storeLocationView}
+      //   selectedYYYYMMDD={selectedYYYYMMDD}
+      //   selectedYear={selectedYear}
+      // />
+      <CustomerMetrics
         businessMetrics={businessMetrics}
         calendarView={calendarView}
-        customerMetric={customerMetric}
         selectedDate={selectedDate}
         selectedMonth={selectedMonth}
         storeLocationView={storeLocationView}

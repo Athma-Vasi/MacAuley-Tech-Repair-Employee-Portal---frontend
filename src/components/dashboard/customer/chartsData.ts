@@ -170,11 +170,11 @@ type CustomerMetricsCharts = {
       line: CustomerNewReturningLineCharts;
       pie: CustomerNewReturningPieCharts;
     };
-    // churnRetention: {
-    //   bar: CustomerChurnRetentionBarCharts;
-    //   line: CustomerChurnRetentionLineCharts;
-    //   pie: PieChartData[];
-    // };
+    churnRetention: {
+      bar: CustomerChurnRetentionBarCharts;
+      line: CustomerChurnRetentionLineCharts;
+      pie: PieChartData[];
+    };
   };
   monthlyCharts: {
     new: {
@@ -315,6 +315,8 @@ async function createCustomerMetricsCharts({
         newLineChartsTemplate: NEW_RETURNING_LINE_CHART_TEMPLATE,
         returningBarChartsTemplate: NEW_RETURNING_BAR_CHART_TEMPLATE,
         returningLineChartsTemplate: NEW_RETURNING_LINE_CHART_TEMPLATE,
+        churnRetentionBarChartsTemplate: CHURN_RETENTION_BAR_CHART_TEMPLATE,
+        churnRetentionLineChartsTemplate: CHURN_RETENTION_LINE_CHART_TEMPLATE,
         selectedDayMetrics,
       }),
       createMonthlyCustomerCharts({
@@ -349,6 +351,8 @@ async function createCustomerMetricsCharts({
 }
 
 type CreateDailyCustomerChartsInput = {
+  churnRetentionBarChartsTemplate: CustomerChurnRetentionBarCharts;
+  churnRetentionLineChartsTemplate: CustomerChurnRetentionLineCharts;
   dailyMetrics?: CustomerDailyMetric[];
   newBarChartsTemplate: CustomerNewReturningBarCharts;
   newLineChartsTemplate: CustomerNewReturningLineCharts;
@@ -358,6 +362,8 @@ type CreateDailyCustomerChartsInput = {
 };
 
 async function createDailyCustomerCharts({
+  churnRetentionBarChartsTemplate,
+  churnRetentionLineChartsTemplate,
   dailyMetrics,
   newBarChartsTemplate,
   newLineChartsTemplate,
@@ -378,6 +384,11 @@ async function createDailyCustomerCharts({
           line: returningLineChartsTemplate,
           pie: { overview: [], all: [], sales: [] },
         },
+        churnRetention: {
+          bar: { overview: [], churnRate: [], retentionRate: [] },
+          line: { overview: [], churnRate: [], retentionRate: [] },
+          pie: [],
+        },
       });
     });
   }
@@ -390,6 +401,9 @@ async function createDailyCustomerCharts({
 
         dailyReturningBarCharts,
         dailyReturningLineCharts,
+
+        dailyChurnRetentionBarCharts,
+        dailyChurnRetentionLineCharts,
       ] = dailyMetrics.reduce(
         (dailyCustomerChartsAcc, dailyMetric) => {
           const [
@@ -398,6 +412,9 @@ async function createDailyCustomerCharts({
 
             dailyReturningBarChartsAcc,
             dailyReturningLineChartsAcc,
+
+            dailyChurnRetentionBarChartsAcc,
+            dailyChurnRetentionLineChartsAcc,
           ] = dailyCustomerChartsAcc;
 
           const { day, customers } = dailyMetric;
@@ -682,6 +699,67 @@ async function createDailyCustomerCharts({
             .find((lineChartData: LineChartData) => lineChartData.id === "Repair")
             ?.data.push(dailyReturningRepairLineChart);
 
+          // churn & retention rate section y-axis variables: overview, churn rate, retention rate
+
+          // churn & retention rate -> bar chart obj
+
+          const overviewChurnRetentionRateBarChart = {
+            Days: day,
+            "Churn Rate": toFixedFloat(customers.churnRate * 100, 2),
+            "Retention Rate": toFixedFloat(customers.retentionRate * 100, 2),
+          };
+          dailyChurnRetentionBarChartsAcc.overview.push(
+            overviewChurnRetentionRateBarChart
+          );
+
+          const overviewChurnRateBarChart = {
+            Days: day,
+            "Churn Rate": toFixedFloat(customers.churnRate * 100, 2),
+          };
+          dailyChurnRetentionBarChartsAcc.churnRate.push(overviewChurnRateBarChart);
+
+          const monthlyRetentionRateBarChart = {
+            Days: day,
+            "Retention Rate": toFixedFloat(customers.retentionRate * 100, 2),
+          };
+          dailyChurnRetentionBarChartsAcc.retentionRate.push(
+            monthlyRetentionRateBarChart
+          );
+
+          // churn & retention rate -> line chart obj
+
+          const overviewChurnRetentionRateLineChart = {
+            x: day,
+            y: toFixedFloat(customers.churnRate * 100, 2),
+          };
+          dailyChurnRetentionLineChartsAcc.overview
+            .find((lineChartData: LineChartData) => lineChartData.id === "Churn Rate")
+            ?.data.push(overviewChurnRetentionRateLineChart);
+
+          const overviewRetentionRateLineChart = {
+            x: day,
+            y: toFixedFloat(customers.retentionRate * 100, 2),
+          };
+          dailyChurnRetentionLineChartsAcc.overview
+            .find((lineChartData: LineChartData) => lineChartData.id === "Retention Rate")
+            ?.data.push(overviewRetentionRateLineChart);
+
+          const monthlyChurnRateLineChart = {
+            x: day,
+            y: toFixedFloat(customers.churnRate * 100, 2),
+          };
+          dailyChurnRetentionLineChartsAcc.churnRate
+            .find((lineChartData: LineChartData) => lineChartData.id === "Churn Rate")
+            ?.data.push(monthlyChurnRateLineChart);
+
+          const monthlyRetentionRateLineChart = {
+            x: day,
+            y: toFixedFloat(customers.retentionRate * 100, 2),
+          };
+          dailyChurnRetentionLineChartsAcc.retentionRate
+            .find((lineChartData: LineChartData) => lineChartData.id === "Retention Rate")
+            ?.data.push(monthlyRetentionRateLineChart);
+
           return dailyCustomerChartsAcc;
         },
         [
@@ -690,6 +768,9 @@ async function createDailyCustomerCharts({
 
           structuredClone(returningBarChartsTemplate),
           structuredClone(returningLineChartsTemplate),
+
+          structuredClone(churnRetentionBarChartsTemplate),
+          structuredClone(churnRetentionLineChartsTemplate),
         ]
       );
 
@@ -755,6 +836,19 @@ async function createDailyCustomerCharts({
         sales: [returningSalesOnlinePieChartData, returningSalesInStorePieChartData],
       };
 
+      const dailyChurnRetentionPieChartData: PieChartData[] = [
+        {
+          id: "Churn Rate",
+          label: "Churn Rate",
+          value: toFixedFloat(selectedDayMetrics.customers.churnRate * 100, 2),
+        },
+        {
+          id: "Retention Rate",
+          label: "Retention Rate",
+          value: toFixedFloat(selectedDayMetrics.customers.retentionRate * 100, 2),
+        },
+      ];
+
       resolve({
         new: {
           bar: dailyNewBarCharts,
@@ -765,6 +859,11 @@ async function createDailyCustomerCharts({
           bar: dailyReturningBarCharts,
           line: dailyReturningLineCharts,
           pie: dailyReturningPieChartData,
+        },
+        churnRetention: {
+          bar: dailyChurnRetentionBarCharts,
+          line: dailyChurnRetentionLineCharts,
+          pie: dailyChurnRetentionPieChartData,
         },
       });
     }, 0);

@@ -1,7 +1,11 @@
 import { CustomerMetricsAction, customerMetricsAction } from "./actions";
 import { CustomerMetricsCards } from "./cards";
 import { CustomerMetricsCharts } from "./chartsData";
-import { CustomerMetricsDispatch, CustomerMetricsState } from "./types";
+import {
+  CustomerMetricsCategory,
+  CustomerMetricsDispatch,
+  CustomerMetricsState,
+} from "./types";
 
 function customerMetricsReducer(
   state: CustomerMetricsState,
@@ -16,6 +20,7 @@ const customerMetricsReducers = new Map<
   (state: CustomerMetricsState, dispatch: CustomerMetricsDispatch) => CustomerMetricsState
 >([
   [customerMetricsAction.setCards, customerMetricsReducer_setCards],
+  [customerMetricsAction.setCategory, customerMetricsReducer_setCategory],
   [customerMetricsAction.setCharts, customerMetricsReducer_setCharts],
   [customerMetricsAction.setIsGenerating, customerMetricsReducer_setIsGenerating],
 ]);
@@ -27,6 +32,16 @@ function customerMetricsReducer_setCards(
   return {
     ...state,
     cards: dispatch.payload as CustomerMetricsCards,
+  };
+}
+
+function customerMetricsReducer_setCategory(
+  state: CustomerMetricsState,
+  dispatch: CustomerMetricsDispatch
+): CustomerMetricsState {
+  return {
+    ...state,
+    category: dispatch.payload as CustomerMetricsCategory,
   };
 }
 
