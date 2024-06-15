@@ -14,7 +14,7 @@ import {
   Month,
   Year,
 } from "../types";
-import { customerMetricsAction } from "./actions";
+import { CustomerMetricsAction, customerMetricsAction } from "./actions";
 import { createCustomerMetricsCards } from "./cards";
 import {
   createCustomerMetricsCharts,
@@ -25,6 +25,7 @@ import { CUSTOMER_METRICS_CATEGORY_DATA } from "./constants";
 import NewReturning from "./newReturning/NewReturning";
 import { customerMetricsReducer } from "./reducers";
 import { initialCustomerMetricsState } from "./state";
+import { CustomerMetricsCategory } from "./types";
 
 type CustomerMetricsProps = {
   businessMetrics: BusinessMetric[];
@@ -152,7 +153,7 @@ function CustomerMetrics({
   const categorySegmentedControl = (
     <AccessibleSegmentedControl
       attributes={{
-        data: CUSTOMER_METRICS_CATEGORY_DATA,
+        data: CUSTOMER_METRICS_CATEGORY_DATA as any,
         name: "category",
         parentDispatch: customerMetricsDispatch,
         validValueAction: customerMetricsAction.setCategory,

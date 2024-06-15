@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 import { globalAction } from "../../../../context/globalProvider/state";
 import { useGlobalState } from "../../../../hooks";
-import { addCommaSeparator } from "../../../../utils";
+import { addCommaSeparator, splitCamelCase } from "../../../../utils";
 import { AccessibleButton } from "../../../accessibleInputs/AccessibleButton";
 import { AccessibleSelectInput } from "../../../accessibleInputs/AccessibleSelectInput";
 import {
@@ -121,7 +121,7 @@ function NewReturning({
   const pieChartYAxisVariableSelectInput = (
     <AccessibleSelectInput
       attributes={{
-        data: CUSTOMER_NEW_RETURNING_PIE_Y_AXIS_DATA,
+        data: CUSTOMER_NEW_RETURNING_PIE_Y_AXIS_DATA as any,
         name: "Y-Axis Pie",
         parentDispatch: newReturningDispatch,
         validValueAction: newReturningAction.setNewReturningPieChartYAxisVariable,
@@ -195,7 +195,7 @@ function NewReturning({
   const barChartYAxisVariablesSelectInput = (
     <AccessibleSelectInput
       attributes={{
-        data: CUSTOMER_NEW_RETURNING_LINE_BAR_Y_AXIS_DATA,
+        data: CUSTOMER_NEW_RETURNING_LINE_BAR_Y_AXIS_DATA as any,
         name: "Y-Axis Bar",
         parentDispatch: newReturningDispatch,
         validValueAction: newReturningAction.setNewReturningBarChartYAxisVariable,
@@ -217,7 +217,7 @@ function NewReturning({
           ? "Months"
           : "Years"
       }
-      keys={CUSTOMER_NEW_RETURNING_LINE_BAR_Y_AXIS_DATA}
+      keys={CUSTOMER_NEW_RETURNING_LINE_BAR_Y_AXIS_DATA.map((obj) => obj.label)}
       unitKind="number"
     />
   );
@@ -251,7 +251,7 @@ function NewReturning({
   const lineChartYAxisVariablesSelectInput = (
     <AccessibleSelectInput
       attributes={{
-        data: CUSTOMER_NEW_RETURNING_LINE_BAR_Y_AXIS_DATA,
+        data: CUSTOMER_NEW_RETURNING_LINE_BAR_Y_AXIS_DATA as any,
         name: "Y-Axis Line",
         parentDispatch: newReturningDispatch,
         validValueAction: newReturningAction.setNewReturningLineChartYAxisVariable,

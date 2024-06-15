@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 import { globalAction } from "../../../../context/globalProvider/state";
 import { useGlobalState } from "../../../../hooks";
-import { addCommaSeparator } from "../../../../utils";
+import { addCommaSeparator, splitCamelCase } from "../../../../utils";
 import { AccessibleButton } from "../../../accessibleInputs/AccessibleButton";
 import { AccessibleSelectInput } from "../../../accessibleInputs/AccessibleSelectInput";
 import {
@@ -172,7 +172,7 @@ function ChurnRetention({
   const barChartYAxisVariablesSelectInput = (
     <AccessibleSelectInput
       attributes={{
-        data: CUSTOMER_CHURN_RETENTION_Y_AXIS_DATA,
+        data: CUSTOMER_CHURN_RETENTION_Y_AXIS_DATA as any,
         name: "Y-Axis Bar",
         parentDispatch: churnRetentionDispatch,
         validValueAction: churnRetentionAction.setChurnRetentionBarChartYAxisVariable,
@@ -194,7 +194,7 @@ function ChurnRetention({
           ? "Months"
           : "Years"
       }
-      keys={CUSTOMER_NEW_RETURNING_LINE_BAR_Y_AXIS_DATA}
+      keys={CUSTOMER_NEW_RETURNING_LINE_BAR_Y_AXIS_DATA.map((obj) => obj.label)}
       unitKind="number"
     />
   );
@@ -228,7 +228,7 @@ function ChurnRetention({
   const lineChartYAxisVariablesSelectInput = (
     <AccessibleSelectInput
       attributes={{
-        data: CUSTOMER_CHURN_RETENTION_Y_AXIS_DATA,
+        data: CUSTOMER_CHURN_RETENTION_Y_AXIS_DATA as any,
         name: "Y-Axis Line",
         parentDispatch: churnRetentionDispatch,
         validValueAction: churnRetentionAction.setChurnRetentionLineChartYAxisVariable,

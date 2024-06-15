@@ -64,6 +64,10 @@ function ResponsiveBarChart({
   keys,
   unitKind = "currency",
 }: ResponsiveBarChartProps) {
+  console.group("ResponsiveBarChart");
+  console.log("barChartData", barChartData);
+  console.groupEnd();
+
   const {
     globalState: { isPrefersReducedMotion, width, themeObject, padding },
   } = useGlobalState();
