@@ -14,19 +14,8 @@ import {
   Month,
   Year,
 } from "../types";
-import { customerMetricsAction } from "./actions";
-import { createCustomerMetricsCards } from "./cards";
-import {
-  createCustomerMetricsCharts,
-  returnSelectedDateCustomerMetrics,
-} from "./chartsData";
-import { ChurnRetention } from "./churnRetention/ChurnRetention";
-import { CUSTOMER_METRICS_CATEGORY_DATA } from "./constants";
-import NewReturning from "./newReturning/NewReturning";
-import { customerMetricsReducer } from "./reducers";
-import { initialCustomerMetricsState } from "./state";
 
-type CustomerMetricsProps = {
+type FinancialMetricsProps = {
   businessMetrics: BusinessMetric[];
   calendarView: DashboardCalendarView;
   selectedDate: string;
@@ -36,7 +25,7 @@ type CustomerMetricsProps = {
   selectedYYYYMMDD: string;
 };
 
-function CustomerMetrics({
+function FinancialMetrics({
   businessMetrics,
   calendarView,
   selectedDate,
@@ -44,12 +33,12 @@ function CustomerMetrics({
   selectedYYYYMMDD,
   selectedYear,
   storeLocationView,
-}: CustomerMetricsProps) {
-  const [customerMetricsState, customerMetricsDispatch] = useReducer(
-    customerMetricsReducer,
-    initialCustomerMetricsState
+}: FinancialMetricsProps) {
+  const [financialMetricsState, financialMetricsDispatch] = useReducer(
+    financialMetricsReducer,
+    initialFinancialMetricsState
   );
-  const { cards, category, charts, isGenerating } = customerMetricsState;
+  const { cards, category, charts, isGenerating } = financialMetricsState;
 
   const {
     globalState: { themeObject, padding, width },
@@ -70,14 +59,14 @@ function CustomerMetrics({
     isComponentMountedRef.current = true;
     const isMounted = isComponentMountedRef.current;
 
-    async function generateCustomerChartsCards() {
-      customerMetricsDispatch({
-        action: customerMetricsAction.setIsGenerating,
+    async function generateFinancialChartsCards() {
+      financialMetricsDispatch({
+        action: financialMetricsAction.setIsGenerating,
         payload: true,
       });
 
       try {
-        const selectedDateCustomerMetrics = returnSelectedDateCustomerMetrics({
+        const selectedDateFinancialMetrics = returnSelectedDateFinancialMetrics({
           businessMetrics,
           day: selectedDate,
           month: selectedMonth,
@@ -86,20 +75,20 @@ function CustomerMetrics({
           year: selectedYear,
         });
 
-        console.log("selectedDateCustomerMetrics", selectedDateCustomerMetrics);
+        console.log("selectedDateFinancialMetrics", selectedDateFinancialMetrics);
 
-        const customerMetricsCharts = await createCustomerMetricsCharts({
+        const financialMetricsCharts = await createFinancialMetricsCharts({
           businessMetrics,
           months: MONTHS,
-          selectedDateCustomerMetrics,
+          selectedDateFinancialMetrics,
           storeLocation: storeLocationView,
         });
 
-        const customerMetricsCards = await createCustomerMetricsCards({
+        const financialMetricsCards = await createFinancialMetricsCards({
           greenColorShade,
           padding,
           redColorShade,
-          selectedDateCustomerMetrics,
+          selectedDateFinancialMetrics,
           width,
         });
 
@@ -107,18 +96,18 @@ function CustomerMetrics({
           return;
         }
 
-        customerMetricsDispatch({
-          action: customerMetricsAction.setCards,
-          payload: customerMetricsCards,
+        financialMetricsDispatch({
+          action: financialMetricsAction.setCards,
+          payload: financialMetricsCards,
         });
 
-        customerMetricsDispatch({
-          action: customerMetricsAction.setCharts,
-          payload: customerMetricsCharts,
+        financialMetricsDispatch({
+          action: financialMetricsAction.setCharts,
+          payload: financialMetricsCharts,
         });
 
-        customerMetricsDispatch({
-          action: customerMetricsAction.setIsGenerating,
+        financialMetricsDispatch({
+          action: financialMetricsAction.setIsGenerating,
           payload: false,
         });
       } catch (error: any) {
@@ -131,7 +120,7 @@ function CustomerMetrics({
     }
 
     if (businessMetrics?.length || !cards || !charts) {
-      generateCustomerChartsCards();
+      generateFinancialChartsCards();
     }
 
     return () => {
@@ -145,8 +134,8 @@ function CustomerMetrics({
   }
 
   logState({
-    state: customerMetricsState,
-    groupLabel: "CustomerMetrics",
+    state: financialMetricsState,
+    groupLabel: "FinancialMetrics",
   });
 
   const categorySegmentedControl = (
@@ -154,8 +143,8 @@ function CustomerMetrics({
       attributes={{
         data: CUSTOMER_METRICS_CATEGORY_DATA as any,
         name: "category",
-        parentDispatch: customerMetricsDispatch,
-        validValueAction: customerMetricsAction.setCategory,
+        parentDispatch: financialMetricsDispatch,
+        validValueAction: financialMetricsAction.setCategory,
         value: category,
       }}
     />
@@ -167,13 +156,13 @@ function CustomerMetrics({
       calendarView={calendarView}
       chartHeight={382}
       chartWidth={612}
-      customerMetricsCards={cards}
-      customerMetricsCharts={charts}
+      financialMetricsCards={cards}
+      financialMetricsCharts={charts}
       day={selectedDate}
       month={selectedYYYYMMDD.split("-")[1]}
       padding={padding}
       metricCategory={category}
-      metricsView="Customers"
+      metricsView="Financials"
       storeLocation={storeLocationView}
       width={width}
       year={selectedYear}
@@ -186,13 +175,13 @@ function CustomerMetrics({
       calendarView={calendarView}
       chartHeight={382}
       chartWidth={612}
-      customerMetricsCards={cards}
-      customerMetricsCharts={charts}
+      financialMetricsCards={cards}
+      financialMetricsCharts={charts}
       day={selectedDate}
       month={selectedYYYYMMDD.split("-")[1]}
       padding={padding}
       metricCategory={category}
-      metricsView="Customers"
+      metricsView="Financials"
       storeLocation={storeLocationView}
       width={width}
       year={selectedYear}
@@ -216,7 +205,7 @@ function CustomerMetrics({
     />
   );
 
-  const customerMetrics = (
+  const financialMetrics = (
     <Stack>
       {loadingOverlay}
       {categorySegmentedControl}
@@ -224,7 +213,7 @@ function CustomerMetrics({
     </Stack>
   );
 
-  return customerMetrics;
+  return financialMetrics;
 }
 
-export { CustomerMetrics };
+export { FinancialMetrics };
