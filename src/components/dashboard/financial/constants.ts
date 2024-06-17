@@ -14,4 +14,14 @@ const FINANCIAL_PERT_BAR_LINE_Y_AXIS_DATA = [
   { label: "Online", value: "online" },
 ];
 
-export { FINANCIAL_PERT_BAR_LINE_Y_AXIS_DATA, FINANCIAL_PERT_PIE_Y_AXIS_DATA };
+const FINANCIAL_OTHERS_Y_AXIS_DATA = [
+  { label: "Net Profit Margin", value: "netProfitMargin" },
+  { label: "Average Order Value", value: "averageOrderValue" },
+  { label: "Conversion Rate", value: "conversionRate" },
+];
+
+export {
+  FINANCIAL_OTHERS_Y_AXIS_DATA,
+  FINANCIAL_PERT_BAR_LINE_Y_AXIS_DATA,
+  FINANCIAL_PERT_PIE_Y_AXIS_DATA,
+};
