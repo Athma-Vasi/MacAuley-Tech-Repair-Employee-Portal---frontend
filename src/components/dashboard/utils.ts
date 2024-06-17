@@ -3240,7 +3240,7 @@ function returnChartTitleNavigateLinks({
   const xAxisVariable =
     calendarView === "Daily" ? "Days" : calendarView === "Monthly" ? "Months" : "Years";
   const metricSafe = productMetric ?? "";
-  const metricCategoryCapitalized = capitalizeAll(metricCategory);
+  const metricCategoryCapitalized = splitCamelCase(metricCategory);
 
   const yAxisBarChartPrefix =
     yAxisBarChartVariable.toLowerCase() === metricCategory.toLowerCase()

@@ -35,8 +35,8 @@ import {
 } from "./constants";
 import { CustomerMetrics } from "./customer/CustomerMetrics";
 import { FinancialMetrics } from "./financial/FinancialMetrics";
-import ProductDashboard from "./productDashboard/ProductDashboard";
-import RepairDashboard from "./repairDashboard/RepairDashboard";
+import { ProductMetrics } from "./product/ProductMetrics";
+import { RepairMetrics } from "./repair/RepairMetrics";
 import { dashboardAction, dashboardReducer, initialDashboardState } from "./state";
 import {
   BusinessMetric,
@@ -49,7 +49,6 @@ import {
   DashboardRepairMetric,
 } from "./types";
 import { createRandomBusinessMetrics, splitSelectedCalendarDate } from "./utils";
-import { ProductMetrics } from "./product/ProductMetrics";
 
 function Dashboard() {
   const [dashboardState, dashboardDispatch] = useReducer(
@@ -482,10 +481,20 @@ function Dashboard() {
         storeLocationView={storeLocationView}
       />
     ) : (
-      <RepairDashboard
+      // <RepairDashboard
+      //   businessMetrics={businessMetrics}
+      //   calendarView={calendarView}
+      //   repairMetric={repairMetric}
+      //   selectedDate={selectedDate}
+      //   selectedMonth={selectedMonth}
+      //   selectedYYYYMMDD={selectedYYYYMMDD}
+      //   selectedYear={selectedYear}
+      //   storeLocationView={storeLocationView}
+      // />
+
+      <RepairMetrics
         businessMetrics={businessMetrics}
         calendarView={calendarView}
-        repairMetric={repairMetric}
         selectedDate={selectedDate}
         selectedMonth={selectedMonth}
         selectedYYYYMMDD={selectedYYYYMMDD}

@@ -5,7 +5,7 @@ import {
   CreateDashboardMetricsCardsInput,
   DashboardCardInfo,
 } from "../utilsTSX";
-import { SelectedDateRepairMetrics } from "./utils";
+import { SelectedDateRepairMetrics } from "./chartsData";
 
 type ReturnRepairMetricsCardsInput = {
   greenColorShade: string;

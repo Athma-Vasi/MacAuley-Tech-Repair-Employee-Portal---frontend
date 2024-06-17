@@ -11,13 +11,13 @@ import {
 } from "@mantine/core";
 
 import { addCommaSeparator, splitCamelCase } from "../../utils";
-import { DashboardCardInfo, returnDashboardCardElement } from "./utilsTSX";
 import { StatisticsObject } from "./utils";
+import { DashboardCardInfo, returnDashboardCardElement } from "./utilsTSX";
 
 type DashboardMetricsLayoutProps<MetricObjKey extends string = string> = {
   barChart: React.JSX.Element;
   barChartHeading: string;
-  barChartYAxisSelectInput: React.JSX.Element;
+  barChartYAxisSelectInput?: React.JSX.Element;
   borderColor: string;
   calendarChart?: React.JSX.Element;
   calendarChartHeading?: string;
@@ -29,7 +29,7 @@ type DashboardMetricsLayoutProps<MetricObjKey extends string = string> = {
   isMoney?: boolean;
   lineChart: React.JSX.Element;
   lineChartHeading: string;
-  lineChartYAxisSelectInput: React.JSX.Element;
+  lineChartYAxisSelectInput?: React.JSX.Element;
   overviewCards: DashboardCardInfo[];
   padding: MantineNumberSize;
   pieChart?: React.JSX.Element;
@@ -106,7 +106,9 @@ function DashboardMetricsLayout({
     <Stack pb={padding} style={{ borderBottom: borderColor }} align="center">
       <Title order={4}>Bar Chart</Title>
       <Group w="100%" position="center" align="flex-end">
-        <Group w={200}>{barChartYAxisSelectInput}</Group>
+        {barChartYAxisSelectInput ? (
+          <Group w={200}>{barChartYAxisSelectInput}</Group>
+        ) : null}
         {expandBarChartButtonWithTooltip}
       </Group>
       <Group w="100%" position="center">
@@ -158,7 +160,9 @@ function DashboardMetricsLayout({
     <Stack pb={padding} style={{ borderBottom: borderColor }} align="center">
       <Title order={4}>Line Chart</Title>
       <Group w="100%" position="center" align="flex-end">
-        <Group w={200}>{lineChartYAxisSelectInput}</Group>
+        {lineChartYAxisSelectInput ? (
+          <Group w={200}>{lineChartYAxisSelectInput}</Group>
+        ) : null}
         {expandLineChartButtonWithTooltip}
       </Group>
       <Group w="100%" position="center">
