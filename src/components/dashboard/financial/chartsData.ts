@@ -6,11 +6,13 @@ import {
   BusinessMetric,
   BusinessMetricStoreLocation,
   DailyFinancialMetric,
+  DashboardCalendarView,
   Month,
   MonthlyFinancialMetric,
   Year,
   YearlyFinancialMetric,
 } from "../types";
+import { FinancialMetricsCategory } from "./types";
 
 type SelectedDateFinancialMetrics = {
   dayFinancialMetrics: {
@@ -3203,7 +3205,24 @@ async function createYearlyFinancialCharts({
   });
 }
 
-export { createFinancialMetricsCharts, returnSelectedDateFinancialMetrics };
+function returnCalendarViewFinancialCharts(
+  calendarView: DashboardCalendarView,
+  financialMetricsCharts: FinancialMetricsCharts,
+  metricCategory: FinancialMetricsCategory
+) {
+  return calendarView === "Daily"
+    ? financialMetricsCharts.dailyCharts[metricCategory]
+    : calendarView === "Monthly"
+    ? financialMetricsCharts.monthlyCharts[metricCategory]
+    : financialMetricsCharts.yearlyCharts[metricCategory];
+}
+
+export {
+  createFinancialMetricsCharts,
+  createYearlyFinancialCharts,
+  returnCalendarViewFinancialCharts,
+  returnSelectedDateFinancialMetrics,
+};
 export type {
   FinancialMetricsBarCharts,
   FinancialMetricsBarLineChartsKey,

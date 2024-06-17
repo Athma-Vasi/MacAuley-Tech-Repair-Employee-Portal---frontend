@@ -9,7 +9,7 @@ type AccessibleSelectInputAttributes<
 > = {
   data: Array<
     | {
-        label: Capitalize<Payload>;
+        label: string;
         value: Payload;
       }
     | Payload

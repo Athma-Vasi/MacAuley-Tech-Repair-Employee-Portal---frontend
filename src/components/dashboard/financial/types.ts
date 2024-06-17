@@ -2,7 +2,7 @@ import { FinancialMetricsAction } from "./actions";
 import { FinancialMetricsCards } from "./cards";
 import { FinancialMetricsCharts } from "./chartsData";
 
-type FinancialMetricsCategory = "profit" | "revenue" | "expense" | "transaction";
+type FinancialMetricsCategory = "profit" | "revenue" | "expenses" | "transactions";
 
 type FinancialMetricsState = {
   cards: FinancialMetricsCards | null;
