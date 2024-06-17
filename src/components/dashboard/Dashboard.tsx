@@ -49,6 +49,7 @@ import {
   DashboardRepairMetric,
 } from "./types";
 import { createRandomBusinessMetrics, splitSelectedCalendarDate } from "./utils";
+import { ProductMetrics } from "./product/ProductMetrics";
 
 function Dashboard() {
   const [dashboardState, dashboardDispatch] = useReducer(
@@ -461,10 +462,19 @@ function Dashboard() {
         selectedYear={selectedYear}
       />
     ) : metricsView === "Products" ? (
-      <ProductDashboard
+      // <ProductDashboard
+      //   businessMetrics={businessMetrics}
+      //   calendarView={calendarView}
+      //   productMetric={productMetric}
+      //   selectedDate={selectedDate}
+      //   selectedMonth={selectedMonth}
+      //   selectedYYYYMMDD={selectedYYYYMMDD}
+      //   selectedYear={selectedYear}
+      //   storeLocationView={storeLocationView}
+      // />
+      <ProductMetrics
         businessMetrics={businessMetrics}
         calendarView={calendarView}
-        productMetric={productMetric}
         selectedDate={selectedDate}
         selectedMonth={selectedMonth}
         selectedYYYYMMDD={selectedYYYYMMDD}

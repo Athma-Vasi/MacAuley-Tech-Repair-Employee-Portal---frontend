@@ -7,7 +7,7 @@ import {
 } from "simple-statistics";
 
 import { StoreLocation } from "../../types";
-import { splitCamelCase, toFixedFloat } from "../../utils";
+import { capitalizeAll, splitCamelCase, toFixedFloat } from "../../utils";
 import { BarChartData } from "../charts/responsiveBarChart/types";
 import { DAYS_PER_MONTH, MONTHS } from "./constants";
 import {
@@ -3239,34 +3239,36 @@ function returnChartTitleNavigateLinks({
 }: ReturnChartTitleNavigateLinksInput) {
   const xAxisVariable =
     calendarView === "Daily" ? "Days" : calendarView === "Monthly" ? "Months" : "Years";
+  const metricSafe = productMetric ?? "";
+  const metricCategoryCapitalized = capitalizeAll(metricCategory);
 
   const yAxisBarChartPrefix =
     yAxisBarChartVariable.toLowerCase() === metricCategory.toLowerCase()
-      ? `${productMetric ? productMetric : ""} ${metricCategory} `
-      : `${productMetric ? productMetric : ""} ${splitCamelCase(
+      ? `${metricSafe} ${metricCategoryCapitalized} `
+      : `${metricSafe} ${splitCamelCase(
           yAxisBarChartVariable
-        )} ${metricCategory} ` ?? "";
+        )} ${metricCategoryCapitalized} ` ?? "";
 
   const yAxisCalendarChartPrefix =
     yAxisCalendarChartVariable?.toLowerCase() === metricCategory.toLowerCase()
-      ? `${productMetric ? productMetric : ""} ${metricCategory} `
-      : `${productMetric ? productMetric : ""} ${splitCamelCase(
+      ? `${metricSafe} ${metricCategoryCapitalized} `
+      : `${metricSafe} ${splitCamelCase(
           yAxisCalendarChartVariable ?? ""
-        )} ${metricCategory} ` ?? "";
+        )} ${metricCategoryCapitalized} ` ?? "";
 
   const yAxisLineChartPrefix =
     yAxisLineChartVariable.toLowerCase() === metricCategory.toLowerCase()
-      ? `${productMetric ? productMetric : ""} ${metricCategory} `
-      : `${productMetric ? productMetric : ""} ${splitCamelCase(
+      ? `${metricSafe} ${metricCategoryCapitalized} `
+      : `${metricSafe} ${splitCamelCase(
           yAxisLineChartVariable
-        )} ${metricCategory} ` ?? "";
+        )} ${metricCategoryCapitalized} ` ?? "";
 
   const yAxisPieChartPrefix =
     yAxisPieChartVariable?.toLowerCase() === metricCategory.toLowerCase()
-      ? `${productMetric ? productMetric : ""} ${metricCategory} `
-      : `${productMetric ? productMetric : ""} ${splitCamelCase(
+      ? `${metricSafe} ${metricCategoryCapitalized} `
+      : `${metricSafe} ${splitCamelCase(
           yAxisPieChartVariable ?? ""
-        )} ${metricCategory} ` ?? "";
+        )} ${metricCategoryCapitalized} ` ?? "";
 
   const barChartHeading =
     calendarView === "Daily"
