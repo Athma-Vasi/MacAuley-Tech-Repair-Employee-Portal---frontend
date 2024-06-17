@@ -1,5 +1,4 @@
 import { shuffleArray } from '../../../utils';
-import { DirectoryUserDocument } from '../../directory/types';
 
 type PrinterIssuesArray = {
   title: string;
@@ -784,42 +783,42 @@ const printerIssuesArray: PrinterIssuesArray = [
   },
 ];
 
-function returnPrinterIssuesRequestBodies({
-  printerIssuesArray,
-  userDocs,
-}: {
-  userDocs: DirectoryUserDocument[];
-  printerIssuesArray: PrinterIssuesArray;
-}) {
-  return userDocs.flatMap((userDoc) => {
-    const { _id, username, contactNumber, email } = userDoc;
+// function returnPrinterIssuesRequestBodies({
+//   printerIssuesArray,
+//   userDocs,
+// }: {
+//   userDocs: DirectoryUserDocument[];
+//   printerIssuesArray: PrinterIssuesArray;
+// }) {
+//   return userDocs.flatMap((userDoc) => {
+//     const { _id, username, contactNumber, email } = userDoc;
 
-    // random amount of printer issues
-    const randomAmountOfPrinterIssues = Math.floor(Math.random() * 3);
+//     // random amount of printer issues
+//     const randomAmountOfPrinterIssues = Math.floor(Math.random() * 3);
 
-    // shuffle array of printer issues
-    const shuffledPrinterIssuesArray = shuffleArray(printerIssuesArray);
+//     // shuffle array of printer issues
+//     const shuffledPrinterIssuesArray = shuffleArray(printerIssuesArray);
 
-    // random printer issues
-    const randomPrinterIssues = shuffledPrinterIssuesArray.slice(
-      0,
-      randomAmountOfPrinterIssues
-    );
+//     // random printer issues
+//     const randomPrinterIssues = shuffledPrinterIssuesArray.slice(
+//       0,
+//       randomAmountOfPrinterIssues
+//     );
 
-    const bodiesArr = randomPrinterIssues.map((printerIssue) => {
-      const body = {
-        ...printerIssue,
-        userId: _id,
-        username,
-        contactNumber,
-        contactEmail: email,
-      };
+//     const bodiesArr = randomPrinterIssues.map((printerIssue) => {
+//       const body = {
+//         ...printerIssue,
+//         userId: _id,
+//         username,
+//         contactNumber,
+//         contactEmail: email,
+//       };
 
-      return body;
-    });
+//       return body;
+//     });
 
-    return bodiesArr;
-  });
-}
+//     return bodiesArr;
+//   });
+// }
 
-export { printerIssuesArray, returnPrinterIssuesRequestBodies };
+export { printerIssuesArray,  };

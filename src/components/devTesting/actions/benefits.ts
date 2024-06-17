@@ -1,8 +1,6 @@
 import { CURRENCY_DATA, REQUEST_STATUS } from "../../../constants/data";
 import { Department } from "../../../types";
 import { groupByField } from "../../../utils";
-import { DirectoryUserDocument } from "../../directory/types";
-import { USERS_DOCS } from "../constants";
 
 const benefitsArray = [
   {
@@ -523,61 +521,61 @@ type GroupedByBenefitKind = Record<
 
 // return benefits based on department of employee
 // one branch at a time to avoid overloading server
-function returnBenefitsRequestBodies({
-  userDocs,
-  groupedByBenefits,
-}: {
-  userDocs: DirectoryUserDocument[];
-  groupedByBenefits: GroupedByBenefitKind;
-}) {
-  return userDocs.reduce((benefitsRequestBodiesAcc, userDoc) => {
-    const { department } = userDoc;
+// function returnBenefitsRequestBodies({
+//   userDocs,
+//   groupedByBenefits,
+// }: {
+//   userDocs: DirectoryUserDocument[];
+//   groupedByBenefits: GroupedByBenefitKind;
+// }) {
+//   return userDocs.reduce((benefitsRequestBodiesAcc, userDoc) => {
+//     const { department } = userDoc;
 
-    const randomCurrency =
-      CURRENCY_DATA[Math.floor(Math.random() * CURRENCY_DATA.length)];
+//     const randomCurrency =
+//       CURRENCY_DATA[Math.floor(Math.random() * CURRENCY_DATA.length)];
 
-    const randomRequestStatus =
-      REQUEST_STATUS[Math.floor(Math.random() * REQUEST_STATUS.length)];
+//     const randomRequestStatus =
+//       REQUEST_STATUS[Math.floor(Math.random() * REQUEST_STATUS.length)];
 
-    const benefit = {
-      username: userDoc.username,
-      currency: randomCurrency,
-      requestStatus: randomRequestStatus,
-    };
+//     const benefit = {
+//       username: userDoc.username,
+//       currency: randomCurrency,
+//       requestStatus: randomRequestStatus,
+//     };
 
-    // ignore all other branches
-    if (department !== "Maintenance") {
-      return benefitsRequestBodiesAcc;
-    }
-    const randomPoolBenefits = Object.entries(groupedByBenefits).reduce(
-      (benefitsAcc, groupedBenefitTuple) => {
-        const [benefitKind, benefitKindArray] = groupedBenefitTuple;
-        if (benefitKind === "Dental" || benefitKind === "Vision") {
-          return benefitsAcc;
-        }
+//     // ignore all other branches
+//     if (department !== "Maintenance") {
+//       return benefitsRequestBodiesAcc;
+//     }
+//     const randomPoolBenefits = Object.entries(groupedByBenefits).reduce(
+//       (benefitsAcc, groupedBenefitTuple) => {
+//         const [benefitKind, benefitKindArray] = groupedBenefitTuple;
+//         if (benefitKind === "Dental" || benefitKind === "Vision") {
+//           return benefitsAcc;
+//         }
 
-        const randomBenefit =
-          benefitKindArray[Math.floor(Math.random() * benefitKindArray.length)];
+//         const randomBenefit =
+//           benefitKindArray[Math.floor(Math.random() * benefitKindArray.length)];
 
-        return benefitsAcc.concat(randomBenefit);
-      },
-      [] as Record<string, any>[]
-    );
+//         return benefitsAcc.concat(randomBenefit);
+//       },
+//       [] as Record<string, any>[]
+//     );
 
-    const requestBodies = randomPoolBenefits.map((randomBenefit) => {
-      const body = {
-        ...benefit,
-        ...randomBenefit,
-      };
+//     const requestBodies = randomPoolBenefits.map((randomBenefit) => {
+//       const body = {
+//         ...benefit,
+//         ...randomBenefit,
+//       };
 
-      return body;
-    });
+//       return body;
+//     });
 
-    benefitsRequestBodiesAcc.push(...requestBodies);
+//     benefitsRequestBodiesAcc.push(...requestBodies);
 
-    return benefitsRequestBodiesAcc;
-  }, [] as any[]);
-}
+//     return benefitsRequestBodiesAcc;
+//   }, [] as any[]);
+// }
 
-export { benefitsArray, returnBenefitsRequestBodies };
+export { benefitsArray };
 export type { GroupedByBenefitKind };

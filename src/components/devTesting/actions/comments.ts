@@ -1,5 +1,4 @@
-import { shuffleArray } from '../../../utils';
-import { DirectoryUserDocument } from '../../directory/types';
+import { shuffleArray } from "../../../utils";
 
 type CommentsArray = {
   parentResourceId: string;
@@ -7460,10 +7459,10 @@ const commentsArray: CommentsArray = [
   // title: 'Diversity Training' 65139981878c0a62f4b644ba
   //
   {
-    parentResourceId: '65139981878c0a62f4b644ba',
+    parentResourceId: "65139981878c0a62f4b644ba",
     comment:
       "I'm excited to see that we're investing in diversity training! This is a crucial step toward creating an inclusive and equitable workplace. Count me in!",
-    quotedComment: '',
+    quotedComment: "",
     likesCount: 48,
     dislikesCount: 0,
     reportsCount: 0,
@@ -7471,7 +7470,7 @@ const commentsArray: CommentsArray = [
     isDeleted: false,
   },
   {
-    parentResourceId: '65139981878c0a62f4b644ba',
+    parentResourceId: "65139981878c0a62f4b644ba",
     comment:
       "Absolutely! Diversity training not only benefits us as individuals but also strengthens our organization. Let's learn and grow together.",
     quotedComment:
@@ -7483,10 +7482,10 @@ const commentsArray: CommentsArray = [
     isDeleted: false,
   },
   {
-    parentResourceId: '65139981878c0a62f4b644ba',
+    parentResourceId: "65139981878c0a62f4b644ba",
     comment:
-      'I hope the training covers a wide range of topics, from unconscious bias to cultural sensitivity. This will help us become more aware and empathetic colleagues.',
-    quotedComment: '',
+      "I hope the training covers a wide range of topics, from unconscious bias to cultural sensitivity. This will help us become more aware and empathetic colleagues.",
+    quotedComment: "",
     likesCount: 42,
     dislikesCount: 0,
     reportsCount: 0,
@@ -7494,11 +7493,11 @@ const commentsArray: CommentsArray = [
     isDeleted: false,
   },
   {
-    parentResourceId: '65139981878c0a62f4b644ba',
+    parentResourceId: "65139981878c0a62f4b644ba",
     comment:
       "You're spot on! Comprehensive training will equip us to address diversity and inclusion in all aspects of our work. Let's embrace this opportunity for growth.",
     quotedComment:
-      'I hope the training covers a wide range of topics, from unconscious bias to cultural sensitivity. This will help us become more aware and empathetic colleagues.',
+      "I hope the training covers a wide range of topics, from unconscious bias to cultural sensitivity. This will help us become more aware and empathetic colleagues.",
     likesCount: 47,
     dislikesCount: 0,
     reportsCount: 0,
@@ -7506,10 +7505,10 @@ const commentsArray: CommentsArray = [
     isDeleted: false,
   },
   {
-    parentResourceId: '65139981878c0a62f4b644ba',
+    parentResourceId: "65139981878c0a62f4b644ba",
     comment:
       "I'm particularly looking forward to workshops or sessions where we can share personal experiences and insights. It's through stories that we truly understand each other.",
-    quotedComment: '',
+    quotedComment: "",
     likesCount: 41,
     dislikesCount: 0,
     reportsCount: 0,
@@ -7517,7 +7516,7 @@ const commentsArray: CommentsArray = [
     isDeleted: false,
   },
   {
-    parentResourceId: '65139981878c0a62f4b644ba',
+    parentResourceId: "65139981878c0a62f4b644ba",
     comment:
       "That's a wonderful idea! Sharing our stories can create empathy and build bridges between us. Let's encourage open and respectful dialogue.",
     quotedComment:
@@ -7529,10 +7528,10 @@ const commentsArray: CommentsArray = [
     isDeleted: false,
   },
   {
-    parentResourceId: '65139981878c0a62f4b644ba',
+    parentResourceId: "65139981878c0a62f4b644ba",
     comment:
       "I'm grateful that our company is committed to fostering a culture of diversity and inclusion. This training is a step in the right direction for positive change.",
-    quotedComment: '',
+    quotedComment: "",
     likesCount: 45,
     dislikesCount: 0,
     reportsCount: 0,
@@ -7540,7 +7539,7 @@ const commentsArray: CommentsArray = [
     isDeleted: false,
   },
   {
-    parentResourceId: '65139981878c0a62f4b644ba',
+    parentResourceId: "65139981878c0a62f4b644ba",
     comment:
       "Absolutely, a diverse and inclusive workplace benefits everyone. Let's embrace this training as an opportunity for personal and professional growth.",
     quotedComment:
@@ -7552,10 +7551,10 @@ const commentsArray: CommentsArray = [
     isDeleted: false,
   },
   {
-    parentResourceId: '65139981878c0a62f4b644ba',
+    parentResourceId: "65139981878c0a62f4b644ba",
     comment:
       "I hope this training leads to tangible actions and initiatives within our company. Let's not just learn but also apply what we learn to make a difference.",
-    quotedComment: '',
+    quotedComment: "",
     likesCount: 40,
     dislikesCount: 0,
     reportsCount: 0,
@@ -7563,7 +7562,7 @@ const commentsArray: CommentsArray = [
     isDeleted: false,
   },
   {
-    parentResourceId: '65139981878c0a62f4b644ba',
+    parentResourceId: "65139981878c0a62f4b644ba",
     comment:
       "You're absolutely right. Learning without action is incomplete. Let's be the change we want to see and actively contribute to a more inclusive workplace.",
     quotedComment:
@@ -7575,10 +7574,10 @@ const commentsArray: CommentsArray = [
     isDeleted: false,
   },
   {
-    parentResourceId: '65139981878c0a62f4b644ba',
+    parentResourceId: "65139981878c0a62f4b644ba",
     comment:
       "This is fantastic news! Diversity training is an important step towards creating a more inclusive and equitable workplace. I'm eager to participate and learn.",
-    quotedComment: '',
+    quotedComment: "",
     likesCount: 45,
     dislikesCount: 0,
     reportsCount: 0,
@@ -7586,7 +7585,7 @@ const commentsArray: CommentsArray = [
     isDeleted: false,
   },
   {
-    parentResourceId: '65139981878c0a62f4b644ba',
+    parentResourceId: "65139981878c0a62f4b644ba",
     comment:
       "Absolutely! It's a great opportunity for us to gain insights, challenge our biases, and promote a culture of respect and understanding.",
     quotedComment:
@@ -7598,10 +7597,10 @@ const commentsArray: CommentsArray = [
     isDeleted: false,
   },
   {
-    parentResourceId: '65139981878c0a62f4b644ba',
+    parentResourceId: "65139981878c0a62f4b644ba",
     comment:
       "I hope the training addresses not just gender and ethnicity but also disability inclusion. It's important to consider the full spectrum of diversity.",
-    quotedComment: '',
+    quotedComment: "",
     likesCount: 41,
     dislikesCount: 0,
     reportsCount: 0,
@@ -7609,7 +7608,7 @@ const commentsArray: CommentsArray = [
     isDeleted: false,
   },
   {
-    parentResourceId: '65139981878c0a62f4b644ba',
+    parentResourceId: "65139981878c0a62f4b644ba",
     comment:
       "You're absolutely right. Inclusion encompasses a wide range of dimensions, and the training should reflect that diversity. Let's make sure we cover it all.",
     quotedComment:
@@ -7621,10 +7620,10 @@ const commentsArray: CommentsArray = [
     isDeleted: false,
   },
   {
-    parentResourceId: '65139981878c0a62f4b644ba',
+    parentResourceId: "65139981878c0a62f4b644ba",
     comment:
       "I'm looking forward to practical tips on how to foster diversity and inclusion in our daily work. Let's make this training impactful.",
-    quotedComment: '',
+    quotedComment: "",
     likesCount: 43,
     dislikesCount: 0,
     reportsCount: 0,
@@ -7632,7 +7631,7 @@ const commentsArray: CommentsArray = [
     isDeleted: false,
   },
   {
-    parentResourceId: '65139981878c0a62f4b644ba',
+    parentResourceId: "65139981878c0a62f4b644ba",
     comment:
       "Absolutely, it's not just about theory; it's about applying what we learn. Let's translate this training into actions that create a more inclusive workplace.",
     quotedComment:
@@ -7644,10 +7643,10 @@ const commentsArray: CommentsArray = [
     isDeleted: false,
   },
   {
-    parentResourceId: '65139981878c0a62f4b644ba',
+    parentResourceId: "65139981878c0a62f4b644ba",
     comment:
       "This initiative demonstrates our company's commitment to a diverse and inclusive workforce. Let's embrace it wholeheartedly and be change agents.",
-    quotedComment: '',
+    quotedComment: "",
     likesCount: 47,
     dislikesCount: 0,
     reportsCount: 0,
@@ -7655,7 +7654,7 @@ const commentsArray: CommentsArray = [
     isDeleted: false,
   },
   {
-    parentResourceId: '65139981878c0a62f4b644ba',
+    parentResourceId: "65139981878c0a62f4b644ba",
     comment:
       "Absolutely, let's be proactive in promoting diversity and inclusion in our teams. Our actions can inspire positive change across the organization.",
     quotedComment:
@@ -7667,10 +7666,10 @@ const commentsArray: CommentsArray = [
     isDeleted: false,
   },
   {
-    parentResourceId: '65139981878c0a62f4b644ba',
+    parentResourceId: "65139981878c0a62f4b644ba",
     comment:
       "I hope this training fosters an environment where everyone feels valued and heard, regardless of their background. Let's create a workplace where diversity thrives.",
-    quotedComment: '',
+    quotedComment: "",
     likesCount: 40,
     dislikesCount: 0,
     reportsCount: 0,
@@ -7678,7 +7677,7 @@ const commentsArray: CommentsArray = [
     isDeleted: false,
   },
   {
-    parentResourceId: '65139981878c0a62f4b644ba',
+    parentResourceId: "65139981878c0a62f4b644ba",
     comment:
       "Well said! Let's work together to make our workplace a model of diversity and inclusion that others can learn from and emulate.",
     quotedComment:
@@ -7690,10 +7689,10 @@ const commentsArray: CommentsArray = [
     isDeleted: false,
   },
   {
-    parentResourceId: '65139981878c0a62f4b644ba',
+    parentResourceId: "65139981878c0a62f4b644ba",
     comment:
       "I'm thrilled to see our company prioritizing diversity training. This is an opportunity for us to learn, grow, and build a more inclusive workplace together. Count me in!",
-    quotedComment: '',
+    quotedComment: "",
     likesCount: 42,
     dislikesCount: 0,
     reportsCount: 0,
@@ -7701,7 +7700,7 @@ const commentsArray: CommentsArray = [
     isDeleted: false,
   },
   {
-    parentResourceId: '65139981878c0a62f4b644ba',
+    parentResourceId: "65139981878c0a62f4b644ba",
     comment:
       "Absolutely! Embracing diversity is not just a moral imperative but also a strategic advantage. Let's make the most of this training.",
     quotedComment:
@@ -7713,10 +7712,10 @@ const commentsArray: CommentsArray = [
     isDeleted: false,
   },
   {
-    parentResourceId: '65139981878c0a62f4b644ba',
+    parentResourceId: "65139981878c0a62f4b644ba",
     comment:
-      'I hope the training includes discussions on unconscious bias and microaggressions. These are important topics to address for fostering inclusivity.',
-    quotedComment: '',
+      "I hope the training includes discussions on unconscious bias and microaggressions. These are important topics to address for fostering inclusivity.",
+    quotedComment: "",
     likesCount: 39,
     dislikesCount: 0,
     reportsCount: 0,
@@ -7724,11 +7723,11 @@ const commentsArray: CommentsArray = [
     isDeleted: false,
   },
   {
-    parentResourceId: '65139981878c0a62f4b644ba',
+    parentResourceId: "65139981878c0a62f4b644ba",
     comment:
       "You're absolutely right. Recognizing and addressing bias is a significant step toward creating a more equitable work environment. Let's raise awareness together.",
     quotedComment:
-      'I hope the training includes discussions on unconscious bias and microaggressions. These are important topics to address for fostering inclusivity.',
+      "I hope the training includes discussions on unconscious bias and microaggressions. These are important topics to address for fostering inclusivity.",
     likesCount: 41,
     dislikesCount: 0,
     reportsCount: 0,
@@ -7736,10 +7735,10 @@ const commentsArray: CommentsArray = [
     isDeleted: false,
   },
   {
-    parentResourceId: '65139981878c0a62f4b644ba',
+    parentResourceId: "65139981878c0a62f4b644ba",
     comment:
       "I'm looking forward to workshops where we can share our experiences and learn from each other. It's through these conversations that we can truly grow.",
-    quotedComment: '',
+    quotedComment: "",
     likesCount: 38,
     dislikesCount: 0,
     reportsCount: 0,
@@ -7747,7 +7746,7 @@ const commentsArray: CommentsArray = [
     isDeleted: false,
   },
   {
-    parentResourceId: '65139981878c0a62f4b644ba',
+    parentResourceId: "65139981878c0a62f4b644ba",
     comment:
       "Absolutely, open dialogue is key to understanding and empathizing with others' experiences. Let's create a safe space for these conversations.",
     quotedComment:
@@ -7759,10 +7758,10 @@ const commentsArray: CommentsArray = [
     isDeleted: false,
   },
   {
-    parentResourceId: '65139981878c0a62f4b644ba',
+    parentResourceId: "65139981878c0a62f4b644ba",
     comment:
       "I'm proud to be part of an organization that values diversity and inclusion. Let's actively participate and ensure this training brings positive change.",
-    quotedComment: '',
+    quotedComment: "",
     likesCount: 40,
     dislikesCount: 0,
     reportsCount: 0,
@@ -7770,7 +7769,7 @@ const commentsArray: CommentsArray = [
     isDeleted: false,
   },
   {
-    parentResourceId: '65139981878c0a62f4b644ba',
+    parentResourceId: "65139981878c0a62f4b644ba",
     comment:
       "Indeed, let's not just be passive participants but active advocates for diversity. Our collective efforts can make a significant impact.",
     quotedComment:
@@ -7782,10 +7781,10 @@ const commentsArray: CommentsArray = [
     isDeleted: false,
   },
   {
-    parentResourceId: '65139981878c0a62f4b644ba',
+    parentResourceId: "65139981878c0a62f4b644ba",
     comment:
       "I hope this training leads to tangible actions within our company. Let's apply what we learn to create a more inclusive work environment.",
-    quotedComment: '',
+    quotedComment: "",
     likesCount: 35,
     dislikesCount: 0,
     reportsCount: 0,
@@ -7793,7 +7792,7 @@ const commentsArray: CommentsArray = [
     isDeleted: false,
   },
   {
-    parentResourceId: '65139981878c0a62f4b644ba',
+    parentResourceId: "65139981878c0a62f4b644ba",
     comment:
       "You're absolutely right. Knowledge without action is ineffective. Let's be catalysts for change and actively promote inclusivity.",
     quotedComment:
@@ -7805,10 +7804,10 @@ const commentsArray: CommentsArray = [
     isDeleted: false,
   },
   {
-    parentResourceId: '65139981878c0a62f4b644ba',
+    parentResourceId: "65139981878c0a62f4b644ba",
     comment:
       "I'm genuinely excited about this diversity training initiative. It's a crucial step towards building a more inclusive workplace. Count me in!",
-    quotedComment: '',
+    quotedComment: "",
     likesCount: 50,
     dislikesCount: 0,
     reportsCount: 0,
@@ -7816,7 +7815,7 @@ const commentsArray: CommentsArray = [
     isDeleted: false,
   },
   {
-    parentResourceId: '65139981878c0a62f4b644ba',
+    parentResourceId: "65139981878c0a62f4b644ba",
     comment:
       "Absolutely! Diversity is our strength, and this training will help us harness it to the fullest. Let's embrace it with open hearts and minds.",
     quotedComment:
@@ -7828,10 +7827,10 @@ const commentsArray: CommentsArray = [
     isDeleted: false,
   },
   {
-    parentResourceId: '65139981878c0a62f4b644ba',
+    parentResourceId: "65139981878c0a62f4b644ba",
     comment:
       "I hope the training covers a wide range of perspectives, including those related to gender, race, and disability. Let's leave no one behind.",
-    quotedComment: '',
+    quotedComment: "",
     likesCount: 48,
     dislikesCount: 0,
     reportsCount: 0,
@@ -7839,7 +7838,7 @@ const commentsArray: CommentsArray = [
     isDeleted: false,
   },
   {
-    parentResourceId: '65139981878c0a62f4b644ba',
+    parentResourceId: "65139981878c0a62f4b644ba",
     comment:
       "You're absolutely right. Inclusivity means considering all dimensions of diversity. Let's ensure everyone's voice is heard and valued.",
     quotedComment:
@@ -7851,10 +7850,10 @@ const commentsArray: CommentsArray = [
     isDeleted: false,
   },
   {
-    parentResourceId: '65139981878c0a62f4b644ba',
+    parentResourceId: "65139981878c0a62f4b644ba",
     comment:
       "I'm looking forward to practical exercises that help us apply what we learn in our day-to-day work. Let's make it impactful!",
-    quotedComment: '',
+    quotedComment: "",
     likesCount: 52,
     dislikesCount: 0,
     reportsCount: 0,
@@ -7862,7 +7861,7 @@ const commentsArray: CommentsArray = [
     isDeleted: false,
   },
   {
-    parentResourceId: '65139981878c0a62f4b644ba',
+    parentResourceId: "65139981878c0a62f4b644ba",
     comment:
       "Absolutely! Theory alone won't bring change; it's in our actions that we create an inclusive workplace. Let's commit to making it happen.",
     quotedComment:
@@ -7874,10 +7873,10 @@ const commentsArray: CommentsArray = [
     isDeleted: false,
   },
   {
-    parentResourceId: '65139981878c0a62f4b644ba',
+    parentResourceId: "65139981878c0a62f4b644ba",
     comment:
       "This initiative reflects our company's dedication to diversity and inclusion. Let's actively engage and be the change we want to see.",
-    quotedComment: '',
+    quotedComment: "",
     likesCount: 55,
     dislikesCount: 0,
     reportsCount: 0,
@@ -7885,7 +7884,7 @@ const commentsArray: CommentsArray = [
     isDeleted: false,
   },
   {
-    parentResourceId: '65139981878c0a62f4b644ba',
+    parentResourceId: "65139981878c0a62f4b644ba",
     comment:
       "Indeed! Let's not just talk the talk; let's walk the walk. Our collective efforts can shape a more inclusive future for our workplace.",
     quotedComment:
@@ -7897,10 +7896,10 @@ const commentsArray: CommentsArray = [
     isDeleted: false,
   },
   {
-    parentResourceId: '65139981878c0a62f4b644ba',
+    parentResourceId: "65139981878c0a62f4b644ba",
     comment:
-      'I hope this training fosters an environment where every voice is heard and valued, irrespective of background or identity.',
-    quotedComment: '',
+      "I hope this training fosters an environment where every voice is heard and valued, irrespective of background or identity.",
+    quotedComment: "",
     likesCount: 46,
     dislikesCount: 0,
     reportsCount: 0,
@@ -7908,11 +7907,11 @@ const commentsArray: CommentsArray = [
     isDeleted: false,
   },
   {
-    parentResourceId: '65139981878c0a62f4b644ba',
+    parentResourceId: "65139981878c0a62f4b644ba",
     comment:
       "Well said! Let's work together to make our workplace a shining example of diversity and inclusion. Our actions can inspire others.",
     quotedComment:
-      'I hope this training fosters an environment where every voice is heard and valued, irrespective of background or identity.',
+      "I hope this training fosters an environment where every voice is heard and valued, irrespective of background or identity.",
     likesCount: 51,
     dislikesCount: 0,
     reportsCount: 0,
@@ -7920,10 +7919,10 @@ const commentsArray: CommentsArray = [
     isDeleted: false,
   },
   {
-    parentResourceId: '65139981878c0a62f4b644ba',
+    parentResourceId: "65139981878c0a62f4b644ba",
     comment:
       "I'm excited to see our company taking proactive steps toward embracing diversity. This training is an opportunity for us to learn, unlearn, and grow together.",
-    quotedComment: '',
+    quotedComment: "",
     likesCount: 52,
     dislikesCount: 0,
     reportsCount: 0,
@@ -7931,7 +7930,7 @@ const commentsArray: CommentsArray = [
     isDeleted: false,
   },
   {
-    parentResourceId: '65139981878c0a62f4b644ba',
+    parentResourceId: "65139981878c0a62f4b644ba",
     comment:
       "Absolutely! Diversity is not just a buzzword; it's a strength. Let's make the most of this opportunity to become a more inclusive workplace.",
     quotedComment:
@@ -7943,10 +7942,10 @@ const commentsArray: CommentsArray = [
     isDeleted: false,
   },
   {
-    parentResourceId: '65139981878c0a62f4b644ba',
+    parentResourceId: "65139981878c0a62f4b644ba",
     comment:
       "I hope the training includes discussions on unconscious bias and its impact. It's crucial for us to address these issues openly.",
-    quotedComment: '',
+    quotedComment: "",
     likesCount: 49,
     dislikesCount: 0,
     reportsCount: 0,
@@ -7954,7 +7953,7 @@ const commentsArray: CommentsArray = [
     isDeleted: false,
   },
   {
-    parentResourceId: '65139981878c0a62f4b644ba',
+    parentResourceId: "65139981878c0a62f4b644ba",
     comment:
       "You're right; unconscious bias can affect decision-making and relationships. Let's explore this topic and work toward a fairer workplace.",
     quotedComment:
@@ -7966,10 +7965,10 @@ const commentsArray: CommentsArray = [
     isDeleted: false,
   },
   {
-    parentResourceId: '65139981878c0a62f4b644ba',
+    parentResourceId: "65139981878c0a62f4b644ba",
     comment:
       "I'm looking forward to practical exercises that simulate real-world scenarios. These can help us apply our learning effectively.",
-    quotedComment: '',
+    quotedComment: "",
     likesCount: 50,
     dislikesCount: 0,
     reportsCount: 0,
@@ -7977,7 +7976,7 @@ const commentsArray: CommentsArray = [
     isDeleted: false,
   },
   {
-    parentResourceId: '65139981878c0a62f4b644ba',
+    parentResourceId: "65139981878c0a62f4b644ba",
     comment:
       "Absolutely! Practice is key to mastering new skills. Let's ensure this training is not just theoretical but hands-on.",
     quotedComment:
@@ -7989,10 +7988,10 @@ const commentsArray: CommentsArray = [
     isDeleted: false,
   },
   {
-    parentResourceId: '65139981878c0a62f4b644ba',
+    parentResourceId: "65139981878c0a62f4b644ba",
     comment:
       "Our commitment to diversity and inclusion is what sets us apart. Let's actively engage and make this training a success.",
-    quotedComment: '',
+    quotedComment: "",
     likesCount: 54,
     dislikesCount: 0,
     reportsCount: 0,
@@ -8000,7 +7999,7 @@ const commentsArray: CommentsArray = [
     isDeleted: false,
   },
   {
-    parentResourceId: '65139981878c0a62f4b644ba',
+    parentResourceId: "65139981878c0a62f4b644ba",
     comment:
       "Indeed! Let's lead by example and inspire others to prioritize diversity and inclusion in their workplaces too.",
     quotedComment:
@@ -8012,10 +8011,10 @@ const commentsArray: CommentsArray = [
     isDeleted: false,
   },
   {
-    parentResourceId: '65139981878c0a62f4b644ba',
+    parentResourceId: "65139981878c0a62f4b644ba",
     comment:
       "I hope this training encourages open discussions where everyone's perspective is valued, regardless of their background.",
-    quotedComment: '',
+    quotedComment: "",
     likesCount: 46,
     dislikesCount: 0,
     reportsCount: 0,
@@ -8023,7 +8022,7 @@ const commentsArray: CommentsArray = [
     isDeleted: false,
   },
   {
-    parentResourceId: '65139981878c0a62f4b644ba',
+    parentResourceId: "65139981878c0a62f4b644ba",
     comment:
       "Well said! Let's create an environment where every voice is heard and respected, fostering a culture of inclusivity.",
     quotedComment:
@@ -8035,10 +8034,10 @@ const commentsArray: CommentsArray = [
     isDeleted: false,
   },
   {
-    parentResourceId: '65139981878c0a62f4b644ba',
+    parentResourceId: "65139981878c0a62f4b644ba",
     comment:
-      'I believe diversity is our greatest asset. This training is a fantastic opportunity for us to foster inclusivity, celebrate differences, and build a stronger team.',
-    quotedComment: '',
+      "I believe diversity is our greatest asset. This training is a fantastic opportunity for us to foster inclusivity, celebrate differences, and build a stronger team.",
+    quotedComment: "",
     likesCount: 42,
     dislikesCount: 0,
     reportsCount: 0,
@@ -8046,11 +8045,11 @@ const commentsArray: CommentsArray = [
     isDeleted: false,
   },
   {
-    parentResourceId: '65139981878c0a62f4b644ba',
+    parentResourceId: "65139981878c0a62f4b644ba",
     comment:
       "Absolutely! Let's make the most of this chance to learn from each other and create a workplace where everyone feels valued.",
     quotedComment:
-      'I believe diversity is our greatest asset. This training is a fantastic opportunity for us to foster inclusivity, celebrate differences, and build a stronger team.',
+      "I believe diversity is our greatest asset. This training is a fantastic opportunity for us to foster inclusivity, celebrate differences, and build a stronger team.",
     likesCount: 37,
     dislikesCount: 0,
     reportsCount: 0,
@@ -8058,10 +8057,10 @@ const commentsArray: CommentsArray = [
     isDeleted: false,
   },
   {
-    parentResourceId: '65139981878c0a62f4b644ba',
+    parentResourceId: "65139981878c0a62f4b644ba",
     comment:
       "I hope this training encourages us to challenge our biases and stereotypes. Let's aim for a more open-minded and accepting workplace.",
-    quotedComment: '',
+    quotedComment: "",
     likesCount: 39,
     dislikesCount: 0,
     reportsCount: 0,
@@ -8069,7 +8068,7 @@ const commentsArray: CommentsArray = [
     isDeleted: false,
   },
   {
-    parentResourceId: '65139981878c0a62f4b644ba',
+    parentResourceId: "65139981878c0a62f4b644ba",
     comment:
       "Absolutely! It's crucial that we recognize and address our biases. Let's create a culture of empathy and understanding.",
     quotedComment:
@@ -8081,10 +8080,10 @@ const commentsArray: CommentsArray = [
     isDeleted: false,
   },
   {
-    parentResourceId: '65139981878c0a62f4b644ba',
+    parentResourceId: "65139981878c0a62f4b644ba",
     comment:
       "I'm excited about the practical workshops. Learning by doing will help us internalize the principles of diversity and inclusion.",
-    quotedComment: '',
+    quotedComment: "",
     likesCount: 45,
     dislikesCount: 0,
     reportsCount: 0,
@@ -8092,7 +8091,7 @@ const commentsArray: CommentsArray = [
     isDeleted: false,
   },
   {
-    parentResourceId: '65139981878c0a62f4b644ba',
+    parentResourceId: "65139981878c0a62f4b644ba",
     comment:
       "Indeed! Practical experience is often the most effective way to learn. Let's apply these lessons to our daily interactions.",
     quotedComment:
@@ -8104,10 +8103,10 @@ const commentsArray: CommentsArray = [
     isDeleted: false,
   },
   {
-    parentResourceId: '65139981878c0a62f4b644ba',
+    parentResourceId: "65139981878c0a62f4b644ba",
     comment:
       "Our company's commitment to diversity is commendable. Let's actively participate and ensure this training is a resounding success.",
-    quotedComment: '',
+    quotedComment: "",
     likesCount: 41,
     dislikesCount: 0,
     reportsCount: 0,
@@ -8115,7 +8114,7 @@ const commentsArray: CommentsArray = [
     isDeleted: false,
   },
   {
-    parentResourceId: '65139981878c0a62f4b644ba',
+    parentResourceId: "65139981878c0a62f4b644ba",
     comment:
       "Absolutely! Our actions speak louder than words. Let's be champions of diversity, both within our company and beyond.",
     quotedComment:
@@ -8127,10 +8126,10 @@ const commentsArray: CommentsArray = [
     isDeleted: false,
   },
   {
-    parentResourceId: '65139981878c0a62f4b644ba',
+    parentResourceId: "65139981878c0a62f4b644ba",
     comment:
-      'I hope this training fosters an environment where every voice is heard and respected, regardless of background.',
-    quotedComment: '',
+      "I hope this training fosters an environment where every voice is heard and respected, regardless of background.",
+    quotedComment: "",
     likesCount: 36,
     dislikesCount: 0,
     reportsCount: 0,
@@ -8138,11 +8137,11 @@ const commentsArray: CommentsArray = [
     isDeleted: false,
   },
   {
-    parentResourceId: '65139981878c0a62f4b644ba',
+    parentResourceId: "65139981878c0a62f4b644ba",
     comment:
       "Well said! Let's create an inclusive space where diversity thrives, and everyone feels they belong.",
     quotedComment:
-      'I hope this training fosters an environment where every voice is heard and respected, regardless of background.',
+      "I hope this training fosters an environment where every voice is heard and respected, regardless of background.",
     likesCount: 43,
     dislikesCount: 0,
     reportsCount: 0,
@@ -8151,157 +8150,147 @@ const commentsArray: CommentsArray = [
   },
 ];
 
-type ReturnCommentsWithoutQuotedUsernameReturnType = ReturnType<
-  typeof returnCommentsWithoutQuotedUsername
->;
+// type ReturnCommentsWithoutQuotedUsernameReturnType = ReturnType<
+//   typeof returnCommentsWithoutQuotedUsername
+// >;
 
-type ReturnCommentsWithoutQuotedUsername = (args: {
-  commentsArray: CommentsArray;
-  userDocs: DirectoryUserDocument[];
-}) => ReturnCommentsWithoutQuotedUsernameReturnType;
+// type ReturnCommentsWithoutQuotedUsername = (args: {
+//   commentsArray: CommentsArray;
+//   userDocs: DirectoryUserDocument[];
+// }) => ReturnCommentsWithoutQuotedUsernameReturnType;
 
-function returnCommentsWithoutQuotedUsername({
-  commentsArray,
-  userDocs,
-}: {
-  userDocs: DirectoryUserDocument[];
-  commentsArray: CommentsArray;
-}) {
-  return commentsArray.map((comment) => {
-    const { likesCount, dislikesCount, reportsCount } = comment;
+// // function returnCommentsWithoutQuotedUsername({
+// //   commentsArray,
+// //   userDocs,
+// // }: {
+// //   userDocs: DirectoryUserDocument[];
+// //   commentsArray: CommentsArray;
+// // }) {
+// //   return commentsArray.map((comment) => {
+// //     const { likesCount, dislikesCount, reportsCount } = comment;
 
-    // pick a random user
-    const randomUser = userDocs[Math.floor(Math.random() * userDocs.length)];
+// //     // pick a random user
+// //     const randomUser = userDocs[Math.floor(Math.random() * userDocs.length)];
 
-    // grab their details
-    const {
-      _id,
-      username,
-      roles,
-      firstName,
-      middleName,
-      lastName,
-      jobPosition,
-      department,
-      profilePictureUrl,
-    } = randomUser;
+// //     // grab their details
+// //     const {
+// //       _id,
+// //       username,
+// //       roles,
+// //       firstName,
+// //       middleName,
+// //       lastName,
+// //       jobPosition,
+// //       department,
+// //       profilePictureUrl,
+// //     } = randomUser;
 
-    // shuffle array
-    const shuffledUsers = shuffleArray(userDocs);
+// //     // shuffle array
+// //     const shuffledUsers = shuffleArray(userDocs);
 
-    // pick amount equal to likes count
-    const likedUsers = shuffledUsers.slice(0, likesCount);
-    const likedUserIds = likedUsers.map((user) => user._id);
+// //     // pick amount equal to likes count
+// //     const likedUsers = shuffledUsers.slice(0, likesCount);
+// //     const likedUserIds = likedUsers.map((user) => user._id);
 
-    // remove the liked users from shuffled array
-    const shuffledUsersMinusLikedUsers = shuffledUsers.slice(likesCount);
+// //     // remove the liked users from shuffled array
+// //     const shuffledUsersMinusLikedUsers = shuffledUsers.slice(likesCount);
 
-    // pick amount equal to dislikes count
-    const dislikedUsers = shuffledUsersMinusLikedUsers.slice(0, dislikesCount);
-    const dislikedUserIds = dislikedUsers.map((user) => user._id);
+// //     // pick amount equal to dislikes count
+// //     const dislikedUsers = shuffledUsersMinusLikedUsers.slice(0, dislikesCount);
+// //     const dislikedUserIds = dislikedUsers.map((user) => user._id);
 
-    // remove the disliked users from shuffled array
-    const shuffledUsersMinusLikedAndDislikedUsers =
-      shuffledUsersMinusLikedUsers.slice(dislikesCount);
+// //     // remove the disliked users from shuffled array
+// //     const shuffledUsersMinusLikedAndDislikedUsers =
+// //       shuffledUsersMinusLikedUsers.slice(dislikesCount);
 
-    // pick amount equal to reports count
-    const reportedUsers = shuffledUsersMinusLikedAndDislikedUsers.slice(
-      0,
-      reportsCount
-    );
-    const reportedUserIds = reportedUsers.map((user) => user._id);
+// //     // pick amount equal to reports count
+// //     const reportedUsers = shuffledUsersMinusLikedAndDislikedUsers.slice(0, reportsCount);
+// //     const reportedUserIds = reportedUsers.map((user) => user._id);
 
-    // 10 percent chance of being deleted
-    const isDeleted = Math.random() < 0.1;
+// //     // 10 percent chance of being deleted
+// //     const isDeleted = Math.random() < 0.1;
 
-    // 25 percent chance of being featured if not deleted
-    const isFeatured = isDeleted ? false : Math.random() < 0.25;
+// //     // 25 percent chance of being featured if not deleted
+// //     const isFeatured = isDeleted ? false : Math.random() < 0.25;
 
-    const requestBody = {
-      userId: _id,
-      username,
-      roles,
-      firstName,
-      middleName,
-      lastName,
-      jobPosition,
-      department,
-      profilePictureUrl,
-      parentResourceId: comment.parentResourceId,
-      comment: comment.comment,
-      quotedComment: comment.quotedComment,
+// //     const requestBody = {
+// //       userId: _id,
+// //       username,
+// //       roles,
+// //       firstName,
+// //       middleName,
+// //       lastName,
+// //       jobPosition,
+// //       department,
+// //       profilePictureUrl,
+// //       parentResourceId: comment.parentResourceId,
+// //       comment: comment.comment,
+// //       quotedComment: comment.quotedComment,
 
-      likesCount: comment.likesCount,
-      dislikesCount: comment.dislikesCount,
-      reportsCount: comment.reportsCount,
+// //       likesCount: comment.likesCount,
+// //       dislikesCount: comment.dislikesCount,
+// //       reportsCount: comment.reportsCount,
 
-      isFeatured,
-      isDeleted,
+// //       isFeatured,
+// //       isDeleted,
 
-      likedUserIds,
-      dislikedUserIds,
-      reportedUserIds,
-    };
+// //       likedUserIds,
+// //       dislikedUserIds,
+// //       reportedUserIds,
+// //     };
 
-    return requestBody;
-  });
-}
+// //     return requestBody;
+// //   });
+// // }
 
-type CommentRequestBodyWithoutQuotedUsernames = ReturnType<
-  typeof returnCommentsWithoutQuotedUsername
->;
+// type CommentRequestBodyWithoutQuotedUsernames = ReturnType<
+//   typeof returnCommentsWithoutQuotedUsername
+// >;
 
-// add quotedUsername to the comments
-function returnCommentsRequestBodies({
-  commentsArray,
-  userDocs,
-  returnCommentsWithoutQuotedUsername,
-}: {
-  commentsArray: CommentsArray;
-  userDocs: DirectoryUserDocument[];
-  returnCommentsWithoutQuotedUsername: ReturnCommentsWithoutQuotedUsername;
-}) {
-  const commentRequestBodyWithoutQuotedUsernames =
-    returnCommentsWithoutQuotedUsername({
-      commentsArray,
-      userDocs,
-    });
+// // // add quotedUsername to the comments
+// // function returnCommentsRequestBodies({
+// //   commentsArray,
+// //   userDocs,
+// //   returnCommentsWithoutQuotedUsername,
+// // }: {
+// //   commentsArray: CommentsArray;
+// //   userDocs: DirectoryUserDocument[];
+// //   returnCommentsWithoutQuotedUsername: ReturnCommentsWithoutQuotedUsername;
+// // }) {
+// //   const commentRequestBodyWithoutQuotedUsernames = returnCommentsWithoutQuotedUsername({
+// //     commentsArray,
+// //     userDocs,
+// //   });
 
-  return commentRequestBodyWithoutQuotedUsernames.reduce(
-    (bodiesAcc, comment) => {
-      const { quotedComment } = comment;
-      // if there is no quoted comment, return the comment as is
-      if (!quotedComment.length) {
-        bodiesAcc.push(comment);
-        return bodiesAcc;
-      }
+// //   return commentRequestBodyWithoutQuotedUsernames.reduce((bodiesAcc, comment) => {
+// //     const { quotedComment } = comment;
+// //     // if there is no quoted comment, return the comment as is
+// //     if (!quotedComment.length) {
+// //       bodiesAcc.push(comment);
+// //       return bodiesAcc;
+// //     }
 
-      // find the user who made the quoted comment
-      const quotedUser = commentRequestBodyWithoutQuotedUsernames.find(
-        (comment) => comment.comment === quotedComment
-      );
-      if (!quotedUser)
-        throw new Error(`Quoted user not found: ${quotedComment}`);
+// //     // find the user who made the quoted comment
+// //     const quotedUser = commentRequestBodyWithoutQuotedUsernames.find(
+// //       (comment) => comment.comment === quotedComment
+// //     );
+// //     if (!quotedUser) throw new Error(`Quoted user not found: ${quotedComment}`);
 
-      // grab their username
-      const { username: quotedUsername } = quotedUser;
+// //     // grab their username
+// //     const { username: quotedUsername } = quotedUser;
 
-      // add quotedUsername to the comment
-      const commentWithQuotedUsername = {
-        ...comment,
-        quotedUsername,
-      };
+// //     // add quotedUsername to the comment
+// //     const commentWithQuotedUsername = {
+// //       ...comment,
+// //       quotedUsername,
+// //     };
 
-      bodiesAcc.push(commentWithQuotedUsername);
+// //     bodiesAcc.push(commentWithQuotedUsername);
 
-      return bodiesAcc;
-    },
-    [] as CommentRequestBodyWithoutQuotedUsernames
-  );
-}
+// //     return bodiesAcc;
+// //   }, [] as CommentRequestBodyWithoutQuotedUsernames);
+// // }
 
 export {
   commentsArray,
-  returnCommentsRequestBodies,
-  returnCommentsWithoutQuotedUsername,
 };

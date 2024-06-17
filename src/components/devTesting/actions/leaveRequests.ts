@@ -1,5 +1,4 @@
-import { shuffleArray } from '../../../utils';
-import { DirectoryUserDocument } from '../../directory/types';
+import { shuffleArray } from "../../../utils";
 
 // type LeaveRequestsArray = {
 //   startDate: string;
@@ -794,1011 +793,1011 @@ type LeaveRequestsArray = {
 
 const leaveRequestsArray = [
   {
-    department: 'Executive Management',
-    startDate: '2023-04-10',
-    endDate: '2023-04-12',
-    reasonForLeave: 'Vacation',
+    department: "Executive Management",
+    startDate: "2023-04-10",
+    endDate: "2023-04-12",
+    reasonForLeave: "Vacation",
     delegatedResponsibilities:
-      'During my absence, executive management will collectively oversee strategic decision-making, financial planning, and team leadership. Specific tasks will be divided among department heads.',
+      "During my absence, executive management will collectively oversee strategic decision-making, financial planning, and team leadership. Specific tasks will be divided among department heads.",
     additionalComments:
       "This vacation will provide me with the opportunity to recharge and return with fresh ideas for the company's growth.",
-    requestStatus: 'approved',
+    requestStatus: "approved",
     acknowledgement: true,
   },
   {
-    department: 'Information Technology',
-    startDate: '2023-07-22',
-    endDate: '2023-07-23',
-    reasonForLeave: 'Medical',
+    department: "Information Technology",
+    startDate: "2023-07-22",
+    endDate: "2023-07-23",
+    reasonForLeave: "Medical",
     delegatedResponsibilities:
-      'The IT team will handle my technical responsibilities, including system maintenance, software updates, and user support. Our senior developer will lead the team in my absence.',
+      "The IT team will handle my technical responsibilities, including system maintenance, software updates, and user support. Our senior developer will lead the team in my absence.",
     additionalComments:
-      'My medical leave is for a necessary procedure, and I trust my team to maintain our IT infrastructure efficiently.',
-    requestStatus: 'approved',
+      "My medical leave is for a necessary procedure, and I trust my team to maintain our IT infrastructure efficiently.",
+    requestStatus: "approved",
     acknowledgement: true,
   },
   {
-    department: 'Marketing',
-    startDate: '2023-09-05',
-    endDate: '2023-09-07',
-    reasonForLeave: 'Education',
+    department: "Marketing",
+    startDate: "2023-09-05",
+    endDate: "2023-09-07",
+    reasonForLeave: "Education",
     delegatedResponsibilities:
-      'The marketing department will continue campaigns, market research, and content creation. Our marketing manager will coordinate the team and maintain our brand presence.',
+      "The marketing department will continue campaigns, market research, and content creation. Our marketing manager will coordinate the team and maintain our brand presence.",
     additionalComments:
       "I'm attending an advanced marketing course to bring fresh insights and strategies to our campaigns.",
-    requestStatus: 'approved',
+    requestStatus: "approved",
     acknowledgement: true,
   },
   {
-    department: 'Sales',
-    startDate: '2023-08-15',
-    endDate: '2023-08-15',
-    reasonForLeave: 'Other',
+    department: "Sales",
+    startDate: "2023-08-15",
+    endDate: "2023-08-15",
+    reasonForLeave: "Other",
     delegatedResponsibilities:
       "The sales team will manage client interactions, negotiations, and sales presentations. Our sales manager will oversee the team's performance and goals for the day.",
     additionalComments:
-      'This personal day will allow me to refocus and return with a renewed enthusiasm for achieving our sales targets.',
-    requestStatus: 'approved',
+      "This personal day will allow me to refocus and return with a renewed enthusiasm for achieving our sales targets.",
+    requestStatus: "approved",
     acknowledgement: true,
   },
   {
-    department: 'Logistics and Inventory',
-    startDate: '2023-11-25',
-    endDate: '2023-11-25',
-    reasonForLeave: 'Religious',
+    department: "Logistics and Inventory",
+    startDate: "2023-11-25",
+    endDate: "2023-11-25",
+    reasonForLeave: "Religious",
     delegatedResponsibilities:
-      'Logistics and inventory control will be handled by our logistics team. They will manage inventory levels, shipments, and distribution routes in accordance with standard procedures.',
+      "Logistics and inventory control will be handled by our logistics team. They will manage inventory levels, shipments, and distribution routes in accordance with standard procedures.",
     additionalComments:
-      'This religious observance day is essential for me, and I trust our team to maintain smooth operations.',
-    requestStatus: 'approved',
+      "This religious observance day is essential for me, and I trust our team to maintain smooth operations.",
+    requestStatus: "approved",
     acknowledgement: true,
   },
   {
-    department: 'Customer Service',
-    startDate: '2023-06-10',
-    endDate: '2023-06-12',
-    reasonForLeave: 'Vacation',
+    department: "Customer Service",
+    startDate: "2023-06-10",
+    endDate: "2023-06-12",
+    reasonForLeave: "Vacation",
     delegatedResponsibilities:
-      'Customer service representatives will handle inquiries, resolve issues, and provide support to clients. The customer service manager will coordinate and ensure high-quality service delivery.',
+      "Customer service representatives will handle inquiries, resolve issues, and provide support to clients. The customer service manager will coordinate and ensure high-quality service delivery.",
     additionalComments:
       "This vacation will allow me to relax, and I'm confident in our team's ability to provide excellent customer support.",
-    requestStatus: 'approved',
+    requestStatus: "approved",
     acknowledgement: true,
   },
   {
-    department: 'Field Service Technicians',
-    startDate: '2023-08-16',
-    endDate: '2023-08-17',
-    reasonForLeave: 'Bereavement',
+    department: "Field Service Technicians",
+    startDate: "2023-08-16",
+    endDate: "2023-08-17",
+    reasonForLeave: "Bereavement",
     delegatedResponsibilities:
-      'Field service technicians will take over equipment installations, repairs, and maintenance tasks. The field service manager will ensure timely service delivery and customer satisfaction.',
+      "Field service technicians will take over equipment installations, repairs, and maintenance tasks. The field service manager will ensure timely service delivery and customer satisfaction.",
     additionalComments:
-      'I appreciate the support as I attend a funeral, and I trust our team to uphold our service standards.',
-    requestStatus: 'approved',
+      "I appreciate the support as I attend a funeral, and I trust our team to uphold our service standards.",
+    requestStatus: "approved",
     acknowledgement: true,
   },
   {
-    department: 'Accounting',
-    startDate: '2023-11-02',
-    endDate: '2023-11-02',
-    reasonForLeave: 'Jury Duty',
+    department: "Accounting",
+    startDate: "2023-11-02",
+    endDate: "2023-11-02",
+    reasonForLeave: "Jury Duty",
     delegatedResponsibilities:
-      'The accounting team will manage financial transactions, budgeting, and financial reporting for the day. Our chief accountant will lead the team and ensure compliance with accounting standards.',
+      "The accounting team will manage financial transactions, budgeting, and financial reporting for the day. Our chief accountant will lead the team and ensure compliance with accounting standards.",
     additionalComments:
-      'I consider serving on a jury as part of my civic duty, and I trust our team to maintain financial integrity in my absence.',
-    requestStatus: 'approved',
+      "I consider serving on a jury as part of my civic duty, and I trust our team to maintain financial integrity in my absence.",
+    requestStatus: "approved",
     acknowledgement: true,
   },
   {
-    department: 'Maintenance',
-    startDate: '2023-06-15',
-    endDate: '2023-06-15',
-    reasonForLeave: 'Military',
+    department: "Maintenance",
+    startDate: "2023-06-15",
+    endDate: "2023-06-15",
+    reasonForLeave: "Military",
     delegatedResponsibilities:
-      'Maintenance tasks, including equipment inspections and repairs, will be managed by our maintenance team. Our maintenance supervisor will coordinate and ensure the smooth functioning of our facilities.',
+      "Maintenance tasks, including equipment inspections and repairs, will be managed by our maintenance team. Our maintenance supervisor will coordinate and ensure the smooth functioning of our facilities.",
     additionalComments:
       "This military training is essential for my reserve service commitment, and I'm confident in our team's ability to maintain our infrastructure.",
-    requestStatus: 'approved',
+    requestStatus: "approved",
     acknowledgement: true,
   },
   {
-    department: 'Office Administration',
-    startDate: '2023-04-05',
-    endDate: '2023-04-06',
-    reasonForLeave: 'Other',
+    department: "Office Administration",
+    startDate: "2023-04-05",
+    endDate: "2023-04-06",
+    reasonForLeave: "Other",
     delegatedResponsibilities:
-      'Office administrative tasks, such as document management, scheduling, and communication, will be handled by our administrative team. Our administrative lead will ensure smooth operations during my brief absence.',
+      "Office administrative tasks, such as document management, scheduling, and communication, will be handled by our administrative team. Our administrative lead will ensure smooth operations during my brief absence.",
     additionalComments:
       "I'm looking forward to working on a personal coding project during this time off to enhance our department's processes and efficiency.",
-    requestStatus: 'approved',
+    requestStatus: "approved",
     acknowledgement: true,
   },
   {
-    department: 'Sales',
-    startDate: '2023-07-15',
-    endDate: '2023-07-20',
-    reasonForLeave: 'Vacation',
+    department: "Sales",
+    startDate: "2023-07-15",
+    endDate: "2023-07-20",
+    reasonForLeave: "Vacation",
     delegatedResponsibilities:
       "The sales team will manage client meetings, negotiations, and sales presentations. Our sales manager will oversee the team's performance and maintain sales targets.",
     additionalComments:
-      'I will be on vacation to recharge and spend quality time with my family. I trust the team to handle client relationships effectively.',
-    requestStatus: 'approved',
+      "I will be on vacation to recharge and spend quality time with my family. I trust the team to handle client relationships effectively.",
+    requestStatus: "approved",
     acknowledgement: true,
   },
   {
-    department: 'Marketing',
-    startDate: '2023-08-05',
-    endDate: '2023-08-05',
-    reasonForLeave: 'Other',
+    department: "Marketing",
+    startDate: "2023-08-05",
+    endDate: "2023-08-05",
+    reasonForLeave: "Other",
     delegatedResponsibilities:
-      'Marketing campaigns and social media management will continue as usual. Our marketing manager will lead the team and ensure campaign success.',
+      "Marketing campaigns and social media management will continue as usual. Our marketing manager will lead the team and ensure campaign success.",
     additionalComments:
-      'I have a personal commitment that requires my presence. The marketing team is well-prepared to maintain our online presence.',
-    requestStatus: 'approved',
+      "I have a personal commitment that requires my presence. The marketing team is well-prepared to maintain our online presence.",
+    requestStatus: "approved",
     acknowledgement: true,
   },
   {
-    department: 'Information Technology',
-    startDate: '2023-09-10',
-    endDate: '2023-09-10',
-    reasonForLeave: 'Religious',
+    department: "Information Technology",
+    startDate: "2023-09-10",
+    endDate: "2023-09-10",
+    reasonForLeave: "Religious",
     delegatedResponsibilities:
-      'The IT team will handle system maintenance, software updates, and user support. Our senior developer will lead the team during my absence.',
+      "The IT team will handle system maintenance, software updates, and user support. Our senior developer will lead the team during my absence.",
     additionalComments:
       "I'll be observing an important religious holiday and trust my team to keep our systems running smoothly.",
-    requestStatus: 'approved',
+    requestStatus: "approved",
     acknowledgement: true,
   },
   {
-    department: 'Human Resources',
-    startDate: '2023-10-15',
-    endDate: '2023-10-18',
-    reasonForLeave: 'Medical',
+    department: "Human Resources",
+    startDate: "2023-10-15",
+    endDate: "2023-10-18",
+    reasonForLeave: "Medical",
     delegatedResponsibilities:
-      'HR operations will be managed by our HR specialists. They will handle employee inquiries, recruitment, and onboarding processes.',
+      "HR operations will be managed by our HR specialists. They will handle employee inquiries, recruitment, and onboarding processes.",
     additionalComments:
-      'I have a scheduled medical procedure that requires my attention. Our HR team is well-equipped to manage daily operations.',
-    requestStatus: 'approved',
+      "I have a scheduled medical procedure that requires my attention. Our HR team is well-equipped to manage daily operations.",
+    requestStatus: "approved",
     acknowledgement: true,
   },
   {
-    department: 'Accounting',
-    startDate: '2023-11-20',
-    endDate: '2023-11-21',
-    reasonForLeave: 'Education',
+    department: "Accounting",
+    startDate: "2023-11-20",
+    endDate: "2023-11-21",
+    reasonForLeave: "Education",
     delegatedResponsibilities:
-      'Financial transactions and budgeting will be overseen by our chief accountant. The accounting team will ensure compliance with financial regulations.',
+      "Financial transactions and budgeting will be overseen by our chief accountant. The accounting team will ensure compliance with financial regulations.",
     additionalComments:
       "I'll be attending a specialized financial training program to enhance our financial strategies and processes.",
-    requestStatus: 'approved',
+    requestStatus: "approved",
     acknowledgement: true,
   },
   {
-    department: 'Maintenance',
-    startDate: '2023-12-05',
-    endDate: '2023-12-05',
-    reasonForLeave: 'Military',
+    department: "Maintenance",
+    startDate: "2023-12-05",
+    endDate: "2023-12-05",
+    reasonForLeave: "Military",
     delegatedResponsibilities:
-      'Maintenance tasks, including equipment inspections and repairs, will be managed by our skilled technicians. Our maintenance supervisor will ensure uninterrupted facility operations.',
+      "Maintenance tasks, including equipment inspections and repairs, will be managed by our skilled technicians. Our maintenance supervisor will ensure uninterrupted facility operations.",
     additionalComments:
       "I have a military training obligation to fulfill, and I'm confident in our maintenance team's capabilities.",
-    requestStatus: 'approved',
+    requestStatus: "approved",
     acknowledgement: true,
   },
   {
-    department: 'Customer Service',
-    startDate: '2023-07-01',
-    endDate: '2023-07-02',
-    reasonForLeave: 'Vacation',
+    department: "Customer Service",
+    startDate: "2023-07-01",
+    endDate: "2023-07-02",
+    reasonForLeave: "Vacation",
     delegatedResponsibilities:
-      'Customer service representatives will handle customer inquiries, resolve issues, and provide support. Our team lead will oversee operations.',
+      "Customer service representatives will handle customer inquiries, resolve issues, and provide support. Our team lead will oversee operations.",
     additionalComments:
       "I'm taking a short vacation to relax and return with a refreshed mindset to provide excellent customer service.",
-    requestStatus: 'approved',
+    requestStatus: "approved",
     acknowledgement: true,
   },
   {
-    department: 'Repair Technicians',
-    startDate: '2023-10-01',
-    endDate: '2023-10-01',
-    reasonForLeave: 'Other',
+    department: "Repair Technicians",
+    startDate: "2023-10-01",
+    endDate: "2023-10-01",
+    reasonForLeave: "Other",
     delegatedResponsibilities:
-      'Repair technicians will handle equipment repair and maintenance tasks. Our lead technician will ensure prompt service delivery.',
+      "Repair technicians will handle equipment repair and maintenance tasks. Our lead technician will ensure prompt service delivery.",
     additionalComments:
       "I have a personal commitment, and I'm confident in our team's ability to maintain our equipment.",
-    requestStatus: 'approved',
+    requestStatus: "approved",
     acknowledgement: true,
   },
   {
-    department: 'Logistics and Inventory',
-    startDate: '2023-05-15',
-    endDate: '2023-05-18',
-    reasonForLeave: 'Other',
+    department: "Logistics and Inventory",
+    startDate: "2023-05-15",
+    endDate: "2023-05-18",
+    reasonForLeave: "Other",
     delegatedResponsibilities:
-      'Logistics and inventory management will be handled by our logistics team. They will manage shipments, inventory levels, and distribution routes.',
+      "Logistics and inventory management will be handled by our logistics team. They will manage shipments, inventory levels, and distribution routes.",
     additionalComments:
       "I'll be working on a special project during this time to optimize our logistics operations. The team is well-prepared to manage day-to-day tasks.",
-    requestStatus: 'approved',
+    requestStatus: "approved",
     acknowledgement: true,
   },
   {
-    department: 'Office Administration',
-    startDate: '2023-09-01',
-    endDate: '2023-09-05',
-    reasonForLeave: 'Vacation',
+    department: "Office Administration",
+    startDate: "2023-09-01",
+    endDate: "2023-09-05",
+    reasonForLeave: "Vacation",
     delegatedResponsibilities:
-      'Administrative tasks such as document management, scheduling, and communication will be managed by our administrative team. Our lead administrator will ensure smooth operations.',
+      "Administrative tasks such as document management, scheduling, and communication will be managed by our administrative team. Our lead administrator will ensure smooth operations.",
     additionalComments:
       "I'm taking a well-deserved vacation to recharge and return with renewed energy to support the office's administrative needs.",
-    requestStatus: 'approved',
+    requestStatus: "approved",
     acknowledgement: true,
   },
   {
-    department: 'Marketing',
-    startDate: '2023-07-15',
-    endDate: '2023-07-20',
-    reasonForLeave: 'Vacation',
+    department: "Marketing",
+    startDate: "2023-07-15",
+    endDate: "2023-07-20",
+    reasonForLeave: "Vacation",
     delegatedResponsibilities:
-      'During my absence, the marketing team will be responsible for executing our ongoing marketing campaigns, managing our social media accounts, and analyzing campaign performance data. The team lead will oversee day-to-day operations.',
+      "During my absence, the marketing team will be responsible for executing our ongoing marketing campaigns, managing our social media accounts, and analyzing campaign performance data. The team lead will oversee day-to-day operations.",
     additionalComments:
       "I am taking a well-deserved vacation to recharge and spend quality time with family. I trust the marketing team to maintain our brand's presence effectively.",
-    requestStatus: 'approved',
+    requestStatus: "approved",
     acknowledgement: true,
   },
   {
-    department: 'Information Technology',
-    startDate: '2023-08-05',
-    endDate: '2023-08-12',
-    reasonForLeave: 'Education',
+    department: "Information Technology",
+    startDate: "2023-08-05",
+    endDate: "2023-08-12",
+    reasonForLeave: "Education",
     delegatedResponsibilities:
       "While I'm away, the IT department will handle routine system maintenance tasks, provide technical support to employees, and monitor the network infrastructure. Our senior IT specialist will lead the team and ensure system reliability.",
     additionalComments:
       "I'm attending an advanced training program to enhance our IT infrastructure. I'm confident that our IT team can maintain our systems efficiently during my absence.",
-    requestStatus: 'approved',
+    requestStatus: "approved",
     acknowledgement: true,
   },
   {
-    department: 'Customer Service',
-    startDate: '2023-09-10',
-    endDate: '2023-09-15',
-    reasonForLeave: 'Vacation',
+    department: "Customer Service",
+    startDate: "2023-09-10",
+    endDate: "2023-09-15",
+    reasonForLeave: "Vacation",
     delegatedResponsibilities:
-      'During my vacation, the customer service team will handle customer inquiries, resolve issues, and provide top-notch support. The team lead will oversee daily operations and ensure customer satisfaction.',
+      "During my vacation, the customer service team will handle customer inquiries, resolve issues, and provide top-notch support. The team lead will oversee daily operations and ensure customer satisfaction.",
     additionalComments:
       "I'm taking a short break to recharge and come back with a fresh perspective to serve our valued customers better. Our team is well-prepared to maintain our service quality.",
-    requestStatus: 'approved',
+    requestStatus: "approved",
     acknowledgement: true,
   },
   {
-    department: 'Sales',
-    startDate: '2023-10-15',
-    endDate: '2023-10-16',
-    reasonForLeave: 'Medical',
+    department: "Sales",
+    startDate: "2023-10-15",
+    endDate: "2023-10-16",
+    reasonForLeave: "Medical",
     delegatedResponsibilities:
-      'In my absence, the sales team will continue client meetings, negotiations, and sales presentations. The sales manager will lead the team, ensuring that targets are met.',
+      "In my absence, the sales team will continue client meetings, negotiations, and sales presentations. The sales manager will lead the team, ensuring that targets are met.",
     additionalComments:
-      'I have a medical appointment that I need to attend to. I trust the sales team to maintain our client relationships and achieve our sales goals.',
-    requestStatus: 'approved',
+      "I have a medical appointment that I need to attend to. I trust the sales team to maintain our client relationships and achieve our sales goals.",
+    requestStatus: "approved",
     acknowledgement: true,
   },
   {
-    department: 'Maintenance',
-    startDate: '2023-11-20',
-    endDate: '2023-11-25',
-    reasonForLeave: 'Vacation',
+    department: "Maintenance",
+    startDate: "2023-11-20",
+    endDate: "2023-11-25",
+    reasonForLeave: "Vacation",
     delegatedResponsibilities:
-      'During my vacation, the maintenance team will handle equipment inspections, repairs, and facility maintenance. Our maintenance supervisor will ensure that everything runs smoothly.',
+      "During my vacation, the maintenance team will handle equipment inspections, repairs, and facility maintenance. Our maintenance supervisor will ensure that everything runs smoothly.",
     additionalComments:
       "I'll be on vacation to recharge and return with renewed energy to oversee our maintenance operations. I have full confidence in our maintenance team's capabilities.",
-    requestStatus: 'approved',
+    requestStatus: "approved",
     acknowledgement: true,
   },
   {
-    department: 'Accounting',
-    startDate: '2023-12-05',
-    endDate: '2023-12-12',
-    reasonForLeave: 'Education',
+    department: "Accounting",
+    startDate: "2023-12-05",
+    endDate: "2023-12-12",
+    reasonForLeave: "Education",
     delegatedResponsibilities:
       "While I'm attending a financial training program, the accounting team will manage financial transactions, budgeting, and ensure compliance with financial regulations. Our chief accountant will lead the team.",
     additionalComments:
       "I'm participating in an educational program to enhance our financial strategies. I'm confident that our accounting team will maintain our financial integrity.",
-    requestStatus: 'approved',
+    requestStatus: "approved",
     acknowledgement: true,
   },
   {
-    department: 'Logistics and Inventory',
-    startDate: '2023-07-01',
-    endDate: '2023-07-05',
-    reasonForLeave: 'Vacation',
+    department: "Logistics and Inventory",
+    startDate: "2023-07-01",
+    endDate: "2023-07-05",
+    reasonForLeave: "Vacation",
     delegatedResponsibilities:
-      'During my vacation, the logistics and inventory team will manage shipments, inventory levels, and distribution routes. Our logistics manager will ensure that operations run smoothly.',
+      "During my vacation, the logistics and inventory team will manage shipments, inventory levels, and distribution routes. Our logistics manager will ensure that operations run smoothly.",
     additionalComments:
       "I'm taking a short vacation to recharge and come back with fresh ideas to optimize our logistics and inventory processes. I trust the team to handle day-to-day tasks effectively.",
-    requestStatus: 'approved',
+    requestStatus: "approved",
     acknowledgement: true,
   },
   {
-    department: 'Human Resources',
-    startDate: '2023-10-01',
-    endDate: '2023-10-02',
-    reasonForLeave: 'Other',
+    department: "Human Resources",
+    startDate: "2023-10-01",
+    endDate: "2023-10-02",
+    reasonForLeave: "Other",
     delegatedResponsibilities:
-      'In my absence, the HR team will handle employee inquiries, recruitment, and onboarding processes. Our HR specialists will ensure a seamless HR operation.',
+      "In my absence, the HR team will handle employee inquiries, recruitment, and onboarding processes. Our HR specialists will ensure a seamless HR operation.",
     additionalComments:
       "I have personal commitments to attend to, but I'm confident in our HR team's capabilities to maintain our HR processes effectively.",
-    requestStatus: 'approved',
+    requestStatus: "approved",
     acknowledgement: true,
   },
   {
-    department: 'Office Administration',
-    startDate: '2023-05-15',
-    endDate: '2023-05-18',
-    reasonForLeave: 'Other',
+    department: "Office Administration",
+    startDate: "2023-05-15",
+    endDate: "2023-05-18",
+    reasonForLeave: "Other",
     delegatedResponsibilities:
-      'Administrative tasks such as document management, scheduling, and communication will be managed by our administrative team. Our lead administrator will ensure smooth operations.',
+      "Administrative tasks such as document management, scheduling, and communication will be managed by our administrative team. Our lead administrator will ensure smooth operations.",
     additionalComments:
       "I'll be working on a special project during this time to optimize our administrative processes. The team is well-prepared to manage day-to-day tasks.",
-    requestStatus: 'approved',
+    requestStatus: "approved",
     acknowledgement: true,
   },
   {
-    department: 'Executive Management',
-    startDate: '2023-10-01',
-    endDate: '2023-10-10',
-    reasonForLeave: 'Vacation',
+    department: "Executive Management",
+    startDate: "2023-10-01",
+    endDate: "2023-10-10",
+    reasonForLeave: "Vacation",
     delegatedResponsibilities:
-      'During my vacation, the executive management team will oversee strategic decision-making, budget planning, and leadership of the organization. Each member will take on additional responsibilities.',
+      "During my vacation, the executive management team will oversee strategic decision-making, budget planning, and leadership of the organization. Each member will take on additional responsibilities.",
     additionalComments:
       "I'm taking a well-deserved vacation to recharge and trust my capable team to continue driving our organization's success.",
-    requestStatus: 'approved',
+    requestStatus: "approved",
     acknowledgement: true,
   },
   {
-    department: 'Information Technology',
-    startDate: '2023-11-15',
-    endDate: '2023-11-20',
-    reasonForLeave: 'Education',
+    department: "Information Technology",
+    startDate: "2023-11-15",
+    endDate: "2023-11-20",
+    reasonForLeave: "Education",
     delegatedResponsibilities:
-      'While I attend an advanced IT training program, the IT department will manage daily operations, troubleshoot technical issues, and ensure data security. The team lead will lead efforts.',
+      "While I attend an advanced IT training program, the IT department will manage daily operations, troubleshoot technical issues, and ensure data security. The team lead will lead efforts.",
     additionalComments:
       "I'm investing in our IT team's growth and development. I'm confident they will excel in maintaining our IT infrastructure.",
-    requestStatus: 'approved',
+    requestStatus: "approved",
     acknowledgement: true,
   },
   {
-    department: 'Sales',
-    startDate: '2023-12-01',
-    endDate: '2023-12-05',
-    reasonForLeave: 'Vacation',
+    department: "Sales",
+    startDate: "2023-12-01",
+    endDate: "2023-12-05",
+    reasonForLeave: "Vacation",
     delegatedResponsibilities:
-      'During my vacation, the sales team will handle client meetings, negotiations, and sales targets. The sales manager will provide guidance and leadership.',
+      "During my vacation, the sales team will handle client meetings, negotiations, and sales targets. The sales manager will provide guidance and leadership.",
     additionalComments:
       "I'm taking a break to recharge and trust the sales team to maintain strong client relationships and achieve our sales goals.",
-    requestStatus: 'approved',
+    requestStatus: "approved",
     acknowledgement: true,
   },
   {
-    department: 'Customer Service',
-    startDate: '2023-08-15',
-    endDate: '2023-08-20',
-    reasonForLeave: 'Medical',
+    department: "Customer Service",
+    startDate: "2023-08-15",
+    endDate: "2023-08-20",
+    reasonForLeave: "Medical",
     delegatedResponsibilities:
-      'In my absence, the customer service team will manage customer inquiries, issue resolution, and maintain service quality. The team lead will oversee daily operations.',
+      "In my absence, the customer service team will manage customer inquiries, issue resolution, and maintain service quality. The team lead will oversee daily operations.",
     additionalComments:
       "I have a medical condition to attend to, but I'm confident in our customer service team's ability to provide excellent support.",
-    requestStatus: 'approved',
+    requestStatus: "approved",
     acknowledgement: true,
   },
   {
-    department: 'Marketing',
-    startDate: '2023-09-01',
-    endDate: '2023-09-10',
-    reasonForLeave: 'Vacation',
+    department: "Marketing",
+    startDate: "2023-09-01",
+    endDate: "2023-09-10",
+    reasonForLeave: "Vacation",
     delegatedResponsibilities:
-      'During my vacation, the marketing team will handle campaign planning, social media management, and market analysis. The marketing manager will lead the team.',
+      "During my vacation, the marketing team will handle campaign planning, social media management, and market analysis. The marketing manager will lead the team.",
     additionalComments:
       "I'm taking a break to recharge creatively and trust our marketing team to continue promoting our brand effectively.",
-    requestStatus: 'approved',
+    requestStatus: "approved",
     acknowledgement: true,
   },
   {
-    department: 'Maintenance',
-    startDate: '2023-07-15',
-    endDate: '2023-07-20',
-    reasonForLeave: 'Vacation',
+    department: "Maintenance",
+    startDate: "2023-07-15",
+    endDate: "2023-07-20",
+    reasonForLeave: "Vacation",
     delegatedResponsibilities:
-      'During my vacation, the maintenance team will conduct equipment inspections, repairs, and facility maintenance. The lead technician will oversee daily tasks.',
+      "During my vacation, the maintenance team will conduct equipment inspections, repairs, and facility maintenance. The lead technician will oversee daily tasks.",
     additionalComments:
       "I'm taking a vacation to return with a fresh perspective on optimizing our maintenance processes. I trust our maintenance team to ensure everything runs smoothly.",
-    requestStatus: 'approved',
+    requestStatus: "approved",
     acknowledgement: true,
   },
   {
-    department: 'Office Administration',
-    startDate: '2023-05-01',
-    endDate: '2023-05-05',
-    reasonForLeave: 'Education',
+    department: "Office Administration",
+    startDate: "2023-05-01",
+    endDate: "2023-05-05",
+    reasonForLeave: "Education",
     delegatedResponsibilities:
-      'While I attend an administrative efficiency workshop, the office administration team will manage document organization, scheduling, and communication. Our lead administrator will coordinate.',
+      "While I attend an administrative efficiency workshop, the office administration team will manage document organization, scheduling, and communication. Our lead administrator will coordinate.",
     additionalComments:
       "I'm focused on improving our administrative processes and trust our team to maintain efficiency during my absence.",
-    requestStatus: 'approved',
+    requestStatus: "approved",
     acknowledgement: true,
   },
   {
-    department: 'Repair Technicians',
-    startDate: '2023-06-10',
-    endDate: '2023-06-15',
-    reasonForLeave: 'Vacation',
+    department: "Repair Technicians",
+    startDate: "2023-06-10",
+    endDate: "2023-06-15",
+    reasonForLeave: "Vacation",
     delegatedResponsibilities:
-      'During my vacation, the repair technicians will handle equipment repairs, maintenance, and technical support. The senior technician will lead the team.',
+      "During my vacation, the repair technicians will handle equipment repairs, maintenance, and technical support. The senior technician will lead the team.",
     additionalComments:
       "I'm taking a break to recharge, and I have full confidence in our repair technicians' expertise to ensure our equipment runs smoothly.",
-    requestStatus: 'approved',
+    requestStatus: "approved",
     acknowledgement: true,
   },
   {
-    department: 'Human Resources',
-    startDate: '2023-04-20',
-    endDate: '2023-04-25',
-    reasonForLeave: 'Vacation',
+    department: "Human Resources",
+    startDate: "2023-04-20",
+    endDate: "2023-04-25",
+    reasonForLeave: "Vacation",
     delegatedResponsibilities:
-      'During my vacation, the HR team will handle recruitment, onboarding, and employee relations. The HR manager will lead HR operations.',
+      "During my vacation, the HR team will handle recruitment, onboarding, and employee relations. The HR manager will lead HR operations.",
     additionalComments:
       "I'm taking a well-deserved break, and I trust our HR team to continue nurturing our talented workforce.",
-    requestStatus: 'approved',
+    requestStatus: "approved",
     acknowledgement: true,
   },
   {
-    department: 'Executive Management',
-    startDate: '2023-10-01',
-    endDate: '2023-10-10',
-    reasonForLeave: 'Vacation',
+    department: "Executive Management",
+    startDate: "2023-10-01",
+    endDate: "2023-10-10",
+    reasonForLeave: "Vacation",
     delegatedResponsibilities:
-      'During my vacation, the executive management team will oversee strategic decision-making, budget planning, and leadership of the organization. Each member will take on additional responsibilities to ensure a smooth workflow.',
+      "During my vacation, the executive management team will oversee strategic decision-making, budget planning, and leadership of the organization. Each member will take on additional responsibilities to ensure a smooth workflow.",
     additionalComments:
       "I'm taking a well-deserved vacation to recharge and trust my capable team to continue driving our organization's success during my absence. I have full confidence in their abilities.",
-    requestStatus: 'approved',
+    requestStatus: "approved",
     acknowledgement: true,
   },
   {
-    department: 'Information Technology',
-    startDate: '2023-11-15',
-    endDate: '2023-11-20',
-    reasonForLeave: 'Education',
+    department: "Information Technology",
+    startDate: "2023-11-15",
+    endDate: "2023-11-20",
+    reasonForLeave: "Education",
     delegatedResponsibilities:
-      'While I attend an advanced IT training program, the IT department will manage daily operations, troubleshoot technical issues, and ensure data security. The team lead will lead efforts to maintain system integrity and support our colleagues.',
+      "While I attend an advanced IT training program, the IT department will manage daily operations, troubleshoot technical issues, and ensure data security. The team lead will lead efforts to maintain system integrity and support our colleagues.",
     additionalComments:
       "I'm investing in our IT team's growth and development. I'm confident they will excel in maintaining our IT infrastructure and providing top-notch support to our colleagues.",
-    requestStatus: 'approved',
+    requestStatus: "approved",
     acknowledgement: true,
   },
   {
-    department: 'Sales',
-    startDate: '2023-12-01',
-    endDate: '2023-12-05',
-    reasonForLeave: 'Vacation',
+    department: "Sales",
+    startDate: "2023-12-01",
+    endDate: "2023-12-05",
+    reasonForLeave: "Vacation",
     delegatedResponsibilities:
       "During my vacation, the sales team will handle client meetings, negotiations, and sales targets. The sales manager will provide guidance and leadership to ensure our clients' needs are met effectively.",
     additionalComments:
       "I'm taking a break to recharge and trust the sales team to maintain strong client relationships and achieve our sales goals. They have a solid plan in place.",
-    requestStatus: 'approved',
+    requestStatus: "approved",
     acknowledgement: true,
   },
   {
-    department: 'Customer Service',
-    startDate: '2023-08-15',
-    endDate: '2023-08-20',
-    reasonForLeave: 'Medical',
+    department: "Customer Service",
+    startDate: "2023-08-15",
+    endDate: "2023-08-20",
+    reasonForLeave: "Medical",
     delegatedResponsibilities:
-      'In my absence, the customer service team will manage customer inquiries, issue resolution, and maintain service quality. The team lead will oversee daily operations and ensure that our customers receive excellent support.',
+      "In my absence, the customer service team will manage customer inquiries, issue resolution, and maintain service quality. The team lead will oversee daily operations and ensure that our customers receive excellent support.",
     additionalComments:
       "I have a medical condition to attend to, but I'm confident in our customer service team's ability to provide excellent support. Our customers are in good hands.",
-    requestStatus: 'approved',
+    requestStatus: "approved",
     acknowledgement: true,
   },
   {
-    department: 'Marketing',
-    startDate: '2023-09-01',
-    endDate: '2023-09-10',
-    reasonForLeave: 'Vacation',
+    department: "Marketing",
+    startDate: "2023-09-01",
+    endDate: "2023-09-10",
+    reasonForLeave: "Vacation",
     delegatedResponsibilities:
-      'During my vacation, the marketing team will handle campaign planning, social media management, and market analysis. The marketing manager will lead the team in crafting compelling strategies to promote our brand.',
+      "During my vacation, the marketing team will handle campaign planning, social media management, and market analysis. The marketing manager will lead the team in crafting compelling strategies to promote our brand.",
     additionalComments:
       "I'm taking a break to recharge creatively and trust our marketing team to continue promoting our brand effectively. They have innovative ideas ready to go.",
-    requestStatus: 'approved',
+    requestStatus: "approved",
     acknowledgement: true,
   },
   {
-    department: 'Maintenance',
-    startDate: '2023-07-15',
-    endDate: '2023-07-20',
-    reasonForLeave: 'Vacation',
+    department: "Maintenance",
+    startDate: "2023-07-15",
+    endDate: "2023-07-20",
+    reasonForLeave: "Vacation",
     delegatedResponsibilities:
-      'During my vacation, the maintenance team will conduct equipment inspections, repairs, and facility maintenance. The lead technician will oversee daily tasks to ensure that our facilities and equipment are in top condition.',
+      "During my vacation, the maintenance team will conduct equipment inspections, repairs, and facility maintenance. The lead technician will oversee daily tasks to ensure that our facilities and equipment are in top condition.",
     additionalComments:
       "I'm taking a vacation to return with a fresh perspective on optimizing our maintenance processes. I trust our maintenance team to ensure everything runs smoothly and safely.",
-    requestStatus: 'approved',
+    requestStatus: "approved",
     acknowledgement: true,
   },
   {
-    department: 'Office Administration',
-    startDate: '2023-05-01',
-    endDate: '2023-05-05',
-    reasonForLeave: 'Education',
+    department: "Office Administration",
+    startDate: "2023-05-01",
+    endDate: "2023-05-05",
+    reasonForLeave: "Education",
     delegatedResponsibilities:
-      'While I attend an administrative efficiency workshop, the office administration team will manage document organization, scheduling, and communication. Our lead administrator will coordinate efforts to maintain efficiency.',
+      "While I attend an administrative efficiency workshop, the office administration team will manage document organization, scheduling, and communication. Our lead administrator will coordinate efforts to maintain efficiency.",
     additionalComments:
       "I'm focused on improving our administrative processes and trust our team to maintain efficiency during my absence. They are well-prepared for this temporary transition.",
-    requestStatus: 'approved',
+    requestStatus: "approved",
     acknowledgement: true,
   },
   {
-    department: 'Repair Technicians',
-    startDate: '2023-06-10',
-    endDate: '2023-06-15',
-    reasonForLeave: 'Vacation',
+    department: "Repair Technicians",
+    startDate: "2023-06-10",
+    endDate: "2023-06-15",
+    reasonForLeave: "Vacation",
     delegatedResponsibilities:
-      'During my vacation, the repair technicians will handle equipment repairs, maintenance, and technical support. The senior technician will lead the team in ensuring that all equipment functions optimally.',
+      "During my vacation, the repair technicians will handle equipment repairs, maintenance, and technical support. The senior technician will lead the team in ensuring that all equipment functions optimally.",
     additionalComments:
       "I'm taking a break to recharge, and I have full confidence in our repair technicians' expertise to ensure our equipment runs smoothly. They are well-versed in equipment maintenance.",
-    requestStatus: 'approved',
+    requestStatus: "approved",
     acknowledgement: true,
   },
   {
-    department: 'Human Resources',
-    startDate: '2023-04-20',
-    endDate: '2023-04-25',
-    reasonForLeave: 'Vacation',
+    department: "Human Resources",
+    startDate: "2023-04-20",
+    endDate: "2023-04-25",
+    reasonForLeave: "Vacation",
     delegatedResponsibilities:
-      'During my vacation, the HR team will handle recruitment, onboarding, and employee relations. The HR manager will lead HR operations to ensure a seamless experience for our employees.',
+      "During my vacation, the HR team will handle recruitment, onboarding, and employee relations. The HR manager will lead HR operations to ensure a seamless experience for our employees.",
     additionalComments:
       "I'm taking a well-deserved break, and I trust our HR team to continue nurturing our talented workforce. They are experts in talent management.",
-    requestStatus: 'approved',
+    requestStatus: "approved",
     acknowledgement: true,
   },
   {
-    department: 'Logistics and Inventory',
-    startDate: '2023-03-15',
-    endDate: '2023-03-20',
-    reasonForLeave: 'Vacation',
+    department: "Logistics and Inventory",
+    startDate: "2023-03-15",
+    endDate: "2023-03-20",
+    reasonForLeave: "Vacation",
     delegatedResponsibilities:
-      'During my vacation, the logistics and inventory team will manage inventory control, shipments, and warehouse operations. The logistics manager will lead the team in optimizing our supply chain processes.',
+      "During my vacation, the logistics and inventory team will manage inventory control, shipments, and warehouse operations. The logistics manager will lead the team in optimizing our supply chain processes.",
     additionalComments:
       "I'm taking a break to recharge, and I trust our logistics and inventory team to keep our supply chain running smoothly. They have a keen eye for efficiency.",
-    requestStatus: 'approved',
+    requestStatus: "approved",
     acknowledgement: true,
   },
   {
-    department: 'Executive Management',
-    startDate: '2023-10-01',
-    endDate: '2023-10-10',
-    reasonForLeave: 'Vacation',
+    department: "Executive Management",
+    startDate: "2023-10-01",
+    endDate: "2023-10-10",
+    reasonForLeave: "Vacation",
     delegatedResponsibilities:
-      'During my vacation, the executive management team will oversee strategic decision-making, budget planning, and leadership of the organization. Each member will take on additional responsibilities to ensure a smooth workflow.',
+      "During my vacation, the executive management team will oversee strategic decision-making, budget planning, and leadership of the organization. Each member will take on additional responsibilities to ensure a smooth workflow.",
     additionalComments:
       "I'm taking a well-deserved vacation to recharge and trust my capable team to continue driving our organization's success during my absence. I have full confidence in their abilities.",
-    requestStatus: 'approved',
+    requestStatus: "approved",
     acknowledgement: true,
   },
   {
-    department: 'Information Technology',
-    startDate: '2023-11-15',
-    endDate: '2023-11-20',
-    reasonForLeave: 'Education',
+    department: "Information Technology",
+    startDate: "2023-11-15",
+    endDate: "2023-11-20",
+    reasonForLeave: "Education",
     delegatedResponsibilities:
-      'While I attend an advanced IT training program, the IT department will manage daily operations, troubleshoot technical issues, and ensure data security. The team lead will lead efforts to maintain system integrity and support our colleagues.',
+      "While I attend an advanced IT training program, the IT department will manage daily operations, troubleshoot technical issues, and ensure data security. The team lead will lead efforts to maintain system integrity and support our colleagues.",
     additionalComments:
       "I'm investing in our IT team's growth and development. I'm confident they will excel in maintaining our IT infrastructure and providing top-notch support to our colleagues.",
-    requestStatus: 'approved',
+    requestStatus: "approved",
     acknowledgement: true,
   },
   {
-    department: 'Sales',
-    startDate: '2023-12-01',
-    endDate: '2023-12-05',
-    reasonForLeave: 'Vacation',
+    department: "Sales",
+    startDate: "2023-12-01",
+    endDate: "2023-12-05",
+    reasonForLeave: "Vacation",
     delegatedResponsibilities:
       "During my vacation, the sales team will handle client meetings, negotiations, and sales targets. The sales manager will provide guidance and leadership to ensure our clients' needs are met effectively.",
     additionalComments:
       "I'm taking a break to recharge and trust the sales team to maintain strong client relationships and achieve our sales goals. They have a solid plan in place.",
-    requestStatus: 'approved',
+    requestStatus: "approved",
     acknowledgement: true,
   },
   {
-    department: 'Customer Service',
-    startDate: '2023-08-15',
-    endDate: '2023-08-20',
-    reasonForLeave: 'Medical',
+    department: "Customer Service",
+    startDate: "2023-08-15",
+    endDate: "2023-08-20",
+    reasonForLeave: "Medical",
     delegatedResponsibilities:
-      'In my absence, the customer service team will manage customer inquiries, issue resolution, and maintain service quality. The team lead will oversee daily operations and ensure that our customers receive excellent support.',
+      "In my absence, the customer service team will manage customer inquiries, issue resolution, and maintain service quality. The team lead will oversee daily operations and ensure that our customers receive excellent support.",
     additionalComments:
       "I have a medical condition to attend to, but I'm confident in our customer service team's ability to provide excellent support. Our customers are in good hands.",
-    requestStatus: 'approved',
+    requestStatus: "approved",
     acknowledgement: true,
   },
   {
-    department: 'Marketing',
-    startDate: '2023-09-01',
-    endDate: '2023-09-10',
-    reasonForLeave: 'Vacation',
+    department: "Marketing",
+    startDate: "2023-09-01",
+    endDate: "2023-09-10",
+    reasonForLeave: "Vacation",
     delegatedResponsibilities:
-      'During my vacation, the marketing team will handle campaign planning, social media management, and market analysis. The marketing manager will lead the team in crafting compelling strategies to promote our brand.',
+      "During my vacation, the marketing team will handle campaign planning, social media management, and market analysis. The marketing manager will lead the team in crafting compelling strategies to promote our brand.",
     additionalComments:
       "I'm taking a break to recharge creatively and trust our marketing team to continue promoting our brand effectively. They have innovative ideas ready to go.",
-    requestStatus: 'approved',
+    requestStatus: "approved",
     acknowledgement: true,
   },
   {
-    department: 'Maintenance',
-    startDate: '2023-07-15',
-    endDate: '2023-07-20',
-    reasonForLeave: 'Vacation',
+    department: "Maintenance",
+    startDate: "2023-07-15",
+    endDate: "2023-07-20",
+    reasonForLeave: "Vacation",
     delegatedResponsibilities:
-      'During my vacation, the maintenance team will conduct equipment inspections, repairs, and facility maintenance. The lead technician will oversee daily tasks to ensure that our facilities and equipment are in top condition.',
+      "During my vacation, the maintenance team will conduct equipment inspections, repairs, and facility maintenance. The lead technician will oversee daily tasks to ensure that our facilities and equipment are in top condition.",
     additionalComments:
       "I'm taking a vacation to return with a fresh perspective on optimizing our maintenance processes. I trust our maintenance team to ensure everything runs smoothly and safely.",
-    requestStatus: 'approved',
+    requestStatus: "approved",
     acknowledgement: true,
   },
   {
-    department: 'Office Administration',
-    startDate: '2023-05-01',
-    endDate: '2023-05-05',
-    reasonForLeave: 'Education',
+    department: "Office Administration",
+    startDate: "2023-05-01",
+    endDate: "2023-05-05",
+    reasonForLeave: "Education",
     delegatedResponsibilities:
-      'While I attend an administrative efficiency workshop, the office administration team will manage document organization, scheduling, and communication. Our lead administrator will coordinate efforts to maintain efficiency.',
+      "While I attend an administrative efficiency workshop, the office administration team will manage document organization, scheduling, and communication. Our lead administrator will coordinate efforts to maintain efficiency.",
     additionalComments:
       "I'm focused on improving our administrative processes and trust our team to maintain efficiency during my absence. They are well-prepared for this temporary transition.",
-    requestStatus: 'approved',
+    requestStatus: "approved",
     acknowledgement: true,
   },
   {
-    department: 'Repair Technicians',
-    startDate: '2023-06-10',
-    endDate: '2023-06-15',
-    reasonForLeave: 'Vacation',
+    department: "Repair Technicians",
+    startDate: "2023-06-10",
+    endDate: "2023-06-15",
+    reasonForLeave: "Vacation",
     delegatedResponsibilities:
-      'During my vacation, the repair technicians will handle equipment repairs, maintenance, and technical support. The senior technician will lead the team in ensuring that all equipment functions optimally.',
+      "During my vacation, the repair technicians will handle equipment repairs, maintenance, and technical support. The senior technician will lead the team in ensuring that all equipment functions optimally.",
     additionalComments:
       "I'm taking a break to recharge, and I have full confidence in our repair technicians' expertise to ensure our equipment runs smoothly. They are well-versed in equipment maintenance.",
-    requestStatus: 'approved',
+    requestStatus: "approved",
     acknowledgement: true,
   },
   {
-    department: 'Human Resources',
-    startDate: '2023-04-20',
-    endDate: '2023-04-25',
-    reasonForLeave: 'Vacation',
+    department: "Human Resources",
+    startDate: "2023-04-20",
+    endDate: "2023-04-25",
+    reasonForLeave: "Vacation",
     delegatedResponsibilities:
-      'During my vacation, the HR team will handle recruitment, onboarding, and employee engagement. The HR manager will lead efforts to ensure our workforce remains motivated and supported.',
+      "During my vacation, the HR team will handle recruitment, onboarding, and employee engagement. The HR manager will lead efforts to ensure our workforce remains motivated and supported.",
     additionalComments:
       "I'm taking a well-deserved break, and I trust our HR team to continue nurturing our talented workforce. They are experts in talent management.",
-    requestStatus: 'approved',
+    requestStatus: "approved",
     acknowledgement: true,
   },
   {
-    department: 'Logistics and Inventory',
-    startDate: '2023-03-15',
-    endDate: '2023-03-20',
-    reasonForLeave: 'Vacation',
+    department: "Logistics and Inventory",
+    startDate: "2023-03-15",
+    endDate: "2023-03-20",
+    reasonForLeave: "Vacation",
     delegatedResponsibilities:
-      'During my vacation, the logistics and inventory team will manage inventory control, shipments, and warehouse operations. The logistics manager will lead the team in optimizing our supply chain processes.',
+      "During my vacation, the logistics and inventory team will manage inventory control, shipments, and warehouse operations. The logistics manager will lead the team in optimizing our supply chain processes.",
     additionalComments:
       "I'm taking a break to recharge, and I trust our logistics and inventory team to keep our supply chain running smoothly. They have a keen eye for efficiency.",
-    requestStatus: 'approved',
+    requestStatus: "approved",
     acknowledgement: true,
   },
   {
-    department: 'Accounting',
-    startDate: '2023-02-05',
-    endDate: '2023-02-10',
-    reasonForLeave: 'Vacation',
+    department: "Accounting",
+    startDate: "2023-02-05",
+    endDate: "2023-02-10",
+    reasonForLeave: "Vacation",
     delegatedResponsibilities:
-      'During my vacation, the accounting team will handle financial reporting, budgeting, and auditing. The senior accountant will lead the team in maintaining accurate financial records.',
+      "During my vacation, the accounting team will handle financial reporting, budgeting, and auditing. The senior accountant will lead the team in maintaining accurate financial records.",
     additionalComments:
       "I'm taking a break to recharge, and I have full confidence in our accounting team's ability to ensure the financial stability of our organization. They are meticulous in their work.",
-    requestStatus: 'approved',
+    requestStatus: "approved",
     acknowledgement: true,
   },
   {
-    department: 'Field Service Technicians',
-    startDate: '2023-01-15',
-    endDate: '2023-01-20',
-    reasonForLeave: 'Vacation',
+    department: "Field Service Technicians",
+    startDate: "2023-01-15",
+    endDate: "2023-01-20",
+    reasonForLeave: "Vacation",
     delegatedResponsibilities:
-      'During my vacation, the field service technicians will handle on-site equipment repairs and technical support. The lead technician will ensure our clients receive prompt and efficient service.',
+      "During my vacation, the field service technicians will handle on-site equipment repairs and technical support. The lead technician will ensure our clients receive prompt and efficient service.",
     additionalComments:
       "I'm taking a break to recharge, and I trust our field service technicians to provide excellent on-site support to our clients. They are skilled problem solvers.",
-    requestStatus: 'approved',
+    requestStatus: "approved",
     acknowledgement: true,
   },
   {
-    department: 'Religious',
-    startDate: '2023-03-01',
-    endDate: '2023-03-10',
-    reasonForLeave: 'Religious',
+    department: "Religious",
+    startDate: "2023-03-01",
+    endDate: "2023-03-10",
+    reasonForLeave: "Religious",
     delegatedResponsibilities:
-      'During my religious retreat, I have arranged for a colleague from another department to cover my responsibilities. They are familiar with my tasks and will ensure a smooth workflow in my absence.',
+      "During my religious retreat, I have arranged for a colleague from another department to cover my responsibilities. They are familiar with my tasks and will ensure a smooth workflow in my absence.",
     additionalComments:
-      'My religious beliefs require this time for spiritual reflection and renewal. I appreciate the understanding and support of my colleagues during this period.',
-    requestStatus: 'approved',
+      "My religious beliefs require this time for spiritual reflection and renewal. I appreciate the understanding and support of my colleagues during this period.",
+    requestStatus: "approved",
     acknowledgement: true,
   },
   {
-    department: 'Executive Management',
-    startDate: '2023-10-01',
-    endDate: '2023-10-10',
-    reasonForLeave: 'Vacation',
+    department: "Executive Management",
+    startDate: "2023-10-01",
+    endDate: "2023-10-10",
+    reasonForLeave: "Vacation",
     delegatedResponsibilities:
-      'During my vacation, the executive management team will oversee strategic decision-making, budget planning, and leadership of the organization. Each member will take on additional responsibilities to ensure a smooth workflow.',
+      "During my vacation, the executive management team will oversee strategic decision-making, budget planning, and leadership of the organization. Each member will take on additional responsibilities to ensure a smooth workflow.",
     additionalComments:
       "I'm taking a well-deserved vacation to recharge and trust my capable team to continue driving our organization's success during my absence. I have full confidence in their abilities.",
-    requestStatus: 'approved',
+    requestStatus: "approved",
     acknowledgement: true,
   },
   {
-    department: 'Information Technology',
-    startDate: '2023-11-15',
-    endDate: '2023-11-20',
-    reasonForLeave: 'Education',
+    department: "Information Technology",
+    startDate: "2023-11-15",
+    endDate: "2023-11-20",
+    reasonForLeave: "Education",
     delegatedResponsibilities:
-      'While I attend an advanced IT training program, the IT department will manage daily operations, troubleshoot technical issues, and ensure data security. The team lead will lead efforts to maintain system integrity and support our colleagues.',
+      "While I attend an advanced IT training program, the IT department will manage daily operations, troubleshoot technical issues, and ensure data security. The team lead will lead efforts to maintain system integrity and support our colleagues.",
     additionalComments:
       "I'm investing in our IT team's growth and development. I'm confident they will excel in maintaining our IT infrastructure and providing top-notch support to our colleagues.",
-    requestStatus: 'approved',
+    requestStatus: "approved",
     acknowledgement: true,
   },
   {
-    department: 'Sales',
-    startDate: '2023-12-01',
-    endDate: '2023-12-05',
-    reasonForLeave: 'Vacation',
+    department: "Sales",
+    startDate: "2023-12-01",
+    endDate: "2023-12-05",
+    reasonForLeave: "Vacation",
     delegatedResponsibilities:
       "During my vacation, the sales team will handle client meetings, negotiations, and sales targets. The sales manager will provide guidance and leadership to ensure our clients' needs are met effectively.",
     additionalComments:
       "I'm taking a break to recharge and trust the sales team to maintain strong client relationships and achieve our sales goals. They have a solid plan in place.",
-    requestStatus: 'approved',
+    requestStatus: "approved",
     acknowledgement: true,
   },
   {
-    department: 'Customer Service',
-    startDate: '2023-08-15',
-    endDate: '2023-08-20',
-    reasonForLeave: 'Medical',
+    department: "Customer Service",
+    startDate: "2023-08-15",
+    endDate: "2023-08-20",
+    reasonForLeave: "Medical",
     delegatedResponsibilities:
-      'In my absence, the customer service team will manage customer inquiries, issue resolution, and maintain service quality. The team lead will oversee daily operations and ensure that our customers receive excellent support.',
+      "In my absence, the customer service team will manage customer inquiries, issue resolution, and maintain service quality. The team lead will oversee daily operations and ensure that our customers receive excellent support.",
     additionalComments:
       "I have a medical condition to attend to, but I'm confident in our customer service team's ability to provide excellent support. Our customers are in good hands.",
-    requestStatus: 'approved',
+    requestStatus: "approved",
     acknowledgement: true,
   },
   {
-    department: 'Marketing',
-    startDate: '2023-09-01',
-    endDate: '2023-09-10',
-    reasonForLeave: 'Vacation',
+    department: "Marketing",
+    startDate: "2023-09-01",
+    endDate: "2023-09-10",
+    reasonForLeave: "Vacation",
     delegatedResponsibilities:
-      'During my vacation, the marketing team will handle campaign planning, social media management, and market analysis. The marketing manager will lead the team in crafting compelling strategies to promote our brand.',
+      "During my vacation, the marketing team will handle campaign planning, social media management, and market analysis. The marketing manager will lead the team in crafting compelling strategies to promote our brand.",
     additionalComments:
       "I'm taking a break to recharge creatively and trust our marketing team to continue promoting our brand effectively. They have innovative ideas ready to go.",
-    requestStatus: 'approved',
+    requestStatus: "approved",
     acknowledgement: true,
   },
   {
-    department: 'Maintenance',
-    startDate: '2023-07-15',
-    endDate: '2023-07-20',
-    reasonForLeave: 'Vacation',
+    department: "Maintenance",
+    startDate: "2023-07-15",
+    endDate: "2023-07-20",
+    reasonForLeave: "Vacation",
     delegatedResponsibilities:
-      'During my vacation, the maintenance team will conduct equipment inspections, repairs, and facility maintenance. The lead technician will oversee daily tasks to ensure that our facilities and equipment are in top condition.',
+      "During my vacation, the maintenance team will conduct equipment inspections, repairs, and facility maintenance. The lead technician will oversee daily tasks to ensure that our facilities and equipment are in top condition.",
     additionalComments:
       "I'm taking a vacation to return with a fresh perspective on optimizing our maintenance processes. I trust our maintenance team to ensure everything runs smoothly and safely.",
-    requestStatus: 'approved',
+    requestStatus: "approved",
     acknowledgement: true,
   },
   {
-    department: 'Office Administration',
-    startDate: '2023-05-01',
-    endDate: '2023-05-05',
-    reasonForLeave: 'Education',
+    department: "Office Administration",
+    startDate: "2023-05-01",
+    endDate: "2023-05-05",
+    reasonForLeave: "Education",
     delegatedResponsibilities:
-      'While I attend an administrative efficiency workshop, the office administration team will manage document organization, scheduling, and communication. Our lead administrator will coordinate efforts to maintain efficiency.',
+      "While I attend an administrative efficiency workshop, the office administration team will manage document organization, scheduling, and communication. Our lead administrator will coordinate efforts to maintain efficiency.",
     additionalComments:
       "I'm focused on improving our administrative processes, and I trust our office administration team to keep everything running smoothly in my absence. They are organized and efficient.",
-    requestStatus: 'approved',
+    requestStatus: "approved",
     acknowledgement: true,
   },
   {
-    department: 'Repair Technicians',
-    startDate: '2023-06-01',
-    endDate: '2023-06-10',
-    reasonForLeave: 'Vacation',
+    department: "Repair Technicians",
+    startDate: "2023-06-01",
+    endDate: "2023-06-10",
+    reasonForLeave: "Vacation",
     delegatedResponsibilities:
-      'During my vacation, the repair technicians will handle equipment diagnostics, repairs, and testing. The lead technician will ensure our clients receive prompt and efficient service.',
+      "During my vacation, the repair technicians will handle equipment diagnostics, repairs, and testing. The lead technician will ensure our clients receive prompt and efficient service.",
     additionalComments:
       "I'm taking a break to recharge, and I trust our repair technicians to provide excellent service to our clients. They are skilled problem solvers.",
-    requestStatus: 'approved',
+    requestStatus: "approved",
     acknowledgement: true,
   },
   {
-    department: 'Field Service Technicians',
-    startDate: '2023-04-15',
-    endDate: '2023-04-20',
-    reasonForLeave: 'Vacation',
+    department: "Field Service Technicians",
+    startDate: "2023-04-15",
+    endDate: "2023-04-20",
+    reasonForLeave: "Vacation",
     delegatedResponsibilities:
-      'During my vacation, the field service technicians will handle on-site equipment repairs and technical support. The lead technician will ensure our clients receive prompt and efficient service.',
+      "During my vacation, the field service technicians will handle on-site equipment repairs and technical support. The lead technician will ensure our clients receive prompt and efficient service.",
     additionalComments:
       "I'm taking a break to recharge, and I trust our field service technicians to provide excellent on-site support to our clients. They are skilled problem solvers.",
-    requestStatus: 'approved',
+    requestStatus: "approved",
     acknowledgement: true,
   },
   {
-    department: 'Bereavement',
-    startDate: '2023-03-15',
-    endDate: '2023-03-20',
-    reasonForLeave: 'Bereavement',
+    department: "Bereavement",
+    startDate: "2023-03-15",
+    endDate: "2023-03-20",
+    reasonForLeave: "Bereavement",
     delegatedResponsibilities:
-      'During this difficult time, my colleagues in various departments have come together to support me. They will handle my responsibilities collectively with empathy and understanding.',
+      "During this difficult time, my colleagues in various departments have come together to support me. They will handle my responsibilities collectively with empathy and understanding.",
     additionalComments:
-      'I appreciate the support and understanding of my colleagues during this challenging period. Their compassion has made it easier to navigate this loss.',
-    requestStatus: 'approved',
+      "I appreciate the support and understanding of my colleagues during this challenging period. Their compassion has made it easier to navigate this loss.",
+    requestStatus: "approved",
     acknowledgement: true,
   },
   {
-    department: 'Marketing',
-    startDate: '2023-02-01',
-    endDate: '2023-02-10',
-    reasonForLeave: 'Vacation',
+    department: "Marketing",
+    startDate: "2023-02-01",
+    endDate: "2023-02-10",
+    reasonForLeave: "Vacation",
     delegatedResponsibilities:
-      'During my vacation, the marketing team will handle campaign planning, social media management, and market analysis. The marketing manager will lead the team in crafting compelling strategies to promote our brand.',
+      "During my vacation, the marketing team will handle campaign planning, social media management, and market analysis. The marketing manager will lead the team in crafting compelling strategies to promote our brand.",
     additionalComments:
       "I'm taking a break to recharge creatively and trust our marketing team to continue promoting our brand effectively. They have innovative ideas ready to go.",
-    requestStatus: 'approved',
+    requestStatus: "approved",
     acknowledgement: true,
   },
   {
-    department: 'Sales',
-    startDate: '2023-01-15',
-    endDate: '2023-01-20',
-    reasonForLeave: 'Vacation',
+    department: "Sales",
+    startDate: "2023-01-15",
+    endDate: "2023-01-20",
+    reasonForLeave: "Vacation",
     delegatedResponsibilities:
       "During my vacation, the sales team will handle client meetings, negotiations, and sales targets. The sales manager will provide guidance and leadership to ensure our clients' needs are met effectively.",
     additionalComments:
       "I'm taking a break to recharge and trust the sales team to maintain strong client relationships and achieve our sales goals. They have a solid plan in place.",
-    requestStatus: 'approved',
+    requestStatus: "approved",
     acknowledgement: true,
   },
   {
-    department: 'Customer Service',
-    startDate: '2023-04-01',
-    endDate: '2023-04-10',
-    reasonForLeave: 'Vacation',
+    department: "Customer Service",
+    startDate: "2023-04-01",
+    endDate: "2023-04-10",
+    reasonForLeave: "Vacation",
     delegatedResponsibilities:
-      'During my vacation, the customer service team will manage customer inquiries, issue resolution, and maintain service quality. The team lead will oversee daily operations and ensure that our customers receive excellent support.',
+      "During my vacation, the customer service team will manage customer inquiries, issue resolution, and maintain service quality. The team lead will oversee daily operations and ensure that our customers receive excellent support.",
     additionalComments:
       "I'm taking a break to recharge, and I trust the customer service team to provide outstanding support to our valued customers. They are dedicated to excellence.",
-    requestStatus: 'approved',
+    requestStatus: "approved",
     acknowledgement: true,
   },
   {
-    department: 'Repair Technicians',
-    startDate: '2023-03-01',
-    endDate: '2023-03-10',
-    reasonForLeave: 'Medical',
+    department: "Repair Technicians",
+    startDate: "2023-03-01",
+    endDate: "2023-03-10",
+    reasonForLeave: "Medical",
     delegatedResponsibilities:
-      'In my absence, the repair technicians will handle equipment diagnostics, repairs, and testing. The lead technician will ensure that our clients receive prompt and efficient service.',
+      "In my absence, the repair technicians will handle equipment diagnostics, repairs, and testing. The lead technician will ensure that our clients receive prompt and efficient service.",
     additionalComments:
       "I have a medical condition to attend to, but I'm confident in our repair technicians' ability to provide excellent service to our clients. They are experts in their field.",
-    requestStatus: 'approved',
+    requestStatus: "approved",
     acknowledgement: true,
   },
   {
-    department: 'Maintenance',
-    startDate: '2023-02-15',
-    endDate: '2023-02-20',
-    reasonForLeave: 'Vacation',
+    department: "Maintenance",
+    startDate: "2023-02-15",
+    endDate: "2023-02-20",
+    reasonForLeave: "Vacation",
     delegatedResponsibilities:
-      'During my vacation, the maintenance team will conduct equipment inspections, repairs, and facility maintenance. The lead technician will oversee daily tasks to ensure that our facilities and equipment are in top condition.',
+      "During my vacation, the maintenance team will conduct equipment inspections, repairs, and facility maintenance. The lead technician will oversee daily tasks to ensure that our facilities and equipment are in top condition.",
     additionalComments:
       "I'm taking a vacation to return with a fresh perspective on optimizing our maintenance processes. I trust our maintenance team to ensure everything runs smoothly and safely.",
-    requestStatus: 'approved',
+    requestStatus: "approved",
     acknowledgement: true,
   },
   {
-    department: 'Logistics and Inventory',
-    startDate: '2023-01-01',
-    endDate: '2023-01-10',
-    reasonForLeave: 'Vacation',
+    department: "Logistics and Inventory",
+    startDate: "2023-01-01",
+    endDate: "2023-01-10",
+    reasonForLeave: "Vacation",
     delegatedResponsibilities:
-      'During my vacation, the logistics and inventory team will manage inventory control, shipments, and warehouse operations. The logistics manager will lead efforts to maintain efficient logistics processes.',
+      "During my vacation, the logistics and inventory team will manage inventory control, shipments, and warehouse operations. The logistics manager will lead efforts to maintain efficient logistics processes.",
     additionalComments:
       "I'm taking a well-deserved break, and I trust our logistics and inventory team to ensure that our supply chain continues to operate smoothly. They are experts in managing our inventory.",
-    requestStatus: 'approved',
+    requestStatus: "approved",
     acknowledgement: true,
   },
   {
-    department: 'Education',
-    startDate: '2023-05-15',
-    endDate: '2023-05-20',
-    reasonForLeave: 'Education',
+    department: "Education",
+    startDate: "2023-05-15",
+    endDate: "2023-05-20",
+    reasonForLeave: "Education",
     delegatedResponsibilities:
-      'While I attend an educational seminar, the education department will continue planning and delivering high-quality training programs. Our lead educator will ensure that our educational initiatives run smoothly.',
+      "While I attend an educational seminar, the education department will continue planning and delivering high-quality training programs. Our lead educator will ensure that our educational initiatives run smoothly.",
     additionalComments:
       "I'm committed to enhancing our education programs, and I trust our education department to maintain the high standards of our training during my absence. They are dedicated educators.",
-    requestStatus: 'approved',
+    requestStatus: "approved",
     acknowledgement: true,
   },
 ];
 
-function returnLeaveRequestsBodies({
-  userDocs,
-  leaveRequestsArray,
-}: {
-  userDocs: DirectoryUserDocument[];
-  leaveRequestsArray: LeaveRequestsArray;
-}) {
-  return userDocs.flatMap((userDoc) => {
-    const { _id, username, department } = userDoc;
+// function returnLeaveRequestsBodies({
+//   userDocs,
+//   leaveRequestsArray,
+// }: {
+//   userDocs: DirectoryUserDocument[];
+//   leaveRequestsArray: LeaveRequestsArray;
+// }) {
+//   return userDocs.flatMap((userDoc) => {
+//     const { _id, username, department } = userDoc;
 
-    // Randomly select a number of leave requests to return (except for execs)
-    const numberOfLeaveRequestsToReturn =
-      department === 'Executive Management' ? 5 : Math.floor(Math.random() * 7);
+//     // Randomly select a number of leave requests to return (except for execs)
+//     const numberOfLeaveRequestsToReturn =
+//       department === 'Executive Management' ? 5 : Math.floor(Math.random() * 7);
 
-    // grab the leaveRequests with the same department as the current user's department
-    // because the delegatedResponsibilities should reflect the current user's department
-    const leaveRequestsArrayWithSameDepartment = leaveRequestsArray.filter(
-      (leaveRequest) => leaveRequest.department === department
-    );
+//     // grab the leaveRequests with the same department as the current user's department
+//     // because the delegatedResponsibilities should reflect the current user's department
+//     const leaveRequestsArrayWithSameDepartment = leaveRequestsArray.filter(
+//       (leaveRequest) => leaveRequest.department === department
+//     );
 
-    // shuffle the leave requests
-    const shuffledLeaveRequests = shuffleArray(
-      leaveRequestsArrayWithSameDepartment
-    );
+//     // shuffle the leave requests
+//     const shuffledLeaveRequests = shuffleArray(
+//       leaveRequestsArrayWithSameDepartment
+//     );
 
-    // return the first n leave requests
-    const leaveRequestsToReturn = shuffledLeaveRequests.slice(
-      0,
-      numberOfLeaveRequestsToReturn
-    );
+//     // return the first n leave requests
+//     const leaveRequestsToReturn = shuffledLeaveRequests.slice(
+//       0,
+//       numberOfLeaveRequestsToReturn
+//     );
 
-    const leaveRequestsBodies = leaveRequestsToReturn.map((leaveRequest) => {
-      // filter the user docs by same department as current user's department
-      // because the delegated user should be from the same department as leave requesting user
-      const filteredUsersDocsByDepartment = userDocs.filter(
-        (userDoc) => userDoc.department === department
-      );
+//     const leaveRequestsBodies = leaveRequestsToReturn.map((leaveRequest) => {
+//       // filter the user docs by same department as current user's department
+//       // because the delegated user should be from the same department as leave requesting user
+//       const filteredUsersDocsByDepartment = userDocs.filter(
+//         (userDoc) => userDoc.department === department
+//       );
 
-      // pick a random user doc from the filtered user docs
-      const randomUserDoc =
-        filteredUsersDocsByDepartment[
-          Math.floor(Math.random() * filteredUsersDocsByDepartment.length)
-        ];
+//       // pick a random user doc from the filtered user docs
+//       const randomUserDoc =
+//         filteredUsersDocsByDepartment[
+//           Math.floor(Math.random() * filteredUsersDocsByDepartment.length)
+//         ];
 
-      // assign the random user doc's name to the current user's delegatedToEmployee field
-      const { firstName, middleName, lastName } = randomUserDoc;
-      const delegatedToEmployee = `${firstName} ${middleName} ${lastName}`;
+//       // assign the random user doc's name to the current user's delegatedToEmployee field
+//       const { firstName, middleName, lastName } = randomUserDoc;
+//       const delegatedToEmployee = `${firstName} ${middleName} ${lastName}`;
 
-      //  do not want department field in the leave request body
-      const leaveRequestBody = {
-        userId: _id,
-        username,
-        delegatedToEmployee,
-        startDate: leaveRequest.startDate,
-        endDate: leaveRequest.endDate,
-        reasonForLeave: leaveRequest.reasonForLeave,
-        delegatedResponsibilities: leaveRequest.delegatedResponsibilities,
-        additionalComments: leaveRequest.additionalComments,
-        requestStatus: leaveRequest.requestStatus,
-        acknowledgement: leaveRequest.acknowledgement,
-      };
+//       //  do not want department field in the leave request body
+//       const leaveRequestBody = {
+//         userId: _id,
+//         username,
+//         delegatedToEmployee,
+//         startDate: leaveRequest.startDate,
+//         endDate: leaveRequest.endDate,
+//         reasonForLeave: leaveRequest.reasonForLeave,
+//         delegatedResponsibilities: leaveRequest.delegatedResponsibilities,
+//         additionalComments: leaveRequest.additionalComments,
+//         requestStatus: leaveRequest.requestStatus,
+//         acknowledgement: leaveRequest.acknowledgement,
+//       };
 
-      return leaveRequestBody;
-    });
+//       return leaveRequestBody;
+//     });
 
-    return leaveRequestsBodies;
-  });
-}
+//     return leaveRequestsBodies;
+//   });
+// }
 
-export { leaveRequestsArray, returnLeaveRequestsBodies };
+export { leaveRequestsArray };
 export type { LeaveRequestsArray };

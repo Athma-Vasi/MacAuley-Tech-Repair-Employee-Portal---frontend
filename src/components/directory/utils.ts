@@ -2,11 +2,11 @@ import { StoreLocation } from "../../types";
 import { EmployeeDoc } from "./data";
 import {
   DepartmentsWithDefaultKey,
-  Directory1UserDocument,
+  DirectoryUserDocument,
   StoreLocationsWithDefaultKey,
 } from "./types";
 
-function returnSearchInputData(usersDocs: Directory1UserDocument[]) {
+function returnSearchInputData(usersDocs: DirectoryUserDocument[]) {
   return Array.from(
     usersDocs.reduce<Set<string>>((acc, user) => {
       const { firstName, middleName, lastName } = user;

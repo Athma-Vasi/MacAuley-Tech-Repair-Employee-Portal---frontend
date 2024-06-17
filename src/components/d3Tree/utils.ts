@@ -1,4 +1,4 @@
-import { EmployeeDoc } from "../directory1/data";
+import { EmployeeDoc } from "../directory/data";
 
 type D3TreeInput = {
   attributes: Record<string, string>;

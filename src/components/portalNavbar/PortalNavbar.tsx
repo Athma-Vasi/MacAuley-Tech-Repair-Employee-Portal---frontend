@@ -539,16 +539,6 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
     },
   ]);
 
-  const [createdDirectory1NavLink] = returnAccessibleNavLinkElements([
-    {
-      ariaLabel: "Will navigate to directory1 page",
-      label: "Directory1",
-      onClick: () => {
-        navigate("/home/directory1");
-      },
-    },
-  ]);
-
   const displayDevTestingNavLink = (
     <NavLink
       label={<Text>Dev testing</Text>}
@@ -595,8 +585,6 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
           {createdOutreachNavLink}
 
           {createdDirectoryNavLink}
-
-          {createdDirectory1NavLink}
         </Flex>
       </ScrollArea>
     </Navbar>

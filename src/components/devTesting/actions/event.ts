@@ -1,5 +1,4 @@
 import { replaceLastCommaWithAnd, shuffleArray } from '../../../utils';
-import { DirectoryUserDocument } from '../../directory/types';
 
 type EventsArray = {
   eventTitle: string;
@@ -986,6 +985,7 @@ const eventsArray: EventsArray = [
   },
 ];
 
+
 // function returnEventsRequestBodies({
 //   eventsArray,
 //   userDocs,
@@ -993,20 +993,12 @@ const eventsArray: EventsArray = [
 //   eventsArray: EventsArray;
 //   userDocs: DirectoryUserDocument[];
 // }) {
-//   return userDocs.reduce((bodiesAcc, userDoc) => {
-//     const { _id, username, roles } = userDoc;
-
-//     // shuffle events
-//     const shuffledEvents = shuffleArray(eventsArray);
-
-//     // pick a random event
-//     const randomEvent = shuffledEvents[0];
-
-//     // pick a random number for event attendees amount (2:9)
-//     const randomAttendeesAmount = Math.floor(Math.random() * 7) + 2;
-
+//   return eventsArray.map((event) => {
 //     // shuffle userDocs
 //     const shuffledUserDocs = shuffleArray(userDocs);
+
+//     // pick random number of event attendees
+//     const randomAttendeesAmount = Math.floor(Math.random() * 7) + 2;
 
 //     // pick random userDocs for event attendees
 //     const randomAttendees = shuffledUserDocs.slice(0, randomAttendeesAmount);
@@ -1024,58 +1016,15 @@ const eventsArray: EventsArray = [
 
 //     // create event body
 //     const body = {
-//       ...randomEvent,
-//       userId: _id,
-//       username,
-//       creatorRole: roles,
+//       ...event,
+//       userId: randomAttendees[0]._id,
+//       username: randomAttendees[0].username,
+//       creatorRole: randomAttendees[0].roles,
 //       eventAttendees: joinedAttendeeNames,
 //     };
 
-//     bodiesAcc.push(body);
-
-//     return bodiesAcc;
-//   }, [] as any[]);
+//     return body;
+//   });
 // }
 
-function returnEventsRequestBodies({
-  eventsArray,
-  userDocs,
-}: {
-  eventsArray: EventsArray;
-  userDocs: DirectoryUserDocument[];
-}) {
-  return eventsArray.map((event) => {
-    // shuffle userDocs
-    const shuffledUserDocs = shuffleArray(userDocs);
-
-    // pick random number of event attendees
-    const randomAttendeesAmount = Math.floor(Math.random() * 7) + 2;
-
-    // pick random userDocs for event attendees
-    const randomAttendees = shuffledUserDocs.slice(0, randomAttendeesAmount);
-
-    // from each random attendee, pick their first, middle and last names
-    const randomAttendeesNames = randomAttendees.map((attendee) => {
-      const { firstName, middleName, lastName } = attendee;
-
-      return `${firstName} ${middleName} ${lastName}`;
-    });
-
-    const joinedAttendeeNames = replaceLastCommaWithAnd(
-      randomAttendeesNames.join(', ')
-    );
-
-    // create event body
-    const body = {
-      ...event,
-      userId: randomAttendees[0]._id,
-      username: randomAttendees[0].username,
-      creatorRole: randomAttendees[0].roles,
-      eventAttendees: joinedAttendeeNames,
-    };
-
-    return body;
-  });
-}
-
-export { eventsArray, returnEventsRequestBodies };
+export { eventsArray, };

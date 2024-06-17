@@ -1,12 +1,12 @@
-type Directory1Action = {
+type DirectoryAction = {
   setDepartment: "setDepartment";
   setStoreLocation: "setStoreLocation";
 };
 
-const directory1Action: Directory1Action = {
+const directoryAction: DirectoryAction = {
   setDepartment: "setDepartment",
   setStoreLocation: "setStoreLocation",
 };
 
-export { directory1Action };
-export type { Directory1Action };
+export { directoryAction };
+export type { DirectoryAction };

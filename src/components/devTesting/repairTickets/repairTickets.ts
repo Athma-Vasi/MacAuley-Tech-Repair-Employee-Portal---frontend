@@ -1,8 +1,3 @@
-import { v4 as uuidv4 } from "uuid";
-
-import { DirectoryUserDocument } from "../../directory/types";
-import { CUSTOMER_DOCUMENTS } from "../customer/customerDocuments";
-
 /**
  * type RepairTicketSchema = { 
 
@@ -1483,45 +1478,4 @@ const REPAIR_TICKETS_ARRAY = [
   },
 ];
 
-function returnRepairTicketSchemas({
-  customerDocuments,
-  repairTicketsArray,
-  usersDocs,
-}: {
-  customerDocuments: typeof CUSTOMER_DOCUMENTS;
-  repairTicketsArray: typeof REPAIR_TICKETS_ARRAY;
-  usersDocs: DirectoryUserDocument[];
-}) {
-  return repairTicketsArray.map((repairTicket, index) => {
-    const filteredEmployees = usersDocs.filter(
-      (user) =>
-        user.department === "Customer Service" ||
-        user.department === "Repair Technicians" ||
-        user.department === "Store Administration"
-    );
-
-    const randomEmployee =
-      filteredEmployees[Math.floor(Math.random() * filteredEmployees.length)];
-    const { _id: userId, username } = randomEmployee;
-
-    const randomCustomer =
-      customerDocuments[Math.floor(Math.random() * customerDocuments.length)];
-    const { _id: customerId } = randomCustomer;
-
-    const partSerialId = uuidv4();
-    const workOrderId = uuidv4();
-
-    const repairTicketSchema = {
-      ...repairTicket,
-      userId,
-      username,
-      customerId,
-      partSerialId,
-      workOrderId,
-    };
-
-    return repairTicketSchema;
-  });
-}
-
-export { REPAIR_TICKETS_ARRAY, returnRepairTicketSchemas };
+export { REPAIR_TICKETS_ARRAY };
