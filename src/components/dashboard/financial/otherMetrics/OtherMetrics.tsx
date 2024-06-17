@@ -20,7 +20,7 @@ import { returnChartTitleNavigateLinks, returnStatistics } from "../../utils";
 import { FinancialMetricsCards } from "../cards";
 import { FinancialMetricsCharts } from "../chartsData";
 import { FINANCIAL_OTHERS_Y_AXIS_DATA } from "../constants";
-import { FinancialMetricsCategory } from "../types";
+import { FinancialMetricCategory } from "../types";
 import { otherMetricsAction } from "./actions";
 import { otherMetricsReducer } from "./reducers";
 import { initialOtherMetricsState } from "./state";
@@ -33,7 +33,7 @@ type OtherMetricsProps = {
   financialMetricsCards: FinancialMetricsCards;
   financialMetricsCharts: FinancialMetricsCharts;
   day: string;
-  metricCategory: FinancialMetricsCategory;
+  metricCategory: FinancialMetricCategory;
   metricsView: DashboardMetricsView;
   month: string;
   padding: MantineNumberSize;

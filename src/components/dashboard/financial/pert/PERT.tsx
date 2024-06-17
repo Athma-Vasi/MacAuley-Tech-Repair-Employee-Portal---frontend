@@ -22,16 +22,13 @@ import {
 } from "../../types";
 import { returnChartTitleNavigateLinks, returnStatistics } from "../../utils";
 import { FinancialMetricsCards, returnCalendarViewFinancialCards } from "../cards";
-import {
-  FinancialMetricsBarLineChartsKey,
-  FinancialMetricsCharts,
-  returnCalendarViewFinancialCharts,
-} from "../chartsData";
+import { FinancialMetricsCharts, returnCalendarViewFinancialCharts } from "../chartsData";
 import {
   FINANCIAL_PERT_BAR_LINE_Y_AXIS_DATA,
   FINANCIAL_PERT_PIE_Y_AXIS_DATA,
+  PERT_SET,
 } from "../constants";
-import { FinancialMetricsCategory } from "../types";
+import { FinancialMetricCategory } from "../types";
 import { pertAction } from "./actions";
 import { pertReducer } from "./reducers";
 import { initialPERTState } from "./state";
@@ -44,7 +41,7 @@ type PERTProps = {
   financialMetricsCards: FinancialMetricsCards;
   financialMetricsCharts: FinancialMetricsCharts;
   day: string;
-  metricCategory: FinancialMetricsCategory;
+  metricCategory: FinancialMetricCategory;
   metricsView: DashboardMetricsView;
   month: string;
   padding: MantineNumberSize;
@@ -77,17 +74,16 @@ function PERT({
   const { barChartYAxisVariable, lineChartYAxisVariable, pieChartYAxisVariable } =
     pertState;
 
+  const charts = returnCalendarViewFinancialCharts(calendarView, financialMetricsCharts);
   const {
     bar: barCharts,
     line: lineCharts,
     pie: pieCharts,
-  } = returnCalendarViewFinancialCharts(
-    calendarView,
-    financialMetricsCharts,
-    metricCategory
-  );
+  } = PERT_SET.has(metricCategory)
+    ? (charts[metricCategory] as FinancialMetricsCharts["dailyCharts"]["expenses"]) // cast to avoid TS error
+    : charts.profit;
 
-  const statistics = returnStatistics<FinancialMetricsBarLineChartsKey>(barCharts);
+  const statistics = returnStatistics(barCharts);
 
   const {
     barChartHeading,
@@ -267,11 +263,10 @@ function PERT({
     />
   );
 
-  const overviewCards = returnCalendarViewFinancialCards(
-    calendarView,
-    financialMetricsCards,
-    metricCategory
-  );
+  const cards = returnCalendarViewFinancialCards(calendarView, financialMetricsCards);
+  const overviewCards = PERT_SET.has(metricCategory)
+    ? cards[metricCategory]
+    : cards.profit;
 
   const financialMetricsOverview = (
     <DashboardMetricsLayout
@@ -291,6 +286,7 @@ function PERT({
       pieChartHeading={pieChartHeading}
       pieChartYAxisSelectInput={pieChartYAxisVariableSelectInput}
       sectionHeading={`${storeLocation} ${calendarView} Overview Financials`}
+      semanticLabel={metricCategory}
       statisticsMap={statistics}
       width={width}
     />

@@ -12,7 +12,6 @@ import {
   Year,
   YearlyFinancialMetric,
 } from "../types";
-import { FinancialMetricsCategory } from "./types";
 
 type SelectedDateFinancialMetrics = {
   dayFinancialMetrics: {
@@ -3207,14 +3206,13 @@ async function createYearlyFinancialCharts({
 
 function returnCalendarViewFinancialCharts(
   calendarView: DashboardCalendarView,
-  financialMetricsCharts: FinancialMetricsCharts,
-  metricCategory: FinancialMetricsCategory
+  financialMetricsCharts: FinancialMetricsCharts
 ) {
   return calendarView === "Daily"
-    ? financialMetricsCharts.dailyCharts[metricCategory]
+    ? financialMetricsCharts.dailyCharts
     : calendarView === "Monthly"
-    ? financialMetricsCharts.monthlyCharts[metricCategory]
-    : financialMetricsCharts.yearlyCharts[metricCategory];
+    ? financialMetricsCharts.monthlyCharts
+    : financialMetricsCharts.yearlyCharts;
 }
 
 export {

@@ -2,11 +2,16 @@ import { FinancialMetricsAction } from "./actions";
 import { FinancialMetricsCards } from "./cards";
 import { FinancialMetricsCharts } from "./chartsData";
 
-type FinancialMetricsCategory = "profit" | "revenue" | "expenses" | "transactions";
+type FinancialMetricCategory =
+  | "profit"
+  | "revenue"
+  | "expenses"
+  | "transactions"
+  | "otherMetrics";
 
 type FinancialMetricsState = {
   cards: FinancialMetricsCards | null;
-  category: FinancialMetricsCategory;
+  category: FinancialMetricCategory;
   charts: FinancialMetricsCharts | null;
   isGenerating: boolean;
 };
@@ -18,7 +23,7 @@ type FinancialMetricsDispatch =
     }
   | {
       action: FinancialMetricsAction["setCategory"];
-      payload: FinancialMetricsCategory;
+      payload: FinancialMetricCategory;
     }
   | {
       action: FinancialMetricsAction["setCharts"];
@@ -29,4 +34,4 @@ type FinancialMetricsDispatch =
       payload: boolean;
     };
 
-export type { FinancialMetricsCategory, FinancialMetricsDispatch, FinancialMetricsState };
+export type { FinancialMetricCategory, FinancialMetricsDispatch, FinancialMetricsState };

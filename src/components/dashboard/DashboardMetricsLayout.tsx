@@ -10,7 +10,7 @@ import {
   Tooltip,
 } from "@mantine/core";
 
-import { addCommaSeparator } from "../../utils";
+import { addCommaSeparator, splitCamelCase } from "../../utils";
 import { DashboardCardInfo, returnDashboardCardElement } from "./utilsTSX";
 import { StatisticsObject } from "./utils";
 
@@ -227,7 +227,9 @@ function DashboardMetricsLayout({
           >
             <Accordion.Item value={key}>
               <Accordion.Control>
-                <Text weight={500} size="md">{`${key} ${semanticLabel}`}</Text>
+                <Text weight={500} size="md">{`${key} ${splitCamelCase(
+                  semanticLabel
+                )}`}</Text>
               </Accordion.Control>
               <Accordion.Panel>
                 <Flex direction="column" rowGap="xs">

@@ -14,6 +14,17 @@ import {
   Month,
   Year,
 } from "../types";
+import { financialMetricsAction } from "./actions";
+import { createFinancialMetricsCards } from "./cards";
+import {
+  createFinancialMetricsCharts,
+  returnSelectedDateFinancialMetrics,
+} from "./chartsData";
+import { FINANCIAL_METRICS_CATEGORY_DATA, PERT_SET } from "./constants";
+import OtherMetrics from "./otherMetrics/OtherMetrics";
+import PERT from "./pert/PERT";
+import { financialMetricsReducer } from "./reducers";
+import { initialFinancialMetricsState } from "./state";
 
 type FinancialMetricsProps = {
   businessMetrics: BusinessMetric[];
@@ -141,7 +152,7 @@ function FinancialMetrics({
   const categorySegmentedControl = (
     <AccessibleSegmentedControl
       attributes={{
-        data: CUSTOMER_METRICS_CATEGORY_DATA as any,
+        data: FINANCIAL_METRICS_CATEGORY_DATA as any,
         name: "category",
         parentDispatch: financialMetricsDispatch,
         validValueAction: financialMetricsAction.setCategory,
@@ -150,8 +161,8 @@ function FinancialMetrics({
     />
   );
 
-  const newReturning = (
-    <NewReturning
+  const subCategoryPage = PERT_SET.has(category) ? (
+    <PERT
       borderColor={borderColor}
       calendarView={calendarView}
       chartHeight={382}
@@ -167,10 +178,8 @@ function FinancialMetrics({
       width={width}
       year={selectedYear}
     />
-  );
-
-  const churnRetention = (
-    <ChurnRetention
+  ) : (
+    <OtherMetrics
       borderColor={borderColor}
       calendarView={calendarView}
       chartHeight={382}
@@ -209,7 +218,7 @@ function FinancialMetrics({
     <Stack>
       {loadingOverlay}
       {categorySegmentedControl}
-      {category === "new" || category === "returning" ? newReturning : churnRetention}
+      {subCategoryPage}
     </Stack>
   );
 

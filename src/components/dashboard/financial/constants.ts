@@ -1,3 +1,5 @@
+import { FinancialMetricCategory } from "./types";
+
 const FINANCIAL_PERT_PIE_Y_AXIS_DATA = [
   { label: "Overview", value: "overview" },
   { label: "All", value: "all" },
@@ -20,8 +22,26 @@ const FINANCIAL_OTHERS_Y_AXIS_DATA = [
   { label: "Conversion Rate", value: "conversionRate" },
 ];
 
+const FINANCIAL_METRICS_CATEGORY_DATA = [
+  { label: "Profit", value: "profit" },
+  { label: "Revenue", value: "revenue" },
+  { label: "Expenses", value: "expenses" },
+  { label: "Transactions", value: "transactions" },
+  { label: "Units Sold", value: "unitsSold" },
+  { label: "Other Metrics", value: "otherMetrics" },
+];
+
+const PERT_SET = new Set<Omit<FinancialMetricCategory, "otherMetrics">>([
+  "profit",
+  "expenses",
+  "revenue",
+  "transactions",
+]);
+
 export {
+  FINANCIAL_METRICS_CATEGORY_DATA,
   FINANCIAL_OTHERS_Y_AXIS_DATA,
   FINANCIAL_PERT_BAR_LINE_Y_AXIS_DATA,
   FINANCIAL_PERT_PIE_Y_AXIS_DATA,
+  PERT_SET,
 };

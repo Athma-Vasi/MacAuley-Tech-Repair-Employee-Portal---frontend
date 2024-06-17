@@ -1,13 +1,12 @@
 import { MantineNumberSize } from "@mantine/core";
 
+import { DashboardCalendarView } from "../types";
 import {
   createDashboardMetricsCards,
   CreateDashboardMetricsCardsInput,
   DashboardCardInfo,
 } from "../utilsTSX";
 import { SelectedDateFinancialMetrics } from "./chartsData";
-import { DashboardCalendarView } from "../types";
-import { FinancialMetricsCategory } from "./types";
 
 type CreateFinancialMetricsCardsInput = {
   selectedDateFinancialMetrics: SelectedDateFinancialMetrics;
@@ -886,14 +885,13 @@ function createFinancialMetricsCards({
 
 function returnCalendarViewFinancialCards(
   calendarView: DashboardCalendarView,
-  financialMetricsCards: FinancialMetricsCards,
-  metricCategory: FinancialMetricsCategory
+  financialMetricsCards: FinancialMetricsCards
 ) {
   return calendarView === "Daily"
-    ? financialMetricsCards.dailyCards[metricCategory]
+    ? financialMetricsCards.dailyCards
     : calendarView === "Monthly"
-    ? financialMetricsCards.monthlyCards[metricCategory]
-    : financialMetricsCards.yearlyCards[metricCategory];
+    ? financialMetricsCards.monthlyCards
+    : financialMetricsCards.yearlyCards;
 }
 
 export { createFinancialMetricsCards, returnCalendarViewFinancialCards };

@@ -34,7 +34,7 @@ import {
   STORE_LOCATION_VIEW_TABS_DATA,
 } from "./constants";
 import { CustomerMetrics } from "./customer/CustomerMetrics";
-import FinancialDashboard from "./financialDashboard/FinancialDashboard";
+import { FinancialMetrics } from "./financial/FinancialMetrics";
 import ProductDashboard from "./productDashboard/ProductDashboard";
 import RepairDashboard from "./repairDashboard/RepairDashboard";
 import { dashboardAction, dashboardReducer, initialDashboardState } from "./state";
@@ -420,11 +420,21 @@ function Dashboard() {
 
   const displayMetricsView =
     metricsView === "Financials" ? (
-      <FinancialDashboard
+      // <FinancialDashboard
+      //   businessMetrics={businessMetrics}
+      //   calendarView={calendarView}
+      //   selectedDate={selectedDate}
+      //   financialMetric={financialMetric}
+      //   selectedMonth={selectedMonth}
+      //   storeLocationView={storeLocationView}
+      //   selectedYYYYMMDD={selectedYYYYMMDD}
+      //   selectedYear={selectedYear}
+      // />
+
+      <FinancialMetrics
         businessMetrics={businessMetrics}
         calendarView={calendarView}
         selectedDate={selectedDate}
-        financialMetric={financialMetric}
         selectedMonth={selectedMonth}
         storeLocationView={storeLocationView}
         selectedYYYYMMDD={selectedYYYYMMDD}
