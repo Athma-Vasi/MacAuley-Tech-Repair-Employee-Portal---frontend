@@ -3478,6 +3478,26 @@ function splitSelectedCalendarDate({
   };
 }
 
+function returnIsTabDisabled(
+  storeLocationView: BusinessMetricStoreLocation,
+  selectedYear: Year
+) {
+  const yearNumber = Number(selectedYear) ?? 0;
+
+  switch (storeLocationView) {
+    case "Calgary": {
+      return yearNumber < 2017 ;
+    }
+
+    case "Vancouver": {
+      return yearNumber < 2019;
+    }
+
+    default:
+      return false;
+  }
+}
+
 export {
   createAggregatedProductMetrics,
   createAggregatedRepairMetrics,
@@ -3497,5 +3517,6 @@ export {
   returnDaysInMonthsInYears,
   returnStatistics,
   splitSelectedCalendarDate,
+  returnIsTabDisabled,
 };
 export type { StatisticsObject };

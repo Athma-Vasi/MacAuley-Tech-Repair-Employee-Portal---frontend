@@ -314,8 +314,6 @@ async function createFinancialMetricsCharts({
   const {
     monthFinancialMetrics: { selectedMonthMetrics },
   } = selectedDateFinancialMetrics;
-  const selectedMonth = selectedMonthMetrics?.month ?? "January";
-  const monthIndex = (months.indexOf(selectedMonth) + 1).toString().padStart(2, "0");
 
   const {
     dayFinancialMetrics: { selectedDayMetrics },
@@ -380,12 +378,10 @@ async function createFinancialMetricsCharts({
         barChartsTemplate: BAR_CHARTS_TEMPLATE,
         dailyMetrics: selectedMonthMetrics?.dailyMetrics,
         lineChartsTemplate: LINE_CHARTS_TEMPLATE,
-        monthIndex,
         otherMetricsBarChartsTemplate: OTHER_METRICS_BAR_CHARTS_TEMPLATE,
         otherMetricsLineChartsTemplate: OTHER_METRICS_LINE_CHARTS_TEMPLATE,
         pieChartsTemplate: PIE_CHARTS_TEMPLATE,
         selectedDayMetrics,
-        selectedYear,
       }),
       createMonthlyFinancialCharts({
         barChartsTemplate: BAR_CHARTS_TEMPLATE,
@@ -420,23 +416,19 @@ type CreateDailyFinancialChartsInput = {
   barChartsTemplate: FinancialMetricsBarCharts;
   dailyMetrics?: DailyFinancialMetric[];
   lineChartsTemplate: FinancialMetricLineCharts;
-  monthIndex: string;
   otherMetricsBarChartsTemplate: FinancialOtherMetricsBarCharts;
   otherMetricsLineChartsTemplate: FinancialOtherMetricsLineCharts;
   pieChartsTemplate: FinancialMetricsPieCharts;
   selectedDayMetrics?: DailyFinancialMetric;
-  selectedYear: Year;
 };
 async function createDailyFinancialCharts({
   barChartsTemplate,
   dailyMetrics,
   lineChartsTemplate,
-  monthIndex,
   otherMetricsBarChartsTemplate,
   otherMetricsLineChartsTemplate,
   pieChartsTemplate,
   selectedDayMetrics,
-  selectedYear,
 }: CreateDailyFinancialChartsInput): Promise<FinancialMetricsCharts["dailyCharts"]> {
   if (!dailyMetrics || !selectedDayMetrics) {
     return new Promise((resolve) => {

@@ -27,7 +27,6 @@ const FINANCIAL_METRICS_CATEGORY_DATA = [
   { label: "Revenue", value: "revenue" },
   { label: "Expenses", value: "expenses" },
   { label: "Transactions", value: "transactions" },
-  { label: "Units Sold", value: "unitsSold" },
   { label: "Other Metrics", value: "otherMetrics" },
 ];
 

@@ -10,7 +10,7 @@ import {
   Title,
 } from "@mantine/core";
 import localforage from "localforage";
-import { ChangeEvent, useEffect, useReducer } from "react";
+import { ChangeEvent, useEffect, useReducer, useRef } from "react";
 import { useErrorBoundary } from "react-error-boundary";
 import { useNavigate } from "react-router-dom";
 
@@ -47,8 +47,14 @@ import {
   DashboardMetricsView,
   DashboardProductMetric,
   DashboardRepairMetric,
+  Year,
 } from "./types";
-import { createRandomBusinessMetrics, splitSelectedCalendarDate } from "./utils";
+import {
+  createRandomBusinessMetrics,
+  returnIsTabDisabled,
+  splitSelectedCalendarDate,
+} from "./utils";
+import React from "react";
 
 function Dashboard() {
   const [dashboardState, dashboardDispatch] = useReducer(
@@ -86,24 +92,28 @@ function Dashboard() {
     loadingMessage,
   } = dashboardState;
 
-  useEffect(() => {
-    globalDispatch({
-      type: globalAction.setCustomizeChartsPageDataSelectedYYYYMMDD,
-      payload: initialDashboardState.selectedYYYYMMDD,
-    });
+  // useEffect(() => {
+  //   globalDispatch({
+  //     type: globalAction.setCustomizeChartsPageDataSelectedYYYYMMDD,
+  //     payload: initialDashboardState.selectedYYYYMMDD,
+  //   });
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
 
-  useEffect(() => {
-    globalDispatch({
-      type: globalAction.setCustomizeChartsPageDataSelectedYYYYMMDD,
-      payload: initialDashboardState.selectedYYYYMMDD,
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedYYYYMMDD]);
+  // useEffect(() => {
+  //   globalDispatch({
+  //     type: globalAction.setCustomizeChartsPageDataSelectedYYYYMMDD,
+  //     payload: initialDashboardState.selectedYYYYMMDD,
+  //   });
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [selectedYYYYMMDD]);
 
+  const isComponentMountedRef = React.useRef(false);
   useEffect(() => {
+    isComponentMountedRef.current = true;
+    const isMounted = isComponentMountedRef.current;
+
     async function createBusinessMetrics() {
       try {
         if (businessMetrics?.length) {
@@ -118,7 +128,7 @@ function Dashboard() {
         const existingMetrics = await localforage.getItem<BusinessMetric[]>(
           "businessMetrics"
         );
-        if (existingMetrics) {
+        if (existingMetrics && isMounted) {
           dashboardDispatch({
             type: dashboardAction.setBusinessMetrics,
             payload: existingMetrics,
@@ -144,6 +154,10 @@ function Dashboard() {
 
         console.timeEnd("createRandomBusinessMetrics");
 
+        if (!isMounted) {
+          return;
+        }
+
         dashboardDispatch({
           type: dashboardAction.setBusinessMetrics,
           payload: createdBusinessMetrics,
@@ -156,40 +170,20 @@ function Dashboard() {
           payload: false,
         });
       } catch (error: any) {
-        globalDispatch({
-          type: globalAction.setErrorState,
-          payload: {
-            isError: true,
-            errorMessage: error.message ?? "Unknown error occured. Please try again.",
-            errorCallback: () => {
-              navigate("/home");
-
-              globalDispatch({
-                type: globalAction.setErrorState,
-                payload: {
-                  isError: false,
-                  errorMessage: "",
-                  errorCallback: () => {},
-                },
-              });
-            },
-          },
-        });
-
+        if (!isMounted) {
+          return;
+        }
         showBoundary(error);
       }
     }
 
     createBusinessMetrics();
+
+    return () => {
+      isComponentMountedRef.current = false;
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  useEffect(() => {
-    logState({
-      state: dashboardState,
-      groupLabel: "Dashboard State",
-    });
-  }, [dashboardState]);
 
   const displayLoadingOverlay = (
     <LoadingOverlay
@@ -220,6 +214,13 @@ function Dashboard() {
     return displayLoadingOverlay;
   }
 
+  const { selectedDate, selectedMonth, selectedYear } = splitSelectedCalendarDate({
+    calendarDate: selectedYYYYMMDD,
+    months: MONTHS,
+  });
+
+  const isTabDisabled = returnIsTabDisabled(storeLocationView, selectedYear);
+
   const createdMetricsTabs = (
     <Tabs
       value={metricsView}
@@ -232,7 +233,11 @@ function Dashboard() {
     >
       <Tabs.List>
         {METRICS_VIEW_TABS_DATA.map((metricsView, idx) => (
-          <Tabs.Tab key={`${idx}-${metricsView}`} value={metricsView}>
+          <Tabs.Tab
+            key={`${idx}-${metricsView}`}
+            value={metricsView}
+            disabled={isTabDisabled}
+          >
             {metricsView}
           </Tabs.Tab>
         ))}
@@ -252,7 +257,11 @@ function Dashboard() {
     >
       <Tabs.List>
         {CALENDAR_VIEW_TABS_DATA.map((calendarView, idx) => (
-          <Tabs.Tab key={`${idx}-${calendarView}`} value={calendarView}>
+          <Tabs.Tab
+            key={`${idx}-${calendarView}`}
+            value={calendarView}
+            disabled={isTabDisabled}
+          >
             {calendarView}
           </Tabs.Tab>
         ))}
@@ -388,14 +397,23 @@ function Dashboard() {
                 }}
               >
                 <Tabs.List>
-                  {STORE_LOCATION_VIEW_TABS_DATA.map((storeLocationView, idx) => (
-                    <Tabs.Tab
-                      key={`${idx}-${storeLocationView}`}
-                      value={storeLocationView}
-                    >
-                      {storeLocationView}
-                    </Tabs.Tab>
-                  ))}
+                  {STORE_LOCATION_VIEW_TABS_DATA.map((storeLocationView, idx) => {
+                    const isStoreLocationTabDisabled =
+                      (storeLocationView === "Vancouver" &&
+                        Number(selectedYear) < 2019) ||
+                      (storeLocationView === "Calgary" && Number(selectedYear) < 2017) ||
+                      (storeLocationView === "Edmonton" && Number(selectedYear) < 2013);
+
+                    return (
+                      <Tabs.Tab
+                        key={`${idx}-${storeLocationView}`}
+                        value={storeLocationView}
+                        disabled={isStoreLocationTabDisabled}
+                      >
+                        {storeLocationView}
+                      </Tabs.Tab>
+                    );
+                  })}
                 </Tabs.List>
               </Tabs>
 
@@ -412,11 +430,6 @@ function Dashboard() {
       </Accordion.Item>
     </Accordion>
   );
-
-  const { selectedDate, selectedMonth, selectedYear } = splitSelectedCalendarDate({
-    calendarDate: selectedYYYYMMDD,
-    months: MONTHS,
-  });
 
   const displayMetricsView =
     metricsView === "Financials" ? (

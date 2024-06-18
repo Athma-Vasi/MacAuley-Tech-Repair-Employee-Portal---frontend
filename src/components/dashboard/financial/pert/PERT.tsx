@@ -83,6 +83,14 @@ function PERT({
     ? (charts[metricCategory] as FinancialMetricsCharts["dailyCharts"]["expenses"]) // cast to avoid TS error
     : charts.profit;
 
+  console.group("PERT");
+  console.log({ pertState });
+  console.log({ charts });
+  console.log({ barCharts });
+  console.log({ lineCharts });
+  console.log({ pieCharts });
+  console.groupEnd();
+
   const statistics = returnStatistics(barCharts);
 
   const {
