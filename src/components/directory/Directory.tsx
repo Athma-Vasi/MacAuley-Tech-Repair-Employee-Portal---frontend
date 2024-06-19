@@ -17,6 +17,7 @@ import { directoryReducer } from "./reducers";
 import { initialDirectoryState } from "./state";
 import { DepartmentsWithDefaultKey, StoreLocationsWithDefaultKey } from "./types";
 import { filterEmployees, returnIsStoreLocationDisabled } from "./utils";
+import { CheckboxRadioSelectData } from "../../types";
 
 function Directory() {
   const [directoryState, directoryDispatch] = useReducer(
@@ -32,10 +33,15 @@ function Directory() {
     generalColors: { themeColorShade },
   } = returnThemeColors({ colorsSwatches: COLORS_SWATCHES, themeObject });
 
+  const departmentData = [
+    { label: "All Departments", value: "All Departments" },
+    ...DEPARTMENT_DATA,
+  ] as CheckboxRadioSelectData<DepartmentsWithDefaultKey>;
+
   const departmentSelectInput = (
     <AccessibleSelectInput<DirectoryAction["setDepartment"], DepartmentsWithDefaultKey>
       attributes={{
-        data: ["All Departments", ...DEPARTMENT_DATA],
+        data: departmentData,
         name: "department",
         value: department,
         parentDispatch: directoryDispatch,
@@ -46,8 +52,13 @@ function Directory() {
 
   const isStoreLocationDisabled = returnIsStoreLocationDisabled(department);
   const storeLocationData = isStoreLocationDisabled
-    ? (["All Locations"] as StoreLocationsWithDefaultKey[])
-    : (STORE_LOCATION_DATA as StoreLocationsWithDefaultKey[]);
+    ? ([
+        {
+          label: "All Locations",
+          value: "All Locations",
+        },
+      ] as CheckboxRadioSelectData<StoreLocationsWithDefaultKey>)
+    : (STORE_LOCATION_DATA as CheckboxRadioSelectData<StoreLocationsWithDefaultKey>);
 
   const storeLocationSelectInput = (
     <AccessibleSelectInput<

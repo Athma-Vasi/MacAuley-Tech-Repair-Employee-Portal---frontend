@@ -8,6 +8,7 @@ import {
   USERNAME_REGEX,
 } from "../../constants/regex";
 import {
+  CheckboxRadioSelectData,
   ResourceRoutePaths,
   RoleResourceRoutePaths,
   StepperChild,
@@ -70,7 +71,7 @@ function returnAnonymousRequestStepperPages(): StepperPage[] {
   const requestKindChild: StepperChild = {
     inputType: "select",
     name: "requestKind",
-    selectInputData: ANONYMOUS_REQUEST_KINDS,
+    selectInputData: ANONYMOUS_REQUEST_KINDS_DATA,
   };
 
   return [
@@ -115,21 +116,63 @@ const CREATE_ANON_REQUEST_DESCRIPTION_OBJECTS: DescriptionObjectsArray = [
 
 const CREATE_ANON_REQUEST_MAX_STEPPER_POSITION = 3;
 
-const ANONYMOUS_REQUEST_KINDS: AnonymousRequestKind[] = [
-  "Benefits and compensation",
-  "Bullying and intimidation",
-  "Company security",
-  "Customer service",
-  "Discrimination",
-  "Diversity and inclusion",
-  "Employee conflict",
-  "Ethical concerns",
-  "LGBTQIA+",
-  "Managerial issues",
-  "Environmental concerns",
-  "Workload and stress",
-  "Workplace safety",
-  "Workplace harassment",
+const ANONYMOUS_REQUEST_KINDS_DATA: CheckboxRadioSelectData<AnonymousRequestKind> = [
+  {
+    label: "Benefits and compensation",
+    value: "Benefits and compensation",
+  },
+  {
+    label: "Bullying and intimidation",
+    value: "Bullying and intimidation",
+  },
+  {
+    label: "Company security",
+    value: "Company security",
+  },
+  {
+    label: "Customer service",
+    value: "Customer service",
+  },
+  {
+    label: "Discrimination",
+    value: "Discrimination",
+  },
+  {
+    label: "Diversity and inclusion",
+    value: "Diversity and inclusion",
+  },
+  {
+    label: "Employee conflict",
+    value: "Employee conflict",
+  },
+  {
+    label: "Ethical concerns",
+    value: "Ethical concerns",
+  },
+  {
+    label: "LGBTQIA+",
+    value: "LGBTQIA+",
+  },
+  {
+    label: "Managerial issues",
+    value: "Managerial issues",
+  },
+  {
+    label: "Environmental concerns",
+    value: "Environmental concerns",
+  },
+  {
+    label: "Workload and stress",
+    value: "Workload and stress",
+  },
+  {
+    label: "Workplace safety",
+    value: "Workplace safety",
+  },
+  {
+    label: "Workplace harassment",
+    value: "Workplace harassment",
+  },
 ];
 
 const ANONYMOUS_REQUEST_QUERY_DATA: ComponentQueryData[] = [
@@ -179,7 +222,7 @@ const ANONYMOUS_REQUEST_QUERY_DATA: ComponentQueryData[] = [
     label: "Request Kind",
     value: "requestKind",
     inputKind: "selectInput",
-    selectData: ANONYMOUS_REQUEST_KINDS,
+    selectData: ANONYMOUS_REQUEST_KINDS_DATA,
   },
   {
     label: "Request Description",
@@ -216,7 +259,7 @@ const ANONYMOUS_REQUEST_ROUTES: ResourceRoutePaths = {
 };
 
 export {
-  ANONYMOUS_REQUEST_KINDS,
+  ANONYMOUS_REQUEST_KINDS_DATA,
   ANONYMOUS_REQUEST_QUERY_DATA,
   ANONYMOUS_REQUEST_ROLE_PATHS,
   ANONYMOUS_REQUEST_ROUTES,

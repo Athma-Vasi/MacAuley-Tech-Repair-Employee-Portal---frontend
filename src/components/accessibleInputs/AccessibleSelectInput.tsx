@@ -1,30 +1,24 @@
 import { MantineSize, NativeSelect } from "@mantine/core";
-import { ChangeEvent, ReactNode, RefObject } from "react";
 
+import { CheckboxRadioSelectData } from "../../types";
 import { splitCamelCase } from "../../utils";
 
 type AccessibleSelectInputAttributes<
   ValidValueAction extends string = string,
   Payload extends string = string
 > = {
-  data: Array<
-    | {
-        label: string;
-        value: Payload;
-      }
-    | Payload
-  >;
+  data: CheckboxRadioSelectData<Payload>;
   describedBy?: string;
   description?: string;
   disabled?: boolean;
-  label?: ReactNode;
+  label?: React.ReactNode;
   name: string;
-  onChange?: (event: ChangeEvent<HTMLSelectElement>) => void;
+  onChange?: (event: React.ChangeEvent<HTMLSelectElement>) => void;
   parentDispatch: React.Dispatch<{
     action: ValidValueAction;
     payload: Payload;
   }>;
-  ref?: RefObject<HTMLSelectElement>;
+  ref?: React.RefObject<HTMLSelectElement>;
   required?: boolean;
   size?: MantineSize;
   validValueAction: ValidValueAction;
@@ -70,15 +64,13 @@ function AccessibleSelectInput<
       disabled={disabled}
       label={label}
       name={name}
-      onChange={(event: ChangeEvent<HTMLSelectElement>) => {
+      onChange={(event: React.ChangeEvent<HTMLSelectElement>) => {
         parentDispatch({
           action: validValueAction,
           payload: event.currentTarget.value as Payload,
         });
 
-        if (onChange) {
-          onChange(event);
-        }
+        onChange?.(event);
       }}
       ref={ref}
       required={required}

@@ -6,7 +6,7 @@ import {
   USERNAME_REGEX,
 } from "../../constants/regex";
 import {
-  CheckBoxMultipleData,
+  CheckboxRadioSelectData,
   RoleResourceRoutePaths,
   StepperChild,
   StepperPage,
@@ -19,6 +19,7 @@ import {
 } from "../../utils";
 import { ComponentQueryData } from "../queryBuilder";
 import { DescriptionObjectsArray } from "../wrappers";
+import { EmployeeAttributes } from "./create/types";
 
 const ENDORSEMENT_ROLE_PATHS: RoleResourceRoutePaths = {
   admin: "actions/general/endorsement",
@@ -90,7 +91,7 @@ const CREATE_ENDORSEMENT_DESCRIPTION_OBJECTS: DescriptionObjectsArray = [
   },
 ];
 
-const EMPLOYEE_ATTRIBUTES_DATA: CheckBoxMultipleData = [
+const EMPLOYEE_ATTRIBUTES_DATA: CheckboxRadioSelectData<EmployeeAttributes> = [
   { value: "teamwork and collaboration", label: "Teamwork and collaboration" },
   { value: "leadership and mentorship", label: "Leadership and mentorship" },
   { value: "technical expertise", label: "Technical expertise" },

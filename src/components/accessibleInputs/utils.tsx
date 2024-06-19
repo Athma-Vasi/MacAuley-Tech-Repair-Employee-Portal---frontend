@@ -477,7 +477,7 @@ function createAccessibleCheckboxSingleInputs<
 
 function createAccessibleCheckboxGroupInputs<
   ValidValueAction extends string = string,
-  Payload extends string[] = string[]
+  Payload extends string = string
 >(
   attributesArray: AccessibleCheckboxInputGroupAttributes<ValidValueAction, Payload>[]
 ): React.JSX.Element[] {

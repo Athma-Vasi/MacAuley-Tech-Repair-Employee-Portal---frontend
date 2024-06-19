@@ -6,6 +6,7 @@ import {
   USERNAME_REGEX,
 } from "../../constants/regex";
 import {
+  CheckboxRadioSelectData,
   RadioGroupInputData,
   RoleResourceRoutePaths,
   StepperChild,
@@ -135,27 +136,27 @@ const INDEX_ALPHABET_TABLE: Record<number, string> = {
   25: "Z",
 };
 
-const SURVEY_RECIPIENT_DATA: SurveyRecipient[] = [
-  "All",
-  "Executive Management",
-  "Store Administration",
-  "Office Administration",
-  "Accounting",
-  "Human Resources",
-  "Sales",
-  "Marketing",
-  "Information Technology",
-  "Repair Technicians",
-  "Field Service Technicians",
-  "Logistics and Inventory",
-  "Customer Service",
-  "Maintenance",
+const SURVEY_RECIPIENT_DATA: CheckboxRadioSelectData<SurveyRecipient> = [
+  { label: "All", value: "All" },
+  { label: "Executive Management", value: "Executive Management" },
+  { label: "Store Administration", value: "Store Administration" },
+  { label: "Office Administration", value: "Office Administration" },
+  { label: "Accounting", value: "Accounting" },
+  { label: "Human Resources", value: "Human Resources" },
+  { label: "Sales", value: "Sales" },
+  { label: "Marketing", value: "Marketing" },
+  { label: "Information Technology", value: "Information Technology" },
+  { label: "Repair Technicians", value: "Repair Technicians" },
+  { label: "Field Service Technicians", value: "Field Service Technicians" },
+  { label: "Logistics and Inventory", value: "Logistics and Inventory" },
+  { label: "Customer Service", value: "Customer Service" },
+  { label: "Maintenance", value: "Maintenance" },
 ];
 
-const SURVEY_RESPONSE_KIND_DATA: SurveyResponseKind[] = [
-  "chooseOne",
-  "chooseAny",
-  "rating",
+const SURVEY_RESPONSE_KIND_DATA: CheckboxRadioSelectData<SurveyResponseKind> = [
+  { label: "Choose One", value: "chooseOne" },
+  { label: "Choose Any", value: "chooseAny" },
+  { label: "Rating", value: "rating" },
 ];
 
 const SURVEY_INPUT_HTML_DATA: Record<SurveyResponseKind, SurveyResponseInput[]> = {
@@ -169,34 +170,19 @@ const SURVEY_MAX_QUESTION_AMOUNT = 3;
 const SURVEY_MAX_RESPONSE_DATA_OPTIONS = 11;
 
 const SURVEY_AGREE_DISAGREE_RESPONSE_DATA_OPTIONS: RadioGroupInputData = [
-  {
-    label: "Strongly agree",
-    value: "Strongly agree",
-  },
-  {
-    label: "Agree",
-    value: "Agree",
-  },
-  {
-    label: "Neither agree nor disagree",
-    value: "Neither agree nor disagree",
-  },
-  {
-    label: "Disagree",
-    value: "Disagree",
-  },
-  {
-    label: "Strongly disagree",
-    value: "Strongly disagree",
-  },
+  { label: "Strongly agree", value: "Strongly agree" },
+  { label: "Agree", value: "Agree" },
+  { label: "Neither agree nor disagree", value: "Neither agree nor disagree" },
+  { label: "Disagree", value: "Disagree" },
+  { label: "Strongly disagree", value: "Strongly disagree" },
 ];
 
-const SURVEY_RESPONSE_INPUTS: SurveyResponseInput[] = [
-  "agreeDisagree",
-  "radio",
-  "checkbox",
-  "emotion",
-  "stars",
+const SURVEY_RESPONSE_INPUTS: CheckboxRadioSelectData<SurveyResponseInput> = [
+  { label: "Agree/Disagree", value: "agreeDisagree" },
+  { label: "Radio", value: "radio" },
+  { label: "Checkbox", value: "checkbox" },
+  { label: "Emotion", value: "emotion" },
+  { label: "Stars", value: "stars" },
 ];
 
 const SURVEY_QUERY_DATA: ComponentQueryData[] = [

@@ -1,10 +1,10 @@
 import { MantineNumberSize, MantineSize, NativeSelect } from "@mantine/core";
 import { ChangeEvent, RefObject } from "react";
 
-import { SelectInputData } from "../../types";
+import { CheckboxRadioSelectData } from "../../types";
 
 type AccessibleSelectInputCreatorInfo = {
-  data: string[] | SelectInputData;
+  data: string[] | CheckboxRadioSelectData;
   describedBy?: string;
   description?: string;
   disabled?: boolean;

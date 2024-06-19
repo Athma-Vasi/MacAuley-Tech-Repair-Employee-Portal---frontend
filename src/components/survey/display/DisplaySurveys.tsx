@@ -9,6 +9,7 @@ import {
   Title,
   Tooltip,
 } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
 import { InvalidTokenError } from "jwt-decode";
 import { Fragment, useEffect, useReducer } from "react";
 import { useErrorBoundary } from "react-error-boundary";
@@ -23,7 +24,11 @@ import {
   returnAccessibleCheckboxGroupInputsElements,
   returnAccessibleRadioGroupInputsElements,
 } from "../../../jsxCreators";
-import { CheckBoxMultipleData, RadioGroupInputData, UserDocument } from "../../../types";
+import {
+  CheckboxRadioSelectData,
+  RadioGroupInputData,
+  UserDocument,
+} from "../../../types";
 import {
   filterFieldsFromObject,
   logState,
@@ -31,10 +36,10 @@ import {
   returnThemeColors,
   urlBuilder,
 } from "../../../utils";
-import { NotificationModal } from "../../notificationModal";
 import { CustomRating } from "../../customRating/CustomRating";
 import DisplayResourceHeader from "../../displayResourceHeader/DisplayResourceHeader";
 import { DisplayStatistics } from "../../displayStatistics";
+import { NotificationModal } from "../../notificationModal";
 import { PageBuilder } from "../../pageBuilder";
 import {
   AccessibleCheckboxGroupInputCreatorInfo,
@@ -49,7 +54,6 @@ import {
   displaySurveysReducer,
   initialDisplaySurveysState,
 } from "./state";
-import { useDisclosure } from "@mantine/hooks";
 
 function DisplaySurveys() {
   /** ------------- begin hooks ------------- */
@@ -706,7 +710,7 @@ function DisplaySurveys() {
             }
             // checkbox is a checkbox group with dynamic values with unconstrained multiple selections (array of strings)
             case "checkbox": {
-              const dataObjectArray: CheckBoxMultipleData = responseDataOptions.map(
+              const dataObjectArray: CheckboxRadioSelectData = responseDataOptions.map(
                 (responseDataOption) => ({
                   value: responseDataOption,
                   label: responseDataOption,

@@ -113,7 +113,7 @@ function DisplayResource<Doc>({
     globalDispatch,
   } = useGlobalState();
   const {
-    authState: { roles, sessionId },
+    authState: { roles },
   } = useAuth();
 
   const { pathname } = useLocation();
@@ -1053,7 +1053,7 @@ function DisplayResource<Doc>({
       bg={backgroundColor}
       style={{ ...style, borderRadius: 4 }}
       align="center"
-      p={padding}      
+      p={padding}
     >
       {displaySubmitSuccessNotificationModal}
 

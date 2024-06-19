@@ -1,16 +1,17 @@
+import { CheckboxRadioSelectData } from "../../../types";
 import { DescriptionObjectsArray } from "../../wrappers";
 import { ReasonForLeave } from "../types";
 
-const REASON_FOR_LEAVE_DATA: ReasonForLeave[] = [
-  "Vacation",
-  "Medical",
-  "Parental",
-  "Bereavement",
-  "Jury Duty",
-  "Military",
-  "Education",
-  "Religious",
-  "Other",
+const REASON_FOR_LEAVE_DATA: CheckboxRadioSelectData<ReasonForLeave> = [
+  { label: "Vacation", value: "Vacation" },
+  { label: "Medical", value: "Medical" },
+  { label: "Parental", value: "Parental" },
+  { label: "Bereavement", value: "Bereavement" },
+  { label: "Jury Duty", value: "Jury Duty" },
+  { label: "Military", value: "Military" },
+  { label: "Education", value: "Education" },
+  { label: "Religious", value: "Religious" },
+  { label: "Other", value: "Other" },
 ];
 
 const LEAVE_REQUEST_DESCRIPTION_OBJECTS: DescriptionObjectsArray = [

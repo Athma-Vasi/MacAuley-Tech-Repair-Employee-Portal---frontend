@@ -4,87 +4,91 @@ import {
   AllowedFileEncodings,
   AllowedFileExtensions,
   AllowedFileMimeTypes,
+  CheckboxRadioSelectData,
   Country,
   Currency,
   Department,
   JobPosition,
   Province,
-  SelectInputData,
   StatesUS,
   StoreLocation,
   Urgency,
 } from "../../types";
 
-const PROVINCES: Province[] = [
-  "Alberta",
-  "British Columbia",
-  "Manitoba",
-  "New Brunswick",
-  "Newfoundland and Labrador",
-  "Northwest Territories",
-  "Nova Scotia",
-  "Nunavut",
-  "Ontario",
-  "Prince Edward Island",
-  "Quebec",
-  "Saskatchewan",
-  "Yukon",
+const PROVINCES: CheckboxRadioSelectData<Province> = [
+  { value: "Alberta", label: "Alberta" },
+  { value: "British Columbia", label: "British Columbia" },
+  { value: "Manitoba", label: "Manitoba" },
+  { value: "New Brunswick", label: "New Brunswick" },
+  { value: "Newfoundland and Labrador", label: "Newfoundland and Labrador" },
+  { value: "Northwest Territories", label: "Northwest Territories" },
+  { value: "Nova Scotia", label: "Nova Scotia" },
+  { value: "Nunavut", label: "Nunavut" },
+  { value: "Ontario", label: "Ontario" },
+  { value: "Prince Edward Island", label: "Prince Edward Island" },
+  { value: "Quebec", label: "Quebec" },
+  { value: "Saskatchewan", label: "Saskatchewan" },
+  { value: "Yukon", label: "Yukon" },
 ];
 
-const STATES_US: StatesUS[] = [
-  "Alabama",
-  "Alaska",
-  "Arizona",
-  "Arkansas",
-  "California",
-  "Colorado",
-  "Connecticut",
-  "Delaware",
-  "Florida",
-  "Georgia",
-  "Hawaii",
-  "Idaho",
-  "Illinois",
-  "Indiana",
-  "Iowa",
-  "Kansas",
-  "Kentucky",
-  "Louisiana",
-  "Maine",
-  "Maryland",
-  "Massachusetts",
-  "Michigan",
-  "Minnesota",
-  "Mississippi",
-  "Missouri",
-  "Montana",
-  "Nebraska",
-  "Nevada",
-  "New Hampshire",
-  "New Jersey",
-  "New Mexico",
-  "New York",
-  "North Carolina",
-  "North Dakota",
-  "Ohio",
-  "Oklahoma",
-  "Oregon",
-  "Pennsylvania",
-  "Rhode Island",
-  "South Carolina",
-  "South Dakota",
-  "Tennessee",
-  "Texas",
-  "Utah",
-  "Vermont",
-  "Virginia",
-  "Washington",
-  "West Virginia",
-  "Wisconsin",
-  "Wyoming",
+const STATES_US: CheckboxRadioSelectData<StatesUS> = [
+  { value: "Alabama", label: "Alabama" },
+  { value: "Alaska", label: "Alaska" },
+  { value: "Arizona", label: "Arizona" },
+  { value: "Arkansas", label: "Arkansas" },
+  { value: "California", label: "California" },
+  { value: "Colorado", label: "Colorado" },
+  { value: "Connecticut", label: "Connecticut" },
+  { value: "Delaware", label: "Delaware" },
+  { value: "Florida", label: "Florida" },
+  { value: "Georgia", label: "Georgia" },
+  { value: "Hawaii", label: "Hawaii" },
+  { value: "Idaho", label: "Idaho" },
+  { value: "Illinois", label: "Illinois" },
+  { value: "Indiana", label: "Indiana" },
+  { value: "Iowa", label: "Iowa" },
+  { value: "Kansas", label: "Kansas" },
+  { value: "Kentucky", label: "Kentucky" },
+  { value: "Louisiana", label: "Louisiana" },
+  { value: "Maine", label: "Maine" },
+  { value: "Maryland", label: "Maryland" },
+  { value: "Massachusetts", label: "Massachusetts" },
+  { value: "Michigan", label: "Michigan" },
+  { value: "Minnesota", label: "Minnesota" },
+  { value: "Mississippi", label: "Mississippi" },
+  { value: "Missouri", label: "Missouri" },
+  { value: "Montana", label: "Montana" },
+  { value: "Nebraska", label: "Nebraska" },
+  { value: "Nevada", label: "Nevada" },
+  { value: "New Hampshire", label: "New Hampshire" },
+  { value: "New Jersey", label: "New Jersey" },
+  { value: "New Mexico", label: "New Mexico" },
+  { value: "New York", label: "New York" },
+  { value: "North Carolina", label: "North Carolina" },
+  { value: "North Dakota", label: "North Dakota" },
+  { value: "Ohio", label: "Ohio" },
+  { value: "Oklahoma", label: "Oklahoma" },
+  { value: "Oregon", label: "Oregon" },
+  { value: "Pennsylvania", label: "Pennsylvania" },
+  { value: "Rhode Island", label: "Rhode Island" },
+  { value: "South Carolina", label: "South Carolina" },
+  { value: "South Dakota", label: "South Dakota" },
+  { value: "Tennessee", label: "Tennessee" },
+  { value: "Texas", label: "Texas" },
+  { value: "Utah", label: "Utah" },
+  { value: "Vermont", label: "Vermont" },
+  { value: "Virginia", label: "Virginia" },
+  { value: "Washington", label: "Washington" },
+  { value: "West Virginia", label: "West Virginia" },
+  { value: "Wisconsin", label: "Wisconsin" },
+  { value: "Wyoming", label: "Wyoming" },
 ];
 
-const URGENCY_DATA: Urgency[] = ["low", "medium", "high"];
+const URGENCY_DATA: CheckboxRadioSelectData<Urgency> = [
+  { value: "low", label: "Low" },
+  { value: "medium", label: "Medium" },
+  { value: "high", label: "High" },
+];
 
 const TEXT_OVERFLOW: CSSProperties = {
   overflow: "hidden",
@@ -94,105 +98,111 @@ const TEXT_OVERFLOW: CSSProperties = {
 
 const REQUEST_STATUS = ["pending", "approved", "rejected"];
 
-const DEPARTMENT_DATA: Department[] = [
-  "Executive Management",
-  "Store Administration",
-  "Office Administration",
-  "Accounting",
-  "Human Resources",
-  "Sales",
-  "Marketing",
-  "Information Technology",
-  "Repair Technicians",
-  "Field Service Technicians",
-  "Logistics and Inventory",
-  "Customer Service",
-  "Maintenance",
+const DEPARTMENT_DATA: CheckboxRadioSelectData<Department> = [
+  { value: "Executive Management", label: "Executive Management" },
+  { value: "Human Resources", label: "Human Resources" },
+  { value: "Store Administration", label: "Store Administration" },
+  { value: "Office Administration", label: "Office Administration" },
+  { value: "Accounting", label: "Accounting" },
+  { value: "Sales", label: "Sales" },
+  { value: "Marketing", label: "Marketing" },
+  { value: "Information Technology", label: "Information Technology" },
+  { value: "Repair Technicians", label: "Repair Technicians" },
+  { value: "Field Service Technicians", label: "Field Service Technicians" },
+  { value: "Logistics and Inventory", label: "Logistics and Inventory" },
+  { value: "Customer Service", label: "Customer Service" },
+  { value: "Maintenance", label: "Maintenance" },
 ];
 
-const JOB_POSITION_DATA: JobPosition[] = [
+const JOB_POSITION_DATA: CheckboxRadioSelectData<JobPosition> = [
   // executive management
-  "Chief Executive Officer",
-  "Chief Operations Officer",
-  "Chief Financial Officer",
-  "Chief Technology Officer",
-  "Chief Marketing Officer",
-  "Chief Human Resources Officer",
+  { value: "Chief Executive Officer", label: "Chief Executive Officer" },
+  { value: "Chief Operations Officer", label: "Chief Operations Officer" },
+  { value: "Chief Financial Officer", label: "Chief Financial Officer" },
+  { value: "Chief Technology Officer", label: "Chief Technology Officer" },
+  { value: "Chief Marketing Officer", label: "Chief Marketing Officer" },
+  { value: "Chief Human Resources Officer", label: "Chief Human Resources Officer" },
 
   // human resources
-  "Human Resources Manager",
-  "Compensation and Benefits Specialist",
-  "Health and Safety Specialist",
-  "Training Specialist",
-  "Recruiting Specialist",
+  { value: "Human Resources Manager", label: "Human Resources Manager" },
+  {
+    value: "Compensation and Benefits Specialist",
+    label: "Compensation and Benefits Specialist",
+  },
+  { value: "Health and Safety Specialist", label: "Health and Safety Specialist" },
+  { value: "Training Specialist", label: "Training Specialist" },
+  { value: "Recruiting Specialist", label: "Recruiting Specialist" },
 
   // store administration
-  "Store Manager",
-  "Shift Supervisor",
-  "Office Manager",
+  { value: "Store Manager", label: "Store Manager" },
+  { value: "Shift Supervisor", label: "Shift Supervisor" },
+  { value: "Office Manager", label: "Office Manager" },
 
   // office administration
-  "Office Administrator",
-  "Receptionist",
-  "Data Entry Specialist",
+  { value: "Office Administrator", label: "Office Administrator" },
+  { value: "Receptionist", label: "Receptionist" },
+  { value: "Data Entry Specialist", label: "Data Entry Specialist" },
 
   // accounting
-  "Accounting Manager",
-  "Accounts Payable Clerk",
-  "Accounts Receivable Clerk",
-  "Financial Analyst",
+  { value: "Accounting Manager", label: "Accounting Manager" },
+  { value: "Accounts Payable Clerk", label: "Accounts Payable Clerk" },
+  { value: "Accounts Receivable Clerk", label: "Accounts Receivable Clerk" },
+  { value: "Financial Analyst", label: "Financial Analyst" },
 
   // sales
-  "Sales Manager",
-  "Sales Representative",
-  "Business Development Specialist",
-  "Sales Support Specialist",
-  "Sales Operations Analyst",
+  { value: "Sales Manager", label: "Sales Manager" },
+  { value: "Sales Representative", label: "Sales Representative" },
+  { value: "Business Development Specialist", label: "Business Development Specialist" },
+  { value: "Sales Support Specialist", label: "Sales Support Specialist" },
+  { value: "Sales Operations Analyst", label: "Sales Operations Analyst" },
 
   // marketing
-  "Marketing Manager",
-  "Digital Marketing Specialist",
-  "Graphic Designer",
-  "Public Relations Specialist",
-  "Marketing Analyst",
+  { value: "Marketing Manager", label: "Marketing Manager" },
+  { value: "Digital Marketing Specialist", label: "Digital Marketing Specialist" },
+  { value: "Graphic Designer", label: "Graphic Designer" },
+  { value: "Public Relations Specialist", label: "Public Relations Specialist" },
+  { value: "Marketing Analyst", label: "Marketing Analyst" },
 
   // information technology
-  "IT Manager",
-  "Systems Administrator",
-  "IT Support Specialist",
-  "Database Administrator",
-  "Web Developer",
-  "Software Developer",
-  "Software Engineer",
+  { value: "IT Manager", label: "IT Manager" },
+  { value: "Systems Administrator", label: "Systems Administrator" },
+  { value: "IT Support Specialist", label: "IT Support Specialist" },
+  { value: "Database Administrator", label: "Database Administrator" },
+  { value: "Web Developer", label: "Web Developer" },
+  { value: "Software Developer", label: "Software Developer" },
+  { value: "Software Engineer", label: "Software Engineer" },
 
   // repair technicians
-  "Repair Technicians Supervisor",
-  "Electronics Technician",
-  "Computer Technician",
-  "Smartphone Technician",
-  "Tablet Technician",
-  "Audio/Video Equipment Technician",
+  { value: "Repair Technicians Supervisor", label: "Repair Technicians Supervisor" },
+  { value: "Electronics Technician", label: "Electronics Technician" },
+  { value: "Computer Technician", label: "Computer Technician" },
+  { value: "Smartphone Technician", label: "Smartphone Technician" },
+  { value: "Tablet Technician", label: "Tablet Technician" },
+  {
+    value: "Audio/Video Equipment Technician",
+    label: "Audio/Video Equipment Technician",
+  },
 
   // field service technicians
-  "Field Service Supervisor",
-  "On-Site Technician",
+  { value: "Field Service Supervisor", label: "Field Service Supervisor" },
+  { value: "On-Site Technician", label: "On-Site Technician" },
 
   // logistics and inventory
-  "Warehouse Supervisor",
-  "Inventory Clerk",
-  "Delivery Driver",
-  "Parts and Materials Handler",
-  "Shipper/Receiver",
+  { value: "Warehouse Supervisor", label: "Warehouse Supervisor" },
+  { value: "Inventory Clerk", label: "Inventory Clerk" },
+  { value: "Delivery Driver", label: "Delivery Driver" },
+  { value: "Parts and Materials Handler", label: "Parts and Materials Handler" },
+  { value: "Shipper/Receiver", label: "Shipper/Receiver" },
 
   // customer service
-  "Customer Service Supervisor",
-  "Customer Service Representative",
-  "Technical Support Specialist",
+  { value: "Customer Service Supervisor", label: "Customer Service Supervisor" },
+  { value: "Customer Service Representative", label: "Customer Service Representative" },
+  { value: "Technical Support Specialist", label: "Technical Support Specialist" },
 
   // maintenance
-  "Maintenance Supervisor",
-  "Maintenance Worker",
-  "Custodian",
+  { value: "Maintenance Supervisor", label: "Maintenance Supervisor" },
+  { value: "Maintenance Worker", label: "Maintenance Worker" },
+  { value: "Custodian", label: "Custodian" },
 ];
 
 const DEPARTMENT_JOB_POSITION_MAP = new Map<Department, string[]>([
@@ -308,7 +318,11 @@ const DEPARTMENT_JOB_POSITION_MAP = new Map<Department, string[]>([
   ["Maintenance", ["Maintenance Supervisor", "Maintenance Worker", "Custodian"]],
 ]);
 
-const STORE_LOCATION_DATA: StoreLocation[] = ["Edmonton", "Calgary", "Vancouver"];
+const STORE_LOCATION_DATA: CheckboxRadioSelectData<StoreLocation> = [
+  { value: "Edmonton", label: "Edmonton" },
+  { value: "Calgary", label: "Calgary" },
+  { value: "Vancouver", label: "Vancouver" },
+];
 
 /**
  * these are the field names that have date values that are not time stamps.
@@ -536,7 +550,7 @@ const COLORS_SWATCHES: ColorsSwatches = {
   ],
 };
 
-const SCREENSHOT_IMAGE_TYPE_DATA: SelectInputData = [
+const SCREENSHOT_IMAGE_TYPE_DATA = [
   { value: "image/png", label: "Image/png" },
   { value: "image/jpeg", label: "Image/jpeg" },
   { value: "image/webp", label: "Image/webp" },
@@ -566,9 +580,15 @@ const ALLOWED_FILE_ENCODINGS: AllowedFileEncodings[] = [
 
 const ERROR_LOG_ROUTE_PATH = "/error-log";
 
-const COUNTRIES_DATA: Country[] = ["Canada", "United States"];
+const COUNTRIES_DATA: CheckboxRadioSelectData<Country> = [
+  { value: "Canada", label: "Canada" },
+  { value: "United States", label: "United States" },
+];
 
-const CURRENCY_DATA: Currency[] = ["USD", "CAD"];
+const CURRENCY_DATA: CheckboxRadioSelectData<Currency> = [
+  { value: "USD", label: "USD" },
+  { value: "CAD", label: "CAD" },
+];
 
 export {
   ALLOWED_FILE_ENCODINGS,

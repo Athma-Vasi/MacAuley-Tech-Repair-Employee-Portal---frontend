@@ -13,7 +13,7 @@ import { AccessibleStepper } from "../../accessibleInputs/AccessibleStepper";
 import { AccessibleTextAreaInput } from "../../accessibleInputs/AccessibleTextAreaInput";
 import { AccessibleTextInput } from "../../accessibleInputs/text/AccessibleTextInput";
 import {
-  ANONYMOUS_REQUEST_KINDS,
+  ANONYMOUS_REQUEST_KINDS_DATA,
   ANONYMOUS_REQUEST_ROLE_PATHS,
   returnAnonymousRequestStepperPages,
 } from "../constants";
@@ -172,7 +172,7 @@ function AnonymousRequest() {
   const requestKindSelectInput = (
     <AccessibleSelectInput<AnonymousRequestAction["setRequestKind"], AnonymousRequestKind>
       attributes={{
-        data: ANONYMOUS_REQUEST_KINDS,
+        data: ANONYMOUS_REQUEST_KINDS_DATA,
         name: "requestKind",
         parentDispatch: anonymousRequestDispatch,
         value: requestKind,

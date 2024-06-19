@@ -1,5 +1,4 @@
-import { SelectInputData } from "../../types";
-import { ProductCategory } from "../dashboard/types";
+import { CheckboxRadioSelectData } from "../../types";
 
 const QUERY_LIMIT_PER_PAGE_SELECT_DATA = ["10", "20", "30", "40", "50"];
 
@@ -211,7 +210,7 @@ const PRODUCT_CATEGORY_FIELDS_OBJ: Record<string, Set<string>> = {
   webcam: productCategoryWebcamFields,
 };
 
-const PRODUCT_CATEGORY_ROUTE_SELECT_DATA: SelectInputData = [
+const PRODUCT_CATEGORY_ROUTE_SELECT_DATA: CheckboxRadioSelectData = [
   { label: "Accessory", value: "accessory" },
   { label: "Central Processing Unit (CPU)", value: "cpu" },
   { label: "Computer Case", value: "computer-case" },

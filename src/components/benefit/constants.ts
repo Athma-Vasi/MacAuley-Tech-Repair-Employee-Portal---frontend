@@ -8,7 +8,7 @@ import {
   USERNAME_REGEX,
 } from "../../constants/regex";
 import {
-  Currency,
+  CheckboxRadioSelectData,
   ResourceRoutePaths,
   RoleResourceRoutePaths,
   StepperChild,
@@ -105,15 +105,15 @@ function returnBenefitStepperPages() {
   return stepperPages;
 }
 
-const BENEFIT_PLAN_DATA: BenefitsPlanKind[] = [
-  "Health",
-  "Dental",
-  "Vision",
-  "Life",
-  "Disability",
-  "Retirement",
-  "Education",
-  "Other",
+const BENEFIT_PLAN_DATA: CheckboxRadioSelectData<BenefitsPlanKind> = [
+  { label: "Dental", value: "Dental" },
+  { label: "Disability", value: "Disability" },
+  { label: "Education", value: "Education" },
+  { label: "Health", value: "Health" },
+  { label: "Life", value: "Life" },
+  { label: "Other", value: "Other" },
+  { label: "Retirement", value: "Retirement" },
+  { label: "Vision", value: "Vision" },
 ];
 
 const BENEFIT_DESCRIPTION_OBJECTS: DescriptionObjectsArray = [

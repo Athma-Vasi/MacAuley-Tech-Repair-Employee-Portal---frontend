@@ -7,6 +7,7 @@ import {
   USERNAME_REGEX,
 } from "../../constants/regex";
 import {
+  CheckboxRadioSelectData,
   ResourceRoutePaths,
   RoleResourceRoutePaths,
   StepperChild,
@@ -126,17 +127,17 @@ function returnEventStepperPages(): StepperPage[] {
   ];
 }
 
-const EVENT_KIND_DATA: EventKind[] = [
-  "Webinar",
-  "Workshop",
-  "Seminar",
-  "Conference",
-  "Networking",
-  "Tech Talk",
-  "Charity",
-  "Team Building",
-  "Awards",
-  "Other",
+const EVENT_KIND_DATA: CheckboxRadioSelectData<EventKind> = [
+  { label: "Webinar", value: "Webinar" },
+  { label: "Workshop", value: "Workshop" },
+  { label: "Seminar", value: "Seminar" },
+  { label: "Conference", value: "Conference" },
+  { label: "Networking", value: "Networking" },
+  { label: "Tech Talk", value: "Tech Talk" },
+  { label: "Charity", value: "Charity" },
+  { label: "Team Building", value: "Team Building" },
+  { label: "Awards", value: "Awards" },
+  { label: "Other", value: "Other" },
 ];
 
 const EVENT_CREATOR_DESCRIPTION_OBJECTS: DescriptionObjectsArray = [

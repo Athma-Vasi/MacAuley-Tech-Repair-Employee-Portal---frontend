@@ -7,6 +7,7 @@ import {
   STORE_LOCATION_DATA,
 } from "../../constants/data";
 import {
+  CheckboxRadioSelectData,
   Country,
   PreferredPronouns,
   RoleResourceRoutePaths,
@@ -262,12 +263,12 @@ const REGISTER_DESCRIPTION_OBJECTS: DescriptionObjectsArray = [
 
 const REGISTER_MAX_STEPPER_POSITION = 5;
 
-const PREFERRED_PRONOUNS_DATA: PreferredPronouns[] = [
-  "Prefer not to say",
-  "He/Him",
-  "She/Her",
-  "They/Them",
-  "Other",
+const PREFERRED_PRONOUNS_DATA: CheckboxRadioSelectData<PreferredPronouns> = [
+  { label: "Prefer not to say", value: "Prefer not to say" },
+  { label: "He/Him", value: "He/Him" },
+  { label: "She/Her", value: "She/Her" },
+  { label: "They/Them", value: "They/Them" },
+  { label: "Other", value: "Other" },
 ];
 
 export {

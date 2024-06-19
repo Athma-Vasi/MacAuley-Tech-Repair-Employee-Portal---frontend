@@ -1,7 +1,7 @@
 import { Flex, Group, Text } from "@mantine/core";
 
 import { PROPERTY_DESCRIPTOR } from "../../../constants/data";
-import { StepperPage } from "../../../types";
+import { CheckboxRadioSelectData } from "../../../types";
 import { INDEX_ALPHABET_TABLE } from "../constants";
 import { SurveyResponseInput, SurveyResponseKind } from "../types";
 import { SurveyState } from "./types";
@@ -52,12 +52,15 @@ const SURVEY_HELP_TEXT = (
 
 function returnCorrectResponseInputData(
   responseKind: SurveyResponseKind
-): SurveyResponseInput[] {
+): CheckboxRadioSelectData<SurveyResponseInput> {
   return responseKind === "chooseOne"
-    ? ["radio"]
+    ? [{ label: "Radio", value: "radio" }]
     : responseKind === "chooseAny"
-    ? ["checkbox"]
-    : ["emotion", "stars"];
+    ? [{ label: "Checkbox", value: "checkbox" }]
+    : [
+        { label: "Emotion", value: "emotion" },
+        { label: "Stars", value: "stars" },
+      ];
 }
 
 /** flattens state into stepper-friendly format for review page */

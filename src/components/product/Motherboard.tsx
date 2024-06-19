@@ -7,9 +7,9 @@ import { ProductCategory } from "../dashboard/types";
 import { CreateProductAction } from "./actions";
 import { AdditionalFields } from "./AdditionalFields";
 import {
+  MEMORY_TYPE_DATA,
   MEMORY_UNIT_DATA,
   MOTHERBOARD_FORM_FACTOR_DATA,
-  MOTHERBOARD_MEMORY_TYPE_DATA,
 } from "./constants";
 import { CreateProductDispatch } from "./dispatch";
 import { MemoryType, MemoryUnit, MotherboardFormFactor } from "./types";
@@ -130,7 +130,7 @@ function Motherboard({
   const motherboardMemoryTypeSelectInput = (
     <AccessibleSelectInput
       attributes={{
-        data: MOTHERBOARD_MEMORY_TYPE_DATA,
+        data: MEMORY_TYPE_DATA,
         name: "motherboardMemoryType",
         parentDispatch,
         validValueAction: parentAction.setMotherboardMemoryType,

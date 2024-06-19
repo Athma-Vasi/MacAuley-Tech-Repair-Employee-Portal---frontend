@@ -8,6 +8,7 @@ import {
   USERNAME_REGEX,
 } from "../../constants/regex";
 import {
+  CheckboxRadioSelectData,
   ResourceRoutePaths,
   RoleResourceRoutePaths,
   StepperChild,
@@ -103,11 +104,11 @@ function returnRequestResourceStepperPages(): StepperPage[] {
   return stepperPages;
 }
 
-const REQUEST_RESOURCE_TYPE_DATA: RequestResourceType[] = [
-  "Hardware",
-  "Software",
-  "Access",
-  "Other",
+const REQUEST_RESOURCE_TYPE_DATA: CheckboxRadioSelectData<RequestResourceType> = [
+  { label: "Hardware", value: "Hardware" },
+  { label: "Software", value: "Software" },
+  { label: "Access", value: "Access" },
+  { label: "Other", value: "Other" },
 ];
 
 const REQUEST_RESOURCE_DESCRIPTION_OBJECTS: DescriptionObjectsArray = [
@@ -221,10 +222,10 @@ const REQUEST_RESOURCE_PATHS: ResourceRoutePaths = {
 
 export {
   REQUEST_RESOURCE_DESCRIPTION_OBJECTS,
-  REQUEST_RESOURCE_TYPE_DATA,
   REQUEST_RESOURCE_MAX_STEPPER_POSITION,
   REQUEST_RESOURCE_PATHS,
   REQUEST_RESOURCE_QUERY_DATA,
   REQUEST_RESOURCE_ROLE_PATHS,
+  REQUEST_RESOURCE_TYPE_DATA,
   returnRequestResourceStepperPages,
 };

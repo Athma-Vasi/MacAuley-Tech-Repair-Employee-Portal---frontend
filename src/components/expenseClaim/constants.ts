@@ -7,6 +7,7 @@ import {
   USERNAME_REGEX,
 } from "../../constants/regex";
 import {
+  CheckboxRadioSelectData,
   ResourceRoutePaths,
   RoleResourceRoutePaths,
   StepperChild,
@@ -118,17 +119,17 @@ const EXPENSE_CLAIM_DESCRIPTION_OBJECTS: DescriptionObjectsArray = [
 
 const EXPENSE_CLAIM_MAX_STEPPER_POSITION = 3;
 
-const EXPENSE_CLAIM_KIND_DATA: ExpenseClaimKind[] = [
-  "Travel and Accomodation",
-  "Miscellaneous",
-  "Rent and Leasing",
-  "Software and Licenses",
-  "Training and Certifications",
-  "Communication and Utilities",
-  "Equipment and Supplies",
-  "Insurance",
-  "Legal and Professional Fees",
-  "Marketing and Advertising",
+const EXPENSE_CLAIM_KIND_DATA: CheckboxRadioSelectData<ExpenseClaimKind> = [
+  { label: "Travel and Accomodation", value: "Travel and Accomodation" },
+  { label: "Miscellaneous", value: "Miscellaneous" },
+  { label: "Rent and Leasing", value: "Rent and Leasing" },
+  { label: "Software and Licenses", value: "Software and Licenses" },
+  { label: "Training and Certifications", value: "Training and Certifications" },
+  { label: "Communication and Utilities", value: "Communication and Utilities" },
+  { label: "Equipment and Supplies", value: "Equipment and Supplies" },
+  { label: "Insurance", value: "Insurance" },
+  { label: "Legal and Professional Fees", value: "Legal and Professional Fees" },
+  { label: "Marketing and Advertising", value: "Marketing and Advertising" },
 ];
 
 const EXPENSE_CLAIM_MAX_IMG_AMOUNT = 3;

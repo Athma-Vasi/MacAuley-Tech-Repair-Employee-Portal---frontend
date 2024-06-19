@@ -52,16 +52,12 @@ type SetStepsInErrorPayload = {
   kind: "add" | "delete";
   step: number;
 };
-type CheckBoxMultipleData = {
-  label: string;
-  value: string;
-}[];
 
 type Currency = "USD" | "CAD";
 
-type SelectInputData = Array<{
+type CheckboxRadioSelectData<Payload extends string = string> = Array<{
   label: string;
-  value: string;
+  value: Payload;
 }>;
 
 type RadioGroupInputData<Value extends string = string> = Array<{
@@ -253,8 +249,8 @@ type StepperChild = {
   isRequired?: boolean;
   name: string;
   validationKey?: ValidationKey;
-  selectInputData?: string[] | SelectInputData;
-  checkboxInputData?: CheckBoxMultipleData;
+  selectInputData?: CheckboxRadioSelectData;
+  checkboxInputData?: CheckboxRadioSelectData;
   sliderInputData?: SliderInputData;
 };
 
@@ -296,7 +292,6 @@ export type {
   BreakPoints,
   CanadianPostalCode,
   CheckboxInputData,
-  CheckBoxMultipleData,
   Country,
   Currency,
   Department,
@@ -319,9 +314,10 @@ export type {
   ResourceRoutePaths,
   RoleResourceRoutePaths,
   ScreenshotImageType,
-  SelectInputData,
+  CheckboxRadioSelectData,
   SetPageInErrorPayload,
   SetStepsInErrorPayload,
+  SliderInputData,
   SliderMarksData,
   StatesUS,
   StepperChild,

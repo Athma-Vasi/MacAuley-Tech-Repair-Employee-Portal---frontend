@@ -7,9 +7,9 @@ import {
   USERNAME_REGEX,
 } from "../../constants/regex";
 import {
+  CheckboxRadioSelectData,
   ResourceRoutePaths,
   RoleResourceRoutePaths,
-  SelectInputData,
   StepperChild,
   StepperPage,
 } from "../../types";
@@ -465,7 +465,7 @@ function createProductStepperPages(): StepperPage[] {
   const motherboardMemoryType: StepperChild = {
     inputType: "select",
     name: "motherboardMemoryType",
-    selectInputData: MOTHERBOARD_MEMORY_TYPE_DATA,
+    selectInputData: MEMORY_TYPE_DATA,
   };
 
   const motherboardPcie3Slots: StepperChild = {
@@ -603,7 +603,7 @@ function createProductStepperPages(): StepperPage[] {
   const ramType: StepperChild = {
     inputType: "select",
     name: "ramType",
-    selectInputData: RAM_MEMORY_TYPE_DATA,
+    selectInputData: MEMORY_TYPE_DATA,
   };
 
   const ramVoltage: StepperChild = {
@@ -1112,15 +1112,19 @@ const PRODUCT_CATEGORY_PAGE_TABLE: Record<ProductCategory, number> = {
   Webcam: 15,
 };
 
-const WEIGHT_UNIT_SELECT_INPUT_DATA: SelectInputData = [
+const WEIGHT_UNIT_SELECT_INPUT_DATA: CheckboxRadioSelectData<WeightUnit> = [
   { value: "g", label: "gram" },
   { value: "kg", label: "kilogram" },
   { value: "lb", label: "pound" },
 ];
 
-const WEIGHT_UNIT_DATA: WeightUnit[] = ["g", "kg", "lb"];
+const WEIGHT_UNIT_DATA: CheckboxRadioSelectData<WeightUnit> = [
+  { value: "g", label: "gram" },
+  { value: "kg", label: "kilogram" },
+  { value: "lb", label: "pound" },
+];
 
-const DIMENSION_UNIT_SELECT_INPUT_DATA: SelectInputData = [
+const DIMENSION_UNIT_SELECT_INPUT_DATA: CheckboxRadioSelectData<DimensionUnit> = [
   { value: "mm", label: "millimetre" },
   { value: "cm", label: "centimetre" },
   { value: "m", label: "metre" },
@@ -1128,221 +1132,271 @@ const DIMENSION_UNIT_SELECT_INPUT_DATA: SelectInputData = [
   { value: "ft", label: "feet" },
 ];
 
-const DIMENSION_UNIT_DATA: DimensionUnit[] = ["mm", "cm", "m", "in", "ft"];
-
-const PRODUCT_AVAILABILITY_DATA: ProductAvailability[] = [
-  "In Stock",
-  "Out of Stock",
-  "Pre-order",
-  "Discontinued",
-  "Other",
+const DIMENSION_UNIT_DATA: CheckboxRadioSelectData<DimensionUnit> = [
+  { value: "mm", label: "millimetre" },
+  { value: "cm", label: "centimetre" },
+  { value: "m", label: "metre" },
+  { value: "in", label: "inch" },
+  { value: "ft", label: "feet" },
 ];
 
-const MEMORY_UNIT_SELECT_INPUT_DATA: SelectInputData = [
+const PRODUCT_AVAILABILITY_DATA: CheckboxRadioSelectData<ProductAvailability> = [
+  { value: "In Stock", label: "In Stock" },
+  { value: "Out of Stock", label: "Out of Stock" },
+  { value: "Pre-order", label: "Pre-order" },
+  { value: "Discontinued", label: "Discontinued" },
+  { value: "Other", label: "Other" },
+];
+
+const MEMORY_UNIT_SELECT_INPUT_DATA: CheckboxRadioSelectData = [
   { value: "KB", label: "kilobyte" },
   { value: "MB", label: "megabyte" },
   { value: "GB", label: "gigabyte" },
   { value: "TB", label: "terabyte" },
 ];
 
-const MEMORY_UNIT_DATA: MemoryUnit[] = ["KB", "MB", "GB", "TB"];
-
-const MOTHERBOARD_FORM_FACTOR_DATA: MotherboardFormFactor[] = [
-  "Micro ATX",
-  "Mini ITX",
-  "E-ATX",
-  "ATX",
-  "XL-ATX",
+const MEMORY_UNIT_DATA: CheckboxRadioSelectData<MemoryUnit> = [
+  { value: "KB", label: "kilobyte" },
+  { value: "MB", label: "megabyte" },
+  { value: "GB", label: "gigabyte" },
+  { value: "TB", label: "terabyte" },
 ];
 
-const MOTHERBOARD_MEMORY_TYPE_DATA: MemoryType[] = [
-  "DDR",
-  "DDR2",
-  "DDR3",
-  "DDR4",
-  "DDR5",
+const MOTHERBOARD_FORM_FACTOR_DATA: CheckboxRadioSelectData<MotherboardFormFactor> = [
+  { value: "Micro ATX", label: "Micro ATX" },
+  { value: "Mini ITX", label: "Mini ITX" },
+  { value: "E-ATX", label: "E-ATX" },
+  { value: "ATX", label: "ATX" },
+  { value: "XL-ATX", label: "XL-ATX" },
 ];
 
-const RAM_MEMORY_TYPE_DATA: MemoryType[] = ["DDR", "DDR2", "DDR3", "DDR4", "DDR5"];
-
-const STORAGE_TYPE_DATA: StorageType[] = ["HDD", "SSD", "SSHD", "Other"];
-
-const STORAGE_FORM_FACTOR_DATA: StorageFormFactor[] = [
-  '2.5"',
-  '3.5"',
-  "M.2 2280",
-  "M.2 22110",
-  "M.2 2242",
-  "M.2 2230",
-  "mSATA",
-  "U.2",
-  "Other",
+const MEMORY_TYPE_DATA: CheckboxRadioSelectData<MemoryType> = [
+  { value: "DDR", label: "DDR" },
+  { value: "DDR2", label: "DDR2" },
+  { value: "DDR3", label: "DDR3" },
+  { value: "DDR4", label: "DDR4" },
+  { value: "DDR5", label: "DDR5" },
 ];
 
-const STORAGE_INTERFACE_DATA: StorageInterface[] = [
-  "SATA III",
-  "M.2",
-  "NVMe",
-  "PCIe",
-  "SATA-Express",
-  "U.2",
-  "mSATA",
-  "Other",
+const STORAGE_TYPE_DATA: CheckboxRadioSelectData<StorageType> = [
+  { value: "HDD", label: "HDD" },
+  { value: "SSD", label: "SSD" },
+  { value: "SSHD", label: "SSHD" },
+  { value: "Other", label: "Other" },
 ];
 
-const PSU_EFFICIENCY_RATING_DATA: PsuEfficiency[] = [
-  "80+",
-  "80+ Bronze",
-  "80+ Silver",
-  "80+ Gold",
-  "80+ Platinum",
-  "80+ Titanium",
+const STORAGE_FORM_FACTOR_DATA: CheckboxRadioSelectData<StorageFormFactor> = [
+  { value: '2.5"', label: '2.5"' },
+  { value: '3.5"', label: '3.5"' },
+  { value: "M.2 2280", label: "M.2 2280" },
+  { value: "M.2 22110", label: "M.2 22110" },
+  { value: "M.2 2242", label: "M.2 2242" },
+  { value: "M.2 2230", label: "M.2 2230" },
+  { value: "mSATA", label: "mSATA" },
+  { value: "U.2", label: "U.2" },
+  { value: "Other", label: "Other" },
 ];
 
-const PSU_FORM_FACTOR_DATA: PsuFormFactor[] = [
-  "ATX",
-  "SFX",
-  "SFX-L",
-  "TFX",
-  "Flex ATX",
-  "Other",
+const STORAGE_INTERFACE_DATA: CheckboxRadioSelectData<StorageInterface> = [
+  { value: "SATA III", label: "SATA III" },
+  { value: "M.2", label: "M.2" },
+  { value: "NVMe", label: "NVMe" },
+  { value: "PCIe", label: "PCIe" },
+  { value: "SATA-Express", label: "SATA-Express" },
+  { value: "U.2", label: "U.2" },
+  { value: "mSATA", label: "mSATA" },
+  { value: "Other", label: "Other" },
 ];
 
-const PSU_MODULARITY_DATA: PsuModularity[] = ["Full", "Semi", "None", "Other"];
-
-const CASE_TYPE_DATA: CaseType[] = [
-  "Mid Tower",
-  "Full Tower",
-  "Mini Tower",
-  "Cube",
-  "Slim",
-  "Desktop",
-  "Other",
+const PSU_EFFICIENCY_RATING_DATA: CheckboxRadioSelectData<PsuEfficiency> = [
+  { value: "80+", label: "80+" },
+  { value: "80+ Bronze", label: "80+ Bronze" },
+  { value: "80+ Silver", label: "80+ Silver" },
+  { value: "80+ Gold", label: "80+ Gold" },
+  { value: "80+ Platinum", label: "80+ Platinum" },
+  { value: "80+ Titanium", label: "80+ Titanium" },
 ];
 
-const CASE_SIDE_PANEL_DATA: CaseSidePanel[] = ["Windowed", "Solid"];
-
-const DISPLAY_PANEL_TYPE_DATA: DisplayPanelType[] = [
-  "IPS",
-  "TN",
-  "VA",
-  "OLED",
-  "QLED",
-  "Other",
+const PSU_FORM_FACTOR_DATA: CheckboxRadioSelectData<PsuFormFactor> = [
+  { value: "ATX", label: "ATX" },
+  { value: "SFX", label: "SFX" },
+  { value: "SFX-L", label: "SFX-L" },
+  { value: "TFX", label: "TFX" },
+  { value: "Flex ATX", label: "Flex ATX" },
+  { value: "Other", label: "Other" },
 ];
 
-const KEYBOARD_SWITCH_DATA: KeyboardSwitch[] = [
-  "Cherry MX Red",
-  "Cherry MX Blue",
-  "Cherry MX Brown",
-  "Cherry MX Silent Red",
-  "Cherry MX Black",
-  "Cherry MX Clear",
-  "Membrane",
-  "Other",
+const PSU_MODULARITY_DATA: CheckboxRadioSelectData<PsuModularity> = [
+  { value: "Full", label: "Full" },
+  { value: "Semi", label: "Semi" },
+  { value: "None", label: "None" },
+  { value: "Other", label: "Other" },
 ];
 
-const KEYBOARD_LAYOUT_DATA: KeyboardLayout[] = [
-  "QWERTY",
-  "CARPALX",
-  "Colemak",
-  "Dvorak",
-  "HHKB",
-  "NORMAN",
-  "Workman",
-  "Other",
+const CASE_TYPE_DATA: CheckboxRadioSelectData<CaseType> = [
+  { value: "Mid Tower", label: "Mid Tower" },
+  { value: "Full Tower", label: "Full Tower" },
+  { value: "Mini Tower", label: "Mini Tower" },
+  { value: "Cube", label: "Cube" },
+  { value: "Slim", label: "Slim" },
+  { value: "Desktop", label: "Desktop" },
+  { value: "Other", label: "Other" },
 ];
 
-const KEYBOARD_BACKLIGHT_DATA: KeyboardBacklight[] = ["RGB", "Single Color", "None"];
-
-const PERIPHERALS_INTERFACE_DATA: PeripheralsInterface[] = [
-  "USB",
-  "Bluetooth",
-  "PS/2",
-  "Wi-Fi",
-  "Other",
+const CASE_SIDE_PANEL_DATA: CheckboxRadioSelectData<CaseSidePanel> = [
+  { value: "Windowed", label: "Windowed" },
+  { value: "Solid", label: "Solid" },
 ];
 
-const MOUSE_SENSOR_DATA: MouseSensor[] = ["Optical", "Laser", "Infrared", "Other"];
-
-const HEADPHONE_TYPE_DATA: HeadphoneType[] = ["Over-ear", "On-ear", "In-ear", "Other"];
-
-const HEADPHONE_INTERFACE_DATA: HeadphoneInterface[] = [
-  "3.5 mm",
-  "2.5 mm",
-  "USB",
-  "Bluetooth",
-  "MMCX",
-  "Other",
+const DISPLAY_PANEL_TYPE_DATA: CheckboxRadioSelectData<DisplayPanelType> = [
+  { value: "IPS", label: "IPS" },
+  { value: "TN", label: "TN" },
+  { value: "VA", label: "VA" },
+  { value: "OLED", label: "OLED" },
+  { value: "QLED", label: "QLED" },
+  { value: "Other", label: "Other" },
 ];
 
-const SPEAKER_TYPE_DATA: SpeakerType[] = [
-  "2.0",
-  "2.1",
-  "3.1",
-  "4.1",
-  "5.1",
-  "7.1",
-  "Other",
+const KEYBOARD_SWITCH_DATA: CheckboxRadioSelectData<KeyboardSwitch> = [
+  { value: "Cherry MX Red", label: "Cherry MX Red" },
+  { value: "Cherry MX Blue", label: "Cherry MX Blue" },
+  { value: "Cherry MX Brown", label: "Cherry MX Brown" },
+  { value: "Cherry MX Silent Red", label: "Cherry MX Silent Red" },
+  { value: "Cherry MX Black", label: "Cherry MX Black" },
+  { value: "Cherry MX Clear", label: "Cherry MX Clear" },
+  { value: "Membrane", label: "Membrane" },
+  { value: "Other", label: "Other" },
 ];
 
-const SPEAKER_INTERFACE_DATA: SpeakerInterface[] = [
-  "3.5 mm",
-  "2.5 mm",
-  "USB",
-  "Bluetooth",
-  "Wi-Fi",
-  "RCA",
-  "TRS",
-  "Other",
+const KEYBOARD_LAYOUT_DATA: CheckboxRadioSelectData<KeyboardLayout> = [
+  { value: "QWERTY", label: "QWERTY" },
+  { value: "CARPALX", label: "CARPALX" },
+  { value: "Colemak", label: "Colemak" },
+  { value: "Dvorak", label: "Dvorak" },
+  { value: "HHKB", label: "HHKB" },
+  { value: "NORMAN", label: "NORMAN" },
+  { value: "Workman", label: "Workman" },
+  { value: "Other", label: "Other" },
 ];
 
-const MOBILE_OS_DATA: MobileOs[] = ["iOS", "Android", "Windows", "Linux", "Other"];
-
-const WEBCAM_RESOLUTION_DATA: WebcamResolution[] = [
-  "720p",
-  "1080p",
-  "1440p",
-  "4K",
-  "Other",
+const KEYBOARD_BACKLIGHT_DATA: CheckboxRadioSelectData<KeyboardBacklight> = [
+  { value: "RGB", label: "RGB" },
+  { value: "Single Color", label: "Single Color" },
+  { value: "None", label: "None" },
 ];
 
-const WEBCAM_INTERFACE_DATA: WebcamInterface[] = ["USB", "Bluetooth", "Wi-Fi", "Other"];
-
-const WEBCAM_FRAME_RATE_DATA: WebcamFrameRate[] = [
-  "30 fps",
-  "60 fps",
-  "120 fps",
-  "240 fps",
-  "Other",
+const PERIPHERALS_INTERFACE_DATA: CheckboxRadioSelectData<PeripheralsInterface> = [
+  { value: "USB", label: "USB" },
+  { value: "Bluetooth", label: "Bluetooth" },
+  { value: "PS/2", label: "PS/2" },
+  { value: "Wi-Fi", label: "Wi-Fi" },
+  { value: "Other", label: "Other" },
 ];
 
-const WEBCAM_MICROPHONE_DATA: WebcamMicrophone[] = ["Yes", "No"];
-
-const MICROPHONE_TYPE_DATA: MicrophoneType[] = [
-  "Condenser",
-  "Dynamic",
-  "Ribbon",
-  "USB",
-  "Wireless",
-  "Other",
+const MOUSE_SENSOR_DATA: CheckboxRadioSelectData<MouseSensor> = [
+  { value: "Optical", label: "Optical" },
+  { value: "Laser", label: "Laser" },
+  { value: "Infrared", label: "Infrared" },
+  { value: "Other", label: "Other" },
 ];
 
-const MICROPHONE_POLAR_PATTERN_DATA: MicrophonePolarPattern[] = [
-  "Cardioid",
-  "Supercardioid",
-  "Hypercardioid",
-  "Omnidirectional",
-  "Bidirectional",
-  "Other",
+const HEADPHONE_TYPE_DATA: CheckboxRadioSelectData<HeadphoneType> = [
+  { value: "Over-ear", label: "Over-ear" },
+  { value: "On-ear", label: "On-ear" },
+  { value: "In-ear", label: "In-ear" },
+  { value: "Other", label: "Other" },
 ];
 
-const MICROPHONE_INTERFACE_DATA: MicrophoneInterface[] = [
-  "XLR",
-  "USB",
-  "3.5mm",
-  "Wireless",
-  "Other",
+const HEADPHONE_INTERFACE_DATA: CheckboxRadioSelectData<HeadphoneInterface> = [
+  { value: "3.5 mm", label: "3.5 mm" },
+  { value: "2.5 mm", label: "2.5 mm" },
+  { value: "USB", label: "USB" },
+  { value: "Bluetooth", label: "Bluetooth" },
+  { value: "MMCX", label: "MMCX" },
+  { value: "Other", label: "Other" },
+];
+
+const SPEAKER_TYPE_DATA: CheckboxRadioSelectData<SpeakerType> = [
+  { value: "2.0", label: "2.0" },
+  { value: "2.1", label: "2.1" },
+  { value: "3.1", label: "3.1" },
+  { value: "4.1", label: "4.1" },
+  { value: "5.1", label: "5.1" },
+  { value: "7.1", label: "7.1" },
+  { value: "Other", label: "Other" },
+];
+
+const SPEAKER_INTERFACE_DATA: CheckboxRadioSelectData<SpeakerInterface> = [
+  { value: "3.5 mm", label: "3.5 mm" },
+  { value: "2.5 mm", label: "2.5 mm" },
+  { value: "USB", label: "USB" },
+  { value: "Bluetooth", label: "Bluetooth" },
+  { value: "Wi-Fi", label: "Wi-Fi" },
+  { value: "RCA", label: "RCA" },
+  { value: "TRS", label: "TRS" },
+  { value: "Other", label: "Other" },
+];
+
+const MOBILE_OS_DATA: CheckboxRadioSelectData<MobileOs> = [
+  { value: "iOS", label: "iOS" },
+  { value: "Android", label: "Android" },
+  { value: "Windows", label: "Windows" },
+  { value: "Linux", label: "Linux" },
+  { value: "Other", label: "Other" },
+];
+
+const WEBCAM_RESOLUTION_DATA: CheckboxRadioSelectData<WebcamResolution> = [
+  { value: "720p", label: "720p" },
+  { value: "1080p", label: "1080p" },
+  { value: "1440p", label: "1440p" },
+  { value: "4K", label: "4K" },
+  { value: "Other", label: "Other" },
+];
+
+const WEBCAM_INTERFACE_DATA: CheckboxRadioSelectData<WebcamInterface> = [
+  { value: "USB", label: "USB" },
+  { value: "Bluetooth", label: "Bluetooth" },
+  { value: "Wi-Fi", label: "Wi-Fi" },
+  { value: "Other", label: "Other" },
+];
+
+const WEBCAM_FRAME_RATE_DATA: CheckboxRadioSelectData<WebcamFrameRate> = [
+  { value: "30 fps", label: "30 fps" },
+  { value: "60 fps", label: "60 fps" },
+  { value: "120 fps", label: "120 fps" },
+  { value: "240 fps", label: "240 fps" },
+  { value: "Other", label: "Other" },
+];
+
+const WEBCAM_MICROPHONE_DATA: CheckboxRadioSelectData<WebcamMicrophone> = [
+  { value: "Yes", label: "Yes" },
+  { value: "No", label: "No" },
+];
+
+const MICROPHONE_TYPE_DATA: CheckboxRadioSelectData<MicrophoneType> = [
+  { value: "Condenser", label: "Condenser" },
+  { value: "Dynamic", label: "Dynamic" },
+  { value: "Ribbon", label: "Ribbon" },
+  { value: "USB", label: "USB" },
+  { value: "Wireless", label: "Wireless" },
+  { value: "Other", label: "Other" },
+];
+
+const MICROPHONE_POLAR_PATTERN_DATA: CheckboxRadioSelectData<MicrophonePolarPattern> = [
+  { value: "Cardioid", label: "Cardioid" },
+  { value: "Supercardioid", label: "Supercardioid" },
+  { value: "Hypercardioid", label: "Hypercardioid" },
+  { value: "Omnidirectional", label: "Omnidirectional" },
+  { value: "Bidirectional", label: "Bidirectional" },
+  { value: "Other", label: "Other" },
+];
+
+const MICROPHONE_INTERFACE_DATA: CheckboxRadioSelectData<MicrophoneInterface> = [
+  { value: "XLR", label: "XLR" },
+  { value: "USB", label: "USB" },
+  { value: "3.5mm", label: "3.5mm" },
+  { value: "Wireless", label: "Wireless" },
+  { value: "Other", label: "Other" },
 ];
 
 const PRODUCT_RATING_DATA: RatingKind[] = [
@@ -1705,7 +1759,7 @@ const PRODUCTS_QUERY_DATA: ComponentQueryData[] = [
     label: "Motherboard Memory Type",
     value: "motherboardMemoryType",
     inputKind: "selectInput",
-    selectData: MOTHERBOARD_MEMORY_TYPE_DATA,
+    selectData: MEMORY_TYPE_DATA,
   },
   {
     label: "Motherboard SATA Ports",
@@ -1775,7 +1829,7 @@ const PRODUCTS_QUERY_DATA: ComponentQueryData[] = [
     label: "RAM Memory Type",
     value: "ramMemoryType",
     inputKind: "selectInput",
-    selectData: RAM_MEMORY_TYPE_DATA,
+    selectData: MEMORY_TYPE_DATA,
   },
   {
     label: "RAM Color",
@@ -2361,6 +2415,7 @@ export {
   LOCATION_PRODUCT_CATEGORY_OBJ,
   MAX_ADDITIONAL_FIELDS_AMOUNT,
   MEDIUM_INTEGER_REGEX,
+  MEMORY_TYPE_DATA,
   MEMORY_UNIT_DATA,
   MEMORY_UNIT_SELECT_INPUT_DATA,
   MICROPHONE_INTERFACE_DATA,
@@ -2370,7 +2425,6 @@ export {
   MOBILE_OS_DATA,
   MOTHERBOARD_CHIPSET_REGEX,
   MOTHERBOARD_FORM_FACTOR_DATA,
-  MOTHERBOARD_MEMORY_TYPE_DATA,
   MOTHERBOARD_SOCKET_REGEX,
   MOUSE_SENSOR_DATA,
   OBJECT_KEY_REGEX,
@@ -2385,7 +2439,6 @@ export {
   PSU_EFFICIENCY_RATING_DATA,
   PSU_FORM_FACTOR_DATA,
   PSU_MODULARITY_DATA,
-  RAM_MEMORY_TYPE_DATA,
   RAM_TIMING_REGEX,
   RAM_VOLTAGE_REGEX,
   SMALL_INTEGER_REGEX,

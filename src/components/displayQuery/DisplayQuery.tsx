@@ -179,7 +179,16 @@ function DisplayQuery<
             (acc, componentQueryObj) => {
               if (groupBySelection === componentQueryObj.value) {
                 if (componentQueryObj.selectData) {
-                  acc = componentQueryObj.selectData;
+                  if (Array.isArray(componentQueryObj.selectData)) {
+                    acc = componentQueryObj.selectData.map((selectDataObj) => {
+                      if (typeof selectDataObj === "string") {
+                        return selectDataObj;
+                      }
+                      return selectDataObj.label;
+                    });
+                  } else {
+                    acc = componentQueryObj.selectData;
+                  }
                 }
               }
 

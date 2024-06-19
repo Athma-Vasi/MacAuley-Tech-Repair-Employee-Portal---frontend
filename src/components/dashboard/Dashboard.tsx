@@ -149,7 +149,7 @@ function Dashboard() {
           months: MONTHS,
           productCategories: PRODUCT_CATEGORIES,
           repairCategories: REPAIR_CATEGORIES,
-          storeLocations: STORE_LOCATION_DATA,
+          storeLocations: STORE_LOCATION_DATA.map((obj) => obj.value),
         });
 
         console.timeEnd("createRandomBusinessMetrics");

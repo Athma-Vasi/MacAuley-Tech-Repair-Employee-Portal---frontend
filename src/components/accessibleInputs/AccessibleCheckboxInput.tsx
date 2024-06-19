@@ -2,7 +2,7 @@ import { Checkbox, MantineSize, Text } from "@mantine/core";
 import { ChangeEvent, ReactNode, RefObject } from "react";
 
 import { useGlobalState } from "../../hooks";
-import { SetPageInErrorPayload } from "../../types";
+import { CheckboxRadioSelectData, SetPageInErrorPayload } from "../../types";
 import { splitCamelCase } from "../../utils";
 import { createAccessibleCheckboxSelectionsTextElements } from "./utils";
 
@@ -131,19 +131,19 @@ function AccessibleCheckboxInputSingle<
 
 type AccessibleCheckboxInputGroupAttributes<
   ValidValueAction extends string = string,
-  Payload extends string[] = string[]
+  Payload extends string = string
 > = {
   /**
    * Set of values that should be disabled. Used by QueryBuilder component to disable values from projection exclusion if they have already been queued for inclusion (by Filter, Sort, or Search).
    */
   disabledValuesSet?: Set<string>;
-  inputData: Array<{ value: string; label: string }>;
+  inputData: CheckboxRadioSelectData<Payload>;
   key?: string;
   label?: ReactNode;
   onChange?: (value: string[]) => void;
   parentDispatch: React.Dispatch<{
     action: ValidValueAction;
-    payload: Payload;
+    payload: Payload[];
   }>;
   ref?: RefObject<HTMLInputElement> | null;
   required?: boolean;
@@ -156,14 +156,14 @@ type AccessibleCheckboxInputGroupAttributes<
 
 type AccessibleCheckboxInputGroupProps<
   ValidValueAction extends string = string,
-  Payload extends string[] = string[]
+  Payload extends string = string
 > = {
   attributes: AccessibleCheckboxInputGroupAttributes<ValidValueAction, Payload>;
 };
 
 function AccessibleCheckboxInputGroup<
   ValidValueAction extends string = string,
-  Payload extends string[] = string[]
+  Payload extends string = string
 >({ attributes }: AccessibleCheckboxInputGroupProps<ValidValueAction, Payload>) {
   const {
     disabledValuesSet = new Set(),
@@ -208,7 +208,7 @@ function AccessibleCheckboxInputGroup<
       description={value.length > 0 ? selectedTextElement : deselectedTextElement}
       key={key}
       label={label}
-      onChange={(value: Payload) => {
+      onChange={(value: Payload[]) => {
         parentDispatch({
           action: validValueAction,
           payload: value,

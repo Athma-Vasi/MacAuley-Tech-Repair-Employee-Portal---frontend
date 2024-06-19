@@ -14,7 +14,7 @@ type ComponentQueryData = {
   label: string;
   value: string;
   inputKind: QueryInputKind;
-  selectData?: string[];
+  selectData?: string[] | Array<{ label: string; value: string }>;
   booleanData?: boolean[];
   regex?: RegExp; // to validate dateInput, timeInput, numberInput, textInput with corresponding regex
   regexValidationFn?: ({
@@ -28,7 +28,7 @@ type ComponentQueryData = {
 type QueryValueTypes = {
   value: string;
   inputKind: QueryInputKind;
-  selectData?: string[];
+  selectData?: string[] | Array<{ label: string; value: string }>;
   booleanData?: boolean[];
   regex?: RegExp;
   regexValidationFn?: ({

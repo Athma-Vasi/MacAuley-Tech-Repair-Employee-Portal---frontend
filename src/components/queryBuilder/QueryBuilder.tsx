@@ -332,7 +332,7 @@ function QueryBuilder({
       case "selectInput": {
         queryBuilderDispatch({
           type: queryBuilderAction.setCurrentFilterValue,
-          payload: selectData?.[0] ?? "",
+          payload: Object.keys(selectData ?? {})[0],
         });
         break;
       }
@@ -680,7 +680,7 @@ function QueryBuilder({
         labelValueTypesMap.get(event.currentTarget.value)?.selectData?.[0] || "";
       queryBuilderDispatch({
         type: queryBuilderAction.setCurrentFilterValue,
-        payload: firstSelectDataValue,
+        payload: Object.keys(firstSelectDataValue)[0] || "",
       });
     },
   };

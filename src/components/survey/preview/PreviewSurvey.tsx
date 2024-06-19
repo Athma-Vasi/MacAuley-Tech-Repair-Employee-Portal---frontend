@@ -1,29 +1,30 @@
+import { Card, Group, Stack, Text, Tooltip } from "@mantine/core";
 import { Fragment, useEffect, useReducer } from "react";
+import { TbChartPie3, TbChartPie4, TbUpload } from "react-icons/tb";
+
+import { useGlobalState } from "../../../hooks";
 import {
-  initialPreviewSurveyState,
-  previewSurveyAction,
-  previewSurveyReducer,
-} from "./state";
-import { PreviewSurveyProps } from "./types";
+  returnAccessibleButtonElements,
+  returnAccessibleCheckboxGroupInputsElements,
+  returnAccessibleRadioGroupInputsElements,
+} from "../../../jsxCreators";
+import { CheckboxRadioSelectData, RadioGroupInputData } from "../../../types";
+import { logState, replaceLastCommaWithAnd } from "../../../utils";
+import { CustomRating } from "../../customRating/CustomRating";
 import {
   AccessibleCheckboxGroupInputCreatorInfo,
   AccessibleRadioGroupInputCreatorInfo,
   DescriptionObjectsArray,
   StepperWrapper,
 } from "../../wrappers";
-import { SurveyQuestion } from "../types";
-import { Card, Group, Stack, Text, Tooltip } from "@mantine/core";
 import { SURVEY_AGREE_DISAGREE_RESPONSE_DATA_OPTIONS } from "../constants";
+import { SurveyQuestion } from "../types";
 import {
-  returnAccessibleButtonElements,
-  returnAccessibleCheckboxGroupInputsElements,
-  returnAccessibleRadioGroupInputsElements,
-} from "../../../jsxCreators";
-import { CheckBoxMultipleData, RadioGroupInputData } from "../../../types";
-import { CustomRating } from "../../customRating/CustomRating";
-import { TbChartPie3, TbChartPie4, TbUpload } from "react-icons/tb";
-import { useGlobalState } from "../../../hooks";
-import { logState, replaceLastCommaWithAnd } from "../../../utils";
+  initialPreviewSurveyState,
+  previewSurveyAction,
+  previewSurveyReducer,
+} from "./state";
+import { PreviewSurveyProps } from "./types";
 
 function PreviewSurvey({
   surveyDescription,
@@ -289,7 +290,7 @@ function PreviewSurvey({
         }
         // checkbox is a checkbox group with dynamic values with unconstrained multiple selections (array of strings)
         case "checkbox": {
-          const dataObjectArray: CheckBoxMultipleData = responseDataOptions.map(
+          const dataObjectArray: CheckboxRadioSelectData = responseDataOptions.map(
             (responseDataOption) => ({
               value: responseDataOption,
               label: responseDataOption,

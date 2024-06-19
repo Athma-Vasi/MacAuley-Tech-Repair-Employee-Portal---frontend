@@ -12,6 +12,7 @@ import {
   USERNAME_REGEX,
 } from "../../constants/regex";
 import {
+  CheckboxRadioSelectData,
   ResourceRoutePaths,
   RoleResourceRoutePaths,
   StepperChild,
@@ -158,23 +159,23 @@ const PRINTER_ISSUE_DESCRIPTION_OBJECTS: DescriptionObjectsArray = [
 
 const PRINTER_ISSUE_MAX_STEPPER_POSITION = 3;
 
-const PRINTER_MAKE_SELECT_OPTIONS: PrinterMake[] = [
-  "HP",
-  "Canon",
-  "Epson",
-  "Brother",
-  "Xerox",
-  "Ricoh",
-  "Lexmark",
-  "Dell",
-  "Kyocera",
-  "Sharp",
-  "Konica Minolta",
-  "Toshiba TEC",
-  "OKI",
-  "Panasonic",
-  "Fujitsu",
-  "Zebra Technologies",
+const PRINTER_MAKE_SELECT_OPTIONS: CheckboxRadioSelectData<PrinterMake> = [
+  { label: "HP", value: "HP" },
+  { label: "Canon", value: "Canon" },
+  { label: "Epson", value: "Epson" },
+  { label: "Brother", value: "Brother" },
+  { label: "Xerox", value: "Xerox" },
+  { label: "Ricoh", value: "Ricoh" },
+  { label: "Lexmark", value: "Lexmark" },
+  { label: "Dell", value: "Dell" },
+  { label: "Kyocera", value: "Kyocera" },
+  { label: "Sharp", value: "Sharp" },
+  { label: "Konica Minolta", value: "Konica Minolta" },
+  { label: "Toshiba TEC", value: "Toshiba TEC" },
+  { label: "OKI", value: "OKI" },
+  { label: "Panasonic", value: "Panasonic" },
+  { label: "Fujitsu", value: "Fujitsu" },
+  { label: "Zebra Technologies", value: "Zebra Technologies" },
 ];
 
 const PRINTER_ISSUE_QUERY_DATA: ComponentQueryData[] = [

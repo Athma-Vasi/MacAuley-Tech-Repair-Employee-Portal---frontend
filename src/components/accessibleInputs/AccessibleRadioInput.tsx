@@ -2,6 +2,7 @@ import { Box, MantineSize, Radio, Text } from "@mantine/core";
 import React, { ReactNode } from "react";
 
 import { useGlobalState } from "../../hooks";
+import { CheckboxRadioSelectData } from "../../types";
 import { splitCamelCase } from "../../utils";
 import { createAccessibleRadioScreenreaderTextElements } from "./utils";
 
@@ -110,10 +111,10 @@ function AccessibleRadioInputSingle<ValidValueAction extends string = string>({
 
 type AccessibleRadioInputGroupAttributes<
   ValidValueAction extends string = string,
-  Data extends string = string
+  Payload extends string = string
 > = {
   // checked: boolean;
-  data: Data[];
+  data: CheckboxRadioSelectData<Payload>;
   description?: ReactNode | string;
   dynamicIndexes?: number[];
   key?: string;
@@ -122,31 +123,31 @@ type AccessibleRadioInputGroupAttributes<
   onChange?: (value: string) => void;
   parentDispatch?: React.Dispatch<{
     action: ValidValueAction;
-    payload: Data;
+    payload: Payload;
   }>;
   parentDynamicDispatch?: React.Dispatch<{
     action: ValidValueAction;
-    payload: { dynamicIndexes: number[]; value: Data };
+    payload: { dynamicIndexes: number[]; value: Payload };
   }>;
   ref?: React.RefObject<HTMLInputElement> | null;
   required?: boolean;
   size?: MantineSize;
-  value: Data;
+  value: Payload;
   validValueAction: ValidValueAction;
   withAsterisk?: boolean;
 };
 
 type AccessibleRadioInputGroupProps<
   ValidValueAction extends string = string,
-  Data extends string = string
+  Payload extends string = string
 > = {
-  attributes: AccessibleRadioInputGroupAttributes<ValidValueAction, Data>;
+  attributes: AccessibleRadioInputGroupAttributes<ValidValueAction, Payload>;
 };
 
 function AccessibleRadioInputGroup<
   ValidValueAction extends string = string,
-  Data extends string = string
->({ attributes }: AccessibleRadioInputGroupProps<ValidValueAction, Data>) {
+  Payload extends string = string
+>({ attributes }: AccessibleRadioInputGroupProps<ValidValueAction, Payload>) {
   const {
     data,
     description,
@@ -186,7 +187,7 @@ function AccessibleRadioInputGroup<
         key={key}
         label={label}
         name={name}
-        onChange={(value: Data) => {
+        onChange={(value: Payload) => {
           dynamicIndexes === undefined
             ? parentDispatch?.({
                 action: validValueAction,
@@ -205,10 +206,8 @@ function AccessibleRadioInputGroup<
         value={value}
         withAsterisk={withAsterisk}
       >
-        {data?.map((name, idx) => {
-          return (
-            <Radio value={name} label={splitCamelCase(name)} key={`${name}-${idx}`} />
-          );
+        {data?.map(({ label, value }, idx) => {
+          return <Radio value={value} label={label} key={`${label}-${idx}`} />;
         })}
       </Radio.Group>
 

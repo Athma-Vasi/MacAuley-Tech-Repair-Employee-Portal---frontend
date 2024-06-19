@@ -6,7 +6,7 @@ import { AccessibleTextInput } from "../accessibleInputs/text/AccessibleTextInpu
 import { ProductCategory } from "../dashboard/types";
 import { CreateProductAction } from "./actions";
 import { AdditionalFields } from "./AdditionalFields";
-import { MEMORY_UNIT_DATA, RAM_MEMORY_TYPE_DATA } from "./constants";
+import { MEMORY_TYPE_DATA, MEMORY_UNIT_DATA } from "./constants";
 import { CreateProductDispatch } from "./dispatch";
 import { MemoryType, MemoryUnit } from "./types";
 
@@ -118,7 +118,7 @@ function RAM({
   const ramTypeSelectInput = (
     <AccessibleSelectInput
       attributes={{
-        data: RAM_MEMORY_TYPE_DATA,
+        data: MEMORY_TYPE_DATA,
         name: "ramType",
         parentDispatch,
         validValueAction: parentAction.setRamType,
