@@ -1,4 +1,5 @@
 import { QueryProps } from "./types";
+import { separateQueryInputsData } from "./utils";
 
 function Query({
   collectionName,
