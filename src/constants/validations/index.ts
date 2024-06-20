@@ -44,6 +44,7 @@ type ValidationKey =
   | "timeRailway"
   | "url"
   | "userDefinedValue"
+  | "userId"
   | "username"
   | "weight";
 
@@ -988,6 +989,22 @@ const VALIDATION_FUNCTIONS_TABLE: ValidationFunctionsTable = {
         "Must contain only letters, numbers, spaces, and special characters.",
       ],
       [/^.{2,75}$/, "Must be between 2 and 75 characters length."],
+    ],
+  },
+
+  userId: {
+    full: function userIdValidation(value: string) {
+      /**
+       * - a valid MongoDB ObjectId is a 24-character hexadecimal string.
+       * - /^[0-9a-fA-F]{24}$/
+       * - [0-9a-fA-F] matches any digit or letter between a-f or A-F.
+       * - {24} matches the preceding token exactly 24 times.
+       */
+      return /^[0-9a-fA-F]{24}$/.test(value);
+    },
+    partials: [
+      [/^[0-9a-fA-F]$/, "Must contain only hexadecimal characters."],
+      [/^.{24}$/, "Must be 24 characters length."],
     ],
   },
 

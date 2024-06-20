@@ -1,5 +1,6 @@
 import { CheckboxInputData, SetPageInErrorPayload, StepperPage } from "../../types";
 import { QueryAction } from "./actions";
+import { OperatorsInputType } from "./utils";
 
 type ComparisonOperators =
   | "equal to"
@@ -12,7 +13,7 @@ type FilterInputsType = "boolean" | "date" | "number" | "select" | "time";
 
 type QueryOperators = ComparisonOperators | "in";
 
-type QueryChainActionsKind = "add" | "delete" | "insert" | "slideUp" | "slideDown";
+type QueryChainActionsKind = "delete" | "insert" | "slideUp" | "slideDown";
 
 type SortDirection = "ascending" | "descending";
 
@@ -24,20 +25,20 @@ type QueryProps<
 > = {
   collectionName: string;
   disableProjection?: boolean;
-  invalidValueAction: InvalidValueAction;
-  parentDispatch: React.Dispatch<
-    | {
-        action: ValidValueAction;
-        payload: string;
-      }
-    | {
-        action: InvalidValueAction;
-        payload: SetPageInErrorPayload;
-      }
-  >;
+  // invalidValueAction: InvalidValueAction;
+  // parentDispatch: React.Dispatch<
+  //   | {
+  //       action: ValidValueAction;
+  //       payload: string;
+  //     }
+  //   | {
+  //       action: InvalidValueAction;
+  //       payload: SetPageInErrorPayload;
+  //     }
+  // >;
   /** only the children steppers objs are used */
   stepperPages: StepperPage[];
-  validValueAction: ValidValueAction;
+  // validValueAction: ValidValueAction;
 };
 
 type QueryState = {
@@ -86,14 +87,20 @@ type SetSortChainPayload = {
   value: string;
 };
 
+type QueryFilterPayload = {
+  fieldNamesOperatorsTypesMap: Map<string, OperatorsInputType>;
+  selectInputsDataMap: Map<string, CheckboxInputData>;
+  value: string;
+};
+
 type QueryDispatch =
   | {
       action: QueryAction["setFilterField"];
-      payload: string;
+      payload: QueryFilterPayload;
     }
   | {
       action: QueryAction["setFilterOperator"];
-      payload: string;
+      payload: QueryFilterPayload;
     }
   | {
       action: QueryAction["setFilterOperatorSelectData"];
@@ -105,7 +112,7 @@ type QueryDispatch =
     }
   | {
       action: QueryAction["setFilterValue"];
-      payload: string;
+      payload: QueryFilterPayload;
     }
   | {
       action: QueryAction["setGeneralSearchExclusionValue"];
@@ -193,6 +200,7 @@ export type {
   FilterInputsType,
   QueryChainActionsKind,
   QueryDispatch,
+  QueryFilterPayload,
   QueryOperators,
   QueryProps,
   QueryState,

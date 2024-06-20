@@ -32,6 +32,8 @@ import { QUERY_LIMIT_PER_PAGE_SELECT_DATA } from "./constants";
 import { displayResourceAction, displayResourceReducer } from "./state";
 import { DisplayResourceProps, DisplayResourceState } from "./types";
 import { buildQueryString } from "./utils";
+import { Query } from "../query/Query";
+import { returnBenefitStepperPages } from "../benefit/constants";
 
 function DisplayResource<Doc>({
   style = {},
@@ -1010,6 +1012,10 @@ function DisplayResource<Doc>({
     />
   );
 
+  const queryTesting = (
+    <Query collectionName="Query testing" stepperPages={returnBenefitStepperPages()} />
+  );
+
   const displaySubmitSuccessNotificationModal = (
     <NotificationModal
       onCloseCallbacks={[closeSubmitSuccessNotificationModal]}
@@ -1056,6 +1062,8 @@ function DisplayResource<Doc>({
       p={padding}
     >
       {displaySubmitSuccessNotificationModal}
+
+      {queryTesting}
 
       {displayQueryBuilder}
 

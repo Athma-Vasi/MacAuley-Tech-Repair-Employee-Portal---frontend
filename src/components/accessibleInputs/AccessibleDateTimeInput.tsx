@@ -7,6 +7,7 @@ import { COLORS_SWATCHES } from "../../constants/data";
 import { useGlobalState } from "../../hooks";
 import { SetPageInErrorPayload, StepperPage } from "../../types";
 import { returnThemeColors, splitCamelCase } from "../../utils";
+import { QueryFilterDispatchData } from "../query/QueryFilter";
 import {
   createAccessibleValueValidationTextElements,
   returnFullValidation,
@@ -36,7 +37,7 @@ type AccessibleDateTimeInputAttributes<
   onFocus?: () => void;
   /** stepper page location of input. default 0 = first page = step 0 */
   page?: number;
-  parentDispatch: Dispatch<
+  parentDispatch?: Dispatch<
     | {
         action: ValidValueAction;
         payload: string;
@@ -46,6 +47,7 @@ type AccessibleDateTimeInputAttributes<
         payload: SetPageInErrorPayload;
       }
   >;
+  queryFilterDispatchData?: QueryFilterDispatchData<ValidValueAction, InvalidValueAction>;
   validValueAction: ValidValueAction;
   invalidValueAction: InvalidValueAction;
   placeholder?: string;
@@ -87,6 +89,7 @@ function AccessibleDateTimeInput<
     page = 0,
     parentDispatch,
     placeholder = "",
+    queryFilterDispatchData,
     ref = null,
     required = false,
     size = "sm",
@@ -206,7 +209,7 @@ function AccessibleDateTimeInput<
             minLength={inputKind === "date" ? 10 : inputKind === "time" ? 5 : minLength}
             name={name}
             onBlur={() => {
-              parentDispatch({
+              parentDispatch?.({
                 action: invalidValueAction,
                 payload: {
                   kind: isValueBufferValid ? "delete" : "add",
@@ -214,10 +217,35 @@ function AccessibleDateTimeInput<
                 },
               });
 
-              parentDispatch({
+              parentDispatch?.({
                 action: validValueAction,
                 payload: valueBuffer,
               });
+
+              if (queryFilterDispatchData) {
+                const {
+                  fieldNamesOperatorsTypesMap,
+                  queryFilterDispatch,
+                  selectInputsDataMap,
+                } = queryFilterDispatchData;
+
+                queryFilterDispatch({
+                  action: validValueAction,
+                  payload: {
+                    fieldNamesOperatorsTypesMap,
+                    value: valueBuffer,
+                    selectInputsDataMap,
+                  },
+                });
+
+                queryFilterDispatch({
+                  action: invalidValueAction,
+                  payload: {
+                    kind: isValueBufferValid ? "delete" : "add",
+                    page,
+                  },
+                });
+              }
 
               onBlur?.();
               closePopover();

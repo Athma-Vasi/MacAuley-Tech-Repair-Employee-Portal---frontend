@@ -1,7 +1,8 @@
-import { CheckboxInputData, SetPageInErrorPayload } from "../../types";
+import { SetPageInErrorPayload } from "../../types";
 import { QueryAction, queryAction } from "./actions";
 import {
   QueryDispatch,
+  QueryFilterPayload,
   QueryState,
   SetFilterChainPayload,
   SetSearchChainPayload,
@@ -57,14 +58,46 @@ function queryReducer_setFilterField(
   state: QueryState,
   dispatch: QueryDispatch
 ): QueryState {
-  return { ...state, filterField: dispatch.payload as string };
+  const { fieldNamesOperatorsTypesMap, value, selectInputsDataMap } =
+    dispatch.payload as QueryFilterPayload;
+  const filterField = value;
+  const operatorTypes = fieldNamesOperatorsTypesMap.get(value);
+  const selectInputData = selectInputsDataMap.get(value);
+
+  console.group("queryReducer_setFilterField");
+  console.log({ filterField, operatorTypes, selectInputData });
+  console.groupEnd();
+
+  if (!operatorTypes) {
+    return { ...state, filterField, filterOperator: "In" };
+  }
+
+  if (selectInputData) {
+    return {
+      ...state,
+      filterField,
+      filterOperator: selectInputData[0].value,
+      filterValue: selectInputData[0].value,
+    };
+  } else {
+    const { operators } = operatorTypes;
+    const filterOperator = operators[0].label;
+
+    return {
+      ...state,
+      filterField,
+      filterOperator,
+      filterValue: new Date().toISOString().split("T")[0],
+    };
+  }
 }
 
 function queryReducer_setFilterOperator(
   state: QueryState,
   dispatch: QueryDispatch
 ): QueryState {
-  return { ...state, filterOperator: dispatch.payload as string };
+  const { value } = dispatch.payload as QueryFilterPayload;
+  return { ...state, filterOperator: value };
 }
 
 function queryReducer_setFilterOperatorSelectData(
@@ -79,21 +112,81 @@ function queryReducer_modifyFilterChain(
   dispatch: QueryDispatch
 ): QueryState {
   const { index, kind, value } = dispatch.payload as SetFilterChainPayload;
+  const [filterField, filterOperator, filterValue] = value;
   const filterChain = structuredClone(state.filterChain);
 
+  const fieldsSetsMap = filterChain.reduce(
+    (
+      mapAcc: Map<string, { operatorsSet: Set<string>; valuesSet: Set<string> }>,
+      link: [string, string, string]
+    ) => {
+      const [field, operator, value] = link;
+      const { operatorsSet, valuesSet } = mapAcc.get(field) ?? {
+        operatorsSet: new Set(),
+        valuesSet: new Set(),
+      };
+      operatorsSet.add(operator);
+      valuesSet.add(value);
+      mapAcc.set(field, { operatorsSet, valuesSet });
+
+      return mapAcc;
+    },
+    new Map<string, { operatorsSet: Set<string>; valuesSet: Set<string> }>()
+  );
+
   switch (kind) {
-    case "add": {
-      filterChain.push(value);
-      return { ...state, filterChain };
+    case "insert": {
+      if (filterValue === "") {
+        return state;
+      }
+
+      const fieldSets = fieldsSetsMap.get(filterField);
+
+      // field is unique
+      if (!fieldSets) {
+        filterChain.push(value);
+        return { ...state, filterChain };
+      }
+
+      const { operatorsSet, valuesSet } = fieldSets;
+
+      // field exists, operator is unique, value is unique
+      if (!operatorsSet.has(filterOperator) && !valuesSet.has(filterValue)) {
+        filterChain.push(value);
+        return { ...state, filterChain };
+      }
+
+      // field exists, operator is unique, value exists
+      if (!operatorsSet.has(filterOperator) && valuesSet.has(filterValue)) {
+        // find the first link with the same field and value
+        const index = filterChain.findIndex(
+          ([field, _, value]: [string, string, string]) =>
+            field === filterField && value === filterValue
+        );
+        filterChain.splice(index, 1, value);
+        return { ...state, filterChain };
+      }
+
+      // field exists, operator exists, value is unique
+      if (operatorsSet.has(filterOperator) && !valuesSet.has(filterValue)) {
+        // find the first link with the same field and operator
+        const index = filterChain.findIndex(
+          ([field, operator, _]: [string, string, string]) =>
+            field === filterField && operator === filterOperator
+        );
+        filterChain.splice(index, 1, value);
+        return { ...state, filterChain };
+      }
+
+      // field exists, operator exists, value exists
+      return { ...state, filterChain: Array.from(new Set(filterChain)) };
     }
+
     case "delete": {
       filterChain.splice(index, 1);
       return { ...state, filterChain };
     }
-    case "insert": {
-      filterChain.splice(index, 0, value);
-      return { ...state, filterChain };
-    }
+
     case "slideDown": {
       const belowLink = filterChain[index + 1];
       const currentLink = filterChain[index];
@@ -101,6 +194,7 @@ function queryReducer_modifyFilterChain(
       filterChain[index + 1] = currentLink;
       return { ...state, filterChain };
     }
+
     case "slideUp": {
       const aboveLink = filterChain[index - 1];
       const currentLink = filterChain[index];
@@ -108,6 +202,7 @@ function queryReducer_modifyFilterChain(
       filterChain[index - 1] = currentLink;
       return { ...state, filterChain };
     }
+
     default:
       return state;
   }
@@ -117,7 +212,8 @@ function queryReducer_setFilterValue(
   state: QueryState,
   dispatch: QueryDispatch
 ): QueryState {
-  return { ...state, filterValue: dispatch.payload as string };
+  const { value } = dispatch.payload as QueryFilterPayload;
+  return { ...state, filterValue: value };
 }
 
 function queryReducer_setGeneralSearchExclusionValue(

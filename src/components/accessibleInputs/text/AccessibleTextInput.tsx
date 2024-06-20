@@ -23,6 +23,7 @@ import { COLORS_SWATCHES } from "../../../constants/data";
 import { useGlobalState } from "../../../hooks";
 import { SetPageInErrorPayload, StepperPage } from "../../../types";
 import { returnThemeColors, splitCamelCase } from "../../../utils";
+import { QueryFilterDispatchData } from "../../query/QueryFilter";
 import {
   createAccessibleValueValidationTextElements,
   returnFullValidation,
@@ -73,6 +74,7 @@ type AccessibleTextInputAttributes<
         payload: SetPageInErrorPayload;
       }
   >;
+  queryFilterDispatchData?: QueryFilterDispatchData<ValidValueAction, InvalidValueAction>;
   validValueAction: ValidValueAction;
   /** stepper page location of input. default 0 = first page = step 0 */
   page?: number;
@@ -118,6 +120,7 @@ function AccessibleTextInput<
     parentDispatch,
     parentDynamicDispatch,
     placeholder = "",
+    queryFilterDispatchData,
     ref = null,
     required = false,
     rightSection = false,
@@ -226,7 +229,9 @@ function AccessibleTextInput<
             minLength={minLength}
             name={name}
             onBlur={() => {
+              // if this input is not created dynamically by user
               if (dynamicIndexes === undefined) {
+                // standard dispatch
                 if (parentDispatch) {
                   parentDispatch({
                     action: invalidValueAction,
@@ -239,6 +244,32 @@ function AccessibleTextInput<
                   parentDispatch({
                     action: validValueAction,
                     payload: valueBuffer,
+                  });
+                }
+
+                // dispatch for query filter
+                if (queryFilterDispatchData) {
+                  const {
+                    fieldNamesOperatorsTypesMap,
+                    queryFilterDispatch,
+                    selectInputsDataMap,
+                  } = queryFilterDispatchData;
+
+                  queryFilterDispatch({
+                    action: validValueAction,
+                    payload: {
+                      fieldNamesOperatorsTypesMap,
+                      value: valueBuffer,
+                      selectInputsDataMap,
+                    },
+                  });
+
+                  queryFilterDispatch({
+                    action: invalidValueAction,
+                    payload: {
+                      kind: isValueBufferValid ? "delete" : "add",
+                      page,
+                    },
                   });
                 }
               } else {

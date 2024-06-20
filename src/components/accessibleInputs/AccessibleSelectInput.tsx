@@ -2,6 +2,8 @@ import { MantineSize, NativeSelect } from "@mantine/core";
 
 import { CheckboxRadioSelectData } from "../../types";
 import { splitCamelCase } from "../../utils";
+import { QueryFilterDispatch } from "../query/QueryFilter";
+import { OperatorsInputType } from "../query/utils";
 
 type AccessibleSelectInputAttributes<
   ValidValueAction extends string = string,
@@ -14,10 +16,15 @@ type AccessibleSelectInputAttributes<
   label?: React.ReactNode;
   name: string;
   onChange?: (event: React.ChangeEvent<HTMLSelectElement>) => void;
-  parentDispatch: React.Dispatch<{
+  parentDispatch?: React.Dispatch<{
     action: ValidValueAction;
     payload: Payload;
   }>;
+  queryFilterDispatchData?: {
+    fieldNamesOperatorsTypesMap: Map<string, OperatorsInputType>;
+    queryFilterDispatch: QueryFilterDispatch<ValidValueAction>;
+    selectInputsDataMap: Map<string, CheckboxRadioSelectData<string>>;
+  };
   ref?: React.RefObject<HTMLSelectElement>;
   required?: boolean;
   size?: MantineSize;
@@ -45,6 +52,7 @@ function AccessibleSelectInput<
     name,
     onChange,
     parentDispatch,
+    queryFilterDispatchData,
     ref = null,
     required = false,
     size = "sm",
@@ -65,10 +73,27 @@ function AccessibleSelectInput<
       label={label}
       name={name}
       onChange={(event: React.ChangeEvent<HTMLSelectElement>) => {
-        parentDispatch({
+        parentDispatch?.({
           action: validValueAction,
           payload: event.currentTarget.value as Payload,
         });
+
+        if (queryFilterDispatchData) {
+          const {
+            fieldNamesOperatorsTypesMap,
+            queryFilterDispatch,
+            selectInputsDataMap,
+          } = queryFilterDispatchData;
+
+          queryFilterDispatch({
+            action: validValueAction,
+            payload: {
+              fieldNamesOperatorsTypesMap,
+              value: event.currentTarget.value,
+              selectInputsDataMap,
+            },
+          });
+        }
 
         onChange?.(event);
       }}

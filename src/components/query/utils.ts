@@ -1,5 +1,10 @@
 import { ValidationKey } from "../../constants/validations";
-import { CheckboxRadioSelectData, InputType, StepperPage } from "../../types";
+import {
+  CheckboxRadioSelectData,
+  InputType,
+  StepperChild,
+  StepperPage,
+} from "../../types";
 import { splitCamelCase } from "../../utils";
 import {
   ComparisonOperators,
@@ -7,6 +12,46 @@ import {
   QueryOperators,
   SortInputsType,
 } from "./types";
+
+function addInputsToStepperPages(stepperPages: StepperPage[]): StepperPage[] {
+  // createdAt and updatedAt are guaranteed to exist in all models and are used as initial values for filter & sort
+  // username and userId exist in all models except AnonymousRequest and are used as initial values for search
+  // the fields must be added here because the stepper pages are used to populate and validate query inputs
+
+  const createdAtInput: StepperChild = {
+    inputType: "date",
+    name: "createdAt",
+    validationKey: "date",
+  };
+
+  const updatedAtInput: StepperChild = {
+    inputType: "date",
+    name: "updatedAt",
+    validationKey: "date",
+  };
+
+  const usernameInput: StepperChild = {
+    inputType: "text",
+    name: "username",
+    validationKey: "username",
+  };
+
+  const userIdInput: StepperChild = {
+    inputType: "text",
+    name: "userId",
+    validationKey: "userId",
+  };
+
+  const clonedStepperPages = structuredClone(stepperPages);
+  clonedStepperPages[0].children.push(
+    createdAtInput,
+    updatedAtInput,
+    usernameInput,
+    userIdInput
+  );
+
+  return clonedStepperPages;
+}
 
 type OperatorsInputType = {
   operators: CheckboxRadioSelectData<QueryOperators>;
@@ -31,7 +76,7 @@ type QueryInputsData = {
 /**
  * - Extracts the names, input data from the stepper pages and used in the corresponding query sections
  */
-function separateQueryInputsData(stepperPages: StepperPage[]): QueryInputsData {
+function createQueryInputsData(stepperPages: StepperPage[]): QueryInputsData {
   // data created with these input types can have a subset of operators applied to them
 
   const filterInputsTypeSet = new Set<FilterInputsType>([
@@ -68,7 +113,8 @@ function separateQueryInputsData(stepperPages: StepperPage[]): QueryInputsData {
     validatedInputsKeyMap: new Map<string, ValidationKey>(),
   };
 
-  return stepperPages.reduce<QueryInputsData>((acc, page) => {
+  const stepperPagesWithAddedInputs = addInputsToStepperPages(stepperPages);
+  return stepperPagesWithAddedInputs.reduce<QueryInputsData>((acc, page) => {
     const {
       fieldNamesOperatorsTypesMap,
       filterFieldSelectInputData,
@@ -124,5 +170,5 @@ function separateQueryInputsData(stepperPages: StepperPage[]): QueryInputsData {
   }, initialAcc);
 }
 
-export { separateQueryInputsData };
+export { createQueryInputsData };
 export type { OperatorsInputType, QueryInputsData };
