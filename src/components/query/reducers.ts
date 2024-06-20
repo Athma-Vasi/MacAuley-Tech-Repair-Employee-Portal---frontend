@@ -3,9 +3,9 @@ import { QueryAction, queryAction } from "./actions";
 import {
   QueryDispatch,
   QueryState,
-  SetFilterStatementsPayload,
-  SetSearchStatementsPayload,
-  SetSortStatementsPayload,
+  SetFilterChainPayload,
+  SetSearchChainPayload,
+  SetSortChainPayload,
   SortDirection,
 } from "./types";
 
@@ -21,7 +21,7 @@ const queryReducers = new Map<
   [queryAction.setFilterField, queryReducer_setFilterField],
   [queryAction.setFilterOperator, queryReducer_setFilterOperator],
   [queryAction.setFilterOperatorSelectData, queryReducer_setFilterOperatorSelectData],
-  [queryAction.modifyFilterChains, queryReducer_modifyFilterStatements],
+  [queryAction.modifyFilterChain, queryReducer_modifyFilterChain],
   [queryAction.setFilterValue, queryReducer_setFilterValue],
   [
     queryAction.setGeneralSearchExclusionValue,
@@ -45,12 +45,12 @@ const queryReducers = new Map<
   [queryAction.setProjectedFieldsSet, queryReducer_setProjectedFieldsSet],
   [queryAction.setProjectionArray, queryReducer_setProjectionArray],
   [queryAction.setSearchField, queryReducer_setSearchField],
-  [queryAction.setSearchStatements, queryReducer_setSearchStatements],
+  [queryAction.setSearchChain, queryReducer_setSearchChain],
   [queryAction.setSearchValue, queryReducer_setSearchValue],
   [queryAction.setSelectedFieldsSet, queryReducer_setSelectedFieldsSet],
   [queryAction.setSortDirection, queryReducer_setSortDirection],
   [queryAction.setSortField, queryReducer_setSortField],
-  [queryAction.setSortStatements, queryReducer_setSortStatements],
+  [queryAction.setSortChain, queryReducer_setSortChain],
 ]);
 
 function queryReducer_setFilterField(
@@ -74,14 +74,43 @@ function queryReducer_setFilterOperatorSelectData(
   return { ...state, filterOperatorSelectData: dispatch.payload as string[] };
 }
 
-function queryReducer_modifyFilterStatements(
+function queryReducer_modifyFilterChain(
   state: QueryState,
   dispatch: QueryDispatch
 ): QueryState {
-  const { index, kind, value } = dispatch.payload as SetFilterStatementsPayload;
-  const filterStatements = [...state.filterStatements];
+  const { index, kind, value } = dispatch.payload as SetFilterChainPayload;
+  const filterChain = structuredClone(state.filterChain);
 
-  return { ...state, filterStatements };
+  switch (kind) {
+    case "add": {
+      filterChain.push(value);
+      return { ...state, filterChain };
+    }
+    case "delete": {
+      filterChain.splice(index, 1);
+      return { ...state, filterChain };
+    }
+    case "insert": {
+      filterChain.splice(index, 0, value);
+      return { ...state, filterChain };
+    }
+    case "slideDown": {
+      const belowLink = filterChain[index + 1];
+      const currentLink = filterChain[index];
+      filterChain[index] = belowLink;
+      filterChain[index + 1] = currentLink;
+      return { ...state, filterChain };
+    }
+    case "slideUp": {
+      const aboveLink = filterChain[index - 1];
+      const currentLink = filterChain[index];
+      filterChain[index] = aboveLink;
+      filterChain[index - 1] = currentLink;
+      return { ...state, filterChain };
+    }
+    default:
+      return state;
+  }
 }
 
 function queryReducer_setFilterValue(
@@ -180,14 +209,14 @@ function queryReducer_setSearchField(
   return { ...state, searchField: dispatch.payload as string };
 }
 
-function queryReducer_setSearchStatements(
+function queryReducer_setSearchChain(
   state: QueryState,
   dispatch: QueryDispatch
 ): QueryState {
-  const { index, kind, value } = dispatch.payload as SetSearchStatementsPayload;
-  const searchStatements = [...state.searchStatements];
+  const { index, kind, value } = dispatch.payload as SetSearchChainPayload;
+  const searchChain = [...state.searchChain];
 
-  return { ...state, searchStatements };
+  return { ...state, searchChain };
 }
 
 function queryReducer_setSearchValue(
@@ -221,14 +250,14 @@ function queryReducer_setSortField(
   return { ...state, sortField: dispatch.payload as string };
 }
 
-function queryReducer_setSortStatements(
+function queryReducer_setSortChain(
   state: QueryState,
   dispatch: QueryDispatch
 ): QueryState {
-  const { index, kind, value } = dispatch.payload as SetSortStatementsPayload;
-  const sortStatements = [...state.sortStatements];
+  const { index, kind, value } = dispatch.payload as SetSortChainPayload;
+  const sortChain = [...state.sortChain];
 
-  return { ...state, sortStatements };
+  return { ...state, sortChain };
 }
 
 export { queryReducer };

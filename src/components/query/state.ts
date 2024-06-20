@@ -9,7 +9,7 @@ function createInitialQueryState(
     filterField: "createdAt",
     filterOperator: "equal to",
     filterOperatorSelectData: [],
-    filterStatements: [],
+    filterChain: [],
     filterValue: new Date().toISOString().split("T")[0],
     generalSearchExclusionValue: "",
     generalSearchInclusionValue: "",
@@ -25,12 +25,12 @@ function createInitialQueryState(
     projectedFieldsSet: new Set(),
     projectionArray: [],
     searchField: "",
-    searchStatements: [],
+    searchChain: [],
     searchValue: "",
     selectedFieldsSet: new Set(),
     sortDirection: "descending",
     sortField: "updatedAt",
-    sortStatements: [],
+    sortChain: [],
   };
 
   function setSearchDefaults(

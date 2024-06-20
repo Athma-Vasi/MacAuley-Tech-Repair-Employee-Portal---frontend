@@ -44,7 +44,7 @@ type QueryState = {
   filterField: string;
   filterOperator: string;
   filterOperatorSelectData: string[];
-  filterStatements: [string, string, string][]; // [field, operator, value][]
+  filterChain: [string, string, string][]; // [field, operator, value][]
   filterValue: string;
   generalSearchExclusionValue: string;
   generalSearchInclusionValue: string;
@@ -60,27 +60,27 @@ type QueryState = {
   projectedFieldsSet: Set<string>;
   projectionArray: string[];
   searchField: string;
-  searchStatements: [string, string][]; // [field, value][]
+  searchChain: [string, string][]; // [field, value][]
   searchValue: string;
   selectedFieldsSet: Set<string>;
   sortDirection: SortDirection;
   sortField: string;
-  sortStatements: [string, string][]; // [field, direction][]
+  sortChain: [string, string][]; // [field, direction][]
 };
 
-type SetFilterStatementsPayload = {
+type SetFilterChainPayload = {
   index: number;
   kind: QueryChainActionsKind;
   value: [string, string, string];
 };
 
-type SetSearchStatementsPayload = {
+type SetSearchChainPayload = {
   index: number;
   kind: "field" | "value";
   value: string;
 };
 
-type SetSortStatementsPayload = {
+type SetSortChainPayload = {
   index: number;
   kind: "field" | "direction";
   value: string;
@@ -100,8 +100,8 @@ type QueryDispatch =
       payload: string[];
     }
   | {
-      action: QueryAction["modifyFilterChains"];
-      payload: SetFilterStatementsPayload;
+      action: QueryAction["modifyFilterChain"];
+      payload: SetFilterChainPayload;
     }
   | {
       action: QueryAction["setFilterValue"];
@@ -164,8 +164,8 @@ type QueryDispatch =
       payload: string;
     }
   | {
-      action: QueryAction["setSearchStatements"];
-      payload: SetSearchStatementsPayload;
+      action: QueryAction["setSearchChain"];
+      payload: SetSearchChainPayload;
     }
   | {
       action: QueryAction["setSearchValue"];
@@ -184,8 +184,8 @@ type QueryDispatch =
       payload: string;
     }
   | {
-      action: QueryAction["setSortStatements"];
-      payload: SetSortStatementsPayload;
+      action: QueryAction["setSortChain"];
+      payload: SetSortChainPayload;
     };
 
 export type {
@@ -196,9 +196,9 @@ export type {
   QueryOperators,
   QueryProps,
   QueryState,
-  SetFilterStatementsPayload,
-  SetSearchStatementsPayload,
-  SetSortStatementsPayload,
+  SetFilterChainPayload,
+  SetSearchChainPayload,
+  SetSortChainPayload,
   SortDirection,
   SortInputsType,
 };

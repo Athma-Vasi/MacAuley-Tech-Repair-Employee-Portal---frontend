@@ -1,5 +1,5 @@
 type QueryAction = {
-  modifyFilterChains: "modifyFilterChains";
+  modifyFilterChain: "modifyFilterChain";
   setFilterField: "setFilterField";
   setFilterOperator: "setFilterOperator";
   setFilterOperatorSelectData: "setFilterOperatorSelectData";
@@ -18,16 +18,16 @@ type QueryAction = {
   setProjectedFieldsSet: "setProjectedFieldsSet";
   setProjectionArray: "setProjectionArray";
   setSearchField: "setSearchField";
-  setSearchStatements: "setSearchStatements";
+  setSearchChain: "setSearchChain";
   setSearchValue: "setSearchValue";
   setSelectedFieldsSet: "setSelectedFieldsSet";
   setSortDirection: "setSortDirection";
   setSortField: "setSortField";
-  setSortStatements: "setSortStatements";
+  setSortChain: "setSortChain";
 };
 
 const queryAction: QueryAction = {
-  modifyFilterChains: "modifyFilterChains",
+  modifyFilterChain: "modifyFilterChain",
   setFilterField: "setFilterField",
   setFilterOperator: "setFilterOperator",
   setFilterOperatorSelectData: "setFilterOperatorSelectData",
@@ -46,12 +46,12 @@ const queryAction: QueryAction = {
   setProjectedFieldsSet: "setProjectedFieldsSet",
   setProjectionArray: "setProjectionArray",
   setSearchField: "setSearchField",
-  setSearchStatements: "setSearchStatements",
+  setSearchChain: "setSearchChain",
   setSearchValue: "setSearchValue",
   setSelectedFieldsSet: "setSelectedFieldsSet",
   setSortDirection: "setSortDirection",
   setSortField: "setSortField",
-  setSortStatements: "setSortStatements",
+  setSortChain: "setSortChain",
 };
 
 export { queryAction };

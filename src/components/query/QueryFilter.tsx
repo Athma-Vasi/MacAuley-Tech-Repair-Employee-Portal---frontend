@@ -1,4 +1,4 @@
-import { Stack } from "@mantine/core";
+import { Accordion, Group, Stack, Timeline } from "@mantine/core";
 import React from "react";
 
 import { ValidationKey } from "../../constants/validations";
@@ -8,9 +8,10 @@ import { AccessibleDateTimeInput } from "../accessibleInputs/AccessibleDateTimeI
 import { AccessibleSelectInput } from "../accessibleInputs/AccessibleSelectInput";
 import { AccessibleTextInput } from "../accessibleInputs/text/AccessibleTextInput";
 import { QueryAction, queryAction } from "./actions";
-import { SetFilterStatementsPayload } from "./types";
+import { SetFilterChainPayload } from "./types";
 import { OperatorsInputType } from "./utils";
 import { MAX_FILTER_LINKS_AMOUNT } from "./constants";
+import { TbChevronDown, TbLink } from "react-icons/tb";
 
 type QueryFilterProps = {
   fieldNamesOperatorsTypesMap: Map<string, OperatorsInputType>;
@@ -20,7 +21,7 @@ type QueryFilterProps = {
   filterChain: Array<[string, string, string]>;
   filterChainDispatch: React.Dispatch<{
     action: string;
-    payload: SetFilterStatementsPayload;
+    payload: SetFilterChainPayload;
   }>;
   filterValue: string;
   parentDispatch: React.Dispatch<
@@ -89,13 +90,13 @@ function QueryFilter({
   const addFilterStatementsButton = (
     <AccessibleButton
       attributes={{
-        enabledScreenreaderText: "Add filter statement to chain",
-        disabledScreenreaderText: "Cannot add filter statement to chain",
+        enabledScreenreaderText: "Add filter link to chain",
+        disabledScreenreaderText: "Cannot add filter link to chain",
         disabled: !filterField || !filterOperator || !filterValue,
         kind: "add",
         onClick: () => {
           filterChainDispatch({
-            action: queryAction.modifyFilterChains,
+            action: queryAction.modifyFilterChain,
             payload: {
               index: filterChain.length,
               kind: "add",
@@ -111,7 +112,7 @@ function QueryFilter({
     const deleteFilterLinkButton = (
       <AccessibleButton
         attributes={{
-          enabledScreenreaderText: `Delete filter link ${index + 1}`,
+          enabledScreenreaderText: `Delete link ${field} ${operator} ${value}`,
           index,
           kind: "delete",
           setIconAsLabel: true,
@@ -121,7 +122,7 @@ function QueryFilter({
               | React.PointerEvent<HTMLButtonElement>
           ) => {
             filterChainDispatch({
-              action: queryAction.modifyFilterChains,
+              action: queryAction.modifyFilterChain,
               payload: {
                 index,
                 kind: "delete",
@@ -138,7 +139,7 @@ function QueryFilter({
         attributes={{
           disabled: index === MAX_FILTER_LINKS_AMOUNT - 1,
           disabledScreenreaderText: "Max filter links amount reached",
-          enabledScreenreaderText: `Insert chain before filter link ${index + 1}`,
+          enabledScreenreaderText: `Insert link before ${field} ${operator} ${value}`,
           index,
           kind: "insert",
           setIconAsLabel: true,
@@ -148,7 +149,7 @@ function QueryFilter({
               | React.PointerEvent<HTMLButtonElement>
           ) => {
             filterChainDispatch({
-              action: queryAction.modifyFilterChains,
+              action: queryAction.modifyFilterChain,
               payload: {
                 index,
                 kind: "insert",
@@ -165,7 +166,7 @@ function QueryFilter({
         attributes={{
           disabled: index === 0,
           disabledScreenreaderText: "Cannot move up. Already at the top",
-          enabledScreenreaderText: `Move filter link ${index + 1} up`,
+          enabledScreenreaderText: `Move link ${field} ${operator} ${value} up`,
           index,
           kind: "up",
           setIconAsLabel: true,
@@ -175,7 +176,7 @@ function QueryFilter({
               | React.PointerEvent<HTMLButtonElement>
           ) => {
             filterChainDispatch({
-              action: queryAction.modifyFilterChains,
+              action: queryAction.modifyFilterChain,
               payload: {
                 index,
                 kind: "slideUp",
@@ -192,7 +193,7 @@ function QueryFilter({
         attributes={{
           disabled: index === filterChain.length - 1,
           disabledScreenreaderText: "Cannot move link down. Already at the bottom",
-          enabledScreenreaderText: `Move filter link ${index + 1} down`,
+          enabledScreenreaderText: `Move link ${field} ${operator} ${value} down`,
           index,
           kind: "down",
           setIconAsLabel: true,
@@ -202,7 +203,7 @@ function QueryFilter({
               | React.PointerEvent<HTMLButtonElement>
           ) => {
             filterChainDispatch({
-              action: queryAction.modifyFilterChains,
+              action: queryAction.modifyFilterChain,
               payload: {
                 index,
                 kind: "slideDown",
@@ -213,10 +214,41 @@ function QueryFilter({
         }}
       />
     );
+
+    const buttons = (
+      <Group>
+        {deleteFilterLinkButton}
+        {insertFilterLinkButton}
+        {slideFilterChainUpButton}
+        {slideFilterChainDownButton}
+      </Group>
+    );
+
+    return (
+      <Timeline.Item
+        key={`timeline-link-${index}`}
+        title={`Select ${field} ${operator} ${value}`}
+        bullet={<TbLink />}
+      >
+        {buttons}
+      </Timeline.Item>
+    );
   });
+
+  const timelineAccordion = (
+    <Accordion chevron={<TbChevronDown />}>
+      <Accordion.Item value="Filter Chain">
+        <Accordion.Control disabled={filterChain.length === 0}></Accordion.Control>
+        <Accordion.Panel>
+          <Timeline active={Number.MAX_SAFE_INTEGER}>{filterChainElements}</Timeline>
+        </Accordion.Panel>
+      </Accordion.Item>
+    </Accordion>
+  );
 
   return (
     <Stack>
+      {timelineAccordion}
       {fieldSelectInput}
       {filterOperatorSelectInput}
       {dynamicValueInput}

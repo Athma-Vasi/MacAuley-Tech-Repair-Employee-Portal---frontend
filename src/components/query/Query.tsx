@@ -31,7 +31,7 @@ function Query({
     filterField,
     filterOperator,
     filterOperatorSelectData,
-    filterStatements,
+    filterChain,
     filterValue,
     generalSearchExclusionValue,
     generalSearchInclusionValue,
@@ -47,12 +47,12 @@ function Query({
     projectedFieldsSet,
     projectionArray,
     searchField,
-    searchStatements,
+    searchChain,
     searchValue,
     selectedFieldsSet,
     sortDirection,
     sortField,
-    sortStatements,
+    sortChain,
   } = queryState;
 }
 

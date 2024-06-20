@@ -1,7 +1,12 @@
 import { ValidationKey } from "../../constants/validations";
 import { CheckboxRadioSelectData, InputType, StepperPage } from "../../types";
 import { splitCamelCase } from "../../utils";
-import { ComparisonOperators, QueryOperators } from "./types";
+import {
+  ComparisonOperators,
+  FilterInputsType,
+  QueryOperators,
+  SortInputsType,
+} from "./types";
 
 type OperatorsInputType = {
   operators: CheckboxRadioSelectData<QueryOperators>;
@@ -29,7 +34,7 @@ type QueryInputsData = {
 function separateQueryInputsData(stepperPages: StepperPage[]): QueryInputsData {
   // data created with these input types can have a subset of operators applied to them
 
-  const filterInputsTypeSet = new Set<InputType>([
+  const filterInputsTypeSet = new Set<FilterInputsType>([
     "boolean", // 'equal to' operator
     "date", // comparison operators
     "number", // comparison operators
@@ -38,7 +43,7 @@ function separateQueryInputsData(stepperPages: StepperPage[]): QueryInputsData {
   ]);
   const projectionInputSet = new Set<InputType>(["checkbox"]); // can apply projection: exclusion | inclusion
   const searchInputSet = new Set<InputType>(["text"]); // can apply regex search
-  const sortInputsSet = new Set<InputType>(["date", "number", "time"]); // can apply sort: ascending | descending
+  const sortInputsSet = new Set<SortInputsType>(["date", "number", "time"]); // can apply sort: ascending | descending
   const comparisonOperatorsInputsSet = new Set<InputType>(["date", "number", "time"]); // can apply comparison operators
 
   const comparisonOperators: CheckboxRadioSelectData<ComparisonOperators> = [
@@ -90,7 +95,7 @@ function separateQueryInputsData(stepperPages: StepperPage[]): QueryInputsData {
 
       fieldNamesOperatorsTypesMap.set(name, operatorsInputTypeObject);
 
-      if (filterInputsTypeSet.has(inputType)) {
+      if (filterInputsTypeSet.has(inputType as FilterInputsType)) {
         filterFieldSelectInputData.push(checkboxRadioSelectData);
       }
 
@@ -106,7 +111,7 @@ function separateQueryInputsData(stepperPages: StepperPage[]): QueryInputsData {
         }
       }
 
-      if (sortInputsSet.has(inputType)) {
+      if (sortInputsSet.has(inputType as SortInputsType)) {
         sortFieldSelectData.push(checkboxRadioSelectData);
       }
 
