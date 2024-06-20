@@ -1,4 +1,4 @@
-import { CheckboxInputData } from "../../types";
+import { CheckboxInputData, SetPageInErrorPayload } from "../../types";
 import { QueryAction, queryAction } from "./actions";
 import {
   QueryDispatch,
@@ -6,6 +6,7 @@ import {
   SetFilterStatementsPayload,
   SetSearchStatementsPayload,
   SetSortStatementsPayload,
+  SortDirection,
 } from "./types";
 
 function queryReducer(state: QueryState, dispatch: QueryDispatch): QueryState {
@@ -17,9 +18,11 @@ const queryReducers = new Map<
   QueryAction[keyof QueryAction],
   (state: QueryState, dispatch: QueryDispatch) => QueryState
 >([
+  [queryAction.setFilterField, queryReducer_setFilterField],
+  [queryAction.setFilterOperator, queryReducer_setFilterOperator],
   [queryAction.setFilterOperatorSelectData, queryReducer_setFilterOperatorSelectData],
-  [queryAction.setFilterSelectData, queryReducer_setFilterSelectData],
-  [queryAction.setFilterStatements, queryReducer_setFilterStatements],
+  [queryAction.modifyFilterChains, queryReducer_modifyFilterStatements],
+  [queryAction.setFilterValue, queryReducer_setFilterValue],
   [
     queryAction.setGeneralSearchExclusionValue,
     queryReducer_setGeneralSearchExclusionValue,
@@ -28,6 +31,7 @@ const queryReducers = new Map<
     queryAction.setGeneralSearchInclusionValue,
     queryReducer_setGeneralSearchInclusionValue,
   ],
+  [queryAction.setIsError, queryReducer_setIsError],
   [queryAction.setIsFilterOpened, queryReducer_setIsFilterOpened],
   [
     queryAction.setIsGeneralSearchCaseSensitive,
@@ -35,41 +39,33 @@ const queryReducers = new Map<
   ],
   [queryAction.setIsProjectionOpened, queryReducer_setIsProjectionOpened],
   [queryAction.setIsQueryOpened, queryReducer_setIsQueryOpened],
+  [queryAction.setIsSearchDisabled, queryReducer_setIsSearchDisabled],
   [queryAction.setIsSearchOpened, queryReducer_setIsSearchOpened],
   [queryAction.setIsSortOpened, queryReducer_setIsSortOpened],
   [queryAction.setProjectedFieldsSet, queryReducer_setProjectedFieldsSet],
   [queryAction.setProjectionArray, queryReducer_setProjectionArray],
-  [queryAction.setProjectionCheckboxData, queryReducer_setProjectionCheckboxData],
-  [queryAction.setSearchSelectData, queryReducer_setSearchSelectData],
+  [queryAction.setSearchField, queryReducer_setSearchField],
   [queryAction.setSearchStatements, queryReducer_setSearchStatements],
+  [queryAction.setSearchValue, queryReducer_setSearchValue],
   [queryAction.setSelectedFieldsSet, queryReducer_setSelectedFieldsSet],
-  [queryAction.setSortSelectData, queryReducer_setSortSelectData],
+  [queryAction.setSortDirection, queryReducer_setSortDirection],
+  [queryAction.setSortField, queryReducer_setSortField],
   [queryAction.setSortStatements, queryReducer_setSortStatements],
 ]);
 
-/**
- * type QueryState = {
-  filterOperatorSelectData: string[];
-  filterSelectData: string[];
-  filterStatements: [string, string, string][]; // [field, operator, value][]
-  generalSearchExclusionValue: string;
-  generalSearchInclusionValue: string;
-  isFilterOpened: boolean;
-  isGeneralSearchCaseSensitive: boolean;
-  isProjectionOpened: boolean;
-  isQueryOpened: boolean;
-  isSearchOpened: boolean;
-  isSortOpened: boolean;
-  projectedFieldsSet: Set<string>;
-  projectionArray: string[];
-  projectionCheckboxData: CheckboxInputData;
-  searchSelectData: string[];
-  searchStatements: [string, string][]; // [field, value][]
-  selectedFieldsSet: Set<string>;
-  sortSelectData: string[];
-  sortStatements: [string, string][]; // [field, direction][]
-};
- */
+function queryReducer_setFilterField(
+  state: QueryState,
+  dispatch: QueryDispatch
+): QueryState {
+  return { ...state, filterField: dispatch.payload as string };
+}
+
+function queryReducer_setFilterOperator(
+  state: QueryState,
+  dispatch: QueryDispatch
+): QueryState {
+  return { ...state, filterOperator: dispatch.payload as string };
+}
 
 function queryReducer_setFilterOperatorSelectData(
   state: QueryState,
@@ -78,14 +74,7 @@ function queryReducer_setFilterOperatorSelectData(
   return { ...state, filterOperatorSelectData: dispatch.payload as string[] };
 }
 
-function queryReducer_setFilterSelectData(
-  state: QueryState,
-  dispatch: QueryDispatch
-): QueryState {
-  return { ...state, filterSelectData: dispatch.payload as string[] };
-}
-
-function queryReducer_setFilterStatements(
+function queryReducer_modifyFilterStatements(
   state: QueryState,
   dispatch: QueryDispatch
 ): QueryState {
@@ -93,6 +82,13 @@ function queryReducer_setFilterStatements(
   const filterStatements = [...state.filterStatements];
 
   return { ...state, filterStatements };
+}
+
+function queryReducer_setFilterValue(
+  state: QueryState,
+  dispatch: QueryDispatch
+): QueryState {
+  return { ...state, filterValue: dispatch.payload as string };
 }
 
 function queryReducer_setGeneralSearchExclusionValue(
@@ -107,6 +103,11 @@ function queryReducer_setGeneralSearchInclusionValue(
   dispatch: QueryDispatch
 ): QueryState {
   return { ...state, generalSearchInclusionValue: dispatch.payload as string };
+}
+
+function queryReducer_setIsError(state: QueryState, dispatch: QueryDispatch): QueryState {
+  const { kind } = dispatch.payload as SetPageInErrorPayload;
+  return { ...state, isError: kind === "add" };
 }
 
 function queryReducer_setIsFilterOpened(
@@ -137,6 +138,13 @@ function queryReducer_setIsQueryOpened(
   return { ...state, isQueryOpened: dispatch.payload as boolean };
 }
 
+function queryReducer_setIsSearchDisabled(
+  state: QueryState,
+  dispatch: QueryDispatch
+): QueryState {
+  return { ...state, isSearchDisabled: dispatch.payload as boolean };
+}
+
 function queryReducer_setIsSearchOpened(
   state: QueryState,
   dispatch: QueryDispatch
@@ -165,18 +173,11 @@ function queryReducer_setProjectionArray(
   return { ...state, projectionArray: dispatch.payload as string[] };
 }
 
-function queryReducer_setProjectionCheckboxData(
+function queryReducer_setSearchField(
   state: QueryState,
   dispatch: QueryDispatch
 ): QueryState {
-  return { ...state, projectionCheckboxData: dispatch.payload as CheckboxInputData };
-}
-
-function queryReducer_setSearchSelectData(
-  state: QueryState,
-  dispatch: QueryDispatch
-): QueryState {
-  return { ...state, searchSelectData: dispatch.payload as string[] };
+  return { ...state, searchField: dispatch.payload as string };
 }
 
 function queryReducer_setSearchStatements(
@@ -189,6 +190,13 @@ function queryReducer_setSearchStatements(
   return { ...state, searchStatements };
 }
 
+function queryReducer_setSearchValue(
+  state: QueryState,
+  dispatch: QueryDispatch
+): QueryState {
+  return { ...state, searchValue: dispatch.payload as string };
+}
+
 function queryReducer_setSelectedFieldsSet(
   state: QueryState,
   dispatch: QueryDispatch
@@ -199,11 +207,18 @@ function queryReducer_setSelectedFieldsSet(
   return state;
 }
 
-function queryReducer_setSortSelectData(
+function queryReducer_setSortDirection(
   state: QueryState,
   dispatch: QueryDispatch
 ): QueryState {
-  return { ...state, sortSelectData: dispatch.payload as string[] };
+  return { ...state, sortDirection: dispatch.payload as SortDirection };
+}
+
+function queryReducer_setSortField(
+  state: QueryState,
+  dispatch: QueryDispatch
+): QueryState {
+  return { ...state, sortField: dispatch.payload as string };
 }
 
 function queryReducer_setSortStatements(

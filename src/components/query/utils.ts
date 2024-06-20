@@ -1,16 +1,15 @@
 import { ValidationKey } from "../../constants/validations";
 import { CheckboxRadioSelectData, InputType, StepperPage } from "../../types";
 import { splitCamelCase } from "../../utils";
+import { ComparisonOperators, QueryOperators } from "./types";
 
-type ComparisonOperators =
-  | "equal to"
-  | "greater than or equal to"
-  | "greater than"
-  | "less than or equal to"
-  | "less than";
+type OperatorsInputType = {
+  operators: CheckboxRadioSelectData<QueryOperators>;
+  inputType: InputType;
+};
 
 type QueryInputsData = {
-  fieldNamesOperatorsMap: Map<string, CheckboxRadioSelectData>;
+  fieldNamesOperatorsTypesMap: Map<string, OperatorsInputType>;
   /** field names */
   filterFieldSelectInputData: CheckboxRadioSelectData;
   /** Map<field names, select data> */
@@ -28,17 +27,19 @@ type QueryInputsData = {
  * - Extracts the names, input data from the stepper pages and used in the corresponding query sections
  */
 function separateQueryInputsData(stepperPages: StepperPage[]): QueryInputsData {
-  // these input types can have filter operators applied to them
+  // data created with these input types can have a subset of operators applied to them
+
   const filterInputsTypeSet = new Set<InputType>([
-    "boolean", // equal to operator
+    "boolean", // 'equal to' operator
     "date", // comparison operators
     "number", // comparison operators
-    "select", // in operator
+    "select", // 'in' operator
     "time", // comparison operators
   ]);
   const projectionInputSet = new Set<InputType>(["checkbox"]); // can apply projection: exclusion | inclusion
-  const sortInputsSet = new Set<InputType>(["date", "number"]); // can apply sort
-  const comparableOperatorsInputsSet = new Set<InputType>(["date", "number", "time"]); // can apply comparison operators
+  const searchInputSet = new Set<InputType>(["text"]); // can apply regex search
+  const sortInputsSet = new Set<InputType>(["date", "number", "time"]); // can apply sort: ascending | descending
+  const comparisonOperatorsInputsSet = new Set<InputType>(["date", "number", "time"]); // can apply comparison operators
 
   const comparisonOperators: CheckboxRadioSelectData<ComparisonOperators> = [
     { label: "Equal to", value: "equal to" },
@@ -53,7 +54,7 @@ function separateQueryInputsData(stepperPages: StepperPage[]): QueryInputsData {
   ];
 
   const initialAcc: QueryInputsData = {
-    fieldNamesOperatorsMap: new Map<string, CheckboxRadioSelectData>(),
+    fieldNamesOperatorsTypesMap: new Map<string, OperatorsInputType>(),
     filterFieldSelectInputData: [],
     selectInputsDataMap: new Map<string, CheckboxRadioSelectData>(),
     projectionCheckboxData: [],
@@ -64,7 +65,7 @@ function separateQueryInputsData(stepperPages: StepperPage[]): QueryInputsData {
 
   return stepperPages.reduce<QueryInputsData>((acc, page) => {
     const {
-      fieldNamesOperatorsMap,
+      fieldNamesOperatorsTypesMap,
       filterFieldSelectInputData,
       selectInputsDataMap,
       searchFieldSelectData,
@@ -78,14 +79,16 @@ function separateQueryInputsData(stepperPages: StepperPage[]): QueryInputsData {
 
       const checkboxRadioSelectData = { label: splitCamelCase(name), value: name };
 
-      fieldNamesOperatorsMap.set(
-        name,
-        comparableOperatorsInputsSet.has(inputType)
+      const operatorsInputTypeObject = {
+        inputType,
+        operators: comparisonOperatorsInputsSet.has(inputType)
           ? comparisonOperators
           : inputType === "boolean"
           ? booleanOperator
-          : inOperator
-      );
+          : inOperator,
+      } as OperatorsInputType;
+
+      fieldNamesOperatorsTypesMap.set(name, operatorsInputTypeObject);
 
       if (filterInputsTypeSet.has(inputType)) {
         filterFieldSelectInputData.push(checkboxRadioSelectData);
@@ -95,7 +98,7 @@ function separateQueryInputsData(stepperPages: StepperPage[]): QueryInputsData {
         acc.projectionCheckboxData = checkboxInputData ?? [];
       }
 
-      if (inputType === "text") {
+      if (searchInputSet.has(inputType)) {
         searchFieldSelectData.push(checkboxRadioSelectData);
 
         if (validationKey) {
@@ -117,4 +120,4 @@ function separateQueryInputsData(stepperPages: StepperPage[]): QueryInputsData {
 }
 
 export { separateQueryInputsData };
-export type { QueryInputsData };
+export type { OperatorsInputType, QueryInputsData };

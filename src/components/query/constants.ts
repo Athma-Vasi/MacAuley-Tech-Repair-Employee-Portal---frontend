@@ -1,1 +1,3 @@
-export {};
+const MAX_FILTER_LINKS_AMOUNT = 11;
+
+export { MAX_FILTER_LINKS_AMOUNT };

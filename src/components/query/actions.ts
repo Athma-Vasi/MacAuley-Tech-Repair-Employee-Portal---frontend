@@ -1,46 +1,56 @@
 type QueryAction = {
+  modifyFilterChains: "modifyFilterChains";
+  setFilterField: "setFilterField";
+  setFilterOperator: "setFilterOperator";
   setFilterOperatorSelectData: "setFilterOperatorSelectData";
-  setFilterSelectData: "setFilterSelectData";
-  setFilterStatements: "setFilterStatements";
+  setFilterValue: "setFilterValue";
   setGeneralSearchExclusionValue: "setGeneralSearchExclusionValue";
   setGeneralSearchInclusionValue: "setGeneralSearchInclusionValue";
+  setIsError: "setIsError";
   setIsFilterOpened: "setIsFilterOpened";
   setIsGeneralSearchCaseSensitive: "setIsGeneralSearchCaseSensitive";
   setIsProjectionOpened: "setIsProjectionOpened";
   setIsQueryOpened: "setIsQueryOpened";
+  setIsSearchDisabled: "setIsSearchDisabled";
   setIsSearchOpened: "setIsSearchOpened";
   setIsSortOpened: "setIsSortOpened";
   setLimitPerPage: "setLimitPerPage";
   setProjectedFieldsSet: "setProjectedFieldsSet";
   setProjectionArray: "setProjectionArray";
-  setProjectionCheckboxData: "setProjectionCheckboxData";
-  setSearchSelectData: "setSearchSelectData";
+  setSearchField: "setSearchField";
   setSearchStatements: "setSearchStatements";
+  setSearchValue: "setSearchValue";
   setSelectedFieldsSet: "setSelectedFieldsSet";
-  setSortSelectData: "setSortSelectData";
+  setSortDirection: "setSortDirection";
+  setSortField: "setSortField";
   setSortStatements: "setSortStatements";
 };
 
 const queryAction: QueryAction = {
+  modifyFilterChains: "modifyFilterChains",
+  setFilterField: "setFilterField",
+  setFilterOperator: "setFilterOperator",
   setFilterOperatorSelectData: "setFilterOperatorSelectData",
-  setFilterSelectData: "setFilterSelectData",
-  setFilterStatements: "setFilterStatements",
+  setFilterValue: "setFilterValue",
   setGeneralSearchExclusionValue: "setGeneralSearchExclusionValue",
   setGeneralSearchInclusionValue: "setGeneralSearchInclusionValue",
+  setIsError: "setIsError",
   setIsFilterOpened: "setIsFilterOpened",
   setIsGeneralSearchCaseSensitive: "setIsGeneralSearchCaseSensitive",
   setIsProjectionOpened: "setIsProjectionOpened",
   setIsQueryOpened: "setIsQueryOpened",
+  setIsSearchDisabled: "setIsSearchDisabled",
   setIsSearchOpened: "setIsSearchOpened",
   setIsSortOpened: "setIsSortOpened",
   setLimitPerPage: "setLimitPerPage",
   setProjectedFieldsSet: "setProjectedFieldsSet",
   setProjectionArray: "setProjectionArray",
-  setProjectionCheckboxData: "setProjectionCheckboxData",
-  setSearchSelectData: "setSearchSelectData",
+  setSearchField: "setSearchField",
   setSearchStatements: "setSearchStatements",
+  setSearchValue: "setSearchValue",
   setSelectedFieldsSet: "setSelectedFieldsSet",
-  setSortSelectData: "setSortSelectData",
+  setSortDirection: "setSortDirection",
+  setSortField: "setSortField",
   setSortStatements: "setSortStatements",
 };
 
