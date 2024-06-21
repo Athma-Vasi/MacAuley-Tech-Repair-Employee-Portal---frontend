@@ -1,3 +1,4 @@
+/** @see https://www.sandromaglione.com/articles/trie-data-structure-typescript */
 class Trie {
   /** check if current node marks a complete word */
   #isEnd = false;
