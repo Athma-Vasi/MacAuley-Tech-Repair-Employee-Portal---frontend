@@ -1013,7 +1013,7 @@ function DisplayResource<Doc>({
   );
 
   const queryTesting = (
-    <Query collectionName="Query testing" stepperPages={returnBenefitStepperPages()} />
+    <Query collectionName="Repair Tickets" stepperPages={returnBenefitStepperPages()} />
   );
 
   const displaySubmitSuccessNotificationModal = (

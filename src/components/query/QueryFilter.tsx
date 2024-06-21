@@ -1,4 +1,4 @@
-import { Accordion, Group, Stack, Text, Timeline } from "@mantine/core";
+import { Accordion, Group, Stack, Text, Timeline, Title } from "@mantine/core";
 import React from "react";
 import { TbChevronDown, TbLink } from "react-icons/tb";
 
@@ -45,6 +45,7 @@ type QueryFilterProps<
   ValidValueAction extends string = string,
   InvalidValueAction extends string = string
 > = {
+  collectionName: string;
   fieldNamesOperatorsTypesMap: Map<string, OperatorsInputType>;
   filterField: string;
   filterOperator: string;
@@ -66,6 +67,7 @@ function QueryFilter<
   ValidValueAction extends string = string,
   InvalidValueAction extends string = string
 >({
+  collectionName,
   fieldNamesOperatorsTypesMap,
   filterField,
   filterFieldSelectInputData,
@@ -194,7 +196,7 @@ function QueryFilter<
               payload: {
                 index,
                 kind: "insert",
-                value: [field, operator, value],
+                value: [filterField, filterOperator, filterValue],
               },
             });
           },
@@ -266,11 +268,10 @@ function QueryFilter<
     );
 
     return (
-      <Timeline.Item
-        key={`timeline-link-${index}`}
-        title={`Select documents where ${filterLinkStatement}`}
-        bullet={<TbLink />}
-      >
+      <Timeline.Item key={`timeline-link-${index}`} bullet={<TbLink />}>
+        <Text>{`${filterLinkStatement} ${
+          filterChain.length > 1 && index !== filterChain.length - 1 ? "and" : ""
+        }`}</Text>
         {buttons}
       </Timeline.Item>
     );
@@ -280,10 +281,13 @@ function QueryFilter<
     <Accordion chevron={<TbChevronDown />}>
       <Accordion.Item value="Filter Chain">
         <Accordion.Control disabled={filterChain.length === 0}>
-          <Text>Filter Chain</Text>
+          <Text size="lg">Filter Chain</Text>
         </Accordion.Control>
         <Accordion.Panel>
-          <Timeline active={Number.MAX_SAFE_INTEGER}>{filterChainElements}</Timeline>
+          <Stack>
+            <Text size="md">{`Select ${collectionName} where:`}</Text>
+            <Timeline active={Number.MAX_SAFE_INTEGER}>{filterChainElements}</Timeline>
+          </Stack>
         </Accordion.Panel>
       </Accordion.Item>
     </Accordion>

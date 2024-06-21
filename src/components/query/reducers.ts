@@ -68,23 +68,22 @@ function queryReducer_setFilterField(
   console.log({ filterField, operatorTypes, selectInputData });
   console.groupEnd();
 
-  const filterValue = new Date().toISOString().split("T")[0];
-
-  if (!operatorTypes) {
-    return { ...state, filterField, filterOperator: "In", filterValue };
+  if (operatorTypes === undefined) {
+    return { ...state, filterField, filterOperator: "In", filterValue: "" };
   }
 
-  if (!selectInputData) {
+  if (selectInputData === undefined) {
     return {
       ...state,
       filterField,
       filterOperator: operatorTypes.operators[0].label,
-      filterValue,
+      filterValue: new Date().toISOString().split("T")[0],
     };
   }
 
   const { operators } = operatorTypes;
   const filterOperator = operators[0].label;
+  const filterValue = selectInputData[0].value;
 
   return {
     ...state,
@@ -133,7 +132,7 @@ function queryReducer_modifyFilterChain(
 
       return mapAcc;
     },
-    new Map<string, { operatorsSet: Set<string>; valuesSet: Set<string> }>()
+    new Map()
   );
 
   switch (kind) {
@@ -154,9 +153,11 @@ function queryReducer_modifyFilterChain(
 
       // field is unique
       if (fieldSets === undefined) {
-        filterChain.push(value);
+        filterChain.splice(index, 0, value);
         console.log("field is unique");
         console.log("filterChain", filterChain);
+        console.log("filterChain.length", filterChain.length);
+        console.log("index", index);
         return { ...state, filterChain };
       }
 
@@ -164,7 +165,7 @@ function queryReducer_modifyFilterChain(
 
       // field exists, operator is unique, value is unique
       if (!operatorsSet.has(filterOperator) && !valuesSet.has(filterValue)) {
-        filterChain.push(value);
+        filterChain.splice(index, 0, value);
         console.log("field exists, operator is unique, value is unique");
         console.log("filterChain", filterChain);
         return { ...state, filterChain };
@@ -198,7 +199,7 @@ function queryReducer_modifyFilterChain(
       console.log("filterChain", filterChain);
       console.groupEnd();
       // field exists, operator exists, value exists
-      return { ...state, filterChain: Array.from(new Set(filterChain)) };
+      return { ...state, filterChain };
     }
 
     case "delete": {

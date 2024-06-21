@@ -74,6 +74,7 @@ function Query({
 
   const queryFilter = (
     <QueryFilter
+      collectionName={collectionName}
       fieldNamesOperatorsTypesMap={fieldNamesOperatorsTypesMap}
       filterChain={filterChain}
       filterField={filterField}
