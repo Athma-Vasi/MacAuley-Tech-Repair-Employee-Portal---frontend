@@ -68,28 +68,30 @@ function queryReducer_setFilterField(
   console.log({ filterField, operatorTypes, selectInputData });
   console.groupEnd();
 
+  const filterValue = new Date().toISOString().split("T")[0];
+
   if (!operatorTypes) {
-    return { ...state, filterField, filterOperator: "In" };
+    return { ...state, filterField, filterOperator: "In", filterValue };
   }
 
-  if (selectInputData) {
+  if (!selectInputData) {
     return {
       ...state,
       filterField,
-      filterOperator: selectInputData[0].value,
-      filterValue: selectInputData[0].value,
-    };
-  } else {
-    const { operators } = operatorTypes;
-    const filterOperator = operators[0].label;
-
-    return {
-      ...state,
-      filterField,
-      filterOperator,
-      filterValue: new Date().toISOString().split("T")[0],
+      filterOperator: operatorTypes.operators[0].label,
+      filterValue,
     };
   }
+
+  const { operators } = operatorTypes;
+  const filterOperator = operators[0].label;
+
+  return {
+    ...state,
+    filterField,
+    filterOperator,
+    filterValue,
+  };
 }
 
 function queryReducer_setFilterOperator(
@@ -136,15 +138,25 @@ function queryReducer_modifyFilterChain(
 
   switch (kind) {
     case "insert": {
+      console.group("queryReducer_modifyFilterChain");
+      console.log("filterChain", filterChain);
+      console.log("fieldsSetsMap", fieldsSetsMap);
+      console.log("filterField", filterField);
+      console.log("filterOperator", filterOperator);
+      console.log("filterValue", filterValue);
+
       if (filterValue === "") {
+        console.log("filterValue is empty");
         return state;
       }
 
       const fieldSets = fieldsSetsMap.get(filterField);
 
       // field is unique
-      if (!fieldSets) {
+      if (fieldSets === undefined) {
         filterChain.push(value);
+        console.log("field is unique");
+        console.log("filterChain", filterChain);
         return { ...state, filterChain };
       }
 
@@ -153,38 +165,51 @@ function queryReducer_modifyFilterChain(
       // field exists, operator is unique, value is unique
       if (!operatorsSet.has(filterOperator) && !valuesSet.has(filterValue)) {
         filterChain.push(value);
+        console.log("field exists, operator is unique, value is unique");
+        console.log("filterChain", filterChain);
         return { ...state, filterChain };
       }
 
       // field exists, operator is unique, value exists
       if (!operatorsSet.has(filterOperator) && valuesSet.has(filterValue)) {
-        // find the first link with the same field and value
         const index = filterChain.findIndex(
           ([field, _, value]: [string, string, string]) =>
             field === filterField && value === filterValue
         );
         filterChain.splice(index, 1, value);
+        console.log("field exists, operator is unique, value exists");
+        console.log("filterChain", filterChain);
         return { ...state, filterChain };
       }
 
       // field exists, operator exists, value is unique
       if (operatorsSet.has(filterOperator) && !valuesSet.has(filterValue)) {
-        // find the first link with the same field and operator
         const index = filterChain.findIndex(
           ([field, operator, _]: [string, string, string]) =>
             field === filterField && operator === filterOperator
         );
         filterChain.splice(index, 1, value);
+        console.log("field exists, operator exists, value is unique");
+        console.log("filterChain", filterChain);
         return { ...state, filterChain };
       }
 
+      console.log("field exists, operator exists, value exists");
+      console.log("filterChain", filterChain);
+      console.groupEnd();
       // field exists, operator exists, value exists
       return { ...state, filterChain: Array.from(new Set(filterChain)) };
     }
 
     case "delete": {
       filterChain.splice(index, 1);
-      return { ...state, filterChain };
+      return {
+        ...state,
+        filterChain,
+        filterField: "createdAt",
+        filterOperator: "equal to",
+        filterValue: new Date().toISOString().split("T")[0],
+      };
     }
 
     case "slideDown": {
