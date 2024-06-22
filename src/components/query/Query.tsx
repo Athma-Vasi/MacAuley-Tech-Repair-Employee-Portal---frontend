@@ -5,8 +5,10 @@ import { QueryProps } from "./types";
 import { createQueryInputsData } from "./utils";
 import { QueryFilter, QueryFilterDispatch } from "./QueryFilter";
 import { QueryAction, queryAction } from "./actions";
-import { Stack } from "@mantine/core";
+import { Accordion, Stack, Text } from "@mantine/core";
 import { QuerySearch, QuerySearchDispatch, SearchChainDispatch } from "./QuerySearch";
+import { TbChevronDown } from "react-icons/tb";
+import { QueryProjection, QueryProjectionDispatch } from "./QueryProjection";
 
 function Query({
   collectionName,
@@ -14,7 +16,7 @@ function Query({
   // parentDispatch,
   stepperPages,
   // validValueAction,
-  disableProjection = false,
+  isProjectionDisabled = false,
 }: QueryProps) {
   const {
     fieldNamesOperatorsTypesMap,
@@ -28,7 +30,7 @@ function Query({
 
   const [queryState, queryDispatch] = React.useReducer(
     queryReducer,
-    createInitialQueryState(searchFieldSelectData)
+    createInitialQueryState(projectionCheckboxData, searchFieldSelectData)
   );
 
   const {
@@ -49,7 +51,7 @@ function Query({
     isSortOpened,
     limitPerPage,
     projectedFieldsSet,
-    projectionArray,
+    projectionFields,
     searchField,
     searchChain,
     searchValue,
@@ -103,9 +105,48 @@ function Query({
     />
   );
 
+  /**
+   *  <Accordion chevron={<TbChevronDown />}>
+      <Accordion.Item value="Search Chain">
+        <Accordion.Control disabled={searchChain.length === 0}>
+          <Text size="lg">Search Chain</Text>
+        </Accordion.Control>
+        <Accordion.Panel>
+          <Stack>
+            <Text size="md">{`Select ${collectionName} where:`}</Text>
+            <Timeline active={Number.MAX_SAFE_INTEGER}>{searchChainElements}</Timeline>
+          </Stack>
+        </Accordion.Panel>
+      </Accordion.Item>
+    </Accordion>
+   */
+
+  const queryProjectionAccordion = (
+    <Accordion chevron={<TbChevronDown />}>
+      <Accordion.Item value="Projection">
+        <Accordion.Control
+          disabled={isProjectionDisabled || projectionCheckboxData.length === 0}
+        >
+          <Text size="lg">Projection</Text>
+        </Accordion.Control>
+        <Accordion.Panel>
+          <Stack>
+            <QueryProjection
+              parentDispatch={queryDispatch as any}
+              projectionCheckboxData={projectionCheckboxData}
+              projectionFields={projectionFields}
+              queryAction={queryAction}
+            />
+          </Stack>
+        </Accordion.Panel>
+      </Accordion.Item>
+    </Accordion>
+  );
+
   return (
     <Stack>
       {queryFilter}
+      {queryProjectionAccordion}
       {querySearch}
     </Stack>
   );

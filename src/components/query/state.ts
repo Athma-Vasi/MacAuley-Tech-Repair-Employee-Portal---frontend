@@ -1,15 +1,18 @@
 import { CheckboxRadioSelectData } from "../../types";
-import { QueryState } from "./types";
+import { FilterFieldsOperatorsValuesSetsMap, QueryState } from "./types";
 
 function createInitialQueryState(
+  projectionCheckboxData: CheckboxRadioSelectData,
   searchFieldSelectData: CheckboxRadioSelectData
 ): QueryState {
-  const filterFieldsOperatorsValuesSetsMap = new Map([["createdAt", new Set()]]);
+  const filterFieldsOperatorsValuesSetsMap = new Map([
+    ["createdAt", { operatorsSet: new Set(), valuesSet: new Set() }],
+  ]) as FilterFieldsOperatorsValuesSetsMap;
 
   const initialQueryState: QueryState = {
     // date input type is guaranteed to exist (all schemas have createdAt & updatedAt)
     filterField: "createdAt",
-    filterFieldsOperatorsValuesSetsMap: new Map(),
+    filterFieldsOperatorsValuesSetsMap,
     filterOperator: "equal to",
     filterOperatorSelectData: [],
     filterChain: [],
@@ -26,7 +29,7 @@ function createInitialQueryState(
     isSortOpened: false,
     limitPerPage: 10,
     projectedFieldsSet: new Set(),
-    projectionArray: [],
+    projectionFields: projectionCheckboxData.map((field) => field.value),
     searchField: searchFieldSelectData[0].value,
     searchFieldsValuesSetMap: new Map([[searchFieldSelectData[0].value, new Set()]]),
     searchChain: [],

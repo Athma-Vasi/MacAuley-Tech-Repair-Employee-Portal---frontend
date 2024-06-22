@@ -148,7 +148,7 @@ function QuerySearch<
               payload: {
                 index,
                 kind: "delete",
-                value: [field, value],
+                value: [searchField, searchValue],
               },
             });
           },
@@ -202,7 +202,7 @@ function QuerySearch<
               payload: {
                 index,
                 kind: "slideUp",
-                value: [field, value],
+                value: [searchField, searchValue],
               },
             });
           },
@@ -229,7 +229,7 @@ function QuerySearch<
               payload: {
                 index,
                 kind: "slideDown",
-                value: [field, value],
+                value: [searchField, searchValue],
               },
             });
           },

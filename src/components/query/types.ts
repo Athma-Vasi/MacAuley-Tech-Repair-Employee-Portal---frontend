@@ -1,4 +1,9 @@
-import { CheckboxInputData, SetPageInErrorPayload, StepperPage } from "../../types";
+import {
+  CheckboxInputData,
+  CheckboxRadioSelectData,
+  SetPageInErrorPayload,
+  StepperPage,
+} from "../../types";
 import { QueryAction } from "./actions";
 import { OperatorsInputType } from "./utils";
 
@@ -31,7 +36,7 @@ type QueryProps<
   InvalidValueAction extends string = string
 > = {
   collectionName: string;
-  disableProjection?: boolean;
+  isProjectionDisabled?: boolean;
   // invalidValueAction: InvalidValueAction;
   // parentDispatch: React.Dispatch<
   //   | {
@@ -67,7 +72,7 @@ type QueryState = {
   isSortOpened: boolean;
   limitPerPage: number;
   projectedFieldsSet: Set<string>;
-  projectionArray: string[];
+  projectionFields: string[];
   searchField: string;
   searchFieldsValuesSetMap: SearchFieldsValuesSetMap;
   searchChain: Array<[string, string]>; // [field, value][]
@@ -172,7 +177,7 @@ type QueryDispatch =
       payload: Set<string>;
     }
   | {
-      action: QueryAction["setProjectionArray"];
+      action: QueryAction["setProjectionFields"];
       payload: string[];
     }
   | {

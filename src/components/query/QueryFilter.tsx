@@ -169,7 +169,7 @@ function QueryFilter<
               payload: {
                 index,
                 kind: "delete",
-                value: [field, operator, value],
+                value: [filterField, filterOperator, filterValue],
               },
             });
           },
@@ -223,7 +223,7 @@ function QueryFilter<
               payload: {
                 index,
                 kind: "slideUp",
-                value: [field, operator, value],
+                value: [filterField, filterOperator, filterValue],
               },
             });
           },
@@ -250,7 +250,7 @@ function QueryFilter<
               payload: {
                 index,
                 kind: "slideDown",
-                value: [field, operator, value],
+                value: [filterField, filterOperator, filterValue],
               },
             });
           },

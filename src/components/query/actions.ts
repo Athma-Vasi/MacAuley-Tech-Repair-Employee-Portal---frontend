@@ -17,7 +17,7 @@ type QueryAction = {
   setIsSortOpened: "setIsSortOpened";
   setLimitPerPage: "setLimitPerPage";
   setProjectedFieldsSet: "setProjectedFieldsSet";
-  setProjectionArray: "setProjectionArray";
+  setProjectionFields: "setProjectionFields";
   setSearchField: "setSearchField";
   setSearchValue: "setSearchValue";
   setSelectedFieldsSet: "setSelectedFieldsSet";
@@ -45,7 +45,7 @@ const queryAction: QueryAction = {
   setIsSortOpened: "setIsSortOpened",
   setLimitPerPage: "setLimitPerPage",
   setProjectedFieldsSet: "setProjectedFieldsSet",
-  setProjectionArray: "setProjectionArray",
+  setProjectionFields: "setProjectionFields",
   setSearchField: "setSearchField",
   setSearchValue: "setSearchValue",
   setSelectedFieldsSet: "setSelectedFieldsSet",

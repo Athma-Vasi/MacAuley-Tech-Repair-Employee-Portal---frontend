@@ -1,4 +1,4 @@
-import { SetPageInErrorPayload } from "../../types";
+import { CheckboxRadioSelectData, SetPageInErrorPayload } from "../../types";
 import { QueryAction, queryAction } from "./actions";
 import {
   QueryDispatch,
@@ -45,7 +45,7 @@ const queryReducers = new Map<
   [queryAction.setIsSearchOpened, queryReducer_setIsSearchOpened],
   [queryAction.setIsSortOpened, queryReducer_setIsSortOpened],
   [queryAction.setProjectedFieldsSet, queryReducer_setProjectedFieldsSet],
-  [queryAction.setProjectionArray, queryReducer_setProjectionArray],
+  [queryAction.setProjectionFields, queryReducer_setProjectionFields],
   [queryAction.setSearchField, queryReducer_setSearchField],
   [queryAction.setSearchValue, queryReducer_setSearchValue],
   [queryAction.setSelectedFieldsSet, queryReducer_setSelectedFieldsSet],
@@ -285,7 +285,7 @@ function queryReducer_setFilterField(
   console.groupEnd();
 
   if (operatorTypes === undefined) {
-    return { ...state, filterField, filterOperator: "In", filterValue: "" };
+    return { ...state, filterField, filterOperator: "in", filterValue: "" };
   }
 
   if (selectInputData === undefined) {
@@ -407,11 +407,11 @@ function queryReducer_setProjectedFieldsSet(
   return { ...state, projectedFieldsSet: dispatch.payload as Set<string> };
 }
 
-function queryReducer_setProjectionArray(
+function queryReducer_setProjectionFields(
   state: QueryState,
   dispatch: QueryDispatch
 ): QueryState {
-  return { ...state, projectionArray: dispatch.payload as string[] };
+  return { ...state, projectionFields: dispatch.payload as string[] };
 }
 
 function queryReducer_setSearchField(
