@@ -21,9 +21,15 @@ type FilterFieldsOperatorsValuesSetsMap = Map<
 
 type LogicalOperators = "$and" | "$nor" | "$not" | "$or";
 
+type QueryChain = Array<QueryLink>;
+
+type QueryLink = [string, string, string];
+
 type QueryOperators = ComparisonOperators | "in";
 
 type QueryChainActionsKind = "delete" | "insert" | "slideUp" | "slideDown";
+
+type QueryChainKind = "filter" | "search" | "sort";
 
 type SearchFieldsValuesSetMap = Map<string, Set<string>>;
 
@@ -58,7 +64,7 @@ type QueryState = {
   filterFieldsOperatorsValuesSetsMap: FilterFieldsOperatorsValuesSetsMap;
   filterOperator: string;
   filterOperatorSelectData: string[];
-  filterChain: Array<[string, string, string]>; // [field, operator, value][]
+  filterChain: QueryChain; // [field, operator, value][]
   filterValue: string;
   generalSearchExclusionValue: string;
   generalSearchInclusionValue: string;
@@ -75,30 +81,19 @@ type QueryState = {
   projectionFields: string[];
   searchField: string;
   searchFieldsValuesSetMap: SearchFieldsValuesSetMap;
-  searchChain: Array<[string, string]>; // [field, value][]
+  searchChain: QueryChain; // [field, _, value][]
   searchValue: string;
   selectedFieldsSet: Set<string>;
   sortDirection: SortDirection;
   sortField: string;
-  sortChain: [string, string][]; // [field, direction][]
+  sortChain: QueryChain; // [field, _, direction][]
 };
 
-type ModifyFilterChainPayload = {
+type ModifyQueryChainPayload = {
   index: number;
   kind: QueryChainActionsKind;
-  value: [string, string, string];
-};
-
-type ModifySearchChainPayload = {
-  index: number;
-  kind: QueryChainActionsKind;
-  value: [string, string];
-};
-
-type ModifySortChainPayload = {
-  index: number;
-  kind: "field" | "direction";
-  value: string;
+  query: QueryChainKind;
+  value: QueryLink;
 };
 
 type QueryFilterPayload = {
@@ -108,6 +103,10 @@ type QueryFilterPayload = {
 };
 
 type QueryDispatch =
+  | {
+      action: QueryAction["modifyQueryChain"];
+      payload: ModifyQueryChainPayload;
+    }
   | {
       action: QueryAction["setFilterField"];
       payload: QueryFilterPayload;
@@ -119,10 +118,6 @@ type QueryDispatch =
   | {
       action: QueryAction["setFilterOperatorSelectData"];
       payload: string[];
-    }
-  | {
-      action: QueryAction["modifyFilterChain"];
-      payload: ModifyFilterChainPayload;
     }
   | {
       action: QueryAction["setFilterValue"];
@@ -185,10 +180,6 @@ type QueryDispatch =
       payload: string;
     }
   | {
-      action: QueryAction["modifySearchChain"];
-      payload: ModifySearchChainPayload;
-    }
-  | {
       action: QueryAction["setSearchValue"];
       payload: string;
     }
@@ -203,10 +194,6 @@ type QueryDispatch =
   | {
       action: QueryAction["setSortField"];
       payload: string;
-    }
-  | {
-      action: QueryAction["setSortChain"];
-      payload: ModifySortChainPayload;
     };
 
 export type {
@@ -214,12 +201,13 @@ export type {
   FilterFieldsOperatorsValuesSetsMap,
   FilterInputsType,
   LogicalOperators,
-  ModifyFilterChainPayload,
-  ModifySearchChainPayload,
-  ModifySortChainPayload,
+  ModifyQueryChainPayload,
+  QueryChain,
   QueryChainActionsKind,
+  QueryChainKind,
   QueryDispatch,
   QueryFilterPayload,
+  QueryLink,
   QueryOperators,
   QueryProps,
   QueryState,

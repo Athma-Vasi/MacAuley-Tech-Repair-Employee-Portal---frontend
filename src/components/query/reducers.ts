@@ -1,12 +1,14 @@
 import { CheckboxRadioSelectData, SetPageInErrorPayload } from "../../types";
 import { QueryAction, queryAction } from "./actions";
 import {
+  ModifyQueryChainPayload,
+  QueryChain,
+  QueryChainActionsKind,
+  QueryChainKind,
   QueryDispatch,
   QueryFilterPayload,
+  QueryLink,
   QueryState,
-  ModifyFilterChainPayload,
-  ModifySearchChainPayload,
-  ModifySortChainPayload,
   SortDirection,
 } from "./types";
 
@@ -19,8 +21,7 @@ const queryReducers = new Map<
   QueryAction[keyof QueryAction],
   (state: QueryState, dispatch: QueryDispatch) => QueryState
 >([
-  [queryAction.modifyFilterChain, queryReducer_modifyFilterChain],
-  [queryAction.modifySearchChain, queryReducer_modifySearchChain],
+  [queryAction.modifyQueryChain, queryReducer_modifyQueryChain],
   [queryAction.setFilterField, queryReducer_setFilterField],
   [queryAction.setFilterOperator, queryReducer_setFilterOperator],
   [queryAction.setFilterOperatorSelectData, queryReducer_setFilterOperatorSelectData],
@@ -51,29 +52,43 @@ const queryReducers = new Map<
   [queryAction.setSelectedFieldsSet, queryReducer_setSelectedFieldsSet],
   [queryAction.setSortDirection, queryReducer_setSortDirection],
   [queryAction.setSortField, queryReducer_setSortField],
-  [queryAction.setSortChain, queryReducer_setSortChain],
 ]);
 
-function queryReducer_modifyFilterChain(
-  state: QueryState,
-  dispatch: QueryDispatch
-): QueryState {
-  const { index, kind, value } = dispatch.payload as ModifyFilterChainPayload;
-  const [filterField, filterOperator, filterValue] = value;
-  const filterChain = structuredClone(state.filterChain);
-  const filterFieldsOperatorsValuesSetsMap = structuredClone(
-    state.filterFieldsOperatorsValuesSetsMap
-  );
+type ModifyFilterChainInput = {
+  actionsKind: QueryChainActionsKind;
+  filterChain: QueryChain;
+  filterFieldsOperatorsValuesSetsMap: Map<
+    string,
+    { operatorsSet: Set<string>; valuesSet: Set<string> }
+  >;
+  index: number;
+  queryField: string;
+  queryOperator: string;
+  queryValue: string;
+  state: QueryState;
+  value: QueryLink;
+};
 
-  switch (kind) {
+function modifyFilterChain({
+  actionsKind,
+  filterChain,
+  filterFieldsOperatorsValuesSetsMap,
+  index,
+  queryField,
+  queryOperator,
+  queryValue,
+  state,
+  value,
+}: ModifyFilterChainInput) {
+  switch (actionsKind) {
     case "delete": {
       filterChain.splice(index, 1);
 
-      filterFieldsOperatorsValuesSetsMap.delete(filterField);
+      filterFieldsOperatorsValuesSetsMap.delete(queryField);
 
       return {
         ...state,
-        filterChain,
+        filterChain: filterChain,
         filterField: "createdAt",
         filterFieldsOperatorsValuesSetsMap,
         filterOperator: "equal to",
@@ -82,29 +97,29 @@ function queryReducer_modifyFilterChain(
     }
 
     case "insert": {
-      console.group("queryReducer_modifyFilterChain");
+      console.group("queryReducer_modifyQueryChain");
       console.log("filterChain", filterChain);
       console.log(
         "filterFieldsOperatorsValuesSetsMap",
         filterFieldsOperatorsValuesSetsMap
       );
-      console.log("filterField", filterField);
-      console.log("filterOperator", filterOperator);
-      console.log("filterValue", filterValue);
+      console.log("queryField", queryField);
+      console.log("queryOperator", queryOperator);
+      console.log("queryValue", queryValue);
 
-      if (filterValue === "") {
-        console.log("filterValue is empty");
+      if (queryValue === "") {
+        console.log("queryValue is empty");
         return state;
       }
 
-      const operatorsValuesSets = filterFieldsOperatorsValuesSetsMap.get(filterField);
+      const operatorsValuesSets = filterFieldsOperatorsValuesSetsMap.get(queryField);
 
       // field is unique
       if (operatorsValuesSets === undefined) {
         filterChain.splice(index, 0, value);
-        filterFieldsOperatorsValuesSetsMap.set(filterField, {
-          operatorsSet: new Set([filterOperator]),
-          valuesSet: new Set([filterValue]),
+        filterFieldsOperatorsValuesSetsMap.set(queryField, {
+          operatorsSet: new Set([queryOperator]),
+          valuesSet: new Set([queryValue]),
         });
         console.log("field is unique");
         console.log("filterChain", filterChain);
@@ -116,36 +131,36 @@ function queryReducer_modifyFilterChain(
       const { operatorsSet, valuesSet } = operatorsValuesSets;
 
       // field exists, operator is unique, value is unique
-      if (!operatorsSet.has(filterOperator) && !valuesSet.has(filterValue)) {
+      if (!operatorsSet.has(queryOperator) && !valuesSet.has(queryValue)) {
         filterChain.splice(index, 0, value);
-        operatorsSet.add(filterOperator);
-        valuesSet.add(filterValue);
+        operatorsSet.add(queryOperator);
+        valuesSet.add(queryValue);
 
         console.log("field exists, operator is unique, value is unique");
         console.log("filterChain", filterChain);
       }
 
       // field exists, operator is unique, value exists
-      if (!operatorsSet.has(filterOperator) && valuesSet.has(filterValue)) {
+      if (!operatorsSet.has(queryOperator) && valuesSet.has(queryValue)) {
         const index = filterChain.findIndex(
           ([field, _, value]: [string, string, string]) =>
-            field === filterField && value === filterValue
+            field === queryField && value === queryValue
         );
         filterChain.splice(index, 1, value);
-        operatorsSet.add(filterOperator);
+        operatorsSet.add(queryOperator);
 
         console.log("field exists, operator is unique, value exists");
         console.log("filterChain", filterChain);
       }
 
       // field exists, operator exists, value is unique
-      if (operatorsSet.has(filterOperator) && !valuesSet.has(filterValue)) {
+      if (operatorsSet.has(queryOperator) && !valuesSet.has(queryValue)) {
         const index = filterChain.findIndex(
           ([field, operator, _]: [string, string, string]) =>
-            field === filterField && operator === filterOperator
+            field === queryField && operator === queryOperator
         );
         filterChain.splice(index, 1, value);
-        valuesSet.add(filterValue);
+        valuesSet.add(queryValue);
         console.log("field exists, operator exists, value is unique");
         console.log("filterChain", filterChain);
       }
@@ -154,7 +169,7 @@ function queryReducer_modifyFilterChain(
       console.log("filterChain", filterChain);
       console.groupEnd();
 
-      filterFieldsOperatorsValuesSetsMap.set(filterField, {
+      filterFieldsOperatorsValuesSetsMap.set(queryField, {
         operatorsSet,
         valuesSet,
       });
@@ -183,20 +198,31 @@ function queryReducer_modifyFilterChain(
   }
 }
 
-function queryReducer_modifySearchChain(
-  state: QueryState,
-  dispatch: QueryDispatch
-): QueryState {
-  const { index, kind, value } = dispatch.payload as ModifySearchChainPayload;
-  const [searchField, searchValue] = value;
+type ModifySearchChainInput = {
+  actionsKind: QueryChainActionsKind;
+  index: number;
+  queryField: string;
+  queryValue: string;
+  searchChain: QueryChain;
+  searchFieldsValuesSetMap: Map<string, Set<string>>;
+  state: QueryState;
+  value: QueryLink;
+};
 
-  const searchChain = structuredClone(state.searchChain);
-  const searchFieldsValuesSetMap = structuredClone(state.searchFieldsValuesSetMap);
-
-  switch (kind) {
+function modifySearchChain({
+  actionsKind,
+  index,
+  queryField,
+  queryValue,
+  searchChain,
+  searchFieldsValuesSetMap,
+  state,
+  value,
+}: ModifySearchChainInput) {
+  switch (actionsKind) {
     case "delete": {
       searchChain.splice(index, 1);
-      searchFieldsValuesSetMap.delete(searchField);
+      searchFieldsValuesSetMap.delete(queryField);
 
       return {
         ...state,
@@ -210,15 +236,15 @@ function queryReducer_modifySearchChain(
     case "insert": {
       console.group("queryReducer_modifySearchChain");
       console.log("searchChain", searchChain);
-      console.log("searchField", searchField);
-      console.log("searchValue", searchValue);
+      console.log("queryField", queryField);
+      console.log("queryValue", queryValue);
 
-      if (searchValue === "") {
+      if (queryValue === "") {
         console.log("searchValue is empty");
         return state;
       }
 
-      const valuesSet = searchFieldsValuesSetMap.get(searchField);
+      const valuesSet = searchFieldsValuesSetMap.get(queryField);
 
       console.log("state.searchFieldsValuesSetMap", state.searchFieldsValuesSetMap);
       console.log("valuesSet", valuesSet);
@@ -226,7 +252,7 @@ function queryReducer_modifySearchChain(
       // field is unique
       if (valuesSet === undefined) {
         searchChain.splice(index, 0, value);
-        searchFieldsValuesSetMap.set(searchField, new Set([searchValue]));
+        searchFieldsValuesSetMap.set(queryField, new Set([queryValue]));
         console.log("field is unique");
         console.log("searchChain", searchChain);
         console.log("searchChain.length", searchChain.length);
@@ -235,7 +261,7 @@ function queryReducer_modifySearchChain(
       }
 
       // field exists, value is unique
-      if (!valuesSet.has(searchValue)) {
+      if (!valuesSet.has(queryValue)) {
         searchChain.splice(index, 0, value);
         console.log("field exists, value is unique");
         console.log("searchChain", searchChain);
@@ -245,7 +271,7 @@ function queryReducer_modifySearchChain(
       console.log("searchChain", searchChain);
       console.groupEnd();
       // field exists, value exists
-      searchFieldsValuesSetMap.set(searchField, valuesSet.add(searchValue));
+      searchFieldsValuesSetMap.set(queryField, valuesSet.add(queryValue));
       return { ...state, searchChain, searchFieldsValuesSetMap };
     }
 
@@ -264,6 +290,57 @@ function queryReducer_modifySearchChain(
       searchChain[index - 1] = currentLink;
       return { ...state, searchChain };
     }
+
+    default:
+      return state;
+  }
+}
+
+function queryReducer_modifyQueryChain(
+  state: QueryState,
+  dispatch: QueryDispatch
+): QueryState {
+  const { index, kind, value, query } = dispatch.payload as ModifyQueryChainPayload;
+  const [queryField, queryOperator, queryValue] = value;
+
+  switch (query) {
+    case "filter": {
+      const filterChain = structuredClone(state.filterChain);
+      const filterFieldsOperatorsValuesSetsMap = structuredClone(
+        state.filterFieldsOperatorsValuesSetsMap
+      );
+
+      return modifyFilterChain({
+        actionsKind: kind,
+        filterChain,
+        filterFieldsOperatorsValuesSetsMap,
+        index,
+        queryField,
+        queryOperator,
+        queryValue,
+        state,
+        value,
+      });
+    }
+
+    case "search": {
+      const searchChain = structuredClone(state.searchChain);
+      const searchFieldsValuesSetMap = structuredClone(state.searchFieldsValuesSetMap);
+
+      return modifySearchChain({
+        actionsKind: kind,
+        index,
+        queryField,
+        queryValue,
+        searchChain,
+        searchFieldsValuesSetMap,
+        state,
+        value,
+      });
+    }
+
+    case "sort":
+      return state;
 
     default:
       return state;
@@ -450,16 +527,6 @@ function queryReducer_setSortField(
   dispatch: QueryDispatch
 ): QueryState {
   return { ...state, sortField: dispatch.payload as string };
-}
-
-function queryReducer_setSortChain(
-  state: QueryState,
-  dispatch: QueryDispatch
-): QueryState {
-  const { index, kind, value } = dispatch.payload as ModifySortChainPayload;
-  const sortChain = [...state.sortChain];
-
-  return { ...state, sortChain };
 }
 
 export { queryReducer };

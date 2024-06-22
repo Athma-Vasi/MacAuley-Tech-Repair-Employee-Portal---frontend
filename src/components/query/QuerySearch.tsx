@@ -7,10 +7,10 @@ import { splitCamelCase } from "../../utils";
 import { AccessibleButton } from "../accessibleInputs/AccessibleButton";
 import { AccessibleSelectInput } from "../accessibleInputs/AccessibleSelectInput";
 import { AccessibleTextAreaInput } from "../accessibleInputs/AccessibleTextAreaInput";
+import { AccessibleTextInput } from "../accessibleInputs/text/AccessibleTextInput";
 import { QueryAction } from "./actions";
 import { MAX_LINKS_AMOUNT } from "./constants";
-import { ModifySearchChainPayload } from "./types";
-import { AccessibleTextInput } from "../accessibleInputs/text/AccessibleTextInput";
+import { ModifyQueryChainPayload, QueryChain } from "./types";
 
 type QuerySearchDispatch<
   ValidValueAction extends string = string,
@@ -28,7 +28,7 @@ type QuerySearchDispatch<
 
 type SearchChainDispatch<ValidValueAction extends string = string> = React.Dispatch<{
   action: ValidValueAction;
-  payload: ModifySearchChainPayload;
+  payload: ModifyQueryChainPayload;
 }>;
 
 type QuerySearchProps<
@@ -41,7 +41,7 @@ type QuerySearchProps<
   isGeneralSearchCaseSensitive?: boolean;
   queryAction: QueryAction;
   querySearchDispatch: QuerySearchDispatch;
-  searchChain: Array<[string, string]>;
+  searchChain: QueryChain;
   searchChainDispatch: SearchChainDispatch;
   searchField: string;
   searchFieldSelectData: CheckboxRadioSelectData;
@@ -156,7 +156,7 @@ function QuerySearch<
             payload: {
               index: searchChain.length,
               kind: "insert",
-              value: [searchField, searchValue],
+              value: [searchField, "", searchValue],
             },
           });
         },
@@ -186,7 +186,7 @@ function QuerySearch<
               payload: {
                 index,
                 kind: "delete",
-                value: [searchField, searchValue],
+                value: [searchField, "", searchValue],
               },
             });
           },
@@ -213,7 +213,7 @@ function QuerySearch<
               payload: {
                 index,
                 kind: "insert",
-                value: [searchField, searchValue],
+                value: [searchField, "", searchValue],
               },
             });
           },
@@ -240,7 +240,7 @@ function QuerySearch<
               payload: {
                 index,
                 kind: "slideUp",
-                value: [searchField, searchValue],
+                value: [searchField, "", searchValue],
               },
             });
           },
@@ -267,7 +267,7 @@ function QuerySearch<
               payload: {
                 index,
                 kind: "slideDown",
-                value: [searchField, searchValue],
+                value: [searchField, "", searchValue],
               },
             });
           },

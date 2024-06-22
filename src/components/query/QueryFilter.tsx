@@ -11,7 +11,7 @@ import { AccessibleSelectInput } from "../accessibleInputs/AccessibleSelectInput
 import { AccessibleTextInput } from "../accessibleInputs/text/AccessibleTextInput";
 import { QueryAction, queryAction } from "./actions";
 import { MAX_LINKS_AMOUNT } from "./constants";
-import { ModifyFilterChainPayload } from "./types";
+import { ModifyQueryChainPayload, QueryChain } from "./types";
 import { OperatorsInputType } from "./utils";
 
 type QueryFilterDispatch<
@@ -50,10 +50,10 @@ type QueryFilterProps<
   filterField: string;
   filterOperator: string;
   filterFieldSelectInputData: CheckboxRadioSelectData;
-  filterChain: Array<[string, string, string]>;
+  filterChain: QueryChain;
   filterChainDispatch: React.Dispatch<{
     action: QueryAction["modifyFilterChain"];
-    payload: ModifyFilterChainPayload;
+    payload: ModifyQueryChainPayload;
   }>;
   filterValue: string;
   queryFilterDispatch: QueryFilterDispatch;
