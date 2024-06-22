@@ -2546,7 +2546,8 @@ function capitalizeAll(str: string): string {
 
 function capitalizeJoinWithAnd(strings: string[]): string {
   const joined = strings
-    .map((string) => string.charAt(0).toUpperCase() + string.slice(1))
+    // .map((string) => string.charAt(0).toUpperCase() + string.slice(1))
+    .map((string) => splitCamelCase(string))
     .join(", ");
   return replaceLastCommaWithAnd(joined);
 }

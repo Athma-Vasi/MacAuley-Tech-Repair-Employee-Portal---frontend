@@ -94,6 +94,8 @@ function Query({
   const querySearch = (
     <QuerySearch
       collectionName={collectionName}
+      generalSearchExclusionValue={generalSearchExclusionValue}
+      generalSearchInclusionValue={generalSearchInclusionValue}
       queryAction={queryAction}
       querySearchDispatch={queryDispatch as QuerySearchDispatch}
       searchChain={searchChain}
@@ -104,22 +106,6 @@ function Query({
       validatedInputsKeyMap={validatedInputsKeyMap}
     />
   );
-
-  /**
-   *  <Accordion chevron={<TbChevronDown />}>
-      <Accordion.Item value="Search Chain">
-        <Accordion.Control disabled={searchChain.length === 0}>
-          <Text size="lg">Search Chain</Text>
-        </Accordion.Control>
-        <Accordion.Panel>
-          <Stack>
-            <Text size="md">{`Select ${collectionName} where:`}</Text>
-            <Timeline active={Number.MAX_SAFE_INTEGER}>{searchChainElements}</Timeline>
-          </Stack>
-        </Accordion.Panel>
-      </Accordion.Item>
-    </Accordion>
-   */
 
   const queryProjectionAccordion = (
     <Accordion chevron={<TbChevronDown />}>

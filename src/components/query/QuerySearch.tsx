@@ -10,6 +10,7 @@ import { AccessibleTextAreaInput } from "../accessibleInputs/AccessibleTextAreaI
 import { QueryAction } from "./actions";
 import { MAX_LINKS_AMOUNT } from "./constants";
 import { ModifySearchChainPayload } from "./types";
+import { AccessibleTextInput } from "../accessibleInputs/text/AccessibleTextInput";
 
 type QuerySearchDispatch<
   ValidValueAction extends string = string,
@@ -25,10 +26,7 @@ type QuerySearchDispatch<
     }
 >;
 
-type SearchChainDispatch<
-  ValidValueAction extends string = string,
-  InvalidValueAction extends string = string
-> = React.Dispatch<{
+type SearchChainDispatch<ValidValueAction extends string = string> = React.Dispatch<{
   action: ValidValueAction;
   payload: ModifySearchChainPayload;
 }>;
@@ -38,6 +36,9 @@ type QuerySearchProps<
   InvalidValueAction extends string = string
 > = {
   collectionName: string;
+  generalSearchExclusionValue: string;
+  generalSearchInclusionValue: string;
+  isGeneralSearchCaseSensitive?: boolean;
   queryAction: QueryAction;
   querySearchDispatch: QuerySearchDispatch;
   searchChain: Array<[string, string]>;
@@ -53,6 +54,9 @@ function QuerySearch<
   InvalidValueAction extends string = string
 >({
   collectionName,
+  generalSearchExclusionValue,
+  generalSearchInclusionValue,
+  isGeneralSearchCaseSensitive,
   queryAction,
   querySearchDispatch,
   searchChain,
@@ -82,6 +86,16 @@ function QuerySearch<
           name: "searchValue",
           validationKey: validatedInputsKeyMap.get("searchValue") ?? "allowAll",
         },
+        {
+          inputType: "text",
+          name: "include",
+          validationKey: validatedInputsKeyMap.get("include") ?? "allowAll",
+        },
+        {
+          inputType: "text",
+          name: "exclude",
+          validationKey: validatedInputsKeyMap.get("include") ?? "allowAll",
+        },
       ],
       description: "text area",
     },
@@ -97,6 +111,30 @@ function QuerySearch<
         validValueAction: queryAction.setSearchValue as ValidValueAction,
         value: searchValue,
         stepperPages,
+      }}
+    />
+  );
+
+  const generalSearchInclusionTextInput = (
+    <AccessibleTextInput
+      attributes={{
+        invalidValueAction: queryAction.setIsError as InvalidValueAction,
+        name: "include",
+        stepperPages,
+        validValueAction: queryAction.setGeneralSearchInclusionValue as ValidValueAction,
+        value: generalSearchInclusionValue,
+      }}
+    />
+  );
+
+  const generalSearchExclusionTextInput = (
+    <AccessibleTextInput
+      attributes={{
+        invalidValueAction: queryAction.setIsError as InvalidValueAction,
+        name: "exclude",
+        stepperPages,
+        validValueAction: queryAction.setGeneralSearchExclusionValue as ValidValueAction,
+        value: generalSearchExclusionValue,
       }}
     />
   );
@@ -277,6 +315,8 @@ function QuerySearch<
       {timelineAccordion}
       {fieldSelectInput}
       {valueTextAreaInput}
+      {generalSearchInclusionTextInput}
+      {generalSearchExclusionTextInput}
       {addFilterStatementsButton}
     </Stack>
   );

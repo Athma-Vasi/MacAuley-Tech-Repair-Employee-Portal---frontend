@@ -36,19 +36,8 @@ function addInputsToStepperPages(stepperPages: StepperPage[]): StepperPage[] {
     validationKey: "username",
   };
 
-  const userIdInput: StepperChild = {
-    inputType: "text",
-    name: "userId",
-    validationKey: "userId",
-  };
-
   const clonedStepperPages = structuredClone(stepperPages);
-  clonedStepperPages[0].children.push(
-    createdAtInput,
-    updatedAtInput,
-    usernameInput,
-    userIdInput
-  );
+  clonedStepperPages[0].children.push(createdAtInput, updatedAtInput, usernameInput);
 
   return clonedStepperPages;
 }
@@ -86,8 +75,6 @@ function createQueryInputsData(stepperPages: StepperPage[]): QueryInputsData {
     "select", // 'in' operator
     "time", // comparison operators
   ]);
-  const projectionInputSet = new Set<InputType>(["checkbox"]); // can apply projection: exclusion | inclusion
-  const searchInputSet = new Set<InputType>(["text"]); // can apply regex search
   const sortInputsSet = new Set<SortInputsType>(["date", "number", "time"]); // can apply sort: ascending | descending
   const comparisonOperatorsInputsSet = new Set<InputType>(["date", "number", "time"]); // can apply comparison operators
 
@@ -106,6 +93,7 @@ function createQueryInputsData(stepperPages: StepperPage[]): QueryInputsData {
     const {
       fieldNamesOperatorsTypesMap,
       filterFieldSelectInputData,
+      projectionCheckboxData,
       selectInputsDataMap,
       searchFieldSelectData,
       sortFieldSelectData,
@@ -127,17 +115,14 @@ function createQueryInputsData(stepperPages: StepperPage[]): QueryInputsData {
           : IN_OPERATOR_DATA,
       } as OperatorsInputType;
 
+      projectionCheckboxData.push(checkboxRadioSelectData);
       fieldNamesOperatorsTypesMap.set(name, operatorsInputTypeObject);
 
       if (filterInputsTypeSet.has(inputType as FilterInputsType)) {
         filterFieldSelectInputData.push(checkboxRadioSelectData);
       }
 
-      if (projectionInputSet.has(inputType)) {
-        acc.projectionCheckboxData = checkboxInputData ?? [];
-      }
-
-      if (searchInputSet.has(inputType)) {
+      if (inputType === "text") {
         searchFieldSelectData.push(checkboxRadioSelectData);
 
         if (validationKey) {

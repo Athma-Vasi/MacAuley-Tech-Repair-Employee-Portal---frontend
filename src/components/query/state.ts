@@ -29,7 +29,7 @@ function createInitialQueryState(
     isSortOpened: false,
     limitPerPage: 10,
     projectedFieldsSet: new Set(),
-    projectionFields: projectionCheckboxData.map((field) => field.value),
+    projectionFields: [],
     searchField: searchFieldSelectData[0].value,
     searchFieldsValuesSetMap: new Map([[searchFieldSelectData[0].value, new Set()]]),
     searchChain: [],
