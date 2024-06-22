@@ -2,18 +2,25 @@ import { CheckboxInputData, SetPageInErrorPayload, StepperPage } from "../../typ
 import { QueryAction } from "./actions";
 import { OperatorsInputType } from "./utils";
 
-type ComparisonOperators =
-  | "equal to"
-  | "greater than or equal to"
-  | "greater than"
-  | "less than or equal to"
-  | "less than";
+type ComparisonOperators = "$eq" | "$gte" | "$gt" | "$lte" | "$lt" | "$ne";
 
 type FilterInputsType = "boolean" | "date" | "number" | "select" | "time";
+
+type FilterFieldsOperatorsValuesSetsMap = Map<
+  string,
+  {
+    operatorsSet: Set<string>;
+    valuesSet: Set<string>;
+  }
+>;
+
+type LogicalOperators = "$and" | "$nor" | "$not" | "$or";
 
 type QueryOperators = ComparisonOperators | "in";
 
 type QueryChainActionsKind = "delete" | "insert" | "slideUp" | "slideDown";
+
+type SearchFieldsValuesSetMap = Map<string, Set<string>>;
 
 type SortDirection = "ascending" | "descending";
 
@@ -43,9 +50,10 @@ type QueryProps<
 
 type QueryState = {
   filterField: string;
+  filterFieldsOperatorsValuesSetsMap: FilterFieldsOperatorsValuesSetsMap;
   filterOperator: string;
   filterOperatorSelectData: string[];
-  filterChain: [string, string, string][]; // [field, operator, value][]
+  filterChain: Array<[string, string, string]>; // [field, operator, value][]
   filterValue: string;
   generalSearchExclusionValue: string;
   generalSearchInclusionValue: string;
@@ -61,7 +69,8 @@ type QueryState = {
   projectedFieldsSet: Set<string>;
   projectionArray: string[];
   searchField: string;
-  searchChain: [string, string][]; // [field, value][]
+  searchFieldsValuesSetMap: SearchFieldsValuesSetMap;
+  searchChain: Array<[string, string]>; // [field, value][]
   searchValue: string;
   selectedFieldsSet: Set<string>;
   sortDirection: SortDirection;
@@ -69,19 +78,19 @@ type QueryState = {
   sortChain: [string, string][]; // [field, direction][]
 };
 
-type SetFilterChainPayload = {
+type ModifyFilterChainPayload = {
   index: number;
   kind: QueryChainActionsKind;
   value: [string, string, string];
 };
 
-type SetSearchChainPayload = {
+type ModifySearchChainPayload = {
   index: number;
-  kind: "field" | "value";
-  value: string;
+  kind: QueryChainActionsKind;
+  value: [string, string];
 };
 
-type SetSortChainPayload = {
+type ModifySortChainPayload = {
   index: number;
   kind: "field" | "direction";
   value: string;
@@ -108,7 +117,7 @@ type QueryDispatch =
     }
   | {
       action: QueryAction["modifyFilterChain"];
-      payload: SetFilterChainPayload;
+      payload: ModifyFilterChainPayload;
     }
   | {
       action: QueryAction["setFilterValue"];
@@ -171,8 +180,8 @@ type QueryDispatch =
       payload: string;
     }
   | {
-      action: QueryAction["setSearchChain"];
-      payload: SetSearchChainPayload;
+      action: QueryAction["modifySearchChain"];
+      payload: ModifySearchChainPayload;
     }
   | {
       action: QueryAction["setSearchValue"];
@@ -192,21 +201,23 @@ type QueryDispatch =
     }
   | {
       action: QueryAction["setSortChain"];
-      payload: SetSortChainPayload;
+      payload: ModifySortChainPayload;
     };
 
 export type {
   ComparisonOperators,
+  FilterFieldsOperatorsValuesSetsMap,
   FilterInputsType,
+  LogicalOperators,
+  ModifyFilterChainPayload,
+  ModifySearchChainPayload,
+  ModifySortChainPayload,
   QueryChainActionsKind,
   QueryDispatch,
   QueryFilterPayload,
   QueryOperators,
   QueryProps,
   QueryState,
-  SetFilterChainPayload,
-  SetSearchChainPayload,
-  SetSortChainPayload,
   SortDirection,
   SortInputsType,
 };

@@ -1,7 +1,7 @@
 import { GlobalAction, GlobalDispatch, GlobalState, ThemeObject } from "./types";
 
 const initialThemeObject: ThemeObject = {
-  colorScheme: "dark",
+  colorScheme: "light",
   respectReducedMotion: true,
 
   // white: '#f8f9fa', // gray.0

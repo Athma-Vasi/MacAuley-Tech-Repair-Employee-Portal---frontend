@@ -7,11 +7,11 @@ import {
 } from "../../types";
 import { splitCamelCase } from "../../utils";
 import {
-  ComparisonOperators,
-  FilterInputsType,
-  QueryOperators,
-  SortInputsType,
-} from "./types";
+  BOOLEAN_OPERATOR_DATA,
+  COMPARISON_OPERATORS_DATA,
+  IN_OPERATOR_DATA,
+} from "./constants";
+import { FilterInputsType, QueryOperators, SortInputsType } from "./types";
 
 function addInputsToStepperPages(stepperPages: StepperPage[]): StepperPage[] {
   // createdAt and updatedAt are guaranteed to exist in all models and are used as initial values for filter & sort
@@ -91,18 +91,6 @@ function createQueryInputsData(stepperPages: StepperPage[]): QueryInputsData {
   const sortInputsSet = new Set<SortInputsType>(["date", "number", "time"]); // can apply sort: ascending | descending
   const comparisonOperatorsInputsSet = new Set<InputType>(["date", "number", "time"]); // can apply comparison operators
 
-  const comparisonOperators: CheckboxRadioSelectData<ComparisonOperators> = [
-    { label: "Equal to", value: "equal to" },
-    { label: "Greater than or equal to", value: "greater than or equal to" },
-    { label: "Greater than", value: "greater than" },
-    { label: "Less than or equal to", value: "less than or equal to" },
-    { label: "Less than", value: "less than" },
-  ];
-  const inOperator: CheckboxRadioSelectData = [{ label: "In", value: "in" }];
-  const booleanOperator: CheckboxRadioSelectData = [
-    { label: "Equal to", value: "equal to" },
-  ];
-
   const initialAcc: QueryInputsData = {
     fieldNamesOperatorsTypesMap: new Map<string, OperatorsInputType>(),
     filterFieldSelectInputData: [],
@@ -133,10 +121,10 @@ function createQueryInputsData(stepperPages: StepperPage[]): QueryInputsData {
       const operatorsInputTypeObject = {
         inputType,
         operators: comparisonOperatorsInputsSet.has(inputType)
-          ? comparisonOperators
+          ? COMPARISON_OPERATORS_DATA
           : inputType === "boolean"
-          ? booleanOperator
-          : inOperator,
+          ? BOOLEAN_OPERATOR_DATA
+          : IN_OPERATOR_DATA,
       } as OperatorsInputType;
 
       fieldNamesOperatorsTypesMap.set(name, operatorsInputTypeObject);

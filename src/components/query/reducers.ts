@@ -4,9 +4,9 @@ import {
   QueryDispatch,
   QueryFilterPayload,
   QueryState,
-  SetFilterChainPayload,
-  SetSearchChainPayload,
-  SetSortChainPayload,
+  ModifyFilterChainPayload,
+  ModifySearchChainPayload,
+  ModifySortChainPayload,
   SortDirection,
 } from "./types";
 
@@ -19,10 +19,11 @@ const queryReducers = new Map<
   QueryAction[keyof QueryAction],
   (state: QueryState, dispatch: QueryDispatch) => QueryState
 >([
+  [queryAction.modifyFilterChain, queryReducer_modifyFilterChain],
+  [queryAction.modifySearchChain, queryReducer_modifySearchChain],
   [queryAction.setFilterField, queryReducer_setFilterField],
   [queryAction.setFilterOperator, queryReducer_setFilterOperator],
   [queryAction.setFilterOperatorSelectData, queryReducer_setFilterOperatorSelectData],
-  [queryAction.modifyFilterChain, queryReducer_modifyFilterChain],
   [queryAction.setFilterValue, queryReducer_setFilterValue],
   [
     queryAction.setGeneralSearchExclusionValue,
@@ -46,13 +47,228 @@ const queryReducers = new Map<
   [queryAction.setProjectedFieldsSet, queryReducer_setProjectedFieldsSet],
   [queryAction.setProjectionArray, queryReducer_setProjectionArray],
   [queryAction.setSearchField, queryReducer_setSearchField],
-  [queryAction.setSearchChain, queryReducer_setSearchChain],
   [queryAction.setSearchValue, queryReducer_setSearchValue],
   [queryAction.setSelectedFieldsSet, queryReducer_setSelectedFieldsSet],
   [queryAction.setSortDirection, queryReducer_setSortDirection],
   [queryAction.setSortField, queryReducer_setSortField],
   [queryAction.setSortChain, queryReducer_setSortChain],
 ]);
+
+function queryReducer_modifyFilterChain(
+  state: QueryState,
+  dispatch: QueryDispatch
+): QueryState {
+  const { index, kind, value } = dispatch.payload as ModifyFilterChainPayload;
+  const [filterField, filterOperator, filterValue] = value;
+  const filterChain = structuredClone(state.filterChain);
+  const filterFieldsOperatorsValuesSetsMap = structuredClone(
+    state.filterFieldsOperatorsValuesSetsMap
+  );
+
+  switch (kind) {
+    case "delete": {
+      filterChain.splice(index, 1);
+
+      filterFieldsOperatorsValuesSetsMap.delete(filterField);
+
+      return {
+        ...state,
+        filterChain,
+        filterField: "createdAt",
+        filterFieldsOperatorsValuesSetsMap,
+        filterOperator: "equal to",
+        filterValue: new Date().toISOString().split("T")[0],
+      };
+    }
+
+    case "insert": {
+      console.group("queryReducer_modifyFilterChain");
+      console.log("filterChain", filterChain);
+      console.log(
+        "filterFieldsOperatorsValuesSetsMap",
+        filterFieldsOperatorsValuesSetsMap
+      );
+      console.log("filterField", filterField);
+      console.log("filterOperator", filterOperator);
+      console.log("filterValue", filterValue);
+
+      if (filterValue === "") {
+        console.log("filterValue is empty");
+        return state;
+      }
+
+      const operatorsValuesSets = filterFieldsOperatorsValuesSetsMap.get(filterField);
+
+      // field is unique
+      if (operatorsValuesSets === undefined) {
+        filterChain.splice(index, 0, value);
+        filterFieldsOperatorsValuesSetsMap.set(filterField, {
+          operatorsSet: new Set([filterOperator]),
+          valuesSet: new Set([filterValue]),
+        });
+        console.log("field is unique");
+        console.log("filterChain", filterChain);
+        console.log("filterChain.length", filterChain.length);
+        console.log("index", index);
+        return { ...state, filterChain, filterFieldsOperatorsValuesSetsMap };
+      }
+
+      const { operatorsSet, valuesSet } = operatorsValuesSets;
+
+      // field exists, operator is unique, value is unique
+      if (!operatorsSet.has(filterOperator) && !valuesSet.has(filterValue)) {
+        filterChain.splice(index, 0, value);
+        operatorsSet.add(filterOperator);
+        valuesSet.add(filterValue);
+
+        console.log("field exists, operator is unique, value is unique");
+        console.log("filterChain", filterChain);
+      }
+
+      // field exists, operator is unique, value exists
+      if (!operatorsSet.has(filterOperator) && valuesSet.has(filterValue)) {
+        const index = filterChain.findIndex(
+          ([field, _, value]: [string, string, string]) =>
+            field === filterField && value === filterValue
+        );
+        filterChain.splice(index, 1, value);
+        operatorsSet.add(filterOperator);
+
+        console.log("field exists, operator is unique, value exists");
+        console.log("filterChain", filterChain);
+      }
+
+      // field exists, operator exists, value is unique
+      if (operatorsSet.has(filterOperator) && !valuesSet.has(filterValue)) {
+        const index = filterChain.findIndex(
+          ([field, operator, _]: [string, string, string]) =>
+            field === filterField && operator === filterOperator
+        );
+        filterChain.splice(index, 1, value);
+        valuesSet.add(filterValue);
+        console.log("field exists, operator exists, value is unique");
+        console.log("filterChain", filterChain);
+      }
+
+      console.log("field exists, operator exists, value exists");
+      console.log("filterChain", filterChain);
+      console.groupEnd();
+
+      filterFieldsOperatorsValuesSetsMap.set(filterField, {
+        operatorsSet,
+        valuesSet,
+      });
+      // field exists, operator exists, value exists
+      return { ...state, filterChain, filterFieldsOperatorsValuesSetsMap };
+    }
+
+    case "slideDown": {
+      const belowLink = filterChain[index + 1];
+      const currentLink = filterChain[index];
+      filterChain[index] = belowLink;
+      filterChain[index + 1] = currentLink;
+      return { ...state, filterChain };
+    }
+
+    case "slideUp": {
+      const aboveLink = filterChain[index - 1];
+      const currentLink = filterChain[index];
+      filterChain[index] = aboveLink;
+      filterChain[index - 1] = currentLink;
+      return { ...state, filterChain };
+    }
+
+    default:
+      return state;
+  }
+}
+
+function queryReducer_modifySearchChain(
+  state: QueryState,
+  dispatch: QueryDispatch
+): QueryState {
+  const { index, kind, value } = dispatch.payload as ModifySearchChainPayload;
+  const [searchField, searchValue] = value;
+
+  const searchChain = structuredClone(state.searchChain);
+  const searchFieldsValuesSetMap = structuredClone(state.searchFieldsValuesSetMap);
+
+  switch (kind) {
+    case "delete": {
+      searchChain.splice(index, 1);
+      searchFieldsValuesSetMap.delete(searchField);
+
+      return {
+        ...state,
+        searchChain,
+        searchField: "username",
+        searchFieldsValuesSetMap,
+        searchValue: "",
+      };
+    }
+
+    case "insert": {
+      console.group("queryReducer_modifySearchChain");
+      console.log("searchChain", searchChain);
+      console.log("searchField", searchField);
+      console.log("searchValue", searchValue);
+
+      if (searchValue === "") {
+        console.log("searchValue is empty");
+        return state;
+      }
+
+      const valuesSet = searchFieldsValuesSetMap.get(searchField);
+
+      console.log("state.searchFieldsValuesSetMap", state.searchFieldsValuesSetMap);
+      console.log("valuesSet", valuesSet);
+
+      // field is unique
+      if (valuesSet === undefined) {
+        searchChain.splice(index, 0, value);
+        searchFieldsValuesSetMap.set(searchField, new Set([searchValue]));
+        console.log("field is unique");
+        console.log("searchChain", searchChain);
+        console.log("searchChain.length", searchChain.length);
+        console.log("index", index);
+        return { ...state, searchChain, searchFieldsValuesSetMap };
+      }
+
+      // field exists, value is unique
+      if (!valuesSet.has(searchValue)) {
+        searchChain.splice(index, 0, value);
+        console.log("field exists, value is unique");
+        console.log("searchChain", searchChain);
+      }
+
+      console.log("field exists, value exists");
+      console.log("searchChain", searchChain);
+      console.groupEnd();
+      // field exists, value exists
+      searchFieldsValuesSetMap.set(searchField, valuesSet.add(searchValue));
+      return { ...state, searchChain, searchFieldsValuesSetMap };
+    }
+
+    case "slideDown": {
+      const belowLink = searchChain[index + 1];
+      const currentLink = searchChain[index];
+      searchChain[index] = belowLink;
+      searchChain[index + 1] = currentLink;
+      return { ...state, searchChain };
+    }
+
+    case "slideUp": {
+      const aboveLink = searchChain[index - 1];
+      const currentLink = searchChain[index];
+      searchChain[index] = aboveLink;
+      searchChain[index - 1] = currentLink;
+      return { ...state, searchChain };
+    }
+
+    default:
+      return state;
+  }
+}
 
 function queryReducer_setFilterField(
   state: QueryState,
@@ -106,132 +322,6 @@ function queryReducer_setFilterOperatorSelectData(
   dispatch: QueryDispatch
 ): QueryState {
   return { ...state, filterOperatorSelectData: dispatch.payload as string[] };
-}
-
-function queryReducer_modifyFilterChain(
-  state: QueryState,
-  dispatch: QueryDispatch
-): QueryState {
-  const { index, kind, value } = dispatch.payload as SetFilterChainPayload;
-  const [filterField, filterOperator, filterValue] = value;
-  const filterChain = structuredClone(state.filterChain);
-
-  const fieldsSetsMap = filterChain.reduce(
-    (
-      mapAcc: Map<string, { operatorsSet: Set<string>; valuesSet: Set<string> }>,
-      link: [string, string, string]
-    ) => {
-      const [field, operator, value] = link;
-      const { operatorsSet, valuesSet } = mapAcc.get(field) ?? {
-        operatorsSet: new Set(),
-        valuesSet: new Set(),
-      };
-      operatorsSet.add(operator);
-      valuesSet.add(value);
-      mapAcc.set(field, { operatorsSet, valuesSet });
-
-      return mapAcc;
-    },
-    new Map()
-  );
-
-  switch (kind) {
-    case "insert": {
-      console.group("queryReducer_modifyFilterChain");
-      console.log("filterChain", filterChain);
-      console.log("fieldsSetsMap", fieldsSetsMap);
-      console.log("filterField", filterField);
-      console.log("filterOperator", filterOperator);
-      console.log("filterValue", filterValue);
-
-      if (filterValue === "") {
-        console.log("filterValue is empty");
-        return state;
-      }
-
-      const fieldSets = fieldsSetsMap.get(filterField);
-
-      // field is unique
-      if (fieldSets === undefined) {
-        filterChain.splice(index, 0, value);
-        console.log("field is unique");
-        console.log("filterChain", filterChain);
-        console.log("filterChain.length", filterChain.length);
-        console.log("index", index);
-        return { ...state, filterChain };
-      }
-
-      const { operatorsSet, valuesSet } = fieldSets;
-
-      // field exists, operator is unique, value is unique
-      if (!operatorsSet.has(filterOperator) && !valuesSet.has(filterValue)) {
-        filterChain.splice(index, 0, value);
-        console.log("field exists, operator is unique, value is unique");
-        console.log("filterChain", filterChain);
-        return { ...state, filterChain };
-      }
-
-      // field exists, operator is unique, value exists
-      if (!operatorsSet.has(filterOperator) && valuesSet.has(filterValue)) {
-        const index = filterChain.findIndex(
-          ([field, _, value]: [string, string, string]) =>
-            field === filterField && value === filterValue
-        );
-        filterChain.splice(index, 1, value);
-        console.log("field exists, operator is unique, value exists");
-        console.log("filterChain", filterChain);
-        return { ...state, filterChain };
-      }
-
-      // field exists, operator exists, value is unique
-      if (operatorsSet.has(filterOperator) && !valuesSet.has(filterValue)) {
-        const index = filterChain.findIndex(
-          ([field, operator, _]: [string, string, string]) =>
-            field === filterField && operator === filterOperator
-        );
-        filterChain.splice(index, 1, value);
-        console.log("field exists, operator exists, value is unique");
-        console.log("filterChain", filterChain);
-        return { ...state, filterChain };
-      }
-
-      console.log("field exists, operator exists, value exists");
-      console.log("filterChain", filterChain);
-      console.groupEnd();
-      // field exists, operator exists, value exists
-      return { ...state, filterChain };
-    }
-
-    case "delete": {
-      filterChain.splice(index, 1);
-      return {
-        ...state,
-        filterChain,
-        filterField: "createdAt",
-        filterOperator: "equal to",
-        filterValue: new Date().toISOString().split("T")[0],
-      };
-    }
-
-    case "slideDown": {
-      const belowLink = filterChain[index + 1];
-      const currentLink = filterChain[index];
-      filterChain[index] = belowLink;
-      filterChain[index + 1] = currentLink;
-      return { ...state, filterChain };
-    }
-
-    case "slideUp": {
-      const aboveLink = filterChain[index - 1];
-      const currentLink = filterChain[index];
-      filterChain[index] = aboveLink;
-      filterChain[index - 1] = currentLink;
-      return { ...state, filterChain };
-    }
-
-    default:
-      return state;
-  }
 }
 
 function queryReducer_setFilterValue(
@@ -331,16 +421,6 @@ function queryReducer_setSearchField(
   return { ...state, searchField: dispatch.payload as string };
 }
 
-function queryReducer_setSearchChain(
-  state: QueryState,
-  dispatch: QueryDispatch
-): QueryState {
-  const { index, kind, value } = dispatch.payload as SetSearchChainPayload;
-  const searchChain = [...state.searchChain];
-
-  return { ...state, searchChain };
-}
-
 function queryReducer_setSearchValue(
   state: QueryState,
   dispatch: QueryDispatch
@@ -376,7 +456,7 @@ function queryReducer_setSortChain(
   state: QueryState,
   dispatch: QueryDispatch
 ): QueryState {
-  const { index, kind, value } = dispatch.payload as SetSortChainPayload;
+  const { index, kind, value } = dispatch.payload as ModifySortChainPayload;
   const sortChain = [...state.sortChain];
 
   return { ...state, sortChain };

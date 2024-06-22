@@ -4,9 +4,12 @@ import { QueryState } from "./types";
 function createInitialQueryState(
   searchFieldSelectData: CheckboxRadioSelectData
 ): QueryState {
+  const filterFieldsOperatorsValuesSetsMap = new Map([["createdAt", new Set()]]);
+
   const initialQueryState: QueryState = {
     // date input type is guaranteed to exist (all schemas have createdAt & updatedAt)
     filterField: "createdAt",
+    filterFieldsOperatorsValuesSetsMap: new Map(),
     filterOperator: "equal to",
     filterOperatorSelectData: [],
     filterChain: [],
@@ -24,7 +27,8 @@ function createInitialQueryState(
     limitPerPage: 10,
     projectedFieldsSet: new Set(),
     projectionArray: [],
-    searchField: "",
+    searchField: searchFieldSelectData[0].value,
+    searchFieldsValuesSetMap: new Map([[searchFieldSelectData[0].value, new Set()]]),
     searchChain: [],
     searchValue: "",
     selectedFieldsSet: new Set(),
@@ -33,22 +37,23 @@ function createInitialQueryState(
     sortChain: [],
   };
 
-  function setSearchDefaults(
-    queryState: QueryState,
-    searchFieldSelectData: CheckboxRadioSelectData
-  ): QueryState {
-    // all but one model has username field
-    const searchField =
-      searchFieldSelectData.find((field) => field.label === "username")?.label ??
-      searchFieldSelectData[0].label;
+  // function setSearchDefaults(
+  //   queryState: QueryState,
+  //   searchFieldSelectData: CheckboxRadioSelectData
+  // ): QueryState {
+  //   // all but one model has username field
+  //   const searchField =
+  //     searchFieldSelectData.find((field) => field.label === "Username")?.label ??
+  //     searchFieldSelectData[0].label;
 
-    return {
-      ...queryState,
-      searchField,
-    };
-  }
+  //   return {
+  //     ...queryState,
+  //     searchField,
+  //   };
+  // }
 
-  return setSearchDefaults(initialQueryState, searchFieldSelectData);
+  // return setSearchDefaults(initialQueryState, searchFieldSelectData);
+  return initialQueryState;
 }
 
 export { createInitialQueryState };

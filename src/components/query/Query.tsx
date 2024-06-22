@@ -6,6 +6,7 @@ import { createQueryInputsData } from "./utils";
 import { QueryFilter, QueryFilterDispatch } from "./QueryFilter";
 import { QueryAction, queryAction } from "./actions";
 import { Stack } from "@mantine/core";
+import { QuerySearch, QuerySearchDispatch, SearchChainDispatch } from "./QuerySearch";
 
 function Query({
   collectionName,
@@ -59,11 +60,9 @@ function Query({
   } = queryState;
 
   console.group("Query");
+  console.log("queryState", queryState);
   console.log("stepperPages", stepperPages);
   console.log("fieldNamesOperatorsTypesMap", fieldNamesOperatorsTypesMap);
-  console.log("filterField", filterField);
-  console.log("filterOperator", filterOperator);
-  console.log("filterValue", filterValue);
   console.log("filterFieldSelectInputData", filterFieldSelectInputData);
   console.log("projectionCheckboxData", projectionCheckboxData);
   console.log("searchFieldSelectData", searchFieldSelectData);
@@ -90,7 +89,26 @@ function Query({
     />
   );
 
-  return <Stack>{queryFilter}</Stack>;
+  const querySearch = (
+    <QuerySearch
+      collectionName={collectionName}
+      queryAction={queryAction}
+      querySearchDispatch={queryDispatch as QuerySearchDispatch}
+      searchChain={searchChain}
+      searchChainDispatch={queryDispatch as SearchChainDispatch}
+      searchField={searchField}
+      searchFieldSelectData={searchFieldSelectData}
+      searchValue={searchValue}
+      validatedInputsKeyMap={validatedInputsKeyMap}
+    />
+  );
+
+  return (
+    <Stack>
+      {queryFilter}
+      {querySearch}
+    </Stack>
+  );
 }
 
 export { Query };

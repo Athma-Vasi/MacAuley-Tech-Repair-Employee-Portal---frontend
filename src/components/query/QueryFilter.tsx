@@ -10,8 +10,8 @@ import { AccessibleDateTimeInput } from "../accessibleInputs/AccessibleDateTimeI
 import { AccessibleSelectInput } from "../accessibleInputs/AccessibleSelectInput";
 import { AccessibleTextInput } from "../accessibleInputs/text/AccessibleTextInput";
 import { QueryAction, queryAction } from "./actions";
-import { MAX_FILTER_LINKS_AMOUNT } from "./constants";
-import { SetFilterChainPayload } from "./types";
+import { MAX_LINKS_AMOUNT } from "./constants";
+import { ModifyFilterChainPayload } from "./types";
 import { OperatorsInputType } from "./utils";
 
 type QueryFilterDispatch<
@@ -53,7 +53,7 @@ type QueryFilterProps<
   filterChain: Array<[string, string, string]>;
   filterChainDispatch: React.Dispatch<{
     action: QueryAction["modifyFilterChain"];
-    payload: SetFilterChainPayload;
+    payload: ModifyFilterChainPayload;
   }>;
   filterValue: string;
   queryFilterDispatch: QueryFilterDispatch;
@@ -123,7 +123,7 @@ function QueryFilter<
   });
 
   const disabledScreenreaderText =
-    filterChain.length === MAX_FILTER_LINKS_AMOUNT
+    filterChain.length === MAX_LINKS_AMOUNT
       ? "Max filter links amount reached"
       : "Value is empty";
   const addFilterStatementsButton = (
@@ -131,7 +131,7 @@ function QueryFilter<
       attributes={{
         enabledScreenreaderText: "Add filter link to chain",
         disabledScreenreaderText,
-        disabled: filterChain.length === MAX_FILTER_LINKS_AMOUNT || filterValue === "",
+        disabled: filterChain.length === MAX_LINKS_AMOUNT || filterValue === "",
         kind: "add",
         onClick: () => {
           filterChainDispatch({
@@ -180,7 +180,7 @@ function QueryFilter<
     const insertFilterLinkButton = (
       <AccessibleButton
         attributes={{
-          disabled: index === MAX_FILTER_LINKS_AMOUNT - 1,
+          disabled: index === MAX_LINKS_AMOUNT - 1,
           disabledScreenreaderText: "Max filter links amount reached",
           enabledScreenreaderText: `Insert link before ${filterLinkStatement}`,
           index,
