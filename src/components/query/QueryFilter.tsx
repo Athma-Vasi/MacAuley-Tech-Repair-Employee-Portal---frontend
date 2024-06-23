@@ -45,14 +45,13 @@ type QueryFilterProps<
   ValidValueAction extends string = string,
   InvalidValueAction extends string = string
 > = {
-  collectionName: string;
   fieldNamesOperatorsTypesMap: Map<string, OperatorsInputType>;
+  filterChain: QueryChain;
   filterField: string;
   filterOperator: string;
   filterFieldSelectInputData: CheckboxRadioSelectData;
-  filterChain: QueryChain;
   filterChainDispatch: React.Dispatch<{
-    action: QueryAction["modifyFilterChain"];
+    action: QueryAction["modifyQueryChains"];
     payload: ModifyQueryChainPayload;
   }>;
   filterValue: string;
@@ -67,12 +66,11 @@ function QueryFilter<
   ValidValueAction extends string = string,
   InvalidValueAction extends string = string
 >({
-  collectionName,
   fieldNamesOperatorsTypesMap,
+  filterChain,
   filterField,
   filterFieldSelectInputData,
   filterOperator,
-  filterChain,
   filterChainDispatch,
   filterValue,
   queryFilterDispatch,
@@ -135,10 +133,11 @@ function QueryFilter<
         kind: "add",
         onClick: () => {
           filterChainDispatch({
-            action: queryAction.modifyFilterChain,
+            action: queryAction.modifyQueryChains,
             payload: {
               index: filterChain.length,
-              kind: "insert",
+              queryChainActions: "insert",
+              queryChainKind: "filter",
               value: [filterField, filterOperator, filterValue],
             },
           });
@@ -147,155 +146,155 @@ function QueryFilter<
     />
   );
 
-  const filterChainElements = filterChain.map(([field, operator, value], index) => {
-    const filterLinkStatement = `${splitCamelCase(field)} is ${operator} ${splitCamelCase(
-      value
-    )}`;
+  // const filterChainElements = filterChain.map(([field, operator, value], index) => {
+  //   const filterLinkStatement = `${splitCamelCase(field)} is ${operator} ${splitCamelCase(
+  //     value
+  //   )}`;
 
-    const deleteFilterLinkButton = (
-      <AccessibleButton
-        attributes={{
-          enabledScreenreaderText: `Delete link ${filterLinkStatement}`,
-          index,
-          kind: "delete",
-          setIconAsLabel: true,
-          onClick: (
-            _event:
-              | React.MouseEvent<HTMLButtonElement, MouseEvent>
-              | React.PointerEvent<HTMLButtonElement>
-          ) => {
-            filterChainDispatch({
-              action: queryAction.modifyFilterChain,
-              payload: {
-                index,
-                kind: "delete",
-                value: [filterField, filterOperator, filterValue],
-              },
-            });
-          },
-        }}
-      />
-    );
+  //   const deleteFilterLinkButton = (
+  //     <AccessibleButton
+  //       attributes={{
+  //         enabledScreenreaderText: `Delete link ${filterLinkStatement}`,
+  //         index,
+  //         kind: "delete",
+  //         setIconAsLabel: true,
+  //         onClick: (
+  //           _event:
+  //             | React.MouseEvent<HTMLButtonElement, MouseEvent>
+  //             | React.PointerEvent<HTMLButtonElement>
+  //         ) => {
+  //           filterChainDispatch({
+  //             action: queryAction.modifyFilterChain,
+  //             payload: {
+  //               index,
+  //               kind: "delete",
+  //               value: [filterField, filterOperator, filterValue],
+  //             },
+  //           });
+  //         },
+  //       }}
+  //     />
+  //   );
 
-    const insertFilterLinkButton = (
-      <AccessibleButton
-        attributes={{
-          disabled: index === MAX_LINKS_AMOUNT - 1,
-          disabledScreenreaderText: "Max filter links amount reached",
-          enabledScreenreaderText: `Insert link before ${filterLinkStatement}`,
-          index,
-          kind: "insert",
-          setIconAsLabel: true,
-          onClick: (
-            _event:
-              | React.MouseEvent<HTMLButtonElement, MouseEvent>
-              | React.PointerEvent<HTMLButtonElement>
-          ) => {
-            filterChainDispatch({
-              action: queryAction.modifyFilterChain,
-              payload: {
-                index,
-                kind: "insert",
-                value: [filterField, filterOperator, filterValue],
-              },
-            });
-          },
-        }}
-      />
-    );
+  //   const insertFilterLinkButton = (
+  //     <AccessibleButton
+  //       attributes={{
+  //         disabled: index === MAX_LINKS_AMOUNT - 1,
+  //         disabledScreenreaderText: "Max filter links amount reached",
+  //         enabledScreenreaderText: `Insert link before ${filterLinkStatement}`,
+  //         index,
+  //         kind: "insert",
+  //         setIconAsLabel: true,
+  //         onClick: (
+  //           _event:
+  //             | React.MouseEvent<HTMLButtonElement, MouseEvent>
+  //             | React.PointerEvent<HTMLButtonElement>
+  //         ) => {
+  //           filterChainDispatch({
+  //             action: queryAction.modifyFilterChain,
+  //             payload: {
+  //               index,
+  //               kind: "insert",
+  //               value: [filterField, filterOperator, filterValue],
+  //             },
+  //           });
+  //         },
+  //       }}
+  //     />
+  //   );
 
-    const slideFilterChainUpButton = (
-      <AccessibleButton
-        attributes={{
-          disabled: index === 0,
-          disabledScreenreaderText: "Cannot move up. Already at the top",
-          enabledScreenreaderText: `Move link ${filterLinkStatement} up`,
-          index,
-          kind: "up",
-          setIconAsLabel: true,
-          onClick: (
-            _event:
-              | React.MouseEvent<HTMLButtonElement, MouseEvent>
-              | React.PointerEvent<HTMLButtonElement>
-          ) => {
-            filterChainDispatch({
-              action: queryAction.modifyFilterChain,
-              payload: {
-                index,
-                kind: "slideUp",
-                value: [filterField, filterOperator, filterValue],
-              },
-            });
-          },
-        }}
-      />
-    );
+  //   const slideFilterChainUpButton = (
+  //     <AccessibleButton
+  //       attributes={{
+  //         disabled: index === 0,
+  //         disabledScreenreaderText: "Cannot move up. Already at the top",
+  //         enabledScreenreaderText: `Move link ${filterLinkStatement} up`,
+  //         index,
+  //         kind: "up",
+  //         setIconAsLabel: true,
+  //         onClick: (
+  //           _event:
+  //             | React.MouseEvent<HTMLButtonElement, MouseEvent>
+  //             | React.PointerEvent<HTMLButtonElement>
+  //         ) => {
+  //           filterChainDispatch({
+  //             action: queryAction.modifyFilterChain,
+  //             payload: {
+  //               index,
+  //               kind: "slideUp",
+  //               value: [filterField, filterOperator, filterValue],
+  //             },
+  //           });
+  //         },
+  //       }}
+  //     />
+  //   );
 
-    const slideFilterChainDownButton = (
-      <AccessibleButton
-        attributes={{
-          disabled: index === filterChain.length - 1,
-          disabledScreenreaderText: "Cannot move link down. Already at the bottom",
-          enabledScreenreaderText: `Move link ${filterLinkStatement} down`,
-          index,
-          kind: "down",
-          setIconAsLabel: true,
-          onClick: (
-            _event:
-              | React.MouseEvent<HTMLButtonElement, MouseEvent>
-              | React.PointerEvent<HTMLButtonElement>
-          ) => {
-            filterChainDispatch({
-              action: queryAction.modifyFilterChain,
-              payload: {
-                index,
-                kind: "slideDown",
-                value: [filterField, filterOperator, filterValue],
-              },
-            });
-          },
-        }}
-      />
-    );
+  //   const slideFilterChainDownButton = (
+  //     <AccessibleButton
+  //       attributes={{
+  //         disabled: index === filterChain.length - 1,
+  //         disabledScreenreaderText: "Cannot move link down. Already at the bottom",
+  //         enabledScreenreaderText: `Move link ${filterLinkStatement} down`,
+  //         index,
+  //         kind: "down",
+  //         setIconAsLabel: true,
+  //         onClick: (
+  //           _event:
+  //             | React.MouseEvent<HTMLButtonElement, MouseEvent>
+  //             | React.PointerEvent<HTMLButtonElement>
+  //         ) => {
+  //           filterChainDispatch({
+  //             action: queryAction.modifyFilterChain,
+  //             payload: {
+  //               index,
+  //               kind: "slideDown",
+  //               value: [filterField, filterOperator, filterValue],
+  //             },
+  //           });
+  //         },
+  //       }}
+  //     />
+  //   );
 
-    const buttons = (
-      <Group>
-        {deleteFilterLinkButton}
-        {insertFilterLinkButton}
-        {slideFilterChainUpButton}
-        {slideFilterChainDownButton}
-      </Group>
-    );
+  //   const buttons = (
+  //     <Group>
+  //       {deleteFilterLinkButton}
+  //       {insertFilterLinkButton}
+  //       {slideFilterChainUpButton}
+  //       {slideFilterChainDownButton}
+  //     </Group>
+  //   );
 
-    return (
-      <Timeline.Item key={`timeline-link-${index}`} bullet={<TbLink />}>
-        <Text>{`${filterLinkStatement} ${
-          filterChain.length > 1 && index !== filterChain.length - 1 ? "and" : ""
-        }`}</Text>
-        {buttons}
-      </Timeline.Item>
-    );
-  });
+  //   return (
+  //     <Timeline.Item key={`timeline-link-${index}`} bullet={<TbLink />}>
+  //       <Text>{`${filterLinkStatement} ${
+  //         filterChain.length > 1 && index !== filterChain.length - 1 ? "and" : ""
+  //       }`}</Text>
+  //       {buttons}
+  //     </Timeline.Item>
+  //   );
+  // });
 
-  const timelineAccordion = (
-    <Accordion chevron={<TbChevronDown />}>
-      <Accordion.Item value="Filter Chain">
-        <Accordion.Control disabled={filterChain.length === 0}>
-          <Text size="lg">Filter Chain</Text>
-        </Accordion.Control>
-        <Accordion.Panel>
-          <Stack>
-            <Text size="md">{`Select ${collectionName} where:`}</Text>
-            <Timeline active={Number.MAX_SAFE_INTEGER}>{filterChainElements}</Timeline>
-          </Stack>
-        </Accordion.Panel>
-      </Accordion.Item>
-    </Accordion>
-  );
+  // const timelineAccordion = (
+  //   <Accordion chevron={<TbChevronDown />}>
+  //     <Accordion.Item value="Filter Chain">
+  //       <Accordion.Control disabled={filterChain.length === 0}>
+  //         <Text size="lg">Filter Chain</Text>
+  //       </Accordion.Control>
+  //       <Accordion.Panel>
+  //         <Stack>
+  //           <Text size="md">{`Select ${collectionName} where:`}</Text>
+  //           <Timeline active={Number.MAX_SAFE_INTEGER}>{filterChainElements}</Timeline>
+  //         </Stack>
+  //       </Accordion.Panel>
+  //     </Accordion.Item>
+  //   </Accordion>
+  // );
 
   return (
     <Stack>
-      {timelineAccordion}
+      {/* {timelineAccordion} */}
       {fieldSelectInput}
       {filterOperatorSelectInput}
       {dynamicValueInput}

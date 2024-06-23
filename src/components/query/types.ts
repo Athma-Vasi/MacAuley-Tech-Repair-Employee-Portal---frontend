@@ -23,13 +23,15 @@ type LogicalOperators = "$and" | "$nor" | "$not" | "$or";
 
 type QueryChain = Array<QueryLink>;
 
+type QueryChainActions = "delete" | "insert" | "slideUp" | "slideDown";
+
+type QueryChainKind = "filter" | "generalSearch" | "search" | "sort";
+
+type QueryChains = Record<QueryChainKind, QueryChain>;
+
 type QueryLink = [string, string, string];
 
 type QueryOperators = ComparisonOperators | "in";
-
-type QueryChainActionsKind = "delete" | "insert" | "slideUp" | "slideDown";
-
-type QueryChainKind = "filter" | "search" | "sort";
 
 type SearchFieldsValuesSetMap = Map<string, Set<string>>;
 
@@ -64,7 +66,6 @@ type QueryState = {
   filterFieldsOperatorsValuesSetsMap: FilterFieldsOperatorsValuesSetsMap;
   filterOperator: string;
   filterOperatorSelectData: string[];
-  filterChain: QueryChain; // [field, operator, value][]
   filterValue: string;
   generalSearchExclusionValue: string;
   generalSearchInclusionValue: string;
@@ -79,20 +80,19 @@ type QueryState = {
   limitPerPage: number;
   projectedFieldsSet: Set<string>;
   projectionFields: string[];
+  queryChains: QueryChains;
   searchField: string;
   searchFieldsValuesSetMap: SearchFieldsValuesSetMap;
-  searchChain: QueryChain; // [field, _, value][]
   searchValue: string;
   selectedFieldsSet: Set<string>;
   sortDirection: SortDirection;
   sortField: string;
-  sortChain: QueryChain; // [field, _, direction][]
 };
 
 type ModifyQueryChainPayload = {
   index: number;
-  kind: QueryChainActionsKind;
-  query: QueryChainKind;
+  queryChainActions: QueryChainActions;
+  queryChainKind: QueryChainKind;
   value: QueryLink;
 };
 
@@ -104,7 +104,7 @@ type QueryFilterPayload = {
 
 type QueryDispatch =
   | {
-      action: QueryAction["modifyQueryChain"];
+      action: QueryAction["modifyQueryChains"];
       payload: ModifyQueryChainPayload;
     }
   | {
@@ -203,7 +203,8 @@ export type {
   LogicalOperators,
   ModifyQueryChainPayload,
   QueryChain,
-  QueryChainActionsKind,
+  QueryChains,
+  QueryChainActions,
   QueryChainKind,
   QueryDispatch,
   QueryFilterPayload,

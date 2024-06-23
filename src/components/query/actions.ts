@@ -1,5 +1,5 @@
 type QueryAction = {
-  modifyQueryChain: "modifyQueryChain";
+  modifyQueryChains: "modifyQueryChains";
   setFilterField: "setFilterField";
   setFilterOperator: "setFilterOperator";
   setFilterOperatorSelectData: "setFilterOperatorSelectData";
@@ -25,7 +25,7 @@ type QueryAction = {
 };
 
 const queryAction: QueryAction = {
-  modifyQueryChain: "modifyQueryChain",
+  modifyQueryChains: "modifyQueryChains",
   setFilterField: "setFilterField",
   setFilterOperator: "setFilterOperator",
   setFilterOperatorSelectData: "setFilterOperatorSelectData",

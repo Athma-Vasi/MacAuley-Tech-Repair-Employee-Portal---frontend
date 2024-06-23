@@ -15,7 +15,6 @@ function createInitialQueryState(
     filterFieldsOperatorsValuesSetsMap,
     filterOperator: "equal to",
     filterOperatorSelectData: [],
-    filterChain: [],
     filterValue: new Date().toISOString().split("T")[0],
     generalSearchExclusionValue: "",
     generalSearchInclusionValue: "",
@@ -30,14 +29,18 @@ function createInitialQueryState(
     limitPerPage: 10,
     projectedFieldsSet: new Set(),
     projectionFields: [],
+    queryChains: {
+      filter: [],
+      generalSearch: [],
+      search: [],
+      sort: [],
+    },
     searchField: searchFieldSelectData[0].value,
     searchFieldsValuesSetMap: new Map([[searchFieldSelectData[0].value, new Set()]]),
-    searchChain: [],
     searchValue: "",
     selectedFieldsSet: new Set(),
     sortDirection: "descending",
     sortField: "updatedAt",
-    sortChain: [],
   };
 
   // function setSearchDefaults(

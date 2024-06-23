@@ -1,3 +1,5 @@
+import { Accordion, Stack, Text } from "@mantine/core";
+import { TbChevronDown } from "react-icons/tb";
 import { CheckboxRadioSelectData, SetPageInErrorPayload } from "../../types";
 import { AccessibleCheckboxInputGroup } from "../accessibleInputs/AccessibleCheckboxInput";
 import { QueryAction } from "./actions";
@@ -37,7 +39,20 @@ function QueryProjection<ValidValueAction extends string = string>({
     />
   );
 
-  return projectionCheckboxInput;
+  return (
+    <Accordion chevron={<TbChevronDown />}>
+      <Accordion.Item value="Projection">
+        <Accordion.Control
+          disabled={isProjectionDisabled || projectionCheckboxData.length === 0}
+        >
+          <Text size="lg">Projection</Text>
+        </Accordion.Control>
+        <Accordion.Panel>
+          <Stack>{projectionCheckboxInput}</Stack>
+        </Accordion.Panel>
+      </Accordion.Item>
+    </Accordion>
+  );
 }
 
 export { QueryProjection };

@@ -1,14 +1,15 @@
 import React from "react";
 import { queryReducer } from "./reducers";
 import { createInitialQueryState } from "./state";
-import { QueryProps } from "./types";
+import { QueryChainKind, QueryProps } from "./types";
 import { createQueryInputsData } from "./utils";
 import { QueryFilter, QueryFilterDispatch } from "./QueryFilter";
 import { QueryAction, queryAction } from "./actions";
-import { Accordion, Stack, Text } from "@mantine/core";
+import { Accordion, Stack, Text, Timeline } from "@mantine/core";
 import { QuerySearch, QuerySearchDispatch, SearchChainDispatch } from "./QuerySearch";
 import { TbChevronDown } from "react-icons/tb";
 import { QueryProjection, QueryProjectionDispatch } from "./QueryProjection";
+import { Chain } from "./Chain";
 
 function Query({
   collectionName,
@@ -37,7 +38,6 @@ function Query({
     filterField,
     filterOperator,
     filterOperatorSelectData,
-    filterChain,
     filterValue,
     generalSearchExclusionValue,
     generalSearchInclusionValue,
@@ -52,13 +52,12 @@ function Query({
     limitPerPage,
     projectedFieldsSet,
     projectionFields,
+    queryChains,
     searchField,
-    searchChain,
     searchValue,
     selectedFieldsSet,
     sortDirection,
     sortField,
-    sortChain,
   } = queryState;
 
   console.group("Query");
@@ -75,9 +74,8 @@ function Query({
 
   const queryFilter = (
     <QueryFilter
-      collectionName={collectionName}
       fieldNamesOperatorsTypesMap={fieldNamesOperatorsTypesMap}
-      filterChain={filterChain}
+      filterChain={queryChains.filter}
       filterField={filterField}
       filterFieldSelectInputData={filterFieldSelectInputData}
       filterOperator={filterOperator}
@@ -93,12 +91,11 @@ function Query({
 
   const querySearch = (
     <QuerySearch
-      collectionName={collectionName}
       generalSearchExclusionValue={generalSearchExclusionValue}
       generalSearchInclusionValue={generalSearchInclusionValue}
       queryAction={queryAction}
       querySearchDispatch={queryDispatch as QuerySearchDispatch}
-      searchChain={searchChain}
+      searchChain={queryChains.search}
       searchChainDispatch={queryDispatch as SearchChainDispatch}
       searchField={searchField}
       searchFieldSelectData={searchFieldSelectData}
@@ -107,32 +104,29 @@ function Query({
     />
   );
 
-  const queryProjectionAccordion = (
-    <Accordion chevron={<TbChevronDown />}>
-      <Accordion.Item value="Projection">
-        <Accordion.Control
-          disabled={isProjectionDisabled || projectionCheckboxData.length === 0}
-        >
-          <Text size="lg">Projection</Text>
-        </Accordion.Control>
-        <Accordion.Panel>
-          <Stack>
-            <QueryProjection
-              parentDispatch={queryDispatch as any}
-              projectionCheckboxData={projectionCheckboxData}
-              projectionFields={projectionFields}
-              queryAction={queryAction}
-            />
-          </Stack>
-        </Accordion.Panel>
-      </Accordion.Item>
-    </Accordion>
+  const queryProjection = (
+    <QueryProjection
+      parentDispatch={queryDispatch as any}
+      projectionCheckboxData={projectionCheckboxData}
+      projectionFields={projectionFields}
+      queryAction={queryAction}
+    />
+  );
+
+  const queryChain = (
+    <Chain
+      collectionName={collectionName}
+      queryAction={queryAction}
+      queryChainDispatch={queryDispatch}
+      queryChains={queryChains}
+    />
   );
 
   return (
     <Stack>
+      {queryChain}
       {queryFilter}
-      {queryProjectionAccordion}
+      {queryProjection}
       {querySearch}
     </Stack>
   );
