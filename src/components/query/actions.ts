@@ -11,6 +11,7 @@ type QueryAction = {
   setIsGeneralSearchCaseSensitive: "setIsGeneralSearchCaseSensitive";
   setIsProjectionOpened: "setIsProjectionOpened";
   setIsQueryOpened: "setIsQueryOpened";
+  setIsQueryChainOpened: "setIsQueryChainOpened";
   setIsSearchDisabled: "setIsSearchDisabled";
   setIsSearchOpened: "setIsSearchOpened";
   setIsSortOpened: "setIsSortOpened";
@@ -37,6 +38,7 @@ const queryAction: QueryAction = {
   setIsGeneralSearchCaseSensitive: "setIsGeneralSearchCaseSensitive",
   setIsProjectionOpened: "setIsProjectionOpened",
   setIsQueryOpened: "setIsQueryOpened",
+  setIsQueryChainOpened: "setIsQueryChainOpened",
   setIsSearchDisabled: "setIsSearchDisabled",
   setIsSearchOpened: "setIsSearchOpened",
   setIsSortOpened: "setIsSortOpened",

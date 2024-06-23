@@ -9,7 +9,9 @@ import {
   QueryFilterPayload,
   QueryLink,
   QueryState,
+  SearchFieldsValuesSetMap,
   SortDirection,
+  SortFieldsValuesSetMap,
 } from "./types";
 
 function queryReducer(state: QueryState, dispatch: QueryDispatch): QueryState {
@@ -42,6 +44,7 @@ const queryReducers = new Map<
   ],
   [queryAction.setIsProjectionOpened, queryReducer_setIsProjectionOpened],
   [queryAction.setIsQueryOpened, queryReducer_setIsQueryOpened],
+  [queryAction.setIsQueryChainOpened, queryReducer_setIsQueryChainOpened],
   [queryAction.setIsSearchDisabled, queryReducer_setIsSearchDisabled],
   [queryAction.setIsSearchOpened, queryReducer_setIsSearchOpened],
   [queryAction.setIsSortOpened, queryReducer_setIsSortOpened],
@@ -225,7 +228,7 @@ type ModifySearchChainInput = {
   queryField: string;
   queryValue: string;
   searchChain: QueryChain;
-  searchFieldsValuesSetMap: Map<string, Set<string>>;
+  searchFieldsValuesSetMap: SearchFieldsValuesSetMap;
   state: QueryState;
   value: QueryLink;
 };
@@ -341,6 +344,128 @@ function modifySearchChain({
   }
 }
 
+type ModifySortChainInput = {
+  index: number;
+  queryChainActions: QueryChainActions;
+  queryField: string;
+  queryValue: string;
+  sortChain: QueryChain;
+  sortFieldsValuesSetMap: SortFieldsValuesSetMap;
+  state: QueryState;
+  value: QueryLink;
+};
+
+function modifySortChain({
+  index,
+  queryChainActions,
+  queryField,
+  queryValue,
+  sortChain,
+  sortFieldsValuesSetMap,
+  state,
+  value,
+}: ModifySortChainInput): QueryState {
+  switch (queryChainActions) {
+    case "delete": {
+      sortChain.splice(index, 1);
+      sortFieldsValuesSetMap.delete(queryField);
+
+      return {
+        ...state,
+        queryChains: {
+          ...state.queryChains,
+          sort: sortChain,
+        },
+        sortField: "updatedAt",
+        sortFieldsValuesSetMap,
+        sortDirection: "descending",
+      };
+    }
+
+    case "insert": {
+      console.group("queryReducer_modifySortChain");
+      console.log("sortChain", sortChain);
+      console.log("queryField", queryField);
+      console.log("queryValue", queryValue);
+
+      if (queryValue === "") {
+        console.log("queryValue is empty");
+        return state;
+      }
+
+      const valuesSet = sortFieldsValuesSetMap.get(queryField);
+
+      console.log("state.sortFieldsValuesSetMap", state.sortFieldsValuesSetMap);
+      console.log("valuesSet", valuesSet);
+
+      // field is unique
+      if (valuesSet === undefined) {
+        sortChain.splice(index, 0, value);
+        sortFieldsValuesSetMap.set(queryField, new Set([queryValue]));
+
+        console.log("field is unique");
+        console.log("sortChain", sortChain);
+        console.log("sortChain.length", sortChain.length);
+        console.log("index", index);
+
+        return {
+          ...state,
+          queryChains: {
+            ...state.queryChains,
+            sort: sortChain,
+          },
+          sortFieldsValuesSetMap,
+        };
+      }
+
+      // field exists, value is unique
+      if (!valuesSet.has(queryValue)) {
+        sortChain.splice(index, 0, value);
+
+        console.log("field exists, value is unique");
+        console.log("sortChain", sortChain);
+      }
+
+      console.log("field exists, value exists");
+      console.log("sortChain", sortChain);
+      console.groupEnd();
+
+      // field exists, value exists
+      sortFieldsValuesSetMap.set(queryField, valuesSet.add(queryValue));
+
+      return {
+        ...state,
+        queryChains: {
+          ...state.queryChains,
+          sort: sortChain,
+        },
+        sortFieldsValuesSetMap,
+      };
+    }
+
+    case "slideDown": {
+      const belowLink = sortChain[index + 1];
+      const currentLink = sortChain[index];
+      sortChain[index] = belowLink;
+      sortChain[index + 1] = currentLink;
+
+      return { ...state, queryChains: { ...state.queryChains, sort: sortChain } };
+    }
+
+    case "slideUp": {
+      const aboveLink = sortChain[index - 1];
+      const currentLink = sortChain[index];
+      sortChain[index] = aboveLink;
+      sortChain[index - 1] = currentLink;
+
+      return { ...state, queryChains: { ...state.queryChains, sort: sortChain } };
+    }
+
+    default:
+      return state;
+  }
+}
+
 function queryReducer_modifyQueryChains(
   state: QueryState,
   dispatch: QueryDispatch
@@ -389,8 +514,20 @@ function queryReducer_modifyQueryChains(
       });
     }
 
-    case "sort":
-      return state;
+    case "sort": {
+      const sortFieldsValuesSetMap = structuredClone(state.sortFieldsValuesSetMap);
+
+      return modifySortChain({
+        index,
+        queryChainActions,
+        queryField,
+        queryValue,
+        sortChain,
+        sortFieldsValuesSetMap,
+        state,
+        value,
+      });
+    }
 
     default:
       return state;
@@ -504,6 +641,13 @@ function queryReducer_setIsQueryOpened(
   dispatch: QueryDispatch
 ): QueryState {
   return { ...state, isQueryOpened: dispatch.payload as boolean };
+}
+
+function queryReducer_setIsQueryChainOpened(
+  state: QueryState,
+  dispatch: QueryDispatch
+): QueryState {
+  return { ...state, isQueryChainOpened: dispatch.payload as boolean };
 }
 
 function queryReducer_setIsSearchDisabled(

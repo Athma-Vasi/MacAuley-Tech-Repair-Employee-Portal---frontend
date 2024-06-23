@@ -9,7 +9,7 @@ import { Accordion, Stack, Text, Timeline } from "@mantine/core";
 import { QuerySearch, QuerySearchDispatch, SearchChainDispatch } from "./QuerySearch";
 import { TbChevronDown } from "react-icons/tb";
 import { QueryProjection, QueryProjectionDispatch } from "./QueryProjection";
-import { Chain } from "./Chain";
+import { Chain, QueryChainDispatch } from "./Chain";
 import { QuerySort, QuerySortDispatch } from "./QuerySort";
 
 function Query({
@@ -47,6 +47,7 @@ function Query({
     isGeneralSearchCaseSensitive,
     isProjectionOpened,
     isQueryOpened,
+    isQueryChainOpened,
     isSearchDisabled,
     isSearchOpened,
     isSortOpened,
@@ -76,8 +77,9 @@ function Query({
   const queryChain = (
     <Chain
       collectionName={collectionName}
+      isQueryChainOpened={isQueryChainOpened}
       queryAction={queryAction}
-      queryChainDispatch={queryDispatch}
+      queryChainDispatch={queryDispatch as QueryChainDispatch}
       queryChains={queryChains}
     />
   );

@@ -39,7 +39,8 @@ function QuerySort<ValidValueAction extends string = string>({
       attributes={{
         data: sortFieldSelectData,
         name: "sortField",
-        validValueAction: queryAction.setSortField,
+        parentDispatch: querySortDispatch,
+        validValueAction: queryAction.setSortField as ValidValueAction,
         value: sortField,
       }}
     />
@@ -74,7 +75,7 @@ function QuerySort<ValidValueAction extends string = string>({
             payload: {
               index: sortChain.length,
               queryChainActions: "insert",
-              queryChainKind: "search",
+              queryChainKind: "sort",
               value: [sortField, "", sortDirection],
             },
           });

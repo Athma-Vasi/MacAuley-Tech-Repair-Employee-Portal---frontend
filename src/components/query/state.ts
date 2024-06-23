@@ -23,6 +23,7 @@ function createInitialQueryState(
     isGeneralSearchCaseSensitive: false,
     isProjectionOpened: false,
     isQueryOpened: false,
+    isQueryChainOpened: false,
     isSearchDisabled: false,
     isSearchOpened: false,
     isSortOpened: false,
@@ -41,6 +42,7 @@ function createInitialQueryState(
     selectedFieldsSet: new Set(),
     sortDirection: "descending",
     sortField: "updatedAt",
+    sortFieldsValuesSetMap: new Map([["updatedAt", new Set()]]),
   };
 
   // function setSearchDefaults(
