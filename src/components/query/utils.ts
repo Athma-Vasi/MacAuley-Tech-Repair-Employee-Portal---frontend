@@ -101,8 +101,7 @@ function createQueryInputsData(stepperPages: StepperPage[]): QueryInputsData {
     } = acc;
 
     page.children.forEach((child) => {
-      const { inputType, name, checkboxInputData, selectInputData, validationKey } =
-        child;
+      const { inputType, name, selectInputData, validationKey } = child;
 
       const checkboxRadioSelectData = { label: splitCamelCase(name), value: name };
 
@@ -114,9 +113,9 @@ function createQueryInputsData(stepperPages: StepperPage[]): QueryInputsData {
           ? BOOLEAN_OPERATOR_DATA
           : IN_OPERATOR_DATA,
       } as OperatorsInputType;
+      fieldNamesOperatorsTypesMap.set(name, operatorsInputTypeObject);
 
       projectionCheckboxData.push(checkboxRadioSelectData);
-      fieldNamesOperatorsTypesMap.set(name, operatorsInputTypeObject);
 
       if (filterInputsTypeSet.has(inputType as FilterInputsType)) {
         filterFieldSelectInputData.push(checkboxRadioSelectData);
@@ -125,7 +124,7 @@ function createQueryInputsData(stepperPages: StepperPage[]): QueryInputsData {
       if (inputType === "text") {
         searchFieldSelectData.push(checkboxRadioSelectData);
 
-        if (validationKey) {
+        if (validationKey !== undefined) {
           validatedInputsKeyMap.set(name, validationKey);
         }
       }
@@ -134,7 +133,7 @@ function createQueryInputsData(stepperPages: StepperPage[]): QueryInputsData {
         sortFieldSelectData.push(checkboxRadioSelectData);
       }
 
-      if (selectInputData) {
+      if (selectInputData !== undefined) {
         selectInputsDataMap.set(name, selectInputData);
       }
     });

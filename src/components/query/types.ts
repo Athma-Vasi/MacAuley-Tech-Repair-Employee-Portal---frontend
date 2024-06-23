@@ -1,9 +1,4 @@
-import {
-  CheckboxInputData,
-  CheckboxRadioSelectData,
-  SetPageInErrorPayload,
-  StepperPage,
-} from "../../types";
+import { CheckboxInputData, SetPageInErrorPayload, StepperPage } from "../../types";
 import { QueryAction } from "./actions";
 import { OperatorsInputType } from "./utils";
 
@@ -203,9 +198,9 @@ export type {
   LogicalOperators,
   ModifyQueryChainPayload,
   QueryChain,
-  QueryChains,
   QueryChainActions,
   QueryChainKind,
+  QueryChains,
   QueryDispatch,
   QueryFilterPayload,
   QueryLink,

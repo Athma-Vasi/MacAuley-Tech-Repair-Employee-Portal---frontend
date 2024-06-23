@@ -1,20 +1,18 @@
 import { Accordion, Stack, Text } from "@mantine/core";
 import { TbChevronDown } from "react-icons/tb";
-import { CheckboxRadioSelectData, SetPageInErrorPayload } from "../../types";
+
+import { CheckboxRadioSelectData } from "../../types";
 import { AccessibleCheckboxInputGroup } from "../accessibleInputs/AccessibleCheckboxInput";
 import { QueryAction } from "./actions";
 
 type QueryProjectionDispatch<ValidValueAction extends string = string> = React.Dispatch<{
   action: ValidValueAction;
-  payload: string;
+  payload: string[];
 }>;
 
 type QueryProjectionProps<ValidValueAction extends string = string> = {
   isProjectionDisabled?: boolean;
-  parentDispatch: React.Dispatch<{
-    action: ValidValueAction;
-    payload: string[];
-  }>;
+  parentDispatch: QueryProjectionDispatch<ValidValueAction>;
   projectionCheckboxData: CheckboxRadioSelectData;
   projectionFields: string[];
   queryAction: QueryAction;

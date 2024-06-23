@@ -10,6 +10,7 @@ import { QuerySearch, QuerySearchDispatch, SearchChainDispatch } from "./QuerySe
 import { TbChevronDown } from "react-icons/tb";
 import { QueryProjection, QueryProjectionDispatch } from "./QueryProjection";
 import { Chain } from "./Chain";
+import { QuerySort, QuerySortDispatch } from "./QuerySort";
 
 function Query({
   collectionName,
@@ -72,6 +73,15 @@ function Query({
   console.log("validatedInputsKeyMap", validatedInputsKeyMap);
   console.groupEnd();
 
+  const queryChain = (
+    <Chain
+      collectionName={collectionName}
+      queryAction={queryAction}
+      queryChainDispatch={queryDispatch}
+      queryChains={queryChains}
+    />
+  );
+
   const queryFilter = (
     <QueryFilter
       fieldNamesOperatorsTypesMap={fieldNamesOperatorsTypesMap}
@@ -86,6 +96,15 @@ function Query({
       validatedInputsKeyMap={validatedInputsKeyMap}
       filterChainDispatch={queryDispatch}
       queryFilterDispatch={queryDispatch as QueryFilterDispatch}
+    />
+  );
+
+  const queryProjection = (
+    <QueryProjection
+      parentDispatch={queryDispatch as QueryProjectionDispatch}
+      projectionCheckboxData={projectionCheckboxData}
+      projectionFields={projectionFields}
+      queryAction={queryAction}
     />
   );
 
@@ -104,21 +123,15 @@ function Query({
     />
   );
 
-  const queryProjection = (
-    <QueryProjection
-      parentDispatch={queryDispatch as any}
-      projectionCheckboxData={projectionCheckboxData}
-      projectionFields={projectionFields}
+  const querySort = (
+    <QuerySort
       queryAction={queryAction}
-    />
-  );
-
-  const queryChain = (
-    <Chain
-      collectionName={collectionName}
-      queryAction={queryAction}
-      queryChainDispatch={queryDispatch}
-      queryChains={queryChains}
+      querySortDispatch={queryDispatch as QuerySortDispatch}
+      sortChain={queryChains.sort}
+      sortChainDispatch={queryDispatch}
+      sortDirection={sortDirection}
+      sortField={sortField}
+      sortFieldSelectData={sortFieldSelectData}
     />
   );
 
@@ -128,6 +141,7 @@ function Query({
       {queryFilter}
       {queryProjection}
       {querySearch}
+      {querySort}
     </Stack>
   );
 }

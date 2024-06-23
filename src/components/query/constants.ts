@@ -1,5 +1,5 @@
 import { CheckboxRadioSelectData } from "../../types";
-import { ComparisonOperators, LogicalOperators } from "./types";
+import { ComparisonOperators, LogicalOperators, SortDirection } from "./types";
 
 const MAX_LINKS_AMOUNT = 11;
 
@@ -30,10 +30,16 @@ const LOGICAL_OPERATORS_DATA: CheckboxRadioSelectData<LogicalOperators> = [
   { label: "Or", value: "$or" },
 ];
 
+const SORT_DIRECTION_DATA: CheckboxRadioSelectData<SortDirection> = [
+  { label: "Ascending", value: "ascending" },
+  { label: "Descending", value: "descending" },
+];
+
 export {
   BOOLEAN_OPERATOR_DATA,
   COMPARISON_OPERATORS_DATA,
   IN_OPERATOR_DATA,
   LOGICAL_OPERATORS_DATA,
   MAX_LINKS_AMOUNT,
+  SORT_DIRECTION_DATA,
 };
