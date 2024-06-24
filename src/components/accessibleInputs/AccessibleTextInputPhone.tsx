@@ -13,8 +13,13 @@ import { ChangeEvent, Dispatch, ReactNode, useState } from "react";
 import { TbCheck, TbRefresh } from "react-icons/tb";
 
 import { COLORS_SWATCHES } from "../../constants/data";
+import { VALIDATION_FUNCTIONS_TABLE } from "../../constants/validations";
 import { useGlobalState } from "../../hooks";
-import { SetPageInErrorPayload, StepperPage } from "../../types";
+import {
+  SetPageInErrorPayload,
+  StepperPage,
+  ValidationFunctionsTable,
+} from "../../types";
 import { returnThemeColors, splitCamelCase } from "../../utils";
 import {
   createAccessibleValueValidationTextElements,
@@ -31,6 +36,7 @@ type AccessibleTextInputPhoneAttributes<
   disabled?: boolean;
   icon?: ReactNode;
   initialInputValue?: string;
+  invalidValueAction: InvalidValueAction;
   label?: ReactNode;
   maxLength?: number;
   minLength?: number;
@@ -51,8 +57,6 @@ type AccessibleTextInputPhoneAttributes<
         payload: SetPageInErrorPayload;
       }
   >;
-  validValueAction: ValidValueAction;
-  invalidValueAction: InvalidValueAction;
   placeholder?: string;
   ref?: React.RefObject<HTMLInputElement>;
   required?: boolean;
@@ -61,6 +65,8 @@ type AccessibleTextInputPhoneAttributes<
   rightSectionOnClick?: () => void;
   size?: MantineSize;
   stepperPages: StepperPage[];
+  validationFunctionsTable?: ValidationFunctionsTable;
+  validValueAction: ValidValueAction;
   value: string;
   withAsterisk?: boolean;
 };
@@ -82,6 +88,7 @@ function AccessibleTextInputPhone<
     disabled = false,
     icon = null,
     initialInputValue = "+(1)",
+    invalidValueAction,
     maxLength = 18,
     minLength = 18,
     name,
@@ -90,8 +97,6 @@ function AccessibleTextInputPhone<
     onFocus,
     onKeyDown,
     parentDispatch,
-    validValueAction,
-    invalidValueAction,
     page = 0,
     placeholder,
     ref = null,
@@ -101,6 +106,8 @@ function AccessibleTextInputPhone<
     rightSectionOnClick = () => {},
     size = "sm",
     stepperPages,
+    validationFunctionsTable = VALIDATION_FUNCTIONS_TABLE,
+    validValueAction,
     value,
     withAsterisk = false,
   } = attributes;
@@ -123,7 +130,7 @@ function AccessibleTextInputPhone<
     generalColors: { greenColorShade, iconGray },
   } = returnThemeColors({ colorsSwatches: COLORS_SWATCHES, themeObject });
 
-  const { full } = returnFullValidation(name, stepperPages);
+  const { full } = returnFullValidation({ name, stepperPages, validationFunctionsTable });
   const isValueBufferValid =
     typeof full === "function" ? full(valueBuffer) : full.test(valueBuffer);
 

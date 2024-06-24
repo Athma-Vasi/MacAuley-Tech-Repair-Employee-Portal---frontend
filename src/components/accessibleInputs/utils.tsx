@@ -6,7 +6,7 @@ import { TbCheck, TbExclamationCircle } from "react-icons/tb";
 import { COLORS_SWATCHES } from "../../constants/data";
 import { VALIDATION_FUNCTIONS_TABLE } from "../../constants/validations";
 import { ThemeObject } from "../../context/globalProvider/types";
-import { StepperPage, Validation } from "../../types";
+import { StepperPage, Validation, ValidationFunctionsTable } from "../../types";
 import { capitalizeJoinWithAnd, returnThemeColors, splitCamelCase } from "../../utils";
 import { AccessibleButton, AccessibleButtonAttributes } from "./AccessibleButton";
 import {
@@ -656,10 +656,15 @@ function returnValidationTexts({
   }, initialValidationTexts);
 }
 
-function returnFullValidation(
-  name: string,
-  stepperPages: StepperPage[]
-): { full: Validation["full"] } {
+function returnFullValidation({
+  name,
+  stepperPages,
+  validationFunctionsTable,
+}: {
+  name: string;
+  stepperPages: StepperPage[];
+  validationFunctionsTable: ValidationFunctionsTable;
+}): { full: Validation["full"] } {
   const initial = { full: new RegExp("") };
 
   return stepperPages.reduce<{ full: Validation["full"] }>((regexAcc, page) => {
@@ -676,7 +681,7 @@ function returnFullValidation(
         return;
       }
 
-      const validation = VALIDATION_FUNCTIONS_TABLE[validationKey ?? "allowAll"];
+      const validation = validationFunctionsTable[validationKey ?? "allowAll"];
       const { full } = validation;
       regexAcc.full = full;
     });

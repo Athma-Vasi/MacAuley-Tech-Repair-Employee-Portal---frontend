@@ -4,8 +4,13 @@ import { ChangeEvent, Dispatch, ReactNode, RefObject, useState } from "react";
 import { TbCheck } from "react-icons/tb";
 
 import { COLORS_SWATCHES } from "../../constants/data";
+import { VALIDATION_FUNCTIONS_TABLE } from "../../constants/validations";
 import { useGlobalState } from "../../hooks";
-import { SetPageInErrorPayload, StepperPage } from "../../types";
+import {
+  SetPageInErrorPayload,
+  StepperPage,
+  ValidationFunctionsTable,
+} from "../../types";
 import { returnThemeColors, splitCamelCase } from "../../utils";
 import { QueryFilterDispatchData } from "../query/QueryFilter";
 import {
@@ -25,7 +30,7 @@ type AccessibleDateTimeInputAttributes<
   icon?: ReactNode;
   initialInputValue?: string;
   inputKind: "date" | "time";
-  value: string;
+  invalidValueAction: InvalidValueAction;
   label?: ReactNode;
   max?: string;
   maxLength?: number;
@@ -47,14 +52,15 @@ type AccessibleDateTimeInputAttributes<
         payload: SetPageInErrorPayload;
       }
   >;
-  queryFilterDispatchData?: QueryFilterDispatchData<ValidValueAction, InvalidValueAction>;
-  validValueAction: ValidValueAction;
-  invalidValueAction: InvalidValueAction;
   placeholder?: string;
+  queryFilterDispatchData?: QueryFilterDispatchData<ValidValueAction, InvalidValueAction>;
   ref?: RefObject<HTMLInputElement>;
   required?: boolean;
   size?: MantineSize;
   stepperPages: StepperPage[];
+  validValueAction: ValidValueAction;
+  validationFunctionsTable?: ValidationFunctionsTable;
+  value: string;
   withAsterisk?: boolean;
 };
 
@@ -94,6 +100,7 @@ function AccessibleDateTimeInput<
     required = false,
     size = "sm",
     stepperPages,
+    validationFunctionsTable = VALIDATION_FUNCTIONS_TABLE,
     validValueAction,
     value,
     withAsterisk = required,
@@ -117,7 +124,7 @@ function AccessibleDateTimeInput<
     generalColors: { greenColorShade },
   } = returnThemeColors({ colorsSwatches: COLORS_SWATCHES, themeObject });
 
-  const { full } = returnFullValidation(name, stepperPages);
+  const { full } = returnFullValidation({ name, stepperPages, validationFunctionsTable });
   const isValueBufferValid =
     typeof full === "function" ? full(valueBuffer) : full.test(valueBuffer);
 

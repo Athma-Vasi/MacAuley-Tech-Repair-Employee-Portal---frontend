@@ -167,11 +167,13 @@ function createDynamicValueInput<ValidValueAction extends string = string>({
   validatedInputsKeyMap: Map<string, ValidationKey>;
 }) {
   const operatorTypes = fieldNamesOperatorsTypesMap.get(filterField);
-  if (!operatorTypes) {
+  if (operatorTypes === undefined) {
     return null;
   }
 
   const name = "filterValue";
+
+  const { inputType } = operatorTypes;
 
   const stepperPages: StepperPage[] = [
     {
@@ -185,8 +187,6 @@ function createDynamicValueInput<ValidValueAction extends string = string>({
       description: "Date",
     },
   ];
-
-  const { inputType } = operatorTypes;
 
   switch (inputType) {
     case "boolean": {

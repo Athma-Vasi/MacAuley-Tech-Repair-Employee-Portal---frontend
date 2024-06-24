@@ -13,8 +13,13 @@ import React from "react";
 import { TbCheck, TbRefresh } from "react-icons/tb";
 
 import { COLORS_SWATCHES } from "../../constants/data";
+import { VALIDATION_FUNCTIONS_TABLE } from "../../constants/validations";
 import { useGlobalState } from "../../hooks";
-import { SetPageInErrorPayload, StepperPage } from "../../types";
+import {
+  SetPageInErrorPayload,
+  StepperPage,
+  ValidationFunctionsTable,
+} from "../../types";
 import { returnThemeColors, splitCamelCase } from "../../utils";
 import { ProductCategory } from "../dashboard/types";
 import { AdditionalFieldsOperation, AdditionalFieldsPayload } from "../product/dispatch";
@@ -96,6 +101,7 @@ type AccessibleTextAreaInputAttributes<
   rightSectionOnClick?: () => void;
   size?: MantineSize;
   stepperPages: StepperPage[];
+  validationFunctionsTable?: ValidationFunctionsTable;
   validValueAction: ValidValueAction;
   value: string;
   withAsterisk?: boolean;
@@ -141,6 +147,7 @@ function AccessibleTextAreaInput<
     rightSectionOnClick = () => {},
     size = "sm",
     stepperPages,
+    validationFunctionsTable = VALIDATION_FUNCTIONS_TABLE,
     validValueAction,
     value,
     withAsterisk = required,
@@ -182,7 +189,7 @@ function AccessibleTextAreaInput<
     )
   ) : null;
 
-  const { full } = returnFullValidation(name, stepperPages);
+  const { full } = returnFullValidation({ name, stepperPages, validationFunctionsTable });
   const isValueBufferValid =
     typeof full === "function" ? full(valueBuffer) : full.test(valueBuffer);
 
