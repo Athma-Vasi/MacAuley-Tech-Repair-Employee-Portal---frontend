@@ -1,4 +1,4 @@
-import { Stack } from "@mantine/core";
+import { Stack, Text } from "@mantine/core";
 
 import { ValidationKey } from "../../constants/validations";
 import { CheckboxRadioSelectData, SetPageInErrorPayload, StepperPage } from "../../types";
@@ -7,8 +7,9 @@ import { AccessibleSelectInput } from "../accessibleInputs/AccessibleSelectInput
 import { AccessibleTextAreaInput } from "../accessibleInputs/AccessibleTextAreaInput";
 import { AccessibleTextInput } from "../accessibleInputs/text/AccessibleTextInput";
 import { QueryAction } from "./actions";
-import { MAX_LINKS_AMOUNT } from "./constants";
-import { ModifyQueryChainPayload, QueryChain } from "./types";
+import { MAX_LINKS_AMOUNT, QUERY_SEARCH_CASE_DATA } from "./constants";
+import { GeneralSearchCase, ModifyQueryChainPayload, QueryChain } from "./types";
+import { AccessibleSegmentedControl } from "../accessibleInputs/AccessibleSegmentedControl";
 
 type QuerySearchDispatch<
   ValidValueAction extends string = string,
@@ -33,9 +34,6 @@ type QuerySearchProps<
   ValidValueAction extends string = string,
   InvalidValueAction extends string = string
 > = {
-  generalSearchExclusionValue: string;
-  generalSearchInclusionValue: string;
-  isGeneralSearchCaseSensitive?: boolean;
   queryAction: QueryAction;
   querySearchDispatch: QuerySearchDispatch<ValidValueAction, InvalidValueAction>;
   searchChain: QueryChain;
@@ -50,9 +48,6 @@ function QuerySearch<
   ValidValueAction extends string = string,
   InvalidValueAction extends string = string
 >({
-  generalSearchExclusionValue,
-  generalSearchInclusionValue,
-  isGeneralSearchCaseSensitive,
   queryAction,
   querySearchDispatch,
   searchChain,
@@ -82,18 +77,8 @@ function QuerySearch<
           name: "searchValue",
           validationKey: validatedInputsKeyMap.get("searchValue") ?? "allowAll",
         },
-        {
-          inputType: "text",
-          name: "include",
-          validationKey: validatedInputsKeyMap.get("include") ?? "allowAll",
-        },
-        {
-          inputType: "text",
-          name: "exclude",
-          validationKey: validatedInputsKeyMap.get("include") ?? "allowAll",
-        },
       ],
-      description: "text area",
+      description: "",
     },
   ];
 
@@ -107,30 +92,6 @@ function QuerySearch<
         validValueAction: queryAction.setSearchValue as ValidValueAction,
         value: searchValue,
         stepperPages,
-      }}
-    />
-  );
-
-  const generalSearchInclusionTextInput = (
-    <AccessibleTextInput
-      attributes={{
-        invalidValueAction: queryAction.setIsError as InvalidValueAction,
-        name: "include",
-        stepperPages,
-        validValueAction: queryAction.setGeneralSearchInclusionValue as ValidValueAction,
-        value: generalSearchInclusionValue,
-      }}
-    />
-  );
-
-  const generalSearchExclusionTextInput = (
-    <AccessibleTextInput
-      attributes={{
-        invalidValueAction: queryAction.setIsError as InvalidValueAction,
-        name: "exclude",
-        stepperPages,
-        validValueAction: queryAction.setGeneralSearchExclusionValue as ValidValueAction,
-        value: generalSearchExclusionValue,
       }}
     />
   );
@@ -168,8 +129,6 @@ function QuerySearch<
     <Stack>
       {fieldSelectInput}
       {valueTextAreaInput}
-      {generalSearchInclusionTextInput}
-      {generalSearchExclusionTextInput}
       {addFilterStatementsButton}
     </Stack>
   );

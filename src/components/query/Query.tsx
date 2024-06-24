@@ -11,6 +11,7 @@ import { TbChevronDown } from "react-icons/tb";
 import { QueryProjection, QueryProjectionDispatch } from "./QueryProjection";
 import { Chain, QueryChainDispatch } from "./Chain";
 import { QuerySort, QuerySortDispatch } from "./QuerySort";
+import { QueryGeneralSearch } from "./QueryGeneralSearch";
 
 function Query({
   collectionName,
@@ -40,14 +41,14 @@ function Query({
     filterOperator,
     filterOperatorSelectData,
     filterValue,
+    generalSearchCase,
     generalSearchExclusionValue,
     generalSearchInclusionValue,
     isError,
     isFilterOpened,
-    isGeneralSearchCaseSensitive,
     isProjectionOpened,
-    isQueryOpened,
     isQueryChainOpened,
+    isQueryOpened,
     isSearchDisabled,
     isSearchOpened,
     isSortOpened,
@@ -77,6 +78,9 @@ function Query({
   const queryChain = (
     <Chain
       collectionName={collectionName}
+      generalSearchCase={generalSearchCase}
+      generalSearchExclusionValue={generalSearchExclusionValue}
+      generalSearchInclusionValue={generalSearchInclusionValue}
       isQueryChainOpened={isQueryChainOpened}
       queryAction={queryAction}
       queryChainDispatch={queryDispatch as QueryChainDispatch}
@@ -110,10 +114,19 @@ function Query({
     />
   );
 
-  const querySearch = (
-    <QuerySearch
+  const queryGeneralSearch = (
+    <QueryGeneralSearch
+      generalSearchCase={generalSearchCase}
       generalSearchExclusionValue={generalSearchExclusionValue}
       generalSearchInclusionValue={generalSearchInclusionValue}
+      queryAction={queryAction}
+      querySearchDispatch={queryDispatch as QuerySearchDispatch}
+      validatedInputsKeyMap={validatedInputsKeyMap}
+    />
+  );
+
+  const querySearch = (
+    <QuerySearch
       queryAction={queryAction}
       querySearchDispatch={queryDispatch as QuerySearchDispatch}
       searchChain={queryChains.search}
@@ -137,13 +150,41 @@ function Query({
     />
   );
 
+  const queryAccordion = (
+    <Accordion>
+      <Accordion.Item value="Filter">
+        <Accordion.Control>Filter</Accordion.Control>
+        <Accordion.Panel>{queryFilter}</Accordion.Panel>
+      </Accordion.Item>
+
+      <Accordion.Item value="Project">
+        <Accordion.Control>Project</Accordion.Control>
+        <Accordion.Panel>{queryProjection}</Accordion.Panel>
+      </Accordion.Item>
+
+      <Accordion.Item value="Search by Fields">
+        <Accordion.Control>Search by Fields</Accordion.Control>
+        <Accordion.Panel>{querySearch}</Accordion.Panel>
+      </Accordion.Item>
+
+      <Accordion.Item value="Search by Text">
+        <Accordion.Control>Search by Text</Accordion.Control>
+        <Accordion.Panel>
+          <Text>{queryGeneralSearch}</Text>
+        </Accordion.Panel>
+      </Accordion.Item>
+
+      <Accordion.Item value="Sort">
+        <Accordion.Control>Sort</Accordion.Control>
+        <Accordion.Panel>{querySort}</Accordion.Panel>
+      </Accordion.Item>
+    </Accordion>
+  );
+
   return (
     <Stack>
       {queryChain}
-      {queryFilter}
-      {queryProjection}
-      {querySearch}
-      {querySort}
+      {queryAccordion}
     </Stack>
   );
 }

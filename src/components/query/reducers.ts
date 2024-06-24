@@ -1,6 +1,7 @@
 import { CheckboxRadioSelectData, SetPageInErrorPayload } from "../../types";
 import { QueryAction, queryAction } from "./actions";
 import {
+  GeneralSearchCase,
   ModifyQueryChainPayload,
   QueryChain,
   QueryChainActions,
@@ -38,10 +39,7 @@ const queryReducers = new Map<
   ],
   [queryAction.setIsError, queryReducer_setIsError],
   [queryAction.setIsFilterOpened, queryReducer_setIsFilterOpened],
-  [
-    queryAction.setIsGeneralSearchCaseSensitive,
-    queryReducer_setIsGeneralSearchCaseSensitive,
-  ],
+  [queryAction.setGeneralSearchCase, queryReducer_setGeneralSearchCase],
   [queryAction.setIsProjectionOpened, queryReducer_setIsProjectionOpened],
   [queryAction.setIsQueryOpened, queryReducer_setIsQueryOpened],
   [queryAction.setIsQueryChainOpened, queryReducer_setIsQueryChainOpened],
@@ -475,7 +473,6 @@ function queryReducer_modifyQueryChains(
   const [queryField, queryOperator, queryValue] = value;
   const {
     filter: filterChain,
-    generalSearch: generalSearchChain,
     search: searchChain,
     sort: sortChain,
   } = structuredClone(state.queryChains);
@@ -596,6 +593,13 @@ function queryReducer_setFilterValue(
   return { ...state, filterValue: value };
 }
 
+function queryReducer_setGeneralSearchCase(
+  state: QueryState,
+  dispatch: QueryDispatch
+): QueryState {
+  return { ...state, generalSearchCase: dispatch.payload as GeneralSearchCase };
+}
+
 function queryReducer_setGeneralSearchExclusionValue(
   state: QueryState,
   dispatch: QueryDispatch
@@ -620,13 +624,6 @@ function queryReducer_setIsFilterOpened(
   dispatch: QueryDispatch
 ): QueryState {
   return { ...state, isFilterOpened: dispatch.payload as boolean };
-}
-
-function queryReducer_setIsGeneralSearchCaseSensitive(
-  state: QueryState,
-  dispatch: QueryDispatch
-): QueryState {
-  return { ...state, isGeneralSearchCaseSensitive: dispatch.payload as boolean };
 }
 
 function queryReducer_setIsProjectionOpened(

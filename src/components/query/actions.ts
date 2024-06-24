@@ -8,7 +8,7 @@ type QueryAction = {
   setGeneralSearchInclusionValue: "setGeneralSearchInclusionValue";
   setIsError: "setIsError";
   setIsFilterOpened: "setIsFilterOpened";
-  setIsGeneralSearchCaseSensitive: "setIsGeneralSearchCaseSensitive";
+  setGeneralSearchCase: "setGeneralSearchCase";
   setIsProjectionOpened: "setIsProjectionOpened";
   setIsQueryOpened: "setIsQueryOpened";
   setIsQueryChainOpened: "setIsQueryChainOpened";
@@ -35,7 +35,7 @@ const queryAction: QueryAction = {
   setGeneralSearchInclusionValue: "setGeneralSearchInclusionValue",
   setIsError: "setIsError",
   setIsFilterOpened: "setIsFilterOpened",
-  setIsGeneralSearchCaseSensitive: "setIsGeneralSearchCaseSensitive",
+  setGeneralSearchCase: "setGeneralSearchCase",
   setIsProjectionOpened: "setIsProjectionOpened",
   setIsQueryOpened: "setIsQueryOpened",
   setIsQueryChainOpened: "setIsQueryChainOpened",

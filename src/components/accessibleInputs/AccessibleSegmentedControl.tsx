@@ -1,10 +1,13 @@
 import {
   Box,
+  Group,
   MantineColor,
   MantineNumberSize,
   MantineSize,
   SegmentedControl,
+  Text,
 } from "@mantine/core";
+import { splitCamelCase } from "../../utils";
 
 type AccessibleSegmentedControlAttributes<
   ValidValueAction extends string = string,
@@ -15,6 +18,7 @@ type AccessibleSegmentedControlAttributes<
   defaultValue?: Payload;
   disabled?: boolean;
   fullWidth?: boolean;
+  hideName?: boolean;
   label?: React.ReactNode;
   name: string;
   onChange?: (value: Payload) => void;
@@ -49,6 +53,7 @@ function AccessibleSegmentedControl<
     defaultValue,
     disabled = false,
     fullWidth = false,
+    hideName = true,
     name,
     onChange,
     orientation = "horizontal",
@@ -76,7 +81,8 @@ function AccessibleSegmentedControl<
   //     });
 
   return (
-    <Box>
+    <Group>
+      {hideName ? null : <Text>{splitCamelCase(name)}</Text>}
       <SegmentedControl
         aria-label={name}
         color={color}
@@ -113,7 +119,7 @@ function AccessibleSegmentedControl<
         {/* {switchOnTextElement}
         {switchOffTextElement} */}
       </Box>
-    </Box>
+    </Group>
   );
 }
 

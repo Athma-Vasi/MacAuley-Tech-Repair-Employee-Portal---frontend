@@ -1,5 +1,10 @@
 import { CheckboxRadioSelectData } from "../../types";
-import { ComparisonOperators, LogicalOperators, SortDirection } from "./types";
+import {
+  ComparisonOperators,
+  LogicalOperators,
+  GeneralSearchCase,
+  SortDirection,
+} from "./types";
 
 const MAX_LINKS_AMOUNT = 11;
 
@@ -35,11 +40,17 @@ const SORT_DIRECTION_DATA: CheckboxRadioSelectData<SortDirection> = [
   { label: "Descending", value: "descending" },
 ];
 
+const QUERY_SEARCH_CASE_DATA: GeneralSearchCase[] = [
+  "case-sensitive",
+  "case-insensitive",
+];
+
 export {
   BOOLEAN_OPERATOR_DATA,
   COMPARISON_OPERATORS_DATA,
   IN_OPERATOR_DATA,
   LOGICAL_OPERATORS_DATA,
   MAX_LINKS_AMOUNT,
+  QUERY_SEARCH_CASE_DATA,
   SORT_DIRECTION_DATA,
 };

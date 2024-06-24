@@ -2,11 +2,12 @@ import { Accordion, Group, Stack, Text, Timeline } from "@mantine/core";
 import React from "react";
 import { TbChevronDown, TbLink } from "react-icons/tb";
 
-import { splitCamelCase } from "../../utils";
+import { addCommaSeparator, splitCamelCase } from "../../utils";
 import { AccessibleButton } from "../accessibleInputs/AccessibleButton";
 import { QueryAction } from "./actions";
 import { MAX_LINKS_AMOUNT } from "./constants";
 import {
+  GeneralSearchCase,
   ModifyQueryChainPayload,
   QueryChain,
   QueryChainKind,
@@ -26,6 +27,9 @@ type QueryChainDispatch = React.Dispatch<
 
 type QueryChainProps = {
   collectionName: string;
+  generalSearchCase: GeneralSearchCase;
+  generalSearchExclusionValue: string;
+  generalSearchInclusionValue: string;
   isQueryChainOpened: boolean;
   queryAction: QueryAction;
   queryChains: QueryChains;
@@ -35,6 +39,9 @@ type QueryChainProps = {
 function Chain({
   collectionName,
   isQueryChainOpened,
+  generalSearchCase,
+  generalSearchExclusionValue,
+  generalSearchInclusionValue,
   queryAction,
   queryChains,
   queryChainDispatch,
@@ -43,12 +50,6 @@ function Chain({
     queryChain.forEach(() => (acc += 1));
     return acc;
   }, 0);
-
-  const filterSearchSet = new Set<Omit<QueryChainKind, "sort">>([
-    "filter",
-    "search",
-    "generalSearch",
-  ]);
 
   const queryChainElements = Object.entries(queryChains).flatMap((tuple, chainsIndex) => {
     const [queryChainKind, queryChain] = tuple as [QueryChainKind, QueryChain];
@@ -59,7 +60,6 @@ function Chain({
           {queryChain.map(([field, operator, value], linkIndex) => {
             const queryLinkStatement = createQueryLinkStatement({
               field,
-              filterSearchSet,
               operator,
               queryChainKind,
               value,
@@ -211,12 +211,8 @@ function Chain({
       queryChain.length === 0 ? null : (
         <Stack>
           <Text size="lg">{splitCamelCase(queryChainKind)}</Text>
-          <Text>
-            {createQueryLinkHeading({
-              collectionName,
-              filterSearchSet,
-              queryChainKind,
-            })}
+          <Text size="md">
+            {createQueryLinkHeading({ collectionName, queryChainKind })}
           </Text>
         </Stack>
       );
@@ -229,25 +225,59 @@ function Chain({
     );
   });
 
-  return chainLength === 0 ? (
+  const generalSearchExclusion =
+    generalSearchExclusionValue.length === 0 ? null : (
+      <Timeline.Item bullet={<TbLink />}>
+        <Text>{`${addCommaSeparator(
+          generalSearchExclusionValue.split(" ").join(", ")
+        )} are not present`}</Text>
+      </Timeline.Item>
+    );
+
+  const generalSearchInclusion =
+    generalSearchInclusionValue.length === 0 ? null : (
+      <Timeline.Item bullet={<TbLink />}>
+        <Text>{`${addCommaSeparator(
+          generalSearchInclusionValue.split(" ").join(", ")
+        )} are present ${generalSearchExclusionValue.length === 0 ? "" : "and"}`}</Text>
+      </Timeline.Item>
+    );
+
+  const generalSearchChainElement = (
+    <Stack>
+      <Text size="lg">General Search</Text>
+      <Text size="md">{`Search ${splitCamelCase(
+        collectionName
+      )} by text fields where: `}</Text>
+      <Timeline active={Number.MAX_SAFE_INTEGER}>
+        {generalSearchInclusion}
+        {generalSearchExclusion}
+      </Timeline>
+    </Stack>
+  );
+
+  return chainLength === 0 &&
+    generalSearchExclusionValue.length === 0 &&
+    generalSearchInclusionValue.length === 0 ? (
     <Text>No query chain links</Text>
   ) : (
-    <Stack>{queryChainElements}</Stack>
+    <Stack>
+      {queryChainElements}
+      {generalSearchChainElement}
+    </Stack>
   );
 }
 
 function createQueryLinkHeading({
   collectionName,
-  filterSearchSet,
   queryChainKind,
 }: {
   collectionName: string;
-  filterSearchSet: Set<Omit<QueryChainKind, "sort">>;
   queryChainKind: QueryChainKind;
 }) {
   let queryLinkHeading = "";
 
-  if (filterSearchSet.has(queryChainKind)) {
+  if (queryChainKind === "filter" || queryChainKind === "search") {
     queryLinkHeading = `Select ${splitCamelCase(collectionName)} where:`;
   }
 
@@ -260,13 +290,11 @@ function createQueryLinkHeading({
 
 function createQueryLinkStatement({
   field,
-  filterSearchSet,
   operator,
   queryChainKind,
   value,
 }: {
   field: string;
-  filterSearchSet: Set<Omit<QueryChainKind, "sort">>;
   operator: string;
   queryChainKind: QueryChainKind;
   value: string;
@@ -274,14 +302,14 @@ function createQueryLinkStatement({
   // projection
   let queryLinkStatement = "";
 
-  if (filterSearchSet.has(queryChainKind)) {
+  if (queryChainKind === "filter" || queryChainKind === "search") {
     queryLinkStatement = `${splitCamelCase(field)} ${
       operator.length > 0 ? `is ${operator}` : "contains"
-    } ${splitCamelCase(value)}`;
+    } ${value}`;
   }
 
   if (queryChainKind === "sort") {
-    queryLinkStatement = `${splitCamelCase(field)} in ${splitCamelCase(value)} order`;
+    queryLinkStatement = `${splitCamelCase(field)} in ${value} order`;
   }
 
   return queryLinkStatement;

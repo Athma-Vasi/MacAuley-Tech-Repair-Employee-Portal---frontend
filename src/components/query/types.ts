@@ -14,13 +14,17 @@ type FilterFieldsOperatorsValuesSetsMap = Map<
   }
 >;
 
+type GeneralSearchCase = "case-sensitive" | "case-insensitive";
+
+type GeneralSearchKind = "inclusion" | "exclusion";
+
 type LogicalOperators = "$and" | "$nor" | "$not" | "$or";
 
 type QueryChain = Array<QueryLink>;
 
 type QueryChainActions = "delete" | "insert" | "slideUp" | "slideDown";
 
-type QueryChainKind = "filter" | "generalSearch" | "search" | "sort";
+type QueryChainKind = "filter" | "search" | "sort";
 
 type QueryChains = Record<QueryChainKind, QueryChain>;
 
@@ -64,14 +68,14 @@ type QueryState = {
   filterOperator: string;
   filterOperatorSelectData: string[];
   filterValue: string;
+  generalSearchCase: GeneralSearchCase;
   generalSearchExclusionValue: string;
   generalSearchInclusionValue: string;
   isError: boolean;
   isFilterOpened: boolean;
-  isGeneralSearchCaseSensitive: boolean;
   isProjectionOpened: boolean;
-  isQueryOpened: boolean;
   isQueryChainOpened: boolean;
+  isQueryOpened: boolean;
   isSearchDisabled: boolean;
   isSearchOpened: boolean;
   isSortOpened: boolean;
@@ -139,8 +143,8 @@ type QueryDispatch =
       payload: boolean;
     }
   | {
-      action: QueryAction["setIsGeneralSearchCaseSensitive"];
-      payload: boolean;
+      action: QueryAction["setGeneralSearchCase"];
+      payload: GeneralSearchCase;
     }
   | {
       action: QueryAction["setIsProjectionOpened"];
@@ -199,6 +203,8 @@ export type {
   ComparisonOperators,
   FilterFieldsOperatorsValuesSetsMap,
   FilterInputsType,
+  GeneralSearchCase,
+  GeneralSearchKind,
   LogicalOperators,
   ModifyQueryChainPayload,
   QueryChain,

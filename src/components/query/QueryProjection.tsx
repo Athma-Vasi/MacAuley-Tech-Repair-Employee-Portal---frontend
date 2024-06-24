@@ -11,7 +11,6 @@ type QueryProjectionDispatch<ValidValueAction extends string = string> = React.D
 }>;
 
 type QueryProjectionProps<ValidValueAction extends string = string> = {
-  isProjectionDisabled?: boolean;
   parentDispatch: QueryProjectionDispatch<ValidValueAction>;
   projectionCheckboxData: CheckboxRadioSelectData;
   projectionFields: string[];
@@ -19,13 +18,12 @@ type QueryProjectionProps<ValidValueAction extends string = string> = {
 };
 
 function QueryProjection<ValidValueAction extends string = string>({
-  isProjectionDisabled = false,
   parentDispatch,
   projectionCheckboxData,
   projectionFields,
   queryAction,
 }: QueryProjectionProps<ValidValueAction>) {
-  const projectionCheckboxInput = (
+  return (
     <AccessibleCheckboxInputGroup
       attributes={{
         inputData: projectionCheckboxData,
@@ -35,21 +33,6 @@ function QueryProjection<ValidValueAction extends string = string>({
         value: projectionFields,
       }}
     />
-  );
-
-  return (
-    <Accordion chevron={<TbChevronDown />}>
-      <Accordion.Item value="Projection">
-        <Accordion.Control
-          disabled={isProjectionDisabled || projectionCheckboxData.length === 0}
-        >
-          <Text size="lg">Projection</Text>
-        </Accordion.Control>
-        <Accordion.Panel>
-          <Stack>{projectionCheckboxInput}</Stack>
-        </Accordion.Panel>
-      </Accordion.Item>
-    </Accordion>
   );
 }
 
