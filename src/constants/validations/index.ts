@@ -19,13 +19,17 @@ type ValidationKey =
   | "dimensions"
   | "displayAspectRatio"
   | "email"
+  | "exclude"
+  | "filterValue"
   | "frequencyResponse"
   | "fullName"
+  | "include"
   | "largeInteger"
   | "mediumInteger"
   | "mobileCamera"
   | "money"
   | "name"
+  | "objectKey"
   | "password"
   | "phoneNumber"
   | "planDescription"
@@ -38,6 +42,7 @@ type ValidationKey =
   | "ramTiming"
   | "ramVoltage"
   | "search"
+  | "searchValue"
   | "smallInteger"
   | "textAreaInput"
   | "textInput"
@@ -462,25 +467,33 @@ const VALIDATION_FUNCTIONS_TABLE: ValidationFunctionsTable = {
     ],
   },
 
-  fullName: {
-    full: function fullNameValidation(value: string) {
+  exclude: {
+    full: function excludeValidation(value: string) {
       /**
-       * - /^[A-Za-z\s.\-']{2,75}$/i
-       * - [A-Za-z\s.\-'] matches any letter, whitespace, period, hyphen, or apostrophe.
-       * - {2,75} ensures that the text is between 2 and 75 characters long.
+       * - /^[A-Za-z0-9\w\s.,!?():;"'-]{1,100}$/i
+       * - [A-Za-z0-9\w\s.,!?():;"'-] matches any letter, number, whitespace, word character, period, comma, exclamation mark, question mark, parentheses, colon, semicolon, double quotation marks, single quotation marks, or hyphen.
+       * - {1,100} ensures that the text is between 1 and 100 characters long.
        * - ^ and $ ensure that the entire string matches the regex.
-       * - i makes the regex case-insensitive.
        */
-      return /^[A-Za-z\s.\-']{2,75}$/i.test(value);
+
+      return /^[A-Za-z0-9\w\s.,!?():;"'-]{1,100}$/i.test(value);
     },
 
     partials: [
       [
-        /^[A-Za-z\s.\-']$/,
-        "Must contain only letters, spaces, periods, hyphens, and apostrophes.",
+        /^[A-Za-z0-9\w\s.,!?():;"'-]$/,
+        "Must contain only letters, numbers, spaces, periods, commas, exclamation marks, question marks, parentheses, colons, semicolons, double quotation marks, single quotation marks, or hyphens.",
       ],
-      [/^.{2,75}$/, "Must be between 2 and 75 characters length."],
+      [/^.{1,100}$/, "Must be between 1 and 100 characters length."],
     ],
+  },
+
+  filterValue: {
+    full: function filterValueValidation(value: string) {
+      return true;
+    },
+
+    partials: [],
   },
 
   frequencyResponse: {
@@ -506,6 +519,48 @@ const VALIDATION_FUNCTIONS_TABLE: ValidationFunctionsTable = {
         /^[0-9]{1,2}[\s]{0,1}Hz[\s]{0,1}-[\s]{0,1}[0-9]{1,2}[\s]{0,1}kHz$/,
         "Must be a valid speaker frequency response in the format 00Hz-00kHz with optional single spaces.",
       ],
+    ],
+  },
+
+  fullName: {
+    full: function fullNameValidation(value: string) {
+      /**
+       * - /^[A-Za-z\s.\-']{2,75}$/i
+       * - [A-Za-z\s.\-'] matches any letter, whitespace, period, hyphen, or apostrophe.
+       * - {2,75} ensures that the text is between 2 and 75 characters long.
+       * - ^ and $ ensure that the entire string matches the regex.
+       * - i makes the regex case-insensitive.
+       */
+      return /^[A-Za-z\s.\-']{2,75}$/i.test(value);
+    },
+
+    partials: [
+      [
+        /^[A-Za-z\s.\-']$/,
+        "Must contain only letters, spaces, periods, hyphens, and apostrophes.",
+      ],
+      [/^.{2,75}$/, "Must be between 2 and 75 characters length."],
+    ],
+  },
+
+  include: {
+    full: function includeValidation(value: string) {
+      /**
+       * - /^[A-Za-z0-9\w\s.,!?():;"'-]{1,100}$/i
+       * - [A-Za-z0-9\w\s.,!?():;"'-] matches any letter, number, whitespace, word character, period, comma, exclamation mark, question mark, parentheses, colon, semicolon, double quotation marks, single quotation marks, or hyphen.
+       * - {1,100} ensures that the text is between 1 and 100 characters long.
+       * - ^ and $ ensure that the entire string matches the regex.
+       */
+
+      return /^[A-Za-z0-9\w\s.,!?():;"'-]{1,100}$/i.test(value);
+    },
+
+    partials: [
+      [
+        /^[A-Za-z0-9\w\s.,!?():;"'-]$/,
+        "Must contain only letters, numbers, spaces, periods, commas, exclamation marks, question marks, parentheses, colons, semicolons, double quotation marks, single quotation marks, or hyphens.",
+      ],
+      [/^.{1,100}$/, "Must be between 1 and 100 characters length."],
     ],
   },
 
@@ -612,17 +667,24 @@ const VALIDATION_FUNCTIONS_TABLE: ValidationFunctionsTable = {
   objectKey: {
     full: function objectKeyValidation(value: string) {
       /**
-       * - /^[a-zA-Z0-9_]{1,30}$/
-       * - [a-zA-Z0-9_] matches any character between a-z, A-Z, 0-9, or _.
-       * - {1,30} matches between 1 and 30 of the preceding token.
+       * - /^(?![0-9])[^"'\s\\]{1,75}$/;
+       * - (?![0-9]) ensures that the first character is not a digit.
+       * - [^"'\s\\] ensures that the input does not contain any of the following characters: ", ', whitespace, \.
+       * - {1,75} matches the preceding token between 1 and 75 times.
        * - ^ and $ ensure that the entire string matches the regex.
+       * ex: 'username' or 'username123' or 'username-123' or 'u123-sername'
        */
-      return /^[a-zA-Z0-9_]{1,30}$/.test(value);
+      return /^(?![0-9])[^"'\s\\]{1,75}$/i.test(value);
     },
 
     partials: [
-      [/^[a-zA-Z0-9_]$/, "Must contain only letters, numbers, and underscores."],
-      [/^.{1,30}$/, "Must be between 1 and 30 characters length."],
+      // [
+      //   /^(?![0-9])[^"'\s\\]$/,
+      //   "Must not start with a digit or contain quotes, spaces, or backslashes.",
+      // ],
+      [/^(?![0-9])/, "Must not start with a digit."],
+      [/[^"'\s\\]/, "Must not contain quotes, spaces, or backslashes."],
+      [/^.{1,75}$/, "Must be between 1 and 75 characters length."],
     ],
   },
 
@@ -862,6 +924,14 @@ const VALIDATION_FUNCTIONS_TABLE: ValidationFunctionsTable = {
     ],
   },
 
+  searchValue: {
+    full: function searchValueValidation(value: string) {
+      return true;
+    },
+
+    partials: [],
+  },
+
   smallInteger: {
     full: function smallIntegerValidation(value: string) {
       /**
@@ -974,21 +1044,24 @@ const VALIDATION_FUNCTIONS_TABLE: ValidationFunctionsTable = {
   userDefinedValue: {
     full: function userDefinedValueValidation(value: string) {
       /**
-       * - /^[A-Za-z0-9\s.,#-]{2,75}$/i
-       * - [A-Za-z0-9\s.,#-] matches any letter, number, whitespace, period, comma, hash, or hyphen.
-       * - {2,75} ensures that the text is between 2 and 75 characters long.
+       * - /^(?!^\s*$)[a-zA-Z0-9!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]{2,2000}$/i
+       * - (?=.*[A-Za-z0-9]) ensures that there is at least one alphanumeric character, preventing the input from consisting entirely of whitespace.
+       * - [A-Za-z0-9!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~] matches any alphanumeric character or special character in the range of special characters commonly used in components, part numbers, and ID numbers.
+       * - {2,2000} ensures that the text is between 2 and 2000 characters long.
        * - ^ and $ ensure that the entire string matches the regex.
-       * - i makes the regex case-insensitive.
        */
-      return /^[A-Za-z0-9\s.,#-]{2,75}$/i.test(value);
+      return /^(?!^\s*$)[a-zA-Z0-9!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~\w\s]{2,2000}$/i.test(
+        value
+      );
     },
 
     partials: [
+      [/^(?!^\s*$)/, "Must not be empty or consist entirely of whitespace characters."],
       [
-        /^[A-Za-z0-9\s.,#-]+$/,
-        "Must contain only letters, numbers, spaces, and special characters.",
+        /^[a-zA-Z0-9!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]+$/,
+        "Must contain only alphanumeric characters and special characters.",
       ],
-      [/^.{2,75}$/, "Must be between 2 and 75 characters length."],
+      [/^.{2,2000}$/, "Must be between 2 and 2000 characters length."],
     ],
   },
 

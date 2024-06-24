@@ -198,7 +198,7 @@ function Chain({
                 bullet={<TbLink />}
               >
                 <Text>{`${queryLinkStatement} ${
-                  linkIndex === queryChain.length - 1 ? "" : "and"
+                  linkIndex === queryChain.length - 1 ? "." : "and"
                 }`}</Text>
                 {buttons}
               </Timeline.Item>
@@ -225,16 +225,16 @@ function Chain({
     );
   });
 
-  const generalSearchExclusion =
+  const generalSearchExclusionLink =
     generalSearchExclusionValue.length === 0 ? null : (
       <Timeline.Item bullet={<TbLink />}>
         <Text>{`${addCommaSeparator(
           generalSearchExclusionValue.split(" ").join(", ")
-        )} are not present`}</Text>
+        )} are not present.`}</Text>
       </Timeline.Item>
     );
 
-  const generalSearchInclusion =
+  const generalSearchInclusionLink =
     generalSearchInclusionValue.length === 0 ? null : (
       <Timeline.Item bullet={<TbLink />}>
         <Text>{`${addCommaSeparator(
@@ -250,8 +250,8 @@ function Chain({
         collectionName
       )} by text fields where: `}</Text>
       <Timeline active={Number.MAX_SAFE_INTEGER}>
-        {generalSearchInclusion}
-        {generalSearchExclusion}
+        {generalSearchInclusionLink}
+        {generalSearchExclusionLink}
       </Timeline>
     </Stack>
   );
@@ -317,31 +317,3 @@ function createQueryLinkStatement({
 
 export { Chain };
 export type { QueryChainDispatch };
-
-/**
- * <Accordion
-      chevron={<TbChevronDown />}
-      onChange={(_event: string | null) => {
-        queryChainDispatch({
-          action: queryAction.setIsQueryChainOpened,
-          payload: true,
-        });
-      }}
-      value={isQueryChainOpened ? "Query Chain" : null}
-    >
-      <Accordion.Item value="Query Chain">
-        <Accordion.Control disabled={chainLength === 0}>
-          <Text size="lg">Query Chain</Text>
-        </Accordion.Control>
-        <Accordion.Panel>
-          <Stack>
-            {queryChainElements.length === 0 ? (
-              <Text>No query chain links</Text>
-            ) : (
-              queryChainElements
-            )}
-          </Stack>
-        </Accordion.Panel>
-      </Accordion.Item>
-    </Accordion>
- */

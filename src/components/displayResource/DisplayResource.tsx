@@ -34,6 +34,7 @@ import { DisplayResourceProps, DisplayResourceState } from "./types";
 import { buildQueryString } from "./utils";
 import { Query } from "../query/Query";
 import { returnBenefitStepperPages } from "../benefit/constants";
+import { returnEventStepperPages } from "../event/constants";
 
 function DisplayResource<Doc>({
   style = {},
@@ -1013,7 +1014,7 @@ function DisplayResource<Doc>({
   );
 
   const queryTesting = (
-    <Query collectionName="Repair Tickets" stepperPages={returnBenefitStepperPages()} />
+    <Query collectionName="Events" stepperPages={returnEventStepperPages()} />
   );
 
   const displaySubmitSuccessNotificationModal = (

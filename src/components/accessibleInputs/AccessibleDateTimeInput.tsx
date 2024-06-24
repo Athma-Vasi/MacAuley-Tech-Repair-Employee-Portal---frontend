@@ -135,6 +135,14 @@ function AccessibleDateTimeInput<
     valueBuffer,
   });
 
+  console.group("AccessibleDateTimeInput");
+  console.log("name:", name);
+  console.log("valueBuffer:", valueBuffer);
+  console.log("fullValidation", full);
+  console.log("stepperPages", stepperPages);
+  console.log("validationTexts:", validationTexts);
+  console.groupEnd();
+
   const { validValueTextElement, invalidValueTextElement } =
     createAccessibleValueValidationTextElements({
       isPopoverOpened,
