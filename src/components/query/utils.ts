@@ -1,9 +1,10 @@
-import { ValidationKey } from "../../constants/validations";
+import { VALIDATION_FUNCTIONS_TABLE, ValidationKey } from "../../constants/validations";
 import {
   CheckboxRadioSelectData,
   InputType,
   StepperChild,
   StepperPage,
+  Validation,
 } from "../../types";
 import { splitCamelCase } from "../../utils";
 import {
@@ -21,13 +22,13 @@ function addInputsToStepperPages(stepperPages: StepperPage[]): StepperPage[] {
   const createdAtInput: StepperChild = {
     inputType: "date",
     name: "createdAt",
-    validationKey: "date",
+    validationKey: "dateFullRange",
   };
 
   const updatedAtInput: StepperChild = {
     inputType: "date",
     name: "updatedAt",
-    validationKey: "date",
+    validationKey: "dateFullRange",
   };
 
   const usernameInput: StepperChild = {
@@ -47,6 +48,11 @@ type OperatorsInputType = {
   inputType: InputType;
 };
 
+type InputsValidationsMap = Map<
+  string,
+  { validationKey: ValidationKey; validation: Validation }
+>;
+
 type QueryInputsData = {
   fieldNamesOperatorsTypesMap: Map<string, OperatorsInputType>;
   /** field names */
@@ -59,7 +65,7 @@ type QueryInputsData = {
   /** for sort section */
   sortFieldSelectData: CheckboxRadioSelectData;
   /** Map<field names, validationKey> */
-  validatedInputsKeyMap: Map<string, ValidationKey>;
+  inputsValidationsMap: InputsValidationsMap;
 };
 
 /**
@@ -77,6 +83,7 @@ function createQueryInputsData(stepperPages: StepperPage[]): QueryInputsData {
   ]);
   const sortInputsSet = new Set<SortInputsType>(["date", "number", "time"]); // can apply sort: ascending | descending
   const comparisonOperatorsInputsSet = new Set<InputType>(["date", "number", "time"]); // can apply comparison operators
+  const validatedInputsSet = new Set<InputType>(["text", "date", "number", "time"]);
 
   const initialAcc: QueryInputsData = {
     fieldNamesOperatorsTypesMap: new Map<string, OperatorsInputType>(),
@@ -85,7 +92,7 @@ function createQueryInputsData(stepperPages: StepperPage[]): QueryInputsData {
     projectionCheckboxData: [],
     searchFieldSelectData: [],
     sortFieldSelectData: [],
-    validatedInputsKeyMap: new Map<string, ValidationKey>(),
+    inputsValidationsMap: new Map(),
   };
 
   const stepperPagesWithAddedInputs = addInputsToStepperPages(stepperPages);
@@ -97,7 +104,7 @@ function createQueryInputsData(stepperPages: StepperPage[]): QueryInputsData {
       selectInputsDataMap,
       searchFieldSelectData,
       sortFieldSelectData,
-      validatedInputsKeyMap,
+      inputsValidationsMap,
     } = acc;
 
     page.children.forEach((child) => {
@@ -123,10 +130,6 @@ function createQueryInputsData(stepperPages: StepperPage[]): QueryInputsData {
 
       if (inputType === "text") {
         searchFieldSelectData.push(checkboxRadioSelectData);
-
-        if (validationKey !== undefined) {
-          validatedInputsKeyMap.set(name, validationKey);
-        }
       }
 
       if (sortInputsSet.has(inputType as SortInputsType)) {
@@ -136,6 +139,35 @@ function createQueryInputsData(stepperPages: StepperPage[]): QueryInputsData {
       if (selectInputData !== undefined) {
         selectInputsDataMap.set(name, selectInputData);
       }
+
+      if (validatedInputsSet.has(inputType)) {
+        if (validationKey === undefined) {
+          return acc;
+        }
+
+        if (inputType === "text") {
+          // searchValue is the name of the dynamic input in search section
+          // this ensures that the searchValue input, which may consist of text input type, is validated correctly
+          inputsValidationsMap.set(name, {
+            validationKey,
+            validation: VALIDATION_FUNCTIONS_TABLE[validationKey],
+          });
+
+          return acc;
+        }
+
+        // filterValue is the name of the dynamic input in query filter section
+        // this ensures that the filterValue input, which may consist of date, number, or time input types, is validated correctly
+        inputsValidationsMap.set(name, {
+          validationKey,
+          validation: VALIDATION_FUNCTIONS_TABLE[validationKey],
+        });
+
+        console.group("createQueryInputsData");
+        console.log("validationKey", validationKey);
+        console.log("validation", VALIDATION_FUNCTIONS_TABLE[validationKey]);
+        console.groupEnd();
+      }
     });
 
     return acc;
@@ -143,4 +175,4 @@ function createQueryInputsData(stepperPages: StepperPage[]): QueryInputsData {
 }
 
 export { createQueryInputsData };
-export type { OperatorsInputType, QueryInputsData };
+export type { InputsValidationsMap, OperatorsInputType, QueryInputsData };

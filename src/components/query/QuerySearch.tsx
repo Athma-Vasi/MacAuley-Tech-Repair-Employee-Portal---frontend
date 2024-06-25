@@ -10,6 +10,8 @@ import { QueryAction } from "./actions";
 import { MAX_LINKS_AMOUNT, QUERY_SEARCH_CASE_DATA } from "./constants";
 import { GeneralSearchCase, ModifyQueryChainPayload, QueryChain } from "./types";
 import { AccessibleSegmentedControl } from "../accessibleInputs/AccessibleSegmentedControl";
+import { InputsValidationsMap } from "./utils";
+import { splitCamelCase } from "../../utils";
 
 type QuerySearchDispatch<
   ValidValueAction extends string = string,
@@ -41,7 +43,7 @@ type QuerySearchProps<
   searchField: string;
   searchFieldSelectData: CheckboxRadioSelectData;
   searchValue: string;
-  validatedInputsKeyMap: Map<string, ValidationKey>;
+  inputsValidationsMap: InputsValidationsMap;
 };
 
 function QuerySearch<
@@ -55,7 +57,7 @@ function QuerySearch<
   searchField,
   searchFieldSelectData,
   searchValue,
-  validatedInputsKeyMap,
+  inputsValidationsMap,
 }: QuerySearchProps<ValidValueAction, InvalidValueAction>) {
   const fieldSelectInput = (
     <AccessibleSelectInput
@@ -74,8 +76,9 @@ function QuerySearch<
       children: [
         {
           inputType: "text",
-          name: "searchValue",
-          validationKey: validatedInputsKeyMap.get("searchValue") ?? "allowAll",
+          name: `${splitCamelCase(searchField)} Value`,
+          validationKey:
+            inputsValidationsMap.get(searchField)?.validationKey ?? "allowAll",
         },
       ],
       description: "",
@@ -85,7 +88,7 @@ function QuerySearch<
   const valueTextAreaInput = (
     <AccessibleTextAreaInput
       attributes={{
-        name: "searchValue",
+        name: `${splitCamelCase(searchField)} Value`,
         invalidValueAction: queryAction.setIsError as InvalidValueAction,
         required: false,
         parentDispatch: querySearchDispatch,

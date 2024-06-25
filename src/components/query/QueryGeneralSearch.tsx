@@ -1,5 +1,5 @@
 import { Stack, Text } from "@mantine/core";
-import { ValidationKey } from "../../constants/validations";
+import { VALIDATION_FUNCTIONS_TABLE, ValidationKey } from "../../constants/validations";
 import { StepperPage } from "../../types";
 import { AccessibleSegmentedControl } from "../accessibleInputs/AccessibleSegmentedControl";
 import { AccessibleTextInput } from "../accessibleInputs/text/AccessibleTextInput";
@@ -7,6 +7,7 @@ import { QueryAction } from "./actions";
 import { QUERY_SEARCH_CASE_DATA } from "./constants";
 import { QuerySearchDispatch } from "./QuerySearch";
 import { GeneralSearchCase } from "./types";
+import { InputsValidationsMap } from "./utils";
 
 type QueryGeneralSearchProps<
   ValidValueAction extends string = string,
@@ -17,7 +18,7 @@ type QueryGeneralSearchProps<
   generalSearchCase: GeneralSearchCase;
   queryAction: QueryAction;
   querySearchDispatch: QuerySearchDispatch<ValidValueAction, InvalidValueAction>;
-  validatedInputsKeyMap: Map<string, ValidationKey>;
+  inputsValidationsMap: InputsValidationsMap;
 };
 
 function QueryGeneralSearch<
@@ -29,7 +30,7 @@ function QueryGeneralSearch<
   generalSearchInclusionValue,
   queryAction,
   querySearchDispatch,
-  validatedInputsKeyMap,
+  inputsValidationsMap,
 }: QueryGeneralSearchProps<ValidValueAction, InvalidValueAction>) {
   const stepperPages: StepperPage[] = [
     {
@@ -37,12 +38,12 @@ function QueryGeneralSearch<
         {
           inputType: "text",
           name: "include",
-          validationKey: validatedInputsKeyMap.get("include") ?? "allowAll",
+          validationKey: "include",
         },
         {
           inputType: "text",
           name: "exclude",
-          validationKey: validatedInputsKeyMap.get("include") ?? "allowAll",
+          validationKey: "exclude",
         },
       ],
       description: "",

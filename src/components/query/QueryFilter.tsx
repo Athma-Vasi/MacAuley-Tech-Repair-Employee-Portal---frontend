@@ -1,8 +1,13 @@
 import { Stack } from "@mantine/core";
 import React from "react";
 
-import { ValidationKey } from "../../constants/validations";
-import { CheckboxRadioSelectData, SetPageInErrorPayload, StepperPage } from "../../types";
+import { VALIDATION_FUNCTIONS_TABLE } from "../../constants/validations";
+import {
+  CheckboxRadioSelectData,
+  SetPageInErrorPayload,
+  StepperPage,
+  ValidationFunctionsTable,
+} from "../../types";
 import { AccessibleButton } from "../accessibleInputs/AccessibleButton";
 import { AccessibleDateTimeInput } from "../accessibleInputs/AccessibleDateTimeInput";
 import { AccessibleSelectInput } from "../accessibleInputs/AccessibleSelectInput";
@@ -10,7 +15,8 @@ import { AccessibleTextInput } from "../accessibleInputs/text/AccessibleTextInpu
 import { QueryAction, queryAction } from "./actions";
 import { MAX_LINKS_AMOUNT } from "./constants";
 import { ModifyQueryChainPayload, QueryChain } from "./types";
-import { OperatorsInputType } from "./utils";
+import { InputsValidationsMap, OperatorsInputType } from "./utils";
+import { splitCamelCase } from "../../utils";
 
 type QueryFilterDispatch<
   ValidValueAction extends string = string,
@@ -50,26 +56,28 @@ type QueryFilterProps<ValidValueAction extends string = string> = {
     payload: ModifyQueryChainPayload;
   }>;
   filterValue: string;
-  queryFilterDispatch: QueryFilterDispatch<ValidValueAction>;
+  inputsValidationsMap: InputsValidationsMap;
+  isError: boolean;
   projectedFieldsSet: Set<string>;
   queryAction: QueryAction;
+  queryFilterDispatch: QueryFilterDispatch<ValidValueAction>;
   selectInputsDataMap: Map<string, CheckboxRadioSelectData>;
-  validatedInputsKeyMap: Map<string, ValidationKey>;
 };
 
 function QueryFilter<ValidValueAction extends string = string>({
   fieldNamesOperatorsTypesMap,
   filterChain,
+  filterChainDispatch,
   filterField,
   filterFieldSelectInputData,
   filterOperator,
-  filterChainDispatch,
   filterValue,
-  queryFilterDispatch,
+  inputsValidationsMap,
+  isError,
   projectedFieldsSet,
   queryAction,
+  queryFilterDispatch,
   selectInputsDataMap,
-  validatedInputsKeyMap,
 }: QueryFilterProps<ValidValueAction>) {
   const fieldSelectInput = (
     <AccessibleSelectInput
@@ -109,7 +117,7 @@ function QueryFilter<ValidValueAction extends string = string>({
     filterValue,
     queryFilterDispatch,
     selectInputsDataMap,
-    validatedInputsKeyMap,
+    inputsValidationsMap,
   });
 
   const addFilterStatementsButton = (
@@ -119,8 +127,11 @@ function QueryFilter<ValidValueAction extends string = string>({
         disabledScreenreaderText:
           filterChain.length === MAX_LINKS_AMOUNT
             ? "Max query links amount reached"
-            : "Value is empty",
-        disabled: filterChain.length === MAX_LINKS_AMOUNT || filterValue === "",
+            : isError
+            ? "Value cannot be invalid"
+            : "Value cannot be empty",
+        disabled:
+          isError || filterChain.length === MAX_LINKS_AMOUNT || filterValue === "",
         kind: "add",
         onClick: (
           _event:
@@ -157,36 +168,56 @@ function createDynamicValueInput<ValidValueAction extends string = string>({
   filterValue,
   queryFilterDispatch,
   selectInputsDataMap,
-  validatedInputsKeyMap,
+  inputsValidationsMap,
 }: {
   fieldNamesOperatorsTypesMap: Map<string, OperatorsInputType>;
   filterField: string;
   filterValue: string;
   queryFilterDispatch: QueryFilterDispatch<ValidValueAction>;
   selectInputsDataMap: Map<string, CheckboxRadioSelectData>;
-  validatedInputsKeyMap: Map<string, ValidationKey>;
+  inputsValidationsMap: InputsValidationsMap;
 }) {
   const operatorTypes = fieldNamesOperatorsTypesMap.get(filterField);
   if (operatorTypes === undefined) {
     return null;
   }
 
-  const name = "filterValue";
-
   const { inputType } = operatorTypes;
 
+  const validationObject = inputsValidationsMap.get(filterField);
+  if (validationObject === undefined) {
+    return null;
+  }
+
+  const { validation, validationKey } = validationObject;
+  const name = `${splitCamelCase(filterField)} Value`;
   const stepperPages: StepperPage[] = [
     {
       children: [
         {
-          inputType: "date",
+          inputType,
           name,
-          validationKey: validatedInputsKeyMap.get(name) ?? "allowAll",
+          validationKey,
         },
       ],
-      description: "Date",
+      description: "",
     },
   ];
+
+  const validationFunctionsTable: ValidationFunctionsTable = {
+    ...VALIDATION_FUNCTIONS_TABLE,
+    filterValue: validation,
+  };
+
+  console.group("createDynamicValueInput");
+  console.log("filterField", filterField);
+  console.log("filterValue", filterValue);
+  console.log("inputType", inputType);
+  console.log("validationKey", validationKey);
+  console.log("validation", validation);
+  console.log("stepperPages", stepperPages);
+  console.log("validationFunctionsTable", validationFunctionsTable);
+  console.groupEnd();
 
   switch (inputType) {
     case "boolean": {
@@ -224,6 +255,7 @@ function createDynamicValueInput<ValidValueAction extends string = string>({
               selectInputsDataMap,
             },
             stepperPages,
+            validationFunctionsTable,
             validValueAction: queryAction.setFilterValue as ValidValueAction,
             value: filterValue,
           }}
@@ -276,6 +308,7 @@ function createDynamicValueInput<ValidValueAction extends string = string>({
               selectInputsDataMap,
             },
             stepperPages,
+            validationFunctionsTable,
             validValueAction: queryAction.setFilterValue as ValidValueAction,
             value: filterValue,
           }}

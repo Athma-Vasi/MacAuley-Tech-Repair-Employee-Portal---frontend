@@ -28,7 +28,7 @@ function Query({
     searchFieldSelectData,
     selectInputsDataMap,
     sortFieldSelectData,
-    validatedInputsKeyMap,
+    inputsValidationsMap,
   } = createQueryInputsData(stepperPages);
 
   const [queryState, queryDispatch] = React.useReducer(
@@ -72,7 +72,7 @@ function Query({
   console.log("searchFieldSelectData", searchFieldSelectData);
   console.log("selectInputsDataMap", selectInputsDataMap);
   console.log("sortFieldSelectData", sortFieldSelectData);
-  console.log("validatedInputsKeyMap", validatedInputsKeyMap);
+  console.log("inputsValidationsMap", inputsValidationsMap);
   console.groupEnd();
 
   const queryChain = (
@@ -92,16 +92,17 @@ function Query({
     <QueryFilter
       fieldNamesOperatorsTypesMap={fieldNamesOperatorsTypesMap}
       filterChain={queryChains.filter}
+      filterChainDispatch={queryDispatch}
       filterField={filterField}
       filterFieldSelectInputData={filterFieldSelectInputData}
       filterOperator={filterOperator}
       filterValue={filterValue}
+      inputsValidationsMap={inputsValidationsMap}
+      isError={isError}
       projectedFieldsSet={projectedFieldsSet}
       queryAction={queryAction}
-      selectInputsDataMap={selectInputsDataMap}
-      validatedInputsKeyMap={validatedInputsKeyMap}
-      filterChainDispatch={queryDispatch}
       queryFilterDispatch={queryDispatch as QueryFilterDispatch}
+      selectInputsDataMap={selectInputsDataMap}
     />
   );
 
@@ -121,7 +122,7 @@ function Query({
       generalSearchInclusionValue={generalSearchInclusionValue}
       queryAction={queryAction}
       querySearchDispatch={queryDispatch as QuerySearchDispatch}
-      validatedInputsKeyMap={validatedInputsKeyMap}
+      inputsValidationsMap={inputsValidationsMap}
     />
   );
 
@@ -134,7 +135,7 @@ function Query({
       searchField={searchField}
       searchFieldSelectData={searchFieldSelectData}
       searchValue={searchValue}
-      validatedInputsKeyMap={validatedInputsKeyMap}
+      inputsValidationsMap={inputsValidationsMap}
     />
   );
 
@@ -182,7 +183,7 @@ function Query({
   );
 
   return (
-    <Stack>
+    <Stack w={700}>
       {queryChain}
       {queryAccordion}
     </Stack>
