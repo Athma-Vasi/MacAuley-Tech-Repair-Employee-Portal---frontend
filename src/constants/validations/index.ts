@@ -19,11 +19,11 @@ type ValidationKey =
   | "dimensions"
   | "displayAspectRatio"
   | "email"
-  | "exclude"
+  | "exclusion"
   | "filterValue"
   | "frequencyResponse"
   | "fullName"
-  | "include"
+  | "inclusion"
   | "largeInteger"
   | "mediumInteger"
   | "mobileCamera"
@@ -467,8 +467,8 @@ const VALIDATION_FUNCTIONS_TABLE: ValidationFunctionsTable = {
     ],
   },
 
-  exclude: {
-    full: function excludeValidation(value: string) {
+  exclusion: {
+    full: function exclusionValidation(value: string) {
       /**
        * - /^[A-Za-z0-9\w\s.,!?():;"'-]{1,100}$/i
        * - [A-Za-z0-9\w\s.,!?():;"'-] matches any letter, number, whitespace, word character, period, comma, exclamation mark, question mark, parentheses, colon, semicolon, double quotation marks, single quotation marks, or hyphen.
@@ -543,8 +543,8 @@ const VALIDATION_FUNCTIONS_TABLE: ValidationFunctionsTable = {
     ],
   },
 
-  include: {
-    full: function includeValidation(value: string) {
+  inclusion: {
+    full: function inclusionValidation(value: string) {
       /**
        * - /^[A-Za-z0-9\w\s.,!?():;"'-]{1,100}$/i
        * - [A-Za-z0-9\w\s.,!?():;"'-] matches any letter, number, whitespace, word character, period, comma, exclamation mark, question mark, parentheses, colon, semicolon, double quotation marks, single quotation marks, or hyphen.

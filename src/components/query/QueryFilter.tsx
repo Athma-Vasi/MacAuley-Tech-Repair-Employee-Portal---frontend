@@ -120,7 +120,7 @@ function QueryFilter<ValidValueAction extends string = string>({
     inputsValidationsMap,
   });
 
-  const addFilterStatementsButton = (
+  const addFilterLinkButton = (
     <AccessibleButton
       attributes={{
         enabledScreenreaderText: "Add filter link to chain",
@@ -157,7 +157,7 @@ function QueryFilter<ValidValueAction extends string = string>({
       {fieldSelectInput}
       {filterOperatorSelectInput}
       {dynamicValueInput}
-      {addFilterStatementsButton}
+      {addFilterLinkButton}
     </Stack>
   );
 }

@@ -82,6 +82,7 @@ function Query({
       generalSearchExclusionValue={generalSearchExclusionValue}
       generalSearchInclusionValue={generalSearchInclusionValue}
       isQueryChainOpened={isQueryChainOpened}
+      projectionFields={projectionFields}
       queryAction={queryAction}
       queryChainDispatch={queryDispatch as QueryChainDispatch}
       queryChains={queryChains}

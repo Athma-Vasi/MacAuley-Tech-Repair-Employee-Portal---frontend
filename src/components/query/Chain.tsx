@@ -2,7 +2,7 @@ import { Accordion, Group, Stack, Text, Timeline } from "@mantine/core";
 import React from "react";
 import { TbChevronDown, TbLink } from "react-icons/tb";
 
-import { addCommaSeparator, splitCamelCase } from "../../utils";
+import { addCommaSeparator, capitalizeJoinWithAnd, splitCamelCase } from "../../utils";
 import { AccessibleButton } from "../accessibleInputs/AccessibleButton";
 import { QueryAction } from "./actions";
 import { MAX_LINKS_AMOUNT } from "./constants";
@@ -31,6 +31,7 @@ type QueryChainProps = {
   generalSearchExclusionValue: string;
   generalSearchInclusionValue: string;
   isQueryChainOpened: boolean;
+  projectionFields: string[];
   queryAction: QueryAction;
   queryChains: QueryChains;
   queryChainDispatch: QueryChainDispatch;
@@ -42,6 +43,7 @@ function Chain({
   generalSearchCase,
   generalSearchExclusionValue,
   generalSearchInclusionValue,
+  projectionFields,
   queryAction,
   queryChains,
   queryChainDispatch,
@@ -98,33 +100,33 @@ function Chain({
               />
             );
 
-            const insertQueryLinkButton = (
-              <AccessibleButton
-                attributes={{
-                  disabled: linkIndex === MAX_LINKS_AMOUNT - 1,
-                  disabledScreenreaderText: "Max query links amount reached",
-                  enabledScreenreaderText: `Insert link before ${queryLinkStatement}`,
-                  index: linkIndex,
-                  kind: "insert",
-                  setIconAsLabel: true,
-                  onClick: (
-                    _event:
-                      | React.MouseEvent<HTMLButtonElement, MouseEvent>
-                      | React.PointerEvent<HTMLButtonElement>
-                  ) => {
-                    queryChainDispatch({
-                      action: queryAction.modifyQueryChains,
-                      payload: {
-                        index: linkIndex,
-                        queryChainActions: "insert",
-                        queryChainKind,
-                        value: ["", "", ""],
-                      },
-                    });
-                  },
-                }}
-              />
-            );
+            // const insertQueryLinkButton = (
+            //   <AccessibleButton
+            //     attributes={{
+            //       disabled: linkIndex === MAX_LINKS_AMOUNT - 1,
+            //       disabledScreenreaderText: "Max query links amount reached",
+            //       enabledScreenreaderText: `Insert link before ${queryLinkStatement}`,
+            //       index: linkIndex,
+            //       kind: "insert",
+            //       setIconAsLabel: true,
+            //       onClick: (
+            //         _event:
+            //           | React.MouseEvent<HTMLButtonElement, MouseEvent>
+            //           | React.PointerEvent<HTMLButtonElement>
+            //       ) => {
+            //         queryChainDispatch({
+            //           action: queryAction.modifyQueryChains,
+            //           payload: {
+            //             index: linkIndex,
+            //             queryChainActions: "insert",
+            //             queryChainKind,
+            //             value: ["", "", ""],
+            //           },
+            //         });
+            //       },
+            //     }}
+            //   />
+            // );
 
             const slideQueryChainUpButton = (
               <AccessibleButton
@@ -186,7 +188,7 @@ function Chain({
             const buttons = (
               <Group>
                 {deleteQueryLinkButton}
-                {insertQueryLinkButton}
+                {/* {insertQueryLinkButton} */}
                 {slideQueryChainUpButton}
                 {slideQueryChainDownButton}
               </Group>
@@ -243,27 +245,48 @@ function Chain({
       </Timeline.Item>
     );
 
-  const generalSearchChainElement = (
-    <Stack>
-      <Text size="lg">General Search</Text>
-      <Text size="md">{`Search ${splitCamelCase(
-        collectionName
-      )} by text fields where: `}</Text>
-      <Timeline active={Number.MAX_SAFE_INTEGER}>
-        {generalSearchInclusionLink}
-        {generalSearchExclusionLink}
-      </Timeline>
-    </Stack>
+  const generalSearchChainElement =
+    generalSearchExclusionValue.length === 0 &&
+    generalSearchExclusionValue.length === 0 ? null : (
+      <Stack>
+        <Text size="lg">General Search</Text>
+        <Text size="md">{`Search ${splitCamelCase(
+          collectionName
+        )} by text fields where: `}</Text>
+        <Timeline active={Number.MAX_SAFE_INTEGER}>
+          {generalSearchInclusionLink}
+          {generalSearchExclusionLink}
+        </Timeline>
+      </Stack>
+    );
+
+  const projectionExclusionLink = (
+    <Timeline.Item bullet={<TbLink />}>
+      <Text>{`${capitalizeJoinWithAnd(projectionFields)} excluded.`}</Text>
+    </Timeline.Item>
   );
+
+  const projectionChainElement =
+    projectionFields.length === 0 ? null : (
+      <Stack>
+        <Text size="lg">Projection</Text>
+        <Text size="md">{`Return selected ${splitCamelCase(collectionName)} with field${
+          projectionFields.length === 1 ? "" : "s"
+        }:`}</Text>
+        <Timeline active={Number.MAX_SAFE_INTEGER}>{projectionExclusionLink}</Timeline>
+      </Stack>
+    );
 
   return chainLength === 0 &&
     generalSearchExclusionValue.length === 0 &&
-    generalSearchInclusionValue.length === 0 ? (
+    generalSearchInclusionValue.length === 0 &&
+    projectionFields.length === 0 ? (
     <Text>No query chain links</Text>
   ) : (
     <Stack>
       {queryChainElements}
       {generalSearchChainElement}
+      {projectionChainElement}
     </Stack>
   );
 }

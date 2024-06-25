@@ -1,18 +1,16 @@
-import { CheckboxRadioSelectData, SetPageInErrorPayload } from "../../types";
+import { SetPageInErrorPayload } from "../../types";
 import { QueryAction, queryAction } from "./actions";
 import {
   GeneralSearchCase,
   ModifyQueryChainPayload,
   QueryChain,
   QueryChainActions,
-  QueryChainKind,
   QueryDispatch,
   QueryFilterPayload,
   QueryLink,
   QueryState,
   SearchFieldsValuesSetMap,
   SortDirection,
-  SortFieldsValuesSetMap,
 } from "./types";
 
 function queryReducer(state: QueryState, dispatch: QueryDispatch): QueryState {
@@ -348,7 +346,7 @@ type ModifySortChainInput = {
   queryField: string;
   queryValue: string;
   sortChain: QueryChain;
-  sortFieldsValuesSetMap: SortFieldsValuesSetMap;
+  sortFieldsSet: Set<string>;
   state: QueryState;
   value: QueryLink;
 };
@@ -359,14 +357,14 @@ function modifySortChain({
   queryField,
   queryValue,
   sortChain,
-  sortFieldsValuesSetMap,
+  sortFieldsSet,
   state,
   value,
 }: ModifySortChainInput): QueryState {
   switch (queryChainActions) {
     case "delete": {
       sortChain.splice(index, 1);
-      sortFieldsValuesSetMap.delete(queryField);
+      sortFieldsSet.delete(queryField);
 
       return {
         ...state,
@@ -375,7 +373,7 @@ function modifySortChain({
           sort: sortChain,
         },
         sortField: "updatedAt",
-        sortFieldsValuesSetMap,
+        sortFieldsSet,
         sortDirection: "descending",
       };
     }
@@ -391,45 +389,18 @@ function modifySortChain({
         return state;
       }
 
-      const valuesSet = sortFieldsValuesSetMap.get(queryField);
+      console.log("state.sortFieldsSet", state.sortFieldsSet);
 
-      console.log("state.sortFieldsValuesSetMap", state.sortFieldsValuesSetMap);
-      console.log("valuesSet", valuesSet);
-
-      // field is unique
-      if (valuesSet === undefined) {
-        sortChain.splice(index, 0, value);
-        sortFieldsValuesSetMap.set(queryField, new Set([queryValue]));
-
-        console.log("field is unique");
-        console.log("sortChain", sortChain);
-        console.log("sortChain.length", sortChain.length);
-        console.log("index", index);
-
-        return {
-          ...state,
-          queryChains: {
-            ...state.queryChains,
-            sort: sortChain,
-          },
-          sortFieldsValuesSetMap,
-        };
+      if (sortFieldsSet.has(queryField)) {
+        const spliceIndex = sortChain.findIndex(
+          ([field, _, direction]: [string, string, string]) =>
+            field === queryField && direction === queryValue
+        );
+        sortChain.splice(spliceIndex, 1, value);
       }
 
-      // field exists, value is unique
-      if (!valuesSet.has(queryValue)) {
-        sortChain.splice(index, 0, value);
-
-        console.log("field exists, value is unique");
-        console.log("sortChain", sortChain);
-      }
-
-      console.log("field exists, value exists");
-      console.log("sortChain", sortChain);
-      console.groupEnd();
-
-      // field exists, value exists
-      sortFieldsValuesSetMap.set(queryField, valuesSet.add(queryValue));
+      sortChain.splice(index, 0, value);
+      sortFieldsSet.add(queryField);
 
       return {
         ...state,
@@ -437,7 +408,7 @@ function modifySortChain({
           ...state.queryChains,
           sort: sortChain,
         },
-        sortFieldsValuesSetMap,
+        sortFieldsSet,
       };
     }
 
@@ -479,13 +450,11 @@ function queryReducer_modifyQueryChains(
 
   switch (queryChainKind) {
     case "filter": {
-      const filterFieldsOperatorsValuesSetsMap = structuredClone(
-        state.filterFieldsOperatorsValuesSetsMap
-      );
-
       return modifyFilterChain({
         filterChain,
-        filterFieldsOperatorsValuesSetsMap,
+        filterFieldsOperatorsValuesSetsMap: structuredClone(
+          state.filterFieldsOperatorsValuesSetsMap
+        ),
         index,
         queryChainActions,
         queryField,
@@ -497,22 +466,20 @@ function queryReducer_modifyQueryChains(
     }
 
     case "search": {
-      const searchFieldsValuesSetMap = structuredClone(state.searchFieldsValuesSetMap);
-
       return modifySearchChain({
         index,
         queryChainActions,
         queryField,
         queryValue,
         searchChain,
-        searchFieldsValuesSetMap,
+        searchFieldsValuesSetMap: structuredClone(state.searchFieldsValuesSetMap),
         state,
         value,
       });
     }
 
     case "sort": {
-      const sortFieldsValuesSetMap = structuredClone(state.sortFieldsValuesSetMap);
+      const sortFieldsSet = structuredClone(state.sortFieldsSet);
 
       return modifySortChain({
         index,
@@ -520,7 +487,7 @@ function queryReducer_modifyQueryChains(
         queryField,
         queryValue,
         sortChain,
-        sortFieldsValuesSetMap,
+        sortFieldsSet,
         state,
         value,
       });

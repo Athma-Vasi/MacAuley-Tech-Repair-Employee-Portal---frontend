@@ -37,7 +37,7 @@ function createInitialQueryState(
     selectedFieldsSet: new Set(),
     sortDirection: "descending",
     sortField: "updatedAt",
-    sortFieldsValuesSetMap: new Map([["updatedAt", new Set()]]),
+    sortFieldsSet: new Set(),
   };
 
   // function setSearchDefaults(

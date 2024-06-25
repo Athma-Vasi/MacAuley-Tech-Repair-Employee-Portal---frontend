@@ -37,13 +37,13 @@ function QueryGeneralSearch<
       children: [
         {
           inputType: "text",
-          name: "include",
-          validationKey: "include",
+          name: "inclusion",
+          validationKey: "inclusion",
         },
         {
           inputType: "text",
-          name: "exclude",
-          validationKey: "exclude",
+          name: "exclusion",
+          validationKey: "exclusion",
         },
       ],
       description: "",
@@ -54,7 +54,7 @@ function QueryGeneralSearch<
     <AccessibleTextInput
       attributes={{
         invalidValueAction: queryAction.setIsError as InvalidValueAction,
-        name: "include",
+        name: "inclusion",
         parentDispatch: querySearchDispatch,
         stepperPages,
         validValueAction: queryAction.setGeneralSearchInclusionValue as ValidValueAction,
@@ -67,7 +67,7 @@ function QueryGeneralSearch<
     <AccessibleTextInput
       attributes={{
         invalidValueAction: queryAction.setIsError as InvalidValueAction,
-        name: "exclude",
+        name: "exclusion",
         parentDispatch: querySearchDispatch,
         stepperPages,
         validValueAction: queryAction.setGeneralSearchExclusionValue as ValidValueAction,

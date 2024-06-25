@@ -36,8 +36,6 @@ type SearchFieldsValuesSetMap = Map<string, Set<string>>;
 
 type SortDirection = "ascending" | "descending";
 
-type SortFieldsValuesSetMap = Map<string, Set<string>>;
-
 type SortInputsType = "date" | "number" | "time";
 
 type QueryProps<
@@ -89,7 +87,7 @@ type QueryState = {
   selectedFieldsSet: Set<string>;
   sortDirection: SortDirection;
   sortField: string;
-  sortFieldsValuesSetMap: SortFieldsValuesSetMap;
+  sortFieldsSet: Set<string>;
 };
 
 type ModifyQueryChainPayload = {
@@ -219,6 +217,5 @@ export type {
   QueryState,
   SearchFieldsValuesSetMap,
   SortDirection,
-  SortFieldsValuesSetMap,
   SortInputsType,
 };
