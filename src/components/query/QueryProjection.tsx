@@ -13,14 +13,14 @@ type QueryProjectionDispatch<ValidValueAction extends string = string> = React.D
 type QueryProjectionProps<ValidValueAction extends string = string> = {
   parentDispatch: QueryProjectionDispatch<ValidValueAction>;
   projectionCheckboxData: CheckboxRadioSelectData;
-  projectionFields: string[];
+  projectionExclusionFields: string[];
   queryAction: QueryAction;
 };
 
 function QueryProjection<ValidValueAction extends string = string>({
   parentDispatch,
   projectionCheckboxData,
-  projectionFields,
+  projectionExclusionFields,
   queryAction,
 }: QueryProjectionProps<ValidValueAction>) {
   return (
@@ -29,8 +29,8 @@ function QueryProjection<ValidValueAction extends string = string>({
         inputData: projectionCheckboxData,
         name: "exclusionFields",
         parentDispatch,
-        validValueAction: queryAction.setProjectionFields as ValidValueAction,
-        value: projectionFields,
+        validValueAction: queryAction.setProjectionExclusionFields as ValidValueAction,
+        value: projectionExclusionFields,
       }}
     />
   );

@@ -10,7 +10,7 @@ import { QueryAction } from "./actions";
 import { MAX_LINKS_AMOUNT, QUERY_SEARCH_CASE_DATA } from "./constants";
 import { GeneralSearchCase, ModifyQueryChainPayload, QueryChain } from "./types";
 import { AccessibleSegmentedControl } from "../accessibleInputs/AccessibleSegmentedControl";
-import { InputsValidationsMap } from "./utils";
+import { InputsValidationsMap, removeProjectionExclusionFields } from "./utils";
 import { splitCamelCase } from "../../utils";
 
 type QuerySearchDispatch<
@@ -36,6 +36,7 @@ type QuerySearchProps<
   ValidValueAction extends string = string,
   InvalidValueAction extends string = string
 > = {
+  projectionExclusionFields: string[];
   queryAction: QueryAction;
   querySearchDispatch: QuerySearchDispatch<ValidValueAction, InvalidValueAction>;
   searchChain: QueryChain;
@@ -50,6 +51,7 @@ function QuerySearch<
   ValidValueAction extends string = string,
   InvalidValueAction extends string = string
 >({
+  projectionExclusionFields,
   queryAction,
   querySearchDispatch,
   searchChain,
@@ -59,10 +61,17 @@ function QuerySearch<
   searchValue,
   inputsValidationsMap,
 }: QuerySearchProps<ValidValueAction, InvalidValueAction>) {
+  const data = removeProjectionExclusionFields(
+    projectionExclusionFields,
+    searchFieldSelectData
+  );
+  const disabled = data.length === 0;
+
   const fieldSelectInput = (
     <AccessibleSelectInput
       attributes={{
-        data: searchFieldSelectData,
+        data,
+        disabled,
         name: "searchField",
         parentDispatch: querySearchDispatch,
         validValueAction: queryAction.setSearchField as ValidValueAction,
@@ -88,6 +97,7 @@ function QuerySearch<
   const valueTextAreaInput = (
     <AccessibleTextAreaInput
       attributes={{
+        disabled,
         name: `${splitCamelCase(searchField)} Value`,
         invalidValueAction: queryAction.setIsError as InvalidValueAction,
         required: false,
@@ -107,7 +117,8 @@ function QuerySearch<
           searchChain.length === MAX_LINKS_AMOUNT
             ? "Max query links amount reached"
             : "Value is empty",
-        disabled: searchChain.length === MAX_LINKS_AMOUNT || searchValue === "",
+        disabled:
+          disabled || searchChain.length === MAX_LINKS_AMOUNT || searchValue === "",
         kind: "add",
         onClick: (
           _event:

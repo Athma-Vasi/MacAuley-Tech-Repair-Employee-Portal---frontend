@@ -78,13 +78,11 @@ type QueryState = {
   isSearchOpened: boolean;
   isSortOpened: boolean;
   limitPerPage: number;
-  projectedFieldsSet: Set<string>;
-  projectionFields: string[];
+  projectionExclusionFields: string[];
   queryChains: QueryChains;
   searchField: string;
   searchFieldsValuesSetMap: SearchFieldsValuesSetMap;
   searchValue: string;
-  selectedFieldsSet: Set<string>;
   sortDirection: SortDirection;
   sortField: string;
   sortFieldsSet: Set<string>;
@@ -169,11 +167,7 @@ type QueryDispatch =
       payload: number;
     }
   | {
-      action: QueryAction["setProjectedFieldsSet"];
-      payload: Set<string>;
-    }
-  | {
-      action: QueryAction["setProjectionFields"];
+      action: QueryAction["setProjectionExclusionFields"];
       payload: string[];
     }
   | {
@@ -183,10 +177,6 @@ type QueryDispatch =
   | {
       action: QueryAction["setSearchValue"];
       payload: string;
-    }
-  | {
-      action: QueryAction["setSelectedFieldsSet"];
-      payload: Set<string>;
     }
   | {
       action: QueryAction["setSortDirection"];

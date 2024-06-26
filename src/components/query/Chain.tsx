@@ -31,7 +31,7 @@ type QueryChainProps = {
   generalSearchExclusionValue: string;
   generalSearchInclusionValue: string;
   isQueryChainOpened: boolean;
-  projectionFields: string[];
+  projectionExclusionFields: string[];
   queryAction: QueryAction;
   queryChains: QueryChains;
   queryChainDispatch: QueryChainDispatch;
@@ -43,7 +43,7 @@ function Chain({
   generalSearchCase,
   generalSearchExclusionValue,
   generalSearchInclusionValue,
-  projectionFields,
+  projectionExclusionFields,
   queryAction,
   queryChains,
   queryChainDispatch,
@@ -260,15 +260,15 @@ function Chain({
 
   const projectionExclusionLink = (
     <Timeline.Item bullet={<TbLink />}>
-      <Text>{`${capitalizeJoinWithAnd(projectionFields)} excluded.`}</Text>
+      <Text>{`${capitalizeJoinWithAnd(projectionExclusionFields)} excluded.`}</Text>
     </Timeline.Item>
   );
 
   const projectionChainElement =
-    projectionFields.length === 0 ? null : (
+    projectionExclusionFields.length === 0 ? null : (
       <Stack>
         <Text size="md">{`Return selected ${splitCamelCase(collectionName)} with field${
-          projectionFields.length === 1 ? "" : "s"
+          projectionExclusionFields.length === 1 ? "" : "s"
         }:`}</Text>
         <Timeline active={Number.MAX_SAFE_INTEGER}>{projectionExclusionLink}</Timeline>
       </Stack>
@@ -277,7 +277,7 @@ function Chain({
   return chainLength === 0 &&
     generalSearchExclusionValue.length === 0 &&
     generalSearchInclusionValue.length === 0 &&
-    projectionFields.length === 0 ? (
+    projectionExclusionFields.length === 0 ? (
     <Text>No query chain links</Text>
   ) : (
     <Stack>

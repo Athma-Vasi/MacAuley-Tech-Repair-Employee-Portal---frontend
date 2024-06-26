@@ -6,6 +6,7 @@ import { AccessibleSelectInput } from "../accessibleInputs/AccessibleSelectInput
 import { QueryAction } from "./actions";
 import { MAX_LINKS_AMOUNT, SORT_DIRECTION_DATA } from "./constants";
 import { ModifyQueryChainPayload, QueryChain, SortDirection } from "./types";
+import { removeProjectionExclusionFields } from "./utils";
 
 type QuerySortDispatch<ValidValueAction extends string = string> = React.Dispatch<{
   action: ValidValueAction;
@@ -13,6 +14,7 @@ type QuerySortDispatch<ValidValueAction extends string = string> = React.Dispatc
 }>;
 
 type QuerySortProps<ValidValueAction extends string = string> = {
+  projectionExclusionFields: string[];
   queryAction: QueryAction;
   querySortDispatch: QuerySortDispatch<ValidValueAction>;
   sortChain: QueryChain;
@@ -26,6 +28,7 @@ type QuerySortProps<ValidValueAction extends string = string> = {
 };
 
 function QuerySort<ValidValueAction extends string = string>({
+  projectionExclusionFields,
   queryAction,
   querySortDispatch,
   sortChain,
@@ -34,10 +37,17 @@ function QuerySort<ValidValueAction extends string = string>({
   sortField,
   sortFieldSelectData,
 }: QuerySortProps<ValidValueAction>) {
+  const data = removeProjectionExclusionFields(
+    projectionExclusionFields,
+    sortFieldSelectData
+  );
+  const disabled = data.length === 0;
+
   const sortFieldSelectInput = (
     <AccessibleSelectInput
       attributes={{
-        data: sortFieldSelectData,
+        data,
+        disabled,
         name: "sortField",
         parentDispatch: querySortDispatch,
         validValueAction: queryAction.setSortField as ValidValueAction,
@@ -50,6 +60,7 @@ function QuerySort<ValidValueAction extends string = string>({
     <AccessibleSelectInput
       attributes={{
         data: SORT_DIRECTION_DATA,
+        disabled,
         name: "sortDirection",
         parentDispatch: querySortDispatch,
         validValueAction: queryAction.setSortDirection as ValidValueAction,
@@ -63,7 +74,7 @@ function QuerySort<ValidValueAction extends string = string>({
       attributes={{
         enabledScreenreaderText: "Add search link to chain",
         disabledScreenreaderText: "Max query links amount reached",
-        disabled: sortChain.length === MAX_LINKS_AMOUNT,
+        disabled: disabled || sortChain.length === MAX_LINKS_AMOUNT,
         kind: "add",
         onClick: (
           _event:

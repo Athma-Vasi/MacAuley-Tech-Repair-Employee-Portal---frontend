@@ -16,11 +16,9 @@ type QueryAction = {
   setIsSearchOpened: "setIsSearchOpened";
   setIsSortOpened: "setIsSortOpened";
   setLimitPerPage: "setLimitPerPage";
-  setProjectedFieldsSet: "setProjectedFieldsSet";
-  setProjectionFields: "setProjectionFields";
+  setProjectionExclusionFields: "setProjectionExclusionFields";
   setSearchField: "setSearchField";
   setSearchValue: "setSearchValue";
-  setSelectedFieldsSet: "setSelectedFieldsSet";
   setSortDirection: "setSortDirection";
   setSortField: "setSortField";
 };
@@ -43,11 +41,9 @@ const queryAction: QueryAction = {
   setIsSearchOpened: "setIsSearchOpened",
   setIsSortOpened: "setIsSortOpened",
   setLimitPerPage: "setLimitPerPage",
-  setProjectedFieldsSet: "setProjectedFieldsSet",
-  setProjectionFields: "setProjectionFields",
+  setProjectionExclusionFields: "setProjectionExclusionFields",
   setSearchField: "setSearchField",
   setSearchValue: "setSearchValue",
-  setSelectedFieldsSet: "setSelectedFieldsSet",
   setSortDirection: "setSortDirection",
   setSortField: "setSortField",
 };

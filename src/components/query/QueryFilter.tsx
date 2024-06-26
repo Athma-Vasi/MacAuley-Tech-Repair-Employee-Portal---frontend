@@ -8,6 +8,7 @@ import {
   StepperPage,
   ValidationFunctionsTable,
 } from "../../types";
+import { splitCamelCase } from "../../utils";
 import { AccessibleButton } from "../accessibleInputs/AccessibleButton";
 import { AccessibleDateTimeInput } from "../accessibleInputs/AccessibleDateTimeInput";
 import { AccessibleSelectInput } from "../accessibleInputs/AccessibleSelectInput";
@@ -15,8 +16,11 @@ import { AccessibleTextInput } from "../accessibleInputs/text/AccessibleTextInpu
 import { QueryAction, queryAction } from "./actions";
 import { MAX_LINKS_AMOUNT } from "./constants";
 import { ModifyQueryChainPayload, QueryChain } from "./types";
-import { InputsValidationsMap, OperatorsInputType } from "./utils";
-import { splitCamelCase } from "../../utils";
+import {
+  InputsValidationsMap,
+  OperatorsInputType,
+  removeProjectionExclusionFields,
+} from "./utils";
 
 type QueryFilterDispatch<
   ValidValueAction extends string = string,
@@ -58,7 +62,7 @@ type QueryFilterProps<ValidValueAction extends string = string> = {
   filterValue: string;
   inputsValidationsMap: InputsValidationsMap;
   isError: boolean;
-  projectedFieldsSet: Set<string>;
+  projectionExclusionFields: string[];
   queryAction: QueryAction;
   queryFilterDispatch: QueryFilterDispatch<ValidValueAction>;
   selectInputsDataMap: Map<string, CheckboxRadioSelectData>;
@@ -74,15 +78,22 @@ function QueryFilter<ValidValueAction extends string = string>({
   filterValue,
   inputsValidationsMap,
   isError,
-  projectedFieldsSet,
+  projectionExclusionFields,
   queryAction,
   queryFilterDispatch,
   selectInputsDataMap,
 }: QueryFilterProps<ValidValueAction>) {
+  const data = removeProjectionExclusionFields(
+    projectionExclusionFields,
+    filterFieldSelectInputData
+  );
+  const disabled = data.length === 0;
+
   const fieldSelectInput = (
     <AccessibleSelectInput
       attributes={{
-        data: filterFieldSelectInputData,
+        data,
+        disabled,
         name: "filterField",
         queryFilterDispatchData: {
           fieldNamesOperatorsTypesMap,
@@ -99,6 +110,7 @@ function QueryFilter<ValidValueAction extends string = string>({
     <AccessibleSelectInput
       attributes={{
         data: fieldNamesOperatorsTypesMap.get(filterField)?.operators ?? [],
+        disabled,
         name: "filterOperator",
         queryFilterDispatchData: {
           fieldNamesOperatorsTypesMap,
@@ -112,6 +124,7 @@ function QueryFilter<ValidValueAction extends string = string>({
   );
 
   const dynamicValueInput = createDynamicValueInput({
+    disabled,
     fieldNamesOperatorsTypesMap,
     filterField,
     filterValue,
@@ -131,7 +144,10 @@ function QueryFilter<ValidValueAction extends string = string>({
             ? "Value cannot be invalid"
             : "Value cannot be empty",
         disabled:
-          isError || filterChain.length === MAX_LINKS_AMOUNT || filterValue === "",
+          disabled ||
+          isError ||
+          filterChain.length === MAX_LINKS_AMOUNT ||
+          filterValue === "",
         kind: "add",
         onClick: (
           _event:
@@ -163,6 +179,7 @@ function QueryFilter<ValidValueAction extends string = string>({
 }
 
 function createDynamicValueInput<ValidValueAction extends string = string>({
+  disabled,
   fieldNamesOperatorsTypesMap,
   filterField,
   filterValue,
@@ -170,6 +187,7 @@ function createDynamicValueInput<ValidValueAction extends string = string>({
   selectInputsDataMap,
   inputsValidationsMap,
 }: {
+  disabled: boolean;
   fieldNamesOperatorsTypesMap: Map<string, OperatorsInputType>;
   filterField: string;
   filterValue: string;
@@ -193,6 +211,7 @@ function createDynamicValueInput<ValidValueAction extends string = string>({
             { label: "True", value: "true" },
             { label: "False", value: "false" },
           ],
+          disabled,
           name,
           queryFilterDispatchData: {
             fieldNamesOperatorsTypesMap,
@@ -211,6 +230,7 @@ function createDynamicValueInput<ValidValueAction extends string = string>({
       <AccessibleSelectInput
         attributes={{
           data: selectInputsDataMap.get(filterField) ?? [],
+          disabled,
           name,
           queryFilterDispatchData: {
             fieldNamesOperatorsTypesMap,
@@ -254,6 +274,7 @@ function createDynamicValueInput<ValidValueAction extends string = string>({
         <AccessibleDateTimeInput
           attributes={{
             dateKind: "full date",
+            disabled,
             inputKind: "date",
             invalidValueAction: queryAction.setIsError,
             name,
@@ -275,6 +296,7 @@ function createDynamicValueInput<ValidValueAction extends string = string>({
       return (
         <AccessibleTextInput
           attributes={{
+            disabled,
             invalidValueAction: queryAction.setIsError,
             name,
             stepperPages,
@@ -289,6 +311,7 @@ function createDynamicValueInput<ValidValueAction extends string = string>({
       return (
         <AccessibleDateTimeInput
           attributes={{
+            disabled,
             inputKind: "time",
             invalidValueAction: queryAction.setIsError,
             name,

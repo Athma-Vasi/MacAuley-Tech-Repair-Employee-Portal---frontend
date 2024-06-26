@@ -53,12 +53,10 @@ function Query({
     isSearchOpened,
     isSortOpened,
     limitPerPage,
-    projectedFieldsSet,
-    projectionFields,
+    projectionExclusionFields,
     queryChains,
     searchField,
     searchValue,
-    selectedFieldsSet,
     sortDirection,
     sortField,
   } = queryState;
@@ -82,7 +80,7 @@ function Query({
       generalSearchExclusionValue={generalSearchExclusionValue}
       generalSearchInclusionValue={generalSearchInclusionValue}
       isQueryChainOpened={isQueryChainOpened}
-      projectionFields={projectionFields}
+      projectionExclusionFields={projectionExclusionFields}
       queryAction={queryAction}
       queryChainDispatch={queryDispatch as QueryChainDispatch}
       queryChains={queryChains}
@@ -100,7 +98,7 @@ function Query({
       filterValue={filterValue}
       inputsValidationsMap={inputsValidationsMap}
       isError={isError}
-      projectedFieldsSet={projectedFieldsSet}
+      projectionExclusionFields={projectionExclusionFields}
       queryAction={queryAction}
       queryFilterDispatch={queryDispatch as QueryFilterDispatch}
       selectInputsDataMap={selectInputsDataMap}
@@ -111,7 +109,7 @@ function Query({
     <QueryProjection
       parentDispatch={queryDispatch as QueryProjectionDispatch}
       projectionCheckboxData={projectionCheckboxData}
-      projectionFields={projectionFields}
+      projectionExclusionFields={projectionExclusionFields}
       queryAction={queryAction}
     />
   );
@@ -129,6 +127,7 @@ function Query({
 
   const querySearch = (
     <QuerySearch
+      projectionExclusionFields={projectionExclusionFields}
       queryAction={queryAction}
       querySearchDispatch={queryDispatch as QuerySearchDispatch}
       searchChain={queryChains.search}
@@ -142,6 +141,7 @@ function Query({
 
   const querySort = (
     <QuerySort
+      projectionExclusionFields={projectionExclusionFields}
       queryAction={queryAction}
       querySortDispatch={queryDispatch as QuerySortDispatch}
       sortChain={queryChains.sort}

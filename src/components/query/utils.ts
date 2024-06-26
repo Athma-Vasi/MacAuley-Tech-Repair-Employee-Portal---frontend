@@ -174,5 +174,20 @@ function createQueryInputsData(stepperPages: StepperPage[]): QueryInputsData {
   }, initialAcc);
 }
 
-export { createQueryInputsData };
+function removeProjectionExclusionFields(
+  projectionExclusionFields: string[],
+  selectData: CheckboxRadioSelectData
+) {
+  const exclusionFieldsSet = new Set(projectionExclusionFields);
+
+  return selectData.reduce<CheckboxRadioSelectData>((acc, field) => {
+    if (!exclusionFieldsSet.has(field.value)) {
+      acc.push(structuredClone(field));
+    }
+
+    return acc;
+  }, []);
+}
+
+export { createQueryInputsData, removeProjectionExclusionFields };
 export type { InputsValidationsMap, OperatorsInputType, QueryInputsData };

@@ -44,11 +44,9 @@ const queryReducers = new Map<
   [queryAction.setIsSearchDisabled, queryReducer_setIsSearchDisabled],
   [queryAction.setIsSearchOpened, queryReducer_setIsSearchOpened],
   [queryAction.setIsSortOpened, queryReducer_setIsSortOpened],
-  [queryAction.setProjectedFieldsSet, queryReducer_setProjectedFieldsSet],
-  [queryAction.setProjectionFields, queryReducer_setProjectionFields],
+  [queryAction.setProjectionExclusionFields, queryReducer_setProjectionExclusionFields],
   [queryAction.setSearchField, queryReducer_setSearchField],
   [queryAction.setSearchValue, queryReducer_setSearchValue],
-  [queryAction.setSelectedFieldsSet, queryReducer_setSelectedFieldsSet],
   [queryAction.setSortDirection, queryReducer_setSortDirection],
   [queryAction.setSortField, queryReducer_setSortField],
 ]);
@@ -635,18 +633,11 @@ function queryReducer_setIsSortOpened(
   return { ...state, isSortOpened: dispatch.payload as boolean };
 }
 
-function queryReducer_setProjectedFieldsSet(
+function queryReducer_setProjectionExclusionFields(
   state: QueryState,
   dispatch: QueryDispatch
 ): QueryState {
-  return { ...state, projectedFieldsSet: dispatch.payload as Set<string> };
-}
-
-function queryReducer_setProjectionFields(
-  state: QueryState,
-  dispatch: QueryDispatch
-): QueryState {
-  return { ...state, projectionFields: dispatch.payload as string[] };
+  return { ...state, projectionExclusionFields: dispatch.payload as string[] };
 }
 
 function queryReducer_setSearchField(
@@ -661,16 +652,6 @@ function queryReducer_setSearchValue(
   dispatch: QueryDispatch
 ): QueryState {
   return { ...state, searchValue: dispatch.payload as string };
-}
-
-function queryReducer_setSelectedFieldsSet(
-  state: QueryState,
-  dispatch: QueryDispatch
-): QueryState {
-  //   const selectedFieldsSet = new Set(state.selectedFieldsSet);
-
-  //   return { ...state, selectedFieldsSet };
-  return state;
 }
 
 function queryReducer_setSortDirection(
