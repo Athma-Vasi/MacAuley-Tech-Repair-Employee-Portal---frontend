@@ -212,7 +212,6 @@ function Chain({
     const queryLinkHeadingElement =
       queryChain.length === 0 ? null : (
         <Stack>
-          <Text size="lg">{splitCamelCase(queryChainKind)}</Text>
           <Text size="md">
             {createQueryLinkHeading({ collectionName, queryChainKind })}
           </Text>
@@ -249,7 +248,6 @@ function Chain({
     generalSearchExclusionValue.length === 0 &&
     generalSearchExclusionValue.length === 0 ? null : (
       <Stack>
-        <Text size="lg">General Search</Text>
         <Text size="md">{`Search ${splitCamelCase(
           collectionName
         )} by text fields where: `}</Text>
@@ -269,7 +267,6 @@ function Chain({
   const projectionChainElement =
     projectionFields.length === 0 ? null : (
       <Stack>
-        <Text size="lg">Projection</Text>
         <Text size="md">{`Return selected ${splitCamelCase(collectionName)} with field${
           projectionFields.length === 1 ? "" : "s"
         }:`}</Text>

@@ -183,6 +183,46 @@ function createDynamicValueInput<ValidValueAction extends string = string>({
   }
 
   const { inputType } = operatorTypes;
+  const name = `${splitCamelCase(filterField)} Value`;
+
+  if (inputType === "boolean") {
+    return (
+      <AccessibleSelectInput
+        attributes={{
+          data: [
+            { label: "True", value: "true" },
+            { label: "False", value: "false" },
+          ],
+          name,
+          queryFilterDispatchData: {
+            fieldNamesOperatorsTypesMap,
+            queryFilterDispatch,
+            selectInputsDataMap,
+          },
+          validValueAction: queryAction.setFilterValue as ValidValueAction,
+          value: filterValue,
+        }}
+      />
+    );
+  }
+
+  if (inputType === "select") {
+    return (
+      <AccessibleSelectInput
+        attributes={{
+          data: selectInputsDataMap.get(filterField) ?? [],
+          name,
+          queryFilterDispatchData: {
+            fieldNamesOperatorsTypesMap,
+            queryFilterDispatch,
+            selectInputsDataMap,
+          },
+          validValueAction: queryAction.setFilterValue as ValidValueAction,
+          value: filterValue,
+        }}
+      />
+    );
+  }
 
   const validationObject = inputsValidationsMap.get(filterField);
   if (validationObject === undefined) {
@@ -190,7 +230,6 @@ function createDynamicValueInput<ValidValueAction extends string = string>({
   }
 
   const { validation, validationKey } = validationObject;
-  const name = `${splitCamelCase(filterField)} Value`;
   const stepperPages: StepperPage[] = [
     {
       children: [
@@ -209,38 +248,7 @@ function createDynamicValueInput<ValidValueAction extends string = string>({
     filterValue: validation,
   };
 
-  console.group("createDynamicValueInput");
-  console.log("filterField", filterField);
-  console.log("filterValue", filterValue);
-  console.log("inputType", inputType);
-  console.log("validationKey", validationKey);
-  console.log("validation", validation);
-  console.log("stepperPages", stepperPages);
-  console.log("validationFunctionsTable", validationFunctionsTable);
-  console.groupEnd();
-
   switch (inputType) {
-    case "boolean": {
-      return (
-        <AccessibleSelectInput
-          attributes={{
-            data: [
-              { label: "True", value: "true" },
-              { label: "False", value: "false" },
-            ],
-            name,
-            queryFilterDispatchData: {
-              fieldNamesOperatorsTypesMap,
-              queryFilterDispatch,
-              selectInputsDataMap,
-            },
-            validValueAction: queryAction.setFilterValue as ValidValueAction,
-            value: filterValue,
-          }}
-        />
-      );
-    }
-
     case "date": {
       return (
         <AccessibleDateTimeInput
@@ -271,24 +279,6 @@ function createDynamicValueInput<ValidValueAction extends string = string>({
             name,
             stepperPages,
             validValueAction: queryAction.setFilterValue,
-            value: filterValue,
-          }}
-        />
-      );
-    }
-
-    case "select": {
-      return (
-        <AccessibleSelectInput
-          attributes={{
-            data: selectInputsDataMap.get(filterField) ?? [],
-            name,
-            queryFilterDispatchData: {
-              fieldNamesOperatorsTypesMap,
-              queryFilterDispatch,
-              selectInputsDataMap,
-            },
-            validValueAction: queryAction.setFilterValue as ValidValueAction,
             value: filterValue,
           }}
         />

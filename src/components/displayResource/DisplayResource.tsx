@@ -35,6 +35,7 @@ import { buildQueryString } from "./utils";
 import { Query } from "../query/Query";
 import { returnBenefitStepperPages } from "../benefit/constants";
 import { returnEventStepperPages } from "../event/constants";
+import { returnExpenseClaimStepperPages } from "../expenseClaim/constants";
 
 function DisplayResource<Doc>({
   style = {},
@@ -1014,7 +1015,10 @@ function DisplayResource<Doc>({
   );
 
   const queryTesting = (
-    <Query collectionName="Events" stepperPages={returnEventStepperPages()} />
+    <Query
+      collectionName="Expense Claims"
+      stepperPages={returnExpenseClaimStepperPages()}
+    />
   );
 
   const displaySubmitSuccessNotificationModal = (
