@@ -98,6 +98,11 @@ type ModifyQueryChainPayload = {
   queryLink: QueryLink;
 };
 
+type ModifyQueryChainsDispatch = React.Dispatch<{
+  action: QueryAction["modifyQueryChains"];
+  payload: ModifyQueryChainPayload;
+}>;
+
 type QueryFilterPayload = {
   fieldNamesOperatorsTypesMap: Map<string, OperatorsInputType>;
   selectInputsDataMap: Map<string, CheckboxInputData>;
@@ -183,7 +188,7 @@ type QueryDispatch =
     }
   | {
       action: QueryAction["setSearchLogicalOperator"];
-      payload: LogicalOperator;
+      payload: string;
     }
   | {
       action: QueryAction["setSearchValue"];
@@ -206,6 +211,7 @@ export type {
   GeneralSearchKind,
   LogicalOperator,
   ModifyQueryChainPayload,
+  ModifyQueryChainsDispatch,
   QueryChain,
   QueryChainActions,
   QueryChainKind,

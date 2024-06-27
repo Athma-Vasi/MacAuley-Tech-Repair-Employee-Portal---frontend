@@ -6,9 +6,8 @@ import { createQueryInputsData } from "./utils";
 import { QueryFilter, SetFilterInputValuesDispatch } from "./QueryFilter";
 import { QueryAction, queryAction } from "./actions";
 import { Accordion, Stack, Text, Timeline } from "@mantine/core";
-import { QuerySearch, QuerySearchDispatch, SearchChainDispatch } from "./QuerySearch";
-import { TbChevronDown } from "react-icons/tb";
-import { QueryProjection, QueryProjectionDispatch } from "./QueryProjection";
+import { QuerySearch } from "./QuerySearch";
+import { QueryProjection } from "./QueryProjection";
 import { Chain, QueryChainDispatch } from "./Chain";
 import { QuerySort, QuerySortDispatch } from "./QuerySort";
 import { QueryGeneralSearch } from "./QueryGeneralSearch";
@@ -102,7 +101,7 @@ function Query({
 
   const queryProjection = (
     <QueryProjection
-      parentDispatch={queryDispatch as QueryProjectionDispatch}
+      parentDispatch={queryDispatch}
       projectionCheckboxData={projectionCheckboxData}
       projectionExclusionFields={projectionExclusionFields}
       queryAction={queryAction}
@@ -115,7 +114,7 @@ function Query({
       generalSearchExclusionValue={generalSearchExclusionValue}
       generalSearchInclusionValue={generalSearchInclusionValue}
       queryAction={queryAction}
-      querySearchDispatch={queryDispatch as QuerySearchDispatch}
+      parentDispatch={queryDispatch}
       inputsValidationsMap={inputsValidationsMap}
     />
   );
@@ -123,9 +122,9 @@ function Query({
   const querySearch = (
     <QuerySearch
       inputsValidationsMap={inputsValidationsMap}
-      querySearchDispatch={queryDispatch as QuerySearchDispatch}
+      parentDispatch={queryDispatch}
       queryState={queryState}
-      searchChainDispatch={queryDispatch as SearchChainDispatch}
+      modifyQueryChainsDispatch={queryDispatch}
       searchFieldSelectData={searchFieldSelectData}
     />
   );

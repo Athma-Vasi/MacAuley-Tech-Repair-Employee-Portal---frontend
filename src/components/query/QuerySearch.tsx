@@ -17,38 +17,21 @@ import {
 import {
   GeneralSearchCase,
   ModifyQueryChainPayload,
+  ModifyQueryChainsDispatch,
   QueryChain,
+  QueryDispatch,
   QueryState,
 } from "./types";
 import { InputsValidationsMap, removeProjectionExclusionFields } from "./utils";
-
-type QuerySearchDispatch<
-  ValidValueAction extends string = string,
-  InvalidValueAction extends string = string
-> = React.Dispatch<
-  | {
-      action: ValidValueAction;
-      payload: string;
-    }
-  | {
-      action: InvalidValueAction;
-      payload: SetPageInErrorPayload;
-    }
->;
-
-type SearchChainDispatch<ValidValueAction extends string = string> = React.Dispatch<{
-  action: ValidValueAction;
-  payload: ModifyQueryChainPayload;
-}>;
 
 type QuerySearchProps<
   ValidValueAction extends string = string,
   InvalidValueAction extends string = string
 > = {
   inputsValidationsMap: InputsValidationsMap;
-  querySearchDispatch: QuerySearchDispatch<ValidValueAction, InvalidValueAction>;
+  parentDispatch: React.Dispatch<QueryDispatch>;
   queryState: QueryState;
-  searchChainDispatch: SearchChainDispatch<ValidValueAction>;
+  modifyQueryChainsDispatch: ModifyQueryChainsDispatch;
   searchFieldSelectData: CheckboxRadioSelectData;
 };
 
@@ -57,9 +40,9 @@ function QuerySearch<
   InvalidValueAction extends string = string
 >({
   inputsValidationsMap,
-  querySearchDispatch,
+  parentDispatch,
   queryState,
-  searchChainDispatch,
+  modifyQueryChainsDispatch,
   searchFieldSelectData,
 }: QuerySearchProps<ValidValueAction, InvalidValueAction>) {
   const {
@@ -79,12 +62,12 @@ function QuerySearch<
   );
 
   const logicalOperatorSelectInput = (
-    <AccessibleSelectInput
+    <AccessibleSelectInput<QueryAction["setSearchLogicalOperator"], string>
       attributes={{
         data: LOGICAL_OPERATORS_DATA,
         name: "filterLogicalOperator",
-        parentDispatch: querySearchDispatch,
-        validValueAction: queryAction.setSearchLogicalOperator as ValidValueAction,
+        parentDispatch,
+        validValueAction: queryAction.setSearchLogicalOperator,
         value: searchLogicalOperator,
       }}
     />
@@ -102,8 +85,8 @@ function QuerySearch<
         data,
         disabled,
         name: "searchField",
-        parentDispatch: querySearchDispatch,
-        validValueAction: queryAction.setSearchField as ValidValueAction,
+        parentDispatch,
+        validValueAction: queryAction.setSearchField,
         value: searchField,
       }}
     />
@@ -128,10 +111,10 @@ function QuerySearch<
       attributes={{
         disabled,
         name: `${splitCamelCase(searchField)} Value`,
-        invalidValueAction: queryAction.setIsError as InvalidValueAction,
+        invalidValueAction: queryAction.setIsError,
         required: false,
-        parentDispatch: querySearchDispatch,
-        validValueAction: queryAction.setSearchValue as ValidValueAction,
+        parentDispatch,
+        validValueAction: queryAction.setSearchValue,
         value: searchValue,
         stepperPages,
       }}
@@ -154,8 +137,8 @@ function QuerySearch<
             | React.MouseEvent<HTMLButtonElement, MouseEvent>
             | React.PointerEvent<HTMLButtonElement>
         ) => {
-          searchChainDispatch({
-            action: queryAction.modifyQueryChains as ValidValueAction,
+          modifyQueryChainsDispatch({
+            action: queryAction.modifyQueryChains,
             payload: {
               index: searchChainLength,
               logicalOperator: searchLogicalOperator,
@@ -180,4 +163,3 @@ function QuerySearch<
 }
 
 export { QuerySearch };
-export type { QuerySearchDispatch, SearchChainDispatch };

@@ -15,19 +15,19 @@ type QuerySortDispatch<ValidValueAction extends string = string> = React.Dispatc
 
 type QuerySortProps<ValidValueAction extends string = string> = {
   querySortDispatch: QuerySortDispatch<ValidValueAction>;
+  queryState: QueryState;
   sortChainDispatch: React.Dispatch<{
     action: QueryAction["modifyQueryChains"];
     payload: ModifyQueryChainPayload;
   }>;
   sortFieldSelectData: CheckboxRadioSelectData;
-  queryState: QueryState;
 };
 
 function QuerySort<ValidValueAction extends string = string>({
   querySortDispatch,
+  queryState,
   sortChainDispatch,
   sortFieldSelectData,
-  queryState,
 }: QuerySortProps<ValidValueAction>) {
   const { projectionExclusionFields, queryChains, sortDirection, sortField } = queryState;
   const logicalOperatorChainsMap = queryChains.sort;

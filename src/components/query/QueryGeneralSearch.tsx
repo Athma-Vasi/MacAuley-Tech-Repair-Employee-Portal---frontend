@@ -5,8 +5,7 @@ import { AccessibleSegmentedControl } from "../accessibleInputs/AccessibleSegmen
 import { AccessibleTextInput } from "../accessibleInputs/text/AccessibleTextInput";
 import { QueryAction } from "./actions";
 import { QUERY_SEARCH_CASE_DATA } from "./constants";
-import { QuerySearchDispatch } from "./QuerySearch";
-import { GeneralSearchCase } from "./types";
+import { GeneralSearchCase, QueryDispatch } from "./types";
 import { InputsValidationsMap } from "./utils";
 
 type QueryGeneralSearchProps<
@@ -17,7 +16,7 @@ type QueryGeneralSearchProps<
   generalSearchInclusionValue: string;
   generalSearchCase: GeneralSearchCase;
   queryAction: QueryAction;
-  querySearchDispatch: QuerySearchDispatch<ValidValueAction, InvalidValueAction>;
+  parentDispatch: React.Dispatch<QueryDispatch>;
   inputsValidationsMap: InputsValidationsMap;
 };
 
@@ -29,7 +28,7 @@ function QueryGeneralSearch<
   generalSearchExclusionValue,
   generalSearchInclusionValue,
   queryAction,
-  querySearchDispatch,
+  parentDispatch,
   inputsValidationsMap,
 }: QueryGeneralSearchProps<ValidValueAction, InvalidValueAction>) {
   const stepperPages: StepperPage[] = [
@@ -53,11 +52,11 @@ function QueryGeneralSearch<
   const generalSearchInclusionTextInput = (
     <AccessibleTextInput
       attributes={{
-        invalidValueAction: queryAction.setIsError as InvalidValueAction,
+        invalidValueAction: queryAction.setIsError,
         name: "inclusion",
-        parentDispatch: querySearchDispatch,
+        parentDispatch,
         stepperPages,
-        validValueAction: queryAction.setGeneralSearchInclusionValue as ValidValueAction,
+        validValueAction: queryAction.setGeneralSearchInclusionValue,
         value: generalSearchInclusionValue,
       }}
     />
@@ -66,11 +65,11 @@ function QueryGeneralSearch<
   const generalSearchExclusionTextInput = (
     <AccessibleTextInput
       attributes={{
-        invalidValueAction: queryAction.setIsError as InvalidValueAction,
+        invalidValueAction: queryAction.setIsError,
         name: "exclusion",
-        parentDispatch: querySearchDispatch,
+        parentDispatch,
         stepperPages,
-        validValueAction: queryAction.setGeneralSearchExclusionValue as ValidValueAction,
+        validValueAction: queryAction.setGeneralSearchExclusionValue,
         value: generalSearchExclusionValue,
       }}
     />
@@ -81,8 +80,8 @@ function QueryGeneralSearch<
       attributes={{
         data: QUERY_SEARCH_CASE_DATA,
         name: "case",
-        parentDispatch: querySearchDispatch,
-        validValueAction: queryAction.setGeneralSearchCase as ValidValueAction,
+        parentDispatch,
+        validValueAction: queryAction.setGeneralSearchCase,
         value: generalSearchCase,
       }}
     />

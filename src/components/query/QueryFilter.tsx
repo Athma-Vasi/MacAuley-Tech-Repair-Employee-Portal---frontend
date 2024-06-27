@@ -18,6 +18,7 @@ import { LOGICAL_OPERATORS_DATA, MAX_LINKS_AMOUNT } from "./constants";
 import {
   LogicalOperator,
   ModifyQueryChainPayload,
+  ModifyQueryChainsDispatch,
   QueryChain,
   QueryState,
 } from "./types";
@@ -60,10 +61,7 @@ type SetFilterInputValuesDispatchData<
 
 type QueryFilterProps<ValidValueAction extends string = string> = {
   fieldNamesOperatorsTypesMap: Map<string, OperatorsInputType>;
-  modifyQueryChainsDispatch: React.Dispatch<{
-    action: QueryAction["modifyQueryChains"];
-    payload: ModifyQueryChainPayload;
-  }>;
+  modifyQueryChainsDispatch: ModifyQueryChainsDispatch;
   filterFieldSelectInputData: CheckboxRadioSelectData;
   inputsValidationsMap: InputsValidationsMap;
   setFilterInputValuesDispatch: SetFilterInputValuesDispatch<ValidValueAction>;
