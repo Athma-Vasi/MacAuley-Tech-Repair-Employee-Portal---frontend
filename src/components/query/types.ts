@@ -2,7 +2,13 @@ import { CheckboxInputData, SetPageInErrorPayload, StepperPage } from "../../typ
 import { QueryAction } from "./actions";
 import { OperatorsInputType } from "./utils";
 
-type ComparisonOperator = "$eq" | "$gte" | "$gt" | "$lte" | "$lt" | "$ne";
+type ComparisonOperator =
+  | "equal to"
+  | "greater than or equal to"
+  | "greater than"
+  | "less than or equal to"
+  | "less than"
+  | "not equal to";
 
 type FilterInputsType = "boolean" | "date" | "number" | "select" | "time";
 
@@ -18,7 +24,7 @@ type GeneralSearchCase = "case-sensitive" | "case-insensitive";
 
 type GeneralSearchKind = "inclusion" | "exclusion";
 
-type LogicalOperator = "$and" | "$nor" | "$not" | "$or";
+type LogicalOperator = "and" | "nor" | "or";
 
 type QueryChain = Array<QueryLink>;
 

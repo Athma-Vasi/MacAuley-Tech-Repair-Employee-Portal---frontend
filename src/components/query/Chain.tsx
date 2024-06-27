@@ -1,6 +1,6 @@
 import { Group, Stack, Text, Timeline } from "@mantine/core";
 import React from "react";
-import { TbLink } from "react-icons/tb";
+import { TbLink, TbLogicAnd, TbLogicNor, TbLogicOr } from "react-icons/tb";
 
 import { addCommaSeparator, capitalizeJoinWithAnd, splitCamelCase } from "../../utils";
 import { AccessibleButton } from "../accessibleInputs/AccessibleButton";
@@ -12,6 +12,7 @@ import {
   QueryChainKind,
   QueryChains,
 } from "./types";
+import { link } from "fs";
 
 type QueryChainDispatch = React.Dispatch<
   | {
@@ -200,14 +201,27 @@ function Chain({
                 </Group>
               );
 
+              const timelineBullet =
+                logicalOperator === "and" ? (
+                  <TbLogicAnd />
+                ) : logicalOperator === "nor" ? (
+                  <TbLogicNor />
+                ) : (
+                  <TbLogicOr />
+                );
+
+              const timelineText = (
+                <Text>{`${queryLinkStatement} ${
+                  linkIndex === queryChain.length - 1 ? "." : logicalOperator
+                }`}</Text>
+              );
+
               return (
                 <Timeline.Item
-                  key={`chain-${chainsIndex}-link-${linkIndex}`}
-                  bullet={<TbLink />}
+                  key={`chain-${chainsIndex}-map-${mapIndex}-link-${linkIndex}`}
+                  bullet={timelineBullet}
                 >
-                  <Text>{`${queryLinkStatement} ${
-                    linkIndex === queryChain.length - 1 ? "." : "and"
-                  }`}</Text>
+                  {timelineText}
                   {buttons}
                 </Timeline.Item>
               );

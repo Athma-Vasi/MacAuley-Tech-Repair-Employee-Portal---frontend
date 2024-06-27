@@ -26,6 +26,7 @@ const queryReducers = new Map<
   [queryAction.modifyQueryChains, queryReducer_modifyQueryChains],
   [queryAction.setFilterField, queryReducer_setFilterField],
   [queryAction.setFilterComparisonOperator, queryReducer_setFilterComparisonOperator],
+  [queryAction.setFilterLogicalOperator, queryReducer_setFilterLogicalOperator],
   [
     queryAction.setFilterComparisonOperatorSelectData,
     queryReducer_setFilterComparisonOperatorSelectData,
@@ -50,10 +51,62 @@ const queryReducers = new Map<
   [queryAction.setIsSortOpened, queryReducer_setIsSortOpened],
   [queryAction.setProjectionExclusionFields, queryReducer_setProjectionExclusionFields],
   [queryAction.setSearchField, queryReducer_setSearchField],
+  [queryAction.setSearchLogicalOperator, queryReducer_setSearchLogicalOperator],
   [queryAction.setSearchValue, queryReducer_setSearchValue],
   [queryAction.setSortDirection, queryReducer_setSortDirection],
   [queryAction.setSortField, queryReducer_setSortField],
 ]);
+
+function queryReducer_modifyQueryChains(
+  state: QueryState,
+  dispatch: QueryDispatch
+): QueryState {
+  const { index, logicalOperator, queryChainActions, queryLink, queryChainKind } =
+    dispatch.payload as ModifyQueryChainPayload;
+  const [field, comparisonOperator, value] = queryLink;
+
+  switch (queryChainKind) {
+    case "filter": {
+      return modifyFilterChain({
+        comparisonOperator,
+        field,
+        index,
+        logicalOperator,
+        queryChainActions,
+        queryLink,
+        state,
+        value,
+      });
+    }
+
+    case "search": {
+      return modifySearchChain({
+        field,
+        index,
+        logicalOperator,
+        queryChainActions,
+        queryLink,
+        state,
+        value,
+      });
+    }
+
+    case "sort": {
+      return modifySortChain({
+        field,
+        index,
+        logicalOperator,
+        queryChainActions,
+        queryLink,
+        state,
+        value,
+      });
+    }
+
+    default:
+      return state;
+  }
+}
 
 type ModifyFilterChainInput = {
   comparisonOperator: string;
@@ -80,11 +133,7 @@ function modifyFilterChain({
     state.filterFieldsOperatorsValuesSetsMap
   );
   const logicalOperatorChainsMap = structuredClone(state.queryChains.filter);
-  const filterChain = logicalOperatorChainsMap.get(logicalOperator);
-
-  if (filterChain === undefined) {
-    return state;
-  }
+  const filterChain = logicalOperatorChainsMap.get(logicalOperator) ?? [];
 
   switch (queryChainActions) {
     case "delete": {
@@ -131,6 +180,7 @@ function modifyFilterChain({
           comparisonOperatorsSet: new Set([comparisonOperator]),
           valuesSet: new Set([value]),
         });
+        logicalOperatorChainsMap.set(logicalOperator, filterChain);
 
         console.log("field is unique");
         console.log("filterChain", filterChain);
@@ -270,11 +320,7 @@ function modifySearchChain({
     state.searchFieldsOperatorsValuesSetMap
   );
   const logicalOperatorChainsMap = structuredClone(state.queryChains.search);
-  const searchChain = logicalOperatorChainsMap.get(logicalOperator);
-
-  if (searchChain === undefined) {
-    return state;
-  }
+  const searchChain = logicalOperatorChainsMap.get(logicalOperator) ?? [];
 
   switch (queryChainActions) {
     case "delete": {
@@ -411,11 +457,7 @@ function modifySortChain({
 }: ModifySortChainInput): QueryState {
   const sortFieldsSet = structuredClone(state.sortFieldsSet);
   const logicalOperatorChainsMap = structuredClone(state.queryChains.sort);
-  const queryChain = logicalOperatorChainsMap.get(logicalOperator);
-
-  if (queryChain === undefined) {
-    return state;
-  }
+  const queryChain = logicalOperatorChainsMap.get(logicalOperator) ?? [];
 
   switch (queryChainActions) {
     case "delete": {
@@ -502,57 +544,6 @@ function modifySortChain({
   }
 }
 
-function queryReducer_modifyQueryChains(
-  state: QueryState,
-  dispatch: QueryDispatch
-): QueryState {
-  const { index, logicalOperator, queryChainActions, queryLink, queryChainKind } =
-    dispatch.payload as ModifyQueryChainPayload;
-  const [field, comparisonOperator, value] = queryLink;
-
-  switch (queryChainKind) {
-    case "filter": {
-      return modifyFilterChain({
-        comparisonOperator,
-        field,
-        index,
-        logicalOperator,
-        queryChainActions,
-        queryLink,
-        state,
-        value,
-      });
-    }
-
-    case "search": {
-      return modifySearchChain({
-        field,
-        index,
-        logicalOperator,
-        queryChainActions,
-        queryLink,
-        state,
-        value,
-      });
-    }
-
-    case "sort": {
-      return modifySortChain({
-        field,
-        index,
-        logicalOperator,
-        queryChainActions,
-        queryLink,
-        state,
-        value,
-      });
-    }
-
-    default:
-      return state;
-  }
-}
-
 function queryReducer_setFilterField(
   state: QueryState,
   dispatch: QueryDispatch
@@ -598,6 +589,13 @@ function queryReducer_setFilterComparisonOperator(
 ): QueryState {
   const { value } = dispatch.payload as QueryFilterPayload;
   return { ...state, filterComparisonOperator: value };
+}
+
+function queryReducer_setFilterLogicalOperator(
+  state: QueryState,
+  dispatch: QueryDispatch
+): QueryState {
+  return { ...state, filterLogicalOperator: dispatch.payload as string };
 }
 
 function queryReducer_setFilterComparisonOperatorSelectData(
@@ -702,6 +700,13 @@ function queryReducer_setSearchField(
   dispatch: QueryDispatch
 ): QueryState {
   return { ...state, searchField: dispatch.payload as string };
+}
+
+function queryReducer_setSearchLogicalOperator(
+  state: QueryState,
+  dispatch: QueryDispatch
+): QueryState {
+  return { ...state, searchLogicalOperator: dispatch.payload as string };
 }
 
 function queryReducer_setSearchValue(

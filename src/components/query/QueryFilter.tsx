@@ -20,6 +20,7 @@ import {
   ModifyQueryChainPayload,
   ModifyQueryChainsDispatch,
   QueryChain,
+  QueryDispatch,
   QueryState,
 } from "./types";
 import {
@@ -61,22 +62,24 @@ type SetFilterInputValuesDispatchData<
 
 type QueryFilterProps<ValidValueAction extends string = string> = {
   fieldNamesOperatorsTypesMap: Map<string, OperatorsInputType>;
-  modifyQueryChainsDispatch: ModifyQueryChainsDispatch;
   filterFieldSelectInputData: CheckboxRadioSelectData;
   inputsValidationsMap: InputsValidationsMap;
-  setFilterInputValuesDispatch: SetFilterInputValuesDispatch<ValidValueAction>;
-  selectInputsDataMap: Map<string, CheckboxRadioSelectData>;
+  modifyQueryChainsDispatch: ModifyQueryChainsDispatch;
+  parentDispatch: React.Dispatch<QueryDispatch>;
   queryState: QueryState;
+  selectInputsDataMap: Map<string, CheckboxRadioSelectData>;
+  setFilterInputValuesDispatch: SetFilterInputValuesDispatch<ValidValueAction>;
 };
 
 function QueryFilter<ValidValueAction extends string = string>({
   fieldNamesOperatorsTypesMap,
-  modifyQueryChainsDispatch,
   filterFieldSelectInputData,
   inputsValidationsMap,
-  setFilterInputValuesDispatch,
-  selectInputsDataMap,
+  modifyQueryChainsDispatch,
+  parentDispatch,
   queryState,
+  selectInputsDataMap,
+  setFilterInputValuesDispatch,
 }: QueryFilterProps<ValidValueAction>) {
   const {
     filterField,
@@ -101,12 +104,8 @@ function QueryFilter<ValidValueAction extends string = string>({
       attributes={{
         data: LOGICAL_OPERATORS_DATA,
         name: "filterLogicalOperator",
-        setFilterInputValuesDispatchData: {
-          fieldNamesOperatorsTypesMap,
-          setFilterInputValuesDispatch,
-          selectInputsDataMap,
-        },
-        validValueAction: queryAction.setFilterLogicalOperator as ValidValueAction,
+        parentDispatch,
+        validValueAction: queryAction.setFilterLogicalOperator,
         value: filterLogicalOperator,
       }}
     />

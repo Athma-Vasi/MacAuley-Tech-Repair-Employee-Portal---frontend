@@ -93,6 +93,7 @@ function Query({
       filterFieldSelectInputData={filterFieldSelectInputData}
       inputsValidationsMap={inputsValidationsMap}
       modifyQueryChainsDispatch={queryDispatch}
+      parentDispatch={queryDispatch}
       queryState={queryState}
       selectInputsDataMap={selectInputsDataMap}
       setFilterInputValuesDispatch={queryDispatch as SetFilterInputValuesDispatch}

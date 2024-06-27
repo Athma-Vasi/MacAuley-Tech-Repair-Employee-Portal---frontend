@@ -1,38 +1,37 @@
 import { CheckboxRadioSelectData } from "../../types";
 import {
   ComparisonOperator,
-  LogicalOperator,
   GeneralSearchCase,
+  LogicalOperator,
   SortDirection,
 } from "./types";
 
 const MAX_LINKS_AMOUNT = 11;
 
 const COMPARISON_OPERATORS_DATA: CheckboxRadioSelectData<ComparisonOperator> = [
-  { label: "equal to", value: "$eq" },
-  { label: "not equal to", value: "$ne" },
-  { label: "greater than", value: "$gt" },
-  { label: "greater than or equal to", value: "$gte" },
-  { label: "less than", value: "$lt" },
-  { label: "less than or equal to", value: "$lte" },
-  //   { label: "contains", value: "contains" },
-  //   { label: "does not contain", value: "does not contain" },
-  //   { label: "starts with", value: "starts with" },
-  //   { label: "ends with", value: "ends with" },
-  //   { label: "is empty", value: "is empty" },
-  //   { label: "is not empty", value: "is not empty" },
+  { label: "equal to", value: "equal to" },
+  { label: "not equal to", value: "not equal to" },
+  { label: "greater than", value: "greater than" },
+  { label: "greater than or equal to", value: "greater than or equal to" },
+  { label: "less than", value: "less than" },
+  { label: "less than or equal to", value: "less than or equal to" },
+  // { label: "contains", value: "contains" },
+  // { label: "does not contain", value: "does not contain" },
+  // { label: "starts with", value: "starts with" },
+  // { label: "ends with", value: "ends with" },
+  // { label: "is empty", value: "is empty" },
+  // { label: "is not empty", value: "is not empty" },
 ];
 
-const IN_OPERATOR_DATA: CheckboxRadioSelectData = [{ label: "In", value: "$in" }];
+const IN_OPERATOR_DATA: CheckboxRadioSelectData = [{ label: "in", value: "in" }];
 const BOOLEAN_OPERATOR_DATA: CheckboxRadioSelectData = [
-  { label: "Equal to", value: "$eq" },
+  { label: "equal to", value: "eq" },
 ];
 
 const LOGICAL_OPERATORS_DATA: CheckboxRadioSelectData<LogicalOperator> = [
-  { label: "And", value: "$and" },
-  { label: "Nor", value: "$nor" },
-  { label: "Not", value: "$not" },
-  { label: "Or", value: "$or" },
+  { label: "and", value: "and" },
+  { label: "nor", value: "nor" },
+  { label: "or", value: "or" },
 ];
 
 const SORT_DIRECTION_DATA: CheckboxRadioSelectData<SortDirection> = [
