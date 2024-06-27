@@ -12,7 +12,7 @@ import {
   ValidationFunctionsTable,
 } from "../../types";
 import { returnThemeColors, splitCamelCase } from "../../utils";
-import { QueryFilterDispatchData } from "../query/QueryFilter";
+import { SetFilterInputValuesDispatchData } from "../query/QueryFilter";
 import {
   createAccessibleValueValidationTextElements,
   returnFullValidation,
@@ -53,7 +53,10 @@ type AccessibleDateTimeInputAttributes<
       }
   >;
   placeholder?: string;
-  queryFilterDispatchData?: QueryFilterDispatchData<ValidValueAction, InvalidValueAction>;
+  setFilterInputValuesDispatchData?: SetFilterInputValuesDispatchData<
+    ValidValueAction,
+    InvalidValueAction
+  >;
   ref?: RefObject<HTMLInputElement>;
   required?: boolean;
   size?: MantineSize;
@@ -95,7 +98,7 @@ function AccessibleDateTimeInput<
     page = 0,
     parentDispatch,
     placeholder = "",
-    queryFilterDispatchData,
+    setFilterInputValuesDispatchData,
     ref = null,
     required = false,
     size = "sm",
@@ -237,14 +240,14 @@ function AccessibleDateTimeInput<
                 payload: valueBuffer,
               });
 
-              if (queryFilterDispatchData) {
+              if (setFilterInputValuesDispatchData) {
                 const {
                   fieldNamesOperatorsTypesMap,
-                  queryFilterDispatch,
+                  setFilterInputValuesDispatch,
                   selectInputsDataMap,
-                } = queryFilterDispatchData;
+                } = setFilterInputValuesDispatchData;
 
-                queryFilterDispatch({
+                setFilterInputValuesDispatch({
                   action: validValueAction,
                   payload: {
                     fieldNamesOperatorsTypesMap,
@@ -253,7 +256,7 @@ function AccessibleDateTimeInput<
                   },
                 });
 
-                queryFilterDispatch({
+                setFilterInputValuesDispatch({
                   action: invalidValueAction,
                   payload: {
                     kind: isValueBufferValid ? "delete" : "add",

@@ -3,7 +3,7 @@ import { queryReducer } from "./reducers";
 import { createInitialQueryState } from "./state";
 import { QueryChainKind, QueryProps } from "./types";
 import { createQueryInputsData } from "./utils";
-import { QueryFilter, QueryFilterDispatch } from "./QueryFilter";
+import { QueryFilter, SetFilterInputValuesDispatch } from "./QueryFilter";
 import { QueryAction, queryAction } from "./actions";
 import { Accordion, Stack, Text, Timeline } from "@mantine/core";
 import { QuerySearch, QuerySearchDispatch, SearchChainDispatch } from "./QuerySearch";
@@ -33,13 +33,14 @@ function Query({
 
   const [queryState, queryDispatch] = React.useReducer(
     queryReducer,
-    createInitialQueryState(projectionCheckboxData, searchFieldSelectData)
+    createInitialQueryState(searchFieldSelectData)
   );
 
   const {
     filterField,
-    filterOperator,
-    filterOperatorSelectData,
+    filterComparisonOperator,
+    filterComparisonOperatorSelectData,
+    filterLogicalOperator,
     filterValue,
     generalSearchCase,
     generalSearchExclusionValue,
@@ -90,18 +91,12 @@ function Query({
   const queryFilter = (
     <QueryFilter
       fieldNamesOperatorsTypesMap={fieldNamesOperatorsTypesMap}
-      filterChain={queryChains.filter}
-      filterChainDispatch={queryDispatch}
-      filterField={filterField}
       filterFieldSelectInputData={filterFieldSelectInputData}
-      filterOperator={filterOperator}
-      filterValue={filterValue}
       inputsValidationsMap={inputsValidationsMap}
-      isError={isError}
-      projectionExclusionFields={projectionExclusionFields}
-      queryAction={queryAction}
-      queryFilterDispatch={queryDispatch as QueryFilterDispatch}
+      modifyQueryChainsDispatch={queryDispatch}
+      queryState={queryState}
       selectInputsDataMap={selectInputsDataMap}
+      setFilterInputValuesDispatch={queryDispatch as SetFilterInputValuesDispatch}
     />
   );
 
@@ -127,27 +122,19 @@ function Query({
 
   const querySearch = (
     <QuerySearch
-      projectionExclusionFields={projectionExclusionFields}
-      queryAction={queryAction}
-      querySearchDispatch={queryDispatch as QuerySearchDispatch}
-      searchChain={queryChains.search}
-      searchChainDispatch={queryDispatch as SearchChainDispatch}
-      searchField={searchField}
-      searchFieldSelectData={searchFieldSelectData}
-      searchValue={searchValue}
       inputsValidationsMap={inputsValidationsMap}
+      querySearchDispatch={queryDispatch as QuerySearchDispatch}
+      queryState={queryState}
+      searchChainDispatch={queryDispatch as SearchChainDispatch}
+      searchFieldSelectData={searchFieldSelectData}
     />
   );
 
   const querySort = (
     <QuerySort
-      projectionExclusionFields={projectionExclusionFields}
-      queryAction={queryAction}
       querySortDispatch={queryDispatch as QuerySortDispatch}
-      sortChain={queryChains.sort}
+      queryState={queryState}
       sortChainDispatch={queryDispatch}
-      sortDirection={sortDirection}
-      sortField={sortField}
       sortFieldSelectData={sortFieldSelectData}
     />
   );
@@ -159,8 +146,8 @@ function Query({
         <Accordion.Panel>{queryFilter}</Accordion.Panel>
       </Accordion.Item>
 
-      <Accordion.Item value="Project">
-        <Accordion.Control>Project</Accordion.Control>
+      <Accordion.Item value="Projection">
+        <Accordion.Control>Projection</Accordion.Control>
         <Accordion.Panel>{queryProjection}</Accordion.Panel>
       </Accordion.Item>
 

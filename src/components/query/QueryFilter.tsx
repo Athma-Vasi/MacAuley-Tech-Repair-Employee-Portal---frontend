@@ -14,15 +14,21 @@ import { AccessibleDateTimeInput } from "../accessibleInputs/AccessibleDateTimeI
 import { AccessibleSelectInput } from "../accessibleInputs/AccessibleSelectInput";
 import { AccessibleTextInput } from "../accessibleInputs/text/AccessibleTextInput";
 import { QueryAction, queryAction } from "./actions";
-import { MAX_LINKS_AMOUNT } from "./constants";
-import { ModifyQueryChainPayload, QueryChain } from "./types";
+import { LOGICAL_OPERATORS_DATA, MAX_LINKS_AMOUNT } from "./constants";
+import {
+  LogicalOperator,
+  ModifyQueryChainPayload,
+  QueryChain,
+  QueryState,
+} from "./types";
 import {
   InputsValidationsMap,
   OperatorsInputType,
   removeProjectionExclusionFields,
 } from "./utils";
+import { AccessibleSegmentedControl } from "../accessibleInputs/AccessibleSegmentedControl";
 
-type QueryFilterDispatch<
+type SetFilterInputValuesDispatch<
   ValidValueAction extends string = string,
   InvalidValueAction extends string = string
 > = React.Dispatch<
@@ -40,49 +46,74 @@ type QueryFilterDispatch<
     }
 >;
 
-type QueryFilterDispatchData<
+type SetFilterInputValuesDispatchData<
   ValidValueAction extends string = string,
   InvalidValueAction extends string = string
 > = {
   fieldNamesOperatorsTypesMap: Map<string, OperatorsInputType>;
-  queryFilterDispatch: QueryFilterDispatch<ValidValueAction, InvalidValueAction>;
+  setFilterInputValuesDispatch: SetFilterInputValuesDispatch<
+    ValidValueAction,
+    InvalidValueAction
+  >;
   selectInputsDataMap: Map<string, CheckboxRadioSelectData>;
 };
 
 type QueryFilterProps<ValidValueAction extends string = string> = {
   fieldNamesOperatorsTypesMap: Map<string, OperatorsInputType>;
-  filterChain: QueryChain;
-  filterField: string;
-  filterOperator: string;
-  filterFieldSelectInputData: CheckboxRadioSelectData;
-  filterChainDispatch: React.Dispatch<{
+  modifyQueryChainsDispatch: React.Dispatch<{
     action: QueryAction["modifyQueryChains"];
     payload: ModifyQueryChainPayload;
   }>;
-  filterValue: string;
+  filterFieldSelectInputData: CheckboxRadioSelectData;
   inputsValidationsMap: InputsValidationsMap;
-  isError: boolean;
-  projectionExclusionFields: string[];
-  queryAction: QueryAction;
-  queryFilterDispatch: QueryFilterDispatch<ValidValueAction>;
+  setFilterInputValuesDispatch: SetFilterInputValuesDispatch<ValidValueAction>;
   selectInputsDataMap: Map<string, CheckboxRadioSelectData>;
+  queryState: QueryState;
 };
 
 function QueryFilter<ValidValueAction extends string = string>({
   fieldNamesOperatorsTypesMap,
-  filterChain,
-  filterChainDispatch,
-  filterField,
+  modifyQueryChainsDispatch,
   filterFieldSelectInputData,
-  filterOperator,
-  filterValue,
   inputsValidationsMap,
-  isError,
-  projectionExclusionFields,
-  queryAction,
-  queryFilterDispatch,
+  setFilterInputValuesDispatch,
   selectInputsDataMap,
+  queryState,
 }: QueryFilterProps<ValidValueAction>) {
+  const {
+    filterField,
+    filterComparisonOperator,
+    filterLogicalOperator,
+    filterValue,
+    isError,
+    projectionExclusionFields,
+    queryChains,
+  } = queryState;
+  const logicalOperatorChainsMap = queryChains.filter;
+  const chainLength = Array.from(logicalOperatorChainsMap).reduce(
+    (acc, [_key, value]) => {
+      acc += value.length;
+      return acc;
+    },
+    0
+  );
+
+  const logicalOperatorSelectInput = (
+    <AccessibleSelectInput
+      attributes={{
+        data: LOGICAL_OPERATORS_DATA,
+        name: "filterLogicalOperator",
+        setFilterInputValuesDispatchData: {
+          fieldNamesOperatorsTypesMap,
+          setFilterInputValuesDispatch,
+          selectInputsDataMap,
+        },
+        validValueAction: queryAction.setFilterLogicalOperator as ValidValueAction,
+        value: filterLogicalOperator,
+      }}
+    />
+  );
+
   const data = removeProjectionExclusionFields(
     projectionExclusionFields,
     filterFieldSelectInputData
@@ -95,9 +126,9 @@ function QueryFilter<ValidValueAction extends string = string>({
         data,
         disabled,
         name: "filterField",
-        queryFilterDispatchData: {
+        setFilterInputValuesDispatchData: {
           fieldNamesOperatorsTypesMap,
-          queryFilterDispatch,
+          setFilterInputValuesDispatch,
           selectInputsDataMap,
         },
         validValueAction: queryAction.setFilterField as ValidValueAction,
@@ -106,19 +137,19 @@ function QueryFilter<ValidValueAction extends string = string>({
     />
   );
 
-  const filterOperatorSelectInput = (
+  const filterComparisonOperatorSelectInput = (
     <AccessibleSelectInput
       attributes={{
         data: fieldNamesOperatorsTypesMap.get(filterField)?.operators ?? [],
         disabled,
-        name: "filterOperator",
-        queryFilterDispatchData: {
+        name: "filterComparisonOperator",
+        setFilterInputValuesDispatchData: {
           fieldNamesOperatorsTypesMap,
-          queryFilterDispatch,
+          setFilterInputValuesDispatch,
           selectInputsDataMap,
         },
-        validValueAction: queryAction.setFilterOperator as ValidValueAction,
-        value: filterOperator,
+        validValueAction: queryAction.setFilterComparisonOperator as ValidValueAction,
+        value: filterComparisonOperator,
       }}
     />
   );
@@ -128,7 +159,7 @@ function QueryFilter<ValidValueAction extends string = string>({
     fieldNamesOperatorsTypesMap,
     filterField,
     filterValue,
-    queryFilterDispatch,
+    setFilterInputValuesDispatch,
     selectInputsDataMap,
     inputsValidationsMap,
   });
@@ -138,29 +169,27 @@ function QueryFilter<ValidValueAction extends string = string>({
       attributes={{
         enabledScreenreaderText: "Add filter link to chain",
         disabledScreenreaderText:
-          filterChain.length === MAX_LINKS_AMOUNT
+          chainLength === MAX_LINKS_AMOUNT
             ? "Max query links amount reached"
             : isError
             ? "Value cannot be invalid"
             : "Value cannot be empty",
         disabled:
-          disabled ||
-          isError ||
-          filterChain.length === MAX_LINKS_AMOUNT ||
-          filterValue === "",
+          disabled || isError || chainLength === MAX_LINKS_AMOUNT || filterValue === "",
         kind: "add",
         onClick: (
           _event:
             | React.MouseEvent<HTMLButtonElement, MouseEvent>
             | React.PointerEvent<HTMLButtonElement>
         ) => {
-          filterChainDispatch({
+          modifyQueryChainsDispatch({
             action: queryAction.modifyQueryChains,
             payload: {
-              index: filterChain.length,
+              index: chainLength,
+              logicalOperator: filterLogicalOperator,
               queryChainActions: "insert",
               queryChainKind: "filter",
-              value: [filterField, filterOperator, filterValue],
+              queryLink: [filterField, filterComparisonOperator, filterValue],
             },
           });
         },
@@ -170,8 +199,9 @@ function QueryFilter<ValidValueAction extends string = string>({
 
   return (
     <Stack>
+      {logicalOperatorSelectInput}
       {fieldSelectInput}
-      {filterOperatorSelectInput}
+      {filterComparisonOperatorSelectInput}
       {dynamicValueInput}
       {addFilterLinkButton}
     </Stack>
@@ -183,7 +213,7 @@ function createDynamicValueInput<ValidValueAction extends string = string>({
   fieldNamesOperatorsTypesMap,
   filterField,
   filterValue,
-  queryFilterDispatch,
+  setFilterInputValuesDispatch,
   selectInputsDataMap,
   inputsValidationsMap,
 }: {
@@ -191,7 +221,7 @@ function createDynamicValueInput<ValidValueAction extends string = string>({
   fieldNamesOperatorsTypesMap: Map<string, OperatorsInputType>;
   filterField: string;
   filterValue: string;
-  queryFilterDispatch: QueryFilterDispatch<ValidValueAction>;
+  setFilterInputValuesDispatch: SetFilterInputValuesDispatch<ValidValueAction>;
   selectInputsDataMap: Map<string, CheckboxRadioSelectData>;
   inputsValidationsMap: InputsValidationsMap;
 }) {
@@ -213,9 +243,9 @@ function createDynamicValueInput<ValidValueAction extends string = string>({
           ],
           disabled,
           name,
-          queryFilterDispatchData: {
+          setFilterInputValuesDispatchData: {
             fieldNamesOperatorsTypesMap,
-            queryFilterDispatch,
+            setFilterInputValuesDispatch,
             selectInputsDataMap,
           },
           validValueAction: queryAction.setFilterValue as ValidValueAction,
@@ -232,9 +262,9 @@ function createDynamicValueInput<ValidValueAction extends string = string>({
           data: selectInputsDataMap.get(filterField) ?? [],
           disabled,
           name,
-          queryFilterDispatchData: {
+          setFilterInputValuesDispatchData: {
             fieldNamesOperatorsTypesMap,
-            queryFilterDispatch,
+            setFilterInputValuesDispatch,
             selectInputsDataMap,
           },
           validValueAction: queryAction.setFilterValue as ValidValueAction,
@@ -278,9 +308,9 @@ function createDynamicValueInput<ValidValueAction extends string = string>({
             inputKind: "date",
             invalidValueAction: queryAction.setIsError,
             name,
-            queryFilterDispatchData: {
+            setFilterInputValuesDispatchData: {
               fieldNamesOperatorsTypesMap,
-              queryFilterDispatch,
+              setFilterInputValuesDispatch,
               selectInputsDataMap,
             },
             stepperPages,
@@ -315,9 +345,9 @@ function createDynamicValueInput<ValidValueAction extends string = string>({
             inputKind: "time",
             invalidValueAction: queryAction.setIsError,
             name,
-            queryFilterDispatchData: {
+            setFilterInputValuesDispatchData: {
               fieldNamesOperatorsTypesMap,
-              queryFilterDispatch,
+              setFilterInputValuesDispatch,
               selectInputsDataMap,
             },
             stepperPages,
@@ -335,4 +365,4 @@ function createDynamicValueInput<ValidValueAction extends string = string>({
 }
 
 export { QueryFilter };
-export type { QueryFilterDispatch, QueryFilterDispatchData };
+export type { SetFilterInputValuesDispatch, SetFilterInputValuesDispatchData };

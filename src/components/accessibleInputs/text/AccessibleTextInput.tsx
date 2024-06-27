@@ -28,7 +28,7 @@ import {
   ValidationFunctionsTable,
 } from "../../../types";
 import { returnThemeColors, splitCamelCase } from "../../../utils";
-import { QueryFilterDispatchData } from "../../query/QueryFilter";
+import { SetFilterInputValuesDispatchData } from "../../query/QueryFilter";
 import {
   createAccessibleValueValidationTextElements,
   returnFullValidation,
@@ -79,7 +79,7 @@ type AccessibleTextInputAttributes<
         payload: SetPageInErrorPayload;
       }
   >;
-  queryFilterDispatchData?: QueryFilterDispatchData<ValidValueAction, InvalidValueAction>;
+  setFilterInputValuesDispatchData?: SetFilterInputValuesDispatchData<ValidValueAction, InvalidValueAction>;
   /** stepper page location of input. default 0 = first page = step 0 */
   page?: number;
   placeholder?: string;
@@ -126,7 +126,7 @@ function AccessibleTextInput<
     parentDispatch,
     parentDynamicDispatch,
     placeholder = "",
-    queryFilterDispatchData,
+    setFilterInputValuesDispatchData,
     ref = null,
     required = false,
     rightSection = false,
@@ -255,14 +255,14 @@ function AccessibleTextInput<
                 }
 
                 // dispatch for query filter
-                if (queryFilterDispatchData) {
+                if (setFilterInputValuesDispatchData) {
                   const {
                     fieldNamesOperatorsTypesMap,
-                    queryFilterDispatch,
+                    setFilterInputValuesDispatch,
                     selectInputsDataMap,
-                  } = queryFilterDispatchData;
+                  } = setFilterInputValuesDispatchData;
 
-                  queryFilterDispatch({
+                  setFilterInputValuesDispatch({
                     action: validValueAction,
                     payload: {
                       fieldNamesOperatorsTypesMap,
@@ -271,7 +271,7 @@ function AccessibleTextInput<
                     },
                   });
 
-                  queryFilterDispatch({
+                  setFilterInputValuesDispatch({
                     action: invalidValueAction,
                     payload: {
                       kind: isValueBufferValid ? "delete" : "add",
@@ -295,7 +295,6 @@ function AccessibleTextInput<
               }
 
               onBlur?.();
-
               closePopover();
             }}
             onChange={(event: ChangeEvent<HTMLInputElement>) => {

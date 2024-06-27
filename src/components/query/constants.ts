@@ -1,14 +1,14 @@
 import { CheckboxRadioSelectData } from "../../types";
 import {
-  ComparisonOperators,
-  LogicalOperators,
+  ComparisonOperator,
+  LogicalOperator,
   GeneralSearchCase,
   SortDirection,
 } from "./types";
 
 const MAX_LINKS_AMOUNT = 11;
 
-const COMPARISON_OPERATORS_DATA: CheckboxRadioSelectData<ComparisonOperators> = [
+const COMPARISON_OPERATORS_DATA: CheckboxRadioSelectData<ComparisonOperator> = [
   { label: "equal to", value: "$eq" },
   { label: "not equal to", value: "$ne" },
   { label: "greater than", value: "$gt" },
@@ -28,7 +28,7 @@ const BOOLEAN_OPERATOR_DATA: CheckboxRadioSelectData = [
   { label: "Equal to", value: "$eq" },
 ];
 
-const LOGICAL_OPERATORS_DATA: CheckboxRadioSelectData<LogicalOperators> = [
+const LOGICAL_OPERATORS_DATA: CheckboxRadioSelectData<LogicalOperator> = [
   { label: "And", value: "$and" },
   { label: "Nor", value: "$nor" },
   { label: "Not", value: "$not" },

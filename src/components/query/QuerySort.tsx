@@ -3,9 +3,9 @@ import { Stack } from "@mantine/core";
 import { CheckboxRadioSelectData } from "../../types";
 import { AccessibleButton } from "../accessibleInputs/AccessibleButton";
 import { AccessibleSelectInput } from "../accessibleInputs/AccessibleSelectInput";
-import { QueryAction } from "./actions";
+import { QueryAction, queryAction } from "./actions";
 import { MAX_LINKS_AMOUNT, SORT_DIRECTION_DATA } from "./constants";
-import { ModifyQueryChainPayload, QueryChain, SortDirection } from "./types";
+import { ModifyQueryChainPayload, QueryChain, QueryState, SortDirection } from "./types";
 import { removeProjectionExclusionFields } from "./utils";
 
 type QuerySortDispatch<ValidValueAction extends string = string> = React.Dispatch<{
@@ -14,29 +14,31 @@ type QuerySortDispatch<ValidValueAction extends string = string> = React.Dispatc
 }>;
 
 type QuerySortProps<ValidValueAction extends string = string> = {
-  projectionExclusionFields: string[];
-  queryAction: QueryAction;
   querySortDispatch: QuerySortDispatch<ValidValueAction>;
-  sortChain: QueryChain;
   sortChainDispatch: React.Dispatch<{
     action: QueryAction["modifyQueryChains"];
     payload: ModifyQueryChainPayload;
   }>;
-  sortDirection: SortDirection;
-  sortField: string;
   sortFieldSelectData: CheckboxRadioSelectData;
+  queryState: QueryState;
 };
 
 function QuerySort<ValidValueAction extends string = string>({
-  projectionExclusionFields,
-  queryAction,
   querySortDispatch,
-  sortChain,
   sortChainDispatch,
-  sortDirection,
-  sortField,
   sortFieldSelectData,
+  queryState,
 }: QuerySortProps<ValidValueAction>) {
+  const { projectionExclusionFields, queryChains, sortDirection, sortField } = queryState;
+  const logicalOperatorChainsMap = queryChains.sort;
+  const sortChainLength = Array.from(logicalOperatorChainsMap).reduce(
+    (acc, [_key, value]) => {
+      acc += value.length;
+      return acc;
+    },
+    0
+  );
+
   const data = removeProjectionExclusionFields(
     projectionExclusionFields,
     sortFieldSelectData
@@ -74,7 +76,7 @@ function QuerySort<ValidValueAction extends string = string>({
       attributes={{
         enabledScreenreaderText: "Add search link to chain",
         disabledScreenreaderText: "Max query links amount reached",
-        disabled: disabled || sortChain.length === MAX_LINKS_AMOUNT,
+        disabled: disabled || sortChainLength === MAX_LINKS_AMOUNT,
         kind: "add",
         onClick: (
           _event:
@@ -84,10 +86,11 @@ function QuerySort<ValidValueAction extends string = string>({
           sortChainDispatch({
             action: queryAction.modifyQueryChains,
             payload: {
-              index: sortChain.length,
+              index: sortChainLength,
+              logicalOperator: "and",
               queryChainActions: "insert",
               queryChainKind: "sort",
-              value: [sortField, "", sortDirection],
+              queryLink: [sortField, "", sortDirection],
             },
           });
         },

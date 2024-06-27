@@ -2,16 +2,25 @@ import { Stack, Text } from "@mantine/core";
 
 import { ValidationKey } from "../../constants/validations";
 import { CheckboxRadioSelectData, SetPageInErrorPayload, StepperPage } from "../../types";
+import { splitCamelCase } from "../../utils";
 import { AccessibleButton } from "../accessibleInputs/AccessibleButton";
+import { AccessibleSegmentedControl } from "../accessibleInputs/AccessibleSegmentedControl";
 import { AccessibleSelectInput } from "../accessibleInputs/AccessibleSelectInput";
 import { AccessibleTextAreaInput } from "../accessibleInputs/AccessibleTextAreaInput";
 import { AccessibleTextInput } from "../accessibleInputs/text/AccessibleTextInput";
-import { QueryAction } from "./actions";
-import { MAX_LINKS_AMOUNT, QUERY_SEARCH_CASE_DATA } from "./constants";
-import { GeneralSearchCase, ModifyQueryChainPayload, QueryChain } from "./types";
-import { AccessibleSegmentedControl } from "../accessibleInputs/AccessibleSegmentedControl";
+import { QueryAction, queryAction } from "./actions";
+import {
+  LOGICAL_OPERATORS_DATA,
+  MAX_LINKS_AMOUNT,
+  QUERY_SEARCH_CASE_DATA,
+} from "./constants";
+import {
+  GeneralSearchCase,
+  ModifyQueryChainPayload,
+  QueryChain,
+  QueryState,
+} from "./types";
 import { InputsValidationsMap, removeProjectionExclusionFields } from "./utils";
-import { splitCamelCase } from "../../utils";
 
 type QuerySearchDispatch<
   ValidValueAction extends string = string,
@@ -36,31 +45,51 @@ type QuerySearchProps<
   ValidValueAction extends string = string,
   InvalidValueAction extends string = string
 > = {
-  projectionExclusionFields: string[];
-  queryAction: QueryAction;
-  querySearchDispatch: QuerySearchDispatch<ValidValueAction, InvalidValueAction>;
-  searchChain: QueryChain;
-  searchChainDispatch: SearchChainDispatch<ValidValueAction>;
-  searchField: string;
-  searchFieldSelectData: CheckboxRadioSelectData;
-  searchValue: string;
   inputsValidationsMap: InputsValidationsMap;
+  querySearchDispatch: QuerySearchDispatch<ValidValueAction, InvalidValueAction>;
+  queryState: QueryState;
+  searchChainDispatch: SearchChainDispatch<ValidValueAction>;
+  searchFieldSelectData: CheckboxRadioSelectData;
 };
 
 function QuerySearch<
   ValidValueAction extends string = string,
   InvalidValueAction extends string = string
 >({
-  projectionExclusionFields,
-  queryAction,
-  querySearchDispatch,
-  searchChain,
-  searchChainDispatch,
-  searchField,
-  searchFieldSelectData,
-  searchValue,
   inputsValidationsMap,
+  querySearchDispatch,
+  queryState,
+  searchChainDispatch,
+  searchFieldSelectData,
 }: QuerySearchProps<ValidValueAction, InvalidValueAction>) {
+  const {
+    projectionExclusionFields,
+    searchField,
+    searchLogicalOperator,
+    searchValue,
+    queryChains,
+  } = queryState;
+  const logicalOperatorChainsMap = queryChains.search;
+  const searchChainLength = Array.from(logicalOperatorChainsMap).reduce(
+    (acc, [_key, value]) => {
+      acc += value.length;
+      return acc;
+    },
+    0
+  );
+
+  const logicalOperatorSelectInput = (
+    <AccessibleSelectInput
+      attributes={{
+        data: LOGICAL_OPERATORS_DATA,
+        name: "filterLogicalOperator",
+        parentDispatch: querySearchDispatch,
+        validValueAction: queryAction.setSearchLogicalOperator as ValidValueAction,
+        value: searchLogicalOperator,
+      }}
+    />
+  );
+
   const data = removeProjectionExclusionFields(
     projectionExclusionFields,
     searchFieldSelectData
@@ -114,11 +143,11 @@ function QuerySearch<
       attributes={{
         enabledScreenreaderText: "Add search link to chain",
         disabledScreenreaderText:
-          searchChain.length === MAX_LINKS_AMOUNT
+          searchChainLength === MAX_LINKS_AMOUNT
             ? "Max query links amount reached"
             : "Value is empty",
         disabled:
-          disabled || searchChain.length === MAX_LINKS_AMOUNT || searchValue === "",
+          disabled || searchChainLength === MAX_LINKS_AMOUNT || searchValue === "",
         kind: "add",
         onClick: (
           _event:
@@ -128,10 +157,11 @@ function QuerySearch<
           searchChainDispatch({
             action: queryAction.modifyQueryChains as ValidValueAction,
             payload: {
-              index: searchChain.length,
+              index: searchChainLength,
+              logicalOperator: searchLogicalOperator,
               queryChainActions: "insert",
               queryChainKind: "search",
-              value: [searchField, "", searchValue],
+              queryLink: [searchField, "", searchValue],
             },
           });
         },
@@ -141,6 +171,7 @@ function QuerySearch<
 
   return (
     <Stack>
+      {logicalOperatorSelectInput}
       {fieldSelectInput}
       {valueTextAreaInput}
       {addFilterStatementsButton}

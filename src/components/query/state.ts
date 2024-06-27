@@ -1,20 +1,34 @@
 import { CheckboxRadioSelectData } from "../../types";
-import { FilterFieldsOperatorsValuesSetsMap, QueryState } from "./types";
+import {
+  FilterFieldsOperatorsValuesSetsMap,
+  QueryState,
+  SearchFieldsValuesSetMap,
+} from "./types";
 
 function createInitialQueryState(
-  projectionCheckboxData: CheckboxRadioSelectData,
   searchFieldSelectData: CheckboxRadioSelectData
 ): QueryState {
   const filterFieldsOperatorsValuesSetsMap = new Map([
-    ["createdAt", { operatorsSet: new Set(), valuesSet: new Set() }],
+    [
+      "createdAt",
+      {
+        comparisonOperatorsSet: new Set(),
+        valuesSet: new Set(),
+      },
+    ],
   ]) as FilterFieldsOperatorsValuesSetsMap;
+
+  const searchFieldsOperatorsValuesSetMap = new Map([
+    [searchFieldSelectData[0].value, new Set()],
+  ]) as SearchFieldsValuesSetMap;
 
   const initialQueryState: QueryState = {
     // date input type is guaranteed to exist (all schemas have createdAt & updatedAt)
     filterField: "createdAt",
     filterFieldsOperatorsValuesSetsMap,
-    filterOperator: "equal to",
-    filterOperatorSelectData: [],
+    filterComparisonOperator: "equal to",
+    filterComparisonOperatorSelectData: [],
+    filterLogicalOperator: "and",
     filterValue: new Date().toISOString().split("T")[0],
     generalSearchCase: "case-insensitive",
     generalSearchExclusionValue: "",
@@ -29,31 +43,16 @@ function createInitialQueryState(
     isSortOpened: false,
     limitPerPage: 10,
     projectionExclusionFields: [],
-    queryChains: { filter: [], search: [], sort: [] },
+    queryChains: { filter: new Map(), search: new Map(), sort: new Map() },
     searchField: searchFieldSelectData[0].value,
-    searchFieldsValuesSetMap: new Map([[searchFieldSelectData[0].value, new Set()]]),
+    searchFieldsOperatorsValuesSetMap,
+    searchLogicalOperator: "and",
     searchValue: "",
     sortDirection: "descending",
     sortField: "updatedAt",
     sortFieldsSet: new Set(),
   };
 
-  // function setSearchDefaults(
-  //   queryState: QueryState,
-  //   searchFieldSelectData: CheckboxRadioSelectData
-  // ): QueryState {
-  //   // all but one model has username field
-  //   const searchField =
-  //     searchFieldSelectData.find((field) => field.label === "Username")?.label ??
-  //     searchFieldSelectData[0].label;
-
-  //   return {
-  //     ...queryState,
-  //     searchField,
-  //   };
-  // }
-
-  // return setSearchDefaults(initialQueryState, searchFieldSelectData);
   return initialQueryState;
 }
 
