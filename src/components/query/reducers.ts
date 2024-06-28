@@ -363,6 +363,7 @@ function modifySearchChain({
       if (valuesSet === undefined) {
         searchChain.splice(index, 0, queryLink);
         searchFieldsOperatorsValuesSetMap.set(field, new Set([value]));
+        logicalOperatorChainsMap.set(logicalOperator, searchChain);
 
         console.log("field is unique");
         console.log("searchChain", searchChain);
@@ -463,7 +464,6 @@ function modifySortChain({
     case "delete": {
       queryChain.splice(index, 1);
       sortFieldsSet.delete(field);
-
       logicalOperatorChainsMap.set(logicalOperator, queryChain);
 
       return {
