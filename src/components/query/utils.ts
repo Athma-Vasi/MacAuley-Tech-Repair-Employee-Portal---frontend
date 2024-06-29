@@ -12,7 +12,15 @@ import {
   COMPARISON_OPERATORS_DATA,
   IN_OPERATOR_DATA,
 } from "./constants";
-import { FilterInputsType, QueryOperator, SortInputsType } from "./types";
+import {
+  ComparisonOperator,
+  FilterInputsType,
+  GeneralSearchCase,
+  LogicalOperator,
+  QueryOperator,
+  SortDirection,
+  SortInputsType,
+} from "./types";
 
 function addInputsToStepperPages(stepperPages: StepperPage[]): StepperPage[] {
   // createdAt and updatedAt are guaranteed to exist in all models and are used as initial values for filter & sort
@@ -189,5 +197,68 @@ function removeProjectionExclusionFields(
   }, []);
 }
 
-export { createQueryInputsData, removeProjectionExclusionFields };
+function createQueryStringFromFilter({
+  existingQueryString,
+  filterComparisonOperator,
+  filterField,
+  filterLogicalOperator,
+  filterValue,
+}: {
+  existingQueryString: string;
+  filterComparisonOperator: ComparisonOperator;
+  filterField: string;
+  filterLogicalOperator: LogicalOperator;
+  filterValue: string;
+}) {
+  return `${existingQueryString}${filterLogicalOperator}[${filterField}][${filterComparisonOperator}]=${filterValue}&`;
+}
+
+function createQueryStringFromProjection({
+  existingQueryString,
+  projectionExclusionFields,
+}: {
+  existingQueryString: string;
+  projectionExclusionFields: string[];
+}) {
+  return `${existingQueryString}projection=${projectionExclusionFields.join(",")}`;
+}
+
+function createQueryStringFromSearch({
+  existingQueryString,
+  generalSearchCase,
+  generalSearchExclusionValue,
+  generalSearchInclusionValue,
+}: {
+  existingQueryString: string;
+  generalSearchCase: GeneralSearchCase;
+  generalSearchExclusionValue: string;
+  generalSearchInclusionValue: string;
+}) {
+  return `${existingQueryString}text[search]=${generalSearchInclusionValue} ${
+    generalSearchExclusionValue.length > 0 ? `-${generalSearchExclusionValue}` : ""
+  }&text[$caseSensitive]=${generalSearchCase}`;
+}
+
+function createQueryStringFromSort({
+  existingQueryString,
+  sortDirection,
+  sortField,
+}: {
+  existingQueryString: string;
+  sortDirection: SortDirection;
+  sortField: string;
+}) {
+  return `${existingQueryString}?&sort[${sortField}]=${
+    sortDirection === "ascending" ? 1 : -1
+  }`;
+}
+
+export {
+  createQueryInputsData,
+  createQueryStringFromFilter,
+  createQueryStringFromProjection,
+  createQueryStringFromSearch,
+  createQueryStringFromSort,
+  removeProjectionExclusionFields,
+};
 export type { InputsValidationsMap, OperatorsInputType, QueryInputsData };

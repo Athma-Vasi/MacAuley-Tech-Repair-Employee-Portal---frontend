@@ -17,13 +17,16 @@ import { QueryAction, queryAction } from "./actions";
 import { LOGICAL_OPERATORS_DATA, MAX_LINKS_AMOUNT } from "./constants";
 import {
   ComparisonOperator,
+  GeneralSearchCase,
   LogicalOperator,
   ModifyQueryChainPayload,
   ModifyQueryChainsDispatch,
   QueryChain,
+  QueryChainKind,
   QueryDispatch,
   QueryOperator,
   QueryState,
+  SortDirection,
 } from "./types";
 import {
   InputsValidationsMap,
@@ -144,9 +147,7 @@ function QueryFilter<ValidValueAction extends string = string>({
     <AccessibleSelectInput
       attributes={{
         data: fieldNamesOperatorsTypesMap.get(filterField)?.operators ?? [],
-        disabled:
-          disabled ||
-          searchFieldSelectInputData.map(({ value }) => value).includes(filterField),
+        disabled: disabled,
         name: "filterComparisonOperator",
         parentDispatch,
         validValueAction: queryAction.setFilterComparisonOperator,
@@ -200,7 +201,9 @@ function QueryFilter<ValidValueAction extends string = string>({
     <Stack>
       {logicalOperatorSelectInput}
       {fieldSelectInput}
-      {filterComparisonOperatorSelectInput}
+      {searchFieldSelectInputData.map(({ value }) => value).includes(filterField)
+        ? null
+        : filterComparisonOperatorSelectInput}
       {dynamicValueInput}
       {addFilterLinkButton}
     </Stack>

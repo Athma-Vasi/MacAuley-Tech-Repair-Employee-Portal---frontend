@@ -48,8 +48,6 @@ function Query({
     limitPerPage,
     projectionExclusionFields,
     queryChains,
-    searchField,
-    searchValue,
     sortDirection,
     sortField,
   } = queryState;

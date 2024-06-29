@@ -95,10 +95,7 @@ type QueryState = {
   logicalOperatorChainsSetsMap: LogicalOperatorChainsSetsMap;
   projectionExclusionFields: string[];
   queryChains: QueryChains;
-  searchField: string;
   searchFieldsOperatorsValuesSetMap: SearchFieldsValuesSetMap;
-  searchLogicalOperator: LogicalOperator;
-  searchValue: string;
   sortDirection: SortDirection;
   sortField: string;
   sortFieldsSet: Set<string>;
@@ -176,18 +173,6 @@ type QueryDispatch =
   | {
       action: QueryAction["setProjectionExclusionFields"];
       payload: string[];
-    }
-  | {
-      action: QueryAction["setSearchField"];
-      payload: string;
-    }
-  | {
-      action: QueryAction["setSearchLogicalOperator"];
-      payload: LogicalOperator;
-    }
-  | {
-      action: QueryAction["setSearchValue"];
-      payload: string;
     }
   | {
       action: QueryAction["setSortDirection"];

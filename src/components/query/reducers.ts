@@ -46,9 +46,6 @@ const queryReducers = new Map<
   [queryAction.setGeneralSearchCase, queryReducer_setGeneralSearchCase],
   [queryAction.setIsSearchDisabled, queryReducer_setIsSearchDisabled],
   [queryAction.setProjectionExclusionFields, queryReducer_setProjectionExclusionFields],
-  [queryAction.setSearchField, queryReducer_setSearchField],
-  [queryAction.setSearchLogicalOperator, queryReducer_setSearchLogicalOperator],
-  [queryAction.setSearchValue, queryReducer_setSearchValue],
   [queryAction.setSortDirection, queryReducer_setSortDirection],
   [queryAction.setSortField, queryReducer_setSortField],
 ]);
@@ -140,13 +137,6 @@ function queryReducer_modifyQueryChains(
             field_ === field && comparisonOperator_ === comparisonOperator
         );
         chains.splice(index, 1, queryLink);
-        logicalOperatorChainsMap.set(logicalOperator, chains);
-        valuesSet.add(value);
-        logicalOperatorChainsSetsMap.set(logicalOperator, {
-          fieldsSet,
-          comparisonOperatorsSet,
-          valuesSet,
-        });
 
         console.log("field exists, operator exists, value is unique");
       }
@@ -162,13 +152,6 @@ function queryReducer_modifyQueryChains(
             field_ === field && value_ === value
         );
         chains.splice(index, 1, queryLink);
-        logicalOperatorChainsMap.set(logicalOperator, chains);
-        comparisonOperatorsSet.add(comparisonOperator);
-        logicalOperatorChainsSetsMap.set(logicalOperator, {
-          fieldsSet,
-          comparisonOperatorsSet,
-          valuesSet,
-        });
 
         console.log("field exists, operator is unique, value exists");
       }
@@ -180,14 +163,6 @@ function queryReducer_modifyQueryChains(
         !valuesSet.has(value)
       ) {
         chains.splice(index, 1, queryLink);
-        logicalOperatorChainsMap.set(logicalOperator, chains);
-        comparisonOperatorsSet.add(comparisonOperator);
-        valuesSet.add(value);
-        logicalOperatorChainsSetsMap.set(logicalOperator, {
-          fieldsSet,
-          comparisonOperatorsSet,
-          valuesSet,
-        });
 
         console.log("field exists, operator is unique, value is unique");
       }
@@ -195,19 +170,21 @@ function queryReducer_modifyQueryChains(
       // field is unique
       if (!fieldsSet.has(field)) {
         chains.push(queryLink);
-        logicalOperatorChainsMap.set(logicalOperator, chains);
-        fieldsSet.add(field);
-        comparisonOperatorsSet.add(comparisonOperator);
-        valuesSet.add(value);
-        logicalOperatorChainsSetsMap.set(logicalOperator, {
-          fieldsSet,
-          comparisonOperatorsSet,
-          valuesSet,
-        });
 
         console.log("field is unique");
         console.groupEnd();
       }
+
+      logicalOperatorChainsMap.set(logicalOperator, chains);
+
+      fieldsSet.add(field);
+      comparisonOperatorsSet.add(comparisonOperator);
+      valuesSet.add(value);
+      logicalOperatorChainsSetsMap.set(logicalOperator, {
+        fieldsSet,
+        comparisonOperatorsSet,
+        valuesSet,
+      });
 
       return {
         ...state,
@@ -374,27 +351,6 @@ function queryReducer_setProjectionExclusionFields(
   dispatch: QueryDispatch
 ): QueryState {
   return { ...state, projectionExclusionFields: dispatch.payload as string[] };
-}
-
-function queryReducer_setSearchField(
-  state: QueryState,
-  dispatch: QueryDispatch
-): QueryState {
-  return { ...state, searchField: dispatch.payload as string };
-}
-
-function queryReducer_setSearchLogicalOperator(
-  state: QueryState,
-  dispatch: QueryDispatch
-): QueryState {
-  return { ...state, searchLogicalOperator: dispatch.payload as LogicalOperator };
-}
-
-function queryReducer_setSearchValue(
-  state: QueryState,
-  dispatch: QueryDispatch
-): QueryState {
-  return { ...state, searchValue: dispatch.payload as string };
 }
 
 function queryReducer_setSortDirection(
