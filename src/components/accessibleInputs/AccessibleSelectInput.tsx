@@ -24,11 +24,7 @@ type AccessibleSelectInputAttributes<
     action: ValidValueAction;
     payload: Payload;
   }>;
-  setFilterInputValuesDispatchData?: {
-    fieldNamesOperatorsTypesMap: Map<string, OperatorsInputType>;
-    setFilterInputValuesDispatch: SetFilterInputValuesDispatch<ValidValueAction>;
-    selectInputsDataMap: Map<string, CheckboxRadioSelectData>;
-  };
+  setFilterInputValuesDispatchData?: SetFilterInputValuesDispatchData<ValidValueAction>;
   ref?: React.RefObject<HTMLSelectElement>;
   required?: boolean;
   size?: MantineSize;
@@ -85,6 +81,7 @@ function AccessibleSelectInput<
         if (setFilterInputValuesDispatchData) {
           const {
             fieldNamesOperatorsTypesMap,
+            searchFieldSelectInputData,
             setFilterInputValuesDispatch,
             selectInputsDataMap,
           } = setFilterInputValuesDispatchData;
@@ -93,8 +90,9 @@ function AccessibleSelectInput<
             action: validValueAction,
             payload: {
               fieldNamesOperatorsTypesMap,
-              value: event.currentTarget.value,
+              searchFieldSelectInputData,
               selectInputsDataMap,
+              value: event.currentTarget.value,
             },
           });
         }

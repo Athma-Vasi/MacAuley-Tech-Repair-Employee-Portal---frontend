@@ -1,12 +1,13 @@
 import { CheckboxRadioSelectData } from "../../types";
 import {
   FilterFieldsOperatorsValuesSetsMap,
+  LogicalOperatorChainsSetsMap,
   QueryState,
   SearchFieldsValuesSetMap,
 } from "./types";
 
 function createInitialQueryState(
-  searchFieldSelectData: CheckboxRadioSelectData
+  searchFieldSelectInputData: CheckboxRadioSelectData
 ): QueryState {
   const filterFieldsOperatorsValuesSetsMap = new Map([
     [
@@ -19,8 +20,19 @@ function createInitialQueryState(
   ]) as FilterFieldsOperatorsValuesSetsMap;
 
   const searchFieldsOperatorsValuesSetMap = new Map([
-    [searchFieldSelectData[0].value, new Set()],
+    [searchFieldSelectInputData[0].value, new Set()],
   ]) as SearchFieldsValuesSetMap;
+
+  const logicalOperatorChainsSetsMap = new Map([
+    [
+      "and",
+      {
+        fieldsSet: new Set(),
+        comparisonOperatorsSet: new Set(),
+        valuesSet: new Set(),
+      },
+    ],
+  ]) as LogicalOperatorChainsSetsMap;
 
   const initialQueryState: QueryState = {
     // date input type is guaranteed to exist (all schemas have createdAt & updatedAt)
@@ -34,17 +46,12 @@ function createInitialQueryState(
     generalSearchExclusionValue: "",
     generalSearchInclusionValue: "",
     isError: false,
-    isFilterOpened: false,
-    isProjectionOpened: false,
-    isQueryOpened: false,
-    isQueryChainOpened: false,
     isSearchDisabled: false,
-    isSearchOpened: false,
-    isSortOpened: false,
     limitPerPage: 10,
+    logicalOperatorChainsSetsMap,
     projectionExclusionFields: [],
-    queryChains: { filter: new Map(), search: new Map(), sort: new Map() },
-    searchField: searchFieldSelectData[0].value,
+    queryChains: { filter: new Map(), sort: new Map() },
+    searchField: searchFieldSelectInputData[0].value,
     searchFieldsOperatorsValuesSetMap,
     searchLogicalOperator: "and",
     searchValue: "",

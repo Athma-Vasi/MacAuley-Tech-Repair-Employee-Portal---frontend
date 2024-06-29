@@ -1,165 +1,193 @@
 import { Stack, Text } from "@mantine/core";
-
-import { ValidationKey } from "../../constants/validations";
-import { CheckboxRadioSelectData, SetPageInErrorPayload, StepperPage } from "../../types";
-import { splitCamelCase } from "../../utils";
-import { AccessibleButton } from "../accessibleInputs/AccessibleButton";
+import { VALIDATION_FUNCTIONS_TABLE, ValidationKey } from "../../constants/validations";
+import { SetPageInErrorPayload, StepperPage } from "../../types";
 import { AccessibleSegmentedControl } from "../accessibleInputs/AccessibleSegmentedControl";
-import { AccessibleSelectInput } from "../accessibleInputs/AccessibleSelectInput";
-import { AccessibleTextAreaInput } from "../accessibleInputs/AccessibleTextAreaInput";
 import { AccessibleTextInput } from "../accessibleInputs/text/AccessibleTextInput";
-import { QueryAction, queryAction } from "./actions";
-import {
-  LOGICAL_OPERATORS_DATA,
-  MAX_LINKS_AMOUNT,
-  QUERY_SEARCH_CASE_DATA,
-} from "./constants";
-import {
-  GeneralSearchCase,
-  ModifyQueryChainPayload,
-  ModifyQueryChainsDispatch,
-  QueryChain,
-  QueryDispatch,
-  QueryState,
-} from "./types";
-import { InputsValidationsMap, removeProjectionExclusionFields } from "./utils";
+import { QueryAction } from "./actions";
+import { QUERY_SEARCH_CASE_DATA } from "./constants";
+import { GeneralSearchCase, ModifyQueryChainsDispatch, QueryDispatch } from "./types";
+import { InputsValidationsMap } from "./utils";
+import React from "react";
+import { AccessibleButton } from "../accessibleInputs/AccessibleButton";
 
 type QuerySearchProps<
   ValidValueAction extends string = string,
   InvalidValueAction extends string = string
 > = {
-  inputsValidationsMap: InputsValidationsMap;
+  generalSearchExclusionValue: string;
+  generalSearchInclusionValue: string;
+  generalSearchCase: GeneralSearchCase;
+  queryAction: QueryAction;
   parentDispatch: React.Dispatch<QueryDispatch>;
-  queryState: QueryState;
-  modifyQueryChainsDispatch: ModifyQueryChainsDispatch;
-  searchFieldSelectData: CheckboxRadioSelectData;
+  inputsValidationsMap: InputsValidationsMap;
 };
 
 function QuerySearch<
   ValidValueAction extends string = string,
   InvalidValueAction extends string = string
 >({
-  inputsValidationsMap,
+  generalSearchCase,
+  generalSearchExclusionValue,
+  generalSearchInclusionValue,
+  queryAction,
   parentDispatch,
-  queryState,
-  modifyQueryChainsDispatch,
-  searchFieldSelectData,
+  inputsValidationsMap,
 }: QuerySearchProps<ValidValueAction, InvalidValueAction>) {
-  const {
-    projectionExclusionFields,
-    searchField,
-    searchLogicalOperator,
-    searchValue,
-    queryChains,
-  } = queryState;
-  const logicalOperatorChainsMap = queryChains.search;
-  const searchChainLength = Array.from(logicalOperatorChainsMap).reduce(
-    (acc, [_key, value]) => {
-      acc += value.length;
-      return acc;
-    },
-    0
-  );
+  type QuerySearchState = {
+    exclusion: string;
+    inclusion: string;
+    pagesInError: Set<number>;
+  };
+  const initialQuerySearchState: QuerySearchState = {
+    exclusion: generalSearchExclusionValue,
+    inclusion: generalSearchInclusionValue,
+    pagesInError: new Set(),
+  };
 
-  const logicalOperatorSelectInput = (
-    <AccessibleSelectInput<QueryAction["setSearchLogicalOperator"], string>
-      attributes={{
-        data: LOGICAL_OPERATORS_DATA,
-        name: "filterLogicalOperator",
-        parentDispatch,
-        validValueAction: queryAction.setSearchLogicalOperator,
-        value: searchLogicalOperator,
-      }}
-    />
-  );
+  type QuerySearchActions = {
+    setExclusion: "setExclusion";
+    setInclusion: "setInclusion";
+    setPageInError: "setPageInError";
+  };
+  const querySearchActions: QuerySearchActions = {
+    setExclusion: "setExclusion",
+    setInclusion: "setInclusion",
+    setPageInError: "setPageInError",
+  };
 
-  const data = removeProjectionExclusionFields(
-    projectionExclusionFields,
-    searchFieldSelectData
-  );
-  const disabled = data.length === 0;
+  type QuerySearchDispatch =
+    | {
+        action: QuerySearchActions["setExclusion"] | QuerySearchActions["setInclusion"];
+        payload: string;
+      }
+    | {
+        action: QuerySearchActions["setPageInError"];
+        payload: SetPageInErrorPayload;
+      };
 
-  const fieldSelectInput = (
-    <AccessibleSelectInput
-      attributes={{
-        data,
-        disabled,
-        name: "searchField",
-        parentDispatch,
-        validValueAction: queryAction.setSearchField,
-        value: searchField,
-      }}
-    />
+  function querySearchReducer(state: QuerySearchState, dispatch: QuerySearchDispatch) {
+    switch (dispatch.action) {
+      case querySearchActions.setExclusion:
+        return { ...state, exclusion: dispatch.payload };
+
+      case querySearchActions.setInclusion:
+        return { ...state, inclusion: dispatch.payload };
+
+      case querySearchActions.setPageInError: {
+        const { kind, page } = dispatch.payload as SetPageInErrorPayload;
+        const pagesInError = new Set(state.pagesInError);
+        kind === "add" ? pagesInError.add(page) : pagesInError.delete(page);
+
+        return {
+          ...state,
+          pagesInError,
+        };
+      }
+
+      default:
+        return state;
+    }
+  }
+
+  const [querySearchState, querySearchDispatch] = React.useReducer(
+    querySearchReducer,
+    initialQuerySearchState
   );
+  const { exclusion, inclusion, pagesInError } = querySearchState;
 
   const stepperPages: StepperPage[] = [
     {
       children: [
         {
           inputType: "text",
-          name: `${splitCamelCase(searchField)} Value`,
-          validationKey:
-            inputsValidationsMap.get(searchField)?.validationKey ?? "allowAll",
+          name: "inclusion",
+          validationKey: "inclusion",
+        },
+        {
+          inputType: "text",
+          name: "exclusion",
+          validationKey: "exclusion",
         },
       ],
       description: "",
     },
   ];
 
-  const valueTextAreaInput = (
-    <AccessibleTextAreaInput
+  const generalSearchInclusionTextInput = (
+    <AccessibleTextInput
       attributes={{
-        disabled,
-        name: `${splitCamelCase(searchField)} Value`,
-        invalidValueAction: queryAction.setIsError,
-        required: false,
-        parentDispatch,
-        validValueAction: queryAction.setSearchValue,
-        value: searchValue,
+        invalidValueAction: querySearchActions.setPageInError,
+        name: "inclusion",
+        parentDispatch: querySearchDispatch,
         stepperPages,
+        validValueAction: querySearchActions.setInclusion,
+        value: generalSearchInclusionValue,
       }}
     />
   );
 
-  const addFilterStatementsButton = (
+  const generalSearchExclusionTextInput = (
+    <AccessibleTextInput
+      attributes={{
+        invalidValueAction: querySearchActions.setPageInError,
+        name: "exclusion",
+        parentDispatch: querySearchDispatch,
+        stepperPages,
+        validValueAction: querySearchActions.setExclusion,
+        value: generalSearchExclusionValue,
+      }}
+    />
+  );
+
+  const caseSensitiveSegmentedControl = (
+    <AccessibleSegmentedControl
+      attributes={{
+        data: QUERY_SEARCH_CASE_DATA,
+        name: "case",
+        parentDispatch,
+        validValueAction: queryAction.setGeneralSearchCase,
+        value: generalSearchCase,
+      }}
+    />
+  );
+
+  const addSearchLinkButton = (
     <AccessibleButton
       attributes={{
-        enabledScreenreaderText: "Add search link to chain",
-        disabledScreenreaderText:
-          searchChainLength === MAX_LINKS_AMOUNT
-            ? "Max query links amount reached"
-            : "Value is empty",
-        disabled:
-          disabled || searchChainLength === MAX_LINKS_AMOUNT || searchValue === "",
+        enabledScreenreaderText: "Add filter link to chain",
+        disabledScreenreaderText: "Please fix error(s) before proceeding",
+        disabled: pagesInError.size > 0,
         kind: "add",
         onClick: (
           _event:
             | React.MouseEvent<HTMLButtonElement, MouseEvent>
             | React.PointerEvent<HTMLButtonElement>
         ) => {
-          modifyQueryChainsDispatch({
-            action: queryAction.modifyQueryChains,
-            payload: {
-              index: searchChainLength,
-              logicalOperator: searchLogicalOperator,
-              queryChainActions: "insert",
-              queryChainKind: "search",
-              queryLink: [searchField, "", searchValue],
-            },
+          parentDispatch({
+            action: queryAction.setGeneralSearchExclusionValue,
+            payload: exclusion,
+          });
+
+          parentDispatch({
+            action: queryAction.setGeneralSearchInclusionValue,
+            payload: inclusion,
           });
         },
       }}
     />
   );
 
-  return (
+  const generalSearchSection = (
     <Stack>
-      {logicalOperatorSelectInput}
-      {fieldSelectInput}
-      {valueTextAreaInput}
-      {addFilterStatementsButton}
+      <Text size="md">Search</Text>
+      {caseSensitiveSegmentedControl}
+      {generalSearchInclusionTextInput}
+      {generalSearchExclusionTextInput}
+      {addSearchLinkButton}
     </Stack>
   );
+
+  return generalSearchSection;
 }
 
 export { QuerySearch };

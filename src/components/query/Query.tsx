@@ -6,11 +6,10 @@ import { createQueryInputsData } from "./utils";
 import { QueryFilter, SetFilterInputValuesDispatch } from "./QueryFilter";
 import { QueryAction, queryAction } from "./actions";
 import { Accordion, Stack, Text, Timeline } from "@mantine/core";
-import { QuerySearch } from "./QuerySearch";
 import { QueryProjection } from "./QueryProjection";
 import { Chain, QueryChainDispatch } from "./Chain";
 import { QuerySort, QuerySortDispatch } from "./QuerySort";
-import { QueryGeneralSearch } from "./QueryGeneralSearch";
+import { QuerySearch } from "./QuerySearch";
 
 function Query({
   collectionName,
@@ -24,7 +23,7 @@ function Query({
     fieldNamesOperatorsTypesMap,
     filterFieldSelectInputData,
     projectionCheckboxData,
-    searchFieldSelectData,
+    searchFieldSelectInputData,
     selectInputsDataMap,
     sortFieldSelectData,
     inputsValidationsMap,
@@ -32,7 +31,7 @@ function Query({
 
   const [queryState, queryDispatch] = React.useReducer(
     queryReducer,
-    createInitialQueryState(searchFieldSelectData)
+    createInitialQueryState(searchFieldSelectInputData)
   );
 
   const {
@@ -45,13 +44,7 @@ function Query({
     generalSearchExclusionValue,
     generalSearchInclusionValue,
     isError,
-    isFilterOpened,
-    isProjectionOpened,
-    isQueryChainOpened,
-    isQueryOpened,
     isSearchDisabled,
-    isSearchOpened,
-    isSortOpened,
     limitPerPage,
     projectionExclusionFields,
     queryChains,
@@ -67,7 +60,7 @@ function Query({
   console.log("fieldNamesOperatorsTypesMap", fieldNamesOperatorsTypesMap);
   console.log("filterFieldSelectInputData", filterFieldSelectInputData);
   console.log("projectionCheckboxData", projectionCheckboxData);
-  console.log("searchFieldSelectData", searchFieldSelectData);
+  console.log("searchFieldSelectInputData", searchFieldSelectInputData);
   console.log("selectInputsDataMap", selectInputsDataMap);
   console.log("sortFieldSelectData", sortFieldSelectData);
   console.log("inputsValidationsMap", inputsValidationsMap);
@@ -79,7 +72,6 @@ function Query({
       generalSearchCase={generalSearchCase}
       generalSearchExclusionValue={generalSearchExclusionValue}
       generalSearchInclusionValue={generalSearchInclusionValue}
-      isQueryChainOpened={isQueryChainOpened}
       projectionExclusionFields={projectionExclusionFields}
       queryAction={queryAction}
       queryChainDispatch={queryDispatch as QueryChainDispatch}
@@ -95,6 +87,7 @@ function Query({
       modifyQueryChainsDispatch={queryDispatch}
       parentDispatch={queryDispatch}
       queryState={queryState}
+      searchFieldSelectInputData={searchFieldSelectInputData}
       selectInputsDataMap={selectInputsDataMap}
       setFilterInputValuesDispatch={queryDispatch as SetFilterInputValuesDispatch}
     />
@@ -109,24 +102,14 @@ function Query({
     />
   );
 
-  const queryGeneralSearch = (
-    <QueryGeneralSearch
+  const querySearch = (
+    <QuerySearch
       generalSearchCase={generalSearchCase}
       generalSearchExclusionValue={generalSearchExclusionValue}
       generalSearchInclusionValue={generalSearchInclusionValue}
       queryAction={queryAction}
       parentDispatch={queryDispatch}
       inputsValidationsMap={inputsValidationsMap}
-    />
-  );
-
-  const querySearch = (
-    <QuerySearch
-      inputsValidationsMap={inputsValidationsMap}
-      parentDispatch={queryDispatch}
-      queryState={queryState}
-      modifyQueryChainsDispatch={queryDispatch}
-      searchFieldSelectData={searchFieldSelectData}
     />
   );
 
@@ -146,21 +129,14 @@ function Query({
         <Accordion.Panel>{queryFilter}</Accordion.Panel>
       </Accordion.Item>
 
-      <Accordion.Item value="Projection">
-        <Accordion.Control>Projection</Accordion.Control>
-        <Accordion.Panel>{queryProjection}</Accordion.Panel>
-      </Accordion.Item>
-
-      <Accordion.Item value="Search by Fields">
-        <Accordion.Control>Search by Fields</Accordion.Control>
+      <Accordion.Item value="Search">
+        <Accordion.Control>Search</Accordion.Control>
         <Accordion.Panel>{querySearch}</Accordion.Panel>
       </Accordion.Item>
 
-      <Accordion.Item value="Search by Text">
-        <Accordion.Control>Search by Text</Accordion.Control>
-        <Accordion.Panel>
-          <Text>{queryGeneralSearch}</Text>
-        </Accordion.Panel>
+      <Accordion.Item value="Projection">
+        <Accordion.Control>Projection</Accordion.Control>
+        <Accordion.Panel>{queryProjection}</Accordion.Panel>
       </Accordion.Item>
 
       <Accordion.Item value="Sort">

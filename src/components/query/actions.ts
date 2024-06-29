@@ -8,14 +8,8 @@ type QueryAction = {
   setGeneralSearchExclusionValue: "setGeneralSearchExclusionValue";
   setGeneralSearchInclusionValue: "setGeneralSearchInclusionValue";
   setIsError: "setIsError";
-  setIsFilterOpened: "setIsFilterOpened";
   setGeneralSearchCase: "setGeneralSearchCase";
-  setIsProjectionOpened: "setIsProjectionOpened";
-  setIsQueryOpened: "setIsQueryOpened";
-  setIsQueryChainOpened: "setIsQueryChainOpened";
   setIsSearchDisabled: "setIsSearchDisabled";
-  setIsSearchOpened: "setIsSearchOpened";
-  setIsSortOpened: "setIsSortOpened";
   setLimitPerPage: "setLimitPerPage";
   setProjectionExclusionFields: "setProjectionExclusionFields";
   setSearchField: "setSearchField";
@@ -35,14 +29,8 @@ const queryAction: QueryAction = {
   setGeneralSearchExclusionValue: "setGeneralSearchExclusionValue",
   setGeneralSearchInclusionValue: "setGeneralSearchInclusionValue",
   setIsError: "setIsError",
-  setIsFilterOpened: "setIsFilterOpened",
   setGeneralSearchCase: "setGeneralSearchCase",
-  setIsProjectionOpened: "setIsProjectionOpened",
-  setIsQueryOpened: "setIsQueryOpened",
-  setIsQueryChainOpened: "setIsQueryChainOpened",
   setIsSearchDisabled: "setIsSearchDisabled",
-  setIsSearchOpened: "setIsSearchOpened",
-  setIsSortOpened: "setIsSortOpened",
   setLimitPerPage: "setLimitPerPage",
   setProjectionExclusionFields: "setProjectionExclusionFields",
   setSearchField: "setSearchField",

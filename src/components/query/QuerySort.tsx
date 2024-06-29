@@ -90,7 +90,7 @@ function QuerySort<ValidValueAction extends string = string>({
               logicalOperator: "and",
               queryChainActions: "insert",
               queryChainKind: "sort",
-              queryLink: [sortField, "", sortDirection],
+              queryLink: [sortField, "equal to", sortDirection],
             },
           });
         },

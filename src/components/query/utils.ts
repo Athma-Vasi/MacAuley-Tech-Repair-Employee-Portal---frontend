@@ -12,7 +12,7 @@ import {
   COMPARISON_OPERATORS_DATA,
   IN_OPERATOR_DATA,
 } from "./constants";
-import { FilterInputsType, QueryOperators, SortInputsType } from "./types";
+import { FilterInputsType, QueryOperator, SortInputsType } from "./types";
 
 function addInputsToStepperPages(stepperPages: StepperPage[]): StepperPage[] {
   // createdAt and updatedAt are guaranteed to exist in all models and are used as initial values for filter & sort
@@ -44,7 +44,7 @@ function addInputsToStepperPages(stepperPages: StepperPage[]): StepperPage[] {
 }
 
 type OperatorsInputType = {
-  operators: CheckboxRadioSelectData<QueryOperators>;
+  operators: CheckboxRadioSelectData<QueryOperator>;
   inputType: InputType;
 };
 
@@ -61,7 +61,7 @@ type QueryInputsData = {
   selectInputsDataMap: Map<string, CheckboxRadioSelectData>;
   projectionCheckboxData: CheckboxRadioSelectData;
   /** for search section */
-  searchFieldSelectData: CheckboxRadioSelectData;
+  searchFieldSelectInputData: CheckboxRadioSelectData;
   /** for sort section */
   sortFieldSelectData: CheckboxRadioSelectData;
   /** Map<field names, validationKey> */
@@ -90,7 +90,7 @@ function createQueryInputsData(stepperPages: StepperPage[]): QueryInputsData {
     filterFieldSelectInputData: [],
     selectInputsDataMap: new Map<string, CheckboxRadioSelectData>(),
     projectionCheckboxData: [],
-    searchFieldSelectData: [],
+    searchFieldSelectInputData: [],
     sortFieldSelectData: [],
     inputsValidationsMap: new Map(),
   };
@@ -102,7 +102,7 @@ function createQueryInputsData(stepperPages: StepperPage[]): QueryInputsData {
       filterFieldSelectInputData,
       projectionCheckboxData,
       selectInputsDataMap,
-      searchFieldSelectData,
+      searchFieldSelectInputData,
       sortFieldSelectData,
       inputsValidationsMap,
     } = acc;
@@ -129,7 +129,7 @@ function createQueryInputsData(stepperPages: StepperPage[]): QueryInputsData {
       }
 
       if (inputType === "text") {
-        searchFieldSelectData.push(checkboxRadioSelectData);
+        searchFieldSelectInputData.push(checkboxRadioSelectData);
       }
 
       if (sortInputsSet.has(inputType as SortInputsType)) {

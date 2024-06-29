@@ -1,4 +1,9 @@
-import { CheckboxInputData, SetPageInErrorPayload, StepperPage } from "../../types";
+import {
+  CheckboxInputData,
+  CheckboxRadioSelectData,
+  SetPageInErrorPayload,
+  StepperPage,
+} from "../../types";
 import { QueryAction } from "./actions";
 import { OperatorsInputType } from "./utils";
 
@@ -26,17 +31,25 @@ type GeneralSearchKind = "inclusion" | "exclusion";
 
 type LogicalOperator = "and" | "nor" | "or";
 
+type LogicalOperatorChainsSets = {
+  fieldsSet: Set<string>;
+  comparisonOperatorsSet: Set<QueryOperator>;
+  valuesSet: Set<string>;
+};
+
+type LogicalOperatorChainsSetsMap = Map<LogicalOperator, LogicalOperatorChainsSets>;
+
 type QueryChain = Array<QueryLink>;
 
 type QueryChainActions = "delete" | "insert" | "slideUp" | "slideDown";
 
-type QueryChainKind = "filter" | "search" | "sort";
+type QueryChainKind = "filter" | "sort";
 
-type QueryChains = Record<QueryChainKind, Map<string, QueryChain>>; // Map<logicalOperator, ...
+type QueryChains = Record<QueryChainKind, Map<LogicalOperator, QueryChain>>; // Map<logicalOperator, ...
 
-type QueryLink = [string, string, string]; // [field, comparisonOperator, value]
+type QueryLink = [string, QueryOperator, string]; // [field, comparisonOperator, value]
 
-type QueryOperators = ComparisonOperator | "in";
+type QueryOperator = ComparisonOperator | "in";
 
 type SearchFieldsValuesSetMap = Map<string, Set<string>>;
 
@@ -69,27 +82,22 @@ type QueryProps<
 type QueryState = {
   filterField: string;
   filterFieldsOperatorsValuesSetsMap: FilterFieldsOperatorsValuesSetsMap;
-  filterLogicalOperator: string;
-  filterComparisonOperator: string;
+  filterLogicalOperator: LogicalOperator;
+  filterComparisonOperator: QueryOperator;
   filterComparisonOperatorSelectData: string[];
   filterValue: string;
   generalSearchCase: GeneralSearchCase;
   generalSearchExclusionValue: string;
   generalSearchInclusionValue: string;
   isError: boolean;
-  isFilterOpened: boolean;
-  isProjectionOpened: boolean;
-  isQueryChainOpened: boolean;
-  isQueryOpened: boolean;
   isSearchDisabled: boolean;
-  isSearchOpened: boolean;
-  isSortOpened: boolean;
   limitPerPage: number;
+  logicalOperatorChainsSetsMap: LogicalOperatorChainsSetsMap;
   projectionExclusionFields: string[];
   queryChains: QueryChains;
   searchField: string;
   searchFieldsOperatorsValuesSetMap: SearchFieldsValuesSetMap;
-  searchLogicalOperator: string;
+  searchLogicalOperator: LogicalOperator;
   searchValue: string;
   sortDirection: SortDirection;
   sortField: string;
@@ -98,7 +106,7 @@ type QueryState = {
 
 type ModifyQueryChainPayload = {
   index: number;
-  logicalOperator: string;
+  logicalOperator: LogicalOperator;
   queryChainActions: QueryChainActions;
   queryChainKind: QueryChainKind;
   queryLink: QueryLink;
@@ -111,6 +119,7 @@ type ModifyQueryChainsDispatch = React.Dispatch<{
 
 type QueryFilterPayload = {
   fieldNamesOperatorsTypesMap: Map<string, OperatorsInputType>;
+  searchFieldSelectInputData: CheckboxRadioSelectData;
   selectInputsDataMap: Map<string, CheckboxInputData>;
   value: string;
 };
@@ -126,7 +135,7 @@ type QueryDispatch =
     }
   | {
       action: QueryAction["setFilterComparisonOperator"];
-      payload: QueryFilterPayload;
+      payload: QueryOperator;
     }
   | {
       action: QueryAction["setFilterComparisonOperatorSelectData"];
@@ -138,7 +147,7 @@ type QueryDispatch =
     }
   | {
       action: QueryAction["setFilterValue"];
-      payload: QueryFilterPayload;
+      payload: string;
     }
   | {
       action: QueryAction["setGeneralSearchExclusionValue"];
@@ -153,31 +162,11 @@ type QueryDispatch =
       payload: SetPageInErrorPayload;
     }
   | {
-      action: QueryAction["setIsFilterOpened"];
-      payload: boolean;
-    }
-  | {
       action: QueryAction["setGeneralSearchCase"];
       payload: GeneralSearchCase;
     }
   | {
-      action: QueryAction["setIsProjectionOpened"];
-      payload: boolean;
-    }
-  | {
-      action: QueryAction["setIsQueryOpened"];
-      payload: boolean;
-    }
-  | {
       action: QueryAction["setIsSearchDisabled"];
-      payload: boolean;
-    }
-  | {
-      action: QueryAction["setIsSearchOpened"];
-      payload: boolean;
-    }
-  | {
-      action: QueryAction["setIsSortOpened"];
       payload: boolean;
     }
   | {
@@ -194,7 +183,7 @@ type QueryDispatch =
     }
   | {
       action: QueryAction["setSearchLogicalOperator"];
-      payload: string;
+      payload: LogicalOperator;
     }
   | {
       action: QueryAction["setSearchValue"];
@@ -216,6 +205,8 @@ export type {
   GeneralSearchCase,
   GeneralSearchKind,
   LogicalOperator,
+  LogicalOperatorChainsSets,
+  LogicalOperatorChainsSetsMap,
   ModifyQueryChainPayload,
   ModifyQueryChainsDispatch,
   QueryChain,
@@ -225,7 +216,7 @@ export type {
   QueryDispatch,
   QueryFilterPayload,
   QueryLink,
-  QueryOperators,
+  QueryOperator,
   QueryProps,
   QueryState,
   SearchFieldsValuesSetMap,

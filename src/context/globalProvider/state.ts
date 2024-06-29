@@ -9,7 +9,7 @@ const initialThemeObject: ThemeObject = {
   white: "#f5f5f5",
   black: "#25262b",
 
-  primaryColor: "violet",
+  primaryColor: "cyan",
   primaryShade: { light: 5, dark: 7 },
 
   defaultGradient: { deg: 45, from: "blue", to: "cyan" },

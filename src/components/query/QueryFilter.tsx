@@ -16,11 +16,13 @@ import { AccessibleTextInput } from "../accessibleInputs/text/AccessibleTextInpu
 import { QueryAction, queryAction } from "./actions";
 import { LOGICAL_OPERATORS_DATA, MAX_LINKS_AMOUNT } from "./constants";
 import {
+  ComparisonOperator,
   LogicalOperator,
   ModifyQueryChainPayload,
   ModifyQueryChainsDispatch,
   QueryChain,
   QueryDispatch,
+  QueryOperator,
   QueryState,
 } from "./types";
 import {
@@ -29,6 +31,7 @@ import {
   removeProjectionExclusionFields,
 } from "./utils";
 import { AccessibleSegmentedControl } from "../accessibleInputs/AccessibleSegmentedControl";
+import { AccessibleTextAreaInput } from "../accessibleInputs/AccessibleTextAreaInput";
 
 type SetFilterInputValuesDispatch<
   ValidValueAction extends string = string,
@@ -40,6 +43,7 @@ type SetFilterInputValuesDispatch<
         fieldNamesOperatorsTypesMap: Map<string, OperatorsInputType>;
         value: string;
         selectInputsDataMap: Map<string, CheckboxRadioSelectData>;
+        searchFieldSelectInputData: CheckboxRadioSelectData;
       };
     }
   | {
@@ -57,6 +61,7 @@ type SetFilterInputValuesDispatchData<
     ValidValueAction,
     InvalidValueAction
   >;
+  searchFieldSelectInputData: CheckboxRadioSelectData;
   selectInputsDataMap: Map<string, CheckboxRadioSelectData>;
 };
 
@@ -67,6 +72,7 @@ type QueryFilterProps<ValidValueAction extends string = string> = {
   modifyQueryChainsDispatch: ModifyQueryChainsDispatch;
   parentDispatch: React.Dispatch<QueryDispatch>;
   queryState: QueryState;
+  searchFieldSelectInputData: CheckboxRadioSelectData;
   selectInputsDataMap: Map<string, CheckboxRadioSelectData>;
   setFilterInputValuesDispatch: SetFilterInputValuesDispatch<ValidValueAction>;
 };
@@ -78,6 +84,7 @@ function QueryFilter<ValidValueAction extends string = string>({
   modifyQueryChainsDispatch,
   parentDispatch,
   queryState,
+  searchFieldSelectInputData,
   selectInputsDataMap,
   setFilterInputValuesDispatch,
 }: QueryFilterProps<ValidValueAction>) {
@@ -90,14 +97,10 @@ function QueryFilter<ValidValueAction extends string = string>({
     projectionExclusionFields,
     queryChains,
   } = queryState;
-  const logicalOperatorChainsMap = queryChains.filter;
-  const chainLength = Array.from(logicalOperatorChainsMap).reduce(
-    (acc, [_key, value]) => {
-      acc += value.length;
-      return acc;
-    },
-    0
-  );
+  const chainLength = Array.from(queryChains.filter).reduce((acc, [_key, value]) => {
+    acc += value.length;
+    return acc;
+  }, 0);
 
   const logicalOperatorSelectInput = (
     <AccessibleSelectInput
@@ -111,11 +114,18 @@ function QueryFilter<ValidValueAction extends string = string>({
     />
   );
 
-  const data = removeProjectionExclusionFields(
-    projectionExclusionFields,
-    filterFieldSelectInputData
-  );
+  const data = removeProjectionExclusionFields(projectionExclusionFields, [
+    ...filterFieldSelectInputData,
+    ...searchFieldSelectInputData,
+  ]);
   const disabled = data.length === 0;
+  const setFilterInputValuesDispatchData: SetFilterInputValuesDispatchData<ValidValueAction> =
+    {
+      fieldNamesOperatorsTypesMap,
+      searchFieldSelectInputData,
+      setFilterInputValuesDispatch,
+      selectInputsDataMap,
+    };
 
   const fieldSelectInput = (
     <AccessibleSelectInput
@@ -123,11 +133,7 @@ function QueryFilter<ValidValueAction extends string = string>({
         data,
         disabled,
         name: "filterField",
-        setFilterInputValuesDispatchData: {
-          fieldNamesOperatorsTypesMap,
-          setFilterInputValuesDispatch,
-          selectInputsDataMap,
-        },
+        setFilterInputValuesDispatchData,
         validValueAction: queryAction.setFilterField as ValidValueAction,
         value: filterField,
       }}
@@ -138,14 +144,12 @@ function QueryFilter<ValidValueAction extends string = string>({
     <AccessibleSelectInput
       attributes={{
         data: fieldNamesOperatorsTypesMap.get(filterField)?.operators ?? [],
-        disabled,
+        disabled:
+          disabled ||
+          searchFieldSelectInputData.map(({ value }) => value).includes(filterField),
         name: "filterComparisonOperator",
-        setFilterInputValuesDispatchData: {
-          fieldNamesOperatorsTypesMap,
-          setFilterInputValuesDispatch,
-          selectInputsDataMap,
-        },
-        validValueAction: queryAction.setFilterComparisonOperator as ValidValueAction,
+        parentDispatch,
+        validValueAction: queryAction.setFilterComparisonOperator,
         value: filterComparisonOperator,
       }}
     />
@@ -153,12 +157,11 @@ function QueryFilter<ValidValueAction extends string = string>({
 
   const dynamicValueInput = createDynamicValueInput({
     disabled,
-    fieldNamesOperatorsTypesMap,
     filterField,
     filterValue,
-    setFilterInputValuesDispatch,
-    selectInputsDataMap,
     inputsValidationsMap,
+    parentDispatch,
+    setFilterInputValuesDispatchData,
   });
 
   const addFilterLinkButton = (
@@ -171,8 +174,7 @@ function QueryFilter<ValidValueAction extends string = string>({
             : isError
             ? "Value cannot be invalid"
             : "Value cannot be empty",
-        disabled:
-          disabled || isError || chainLength === MAX_LINKS_AMOUNT || filterValue === "",
+        disabled: disabled || isError || chainLength === MAX_LINKS_AMOUNT,
         kind: "add",
         onClick: (
           _event:
@@ -207,22 +209,23 @@ function QueryFilter<ValidValueAction extends string = string>({
 
 function createDynamicValueInput<ValidValueAction extends string = string>({
   disabled,
-  fieldNamesOperatorsTypesMap,
   filterField,
   filterValue,
-  setFilterInputValuesDispatch,
-  selectInputsDataMap,
   inputsValidationsMap,
+  parentDispatch,
+  setFilterInputValuesDispatchData,
 }: {
   disabled: boolean;
-  fieldNamesOperatorsTypesMap: Map<string, OperatorsInputType>;
   filterField: string;
   filterValue: string;
-  setFilterInputValuesDispatch: SetFilterInputValuesDispatch<ValidValueAction>;
-  selectInputsDataMap: Map<string, CheckboxRadioSelectData>;
   inputsValidationsMap: InputsValidationsMap;
+  parentDispatch: React.Dispatch<QueryDispatch>;
+  setFilterInputValuesDispatchData: SetFilterInputValuesDispatchData<ValidValueAction>;
 }) {
+  const { fieldNamesOperatorsTypesMap, selectInputsDataMap } =
+    setFilterInputValuesDispatchData;
   const operatorTypes = fieldNamesOperatorsTypesMap.get(filterField);
+
   if (operatorTypes === undefined) {
     return null;
   }
@@ -240,11 +243,7 @@ function createDynamicValueInput<ValidValueAction extends string = string>({
           ],
           disabled,
           name,
-          setFilterInputValuesDispatchData: {
-            fieldNamesOperatorsTypesMap,
-            setFilterInputValuesDispatch,
-            selectInputsDataMap,
-          },
+          setFilterInputValuesDispatchData,
           validValueAction: queryAction.setFilterValue as ValidValueAction,
           value: filterValue,
         }}
@@ -259,11 +258,7 @@ function createDynamicValueInput<ValidValueAction extends string = string>({
           data: selectInputsDataMap.get(filterField) ?? [],
           disabled,
           name,
-          setFilterInputValuesDispatchData: {
-            fieldNamesOperatorsTypesMap,
-            setFilterInputValuesDispatch,
-            selectInputsDataMap,
-          },
+          setFilterInputValuesDispatchData,
           validValueAction: queryAction.setFilterValue as ValidValueAction,
           value: filterValue,
         }}
@@ -305,14 +300,10 @@ function createDynamicValueInput<ValidValueAction extends string = string>({
             inputKind: "date",
             invalidValueAction: queryAction.setIsError,
             name,
-            setFilterInputValuesDispatchData: {
-              fieldNamesOperatorsTypesMap,
-              setFilterInputValuesDispatch,
-              selectInputsDataMap,
-            },
+            parentDispatch,
             stepperPages,
             validationFunctionsTable,
-            validValueAction: queryAction.setFilterValue as ValidValueAction,
+            validValueAction: queryAction.setFilterValue,
             value: filterValue,
           }}
         />
@@ -342,14 +333,27 @@ function createDynamicValueInput<ValidValueAction extends string = string>({
             inputKind: "time",
             invalidValueAction: queryAction.setIsError,
             name,
-            setFilterInputValuesDispatchData: {
-              fieldNamesOperatorsTypesMap,
-              setFilterInputValuesDispatch,
-              selectInputsDataMap,
-            },
+            parentDispatch,
             stepperPages,
             validationFunctionsTable,
-            validValueAction: queryAction.setFilterValue as ValidValueAction,
+            validValueAction: queryAction.setFilterValue,
+            value: filterValue,
+          }}
+        />
+      );
+    }
+
+    case "text": {
+      return (
+        <AccessibleTextAreaInput
+          attributes={{
+            disabled,
+            invalidValueAction: queryAction.setIsError,
+            name: `${splitCamelCase(filterField)} Value`,
+            parentDispatch,
+            required: false,
+            stepperPages,
+            validValueAction: queryAction.setFilterValue,
             value: filterValue,
           }}
         />

@@ -79,7 +79,10 @@ type AccessibleTextInputAttributes<
         payload: SetPageInErrorPayload;
       }
   >;
-  setFilterInputValuesDispatchData?: SetFilterInputValuesDispatchData<ValidValueAction, InvalidValueAction>;
+  setFilterInputValuesDispatchData?: SetFilterInputValuesDispatchData<
+    ValidValueAction,
+    InvalidValueAction
+  >;
   /** stepper page location of input. default 0 = first page = step 0 */
   page?: number;
   placeholder?: string;
@@ -258,6 +261,7 @@ function AccessibleTextInput<
                 if (setFilterInputValuesDispatchData) {
                   const {
                     fieldNamesOperatorsTypesMap,
+                    searchFieldSelectInputData,
                     setFilterInputValuesDispatch,
                     selectInputsDataMap,
                   } = setFilterInputValuesDispatchData;
@@ -266,6 +270,7 @@ function AccessibleTextInput<
                     action: validValueAction,
                     payload: {
                       fieldNamesOperatorsTypesMap,
+                      searchFieldSelectInputData,
                       value: valueBuffer,
                       selectInputsDataMap,
                     },

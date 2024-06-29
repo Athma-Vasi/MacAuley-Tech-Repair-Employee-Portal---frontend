@@ -243,16 +243,18 @@ function AccessibleDateTimeInput<
               if (setFilterInputValuesDispatchData) {
                 const {
                   fieldNamesOperatorsTypesMap,
-                  setFilterInputValuesDispatch,
+                  searchFieldSelectInputData,
                   selectInputsDataMap,
+                  setFilterInputValuesDispatch,
                 } = setFilterInputValuesDispatchData;
 
                 setFilterInputValuesDispatch({
                   action: validValueAction,
                   payload: {
                     fieldNamesOperatorsTypesMap,
-                    value: valueBuffer,
+                    searchFieldSelectInputData,
                     selectInputsDataMap,
+                    value: valueBuffer,
                   },
                 });
 
