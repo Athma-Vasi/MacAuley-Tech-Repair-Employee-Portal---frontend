@@ -210,8 +210,8 @@ function createQueryStringFromFilter({
   const mongoOperator =
     comparisonOperatorsMongoTable.get(filterComparisonOperator) ?? "$in";
   const inModifier = comparisonOperatorsMongoTable.has(filterComparisonOperator)
-    ? "[]"
-    : "";
+    ? ""
+    : "[]";
 
   return `${existingQueryString}$${filterLogicalOperator}[${filterField}][${mongoOperator}]=${filterValue}${inModifier}&`;
 }

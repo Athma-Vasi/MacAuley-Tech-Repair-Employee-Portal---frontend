@@ -1,38 +1,29 @@
 import { Stack, Text } from "@mantine/core";
-import { VALIDATION_FUNCTIONS_TABLE, ValidationKey } from "../../constants/validations";
+import React from "react";
+
 import { SetPageInErrorPayload, StepperPage } from "../../types";
+import { AccessibleButton } from "../accessibleInputs/AccessibleButton";
 import { AccessibleSegmentedControl } from "../accessibleInputs/AccessibleSegmentedControl";
 import { AccessibleTextInput } from "../accessibleInputs/text/AccessibleTextInput";
-import { QueryAction } from "./actions";
+import { queryAction } from "./actions";
 import { QUERY_SEARCH_CASE_DATA } from "./constants";
-import { GeneralSearchCase, ModifyQueryChainsDispatch, QueryDispatch } from "./types";
+import { QueryDispatch, QueryState } from "./types";
 import { InputsValidationsMap } from "./utils";
-import React from "react";
-import { AccessibleButton } from "../accessibleInputs/AccessibleButton";
 
-type QuerySearchProps<
-  ValidValueAction extends string = string,
-  InvalidValueAction extends string = string
-> = {
-  generalSearchExclusionValue: string;
-  generalSearchInclusionValue: string;
-  generalSearchCase: GeneralSearchCase;
-  queryAction: QueryAction;
-  parentDispatch: React.Dispatch<QueryDispatch>;
+type QuerySearchProps = {
   inputsValidationsMap: InputsValidationsMap;
+  parentDispatch: React.Dispatch<QueryDispatch>;
+  queryState: QueryState;
 };
 
-function QuerySearch<
-  ValidValueAction extends string = string,
-  InvalidValueAction extends string = string
->({
-  generalSearchCase,
-  generalSearchExclusionValue,
-  generalSearchInclusionValue,
-  queryAction,
-  parentDispatch,
+function QuerySearch({
   inputsValidationsMap,
-}: QuerySearchProps<ValidValueAction, InvalidValueAction>) {
+  parentDispatch,
+  queryState,
+}: QuerySearchProps) {
+  const { generalSearchCase, generalSearchExclusionValue, generalSearchInclusionValue } =
+    queryState;
+
   type QuerySearchState = {
     exclusion: string;
     inclusion: string;

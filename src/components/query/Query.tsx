@@ -1,15 +1,15 @@
+import { Accordion, Stack } from "@mantine/core";
 import React from "react";
+
+import { Chain, QueryChainDispatch } from "./Chain";
+import { QueryFilter, SetFilterInputValuesDispatch } from "./QueryFilter";
+import { QueryProjection } from "./QueryProjection";
+import { QuerySearch } from "./QuerySearch";
+import { QuerySort, QuerySortDispatch } from "./QuerySort";
 import { queryReducer } from "./reducers";
 import { createInitialQueryState } from "./state";
-import { QueryChainKind, QueryProps } from "./types";
+import { QueryProps } from "./types";
 import { createQueryInputsData } from "./utils";
-import { QueryFilter, SetFilterInputValuesDispatch } from "./QueryFilter";
-import { QueryAction, queryAction } from "./actions";
-import { Accordion, Stack, Text, Timeline } from "@mantine/core";
-import { QueryProjection } from "./QueryProjection";
-import { Chain, QueryChainDispatch } from "./Chain";
-import { QuerySort, QuerySortDispatch } from "./QuerySort";
-import { QuerySearch } from "./QuerySearch";
 
 function Query({
   collectionName,
@@ -17,7 +17,7 @@ function Query({
   // parentDispatch,
   stepperPages,
   // validValueAction,
-  isProjectionDisabled = false,
+  hideProjection = false,
 }: QueryProps) {
   const {
     fieldNamesOperatorsTypesMap,
@@ -34,24 +34,6 @@ function Query({
     createInitialQueryState(searchFieldSelectInputData)
   );
 
-  const {
-    filterField,
-    filterComparisonOperator,
-    filterComparisonOperatorSelectData,
-    filterLogicalOperator,
-    filterValue,
-    generalSearchCase,
-    generalSearchExclusionValue,
-    generalSearchInclusionValue,
-    isError,
-    isSearchDisabled,
-    limitPerPage,
-    projectionExclusionFields,
-    queryChains,
-    sortDirection,
-    sortField,
-  } = queryState;
-
   console.group("Query");
   console.log("queryState", queryState);
   console.log("stepperPages", stepperPages);
@@ -67,13 +49,8 @@ function Query({
   const queryChain = (
     <Chain
       collectionName={collectionName}
-      generalSearchCase={generalSearchCase}
-      generalSearchExclusionValue={generalSearchExclusionValue}
-      generalSearchInclusionValue={generalSearchInclusionValue}
-      projectionExclusionFields={projectionExclusionFields}
-      queryAction={queryAction}
       queryChainDispatch={queryDispatch as QueryChainDispatch}
-      queryChains={queryChains}
+      queryState={queryState}
     />
   );
 
@@ -93,21 +70,18 @@ function Query({
 
   const queryProjection = (
     <QueryProjection
+      hideProjection={hideProjection}
       parentDispatch={queryDispatch}
       projectionCheckboxData={projectionCheckboxData}
-      projectionExclusionFields={projectionExclusionFields}
-      queryAction={queryAction}
+      queryState={queryState}
     />
   );
 
   const querySearch = (
     <QuerySearch
-      generalSearchCase={generalSearchCase}
-      generalSearchExclusionValue={generalSearchExclusionValue}
-      generalSearchInclusionValue={generalSearchInclusionValue}
-      queryAction={queryAction}
-      parentDispatch={queryDispatch}
       inputsValidationsMap={inputsValidationsMap}
+      parentDispatch={queryDispatch}
+      queryState={queryState}
     />
   );
 

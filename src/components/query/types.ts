@@ -62,7 +62,7 @@ type QueryProps<
   InvalidValueAction extends string = string
 > = {
   collectionName: string;
-  isProjectionDisabled?: boolean;
+  hideProjection?: boolean;
   // invalidValueAction: InvalidValueAction;
   // parentDispatch: React.Dispatch<
   //   | {

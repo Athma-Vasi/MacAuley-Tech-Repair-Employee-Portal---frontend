@@ -4,7 +4,7 @@ import { TbLink, TbLogicAnd, TbLogicNor, TbLogicNot, TbLogicOr } from "react-ico
 
 import { addCommaSeparator, capitalizeJoinWithAnd, splitCamelCase } from "../../utils";
 import { AccessibleButton } from "../accessibleInputs/AccessibleButton";
-import { QueryAction } from "./actions";
+import { queryAction, QueryAction } from "./actions";
 import {
   GeneralSearchCase,
   LogicalOperator,
@@ -12,6 +12,7 @@ import {
   QueryChain,
   QueryChainKind,
   QueryChains,
+  QueryState,
 } from "./types";
 import { link } from "fs";
 
@@ -22,25 +23,19 @@ type QueryChainDispatch = React.Dispatch<{
 
 type QueryChainProps = {
   collectionName: string;
-  generalSearchCase: GeneralSearchCase;
-  generalSearchExclusionValue: string;
-  generalSearchInclusionValue: string;
-  projectionExclusionFields: string[];
-  queryAction: QueryAction;
-  queryChains: QueryChains;
   queryChainDispatch: QueryChainDispatch;
+  queryState: QueryState;
 };
 
-function Chain({
-  collectionName,
-  generalSearchCase,
-  generalSearchExclusionValue,
-  generalSearchInclusionValue,
-  projectionExclusionFields,
-  queryAction,
-  queryChains,
-  queryChainDispatch,
-}: QueryChainProps) {
+function Chain({ collectionName, queryChainDispatch, queryState }: QueryChainProps) {
+  const {
+    generalSearchCase,
+    generalSearchExclusionValue,
+    generalSearchInclusionValue,
+    projectionExclusionFields,
+    queryChains,
+  } = queryState;
+
   const allChainsLength = Object.values(queryChains).reduce(
     (acc, logicalOperatorChainsMap) => {
       Array.from(logicalOperatorChainsMap).forEach(([_logicalOperator, queryChain]) => {

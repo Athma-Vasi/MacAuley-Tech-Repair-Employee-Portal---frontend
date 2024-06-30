@@ -1,22 +1,24 @@
 import { CheckboxRadioSelectData } from "../../types";
 import { AccessibleCheckboxInputGroup } from "../accessibleInputs/AccessibleCheckboxInput";
-import { QueryAction } from "./actions";
-import { QueryDispatch } from "./types";
+import { queryAction } from "./actions";
+import { QueryDispatch, QueryState } from "./types";
 
 type QueryProjectionProps = {
+  hideProjection: boolean;
   parentDispatch: React.Dispatch<QueryDispatch>;
   projectionCheckboxData: CheckboxRadioSelectData;
-  projectionExclusionFields: string[];
-  queryAction: QueryAction;
+  queryState: QueryState;
 };
 
 function QueryProjection({
+  hideProjection = false,
   parentDispatch,
   projectionCheckboxData,
-  projectionExclusionFields,
-  queryAction,
+  queryState,
 }: QueryProjectionProps) {
-  return (
+  const { projectionExclusionFields } = queryState;
+
+  return hideProjection ? null : (
     <AccessibleCheckboxInputGroup
       attributes={{
         inputData: projectionCheckboxData,

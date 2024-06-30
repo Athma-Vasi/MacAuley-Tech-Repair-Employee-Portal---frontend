@@ -1,16 +1,11 @@
 import { SetPageInErrorPayload } from "../../types";
 import { QueryAction, queryAction } from "./actions";
 import {
-  ComparisonOperator,
   GeneralSearchCase,
   LogicalOperator,
-  LogicalOperatorChainsSets,
   ModifyQueryChainPayload,
-  QueryChainActions,
-  QueryChainKind,
   QueryDispatch,
   QueryFilterPayload,
-  QueryLink,
   QueryOperator,
   QueryState,
   SortDirection,
