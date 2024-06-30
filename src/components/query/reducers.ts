@@ -2,6 +2,7 @@ import { SetPageInErrorPayload } from "../../types";
 import { QueryAction, queryAction } from "./actions";
 import {
   GeneralSearchCase,
+  LimitPerPage,
   LogicalOperator,
   ModifyQueryChainPayload,
   QueryDispatch,
@@ -37,9 +38,10 @@ const queryReducers = new Map<
     queryAction.setGeneralSearchInclusionValue,
     queryReducer_setGeneralSearchInclusionValue,
   ],
-  [queryAction.setIsError, queryReducer_setIsError],
   [queryAction.setGeneralSearchCase, queryReducer_setGeneralSearchCase],
+  [queryAction.setIsError, queryReducer_setIsError],
   [queryAction.setIsSearchDisabled, queryReducer_setIsSearchDisabled],
+  [queryAction.setLimitPerPage, queryReducer_setLimitPerPage],
   [queryAction.setProjectionExclusionFields, queryReducer_setProjectionExclusionFields],
   [queryAction.setSortDirection, queryReducer_setSortDirection],
   [queryAction.setSortField, queryReducer_setSortField],
@@ -339,6 +341,13 @@ function queryReducer_setIsSearchDisabled(
   dispatch: QueryDispatch
 ): QueryState {
   return { ...state, isSearchDisabled: dispatch.payload as boolean };
+}
+
+function queryReducer_setLimitPerPage(
+  state: QueryState,
+  dispatch: QueryDispatch
+): QueryState {
+  return { ...state, limitPerPage: dispatch.payload as LimitPerPage };
 }
 
 function queryReducer_setProjectionExclusionFields(

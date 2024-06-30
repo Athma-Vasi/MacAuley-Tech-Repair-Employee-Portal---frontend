@@ -29,6 +29,8 @@ type GeneralSearchCase = "case-sensitive" | "case-insensitive";
 
 type GeneralSearchKind = "inclusion" | "exclusion";
 
+type LimitPerPage = "10" | "25" | "50" | "75";
+
 type LogicalOperator = "and" | "nor" | "or";
 
 type LogicalOperatorChainsSets = {
@@ -91,7 +93,7 @@ type QueryState = {
   generalSearchInclusionValue: string;
   isError: boolean;
   isSearchDisabled: boolean;
-  limitPerPage: number;
+  limitPerPage: LimitPerPage;
   logicalOperatorChainsSetsMap: LogicalOperatorChainsSetsMap;
   projectionExclusionFields: string[];
   queryChains: QueryChains;
@@ -168,7 +170,7 @@ type QueryDispatch =
     }
   | {
       action: QueryAction["setLimitPerPage"];
-      payload: number;
+      payload: LimitPerPage;
     }
   | {
       action: QueryAction["setProjectionExclusionFields"];
@@ -189,6 +191,7 @@ export type {
   FilterInputsType,
   GeneralSearchCase,
   GeneralSearchKind,
+  LimitPerPage,
   LogicalOperator,
   LogicalOperatorChainsSets,
   LogicalOperatorChainsSetsMap,

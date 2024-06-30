@@ -1,14 +1,14 @@
 type QueryAction = {
   modifyQueryChains: "modifyQueryChains";
-  setFilterField: "setFilterField";
   setFilterComparisonOperator: "setFilterComparisonOperator";
   setFilterComparisonOperatorSelectData: "setFilterComparisonOperatorSelectData";
+  setFilterField: "setFilterField";
   setFilterLogicalOperator: "setFilterLogicalOperator";
   setFilterValue: "setFilterValue";
+  setGeneralSearchCase: "setGeneralSearchCase";
   setGeneralSearchExclusionValue: "setGeneralSearchExclusionValue";
   setGeneralSearchInclusionValue: "setGeneralSearchInclusionValue";
   setIsError: "setIsError";
-  setGeneralSearchCase: "setGeneralSearchCase";
   setIsSearchDisabled: "setIsSearchDisabled";
   setLimitPerPage: "setLimitPerPage";
   setProjectionExclusionFields: "setProjectionExclusionFields";
@@ -18,15 +18,15 @@ type QueryAction = {
 
 const queryAction: QueryAction = {
   modifyQueryChains: "modifyQueryChains",
-  setFilterField: "setFilterField",
   setFilterComparisonOperator: "setFilterComparisonOperator",
   setFilterComparisonOperatorSelectData: "setFilterComparisonOperatorSelectData",
+  setFilterField: "setFilterField",
   setFilterLogicalOperator: "setFilterLogicalOperator",
   setFilterValue: "setFilterValue",
+  setGeneralSearchCase: "setGeneralSearchCase",
   setGeneralSearchExclusionValue: "setGeneralSearchExclusionValue",
   setGeneralSearchInclusionValue: "setGeneralSearchInclusionValue",
   setIsError: "setIsError",
-  setGeneralSearchCase: "setGeneralSearchCase",
   setIsSearchDisabled: "setIsSearchDisabled",
   setLimitPerPage: "setLimitPerPage",
   setProjectionExclusionFields: "setProjectionExclusionFields",
