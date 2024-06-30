@@ -1,4 +1,6 @@
 import { Stack } from "@mantine/core";
+import qs from "qs";
+import React from "react";
 
 import { CheckboxRadioSelectData } from "../../types";
 import { AccessibleButton } from "../accessibleInputs/AccessibleButton";
@@ -6,7 +8,7 @@ import { AccessibleSelectInput } from "../accessibleInputs/AccessibleSelectInput
 import { QueryAction, queryAction } from "./actions";
 import { MAX_LINKS_AMOUNT, SORT_DIRECTION_DATA } from "./constants";
 import { ModifyQueryChainPayload, QueryChain, QueryState, SortDirection } from "./types";
-import { removeProjectionExclusionFields } from "./utils";
+import { createQueryStringFromSort, removeProjectionExclusionFields } from "./utils";
 
 type QuerySortDispatch<ValidValueAction extends string = string> = React.Dispatch<{
   action: ValidValueAction;
@@ -29,6 +31,8 @@ function QuerySort<ValidValueAction extends string = string>({
   sortChainDispatch,
   sortFieldSelectData,
 }: QuerySortProps<ValidValueAction>) {
+  const [existingQueryString, setExistingQueryString] = React.useState<string>("");
+
   const { projectionExclusionFields, queryChains, sortDirection, sortField } = queryState;
   const logicalOperatorChainsMap = queryChains.sort;
   const sortChainLength = Array.from(logicalOperatorChainsMap).reduce(
@@ -71,7 +75,7 @@ function QuerySort<ValidValueAction extends string = string>({
     />
   );
 
-  const addFilterStatementsButton = (
+  const addSortLinkButton = (
     <AccessibleButton
       attributes={{
         enabledScreenreaderText: "Add search link to chain",
@@ -93,6 +97,25 @@ function QuerySort<ValidValueAction extends string = string>({
               queryLink: [sortField, "equal to", sortDirection],
             },
           });
+
+          //
+          //
+          //
+
+          const sortQueryString = createQueryStringFromSort({
+            existingQueryString,
+            sortDirection,
+            sortField,
+          });
+
+          setExistingQueryString(sortQueryString);
+
+          const parsedQueryObject = qs.parse(sortQueryString);
+
+          console.group("addSortLinkButton onClick");
+          console.log("sortQueryString", sortQueryString);
+          console.log("parsedQueryObject", parsedQueryObject);
+          console.groupEnd();
         },
       }}
     />
@@ -102,7 +125,7 @@ function QuerySort<ValidValueAction extends string = string>({
     <Stack>
       {sortFieldSelectInput}
       {sortDirectionSelectInput}
-      {addFilterStatementsButton}
+      {addSortLinkButton}
     </Stack>
   );
 }

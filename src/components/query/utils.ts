@@ -153,19 +153,6 @@ function createQueryInputsData(stepperPages: StepperPage[]): QueryInputsData {
           return acc;
         }
 
-        if (inputType === "text") {
-          // searchValue is the name of the dynamic input in search section
-          // this ensures that the searchValue input, which may consist of text input type, is validated correctly
-          inputsValidationsMap.set(name, {
-            validationKey,
-            validation: VALIDATION_FUNCTIONS_TABLE[validationKey],
-          });
-
-          return acc;
-        }
-
-        // filterValue is the name of the dynamic input in query filter section
-        // this ensures that the filterValue input, which may consist of date, number, or time input types, is validated correctly
         inputsValidationsMap.set(name, {
           validationKey,
           validation: VALIDATION_FUNCTIONS_TABLE[validationKey],
@@ -205,12 +192,28 @@ function createQueryStringFromFilter({
   filterValue,
 }: {
   existingQueryString: string;
-  filterComparisonOperator: ComparisonOperator;
+  filterComparisonOperator: QueryOperator;
   filterField: string;
   filterLogicalOperator: LogicalOperator;
   filterValue: string;
 }) {
-  return `${existingQueryString}${filterLogicalOperator}[${filterField}][${filterComparisonOperator}]=${filterValue}&`;
+  type MongoComparisonOperator = "$eq" | "$gt" | "$gte" | "$lt" | "$lte" | "$ne";
+  const comparisonOperatorsMongoTable = new Map<QueryOperator, MongoComparisonOperator>([
+    ["equal to", "$eq"],
+    ["greater than", "$gt"],
+    ["greater than or equal to", "$gte"],
+    ["less than", "$lt"],
+    ["less than or equal to", "$lte"],
+    ["not equal to", "$ne"],
+  ]);
+
+  const mongoOperator =
+    comparisonOperatorsMongoTable.get(filterComparisonOperator) ?? "$in";
+  const inModifier = comparisonOperatorsMongoTable.has(filterComparisonOperator)
+    ? "[]"
+    : "";
+
+  return `${existingQueryString}$${filterLogicalOperator}[${filterField}][${mongoOperator}]=${filterValue}${inModifier}&`;
 }
 
 function createQueryStringFromProjection({

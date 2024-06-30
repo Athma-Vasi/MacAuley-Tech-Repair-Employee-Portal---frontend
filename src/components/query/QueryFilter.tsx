@@ -1,5 +1,6 @@
 import { Stack } from "@mantine/core";
 import React from "react";
+import qs from "qs";
 
 import { VALIDATION_FUNCTIONS_TABLE } from "../../constants/validations";
 import {
@@ -29,6 +30,7 @@ import {
   SortDirection,
 } from "./types";
 import {
+  createQueryStringFromFilter,
   InputsValidationsMap,
   OperatorsInputType,
   removeProjectionExclusionFields,
@@ -91,6 +93,8 @@ function QueryFilter<ValidValueAction extends string = string>({
   selectInputsDataMap,
   setFilterInputValuesDispatch,
 }: QueryFilterProps<ValidValueAction>) {
+  const [existingQueryString, setExistingQueryString] = React.useState<string>("");
+
   const {
     filterField,
     filterComparisonOperator,
@@ -192,6 +196,27 @@ function QueryFilter<ValidValueAction extends string = string>({
               queryLink: [filterField, filterComparisonOperator, filterValue],
             },
           });
+
+          //
+          //
+          //
+
+          const filterQueryString = createQueryStringFromFilter({
+            existingQueryString,
+            filterComparisonOperator,
+            filterField,
+            filterLogicalOperator,
+            filterValue,
+          });
+
+          setExistingQueryString(filterQueryString);
+
+          const parsedQueryObject = qs.parse(filterQueryString);
+
+          console.group("addFilterLinkButton onClick");
+          console.log("filterQueryString", filterQueryString);
+          console.log("parsedQueryObject", parsedQueryObject);
+          console.groupEnd();
         },
       }}
     />
