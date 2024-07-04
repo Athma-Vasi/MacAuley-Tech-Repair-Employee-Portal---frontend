@@ -47,7 +47,6 @@ function createInitialQueryState(
     generalSearchInclusionValue: "",
     isError: false,
     isSearchDisabled: false,
-    limitPerPage: 10,
     logicalOperatorChainsSetsMap,
     projectionExclusionFields: [],
     queryChains: { filter: new Map(), sort: new Map() },

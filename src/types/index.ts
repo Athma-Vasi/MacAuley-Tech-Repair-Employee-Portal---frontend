@@ -100,7 +100,7 @@ type RequestStatus = "pending" | "approved" | "rejected";
  * - The type includes mandatory fields that are always returned in resource documents.
  * - The 'Partial' type with the generic 'Doc' indicates that the returned fields may vary depending on the query.
  */
-type QueryResponseData<Doc> = {
+type QueryResponseData<Doc extends Record<string, unknown> = Record<string, unknown>> = {
   _id: string;
   userId: string;
   username: string;
@@ -111,7 +111,9 @@ type QueryResponseData<Doc> = {
 /**
  * Default server response type for most (except GET multiple docs) REST API requests
  */
-type ResourceRequestServerResponse<Doc> = {
+type ResourceRequestServerResponse<
+  Doc extends Record<string, unknown> = Record<string, unknown>
+> = {
   message: string;
   resourceData: [QueryResponseData<Doc>];
 };
@@ -119,7 +121,9 @@ type ResourceRequestServerResponse<Doc> = {
 /**
  * Default server response type for GET(multiple docs) REST API requests with query parameters
  */
-type GetQueriedResourceRequestServerResponse<Doc> = {
+type GetQueriedResourceRequestServerResponse<
+  Doc extends Record<string, unknown> = Record<string, unknown>
+> = {
   message: string;
   pages: number;
   totalDocuments: number;

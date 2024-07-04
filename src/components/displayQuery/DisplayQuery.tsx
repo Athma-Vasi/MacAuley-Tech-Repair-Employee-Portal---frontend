@@ -51,12 +51,7 @@ import { DisplayDocumentsView, DisplayQueryProps } from "./types";
 import { GROUP_BY_HELP_MODAL_CONTENT } from "./utils";
 import DisplayQueryCards from "./displayQueryCards/DisplayQueryCards";
 
-function DisplayQuery<
-  Doc extends Record<string | symbol | number, any> = Record<
-    string | symbol | number,
-    any
-  >
->({
+function DisplayQuery({
   componentQueryData,
   createResourcePath,
   fileUploadsData = [],
@@ -69,7 +64,7 @@ function DisplayQuery<
   queryValuesArray,
   style = {},
   totalDocuments,
-}: DisplayQueryProps<Doc>) {
+}: DisplayQueryProps) {
   const [displayQueryState, displayQueryDispatch] = useReducer(
     displayQueryReducer,
     initialDisplayQueryState

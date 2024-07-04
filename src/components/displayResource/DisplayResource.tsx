@@ -37,7 +37,7 @@ import { returnBenefitStepperPages } from "../benefit/constants";
 import { returnEventStepperPages } from "../event/constants";
 import { returnExpenseClaimStepperPages } from "../expenseClaim/constants";
 
-function DisplayResource<Doc>({
+function DisplayResource<Doc extends Record<string, unknown> = Record<string, unknown>>({
   style = {},
   componentQueryData,
   createResourcePath,
@@ -741,7 +741,7 @@ function DisplayResource<Doc>({
                     ...PROPERTY_DESCRIPTOR,
                     value: filteredValue,
                   });
-                  acc = clone;
+                  acc = clone as QueryResponseData<Doc>;
                 }
               }
               // if the value is a string, check if the value is the fileUploadId
@@ -753,7 +753,7 @@ function DisplayResource<Doc>({
                     ...PROPERTY_DESCRIPTOR,
                     value: "",
                   });
-                  acc = clone;
+                  acc = clone as QueryResponseData<Doc>;
                 }
               }
             }

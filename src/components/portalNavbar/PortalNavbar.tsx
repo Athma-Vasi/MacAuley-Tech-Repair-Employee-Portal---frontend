@@ -549,6 +549,16 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
     />
   );
 
+  const resourceNavLink = (
+    <NavLink
+      label={<Text>Resource</Text>}
+      icon={<TbCash color={iconGray} />}
+      onClick={() => {
+        navigate("/home/resource");
+      }}
+    />
+  );
+
   return (
     <Navbar
       bg={backgroundColor}
@@ -585,6 +595,8 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
           {createdOutreachNavLink}
 
           {createdDirectoryNavLink}
+
+          {resourceNavLink}
         </Flex>
       </ScrollArea>
     </Navbar>

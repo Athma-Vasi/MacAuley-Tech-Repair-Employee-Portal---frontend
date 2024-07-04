@@ -1,18 +1,18 @@
-import { Pagination } from '@mantine/core';
-import { CSSProperties, Dispatch, useEffect, useState } from 'react';
-import React from 'react';
+import { Pagination } from "@mantine/core";
+import { CSSProperties, Dispatch, useEffect, useState } from "react";
+import React from "react";
 
 type PageBuilderProps = {
   style?: CSSProperties;
-  setPageQueryString?: 'setPageQueryString';
+  setPageQueryString?: "setPageQueryString";
   parentComponentDispatch?: Dispatch<{
-    type: 'setPageQueryString';
+    type: "setPageQueryString";
     payload: string;
   }>;
 
-  setModalPage?: 'setModalPage';
+  setModalPage?: "setModalPage";
   modalPageDispatch?: Dispatch<{
-    type: 'setModalPage';
+    type: "setModalPage";
     payload: number;
   }>;
 
@@ -24,10 +24,10 @@ type PageBuilderProps = {
 function PageBuilder({
   style = {},
   total,
-  setPageQueryString = 'setPageQueryString',
+  setPageQueryString = "setPageQueryString",
   parentComponentDispatch,
   resetPage = false,
-  setModalPage = 'setModalPage',
+  setModalPage = "setModalPage",
   modalPageDispatch,
 }: PageBuilderProps): React.JSX.Element {
   const [page, setPage] = useState(1);

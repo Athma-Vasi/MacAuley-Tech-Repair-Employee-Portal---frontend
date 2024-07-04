@@ -13,7 +13,7 @@ type GroupedByQueryResponseData = Map<
   Record<string, any>[]
 >;
 
-type DisplayQueryProps<Doc> = {
+type DisplayQueryProps = {
   componentQueryData: ComponentQueryData[];
   createResourcePath: string;
   fileUploadsData?: Array<{ [key: string]: FileUploadDocument[] }>;
@@ -36,7 +36,7 @@ type DisplayQueryProps<Doc> = {
       value: boolean;
     };
   }>;
-  queryResponseData: QueryResponseData<Doc>[];
+  queryResponseData: QueryResponseData[];
   queryValuesArray: string[]; // simply passed down from DisplayResource to DisplayQueryDesktop and DisplayQueryMobile to highlight the query values in the table
   style?: CSSProperties;
   totalDocuments: number;

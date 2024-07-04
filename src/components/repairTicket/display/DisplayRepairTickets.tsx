@@ -23,7 +23,7 @@ function DisplayRepairTickets() {
   );
 
   const displayResource = (
-    <DisplayResource<QueryResponseData<RepairTicketDocument>[]>
+    <DisplayResource
       componentQueryData={REPAIR_NOTE_QUERY_DATA}
       createResourcePath="/home/repair-ticket/create"
       resourceUrlPaths={REPAIR_NOTE_ROUTE_PATHS}

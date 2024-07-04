@@ -14,6 +14,7 @@ import { FetchInterceptor } from "../hooks/useFetchInterceptor";
 import type {
   Country,
   ErrorLogSchema,
+  GetQueriedResourceRequestServerResponse,
   PostalCode,
   QueryResponseData,
   RoleResourceRoutePaths,
@@ -1908,40 +1909,26 @@ function urlBuilder({
   return new URL(`${protocol}://${host}:${port}/api/v1/${path}${query}${hash}`);
 }
 
-type GroupQueryResponseInput<Doc> = {
-  queryResponseData: QueryResponseData<Doc>[];
+type GroupQueryResponseInput = {
+  queryResponseData: QueryResponseData[];
   groupBySelection: string;
   currentSelectionData: string[];
 };
-type GroupQueryResponseOutput<Doc> = {
-  groupedBy: Map<string | number, QueryResponseData<Doc>[]>;
+type GroupQueryResponseOutput = {
+  groupedBy: Map<string | number, QueryResponseData[]>;
   // rest: Record<string, number>[];
 };
-/**
- * Groups query response data by a specified field and groups omitted fields as "rest".
- *
- * This function takes query response data, a field for grouping, and the current selection data.
- * It organizes the query response data into groups based on the provided grouping field
- *
- * @template Doc - The type of the documents in the query response data.
- *
- * @param {GroupQueryResponseInput<Doc>} params - Parameters for grouping query response data.
- * @param {Array<QueryResponseData<Doc>>} params.queryResponseData - The data to be grouped.
- * @param {string} params.groupBySelection - The field used for grouping.
- * @param {string[]} params.currentSelectionData - The current selection data.
- *
- * @returns {GroupQueryResponseOutput<Doc>} An object containing grouped data and "rest" data.
- */
-function groupQueryResponse<Doc>({
+
+function groupQueryResponse({
   queryResponseData,
   groupBySelection,
   currentSelectionData,
-}: GroupQueryResponseInput<Doc>): GroupQueryResponseOutput<Doc> {
+}: GroupQueryResponseInput): GroupQueryResponseOutput {
   if (groupBySelection === "none") {
     const groupedBy = queryResponseData.reduce(
       (
-        acc: Map<string | number, QueryResponseData<Doc>[]>,
-        queryResponseObj: QueryResponseData<Doc>
+        acc: Map<string | number, QueryResponseData[]>,
+        queryResponseObj: QueryResponseData
       ) => {
         // acc.set('results', [...(acc.get('results') ?? []), queryResponseObj]);
         const prevResults = acc.get("results") ?? [];
@@ -1959,14 +1946,14 @@ function groupQueryResponse<Doc>({
 
   const groupedBy = queryResponseData.reduce(
     (
-      acc: Map<string | number, Array<QueryResponseData<Doc>>>,
-      queryResponseObj: QueryResponseData<Doc>
+      acc: Map<string | number, Array<QueryResponseData>>,
+      queryResponseObj: QueryResponseData
     ) => {
       // find the value of the groupBySelection field
       const groupBySelectionValue =
-        Object.entries(queryResponseObj).find(
+        (Object.entries(queryResponseObj).find(
           ([key, _]) => key === groupBySelection
-        )?.[1] ?? "";
+        )?.[1] as string | number) ?? "";
 
       // if the groupBySelection field exists in the queryResponseObj
       if (Object.hasOwn(queryResponseObj, groupBySelection)) {
@@ -2686,8 +2673,157 @@ async function formSubmitPOST<
       payload: false,
     });
   } catch (error: any) {
-    console.log("error inside catch", error);
+    console.log("formSubmitPOST", error);
 
+    if (!isComponentMounted || error?.name === "AbortError") {
+      return;
+    }
+
+    showBoundary(error);
+  }
+}
+
+async function fetchResourceGET<
+  SetIsLoadingAction extends string = string,
+  SetLoadingMessageAction extends string = string,
+  SetResourceDataAction extends string = string,
+  SetTotalDocumentsAction extends string = string,
+  SetTotalPagesAction extends string = string,
+  Data extends Record<string, unknown> = Record<string, unknown>
+>({
+  fetchAbortController,
+  fetchInterceptor,
+  isComponentMounted,
+  loadingMessage,
+  parentDispatch,
+  preFetchAbortController,
+  roleResourceRoutePaths,
+  sessionId,
+  setResourceDataAction,
+  setIsLoadingAction,
+  setLoadingMessageAction,
+  setTotalDocumentsAction,
+  setTotalPagesAction,
+  showBoundary,
+  userId,
+  userRole,
+  username,
+}: {
+  fetchAbortController: AbortController;
+  fetchInterceptor: FetchInterceptor;
+  isComponentMounted: boolean;
+  loadingMessage: string;
+  parentDispatch: React.Dispatch<
+    | {
+        action: SetIsLoadingAction;
+        payload: boolean;
+      }
+    | {
+        action: SetLoadingMessageAction;
+        payload: string;
+      }
+    | {
+        action: SetResourceDataAction;
+        payload: Array<QueryResponseData<Data>>;
+      }
+    | {
+        action: SetTotalDocumentsAction;
+        payload: number;
+      }
+    | {
+        action: SetTotalPagesAction;
+        payload: number;
+      }
+  >;
+  preFetchAbortController: AbortController;
+  roleResourceRoutePaths: RoleResourceRoutePaths;
+  sessionId: string;
+  setResourceDataAction: SetResourceDataAction;
+  setIsLoadingAction: SetIsLoadingAction;
+  setLoadingMessageAction: SetLoadingMessageAction;
+  setTotalDocumentsAction: SetTotalDocumentsAction;
+  setTotalPagesAction: SetTotalPagesAction;
+  showBoundary: (error: any) => void;
+  userId: string;
+  userRole: UserRole;
+  username: string;
+}) {
+  try {
+    parentDispatch({
+      action: setLoadingMessageAction,
+      payload: loadingMessage,
+    });
+
+    const url: URL = urlBuilder({ path: roleResourceRoutePaths[userRole] });
+
+    const requestInit: RequestInit = {
+      headers: { "Content-Type": "application/json" },
+      method: "GET",
+    };
+
+    const response: Response = await fetchInterceptor({
+      fetchAbortController,
+      preFetchAbortController,
+      requestInit,
+      url,
+    });
+
+    if (!isComponentMounted) {
+      return;
+    }
+
+    if (!response.ok) {
+      const { status, statusText } = response;
+
+      const errorLogSchema: ErrorLogSchema = {
+        message: statusText,
+        requestBody: "",
+        sessionId,
+        stack: "",
+        status,
+        timestamp: new Date().toISOString(),
+        userId,
+        username,
+      };
+
+      console.log("errorLogSchema inside try", errorLogSchema);
+
+      // throw new Error(JSON.stringify(errorLogSchema));
+      return Promise.reject(errorLogSchema);
+
+      // if (status === 401) {
+      // throw new Error("Unauthorized");
+      // }
+      // throw new Error(`${status} : ${statusText}`);
+    }
+
+    const {
+      pages,
+      resourceData,
+      totalDocuments,
+    }: GetQueriedResourceRequestServerResponse<Data> = await response.json();
+
+    parentDispatch({
+      action: setResourceDataAction,
+      payload: resourceData,
+    });
+
+    parentDispatch({
+      action: setTotalDocumentsAction,
+      payload: totalDocuments,
+    });
+
+    parentDispatch({
+      action: setTotalPagesAction,
+      payload: pages,
+    });
+
+    parentDispatch({
+      action: setIsLoadingAction,
+      payload: false,
+    });
+  } catch (error: any) {
+    console.log("fetchResourceGet", error);
     if (!isComponentMounted || error?.name === "AbortError") {
       return;
     }
@@ -2702,6 +2838,7 @@ export {
   capitalizeAll,
   capitalizeJoinWithAnd,
   captureScreenshot,
+  fetchResourceGET,
   filterFieldsFromObject,
   flattenObjectIterative,
   formatDate,

@@ -32,7 +32,9 @@ const displayResourceAction: DisplayResourceAction = {
   setLoadingMessage: "setLoadingMessage",
 };
 
-function displayResourceReducer<Doc>(
+function displayResourceReducer<
+  Doc extends Record<string, unknown> = Record<string, unknown>
+>(
   state: DisplayResourceState<Doc>,
   action: DisplayResourceDispatch<Doc>
 ): DisplayResourceState<Doc> {

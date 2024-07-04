@@ -1,31 +1,40 @@
-import { Text } from "@mantine/core";
-import { ResourceProps } from "./types";
+import { Pagination, Stack, Text } from "@mantine/core";
 import { resourceReducer } from "./reducers";
 import { initialResourceState } from "./state";
 import React from "react";
 import { useErrorBoundary } from "react-error-boundary";
 import { useFetchInterceptor } from "../../hooks/useFetchInterceptor";
 import { useAuth } from "../../hooks";
-import { resourceAction } from "./actions";
+import { ResourceAction, resourceAction } from "./actions";
+import { PageNavigation } from "../pageNavigation/PageNavigation";
+import { fetchResourceGET, urlBuilder } from "../../utils";
+import {
+  ErrorLogSchema,
+  GetQueriedResourceRequestServerResponse,
+  RoleResourceRoutePaths,
+  UserRole,
+} from "../../types";
 
-function Resource({
-  createResourceLink,
-  resourceName,
-  roleResourceRoutePaths,
-  stepperPages,
-}: ResourceProps) {
+type ResourceProps = {
+  resourceName: string;
+  roleResourceRoutePaths: RoleResourceRoutePaths;
+};
+
+function Resource({ resourceName, roleResourceRoutePaths }: ResourceProps) {
   const [resourceState, resourceDispatch] = React.useReducer(
     resourceReducer,
     initialResourceState
   );
 
   const {
+    currentPage,
     isError,
     isLoading,
     isSubmitting,
     isSuccessful,
+    limitPerPage,
     newQueryFlag,
-    paginationsAmount,
+    totalPages,
     queryString,
     totalDocuments,
   } = resourceState;
@@ -52,27 +61,53 @@ function Resource({
     isComponentMountedRef.current = true;
     let isComponentMounted = isComponentMountedRef.current;
 
-    async function fetchResourceGET() {
-      try {
-      } catch (error: any) {
-        if (!isComponentMounted) {
-          return;
-        }
-
-        showBoundary(error);
-      }
-    }
+    fetchResourceGET({
+      fetchAbortController,
+      fetchInterceptor,
+      isComponentMounted,
+      loadingMessage: `Loading ${resourceName} page ${currentPage}`,
+      parentDispatch: resourceDispatch,
+      preFetchAbortController,
+      roleResourceRoutePaths,
+      sessionId,
+      setResourceDataAction: resourceAction.setResourceData,
+      setIsLoadingAction: resourceAction.setIsLoading,
+      setTotalDocumentsAction: resourceAction.setTotalDocuments,
+      setLoadingMessageAction: resourceAction.setLoadingMessage,
+      setTotalPagesAction: resourceAction.setTotalPages,
+      showBoundary,
+      userId,
+      username,
+      userRole: "manager",
+    });
 
     return () => {
       fetchAbortController.abort();
       preFetchAbortController.abort();
       isComponentMountedRef.current = false;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (isLoading) {
     return <Text>Loading...</Text>;
   }
 
-  return <Text>Resource</Text>;
+  const pageNavigation = (
+    <PageNavigation
+      limitPerPage={limitPerPage}
+      parentDispatch={resourceDispatch}
+      totalPages={totalPages}
+      validValueAction={resourceAction.setCurrentPage}
+    />
+  );
+
+  return (
+    <Stack w={700}>
+      <Text>Resource</Text>
+      {pageNavigation}
+    </Stack>
+  );
 }
+
+export default Resource;

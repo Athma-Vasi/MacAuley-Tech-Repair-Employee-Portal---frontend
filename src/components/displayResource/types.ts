@@ -24,45 +24,46 @@ type DisplayResourceProps = {
   style?: CSSProperties;
 };
 
-type DisplayResourceState<Doc> = {
-  /** The resource data fetched from backend. */
-  resourceData: QueryResponseData<Doc>[];
-  /** The number of pages to display in the pagination component. */
-  pages: number;
-  /** The total number of documents in the database. */
-  totalDocuments: number;
+type DisplayResourceState<Doc extends Record<string, unknown> = Record<string, unknown>> =
+  {
+    /** The resource data fetched from backend. */
+    resourceData: QueryResponseData<Doc>[];
+    /** The number of pages to display in the pagination component. */
+    pages: number;
+    /** The total number of documents in the database. */
+    totalDocuments: number;
 
-  queryValuesArray: string[]; // values from queryBuilder are passed down to DisplayQueryDesktop and DisplayQueryMobile to highlight the query values in the table
-  newQueryFlag: boolean;
-  queryBuilderString: string;
-  pageQueryString: string;
-  limitPerPage: string;
-  resetPage: boolean;
+    queryValuesArray: string[]; // values from queryBuilder are passed down to DisplayQueryDesktop and DisplayQueryMobile to highlight the query values in the table
+    newQueryFlag: boolean;
+    queryBuilderString: string;
+    pageQueryString: string;
+    limitPerPage: string;
+    resetPage: boolean;
 
-  fileUploads: Array<{ [key: string]: FileUploadDocument[] }>;
+    fileUploads: Array<{ [key: string]: FileUploadDocument[] }>;
 
-  requestStatus: {
-    id: string;
-    status: RequestStatus;
+    requestStatus: {
+      id: string;
+      status: RequestStatus;
+    };
+
+    deleteResource: {
+      formId: string;
+      fileUploadId?: string;
+      kind: "form" | "fileUpload" | "";
+      value: boolean;
+    };
+
+    triggerRefresh: boolean;
+    triggerUpdateRequestStatus: boolean;
+
+    isSubmitting: boolean;
+    submitMessage: string;
+    isSuccessful: boolean;
+    successMessage: string;
+    isLoading: boolean;
+    loadingMessage: string;
   };
-
-  deleteResource: {
-    formId: string;
-    fileUploadId?: string;
-    kind: "form" | "fileUpload" | "";
-    value: boolean;
-  };
-
-  triggerRefresh: boolean;
-  triggerUpdateRequestStatus: boolean;
-
-  isSubmitting: boolean;
-  submitMessage: string;
-  isSuccessful: boolean;
-  successMessage: string;
-  isLoading: boolean;
-  loadingMessage: string;
-};
 
 type UpdateRequestStatusInput = {
   accessToken: string;
@@ -102,7 +103,9 @@ type DisplayResourceAction = {
   setLoadingMessage: "setLoadingMessage";
 };
 
-type DisplayResourceDispatch<Doc> =
+type DisplayResourceDispatch<
+  Doc extends Record<string, unknown> = Record<string, unknown>
+> =
   | {
       type: DisplayResourceAction["setResourceData"];
       payload: QueryResponseData<Doc>[];
@@ -170,7 +173,9 @@ type DisplayResourceDispatch<Doc> =
       payload: Array<{ [key: string]: FileUploadDocument[] }>;
     };
 
-type DisplayResourceReducer = <Doc>(
+type DisplayResourceReducer = <
+  Doc extends Record<string, unknown> = Record<string, unknown>
+>(
   state: DisplayResourceState<Doc>,
   action: DisplayResourceDispatch<Doc>
 ) => DisplayResourceState<Doc>;

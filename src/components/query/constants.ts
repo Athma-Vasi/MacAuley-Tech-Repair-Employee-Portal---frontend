@@ -2,7 +2,6 @@ import { CheckboxRadioSelectData } from "../../types";
 import {
   ComparisonOperator,
   GeneralSearchCase,
-  LimitPerPage,
   LogicalOperator,
   SortDirection,
 } from "./types";
@@ -45,13 +44,10 @@ const QUERY_SEARCH_CASE_DATA: GeneralSearchCase[] = [
   "case-insensitive",
 ];
 
-const LIMIT_PER_PAGE_DATA: LimitPerPage[] = ["10", "25", "50", "75"];
-
 export {
   BOOLEAN_OPERATOR_DATA,
   COMPARISON_OPERATORS_DATA,
   IN_OPERATOR_DATA,
-  LIMIT_PER_PAGE_DATA,
   LOGICAL_OPERATORS_DATA,
   MAX_LINKS_AMOUNT,
   QUERY_SEARCH_CASE_DATA,

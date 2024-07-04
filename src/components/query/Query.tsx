@@ -10,9 +10,6 @@ import { queryReducer } from "./reducers";
 import { createInitialQueryState } from "./state";
 import { QueryProps } from "./types";
 import { createQueryInputsData } from "./utils";
-import { AccessibleSegmentedControl } from "../accessibleInputs/AccessibleSegmentedControl";
-import { queryAction } from "./actions";
-import { LIMIT_PER_PAGE_DATA } from "./constants";
 
 function Query({
   collectionName,
@@ -121,22 +118,9 @@ function Query({
     </Accordion>
   );
 
-  const limitPerPageSegmentedControl = (
-    <AccessibleSegmentedControl
-      attributes={{
-        data: LIMIT_PER_PAGE_DATA,
-        name: "limitPerPage",
-        parentDispatch: queryDispatch,
-        validValueAction: queryAction.setLimitPerPage,
-        value: queryState.limitPerPage,
-      }}
-    />
-  );
-
   return (
     <Stack w={700}>
       {queryChain}
-      {limitPerPageSegmentedControl}
       {queryAccordion}
     </Stack>
   );
