@@ -1,32 +1,11 @@
 import { formatDate, replaceLastCommaWithAnd } from "../../utils";
+import { KEYS_WITH_DATE_VALUES_SET } from "./constants";
 
 function formatDocumentValue(
   key: string,
   value: unknown,
   sliceNumber = 17
 ): { slicedValue: string; unSlicedValue: string } {
-  const keysWithDateValues = new Set([
-    "createdAt",
-    "updatedAt",
-    // repair note
-    "dateReceived",
-    "estimatedCompletionDate",
-    // company
-    "planStartDate",
-    "expenseClaimDate",
-    "startDate",
-    "endDate",
-    "dateNeededBy",
-    // general
-    "dateOfOccurrence",
-    // outreach
-    "rsvpDeadline",
-    "eventStartDate",
-    "eventEndDate",
-    // register - user
-    "dateOfBirth",
-  ]);
-
   const stringifiedValue =
     typeof value === "boolean"
       ? value === true
@@ -36,7 +15,7 @@ function formatDocumentValue(
       ? replaceLastCommaWithAnd(value.join(","))
       : typeof value === "object" && value !== null
       ? ""
-      : keysWithDateValues.has(key)
+      : KEYS_WITH_DATE_VALUES_SET.has(key)
       ? formatDate({
           date: value as string,
           formatOptions: { dateStyle: "short" },

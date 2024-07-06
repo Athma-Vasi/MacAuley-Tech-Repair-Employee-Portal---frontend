@@ -21,6 +21,7 @@ import { useDisclosure } from "@mantine/hooks";
 import { ResourceDispatch } from "./types";
 import { ResourceAction } from "./actions";
 import { GoldenGrid } from "../accessibleInputs/GoldenGrid";
+import { UNMODIFIABLE_FIELDS_SET } from "./constants";
 
 type DesktopProps = {
   // queryValues: Array<string>;
@@ -110,39 +111,16 @@ function Desktop({
     const tableRow = Object.entries(document).map(([key, value], rowIndex) => {
       const { slicedValue, unSlicedValue } = formatDocumentValue(key, value);
 
-      const unmodifiableFieldsSet = new Set([
-        "_id",
-        "username",
-        "userId",
-        "userRole",
-        "createdAt",
-        "updatedAt",
-        "__v",
-        // repair note
-        "dateReceived",
-        "estimatedCompletionDate",
-        // company
-        "planStartDate",
-        "expenseClaimDate",
-        "startDate",
-        "endDate",
-        "dateNeededBy",
-        // general
-        "dateOfOccurrence",
-        // outreach
-        "rsvpDeadline",
-        "eventStartDate",
-        "eventEndDate",
-        // register - user
-        "dateOfBirth",
-      ]);
-
       const button = (
         <UnstyledButton
           maw={300}
           miw={50}
           onClick={(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
             console.log(`Button clicked: ${event.currentTarget}`);
+
+            if (UNMODIFIABLE_FIELDS_SET.has(key)) {
+              return;
+            }
 
             resourceDispatch({
               action: setSelectedDocument,
@@ -156,7 +134,7 @@ function Desktop({
 
             openDocumentEditModal();
           }}
-          style={{ cursor: unmodifiableFieldsSet.has(key) ? "not-allowed" : "pointer" }}
+          style={{ cursor: UNMODIFIABLE_FIELDS_SET.has(key) ? "not-allowed" : "pointer" }}
         >
           {slicedValue}
         </UnstyledButton>

@@ -2,4 +2,53 @@ import { LimitPerPage } from "./types";
 
 const LIMIT_PER_PAGE_DATA: LimitPerPage[] = ["10", "25", "50", "75"];
 
-export { LIMIT_PER_PAGE_DATA };
+const UNMODIFIABLE_FIELDS_SET = new Set([
+  "_id",
+  "username",
+  "userId",
+  "userRole",
+  "createdAt",
+  "updatedAt",
+  "__v",
+  // repair note
+  "dateReceived",
+  "estimatedCompletionDate",
+  // company
+  "planStartDate",
+  "expenseClaimDate",
+  "startDate",
+  "endDate",
+  "dateNeededBy",
+  // general
+  "dateOfOccurrence",
+  // outreach
+  "rsvpDeadline",
+  "eventStartDate",
+  "eventEndDate",
+  // register - user
+  "dateOfBirth",
+]);
+
+const KEYS_WITH_DATE_VALUES_SET = new Set([
+  "createdAt",
+  "updatedAt",
+  // repair note
+  "dateReceived",
+  "estimatedCompletionDate",
+  // company
+  "planStartDate",
+  "expenseClaimDate",
+  "startDate",
+  "endDate",
+  "dateNeededBy",
+  // general
+  "dateOfOccurrence",
+  // outreach
+  "rsvpDeadline",
+  "eventStartDate",
+  "eventEndDate",
+  // register - user
+  "dateOfBirth",
+]);
+
+export { KEYS_WITH_DATE_VALUES_SET, LIMIT_PER_PAGE_DATA, UNMODIFIABLE_FIELDS_SET };
