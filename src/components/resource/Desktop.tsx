@@ -13,7 +13,6 @@ import {
 } from "@mantine/core";
 import { FileUploadDocument, QueryResponseData } from "../../types";
 import { TiArrowUpThick } from "react-icons/ti";
-import { COMMENT_RESOURCE_DATA } from "./TEMPDATA";
 import { formatDate, replaceLastCommaWithAnd } from "../../utils";
 import { SortDirection } from "../query/types";
 import React from "react";
@@ -41,6 +40,10 @@ function Desktop({
   resourceData,
   resourceDispatch,
 }: DesktopProps): JSX.Element {
+  if (resourceData.length === 0) {
+    return <Text>No data to display</Text>;
+  }
+
   const headerValues = resourceData.length > 0 ? Object.keys(resourceData[0]) : [];
 
   const tableHeader = (

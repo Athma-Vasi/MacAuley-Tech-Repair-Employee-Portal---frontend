@@ -9,20 +9,27 @@ import { ResourceAction, resourceAction } from "./actions";
 import { PageNavigation } from "../pageNavigation/PageNavigation";
 import { fetchResourceGET, logState, splitCamelCase, urlBuilder } from "../../utils";
 import {
+  CheckboxRadioSelectData,
   ErrorLogSchema,
   GetQueriedResourceRequestServerResponse,
+  InputType,
   RoleResourceRoutePaths,
   StepperPage,
   UserRole,
+  ValidationFunctionsTable,
 } from "../../types";
 import { Desktop } from "./Desktop";
-import { COMMENT_RESOURCE_DATA } from "./TEMPDATA";
+import { LEAVE_REQUEST_RESOURCE_DATA } from "./TEMPDATA";
 import { Mobile } from "./Mobile";
 import { useDisclosure } from "@mantine/hooks";
 import { AccessibleButton } from "../accessibleInputs/AccessibleButton";
 import { GoldenGrid } from "../accessibleInputs/GoldenGrid";
 import { AccessibleTextAreaInput } from "../accessibleInputs/AccessibleTextAreaInput";
-import { VALIDATION_FUNCTIONS_TABLE } from "../../constants/validations";
+import { VALIDATION_FUNCTIONS_TABLE, ValidationKey } from "../../constants/validations";
+import { returnBenefitStepperPages } from "../benefit/constants";
+import { returnLeaveRequestStepperPages } from "../leaveRequest/constants";
+import { InputsValidationsMap } from "../query/utils";
+import { addSelectedFieldValidation, createResourceInputsData } from "./utils";
 
 type ResourceProps = {
   resourceName: string;
@@ -107,7 +114,7 @@ function Resource() {
 
     resourceDispatch({
       action: resourceAction.setResourceData,
-      payload: COMMENT_RESOURCE_DATA.resourceData,
+      payload: LEAVE_REQUEST_RESOURCE_DATA.resourceData,
     });
 
     return () => {
@@ -121,6 +128,19 @@ function Resource() {
   if (isLoading) {
     return <Text>Loading...</Text>;
   }
+
+  const stepperPages = returnLeaveRequestStepperPages();
+
+  console.log(`Resource.tsx stepperPages: ${JSON.stringify(stepperPages)}`);
+
+  const {
+    checkboxInputsSet,
+    dateInputsSet,
+    inputsValidationsMap,
+    selectInputsDataMap,
+    selectInputsSet,
+    textInputsSet,
+  } = createResourceInputsData(stepperPages);
 
   const pageNavigation = (
     <PageNavigation
@@ -149,19 +169,7 @@ function Resource() {
     />
   );
 
-  const stepperPages: Array<StepperPage> = [
-    {
-      children: [
-        {
-          inputType: "text",
-          name: "editFieldValue",
-          // TODO
-          // validationKey: VALIDATION_FUNCTIONS_TABLE[selectedField] ?? "allowAll",
-        },
-      ],
-      description: "Edit Document",
-    },
-  ];
+  function createEditDocumentInput({}: { selectedField: string }) {}
 
   const editDocumentTextAreaInput = (
     <AccessibleTextAreaInput
@@ -170,6 +178,11 @@ function Resource() {
         name: "editFieldValue",
         parentDispatch: resourceDispatch,
         stepperPages,
+        validationFunctionsTable: addSelectedFieldValidation(
+          inputsValidationsMap,
+          selectedField,
+          VALIDATION_FUNCTIONS_TABLE
+        ),
         validValueAction: resourceAction.setEditFieldValue,
         value: editFieldValue,
       }}

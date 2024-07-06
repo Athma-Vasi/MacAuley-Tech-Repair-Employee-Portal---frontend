@@ -18,6 +18,7 @@ type ValidationKey =
   | "dateOfBirth"
   | "dimensions"
   | "displayAspectRatio"
+  | "editFieldValue"
   | "email"
   | "exclusion"
   | "filterValue"
@@ -435,6 +436,14 @@ const VALIDATION_FUNCTIONS_TABLE: ValidationFunctionsTable = {
         "Must be a valid display aspect ratio in the format 00:00.",
       ],
     ],
+  },
+
+  editFieldValue: {
+    full: function editFieldValueValidation(value: string) {
+      return true;
+    },
+
+    partials: [],
   },
 
   email: {
