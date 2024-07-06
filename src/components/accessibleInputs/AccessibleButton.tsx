@@ -168,7 +168,7 @@ function AccessibleButton({ attributes }: AccessibleButtonProps) {
 
   return (
     <Container w={100} key={`${name}-${index}`}>
-      {isTooltip ? (
+      {isTooltip && enabledScreenreaderText?.length ? (
         <Tooltip label={disabled ? disabledScreenreaderText : enabledScreenreaderText}>
           <Group>{button}</Group>
         </Tooltip>

@@ -7,6 +7,7 @@ import {
   Stack,
   Table,
   Text,
+  Textarea,
   Tooltip,
   UnstyledButton,
 } from "@mantine/core";
@@ -22,6 +23,8 @@ import { ResourceDispatch } from "./types";
 import { ResourceAction } from "./actions";
 import { GoldenGrid } from "../accessibleInputs/GoldenGrid";
 import { UNMODIFIABLE_FIELDS_SET } from "./constants";
+import { AccessibleTextAreaInput } from "../accessibleInputs/AccessibleTextAreaInput";
+import { AccessibleButton } from "../accessibleInputs/AccessibleButton";
 
 type DesktopProps = {
   // queryValues: Array<string>;
@@ -46,6 +49,8 @@ function Desktop({
   setSelectedField,
   setSortFieldDirection,
 }: DesktopProps): JSX.Element {
+  const [editFieldValue, setEditFieldValue] = React.useState<string>("");
+
   const [
     openedDocumentEditModal,
     { open: openDocumentEditModal, close: closeDocumentEditModal },
@@ -122,16 +127,8 @@ function Desktop({
               return;
             }
 
-            resourceDispatch({
-              action: setSelectedDocument,
-              payload: document,
-            });
-
-            resourceDispatch({
-              action: setSelectedField,
-              payload: key,
-            });
-
+            resourceDispatch({ action: setSelectedDocument, payload: document });
+            resourceDispatch({ action: setSelectedField, payload: key });
             openDocumentEditModal();
           }}
           style={{ cursor: UNMODIFIABLE_FIELDS_SET.has(key) ? "not-allowed" : "pointer" }}
@@ -141,7 +138,7 @@ function Desktop({
       );
 
       const buttonWithHoverCard = (
-        <HoverCard width={500} shadow="lg" withArrow>
+        <HoverCard closeDelay={50} openDelay={250} shadow="lg" width={500} withArrow>
           <HoverCard.Target>{button}</HoverCard.Target>
 
           <HoverCard.Dropdown>
@@ -164,6 +161,45 @@ function Desktop({
     );
   });
 
+  const label = "Edit Field";
+  const editDocumentTextAreaInput = (
+    <Textarea
+      aria-label={label}
+      label={label}
+      name={label}
+      onChange={(event) => {
+        setEditFieldValue(event.currentTarget.value);
+      }}
+    />
+  );
+
+  const editDocumentSubmitButton = (
+    <AccessibleButton
+      attributes={{
+        enabledScreenreaderText: "Click to submit edited document",
+        kind: "submit",
+        onClick: (
+          event:
+            | React.MouseEvent<HTMLButtonElement>
+            | React.PointerEvent<HTMLButtonElement>
+        ) => {
+          console.log(`Edit Document Submit Button clicked: ${editFieldValue}`);
+          event?.preventDefault();
+        },
+        type: "submit",
+      }}
+    />
+  );
+
+  const editDocumentForm = (
+    <form action="" method="patch">
+      <Stack>
+        {editDocumentTextAreaInput}
+        {editDocumentSubmitButton}
+      </Stack>
+    </form>
+  );
+
   const documentEditModal = (
     <Modal
       centered
@@ -172,6 +208,7 @@ function Desktop({
       title={<Text>Edit Document</Text>}
     >
       <Stack>
+        {editDocumentForm}
         {Object.entries(selectedDocument ?? {}).map(([key, value], index) => (
           <GoldenGrid key={`${index}-${key}-${value?.toString().slice(17) ?? ""}`}>
             <Text>{key}</Text>
