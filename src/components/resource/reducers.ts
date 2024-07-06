@@ -1,4 +1,5 @@
-import { QueryResponseData } from "../../types";
+import { QueryResponseData, SetPageInErrorPayload } from "../../types";
+import { SortDirection } from "../query/types";
 import { ResourceAction, resourceAction } from "./actions";
 import {
   LimitPerPage,
@@ -20,6 +21,7 @@ const resourceReducers = new Map<
   (state: ResourceState, dispatch: ResourceDispatch) => ResourceState
 >([
   [resourceAction.setCurrentPage, resourceReducer_setCurrentPage],
+  [resourceAction.setEditFieldValue, resourceReducer_setEditFieldValue],
   [resourceAction.setIsError, resourceReducer_setIsError],
   [resourceAction.setIsLoading, resourceReducer_setIsLoading],
   [resourceAction.setIsSubmitting, resourceReducer_setIsSubmitting],
@@ -27,11 +29,14 @@ const resourceReducers = new Map<
   [resourceAction.setLimitPerPage, resourceReducer_setLimitPerPage],
   [resourceAction.setLoadingMessage, resourceReducer_setLoadingMessage],
   [resourceAction.setNewQueryFlag, resourceReducer_setNewQueryFlag],
+  [resourceAction.setPageInError, resourceReducer_setPageInError],
   [resourceAction.setQueryString, resourceReducer_setQueryString],
   [resourceAction.setResourceData, resourceReducer_setResourceData],
   [resourceAction.setSelectedDocument, resourceReducer_setSelectedDocument],
   [resourceAction.setSelectedField, resourceReducer_setSelectedField],
+  [resourceAction.setSortField, resourceReducer_setSortField],
   [resourceAction.setSortFieldDirection, resourceReducer_setSortFieldDirection],
+  [resourceAction.setSortDirection, resourceReducer_setSortDirection],
   [resourceAction.setTotalPages, resourceReducer_setTotalPages],
   [resourceAction.setTotalDocuments, resourceReducer_setTotalDocuments],
 ]);
@@ -44,6 +49,13 @@ function resourceReducer_setCurrentPage(
   // const newPage = currentPage > state.totalPages ? state.totalPages : currentPage;
   // return { ...state, currentPage: newPage };
   return { ...state, currentPage: dispatch.payload as number };
+}
+
+function resourceReducer_setEditFieldValue(
+  state: ResourceState,
+  dispatch: ResourceDispatch
+): ResourceState {
+  return { ...state, editFieldValue: dispatch.payload as string };
 }
 
 function resourceReducer_setIsError(
@@ -95,6 +107,20 @@ function resourceReducer_setNewQueryFlag(
   return { ...state, newQueryFlag: dispatch.payload as boolean };
 }
 
+function resourceReducer_setPageInError(
+  state: ResourceState,
+  dispatch: ResourceDispatch
+): ResourceState {
+  const { kind, page } = dispatch.payload as SetPageInErrorPayload;
+  const pagesInError = new Set(state.pagesInError);
+  kind === "add" ? pagesInError.add(page) : pagesInError.delete(page);
+
+  return {
+    ...state,
+    pagesInError,
+  };
+}
+
 function resourceReducer_setQueryString(
   state: ResourceState,
   dispatch: ResourceDispatch
@@ -123,6 +149,34 @@ function resourceReducer_setSelectedField(
   return { ...state, selectedField: dispatch.payload as string };
 }
 
+function resourceReducer_setSortField(
+  state: ResourceState,
+  dispatch: ResourceDispatch
+): ResourceState {
+  const field = dispatch.payload as string;
+  const direction = state.sortDirection;
+  const clonedData = structuredClone(state.resourceData);
+
+  const sortedData = clonedData.sort((a: QueryResponseData, b: QueryResponseData) => {
+    const left = a[field] as string;
+    const right = b[field] as string;
+
+    return direction === "ascending"
+      ? left < right
+        ? -1
+        : left > right
+        ? 1
+        : 0
+      : left > right
+      ? -1
+      : left < right
+      ? 1
+      : 0;
+  });
+
+  return { ...state, resourceData: sortedData, sortField: field };
+}
+
 function resourceReducer_setSortFieldDirection(
   state: ResourceState,
   dispatch: ResourceDispatch
@@ -148,6 +202,34 @@ function resourceReducer_setSortFieldDirection(
   });
 
   return { ...state, resourceData: sortedData, sortFieldDirection: { field, direction } };
+}
+
+function resourceReducer_setSortDirection(
+  state: ResourceState,
+  dispatch: ResourceDispatch
+): ResourceState {
+  const direction = dispatch.payload as SortDirection;
+  const field = state.sortField;
+  const clonedData = structuredClone(state.resourceData);
+
+  const sortedData = clonedData.sort((a: QueryResponseData, b: QueryResponseData) => {
+    const left = a[field] as string;
+    const right = b[field] as string;
+
+    return direction === "ascending"
+      ? left < right
+        ? -1
+        : left > right
+        ? 1
+        : 0
+      : left > right
+      ? -1
+      : left < right
+      ? 1
+      : 0;
+  });
+
+  return { ...state, resourceData: sortedData, sortDirection: direction };
 }
 
 function resourceReducer_setTotalPages(

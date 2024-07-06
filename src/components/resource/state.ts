@@ -2,6 +2,7 @@ import { ResourceState } from "./types";
 
 const initialResourceState: ResourceState = {
   currentPage: 1,
+  editFieldValue: "",
   isError: false,
   isLoading: false,
   isSubmitting: false,
@@ -9,14 +10,17 @@ const initialResourceState: ResourceState = {
   limitPerPage: "10",
   loadingMessage: "Loading",
   newQueryFlag: false,
+  pagesInError: new Set(),
   queryString: "",
   resourceData: [],
   selectedDocument: null,
   selectedField: "",
+  sortField: "createdAt",
   sortFieldDirection: {
-    field: "",
+    field: "createdAt",
     direction: "ascending",
   },
+  sortDirection: "ascending",
   totalDocuments: 0,
   totalPages: 10,
 };

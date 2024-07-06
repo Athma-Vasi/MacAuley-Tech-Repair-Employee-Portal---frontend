@@ -6,7 +6,7 @@ function formatDocumentValue(
   value: unknown,
   sliceNumber = 17
 ): { slicedValue: string; unSlicedValue: string } {
-  const stringifiedValue =
+  const unSlicedValue =
     typeof value === "boolean"
       ? value === true
         ? "Yes"
@@ -18,17 +18,17 @@ function formatDocumentValue(
       : KEYS_WITH_DATE_VALUES_SET.has(key)
       ? formatDate({
           date: value as string,
-          formatOptions: { dateStyle: "short" },
+          formatOptions: { year: "numeric", month: "numeric", day: "numeric" },
           locale: "en-US",
         })
       : value?.toString() ?? "";
 
   return {
     slicedValue:
-      stringifiedValue.length > sliceNumber
-        ? `${stringifiedValue.slice(0, sliceNumber)}...`
-        : stringifiedValue,
-    unSlicedValue: stringifiedValue,
+      unSlicedValue.length > sliceNumber
+        ? `${unSlicedValue.slice(0, sliceNumber)}...`
+        : unSlicedValue,
+    unSlicedValue,
   };
 }
 

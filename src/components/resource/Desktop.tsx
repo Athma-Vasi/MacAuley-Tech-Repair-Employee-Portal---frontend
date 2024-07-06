@@ -20,7 +20,7 @@ import React from "react";
 import { formatDocumentValue } from "./utils";
 import { useDisclosure } from "@mantine/hooks";
 import { ResourceDispatch } from "./types";
-import { ResourceAction } from "./actions";
+import { resourceAction, ResourceAction } from "./actions";
 import { GoldenGrid } from "../accessibleInputs/GoldenGrid";
 import { UNMODIFIABLE_FIELDS_SET } from "./constants";
 import { AccessibleTextAreaInput } from "../accessibleInputs/AccessibleTextAreaInput";
@@ -31,31 +31,16 @@ type DesktopProps = {
   // resourceActionPATCH: string;
   // uploadedFiles: Map<string, Array<FileUploadDocument>>;
 
+  openDocumentEditModal: () => void;
   resourceData: Array<QueryResponseData>;
   resourceDispatch: React.Dispatch<ResourceDispatch>;
-  selectedDocument: QueryResponseData | null;
-  selectedField: string;
-  setSelectedDocument: ResourceAction["setSelectedDocument"];
-  setSelectedField: ResourceAction["setSelectedField"];
-  setSortFieldDirection: ResourceAction["setSortFieldDirection"];
 };
 
 function Desktop({
+  openDocumentEditModal,
   resourceData,
   resourceDispatch,
-  selectedDocument,
-  selectedField,
-  setSelectedDocument,
-  setSelectedField,
-  setSortFieldDirection,
 }: DesktopProps): JSX.Element {
-  const [editFieldValue, setEditFieldValue] = React.useState<string>("");
-
-  const [
-    openedDocumentEditModal,
-    { open: openDocumentEditModal, close: closeDocumentEditModal },
-  ] = useDisclosure(false);
-
   const headerValues = resourceData.length > 0 ? Object.keys(resourceData[0]) : [];
 
   const tableHeader = (
@@ -71,7 +56,7 @@ function Desktop({
                   size={17}
                   onClick={(_event: React.MouseEvent<SVGElement, MouseEvent>) => {
                     resourceDispatch({
-                      action: setSortFieldDirection,
+                      action: resourceAction.setSortFieldDirection,
                       payload: { direction: "ascending", field: headerValue },
                     });
                   }}
@@ -89,7 +74,7 @@ function Desktop({
                   size={17}
                   onClick={(_event: React.MouseEvent<SVGElement, MouseEvent>) => {
                     resourceDispatch({
-                      action: setSortFieldDirection,
+                      action: resourceAction.setSortFieldDirection,
                       payload: { direction: "descending", field: headerValue },
                     });
                   }}
@@ -113,7 +98,7 @@ function Desktop({
   );
 
   const tableBody = resourceData.map((document, docIndex) => {
-    const tableRow = Object.entries(document).map(([key, value], rowIndex) => {
+    const tableRow = Object.entries(document).map(([key, value], keyIndex) => {
       const { slicedValue, unSlicedValue } = formatDocumentValue(key, value);
 
       const button = (
@@ -127,8 +112,11 @@ function Desktop({
               return;
             }
 
-            resourceDispatch({ action: setSelectedDocument, payload: document });
-            resourceDispatch({ action: setSelectedField, payload: key });
+            resourceDispatch({
+              action: resourceAction.setSelectedDocument,
+              payload: document,
+            });
+            resourceDispatch({ action: resourceAction.setSelectedField, payload: key });
             openDocumentEditModal();
           }}
           style={{ cursor: UNMODIFIABLE_FIELDS_SET.has(key) ? "not-allowed" : "pointer" }}
@@ -148,7 +136,7 @@ function Desktop({
       );
 
       return (
-        <td key={`${docIndex}-${rowIndex}-${key}-${slicedValue}`}>
+        <td key={`${docIndex}-${document._id}-${keyIndex}-${key}-${slicedValue}`}>
           {buttonWithHoverCard}
         </td>
       );
@@ -161,67 +149,8 @@ function Desktop({
     );
   });
 
-  const label = "Edit Field";
-  const editDocumentTextAreaInput = (
-    <Textarea
-      aria-label={label}
-      label={label}
-      name={label}
-      onChange={(event) => {
-        setEditFieldValue(event.currentTarget.value);
-      }}
-    />
-  );
-
-  const editDocumentSubmitButton = (
-    <AccessibleButton
-      attributes={{
-        enabledScreenreaderText: "Click to submit edited document",
-        kind: "submit",
-        onClick: (
-          event:
-            | React.MouseEvent<HTMLButtonElement>
-            | React.PointerEvent<HTMLButtonElement>
-        ) => {
-          console.log(`Edit Document Submit Button clicked: ${editFieldValue}`);
-          event?.preventDefault();
-        },
-        type: "submit",
-      }}
-    />
-  );
-
-  const editDocumentForm = (
-    <form action="" method="patch">
-      <Stack>
-        {editDocumentTextAreaInput}
-        {editDocumentSubmitButton}
-      </Stack>
-    </form>
-  );
-
-  const documentEditModal = (
-    <Modal
-      centered
-      opened={openedDocumentEditModal}
-      onClose={closeDocumentEditModal}
-      title={<Text>Edit Document</Text>}
-    >
-      <Stack>
-        {editDocumentForm}
-        {Object.entries(selectedDocument ?? {}).map(([key, value], index) => (
-          <GoldenGrid key={`${index}-${key}-${value?.toString().slice(17) ?? ""}`}>
-            <Text>{key}</Text>
-            <Text>{value?.toString() ?? ""}</Text>
-          </GoldenGrid>
-        ))}
-      </Stack>
-    </Modal>
-  );
-
   return (
     <Stack>
-      {documentEditModal}
       <Table striped highlightOnHover>
         {tableHeader}
         {tableBody}

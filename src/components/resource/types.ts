@@ -1,4 +1,9 @@
-import { QueryResponseData, RoleResourceRoutePaths, StepperPage } from "../../types";
+import {
+  QueryResponseData,
+  RoleResourceRoutePaths,
+  SetPageInErrorPayload,
+  StepperPage,
+} from "../../types";
 import { SortDirection } from "../query/types";
 import { ResourceAction } from "./actions";
 
@@ -18,6 +23,7 @@ type SortFieldDirection = {
 
 type ResourceState = {
   currentPage: number;
+  editFieldValue: string;
   isError: boolean;
   isLoading: boolean;
   isSubmitting: boolean;
@@ -25,11 +31,15 @@ type ResourceState = {
   limitPerPage: LimitPerPage;
   loadingMessage: string;
   newQueryFlag: boolean;
+  pagesInError: Set<number>;
   queryString: string;
   resourceData: Array<QueryResponseData>;
   selectedDocument: QueryResponseData | null;
   selectedField: string;
+  sortField: string; // dispatched from Mobile
+  /** Desktop requires both at dispatch */
   sortFieldDirection: SortFieldDirection;
+  sortDirection: SortDirection; // dispatched from Mobile
   totalDocuments: number;
   totalPages: number;
 };
@@ -38,6 +48,10 @@ type ResourceDispatch =
   | {
       action: ResourceAction["setCurrentPage"];
       payload: number;
+    }
+  | {
+      action: ResourceAction["setEditFieldValue"];
+      payload: string;
     }
   | {
       action: ResourceAction["setIsError"];
@@ -68,6 +82,10 @@ type ResourceDispatch =
       payload: boolean;
     }
   | {
+      action: ResourceAction["setPageInError"];
+      payload: SetPageInErrorPayload;
+    }
+  | {
       action: ResourceAction["setQueryString"];
       payload: string;
     }
@@ -84,8 +102,16 @@ type ResourceDispatch =
       payload: string;
     }
   | {
+      action: ResourceAction["setSortField"];
+      payload: string;
+    }
+  | {
       action: ResourceAction["setSortFieldDirection"];
       payload: SortFieldDirection;
+    }
+  | {
+      action: ResourceAction["setSortDirection"];
+      payload: SortDirection;
     }
   | {
       action: ResourceAction["setTotalPages"];

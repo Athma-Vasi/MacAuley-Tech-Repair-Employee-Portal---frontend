@@ -1,4 +1,4 @@
-import { Pagination, Stack, Text } from "@mantine/core";
+import { Modal, Pagination, Stack, Text, Textarea } from "@mantine/core";
 import { resourceReducer } from "./reducers";
 import { initialResourceState } from "./state";
 import React from "react";
@@ -7,19 +7,27 @@ import { useFetchInterceptor } from "../../hooks/useFetchInterceptor";
 import { useAuth } from "../../hooks";
 import { ResourceAction, resourceAction } from "./actions";
 import { PageNavigation } from "../pageNavigation/PageNavigation";
-import { fetchResourceGET, logState, urlBuilder } from "../../utils";
+import { fetchResourceGET, logState, splitCamelCase, urlBuilder } from "../../utils";
 import {
   ErrorLogSchema,
   GetQueriedResourceRequestServerResponse,
   RoleResourceRoutePaths,
+  StepperPage,
   UserRole,
 } from "../../types";
 import { Desktop } from "./Desktop";
 import { COMMENT_RESOURCE_DATA } from "./TEMPDATA";
+import { Mobile } from "./Mobile";
+import { useDisclosure } from "@mantine/hooks";
+import { AccessibleButton } from "../accessibleInputs/AccessibleButton";
+import { GoldenGrid } from "../accessibleInputs/GoldenGrid";
+import { AccessibleTextAreaInput } from "../accessibleInputs/AccessibleTextAreaInput";
+import { VALIDATION_FUNCTIONS_TABLE } from "../../constants/validations";
 
 type ResourceProps = {
   resourceName: string;
   roleResourceRoutePaths: RoleResourceRoutePaths;
+  stepperPages: Array<StepperPage>;
 };
 
 function Resource() {
@@ -30,6 +38,7 @@ function Resource() {
 
   const {
     currentPage,
+    editFieldValue,
     isError,
     isLoading,
     isSubmitting,
@@ -37,14 +46,22 @@ function Resource() {
     limitPerPage,
     loadingMessage,
     newQueryFlag,
+    pagesInError,
     queryString,
     resourceData,
     selectedDocument,
     selectedField,
+    sortField,
     sortFieldDirection,
+    sortDirection,
     totalDocuments,
     totalPages,
   } = resourceState;
+
+  const [
+    openedDocumentEditModal,
+    { open: openDocumentEditModal, close: closeDocumentEditModal },
+  ] = useDisclosure(false);
 
   const {
     authState: { sessionId, userId, username },
@@ -116,14 +133,93 @@ function Resource() {
 
   const desktop = (
     <Desktop
+      openDocumentEditModal={openDocumentEditModal}
       resourceData={resourceData}
       resourceDispatch={resourceDispatch}
-      selectedDocument={selectedDocument}
-      selectedField={selectedField}
-      setSelectedDocument={resourceAction.setSelectedDocument}
-      setSelectedField={resourceAction.setSelectedField}
-      setSortFieldDirection={resourceAction.setSortFieldDirection}
     />
+  );
+
+  const mobile = (
+    <Mobile
+      openDocumentEditModal={openDocumentEditModal}
+      resourceData={resourceData}
+      resourceDispatch={resourceDispatch}
+      sortDirection={sortDirection}
+      sortField={sortField}
+    />
+  );
+
+  const stepperPages: Array<StepperPage> = [
+    {
+      children: [
+        {
+          inputType: "text",
+          name: "editFieldValue",
+          // TODO
+          // validationKey: VALIDATION_FUNCTIONS_TABLE[selectedField] ?? "allowAll",
+        },
+      ],
+      description: "Edit Document",
+    },
+  ];
+
+  const editDocumentTextAreaInput = (
+    <AccessibleTextAreaInput
+      attributes={{
+        invalidValueAction: resourceAction.setPageInError,
+        name: "editFieldValue",
+        parentDispatch: resourceDispatch,
+        stepperPages,
+        validValueAction: resourceAction.setEditFieldValue,
+        value: editFieldValue,
+      }}
+    />
+  );
+
+  const editDocumentSubmitButton = (
+    <AccessibleButton
+      attributes={{
+        enabledScreenreaderText: "Click to submit edited document",
+        kind: "submit",
+        onClick: (
+          event:
+            | React.MouseEvent<HTMLButtonElement>
+            | React.PointerEvent<HTMLButtonElement>
+        ) => {
+          // console.log(`Edit Document Submit Button clicked: ${editFieldValue}`);
+          event?.preventDefault();
+        },
+        type: "submit",
+      }}
+    />
+  );
+
+  const editDocumentForm = (
+    <form action="" method="patch">
+      <Stack>
+        {editDocumentTextAreaInput}
+        {editDocumentSubmitButton}
+      </Stack>
+    </form>
+  );
+
+  const documentEditModal = (
+    <Modal
+      centered
+      opened={openedDocumentEditModal}
+      onClose={closeDocumentEditModal}
+      title={<Text>Edit Document</Text>}
+    >
+      <Stack>
+        {editDocumentForm}
+        {Object.entries(selectedDocument ?? {}).map(([key, value], index) => (
+          <GoldenGrid key={`${index}-${key}-${value?.toString().slice(17) ?? ""}`}>
+            <Text>{key}</Text>
+            <Text>{value?.toString() ?? ""}</Text>
+          </GoldenGrid>
+        ))}
+      </Stack>
+    </Modal>
   );
 
   logState({
@@ -134,8 +230,10 @@ function Resource() {
   return (
     <Stack w={700}>
       <Text>Resource</Text>
+      {documentEditModal}
       {pageNavigation}
       {desktop}
+      {mobile}
     </Stack>
   );
 }

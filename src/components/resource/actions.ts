@@ -1,5 +1,6 @@
 type ResourceAction = {
   setCurrentPage: "setCurrentPage";
+  setEditFieldValue: "setEditFieldValue";
   setIsError: "setIsError";
   setIsLoading: "setIsLoading";
   setIsSubmitting: "setIsSubmitting";
@@ -7,17 +8,21 @@ type ResourceAction = {
   setLimitPerPage: "setLimitPerPage";
   setLoadingMessage: "setLoadingMessage";
   setNewQueryFlag: "setNewQueryFlag";
+  setPageInError: "setPageInError";
   setQueryString: "setQueryString";
   setResourceData: "setResourceData";
   setSelectedDocument: "setSelectedDocument";
   setSelectedField: "setSelectedField";
+  setSortField: "setSortField";
   setSortFieldDirection: "setSortFieldDirection";
+  setSortDirection: "setSortDirection";
   setTotalDocuments: "setTotalDocuments";
   setTotalPages: "setTotalPages";
 };
 
 const resourceAction: ResourceAction = {
   setCurrentPage: "setCurrentPage",
+  setEditFieldValue: "setEditFieldValue",
   setIsError: "setIsError",
   setIsLoading: "setIsLoading",
   setIsSubmitting: "setIsSubmitting",
@@ -25,11 +30,14 @@ const resourceAction: ResourceAction = {
   setLimitPerPage: "setLimitPerPage",
   setLoadingMessage: "setLoadingMessage",
   setNewQueryFlag: "setNewQueryFlag",
+  setPageInError: "setPageInError",
   setQueryString: "setQueryString",
   setResourceData: "setResourceData",
   setSelectedDocument: "setSelectedDocument",
   setSelectedField: "setSelectedField",
+  setSortField: "setSortField",
   setSortFieldDirection: "setSortFieldDirection",
+  setSortDirection: "setSortDirection",
   setTotalDocuments: "setTotalDocuments",
   setTotalPages: "setTotalPages",
 };
