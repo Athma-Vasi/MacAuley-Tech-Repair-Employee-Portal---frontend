@@ -23,6 +23,7 @@ import {
   YEAR_UNITS_SOLD_SPREAD,
 } from "./constantsDashboard";
 import { devTestingAction, devTestingReducer, initialDevTestingState } from "./state";
+import Resource from "../resource/Resource";
 
 function DevTesting() {
   const [devTestingState, devTestingDispatch] = useReducer(

@@ -1,6 +1,11 @@
 import { QueryResponseData } from "../../types";
 import { ResourceAction, resourceAction } from "./actions";
-import { LimitPerPage, ResourceDispatch, ResourceState } from "./types";
+import {
+  LimitPerPage,
+  ResourceDispatch,
+  ResourceState,
+  SortFieldDirection,
+} from "./types";
 
 function resourceReducer(
   state: ResourceState,
@@ -24,6 +29,9 @@ const resourceReducers = new Map<
   [resourceAction.setNewQueryFlag, resourceReducer_setNewQueryFlag],
   [resourceAction.setQueryString, resourceReducer_setQueryString],
   [resourceAction.setResourceData, resourceReducer_setResourceData],
+  [resourceAction.setSelectedDocument, resourceReducer_setSelectedDocument],
+  [resourceAction.setSelectedField, resourceReducer_setSelectedField],
+  [resourceAction.setSortFieldDirection, resourceReducer_setSortFieldDirection],
   [resourceAction.setTotalPages, resourceReducer_setTotalPages],
   [resourceAction.setTotalDocuments, resourceReducer_setTotalDocuments],
 ]);
@@ -99,6 +107,47 @@ function resourceReducer_setResourceData(
   dispatch: ResourceDispatch
 ): ResourceState {
   return { ...state, resourceData: dispatch.payload as Array<QueryResponseData> };
+}
+
+function resourceReducer_setSelectedDocument(
+  state: ResourceState,
+  dispatch: ResourceDispatch
+): ResourceState {
+  return { ...state, selectedDocument: dispatch.payload as QueryResponseData };
+}
+
+function resourceReducer_setSelectedField(
+  state: ResourceState,
+  dispatch: ResourceDispatch
+): ResourceState {
+  return { ...state, selectedField: dispatch.payload as string };
+}
+
+function resourceReducer_setSortFieldDirection(
+  state: ResourceState,
+  dispatch: ResourceDispatch
+): ResourceState {
+  const { field, direction } = dispatch.payload as SortFieldDirection;
+  const clonedData = structuredClone(state.resourceData);
+
+  const sortedData = clonedData.sort((a: QueryResponseData, b: QueryResponseData) => {
+    const left = a[field] as string;
+    const right = b[field] as string;
+
+    return direction === "ascending"
+      ? left < right
+        ? -1
+        : left > right
+        ? 1
+        : 0
+      : left > right
+      ? -1
+      : left < right
+      ? 1
+      : 0;
+  });
+
+  return { ...state, resourceData: sortedData, sortFieldDirection: { field, direction } };
 }
 
 function resourceReducer_setTotalPages(

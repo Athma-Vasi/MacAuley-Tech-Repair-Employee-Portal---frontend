@@ -3,7 +3,7 @@ import { ResourceState } from "./types";
 const initialResourceState: ResourceState = {
   currentPage: 1,
   isError: false,
-  isLoading: true,
+  isLoading: false,
   isSubmitting: false,
   isSuccessful: false,
   limitPerPage: "10",
@@ -11,6 +11,12 @@ const initialResourceState: ResourceState = {
   newQueryFlag: false,
   queryString: "",
   resourceData: [],
+  selectedDocument: null,
+  selectedField: "",
+  sortFieldDirection: {
+    field: "",
+    direction: "ascending",
+  },
   totalDocuments: 0,
   totalPages: 10,
 };

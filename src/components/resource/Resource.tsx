@@ -7,20 +7,22 @@ import { useFetchInterceptor } from "../../hooks/useFetchInterceptor";
 import { useAuth } from "../../hooks";
 import { ResourceAction, resourceAction } from "./actions";
 import { PageNavigation } from "../pageNavigation/PageNavigation";
-import { fetchResourceGET, urlBuilder } from "../../utils";
+import { fetchResourceGET, logState, urlBuilder } from "../../utils";
 import {
   ErrorLogSchema,
   GetQueriedResourceRequestServerResponse,
   RoleResourceRoutePaths,
   UserRole,
 } from "../../types";
+import { Desktop } from "./Desktop";
+import { COMMENT_RESOURCE_DATA } from "./TEMPDATA";
 
 type ResourceProps = {
   resourceName: string;
   roleResourceRoutePaths: RoleResourceRoutePaths;
 };
 
-function Resource({ resourceName, roleResourceRoutePaths }: ResourceProps) {
+function Resource() {
   const [resourceState, resourceDispatch] = React.useReducer(
     resourceReducer,
     initialResourceState
@@ -33,10 +35,15 @@ function Resource({ resourceName, roleResourceRoutePaths }: ResourceProps) {
     isSubmitting,
     isSuccessful,
     limitPerPage,
+    loadingMessage,
     newQueryFlag,
-    totalPages,
     queryString,
+    resourceData,
+    selectedDocument,
+    selectedField,
+    sortFieldDirection,
     totalDocuments,
+    totalPages,
   } = resourceState;
 
   const {
@@ -45,9 +52,9 @@ function Resource({ resourceName, roleResourceRoutePaths }: ResourceProps) {
   const { fetchInterceptor } = useFetchInterceptor();
   const { showBoundary } = useErrorBoundary();
 
+  const isComponentMountedRef = React.useRef(false);
   const fetchAbortControllerRef = React.useRef<AbortController | null>(null);
   const preFetchAbortControllerRef = React.useRef<AbortController | null>(null);
-  const isComponentMountedRef = React.useRef(false);
 
   React.useEffect(() => {
     fetchAbortControllerRef.current?.abort();
@@ -61,24 +68,29 @@ function Resource({ resourceName, roleResourceRoutePaths }: ResourceProps) {
     isComponentMountedRef.current = true;
     let isComponentMounted = isComponentMountedRef.current;
 
-    fetchResourceGET({
-      fetchAbortController,
-      fetchInterceptor,
-      isComponentMounted,
-      loadingMessage: `Loading ${resourceName} page ${currentPage}`,
-      parentDispatch: resourceDispatch,
-      preFetchAbortController,
-      roleResourceRoutePaths,
-      sessionId,
-      setResourceDataAction: resourceAction.setResourceData,
-      setIsLoadingAction: resourceAction.setIsLoading,
-      setTotalDocumentsAction: resourceAction.setTotalDocuments,
-      setLoadingMessageAction: resourceAction.setLoadingMessage,
-      setTotalPagesAction: resourceAction.setTotalPages,
-      showBoundary,
-      userId,
-      username,
-      userRole: "manager",
+    // fetchResourceGET({
+    //   fetchAbortController,
+    //   fetchInterceptor,
+    //   isComponentMounted,
+    //   loadingMessage: `Loading ${resourceName} page ${currentPage}`,
+    //   parentDispatch: resourceDispatch,
+    //   preFetchAbortController,
+    //   roleResourceRoutePaths,
+    //   sessionId,
+    //   setResourceDataAction: resourceAction.setResourceData,
+    //   setIsLoadingAction: resourceAction.setIsLoading,
+    //   setTotalDocumentsAction: resourceAction.setTotalDocuments,
+    //   setLoadingMessageAction: resourceAction.setLoadingMessage,
+    //   setTotalPagesAction: resourceAction.setTotalPages,
+    //   showBoundary,
+    //   userId,
+    //   username,
+    //   userRole: "manager",
+    // });
+
+    resourceDispatch({
+      action: resourceAction.setResourceData,
+      payload: COMMENT_RESOURCE_DATA.resourceData,
     });
 
     return () => {
@@ -102,10 +114,28 @@ function Resource({ resourceName, roleResourceRoutePaths }: ResourceProps) {
     />
   );
 
+  const desktop = (
+    <Desktop
+      resourceData={resourceData}
+      resourceDispatch={resourceDispatch}
+      selectedDocument={selectedDocument}
+      selectedField={selectedField}
+      setSelectedDocument={resourceAction.setSelectedDocument}
+      setSelectedField={resourceAction.setSelectedField}
+      setSortFieldDirection={resourceAction.setSortFieldDirection}
+    />
+  );
+
+  logState({
+    state: resourceState,
+    groupLabel: "Resource",
+  });
+
   return (
     <Stack w={700}>
       <Text>Resource</Text>
       {pageNavigation}
+      {desktop}
     </Stack>
   );
 }

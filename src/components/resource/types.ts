@@ -1,4 +1,5 @@
 import { QueryResponseData, RoleResourceRoutePaths, StepperPage } from "../../types";
+import { SortDirection } from "../query/types";
 import { ResourceAction } from "./actions";
 
 type LimitPerPage = "10" | "25" | "50" | "75";
@@ -8,6 +9,11 @@ type ResourceProps = {
   createResourceLink: string;
   resourceName: string;
   roleResourceRoutePaths: RoleResourceRoutePaths;
+};
+
+type SortFieldDirection = {
+  field: string;
+  direction: SortDirection;
 };
 
 type ResourceState = {
@@ -21,6 +27,9 @@ type ResourceState = {
   newQueryFlag: boolean;
   queryString: string;
   resourceData: Array<QueryResponseData>;
+  selectedDocument: QueryResponseData | null;
+  selectedField: string;
+  sortFieldDirection: SortFieldDirection;
   totalDocuments: number;
   totalPages: number;
 };
@@ -67,6 +76,18 @@ type ResourceDispatch =
       payload: Array<QueryResponseData>;
     }
   | {
+      action: ResourceAction["setSelectedDocument"];
+      payload: QueryResponseData;
+    }
+  | {
+      action: ResourceAction["setSelectedField"];
+      payload: string;
+    }
+  | {
+      action: ResourceAction["setSortFieldDirection"];
+      payload: SortFieldDirection;
+    }
+  | {
       action: ResourceAction["setTotalPages"];
       payload: number;
     }
@@ -75,4 +96,10 @@ type ResourceDispatch =
       payload: number;
     };
 
-export type { LimitPerPage, ResourceDispatch, ResourceProps, ResourceState };
+export type {
+  LimitPerPage,
+  ResourceDispatch,
+  ResourceProps,
+  ResourceState,
+  SortFieldDirection,
+};

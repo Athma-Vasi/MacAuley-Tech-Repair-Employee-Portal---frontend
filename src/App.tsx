@@ -224,6 +224,8 @@ const SurveyBuilder = lazy(() => import("./components/survey/create/Survey"));
 
 const Directory = lazy(() => import("./components/directory/Directory"));
 
+const Resource = lazy(() => import("./components/resource/Resource"));
+
 // ╔═════════════════════════════════════════════════════════════════╗
 //   CATCH ALL
 // ╚═════════════════════════════════════════════════════════════════╝
@@ -1097,6 +1099,22 @@ function App() {
     </ErrorBoundary>
   );
 
+  const resourceElement = (
+    <ErrorBoundary
+      fallback={
+        <ErrorFallback
+          isError={isError}
+          errorCallback={errorCallback}
+          errorMessage={errorMessage}
+        />
+      }
+    >
+      <Suspense fallback={<div>Generic Loading message...</div>}>
+        <Resource />
+      </Suspense>
+    </ErrorBoundary>
+  );
+
   // ╔═════════════════════════════════════════════════════════════════╗
   //   CATCH ALL
   // ╚═════════════════════════════════════════════════════════════════╝
@@ -1281,6 +1299,9 @@ function App() {
 
           {/* directory */}
           <Route path="directory" element={directoryElement} />
+
+          {/* resource */}
+          <Route path="resource" element={resourceElement} />
         </Route>
 
         {/* catch all */}

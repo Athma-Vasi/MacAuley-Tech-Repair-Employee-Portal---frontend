@@ -2727,11 +2727,7 @@ async function fetchResourceGET<
         payload: Array<QueryResponseData<Data>>;
       }
     | {
-        action: SetTotalDocumentsAction;
-        payload: number;
-      }
-    | {
-        action: SetTotalPagesAction;
+        action: SetTotalDocumentsAction | SetTotalPagesAction;
         payload: number;
       }
   >;
@@ -2767,6 +2763,10 @@ async function fetchResourceGET<
       requestInit,
       url,
     });
+
+    console.group("fetchResourceGET");
+    console.log("response", response);
+    console.groupEnd();
 
     if (!isComponentMounted) {
       return;

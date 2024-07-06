@@ -9,6 +9,9 @@ type ResourceAction = {
   setNewQueryFlag: "setNewQueryFlag";
   setQueryString: "setQueryString";
   setResourceData: "setResourceData";
+  setSelectedDocument: "setSelectedDocument";
+  setSelectedField: "setSelectedField";
+  setSortFieldDirection: "setSortFieldDirection";
   setTotalDocuments: "setTotalDocuments";
   setTotalPages: "setTotalPages";
 };
@@ -24,6 +27,9 @@ const resourceAction: ResourceAction = {
   setNewQueryFlag: "setNewQueryFlag",
   setQueryString: "setQueryString",
   setResourceData: "setResourceData",
+  setSelectedDocument: "setSelectedDocument",
+  setSelectedField: "setSelectedField",
+  setSortFieldDirection: "setSortFieldDirection",
   setTotalDocuments: "setTotalDocuments",
   setTotalPages: "setTotalPages",
 };

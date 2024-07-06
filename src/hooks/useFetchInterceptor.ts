@@ -40,8 +40,6 @@ function useFetchInterceptor() {
     url: URL | string;
   }): Promise<Response> {
     try {
-      throw new Error("test error inside useFetchInterceptor");
-
       let newAccessToken = "";
       if (isAccessTokenExpired) {
         newAccessToken =

@@ -3,6 +3,7 @@ import { Flex } from "@mantine/core";
 import { DisplayResource } from "../displayResource";
 import DisplayResourceHeader from "../displayResourceHeader/DisplayResourceHeader";
 import { COMMENT_QUERY_DATA, COMMENT_RESOURCE_ROUTE_PATHS } from "./constants";
+import Resource from "../resource/Resource";
 
 function DisplayComment() {
   // ╭─────────────────────────────────────────────────────────────────╮
@@ -35,10 +36,22 @@ function DisplayComment() {
     />
   );
 
+  // const newResource = (
+  //   <Resource
+  //     resourceName="comment"
+  //     roleResourceRoutePaths={{
+  //       admin: "comment",
+  //       manager: "comment",
+  //       employee: "comment/user",
+  //     }}
+  //   />
+  // );
+
   const displayCommentComponent = (
     <Flex direction="column" w="100%">
       {displayResourceHeader}
       {displayResource}
+      {/* {newResource} */}
     </Flex>
   );
 
