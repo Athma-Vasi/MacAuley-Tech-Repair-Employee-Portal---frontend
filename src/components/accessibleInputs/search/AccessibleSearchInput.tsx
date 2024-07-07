@@ -176,6 +176,7 @@ function AccessibleSearchInput<
   const validationTexts = returnValidationTexts({
     name,
     stepperPages,
+    validationFunctionsTable,
     valueBuffer,
   });
 

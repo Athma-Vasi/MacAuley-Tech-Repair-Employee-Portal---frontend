@@ -178,6 +178,8 @@ function Resource() {
   const editDocumentSubmitButton = (
     <AccessibleButton
       attributes={{
+        disabled: isSubmitting || pagesInError.size > 0,
+        disabledScreenreaderText: "Please fix errors before submitting edited document",
         enabledScreenreaderText: "Click to submit edited document",
         kind: "submit",
         onClick: (
@@ -219,12 +221,16 @@ function Resource() {
           action: resourceAction.setSelectedDocument,
           payload: null,
         });
+        resourceDispatch({
+          action: resourceAction.setSelectedField,
+          payload: "",
+        });
 
         closeDocumentEditModal();
       }}
       title={<Text>Edit Document</Text>}
     >
-      <Stack>
+      <Stack w={350}>
         {editDocumentForm}
         {Object.entries(selectedDocument ?? {}).map(([key, value], index) => (
           <GoldenGrid key={`${index}-${key}-${value?.toString().slice(17) ?? ""}`}>

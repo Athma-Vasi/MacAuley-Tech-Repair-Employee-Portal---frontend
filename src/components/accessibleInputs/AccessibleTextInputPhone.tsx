@@ -145,6 +145,7 @@ function AccessibleTextInputPhone<
   const validationTexts = returnValidationTexts({
     name,
     stepperPages,
+    validationFunctionsTable,
     valueBuffer,
   });
 

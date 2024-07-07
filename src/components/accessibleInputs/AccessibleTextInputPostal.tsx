@@ -146,6 +146,7 @@ function AccessibleTextInputPostal<
   const validationTexts = returnValidationTexts({
     name,
     stepperPages,
+    validationFunctionsTable,
     valueBuffer,
   });
 

@@ -193,6 +193,7 @@ function AccessibleTextInput<
   const validationTexts = returnValidationTexts({
     name,
     stepperPages,
+    validationFunctionsTable,
     valueBuffer,
   });
 

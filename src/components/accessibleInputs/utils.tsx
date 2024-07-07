@@ -600,10 +600,12 @@ type ValidationTexts = {
 function returnValidationTexts({
   name,
   stepperPages,
+  validationFunctionsTable,
   valueBuffer,
 }: {
   name: string;
   stepperPages: StepperPage[];
+  validationFunctionsTable: ValidationFunctionsTable;
   valueBuffer: string;
 }): ValidationTexts {
   const initialValidationTexts = {
@@ -624,13 +626,14 @@ function returnValidationTexts({
         return;
       }
 
+      const validation = validationFunctionsTable[validationKey ?? "allowAll"];
+      const { partials } = validation;
+
       console.group("returnValidationTexts");
       console.log("inputName", inputName);
       console.log("validationKey", validationKey);
+      console.log("validation", validation);
       console.groupEnd();
-
-      const validation = VALIDATION_FUNCTIONS_TABLE[validationKey ?? "allowAll"];
-      const { partials } = validation;
 
       const partialInvalidText = partials.length
         ? partials

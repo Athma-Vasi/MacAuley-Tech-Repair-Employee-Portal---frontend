@@ -204,6 +204,7 @@ function AccessibleTextAreaInput<
   const validationTexts = returnValidationTexts({
     name,
     stepperPages,
+    validationFunctionsTable,
     valueBuffer,
   });
 

@@ -142,6 +142,7 @@ function AccessibleDateTimeInput<
   const validationTexts = returnValidationTexts({
     name,
     stepperPages,
+    validationFunctionsTable,
     valueBuffer,
   });
 
