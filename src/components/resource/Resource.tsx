@@ -134,7 +134,19 @@ function Resource() {
   }, []);
 
   if (isLoading) {
-    return <Text>Loading...</Text>;
+    return <Text>{loadingMessage}</Text>;
+  }
+
+  if (isError) {
+    return <Text>Error...</Text>;
+  }
+
+  if (isSuccessful) {
+    return <Text>Success...</Text>;
+  }
+
+  if (isSubmitting) {
+    return <Text>Submitting...</Text>;
   }
 
   const stepperPages = returnLeaveRequestStepperPages();
@@ -187,8 +199,18 @@ function Resource() {
             | React.MouseEvent<HTMLButtonElement>
             | React.PointerEvent<HTMLButtonElement>
         ) => {
-          // console.log(`Edit Document Submit Button clicked: ${editFieldValue}`);
           event?.preventDefault();
+
+          fetchAbortControllerRef.current?.abort();
+          fetchAbortControllerRef.current = new AbortController();
+          const fetchAbortController = fetchAbortControllerRef.current;
+
+          preFetchAbortControllerRef.current?.abort();
+          preFetchAbortControllerRef.current = new AbortController();
+          const preFetchAbortController = preFetchAbortControllerRef.current;
+
+          isComponentMountedRef.current = true;
+          let isComponentMounted = isComponentMountedRef.current;
         },
         type: "submit",
       }}
@@ -196,7 +218,7 @@ function Resource() {
   );
 
   const editDocumentForm = (
-    <form action="" method="patch">
+    <form action="" method="patch" name="editDocumentForm">
       <Stack>
         {editDocumentInput}
         {editDocumentSubmitButton}

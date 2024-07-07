@@ -2832,6 +2832,154 @@ async function fetchResourceGET<
   }
 }
 
+async function fetchResourcePATCH<
+  SetIsSubmittingAction extends string = string,
+  SetSubmittingMessageAction extends string = string,
+  SetResourceDataAction extends string = string,
+  SetTotalDocumentsAction extends string = string,
+  SetTotalPagesAction extends string = string,
+  Data extends Record<string, unknown> = Record<string, unknown>
+>({
+  fetchAbortController,
+  fetchInterceptor,
+  isComponentMounted,
+  parentDispatch,
+  preFetchAbortController,
+  requestBody,
+  roleResourceRoutePaths,
+  sessionId,
+  setIsSubmittingAction,
+  setResourceDataAction,
+  setSubmittingMessageAction,
+  setTotalDocumentsAction,
+  setTotalPagesAction,
+  showBoundary,
+  submittingMessage,
+  userId,
+  userRole,
+  username,
+}: {
+  fetchAbortController: AbortController;
+  fetchInterceptor: FetchInterceptor;
+  isComponentMounted: boolean;
+  submittingMessage: string;
+  parentDispatch: React.Dispatch<
+    | {
+        action: SetIsSubmittingAction;
+        payload: boolean;
+      }
+    | {
+        action: SetSubmittingMessageAction;
+        payload: string;
+      }
+    | {
+        action: SetResourceDataAction;
+        payload: Array<QueryResponseData<Data>>;
+      }
+    | {
+        action: SetTotalDocumentsAction | SetTotalPagesAction;
+        payload: number;
+      }
+  >;
+  preFetchAbortController: AbortController;
+  requestBody: string;
+  roleResourceRoutePaths: RoleResourceRoutePaths;
+  sessionId: string;
+  setResourceDataAction: SetResourceDataAction;
+  setIsSubmittingAction: SetIsSubmittingAction;
+  setSubmittingMessageAction: SetSubmittingMessageAction;
+  setTotalDocumentsAction: SetTotalDocumentsAction;
+  setTotalPagesAction: SetTotalPagesAction;
+  showBoundary: (error: any) => void;
+  userId: string;
+  userRole: UserRole;
+  username: string;
+}) {
+  try {
+    parentDispatch({
+      action: setSubmittingMessageAction,
+      payload: submittingMessage,
+    });
+
+    const url: URL = urlBuilder({ path: roleResourceRoutePaths[userRole] });
+
+    const requestInit: RequestInit = {
+      body: requestBody,
+      headers: { "Content-Type": "application/json" },
+      method: "PATCH",
+    };
+
+    const response: Response = await fetchInterceptor({
+      fetchAbortController,
+      preFetchAbortController,
+      requestInit,
+      url,
+    });
+
+    if (!isComponentMounted) {
+      return;
+    }
+
+    if (!response.ok) {
+      const { status, statusText } = response;
+
+      const errorLogSchema: ErrorLogSchema = {
+        message: statusText,
+        requestBody,
+        sessionId,
+        stack: "",
+        status,
+        timestamp: new Date().toISOString(),
+        userId,
+        username,
+      };
+
+      console.log("errorLogSchema inside try", errorLogSchema);
+
+      // throw new Error(JSON.stringify(errorLogSchema));
+      return Promise.reject(errorLogSchema);
+
+      // if (status === 401) {
+      // throw new Error("Unauthorized");
+      // }
+      // throw new Error(`${status} : ${statusText}`);
+    }
+
+    const {
+      pages,
+      resourceData,
+      totalDocuments,
+    }: GetQueriedResourceRequestServerResponse<Data> = await response.json();
+
+    parentDispatch({
+      action: setResourceDataAction,
+      payload: resourceData,
+    });
+
+    parentDispatch({
+      action: setTotalDocumentsAction,
+      payload: totalDocuments,
+    });
+
+    parentDispatch({
+      action: setTotalPagesAction,
+      payload: pages,
+    });
+
+    parentDispatch({
+      action: setIsSubmittingAction,
+      payload: false,
+    });
+  } catch (error: any) {
+    console.log("fetchResourcePATCH", error);
+    if (!isComponentMounted || error?.name === "AbortError") {
+      return;
+    }
+
+    showBoundary(error);
+  }
+}
+
 export {
   addCommaSeparator,
   addFieldsToObject,
