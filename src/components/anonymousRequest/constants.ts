@@ -1,4 +1,4 @@
-import { REQUEST_STATUS, URGENCY_DATA } from "../../constants/data";
+import { REQUEST_STATUS, REQUEST_STATUS_DATA, URGENCY_DATA } from "../../constants/data";
 import {
   DATE_FULL_RANGE_REGEX,
   EMAIL_REGEX,
@@ -74,6 +74,12 @@ function returnAnonymousRequestStepperPages(): StepperPage[] {
     selectInputData: ANONYMOUS_REQUEST_KINDS_DATA,
   };
 
+  const requestStatusChild: StepperChild = {
+    inputType: "select",
+    name: "requestStatus",
+    selectInputData: REQUEST_STATUS_DATA,
+  };
+
   return [
     {
       children: [
@@ -84,6 +90,7 @@ function returnAnonymousRequestStepperPages(): StepperPage[] {
         requestDescriptionChild,
         additionalInformationChild,
         urgencyChild,
+        requestStatusChild,
       ],
       description: "Anonymous Request Details",
     },

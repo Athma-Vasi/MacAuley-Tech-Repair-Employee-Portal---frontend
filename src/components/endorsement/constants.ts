@@ -1,4 +1,4 @@
-import { REQUEST_STATUS } from "../../constants/data";
+import { REQUEST_STATUS, REQUEST_STATUS_DATA } from "../../constants/data";
 import {
   DATE_FULL_RANGE_REGEX,
   FULL_NAME_REGEX,
@@ -52,6 +52,12 @@ function returnEndorsementStepperPages(): StepperPage[] {
     validationKey: "textInput",
   };
 
+  const requestStatusChild: StepperChild = {
+    inputType: "select",
+    name: "requestStatus",
+    selectInputData: REQUEST_STATUS_DATA,
+  };
+
   const stepperPages: StepperPage[] = [
     {
       children: [
@@ -59,6 +65,7 @@ function returnEndorsementStepperPages(): StepperPage[] {
         personToBeEndorsedChild,
         summaryOfEndorsementChild,
         attributeEndorsedChild,
+        requestStatusChild,
       ],
       description: "Employee Endorsement",
     },

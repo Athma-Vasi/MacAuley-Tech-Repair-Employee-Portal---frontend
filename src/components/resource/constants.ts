@@ -7,26 +7,10 @@ const UNMODIFIABLE_FIELDS_SET = new Set([
   "username",
   "userId",
   "userRole",
+  "acknowledgement",
   "createdAt",
   "updatedAt",
   "__v",
-  // repair note
-  "dateReceived",
-  "estimatedCompletionDate",
-  // company
-  "planStartDate",
-  "expenseClaimDate",
-  "startDate",
-  "endDate",
-  "dateNeededBy",
-  // general
-  "dateOfOccurrence",
-  // outreach
-  "rsvpDeadline",
-  "eventStartDate",
-  "eventEndDate",
-  // register - user
-  "dateOfBirth",
 ]);
 
 const KEYS_WITH_DATE_VALUES_SET = new Set([

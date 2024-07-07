@@ -1,4 +1,9 @@
-import { DEPARTMENT_DATA, JOB_POSITION_DATA, REQUEST_STATUS } from "../../constants/data";
+import {
+  DEPARTMENT_DATA,
+  JOB_POSITION_DATA,
+  REQUEST_STATUS,
+  REQUEST_STATUS_DATA,
+} from "../../constants/data";
 import {
   DATE_FULL_RANGE_REGEX,
   EMAIL_REGEX,
@@ -106,6 +111,12 @@ function returnRefermentStepperPages(): StepperPage[] {
     validationKey: "textAreaInput",
   };
 
+  const requestStatusChild: StepperChild = {
+    inputType: "select",
+    name: "requestStatus",
+    selectInputData: REQUEST_STATUS_DATA,
+  };
+
   return [
     {
       children: [
@@ -126,6 +137,7 @@ function returnRefermentStepperPages(): StepperPage[] {
         referralReasonChild,
         additionalInformationChild,
         privacyConsentChild,
+        requestStatusChild,
       ],
       description: "Position Details",
     },

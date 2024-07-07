@@ -163,10 +163,10 @@ function AccessibleTextAreaInput<
   const [isPopoverOpened, { open: openPopover, close: closePopover }] =
     useDisclosure(false);
 
-  // required because valueBuffer still has stale value on dynamic inputs
-  useEffect(() => {
-    dynamicIndexes === undefined ? void 0 : setValueBuffer(value);
-  }, [dynamicIndexes, value]);
+  // // required because valueBuffer still has stale value on dynamic inputs
+  // useEffect(() => {
+  //   dynamicIndexes === undefined ? void 0 : setValueBuffer(value);
+  // }, [dynamicIndexes, value]);
 
   const {
     globalState: { themeObject },
@@ -208,6 +208,10 @@ function AccessibleTextAreaInput<
   });
 
   console.group(`AccessibleTextAreaInput: ${name}`);
+  console.log("name:", name);
+  console.log("stepperPages:", stepperPages);
+  console.log("validationFunctionsTable:", validationFunctionsTable);
+  console.log("fullValidation:", full);
   console.log("valueBuffer:", valueBuffer);
   console.log("isValueBufferValid:", isValueBufferValid);
   console.log("validationTexts:", validationTexts);

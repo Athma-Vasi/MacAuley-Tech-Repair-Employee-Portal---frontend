@@ -1,3 +1,4 @@
+import { REQUEST_STATUS_DATA } from "../../constants/data";
 import {
   DATE_FULL_RANGE_REGEX,
   DATE_NEAR_FUTURE_REGEX,
@@ -97,6 +98,12 @@ function returnEventStepperPages(): StepperPage[] {
     validationKey: "textInput",
   };
 
+  const requestStatusChild: StepperChild = {
+    inputType: "select",
+    name: "requestStatus",
+    selectInputData: REQUEST_STATUS_DATA,
+  };
+
   return [
     {
       children: [
@@ -106,6 +113,7 @@ function returnEventStepperPages(): StepperPage[] {
         endDateChild,
         startTimeChild,
         endTimeChild,
+        requestStatusChild,
       ],
       description: "Event Date and Time",
     },

@@ -12,7 +12,7 @@ import {
   UnstyledButton,
 } from "@mantine/core";
 import { FileUploadDocument, QueryResponseData } from "../../types";
-import { TiArrowUpThick } from "react-icons/ti";
+import { TiArrowDownThick, TiArrowUpThick } from "react-icons/ti";
 import { formatDate, replaceLastCommaWithAnd } from "../../utils";
 import { SortDirection } from "../query/types";
 import React from "react";
@@ -71,7 +71,7 @@ function Desktop({
           const descendingIconWithTooltip = (
             <Tooltip label={`Sort ${headerValue} in descending order`}>
               <Group>
-                <TiArrowUpThick
+                <TiArrowDownThick
                   // color={descendingIconColor}
                   style={{ cursor: "pointer" }}
                   size={17}

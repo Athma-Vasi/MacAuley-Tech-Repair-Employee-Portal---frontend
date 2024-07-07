@@ -3,6 +3,7 @@ import { ResourceState } from "./types";
 const initialResourceState: ResourceState = {
   currentPage: 1,
   editFieldValue: "",
+  editFieldValues: [],
   isError: false,
   isLoading: false,
   isSubmitting: false,

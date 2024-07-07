@@ -1,6 +1,7 @@
 type ResourceAction = {
   setCurrentPage: "setCurrentPage";
   setEditFieldValue: "setEditFieldValue";
+  setEditFieldValues: "setEditFieldValues";
   setIsError: "setIsError";
   setIsLoading: "setIsLoading";
   setIsSubmitting: "setIsSubmitting";
@@ -23,6 +24,7 @@ type ResourceAction = {
 const resourceAction: ResourceAction = {
   setCurrentPage: "setCurrentPage",
   setEditFieldValue: "setEditFieldValue",
+  setEditFieldValues: "setEditFieldValues",
   setIsError: "setIsError",
   setIsLoading: "setIsLoading",
   setIsSubmitting: "setIsSubmitting",

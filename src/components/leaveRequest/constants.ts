@@ -1,4 +1,4 @@
-import { REQUEST_STATUS } from "../../constants/data";
+import { REQUEST_STATUS, REQUEST_STATUS_DATA } from "../../constants/data";
 import {
   DATE_FULL_RANGE_REGEX,
   DATE_NEAR_FUTURE_REGEX,
@@ -66,6 +66,12 @@ function returnLeaveRequestStepperPages() {
     validationKey: "dateNearFuture",
   };
 
+  const requestStatusChild: StepperChild = {
+    inputType: "select",
+    name: "requestStatus",
+    selectInputData: REQUEST_STATUS_DATA,
+  };
+
   const stepperPages: StepperPage[] = [
     {
       children: [
@@ -75,6 +81,7 @@ function returnLeaveRequestStepperPages() {
         delegatedToEmployeeChild,
         endDateChild,
         reasonForLeaveChild,
+        requestStatusChild,
         startDateChild,
       ],
       description: "Create Leave Request",

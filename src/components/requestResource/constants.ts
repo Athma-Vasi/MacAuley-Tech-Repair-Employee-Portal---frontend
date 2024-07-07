@@ -1,4 +1,9 @@
-import { DEPARTMENT_DATA, REQUEST_STATUS, URGENCY_DATA } from "../../constants/data";
+import {
+  DEPARTMENT_DATA,
+  REQUEST_STATUS,
+  REQUEST_STATUS_DATA,
+  URGENCY_DATA,
+} from "../../constants/data";
 import {
   DATE_FULL_RANGE_REGEX,
   DATE_NEAR_FUTURE_REGEX,
@@ -80,6 +85,12 @@ function returnRequestResourceStepperPages(): StepperPage[] {
     validationKey: "textAreaInput",
   };
 
+  const requestStatusChild: StepperChild = {
+    inputType: "select",
+    name: "requestStatus",
+    selectInputData: REQUEST_STATUS_DATA,
+  };
+
   const stepperPages: StepperPage[] = [
     {
       children: [
@@ -91,6 +102,7 @@ function returnRequestResourceStepperPages(): StepperPage[] {
         urgencyChild,
         dateNeededByChild,
         additionalInformationChild,
+        requestStatusChild,
       ],
       description: "Resource Request Details",
     },

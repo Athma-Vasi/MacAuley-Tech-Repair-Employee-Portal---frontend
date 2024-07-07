@@ -2,6 +2,7 @@ import {
   COUNTRIES_DATA,
   PROVINCES,
   REQUEST_STATUS,
+  REQUEST_STATUS_DATA,
   STATES_US,
 } from "../../constants/data";
 import {
@@ -90,6 +91,12 @@ function returnAddressChangeStepperPages(country: Country): StepperPage[] {
     validationKey: "acknowledgement",
   };
 
+  const requestStatusChild: StepperChild = {
+    inputType: "select",
+    name: "requestStatus",
+    selectInputData: REQUEST_STATUS_DATA,
+  };
+
   const stepperPages: StepperPage[] = [
     {
       children: [
@@ -101,6 +108,7 @@ function returnAddressChangeStepperPages(country: Country): StepperPage[] {
         postalCode,
         contactNumber,
         acknowledgement,
+        requestStatusChild,
       ],
       description: "Update your contact details",
     },

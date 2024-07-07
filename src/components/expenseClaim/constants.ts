@@ -1,4 +1,4 @@
-import { CURRENCY_DATA, REQUEST_STATUS } from "../../constants/data";
+import { CURRENCY_DATA, REQUEST_STATUS, REQUEST_STATUS_DATA } from "../../constants/data";
 import {
   DATE_FULL_RANGE_REGEX,
   DATE_NEAR_PAST_REGEX,
@@ -74,6 +74,12 @@ function returnExpenseClaimStepperPages() {
     selectInputData: EXPENSE_CLAIM_KIND_DATA,
   };
 
+  const requestStatusChild: StepperChild = {
+    inputType: "select",
+    name: "requestStatus",
+    selectInputData: REQUEST_STATUS_DATA,
+  };
+
   const stepperPages: StepperPage[] = [
     {
       children: [
@@ -84,6 +90,7 @@ function returnExpenseClaimStepperPages() {
         expenseClaimDescriptionChild,
         additionalCommentsTextChild,
         acknowledgementSwitchChild,
+        requestStatusChild,
       ],
       description: "Expense Details",
     },

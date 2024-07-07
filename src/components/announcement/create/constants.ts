@@ -1,3 +1,4 @@
+import { REQUEST_STATUS_DATA } from "../../../constants/data";
 import {
   DATE_FULL_RANGE_REGEX,
   FULL_NAME_REGEX,
@@ -49,9 +50,21 @@ function returnAnnouncementStepperPages(): StepperPage[] {
     validationKey: "textInput",
   };
 
+  const requestStatusChild: StepperChild = {
+    inputType: "select",
+    name: "requestStatus",
+    selectInputData: REQUEST_STATUS_DATA,
+  };
+
   return [
     {
-      children: [titleChild, authorChild, bannerImageSrcChild, bannerImageAltChild],
+      children: [
+        titleChild,
+        authorChild,
+        bannerImageSrcChild,
+        bannerImageAltChild,
+        requestStatusChild,
+      ],
       description: "Announcement Details",
     },
     {

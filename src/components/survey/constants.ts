@@ -1,3 +1,4 @@
+import { REQUEST_STATUS_DATA } from "../../constants/data";
 import {
   DATE_FULL_RANGE_REGEX,
   DATE_NEAR_FUTURE_REGEX,
@@ -76,6 +77,12 @@ function returnSurveyStepperPages(): StepperPage[] {
     validationKey: "textAreaInput",
   };
 
+  const requestStatusChild: StepperChild = {
+    inputType: "select",
+    name: "requestStatus",
+    selectInputData: REQUEST_STATUS_DATA,
+  };
+
   return [
     {
       children: [
@@ -83,6 +90,7 @@ function returnSurveyStepperPages(): StepperPage[] {
         surveyDescriptionChild,
         expiryDateChild,
         surveyRecipientsChild,
+        requestStatusChild,
       ],
       description: "Survey details",
     },

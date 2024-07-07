@@ -24,6 +24,7 @@ type SortFieldDirection = {
 type ResourceState = {
   currentPage: number;
   editFieldValue: string;
+  editFieldValues: Array<string>;
   isError: boolean;
   isLoading: boolean;
   isSubmitting: boolean;
@@ -52,6 +53,10 @@ type ResourceDispatch =
   | {
       action: ResourceAction["setEditFieldValue"];
       payload: string;
+    }
+  | {
+      action: ResourceAction["setEditFieldValues"];
+      payload: Array<string>;
     }
   | {
       action: ResourceAction["setIsError"];
@@ -95,7 +100,7 @@ type ResourceDispatch =
     }
   | {
       action: ResourceAction["setSelectedDocument"];
-      payload: QueryResponseData;
+      payload: QueryResponseData | null;
     }
   | {
       action: ResourceAction["setSelectedField"];

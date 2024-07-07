@@ -1,4 +1,4 @@
-import { CURRENCY_DATA, REQUEST_STATUS } from "../../constants/data";
+import { CURRENCY_DATA, REQUEST_STATUS, REQUEST_STATUS_DATA } from "../../constants/data";
 import {
   DATE_FULL_RANGE_REGEX,
   DATE_REGEX,
@@ -81,6 +81,12 @@ function returnBenefitStepperPages() {
     validationKey: "date",
   };
 
+  const requestStatusChild: StepperChild = {
+    inputType: "select",
+    name: "requestStatus",
+    selectInputData: REQUEST_STATUS_DATA,
+  };
+
   const stepperPages: StepperPage[] = [
     {
       children: [
@@ -92,6 +98,7 @@ function returnBenefitStepperPages() {
         employerContributionInput,
         employeeContributionInput,
         isPlanActiveInput,
+        requestStatusChild,
       ],
       description: "Plan Details",
     },

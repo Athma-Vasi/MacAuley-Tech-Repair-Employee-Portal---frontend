@@ -10,6 +10,7 @@ import {
   Department,
   JobPosition,
   Province,
+  RequestStatus,
   StatesUS,
   StoreLocation,
   Urgency,
@@ -97,6 +98,12 @@ const TEXT_OVERFLOW: CSSProperties = {
 };
 
 const REQUEST_STATUS = ["pending", "approved", "rejected"];
+
+const REQUEST_STATUS_DATA: CheckboxRadioSelectData<RequestStatus> = [
+  { value: "pending", label: "Pending" },
+  { value: "approved", label: "Approved" },
+  { value: "rejected", label: "Rejected" },
+];
 
 const DEPARTMENT_DATA: CheckboxRadioSelectData<Department> = [
   { value: "Executive Management", label: "Executive Management" },
@@ -605,6 +612,7 @@ export {
   PROPERTY_DESCRIPTOR,
   PROVINCES,
   REQUEST_STATUS,
+  REQUEST_STATUS_DATA,
   SCREENSHOT_IMAGE_TYPE_DATA,
   STATES_US,
   STORE_LOCATION_DATA,

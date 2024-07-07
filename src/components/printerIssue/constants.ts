@@ -1,4 +1,4 @@
-import { REQUEST_STATUS, URGENCY_DATA } from "../../constants/data";
+import { REQUEST_STATUS, REQUEST_STATUS_DATA, URGENCY_DATA } from "../../constants/data";
 import {
   DATE_FULL_RANGE_REGEX,
   DATE_NEAR_PAST_REGEX,
@@ -106,6 +106,12 @@ function returnPrinterIssueStepperPages(): StepperPage[] {
     selectInputData: URGENCY_DATA,
   };
 
+  const requestStatusChild: StepperChild = {
+    inputType: "select",
+    name: "requestStatus",
+    selectInputData: REQUEST_STATUS_DATA,
+  };
+
   const stepperPages: StepperPage[] = [
     {
       children: [
@@ -125,6 +131,7 @@ function returnPrinterIssueStepperPages(): StepperPage[] {
         contactEmailChild,
         dateOfOccurrenceChild,
         timeOfOccurrenceChild,
+        requestStatusChild,
       ],
       description: "Personal and Contact Details",
     },

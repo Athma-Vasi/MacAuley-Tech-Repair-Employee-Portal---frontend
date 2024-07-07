@@ -22,6 +22,7 @@ const resourceReducers = new Map<
 >([
   [resourceAction.setCurrentPage, resourceReducer_setCurrentPage],
   [resourceAction.setEditFieldValue, resourceReducer_setEditFieldValue],
+  [resourceAction.setEditFieldValues, resourceReducer_setEditFieldValues],
   [resourceAction.setIsError, resourceReducer_setIsError],
   [resourceAction.setIsLoading, resourceReducer_setIsLoading],
   [resourceAction.setIsSubmitting, resourceReducer_setIsSubmitting],
@@ -56,6 +57,13 @@ function resourceReducer_setEditFieldValue(
   dispatch: ResourceDispatch
 ): ResourceState {
   return { ...state, editFieldValue: dispatch.payload as string };
+}
+
+function resourceReducer_setEditFieldValues(
+  state: ResourceState,
+  dispatch: ResourceDispatch
+): ResourceState {
+  return { ...state, editFieldValues: dispatch.payload as Array<string> };
 }
 
 function resourceReducer_setIsError(

@@ -29,7 +29,14 @@ import { VALIDATION_FUNCTIONS_TABLE, ValidationKey } from "../../constants/valid
 import { returnBenefitStepperPages } from "../benefit/constants";
 import { returnLeaveRequestStepperPages } from "../leaveRequest/constants";
 import { InputsValidationsMap } from "../query/utils";
-import { addSelectedFieldValidation, createResourceInputsData } from "./utils";
+import {
+  addSelectedFieldValidation,
+  createEditDocumentInput,
+  createResourceInputsData,
+} from "./utils";
+import { AccessibleCheckboxInputGroup } from "../accessibleInputs/AccessibleCheckboxInput";
+import { AccessibleDateTimeInput } from "../accessibleInputs/AccessibleDateTimeInput";
+import { AccessibleSelectInput } from "../accessibleInputs/AccessibleSelectInput";
 
 type ResourceProps = {
   resourceName: string;
@@ -46,6 +53,7 @@ function Resource() {
   const {
     currentPage,
     editFieldValue,
+    editFieldValues,
     isError,
     isLoading,
     isSubmitting,
@@ -131,17 +139,6 @@ function Resource() {
 
   const stepperPages = returnLeaveRequestStepperPages();
 
-  console.log(`Resource.tsx stepperPages: ${JSON.stringify(stepperPages)}`);
-
-  const {
-    checkboxInputsSet,
-    dateInputsSet,
-    inputsValidationsMap,
-    selectInputsDataMap,
-    selectInputsSet,
-    textInputsSet,
-  } = createResourceInputsData(stepperPages);
-
   const pageNavigation = (
     <PageNavigation
       limitPerPage={limitPerPage}
@@ -169,25 +166,14 @@ function Resource() {
     />
   );
 
-  function createEditDocumentInput({}: { selectedField: string }) {}
-
-  const editDocumentTextAreaInput = (
-    <AccessibleTextAreaInput
-      attributes={{
-        invalidValueAction: resourceAction.setPageInError,
-        name: "editFieldValue",
-        parentDispatch: resourceDispatch,
-        stepperPages,
-        validationFunctionsTable: addSelectedFieldValidation(
-          inputsValidationsMap,
-          selectedField,
-          VALIDATION_FUNCTIONS_TABLE
-        ),
-        validValueAction: resourceAction.setEditFieldValue,
-        value: editFieldValue,
-      }}
-    />
-  );
+  const editDocumentInput = createEditDocumentInput({
+    editFieldValue,
+    editFieldValues,
+    resourceAction,
+    resourceDispatch,
+    selectedField,
+    stepperPages,
+  });
 
   const editDocumentSubmitButton = (
     <AccessibleButton
@@ -210,7 +196,7 @@ function Resource() {
   const editDocumentForm = (
     <form action="" method="patch">
       <Stack>
-        {editDocumentTextAreaInput}
+        {editDocumentInput}
         {editDocumentSubmitButton}
       </Stack>
     </form>
@@ -220,7 +206,22 @@ function Resource() {
     <Modal
       centered
       opened={openedDocumentEditModal}
-      onClose={closeDocumentEditModal}
+      onClose={() => {
+        resourceDispatch({
+          action: resourceAction.setEditFieldValue,
+          payload: "",
+        });
+        resourceDispatch({
+          action: resourceAction.setEditFieldValues,
+          payload: [],
+        });
+        resourceDispatch({
+          action: resourceAction.setSelectedDocument,
+          payload: null,
+        });
+
+        closeDocumentEditModal();
+      }}
       title={<Text>Edit Document</Text>}
     >
       <Stack>
@@ -235,10 +236,9 @@ function Resource() {
     </Modal>
   );
 
-  logState({
-    state: resourceState,
-    groupLabel: "Resource",
-  });
+  console.group("Resource");
+  console.log("resourceState", resourceState);
+  console.groupEnd();
 
   return (
     <Stack w={700}>
