@@ -41,7 +41,7 @@ function CreateRepairTicket() {
   /** ------------- begin hooks ------------- */
   const [createRepairTicketState, createRepairTicketDispatch] = useReducer(
     createRepairTicketReducer,
-    initialCreateRepairTicketState
+    initialCreateRepairTicketState,
   );
   const {
     // customer search
@@ -152,7 +152,6 @@ function CreateRepairTicket() {
 
   const {
     globalDispatch,
-    globalState: { actionsDocuments },
   } = useGlobalState();
 
   const { wrappedFetch } = useWrapFetch();
@@ -259,12 +258,11 @@ function CreateRepairTicket() {
           return;
         }
 
-        const errorMessage =
-          error instanceof InvalidTokenError
-            ? "Invalid token. Please login again."
-            : !error.response
-            ? "Network error. Please try again."
-            : error?.message ?? "Unknown error occurred. Please try again.";
+        const errorMessage = error instanceof InvalidTokenError
+          ? "Invalid token. Please login again."
+          : !error.response
+          ? "Network error. Please try again."
+          : error?.message ?? "Unknown error occurred. Please try again.";
 
         globalDispatch({
           type: globalAction.setErrorState,
@@ -343,7 +341,7 @@ function CreateRepairTicket() {
     customerSearchResults.find((doc) => doc._id === customerId) ?? {};
 
   const customerInformationFormReviewObjects = Object.entries(
-    flattenObjectIterative(selectedCustomerInformation)
+    flattenObjectIterative(selectedCustomerInformation),
   ).map(([key, value]) => {
     const formReviewObject: FormReviewObject = {
       inputName: splitCamelCase(key),
@@ -431,7 +429,10 @@ function CreateRepairTicket() {
   };
 
   const displayReviewPage = (
-    <FormReviewPage formReviewObject={REPAIR_NOTE_REVIEW_OBJECT} formName="Repair Note" />
+    <FormReviewPage
+      formReviewObject={REPAIR_NOTE_REVIEW_OBJECT}
+      formName="Repair Note"
+    />
   );
 
   const displaySubmitSuccessNotificationModal = (
@@ -447,17 +448,17 @@ function CreateRepairTicket() {
         loading: isSubmitting,
         text: isSubmitting ? submitMessage : successMessage,
       }}
-      title={<Title order={4}>{isSuccessful ? "Success!" : "Submitting ..."}</Title>}
+      title={
+        <Title order={4}>{isSuccessful ? "Success!" : "Submitting ..."}</Title>
+      }
     />
   );
 
   const displaySubmitButton = (
     <Tooltip
-      label={
-        stepsInError.size > 0
-          ? "Please fix errors before submitting form"
-          : "Submit Repair Note form"
-      }
+      label={stepsInError.size > 0
+        ? "Please fix errors before submitting form"
+        : "Submit Repair Note form"}
     >
       <Group w="100%" position="center">
         {createdSubmitButton}
@@ -465,11 +466,10 @@ function CreateRepairTicket() {
     </Tooltip>
   );
 
-  const displayRepairTicketComponentPage =
-    currentStepperPosition === 0 ? (
+  const displayRepairTicketComponentPage = currentStepperPosition === 0
+    ? (
       <RepairTicketStepCustomer
         customerSearchResults={customerSearchResults}
-        actionsDocuments={actionsDocuments}
         currentSearchObject={currentSearchObject}
         searchOperator={searchOperator}
         clearSearchInputs={clearSearchInputs}
@@ -512,7 +512,9 @@ function CreateRepairTicket() {
         createRepairTicketAction={createRepairTicketAction}
         createRepairTicketDispatch={createRepairTicketDispatch}
       />
-    ) : currentStepperPosition === 1 ? (
+    )
+    : currentStepperPosition === 1
+    ? (
       <RepairTicketStepPart
         partName={partName}
         partSerialId={partSerialId}
@@ -532,7 +534,9 @@ function CreateRepairTicket() {
         createRepairTicketAction={createRepairTicketAction}
         createRepairTicketDispatch={createRepairTicketDispatch}
       />
-    ) : currentStepperPosition === 2 ? (
+    )
+    : currentStepperPosition === 2
+    ? (
       <RepairTicketStepDetail
         requiredRepairs={requiredRepairs}
         partsNeeded={partsNeeded}
@@ -551,11 +555,10 @@ function CreateRepairTicket() {
         createRepairTicketAction={createRepairTicketAction}
         createRepairTicketDispatch={createRepairTicketDispatch}
       />
-    ) : currentStepperPosition === 3 ? (
-      displayReviewPage
-    ) : (
-      displaySubmitButton
-    );
+    )
+    : currentStepperPosition === 3
+    ? displayReviewPage
+    : displaySubmitButton;
 
   const displayRepairTicketForm = (
     <StepperWrapper
@@ -563,7 +566,8 @@ function CreateRepairTicket() {
       descriptionObjectsArray={CREATE_REPAIR_NOTE_DESCRIPTION_OBJECTS}
       maxStepperPosition={CREATE_REPAIR_NOTE_MAX_STEPPER_POSITION}
       parentComponentDispatch={createRepairTicketDispatch}
-      setCurrentStepperPosition={createRepairTicketAction.setCurrentStepperPosition}
+      setCurrentStepperPosition={createRepairTicketAction
+        .setCurrentStepperPosition}
       stepsInError={stepsInError}
       childrenTitle="Create repair ticket"
     >

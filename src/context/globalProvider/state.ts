@@ -1,4 +1,9 @@
-import { GlobalAction, GlobalDispatch, GlobalState, ThemeObject } from "./types";
+import {
+  GlobalAction,
+  GlobalDispatch,
+  GlobalState,
+  ThemeObject,
+} from "./types";
 
 const initialThemeObject: ThemeObject = {
   colorScheme: "light",
@@ -48,7 +53,6 @@ const initialGlobalState: GlobalState = {
   themeObject: initialThemeObject,
 
   userDocument: null,
-  actionsDocuments: null,
   announcementDocument: null,
   isPrefersReducedMotion: false,
 
@@ -87,7 +91,6 @@ const globalAction: GlobalAction = {
   setComponents: "setComponents",
 
   setUserDocument: "setUserDocument",
-  setActionsDocuments: "setActionsDocuments",
   setAnnouncementDocument: "setAnnouncementDocument",
   setPrefersReducedMotion: "setPrefersReducedMotion",
 
@@ -100,7 +103,10 @@ const globalAction: GlobalAction = {
   setComponentsErrorState: "setComponentsErrorState",
 };
 
-function globalReducer(state: GlobalState, action: GlobalDispatch): GlobalState {
+function globalReducer(
+  state: GlobalState,
+  action: GlobalDispatch,
+): GlobalState {
   switch (action.type) {
     case globalAction.setWidth:
       return { ...state, width: action.payload };
@@ -221,8 +227,6 @@ function globalReducer(state: GlobalState, action: GlobalDispatch): GlobalState 
     // documents
     case globalAction.setUserDocument:
       return { ...state, userDocument: action.payload };
-    case globalAction.setActionsDocuments:
-      return { ...state, actionsDocuments: action.payload };
     case globalAction.setAnnouncementDocument:
       return { ...state, announcementDocument: action.payload };
     case globalAction.setPrefersReducedMotion:
@@ -237,7 +241,7 @@ function globalReducer(state: GlobalState, action: GlobalDispatch): GlobalState 
       const customizeChartsPageData = action.payload;
       const existingYYYYMMDD =
         state.customizeChartsPageData?.selectedYYYYMMDD ??
-        new Date().toISOString().slice(0, 10);
+          new Date().toISOString().slice(0, 10);
 
       let [existingYYYY, existingMM, existingDD] = existingYYYYMMDD.split("-");
       existingMM = existingMM.padStart(2, "0");
@@ -256,7 +260,9 @@ function globalReducer(state: GlobalState, action: GlobalDispatch): GlobalState 
       const { customizeChartsPageData } = state;
       if (!customizeChartsPageData) return state;
 
-      const clonedCustomizeChartsPageData = structuredClone(customizeChartsPageData);
+      const clonedCustomizeChartsPageData = structuredClone(
+        customizeChartsPageData,
+      );
       clonedCustomizeChartsPageData.selectedYYYYMMDD = action.payload;
 
       return {

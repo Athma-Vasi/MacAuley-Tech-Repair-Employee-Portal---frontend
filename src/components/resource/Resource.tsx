@@ -1,42 +1,22 @@
-import { Modal, Pagination, Stack, Text, Textarea } from "@mantine/core";
-import { resourceReducer } from "./reducers";
-import { initialResourceState } from "./state";
+import { Modal, Stack, Text } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
 import React from "react";
 import { useErrorBoundary } from "react-error-boundary";
-import { useFetchInterceptor } from "../../hooks/useFetchInterceptor";
+
 import { useAuth } from "../../hooks";
-import { ResourceAction, resourceAction } from "./actions";
-import { PageNavigation } from "../pageNavigation/PageNavigation";
-import { fetchResourceGET, logState, splitCamelCase, urlBuilder } from "../../utils";
-import {
-  CheckboxRadioSelectData,
-  ErrorLogSchema,
-  GetQueriedResourceRequestServerResponse,
-  InputType,
-  RoleResourceRoutePaths,
-  StepperPage,
-  UserRole,
-  ValidationFunctionsTable,
-} from "../../types";
-import { Desktop } from "./Desktop";
-import { LEAVE_REQUEST_RESOURCE_DATA } from "./TEMPDATA";
-import { Mobile } from "./Mobile";
-import { useDisclosure } from "@mantine/hooks";
+import { useFetchInterceptor } from "../../hooks/useFetchInterceptor";
+import { RoleResourceRoutePaths, StepperPage } from "../../types";
 import { AccessibleButton } from "../accessibleInputs/AccessibleButton";
 import { GoldenGrid } from "../accessibleInputs/GoldenGrid";
-import { AccessibleTextAreaInput } from "../accessibleInputs/AccessibleTextAreaInput";
-import { VALIDATION_FUNCTIONS_TABLE, ValidationKey } from "../../constants/validations";
-import { returnBenefitStepperPages } from "../benefit/constants";
-import { returnLeaveRequestStepperPages } from "../leaveRequest/constants";
-import { InputsValidationsMap } from "../query/utils";
-import {
-  addSelectedFieldValidation,
-  createEditDocumentInput,
-  createResourceInputsData,
-} from "./utils";
-import { AccessibleCheckboxInputGroup } from "../accessibleInputs/AccessibleCheckboxInput";
-import { AccessibleDateTimeInput } from "../accessibleInputs/AccessibleDateTimeInput";
-import { AccessibleSelectInput } from "../accessibleInputs/AccessibleSelectInput";
+import { returnEventStepperPages } from "../event/constants";
+import { PageNavigation } from "../pageNavigation/PageNavigation";
+import { Desktop } from "./Desktop";
+import { Mobile } from "./Mobile";
+import { LEAVE_REQUEST_RESOURCE_DATA } from "./TEMPDATA";
+import { resourceAction } from "./actions";
+import { resourceReducer } from "./reducers";
+import { initialResourceState } from "./state";
+import { createEditDocumentInput } from "./utils";
 
 type ResourceProps = {
   resourceName: string;
@@ -47,7 +27,7 @@ type ResourceProps = {
 function Resource() {
   const [resourceState, resourceDispatch] = React.useReducer(
     resourceReducer,
-    initialResourceState
+    initialResourceState,
   );
 
   const {
@@ -149,7 +129,7 @@ function Resource() {
     return <Text>Submitting...</Text>;
   }
 
-  const stepperPages = returnLeaveRequestStepperPages();
+  const stepperPages = returnEventStepperPages();
 
   const pageNavigation = (
     <PageNavigation
@@ -191,13 +171,14 @@ function Resource() {
     <AccessibleButton
       attributes={{
         disabled: isSubmitting || pagesInError.size > 0,
-        disabledScreenreaderText: "Please fix errors before submitting edited document",
+        disabledScreenreaderText:
+          "Please fix errors before submitting edited document",
         enabledScreenreaderText: "Click to submit edited document",
         kind: "submit",
         onClick: (
           event:
             | React.MouseEvent<HTMLButtonElement>
-            | React.PointerEvent<HTMLButtonElement>
+            | React.PointerEvent<HTMLButtonElement>,
         ) => {
           event?.preventDefault();
 
@@ -255,7 +236,9 @@ function Resource() {
       <Stack w={350}>
         {editDocumentForm}
         {Object.entries(selectedDocument ?? {}).map(([key, value], index) => (
-          <GoldenGrid key={`${index}-${key}-${value?.toString().slice(17) ?? ""}`}>
+          <GoldenGrid
+            key={`${index}-${key}-${value?.toString().slice(17) ?? ""}`}
+          >
             <Text>{key}</Text>
             <Text>{value?.toString() ?? ""}</Text>
           </GoldenGrid>

@@ -25,15 +25,17 @@ import {
   TbUserSearch,
 } from "react-icons/tb";
 
-import { COLORS_SWATCHES, FIELDNAMES_WITH_DATE_VALUES } from "../../../constants/data";
+import { LiaAddressBook, LiaExpandArrowsAltSolid } from "react-icons/lia";
+import {
+  COLORS_SWATCHES,
+  FIELDNAMES_WITH_DATE_VALUES,
+} from "../../../constants/data";
 import { useAuth, useGlobalState } from "../../../hooks";
 import {
   returnAccessibleButtonElements,
   returnHighlightedText,
 } from "../../../jsxCreators";
-import { UserDocument } from "../../../types";
 import {
-  addFieldsToObject,
   formatDate,
   replaceLastCommaWithAnd,
   returnThemeColors,
@@ -50,8 +52,6 @@ import {
   initialDisplayQueryMobileState,
 } from "./state";
 import { DisplayQueryMobileProps } from "./types";
-import { CustomerDocument } from "../../customer/types";
-import { LiaExpandArrowsAltSolid, LiaAddressBook } from "react-icons/lia";
 
 function DisplayQueryMobile({
   componentQueryData,
@@ -71,7 +71,7 @@ function DisplayQueryMobile({
 }: DisplayQueryMobileProps): JSX.Element {
   const [displayQueryMobileState, displayQueryMobileDispatch] = useReducer(
     displayQueryMobileReducer,
-    initialDisplayQueryMobileState
+    initialDisplayQueryMobileState,
   );
   const {
     editRepairTicketInput,
@@ -82,7 +82,7 @@ function DisplayQueryMobile({
   } = displayQueryMobileState;
 
   const {
-    globalState: { width, padding, rowGap, themeObject, actionsDocuments },
+    globalState: { width, padding, rowGap, themeObject },
   } = useGlobalState();
   const {
     authState: { roles },
@@ -90,7 +90,10 @@ function DisplayQueryMobile({
 
   const [
     openedUpdateRequestStatusModal,
-    { open: openUpdateRequestStatusModal, close: closeUpdateRequestStatusModal },
+    {
+      open: openUpdateRequestStatusModal,
+      close: closeUpdateRequestStatusModal,
+    },
   ] = useDisclosure(false);
 
   // for repair note fields update only
@@ -130,22 +133,23 @@ function DisplayQueryMobile({
     { open: openPersonalAddressModal, close: closePersonalAddressModal },
   ] = useDisclosure(false);
 
-  const [createdShowMoreButton, createdHideButton] = returnAccessibleButtonElements([
-    {
-      buttonLabel: "Show",
-      leftIcon: <TbArrowDown />,
-      buttonType: "button",
-      semanticDescription: "Reveal more information",
-      semanticName: "Show more",
-    },
-    {
-      buttonLabel: "Hide",
-      leftIcon: <TbArrowUp />,
-      buttonType: "button",
-      semanticDescription: "Hide revealed information",
-      semanticName: "Hide",
-    },
-  ]);
+  const [createdShowMoreButton, createdHideButton] =
+    returnAccessibleButtonElements([
+      {
+        buttonLabel: "Show",
+        leftIcon: <TbArrowDown />,
+        buttonType: "button",
+        semanticDescription: "Reveal more information",
+        semanticName: "Show more",
+      },
+      {
+        buttonLabel: "Hide",
+        leftIcon: <TbArrowUp />,
+        buttonType: "button",
+        semanticDescription: "Hide revealed information",
+        semanticName: "Hide",
+      },
+    ]);
 
   const {
     appThemeColors: { borderColor },
@@ -168,7 +172,9 @@ function DisplayQueryMobile({
     isProductReviewSectionInView,
   } = returnWhichResourceInView(groupedByQueryResponseData);
 
-  const displayGroupedByQueryResponseData = Array.from(groupedByQueryResponseData).map(
+  const displayGroupedByQueryResponseData = Array.from(
+    groupedByQueryResponseData,
+  ).map(
     ([section, queryObjArr], responseDataIdx) => {
       const displayQueryObjArr = queryObjArr.map((queryObj, queryObjIdx) => {
         const queryResponseObjWithAddedFields = addFieldsToQueryResponseObject({
@@ -184,18 +190,22 @@ function DisplayQueryMobile({
           queryResponseObj: queryObj,
         });
 
-        console.log("queryResponseObjWithAddedFields", queryResponseObjWithAddedFields);
+        console.log(
+          "queryResponseObjWithAddedFields",
+          queryResponseObjWithAddedFields,
+        );
 
-        const displayKeyValues = Object.entries(queryResponseObjWithAddedFields).map(
-          (document, keyValIdx) => {
-            const [key, value] = document;
-            // grab the section instead of the camelCased value and if it doesn't exist, split the camelCase
-            const sectionKey =
-              componentQueryData.find((queryDataObj) => queryDataObj.value === key)
+        const displayKeyValues = Object.entries(queryResponseObjWithAddedFields)
+          .map(
+            (document, keyValIdx) => {
+              const [key, value] = document;
+              // grab the section instead of the camelCased value and if it doesn't exist, split the camelCase
+              const sectionKey = componentQueryData.find((queryDataObj) =>
+                queryDataObj.value === key
+              )
                 ?.label ?? splitCamelCase(key);
 
-            const formattedValue =
-              value === true
+              const formattedValue = value === true
                 ? "Yes"
                 : value === false
                 ? "No"
@@ -205,93 +215,108 @@ function DisplayQueryMobile({
                 ? value
                 : key === "createdAt" || key === "updatedAt"
                 ? formatDate({
-                    date: value,
-                    formatOptions: {
-                      year: "numeric",
-                      month: "numeric",
-                      day: "numeric",
-                      hour: "numeric",
-                      minute: "numeric",
-                      second: "numeric",
-                      hour12: false,
-                      timeZoneName: "long",
-                    },
-                    locale: "en-US",
-                  })
+                  date: value,
+                  formatOptions: {
+                    year: "numeric",
+                    month: "numeric",
+                    day: "numeric",
+                    hour: "numeric",
+                    minute: "numeric",
+                    second: "numeric",
+                    hour12: false,
+                    timeZoneName: "long",
+                  },
+                  locale: "en-US",
+                })
                 : FIELDNAMES_WITH_DATE_VALUES.has(key)
                 ? formatDate({
-                    date: value,
-                    formatOptions: {
-                      dateStyle: "short",
-                    },
-                    locale: "en-US",
-                  })
-                : `${value.toString().charAt(0).toUpperCase()}${value
+                  date: value,
+                  formatOptions: {
+                    dateStyle: "short",
+                  },
+                  locale: "en-US",
+                })
+                : `${value.toString().charAt(0).toUpperCase()}${
+                  value
                     .toString()
-                    .slice(1)}`;
+                    .slice(1)
+                }`;
 
-            // only when user views repair notes section
-            const [createdRepairTicketEditButton] = isRepairTicketSectionInView
-              ? returnAccessibleButtonElements([
-                  {
-                    buttonLabel: <TbEdit />,
-                    semanticDescription: `Modify ${key} for username: ${queryResponseObjWithAddedFields.username} and form with id: ${queryResponseObjWithAddedFields._id}`,
-                    semanticName: `Modify ${key}`,
-                    buttonOnClick: () => {
-                      displayQueryMobileDispatch({
-                        type: displayQueryMobileAction.setEditRepairTicketInput,
-                        payload: {
-                          repairTicketFormId: queryResponseObjWithAddedFields._id,
-                          repairNotes: queryResponseObjWithAddedFields.repairNotes,
-                          testingResults: queryResponseObjWithAddedFields.testingResults,
-                          finalRepairCost:
-                            queryResponseObjWithAddedFields.finalRepairCost,
-                          finalRepairCostCurrency:
-                            queryResponseObjWithAddedFields.finalRepairCostCurrency,
-                          repairStatus: queryResponseObjWithAddedFields.repairStatus,
-                        },
-                      });
+              // only when user views repair notes section
+              const [createdRepairTicketEditButton] =
+                isRepairTicketSectionInView
+                  ? returnAccessibleButtonElements([
+                    {
+                      buttonLabel: <TbEdit />,
+                      semanticDescription:
+                        `Modify ${key} for username: ${queryResponseObjWithAddedFields.username} and form with id: ${queryResponseObjWithAddedFields._id}`,
+                      semanticName: `Modify ${key}`,
+                      buttonOnClick: () => {
+                        displayQueryMobileDispatch({
+                          type:
+                            displayQueryMobileAction.setEditRepairTicketInput,
+                          payload: {
+                            repairTicketFormId:
+                              queryResponseObjWithAddedFields._id,
+                            repairNotes:
+                              queryResponseObjWithAddedFields.repairNotes,
+                            testingResults:
+                              queryResponseObjWithAddedFields.testingResults,
+                            finalRepairCost:
+                              queryResponseObjWithAddedFields.finalRepairCost,
+                            finalRepairCostCurrency:
+                              queryResponseObjWithAddedFields
+                                .finalRepairCostCurrency,
+                            repairStatus:
+                              queryResponseObjWithAddedFields.repairStatus,
+                          },
+                        });
 
-                      openEditRepairTicketsModal();
+                        openEditRepairTicketsModal();
+                      },
                     },
-                  },
-                ])
-              : [null];
+                  ])
+                  : [null];
 
-            // only when viewing product category section
-            const [createdViewAdditionalFieldsButton] = isProductCategorySectionInView
-              ? returnAccessibleButtonElements([
-                  {
-                    buttonLabel: <LiaExpandArrowsAltSolid />,
-                    semanticDescription: `View additional fields for product with id: ${queryResponseObjWithAddedFields._id}`,
-                    semanticName: "View additional fields",
-                    buttonOnClick: () => {
-                      displayQueryMobileDispatch({
-                        type: displayQueryMobileAction.setCurrentDocumentId,
-                        payload: queryResponseObjWithAddedFields._id,
-                      });
+              // only when viewing product category section
+              const [createdViewAdditionalFieldsButton] =
+                isProductCategorySectionInView
+                  ? returnAccessibleButtonElements([
+                    {
+                      buttonLabel: <LiaExpandArrowsAltSolid />,
+                      semanticDescription:
+                        `View additional fields for product with id: ${queryResponseObjWithAddedFields._id}`,
+                      semanticName: "View additional fields",
+                      buttonOnClick: () => {
+                        displayQueryMobileDispatch({
+                          type: displayQueryMobileAction.setCurrentDocumentId,
+                          payload: queryResponseObjWithAddedFields._id,
+                        });
 
-                      openAdditionalFieldsModal();
+                        openAdditionalFieldsModal();
+                      },
                     },
-                  },
-                ])
-              : [null];
+                  ])
+                  : [null];
 
-            const displayViewAdditionalFieldsButton =
-              createdViewAdditionalFieldsButton ? (
-                <Tooltip
-                  label={`View additional fields for product with id: ${queryResponseObjWithAddedFields._id}`}
-                >
-                  <Group>{createdViewAdditionalFieldsButton}</Group>
-                </Tooltip>
-              ) : null;
+              const displayViewAdditionalFieldsButton =
+                createdViewAdditionalFieldsButton
+                  ? (
+                    <Tooltip
+                      label={`View additional fields for product with id: ${queryResponseObjWithAddedFields._id}`}
+                    >
+                      <Group>{createdViewAdditionalFieldsButton}</Group>
+                    </Tooltip>
+                  )
+                  : null;
 
-            // only when viewing product category section
-            const [viewStarRatingsButton] = isProductCategorySectionInView
-              ? returnAccessibleButtonElements([
+              // only when viewing product category section
+              const [viewStarRatingsButton] = isProductCategorySectionInView
+                ? returnAccessibleButtonElements([
                   {
                     buttonLabel: <TbStars />,
-                    semanticDescription: `View reviews for product with id: ${queryResponseObjWithAddedFields._id}`,
+                    semanticDescription:
+                      `View reviews for product with id: ${queryResponseObjWithAddedFields._id}`,
                     semanticName: "View reviews",
                     buttonOnClick: () => {
                       displayQueryMobileDispatch({
@@ -303,22 +328,25 @@ function DisplayQueryMobile({
                     },
                   },
                 ])
-              : [null];
+                : [null];
 
-            const displayViewStarRatingsButton = viewStarRatingsButton ? (
-              <Tooltip
-                label={`View reviews for product with id: ${queryResponseObjWithAddedFields._id}`}
-              >
-                <Group>{viewStarRatingsButton}</Group>
-              </Tooltip>
-            ) : null;
+              const displayViewStarRatingsButton = viewStarRatingsButton
+                ? (
+                  <Tooltip
+                    label={`View reviews for product with id: ${queryResponseObjWithAddedFields._id}`}
+                  >
+                    <Group>{viewStarRatingsButton}</Group>
+                  </Tooltip>
+                )
+                : null;
 
-            // only when viewing purchase section
-            const [viewPurchasesModalButton] = isPurchaseSectionInView
-              ? returnAccessibleButtonElements([
+              // only when viewing purchase section
+              const [viewPurchasesModalButton] = isPurchaseSectionInView
+                ? returnAccessibleButtonElements([
                   {
                     buttonLabel: <LiaExpandArrowsAltSolid />,
-                    semanticDescription: `View purchase details for customer with id: ${queryResponseObjWithAddedFields.customerId}`,
+                    semanticDescription:
+                      `View purchase details for customer with id: ${queryResponseObjWithAddedFields.customerId}`,
                     semanticName: "View purchase details",
                     buttonOnClick: () => {
                       displayQueryMobileDispatch({
@@ -330,22 +358,25 @@ function DisplayQueryMobile({
                     },
                   },
                 ])
-              : [null];
+                : [null];
 
-            const displayViewPurchasesModalButton = viewPurchasesModalButton ? (
-              <Tooltip
-                label={`View purchase details for customer with id: ${queryResponseObjWithAddedFields.customerId}`}
-              >
-                <Group>{viewPurchasesModalButton}</Group>
-              </Tooltip>
-            ) : null;
+              const displayViewPurchasesModalButton = viewPurchasesModalButton
+                ? (
+                  <Tooltip
+                    label={`View purchase details for customer with id: ${queryResponseObjWithAddedFields.customerId}`}
+                  >
+                    <Group>{viewPurchasesModalButton}</Group>
+                  </Tooltip>
+                )
+                : null;
 
-            // only when viewing purchase section
-            const [viewShippingAddressModalButton] = isPurchaseSectionInView
-              ? returnAccessibleButtonElements([
+              // only when viewing purchase section
+              const [viewShippingAddressModalButton] = isPurchaseSectionInView
+                ? returnAccessibleButtonElements([
                   {
                     buttonLabel: <LiaAddressBook />,
-                    semanticDescription: `View shipping address for customer with id: ${queryResponseObjWithAddedFields.customerId}`,
+                    semanticDescription:
+                      `View shipping address for customer with id: ${queryResponseObjWithAddedFields.customerId}`,
                     semanticName: "View shipping address",
                     buttonOnClick: () => {
                       displayQueryMobileDispatch({
@@ -357,22 +388,26 @@ function DisplayQueryMobile({
                     },
                   },
                 ])
-              : [null];
+                : [null];
 
-            const displayShippingAddressModalButton = viewShippingAddressModalButton ? (
-              <Tooltip
-                label={`View shipping address for customer with id: ${queryResponseObjWithAddedFields.customerId}`}
-              >
-                <Group>{viewShippingAddressModalButton}</Group>
-              </Tooltip>
-            ) : null;
+              const displayShippingAddressModalButton =
+                viewShippingAddressModalButton
+                  ? (
+                    <Tooltip
+                      label={`View shipping address for customer with id: ${queryResponseObjWithAddedFields.customerId}`}
+                    >
+                      <Group>{viewShippingAddressModalButton}</Group>
+                    </Tooltip>
+                  )
+                  : null;
 
-            // only when viewing customer section
-            const [viewPersonalAddressModalButton] = isCustomerSectionInView
-              ? returnAccessibleButtonElements([
+              // only when viewing customer section
+              const [viewPersonalAddressModalButton] = isCustomerSectionInView
+                ? returnAccessibleButtonElements([
                   {
                     buttonLabel: <LiaAddressBook />,
-                    semanticDescription: `View personal address for username: ${queryResponseObjWithAddedFields.username}`,
+                    semanticDescription:
+                      `View personal address for username: ${queryResponseObjWithAddedFields.username}`,
                     semanticName: "View personal address",
                     buttonOnClick: () => {
                       displayQueryMobileDispatch({
@@ -384,225 +419,245 @@ function DisplayQueryMobile({
                     },
                   },
                 ])
-              : [null];
+                : [null];
 
-            const displayPersonalAddressModalButton = viewPersonalAddressModalButton ? (
-              <Tooltip
-                label={`View personal address for username: ${queryResponseObjWithAddedFields.username}`}
-              >
-                <Group>{viewPersonalAddressModalButton}</Group>
-              </Tooltip>
-            ) : null;
+              const displayPersonalAddressModalButton =
+                viewPersonalAddressModalButton
+                  ? (
+                    <Tooltip
+                      label={`View personal address for username: ${queryResponseObjWithAddedFields.username}`}
+                    >
+                      <Group>{viewPersonalAddressModalButton}</Group>
+                    </Tooltip>
+                  )
+                  : null;
 
-            const [
-              createdUpdateRequestStatusButton,
-              createdViewProfileButton,
-              createdDeleteButton,
-              createdOpenFileUploadsModalButton,
-            ] = returnAccessibleButtonElements([
-              // update request status button
-              {
-                buttonLabel: <TbStatusChange />,
-                semanticDescription: `Modify current request status of ${queryResponseObjWithAddedFields.requestStatus} for username: ${queryResponseObjWithAddedFields.username} and form with id: ${queryResponseObjWithAddedFields._id}`,
-                semanticName: "Update request status",
-                buttonOnClick: () => {
-                  displayQueryMobileDispatch({
-                    type: displayQueryMobileAction.setCurrentDocumentId,
-                    payload: queryResponseObjWithAddedFields._id,
-                  });
-                  displayQueryMobileDispatch({
-                    type: displayQueryMobileAction.setCurrentRequestStatus,
-                    payload: queryResponseObjWithAddedFields.requestStatus,
-                  });
-                  openUpdateRequestStatusModal();
+              const [
+                createdUpdateRequestStatusButton,
+                createdViewProfileButton,
+                createdDeleteButton,
+                createdOpenFileUploadsModalButton,
+              ] = returnAccessibleButtonElements([
+                // update request status button
+                {
+                  buttonLabel: <TbStatusChange />,
+                  semanticDescription:
+                    `Modify current request status of ${queryResponseObjWithAddedFields.requestStatus} for username: ${queryResponseObjWithAddedFields.username} and form with id: ${queryResponseObjWithAddedFields._id}`,
+                  semanticName: "Update request status",
+                  buttonOnClick: () => {
+                    displayQueryMobileDispatch({
+                      type: displayQueryMobileAction.setCurrentDocumentId,
+                      payload: queryResponseObjWithAddedFields._id,
+                    });
+                    displayQueryMobileDispatch({
+                      type: displayQueryMobileAction.setCurrentRequestStatus,
+                      payload: queryResponseObjWithAddedFields.requestStatus,
+                    });
+                    openUpdateRequestStatusModal();
+                  },
                 },
-              },
-              // view profile button
-              {
-                buttonLabel: <TbUserSearch />,
-                semanticDescription: `View profile of username: ${queryResponseObjWithAddedFields.username}`,
-                semanticName: "View profile",
-                buttonOnClick: () => {
-                  isProductReviewSectionInView ||
-                  isPurchaseSectionInView ||
-                  isRMASectionInView
-                    ? displayQueryMobileDispatch({
-                        type: displayQueryMobileAction.setCustomerDocument,
-                        payload:
-                          actionsDocuments?.customerData?.find(
-                            (customer) =>
-                              customer.username ===
-                              queryResponseObjWithAddedFields.username
-                          ) ??
-                          ({} as Omit<
-                            CustomerDocument,
-                            "password" | "paymentInformation"
-                          >),
-                      })
-                    : displayQueryMobileDispatch({
-                        type: displayQueryMobileAction.setEmployeeDocument,
-                        payload: isCustomerSectionInView
-                          ? (queryObj as UserDocument)
-                          : (Array.from(actionsDocuments?.employeeData ?? new Map()).find(
-                              ([_key, value]) =>
-                                value._id === queryResponseObjWithAddedFields.userId
-                            )?.[1] as UserDocument),
-                      });
+                // view profile button
+                {
+                  buttonLabel: <TbUserSearch />,
+                  semanticDescription:
+                    `View profile of username: ${queryResponseObjWithAddedFields.username}`,
+                  semanticName: "View profile",
+                  buttonOnClick: () => {
+                    // isProductReviewSectionInView ||
+                    //   isPurchaseSectionInView ||
+                    //   isRMASectionInView
+                    //   ? displayQueryMobileDispatch({
+                    //     type: displayQueryMobileAction.setCustomerDocument,
+                    //     payload: actionsDocuments?.customerData?.find(
+                    //       (customer) =>
+                    //         customer.username ===
+                    //           queryResponseObjWithAddedFields.username,
+                    //     ) ??
+                    //       ({} as Omit<
+                    //         CustomerDocument,
+                    //         "password" | "paymentInformation"
+                    //       >),
+                    //   })
+                    //   : displayQueryMobileDispatch({
+                    //     type: displayQueryMobileAction.setEmployeeDocument,
+                    //     payload: isCustomerSectionInView
+                    //       ? (queryObj as UserDocument)
+                    //       : (Array.from(
+                    //         actionsDocuments?.employeeData ?? new Map(),
+                    //       ).find(
+                    //         ([_key, value]) =>
+                    //           value._id ===
+                    //             queryResponseObjWithAddedFields.userId,
+                    //       )?.[1] as UserDocument),
+                    //   });
 
-                  openProfileInfoModal();
+                    openProfileInfoModal();
+                  },
                 },
-              },
-              // delete button
-              {
-                buttonLabel: <TbTrash />,
-                semanticDescription: "Delete this form",
-                semanticName: "Delete",
-                buttonOnClick: () => {
-                  deleteFormIdDispatch({
-                    type: "setDeleteFormId",
-                    payload: queryObj._id,
-                  });
-                  deleteResourceKindDispatch({
-                    type: "setDeleteResourceKind",
-                    payload: "form",
-                  });
-                  openDeleteAcknowledge();
+                // delete button
+                {
+                  buttonLabel: <TbTrash />,
+                  semanticDescription: "Delete this form",
+                  semanticName: "Delete",
+                  buttonOnClick: () => {
+                    deleteFormIdDispatch({
+                      type: "setDeleteFormId",
+                      payload: queryObj._id,
+                    });
+                    deleteResourceKindDispatch({
+                      type: "setDeleteResourceKind",
+                      payload: "form",
+                    });
+                    openDeleteAcknowledge();
+                  },
                 },
-              },
-              // open file uploads modal button
-              {
-                buttonLabel: "Open",
-                buttonDisabled: fileUploadsData[queryObjIdx]?.fileUploads.length < 1,
-                leftIcon: <IoMdOpen />,
-                semanticDescription:
-                  "Open modal to display file uploads associated with this document",
-                semanticName: "Open file uploads modal",
-                buttonOnClick: () => {
-                  setFileUploadsForAFormDispatch({
-                    type: "setFileUploadsForAForm",
-                    payload: fileUploadsData[queryObjIdx]?.fileUploads,
-                  });
-                  deleteFormIdDispatch({
-                    type: "setDeleteFormId",
-                    payload: queryResponseObjWithAddedFields._id,
-                  });
-                  openFileUploads();
+                // open file uploads modal button
+                {
+                  buttonLabel: "Open",
+                  buttonDisabled:
+                    fileUploadsData[queryObjIdx]?.fileUploads.length < 1,
+                  leftIcon: <IoMdOpen />,
+                  semanticDescription:
+                    "Open modal to display file uploads associated with this document",
+                  semanticName: "Open file uploads modal",
+                  buttonOnClick: () => {
+                    setFileUploadsForAFormDispatch({
+                      type: "setFileUploadsForAForm",
+                      payload: fileUploadsData[queryObjIdx]?.fileUploads,
+                    });
+                    deleteFormIdDispatch({
+                      type: "setDeleteFormId",
+                      payload: queryResponseObjWithAddedFields._id,
+                    });
+                    openFileUploads();
+                  },
                 },
-              },
-            ]);
+              ]);
 
-            // only managers can update request status
-            const displayUpdateRequestStatusButton = roles.includes("Manager")
-              ? key === "requestStatus"
-                ? createdUpdateRequestStatusButton
-                : null
-              : null;
+              // only managers can update request status
+              const displayUpdateRequestStatusButton = roles.includes("Manager")
+                ? key === "requestStatus"
+                  ? createdUpdateRequestStatusButton
+                  : null
+                : null;
 
-            const displayViewProfileButton =
-              key === "viewProfile" ? createdViewProfileButton : null;
-            const displayCreatedDeleteButton =
-              key === "delete" ? createdDeleteButton : null;
-            const displayEditRepairTicketButton =
-              key === "edit" ? createdRepairTicketEditButton : null;
-            const displayCreatedOpenFileUploadsModalButton =
-              key === "fileUploads" ? createdOpenFileUploadsModalButton : null;
+              const displayViewProfileButton = key === "viewProfile"
+                ? createdViewProfileButton
+                : null;
+              const displayCreatedDeleteButton = key === "delete"
+                ? createdDeleteButton
+                : null;
+              const displayEditRepairTicketButton = key === "edit"
+                ? createdRepairTicketEditButton
+                : null;
+              const displayCreatedOpenFileUploadsModalButton =
+                key === "fileUploads"
+                  ? createdOpenFileUploadsModalButton
+                  : null;
 
-            // regex to determine if formattedValue has any terms in queryValuesArray
-            const regex = queryValuesArray.length
-              ? new RegExp(
+              // regex to determine if formattedValue has any terms in queryValuesArray
+              const regex = queryValuesArray.length
+                ? new RegExp(
                   queryValuesArray
-                    .filter((value) => value) // remove empty strings
+                    .filter((value) =>
+                      value
+                    ) // remove empty strings
                     .flatMap((value) => value.split(" ")) // split strings into words
                     .join("|"),
-                  "gi"
+                  "gi",
                 )
-              : null;
+                : null;
 
-            const highlightedSectionKey = regex?.test(formattedValue) ? (
-              <Text weight={600}>
-                {sectionKey === "_id" ? "Document Id" : sectionKey}
-              </Text>
-            ) : (
-              <Text>{sectionKey === "_id" ? "Document Id" : sectionKey}</Text>
-            );
+              const highlightedSectionKey = regex?.test(formattedValue)
+                ? (
+                  <Text weight={600}>
+                    {sectionKey === "_id" ? "Document Id" : sectionKey}
+                  </Text>
+                )
+                : (
+                  <Text>
+                    {sectionKey === "_id" ? "Document Id" : sectionKey}
+                  </Text>
+                );
 
-            const highlightedText = returnHighlightedText({
-              textHighlightColor,
-              fieldValue: formattedValue,
-              queryValuesArray,
-            });
+              const highlightedText = returnHighlightedText({
+                textHighlightColor,
+                fieldValue: formattedValue,
+                queryValuesArray,
+              });
 
-            const displayFullLabelValueRow = (
-              <Flex w="100%">
-                <Flex w="100%">{highlightedSectionKey}</Flex>
-                <Flex
-                  align="center"
-                  justify="flex-end"
-                  w="100%"
-                  columnGap={rowGap}
-                  pl={padding}
-                >
-                  {displayUpdateRequestStatusButton}
-                  {displayViewProfileButton}
-                  {displayCreatedOpenFileUploadsModalButton}
-                  {displayCreatedDeleteButton}
-                  {displayEditRepairTicketButton}
-                  <Spoiler
-                    maxHeight={70}
-                    showLabel={createdShowMoreButton}
-                    hideLabel={createdHideButton}
+              const displayFullLabelValueRow = (
+                <Flex w="100%">
+                  <Flex w="100%">{highlightedSectionKey}</Flex>
+                  <Flex
+                    align="center"
+                    justify="flex-end"
+                    w="100%"
+                    columnGap={rowGap}
+                    pl={padding}
                   >
-                    <Flex direction="row" wrap="wrap" gap={4}>
-                      {highlightedText}
-                    </Flex>
-                  </Spoiler>
+                    {displayUpdateRequestStatusButton}
+                    {displayViewProfileButton}
+                    {displayCreatedOpenFileUploadsModalButton}
+                    {displayCreatedDeleteButton}
+                    {displayEditRepairTicketButton}
+                    <Spoiler
+                      maxHeight={70}
+                      showLabel={createdShowMoreButton}
+                      hideLabel={createdHideButton}
+                    >
+                      <Flex direction="row" wrap="wrap" gap={4}>
+                        {highlightedText}
+                      </Flex>
+                    </Spoiler>
+                  </Flex>
                 </Flex>
-              </Flex>
-            );
+              );
 
-            const rowBackgroundColorLight =
-              keyValIdx % 2 === 0 ? "#f9f9f9" : "transparent";
-            const rowBackgroundColorDark = "transparent";
-            const rowBackgroundColor =
-              themeObject.colorScheme === "dark"
+              const rowBackgroundColorLight = keyValIdx % 2 === 0
+                ? "#f9f9f9"
+                : "transparent";
+              const rowBackgroundColorDark = "transparent";
+              const rowBackgroundColor = themeObject.colorScheme === "dark"
                 ? rowBackgroundColorDark
                 : rowBackgroundColorLight;
 
-            const lastKeyValBorderBottom =
-              Object.keys(queryResponseObjWithAddedFields).length - 1 === keyValIdx
-                ? ""
-                : borderColor;
+              const lastKeyValBorderBottom =
+                Object.keys(queryResponseObjWithAddedFields).length - 1 ===
+                    keyValIdx
+                  ? ""
+                  : borderColor;
 
-            return (
-              <Flex
-                key={`${key}-${keyValIdx}`}
-                direction={width < 768 ? "column" : "row"}
-                align={width < 768 ? "flex-start" : "center"}
-                justify={width < 768 ? "flex-start" : "space-between"}
-                bg={rowBackgroundColor}
-                style={{ borderBottom: lastKeyValBorderBottom }}
-                rowGap={rowGap}
-                w="100%"
-                p={padding}
-              >
-                {displayFullLabelValueRow}
-              </Flex>
-            );
-          }
-        );
-
-        const displayBeginDivider =
-          queryObjIdx === 0 ? null : (
-            <Divider
-              label={<Text>Begin</Text>}
-              labelPosition="center"
-              w="100%"
-              variant="dashed"
-            />
+              return (
+                <Flex
+                  key={`${key}-${keyValIdx}`}
+                  direction={width < 768 ? "column" : "row"}
+                  align={width < 768 ? "flex-start" : "center"}
+                  justify={width < 768 ? "flex-start" : "space-between"}
+                  bg={rowBackgroundColor}
+                  style={{ borderBottom: lastKeyValBorderBottom }}
+                  rowGap={rowGap}
+                  w="100%"
+                  p={padding}
+                >
+                  {displayFullLabelValueRow}
+                </Flex>
+              );
+            },
           );
 
-        const displayEndDivider =
-          queryObjIdx === queryObj.length - 1 ? null : (
+        const displayBeginDivider = queryObjIdx === 0 ? null : (
+          <Divider
+            label={<Text>Begin</Text>}
+            labelPosition="center"
+            w="100%"
+            variant="dashed"
+          />
+        );
+
+        const displayEndDivider = queryObjIdx === queryObj.length - 1
+          ? null
+          : (
             <Divider
               label={<Text>End</Text>}
               labelPosition="center"
@@ -628,12 +683,13 @@ function DisplayQueryMobile({
         );
       });
 
-      const displaySection =
-        section === true
-          ? "Yes"
-          : section === false
-          ? "No"
-          : `${section.toString().charAt(0).toUpperCase()}${section.toString().slice(1)}`;
+      const displaySection = section === true
+        ? "Yes"
+        : section === false
+        ? "No"
+        : `${section.toString().charAt(0).toUpperCase()}${
+          section.toString().slice(1)
+        }`;
 
       return (
         <Flex
@@ -666,7 +722,7 @@ function DisplayQueryMobile({
           </Accordion>
         </Flex>
       );
-    }
+    },
   );
 
   // StepperWrapper width plus extra paddingX
@@ -676,8 +732,8 @@ function DisplayQueryMobile({
       ? 375 - 20
       : width < 768 // for iPhone 6/7/8
       ? width * 0.9
-      : // at 768vw the navbar appears at width of 225px
-        (width - 225) * 0.9;
+      // at 768vw the navbar appears at width of 225px
+      : (width - 225) * 0.9;
 
   const displayEditRepairTicketModal = (
     <Modal
@@ -694,10 +750,10 @@ function DisplayQueryMobile({
     </Modal>
   );
 
-  const selectedDocument =
-    Array.from(groupedByQueryResponseData)
-      .flatMap(([, queryResponseObjArrays]) => queryResponseObjArrays)
-      .find((queryResponseObj) => queryResponseObj._id === currentDocumentId) || {};
+  const selectedDocument = Array.from(groupedByQueryResponseData)
+    .flatMap(([, queryResponseObjArrays]) => queryResponseObjArrays)
+    .find((queryResponseObj) => queryResponseObj._id === currentDocumentId) ||
+    {};
 
   const displayUpdateRequestStatusModal = (
     <Modal
@@ -740,7 +796,9 @@ function DisplayQueryMobile({
       scrollAreaComponent={ScrollArea.Autosize}
     >
       <ProfileInfo
-        userDocument={isProductReviewSectionInView ? customerDocument : employeeDocument}
+        userDocument={isProductReviewSectionInView
+          ? customerDocument
+          : employeeDocument}
       />
     </Modal>
   );

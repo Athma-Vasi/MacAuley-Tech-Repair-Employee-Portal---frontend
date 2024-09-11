@@ -1,6 +1,5 @@
 import {
   Group,
-  Image,
   Modal,
   Pagination,
   Space,
@@ -11,9 +10,16 @@ import {
   Tooltip,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { ChangeEvent, Fragment, KeyboardEvent, MouseEvent, useEffect } from "react";
+import {
+  ChangeEvent,
+  Fragment,
+  KeyboardEvent,
+  MouseEvent,
+  useEffect,
+} from "react";
 import { TbClearAll, TbQuestionMark, TbSearch } from "react-icons/tb";
 
+import { TiDelete } from "react-icons/ti";
 import {
   COLORS_SWATCHES,
   COUNTRIES_DATA,
@@ -31,7 +37,6 @@ import {
   POSTAL_CODE_REGEX_US,
   USERNAME_REGEX,
 } from "../../../../constants/regex";
-import { ActionsDocuments } from "../../../../context/globalProvider/types";
 import { useGlobalState } from "../../../../hooks";
 import {
   AccessibleErrorValidTextElements,
@@ -41,7 +46,13 @@ import {
   returnAccessibleSelectInputElements,
   returnAccessibleTextInputElements,
 } from "../../../../jsxCreators";
-import { Country, PhoneNumber, PostalCode, Province, StatesUS } from "../../../../types";
+import {
+  Country,
+  PhoneNumber,
+  PostalCode,
+  Province,
+  StatesUS,
+} from "../../../../types";
 import {
   returnAddressValidationText,
   returnCityValidationText,
@@ -64,14 +75,14 @@ import {
 import {
   displayResourceDocument,
   OPERATOR_SWITCH_HELP_MODAL_CONTENT,
-  returnFilteredDocuments,
 } from "../utils";
-import { TiDelete } from "react-icons/ti";
 
 type RepairTicketStepCustomerProps = {
-  actionsDocuments: ActionsDocuments | null;
   currentSearchObject: CurrentSearchObject;
-  customerSearchResults: Omit<CustomerDocument, "password" | "paymentInformation">[];
+  customerSearchResults: Omit<
+    CustomerDocument,
+    "password" | "paymentInformation"
+  >[];
   searchOperator: CustomerSearchOperator;
   clearSearchInputs: boolean;
   customerId: string;
@@ -128,7 +139,6 @@ type RepairTicketStepCustomerProps = {
 
 function RepairTicketStepCustomer(parentState: RepairTicketStepCustomerProps) {
   const {
-    actionsDocuments,
     currentSearchObject,
     customerSearchResults,
     searchOperator,
@@ -203,7 +213,11 @@ function RepairTicketStepCustomer(parentState: RepairTicketStepCustomerProps) {
       type: createRepairTicketAction.setIsValidUsername,
       payload: isValid,
     });
-  }, [createRepairTicketAction.setIsValidUsername, createRepairTicketDispatch, username]);
+  }, [
+    createRepairTicketAction.setIsValidUsername,
+    createRepairTicketDispatch,
+    username,
+  ]);
 
   useEffect(() => {
     const isValid = EMAIL_REGEX.test(email);
@@ -212,7 +226,11 @@ function RepairTicketStepCustomer(parentState: RepairTicketStepCustomerProps) {
       type: createRepairTicketAction.setIsValidEmail,
       payload: isValid,
     });
-  }, [createRepairTicketAction.setIsValidEmail, createRepairTicketDispatch, email]);
+  }, [
+    createRepairTicketAction.setIsValidEmail,
+    createRepairTicketDispatch,
+    email,
+  ]);
 
   useEffect(() => {
     const isValid = NAME_REGEX.test(firstName);
@@ -247,7 +265,11 @@ function RepairTicketStepCustomer(parentState: RepairTicketStepCustomerProps) {
       type: createRepairTicketAction.setIsValidLastName,
       payload: isValid,
     });
-  }, [createRepairTicketAction.setIsValidLastName, createRepairTicketDispatch, lastName]);
+  }, [
+    createRepairTicketAction.setIsValidLastName,
+    createRepairTicketDispatch,
+    lastName,
+  ]);
 
   useEffect(() => {
     const isValid = FULL_NAME_REGEX.test(preferredName);
@@ -327,13 +349,16 @@ function RepairTicketStepCustomer(parentState: RepairTicketStepCustomerProps) {
       type: createRepairTicketAction.setIsValidCity,
       payload: isValid,
     });
-  }, [city, createRepairTicketAction.setIsValidCity, createRepairTicketDispatch]);
+  }, [
+    city,
+    createRepairTicketAction.setIsValidCity,
+    createRepairTicketDispatch,
+  ]);
 
   useEffect(() => {
-    const isValid =
-      country === "Canada"
-        ? POSTAL_CODE_REGEX_CANADA.test(postalCode)
-        : POSTAL_CODE_REGEX_US.test(postalCode);
+    const isValid = country === "Canada"
+      ? POSTAL_CODE_REGEX_CANADA.test(postalCode)
+      : POSTAL_CODE_REGEX_US.test(postalCode);
 
     if (country === "Canada") {
       const postalCodeLength = postalCode.length;
@@ -382,8 +407,9 @@ function RepairTicketStepCustomer(parentState: RepairTicketStepCustomerProps) {
       (city !== "" && !isValidCity) ||
       (postalCode !== "" && !isValidPostalCode);
 
-    const isPage1InError =
-      !areCustomerSearchFieldsInError && customerId.length ? false : true;
+    const isPage1InError = !areCustomerSearchFieldsInError && customerId.length
+      ? false
+      : true;
 
     createRepairTicketDispatch({
       type: createRepairTicketAction.setStepsInError,
@@ -486,16 +512,17 @@ function RepairTicketStepCustomer(parentState: RepairTicketStepCustomerProps) {
     },
   ]);
 
-  const [emailInputErrorText, emailInputValidText] = AccessibleErrorValidTextElements({
-    inputElementKind: "email",
-    inputText: email,
-    isInputTextFocused: isEmailFocused,
-    isValidInputText: isValidEmail,
-    regexValidationText: returnEmailValidationText({
-      content: email,
-      contentKind: "email",
-    }),
-  });
+  const [emailInputErrorText, emailInputValidText] =
+    AccessibleErrorValidTextElements({
+      inputElementKind: "email",
+      inputText: email,
+      isInputTextFocused: isEmailFocused,
+      isValidInputText: isValidEmail,
+      regexValidationText: returnEmailValidationText({
+        content: email,
+        contentKind: "email",
+      }),
+    });
 
   const [createdEmailTextInput] = returnAccessibleTextInputElements([
     {
@@ -802,69 +829,70 @@ function RepairTicketStepCustomer(parentState: RepairTicketStepCustomerProps) {
       }),
     });
 
-  const [createdContactNumberTextInput] = returnAccessiblePhoneNumberTextInputElements([
-    {
-      description: {
-        error: contactNumberInputErrorText,
-        valid: contactNumberInputValidText,
-      },
-      inputText: contactNumber,
-      isValidInputText: isValidContactNumber,
-      label: "Contact Number",
-      name: "contactNumber",
-      onBlur: () => {
-        createRepairTicketDispatch({
-          type: createRepairTicketAction.setIsContactNumberFocused,
-          payload: false,
-        });
-      },
-      onChange: (event: ChangeEvent<HTMLInputElement>) => {
-        createRepairTicketDispatch({
-          type: createRepairTicketAction.setContactNumber,
-          payload: event.currentTarget.value,
-        });
+  const [createdContactNumberTextInput] =
+    returnAccessiblePhoneNumberTextInputElements([
+      {
+        description: {
+          error: contactNumberInputErrorText,
+          valid: contactNumberInputValidText,
+        },
+        inputText: contactNumber,
+        isValidInputText: isValidContactNumber,
+        label: "Contact Number",
+        name: "contactNumber",
+        onBlur: () => {
+          createRepairTicketDispatch({
+            type: createRepairTicketAction.setIsContactNumberFocused,
+            payload: false,
+          });
+        },
+        onChange: (event: ChangeEvent<HTMLInputElement>) => {
+          createRepairTicketDispatch({
+            type: createRepairTicketAction.setContactNumber,
+            payload: event.currentTarget.value,
+          });
 
-        createRepairTicketDispatch({
-          type: createRepairTicketAction.setCurrentSearchObject,
-          payload: {
-            [event.currentTarget.name]: event.currentTarget.value,
-          } as CurrentSearchObject,
-        });
+          createRepairTicketDispatch({
+            type: createRepairTicketAction.setCurrentSearchObject,
+            payload: {
+              [event.currentTarget.name]: event.currentTarget.value,
+            } as CurrentSearchObject,
+          });
 
-        createRepairTicketDispatch({
-          type: createRepairTicketAction.setCustomerSearchResults,
-          payload: [],
-        });
-      },
-      onFocus: () => {
-        createRepairTicketDispatch({
-          type: createRepairTicketAction.setIsContactNumberFocused,
-          payload: true,
-        });
-      },
-      placeholder: "Enter contact number",
-      required: true,
-      rightSection: true,
-      rightSectionOnClick: () => {
-        createRepairTicketDispatch({
-          type: createRepairTicketAction.setContactNumber,
-          payload: "+(1)",
-        });
-      },
-      withAsterisk: true,
-      semanticName: "contact number",
-      onKeyDown: (event: KeyboardEvent<HTMLInputElement>) => {
-        if (event.key === "Backspace") {
-          if (contactNumber.length === 14 || contactNumber.length === 9) {
-            createRepairTicketDispatch({
-              type: createRepairTicketAction.setContactNumber,
-              payload: contactNumber.slice(0, -1),
-            });
+          createRepairTicketDispatch({
+            type: createRepairTicketAction.setCustomerSearchResults,
+            payload: [],
+          });
+        },
+        onFocus: () => {
+          createRepairTicketDispatch({
+            type: createRepairTicketAction.setIsContactNumberFocused,
+            payload: true,
+          });
+        },
+        placeholder: "Enter contact number",
+        required: true,
+        rightSection: true,
+        rightSectionOnClick: () => {
+          createRepairTicketDispatch({
+            type: createRepairTicketAction.setContactNumber,
+            payload: "+(1)",
+          });
+        },
+        withAsterisk: true,
+        semanticName: "contact number",
+        onKeyDown: (event: KeyboardEvent<HTMLInputElement>) => {
+          if (event.key === "Backspace") {
+            if (contactNumber.length === 14 || contactNumber.length === 9) {
+              createRepairTicketDispatch({
+                type: createRepairTicketAction.setContactNumber,
+                payload: contactNumber.slice(0, -1),
+              });
+            }
           }
-        }
+        },
       },
-    },
-  ]);
+    ]);
 
   // error/valid text elements
   const [addressLineInputErrorText, addressLineInputValidText] =
@@ -925,16 +953,17 @@ function RepairTicketStepCustomer(parentState: RepairTicketStepCustomerProps) {
     },
   ]);
 
-  const [cityInputErrorText, cityInputValidText] = AccessibleErrorValidTextElements({
-    inputElementKind: "city",
-    inputText: city,
-    isInputTextFocused: isCityFocused,
-    isValidInputText: isValidCity,
-    regexValidationText: returnCityValidationText({
-      content: city,
-      contentKind: "city",
-    }),
-  });
+  const [cityInputErrorText, cityInputValidText] =
+    AccessibleErrorValidTextElements({
+      inputElementKind: "city",
+      inputText: city,
+      isInputTextFocused: isCityFocused,
+      isValidInputText: isValidCity,
+      regexValidationText: returnCityValidationText({
+        content: city,
+        contentKind: "city",
+      }),
+    });
 
   const [createdCityTextInput] = returnAccessibleTextInputElements([
     {
@@ -982,38 +1011,42 @@ function RepairTicketStepCustomer(parentState: RepairTicketStepCustomerProps) {
     },
   ]);
 
-  const [createdProvinceStateSelectInput] = returnAccessibleSelectInputElements([
-    {
-      data: country === "Canada" ? PROVINCES : STATES_US,
-      description: country === "Canada" ? "Select your province" : "Select your state",
-      label: country === "Canada" ? "Province" : "State",
-      name: country === "Canada" ? "province" : "state",
-      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-        country === "Canada"
-          ? createRepairTicketDispatch({
+  const [createdProvinceStateSelectInput] = returnAccessibleSelectInputElements(
+    [
+      {
+        data: country === "Canada" ? PROVINCES : STATES_US,
+        description: country === "Canada"
+          ? "Select your province"
+          : "Select your state",
+        label: country === "Canada" ? "Province" : "State",
+        name: country === "Canada" ? "province" : "state",
+        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+          country === "Canada"
+            ? createRepairTicketDispatch({
               type: createRepairTicketAction.setProvince,
               payload: event.currentTarget.value as Province,
             })
-          : createRepairTicketDispatch({
+            : createRepairTicketDispatch({
               type: createRepairTicketAction.setState,
               payload: event.currentTarget.value as StatesUS,
             });
 
-        createRepairTicketDispatch({
-          type: createRepairTicketAction.setCurrentSearchObject,
-          payload: {
-            [event.currentTarget.name]: event.currentTarget.value,
-          } as CurrentSearchObject,
-        });
+          createRepairTicketDispatch({
+            type: createRepairTicketAction.setCurrentSearchObject,
+            payload: {
+              [event.currentTarget.name]: event.currentTarget.value,
+            } as CurrentSearchObject,
+          });
 
-        createRepairTicketDispatch({
-          type: createRepairTicketAction.setCustomerSearchResults,
-          payload: [],
-        });
+          createRepairTicketDispatch({
+            type: createRepairTicketAction.setCustomerSearchResults,
+            payload: [],
+          });
+        },
+        value: country === "Canada" ? province : state,
       },
-      value: country === "Canada" ? province : state,
-    },
-  ]);
+    ],
+  );
 
   const [createdCountrySelectInput] = returnAccessibleSelectInputElements([
     {
@@ -1077,10 +1110,9 @@ function RepairTicketStepCustomer(parentState: RepairTicketStepCustomerProps) {
       onChange: (event: ChangeEvent<HTMLInputElement>) => {
         createRepairTicketDispatch({
           type: createRepairTicketAction.setPostalCode,
-          payload:
-            country === "Canada"
-              ? event.currentTarget.value.toUpperCase()
-              : event.currentTarget.value,
+          payload: country === "Canada"
+            ? event.currentTarget.value.toUpperCase()
+            : event.currentTarget.value,
         });
 
         createRepairTicketDispatch({
@@ -1125,8 +1157,9 @@ function RepairTicketStepCustomer(parentState: RepairTicketStepCustomerProps) {
             break;
         }
       },
-      placeholder:
-        country === "Canada" ? "Enter Canadian postal code" : "Enter US postal code",
+      placeholder: country === "Canada"
+        ? "Enter Canadian postal code"
+        : "Enter US postal code",
       required: true,
       semanticName: "postal code",
     },
@@ -1141,17 +1174,17 @@ function RepairTicketStepCustomer(parentState: RepairTicketStepCustomerProps) {
     {
       buttonLabel: "Search",
       buttonOnClick: (_event: MouseEvent<HTMLButtonElement>) => {
-        const customerData = actionsDocuments?.customerData ?? [];
-        const filteredCustomerDocs = returnFilteredDocuments({
-          currentSearchObject,
-          documents: customerData,
-          searchOperator,
-        });
+        // const customerData = actionsDocuments?.customerData ?? [];
+        // const filteredCustomerDocs = returnFilteredDocuments({
+        //   currentSearchObject,
+        //   documents: customerData,
+        //   searchOperator,
+        // });
 
-        createRepairTicketDispatch({
-          type: createRepairTicketAction.setCustomerSearchResults,
-          payload: filteredCustomerDocs,
-        });
+        // createRepairTicketDispatch({
+        //   type: createRepairTicketAction.setCustomerSearchResults,
+        //   payload: filteredCustomerDocs,
+        // });
       },
       leftIcon: <TbSearch />,
       semanticDescription: "Search for customer",
@@ -1273,13 +1306,12 @@ function RepairTicketStepCustomer(parentState: RepairTicketStepCustomerProps) {
   const filteredCustomerDocs: Map<[string, string], JSX.Element[]> =
     displayResourceDocument({
       padding,
-      documents:
-        currentSearchResultPage === 1
-          ? customerSearchResults.slice(0, 10)
-          : customerSearchResults.slice(
-              (currentSearchResultPage - 1) * 10,
-              currentSearchResultPage * 10
-            ),
+      documents: currentSearchResultPage === 1
+        ? customerSearchResults.slice(0, 10)
+        : customerSearchResults.slice(
+          (currentSearchResultPage - 1) * 10,
+          currentSearchResultPage * 10,
+        ),
       themeObject,
     });
 
@@ -1287,29 +1319,28 @@ function RepairTicketStepCustomer(parentState: RepairTicketStepCustomerProps) {
     (tuple, index) => {
       const [[documentId, profilePictureUrl], documentElement] = tuple;
 
-      const [customerSelectRadioSingleInput] = returnAccessibleRadioSingleInputElements([
-        {
-          checked: documentId === customerId,
-          description: "",
-          semanticName: "customer",
-          label: "",
-          onChange: (event: ChangeEvent<HTMLInputElement>) => {
-            createRepairTicketDispatch({
-              type: createRepairTicketAction.setCustomerId,
-              payload: documentId,
-            });
+      const [customerSelectRadioSingleInput] =
+        returnAccessibleRadioSingleInputElements([
+          {
+            checked: documentId === customerId,
+            description: "",
+            semanticName: "customer",
+            label: "",
+            onChange: (event: ChangeEvent<HTMLInputElement>) => {
+              createRepairTicketDispatch({
+                type: createRepairTicketAction.setCustomerId,
+                payload: documentId,
+              });
+            },
+            width: "fit-content",
           },
-          width: "fit-content",
-        },
-      ]);
+        ]);
 
       const customerSelectRadioSingleInputWithTooltip = (
         <Tooltip
-          label={
-            documentId === customerId
-              ? `You have selected customer with id: ${documentId}`
-              : `Select customer with id: ${documentId}`
-          }
+          label={documentId === customerId
+            ? `You have selected customer with id: ${documentId}`
+            : `Select customer with id: ${documentId}`}
         >
           <Group pr={6}>{customerSelectRadioSingleInput}</Group>
         </Tooltip>
@@ -1331,7 +1362,9 @@ function RepairTicketStepCustomer(parentState: RepairTicketStepCustomerProps) {
               }}
             />
           </Group>
-          <Group position="right">{customerSelectRadioSingleInputWithTooltip}</Group>
+          <Group position="right">
+            {customerSelectRadioSingleInputWithTooltip}
+          </Group>
         </Group>
       );
 
@@ -1359,56 +1392,59 @@ function RepairTicketStepCustomer(parentState: RepairTicketStepCustomerProps) {
           <Space h="xs" />
         </Fragment>
       );
-    }
+    },
   );
 
   const searchObjLen = Object.keys(currentSearchObject).length;
   const searchResultsLen = customerSearchResults.length;
 
-  const displayCustomerSearchResults =
-    searchObjLen && searchResultsLen ? (
-      customerSearchResultsElements
-    ) : searchObjLen && !searchResultsLen ? (
+  const displayCustomerSearchResults = searchObjLen && searchResultsLen
+    ? customerSearchResultsElements
+    : searchObjLen && !searchResultsLen
+    ? (
       <Group>
         <Text>There are no search results</Text>
       </Group>
-    ) : (
+    )
+    : (
       <Group>
         <Text>Search for a customer to see results</Text>
       </Group>
     );
 
-  const displaySearchObject = Object.entries(currentSearchObject).map((tuple, index) => {
-    const [key, value] = tuple;
+  const displaySearchObject = Object.entries(currentSearchObject).map(
+    (tuple, index) => {
+      const [key, value] = tuple;
 
-    const [deleteFieldButton] = returnAccessibleButtonElements([
-      {
-        buttonLabel: <TiDelete size={20} />,
-        buttonOnClick: (_event: MouseEvent<HTMLButtonElement>) => {
-          createRepairTicketDispatch({
-            type: createRepairTicketAction.deleteSearchObjectField,
-            payload: key,
-          });
+      const [deleteFieldButton] = returnAccessibleButtonElements([
+        {
+          buttonLabel: <TiDelete size={20} />,
+          buttonOnClick: (_event: MouseEvent<HTMLButtonElement>) => {
+            createRepairTicketDispatch({
+              type: createRepairTicketAction.deleteSearchObjectField,
+              payload: key,
+            });
+          },
+          semanticDescription: "Delete search field",
+          semanticName: "delete search field button",
         },
-        semanticDescription: "Delete search field",
-        semanticName: "delete search field button",
-      },
-    ]);
+      ]);
 
-    const deleteFieldButtonWithTooltip = (
-      <Tooltip label={`Delete field: ${splitCamelCase(key)}`}>
-        <Group>{deleteFieldButton}</Group>
-      </Tooltip>
-    );
+      const deleteFieldButtonWithTooltip = (
+        <Tooltip label={`Delete field: ${splitCamelCase(key)}`}>
+          <Group>{deleteFieldButton}</Group>
+        </Tooltip>
+      );
 
-    return (
-      <Group key={index} pl={padding}>
-        {deleteFieldButtonWithTooltip}
-        <Text>{splitCamelCase(key)}: </Text>
-        <Text>{value}</Text>
-      </Group>
-    );
-  });
+      return (
+        <Group key={index} pl={padding}>
+          {deleteFieldButtonWithTooltip}
+          <Text>{splitCamelCase(key)}:</Text>
+          <Text>{value}</Text>
+        </Group>
+      );
+    },
+  );
 
   const displaySearchObjectAndOperator = (
     <Stack>
@@ -1425,18 +1461,20 @@ function RepairTicketStepCustomer(parentState: RepairTicketStepCustomerProps) {
     </Stack>
   );
 
-  const createdPagination = filteredCustomerDocs.size ? (
-    <Pagination
-      onChange={(value: number) => {
-        createRepairTicketDispatch({
-          type: createRepairTicketAction.setCurrentSearchResultPage,
-          payload: value,
-        });
-      }}
-      total={customerSearchResults.length / 10 + 1}
-      value={currentSearchResultPage}
-    />
-  ) : null;
+  const createdPagination = filteredCustomerDocs.size
+    ? (
+      <Pagination
+        onChange={(value: number) => {
+          createRepairTicketDispatch({
+            type: createRepairTicketAction.setCurrentSearchResultPage,
+            payload: value,
+          });
+        }}
+        total={customerSearchResults.length / 10 + 1}
+        value={currentSearchResultPage}
+      />
+    )
+    : null;
 
   const displayRepairTicketStepCustomer = (
     <Group position="apart" w="100%">

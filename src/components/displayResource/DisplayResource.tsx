@@ -23,21 +23,21 @@ import {
   urlBuilder,
 } from "../../utils";
 import { DisplayQuery } from "../displayQuery";
+import { returnExpenseClaimStepperPages } from "../expenseClaim/constants";
 import DisplayFileUploads from "../fileUploads/DisplayFileUploads";
 import { NotificationModal } from "../notificationModal";
 import { PageBuilder } from "../pageBuilder";
+import { Query } from "../query/Query";
 import { QueryBuilder } from "../queryBuilder";
 import { AccessibleSelectInputCreatorInfo } from "../wrappers";
 import { QUERY_LIMIT_PER_PAGE_SELECT_DATA } from "./constants";
 import { displayResourceAction, displayResourceReducer } from "./state";
 import { DisplayResourceProps, DisplayResourceState } from "./types";
 import { buildQueryString } from "./utils";
-import { Query } from "../query/Query";
-import { returnBenefitStepperPages } from "../benefit/constants";
-import { returnEventStepperPages } from "../event/constants";
-import { returnExpenseClaimStepperPages } from "../expenseClaim/constants";
 
-function DisplayResource<Doc extends Record<string, unknown> = Record<string, unknown>>({
+function DisplayResource<
+  Doc extends Record<string, unknown> = Record<string, unknown>,
+>({
   style = {},
   componentQueryData,
   createResourcePath,
@@ -85,7 +85,7 @@ function DisplayResource<Doc extends Record<string, unknown> = Record<string, un
 
   const [displayResourceState, displayResourceDispatch] = useReducer(
     displayResourceReducer,
-    initialDisplayResourceState as DisplayResourceState<Doc>
+    initialDisplayResourceState as DisplayResourceState<Doc>,
   );
   const {
     resourceData,
@@ -164,14 +164,15 @@ function DisplayResource<Doc extends Record<string, unknown> = Record<string, un
       const pageNumber = pageQueryString.split("=")[1] ?? "1";
       displayResourceDispatch({
         type: displayResourceAction.setLoadingMessage,
-        payload: `Loading ${splitCamelCase(requestBodyHeading)}s: page ${pageNumber} ...`,
+        payload: `Loading ${
+          splitCamelCase(requestBodyHeading)
+        }s: page ${pageNumber} ...`,
       });
 
       // employees can view their own resources only
-      const path =
-        roles.includes("Admin") || roles.includes("Manager")
-          ? resourceUrlPaths.manager
-          : resourceUrlPaths.employee;
+      const path = roles.includes("Admin") || roles.includes("Manager")
+        ? resourceUrlPaths.manager
+        : resourceUrlPaths.employee;
 
       const query = buildQueryString({
         limitPerPage,
@@ -198,7 +199,8 @@ function DisplayResource<Doc extends Record<string, unknown> = Record<string, un
           url,
         });
 
-        const data: GetQueriedResourceRequestServerResponse<Doc> = await response.json();
+        const data: GetQueriedResourceRequestServerResponse<Doc> =
+          await response.json();
         if (!isMounted) {
           return;
         }
@@ -227,57 +229,60 @@ function DisplayResource<Doc extends Record<string, unknown> = Record<string, un
 
         // if there are file uploads, split the data into two arrays
         // one for the resource data and the other for the file uploads
-        const [resourceDataWithoutFileUploadsArr, fileUploadsArr] =
-          data.resourceData.reduce(
+        const [resourceDataWithoutFileUploadsArr, fileUploadsArr] = data
+          .resourceData.reduce(
             (
               splitResourceDataTupleAcc: [
                 QueryResponseData<Doc>[],
-                Array<Record<string, FileUploadDocument[]>>
+                Array<Record<string, FileUploadDocument[]>>,
               ],
-              currObj: QueryResponseData<Doc>
+              currObj: QueryResponseData<Doc>,
             ) => {
               const [resourceDataWithoutFileUploadsArrAcc, fileUploadsArrAcc] =
                 splitResourceDataTupleAcc;
 
               // reduce over the object entries of the current resource data
               // to separate the file uploads from the rest of the data
-              const [fileUploadsObj, resourceDataWithoutFileUploadsObj] = Object.entries(
-                currObj
-              ).reduce(
-                (objTuplesAcc, [docKey, docValue]) => {
-                  const [fileUploadsObjAcc, resourceDataWithoutFileUploadsObjAcc] =
-                    objTuplesAcc as [
+              const [fileUploadsObj, resourceDataWithoutFileUploadsObj] = Object
+                .entries(
+                  currObj,
+                ).reduce(
+                  (objTuplesAcc, [docKey, docValue]) => {
+                    const [
+                      fileUploadsObjAcc,
+                      resourceDataWithoutFileUploadsObjAcc,
+                    ] = objTuplesAcc as [
                       { fileUploads: FileUploadDocument[] },
-                      QueryResponseData<Doc>
+                      QueryResponseData<Doc>,
                     ];
 
-                  docKey === fileUploadFieldName
-                    ? Object.defineProperty(fileUploadsObjAcc, docKey, {
+                    docKey === fileUploadFieldName
+                      ? Object.defineProperty(fileUploadsObjAcc, docKey, {
                         ...PROPERTY_DESCRIPTOR,
                         value: structuredClone(docValue),
                       })
-                    : Object.defineProperty(
+                      : Object.defineProperty(
                         resourceDataWithoutFileUploadsObjAcc,
                         docKey,
                         {
                           ...PROPERTY_DESCRIPTOR,
                           value: structuredClone(docValue),
-                        }
+                        },
                       );
 
-                  return objTuplesAcc;
-                },
-                [Object.create(null), Object.create(null)]
-              );
+                    return objTuplesAcc;
+                  },
+                  [Object.create(null), Object.create(null)],
+                );
 
               resourceDataWithoutFileUploadsArrAcc.push(
-                resourceDataWithoutFileUploadsObj
+                resourceDataWithoutFileUploadsObj,
               );
               fileUploadsArrAcc.push(fileUploadsObj);
 
               return splitResourceDataTupleAcc;
             },
-            [[], []]
+            [[], []],
           );
 
         displayResourceDispatch({
@@ -303,12 +308,11 @@ function DisplayResource<Doc extends Record<string, unknown> = Record<string, un
           return;
         }
 
-        const errorMessage =
-          error instanceof InvalidTokenError
-            ? "Invalid token. Please login again."
-            : !error.response
-            ? "Network error. Please try again."
-            : error?.message ?? "Unknown error occurred. Please try again.";
+        const errorMessage = error instanceof InvalidTokenError
+          ? "Invalid token. Please login again."
+          : !error.response
+          ? "Network error. Please try again."
+          : error?.message ?? "Unknown error occurred. Please try again.";
 
         globalDispatch({
           type: globalAction.setErrorState,
@@ -369,7 +373,13 @@ function DisplayResource<Doc extends Record<string, unknown> = Record<string, un
       type: displayResourceAction.setTriggerRefresh,
       payload: true,
     });
-  }, [newQueryFlag, queryBuilderString, pageQueryString, limitPerPage, pathname]);
+  }, [
+    newQueryFlag,
+    queryBuilderString,
+    pageQueryString,
+    limitPerPage,
+    pathname,
+  ]);
 
   // backend is set to trigger countDocuments scan on a new query only, not on page changes
   useEffect(() => {
@@ -416,7 +426,8 @@ function DisplayResource<Doc extends Record<string, unknown> = Record<string, un
       });
       displayResourceDispatch({
         type: displayResourceAction.setSubmitMessage,
-        payload: `Submitting request status update of id: ${requestStatus.id}to ${requestStatus.status} ...`,
+        payload:
+          `Submitting request status update of id: ${requestStatus.id}to ${requestStatus.status} ...`,
       });
       openSubmitSuccessNotificationModal();
 
@@ -483,12 +494,11 @@ function DisplayResource<Doc extends Record<string, unknown> = Record<string, un
           return;
         }
 
-        const errorMessage =
-          error instanceof InvalidTokenError
-            ? "Invalid token. Please login again."
-            : !error.response
-            ? "Network error. Please try again."
-            : error?.message ?? "Unknown error occurred. Please try again.";
+        const errorMessage = error instanceof InvalidTokenError
+          ? "Invalid token. Please login again."
+          : !error.response
+          ? "Network error. Please try again."
+          : error?.message ?? "Unknown error occurred. Please try again.";
 
         globalDispatch({
           type: globalAction.setErrorState,
@@ -527,7 +537,8 @@ function DisplayResource<Doc extends Record<string, unknown> = Record<string, un
           });
           displayResourceDispatch({
             type: displayResourceAction.setSuccessMessage,
-            payload: `Successfully updated request status of id: ${requestStatus.id} to ${requestStatus.status}`,
+            payload:
+              `Successfully updated request status of id: ${requestStatus.id} to ${requestStatus.status}`,
           });
           displayResourceDispatch({
             type: displayResourceAction.setRequestStatus,
@@ -592,10 +603,9 @@ function DisplayResource<Doc extends Record<string, unknown> = Record<string, un
       });
       openSubmitSuccessNotificationModal();
 
-      const path =
-        kind === "form"
-          ? `${resourceUrlPaths.manager}/${formId}`
-          : `file-upload/${fileUploadId}`;
+      const path = kind === "form"
+        ? `${resourceUrlPaths.manager}/${formId}`
+        : `file-upload/${fileUploadId}`;
       const url: URL = urlBuilder({ path });
 
       const requestInit: RequestInit = {
@@ -613,7 +623,8 @@ function DisplayResource<Doc extends Record<string, unknown> = Record<string, un
           url,
         });
 
-        const data: { message: string; resourceData?: [] } = await response.json();
+        const data: { message: string; resourceData?: [] } = await response
+          .json();
 
         console.log("delete response", data);
 
@@ -637,12 +648,11 @@ function DisplayResource<Doc extends Record<string, unknown> = Record<string, un
           return;
         }
 
-        const errorMessage =
-          error instanceof InvalidTokenError
-            ? "Invalid token. Please login again."
-            : !error.response
-            ? "Network error. Please try again."
-            : error?.message ?? "Unknown error occurred. Please try again.";
+        const errorMessage = error instanceof InvalidTokenError
+          ? "Invalid token. Please login again."
+          : !error.response
+          ? "Network error. Please try again."
+          : error?.message ?? "Unknown error occurred. Please try again.";
 
         globalDispatch({
           type: globalAction.setErrorState,
@@ -718,7 +728,8 @@ function DisplayResource<Doc extends Record<string, unknown> = Record<string, un
       });
       displayResourceDispatch({
         type: displayResourceAction.setSubmitMessage,
-        payload: `Deleting file upload of id: ${deleteResource.fileUploadId} ...`,
+        payload:
+          `Deleting file upload of id: ${deleteResource.fileUploadId} ...`,
       });
       openSubmitSuccessNotificationModal();
 
@@ -733,7 +744,7 @@ function DisplayResource<Doc extends Record<string, unknown> = Record<string, un
                 if (value.includes(deleteResource.fileUploadId)) {
                   // remove the fileUploadId from the array
                   const filteredValue = value.filter(
-                    (id) => id !== deleteResource.fileUploadId
+                    (id) => id !== deleteResource.fileUploadId,
                   );
                   // add the filtered array to the resource obj
                   const clone = structuredClone(obj);
@@ -743,8 +754,7 @@ function DisplayResource<Doc extends Record<string, unknown> = Record<string, un
                   });
                   acc = clone as QueryResponseData<Doc>;
                 }
-              }
-              // if the value is a string, check if the value is the fileUploadId
+              } // if the value is a string, check if the value is the fileUploadId
               else {
                 if (value === deleteResource.fileUploadId) {
                   const clone = structuredClone(obj);
@@ -761,7 +771,7 @@ function DisplayResource<Doc extends Record<string, unknown> = Record<string, un
 
           return acc;
         },
-        null
+        null,
       );
 
       // if the associated resource is not found, do not make request
@@ -770,7 +780,9 @@ function DisplayResource<Doc extends Record<string, unknown> = Record<string, un
       }
 
       const { _id } = associatedResource;
-      const filteredAssociatedResource = filterFieldsFromObject<Record<string, any>>({
+      const filteredAssociatedResource = filterFieldsFromObject<
+        Record<string, any>
+      >({
         object: associatedResource,
         // delete was added at front end
         // fileUploads does not belong in the resource schema, and is added to response by server
@@ -830,12 +842,11 @@ function DisplayResource<Doc extends Record<string, unknown> = Record<string, un
           return;
         }
 
-        const errorMessage =
-          error instanceof InvalidTokenError
-            ? "Invalid token. Please login again."
-            : !error.response
-            ? "Network error. Please try again."
-            : error?.message ?? "Unknown error occurred. Please try again.";
+        const errorMessage = error instanceof InvalidTokenError
+          ? "Invalid token. Please login again."
+          : !error.response
+          ? "Network error. Please try again."
+          : error?.message ?? "Unknown error occurred. Please try again.";
 
         globalDispatch({
           type: globalAction.setErrorState,
@@ -874,7 +885,8 @@ function DisplayResource<Doc extends Record<string, unknown> = Record<string, un
           });
           displayResourceDispatch({
             type: displayResourceAction.setSuccessMessage,
-            payload: `Successfully deleted file upload of id: ${deleteResource.fileUploadId} and updated form`,
+            payload:
+              `Successfully deleted file upload of id: ${deleteResource.fileUploadId} and updated form`,
           });
         }
       }
@@ -944,18 +956,17 @@ function DisplayResource<Doc extends Record<string, unknown> = Record<string, un
     limitPerPageSelectInputCreatorInfo,
   ]);
 
-  const sectionWidth =
-    width < 480 // for iPhone 5/SE
-      ? width * 0.93
-      : width < 768 // for iPhones 6 - 15
-      ? width - 40
-      : // at 768vw the navbar appears at width of 225px
-      width < 1024
-      ? (width - 225) * 0.8
-      : // at >= 1200vw the navbar width is 300px
-      width < 1200
-      ? (width - 225) * 0.8
-      : 900 - 40;
+  const sectionWidth = width < 480 // for iPhone 5/SE
+    ? width * 0.93
+    : width < 768 // for iPhones 6 - 15
+    ? width - 40
+    // at 768vw the navbar appears at width of 225px
+    : width < 1024
+    ? (width - 225) * 0.8
+    // at >= 1200vw the navbar width is 300px
+    : width < 1200
+    ? (width - 225) * 0.8
+    : 900 - 40;
 
   const displayLimitPerPageAndProductCategory = (
     <Group
@@ -976,7 +987,13 @@ function DisplayResource<Doc extends Record<string, unknown> = Record<string, un
   );
 
   const displayPagination = (
-    <Group w={sectionWidth} spacing={rowGap} p={padding} position="center" align="center">
+    <Group
+      w={sectionWidth}
+      spacing={rowGap}
+      p={padding}
+      position="center"
+      align="center"
+    >
       <PageBuilder
         total={pages}
         resetPage={resetPage}
@@ -987,10 +1004,9 @@ function DisplayResource<Doc extends Record<string, unknown> = Record<string, un
   );
 
   // prevent display of option to groupBy/projection exclusion of username field if the resource is anonymousRequest
-  const filteredComponentQueryData =
-    requestBodyHeading === "anonymousRequest"
-      ? componentQueryData?.filter((obj) => obj.value !== "username")
-      : componentQueryData;
+  const filteredComponentQueryData = requestBodyHeading === "anonymousRequest"
+    ? componentQueryData?.filter((obj) => obj.value !== "username")
+    : componentQueryData;
 
   // // prevents display of all Product model fields and only displays the fields for the selected product category
   // const productCategoryComponentQueryData = returnProductCategoryComponentQueryData({
@@ -1029,34 +1045,38 @@ function DisplayResource<Doc extends Record<string, unknown> = Record<string, un
         loading: isSubmitting,
         text: isSubmitting ? submitMessage : successMessage,
       }}
-      title={<Title order={4}>{isSuccessful ? "Success!" : "Submitting ..."}</Title>}
+      title={
+        <Title order={4}>{isSuccessful ? "Success!" : "Submitting ..."}</Title>
+      }
     />
   );
 
-  const displayResource = isDisplayFilesOnly ? (
-    <DisplayFileUploads
-    // createResourcePath={createResourcePath}
-    // fileUploadsData={fileUploads}
-    // componentQueryData={filteredComponentQueryData}
-    // parentComponentName={splitCamelCase(requestBodyHeading)}
-    // parentDeleteResourceDispatch={displayResourceDispatch}
-    // totalDocuments={totalDocuments}
-    />
-  ) : (
-    <DisplayQuery
-      componentQueryData={filteredComponentQueryData}
-      createResourcePath={createResourcePath}
-      fileUploadsData={fileUploads}
-      isLoading={isLoading}
-      loadingMessage={loadingMessage}
-      parentComponentName={splitCamelCase(requestBodyHeading)}
-      parentRequestStatusDispatch={displayResourceDispatch}
-      parentDeleteResourceDispatch={displayResourceDispatch}
-      queryResponseData={resourceData}
-      queryValuesArray={queryValuesArray}
-      totalDocuments={totalDocuments}
-    />
-  );
+  const displayResource = isDisplayFilesOnly
+    ? (
+      <DisplayFileUploads
+        // createResourcePath={createResourcePath}
+        // fileUploadsData={fileUploads}
+        // componentQueryData={filteredComponentQueryData}
+        // parentComponentName={splitCamelCase(requestBodyHeading)}
+        // parentDeleteResourceDispatch={displayResourceDispatch}
+        // totalDocuments={totalDocuments}
+      />
+    )
+    : (
+      <DisplayQuery
+        componentQueryData={filteredComponentQueryData}
+        createResourcePath={createResourcePath}
+        fileUploadsData={fileUploads}
+        isLoading={isLoading}
+        loadingMessage={loadingMessage}
+        parentComponentName={splitCamelCase(requestBodyHeading)}
+        parentRequestStatusDispatch={displayResourceDispatch}
+        parentDeleteResourceDispatch={displayResourceDispatch}
+        queryResponseData={resourceData}
+        queryValuesArray={queryValuesArray}
+        totalDocuments={totalDocuments}
+      />
+    );
 
   const displayResourceComponent = (
     <Stack

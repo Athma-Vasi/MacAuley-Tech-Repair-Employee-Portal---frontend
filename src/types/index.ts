@@ -7,21 +7,8 @@
  */
 import { MantineSize } from "@mantine/core";
 
-import { AddressChangeDocument } from "../components/addressChange/create/types";
-import { AnnouncementDocument } from "../components/announcement/create/types";
-import { AnonymousRequestDocument } from "../components/anonymousRequest/create/types";
-import { BenefitsDocument } from "../components/benefit/create/types";
-import { CustomerDocument } from "../components/customer/types";
-import { EndorsementDocument } from "../components/endorsement/create/types";
-import { EventDocument } from "../components/event/create/types";
-import { ExpenseClaimDocument } from "../components/expenseClaim/create/types";
-import { LeaveRequestDocument } from "../components/leaveRequest/types";
-import { PrinterIssueDocument } from "../components/printerIssue/create/types";
-import { RefermentDocument } from "../components/referment/create/types";
-import { RepairTicketDocument } from "../components/repairTicket/types";
-import { RequestResourceDocument } from "../components/requestResource/create/types";
-import { SurveyDocument } from "../components/survey/types";
 import { ValidationKey } from "../constants/validations";
+
 import type {
   Action,
   ActionsCompany,
@@ -100,7 +87,9 @@ type RequestStatus = "pending" | "approved" | "rejected";
  * - The type includes mandatory fields that are always returned in resource documents.
  * - The 'Partial' type with the generic 'Doc' indicates that the returned fields may vary depending on the query.
  */
-type QueryResponseData<Doc extends Record<string, unknown> = Record<string, unknown>> = {
+type QueryResponseData<
+  Doc extends Record<string, unknown> = Record<string, unknown>,
+> = {
   _id: string;
   userId: string;
   username: string;
@@ -112,7 +101,7 @@ type QueryResponseData<Doc extends Record<string, unknown> = Record<string, unkn
  * Default server response type for most (except GET multiple docs) REST API requests
  */
 type ResourceRequestServerResponse<
-  Doc extends Record<string, unknown> = Record<string, unknown>
+  Doc extends Record<string, unknown> = Record<string, unknown>,
 > = {
   message: string;
   resourceData: [QueryResponseData<Doc>];
@@ -122,40 +111,12 @@ type ResourceRequestServerResponse<
  * Default server response type for GET(multiple docs) REST API requests with query parameters
  */
 type GetQueriedResourceRequestServerResponse<
-  Doc extends Record<string, unknown> = Record<string, unknown>
+  Doc extends Record<string, unknown> = Record<string, unknown>,
 > = {
   message: string;
   pages: number;
   totalDocuments: number;
   resourceData: QueryResponseData<Doc>[];
-};
-
-/**
- * Default server response type for GET(multiple docs) REST API requests without query parameters (actions/dashboard route)
- */
-type ActionsResourceRequestServerResponse = {
-  message: string;
-  repairTicketData: RepairTicketDocument[];
-  companyData: {
-    addressChangeData: AddressChangeDocument[];
-    expenseClaimData: ExpenseClaimDocument[];
-    requestResourceData: RequestResourceDocument[];
-    leaveRequestData: LeaveRequestDocument[];
-    benefitData: BenefitsDocument[];
-  };
-  generalData: {
-    endorsementData: EndorsementDocument[];
-    printerIssueData: PrinterIssueDocument[];
-    anonymousRequestData?: AnonymousRequestDocument[];
-    refermentData: RefermentDocument[];
-  };
-  outreachData: {
-    announcementData: AnnouncementDocument[];
-    surveyData: SurveyDocument[];
-    eventData: EventDocument[];
-  };
-  employeeData: UserDocument[];
-  customerData: Omit<CustomerDocument, "password" | "paymentInformation">[];
 };
 
 type ResourceRoutePaths = {
@@ -174,7 +135,7 @@ type ScreenshotImageType = "image/png" | "image/jpeg" | "image/webp";
 type DocumentUpdateOperation<
   Document extends Record<Key, Value>,
   Key extends keyof Document = keyof Document,
-  Value extends Document[Key] = Document[Key]
+  Value extends Document[Key] = Document[Key],
 > =
   | DocumentFieldUpdateOperation<Document, Key, Value>
   | DocumentArrayUpdateOperation<Document, Key, Value>;
@@ -193,7 +154,7 @@ type FieldOperators =
 type DocumentFieldUpdateOperation<
   Document extends Record<Key, Value>,
   Key extends keyof Document = keyof Document,
-  Value extends Document[Key] = Document[Key]
+  Value extends Document[Key] = Document[Key],
 > = {
   updateKind: "field";
   updateOperator: FieldOperators;
@@ -205,7 +166,7 @@ type ArrayOperators = "$addToSet" | "$pop" | "$pull" | "$push" | "$pullAll";
 type DocumentArrayUpdateOperation<
   Document extends Record<Key, Value>,
   Key extends keyof Document = keyof Document,
-  Value extends Document[Key] = Document[Key]
+  Value extends Document[Key] = Document[Key],
 > = {
   updateKind: "array";
   updateOperator: ArrayOperators;
@@ -214,9 +175,18 @@ type DocumentArrayUpdateOperation<
 
 type AllowedFileExtensions = ".jpg" | ".jpeg" | ".png" | ".webp";
 
-type AllowedFileMimeTypes = "image/jpg" | "image/jpeg" | "image/png" | "image/webp";
+type AllowedFileMimeTypes =
+  | "image/jpg"
+  | "image/jpeg"
+  | "image/png"
+  | "image/webp";
 
-type AllowedFileEncodings = "7bit" | "8bit" | "binary" | "base64" | "quoted-printable";
+type AllowedFileEncodings =
+  | "7bit"
+  | "8bit"
+  | "binary"
+  | "base64"
+  | "quoted-printable";
 
 type ErrorLogSchema = {
   expireAt?: Date;
@@ -288,7 +258,6 @@ export type {
   ActionsCompany,
   ActionsGeneral,
   ActionsOutreach,
-  ActionsResourceRequestServerResponse,
   AllowedFileEncodings,
   AllowedFileExtensions,
   AllowedFileMimeTypes,
