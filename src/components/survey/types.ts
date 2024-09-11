@@ -1,4 +1,4 @@
-import { Action, ActionsOutreach, UserRoles } from "../../types";
+import { UserRoles } from "../../types";
 
 type Department =
   | "Executive Management"
@@ -18,7 +18,12 @@ type Department =
 type SurveyRecipient = "All" | Department;
 
 type SurveyResponseKind = "chooseOne" | "chooseAny" | "rating";
-type SurveyResponseInput = "agreeDisagree" | "radio" | "checkbox" | "emotion" | "stars";
+type SurveyResponseInput =
+  | "agreeDisagree"
+  | "radio"
+  | "checkbox"
+  | "emotion"
+  | "stars";
 
 type AgreeDisagreeResponse =
   | "Strongly Agree"
@@ -56,8 +61,6 @@ type SurveySchema = {
   creatorId: string;
   creatorUsername: string;
   creatorRole: UserRoles;
-  action: Action;
-  category: ActionsOutreach;
 
   surveyTitle: string;
   sendTo: SurveyRecipient;

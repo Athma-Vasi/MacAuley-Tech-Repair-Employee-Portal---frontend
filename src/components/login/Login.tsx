@@ -6,32 +6,32 @@ import {
   Text,
   TextInput,
   Title,
-} from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
-import jwtDecode, { InvalidTokenError } from 'jwt-decode';
-import { ChangeEvent, useEffect, useReducer, useRef } from 'react';
-import { useErrorBoundary } from 'react-error-boundary';
-import { TbPassword, TbUser } from 'react-icons/tb';
-import { Link, useNavigate } from 'react-router-dom';
+} from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
+import jwtDecode, { InvalidTokenError } from "jwt-decode";
+import { ChangeEvent, useEffect, useReducer, useRef } from "react";
+import { useErrorBoundary } from "react-error-boundary";
+import { TbPassword, TbUser } from "react-icons/tb";
+import { Link, useNavigate } from "react-router-dom";
 
-import { COLORS_SWATCHES } from '../../constants/data';
-import { authAction } from '../../context/authProvider/state';
-import { globalAction } from '../../context/globalProvider/state';
-import { useGlobalState } from '../../hooks';
-import { useAuth } from '../../hooks/useAuth';
-import { returnAccessibleButtonElements } from '../../jsxCreators';
-import { logState, returnThemeColors, urlBuilder } from '../../utils';
-import { NotificationModal } from '../notificationModal';
-import { AccessibleButtonCreatorInfo } from '../wrappers';
-import { LOGIN_URL } from './constants';
-import { initialLoginState, loginAction, loginReducer } from './state';
-import { DecodedToken, LoginResponse } from './types';
+import { COLORS_SWATCHES } from "../../constants/data";
+import { authAction } from "../../context/authProvider/state";
+import { globalAction } from "../../context/globalProvider/state";
+import { useGlobalState } from "../../hooks";
+import { useAuth } from "../../hooks/useAuth";
+import { returnAccessibleButtonElements } from "../../jsxCreators";
+import { logState, returnThemeColors } from "../../utils";
+import { NotificationModal } from "../notificationModal";
+import { AccessibleButtonCreatorInfo } from "../wrappers";
+import { initialLoginState, loginAction, loginReducer } from "./state";
+import { DecodedToken, LoginResponse } from "./types";
+import { loginResponseSchema } from "./validations";
 
 function Login() {
   /** ------------- begin hooks ------------- */
   const [loginState, loginDispatch] = useReducer(
     loginReducer,
-    initialLoginState
+    initialLoginState,
   );
   const {
     username,
@@ -78,7 +78,7 @@ function Login() {
   useEffect(() => {
     logState({
       state: loginState,
-      groupLabel: 'loginState',
+      groupLabel: "loginState",
     });
   }, [loginState]);
 
@@ -93,37 +93,43 @@ function Login() {
       });
       loginDispatch({
         type: loginAction.setSubmitMessage,
-        payload: 'Logging in ...',
+        payload: "Logging in ...",
       });
       openSubmitSuccessNotificationModal();
 
-      const url: URL = new URL('http://localhost:5500/auth/login');
-      const body = JSON.stringify({ username, password });
+      const url: URL = new URL("http://localhost:5500/auth/login");
+      const body = JSON.stringify({ schema: { username, password } });
 
       const request: Request = new Request(url.toString(), {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body,
-        credentials: 'include',
+        credentials: "include",
         signal: controller.signal,
       });
 
       try {
         const response = await fetch(request);
-        const data: LoginResponse = await response.json();
+        const httpResponse: LoginResponse = await response.json();
+
+        const parsed = loginResponseSchema.parse(httpResponse);
+
+        console.log({ parsed });
+
+        const { data, accessToken, message } = parsed;
+        const userDocument = data[0];
 
         if (!isMounted) {
           return;
         }
         if (!response.ok) {
-          throw new Error(data.message);
+          throw new Error(message);
         }
 
-        const { accessToken, userDocument } = data;
         if (!accessToken || !userDocument) {
-          throw new Error('Error logging in');
+          throw new Error("Error logging in");
         }
 
         const decodedToken: DecodedToken = jwtDecode(accessToken);
@@ -138,7 +144,7 @@ function Login() {
         });
         loginDispatch({
           type: loginAction.setSuccessMessage,
-          payload: 'Login successful!',
+          payload: "Login successful!",
         });
 
         // set all auth state upon login
@@ -146,7 +152,7 @@ function Login() {
           type: authAction.setAllAuthState,
           payload: {
             accessToken,
-            errorMessage: '',
+            errorMessage: "",
             isLoggedIn: true,
             password,
             roles,
@@ -162,18 +168,17 @@ function Login() {
           payload: userDocument,
         });
 
-        navigate('/home');
+        navigate("/home");
       } catch (error: any) {
-        if (!isMounted || error.name === 'AbortError') {
+        if (!isMounted || error.name === "AbortError") {
           return;
         }
 
-        const errorMessage =
-          error instanceof InvalidTokenError
-            ? 'Invalid token. Please login again.'
-            : !error.response
-            ? 'Network error. Please try again.'
-            : error?.message ?? 'Unknown error occurred. Please try again.';
+        const errorMessage = error instanceof InvalidTokenError
+          ? "Invalid token. Please login again."
+          : !error.response
+          ? "Network error. Please try again."
+          : error?.message ?? "Unknown error occurred. Please try again.";
 
         globalDispatch({
           type: globalAction.setErrorState,
@@ -181,13 +186,13 @@ function Login() {
             isError: true,
             errorMessage,
             errorCallback: () => {
-              navigate('/login');
+              navigate("/login");
 
               globalDispatch({
                 type: globalAction.setErrorState,
                 payload: {
                   isError: false,
-                  errorMessage: '',
+                  errorMessage: "",
                   errorCallback: () => {},
                 },
               });
@@ -208,7 +213,7 @@ function Login() {
           });
           loginDispatch({
             type: loginAction.setSubmitMessage,
-            payload: '',
+            payload: "",
           });
           loginDispatch({
             type: loginAction.setIsSuccessful,
@@ -216,7 +221,7 @@ function Login() {
           });
           loginDispatch({
             type: loginAction.setSuccessMessage,
-            payload: '',
+            payload: "",
           });
           closeSubmitSuccessNotificationModal();
         }
@@ -282,9 +287,9 @@ function Login() {
   );
 
   const loginButtonCreatorInfo: AccessibleButtonCreatorInfo = {
-    buttonLabel: 'Login',
-    semanticDescription: 'Login button to submit username and password',
-    semanticName: 'Login button',
+    buttonLabel: "Login",
+    semanticDescription: "Login button to submit username and password",
+    semanticName: "Login button",
     buttonDisabled: isLoading,
     buttonOnClick: () => {
       loginDispatch({
@@ -292,7 +297,7 @@ function Login() {
         payload: true,
       });
     },
-    buttonVariant: 'outline',
+    buttonVariant: "outline",
   };
   const createdLoginButton = returnAccessibleButtonElements([
     loginButtonCreatorInfo,
@@ -311,7 +316,7 @@ function Login() {
   const displayTitle = (
     <Stack spacing={rowGap}>
       <Flex align="center" justify="center">
-        <Title order={3} color="dark" style={{ letterSpacing: '0.30rem' }}>
+        <Title order={3} color="dark" style={{ letterSpacing: "0.30rem" }}>
           MACAULEY
         </Title>
         <Title order={3} color="red">

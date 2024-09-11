@@ -120,7 +120,8 @@ type StatesUS =
   | "Wisconsin"
   | "Wyoming";
 
-type CanadianPostalCode = `${string}${string}${string} ${string}${string}${string}`;
+type CanadianPostalCode =
+  `${string}${string}${string} ${string}${string}${string}`;
 type USPostalCode = `${string}${string}${string}${string}${string}`;
 type PostalCode = CanadianPostalCode | USPostalCode;
 
@@ -161,7 +162,10 @@ type HumanResources =
   | "Training Specialist"
   | "Recruiting Specialist";
 
-type StoreAdministration = "Store Manager" | "Shift Supervisor" | "Office Manager";
+type StoreAdministration =
+  | "Store Manager"
+  | "Shift Supervisor"
+  | "Office Manager";
 
 type OfficeAdministration =
   | "Office Administrator"
@@ -205,7 +209,9 @@ type RepairTechnicians =
   | "Tablet Technician"
   | "Audio/Video Equipment Technician";
 
-type FieldServiceTechnicians = "Field Service Supervisor" | "On-Site Technician";
+type FieldServiceTechnicians =
+  | "Field Service Supervisor"
+  | "On-Site Technician";
 
 type LogisticsAndInventory =
   | "Warehouse Supervisor"
@@ -219,7 +225,10 @@ type CustomerService =
   | "Customer Service Representative"
   | "Technical Support Specialist";
 
-type Maintenance = "Maintenance Supervisor" | "Maintenance Worker" | "Custodian";
+type Maintenance =
+  | "Maintenance Supervisor"
+  | "Maintenance Worker"
+  | "Custodian";
 
 type JobPosition =
   | ExecutiveManagement

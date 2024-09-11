@@ -1,14 +1,9 @@
 import html2canvas from "html2canvas";
 import jwtDecode from "jwt-decode";
-import { NavigateFunction } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
 
 import { DecodedToken } from "../components/login/types";
-import {
-  ColorsSwatches,
-  ERROR_LOG_ROUTE_PATH,
-  PROPERTY_DESCRIPTOR,
-} from "../constants/data";
+import { ColorsSwatches, PROPERTY_DESCRIPTOR } from "../constants/data";
 import { ThemeObject } from "../context/globalProvider/types";
 import { FetchInterceptor } from "../hooks/useFetchInterceptor";
 import type {
@@ -40,17 +35,20 @@ function returnEmailValidationText({
   const usernamePartRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+$/;
   // /^[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?$/
   const domainPartRegex = new RegExp(
-    `^[a-zA-Z0-9](?:[a-zA-Z0-9-]{${minLength},${maxLength}}[a-zA-Z0-9])?$`
+    `^[a-zA-Z0-9](?:[a-zA-Z0-9-]{${minLength},${maxLength}}[a-zA-Z0-9])?$`,
   );
   // /^\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?$/
   const subdomainPartRegex = new RegExp(
-    `^\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{${minLength},${maxLength}}[a-zA-Z0-9])?$`
+    `^\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{${minLength},${maxLength}}[a-zA-Z0-9])?$`,
   );
 
   const emailRegexTupleArr: [boolean, string][] = [
     [usernamePartRegex.test(content), "Must contain a valid username part."],
     [domainPartRegex.test(content), "Must contain a valid domain part."],
-    [subdomainPartRegex.test(content), "Must contain a valid (optional) subdomain part."],
+    [
+      subdomainPartRegex.test(content),
+      "Must contain a valid (optional) subdomain part.",
+    ],
   ];
 
   const validationText = emailRegexTupleArr
@@ -90,7 +88,10 @@ function returnUsernameRegexValidationText({
       usernameCharacterRegex.test(content),
       "Can only contain alphanumeric characters, hyphens, underscores, or periods.",
     ],
-    [usernameEndRegex.test(content), "Cannot end with a hyphen, underscore, or period."],
+    [
+      usernameEndRegex.test(content),
+      "Cannot end with a hyphen, underscore, or period.",
+    ],
   ];
 
   const validationText = usernameRegexTupleArr
@@ -174,9 +175,11 @@ function returnNoteTextValidationText({
     .join(" ");
 
   return validationText
-    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${contentKind.slice(
-        1
-      )}. ${validationText}`
+    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${
+      contentKind.slice(
+        1,
+      )
+    }. ${validationText}`
     : "";
 }
 
@@ -223,9 +226,11 @@ function returnGrammarValidationText({
     .join(" ");
 
   return validationText
-    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${contentKind.slice(
-        1
-      )}. ${validationText}`
+    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${
+      contentKind.slice(
+        1,
+      )
+    }. ${validationText}`
     : "";
 }
 
@@ -258,7 +263,8 @@ function returnAcknowledgementValidationText(content: string) {
   /^I solemnly swear that I am up to no good\.$/i;
    */
 
-  const acknowledgementTextRegex = /^I solemnly swear that I am up to no good\.$/i;
+  const acknowledgementTextRegex =
+    /^I solemnly swear that I am up to no good\.$/i;
 
   const validationText = acknowledgementTextRegex.test(content)
     ? ""
@@ -297,9 +303,11 @@ function returnAddressValidationText({
     .join(" ");
 
   return validationText
-    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${contentKind.slice(
-        1
-      )}. ${validationText}`
+    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${
+      contentKind.slice(
+        1,
+      )
+    }. ${validationText}`
     : "";
 }
 
@@ -330,9 +338,11 @@ function returnCityValidationText({
     .join(" ");
 
   return validationText
-    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${contentKind.slice(
-        1
-      )}. ${validationText}`
+    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${
+      contentKind.slice(
+        1,
+      )
+    }. ${validationText}`
     : "";
 }
 
@@ -406,12 +416,18 @@ function returnDateValidationText({
   const year = content.split("-")[0];
 
   const dateValidationTupleArr: [boolean, string][] = [
-    [day ? dayRegex.test(day) : true, "Must be a valid day. Cannot be greater than 31."],
+    [
+      day ? dayRegex.test(day) : true,
+      "Must be a valid day. Cannot be greater than 31.",
+    ],
     [
       month ? monthRegex.test(month) : true,
       "Must be a valid month. Cannot be greater than 12.",
     ],
-    [year ? yearRegex.test(year) : true, "Must be a valid year between 1900 and 2024."],
+    [
+      year ? yearRegex.test(year) : true,
+      "Must be a valid year between 1900 and 2024.",
+    ],
   ];
 
   const validationText = dateValidationTupleArr
@@ -435,26 +451,32 @@ function returnDateNearFutureValidationText({
   const year = content.split("-")[0];
 
   const isDayInPast = day ? parseInt(day) < new Date().getDate() : false;
-  const isMonthInPast = month ? parseInt(month) < new Date().getMonth() + 1 : false;
+  const isMonthInPast = month
+    ? parseInt(month) < new Date().getMonth() + 1
+    : false;
   const isYearInPast = year ? parseInt(year) < new Date().getFullYear() : false;
 
   const isEnteredYearMonthDayInPast = isYearInPast
-    ? isMonthInPast
-      ? isDayInPast
-        ? true
-        : false
-      : false
+    ? isMonthInPast ? isDayInPast ? true : false : false
     : false;
-  const isEnteredYearMonthInPast = isYearInPast ? (isMonthInPast ? true : false) : false;
+  const isEnteredYearMonthInPast = isYearInPast
+    ? (isMonthInPast ? true : false)
+    : false;
   const isEnteredDayInPast = day ? parseInt(day) < new Date().getDate() : false;
 
   const dateValidationTupleArr: [boolean, string][] = [
-    [day ? dayRegex.test(day) : true, "Must be a valid day. Cannot be greater than 31."],
+    [
+      day ? dayRegex.test(day) : true,
+      "Must be a valid day. Cannot be greater than 31.",
+    ],
     [
       month ? monthRegex.test(month) : true,
       "Must be a valid month. Cannot be greater than 12.",
     ],
-    [year ? yearRegex.test(year) : true, "Must be a valid year between 2023 and 2026."],
+    [
+      year ? yearRegex.test(year) : true,
+      "Must be a valid year between 2023 and 2026.",
+    ],
     [
       isEnteredYearMonthInPast && !isEnteredDayInPast ? false : true,
       `Month of ${month} must be in the future.`,
@@ -491,30 +513,36 @@ function returnDateNearPastValidationText({
   const year = content.split("-")[0];
 
   const isDayInFuture = day ? parseInt(day) > new Date().getDate() : false;
-  const isMonthInFuture = month ? parseInt(month) > new Date().getMonth() + 1 : false;
-  const isYearInFuture = year ? parseInt(year) > new Date().getFullYear() : false;
+  const isMonthInFuture = month
+    ? parseInt(month) > new Date().getMonth() + 1
+    : false;
+  const isYearInFuture = year
+    ? parseInt(year) > new Date().getFullYear()
+    : false;
 
   const isEnteredYearMonthDayInFuture = isYearInFuture
-    ? isMonthInFuture
-      ? isDayInFuture
-        ? true
-        : false
-      : false
+    ? isMonthInFuture ? isDayInFuture ? true : false : false
     : false;
   const isEnteredYearMonthInFuture = isYearInFuture
-    ? isMonthInFuture
-      ? true
-      : false
+    ? isMonthInFuture ? true : false
     : false;
-  const isEnteredDayInFuture = day ? parseInt(day) > new Date().getDate() : false;
+  const isEnteredDayInFuture = day
+    ? parseInt(day) > new Date().getDate()
+    : false;
 
   const dateValidationTupleArr: [boolean, string][] = [
-    [day ? dayRegex.test(day) : true, "Must be a valid day. Cannot be greater than 31."],
+    [
+      day ? dayRegex.test(day) : true,
+      "Must be a valid day. Cannot be greater than 31.",
+    ],
     [
       month ? monthRegex.test(month) : true,
       "Must be a valid month. Cannot be greater than 12.",
     ],
-    [year ? yearRegex.test(year) : true, "Must be a valid year between 2020 and 2023."],
+    [
+      year ? yearRegex.test(year) : true,
+      "Must be a valid year between 2020 and 2023.",
+    ],
     [
       isEnteredYearMonthInFuture && !isEnteredDayInFuture ? false : true,
       `Month of ${month} must be in the past.`,
@@ -550,30 +578,36 @@ function returnDateFullRangeValidationText({
   const year = content.split("-")[0];
 
   const isDayInFuture = day ? parseInt(day) > new Date().getDate() : false;
-  const isMonthInFuture = month ? parseInt(month) > new Date().getMonth() + 1 : false;
-  const isYearInFuture = year ? parseInt(year) > new Date().getFullYear() : false;
+  const isMonthInFuture = month
+    ? parseInt(month) > new Date().getMonth() + 1
+    : false;
+  const isYearInFuture = year
+    ? parseInt(year) > new Date().getFullYear()
+    : false;
 
   const isEnteredYearMonthDayInFuture = isYearInFuture
-    ? isMonthInFuture
-      ? isDayInFuture
-        ? true
-        : false
-      : false
+    ? isMonthInFuture ? isDayInFuture ? true : false : false
     : false;
   const isEnteredYearMonthInFuture = isYearInFuture
-    ? isMonthInFuture
-      ? true
-      : false
+    ? isMonthInFuture ? true : false
     : false;
-  const isEnteredDayInFuture = day ? parseInt(day) > new Date().getDate() : false;
+  const isEnteredDayInFuture = day
+    ? parseInt(day) > new Date().getDate()
+    : false;
 
   const dateValidationTupleArr: [boolean, string][] = [
-    [day ? dayRegex.test(day) : true, "Must be a valid day. Cannot be greater than 31."],
+    [
+      day ? dayRegex.test(day) : true,
+      "Must be a valid day. Cannot be greater than 31.",
+    ],
     [
       month ? monthRegex.test(month) : true,
       "Must be a valid month. Cannot be greater than 12.",
     ],
-    [year ? yearRegex.test(year) : true, "Must be a valid year between 1900 and 2026."],
+    [
+      year ? yearRegex.test(year) : true,
+      "Must be a valid year between 1900 and 2026.",
+    ],
     [
       isEnteredYearMonthInFuture && !isEnteredDayInFuture ? false : true,
       `Month of ${month} must be in the past.`,
@@ -637,30 +671,36 @@ function returnDateOfBirthValidationText({
   const year = content.split("-")[0];
 
   const isDayInFuture = day ? parseInt(day) > new Date().getDate() : false;
-  const isMonthInFuture = month ? parseInt(month) > new Date().getMonth() + 1 : false;
-  const isYearInFuture = year ? parseInt(year) > new Date().getFullYear() : false;
+  const isMonthInFuture = month
+    ? parseInt(month) > new Date().getMonth() + 1
+    : false;
+  const isYearInFuture = year
+    ? parseInt(year) > new Date().getFullYear()
+    : false;
 
   const isEnteredYearMonthDayInFuture = isYearInFuture
-    ? isMonthInFuture
-      ? isDayInFuture
-        ? true
-        : false
-      : false
+    ? isMonthInFuture ? isDayInFuture ? true : false : false
     : false;
   const isEnteredYearMonthInFuture = isYearInFuture
-    ? isMonthInFuture
-      ? true
-      : false
+    ? isMonthInFuture ? true : false
     : false;
-  const isEnteredDayInFuture = day ? parseInt(day) > new Date().getDate() : false;
+  const isEnteredDayInFuture = day
+    ? parseInt(day) > new Date().getDate()
+    : false;
 
   const dateValidationTupleArr: [boolean, string][] = [
-    [day ? dayRegex.test(day) : true, "Must be a valid day. Cannot be greater than 31."],
+    [
+      day ? dayRegex.test(day) : true,
+      "Must be a valid day. Cannot be greater than 31.",
+    ],
     [
       month ? monthRegex.test(month) : true,
       "Must be a valid month. Cannot be greater than 12.",
     ],
-    [year ? yearRegex.test(year) : true, "Must be a valid year between 1900 and 2023."],
+    [
+      year ? yearRegex.test(year) : true,
+      "Must be a valid year between 1900 and 2023.",
+    ],
     [
       isEnteredYearMonthInFuture && !isEnteredDayInFuture ? false : true,
       `Month of ${month} must be in the past.`,
@@ -680,7 +720,9 @@ function returnDateOfBirthValidationText({
     .map(([_, validationText]: [boolean, string]) => validationText)
     .join(" ");
 
-  return validationText ? `Invalid ${contentKind} of birth. ${validationText}` : "";
+  return validationText
+    ? `Invalid ${contentKind} of birth. ${validationText}`
+    : "";
 }
 
 /**
@@ -709,17 +751,20 @@ function returnFloatAmountValidationText({
     : stringifiedContent.split(",")[1];
 
   const amountRegexTupleArr: [boolean, string][] = [
-    [numberPresentRegex.test(stringifiedContent), "Must contain at least one number."],
+    [
+      numberPresentRegex.test(stringifiedContent),
+      "Must contain at least one number.",
+    ],
     [
       onlyNumbersAndCommaOrDecimalRegex.test(stringifiedContent),
       "Must only contain numbers, commas, or decimals.",
     ],
     [
-      beforeSeparatorAmount?.length < 7 ?? false,
+      beforeSeparatorAmount ? beforeSeparatorAmount.length < 7 : false,
       "Must be between 1 and 6 digits before the separator.",
     ],
     [
-      afterSeparatorAmount?.length < 3 ?? false,
+      afterSeparatorAmount ? afterSeparatorAmount.length < 3 : false,
       "Must be between 0 and 2 digits after the separator.",
     ],
   ];
@@ -730,13 +775,17 @@ function returnFloatAmountValidationText({
     .join(" ");
 
   return validationText
-    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${contentKind.slice(
-        1
-      )}. ${validationText}`
+    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${
+      contentKind.slice(
+        1,
+      )
+    }. ${validationText}`
     : "";
 }
 
-function returnUrlValidationText({ content, contentKind }: RegexValidationProps): string {
+function returnUrlValidationText(
+  { content, contentKind }: RegexValidationProps,
+): string {
   // /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/
   const protocolRegex = /^(https?:\/\/)/;
   const optionalSubdomainRegex = /^(www\.)?/;
@@ -745,9 +794,15 @@ function returnUrlValidationText({ content, contentKind }: RegexValidationProps)
 
   const urlRegexTupleArr: [boolean, string][] = [
     [protocolRegex.test(content), "Must begin with 'http://' or 'https://'."],
-    [optionalSubdomainRegex.test(content), "Must begin with www. or no subdomain."],
+    [
+      optionalSubdomainRegex.test(content),
+      "Must begin with www. or no subdomain.",
+    ],
     [domainRegex.test(content), "Must contain a valid domain name."],
-    [topLevelDomainRegex.test(content), "Must contain a valid top-level domain."],
+    [
+      topLevelDomainRegex.test(content),
+      "Must contain a valid top-level domain.",
+    ],
   ];
 
   const validationText = urlRegexTupleArr
@@ -793,9 +848,11 @@ function returnNameValidationText({
     .join(" ");
 
   return validationText
-    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${contentKind.slice(
-        1
-      )}. ${validationText}`
+    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${
+      contentKind.slice(
+        1,
+      )
+    }. ${validationText}`
     : "";
 }
 
@@ -806,7 +863,9 @@ function returnPrinterMakeModelValidationText({
   minLength = 1,
 }: RegexValidationProps): string {
   // /^[a-zA-Z0-9\s.,'()-]{1,50}$/i
-  const printerMakeModelLengthRegex = new RegExp(`^(?=.{${minLength},${maxLength}}$)`);
+  const printerMakeModelLengthRegex = new RegExp(
+    `^(?=.{${minLength},${maxLength}}$)`,
+  );
   const printerMakeModelCharacterRegex = /^[a-zA-Z0-9\s.,'()-]+$/;
 
   const printerMakeModelRegexTupleArr: [boolean, string][] = [
@@ -826,9 +885,11 @@ function returnPrinterMakeModelValidationText({
     .join(" ");
 
   return validationText
-    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${contentKind.slice(
-        1
-      )}. ${validationText}`
+    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${
+      contentKind.slice(
+        1,
+      )
+    }. ${validationText}`
     : "";
 }
 
@@ -839,7 +900,9 @@ function returnPrinterSerialNumberValidationText({
   minLength = 1,
 }: RegexValidationProps): string {
   // /^[a-zA-Z0-9]{1,50}$/i
-  const printerSerialNumberLengthRegex = new RegExp(`^(?=.{${minLength},${maxLength}}$)`);
+  const printerSerialNumberLengthRegex = new RegExp(
+    `^(?=.{${minLength},${maxLength}}$)`,
+  );
   const printerSerialNumberCharacterRegex = /^[a-zA-Z0-9]+$/;
 
   const printerSerialNumberRegexTupleArr: [boolean, string][] = [
@@ -859,9 +922,11 @@ function returnPrinterSerialNumberValidationText({
     .join(" ");
 
   return validationText
-    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${contentKind.slice(
-        1
-      )}. ${validationText}`
+    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${
+      contentKind.slice(
+        1,
+      )
+    }. ${validationText}`
     : "";
 }
 
@@ -872,7 +937,9 @@ function returnTimeRailwayValidationText({
   minLength = 4,
 }: RegexValidationProps): string {
   // /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/
-  const timeRailwayLengthRegex = new RegExp(`^(?=.{${minLength},${maxLength}}$)`);
+  const timeRailwayLengthRegex = new RegExp(
+    `^(?=.{${minLength},${maxLength}}$)`,
+  );
   const timeRailwayCharacterRegex = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/;
 
   const timeRailwayRegexTupleArr: [boolean, string][] = [
@@ -880,7 +947,10 @@ function returnTimeRailwayValidationText({
       timeRailwayLengthRegex.test(content),
       `Must be between ${minLength} and ${maxLength} characters.`,
     ],
-    [timeRailwayCharacterRegex.test(content), "Must be a valid time in 24-hour format."],
+    [
+      timeRailwayCharacterRegex.test(content),
+      "Must be a valid time in 24-hour format.",
+    ],
   ];
 
   const validationText = timeRailwayRegexTupleArr
@@ -889,9 +959,11 @@ function returnTimeRailwayValidationText({
     .join(" ");
 
   return validationText
-    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${contentKind.slice(
-        1
-      )}. ${validationText}`
+    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${
+      contentKind.slice(
+        1,
+      )
+    }. ${validationText}`
     : "";
 }
 
@@ -919,9 +991,11 @@ function returnIntegerValidationText({
     .join(" ");
 
   return validationText
-    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${contentKind.slice(
-        1
-      )}. ${validationText}`
+    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${
+      contentKind.slice(
+        1,
+      )
+    }. ${validationText}`
     : "";
 }
 
@@ -952,9 +1026,11 @@ function returnFilenameValidationText({
     .join(" ");
 
   return validationText
-    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${contentKind.slice(
-        1
-      )}. ${validationText}`
+    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${
+      contentKind.slice(
+        1,
+      )
+    }. ${validationText}`
     : "";
 }
 
@@ -985,9 +1061,11 @@ function returnBrandNameValidationText({
     .join(" ");
 
   return validationText
-    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${contentKind.slice(
-        1
-      )}. ${validationText}`
+    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${
+      contentKind.slice(
+        1,
+      )
+    }. ${validationText}`
     : "";
 }
 
@@ -998,7 +1076,9 @@ function returnWeightValidationText({
   minLength = 1,
 }: RegexValidationProps): string {
   // /^(?!^$|^0*$)[0-9]{1,6}(\.[0-9]{1,2})?$/
-  const productWeightLengthRegex = new RegExp(`^(?=.{${minLength},${maxLength}}$)`);
+  const productWeightLengthRegex = new RegExp(
+    `^(?=.{${minLength},${maxLength}}$)`,
+  );
   const productWeightZeroValue = Number(content) === 0;
   const productWeightCharacterRegex = /^[0-9.]+$/;
   const productDimensionsSextupleDigitBeforeDecimal = content.includes(".")
@@ -1015,7 +1095,10 @@ function returnWeightValidationText({
       `Must be between ${minLength} and ${maxLength} characters.`,
     ],
     [!productWeightZeroValue, "Must not be empty or have zero value."],
-    [productWeightCharacterRegex.test(content), "Must only contain numbers and periods."],
+    [
+      productWeightCharacterRegex.test(content),
+      "Must only contain numbers and periods.",
+    ],
     [
       productDimensionsSextupleDigitBeforeDecimal,
       "Must only have 6 digits before decimal.",
@@ -1029,9 +1112,11 @@ function returnWeightValidationText({
     .join(" ");
 
   return validationText
-    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${contentKind.slice(
-        1
-      )}. ${validationText}`
+    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${
+      contentKind.slice(
+        1,
+      )
+    }. ${validationText}`
     : "";
 }
 
@@ -1042,7 +1127,9 @@ function returnDimensionsValidationText({
   minLength = 1,
 }: RegexValidationProps): string {
   // /^(?!^$|^0*$)[0-9]{1,3}(\.[0-9]{1,2})?$/
-  const productDimensionsLengthRegex = new RegExp(`^(?=.{${minLength},${maxLength}}$)`);
+  const productDimensionsLengthRegex = new RegExp(
+    `^(?=.{${minLength},${maxLength}}$)`,
+  );
   const productDimensionsCharacterRegex = /^[0-9.]+$/;
   const productDimensionsZeroValue = Number(content) === 0;
   const productDimensionsTripleDigitBeforeDecimal = content.includes(".")
@@ -1077,9 +1164,11 @@ function returnDimensionsValidationText({
     .join(" ");
 
   return validationText
-    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${contentKind.slice(
-        1
-      )}. ${validationText}`
+    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${
+      contentKind.slice(
+        1,
+      )
+    }. ${validationText}`
     : "";
 }
 
@@ -1090,7 +1179,9 @@ function returnLargeIntegerValidationText({
   minLength = 1,
 }: RegexValidationProps): string {
   // /^(?!^$|^0*$)[0-9]{1,6}$/
-  const largeIntegerLengthRegex = new RegExp(`^(?=.{${minLength},${maxLength}}$)`);
+  const largeIntegerLengthRegex = new RegExp(
+    `^(?=.{${minLength},${maxLength}}$)`,
+  );
   const largeIntegerCharacterRegex = /^[0-9]+$/;
   const largeIntegerZeroValue = Number(content) === 0;
 
@@ -1099,7 +1190,10 @@ function returnLargeIntegerValidationText({
       largeIntegerLengthRegex.test(content),
       `Must be between ${minLength} and ${maxLength} characters.`,
     ],
-    [largeIntegerCharacterRegex.test(content), "Must only contain whole numbers."],
+    [
+      largeIntegerCharacterRegex.test(content),
+      "Must only contain whole numbers.",
+    ],
     [!largeIntegerZeroValue, "Must not be empty or have zero value."],
   ];
 
@@ -1109,9 +1203,11 @@ function returnLargeIntegerValidationText({
     .join(" ");
 
   return validationText
-    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${contentKind.slice(
-        1
-      )}. ${validationText}`
+    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${
+      contentKind.slice(
+        1,
+      )
+    }. ${validationText}`
     : "";
 }
 
@@ -1122,7 +1218,9 @@ function returnSmallIntegerValidationText({
   minLength = 1,
 }: RegexValidationProps): string {
   // /^(?!^$|^0*$)[0-9]{1,2}$/
-  const smallIntegerLengthRegex = new RegExp(`^(?=.{${minLength},${maxLength}}$)`);
+  const smallIntegerLengthRegex = new RegExp(
+    `^(?=.{${minLength},${maxLength}}$)`,
+  );
   const smallIntegerCharacterRegex = /^[0-9]+$/;
   const smallIntegerZeroValue = Number(content) === 0;
 
@@ -1131,7 +1229,10 @@ function returnSmallIntegerValidationText({
       smallIntegerLengthRegex.test(content),
       `Must be between ${minLength} and ${maxLength} characters.`,
     ],
-    [smallIntegerCharacterRegex.test(content), "Must only contain whole numbers."],
+    [
+      smallIntegerCharacterRegex.test(content),
+      "Must only contain whole numbers.",
+    ],
     [!smallIntegerZeroValue, "Must not be empty or have zero value."],
   ];
 
@@ -1141,9 +1242,11 @@ function returnSmallIntegerValidationText({
     .join(" ");
 
   return validationText
-    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${contentKind.slice(
-        1
-      )}. ${validationText}`
+    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${
+      contentKind.slice(
+        1,
+      )
+    }. ${validationText}`
     : "";
 }
 
@@ -1154,7 +1257,9 @@ function returnMediumIntegerValidationText({
   minLength = 1,
 }: RegexValidationProps): string {
   // /^(?!^$|^0*$)[0-9]{1,4}$/
-  const mediumIntegerLengthRegex = new RegExp(`^(?=.{${minLength},${maxLength}}$)`);
+  const mediumIntegerLengthRegex = new RegExp(
+    `^(?=.{${minLength},${maxLength}}$)`,
+  );
   const mediumIntegerCharacterRegex = /^[0-9]+$/;
   const mediumIntegerZeroValue = Number(content) === 0;
 
@@ -1163,7 +1268,10 @@ function returnMediumIntegerValidationText({
       mediumIntegerLengthRegex.test(content),
       `Must be between ${minLength} and ${maxLength} characters.`,
     ],
-    [mediumIntegerCharacterRegex.test(content), "Must only contain whole numbers."],
+    [
+      mediumIntegerCharacterRegex.test(content),
+      "Must only contain whole numbers.",
+    ],
     [!mediumIntegerZeroValue, "Must not be empty or have zero value."],
   ];
 
@@ -1173,9 +1281,11 @@ function returnMediumIntegerValidationText({
     .join(" ");
 
   return validationText
-    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${contentKind.slice(
-        1
-      )}. ${validationText}`
+    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${
+      contentKind.slice(
+        1,
+      )
+    }. ${validationText}`
     : "";
 }
 
@@ -1187,7 +1297,9 @@ function returnCpuFrequencyValidationText({
 }: RegexValidationProps): string {
   // /^(?!^$|^0*$)[0-9]{1}(\.[0-9]{1,2})?$/
 
-  const cpuFrequencyLengthRegex = new RegExp(`^(?=.{${minLength},${maxLength}}$)`);
+  const cpuFrequencyLengthRegex = new RegExp(
+    `^(?=.{${minLength},${maxLength}}$)`,
+  );
   const cpuFrequencyCharacterRegex = /^[0-9.]+$/;
   const cpuFrequencyZeroValue = Number(content) === 0;
   const cpuFrequencySingleDigitBeforeDecimal = content.includes(".")
@@ -1203,7 +1315,10 @@ function returnCpuFrequencyValidationText({
       cpuFrequencyLengthRegex.test(content),
       `Must be between ${minLength} and ${maxLength} characters.`,
     ],
-    [cpuFrequencyCharacterRegex.test(content), "Must only contain numbers and periods."],
+    [
+      cpuFrequencyCharacterRegex.test(content),
+      "Must only contain numbers and periods.",
+    ],
     [!cpuFrequencyZeroValue, "Must not be empty or have zero value."],
     [
       cpuFrequencySingleDigitBeforeDecimal,
@@ -1218,9 +1333,11 @@ function returnCpuFrequencyValidationText({
     .join(" ");
 
   return validationText
-    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${contentKind.slice(
-        1
-      )}. ${validationText}`
+    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${
+      contentKind.slice(
+        1,
+      )
+    }. ${validationText}`
     : "";
 }
 
@@ -1231,14 +1348,18 @@ function returnRamVoltageValidationText({
   minLength = 1,
 }: RegexValidationProps): string {
   // /^(?!^$|^0*$)[0-1]{1}(\.[0-9]{1,2})?$/
-  const ramVoltageLengthRegex = new RegExp(`^(?=.{${minLength},${maxLength}}$)`);
+  const ramVoltageLengthRegex = new RegExp(
+    `^(?=.{${minLength},${maxLength}}$)`,
+  );
   const ramVoltageCharacterRegex = /^[0-9.]+$/;
   const ramVoltageZeroValue = Number(content) === 0;
   const ramVoltageSingleDigitBeforeDecimal = content.includes(".")
     ? content.split(".")[0].length === 1
     : false;
   // test for 23. or 0.
-  const ramVoltageSingleDecimal = content.includes(".") ? content.at(-1) === "." : false;
+  const ramVoltageSingleDecimal = content.includes(".")
+    ? content.at(-1) === "."
+    : false;
   const ramVoltageLessThan2 = Number(content) < 2;
 
   const ramVoltageRegexTupleArr: [boolean, string][] = [
@@ -1246,7 +1367,10 @@ function returnRamVoltageValidationText({
       ramVoltageLengthRegex.test(content),
       `Must be between ${minLength} and ${maxLength} characters.`,
     ],
-    [ramVoltageCharacterRegex.test(content), "Must only contain numbers and periods."],
+    [
+      ramVoltageCharacterRegex.test(content),
+      "Must only contain numbers and periods.",
+    ],
     [!ramVoltageZeroValue, "Must not be empty or have zero value."],
     [
       ramVoltageSingleDigitBeforeDecimal,
@@ -1262,9 +1386,11 @@ function returnRamVoltageValidationText({
     .join(" ");
 
   return validationText
-    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${contentKind.slice(
-        1
-      )}. ${validationText}`
+    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${
+      contentKind.slice(
+        1,
+      )
+    }. ${validationText}`
     : "";
 }
 
@@ -1275,7 +1401,9 @@ function returnSocketChipsetValidationText({
   minLength = 2,
 }: RegexValidationProps): string {
   // /^[a-zA-Z0-9\s.,'()-]{2,30}$/
-  const socketChipsetNameLengthRegex = new RegExp(`^(?=.{${minLength},${maxLength}}$)`);
+  const socketChipsetNameLengthRegex = new RegExp(
+    `^(?=.{${minLength},${maxLength}}$)`,
+  );
   const socketChipsetNameCharacterRegex = /^[a-zA-Z0-9\s.,'()-]+$/;
 
   const socketChipsetNameRegexTupleArr: [boolean, string][] = [
@@ -1295,9 +1423,11 @@ function returnSocketChipsetValidationText({
     .join(" ");
 
   return validationText
-    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${contentKind.slice(
-        1
-      )}. ${validationText}`
+    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${
+      contentKind.slice(
+        1,
+      )
+    }. ${validationText}`
     : "";
 }
 
@@ -1309,7 +1439,9 @@ function returnColorVariantValidationText({
 }: RegexValidationProps): string {
   // /^[a-zA-Z0-9#()%,.\s-]{2,30}$/
 
-  const colorVariantLengthRegex = new RegExp(`^(?=.{${minLength},${maxLength}}$)`);
+  const colorVariantLengthRegex = new RegExp(
+    `^(?=.{${minLength},${maxLength}}$)`,
+  );
   const colorVariantCharacterRegex = /^[a-zA-Z0-9#()%,.\s-]+$/;
 
   const colorVariantRegexTupleArr: [boolean, string][] = [
@@ -1329,9 +1461,11 @@ function returnColorVariantValidationText({
     .join(" ");
 
   return validationText
-    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${contentKind.slice(
-        1
-      )}. ${validationText}`
+    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${
+      contentKind.slice(
+        1,
+      )
+    }. ${validationText}`
     : "";
 }
 
@@ -1343,7 +1477,8 @@ function returnRamTimingValidationText({
 }: RegexValidationProps): string {
   // /^[0-9]{1,2}-[0-9]{1,2}-[0-9]{1,2}-[0-9]{1,2}$/
   const ramTimingLengthRegex = new RegExp(`^(?=.{${minLength},${maxLength}}$)`);
-  const ramTimingCharacterRegex = /^[0-9]{1,2}-[0-9]{1,2}-[0-9]{1,2}-[0-9]{1,2}$/;
+  const ramTimingCharacterRegex =
+    /^[0-9]{1,2}-[0-9]{1,2}-[0-9]{1,2}-[0-9]{1,2}$/;
 
   const ramTimingRegexTupleArr: [boolean, string][] = [
     [
@@ -1362,9 +1497,11 @@ function returnRamTimingValidationText({
     .join(" ");
 
   return validationText
-    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${contentKind.slice(
-        1
-      )}: ${validationText}`
+    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${
+      contentKind.slice(
+        1,
+      )
+    }: ${validationText}`
     : "";
 }
 
@@ -1375,7 +1512,9 @@ function returnDisplayAspectRatioValidationText({
   minLength = 5,
 }: RegexValidationProps): string {
   // /^[0-9]{1,2}:[0-9]{1,2}$/
-  const monitorAspectRatioLengthRegex = new RegExp(`^(?=.{${minLength},${maxLength}}$)`);
+  const monitorAspectRatioLengthRegex = new RegExp(
+    `^(?=.{${minLength},${maxLength}}$)`,
+  );
   const monitorAspectRatioCharacterRegex = /^[0-9]{1,2}:[0-9]{1,2}$/;
 
   const monitorAspectRatioRegexTupleArr: [boolean, string][] = [
@@ -1395,9 +1534,11 @@ function returnDisplayAspectRatioValidationText({
     .join(" ");
 
   return validationText
-    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${contentKind.slice(
-        1
-      )}: ${validationText}`
+    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${
+      contentKind.slice(
+        1,
+      )
+    }: ${validationText}`
     : "";
 }
 
@@ -1409,7 +1550,7 @@ function returnFrequencyResponseValidationText({
 }: RegexValidationProps): string {
   // /^[0-9]{1,2}[\s]{0,1}Hz[\s]{0,1}-[\s]{0,1}[0-9]{1,2}[\s]{0,1}kHz$/
   const speakerFrequencyResponseLengthRegex = new RegExp(
-    `^(?=.{${minLength},${maxLength}}$)`
+    `^(?=.{${minLength},${maxLength}}$)`,
   );
   const speakerFrequencyResponseCharacterRegex =
     /^[0-9]{1,2}[\s]{0,1}Hz[\s]{0,1}-[\s]{0,1}[0-9]{1,2}[\s]{0,1}kHz$/;
@@ -1431,9 +1572,11 @@ function returnFrequencyResponseValidationText({
     .join(" ");
 
   return validationText
-    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${contentKind.slice(
-        1
-      )}: ${validationText}`
+    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${
+      contentKind.slice(
+        1,
+      )
+    }: ${validationText}`
     : "";
 }
 
@@ -1445,7 +1588,7 @@ function returnMobileCameraResolutionValidationText({
 }: RegexValidationProps): string {
   // /^([0-9]{1,3} MP)(?:, ([0-9]{1,3} MP)){1,12}$/
   const mobileCameraResolutionLengthRegex = new RegExp(
-    `^(?=.{${minLength},${maxLength}}$)`
+    `^(?=.{${minLength},${maxLength}}$)`,
   );
   const mobileCameraResolutionCharacterRegex =
     /^([0-9]{1,3} MP)(?:, ([0-9]{1,3} MP)){0,12}$/;
@@ -1467,9 +1610,11 @@ function returnMobileCameraResolutionValidationText({
     .join(" ");
 
   return validationText
-    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${contentKind.slice(
-        1
-      )}: ${validationText}`
+    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${
+      contentKind.slice(
+        1,
+      )
+    }: ${validationText}`
     : "";
 }
 
@@ -1505,9 +1650,11 @@ function returnObjectKeyValidationText({
     .join(" ");
 
   return validationText
-    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${contentKind.slice(
-        1
-      )}: ${validationText}`
+    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${
+      contentKind.slice(
+        1,
+      )
+    }: ${validationText}`
     : "";
 }
 
@@ -1518,7 +1665,9 @@ function returnUserDefinedFieldValueValidationText({
   minLength = 1,
 }: RegexValidationProps): string {
   // /^(?!^\s*$)[a-zA-Z0-9!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~\w\s]{2,2000}$/i
-  const userDefinedValueLengthRegex = new RegExp(`^(?=.{${minLength},${maxLength}}$)`);
+  const userDefinedValueLengthRegex = new RegExp(
+    `^(?=.{${minLength},${maxLength}}$)`,
+  );
   const userDefinedValueCharacterRegex =
     /^(?!^\s*$)[a-zA-Z0-9!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~\w\s]{2,2000}$/;
 
@@ -1527,7 +1676,10 @@ function returnUserDefinedFieldValueValidationText({
       userDefinedValueLengthRegex.test(content),
       `Must be between ${minLength} and ${maxLength} characters.`,
     ],
-    [userDefinedValueCharacterRegex.test(content), "Must not contain only whitespace."],
+    [
+      userDefinedValueCharacterRegex.test(content),
+      "Must not contain only whitespace.",
+    ],
   ];
 
   const validationText = userDefinedValueRegexTupleArr
@@ -1536,9 +1688,11 @@ function returnUserDefinedFieldValueValidationText({
     .join(" ");
 
   return validationText
-    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${contentKind.slice(
-        1
-      )}: ${validationText}`
+    ? `Invalid ${contentKind.charAt(0).toUpperCase()}${
+      contentKind.slice(
+        1,
+      )
+    }: ${validationText}`
     : "";
 }
 
@@ -1549,7 +1703,9 @@ function returnCreditCardNumberValidationText({
   minLength = 19,
 }: RegexValidationProps): string {
   // /^\d{4} \d{4} \d{4} \d{4}$/
-  const creditCardNumberLengthRegex = new RegExp(`^(?=.{${minLength},${maxLength}}$)`);
+  const creditCardNumberLengthRegex = new RegExp(
+    `^(?=.{${minLength},${maxLength}}$)`,
+  );
   const creditCardNumberCharacterRegex = /^\d{4} \d{4} \d{4} \d{4}$/;
 
   const creditCardNumberRegexTupleArr: [boolean, string][] = [
@@ -1577,10 +1733,9 @@ function returnIsExpirationDateInPast(expirationDate: string) {
   const expirationDateArray = expirationDate.split("/");
   const expirationMonth = Number(expirationDateArray[0]);
   const expirationYearStr = expirationDateArray[1] ?? "";
-  const expirationYear =
-    expirationYearStr.length === 2
-      ? Number(`20${expirationYearStr}`)
-      : Number(expirationYearStr);
+  const expirationYear = expirationYearStr.length === 2
+    ? Number(`20${expirationYearStr}`)
+    : Number(expirationYearStr);
 
   if (expirationYear < currentYear) {
     return true;
@@ -1601,9 +1756,10 @@ function returnCreditCardExpirationDateValidationText({
 }: RegexValidationProps): string {
   // /^(0[1-9]|1[0-2])\/([0-9]{4}|[0-9]{2})$/
   const creditCardExpirationDateLengthRegex = new RegExp(
-    `^(?=.{${minLength},${maxLength}}$)`
+    `^(?=.{${minLength},${maxLength}}$)`,
   );
-  const creditCardExpirationDateCharacterRegex = /^(0[1-9]|1[0-2])\/([0-9]{4}|[0-9]{2})$/;
+  const creditCardExpirationDateCharacterRegex =
+    /^(0[1-9]|1[0-2])\/([0-9]{4}|[0-9]{2})$/;
   const isExpirationDateValid = returnIsExpirationDateInPast(content);
 
   const creditCardExpirationDateRegexTupleArr: [boolean, string][] = [
@@ -1633,7 +1789,9 @@ function returnCreditCardCvvValidationText({
   minLength = 3,
 }: RegexValidationProps): string {
   // /^\d{3,4}$/
-  const creditCardCvvLengthRegex = new RegExp(`^(?=.{${minLength},${maxLength}}$)`);
+  const creditCardCvvLengthRegex = new RegExp(
+    `^(?=.{${minLength},${maxLength}}$)`,
+  );
   const creditCardCvvCharacterRegex = /^\d{3,4}$/;
   const onlyNumbersRegex = /^\d+$/;
 
@@ -1664,7 +1822,9 @@ function returnFileExtensionValidationText({
   minLength = 3,
 }: RegexValidationProps): string {
   // /\.(jpg|jpeg|png|webp)$/
-  const fileExtensionLengthRegex = new RegExp(`^(?=.{${minLength},${maxLength}}$)`);
+  const fileExtensionLengthRegex = new RegExp(
+    `^(?=.{${minLength},${maxLength}}$)`,
+  );
   const fileExtensionCharacterRegex = /\.(jpg|jpeg|png|webp)$/;
 
   const fileExtensionRegexTupleArr: [boolean, string][] = [
@@ -1722,7 +1882,9 @@ function returnFileMimeTypeValidationText({
   minLength = 10,
 }: RegexValidationProps): string {
   // /^image\/(jpeg|png|webp)$/
-  const fileMimeTypeLengthRegex = new RegExp(`^(?=.{${minLength},${maxLength}}$)`);
+  const fileMimeTypeLengthRegex = new RegExp(
+    `^(?=.{${minLength},${maxLength}}$)`,
+  );
   const fileMimeTypeCharacterRegex = /^image\/(jpeg|png|webp)$/;
 
   const fileMimeTypeRegexTupleArr: [boolean, string][] = [
@@ -1751,8 +1913,11 @@ function returnFileEncodingValidationText({
   minLength = 4,
 }: RegexValidationProps): string {
   // /^(7bit|8bit|binary|quoted-printable|base64)$/
-  const fileEncodingLengthRegex = new RegExp(`^(?=.{${minLength},${maxLength}}$)`);
-  const fileEncodingCharacterRegex = /^(7bit|8bit|binary|quoted-printable|base64)$/;
+  const fileEncodingLengthRegex = new RegExp(
+    `^(?=.{${minLength},${maxLength}}$)`,
+  );
+  const fileEncodingCharacterRegex =
+    /^(7bit|8bit|binary|quoted-printable|base64)$/;
 
   const fileEncodingRegexTupleArr: [boolean, string][] = [
     [
@@ -1804,7 +1969,7 @@ type FilterFieldsFromObjectInput<
   Obj extends Record<string | number | symbol, any> = Record<
     string | symbol | number,
     any
-  >
+  >,
 > = {
   object: Obj;
   fieldsToFilter: Array<keyof Obj>;
@@ -1817,8 +1982,10 @@ function filterFieldsFromObject<
     string | symbol | number,
     any
   >,
-  Keys extends keyof Obj = keyof Obj
->({ object, fieldsToFilter }: FilterFieldsFromObjectInput<Obj>): Omit<Obj, Keys> {
+  Keys extends keyof Obj = keyof Obj,
+>(
+  { object, fieldsToFilter }: FilterFieldsFromObjectInput<Obj>,
+): Omit<Obj, Keys> {
   return Object.entries(object).reduce((obj, [key, value]) => {
     if (fieldsToFilter.includes(key)) {
       return obj;
@@ -1833,7 +2000,7 @@ type AddFieldsToObjectInput<
   Obj extends Record<string | number | symbol, any> = Record<
     string | symbol | number,
     any
-  >
+  >,
 > = {
   object: Obj;
   fieldValuesTuples: [keyof Obj, Obj[keyof Obj]][]; // [key, value][]
@@ -1846,7 +2013,7 @@ function addFieldsToObject<
   Obj extends Record<string | number | symbol, any> = Record<
     string | symbol | number,
     any
-  >
+  >,
 >({
   object,
   fieldValuesTuples,
@@ -1873,21 +2040,25 @@ function updateObjectPure<
   Obj extends Record<string | number | symbol, unknown> = Record<
     string | number | symbol,
     unknown
-  >
+  >,
 >(oldObject: Obj, keyValueTuples: Array<[string, unknown]>): Obj {
-  return Object.entries(oldObject).reduce<Obj>((newObject, [oldObjKey, oldObjValue]) => {
-    const [key, value] = keyValueTuples.find(([key]) => key === oldObjKey) ?? [
-      oldObjKey,
-      oldObjValue,
-    ];
+  return Object.entries(oldObject).reduce<Obj>(
+    (newObject, [oldObjKey, oldObjValue]) => {
+      const [key, value] = keyValueTuples.find(([key]) => key === oldObjKey) ??
+        [
+          oldObjKey,
+          oldObjValue,
+        ];
 
-    Object.defineProperty(newObject, key, {
-      value,
-      ...PROPERTY_DESCRIPTOR,
-    });
+      Object.defineProperty(newObject, key, {
+        value,
+        ...PROPERTY_DESCRIPTOR,
+      });
 
-    return newObject;
-  }, Object.create(null));
+      return newObject;
+    },
+    Object.create(null),
+  );
 }
 
 type UrlBuilderInput = {
@@ -1928,7 +2099,7 @@ function groupQueryResponse({
     const groupedBy = queryResponseData.reduce(
       (
         acc: Map<string | number, QueryResponseData[]>,
-        queryResponseObj: QueryResponseData
+        queryResponseObj: QueryResponseData,
       ) => {
         // acc.set('results', [...(acc.get('results') ?? []), queryResponseObj]);
         const prevResults = acc.get("results") ?? [];
@@ -1936,7 +2107,7 @@ function groupQueryResponse({
 
         return acc;
       },
-      new Map()
+      new Map(),
     );
 
     return {
@@ -1947,13 +2118,12 @@ function groupQueryResponse({
   const groupedBy = queryResponseData.reduce(
     (
       acc: Map<string | number, Array<QueryResponseData>>,
-      queryResponseObj: QueryResponseData
+      queryResponseObj: QueryResponseData,
     ) => {
       // find the value of the groupBySelection field
-      const groupBySelectionValue =
-        (Object.entries(queryResponseObj).find(
-          ([key, _]) => key === groupBySelection
-        )?.[1] as string | number) ?? "";
+      const groupBySelectionValue = (Object.entries(queryResponseObj).find(
+        ([key, _]) => key === groupBySelection,
+      )?.[1] as string | number) ?? "";
 
       // if the groupBySelection field exists in the queryResponseObj
       if (Object.hasOwn(queryResponseObj, groupBySelection)) {
@@ -1978,7 +2148,7 @@ function groupQueryResponse({
 
       return acc;
     },
-    new Map()
+    new Map(),
   );
 
   const sortedGroupedBy = new Map(
@@ -1991,7 +2161,7 @@ function groupQueryResponse({
         : typeof aKey === "number" && typeof bKey === "number"
         ? aKey - bKey
         : 0;
-    })
+    }),
   );
 
   return {
@@ -2047,7 +2217,7 @@ function flattenObjectIterative<
   Obj extends Record<string | symbol | number, any> = Record<
     string | symbol | number,
     any
-  >
+  >,
 >(obj: Obj): Obj {
   const queue = [obj] as Record<string | symbol | number, any>[];
   const flatObj = Object.create(null);
@@ -2059,7 +2229,9 @@ function flattenObjectIterative<
     }
 
     Object.entries(shifted).forEach(([key, value]) => {
-      if (typeof value === "object" && value !== null && !Array.isArray(value)) {
+      if (
+        typeof value === "object" && value !== null && !Array.isArray(value)
+      ) {
         queue.push(value);
       } else {
         flatObj[key] = value;
@@ -2077,34 +2249,42 @@ function flattenObjectIterative<
  */
 function groupBy<T extends unknown = unknown>(
   iterable: Iterable<T>,
-  callbackFn: (value: T) => string | symbol
+  callbackFn: (value: T) => string | symbol,
 ) {
   const clone = structuredClone(iterable);
 
-  const keysSet = Array.from(clone).reduce<Set<string | symbol>>((keysAcc, value) => {
-    const key = callbackFn(value as T);
-    keysAcc.add(key);
+  const keysSet = Array.from(clone).reduce<Set<string | symbol>>(
+    (keysAcc, value) => {
+      const key = callbackFn(value as T);
+      keysAcc.add(key);
 
-    return keysAcc;
-  }, new Set());
+      return keysAcc;
+    },
+    new Set(),
+  );
 
-  return Array.from(keysSet).reduce<Record<string | symbol, T[]>>((groupedAcc, key) => {
-    const values = Array.from(clone).filter((value) => callbackFn(value as T) === key);
+  return Array.from(keysSet).reduce<Record<string | symbol, T[]>>(
+    (groupedAcc, key) => {
+      const values = Array.from(clone).filter((value) =>
+        callbackFn(value as T) === key
+      );
 
-    Object.defineProperty(groupedAcc, key, {
-      value: values,
-      ...PROPERTY_DESCRIPTOR,
-    });
+      Object.defineProperty(groupedAcc, key, {
+        value: values,
+        ...PROPERTY_DESCRIPTOR,
+      });
 
-    return groupedAcc;
-  }, Object.create(null));
+      return groupedAcc;
+    },
+    Object.create(null),
+  );
 }
 
 type GroupByFieldInput<
   Obj extends Record<string | symbol | number, any> = Record<
     string | symbol | number,
     any
-  >
+  >,
 > = {
   objectArray: Obj[];
   field?: keyof Obj;
@@ -2115,7 +2295,7 @@ function groupByField<
   Obj extends Record<string | symbol | number, any> = Record<
     string | symbol | number,
     any
-  >
+  >,
 >({
   objectArray,
   field,
@@ -2128,26 +2308,29 @@ function groupByField<
     return Object.create(null);
   }
 
-  return objectArray.reduce((objAcc: Record<string | symbol | number, Obj[]>, obj) => {
-    const objField = callbackFn ? callbackFn(obj) : field ? obj[field] : "";
-    const propertyDescriptor: PropertyDescriptor = {
-      writable: true,
-      enumerable: true,
-      configurable: true,
-    };
+  return objectArray.reduce(
+    (objAcc: Record<string | symbol | number, Obj[]>, obj) => {
+      const objField = callbackFn ? callbackFn(obj) : field ? obj[field] : "";
+      const propertyDescriptor: PropertyDescriptor = {
+        writable: true,
+        enumerable: true,
+        configurable: true,
+      };
 
-    Object.hasOwn(objAcc, objField)
-      ? Object.defineProperty(objAcc, objField, {
+      Object.hasOwn(objAcc, objField)
+        ? Object.defineProperty(objAcc, objField, {
           value: [...objAcc[objField], obj],
           ...propertyDescriptor,
         })
-      : Object.defineProperty(objAcc, objField, {
+        : Object.defineProperty(objAcc, objField, {
           value: [obj],
           ...propertyDescriptor,
         });
 
-    return objAcc;
-  }, Object.create(null));
+      return objAcc;
+    },
+    Object.create(null),
+  );
 }
 
 /**
@@ -2172,11 +2355,15 @@ function returnThemeColors({
   const iconGray = textColor;
   const chartTextColor = colorScheme === "light" ? gray[8] : dark[7];
 
-  const colorShade = colorScheme === "light" ? primaryShade.light : primaryShade.dark;
+  const colorShade = colorScheme === "light"
+    ? primaryShade.light
+    : primaryShade.dark;
   const themeColorShades = Object.entries(colorsSwatches).find(
-    ([color, _shades]) => color === primaryColor
+    ([color, _shades]) => color === primaryColor,
   )?.[1];
-  const themeColorShade = themeColorShades ? themeColorShades[colorShade] : gray[5];
+  const themeColorShade = themeColorShades
+    ? themeColorShades[colorShade]
+    : gray[5];
   // all color shades
   const grayColorShade = gray[colorShade];
   const grayBorderShade = colorScheme === "light" ? gray[2] : gray[8];
@@ -2189,9 +2376,7 @@ function returnThemeColors({
   const sliderLabelColor = gray[3];
   const navLinkHoverShade = colorScheme === "light" ? gray[2] : gray[8];
   const navLinkActiveShade = themeColorShades
-    ? colorScheme === "light"
-      ? themeColorShades[1]
-      : ""
+    ? colorScheme === "light" ? themeColorShades[1] : ""
     : gray[5];
 
   const generalColors = {
@@ -2216,13 +2401,13 @@ function returnThemeColors({
   };
 
   // app colors
-  const borderColor =
-    colorScheme === "light" ? `1px solid ${gray[3]}` : `1px solid ${gray[8]}`;
-  const backgroundColor =
-    colorScheme === "light"
-      ? // ? 'radial-gradient(circle, #f9f9f9 50%, #f5f5f5 100%)'
-        "#f5f5f5"
-      : dark[6];
+  const borderColor = colorScheme === "light"
+    ? `1px solid ${gray[3]}`
+    : `1px solid ${gray[8]}`;
+  const backgroundColor = colorScheme === "light"
+    // ? 'radial-gradient(circle, #f9f9f9 50%, #f5f5f5 100%)'
+    ? "#f5f5f5"
+    : dark[6];
   const redBorderColor = `1px solid ${redColorShade}`;
   const appThemeColors = {
     borderColor,
@@ -2233,10 +2418,12 @@ function returnThemeColors({
   // for table display
   const tableHeadersBgColor = colorScheme === "light" ? gray[4] : gray[8];
   const headersIconColor = colorScheme === "light" ? gray[5] : gray[7];
-  const headerBorderColor =
-    colorScheme === "light" ? `2px solid ${gray[2]}` : `2px solid ${gray[7]}`;
-  const rowsBorderColor =
-    colorScheme === "light" ? `1px solid ${gray[2]}` : `1px solid ${gray[8]}`;
+  const headerBorderColor = colorScheme === "light"
+    ? `2px solid ${gray[2]}`
+    : `2px solid ${gray[7]}`;
+  const rowsBorderColor = colorScheme === "light"
+    ? `1px solid ${gray[2]}`
+    : `1px solid ${gray[8]}`;
   const textHighlightColor = colorScheme === "light" ? gray[3] : gray[6];
   const tablesThemeColors = {
     tableHeadersBgColor,
@@ -2248,13 +2435,13 @@ function returnThemeColors({
 
   // directory graph colors
   const edgeStrokeColor = colorScheme === "light" ? dark[5] : gray[8];
-  const nodeBackgroundColor =
-    colorScheme === "light"
-      ? // ? 'radial-gradient(circle, #f9f9f9 50%, #f5f5f5 100%)'
-        "#f5f5f5"
-      : dark[6];
-  const nodeBorderColor =
-    colorScheme === "light" ? `1px solid ${dark[1]}` : `1px solid ${gray[8]}`;
+  const nodeBackgroundColor = colorScheme === "light"
+    // ? 'radial-gradient(circle, #f9f9f9 50%, #f5f5f5 100%)'
+    ? "#f5f5f5"
+    : dark[6];
+  const nodeBorderColor = colorScheme === "light"
+    ? `1px solid ${dark[1]}`
+    : `1px solid ${gray[8]}`;
   const nodeTextColor = colorScheme === "light" ? gray[8] : gray[5];
   const directoryGraphThemeColors = {
     edgeStrokeColor,
@@ -2326,7 +2513,7 @@ type ToggleNavlinksActiveInput<
   State extends Record<string | symbol | number, any> = Record<
     string | symbol | number,
     any
-  >
+  >,
 > = {
   navlinksState: State;
   toggledNavlink: keyof State;
@@ -2339,24 +2526,25 @@ function toggleNavlinksActive<
   State extends Record<string | symbol | number, any> = Record<
     string | symbol | number,
     any
-  >
->({ navlinksState, toggledNavlink, payload }: ToggleNavlinksActiveInput<State>): State {
+  >,
+>(
+  { navlinksState, toggledNavlink, payload }: ToggleNavlinksActiveInput<State>,
+): State {
   return Object.keys(navlinksState).reduce(
     (acc: State, navlink) => {
       navlink === toggledNavlink
         ? Object.defineProperty(acc, navlink, {
-            value: payload,
-            ...PROPERTY_DESCRIPTOR,
-          })
+          value: payload,
+          ...PROPERTY_DESCRIPTOR,
+        })
         : Object.defineProperty(acc, navlink, {
-            value: false,
-            ...PROPERTY_DESCRIPTOR,
-          });
+          value: false,
+          ...PROPERTY_DESCRIPTOR,
+        });
 
       return acc;
     },
-
-    Object.create(null)
+    Object.create(null),
   );
 }
 
@@ -2421,7 +2609,8 @@ function returnIsAccessTokenExpired(accessToken: string): {
   const decodedToken: DecodedToken = jwtDecode(accessToken);
   const { exp: accessTokenExpiration } = decodedToken;
   // buffer of 10 seconds to refresh access token
-  const isAccessTokenExpired = accessTokenExpiration * 1000 - 10000 < Date.now();
+  const isAccessTokenExpired =
+    accessTokenExpiration * 1000 - 10000 < Date.now();
 
   return { isAccessTokenExpired };
 }
@@ -2492,7 +2681,10 @@ async function captureScreenshot({
     useCORS: true,
   });
   canvasPromise.then((canvas) => {
-    const dataURL = canvas.toDataURL(screenshotImageType, screenshotImageQuality);
+    const dataURL = canvas.toDataURL(
+      screenshotImageType,
+      screenshotImageQuality,
+    );
     // Create an image element from the data URL
     const img = new Image();
     img.src = dataURL;
@@ -2547,7 +2739,7 @@ function returnTimeToRead(string: string) {
 
 type FormSubmitPOST<
   IsSubmittingAction extends string = string,
-  IsSuccessfulAction extends string = string
+  IsSuccessfulAction extends string = string,
 > = {
   /** dispatch function from component reducer */
   dispatch: React.Dispatch<{
@@ -2588,7 +2780,7 @@ type FormSubmitPOST<
 
 async function formSubmitPOST<
   IsSubmittingAction extends string = string,
-  IsSuccessfulAction extends string = string
+  IsSuccessfulAction extends string = string,
 >({
   dispatch,
   fetchAbortController,
@@ -2615,8 +2807,7 @@ async function formSubmitPOST<
 
     const url: URL = urlBuilder({ path: roleResourceRoutePaths[userRole] });
 
-    const body =
-      requestBody ??
+    const body = requestBody ??
       JSON.stringify({
         [schemaName]: schema,
       });
@@ -2689,7 +2880,7 @@ async function fetchResourceGET<
   SetResourceDataAction extends string = string,
   SetTotalDocumentsAction extends string = string,
   SetTotalPagesAction extends string = string,
-  Data extends Record<string, unknown> = Record<string, unknown>
+  Data extends Record<string, unknown> = Record<string, unknown>,
 >({
   fetchAbortController,
   fetchInterceptor,
@@ -2715,21 +2906,21 @@ async function fetchResourceGET<
   loadingMessage: string;
   parentDispatch: React.Dispatch<
     | {
-        action: SetIsLoadingAction;
-        payload: boolean;
-      }
+      action: SetIsLoadingAction;
+      payload: boolean;
+    }
     | {
-        action: SetLoadingMessageAction;
-        payload: string;
-      }
+      action: SetLoadingMessageAction;
+      payload: string;
+    }
     | {
-        action: SetResourceDataAction;
-        payload: Array<QueryResponseData<Data>>;
-      }
+      action: SetResourceDataAction;
+      payload: Array<QueryResponseData<Data>>;
+    }
     | {
-        action: SetTotalDocumentsAction | SetTotalPagesAction;
-        payload: number;
-      }
+      action: SetTotalDocumentsAction | SetTotalPagesAction;
+      payload: number;
+    }
   >;
   preFetchAbortController: AbortController;
   roleResourceRoutePaths: RoleResourceRoutePaths;
@@ -2838,7 +3029,7 @@ async function fetchResourcePATCH<
   SetResourceDataAction extends string = string,
   SetTotalDocumentsAction extends string = string,
   SetTotalPagesAction extends string = string,
-  Data extends Record<string, unknown> = Record<string, unknown>
+  Data extends Record<string, unknown> = Record<string, unknown>,
 >({
   fetchAbortController,
   fetchInterceptor,
@@ -2865,21 +3056,21 @@ async function fetchResourcePATCH<
   submittingMessage: string;
   parentDispatch: React.Dispatch<
     | {
-        action: SetIsSubmittingAction;
-        payload: boolean;
-      }
+      action: SetIsSubmittingAction;
+      payload: boolean;
+    }
     | {
-        action: SetSubmittingMessageAction;
-        payload: string;
-      }
+      action: SetSubmittingMessageAction;
+      payload: string;
+    }
     | {
-        action: SetResourceDataAction;
-        payload: Array<QueryResponseData<Data>>;
-      }
+      action: SetResourceDataAction;
+      payload: Array<QueryResponseData<Data>>;
+    }
     | {
-        action: SetTotalDocumentsAction | SetTotalPagesAction;
-        payload: number;
-      }
+      action: SetTotalDocumentsAction | SetTotalPagesAction;
+      payload: number;
+    }
   >;
   preFetchAbortController: AbortController;
   requestBody: string;

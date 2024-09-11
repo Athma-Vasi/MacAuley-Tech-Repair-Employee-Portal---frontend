@@ -1,10 +1,4 @@
-import {
-  Action,
-  ActionsCompany,
-  Currency,
-  RequestStatus,
-  SetPageInErrorPayload,
-} from "../../../types";
+import { Currency, RequestStatus, SetPageInErrorPayload } from "../../../types";
 import { ExpenseClaimAction } from "./actions";
 
 type ExpenseClaimKind =
@@ -57,59 +51,59 @@ type ExpenseClaimState = {
 
 type ExpenseClaimDispatch =
   | {
-      action: ExpenseClaimAction["setAcknowledgement"];
-      payload: boolean;
-    }
+    action: ExpenseClaimAction["setAcknowledgement"];
+    payload: boolean;
+  }
   | {
-      action: ExpenseClaimAction["setAdditionalComments"];
-      payload: string;
-    }
+    action: ExpenseClaimAction["setAdditionalComments"];
+    payload: string;
+  }
   | {
-      action: ExpenseClaimAction["setExpenseClaimAmount"];
-      payload: string;
-    }
+    action: ExpenseClaimAction["setExpenseClaimAmount"];
+    payload: string;
+  }
   | {
-      action: ExpenseClaimAction["setExpenseClaimCurrency"];
-      payload: Currency;
-    }
+    action: ExpenseClaimAction["setExpenseClaimCurrency"];
+    payload: Currency;
+  }
   | {
-      action: ExpenseClaimAction["setExpenseClaimDate"];
-      payload: string;
-    }
+    action: ExpenseClaimAction["setExpenseClaimDate"];
+    payload: string;
+  }
   | {
-      action: ExpenseClaimAction["setExpenseClaimDescription"];
-      payload: string;
-    }
+    action: ExpenseClaimAction["setExpenseClaimDescription"];
+    payload: string;
+  }
   | {
-      action: ExpenseClaimAction["setExpenseClaimKind"];
-      payload: ExpenseClaimKind;
-    }
+    action: ExpenseClaimAction["setExpenseClaimKind"];
+    payload: ExpenseClaimKind;
+  }
   | {
-      action: ExpenseClaimAction["setFormData"];
-      payload: FormData;
-    }
+    action: ExpenseClaimAction["setFormData"];
+    payload: FormData;
+  }
   | {
-      action: ExpenseClaimAction["setIsSubmitting"];
-      payload: boolean;
-    }
+    action: ExpenseClaimAction["setIsSubmitting"];
+    payload: boolean;
+  }
   | {
-      action: ExpenseClaimAction["setIsSuccessful"];
-      payload: boolean;
-    }
+    action: ExpenseClaimAction["setIsSuccessful"];
+    payload: boolean;
+  }
   | {
-      action: ExpenseClaimAction["setPageInError"];
-      payload: SetPageInErrorPayload;
-    }
+    action: ExpenseClaimAction["setPageInError"];
+    payload: SetPageInErrorPayload;
+  }
   | {
-      action: ExpenseClaimAction["setTriggerFormSubmit"];
-      payload: boolean;
-    };
+    action: ExpenseClaimAction["setTriggerFormSubmit"];
+    payload: boolean;
+  };
 
 export type {
   ExpenseClaimAction,
   ExpenseClaimDispatch,
-  ExpenseClaimState,
   ExpenseClaimDocument,
   ExpenseClaimKind,
   ExpenseClaimSchema,
+  ExpenseClaimState,
 };

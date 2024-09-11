@@ -10,12 +10,6 @@ import { MantineSize } from "@mantine/core";
 import { ValidationKey } from "../constants/validations";
 
 import type {
-  Action,
-  ActionsCompany,
-  ActionsGeneral,
-  ActionsOutreach,
-} from "./actions.types";
-import type {
   CanadianPostalCode,
   Country,
   Department,
@@ -254,10 +248,6 @@ type UserRole = "admin" | "manager" | "employee";
 type RoleResourceRoutePaths = Record<UserRole, string>;
 
 export type {
-  Action,
-  ActionsCompany,
-  ActionsGeneral,
-  ActionsOutreach,
   AllowedFileEncodings,
   AllowedFileExtensions,
   AllowedFileMimeTypes,
