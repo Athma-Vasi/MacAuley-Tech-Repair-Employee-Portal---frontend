@@ -1,76 +1,29 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from "react";
+import type { DecodedToken } from "../../types";
+import type { AuthAction } from "./actions";
 
 type AuthState = {
   accessToken: string;
-  errorMessage: string;
-  isLoggedIn: boolean;
-  password: string;
-  roles: ('Admin' | 'Employee' | 'Manager')[];
-  sessionId: string;
-  userId: string;
-  username: string;
+  decodedToken: DecodedToken;
+  userDocument: Record<string, unknown>;
 };
 
 type AuthProviderProps = {
   children?: ReactNode;
 };
 
-type AuthAction = {
-  setAccessToken: 'setAccessToken';
-  setAllAuthState: 'setAllAuthState';
-  setErrorMessage: 'setErrorMessage';
-  setIsLoggedIn: 'setIsLoggedIn';
-  setPassword: 'setPassword';
-  setRoles: 'setRoles';
-  setSessionId: 'setSessionId';
-  setUserId: 'setUserId';
-  setUsername: 'setUsername';
-};
-
 type AuthDispatch =
   | {
-      type: AuthAction['setAccessToken'];
-      payload: string;
-    }
+    action: AuthAction["setAccessToken"];
+    payload: string;
+  }
   | {
-      type: AuthAction['setAllAuthState'];
-      payload: AuthState;
-    }
+    action: AuthAction["setDecodedToken"];
+    payload: DecodedToken;
+  }
   | {
-      type: AuthAction['setErrorMessage'];
-      payload: string;
-    }
-  | {
-      type: AuthAction['setIsLoggedIn'];
-      payload: boolean;
-    }
-  | {
-      type: AuthAction['setPassword'];
-      payload: string;
-    }
-  | {
-      type: AuthAction['setRoles'];
-      payload: ('Admin' | 'Employee' | 'Manager')[];
-    }
-  | {
-      type: AuthAction['setSessionId'];
-      payload: string;
-    }
-  | {
-      type: AuthAction['setUserId'];
-      payload: string;
-    }
-  | {
-      type: AuthAction['setUsername'];
-      payload: string;
-    };
+    action: AuthAction["setUserDocument"];
+    payload: Record<string, unknown>;
+  };
 
-type AuthReducer = (state: AuthState, action: AuthDispatch) => AuthState;
-
-export type {
-  AuthAction,
-  AuthDispatch,
-  AuthProviderProps,
-  AuthReducer,
-  AuthState,
-};
+export type { AuthDispatch, AuthProviderProps, AuthState };

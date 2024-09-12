@@ -8,71 +8,62 @@ import {
   Title,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import jwtDecode, { InvalidTokenError } from "jwt-decode";
-import { ChangeEvent, useEffect, useReducer, useRef } from "react";
+import { type ChangeEvent, useEffect, useReducer, useRef } from "react";
 import { useErrorBoundary } from "react-error-boundary";
 import { TbPassword, TbUser } from "react-icons/tb";
 import { Link, useNavigate } from "react-router-dom";
 
 import { COLORS_SWATCHES } from "../../constants/data";
-import { authAction } from "../../context/authProvider/state";
-import { globalAction } from "../../context/globalProvider/state";
+import { authAction } from "../../context/authProvider";
 import { useGlobalState } from "../../hooks";
 import { useAuth } from "../../hooks/useAuth";
 import { returnAccessibleButtonElements } from "../../jsxCreators";
-import { logState, returnThemeColors } from "../../utils";
+import {
+  decodeJWTSafe,
+  formSubmitPOSTSafe,
+  logState,
+  returnThemeColors,
+} from "../../utils";
 import { NotificationModal } from "../notificationModal";
-import { AccessibleButtonCreatorInfo } from "../wrappers";
-import { initialLoginState, loginAction, loginReducer } from "./state";
-import { DecodedToken, LoginResponse } from "./types";
-import { loginResponseSchema } from "./validations";
+import type { AccessibleButtonCreatorInfo } from "../wrappers";
+import { loginAction } from "./actions";
+import { LOGIN_ROUTE_PATHS } from "./constants";
+import { loginReducer } from "./reducers";
+import { initialLoginState } from "./state";
 
 function Login() {
-  /** ------------- begin hooks ------------- */
   const [loginState, loginDispatch] = useReducer(
     loginReducer,
     initialLoginState,
   );
   const {
-    username,
-    password,
-    triggerLoginSubmit,
-
+    isError,
     isLoading,
-    loadingMessage,
     isSubmitting,
-    submitMessage,
     isSuccessful,
-    successMessage,
+    password,
+    triggerFormSubmit,
+    username,
   } = loginState;
 
   const { authDispatch } = useAuth();
   const {
     globalState: { padding, rowGap, width, themeObject },
-    globalDispatch,
   } = useGlobalState();
   const navigate = useNavigate();
   const { showBoundary } = useErrorBoundary();
 
   const [
-    openedSubmitSuccessNotificationModal,
+    openedSubmitFormModal,
     {
-      open: openSubmitSuccessNotificationModal,
-      close: closeSubmitSuccessNotificationModal,
+      open: openSubmitFormModal,
+      close: closeSubmitFormModal,
     },
   ] = useDisclosure(false);
 
   const usernameRef = useRef<HTMLInputElement>(null);
-  // sets focus on username input on first render
   useEffect(() => {
     usernameRef.current?.focus();
-  }, []);
-
-  useEffect(() => {
-    loginDispatch({
-      type: loginAction.setIsLoading,
-      payload: false,
-    });
   }, []);
 
   useEffect(() => {
@@ -82,165 +73,111 @@ function Login() {
     });
   }, [loginState]);
 
+  const fetchAbortControllerRef = useRef<AbortController | null>(null);
+  const isComponentMountedRef = useRef(false);
+
   useEffect(() => {
-    let isMounted = true;
-    const controller = new AbortController();
+    fetchAbortControllerRef.current?.abort();
+    fetchAbortControllerRef.current = new AbortController();
+    const fetchAbortController = fetchAbortControllerRef.current;
+
+    isComponentMountedRef.current = true;
+    let isComponentMounted = isComponentMountedRef.current;
 
     async function loginFormSubmit() {
-      loginDispatch({
-        type: loginAction.setIsSubmitting,
-        payload: true,
-      });
-      loginDispatch({
-        type: loginAction.setSubmitMessage,
-        payload: "Logging in ...",
-      });
-      openSubmitSuccessNotificationModal();
+      const schema = { username, password };
 
-      const url: URL = new URL("http://localhost:5500/auth/login");
-      const body = JSON.stringify({ schema: { username, password } });
-
-      const request: Request = new Request(url.toString(), {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body,
-        credentials: "include",
-        signal: controller.signal,
+      const loginResult = await formSubmitPOSTSafe({
+        closeSubmitFormModal,
+        dispatch: loginDispatch,
+        fetchAbortController,
+        isComponentMounted,
+        isSubmittingAction: loginAction.setIsSubmitting,
+        isSuccessfulAction: loginAction.setIsSuccessful,
+        roleResourceRoutePaths: LOGIN_ROUTE_PATHS,
+        openSubmitFormModal,
+        roles: ["Employee"], // public route, no roles required
+        schema,
+        triggerFormSubmitAction: loginAction.setTriggerFormSubmit,
       });
 
-      try {
-        const response = await fetch(request);
-        const httpResponse: LoginResponse = await response.json();
-
-        const parsed = loginResponseSchema.parse(httpResponse);
-
-        console.log({ parsed });
-
-        const { data, accessToken, message } = parsed;
-        const userDocument = data[0];
-
-        if (!isMounted) {
-          return;
-        }
-        if (!response.ok) {
-          throw new Error(message);
-        }
-
-        if (!accessToken || !userDocument) {
-          throw new Error("Error logging in");
-        }
-
-        const decodedToken: DecodedToken = jwtDecode(accessToken);
-        const {
-          userInfo: { username, userId, roles },
-          sessionId,
-        } = decodedToken;
-
-        loginDispatch({
-          type: loginAction.setIsSuccessful,
-          payload: true,
-        });
-        loginDispatch({
-          type: loginAction.setSuccessMessage,
-          payload: "Login successful!",
-        });
-
-        // set all auth state upon login
-        authDispatch({
-          type: authAction.setAllAuthState,
-          payload: {
-            accessToken,
-            errorMessage: "",
-            isLoggedIn: true,
-            password,
-            roles,
-            sessionId,
-            userId,
-            username,
-          },
-        });
-
-        // set user document
-        globalDispatch({
-          type: globalAction.setUserDocument,
-          payload: userDocument,
-        });
-
-        navigate("/home");
-      } catch (error: any) {
-        if (!isMounted || error.name === "AbortError") {
-          return;
-        }
-
-        const errorMessage = error instanceof InvalidTokenError
-          ? "Invalid token. Please login again."
-          : !error.response
-          ? "Network error. Please try again."
-          : error?.message ?? "Unknown error occurred. Please try again.";
-
-        globalDispatch({
-          type: globalAction.setErrorState,
-          payload: {
-            isError: true,
-            errorMessage,
-            errorCallback: () => {
-              navigate("/login");
-
-              globalDispatch({
-                type: globalAction.setErrorState,
-                payload: {
-                  isError: false,
-                  errorMessage: "",
-                  errorCallback: () => {},
-                },
-              });
-            },
-          },
-        });
-
-        showBoundary(error);
-      } finally {
-        if (isMounted) {
-          loginDispatch({
-            type: loginAction.setTriggerLoginSubmit,
-            payload: false,
-          });
-          loginDispatch({
-            type: loginAction.setIsSubmitting,
-            payload: false,
-          });
-          loginDispatch({
-            type: loginAction.setSubmitMessage,
-            payload: "",
-          });
-          loginDispatch({
-            type: loginAction.setIsSuccessful,
-            payload: false,
-          });
-          loginDispatch({
-            type: loginAction.setSuccessMessage,
-            payload: "",
-          });
-          closeSubmitSuccessNotificationModal();
-        }
+      if (loginResult.err) {
+        showBoundary(loginResult.val.data);
+        return;
       }
+
+      const safeBox = loginResult.safeUnwrap();
+      if (safeBox.kind === "error") {
+        showBoundary(new Error("Error logging in"));
+        return;
+      }
+
+      const serverResponse = safeBox.data;
+      if (serverResponse === undefined) {
+        showBoundary(new Error("Network error"));
+        return;
+      }
+
+      const { accessToken } = serverResponse;
+
+      const decodedTokenResult = await decodeJWTSafe(accessToken);
+      if (decodedTokenResult.err) {
+        showBoundary(decodedTokenResult.val.data);
+        return;
+      }
+
+      const decodedToken = decodedTokenResult.safeUnwrap().data;
+      if (decodedToken === undefined) {
+        showBoundary(new Error("Invalid token"));
+        return;
+      }
+
+      authDispatch({
+        action: authAction.setAccessToken,
+        payload: accessToken,
+      });
+      authDispatch({
+        action: authAction.setDecodedToken,
+        payload: decodedToken,
+      });
+      authDispatch({
+        action: authAction.setUserDocument,
+        payload: serverResponse.data[0],
+      });
+
+      navigate("/home");
     }
 
-    if (triggerLoginSubmit) {
+    if (triggerFormSubmit) {
       loginFormSubmit();
     }
 
     return () => {
-      isMounted = false;
-      controller.abort();
+      isComponentMounted = false;
+      fetchAbortController.abort();
     };
-  }, [triggerLoginSubmit]);
+  }, [triggerFormSubmit]);
 
-  /** ------------- end hooks ------------- */
+  if (isSubmitting) {
+    const submittingState = (
+      <Stack>
+        <Text size="md">Submitting benefit! Please wait...</Text>
+      </Stack>
+    );
 
-  /** ------------- begin element creation ------------- */
+    return submittingState;
+  }
+
+  if (isSuccessful) {
+    const successfulState = (
+      <Stack>
+        <Text size="md">ExpenseClaim submitted successfully!</Text>
+      </Stack>
+    );
+
+    return successfulState;
+  }
+
   const usernameTextInput = (
     <TextInput
       aria-live="polite"
@@ -254,7 +191,7 @@ function Login() {
       value={username}
       onChange={(event: ChangeEvent<HTMLInputElement>) => {
         loginDispatch({
-          type: loginAction.setUsername,
+          action: loginAction.setUsername,
           payload: event.currentTarget.value,
         });
       }}
@@ -277,7 +214,7 @@ function Login() {
       value={password}
       onChange={(event: ChangeEvent<HTMLInputElement>) => {
         loginDispatch({
-          type: loginAction.setPassword,
+          action: loginAction.setPassword,
           payload: event.currentTarget.value,
         });
       }}
@@ -293,7 +230,7 @@ function Login() {
     buttonDisabled: isLoading,
     buttonOnClick: () => {
       loginDispatch({
-        type: loginAction.setTriggerLoginSubmit,
+        action: loginAction.setTriggerFormSubmit,
         payload: true,
       });
     },
@@ -302,9 +239,7 @@ function Login() {
   const createdLoginButton = returnAccessibleButtonElements([
     loginButtonCreatorInfo,
   ]);
-  /** ------------- end element creation ------------- */
 
-  /** ------------- begin component display ------------- */
   const {
     generalColors: { themeColorShade },
     appThemeColors: { backgroundColor },
@@ -357,11 +292,11 @@ function Login() {
 
   const displaySubmitSuccessNotificationModal = (
     <NotificationModal
-      onCloseCallbacks={[closeSubmitSuccessNotificationModal]}
-      opened={openedSubmitSuccessNotificationModal}
+      onCloseCallbacks={[closeSubmitFormModal]}
+      opened={openedSubmitFormModal}
       notificationProps={{
         loading: isSubmitting,
-        text: submitMessage,
+        text: "Login successful!",
       }}
       title={<Title order={4}>Submitting ...</Title>}
       withCloseButton={false}
@@ -384,7 +319,6 @@ function Login() {
       {displayLinkToRegister}
     </Flex>
   );
-  /** ------------- end component display ------------- */
 
   return (
     <Flex

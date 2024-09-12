@@ -1,15 +1,15 @@
-import { Currency, SetPageInErrorPayload } from "../../../types";
+import type { Currency, SetPageInErrorPayload } from "../../../types";
 import { expenseClaimAction } from "./actions";
-import {
+import type {
   ExpenseClaimAction,
   ExpenseClaimDispatch,
-  ExpenseClaimState,
   ExpenseClaimKind,
+  ExpenseClaimState,
 } from "./types";
 
 function expenseClaimReducer(
   state: ExpenseClaimState,
-  dispatch: ExpenseClaimDispatch
+  dispatch: ExpenseClaimDispatch,
 ): ExpenseClaimState {
   const reducer = expenseClaimReducersMap.get(dispatch.action);
   return reducer ? reducer(state, dispatch) : state;
@@ -17,31 +17,52 @@ function expenseClaimReducer(
 
 const expenseClaimReducersMap = new Map<
   ExpenseClaimAction[keyof ExpenseClaimAction],
-  (state: ExpenseClaimState, dispatch: ExpenseClaimDispatch) => ExpenseClaimState
+  (
+    state: ExpenseClaimState,
+    dispatch: ExpenseClaimDispatch,
+  ) => ExpenseClaimState
 >([
-  [expenseClaimAction.setAcknowledgement, expenseClaimReducer_setAcknowledgement],
-  [expenseClaimAction.setAdditionalComments, expenseClaimReducer_setAdditionalComments],
-  [expenseClaimAction.setExpenseClaimAmount, expenseClaimReducer_setExpenseClaimAmount],
+  [
+    expenseClaimAction.setAcknowledgement,
+    expenseClaimReducer_setAcknowledgement,
+  ],
+  [
+    expenseClaimAction.setAdditionalComments,
+    expenseClaimReducer_setAdditionalComments,
+  ],
+  [
+    expenseClaimAction.setExpenseClaimAmount,
+    expenseClaimReducer_setExpenseClaimAmount,
+  ],
   [
     expenseClaimAction.setExpenseClaimCurrency,
     expenseClaimReducer_setExpenseClaimCurrency,
   ],
-  [expenseClaimAction.setExpenseClaimDate, expenseClaimReducer_setExpenseClaimDate],
+  [
+    expenseClaimAction.setExpenseClaimDate,
+    expenseClaimReducer_setExpenseClaimDate,
+  ],
   [
     expenseClaimAction.setExpenseClaimDescription,
     expenseClaimReducer_setExpenseClaimDescription,
   ],
-  [expenseClaimAction.setExpenseClaimKind, expenseClaimReducer_setExpenseClaimKind],
+  [
+    expenseClaimAction.setExpenseClaimKind,
+    expenseClaimReducer_setExpenseClaimKind,
+  ],
   [expenseClaimAction.setFormData, expenseClaimReducer_setFormData],
   [expenseClaimAction.setIsSubmitting, expenseClaimReducer_setIsSubmitting],
   [expenseClaimAction.setIsSuccessful, expenseClaimReducer_setIsSuccessful],
   [expenseClaimAction.setPageInError, expenseClaimReducer_setStepsInError],
-  [expenseClaimAction.setTriggerFormSubmit, expenseClaimReducer_setTriggerFormSubmit],
+  [
+    expenseClaimAction.setTriggerFormSubmit,
+    expenseClaimReducer_setTriggerFormSubmit,
+  ],
 ]);
 
 function expenseClaimReducer_setAcknowledgement(
   state: ExpenseClaimState,
-  dispatch: ExpenseClaimDispatch
+  dispatch: ExpenseClaimDispatch,
 ): ExpenseClaimState {
   return {
     ...state,
@@ -51,7 +72,7 @@ function expenseClaimReducer_setAcknowledgement(
 
 function expenseClaimReducer_setAdditionalComments(
   state: ExpenseClaimState,
-  dispatch: ExpenseClaimDispatch
+  dispatch: ExpenseClaimDispatch,
 ): ExpenseClaimState {
   return {
     ...state,
@@ -61,7 +82,7 @@ function expenseClaimReducer_setAdditionalComments(
 
 function expenseClaimReducer_setExpenseClaimAmount(
   state: ExpenseClaimState,
-  dispatch: ExpenseClaimDispatch
+  dispatch: ExpenseClaimDispatch,
 ): ExpenseClaimState {
   return {
     ...state,
@@ -71,7 +92,7 @@ function expenseClaimReducer_setExpenseClaimAmount(
 
 function expenseClaimReducer_setExpenseClaimCurrency(
   state: ExpenseClaimState,
-  dispatch: ExpenseClaimDispatch
+  dispatch: ExpenseClaimDispatch,
 ): ExpenseClaimState {
   return {
     ...state,
@@ -81,7 +102,7 @@ function expenseClaimReducer_setExpenseClaimCurrency(
 
 function expenseClaimReducer_setExpenseClaimDate(
   state: ExpenseClaimState,
-  dispatch: ExpenseClaimDispatch
+  dispatch: ExpenseClaimDispatch,
 ): ExpenseClaimState {
   return {
     ...state,
@@ -91,7 +112,7 @@ function expenseClaimReducer_setExpenseClaimDate(
 
 function expenseClaimReducer_setExpenseClaimDescription(
   state: ExpenseClaimState,
-  dispatch: ExpenseClaimDispatch
+  dispatch: ExpenseClaimDispatch,
 ): ExpenseClaimState {
   return {
     ...state,
@@ -101,7 +122,7 @@ function expenseClaimReducer_setExpenseClaimDescription(
 
 function expenseClaimReducer_setExpenseClaimKind(
   state: ExpenseClaimState,
-  dispatch: ExpenseClaimDispatch
+  dispatch: ExpenseClaimDispatch,
 ): ExpenseClaimState {
   return {
     ...state,
@@ -111,7 +132,7 @@ function expenseClaimReducer_setExpenseClaimKind(
 
 function expenseClaimReducer_setFormData(
   state: ExpenseClaimState,
-  dispatch: ExpenseClaimDispatch
+  dispatch: ExpenseClaimDispatch,
 ): ExpenseClaimState {
   return {
     ...state,
@@ -121,7 +142,7 @@ function expenseClaimReducer_setFormData(
 
 function expenseClaimReducer_setIsSubmitting(
   state: ExpenseClaimState,
-  dispatch: ExpenseClaimDispatch
+  dispatch: ExpenseClaimDispatch,
 ): ExpenseClaimState {
   return {
     ...state,
@@ -131,7 +152,7 @@ function expenseClaimReducer_setIsSubmitting(
 
 function expenseClaimReducer_setIsSuccessful(
   state: ExpenseClaimState,
-  dispatch: ExpenseClaimDispatch
+  dispatch: ExpenseClaimDispatch,
 ): ExpenseClaimState {
   return {
     ...state,
@@ -141,7 +162,7 @@ function expenseClaimReducer_setIsSuccessful(
 
 function expenseClaimReducer_setStepsInError(
   state: ExpenseClaimState,
-  dispatch: ExpenseClaimDispatch
+  dispatch: ExpenseClaimDispatch,
 ): ExpenseClaimState {
   const { kind, page } = dispatch.payload as SetPageInErrorPayload;
   const pagesInError = new Set(state.pagesInError);
@@ -155,7 +176,7 @@ function expenseClaimReducer_setStepsInError(
 
 function expenseClaimReducer_setTriggerFormSubmit(
   state: ExpenseClaimState,
-  dispatch: ExpenseClaimDispatch
+  dispatch: ExpenseClaimDispatch,
 ): ExpenseClaimState {
   return {
     ...state,

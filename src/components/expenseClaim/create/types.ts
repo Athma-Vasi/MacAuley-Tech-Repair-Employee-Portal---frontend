@@ -1,5 +1,9 @@
-import { Currency, RequestStatus, SetPageInErrorPayload } from "../../../types";
-import { ExpenseClaimAction } from "./actions";
+import type {
+  Currency,
+  RequestStatus,
+  SetPageInErrorPayload,
+} from "../../../types";
+import type { ExpenseClaimAction } from "./actions";
 
 type ExpenseClaimKind =
   | "Communication and Utilities"

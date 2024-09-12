@@ -2,18 +2,18 @@ import html2canvas from "html2canvas";
 import jwtDecode from "jwt-decode";
 import { v4 as uuidv4 } from "uuid";
 
-import { DecodedToken } from "../components/login/types";
+import { Err, Ok } from "ts-results";
 import { ColorsSwatches, PROPERTY_DESCRIPTOR } from "../constants/data";
 import { ThemeObject } from "../context/globalProvider/types";
-import { FetchInterceptor } from "../hooks/useFetchInterceptor";
 import type {
   Country,
-  ErrorLogSchema,
-  GetQueriedResourceRequestServerResponse,
+  DecodedToken,
+  HttpServerResponse,
   PostalCode,
   QueryResponseData,
   RoleResourceRoutePaths,
-  UserRole,
+  SafeBoxResult,
+  UserRoles,
 } from "../types";
 
 /**
@@ -450,19 +450,21 @@ function returnDateNearFutureValidationText({
   const month = content.split("-")[1];
   const year = content.split("-")[0];
 
-  const isDayInPast = day ? parseInt(day) < new Date().getDate() : false;
+  const isDayInPast = day ? Number.parseInt(day) < new Date().getDate() : false;
   const isMonthInPast = month
-    ? parseInt(month) < new Date().getMonth() + 1
+    ? Number.parseInt(month) < new Date().getMonth() + 1
     : false;
-  const isYearInPast = year ? parseInt(year) < new Date().getFullYear() : false;
+  const isYearInPast = year
+    ? Number.parseInt(year) < new Date().getFullYear()
+    : false;
 
   const isEnteredYearMonthDayInPast = isYearInPast
-    ? isMonthInPast ? isDayInPast ? true : false : false
+    ? isMonthInPast && isDayInPast
     : false;
-  const isEnteredYearMonthInPast = isYearInPast
-    ? (isMonthInPast ? true : false)
+  const isEnteredYearMonthInPast = isYearInPast ? isMonthInPast : false;
+  const isEnteredDayInPast = day
+    ? Number.parseInt(day) < new Date().getDate()
     : false;
-  const isEnteredDayInPast = day ? parseInt(day) < new Date().getDate() : false;
 
   const dateValidationTupleArr: [boolean, string][] = [
     [
@@ -478,15 +480,15 @@ function returnDateNearFutureValidationText({
       "Must be a valid year between 2023 and 2026.",
     ],
     [
-      isEnteredYearMonthInPast && !isEnteredDayInPast ? false : true,
+      !(isEnteredYearMonthInPast && !isEnteredDayInPast),
       `Month of ${month} must be in the future.`,
     ],
     [
-      isEnteredDayInPast && !isEnteredYearMonthInPast ? false : true,
+      !(isEnteredDayInPast && !isEnteredYearMonthInPast),
       `Day of ${day} must be in the future.`,
     ],
     [
-      isEnteredYearMonthDayInPast ? false : true,
+      !isEnteredYearMonthDayInPast,
       `Date of ${content} must be in the future.`,
     ],
   ];
@@ -512,22 +514,22 @@ function returnDateNearPastValidationText({
   const month = content.split("-")[1];
   const year = content.split("-")[0];
 
-  const isDayInFuture = day ? parseInt(day) > new Date().getDate() : false;
+  const isDayInFuture = day
+    ? Number.parseInt(day) > new Date().getDate()
+    : false;
   const isMonthInFuture = month
-    ? parseInt(month) > new Date().getMonth() + 1
+    ? Number.parseInt(month) > new Date().getMonth() + 1
     : false;
   const isYearInFuture = year
-    ? parseInt(year) > new Date().getFullYear()
+    ? Number.parseInt(year) > new Date().getFullYear()
     : false;
 
   const isEnteredYearMonthDayInFuture = isYearInFuture
-    ? isMonthInFuture ? isDayInFuture ? true : false : false
+    ? isMonthInFuture && isDayInFuture
     : false;
-  const isEnteredYearMonthInFuture = isYearInFuture
-    ? isMonthInFuture ? true : false
-    : false;
+  const isEnteredYearMonthInFuture = isYearInFuture ? isMonthInFuture : false;
   const isEnteredDayInFuture = day
-    ? parseInt(day) > new Date().getDate()
+    ? Number.parseInt(day) > new Date().getDate()
     : false;
 
   const dateValidationTupleArr: [boolean, string][] = [
@@ -577,12 +579,14 @@ function returnDateFullRangeValidationText({
   const month = content.split("-")[1];
   const year = content.split("-")[0];
 
-  const isDayInFuture = day ? parseInt(day) > new Date().getDate() : false;
+  const isDayInFuture = day
+    ? Number.parseInt(day) > new Date().getDate()
+    : false;
   const isMonthInFuture = month
-    ? parseInt(month) > new Date().getMonth() + 1
+    ? Number.parseInt(month) > new Date().getMonth() + 1
     : false;
   const isYearInFuture = year
-    ? parseInt(year) > new Date().getFullYear()
+    ? Number.parseInt(year) > new Date().getFullYear()
     : false;
 
   const isEnteredYearMonthDayInFuture = isYearInFuture
@@ -592,7 +596,7 @@ function returnDateFullRangeValidationText({
     ? isMonthInFuture ? true : false
     : false;
   const isEnteredDayInFuture = day
-    ? parseInt(day) > new Date().getDate()
+    ? Number.parseInt(day) > new Date().getDate()
     : false;
 
   const dateValidationTupleArr: [boolean, string][] = [
@@ -670,12 +674,14 @@ function returnDateOfBirthValidationText({
   const month = content.split("-")[1];
   const year = content.split("-")[0];
 
-  const isDayInFuture = day ? parseInt(day) > new Date().getDate() : false;
+  const isDayInFuture = day
+    ? Number.parseInt(day) > new Date().getDate()
+    : false;
   const isMonthInFuture = month
-    ? parseInt(month) > new Date().getMonth() + 1
+    ? Number.parseInt(month) > new Date().getMonth() + 1
     : false;
   const isYearInFuture = year
-    ? parseInt(year) > new Date().getFullYear()
+    ? Number.parseInt(year) > new Date().getFullYear()
     : false;
 
   const isEnteredYearMonthDayInFuture = isYearInFuture
@@ -685,7 +691,7 @@ function returnDateOfBirthValidationText({
     ? isMonthInFuture ? true : false
     : false;
   const isEnteredDayInFuture = day
-    ? parseInt(day) > new Date().getDate()
+    ? Number.parseInt(day) > new Date().getDate()
     : false;
 
   const dateValidationTupleArr: [boolean, string][] = [
@@ -2247,7 +2253,7 @@ function flattenObjectIterative<
  * - only works on 1st level of object
  * - complexity: O(n^2)
  */
-function groupBy<T extends unknown = unknown>(
+function groupBy<T = unknown>(
   iterable: Iterable<T>,
   callbackFn: (value: T) => string | symbol,
 ) {
@@ -2649,7 +2655,7 @@ function returnSliderMarks({
     const valueFormatted = value.toFixed(precision);
 
     return {
-      value: parseInt(valueFormatted),
+      value: Number.parseInt(valueFormatted),
       label: `${valueFormatted}${symbol}`,
     };
   });
@@ -2737,176 +2743,170 @@ function returnTimeToRead(string: string) {
   return Math.ceil(textLength / wordsPerMinute);
 }
 
-type FormSubmitPOST<
-  IsSubmittingAction extends string = string,
-  IsSuccessfulAction extends string = string,
-> = {
-  /** dispatch function from component reducer */
-  dispatch: React.Dispatch<{
-    action: IsSubmittingAction | IsSuccessfulAction;
-    payload: boolean;
-  }>;
-  /** must be defined outside useEffect and inside component */
-  fetchAbortController: AbortController;
-  /** before request, function refreshes tokens and if refreshed, fetches request */
-  fetchInterceptor: FetchInterceptor;
-  /** must be defined outside useEffect and inside component */
-  isComponentMounted: boolean;
-  /** sets component submit state */
-  isSubmittingAction: IsSubmittingAction;
-  /** sets component success state */
-  isSuccessfulAction: IsSuccessfulAction;
-  /** must be defined outside useEffect and inside component */
-  preFetchAbortController: AbortController;
-  /** default : JSON.stringify({ [schemaName]: schema }) */
-  requestBody?: string;
-  /** backend resource route paths for each role */
-  roleResourceRoutePaths: RoleResourceRoutePaths;
-  /** must correspond to backend schema model */
-  schema: Record<string, unknown>;
-  /** must correspond to name defined in backend POST request type. typically '${component}Schema' */
-  schemaName: string;
-  /** from auth state */
-  sessionId: string;
-  /** from react-error-boundary  */
-  showBoundary: (error: any) => void;
-  /** from auth state */
-  userId: string;
-  /** from auth state */
-  username: string;
-  /** user role found in auth state */
-  userRole: UserRole;
-};
-
-async function formSubmitPOST<
-  IsSubmittingAction extends string = string,
-  IsSuccessfulAction extends string = string,
->({
-  dispatch,
-  fetchAbortController,
-  fetchInterceptor,
-  isComponentMounted,
-  isSubmittingAction,
-  isSuccessfulAction,
-  preFetchAbortController,
-  requestBody,
-  roleResourceRoutePaths,
-  schema,
-  schemaName,
-  sessionId,
-  showBoundary,
-  userId,
-  username,
-  userRole,
-}: FormSubmitPOST<IsSubmittingAction, IsSuccessfulAction>): Promise<void> {
+async function decodeJWTSafe<Decoded extends DecodedToken = DecodedToken>(
+  token: string,
+): Promise<SafeBoxResult<Decoded>> {
   try {
-    dispatch({
-      action: isSubmittingAction,
-      payload: true,
-    });
+    const decoded: Decoded = jwtDecode(token);
+    return new Ok({ data: decoded, kind: "success" });
+  } catch (error: unknown) {
+    return new Err({ data: error, kind: "error" });
+  }
+}
 
-    const url: URL = urlBuilder({ path: roleResourceRoutePaths[userRole] });
+async function formSubmitPOSTSafe<
+  DBRecord = Record<string, unknown> & {
+    _id: string;
+    createdAt: string;
+    updatedAt: string;
+    __v: number;
+  },
+  IsSubmittingAction extends string = string,
+  IsSuccessfulAction extends string = string,
+  TriggerFormSubmitAction extends string = string,
+>(
+  {
+    accessToken = "",
+    closeSubmitFormModal,
+    dispatch,
+    fetchAbortController,
+    isComponentMounted,
+    isSubmittingAction,
+    isSuccessfulAction,
+    openSubmitFormModal,
+    requestBody,
+    roleResourceRoutePaths,
+    roles,
+    schema,
+    triggerFormSubmitAction,
+  }: {
+    accessToken?: string;
+    closeSubmitFormModal: () => void;
+    dispatch: React.Dispatch<{
+      action: IsSubmittingAction | IsSuccessfulAction | TriggerFormSubmitAction;
+      payload: boolean;
+    }>;
+    /** must be defined outside useEffect and inside component */
+    fetchAbortController: AbortController;
+    /** must be defined outside useEffect and inside component */
+    isComponentMounted: boolean;
+    isSubmittingAction: IsSubmittingAction;
+    isSuccessfulAction: IsSuccessfulAction;
+    openSubmitFormModal: () => void;
+    requestBody?: string;
+    roleResourceRoutePaths: RoleResourceRoutePaths;
+    roles: UserRoles;
+    schema: Record<string, unknown>;
+    triggerFormSubmitAction: TriggerFormSubmitAction;
+  },
+): Promise<SafeBoxResult<HttpServerResponse<DBRecord>>> {
+  openSubmitFormModal();
 
-    const body = requestBody ??
-      JSON.stringify({
-        [schemaName]: schema,
-      });
+  dispatch({
+    action: isSubmittingAction,
+    payload: true,
+  });
 
-    const requestInit: RequestInit = {
-      body,
-      headers: { "Content-Type": "application/json" },
-      method: "POST",
-    };
+  const userRole = roles.includes("Manager")
+    ? "manager"
+    : roles.includes("Admin")
+    ? "admin"
+    : "employee";
+  const url: URL = urlBuilder({ path: roleResourceRoutePaths[userRole] });
 
-    const response: Response = await fetchInterceptor({
-      fetchAbortController,
-      preFetchAbortController,
-      requestInit,
-      url,
-    });
+  const body = requestBody ??
+    JSON.stringify({ schema });
+
+  const requestInit: RequestInit = {
+    body,
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`,
+    },
+    method: "POST",
+    signal: fetchAbortController.signal,
+  };
+
+  try {
+    const response: Response = await fetch(url.toString(), requestInit);
 
     if (!isComponentMounted) {
-      return;
+      return new Ok({ kind: "error" });
     }
 
     if (!response.ok) {
-      const { status, statusText } = response;
-
-      const errorLogSchema: ErrorLogSchema = {
-        message: statusText,
-        requestBody: body,
-        sessionId,
-        stack: "",
-        status,
-        timestamp: new Date().toISOString(),
-        userId,
-        username,
-      };
-
-      console.log("errorLogSchema inside try", errorLogSchema);
-
-      // throw new Error(JSON.stringify(errorLogSchema));
-      return Promise.reject(errorLogSchema);
-
-      // if (status === 401) {
-      // throw new Error("Unauthorized");
-      // }
-      // throw new Error(`${status} : ${statusText}`);
+      return new Ok({ kind: "error", message: response.statusText });
     }
+
+    const serverResponse: HttpServerResponse<DBRecord> = await response.json();
 
     dispatch({
       action: isSuccessfulAction,
       payload: true,
     });
-
     dispatch({
       action: isSubmittingAction,
       payload: false,
     });
-  } catch (error: any) {
-    console.log("formSubmitPOST", error);
+    dispatch({
+      action: triggerFormSubmitAction,
+      payload: false,
+    });
 
-    if (!isComponentMounted || error?.name === "AbortError") {
-      return;
+    return new Ok({ data: serverResponse, kind: "success" });
+  } catch (error: unknown) {
+    if (
+      !isComponentMounted ||
+      error instanceof Error && error?.name === "AbortError"
+    ) {
+      return new Ok({ kind: "error" });
     }
 
-    showBoundary(error);
+    return new Err({ data: error, kind: "error" });
+  } finally {
+    closeSubmitFormModal();
   }
 }
 
-async function fetchResourceGET<
+async function fetchResourceGETSafe<
   SetIsLoadingAction extends string = string,
   SetLoadingMessageAction extends string = string,
   SetResourceDataAction extends string = string,
   SetTotalDocumentsAction extends string = string,
   SetTotalPagesAction extends string = string,
-  Data extends Record<string, unknown> = Record<string, unknown>,
+  TriggerFormSubmitAction extends string = string,
+  DBRecord = Record<string, unknown> & {
+    _id: string;
+    createdAt: string;
+    updatedAt: string;
+    __v: number;
+  },
 >({
+  accessToken = "",
+  closeSubmitFormModal,
   fetchAbortController,
-  fetchInterceptor,
   isComponentMounted,
   loadingMessage,
+  openSubmitFormModal,
   parentDispatch,
-  preFetchAbortController,
   roleResourceRoutePaths,
-  sessionId,
-  setResourceDataAction,
+  roles,
   setIsLoadingAction,
   setLoadingMessageAction,
+  setResourceDataAction,
   setTotalDocumentsAction,
   setTotalPagesAction,
-  showBoundary,
-  userId,
-  userRole,
-  username,
+  triggerFormSubmitAction,
 }: {
+  accessToken?: string;
+  closeSubmitFormModal: () => void;
   fetchAbortController: AbortController;
-  fetchInterceptor: FetchInterceptor;
   isComponentMounted: boolean;
   loadingMessage: string;
+  openSubmitFormModal: () => void;
   parentDispatch: React.Dispatch<
     | {
-      action: SetIsLoadingAction;
+      action: SetIsLoadingAction | TriggerFormSubmitAction;
       payload: boolean;
     }
     | {
@@ -2915,148 +2915,134 @@ async function fetchResourceGET<
     }
     | {
       action: SetResourceDataAction;
-      payload: Array<QueryResponseData<Data>>;
+      payload: Array<DBRecord>;
     }
     | {
       action: SetTotalDocumentsAction | SetTotalPagesAction;
       payload: number;
     }
   >;
-  preFetchAbortController: AbortController;
   roleResourceRoutePaths: RoleResourceRoutePaths;
-  sessionId: string;
+  roles: UserRoles;
   setResourceDataAction: SetResourceDataAction;
   setIsLoadingAction: SetIsLoadingAction;
   setLoadingMessageAction: SetLoadingMessageAction;
   setTotalDocumentsAction: SetTotalDocumentsAction;
   setTotalPagesAction: SetTotalPagesAction;
-  showBoundary: (error: any) => void;
-  userId: string;
-  userRole: UserRole;
-  username: string;
-}) {
+  triggerFormSubmitAction: TriggerFormSubmitAction;
+}): Promise<SafeBoxResult<HttpServerResponse<DBRecord>>> {
+  openSubmitFormModal();
+
+  parentDispatch({
+    action: setLoadingMessageAction,
+    payload: loadingMessage,
+  });
+
+  const userRole = roles.includes("Manager")
+    ? "manager"
+    : roles.includes("Admin")
+    ? "admin"
+    : "employee";
+  const url: URL = urlBuilder({ path: roleResourceRoutePaths[userRole] });
+
+  const requestInit: RequestInit = {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`,
+    },
+    method: "GET",
+    signal: fetchAbortController.signal,
+  };
+
   try {
-    parentDispatch({
-      action: setLoadingMessageAction,
-      payload: loadingMessage,
-    });
-
-    const url: URL = urlBuilder({ path: roleResourceRoutePaths[userRole] });
-
-    const requestInit: RequestInit = {
-      headers: { "Content-Type": "application/json" },
-      method: "GET",
-    };
-
-    const response: Response = await fetchInterceptor({
-      fetchAbortController,
-      preFetchAbortController,
-      requestInit,
-      url,
-    });
-
-    console.group("fetchResourceGET");
-    console.log("response", response);
-    console.groupEnd();
+    const response: Response = await fetch(url.toString(), requestInit);
 
     if (!isComponentMounted) {
-      return;
+      return new Ok({ kind: "error" });
     }
 
     if (!response.ok) {
-      const { status, statusText } = response;
-
-      const errorLogSchema: ErrorLogSchema = {
-        message: statusText,
-        requestBody: "",
-        sessionId,
-        stack: "",
-        status,
-        timestamp: new Date().toISOString(),
-        userId,
-        username,
-      };
-
-      console.log("errorLogSchema inside try", errorLogSchema);
-
-      // throw new Error(JSON.stringify(errorLogSchema));
-      return Promise.reject(errorLogSchema);
-
-      // if (status === 401) {
-      // throw new Error("Unauthorized");
-      // }
-      // throw new Error(`${status} : ${statusText}`);
+      return new Ok({ kind: "error", message: response.statusText });
     }
 
-    const {
-      pages,
-      resourceData,
-      totalDocuments,
-    }: GetQueriedResourceRequestServerResponse<Data> = await response.json();
+    const serverResponse: HttpServerResponse<DBRecord> = await response
+      .json();
 
     parentDispatch({
       action: setResourceDataAction,
-      payload: resourceData,
+      payload: serverResponse.data,
     });
-
     parentDispatch({
       action: setTotalDocumentsAction,
-      payload: totalDocuments,
+      payload: serverResponse.totalDocuments,
     });
-
     parentDispatch({
       action: setTotalPagesAction,
-      payload: pages,
+      payload: serverResponse.pages,
     });
-
     parentDispatch({
       action: setIsLoadingAction,
       payload: false,
     });
-  } catch (error: any) {
-    console.log("fetchResourceGet", error);
-    if (!isComponentMounted || error?.name === "AbortError") {
-      return;
+    parentDispatch({
+      action: triggerFormSubmitAction,
+      payload: false,
+    });
+
+    return new Ok({ kind: "success" });
+  } catch (error: unknown) {
+    if (
+      !isComponentMounted ||
+      error instanceof Error && error?.name === "AbortError"
+    ) {
+      return new Ok({ kind: "error" });
     }
 
-    showBoundary(error);
+    return new Err({ data: error, kind: "error" });
+  } finally {
+    closeSubmitFormModal();
   }
 }
 
-async function fetchResourcePATCH<
+async function fetchResourcePATCHSafe<
   SetIsSubmittingAction extends string = string,
   SetSubmittingMessageAction extends string = string,
   SetResourceDataAction extends string = string,
   SetTotalDocumentsAction extends string = string,
   SetTotalPagesAction extends string = string,
-  Data extends Record<string, unknown> = Record<string, unknown>,
+  DBRecord = Record<string, unknown> & {
+    _id: string;
+    createdAt: string;
+    updatedAt: string;
+    __v: number;
+  },
+  TriggerFormSubmitAction extends string = string,
 >({
+  accessToken = "",
+  closeSubmitFormModal,
   fetchAbortController,
-  fetchInterceptor,
   isComponentMounted,
+  openSubmitFormModal,
   parentDispatch,
-  preFetchAbortController,
   requestBody,
   roleResourceRoutePaths,
-  sessionId,
+  roles,
   setIsSubmittingAction,
   setResourceDataAction,
   setSubmittingMessageAction,
   setTotalDocumentsAction,
   setTotalPagesAction,
-  showBoundary,
-  submittingMessage,
-  userId,
-  userRole,
-  username,
+  submitMessage,
+  triggerFormSubmitAction,
 }: {
+  accessToken?: string;
+  closeSubmitFormModal: () => void;
   fetchAbortController: AbortController;
-  fetchInterceptor: FetchInterceptor;
   isComponentMounted: boolean;
-  submittingMessage: string;
+  openSubmitFormModal: () => void;
   parentDispatch: React.Dispatch<
     | {
-      action: SetIsSubmittingAction;
+      action: SetIsSubmittingAction | TriggerFormSubmitAction;
       payload: boolean;
     }
     | {
@@ -3065,109 +3051,95 @@ async function fetchResourcePATCH<
     }
     | {
       action: SetResourceDataAction;
-      payload: Array<QueryResponseData<Data>>;
+      payload: Array<DBRecord>;
     }
     | {
       action: SetTotalDocumentsAction | SetTotalPagesAction;
       payload: number;
     }
   >;
-  preFetchAbortController: AbortController;
   requestBody: string;
   roleResourceRoutePaths: RoleResourceRoutePaths;
-  sessionId: string;
-  setResourceDataAction: SetResourceDataAction;
+  roles: UserRoles;
   setIsSubmittingAction: SetIsSubmittingAction;
+  setResourceDataAction: SetResourceDataAction;
   setSubmittingMessageAction: SetSubmittingMessageAction;
   setTotalDocumentsAction: SetTotalDocumentsAction;
   setTotalPagesAction: SetTotalPagesAction;
-  showBoundary: (error: any) => void;
-  userId: string;
-  userRole: UserRole;
-  username: string;
-}) {
+  submitMessage: string;
+  triggerFormSubmitAction: TriggerFormSubmitAction;
+}): Promise<SafeBoxResult<HttpServerResponse<DBRecord>>> {
+  openSubmitFormModal();
+
+  parentDispatch({
+    action: setSubmittingMessageAction,
+    payload: submitMessage,
+  });
+
+  const userRole = roles.includes("Manager")
+    ? "manager"
+    : roles.includes("Admin")
+    ? "admin"
+    : "employee";
+  const url: URL = urlBuilder({ path: roleResourceRoutePaths[userRole] });
+
+  const requestInit: RequestInit = {
+    body: requestBody,
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`,
+    },
+    method: "PATCH",
+    signal: fetchAbortController.signal,
+  };
+
   try {
-    parentDispatch({
-      action: setSubmittingMessageAction,
-      payload: submittingMessage,
-    });
-
-    const url: URL = urlBuilder({ path: roleResourceRoutePaths[userRole] });
-
-    const requestInit: RequestInit = {
-      body: requestBody,
-      headers: { "Content-Type": "application/json" },
-      method: "PATCH",
-    };
-
-    const response: Response = await fetchInterceptor({
-      fetchAbortController,
-      preFetchAbortController,
-      requestInit,
-      url,
-    });
+    const response: Response = await fetch(url.toString(), requestInit);
 
     if (!isComponentMounted) {
-      return;
+      return new Ok({ kind: "error" });
     }
 
     if (!response.ok) {
-      const { status, statusText } = response;
-
-      const errorLogSchema: ErrorLogSchema = {
-        message: statusText,
-        requestBody,
-        sessionId,
-        stack: "",
-        status,
-        timestamp: new Date().toISOString(),
-        userId,
-        username,
-      };
-
-      console.log("errorLogSchema inside try", errorLogSchema);
-
-      // throw new Error(JSON.stringify(errorLogSchema));
-      return Promise.reject(errorLogSchema);
-
-      // if (status === 401) {
-      // throw new Error("Unauthorized");
-      // }
-      // throw new Error(`${status} : ${statusText}`);
+      return new Ok({ kind: "error", message: response.statusText });
     }
 
-    const {
-      pages,
-      resourceData,
-      totalDocuments,
-    }: GetQueriedResourceRequestServerResponse<Data> = await response.json();
+    const serverResponse: HttpServerResponse<DBRecord> = await response
+      .json();
 
     parentDispatch({
       action: setResourceDataAction,
-      payload: resourceData,
+      payload: serverResponse.data,
     });
-
     parentDispatch({
       action: setTotalDocumentsAction,
-      payload: totalDocuments,
+      payload: serverResponse.totalDocuments,
     });
-
     parentDispatch({
       action: setTotalPagesAction,
-      payload: pages,
+      payload: serverResponse.pages,
     });
-
     parentDispatch({
       action: setIsSubmittingAction,
       payload: false,
     });
-  } catch (error: any) {
-    console.log("fetchResourcePATCH", error);
-    if (!isComponentMounted || error?.name === "AbortError") {
-      return;
+    parentDispatch({
+      action: triggerFormSubmitAction,
+      payload: false,
+    });
+
+    return new Ok({ kind: "success" });
+  } catch (error: unknown) {
+    if (
+      !isComponentMounted ||
+      error instanceof Error && error?.name === "AbortError"
+    ) {
+      return new Ok({ kind: "error" });
     }
 
-    showBoundary(error);
+    return new Err({ data: error, kind: "error" });
+  } finally {
+    closeSubmitFormModal();
   }
 }
 
@@ -3177,11 +3149,13 @@ export {
   capitalizeAll,
   capitalizeJoinWithAnd,
   captureScreenshot,
-  fetchResourceGET,
+  decodeJWTSafe,
+  fetchResourceGETSafe,
+  fetchResourcePATCHSafe,
   filterFieldsFromObject,
   flattenObjectIterative,
   formatDate,
-  formSubmitPOST,
+  formSubmitPOSTSafe,
   groupBy,
   groupByField,
   groupQueryResponse,

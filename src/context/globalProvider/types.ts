@@ -1,4 +1,4 @@
-import {
+import type {
   ContextStylesParams,
   CSSObject,
   MantineColor,
@@ -6,22 +6,22 @@ import {
   MantineTheme,
   MantineThemeOverride,
 } from "@mantine/core";
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 
-import { AnnouncementDocument } from "../../components/announcement/create/types";
-import { BarChartData } from "../../components/charts/responsiveBarChart/types";
-import { CalendarChartData } from "../../components/charts/responsiveCalendarChart/types";
-import { LineChartData } from "../../components/charts/responsiveLineChart/types";
-import { PieChartData } from "../../components/charts/responsivePieChart/types";
-import { RadialBarChartData } from "../../components/charts/responsiveRadialBarChart/types";
-import { SunburstChartData } from "../../components/charts/responsiveSunburstChart/types";
-import { NivoChartUnitKind } from "../../components/charts/types";
-import {
+import type { AnnouncementDocument } from "../../components/announcement/create/types";
+import type { BarChartData } from "../../components/charts/responsiveBarChart/types";
+import type { CalendarChartData } from "../../components/charts/responsiveCalendarChart/types";
+import type { LineChartData } from "../../components/charts/responsiveLineChart/types";
+import type { PieChartData } from "../../components/charts/responsivePieChart/types";
+import type { RadialBarChartData } from "../../components/charts/responsiveRadialBarChart/types";
+import type { SunburstChartData } from "../../components/charts/responsiveSunburstChart/types";
+import type { NivoChartUnitKind } from "../../components/charts/types";
+import type {
   ScrollAxesDirection,
   ScrollXDirection,
   ScrollYDirection,
 } from "../../hooks/useScrollDirection";
-import { QueryResponseData, UserDocument } from "../../types";
+import type { QueryResponseData, UserDocument } from "../../types";
 
 type ColorScheme = "light" | "dark";
 type Shade = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;

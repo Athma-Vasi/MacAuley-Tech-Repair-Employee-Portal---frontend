@@ -5,10 +5,11 @@
 /**
  * Imports
  */
-import { MantineSize } from "@mantine/core";
+import type { MantineSize } from "@mantine/core";
 
-import { ValidationKey } from "../constants/validations";
+import type { ValidationKey } from "../constants/validations";
 
+import type { Result } from "ts-results";
 import type {
   CanadianPostalCode,
   Country,
@@ -247,6 +248,37 @@ type UserRole = "admin" | "manager" | "employee";
 
 type RoleResourceRoutePaths = Record<UserRole, string>;
 
+type DecodedToken = {
+  userInfo: {
+    userId: string;
+    username: string;
+    roles: ("Admin" | "Employee" | "Manager")[];
+  };
+  sessionId: string;
+  iat: number;
+  exp: number;
+  jti: string;
+};
+
+type HttpServerResponse<Data = unknown> = {
+  accessToken: string;
+  data: Array<Data>;
+  kind: "error" | "success";
+  message: string;
+  pages: number;
+  status: number;
+  totalDocuments: number;
+  triggerLogout: boolean;
+};
+
+type SafeBox<Data = unknown> = {
+  data?: Data;
+  kind: "error" | "notFound" | "success";
+  message?: string;
+};
+
+type SafeBoxResult<Data = unknown> = Result<SafeBox<Data>, SafeBox>;
+
 export type {
   AllowedFileEncodings,
   AllowedFileExtensions,
@@ -258,6 +290,7 @@ export type {
   CheckboxRadioSelectData,
   Country,
   Currency,
+  DecodedToken,
   Department,
   DocumentUpdateOperation,
   ErrorLogSchema,
@@ -265,6 +298,7 @@ export type {
   FileUploadDocument,
   FileUploadSchema,
   GetQueriedResourceRequestServerResponse,
+  HttpServerResponse,
   InputType,
   JobPosition,
   PhoneNumber,
@@ -277,6 +311,8 @@ export type {
   ResourceRequestServerResponse,
   ResourceRoutePaths,
   RoleResourceRoutePaths,
+  SafeBox,
+  SafeBoxResult,
   ScreenshotImageType,
   SetPageInErrorPayload,
   SetStepsInErrorPayload,

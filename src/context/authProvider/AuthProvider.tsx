@@ -1,7 +1,7 @@
-import { createContext, useMemo,useReducer } from 'react';
-
-import { authReducer, initialAuthState } from './state';
-import { AuthDispatch, AuthProviderProps, AuthState } from './types';
+import { createContext, useMemo, useReducer } from "react";
+import { authReducer } from "./reducers";
+import { initialAuthState } from "./state";
+import type { AuthDispatch, AuthProviderProps, AuthState } from "./types";
 
 const AuthContext = createContext<{
   authState: AuthState;
@@ -16,7 +16,7 @@ function AuthProvider({ children }: AuthProviderProps) {
 
   const authContextValue = useMemo(
     () => ({ authState, authDispatch }),
-    [authState, authDispatch]
+    [authState, authDispatch],
   );
 
   return (

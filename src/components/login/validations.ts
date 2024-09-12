@@ -9,7 +9,7 @@ import {
     StatesUSZodEnum,
     StorelocationZodEnum,
     UserRolesZodEnum,
-} from "../../validations";
+} from "../../parse";
 
 const loginResponseSchema = z.object({
     accessToken: z.string(),

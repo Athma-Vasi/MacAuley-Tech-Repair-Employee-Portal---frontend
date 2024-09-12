@@ -1,4 +1,4 @@
-import { ValidationFunctionsTable } from "../../types";
+import type { ValidationFunctionsTable } from "../../types";
 
 type ValidationKey =
   | "objectKey"
@@ -83,7 +83,10 @@ const VALIDATION_FUNCTIONS_TABLE: ValidationFunctionsTable = {
       return /^(true)$/.test(value);
     },
 
-    partials: [[/^(true)$/, "Must acknowledge that the information entered is correct."]],
+    partials: [[
+      /^(true)$/,
+      "Must acknowledge that the information entered is correct.",
+    ]],
   },
 
   addressLine: {
@@ -220,9 +223,10 @@ const VALIDATION_FUNCTIONS_TABLE: ValidationFunctionsTable = {
        * - (0[1-9]|[12][0-9]|3[01]) day: matches either 0 followed by a digit between 1 and 9, or 1 or 2 followed by a digit between 0 and 9, or 3 followed by a digit between 0 and 1.
        * - ^ and $ ensure that the entire string matches the regex.
        */
-      return /^(?:19[0-9][0-9]|20[0-1][0-9]|202[0-4])-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])/.test(
-        value
-      );
+      return /^(?:19[0-9][0-9]|20[0-1][0-9]|202[0-4])-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])/
+        .test(
+          value,
+        );
     },
 
     partials: [
@@ -249,9 +253,10 @@ const VALIDATION_FUNCTIONS_TABLE: ValidationFunctionsTable = {
        */
 
       const isDateInPast = new Date(value) > new Date();
-      const isStringValid = /^(?:202[4-6])-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])/.test(
-        value
-      );
+      const isStringValid =
+        /^(?:202[4-6])-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])/.test(
+          value,
+        );
       return isDateInPast && isStringValid;
     },
 
@@ -282,9 +287,10 @@ const VALIDATION_FUNCTIONS_TABLE: ValidationFunctionsTable = {
        * - (0[1-9]|[12][0-9]|3[01]) day: matches either 0 followed by a digit between 1 and 9, or 1 or 2 followed by a digit between 0 and 9, or 3 followed by a digit between 0 and 1.
        * - ^ and $ ensure that the entire string matches the regex.
        */
-      return /^(?:19[0-9][0-9]|20[0-9][0-9]|202[0-6])-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])/.test(
-        value
-      );
+      return /^(?:19[0-9][0-9]|20[0-9][0-9]|202[0-6])-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])/
+        .test(
+          value,
+        );
     },
 
     partials: [
@@ -310,9 +316,10 @@ const VALIDATION_FUNCTIONS_TABLE: ValidationFunctionsTable = {
        * - ^ and $ ensure that the entire string matches the regex.
        */
       const isDateInFuture = new Date(value) < new Date();
-      const isStringValid = /^(?:202[0-4])-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])/.test(
-        value
-      );
+      const isStringValid =
+        /^(?:202[0-4])-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])/.test(
+          value,
+        );
       return isDateInFuture && isStringValid;
     },
 
@@ -354,16 +361,19 @@ const VALIDATION_FUNCTIONS_TABLE: ValidationFunctionsTable = {
       return (
         date < now &&
         age >= 18 &&
-        /^(?:19[0-9][0-9]|20[0-1][0-9]|202[0-3])-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])/.test(
-          value
-        )
+        /^(?:19[0-9][0-9]|20[0-1][0-9]|202[0-3])-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])/
+          .test(
+            value,
+          )
       );
     },
 
     partials: [
       [
         /^(?:19[0-9][0-9]|20[0-1][0-9]|202[0-3])$/,
-        `Must be a valid year in the range 1900-${new Date().getFullYear() - 18}.`,
+        `Must be a valid year in the range 1900-${
+          new Date().getFullYear() - 18
+        }.`,
       ],
       [/-(0[1-9]|1[0-2])-/, "Must be a valid month in the range 01-12."],
       [/-(0[1-9]|[12][0-9]|3[01])$/, "Must be a valid day in the range 01-31."],
@@ -461,14 +471,18 @@ const VALIDATION_FUNCTIONS_TABLE: ValidationFunctionsTable = {
        * - )*  Ends the non-capturing group for the optional subdomains. This allows for zero or more occurrences of subdomain sections.
        */
 
-      return /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/.test(
-        value
-      );
+      return /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/
+        .test(
+          value,
+        );
     },
 
     partials: [
       [/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+$/, "Must be a valid username."],
-      [/^[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?$/, "Must be a valid domain name."],
+      [
+        /^[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?$/,
+        "Must be a valid domain name.",
+      ],
       [
         /^\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?$/,
         "Must be a valid subdomain.",
@@ -518,9 +532,10 @@ const VALIDATION_FUNCTIONS_TABLE: ValidationFunctionsTable = {
        * - ^ and $ ensure that the entire string matches the regex.
        * - ex: 20Hz-20kHz or 20 Hz - 20 kHz or 20 Hz-20 kHz or 20Hz - 20kHz
        */
-      return /^[0-9]{1,2}[\s]{0,1}Hz[\s]{0,1}-[\s]{0,1}[0-9]{1,2}[\s]{0,1}kHz$/.test(
-        value
-      );
+      return /^[0-9]{1,2}[\s]{0,1}Hz[\s]{0,1}-[\s]{0,1}[0-9]{1,2}[\s]{0,1}kHz$/
+        .test(
+          value,
+        );
     },
 
     partials: [
@@ -709,9 +724,10 @@ const VALIDATION_FUNCTIONS_TABLE: ValidationFunctionsTable = {
        * - .{8,32} ensures that the password is between 8 and 32 characters long.
        * - ^ and $ ensure that the entire string matches the regex.
        */
-      return /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*])(?!.*\s).{8,32}$/.test(
-        value
-      );
+      return /^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[!@#$%^&*])(?!.*\s).{8,32}$/
+        .test(
+          value,
+        );
     },
     partials: [
       [/^.{8,32}$/i, "Must be between 8 and 32 characters."],
@@ -735,12 +751,18 @@ const VALIDATION_FUNCTIONS_TABLE: ValidationFunctionsTable = {
       return /^(?=.*[A-Za-z0-9])[\w\s.,!?():;"'-]{1,300}$/i.test(value);
     },
     partials: [
-      [/^(?=.*[A-Za-z0-9])/, "Must contain at least one alphanumeric character."],
+      [
+        /^(?=.*[A-Za-z0-9])/,
+        "Must contain at least one alphanumeric character.",
+      ],
       [
         /^[\w\s.,!?():;"'-]+$/,
         "Must contain only letters, numbers, spaces, and special characters.",
       ],
-      [/[\w\s.,!?():;"'-]{1,300}$/, "Must be between 1 and 300 characters length."],
+      [
+        /[\w\s.,!?():;"'-]{1,300}$/,
+        "Must be between 1 and 300 characters length.",
+      ],
     ],
   },
 
@@ -757,12 +779,18 @@ const VALIDATION_FUNCTIONS_TABLE: ValidationFunctionsTable = {
     },
 
     partials: [
-      [/^(?=.*[A-Za-z0-9])/, "Must contain at least one alphanumeric character."],
+      [
+        /^(?=.*[A-Za-z0-9])/,
+        "Must contain at least one alphanumeric character.",
+      ],
       [
         /^[\w\s.,!?():;"'-]+$/,
         "Must contain only letters, numbers, spaces, and special characters.",
       ],
-      [/[\w\s.,!?():;"'-]{1,50}$/, "Must be between 1 and 50 characters length."],
+      [
+        /[\w\s.,!?():;"'-]{1,50}$/,
+        "Must be between 1 and 50 characters length.",
+      ],
     ],
   },
 
@@ -789,7 +817,10 @@ const VALIDATION_FUNCTIONS_TABLE: ValidationFunctionsTable = {
 
     partials: [
       [/^[A-Za-z]\d[A-Za-z]$/, "Must be in the format A1A."],
-      [/^[A-Za-z]\d[A-Za-z][ ]?\d[A-Za-z]\d$/, "Must be in the format A1A 1A1."],
+      [
+        /^[A-Za-z]\d[A-Za-z][ ]?\d[A-Za-z]\d$/,
+        "Must be in the format A1A 1A1.",
+      ],
       [/^[A-Za-z0-9]+$/, "Must only contain letters and numbers."],
     ],
   },
@@ -870,7 +901,8 @@ const VALIDATION_FUNCTIONS_TABLE: ValidationFunctionsTable = {
        * - ^ and $ ensure that the entire string matches the regex.
        * - ex: 16-18-18-38
        */
-      return /^[0-9]{1,3}[-]{1}[0-9]{1,3}[-]{1}[0-9]{1,3}[-]{1}[0-9]{1,3}$/.test(value);
+      return /^[0-9]{1,3}[-]{1}[0-9]{1,3}[-]{1}[0-9]{1,3}[-]{1}[0-9]{1,3}$/
+        .test(value);
     },
 
     partials: [
@@ -994,7 +1026,10 @@ const VALIDATION_FUNCTIONS_TABLE: ValidationFunctionsTable = {
     },
 
     partials: [
-      [/^(?=.*[A-Za-z0-9])/, "Must contain at least one alphanumeric character."],
+      [
+        /^(?=.*[A-Za-z0-9])/,
+        "Must contain at least one alphanumeric character.",
+      ],
       [/^.{2,2000}$/, "Must be between 2 and 2000 characters length."],
       [
         /^[\w\s.,!?():;"'-]+$/,
@@ -1017,7 +1052,10 @@ const VALIDATION_FUNCTIONS_TABLE: ValidationFunctionsTable = {
 
     partials: [
       [/^.{4,5}$/i, "Must be between 4 and 5 characters long."],
-      [/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/, "Must be a valid time in 24-hour format."],
+      [
+        /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/,
+        "Must be a valid time in 24-hour format.",
+      ],
     ],
   },
 
@@ -1035,9 +1073,10 @@ const VALIDATION_FUNCTIONS_TABLE: ValidationFunctionsTable = {
        * - ([-a-zA-Z0-9()@:%_+.~#?&//=]*) matches any letter, number, or symbol in the brackets, between 0 and infinity times.
        */
 
-      return /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/.test(
-        value
-      );
+      return /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/
+        .test(
+          value,
+        );
     },
 
     partials: [
@@ -1059,13 +1098,17 @@ const VALIDATION_FUNCTIONS_TABLE: ValidationFunctionsTable = {
        * - {2,2000} ensures that the text is between 2 and 2000 characters long.
        * - ^ and $ ensure that the entire string matches the regex.
        */
-      return /^(?!^\s*$)[a-zA-Z0-9!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~\w\s]{2,2000}$/i.test(
-        value
-      );
+      return /^(?!^\s*$)[a-zA-Z0-9!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~\w\s]{2,2000}$/i
+        .test(
+          value,
+        );
     },
 
     partials: [
-      [/^(?!^\s*$)/, "Must not be empty or consist entirely of whitespace characters."],
+      [
+        /^(?!^\s*$)/,
+        "Must not be empty or consist entirely of whitespace characters.",
+      ],
       [
         /^[a-zA-Z0-9!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]+$/,
         "Must contain only alphanumeric characters and special characters.",
@@ -1101,7 +1144,8 @@ const VALIDATION_FUNCTIONS_TABLE: ValidationFunctionsTable = {
        * - (?<![-_.]) ensures that the username does not end with a hyphen, underscore, or period.
        * - ^ and $ ensure that the entire string matches the regex.
        */
-      return /^(?=.{3,20}$)(?![-_.])(?!.*[-_.]{2})[a-zA-Z0-9-_.]+(?<![-_.])$/.test(value);
+      return /^(?=.{3,20}$)(?![-_.])(?!.*[-_.]{2})[a-zA-Z0-9-_.]+(?<![-_.])$/
+        .test(value);
     },
 
     partials: [

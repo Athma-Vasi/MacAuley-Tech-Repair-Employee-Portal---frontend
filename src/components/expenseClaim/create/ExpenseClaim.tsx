@@ -5,7 +5,7 @@ import { useErrorBoundary } from "react-error-boundary";
 import { CURRENCY_DATA } from "../../../constants/data";
 import { useAuth } from "../../../hooks";
 import { useFetchInterceptor } from "../../../hooks/useFetchInterceptor";
-import { Currency, StepperPage } from "../../../types";
+import type { Currency, StepperPage } from "../../../types";
 import { formSubmitPOST, logState } from "../../../utils";
 import { AccessibleButton } from "../../accessibleInputs/AccessibleButton";
 import { AccessibleDateTimeInput } from "../../accessibleInputs/AccessibleDateTimeInput";
@@ -20,15 +20,15 @@ import {
   EXPENSE_CLAIM_ROLE_PATHS,
   returnExpenseClaimStepperPages,
 } from "../constants";
-import { ExpenseClaimAction, expenseClaimAction } from "./actions";
+import { type ExpenseClaimAction, expenseClaimAction } from "./actions";
 import { expenseClaimReducer } from "./reducers";
 import { initialExpenseClaimState } from "./state";
-import { ExpenseClaimKind, ExpenseClaimSchema } from "./types";
+import type { ExpenseClaimKind, ExpenseClaimSchema } from "./types";
 
 function ExpenseClaim() {
   const [expenseClaimState, expenseClaimDispatch] = useReducer(
     expenseClaimReducer,
-    initialExpenseClaimState
+    initialExpenseClaimState,
   );
 
   const {
@@ -47,7 +47,7 @@ function ExpenseClaim() {
   } = expenseClaimState;
 
   const {
-    authState: { sessionId, userId, username },
+    authState: { decodedToken: { userInfo: { userId, username }, sessionId } },
   } = useAuth();
   const { fetchInterceptor } = useFetchInterceptor();
   const { showBoundary } = useErrorBoundary();
@@ -66,7 +66,7 @@ function ExpenseClaim() {
     const preFetchAbortController = preFetchAbortControllerRef.current;
 
     isComponentMountedRef.current = true;
-    let isComponentMounted = isComponentMountedRef.current;
+    const isComponentMounted = isComponentMountedRef.current;
 
     if (triggerFormSubmit) {
       const expenseClaimSchema: ExpenseClaimSchema = {
@@ -138,10 +138,14 @@ function ExpenseClaim() {
     return successfulState;
   }
 
-  const EXPENSE_CLAIM_STEPPER_PAGES: StepperPage[] = returnExpenseClaimStepperPages();
+  const EXPENSE_CLAIM_STEPPER_PAGES: StepperPage[] =
+    returnExpenseClaimStepperPages();
 
   const expenseClaimKindSelectInput = (
-    <AccessibleSelectInput<ExpenseClaimAction["setExpenseClaimKind"], ExpenseClaimKind>
+    <AccessibleSelectInput<
+      ExpenseClaimAction["setExpenseClaimKind"],
+      ExpenseClaimKind
+    >
       attributes={{
         data: EXPENSE_CLAIM_KIND_DATA,
         name: "expenseClaimKind",
@@ -153,7 +157,10 @@ function ExpenseClaim() {
   );
 
   const expenseClaimCurrencySelectInput = (
-    <AccessibleSelectInput<ExpenseClaimAction["setExpenseClaimCurrency"], Currency>
+    <AccessibleSelectInput<
+      ExpenseClaimAction["setExpenseClaimCurrency"],
+      Currency
+    >
       attributes={{
         data: CURRENCY_DATA,
         name: "expenseClaimCurrency",

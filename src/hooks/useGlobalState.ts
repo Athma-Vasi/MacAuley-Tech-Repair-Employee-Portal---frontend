@@ -1,7 +1,10 @@
-import { useContext } from 'react';
+import { useContext } from "react";
 
-import { GlobalContext } from '../context/globalProvider/GlobalProvider';
-import { GlobalDispatch, GlobalState } from '../context/globalProvider/types';
+import { GlobalContext } from "../context/globalProvider/GlobalProvider";
+import type {
+  GlobalDispatch,
+  GlobalState,
+} from "../context/globalProvider/types";
 
 function useGlobalState(): {
   globalState: GlobalState;
