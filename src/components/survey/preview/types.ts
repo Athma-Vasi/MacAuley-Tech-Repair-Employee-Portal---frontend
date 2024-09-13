@@ -1,6 +1,5 @@
-import { SetStepsInErrorPayload } from "../../../types";
-import { DescriptionObjectsArray } from "../../wrappers";
-import { SurveyQuestions } from "../create/types";
+import type { SetStepsInErrorPayload } from "../../../types";
+import type { SurveyQuestions } from "../create/types";
 
 type PreviewSurveyProps = {
   surveyTitle: string;
@@ -44,47 +43,47 @@ type PreviewSurveyAction = {
 
 type PreviewSurveyDispatch =
   | {
-      type: PreviewSurveyAction["setSurveyQuestions"];
-      payload: SurveyQuestions[];
-    }
+    type: PreviewSurveyAction["setSurveyQuestions"];
+    payload: SurveyQuestions[];
+  }
   | {
-      type: PreviewSurveyAction["setSurveyResponsesArray"];
-      payload: {
-        question: string;
-        response: string | string[] | number;
-      };
-    }
-  | {
-      type: PreviewSurveyAction["setQuestionsResponseInputMap"];
-      payload: Map<string, string>;
-    }
-  | {
-      type: PreviewSurveyAction["setQuestionsResponseDataOptionsMap"];
-      payload: Map<string, string[]>;
-    }
-  | {
-      type: PreviewSurveyAction["setGenericProps"];
-      payload: {
-        question: string;
-        rating: number;
-      };
-    }
-  | {
-      type: PreviewSurveyAction["setStepperDescriptionsArray"];
-      payload: DescriptionObjectsArray;
-    }
-  | {
-      type: PreviewSurveyAction["setCurrentStepperPosition"];
-      payload: number;
-    }
-  | {
-      type: PreviewSurveyAction["setPageInError"];
-      payload: SetStepsInErrorPayload;
+    type: PreviewSurveyAction["setSurveyResponsesArray"];
+    payload: {
+      question: string;
+      response: string | string[] | number;
     };
+  }
+  | {
+    type: PreviewSurveyAction["setQuestionsResponseInputMap"];
+    payload: Map<string, string>;
+  }
+  | {
+    type: PreviewSurveyAction["setQuestionsResponseDataOptionsMap"];
+    payload: Map<string, string[]>;
+  }
+  | {
+    type: PreviewSurveyAction["setGenericProps"];
+    payload: {
+      question: string;
+      rating: number;
+    };
+  }
+  | {
+    type: PreviewSurveyAction["setStepperDescriptionsArray"];
+    payload: DescriptionObjectsArray;
+  }
+  | {
+    type: PreviewSurveyAction["setCurrentStepperPosition"];
+    payload: number;
+  }
+  | {
+    type: PreviewSurveyAction["setPageInError"];
+    payload: SetStepsInErrorPayload;
+  };
 
 type PreviewSurveyReducer = (
   state: PreviewSurveyState,
-  action: PreviewSurveyDispatch
+  action: PreviewSurveyDispatch,
 ) => PreviewSurveyState;
 
 export type {
