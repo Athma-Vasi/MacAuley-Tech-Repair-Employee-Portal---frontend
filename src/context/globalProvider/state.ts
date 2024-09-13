@@ -1,29 +1,18 @@
-import {
-  GlobalAction,
-  GlobalDispatch,
-  GlobalState,
-  ThemeObject,
-} from "./types";
+import type { GlobalState, ThemeObject } from "./types";
 
 const initialThemeObject: ThemeObject = {
   colorScheme: "light",
   respectReducedMotion: true,
-
   // white: '#f8f9fa', // gray.0
-  // black: '#212529', // gray.9
   white: "#f5f5f5",
+  // black: '#212529', // gray.9
   black: "#25262b",
-
   primaryColor: "cyan",
   primaryShade: { light: 5, dark: 7 },
-
   defaultGradient: { deg: 45, from: "blue", to: "cyan" },
-
   fontFamily: "sans-serif",
-
   components: {
     Button: {
-      // Variants<'filled' | 'outline' | 'light' | 'white' | 'default' | 'subtle' | 'gradient'>
       defaultProps: {
         variant: "light",
       },
@@ -45,23 +34,9 @@ const initialThemeObject: ThemeObject = {
 const initialGlobalState: GlobalState = {
   width: 0,
   height: 0,
-  rowGap: "xs",
-  padding: "xs",
-  scrollXDirection: "neutral",
-  scrollYDirection: "neutral",
-
   themeObject: initialThemeObject,
-
-  userDocument: null,
   announcementDocument: null,
   isPrefersReducedMotion: false,
-
-  errorState: {
-    isError: false,
-    errorMessage: "",
-    errorCallback: () => {},
-  },
-
   customizeChartsPageData: {
     chartData: [],
     chartKind: "bar",
@@ -69,239 +44,6 @@ const initialGlobalState: GlobalState = {
     chartUnitKind: "currency",
     selectedYYYYMMDD: new Date().toISOString().slice(0, 10),
   },
-
-  componentsErrorState: new Map(),
 };
 
-const globalAction: GlobalAction = {
-  setWidth: "setWidth",
-  setHeight: "setHeight",
-  setRowGap: "setRowGap",
-  setPadding: "setPadding",
-  setWindowSize: "setWindowSize",
-  setScrollAxesDirection: "setScrollAxesDirection",
-
-  // mantine theme object
-  setRespectReducedMotion: "setRespectReducedMotion",
-  setColorScheme: "setColorScheme",
-  setPrimaryColor: "setPrimaryColor",
-  setPrimaryShade: "setPrimaryShade",
-  setDefaultGradient: "setDefaultGradient",
-  setFontFamily: "setFontFamily",
-  setComponents: "setComponents",
-
-  setUserDocument: "setUserDocument",
-  setAnnouncementDocument: "setAnnouncementDocument",
-  setPrefersReducedMotion: "setPrefersReducedMotion",
-
-  setErrorState: "setErrorState",
-  setCustomizeChartsPageData: "setCustomizeChartsPageData",
-  setCustomizeChartsPageDataSelectedYYYYMMDD:
-    "setCustomizeChartsPageDataSelectedYYYYMMDD",
-
-  // error state
-  setComponentsErrorState: "setComponentsErrorState",
-};
-
-function globalReducer(
-  state: GlobalState,
-  action: GlobalDispatch,
-): GlobalState {
-  switch (action.type) {
-    case globalAction.setWidth:
-      return { ...state, width: action.payload };
-    case globalAction.setHeight:
-      return { ...state, height: action.payload };
-    case globalAction.setRowGap:
-      return { ...state, rowGap: action.payload };
-    case globalAction.setPadding:
-      return { ...state, padding: action.payload };
-    case globalAction.setWindowSize: {
-      const { width, height } = action.payload;
-      return { ...state, width, height };
-    }
-    case globalAction.setScrollAxesDirection: {
-      const { scrollXDirection, scrollYDirection } = action.payload;
-      return { ...state, scrollXDirection, scrollYDirection };
-    }
-
-    // mantine theme object
-    case globalAction.setRespectReducedMotion:
-      return {
-        ...state,
-        themeObject: {
-          ...state.themeObject,
-          respectReducedMotion: action.payload,
-        },
-      };
-    case globalAction.setColorScheme: {
-      const colorScheme = action.payload;
-      const { components } = state.themeObject;
-      const { Button, Text, Title } = components;
-
-      // set button variant
-      const { defaultProps } = Button;
-      const newButtonDefaultProps = {
-        ...defaultProps,
-        variant: colorScheme === "dark" ? "outline" : "light",
-      };
-
-      // set text color
-      const { defaultProps: textDefaultProps } = Text;
-      const newTextDefaultProps = {
-        ...textDefaultProps,
-        color: colorScheme === "dark" ? "gray.5" : "gray.8",
-      };
-
-      // set title color
-      const { defaultProps: titleDefaultProps } = Title;
-      const newTitleDefaultProps = {
-        ...titleDefaultProps,
-        color: colorScheme === "dark" ? "dark.1" : "dark.4",
-      };
-
-      return {
-        ...state,
-        themeObject: {
-          ...state.themeObject,
-          colorScheme,
-          components: {
-            ...components,
-            Button: {
-              ...Button,
-              defaultProps: newButtonDefaultProps,
-            },
-            Text: {
-              ...Text,
-              defaultProps: newTextDefaultProps,
-            },
-            Title: {
-              ...Title,
-              defaultProps: newTitleDefaultProps,
-            },
-          },
-        },
-      };
-    }
-    case globalAction.setPrimaryColor:
-      return {
-        ...state,
-        themeObject: {
-          ...state.themeObject,
-          primaryColor: action.payload,
-        },
-      };
-    case globalAction.setPrimaryShade:
-      return {
-        ...state,
-        themeObject: {
-          ...state.themeObject,
-          primaryShade: action.payload,
-        },
-      };
-    case globalAction.setDefaultGradient:
-      return {
-        ...state,
-        themeObject: {
-          ...state.themeObject,
-          defaultGradient: action.payload,
-        },
-      };
-    case globalAction.setFontFamily:
-      return {
-        ...state,
-        themeObject: {
-          ...state.themeObject,
-          fontFamily: action.payload,
-        },
-      };
-    case globalAction.setComponents:
-      return {
-        ...state,
-        themeObject: {
-          ...state.themeObject,
-          components: action.payload,
-        },
-      };
-
-    // documents
-    case globalAction.setUserDocument:
-      return { ...state, userDocument: action.payload };
-    case globalAction.setAnnouncementDocument:
-      return { ...state, announcementDocument: action.payload };
-    case globalAction.setPrefersReducedMotion:
-      return { ...state, isPrefersReducedMotion: action.payload };
-
-    // error state
-    case globalAction.setErrorState:
-      return { ...state, errorState: action.payload };
-
-    // customize charts page data
-    case globalAction.setCustomizeChartsPageData: {
-      const customizeChartsPageData = action.payload;
-      const existingYYYYMMDD =
-        state.customizeChartsPageData?.selectedYYYYMMDD ??
-          new Date().toISOString().slice(0, 10);
-
-      let [existingYYYY, existingMM, existingDD] = existingYYYYMMDD.split("-");
-      existingMM = existingMM.padStart(2, "0");
-      existingDD = existingDD.padStart(2, "0");
-
-      return {
-        ...state,
-        customizeChartsPageData: {
-          ...customizeChartsPageData,
-          selectedYYYYMMDD: `${existingYYYY}-${existingMM}-${existingDD}`,
-        },
-      };
-    }
-
-    case globalAction.setCustomizeChartsPageDataSelectedYYYYMMDD: {
-      const { customizeChartsPageData } = state;
-      if (!customizeChartsPageData) return state;
-
-      const clonedCustomizeChartsPageData = structuredClone(
-        customizeChartsPageData,
-      );
-      clonedCustomizeChartsPageData.selectedYYYYMMDD = action.payload;
-
-      return {
-        ...state,
-        customizeChartsPageData: clonedCustomizeChartsPageData,
-      };
-    }
-
-    // error state
-    case globalAction.setComponentsErrorState: {
-      const { componentsErrorState } = state;
-      const { componentName, beforeErrorState, kind } = action.payload;
-
-      switch (kind) {
-        case "add": {
-          const clonedComponentsErrorState = new Map(componentsErrorState);
-          clonedComponentsErrorState.set(componentName, beforeErrorState);
-
-          return {
-            ...state,
-            componentsErrorState: clonedComponentsErrorState,
-          };
-        }
-        // case 'remove'
-        default: {
-          const clonedComponentsErrorState = new Map(componentsErrorState);
-          clonedComponentsErrorState.delete(componentName);
-
-          return {
-            ...state,
-            componentsErrorState: clonedComponentsErrorState,
-          };
-        }
-      }
-    }
-
-    default:
-      return state;
-  }
-}
-
-export { globalAction, globalReducer, initialGlobalState };
+export { initialGlobalState };

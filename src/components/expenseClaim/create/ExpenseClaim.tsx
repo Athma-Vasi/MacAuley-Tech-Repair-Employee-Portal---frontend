@@ -97,7 +97,7 @@ function ExpenseClaim() {
             roles,
             triggerFormSubmitAction: expenseClaimAction.setTriggerFormSubmit,
             accessToken,
-            // TODO: add dynamic url
+            // TODO: change to actual url
             customUrl: "http://localhost:3000/api/v1/file-upload",
           });
 

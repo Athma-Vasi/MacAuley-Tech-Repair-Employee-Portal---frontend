@@ -1,11 +1,17 @@
-import { ModifiedFile, OriginalFile } from "../AccessibleFileInput";
-import { DynamicSliderInputPayload } from "../AccessibleSliderInput";
-import { AccessibleImageInputAction, accessibleImageInputAction } from "./actions";
-import { AccessibleImageInputDispatch, AccessibleImageInputState } from "./types";
+import type { ModifiedFile, OriginalFile } from "../AccessibleFileInput";
+import type { DynamicSliderInputPayload } from "../AccessibleSliderInput";
+import {
+  type AccessibleImageInputAction,
+  accessibleImageInputAction,
+} from "./actions";
+import type {
+  AccessibleImageInputDispatch,
+  AccessibleImageInputState,
+} from "./types";
 
 function accessibleImageInputReducer(
   state: AccessibleImageInputState,
-  dispatch: AccessibleImageInputDispatch
+  dispatch: AccessibleImageInputDispatch,
 ): AccessibleImageInputState {
   const reducer = accessibleImageInputReducersMap.get(dispatch.action);
   return reducer ? reducer(state, dispatch) : state;
@@ -15,14 +21,17 @@ const accessibleImageInputReducersMap = new Map<
   AccessibleImageInputAction[keyof AccessibleImageInputAction],
   (
     state: AccessibleImageInputState,
-    dispatch: AccessibleImageInputDispatch
+    dispatch: AccessibleImageInputDispatch,
   ) => AccessibleImageInputState
 >([
   [
     accessibleImageInputAction.addImageFileBlob,
     accessibleImageInputReducer_addImageFileBlob,
   ],
-  [accessibleImageInputAction.addFileName, accessibleImageInputReducer_addFileName],
+  [
+    accessibleImageInputAction.addFileName,
+    accessibleImageInputReducer_addFileName,
+  ],
   [
     accessibleImageInputAction.setCurrentImageIndex,
     accessibleImageInputReducer_setCurrentImageIndex,
@@ -39,8 +48,14 @@ const accessibleImageInputReducersMap = new Map<
     accessibleImageInputAction.setImageFileBlobs,
     accessibleImageInputReducer_setImageFileBlobs,
   ],
-  [accessibleImageInputAction.setIsLoading, accessibleImageInputReducer_setIsLoading],
-  [accessibleImageInputAction.setQualities, accessibleImageInputReducer_setQualities],
+  [
+    accessibleImageInputAction.setIsLoading,
+    accessibleImageInputReducer_setIsLoading,
+  ],
+  [
+    accessibleImageInputAction.setQualities,
+    accessibleImageInputReducer_setQualities,
+  ],
   [
     accessibleImageInputAction.setOrientations,
     accessibleImageInputReducer_setOrientations,
@@ -49,7 +64,7 @@ const accessibleImageInputReducersMap = new Map<
 
 function accessibleImageInputReducer_addImageFileBlob(
   state: AccessibleImageInputState,
-  dispatch: AccessibleImageInputDispatch
+  dispatch: AccessibleImageInputDispatch,
 ): AccessibleImageInputState {
   const fileBlob = dispatch.payload as ModifiedFile;
   const imageFileBlobs = structuredClone(state.imageFileBlobs);
@@ -63,7 +78,7 @@ function accessibleImageInputReducer_addImageFileBlob(
 
 function accessibleImageInputReducer_addFileName(
   state: AccessibleImageInputState,
-  dispatch: AccessibleImageInputDispatch
+  dispatch: AccessibleImageInputDispatch,
 ): AccessibleImageInputState {
   const fileName = dispatch.payload as string;
 
@@ -75,7 +90,7 @@ function accessibleImageInputReducer_addFileName(
 
 function accessibleImageInputReducer_setCurrentImageIndex(
   state: AccessibleImageInputState,
-  dispatch: AccessibleImageInputDispatch
+  dispatch: AccessibleImageInputDispatch,
 ): AccessibleImageInputState {
   return {
     ...state,
@@ -85,7 +100,7 @@ function accessibleImageInputReducer_setCurrentImageIndex(
 
 function accessibleImageInputReducer_removeImageFileBlob(
   state: AccessibleImageInputState,
-  dispatch: AccessibleImageInputDispatch
+  dispatch: AccessibleImageInputDispatch,
 ): AccessibleImageInputState {
   const index = dispatch.payload as number;
   const imageFileBlobs = structuredClone(state.imageFileBlobs);
@@ -111,7 +126,7 @@ function accessibleImageInputReducer_removeImageFileBlob(
 
 function accessibleImageInputReducer_resetImageFileBlob(
   state: AccessibleImageInputState,
-  dispatch: AccessibleImageInputDispatch
+  dispatch: AccessibleImageInputDispatch,
 ): AccessibleImageInputState {
   const { index, value } = dispatch.payload as {
     index: number;
@@ -135,7 +150,7 @@ function accessibleImageInputReducer_resetImageFileBlob(
 
 function accessibleImageInputReducer_setImageFileBlobs(
   state: AccessibleImageInputState,
-  dispatch: AccessibleImageInputDispatch
+  dispatch: AccessibleImageInputDispatch,
 ): AccessibleImageInputState {
   const { fileBlob, index } = dispatch.payload as {
     index: number;
@@ -153,7 +168,7 @@ function accessibleImageInputReducer_setImageFileBlobs(
 
 function accessibleImageInputReducer_setIsLoading(
   state: AccessibleImageInputState,
-  dispatch: AccessibleImageInputDispatch
+  dispatch: AccessibleImageInputDispatch,
 ): AccessibleImageInputState {
   return {
     ...state,
@@ -163,7 +178,7 @@ function accessibleImageInputReducer_setIsLoading(
 
 function accessibleImageInputReducer_setQualities(
   state: AccessibleImageInputState,
-  dispatch: AccessibleImageInputDispatch
+  dispatch: AccessibleImageInputDispatch,
 ): AccessibleImageInputState {
   const { index, value } = dispatch.payload as DynamicSliderInputPayload;
   const qualities = state.qualities.slice();
@@ -178,7 +193,7 @@ function accessibleImageInputReducer_setQualities(
 
 function accessibleImageInputReducer_setOrientations(
   state: AccessibleImageInputState,
-  dispatch: AccessibleImageInputDispatch
+  dispatch: AccessibleImageInputDispatch,
 ): AccessibleImageInputState {
   const { index, value } = dispatch.payload as DynamicSliderInputPayload;
   const orientations = state.orientations.slice();

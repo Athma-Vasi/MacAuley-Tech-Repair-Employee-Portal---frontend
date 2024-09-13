@@ -1,11 +1,11 @@
 import { Card, Flex, Stack, Text } from "@mantine/core";
-import Tree, { CustomNodeElementProps, Point } from "react-d3-tree";
+import Tree, { type CustomNodeElementProps, type Point } from "react-d3-tree";
 
 import { useCenteredTree } from "../../hooks";
 import { AccessibleButton } from "../accessibleInputs/AccessibleButton";
 import { GoldenGrid } from "../accessibleInputs/GoldenGrid";
 import { ImageWrapper } from "../wrappers";
-import { D3TreeInput } from "./utils";
+import type { D3TreeInput } from "./utils";
 
 function renderForeignObjectNode({
   nodeDatum,
@@ -57,9 +57,13 @@ function renderForeignObjectNode({
       {Object.entries(nodeDatum.attributes).map(([key, value], index) => {
         const disallowedKeysSet = new Set(["profilePictureUrl", "nodeColor"]);
 
-        return disallowedKeysSet.has(key) ? null : (
-          <Text key={`${key}-${value}-${index}`}>{value as string}</Text>
-        );
+        return disallowedKeysSet.has(key)
+          ? null
+          : (
+            <Text key={`${key}-${value}-${index.toString()}`}>
+              {value as string}
+            </Text>
+          );
       })}
     </Flex>
   );
@@ -103,7 +107,12 @@ function renderForeignObjectNode({
 function D3Tree({ data }: { data: Array<D3TreeInput> }) {
   const [translate, containerRef] = useCenteredTree();
   const nodeSize = { x: 400, y: 400 };
-  const foreignObjectProps = { width: nodeSize.x, height: nodeSize.y, x: 15, y: 15 };
+  const foreignObjectProps = {
+    width: nodeSize.x,
+    height: nodeSize.y,
+    x: 15,
+    y: 15,
+  };
   const containerStyles = { width: "100vw", height: "100vh" };
 
   return (
@@ -113,8 +122,7 @@ function D3Tree({ data }: { data: Array<D3TreeInput> }) {
         nodeSize={nodeSize}
         orientation="vertical"
         renderCustomNodeElement={(rd3tProps: CustomNodeElementProps) =>
-          renderForeignObjectNode({ ...rd3tProps, foreignObjectProps })
-        }
+          renderForeignObjectNode({ ...rd3tProps, foreignObjectProps })}
         translate={translate as Point}
       />
     </div>

@@ -2,7 +2,6 @@ import type {
   ContextStylesParams,
   CSSObject,
   MantineColor,
-  MantineSize,
   MantineTheme,
   MantineThemeOverride,
 } from "@mantine/core";
@@ -16,12 +15,8 @@ import type { PieChartData } from "../../components/charts/responsivePieChart/ty
 import type { RadialBarChartData } from "../../components/charts/responsiveRadialBarChart/types";
 import type { SunburstChartData } from "../../components/charts/responsiveSunburstChart/types";
 import type { NivoChartUnitKind } from "../../components/charts/types";
-import type {
-  ScrollAxesDirection,
-  ScrollXDirection,
-  ScrollYDirection,
-} from "../../hooks/useScrollDirection";
-import type { QueryResponseData, UserDocument } from "../../types";
+import type { WindowSize } from "../../hooks/useWindowSize";
+import type { QueryResponseData } from "../../types";
 
 type ColorScheme = "light" | "dark";
 type Shade = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
@@ -84,12 +79,6 @@ interface ThemeObject extends MantineThemeOverride {
   };
 }
 
-type ErrorState = {
-  isError: boolean;
-  errorMessage: string;
-  errorCallback: () => void;
-};
-
 type CustomizeChartsPageData =
   & {
     chartTitle: string;
@@ -123,150 +112,65 @@ type CustomizeChartsPageData =
     }
   );
 
-// Map of components with their before error states
-type ComponentsErrorState = Map<string, Record<string, any>>;
-type ComponentsErrorStatePayload = {
-  componentName: string;
-  beforeErrorState: Record<string, any>;
-  kind: "add" | "remove";
-};
-
 type GlobalState = {
-  width: number;
-  height: number;
-  rowGap: MantineSize;
-  padding: "xs" | "sm" | "md";
-  scrollXDirection: ScrollXDirection;
-  scrollYDirection: ScrollYDirection;
-
-  // mantine theme object
-  themeObject: ThemeObject;
-
-  userDocument: Omit<UserDocument, "password"> | null;
   announcementDocument: QueryResponseData<AnnouncementDocument> | null;
-  isPrefersReducedMotion: boolean;
-  errorState: ErrorState;
-
   customizeChartsPageData: CustomizeChartsPageData | null;
-
-  // error state
-  componentsErrorState: ComponentsErrorState;
-};
-
-type GlobalAction = {
-  setWidth: "setWidth";
-  setHeight: "setHeight";
-  setRowGap: "setRowGap";
-  setPadding: "setPadding";
-  setWindowSize: "setWindowSize";
-  setScrollAxesDirection: "setScrollAxesDirection";
-
-  // mantine theme object
-  setRespectReducedMotion: "setRespectReducedMotion";
-  setColorScheme: "setColorScheme";
-  setPrimaryColor: "setPrimaryColor";
-  setPrimaryShade: "setPrimaryShade";
-  setDefaultGradient: "setDefaultGradient";
-  setFontFamily: "setFontFamily";
-  setComponents: "setComponents";
-
-  setUserDocument: "setUserDocument";
-  setAnnouncementDocument: "setAnnouncementDocument";
-  setPrefersReducedMotion: "setPrefersReducedMotion";
-
-  setErrorState: "setErrorState";
-  setCustomizeChartsPageData: "setCustomizeChartsPageData";
-  setCustomizeChartsPageDataSelectedYYYYMMDD:
-    "setCustomizeChartsPageDataSelectedYYYYMMDD";
-
-  // error state
-  setComponentsErrorState: "setComponentsErrorState";
-};
-
-type WindowDimensions = {
-  width: number;
   height: number;
+  isPrefersReducedMotion: boolean;
+  themeObject: ThemeObject;
+  width: number;
 };
 
 type GlobalDispatch =
   | {
-    type: GlobalAction["setWindowSize"];
-    payload: WindowDimensions;
+    action: GlobalAction["setWindowSize"];
+    payload: WindowSize;
   }
   | {
-    type: GlobalAction["setScrollAxesDirection"];
-    payload: ScrollAxesDirection;
-  }
-  | {
-    type: GlobalAction["setWidth"] | GlobalAction["setHeight"];
+    action: GlobalAction["setWidth"] | GlobalAction["setHeight"];
     payload: number;
   }
   | {
-    type: GlobalAction["setRowGap"];
-    payload: MantineSize;
-  }
-  | {
-    type: GlobalAction["setPadding"];
-    payload: "xs" | "sm" | "md";
-  }
-  // mantine theme object
-  | {
-    type:
+    action:
       | GlobalAction["setRespectReducedMotion"]
       | GlobalAction["setPrefersReducedMotion"];
     payload: boolean;
   }
   | {
-    type: GlobalAction["setColorScheme"];
+    action: GlobalAction["setColorScheme"];
     payload: ColorScheme;
   }
   | {
-    type: GlobalAction["setPrimaryColor"];
+    action: GlobalAction["setPrimaryColor"];
     payload: MantineColor;
   }
   | {
-    type: GlobalAction["setPrimaryShade"];
+    action: GlobalAction["setPrimaryShade"];
     payload: { light: Shade; dark: Shade };
   }
   | {
-    type: GlobalAction["setDefaultGradient"];
+    action: GlobalAction["setDefaultGradient"];
     payload: { deg: number; from: MantineColor; to: MantineColor };
   }
   | {
-    type: GlobalAction["setFontFamily"];
+    action: GlobalAction["setFontFamily"];
     payload: string;
   }
   | {
-    type: GlobalAction["setComponents"];
+    action: GlobalAction["setComponents"];
     payload: any;
   }
-  // documents
   | {
-    type: GlobalAction["setUserDocument"];
-    payload: Omit<UserDocument, "password">;
-  }
-  | {
-    type: GlobalAction["setAnnouncementDocument"];
+    action: GlobalAction["setAnnouncementDocument"];
     payload: QueryResponseData<AnnouncementDocument>;
   }
-  // error state
   | {
-    type: GlobalAction["setErrorState"];
-    payload: ErrorState;
-  }
-  // customize charts page data
-  | {
-    type: GlobalAction["setCustomizeChartsPageData"];
+    action: GlobalAction["setCustomizeChartsPageData"];
     payload: CustomizeChartsPageData;
   }
   | {
-    type: GlobalAction["setCustomizeChartsPageDataSelectedYYYYMMDD"];
+    action: GlobalAction["setCustomizeChartsPageDataSelectedYYYYMMDD"];
     payload: string;
-  }
-  // error state
-  | {
-    type: GlobalAction["setComponentsErrorState"];
-    payload: ComponentsErrorStatePayload;
   };
 
 type GlobalReducer = (
@@ -280,13 +184,10 @@ type GlobalProviderProps = {
 
 export type {
   ColorScheme,
-  ErrorState,
-  GlobalAction,
   GlobalDispatch,
   GlobalProviderProps,
   GlobalReducer,
   GlobalState,
   Shade,
   ThemeObject,
-  WindowDimensions,
 };

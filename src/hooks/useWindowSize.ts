@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from "react";
 
 type WindowSize = {
   width: number;
@@ -19,8 +19,8 @@ function useWindowSize(): WindowSize {
   }, []);
 
   useEffect(() => {
-    window.addEventListener('resize', setSize);
-    return () => window.removeEventListener('resize', setSize);
+    window.addEventListener("resize", setSize);
+    return () => window.removeEventListener("resize", setSize);
   }, [setSize]);
 
   return {
@@ -30,3 +30,4 @@ function useWindowSize(): WindowSize {
 }
 
 export { useWindowSize };
+export type { WindowSize };
