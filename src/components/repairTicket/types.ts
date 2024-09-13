@@ -1,5 +1,5 @@
-import { Currency, Urgency } from "../../types";
-import { RepairCategory } from "../dashboard/types";
+import type { Currency, Urgency } from "../../types";
+import type { RepairCategory } from "../dashboard/types";
 
 type RequiredRepairs =
   | "Cleaning"

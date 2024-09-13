@@ -4,8 +4,7 @@ import React from "react";
 import { useErrorBoundary } from "react-error-boundary";
 
 import { useAuth } from "../../hooks";
-import { useFetchInterceptor } from "../../hooks/useFetchInterceptor";
-import { RoleResourceRoutePaths, StepperPage } from "../../types";
+import type { RoleResourceRoutePaths, StepperPage } from "../../types";
 import { AccessibleButton } from "../accessibleInputs/AccessibleButton";
 import { GoldenGrid } from "../accessibleInputs/GoldenGrid";
 import { returnEventStepperPages } from "../event/constants";
@@ -59,23 +58,21 @@ function Resource() {
   ] = useDisclosure(false);
 
   const {
-    authState: { sessionId, userId, username },
+    authState: {
+      accessToken,
+      decodedToken: { sessionId, userInfo: { userId, username, roles } },
+    },
   } = useAuth();
-  const { fetchInterceptor } = useFetchInterceptor();
+
   const { showBoundary } = useErrorBoundary();
 
   const isComponentMountedRef = React.useRef(false);
   const fetchAbortControllerRef = React.useRef<AbortController | null>(null);
-  const preFetchAbortControllerRef = React.useRef<AbortController | null>(null);
 
   React.useEffect(() => {
     fetchAbortControllerRef.current?.abort();
     fetchAbortControllerRef.current = new AbortController();
     const fetchAbortController = fetchAbortControllerRef.current;
-
-    preFetchAbortControllerRef.current?.abort();
-    preFetchAbortControllerRef.current = new AbortController();
-    const preFetchAbortController = preFetchAbortControllerRef.current;
 
     isComponentMountedRef.current = true;
     let isComponentMounted = isComponentMountedRef.current;
@@ -107,7 +104,6 @@ function Resource() {
 
     return () => {
       fetchAbortController.abort();
-      preFetchAbortController.abort();
       isComponentMountedRef.current = false;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -186,12 +182,10 @@ function Resource() {
           fetchAbortControllerRef.current = new AbortController();
           const fetchAbortController = fetchAbortControllerRef.current;
 
-          preFetchAbortControllerRef.current?.abort();
-          preFetchAbortControllerRef.current = new AbortController();
-          const preFetchAbortController = preFetchAbortControllerRef.current;
-
           isComponentMountedRef.current = true;
           let isComponentMounted = isComponentMountedRef.current;
+
+          // TODO: fetchResourcePATCHSafe({})
         },
         type: "submit",
       }}

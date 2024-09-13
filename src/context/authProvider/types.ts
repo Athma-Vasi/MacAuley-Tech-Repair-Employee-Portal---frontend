@@ -5,6 +5,7 @@ import type { AuthAction } from "./actions";
 type AuthState = {
   accessToken: string;
   decodedToken: DecodedToken;
+  isLoggedIn: boolean;
   userDocument: Record<string, unknown>;
 };
 
@@ -20,6 +21,10 @@ type AuthDispatch =
   | {
     action: AuthAction["setDecodedToken"];
     payload: DecodedToken;
+  }
+  | {
+    action: AuthAction["setIsLoggedIn"];
+    payload: boolean;
   }
   | {
     action: AuthAction["setUserDocument"];

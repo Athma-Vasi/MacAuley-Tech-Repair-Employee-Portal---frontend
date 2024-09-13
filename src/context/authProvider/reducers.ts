@@ -13,6 +13,7 @@ const authReducersMap = new Map<
 >([
     [authAction.setAccessToken, authReducer_setAccessToken],
     [authAction.setDecodedToken, authReducer_setDecodedToken],
+    [authAction.setIsLoggedIn, authReducer_setIsLoggedIn],
     [authAction.setUserDocument, authReducer_setUserDocument],
 ]);
 
@@ -33,6 +34,16 @@ function authReducer_setDecodedToken(
     return {
         ...state,
         decodedToken: dispatch.payload as DecodedToken,
+    };
+}
+
+function authReducer_setIsLoggedIn(
+    state: AuthState,
+    dispatch: AuthDispatch,
+): AuthState {
+    return {
+        ...state,
+        isLoggedIn: dispatch.payload as boolean,
     };
 }
 
