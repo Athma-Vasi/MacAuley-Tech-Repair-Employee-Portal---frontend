@@ -1,26 +1,16 @@
 import { REQUEST_STATUS_DATA } from "../../constants/data";
-import {
-  DATE_FULL_RANGE_REGEX,
-  DATE_NEAR_FUTURE_REGEX,
-  GRAMMAR_TEXT_INPUT_REGEX,
-  GRAMMAR_TEXTAREA_INPUT_REGEX,
-  USERNAME_REGEX,
-} from "../../constants/regex";
-import {
+import type {
   CheckboxRadioSelectData,
   RadioGroupInputData,
   RoleResourceRoutePaths,
   StepperChild,
   StepperPage,
 } from "../../types";
-import {
-  returnDateFullRangeValidationText,
-  returnDateNearFutureValidationText,
-  returnGrammarValidationText,
-  returnUsernameRegexValidationText,
-} from "../../utils";
-import { ComponentQueryData } from "../queryBuilder";
-import { SurveyRecipient, SurveyResponseInput, SurveyResponseKind } from "./types";
+import type {
+  SurveyRecipient,
+  SurveyResponseInput,
+  SurveyResponseKind,
+} from "./types";
 
 const SURVEY_ROLE_ROUTE_PATHS: RoleResourceRoutePaths = {
   admin: "actions/outreach/survey",
@@ -167,7 +157,10 @@ const SURVEY_RESPONSE_KIND_DATA: CheckboxRadioSelectData<SurveyResponseKind> = [
   { label: "Rating", value: "rating" },
 ];
 
-const SURVEY_INPUT_HTML_DATA: Record<SurveyResponseKind, SurveyResponseInput[]> = {
+const SURVEY_INPUT_HTML_DATA: Record<
+  SurveyResponseKind,
+  SurveyResponseInput[]
+> = {
   chooseOne: ["agreeDisagree", "radio"],
   chooseAny: ["checkbox"],
   rating: ["emotion", "stars"],
@@ -193,83 +186,6 @@ const SURVEY_RESPONSE_INPUTS: CheckboxRadioSelectData<SurveyResponseInput> = [
   { label: "Stars", value: "stars" },
 ];
 
-const SURVEY_QUERY_DATA: ComponentQueryData[] = [
-  {
-    label: "Username",
-    value: "username",
-    inputKind: "textInput",
-    regex: USERNAME_REGEX,
-    regexValidationFn: returnUsernameRegexValidationText,
-  },
-  {
-    label: "Created Date",
-    value: "createdAt",
-    inputKind: "dateInput",
-    regex: DATE_FULL_RANGE_REGEX,
-    regexValidationFn: returnDateFullRangeValidationText,
-  },
-  {
-    label: "Updated Date",
-    value: "updatedAt",
-    inputKind: "dateInput",
-    regex: DATE_FULL_RANGE_REGEX,
-    regexValidationFn: returnDateFullRangeValidationText,
-  },
-  {
-    label: "Survey Title",
-    value: "surveyTitle",
-    inputKind: "textInput",
-    regex: GRAMMAR_TEXT_INPUT_REGEX,
-    regexValidationFn: returnGrammarValidationText,
-  },
-  {
-    label: "Survey Description",
-    value: "surveyDescription",
-    inputKind: "textInput",
-    regex: GRAMMAR_TEXTAREA_INPUT_REGEX,
-    regexValidationFn: returnGrammarValidationText,
-  },
-  {
-    label: "Send To",
-    value: "sendTo",
-    inputKind: "selectInput",
-    selectData: SURVEY_RECIPIENT_DATA,
-  },
-  {
-    label: "Expiry Date",
-    value: "expiryDate",
-    inputKind: "dateInput",
-    regex: DATE_NEAR_FUTURE_REGEX,
-    regexValidationFn: returnDateNearFutureValidationText,
-  },
-  {
-    label: "Question",
-    value: "question",
-    inputKind: "textInput",
-    regex: GRAMMAR_TEXT_INPUT_REGEX,
-    regexValidationFn: returnGrammarValidationText,
-  },
-  {
-    label: "Response Kind",
-    value: "responseKind",
-    inputKind: "selectInput",
-    selectData: SURVEY_RESPONSE_KIND_DATA,
-  },
-  {
-    label: "Response Input",
-    value: "responseInput",
-    inputKind: "selectInput",
-    selectData: SURVEY_RESPONSE_INPUTS,
-  },
-  {
-    label: "Response Options",
-    value: "responseOptions",
-    inputKind: "textInput",
-    regex: GRAMMAR_TEXT_INPUT_REGEX,
-    regexValidationFn: returnGrammarValidationText,
-  },
-];
-
 export {
   INDEX_ALPHABET_TABLE,
   MAX_INPUTS_AMOUNT,
@@ -278,7 +194,6 @@ export {
   SURVEY_INPUT_HTML_DATA,
   SURVEY_MAX_QUESTION_AMOUNT,
   SURVEY_MAX_RESPONSE_DATA_OPTIONS,
-  SURVEY_QUERY_DATA,
   SURVEY_RECIPIENT_DATA,
   SURVEY_RESPONSE_INPUTS,
   SURVEY_RESPONSE_KIND_DATA,
