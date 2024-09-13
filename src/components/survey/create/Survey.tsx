@@ -1,7 +1,7 @@
 import { Container, Group, Stack } from "@mantine/core";
 import { useReducer } from "react";
 
-import { StepperChild, StepperPage } from "../../../types";
+import type { StepperChild, StepperPage } from "../../../types";
 import { logState } from "../../../utils";
 import { AccessibleButton } from "../../accessibleInputs/AccessibleButton";
 import { AccessibleDateTimeInput } from "../../accessibleInputs/AccessibleDateTimeInput";
@@ -18,8 +18,8 @@ import {
   SURVEY_RESPONSE_INPUTS,
   SURVEY_RESPONSE_KIND_DATA,
 } from "../constants";
-import { SurveyRecipient, SurveyResponseKind } from "../types";
-import { SurveyAction, surveyAction } from "./actions";
+import type { SurveyRecipient, SurveyResponseKind } from "../types";
+import { type SurveyAction, surveyAction } from "./actions";
 import { surveyReducer } from "./reducers";
 import { initialSurveyState } from "./state";
 import {
@@ -351,7 +351,7 @@ function Survey() {
 
           return (
             <Stack
-              key={`${question}-${questionIndex}-${responseOption}-${optionIndex}`}
+              key={`${question}-${questionIndex}-${responseOption}-${optionIndex.toString()}`}
             >
               {responseOptionTextAreaInput}
               <Group>
@@ -409,7 +409,7 @@ function Survey() {
         );
 
       return (
-        <Stack key={`${question}-${questionIndex}`}>
+        <Stack key={`${question}-${questionIndex.toString()}`}>
           {addQuestionButton}
           {questionTextInput}
           {responseKindRadioGroup}

@@ -1,12 +1,15 @@
-import { SetPageInErrorPayload, StepperChild, StepperPage } from "../../../types";
-import { PreviewSurveyProps } from "../preview/types";
-import {
+import type {
+  SetPageInErrorPayload,
+  StepperChild,
+  StepperPage,
+} from "../../../types";
+import type {
   SurveyRecipient,
   SurveyResponseInput,
   SurveyResponseKind,
   SurveyStatistics,
 } from "../types";
-import { SurveyAction } from "./actions";
+import type { SurveyAction } from "./actions";
 
 type SurveyQuestions = {
   question: string;
@@ -40,122 +43,118 @@ type SurveyState = {
 
 type SurveyDispatch =
   | {
-      action: SurveyAction["addQuestion"];
-      payload: undefined;
-    }
+    action: SurveyAction["addQuestion"];
+    payload: undefined;
+  }
   | {
-      action: SurveyAction["addResponseOption"];
-      payload: number[];
-    }
+    action: SurveyAction["addResponseOption"];
+    payload: number[];
+  }
   | {
-      action: SurveyAction["addStepperChild"];
-      payload: {
-        dynamicIndexes: number[];
-        value: StepperChild;
-      };
-    }
-  | {
-      action: SurveyAction["addStepperPage"];
-      payload: {
-        dynamicIndexes: number[];
-        value: StepperPage;
-      };
-    }
-  | {
-      action: SurveyAction["deleteAllResponseOptionsForQuestion"];
-      payload: number[];
-    }
-  | {
-      action: SurveyAction["deleteQuestion"];
-      payload: number[];
-    }
-  | {
-      action: SurveyAction["deleteResponseOption"];
-      payload: number[];
-    }
-  | {
-      action: SurveyAction["insertResponseOption"];
-      payload: number[];
-    }
-  | {
-      action: SurveyAction["setExpiryDate"];
-      payload: string;
-    }
-  | {
-      action: SurveyAction["setIsSubmitting"];
-      payload: boolean;
-    }
-  | {
-      action: SurveyAction["setIsSuccessful"];
-      payload: boolean;
-    }
-  | {
-      action: SurveyAction["setPageInError"];
-      payload: SetPageInErrorPayload;
-    }
-  | {
-      action: SurveyAction["setPreviewSurveyProps"];
-      payload: PreviewSurveyProps;
-    }
-  | {
-      action: SurveyAction["setQuestions"];
-      payload: {
-        dynamicIndexes: number[];
-        value: string;
-      };
-    }
-  | {
-      action: SurveyAction["setResponseInputs"];
-      payload: {
-        dynamicIndexes: number[];
-        value: SurveyResponseInput;
-      };
-    }
-  | {
-      action: SurveyAction["setResponseKinds"];
-      payload: {
-        dynamicIndexes: number[];
-        value: SurveyResponseKind;
-      };
-    }
-  | {
-      action: SurveyAction["setResponseOptions"];
-      payload: {
-        dynamicIndexes: number[];
-        value: string;
-      };
-    }
-  | {
-      action: SurveyAction["setSurveyDescription"];
-      payload: string;
-    }
-  | {
-      action: SurveyAction["setSurveyRecipients"];
-      payload: SurveyRecipient;
-    }
-  | {
-      action: SurveyAction["setSurveyStatistics"];
-      payload: SurveyStatistics[];
-    }
-  | {
-      action: SurveyAction["setSurveyTitle"];
-      payload: string;
-    }
-  | {
-      action: SurveyAction["setTriggerFormSubmit"];
-      payload: boolean;
-    }
-  | {
-      action: SurveyAction["setTriggerPreviewSurvey"];
-      payload: boolean;
-    }
-  | {
-      action: SurveyAction["slideResponseOptionDown"];
-      payload: number[];
-    }
-  | {
-      action: SurveyAction["slideResponseOptionUp"];
-      payload: number[];
+    action: SurveyAction["addStepperChild"];
+    payload: {
+      dynamicIndexes: number[];
+      value: StepperChild;
     };
+  }
+  | {
+    action: SurveyAction["addStepperPage"];
+    payload: {
+      dynamicIndexes: number[];
+      value: StepperPage;
+    };
+  }
+  | {
+    action: SurveyAction["deleteAllResponseOptionsForQuestion"];
+    payload: number[];
+  }
+  | {
+    action: SurveyAction["deleteQuestion"];
+    payload: number[];
+  }
+  | {
+    action: SurveyAction["deleteResponseOption"];
+    payload: number[];
+  }
+  | {
+    action: SurveyAction["insertResponseOption"];
+    payload: number[];
+  }
+  | {
+    action: SurveyAction["setExpiryDate"];
+    payload: string;
+  }
+  | {
+    action: SurveyAction["setIsSubmitting"];
+    payload: boolean;
+  }
+  | {
+    action: SurveyAction["setIsSuccessful"];
+    payload: boolean;
+  }
+  | {
+    action: SurveyAction["setPageInError"];
+    payload: SetPageInErrorPayload;
+  }
+  | {
+    action: SurveyAction["setQuestions"];
+    payload: {
+      dynamicIndexes: number[];
+      value: string;
+    };
+  }
+  | {
+    action: SurveyAction["setResponseInputs"];
+    payload: {
+      dynamicIndexes: number[];
+      value: SurveyResponseInput;
+    };
+  }
+  | {
+    action: SurveyAction["setResponseKinds"];
+    payload: {
+      dynamicIndexes: number[];
+      value: SurveyResponseKind;
+    };
+  }
+  | {
+    action: SurveyAction["setResponseOptions"];
+    payload: {
+      dynamicIndexes: number[];
+      value: string;
+    };
+  }
+  | {
+    action: SurveyAction["setSurveyDescription"];
+    payload: string;
+  }
+  | {
+    action: SurveyAction["setSurveyRecipients"];
+    payload: SurveyRecipient;
+  }
+  | {
+    action: SurveyAction["setSurveyStatistics"];
+    payload: SurveyStatistics[];
+  }
+  | {
+    action: SurveyAction["setSurveyTitle"];
+    payload: string;
+  }
+  | {
+    action: SurveyAction["setTriggerFormSubmit"];
+    payload: boolean;
+  }
+  | {
+    action: SurveyAction["setTriggerPreviewSurvey"];
+    payload: boolean;
+  }
+  | {
+    action: SurveyAction["slideResponseOptionDown"];
+    payload: number[];
+  }
+  | {
+    action: SurveyAction["slideResponseOptionUp"];
+    payload: number[];
+  };
 
 export type { SurveyDispatch, SurveyQuestions, SurveyState };
