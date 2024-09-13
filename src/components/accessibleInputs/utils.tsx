@@ -1,53 +1,63 @@
 import { faCheck, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Grid, Group, Text } from "@mantine/core";
+import { Flex, Grid, Group, Highlight, Text } from "@mantine/core";
 import { TbCheck, TbExclamationCircle } from "react-icons/tb";
 
 import { COLORS_SWATCHES } from "../../constants/data";
-import { VALIDATION_FUNCTIONS_TABLE } from "../../constants/validations";
-import { ThemeObject } from "../../context/globalProvider/types";
-import { StepperPage, Validation, ValidationFunctionsTable } from "../../types";
-import { capitalizeJoinWithAnd, returnThemeColors, splitCamelCase } from "../../utils";
-import { AccessibleButton, AccessibleButtonAttributes } from "./AccessibleButton";
+import type { ThemeObject } from "../../context/globalProvider/types";
+import type {
+  StepperPage,
+  Validation,
+  ValidationFunctionsTable,
+} from "../../types";
+import {
+  capitalizeJoinWithAnd,
+  returnThemeColors,
+  splitCamelCase,
+} from "../../utils";
+import {
+  AccessibleButton,
+  type AccessibleButtonAttributes,
+} from "./AccessibleButton";
 import {
   AccessibleCheckboxInputGroup,
-  AccessibleCheckboxInputGroupAttributes,
+  type AccessibleCheckboxInputGroupAttributes,
   AccessibleCheckboxInputSingle,
-  AccessibleCheckboxInputSingleAttributes,
+  type AccessibleCheckboxInputSingleAttributes,
 } from "./AccessibleCheckboxInput";
 import {
   AccessibleDateTimeInput,
-  AccessibleDateTimeInputAttributes,
+  type AccessibleDateTimeInputAttributes,
 } from "./AccessibleDateTimeInput";
 import {
   AccessibleRadioInputGroup,
-  AccessibleRadioInputGroupAttributes,
+  type AccessibleRadioInputGroupAttributes,
   AccessibleRadioInputSingle,
-  AccessibleRadioInputSingleAttributes,
+  type AccessibleRadioInputSingleAttributes,
 } from "./AccessibleRadioInput";
 import {
   AccessibleSelectInput,
-  AccessibleSelectInputAttributes,
+  type AccessibleSelectInputAttributes,
 } from "./AccessibleSelectInput";
 import {
   AccessibleSwitchInput,
-  AccessibleSwitchInputAttributes,
+  type AccessibleSwitchInputAttributes,
 } from "./AccessibleSwitchInput";
 import {
   AccessibleTextAreaInput,
-  AccessibleTextAreaInputAttributes,
+  type AccessibleTextAreaInputAttributes,
 } from "./AccessibleTextAreaInput";
 import {
   AccessibleTextInputPhone,
-  AccessibleTextInputPhoneAttributes,
+  type AccessibleTextInputPhoneAttributes,
 } from "./AccessibleTextInputPhone";
 import {
   AccessibleTextInputPostal,
-  AccessibleTextInputPostalAttributes,
+  type AccessibleTextInputPostalAttributes,
 } from "./AccessibleTextInputPostal";
 import {
   AccessibleTextInput,
-  AccessibleTextInputAttributes,
+  type AccessibleTextInputAttributes,
 } from "./text/AccessibleTextInput";
 
 type CreateAccessibleValueValidationTextElements = {
@@ -81,7 +91,9 @@ function createAccessibleValueValidationTextElements({
     <Text
       id={`${name}-invalid`}
       style={{
-        display: isPopoverOpened && valueBuffer && !isValueBufferValid ? "block" : "none",
+        display: isPopoverOpened && valueBuffer && !isValueBufferValid
+          ? "block"
+          : "none",
       }}
       w="100%"
       aria-live="polite"
@@ -105,7 +117,9 @@ function createAccessibleValueValidationTextElements({
     <Text
       id={`${name}-valid`}
       style={{
-        display: isPopoverOpened && valueBuffer && isValueBufferValid ? "block" : "none",
+        display: isPopoverOpened && valueBuffer && isValueBufferValid
+          ? "block"
+          : "none",
       }}
       color={greenColorShade}
       w="100%"
@@ -152,23 +166,28 @@ function createAccessibleCheckboxSelectionsTextElements({
   deselectedTextElement: React.JSX.Element;
 } {
   const {
-    generalColors: { greenColorShade, grayColorShade, redColorShade, darkSchemeGray },
+    generalColors: {
+      greenColorShade,
+      grayColorShade,
+      redColorShade,
+      darkSchemeGray,
+    },
   } = returnThemeColors({
     themeObject,
     colorsSwatches: COLORS_SWATCHES,
   });
 
-  const selectedIcon =
-    theme === "default" ? (
-      <FontAwesomeIcon icon={faCheck} color={greenColorShade} />
-    ) : null;
+  const selectedIcon = theme === "default"
+    ? <FontAwesomeIcon icon={faCheck} color={greenColorShade} />
+    : null;
 
-  const stringifiedValue = Array.isArray(value) ? capitalizeJoinWithAnd(value) : value;
+  const stringifiedValue = Array.isArray(value)
+    ? capitalizeJoinWithAnd(value)
+    : value;
 
-  const selectedText =
-    kind === "single"
-      ? `${value} selected.`
-      : `${stringifiedValue} ${value.length > 1 ? "are" : "is"} selected.`;
+  const selectedText = kind === "single"
+    ? `${value} selected.`
+    : `${stringifiedValue} ${value.length > 1 ? "are" : "is"} selected.`;
 
   const selectedTextElement = (
     <Text
@@ -182,10 +201,9 @@ function createAccessibleCheckboxSelectionsTextElements({
     </Text>
   );
 
-  const deselectedIcon =
-    theme === "default" ? (
-      <FontAwesomeIcon icon={faInfoCircle} color={redColorShade} />
-    ) : null;
+  const deselectedIcon = theme === "default"
+    ? <FontAwesomeIcon icon={faInfoCircle} color={redColorShade} />
+    : null;
 
   const deselectedText = "No selection made.";
 
@@ -226,10 +244,9 @@ function createAccessibleRadioScreenreaderTextElements({
     colorsSwatches: COLORS_SWATCHES,
   });
 
-  const icon =
-    theme === "default" ? (
-      <FontAwesomeIcon icon={faCheck} color={greenColorShade} />
-    ) : null;
+  const icon = theme === "default"
+    ? <FontAwesomeIcon icon={faCheck} color={greenColorShade} />
+    : null;
 
   const screenreaderTextElement = (
     <Text
@@ -269,18 +286,23 @@ function createAccessibleButtonScreenreaderTextElements({
   disabledTextElement: React.JSX.Element;
 } {
   const {
-    generalColors: { greenColorShade, textColor, grayColorShade, redColorShade },
+    generalColors: {
+      greenColorShade,
+      textColor,
+      grayColorShade,
+      redColorShade,
+    },
   } = returnThemeColors({
     themeObject,
     colorsSwatches: COLORS_SWATCHES,
   });
 
-  const enabledIcon =
-    theme === "default" ? (
-      <FontAwesomeIcon icon={faCheck} color={greenColorShade} />
-    ) : null;
+  const enabledIcon = theme === "default"
+    ? <FontAwesomeIcon icon={faCheck} color={greenColorShade} />
+    : null;
 
-  const defaultEnabledText = `All form inputs are valid. ${name} is enabled. You may submit the form.`;
+  const defaultEnabledText =
+    `All form inputs are valid. ${name} is enabled. You may submit the form.`;
 
   const enabledTextElement = (
     <Text
@@ -295,20 +317,20 @@ function createAccessibleButtonScreenreaderTextElements({
     </Text>
   );
 
-  const disabledIcon =
-    theme === "default" ? (
-      <FontAwesomeIcon icon={faInfoCircle} color={redColorShade} />
-    ) : null;
+  const disabledIcon = theme === "default"
+    ? <FontAwesomeIcon icon={faInfoCircle} color={redColorShade} />
+    : null;
 
-  const defaultDisabledText = `One or more inputs are in error. ${name} disabled. Please fix errors before submitting form.`;
+  const defaultDisabledText =
+    `One or more inputs are in error. ${name} disabled. Please fix errors before submitting form.`;
 
   const disabledTextElement = (
     <Text
       id={`${name}-disabled`}
       style={{ display: !isEnabled ? "block" : "none" }}
-      color={
-        theme === "default" ? (!isEnabled ? redColorShade : textColor) : grayColorShade
-      }
+      color={theme === "default"
+        ? (!isEnabled ? redColorShade : textColor)
+        : grayColorShade}
       w="100%"
       aria-live="polite"
     >
@@ -342,10 +364,9 @@ function createAccessibleSliderScreenreaderTextElements({
     colorsSwatches: COLORS_SWATCHES,
   });
 
-  const icon =
-    theme === "default" ? (
-      <FontAwesomeIcon icon={faCheck} color={greenColorShade} />
-    ) : null;
+  const icon = theme === "default"
+    ? <FontAwesomeIcon icon={faCheck} color={greenColorShade} />
+    : null;
 
   const screenreaderTextElement = (
     <Text
@@ -389,10 +410,9 @@ function createAccessibleSwitchOnOffTextElements({
     colorsSwatches: COLORS_SWATCHES,
   });
 
-  const switchOnIcon =
-    theme === "default" ? (
-      <FontAwesomeIcon icon={faCheck} color={greenColorShade} />
-    ) : null;
+  const switchOnIcon = theme === "default"
+    ? <FontAwesomeIcon icon={faCheck} color={greenColorShade} />
+    : null;
 
   const switchOnText = switchOnDescription ?? `${name} is on.`;
 
@@ -408,10 +428,9 @@ function createAccessibleSwitchOnOffTextElements({
     </Text>
   );
 
-  const switchOffIcon =
-    theme === "default" ? (
-      <FontAwesomeIcon icon={faInfoCircle} color={redColorShade} />
-    ) : null;
+  const switchOffIcon = theme === "default"
+    ? <FontAwesomeIcon icon={faInfoCircle} color={redColorShade} />
+    : null;
 
   const switchOffText = switchOffDescription ?? `${name} is off.`;
 
@@ -432,23 +451,29 @@ function createAccessibleSwitchOnOffTextElements({
 
 function createAccessibleTextInputs<
   ValidValueAction extends string = string,
-  InvalidValueAction extends string = string
+  InvalidValueAction extends string = string,
 >(
-  attributesArray: AccessibleTextInputAttributes<ValidValueAction, InvalidValueAction>[]
+  attributesArray: AccessibleTextInputAttributes<
+    ValidValueAction,
+    InvalidValueAction
+  >[],
 ): React.JSX.Element[] {
   return attributesArray.map((attributes, index) => (
-    <AccessibleTextInput key={`${index}-${attributes.name}`} attributes={attributes} />
+    <AccessibleTextInput
+      key={`${index}-${attributes.name}`}
+      attributes={attributes}
+    />
   ));
 }
 
 function createAccessibleTextAreaInputs<
   ValidValueAction extends string = string,
-  InvalidValueAction extends string = string
+  InvalidValueAction extends string = string,
 >(
   attributesArray: AccessibleTextAreaInputAttributes<
     ValidValueAction,
     InvalidValueAction
-  >[]
+  >[],
 ): React.JSX.Element[] {
   return attributesArray.map((attributes, index) => (
     <AccessibleTextAreaInput
@@ -460,12 +485,12 @@ function createAccessibleTextAreaInputs<
 
 function createAccessibleCheckboxSingleInputs<
   ValidValueAction extends string = string,
-  InvalidValueAction extends string = string
+  InvalidValueAction extends string = string,
 >(
   attributesArray: AccessibleCheckboxInputSingleAttributes<
     ValidValueAction,
     InvalidValueAction
-  >[]
+  >[],
 ): React.JSX.Element[] {
   return attributesArray.map((attributes, index) => (
     <AccessibleCheckboxInputSingle
@@ -477,9 +502,12 @@ function createAccessibleCheckboxSingleInputs<
 
 function createAccessibleCheckboxGroupInputs<
   ValidValueAction extends string = string,
-  Payload extends string = string
+  Payload extends string = string,
 >(
-  attributesArray: AccessibleCheckboxInputGroupAttributes<ValidValueAction, Payload>[]
+  attributesArray: AccessibleCheckboxInputGroupAttributes<
+    ValidValueAction,
+    Payload
+  >[],
 ): React.JSX.Element[] {
   return attributesArray.map((attributes, index) => (
     <AccessibleCheckboxInputGroup
@@ -489,8 +517,10 @@ function createAccessibleCheckboxGroupInputs<
   ));
 }
 
-function createAccessibleRadioSingleInputs<ValidValueAction extends string = string>(
-  attributesArray: AccessibleRadioInputSingleAttributes<ValidValueAction>[]
+function createAccessibleRadioSingleInputs<
+  ValidValueAction extends string = string,
+>(
+  attributesArray: AccessibleRadioInputSingleAttributes<ValidValueAction>[],
 ): React.JSX.Element[] {
   return attributesArray.map((attributes, index) => (
     <AccessibleRadioInputSingle
@@ -500,8 +530,10 @@ function createAccessibleRadioSingleInputs<ValidValueAction extends string = str
   ));
 }
 
-function createAccessibleRadioGroupInputs<ValidValueAction extends string = string>(
-  attributesArray: AccessibleRadioInputGroupAttributes<ValidValueAction>[]
+function createAccessibleRadioGroupInputs<
+  ValidValueAction extends string = string,
+>(
+  attributesArray: AccessibleRadioInputGroupAttributes<ValidValueAction>[],
 ): React.JSX.Element[] {
   return attributesArray.map((attributes, index) => (
     <AccessibleRadioInputGroup
@@ -513,31 +545,34 @@ function createAccessibleRadioGroupInputs<ValidValueAction extends string = stri
 
 function createAccessibleSelectInputs<
   ValidValueAction extends string = string,
-  Payload extends string = string
+  Payload extends string = string,
 >(
-  attributesArray: AccessibleSelectInputAttributes<ValidValueAction, Payload>[]
+  attributesArray: AccessibleSelectInputAttributes<ValidValueAction, Payload>[],
 ): React.JSX.Element[] {
   return attributesArray.map((attributes, index) => (
-    <AccessibleSelectInput key={`${index}-${attributes.name}`} attributes={attributes} />
+    <AccessibleSelectInput
+      key={`${index}-${attributes.name}`}
+      attributes={attributes}
+    />
   ));
 }
 
 function createAccessibleButtons(
-  attributesArray: AccessibleButtonAttributes[]
+  attributesArray: AccessibleButtonAttributes[],
 ): React.JSX.Element[] {
   return attributesArray.map((attributes, index) => (
-    <AccessibleButton key={index} attributes={attributes} />
+    <AccessibleButton key={index.toString()} attributes={attributes} />
   ));
 }
 
 function createAccessibleTextInputsPostal<
   ValidValueAction extends string = string,
-  InvalidValueAction extends string = string
+  InvalidValueAction extends string = string,
 >(
   attributesArray: AccessibleTextInputPostalAttributes<
     ValidValueAction,
     InvalidValueAction
-  >[]
+  >[],
 ): React.JSX.Element[] {
   return attributesArray.map((attributes, index) => (
     <AccessibleTextInputPostal
@@ -549,12 +584,12 @@ function createAccessibleTextInputsPostal<
 
 function createAccessibleTextInputsPhone<
   ValidValueAction extends string = string,
-  InvalidValueAction extends string = string
+  InvalidValueAction extends string = string,
 >(
   attributesArray: AccessibleTextInputPhoneAttributes<
     ValidValueAction,
     InvalidValueAction
-  >[]
+  >[],
 ): React.JSX.Element[] {
   return attributesArray.map((attributes, index) => (
     <AccessibleTextInputPhone
@@ -566,23 +601,29 @@ function createAccessibleTextInputsPhone<
 
 function createAccessibleSwitchInputs<
   ValidValueAction extends string = string,
-  InvalidValueAction extends string = string
+  InvalidValueAction extends string = string,
 >(
-  attributesArray: AccessibleSwitchInputAttributes<ValidValueAction, InvalidValueAction>[]
+  attributesArray: AccessibleSwitchInputAttributes<
+    ValidValueAction,
+    InvalidValueAction
+  >[],
 ): React.JSX.Element[] {
   return attributesArray.map((attributes, index) => (
-    <AccessibleSwitchInput key={`${index}-${attributes.name}`} attributes={attributes} />
+    <AccessibleSwitchInput
+      key={`${index}-${attributes.name}`}
+      attributes={attributes}
+    />
   ));
 }
 
 function createAccessibleDateTimeInputs<
   ValidValueAction extends string = string,
-  InvalidValueAction extends string = string
+  InvalidValueAction extends string = string,
 >(
   attributesArray: AccessibleDateTimeInputAttributes<
     ValidValueAction,
     InvalidValueAction
-  >[]
+  >[],
 ): React.JSX.Element[] {
   return attributesArray.map((attributes, index) => (
     <AccessibleDateTimeInput
@@ -637,21 +678,21 @@ function returnValidationTexts({
 
       const partialInvalidText = partials.length
         ? partials
-            .map(([regexOrFunc, errorMessage]) =>
-              typeof regexOrFunc === "function"
-                ? regexOrFunc(valueBuffer)
-                  ? ""
-                  : errorMessage
-                : regexOrFunc.test(valueBuffer)
-                ? ""
-                : errorMessage
-            )
-            .join(" ")
+          .map(([regexOrFunc, errorMessage]) =>
+            typeof regexOrFunc === "function"
+              ? regexOrFunc(valueBuffer) ? "" : errorMessage
+              : regexOrFunc.test(valueBuffer)
+              ? ""
+              : errorMessage
+          )
+          .join(" ")
         : "";
 
-      validationTextsAcc.valueInvalidText = `${splitCamelCase(
-        name
-      )} is invalid. ${partialInvalidText}`;
+      validationTextsAcc.valueInvalidText = `${
+        splitCamelCase(
+          name,
+        )
+      } is invalid. ${partialInvalidText}`;
       validationTextsAcc.valueValidText = `${splitCamelCase(name)} is valid.`;
     });
 
@@ -668,7 +709,7 @@ function returnFullValidation({
   stepperPages: StepperPage[];
   validationFunctionsTable: ValidationFunctionsTable;
 }): { full: Validation["full"] } {
-  const initial = { full: new RegExp("") };
+  const initial = { full: /(?:)/ };
 
   return stepperPages.reduce<{ full: Validation["full"] }>((regexAcc, page) => {
     const { children, kind } = page;
@@ -693,6 +734,72 @@ function returnFullValidation({
   }, initial);
 }
 
+function returnHighlightedText({
+  fieldValue,
+  queryValuesArray,
+  textHighlightColor,
+}: {
+  fieldValue: string | boolean | number | string[] | boolean[] | number[];
+  queryValuesArray: string[];
+  textHighlightColor: string;
+}) {
+  // regex to determine if formattedValue has any terms in queryValuesArray
+  const regex = queryValuesArray.length
+    ? new RegExp(
+      queryValuesArray
+        .filter((value) => value !== "")
+        .flatMap((value) => value.split(" "))
+        .join("|"),
+      "gi",
+    )
+    : null;
+
+  let returnedText: React.JSX.Element | React.JSX.Element[] | null = null;
+  if (regex?.test(fieldValue?.toString() ?? "")) {
+    returnedText = fieldValue
+      .toString()
+      .split(" ")
+      .map((text, index) => {
+        // word that has below symbol is also highlighted
+        const wordWithoutPunctuation = text
+          .replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, " ")
+          .toLowerCase()
+          .split(" ");
+
+        const flattenedQueryValuesArray = queryValuesArray
+          .filter((value) => value !== "")
+          .flatMap((value) => value.toLowerCase().split(" "));
+
+        const isQueryArrayIncludesWord = flattenedQueryValuesArray.some(
+          (queryValue) => {
+            const regex = new RegExp(queryValue, "gi");
+            return regex.test(wordWithoutPunctuation.join(" "));
+          },
+        );
+
+        if (isQueryArrayIncludesWord) {
+          return (
+            <Flex>
+              <Highlight
+                key={`${text}-${index.toString()}`}
+                highlightStyles={{ backgroundColor: textHighlightColor }}
+                highlight={text}
+              >
+                {text}
+              </Highlight>
+            </Flex>
+          );
+        }
+
+        return <Text key={`${text}-${index.toString()}`}>{text}</Text>;
+      });
+  } else {
+    returnedText = <Text>{fieldValue?.toString() ?? ""}</Text>;
+  }
+
+  return returnedText;
+}
+
 export {
   createAccessibleButtons,
   createAccessibleButtonScreenreaderTextElements,
@@ -713,5 +820,6 @@ export {
   createAccessibleTextInputsPostal,
   createAccessibleValueValidationTextElements,
   returnFullValidation,
+  returnHighlightedText,
   returnValidationTexts,
 };
