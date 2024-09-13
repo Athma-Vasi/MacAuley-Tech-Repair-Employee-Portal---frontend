@@ -1,12 +1,17 @@
-import { Stack, Text } from "@mantine/core";
+import { Container, Stack, Text, Title } from "@mantine/core";
 import { useEffect, useReducer, useRef } from "react";
 import { useErrorBoundary } from "react-error-boundary";
 
+import { useDisclosure } from "@mantine/hooks";
+import { useNavigate } from "react-router-dom";
 import { CURRENCY_DATA } from "../../../constants/data";
 import { useAuth } from "../../../hooks";
-import { useFetchInterceptor } from "../../../hooks/useFetchInterceptor";
 import type { Currency, StepperPage } from "../../../types";
-import { formSubmitPOST, logState } from "../../../utils";
+import {
+  formSubmitPOSTSafe,
+  logState,
+  removeUndefinedAndNull,
+} from "../../../utils";
 import { AccessibleButton } from "../../accessibleInputs/AccessibleButton";
 import { AccessibleDateTimeInput } from "../../accessibleInputs/AccessibleDateTimeInput";
 import { AccessibleSelectInput } from "../../accessibleInputs/AccessibleSelectInput";
@@ -15,6 +20,7 @@ import { AccessibleSwitchInput } from "../../accessibleInputs/AccessibleSwitchIn
 import { AccessibleTextAreaInput } from "../../accessibleInputs/AccessibleTextAreaInput";
 import { AccessibleImageInput } from "../../accessibleInputs/image";
 import { AccessibleTextInput } from "../../accessibleInputs/text/AccessibleTextInput";
+import { NotificationModal } from "../../notificationModal";
 import {
   EXPENSE_CLAIM_KIND_DATA,
   EXPENSE_CLAIM_ROLE_PATHS,
@@ -47,13 +53,24 @@ function ExpenseClaim() {
   } = expenseClaimState;
 
   const {
-    authState: { decodedToken: { userInfo: { userId, username }, sessionId } },
+    authState: {
+      accessToken,
+      decodedToken: { userInfo: { userId, username, roles }, sessionId },
+    },
   } = useAuth();
-  const { fetchInterceptor } = useFetchInterceptor();
+
+  const [
+    openedSubmitFormModal,
+    {
+      open: openSubmitFormModal,
+      close: closeSubmitFormModal,
+    },
+  ] = useDisclosure(false);
+
+  const navigate = useNavigate();
   const { showBoundary } = useErrorBoundary();
 
   const fetchAbortControllerRef = useRef<AbortController | null>(null);
-  const preFetchAbortControllerRef = useRef<AbortController | null>(null);
   const isComponentMountedRef = useRef(false);
 
   useEffect(() => {
@@ -61,50 +78,95 @@ function ExpenseClaim() {
     fetchAbortControllerRef.current = new AbortController();
     const fetchAbortController = fetchAbortControllerRef.current;
 
-    preFetchAbortControllerRef.current?.abort();
-    preFetchAbortControllerRef.current = new AbortController();
-    const preFetchAbortController = preFetchAbortControllerRef.current;
-
     isComponentMountedRef.current = true;
     const isComponentMounted = isComponentMountedRef.current;
 
-    if (triggerFormSubmit) {
+    async function handleExpenseClaimFormSubmit() {
+      const fileUploadsResult = await Promise.all(
+        formData.map(async (formDataItem) => {
+          const filesUploadResult = await formSubmitPOSTSafe({
+            closeSubmitFormModal,
+            dispatch: expenseClaimDispatch,
+            fetchAbortController,
+            isComponentMounted,
+            isSubmittingAction: expenseClaimAction.setIsSubmitting,
+            isSuccessfulAction: expenseClaimAction.setIsSuccessful,
+            openSubmitFormModal,
+            requestBody: formDataItem,
+            roleResourceRoutePaths: EXPENSE_CLAIM_ROLE_PATHS,
+            roles,
+            triggerFormSubmitAction: expenseClaimAction.setTriggerFormSubmit,
+            accessToken,
+            // TODO: add dynamic url
+            customUrl: "http://localhost:3000/api/v1/file-upload",
+          });
+
+          return filesUploadResult;
+        }),
+      );
+
+      if (fileUploadsResult.some((result) => result.err)) {
+        showBoundary(new Error("File uploads failed. Please try again."));
+        return;
+      }
+
+      const fileUploadsServerResponse = fileUploadsResult.map((result) =>
+        result.ok ? result.safeUnwrap().data : void 0
+      );
+
+      if (fileUploadsServerResponse.some((result) => result === undefined)) {
+        showBoundary(new Error("File uploads failed. Please try again."));
+        return;
+      }
+
+      const uploadedFilesIdsMaybe = fileUploadsServerResponse.map(
+        (result) => result?.data[0]?._id,
+      );
+
+      if (uploadedFilesIdsMaybe.some((id) => id === undefined)) {
+        showBoundary(new Error("File uploads failed. Please try again."));
+        return;
+      }
+
+      const uploadedFilesIds = uploadedFilesIdsMaybe.map((idMaybe) =>
+        removeUndefinedAndNull(idMaybe)
+      ) as unknown as string[];
+
       const expenseClaimSchema: ExpenseClaimSchema = {
         acknowledgement,
         additionalComments,
-        expenseClaimAmount: Number(expenseClaimAmount),
+        expenseClaimAmount: Number.parseInt(expenseClaimAmount),
         expenseClaimCurrency,
         expenseClaimDate,
         expenseClaimDescription,
         expenseClaimKind,
         requestStatus: "pending",
-        uploadedFilesIds: [],
+        uploadedFilesIds,
         userId,
         username,
       };
 
-      formSubmitPOST({
+      await formSubmitPOSTSafe({
+        accessToken,
+        closeSubmitFormModal,
         dispatch: expenseClaimDispatch,
         fetchAbortController,
-        fetchInterceptor,
         isComponentMounted,
         isSubmittingAction: expenseClaimAction.setIsSubmitting,
         isSuccessfulAction: expenseClaimAction.setIsSuccessful,
-        preFetchAbortController,
+        openSubmitFormModal,
         roleResourceRoutePaths: EXPENSE_CLAIM_ROLE_PATHS,
+        roles,
         schema: expenseClaimSchema,
-        schemaName: "expenseClaimSchema",
-        sessionId,
-        showBoundary,
-        userId,
-        username,
-        userRole: "manager",
+        triggerFormSubmitAction: expenseClaimAction.setTriggerFormSubmit,
       });
+    }
+
+    if (triggerFormSubmit) {
     }
 
     return () => {
       isComponentMountedRef.current = false;
-      preFetchAbortController?.abort();
       fetchAbortController?.abort();
     };
 
@@ -285,6 +347,19 @@ function ExpenseClaim() {
     />
   );
 
+  const displaySubmitSuccessNotificationModal = (
+    <NotificationModal
+      onCloseCallbacks={[closeSubmitFormModal]}
+      opened={openedSubmitFormModal}
+      notificationProps={{
+        loading: isSubmitting,
+        text: "Document upload successful!",
+      }}
+      title={<Title order={4}>Submitting ...</Title>}
+      withCloseButton={false}
+    />
+  );
+
   const stepper = (
     <AccessibleStepper
       attributes={{
@@ -299,7 +374,12 @@ function ExpenseClaim() {
     />
   );
 
-  return stepper;
+  return (
+    <Container w={700}>
+      {stepper}
+      {displaySubmitSuccessNotificationModal}
+    </Container>
+  );
 }
 
 export default ExpenseClaim;

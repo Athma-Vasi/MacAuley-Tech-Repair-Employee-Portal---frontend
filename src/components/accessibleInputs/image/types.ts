@@ -1,14 +1,14 @@
-import { Dispatch } from "react";
+import type { Dispatch } from "react";
 
-import { SetPageInErrorPayload } from "../../../types";
-import { ProductCategory } from "../../dashboard/types";
-import { AdditionalFieldsFormDataPayload } from "../../product/dispatch";
-import { ModifiedFile, OriginalFile } from "../AccessibleFileInput";
-import { AccessibleImageInputAction } from "./actions";
+import type { SetPageInErrorPayload } from "../../../types";
+import type { ProductCategory } from "../../dashboard/types";
+import type { AdditionalFieldsFormDataPayload } from "../../product/dispatch";
+import type { ModifiedFile, OriginalFile } from "../AccessibleFileInput";
+import type { AccessibleImageInputAction } from "./actions";
 
 type AccessibleImageInputAttributes<
   ValidValueAction extends string = string,
-  InvalidValueAction extends string = string
+  InvalidValueAction extends string = string,
 > = {
   disabled?: boolean;
   invalidValueAction: InvalidValueAction;
@@ -17,24 +17,24 @@ type AccessibleImageInputAttributes<
   page: number;
   parentDispatch?: Dispatch<
     | {
-        action: ValidValueAction;
-        payload: FormData;
-      }
+      action: ValidValueAction;
+      payload: FormData;
+    }
     | {
-        action: InvalidValueAction;
-        payload: SetPageInErrorPayload;
-      }
+      action: InvalidValueAction;
+      payload: SetPageInErrorPayload;
+    }
   >;
   productCategory?: ProductCategory;
   productCategoryDispatch?: Dispatch<
     | {
-        action: ValidValueAction;
-        payload: AdditionalFieldsFormDataPayload;
-      }
+      action: ValidValueAction;
+      payload: AdditionalFieldsFormDataPayload;
+    }
     | {
-        action: InvalidValueAction;
-        payload: SetPageInErrorPayload;
-      }
+      action: InvalidValueAction;
+      payload: SetPageInErrorPayload;
+    }
   >;
   /** unique id for local forage */
   storageKey: string;
@@ -43,9 +43,12 @@ type AccessibleImageInputAttributes<
 
 type AccessibleImageInputProps<
   ValidValueAction extends string = string,
-  InvalidValueAction extends string = string
+  InvalidValueAction extends string = string,
 > = {
-  attributes: AccessibleImageInputAttributes<ValidValueAction, InvalidValueAction>;
+  attributes: AccessibleImageInputAttributes<
+    ValidValueAction,
+    InvalidValueAction
+  >;
 };
 
 type AccessibleImageInputState = {
@@ -60,53 +63,53 @@ type AccessibleImageInputState = {
 
 type AccessibleImageInputDispatch =
   | {
-      action: AccessibleImageInputAction["addImageFileBlob"];
-      payload: ModifiedFile;
-    }
+    action: AccessibleImageInputAction["addImageFileBlob"];
+    payload: ModifiedFile;
+  }
   | {
-      action: AccessibleImageInputAction["removeImageFileBlob"];
-      payload: number;
-    }
+    action: AccessibleImageInputAction["removeImageFileBlob"];
+    payload: number;
+  }
   | {
-      action: AccessibleImageInputAction["addFileName"];
-      payload: string;
-    }
+    action: AccessibleImageInputAction["addFileName"];
+    payload: string;
+  }
   | {
-      action: AccessibleImageInputAction["setCurrentImageIndex"];
-      payload: number;
-    }
+    action: AccessibleImageInputAction["setCurrentImageIndex"];
+    payload: number;
+  }
   | {
-      action: AccessibleImageInputAction["resetImageFileBlob"];
-      payload: {
-        index: number;
-        value: OriginalFile;
-      };
-    }
-  | {
-      action: AccessibleImageInputAction["setImageFileBlobs"];
-      payload: {
-        index: number;
-        fileBlob: ModifiedFile;
-      };
-    }
-  | {
-      action: AccessibleImageInputAction["setIsLoading"];
-      payload: boolean;
-    }
-  | {
-      action: AccessibleImageInputAction["setQualities"];
-      payload: {
-        index: number;
-        value: number;
-      };
-    }
-  | {
-      action: AccessibleImageInputAction["setOrientations"];
-      payload: {
-        index: number;
-        value: number;
-      };
+    action: AccessibleImageInputAction["resetImageFileBlob"];
+    payload: {
+      index: number;
+      value: OriginalFile;
     };
+  }
+  | {
+    action: AccessibleImageInputAction["setImageFileBlobs"];
+    payload: {
+      index: number;
+      fileBlob: ModifiedFile;
+    };
+  }
+  | {
+    action: AccessibleImageInputAction["setIsLoading"];
+    payload: boolean;
+  }
+  | {
+    action: AccessibleImageInputAction["setQualities"];
+    payload: {
+      index: number;
+      value: number;
+    };
+  }
+  | {
+    action: AccessibleImageInputAction["setOrientations"];
+    payload: {
+      index: number;
+      value: number;
+    };
+  };
 
 export type {
   AccessibleImageInputAttributes,

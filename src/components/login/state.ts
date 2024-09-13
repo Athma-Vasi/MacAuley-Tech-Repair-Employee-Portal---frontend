@@ -1,7 +1,6 @@
 import type { LoginState } from "./types";
 
 const initialLoginState: LoginState = {
-  isError: false,
   isLoading: true,
   isSubmitting: false,
   isSuccessful: false,

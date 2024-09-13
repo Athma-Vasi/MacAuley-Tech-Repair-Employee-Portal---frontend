@@ -1,5 +1,13 @@
-import { Card, Group, Image, LoadingOverlay, Stack, Text, Tooltip } from "@mantine/core";
-import { compress, EImageType } from "image-conversion";
+import {
+  Card,
+  Group,
+  Image,
+  LoadingOverlay,
+  Stack,
+  Text,
+  Tooltip,
+} from "@mantine/core";
+import { compress, type EImageType } from "image-conversion";
 import localforage from "localforage";
 import { useEffect, useReducer, useRef } from "react";
 import { useErrorBoundary } from "react-error-boundary";
@@ -13,21 +21,37 @@ import {
   IMG_ORIENTATION_SLIDER_DATA,
   IMG_QUALITY_SLIDER_DATA,
 } from "../../imageUpload/constants";
-import { AccessibleFileInput, ModifiedFile, OriginalFile } from "../AccessibleFileInput";
+import {
+  AccessibleFileInput,
+  type ModifiedFile,
+  type OriginalFile,
+} from "../AccessibleFileInput";
 import { AccessibleSliderInput } from "../AccessibleSliderInput";
 import { GoldenGrid } from "../GoldenGrid";
 import { createAccessibleButtons } from "../utils";
-import { AccessibleImageInputAction, accessibleImageInputAction } from "./actions";
-import { ALLOWED_FILE_EXTENSIONS_REGEX, MAX_IMAGE_SIZE, MAX_IMAGES } from "./constants";
+import {
+  type AccessibleImageInputAction,
+  accessibleImageInputAction,
+} from "./actions";
+import {
+  ALLOWED_FILE_EXTENSIONS_REGEX,
+  MAX_IMAGE_SIZE,
+  MAX_IMAGES,
+} from "./constants";
 import { accessibleImageInputReducer } from "./reducers";
 import { initialAccessibleImageInputState } from "./state";
-import { AccessibleImageInputProps } from "./types";
+import type { AccessibleImageInputProps } from "./types";
 import { validateImages } from "./utils";
 
 function AccessibleImageInput<
   ValidValueAction extends string = string,
-  InvalidValueAction extends string = string
->({ attributes }: AccessibleImageInputProps<ValidValueAction, InvalidValueAction>) {
+  InvalidValueAction extends string = string,
+>(
+  { attributes }: AccessibleImageInputProps<
+    ValidValueAction,
+    InvalidValueAction
+  >,
+) {
   const {
     disabled,
     invalidValueAction,
@@ -43,7 +67,7 @@ function AccessibleImageInput<
 
   const [accessibleImageInputState, accessibleImageInputDispatch] = useReducer(
     accessibleImageInputReducer,
-    initialAccessibleImageInputState
+    initialAccessibleImageInputState,
   );
 
   const {
@@ -86,19 +110,21 @@ function AccessibleImageInput<
         });
 
         const modifiedFiles = await localforage.getItem<Array<ModifiedFile>>(
-          `${storageKey}-modifiedFiles`
+          `${storageKey}-modifiedFiles`,
         );
 
         const fileNames = await localforage.getItem<Array<string>>(
-          `${storageKey}-fileNames`
+          `${storageKey}-fileNames`,
         );
 
-        const qualities =
-          (await localforage.getItem<Array<number>>(`${storageKey}-qualities`)) ??
+        const qualities = (await localforage.getItem<Array<number>>(
+          `${storageKey}-qualities`,
+        )) ??
           Array.from({ length: maxImagesAmount }, () => 10);
 
-        const orientations =
-          (await localforage.getItem<Array<number>>(`${storageKey}-orientations`)) ??
+        const orientations = (await localforage.getItem<Array<number>>(
+          `${storageKey}-orientations`,
+        )) ??
           Array.from({ length: maxImagesAmount }, () => 1);
 
         if (!isMounted) {
@@ -160,7 +186,7 @@ function AccessibleImageInput<
     async function modifyImage(): Promise<void> {
       try {
         const originalFiles = await localforage.getItem<Array<OriginalFile>>(
-          `${storageKey}-originalFiles`
+          `${storageKey}-originalFiles`,
         );
 
         if (!originalFiles) {
@@ -195,16 +221,18 @@ function AccessibleImageInput<
           },
         });
 
-        const updatedModifiedFiles = originalFiles.map((originalFile, index) => {
-          if (index === currentImageIndex) {
-            return fileBlob;
-          }
-          return originalFile;
-        });
+        const updatedModifiedFiles = originalFiles.map(
+          (originalFile, index) => {
+            if (index === currentImageIndex) {
+              return fileBlob;
+            }
+            return originalFile;
+          },
+        );
 
         await localforage.setItem<Array<ModifiedFile>>(
           `${storageKey}-modifiedFiles`,
-          updatedModifiedFiles
+          updatedModifiedFiles,
         );
 
         const { areImagesInvalid } = validateImages({
@@ -228,13 +256,13 @@ function AccessibleImageInput<
               formDataAcc.append(
                 `${storageKey}-modifiedFiles`,
                 imageFileBlob,
-                fileNames[index]
+                fileNames[index],
               );
             }
 
             return formDataAcc;
           },
-          new FormData()
+          new FormData(),
         );
 
         parentDispatch?.({
@@ -269,7 +297,7 @@ function AccessibleImageInput<
 
         const isImageSizeInvalid = size > maxImageSize;
         const isImageTypeInvalid = !ALLOWED_FILE_EXTENSIONS_REGEX.test(
-          type.split("/")[1]
+          type.split("/")[1],
         );
         const isImageInvalid = isImageSizeInvalid || isImageTypeInvalid;
 
@@ -293,17 +321,20 @@ function AccessibleImageInput<
       }
     });
 
-    const value = imageFileBlobs.reduce<FormData>((formDataAcc, imageFileBlob, index) => {
-      if (imageFileBlob) {
-        formDataAcc.append(
-          `${storageKey}-modifiedFiles`,
-          imageFileBlob,
-          fileNames[index]
-        );
-      }
+    const value = imageFileBlobs.reduce<FormData>(
+      (formDataAcc, imageFileBlob, index) => {
+        if (imageFileBlob) {
+          formDataAcc.append(
+            `${storageKey}-modifiedFiles`,
+            imageFileBlob,
+            fileNames[index],
+          );
+        }
 
-      return formDataAcc;
-    }, new FormData());
+        return formDataAcc;
+      },
+      new FormData(),
+    );
 
     if (productCategory && productCategoryDispatch) {
       productCategoryDispatch({
@@ -339,7 +370,9 @@ function AccessibleImageInput<
     const { size, type } = fileBlob ?? new Blob([]);
 
     const isImageSizeInvalid = size > maxImageSize;
-    const isImageTypeInvalid = !ALLOWED_FILE_EXTENSIONS_REGEX.test(type.split("/")[1]);
+    const isImageTypeInvalid = !ALLOWED_FILE_EXTENSIONS_REGEX.test(
+      type.split("/")[1],
+    );
     const isImageInvalid = isImageSizeInvalid || isImageTypeInvalid;
 
     const validScreenreaderTextElement = (
@@ -372,7 +405,7 @@ function AccessibleImageInput<
     const img = (
       <Image
         alt={isImageInvalid ? "Invalid image" : fileNames[index] ?? "Image"}
-        key={index}
+        key={index.toString()}
         maw={300}
         src={URL.createObjectURL(fileBlob ?? new Blob([]))}
         withPlaceholder
@@ -399,7 +432,9 @@ function AccessibleImageInput<
       <GoldenGrid>
         <Text color={imageTypeColor}>Type:</Text>
         <Text color={imageTypeColor}>
-          {type.length ? type.split("/")[1] : fileNames[index].split(".")[1] ?? "Unknown"}
+          {type.length
+            ? type.split("/")[1]
+            : fileNames[index].split(".")[1] ?? "Unknown"}
         </Text>
       </GoldenGrid>
     );
@@ -416,19 +451,25 @@ function AccessibleImageInput<
         onClick: async (
           _event:
             | React.MouseEvent<HTMLButtonElement, MouseEvent>
-            | React.PointerEvent<HTMLButtonElement>
+            | React.PointerEvent<HTMLButtonElement>,
         ) => {
           const modifiedFiles = await localforage.getItem<Array<ModifiedFile>>(
-            storageKey
+            storageKey,
           );
           modifiedFiles?.splice(index, 1);
-          await localforage.setItem(`${storageKey}-modifiedFiles`, modifiedFiles);
+          await localforage.setItem(
+            `${storageKey}-modifiedFiles`,
+            modifiedFiles,
+          );
 
           const originalFiles = await localforage.getItem<Array<OriginalFile>>(
-            `${storageKey}-originalFiles`
+            `${storageKey}-originalFiles`,
           );
           originalFiles?.splice(index, 1);
-          await localforage.setItem(`${storageKey}-originalFiles`, originalFiles);
+          await localforage.setItem(
+            `${storageKey}-originalFiles`,
+            originalFiles,
+          );
 
           accessibleImageInputDispatch({
             action: accessibleImageInputAction.removeImageFileBlob,
@@ -445,10 +486,10 @@ function AccessibleImageInput<
         onClick: async (
           _event:
             | React.MouseEvent<HTMLButtonElement, MouseEvent>
-            | React.PointerEvent<HTMLButtonElement>
+            | React.PointerEvent<HTMLButtonElement>,
         ) => {
           const originalFiles = await localforage.getItem<Array<OriginalFile>>(
-            `${storageKey}-originalFiles`
+            `${storageKey}-originalFiles`,
           );
 
           if (!originalFiles) {
@@ -467,17 +508,13 @@ function AccessibleImageInput<
       },
     ]);
 
-    const removeButtonWithTooltip = isImageInvalid ? (
-      <Tooltip label={`${imageName} is invalid`}>{removeButton}</Tooltip>
-    ) : (
-      removeButton
-    );
+    const removeButtonWithTooltip = isImageInvalid
+      ? <Tooltip label={`${imageName} is invalid`}>{removeButton}</Tooltip>
+      : removeButton;
 
-    const resetButtonWithTooltip = isImageInvalid ? (
-      <Tooltip label={invalidImageDescription}>{resetButton}</Tooltip>
-    ) : (
-      resetButton
-    );
+    const resetButtonWithTooltip = isImageInvalid
+      ? <Tooltip label={invalidImageDescription}>{resetButton}</Tooltip>
+      : resetButton;
 
     const imageQualitySlider = (
       <AccessibleSliderInput
@@ -489,11 +526,15 @@ function AccessibleImageInput<
           min: 1,
           name: "quality",
           onChange: async (value: number) => {
-            const storedQualities =
-              (await localforage.getItem<Array<number>>(`${storageKey}-qualities`)) ??
+            const storedQualities = (await localforage.getItem<Array<number>>(
+              `${storageKey}-qualities`,
+            )) ??
               Array.from({ length: maxImagesAmount }, () => 10);
             storedQualities[index] = value;
-            await localforage.setItem(`${storageKey}-qualities`, storedQualities);
+            await localforage.setItem(
+              `${storageKey}-qualities`,
+              storedQualities,
+            );
           },
           parentDynamicDispatch: accessibleImageInputDispatch,
           step: 1,
@@ -524,10 +565,15 @@ function AccessibleImageInput<
           name: "orientation",
           onChange: async (value: number) => {
             const storedOrientations =
-              (await localforage.getItem<Array<number>>(`${storageKey}-orientations`)) ??
-              Array.from({ length: maxImagesAmount }, () => 1);
+              (await localforage.getItem<Array<number>>(
+                `${storageKey}-orientations`,
+              )) ??
+                Array.from({ length: maxImagesAmount }, () => 1);
             storedOrientations[index] = value;
-            await localforage.setItem(`${storageKey}-orientations`, storedOrientations);
+            await localforage.setItem(
+              `${storageKey}-orientations`,
+              storedOrientations,
+            );
           },
           parentDynamicDispatch: accessibleImageInputDispatch,
           step: 1,
@@ -542,7 +588,9 @@ function AccessibleImageInput<
         {imageOrientationSlider}
         <Group position="center">
           <Text>
-            {qualities[index] > 8 ? "Quality must be less than 90%" : "Orientation"}
+            {qualities[index] > 8
+              ? "Quality must be less than 90%"
+              : "Orientation"}
           </Text>
         </Group>
       </Stack>
@@ -556,7 +604,9 @@ function AccessibleImageInput<
       >
         <Stack spacing="xl">
           {img}
-          {isImageInvalid ? invalidScreenreaderTextElement : validScreenreaderTextElement}
+          {isImageInvalid
+            ? invalidScreenreaderTextElement
+            : validScreenreaderTextElement}
           <Stack>
             {imageName}
             {imageSize}

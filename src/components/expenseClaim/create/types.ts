@@ -46,7 +46,7 @@ type ExpenseClaimState = {
   expenseClaimDate: string;
   expenseClaimDescription: string;
   expenseClaimKind: ExpenseClaimKind;
-  formData: FormData;
+  formData: Array<FormData>;
   isSubmitting: boolean;
   isSuccessful: boolean;
   pagesInError: Set<number>;

@@ -37,7 +37,6 @@ function Login() {
     initialLoginState,
   );
   const {
-    isError,
     isLoading,
     isSubmitting,
     isSuccessful,

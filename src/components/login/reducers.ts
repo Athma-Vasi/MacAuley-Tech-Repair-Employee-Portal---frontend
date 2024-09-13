@@ -13,23 +13,12 @@ const loginReducersMap = new Map<
     LoginAction[keyof LoginAction],
     (state: LoginState, dispatch: LoginDispatch) => LoginState
 >([
-    [loginAction.setIsError, loginReducer_setIsError],
     [loginAction.setIsLoading, loginReducer_setIsLoading],
     [loginAction.setIsSubmitting, loginReducer_setIsSubmitting],
     [loginAction.setIsSuccessful, loginReducer_setIsSuccessful],
     [loginAction.setPassword, loginReducer_setPassword],
     [loginAction.setTriggerFormSubmit, loginReducer_setTriggerFormSubmit],
 ]);
-
-function loginReducer_setIsError(
-    state: LoginState,
-    dispatch: LoginDispatch,
-): LoginState {
-    return {
-        ...state,
-        isError: dispatch.payload as boolean,
-    };
-}
 
 function loginReducer_setIsLoading(
     state: LoginState,

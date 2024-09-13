@@ -1,7 +1,6 @@
 import type { LoginAction } from "./actions";
 
 type LoginState = {
-  isError: boolean;
   isLoading: boolean;
   isSubmitting: boolean;
   isSuccessful: boolean;
@@ -11,9 +10,6 @@ type LoginState = {
 };
 
 type LoginDispatch = {
-  action: LoginAction["setIsError"];
-  payload: boolean;
-} | {
   action: LoginAction["setIsLoading"];
   payload: boolean;
 } | {

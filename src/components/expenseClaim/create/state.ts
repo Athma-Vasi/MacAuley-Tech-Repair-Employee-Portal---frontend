@@ -8,7 +8,7 @@ const initialExpenseClaimState: ExpenseClaimState = {
   expenseClaimDate: "",
   expenseClaimDescription: "",
   expenseClaimKind: "Travel and Accomodation",
-  formData: new FormData(),
+  formData: [new FormData()],
   isSubmitting: false,
   isSuccessful: false,
   pagesInError: new Set(),

@@ -1,5 +1,4 @@
 type LoginAction = {
-    setIsError: "setIsError";
     setIsLoading: "setIsLoading";
     setIsSubmitting: "setIsSubmitting";
     setIsSuccessful: "setIsSuccessful";
@@ -9,7 +8,6 @@ type LoginAction = {
 };
 
 const loginAction: LoginAction = {
-    setIsError: "setIsError",
     setIsLoading: "setIsLoading",
     setIsSubmitting: "setIsSubmitting",
     setIsSuccessful: "setIsSuccessful",

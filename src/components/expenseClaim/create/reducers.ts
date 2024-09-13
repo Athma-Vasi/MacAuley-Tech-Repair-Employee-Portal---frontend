@@ -134,9 +134,10 @@ function expenseClaimReducer_setFormData(
   state: ExpenseClaimState,
   dispatch: ExpenseClaimDispatch,
 ): ExpenseClaimState {
+  const formData = dispatch.payload as FormData;
   return {
     ...state,
-    formData: dispatch.payload as FormData,
+    formData: [...state.formData, formData],
   };
 }
 

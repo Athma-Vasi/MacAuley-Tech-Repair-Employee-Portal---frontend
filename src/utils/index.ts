@@ -2768,6 +2768,7 @@ async function formSubmitPOSTSafe<
   {
     accessToken = "",
     closeSubmitFormModal,
+    customUrl,
     dispatch,
     fetchAbortController,
     isComponentMounted,
@@ -2782,6 +2783,7 @@ async function formSubmitPOSTSafe<
   }: {
     accessToken?: string;
     closeSubmitFormModal: () => void;
+    customUrl?: URL | string;
     dispatch: React.Dispatch<{
       action: IsSubmittingAction | IsSuccessfulAction | TriggerFormSubmitAction;
       payload: boolean;
@@ -2793,10 +2795,10 @@ async function formSubmitPOSTSafe<
     isSubmittingAction: IsSubmittingAction;
     isSuccessfulAction: IsSuccessfulAction;
     openSubmitFormModal: () => void;
-    requestBody?: string;
+    requestBody?: string | FormData;
     roleResourceRoutePaths: RoleResourceRoutePaths;
     roles: UserRoles;
-    schema: Record<string, unknown>;
+    schema?: Record<string, unknown>;
     triggerFormSubmitAction: TriggerFormSubmitAction;
   },
 ): Promise<SafeBoxResult<HttpServerResponse<DBRecord>>> {
@@ -2812,10 +2814,11 @@ async function formSubmitPOSTSafe<
     : roles.includes("Admin")
     ? "admin"
     : "employee";
-  const url: URL = urlBuilder({ path: roleResourceRoutePaths[userRole] });
+  const url = customUrl ??
+    urlBuilder({ path: roleResourceRoutePaths[userRole] });
 
   const body = requestBody ??
-    JSON.stringify({ schema });
+    JSON.stringify({ schema: schema ?? {} });
 
   const requestInit: RequestInit = {
     body,
@@ -2884,6 +2887,7 @@ async function fetchResourceGETSafe<
 >({
   accessToken = "",
   closeSubmitFormModal,
+  customUrl,
   fetchAbortController,
   isComponentMounted,
   loadingMessage,
@@ -2900,6 +2904,7 @@ async function fetchResourceGETSafe<
 }: {
   accessToken?: string;
   closeSubmitFormModal: () => void;
+  customUrl?: URL | string;
   fetchAbortController: AbortController;
   isComponentMounted: boolean;
   loadingMessage: string;
@@ -2943,7 +2948,9 @@ async function fetchResourceGETSafe<
     : roles.includes("Admin")
     ? "admin"
     : "employee";
-  const url: URL = urlBuilder({ path: roleResourceRoutePaths[userRole] });
+
+  const url = customUrl ??
+    urlBuilder({ path: roleResourceRoutePaths[userRole] });
 
   const requestInit: RequestInit = {
     headers: {
@@ -3020,6 +3027,7 @@ async function fetchResourcePATCHSafe<
 >({
   accessToken = "",
   closeSubmitFormModal,
+  customUrl,
   fetchAbortController,
   isComponentMounted,
   openSubmitFormModal,
@@ -3037,6 +3045,7 @@ async function fetchResourcePATCHSafe<
 }: {
   accessToken?: string;
   closeSubmitFormModal: () => void;
+  customUrl?: URL | string;
   fetchAbortController: AbortController;
   isComponentMounted: boolean;
   openSubmitFormModal: () => void;
@@ -3081,7 +3090,9 @@ async function fetchResourcePATCHSafe<
     : roles.includes("Admin")
     ? "admin"
     : "employee";
-  const url: URL = urlBuilder({ path: roleResourceRoutePaths[userRole] });
+
+  const url = customUrl ??
+    urlBuilder({ path: roleResourceRoutePaths[userRole] });
 
   const requestInit: RequestInit = {
     body: requestBody,
