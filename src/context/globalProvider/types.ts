@@ -17,6 +17,7 @@ import type { SunburstChartData } from "../../components/charts/responsiveSunbur
 import type { NivoChartUnitKind } from "../../components/charts/types";
 import type { WindowSize } from "../../hooks/useWindowSize";
 import type { QueryResponseData } from "../../types";
+import type { GlobalAction } from "./actions";
 
 type ColorScheme = "light" | "dark";
 type Shade = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;

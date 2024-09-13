@@ -1,3 +1,4 @@
+import { type GlobalAction, globalAction } from "./actions";
 import type { GlobalDispatch, GlobalState } from "./types";
 
 function globalReducer(

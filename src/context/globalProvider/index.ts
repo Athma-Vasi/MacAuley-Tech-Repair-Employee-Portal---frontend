@@ -1,3 +1,3 @@
-import { GlobalProvider } from './GlobalProvider';
+import { GlobalProvider } from "./GlobalProvider";
 
 export { GlobalProvider };

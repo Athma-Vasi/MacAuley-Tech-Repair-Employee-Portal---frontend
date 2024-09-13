@@ -33,3 +33,6 @@ const globalAction: GlobalAction = {
     setWidth: "setWidth",
     setWindowSize: "setWindowSize",
 };
+
+export { globalAction };
+export type { GlobalAction };
