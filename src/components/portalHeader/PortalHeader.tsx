@@ -1,50 +1,38 @@
 import { Burger, Flex, Header, MediaQuery, Text, Title } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 
 import { COLORS_SWATCHES } from "../../constants/data";
-import { globalAction } from "../../context/globalProvider/state";
+
+import { globalAction } from "../../context/globalProvider/actions";
 import { useAuth } from "../../hooks/useAuth";
 import { useGlobalState } from "../../hooks/useGlobalState";
-import { logState, returnThemeColors } from "../../utils";
-import { PortalHeaderProps } from "./types";
+import { returnThemeColors } from "../../utils";
+import type { PortalHeaderProps } from "./types";
 import { UserAvatar } from "./userAvatar/UserAvatar";
 
 function PortalHeader({ openedHeader, setOpenedHeader }: PortalHeaderProps) {
   const { authState } = useAuth();
-  const { accessToken, username } = authState;
+  const { userDocument, decodedToken: { userInfo: { username } } } = authState;
 
   const {
-    globalState: { themeObject, width, userDocument },
+    globalState: { themeObject, width },
     globalDispatch,
   } = useGlobalState();
-  const matchesPrefersReducedMotion = useMediaQuery("(prefers-reduced-motion: reduce)");
 
-  // const navigate = useNavigate();
-
-  // useEffect(() => {
-  //   if (!accessToken) {
-  //     navigate("/");
-  //   }
-  // }, [accessToken, navigate]);
+  const matchesPrefersReducedMotion = useMediaQuery(
+    "(prefers-reduced-motion: reduce)",
+  );
 
   useEffect(() => {
     if (!matchesPrefersReducedMotion) {
       return;
     }
     globalDispatch({
-      type: globalAction.setPrefersReducedMotion,
+      action: globalAction.setPrefersReducedMotion,
       payload: matchesPrefersReducedMotion,
     });
   }, [globalDispatch, matchesPrefersReducedMotion]);
-
-  // useEffect(() => {
-  //   logState({
-  //     state: authState,
-  //     groupLabel: "auth state in PortalHeader",
-  //   });
-  // }, [authState]);
 
   const {
     appThemeColors: { backgroundColor },
@@ -76,7 +64,7 @@ function PortalHeader({ openedHeader, setOpenedHeader }: PortalHeaderProps) {
               </Title>
             </Flex>
 
-            <Text>Welcome {userDocument?.firstName ?? username}</Text>
+            <Text>{`Welcome ${userDocument?.firstName ?? username}`}</Text>
           </Flex>
         )}
 
