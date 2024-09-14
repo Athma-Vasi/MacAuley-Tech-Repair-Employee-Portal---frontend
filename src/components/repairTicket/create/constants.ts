@@ -74,7 +74,7 @@ function returnCreateRepairNoteStepperPages() {
   };
 
   const partUnderWarrantySwitchChild: StepperChild = {
-    inputType: "checkbox",
+    inputType: "switch",
     name: "partUnderWarranty",
     validationKey: "acknowledgement",
   };

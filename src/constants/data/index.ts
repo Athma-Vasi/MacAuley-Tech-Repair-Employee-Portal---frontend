@@ -128,7 +128,10 @@ const JOB_POSITION_DATA: CheckboxRadioSelectData<JobPosition> = [
   { value: "Chief Financial Officer", label: "Chief Financial Officer" },
   { value: "Chief Technology Officer", label: "Chief Technology Officer" },
   { value: "Chief Marketing Officer", label: "Chief Marketing Officer" },
-  { value: "Chief Human Resources Officer", label: "Chief Human Resources Officer" },
+  {
+    value: "Chief Human Resources Officer",
+    label: "Chief Human Resources Officer",
+  },
 
   // human resources
   { value: "Human Resources Manager", label: "Human Resources Manager" },
@@ -136,7 +139,10 @@ const JOB_POSITION_DATA: CheckboxRadioSelectData<JobPosition> = [
     value: "Compensation and Benefits Specialist",
     label: "Compensation and Benefits Specialist",
   },
-  { value: "Health and Safety Specialist", label: "Health and Safety Specialist" },
+  {
+    value: "Health and Safety Specialist",
+    label: "Health and Safety Specialist",
+  },
   { value: "Training Specialist", label: "Training Specialist" },
   { value: "Recruiting Specialist", label: "Recruiting Specialist" },
 
@@ -159,15 +165,24 @@ const JOB_POSITION_DATA: CheckboxRadioSelectData<JobPosition> = [
   // sales
   { value: "Sales Manager", label: "Sales Manager" },
   { value: "Sales Representative", label: "Sales Representative" },
-  { value: "Business Development Specialist", label: "Business Development Specialist" },
+  {
+    value: "Business Development Specialist",
+    label: "Business Development Specialist",
+  },
   { value: "Sales Support Specialist", label: "Sales Support Specialist" },
   { value: "Sales Operations Analyst", label: "Sales Operations Analyst" },
 
   // marketing
   { value: "Marketing Manager", label: "Marketing Manager" },
-  { value: "Digital Marketing Specialist", label: "Digital Marketing Specialist" },
+  {
+    value: "Digital Marketing Specialist",
+    label: "Digital Marketing Specialist",
+  },
   { value: "Graphic Designer", label: "Graphic Designer" },
-  { value: "Public Relations Specialist", label: "Public Relations Specialist" },
+  {
+    value: "Public Relations Specialist",
+    label: "Public Relations Specialist",
+  },
   { value: "Marketing Analyst", label: "Marketing Analyst" },
 
   // information technology
@@ -180,7 +195,10 @@ const JOB_POSITION_DATA: CheckboxRadioSelectData<JobPosition> = [
   { value: "Software Engineer", label: "Software Engineer" },
 
   // repair technicians
-  { value: "Repair Technicians Supervisor", label: "Repair Technicians Supervisor" },
+  {
+    value: "Repair Technicians Supervisor",
+    label: "Repair Technicians Supervisor",
+  },
   { value: "Electronics Technician", label: "Electronics Technician" },
   { value: "Computer Technician", label: "Computer Technician" },
   { value: "Smartphone Technician", label: "Smartphone Technician" },
@@ -198,13 +216,25 @@ const JOB_POSITION_DATA: CheckboxRadioSelectData<JobPosition> = [
   { value: "Warehouse Supervisor", label: "Warehouse Supervisor" },
   { value: "Inventory Clerk", label: "Inventory Clerk" },
   { value: "Delivery Driver", label: "Delivery Driver" },
-  { value: "Parts and Materials Handler", label: "Parts and Materials Handler" },
+  {
+    value: "Parts and Materials Handler",
+    label: "Parts and Materials Handler",
+  },
   { value: "Shipper/Receiver", label: "Shipper/Receiver" },
 
   // customer service
-  { value: "Customer Service Supervisor", label: "Customer Service Supervisor" },
-  { value: "Customer Service Representative", label: "Customer Service Representative" },
-  { value: "Technical Support Specialist", label: "Technical Support Specialist" },
+  {
+    value: "Customer Service Supervisor",
+    label: "Customer Service Supervisor",
+  },
+  {
+    value: "Customer Service Representative",
+    label: "Customer Service Representative",
+  },
+  {
+    value: "Technical Support Specialist",
+    label: "Technical Support Specialist",
+  },
 
   // maintenance
   { value: "Maintenance Supervisor", label: "Maintenance Supervisor" },
@@ -236,7 +266,11 @@ const DEPARTMENT_JOB_POSITION_MAP = new Map<Department, string[]>([
     ],
   ],
 
-  ["Store Administration", ["Store Manager", "Shift Supervisor", "Office Manager"]],
+  ["Store Administration", [
+    "Store Manager",
+    "Shift Supervisor",
+    "Office Manager",
+  ]],
 
   [
     "Office Administration",
@@ -300,7 +334,10 @@ const DEPARTMENT_JOB_POSITION_MAP = new Map<Department, string[]>([
     ],
   ],
 
-  ["Field Service Technicians", ["Field Service Supervisor", "On-Site Technician"]],
+  ["Field Service Technicians", [
+    "Field Service Supervisor",
+    "On-Site Technician",
+  ]],
 
   [
     "Logistics and Inventory",
@@ -322,7 +359,11 @@ const DEPARTMENT_JOB_POSITION_MAP = new Map<Department, string[]>([
     ],
   ],
 
-  ["Maintenance", ["Maintenance Supervisor", "Maintenance Worker", "Custodian"]],
+  ["Maintenance", [
+    "Maintenance Supervisor",
+    "Maintenance Worker",
+    "Custodian",
+  ]],
 ]);
 
 const STORE_LOCATION_DATA: CheckboxRadioSelectData<StoreLocation> = [
@@ -597,10 +638,16 @@ const CURRENCY_DATA: CheckboxRadioSelectData<Currency> = [
   { value: "CAD", label: "CAD" },
 ];
 
+const CHECKBOX_SWITCH_DATA: CheckboxRadioSelectData = [
+  { value: "true", label: "Yes" },
+  { value: "false", label: "No" },
+];
+
 export {
   ALLOWED_FILE_ENCODINGS,
   ALLOWED_FILE_EXTENSIONS,
   ALLOWED_FILE_MIME_TYPES,
+  CHECKBOX_SWITCH_DATA,
   COLORS_SWATCHES,
   COUNTRIES_DATA,
   CURRENCY_DATA,

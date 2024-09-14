@@ -1,14 +1,14 @@
-import { Box, MantineSize, Switch } from "@mantine/core";
-import { ChangeEvent, ReactNode, RefObject } from "react";
+import { Box, type MantineSize, Switch } from "@mantine/core";
+import type { ChangeEvent, ReactNode, RefObject } from "react";
 
 import { useGlobalState } from "../../hooks";
-import { SetPageInErrorPayload } from "../../types";
+import type { SetPageInErrorPayload } from "../../types";
 import { splitCamelCase } from "../../utils";
 import { createAccessibleSwitchOnOffTextElements } from "./utils";
 
 type AccessibleSwitchInputAttributes<
   ValidValueAction extends string = string,
-  InvalidValueAction extends string = string
+  InvalidValueAction extends string = string,
 > = {
   checked: boolean;
   disabled?: boolean;
@@ -21,13 +21,13 @@ type AccessibleSwitchInputAttributes<
   onLabel: ReactNode;
   parentDispatch: React.Dispatch<
     | {
-        action: ValidValueAction;
-        payload: boolean;
-      }
+      action: ValidValueAction;
+      payload: boolean;
+    }
     | {
-        action: InvalidValueAction;
-        payload: SetPageInErrorPayload;
-      }
+      action: InvalidValueAction;
+      payload: SetPageInErrorPayload;
+    }
   >;
   radius?: MantineSize;
   ref?: RefObject<HTMLInputElement>;
@@ -41,20 +41,28 @@ type AccessibleSwitchInputAttributes<
   switchOnDescription?: string;
   thumbIcon?: ReactNode;
   validValueAction: ValidValueAction;
-  value: string;
+  value: boolean;
 };
 
 type AccessibleSwitchInputProps<
   ValidValueAction extends string = string,
-  InvalidValueAction extends string = string
+  InvalidValueAction extends string = string,
 > = {
-  attributes: AccessibleSwitchInputAttributes<ValidValueAction, InvalidValueAction>;
+  attributes: AccessibleSwitchInputAttributes<
+    ValidValueAction,
+    InvalidValueAction
+  >;
 };
 
 function AccessibleSwitchInput<
   ValidValueAction extends string = string,
-  InvalidValueAction extends string = string
->({ attributes }: AccessibleSwitchInputProps<ValidValueAction, InvalidValueAction>) {
+  InvalidValueAction extends string = string,
+>(
+  { attributes }: AccessibleSwitchInputProps<
+    ValidValueAction,
+    InvalidValueAction
+  >,
+) {
   const {
     checked,
     disabled = false,
@@ -98,21 +106,17 @@ function AccessibleSwitchInput<
       <Switch
         aria-label={name}
         aria-required={required}
-        aria-describedby={
-          checked
-            ? // id of switchOnTextElement
-              `${name}-on`
-            : // id of switchOffTextElement
-              `${name}-off`
-        }
+        aria-describedby={checked
+          // id of switchOnTextElement
+          ? `${name}-on`
+          // id of switchOffTextElement
+          : `${name}-off`}
         checked={checked}
-        description={
-          preventErrorStateWhenOff
-            ? ""
-            : checked
-            ? switchOnTextElement
-            : switchOffTextElement
-        }
+        description={preventErrorStateWhenOff
+          ? ""
+          : checked
+          ? switchOnTextElement
+          : switchOffTextElement}
         disabled={disabled}
         label={label}
         labelPosition={labelPosition}
@@ -146,7 +150,7 @@ function AccessibleSwitchInput<
         required={required}
         size={size}
         thumbIcon={thumbIcon}
-        value={value}
+        value={value ? "Yes" : "No"}
       />
 
       <Box
