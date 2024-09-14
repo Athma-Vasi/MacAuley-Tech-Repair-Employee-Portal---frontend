@@ -6,28 +6,29 @@ import {
     type Variants,
 } from "@mantine/core";
 import type { ReactNode } from "react";
+import { TbChevronDownRight } from "react-icons/tb";
 import { useGlobalState } from "../../hooks";
 import { splitCamelCase } from "../../utils";
 import { createAccessibleNavLinkTextElements } from "./utils";
 
 type AccessibleNavLinkAttributes = {
-    active: boolean;
-    children: ReactNode;
-    childrenOffset: number | "xs" | "sm" | "md" | "lg" | "xl";
-    color: MantineColor;
-    defaultOpened: boolean;
+    active?: boolean;
+    children?: ReactNode;
+    childrenOffset?: number | "xs" | "sm" | "md" | "lg" | "xl";
+    color?: MantineColor;
+    defaultOpened?: boolean;
     description: string;
-    disableRightSectionRotation: boolean;
-    disabled: boolean;
-    icon: ReactNode;
+    disableRightSectionRotation?: boolean;
+    disabled?: boolean;
+    icon?: ReactNode;
     index?: number;
     label?: ReactNode;
     name: string;
-    noWrap: boolean;
+    noWrap?: boolean;
     onChange: (opened: boolean) => void;
-    opened: boolean;
-    rightSection: ReactNode;
-    variant: Variants<"light" | "filled" | "subtle">;
+    opened?: boolean;
+    rightSection?: ReactNode;
+    variant?: Variants<"light" | "filled" | "subtle">;
 };
 
 type AccessibleNavLinkProps = {
@@ -40,22 +41,22 @@ function AccessibleNavLink({ attributes }: AccessibleNavLinkProps) {
     } = useGlobalState();
 
     const {
-        active,
-        children,
-        childrenOffset,
+        active = false,
+        children = null,
+        childrenOffset = 0,
         color,
-        defaultOpened,
+        defaultOpened = false,
         description,
-        disableRightSectionRotation,
-        disabled,
-        icon,
-        index,
+        disableRightSectionRotation = false,
+        disabled = false,
+        icon = <TbChevronDownRight />,
+        index = 0,
         name,
-        noWrap,
+        noWrap = false,
         onChange,
-        opened,
-        rightSection,
-        variant,
+        opened = false,
+        rightSection = null,
+        variant = "light",
     } = attributes;
     const label = attributes.label ?? splitCamelCase(name);
 
@@ -69,6 +70,7 @@ function AccessibleNavLink({ attributes }: AccessibleNavLinkProps) {
     const navLink = (
         <NavLink
             active={active}
+            childrenOffset={childrenOffset}
             color={color}
             defaultOpened={defaultOpened}
             description={description}
