@@ -25,7 +25,7 @@ type CreateRepairTicketAction = {
     setRepairPriority: "setRepairPriority";
 
     setTriggerFormSubmit: "setTriggerFormSubmit";
-    setPagesInError: "setPagesInError";
+    setPageInError: "setPageInError";
     setIsSubmitting: "setIsSubmitting";
     setIsSuccessful: "setIsSuccessful";
 };
@@ -57,7 +57,7 @@ const createRepairTicketAction: CreateRepairTicketAction = {
     setRepairPriority: "setRepairPriority",
 
     setTriggerFormSubmit: "setTriggerFormSubmit",
-    setPagesInError: "setPagesInError",
+    setPageInError: "setPageInError",
     setIsSubmitting: "setIsSubmitting",
     setIsSuccessful: "setIsSuccessful",
 };

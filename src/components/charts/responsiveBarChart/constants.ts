@@ -1,7 +1,13 @@
-import { CheckboxRadioSelectData } from "../../../types";
-import { NivoBarGroupMode, NivoBarLayout, NivoBarValueScale } from "../types";
+import type { CheckboxRadioSelectData } from "../../../types";
+import type {
+  NivoBarGroupMode,
+  NivoBarLayout,
+  NivoBarValueScale,
+} from "../types";
 
-const BAR_CHART_GROUP_MODE_SELECT_DATA: CheckboxRadioSelectData<NivoBarGroupMode> = [
+const BAR_CHART_GROUP_MODE_SELECT_DATA: CheckboxRadioSelectData<
+  NivoBarGroupMode
+> = [
   { value: "stacked", label: "Stacked" },
   { value: "grouped", label: "Grouped" },
 ];
@@ -11,7 +17,9 @@ const BAR_CHART_LAYOUT_SELECT_DATA: CheckboxRadioSelectData<NivoBarLayout> = [
   { value: "vertical", label: "Vertical" },
 ];
 
-const BAR_CHART_VALUE_SCALE_SELECT_DATA: CheckboxRadioSelectData<NivoBarValueScale> = [
+const BAR_CHART_VALUE_SCALE_SELECT_DATA: CheckboxRadioSelectData<
+  NivoBarValueScale
+> = [
   { value: "linear", label: "Linear" },
   { value: "symlog", label: "Symlog" },
 ];

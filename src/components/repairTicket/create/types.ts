@@ -118,7 +118,7 @@ type CreateRepairTicketDispatch = {
   action: CreateRepairTicketAction["setTriggerFormSubmit"];
   payload: boolean;
 } | {
-  action: CreateRepairTicketAction["setPagesInError"];
+  action: CreateRepairTicketAction["setPageInError"];
   payload: SetPageInErrorPayload;
 } | {
   action: CreateRepairTicketAction["setIsSubmitting"];

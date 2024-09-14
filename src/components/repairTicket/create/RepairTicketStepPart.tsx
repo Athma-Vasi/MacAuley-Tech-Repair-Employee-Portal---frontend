@@ -1,3 +1,114 @@
+import { Stack } from "@mantine/core";
+import type { StepperPage } from "../../../types";
+import { AccessibleDateTimeInput } from "../../accessibleInputs/AccessibleDateTimeInput";
+import { AccessibleTextAreaInput } from "../../accessibleInputs/AccessibleTextAreaInput";
+import { AccessibleTextInput } from "../../accessibleInputs/text/AccessibleTextInput";
+import type { CreateRepairTicketAction } from "./actions";
+import type { CreateRepairTicketDispatch } from "./types";
+
+type RepairTicketStepPartProps = {
+  partName: string;
+  partSerialId: string;
+  dateReceived: string;
+  descriptionOfIssue: string;
+  initialInspectionNotes: string;
+
+  createRepairTicketAction: CreateRepairTicketAction;
+  createRepairTicketDispatch: React.Dispatch<CreateRepairTicketDispatch>;
+  stepperPages: StepperPage[];
+};
+
+function RepairTicketStepPart(
+  {
+    stepperPages,
+    partSerialId,
+    partName,
+    initialInspectionNotes,
+    descriptionOfIssue,
+    dateReceived,
+    createRepairTicketDispatch,
+    createRepairTicketAction,
+  }: RepairTicketStepPartProps,
+) {
+  const partNameTextInput = (
+    <AccessibleTextInput
+      attributes={{
+        invalidValueAction: createRepairTicketAction.setPageInError,
+        name: "partName",
+        parentDispatch: createRepairTicketDispatch,
+        stepperPages,
+        validValueAction: createRepairTicketAction.setPartName,
+        value: partName,
+      }}
+    />
+  );
+
+  const partSerialIdTextInput = (
+    <AccessibleTextInput
+      attributes={{
+        invalidValueAction: createRepairTicketAction.setPageInError,
+        name: "partSerialId",
+        parentDispatch: createRepairTicketDispatch,
+        stepperPages,
+        validValueAction: createRepairTicketAction.setPartSerialId,
+        value: partSerialId,
+      }}
+    />
+  );
+
+  const dateReceivedDateTimeInput = (
+    <AccessibleDateTimeInput
+      attributes={{
+        dateKind: "date near past",
+        inputKind: "date",
+        invalidValueAction: createRepairTicketAction.setPageInError,
+        name: "dateReceived",
+        parentDispatch: createRepairTicketDispatch,
+        stepperPages,
+        validValueAction: createRepairTicketAction.setDateReceived,
+        value: dateReceived,
+      }}
+    />
+  );
+
+  const descriptionOfIssueTextAreaInput = (
+    <AccessibleTextAreaInput
+      attributes={{
+        invalidValueAction: createRepairTicketAction.setPageInError,
+        name: "descriptionOfIssue",
+        parentDispatch: createRepairTicketDispatch,
+        stepperPages,
+        validValueAction: createRepairTicketAction.setDescriptionOfIssue,
+        value: descriptionOfIssue,
+      }}
+    />
+  );
+
+  const initialInspectionNotesTextAreaInput = (
+    <AccessibleTextAreaInput
+      attributes={{
+        invalidValueAction: createRepairTicketAction.setPageInError,
+        name: "initialInspectionNotes",
+        parentDispatch: createRepairTicketDispatch,
+        stepperPages,
+        validValueAction: createRepairTicketAction.setInitialInspectionNotes,
+        value: initialInspectionNotes,
+      }}
+    />
+  );
+
+  return (
+    <Stack>
+      {partNameTextInput}
+      {partSerialIdTextInput}
+      {dateReceivedDateTimeInput}
+      {descriptionOfIssueTextAreaInput}
+      {initialInspectionNotesTextAreaInput}
+    </Stack>
+  );
+}
+
+/**
 import { ChangeEvent, useEffect } from "react";
 
 import {
@@ -34,6 +145,7 @@ function RepairTicketStepPart(parentState: RepairTicketStepPartProps) {
   const {
     partName,
     isValidPartName,
+/**
     isPartNameFocused,
 
     partSerialId,
@@ -59,7 +171,6 @@ function RepairTicketStepPart(parentState: RepairTicketStepPartProps) {
   const {
     globalState: { width },
   } = useGlobalState();
-  /** ------------- input validation ------------- */
 
   // validate part name on every change
   useEffect(() => {
@@ -85,8 +196,7 @@ function RepairTicketStepPart(parentState: RepairTicketStepPartProps) {
   useEffect(() => {
     // date must be valid regex and it must be present or near past
 
-    const isValid =
-      DATE_NEAR_PAST_REGEX.test(dateReceived) &&
+    const isValid = DATE_NEAR_PAST_REGEX.test(dateReceived) &&
       new Date(dateReceived).getTime() <= new Date().getTime();
 
     createRepairTicketDispatch({
@@ -103,22 +213,30 @@ function RepairTicketStepPart(parentState: RepairTicketStepPartProps) {
       type: createRepairTicketAction.setIsValidDescriptionOfIssue,
       payload: isValid,
     });
-  }, [descriptionOfIssue, createRepairTicketDispatch, createRepairTicketAction]);
+  }, [
+    descriptionOfIssue,
+    createRepairTicketDispatch,
+    createRepairTicketAction,
+  ]);
 
   // validate initial inspection notes on every change
   useEffect(() => {
     const isValid = GRAMMAR_TEXTAREA_INPUT_REGEX.test(initialInspectionNotes);
 
     createRepairTicketDispatch({
+/**
       type: createRepairTicketAction.setIsValidInitialInspectionNotes,
       payload: isValid,
     });
-  }, [initialInspectionNotes, createRepairTicketDispatch, createRepairTicketAction]);
+  }, [
+    initialInspectionNotes,
+    createRepairTicketDispatch,
+    createRepairTicketAction,
+  ]);
 
   // update corresponding stepsInError state when inputs change
   useEffect(() => {
-    const isStepInError =
-      !isValidPartName ||
+    const isStepInError = !isValidPartName ||
       !isValidPartSerialId ||
       !isValidDateReceived ||
       !isValidDescriptionOfIssue ||
@@ -140,9 +258,6 @@ function RepairTicketStepPart(parentState: RepairTicketStepPartProps) {
     createRepairTicketDispatch,
     createRepairTicketAction,
   ]);
-  /** ------------- end input validation ------------- */
-
-  /** ------------- accessible error and valid texts ------------- */
 
   // following are the accessible text elements for screen readers to read out based on the state of the input
 
@@ -184,10 +299,12 @@ function RepairTicketStepPart(parentState: RepairTicketStepPartProps) {
       inputText: dateReceived,
       isValidInputText: isValidDateReceived,
       isInputTextFocused: isDateReceivedFocused,
-      regexValidationText: `${dateReceivedInvalidText}${returnDateNearPastValidationText({
-        content: dateReceived,
-        contentKind: "date received",
-      })}`,
+      regexValidationText: `${dateReceivedInvalidText}${
+        returnDateNearPastValidationText({
+          content: dateReceived,
+          contentKind: "date received",
+        })
+      }`,
     });
 
   const [descriptionOfIssueInputErrorText, descriptionOfIssueInputValidText] =
@@ -204,22 +321,21 @@ function RepairTicketStepPart(parentState: RepairTicketStepPartProps) {
       }),
     });
 
-  const [initialInspectionNotesInputErrorText, initialInspectionNotesInputValidText] =
-    AccessibleErrorValidTextElements({
-      inputElementKind: "initial inspection notes",
-      inputText: initialInspectionNotes,
-      isValidInputText: isValidInitialInspectionNotes,
-      isInputTextFocused: isInitialInspectionNotesFocused,
-      regexValidationText: returnGrammarValidationText({
-        content: initialInspectionNotes,
-        contentKind: "initial inspection notes",
-        minLength: 2,
-        maxLength: 2000,
-      }),
-    });
-  /** ------------- end accessible error and valid texts ------------- */
-
-  /** ------------- input creator info objects ------------- */
+  const [
+    initialInspectionNotesInputErrorText,
+    initialInspectionNotesInputValidText,
+  ] = AccessibleErrorValidTextElements({
+    inputElementKind: "initial inspection notes",
+    inputText: initialInspectionNotes,
+    isValidInputText: isValidInitialInspectionNotes,
+    isInputTextFocused: isInitialInspectionNotesFocused,
+    regexValidationText: returnGrammarValidationText({
+      content: initialInspectionNotes,
+      contentKind: "initial inspection notes",
+      minLength: 2,
+      maxLength: 2000,
+    }),
+  });
 
   const partNameTextInputCreatorInfo: AccessibleTextInputCreatorInfo = {
     description: {
@@ -285,6 +401,7 @@ function RepairTicketStepPart(parentState: RepairTicketStepPartProps) {
     semanticName: "part serial Id",
   };
 
+/**
   const dateReceivedInputCreatorInfo: AccessibleDateTimeInputCreatorInfo = {
     description: {
       error: dateReceivedInputErrorText,
@@ -304,6 +421,7 @@ function RepairTicketStepPart(parentState: RepairTicketStepPartProps) {
         type: createRepairTicketAction.setDateReceived,
         payload: event.currentTarget.value,
       });
+/**
     },
     onFocus: () => {
       createRepairTicketDispatch({
@@ -314,6 +432,7 @@ function RepairTicketStepPart(parentState: RepairTicketStepPartProps) {
     placeholder: "Enter date received",
     required: true,
     withAsterisk: true,
+/**
     semanticName: "date received",
     inputKind: "date",
     dateKind: "date near past",
@@ -351,54 +470,51 @@ function RepairTicketStepPart(parentState: RepairTicketStepPartProps) {
     semanticName: "description of issue",
   };
 
-  const textAreaWidth =
-    width < 480 // for iPhone 5/SE
-      ? 330
-      : width < 768 // for iPhone 6/7/8
-      ? width * 0.8 - 44
-      : // at 768vw the navbar appears at width of 225px
-      width < 1024
-      ? (width - 225 - 44) * 0.8
-      : // at >= 1200vw the navbar width is 300px
-      width < 1200
-      ? (width - 300 - 44) * 0.8
-      : 900 - 74;
+  const textAreaWidth = width < 480 // for iPhone 5/SE
+    ? 330
+    : width < 768 // for iPhone 6/7/8
+    ? width * 0.8 - 44
+    // at 768vw the navbar appears at width of 225px
+    : width < 1024
+    ? (width - 225 - 44) * 0.8
+    // at >= 1200vw the navbar width is 300px
+    : width < 1200
+    ? (width - 300 - 44) * 0.8
+    : 900 - 74;
 
-  const initialInspectionNotesInputCreatorInfo: AccessibleTextAreaInputCreatorInfo = {
-    description: {
-      error: initialInspectionNotesInputErrorText,
-      valid: initialInspectionNotesInputValidText,
-    },
-    inputText: initialInspectionNotes,
-    isValidInputText: isValidInitialInspectionNotes,
-    label: "Initial Inspection Notes",
-    onBlur: () => {
-      createRepairTicketDispatch({
-        type: createRepairTicketAction.setIsInitialInspectionNotesFocused,
-        payload: false,
-      });
-    },
-    onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
-      createRepairTicketDispatch({
-        type: createRepairTicketAction.setInitialInspectionNotes,
-        payload: event.currentTarget.value,
-      });
-    },
-    onFocus: () => {
-      createRepairTicketDispatch({
-        type: createRepairTicketAction.setIsInitialInspectionNotesFocused,
-        payload: true,
-      });
-    },
-    placeholder: "Enter initial inspection notes",
-    required: true,
-    semanticName: "initial inspection notes",
-    textAreaWidth,
-    withAsterisk: true,
-  };
-  /** ------------- end input creator info objects ------------- */
-
-  /** ------------- created inputs ------------- */
+  const initialInspectionNotesInputCreatorInfo:
+    AccessibleTextAreaInputCreatorInfo = {
+      description: {
+        error: initialInspectionNotesInputErrorText,
+        valid: initialInspectionNotesInputValidText,
+      },
+      inputText: initialInspectionNotes,
+      isValidInputText: isValidInitialInspectionNotes,
+      label: "Initial Inspection Notes",
+      onBlur: () => {
+        createRepairTicketDispatch({
+          type: createRepairTicketAction.setIsInitialInspectionNotesFocused,
+          payload: false,
+        });
+      },
+      onChange: (event: ChangeEvent<HTMLTextAreaElement>) => {
+        createRepairTicketDispatch({
+          type: createRepairTicketAction.setInitialInspectionNotes,
+          payload: event.currentTarget.value,
+        });
+      },
+      onFocus: () => {
+        createRepairTicketDispatch({
+          type: createRepairTicketAction.setIsInitialInspectionNotesFocused,
+          payload: true,
+        });
+      },
+      placeholder: "Enter initial inspection notes",
+      required: true,
+      semanticName: "initial inspection notes",
+      textAreaWidth,
+      withAsterisk: true,
+    };
 
   const [
     createdPartNameTextInput,
@@ -414,12 +530,10 @@ function RepairTicketStepPart(parentState: RepairTicketStepPartProps) {
     dateReceivedInputCreatorInfo,
   ]);
 
-  const [createdInitialInspectionNotesInput] = returnAccessibleTextAreaInputElements([
-    initialInspectionNotesInputCreatorInfo,
-  ]);
-  /** ------------- end created inputs ------------- */
-
-  /** ------------- display created inputs ------------- */
+  const [createdInitialInspectionNotesInput] =
+    returnAccessibleTextAreaInputElements([
+      initialInspectionNotesInputCreatorInfo,
+    ]);
 
   const displayRepairTicketStepPart = (
     <FormLayoutWrapper>
@@ -430,12 +544,14 @@ function RepairTicketStepPart(parentState: RepairTicketStepPartProps) {
       {createdInitialInspectionNotesInput}
     </FormLayoutWrapper>
   );
-  /** ------------- end display created inputs ------------- */
 
   useEffect(() => {
     const fieldsOmittedState = filterFieldsFromObject({
       object: parentState,
-      fieldsToFilter: ["createRepairTicketAction", "createRepairTicketDispatch"],
+      fieldsToFilter: [
+        "createRepairTicketAction",
+        "createRepairTicketDispatch",
+      ],
     });
 
     logState({
@@ -448,3 +564,4 @@ function RepairTicketStepPart(parentState: RepairTicketStepPartProps) {
 }
 
 export { RepairTicketStepPart };
+*/

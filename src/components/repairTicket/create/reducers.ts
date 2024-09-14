@@ -122,8 +122,8 @@ const createRepairTicketReducersMap = new Map<
         createRepairTicketReducer_setTriggerFormSubmit,
     ],
     [
-        createRepairTicketAction.setPagesInError,
-        createRepairTicketReducer_setPagesInError,
+        createRepairTicketAction.setPageInError,
+        createRepairTicketReducer_setPageInError,
     ],
     [
         createRepairTicketAction.setIsSubmitting,
@@ -375,7 +375,7 @@ function createRepairTicketReducer_setTriggerFormSubmit(
     };
 }
 
-function createRepairTicketReducer_setPagesInError(
+function createRepairTicketReducer_setPageInError(
     state: CreateRepairTicketState,
     dispatch: CreateRepairTicketDispatch,
 ): CreateRepairTicketState {
