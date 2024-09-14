@@ -2,25 +2,23 @@ import { Container, Stack, Text } from "@mantine/core";
 import { useEffect, useReducer, useRef } from "react";
 import { useErrorBoundary } from "react-error-boundary";
 
-import { useFetchInterceptor } from "../../hooks/useFetchInterceptor";
-import { UserSchema } from "../../types";
-import { formSubmitPOST, logState } from "../../utils";
+import { logState } from "../../utils";
 import { AccessibleButton } from "../accessibleInputs/AccessibleButton";
 import { AccessibleStepper } from "../accessibleInputs/AccessibleStepper";
-import { registerAction } from "./actions";
-import { REGISTER_ROLE_ROUTE_PATHS, returnRegisterperPages } from "./constants";
-import { registerReducer } from "./reducers";
 import { RegisterAdditional } from "./RegisterAdditional";
 import { RegisterAddress } from "./RegisterAddress";
 import { RegisterAuthentication } from "./RegisterAuthentication";
 import { RegisterPersonal } from "./RegisterPersonal";
-import { initialRegisterState } from "./state";
 import { RegisterProfilePicture } from "./RegisterProfilePicture";
+import { registerAction } from "./actions";
+import { returnRegisterperPages } from "./constants";
+import { registerReducer } from "./reducers";
+import { initialRegisterState } from "./state";
 
 function Register() {
   const [registerState, registerDispatch] = useReducer(
     registerReducer,
-    initialRegisterState
+    initialRegisterState,
   );
 
   const {
@@ -54,7 +52,6 @@ function Register() {
     username,
   } = registerState;
 
-  const { fetchInterceptor } = useFetchInterceptor();
   const { showBoundary } = useErrorBoundary();
 
   const fetchAbortControllerRef = useRef<AbortController | null>(null);

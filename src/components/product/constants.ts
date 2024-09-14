@@ -1,41 +1,12 @@
 import { CURRENCY_DATA } from "../../constants/data";
-import {
-  DATE_FULL_RANGE_REGEX,
-  GRAMMAR_TEXTAREA_INPUT_REGEX,
-  MONEY_REGEX,
-  SERIAL_ID_REGEX,
-  USERNAME_REGEX,
-} from "../../constants/regex";
-import {
+import type {
   CheckboxRadioSelectData,
-  ResourceRoutePaths,
   RoleResourceRoutePaths,
   StepperChild,
   StepperPage,
 } from "../../types";
-import {
-  returnBrandNameValidationText,
-  returnColorVariantValidationText,
-  returnCpuFrequencyValidationText,
-  returnDateFullRangeValidationText,
-  returnDimensionsValidationText,
-  returnFloatAmountValidationText,
-  returnFrequencyResponseValidationText,
-  returnGrammarValidationText,
-  returnLargeIntegerValidationText,
-  returnMediumIntegerValidationText,
-  returnRamTimingValidationText,
-  returnRamVoltageValidationText,
-  returnSerialIdValidationText,
-  returnSmallIntegerValidationText,
-  returnSocketChipsetValidationText,
-  returnUsernameRegexValidationText,
-  returnWeightValidationText,
-} from "../../utils";
-import { ProductCategory } from "../dashboard/types";
-import { ComponentQueryData } from "../queryBuilder";
-import { DescriptionObjectsArray } from "../wrappers";
-import {
+import type { ProductCategory } from "../dashboard/types";
+import type {
   CaseSidePanel,
   CaseType,
   DimensionUnit,
@@ -821,7 +792,12 @@ function createProductStepperPages(): StepperPage[] {
     },
 
     {
-      children: [keyboardLayout, keyboardSwitch, keyboardBacklight, keyboardInterface],
+      children: [
+        keyboardLayout,
+        keyboardSwitch,
+        keyboardBacklight,
+        keyboardInterface,
+      ],
       description: "Keyboard",
     },
 
@@ -867,7 +843,13 @@ function createProductStepperPages(): StepperPage[] {
     },
 
     {
-      children: [mouseButtons, mouseDpi, mouseSensor, mouseInterface, mouseColor],
+      children: [
+        mouseButtons,
+        mouseDpi,
+        mouseSensor,
+        mouseInterface,
+        mouseColor,
+      ],
       description: "Mouse",
     },
 
@@ -1124,13 +1106,14 @@ const WEIGHT_UNIT_DATA: CheckboxRadioSelectData<WeightUnit> = [
   { value: "lb", label: "pound" },
 ];
 
-const DIMENSION_UNIT_SELECT_INPUT_DATA: CheckboxRadioSelectData<DimensionUnit> = [
-  { value: "mm", label: "millimetre" },
-  { value: "cm", label: "centimetre" },
-  { value: "m", label: "metre" },
-  { value: "in", label: "inch" },
-  { value: "ft", label: "feet" },
-];
+const DIMENSION_UNIT_SELECT_INPUT_DATA: CheckboxRadioSelectData<DimensionUnit> =
+  [
+    { value: "mm", label: "millimetre" },
+    { value: "cm", label: "centimetre" },
+    { value: "m", label: "metre" },
+    { value: "in", label: "inch" },
+    { value: "ft", label: "feet" },
+  ];
 
 const DIMENSION_UNIT_DATA: CheckboxRadioSelectData<DimensionUnit> = [
   { value: "mm", label: "millimetre" },
@@ -1140,13 +1123,14 @@ const DIMENSION_UNIT_DATA: CheckboxRadioSelectData<DimensionUnit> = [
   { value: "ft", label: "feet" },
 ];
 
-const PRODUCT_AVAILABILITY_DATA: CheckboxRadioSelectData<ProductAvailability> = [
-  { value: "In Stock", label: "In Stock" },
-  { value: "Out of Stock", label: "Out of Stock" },
-  { value: "Pre-order", label: "Pre-order" },
-  { value: "Discontinued", label: "Discontinued" },
-  { value: "Other", label: "Other" },
-];
+const PRODUCT_AVAILABILITY_DATA: CheckboxRadioSelectData<ProductAvailability> =
+  [
+    { value: "In Stock", label: "In Stock" },
+    { value: "Out of Stock", label: "Out of Stock" },
+    { value: "Pre-order", label: "Pre-order" },
+    { value: "Discontinued", label: "Discontinued" },
+    { value: "Other", label: "Other" },
+  ];
 
 const MEMORY_UNIT_SELECT_INPUT_DATA: CheckboxRadioSelectData = [
   { value: "KB", label: "kilobyte" },
@@ -1162,7 +1146,9 @@ const MEMORY_UNIT_DATA: CheckboxRadioSelectData<MemoryUnit> = [
   { value: "TB", label: "terabyte" },
 ];
 
-const MOTHERBOARD_FORM_FACTOR_DATA: CheckboxRadioSelectData<MotherboardFormFactor> = [
+const MOTHERBOARD_FORM_FACTOR_DATA: CheckboxRadioSelectData<
+  MotherboardFormFactor
+> = [
   { value: "Micro ATX", label: "Micro ATX" },
   { value: "Mini ITX", label: "Mini ITX" },
   { value: "E-ATX", label: "E-ATX" },
@@ -1285,7 +1271,9 @@ const KEYBOARD_BACKLIGHT_DATA: CheckboxRadioSelectData<KeyboardBacklight> = [
   { value: "None", label: "None" },
 ];
 
-const PERIPHERALS_INTERFACE_DATA: CheckboxRadioSelectData<PeripheralsInterface> = [
+const PERIPHERALS_INTERFACE_DATA: CheckboxRadioSelectData<
+  PeripheralsInterface
+> = [
   { value: "USB", label: "USB" },
   { value: "Bluetooth", label: "Bluetooth" },
   { value: "PS/2", label: "PS/2" },
@@ -1382,7 +1370,9 @@ const MICROPHONE_TYPE_DATA: CheckboxRadioSelectData<MicrophoneType> = [
   { value: "Other", label: "Other" },
 ];
 
-const MICROPHONE_POLAR_PATTERN_DATA: CheckboxRadioSelectData<MicrophonePolarPattern> = [
+const MICROPHONE_POLAR_PATTERN_DATA: CheckboxRadioSelectData<
+  MicrophonePolarPattern
+> = [
   { value: "Cardioid", label: "Cardioid" },
   { value: "Supercardioid", label: "Supercardioid" },
   { value: "Hypercardioid", label: "Hypercardioid" },
@@ -1391,13 +1381,14 @@ const MICROPHONE_POLAR_PATTERN_DATA: CheckboxRadioSelectData<MicrophonePolarPatt
   { value: "Other", label: "Other" },
 ];
 
-const MICROPHONE_INTERFACE_DATA: CheckboxRadioSelectData<MicrophoneInterface> = [
-  { value: "XLR", label: "XLR" },
-  { value: "USB", label: "USB" },
-  { value: "3.5mm", label: "3.5mm" },
-  { value: "Wireless", label: "Wireless" },
-  { value: "Other", label: "Other" },
-];
+const MICROPHONE_INTERFACE_DATA: CheckboxRadioSelectData<MicrophoneInterface> =
+  [
+    { value: "XLR", label: "XLR" },
+    { value: "USB", label: "USB" },
+    { value: "3.5mm", label: "3.5mm" },
+    { value: "Wireless", label: "Wireless" },
+    { value: "Other", label: "Other" },
+  ];
 
 const PRODUCT_RATING_DATA: RatingKind[] = [
   "halfStar",
@@ -1464,928 +1455,6 @@ const CREATE_PRODUCT_MAX_IMG_SIZE = 1 * 1024 * 1024; // 1 MB
 
 const CREATE_PRODUCT_MAX_IMG_AMOUNT = 3;
 
-const CREATE_PRODUCT_DESCRIPTION_OBJECTS: DescriptionObjectsArray = [
-  {
-    description: "Product Overview",
-    ariaLabel:
-      "Enter brand, model, price, description, currency, availability, quantity, weight, dimensions and additional details",
-  },
-  {
-    description: "Product Specifications",
-    ariaLabel: "Enter product specifications",
-  },
-  {
-    description: "Upload Images",
-    ariaLabel: "Select up to 3 images of product to upload",
-  },
-  {
-    description: "Review and Proceed",
-    ariaLabel: "Review accuracy of information and proceed",
-  },
-];
-
-const PRODUCTS_QUERY_DATA: ComponentQueryData[] = [
-  {
-    label: "Username",
-    value: "username",
-    inputKind: "textInput",
-    regex: USERNAME_REGEX,
-    regexValidationFn: returnUsernameRegexValidationText,
-  },
-  {
-    label: "Created Date",
-    value: "createdAt",
-    inputKind: "dateInput",
-    regex: DATE_FULL_RANGE_REGEX,
-    regexValidationFn: returnDateFullRangeValidationText,
-  },
-  {
-    label: "Updated Date",
-    value: "updatedAt",
-    inputKind: "dateInput",
-    regex: DATE_FULL_RANGE_REGEX,
-    regexValidationFn: returnDateFullRangeValidationText,
-  },
-  {
-    label: "Brand",
-    value: "brand",
-    inputKind: "textInput",
-    regex: BRAND_REGEX,
-    regexValidationFn: returnBrandNameValidationText,
-  },
-  {
-    label: "Model",
-    value: "model",
-    inputKind: "textInput",
-    regex: SERIAL_ID_REGEX,
-    regexValidationFn: returnSerialIdValidationText,
-  },
-  {
-    label: "Price",
-    value: "price",
-    inputKind: "numberInput",
-    regex: MONEY_REGEX,
-    regexValidationFn: returnFloatAmountValidationText,
-  },
-  {
-    label: "Description",
-    value: "description",
-    inputKind: "textInput",
-    regex: GRAMMAR_TEXTAREA_INPUT_REGEX,
-    regexValidationFn: returnGrammarValidationText,
-  },
-  {
-    label: "Currency",
-    value: "currency",
-    inputKind: "selectInput",
-    selectData: CURRENCY_DATA,
-  },
-  {
-    label: "Availability",
-    value: "availability",
-    inputKind: "selectInput",
-    selectData: PRODUCT_AVAILABILITY_DATA,
-  },
-  {
-    label: "Quantity",
-    value: "quantity",
-    inputKind: "numberInput",
-    regex: LARGE_INTEGER_REGEX,
-    regexValidationFn: returnLargeIntegerValidationText,
-  },
-  {
-    label: "Weight",
-    value: "weight",
-    inputKind: "numberInput",
-    regex: WEIGHT_REGEX,
-    regexValidationFn: returnWeightValidationText,
-  },
-  {
-    label: "Weight Unit",
-    value: "weightUnit",
-    inputKind: "selectInput",
-    selectData: WEIGHT_UNIT_DATA,
-  },
-  {
-    label: "Length",
-    value: "length",
-    inputKind: "numberInput",
-    regex: DIMENSIONS_REGEX,
-    regexValidationFn: returnDimensionsValidationText,
-  },
-  {
-    label: "Length Unit",
-    value: "lengthUnit",
-    inputKind: "selectInput",
-    selectData: DIMENSION_UNIT_DATA,
-  },
-  {
-    label: "Width",
-    value: "width",
-    inputKind: "numberInput",
-    regex: DIMENSIONS_REGEX,
-    regexValidationFn: returnDimensionsValidationText,
-  },
-  {
-    label: "Width Unit",
-    value: "widthUnit",
-    inputKind: "selectInput",
-    selectData: DIMENSION_UNIT_DATA,
-  },
-  {
-    label: "Height",
-    value: "height",
-    inputKind: "numberInput",
-    regex: DIMENSIONS_REGEX,
-    regexValidationFn: returnDimensionsValidationText,
-  },
-  {
-    label: "Height Unit",
-    value: "heightUnit",
-    inputKind: "selectInput",
-    selectData: DIMENSION_UNIT_DATA,
-  },
-  {
-    label: "Additional Details",
-    value: "additionalDetails",
-    inputKind: "textInput",
-    regex: GRAMMAR_TEXTAREA_INPUT_REGEX,
-    regexValidationFn: returnGrammarValidationText,
-  },
-
-  // page 2
-
-  // page 2 -> cpu
-  {
-    label: "CPU Socket",
-    value: "cpuSocket",
-    inputKind: "textInput",
-    regex: CPU_SOCKET_REGEX,
-    regexValidationFn: returnSocketChipsetValidationText,
-  },
-  {
-    label: "CPU Frequency (GHz)",
-    value: "cpuFrequency",
-    inputKind: "numberInput",
-    regex: CPU_FREQUENCY_REGEX,
-    regexValidationFn: returnCpuFrequencyValidationText,
-  },
-  {
-    label: "CPU Cores",
-    value: "cpuCores",
-    inputKind: "numberInput",
-    regex: SMALL_INTEGER_REGEX,
-    regexValidationFn: returnSmallIntegerValidationText,
-  },
-  {
-    label: "CPU L1 Cache",
-    value: "cpuL1Cache",
-    inputKind: "numberInput",
-    regex: MEDIUM_INTEGER_REGEX,
-    regexValidationFn: returnMediumIntegerValidationText,
-  },
-  {
-    label: "CPU L1 Cache Unit",
-    value: "cpuL1CacheUnit",
-    inputKind: "selectInput",
-    selectData: MEMORY_UNIT_DATA,
-  },
-  {
-    label: "CPU L2 Cache",
-    value: "cpuL2Cache",
-    inputKind: "numberInput",
-    regex: MEDIUM_INTEGER_REGEX,
-    regexValidationFn: returnMediumIntegerValidationText,
-  },
-  {
-    label: "CPU L2 Cache Unit",
-    value: "cpuL2CacheUnit",
-    inputKind: "selectInput",
-    selectData: MEMORY_UNIT_DATA,
-  },
-  {
-    label: "CPU L3 Cache",
-    value: "cpuL3Cache",
-    inputKind: "numberInput",
-    regex: MEDIUM_INTEGER_REGEX,
-    regexValidationFn: returnMediumIntegerValidationText,
-  },
-  {
-    label: "CPU L3 Cache Unit",
-    value: "cpuL3CacheUnit",
-    inputKind: "selectInput",
-    selectData: MEMORY_UNIT_DATA,
-  },
-
-  // page 2 -> gpu
-  {
-    label: "GPU Chipset",
-    value: "cpuChipset",
-    inputKind: "textInput",
-    regex: GPU_CHIPSET_REGEX,
-    regexValidationFn: returnSocketChipsetValidationText,
-  },
-  {
-    label: "GPU Memory (GB)",
-    value: "gpuMemory",
-    inputKind: "numberInput",
-    regex: SMALL_INTEGER_REGEX,
-    regexValidationFn: returnSmallIntegerValidationText,
-  },
-  {
-    label: "GPU Core Clock (MHz)",
-    value: "gpuCoreClock",
-    inputKind: "numberInput",
-    regex: MEDIUM_INTEGER_REGEX,
-    regexValidationFn: returnMediumIntegerValidationText,
-  },
-  {
-    label: "GPU Boost Clock (MHz)",
-    value: "gpuBoostClock",
-    inputKind: "numberInput",
-    regex: MEDIUM_INTEGER_REGEX,
-    regexValidationFn: returnMediumIntegerValidationText,
-  },
-  {
-    label: "GPU TDP (W)",
-    value: "gpuTdp",
-    inputKind: "numberInput",
-    regex: MEDIUM_INTEGER_REGEX,
-    regexValidationFn: returnMediumIntegerValidationText,
-  },
-
-  // page 2 -> motherboard
-  {
-    label: "Motherboard Socket",
-    value: "motherboardSocket",
-    inputKind: "textInput",
-    regex: MOTHERBOARD_SOCKET_REGEX,
-    regexValidationFn: returnSocketChipsetValidationText,
-  },
-  {
-    label: "Motherboard Chipset",
-    value: "motherboardChipset",
-    inputKind: "textInput",
-    regex: MOTHERBOARD_CHIPSET_REGEX,
-    regexValidationFn: returnSocketChipsetValidationText,
-  },
-  {
-    label: "Motherboard Form Factor",
-    value: "motherboardFormFactor",
-    inputKind: "selectInput",
-    selectData: MOTHERBOARD_FORM_FACTOR_DATA,
-  },
-  {
-    label: "Motherboard Memory Max",
-    value: "motherboardMemoryMax",
-    inputKind: "numberInput",
-    regex: MEDIUM_INTEGER_REGEX,
-    regexValidationFn: returnMediumIntegerValidationText,
-  },
-  {
-    label: "Motherboard Memory Max Unit",
-    value: "motherboardMemoryMaxUnit",
-    inputKind: "selectInput",
-    selectData: MEMORY_UNIT_DATA,
-  },
-  {
-    label: "Motherboard Memory Slots",
-    value: "motherboardMemorySlots",
-    inputKind: "numberInput",
-    regex: SMALL_INTEGER_REGEX,
-    regexValidationFn: returnSmallIntegerValidationText,
-  },
-  {
-    label: "Motherboard Memory Type",
-    value: "motherboardMemoryType",
-    inputKind: "selectInput",
-    selectData: MEMORY_TYPE_DATA,
-  },
-  {
-    label: "Motherboard SATA Ports",
-    value: "motherboardSataPorts",
-    inputKind: "numberInput",
-    regex: SMALL_INTEGER_REGEX,
-    regexValidationFn: returnSmallIntegerValidationText,
-  },
-  {
-    label: "Motherboard M.2 Slots",
-    value: "motherboardM2Slots",
-    inputKind: "numberInput",
-    regex: SMALL_INTEGER_REGEX,
-    regexValidationFn: returnSmallIntegerValidationText,
-  },
-  {
-    label: "Motherboard PCIe 3.0 Slots",
-    value: "motherboardPcie3Slots",
-    inputKind: "numberInput",
-    regex: SMALL_INTEGER_REGEX,
-    regexValidationFn: returnSmallIntegerValidationText,
-  },
-  {
-    label: "Motherboard PCIe 4.0 Slots",
-    value: "motherboardPcie4Slots",
-    inputKind: "numberInput",
-    regex: SMALL_INTEGER_REGEX,
-    regexValidationFn: returnSmallIntegerValidationText,
-  },
-  {
-    label: "Motherboard PCIe 5.0 Slots",
-    value: "motherboardPcie5Slots",
-    inputKind: "numberInput",
-    regex: SMALL_INTEGER_REGEX,
-    regexValidationFn: returnSmallIntegerValidationText,
-  },
-
-  // page 2 -> ram
-  {
-    label: "RAM Data Rate (MT/s)",
-    value: "ramDataRate",
-    inputKind: "numberInput",
-    regex: MEDIUM_INTEGER_REGEX,
-    regexValidationFn: returnMediumIntegerValidationText,
-  },
-  {
-    label: "RAM Modules Quantity",
-    value: "ramModulesQuantity",
-    inputKind: "numberInput",
-    regex: SMALL_INTEGER_REGEX,
-    regexValidationFn: returnSmallIntegerValidationText,
-  },
-  {
-    label: "RAM Modules Capacity",
-    value: "ramModulesCapacity",
-    inputKind: "numberInput",
-    regex: MEDIUM_INTEGER_REGEX,
-    regexValidationFn: returnMediumIntegerValidationText,
-  },
-  {
-    label: "RAM Modules Capacity Unit",
-    value: "ramModulesCapacityUnit",
-    inputKind: "selectInput",
-    selectData: MEMORY_UNIT_DATA,
-  },
-  {
-    label: "RAM Memory Type",
-    value: "ramMemoryType",
-    inputKind: "selectInput",
-    selectData: MEMORY_TYPE_DATA,
-  },
-  {
-    label: "RAM Color",
-    value: "ramColor",
-    inputKind: "textInput",
-    regex: COLOR_VARIANT_REGEX,
-    regexValidationFn: returnColorVariantValidationText,
-  },
-  {
-    label: "RAM Voltage (V)",
-    value: "ramVoltage",
-    inputKind: "numberInput",
-    regex: RAM_VOLTAGE_REGEX,
-    regexValidationFn: returnRamVoltageValidationText,
-  },
-  {
-    label: "RAM Timing",
-    value: "ramTiming",
-    inputKind: "textInput",
-    regex: RAM_TIMING_REGEX,
-    regexValidationFn: returnRamTimingValidationText,
-  },
-
-  // page 2 -> storage
-
-  {
-    label: "Storage Type",
-    value: "storageType",
-    inputKind: "selectInput",
-    selectData: STORAGE_TYPE_DATA,
-  },
-  {
-    label: "Storage Capacity",
-    value: "storageCapacity",
-    inputKind: "numberInput",
-    regex: MEDIUM_INTEGER_REGEX,
-    regexValidationFn: returnMediumIntegerValidationText,
-  },
-  {
-    label: "Storage Capacity Unit",
-    value: "storageCapacityUnit",
-    inputKind: "selectInput",
-    selectData: MEMORY_UNIT_DATA,
-  },
-  {
-    label: "Storage Cache",
-    value: "storageCache",
-    inputKind: "numberInput",
-    regex: MEDIUM_INTEGER_REGEX,
-    regexValidationFn: returnMediumIntegerValidationText,
-  },
-  {
-    label: "Storage Cache Unit",
-    value: "storageCacheUnit",
-    inputKind: "selectInput",
-    selectData: MEMORY_UNIT_DATA,
-  },
-  {
-    label: "Storage Form Factor",
-    value: "storageFormFactor",
-    inputKind: "selectInput",
-    selectData: STORAGE_FORM_FACTOR_DATA,
-  },
-  {
-    label: "Storage Interface",
-    value: "storageInterface",
-    inputKind: "selectInput",
-    selectData: STORAGE_INTERFACE_DATA,
-  },
-
-  // page 2 -> psu
-  {
-    label: "PSU Wattage (W)",
-    value: "psuWattage",
-    inputKind: "numberInput",
-    regex: MEDIUM_INTEGER_REGEX,
-    regexValidationFn: returnMediumIntegerValidationText,
-  },
-  {
-    label: "PSU Efficiency",
-    value: "psuEfficiency",
-    inputKind: "selectInput",
-    selectData: PSU_EFFICIENCY_RATING_DATA,
-  },
-  {
-    label: "PSU Form Factor",
-    value: "psuFormFactor",
-    inputKind: "selectInput",
-    selectData: PSU_FORM_FACTOR_DATA,
-  },
-  {
-    label: "PSU Modularity",
-    value: "psuModularity",
-    inputKind: "selectInput",
-    selectData: PSU_MODULARITY_DATA,
-  },
-
-  // page 2 -> case
-  {
-    label: "Case Type",
-    value: "caseType",
-    inputKind: "selectInput",
-    selectData: CASE_TYPE_DATA,
-  },
-  {
-    label: "Case Color",
-    value: "caseColor",
-    inputKind: "textInput",
-    regex: COLOR_VARIANT_REGEX,
-    regexValidationFn: returnColorVariantValidationText,
-  },
-  {
-    label: "Case Side Panel",
-    value: "caseSidePanel",
-    inputKind: "selectInput",
-    selectData: CASE_SIDE_PANEL_DATA,
-  },
-
-  // page 2 -> display
-  {
-    label: "Display Size (in)",
-    value: "displaySize",
-    inputKind: "numberInput",
-    regex: DIMENSIONS_REGEX,
-    regexValidationFn: returnDimensionsValidationText,
-  },
-  {
-    label: "Display Horizontal Resolution",
-    value: "displayHorizontalResolution",
-    inputKind: "numberInput",
-    regex: LARGE_INTEGER_REGEX,
-    regexValidationFn: returnLargeIntegerValidationText,
-  },
-  {
-    label: "Display Vertical Resolution",
-    value: "displayVerticalResolution",
-    inputKind: "numberInput",
-    regex: LARGE_INTEGER_REGEX,
-    regexValidationFn: returnLargeIntegerValidationText,
-  },
-  {
-    label: "Display Refresh Rate (Hz)",
-    value: "displayRefreshRate",
-    inputKind: "numberInput",
-    regex: MEDIUM_INTEGER_REGEX,
-    regexValidationFn: returnMediumIntegerValidationText,
-  },
-  {
-    label: "Display Panel Type",
-    value: "displayPanelType",
-    inputKind: "selectInput",
-    selectData: DISPLAY_PANEL_TYPE_DATA,
-  },
-  {
-    label: "Display Response Time (ms)",
-    value: "displayResponseTime",
-    inputKind: "numberInput",
-    regex: DIMENSIONS_REGEX,
-    regexValidationFn: returnDimensionsValidationText,
-  },
-  {
-    label: "Display Aspect Ratio",
-    value: "displayAspectRatio",
-    inputKind: "textInput",
-    regex: DISPLAY_ASPECT_RATIO_REGEX,
-    regexValidationFn: returnColorVariantValidationText,
-  },
-
-  // page 2 -> keyboard
-  {
-    label: "Keyboard Switch",
-    value: "keyboardSwitch",
-    inputKind: "selectInput",
-    selectData: KEYBOARD_SWITCH_DATA,
-  },
-  {
-    label: "Keyboard Layout",
-    value: "keyboardLayout",
-    inputKind: "selectInput",
-    selectData: KEYBOARD_LAYOUT_DATA,
-  },
-  {
-    label: "Keyboard Backlight",
-    value: "keyboardBacklight",
-    inputKind: "selectInput",
-    selectData: KEYBOARD_BACKLIGHT_DATA,
-  },
-  {
-    label: "Keyboard Interface",
-    value: "keyboardInterface",
-    inputKind: "selectInput",
-    selectData: PERIPHERALS_INTERFACE_DATA,
-  },
-
-  // page 2 -> mouse
-  {
-    label: "Mouse Sensor",
-    value: "mouseSensor",
-    inputKind: "selectInput",
-    selectData: MOUSE_SENSOR_DATA,
-  },
-  {
-    label: "Mouse DPI",
-    value: "mouseDpi",
-    inputKind: "numberInput",
-    regex: LARGE_INTEGER_REGEX,
-    regexValidationFn: returnLargeIntegerValidationText,
-  },
-  {
-    label: "Mouse Buttons",
-    value: "mouseButtons",
-    inputKind: "numberInput",
-    regex: SMALL_INTEGER_REGEX,
-    regexValidationFn: returnSmallIntegerValidationText,
-  },
-  {
-    label: "Mouse Color",
-    value: "mouseColor",
-    inputKind: "textInput",
-    regex: COLOR_VARIANT_REGEX,
-    regexValidationFn: returnColorVariantValidationText,
-  },
-  {
-    label: "Mouse Interface",
-    value: "mouseInterface",
-    inputKind: "selectInput",
-    selectData: PERIPHERALS_INTERFACE_DATA,
-  },
-
-  // page 2 -> headphone
-  {
-    label: "Headphone Type",
-    value: "headphoneType",
-    inputKind: "selectInput",
-    selectData: HEADPHONE_TYPE_DATA,
-  },
-  {
-    label: "Headphone Driver (mm)",
-    value: "headphoneDriver",
-    inputKind: "numberInput",
-    regex: SMALL_INTEGER_REGEX,
-    regexValidationFn: returnSmallIntegerValidationText,
-  },
-  {
-    label: "Headphone Frequency Response",
-    value: "headphoneFrequencyResponse",
-    inputKind: "textInput",
-    regex: FREQUENCY_RESPONSE_REGEX,
-    regexValidationFn: returnColorVariantValidationText,
-  },
-  {
-    label: "Headphone Impedance (Ohm Ω)",
-    value: "headphoneImpedance",
-    inputKind: "numberInput",
-    regex: MEDIUM_INTEGER_REGEX,
-    regexValidationFn: returnMediumIntegerValidationText,
-  },
-  {
-    label: "Headphone Color",
-    value: "headphoneColor",
-    inputKind: "textInput",
-    regex: COLOR_VARIANT_REGEX,
-    regexValidationFn: returnColorVariantValidationText,
-  },
-  {
-    label: "Headphone Interface",
-    value: "headphoneInterface",
-    inputKind: "selectInput",
-    selectData: HEADPHONE_INTERFACE_DATA,
-  },
-
-  // page 2 -> speaker
-  {
-    label: "Speaker Type",
-    value: "speakerType",
-    inputKind: "selectInput",
-    selectData: SPEAKER_TYPE_DATA,
-  },
-  {
-    label: "Speaker Total Wattage (W)",
-    value: "speakerTotalWattage",
-    inputKind: "numberInput",
-    regex: MEDIUM_INTEGER_REGEX,
-    regexValidationFn: returnMediumIntegerValidationText,
-  },
-  {
-    label: "Speaker Frequency Response",
-    value: "speakerFrequencyResponse",
-    inputKind: "textInput",
-    regex: FREQUENCY_RESPONSE_REGEX,
-    regexValidationFn: returnColorVariantValidationText,
-  },
-  {
-    label: "Speaker Color",
-    value: "speakerColor",
-    inputKind: "textInput",
-    regex: COLOR_VARIANT_REGEX,
-    regexValidationFn: returnColorVariantValidationText,
-  },
-  {
-    label: "Speaker Interface",
-    value: "speakerInterface",
-    inputKind: "selectInput",
-    selectData: SPEAKER_INTERFACE_DATA,
-  },
-
-  // page 2 -> smartphone
-  {
-    label: "Smartphone OS",
-    value: "smartphoneOs",
-    inputKind: "selectInput",
-    selectData: MOBILE_OS_DATA,
-  },
-  {
-    label: "Smartphone Chipset",
-    value: "smartphoneChipset",
-    inputKind: "textInput",
-    regex: SMARTPHONE_CHIPSET_REGEX,
-    regexValidationFn: returnSocketChipsetValidationText,
-  },
-  {
-    label: "Smartphone Display (in)",
-    value: "smartphoneDisplay",
-    inputKind: "numberInput",
-    regex: DIMENSIONS_REGEX,
-    regexValidationFn: returnDimensionsValidationText,
-  },
-  {
-    label: "Smartphone Horizontal Resolution",
-    value: "smartphoneHorizontalResolution",
-    inputKind: "numberInput",
-    regex: MEDIUM_INTEGER_REGEX,
-    regexValidationFn: returnMediumIntegerValidationText,
-  },
-  {
-    label: "Smartphone Vertical Resolution",
-    value: "smartphoneVerticalResolution",
-    inputKind: "numberInput",
-    regex: MEDIUM_INTEGER_REGEX,
-    regexValidationFn: returnMediumIntegerValidationText,
-  },
-  {
-    label: "Smartphone RAM Capacity",
-    value: "smartphoneRamCapacity",
-    inputKind: "numberInput",
-    regex: MEDIUM_INTEGER_REGEX,
-    regexValidationFn: returnMediumIntegerValidationText,
-  },
-  {
-    label: "Smartphone RAM Capacity Unit",
-    value: "smartphoneRamCapacityUnit",
-    inputKind: "selectInput",
-    selectData: MEMORY_UNIT_DATA,
-  },
-  {
-    label: "Smartphone Storage (GB)",
-    value: "smartphoneStorage",
-    inputKind: "numberInput",
-    regex: MEDIUM_INTEGER_REGEX,
-    regexValidationFn: returnMediumIntegerValidationText,
-  },
-  {
-    label: "Smartphone Battery (mAh)",
-    value: "smartphoneBattery",
-    inputKind: "numberInput",
-    regex: LARGE_INTEGER_REGEX,
-    regexValidationFn: returnLargeIntegerValidationText,
-  },
-  {
-    label: "Smartphone Camera",
-    value: "smartphoneCamera",
-    inputKind: "textInput",
-    regex: MOBILE_CAMERA_REGEX,
-    regexValidationFn: returnColorVariantValidationText,
-  },
-  {
-    label: "Smartphone Color",
-    value: "smartphoneColor",
-    inputKind: "textInput",
-    regex: COLOR_VARIANT_REGEX,
-    regexValidationFn: returnColorVariantValidationText,
-  },
-
-  // page 2 -> tablet
-  {
-    label: "Tablet OS",
-    value: "tabletOs",
-    inputKind: "selectInput",
-    selectData: MOBILE_OS_DATA,
-  },
-  {
-    label: "Tablet Chipset",
-    value: "tabletChipset",
-    inputKind: "textInput",
-    regex: TABLET_CHIPSET_REGEX,
-    regexValidationFn: returnSocketChipsetValidationText,
-  },
-  {
-    label: "Tablet Display (in)",
-    value: "tabletDisplay",
-    inputKind: "numberInput",
-    regex: DIMENSIONS_REGEX,
-    regexValidationFn: returnDimensionsValidationText,
-  },
-  {
-    label: "Tablet Horizontal Resolution",
-    value: "tabletHorizontalResolution",
-    inputKind: "numberInput",
-    regex: MEDIUM_INTEGER_REGEX,
-    regexValidationFn: returnMediumIntegerValidationText,
-  },
-  {
-    label: "Tablet Vertical Resolution",
-    value: "tabletVerticalResolution",
-    inputKind: "numberInput",
-    regex: MEDIUM_INTEGER_REGEX,
-    regexValidationFn: returnMediumIntegerValidationText,
-  },
-  {
-    label: "Tablet RAM Capacity",
-    value: "tabletRamCapacity",
-    inputKind: "numberInput",
-    regex: MEDIUM_INTEGER_REGEX,
-    regexValidationFn: returnMediumIntegerValidationText,
-  },
-  {
-    label: "Tablet RAM Capacity Unit",
-    value: "tabletRamCapacityUnit",
-    inputKind: "selectInput",
-    selectData: MEMORY_UNIT_DATA,
-  },
-  {
-    label: "Tablet Storage (GB)",
-    value: "tabletStorage",
-    inputKind: "numberInput",
-    regex: MEDIUM_INTEGER_REGEX,
-    regexValidationFn: returnMediumIntegerValidationText,
-  },
-  {
-    label: "Tablet Battery (mAh)",
-    value: "tabletBattery",
-    inputKind: "numberInput",
-    regex: LARGE_INTEGER_REGEX,
-    regexValidationFn: returnLargeIntegerValidationText,
-  },
-  {
-    label: "Tablet Camera",
-    value: "tabletCamera",
-    inputKind: "textInput",
-    regex: MOBILE_CAMERA_REGEX,
-    regexValidationFn: returnColorVariantValidationText,
-  },
-  {
-    label: "Tablet Color",
-    value: "tabletColor",
-    inputKind: "textInput",
-    regex: COLOR_VARIANT_REGEX,
-    regexValidationFn: returnColorVariantValidationText,
-  },
-
-  // page 2 -> accessory
-  {
-    label: "Accessory Type",
-    value: "accessoryType",
-    inputKind: "textInput",
-    regex: BRAND_REGEX,
-    regexValidationFn: returnBrandNameValidationText,
-  },
-  {
-    label: "Accessory Color",
-    value: "accessoryColor",
-    inputKind: "textInput",
-    regex: COLOR_VARIANT_REGEX,
-    regexValidationFn: returnColorVariantValidationText,
-  },
-  {
-    label: "Accessory Interface",
-    value: "accessoryInterface",
-    inputKind: "selectInput",
-    selectData: PERIPHERALS_INTERFACE_DATA,
-  },
-
-  // page 2 -> webcam
-  {
-    label: "Webcam Resolution",
-    value: "webcamResolution",
-    inputKind: "selectInput",
-    selectData: WEBCAM_RESOLUTION_DATA,
-  },
-  {
-    label: "Webcam Color",
-    value: "webcamColor",
-    inputKind: "textInput",
-    regex: COLOR_VARIANT_REGEX,
-    regexValidationFn: returnColorVariantValidationText,
-  },
-  {
-    label: "Webcam Interface",
-    value: "webcamInterface",
-    inputKind: "selectInput",
-    selectData: WEBCAM_INTERFACE_DATA,
-  },
-  {
-    label: "Webcam Microphone",
-    value: "webcamMicrophone",
-    inputKind: "selectInput",
-    selectData: WEBCAM_MICROPHONE_DATA,
-  },
-  {
-    label: "Webcam Frame Rate",
-    value: "webcamFrameRate",
-    inputKind: "selectInput",
-    selectData: WEBCAM_FRAME_RATE_DATA,
-  },
-
-  // page 2 -> microphone
-  {
-    label: "Microphone Type",
-    value: "microphoneType",
-    inputKind: "selectInput",
-    selectData: MICROPHONE_TYPE_DATA,
-  },
-  {
-    label: "Microphone Polar Pattern",
-    value: "microphonePolarPattern",
-    inputKind: "selectInput",
-    selectData: MICROPHONE_POLAR_PATTERN_DATA,
-  },
-  {
-    label: "Microphone Frequency Response",
-    value: "microphoneFrequencyResponse",
-    inputKind: "textInput",
-    regex: FREQUENCY_RESPONSE_REGEX,
-    regexValidationFn: returnFrequencyResponseValidationText,
-  },
-  {
-    label: "Microphone Color",
-    value: "microphoneColor",
-    inputKind: "textInput",
-    regex: COLOR_VARIANT_REGEX,
-    regexValidationFn: returnColorVariantValidationText,
-  },
-  {
-    label: "Microphone Interface",
-    value: "microphoneInterface",
-    inputKind: "selectInput",
-    selectData: MICROPHONE_INTERFACE_DATA,
-  },
-];
-
-const PRODUCTS_RESOURCE_PATHS: ResourceRoutePaths = {
-  manager: "product-category",
-  admin: "product-category",
-  employee: "product-category", // all roles have access to this resource
-};
-
 export {
   ACCESSORY_TYPE_REGEX,
   BRAND_REGEX,
@@ -2394,7 +1463,6 @@ export {
   COLOR_VARIANT_REGEX,
   CPU_FREQUENCY_REGEX,
   CPU_SOCKET_REGEX,
-  CREATE_PRODUCT_DESCRIPTION_OBJECTS,
   CREATE_PRODUCT_MAX_IMG_AMOUNT,
   CREATE_PRODUCT_MAX_IMG_SIZE,
   CREATE_PRODUCT_MAX_STEPPER_POSITION,
@@ -2434,8 +1502,6 @@ export {
   PRODUCT_CATEGORY_ROUTE_NAME_OBJ,
   PRODUCT_RATING_DATA,
   PRODUCT_ROLE_RESOURCE_PATHS,
-  PRODUCTS_QUERY_DATA,
-  PRODUCTS_RESOURCE_PATHS,
   PSU_EFFICIENCY_RATING_DATA,
   PSU_FORM_FACTOR_DATA,
   PSU_MODULARITY_DATA,

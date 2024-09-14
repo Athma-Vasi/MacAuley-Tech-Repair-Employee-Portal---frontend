@@ -6,7 +6,7 @@ import {
   STATES_US,
   STORE_LOCATION_DATA,
 } from "../../constants/data";
-import {
+import type {
   CheckboxRadioSelectData,
   Country,
   PreferredPronouns,
@@ -14,7 +14,6 @@ import {
   StepperChild,
   StepperPage,
 } from "../../types";
-import { DescriptionObjectsArray } from "../wrappers";
 
 function returnRegisterperPages(country: Country): StepperPage[] {
   const addressLine: StepperChild = {
@@ -107,18 +106,17 @@ function returnRegisterperPages(country: Country): StepperPage[] {
     validationKey: "password",
   };
 
-  const postalCode: StepperChild =
-    country === "Canada"
-      ? {
-          inputType: "text",
-          name: "postalCode",
-          validationKey: "postalCodeCanada",
-        }
-      : {
-          inputType: "text",
-          name: "postalCode",
-          validationKey: "postalCodeUS",
-        };
+  const postalCode: StepperChild = country === "Canada"
+    ? {
+      inputType: "text",
+      name: "postalCode",
+      validationKey: "postalCodeCanada",
+    }
+    : {
+      inputType: "text",
+      name: "postalCode",
+      validationKey: "postalCodeUS",
+    };
 
   const preferredName: StepperChild = {
     inputType: "text",
@@ -231,36 +229,6 @@ const REGISTER_ROLE_ROUTE_PATHS: RoleResourceRoutePaths = {
 
 const REGISTER_URL = "http://localhost:5500/api/v1/user";
 
-const REGISTER_DESCRIPTION_OBJECTS: DescriptionObjectsArray = [
-  {
-    description: "Authentication",
-    ariaLabel: "Enter email, username, password and confirm password",
-  },
-
-  {
-    description: "Personal information",
-    ariaLabel:
-      "Enter first name, middle name, last name, preferred name, profile picture url, and (optionally) preferred pronouns",
-  },
-
-  {
-    description: "Contact details",
-    ariaLabel:
-      "Enter country, address line, city, province or state, postal or zip code, and contact number",
-  },
-
-  {
-    description: "Additional information",
-    ariaLabel:
-      "Enter job position, department, store location, emergency contact name, emergency contact number, and start date",
-  },
-
-  {
-    description: "Review and proceed",
-    ariaLabel: "Review all the information you have entered",
-  },
-];
-
 const REGISTER_MAX_STEPPER_POSITION = 5;
 
 const PREFERRED_PRONOUNS_DATA: CheckboxRadioSelectData<PreferredPronouns> = [
@@ -273,7 +241,6 @@ const PREFERRED_PRONOUNS_DATA: CheckboxRadioSelectData<PreferredPronouns> = [
 
 export {
   PREFERRED_PRONOUNS_DATA,
-  REGISTER_DESCRIPTION_OBJECTS,
   REGISTER_MAX_STEPPER_POSITION,
   REGISTER_ROLE_ROUTE_PATHS,
   REGISTER_URL,

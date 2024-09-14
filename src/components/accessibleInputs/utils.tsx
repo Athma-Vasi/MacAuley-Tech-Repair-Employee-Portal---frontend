@@ -342,6 +342,45 @@ function createAccessibleButtonScreenreaderTextElements({
   return { enabledTextElement, disabledTextElement };
 }
 
+type CreateAccessibleNavLinkTextElements = {
+  active: boolean;
+  description: string;
+  name: string;
+  themeObject: ThemeObject;
+};
+
+function createAccessibleNavLinkTextElements({
+  active,
+  description,
+  name,
+  themeObject,
+}: CreateAccessibleNavLinkTextElements): {
+  screenreaderTextElement: React.JSX.Element;
+} {
+  const {
+    generalColors: { greenColorShade, textColor },
+  } = returnThemeColors({
+    themeObject,
+    colorsSwatches: COLORS_SWATCHES,
+  });
+
+  const icon = <FontAwesomeIcon icon={faCheck} color={greenColorShade} />;
+
+  const screenreaderTextElement = (
+    <Text
+      id={`${name}-selected`}
+      color={active ? textColor : greenColorShade}
+      w="100%"
+      aria-live="polite"
+    >
+      {icon}
+      {description}
+    </Text>
+  );
+
+  return { screenreaderTextElement };
+}
+
 type CreateAccessibleSliderSelectionTextElements = {
   name: string;
   theme?: "muted" | "default";
@@ -807,6 +846,7 @@ export {
   createAccessibleCheckboxSelectionsTextElements,
   createAccessibleCheckboxSingleInputs,
   createAccessibleDateTimeInputs,
+  createAccessibleNavLinkTextElements,
   createAccessibleRadioGroupInputs,
   createAccessibleRadioScreenreaderTextElements,
   createAccessibleRadioSingleInputs,

@@ -1,5 +1,12 @@
-import { Box, Button, Container, Group, MantineSize, Tooltip } from "@mantine/core";
 import {
+  Box,
+  Button,
+  Container,
+  Group,
+  type MantineSize,
+  Tooltip,
+} from "@mantine/core";
+import type {
   CSSProperties,
   KeyboardEvent,
   MouseEvent,
@@ -24,10 +31,10 @@ import {
 } from "react-icons/tb";
 import { TiArrowLeftThick, TiArrowRightThick } from "react-icons/ti";
 
+import { VscCollapseAll, VscExpandAll } from "react-icons/vsc";
 import { useGlobalState } from "../../hooks";
 import { splitCamelCase } from "../../utils";
 import { createAccessibleButtonScreenreaderTextElements } from "./utils";
-import { VscCollapseAll, VscExpandAll } from "react-icons/vsc";
 
 type AccessibleButtonKind =
   | "add"
@@ -62,7 +69,7 @@ type AccessibleButtonAttributes = {
   setIconAsLabel?: boolean;
   name?: string;
   onClick?: (
-    event: MouseEvent<HTMLButtonElement> | PointerEvent<HTMLButtonElement>
+    event: MouseEvent<HTMLButtonElement> | PointerEvent<HTMLButtonElement>,
   ) => void;
   onKeyDown?: (event: KeyboardEvent<HTMLButtonElement>) => void;
   ref?: RefObject<HTMLButtonElement>;
@@ -70,7 +77,14 @@ type AccessibleButtonAttributes = {
   size?: MantineSize;
   style?: CSSProperties;
   type?: "button" | "submit" | "reset";
-  variant?: "outline" | "white" | "light" | "default" | "filled" | "gradient" | "subtle";
+  variant?:
+    | "outline"
+    | "white"
+    | "light"
+    | "default"
+    | "filled"
+    | "gradient"
+    | "subtle";
 };
 
 type AccessibleButtonProps = {
@@ -124,7 +138,9 @@ function AccessibleButton({ attributes }: AccessibleButtonProps) {
     up: <TbCircleArrowUp />,
   };
 
-  const leftIcon = setIconAsLabel ? null : attributes.leftIcon ?? leftIconTable[kind];
+  const leftIcon = setIconAsLabel
+    ? null
+    : attributes.leftIcon ?? leftIconTable[kind];
   const label = setIconAsLabel
     ? leftIconTable[kind]
     : attributes.label ?? splitCamelCase(name);
@@ -140,13 +156,11 @@ function AccessibleButton({ attributes }: AccessibleButtonProps) {
 
   const button = (
     <Button
-      aria-describedby={
-        disabled
-          ? // id of disabledTextElement
-            `${name}-disabled`
-          : // id of enabledTextElement
-            `${name}-enabled`
-      }
+      aria-describedby={disabled
+        // id of disabledTextElement
+        ? `${name}-disabled`
+        // id of enabledTextElement
+        : `${name}-enabled`}
       aria-label={name}
       compact={compact}
       disabled={disabled}
@@ -168,13 +182,17 @@ function AccessibleButton({ attributes }: AccessibleButtonProps) {
 
   return (
     <Container w={100} key={`${name}-${index}`}>
-      {isTooltip && enabledScreenreaderText?.length ? (
-        <Tooltip label={disabled ? disabledScreenreaderText : enabledScreenreaderText}>
-          <Group>{button}</Group>
-        </Tooltip>
-      ) : (
-        button
-      )}
+      {isTooltip && enabledScreenreaderText?.length
+        ? (
+          <Tooltip
+            label={disabled
+              ? disabledScreenreaderText
+              : enabledScreenreaderText}
+          >
+            <Group>{button}</Group>
+          </Tooltip>
+        )
+        : button}
 
       <Box
         style={

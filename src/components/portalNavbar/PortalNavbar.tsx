@@ -1,16 +1,10 @@
 import { Flex, Navbar, NavLink, ScrollArea, Text } from "@mantine/core";
 import { useReducer } from "react";
-import { BsDeviceHdd, BsMotherboard, BsWebcam } from "react-icons/bs";
 import { CgDatabase } from "react-icons/cg";
-import { GrTransaction } from "react-icons/gr";
-import { IoPhonePortraitOutline } from "react-icons/io5";
-import { LuMemoryStick } from "react-icons/lu";
-import { MdMonitor, MdOutlineKeyboard, MdSafetyDivider } from "react-icons/md";
+import { MdSafetyDivider } from "react-icons/md";
 import { RiSignalTowerFill } from "react-icons/ri";
 import {
   TbAddressBook,
-  TbAffiliate,
-  TbBriefcase,
   TbBuildingWarehouse,
   TbCalendarPin,
   TbCash,
@@ -19,27 +13,15 @@ import {
   TbChevronRight,
   TbCircleTriangle,
   TbCircuitResistor,
-  TbCpu,
-  TbCpu2,
   TbDashboard,
-  TbDeviceDesktopPlus,
-  TbDeviceLaptop,
-  TbDeviceSpeaker,
-  TbDeviceTablet,
   TbGift,
-  TbHeadphones,
   TbHome2,
-  TbMicrophone,
-  TbMouse,
   TbNotebook,
-  TbPower,
   TbPrinterOff,
   TbReceipt2,
-  TbShoppingBag,
   TbShoppingCartPlus,
   TbSpeakerphone,
   TbTimelineEventPlus,
-  TbTruckReturn,
   TbUserCheck,
 } from "react-icons/tb";
 import { TiThumbsUp } from "react-icons/ti";
@@ -47,23 +29,21 @@ import { useNavigate } from "react-router-dom";
 
 import { COLORS_SWATCHES } from "../../constants/data";
 import { useGlobalState } from "../../hooks";
-import { returnAccessibleNavLinkElements } from "../../jsxCreators";
 import { returnThemeColors } from "../../utils";
-import { AccessibleNavLinkCreatorInfo } from "../wrappers";
 import { portalNavbarAction } from "./actions";
 import { portalNavbarReducer } from "./reducers";
 import { initialPortalNavbarState } from "./state";
-import { PortalNavbarProps } from "./types";
+import type { PortalNavbarProps } from "./types";
 
 function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
   const {
-    globalState: { width, themeObject, height, padding },
+    globalState: { width, themeObject, height },
   } = useGlobalState();
   const navigate = useNavigate();
 
   const [portalNavbarState, portalNavbarDispatch] = useReducer(
     portalNavbarReducer,
-    initialPortalNavbarState
+    initialPortalNavbarState,
   );
 
   const {
@@ -125,7 +105,9 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
     {
       active: isDashboardActive,
       ariaLabel: "Will navigate to dashboard page",
-      icon: <TbDashboard color={isDashboardActive ? themeColorShade : iconGray} />,
+      icon: (
+        <TbDashboard color={isDashboardActive ? themeColorShade : iconGray} />
+      ),
       label: "Dashboard",
       onClick: () => {
         portalNavbarDispatch({
@@ -141,7 +123,9 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
     {
       active: isCustomerActive,
       ariaLabel: "Will navigate to customer page",
-      icon: <TbUserCheck color={isCustomerActive ? themeColorShade : iconGray} />,
+      icon: (
+        <TbUserCheck color={isCustomerActive ? themeColorShade : iconGray} />
+      ),
       label: "Customer",
       onClick: () => {
         portalNavbarDispatch({
@@ -173,7 +157,9 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
     {
       active: isFileUploadActive,
       ariaLabel: "Will navigate to file upload page",
-      icon: <TbReceipt2 color={isFileUploadActive ? themeColorShade : iconGray} />,
+      icon: (
+        <TbReceipt2 color={isFileUploadActive ? themeColorShade : iconGray} />
+      ),
       label: "File upload",
       onClick: () => {
         portalNavbarDispatch({
@@ -188,7 +174,11 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
   const productNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
     active: isProductActive,
     ariaLabel: "Will navigate to product page",
-    icon: <TbShoppingCartPlus color={isProductActive ? themeColorShade : iconGray} />,
+    icon: (
+      <TbShoppingCartPlus
+        color={isProductActive ? themeColorShade : iconGray}
+      />
+    ),
     label: "Product",
     onClick: () => {
       portalNavbarDispatch({
@@ -207,7 +197,11 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
     {
       active: isRepairActive,
       ariaLabel: "Will navigate to repair page",
-      icon: <TbCircuitResistor color={isRepairActive ? themeColorShade : iconGray} />,
+      icon: (
+        <TbCircuitResistor
+          color={isRepairActive ? themeColorShade : iconGray}
+        />
+      ),
       label: "Repair",
       onClick: () => {
         portalNavbarDispatch({
@@ -222,7 +216,11 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
   const addressChangeNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
     active: isAddressChangeActive,
     ariaLabel: "Will navigate to address change page",
-    icon: <TbAddressBook color={isAddressChangeActive ? themeColorShade : iconGray} />,
+    icon: (
+      <TbAddressBook
+        color={isAddressChangeActive ? themeColorShade : iconGray}
+      />
+    ),
     label: "Address change",
     onClick: () => {
       portalNavbarDispatch({
@@ -250,7 +248,9 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
   const expenseClaimNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
     active: isExpenseClaimActive,
     ariaLabel: "Will navigate to expense claim page",
-    icon: <TbReceipt2 color={isExpenseClaimActive ? themeColorShade : iconGray} />,
+    icon: (
+      <TbReceipt2 color={isExpenseClaimActive ? themeColorShade : iconGray} />
+    ),
     label: "Expense claim",
     onClick: () => {
       portalNavbarDispatch({
@@ -264,7 +264,11 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
   const leaveRequestNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
     active: isLeaveRequestActive,
     ariaLabel: "Will navigate to leave request page",
-    icon: <TbCalendarPin color={isLeaveRequestActive ? themeColorShade : iconGray} />,
+    icon: (
+      <TbCalendarPin
+        color={isLeaveRequestActive ? themeColorShade : iconGray}
+      />
+    ),
     label: "Leave request",
     onClick: () => {
       portalNavbarDispatch({
@@ -278,7 +282,11 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
   const requestResourceNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
     active: isRequestResourceActive,
     ariaLabel: "Will navigate to request resource page",
-    icon: <TbCashBanknote color={isRequestResourceActive ? themeColorShade : iconGray} />,
+    icon: (
+      <TbCashBanknote
+        color={isRequestResourceActive ? themeColorShade : iconGray}
+      />
+    ),
     label: "Request resource",
     onClick: () => {
       portalNavbarDispatch({
@@ -303,15 +311,14 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
     requestResourceNavLinkCreatorInfo,
   ]);
 
-  const isCompanyNavlinkOpened =
-    isCompanyActive ||
-    isAddressChangeActive ||
-    isBenefitActive ||
-    isExpenseClaimActive ||
-    isLeaveRequestActive ||
-    isRequestResourceActive
-      ? true
-      : false;
+  const isCompanyNavlinkOpened = isCompanyActive ||
+      isAddressChangeActive ||
+      isBenefitActive ||
+      isExpenseClaimActive ||
+      isLeaveRequestActive ||
+      isRequestResourceActive
+    ? true
+    : false;
 
   const companyNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
     active: isCompanyActive,
@@ -323,7 +330,11 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
       createdLeaveRequestNavLink,
       createdRequestResourceNavLink,
     ],
-    icon: <TbBuildingWarehouse color={isCompanyActive ? themeColorShade : iconGray} />,
+    icon: (
+      <TbBuildingWarehouse
+        color={isCompanyActive ? themeColorShade : iconGray}
+      />
+    ),
     label: "Company",
     onClick: () => {
       portalNavbarDispatch({
@@ -333,7 +344,9 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
     },
     opened: isCompanyNavlinkOpened,
     rightSection: (
-      <TbChevronRight color={isCompanyNavlinkOpened ? themeColorShade : iconGray} />
+      <TbChevronRight
+        color={isCompanyNavlinkOpened ? themeColorShade : iconGray}
+      />
     ),
   };
 
@@ -344,7 +357,9 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
   const endorsementNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
     active: isEndorsementActive,
     ariaLabel: "Will navigate to endorsement page",
-    icon: <TbUserCheck color={isEndorsementActive ? themeColorShade : iconGray} />,
+    icon: (
+      <TbUserCheck color={isEndorsementActive ? themeColorShade : iconGray} />
+    ),
     label: "Endorsement",
     onClick: () => {
       portalNavbarDispatch({
@@ -358,7 +373,9 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
   const printerIssueNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
     active: isPrinterIssueActive,
     ariaLabel: "Will navigate to printer issue page",
-    icon: <TbPrinterOff color={isPrinterIssueActive ? themeColorShade : iconGray} />,
+    icon: (
+      <TbPrinterOff color={isPrinterIssueActive ? themeColorShade : iconGray} />
+    ),
     label: "Printer issue",
     onClick: () => {
       portalNavbarDispatch({
@@ -373,7 +390,9 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
     active: isAnonymousRequestActive,
     ariaLabel: "Will navigate to anonymous request page",
     icon: (
-      <MdSafetyDivider color={isAnonymousRequestActive ? themeColorShade : iconGray} />
+      <MdSafetyDivider
+        color={isAnonymousRequestActive ? themeColorShade : iconGray}
+      />
     ),
     label: "Anonymous request",
     onClick: () => {
@@ -411,14 +430,13 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
     refermentNavLinkCreatorInfo,
   ]);
 
-  const isGeneralNavlinkOpened =
-    isGeneralActive ||
-    isEndorsementActive ||
-    isPrinterIssueActive ||
-    isAnonymousRequestActive ||
-    isRefermentActive
-      ? true
-      : false;
+  const isGeneralNavlinkOpened = isGeneralActive ||
+      isEndorsementActive ||
+      isPrinterIssueActive ||
+      isAnonymousRequestActive ||
+      isRefermentActive
+    ? true
+    : false;
 
   const generalNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
     active: isGeneralActive,
@@ -429,7 +447,9 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
       createdAnonymousRequestNavLink,
       createdRefermentNavLink,
     ],
-    icon: <TbCircleTriangle color={isGeneralActive ? themeColorShade : iconGray} />,
+    icon: (
+      <TbCircleTriangle color={isGeneralActive ? themeColorShade : iconGray} />
+    ),
     label: "General",
     onClick: () => {
       portalNavbarDispatch({
@@ -439,7 +459,9 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
     },
     opened: isGeneralNavlinkOpened,
     rightSection: (
-      <TbChevronRight color={isGeneralNavlinkOpened ? themeColorShade : iconGray} />
+      <TbChevronRight
+        color={isGeneralNavlinkOpened ? themeColorShade : iconGray}
+      />
     ),
   };
 
@@ -450,7 +472,11 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
   const announcementNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
     active: isAnnouncementActive,
     ariaLabel: "Will navigate to announcement page",
-    icon: <TbSpeakerphone color={isAnnouncementActive ? themeColorShade : iconGray} />,
+    icon: (
+      <TbSpeakerphone
+        color={isAnnouncementActive ? themeColorShade : iconGray}
+      />
+    ),
     label: "Announcement",
     onClick: () => {
       portalNavbarDispatch({
@@ -478,7 +504,9 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
   const eventNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
     active: isEventActive,
     ariaLabel: "Will navigate to event page",
-    icon: <TbTimelineEventPlus color={isEventActive ? themeColorShade : iconGray} />,
+    icon: (
+      <TbTimelineEventPlus color={isEventActive ? themeColorShade : iconGray} />
+    ),
     label: "Event",
     onClick: () => {
       portalNavbarDispatch({
@@ -489,12 +517,15 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
     },
   };
 
-  const [createdAnnouncementNavLink, createdSurveyNavLink, createdEventNavLink] =
-    returnAccessibleNavLinkElements([
-      announcementNavLinkCreatorInfo,
-      surveyNavLinkCreatorInfo,
-      eventNavLinkCreatorInfo,
-    ]);
+  const [
+    createdAnnouncementNavLink,
+    createdSurveyNavLink,
+    createdEventNavLink,
+  ] = returnAccessibleNavLinkElements([
+    announcementNavLinkCreatorInfo,
+    surveyNavLinkCreatorInfo,
+    eventNavLinkCreatorInfo,
+  ]);
 
   const isOutreachNavlinkOpened =
     isOutreachActive || isAnnouncementActive || isEventActive || isSurveyActive
@@ -504,8 +535,16 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
   const outreachNavLinkCreatorInfo: AccessibleNavLinkCreatorInfo = {
     active: isOutreachActive,
     ariaLabel: "Will navigate to outreach page",
-    children: [createdAnnouncementNavLink, createdSurveyNavLink, createdEventNavLink],
-    icon: <RiSignalTowerFill color={isOutreachActive ? themeColorShade : iconGray} />,
+    children: [
+      createdAnnouncementNavLink,
+      createdSurveyNavLink,
+      createdEventNavLink,
+    ],
+    icon: (
+      <RiSignalTowerFill
+        color={isOutreachActive ? themeColorShade : iconGray}
+      />
+    ),
     label: "Outreach",
     onClick: () => {
       portalNavbarDispatch({
@@ -515,7 +554,9 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
     },
     opened: isOutreachNavlinkOpened,
     rightSection: (
-      <TbChevronRight color={isOutreachNavlinkOpened ? themeColorShade : iconGray} />
+      <TbChevronRight
+        color={isOutreachNavlinkOpened ? themeColorShade : iconGray}
+      />
     ),
   };
 
@@ -527,7 +568,9 @@ function PortalNavbar({ openedNavbar }: PortalNavbarProps) {
     {
       active: isDirectoryActive,
       ariaLabel: "Will navigate to directory page",
-      icon: <CgDatabase color={isDirectoryActive ? themeColorShade : iconGray} />,
+      icon: (
+        <CgDatabase color={isDirectoryActive ? themeColorShade : iconGray} />
+      ),
       label: "Directory",
       onClick: () => {
         portalNavbarDispatch({
