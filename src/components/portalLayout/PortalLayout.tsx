@@ -1,5 +1,5 @@
 import { AppShell, Flex, Group, ScrollArea, Space } from "@mantine/core";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 
 import { COLORS_SWATCHES } from "../../constants/data";
@@ -8,12 +8,12 @@ import { returnThemeColors } from "../../utils";
 import { BreadcrumbsBuilder } from "../breadcrumbsBuilder/BreadcrumbsBuilder";
 import { PortalFooter } from "../portalFooter";
 import { PortalHeader } from "../portalHeader";
-import { PortalNavbar } from "../portalNavbar";
+import { PortalNavbar } from "../portalNavbar/PortalNavbar";
 
 function PortalLayout() {
   const [opened, setOpened] = useState<boolean>(false);
   const {
-    globalState: { padding, themeObject, height, width },
+    globalState: { themeObject, height, width },
   } = useGlobalState();
 
   const { pathname } = useLocation();
@@ -26,7 +26,7 @@ function PortalLayout() {
   const displayBreadcrumbs = (
     <Group
       w="100%"
-      p={padding}
+      p="md"
       h={50}
       bg={backgroundColor}
       style={{ borderBottom: borderColor }}
@@ -41,10 +41,12 @@ function PortalLayout() {
       padding={0}
       navbarOffsetBreakpoint="sm"
       navbar={<PortalNavbar openedNavbar={opened} />}
-      header={<PortalHeader openedHeader={opened} setOpenedHeader={setOpened} />}
+      header={
+        <PortalHeader openedHeader={opened} setOpenedHeader={setOpened} />
+      }
       footer={<PortalFooter />}
     >
-      {/* breadcrumbs always visible on top of <Outlet /> */}
+      {/* breadcrumbs always visible */}
       {displayBreadcrumbs}
 
       <ScrollArea styles={() => scrollBarStyle} type="scroll">

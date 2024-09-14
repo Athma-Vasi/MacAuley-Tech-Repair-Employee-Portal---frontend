@@ -1,15 +1,11 @@
-import { Grid, Group, Stack, Text, Tooltip } from '@mantine/core';
-import { TbEdit } from 'react-icons/tb';
-import { useNavigate } from 'react-router-dom';
+import { Grid, Group, Image, Stack, Text } from "@mantine/core";
+import { useNavigate } from "react-router-dom";
 
-import { COLORS_SWATCHES } from '../../../constants/data';
-import { useGlobalState } from '../../../hooks';
-import {
-  returnAccessibleButtonElements,
-  returnAccessibleImageElements,
-} from '../../../jsxCreators';
-import { returnThemeColors, splitCamelCase } from '../../../utils';
-import { returnProfileInfoObject } from './utils';
+import { COLORS_SWATCHES } from "../../../constants/data";
+import { useAuth, useGlobalState } from "../../../hooks";
+import type { UserDocument } from "../../../types";
+import { returnThemeColors, splitCamelCase } from "../../../utils";
+import { returnProfileInfoObject } from "./utils";
 
 type UserInfoProps = {
   closeUserInfoModal: () => void;
@@ -17,8 +13,10 @@ type UserInfoProps = {
 
 function UserInfo({ closeUserInfoModal }: UserInfoProps) {
   const {
-    globalState: { userDocument, themeObject, width, padding, rowGap },
+    globalState: { themeObject },
   } = useGlobalState();
+
+  const { authState: { userDocument } } = useAuth();
 
   const navigate = useNavigate();
 
@@ -29,44 +27,34 @@ function UserInfo({ closeUserInfoModal }: UserInfoProps) {
     colorsSwatches: COLORS_SWATCHES,
   });
 
-  const [profilePicElement] = returnAccessibleImageElements([
-    {
-      customWidth: width < 640 ? 128 : width < 1024 ? 256 : 384,
-      customRadius: 4,
-      fit: 'cover',
-      imageSrc: userDocument?.profilePictureUrl,
-      imageAlt: `Picture of ${userDocument?.username}`,
-      isCard: false,
-      isOverlay: false,
-      isLoader: true,
-      withPlaceholder: true,
-    },
-  ]);
+  // const [profilePicElement] = returnAccessibleImageElements([
+  //   {
+  //     customWidth: width < 640 ? 128 : width < 1024 ? 256 : 384,
+  //     customRadius: 4,
+  //     fit: "cover",
+  //     imageSrc: userDocument?.profilePictureUrl,
+  //     imageAlt: `Picture of ${userDocument?.username}`,
+  //     isCard: false,
+  //     isOverlay: false,
+  //     isLoader: true,
+  //     withPlaceholder: true,
+  //   },
+  // ]);
 
-  const displayProfilePic = (
+  const profilePic = (
     <Group w="100%" position="center" align="center">
-      {profilePicElement}
+      <Image
+        src={userDocument?.profilePictureUrl as string}
+        alt={`Picture of ${userDocument?.username}`}
+        radius={4}
+        fit="cover"
+        placeholder
+      />
     </Group>
   );
 
-  const profileInfoObject = returnProfileInfoObject(userDocument);
-
-  const [createdAddressChangeButton] = returnAccessibleButtonElements([
-    {
-      buttonLabel: <TbEdit />,
-      semanticDescription: 'Click to change address',
-      semanticName: 'button to change address',
-      buttonOnClick: () => {
-        closeUserInfoModal();
-        navigate('/home/company/address-change/create');
-      },
-    },
-  ]);
-
-  const displayAddressChangeButton = (
-    <Tooltip label="Change Address">
-      <Group>{createdAddressChangeButton}</Group>
-    </Tooltip>
+  const profileInfoObject = returnProfileInfoObject(
+    userDocument as Omit<UserDocument, "password" | "paymentInformation">,
   );
 
   const displayProfileStack = Object.entries(profileInfoObject).map(
@@ -76,7 +64,7 @@ function UserInfo({ closeUserInfoModal }: UserInfoProps) {
         Array<{
           inputName: string;
           inputValue?: string | boolean;
-        }>
+        }>,
       ];
 
       const displayPageName = (
@@ -84,54 +72,60 @@ function UserInfo({ closeUserInfoModal }: UserInfoProps) {
           w="100%"
           position="center"
           align="baseline"
-          spacing={rowGap}
-          py={padding}
+          key={`profile-review-${index.toString()}`}
         >
           <Text size="lg" weight={500} style={{ marginTop: 16 }}>
             {splitCamelCase(pageName)}
           </Text>
-          {pageName === 'address' ? displayAddressChangeButton : null}
         </Group>
       );
 
       const displayPageSection = pageObjectArr.map((pageObject, index) => {
-        const { inputName, inputValue = '' } = pageObject;
+        const { inputName, inputValue = "" } = pageObject;
 
-        const displayInputName = <Text>{inputName}</Text>;
-        const displayValue =
-          inputName === 'Email' ? (
+        const displayInputName = (
+          <Text key={`profile-review-${index.toString()}-input-name`}>
+            {inputName}
+          </Text>
+        );
+        const displayValue = inputName === "Email"
+          ? (
             inputValue
               .toString()
-              .split('@')
+              .split("@")
               .map((str, index) => {
                 const displayStr = index === 0 ? str : `@${str}`;
                 return (
                   <Text
-                    key={`email-${index}`}
-                    style={{ display: 'inline-block' }}
+                    key={`profile-review-${index.toString()}-input-value`}
+                    style={{ display: "inline-block" }}
                   >
                     {displayStr}
                   </Text>
                 );
               })
-          ) : (
-            <Text>{inputValue}</Text>
+          )
+          : (
+            <Text
+              key={`profile-review-${index.toString()}-input-value`}
+            >
+              {inputValue}
+            </Text>
           );
 
-        const rowBackgroundColorLight =
-          index % 2 === 0 ? '#f9f9f9' : 'transparent';
-        const rowBackgroundColorDark = 'transparent';
-        const rowBackgroundColor =
-          themeObject.colorScheme === 'dark'
-            ? rowBackgroundColorDark
-            : rowBackgroundColorLight;
+        const rowBackgroundColorLight = index % 2 === 0
+          ? "#f9f9f9"
+          : "transparent";
+        const rowBackgroundColorDark = "transparent";
+        const rowBackgroundColor = themeObject.colorScheme === "dark"
+          ? rowBackgroundColorDark
+          : rowBackgroundColorLight;
 
         const displayPageSection = (
           <Grid
             columns={10}
-            key={`profile-review-${index}`}
+            key={`profile-review-${index.toString()}`}
             style={{ borderBottom: borderColor }}
-            gutter={rowGap}
             w="100%"
           >
             <Grid.Col span={4} style={{ background: rowBackgroundColor }}>
@@ -147,19 +141,19 @@ function UserInfo({ closeUserInfoModal }: UserInfoProps) {
       });
 
       const profileReviewStack = (
-        <Stack key={`profile-review-${index}`} w="100%" pb={padding}>
+        <Stack key={`profile-review-${index.toString()}`} w="100%">
           {displayPageName}
           {displayPageSection}
         </Stack>
       );
 
       return profileReviewStack;
-    }
+    },
   );
 
   const displayUserInfoComponent = (
-    <Stack w="100%" p={padding} style={{ position: 'relative' }}>
-      {displayProfilePic}
+    <Stack w="100%" style={{ position: "relative" }}>
+      {profilePic}
       {displayProfileStack}
     </Stack>
   );
