@@ -1,10 +1,6 @@
 import { Flex } from "@mantine/core";
 
-import { QueryResponseData } from "../../../types";
-import { DisplayResource } from "../../displayResource";
 import DisplayResourceHeader from "../../displayResourceHeader/DisplayResourceHeader";
-import { REPAIR_NOTE_QUERY_DATA, REPAIR_NOTE_ROUTE_PATHS } from "../constants";
-import { RepairTicketDocument } from "../types";
 
 function DisplayRepairTickets() {
   const imageSrc =
@@ -22,19 +18,19 @@ function DisplayRepairTickets() {
     />
   );
 
-  const displayResource = (
-    <DisplayResource
-      componentQueryData={REPAIR_NOTE_QUERY_DATA}
-      createResourcePath="/home/repair-ticket/create"
-      resourceUrlPaths={REPAIR_NOTE_ROUTE_PATHS}
-      requestBodyHeading="repairTicket"
-    />
-  );
+  // const displayResource = (
+  //   <DisplayResource
+  //     componentQueryData={REPAIR_NOTE_QUERY_DATA}
+  //     createResourcePath="/home/repair-ticket/create"
+  //     resourceUrlPaths={REPAIR_NOTE_ROUTE_PATHS}
+  //     requestBodyHeading="repairTicket"
+  //   />
+  // );
 
   const displayRepairTicketComponent = (
     <Flex direction="column" w="100%">
       {displayResourceHeader}
-      {displayResource}
+      {/* {displayResource} */}
     </Flex>
   );
 
