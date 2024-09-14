@@ -158,6 +158,8 @@ function RepairTicketStepDetails({
   );
 }
 
+export { RepairTicketStepDetails };
+
 /**
 import { useMantineTheme } from "@mantine/core";
 import { ChangeEvent, useEffect } from "react";

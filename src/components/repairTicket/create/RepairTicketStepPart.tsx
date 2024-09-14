@@ -108,6 +108,8 @@ function RepairTicketStepPart(
   );
 }
 
+export { RepairTicketStepPart };
+
 /**
 import { ChangeEvent, useEffect } from "react";
 

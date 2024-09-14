@@ -26,10 +26,15 @@ const initialCreateRepairTicketState: CreateRepairTicketState = {
   estimatedCompletionDate: "",
   repairPriority: "low",
 
-  triggerFormSubmit: false,
+  triggerCustomerSearchSubmit: false,
+  triggerRepairFormSubmit: false,
   pagesInError: new Set(),
   isSubmitting: false,
   isSuccessful: false,
+  isLoading: false,
+  totalDocuments: 0,
+  totalPages: 0,
+  loadingMessage: "",
 };
 
 export { initialCreateRepairTicketState };

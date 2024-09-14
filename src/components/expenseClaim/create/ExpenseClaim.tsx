@@ -300,7 +300,7 @@ function ExpenseClaim() {
         switchOffDescription: "I do not acknowledge.",
         switchOnDescription: "I acknowledge that the information is correct.",
         validValueAction: expenseClaimAction.setAcknowledgement,
-        value: acknowledgement.toString(),
+        value: acknowledgement,
       }}
     />
   );

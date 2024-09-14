@@ -24,10 +24,15 @@ type CreateRepairTicketAction = {
     setEstimatedCompletionDate: "setEstimatedCompletionDate";
     setRepairPriority: "setRepairPriority";
 
-    setTriggerFormSubmit: "setTriggerFormSubmit";
+    setTriggerCustomerSearchSubmit: "setTriggerCustomerSearchSubmit";
+    setTriggerRepairFormSubmit: "setTriggerRepairFormSubmit";
     setPageInError: "setPageInError";
     setIsSubmitting: "setIsSubmitting";
     setIsSuccessful: "setIsSuccessful";
+    setIsLoading: "setIsLoading";
+    setTotalDocuments: "setTotalDocuments";
+    setTotalPages: "setTotalPages";
+    setLoadingMessage: "setLoadingMessage";
 };
 
 const createRepairTicketAction: CreateRepairTicketAction = {
@@ -56,10 +61,15 @@ const createRepairTicketAction: CreateRepairTicketAction = {
     setEstimatedCompletionDate: "setEstimatedCompletionDate",
     setRepairPriority: "setRepairPriority",
 
-    setTriggerFormSubmit: "setTriggerFormSubmit",
+    setTriggerCustomerSearchSubmit: "setTriggerCustomerSearchSubmit",
+    setTriggerRepairFormSubmit: "setTriggerRepairFormSubmit",
     setPageInError: "setPageInError",
     setIsSubmitting: "setIsSubmitting",
     setIsSuccessful: "setIsSuccessful",
+    setIsLoading: "setIsLoading",
+    setTotalDocuments: "setTotalDocuments",
+    setTotalPages: "setTotalPages",
+    setLoadingMessage: "setLoadingMessage",
 };
 
 export { createRepairTicketAction };

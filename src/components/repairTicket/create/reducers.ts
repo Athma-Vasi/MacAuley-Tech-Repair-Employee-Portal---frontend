@@ -118,8 +118,12 @@ const createRepairTicketReducersMap = new Map<
         createRepairTicketReducer_setRepairPriority,
     ],
     [
-        createRepairTicketAction.setTriggerFormSubmit,
-        createRepairTicketReducer_setTriggerFormSubmit,
+        createRepairTicketAction.setTriggerCustomerSearchSubmit,
+        createRepairTicketReducer_settriggerCustomerSearchSubmit,
+    ],
+    [
+        createRepairTicketAction.setTriggerRepairFormSubmit,
+        createRepairTicketReducer_setTriggerRepairFormSubmit,
     ],
     [
         createRepairTicketAction.setPageInError,
@@ -132,6 +136,22 @@ const createRepairTicketReducersMap = new Map<
     [
         createRepairTicketAction.setIsSuccessful,
         createRepairTicketReducer_setIsSuccessful,
+    ],
+    [
+        createRepairTicketAction.setIsLoading,
+        createRepairTicketReducer_setIsLoading,
+    ],
+    [
+        createRepairTicketAction.setTotalDocuments,
+        createRepairTicketReducer_setTotalDocuments,
+    ],
+    [
+        createRepairTicketAction.setTotalPages,
+        createRepairTicketReducer_setTotalPages,
+    ],
+    [
+        createRepairTicketAction.setLoadingMessage,
+        createRepairTicketReducer_setLoadingMessage,
     ],
 ]);
 
@@ -365,13 +385,23 @@ function createRepairTicketReducer_setRepairPriority(
     };
 }
 
-function createRepairTicketReducer_setTriggerFormSubmit(
+function createRepairTicketReducer_settriggerCustomerSearchSubmit(
     state: CreateRepairTicketState,
     dispatch: CreateRepairTicketDispatch,
 ): CreateRepairTicketState {
     return {
         ...state,
-        triggerFormSubmit: dispatch.payload as boolean,
+        triggerCustomerSearchSubmit: dispatch.payload as boolean,
+    };
+}
+
+function createRepairTicketReducer_setTriggerRepairFormSubmit(
+    state: CreateRepairTicketState,
+    dispatch: CreateRepairTicketDispatch,
+): CreateRepairTicketState {
+    return {
+        ...state,
+        triggerRepairFormSubmit: dispatch.payload as boolean,
     };
 }
 
@@ -406,6 +436,46 @@ function createRepairTicketReducer_setIsSuccessful(
     return {
         ...state,
         isSuccessful: dispatch.payload as boolean,
+    };
+}
+
+function createRepairTicketReducer_setIsLoading(
+    state: CreateRepairTicketState,
+    dispatch: CreateRepairTicketDispatch,
+): CreateRepairTicketState {
+    return {
+        ...state,
+        isLoading: dispatch.payload as boolean,
+    };
+}
+
+function createRepairTicketReducer_setTotalDocuments(
+    state: CreateRepairTicketState,
+    dispatch: CreateRepairTicketDispatch,
+): CreateRepairTicketState {
+    return {
+        ...state,
+        totalDocuments: dispatch.payload as number,
+    };
+}
+
+function createRepairTicketReducer_setTotalPages(
+    state: CreateRepairTicketState,
+    dispatch: CreateRepairTicketDispatch,
+): CreateRepairTicketState {
+    return {
+        ...state,
+        totalPages: dispatch.payload as number,
+    };
+}
+
+function createRepairTicketReducer_setLoadingMessage(
+    state: CreateRepairTicketState,
+    dispatch: CreateRepairTicketDispatch,
+): CreateRepairTicketState {
+    return {
+        ...state,
+        loadingMessage: dispatch.payload as string,
     };
 }
 

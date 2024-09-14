@@ -2872,18 +2872,18 @@ async function formSubmitPOSTSafe<
 }
 
 async function fetchResourceGETSafe<
-  SetIsLoadingAction extends string = string,
-  SetLoadingMessageAction extends string = string,
-  SetResourceDataAction extends string = string,
-  SetTotalDocumentsAction extends string = string,
-  SetTotalPagesAction extends string = string,
-  TriggerFormSubmitAction extends string = string,
   DBRecord = Record<string, unknown> & {
     _id: string;
     createdAt: string;
     updatedAt: string;
     __v: number;
   },
+  SetIsLoadingAction extends string = string,
+  SetLoadingMessageAction extends string = string,
+  SetResourceDataAction extends string = string,
+  SetTotalDocumentsAction extends string = string,
+  SetTotalPagesAction extends string = string,
+  TriggerFormSubmitAction extends string = string,
 >({
   accessToken = "",
   closeSubmitFormModal,
