@@ -10,7 +10,7 @@ import {
   URL_REGEX,
   USERNAME_REGEX,
 } from "../../constants/regex";
-import { ResourceRoutePaths } from "../../types";
+import type { ResourceRoutePaths } from "../../types";
 import {
   returnAddressValidationText,
   returnCityValidationText,
@@ -22,11 +22,9 @@ import {
   returnUrlValidationText,
   returnUsernameRegexValidationText,
 } from "../../utils";
-import { ComponentQueryData } from "../queryBuilder";
 import { PREFERRED_PRONOUNS_DATA } from "../register/constants";
-import { DescriptionObjectsArray } from "../wrappers";
 
-const CUSTOMER_QUERY_DATA: ComponentQueryData[] = [
+const CUSTOMER_QUERY_DATA = [
   {
     label: "Username",
     value: "username",
@@ -163,7 +161,7 @@ const CUSTOMER_RESOURCE_ROUTE_PATHS: ResourceRoutePaths = {
 
 const CREATE_CUSTOMER_MAX_STEPPER_POSITION = 3;
 
-const CREATE_CUSTOMER_DESCRIPTION_OBJECTS: DescriptionObjectsArray = [
+const CREATE_CUSTOMER_DESCRIPTION_OBJECTS = [
   {
     description: "Personal Details",
     ariaLabel:
@@ -171,7 +169,8 @@ const CREATE_CUSTOMER_DESCRIPTION_OBJECTS: DescriptionObjectsArray = [
   },
   {
     description: "Contact & Payment Information",
-    ariaLabel: "Enter customer's contact number, address and payment information",
+    ariaLabel:
+      "Enter customer's contact number, address and payment information",
   },
   {
     description: "Review and Proceed",

@@ -1,10 +1,9 @@
-import { MantineNumberSize } from "@mantine/core";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-import { globalAction } from "../../../../context/globalProvider/state";
+import { globalAction } from "../../../../context/globalProvider/actions";
 import { useGlobalState } from "../../../../hooks";
-import { addCommaSeparator, splitCamelCase } from "../../../../utils";
+import { addCommaSeparator } from "../../../../utils";
 import { AccessibleButton } from "../../../accessibleInputs/AccessibleButton";
 import { AccessibleSelectInput } from "../../../accessibleInputs/AccessibleSelectInput";
 import {
@@ -12,26 +11,29 @@ import {
   ResponsiveLineChart,
   ResponsivePieChart,
 } from "../../../charts";
-import { MONTHS } from "../../constants";
 import DashboardMetricsLayout from "../../DashboardMetricsLayout";
-import {
+import { MONTHS } from "../../constants";
+import type {
   BusinessMetricStoreLocation,
   DashboardCalendarView,
   DashboardMetricsView,
   Year,
 } from "../../types";
 import { returnChartTitleNavigateLinks, returnStatistics } from "../../utils";
-import { CustomerMetricsCards, returnCalendarViewCustomerCards } from "../cards";
 import {
-  CustomerMetricsCharts,
-  CustomerMetricsNewReturningChartsKey,
+  type CustomerMetricsCards,
+  returnCalendarViewCustomerCards,
+} from "../cards";
+import {
+  type CustomerMetricsCharts,
+  type CustomerMetricsNewReturningChartsKey,
   returnCalendarViewCustomerCharts,
 } from "../chartsData";
 import {
   CUSTOMER_NEW_RETURNING_LINE_BAR_Y_AXIS_DATA,
   CUSTOMER_NEW_RETURNING_PIE_Y_AXIS_DATA,
 } from "../constants";
-import { CustomerMetricsCategory } from "../types";
+import type { CustomerMetricsCategory } from "../types";
 import { newReturningAction } from "./actions";
 import { newReturningReducer } from "./reducers";
 import { initialNewReturningState } from "./state";
@@ -47,7 +49,6 @@ type NewReturningProps = {
   metricCategory: CustomerMetricsCategory;
   metricsView: DashboardMetricsView;
   month: string;
-  padding: MantineNumberSize;
   storeLocation: BusinessMetricStoreLocation;
   width: number;
   year: Year;
@@ -64,7 +65,6 @@ function NewReturning({
   metricCategory,
   metricsView,
   month,
-  padding,
   storeLocation,
   width,
   year,
@@ -74,7 +74,7 @@ function NewReturning({
 
   const [newReturningState, newReturningDispatch] = React.useReducer(
     newReturningReducer,
-    initialNewReturningState
+    initialNewReturningState,
   );
 
   const {
@@ -83,14 +83,19 @@ function NewReturning({
     newReturningPieChartYAxisVariable,
   } = newReturningState;
 
-  const charts = returnCalendarViewCustomerCharts(calendarView, customerMetricsCharts);
+  const charts = returnCalendarViewCustomerCharts(
+    calendarView,
+    customerMetricsCharts,
+  );
   const {
     bar: barCharts,
     line: lineCharts,
     pie: pieCharts,
   } = metricCategory === "new" ? charts.new : charts.returning;
 
-  const statistics = returnStatistics<CustomerMetricsNewReturningChartsKey>(barCharts);
+  const statistics = returnStatistics<CustomerMetricsNewReturningChartsKey>(
+    barCharts,
+  );
 
   console.group("NewReturning");
   console.log("newReturningState", newReturningState);
@@ -124,7 +129,8 @@ function NewReturning({
         data: CUSTOMER_NEW_RETURNING_PIE_Y_AXIS_DATA as any,
         name: "Y-Axis Pie",
         parentDispatch: newReturningDispatch,
-        validValueAction: newReturningAction.setNewReturningPieChartYAxisVariable,
+        validValueAction:
+          newReturningAction.setNewReturningPieChartYAxisVariable,
         value: newReturningPieChartYAxisVariable,
       }}
     />
@@ -138,10 +144,10 @@ function NewReturning({
         onClick: (
           _event:
             | React.MouseEvent<HTMLButtonElement>
-            | React.PointerEvent<HTMLButtonElement>
+            | React.PointerEvent<HTMLButtonElement>,
         ) => {
           globalDispatch({
-            type: globalAction.setCustomizeChartsPageData,
+            action: globalAction.setCustomizeChartsPageData,
             payload: {
               chartKind: "pie",
               chartData: pieCharts[newReturningPieChartYAxisVariable],
@@ -174,10 +180,10 @@ function NewReturning({
         onClick: (
           _event:
             | React.MouseEvent<HTMLButtonElement>
-            | React.PointerEvent<HTMLButtonElement>
+            | React.PointerEvent<HTMLButtonElement>,
         ) => {
           globalDispatch({
-            type: globalAction.setCustomizeChartsPageData,
+            action: globalAction.setCustomizeChartsPageData,
             payload: {
               chartKind: "bar",
               chartData: barCharts[newReturningBarChartYAxisVariable],
@@ -198,7 +204,8 @@ function NewReturning({
         data: CUSTOMER_NEW_RETURNING_LINE_BAR_Y_AXIS_DATA as any,
         name: "Y-Axis Bar",
         parentDispatch: newReturningDispatch,
-        validValueAction: newReturningAction.setNewReturningBarChartYAxisVariable,
+        validValueAction:
+          newReturningAction.setNewReturningBarChartYAxisVariable,
         value: newReturningBarChartYAxisVariable,
       }}
     />
@@ -210,13 +217,11 @@ function NewReturning({
       chartWidth={chartWidth}
       barChartData={barCharts[newReturningBarChartYAxisVariable]}
       hideControls
-      indexBy={
-        calendarView === "Daily"
-          ? "Days"
-          : calendarView === "Monthly"
-          ? "Months"
-          : "Years"
-      }
+      indexBy={calendarView === "Daily"
+        ? "Days"
+        : calendarView === "Monthly"
+        ? "Months"
+        : "Years"}
       keys={CUSTOMER_NEW_RETURNING_LINE_BAR_Y_AXIS_DATA.map((obj) => obj.label)}
       unitKind="number"
     />
@@ -230,10 +235,10 @@ function NewReturning({
         onClick: (
           _event:
             | React.MouseEvent<HTMLButtonElement>
-            | React.PointerEvent<HTMLButtonElement>
+            | React.PointerEvent<HTMLButtonElement>,
         ) => {
           globalDispatch({
-            type: globalAction.setCustomizeChartsPageData,
+            action: globalAction.setCustomizeChartsPageData,
             payload: {
               chartKind: "line",
               chartData: lineCharts[newReturningLineChartYAxisVariable],
@@ -254,7 +259,8 @@ function NewReturning({
         data: CUSTOMER_NEW_RETURNING_LINE_BAR_Y_AXIS_DATA as any,
         name: "Y-Axis Line",
         parentDispatch: newReturningDispatch,
-        validValueAction: newReturningAction.setNewReturningLineChartYAxisVariable,
+        validValueAction:
+          newReturningAction.setNewReturningLineChartYAxisVariable,
         value: newReturningLineChartYAxisVariable,
       }}
     />
@@ -268,15 +274,21 @@ function NewReturning({
       hideControls
       xFormat={(x) =>
         `${
-          calendarView === "Daily" ? "Day" : calendarView === "Monthly" ? "Month" : "Year"
-        } - ${x}`
-      }
+          calendarView === "Daily"
+            ? "Day"
+            : calendarView === "Monthly"
+            ? "Month"
+            : "Year"
+        } - ${x}`}
       yFormat={(y) => `${addCommaSeparator(y)} Customers`}
       unitKind="number"
     />
   );
 
-  const cards = returnCalendarViewCustomerCards(calendarView, customerMetricsCards);
+  const cards = returnCalendarViewCustomerCards(
+    calendarView,
+    customerMetricsCards,
+  );
   const overviewCards = metricCategory === "new" ? cards.new : cards.returning;
 
   const customerMetricsOverview = (
@@ -292,7 +304,6 @@ function NewReturning({
       lineChartHeading={lineChartHeading}
       lineChartYAxisSelectInput={lineChartYAxisVariablesSelectInput}
       overviewCards={overviewCards}
-      padding={padding}
       pieChart={overviewPieChart}
       pieChartHeading={pieChartHeading}
       pieChartYAxisSelectInput={pieChartYAxisVariableSelectInput}

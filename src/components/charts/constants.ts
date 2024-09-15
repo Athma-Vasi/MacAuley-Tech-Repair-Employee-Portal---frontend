@@ -1,5 +1,10 @@
-import { CheckboxRadioSelectData } from "../../types";
-import {
+import { COLORS_SWATCHES } from "../../constants/data";
+import type {
+  CheckboxRadioSelectData,
+  StepperChild,
+  StepperPage,
+} from "../../types";
+import type {
   NivoColorScheme,
   NivoLegendAnchor,
   NivoLegendDirection,
@@ -8,6 +13,13 @@ import {
   NivoMotionConfig,
   NivoTransitionMode,
 } from "./types";
+
+const STICKY_STYLE: React.CSSProperties = {
+  boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.25)",
+  position: "sticky",
+  top: 0,
+  zIndex: 4,
+};
 
 const NIVO_LEGEND_ANCHOR_DATA: CheckboxRadioSelectData<NivoLegendAnchor> = [
   { value: "top", label: "Top" },
@@ -21,20 +33,24 @@ const NIVO_LEGEND_ANCHOR_DATA: CheckboxRadioSelectData<NivoLegendAnchor> = [
   { value: "center", label: "Center" },
 ];
 
-const NIVO_LEGEND_DIRECTION_DATA: CheckboxRadioSelectData<NivoLegendDirection> = [
-  { value: "row", label: "Row" },
-  { value: "column", label: "Column" },
-];
-
-const NIVO_LEGEND_ITEM_DIRECTION_DATA: CheckboxRadioSelectData<NivoLegendItemDirection> =
+const NIVO_LEGEND_DIRECTION_DATA: CheckboxRadioSelectData<NivoLegendDirection> =
   [
-    { value: "left-to-right", label: "Left to Right" },
-    { value: "right-to-left", label: "Right to Left" },
-    { value: "top-to-bottom", label: "Top to Bottom" },
-    { value: "bottom-to-top", label: "Bottom to Top" },
+    { value: "row", label: "Row" },
+    { value: "column", label: "Column" },
   ];
 
-const NIVO_LEGEND_SYMBOL_SHAPE_DATA: CheckboxRadioSelectData<NivoLegendSymbolShape> = [
+const NIVO_LEGEND_ITEM_DIRECTION_DATA: CheckboxRadioSelectData<
+  NivoLegendItemDirection
+> = [
+  { value: "left-to-right", label: "Left to Right" },
+  { value: "right-to-left", label: "Right to Left" },
+  { value: "top-to-bottom", label: "Top to Bottom" },
+  { value: "bottom-to-top", label: "Bottom to Top" },
+];
+
+const NIVO_LEGEND_SYMBOL_SHAPE_DATA: CheckboxRadioSelectData<
+  NivoLegendSymbolShape
+> = [
   { value: "circle", label: "Circle" },
   { value: "diamond", label: "Diamond" },
   { value: "square", label: "Square" },
@@ -128,6 +144,30 @@ const NIVO_CHART_TITLE_POSITION_DATA: CheckboxRadioSelectData = [
   { value: "right", label: "Right" },
 ];
 
+const { gray } = COLORS_SWATCHES;
+const SLIDER_TOOLTIP_COLOR = gray[3];
+
+function returnChartOptionsStepperPages(): StepperPage[] {
+  const chartTitleTextChild: StepperChild = {
+    inputType: "text",
+    name: "chartTitle",
+    validationKey: "textInput",
+  };
+
+  const screenshotFilenameTextChild: StepperChild = {
+    inputType: "text",
+    name: "screenshotFilename",
+    validationKey: "textInput",
+  };
+
+  return [
+    {
+      children: [chartTitleTextChild, screenshotFilenameTextChild],
+      description: "Chart Options",
+    },
+  ];
+}
+
 export {
   NIVO_CHART_PATTERN_DEFS,
   NIVO_CHART_TITLE_POSITION_DATA,
@@ -138,4 +178,7 @@ export {
   NIVO_LEGEND_SYMBOL_SHAPE_DATA,
   NIVO_MOTION_CONFIG_DATA,
   NIVO_TRANSITION_MODE_DATA,
+  returnChartOptionsStepperPages,
+  SLIDER_TOOLTIP_COLOR,
+  STICKY_STYLE,
 };

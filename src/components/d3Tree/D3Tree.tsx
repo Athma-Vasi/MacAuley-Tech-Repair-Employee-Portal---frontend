@@ -3,8 +3,8 @@ import Tree, { type CustomNodeElementProps, type Point } from "react-d3-tree";
 
 import { useCenteredTree } from "../../hooks";
 import { AccessibleButton } from "../accessibleInputs/AccessibleButton";
+import AccessibleImage from "../accessibleInputs/AccessibleImage";
 import { GoldenGrid } from "../accessibleInputs/GoldenGrid";
-import { ImageWrapper } from "../wrappers";
 import type { D3TreeInput } from "./utils";
 
 function renderForeignObjectNode({
@@ -40,14 +40,15 @@ function renderForeignObjectNode({
   );
 
   const profilePic = (
-    <ImageWrapper
-      creatorInfoObject={{
-        imageSrc: nodeDatum.attributes.profilePictureUrl,
-        imageAlt: nodeDatum.name,
+    <AccessibleImage
+      attributes={{
+        alt: nodeDatum.name,
         fit: "cover",
-        customWidth: 50,
-        customRadius: 9999,
-        customHeight: 50,
+        height: 50,
+        name: nodeDatum.name,
+        radius: 9999,
+        src: nodeDatum.attributes.profilePictureUrl ?? "",
+        width: 50,
       }}
     />
   );

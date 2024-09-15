@@ -1,9 +1,6 @@
 import { Flex } from "@mantine/core";
 
-import { DisplayResource } from "../displayResource";
 import DisplayResourceHeader from "../displayResourceHeader/DisplayResourceHeader";
-import { COMMENT_QUERY_DATA, COMMENT_RESOURCE_ROUTE_PATHS } from "./constants";
-import Resource from "../resource/Resource";
 
 function DisplayComment() {
   // ╭─────────────────────────────────────────────────────────────────╮
@@ -27,14 +24,14 @@ function DisplayComment() {
   // ╭─────────────────────────────────────────────────────────────────╮
   //     DISPLAY RESOURCE
   // ╰─────────────────────────────────────────────────────────────────╯
-  const displayResource = (
-    <DisplayResource
-      componentQueryData={COMMENT_QUERY_DATA}
-      createResourcePath="/home/comment/create"
-      requestBodyHeading="Comment"
-      resourceUrlPaths={COMMENT_RESOURCE_ROUTE_PATHS}
-    />
-  );
+  // const displayResource = (
+  //   <DisplayResource
+  //     componentQueryData={COMMENT_QUERY_DATA}
+  //     createResourcePath="/home/comment/create"
+  //     requestBodyHeading="Comment"
+  //     resourceUrlPaths={COMMENT_RESOURCE_ROUTE_PATHS}
+  //   />
+  // );
 
   // const newResource = (
   //   <Resource
@@ -50,7 +47,7 @@ function DisplayComment() {
   const displayCommentComponent = (
     <Flex direction="column" w="100%">
       {displayResourceHeader}
-      {displayResource}
+      {/* {displayResource} */}
       {/* {newResource} */}
     </Flex>
   );

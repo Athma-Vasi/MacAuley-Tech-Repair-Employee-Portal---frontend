@@ -1,16 +1,19 @@
-import { TitleOrder } from '@mantine/core';
+import type { TitleOrder } from "@mantine/core";
 
-import { ScreenshotImageType } from '../../../types';
-import {
+import type { ValueFormat } from "@nivo/core";
+import type {
+  ScreenshotImageType,
+  SetPageInErrorPayload,
+} from "../../../types";
+import type {
   NivoArcLabel,
   NivoChartTitlePosition,
   NivoColorScheme,
   NivoFillPatternObject,
   NivoMotionConfig,
   NivoTransitionMode,
-} from '../types';
-import { ComputedDatum } from '@nivo/sunburst';
-import { ValueFormat } from '@nivo/core';
+} from "../types";
+import type { ResponsiveSunburstChartAction } from "./actions";
 
 type SunburstChartData = {
   name: string;
@@ -61,143 +64,91 @@ type ResponsiveSunburstChartState = {
   chartTitleColor: string; // default: #ffffff
   chartTitlePosition: NivoChartTitlePosition; // default: center
   chartTitleSize: TitleOrder; // 1 - 6 px default: 3 step: 1
-  isChartTitleFocused: boolean;
-  isChartTitleValid: boolean;
 
   // screenshot
-  isScreenshotFilenameFocused: boolean;
-  isScreenshotFilenameValid: boolean;
   screenshotFilename: string;
   screenshotImageQuality: number; // 0 - 1 default: 1 step: 0.05
   screenshotImageType: ScreenshotImageType;
-};
 
-type ResponsiveSunburstChartAction = {
-  // base
-  setCornerRadius: 'setCornerRadius';
-
-  // margin
-  setMarginTop: 'setMarginTop';
-  setMarginRight: 'setMarginRight';
-  setMarginBottom: 'setMarginBottom';
-  setMarginLeft: 'setMarginLeft';
-
-  // style
-  setChartBorderColor: 'setChartBorderColor';
-  setChartBorderWidth: 'setChartBorderWidth';
-  setChartColors: 'setChartColors';
-  setEnableFillPatterns: 'setEnableFillPatterns';
-  setFillPatterns: 'setFillPatterns';
-  setInheritColorFromParent: 'setInheritColorFromParent';
-
-  // arc labels
-  setArcLabelsRadiusOffset: 'setArcLabelsRadiusOffset';
-  setArcLabelsSkipAngle: 'setArcLabelsSkipAngle';
-  setArcLabelsTextColor: 'setArcLabelsTextColor';
-  setEnableArcLabels: 'setEnableArcLabels';
-  setArcLabel: 'setArcLabel';
-
-  // motion
-  setEnableAnimate: 'setEnableAnimate';
-  setMotionConfig: 'setMotionConfig';
-  setTransitionMode: 'setTransitionMode';
-
-  // options
-  setChartTitle: 'setChartTitle';
-  setChartTitleColor: 'setChartTitleColor';
-  setChartTitlePosition: 'setChartTitlePosition';
-  setChartTitleSize: 'setChartTitleSize';
-  setIsChartTitleFocused: 'setIsChartTitleFocused';
-  setIsChartTitleValid: 'setIsChartTitleValid';
-
-  // screenshot
-  setIsScreenshotFilenameFocused: 'setIsScreenshotFilenameFocused';
-  setIsScreenshotFilenameValid: 'setIsScreenshotFilenameValid';
-  setScreenshotFilename: 'setScreenshotFilename';
-  setScreenshotImageQuality: 'setScreenshotImageQuality';
-  setScreenshotImageType: 'setScreenshotImageType';
-
-  // reset all
-  resetChartToDefault: 'resetChartToDefault';
+  pagesInError: Set<number>;
 };
 
 type ResponsiveSunburstChartDispatch =
   | {
-      type:
-        | ResponsiveSunburstChartAction['setArcLabelsRadiusOffset']
-        | ResponsiveSunburstChartAction['setArcLabelsSkipAngle']
-        | ResponsiveSunburstChartAction['setChartBorderWidth']
-        | ResponsiveSunburstChartAction['setCornerRadius']
-        | ResponsiveSunburstChartAction['setMarginBottom']
-        | ResponsiveSunburstChartAction['setMarginLeft']
-        | ResponsiveSunburstChartAction['setMarginRight']
-        | ResponsiveSunburstChartAction['setMarginTop']
-        | ResponsiveSunburstChartAction['setScreenshotImageQuality'];
+    action:
+      | ResponsiveSunburstChartAction["setArcLabelsRadiusOffset"]
+      | ResponsiveSunburstChartAction["setArcLabelsSkipAngle"]
+      | ResponsiveSunburstChartAction["setChartBorderWidth"]
+      | ResponsiveSunburstChartAction["setCornerRadius"]
+      | ResponsiveSunburstChartAction["setMarginBottom"]
+      | ResponsiveSunburstChartAction["setMarginLeft"]
+      | ResponsiveSunburstChartAction["setMarginRight"]
+      | ResponsiveSunburstChartAction["setMarginTop"]
+      | ResponsiveSunburstChartAction["setScreenshotImageQuality"];
 
-      payload: number;
-    }
+    payload: number;
+  }
   | {
-      type:
-        | ResponsiveSunburstChartAction['setArcLabelsTextColor']
-        | ResponsiveSunburstChartAction['setChartBorderColor']
-        | ResponsiveSunburstChartAction['setChartTitle']
-        | ResponsiveSunburstChartAction['setChartTitleColor']
-        | ResponsiveSunburstChartAction['setScreenshotFilename'];
+    action:
+      | ResponsiveSunburstChartAction["setArcLabelsTextColor"]
+      | ResponsiveSunburstChartAction["setChartBorderColor"]
+      | ResponsiveSunburstChartAction["setChartTitle"]
+      | ResponsiveSunburstChartAction["setChartTitleColor"]
+      | ResponsiveSunburstChartAction["setScreenshotFilename"];
 
-      payload: string;
-    }
+    payload: string;
+  }
   | {
-      type:
-        | ResponsiveSunburstChartAction['setEnableAnimate']
-        | ResponsiveSunburstChartAction['setEnableArcLabels']
-        | ResponsiveSunburstChartAction['setEnableFillPatterns']
-        | ResponsiveSunburstChartAction['setInheritColorFromParent']
-        | ResponsiveSunburstChartAction['setIsChartTitleFocused']
-        | ResponsiveSunburstChartAction['setIsChartTitleValid']
-        | ResponsiveSunburstChartAction['setIsScreenshotFilenameFocused']
-        | ResponsiveSunburstChartAction['setIsScreenshotFilenameValid'];
+    action:
+      | ResponsiveSunburstChartAction["setEnableAnimate"]
+      | ResponsiveSunburstChartAction["setEnableArcLabels"]
+      | ResponsiveSunburstChartAction["setEnableFillPatterns"]
+      | ResponsiveSunburstChartAction["setInheritColorFromParent"];
 
-      payload: boolean;
-    }
+    payload: boolean;
+  }
   | {
-      type: ResponsiveSunburstChartAction['setChartColors'];
-      payload: NivoColorScheme;
-    }
+    action: ResponsiveSunburstChartAction["setChartColors"];
+    payload: NivoColorScheme;
+  }
   | {
-      type: ResponsiveSunburstChartAction['setArcLabel'];
-      payload: NivoArcLabel;
-    }
+    action: ResponsiveSunburstChartAction["setArcLabel"];
+    payload: NivoArcLabel;
+  }
   | {
-      type: ResponsiveSunburstChartAction['setMotionConfig'];
-      payload: NivoMotionConfig;
-    }
+    action: ResponsiveSunburstChartAction["setMotionConfig"];
+    payload: NivoMotionConfig;
+  }
   | {
-      type: ResponsiveSunburstChartAction['setTransitionMode'];
-      payload: NivoTransitionMode;
-    }
+    action: ResponsiveSunburstChartAction["setTransitionMode"];
+    payload: NivoTransitionMode;
+  }
   | {
-      type: ResponsiveSunburstChartAction['setFillPatterns'];
-      payload: NivoFillPatternObject[];
-    }
+    action: ResponsiveSunburstChartAction["setFillPatterns"];
+    payload: NivoFillPatternObject[];
+  }
   | {
-      type: ResponsiveSunburstChartAction['setChartTitlePosition'];
-      payload: NivoChartTitlePosition;
-    }
+    action: ResponsiveSunburstChartAction["setChartTitlePosition"];
+    payload: NivoChartTitlePosition;
+  }
   | {
-      type: ResponsiveSunburstChartAction['setChartTitleSize'];
-      payload: TitleOrder;
-    }
+    action: ResponsiveSunburstChartAction["setChartTitleSize"];
+    payload: TitleOrder;
+  }
   | {
-      type: ResponsiveSunburstChartAction['setScreenshotImageType'];
-      payload: ScreenshotImageType;
-    }
+    action: ResponsiveSunburstChartAction["setScreenshotImageType"];
+    payload: ScreenshotImageType;
+  }
   | {
-      type: ResponsiveSunburstChartAction['resetChartToDefault'];
-      payload: ResponsiveSunburstChartState;
-    };
+    action: ResponsiveSunburstChartAction["resetChartToDefault"];
+    payload: ResponsiveSunburstChartState;
+  }
+  | {
+    action: ResponsiveSunburstChartAction["setPageInError"];
+    payload: SetPageInErrorPayload;
+  };
 
 export type {
-  ResponsiveSunburstChartAction,
   ResponsiveSunburstChartDispatch,
   ResponsiveSunburstChartProps,
   ResponsiveSunburstChartState,

@@ -1,12 +1,12 @@
-import { Flex, Group, Text } from '@mantine/core';
+import { Flex, Group, Text } from "@mantine/core";
 
-import { COLORS_SWATCHES } from '../../constants/data';
-import { useGlobalState } from '../../hooks';
+import { COLORS_SWATCHES } from "../../constants/data";
+import { useGlobalState } from "../../hooks";
 import {
   returnThemeColors,
-  splitWordIntoUpperCasedSentence,
   splitCamelCase,
-} from '../../utils';
+  splitWordIntoUpperCasedSentence,
+} from "../../utils";
 
 type ChartsAndGraphsControlsStackerProps = {
   initialChartState?: Record<string, any>;
@@ -22,11 +22,11 @@ function ChartsAndGraphsControlsStacker({
   input,
   isInputDisabled = false,
   label,
-  symbol = '',
+  symbol = "",
   value,
 }: ChartsAndGraphsControlsStackerProps): React.JSX.Element {
   const {
-    globalState: { padding, rowGap, themeObject },
+    globalState: { themeObject },
   } = useGlobalState();
 
   const {
@@ -37,36 +37,30 @@ function ChartsAndGraphsControlsStacker({
     colorsSwatches: COLORS_SWATCHES,
   });
 
-  const defaultValue =
-    Object.entries(initialChartState).find(
-      ([key]) =>
-        splitCamelCase(key).toLowerCase() ===
-        splitCamelCase(label).toLowerCase()
-    )?.[1] ?? '';
+  const defaultValue = Object.entries(initialChartState).find(
+    ([key]) =>
+      splitCamelCase(key).toLowerCase() ===
+        splitCamelCase(label).toLowerCase(),
+  )?.[1] ?? "";
 
-  const displayDefaultValue =
-    defaultValue === '' ? null : (
-      <Text
-        weight={300}
-        color={
-          isInputDisabled
-            ? grayColorShade
-            : defaultValue === value
-            ? grayColorShade
-            : ''
-        }
-      >
-        Default:{' '}
-        {splitWordIntoUpperCasedSentence(
-          splitCamelCase(defaultValue.toString())
-        )}{' '}
-        {symbol}
-      </Text>
-    );
+  const displayDefaultValue = defaultValue === "" ? null : (
+    <Text
+      weight={300}
+      color={isInputDisabled
+        ? grayColorShade
+        : defaultValue === value
+        ? grayColorShade
+        : ""}
+    >
+      Default: {splitWordIntoUpperCasedSentence(
+        splitCamelCase(defaultValue.toString()),
+      )} {symbol}
+    </Text>
+  );
 
   const displayTopSection = (
     <Group w="100%" position="apart">
-      <Text weight={500} color={isInputDisabled ? grayColorShade : ''}>
+      <Text weight={500} color={isInputDisabled ? grayColorShade : ""}>
         {splitWordIntoUpperCasedSentence(label)}
       </Text>
 
@@ -77,26 +71,20 @@ function ChartsAndGraphsControlsStacker({
   const displayBottomSection = (
     <Flex
       align="center"
-      columnGap={rowGap}
       justify="space-between"
-      rowGap={rowGap}
       w="100%"
       wrap="wrap"
     >
       <Text
         aria-live="polite"
-        color={isInputDisabled ? grayColorShade : ''}
-        style={
-          value === ''
-            ? {}
-            : {
-                border: borderColor,
-                borderRadius: 4,
-                padding: '0.5rem 0.75rem',
-              }
-        }
+        color={isInputDisabled ? grayColorShade : ""}
+        style={value === "" ? {} : {
+          border: borderColor,
+          borderRadius: 4,
+          padding: "0.5rem 0.75rem",
+        }}
       >
-        {splitWordIntoUpperCasedSentence(splitCamelCase(value.toString()))}{' '}
+        {splitWordIntoUpperCasedSentence(splitCamelCase(value.toString()))}{" "}
         {symbol}
       </Text>
       <Group>{input}</Group>
@@ -107,10 +95,7 @@ function ChartsAndGraphsControlsStacker({
     <Flex
       align="center"
       justify="space-between"
-      pb={padding}
-      px={padding}
       rowGap="xs"
-      columnGap={rowGap}
       style={{ borderBottom: borderColor }}
       w="100%"
       wrap="wrap"

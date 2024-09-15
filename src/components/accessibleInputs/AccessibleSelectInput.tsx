@@ -1,16 +1,12 @@
-import { MantineSize, NativeSelect } from "@mantine/core";
+import { type MantineSize, NativeSelect } from "@mantine/core";
 
-import { CheckboxRadioSelectData } from "../../types";
+import type { CheckboxRadioSelectData } from "../../types";
 import { splitCamelCase } from "../../utils";
-import {
-  SetFilterInputValuesDispatch,
-  SetFilterInputValuesDispatchData,
-} from "../query/QueryFilter";
-import { OperatorsInputType } from "../query/utils";
+import type { SetFilterInputValuesDispatchData } from "../query/QueryFilter";
 
 type AccessibleSelectInputAttributes<
   ValidValueAction extends string = string,
-  Payload extends string = string
+  Payload extends string = string,
 > = {
   data: CheckboxRadioSelectData<Payload>;
   describedBy?: string;
@@ -24,7 +20,9 @@ type AccessibleSelectInputAttributes<
     action: ValidValueAction;
     payload: Payload;
   }>;
-  setFilterInputValuesDispatchData?: SetFilterInputValuesDispatchData<ValidValueAction>;
+  setFilterInputValuesDispatchData?: SetFilterInputValuesDispatchData<
+    ValidValueAction
+  >;
   ref?: React.RefObject<HTMLSelectElement>;
   required?: boolean;
   size?: MantineSize;
@@ -35,14 +33,14 @@ type AccessibleSelectInputAttributes<
 
 type AccessibleSelectInputProps<
   ValidValueAction extends string = string,
-  Payload extends string = string
+  Payload extends string = string,
 > = {
   attributes: AccessibleSelectInputAttributes<ValidValueAction, Payload>;
 };
 
 function AccessibleSelectInput<
   ValidValueAction extends string = string,
-  Payload extends string = string
+  Payload extends string = string,
 >({ attributes }: AccessibleSelectInputProps<ValidValueAction, Payload>) {
   const {
     data,

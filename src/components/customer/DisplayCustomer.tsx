@@ -1,8 +1,6 @@
 import { Flex } from "@mantine/core";
 
-import { DisplayResource } from "../displayResource";
 import DisplayResourceHeader from "../displayResourceHeader/DisplayResourceHeader";
-import { CUSTOMER_QUERY_DATA, CUSTOMER_RESOURCE_ROUTE_PATHS } from "./constants";
 
 function DisplayCustomer() {
   // ╭─────────────────────────────────────────────────────────────────╮
@@ -26,19 +24,19 @@ function DisplayCustomer() {
   // ╭─────────────────────────────────────────────────────────────────╮
   //     DISPLAY RESOURCE
   // ╰─────────────────────────────────────────────────────────────────╯
-  const displayResource = (
-    <DisplayResource
-      componentQueryData={CUSTOMER_QUERY_DATA}
-      createResourcePath="/home/customer/create"
-      requestBodyHeading="Customer"
-      resourceUrlPaths={CUSTOMER_RESOURCE_ROUTE_PATHS}
-    />
-  );
+  // const displayResource = (
+  //   <DisplayResource
+  //     componentQueryData={CUSTOMER_QUERY_DATA}
+  //     createResourcePath="/home/customer/create"
+  //     requestBodyHeading="Customer"
+  //     resourceUrlPaths={CUSTOMER_RESOURCE_ROUTE_PATHS}
+  //   />
+  // );
 
   const displayCustomerComponent = (
     <Flex direction="column" w="100%">
       {displayResourceHeader}
-      {displayResource}
+      {/* {displayResource} */}
     </Flex>
   );
 

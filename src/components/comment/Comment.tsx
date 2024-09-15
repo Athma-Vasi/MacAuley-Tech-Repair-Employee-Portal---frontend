@@ -1,3 +1,10 @@
+function Comment() {
+  return null;
+}
+
+export { Comment };
+
+/**
 import {
   Badge,
   Blockquote,
@@ -79,7 +86,7 @@ import {
 } from "./types";
 
 function Comment({ parentResourceId = "", parentResourceTitle = "" }: CommentProps) {
-  /** ------------- begin hooks ------------- */
+
   const [commentState, commentDispatch] = useReducer(commentReducer, initialCommentState);
   const {
     newComment,
@@ -140,9 +147,9 @@ function Comment({ parentResourceId = "", parentResourceTitle = "" }: CommentPro
     },
   ] = useDisclosure(false);
 
-  /** ------------- end hooks ------------- */
 
-  /** ------------- begin useEffects ------------- */
+
+
 
   // fetch comments
   useEffect(() => {
@@ -622,9 +629,9 @@ function Comment({ parentResourceId = "", parentResourceTitle = "" }: CommentPro
       groupLabel: "commentState",
     });
   }, [commentState]);
-  /** ------------- end useEffects ------------- */
 
-  /** ------------- begin accessible texts ------------- */
+
+
   const [newCommentInputErrorText, newCommentInputValidText] =
     AccessibleErrorValidTextElements({
       inputElementKind: "comment",
@@ -639,9 +646,9 @@ function Comment({ parentResourceId = "", parentResourceTitle = "" }: CommentPro
       }),
     });
 
-  /** ------------- end accessible texts ------------- */
 
-  /** ------------- begin input creator info objects ------------- */
+
+
   const limitPerPageSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
     data: COMMENT_LIMIT_PER_PAGE_SELECT_DATA,
     description: "Select number of comments to display per page",
@@ -729,9 +736,9 @@ function Comment({ parentResourceId = "", parentResourceTitle = "" }: CommentPro
     },
   };
 
-  /** ------------- end input creator info objects ------------- */
 
-  /** ------------- begin input creators ------------- */
+
+
 
   const {
     directoryGraphThemeColors: { nodeTextColor },
@@ -1480,9 +1487,9 @@ function Comment({ parentResourceId = "", parentResourceTitle = "" }: CommentPro
 
   const [createdSubmitCommentButton, createdReplyCommentButton] =
     returnAccessibleButtonElements([submitButtonCreatorInfo, replyButtonCreatorInfo]);
-  /** ------------- end input creators ------------- */
 
-  /** ------------- begin input displays ------------- */
+
+
   const displayCommentsSectionObjects = createdCommentsSectionObjectsArray.map(
     (createdCommentsSectionObject: CreatedCommentsSectionObject, index) => {
       const {
@@ -1918,9 +1925,10 @@ function Comment({ parentResourceId = "", parentResourceTitle = "" }: CommentPro
       {displayPagination}
     </Stack>
   );
-  /** ------------- end input displays ------------- */
+
 
   return displayCommentFormPage;
 }
 
 export { Comment };
+*/

@@ -2,15 +2,13 @@ import {
   Divider,
   Grid,
   Group,
-  MantineNumberSize,
   ScrollArea,
   Space,
-  Text,
   Title,
-  TitleOrder,
-} from '@mantine/core';
+  type TitleOrder,
+} from "@mantine/core";
 
-import { NivoChartTitlePosition } from '../types';
+import type { NivoChartTitlePosition } from "../types";
 
 type ChartAndControlsDisplayProps = {
   chartControlsStack: React.JSX.Element;
@@ -20,14 +18,13 @@ type ChartAndControlsDisplayProps = {
   chartTitlePosition: NivoChartTitlePosition;
   chartTitleSize: TitleOrder;
   height?: number;
-  padding: MantineNumberSize;
   responsiveChart: React.JSX.Element;
   scrollBarStyle: Record<string, any>;
   width: number;
 };
 
 function ChartAndControlsDisplay(
-  props: ChartAndControlsDisplayProps
+  props: ChartAndControlsDisplayProps,
 ): React.JSX.Element {
   const {
     chartControlsStack,
@@ -37,7 +34,6 @@ function ChartAndControlsDisplay(
     chartTitlePosition,
     chartTitleSize,
     height,
-    padding,
     responsiveChart,
     scrollBarStyle,
     width,
@@ -45,14 +41,14 @@ function ChartAndControlsDisplay(
 
   const displayChartControls = (
     <ScrollArea styles={() => scrollBarStyle} offsetScrollbars>
-      <Grid columns={1} h={width < 1192 ? '38vh' : '70vh'} py={padding}>
+      <Grid columns={1} h={width < 1192 ? "38vh" : "70vh"}>
         <Grid.Col span={1}>{chartControlsStack}</Grid.Col>
       </Grid>
     </ScrollArea>
   );
 
   const displayChartTitle = (
-    <Group w="100%" position={chartTitlePosition} px={padding}>
+    <Group w="100%" position={chartTitlePosition}>
       <Title order={chartTitleSize} color={chartTitleColor}>
         {chartTitle}
       </Title>
@@ -61,14 +57,14 @@ function ChartAndControlsDisplay(
 
   const displayChartAndControls = (
     <Grid columns={width < 1192 ? 1 : 15} w="100%" h="70vh">
-      <Grid.Col span={width < 1192 ? 1 : 5} h={width < 1192 ? '38vh' : '70vh'}>
+      <Grid.Col span={width < 1192 ? 1 : 5} h={width < 1192 ? "38vh" : "70vh"}>
         {displayChartControls}
       </Grid.Col>
 
       <Grid.Col span={1}>
         {width < 1192 ? <Space h="md" /> : <Space w="md" />}
         <Divider
-          orientation={width < 1192 ? 'horizontal' : 'vertical'}
+          orientation={width < 1192 ? "horizontal" : "vertical"}
           size="sm"
           w="100%"
           h="100%"

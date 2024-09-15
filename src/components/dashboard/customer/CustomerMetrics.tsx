@@ -7,7 +7,7 @@ import { useGlobalState } from "../../../hooks";
 import { logState, returnThemeColors } from "../../../utils";
 import { AccessibleSegmentedControl } from "../../accessibleInputs/AccessibleSegmentedControl";
 import { MONTHS } from "../constants";
-import {
+import type {
   BusinessMetric,
   BusinessMetricStoreLocation,
   DashboardCalendarView,
@@ -47,12 +47,12 @@ function CustomerMetrics({
 }: CustomerMetricsProps) {
   const [customerMetricsState, customerMetricsDispatch] = useReducer(
     customerMetricsReducer,
-    initialCustomerMetricsState
+    initialCustomerMetricsState,
   );
   const { cards, category, charts, isGenerating } = customerMetricsState;
 
   const {
-    globalState: { themeObject, padding, width },
+    globalState: { themeObject, width },
   } = useGlobalState();
 
   const { showBoundary } = useErrorBoundary();
@@ -97,7 +97,6 @@ function CustomerMetrics({
 
         const customerMetricsCards = await createCustomerMetricsCards({
           greenColorShade,
-          padding,
           redColorShade,
           selectedDateCustomerMetrics,
           width,
@@ -171,7 +170,6 @@ function CustomerMetrics({
       customerMetricsCharts={charts}
       day={selectedDate}
       month={selectedYYYYMMDD.split("-")[1]}
-      padding={padding}
       metricCategory={category}
       metricsView="Customers"
       storeLocation={storeLocationView}
@@ -190,7 +188,6 @@ function CustomerMetrics({
       customerMetricsCharts={charts}
       day={selectedDate}
       month={selectedYYYYMMDD.split("-")[1]}
-      padding={padding}
       metricCategory={category}
       metricsView="Customers"
       storeLocation={storeLocationView}
@@ -220,7 +217,9 @@ function CustomerMetrics({
     <Stack>
       {loadingOverlay}
       {categorySegmentedControl}
-      {category === "new" || category === "returning" ? newReturning : churnRetention}
+      {category === "new" || category === "returning"
+        ? newReturning
+        : churnRetention}
     </Stack>
   );
 

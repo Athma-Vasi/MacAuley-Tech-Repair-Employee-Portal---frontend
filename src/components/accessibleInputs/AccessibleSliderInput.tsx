@@ -1,8 +1,14 @@
-import { Box, Container, MantineSize, MantineTransition, Slider } from "@mantine/core";
-import { ReactNode } from "react";
+import {
+  Box,
+  Container,
+  type MantineSize,
+  type MantineTransition,
+  Slider,
+} from "@mantine/core";
+import type { ReactNode } from "react";
 
 import { useGlobalState } from "../../hooks";
-import { SliderMarksData } from "../../types";
+import type { SliderMarksData } from "../../types";
 import { returnSliderMarks } from "../../utils";
 import { createAccessibleSliderScreenreaderTextElements } from "./utils";
 
@@ -11,7 +17,10 @@ type DynamicSliderInputPayload = {
   value: number;
 };
 
-type AccessibleSliderInputAttributes<ValidValueAction extends string = string> = {
+type AccessibleSliderInputAttributes<
+  ValidValueAction extends string = string,
+  Payload extends number = number,
+> = {
   color?: string;
   disabled?: boolean;
   /** when the input is created dynamically */
@@ -30,7 +39,7 @@ type AccessibleSliderInputAttributes<ValidValueAction extends string = string> =
   /** default dispatch for non-user-created inputs */
   parentDispatch?: React.Dispatch<{
     action: ValidValueAction;
-    payload: number;
+    payload: Payload;
   }>;
   /** default dispatch for user-created dynamic inputs */
   parentDynamicDispatch?: React.Dispatch<{
@@ -48,13 +57,19 @@ type AccessibleSliderInputAttributes<ValidValueAction extends string = string> =
   value: number;
 };
 
-type AccessibleSliderInputProps<ValidValueAction extends string = string> = {
-  attributes: AccessibleSliderInputAttributes<ValidValueAction>;
+type AccessibleSliderInputProps<
+  ValidValueAction extends string = string,
+  Payload extends number = number,
+> = {
+  attributes: AccessibleSliderInputAttributes<ValidValueAction, Payload>;
 };
 
-function AccessibleSliderInput<ValidValueAction extends string = string>({
+function AccessibleSliderInput<
+  ValidValueAction extends string = string,
+  Payload extends number = number,
+>({
   attributes,
-}: AccessibleSliderInputProps<ValidValueAction>) {
+}: AccessibleSliderInputProps<ValidValueAction, Payload>) {
   const {
     color,
     disabled = false,
@@ -87,13 +102,18 @@ function AccessibleSliderInput<ValidValueAction extends string = string>({
     globalState: { themeObject },
   } = useGlobalState();
 
-  const sliderMarks = marks ? marks : disabled ? void 0 : returnSliderMarks({ max, min });
+  const sliderMarks = marks
+    ? marks
+    : disabled
+    ? void 0
+    : returnSliderMarks({ max, min });
 
-  const { screenreaderTextElement } = createAccessibleSliderScreenreaderTextElements({
-    name,
-    themeObject,
-    value,
-  });
+  const { screenreaderTextElement } =
+    createAccessibleSliderScreenreaderTextElements({
+      name,
+      themeObject,
+      value,
+    });
 
   const accessibleSliderInput = (
     <Slider
@@ -111,16 +131,16 @@ function AccessibleSliderInput<ValidValueAction extends string = string>({
       min={min}
       name={name}
       onBlur={onBlur}
-      onChange={(value: number) => {
+      onChange={(value: Payload) => {
         index === undefined
           ? parentDispatch?.({
-              action: validValueAction,
-              payload: value,
-            })
+            action: validValueAction,
+            payload: value,
+          })
           : parentDynamicDispatch?.({
-              action: validValueAction,
-              payload: { index, value },
-            });
+            action: validValueAction,
+            payload: { index, value },
+          });
 
         onChange?.(value);
       }}

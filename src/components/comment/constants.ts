@@ -7,7 +7,7 @@ import {
   URL_REGEX,
   USERNAME_REGEX,
 } from "../../constants/regex";
-import { ResourceRoutePaths } from "../../types";
+import type { ResourceRoutePaths } from "../../types";
 import {
   returnDateFullRangeValidationText,
   returnGrammarValidationText,
@@ -16,9 +16,8 @@ import {
   returnUrlValidationText,
   returnUsernameRegexValidationText,
 } from "../../utils";
-import { ComponentQueryData } from "../queryBuilder";
 
-const COMMENT_QUERY_DATA: ComponentQueryData[] = [
+const COMMENT_QUERY_DATA = [
   {
     label: "Username",
     value: "username",

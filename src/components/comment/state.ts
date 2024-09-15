@@ -1,4 +1,4 @@
-import {
+import type {
   CommentAction,
   CommentDispatch,
   CommentState,
@@ -83,7 +83,10 @@ const commentAction: CommentAction = {
   setSuccessMessage: "setSuccessMessage",
 };
 
-function commentReducer(state: CommentState, action: CommentDispatch): CommentState {
+function commentReducer(
+  state: CommentState,
+  action: CommentDispatch,
+): CommentState {
   switch (action.type) {
     case commentAction.setNewComment:
       return {
@@ -134,7 +137,8 @@ function commentReducer(state: CommentState, action: CommentDispatch): CommentSt
 
       switch (kind) {
         case "like": {
-          const { likedUserIds, likesCount, dislikedUserIds, dislikesCount } = comment;
+          const { likedUserIds, likesCount, dislikedUserIds, dislikesCount } =
+            comment;
           const likesCountUpdated = value ? likesCount + 1 : likesCount - 1;
           const likedUserIdsUpdated = value
             ? Array.from(new Set([...likedUserIds, userId]))
@@ -163,8 +167,11 @@ function commentReducer(state: CommentState, action: CommentDispatch): CommentSt
           };
         }
         case "dislike": {
-          const { dislikedUserIds, dislikesCount, likedUserIds, likesCount } = comment;
-          const dislikesCountUpdated = value ? dislikesCount + 1 : dislikesCount - 1;
+          const { dislikedUserIds, dislikesCount, likedUserIds, likesCount } =
+            comment;
+          const dislikesCountUpdated = value
+            ? dislikesCount + 1
+            : dislikesCount - 1;
           const dislikedUserIdsUpdated = value
             ? Array.from(new Set([...dislikedUserIds, userId]))
             : dislikedUserIds.filter((id) => id !== userId);
@@ -193,7 +200,9 @@ function commentReducer(state: CommentState, action: CommentDispatch): CommentSt
         }
         case "report": {
           const { reportedUserIds, reportsCount } = comment;
-          const reportsCountUpdated = value ? reportsCount + 1 : reportsCount - 1;
+          const reportsCountUpdated = value
+            ? reportsCount + 1
+            : reportsCount - 1;
           const reportedUserIdsUpdated = value
             ? Array.from(new Set([...reportedUserIds, userId]))
             : reportedUserIds.filter((id) => id !== userId);

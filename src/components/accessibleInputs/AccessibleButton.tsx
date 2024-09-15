@@ -19,6 +19,7 @@ import {
   TbArrowUp,
   TbCircleArrowDown,
   TbCircleArrowUp,
+  TbClearAll,
   TbDownload,
   TbEdit,
   TbFilter,
@@ -51,6 +52,7 @@ type AccessibleButtonKind =
   | "next"
   | "previous"
   | "refresh"
+  | "reset"
   | "search"
   | "show"
   | "submit"
@@ -132,6 +134,7 @@ function AccessibleButton({ attributes }: AccessibleButtonProps) {
     next: <TiArrowRightThick />,
     previous: <TiArrowLeftThick />,
     refresh: <TbRefresh />,
+    reset: <TbClearAll />,
     search: <TbSearch />,
     show: <TbArrowUp />,
     submit: <TbUpload />,
