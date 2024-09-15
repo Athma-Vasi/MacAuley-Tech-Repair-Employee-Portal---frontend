@@ -7,20 +7,20 @@ import { returnThemeColors } from "../../utils";
 
 function PortalFooter() {
   const {
-    authState: { roles, username: loggedInUsername },
+    authState: {
+      decodedToken: { userInfo: { roles, username: loggedInUsername } },
+    },
   } = useAuth();
 
   const {
-    globalState: { padding, themeObject },
+    globalState: { themeObject },
   } = useGlobalState();
 
-  const displayRole = roles.includes("Manager") ? (
-    <Text>Role: Manager</Text>
-  ) : roles.includes("Admin") ? (
-    <Text>Role: Admin</Text>
-  ) : (
-    <Text>Role: Employee</Text>
-  );
+  const displayRole = roles.includes("Manager")
+    ? <Text>Role: Manager</Text>
+    : roles.includes("Admin")
+    ? <Text>Role: Admin</Text>
+    : <Text>Role: Employee</Text>;
 
   const displayLoggedInUsername = <Text>{loggedInUsername}</Text>;
 
@@ -39,7 +39,7 @@ function PortalFooter() {
   });
 
   return (
-    <Footer bg={backgroundColor} height={75} p={padding} w="100%">
+    <Footer bg={backgroundColor} height={75} w="100%">
       <Group w="100%" position="apart">
         <Group position="left">{displayUsernameWithRoles}</Group>
       </Group>
