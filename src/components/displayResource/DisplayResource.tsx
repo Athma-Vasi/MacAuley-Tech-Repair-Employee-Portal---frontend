@@ -1,3 +1,10 @@
+function DisplayResource() {
+  return <div>DisplayResource</div>;
+}
+
+export { DisplayResource };
+
+/**
 import { Group, Stack, Title } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { InvalidTokenError } from "jwt-decode";
@@ -1104,3 +1111,5 @@ function DisplayResource<
 }
 
 export { DisplayResource };
+
+*/

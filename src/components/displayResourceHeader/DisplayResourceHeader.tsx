@@ -1,8 +1,9 @@
-import { Card, Flex, Group, Image, Stack, Text, Title } from "@mantine/core";
+import { Card, Flex, Group, Stack, Text, Title } from "@mantine/core";
 
 import { COLORS_SWATCHES } from "../../constants/data";
 import { useGlobalState } from "../../hooks";
 import { returnThemeColors } from "../../utils";
+import AccessibleImage from "../accessibleInputs/AccessibleImage";
 
 type DisplayResourceHeaderProps = {
   imageSrc: string;
@@ -45,31 +46,22 @@ function DisplayResourceHeader({
   const imageHeight = imageWidth * 0.62;
 
   const imageElement = (
-    <Image
-      src={imageSrc}
-      alt={imageAlt}
-      style={{ width: "100%", height: "100%" }}
-      withPlaceholder
+    <AccessibleImage
+      attributes={{
+        alt: imageAlt,
+        fit: "cover",
+        height: imageHeight,
+        name: "resource header image",
+        src: imageSrc,
+        width: imageWidth,
+      }}
     />
   );
-
-  // const [createdImage] = returnAccessibleImageElements([
-  //   {
-  //     imageSrc,
-  //     imageAlt,
-  //     isCard: false,
-  //     isLoader: true,
-  //     isOverlay: false,
-  //     withPlaceholder: true,
-  //   },
-  // ]);
 
   const displayResourceTitle = resourceTitle.length > 1
     ? (
       <Title
         color="#f5f5f5"
-        px={padding}
-        pt={padding}
         order={width >= 1200 ? 1 : 2}
       >
         {resourceTitle}
@@ -81,7 +73,6 @@ function DisplayResourceHeader({
     ? (
       <Text
         color="#f5f5f5"
-        px={padding}
         size={width >= 1200 ? "xl" : width >= 991 ? "lg" : "md"}
       >
         {resourceDescription}
@@ -92,16 +83,13 @@ function DisplayResourceHeader({
   const bannerImage = (
     <Stack w={imageWidth} h={imageHeight}>
       <Card withBorder radius="md">
-        <Card.Section>{createdImage}</Card.Section>
+        <Card.Section>{imageElement}</Card.Section>
         <Card.Section>
           f
           <Flex
             direction="column"
-            pb={padding}
             w={imageWidth}
             align="flex-start"
-            gap={rowGap}
-            // h="75%"
             style={{
               position: "absolute",
 
@@ -121,7 +109,7 @@ function DisplayResourceHeader({
   );
 
   return (
-    <Group w="100%" position="center" py={padding} bg={backgroundColor}>
+    <Group w="100%" position="center" bg={backgroundColor}>
       {bannerImage}
     </Group>
   );

@@ -35,7 +35,7 @@ function AccessibleImage({ attributes }: AccessibleImageProps) {
         imageRef,
         isOverlay = false,
         name,
-        overlayText,
+        overlayText = "",
         radius = 0,
         src,
         style,
@@ -54,7 +54,7 @@ function AccessibleImage({ attributes }: AccessibleImageProps) {
     const [isImageLoadFailed, setIsImageLoadFailed] = useState(false);
 
     const { screenreaderTextElement } = accessibleImageTextElement({
-        description: alt,
+        description: isOverlay ? overlayText : alt,
         name,
         themeObject,
     });

@@ -1,4 +1,4 @@
-import { CheckboxRadioSelectData } from "../../types";
+import type { CheckboxRadioSelectData } from "../../types";
 
 const QUERY_LIMIT_PER_PAGE_SELECT_DATA = ["10", "20", "30", "40", "50"];
 
@@ -72,7 +72,11 @@ const productCategoryPsuFields = new Set([
   "psuModularity",
 ]);
 
-const productCategoryCaseFields = new Set(["caseType", "caseColor", "caseSidePanel"]);
+const productCategoryCaseFields = new Set([
+  "caseType",
+  "caseColor",
+  "caseSidePanel",
+]);
 
 const productCategoryDisplayFields = new Set([
   "monitorSize",

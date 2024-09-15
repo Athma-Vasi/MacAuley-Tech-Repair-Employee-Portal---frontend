@@ -1,4 +1,4 @@
-import {
+import type {
   DisplayResourceAction,
   DisplayResourceDispatch,
   DisplayResourceState,
@@ -33,10 +33,10 @@ const displayResourceAction: DisplayResourceAction = {
 };
 
 function displayResourceReducer<
-  Doc extends Record<string, unknown> = Record<string, unknown>
+  Doc extends Record<string, unknown> = Record<string, unknown>,
 >(
   state: DisplayResourceState<Doc>,
-  action: DisplayResourceDispatch<Doc>
+  action: DisplayResourceDispatch<Doc>,
 ): DisplayResourceState<Doc> {
   switch (action.type) {
     case displayResourceAction.setResourceData:
@@ -67,7 +67,7 @@ function displayResourceReducer<
         }
         case "delete": {
           const updatedResourceData = state.resourceData.filter(
-            (resource) => resource._id !== id
+            (resource) => resource._id !== id,
           );
 
           return {

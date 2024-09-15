@@ -1,4 +1,8 @@
-import { DisplayQueryAction, DisplayQueryDispatch, DisplayQueryState } from "./types";
+import type {
+  DisplayQueryAction,
+  DisplayQueryDispatch,
+  DisplayQueryState,
+} from "./types";
 
 const initialDisplayQueryState: DisplayQueryState = {
   groupByRadioData: [],
@@ -39,7 +43,7 @@ const displayQueryAction: DisplayQueryAction = {
 
 function displayQueryReducer(
   state: DisplayQueryState,
-  action: DisplayQueryDispatch
+  action: DisplayQueryDispatch,
 ): DisplayQueryState {
   switch (action.type) {
     case displayQueryAction.setGroupByRadioData:

@@ -1,12 +1,12 @@
-import { Grid, Group, Stack, Text, Title } from "@mantine/core";
+import { Grid, Group, Stack, Text } from "@mantine/core";
 
 import { COLORS_SWATCHES } from "../../../constants/data";
 import { useGlobalState } from "../../../hooks";
-import { returnAccessibleImageElements } from "../../../jsxCreators";
-import { UserDocument } from "../../../types";
+import type { UserDocument } from "../../../types";
 import { returnThemeColors, splitCamelCase } from "../../../utils";
+import AccessibleImage from "../../accessibleInputs/AccessibleImage";
+import type { CustomerDocument } from "../../customer/types";
 import { returnProfileInfoObject } from "../../portalHeader/userInfo/utils";
-import { CustomerDocument } from "../../customer/types";
 
 type ProfileInfoProps = {
   userDocument:
@@ -17,7 +17,7 @@ type ProfileInfoProps = {
 
 function ProfileInfo({ userDocument }: ProfileInfoProps) {
   const {
-    globalState: { themeObject, width, padding, rowGap },
+    globalState: { themeObject, width },
   } = useGlobalState();
 
   const {
@@ -27,20 +27,19 @@ function ProfileInfo({ userDocument }: ProfileInfoProps) {
     colorsSwatches: COLORS_SWATCHES,
   });
 
-  const [profilePicElement] = returnAccessibleImageElements([
-    {
-      customWidth: width < 640 ? 92 : width < 1024 ? 128 : 256,
-      customHeight: width < 640 ? 92 : width < 1024 ? 128 : 256,
-      customRadius: 9999,
-      fit: "cover",
-      imageSrc: userDocument?.profilePictureUrl,
-      imageAlt: `Picture of ${userDocument?.username}`,
-      isCard: false,
-      isOverlay: false,
-      isLoader: true,
-      withPlaceholder: true,
-    },
-  ]);
+  const profilePicElement = (
+    <AccessibleImage
+      attributes={{
+        alt: `Picture of ${userDocument?.username}`,
+        fit: "cover",
+        height: width < 640 ? 92 : width < 1024 ? 128 : 256,
+        name: "profile picture",
+        radius: 9999,
+        src: userDocument?.profilePictureUrl ?? "",
+        width: width < 640 ? 92 : width < 1024 ? 128 : 256,
+      }}
+    />
+  );
 
   const displayProfilePic = (
     <Group w="100%" position="center" align="center">
@@ -57,58 +56,72 @@ function ProfileInfo({ userDocument }: ProfileInfoProps) {
         Array<{
           inputName: string;
           inputValue?: string | boolean;
-        }>
+        }>,
       ];
 
-      const displayPageName =
-        pageObjectArr.length > 0 ? (
+      const displayPageName = pageObjectArr.length > 0
+        ? (
           <Group
             w="100%"
             position="center"
             align="baseline"
-            spacing={rowGap}
-            py={padding}
+            key={`profile-review-${index.toString()}`}
           >
             <Text size="lg" weight={500} style={{ marginTop: 16 }}>
               {splitCamelCase(pageName)}
             </Text>
           </Group>
-        ) : null;
+        )
+        : null;
 
       const displayPageSection = pageObjectArr.map((pageObject, index) => {
         const { inputName, inputValue = "" } = pageObject;
 
-        const displayInputName = <Text>{inputName}</Text>;
-        const displayValue =
-          inputName === "Email" ? (
+        const displayInputName = (
+          <Text
+            key={`profile-review-${index.toString()}`}
+          >
+            {inputName}
+          </Text>
+        );
+        const displayValue = inputName === "Email"
+          ? (
             inputValue
               .toString()
               .split("@")
               .map((str, index) => {
                 const displayStr = index === 0 ? str : `@${str}`;
                 return (
-                  <Text key={`email-${index}`} style={{ display: "inline-block" }}>
+                  <Text
+                    key={`email-${index.toString()}`}
+                    style={{ display: "inline-block" }}
+                  >
                     {displayStr}
                   </Text>
                 );
               })
-          ) : (
-            <Text>{inputValue}</Text>
+          )
+          : (
+            <Text
+              key={`profile-review-${index.toString()}`}
+            >
+              {inputValue}
+            </Text>
           );
 
-        const rowBackgroundColorLight = index % 2 === 0 ? "#f9f9f9" : "transparent";
+        const rowBackgroundColorLight = index % 2 === 0
+          ? "#f9f9f9"
+          : "transparent";
         const rowBackgroundColorDark = "transparent";
-        const rowBackgroundColor =
-          themeObject.colorScheme === "dark"
-            ? rowBackgroundColorDark
-            : rowBackgroundColorLight;
+        const rowBackgroundColor = themeObject.colorScheme === "dark"
+          ? rowBackgroundColorDark
+          : rowBackgroundColorLight;
 
         const displayPageSection = (
           <Grid
             columns={10}
-            key={`profile-review-${index}`}
+            key={`profile-review-${index.toString()}`}
             style={{ borderBottom: borderColor }}
-            gutter={rowGap}
             w="100%"
           >
             <Grid.Col span={4} style={{ background: rowBackgroundColor }}>
@@ -124,18 +137,18 @@ function ProfileInfo({ userDocument }: ProfileInfoProps) {
       });
 
       const profileReviewStack = (
-        <Stack key={`profile-review-${index}`} w="100%" pb={padding}>
+        <Stack key={`profile-review-${index.toString()}`} w="100%">
           {displayPageName}
           {displayPageSection}
         </Stack>
       );
 
       return profileReviewStack;
-    }
+    },
   );
 
   const displayProfileInfoComponent = (
-    <Stack w="100%" p={padding} style={{ position: "relative" }}>
+    <Stack w="100%" style={{ position: "relative" }}>
       {displayProfilePic}
       {displayProfileStack}
     </Stack>

@@ -1,3 +1,10 @@
+function DisplayQuery() {
+  return <div>DisplayQuery</div>;
+}
+
+export { DisplayQuery };
+
+/**
 import {
   Accordion,
   Card,
@@ -212,7 +219,7 @@ function DisplayQuery({
     });
   }, [queryResponseData, groupBySelection, currentSelectionData]);
 
-  /** ------------- accessible error/valid text elems ------------- */
+
 
   const [acknowledgementInputErrorText, acknowledgementInputValidText] =
     AccessibleErrorValidTextElements({
@@ -223,9 +230,9 @@ function DisplayQuery({
       regexValidationText: returnAcknowledgementValidationText(acknowledgementText),
     });
 
-  /** ------------- end accessible error/valid text elems ------------- */
 
-  /** ------------- input creator info objects ------------- */
+
+
 
   const [createdGroupByButton] = returnAccessibleButtonElements([
     {
@@ -334,9 +341,9 @@ function DisplayQuery({
     />
   );
 
-  /** ------------- end input creator info objects ------------- */
 
-  /** ------------- created inputs------------- */
+
+
 
   const [createdGroupByRadioGroup] = returnAccessibleRadioGroupInputsElements([
     groupByRadioGroupCreatorInfo,
@@ -352,7 +359,7 @@ function DisplayQuery({
       createResourceButtonCreatorInfo,
     ]);
 
-  /** ------------- end created inputs------------- */
+
 
   const sectionWidth =
     width < 480 // for iPhone 5/SE
@@ -953,3 +960,5 @@ function DisplayQuery({
 }
 
 export { DisplayQuery };
+
+*/

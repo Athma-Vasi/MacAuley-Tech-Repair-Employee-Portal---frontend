@@ -1,12 +1,11 @@
-import { CSSProperties } from "react";
+import type { CSSProperties } from "react";
 
-import {
+import type {
   FileUploadDocument,
   QueryResponseData,
   RadioGroupInputData,
   RequestStatus,
 } from "../../types";
-import { ComponentQueryData } from "../queryBuilder";
 
 type GroupedByQueryResponseData = Map<
   string | number | boolean | symbol,
@@ -14,7 +13,7 @@ type GroupedByQueryResponseData = Map<
 >;
 
 type DisplayQueryProps = {
-  componentQueryData: ComponentQueryData[];
+  // componentQueryData: ComponentQueryData[];
   createResourcePath: string;
   fileUploadsData?: Array<{ [key: string]: FileUploadDocument[] }>;
   isLoading: boolean;
@@ -85,46 +84,46 @@ type DisplayQueryDispatch<
   Doc extends Record<string | symbol | number, any> = Record<
     string | symbol | number,
     any
-  >
+  >,
 > =
   | {
-      type: DisplayQueryAction["setGroupByRadioData"];
-      payload: RadioGroupInputData;
-    }
+    type: DisplayQueryAction["setGroupByRadioData"];
+    payload: RadioGroupInputData;
+  }
   | {
-      type:
-        | DisplayQueryAction["setGroupBySelection"]
-        | DisplayQueryAction["setAcknowledgementText"]
-        | DisplayQueryAction["setDeleteFormId"]
-        | DisplayQueryAction["setDeleteFileUploadId"];
-      payload: string;
-    }
+    type:
+      | DisplayQueryAction["setGroupBySelection"]
+      | DisplayQueryAction["setAcknowledgementText"]
+      | DisplayQueryAction["setDeleteFormId"]
+      | DisplayQueryAction["setDeleteFileUploadId"];
+    payload: string;
+  }
   | {
-      type: "setDisplayDocumentsView";
-      payload: DisplayDocumentsView;
-    }
+    type: "setDisplayDocumentsView";
+    payload: DisplayDocumentsView;
+  }
   | {
-      type:
-        | DisplayQueryAction["setIsValidAcknowledgementText"]
-        | DisplayQueryAction["setIsAcknowledgementTextFocused"];
-      payload: boolean;
-    }
+    type:
+      | DisplayQueryAction["setIsValidAcknowledgementText"]
+      | DisplayQueryAction["setIsAcknowledgementTextFocused"];
+    payload: boolean;
+  }
   | {
-      type: DisplayQueryAction["setCurrentSelectionData"];
-      payload: string[];
-    }
+    type: DisplayQueryAction["setCurrentSelectionData"];
+    payload: string[];
+  }
   | {
-      type: DisplayQueryAction["setGroupedByQueryResponseData"];
-      payload: Map<keyof Doc, Record<keyof Doc, Doc[keyof Doc]>[]>;
-    }
+    type: DisplayQueryAction["setGroupedByQueryResponseData"];
+    payload: Map<keyof Doc, Record<keyof Doc, Doc[keyof Doc]>[]>;
+  }
   | {
-      type: DisplayQueryAction["setFileUploadsForAForm"];
-      payload: FileUploadDocument[];
-    }
+    type: DisplayQueryAction["setFileUploadsForAForm"];
+    payload: FileUploadDocument[];
+  }
   | {
-      type: DisplayQueryAction["setDeleteResourceKind"];
-      payload: "form" | "fileUpload" | "";
-    };
+    type: DisplayQueryAction["setDeleteResourceKind"];
+    payload: "form" | "fileUpload" | "";
+  };
 
 export type {
   DisplayDocumentsView,
