@@ -1,4 +1,4 @@
-import { SetPageInErrorPayload } from "../../types";
+import type { SetPageInErrorPayload } from "../../types";
 import type { LoginAction } from "./actions";
 
 type LoginState = {

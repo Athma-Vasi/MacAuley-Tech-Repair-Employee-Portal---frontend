@@ -1,11 +1,15 @@
 import { Grid, Group, Spoiler, Stack, Text, Title } from "@mantine/core";
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 
 import { COLORS_SWATCHES, PROPERTY_DESCRIPTOR } from "../../constants/data";
 import { VALIDATION_FUNCTIONS_TABLE } from "../../constants/validations";
 import { useGlobalState } from "../../hooks";
-import { StepperPage } from "../../types";
-import { capitalizeJoinWithAnd, returnThemeColors, splitCamelCase } from "../../utils";
+import type { StepperPage } from "../../types";
+import {
+  capitalizeJoinWithAnd,
+  returnThemeColors,
+  splitCamelCase,
+} from "../../utils";
 import { createAccessibleButtons } from "../accessibleInputs/utils";
 
 type FormReview = {
@@ -25,9 +29,11 @@ type FormReviewProps = {
   title?: ReactNode;
 };
 
-function FormReviewStep({ componentState, stepperPages, title }: FormReviewProps) {
+function FormReviewStep(
+  { componentState, stepperPages, title }: FormReviewProps,
+) {
   const {
-    globalState: { themeObject, padding, rowGap },
+    globalState: { themeObject },
   } = useGlobalState();
 
   const {
@@ -43,7 +49,11 @@ function FormReviewStep({ componentState, stepperPages, title }: FormReviewProps
   const displayFormReviewStack = Object.entries(formReviewObject).map(
     ([pageName, pageObjectArr], index) => {
       const displayPageName = (
-        <Title order={5} style={{ marginTop: 16 }}>
+        <Title
+          order={5}
+          style={{ marginTop: 16 }}
+          key={`form-review-${index.toString()}-title`}
+        >
           {splitCamelCase(pageName)}
         </Title>
       );
@@ -53,17 +63,21 @@ function FormReviewStep({ componentState, stepperPages, title }: FormReviewProps
         const { value } = pageObject;
 
         const displayInputName = (
-          <Text color={isValueValid ? void 0 : redColorShade}>
+          <Text
+            color={isValueValid ? void 0 : redColorShade}
+            key={`form-review-${index.toString()}-name`}
+          >
             {splitCamelCase(name)}
           </Text>
         );
 
-        const rowBackgroundColorLight = index % 2 === 0 ? "#f9f9f9" : "transparent";
+        const rowBackgroundColorLight = index % 2 === 0
+          ? "#f9f9f9"
+          : "transparent";
         const rowBackgroundColorDark = "transparent";
-        const rowBackgroundColor =
-          themeObject.colorScheme === "dark"
-            ? rowBackgroundColorDark
-            : rowBackgroundColorLight;
+        const rowBackgroundColor = themeObject.colorScheme === "dark"
+          ? rowBackgroundColorDark
+          : rowBackgroundColorLight;
 
         const [showLabelButton, hideLabelButton] = createAccessibleButtons([
           {
@@ -83,6 +97,7 @@ function FormReviewStep({ componentState, stepperPages, title }: FormReviewProps
             maxHeight={131}
             showLabel={showLabelButton}
             hideLabel={hideLabelButton}
+            key={`form-review-${index.toString()}-value`}
           >
             <Text>{value}</Text>
           </Spoiler>
@@ -91,9 +106,8 @@ function FormReviewStep({ componentState, stepperPages, title }: FormReviewProps
         const displayPageSection = (
           <Grid
             columns={10}
-            key={`form-review-${index}`}
+            key={`form-review-${index.toString()}-section`}
             style={{ borderBottom: borderColor }}
-            gutter={rowGap}
             w="100%"
           >
             <Grid.Col span={4} style={{ background: rowBackgroundColor }}>
@@ -109,24 +123,29 @@ function FormReviewStep({ componentState, stepperPages, title }: FormReviewProps
       });
 
       const formReviewStack = (
-        <Stack key={`form-review-${index}`} w="100%" pb={padding}>
+        <Stack key={`form-review-${index.toString()}`} w="100%">
           {displayPageName}
           {displayPageSection}
         </Stack>
       );
 
       return formReviewStack;
-    }
+    },
   );
 
-  const displayTitle = title ? (
-    <Group w="100%" position="center">
-      <Title order={4}>{title}</Title>
-    </Group>
-  ) : null;
+  const displayTitle = title
+    ? (
+      <Group w="100%" position="center">
+        <Title order={4}>{title}</Title>
+      </Group>
+    )
+    : null;
 
   const displayFormReview = (
-    <Stack w="100%" p={padding} style={{ border: borderColor, borderRadius: 4 }}>
+    <Stack
+      w="100%"
+      style={{ border: borderColor, borderRadius: 4 }}
+    >
       {displayTitle}
       {displayFormReviewStack}
     </Stack>
@@ -136,7 +155,7 @@ function FormReviewStep({ componentState, stepperPages, title }: FormReviewProps
 }
 
 function returnFormReviews<
-  State extends Record<string, unknown> = Record<string, unknown>
+  State extends Record<string, unknown> = Record<string, unknown>,
 >(stepperPages: StepperPage[], componentState: State): FormReviews {
   return stepperPages.reduce<FormReviews>((formReviewsAcc, stepperPage) => {
     const { description, kind, children } = stepperPage;
@@ -149,28 +168,25 @@ function returnFormReviews<
       const { name, validationKey, inputType } = child;
       const value = componentState[name];
 
-      const stringifiedValue =
-        inputType === "file"
-          ? "Image file"
-          : Array.isArray(value)
-          ? capitalizeJoinWithAnd(value)
-          : typeof value === "boolean"
-          ? value
-            ? "Yes"
-            : "No"
-          : // for survey component ...
-          value === "chooseAny" || value === "choseOne"
-          ? splitCamelCase(value)
-          : value?.toString() ?? "";
+      const stringifiedValue = inputType === "file"
+        ? "Image file"
+        : Array.isArray(value)
+        ? capitalizeJoinWithAnd(value)
+        : typeof value === "boolean"
+        ? value ? "Yes" : "No"
+        // for survey component ...
+        : value === "chooseAny" || value === "choseOne"
+        ? splitCamelCase(value)
+        : value?.toString() ?? "";
 
       let isValueValid = true;
 
       if (validationKey) {
-        const validation = VALIDATION_FUNCTIONS_TABLE[validationKey ?? "allowAll"];
-        isValueValid =
-          typeof validation.full === "function"
-            ? validation.full(value?.toString() ?? "")
-            : validation.full.test(value?.toString() ?? "");
+        const validation =
+          VALIDATION_FUNCTIONS_TABLE[validationKey ?? "allowAll"];
+        isValueValid = typeof validation.full === "function"
+          ? validation.full(value?.toString() ?? "")
+          : validation.full.test(value?.toString() ?? "");
       }
 
       return {
