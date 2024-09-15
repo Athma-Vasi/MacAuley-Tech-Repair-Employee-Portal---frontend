@@ -1,3 +1,4 @@
+import type { SetPageInErrorPayload } from "../../types";
 import { type LoginAction, loginAction } from "./actions";
 import type { LoginDispatch, LoginState } from "./types";
 
@@ -16,6 +17,7 @@ const loginReducersMap = new Map<
     [loginAction.setIsLoading, loginReducer_setIsLoading],
     [loginAction.setIsSubmitting, loginReducer_setIsSubmitting],
     [loginAction.setIsSuccessful, loginReducer_setIsSuccessful],
+    [loginAction.setPageInError, loginReducer_setPageInError],
     [loginAction.setPassword, loginReducer_setPassword],
     [loginAction.setTriggerFormSubmit, loginReducer_setTriggerFormSubmit],
 ]);
@@ -47,6 +49,20 @@ function loginReducer_setIsSuccessful(
     return {
         ...state,
         isSuccessful: dispatch.payload as boolean,
+    };
+}
+
+function loginReducer_setPageInError(
+    state: LoginState,
+    dispatch: LoginDispatch,
+): LoginState {
+    const { kind, page } = dispatch.payload as SetPageInErrorPayload;
+    const pagesInError = new Set(state.pagesInError);
+    kind === "add" ? pagesInError.add(page) : pagesInError.delete(page);
+
+    return {
+        ...state,
+        pagesInError,
     };
 }
 

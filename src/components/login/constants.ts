@@ -1,4 +1,8 @@
-import type { RoleResourceRoutePaths } from "../../types";
+import type {
+  RoleResourceRoutePaths,
+  StepperChild,
+  StepperPage,
+} from "../../types";
 
 const LOGIN_URL = "/auth/login";
 
@@ -11,4 +15,27 @@ const LOGIN_ROUTE_PATHS: RoleResourceRoutePaths = {
   manager: "auth/login",
 };
 
-export { LOGIN_BG_IMAGE_URL, LOGIN_ROUTE_PATHS, LOGIN_URL };
+function returnLoginStepperPages(): StepperPage[] {
+  const usernameChild: StepperChild = {
+    inputType: "text",
+    name: "username",
+    validationKey: "username",
+  };
+
+  const passwordChild: StepperChild = {
+    inputType: "text",
+    name: "password",
+    validationKey: "password",
+  };
+
+  return [
+    { children: [usernameChild, passwordChild], description: "Login" },
+  ];
+}
+
+export {
+  LOGIN_BG_IMAGE_URL,
+  LOGIN_ROUTE_PATHS,
+  LOGIN_URL,
+  returnLoginStepperPages,
+};

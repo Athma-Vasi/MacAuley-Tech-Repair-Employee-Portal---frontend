@@ -1,33 +1,25 @@
-import {
-  Flex,
-  Group,
-  PasswordInput,
-  Stack,
-  Text,
-  TextInput,
-  Title,
-} from "@mantine/core";
+import { Flex, Group, Stack, Text, Title } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { type ChangeEvent, useEffect, useReducer, useRef } from "react";
+import { useEffect, useReducer, useRef } from "react";
 import { useErrorBoundary } from "react-error-boundary";
-import { TbPassword, TbUser } from "react-icons/tb";
 import { Link, useNavigate } from "react-router-dom";
 
 import { COLORS_SWATCHES } from "../../constants/data";
 import { authAction } from "../../context/authProvider";
 import { useGlobalState } from "../../hooks";
 import { useAuth } from "../../hooks/useAuth";
-import { returnAccessibleButtonElements } from "../../jsxCreators";
 import {
   decodeJWTSafe,
   formSubmitPOSTSafe,
   logState,
   returnThemeColors,
 } from "../../utils";
+import { AccessibleButton } from "../accessibleInputs/AccessibleButton";
+import { AccessiblePasswordInput } from "../accessibleInputs/AccessiblePasswordInput";
+import { AccessibleTextInput } from "../accessibleInputs/text/AccessibleTextInput";
 import { NotificationModal } from "../notificationModal";
-import type { AccessibleButtonCreatorInfo } from "../wrappers";
 import { loginAction } from "./actions";
-import { LOGIN_ROUTE_PATHS } from "./constants";
+import { LOGIN_ROUTE_PATHS, returnLoginStepperPages } from "./constants";
 import { loginReducer } from "./reducers";
 import { initialLoginState } from "./state";
 
@@ -47,7 +39,7 @@ function Login() {
 
   const { authDispatch } = useAuth();
   const {
-    globalState: { padding, rowGap, width, themeObject },
+    globalState: { width, themeObject },
   } = useGlobalState();
   const navigate = useNavigate();
   const { showBoundary } = useErrorBoundary();
@@ -177,67 +169,50 @@ function Login() {
     return successfulState;
   }
 
+  const loginStepperPages = returnLoginStepperPages();
+
   const usernameTextInput = (
-    <TextInput
-      aria-live="polite"
-      aria-label="username"
-      aria-required="true"
-      icon={<TbUser />}
-      id="username"
-      label="Username"
-      name="username"
-      placeholder="Username"
-      value={username}
-      onChange={(event: ChangeEvent<HTMLInputElement>) => {
-        loginDispatch({
-          action: loginAction.setUsername,
-          payload: event.currentTarget.value,
-        });
+    <AccessibleTextInput
+      attributes={{
+        invalidValueAction: loginAction.setPageInError,
+        name: "username",
+        parentDispatch: loginDispatch,
+        required: true,
+        stepperPages: loginStepperPages,
+        value: username,
+        validValueAction: loginAction.setUsername,
       }}
-      required
-      ref={usernameRef}
-      withAsterisk
     />
   );
 
   const passwordTextInput = (
-    <PasswordInput
-      aria-live="polite"
-      aria-label="password"
-      aria-required="true"
-      icon={<TbPassword />}
-      id="password"
-      label="Password"
-      name="password"
-      placeholder="Password"
-      value={password}
-      onChange={(event: ChangeEvent<HTMLInputElement>) => {
-        loginDispatch({
-          action: loginAction.setPassword,
-          payload: event.currentTarget.value,
-        });
+    <AccessiblePasswordInput
+      attributes={{
+        invalidValueAction: loginAction.setPageInError,
+        name: "password",
+        parentDispatch: loginDispatch,
+        required: true,
+        stepperPages: loginStepperPages,
+        value: password,
+        validValueAction: loginAction.setPassword,
       }}
-      required
-      withAsterisk
     />
   );
 
-  const loginButtonCreatorInfo: AccessibleButtonCreatorInfo = {
-    buttonLabel: "Login",
-    semanticDescription: "Login button to submit username and password",
-    semanticName: "Login button",
-    buttonDisabled: isLoading,
-    buttonOnClick: () => {
-      loginDispatch({
-        action: loginAction.setTriggerFormSubmit,
-        payload: true,
-      });
-    },
-    buttonVariant: "outline",
-  };
-  const createdLoginButton = returnAccessibleButtonElements([
-    loginButtonCreatorInfo,
-  ]);
+  const loginButton = (
+    <AccessibleButton
+      attributes={{
+        kind: "submit",
+        name: "login",
+        onClick: () => {
+          loginDispatch({
+            action: loginAction.setTriggerFormSubmit,
+            payload: true,
+          });
+        },
+      }}
+    />
+  );
 
   const {
     generalColors: { themeColorShade },
@@ -248,7 +223,7 @@ function Login() {
   });
 
   const displayTitle = (
-    <Stack spacing={rowGap}>
+    <Stack>
       <Flex align="center" justify="center">
         <Title order={3} color="dark" style={{ letterSpacing: "0.30rem" }}>
           MACAULEY
@@ -268,7 +243,7 @@ function Login() {
   );
 
   const displayInputs = (
-    <Stack w="100%" spacing={rowGap}>
+    <Stack w="100%">
       {usernameTextInput}
       {passwordTextInput}
     </Stack>
@@ -276,7 +251,7 @@ function Login() {
 
   const displayLoginButton = (
     <Group w="100%" position="right">
-      {createdLoginButton}
+      {loginButton}
     </Group>
   );
 
@@ -308,8 +283,6 @@ function Login() {
       align="center"
       justify="center"
       w={width < 480 ? 350 : width <= 1024 ? 480 : 640}
-      p={padding}
-      gap={rowGap}
     >
       {displaySubmitSuccessNotificationModal}
       {displayTitle}
@@ -326,7 +299,6 @@ function Login() {
       h="100vh"
       align="center"
       justify="center"
-      p={padding}
     >
       {displayLoginComponent}
     </Flex>

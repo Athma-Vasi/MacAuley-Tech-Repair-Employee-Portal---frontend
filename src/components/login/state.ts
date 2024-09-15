@@ -4,6 +4,7 @@ const initialLoginState: LoginState = {
   isLoading: true,
   isSubmitting: false,
   isSuccessful: false,
+  pagesInError: new Set(),
   password: "",
   triggerFormSubmit: false,
   username: "",
