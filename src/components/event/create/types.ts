@@ -1,5 +1,5 @@
-import { SetPageInErrorPayload, UserRole } from "../../../types";
-import { EventAction } from "./actions";
+import type { SetPageInErrorPayload, UserRole } from "../../../types";
+import type { EventAction } from "./actions";
 
 type EventKind =
   | "Webinar"
@@ -26,7 +26,7 @@ type EventSchema = {
   startTime: string;
   title: string;
   userId: string;
-  userRole: UserRole;
+  creatorRole: UserRole;
   username: string;
 };
 
@@ -57,64 +57,70 @@ type EventState = {
 
 type EventDispatch =
   | {
-      action: EventAction["setAttendees"];
-      payload: string;
-    }
+    action: EventAction["setAttendees"];
+    payload: string;
+  }
   | {
-      action: EventAction["setDescription"];
-      payload: string;
-    }
+    action: EventAction["setDescription"];
+    payload: string;
+  }
   | {
-      action: EventAction["setEndDate"];
-      payload: string;
-    }
+    action: EventAction["setEndDate"];
+    payload: string;
+  }
   | {
-      action: EventAction["setEndTime"];
-      payload: string;
-    }
+    action: EventAction["setEndTime"];
+    payload: string;
+  }
   | {
-      action: EventAction["setKind"];
-      payload: EventKind;
-    }
+    action: EventAction["setKind"];
+    payload: EventKind;
+  }
   | {
-      action: EventAction["setLocation"];
-      payload: string;
-    }
+    action: EventAction["setLocation"];
+    payload: string;
+  }
   | {
-      action: EventAction["setStartDate"];
-      payload: string;
-    }
+    action: EventAction["setStartDate"];
+    payload: string;
+  }
   | {
-      action: EventAction["setStartTime"];
-      payload: string;
-    }
+    action: EventAction["setStartTime"];
+    payload: string;
+  }
   | {
-      action: EventAction["setIsSubmitting"];
-      payload: boolean;
-    }
+    action: EventAction["setIsSubmitting"];
+    payload: boolean;
+  }
   | {
-      action: EventAction["setIsSuccessful"];
-      payload: boolean;
-    }
+    action: EventAction["setIsSuccessful"];
+    payload: boolean;
+  }
   | {
-      action: EventAction["setPageInError"];
-      payload: SetPageInErrorPayload;
-    }
+    action: EventAction["setPageInError"];
+    payload: SetPageInErrorPayload;
+  }
   | {
-      action: EventAction["setRequiredItems"];
-      payload: string;
-    }
+    action: EventAction["setRequiredItems"];
+    payload: string;
+  }
   | {
-      action: EventAction["setRsvpDeadline"];
-      payload: string;
-    }
+    action: EventAction["setRsvpDeadline"];
+    payload: string;
+  }
   | {
-      action: EventAction["setTitle"];
-      payload: string;
-    }
+    action: EventAction["setTitle"];
+    payload: string;
+  }
   | {
-      action: EventAction["setTriggerFormSubmit"];
-      payload: boolean;
-    };
+    action: EventAction["setTriggerFormSubmit"];
+    payload: boolean;
+  };
 
-export type { EventDispatch, EventDocument, EventKind, EventSchema, EventState };
+export type {
+  EventDispatch,
+  EventDocument,
+  EventKind,
+  EventSchema,
+  EventState,
+};

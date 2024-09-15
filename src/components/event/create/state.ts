@@ -1,4 +1,4 @@
-import { EventState } from "./types";
+import type { EventState } from "./types";
 
 const initialEventState: EventState = {
   title: "",

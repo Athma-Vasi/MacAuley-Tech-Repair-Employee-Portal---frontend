@@ -2,10 +2,11 @@ import { Container, Stack, Text } from "@mantine/core";
 import { useEffect, useReducer, useRef } from "react";
 import { useErrorBoundary } from "react-error-boundary";
 
+import { useDisclosure } from "@mantine/hooks";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../hooks";
-import { useFetchInterceptor } from "../../../hooks/useFetchInterceptor";
-import { StepperPage } from "../../../types";
-import { formSubmitPOST } from "../../../utils";
+import type { StepperPage } from "../../../types";
+import { formSubmitPOSTSafe } from "../../../utils";
 import { AccessibleButton } from "../../accessibleInputs/AccessibleButton";
 import { AccessibleDateTimeInput } from "../../accessibleInputs/AccessibleDateTimeInput";
 import { AccessibleSelectInput } from "../../accessibleInputs/AccessibleSelectInput";
@@ -20,10 +21,13 @@ import {
 import { eventAction } from "./actions";
 import { eventReducer } from "./reducers";
 import { initialEventState } from "./state";
-import { EventSchema } from "./types";
+import type { EventSchema } from "./types";
 
 function Event() {
-  const [eventState, eventDispatch] = useReducer(eventReducer, initialEventState);
+  const [eventState, eventDispatch] = useReducer(
+    eventReducer,
+    initialEventState,
+  );
 
   const {
     title,
@@ -44,13 +48,25 @@ function Event() {
   } = eventState;
 
   const {
-    authState: { sessionId, userId, username },
+    authState: {
+      accessToken,
+      decodedToken: { sessionId, userInfo: { roles, userId, username } },
+    },
   } = useAuth();
-  const { fetchInterceptor } = useFetchInterceptor();
+
+  const [
+    openedSubmitFormModal,
+    {
+      open: openSubmitFormModal,
+      close: closeSubmitFormModal,
+    },
+  ] = useDisclosure(false);
+
+  const navigate = useNavigate();
+
   const { showBoundary } = useErrorBoundary();
 
   const fetchAbortControllerRef = useRef<AbortController | null>(null);
-  const preFetchAbortControllerRef = useRef<AbortController | null>(null);
   const isComponentMountedRef = useRef(false);
 
   useEffect(() => {
@@ -58,14 +74,10 @@ function Event() {
     fetchAbortControllerRef.current = new AbortController();
     const fetchAbortController = fetchAbortControllerRef.current;
 
-    preFetchAbortControllerRef.current?.abort();
-    preFetchAbortControllerRef.current = new AbortController();
-    const preFetchAbortController = preFetchAbortControllerRef.current;
-
     isComponentMountedRef.current = true;
-    let isComponentMounted = isComponentMountedRef.current;
+    const isComponentMounted = isComponentMountedRef.current;
 
-    if (triggerFormSubmit) {
+    async function eventFormSubmit() {
       const eventSchema: EventSchema = {
         attendees,
         description,
@@ -80,31 +92,37 @@ function Event() {
         title,
         userId,
         username,
-        userRole: "manager",
+        creatorRole: "manager",
       };
 
-      formSubmitPOST({
+      const formSubmitResult = await formSubmitPOSTSafe({
+        accessToken,
+        closeSubmitFormModal,
         dispatch: eventDispatch,
         fetchAbortController,
-        fetchInterceptor,
         isComponentMounted,
         isSubmittingAction: eventAction.setIsSubmitting,
         isSuccessfulAction: eventAction.setIsSuccessful,
-        preFetchAbortController,
+        openSubmitFormModal,
         roleResourceRoutePaths: EVENT_ROLE_ROUTE_PATHS,
+        roles,
         schema: eventSchema,
-        schemaName: "eventSchema",
-        sessionId,
-        showBoundary,
-        userId,
-        username,
-        userRole: "manager",
+        triggerFormSubmitAction: eventAction.setTriggerFormSubmit,
       });
+
+      if (formSubmitResult.err) {
+        showBoundary(formSubmitResult.val.data);
+      }
+
+      navigate("/home");
+    }
+
+    if (triggerFormSubmit) {
+      eventFormSubmit();
     }
 
     return () => {
       isComponentMountedRef.current = false;
-      preFetchAbortController?.abort();
       fetchAbortController?.abort();
     };
 

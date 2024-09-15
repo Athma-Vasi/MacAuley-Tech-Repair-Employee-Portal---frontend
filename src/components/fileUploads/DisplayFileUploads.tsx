@@ -1,8 +1,27 @@
 import { Flex } from "@mantine/core";
 
-import { DisplayResource } from "../displayResource";
+import type { CSSProperties } from "react";
+import type { FileUploadDocument } from "../../types";
 import DisplayResourceHeader from "../displayResourceHeader/DisplayResourceHeader";
-import { FILE_UPLOADS_QUERY_DATA, FILE_UPLOADS_RESOURCE_ROUTE_PATHS } from "./constants";
+
+type DisplayFileUploadsProps = {
+  // componentQueryData: ComponentQueryData[];
+  createResourcePath: string;
+  fileUploadsData: Array<{ [key: string]: FileUploadDocument[] }>;
+
+  parentComponentName: string;
+  parentDeleteResourceDispatch: React.Dispatch<{
+    type: "setDeleteResource";
+    payload: {
+      formId: string;
+      fileUploadId?: string;
+      kind: "form" | "fileUpload" | "";
+      value: boolean;
+    };
+  }>;
+  style?: CSSProperties;
+  totalDocuments: number;
+};
 
 function DisplayFileUploads() {
   // ╭─────────────────────────────────────────────────────────────────╮
@@ -26,19 +45,19 @@ function DisplayFileUploads() {
   // ╭─────────────────────────────────────────────────────────────────╮
   //     DISPLAY RESOURCE
   // ╰─────────────────────────────────────────────────────────────────╯
-  const displayResource = (
-    <DisplayResource
-      componentQueryData={FILE_UPLOADS_QUERY_DATA}
-      createResourcePath="/home/file-upload"
-      requestBodyHeading="File Upload"
-      resourceUrlPaths={FILE_UPLOADS_RESOURCE_ROUTE_PATHS}
-    />
-  );
+  // const displayResource = (
+  //   <DisplayResource
+  //     componentQueryData={FILE_UPLOADS_QUERY_DATA}
+  //     createResourcePath="/home/file-upload"
+  //     requestBodyHeading="File Upload"
+  //     resourceUrlPaths={FILE_UPLOADS_RESOURCE_ROUTE_PATHS}
+  //   />
+  // );
 
   const displayFileUploadsComponent = (
     <Flex direction="column" w="100%">
       {displayResourceHeader}
-      {displayResource}
+      {/* {displayResource} */}
     </Flex>
   );
 

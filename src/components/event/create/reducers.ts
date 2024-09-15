@@ -1,6 +1,6 @@
-import { SetPageInErrorPayload } from "../../../types";
-import { EventAction, eventAction } from "./actions";
-import { EventDispatch, EventKind, EventState } from "./types";
+import type { SetPageInErrorPayload } from "../../../types";
+import { type EventAction, eventAction } from "./actions";
+import type { EventDispatch, EventKind, EventState } from "./types";
 
 function eventReducer(state: EventState, dispatch: EventDispatch): EventState {
   const reducer = eventReducers.get(dispatch.action);
@@ -30,68 +30,77 @@ const eventReducers = new Map<
 
 function eventReducer_setAttendees(
   state: EventState,
-  dispatch: EventDispatch
+  dispatch: EventDispatch,
 ): EventState {
   return { ...state, attendees: dispatch.payload as string };
 }
 
 function eventReducer_setDescription(
   state: EventState,
-  dispatch: EventDispatch
+  dispatch: EventDispatch,
 ): EventState {
   return { ...state, description: dispatch.payload as string };
 }
 
-function eventReducer_setEndDate(state: EventState, dispatch: EventDispatch): EventState {
+function eventReducer_setEndDate(
+  state: EventState,
+  dispatch: EventDispatch,
+): EventState {
   return { ...state, endDate: dispatch.payload as string };
 }
 
-function eventReducer_setEndTime(state: EventState, dispatch: EventDispatch): EventState {
+function eventReducer_setEndTime(
+  state: EventState,
+  dispatch: EventDispatch,
+): EventState {
   return { ...state, endTime: dispatch.payload as string };
 }
 
-function eventReducer_setKind(state: EventState, dispatch: EventDispatch): EventState {
+function eventReducer_setKind(
+  state: EventState,
+  dispatch: EventDispatch,
+): EventState {
   return { ...state, kind: dispatch.payload as EventKind };
 }
 
 function eventReducer_setLocation(
   state: EventState,
-  dispatch: EventDispatch
+  dispatch: EventDispatch,
 ): EventState {
   return { ...state, location: dispatch.payload as string };
 }
 
 function eventReducer_setStartDate(
   state: EventState,
-  dispatch: EventDispatch
+  dispatch: EventDispatch,
 ): EventState {
   return { ...state, startDate: dispatch.payload as string };
 }
 
 function eventReducer_setStartTime(
   state: EventState,
-  dispatch: EventDispatch
+  dispatch: EventDispatch,
 ): EventState {
   return { ...state, startTime: dispatch.payload as string };
 }
 
 function eventReducer_setIsSubmitting(
   state: EventState,
-  dispatch: EventDispatch
+  dispatch: EventDispatch,
 ): EventState {
   return { ...state, isSubmitting: dispatch.payload as boolean };
 }
 
 function eventReducer_setIsSuccessful(
   state: EventState,
-  dispatch: EventDispatch
+  dispatch: EventDispatch,
 ): EventState {
   return { ...state, isSuccessful: dispatch.payload as boolean };
 }
 
 function eventReducer_setPageInError(
   state: EventState,
-  dispatch: EventDispatch
+  dispatch: EventDispatch,
 ): EventState {
   const { kind, page } = dispatch.payload as SetPageInErrorPayload;
   const pagesInError = new Set(state.pagesInError);
@@ -105,25 +114,28 @@ function eventReducer_setPageInError(
 
 function eventReducer_setRequiredItems(
   state: EventState,
-  dispatch: EventDispatch
+  dispatch: EventDispatch,
 ): EventState {
   return { ...state, requiredItems: dispatch.payload as string };
 }
 
 function eventReducer_setRsvpDeadline(
   state: EventState,
-  dispatch: EventDispatch
+  dispatch: EventDispatch,
 ): EventState {
   return { ...state, rsvpDeadline: dispatch.payload as string };
 }
 
-function eventReducer_setTitle(state: EventState, dispatch: EventDispatch): EventState {
+function eventReducer_setTitle(
+  state: EventState,
+  dispatch: EventDispatch,
+): EventState {
   return { ...state, title: dispatch.payload as string };
 }
 
 function eventReducer_setTriggerFormSubmit(
   state: EventState,
-  dispatch: EventDispatch
+  dispatch: EventDispatch,
 ): EventState {
   return { ...state, triggerFormSubmit: dispatch.payload as boolean };
 }
