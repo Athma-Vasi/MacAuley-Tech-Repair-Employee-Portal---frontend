@@ -1,18 +1,15 @@
-import { MantineNumberSize } from "@mantine/core";
-
-import { DashboardCalendarView } from "../types";
+import type { DashboardCalendarView } from "../types";
 import {
   createDashboardMetricsCards,
-  CreateDashboardMetricsCardsInput,
-  DashboardCardInfo,
+  type CreateDashboardMetricsCardsInput,
+  type DashboardCardInfo,
 } from "../utilsTSX";
-import { SelectedDateFinancialMetrics } from "./chartsData";
+import type { SelectedDateFinancialMetrics } from "./chartsData";
 
 type CreateFinancialMetricsCardsInput = {
   selectedDateFinancialMetrics: SelectedDateFinancialMetrics;
   greenColorShade: string;
   redColorShade: string;
-  padding: MantineNumberSize;
   width: number;
 };
 
@@ -41,7 +38,6 @@ type FinancialMetricsCards = {
 };
 
 function createFinancialMetricsCards({
-  padding,
   selectedDateFinancialMetrics,
   greenColorShade,
   redColorShade,
@@ -102,7 +98,6 @@ function createFinancialMetricsCards({
         greenColorShade,
         heading: "Total",
         kind: "day",
-        padding,
         prevDay,
         prevMonth,
         prevValue: 1,
@@ -885,7 +880,7 @@ function createFinancialMetricsCards({
 
 function returnCalendarViewFinancialCards(
   calendarView: DashboardCalendarView,
-  financialMetricsCards: FinancialMetricsCards
+  financialMetricsCards: FinancialMetricsCards,
 ) {
   return calendarView === "Daily"
     ? financialMetricsCards.dailyCards

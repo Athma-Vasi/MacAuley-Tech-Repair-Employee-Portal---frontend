@@ -1,3 +1,10 @@
+function EditRepairTicket() {
+  return null;
+}
+
+export default EditRepairTicket;
+
+/**
 import { Group, Title, Tooltip } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { InvalidTokenError } from "jwt-decode";
@@ -652,3 +659,4 @@ function EditRepairTicket({
 }
 
 export default EditRepairTicket;
+*/

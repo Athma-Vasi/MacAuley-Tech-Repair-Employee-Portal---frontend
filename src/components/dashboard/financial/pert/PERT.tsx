@@ -1,8 +1,7 @@
-import { MantineNumberSize } from "@mantine/core";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-import { globalAction } from "../../../../context/globalProvider/state";
+import { globalAction } from "../../../../context/globalProvider/actions";
 import { useGlobalState } from "../../../../hooks";
 import { addCommaSeparator } from "../../../../utils";
 import { AccessibleButton } from "../../../accessibleInputs/AccessibleButton";
@@ -12,23 +11,29 @@ import {
   ResponsiveLineChart,
   ResponsivePieChart,
 } from "../../../charts";
-import { MONTHS } from "../../constants";
 import DashboardMetricsLayout from "../../DashboardMetricsLayout";
-import {
+import { MONTHS } from "../../constants";
+import type {
   BusinessMetricStoreLocation,
   DashboardCalendarView,
   DashboardMetricsView,
   Year,
 } from "../../types";
 import { returnChartTitleNavigateLinks, returnStatistics } from "../../utils";
-import { FinancialMetricsCards, returnCalendarViewFinancialCards } from "../cards";
-import { FinancialMetricsCharts, returnCalendarViewFinancialCharts } from "../chartsData";
+import {
+  type FinancialMetricsCards,
+  returnCalendarViewFinancialCards,
+} from "../cards";
+import {
+  type FinancialMetricsCharts,
+  returnCalendarViewFinancialCharts,
+} from "../chartsData";
 import {
   FINANCIAL_PERT_BAR_LINE_Y_AXIS_DATA,
   FINANCIAL_PERT_PIE_Y_AXIS_DATA,
   PERT_SET,
 } from "../constants";
-import { FinancialMetricCategory } from "../types";
+import type { FinancialMetricCategory } from "../types";
 import { pertAction } from "./actions";
 import { pertReducer } from "./reducers";
 import { initialPERTState } from "./state";
@@ -44,7 +49,6 @@ type PERTProps = {
   metricCategory: FinancialMetricCategory;
   metricsView: DashboardMetricsView;
   month: string;
-  padding: MantineNumberSize;
   storeLocation: BusinessMetricStoreLocation;
   width: number;
   year: Year;
@@ -61,7 +65,6 @@ function PERT({
   metricCategory,
   metricsView,
   month,
-  padding,
   storeLocation,
   width,
   year,
@@ -69,18 +72,29 @@ function PERT({
   const { globalDispatch } = useGlobalState();
   const navigate = useNavigate();
 
-  const [pertState, pertDispatch] = React.useReducer(pertReducer, initialPERTState);
+  const [pertState, pertDispatch] = React.useReducer(
+    pertReducer,
+    initialPERTState,
+  );
 
-  const { barChartYAxisVariable, lineChartYAxisVariable, pieChartYAxisVariable } =
-    pertState;
+  const {
+    barChartYAxisVariable,
+    lineChartYAxisVariable,
+    pieChartYAxisVariable,
+  } = pertState;
 
-  const charts = returnCalendarViewFinancialCharts(calendarView, financialMetricsCharts);
+  const charts = returnCalendarViewFinancialCharts(
+    calendarView,
+    financialMetricsCharts,
+  );
   const {
     bar: barCharts,
     line: lineCharts,
     pie: pieCharts,
   } = PERT_SET.has(metricCategory)
-    ? (charts[metricCategory] as FinancialMetricsCharts["dailyCharts"]["expenses"]) // cast to avoid TS error
+    ? (charts[metricCategory] as FinancialMetricsCharts["dailyCharts"][
+      "expenses"
+    ]) // cast to avoid TS error
     : charts.profit;
 
   console.group("PERT");
@@ -133,10 +147,10 @@ function PERT({
         onClick: (
           _event:
             | React.MouseEvent<HTMLButtonElement>
-            | React.PointerEvent<HTMLButtonElement>
+            | React.PointerEvent<HTMLButtonElement>,
         ) => {
           globalDispatch({
-            type: globalAction.setCustomizeChartsPageData,
+            action: globalAction.setCustomizeChartsPageData,
             payload: {
               chartKind: "pie",
               chartData: pieCharts[pieChartYAxisVariable],
@@ -169,10 +183,10 @@ function PERT({
         onClick: (
           _event:
             | React.MouseEvent<HTMLButtonElement>
-            | React.PointerEvent<HTMLButtonElement>
+            | React.PointerEvent<HTMLButtonElement>,
         ) => {
           globalDispatch({
-            type: globalAction.setCustomizeChartsPageData,
+            action: globalAction.setCustomizeChartsPageData,
             payload: {
               chartKind: "bar",
               chartData: barCharts[barChartYAxisVariable],
@@ -205,13 +219,11 @@ function PERT({
       chartWidth={chartWidth}
       barChartData={barCharts[barChartYAxisVariable]}
       hideControls
-      indexBy={
-        calendarView === "Daily"
-          ? "Days"
-          : calendarView === "Monthly"
-          ? "Months"
-          : "Years"
-      }
+      indexBy={calendarView === "Daily"
+        ? "Days"
+        : calendarView === "Monthly"
+        ? "Months"
+        : "Years"}
       keys={FINANCIAL_PERT_BAR_LINE_Y_AXIS_DATA.map((obj) => obj.label)}
       unitKind="number"
     />
@@ -225,10 +237,10 @@ function PERT({
         onClick: (
           _event:
             | React.MouseEvent<HTMLButtonElement>
-            | React.PointerEvent<HTMLButtonElement>
+            | React.PointerEvent<HTMLButtonElement>,
         ) => {
           globalDispatch({
-            type: globalAction.setCustomizeChartsPageData,
+            action: globalAction.setCustomizeChartsPageData,
             payload: {
               chartKind: "line",
               chartData: lineCharts[lineChartYAxisVariable],
@@ -263,15 +275,21 @@ function PERT({
       hideControls
       xFormat={(x) =>
         `${
-          calendarView === "Daily" ? "Day" : calendarView === "Monthly" ? "Month" : "Year"
-        } - ${x}`
-      }
+          calendarView === "Daily"
+            ? "Day"
+            : calendarView === "Monthly"
+            ? "Month"
+            : "Year"
+        } - ${x}`}
       yFormat={(y) => `${addCommaSeparator(y)} Financials`}
       unitKind="number"
     />
   );
 
-  const cards = returnCalendarViewFinancialCards(calendarView, financialMetricsCards);
+  const cards = returnCalendarViewFinancialCards(
+    calendarView,
+    financialMetricsCards,
+  );
   const overviewCards = PERT_SET.has(metricCategory)
     ? cards[metricCategory]
     : cards.profit;
@@ -289,7 +307,6 @@ function PERT({
       lineChartHeading={lineChartHeading}
       lineChartYAxisSelectInput={lineChartYAxisVariablesSelectInput}
       overviewCards={overviewCards}
-      padding={padding}
       pieChart={overviewPieChart}
       pieChartHeading={pieChartHeading}
       pieChartYAxisSelectInput={pieChartYAxisVariableSelectInput}

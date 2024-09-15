@@ -1,7 +1,6 @@
 import {
   Accordion,
   Group,
-  Loader,
   LoadingOverlay,
   Stack,
   Tabs,
@@ -10,56 +9,52 @@ import {
   Title,
 } from "@mantine/core";
 import localforage from "localforage";
-import { ChangeEvent, useEffect, useReducer, useRef } from "react";
+import React, { useEffect, useReducer } from "react";
 import { useErrorBoundary } from "react-error-boundary";
 import { useNavigate } from "react-router-dom";
 
 import { COLORS_SWATCHES, STORE_LOCATION_DATA } from "../../constants/data";
-import { globalAction } from "../../context/globalProvider/state";
+import { globalAction } from "../../context/globalProvider/actions";
 import { useGlobalState } from "../../hooks";
-import { returnAccessibleSelectInputElements } from "../../jsxCreators";
-import { logState, returnThemeColors } from "../../utils";
-import { AccessibleSelectInputCreatorInfo, ImageWrapper } from "../wrappers";
+
+import { returnThemeColors } from "../../utils";
+import { AccessibleSelectInput } from "../accessibleInputs/AccessibleSelectInput";
+import { dashboardAction } from "./actions";
 import {
   CALENDAR_VIEW_TABS_DATA,
-  CUSTOMER_METRICS_SELECT_INPUT_DATA,
+  CUSTOMER_METRICS_DATA,
   DAYS_PER_MONTH,
-  FINANCIALS_METRICS_SELECT_INPUT_DATA,
+  FINANCIALS_METRICS_DATA,
   METRICS_VIEW_TABS_DATA,
   MONTHS,
   PRODUCT_CATEGORIES,
-  PRODUCT_METRICS_SELECT_INPUT_DATA,
+  PRODUCT_METRICS_DATA,
   REPAIR_CATEGORIES,
-  REPAIR_METRICS_SELECT_INPUT_DATA,
+  REPAIR_METRICS_DATA,
   STORE_LOCATION_VIEW_TABS_DATA,
 } from "./constants";
 import { CustomerMetrics } from "./customer/CustomerMetrics";
 import { FinancialMetrics } from "./financial/FinancialMetrics";
 import { ProductMetrics } from "./product/ProductMetrics";
+import { dashboardReducer } from "./reducers";
 import { RepairMetrics } from "./repair/RepairMetrics";
-import { dashboardAction, dashboardReducer, initialDashboardState } from "./state";
-import {
+import { initialDashboardState } from "./state";
+import type {
   BusinessMetric,
   BusinessMetricStoreLocation,
   DashboardCalendarView,
-  DashboardCustomerMetric,
-  DashboardFinancialMetric,
   DashboardMetricsView,
-  DashboardProductMetric,
-  DashboardRepairMetric,
-  Year,
 } from "./types";
 import {
   createRandomBusinessMetrics,
   returnIsTabDisabled,
   splitSelectedCalendarDate,
 } from "./utils";
-import React from "react";
 
 function Dashboard() {
   const [dashboardState, dashboardDispatch] = useReducer(
     dashboardReducer,
-    initialDashboardState
+    initialDashboardState,
   );
 
   const {
@@ -92,23 +87,6 @@ function Dashboard() {
     loadingMessage,
   } = dashboardState;
 
-  // useEffect(() => {
-  //   globalDispatch({
-  //     type: globalAction.setCustomizeChartsPageDataSelectedYYYYMMDD,
-  //     payload: initialDashboardState.selectedYYYYMMDD,
-  //   });
-
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, []);
-
-  // useEffect(() => {
-  //   globalDispatch({
-  //     type: globalAction.setCustomizeChartsPageDataSelectedYYYYMMDD,
-  //     payload: initialDashboardState.selectedYYYYMMDD,
-  //   });
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [selectedYYYYMMDD]);
-
   const isComponentMountedRef = React.useRef(false);
   useEffect(() => {
     isComponentMountedRef.current = true;
@@ -121,21 +99,21 @@ function Dashboard() {
         }
 
         dashboardDispatch({
-          type: dashboardAction.setIsLoading,
+          action: dashboardAction.setIsLoading,
           payload: true,
         });
 
         const existingMetrics = await localforage.getItem<BusinessMetric[]>(
-          "businessMetrics"
+          "businessMetrics",
         );
         if (existingMetrics && isMounted) {
           dashboardDispatch({
-            type: dashboardAction.setBusinessMetrics,
+            action: dashboardAction.setBusinessMetrics,
             payload: existingMetrics,
           });
 
           dashboardDispatch({
-            type: dashboardAction.setIsLoading,
+            action: dashboardAction.setIsLoading,
             payload: false,
           });
 
@@ -159,14 +137,17 @@ function Dashboard() {
         }
 
         dashboardDispatch({
-          type: dashboardAction.setBusinessMetrics,
+          action: dashboardAction.setBusinessMetrics,
           payload: createdBusinessMetrics,
         });
 
-        localforage.setItem<BusinessMetric[]>("businessMetrics", createdBusinessMetrics);
+        localforage.setItem<BusinessMetric[]>(
+          "businessMetrics",
+          createdBusinessMetrics,
+        );
 
         dashboardDispatch({
-          type: dashboardAction.setIsLoading,
+          action: dashboardAction.setIsLoading,
           payload: false,
         });
       } catch (error: any) {
@@ -192,20 +173,6 @@ function Dashboard() {
       overlayBlur={9}
       overlayOpacity={0.99}
       radius={4}
-      loader={
-        <Stack align="center">
-          <ImageWrapper
-            creatorInfoObject={{
-              customHeight: 100,
-              customWidth: 100,
-              imageAlt: "intense generation...",
-              imageSrc: "https://media1.tenor.com/m/H4b3ave7P08AAAAC/typing-busy.gif",
-            }}
-          />
-          <Text>{loadingMessage}</Text>
-          <Loader />
-        </Stack>
-      }
       transitionDuration={500}
     />
   );
@@ -214,10 +181,11 @@ function Dashboard() {
     return displayLoadingOverlay;
   }
 
-  const { selectedDate, selectedMonth, selectedYear } = splitSelectedCalendarDate({
-    calendarDate: selectedYYYYMMDD,
-    months: MONTHS,
-  });
+  const { selectedDate, selectedMonth, selectedYear } =
+    splitSelectedCalendarDate({
+      calendarDate: selectedYYYYMMDD,
+      months: MONTHS,
+    });
 
   const isTabDisabled = returnIsTabDisabled(storeLocationView, selectedYear);
 
@@ -226,7 +194,7 @@ function Dashboard() {
       value={metricsView}
       onTabChange={(value) => {
         dashboardDispatch({
-          type: dashboardAction.setMetricsView,
+          action: dashboardAction.setMetricsView,
           payload: value as DashboardMetricsView,
         });
       }}
@@ -250,7 +218,7 @@ function Dashboard() {
       value={calendarView}
       onTabChange={(value) => {
         dashboardDispatch({
-          type: dashboardAction.setCalendarView,
+          action: dashboardAction.setCalendarView,
           payload: value as DashboardCalendarView,
         });
       }}
@@ -275,22 +243,20 @@ function Dashboard() {
       description="View metrics for selected calendar date."
       label="Calendar Date"
       max={new Date().toISOString().split("T")[0]}
-      min={
-        storeLocationView === "Vancouver"
-          ? new Date(2019, 0, 1).toISOString().split("T")[0]
-          : storeLocationView === "Calgary"
-          ? new Date(2017, 0, 1).toISOString().split("T")[0]
-          : new Date(2013, 0, 1).toISOString().split("T")[0]
-      }
+      min={storeLocationView === "Vancouver"
+        ? new Date(2019, 0, 1).toISOString().split("T")[0]
+        : storeLocationView === "Calgary"
+        ? new Date(2017, 0, 1).toISOString().split("T")[0]
+        : new Date(2013, 0, 1).toISOString().split("T")[0]}
       onChange={(event) => {
         const { value } = event.currentTarget;
         dashboardDispatch({
-          type: dashboardAction.setSelectedYYYYMMDD,
+          action: dashboardAction.setSelectedYYYYMMDD,
           payload: value,
         });
 
         globalDispatch({
-          type: globalAction.setCustomizeChartsPageDataSelectedYYYYMMDD,
+          action: globalAction.setCustomizeChartsPageDataSelectedYYYYMMDD,
           payload: value,
         });
       }}
@@ -300,73 +266,65 @@ function Dashboard() {
   );
   const displayYYYYMMDDInput = <Group w={330}>{createdYYYYMMDDInput}</Group>;
 
-  const financialMetricCategorySelectInputCreatorInfo: AccessibleSelectInputCreatorInfo =
-    {
-      data: FINANCIALS_METRICS_SELECT_INPUT_DATA,
-      description: "Select financial metric category to view.",
-      label: "Category",
-      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-        dashboardDispatch({
-          type: dashboardAction.setFinancialMetric,
-          payload: event.currentTarget.value as DashboardFinancialMetric,
-        });
-      },
-      value: financialMetric,
-    };
+  const financialMetricCategorySelectInput = (
+    <AccessibleSelectInput
+      attributes={{
+        data: FINANCIALS_METRICS_DATA,
+        name: "category",
+        parentDispatch: dashboardDispatch,
+        validValueAction: dashboardAction.setFinancialMetric,
+        value: financialMetric,
+      }}
+    />
+  );
 
-  const filteredCustomerMetricsSelectInputData =
-    CUSTOMER_METRICS_SELECT_INPUT_DATA.filter((data) =>
-      calendarView === "Daily" ? data !== "Other Metrics" : data
-    );
+  const filteredCustomerMetricsSelectInputData = CUSTOMER_METRICS_DATA.filter(
+    (data) => calendarView === "Daily" ? data.value !== "Other Metrics" : true,
+  );
 
-  const customerMetricCategorySelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
-    data: filteredCustomerMetricsSelectInputData,
-    description: "Select customer metric category to view.",
-    label: "Category",
-    onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-      dashboardDispatch({
-        type: dashboardAction.setCustomerMetric,
-        payload: event.currentTarget.value as DashboardCustomerMetric,
-      });
-    },
-    value: customerMetric,
-  };
+  const customerMetricCategorySelectInput = (
+    <AccessibleSelectInput
+      attributes={{
+        data: filteredCustomerMetricsSelectInputData,
+        name: "category",
+        parentDispatch: dashboardDispatch,
+        validValueAction: dashboardAction.setCustomerMetric,
+        value: customerMetric,
+      }}
+    />
+  );
 
-  const productMetricCategorySelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
-    data: PRODUCT_METRICS_SELECT_INPUT_DATA,
-    description: "Select product metric category to view.",
-    label: "Category",
-    onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-      dashboardDispatch({
-        type: dashboardAction.setProductMetric,
-        payload: event.currentTarget.value as DashboardProductMetric,
-      });
-    },
-    value: productMetric,
-  };
+  const productMetricCategorySelectInput = (
+    <AccessibleSelectInput
+      attributes={{
+        data: PRODUCT_METRICS_DATA,
+        name: "category",
+        parentDispatch: dashboardDispatch,
+        validValueAction: dashboardAction.setProductMetric,
+        value: productMetric,
+      }}
+    />
+  );
 
-  const repairMetricCategorySelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
-    data: REPAIR_METRICS_SELECT_INPUT_DATA,
-    description: "Select repair metric category to view.",
-    label: "Category",
-    onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-      dashboardDispatch({
-        type: dashboardAction.setRepairMetric,
-        payload: event.currentTarget.value as DashboardRepairMetric,
-      });
-    },
-    value: repairMetric,
-  };
+  const repairMetricCategorySelectInput = (
+    <AccessibleSelectInput
+      attributes={{
+        data: REPAIR_METRICS_DATA,
+        name: "category",
+        parentDispatch: dashboardDispatch,
+        validValueAction: dashboardAction.setRepairMetric,
+        value: repairMetric,
+      }}
+    />
+  );
 
-  const [createdMetricCategorySelectInput] = returnAccessibleSelectInputElements([
-    metricsView === "Financials"
-      ? financialMetricCategorySelectInputCreatorInfo
-      : metricsView === "Customers"
-      ? customerMetricCategorySelectInputCreatorInfo
-      : metricsView === "Products"
-      ? productMetricCategorySelectInputCreatorInfo
-      : repairMetricCategorySelectInputCreatorInfo,
-  ]);
+  const metricCategorySelectInput = metricsView === "Financials"
+    ? financialMetricCategorySelectInput
+    : metricsView === "Customers"
+    ? customerMetricCategorySelectInput
+    : metricsView === "Products"
+    ? productMetricCategorySelectInput
+    : repairMetricCategorySelectInput;
 
   const createdStoreLocationTabs = (
     <Accordion
@@ -391,29 +349,33 @@ function Dashboard() {
                 value={storeLocationView}
                 onTabChange={(value) => {
                   dashboardDispatch({
-                    type: dashboardAction.setStoreLocationView,
+                    action: dashboardAction.setStoreLocationView,
                     payload: value as BusinessMetricStoreLocation,
                   });
                 }}
               >
                 <Tabs.List>
-                  {STORE_LOCATION_VIEW_TABS_DATA.map((storeLocationView, idx) => {
-                    const isStoreLocationTabDisabled =
-                      (storeLocationView === "Vancouver" &&
-                        Number(selectedYear) < 2019) ||
-                      (storeLocationView === "Calgary" && Number(selectedYear) < 2017) ||
-                      (storeLocationView === "Edmonton" && Number(selectedYear) < 2013);
+                  {STORE_LOCATION_VIEW_TABS_DATA.map(
+                    (storeLocationView, idx) => {
+                      const isStoreLocationTabDisabled =
+                        (storeLocationView === "Vancouver" &&
+                          Number(selectedYear) < 2019) ||
+                        (storeLocationView === "Calgary" &&
+                          Number(selectedYear) < 2017) ||
+                        (storeLocationView === "Edmonton" &&
+                          Number(selectedYear) < 2013);
 
-                    return (
-                      <Tabs.Tab
-                        key={`${idx}-${storeLocationView}`}
-                        value={storeLocationView}
-                        disabled={isStoreLocationTabDisabled}
-                      >
-                        {storeLocationView}
-                      </Tabs.Tab>
-                    );
-                  })}
+                      return (
+                        <Tabs.Tab
+                          key={`${idx}-${storeLocationView}`}
+                          value={storeLocationView}
+                          disabled={isStoreLocationTabDisabled}
+                        >
+                          {storeLocationView}
+                        </Tabs.Tab>
+                      );
+                    },
+                  )}
                 </Tabs.List>
               </Tabs>
 
@@ -422,7 +384,7 @@ function Dashboard() {
               {createdCalendarTabs}
             </Stack>
             <Group w={400} align="flex-end">
-              {createdMetricCategorySelectInput}
+              {metricCategorySelectInput}
               {displayYYYYMMDDInput}
             </Group>
           </Group>
@@ -431,19 +393,8 @@ function Dashboard() {
     </Accordion>
   );
 
-  const displayMetricsView =
-    metricsView === "Financials" ? (
-      // <FinancialDashboard
-      //   businessMetrics={businessMetrics}
-      //   calendarView={calendarView}
-      //   selectedDate={selectedDate}
-      //   financialMetric={financialMetric}
-      //   selectedMonth={selectedMonth}
-      //   storeLocationView={storeLocationView}
-      //   selectedYYYYMMDD={selectedYYYYMMDD}
-      //   selectedYear={selectedYear}
-      // />
-
+  const displayMetricsView = metricsView === "Financials"
+    ? (
       <FinancialMetrics
         businessMetrics={businessMetrics}
         calendarView={calendarView}
@@ -453,17 +404,9 @@ function Dashboard() {
         selectedYYYYMMDD={selectedYYYYMMDD}
         selectedYear={selectedYear}
       />
-    ) : metricsView === "Customers" ? (
-      // <CustomerDashboard
-      //   businessMetrics={businessMetrics}
-      //   calendarView={calendarView}
-      //   customerMetric={customerMetric}
-      //   selectedDate={selectedDate}
-      //   selectedMonth={selectedMonth}
-      //   storeLocationView={storeLocationView}
-      //   selectedYYYYMMDD={selectedYYYYMMDD}
-      //   selectedYear={selectedYear}
-      // />
+    )
+    : metricsView === "Customers"
+    ? (
       <CustomerMetrics
         businessMetrics={businessMetrics}
         calendarView={calendarView}
@@ -473,17 +416,9 @@ function Dashboard() {
         selectedYYYYMMDD={selectedYYYYMMDD}
         selectedYear={selectedYear}
       />
-    ) : metricsView === "Products" ? (
-      // <ProductDashboard
-      //   businessMetrics={businessMetrics}
-      //   calendarView={calendarView}
-      //   productMetric={productMetric}
-      //   selectedDate={selectedDate}
-      //   selectedMonth={selectedMonth}
-      //   selectedYYYYMMDD={selectedYYYYMMDD}
-      //   selectedYear={selectedYear}
-      //   storeLocationView={storeLocationView}
-      // />
+    )
+    : metricsView === "Products"
+    ? (
       <ProductMetrics
         businessMetrics={businessMetrics}
         calendarView={calendarView}
@@ -493,18 +428,8 @@ function Dashboard() {
         selectedYear={selectedYear}
         storeLocationView={storeLocationView}
       />
-    ) : (
-      // <RepairDashboard
-      //   businessMetrics={businessMetrics}
-      //   calendarView={calendarView}
-      //   repairMetric={repairMetric}
-      //   selectedDate={selectedDate}
-      //   selectedMonth={selectedMonth}
-      //   selectedYYYYMMDD={selectedYYYYMMDD}
-      //   selectedYear={selectedYear}
-      //   storeLocationView={storeLocationView}
-      // />
-
+    )
+    : (
       <RepairMetrics
         businessMetrics={businessMetrics}
         calendarView={calendarView}

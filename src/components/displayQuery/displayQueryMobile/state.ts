@@ -1,4 +1,4 @@
-import {
+import type {
   DisplayQueryMobileAction,
   DisplayQueryMobileDispatch,
   DisplayQueryMobileState,
@@ -35,7 +35,7 @@ const displayQueryMobileAction: DisplayQueryMobileAction = {
 
 function displayQueryMobileReducer(
   state: DisplayQueryMobileState,
-  action: DisplayQueryMobileDispatch
+  action: DisplayQueryMobileDispatch,
 ): DisplayQueryMobileState {
   switch (action.type) {
     case displayQueryMobileAction.setCurrentDocumentId:

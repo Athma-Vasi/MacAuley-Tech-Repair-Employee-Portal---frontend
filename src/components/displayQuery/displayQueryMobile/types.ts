@@ -1,14 +1,16 @@
-import { type } from "os";
-import { CSSProperties } from "react";
+import type { CSSProperties } from "react";
 
-import { FileUploadDocument, RequestStatus, UserDocument } from "../../../types";
-import { ComponentQueryData } from "../../queryBuilder";
-import { EditRepairTicketInput } from "../displayQueryDesktop/types";
-import { GroupedByQueryResponseData } from "../types";
-import { CustomerDocument } from "../../customer/types";
+import type {
+  FileUploadDocument,
+  RequestStatus,
+  UserDocument,
+} from "../../../types";
+import type { EditRepairTicketInput } from "../displayQueryDesktop/types";
+import type { GroupedByQueryResponseData } from "../types";
+import type { CustomerDocument } from "../../customer/types";
 
 type DisplayQueryMobileProps = {
-  componentQueryData: ComponentQueryData[];
+  // componentQueryData: ComponentQueryData[];
   deleteFormIdDispatch: React.Dispatch<{
     type: "setDeleteFormId";
     payload: string;
@@ -47,7 +49,9 @@ type DisplayQueryMobileState = {
   editRepairTicketInput: EditRepairTicketInput;
 
   employeeDocument: UserDocument | null;
-  customerDocument: Omit<CustomerDocument, "password" | "paymentInformation"> | null;
+  customerDocument:
+    | Omit<CustomerDocument, "password" | "paymentInformation">
+    | null;
 };
 
 type DisplayQueryMobileAction = {
@@ -63,25 +67,25 @@ type DisplayQueryMobileAction = {
 
 type DisplayQueryMobileDispatch =
   | {
-      type: DisplayQueryMobileAction["setCurrentDocumentId"];
-      payload: string;
-    }
+    type: DisplayQueryMobileAction["setCurrentDocumentId"];
+    payload: string;
+  }
   | {
-      type: DisplayQueryMobileAction["setCurrentRequestStatus"];
-      payload: RequestStatus;
-    }
+    type: DisplayQueryMobileAction["setCurrentRequestStatus"];
+    payload: RequestStatus;
+  }
   | {
-      type: DisplayQueryMobileAction["setEditRepairTicketInput"];
-      payload: EditRepairTicketInput;
-    }
+    type: DisplayQueryMobileAction["setEditRepairTicketInput"];
+    payload: EditRepairTicketInput;
+  }
   | {
-      type: DisplayQueryMobileAction["setEmployeeDocument"];
-      payload: UserDocument | null;
-    }
+    type: DisplayQueryMobileAction["setEmployeeDocument"];
+    payload: UserDocument | null;
+  }
   | {
-      type: DisplayQueryMobileAction["setCustomerDocument"];
-      payload: Omit<CustomerDocument, "password" | "paymentInformation"> | null;
-    };
+    type: DisplayQueryMobileAction["setCustomerDocument"];
+    payload: Omit<CustomerDocument, "password" | "paymentInformation"> | null;
+  };
 
 export type {
   DisplayQueryMobileAction,

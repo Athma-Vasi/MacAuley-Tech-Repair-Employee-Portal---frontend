@@ -1,8 +1,7 @@
-import { MantineNumberSize } from "@mantine/core";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-import { globalAction } from "../../../../context/globalProvider/state";
+import { globalAction } from "../../../../context/globalProvider/actions";
 import { useGlobalState } from "../../../../hooks";
 import { addCommaSeparator } from "../../../../utils";
 import { AccessibleButton } from "../../../accessibleInputs/AccessibleButton";
@@ -12,11 +11,11 @@ import {
   ResponsiveLineChart,
   ResponsivePieChart,
 } from "../../../charts";
-import { MONTHS } from "../../constants";
 import DashboardMetricsLayout from "../../DashboardMetricsLayout";
-import { ProductMetricsCards } from "../../product/cards";
-import { ProductMetricsCharts } from "../../product/chartsData";
-import {
+import { MONTHS } from "../../constants";
+import type { ProductMetricsCards } from "../../product/cards";
+import type { ProductMetricsCharts } from "../../product/chartsData";
+import type {
   BusinessMetricStoreLocation,
   DashboardCalendarView,
   DashboardMetricsView,
@@ -24,7 +23,7 @@ import {
 } from "../../types";
 import { returnChartTitleNavigateLinks, returnStatistics } from "../../utils";
 import { PRODUCT_METRICS_BAR_LINE_Y_AXIS_DATA } from "../constants";
-import { ProductSubMetric } from "../types";
+import type { ProductSubMetric } from "../types";
 import { rusAction } from "./actions";
 import { rusReducer } from "./reducers";
 import { initialRUSState } from "./state";
@@ -38,7 +37,6 @@ type RUSProps = {
   subMetric: ProductSubMetric;
   metricsView: DashboardMetricsView;
   month: string;
-  padding: MantineNumberSize;
   productMetricsCards: ProductMetricsCards;
   productMetricsCharts: ProductMetricsCharts;
   storeLocation: BusinessMetricStoreLocation;
@@ -58,7 +56,6 @@ function RUS({
   subMetric,
   metricsView,
   month,
-  padding,
   storeLocation,
   width,
   year,
@@ -70,12 +67,11 @@ function RUS({
 
   const { barChartYAxisVariable, lineChartYAxisVariable } = rusState;
 
-  const charts =
-    calendarView === "Daily"
-      ? productMetricsCharts.dailyCharts
-      : calendarView === "Monthly"
-      ? productMetricsCharts.monthlyCharts
-      : productMetricsCharts.yearlyCharts;
+  const charts = calendarView === "Daily"
+    ? productMetricsCharts.dailyCharts
+    : calendarView === "Monthly"
+    ? productMetricsCharts.monthlyCharts
+    : productMetricsCharts.yearlyCharts;
   const {
     bar: barCharts,
     line: lineCharts,
@@ -112,10 +108,10 @@ function RUS({
         onClick: (
           _event:
             | React.MouseEvent<HTMLButtonElement>
-            | React.PointerEvent<HTMLButtonElement>
+            | React.PointerEvent<HTMLButtonElement>,
         ) => {
           globalDispatch({
-            type: globalAction.setCustomizeChartsPageData,
+            action: globalAction.setCustomizeChartsPageData,
             payload: {
               chartKind: "pie",
               chartData: pieCharts,
@@ -148,10 +144,10 @@ function RUS({
         onClick: (
           _event:
             | React.MouseEvent<HTMLButtonElement>
-            | React.PointerEvent<HTMLButtonElement>
+            | React.PointerEvent<HTMLButtonElement>,
         ) => {
           globalDispatch({
-            type: globalAction.setCustomizeChartsPageData,
+            action: globalAction.setCustomizeChartsPageData,
             payload: {
               chartKind: "bar",
               chartData: barCharts[barChartYAxisVariable],
@@ -184,13 +180,11 @@ function RUS({
       chartWidth={chartWidth}
       barChartData={barCharts[barChartYAxisVariable]}
       hideControls
-      indexBy={
-        calendarView === "Daily"
-          ? "Days"
-          : calendarView === "Monthly"
-          ? "Months"
-          : "Years"
-      }
+      indexBy={calendarView === "Daily"
+        ? "Days"
+        : calendarView === "Monthly"
+        ? "Months"
+        : "Years"}
       keys={PRODUCT_METRICS_BAR_LINE_Y_AXIS_DATA.map((obj) => obj.label)}
       unitKind="number"
     />
@@ -204,10 +198,10 @@ function RUS({
         onClick: (
           _event:
             | React.MouseEvent<HTMLButtonElement>
-            | React.PointerEvent<HTMLButtonElement>
+            | React.PointerEvent<HTMLButtonElement>,
         ) => {
           globalDispatch({
-            type: globalAction.setCustomizeChartsPageData,
+            action: globalAction.setCustomizeChartsPageData,
             payload: {
               chartKind: "line",
               chartData: lineCharts[lineChartYAxisVariable],
@@ -242,21 +236,25 @@ function RUS({
       hideControls
       xFormat={(x) =>
         `${
-          calendarView === "Daily" ? "Day" : calendarView === "Monthly" ? "Month" : "Year"
-        } - ${x}`
-      }
+          calendarView === "Daily"
+            ? "Day"
+            : calendarView === "Monthly"
+            ? "Month"
+            : "Year"
+        } - ${x}`}
       yFormat={(y) => `${addCommaSeparator(y)} Products`}
       unitKind="number"
     />
   );
 
-  const cards =
-    calendarView === "Daily"
-      ? productMetricsCards.dailyCards
-      : calendarView === "Monthly"
-      ? productMetricsCards.monthlyCards
-      : productMetricsCards.yearlyCards;
-  const overviewCards = subMetric === "revenue" ? cards.revenue : cards.unitsSold;
+  const cards = calendarView === "Daily"
+    ? productMetricsCards.dailyCards
+    : calendarView === "Monthly"
+    ? productMetricsCards.monthlyCards
+    : productMetricsCards.yearlyCards;
+  const overviewCards = subMetric === "revenue"
+    ? cards.revenue
+    : cards.unitsSold;
 
   const productMetricsOverview = (
     <DashboardMetricsLayout
@@ -271,7 +269,6 @@ function RUS({
       lineChartHeading={lineChartHeading}
       lineChartYAxisSelectInput={lineChartYAxisVariablesSelectInput}
       overviewCards={overviewCards}
-      padding={padding}
       pieChart={overviewPieChart}
       pieChartHeading={pieChartHeading}
       sectionHeading={`${storeLocation} ${calendarView} Overview Products`}

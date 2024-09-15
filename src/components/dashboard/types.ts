@@ -1,4 +1,5 @@
-import { StoreLocation } from "../../types";
+import type { StoreLocation } from "../../types";
+import type { DashboardAction } from "./actions";
 
 type DashboardCalendarView = "Daily" | "Monthly" | "Yearly";
 type DashboardMetricsView = "Financials" | "Customers" | "Products" | "Repairs";
@@ -8,7 +9,11 @@ type DashboardFinancialMetric =
   | "Revenue"
   | "Transactions"
   | "Other Metrics";
-type DashboardCustomerMetric = "Overview" | "New" | "Returning" | "Other Metrics";
+type DashboardCustomerMetric =
+  | "Overview"
+  | "New"
+  | "Returning"
+  | "Other Metrics";
 type DashboardProductMetric = ProductCategory | "All Products";
 type DashboardRepairMetric = RepairCategory | "All Repairs";
 
@@ -26,65 +31,51 @@ type DashboardState = {
   loadingMessage: string;
 };
 
-type DashboardAction = {
-  setBusinessMetrics: "setBusinessMetrics";
-  setCalendarView: "setCalendarView";
-  setCustomerMetric: "setCustomerMetric";
-  setFinancialMetric: "setFinancialMetric";
-  setMetricsView: "setMetricsView";
-  setProductMetric: "setProductMetric";
-  setRepairMetric: "setRepairMetric";
-  setSelectedYYYYMMDD: "setSelectedYYYYMMDD";
-  setStoreLocationView: "setStoreLocationView";
-  setIsLoading: "setIsLoading";
-  setLoadingMessage: "setLoadingMessage";
-};
-
 type DashboardDispatch =
   | {
-      type: DashboardAction["setBusinessMetrics"];
-      payload: BusinessMetric[];
-    }
+    action: DashboardAction["setBusinessMetrics"];
+    payload: BusinessMetric[];
+  }
   | {
-      type: DashboardAction["setCalendarView"];
-      payload: DashboardCalendarView;
-    }
+    action: DashboardAction["setCalendarView"];
+    payload: DashboardCalendarView;
+  }
   | {
-      type: DashboardAction["setCustomerMetric"];
-      payload: DashboardCustomerMetric;
-    }
+    action: DashboardAction["setCustomerMetric"];
+    payload: DashboardCustomerMetric;
+  }
   | {
-      type: DashboardAction["setFinancialMetric"];
-      payload: DashboardFinancialMetric;
-    }
+    action: DashboardAction["setFinancialMetric"];
+    payload: DashboardFinancialMetric;
+  }
   | {
-      type: DashboardAction["setMetricsView"];
-      payload: DashboardMetricsView;
-    }
+    action: DashboardAction["setMetricsView"];
+    payload: DashboardMetricsView;
+  }
   | {
-      type: DashboardAction["setProductMetric"];
-      payload: DashboardProductMetric;
-    }
+    action: DashboardAction["setProductMetric"];
+    payload: DashboardProductMetric;
+  }
   | {
-      type: DashboardAction["setRepairMetric"];
-      payload: DashboardRepairMetric;
-    }
+    action: DashboardAction["setRepairMetric"];
+    payload: DashboardRepairMetric;
+  }
   | {
-      type: DashboardAction["setStoreLocationView"];
-      payload: BusinessMetricStoreLocation;
-    }
+    action: DashboardAction["setStoreLocationView"];
+    payload: BusinessMetricStoreLocation;
+  }
   | {
-      type: DashboardAction["setSelectedYYYYMMDD"];
-      payload: string;
-    }
+    action: DashboardAction["setSelectedYYYYMMDD"];
+    payload: string;
+  }
   | {
-      type: DashboardAction["setIsLoading"];
-      payload: boolean;
-    }
+    action: DashboardAction["setIsLoading"];
+    payload: boolean;
+  }
   | {
-      type: DashboardAction["setLoadingMessage"];
-      payload: string;
-    };
+    action: DashboardAction["setLoadingMessage"];
+    payload: string;
+  };
 
 type Month =
   | "January"
@@ -140,7 +131,10 @@ type RepairCategory =
   | "Audio/Video"
   | "Accessory";
 
-type LocationYearSpread = Record<StoreLocation, Record<string, [number, number]>>;
+type LocationYearSpread = Record<
+  StoreLocation,
+  Record<string, [number, number]>
+>;
 
 type FinancialMetricCategory = {
   total: number;

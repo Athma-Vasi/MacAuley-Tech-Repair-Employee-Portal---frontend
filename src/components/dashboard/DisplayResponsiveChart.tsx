@@ -18,7 +18,7 @@ import {
 
 function DisplayResponsiveChart() {
   const {
-    globalState: { customizeChartsPageData, width, padding, themeObject },
+    globalState: { customizeChartsPageData, width, themeObject },
   } = useGlobalState();
 
   const {
@@ -32,33 +32,33 @@ function DisplayResponsiveChart() {
     return null;
   }
 
-  const componentWidth =
-    width < 480 // for iPhone 5/SE
-      ? width * 0.93
-      : width < 768 // for iPhones 6 - 15
-      ? width - 40
-      : // at 768vw the navbar appears at width of 225px
-      width < 1024
-      ? (width - 225) * 0.8
-      : // at >= 1200vw the navbar width is 300px
-      width < 1200
-      ? (width - 225) * 0.8
-      : 900 - 40;
-  const chartHeight = width < 1024 ? componentWidth * 0.618 : componentWidth * 0.382;
+  const componentWidth = width < 480 // for iPhone 5/SE
+    ? width * 0.93
+    : width < 768 // for iPhones 6 - 15
+    ? width - 40
+    // at 768vw the navbar appears at width of 225px
+    : width < 1024
+    ? (width - 225) * 0.8
+    // at >= 1200vw the navbar width is 300px
+    : width < 1200
+    ? (width - 225) * 0.8
+    : 900 - 40;
+  const chartHeight = width < 1024
+    ? componentWidth * 0.618
+    : componentWidth * 0.382;
   const chartWidth = componentWidth;
 
   const { chartData, chartKind, chartTitle, selectedYYYYMMDD, chartUnitKind } =
     customizeChartsPageData;
 
-  const barChartIndexBy =
-    chartKind === "bar"
-      ? Object.keys(chartData[0]).filter(
-          (key) => key === "Days" || key === "Months" || key === "Years"
-        )[0]
-      : "";
+  const barChartIndexBy = chartKind === "bar"
+    ? Object.keys(chartData[0]).filter(
+      (key) => key === "Days" || key === "Months" || key === "Years",
+    )[0]
+    : "";
 
   const barChartKeys = Object.keys(chartData[0]).filter(
-    (key) => key !== "Days" && key !== "Months" && key !== "Years"
+    (key) => key !== "Days" && key !== "Months" && key !== "Years",
   );
 
   let [year, month, day] = selectedYYYYMMDD?.split("-") ?? ["2021", "01", "01"];
@@ -79,8 +79,8 @@ function DisplayResponsiveChart() {
     ? (y: number) => `${addCommaSeparator(y)}`
     : (y: number) => `$${addCommaSeparator(y)}`;
 
-  const displayResponsiveChart =
-    chartKind === "bar" ? (
+  const displayResponsiveChart = chartKind === "bar"
+    ? (
       <ResponsiveBarChart
         barChartData={chartData}
         dashboardChartTitle={chartTitle}
@@ -90,7 +90,9 @@ function DisplayResponsiveChart() {
         chartWidth={chartWidth}
         unitKind={chartUnitKind}
       />
-    ) : chartKind === "calendar" ? (
+    )
+    : chartKind === "calendar"
+    ? (
       <ResponsiveCalendarChart
         calendarChartData={chartData}
         dashboardChartTitle={chartTitle}
@@ -99,7 +101,9 @@ function DisplayResponsiveChart() {
         chartHeight={chartHeight}
         chartWidth={chartWidth}
       />
-    ) : chartKind === "line" ? (
+    )
+    : chartKind === "line"
+    ? (
       <ResponsiveLineChart
         chartHeight={chartHeight}
         chartWidth={chartWidth}
@@ -109,7 +113,9 @@ function DisplayResponsiveChart() {
         yFormat={yFormatLineChart}
         unitKind={chartUnitKind}
       />
-    ) : chartKind === "pie" ? (
+    )
+    : chartKind === "pie"
+    ? (
       <ResponsivePieChart
         chartHeight={chartHeight}
         chartWidth={chartWidth}
@@ -117,14 +123,15 @@ function DisplayResponsiveChart() {
         pieChartData={chartData}
         unitKind={chartUnitKind}
       />
-    ) : null;
+    )
+    : null;
 
   return (
-    <Stack w="100%" p={padding}>
+    <Stack w="100%">
       <Text size="lg" weight={500}>
         {chartTitle}
       </Text>
-      <Group w="100%" style={{ borderTop: borderColor }} pt={padding}>
+      <Group w="100%" style={{ borderTop: borderColor }}>
         {displayResponsiveChart}
       </Group>
     </Stack>

@@ -7,7 +7,7 @@ import { useGlobalState } from "../../../hooks";
 import { logState, returnThemeColors } from "../../../utils";
 import { AccessibleSegmentedControl } from "../../accessibleInputs/AccessibleSegmentedControl";
 import { MONTHS } from "../constants";
-import {
+import type {
   BusinessMetric,
   BusinessMetricStoreLocation,
   DashboardCalendarView,
@@ -47,12 +47,12 @@ function FinancialMetrics({
 }: FinancialMetricsProps) {
   const [financialMetricsState, financialMetricsDispatch] = useReducer(
     financialMetricsReducer,
-    initialFinancialMetricsState
+    initialFinancialMetricsState,
   );
   const { cards, category, charts, isGenerating } = financialMetricsState;
 
   const {
-    globalState: { themeObject, padding, width },
+    globalState: { themeObject, width },
   } = useGlobalState();
 
   const { showBoundary } = useErrorBoundary();
@@ -77,16 +77,21 @@ function FinancialMetrics({
       });
 
       try {
-        const selectedDateFinancialMetrics = returnSelectedDateFinancialMetrics({
-          businessMetrics,
-          day: selectedDate,
-          month: selectedMonth,
-          months: MONTHS,
-          storeLocation: storeLocationView,
-          year: selectedYear,
-        });
+        const selectedDateFinancialMetrics = returnSelectedDateFinancialMetrics(
+          {
+            businessMetrics,
+            day: selectedDate,
+            month: selectedMonth,
+            months: MONTHS,
+            storeLocation: storeLocationView,
+            year: selectedYear,
+          },
+        );
 
-        console.log("selectedDateFinancialMetrics", selectedDateFinancialMetrics);
+        console.log(
+          "selectedDateFinancialMetrics",
+          selectedDateFinancialMetrics,
+        );
 
         const financialMetricsCharts = await createFinancialMetricsCharts({
           businessMetrics,
@@ -97,7 +102,6 @@ function FinancialMetrics({
 
         const financialMetricsCards = await createFinancialMetricsCards({
           greenColorShade,
-          padding,
           redColorShade,
           selectedDateFinancialMetrics,
           width,
@@ -161,41 +165,41 @@ function FinancialMetrics({
     />
   );
 
-  const subCategoryPage = PERT_SET.has(category) ? (
-    <PERT
-      borderColor={borderColor}
-      calendarView={calendarView}
-      chartHeight={382}
-      chartWidth={612}
-      financialMetricsCards={cards}
-      financialMetricsCharts={charts}
-      day={selectedDate}
-      month={selectedYYYYMMDD.split("-")[1]}
-      padding={padding}
-      metricCategory={category}
-      metricsView="Financials"
-      storeLocation={storeLocationView}
-      width={width}
-      year={selectedYear}
-    />
-  ) : (
-    <OtherMetrics
-      borderColor={borderColor}
-      calendarView={calendarView}
-      chartHeight={382}
-      chartWidth={612}
-      financialMetricsCards={cards}
-      financialMetricsCharts={charts}
-      day={selectedDate}
-      month={selectedYYYYMMDD.split("-")[1]}
-      padding={padding}
-      metricCategory={category}
-      metricsView="Financials"
-      storeLocation={storeLocationView}
-      width={width}
-      year={selectedYear}
-    />
-  );
+  const subCategoryPage = PERT_SET.has(category)
+    ? (
+      <PERT
+        borderColor={borderColor}
+        calendarView={calendarView}
+        chartHeight={382}
+        chartWidth={612}
+        financialMetricsCards={cards}
+        financialMetricsCharts={charts}
+        day={selectedDate}
+        month={selectedYYYYMMDD.split("-")[1]}
+        metricCategory={category}
+        metricsView="Financials"
+        storeLocation={storeLocationView}
+        width={width}
+        year={selectedYear}
+      />
+    )
+    : (
+      <OtherMetrics
+        borderColor={borderColor}
+        calendarView={calendarView}
+        chartHeight={382}
+        chartWidth={612}
+        financialMetricsCards={cards}
+        financialMetricsCharts={charts}
+        day={selectedDate}
+        month={selectedYYYYMMDD.split("-")[1]}
+        metricCategory={category}
+        metricsView="Financials"
+        storeLocation={storeLocationView}
+        width={width}
+        year={selectedYear}
+      />
+    );
 
   const loadingOverlay = (
     <LoadingOverlay

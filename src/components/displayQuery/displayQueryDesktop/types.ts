@@ -1,4 +1,4 @@
-import { CSSProperties } from "react";
+import type { CSSProperties } from "react";
 
 import type {
   Currency,
@@ -6,16 +6,15 @@ import type {
   RequestStatus,
   UserDocument,
 } from "../../../types";
-import type { ComponentQueryData } from "../../queryBuilder";
-import { RepairStatus } from "../../repairTicket/types";
-import { CustomerDocument } from "../../customer/types";
+import type { CustomerDocument } from "../../customer/types";
+import type { RepairStatus } from "../../repairTicket/types";
 
 type DisplayQueryDesktopProps = {
   /**
    * - Query data object containing fields specific to a resource.
    * - Used here to grab the label (camelcased) value for groupedByQueryResponseData (lowercased values)
    */
-  componentQueryData: ComponentQueryData[];
+  // componentQueryData: ComponentQueryData[];
   deleteFormIdDispatch: React.Dispatch<{
     type: "setDeleteFormId";
     payload: string;
@@ -72,7 +71,9 @@ type DisplayQueryDesktopState = {
   editRepairTicketInput: EditRepairTicketInput;
 
   employeeDocument: UserDocument | null;
-  customerDocument: Omit<CustomerDocument, "password" | "paymentInformation"> | null;
+  customerDocument:
+    | Omit<CustomerDocument, "password" | "paymentInformation">
+    | null;
 };
 
 type DisplayQueryDesktopAction = {
@@ -90,37 +91,37 @@ type DisplayQueryDesktopAction = {
 
 type DisplayQueryDesktopReducer = (
   state: DisplayQueryDesktopState,
-  action: DisplayQueryDesktopAction
+  action: DisplayQueryDesktopAction,
 ) => DisplayQueryDesktopState;
 
 type DisplayQueryDesktopDispatch =
   | {
-      type:
-        | DisplayQueryDesktopAction["setFieldToSortBy"]
-        | DisplayQueryDesktopAction["setCurrentDocumentId"];
+    type:
+      | DisplayQueryDesktopAction["setFieldToSortBy"]
+      | DisplayQueryDesktopAction["setCurrentDocumentId"];
 
-      payload: string;
-    }
+    payload: string;
+  }
   | {
-      type: DisplayQueryDesktopAction["setSortDirection"];
-      payload: "asc" | "desc";
-    }
+    type: DisplayQueryDesktopAction["setSortDirection"];
+    payload: "asc" | "desc";
+  }
   | {
-      type: DisplayQueryDesktopAction["setCurrentRequestStatus"];
-      payload: RequestStatus;
-    }
+    type: DisplayQueryDesktopAction["setCurrentRequestStatus"];
+    payload: RequestStatus;
+  }
   | {
-      type: DisplayQueryDesktopAction["setEditRepairTicketInput"];
-      payload: EditRepairTicketInput;
-    }
+    type: DisplayQueryDesktopAction["setEditRepairTicketInput"];
+    payload: EditRepairTicketInput;
+  }
   | {
-      type: DisplayQueryDesktopAction["setEmployeeDocument"];
-      payload: UserDocument | null;
-    }
+    type: DisplayQueryDesktopAction["setEmployeeDocument"];
+    payload: UserDocument | null;
+  }
   | {
-      type: DisplayQueryDesktopAction["setCustomerDocument"];
-      payload: Omit<CustomerDocument, "password" | "paymentInformation"> | null;
-    };
+    type: DisplayQueryDesktopAction["setCustomerDocument"];
+    payload: Omit<CustomerDocument, "password" | "paymentInformation"> | null;
+  };
 
 export type {
   DisplayQueryDesktopAction,

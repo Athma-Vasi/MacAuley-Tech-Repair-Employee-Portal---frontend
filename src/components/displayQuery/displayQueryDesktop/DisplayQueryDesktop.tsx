@@ -1,3 +1,10 @@
+function DisplayQueryDesktop() {
+  return null;
+}
+
+export default DisplayQueryDesktop;
+
+/**
 import {
   Center,
   Flex,
@@ -1533,3 +1540,4 @@ function DisplayQueryDesktop({
 }
 
 export { DisplayQueryDesktop };
+*/

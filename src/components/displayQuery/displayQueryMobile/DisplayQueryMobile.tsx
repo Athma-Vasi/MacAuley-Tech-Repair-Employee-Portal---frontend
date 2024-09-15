@@ -1,3 +1,10 @@
+function DisplayQueryMobile() {
+  return null;
+}
+
+export default DisplayQueryMobile;
+
+/**
 import {
   Accordion,
   Divider,
@@ -840,3 +847,4 @@ function DisplayQueryMobile({
 export { DisplayQueryMobile };
 
 // TODO: add view modal buttons present in DisplayQueryDesktop
+*/

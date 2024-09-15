@@ -8,7 +8,7 @@ import { logState, returnThemeColors } from "../../../utils";
 import { AccessibleSegmentedControl } from "../../accessibleInputs/AccessibleSegmentedControl";
 import { AccessibleSelectInput } from "../../accessibleInputs/AccessibleSelectInput";
 import { MONTHS } from "../constants";
-import {
+import type {
   BusinessMetric,
   BusinessMetricStoreLocation,
   DashboardCalendarView,
@@ -50,12 +50,13 @@ function ProductMetrics({
 }: ProductMetricsProps) {
   const [productMetricsState, productMetricsDispatch] = useReducer(
     productMetricsReducer,
-    initialProductMetricsState
+    initialProductMetricsState,
   );
-  const { cards, charts, isGenerating, productCategory, subMetric } = productMetricsState;
+  const { cards, charts, isGenerating, productCategory, subMetric } =
+    productMetricsState;
 
   const {
-    globalState: { themeObject, padding, width },
+    globalState: { themeObject, width },
   } = useGlobalState();
 
   const { showBoundary } = useErrorBoundary();
@@ -100,7 +101,6 @@ function ProductMetrics({
 
         const productMetricsCards = await returnProductMetricsCards({
           greenColorShade,
-          padding,
           redColorShade,
           selectedDateProductMetrics,
           width,
@@ -186,7 +186,6 @@ function ProductMetrics({
       productMetricsCharts={charts}
       day={selectedDate}
       month={selectedYYYYMMDD.split("-")[1]}
-      padding={padding}
       subMetric={subMetric}
       metricsView="Products"
       storeLocation={storeLocationView}

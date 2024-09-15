@@ -8,19 +8,25 @@ import { logState, returnThemeColors } from "../../../utils";
 import { AccessibleSegmentedControl } from "../../accessibleInputs/AccessibleSegmentedControl";
 import { AccessibleSelectInput } from "../../accessibleInputs/AccessibleSelectInput";
 import { MONTHS } from "../constants";
-import {
+import type {
   BusinessMetric,
   BusinessMetricStoreLocation,
   DashboardCalendarView,
   Month,
   Year,
 } from "../types";
+import { RepairRUS } from "./RepairRUS";
 import { repairMetricsAction } from "./actions";
 import { returnRepairMetricsCards } from "./cards";
-import { createRepairMetricsCharts, returnSelectedDateRepairMetrics } from "./chartsData";
-import { REPAIR_METRICS_DATA, REPAIR_METRICS_SUB_CATEGORY_DATA } from "./constants";
+import {
+  createRepairMetricsCharts,
+  returnSelectedDateRepairMetrics,
+} from "./chartsData";
+import {
+  REPAIR_METRICS_DATA,
+  REPAIR_METRICS_SUB_CATEGORY_DATA,
+} from "./constants";
 import { repairMetricsReducer } from "./reducers";
-import { RepairRUS } from "./RepairRUS";
 import { initialRepairMetricsState } from "./state";
 
 type RepairMetricsProps = {
@@ -44,12 +50,13 @@ function RepairMetrics({
 }: RepairMetricsProps) {
   const [repairMetricsState, repairMetricsDispatch] = useReducer(
     repairMetricsReducer,
-    initialRepairMetricsState
+    initialRepairMetricsState,
   );
-  const { cards, charts, isGenerating, repairCategory, subMetric } = repairMetricsState;
+  const { cards, charts, isGenerating, repairCategory, subMetric } =
+    repairMetricsState;
 
   const {
-    globalState: { themeObject, padding, width },
+    globalState: { themeObject, width },
   } = useGlobalState();
 
   const { showBoundary } = useErrorBoundary();
@@ -94,7 +101,6 @@ function RepairMetrics({
 
         const repairMetricsCards = await returnRepairMetricsCards({
           greenColorShade,
-          padding,
           redColorShade,
           selectedDateRepairMetrics,
           width,
@@ -180,7 +186,6 @@ function RepairMetrics({
       repairMetricsCharts={charts}
       day={selectedDate}
       month={selectedYYYYMMDD.split("-")[1]}
-      padding={padding}
       subMetric={subMetric}
       metricsView="Repairs"
       storeLocation={storeLocationView}

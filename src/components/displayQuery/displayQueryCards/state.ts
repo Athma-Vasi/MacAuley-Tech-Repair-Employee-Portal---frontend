@@ -1,4 +1,4 @@
-import {
+import type {
   DisplayQueryCardsAction,
   DisplayQueryCardsDispatch,
   DisplayQueryCardsState,
@@ -35,7 +35,7 @@ const displayQueryCardsAction: DisplayQueryCardsAction = {
 
 function displayQueryCardsReducer(
   state: DisplayQueryCardsState,
-  action: DisplayQueryCardsDispatch
+  action: DisplayQueryCardsDispatch,
 ): DisplayQueryCardsState {
   switch (action.type) {
     case displayQueryCardsAction.setCurrentDocumentId:

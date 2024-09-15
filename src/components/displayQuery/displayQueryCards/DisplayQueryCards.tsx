@@ -1,3 +1,10 @@
+function DisplayQueryCards() {
+  return null;
+}
+
+export { DisplayQueryCards };
+
+/**
 import {
   Accordion,
   Card,
@@ -813,3 +820,4 @@ function DisplayQueryCards({
 }
 
 export default DisplayQueryCards;
+*/

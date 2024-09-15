@@ -1,15 +1,14 @@
-import { MantineNumberSize } from "@mantine/core";
+import type { MantineNumberSize } from "@mantine/core";
 
 import {
   createDashboardMetricsCards,
-  CreateDashboardMetricsCardsInput,
-  DashboardCardInfo,
+  type CreateDashboardMetricsCardsInput,
+  type DashboardCardInfo,
 } from "../utilsTSX";
-import { SelectedDateProductMetrics } from "./chartsData";
+import type { SelectedDateProductMetrics } from "./chartsData";
 
 type ReturnProductMetricsCardsInput = {
   greenColorShade: string;
-  padding: MantineNumberSize;
   redColorShade: string;
   selectedDateProductMetrics: SelectedDateProductMetrics;
   width: number;
@@ -32,7 +31,6 @@ type ProductMetricsCards = {
 
 function returnProductMetricsCards({
   greenColorShade,
-  padding,
   redColorShade,
   selectedDateProductMetrics,
   width,
@@ -77,21 +75,21 @@ function returnProductMetricsCards({
       const prevMonth = prevMonthMetrics.month;
       const prevDay = prevDayMetrics.day;
 
-      const DASHBOARD_CARD_INFO_INPUT_TEMPLATE: CreateDashboardMetricsCardsInput = {
-        currentMonth,
-        currentYear,
-        greenColorShade,
-        heading: "Total",
-        kind: "day",
-        padding,
-        prevDay,
-        prevMonth,
-        prevValue: 1,
-        prevYear,
-        redColorShade,
-        selectedValue: 1,
-        width,
-      };
+      const DASHBOARD_CARD_INFO_INPUT_TEMPLATE:
+        CreateDashboardMetricsCardsInput = {
+          currentMonth,
+          currentYear,
+          greenColorShade,
+          heading: "Total",
+          kind: "day",
+          prevDay,
+          prevMonth,
+          prevValue: 1,
+          prevYear,
+          redColorShade,
+          selectedValue: 1,
+          width,
+        };
 
       // daily
 

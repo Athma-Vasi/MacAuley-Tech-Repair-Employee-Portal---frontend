@@ -1,43 +1,28 @@
 import { Button, Center, Group, Stack, Text } from "@mantine/core";
-import { constants } from "buffer";
-import jwtDecode from "jwt-decode";
-import { useEffect, useReducer } from "react";
-import { RiContactsBookLine } from "react-icons/ri";
+import { useReducer } from "react";
 
-import { useAuth, useWrapFetch } from "../../hooks";
-import { UserRoles } from "../../types";
-import { logState, urlBuilder } from "../../utils";
+import { useAuth } from "../../hooks";
 import {
-  DAYS_PER_MONTH,
-  MONTHS,
-  PRODUCT_CATEGORIES,
-  REPAIR_CATEGORIES,
-} from "../dashboard/constants";
-import { createRandomBusinessMetrics } from "../dashboard/utils";
-import {
-  BUSINESS_METRICS_TEMPLATE,
-  FINANCIAL_METRICS_DAILY_TEMPLATE,
-  FINANCIAL_METRICS_MONTHLY_TEMPLATE,
-  FINANCIAL_METRICS_YEARLY_TEMPLATE,
-  YEAR_ONLINE_TRANSACTIONS_SPREAD,
-  YEAR_UNITS_SOLD_SPREAD,
-} from "./constantsDashboard";
-import { devTestingAction, devTestingReducer, initialDevTestingState } from "./state";
-import Resource from "../resource/Resource";
+  devTestingAction,
+  devTestingReducer,
+  initialDevTestingState,
+} from "./state";
 
 function DevTesting() {
   const [devTestingState, devTestingDispatch] = useReducer(
     devTestingReducer,
-    initialDevTestingState
+    initialDevTestingState,
   );
-  const { triggerPostFormSubmit, bodiesArr, bodiesArrCount, triggerGetRequest } =
-    devTestingState;
+  const {
+    triggerPostFormSubmit,
+    bodiesArr,
+    bodiesArrCount,
+    triggerGetRequest,
+  } = devTestingState;
 
   const {
     authState: { accessToken },
   } = useAuth();
-
-  const { wrappedFetch } = useWrapFetch();
 
   // useEffect(() => {
   //   let isMounted = true;
@@ -183,7 +168,8 @@ function DevTesting() {
     <Center w="100%">
       <Stack>
         <Text>POST REQUEST</Text>
-        {/* <Group>
+        {
+          /* <Group>
           <Button
             // disabled={bodiesArrCount === bodiesArr.length || triggerPostFormSubmit}
             onClick={() => {
@@ -195,7 +181,8 @@ function DevTesting() {
           >
             Trigger POST
           </Button>
-        </Group> */}
+        </Group> */
+        }
 
         <Text>GET REQUEST</Text>
         <Group>

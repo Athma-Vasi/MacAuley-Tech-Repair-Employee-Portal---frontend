@@ -1,4 +1,4 @@
-import {
+import type {
   EditRepairTicketAction,
   EditRepairTicketDispatch,
   EditRepairTicketState,
@@ -35,7 +35,7 @@ const editRepairTicketAction: EditRepairTicketAction = {
 
 function editRepairTicketReducer(
   state: EditRepairTicketState,
-  action: EditRepairTicketDispatch
+  action: EditRepairTicketDispatch,
 ): EditRepairTicketState {
   switch (action.type) {
     case editRepairTicketAction.setRepairNotes:

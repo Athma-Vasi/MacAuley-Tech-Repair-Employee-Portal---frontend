@@ -1,25 +1,25 @@
-import { MantineNumberSize } from "@mantine/core";
-import React from "react";
+import type { MantineNumberSize } from "@mantine/core";
+import type React from "react";
 import { useNavigate } from "react-router-dom";
 
-import { globalAction } from "../../../context/globalProvider/state";
+import { globalAction } from "../../../context/globalProvider/actions";
 import { useGlobalState } from "../../../hooks";
 import { addCommaSeparator } from "../../../utils";
 import { AccessibleButton } from "../../accessibleInputs/AccessibleButton";
 import { ResponsiveBarChart, ResponsiveLineChart } from "../../charts";
-import { MONTHS } from "../constants";
 import DashboardMetricsLayout from "../DashboardMetricsLayout";
-import {
+import { MONTHS } from "../constants";
+import type {
   BusinessMetricStoreLocation,
   DashboardCalendarView,
   DashboardMetricsView,
   Year,
 } from "../types";
 import { returnChartTitleNavigateLinks, returnStatistics } from "../utils";
-import { RepairMetricsCards } from "./cards";
-import { RepairMetricsCharts } from "./chartsData";
+import type { RepairMetricsCards } from "./cards";
+import type { RepairMetricsCharts } from "./chartsData";
 import { REPAIR_METRICS_SUB_CATEGORY_DATA } from "./constants";
-import { RepairSubMetric } from "./types";
+import type { RepairSubMetric } from "./types";
 
 type RepairRUSProps = {
   borderColor: string;
@@ -30,7 +30,6 @@ type RepairRUSProps = {
   subMetric: RepairSubMetric;
   metricsView: DashboardMetricsView;
   month: string;
-  padding: MantineNumberSize;
   repairMetricsCards: RepairMetricsCards;
   repairMetricsCharts: RepairMetricsCharts;
   storeLocation: BusinessMetricStoreLocation;
@@ -50,7 +49,6 @@ function RepairRUS({
   subMetric,
   metricsView,
   month,
-  padding,
   storeLocation,
   width,
   year,
@@ -58,12 +56,11 @@ function RepairRUS({
   const { globalDispatch } = useGlobalState();
   const navigate = useNavigate();
 
-  const charts =
-    calendarView === "Daily"
-      ? repairMetricsCharts.dailyCharts
-      : calendarView === "Monthly"
-      ? repairMetricsCharts.monthlyCharts
-      : repairMetricsCharts.yearlyCharts;
+  const charts = calendarView === "Daily"
+    ? repairMetricsCharts.dailyCharts
+    : calendarView === "Monthly"
+    ? repairMetricsCharts.monthlyCharts
+    : repairMetricsCharts.yearlyCharts;
   const { bar: barCharts, line: lineCharts } = charts;
 
   const statistics = returnStatistics(barCharts);
@@ -94,10 +91,10 @@ function RepairRUS({
         onClick: (
           _event:
             | React.MouseEvent<HTMLButtonElement>
-            | React.PointerEvent<HTMLButtonElement>
+            | React.PointerEvent<HTMLButtonElement>,
         ) => {
           globalDispatch({
-            type: globalAction.setCustomizeChartsPageData,
+            action: globalAction.setCustomizeChartsPageData,
             payload: {
               chartKind: "bar",
               chartData: barCharts[subMetric],
@@ -118,13 +115,11 @@ function RepairRUS({
       chartWidth={chartWidth}
       barChartData={barCharts[subMetric]}
       hideControls
-      indexBy={
-        calendarView === "Daily"
-          ? "Days"
-          : calendarView === "Monthly"
-          ? "Months"
-          : "Years"
-      }
+      indexBy={calendarView === "Daily"
+        ? "Days"
+        : calendarView === "Monthly"
+        ? "Months"
+        : "Years"}
       keys={REPAIR_METRICS_SUB_CATEGORY_DATA.map((obj) => obj.label)}
       unitKind="number"
     />
@@ -138,10 +133,10 @@ function RepairRUS({
         onClick: (
           _event:
             | React.MouseEvent<HTMLButtonElement>
-            | React.PointerEvent<HTMLButtonElement>
+            | React.PointerEvent<HTMLButtonElement>,
         ) => {
           globalDispatch({
-            type: globalAction.setCustomizeChartsPageData,
+            action: globalAction.setCustomizeChartsPageData,
             payload: {
               chartKind: "line",
               chartData: lineCharts[subMetric],
@@ -164,20 +159,22 @@ function RepairRUS({
       hideControls
       xFormat={(x) =>
         `${
-          calendarView === "Daily" ? "Day" : calendarView === "Monthly" ? "Month" : "Year"
-        } - ${x}`
-      }
+          calendarView === "Daily"
+            ? "Day"
+            : calendarView === "Monthly"
+            ? "Month"
+            : "Year"
+        } - ${x}`}
       yFormat={(y) => `${addCommaSeparator(y)} Repairs`}
       unitKind="number"
     />
   );
 
-  const cards =
-    calendarView === "Daily"
-      ? repairMetricsCards.dailyCards
-      : calendarView === "Monthly"
-      ? repairMetricsCards.monthlyCards
-      : repairMetricsCards.yearlyCards;
+  const cards = calendarView === "Daily"
+    ? repairMetricsCards.dailyCards
+    : calendarView === "Monthly"
+    ? repairMetricsCards.monthlyCards
+    : repairMetricsCards.yearlyCards;
 
   const repairMetricsOverview = (
     <DashboardMetricsLayout
@@ -189,7 +186,6 @@ function RepairRUS({
       lineChart={overviewLineChart}
       lineChartHeading={lineChartHeading}
       overviewCards={cards}
-      padding={padding}
       sectionHeading={`${storeLocation} ${calendarView} Overview Repairs`}
       statisticsMap={statistics}
       width={width}

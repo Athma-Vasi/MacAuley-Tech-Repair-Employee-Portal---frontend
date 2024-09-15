@@ -1,5 +1,5 @@
-import { Card, Group, MantineNumberSize, Text } from "@mantine/core";
-import { ReactNode } from "react";
+import { Card, Group, Text } from "@mantine/core";
+import type { ReactNode } from "react";
 import { MdCalendarMonth, MdDateRange } from "react-icons/md";
 import { RiCalendarLine } from "react-icons/ri";
 
@@ -9,7 +9,6 @@ type DashboardCardInfo = {
   date?: string;
   heading?: string;
   icon: ReactNode;
-  padding: MantineNumberSize;
   percentage?: string;
   deltaTextColor?: string;
   value: string | number;
@@ -19,7 +18,6 @@ function returnDashboardCardElement({
   date,
   heading,
   icon,
-  padding,
   percentage,
   deltaTextColor,
   value,
@@ -56,7 +54,7 @@ function returnDashboardCardElement({
   );
 
   const createdChartCard = (
-    <Card shadow="sm" padding={padding} radius="md" withBorder w={cardWidth}>
+    <Card shadow="sm" radius="md" withBorder w={cardWidth}>
       {cardHeading}
       {cardBody}
       {cardFooter}
@@ -75,7 +73,6 @@ type CreateDashboardMetricsCardsInput = {
   isDisplayValueAsPercentage?: boolean;
   isFlipColor?: boolean;
   kind: "day" | "month" | "year";
-  padding: MantineNumberSize;
   prevDay: string;
   prevMonth: string;
   prevValue: number;
@@ -94,7 +91,6 @@ function createDashboardMetricsCards({
   isDisplayValueAsPercentage = false,
   isFlipColor = false,
   kind,
-  padding,
   prevDay,
   prevMonth,
   prevValue,
@@ -103,69 +99,59 @@ function createDashboardMetricsCards({
   selectedValue,
   width,
 }: CreateDashboardMetricsCardsInput): DashboardCardInfo {
-  const icon =
-    kind === "day" ? (
-      <MdDateRange size={20} />
-    ) : kind === "month" ? (
-      <MdCalendarMonth size={20} />
-    ) : (
-      <RiCalendarLine size={20} />
-    );
+  const icon = kind === "day"
+    ? <MdDateRange size={20} />
+    : kind === "month"
+    ? <MdCalendarMonth size={20} />
+    : <RiCalendarLine size={20} />;
 
   const deltaPercentage = toFixedFloat(
     ((selectedValue - prevValue) / prevValue) * 100,
-    2
+    2,
   );
   const deltaFormatted = Number.isFinite(deltaPercentage)
     ? `${deltaPercentage > 0 ? "+" : ""} ${toFixedFloat(deltaPercentage, 2)} %`
     : "N/A";
 
-  const deltaTextColor =
-    deltaPercentage > 0
-      ? isFlipColor
-        ? redColorShade
-        : greenColorShade
-      : deltaPercentage < 0
-      ? isFlipColor
-        ? greenColorShade
-        : redColorShade
-      : "inherit";
+  const deltaTextColor = deltaPercentage > 0
+    ? isFlipColor ? redColorShade : greenColorShade
+    : deltaPercentage < 0
+    ? isFlipColor ? greenColorShade : redColorShade
+    : "inherit";
 
   const dateEndMonthSet = new Set(["31", "30", "29", "28"]);
 
-  const date =
-    kind === "day"
-      ? `Since ${prevDay} ${
-          // display the previous month if the previous day is the last day of the month
-          dateEndMonthSet.has(prevDay) ? prevMonth : currentMonth
-        } ${
-          // display the previous year if the previous day is 31st December of the previous year
-          currentMonth === "January" ? prevYear : currentYear
-        }`
-      : kind === "month"
-      ? `Since ${prevMonth} ${currentMonth === "January" ? prevYear : currentYear}`
-      : `Since ${prevYear}`;
+  const date = kind === "day"
+    ? `Since ${prevDay} ${
+      // display the previous month if the previous day is the last day of the month
+      dateEndMonthSet.has(prevDay) ? prevMonth : currentMonth} ${
+      // display the previous year if the previous day is 31st December of the previous year
+      currentMonth === "January" ? prevYear : currentYear}`
+    : kind === "month"
+    ? `Since ${prevMonth} ${
+      currentMonth === "January" ? prevYear : currentYear
+    }`
+    : `Since ${prevYear}`;
 
   const valueStr = addCommaSeparator(
     toFixedFloat(
       selectedValue < 1 ? selectedValue * 100 : selectedValue,
-      selectedValue < 1 ? 4 : 2
-    )
+      selectedValue < 1 ? 4 : 2,
+    ),
   );
 
   const displayValue = isDisplayValueAsPercentage
     ? `${valueStr} %`
     : `${isDisplayValueAsCurrency ? "CAD" : ""} ${
-        selectedValue.toString().includes(".")
-          ? valueStr
-          : addCommaSeparator(selectedValue.toString())
-      }`;
+      selectedValue.toString().includes(".")
+        ? valueStr
+        : addCommaSeparator(selectedValue.toString())
+    }`;
 
   return {
     date,
     heading,
     icon,
-    padding,
     percentage: deltaFormatted,
     value: displayValue,
     width,

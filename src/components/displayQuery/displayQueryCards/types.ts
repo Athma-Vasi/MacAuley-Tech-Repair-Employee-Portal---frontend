@@ -1,16 +1,19 @@
-import { CSSProperties } from "react";
+import type { CSSProperties } from "react";
 
-import { FileUploadDocument, RequestStatus, UserDocument } from "../../../types";
-import { CustomerDocument } from "../../customer/types";
-import { ComponentQueryData } from "../../queryBuilder/types";
-import { EditRepairTicketInput } from "../displayQueryDesktop/types";
+import type {
+  FileUploadDocument,
+  RequestStatus,
+  UserDocument,
+} from "../../../types";
+import type { CustomerDocument } from "../../customer/types";
+import type { EditRepairTicketInput } from "../displayQueryDesktop/types";
 
 type DisplayQueryCardsProps = {
   /**
    * - Query data object containing fields specific to a resource.
    * - Used here to grab the label (camelcased) value for groupedByQueryResponseData (lowercased values)
    */
-  componentQueryData: ComponentQueryData[];
+  // componentQueryData: ComponentQueryData[];
   deleteFormIdDispatch: React.Dispatch<{
     type: "setDeleteFormId";
     payload: string;
@@ -54,7 +57,9 @@ type DisplayQueryCardsState = {
   editRepairTicketInput: EditRepairTicketInput;
 
   employeeDocument: UserDocument | null;
-  customerDocument: Omit<CustomerDocument, "password" | "paymentInformation"> | null;
+  customerDocument:
+    | Omit<CustomerDocument, "password" | "paymentInformation">
+    | null;
 };
 
 type DisplayQueryCardsAction = {
@@ -70,25 +75,25 @@ type DisplayQueryCardsAction = {
 
 type DisplayQueryCardsDispatch =
   | {
-      type: DisplayQueryCardsAction["setCurrentDocumentId"];
-      payload: string;
-    }
+    type: DisplayQueryCardsAction["setCurrentDocumentId"];
+    payload: string;
+  }
   | {
-      type: DisplayQueryCardsAction["setCurrentRequestStatus"];
-      payload: RequestStatus;
-    }
+    type: DisplayQueryCardsAction["setCurrentRequestStatus"];
+    payload: RequestStatus;
+  }
   | {
-      type: DisplayQueryCardsAction["setEditRepairTicketInput"];
-      payload: EditRepairTicketInput;
-    }
+    type: DisplayQueryCardsAction["setEditRepairTicketInput"];
+    payload: EditRepairTicketInput;
+  }
   | {
-      type: DisplayQueryCardsAction["setEmployeeDocument"];
-      payload: UserDocument | null;
-    }
+    type: DisplayQueryCardsAction["setEmployeeDocument"];
+    payload: UserDocument | null;
+  }
   | {
-      type: DisplayQueryCardsAction["setCustomerDocument"];
-      payload: Omit<CustomerDocument, "password" | "paymentInformation"> | null;
-    };
+    type: DisplayQueryCardsAction["setCustomerDocument"];
+    payload: Omit<CustomerDocument, "password" | "paymentInformation"> | null;
+  };
 
 export type {
   DisplayQueryCardsAction,

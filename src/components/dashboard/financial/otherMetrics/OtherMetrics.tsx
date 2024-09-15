@@ -1,26 +1,25 @@
-import { MantineNumberSize } from "@mantine/core";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-import { globalAction } from "../../../../context/globalProvider/state";
+import { globalAction } from "../../../../context/globalProvider/actions";
 import { useGlobalState } from "../../../../hooks";
 import { addCommaSeparator } from "../../../../utils";
 import { AccessibleButton } from "../../../accessibleInputs/AccessibleButton";
 import { AccessibleSelectInput } from "../../../accessibleInputs/AccessibleSelectInput";
 import { ResponsiveBarChart, ResponsiveLineChart } from "../../../charts";
-import { MONTHS } from "../../constants";
 import DashboardMetricsLayout from "../../DashboardMetricsLayout";
-import {
+import { MONTHS } from "../../constants";
+import type {
   BusinessMetricStoreLocation,
   DashboardCalendarView,
   DashboardMetricsView,
   Year,
 } from "../../types";
 import { returnChartTitleNavigateLinks, returnStatistics } from "../../utils";
-import { FinancialMetricsCards } from "../cards";
-import { FinancialMetricsCharts } from "../chartsData";
+import type { FinancialMetricsCards } from "../cards";
+import type { FinancialMetricsCharts } from "../chartsData";
 import { FINANCIAL_OTHERS_Y_AXIS_DATA } from "../constants";
-import { FinancialMetricCategory } from "../types";
+import type { FinancialMetricCategory } from "../types";
 import { otherMetricsAction } from "./actions";
 import { otherMetricsReducer } from "./reducers";
 import { initialOtherMetricsState } from "./state";
@@ -36,7 +35,6 @@ type OtherMetricsProps = {
   metricCategory: FinancialMetricCategory;
   metricsView: DashboardMetricsView;
   month: string;
-  padding: MantineNumberSize;
   storeLocation: BusinessMetricStoreLocation;
   width: number;
   year: Year;
@@ -53,7 +51,6 @@ function OtherMetrics({
   metricCategory,
   metricsView,
   month,
-  padding,
   storeLocation,
   width,
   year,
@@ -63,17 +60,16 @@ function OtherMetrics({
 
   const [otherMetricsState, otherMetricsDispatch] = React.useReducer(
     otherMetricsReducer,
-    initialOtherMetricsState
+    initialOtherMetricsState,
   );
 
   const { barChartYAxisVariable, lineChartYAxisVariable } = otherMetricsState;
 
-  const charts =
-    calendarView === "Daily"
-      ? financialMetricsCharts.dailyCharts
-      : calendarView === "Monthly"
-      ? financialMetricsCharts.monthlyCharts
-      : financialMetricsCharts.yearlyCharts;
+  const charts = calendarView === "Daily"
+    ? financialMetricsCharts.dailyCharts
+    : calendarView === "Monthly"
+    ? financialMetricsCharts.monthlyCharts
+    : financialMetricsCharts.yearlyCharts;
   const {
     otherMetrics: { bar: barCharts, line: lineCharts },
   } = charts;
@@ -107,10 +103,10 @@ function OtherMetrics({
         onClick: (
           _event:
             | React.MouseEvent<HTMLButtonElement>
-            | React.PointerEvent<HTMLButtonElement>
+            | React.PointerEvent<HTMLButtonElement>,
         ) => {
           globalDispatch({
-            type: globalAction.setCustomizeChartsPageData,
+            action: globalAction.setCustomizeChartsPageData,
             payload: {
               chartKind: "bar",
               chartData: barCharts[barChartYAxisVariable],
@@ -143,13 +139,11 @@ function OtherMetrics({
       chartWidth={chartWidth}
       barChartData={barCharts[barChartYAxisVariable]}
       hideControls
-      indexBy={
-        calendarView === "Daily"
-          ? "Days"
-          : calendarView === "Monthly"
-          ? "Months"
-          : "Years"
-      }
+      indexBy={calendarView === "Daily"
+        ? "Days"
+        : calendarView === "Monthly"
+        ? "Months"
+        : "Years"}
       keys={FINANCIAL_OTHERS_Y_AXIS_DATA.map((obj) => obj.label)}
       unitKind="number"
     />
@@ -163,10 +157,10 @@ function OtherMetrics({
         onClick: (
           _event:
             | React.MouseEvent<HTMLButtonElement>
-            | React.PointerEvent<HTMLButtonElement>
+            | React.PointerEvent<HTMLButtonElement>,
         ) => {
           globalDispatch({
-            type: globalAction.setCustomizeChartsPageData,
+            action: globalAction.setCustomizeChartsPageData,
             payload: {
               chartKind: "line",
               chartData: lineCharts[lineChartYAxisVariable],
@@ -201,20 +195,22 @@ function OtherMetrics({
       hideControls
       xFormat={(x) =>
         `${
-          calendarView === "Daily" ? "Day" : calendarView === "Monthly" ? "Month" : "Year"
-        } - ${x}`
-      }
+          calendarView === "Daily"
+            ? "Day"
+            : calendarView === "Monthly"
+            ? "Month"
+            : "Year"
+        } - ${x}`}
       yFormat={(y) => `${addCommaSeparator(y)} Financials`}
       unitKind="number"
     />
   );
 
-  const cards =
-    calendarView === "Daily"
-      ? financialMetricsCards.dailyCards
-      : calendarView === "Monthly"
-      ? financialMetricsCards.monthlyCards
-      : financialMetricsCards.yearlyCards;
+  const cards = calendarView === "Daily"
+    ? financialMetricsCards.dailyCards
+    : calendarView === "Monthly"
+    ? financialMetricsCards.monthlyCards
+    : financialMetricsCards.yearlyCards;
   const overviewCards = cards.otherMetrics;
 
   const financialMetricsOverview = (
@@ -229,7 +225,6 @@ function OtherMetrics({
       lineChartHeading={lineChartHeading}
       lineChartYAxisSelectInput={lineChartYAxisVariablesSelectInput}
       overviewCards={overviewCards}
-      padding={padding}
       pieChartHeading={pieChartHeading}
       sectionHeading={`${storeLocation} ${calendarView} Overview Financials`}
       statisticsMap={statistics}

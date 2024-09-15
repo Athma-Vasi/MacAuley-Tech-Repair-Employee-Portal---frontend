@@ -1,4 +1,4 @@
-import {
+import type {
   DisplayQueryDesktopAction,
   DisplayQueryDesktopDispatch,
   DisplayQueryDesktopState,
@@ -41,7 +41,7 @@ const displayQueryDesktopAction: DisplayQueryDesktopAction = {
 
 function displayQueryDesktopReducer(
   state: DisplayQueryDesktopState,
-  action: DisplayQueryDesktopDispatch
+  action: DisplayQueryDesktopDispatch,
 ): DisplayQueryDesktopState {
   switch (action.type) {
     case displayQueryDesktopAction.setFieldToSortBy:

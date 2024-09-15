@@ -1,15 +1,12 @@
-import { MantineNumberSize } from "@mantine/core";
-
 import {
   createDashboardMetricsCards,
-  CreateDashboardMetricsCardsInput,
-  DashboardCardInfo,
+  type CreateDashboardMetricsCardsInput,
+  type DashboardCardInfo,
 } from "../utilsTSX";
-import { SelectedDateRepairMetrics } from "./chartsData";
+import type { SelectedDateRepairMetrics } from "./chartsData";
 
 type ReturnRepairMetricsCardsInput = {
   greenColorShade: string;
-  padding: MantineNumberSize;
   redColorShade: string;
   selectedDateRepairMetrics: SelectedDateRepairMetrics;
   width: number;
@@ -23,7 +20,6 @@ type RepairMetricsCards = {
 
 function returnRepairMetricsCards({
   greenColorShade,
-  padding,
   redColorShade,
   selectedDateRepairMetrics,
   width,
@@ -65,7 +61,6 @@ function returnRepairMetricsCards({
         greenColorShade,
         heading: "Revenue",
         kind: "day",
-        padding,
         prevDay,
         prevMonth,
         prevValue: 1,

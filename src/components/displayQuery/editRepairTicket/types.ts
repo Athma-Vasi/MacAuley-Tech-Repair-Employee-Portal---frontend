@@ -1,5 +1,5 @@
-import { Currency, SetStepsInErrorPayload } from "../../../types";
-import { RepairStatus } from "../../repairTicket/types";
+import type { Currency, SetStepsInErrorPayload } from "../../../types";
+import type { RepairStatus } from "../../repairTicket/types";
 
 type EditRepairTicketState = {
   repairNotes: string;
@@ -61,46 +61,50 @@ type EditRepairTicketAction = {
 
 type EditRepairTicketDispatch =
   | {
-      type:
-        | EditRepairTicketAction["setRepairNotes"]
-        | EditRepairTicketAction["setTestingResults"]
-        | EditRepairTicketAction["setFinalRepairCost"]
-        | EditRepairTicketAction["setLoadingMessage"]
-        | EditRepairTicketAction["setSubmitMessage"]
-        | EditRepairTicketAction["setSuccessMessage"];
+    type:
+      | EditRepairTicketAction["setRepairNotes"]
+      | EditRepairTicketAction["setTestingResults"]
+      | EditRepairTicketAction["setFinalRepairCost"]
+      | EditRepairTicketAction["setLoadingMessage"]
+      | EditRepairTicketAction["setSubmitMessage"]
+      | EditRepairTicketAction["setSuccessMessage"];
 
-      payload: string;
-    }
+    payload: string;
+  }
   | {
-      type:
-        | EditRepairTicketAction["setIsRepairNotesValid"]
-        | EditRepairTicketAction["setIsTestingResultsValid"]
-        | EditRepairTicketAction["setIsFinalRepairCostValid"]
-        | EditRepairTicketAction["setIsRepairNotesFocused"]
-        | EditRepairTicketAction["setIsTestingResultsFocused"]
-        | EditRepairTicketAction["setIsFinalRepairCostFocused"]
-        | EditRepairTicketAction["setTriggerFormSubmit"]
-        | EditRepairTicketAction["setIsLoading"]
-        | EditRepairTicketAction["setIsSubmitting"]
-        | EditRepairTicketAction["setIsSuccessful"];
+    type:
+      | EditRepairTicketAction["setIsRepairNotesValid"]
+      | EditRepairTicketAction["setIsTestingResultsValid"]
+      | EditRepairTicketAction["setIsFinalRepairCostValid"]
+      | EditRepairTicketAction["setIsRepairNotesFocused"]
+      | EditRepairTicketAction["setIsTestingResultsFocused"]
+      | EditRepairTicketAction["setIsFinalRepairCostFocused"]
+      | EditRepairTicketAction["setTriggerFormSubmit"]
+      | EditRepairTicketAction["setIsLoading"]
+      | EditRepairTicketAction["setIsSubmitting"]
+      | EditRepairTicketAction["setIsSuccessful"];
 
-      payload: boolean;
-    }
+    payload: boolean;
+  }
   | {
-      type: EditRepairTicketAction["setFinalRepairCostCurrency"];
-      payload: Currency;
-    }
+    type: EditRepairTicketAction["setFinalRepairCostCurrency"];
+    payload: Currency;
+  }
   | {
-      type: EditRepairTicketAction["setRepairStatus"];
-      payload: RepairStatus;
-    }
+    type: EditRepairTicketAction["setRepairStatus"];
+    payload: RepairStatus;
+  }
   | {
-      type: EditRepairTicketAction["setCurrentStepperPosition"];
-      payload: number;
-    }
+    type: EditRepairTicketAction["setCurrentStepperPosition"];
+    payload: number;
+  }
   | {
-      type: EditRepairTicketAction["setStepsInError"];
-      payload: SetStepsInErrorPayload;
-    };
+    type: EditRepairTicketAction["setStepsInError"];
+    payload: SetStepsInErrorPayload;
+  };
 
-export type { EditRepairTicketAction, EditRepairTicketDispatch, EditRepairTicketState };
+export type {
+  EditRepairTicketAction,
+  EditRepairTicketDispatch,
+  EditRepairTicketState,
+};
