@@ -1,8 +1,7 @@
-import { Card, Flex, Group, Stack, Text, Title } from "@mantine/core";
+import { Card, Flex, Group, Image, Stack, Text, Title } from "@mantine/core";
 
 import { COLORS_SWATCHES } from "../../constants/data";
 import { useGlobalState } from "../../hooks";
-import { returnAccessibleImageElements } from "../../jsxCreators";
 import { returnThemeColors } from "../../utils";
 
 type DisplayResourceHeaderProps = {
@@ -21,7 +20,7 @@ function DisplayResourceHeader({
   componentWidth,
 }: DisplayResourceHeaderProps) {
   const {
-    globalState: { width, padding, themeObject, rowGap },
+    globalState: { width, themeObject },
   } = useGlobalState();
 
   const {
@@ -31,42 +30,55 @@ function DisplayResourceHeader({
     colorsSwatches: COLORS_SWATCHES,
   });
 
-  const imageWidth = componentWidth
-    ? componentWidth
-    : width < 480 // for iPhone 5/SE
+  const imageWidth = componentWidth ? componentWidth : width < 480 // for iPhone 5/SE
     ? width * 0.93
     : width < 768 // for iPhones 6 - 15
     ? width - 40
-    : // at 768vw the navbar appears at width of 225px
-    width < 1024
+    // at 768vw the navbar appears at width of 225px
+    : width < 1024
     ? (width - 225) * 0.8
-    : // at >= 1200vw the navbar width is 300px
-    width < 1200
+    // at >= 1200vw the navbar width is 300px
+    : width < 1200
     ? (width - 225) * 0.8
     : 900 - 40;
 
   const imageHeight = imageWidth * 0.62;
 
-  const [createdImage] = returnAccessibleImageElements([
-    {
-      imageSrc,
-      imageAlt,
-      isCard: false,
-      isLoader: true,
-      isOverlay: false,
-      withPlaceholder: true,
-    },
-  ]);
+  const imageElement = (
+    <Image
+      src={imageSrc}
+      alt={imageAlt}
+      style={{ width: "100%", height: "100%" }}
+      withPlaceholder
+    />
+  );
 
-  const displayResourceTitle =
-    resourceTitle.length > 1 ? (
-      <Title color="#f5f5f5" px={padding} pt={padding} order={width >= 1200 ? 1 : 2}>
+  // const [createdImage] = returnAccessibleImageElements([
+  //   {
+  //     imageSrc,
+  //     imageAlt,
+  //     isCard: false,
+  //     isLoader: true,
+  //     isOverlay: false,
+  //     withPlaceholder: true,
+  //   },
+  // ]);
+
+  const displayResourceTitle = resourceTitle.length > 1
+    ? (
+      <Title
+        color="#f5f5f5"
+        px={padding}
+        pt={padding}
+        order={width >= 1200 ? 1 : 2}
+      >
         {resourceTitle}
       </Title>
-    ) : null;
+    )
+    : null;
 
-  const displayResourceDescription =
-    resourceDescription.length > 1 ? (
+  const displayResourceDescription = resourceDescription.length > 1
+    ? (
       <Text
         color="#f5f5f5"
         px={padding}
@@ -74,7 +86,8 @@ function DisplayResourceHeader({
       >
         {resourceDescription}
       </Text>
-    ) : null;
+    )
+    : null;
 
   const bannerImage = (
     <Stack w={imageWidth} h={imageHeight}>

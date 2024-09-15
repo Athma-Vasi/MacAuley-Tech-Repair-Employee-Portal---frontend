@@ -9,7 +9,6 @@ import {
   Title,
   UnstyledButton,
 } from "@mantine/core";
-import { ScrollAreaComponent } from "@mantine/core/lib/Drawer/Drawer.context";
 import { useDisclosure } from "@mantine/hooks";
 import { useEffect, useReducer } from "react";
 import { TbChartPie4 } from "react-icons/tb";
@@ -18,19 +17,19 @@ import { COLORS_SWATCHES } from "../../constants/data";
 import { useGlobalState } from "../../hooks";
 import { logState, returnThemeColors } from "../../utils";
 import { ResponsivePieChart } from "../charts";
+import type { PieChartData } from "../charts/responsivePieChart/types";
 import { PageBuilder } from "../pageBuilder";
 import {
   displayStatisticsAction,
   displayStatisticsReducer,
   initialDisplayStatisticsState,
 } from "./state";
-import { ChartKind, DisplayStatisticsProps } from "./types";
-import { PieChartData } from "../charts/responsivePieChart/types";
+import type { ChartKind, DisplayStatisticsProps } from "./types";
 
 function DisplayStatistics({ surveys }: DisplayStatisticsProps) {
   const [displayStatisticsState, displayStatisticsDispatch] = useReducer(
     displayStatisticsReducer,
-    initialDisplayStatisticsState
+    initialDisplayStatisticsState,
   );
   const {
     pieChartDataMap,
@@ -42,7 +41,7 @@ function DisplayStatistics({ surveys }: DisplayStatisticsProps) {
     modalPage,
   } = displayStatisticsState;
   const {
-    globalState: { width, padding, rowGap, themeObject },
+    globalState: { width, themeObject },
   } = useGlobalState();
 
   const [
@@ -63,9 +62,9 @@ function DisplayStatistics({ surveys }: DisplayStatisticsProps) {
             Map<string, Map<string, PieChartData[]>>,
             Map<string, Map<string, ChartKind>>,
             Map<string, string[]>,
-            Map<string, Map<string, number>>
+            Map<string, Map<string, number>>,
           ],
-          survey
+          survey,
         ) => {
           const { _id, surveyStatistics } = survey;
 
@@ -75,8 +74,12 @@ function DisplayStatistics({ surveys }: DisplayStatisticsProps) {
           totalResponsesMap.set(_id, new Map());
 
           surveyStatistics.forEach((surveyStatistic) => {
-            const { question, responseDistribution, totalResponses, responseInput } =
-              surveyStatistic;
+            const {
+              question,
+              responseDistribution,
+              totalResponses,
+              responseInput,
+            } = surveyStatistic;
 
             const chartDataArray = Object.entries(responseDistribution).map(
               ([response, count]) => {
@@ -150,7 +153,7 @@ function DisplayStatistics({ surveys }: DisplayStatisticsProps) {
                 };
 
                 return chartData;
-              }
+              },
             );
             pieChartDataMap.get(_id)?.set(question, chartDataArray);
 
@@ -159,9 +162,14 @@ function DisplayStatistics({ surveys }: DisplayStatisticsProps) {
             totalResponsesMap.get(_id)?.set(question, totalResponses);
           });
 
-          return [pieChartDataMap, chartKindsMap, chartTitlesMap, totalResponsesMap];
+          return [
+            pieChartDataMap,
+            chartKindsMap,
+            chartTitlesMap,
+            totalResponsesMap,
+          ];
         },
-        [new Map(), new Map(), new Map(), new Map()]
+        [new Map(), new Map(), new Map(), new Map()],
       );
 
     displayStatisticsDispatch({
@@ -194,14 +202,16 @@ function DisplayStatistics({ surveys }: DisplayStatisticsProps) {
       return;
     }
 
-    const currentlySelectedSurveyQuestion = chartTitlesMap.get(_id)?.[modalPage - 1];
+    const currentlySelectedSurveyQuestion = chartTitlesMap.get(_id)
+      ?.[modalPage - 1];
     if (!currentlySelectedSurveyQuestion) {
       return;
     }
 
-    const currentlySelectedPieChartData = currentlySelectedSurveyPieChartData.get(
-      currentlySelectedSurveyQuestion
-    );
+    const currentlySelectedPieChartData = currentlySelectedSurveyPieChartData
+      .get(
+        currentlySelectedSurveyQuestion,
+      );
     if (!currentlySelectedPieChartData) {
       return;
     }
@@ -244,10 +254,10 @@ function DisplayStatistics({ surveys }: DisplayStatisticsProps) {
           });
           openStatisticsModal();
         }}
+        key={`${_id}-${idx}-${surveyTitle}`}
       >
         <Card
           shadow="sm"
-          padding={padding}
           radius="md"
           withBorder
           key={`${_id}-${idx}-${surveyTitle}`}
@@ -269,7 +279,6 @@ function DisplayStatistics({ surveys }: DisplayStatisticsProps) {
       style={{
         borderBottom: borderColor,
       }}
-      p={padding}
     >
       <Title order={3}>Completed surveys</Title>
       <Flex
@@ -277,21 +286,22 @@ function DisplayStatistics({ surveys }: DisplayStatisticsProps) {
         align="center"
         justify="flex-start"
         wrap="wrap"
-        rowGap={rowGap}
-        columnGap={rowGap}
       >
-        {surveys.length === 0 ? (
-          <Text>Complete surveys to view statistics!</Text>
-        ) : (
-          completedSurveysCards
-        )}
+        {surveys.length === 0
+          ? <Text>Complete surveys to view statistics!</Text>
+          : completedSurveysCards}
       </Flex>
     </Stack>
   );
 
   const createdModalHeadingSection = (
     <Stack w="100%">
-      <Flex w="100%" align="center" justify="space-between" wrap="wrap" rowGap={rowGap}>
+      <Flex
+        w="100%"
+        align="center"
+        justify="space-between"
+        wrap="wrap"
+      >
         <Group w="100%" position="apart">
           <Group position="left">
             <Title order={4}>{currentSelectedSurvey?.surveyTitle ?? ""}</Title>
@@ -309,10 +319,9 @@ function DisplayStatistics({ surveys }: DisplayStatisticsProps) {
           w="100%"
           position="apart"
           style={{ borderBottom: borderColor }}
-          pb={padding}
         >
           <Group position="left" align="center">
-            <Text size="md">Question: </Text>
+            <Text size="md">Question:</Text>
             <Text size="md">
               {currentSelectedSurvey?.questions?.[modalPage - 1]?.question}
             </Text>
@@ -320,12 +329,13 @@ function DisplayStatistics({ surveys }: DisplayStatisticsProps) {
 
           {/* total responses */}
           <Group position="left" align="center">
-            <Text size="md">Total responses: </Text>
+            <Text size="md">Total responses:</Text>
             <Text size="md">
               {totalResponsesMap
                 .get(currentSelectedSurvey?._id ?? "")
                 ?.get(
-                  currentSelectedSurvey?.questions?.[modalPage - 1]?.question ?? ""
+                  currentSelectedSurvey?.questions?.[modalPage - 1]?.question ??
+                    "",
                 ) ?? 0}
             </Text>
           </Group>
@@ -335,9 +345,15 @@ function DisplayStatistics({ surveys }: DisplayStatisticsProps) {
   );
 
   const displayResponsivePieChart = (
-    <ScrollArea type="auto" styles={() => scrollBarStyle} offsetScrollbars>
-      <Flex w="100%" h="100%" py={padding}>
-        <ResponsivePieChart pieChartData={currentlySelectedPieChartData ?? []} />
+    <ScrollArea
+      type="auto"
+      styles={() => scrollBarStyle}
+      offsetScrollbars
+    >
+      <Flex w="100%" h="100%">
+        <ResponsivePieChart
+          pieChartData={currentlySelectedPieChartData ?? []}
+        />
       </Flex>
     </ScrollArea>
   );

@@ -1,9 +1,16 @@
-import { Button, Group, Notification, Stack, Text, Tooltip } from "@mantine/core";
+import {
+  Button,
+  Group,
+  Notification,
+  Stack,
+  Text,
+  Tooltip,
+} from "@mantine/core";
+import { InvalidTokenError } from "jwt-decode";
 import { TbExclamationMark } from "react-icons/tb";
 import { COLORS_SWATCHES } from "../../../constants/data";
 import { useGlobalState } from "../../../hooks";
 import { returnThemeColors } from "../../../utils";
-import { InvalidTokenError } from "jwt-decode";
 
 function ErrorFallback1({
   error,
@@ -12,16 +19,8 @@ function ErrorFallback1({
   error: any;
   resetErrorBoundary: () => void;
 }) {
-  // return (
-  //   <div role="alert">
-  //     <p>Something went wrong:</p>
-  //     <pre>{error.message}</pre>
-  //     <button onClick={resetErrorBoundary}>Try again</button>
-  //   </div>
-  // );
-
   const {
-    globalState: { padding, themeObject },
+    globalState: { themeObject },
   } = useGlobalState();
 
   const {
@@ -42,15 +41,15 @@ function ErrorFallback1({
   );
 
   const { colorScheme, primaryShade } = themeObject;
-  const errorColor =
-    colorScheme === "light" ? `red.${primaryShade.light}` : `red.${primaryShade.dark}`;
+  const errorColor = colorScheme === "light"
+    ? `red.${primaryShade.light}`
+    : `red.${primaryShade.dark}`;
 
-  const errorMessage =
-    error instanceof InvalidTokenError
-      ? "Invalid token. Please login again!"
-      : !error.response
-      ? "Network error. Please try again!"
-      : error?.message ?? "Unknown error occurred. Please try again!";
+  const errorMessage = error instanceof InvalidTokenError
+    ? "Invalid token. Please login again!"
+    : !error.response
+    ? "Network error. Please try again!"
+    : error?.message ?? "Unknown error occurred. Please try again!";
 
   return (
     <Stack w={350}>
@@ -60,7 +59,7 @@ function ErrorFallback1({
         style={{ boxShadow: "0 0 0 0", backgroundColor: "transparent" }}
         withCloseButton={false}
       >
-        <Stack w="100%" spacing={padding}>
+        <Stack w="100%">
           <Text>{errorMessage}</Text>
           <Group w="100%" position="right">
             {tryAgainButtonWithTooltip}

@@ -9,7 +9,7 @@ import type { ReactNode } from "react";
 import { TbChevronDownRight } from "react-icons/tb";
 import { useGlobalState } from "../../hooks";
 import { splitCamelCase } from "../../utils";
-import { createAccessibleNavLinkTextElements } from "./utils";
+import { createAccessibleNavLinkTextElement } from "./utils";
 
 type AccessibleNavLinkAttributes = {
     active?: boolean;
@@ -60,7 +60,7 @@ function AccessibleNavLink({ attributes }: AccessibleNavLinkProps) {
     } = attributes;
     const label = attributes.label ?? splitCamelCase(name);
 
-    const { screenreaderTextElement } = createAccessibleNavLinkTextElements({
+    const { screenreaderTextElement } = createAccessibleNavLinkTextElement({
         active,
         description,
         name,

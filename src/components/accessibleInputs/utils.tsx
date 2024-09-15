@@ -342,6 +342,37 @@ function createAccessibleButtonScreenreaderTextElements({
   return { enabledTextElement, disabledTextElement };
 }
 
+type AccessibleImageTextElements = {
+  description: string;
+  name: string;
+  themeObject: ThemeObject;
+};
+
+function accessibleImageTextElement(
+  { description, name, themeObject }: AccessibleImageTextElements,
+): {
+  screenreaderTextElement: React.JSX.Element;
+} {
+  const {
+    generalColors: { greenColorShade, textColor },
+  } = returnThemeColors({
+    themeObject,
+    colorsSwatches: COLORS_SWATCHES,
+  });
+
+  const screenreaderTextElement = (
+    <Text
+      id={`${name}-selected`}
+      w="100%"
+      aria-live="polite"
+    >
+      {description}
+    </Text>
+  );
+
+  return { screenreaderTextElement };
+}
+
 type CreateAccessibleNavLinkTextElements = {
   active: boolean;
   description: string;
@@ -349,7 +380,7 @@ type CreateAccessibleNavLinkTextElements = {
   themeObject: ThemeObject;
 };
 
-function createAccessibleNavLinkTextElements({
+function createAccessibleNavLinkTextElement({
   active,
   description,
   name,
@@ -364,8 +395,6 @@ function createAccessibleNavLinkTextElements({
     colorsSwatches: COLORS_SWATCHES,
   });
 
-  const icon = <FontAwesomeIcon icon={faCheck} color={greenColorShade} />;
-
   const screenreaderTextElement = (
     <Text
       id={`${name}-selected`}
@@ -373,7 +402,6 @@ function createAccessibleNavLinkTextElements({
       w="100%"
       aria-live="polite"
     >
-      {icon}
       {description}
     </Text>
   );
@@ -840,13 +868,14 @@ function returnHighlightedText({
 }
 
 export {
+  accessibleImageTextElement,
   createAccessibleButtons,
   createAccessibleButtonScreenreaderTextElements,
   createAccessibleCheckboxGroupInputs,
   createAccessibleCheckboxSelectionsTextElements,
   createAccessibleCheckboxSingleInputs,
   createAccessibleDateTimeInputs,
-  createAccessibleNavLinkTextElements,
+  createAccessibleNavLinkTextElement,
   createAccessibleRadioGroupInputs,
   createAccessibleRadioScreenreaderTextElements,
   createAccessibleRadioSingleInputs,
