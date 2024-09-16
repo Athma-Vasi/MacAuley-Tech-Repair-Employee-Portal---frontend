@@ -168,6 +168,21 @@ function returnChartOptionsStepperPages(): StepperPage[] {
   ];
 }
 
+function returnChartAxisBottomStepperPages(): StepperPage[] {
+  const axisBottomLegendTextChild: StepperChild = {
+    inputType: "text",
+    name: "axisBottomLegend",
+    validationKey: "textInput",
+  };
+
+  return [
+    {
+      children: [axisBottomLegendTextChild],
+      description: "Axis Bottom",
+    },
+  ];
+}
+
 export {
   NIVO_CHART_PATTERN_DEFS,
   NIVO_CHART_TITLE_POSITION_DATA,
@@ -178,6 +193,7 @@ export {
   NIVO_LEGEND_SYMBOL_SHAPE_DATA,
   NIVO_MOTION_CONFIG_DATA,
   NIVO_TRANSITION_MODE_DATA,
+  returnChartAxisBottomStepperPages,
   returnChartOptionsStepperPages,
   SLIDER_TOOLTIP_COLOR,
   STICKY_STYLE,

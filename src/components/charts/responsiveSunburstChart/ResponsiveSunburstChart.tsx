@@ -172,14 +172,6 @@ function ResponsiveSunburstChart({
       animate={enableAnimate}
       motionConfig={motionConfig}
       transitionMode={transitionMode}
-      //   effects: [
-      //     {
-      //         on: 'hover',
-      //         style: {
-      //             itemTextColor: '#000'
-      //         }
-      //     }
-      // ]
     />
   );
 
@@ -327,7 +319,6 @@ function ResponsiveSunburstChart({
     />
   );
 
-  // reset all button
   const resetAllButton = (
     <AccessibleButton
       attributes={{
@@ -350,12 +341,7 @@ function ResponsiveSunburstChart({
   const displayBaseHeading = (
     <Group
       bg={sectionHeadersBgColor}
-      style={{
-        boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.25)",
-        position: "sticky",
-        top: 0,
-        zIndex: 4,
-      }}
+      style={STICKY_STYLE}
       w="100%"
     >
       <Title order={5} color={textColor}>
@@ -401,12 +387,7 @@ function ResponsiveSunburstChart({
   const displayStyleHeading = (
     <Group
       bg={sectionHeadersBgColor}
-      style={{
-        boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.25)",
-        position: "sticky",
-        top: 0,
-        zIndex: 4,
-      }}
+      style={STICKY_STYLE}
       w="100%"
     >
       <Title order={5} color={textColor}>
