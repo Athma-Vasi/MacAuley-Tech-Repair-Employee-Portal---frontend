@@ -3,64 +3,58 @@ import {
   Flex,
   Group,
   Stack,
-  Switch,
   Text,
   Title,
   Tooltip,
-} from '@mantine/core';
-import { ResponsiveLine } from '@nivo/line';
-import { ChangeEvent, useEffect, useReducer, useRef } from 'react';
-import { BiReset } from 'react-icons/bi';
+} from "@mantine/core";
+import { ResponsiveLine } from "@nivo/line";
+import { useEffect, useReducer, useRef } from "react";
 
-import { COLORS_SWATCHES } from '../../../constants/data';
-import { useGlobalState } from '../../../hooks';
-import {
-  AccessibleSelectedDeselectedTextElements,
-  returnAccessibleButtonElements,
-  returnAccessibleSelectInputElements,
-  returnAccessibleSliderInputElements,
-} from '../../../jsxCreators';
-import { addCommaSeparator, returnThemeColors } from '../../../utils';
-import {
-  AccessibleSelectInputCreatorInfo,
-  AccessibleSliderInputCreatorInfo,
-} from '../../wrappers';
-import { ChartAndControlsDisplay } from '../chartAndControlsDisplay/ChartAndControlsDisplay';
-import { ChartAxisBottom } from '../chartControls/ChartAxisBottom';
-import { ChartAxisLeft } from '../chartControls/ChartAxisLeft';
-import { ChartAxisRight } from '../chartControls/ChartAxisRight';
-import { ChartAxisTop } from '../chartControls/ChartAxisTop';
-import { ChartLegend } from '../chartControls/ChartLegend';
-import { ChartMargin } from '../chartControls/ChartMargin';
-import { ChartOptions } from '../chartControls/ChartOptions';
+import { COLORS_SWATCHES } from "../../../constants/data";
+import { useGlobalState } from "../../../hooks";
+
+import { addCommaSeparator, returnThemeColors } from "../../../utils";
+import { AccessibleButton } from "../../accessibleInputs/AccessibleButton";
+import { AccessibleSelectInput } from "../../accessibleInputs/AccessibleSelectInput";
+import { AccessibleSliderInput } from "../../accessibleInputs/AccessibleSliderInput";
+import { AccessibleSwitchInput } from "../../accessibleInputs/AccessibleSwitchInput";
+import { ChartAndControlsDisplay } from "../chartAndControlsDisplay/ChartAndControlsDisplay";
+import { ChartAxisBottom } from "../chartControls/ChartAxisBottom";
+import { ChartAxisLeft } from "../chartControls/ChartAxisLeft";
+import { ChartAxisRight } from "../chartControls/ChartAxisRight";
+import { ChartAxisTop } from "../chartControls/ChartAxisTop";
+import { ChartLegend } from "../chartControls/ChartLegend";
+import { ChartMargin } from "../chartControls/ChartMargin";
+import { ChartOptions } from "../chartControls/ChartOptions";
 import {
   NIVO_CHART_PATTERN_DEFS,
   NIVO_COLOR_SCHEME_DATA,
   NIVO_MOTION_CONFIG_DATA,
-} from '../constants';
-import {
-  NivoColorScheme,
-  NivoLineAreaBlendMode,
-  NivoLineAxesScale,
-  NivoLineCrosshairType,
-  NivoLineCurve,
-  NivoLinePointLabel,
-  NivoMotionConfig,
-} from '../types';
-import { ChartsAndGraphsControlsStacker } from '../utils';
+  returnChartAxisBottomStepperPages,
+  returnChartAxisLeftStepperPages,
+  returnChartAxisRightStepperPages,
+  returnChartAxisTopStepperPages,
+  returnChartOptionsStepperPages,
+  SLIDER_TOOLTIP_COLOR,
+  STICKY_STYLE,
+} from "../constants";
+import { ChartsAndGraphsControlsStacker } from "../utils";
 import {
   NIVO_LINE_AREA_BLEND_MODE_DATA,
   NIVO_LINE_AXES_SCALE,
   NIVO_LINE_CROSSHAIR_TYPE_DATA,
   NIVO_LINE_CURVE_DATA,
   NIVO_LINE_POINT_LABEL_DATA,
-} from './constants';
+} from "./constants";
 import {
   initialResponsiveLineChartState,
   responsiveLineChartAction,
   responsiveLineChartReducer,
-} from './state';
-import { ResponsiveLineChartProps, ResponsiveLineChartState } from './types';
+} from "./state";
+import type {
+  ResponsiveLineChartProps,
+  ResponsiveLineChartState,
+} from "./types";
 
 function ResponsiveLineChart({
   lineChartData,
@@ -70,12 +64,12 @@ function ResponsiveLineChart({
   hideControls = false,
   xFormat,
   yFormat,
-  yScaleMin = 'auto',
-  yScaleMax = 'auto',
-  unitKind = 'currency',
+  yScaleMin = "auto",
+  yScaleMax = "auto",
+  unitKind = "currency",
 }: ResponsiveLineChartProps) {
   const {
-    globalState: { isPrefersReducedMotion, width, themeObject, padding },
+    globalState: { isPrefersReducedMotion, width, themeObject },
   } = useGlobalState();
 
   const {
@@ -91,14 +85,14 @@ function ResponsiveLineChart({
   // sets initial colors based on app theme
   const modifiedResponsiveLineChartState: ResponsiveLineChartState = {
     ...initialResponsiveLineChartState,
-    chartTitle: dashboardChartTitle ?? 'Line Chart',
-    pointColor: 'rgba(0, 0, 0, 0)',
+    chartTitle: dashboardChartTitle ?? "Line Chart",
+    pointColor: "rgba(0, 0, 0, 0)",
     chartTitleColor: chartTextColor,
   };
 
   const [responsiveLineChartState, responsiveLineChartDispatch] = useReducer(
     responsiveLineChartReducer,
-    modifiedResponsiveLineChartState
+    modifiedResponsiveLineChartState,
   );
 
   const {
@@ -144,8 +138,6 @@ function ResponsiveLineChart({
     axisTopTickRotation, // -90° - 90° default: 0 step: 1
     axisTopTickSize, // 0px - 20px default: 5 step: 1
     enableAxisTop, // default: false ? null
-    isAxisTopLegendFocused, // default: false
-    isAxisTopLegendValid, // default: false
     // axisRight
     axisRightLegend, // default: ''
     axisRightLegendOffset, // -60px - 60px default: 0 step: 1
@@ -154,8 +146,6 @@ function ResponsiveLineChart({
     axisRightTickRotation, // -90° - 90° default: 0 step: 1
     axisRightTickSize, // 0px - 20px default: 5 step: 1
     enableAxisRight, // default: false ? null
-    isAxisRightLegendFocused, // default: false
-    isAxisRightLegendValid, // default: false
     // axisBottom
     axisBottomLegend, // default: ''
     axisBottomLegendOffset, // -60px - 60px default: 0 step: 1
@@ -164,8 +154,6 @@ function ResponsiveLineChart({
     axisBottomTickRotation, // -90° - 90° default: 0 step: 1
     axisBottomTickSize, // 0px - 20px default: 5 step: 1
     enableAxisBottom, // default: true ? {...} : null
-    isAxisBottomLegendFocused, // default: false
-    isAxisBottomLegendValid, // default: false
     // axisLeft
     axisLeftLegend, // default: ''
     axisLeftLegendOffset, // -60px - 60px default: 0 step: 1
@@ -174,8 +162,6 @@ function ResponsiveLineChart({
     axisLeftTickRotation, // -90° - 90° default: 0 step: 1
     axisLeftTickSize, // 0px - 20px default: 5 step: 1
     enableAxisLeft, // default: true ? {...} : null
-    isAxisLeftLegendFocused, // default: false
-    isAxisLeftLegendValid, // default: false
 
     // interactivity
     enableCrosshair, // default: true
@@ -210,12 +196,8 @@ function ResponsiveLineChart({
     chartTitleColor, // default: 'gray'
     chartTitlePosition, // default: 'center'
     chartTitleSize, // 1 - 6 default: 3
-    isChartTitleFocused,
-    isChartTitleValid,
 
     // screenshot
-    isScreenshotFilenameFocused,
-    isScreenshotFilenameValid,
     screenshotFilename,
     screenshotImageQuality, // 0 - 1 default: 1 step: 0.1
     screenshotImageType, // default: 'image/png'
@@ -230,7 +212,7 @@ function ResponsiveLineChart({
     }
 
     responsiveLineChartDispatch({
-      type: responsiveLineChartAction.setEnableAnimate,
+      action: responsiveLineChartAction.setEnableAnimate,
       payload: false,
     });
   }, [isPrefersReducedMotion]);
@@ -269,7 +251,7 @@ function ResponsiveLineChart({
       pointSize={pointSize}
       pointColor={pointColor}
       pointBorderWidth={pointBorderWidth}
-      pointBorderColor={{ from: 'serieColor' }}
+      pointBorderColor={{ from: "serieColor" }}
       enablePointLabel={enablePointLabel}
       pointLabel={pointLabel}
       pointLabelYOffset={pointLabelYOffset}
@@ -277,101 +259,95 @@ function ResponsiveLineChart({
       enableGridX={enableGridX}
       enableGridY={enableGridY}
       // axes
-      axisTop={
-        enableAxisTop
-          ? {
-              tickSize: axisTopTickSize,
-              tickPadding: axisTopTickPadding,
-              tickRotation: axisTopTickRotation,
-              legend: axisTopLegend,
-              legendOffset: axisTopLegendOffset,
-              legendPosition: axisTopLegendPosition,
-            }
-          : null
-      }
-      axisRight={
-        enableAxisRight
-          ? {
-              tickSize: axisRightTickSize,
-              tickPadding: axisRightTickPadding,
-              tickRotation: axisRightTickRotation,
-              legend: axisRightLegend,
-              legendOffset: axisRightLegendOffset,
-              legendPosition: axisRightLegendPosition,
-              format: (value) =>
-                `${unitKind === 'currency' ? '$' : ''}${addCommaSeparator(
-                  value
-                )}${unitKind === 'percent' ? '%' : ''}`,
-            }
-          : null
-      }
-      axisBottom={
-        enableAxisBottom
-          ? {
-              tickSize: axisBottomTickSize,
-              tickPadding: axisBottomTickPadding,
-              tickRotation: axisBottomTickRotation,
-              legend: axisBottomLegend,
-              legendOffset: axisBottomLegendOffset,
-              legendPosition: axisBottomLegendPosition,
-            }
-          : null
-      }
-      axisLeft={
-        enableAxisLeft
-          ? {
-              tickSize: axisLeftTickSize,
-              tickPadding: axisLeftTickPadding,
-              tickRotation: axisLeftTickRotation,
-              legend: axisLeftLegend,
-              legendOffset: axisLeftLegendOffset,
-              legendPosition: axisLeftLegendPosition,
-              format: (value) =>
-                `${unitKind === 'currency' ? '$' : ''}${addCommaSeparator(
-                  value
-                )}${unitKind === 'percent' ? '%' : ''}`,
-            }
-          : null
-      }
+      axisTop={enableAxisTop
+        ? {
+          tickSize: axisTopTickSize,
+          tickPadding: axisTopTickPadding,
+          tickRotation: axisTopTickRotation,
+          legend: axisTopLegend,
+          legendOffset: axisTopLegendOffset,
+          legendPosition: axisTopLegendPosition,
+        }
+        : null}
+      axisRight={enableAxisRight
+        ? {
+          tickSize: axisRightTickSize,
+          tickPadding: axisRightTickPadding,
+          tickRotation: axisRightTickRotation,
+          legend: axisRightLegend,
+          legendOffset: axisRightLegendOffset,
+          legendPosition: axisRightLegendPosition,
+          format: (value) =>
+            `${unitKind === "currency" ? "$" : ""}${
+              addCommaSeparator(
+                value,
+              )
+            }${unitKind === "percent" ? "%" : ""}`,
+        }
+        : null}
+      axisBottom={enableAxisBottom
+        ? {
+          tickSize: axisBottomTickSize,
+          tickPadding: axisBottomTickPadding,
+          tickRotation: axisBottomTickRotation,
+          legend: axisBottomLegend,
+          legendOffset: axisBottomLegendOffset,
+          legendPosition: axisBottomLegendPosition,
+        }
+        : null}
+      axisLeft={enableAxisLeft
+        ? {
+          tickSize: axisLeftTickSize,
+          tickPadding: axisLeftTickPadding,
+          tickRotation: axisLeftTickRotation,
+          legend: axisLeftLegend,
+          legendOffset: axisLeftLegendOffset,
+          legendPosition: axisLeftLegendPosition,
+          format: (value) =>
+            `${unitKind === "currency" ? "$" : ""}${
+              addCommaSeparator(
+                value,
+              )
+            }${unitKind === "percent" ? "%" : ""}`,
+        }
+        : null}
       // interactivity
       isInteractive={true}
       enableCrosshair={enableCrosshair}
       crosshairType={crosshairType}
       useMesh={true}
       // legends
-      legends={
-        enableLegend
-          ? [
-              {
-                anchor: legendAnchor,
-                direction: legendDirection,
-                justify: enableLegendJustify,
-                translateX: legendTranslateX,
-                translateY: legendTranslateY,
-                itemsSpacing: legendItemsSpacing,
-                itemDirection: legendItemDirection,
-                itemWidth: legendItemWidth,
-                itemHeight: legendItemHeight,
-                itemOpacity: legendItemOpacity,
-                symbolSize: legendSymbolSize,
-                symbolShape: legendSymbolShape,
-                symbolBorderColor: legendSymbolBorderColor,
-                symbolBorderWidth: legendSymbolBorderWidth,
-                symbolSpacing: legendSymbolSpacing,
+      legends={enableLegend
+        ? [
+          {
+            anchor: legendAnchor,
+            direction: legendDirection,
+            justify: enableLegendJustify,
+            translateX: legendTranslateX,
+            translateY: legendTranslateY,
+            itemsSpacing: legendItemsSpacing,
+            itemDirection: legendItemDirection,
+            itemWidth: legendItemWidth,
+            itemHeight: legendItemHeight,
+            itemOpacity: legendItemOpacity,
+            symbolSize: legendSymbolSize,
+            symbolShape: legendSymbolShape,
+            symbolBorderColor: legendSymbolBorderColor,
+            symbolBorderWidth: legendSymbolBorderWidth,
+            symbolSpacing: legendSymbolSpacing,
 
-                effects: [
-                  {
-                    on: 'hover',
-                    style: {
-                      itemBackground: 'rgba(0, 0, 0, .03)',
-                      itemOpacity: 1,
-                    },
-                  },
-                ],
+            effects: [
+              {
+                on: "hover",
+                style: {
+                  itemBackground: "rgba(0, 0, 0, .03)",
+                  itemOpacity: 1,
+                },
               },
-            ]
-          : []
-      }
+            ],
+          },
+        ]
+        : []}
       // motion
       animate={enableAnimate}
       motionConfig={motionConfig}
@@ -386,675 +362,379 @@ function ResponsiveLineChart({
     );
   }
 
-  const [
-    enableYScaleStackedAccessibleSelectedText,
-    enableYScaleStackedAccessibleDeselectedText,
-  ] = AccessibleSelectedDeselectedTextElements({
-    deselectedDescription: 'Lines will be stacked',
-    isSelected: enableYScaleStacked,
-    selectedDescription: 'Lines will not be stacked',
-    semanticName: 'Y Scale Stacked',
-    theme: 'muted',
-  });
-
-  const [
-    enableReverseScaleAccessibleSelectedText,
-    enableReverseScaleAccessibleDeselectedText,
-  ] = AccessibleSelectedDeselectedTextElements({
-    deselectedDescription: 'Scale will not be reversed',
-    isSelected: reverseScale,
-    selectedDescription: 'Scale will be reversed',
-    semanticName: 'reverse Scale',
-    theme: 'muted',
-  });
-
-  const [enableAreaAccessibleSelectedText, enableAreaAccessibleDeselectedText] =
-    AccessibleSelectedDeselectedTextElements({
-      deselectedDescription: 'Area below each line will be disabled',
-      isSelected: enableArea,
-      selectedDescription: 'Area below each line will be enabled',
-      semanticName: 'Area',
-      theme: 'muted',
-    });
-
-  const [
-    enablePointsAccessibleSelectedText,
-    enablePointsAccessibleDeselectedText,
-  ] = AccessibleSelectedDeselectedTextElements({
-    deselectedDescription: 'Points will be disabled',
-    isSelected: enablePoints,
-    selectedDescription: 'Points will be enabled',
-    semanticName: 'Points',
-    theme: 'muted',
-  });
-
-  const [
-    enablePointLabelAccessibleSelectedText,
-    enablePointLabelAccessibleDeselectedText,
-  ] = AccessibleSelectedDeselectedTextElements({
-    deselectedDescription: 'Point label will be disabled',
-    isSelected: enablePointLabel,
-    selectedDescription: 'Point label will be enabled',
-    semanticName: 'Point Label',
-    theme: 'muted',
-  });
-
-  const [
-    enableGridXAccessibleSelectedText,
-    enableGridXAccessibleDeselectedText,
-  ] = AccessibleSelectedDeselectedTextElements({
-    deselectedDescription:
-      'Chart display area will not have a grid on the y axis.',
-    isSelected: enableGridX,
-    selectedDescription: 'Chart display area will have a grid on the y axis.',
-    semanticName: 'Grid X',
-    theme: 'muted',
-  });
-
-  const [
-    enableGridYAccessibleSelectedText,
-    enableGridYAccessibleDeselectedText,
-  ] = AccessibleSelectedDeselectedTextElements({
-    deselectedDescription:
-      'Chart display area will not have a grid on the x axis.',
-    isSelected: enableGridY,
-    selectedDescription: 'Chart display area will have a grid on the x axis.',
-    semanticName: 'Grid Y',
-    theme: 'muted',
-  });
-
-  const [
-    enableCrosshairAccessibleSelectedText,
-    enableCrosshairAccessibleDeselectedText,
-  ] = AccessibleSelectedDeselectedTextElements({
-    deselectedDescription: 'Crosshair will be disabled',
-    isSelected: enableCrosshair,
-    selectedDescription: 'Crosshair will be enabled',
-    semanticName: 'Crosshair',
-    theme: 'muted',
-  });
-
-  const [
-    enableAnimateAccessibleSelectedText,
-    enableAnimateAccessibleDeselectedText,
-  ] = AccessibleSelectedDeselectedTextElements({
-    deselectedDescription: 'Animation will be disabled',
-    isSelected: enableAnimate,
-    selectedDescription: 'Animation will be enabled',
-    semanticName: 'Animate',
-    theme: 'muted',
-  });
-
-  //
-  const { gray } = COLORS_SWATCHES;
-  const sliderWidth =
-    width < 480
-      ? '217px'
-      : width < 768
-      ? `${width * 0.38}px`
-      : width < 1192
-      ? '500px'
-      : `${width * 0.15}px`;
-  const sliderLabelColor = gray[3];
-
   // base
-  const xScaleSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
-    data: NIVO_LINE_AXES_SCALE,
-    description: 'Define x scale.',
-    onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-      responsiveLineChartDispatch({
-        type: responsiveLineChartAction.setXScale,
-        payload: event.currentTarget.value as NivoLineAxesScale,
-      });
-    },
-    value: xScale,
-    width: sliderWidth,
-  };
 
-  const yScaleSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
-    data: NIVO_LINE_AXES_SCALE,
-    description: 'Define y scale.',
-    onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-      responsiveLineChartDispatch({
-        type: responsiveLineChartAction.setYScale,
-        payload: event.currentTarget.value as NivoLineAxesScale,
-      });
-    },
-    value: yScale,
-    width: sliderWidth,
-  };
-
-  const createdEnableYScaleStackedSwitchInput = (
-    <Switch
-      aria-describedby={
-        enableYScaleStacked
-          ? enableYScaleStackedAccessibleSelectedText.props.id
-          : enableYScaleStackedAccessibleDeselectedText.props.id
-      }
-      checked={enableYScaleStacked}
-      description={
-        enableYScaleStacked
-          ? enableYScaleStackedAccessibleSelectedText
-          : enableYScaleStackedAccessibleDeselectedText
-      }
-      label={
-        <Text weight={500} color={textColor}>
-          Toggle Y Scale Stacked
-        </Text>
-      }
-      onChange={(event: ChangeEvent<HTMLInputElement>) => {
-        responsiveLineChartDispatch({
-          type: responsiveLineChartAction.setEnableYScaleStacked,
-          payload: event.currentTarget.checked,
-        });
+  const xScaleSelectInput = (
+    <AccessibleSelectInput
+      attributes={{
+        data: NIVO_LINE_AXES_SCALE,
+        description: "Define x scale",
+        name: "xScale",
+        parentDispatch: responsiveLineChartDispatch,
+        validValueAction: responsiveLineChartAction.setXScale,
+        value: xScale,
       }}
-      w="100%"
     />
   );
 
-  const createdReverseScaleSwitchInput = (
-    <Switch
-      aria-describedby={
-        reverseScale
-          ? enableReverseScaleAccessibleSelectedText.props.id
-          : enableReverseScaleAccessibleDeselectedText.props.id
-      }
-      checked={reverseScale}
-      description={
-        reverseScale
-          ? enableReverseScaleAccessibleSelectedText
-          : enableReverseScaleAccessibleDeselectedText
-      }
-      label={
-        <Text weight={500} color={textColor}>
-          Toggle Reverse Scale
-        </Text>
-      }
-      onChange={(event: ChangeEvent<HTMLInputElement>) => {
-        responsiveLineChartDispatch({
-          type: responsiveLineChartAction.setReverseScale,
-          payload: event.currentTarget.checked,
-        });
+  const yScaleSelectInput = (
+    <AccessibleSelectInput
+      attributes={{
+        data: NIVO_LINE_AXES_SCALE,
+        description: "Define y scale",
+        name: "yScale",
+        parentDispatch: responsiveLineChartDispatch,
+        validValueAction: responsiveLineChartAction.setYScale,
+        value: yScale,
       }}
-      w="100%"
+    />
+  );
+
+  const enableYScaleStackedSwitchInput = (
+    <AccessibleSwitchInput
+      attributes={{
+        checked: enableYScaleStacked,
+        invalidValueAction: responsiveLineChartAction.setPageInError,
+        name: "enableYScaleStacked",
+        offLabel: "Off",
+        onLabel: "On",
+        parentDispatch: responsiveLineChartDispatch,
+        validValueAction: responsiveLineChartAction.setEnableYScaleStacked,
+        value: enableYScaleStacked,
+      }}
+    />
+  );
+
+  const reverseScaleSwitchInput = (
+    <AccessibleSwitchInput
+      attributes={{
+        checked: reverseScale,
+        invalidValueAction: responsiveLineChartAction.setPageInError,
+        name: "reverseScale",
+        offLabel: "Off",
+        onLabel: "On",
+        parentDispatch: responsiveLineChartDispatch,
+        validValueAction: responsiveLineChartAction.setReverseScale,
+        value: reverseScale,
+      }}
     />
   );
 
   // style
-  const lineCurveSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
-    data: NIVO_LINE_CURVE_DATA,
-    description: 'Define line curve.',
-    onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-      responsiveLineChartDispatch({
-        type: responsiveLineChartAction.setLineCurve,
-        payload: event.currentTarget.value as NivoLineCurve,
-      });
-    },
-    value: lineCurve,
-    width: sliderWidth,
-  };
 
-  const chartColorsSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
-    data: NIVO_COLOR_SCHEME_DATA,
-    description: 'Define chart colors.',
-    onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-      responsiveLineChartDispatch({
-        type: responsiveLineChartAction.setChartColors,
-        payload: event.currentTarget.value as NivoColorScheme,
-      });
-    },
-    value: chartColors,
-    width: sliderWidth,
-  };
-
-  const lineWidthSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
-    ariaLabel: 'line width',
-    kind: 'slider',
-    label: (value) => (
-      <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-    ),
-    max: 20,
-    min: 0,
-    onChangeSlider: (value: number) => {
-      responsiveLineChartDispatch({
-        type: responsiveLineChartAction.setLineWidth,
-        payload: value,
-      });
-    },
-    sliderDefaultValue: 2,
-    step: 1,
-    value: lineWidth,
-    width: sliderWidth,
-  };
-
-  const createdEnableAreaSwitchInput = (
-    <Switch
-      aria-describedby={
-        enableArea
-          ? enableAreaAccessibleSelectedText.props.id
-          : enableAreaAccessibleDeselectedText.props.id
-      }
-      checked={enableArea}
-      description={
-        enableArea
-          ? enableAreaAccessibleSelectedText
-          : enableAreaAccessibleDeselectedText
-      }
-      label={
-        <Text weight={500} color={textColor}>
-          Toggle Area
-        </Text>
-      }
-      onChange={(event: ChangeEvent<HTMLInputElement>) => {
-        responsiveLineChartDispatch({
-          type: responsiveLineChartAction.setEnableArea,
-          payload: event.currentTarget.checked,
-        });
+  const lineCurveSelectInput = (
+    <AccessibleSelectInput
+      attributes={{
+        data: NIVO_LINE_CURVE_DATA,
+        description: "Define line curve",
+        name: "lineCurve",
+        parentDispatch: responsiveLineChartDispatch,
+        validValueAction: responsiveLineChartAction.setLineCurve,
+        value: lineCurve,
       }}
-      w="100%"
     />
   );
 
-  const areaOpacitySliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
-    ariaLabel: 'area opacity',
-    disabled: !enableArea,
-    kind: 'slider',
-    label: (value) => <Text style={{ color: sliderLabelColor }}>{value}</Text>,
-    max: 1,
-    min: 0,
-    onChangeSlider: (value: number) => {
-      responsiveLineChartDispatch({
-        type: responsiveLineChartAction.setAreaOpacity,
-        payload: value,
-      });
-    },
-    sliderDefaultValue: 0.2,
-    step: 0.1,
-    value: areaOpacity,
-    width: sliderWidth,
-  };
+  const chartColorsSelectInput = (
+    <AccessibleSelectInput
+      attributes={{
+        data: NIVO_COLOR_SCHEME_DATA,
+        description: "Define chart colors",
+        name: "chartColors",
+        parentDispatch: responsiveLineChartDispatch,
+        validValueAction: responsiveLineChartAction.setChartColors,
+        value: chartColors,
+      }}
+    />
+  );
 
-  const areaBlendModeSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo =
-    {
-      data: NIVO_LINE_AREA_BLEND_MODE_DATA,
-      description: 'Define line area blend mode.',
-      disabled: !enableArea,
-      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-        responsiveLineChartDispatch({
-          type: responsiveLineChartAction.setAreaBlendMode,
-          payload: event.currentTarget.value as NivoLineAreaBlendMode,
-        });
-      },
-      value: areaBlendMode,
-      width: sliderWidth,
-    };
+  const lineWidthSliderInput = (
+    <AccessibleSliderInput
+      attributes={{
+        label: (value) => (
+          <Text style={{ color: SLIDER_TOOLTIP_COLOR }}>{value} px</Text>
+        ),
+        max: 20,
+        min: 0,
+        name: "lineWidth",
+        parentDispatch: responsiveLineChartDispatch,
+        sliderDefaultValue: 2,
+        step: 1,
+        validValueAction: responsiveLineChartAction.setLineWidth,
+        value: lineWidth,
+      }}
+    />
+  );
+
+  const enableAreaSwitchInput = (
+    <AccessibleSwitchInput
+      attributes={{
+        checked: enableArea,
+        invalidValueAction: responsiveLineChartAction.setPageInError,
+        name: "enableArea",
+        offLabel: "Off",
+        onLabel: "On",
+        parentDispatch: responsiveLineChartDispatch,
+        validValueAction: responsiveLineChartAction.setEnableArea,
+        value: enableArea,
+      }}
+    />
+  );
+
+  const areaOpacitySliderInput = (
+    <AccessibleSliderInput
+      attributes={{
+        label: (value) => (
+          <Text style={{ color: SLIDER_TOOLTIP_COLOR }}>{value}</Text>
+        ),
+        max: 1,
+        min: 0,
+        name: "areaOpacity",
+        parentDispatch: responsiveLineChartDispatch,
+        sliderDefaultValue: 0.2,
+        step: 0.1,
+        validValueAction: responsiveLineChartAction.setAreaOpacity,
+        value: areaOpacity,
+      }}
+    />
+  );
+
+  const areaBlendModeSelectInput = (
+    <AccessibleSelectInput
+      attributes={{
+        data: NIVO_LINE_AREA_BLEND_MODE_DATA,
+        description: "Define line area blend mode",
+        name: "areaBlendMode",
+        parentDispatch: responsiveLineChartDispatch,
+        validValueAction: responsiveLineChartAction.setAreaBlendMode,
+        value: areaBlendMode,
+      }}
+    />
+  );
 
   // points
-  const createdEnablePointsSwitchInput = (
-    <Switch
-      aria-describedby={
-        enablePoints
-          ? enablePointsAccessibleSelectedText.props.id
-          : enablePointsAccessibleDeselectedText.props.id
-      }
-      checked={enablePoints}
-      description={
-        enablePoints
-          ? enablePointsAccessibleSelectedText
-          : enablePointsAccessibleDeselectedText
-      }
-      label={
-        <Text weight={500} color={textColor}>
-          Toggle Points
-        </Text>
-      }
-      onChange={(event: ChangeEvent<HTMLInputElement>) => {
-        responsiveLineChartDispatch({
-          type: responsiveLineChartAction.setEnablePoints,
-          payload: event.currentTarget.checked,
-        });
+
+  const enablePointsSwitchInput = (
+    <AccessibleSwitchInput
+      attributes={{
+        checked: enablePoints,
+        invalidValueAction: responsiveLineChartAction.setPageInError,
+        name: "enablePoints",
+        offLabel: "Off",
+        onLabel: "On",
+        parentDispatch: responsiveLineChartDispatch,
+        validValueAction: responsiveLineChartAction.setEnablePoints,
+        value: enablePoints,
       }}
-      w="100%"
     />
   );
 
-  const pointSizeSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
-    ariaLabel: 'point size',
-    disabled: !enablePoints,
-    kind: 'slider',
-    label: (value) => (
-      <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-    ),
-    max: 20,
-    min: 0,
-    onChangeSlider: (value: number) => {
-      responsiveLineChartDispatch({
-        type: responsiveLineChartAction.setPointSize,
-        payload: value,
-      });
-    },
-    sliderDefaultValue: 6,
-    step: 1,
-    value: pointSize,
-    width: sliderWidth,
-  };
+  const pointSizeSliderInput = (
+    <AccessibleSliderInput
+      attributes={{
+        label: (value) => (
+          <Text style={{ color: SLIDER_TOOLTIP_COLOR }}>{value} px</Text>
+        ),
+        max: 20,
+        min: 0,
+        name: "pointSize",
+        parentDispatch: responsiveLineChartDispatch,
+        sliderDefaultValue: 6,
+        step: 1,
+        validValueAction: responsiveLineChartAction.setPointSize,
+        value: pointSize,
+      }}
+    />
+  );
 
-  const createdPointColorInput = (
+  const pointColorInput = (
     <ColorInput
       aria-label="point color"
       color={pointColor}
       disabled={!enablePoints}
       onChange={(color: string) => {
         responsiveLineChartDispatch({
-          type: responsiveLineChartAction.setPointColor,
+          action: responsiveLineChartAction.setPointColor,
           payload: color,
         });
       }}
       value={pointColor}
-      w={sliderWidth}
     />
   );
 
-  const pointBorderWidthSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      ariaLabel: 'point border width',
-      disabled: !enablePoints,
-      kind: 'slider',
-      label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-      ),
-      max: 20,
-      min: 0,
-      onChangeSlider: (value: number) => {
-        responsiveLineChartDispatch({
-          type: responsiveLineChartAction.setPointBorderWidth,
-          payload: value,
-        });
-      },
-      sliderDefaultValue: 0,
-      step: 1,
-      value: pointBorderWidth,
-      width: sliderWidth,
-    };
-
-  const createdEnablePointLabelSwitchInput = (
-    <Switch
-      aria-describedby={
-        enablePointLabel
-          ? enablePointLabelAccessibleSelectedText.props.id
-          : enablePointLabelAccessibleDeselectedText.props.id
-      }
-      checked={enablePointLabel}
-      description={
-        enablePointLabel
-          ? enablePointLabelAccessibleSelectedText
-          : enablePointLabelAccessibleDeselectedText
-      }
-      label={
-        <Text weight={500} color={textColor}>
-          Toggle Point Label
-        </Text>
-      }
-      onChange={(event: ChangeEvent<HTMLInputElement>) => {
-        responsiveLineChartDispatch({
-          type: responsiveLineChartAction.setEnablePointLabel,
-          payload: event.currentTarget.checked,
-        });
+  const pointBorderWidthSliderInput = (
+    <AccessibleSliderInput
+      attributes={{
+        label: (value) => (
+          <Text style={{ color: SLIDER_TOOLTIP_COLOR }}>{value} px</Text>
+        ),
+        max: 20,
+        min: 0,
+        name: "pointBorderWidth",
+        parentDispatch: responsiveLineChartDispatch,
+        sliderDefaultValue: 0,
+        step: 1,
+        validValueAction: responsiveLineChartAction.setPointBorderWidth,
+        value: pointBorderWidth,
       }}
-      w="100%"
     />
   );
 
-  const pointLabelSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
-    data: NIVO_LINE_POINT_LABEL_DATA,
-    description: 'Define point label.',
-    disabled: !enablePointLabel,
-    onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-      responsiveLineChartDispatch({
-        type: responsiveLineChartAction.setPointLabel,
-        payload: event.currentTarget.value as NivoLinePointLabel,
-      });
-    },
-    value: pointLabel,
-    width: sliderWidth,
-  };
+  const enablePointLabelSwitchInput = (
+    <AccessibleSwitchInput
+      attributes={{
+        checked: enablePointLabel,
+        invalidValueAction: responsiveLineChartAction.setPageInError,
+        name: "enablePointLabel",
+        offLabel: "Off",
+        onLabel: "On",
+        parentDispatch: responsiveLineChartDispatch,
+        validValueAction: responsiveLineChartAction.setEnablePointLabel,
+        value: enablePointLabel,
+      }}
+    />
+  );
 
-  const pointLabelYOffsetSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      ariaLabel: 'point label y offset',
-      disabled: !enablePointLabel,
-      kind: 'slider',
-      label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-      ),
-      max: 24,
-      min: -22,
-      onChangeSlider: (value: number) => {
-        responsiveLineChartDispatch({
-          type: responsiveLineChartAction.setPointLabelYOffset,
-          payload: value,
-        });
-      },
-      sliderDefaultValue: -12,
-      step: 1,
-      value: pointLabelYOffset,
-      width: sliderWidth,
-    };
+  const pointLabelSelectInput = (
+    <AccessibleSelectInput
+      attributes={{
+        data: NIVO_LINE_POINT_LABEL_DATA,
+        description: "Define point label",
+        name: "pointLabel",
+        parentDispatch: responsiveLineChartDispatch,
+        validValueAction: responsiveLineChartAction.setPointLabel,
+        value: pointLabel,
+      }}
+    />
+  );
+
+  const pointLabelYOffsetSliderInput = (
+    <AccessibleSliderInput
+      attributes={{
+        label: (value) => (
+          <Text style={{ color: SLIDER_TOOLTIP_COLOR }}>{value} px</Text>
+        ),
+        max: 24,
+        min: -22,
+        name: "pointLabelYOffset",
+        parentDispatch: responsiveLineChartDispatch,
+        sliderDefaultValue: -12,
+        step: 1,
+        validValueAction: responsiveLineChartAction.setPointLabelYOffset,
+        value: pointLabelYOffset,
+      }}
+    />
+  );
 
   // grids
-  const createdEnableGridXSwitchInput = (
-    <Switch
-      aria-describedby={
-        enableGridX
-          ? enableGridXAccessibleSelectedText.props.id
-          : enableGridXAccessibleDeselectedText.props.id
-      }
-      checked={enableGridX}
-      description={
-        enableGridX
-          ? enableGridXAccessibleSelectedText
-          : enableGridXAccessibleDeselectedText
-      }
-      label={
-        <Text weight={500} color={textColor}>
-          Toggle Grid X
-        </Text>
-      }
-      onChange={(event: ChangeEvent<HTMLInputElement>) => {
-        responsiveLineChartDispatch({
-          type: responsiveLineChartAction.setEnableGridX,
-          payload: event.currentTarget.checked,
-        });
+
+  const enableGridXSwitchInput = (
+    <AccessibleSwitchInput
+      attributes={{
+        checked: enableGridX,
+        invalidValueAction: responsiveLineChartAction.setPageInError,
+        name: "enableGridX",
+        offLabel: "Off",
+        onLabel: "On",
+        parentDispatch: responsiveLineChartDispatch,
+        validValueAction: responsiveLineChartAction.setEnableGridX,
+        value: enableGridX,
       }}
-      w="100%"
     />
   );
 
-  const createdEnableGridYSwitchInput = (
-    <Switch
-      aria-describedby={
-        enableGridY
-          ? enableGridYAccessibleSelectedText.props.id
-          : enableGridYAccessibleDeselectedText.props.id
-      }
-      checked={enableGridY}
-      description={
-        enableGridY
-          ? enableGridYAccessibleSelectedText
-          : enableGridYAccessibleDeselectedText
-      }
-      label={
-        <Text weight={500} color={textColor}>
-          Toggle Grid Y
-        </Text>
-      }
-      onChange={(event: ChangeEvent<HTMLInputElement>) => {
-        responsiveLineChartDispatch({
-          type: responsiveLineChartAction.setEnableGridY,
-          payload: event.currentTarget.checked,
-        });
+  const enableGridYSwitchInput = (
+    <AccessibleSwitchInput
+      attributes={{
+        checked: enableGridY,
+        invalidValueAction: responsiveLineChartAction.setPageInError,
+        name: "enableGridY",
+        offLabel: "Off",
+        onLabel: "On",
+        parentDispatch: responsiveLineChartDispatch,
+        validValueAction: responsiveLineChartAction.setEnableGridY,
+        value: enableGridY,
       }}
-      w="100%"
     />
   );
 
   // interactivity
-  const createdEnableCrosshairSwitchInput = (
-    <Switch
-      aria-describedby={
-        enableCrosshair
-          ? enableCrosshairAccessibleSelectedText.props.id
-          : enableCrosshairAccessibleDeselectedText.props.id
-      }
-      checked={enableCrosshair}
-      description={
-        enableCrosshair
-          ? enableCrosshairAccessibleSelectedText
-          : enableCrosshairAccessibleDeselectedText
-      }
-      label={
-        <Text weight={500} color={textColor}>
-          Toggle Crosshair
-        </Text>
-      }
-      onChange={(event: ChangeEvent<HTMLInputElement>) => {
-        responsiveLineChartDispatch({
-          type: responsiveLineChartAction.setEnableCrosshair,
-          payload: event.currentTarget.checked,
-        });
+
+  const enableCrosshairSwitchInput = (
+    <AccessibleSwitchInput
+      attributes={{
+        checked: enableCrosshair,
+        invalidValueAction: responsiveLineChartAction.setPageInError,
+        name: "enableCrosshair",
+        offLabel: "Off",
+        onLabel: "On",
+        parentDispatch: responsiveLineChartDispatch,
+        validValueAction: responsiveLineChartAction.setEnableCrosshair,
+        value: enableCrosshair,
       }}
-      w="100%"
     />
   );
 
-  const crosshairTypeSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo =
-    {
-      data: NIVO_LINE_CROSSHAIR_TYPE_DATA,
-      description: 'Define crosshair type.',
-      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-        responsiveLineChartDispatch({
-          type: responsiveLineChartAction.setCrosshairType,
-          payload: event.currentTarget.value as NivoLineCrosshairType,
-        });
-      },
-      value: crosshairType,
-      width: sliderWidth,
-    };
+  const crosshairTypeSelectInput = (
+    <AccessibleSelectInput
+      attributes={{
+        data: NIVO_LINE_CROSSHAIR_TYPE_DATA,
+        description: "Define crosshair type",
+        name: "crosshairType",
+        parentDispatch: responsiveLineChartDispatch,
+        validValueAction: responsiveLineChartAction.setCrosshairType,
+        value: crosshairType,
+      }}
+    />
+  );
 
   // motion
-  const createdEnableAnimateSwitchInput = (
-    <Switch
-      aria-describedby={
-        enableAnimate
-          ? enableAnimateAccessibleSelectedText.props.id
-          : enableAnimateAccessibleDeselectedText.props.id
-      }
-      checked={enableAnimate}
-      description={
-        enableAnimate
-          ? enableAnimateAccessibleSelectedText
-          : enableAnimateAccessibleDeselectedText
-      }
-      label={
-        <Text weight={500} color={textColor}>
-          Animate
-        </Text>
-      }
-      onChange={(event: ChangeEvent<HTMLInputElement>) => {
-        responsiveLineChartDispatch({
-          type: responsiveLineChartAction.setEnableAnimate,
-          payload: event.currentTarget.checked,
-        });
+
+  const enableAnimateSwitchInput = (
+    <AccessibleSwitchInput
+      attributes={{
+        checked: enableAnimate,
+        invalidValueAction: responsiveLineChartAction.setPageInError,
+        name: "enableAnimate",
+        offLabel: "Off",
+        onLabel: "On",
+        parentDispatch: responsiveLineChartDispatch,
+        validValueAction: responsiveLineChartAction.setEnableAnimate,
+        value: enableAnimate,
       }}
-      w="100%"
     />
   );
 
-  const motionConfigSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
-    data: NIVO_MOTION_CONFIG_DATA,
-    description: 'Define motion config.',
-    disabled: !enableAnimate,
-    onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-      responsiveLineChartDispatch({
-        type: responsiveLineChartAction.setMotionConfig,
-        payload: event.currentTarget.value as NivoMotionConfig,
-      });
-    },
-    value: motionConfig,
-    width: sliderWidth,
-  };
+  const motionConfigSelectInput = (
+    <AccessibleSelectInput
+      attributes={{
+        data: NIVO_MOTION_CONFIG_DATA,
+        description: "Define motion config",
+        name: "motionConfig",
+        parentDispatch: responsiveLineChartDispatch,
+        validValueAction: responsiveLineChartAction.setMotionConfig,
+        value: motionConfig,
+      }}
+    />
+  );
 
   // reset all button
-  const [createdResetAllButton] = returnAccessibleButtonElements([
-    {
-      buttonLabel: 'Reset',
-      leftIcon: <BiReset />,
-      semanticDescription: 'Reset all inputs to their default values',
-      semanticName: 'Reset All',
-      buttonOnClick: () => {
-        responsiveLineChartDispatch({
-          type: responsiveLineChartAction.resetChartToDefault,
-          payload: modifiedResponsiveLineChartState,
-        });
-      },
-    },
-  ]);
 
-  // input creation
-
-  // base
-  // base select inputs
-  const [createdXScaleSelectInput, createdYScaleSelectInput] =
-    returnAccessibleSelectInputElements([
-      xScaleSelectInputCreatorInfo,
-      yScaleSelectInputCreatorInfo,
-    ]);
-
-  // style
-  // style select inputs
-  const [
-    createdLineCurveSelectInput,
-    createdChartColorsSelectInput,
-    createdAreaBlendModeSelectInput,
-  ] = returnAccessibleSelectInputElements([
-    lineCurveSelectInputCreatorInfo,
-    chartColorsSelectInputCreatorInfo,
-    areaBlendModeSelectInputCreatorInfo,
-  ]);
-
-  // style slider inputs
-  const [createdLineWidthSliderInput, createdAreaOpacitySliderInput] =
-    returnAccessibleSliderInputElements([
-      lineWidthSliderInputCreatorInfo,
-      areaOpacitySliderInputCreatorInfo,
-    ]);
-
-  // points
-  // points slider inputs
-  const [
-    createdPointSizeSliderInput,
-    createdPointBorderWidthSliderInput,
-    createdPointLabelYOffsetSliderInput,
-  ] = returnAccessibleSliderInputElements([
-    pointSizeSliderInputCreatorInfo,
-    pointBorderWidthSliderInputCreatorInfo,
-    pointLabelYOffsetSliderInputCreatorInfo,
-  ]);
-
-  // points select inputs
-  const [createdPointLabelSelectInput] = returnAccessibleSelectInputElements([
-    pointLabelSelectInputCreatorInfo,
-  ]);
-
-  // interactivity
-  const [createdCrosshairTypeSelectInput] = returnAccessibleSelectInputElements(
-    [crosshairTypeSelectInputCreatorInfo]
+  const resetAllButton = (
+    <AccessibleButton
+      attributes={{
+        enabledScreenreaderText: "Reset all inputs to their default values",
+        kind: "reset",
+        name: "resetAll",
+        onClick: () => {
+          responsiveLineChartDispatch({
+            action: responsiveLineChartAction.resetChartToDefault,
+            payload: modifiedResponsiveLineChartState,
+          });
+        },
+      }}
+    />
   );
-
-  // motion
-  const [createdMotionConfigSelectInput] = returnAccessibleSelectInputElements([
-    motionConfigSelectInputCreatorInfo,
-  ]);
 
   // input display
 
@@ -1062,13 +742,7 @@ function ResponsiveLineChart({
   const displayBaseHeading = (
     <Group
       bg={sectionHeadersBgColor}
-      p={padding}
-      style={{
-        boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25)',
-        position: 'sticky',
-        top: 0,
-        zIndex: 4,
-      }}
+      style={STICKY_STYLE}
       w="100%"
     >
       <Title order={5} color={textColor}>
@@ -1080,7 +754,7 @@ function ResponsiveLineChart({
   const displayXScaleSelectInput = (
     <ChartsAndGraphsControlsStacker
       initialChartState={modifiedResponsiveLineChartState}
-      input={createdXScaleSelectInput}
+      input={xScaleSelectInput}
       label="X scale"
       value={xScale}
     />
@@ -1089,21 +763,21 @@ function ResponsiveLineChart({
   const displayYScaleSelectInput = (
     <ChartsAndGraphsControlsStacker
       initialChartState={modifiedResponsiveLineChartState}
-      input={createdYScaleSelectInput}
+      input={yScaleSelectInput}
       label="Y scale"
       value={yScale}
     />
   );
 
   const displayEnableYScaleStackedSwitchInput = (
-    <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
-      {createdEnableYScaleStackedSwitchInput}
+    <Group w="100%" style={{ borderBottom: borderColor }}>
+      {enableYScaleStackedSwitchInput}
     </Group>
   );
 
   const displayReverseScaleSwitchInput = (
-    <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
-      {createdReverseScaleSwitchInput}
+    <Group w="100%" style={{ borderBottom: borderColor }}>
+      {reverseScaleSwitchInput}
     </Group>
   );
 
@@ -1125,7 +799,6 @@ function ResponsiveLineChart({
       marginLeft={marginLeft}
       marginRight={marginRight}
       marginTop={marginTop}
-      padding={padding}
       parentChartAction={responsiveLineChartAction}
       parentChartDispatch={responsiveLineChartDispatch}
       sectionHeadersBgColor={sectionHeadersBgColor}
@@ -1138,13 +811,7 @@ function ResponsiveLineChart({
   const displayStyleHeading = (
     <Group
       bg={sectionHeadersBgColor}
-      p={padding}
-      style={{
-        boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25)',
-        position: 'sticky',
-        top: 0,
-        zIndex: 4,
-      }}
+      style={STICKY_STYLE}
       w="100%"
     >
       <Title order={5} color={textColor}>
@@ -1156,7 +823,7 @@ function ResponsiveLineChart({
   const displayLineCurveSelectInput = (
     <ChartsAndGraphsControlsStacker
       initialChartState={modifiedResponsiveLineChartState}
-      input={createdLineCurveSelectInput}
+      input={lineCurveSelectInput}
       label="Line curve"
       value={lineCurve}
     />
@@ -1165,7 +832,7 @@ function ResponsiveLineChart({
   const displayChartColorsSelectInput = (
     <ChartsAndGraphsControlsStacker
       initialChartState={modifiedResponsiveLineChartState}
-      input={createdChartColorsSelectInput}
+      input={chartColorsSelectInput}
       label="Chart colors"
       value={chartColors}
     />
@@ -1174,7 +841,7 @@ function ResponsiveLineChart({
   const displayLineWidthSliderInput = (
     <ChartsAndGraphsControlsStacker
       initialChartState={modifiedResponsiveLineChartState}
-      input={createdLineWidthSliderInput}
+      input={lineWidthSliderInput}
       label="Line width"
       symbol="px"
       value={lineWidth}
@@ -1182,15 +849,15 @@ function ResponsiveLineChart({
   );
 
   const displayEnableAreaSwitchInput = (
-    <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
-      {createdEnableAreaSwitchInput}
+    <Group w="100%" style={{ borderBottom: borderColor }}>
+      {enableAreaSwitchInput}
     </Group>
   );
 
   const displayAreaOpacitySliderInput = (
     <ChartsAndGraphsControlsStacker
       initialChartState={modifiedResponsiveLineChartState}
-      input={createdAreaOpacitySliderInput}
+      input={areaOpacitySliderInput}
       isInputDisabled={!enableArea}
       label="Area opacity"
       value={areaOpacity}
@@ -1200,7 +867,7 @@ function ResponsiveLineChart({
   const displayAreaBlendModeSelectInput = (
     <ChartsAndGraphsControlsStacker
       initialChartState={modifiedResponsiveLineChartState}
-      input={createdAreaBlendModeSelectInput}
+      input={areaBlendModeSelectInput}
       isInputDisabled={!enableArea}
       label="Area blend mode"
       value={areaBlendMode}
@@ -1223,13 +890,7 @@ function ResponsiveLineChart({
   const displayPointsHeading = (
     <Group
       bg={sectionHeadersBgColor}
-      p={padding}
-      style={{
-        boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25)',
-        position: 'sticky',
-        top: 0,
-        zIndex: 4,
-      }}
+      style={STICKY_STYLE}
       w="100%"
     >
       <Title order={5} color={textColor}>
@@ -1239,15 +900,15 @@ function ResponsiveLineChart({
   );
 
   const displayEnablePointsSwitchInput = (
-    <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
-      {createdEnablePointsSwitchInput}
+    <Group w="100%" style={{ borderBottom: borderColor }}>
+      {enablePointsSwitchInput}
     </Group>
   );
 
   const displayPointSizeSliderInput = (
     <ChartsAndGraphsControlsStacker
       initialChartState={modifiedResponsiveLineChartState}
-      input={createdPointSizeSliderInput}
+      input={pointSizeSliderInput}
       isInputDisabled={!enablePoints}
       label="Point size"
       symbol="px"
@@ -1258,7 +919,7 @@ function ResponsiveLineChart({
   const displayPointColorInput = (
     <ChartsAndGraphsControlsStacker
       initialChartState={modifiedResponsiveLineChartState}
-      input={createdPointColorInput}
+      input={pointColorInput}
       isInputDisabled={!enablePoints}
       label="Point color"
       value={pointColor}
@@ -1268,7 +929,7 @@ function ResponsiveLineChart({
   const displayPointBorderWidthSliderInput = (
     <ChartsAndGraphsControlsStacker
       initialChartState={modifiedResponsiveLineChartState}
-      input={createdPointBorderWidthSliderInput}
+      input={pointBorderWidthSliderInput}
       isInputDisabled={!enablePoints}
       label="Point border width"
       symbol="px"
@@ -1277,15 +938,15 @@ function ResponsiveLineChart({
   );
 
   const displayEnablePointLabelSwitchInput = (
-    <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
-      {createdEnablePointLabelSwitchInput}
+    <Group w="100%" style={{ borderBottom: borderColor }}>
+      {enablePointLabelSwitchInput}
     </Group>
   );
 
   const displayPointLabelSelectInput = (
     <ChartsAndGraphsControlsStacker
       initialChartState={modifiedResponsiveLineChartState}
-      input={createdPointLabelSelectInput}
+      input={pointLabelSelectInput}
       isInputDisabled={!enablePointLabel}
       label="Point label"
       value={pointLabel}
@@ -1295,7 +956,7 @@ function ResponsiveLineChart({
   const displayPointLabelYOffsetSliderInput = (
     <ChartsAndGraphsControlsStacker
       initialChartState={modifiedResponsiveLineChartState}
-      input={createdPointLabelYOffsetSliderInput}
+      input={pointLabelYOffsetSliderInput}
       isInputDisabled={!enablePointLabel}
       label="Point label Y offset"
       symbol="px"
@@ -1320,13 +981,7 @@ function ResponsiveLineChart({
   const displayGridsHeading = (
     <Group
       bg={sectionHeadersBgColor}
-      p={padding}
-      style={{
-        boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25)',
-        position: 'sticky',
-        top: 0,
-        zIndex: 4,
-      }}
+      style={STICKY_STYLE}
       w="100%"
     >
       <Title order={5} color={textColor}>
@@ -1336,14 +991,14 @@ function ResponsiveLineChart({
   );
 
   const displayEnableGridXSwitchInput = (
-    <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
-      {createdEnableGridXSwitchInput}
+    <Group w="100%" style={{ borderBottom: borderColor }}>
+      {enableGridXSwitchInput}
     </Group>
   );
 
   const displayEnableGridYSwitchInput = (
-    <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
-      {createdEnableGridYSwitchInput}
+    <Group w="100%" style={{ borderBottom: borderColor }}>
+      {enableGridYSwitchInput}
     </Group>
   );
 
@@ -1367,12 +1022,10 @@ function ResponsiveLineChart({
       borderColor={borderColor}
       enableAxisTop={enableAxisTop}
       initialChartState={modifiedResponsiveLineChartState}
-      isAxisTopLegendFocused={isAxisTopLegendFocused}
-      isAxisTopLegendValid={isAxisTopLegendValid}
-      padding={padding}
       parentChartAction={responsiveLineChartAction}
       parentChartDispatch={responsiveLineChartDispatch}
       sectionHeadersBgColor={sectionHeadersBgColor}
+      stepperPages={returnChartAxisTopStepperPages()}
       textColor={textColor}
       width={width}
     />
@@ -1389,12 +1042,10 @@ function ResponsiveLineChart({
       borderColor={borderColor}
       enableAxisRight={enableAxisRight}
       initialChartState={modifiedResponsiveLineChartState}
-      isAxisRightLegendFocused={isAxisRightLegendFocused}
-      isAxisRightLegendValid={isAxisRightLegendValid}
-      padding={padding}
       parentChartAction={responsiveLineChartAction}
       parentChartDispatch={responsiveLineChartDispatch}
       sectionHeadersBgColor={sectionHeadersBgColor}
+      stepperPages={returnChartAxisRightStepperPages()}
       textColor={textColor}
       width={width}
     />
@@ -1411,12 +1062,10 @@ function ResponsiveLineChart({
       borderColor={borderColor}
       enableAxisBottom={enableAxisBottom}
       initialChartState={modifiedResponsiveLineChartState}
-      isAxisBottomLegendFocused={isAxisBottomLegendFocused}
-      isAxisBottomLegendValid={isAxisBottomLegendValid}
-      padding={padding}
       parentChartAction={responsiveLineChartAction}
       parentChartDispatch={responsiveLineChartDispatch}
       sectionHeadersBgColor={sectionHeadersBgColor}
+      stepperPages={returnChartAxisBottomStepperPages()}
       textColor={textColor}
       width={width}
     />
@@ -1433,12 +1082,10 @@ function ResponsiveLineChart({
       borderColor={borderColor}
       enableAxisLeft={enableAxisLeft}
       initialChartState={modifiedResponsiveLineChartState}
-      isAxisLeftLegendFocused={isAxisLeftLegendFocused}
-      isAxisLeftLegendValid={isAxisLeftLegendValid}
-      padding={padding}
       parentChartAction={responsiveLineChartAction}
       parentChartDispatch={responsiveLineChartDispatch}
       sectionHeadersBgColor={sectionHeadersBgColor}
+      stepperPages={returnChartAxisLeftStepperPages()}
       textColor={textColor}
       width={width}
     />
@@ -1448,13 +1095,7 @@ function ResponsiveLineChart({
   const displayInteractivityHeading = (
     <Group
       bg={sectionHeadersBgColor}
-      p={padding}
-      style={{
-        boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25)',
-        position: 'sticky',
-        top: 0,
-        zIndex: 4,
-      }}
+      style={STICKY_STYLE}
       w="100%"
     >
       <Title order={5} color={textColor}>
@@ -1464,15 +1105,15 @@ function ResponsiveLineChart({
   );
 
   const displayEnableCrosshairSwitchInput = (
-    <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
-      {createdEnableCrosshairSwitchInput}
+    <Group w="100%" style={{ borderBottom: borderColor }}>
+      {enableCrosshairSwitchInput}
     </Group>
   );
 
   const displayCrosshairTypeSelectInput = (
     <ChartsAndGraphsControlsStacker
       initialChartState={modifiedResponsiveLineChartState}
-      input={createdCrosshairTypeSelectInput}
+      input={crosshairTypeSelectInput}
       isInputDisabled={!enableCrosshair}
       label="Crosshair type"
       value={crosshairType}
@@ -1511,7 +1152,6 @@ function ResponsiveLineChart({
       legendSymbolSpacing={legendSymbolSpacing}
       legendTranslateX={legendTranslateX}
       legendTranslateY={legendTranslateY}
-      padding={padding}
       parentChartAction={responsiveLineChartAction}
       parentChartDispatch={responsiveLineChartDispatch}
       sectionHeadersBgColor={sectionHeadersBgColor}
@@ -1524,13 +1164,7 @@ function ResponsiveLineChart({
   const displayMotionHeading = (
     <Group
       bg={sectionHeadersBgColor}
-      p={padding}
-      style={{
-        boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25)',
-        position: 'sticky',
-        top: 0,
-        zIndex: 4,
-      }}
+      style={STICKY_STYLE}
       w="100%"
     >
       <Title order={5} color={textColor}>
@@ -1540,15 +1174,15 @@ function ResponsiveLineChart({
   );
 
   const displayEnableAnimateSwitchInput = (
-    <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
-      {createdEnableAnimateSwitchInput}
+    <Group w="100%" style={{ borderBottom: borderColor }}>
+      {enableAnimateSwitchInput}
     </Group>
   );
 
   const displayMotionConfigSelectInput = (
     <ChartsAndGraphsControlsStacker
       initialChartState={modifiedResponsiveLineChartState}
-      input={createdMotionConfigSelectInput}
+      input={motionConfigSelectInput}
       isInputDisabled={!enableAnimate}
       label="Motion config"
       value={motionConfig}
@@ -1572,17 +1206,13 @@ function ResponsiveLineChart({
       chartTitlePosition={chartTitlePosition}
       chartTitleSize={chartTitleSize}
       initialChartState={modifiedResponsiveLineChartState}
-      isChartTitleFocused={isChartTitleFocused}
-      isChartTitleValid={isChartTitleValid}
-      isScreenshotFilenameFocused={isScreenshotFilenameFocused}
-      isScreenshotFilenameValid={isScreenshotFilenameValid}
-      padding={padding}
       parentChartAction={responsiveLineChartAction}
       parentChartDispatch={responsiveLineChartDispatch}
       screenshotFilename={screenshotFilename}
       screenshotImageQuality={screenshotImageQuality}
       screenshotImageType={screenshotImageType}
       sectionHeadersBgColor={sectionHeadersBgColor}
+      stepperPages={returnChartOptionsStepperPages()}
       textColor={textColor}
       width={width}
     />
@@ -1590,12 +1220,12 @@ function ResponsiveLineChart({
 
   const displayResetAllButton = (
     <Tooltip label="Reset all inputs to their default values">
-      <Group>{createdResetAllButton}</Group>
+      <Group>{resetAllButton}</Group>
     </Tooltip>
   );
 
   const displayResetAll = (
-    <Stack w="100%" py={padding}>
+    <Stack w="100%">
       <ChartsAndGraphsControlsStacker
         initialChartState={modifiedResponsiveLineChartState}
         input={displayResetAllButton}
@@ -1632,7 +1262,6 @@ function ResponsiveLineChart({
       chartTitleColor={chartTitleColor}
       chartTitlePosition={chartTitlePosition}
       chartTitleSize={chartTitleSize}
-      padding={padding}
       responsiveChart={displayResponsiveLine}
       scrollBarStyle={scrollBarStyle}
       width={width}

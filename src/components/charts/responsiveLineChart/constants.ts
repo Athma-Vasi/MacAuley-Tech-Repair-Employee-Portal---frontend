@@ -1,5 +1,5 @@
-import { CheckboxRadioSelectData } from "../../../types";
-import {
+import type { CheckboxRadioSelectData } from "../../../types";
+import type {
   NivoLineAreaBlendMode,
   NivoLineAxesScale,
   NivoLineCrosshairType,
@@ -25,7 +25,9 @@ const NIVO_LINE_CURVE_DATA: CheckboxRadioSelectData<NivoLineCurve> = [
   { label: "Step Before", value: "stepBefore" },
 ];
 
-const NIVO_LINE_AREA_BLEND_MODE_DATA: CheckboxRadioSelectData<NivoLineAreaBlendMode> = [
+const NIVO_LINE_AREA_BLEND_MODE_DATA: CheckboxRadioSelectData<
+  NivoLineAreaBlendMode
+> = [
   { label: "Normal", value: "normal" },
   { label: "Multiply", value: "multiply" },
   { label: "Screen", value: "screen" },
@@ -44,12 +46,15 @@ const NIVO_LINE_AREA_BLEND_MODE_DATA: CheckboxRadioSelectData<NivoLineAreaBlendM
   { label: "Luminosity", value: "luminosity" },
 ];
 
-const NIVO_LINE_POINT_LABEL_DATA: CheckboxRadioSelectData<NivoLinePointLabel> = [
-  { label: "X", value: "x" },
-  { label: "Y", value: "y" },
-];
+const NIVO_LINE_POINT_LABEL_DATA: CheckboxRadioSelectData<NivoLinePointLabel> =
+  [
+    { label: "X", value: "x" },
+    { label: "Y", value: "y" },
+  ];
 
-const NIVO_LINE_CROSSHAIR_TYPE_DATA: CheckboxRadioSelectData<NivoLineCrosshairType> = [
+const NIVO_LINE_CROSSHAIR_TYPE_DATA: CheckboxRadioSelectData<
+  NivoLineCrosshairType
+> = [
   { label: "X", value: "x" },
   { label: "Y", value: "y" },
   { label: "Top Left", value: "top-left" },
