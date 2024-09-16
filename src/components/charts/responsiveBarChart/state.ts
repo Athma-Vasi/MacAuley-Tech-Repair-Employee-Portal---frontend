@@ -39,8 +39,6 @@ const initialResponsiveBarChartState: ResponsiveBarChartState = {
   axisTopTickRotation: 45,
   axisTopTickSize: 5,
   enableAxisTop: false,
-  isAxisTopLegendFocused: false,
-  isAxisTopLegendValid: false,
   // axis right
   axisRightLegend: "",
   axisRightLegendOffset: 0,
@@ -49,8 +47,6 @@ const initialResponsiveBarChartState: ResponsiveBarChartState = {
   axisRightTickRotation: 0,
   axisRightTickSize: 5,
   enableAxisRight: false,
-  isAxisRightLegendFocused: false,
-  isAxisRightLegendValid: false,
   // axis bottom
   axisBottomLegend: "",
   axisBottomLegendOffset: 0,
@@ -59,8 +55,6 @@ const initialResponsiveBarChartState: ResponsiveBarChartState = {
   axisBottomTickRotation: 45,
   axisBottomTickSize: 5,
   enableAxisBottom: true,
-  isAxisBottomLegendFocused: false,
-  isAxisBottomLegendValid: false,
   // axis left
   axisLeftLegend: "",
   axisLeftLegendOffset: 0,
@@ -69,8 +63,6 @@ const initialResponsiveBarChartState: ResponsiveBarChartState = {
   axisLeftTickRotation: 0,
   axisLeftTickSize: 5,
   enableAxisLeft: true,
-  isAxisLeftLegendFocused: false,
-  isAxisLeftLegendValid: false,
 
   /** legend */
   enableLegend: false,

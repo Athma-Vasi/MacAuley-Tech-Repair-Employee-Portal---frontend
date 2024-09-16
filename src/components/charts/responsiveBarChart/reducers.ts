@@ -155,14 +155,6 @@ const responsiveBarChartReducersMap = new Map<
         responsiveBarChartAction.setEnableAxisTop,
         responsiveBarChartReducer_setEnableAxisTop,
     ],
-    [
-        responsiveBarChartAction.setIsAxisTopLegendFocused,
-        responsiveBarChartReducer_setIsAxisTopLegendFocused,
-    ],
-    [
-        responsiveBarChartAction.setIsAxisTopLegendValid,
-        responsiveBarChartReducer_setIsAxisTopLegendValid,
-    ],
     // axis -> axisRight
     [
         responsiveBarChartAction.setAxisRightLegend,
@@ -191,14 +183,6 @@ const responsiveBarChartReducersMap = new Map<
     [
         responsiveBarChartAction.setEnableAxisRight,
         responsiveBarChartReducer_setEnableAxisRight,
-    ],
-    [
-        responsiveBarChartAction.setIsAxisRightLegendFocused,
-        responsiveBarChartReducer_setIsAxisRightLegendFocused,
-    ],
-    [
-        responsiveBarChartAction.setIsAxisRightLegendValid,
-        responsiveBarChartReducer_setIsAxisRightLegendValid,
     ],
     // axis -> axisBottom
     [
@@ -229,14 +213,6 @@ const responsiveBarChartReducersMap = new Map<
         responsiveBarChartAction.setEnableAxisBottom,
         responsiveBarChartReducer_setEnableAxisBottom,
     ],
-    [
-        responsiveBarChartAction.setIsAxisBottomLegendFocused,
-        responsiveBarChartReducer_setIsAxisBottomLegendFocused,
-    ],
-    [
-        responsiveBarChartAction.setIsAxisBottomLegendValid,
-        responsiveBarChartReducer_setIsAxisBottomLegendValid,
-    ],
     // axis -> axisLeft
     [
         responsiveBarChartAction.setAxisLeftLegend,
@@ -265,14 +241,6 @@ const responsiveBarChartReducersMap = new Map<
     [
         responsiveBarChartAction.setEnableAxisLeft,
         responsiveBarChartReducer_setEnableAxisLeft,
-    ],
-    [
-        responsiveBarChartAction.setIsAxisLeftLegendFocused,
-        responsiveBarChartReducer_setIsAxisLeftLegendFocused,
-    ],
-    [
-        responsiveBarChartAction.setIsAxisLeftLegendValid,
-        responsiveBarChartReducer_setIsAxisLeftLegendValid,
     ],
 
     // legend
@@ -684,26 +652,6 @@ function responsiveBarChartReducer_setEnableAxisTop(
     };
 }
 
-function responsiveBarChartReducer_setIsAxisTopLegendFocused(
-    state: ResponsiveBarChartState,
-    dispatch: ResponsiveBarChartDispatch,
-): ResponsiveBarChartState {
-    return {
-        ...state,
-        isAxisTopLegendFocused: dispatch.payload as boolean,
-    };
-}
-
-function responsiveBarChartReducer_setIsAxisTopLegendValid(
-    state: ResponsiveBarChartState,
-    dispatch: ResponsiveBarChartDispatch,
-): ResponsiveBarChartState {
-    return {
-        ...state,
-        isAxisTopLegendValid: dispatch.payload as boolean,
-    };
-}
-
 function responsiveBarChartReducer_setAxisRightLegend(
     state: ResponsiveBarChartState,
     dispatch: ResponsiveBarChartDispatch,
@@ -771,26 +719,6 @@ function responsiveBarChartReducer_setEnableAxisRight(
     return {
         ...state,
         enableAxisRight: dispatch.payload as boolean,
-    };
-}
-
-function responsiveBarChartReducer_setIsAxisRightLegendFocused(
-    state: ResponsiveBarChartState,
-    dispatch: ResponsiveBarChartDispatch,
-): ResponsiveBarChartState {
-    return {
-        ...state,
-        isAxisRightLegendFocused: dispatch.payload as boolean,
-    };
-}
-
-function responsiveBarChartReducer_setIsAxisRightLegendValid(
-    state: ResponsiveBarChartState,
-    dispatch: ResponsiveBarChartDispatch,
-): ResponsiveBarChartState {
-    return {
-        ...state,
-        isAxisRightLegendValid: dispatch.payload as boolean,
     };
 }
 
@@ -864,26 +792,6 @@ function responsiveBarChartReducer_setEnableAxisBottom(
     };
 }
 
-function responsiveBarChartReducer_setIsAxisBottomLegendFocused(
-    state: ResponsiveBarChartState,
-    dispatch: ResponsiveBarChartDispatch,
-): ResponsiveBarChartState {
-    return {
-        ...state,
-        isAxisBottomLegendFocused: dispatch.payload as boolean,
-    };
-}
-
-function responsiveBarChartReducer_setIsAxisBottomLegendValid(
-    state: ResponsiveBarChartState,
-    dispatch: ResponsiveBarChartDispatch,
-): ResponsiveBarChartState {
-    return {
-        ...state,
-        isAxisBottomLegendValid: dispatch.payload as boolean,
-    };
-}
-
 function responsiveBarChartReducer_setAxisLeftLegend(
     state: ResponsiveBarChartState,
     dispatch: ResponsiveBarChartDispatch,
@@ -951,26 +859,6 @@ function responsiveBarChartReducer_setEnableAxisLeft(
     return {
         ...state,
         enableAxisLeft: dispatch.payload as boolean,
-    };
-}
-
-function responsiveBarChartReducer_setIsAxisLeftLegendFocused(
-    state: ResponsiveBarChartState,
-    dispatch: ResponsiveBarChartDispatch,
-): ResponsiveBarChartState {
-    return {
-        ...state,
-        isAxisLeftLegendFocused: dispatch.payload as boolean,
-    };
-}
-
-function responsiveBarChartReducer_setIsAxisLeftLegendValid(
-    state: ResponsiveBarChartState,
-    dispatch: ResponsiveBarChartDispatch,
-): ResponsiveBarChartState {
-    return {
-        ...state,
-        isAxisLeftLegendValid: dispatch.payload as boolean,
     };
 }
 

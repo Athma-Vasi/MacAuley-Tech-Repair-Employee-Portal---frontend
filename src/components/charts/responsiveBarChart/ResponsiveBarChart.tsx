@@ -129,8 +129,6 @@ function ResponsiveBarChart({
     axisTopTickRotation, // -90 - 90 default: 0 step: 1
     axisTopTickSize, // 0 - 20 default: 5 step: 1
     enableAxisTop, // default: false ? null
-    isAxisTopLegendFocused, // default: false
-    isAxisTopLegendValid, // default: false
     // axisRight
     axisRightLegend, // default: ''
     axisRightLegendOffset, // -60px - 60px default: 0 step: 1
@@ -139,8 +137,6 @@ function ResponsiveBarChart({
     axisRightTickRotation, // -90 - 90 default: 0 step: 1
     axisRightTickSize, // 0 - 20 default: 5 step: 1
     enableAxisRight, // default: false ? null
-    isAxisRightLegendFocused, // default: false
-    isAxisRightLegendValid, // default: false
     // axisBottom
     axisBottomLegend, // default: ''
     axisBottomLegendOffset, // -60px - 60px default: 0 step: 1
@@ -149,8 +145,6 @@ function ResponsiveBarChart({
     axisBottomTickRotation, // -90 - 90 default: 0 step: 1
     axisBottomTickSize, // 0 - 20 default: 5 step: 1
     enableAxisBottom, // default: true
-    isAxisBottomLegendFocused, // default: false
-    isAxisBottomLegendValid, // default: false
     // axisLeft
     axisLeftLegend, // default: ''
     axisLeftLegendOffset, // -60px - 60px default: 0 step: 1
@@ -159,8 +153,6 @@ function ResponsiveBarChart({
     axisLeftTickRotation, // -90 - 90 default: 0 step: 1
     axisLeftTickSize, // 0 - 20 default: 5 step: 1
     enableAxisLeft, // default: false ? null
-    isAxisLeftLegendFocused, // default: false
-    isAxisLeftLegendValid, // default: false
 
     /** legend */
     enableLegend, // default: false
@@ -371,54 +363,6 @@ function ResponsiveBarChart({
       </Group>
     );
   }
-
-  /**
- * const enableArcLabelsSwitchInput = (
-    <AccessibleSwitchInput
-      attributes={{
-        checked: enableArcLabels,
-        invalidValueAction: parentChartAction.setPageInError,
-        name: "enableArcLabels",
-        offLabel: "Off",
-        onLabel: "On",
-        parentDispatch: parentChartDispatch,
-        validValueAction: parentChartAction.setEnableArcLabels,
-        value: enableArcLabels,
-      }}
-    />
-  );
-
-  const arcLabelSelectInput = (
-    <AccessibleSelectInput
-      attributes={{
-        data: NIVO_SUNBURST_ARC_LABEL_DATA,
-        description: "Define arc label",
-        name: "arcLabel",
-        parentDispatch: parentChartDispatch,
-        validValueAction: parentChartAction.setArcLabel,
-        value: arcLabel,
-      }}
-    />
-  );
-
-  const arcLabelsRadiusOffsetSliderInput = (
-    <AccessibleSliderInput
-      attributes={{
-        label: (value) => (
-          <Text style={{ color: SLIDER_TOOLTIP_COLOR }}>{value}</Text>
-        ),
-        max: 2,
-        min: 0,
-        name: "arcLabelsRadiusOffset",
-        parentDispatch: parentChartDispatch,
-        sliderDefaultValue: 0.5,
-        step: 0.05,
-        validValueAction: parentChartAction.setArcLabelsRadiusOffset,
-        value: arcLabelsRadiusOffset,
-      }}
-    />
-  );
- */
 
   const groupModeSelectInput = (
     <AccessibleSelectInput

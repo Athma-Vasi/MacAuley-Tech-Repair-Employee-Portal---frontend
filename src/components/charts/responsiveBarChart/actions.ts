@@ -37,8 +37,6 @@ type ResponsiveBarChartAction = {
     setAxisTopTickRotation: "setAxisTopTickRotation";
     setAxisTopTickSize: "setAxisTopTickSize";
     setEnableAxisTop: "setEnableAxisTop";
-    setIsAxisTopLegendFocused: "setIsAxisTopLegendFocused";
-    setIsAxisTopLegendValid: "setIsAxisTopLegendValid";
     // axis -> axisRight
     setAxisRightLegend: "setAxisRightLegend";
     setAxisRightLegendOffset: "setAxisRightLegendOffset";
@@ -47,8 +45,6 @@ type ResponsiveBarChartAction = {
     setAxisRightTickRotation: "setAxisRightTickRotation";
     setAxisRightTickSize: "setAxisRightTickSize";
     setEnableAxisRight: "setEnableAxisRight";
-    setIsAxisRightLegendFocused: "setIsAxisRightLegendFocused";
-    setIsAxisRightLegendValid: "setIsAxisRightLegendValid";
     // axis -> axisBottom
     setAxisBottomLegend: "setAxisBottomLegend";
     setAxisBottomLegendOffset: "setAxisBottomLegendOffset";
@@ -57,8 +53,6 @@ type ResponsiveBarChartAction = {
     setAxisBottomTickRotation: "setAxisBottomTickRotation";
     setAxisBottomTickSize: "setAxisBottomTickSize";
     setEnableAxisBottom: "setEnableAxisBottom";
-    setIsAxisBottomLegendFocused: "setIsAxisBottomLegendFocused";
-    setIsAxisBottomLegendValid: "setIsAxisBottomLegendValid";
     // axis -> axisLeft
     setAxisLeftLegend: "setAxisLeftLegend";
     setAxisLeftLegendOffset: "setAxisLeftLegendOffset";
@@ -67,8 +61,6 @@ type ResponsiveBarChartAction = {
     setAxisLeftTickRotation: "setAxisLeftTickRotation";
     setAxisLeftTickSize: "setAxisLeftTickSize";
     setEnableAxisLeft: "setEnableAxisLeft";
-    setIsAxisLeftLegendFocused: "setIsAxisLeftLegendFocused";
-    setIsAxisLeftLegendValid: "setIsAxisLeftLegendValid";
 
     /** legend */
     setEnableLegend: "setEnableLegend";
@@ -151,8 +143,6 @@ const responsiveBarChartAction: ResponsiveBarChartAction = {
     setAxisTopTickRotation: "setAxisTopTickRotation",
     setAxisTopTickSize: "setAxisTopTickSize",
     setEnableAxisTop: "setEnableAxisTop",
-    setIsAxisTopLegendFocused: "setIsAxisTopLegendFocused",
-    setIsAxisTopLegendValid: "setIsAxisTopLegendValid",
     // axis -> axisRight
     setAxisRightLegend: "setAxisRightLegend",
     setAxisRightLegendOffset: "setAxisRightLegendOffset",
@@ -161,8 +151,6 @@ const responsiveBarChartAction: ResponsiveBarChartAction = {
     setAxisRightTickRotation: "setAxisRightTickRotation",
     setAxisRightTickSize: "setAxisRightTickSize",
     setEnableAxisRight: "setEnableAxisRight",
-    setIsAxisRightLegendFocused: "setIsAxisRightLegendFocused",
-    setIsAxisRightLegendValid: "setIsAxisRightLegendValid",
     // axis -> axisBottom
     setAxisBottomLegend: "setAxisBottomLegend",
     setAxisBottomLegendOffset: "setAxisBottomLegendOffset",
@@ -171,8 +159,6 @@ const responsiveBarChartAction: ResponsiveBarChartAction = {
     setAxisBottomTickRotation: "setAxisBottomTickRotation",
     setAxisBottomTickSize: "setAxisBottomTickSize",
     setEnableAxisBottom: "setEnableAxisBottom",
-    setIsAxisBottomLegendFocused: "setIsAxisBottomLegendFocused",
-    setIsAxisBottomLegendValid: "setIsAxisBottomLegendValid",
     // axis -> axisLeft
     setAxisLeftLegend: "setAxisLeftLegend",
     setAxisLeftLegendOffset: "setAxisLeftLegendOffset",
@@ -181,8 +167,6 @@ const responsiveBarChartAction: ResponsiveBarChartAction = {
     setAxisLeftTickRotation: "setAxisLeftTickRotation",
     setAxisLeftTickSize: "setAxisLeftTickSize",
     setEnableAxisLeft: "setEnableAxisLeft",
-    setIsAxisLeftLegendFocused: "setIsAxisLeftLegendFocused",
-    setIsAxisLeftLegendValid: "setIsAxisLeftLegendValid",
 
     /** legend */
     setEnableLegend: "setEnableLegend",

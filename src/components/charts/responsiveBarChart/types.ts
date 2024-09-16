@@ -80,8 +80,6 @@ type ResponsiveBarChartState = {
   axisTopTickRotation: number; // -90° - 90° default: 0 step: 1
   axisTopTickSize: number; // 0px - 20px default: 5 step: 1
   enableAxisTop: boolean; // default: false ? null
-  isAxisTopLegendFocused: boolean; // default: false
-  isAxisTopLegendValid: boolean; // default: false
   // axis -> axisRight
   axisRightLegend: string; // default: ''
   axisRightLegendOffset: number; // -60px - 60px default: 0 step: 1
@@ -90,8 +88,6 @@ type ResponsiveBarChartState = {
   axisRightTickRotation: number; // -90° - 90° default: 0 step: 1
   axisRightTickSize: number; // 0px - 20px default: 5 step: 1
   enableAxisRight: boolean; // default: false ? null
-  isAxisRightLegendFocused: boolean; // default: false
-  isAxisRightLegendValid: boolean; // default: false
   // axis -> axisBottom
   axisBottomLegend: string; // default: ''
   axisBottomLegendOffset: number; // -60px - 60px default: 0 step: 1
@@ -100,8 +96,6 @@ type ResponsiveBarChartState = {
   axisBottomTickRotation: number; // -90° - 90° default: 0 step: 1
   axisBottomTickSize: number; // 0px - 20px default: 5 step: 1
   enableAxisBottom: boolean; // default: true
-  isAxisBottomLegendFocused: boolean; // default: false
-  isAxisBottomLegendValid: boolean; // default: false
   // axis -> axisLeft
   axisLeftLegend: string; // default: ''
   axisLeftLegendOffset: number; // -60px - 60px default: 0 step: 1
@@ -110,8 +104,6 @@ type ResponsiveBarChartState = {
   axisLeftTickRotation: number; // -90° - 90° default: 0 step: 1
   axisLeftTickSize: number; // 0px - 20px default: 5 step: 1
   enableAxisLeft: boolean; // default: false ? null
-  isAxisLeftLegendFocused: boolean; // default: false
-  isAxisLeftLegendValid: boolean; // default: false
 
   /** legend */
   enableLegend: boolean; // default: false
@@ -178,14 +170,6 @@ type ResponsiveBarChartDispatch =
       | ResponsiveBarChartAction["setEnableLabels"]
       | ResponsiveBarChartAction["setEnableLegend"]
       | ResponsiveBarChartAction["setEnableLegendJustify"]
-      | ResponsiveBarChartAction["setIsAxisBottomLegendFocused"]
-      | ResponsiveBarChartAction["setIsAxisBottomLegendValid"]
-      | ResponsiveBarChartAction["setIsAxisLeftLegendFocused"]
-      | ResponsiveBarChartAction["setIsAxisLeftLegendValid"]
-      | ResponsiveBarChartAction["setIsAxisRightLegendFocused"]
-      | ResponsiveBarChartAction["setIsAxisRightLegendValid"]
-      | ResponsiveBarChartAction["setIsAxisTopLegendFocused"]
-      | ResponsiveBarChartAction["setIsAxisTopLegendValid"]
       | ResponsiveBarChartAction["setReverse"];
 
     payload: boolean;
