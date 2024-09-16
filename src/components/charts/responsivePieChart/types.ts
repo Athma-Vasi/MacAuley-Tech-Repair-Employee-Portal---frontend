@@ -1,19 +1,22 @@
-import { TitleOrder } from '@mantine/core';
+import type { TitleOrder } from "@mantine/core";
 
-import { ScreenshotImageType } from '../../../types';
-import {
+import type {
+  ScreenshotImageType,
+  SetPageInErrorPayload,
+} from "../../../types";
+import type {
   NivoArcLabel,
   NivoChartTitlePosition,
   NivoChartUnitKind,
   NivoColorScheme,
-  NivoFillPatternObject,
   NivoLegendAnchor,
   NivoLegendDirection,
   NivoLegendItemDirection,
   NivoLegendSymbolShape,
   NivoMotionConfig,
   NivoTransitionMode,
-} from '../types';
+} from "../types";
+import type { ResponsivePieChartAction } from "./actions";
 
 type PieChartData = {
   id: string;
@@ -42,9 +45,8 @@ type ResponsivePieChartState = {
   /** style */
   arcBorderColor: string; // default: #ffffff
   arcBorderWidth: number; // 0px - 20px default: 0 step: 1
-  chartColors: NivoColorScheme;
+  colorScheme: NivoColorScheme;
   enableFillPatterns: boolean; // default: false
-  fillPatterns: NivoFillPatternObject[];
 
   /** arc labels */
   arcLabel: NivoArcLabel; // default: 'value'
@@ -103,243 +105,135 @@ type ResponsivePieChartState = {
   chartTitleColor: string; // default: #ffffff
   chartTitlePosition: NivoChartTitlePosition; // default: center
   chartTitleSize: TitleOrder; // 1 - 6 px default: 3 step: 1
-  isChartTitleFocused: boolean;
-  isChartTitleValid: boolean;
 
   /** screenshot */
-  isScreenshotFilenameFocused: boolean;
-  isScreenshotFilenameValid: boolean;
   screenshotFilename: string;
   screenshotImageQuality: number; // 0 - 1 default: 1 step: 0.05
   screenshotImageType: ScreenshotImageType;
-};
 
-type ResponsivePieChartAction = {
-  /** base */
-  setCornerRadius: 'setCornerRadius';
-  setEndAngle: 'setEndAngle';
-  setInnerRadius: 'setInnerRadius';
-  setPadAngle: 'setPadAngle';
-  setSortByValue: 'setSortByValue';
-  setStartAngle: 'setStartAngle';
-
-  /** style */
-  setArcBorderColor: 'setArcBorderColor';
-  setArcBorderWidth: 'setArcBorderWidth';
-  setColorScheme: 'setColorScheme';
-  setEnableFillPatterns: 'setEnableFillPatterns';
-  setFillPatterns: 'setFillPatterns';
-
-  /** arc labels */
-  setArcLabel: 'setArcLabel';
-  setArcLabelsRadiusOffset: 'setArcLabelsRadiusOffset';
-  setArcLabelsSkipAngle: 'setArcLabelsSkipAngle';
-  setArcLabelsTextColor: 'setArcLabelsTextColor';
-  setEnableArcLabels: 'setEnableArcLabels';
-
-  /** arc link labels */
-  setArcLinkLabelsDiagonalLength: 'setArcLinkLabelsDiagonalLength';
-  setArcLinkLabelsOffset: 'setArcLinkLabelsOffset';
-  setArcLinkLabelsSkipAngle: 'setArcLinkLabelsSkipAngle';
-  setArcLinkLabelsStraightLength: 'setArcLinkLabelsStraightLength';
-  setArcLinkLabelsTextColor: 'setArcLinkLabelsTextColor';
-  setArcLinkLabelsTextOffset: 'setArcLinkLabelsTextOffset';
-  setArcLinkLabelsThickness: 'setArcLinkLabelsThickness';
-  setEnableArcLinkLabels: 'setEnableArcLinkLabels';
-
-  /** interactivity */
-  setActiveInnerRadiusOffset: 'setActiveInnerRadiusOffset';
-  setActiveOuterRadiusOffset: 'setActiveOuterRadiusOffset';
-
-  /** motion */
-  setEnableAnimate: 'setEnableAnimate';
-  setMotionConfig: 'setMotionConfig';
-  setTransitionMode: 'setTransitionMode';
-
-  /** margin */
-  setMarginTop: 'setMarginTop';
-  setMarginRight: 'setMarginRight';
-  setMarginBottom: 'setMarginBottom';
-  setMarginLeft: 'setMarginLeft';
-
-  /** legend */
-  setEnableLegend: 'setEnableLegend';
-  setEnableLegendJustify: 'setEnableLegendJustify';
-  setLegendAnchor: 'setLegendAnchor';
-  setLegendDirection: 'setLegendDirection';
-  setLegendItemBackground: 'setLegendItemBackground';
-  setLegendItemDirection: 'setLegendItemDirection';
-  setLegendItemHeight: 'setLegendItemHeight';
-  setLegendItemOpacity: 'setLegendItemOpacity';
-  setLegendItemTextColor: 'setLegendItemTextColor';
-  setLegendItemWidth: 'setLegendItemWidth';
-  setLegendItemsSpacing: 'setLegendItemsSpacing';
-  setLegendSymbolBorderColor: 'setLegendSymbolBorderColor';
-  setLegendSymbolBorderWidth: 'setLegendSymbolBorderWidth';
-  setLegendSymbolShape: 'setLegendSymbolShape';
-  setLegendSymbolSize: 'setLegendSymbolSize';
-  setLegendSymbolSpacing: 'setLegendSymbolSpacing';
-  setLegendTranslateX: 'setLegendTranslateX';
-  setLegendTranslateY: 'setLegendTranslateY';
-
-  /** options */
-  setChartTitle: 'setChartTitle';
-  setChartTitleColor: 'setChartTitleColor';
-  setChartTitlePosition: 'setChartTitlePosition';
-  setChartTitleSize: 'setChartTitleSize';
-  setIsChartTitleFocused: 'setIsChartTitleFocused';
-  setIsChartTitleValid: 'setIsChartTitleValid';
-
-  /** screenshot */
-  setIsScreenshotFilenameFocused: 'setIsScreenshotFilenameFocused';
-  setIsScreenshotFilenameValid: 'setIsScreenshotFilenameValid';
-  setScreenshotFilename: 'setScreenshotFilename';
-  setScreenshotImageQuality: 'setScreenshotImageQuality';
-  setScreenshotImageType: 'setScreenshotImageType';
-
-  // reset all
-  resetChartToDefault: 'resetChartToDefault';
+  // error
+  pagesInError: Set<number>;
 };
 
 type ResponsivePieChartDispatch =
   | {
-      // all number payloads
-      type:
-        | ResponsivePieChartAction['setActiveInnerRadiusOffset']
-        | ResponsivePieChartAction['setActiveOuterRadiusOffset']
-        | ResponsivePieChartAction['setArcBorderWidth']
-        | ResponsivePieChartAction['setArcLabelsRadiusOffset']
-        | ResponsivePieChartAction['setArcLabelsSkipAngle']
-        | ResponsivePieChartAction['setArcLinkLabelsDiagonalLength']
-        | ResponsivePieChartAction['setArcLinkLabelsOffset']
-        | ResponsivePieChartAction['setArcLinkLabelsSkipAngle']
-        | ResponsivePieChartAction['setArcLinkLabelsStraightLength']
-        | ResponsivePieChartAction['setArcLinkLabelsTextOffset']
-        | ResponsivePieChartAction['setArcLinkLabelsThickness']
-        | ResponsivePieChartAction['setCornerRadius']
-        | ResponsivePieChartAction['setEndAngle']
-        | ResponsivePieChartAction['setInnerRadius']
-        | ResponsivePieChartAction['setLegendItemHeight']
-        | ResponsivePieChartAction['setLegendItemOpacity']
-        | ResponsivePieChartAction['setLegendItemWidth']
-        | ResponsivePieChartAction['setLegendItemsSpacing']
-        | ResponsivePieChartAction['setLegendSymbolBorderWidth']
-        | ResponsivePieChartAction['setLegendSymbolSize']
-        | ResponsivePieChartAction['setLegendSymbolSpacing']
-        | ResponsivePieChartAction['setLegendTranslateX']
-        | ResponsivePieChartAction['setLegendTranslateY']
-        | ResponsivePieChartAction['setMarginBottom']
-        | ResponsivePieChartAction['setMarginLeft']
-        | ResponsivePieChartAction['setMarginRight']
-        | ResponsivePieChartAction['setMarginTop']
-        | ResponsivePieChartAction['setPadAngle']
-        | ResponsivePieChartAction['setScreenshotImageQuality']
-        | ResponsivePieChartAction['setStartAngle'];
+    action:
+      | ResponsivePieChartAction["setActiveInnerRadiusOffset"]
+      | ResponsivePieChartAction["setActiveOuterRadiusOffset"]
+      | ResponsivePieChartAction["setArcBorderWidth"]
+      | ResponsivePieChartAction["setArcLabelsRadiusOffset"]
+      | ResponsivePieChartAction["setArcLabelsSkipAngle"]
+      | ResponsivePieChartAction["setArcLinkLabelsDiagonalLength"]
+      | ResponsivePieChartAction["setArcLinkLabelsOffset"]
+      | ResponsivePieChartAction["setArcLinkLabelsSkipAngle"]
+      | ResponsivePieChartAction["setArcLinkLabelsStraightLength"]
+      | ResponsivePieChartAction["setArcLinkLabelsTextOffset"]
+      | ResponsivePieChartAction["setArcLinkLabelsThickness"]
+      | ResponsivePieChartAction["setCornerRadius"]
+      | ResponsivePieChartAction["setEndAngle"]
+      | ResponsivePieChartAction["setInnerRadius"]
+      | ResponsivePieChartAction["setLegendItemHeight"]
+      | ResponsivePieChartAction["setLegendItemOpacity"]
+      | ResponsivePieChartAction["setLegendItemWidth"]
+      | ResponsivePieChartAction["setLegendItemsSpacing"]
+      | ResponsivePieChartAction["setLegendSymbolBorderWidth"]
+      | ResponsivePieChartAction["setLegendSymbolSize"]
+      | ResponsivePieChartAction["setLegendSymbolSpacing"]
+      | ResponsivePieChartAction["setLegendTranslateX"]
+      | ResponsivePieChartAction["setLegendTranslateY"]
+      | ResponsivePieChartAction["setMarginBottom"]
+      | ResponsivePieChartAction["setMarginLeft"]
+      | ResponsivePieChartAction["setMarginRight"]
+      | ResponsivePieChartAction["setMarginTop"]
+      | ResponsivePieChartAction["setPadAngle"]
+      | ResponsivePieChartAction["setScreenshotImageQuality"]
+      | ResponsivePieChartAction["setStartAngle"];
 
-      payload: number;
-    }
+    payload: number;
+  }
   | {
-      // all boolean payloads
-      type:
-        | ResponsivePieChartAction['setEnableAnimate']
-        | ResponsivePieChartAction['setEnableArcLabels']
-        | ResponsivePieChartAction['setEnableArcLinkLabels']
-        | ResponsivePieChartAction['setEnableFillPatterns']
-        | ResponsivePieChartAction['setEnableLegend']
-        | ResponsivePieChartAction['setEnableLegendJustify']
-        | ResponsivePieChartAction['setIsChartTitleFocused']
-        | ResponsivePieChartAction['setIsChartTitleValid']
-        | ResponsivePieChartAction['setIsScreenshotFilenameFocused']
-        | ResponsivePieChartAction['setIsScreenshotFilenameValid']
-        | ResponsivePieChartAction['setSortByValue'];
+    // all boolean payloads
+    action:
+      | ResponsivePieChartAction["setEnableAnimate"]
+      | ResponsivePieChartAction["setEnableArcLabels"]
+      | ResponsivePieChartAction["setEnableArcLinkLabels"]
+      | ResponsivePieChartAction["setEnableFillPatterns"]
+      | ResponsivePieChartAction["setEnableLegend"]
+      | ResponsivePieChartAction["setEnableLegendJustify"]
+      | ResponsivePieChartAction["setSortByValue"];
 
-      payload: boolean;
-    }
+    payload: boolean;
+  }
   | {
-      type: ResponsivePieChartAction['setFillPatterns'];
-      payload: NivoFillPatternObject[];
-    }
+    action: ResponsivePieChartAction["setColorScheme"];
+    payload: NivoColorScheme;
+  }
   | {
-      type: ResponsivePieChartAction['setColorScheme'];
-      payload: NivoColorScheme;
-    }
-  | {
-      type:
-        | ResponsivePieChartAction['setArcBorderColor']
-        | ResponsivePieChartAction['setArcLabelsTextColor']
-        | ResponsivePieChartAction['setArcLinkLabelsTextColor']
-        | ResponsivePieChartAction['setChartTitle']
-        | ResponsivePieChartAction['setChartTitleColor']
-        | ResponsivePieChartAction['setLegendItemBackground']
-        | ResponsivePieChartAction['setLegendItemTextColor']
-        | ResponsivePieChartAction['setLegendSymbolBorderColor']
-        | ResponsivePieChartAction['setScreenshotFilename'];
+    action:
+      | ResponsivePieChartAction["setArcBorderColor"]
+      | ResponsivePieChartAction["setArcLabelsTextColor"]
+      | ResponsivePieChartAction["setArcLinkLabelsTextColor"]
+      | ResponsivePieChartAction["setChartTitle"]
+      | ResponsivePieChartAction["setChartTitleColor"]
+      | ResponsivePieChartAction["setLegendItemBackground"]
+      | ResponsivePieChartAction["setLegendItemTextColor"]
+      | ResponsivePieChartAction["setLegendSymbolBorderColor"]
+      | ResponsivePieChartAction["setScreenshotFilename"];
 
-      payload: string;
-    }
+    payload: string;
+  }
   | {
-      type: ResponsivePieChartAction['setArcLabel'];
-      payload: NivoArcLabel;
-    }
+    action: ResponsivePieChartAction["setArcLabel"];
+    payload: NivoArcLabel;
+  }
   | {
-      type: ResponsivePieChartAction['setMotionConfig'];
-      payload: NivoMotionConfig;
-    }
+    action: ResponsivePieChartAction["setMotionConfig"];
+    payload: NivoMotionConfig;
+  }
   | {
-      type: ResponsivePieChartAction['setTransitionMode'];
-      payload: NivoTransitionMode;
-    }
+    action: ResponsivePieChartAction["setTransitionMode"];
+    payload: NivoTransitionMode;
+  }
   | {
-      type: ResponsivePieChartAction['setLegendAnchor'];
-      payload: NivoLegendAnchor;
-    }
+    action: ResponsivePieChartAction["setLegendAnchor"];
+    payload: NivoLegendAnchor;
+  }
   | {
-      type: ResponsivePieChartAction['setLegendDirection'];
-      payload: NivoLegendDirection;
-    }
+    action: ResponsivePieChartAction["setLegendDirection"];
+    payload: NivoLegendDirection;
+  }
   | {
-      type: ResponsivePieChartAction['setLegendItemDirection'];
-      payload: NivoLegendItemDirection;
-    }
+    action: ResponsivePieChartAction["setLegendItemDirection"];
+    payload: NivoLegendItemDirection;
+  }
   | {
-      type: ResponsivePieChartAction['setLegendSymbolShape'];
-      payload: NivoLegendSymbolShape;
-    }
+    action: ResponsivePieChartAction["setLegendSymbolShape"];
+    payload: NivoLegendSymbolShape;
+  }
   | {
-      type: ResponsivePieChartAction['setChartTitlePosition'];
-      payload: NivoChartTitlePosition;
-    }
+    action: ResponsivePieChartAction["setChartTitlePosition"];
+    payload: NivoChartTitlePosition;
+  }
   | {
-      type: ResponsivePieChartAction['setChartTitleSize'];
-      payload: TitleOrder;
-    }
+    action: ResponsivePieChartAction["setChartTitleSize"];
+    payload: TitleOrder;
+  }
   | {
-      type: ResponsivePieChartAction['setScreenshotImageType'];
-      payload: ScreenshotImageType;
-    }
+    action: ResponsivePieChartAction["setScreenshotImageType"];
+    payload: ScreenshotImageType;
+  }
   | {
-      type: ResponsivePieChartAction['resetChartToDefault'];
-      payload: ResponsivePieChartState;
-    };
-
-type ResponsivePieChartReducer = (
-  state: ResponsivePieChartState,
-  action: ResponsivePieChartDispatch
-) => ResponsivePieChartState;
+    action: ResponsivePieChartAction["resetChartToDefault"];
+    payload: ResponsivePieChartState;
+  }
+  | {
+    action: ResponsivePieChartAction["setPageInError"];
+    payload: SetPageInErrorPayload;
+  };
 
 export type {
-  NivoColorScheme,
-  NivoFillPatternObject,
-  NivoLegendAnchor,
-  NivoLegendDirection,
-  NivoLegendItemDirection,
-  NivoLegendSymbolShape,
-  NivoMotionConfig,
-  NivoTransitionMode,
   PieChartData,
-  ResponsivePieChartAction,
   ResponsivePieChartDispatch,
   ResponsivePieChartProps,
-  ResponsivePieChartReducer,
   ResponsivePieChartState,
 };

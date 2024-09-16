@@ -3,53 +3,40 @@ import {
   Flex,
   Group,
   Stack,
-  Switch,
   Text,
   Title,
   Tooltip,
-} from '@mantine/core';
-import { ResponsivePie } from '@nivo/pie';
-import { ChangeEvent, useEffect, useReducer, useRef } from 'react';
-import { BiReset } from 'react-icons/bi';
+} from "@mantine/core";
+import { ResponsivePie } from "@nivo/pie";
+import { useEffect, useReducer, useRef } from "react";
 
-import { COLORS_SWATCHES } from '../../../constants/data';
-import { useGlobalState } from '../../../hooks';
-import {
-  AccessibleSelectedDeselectedTextElements,
-  returnAccessibleButtonElements,
-  returnAccessibleSelectInputElements,
-  returnAccessibleSliderInputElements,
-} from '../../../jsxCreators';
-import { addCommaSeparator, returnThemeColors } from '../../../utils';
-import {
-  AccessibleSelectInputCreatorInfo,
-  AccessibleSliderInputCreatorInfo,
-} from '../../wrappers';
-import { ChartAndControlsDisplay } from '../chartAndControlsDisplay/ChartAndControlsDisplay';
-import { ChartArcLabel } from '../chartControls/ChartArcLabel';
-import { ChartLegend } from '../chartControls/ChartLegend';
-import { ChartMargin } from '../chartControls/ChartMargin';
-import { ChartOptions } from '../chartControls/ChartOptions';
+import { COLORS_SWATCHES } from "../../../constants/data";
+import { useGlobalState } from "../../../hooks";
+import { addCommaSeparator, returnThemeColors } from "../../../utils";
+import { AccessibleButton } from "../../accessibleInputs/AccessibleButton";
+import { AccessibleSelectInput } from "../../accessibleInputs/AccessibleSelectInput";
+import { AccessibleSliderInput } from "../../accessibleInputs/AccessibleSliderInput";
+import { AccessibleSwitchInput } from "../../accessibleInputs/AccessibleSwitchInput";
+import { ChartAndControlsDisplay } from "../chartAndControlsDisplay/ChartAndControlsDisplay";
+import { ChartArcLabel } from "../chartControls/ChartArcLabel";
+import { ChartLegend } from "../chartControls/ChartLegend";
+import { ChartMargin } from "../chartControls/ChartMargin";
+import { ChartOptions } from "../chartControls/ChartOptions";
 import {
   NIVO_CHART_PATTERN_DEFS,
   NIVO_COLOR_SCHEME_DATA,
   NIVO_MOTION_CONFIG_DATA,
   NIVO_TRANSITION_MODE_DATA,
-} from '../constants';
-import { ChartsAndGraphsControlsStacker } from '../utils';
-import {
-  initialResponsivePieChartState,
-  responsivePieChartAction,
-  responsivePieChartReducer,
-} from './state';
-import {
-  NivoColorScheme,
-  NivoFillPatternObject,
-  NivoMotionConfig,
-  NivoTransitionMode,
-  PieChartData,
-  ResponsivePieChartProps,
-} from './types';
+  returnChartOptionsStepperPages,
+  SLIDER_TOOLTIP_COLOR,
+  STICKY_STYLE,
+} from "../constants";
+import { ChartsAndGraphsControlsStacker } from "../utils";
+import { responsivePieChartAction } from "./actions";
+import { responsivePieChartReducer } from "./reducers";
+import { initialResponsivePieChartState } from "./state";
+import type { ResponsivePieChartProps } from "./types";
+import { createPieFillPatterns } from "./utils";
 
 function ResponsivePieChart({
   chartHeight = 500,
@@ -57,11 +44,10 @@ function ResponsivePieChart({
   dashboardChartTitle,
   hideControls = false,
   pieChartData,
-  unitKind = 'currency',
+  unitKind = "currency",
 }: ResponsivePieChartProps) {
-  /** ------------- begin hooks ------------- */
   const {
-    globalState: { padding, width, themeObject, isPrefersReducedMotion },
+    globalState: { width, themeObject, isPrefersReducedMotion },
   } = useGlobalState();
 
   const {
@@ -77,7 +63,7 @@ function ResponsivePieChart({
   // ensures appropriate colors based on color scheme
   const modifiedInitialResponsivePieChartState = {
     ...initialResponsivePieChartState,
-    chartTitle: dashboardChartTitle ?? 'Pie Chart',
+    chartTitle: dashboardChartTitle ?? "Pie Chart",
     arcLabelsTextColor: chartTextColor,
     arcLinkLabelsTextColor: textColor,
     chartTitleColor: chartTextColor,
@@ -85,7 +71,7 @@ function ResponsivePieChart({
 
   const [responsivePieChartState, responsivePieChartDispatch] = useReducer(
     responsivePieChartReducer,
-    modifiedInitialResponsivePieChartState
+    modifiedInitialResponsivePieChartState,
   );
   const {
     startAngle, // -180 - 360 default: 0 step: 1
@@ -95,8 +81,7 @@ function ResponsivePieChart({
     cornerRadius, // 0px - 45px default: 0 step: 1
     sortByValue, // default: false
 
-    chartColors,
-    fillPatterns,
+    colorScheme,
     enableFillPatterns, // default: false
     arcBorderColor, // default: #ffffff
     arcBorderWidth, // 0px - 20px default: 0 step: 1
@@ -152,48 +137,14 @@ function ResponsivePieChart({
     chartTitleColor,
     chartTitlePosition,
     chartTitleSize,
-    isChartTitleFocused,
-    isChartTitleValid,
 
     // screenshot
-    isScreenshotFilenameFocused,
-    isScreenshotFilenameValid,
     screenshotFilename,
     screenshotImageQuality,
     screenshotImageType,
   } = responsivePieChartState;
 
-  /** ------------- end hooks ------------- */
-
   const chartRef = useRef(null);
-
-  /** ------------- begin useEffects ------------- */
-
-  // set fill patterns on enable
-  useEffect(() => {
-    if (!pieChartData) {
-      return;
-    }
-
-    const fillPatterns = pieChartData.map(
-      (pieChartData: PieChartData, chartIdx) => {
-        const { id } = pieChartData;
-        const fillPattern: NivoFillPatternObject = {
-          match: {
-            id,
-          },
-          id: chartIdx % 2 === 0 ? 'dots' : 'lines',
-        };
-
-        return fillPattern;
-      }
-    );
-
-    responsivePieChartDispatch({
-      type: responsivePieChartAction.setFillPatterns,
-      payload: fillPatterns,
-    });
-  }, [enableFillPatterns, pieChartData]);
 
   // set motion config on enable
   useEffect(() => {
@@ -202,12 +153,10 @@ function ResponsivePieChart({
     }
 
     responsivePieChartDispatch({
-      type: responsivePieChartAction.setEnableAnimate,
+      action: responsivePieChartAction.setEnableAnimate,
       payload: false,
     });
   }, [isPrefersReducedMotion]);
-
-  /** ------------- end useEffects ------------- */
 
   const displayResponsivePie = (
     <ResponsivePie
@@ -226,7 +175,7 @@ function ResponsivePieChart({
       cornerRadius={cornerRadius}
       sortByValue={sortByValue}
       // style
-      colors={{ scheme: chartColors }}
+      colors={{ scheme: colorScheme }}
       borderColor={arcBorderColor}
       borderWidth={arcBorderWidth}
       // arc labels
@@ -252,42 +201,38 @@ function ResponsivePieChart({
       motionConfig={motionConfig}
       transitionMode={transitionMode}
       defs={NIVO_CHART_PATTERN_DEFS}
-      fill={enableFillPatterns ? fillPatterns : []}
-      legends={
-        enableLegend
-          ? [
+      fill={enableFillPatterns ? createPieFillPatterns(pieChartData) : []}
+      legends={enableLegend
+        ? [
+          {
+            anchor: legendAnchor,
+            direction: legendDirection,
+            justify: enableLegendJustify,
+            translateX: legendTranslateX,
+            translateY: legendTranslateY,
+            itemsSpacing: legendItemsSpacing,
+            itemWidth: legendItemWidth,
+            itemHeight: legendItemHeight,
+            itemTextColor: legendItemTextColor,
+            itemDirection: legendItemDirection,
+            itemOpacity: legendItemOpacity,
+            symbolSize: legendSymbolSize,
+            symbolShape: legendSymbolShape,
+            effects: [
               {
-                anchor: legendAnchor,
-                direction: legendDirection,
-                justify: enableLegendJustify,
-                translateX: legendTranslateX,
-                translateY: legendTranslateY,
-                itemsSpacing: legendItemsSpacing,
-                itemWidth: legendItemWidth,
-                itemHeight: legendItemHeight,
-                itemTextColor: legendItemTextColor,
-                itemDirection: legendItemDirection,
-                itemOpacity: legendItemOpacity,
-                symbolSize: legendSymbolSize,
-                symbolShape: legendSymbolShape,
-                effects: [
-                  {
-                    on: 'hover',
-                    style: {
-                      itemTextColor: '#000',
-                    },
-                  },
-                ],
+                on: "hover",
+                style: {
+                  itemTextColor: "#000",
+                },
               },
-            ]
-          : []
-      }
+            ],
+          },
+        ]
+        : []}
       valueFormat={(value) =>
-        `${unitKind === 'currency' ? '$' : ''}${addCommaSeparator(value)}${
-          unitKind === 'percent' ? '%' : ''
-        }`
-      }
-      
+        `${unitKind === "currency" ? "$" : ""}${addCommaSeparator(value)}${
+          unitKind === "percent" ? "%" : ""
+        }`}
     />
   );
 
@@ -296,660 +241,466 @@ function ResponsivePieChart({
       <Group
         w={chartWidth}
         h={chartHeight}
-        style={{ outline: '1px solid teal' }}
+        style={{ outline: "1px solid teal" }}
       >
         {displayResponsivePie}
       </Group>
     );
   }
-
-  /** ------------- begin accessible description texts ------------- */
-
-  const [
-    sortByValueAccessibleSelectedText,
-    sortByValueAccessibleDeselectedText,
-  ] = AccessibleSelectedDeselectedTextElements({
-    isSelected: sortByValue,
-    deselectedDescription:
-      'Arcs will not be ordered according to their associated value.',
-    selectedDescription:
-      'Arcs will be ordered according to their associated value.',
-    semanticName: 'sort by value',
-    theme: 'muted',
-  });
-
-  const [
-    enableFillPatternsAccessibleSelectedText,
-    enableFillPatternsAccessibleDeselectedText,
-  ] = AccessibleSelectedDeselectedTextElements({
-    deselectedDescription: 'Fill patterns will not be displayed.',
-    isSelected: enableFillPatterns,
-    selectedDescription: 'Fill patterns will be displayed.',
-    semanticName: 'fill patterns',
-    theme: 'muted',
-  });
-
-  const [
-    enableArcLinkLabelsAccessibleSelectedText,
-    enableArcLinkLabelsAccessibleDeselectedText,
-  ] = AccessibleSelectedDeselectedTextElements({
-    deselectedDescription: 'Arc link labels will not be displayed..',
-    isSelected: enableArcLinkLabels,
-    selectedDescription: 'Arc link labels will be displayed.',
-    semanticName: 'arc link labels',
-    theme: 'muted',
-  });
-
-  const [
-    enableAnimateAccessibleSelectedText,
-    enableAnimateAccessibleDeselectedText,
-  ] = AccessibleSelectedDeselectedTextElements({
-    deselectedDescription: 'Transitions will be disabled.',
-    isSelected: enableAnimate,
-    selectedDescription: 'Transitions will be enabled.',
-    semanticName: 'animate',
-    theme: 'muted',
-  });
-
-  /** ------------- end accessible description texts ------------- */
-
-  /** ------------- begin input objects ------------- */
-  const { gray } = COLORS_SWATCHES;
-
-  /** ------------- begin base ------------- */
-  const sliderWidth =
-    width < 480
-      ? '217px'
-      : width < 768
-      ? `${width * 0.38}px`
-      : width < 1192
-      ? '500px'
-      : `${width * 0.15}px`;
-  const sliderLabelColor = gray[3];
-
-  const startAngleSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
-    ariaLabel: 'start angle',
-    kind: 'slider',
-    label: (value) => (
-      <Text style={{ color: sliderLabelColor }}>{value} °</Text>
-    ),
-    max: 360,
-    min: -180,
-    onChangeSlider: (value: number) => {
-      responsivePieChartDispatch({
-        type: responsivePieChartAction.setStartAngle,
-        payload: value,
-      });
-    },
-    sliderDefaultValue: 0,
-    step: 1,
-    value: startAngle,
-    width: sliderWidth,
-  };
-
-  const endAngleSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
-    ariaLabel: 'end angle',
-    kind: 'slider',
-    label: (value) => (
-      <Text style={{ color: sliderLabelColor }}>{value} °</Text>
-    ),
-    max: 360,
-    min: -360,
-    onChangeSlider: (value: number) => {
-      responsivePieChartDispatch({
-        type: responsivePieChartAction.setEndAngle,
-        payload: value,
-      });
-    },
-    sliderDefaultValue: 360,
-    step: 1,
-    value: endAngle,
-    width: sliderWidth,
-  };
-
-  const innerRadiusSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
-    ariaLabel: 'inner radius',
-    kind: 'slider',
-    label: (value) => (
-      <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-    ),
-    max: 0.95,
-    min: 0,
-    precision: 2,
-    onChangeSlider: (value: number) => {
-      responsivePieChartDispatch({
-        type: responsivePieChartAction.setInnerRadius,
-        payload: value,
-      });
-    },
-    sliderDefaultValue: 0,
-    step: 0.05,
-    value: innerRadius,
-    width: sliderWidth,
-  };
-
-  const padAngleSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
-    ariaLabel: 'pad angle',
-    kind: 'slider',
-    label: (value) => (
-      <Text style={{ color: sliderLabelColor }}>{value} °</Text>
-    ),
-    max: 45,
-    min: 0,
-    onChangeSlider: (value: number) => {
-      responsivePieChartDispatch({
-        type: responsivePieChartAction.setPadAngle,
-        payload: value,
-      });
-    },
-    sliderDefaultValue: 0,
-    step: 1,
-    value: padAngle,
-    width: sliderWidth,
-  };
-
-  const cornerRadiusSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
-    ariaLabel: 'corner radius',
-    kind: 'slider',
-    label: (value) => (
-      <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-    ),
-    max: 45,
-    min: 0,
-    onChangeSlider: (value: number) => {
-      responsivePieChartDispatch({
-        type: responsivePieChartAction.setCornerRadius,
-        payload: value,
-      });
-    },
-    sliderDefaultValue: 0,
-    step: 1,
-    value: cornerRadius,
-    width: sliderWidth,
-  };
-
-  const createdSortByValueSwitchInput = (
-    <Switch
-      aria-describedby={
-        sortByValue
-          ? sortByValueAccessibleSelectedText.props.id
-          : sortByValueAccessibleDeselectedText.props.id
-      }
-      checked={sortByValue}
-      description={
-        sortByValue
-          ? sortByValueAccessibleSelectedText
-          : sortByValueAccessibleDeselectedText
-      }
-      label={
-        <Text weight={500} color={textColor}>
-          Sort by value
-        </Text>
-      }
-      onChange={(event: ChangeEvent<HTMLInputElement>) => {
-        responsivePieChartDispatch({
-          type: responsivePieChartAction.setSortByValue,
-          payload: event.currentTarget.checked,
-        });
+  /**
+ * const enableArcLinkLabelsSwitchInput = (
+    <AccessibleSwitchInput
+      attributes={{
+        checked: enableArcLinkLabels,
+        invalidValueAction: parentChartAction.setPageInError,
+        name: "enableArcLinkLabels",
+        offLabel: "Off",
+        onLabel: "On",
+        parentDispatch: parentChartDispatch,
+        validValueAction: parentChartAction.setEnableArcLabels,
+        value: enableArcLinkLabels,
       }}
-      w="100%"
     />
   );
-  /** ------------- end base ------------- */
 
-  /** ------------- begin style ------------- */
-  const chartColorsSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
-    data: NIVO_COLOR_SCHEME_DATA,
-    description: "Define chart's colors",
-    onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-      responsivePieChartDispatch({
-        type: responsivePieChartAction.setColorScheme,
-        payload: event.currentTarget.value as NivoColorScheme,
-      });
-    },
-    value: chartColors,
-    width: sliderWidth,
-  };
+  const arcLabelSelectInput = (
+    <AccessibleSelectInput
+      attributes={{
+        data: NIVO_SUNBURST_ARC_LABEL_DATA,
+        description: "Define arc label",
+        name: "arcLabel",
+        parentDispatch: parentChartDispatch,
+        validValueAction: parentChartAction.setArcLabel,
+        value: arcLabel,
+      }}
+    />
+  );
 
-  const createdBorderColorInput = (
+  const arcLabelsRadiusOffsetSliderInput = (
+    <AccessibleSliderInput
+      attributes={{
+        label: (value) => (
+          <Text style={{ color: SLIDER_TOOLTIP_COLOR }}>{value}</Text>
+        ),
+        max: 2,
+        min: 0,
+        name: "arcLabelsRadiusOffset",
+        parentDispatch: parentChartDispatch,
+        sliderDefaultValue: 0.5,
+        step: 0.05,
+        validValueAction: parentChartAction.setArcLabelsRadiusOffset,
+        value: arcLabelsRadiusOffset,
+      }}
+    />
+  );
+ */
+
+  const startAngleSliderInput = (
+    <AccessibleSliderInput
+      attributes={{
+        label: (value) => (
+          <Text style={{ color: SLIDER_TOOLTIP_COLOR }}>{value} °</Text>
+        ),
+        max: 360,
+        min: -180,
+        name: "startAngle",
+        parentDispatch: responsivePieChartDispatch,
+        sliderDefaultValue: 0,
+        step: 1,
+        validValueAction: responsivePieChartAction.setStartAngle,
+        value: startAngle,
+      }}
+    />
+  );
+
+  const endAngleSliderInput = (
+    <AccessibleSliderInput
+      attributes={{
+        label: (value) => (
+          <Text style={{ color: SLIDER_TOOLTIP_COLOR }}>{value} °</Text>
+        ),
+        max: 360,
+        min: -360,
+        name: "endAngle",
+        parentDispatch: responsivePieChartDispatch,
+        sliderDefaultValue: 360,
+        step: 1,
+        validValueAction: responsivePieChartAction.setEndAngle,
+        value: endAngle,
+      }}
+    />
+  );
+
+  const innerRadiusSliderInput = (
+    <AccessibleSliderInput
+      attributes={{
+        label: (value) => (
+          <Text style={{ color: SLIDER_TOOLTIP_COLOR }}>{value} px</Text>
+        ),
+        max: 0.95,
+        min: 0,
+        name: "innerRadius",
+        parentDispatch: responsivePieChartDispatch,
+        sliderDefaultValue: 0,
+        step: 0.05,
+        validValueAction: responsivePieChartAction.setInnerRadius,
+        value: innerRadius,
+      }}
+    />
+  );
+
+  const padAngleSliderInput = (
+    <AccessibleSliderInput
+      attributes={{
+        label: (value) => (
+          <Text style={{ color: SLIDER_TOOLTIP_COLOR }}>{value} °</Text>
+        ),
+        max: 45,
+        min: 0,
+        name: "padAngle",
+        parentDispatch: responsivePieChartDispatch,
+        sliderDefaultValue: 0,
+        step: 1,
+        validValueAction: responsivePieChartAction.setPadAngle,
+        value: padAngle,
+      }}
+    />
+  );
+
+  const cornerRadiusSliderInput = (
+    <AccessibleSliderInput
+      attributes={{
+        label: (value) => (
+          <Text style={{ color: SLIDER_TOOLTIP_COLOR }}>{value} px</Text>
+        ),
+        max: 45,
+        min: 0,
+        name: "cornerRadius",
+        parentDispatch: responsivePieChartDispatch,
+        sliderDefaultValue: 0,
+        step: 1,
+        validValueAction: responsivePieChartAction.setCornerRadius,
+        value: cornerRadius,
+      }}
+    />
+  );
+
+  const sortByValueSwitchInput = (
+    <AccessibleSwitchInput
+      attributes={{
+        checked: sortByValue,
+        invalidValueAction: responsivePieChartAction.setPageInError,
+        name: "sortByValue",
+        parentDispatch: responsivePieChartDispatch,
+        offLabel: "Off",
+        onLabel: "On",
+        validValueAction: responsivePieChartAction.setSortByValue,
+        value: sortByValue,
+      }}
+    />
+  );
+
+  const colorSchemeSelectInput = (
+    <AccessibleSelectInput
+      attributes={{
+        data: NIVO_COLOR_SCHEME_DATA,
+        description: "Define chart's colors",
+        name: "colorScheme",
+        parentDispatch: responsivePieChartDispatch,
+        validValueAction: responsivePieChartAction.setColorScheme,
+        value: colorScheme,
+      }}
+    />
+  );
+
+  const borderColorInput = (
     <ColorInput
       aria-label="Border color"
       color={arcBorderColor}
       onChange={(color: string) => {
         responsivePieChartDispatch({
-          type: responsivePieChartAction.setArcBorderColor,
+          action: responsivePieChartAction.setArcBorderColor,
           payload: color,
         });
       }}
       value={arcBorderColor}
-      w={sliderWidth}
     />
   );
 
-  const createdEnableFillPatternsSwitchInput = (
-    <Switch
-      aria-describedby={
-        enableFillPatterns
-          ? enableFillPatternsAccessibleSelectedText.props.id
-          : enableFillPatternsAccessibleDeselectedText.props.id
-      }
-      checked={enableFillPatterns}
-      description={
-        enableFillPatterns
-          ? enableFillPatternsAccessibleSelectedText
-          : enableFillPatternsAccessibleDeselectedText
-      }
-      label={
-        <Text weight={500} color={textColor}>
-          Fill patterns
-        </Text>
-      }
-      onChange={(event: ChangeEvent<HTMLInputElement>) => {
-        responsivePieChartDispatch({
-          type: responsivePieChartAction.setEnableFillPatterns,
-          payload: event.currentTarget.checked,
-        });
+  const enableFillPatternsSwitchInput = (
+    <AccessibleSwitchInput
+      attributes={{
+        checked: enableFillPatterns,
+        invalidValueAction: responsivePieChartAction.setPageInError,
+        name: "enableFillPatterns",
+        offLabel: "Off",
+        onLabel: "On",
+        parentDispatch: responsivePieChartDispatch,
+        validValueAction: responsivePieChartAction.setEnableFillPatterns,
+        value: enableFillPatterns,
       }}
-      w="100%"
     />
   );
 
-  const chartBorderWidthSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      ariaLabel: 'border width',
-      kind: 'slider',
-      label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-      ),
-      max: 20,
-      min: 0,
-      onChangeSlider: (value: number) => {
-        responsivePieChartDispatch({
-          type: responsivePieChartAction.setArcBorderWidth,
-          payload: value,
-        });
-      },
-      sliderDefaultValue: 0,
-      step: 1,
-      value: arcBorderWidth,
-      width: sliderWidth,
-    };
-  /** ------------- end style ------------- */
-
-  /** ------------- begin arc link labels ------------- */
-  const createdEnableArcLinkLabelsSwitchInput = (
-    <Switch
-      aria-describedby={
-        enableArcLinkLabels
-          ? enableArcLinkLabelsAccessibleSelectedText.props.id
-          : enableArcLinkLabelsAccessibleDeselectedText.props.id
-      }
-      checked={enableArcLinkLabels}
-      description={
-        enableArcLinkLabels
-          ? enableArcLinkLabelsAccessibleSelectedText
-          : enableArcLinkLabelsAccessibleDeselectedText
-      }
-      label={
-        <Text weight={500} color={textColor}>
-          Arc link labels
-        </Text>
-      }
-      onChange={(event: ChangeEvent<HTMLInputElement>) => {
-        responsivePieChartDispatch({
-          type: responsivePieChartAction.setEnableArcLinkLabels,
-          payload: event.currentTarget.checked,
-        });
+  const chartBorderWidthSliderInput = (
+    <AccessibleSliderInput
+      attributes={{
+        label: (value) => (
+          <Text style={{ color: SLIDER_TOOLTIP_COLOR }}>{value} px</Text>
+        ),
+        max: 20,
+        min: 0,
+        name: "arcBorderWidth",
+        parentDispatch: responsivePieChartDispatch,
+        sliderDefaultValue: 0,
+        step: 1,
+        validValueAction: responsivePieChartAction.setArcBorderWidth,
+        value: arcBorderWidth,
       }}
-      w="100%"
     />
   );
 
-  const arcLinkLabelsSkipAngleSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      ariaLabel: 'arc link labels skip angle',
-      disabled: !enableArcLinkLabels,
-      kind: 'slider',
-      label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value} °</Text>
-      ),
-      max: 45,
-      min: 0,
-      onChangeSlider: (value: number) => {
-        responsivePieChartDispatch({
-          type: responsivePieChartAction.setArcLinkLabelsSkipAngle,
-          payload: value,
-        });
-      },
-      sliderDefaultValue: 0,
-      step: 1,
-      value: arcLinkLabelsSkipAngle,
-      width: sliderWidth,
-    };
+  const enableArcLinkLabelsSwitchInput = (
+    <AccessibleSwitchInput
+      attributes={{
+        checked: enableArcLinkLabels,
+        invalidValueAction: responsivePieChartAction.setPageInError,
+        name: "enableArcLinkLabels",
+        offLabel: "Off",
+        onLabel: "On",
+        parentDispatch: responsivePieChartDispatch,
+        validValueAction: responsivePieChartAction.setEnableArcLabels,
+        value: enableArcLinkLabels,
+      }}
+    />
+  );
 
-  const arcLinkLabelsOffsetSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      ariaLabel: 'arc link labels offset',
-      disabled: !enableArcLinkLabels,
-      kind: 'slider',
-      label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-      ),
-      max: 24,
-      min: -24,
-      onChangeSlider: (value: number) => {
-        responsivePieChartDispatch({
-          type: responsivePieChartAction.setArcLinkLabelsOffset,
-          payload: value,
-        });
-      },
-      sliderDefaultValue: 0,
-      step: 1,
-      value: arcLinkLabelsOffset,
-      width: sliderWidth,
-    };
+  const arcLinkLabelsSkipAngleSliderInput = (
+    <AccessibleSliderInput
+      attributes={{
+        label: (value) => (
+          <Text style={{ color: SLIDER_TOOLTIP_COLOR }}>{value} °</Text>
+        ),
+        max: 45,
+        min: 0,
+        name: "arcLinkLabelsSkipAngle",
+        parentDispatch: responsivePieChartDispatch,
+        sliderDefaultValue: 0,
+        step: 1,
+        validValueAction: responsivePieChartAction.setArcLinkLabelsSkipAngle,
+        value: arcLinkLabelsSkipAngle,
+      }}
+    />
+  );
 
-  const arcLinkLabelsDiagonalLengthSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      ariaLabel: 'arc link labels diagonal length',
-      disabled: !enableArcLinkLabels,
-      kind: 'slider',
-      label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-      ),
-      max: 36,
-      min: 0,
-      onChangeSlider: (value: number) => {
-        responsivePieChartDispatch({
-          type: responsivePieChartAction.setArcLinkLabelsDiagonalLength,
-          payload: value,
-        });
-      },
-      sliderDefaultValue: 16,
-      step: 1,
-      value: arcLinkLabelsDiagonalLength,
-      width: sliderWidth,
-    };
+  const arcLinkLabelsOffsetSliderInput = (
+    <AccessibleSliderInput
+      attributes={{
+        label: (value) => (
+          <Text style={{ color: SLIDER_TOOLTIP_COLOR }}>{value} px</Text>
+        ),
+        max: 24,
+        min: -24,
+        name: "arcLinkLabelsOffset",
+        parentDispatch: responsivePieChartDispatch,
+        sliderDefaultValue: 0,
+        step: 1,
+        validValueAction: responsivePieChartAction.setArcLinkLabelsOffset,
+        value: arcLinkLabelsOffset,
+      }}
+    />
+  );
 
-  const arcLinkLabelsStraightLengthSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      ariaLabel: 'arc link labels straight length',
-      disabled: !enableArcLinkLabels,
-      kind: 'slider',
-      label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-      ),
-      max: 36,
-      min: 0,
-      onChangeSlider: (value: number) => {
-        responsivePieChartDispatch({
-          type: responsivePieChartAction.setArcLinkLabelsStraightLength,
-          payload: value,
-        });
-      },
-      sliderDefaultValue: 24,
-      step: 1,
-      value: arcLinkLabelsStraightLength,
-      width: sliderWidth,
-    };
+  const arcLinkLabelsDiagonalLengthSliderInput = (
+    <AccessibleSliderInput
+      attributes={{
+        label: (value) => (
+          <Text style={{ color: SLIDER_TOOLTIP_COLOR }}>{value} px</Text>
+        ),
+        max: 36,
+        min: 0,
+        name: "arcLinkLabelsDiagonalLength",
+        parentDispatch: responsivePieChartDispatch,
+        sliderDefaultValue: 16,
+        step: 1,
+        validValueAction:
+          responsivePieChartAction.setArcLinkLabelsDiagonalLength,
+        value: arcLinkLabelsDiagonalLength,
+      }}
+    />
+  );
 
-  const arcLinkLabelsTextOffsetSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      ariaLabel: 'arc link labels text offset',
-      disabled: !enableArcLinkLabels,
-      kind: 'slider',
-      label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-      ),
-      max: 36,
-      min: 0,
-      onChangeSlider: (value: number) => {
-        responsivePieChartDispatch({
-          type: responsivePieChartAction.setArcLinkLabelsTextOffset,
-          payload: value,
-        });
-      },
-      sliderDefaultValue: 6,
-      step: 1,
-      value: arcLinkLabelsTextOffset,
-      width: sliderWidth,
-    };
+  const arcLinkLabelsStraightLengthSliderInput = (
+    <AccessibleSliderInput
+      attributes={{
+        label: (value) => (
+          <Text style={{ color: SLIDER_TOOLTIP_COLOR }}>{value} px</Text>
+        ),
+        max: 36,
+        min: 0,
+        name: "arcLinkLabelsStraightLength",
+        parentDispatch: responsivePieChartDispatch,
+        sliderDefaultValue: 24,
+        step: 1,
+        validValueAction:
+          responsivePieChartAction.setArcLinkLabelsStraightLength,
+        value: arcLinkLabelsStraightLength,
+      }}
+    />
+  );
 
-  const arcLinkLabelsThicknessSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      ariaLabel: 'arc link labels thickness',
-      disabled: !enableArcLinkLabels,
-      kind: 'slider',
-      label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-      ),
-      max: 20,
-      min: 0,
-      onChangeSlider: (value: number) => {
-        responsivePieChartDispatch({
-          type: responsivePieChartAction.setArcLinkLabelsThickness,
-          payload: value,
-        });
-      },
-      sliderDefaultValue: 1,
-      step: 1,
-      value: arcLinkLabelsThickness,
-      width: sliderWidth,
-    };
+  const arcLinkLabelsTextOffsetSliderInput = (
+    <AccessibleSliderInput
+      attributes={{
+        label: (value) => (
+          <Text style={{ color: SLIDER_TOOLTIP_COLOR }}>{value} px</Text>
+        ),
+        max: 36,
+        min: 0,
+        name: "arcLinkLabelsTextOffset",
+        parentDispatch: responsivePieChartDispatch,
+        sliderDefaultValue: 6,
+        step: 1,
+        validValueAction: responsivePieChartAction.setArcLinkLabelsTextOffset,
+        value: arcLinkLabelsTextOffset,
+      }}
+    />
+  );
 
-  const createdArcLinkLabelsTextColorInput = (
+  const arcLinkLabelsThicknessSliderInput = (
+    <AccessibleSliderInput
+      attributes={{
+        label: (value) => (
+          <Text style={{ color: SLIDER_TOOLTIP_COLOR }}>{value} px</Text>
+        ),
+        max: 20,
+        min: 0,
+        name: "arcLinkLabelsThickness",
+        parentDispatch: responsivePieChartDispatch,
+        sliderDefaultValue: 1,
+        step: 1,
+        validValueAction: responsivePieChartAction.setArcLinkLabelsThickness,
+        value: arcLinkLabelsThickness,
+      }}
+    />
+  );
+
+  const arcLinkLabelsTextColorInput = (
     <ColorInput
       aria-label="arc link labels text color"
+      color={arcLinkLabelsTextColor}
       disabled={!enableArcLinkLabels}
       onChange={(color: string) => {
         responsivePieChartDispatch({
-          type: responsivePieChartAction.setArcLinkLabelsTextColor,
+          action: responsivePieChartAction.setArcLinkLabelsTextColor,
           payload: color,
         });
       }}
       value={arcLinkLabelsTextColor}
-      w={sliderWidth}
     />
   );
-  /** ------------- end arc link labels ------------- */
 
-  /** ------------- begin interactivity ------------- */
-  const activeInnerRadiusOffsetSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      ariaLabel: 'active inner radius offset',
-      kind: 'slider',
-      label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-      ),
-      max: 50,
-      min: 0,
-      onChangeSlider: (value: number) => {
-        responsivePieChartDispatch({
-          type: responsivePieChartAction.setActiveInnerRadiusOffset,
-          payload: value,
-        });
-      },
-      sliderDefaultValue: 0,
-      step: 1,
-      value: activeInnerRadiusOffset,
-      width: sliderWidth,
-    };
-
-  const activeOuterRadiusOffsetSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      ariaLabel: 'active outer radius offset',
-      kind: 'slider',
-      label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-      ),
-      max: 50,
-      min: 0,
-      onChangeSlider: (value: number) => {
-        responsivePieChartDispatch({
-          type: responsivePieChartAction.setActiveOuterRadiusOffset,
-          payload: value,
-        });
-      },
-      sliderDefaultValue: 0,
-      step: 1,
-      value: activeOuterRadiusOffset,
-      width: sliderWidth,
-    };
-  /** ------------- end interactivity ------------- */
-
-  /** ------------- begin motion ------------- */
-  const createdAnimateSwitchInput = (
-    <Switch
-      aria-describedby={
-        enableAnimate
-          ? enableAnimateAccessibleSelectedText.props.id
-          : enableAnimateAccessibleDeselectedText.props.id
-      }
-      checked={enableAnimate}
-      description={
-        enableAnimate
-          ? enableAnimateAccessibleSelectedText
-          : enableAnimateAccessibleDeselectedText
-      }
-      label={
-        <Text weight={500} color={textColor}>
-          Animate
-        </Text>
-      }
-      disabled={isPrefersReducedMotion}
-      onChange={(event: ChangeEvent<HTMLInputElement>) => {
-        responsivePieChartDispatch({
-          type: responsivePieChartAction.setEnableAnimate,
-          payload: event.currentTarget.checked,
-        });
+  const activeInnerRadiusOffsetSliderInput = (
+    <AccessibleSliderInput
+      attributes={{
+        label: (value) => (
+          <Text style={{ color: SLIDER_TOOLTIP_COLOR }}>{value} px</Text>
+        ),
+        max: 50,
+        min: 0,
+        name: "activeInnerRadiusOffset",
+        parentDispatch: responsivePieChartDispatch,
+        sliderDefaultValue: 0,
+        step: 1,
+        validValueAction: responsivePieChartAction.setActiveInnerRadiusOffset,
+        value: activeInnerRadiusOffset,
       }}
-      w="100%"
     />
   );
 
-  const motionConfigSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
-    data: NIVO_MOTION_CONFIG_DATA,
-    description: 'Configure react-spring.',
-    disabled: !enableAnimate,
-    onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-      responsivePieChartDispatch({
-        type: responsivePieChartAction.setMotionConfig,
-        payload: event.currentTarget.value as NivoMotionConfig,
-      });
-    },
-    value: motionConfig,
-    width: sliderWidth,
-  };
+  const activeOuterRadiusOffsetSliderInput = (
+    <AccessibleSliderInput
+      attributes={{
+        label: (value) => (
+          <Text style={{ color: SLIDER_TOOLTIP_COLOR }}>{value} px</Text>
+        ),
+        max: 50,
+        min: 0,
+        name: "activeOuterRadiusOffset",
+        parentDispatch: responsivePieChartDispatch,
+        sliderDefaultValue: 0,
+        step: 1,
+        validValueAction: responsivePieChartAction.setActiveOuterRadiusOffset,
+        value: activeOuterRadiusOffset,
+      }}
+    />
+  );
 
-  const transitionModeSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo =
-    {
-      data: NIVO_TRANSITION_MODE_DATA,
-      description: 'Define how transitions behave.',
-      disabled: !enableAnimate,
-      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-        responsivePieChartDispatch({
-          type: responsivePieChartAction.setTransitionMode,
-          payload: event.currentTarget.value as NivoTransitionMode,
-        });
-      },
-      value: transitionMode,
-      width: sliderWidth,
-    };
-  /** ------------- end motion ------------- */
+  const enableAnimateSwitchInput = (
+    <AccessibleSwitchInput
+      attributes={{
+        checked: enableAnimate,
+        invalidValueAction: responsivePieChartAction.setPageInError,
+        name: "enableAnimate",
+        offLabel: "Off",
+        onLabel: "On",
+        parentDispatch: responsivePieChartDispatch,
+        validValueAction: responsivePieChartAction.setEnableAnimate,
+        value: enableAnimate,
+      }}
+    />
+  );
+
+  const motionConfigSelectInput = (
+    <AccessibleSelectInput
+      attributes={{
+        data: NIVO_MOTION_CONFIG_DATA,
+        description: "Configure react-spring.",
+        name: "motionConfig",
+        parentDispatch: responsivePieChartDispatch,
+        validValueAction: responsivePieChartAction.setMotionConfig,
+        value: motionConfig,
+      }}
+    />
+  );
+
+  const transitionModeSelectInput = (
+    <AccessibleSelectInput
+      attributes={{
+        data: NIVO_TRANSITION_MODE_DATA,
+        description: "Define how transitions behave.",
+        name: "transitionMode",
+        parentDispatch: responsivePieChartDispatch,
+        validValueAction: responsivePieChartAction.setTransitionMode,
+        value: transitionMode,
+      }}
+    />
+  );
 
   // reset all button
-  const [createdResetAllButton] = returnAccessibleButtonElements([
-    {
-      buttonLabel: 'Reset',
-      leftIcon: <BiReset />,
-      semanticDescription: 'Reset all inputs to their default values',
-      semanticName: 'Reset All',
-      buttonOnClick: () => {
-        responsivePieChartDispatch({
-          type: responsivePieChartAction.resetChartToDefault,
-          payload: modifiedInitialResponsivePieChartState,
-        });
-      },
-    },
-  ]);
 
-  /** ------------- end input objects ------------- */
-
-  /** ------------- begin input creation ------------- */
-  /** base */
-  const [
-    createdStartAngleSliderInput,
-    createdEndAngleSliderInput,
-    createdInnerRadiusSliderInput,
-    createdPadAngleSliderInput,
-    createdCornerRadiusSliderInput,
-  ] = returnAccessibleSliderInputElements([
-    startAngleSliderInputCreatorInfo,
-    endAngleSliderInputCreatorInfo,
-    innerRadiusSliderInputCreatorInfo,
-    padAngleSliderInputCreatorInfo,
-    cornerRadiusSliderInputCreatorInfo,
-  ]);
-
-  /** style */
-  const [createdColorSchemeSelectInput] = returnAccessibleSelectInputElements([
-    chartColorsSelectInputCreatorInfo,
-  ]);
-
-  const [createdArcBorderWidthSliderInput] =
-    returnAccessibleSliderInputElements([
-      chartBorderWidthSliderInputCreatorInfo,
-    ]);
-
-  /** arc link labels */
-  const [
-    createdArcLinkLabelsSkipAngleSliderInput,
-    createdArcLinkLabelsOffsetSliderInput,
-    createdArcLinkLabelsDiagonalLengthSliderInput,
-    createdArcLinkLabelsStraightLengthSliderInput,
-    createdArcLinkLabelsTextOffsetSliderInput,
-    createdArcLinkLabelsThicknessSliderInput,
-  ] = returnAccessibleSliderInputElements([
-    arcLinkLabelsSkipAngleSliderInputCreatorInfo,
-    arcLinkLabelsOffsetSliderInputCreatorInfo,
-    arcLinkLabelsDiagonalLengthSliderInputCreatorInfo,
-    arcLinkLabelsStraightLengthSliderInputCreatorInfo,
-    arcLinkLabelsTextOffsetSliderInputCreatorInfo,
-    arcLinkLabelsThicknessSliderInputCreatorInfo,
-  ]);
-
-  /** interactivity */
-  const [
-    createdActiveInnerRadiusOffsetSliderInput,
-    createdActiveOuterRadiusOffsetSliderInput,
-  ] = returnAccessibleSliderInputElements([
-    activeInnerRadiusOffsetSliderInputCreatorInfo,
-    activeOuterRadiusOffsetSliderInputCreatorInfo,
-  ]);
-
-  /** motion */
-  const [createdMotionConfigSelectInput, createdTransitionModeSelectInput] =
-    returnAccessibleSelectInputElements([
-      motionConfigSelectInputCreatorInfo,
-      transitionModeSelectInputCreatorInfo,
-    ]);
-
-  /** ------------- end input creation ------------- */
-
-  /** ------------- begin display ------------- */
+  const resetAllButton = (
+    <AccessibleButton
+      attributes={{
+        enabledScreenreaderText: "Reset all inputs to their default values",
+        kind: "reset",
+        name: "resetAll",
+        onClick: () => {
+          responsivePieChartDispatch({
+            action: responsivePieChartAction.resetChartToDefault,
+            payload: modifiedInitialResponsivePieChartState,
+          });
+        },
+      }}
+    />
+  );
 
   /** base */
 
   const displayBaseHeading = (
     <Group
       bg={sectionHeadersBgColor}
-      p={padding}
-      style={{
-        boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25)',
-        position: 'sticky',
-        top: 0,
-        zIndex: 4,
-      }}
+      style={STICKY_STYLE}
       w="100%"
     >
       <Title order={5} color={textColor}>
@@ -961,7 +712,7 @@ function ResponsivePieChart({
   const displayStartAngleSliderInput = (
     <ChartsAndGraphsControlsStacker
       initialChartState={modifiedInitialResponsivePieChartState}
-      input={createdStartAngleSliderInput}
+      input={startAngleSliderInput}
       label="Start angle"
       symbol="°"
       value={startAngle}
@@ -971,7 +722,7 @@ function ResponsivePieChart({
   const displayEndAngleSliderInput = (
     <ChartsAndGraphsControlsStacker
       initialChartState={modifiedInitialResponsivePieChartState}
-      input={createdEndAngleSliderInput}
+      input={endAngleSliderInput}
       label="End angle"
       symbol="°"
       value={endAngle}
@@ -981,7 +732,7 @@ function ResponsivePieChart({
   const displayInnerRadiusSliderInput = (
     <ChartsAndGraphsControlsStacker
       initialChartState={modifiedInitialResponsivePieChartState}
-      input={createdInnerRadiusSliderInput}
+      input={innerRadiusSliderInput}
       label="Inner radius"
       symbol="px"
       value={innerRadius}
@@ -991,7 +742,7 @@ function ResponsivePieChart({
   const displayPadAngleSliderInput = (
     <ChartsAndGraphsControlsStacker
       initialChartState={modifiedInitialResponsivePieChartState}
-      input={createdPadAngleSliderInput}
+      input={padAngleSliderInput}
       label="Pad angle"
       symbol="°"
       value={padAngle}
@@ -1001,7 +752,7 @@ function ResponsivePieChart({
   const displayCornerRadiusSliderInput = (
     <ChartsAndGraphsControlsStacker
       initialChartState={modifiedInitialResponsivePieChartState}
-      input={createdCornerRadiusSliderInput}
+      input={cornerRadiusSliderInput}
       label="Corner radius"
       symbol="px"
       value={cornerRadius}
@@ -1009,8 +760,8 @@ function ResponsivePieChart({
   );
 
   const displaySortByValueSwitchInput = (
-    <Group w="100%" p={padding} style={{ borderBottom: arcBorderColor }}>
-      {createdSortByValueSwitchInput}
+    <Group w="100%" style={{ borderBottom: arcBorderColor }}>
+      {sortByValueSwitchInput}
     </Group>
   );
 
@@ -1030,13 +781,7 @@ function ResponsivePieChart({
   const displayStyleHeading = (
     <Group
       w="100%"
-      style={{
-        boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25)',
-        position: 'sticky',
-        top: 0,
-        zIndex: 4,
-      }}
-      p={padding}
+      style={STICKY_STYLE}
       bg={sectionHeadersBgColor}
     >
       <Title order={5} color={textColor}>
@@ -1046,28 +791,26 @@ function ResponsivePieChart({
   );
 
   const displayEnableFillPatternsSwitchInput = (
-    <Group w="100%" p={padding} style={{ borderBottom: arcBorderColor }}>
-      {createdEnableFillPatternsSwitchInput}
+    <Group w="100%" style={{ borderBottom: arcBorderColor }}>
+      {enableFillPatternsSwitchInput}
     </Group>
   );
 
   const displayColorSchemeSelectInput = (
     <ChartsAndGraphsControlsStacker
       initialChartState={modifiedInitialResponsivePieChartState}
-      input={createdColorSchemeSelectInput}
+      input={colorSchemeSelectInput}
       label="Chart colors"
       // prevents display of camelCased or snake_cased value
-      value={
-        NIVO_COLOR_SCHEME_DATA.find(({ value }) => value === chartColors)
-          ?.label ?? chartColors
-      }
+      value={NIVO_COLOR_SCHEME_DATA.find(({ value }) => value === colorScheme)
+        ?.label ?? colorScheme}
     />
   );
 
   const displayBorderColorInput = (
     <ChartsAndGraphsControlsStacker
       initialChartState={modifiedInitialResponsivePieChartState}
-      input={createdBorderColorInput}
+      input={borderColorInput}
       label="Arc Border color"
       value={arcBorderColor}
     />
@@ -1076,7 +819,7 @@ function ResponsivePieChart({
   const displayArcBorderWidthSliderInput = (
     <ChartsAndGraphsControlsStacker
       initialChartState={modifiedInitialResponsivePieChartState}
-      input={createdArcBorderWidthSliderInput}
+      input={chartBorderWidthSliderInput}
       label="Arc border width"
       symbol="px"
       value={arcBorderWidth}
@@ -1103,7 +846,6 @@ function ResponsivePieChart({
       borderColor={borderColor}
       enableArcLabels={enableArcLabels}
       initialChartState={modifiedInitialResponsivePieChartState}
-      padding={padding}
       parentChartAction={responsivePieChartAction}
       parentChartDispatch={responsivePieChartDispatch}
       sectionHeadersBgColor={sectionHeadersBgColor}
@@ -1116,13 +858,7 @@ function ResponsivePieChart({
   const displayArcLinkLabelsHeading = (
     <Group
       bg={sectionHeadersBgColor}
-      p={padding}
-      style={{
-        boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25)',
-        position: 'sticky',
-        top: 0,
-        zIndex: 4,
-      }}
+      style={STICKY_STYLE}
       w="100%"
     >
       <Title order={5} color={textColor}>
@@ -1132,15 +868,15 @@ function ResponsivePieChart({
   );
 
   const displayEnableArcLinkLabelsSwitchInput = (
-    <Group w="100%" p={padding} style={{ borderBottom: arcBorderColor }}>
-      {createdEnableArcLinkLabelsSwitchInput}
+    <Group w="100%" style={{ borderBottom: arcBorderColor }}>
+      {enableArcLinkLabelsSwitchInput}
     </Group>
   );
 
   const displayArcLinkLabelsSkipAngleSliderInput = (
     <ChartsAndGraphsControlsStacker
       initialChartState={modifiedInitialResponsivePieChartState}
-      input={createdArcLinkLabelsSkipAngleSliderInput}
+      input={arcLinkLabelsSkipAngleSliderInput}
       isInputDisabled={!enableArcLinkLabels}
       label="Arc link labels skip angle"
       symbol="°"
@@ -1151,7 +887,7 @@ function ResponsivePieChart({
   const displayArcLinkLabelsOffsetSliderInput = (
     <ChartsAndGraphsControlsStacker
       initialChartState={modifiedInitialResponsivePieChartState}
-      input={createdArcLinkLabelsOffsetSliderInput}
+      input={arcLinkLabelsOffsetSliderInput}
       isInputDisabled={!enableArcLinkLabels}
       label="Arc link labels offset"
       symbol="px"
@@ -1162,7 +898,7 @@ function ResponsivePieChart({
   const displayArcLinkLabelsDiagonalLengthSliderInput = (
     <ChartsAndGraphsControlsStacker
       initialChartState={modifiedInitialResponsivePieChartState}
-      input={createdArcLinkLabelsDiagonalLengthSliderInput}
+      input={arcLinkLabelsDiagonalLengthSliderInput}
       isInputDisabled={!enableArcLinkLabels}
       label="Arc link labels diagonal length"
       symbol="px"
@@ -1173,7 +909,7 @@ function ResponsivePieChart({
   const displayArcLinkLabelsStraightLengthSliderInput = (
     <ChartsAndGraphsControlsStacker
       initialChartState={modifiedInitialResponsivePieChartState}
-      input={createdArcLinkLabelsStraightLengthSliderInput}
+      input={arcLinkLabelsStraightLengthSliderInput}
       isInputDisabled={!enableArcLinkLabels}
       label="Arc link labels straight length"
       symbol="px"
@@ -1184,7 +920,7 @@ function ResponsivePieChart({
   const displayArcLinkLabelsHeadingOffsetSliderInput = (
     <ChartsAndGraphsControlsStacker
       initialChartState={modifiedInitialResponsivePieChartState}
-      input={createdArcLinkLabelsTextOffsetSliderInput}
+      input={arcLinkLabelsTextOffsetSliderInput}
       isInputDisabled={!enableArcLinkLabels}
       label="Arc link labels text offset"
       symbol="px"
@@ -1195,7 +931,7 @@ function ResponsivePieChart({
   const displayArcLinkLabelsThicknessSliderInput = (
     <ChartsAndGraphsControlsStacker
       initialChartState={modifiedInitialResponsivePieChartState}
-      input={createdArcLinkLabelsThicknessSliderInput}
+      input={arcLinkLabelsThicknessSliderInput}
       isInputDisabled={!enableArcLinkLabels}
       label="Arc link labels thickness"
       symbol="px"
@@ -1206,7 +942,7 @@ function ResponsivePieChart({
   const displayArcLinkLabelsHeadingColorInput = (
     <ChartsAndGraphsControlsStacker
       initialChartState={modifiedInitialResponsivePieChartState}
-      input={createdArcLinkLabelsTextColorInput}
+      input={arcLinkLabelsTextColorInput}
       isInputDisabled={!enableArcLinkLabels}
       label="Arc link labels text color"
       value={arcLinkLabelsTextColor}
@@ -1232,13 +968,7 @@ function ResponsivePieChart({
     <Group
       w="100%"
       bg={sectionHeadersBgColor}
-      p={padding}
-      style={{
-        boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25)',
-        position: 'sticky',
-        top: 0,
-        zIndex: 4,
-      }}
+      style={STICKY_STYLE}
     >
       <Title order={5} color={textColor}>
         Interactivity
@@ -1249,7 +979,7 @@ function ResponsivePieChart({
   const displayActiveInnerRadiusOffsetSliderInput = (
     <ChartsAndGraphsControlsStacker
       initialChartState={modifiedInitialResponsivePieChartState}
-      input={createdActiveInnerRadiusOffsetSliderInput}
+      input={activeInnerRadiusOffsetSliderInput}
       label="Active inner radius offset"
       value={activeInnerRadiusOffset}
       symbol="px"
@@ -1259,7 +989,7 @@ function ResponsivePieChart({
   const displayActiveOuterRadiusOffsetSliderInput = (
     <ChartsAndGraphsControlsStacker
       initialChartState={modifiedInitialResponsivePieChartState}
-      input={createdActiveOuterRadiusOffsetSliderInput}
+      input={activeOuterRadiusOffsetSliderInput}
       label="Active outer radius offset"
       value={activeOuterRadiusOffset}
       symbol="px"
@@ -1278,13 +1008,7 @@ function ResponsivePieChart({
   const displayMotionHeading = (
     <Group
       bg={sectionHeadersBgColor}
-      p={padding}
-      style={{
-        boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25)',
-        position: 'sticky',
-        top: 0,
-        zIndex: 4,
-      }}
+      style={STICKY_STYLE}
       w="100%"
     >
       <Title order={5} color={textColor}>
@@ -1294,15 +1018,15 @@ function ResponsivePieChart({
   );
 
   const displayAnimateMotionSwitchInput = (
-    <Group w="100%" p={padding} style={{ borderBottom: arcBorderColor }}>
-      {createdAnimateSwitchInput}
+    <Group w="100%" style={{ borderBottom: arcBorderColor }}>
+      {enableAnimateSwitchInput}
     </Group>
   );
 
   const displayMotionConfigSelectInput = (
     <ChartsAndGraphsControlsStacker
       initialChartState={modifiedInitialResponsivePieChartState}
-      input={createdMotionConfigSelectInput}
+      input={motionConfigSelectInput}
       isInputDisabled={!enableAnimate}
       label="Motion config"
       value={motionConfig}
@@ -1312,7 +1036,7 @@ function ResponsivePieChart({
   const displayTransitionModeSelectInput = (
     <ChartsAndGraphsControlsStacker
       initialChartState={modifiedInitialResponsivePieChartState}
-      input={createdTransitionModeSelectInput}
+      input={transitionModeSelectInput}
       isInputDisabled={!enableAnimate}
       label="Transition mode"
       value={transitionMode}
@@ -1336,7 +1060,6 @@ function ResponsivePieChart({
       marginLeft={marginLeft}
       marginRight={marginRight}
       marginTop={marginTop}
-      padding={padding}
       parentChartAction={responsivePieChartAction}
       parentChartDispatch={responsivePieChartDispatch}
       sectionHeadersBgColor={sectionHeadersBgColor}
@@ -1369,7 +1092,6 @@ function ResponsivePieChart({
       legendSymbolSpacing={legendSymbolSpacing}
       legendTranslateX={legendTranslateX}
       legendTranslateY={legendTranslateY}
-      padding={padding}
       parentChartAction={responsivePieChartAction}
       parentChartDispatch={responsivePieChartDispatch}
       sectionHeadersBgColor={sectionHeadersBgColor}
@@ -1387,17 +1109,13 @@ function ResponsivePieChart({
       chartTitlePosition={chartTitlePosition}
       chartTitleSize={chartTitleSize}
       initialChartState={modifiedInitialResponsivePieChartState}
-      isChartTitleFocused={isChartTitleFocused}
-      isChartTitleValid={isChartTitleValid}
-      isScreenshotFilenameFocused={isScreenshotFilenameFocused}
-      isScreenshotFilenameValid={isScreenshotFilenameValid}
-      padding={padding}
       parentChartAction={responsivePieChartAction}
       parentChartDispatch={responsivePieChartDispatch}
       screenshotFilename={screenshotFilename}
       screenshotImageQuality={screenshotImageQuality}
       screenshotImageType={screenshotImageType}
       sectionHeadersBgColor={sectionHeadersBgColor}
+      stepperPages={returnChartOptionsStepperPages()}
       textColor={textColor}
       width={width}
     />
@@ -1405,12 +1123,12 @@ function ResponsivePieChart({
 
   const displayResetAllButton = (
     <Tooltip label="Reset all inputs to their default values">
-      <Group>{createdResetAllButton}</Group>
+      <Group>{resetAllButton}</Group>
     </Tooltip>
   );
 
   const displayResetAll = (
-    <Stack w="100%" py={padding}>
+    <Stack w="100%">
       <ChartsAndGraphsControlsStacker
         initialChartState={modifiedInitialResponsivePieChartState}
         input={displayResetAllButton}
@@ -1443,14 +1161,11 @@ function ResponsivePieChart({
       chartTitleColor={chartTitleColor}
       chartTitlePosition={chartTitlePosition}
       chartTitleSize={chartTitleSize}
-      padding={padding}
       responsiveChart={displayResponsivePie}
       scrollBarStyle={scrollBarStyle}
       width={width}
     />
   );
-
-  /** ------------- end display ------------- */
 
   return displayChartAndControls;
 }
