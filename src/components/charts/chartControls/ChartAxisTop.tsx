@@ -1,68 +1,51 @@
-import {
-  Group,
-  MantineNumberSize,
-  Stack,
-  Switch,
-  Text,
-  Title,
-} from '@mantine/core';
-import { ChangeEvent, useEffect } from 'react';
-
-import { COLORS_SWATCHES } from '../../../constants/data';
-import { SERIAL_ID_REGEX } from '../../../constants/regex';
-import {
-  AccessibleErrorValidTextElements,
-  AccessibleSelectedDeselectedTextElements,
-  returnAccessibleSelectInputElements,
-  returnAccessibleSliderInputElements,
-  returnAccessibleTextInputElements,
-} from '../../../jsxCreators';
-import { returnSerialIdValidationText } from '../../../utils';
-import {
-  AccessibleSelectInputCreatorInfo,
-  AccessibleSliderInputCreatorInfo,
-  AccessibleTextInputCreatorInfo,
-} from '../../wrappers';
-import { BAR_CHART_AXIS_LEGEND_POSITION_SELECT_DATA } from '../responsiveBarChart/constants';
-import { NivoAxisLegendPosition } from '../types';
-import { ChartsAndGraphsControlsStacker } from '../utils';
+import { Group, Stack, Text, Title } from "@mantine/core";
+import type { ChangeEvent } from "react";
+import type { SetPageInErrorPayload, StepperPage } from "../../../types";
+import { AccessibleSelectInput } from "../../accessibleInputs/AccessibleSelectInput";
+import { AccessibleSliderInput } from "../../accessibleInputs/AccessibleSliderInput";
+import { AccessibleSwitchInput } from "../../accessibleInputs/AccessibleSwitchInput";
+import { AccessibleTextInput } from "../../accessibleInputs/text/AccessibleTextInput";
+import { SLIDER_TOOLTIP_COLOR, STICKY_STYLE } from "../constants";
+import { BAR_CHART_AXIS_LEGEND_POSITION_SELECT_DATA } from "../responsiveBarChart/constants";
+import type { NivoAxisLegendPosition } from "../types";
+import { ChartsAndGraphsControlsStacker } from "../utils";
 
 type ChartAxisAction = {
-  setAxisTopLegend: 'setAxisTopLegend';
-  setAxisTopLegendOffset: 'setAxisTopLegendOffset';
-  setAxisTopLegendPosition: 'setAxisTopLegendPosition';
-  setAxisTopTickPadding: 'setAxisTopTickPadding';
-  setAxisTopTickRotation: 'setAxisTopTickRotation';
-  setAxisTopTickSize: 'setAxisTopTickSize';
-  setEnableAxisTop: 'setEnableAxisTop';
-  setIsAxisTopLegendFocused: 'setIsAxisTopLegendFocused';
-  setIsAxisTopLegendValid: 'setIsAxisTopLegendValid';
+  setAxisTopLegend: "setAxisTopLegend";
+  setAxisTopLegendOffset: "setAxisTopLegendOffset";
+  setAxisTopLegendPosition: "setAxisTopLegendPosition";
+  setAxisTopTickPadding: "setAxisTopTickPadding";
+  setAxisTopTickRotation: "setAxisTopTickRotation";
+  setAxisTopTickSize: "setAxisTopTickSize";
+  setEnableAxisTop: "setEnableAxisTop";
+  setPageInError: "setPageInError";
 };
 
 type ChartAxisDispatch =
   | {
-      type:
-        | ChartAxisAction['setEnableAxisTop']
-        | ChartAxisAction['setIsAxisTopLegendValid']
-        | ChartAxisAction['setIsAxisTopLegendFocused'];
-      payload: boolean;
-    }
+    action: ChartAxisAction["setEnableAxisTop"];
+    payload: boolean;
+  }
   | {
-      type:
-        | ChartAxisAction['setAxisTopTickSize']
-        | ChartAxisAction['setAxisTopTickPadding']
-        | ChartAxisAction['setAxisTopTickRotation']
-        | ChartAxisAction['setAxisTopLegendOffset'];
-      payload: number;
-    }
+    action:
+      | ChartAxisAction["setAxisTopTickSize"]
+      | ChartAxisAction["setAxisTopTickPadding"]
+      | ChartAxisAction["setAxisTopTickRotation"]
+      | ChartAxisAction["setAxisTopLegendOffset"];
+    payload: number;
+  }
   | {
-      type: ChartAxisAction['setAxisTopLegend'];
-      payload: string;
-    }
+    action: ChartAxisAction["setAxisTopLegend"];
+    payload: string;
+  }
   | {
-      type: ChartAxisAction['setAxisTopLegendPosition'];
-      payload: NivoAxisLegendPosition;
-    };
+    action: ChartAxisAction["setAxisTopLegendPosition"];
+    payload: NivoAxisLegendPosition;
+  }
+  | {
+    action: ChartAxisAction["setPageInError"];
+    payload: SetPageInErrorPayload;
+  };
 
 type ChartAxisTopProps = {
   axisTopLegend: string; // default: ''
@@ -74,12 +57,10 @@ type ChartAxisTopProps = {
   borderColor: string;
   enableAxisTop: boolean; // default: false ? null
   initialChartState: Record<string, any>;
-  isAxisTopLegendFocused: boolean; // default: false
-  isAxisTopLegendValid: boolean; // default: false
-  padding: MantineNumberSize;
   parentChartAction: ChartAxisAction;
   parentChartDispatch: React.Dispatch<ChartAxisDispatch>;
   sectionHeadersBgColor: string;
+  stepperPages: StepperPage[];
   textColor: string;
   width: number;
 };
@@ -95,261 +76,137 @@ function ChartAxisTop(props: ChartAxisTopProps) {
     borderColor,
     enableAxisTop,
     initialChartState,
-    isAxisTopLegendFocused,
-    isAxisTopLegendValid,
-    padding,
     parentChartAction,
     parentChartDispatch,
     sectionHeadersBgColor,
+    stepperPages,
     textColor,
     width,
   } = props;
 
-  // validate axisTopLegend on every change
-  useEffect(() => {
-    const isValid = SERIAL_ID_REGEX.test(axisTopLegend);
-
-    parentChartDispatch({
-      type: parentChartAction.setIsAxisTopLegendValid,
-      payload: isValid,
-    });
-  }, [
-    axisTopLegend,
-    parentChartAction.setIsAxisTopLegendValid,
-    parentChartDispatch,
-  ]);
-
-  const [
-    enableAxisTopAccessibleSelectedText,
-    enableAxisTopAccessibleDeselectedText,
-  ] = AccessibleSelectedDeselectedTextElements({
-    deselectedDescription: 'Chart will not have an axis on top.',
-    isSelected: enableAxisTop,
-    selectedDescription: 'Chart will have an axis on top.',
-    semanticName: 'axis top',
-    theme: 'muted',
-  });
-
-  //
-  const { gray } = COLORS_SWATCHES;
-  const sliderWidth =
-    width < 480
-      ? '217px'
-      : width < 768
-      ? `${width * 0.38}px`
-      : width < 1192
-      ? '500px'
-      : `${width * 0.15}px`;
-  const sliderLabelColor = gray[3];
-
-  const createdEnableAxisTopSwitchInput = (
-    <Switch
-      aria-describedby={
-        enableAxisTop
-          ? enableAxisTopAccessibleSelectedText.props.id
-          : enableAxisTopAccessibleDeselectedText.props.id
-      }
-      checked={enableAxisTop}
-      description={
-        enableAxisTop
-          ? enableAxisTopAccessibleSelectedText
-          : enableAxisTopAccessibleDeselectedText
-      }
-      label={
-        <Text weight={500} color={textColor}>
-          Axis top
-        </Text>
-      }
-      onChange={(event: ChangeEvent<HTMLInputElement>) => {
-        parentChartDispatch({
-          type: parentChartAction.setEnableAxisTop,
-          payload: event.currentTarget.checked,
-        });
+  const enableAxisTopSwitchInput = (
+    <AccessibleSwitchInput
+      attributes={{
+        checked: enableAxisTop,
+        invalidValueAction: parentChartAction.setPageInError,
+        name: "enableAxisTop",
+        offLabel: "Off",
+        onLabel: "On",
+        parentDispatch: parentChartDispatch,
+        validValueAction: parentChartAction.setEnableAxisTop,
+        value: enableAxisTop,
       }}
-      w="100%"
     />
   );
 
-  const axisTopTickSizeSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      ariaLabel: 'axis top tick size',
-      disabled: !enableAxisTop,
-      kind: 'slider',
-      label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-      ),
-      max: 20,
-      min: 0,
-      onChangeSlider: (value: number) => {
-        parentChartDispatch({
-          type: parentChartAction.setAxisTopTickSize,
-          payload: value,
-        });
-      },
-      sliderDefaultValue: 5,
-      step: 1,
-      value: axisTopTickSize,
-      width: sliderWidth,
-    };
+  const axisTopTickSizeSliderInput = (
+    <AccessibleSliderInput
+      attributes={{
+        label: (value) => (
+          <Text style={{ color: SLIDER_TOOLTIP_COLOR }}>{value} px</Text>
+        ),
+        max: 20,
+        min: 0,
+        name: "axisTopTickSize",
+        parentDispatch: parentChartDispatch,
+        sliderDefaultValue: 5,
+        step: 1,
+        validValueAction: parentChartAction.setAxisTopTickSize,
+        value: axisTopTickSize,
+      }}
+    />
+  );
 
-  const axisTopTickPaddingSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      ariaLabel: 'axis top tick padding',
-      disabled: !enableAxisTop,
-      kind: 'slider',
-      label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-      ),
-      max: 20,
-      min: 0,
-      onChangeSlider: (value: number) => {
-        parentChartDispatch({
-          type: parentChartAction.setAxisTopTickPadding,
-          payload: value,
-        });
-      },
-      sliderDefaultValue: 5,
-      step: 1,
-      value: axisTopTickPadding,
-      width: sliderWidth,
-    };
+  const axisTopTickPaddingSliderInput = (
+    <AccessibleSliderInput
+      attributes={{
+        label: (value) => (
+          <Text style={{ color: SLIDER_TOOLTIP_COLOR }}>{value} px</Text>
+        ),
+        max: 20,
+        min: 0,
+        name: "axisTopTickPadding",
+        parentDispatch: parentChartDispatch,
+        sliderDefaultValue: 5,
+        step: 1,
+        validValueAction: parentChartAction.setAxisTopTickPadding,
+        value: axisTopTickPadding,
+      }}
+    />
+  );
 
-  const axisTopTickRotationSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      ariaLabel: 'axis top tick rotation',
-      disabled: !enableAxisTop,
-      kind: 'slider',
-      label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value} °</Text>
-      ),
-      max: 90,
-      min: -90,
-      onChangeSlider: (value: number) => {
-        parentChartDispatch({
-          type: parentChartAction.setAxisTopTickRotation,
-          payload: value,
-        });
-      },
-      sliderDefaultValue: 0,
-      step: 1,
-      value: axisTopTickRotation,
-      width: sliderWidth,
-    };
+  const axisTopTickRotationSliderInput = (
+    <AccessibleSliderInput
+      attributes={{
+        label: (value) => (
+          <Text style={{ color: SLIDER_TOOLTIP_COLOR }}>{value} °</Text>
+        ),
+        max: 90,
+        min: -90,
+        name: "axisTopTickRotation",
+        parentDispatch: parentChartDispatch,
+        sliderDefaultValue: 0,
+        step: 1,
+        validValueAction: parentChartAction.setAxisTopTickRotation,
+        value: axisTopTickRotation,
+      }}
+    />
+  );
 
-  const [axisTopLegendErrorText, axisTopLegendValidText] =
-    AccessibleErrorValidTextElements({
-      inputElementKind: 'axis top legend',
-      inputText: axisTopLegend,
-      isInputTextFocused: isAxisTopLegendFocused,
-      isValidInputText: isAxisTopLegendValid,
-      regexValidationText: returnSerialIdValidationText({
-        content: axisTopLegend,
-        contentKind: 'axis top legend',
-      }),
-    });
+  const axisTopLegendTextInput = (
+    <AccessibleTextInput
+      attributes={{
+        invalidValueAction: parentChartAction.setPageInError,
+        name: "axisTopLegend",
+        parentDispatch: parentChartDispatch,
+        stepperPages,
+        validValueAction: parentChartAction.setAxisTopLegend,
+        value: axisTopLegend,
+      }}
+    />
+  );
 
-  const axisTopLegendTextInputCreatorInfo: AccessibleTextInputCreatorInfo = {
-    description: {
-      error: axisTopLegendErrorText,
-      valid: axisTopLegendValidText,
-    },
-    disabled: !enableAxisTop,
-    inputText: axisTopLegend,
-    isValidInputText: isAxisTopLegendValid,
-    label: '',
-    onBlur: () => {
-      parentChartDispatch({
-        type: parentChartAction.setIsAxisTopLegendFocused,
-        payload: false,
-      });
-    },
-    onChange: (event: ChangeEvent<HTMLInputElement>) => {
-      parentChartDispatch({
-        type: parentChartAction.setAxisTopLegend,
-        payload: event.currentTarget.value,
-      });
-    },
-    onFocus: () => {
-      parentChartDispatch({
-        type: parentChartAction.setIsAxisTopLegendFocused,
-        payload: true,
-      });
-    },
-    placeholder: 'Enter axis top legend text',
-    required: false,
-    semanticName: 'axis top legend',
-  };
+  const axisTopLegendOffsetSliderInput = (
+    <AccessibleSliderInput
+      attributes={{
+        label: (value) => (
+          <Text style={{ color: SLIDER_TOOLTIP_COLOR }}>{value} px</Text>
+        ),
+        max: 90,
+        min: -90,
+        name: "axisTopLegendOffset",
+        parentDispatch: parentChartDispatch,
+        sliderDefaultValue: 0,
+        step: 1,
+        validValueAction: parentChartAction.setAxisTopLegendOffset,
+        value: axisTopLegendOffset,
+      }}
+    />
+  );
 
-  const axisTopLegendOffsetSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      ariaLabel: 'axis top legend offset',
-      disabled: !enableAxisTop || !axisTopLegend,
-      kind: 'slider',
-      label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-      ),
-      max: 90,
-      min: -90,
-      onChangeSlider: (value: number) => {
-        parentChartDispatch({
-          type: parentChartAction.setAxisTopLegendOffset,
-          payload: value,
-        });
-      },
-      sliderDefaultValue: 0,
-      step: 1,
-      value: axisTopLegendOffset,
-      width: sliderWidth,
-    };
+  const axisTopLegendPositionSelectInput = (
+    <AccessibleSelectInput
+      attributes={{
+        data: BAR_CHART_AXIS_LEGEND_POSITION_SELECT_DATA,
+        description: "Define the position of the top axis legend",
+        disabled: !enableAxisTop || !axisTopLegend,
+        name: "axisTopLegendPosition",
+        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+          parentChartDispatch({
+            action: parentChartAction.setAxisTopLegendPosition,
+            payload: event.currentTarget.value as NivoAxisLegendPosition,
+          });
+        },
+        validValueAction: parentChartAction.setAxisTopLegendPosition,
+        value: axisTopLegendPosition,
+      }}
+    />
+  );
 
-  const axisTopLegendPositionSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo =
-    {
-      data: BAR_CHART_AXIS_LEGEND_POSITION_SELECT_DATA,
-      description: 'Define the position of the top axis legend.',
-      disabled: !enableAxisTop || !axisTopLegend,
-      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-        parentChartDispatch({
-          type: parentChartAction.setAxisTopLegendPosition,
-          payload: event.currentTarget.value as NivoAxisLegendPosition,
-        });
-      },
-      value: axisTopLegendPosition,
-      width: sliderWidth,
-    };
-
-  const [
-    // axis top
-    createdAxisTopTickSizeSliderInput,
-    createdAxisTopTickPaddingSliderInput,
-    createdAxisTopTickRotationSliderInput,
-    createdAxisTopLegendOffsetSliderInput,
-  ] = returnAccessibleSliderInputElements([
-    axisTopTickSizeSliderInputCreatorInfo,
-    axisTopTickPaddingSliderInputCreatorInfo,
-    axisTopTickRotationSliderInputCreatorInfo,
-    axisTopLegendOffsetSliderInputCreatorInfo,
-  ]);
-
-  const [createdAxisTopLegendTextInput] = returnAccessibleTextInputElements([
-    axisTopLegendTextInputCreatorInfo,
-  ]);
-
-  const [createdAxisTopLegendPositionSelectInput] =
-    returnAccessibleSelectInputElements([
-      axisTopLegendPositionSelectInputCreatorInfo,
-    ]);
-
-  // axis top
   const displayAxisTopHeading = (
     <Group
       bg={sectionHeadersBgColor}
-      p={padding}
-      style={{
-        boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25)',
-        position: 'sticky',
-        top: 0,
-        zIndex: 4,
-      }}
+      style={STICKY_STYLE}
       w="100%"
     >
       <Title order={5} color={textColor}>
@@ -359,15 +216,15 @@ function ChartAxisTop(props: ChartAxisTopProps) {
   );
 
   const displayToggleAxisTopSwitchInput = (
-    <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
-      {createdEnableAxisTopSwitchInput}
+    <Group w="100%" style={{ borderTop: borderColor }}>
+      {enableAxisTopSwitchInput}
     </Group>
   );
 
   const displayAxisTopTickSizeSliderInput = (
     <ChartsAndGraphsControlsStacker
       initialChartState={initialChartState}
-      input={createdAxisTopTickSizeSliderInput}
+      input={axisTopTickSizeSliderInput}
       isInputDisabled={!enableAxisTop}
       label="Axis top tick size"
       symbol="px"
@@ -378,7 +235,7 @@ function ChartAxisTop(props: ChartAxisTopProps) {
   const displayAxisTopTickPaddingSliderInput = (
     <ChartsAndGraphsControlsStacker
       initialChartState={initialChartState}
-      input={createdAxisTopTickPaddingSliderInput}
+      input={axisTopTickPaddingSliderInput}
       isInputDisabled={!enableAxisTop}
       label="Axis top tick padding"
       symbol="px"
@@ -389,7 +246,7 @@ function ChartAxisTop(props: ChartAxisTopProps) {
   const displayAxisTopTickRotationSliderInput = (
     <ChartsAndGraphsControlsStacker
       initialChartState={initialChartState}
-      input={createdAxisTopTickRotationSliderInput}
+      input={axisTopTickRotationSliderInput}
       isInputDisabled={!enableAxisTop}
       label="Axis top tick rotation"
       symbol="°"
@@ -400,7 +257,7 @@ function ChartAxisTop(props: ChartAxisTopProps) {
   const displayAxisTopLegendTextInput = (
     <ChartsAndGraphsControlsStacker
       initialChartState={initialChartState}
-      input={createdAxisTopLegendTextInput}
+      input={axisTopLegendTextInput}
       isInputDisabled={!enableAxisTop}
       label="Axis top legend"
       value={axisTopLegend}
@@ -410,7 +267,7 @@ function ChartAxisTop(props: ChartAxisTopProps) {
   const displayAxisTopLegendOffsetSliderInput = (
     <ChartsAndGraphsControlsStacker
       initialChartState={initialChartState}
-      input={createdAxisTopLegendOffsetSliderInput}
+      input={axisTopLegendOffsetSliderInput}
       isInputDisabled={!enableAxisTop || !axisTopLegend}
       label="Axis top legend offset"
       symbol="px"
@@ -421,7 +278,7 @@ function ChartAxisTop(props: ChartAxisTopProps) {
   const displayAxisTopLegendPositionSelectInput = (
     <ChartsAndGraphsControlsStacker
       initialChartState={initialChartState}
-      input={createdAxisTopLegendPositionSelectInput}
+      input={axisTopLegendPositionSelectInput}
       isInputDisabled={!enableAxisTop || !axisTopLegend}
       label="Axis top legend position"
       value={axisTopLegendPosition}
