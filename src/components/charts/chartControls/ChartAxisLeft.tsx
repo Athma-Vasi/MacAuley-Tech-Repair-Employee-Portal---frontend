@@ -1,67 +1,51 @@
-import {
-  Group,
-  MantineNumberSize,
-  Stack,
-  Switch,
-  Text,
-  Title,
-} from '@mantine/core';
-import { NivoAxisLegendPosition } from '../types';
-import {
-  AccessibleErrorValidTextElements,
-  AccessibleSelectedDeselectedTextElements,
-  returnAccessibleSelectInputElements,
-  returnAccessibleSliderInputElements,
-  returnAccessibleTextInputElements,
-} from '../../../jsxCreators';
-import { ChangeEvent, useEffect } from 'react';
-import { SERIAL_ID_REGEX } from '../../../constants/regex';
-import { COLORS_SWATCHES } from '../../../constants/data';
-import { returnSerialIdValidationText } from '../../../utils';
-import {
-  AccessibleSliderInputCreatorInfo,
-  AccessibleTextInputCreatorInfo,
-  AccessibleSelectInputCreatorInfo,
-} from '../../wrappers';
-import { BAR_CHART_AXIS_LEGEND_POSITION_SELECT_DATA } from '../responsiveBarChart/constants';
-import { ChartsAndGraphsControlsStacker } from '../utils';
+import { Group, Stack, Text, Title } from "@mantine/core";
+import type { ChangeEvent } from "react";
+import type { SetPageInErrorPayload, StepperPage } from "../../../types";
+import { AccessibleSelectInput } from "../../accessibleInputs/AccessibleSelectInput";
+import { AccessibleSliderInput } from "../../accessibleInputs/AccessibleSliderInput";
+import { AccessibleSwitchInput } from "../../accessibleInputs/AccessibleSwitchInput";
+import { AccessibleTextInput } from "../../accessibleInputs/text/AccessibleTextInput";
+import { SLIDER_TOOLTIP_COLOR, STICKY_STYLE } from "../constants";
+import { BAR_CHART_AXIS_LEGEND_POSITION_SELECT_DATA } from "../responsiveBarChart/constants";
+import type { NivoAxisLegendPosition } from "../types";
+import { ChartsAndGraphsControlsStacker } from "../utils";
 
 type ChartAxisAction = {
-  setAxisLeftLegend: 'setAxisLeftLegend';
-  setAxisLeftLegendOffset: 'setAxisLeftLegendOffset';
-  setAxisLeftLegendPosition: 'setAxisLeftLegendPosition';
-  setAxisLeftTickPadding: 'setAxisLeftTickPadding';
-  setAxisLeftTickRotation: 'setAxisLeftTickRotation';
-  setAxisLeftTickSize: 'setAxisLeftTickSize';
-  setEnableAxisLeft: 'setEnableAxisLeft';
-  setIsAxisLeftLegendFocused: 'setIsAxisLeftLegendFocused';
-  setIsAxisLeftLegendValid: 'setIsAxisLeftLegendValid';
+  setAxisLeftLegend: "setAxisLeftLegend";
+  setAxisLeftLegendOffset: "setAxisLeftLegendOffset";
+  setAxisLeftLegendPosition: "setAxisLeftLegendPosition";
+  setAxisLeftTickPadding: "setAxisLeftTickPadding";
+  setAxisLeftTickRotation: "setAxisLeftTickRotation";
+  setAxisLeftTickSize: "setAxisLeftTickSize";
+  setEnableAxisLeft: "setEnableAxisLeft";
+  setPageInError: "setPageInError";
 };
 
 type ChartAxisDispatch =
   | {
-      type:
-        | ChartAxisAction['setEnableAxisLeft']
-        | ChartAxisAction['setIsAxisLeftLegendValid']
-        | ChartAxisAction['setIsAxisLeftLegendFocused'];
-      payload: boolean;
-    }
+    action: ChartAxisAction["setEnableAxisLeft"];
+    payload: boolean;
+  }
   | {
-      type:
-        | ChartAxisAction['setAxisLeftTickSize']
-        | ChartAxisAction['setAxisLeftTickPadding']
-        | ChartAxisAction['setAxisLeftTickRotation']
-        | ChartAxisAction['setAxisLeftLegendOffset'];
-      payload: number;
-    }
+    action:
+      | ChartAxisAction["setAxisLeftTickSize"]
+      | ChartAxisAction["setAxisLeftTickPadding"]
+      | ChartAxisAction["setAxisLeftTickRotation"]
+      | ChartAxisAction["setAxisLeftLegendOffset"];
+    payload: number;
+  }
   | {
-      type: ChartAxisAction['setAxisLeftLegend'];
-      payload: string;
-    }
+    action: ChartAxisAction["setAxisLeftLegend"];
+    payload: string;
+  }
   | {
-      type: ChartAxisAction['setAxisLeftLegendPosition'];
-      payload: NivoAxisLegendPosition;
-    };
+    action: ChartAxisAction["setAxisLeftLegendPosition"];
+    payload: NivoAxisLegendPosition;
+  }
+  | {
+    action: ChartAxisAction["setPageInError"];
+    payload: SetPageInErrorPayload;
+  };
 
 type ChartAxisLeftProps = {
   axisLeftLegend: string; // default: ''
@@ -73,12 +57,10 @@ type ChartAxisLeftProps = {
   borderColor: string;
   enableAxisLeft: boolean; // default: false ? null
   initialChartState: Record<string, any>;
-  isAxisLeftLegendFocused: boolean; // default: false
-  isAxisLeftLegendValid: boolean; // default: false
-  padding: MantineNumberSize;
   parentChartAction: ChartAxisAction;
   parentChartDispatch: React.Dispatch<ChartAxisDispatch>;
   sectionHeadersBgColor: string;
+  stepperPages: StepperPage[];
   textColor: string;
   width: number;
 };
@@ -94,259 +76,137 @@ function ChartAxisLeft(props: ChartAxisLeftProps) {
     borderColor,
     enableAxisLeft,
     initialChartState,
-    isAxisLeftLegendFocused,
-    isAxisLeftLegendValid,
-    padding,
     parentChartAction,
     parentChartDispatch,
     sectionHeadersBgColor,
+    stepperPages,
     textColor,
     width,
   } = props;
 
-  // validate axisLeftLegend on every change
-  useEffect(() => {
-    const isValid = SERIAL_ID_REGEX.test(axisLeftLegend);
-
-    parentChartDispatch({
-      type: parentChartAction.setIsAxisLeftLegendValid,
-      payload: isValid,
-    });
-  }, [
-    axisLeftLegend,
-    parentChartAction.setIsAxisLeftLegendValid,
-    parentChartDispatch,
-  ]);
-
-  const [
-    enableAxisLeftAccessibleSelectedText,
-    enableAxisLeftAccessibleDeselectedText,
-  ] = AccessibleSelectedDeselectedTextElements({
-    deselectedDescription: 'Chart will not have an axis on the left.',
-    isSelected: enableAxisLeft,
-    selectedDescription: 'Chart will have an axis on the left.',
-    semanticName: 'axis left',
-    theme: 'muted',
-  });
-
-  //
-  const { gray } = COLORS_SWATCHES;
-  const sliderWidth =
-    width < 480
-      ? '217px'
-      : width < 768
-      ? `${width * 0.38}px`
-      : width < 1192
-      ? '500px'
-      : `${width * 0.15}px`;
-  const sliderLabelColor = gray[3];
-
-  const createdEnableAxisLeftSwitchInput = (
-    <Switch
-      aria-describedby={
-        enableAxisLeft
-          ? enableAxisLeftAccessibleSelectedText.props.id
-          : enableAxisLeftAccessibleDeselectedText.props.id
-      }
-      checked={enableAxisLeft}
-      description={
-        enableAxisLeft
-          ? enableAxisLeftAccessibleSelectedText
-          : enableAxisLeftAccessibleDeselectedText
-      }
-      label={
-        <Text weight={500} color={textColor}>
-          Axis left
-        </Text>
-      }
-      onChange={(event: ChangeEvent<HTMLInputElement>) => {
-        parentChartDispatch({
-          type: parentChartAction.setEnableAxisLeft,
-          payload: event.currentTarget.checked,
-        });
+  const enableAxisLeftSwitchInput = (
+    <AccessibleSwitchInput
+      attributes={{
+        checked: enableAxisLeft,
+        invalidValueAction: parentChartAction.setPageInError,
+        name: "enableAxisLeft",
+        offLabel: "Off",
+        onLabel: "On",
+        parentDispatch: parentChartDispatch,
+        validValueAction: parentChartAction.setEnableAxisLeft,
+        value: enableAxisLeft,
       }}
-      w="100%"
     />
   );
 
-  const axisLeftTickSizeSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      ariaLabel: 'axis left tick size',
-      disabled: !enableAxisLeft,
-      kind: 'slider',
-      label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-      ),
-      max: 20,
-      min: 0,
-      onChangeSlider: (value: number) => {
-        parentChartDispatch({
-          type: parentChartAction.setAxisLeftTickSize,
-          payload: value,
-        });
-      },
-      sliderDefaultValue: 5,
-      step: 1,
-      value: axisLeftTickSize,
-      width: sliderWidth,
-    };
+  const axisLeftTickSizeSliderInput = (
+    <AccessibleSliderInput
+      attributes={{
+        label: (value) => (
+          <Text style={{ color: SLIDER_TOOLTIP_COLOR }}>{value} px</Text>
+        ),
+        max: 20,
+        min: 0,
+        name: "axisLeftTickSize",
+        parentDispatch: parentChartDispatch,
+        sliderDefaultValue: 5,
+        step: 1,
+        validValueAction: parentChartAction.setAxisLeftTickSize,
+        value: axisLeftTickSize,
+      }}
+    />
+  );
 
-  const axisLeftTickPaddingSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      ariaLabel: 'axis left tick padding',
-      disabled: !enableAxisLeft,
-      kind: 'slider',
-      label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-      ),
-      max: 20,
-      min: 0,
-      onChangeSlider: (value: number) => {
-        parentChartDispatch({
-          type: parentChartAction.setAxisLeftTickPadding,
-          payload: value,
-        });
-      },
-      sliderDefaultValue: 5,
-      step: 1,
-      value: axisLeftTickPadding,
-      width: sliderWidth,
-    };
+  const axisLeftTickPaddingSliderInput = (
+    <AccessibleSliderInput
+      attributes={{
+        label: (value) => (
+          <Text style={{ color: SLIDER_TOOLTIP_COLOR }}>{value} px</Text>
+        ),
+        max: 20,
+        min: 0,
+        name: "axisLeftTickPadding",
+        parentDispatch: parentChartDispatch,
+        sliderDefaultValue: 5,
+        step: 1,
+        validValueAction: parentChartAction.setAxisLeftTickPadding,
+        value: axisLeftTickPadding,
+      }}
+    />
+  );
 
-  const axisLeftTickRotationSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      ariaLabel: 'axis left tick rotation',
-      disabled: !enableAxisLeft,
-      kind: 'slider',
-      label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value} °</Text>
-      ),
-      max: 90,
-      min: -90,
-      onChangeSlider: (value: number) => {
-        parentChartDispatch({
-          type: parentChartAction.setAxisLeftTickRotation,
-          payload: value,
-        });
-      },
-      sliderDefaultValue: 0,
-      step: 1,
-      value: axisLeftTickRotation,
-      width: sliderWidth,
-    };
+  const axisLeftTickRotationSliderInput = (
+    <AccessibleSliderInput
+      attributes={{
+        label: (value) => (
+          <Text style={{ color: SLIDER_TOOLTIP_COLOR }}>{value} °</Text>
+        ),
+        max: 90,
+        min: -90,
+        name: "axisLeftTickRotation",
+        parentDispatch: parentChartDispatch,
+        sliderDefaultValue: 0,
+        step: 1,
+        validValueAction: parentChartAction.setAxisLeftTickRotation,
+        value: axisLeftTickRotation,
+      }}
+    />
+  );
 
-  const [axisLeftLegendErrorText, axisLeftLegendValidText] =
-    AccessibleErrorValidTextElements({
-      inputElementKind: 'axis left legend',
-      inputText: axisLeftLegend,
-      isValidInputText: isAxisLeftLegendValid,
-      isInputTextFocused: isAxisLeftLegendFocused,
-      regexValidationText: returnSerialIdValidationText({
-        content: axisLeftLegend,
-        contentKind: 'axis left legend',
-      }),
-    });
+  const axisLeftLegendTextInput = (
+    <AccessibleTextInput
+      attributes={{
+        invalidValueAction: parentChartAction.setPageInError,
+        name: "axisLeftLegend",
+        parentDispatch: parentChartDispatch,
+        stepperPages,
+        validValueAction: parentChartAction.setAxisLeftLegend,
+        value: axisLeftLegend,
+      }}
+    />
+  );
 
-  const axisLeftLegendTextInputCreatorInfo: AccessibleTextInputCreatorInfo = {
-    description: {
-      error: axisLeftLegendErrorText,
-      valid: axisLeftLegendValidText,
-    },
-    disabled: !enableAxisLeft,
-    inputText: axisLeftLegend,
-    isValidInputText: isAxisLeftLegendValid,
-    label: '',
-    onBlur: () => {
-      parentChartDispatch({
-        type: parentChartAction.setIsAxisLeftLegendFocused,
-        payload: false,
-      });
-    },
-    onChange: (event: ChangeEvent<HTMLInputElement>) => {
-      parentChartDispatch({
-        type: parentChartAction.setAxisLeftLegend,
-        payload: event.currentTarget.value,
-      });
-    },
-    onFocus: () => {
-      parentChartDispatch({
-        type: parentChartAction.setIsAxisLeftLegendFocused,
-        payload: true,
-      });
-    },
-    placeholder: 'Enter axis left legend text',
-    required: false,
-    semanticName: 'axis left legend',
-  };
+  const axisLeftLegendOffsetSliderInput = (
+    <AccessibleSliderInput
+      attributes={{
+        label: (value) => (
+          <Text style={{ color: SLIDER_TOOLTIP_COLOR }}>{value} px</Text>
+        ),
+        max: 90,
+        min: -90,
+        name: "axisLeftLegendOffset",
+        parentDispatch: parentChartDispatch,
+        sliderDefaultValue: 0,
+        step: 1,
+        validValueAction: parentChartAction.setAxisLeftLegendOffset,
+        value: axisLeftLegendOffset,
+      }}
+    />
+  );
 
-  const axisLeftLegendOffsetSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      ariaLabel: 'axis left legend offset',
-      disabled: !enableAxisLeft || !axisLeftLegend,
-      kind: 'slider',
-      label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-      ),
-      max: 90,
-      min: -90,
-      onChangeSlider: (value: number) => {
-        parentChartDispatch({
-          type: parentChartAction.setAxisLeftLegendOffset,
-          payload: value,
-        });
-      },
-      sliderDefaultValue: 0,
-      step: 1,
-      value: axisLeftLegendOffset,
-      width: sliderWidth,
-    };
-
-  const axisLeftLegendPositionSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo =
-    {
-      data: BAR_CHART_AXIS_LEGEND_POSITION_SELECT_DATA,
-      description: 'Define the position of the left axis legend.',
-      disabled: !enableAxisLeft || !axisLeftLegend,
-      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-        parentChartDispatch({
-          type: parentChartAction.setAxisLeftLegendPosition,
-          payload: event.currentTarget.value as NivoAxisLegendPosition,
-        });
-      },
-      value: axisLeftLegendPosition,
-      width: sliderWidth,
-    };
-
-  const [
-    createdAxisLeftTickSizeSliderInput,
-    createdAxisLeftTickPaddingSliderInput,
-    createdAxisLeftTickRotationSliderInput,
-    createdAxisLeftLegendOffsetSliderInput,
-  ] = returnAccessibleSliderInputElements([
-    axisLeftTickSizeSliderInputCreatorInfo,
-    axisLeftTickPaddingSliderInputCreatorInfo,
-    axisLeftTickRotationSliderInputCreatorInfo,
-    axisLeftLegendOffsetSliderInputCreatorInfo,
-  ]);
-
-  const [createdAxisLeftLegendTextInput] = returnAccessibleTextInputElements([
-    axisLeftLegendTextInputCreatorInfo,
-  ]);
-
-  const [createdAxisLeftLegendPositionSelectInput] =
-    returnAccessibleSelectInputElements([
-      axisLeftLegendPositionSelectInputCreatorInfo,
-    ]);
+  const axisLeftLegendPositionSelectInput = (
+    <AccessibleSelectInput
+      attributes={{
+        data: BAR_CHART_AXIS_LEGEND_POSITION_SELECT_DATA,
+        description: "Define the position of the left axis legend",
+        disabled: !enableAxisLeft || !axisLeftLegend,
+        name: "axisLeftLegendPosition",
+        onChange: (event: ChangeEvent<HTMLSelectElement>) => {
+          parentChartDispatch({
+            action: parentChartAction.setAxisLeftLegendPosition,
+            payload: event.currentTarget.value as NivoAxisLegendPosition,
+          });
+        },
+        validValueAction: parentChartAction.setAxisLeftLegendPosition,
+        value: axisLeftLegendPosition,
+      }}
+    />
+  );
 
   const displayAxisLeftHeading = (
     <Group
       bg={sectionHeadersBgColor}
-      p={padding}
-      style={{
-        boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25)',
-        position: 'sticky',
-        top: 0,
-        zIndex: 4,
-      }}
+      style={STICKY_STYLE}
       w="100%"
     >
       <Title order={5} color={textColor}>
@@ -356,15 +216,15 @@ function ChartAxisLeft(props: ChartAxisLeftProps) {
   );
 
   const displayToggleAxisLeftSwitchInput = (
-    <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
-      {createdEnableAxisLeftSwitchInput}
+    <Group w="100%" style={{ borderLeft: borderColor }}>
+      {enableAxisLeftSwitchInput}
     </Group>
   );
 
   const displayAxisLeftTickSizeSliderInput = (
     <ChartsAndGraphsControlsStacker
       initialChartState={initialChartState}
-      input={createdAxisLeftTickSizeSliderInput}
+      input={axisLeftTickSizeSliderInput}
       isInputDisabled={!enableAxisLeft}
       label="Axis left tick size"
       symbol="px"
@@ -375,7 +235,7 @@ function ChartAxisLeft(props: ChartAxisLeftProps) {
   const displayAxisLeftTickPaddingSliderInput = (
     <ChartsAndGraphsControlsStacker
       initialChartState={initialChartState}
-      input={createdAxisLeftTickPaddingSliderInput}
+      input={axisLeftTickPaddingSliderInput}
       isInputDisabled={!enableAxisLeft}
       label="Axis left tick padding"
       symbol="px"
@@ -386,7 +246,7 @@ function ChartAxisLeft(props: ChartAxisLeftProps) {
   const displayAxisLeftTickRotationSliderInput = (
     <ChartsAndGraphsControlsStacker
       initialChartState={initialChartState}
-      input={createdAxisLeftTickRotationSliderInput}
+      input={axisLeftTickRotationSliderInput}
       isInputDisabled={!enableAxisLeft}
       label="Axis left tick rotation"
       symbol="°"
@@ -397,7 +257,7 @@ function ChartAxisLeft(props: ChartAxisLeftProps) {
   const displayAxisLeftLegendTextInput = (
     <ChartsAndGraphsControlsStacker
       initialChartState={initialChartState}
-      input={createdAxisLeftLegendTextInput}
+      input={axisLeftLegendTextInput}
       isInputDisabled={!enableAxisLeft}
       label="Axis left legend"
       value={axisLeftLegend}
@@ -407,7 +267,7 @@ function ChartAxisLeft(props: ChartAxisLeftProps) {
   const displayAxisLeftLegendOffsetSliderInput = (
     <ChartsAndGraphsControlsStacker
       initialChartState={initialChartState}
-      input={createdAxisLeftLegendOffsetSliderInput}
+      input={axisLeftLegendOffsetSliderInput}
       isInputDisabled={!enableAxisLeft || !axisLeftLegend}
       label="Axis left legend offset"
       symbol="px"
@@ -418,7 +278,7 @@ function ChartAxisLeft(props: ChartAxisLeftProps) {
   const displayAxisLeftLegendPositionSelectInput = (
     <ChartsAndGraphsControlsStacker
       initialChartState={initialChartState}
-      input={createdAxisLeftLegendPositionSelectInput}
+      input={axisLeftLegendPositionSelectInput}
       isInputDisabled={!enableAxisLeft || !axisLeftLegend}
       label="Axis left legend position"
       value={axisLeftLegendPosition}
