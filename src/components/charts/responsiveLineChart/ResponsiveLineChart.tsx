@@ -39,6 +39,7 @@ import {
   STICKY_STYLE,
 } from "../constants";
 import { ChartsAndGraphsControlsStacker } from "../utils";
+import { responsiveLineChartAction } from "./actions";
 import {
   NIVO_LINE_AREA_BLEND_MODE_DATA,
   NIVO_LINE_AXES_SCALE,
@@ -46,11 +47,8 @@ import {
   NIVO_LINE_CURVE_DATA,
   NIVO_LINE_POINT_LABEL_DATA,
 } from "./constants";
-import {
-  initialResponsiveLineChartState,
-  responsiveLineChartAction,
-  responsiveLineChartReducer,
-} from "./state";
+import { responsiveLineChartReducer } from "./reducers";
+import { initialResponsiveLineChartState } from "./state";
 import type {
   ResponsiveLineChartProps,
   ResponsiveLineChartState,
