@@ -296,54 +296,6 @@ function ResponsiveRadialBarChart({
     );
   }
 
-  /**
-   * const enableArcLabelsSwitchInput = (
-    <AccessibleSwitchInput
-      attributes={{
-        checked: enableArcLabels,
-        invalidValueAction: parentChartAction.setPageInError,
-        name: "enableArcLabels",
-        offLabel: "Off",
-        onLabel: "On",
-        parentDispatch: parentChartDispatch,
-        validValueAction: parentChartAction.setEnableArcLabels,
-        value: enableArcLabels,
-      }}
-    />
-  );
-
-  const arcLabelSelectInput = (
-    <AccessibleSelectInput
-      attributes={{
-        data: NIVO_SUNBURST_ARC_LABEL_DATA,
-        description: "Define arc label",
-        name: "arcLabel",
-        parentDispatch: parentChartDispatch,
-        validValueAction: parentChartAction.setArcLabel,
-        value: arcLabel,
-      }}
-    />
-  );
-
-  const arcLabelsRadiusOffsetSliderInput = (
-    <AccessibleSliderInput
-      attributes={{
-        label: (value) => (
-          <Text style={{ color: SLIDER_TOOLTIP_COLOR }}>{value}</Text>
-        ),
-        max: 2,
-        min: 0,
-        name: "arcLabelsRadiusOffset",
-        parentDispatch: parentChartDispatch,
-        sliderDefaultValue: 0.5,
-        step: 0.05,
-        validValueAction: parentChartAction.setArcLabelsRadiusOffset,
-        value: arcLabelsRadiusOffset,
-      }}
-    />
-  );
-   */
-
   // base
 
   // base -> angles

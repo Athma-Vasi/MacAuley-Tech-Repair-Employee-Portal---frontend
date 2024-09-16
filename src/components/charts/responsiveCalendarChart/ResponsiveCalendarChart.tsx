@@ -3,52 +3,42 @@ import {
   Flex,
   Group,
   Stack,
-  Switch,
   Text,
   Title,
   Tooltip,
-} from '@mantine/core';
-import { ResponsiveCalendar } from '@nivo/calendar';
-import { useReducer, useRef } from 'react';
-import { BiReset } from 'react-icons/bi';
+} from "@mantine/core";
+import { ResponsiveCalendar } from "@nivo/calendar";
+import { useReducer, useRef } from "react";
 
-import { COLORS_SWATCHES } from '../../../constants/data';
-import { useGlobalState } from '../../../hooks';
+import { COLORS_SWATCHES } from "../../../constants/data";
+import { useGlobalState } from "../../../hooks";
+import { returnThemeColors } from "../../../utils";
+import { AccessibleButton } from "../../accessibleInputs/AccessibleButton";
+import { AccessibleSelectInput } from "../../accessibleInputs/AccessibleSelectInput";
+import { AccessibleSliderInput } from "../../accessibleInputs/AccessibleSliderInput";
+import { AccessibleSwitchInput } from "../../accessibleInputs/AccessibleSwitchInput";
+import { ChartAndControlsDisplay } from "../chartAndControlsDisplay/ChartAndControlsDisplay";
+import { ChartMargin } from "../chartControls/ChartMargin";
+import { ChartOptions } from "../chartControls/ChartOptions";
 import {
-  AccessibleSelectedDeselectedTextElements,
-  returnAccessibleButtonElements,
-  returnAccessibleSelectInputElements,
-  returnAccessibleSliderInputElements,
-} from '../../../jsxCreators';
-import { returnThemeColors } from '../../../utils';
-import {
-  AccessibleSelectInputCreatorInfo,
-  AccessibleSliderInputCreatorInfo,
-} from '../../wrappers';
-import { ChartAndControlsDisplay } from '../chartAndControlsDisplay/ChartAndControlsDisplay';
-import { ChartMargin } from '../chartControls/ChartMargin';
-import { ChartOptions } from '../chartControls/ChartOptions';
-import {
-  NivoCalendarAlign,
-  NivoCalendarDirection,
-  NivoCalendarLegendPosition,
-} from '../types';
-import { ChartsAndGraphsControlsStacker } from '../utils';
+  returnChartOptionsStepperPages,
+  SLIDER_TOOLTIP_COLOR,
+  STICKY_STYLE,
+} from "../constants";
+import { ChartsAndGraphsControlsStacker } from "../utils";
+import { responsiveCalendarChartAction } from "./actions";
 import {
   NIVO_CALENDAR_ALIGN_DATA,
   NIVO_CALENDAR_CHART_COLORS,
   NIVO_CALENDAR_DIRECTION_DATA,
   NIVO_CALENDAR_LEGEND_POSITION_DATA,
-} from './constants';
-import {
-  initialResponsiveCalendarChartState,
-  responsiveCalendarChartAction,
-  responsiveCalendarChartReducer,
-} from './state';
-import {
+} from "./constants";
+import { responsiveCalendarChartReducer } from "./reducers";
+import { initialResponsiveCalendarChartState } from "./state";
+import type {
   ResponsiveCalendarChartProps,
   ResponsiveCalendarChartState,
-} from './types';
+} from "./types";
 
 function ResponsiveCalendarChart({
   calendarChartData,
@@ -60,7 +50,7 @@ function ResponsiveCalendarChart({
   hideControls = false,
 }: ResponsiveCalendarChartProps) {
   const {
-    globalState: { width, themeObject, padding },
+    globalState: { width, themeObject },
   } = useGlobalState();
 
   const {
@@ -76,7 +66,7 @@ function ResponsiveCalendarChart({
   // sets initial colors based on app theme
   const modifiedResponsiveCalendarChartState: ResponsiveCalendarChartState = {
     ...initialResponsiveCalendarChartState,
-    chartTitle: dashboardChartTitle ?? 'Calendar Chart',
+    chartTitle: dashboardChartTitle ?? "Calendar Chart",
     emptyColor: grayColorShade,
     monthBorderColor: textColor,
     chartTitleColor: chartTextColor,
@@ -86,7 +76,7 @@ function ResponsiveCalendarChart({
   const [responsiveCalendarChartState, responsiveCalendarChartDispatch] =
     useReducer(
       responsiveCalendarChartReducer,
-      modifiedResponsiveCalendarChartState
+      modifiedResponsiveCalendarChartState,
     );
 
   const chartRef = useRef(null);
@@ -128,12 +118,8 @@ function ResponsiveCalendarChart({
     chartTitleColor, // default: 'gray'
     chartTitlePosition, // default: 'center'
     chartTitleSize, // 1 - 6 default: 3
-    isChartTitleFocused,
-    isChartTitleValid,
 
     // screenshot
-    isScreenshotFilenameFocused,
-    isScreenshotFilenameValid,
     screenshotFilename,
     screenshotImageQuality, // 0 - 1 default: 1 step: 0.1
     screenshotImageType, // default: 'image/png'
@@ -141,7 +127,7 @@ function ResponsiveCalendarChart({
 
   const { primaryColor } = themeObject;
   const colorsArray = Object.entries(COLORS_SWATCHES).find(
-    ([key, _value]) => key === primaryColor
+    ([key, _value]) => key === primaryColor,
   )?.[1];
 
   const displayCalendarChart = (
@@ -196,368 +182,308 @@ function ResponsiveCalendarChart({
     );
   }
 
-  const [
-    enableDefaultColorsAccessibleSelectedText,
-    enableDefaultColorsAccessibleDeselectedText,
-  ] = AccessibleSelectedDeselectedTextElements({
-    deselectedDescription: "Shades from App's theme color will be used",
-    isSelected: enableDefaultColors,
-    selectedDescription: 'Default color shades will be used',
-    semanticName: 'Default Colors',
-    theme: 'muted',
-  });
+  /**
+   * const enableArcLabelsSwitchInput = (
+    <AccessibleSwitchInput
+      attributes={{
+        checked: enableArcLabels,
+        invalidValueAction: parentChartAction.setPageInError,
+        name: "enableArcLabels",
+        offLabel: "Off",
+        onLabel: "On",
+        parentDispatch: parentChartDispatch,
+        validValueAction: parentChartAction.setEnableArcLabels,
+        value: enableArcLabels,
+      }}
+    />
+  );
 
-  //
-  const { gray } = COLORS_SWATCHES;
-  const sliderWidth =
-    width < 480
-      ? '217px'
-      : width < 768
-      ? `${width * 0.38}px`
-      : width < 1192
-      ? '500px'
-      : `${width * 0.15}px`;
-  const sliderLabelColor = gray[3];
+  const arcLabelSelectInput = (
+    <AccessibleSelectInput
+      attributes={{
+        data: NIVO_SUNBURST_ARC_LABEL_DATA,
+        description: "Define arc label",
+        name: "arcLabel",
+        parentDispatch: parentChartDispatch,
+        validValueAction: parentChartAction.setArcLabel,
+        value: arcLabel,
+      }}
+    />
+  );
+
+  const arcLabelsRadiusOffsetSliderInput = (
+    <AccessibleSliderInput
+      attributes={{
+        label: (value) => (
+          <Text style={{ color: SLIDER_TOOLTIP_COLOR }}>{value}</Text>
+        ),
+        max: 2,
+        min: 0,
+        name: "arcLabelsRadiusOffset",
+        parentDispatch: parentChartDispatch,
+        sliderDefaultValue: 0.5,
+        step: 0.05,
+        validValueAction: parentChartAction.setArcLabelsRadiusOffset,
+        value: arcLabelsRadiusOffset,
+      }}
+    />
+  );
+   */
 
   // base
-  const calendarDirectionSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo =
-    {
-      data: NIVO_CALENDAR_DIRECTION_DATA,
-      description: 'Define calendar direction.',
-      onChange: (event: React.ChangeEvent<HTMLSelectElement>) => {
-        responsiveCalendarChartDispatch({
-          type: responsiveCalendarChartAction.setCalendarDirection,
-          payload: event.currentTarget.value as NivoCalendarDirection,
-        });
-      },
-      value: calendarDirection,
-      width: sliderWidth,
-    };
+  const calendarDirectionSelectInput = (
+    <AccessibleSelectInput
+      attributes={{
+        data: NIVO_CALENDAR_DIRECTION_DATA,
+        description: "Define calendar direction",
+        name: "calendarDirection",
+        validValueAction: responsiveCalendarChartAction.setCalendarDirection,
+        value: calendarDirection,
+      }}
+    />
+  );
 
-  const calendarAlignSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo =
-    {
-      data: NIVO_CALENDAR_ALIGN_DATA,
-      description: 'Define calendar align.',
-      onChange: (event: React.ChangeEvent<HTMLSelectElement>) => {
-        responsiveCalendarChartDispatch({
-          type: responsiveCalendarChartAction.setCalendarAlign,
-          payload: event.currentTarget.value as NivoCalendarAlign,
-        });
-      },
-      value: calendarAlign,
-      width: sliderWidth,
-    };
+  const calendarAlignSelectInput = (
+    <AccessibleSelectInput
+      attributes={{
+        data: NIVO_CALENDAR_ALIGN_DATA,
+        description: "Define calendar align",
+        name: "calendarAlign",
+        validValueAction: responsiveCalendarChartAction.setCalendarAlign,
+        value: calendarAlign,
+      }}
+    />
+  );
 
   // style
-  const createdEmptyColorInput = (
+  const emptyColorInput = (
     <ColorInput
       aria-label="empty color"
       color={emptyColor}
       onChange={(color: string) => {
         responsiveCalendarChartDispatch({
-          type: responsiveCalendarChartAction.setEmptyColor,
+          action: responsiveCalendarChartAction.setEmptyColor,
           payload: color,
         });
       }}
       value={emptyColor}
-      w={sliderWidth}
     />
   );
 
-  const createdEnableDefaultColorsSwitchInput = (
-    <Switch
-      aria-describedby={
-        enableDefaultColors
-          ? enableDefaultColorsAccessibleSelectedText.props.id
-          : enableDefaultColorsAccessibleDeselectedText.props.id
-      }
-      checked={enableDefaultColors}
-      description={
-        enableDefaultColors
-          ? enableDefaultColorsAccessibleSelectedText
-          : enableDefaultColorsAccessibleDeselectedText
-      }
-      label={
-        <Text weight={500} color={textColor}>
-          Toggle Default Colors
-        </Text>
-      }
-      onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-        responsiveCalendarChartDispatch({
-          type: responsiveCalendarChartAction.setEnableDefaultColors,
-          payload: event.currentTarget.checked,
-        });
+  const enableDefaultColorsSwitchInput = (
+    <AccessibleSwitchInput
+      attributes={{
+        checked: enableDefaultColors,
+        invalidValueAction: responsiveCalendarChartAction.setPageInError,
+        name: "enableDefaultColors",
+        offLabel: "Off",
+        onLabel: "On",
+        parentDispatch: responsiveCalendarChartDispatch,
+        validValueAction: responsiveCalendarChartAction.setEnableDefaultColors,
+        value: enableDefaultColors,
       }}
-      w="100%"
     />
   );
 
   // years
-  const yearSpacingSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
-    ariaLabel: 'year spacing',
-    kind: 'slider',
-    label: (value) => (
-      <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-    ),
-    max: 160,
-    min: 0,
-    onChangeSlider: (value: number) => {
-      responsiveCalendarChartDispatch({
-        type: responsiveCalendarChartAction.setYearSpacing,
-        payload: value,
-      });
-    },
-    sliderDefaultValue: 30,
-    step: 1,
-    value: yearSpacing,
-    width: sliderWidth,
-  };
+  const yearSpacingSliderInput = (
+    <AccessibleSliderInput
+      attributes={{
+        label: (value) => (
+          <Text style={{ color: SLIDER_TOOLTIP_COLOR }}>{value} px</Text>
+        ),
+        max: 160,
+        min: 0,
+        name: "yearSpacing",
+        parentDispatch: responsiveCalendarChartDispatch,
+        sliderDefaultValue: 30,
+        step: 1,
+        validValueAction: responsiveCalendarChartAction.setYearSpacing,
+        value: yearSpacing,
+      }}
+    />
+  );
 
-  const yearLegendPositionSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo =
-    {
-      data: NIVO_CALENDAR_LEGEND_POSITION_DATA,
-      description: 'Define year legend position.',
-      onChange: (event: React.ChangeEvent<HTMLSelectElement>) => {
-        responsiveCalendarChartDispatch({
-          type: responsiveCalendarChartAction.setYearLegendPosition,
-          payload: event.currentTarget.value as NivoCalendarLegendPosition,
-        });
-      },
-      value: yearLegendPosition,
-      width: sliderWidth,
-    };
+  const yearLegendPositionSelectInput = (
+    <AccessibleSelectInput
+      attributes={{
+        data: NIVO_CALENDAR_LEGEND_POSITION_DATA,
+        description: "Define year legend position",
+        name: "yearLegendPosition",
+        validValueAction: responsiveCalendarChartAction.setYearLegendPosition,
+        value: yearLegendPosition,
+      }}
+    />
+  );
 
-  const yearLegendOffsetSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      ariaLabel: 'year legend offset',
-      kind: 'slider',
-      label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-      ),
-      max: 60,
-      min: 0,
-      onChangeSlider: (value: number) => {
-        responsiveCalendarChartDispatch({
-          type: responsiveCalendarChartAction.setYearLegendOffset,
-          payload: value,
-        });
-      },
-      sliderDefaultValue: 10,
-      step: 1,
-      value: yearLegendOffset,
-      width: sliderWidth,
-    };
+  const yearLegendOffsetSliderInput = (
+    <AccessibleSliderInput
+      attributes={{
+        label: (value) => (
+          <Text style={{ color: SLIDER_TOOLTIP_COLOR }}>{value} px</Text>
+        ),
+        max: 60,
+        min: 0,
+        name: "yearLegendOffset",
+        parentDispatch: responsiveCalendarChartDispatch,
+        sliderDefaultValue: 10,
+        step: 1,
+        validValueAction: responsiveCalendarChartAction.setYearLegendOffset,
+        value: yearLegendOffset,
+      }}
+    />
+  );
 
   // months
-  const monthSpacingSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
-    ariaLabel: 'month spacing',
-    kind: 'slider',
-    label: (value) => (
-      <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-    ),
-    max: 160,
-    min: 0,
-    onChangeSlider: (value: number) => {
-      responsiveCalendarChartDispatch({
-        type: responsiveCalendarChartAction.setMonthSpacing,
-        payload: value,
-      });
-    },
-    sliderDefaultValue: 0,
-    step: 1,
-    value: monthSpacing,
-    width: sliderWidth,
-  };
 
-  const monthBorderWidthSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      ariaLabel: 'month border width',
-      kind: 'slider',
-      label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-      ),
-      max: 20,
-      min: 0,
-      onChangeSlider: (value: number) => {
-        responsiveCalendarChartDispatch({
-          type: responsiveCalendarChartAction.setMonthBorderWidth,
-          payload: value,
-        });
-      },
-      sliderDefaultValue: 2,
-      step: 1,
-      value: monthBorderWidth,
-      width: sliderWidth,
-    };
+  const monthSpacingSliderInput = (
+    <AccessibleSliderInput
+      attributes={{
+        label: (value) => (
+          <Text style={{ color: SLIDER_TOOLTIP_COLOR }}>{value} px</Text>
+        ),
+        max: 160,
+        min: 0,
+        name: "monthSpacing",
+        parentDispatch: responsiveCalendarChartDispatch,
+        sliderDefaultValue: 0,
+        step: 1,
+        validValueAction: responsiveCalendarChartAction.setMonthSpacing,
+        value: monthSpacing,
+      }}
+    />
+  );
 
-  const createdMonthBorderColorInput = (
+  const monthBorderWidthSliderInput = (
+    <AccessibleSliderInput
+      attributes={{
+        label: (value) => (
+          <Text style={{ color: SLIDER_TOOLTIP_COLOR }}>{value} px</Text>
+        ),
+        max: 20,
+        min: 0,
+        name: "monthBorderWidth",
+        parentDispatch: responsiveCalendarChartDispatch,
+        sliderDefaultValue: 2,
+        step: 1,
+        validValueAction: responsiveCalendarChartAction.setMonthBorderWidth,
+        value: monthBorderWidth,
+      }}
+    />
+  );
+
+  const monthBorderColorInput = (
     <ColorInput
       aria-label="month border color"
       color={monthBorderColor}
       onChange={(color: string) => {
         responsiveCalendarChartDispatch({
-          type: responsiveCalendarChartAction.setMonthBorderColor,
+          action: responsiveCalendarChartAction.setMonthBorderColor,
           payload: color,
         });
       }}
       value={monthBorderColor}
-      w={sliderWidth}
     />
   );
 
-  const monthLegendPositionSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo =
-    {
-      data: NIVO_CALENDAR_LEGEND_POSITION_DATA,
-      description: 'Define month legend position.',
-      onChange: (event: React.ChangeEvent<HTMLSelectElement>) => {
-        responsiveCalendarChartDispatch({
-          type: responsiveCalendarChartAction.setMonthLegendPosition,
-          payload: event.currentTarget.value as NivoCalendarLegendPosition,
-        });
-      },
-      value: monthLegendPosition,
-      width: sliderWidth,
-    };
+  const monthLegendPositionSelectInput = (
+    <AccessibleSelectInput
+      attributes={{
+        data: NIVO_CALENDAR_LEGEND_POSITION_DATA,
+        description: "Define month legend position",
+        name: "monthLegendPosition",
+        validValueAction: responsiveCalendarChartAction.setMonthLegendPosition,
+        value: monthLegendPosition,
+      }}
+    />
+  );
 
-  const monthLegendOffsetSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      ariaLabel: 'month legend offset',
-      kind: 'slider',
-      label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-      ),
-      max: 36,
-      min: 0,
-      onChangeSlider: (value: number) => {
-        responsiveCalendarChartDispatch({
-          type: responsiveCalendarChartAction.setMonthLegendOffset,
-          payload: value,
-        });
-      },
-      sliderDefaultValue: 10,
-      step: 1,
-      value: monthLegendOffset,
-      width: sliderWidth,
-    };
+  const monthLegendOffsetSliderInput = (
+    <AccessibleSliderInput
+      attributes={{
+        label: (value) => (
+          <Text style={{ color: SLIDER_TOOLTIP_COLOR }}>{value} px</Text>
+        ),
+        max: 36,
+        min: 0,
+        name: "monthLegendOffset",
+        parentDispatch: responsiveCalendarChartDispatch,
+        sliderDefaultValue: 10,
+        step: 1,
+        validValueAction: responsiveCalendarChartAction.setMonthLegendOffset,
+        value: monthLegendOffset,
+      }}
+    />
+  );
 
   // days
-  const daySpacingSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo = {
-    ariaLabel: 'day spacing',
-    kind: 'slider',
-    label: (value) => (
-      <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-    ),
-    max: 20,
-    min: 0,
-    onChangeSlider: (value: number) => {
-      responsiveCalendarChartDispatch({
-        type: responsiveCalendarChartAction.setDaySpacing,
-        payload: value,
-      });
-    },
-    sliderDefaultValue: 0,
-    step: 1,
-    value: daySpacing,
-    width: sliderWidth,
-  };
 
-  const dayBorderWidthSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      ariaLabel: 'day border width',
-      kind: 'slider',
-      label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-      ),
-      max: 20,
-      min: 0,
-      onChangeSlider: (value: number) => {
-        responsiveCalendarChartDispatch({
-          type: responsiveCalendarChartAction.setDayBorderWidth,
-          payload: value,
-        });
-      },
-      sliderDefaultValue: 1,
-      step: 1,
-      value: dayBorderWidth,
-      width: sliderWidth,
-    };
+  const daySpacingSliderInput = (
+    <AccessibleSliderInput
+      attributes={{
+        label: (value) => (
+          <Text style={{ color: SLIDER_TOOLTIP_COLOR }}>{value} px</Text>
+        ),
+        max: 20,
+        min: 0,
+        name: "daySpacing",
+        parentDispatch: responsiveCalendarChartDispatch,
+        sliderDefaultValue: 0,
+        step: 1,
+        validValueAction: responsiveCalendarChartAction.setDaySpacing,
+        value: daySpacing,
+      }}
+    />
+  );
 
-  const createdDayBorderColorInput = (
+  const dayBorderWidthSliderInput = (
+    <AccessibleSliderInput
+      attributes={{
+        label: (value) => (
+          <Text style={{ color: SLIDER_TOOLTIP_COLOR }}>{value} px</Text>
+        ),
+        max: 20,
+        min: 0,
+        name: "dayBorderWidth",
+        parentDispatch: responsiveCalendarChartDispatch,
+        sliderDefaultValue: 1,
+        step: 1,
+        validValueAction: responsiveCalendarChartAction.setDayBorderWidth,
+        value: dayBorderWidth,
+      }}
+    />
+  );
+
+  const dayBorderColorInput = (
     <ColorInput
       aria-label="day border color"
       color={dayBorderColor}
       onChange={(color: string) => {
         responsiveCalendarChartDispatch({
-          type: responsiveCalendarChartAction.setDayBorderColor,
+          action: responsiveCalendarChartAction.setDayBorderColor,
           payload: color,
         });
       }}
       value={dayBorderColor}
-      w={sliderWidth}
     />
   );
 
-  // input creation
-
   // reset all button
-  const [createdResetAllButton] = returnAccessibleButtonElements([
-    {
-      buttonLabel: 'Reset',
-      leftIcon: <BiReset />,
-      semanticDescription: 'Reset all inputs to their default values',
-      semanticName: 'Reset All',
-      buttonOnClick: () => {
-        responsiveCalendarChartDispatch({
-          type: responsiveCalendarChartAction.resetChartToDefault,
-          payload: initialResponsiveCalendarChartState,
-        });
-      },
-    },
-  ]);
-
-  // base
-  const [createdCalendarDirectionSelectInput, createdCalendarAlignSelectInput] =
-    returnAccessibleSelectInputElements([
-      calendarDirectionSelectInputCreatorInfo,
-      calendarAlignSelectInputCreatorInfo,
-    ]);
-
-  // years months days
-  const [
-    // years
-    createdYearSpacingSliderInput,
-    createdYearLegendOffsetSliderInput,
-    // months
-    createdMonthSpacingSliderInput,
-    createdMonthBorderWidthSliderInput,
-    createdMonthLegendOffsetSliderInput,
-    // days
-    createdDaySpacingSliderInput,
-    createdDayBorderWidthSliderInput,
-  ] = returnAccessibleSliderInputElements([
-    // years
-    yearSpacingSliderInputCreatorInfo,
-    yearLegendOffsetSliderInputCreatorInfo,
-    // months
-    monthSpacingSliderInputCreatorInfo,
-    monthBorderWidthSliderInputCreatorInfo,
-    monthLegendOffsetSliderInputCreatorInfo,
-    // days
-    daySpacingSliderInputCreatorInfo,
-    dayBorderWidthSliderInputCreatorInfo,
-  ]);
-
-  const [
-    // years
-    createdYearLegendPositionSelectInput,
-    // months
-    createdMonthLegendPositionSelectInput,
-  ] = returnAccessibleSelectInputElements([
-    // years
-    yearLegendPositionSelectInputCreatorInfo,
-    // months
-    monthLegendPositionSelectInputCreatorInfo,
-  ]);
+  const resetAllButton = (
+    <AccessibleButton
+      attributes={{
+        enabledScreenreaderText: "Reset all inputs to their default values",
+        kind: "reset",
+        name: "resetAll",
+        onClick: () => {
+          responsiveCalendarChartDispatch({
+            action: responsiveCalendarChartAction.resetChartToDefault,
+            payload: initialResponsiveCalendarChartState,
+          });
+        },
+      }}
+    />
+  );
 
   // input display
 
@@ -565,13 +491,7 @@ function ResponsiveCalendarChart({
   const displayBaseHeading = (
     <Group
       bg={sectionHeadersBgColor}
-      p={padding}
-      style={{
-        boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25)',
-        position: 'sticky',
-        top: 0,
-        zIndex: 4,
-      }}
+      style={STICKY_STYLE}
       w="100%"
     >
       <Title order={4} color={textColor}>
@@ -583,7 +503,7 @@ function ResponsiveCalendarChart({
   const displayCalendarDirectionSelectInput = (
     <ChartsAndGraphsControlsStacker
       initialChartState={modifiedResponsiveCalendarChartState}
-      input={createdCalendarDirectionSelectInput}
+      input={calendarDirectionSelectInput}
       label="Calendar Direction"
       value={calendarDirection}
     />
@@ -592,7 +512,7 @@ function ResponsiveCalendarChart({
   const displayCalendarAlignSelectInput = (
     <ChartsAndGraphsControlsStacker
       initialChartState={modifiedResponsiveCalendarChartState}
-      input={createdCalendarAlignSelectInput}
+      input={calendarAlignSelectInput}
       label="Calendar Align"
       value={calendarAlign}
     />
@@ -614,7 +534,6 @@ function ResponsiveCalendarChart({
       marginLeft={marginLeft}
       marginRight={marginRight}
       marginTop={marginTop}
-      padding={padding}
       parentChartAction={responsiveCalendarChartAction}
       parentChartDispatch={responsiveCalendarChartDispatch}
       sectionHeadersBgColor={sectionHeadersBgColor}
@@ -627,13 +546,7 @@ function ResponsiveCalendarChart({
   const displayStyleHeading = (
     <Group
       bg={sectionHeadersBgColor}
-      p={padding}
-      style={{
-        boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25)',
-        position: 'sticky',
-        top: 0,
-        zIndex: 4,
-      }}
+      style={STICKY_STYLE}
       w="100%"
     >
       <Title order={4} color={textColor}>
@@ -645,15 +558,15 @@ function ResponsiveCalendarChart({
   const displayEmptyColorInput = (
     <ChartsAndGraphsControlsStacker
       initialChartState={modifiedResponsiveCalendarChartState}
-      input={createdEmptyColorInput}
+      input={emptyColorInput}
       label="Empty Color"
       value={emptyColor}
     />
   );
 
   const displayEnableDefaultColorsSwitchInput = (
-    <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
-      {createdEnableDefaultColorsSwitchInput}
+    <Group w="100%" style={{ borderBottom: borderColor }}>
+      {enableDefaultColorsSwitchInput}
     </Group>
   );
 
@@ -669,13 +582,7 @@ function ResponsiveCalendarChart({
   const displayYearsHeading = (
     <Group
       bg={sectionHeadersBgColor}
-      p={padding}
-      style={{
-        boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25)',
-        position: 'sticky',
-        top: 0,
-        zIndex: 4,
-      }}
+      style={STICKY_STYLE}
       w="100%"
     >
       <Title order={4} color={textColor}>
@@ -687,7 +594,7 @@ function ResponsiveCalendarChart({
   const displayYearSpacingSliderInput = (
     <ChartsAndGraphsControlsStacker
       initialChartState={modifiedResponsiveCalendarChartState}
-      input={createdYearSpacingSliderInput}
+      input={yearSpacingSliderInput}
       label="Year Spacing"
       symbol="px"
       value={yearSpacing}
@@ -697,7 +604,7 @@ function ResponsiveCalendarChart({
   const displayYearLegendPositionSelectInput = (
     <ChartsAndGraphsControlsStacker
       initialChartState={modifiedResponsiveCalendarChartState}
-      input={createdYearLegendPositionSelectInput}
+      input={yearLegendPositionSelectInput}
       label="Year Legend Position"
       value={yearLegendPosition}
     />
@@ -706,7 +613,7 @@ function ResponsiveCalendarChart({
   const displayYearLegendOffsetSliderInput = (
     <ChartsAndGraphsControlsStacker
       initialChartState={modifiedResponsiveCalendarChartState}
-      input={createdYearLegendOffsetSliderInput}
+      input={yearLegendOffsetSliderInput}
       label="Year Legend Offset"
       symbol="px"
       value={yearLegendOffset}
@@ -726,13 +633,7 @@ function ResponsiveCalendarChart({
   const displayMonthsHeading = (
     <Group
       bg={sectionHeadersBgColor}
-      p={padding}
-      style={{
-        boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25)',
-        position: 'sticky',
-        top: 0,
-        zIndex: 4,
-      }}
+      style={STICKY_STYLE}
       w="100%"
     >
       <Title order={4} color={textColor}>
@@ -744,7 +645,7 @@ function ResponsiveCalendarChart({
   const displayMonthSpacingSliderInput = (
     <ChartsAndGraphsControlsStacker
       initialChartState={modifiedResponsiveCalendarChartState}
-      input={createdMonthSpacingSliderInput}
+      input={monthSpacingSliderInput}
       label="Month Spacing"
       symbol="px"
       value={monthSpacing}
@@ -754,7 +655,7 @@ function ResponsiveCalendarChart({
   const displayMonthBorderWidthSliderInput = (
     <ChartsAndGraphsControlsStacker
       initialChartState={modifiedResponsiveCalendarChartState}
-      input={createdMonthBorderWidthSliderInput}
+      input={monthBorderWidthSliderInput}
       label="Month Border Width"
       symbol="px"
       value={monthBorderWidth}
@@ -764,7 +665,7 @@ function ResponsiveCalendarChart({
   const displayMonthBorderColorInput = (
     <ChartsAndGraphsControlsStacker
       initialChartState={modifiedResponsiveCalendarChartState}
-      input={createdMonthBorderColorInput}
+      input={monthBorderColorInput}
       label="Month Border Color"
       value={monthBorderColor}
     />
@@ -773,7 +674,7 @@ function ResponsiveCalendarChart({
   const displayMonthLegendPositionSelectInput = (
     <ChartsAndGraphsControlsStacker
       initialChartState={modifiedResponsiveCalendarChartState}
-      input={createdMonthLegendPositionSelectInput}
+      input={monthLegendPositionSelectInput}
       label="Month Legend Position"
       value={monthLegendPosition}
     />
@@ -782,7 +683,7 @@ function ResponsiveCalendarChart({
   const displayMonthLegendOffsetSliderInput = (
     <ChartsAndGraphsControlsStacker
       initialChartState={modifiedResponsiveCalendarChartState}
-      input={createdMonthLegendOffsetSliderInput}
+      input={monthLegendOffsetSliderInput}
       label="Month Legend Offset"
       symbol="px"
       value={monthLegendOffset}
@@ -804,13 +705,7 @@ function ResponsiveCalendarChart({
   const displayDaysHeading = (
     <Group
       bg={sectionHeadersBgColor}
-      p={padding}
-      style={{
-        boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25)',
-        position: 'sticky',
-        top: 0,
-        zIndex: 4,
-      }}
+      style={STICKY_STYLE}
       w="100%"
     >
       <Title order={4} color={textColor}>
@@ -822,7 +717,7 @@ function ResponsiveCalendarChart({
   const displayDaySpacingSliderInput = (
     <ChartsAndGraphsControlsStacker
       initialChartState={modifiedResponsiveCalendarChartState}
-      input={createdDaySpacingSliderInput}
+      input={daySpacingSliderInput}
       label="Day Spacing"
       symbol="px"
       value={daySpacing}
@@ -832,7 +727,7 @@ function ResponsiveCalendarChart({
   const displayDayBorderWidthSliderInput = (
     <ChartsAndGraphsControlsStacker
       initialChartState={modifiedResponsiveCalendarChartState}
-      input={createdDayBorderWidthSliderInput}
+      input={dayBorderWidthSliderInput}
       label="Day Border Width"
       symbol="px"
       value={dayBorderWidth}
@@ -842,7 +737,7 @@ function ResponsiveCalendarChart({
   const displayDayBorderColorInput = (
     <ChartsAndGraphsControlsStacker
       initialChartState={modifiedResponsiveCalendarChartState}
-      input={createdDayBorderColorInput}
+      input={dayBorderColorInput}
       label="Day Border Color"
       value={dayBorderColor}
     />
@@ -866,17 +761,13 @@ function ResponsiveCalendarChart({
       chartTitlePosition={chartTitlePosition}
       chartTitleSize={chartTitleSize}
       initialChartState={modifiedResponsiveCalendarChartState}
-      isChartTitleFocused={isChartTitleFocused}
-      isChartTitleValid={isChartTitleValid}
-      isScreenshotFilenameFocused={isScreenshotFilenameFocused}
-      isScreenshotFilenameValid={isScreenshotFilenameValid}
-      padding={padding}
       parentChartAction={responsiveCalendarChartAction}
       parentChartDispatch={responsiveCalendarChartDispatch}
       screenshotFilename={screenshotFilename}
       screenshotImageQuality={screenshotImageQuality}
       screenshotImageType={screenshotImageType}
       sectionHeadersBgColor={sectionHeadersBgColor}
+      stepperPages={returnChartOptionsStepperPages()}
       textColor={textColor}
       width={width}
     />
@@ -884,12 +775,12 @@ function ResponsiveCalendarChart({
 
   const displayResetAllButton = (
     <Tooltip label="Reset all inputs to their default values">
-      <Group>{createdResetAllButton}</Group>
+      <Group>{resetAllButton}</Group>
     </Tooltip>
   );
 
   const displayResetAll = (
-    <Stack w="100%" py={padding}>
+    <Stack w="100%">
       <ChartsAndGraphsControlsStacker
         initialChartState={modifiedResponsiveCalendarChartState}
         input={displayResetAllButton}
@@ -921,7 +812,6 @@ function ResponsiveCalendarChart({
       chartTitleColor={chartTitleColor}
       chartTitlePosition={chartTitlePosition}
       chartTitleSize={chartTitleSize}
-      padding={padding}
       responsiveChart={displayCalendarChart}
       scrollBarStyle={scrollBarStyle}
       width={width}

@@ -1,5 +1,5 @@
-import { CheckboxRadioSelectData } from "../../../types";
-import {
+import type { CheckboxRadioSelectData } from "../../../types";
+import type {
   NivoCalendarAlign,
   NivoCalendarDirection,
   NivoCalendarLegendPosition,
@@ -10,7 +10,9 @@ import {
  */
 const NIVO_CALENDAR_CHART_COLORS = ["#61cdbb", "#97e3d5", "#e8c1a0", "#f47560"];
 
-const NIVO_CALENDAR_DIRECTION_DATA: CheckboxRadioSelectData<NivoCalendarDirection> = [
+const NIVO_CALENDAR_DIRECTION_DATA: CheckboxRadioSelectData<
+  NivoCalendarDirection
+> = [
   { label: "Horizontal", value: "horizontal" },
   { label: "Vertical", value: "vertical" },
 ];
@@ -27,11 +29,12 @@ const NIVO_CALENDAR_ALIGN_DATA: CheckboxRadioSelectData<NivoCalendarAlign> = [
   { label: "Center", value: "center" },
 ];
 
-const NIVO_CALENDAR_LEGEND_POSITION_DATA: CheckboxRadioSelectData<NivoCalendarLegendPosition> =
-  [
-    { label: "Before", value: "before" },
-    { label: "After", value: "after" },
-  ];
+const NIVO_CALENDAR_LEGEND_POSITION_DATA: CheckboxRadioSelectData<
+  NivoCalendarLegendPosition
+> = [
+  { label: "Before", value: "before" },
+  { label: "After", value: "after" },
+];
 
 export {
   NIVO_CALENDAR_ALIGN_DATA,
