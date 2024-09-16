@@ -23,6 +23,8 @@ import {
   TbDownload,
   TbEdit,
   TbFilter,
+  TbPlayerPauseFilled,
+  TbPlayerPlayFilled,
   TbPlus,
   TbRefresh,
   TbRowInsertTop,
@@ -50,6 +52,8 @@ type AccessibleButtonKind =
   | "hide"
   | "insert"
   | "next"
+  | "pause"
+  | "play"
   | "previous"
   | "refresh"
   | "reset"
@@ -132,6 +136,8 @@ function AccessibleButton({ attributes }: AccessibleButtonProps) {
     insert: <TbRowInsertTop />,
     hide: <TbArrowDown />,
     next: <TiArrowRightThick />,
+    pause: <TbPlayerPauseFilled />,
+    play: <TbPlayerPlayFilled />,
     previous: <TiArrowLeftThick />,
     refresh: <TbRefresh />,
     reset: <TbClearAll />,

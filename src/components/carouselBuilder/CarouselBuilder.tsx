@@ -1,19 +1,12 @@
 import { Center, Flex, Group, Title } from "@mantine/core";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import {
-  TbArrowLeft,
-  TbArrowRight,
-  TbPlayerPauseFilled,
-  TbPlayerPlayFilled,
-} from "react-icons/tb";
 
 import { COLORS_SWATCHES } from "../../constants/data";
 import { useGlobalState } from "../../hooks";
-import { returnAccessibleButtonElements } from "../../jsxCreators";
 import { returnThemeColors } from "../../utils";
-import { AccessibleButtonCreatorInfo } from "../wrappers";
-import { CarouselBuilderProps } from "./types";
+import { AccessibleButton } from "../accessibleInputs/AccessibleButton";
+import type { CarouselBuilderProps } from "./types";
 
 function CarouselBuilder({
   autoPlaySpeed = 5000,
@@ -27,7 +20,7 @@ function CarouselBuilder({
   // const [resetAutoplay, setResetAutoplay] = useState<boolean>(false);
 
   const {
-    globalState: { padding, themeObject, isPrefersReducedMotion },
+    globalState: { themeObject, isPrefersReducedMotion },
   } = useGlobalState();
 
   // autoplay set interval
@@ -43,47 +36,61 @@ function CarouselBuilder({
   const carouselWrapperWidth = slideWidth - 22;
   const carouselWrapperHeight = slideHeight - 22;
 
-  const leftControlIconButtonCreatorInfo: AccessibleButtonCreatorInfo = {
-    buttonDisabled: slides.length === 1,
-    buttonLabel: "Previous",
-    leftIcon: <TbArrowLeft />,
-    semanticDescription: "Go to previous slide",
-    semanticName: "previous slide",
-    buttonOnClick: () => {
-      setCurrentSlide(currentSlide === 0 ? slides.length - 1 : currentSlide - 1);
-    },
-  };
+  const leftControlIconButton = (
+    <AccessibleButton
+      attributes={{
+        enabledScreenreaderText: "Go to previous slide",
+        kind: "previous",
+        name: "previous",
+        onClick: () => {
+          setCurrentSlide(
+            currentSlide === 0 ? slides.length - 1 : currentSlide - 1,
+          );
+        },
+      }}
+    />
+  );
 
-  const rightControlIconButtonCreatorInfo: AccessibleButtonCreatorInfo = {
-    buttonDisabled: slides.length === 1,
-    buttonLabel: "Next",
-    rightIcon: <TbArrowRight />,
-    semanticDescription: "Go to next slide",
-    semanticName: "next slide",
-    buttonOnClick: () => {
-      setCurrentSlide(currentSlide === slides.length - 1 ? 0 : currentSlide + 1);
-    },
-  };
+  const rightControlIconButton = (
+    <AccessibleButton
+      attributes={{
+        enabledScreenreaderText: "Go to next slide",
+        kind: "next",
+        name: "next",
+        onClick: () => {
+          setCurrentSlide(
+            currentSlide === slides.length - 1 ? 0 : currentSlide + 1,
+          );
+        },
+      }}
+    />
+  );
 
-  const autoPlayPauseIconButtonCreatorInfo: AccessibleButtonCreatorInfo = {
-    buttonDisabled: slides.length === 1,
-    buttonLabel: isAutoplaying ? <TbPlayerPauseFilled /> : <TbPlayerPlayFilled />,
-    semanticDescription: "Pause autoplay",
-    semanticName: "pause autoplay",
-    buttonOnClick: () => {
-      setIsAutoplaying((prev) => !prev);
-    },
-  };
+  const autoPlayPauseIconButton = (
+    <AccessibleButton
+      attributes={{
+        enabledScreenreaderText: "Pause autoplay",
+        kind: "pause",
+        name: "pause",
+        onClick: () => {
+          setIsAutoplaying((prev) => !prev);
+        },
+      }}
+    />
+  );
 
-  const [
-    createdLeftControlIconButton,
-    createdRightControlIconButton,
-    createdAutoPlayPauseIconButton,
-  ] = returnAccessibleButtonElements([
-    leftControlIconButtonCreatorInfo,
-    rightControlIconButtonCreatorInfo,
-    autoPlayPauseIconButtonCreatorInfo,
-  ]);
+  const autoPlayPlayIconButton = (
+    <AccessibleButton
+      attributes={{
+        enabledScreenreaderText: "Play autoplay",
+        kind: "play",
+        name: "play",
+        onClick: () => {
+          setIsAutoplaying((prev) => !prev);
+        },
+      }}
+    />
+  );
 
   const {
     appThemeColors: { backgroundColor, borderColor },
@@ -108,25 +115,29 @@ function CarouselBuilder({
     },
   };
 
-  const displaySlide = slides.length ? (
-    isPrefersReducedMotion ? (
-      <Center w="100%" h="100%">
-        {slides[currentSlide]}
-      </Center>
-    ) : (
-      <AnimatePresence initial={true} custom={currentSlide} mode="wait">
-        <motion.div
-          key={currentSlide}
-          variants={variants}
-          initial="hidden"
-          animate="visible"
-          exit="exit"
-        >
-          <Center w="100%">{slides[currentSlide]}</Center>
-        </motion.div>
-      </AnimatePresence>
+  const displaySlide = slides.length
+    ? (
+      isPrefersReducedMotion
+        ? (
+          <Center w="100%" h="100%">
+            {slides[currentSlide]}
+          </Center>
+        )
+        : (
+          <AnimatePresence initial={true} custom={currentSlide} mode="wait">
+            <motion.div
+              key={currentSlide}
+              variants={variants}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+            >
+              <Center w="100%">{slides[currentSlide]}</Center>
+            </motion.div>
+          </AnimatePresence>
+        )
     )
-  ) : null;
+    : null;
 
   const displayCarouselWithSlides = (
     <Flex
@@ -138,12 +149,12 @@ function CarouselBuilder({
       style={{ zIndex: 2, border: withBorder ? borderColor : "none" }}
       w={carouselWrapperWidth}
     >
-      <Group w="100%" position="apart" px={padding}>
+      <Group w="100%" position="apart">
         <Title order={4}>{headings?.[currentSlide]}</Title>
-        <Group spacing={padding} pb="xs">
-          {createdLeftControlIconButton}
-          {createdAutoPlayPauseIconButton}
-          {createdRightControlIconButton}
+        <Group spacing="sm" pb="xs">
+          {leftControlIconButton}
+          {isAutoplaying ? autoPlayPauseIconButton : autoPlayPlayIconButton}
+          {rightControlIconButton}
         </Group>
       </Group>
       {displaySlide}
