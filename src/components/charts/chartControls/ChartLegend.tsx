@@ -1,105 +1,97 @@
-import {
-  ColorInput,
-  Group,
-  MantineNumberSize,
-  Stack,
-  Switch,
-  Text,
-  Title,
-} from '@mantine/core';
-import { ChangeEvent } from 'react';
+import { ColorInput, Group, Stack, Text, Title } from "@mantine/core";
 
-import { COLORS_SWATCHES } from '../../../constants/data';
-import {
-  AccessibleSelectedDeselectedTextElements,
-  returnAccessibleSelectInputElements,
-  returnAccessibleSliderInputElements,
-} from '../../../jsxCreators';
-import {
-  AccessibleSelectInputCreatorInfo,
-  AccessibleSliderInputCreatorInfo,
-} from '../../wrappers';
+import type { SetPageInErrorPayload } from "../../../types";
+import { AccessibleSelectInput } from "../../accessibleInputs/AccessibleSelectInput";
+import { AccessibleSliderInput } from "../../accessibleInputs/AccessibleSliderInput";
+import { AccessibleSwitchInput } from "../../accessibleInputs/AccessibleSwitchInput";
 import {
   NIVO_LEGEND_ANCHOR_DATA,
   NIVO_LEGEND_DIRECTION_DATA,
   NIVO_LEGEND_ITEM_DIRECTION_DATA,
   NIVO_LEGEND_SYMBOL_SHAPE_DATA,
-} from '../constants';
-import {
+  SLIDER_TOOLTIP_COLOR,
+  STICKY_STYLE,
+} from "../constants";
+import type {
   NivoLegendAnchor,
   NivoLegendDirection,
   NivoLegendItemDirection,
   NivoLegendSymbolShape,
-} from '../types';
-import { ChartsAndGraphsControlsStacker } from '../utils';
+} from "../types";
+import { ChartsAndGraphsControlsStacker } from "../utils";
 
 type ChartLegendAction = {
-  setEnableLegend: 'setEnableLegend';
-  setEnableLegendJustify: 'setEnableLegendJustify';
-  setLegendAnchor: 'setLegendAnchor';
-  setLegendDirection: 'setLegendDirection';
-  setLegendItemBackground: 'setLegendItemBackground';
-  setLegendItemDirection: 'setLegendItemDirection';
-  setLegendItemHeight: 'setLegendItemHeight';
-  setLegendItemOpacity: 'setLegendItemOpacity';
-  setLegendItemTextColor: 'setLegendItemTextColor';
-  setLegendItemWidth: 'setLegendItemWidth';
-  setLegendItemsSpacing: 'setLegendItemsSpacing';
-  setLegendSymbolBorderColor: 'setLegendSymbolBorderColor';
-  setLegendSymbolBorderWidth: 'setLegendSymbolBorderWidth';
-  setLegendSymbolShape: 'setLegendSymbolShape';
-  setLegendSymbolSize: 'setLegendSymbolSize';
-  setLegendSymbolSpacing: 'setLegendSymbolSpacing';
-  setLegendTranslateX: 'setLegendTranslateX';
-  setLegendTranslateY: 'setLegendTranslateY';
+  setEnableLegend: "setEnableLegend";
+  setEnableLegendJustify: "setEnableLegendJustify";
+  setLegendAnchor: "setLegendAnchor";
+  setLegendDirection: "setLegendDirection";
+  setLegendItemBackground: "setLegendItemBackground";
+  setLegendItemDirection: "setLegendItemDirection";
+  setLegendItemHeight: "setLegendItemHeight";
+  setLegendItemOpacity: "setLegendItemOpacity";
+  setLegendItemTextColor: "setLegendItemTextColor";
+  setLegendItemWidth: "setLegendItemWidth";
+  setLegendItemsSpacing: "setLegendItemsSpacing";
+  setLegendSymbolBorderColor: "setLegendSymbolBorderColor";
+  setLegendSymbolBorderWidth: "setLegendSymbolBorderWidth";
+  setLegendSymbolShape: "setLegendSymbolShape";
+  setLegendSymbolSize: "setLegendSymbolSize";
+  setLegendSymbolSpacing: "setLegendSymbolSpacing";
+  setLegendTranslateX: "setLegendTranslateX";
+  setLegendTranslateY: "setLegendTranslateY";
+  setPageInError: "setPageInError";
 };
 
 type ChartLegendDispatch =
   | {
-      type:
-        | ChartLegendAction['setEnableLegend']
-        | ChartLegendAction['setEnableLegendJustify'];
+    action:
+      | ChartLegendAction["setEnableLegend"]
+      | ChartLegendAction["setEnableLegendJustify"];
 
-      payload: boolean;
-    }
+    payload: boolean;
+  }
   | {
-      type:
-        | ChartLegendAction['setLegendItemBackground']
-        | ChartLegendAction['setLegendItemTextColor']
-        | ChartLegendAction['setLegendSymbolBorderColor'];
+    action:
+      | ChartLegendAction["setLegendItemBackground"]
+      | ChartLegendAction["setLegendItemTextColor"]
+      | ChartLegendAction["setLegendSymbolBorderColor"];
 
-      payload: string;
-    }
+    payload: string;
+  }
   | {
-      type:
-        | ChartLegendAction['setLegendItemHeight']
-        | ChartLegendAction['setLegendItemOpacity']
-        | ChartLegendAction['setLegendItemWidth']
-        | ChartLegendAction['setLegendItemsSpacing']
-        | ChartLegendAction['setLegendSymbolBorderWidth']
-        | ChartLegendAction['setLegendSymbolSize']
-        | ChartLegendAction['setLegendSymbolSpacing']
-        | ChartLegendAction['setLegendTranslateX']
-        | ChartLegendAction['setLegendTranslateY'];
+    action:
+      | ChartLegendAction["setLegendItemHeight"]
+      | ChartLegendAction["setLegendItemOpacity"]
+      | ChartLegendAction["setLegendItemWidth"]
+      | ChartLegendAction["setLegendItemsSpacing"]
+      | ChartLegendAction["setLegendSymbolBorderWidth"]
+      | ChartLegendAction["setLegendSymbolSize"]
+      | ChartLegendAction["setLegendSymbolSpacing"]
+      | ChartLegendAction["setLegendTranslateX"]
+      | ChartLegendAction["setLegendTranslateY"];
 
-      payload: number;
-    }
+    payload: number;
+  }
   | {
-      type: ChartLegendAction['setLegendAnchor'];
-      payload: NivoLegendAnchor;
-    }
+    action: ChartLegendAction["setLegendAnchor"];
+    payload: NivoLegendAnchor;
+  }
   | {
-      type: ChartLegendAction['setLegendDirection'];
-      payload: NivoLegendDirection;
-    }
+    action: ChartLegendAction["setLegendDirection"];
+    payload: NivoLegendDirection;
+  }
   | {
-      type: ChartLegendAction['setLegendItemDirection'];
-      payload: NivoLegendItemDirection;
-    }
+    action: ChartLegendAction["setLegendItemDirection"];
+    payload: NivoLegendItemDirection;
+  }
   | {
-      type: ChartLegendAction['setLegendSymbolShape'];
-      payload: NivoLegendSymbolShape;
-    };
+    action: ChartLegendAction["setLegendSymbolShape"];
+    payload: NivoLegendSymbolShape;
+  }
+  | {
+    action: ChartLegendAction["setPageInError"];
+    payload: SetPageInErrorPayload;
+  };
 
 type ChartLegendProps = {
   borderColor: string;
@@ -123,7 +115,6 @@ type ChartLegendProps = {
   legendSymbolSpacing: number; // 0px - 60px default: 8 step: 1
   legendTranslateX: number; // -200px - 200px default: 0 step: 1
   legendTranslateY: number; // -200px - 200px default: 0 step: 1
-  padding: MantineNumberSize;
   parentChartAction: ChartLegendAction;
   parentChartDispatch: React.Dispatch<ChartLegendDispatch>;
   sectionHeadersBgColor: string;
@@ -154,7 +145,6 @@ function ChartLegend(props: ChartLegendProps) {
     legendSymbolSpacing,
     legendTranslateX,
     legendTranslateY,
-    padding,
     parentChartAction,
     parentChartDispatch,
     sectionHeadersBgColor,
@@ -162,448 +152,360 @@ function ChartLegend(props: ChartLegendProps) {
     width,
   } = props;
 
-  const [
-    enableLegendAccessibleSelectedText,
-    enableLegendAccessibleDeselectedText,
-  ] = AccessibleSelectedDeselectedTextElements({
-    deselectedDescription: 'Chart will not have legend.',
-    isSelected: enableLegend,
-    selectedDescription: 'Chart will have legend.',
-    semanticName: 'legend',
-    theme: 'muted',
-  });
-
-  const [
-    enableLegendJustifyAccessibleSelectedText,
-    enableLegendJustifyAccessibleDeselectedText,
-  ] = AccessibleSelectedDeselectedTextElements({
-    deselectedDescription: 'Legend will not be justified.',
-    isSelected: enableLegendJustify,
-    selectedDescription: 'Legend will be justified.',
-    semanticName: 'legend justify',
-    theme: 'muted',
-  });
-
-  //
-  const { gray } = COLORS_SWATCHES;
-  const sliderWidth =
-    width < 480
-      ? '217px'
-      : width < 768
-      ? `${width * 0.38}px`
-      : width < 1192
-      ? '500px'
-      : `${width * 0.15}px`;
-  const sliderLabelColor = gray[3];
-
-  const createdEnableLegendSwitchInput = (
-    <Switch
-      aria-describedby={
-        enableLegend
-          ? enableLegendAccessibleSelectedText.props.id
-          : enableLegendAccessibleDeselectedText.props.id
-      }
-      checked={enableLegend}
-      description={
-        enableLegend
-          ? enableLegendAccessibleSelectedText
-          : enableLegendAccessibleDeselectedText
-      }
-      label={
-        <Text weight={500} color={textColor}>
-          Legend
-        </Text>
-      }
-      onChange={(event: ChangeEvent<HTMLInputElement>) => {
-        parentChartDispatch({
-          type: parentChartAction.setEnableLegend,
-          payload: event.currentTarget.checked,
-        });
+  /**
+   * const enableArcLabelsSwitchInput = (
+    <AccessibleSwitchInput
+      attributes={{
+        checked: enableArcLabels,
+        invalidValueAction: parentChartAction.setPageInError,
+        name: "enableArcLabels",
+        offLabel: "Off",
+        onLabel: "On",
+        parentDispatch: parentChartDispatch,
+        validValueAction: parentChartAction.setEnableArcLabels,
+        value: enableArcLabels,
       }}
-      w="100%"
     />
   );
 
-  const legendAnchorSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo = {
-    data: NIVO_LEGEND_ANCHOR_DATA,
-    disabled: !enableLegend,
-    description: 'Define legend anchor.',
-    onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-      parentChartDispatch({
-        type: parentChartAction.setLegendAnchor,
-        payload: event.currentTarget.value as NivoLegendAnchor,
-      });
-    },
-    value: legendAnchor,
-    width: sliderWidth,
-  };
+  const arcLabelSelectInput = (
+    <AccessibleSelectInput
+      attributes={{
+        data: NIVO_SUNBURST_ARC_LABEL_DATA,
+        description: "Define arc label",
+        name: "arcLabel",
+        parentDispatch: parentChartDispatch,
+        validValueAction: parentChartAction.setArcLabel,
+        value: arcLabel,
+      }}
+    />
+  );
 
-  const legendDirectionSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo =
-    {
-      data: NIVO_LEGEND_DIRECTION_DATA,
-      disabled: !enableLegend,
-      description: 'Define legend direction.',
-      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-        parentChartDispatch({
-          type: parentChartAction.setLegendDirection,
-          payload: event.currentTarget.value as NivoLegendDirection,
-        });
-      },
-      value: legendDirection,
-      width: sliderWidth,
-    };
+  const arcLabelsRadiusOffsetSliderInput = (
+    <AccessibleSliderInput
+      attributes={{
+        label: (value) => (
+          <Text style={{ color: SLIDER_TOOLTIP_COLOR }}>{value}</Text>
+        ),
+        max: 2,
+        min: 0,
+        name: "arcLabelsRadiusOffset",
+        parentDispatch: parentChartDispatch,
+        sliderDefaultValue: 0.5,
+        step: 0.05,
+        validValueAction: parentChartAction.setArcLabelsRadiusOffset,
+        value: arcLabelsRadiusOffset,
+      }}
+    />
+  );
+   */
 
-  const createdLegendItemBackgroundColorInput = (
+  const enableLegendSwitchInput = (
+    <AccessibleSwitchInput
+      attributes={{
+        checked: enableLegend,
+        invalidValueAction: parentChartAction.setPageInError,
+        name: "enableLegend",
+        offLabel: "Off",
+        onLabel: "On",
+        parentDispatch: parentChartDispatch,
+        validValueAction: parentChartAction.setEnableLegend,
+        value: enableLegend,
+      }}
+    />
+  );
+
+  const legendAnchorSelectInput = (
+    <AccessibleSelectInput
+      attributes={{
+        data: NIVO_LEGEND_ANCHOR_DATA,
+        description: "Define legend anchor",
+        disabled: !enableLegend,
+        name: "legendAnchor",
+        parentDispatch: parentChartDispatch,
+        validValueAction: parentChartAction.setLegendAnchor,
+        value: legendAnchor,
+      }}
+    />
+  );
+
+  const legendDirectionSelectInput = (
+    <AccessibleSelectInput
+      attributes={{
+        data: NIVO_LEGEND_DIRECTION_DATA,
+        description: "Define legend direction",
+        disabled: !enableLegend,
+        name: "legendDirection",
+        parentDispatch: parentChartDispatch,
+        validValueAction: parentChartAction.setLegendDirection,
+        value: legendDirection,
+      }}
+    />
+  );
+
+  const legendItemBackgroundColorInput = (
     <ColorInput
       aria-label="Legend item background color"
       color={legendItemBackground}
       disabled={!enableLegend}
       onChange={(color: string) => {
         parentChartDispatch({
-          type: parentChartAction.setLegendItemBackground,
+          action: parentChartAction.setLegendItemBackground,
           payload: color,
         });
       }}
       value={legendItemBackground}
-      w={sliderWidth}
     />
   );
 
-  const createdLegendItemTextColorInput = (
+  const legendItemTextColorInput = (
     <ColorInput
       aria-label="Legend item text color"
       color={legendItemTextColor}
       disabled={!enableLegend}
       onChange={(color: string) => {
         parentChartDispatch({
-          type: parentChartAction.setLegendItemTextColor,
+          action: parentChartAction.setLegendItemTextColor,
           payload: color,
         });
       }}
       value={legendItemTextColor}
-      w={sliderWidth}
     />
   );
 
-  const createdEnableLegendJustifySwitchInput = (
-    <Switch
-      aria-describedby={
-        enableLegendJustify
-          ? enableLegendJustifyAccessibleSelectedText.props.id
-          : enableLegendJustifyAccessibleDeselectedText.props.id
-      }
-      checked={enableLegendJustify}
-      description={
-        enableLegendJustify
-          ? enableLegendJustifyAccessibleSelectedText
-          : enableLegendJustifyAccessibleDeselectedText
-      }
-      disabled={!enableLegend}
-      label={
-        <Text weight={500} color={enableLegend ? textColor : grayColorShade}>
-          Legend justify
-        </Text>
-      }
-      onChange={(event: ChangeEvent<HTMLInputElement>) => {
-        parentChartDispatch({
-          type: parentChartAction.setEnableLegendJustify,
-          payload: event.currentTarget.checked,
-        });
+  const enableLegendJustifySwitchInput = (
+    <AccessibleSwitchInput
+      attributes={{
+        checked: enableLegendJustify,
+        invalidValueAction: parentChartAction.setPageInError,
+        name: "enableLegendJustify",
+        offLabel: "Off",
+        onLabel: "On",
+        parentDispatch: parentChartDispatch,
+        validValueAction: parentChartAction.setEnableLegendJustify,
+        value: enableLegendJustify,
       }}
-      w="100%"
     />
   );
 
-  const legendTranslateXSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      ariaLabel: 'legend translate x',
-      disabled: !enableLegend,
-      kind: 'slider',
-      label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-      ),
-      max: 200,
-      min: -200,
-      onChangeSlider: (value: number) => {
-        parentChartDispatch({
-          type: parentChartAction.setLegendTranslateX,
-          payload: value,
-        });
-      },
-      sliderDefaultValue: 0,
-      step: 1,
-      value: legendTranslateX,
-      width: sliderWidth,
-    };
+  const legendTranslateXSliderInput = (
+    <AccessibleSliderInput
+      attributes={{
+        disabled: !enableLegend,
+        label: (value) => (
+          <Text style={{ color: SLIDER_TOOLTIP_COLOR }}>{value} px</Text>
+        ),
+        max: 200,
+        min: -200,
+        name: "legendTranslateX",
+        parentDispatch: parentChartDispatch,
+        sliderDefaultValue: 0,
+        step: 1,
+        validValueAction: parentChartAction.setLegendTranslateX,
+        value: legendTranslateX,
+      }}
+    />
+  );
 
-  const legendTranslateYSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      ariaLabel: 'legend translate y',
-      disabled: !enableLegend,
-      kind: 'slider',
-      label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-      ),
-      max: 200,
-      min: -200,
-      onChangeSlider: (value: number) => {
-        parentChartDispatch({
-          type: parentChartAction.setLegendTranslateY,
-          payload: value,
-        });
-      },
-      sliderDefaultValue: 0,
-      step: 1,
-      value: legendTranslateY,
-      width: sliderWidth,
-    };
+  const legendTranslateYSliderInput = (
+    <AccessibleSliderInput
+      attributes={{
+        disabled: !enableLegend,
+        label: (value) => (
+          <Text style={{ color: SLIDER_TOOLTIP_COLOR }}>{value} px</Text>
+        ),
+        max: 200,
+        min: -200,
+        name: "legendTranslateY",
+        parentDispatch: parentChartDispatch,
+        sliderDefaultValue: 0,
+        step: 1,
+        validValueAction: parentChartAction.setLegendTranslateY,
+        value: legendTranslateY,
+      }}
+    />
+  );
 
-  const legendItemWidthSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      ariaLabel: 'legend item width',
-      disabled: !enableLegend,
-      kind: 'slider',
-      label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-      ),
-      max: 200,
-      min: 0,
-      onChangeSlider: (value: number) => {
-        parentChartDispatch({
-          type: parentChartAction.setLegendItemWidth,
-          payload: value,
-        });
-      },
-      sliderDefaultValue: 100,
-      step: 1,
-      value: legendItemWidth,
-      width: sliderWidth,
-    };
+  const legendItemWidthSliderInput = (
+    <AccessibleSliderInput
+      attributes={{
+        disabled: !enableLegend,
+        label: (value) => (
+          <Text style={{ color: SLIDER_TOOLTIP_COLOR }}>{value} px</Text>
+        ),
+        max: 200,
+        min: 0,
+        name: "legendItemWidth",
+        parentDispatch: parentChartDispatch,
+        sliderDefaultValue: 100,
+        step: 1,
+        validValueAction: parentChartAction.setLegendItemWidth,
+        value: legendItemWidth,
+      }}
+    />
+  );
 
-  const legendItemHeightSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      ariaLabel: 'legend item height',
-      disabled: !enableLegend,
-      kind: 'slider',
-      label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-      ),
-      max: 200,
-      min: 0,
-      onChangeSlider: (value: number) => {
-        parentChartDispatch({
-          type: parentChartAction.setLegendItemHeight,
-          payload: value,
-        });
-      },
-      sliderDefaultValue: 12,
-      step: 1,
-      value: legendItemHeight,
-      width: sliderWidth,
-    };
+  const legendItemHeightSliderInput = (
+    <AccessibleSliderInput
+      attributes={{
+        disabled: !enableLegend,
+        label: (value) => (
+          <Text style={{ color: SLIDER_TOOLTIP_COLOR }}>{value} px</Text>
+        ),
+        max: 200,
+        min: 0,
+        name: "legendItemHeight",
+        parentDispatch: parentChartDispatch,
+        sliderDefaultValue: 12,
+        step: 1,
+        validValueAction: parentChartAction.setLegendItemHeight,
+        value: legendItemHeight,
+      }}
+    />
+  );
 
-  const legendItemsSpacingSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      ariaLabel: 'legend items spacing',
-      disabled: !enableLegend,
-      kind: 'slider',
-      label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-      ),
-      max: 200,
-      min: 0,
-      onChangeSlider: (value: number) => {
-        parentChartDispatch({
-          type: parentChartAction.setLegendItemsSpacing,
-          payload: value,
-        });
-      },
-      sliderDefaultValue: 10,
-      step: 1,
-      value: legendItemsSpacing,
-      width: sliderWidth,
-    };
+  const legendItemsSpacingSliderInput = (
+    <AccessibleSliderInput
+      attributes={{
+        disabled: !enableLegend,
+        label: (value) => (
+          <Text style={{ color: SLIDER_TOOLTIP_COLOR }}>{value} px</Text>
+        ),
+        max: 200,
+        min: 0,
+        name: "legendItemsSpacing",
+        parentDispatch: parentChartDispatch,
+        sliderDefaultValue: 10,
+        step: 1,
+        validValueAction: parentChartAction.setLegendItemsSpacing,
+        value: legendItemsSpacing,
+      }}
+    />
+  );
 
-  const legendItemDirectionSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo =
-    {
-      data: NIVO_LEGEND_ITEM_DIRECTION_DATA,
-      disabled: !enableLegend,
-      description: 'Define legend item direction.',
-      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-        parentChartDispatch({
-          type: parentChartAction.setLegendItemDirection,
-          payload: event.currentTarget.value as NivoLegendItemDirection,
-        });
-      },
-      value: legendItemDirection,
-      width: sliderWidth,
-    };
+  const legendItemDirectionSelectInput = (
+    <AccessibleSelectInput
+      attributes={{
+        data: NIVO_LEGEND_ITEM_DIRECTION_DATA,
+        description: "Define legend item direction.",
+        disabled: !enableLegend,
+        name: "legendItemDirection",
+        parentDispatch: parentChartDispatch,
+        validValueAction: parentChartAction.setLegendItemDirection,
+        value: legendItemDirection,
+      }}
+    />
+  );
 
-  const legendItemOpacitySliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      ariaLabel: 'legend item opacity',
-      disabled: !enableLegend,
-      kind: 'slider',
-      label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value}</Text>
-      ),
-      max: 1,
-      min: 0,
-      onChangeSlider: (value: number) => {
-        parentChartDispatch({
-          type: parentChartAction.setLegendItemOpacity,
-          payload: value,
-        });
-      },
-      sliderDefaultValue: 1,
-      step: 0.1,
-      value: legendItemOpacity,
-      width: sliderWidth,
-    };
+  const legendItemOpacitySliderInput = (
+    <AccessibleSliderInput
+      attributes={{
+        disabled: !enableLegend,
+        label: (value) => (
+          <Text style={{ color: SLIDER_TOOLTIP_COLOR }}>{value}</Text>
+        ),
+        max: 1,
+        min: 0,
+        name: "legendItemOpacity",
+        parentDispatch: parentChartDispatch,
+        sliderDefaultValue: 1,
+        step: 0.1,
+        validValueAction: parentChartAction.setLegendItemOpacity,
+        value: legendItemOpacity,
+      }}
+    />
+  );
 
-  const legendSymbolSizeSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      ariaLabel: 'legend symbol size',
-      disabled: !enableLegend,
-      kind: 'slider',
-      label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-      ),
-      max: 100,
-      min: 0,
-      onChangeSlider: (value: number) => {
-        parentChartDispatch({
-          type: parentChartAction.setLegendSymbolSize,
-          payload: value,
-        });
-      },
-      sliderDefaultValue: 16,
-      step: 1,
-      value: legendSymbolSize,
-      width: sliderWidth,
-    };
+  const legendSymbolSizeSliderInput = (
+    <AccessibleSliderInput
+      attributes={{
+        disabled: !enableLegend,
+        label: (value) => (
+          <Text style={{ color: SLIDER_TOOLTIP_COLOR }}>{value} px</Text>
+        ),
+        max: 60,
+        min: 2,
+        name: "legendSymbolSize",
+        parentDispatch: parentChartDispatch,
+        sliderDefaultValue: 12,
+        step: 1,
+        validValueAction: parentChartAction.setLegendSymbolSize,
+        value: legendSymbolSize,
+      }}
+    />
+  );
 
-  const createdLegendSymbolBorderColorInput = (
+  const legendSymbolBorderColorInput = (
     <ColorInput
       aria-label="Legend symbol border color"
       color={legendSymbolBorderColor}
       disabled={!enableLegend}
       onChange={(color: string) => {
         parentChartDispatch({
-          type: parentChartAction.setLegendSymbolBorderColor,
+          action: parentChartAction.setLegendSymbolBorderColor,
           payload: color,
         });
       }}
       value={legendSymbolBorderColor}
-      w={sliderWidth}
     />
   );
 
-  const legendSymbolBorderWidthSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      ariaLabel: 'legend symbol border width',
-      disabled: !enableLegend,
-      kind: 'slider',
-      label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-      ),
-      max: 10,
-      min: 0,
-      onChangeSlider: (value: number) => {
-        parentChartDispatch({
-          type: parentChartAction.setLegendSymbolBorderWidth,
-          payload: value,
-        });
-      },
-      sliderDefaultValue: 1,
-      step: 1,
-      value: legendSymbolBorderWidth,
-      width: sliderWidth,
-    };
+  const legendSymbolBorderWidthSliderInput = (
+    <AccessibleSliderInput
+      attributes={{
+        disabled: !enableLegend,
+        label: (value) => (
+          <Text style={{ color: SLIDER_TOOLTIP_COLOR }}>{value} px</Text>
+        ),
+        max: 10,
+        min: 0,
+        name: "legendSymbolBorderWidth",
+        parentDispatch: parentChartDispatch,
+        sliderDefaultValue: 1,
+        step: 1,
+        validValueAction: parentChartAction.setLegendSymbolBorderWidth,
+        value: legendSymbolBorderWidth,
+      }}
+    />
+  );
 
-  const legendSymbolShapeSelectInputCreatorInfo: AccessibleSelectInputCreatorInfo =
-    {
-      data: NIVO_LEGEND_SYMBOL_SHAPE_DATA,
-      disabled: !enableLegend,
-      description: 'Define legend symbol shape.',
-      onChange: (event: ChangeEvent<HTMLSelectElement>) => {
-        parentChartDispatch({
-          type: parentChartAction.setLegendSymbolShape,
-          payload: event.currentTarget.value as NivoLegendSymbolShape,
-        });
-      },
-      value: legendSymbolShape,
-      width: sliderWidth,
-    };
+  const legendSymbolShapeSelectInput = (
+    <AccessibleSelectInput
+      attributes={{
+        data: NIVO_LEGEND_SYMBOL_SHAPE_DATA,
+        description: "Define legend symbol shape.",
+        disabled: !enableLegend,
+        name: "legendSymbolShape",
+        parentDispatch: parentChartDispatch,
+        validValueAction: parentChartAction.setLegendSymbolShape,
+        value: legendSymbolShape,
+      }}
+    />
+  );
 
-  const legendSymbolSpacingSliderInputCreatorInfo: AccessibleSliderInputCreatorInfo =
-    {
-      ariaLabel: 'legend symbol spacing',
-      disabled: !enableLegend,
-      kind: 'slider',
-      label: (value) => (
-        <Text style={{ color: sliderLabelColor }}>{value} px</Text>
-      ),
-      max: 60,
-      min: 0,
-      onChangeSlider: (value: number) => {
-        parentChartDispatch({
-          type: parentChartAction.setLegendSymbolSpacing,
-          payload: value,
-        });
-      },
-      sliderDefaultValue: 8,
-      step: 1,
-      value: legendSymbolSpacing,
-      width: sliderWidth,
-    };
-
-  // select input creation
-  const [
-    createdLegendAnchorSelectInput,
-    createdLegendDirectionSelectInput,
-    createdLegendItemDirectionSelectInput,
-    createdLegendSymbolShapeSelectInput,
-  ] = returnAccessibleSelectInputElements([
-    legendAnchorSelectInputCreatorInfo,
-    legendDirectionSelectInputCreatorInfo,
-    legendItemDirectionSelectInputCreatorInfo,
-    legendSymbolShapeSelectInputCreatorInfo,
-  ]);
-
-  // slider input creation
-  const [
-    createdLegendItemHeightSliderInput,
-    createdLegendItemOpacitySliderInput,
-    createdLegendItemWidthSliderInput,
-    createdLegendItemsSpacingSliderInput,
-    createdLegendSymbolBorderWidthSliderInput,
-    createdLegendSymbolSizeSliderInput,
-    createdLegendSymbolSpacingSliderInput,
-    createdLegendTranslateXSliderInput,
-    createdLegendTranslateYSliderInput,
-  ] = returnAccessibleSliderInputElements([
-    legendItemHeightSliderInputCreatorInfo,
-    legendItemOpacitySliderInputCreatorInfo,
-    legendItemWidthSliderInputCreatorInfo,
-    legendItemsSpacingSliderInputCreatorInfo,
-    legendSymbolBorderWidthSliderInputCreatorInfo,
-    legendSymbolSizeSliderInputCreatorInfo,
-    legendSymbolSpacingSliderInputCreatorInfo,
-    legendTranslateXSliderInputCreatorInfo,
-    legendTranslateYSliderInputCreatorInfo,
-  ]);
+  const legendSymbolSpacingSliderInput = (
+    <AccessibleSliderInput
+      attributes={{
+        disabled: !enableLegend,
+        label: (value) => (
+          <Text style={{ color: SLIDER_TOOLTIP_COLOR }}>{value} px</Text>
+        ),
+        max: 60,
+        min: 0,
+        name: "legendSymbolSpacing",
+        parentDispatch: parentChartDispatch,
+        sliderDefaultValue: 8,
+        step: 1,
+        validValueAction: parentChartAction.setLegendSymbolSpacing,
+        value: legendSymbolSpacing,
+      }}
+    />
+  );
 
   const displayLegendHeading = (
     <Group
       bg={sectionHeadersBgColor}
-      p={padding}
-      style={{
-        boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.25)',
-        position: 'sticky',
-        top: 0,
-        zIndex: 4,
-      }}
+      style={STICKY_STYLE}
       w="100%"
     >
       <Title order={5} color={textColor}>
@@ -613,29 +515,27 @@ function ChartLegend(props: ChartLegendProps) {
   );
 
   const displayToggleLegendSwitchInput = (
-    <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
-      {createdEnableLegendSwitchInput}
+    <Group w="100%" style={{ borderBottom: borderColor }}>
+      {enableLegendSwitchInput}
     </Group>
   );
 
   const displayLegendAnchorSelectInput = (
     <ChartsAndGraphsControlsStacker
       initialChartState={initialChartState}
-      input={createdLegendAnchorSelectInput}
+      input={legendAnchorSelectInput}
       isInputDisabled={!enableLegend}
       label="Legend anchor"
       // prevents display of camelCased or snake_cased value
-      value={
-        NIVO_LEGEND_ANCHOR_DATA.find(({ value }) => value === legendAnchor)
-          ?.label ?? legendAnchor
-      }
+      value={NIVO_LEGEND_ANCHOR_DATA.find(({ value }) => value === legendAnchor)
+        ?.label ?? legendAnchor}
     />
   );
 
   const displayLegendDirectionSelectInput = (
     <ChartsAndGraphsControlsStacker
       initialChartState={initialChartState}
-      input={createdLegendDirectionSelectInput}
+      input={legendDirectionSelectInput}
       isInputDisabled={!enableLegend}
       label="Legend direction"
       value={legendDirection}
@@ -643,15 +543,15 @@ function ChartLegend(props: ChartLegendProps) {
   );
 
   const displayToggleLegendJustifySwitchInput = (
-    <Group w="100%" p={padding} style={{ borderBottom: borderColor }}>
-      {createdEnableLegendJustifySwitchInput}
+    <Group w="100%" style={{ borderBottom: borderColor }}>
+      {enableLegendJustifySwitchInput}
     </Group>
   );
 
   const displayLegendTranslateXSliderInput = (
     <ChartsAndGraphsControlsStacker
       initialChartState={initialChartState}
-      input={createdLegendTranslateXSliderInput}
+      input={legendTranslateXSliderInput}
       isInputDisabled={!enableLegend}
       label="Legend translate X"
       symbol="px"
@@ -662,7 +562,7 @@ function ChartLegend(props: ChartLegendProps) {
   const displayLegendTranslateYSliderInput = (
     <ChartsAndGraphsControlsStacker
       initialChartState={initialChartState}
-      input={createdLegendTranslateYSliderInput}
+      input={legendTranslateYSliderInput}
       isInputDisabled={!enableLegend}
       label="Legend translate Y"
       symbol="px"
@@ -673,7 +573,7 @@ function ChartLegend(props: ChartLegendProps) {
   const displayLegendItemWidthSliderInput = (
     <ChartsAndGraphsControlsStacker
       initialChartState={initialChartState}
-      input={createdLegendItemWidthSliderInput}
+      input={legendItemWidthSliderInput}
       isInputDisabled={!enableLegend}
       label="Legend item width"
       symbol="px"
@@ -684,7 +584,7 @@ function ChartLegend(props: ChartLegendProps) {
   const displayLegendItemHeightSliderInput = (
     <ChartsAndGraphsControlsStacker
       initialChartState={initialChartState}
-      input={createdLegendItemHeightSliderInput}
+      input={legendItemHeightSliderInput}
       isInputDisabled={!enableLegend}
       label="Legend item height"
       symbol="px"
@@ -695,7 +595,7 @@ function ChartLegend(props: ChartLegendProps) {
   const displayLegendItemsSpacingSliderInput = (
     <ChartsAndGraphsControlsStacker
       initialChartState={initialChartState}
-      input={createdLegendItemsSpacingSliderInput}
+      input={legendItemsSpacingSliderInput}
       isInputDisabled={!enableLegend}
       label="Legend items spacing"
       symbol="px"
@@ -706,22 +606,20 @@ function ChartLegend(props: ChartLegendProps) {
   const displayLegendItemDirectionSelectInput = (
     <ChartsAndGraphsControlsStacker
       initialChartState={initialChartState}
-      input={createdLegendItemDirectionSelectInput}
+      input={legendItemDirectionSelectInput}
       isInputDisabled={!enableLegend}
       label="Legend item direction"
       // prevents display of camelCased or snake_cased value
-      value={
-        NIVO_LEGEND_ITEM_DIRECTION_DATA.find(
-          ({ value }) => value === legendItemDirection
-        )?.label ?? legendItemDirection
-      }
+      value={NIVO_LEGEND_ITEM_DIRECTION_DATA.find(
+        ({ value }) => value === legendItemDirection,
+      )?.label ?? legendItemDirection}
     />
   );
 
   const displayLegendItemOpacitySliderInput = (
     <ChartsAndGraphsControlsStacker
       initialChartState={initialChartState}
-      input={createdLegendItemOpacitySliderInput}
+      input={legendItemOpacitySliderInput}
       isInputDisabled={!enableLegend}
       label="Legend item opacity"
       value={legendItemOpacity}
@@ -731,7 +629,7 @@ function ChartLegend(props: ChartLegendProps) {
   const displayLegendItemBackgroundColorInput = (
     <ChartsAndGraphsControlsStacker
       initialChartState={initialChartState}
-      input={createdLegendItemBackgroundColorInput}
+      input={legendItemBackgroundColorInput}
       isInputDisabled={!enableLegend}
       label="Legend item background"
       value={legendItemBackground}
@@ -741,7 +639,7 @@ function ChartLegend(props: ChartLegendProps) {
   const displayLegendItemTextColorInput = (
     <ChartsAndGraphsControlsStacker
       initialChartState={initialChartState}
-      input={createdLegendItemTextColorInput}
+      input={legendItemTextColorInput}
       isInputDisabled={!enableLegend}
       label="Legend item text color"
       value={legendItemTextColor}
@@ -751,7 +649,7 @@ function ChartLegend(props: ChartLegendProps) {
   const displayLegendSymbolSizeSliderInput = (
     <ChartsAndGraphsControlsStacker
       initialChartState={initialChartState}
-      input={createdLegendSymbolSizeSliderInput}
+      input={legendSymbolSizeSliderInput}
       isInputDisabled={!enableLegend}
       label="Legend symbol size"
       symbol="px"
@@ -762,7 +660,7 @@ function ChartLegend(props: ChartLegendProps) {
   const displayLegendSymbolBorderColorInput = (
     <ChartsAndGraphsControlsStacker
       initialChartState={initialChartState}
-      input={createdLegendSymbolBorderColorInput}
+      input={legendSymbolBorderColorInput}
       isInputDisabled={!enableLegend}
       label="Legend symbol border color"
       value={legendSymbolBorderColor}
@@ -772,7 +670,7 @@ function ChartLegend(props: ChartLegendProps) {
   const displayLegendSymbolBorderWidthSliderInput = (
     <ChartsAndGraphsControlsStacker
       initialChartState={initialChartState}
-      input={createdLegendSymbolBorderWidthSliderInput}
+      input={legendSymbolBorderWidthSliderInput}
       isInputDisabled={!enableLegend}
       label="Legend symbol border width"
       symbol="px"
@@ -783,22 +681,20 @@ function ChartLegend(props: ChartLegendProps) {
   const displayLegendSymbolShapeSelectInput = (
     <ChartsAndGraphsControlsStacker
       initialChartState={initialChartState}
-      input={createdLegendSymbolShapeSelectInput}
+      input={legendSymbolShapeSelectInput}
       isInputDisabled={!enableLegend}
       label="Legend symbol shape"
       // prevents display of camelCased or snake_cased value
-      value={
-        NIVO_LEGEND_SYMBOL_SHAPE_DATA.find(
-          ({ value }) => value === legendSymbolShape
-        )?.label ?? legendSymbolShape
-      }
+      value={NIVO_LEGEND_SYMBOL_SHAPE_DATA.find(
+        ({ value }) => value === legendSymbolShape,
+      )?.label ?? legendSymbolShape}
     />
   );
 
   const displayLegendSymbolSpacingSliderInput = (
     <ChartsAndGraphsControlsStacker
       initialChartState={initialChartState}
-      input={createdLegendSymbolSpacingSliderInput}
+      input={legendSymbolSpacingSliderInput}
       isInputDisabled={!enableLegend}
       label="Legend symbol spacing"
       symbol="px"
