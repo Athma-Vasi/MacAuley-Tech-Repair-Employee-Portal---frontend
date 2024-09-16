@@ -183,6 +183,51 @@ function returnChartAxisBottomStepperPages(): StepperPage[] {
   ];
 }
 
+function returnChartAxisLeftStepperPages(): StepperPage[] {
+  const axisLeftLegendTextChild: StepperChild = {
+    inputType: "text",
+    name: "axisLeftLegend",
+    validationKey: "textInput",
+  };
+
+  return [
+    {
+      children: [axisLeftLegendTextChild],
+      description: "Axis Left",
+    },
+  ];
+}
+
+function returnChartAxisRightStepperPages(): StepperPage[] {
+  const axisRightLegendTextChild: StepperChild = {
+    inputType: "text",
+    name: "axisRightLegend",
+    validationKey: "textInput",
+  };
+
+  return [
+    {
+      children: [axisRightLegendTextChild],
+      description: "Axis Right",
+    },
+  ];
+}
+
+function returnChartAxisTopStepperPages(): StepperPage[] {
+  const axisTopLegendTextChild: StepperChild = {
+    inputType: "text",
+    name: "axisTopLegend",
+    validationKey: "textInput",
+  };
+
+  return [
+    {
+      children: [axisTopLegendTextChild],
+      description: "Axis Top",
+    },
+  ];
+}
+
 export {
   NIVO_CHART_PATTERN_DEFS,
   NIVO_CHART_TITLE_POSITION_DATA,
@@ -194,6 +239,9 @@ export {
   NIVO_MOTION_CONFIG_DATA,
   NIVO_TRANSITION_MODE_DATA,
   returnChartAxisBottomStepperPages,
+  returnChartAxisLeftStepperPages,
+  returnChartAxisRightStepperPages,
+  returnChartAxisTopStepperPages,
   returnChartOptionsStepperPages,
   SLIDER_TOOLTIP_COLOR,
   STICKY_STYLE,
