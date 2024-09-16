@@ -29,6 +29,7 @@ import {
   TbRefresh,
   TbRowInsertTop,
   TbSearch,
+  TbStar,
   TbTrash,
   TbUpload,
 } from "react-icons/tb";
@@ -55,6 +56,7 @@ type AccessibleButtonKind =
   | "pause"
   | "play"
   | "previous"
+  | "rate"
   | "refresh"
   | "reset"
   | "search"
@@ -139,6 +141,7 @@ function AccessibleButton({ attributes }: AccessibleButtonProps) {
     pause: <TbPlayerPauseFilled />,
     play: <TbPlayerPlayFilled />,
     previous: <TiArrowLeftThick />,
+    rate: <TbStar />,
     refresh: <TbRefresh />,
     reset: <TbClearAll />,
     search: <TbSearch />,

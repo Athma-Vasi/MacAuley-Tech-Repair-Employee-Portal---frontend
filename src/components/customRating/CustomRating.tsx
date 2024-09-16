@@ -26,7 +26,7 @@ type CustomRatingProps = {
   question: string;
   ratingKind: "emotion" | "stars" | "scale";
   setRatingDispatch?: React.Dispatch<{
-    type: "setRating";
+    action: "setRating";
     payload: number;
   }>;
   /** components that are created dynamically need to pass in unique identifier props to the component

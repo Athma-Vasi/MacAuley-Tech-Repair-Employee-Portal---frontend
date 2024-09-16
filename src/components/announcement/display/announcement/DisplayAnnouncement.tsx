@@ -1,9 +1,6 @@
 import {
   Flex,
   Group,
-  Image,
-  Loader,
-  LoadingOverlay,
   Modal,
   Space,
   Stack,
@@ -12,74 +9,68 @@ import {
   Tooltip,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { InvalidTokenError } from "jwt-decode";
-import { useEffect, useReducer } from "react";
+import { useEffect, useReducer, useRef } from "react";
 import { useErrorBoundary } from "react-error-boundary";
-import { MdOutlineAddReaction } from "react-icons/md";
-import { TbMoodHappy, TbUpload } from "react-icons/tb";
 import { useNavigate } from "react-router-dom";
 
 import { COLORS_SWATCHES } from "../../../../constants/data";
-import { globalAction } from "../../../../context/globalProvider/state";
+import { globalAction } from "../../../../context/globalProvider/actions";
 import { useAuth, useGlobalState } from "../../../../hooks";
 import {
-  returnAccessibleButtonElements,
-  returnAccessibleImageElements,
-} from "../../../../jsxCreators";
-import { UserDocument } from "../../../../types";
-import { formatDate, logState, returnThemeColors, urlBuilder } from "../../../../utils";
+  fetchResourcePATCHSafe,
+  formatDate,
+  returnThemeColors,
+} from "../../../../utils";
+import { AccessibleButton } from "../../../accessibleInputs/AccessibleButton";
+import AccessibleImage from "../../../accessibleInputs/AccessibleImage";
 import { ResponsivePieChart } from "../../../charts";
+import type { PieChartData } from "../../../charts/responsivePieChart/types";
 import { Comment } from "../../../comment";
 import { CustomRating } from "../../../customRating/CustomRating";
 import { NotificationModal } from "../../../notificationModal";
-import { AnnouncementDocument } from "../../create/types";
-import {
-  displayAnnouncementAction,
-  displayAnnouncementReducer,
-  initialDisplayAnnouncementState,
-} from "./state";
+import { ANNOUNCEMENT_ROUTE_PATHS } from "../../constants";
+import type { AnnouncementDocument } from "../../create/types";
+import { displayAnnouncementAction } from "./actions";
+import { displayAnnouncementReducer } from "./reducers";
+import { initialDisplayAnnouncementState } from "./state";
+import { updateRatingResponse } from "./utils";
 
 function DisplayAnnouncement() {
-  /** ------------- begin hooks ------------- */
   const [displayAnnouncementState, displayAnnouncementDispatch] = useReducer(
     displayAnnouncementReducer,
-    initialDisplayAnnouncementState
+    initialDisplayAnnouncementState,
   );
   const {
-    announcement,
-    rating,
-
-    triggerRatingSubmit,
-    ratingPieChartDataArray,
-
-    isLoading,
-    loadingMessage,
-    isSuccessful,
-    successMessage,
     isSubmitting,
+    isSuccessful,
+    rating,
     submitMessage,
+    triggerRatingSubmit,
   } = displayAnnouncementState;
 
   const {
     globalState: {
-      padding,
-      rowGap,
       width,
       announcementDocument,
-      userDocument,
       themeObject,
     },
     globalDispatch,
   } = useGlobalState();
   const {
-    authState: { userId, accessToken },
+    authState: {
+      accessToken,
+      userDocument,
+      decodedToken: { userInfo: { userId, roles, username } },
+    },
   } = useAuth();
 
   const navigate = useNavigate();
   const { showBoundary } = useErrorBoundary();
 
-  const [openedRatingModal, { open: openRatingModal, close: closeRatingModal }] =
-    useDisclosure(false);
+  const [
+    openedRatingModal,
+    { open: openRatingModal, close: closeRatingModal },
+  ] = useDisclosure(false);
 
   const [
     openedStatisticsModal,
@@ -89,131 +80,73 @@ function DisplayAnnouncement() {
   const [
     openedSubmitSuccessNotificationModal,
     {
-      open: openSubmitSuccessNotificationModal,
+      open: openSubmitFormModal,
       close: closeSubmitSuccessNotificationModal,
     },
   ] = useDisclosure(false);
 
-  /** ------------- end hooks ------------- */
+  const fetchAbortControllerRef = useRef<AbortController | null>(null);
+  const isComponentMountedRef = useRef(false);
 
-  /** ------------- begin useEffects ------------- */
-  // submit rating on trigger
   useEffect(() => {
-    let isMounted = true;
-    const controller = new AbortController();
+    fetchAbortControllerRef.current?.abort();
+    fetchAbortControllerRef.current = new AbortController();
+    const fetchAbortController = fetchAbortControllerRef.current;
+
+    isComponentMountedRef.current = true;
+    const isComponentMounted = isComponentMountedRef.current;
 
     async function submitRating() {
-      if (!announcement) {
+      if (!announcementDocument) {
         return;
       }
-      displayAnnouncementDispatch({
-        type: displayAnnouncementAction.setIsSubmitting,
-        payload: true,
-      });
-      displayAnnouncementDispatch({
-        type: displayAnnouncementAction.setSubmitMessage,
-        payload: `Your rating to ${announcement.title} is on its way!`,
-      });
-      openSubmitSuccessNotificationModal();
 
-      const url: URL = urlBuilder({
-        path: `actions/outreach/announcement/${announcement._id}/rating`,
-      });
+      const updatedAnnouncementDocument = updateRatingResponse(
+        announcementDocument,
+        rating,
+        userId ?? "",
+      );
 
-      const body = JSON.stringify({
-        announcementFields: {
-          ratingResponse: announcement.ratingResponse,
-          ratedUserIds: announcement.ratedUserIds,
+      const body = {
+        documentUpdate: {
+          fields: updatedAnnouncementDocument,
+          updateOperator: "$set",
         },
+      };
+
+      const ratingSubmitResult = await fetchResourcePATCHSafe({
+        closeSubmitFormModal: closeRatingModal,
+        fetchAbortController,
+        isComponentMounted,
+        openSubmitFormModal,
+        parentDispatch: displayAnnouncementDispatch as React.Dispatch<any>,
+        requestBody: JSON.stringify(body),
+        roleResourceRoutePaths: ANNOUNCEMENT_ROUTE_PATHS,
+        roles,
+        setIsSubmittingAction: displayAnnouncementAction.setIsSubmitting,
+        setSubmittingMessageAction: displayAnnouncementAction.setSubmitMessage,
+        submitMessage:
+          `Your rating to ${announcementDocument.title} is on its way!`,
+        triggerFormSubmitAction:
+          displayAnnouncementAction.setTriggerRatingSubmit,
+        accessToken,
       });
 
-      const request: Request = new Request(url.toString(), {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
-        body,
-        signal: controller.signal,
-      });
-
-      try {
-        const response: Response = await fetch(request);
-        const data: {
-          message: string;
-          resourceData: [AnnouncementDocument, Omit<UserDocument, "password">];
-        } = await response.json();
-
-        if (!isMounted) {
-          return;
-        }
-        if (!response.ok) {
-          throw new Error(data.message);
-        }
-
-        const [_updatedAnnouncementDocument, updatedUserDocument] = data.resourceData;
-        globalDispatch({
-          type: globalAction.setUserDocument,
-          payload: updatedUserDocument,
-        });
-
-        displayAnnouncementDispatch({
-          type: displayAnnouncementAction.setIsSuccessful,
-          payload: true,
-        });
-        displayAnnouncementDispatch({
-          type: displayAnnouncementAction.setSuccessMessage,
-          payload: data.message ?? "Success!",
-        });
-      } catch (error: any) {
-        if (!isMounted || error.name === "AbortError") {
-          return;
-        }
-
-        const errorMessage =
-          error instanceof InvalidTokenError
-            ? "Invalid token. Please login again."
-            : !error.response
-            ? "Network error. Please try again."
-            : error?.message ?? "Unknown error occurred. Please try again.";
-
-        globalDispatch({
-          type: globalAction.setErrorState,
-          payload: {
-            isError: true,
-            errorMessage,
-            errorCallback: () => {
-              navigate("/home");
-
-              globalDispatch({
-                type: globalAction.setErrorState,
-                payload: {
-                  isError: false,
-                  errorMessage: "",
-                  errorCallback: () => {},
-                },
-              });
-            },
-          },
-        });
-
-        showBoundary(error);
-      } finally {
-        if (isMounted) {
-          displayAnnouncementDispatch({
-            type: displayAnnouncementAction.setIsSubmitting,
-            payload: false,
-          });
-          displayAnnouncementDispatch({
-            type: displayAnnouncementAction.setSubmitMessage,
-            payload: "",
-          });
-          displayAnnouncementDispatch({
-            type: displayAnnouncementAction.setTriggerRatingSubmit,
-            payload: false,
-          });
-        }
+      if (ratingSubmitResult.err) {
+        showBoundary(ratingSubmitResult.val.data);
       }
+
+      const newAnnouncementDocument = ratingSubmitResult.val
+        .data as AnnouncementDocument | undefined;
+
+      if (newAnnouncementDocument) {
+        globalDispatch({
+          action: globalAction.setAnnouncementDocument,
+          payload: newAnnouncementDocument,
+        });
+      }
+
+      closeRatingModal();
     }
 
     if (triggerRatingSubmit) {
@@ -221,46 +154,16 @@ function DisplayAnnouncement() {
     }
 
     return () => {
-      isMounted = false;
-      controller.abort();
+      fetchAbortController.abort();
+      isComponentMountedRef.current = false;
     };
-    // only run on trigger
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [triggerRatingSubmit]);
 
-  useEffect(() => {
-    if (!announcementDocument) {
-      return;
-    }
-
-    displayAnnouncementDispatch({
-      type: displayAnnouncementAction.setAnnouncement,
-      payload: announcementDocument,
-    });
-  }, [announcementDocument]);
-
-  // set rating response to state
-  useEffect(() => {
-    if (!announcement) {
-      return;
-    }
-    if (!announcement.ratingResponse) {
-      return;
-    }
-
-    displayAnnouncementDispatch({
-      type: displayAnnouncementAction.setRatingPieChartDataArray,
-      payload: announcement.ratingResponse,
-    });
-  }, [announcement, triggerRatingSubmit]);
-
-  useEffect(() => {
-    logState({
-      state: displayAnnouncementState,
-      groupLabel: "announcement",
-    });
-  }, [displayAnnouncementState]);
-  /** ------------- end useEffects ------------- */
+  if (!announcementDocument) {
+    return null;
+  }
 
   const {
     appThemeColors: { backgroundColor, borderColor },
@@ -269,7 +172,6 @@ function DisplayAnnouncement() {
     colorsSwatches: COLORS_SWATCHES,
   });
 
-  /** ------------- begin input creators ------------- */
   const articleTitle = (
     <Title
       order={1}
@@ -277,26 +179,24 @@ function DisplayAnnouncement() {
       style={{
         letterSpacing: "0.1rem",
       }}
-      px={padding}
-      pt={padding}
     >
-      {announcement?.title ?? ""}
+      {announcementDocument?.title ?? ""}
     </Title>
   );
 
   const spacer = <Text size="md">》</Text>;
 
   const articleAuthor = (
-    <Group spacing={rowGap}>
+    <Group>
       <Text size="md" style={{ letterSpacing: "0.05rem" }}>
-        {announcement?.author?.toUpperCase() ?? ""}
+        {announcementDocument?.author?.toUpperCase() ?? ""}
       </Text>
       {spacer}
     </Group>
   );
 
   const formattedDate = formatDate({
-    date: announcement?.createdAt ?? new Date().toISOString(),
+    date: announcementDocument?.createdAt ?? new Date().toISOString(),
     formatOptions: {
       year: "numeric",
       month: "long",
@@ -309,142 +209,141 @@ function DisplayAnnouncement() {
   });
 
   const articleCreatedAt = (
-    <Group spacing={rowGap}>
+    <Group>
       <Text size="md">{formattedDate}</Text>
       {spacer}
     </Group>
   );
 
   const articleTimeToRead = (
-    <Group spacing={rowGap}>
-      <Text size="md">{announcement?.timeToRead ?? 1} min read</Text>
+    <Group>
+      <Text size="md">{announcementDocument?.timeToRead ?? 1} min read</Text>
     </Group>
   );
 
   const displayArticleInfo = (
-    <Group position="left" p={padding}>
+    <Group position="left">
       {articleAuthor}
       {articleCreatedAt}
       {articleTimeToRead}
     </Group>
   );
 
-  const [displayArticleImage] = returnAccessibleImageElements([
-    {
-      imageSrc: announcement?.bannerImageSrc,
-      imageAlt: announcement?.bannerImageAlt,
-      withPlaceholder: true,
-      isLoader: true,
-      isCard: false,
-      isOverlay: false,
-    },
-  ]);
+  const articleImage = (
+    <AccessibleImage
+      attributes={{
+        alt: announcementDocument?.bannerImageAlt,
+        name: announcementDocument?.bannerImageAlt,
+        src: announcementDocument?.bannerImageSrc,
+        withPlaceholder: true,
+      }}
+    />
+  );
 
   /** article paragraphs */
-  const articleParagraphs = announcement?.article?.map((paragraph, index) => {
-    const firstWordsStartingParagraph =
-      index === 0 ? paragraph.split(" ").slice(0, 2).join(" ") : "";
-    const restWordsStartingParagraph =
-      index === 0 ? paragraph.split(" ").slice(2).join(" ") : paragraph;
-    const displayLargeFirstWords = (
-      <Text size={32} pr={padding} w="fit-content" style={{ float: "left" }}>
-        <strong>{firstWordsStartingParagraph}</strong>
-      </Text>
-    );
-    const displayFirstParagraph = (
-      <>
-        {displayLargeFirstWords}
+  const articleParagraphs = announcementDocument?.article?.map(
+    (paragraph, index) => {
+      const firstWordsStartingParagraph = index === 0
+        ? paragraph.split(" ").slice(0, 2).join(" ")
+        : "";
+      const restWordsStartingParagraph = index === 0
+        ? paragraph.split(" ").slice(2).join(" ")
+        : paragraph;
+      const displayLargeFirstWords = (
         <Text
-          key={`${index}`}
-          size="md"
+          size={32}
           w="fit-content"
+          style={{ float: "left" }}
+          key={`${index.toString()}-first-words`}
+        >
+          <strong>{firstWordsStartingParagraph}</strong>
+        </Text>
+      );
+      const displayFirstParagraph = (
+        <>
+          {displayLargeFirstWords}
+          <Text
+            key={`${index.toString()}-rest-words`}
+            size="md"
+            w="fit-content"
+            style={{
+              lineHeight: "1.75rem",
+            }}
+          >
+            {restWordsStartingParagraph}
+          </Text>
+        </>
+      );
+
+      const createdParagraph = (
+        <Text
+          key={index.toString()}
+          size="md"
           style={{
             lineHeight: "1.75rem",
           }}
         >
-          {restWordsStartingParagraph}
+          {index === 0 ? displayFirstParagraph : paragraph}
         </Text>
-      </>
-    );
+      );
 
-    const createdParagraph = (
-      <Text
-        key={`${index}`}
-        size="md"
-        style={{
-          lineHeight: "1.75rem",
-        }}
-      >
-        {index === 0 ? displayFirstParagraph : paragraph}
-      </Text>
-    );
-
-    return createdParagraph;
-  });
+      return createdParagraph;
+    },
+  );
 
   const displayArticleParagraphs = (
-    <Flex w="100%" align="center" justify="center" py={padding}>
-      <Stack w={width < 480 ? "85%" : "62%"} px={padding}>
+    <Flex w="100%" align="center" justify="center">
+      <Stack w={width < 480 ? "85%" : "62%"}>
         {articleParagraphs}
       </Stack>
     </Flex>
   );
 
-  /** buttons */
-  const [
-    createdSubmitRatingButton,
-    createdRateAnnouncementButton,
-    createdViewStatisticsButton,
-  ] = returnAccessibleButtonElements([
-    // submit rating button
-    {
-      buttonLabel: "Submit",
-      leftIcon: <MdOutlineAddReaction />,
-      rightIcon: <TbUpload />,
-      semanticDescription: "Button to submit rating and view results",
-      semanticName: "submitRatingButton",
-      buttonDisabled: rating === 0,
-      buttonOnClick: () => {
-        displayAnnouncementDispatch({
-          type: displayAnnouncementAction.updateRatingResponse,
-          payload: {
-            rating,
-            userId,
-          },
-        });
-        displayAnnouncementDispatch({
-          type: displayAnnouncementAction.setTriggerRatingSubmit,
-          payload: true,
-        });
+  const submitRatingButton = (
+    <AccessibleButton
+      attributes={{
+        enabledScreenreaderText: "Submit your rating",
+        kind: "submit",
+        name: "submit",
+        onClick: () => {
+          displayAnnouncementDispatch({
+            action: displayAnnouncementAction.setTriggerRatingSubmit,
+            payload: true,
+          });
 
-        closeRatingModal();
-      },
-    },
-    // rate button
-    {
-      buttonLabel: "Rate",
-      leftIcon: <TbMoodHappy />,
-      rightIcon: <TbUpload />,
-      semanticDescription: "Button to submit rating",
-      semanticName: "submitRatingButton",
-      buttonOnClick: () => {
-        openRatingModal();
-      },
-    },
-    // view statistics button
-    {
-      buttonLabel: "View",
-      leftIcon: <MdOutlineAddReaction />,
-      semanticDescription: "Button to submit rating and view results",
-      semanticName: "submitRatingButton",
-      buttonOnClick: () => {
-        openStatisticsModal();
-      },
-    },
-  ]);
+          closeRatingModal();
+        },
+      }}
+    />
+  );
 
-  /** rating */
-  const createdRatingComponent = (
+  const rateAnnouncementButton = (
+    <AccessibleButton
+      attributes={{
+        enabledScreenreaderText: "Rate this announcement",
+        kind: "rate",
+        name: "rate",
+        onClick: () => {
+          openRatingModal();
+        },
+      }}
+    />
+  );
+
+  const viewStatisticsButton = (
+    <AccessibleButton
+      attributes={{
+        enabledScreenreaderText: "View statistics",
+        kind: "expand",
+        name: "view",
+        onClick: () => {
+          openStatisticsModal();
+        },
+      }}
+    />
+  );
+
+  const ratingComponent = (
     <CustomRating
       question="Tell us how you feel! (It's anonymous)"
       ratingKind="emotion"
@@ -455,41 +354,63 @@ function DisplayAnnouncement() {
   const displayRatingAndSubmit = (
     <Group
       position="right"
-      spacing={rowGap}
-      p={padding}
       w="100%"
       style={{ border: borderColor, borderRadius: "4px" }}
     >
-      <Group position="left">{createdRatingComponent}</Group>
+      <Group position="left">{ratingComponent}</Group>
       <Space w="lg" />
       <Group position="right">
         <Tooltip
           position="left"
-          label={rating === 0 ? "Please rate before submitting" : "Submit your rating"}
+          label={rating === 0
+            ? "Please rate before submitting"
+            : "Submit your rating"}
         >
-          <Group>{createdSubmitRatingButton}</Group>
+          <Group>{submitRatingButton}</Group>
         </Tooltip>
       </Group>
     </Group>
+  );
+
+  const ratingPieChartDataArray = Object.entries(
+    announcementDocument.ratingResponse.ratingEmotion,
+  ).map(
+    ([key, value]) => {
+      const capsKey = `${key.charAt(0).toUpperCase()}${key.slice(1)}`;
+      const pieChartData: PieChartData = {
+        id: capsKey,
+        label: capsKey,
+        value,
+      };
+
+      return pieChartData;
+    },
   );
 
   const showStatisticsCard = (
     <Stack w="100%">
       <Group position="right">
         <Text size="md">
-          {announcement?.ratingResponse?.ratingCount ?? 0} people have rated this
+          {announcementDocument?.ratingResponse?.ratingCount ?? 0}{" "}
+          people have rated this
         </Text>
       </Group>
-      <ResponsivePieChart pieChartData={ratingPieChartDataArray} unitKind="number" />
+      <ResponsivePieChart
+        pieChartData={ratingPieChartDataArray}
+        unitKind="number"
+      />
     </Stack>
   );
 
-  const ratingModalSize = announcement?.ratedUserIds?.includes(userId ?? "")
-    ? "calc(100% - 2rem)"
-    : width < 480
-    ? "calc(100% - 3rem)"
-    : "640px";
-  const ratingModalTitle = <Title order={4}>{announcement?.title ?? ""}</Title>;
+  const ratingModalSize =
+    announcementDocument?.ratedUserIds?.includes(userId ?? "")
+      ? "calc(100% - 2rem)"
+      : width < 480
+      ? "calc(100% - 3rem)"
+      : "640px";
+  const ratingModalTitle = (
+    <Title order={4}>{announcementDocument?.title ?? ""}</Title>
+  );
   const displayRatingModal = (
     <Modal
       opened={openedRatingModal}
@@ -503,7 +424,9 @@ function DisplayAnnouncement() {
   );
 
   const statisticsModalTitle = (
-    <Title order={4}>MacAuley family responses to {announcement?.title ?? ""}</Title>
+    <Title order={4}>
+      MacAuley family responses to {announcementDocument?.title ?? ""}
+    </Title>
   );
   const displayStatisticsModal = (
     <Modal
@@ -519,25 +442,26 @@ function DisplayAnnouncement() {
 
   /** reader response */
   const displayReaderResponseIcons = (
-    <Group w="100%" position="center" pt={padding}>
-      <Group w={width < 480 ? "85%" : "62%"} p={padding} spacing={rowGap} position="left">
+    <Group w="100%" position="center">
+      <Group
+        w={width < 480 ? "85%" : "62%"}
+        position="left"
+      >
         <Text size="md">
-          {announcement?.ratedUserIds?.includes(userId ?? "")
+          {announcementDocument?.ratedUserIds?.includes(userId ?? "")
             ? "View reactions of MacAuley family members!"
             : "How do you feel about this?"}
         </Text>
         {/* rating icon */}
         <Tooltip
-          label={
-            announcement?.ratedUserIds?.includes(userId ?? "")
-              ? "View statistics"
-              : "Rate to view reactions of MacAuley family members"
-          }
+          label={announcementDocument?.ratedUserIds?.includes(userId ?? "")
+            ? "View statistics"
+            : "Rate to view reactions of MacAuley family members"}
         >
           <Group>
-            {announcement?.ratedUserIds?.includes(userId ?? "")
-              ? createdViewStatisticsButton
-              : createdRateAnnouncementButton}
+            {announcementDocument?.ratedUserIds?.includes(userId ?? "")
+              ? viewStatisticsButton
+              : rateAnnouncementButton}
           </Group>
         </Tooltip>
         {/* spacer */}
@@ -546,27 +470,33 @@ function DisplayAnnouncement() {
     </Group>
   );
 
-  const displayComments = announcement ? (
-    <Comment
-      parentResourceId={announcement?._id ?? ""}
-      parentResourceTitle={announcement?.title ?? ""}
-    />
-  ) : null;
+  const displayComments = announcementDocument
+    ? (
+      <Comment
+        // parentResourceId={announcementDocument?._id ?? ""}
+        // parentResourceTitle={announcementDocument?.title ?? ""}
+      />
+    )
+    : null;
 
   const displaySubmitSuccessNotificationModal = (
     <NotificationModal
       onCloseCallbacks={[
         closeSubmitSuccessNotificationModal,
         () => {
-          navigate(`/home/outreach/announcement/display/${announcement?.title}`);
+          navigate(
+            `/home/actions/announcementDocument/display/${announcementDocument?.title}`,
+          );
         },
       ]}
       opened={openedSubmitSuccessNotificationModal}
       notificationProps={{
         loading: isSubmitting,
-        text: isSubmitting ? submitMessage : successMessage,
+        text: isSubmitting ? submitMessage : "Success!",
       }}
-      title={<Title order={4}>{isSuccessful ? "Success!" : "Submitting ..."}</Title>}
+      title={
+        <Title order={4}>{isSuccessful ? "Success!" : "Submitting ..."}</Title>
+      }
     />
   );
 
@@ -577,13 +507,13 @@ function DisplayAnnouncement() {
       {displayStatisticsModal}
       {articleTitle}
       {displayArticleInfo}
-      {displayArticleImage}
+      {articleImage}
       {displayArticleParagraphs}
       {displayReaderResponseIcons}
       {displayComments}
     </Flex>
   );
-  /** ------------- end input creators ------------- */
+
   return displayAnnouncementComponent;
 }
 

@@ -3012,17 +3012,17 @@ async function fetchResourceGETSafe<
 }
 
 async function fetchResourcePATCHSafe<
-  SetIsSubmittingAction extends string = string,
-  SetSubmittingMessageAction extends string = string,
-  SetResourceDataAction extends string = string,
-  SetTotalDocumentsAction extends string = string,
-  SetTotalPagesAction extends string = string,
   DBRecord = Record<string, unknown> & {
     _id: string;
     createdAt: string;
     updatedAt: string;
     __v: number;
   },
+  SetIsSubmittingAction extends string = string,
+  SetSubmittingMessageAction extends string = string,
+  SetResourceDataAction extends string = string,
+  SetTotalDocumentsAction extends string = string,
+  SetTotalPagesAction extends string = string,
   TriggerFormSubmitAction extends string = string,
 >({
   accessToken = "",
@@ -3071,10 +3071,10 @@ async function fetchResourcePATCHSafe<
   roleResourceRoutePaths: RoleResourceRoutePaths;
   roles: UserRoles;
   setIsSubmittingAction: SetIsSubmittingAction;
-  setResourceDataAction: SetResourceDataAction;
+  setResourceDataAction?: SetResourceDataAction;
   setSubmittingMessageAction: SetSubmittingMessageAction;
-  setTotalDocumentsAction: SetTotalDocumentsAction;
-  setTotalPagesAction: SetTotalPagesAction;
+  setTotalDocumentsAction?: SetTotalDocumentsAction;
+  setTotalPagesAction?: SetTotalPagesAction;
   submitMessage: string;
   triggerFormSubmitAction: TriggerFormSubmitAction;
 }): Promise<SafeBoxResult<HttpServerResponse<DBRecord>>> {
@@ -3118,18 +3118,27 @@ async function fetchResourcePATCHSafe<
     const serverResponse: HttpServerResponse<DBRecord> = await response
       .json();
 
-    parentDispatch({
-      action: setResourceDataAction,
-      payload: serverResponse.data,
-    });
-    parentDispatch({
-      action: setTotalDocumentsAction,
-      payload: serverResponse.totalDocuments,
-    });
-    parentDispatch({
-      action: setTotalPagesAction,
-      payload: serverResponse.pages,
-    });
+    if (setResourceDataAction) {
+      parentDispatch({
+        action: setResourceDataAction,
+        payload: serverResponse.data,
+      });
+    }
+
+    if (setTotalDocumentsAction) {
+      parentDispatch({
+        action: setTotalDocumentsAction,
+        payload: serverResponse.totalDocuments,
+      });
+    }
+
+    if (setTotalPagesAction) {
+      parentDispatch({
+        action: setTotalPagesAction,
+        payload: serverResponse.pages,
+      });
+    }
+
     parentDispatch({
       action: setIsSubmittingAction,
       payload: false,

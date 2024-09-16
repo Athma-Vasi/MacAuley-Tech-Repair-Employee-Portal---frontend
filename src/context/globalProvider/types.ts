@@ -114,7 +114,7 @@ type CustomizeChartsPageData =
   );
 
 type GlobalState = {
-  announcementDocument: QueryResponseData<AnnouncementDocument> | null;
+  announcementDocument: AnnouncementDocument | null;
   customizeChartsPageData: CustomizeChartsPageData | null;
   height: number;
   isPrefersReducedMotion: boolean;
@@ -163,7 +163,7 @@ type GlobalDispatch =
   }
   | {
     action: GlobalAction["setAnnouncementDocument"];
-    payload: QueryResponseData<AnnouncementDocument>;
+    payload: AnnouncementDocument;
   }
   | {
     action: GlobalAction["setCustomizeChartsPageData"];
