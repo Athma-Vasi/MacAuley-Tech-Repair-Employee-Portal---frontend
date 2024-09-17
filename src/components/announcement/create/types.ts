@@ -1,5 +1,5 @@
-import { SetPageInErrorPayload } from "../../../types";
-import { AnnouncementAction } from "./actions";
+import type { SetPageInErrorPayload } from "../../../types";
+import type { AnnouncementAction } from "./actions";
 
 type RatingEmotion = {
   estatic: number;
@@ -49,61 +49,61 @@ type AnnouncementState = {
 
 type AnnouncementDispatch =
   | {
-      action: AnnouncementAction["addParagraph"];
-      payload: null;
-    }
+    action: AnnouncementAction["addParagraph"];
+    payload: null;
+  }
   | {
-      action: AnnouncementAction["removeParagraph"];
-      payload: number;
-    }
+    action: AnnouncementAction["removeParagraph"];
+    payload: number;
+  }
   | {
-      action: AnnouncementAction["insertParagraph"];
-      payload: number;
-    }
+    action: AnnouncementAction["insertParagraph"];
+    payload: number;
+  }
   | {
-      action: AnnouncementAction["setParagraph"];
-      payload: ParagraphPayload;
-    }
+    action: AnnouncementAction["setParagraph"];
+    payload: ParagraphPayload;
+  }
   | {
-      action: AnnouncementAction["slideParagraphUp"];
-      payload: number;
-    }
+    action: AnnouncementAction["slideParagraphUp"];
+    payload: number;
+  }
   | {
-      action: AnnouncementAction["slideParagraphDown"];
-      payload: number;
-    }
+    action: AnnouncementAction["slideParagraphDown"];
+    payload: number;
+  }
   | {
-      action: AnnouncementAction["setAuthor"];
-      payload: string;
-    }
+    action: AnnouncementAction["setAuthor"];
+    payload: string;
+  }
   | {
-      action: AnnouncementAction["setBannerImageAlt"];
-      payload: string;
-    }
+    action: AnnouncementAction["setBannerImageAlt"];
+    payload: string;
+  }
   | {
-      action: AnnouncementAction["setBannerImageSrc"];
-      payload: string;
-    }
+    action: AnnouncementAction["setBannerImageSrc"];
+    payload: string;
+  }
   | {
-      action: AnnouncementAction["setIsSubmitting"];
-      payload: boolean;
-    }
+    action: AnnouncementAction["setIsSubmitting"];
+    payload: boolean;
+  }
   | {
-      action: AnnouncementAction["setIsSuccessful"];
-      payload: boolean;
-    }
+    action: AnnouncementAction["setIsSuccessful"];
+    payload: boolean;
+  }
   | {
-      action: AnnouncementAction["setPageInError"];
-      payload: SetPageInErrorPayload;
-    }
+    action: AnnouncementAction["setPageInError"];
+    payload: SetPageInErrorPayload;
+  }
   | {
-      action: AnnouncementAction["setTitle"];
-      payload: string;
-    }
+    action: AnnouncementAction["setTitle"];
+    payload: string;
+  }
   | {
-      action: AnnouncementAction["setTriggerFormSubmit"];
-      payload: boolean;
-    };
+    action: AnnouncementAction["setTriggerFormSubmit"];
+    payload: boolean;
+  };
 
 type ParagraphPayload = {
   dynamicIndexes: number[];

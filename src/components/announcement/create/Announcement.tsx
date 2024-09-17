@@ -2,29 +2,33 @@ import { Container, Group, Stack, Text } from "@mantine/core";
 import { useEffect, useReducer, useRef } from "react";
 import { useErrorBoundary } from "react-error-boundary";
 
+import { useDisclosure } from "@mantine/hooks";
 import { useAuth } from "../../../hooks";
-import { useFetchInterceptor } from "../../../hooks/useFetchInterceptor";
-import { StepperPage } from "../../../types";
-import { formSubmitPOST, logState, returnTimeToRead } from "../../../utils";
+import type { StepperPage } from "../../../types";
+import {
+  fetchRequestPOSTSafe,
+  logState,
+  returnTimeToRead,
+} from "../../../utils";
 import { AccessibleButton } from "../../accessibleInputs/AccessibleButton";
 import { AccessibleStepper } from "../../accessibleInputs/AccessibleStepper";
 import { AccessibleTextAreaInput } from "../../accessibleInputs/AccessibleTextAreaInput";
 import { AccessibleTextInput } from "../../accessibleInputs/text/AccessibleTextInput";
-import { AnnouncementAction, announcementAction } from "./actions";
+import { ANNOUNCEMENT_ROUTE_PATHS } from "../constants";
+import { announcementAction } from "./actions";
 import {
-  ANNOUNCEMENT_ROLE_ROUTE_PATHS,
   MAX_ARTICLE_LENGTH,
   returnAnnouncementStepperPages,
 } from "./constants";
 import { announcementReducer } from "./reducers";
 import { initialAnnouncementState } from "./state";
-import { AnnouncementSchema, RatingResponse } from "./types";
+import type { AnnouncementSchema, RatingResponse } from "./types";
 import { createStateForStepper } from "./utils";
 
 function Announcement() {
   const [announcementState, announcementDispatch] = useReducer(
     announcementReducer,
-    initialAnnouncementState
+    initialAnnouncementState,
   );
 
   const {
@@ -40,13 +44,23 @@ function Announcement() {
   } = announcementState;
 
   const {
-    authState: { sessionId, userId, username },
+    authState: {
+      accessToken,
+      decodedToken: { sessionId, userInfo: { userId, username, roles } },
+    },
   } = useAuth();
-  const { fetchInterceptor } = useFetchInterceptor();
+
   const { showBoundary } = useErrorBoundary();
 
+  const [
+    openedSubmitFormModal,
+    {
+      open: openSubmitFormModal,
+      close: closeSubmitFormModal,
+    },
+  ] = useDisclosure(false);
+
   const fetchAbortControllerRef = useRef<AbortController | null>(null);
-  const preFetchAbortControllerRef = useRef<AbortController | null>(null);
   const isComponentMountedRef = useRef(false);
 
   useEffect(() => {
@@ -54,12 +68,8 @@ function Announcement() {
     fetchAbortControllerRef.current = new AbortController();
     const fetchAbortController = fetchAbortControllerRef.current;
 
-    preFetchAbortControllerRef.current?.abort();
-    preFetchAbortControllerRef.current = new AbortController();
-    const preFetchAbortController = preFetchAbortControllerRef.current;
-
     isComponentMountedRef.current = true;
-    let isComponentMounted = isComponentMountedRef.current;
+    const isComponentMounted = isComponentMountedRef.current;
 
     if (triggerFormSubmit) {
       const ratingResponse: RatingResponse = {
@@ -89,28 +99,24 @@ function Announcement() {
         author,
       };
 
-      formSubmitPOST({
+      fetchRequestPOSTSafe({
+        accessToken,
+        closeSubmitFormModal,
         dispatch: announcementDispatch,
         fetchAbortController,
-        fetchInterceptor,
         isComponentMounted,
         isSubmittingAction: announcementAction.setIsSubmitting,
         isSuccessfulAction: announcementAction.setIsSuccessful,
-        preFetchAbortController,
-        roleResourceRoutePaths: ANNOUNCEMENT_ROLE_ROUTE_PATHS,
+        openSubmitFormModal,
+        roleResourceRoutePaths: ANNOUNCEMENT_ROUTE_PATHS,
+        roles,
         schema: announcementSchema,
-        schemaName: "announcementSchema",
-        sessionId,
-        showBoundary,
-        userId,
-        username,
-        userRole: "manager",
+        triggerFormSubmitAction: announcementAction.setTriggerFormSubmit,
       });
     }
 
     return () => {
       isComponentMountedRef.current = false;
-      preFetchAbortController?.abort();
       fetchAbortController?.abort();
     };
 
@@ -142,7 +148,8 @@ function Announcement() {
     return successfulState;
   }
 
-  const ANNOUNCEMENT_STEPPER_PAGES: StepperPage[] = returnAnnouncementStepperPages();
+  const ANNOUNCEMENT_STEPPER_PAGES: StepperPage[] =
+    returnAnnouncementStepperPages();
 
   const authorTextInput = (
     <AccessibleTextInput
@@ -214,10 +221,7 @@ function Announcement() {
     });
 
     const paragraphTextAreaInput = (
-      <AccessibleTextAreaInput<
-        AnnouncementAction["setParagraph"],
-        AnnouncementAction["setPageInError"]
-      >
+      <AccessibleTextAreaInput
         attributes={{
           dynamicIndexes: [index],
           invalidValueAction: announcementAction.setPageInError,
@@ -227,6 +231,7 @@ function Announcement() {
           validValueAction: announcementAction.setParagraph,
           value: paragraph,
         }}
+        key={index.toString()}
       />
     );
 
@@ -240,7 +245,7 @@ function Announcement() {
           onClick: (
             _event:
               | React.MouseEvent<HTMLButtonElement, MouseEvent>
-              | React.PointerEvent<HTMLButtonElement>
+              | React.PointerEvent<HTMLButtonElement>,
           ) => {
             announcementDispatch({
               action: announcementAction.removeParagraph,
@@ -248,6 +253,7 @@ function Announcement() {
             });
           },
         }}
+        key={`delete-${index.toString()}`}
       />
     );
 
@@ -263,7 +269,7 @@ function Announcement() {
           onClick: (
             _event:
               | React.MouseEvent<HTMLButtonElement, MouseEvent>
-              | React.PointerEvent<HTMLButtonElement>
+              | React.PointerEvent<HTMLButtonElement>,
           ) => {
             announcementDispatch({
               action: announcementAction.insertParagraph,
@@ -271,6 +277,7 @@ function Announcement() {
             });
           },
         }}
+        key={`insert-${index.toString()}`}
       />
     );
 
@@ -286,7 +293,7 @@ function Announcement() {
           onClick: (
             _event:
               | React.MouseEvent<HTMLButtonElement, MouseEvent>
-              | React.PointerEvent<HTMLButtonElement>
+              | React.PointerEvent<HTMLButtonElement>,
           ) => {
             announcementDispatch({
               action: announcementAction.slideParagraphUp,
@@ -294,6 +301,7 @@ function Announcement() {
             });
           },
         }}
+        key={`up-${index.toString()}`}
       />
     );
 
@@ -309,7 +317,7 @@ function Announcement() {
           onClick: (
             _event:
               | React.MouseEvent<HTMLButtonElement, MouseEvent>
-              | React.PointerEvent<HTMLButtonElement>
+              | React.PointerEvent<HTMLButtonElement>,
           ) => {
             announcementDispatch({
               action: announcementAction.slideParagraphDown,
@@ -317,11 +325,12 @@ function Announcement() {
             });
           },
         }}
+        key={`down-${index.toString()}`}
       />
     );
 
     const paragraphButtons = (
-      <Group>
+      <Group key={`group-${index.toString()}`}>
         {removeParagraphButton}
         {insertParagraphButton}
         {slideParagraphUpButton}
@@ -330,7 +339,7 @@ function Announcement() {
     );
 
     const paragraphGroup = (
-      <Stack>
+      <Stack key={`stack-${index.toString()}`}>
         {paragraphTextAreaInput}
         {paragraphButtons}
       </Stack>
@@ -349,7 +358,7 @@ function Announcement() {
         onClick: (
           _event:
             | React.MouseEvent<HTMLButtonElement, MouseEvent>
-            | React.PointerEvent<HTMLButtonElement>
+            | React.PointerEvent<HTMLButtonElement>,
         ) => {
           announcementDispatch({
             action: announcementAction.addParagraph,
@@ -421,9 +430,9 @@ export default Announcement;
       close: closeSubmitSuccessNotificationModal,
     },
   ] = useDisclosure(false);
-  
 
-  
+
+
   useEffect(() => {
     let isMounted = true;
     const controller = new AbortController();
@@ -693,9 +702,9 @@ export default Announcement;
       groupLabel: "create announcement state",
     });
   }, [announcementState]);
-  
 
-  
+
+
   const [titleInputErrorText, titleInputValidText] = AccessibleErrorValidTextElements({
     inputElementKind: "title",
     inputText: title,
@@ -762,9 +771,9 @@ export default Announcement;
       })),
       regexValidationFunction: returnGrammarValidationText,
     });
-  
 
-  
+
+
   const titleTextInputCreatorInfo: AccessibleTextInputCreatorInfo = {
     description: {
       error: titleInputErrorText,
@@ -1026,9 +1035,9 @@ export default Announcement;
     // ensures form submit happens only once
     buttonDisabled: pagesInError.size > 0 || triggerFormSubmit,
   };
-  
 
-  
+
+
   const createdArticleParagraphsTextAreaInputs =
     returnAccessibleDynamicTextAreaInputElements(
       articleParagraphTextAreaInputsCreatorInfo
@@ -1051,9 +1060,9 @@ export default Announcement;
       addNewArticleParagraphButtonCreatorInfo,
       submitButtonCreatorInfo,
     ]);
-  
 
-  
+
+
   const displaySubmitButton =
     currentStepperPosition === ANNOUNCEMENT_MAX_STEPPER_POSITION ? (
       <Tooltip
@@ -1187,7 +1196,7 @@ export default Announcement;
       {displayAnnouncementForm}
     </StepperWrapper>
   );
-  
+
   return displayAnnouncementComponent;
 
  */

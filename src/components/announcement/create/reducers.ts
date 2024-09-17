@@ -1,10 +1,14 @@
-import { SetPageInErrorPayload } from "../../../types";
-import { AnnouncementAction, announcementAction } from "./actions";
-import { AnnouncementDispatch, AnnouncementState, ParagraphPayload } from "./types";
+import type { SetPageInErrorPayload } from "../../../types";
+import { type AnnouncementAction, announcementAction } from "./actions";
+import type {
+  AnnouncementDispatch,
+  AnnouncementState,
+  ParagraphPayload,
+} from "./types";
 
 function announcementReducer(
   state: AnnouncementState,
-  dispatch: AnnouncementDispatch
+  dispatch: AnnouncementDispatch,
 ): AnnouncementState {
   const reducer = announcementReducers.get(dispatch.action);
   return reducer ? reducer(state, dispatch) : state;
@@ -12,14 +16,20 @@ function announcementReducer(
 
 const announcementReducers = new Map<
   AnnouncementAction[keyof AnnouncementAction],
-  (state: AnnouncementState, dispatch: AnnouncementDispatch) => AnnouncementState
+  (
+    state: AnnouncementState,
+    dispatch: AnnouncementDispatch,
+  ) => AnnouncementState
 >([
   [announcementAction.addParagraph, announcementReducer_addParagraph],
   [announcementAction.insertParagraph, announcementReducer_insertParagraph],
   [announcementAction.removeParagraph, announcementReducer_removeParagraph],
   [announcementAction.setParagraph, announcementReducer_setParagraph],
   [announcementAction.slideParagraphUp, announcementReducer_slideParagraphUp],
-  [announcementAction.slideParagraphDown, announcementReducer_slideParagraphDown],
+  [
+    announcementAction.slideParagraphDown,
+    announcementReducer_slideParagraphDown,
+  ],
   [announcementAction.setAuthor, announcementReducer_setAuthor],
   [announcementAction.setBannerImageAlt, announcementReducer_setBannerImageAlt],
   [announcementAction.setBannerImageSrc, announcementReducer_setBannerImageSrc],
@@ -27,12 +37,15 @@ const announcementReducers = new Map<
   [announcementAction.setIsSuccessful, announcementReducer_setIsSuccessful],
   [announcementAction.setPageInError, announcementReducer_setPageInError],
   [announcementAction.setTitle, announcementReducer_setTitle],
-  [announcementAction.setTriggerFormSubmit, announcementReducer_setTriggerFormSubmit],
+  [
+    announcementAction.setTriggerFormSubmit,
+    announcementReducer_setTriggerFormSubmit,
+  ],
 ]);
 
 function announcementReducer_addParagraph(
   state: AnnouncementState,
-  _dispatch: AnnouncementDispatch
+  _dispatch: AnnouncementDispatch,
 ): AnnouncementState {
   return {
     ...state,
@@ -42,7 +55,7 @@ function announcementReducer_addParagraph(
 
 function announcementReducer_insertParagraph(
   state: AnnouncementState,
-  dispatch: AnnouncementDispatch
+  dispatch: AnnouncementDispatch,
 ): AnnouncementState {
   const index = dispatch.payload as number;
   const clonedState = structuredClone(state);
@@ -55,7 +68,7 @@ function announcementReducer_insertParagraph(
 
 function announcementReducer_removeParagraph(
   state: AnnouncementState,
-  dispatch: AnnouncementDispatch
+  dispatch: AnnouncementDispatch,
 ): AnnouncementState {
   const index = dispatch.payload as number;
   const clonedState = structuredClone(state);
@@ -66,7 +79,7 @@ function announcementReducer_removeParagraph(
 
 function announcementReducer_setParagraph(
   state: AnnouncementState,
-  dispatch: AnnouncementDispatch
+  dispatch: AnnouncementDispatch,
 ): AnnouncementState {
   const {
     dynamicIndexes: [index],
@@ -80,7 +93,7 @@ function announcementReducer_setParagraph(
 
 function announcementReducer_slideParagraphUp(
   state: AnnouncementState,
-  dispatch: AnnouncementDispatch
+  dispatch: AnnouncementDispatch,
 ): AnnouncementState {
   const index = dispatch.payload as number;
   const clonedState = structuredClone(state);
@@ -92,7 +105,7 @@ function announcementReducer_slideParagraphUp(
 
 function announcementReducer_slideParagraphDown(
   state: AnnouncementState,
-  dispatch: AnnouncementDispatch
+  dispatch: AnnouncementDispatch,
 ): AnnouncementState {
   const index = dispatch.payload as number;
   const clonedState = structuredClone(state);
@@ -104,7 +117,7 @@ function announcementReducer_slideParagraphDown(
 
 function announcementReducer_setAuthor(
   state: AnnouncementState,
-  dispatch: AnnouncementDispatch
+  dispatch: AnnouncementDispatch,
 ): AnnouncementState {
   return {
     ...state,
@@ -114,7 +127,7 @@ function announcementReducer_setAuthor(
 
 function announcementReducer_setBannerImageAlt(
   state: AnnouncementState,
-  dispatch: AnnouncementDispatch
+  dispatch: AnnouncementDispatch,
 ): AnnouncementState {
   return {
     ...state,
@@ -124,7 +137,7 @@ function announcementReducer_setBannerImageAlt(
 
 function announcementReducer_setBannerImageSrc(
   state: AnnouncementState,
-  dispatch: AnnouncementDispatch
+  dispatch: AnnouncementDispatch,
 ): AnnouncementState {
   return {
     ...state,
@@ -134,7 +147,7 @@ function announcementReducer_setBannerImageSrc(
 
 function announcementReducer_setIsSubmitting(
   state: AnnouncementState,
-  dispatch: AnnouncementDispatch
+  dispatch: AnnouncementDispatch,
 ): AnnouncementState {
   return {
     ...state,
@@ -144,7 +157,7 @@ function announcementReducer_setIsSubmitting(
 
 function announcementReducer_setIsSuccessful(
   state: AnnouncementState,
-  dispatch: AnnouncementDispatch
+  dispatch: AnnouncementDispatch,
 ): AnnouncementState {
   return {
     ...state,
@@ -154,7 +167,7 @@ function announcementReducer_setIsSuccessful(
 
 function announcementReducer_setPageInError(
   state: AnnouncementState,
-  dispatch: AnnouncementDispatch
+  dispatch: AnnouncementDispatch,
 ): AnnouncementState {
   const { kind, page } = dispatch.payload as SetPageInErrorPayload;
   const pagesInError = new Set(state.pagesInError);
@@ -168,7 +181,7 @@ function announcementReducer_setPageInError(
 
 function announcementReducer_setTitle(
   state: AnnouncementState,
-  dispatch: AnnouncementDispatch
+  dispatch: AnnouncementDispatch,
 ): AnnouncementState {
   return {
     ...state,
@@ -178,7 +191,7 @@ function announcementReducer_setTitle(
 
 function announcementReducer_setTriggerFormSubmit(
   state: AnnouncementState,
-  dispatch: AnnouncementDispatch
+  dispatch: AnnouncementDispatch,
 ): AnnouncementState {
   return {
     ...state,

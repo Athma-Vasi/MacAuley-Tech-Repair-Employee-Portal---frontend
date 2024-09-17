@@ -6,7 +6,7 @@ import { useDisclosure } from "@mantine/hooks";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../hooks";
 import type { StepperPage } from "../../../types";
-import { formSubmitPOSTSafe } from "../../../utils";
+import { fetchRequestPOSTSafe } from "../../../utils";
 import { AccessibleButton } from "../../accessibleInputs/AccessibleButton";
 import { AccessibleDateTimeInput } from "../../accessibleInputs/AccessibleDateTimeInput";
 import { AccessibleSelectInput } from "../../accessibleInputs/AccessibleSelectInput";
@@ -95,7 +95,7 @@ function Event() {
         creatorRole: "manager",
       };
 
-      const formSubmitResult = await formSubmitPOSTSafe({
+      const formSubmitResult = await fetchRequestPOSTSafe({
         accessToken,
         closeSubmitFormModal,
         dispatch: eventDispatch,

@@ -1,6 +1,6 @@
 import { Pagination } from "@mantine/core";
-import { CSSProperties, Dispatch, useEffect, useState } from "react";
-import React from "react";
+import type React from "react";
+import { type CSSProperties, type Dispatch, useEffect, useState } from "react";
 
 type PageBuilderProps = {
   style?: CSSProperties;

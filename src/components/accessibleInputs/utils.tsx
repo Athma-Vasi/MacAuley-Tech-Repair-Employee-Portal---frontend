@@ -342,13 +342,48 @@ function createAccessibleButtonScreenreaderTextElements({
   return { enabledTextElement, disabledTextElement };
 }
 
+type AccessiblePaginationTextElements = {
+  currentPage: number;
+  name: string;
+  themeObject: ThemeObject;
+  totalPages: number;
+};
+
+function createAccessiblePaginationTextElement({
+  currentPage,
+  name,
+  themeObject,
+  totalPages,
+}: AccessiblePaginationTextElements): {
+  screenreaderTextElement: React.JSX.Element;
+} {
+  const {
+    generalColors: { greenColorShade, textColor },
+  } = returnThemeColors({
+    themeObject,
+    colorsSwatches: COLORS_SWATCHES,
+  });
+
+  const screenreaderTextElement = (
+    <Text
+      id={`${name}-selected`}
+      w="100%"
+      aria-live="polite"
+    >
+      {`Page ${currentPage} of ${totalPages} selected.`}
+    </Text>
+  );
+
+  return { screenreaderTextElement };
+}
+
 type AccessibleImageTextElements = {
   description: string;
   name: string;
   themeObject: ThemeObject;
 };
 
-function accessibleImageTextElement(
+function createAccessibleImageTextElement(
   { description, name, themeObject }: AccessibleImageTextElements,
 ): {
   screenreaderTextElement: React.JSX.Element;
@@ -868,14 +903,15 @@ function returnHighlightedText({
 }
 
 export {
-  accessibleImageTextElement,
   createAccessibleButtons,
   createAccessibleButtonScreenreaderTextElements,
   createAccessibleCheckboxGroupInputs,
   createAccessibleCheckboxSelectionsTextElements,
   createAccessibleCheckboxSingleInputs,
   createAccessibleDateTimeInputs,
+  createAccessibleImageTextElement,
   createAccessibleNavLinkTextElement,
+  createAccessiblePaginationTextElement,
   createAccessibleRadioGroupInputs,
   createAccessibleRadioScreenreaderTextElements,
   createAccessibleRadioSingleInputs,

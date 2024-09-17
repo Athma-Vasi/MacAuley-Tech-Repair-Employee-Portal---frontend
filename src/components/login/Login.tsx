@@ -10,7 +10,7 @@ import { useGlobalState } from "../../hooks";
 import { useAuth } from "../../hooks/useAuth";
 import {
   decodeJWTSafe,
-  formSubmitPOSTSafe,
+  fetchRequestPOSTSafe,
   logState,
   returnThemeColors,
 } from "../../utils";
@@ -78,7 +78,7 @@ function Login() {
     async function loginFormSubmit() {
       const schema = { username, password };
 
-      const loginResult = await formSubmitPOSTSafe({
+      const loginResult = await fetchRequestPOSTSafe({
         closeSubmitFormModal,
         dispatch: loginDispatch,
         fetchAbortController,

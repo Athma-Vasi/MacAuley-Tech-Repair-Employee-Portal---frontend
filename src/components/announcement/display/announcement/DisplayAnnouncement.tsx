@@ -78,10 +78,10 @@ function DisplayAnnouncement() {
   ] = useDisclosure(false);
 
   const [
-    openedSubmitSuccessNotificationModal,
+    openedSubmitFormModal,
     {
       open: openSubmitFormModal,
-      close: closeSubmitSuccessNotificationModal,
+      close: closeSubmitFormModal,
     },
   ] = useDisclosure(false);
 
@@ -115,7 +115,7 @@ function DisplayAnnouncement() {
       };
 
       const ratingSubmitResult = await fetchResourcePATCHSafe({
-        closeSubmitFormModal: closeRatingModal,
+        closeSubmitFormModal,
         fetchAbortController,
         isComponentMounted,
         openSubmitFormModal,
@@ -482,14 +482,14 @@ function DisplayAnnouncement() {
   const displaySubmitSuccessNotificationModal = (
     <NotificationModal
       onCloseCallbacks={[
-        closeSubmitSuccessNotificationModal,
+        closeSubmitFormModal,
         () => {
           navigate(
             `/home/actions/announcementDocument/display/${announcementDocument?.title}`,
           );
         },
       ]}
-      opened={openedSubmitSuccessNotificationModal}
+      opened={openedSubmitFormModal}
       notificationProps={{
         loading: isSubmitting,
         text: isSubmitting ? submitMessage : "Success!",

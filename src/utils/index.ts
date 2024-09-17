@@ -2754,7 +2754,7 @@ async function decodeJWTSafe<Decoded extends DecodedToken = DecodedToken>(
   }
 }
 
-async function formSubmitPOSTSafe<
+async function fetchRequestPOSTSafe<
   DBRecord = Record<string, unknown> & {
     _id: string;
     createdAt: string;
@@ -2931,17 +2931,19 @@ async function fetchResourceGETSafe<
   roles: UserRoles;
   setResourceDataAction: SetResourceDataAction;
   setIsLoadingAction: SetIsLoadingAction;
-  setLoadingMessageAction: SetLoadingMessageAction;
+  setLoadingMessageAction?: SetLoadingMessageAction;
   setTotalDocumentsAction: SetTotalDocumentsAction;
   setTotalPagesAction: SetTotalPagesAction;
-  triggerFormSubmitAction: TriggerFormSubmitAction;
+  triggerFormSubmitAction?: TriggerFormSubmitAction;
 }): Promise<SafeBoxResult<HttpServerResponse<DBRecord>>> {
   openSubmitFormModal();
 
-  parentDispatch({
-    action: setLoadingMessageAction,
-    payload: loadingMessage,
-  });
+  if (setLoadingMessageAction) {
+    parentDispatch({
+      action: setLoadingMessageAction,
+      payload: loadingMessage,
+    });
+  }
 
   const userRole = roles.includes("Manager")
     ? "manager"
@@ -2991,12 +2993,15 @@ async function fetchResourceGETSafe<
       action: setIsLoadingAction,
       payload: false,
     });
-    parentDispatch({
-      action: triggerFormSubmitAction,
-      payload: false,
-    });
 
-    return new Ok({ kind: "success" });
+    if (triggerFormSubmitAction) {
+      parentDispatch({
+        action: triggerFormSubmitAction,
+        payload: false,
+      });
+    }
+
+    return new Ok({ kind: "success", data: serverResponse });
   } catch (error: unknown) {
     if (
       !isComponentMounted ||
@@ -3170,12 +3175,12 @@ export {
   capitalizeJoinWithAnd,
   captureScreenshot,
   decodeJWTSafe,
+  fetchRequestPOSTSafe,
   fetchResourceGETSafe,
   fetchResourcePATCHSafe,
   filterFieldsFromObject,
   flattenObjectIterative,
   formatDate,
-  formSubmitPOSTSafe,
   groupBy,
   groupByField,
   groupQueryResponse,

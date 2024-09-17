@@ -3,7 +3,7 @@ import { useDisclosure } from "@mantine/hooks";
 import { type CSSProperties, type ReactNode, useState } from "react";
 import { TbPhotoOff } from "react-icons/tb";
 import { useGlobalState } from "../../hooks";
-import { accessibleImageTextElement } from "./utils";
+import { createAccessibleImageTextElement } from "./utils";
 
 type AccessibleImageAttributes = {
     alt: string;
@@ -24,9 +24,10 @@ type AccessibleImageAttributes = {
 
 type AccessibleImageProps = {
     attributes: AccessibleImageAttributes;
+    key?: string;
 };
 
-function AccessibleImage({ attributes }: AccessibleImageProps) {
+function AccessibleImage({ attributes, key }: AccessibleImageProps) {
     const {
         alt,
         caption,
@@ -53,7 +54,7 @@ function AccessibleImage({ attributes }: AccessibleImageProps) {
     const [isImageLoading, setIsImageLoading] = useState(true);
     const [isImageLoadFailed, setIsImageLoadFailed] = useState(false);
 
-    const { screenreaderTextElement } = accessibleImageTextElement({
+    const { screenreaderTextElement } = createAccessibleImageTextElement({
         description: isOverlay ? overlayText : alt,
         name,
         themeObject,
@@ -113,7 +114,12 @@ function AccessibleImage({ attributes }: AccessibleImageProps) {
     );
 
     const card = (
-        <Card withBorder radius={radius} style={styles}>
+        <Card
+            withBorder
+            radius={radius}
+            style={styles}
+            key={key ?? `${name}-${alt}-${src}`}
+        >
             <Card.Section>
                 {image}
                 {isOverlay && textOverlay}

@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 import { Container, Text, Title } from "@mantine/core";
 import { useAuth } from "../../../hooks";
-import { fetchResourceGETSafe, formSubmitPOSTSafe } from "../../../utils";
+import { fetchRequestPOSTSafe, fetchResourceGETSafe } from "../../../utils";
 import { AccessibleButton } from "../../accessibleInputs/AccessibleButton";
 import { AccessibleStepper } from "../../accessibleInputs/AccessibleStepper";
 import type { CustomerDocument } from "../../customer/types";
@@ -160,7 +160,7 @@ function CreateRepairTicket() {
         // rest are fields updated as repair progresses
       };
 
-      await formSubmitPOSTSafe({
+      await fetchRequestPOSTSafe({
         accessToken,
         closeSubmitFormModal,
         dispatch: createRepairTicketDispatch,

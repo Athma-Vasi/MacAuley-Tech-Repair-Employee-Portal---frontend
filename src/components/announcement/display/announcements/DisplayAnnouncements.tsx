@@ -1,216 +1,104 @@
 import {
   Flex,
-  Group,
   Loader,
   LoadingOverlay,
   Stack,
   Text,
   UnstyledButton,
-} from '@mantine/core';
-import { InvalidTokenError } from 'jwt-decode';
-import { useEffect, useReducer } from 'react';
-import { useErrorBoundary } from 'react-error-boundary';
-import { useNavigate } from 'react-router-dom';
+} from "@mantine/core";
+import { useEffect, useReducer, useRef } from "react";
+import { useErrorBoundary } from "react-error-boundary";
+import { useNavigate } from "react-router-dom";
 
-import { COLORS_SWATCHES } from '../../../../constants/data';
-import { globalAction } from '../../../../context/globalProvider/state';
-import { useGlobalState, useWrapFetch } from '../../../../hooks';
-import { returnAccessibleImageElements } from '../../../../jsxCreators';
-import { GetQueriedResourceRequestServerResponse } from '../../../../types';
-import { logState, returnThemeColors, urlBuilder } from '../../../../utils';
-import DisplayResourceHeader from '../../../displayResourceHeader/DisplayResourceHeader';
-import { PageBuilder } from '../../../pageBuilder';
-import { QueryBuilder } from '../../../queryBuilder';
-import { ANNOUNCEMENT_QUERY_DATA } from '../../create/constants';
-import { AnnouncementDocument } from '../../create/types';
-import {
-  displayAnnouncementsAction,
-  displayAnnouncementsReducer,
-  initialDisplayAnnouncementsState,
-} from './state';
+import { useDisclosure } from "@mantine/hooks";
+import { COLORS_SWATCHES } from "../../../../constants/data";
+import { globalAction } from "../../../../context/globalProvider/actions";
+import { useAuth, useGlobalState } from "../../../../hooks";
+import { fetchResourceGETSafe, returnThemeColors } from "../../../../utils";
+import AccessibleImage from "../../../accessibleInputs/AccessibleImage";
+import AccessiblePagination from "../../../accessibleInputs/AccessiblePagination";
+import DisplayResourceHeader from "../../../displayResourceHeader/DisplayResourceHeader";
+import { ANNOUNCEMENT_ROUTE_PATHS } from "../../constants";
+import { displayAnnouncementsAction } from "./actions";
+import { displayAnnouncementsReducer } from "./reducers";
+import { initialDisplayAnnouncementsState } from "./state";
 
 function DisplayAnnouncements() {
-  /** ------------- begin hooks ------------- */
   const [displayAnnouncementsState, displayAnnouncementsDispatch] = useReducer(
     displayAnnouncementsReducer,
-    initialDisplayAnnouncementsState
+    initialDisplayAnnouncementsState,
   );
-  const {
-    responseData,
-    pages,
-    totalDocuments,
-    newQueryFlag,
-    queryBuilderString,
-    pageQueryString,
-
-    triggerFetchAnnouncements,
-
-    isLoading,
-    loadingMessage,
-    isSuccessful,
-    successMessage,
-    isSubmitting,
-    submitMessage,
-  } = displayAnnouncementsState;
-
-  const { wrappedFetch } = useWrapFetch();
+  const { currentPage, responseData, pages, totalDocuments, isLoading } =
+    displayAnnouncementsState;
 
   const {
-    globalState: { padding, rowGap, themeObject, width },
+    globalState: { themeObject, width },
     globalDispatch,
   } = useGlobalState();
+
+  const {
+    authState: {
+      accessToken,
+      decodedToken: { sessionId, userInfo: { roles, userId, username } },
+    },
+  } = useAuth();
 
   const navigate = useNavigate();
   const { showBoundary } = useErrorBoundary();
 
-  /** ------------- end hooks ------------- */
+  const [
+    openedLoadingFormModal,
+    {
+      open: openLoadingFormModal,
+      close: closeLoadingFormModal,
+    },
+  ] = useDisclosure(false);
 
-  /** ------------- begin useEffects ------------- */
+  const fetchAbortControllerRef = useRef<AbortController | null>(null);
+  const isComponentMountedRef = useRef(false);
+
   useEffect(() => {
-    let isMounted = true;
-    const controller = new AbortController();
+    fetchAbortControllerRef.current?.abort();
+    fetchAbortControllerRef.current = new AbortController();
+    const fetchAbortController = fetchAbortControllerRef.current;
+
+    isComponentMountedRef.current = true;
+    const isComponentMounted = isComponentMountedRef.current;
 
     async function fetchAnnouncements() {
-      displayAnnouncementsDispatch({
-        type: displayAnnouncementsAction.setIsLoading,
-        payload: true,
+      const fetchAnnouncementsResult = await fetchResourceGETSafe({
+        accessToken,
+        closeSubmitFormModal: closeLoadingFormModal,
+        fetchAbortController,
+        isComponentMounted,
+        loadingMessage: "Fetching announcements from server...",
+        openSubmitFormModal: openLoadingFormModal,
+        parentDispatch: displayAnnouncementsDispatch as React.Dispatch<unknown>,
+        roleResourceRoutePaths: ANNOUNCEMENT_ROUTE_PATHS,
+        roles,
+        setIsLoadingAction: displayAnnouncementsAction.setIsLoading,
+        setResourceDataAction: displayAnnouncementsAction.setResponseData,
+        setTotalDocumentsAction: displayAnnouncementsAction.setTotalDocuments,
+        setTotalPagesAction: displayAnnouncementsAction.setPages,
       });
-      displayAnnouncementsDispatch({
-        type: displayAnnouncementsAction.setLoadingMessage,
-        payload: 'Fetching announcements from server...',
-      });
 
-      const url: URL = urlBuilder({
-        path: 'actions/outreach/announcement',
-        query: `${queryBuilderString}${pageQueryString}&newQueryFlag=${newQueryFlag}&totalDocuments=${totalDocuments}&limit=10&projection=-action&projection=-category`,
-      });
-
-      const requestInit: RequestInit = {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      };
-
-      try {
-        const response: Response = await wrappedFetch({
-          isMounted,
-          requestInit,
-          signal: controller.signal,
-          url,
-        });
-
-        const data: GetQueriedResourceRequestServerResponse<AnnouncementDocument> =
-          await response.json();
-
-        if (!isMounted) {
-          return;
-        }
-        if (!response.ok) {
-          throw new Error(data.message);
-        }
-
-        displayAnnouncementsDispatch({
-          type: displayAnnouncementsAction.setResponseData,
-          payload: data.resourceData,
-        });
-        displayAnnouncementsDispatch({
-          type: displayAnnouncementsAction.setPages,
-          payload: data.pages ?? pages,
-        });
-        displayAnnouncementsDispatch({
-          type: displayAnnouncementsAction.setTotalDocuments,
-          payload: data.totalDocuments ?? totalDocuments,
-        });
-      } catch (error: any) {
-        if (!isMounted || error.name === 'AbortError') {
-          return;
-        }
-
-        const errorMessage =
-          error instanceof InvalidTokenError
-            ? 'Invalid token. Please login again.'
-            : !error.response
-            ? 'Network error. Please try again.'
-            : error?.message ?? 'Unknown error occurred. Please try again.';
-
-        globalDispatch({
-          type: globalAction.setErrorState,
-          payload: {
-            isError: true,
-            errorMessage,
-            errorCallback: () => {
-              navigate('/home');
-
-              globalDispatch({
-                type: globalAction.setErrorState,
-                payload: {
-                  isError: false,
-                  errorMessage: '',
-                  errorCallback: () => {},
-                },
-              });
-            },
-          },
-        });
-
-        showBoundary(error);
-      } finally {
-        if (isMounted) {
-          displayAnnouncementsDispatch({
-            type: displayAnnouncementsAction.setIsLoading,
-            payload: false,
-          });
-          displayAnnouncementsDispatch({
-            type: displayAnnouncementsAction.setLoadingMessage,
-            payload: '',
-          });
-          displayAnnouncementsDispatch({
-            type: displayAnnouncementsAction.setTriggerFetchAnnouncements,
-            payload: false,
-          });
-        }
+      if (fetchAnnouncementsResult.err) {
+        showBoundary(fetchAnnouncementsResult.val.data);
+        return;
       }
     }
 
-    if (triggerFetchAnnouncements) {
-      fetchAnnouncements();
-    }
+    fetchAnnouncements();
 
     return () => {
-      isMounted = false;
-      controller.abort();
+      fetchAbortController.abort();
+      isComponentMountedRef.current = false;
     };
+  }, []);
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [triggerFetchAnnouncements]);
-
-  useEffect(() => {
-    displayAnnouncementsDispatch({
-      type: displayAnnouncementsAction.setNewQueryFlag,
-      payload: true,
-    });
-
-    displayAnnouncementsDispatch({
-      type: displayAnnouncementsAction.setTriggerFetchAnnouncements,
-      payload: true,
-    });
-  }, [queryBuilderString]);
-
-  useEffect(() => {
-    displayAnnouncementsDispatch({
-      type: displayAnnouncementsAction.setTriggerFetchAnnouncements,
-      payload: true,
-    });
-  }, [pageQueryString]);
-
-  useEffect(() => {
-    logState({
-      state: displayAnnouncementsState,
-      groupLabel: 'displayAnnouncementsState',
-    });
-  }, [displayAnnouncementsState]);
-  /** ------------- end useEffects ------------- */
+  if (!responseData) {
+    return null;
+  }
 
   const {
     appThemeColors: { backgroundColor, borderColor },
@@ -219,59 +107,55 @@ function DisplayAnnouncements() {
     colorsSwatches: COLORS_SWATCHES,
   });
 
-  /** ------------- begin input creators ------------- */
-
-  const createdAnnouncementsCards = responseData?.map(
+  const createdAnnouncementsCards = responseData.map(
     (announcement, announcementIdx) => {
       const { _id, bannerImageAlt, title, bannerImageSrcCompressed } =
         announcement;
 
-      const [createdImage] = returnAccessibleImageElements([
-        {
-          imageSrc: bannerImageSrcCompressed,
-          imageAlt: bannerImageAlt,
-          isCard: true,
-          isLoader: true,
-          isOverlay: true,
-          overlayText: title,
-        },
-      ]);
+      const imageElement = (
+        <AccessibleImage
+          attributes={{
+            alt: bannerImageAlt,
+            name: title,
+            src: bannerImageSrcCompressed,
+            isOverlay: true,
+            overlayText: title,
+          }}
+          key={`${_id}-${announcementIdx.toString()}`}
+        />
+      );
 
       // required to avoid breadcrumbs showing '%20' instead of spaces
-      const dynamicPath = title ? title.replace(/ /g, '-') : _id;
+      const dynamicPath = title ? title.replace(/ /g, "-") : _id;
       const announcementCard = (
         <UnstyledButton
-          key={`${_id}-${announcementIdx}`}
+          key={`${_id}-${announcementIdx.toString()}`}
           w={350}
           h={217}
           onClick={() => {
             globalDispatch({
-              type: globalAction.setAnnouncementDocument,
+              action: globalAction.setAnnouncementDocument,
               payload: announcement,
             });
 
-            navigate(`/home/outreach/announcement/${dynamicPath}`, {
+            navigate(`/home/actions/announcement/${dynamicPath}`, {
               replace: false,
             });
           }}
         >
-          {createdImage}
+          {imageElement}
         </UnstyledButton>
       );
 
       return announcementCard;
-    }
+    },
   );
 
-  /** ------------- end input creators ------------- */
-
-  /** ------------- begin input display ------------- */
-
   const imageSrc =
-    'https://images.pexels.com/photos/3761509/pexels-photo-3761509.jpeg?auto=compress';
-  const imageAlt = 'Cheerful young woman holding a megaphone';
-  const resourceDescription = 'Explore MacAuley Company Announcements';
-  const resourceTitle = 'Announcements';
+    "https://images.pexels.com/photos/3761509/pexels-photo-3761509.jpeg?auto=compress";
+  const imageAlt = "Cheerful young woman holding a megaphone";
+  const resourceDescription = "Explore MacAuley Company Announcements";
+  const resourceTitle = "Announcements";
 
   const displayAnnouncementHeader = (
     <DisplayResourceHeader
@@ -282,7 +166,6 @@ function DisplayAnnouncements() {
     />
   );
 
-  const pageNumber = pageQueryString.split('=')[1] ?? '1';
   const displayAnnouncementCards = (
     <Flex
       align="flex-start"
@@ -290,10 +173,7 @@ function DisplayAnnouncements() {
       justify="center"
       w="100%"
       wrap="wrap"
-      rowGap={rowGap}
-      p={padding}
-      columnGap={rowGap}
-      style={{ borderRadius: '4px', position: 'relative' }}
+      style={{ borderRadius: "4px", position: "relative" }}
     >
       <LoadingOverlay
         visible={isLoading}
@@ -303,7 +183,7 @@ function DisplayAnnouncements() {
         radius={4}
         loader={
           <Stack align="center">
-            <Text>Loading announcements: page {pageNumber}</Text>
+            <Text>Loading announcements: page {currentPage}</Text>
             <Loader />
           </Stack>
         }
@@ -312,57 +192,50 @@ function DisplayAnnouncements() {
     </Flex>
   );
 
-  const sectionWidth =
-    width < 480 // for iPhone 5/SE
-      ? 375 - 20
-      : width < 768 // for iPhone 6/7/8
-      ? width - 40
-      : // at 768vw the navbar appears at width of 225px
-      width < 1024
-      ? (width - 225) * 0.8
-      : // at >= 1200vw the navbar width is 300px
-      width < 1200
-      ? (width - 225) * 0.8
-      : 900 - 40;
+  const sectionWidth = width < 480 // for iPhone 5/SE
+    ? 375 - 20
+    : width < 768 // for iPhone 6/7/8
+    ? width - 40
+    // at 768vw the navbar appears at width of 225px
+    : width < 1024
+    ? (width - 225) * 0.8
+    // at >= 1200vw the navbar width is 300px
+    : width < 1200
+    ? (width - 225) * 0.8
+    : 900 - 40;
 
-  const displayPagination = (
-    <Group
-      w={sectionWidth}
-      spacing={rowGap}
-      p={padding}
-      position="center"
-      align="center"
-    >
-      <PageBuilder
-        total={pages}
-        setPageQueryString={displayAnnouncementsAction.setPageQueryString}
-        parentComponentDispatch={displayAnnouncementsDispatch}
-      />
-    </Group>
+  const pagination = (
+    <AccessiblePagination
+      attributes={{
+        name: "announcements",
+        parentDispatch: displayAnnouncementsDispatch,
+        setPageNumber: displayAnnouncementsAction.setCurrentPage,
+        total: pages,
+        value: currentPage,
+      }}
+    />
   );
 
-  const displayQueryBuilder = (
-    <Group w="100%" bg={backgroundColor} position="center">
-      <QueryBuilder
-        collectionName="announcement"
-        componentQueryData={ANNOUNCEMENT_QUERY_DATA}
-        queryBuilderStringDispatch={displayAnnouncementsDispatch}
-        setQueryBuilderString={displayAnnouncementsAction.setQueryBuilderString}
-        disableProjection={true}
-      />
-    </Group>
-  );
+  // const displayQueryBuilder = (
+  //   <Group w="100%" bg={backgroundColor} position="center">
+  //     <QueryBuilder
+  //       collectionName="announcement"
+  //       componentQueryData={ANNOUNCEMENT_QUERY_DATA}
+  //       queryBuilderStringDispatch={displayAnnouncementsDispatch}
+  //       setQueryBuilderString={displayAnnouncementsAction.setQueryBuilderString}
+  //       disableProjection={true}
+  //     />
+  //   </Group>
+  // );
 
   const displayAnnouncementsComponent = (
     <Stack w="100%" align="center">
       {displayAnnouncementHeader}
-      {displayQueryBuilder}
+      {/* {displayQueryBuilder} */}
       {displayAnnouncementCards}
-      {displayPagination}
+      {pagination}
     </Stack>
   );
-
-  /** ------------- end input display ------------- */
 
   return displayAnnouncementsComponent;
 }

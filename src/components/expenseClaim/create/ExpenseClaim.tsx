@@ -8,7 +8,7 @@ import { CURRENCY_DATA } from "../../../constants/data";
 import { useAuth } from "../../../hooks";
 import type { Currency, StepperPage } from "../../../types";
 import {
-  formSubmitPOSTSafe,
+  fetchRequestPOSTSafe,
   logState,
   removeUndefinedAndNull,
 } from "../../../utils";
@@ -84,7 +84,7 @@ function ExpenseClaim() {
     async function handleExpenseClaimFormSubmit() {
       const fileUploadsResult = await Promise.all(
         formData.map(async (formDataItem) => {
-          const filesUploadResult = await formSubmitPOSTSafe({
+          const filesUploadResult = await fetchRequestPOSTSafe({
             closeSubmitFormModal,
             dispatch: expenseClaimDispatch,
             fetchAbortController,
@@ -146,7 +146,7 @@ function ExpenseClaim() {
         username,
       };
 
-      await formSubmitPOSTSafe({
+      await fetchRequestPOSTSafe({
         accessToken,
         closeSubmitFormModal,
         dispatch: expenseClaimDispatch,

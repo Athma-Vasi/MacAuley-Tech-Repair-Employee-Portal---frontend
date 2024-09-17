@@ -97,9 +97,10 @@ type AccessibleButtonAttributes = {
 
 type AccessibleButtonProps = {
   attributes: AccessibleButtonAttributes;
+  key?: string;
 };
 
-function AccessibleButton({ attributes }: AccessibleButtonProps) {
+function AccessibleButton({ attributes, key }: AccessibleButtonProps) {
   const {
     globalState: { themeObject },
   } = useGlobalState();
@@ -193,7 +194,7 @@ function AccessibleButton({ attributes }: AccessibleButtonProps) {
   );
 
   return (
-    <Container w={100} key={`${name}-${index}`}>
+    <Container w={100} key={`${name}-${index?.toString() ?? ""}-${key ?? ""}`}>
       {isTooltip && enabledScreenreaderText?.length
         ? (
           <Tooltip

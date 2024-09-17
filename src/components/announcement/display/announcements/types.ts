@@ -1,82 +1,34 @@
-import { QueryResponseData } from '../../../../types';
-import { AnnouncementDocument } from '../../create/types';
+import type { AnnouncementDocument } from "../../create/types";
+import type { DisplayAnnouncementsAction } from "./actions";
 
 type DisplayAnnouncementsState = {
-  responseData: QueryResponseData<AnnouncementDocument>[] | null;
-  pages: number;
-  totalDocuments: number;
-  newQueryFlag: boolean;
-  queryBuilderString: string;
-  pageQueryString: string;
-
-  triggerFetchAnnouncements: boolean;
-
+  currentPage: number;
   isLoading: boolean;
-  loadingMessage: string;
-  isSuccessful: boolean;
-  successMessage: string;
-  isSubmitting: boolean;
-  submitMessage: string;
-};
-
-type DisplayAnnouncementsAction = {
-  setResponseData: 'setResponseData';
-  setPages: 'setPages';
-  setTotalDocuments: 'setTotalDocuments';
-  setNewQueryFlag: 'setNewQueryFlag';
-  setQueryBuilderString: 'setQueryBuilderString';
-  setPageQueryString: 'setPageQueryString';
-
-  setTriggerFetchAnnouncements: 'setTriggerFetchAnnouncements';
-
-  setIsLoading: 'setIsLoading';
-  setLoadingMessage: 'setLoadingMessage';
-  setIsSuccessful: 'setIsSuccessful';
-  setSuccessMessage: 'setSuccessMessage';
-  setIsSubmitting: 'setIsSubmitting';
-  setSubmitMessage: 'setSubmitMessage';
+  pages: number;
+  responseData: Array<AnnouncementDocument> | null;
+  totalDocuments: number;
 };
 
 type DisplayAnnouncementsDispatch =
   | {
-      type: DisplayAnnouncementsAction['setResponseData'];
-      payload: QueryResponseData<AnnouncementDocument>[];
-    }
+    action: DisplayAnnouncementsAction["setCurrentPage"];
+    payload: number;
+  }
   | {
-      type:
-        | DisplayAnnouncementsAction['setPages']
-        | DisplayAnnouncementsAction['setTotalDocuments'];
-      payload: number;
-    }
+    action: DisplayAnnouncementsAction["setIsLoading"];
+    payload: boolean;
+  }
   | {
-      type:
-        | DisplayAnnouncementsAction['setNewQueryFlag']
-        | DisplayAnnouncementsAction['setTriggerFetchAnnouncements']
-        | DisplayAnnouncementsAction['setIsLoading']
-        | DisplayAnnouncementsAction['setIsSuccessful']
-        | DisplayAnnouncementsAction['setIsSubmitting'];
-
-      payload: boolean;
-    }
+    action: DisplayAnnouncementsAction["setPages"];
+    payload: number;
+  }
   | {
-      type:
-        | DisplayAnnouncementsAction['setQueryBuilderString']
-        | DisplayAnnouncementsAction['setPageQueryString']
-        | DisplayAnnouncementsAction['setLoadingMessage']
-        | DisplayAnnouncementsAction['setSuccessMessage']
-        | DisplayAnnouncementsAction['setSubmitMessage'];
+    action: DisplayAnnouncementsAction["setResponseData"];
+    payload: Array<AnnouncementDocument>;
+  }
+  | {
+    action: DisplayAnnouncementsAction["setTotalDocuments"];
+    payload: number;
+  };
 
-      payload: string;
-    };
-
-type DisplayAnnouncementsReducer = (
-  state: DisplayAnnouncementsState,
-  action: DisplayAnnouncementsDispatch
-) => DisplayAnnouncementsState;
-
-export type {
-  DisplayAnnouncementsAction,
-  DisplayAnnouncementsDispatch,
-  DisplayAnnouncementsReducer,
-  DisplayAnnouncementsState,
-};
+export type { DisplayAnnouncementsDispatch, DisplayAnnouncementsState };

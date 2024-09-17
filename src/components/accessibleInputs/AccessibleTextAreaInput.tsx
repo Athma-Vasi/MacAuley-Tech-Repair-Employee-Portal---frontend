@@ -1,28 +1,37 @@
-import { Container, MantineSize, Popover, Stack, Text, Textarea } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
 import {
-  ChangeEvent,
-  Dispatch,
-  FocusEvent,
-  KeyboardEvent,
-  ReactNode,
-  useEffect,
+  Container,
+  type MantineSize,
+  Popover,
+  Stack,
+  Text,
+  Textarea,
+} from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
+import type React from "react";
+import {
+  type ChangeEvent,
+  type Dispatch,
+  type FocusEvent,
+  type KeyboardEvent,
+  type ReactNode,
   useState,
 } from "react";
-import React from "react";
 import { TbCheck, TbRefresh } from "react-icons/tb";
 
 import { COLORS_SWATCHES } from "../../constants/data";
 import { VALIDATION_FUNCTIONS_TABLE } from "../../constants/validations";
 import { useGlobalState } from "../../hooks";
-import {
+import type {
   SetPageInErrorPayload,
   StepperPage,
   ValidationFunctionsTable,
 } from "../../types";
 import { returnThemeColors, splitCamelCase } from "../../utils";
-import { ProductCategory } from "../dashboard/types";
-import { AdditionalFieldsOperation, AdditionalFieldsPayload } from "../product/dispatch";
+import type { ProductCategory } from "../dashboard/types";
+import type {
+  AdditionalFieldsOperation,
+  AdditionalFieldsPayload,
+} from "../product/dispatch";
 import {
   createAccessibleValueValidationTextElements,
   returnFullValidation,
@@ -31,7 +40,7 @@ import {
 
 type AccessibleTextAreaInputAttributes<
   ValidValueAction extends string = string,
-  InvalidValueAction extends string = string
+  InvalidValueAction extends string = string,
 > = {
   ariaAutoComplete?: "both" | "list" | "none" | "inline";
   autoComplete?: "on" | "off";
@@ -55,27 +64,27 @@ type AccessibleTextAreaInputAttributes<
   page?: number;
   parentDispatch?: Dispatch<
     | {
-        action: ValidValueAction;
-        payload: string;
-      }
+      action: ValidValueAction;
+      payload: string;
+    }
     | {
-        action: InvalidValueAction;
-        payload: SetPageInErrorPayload;
-      }
+      action: InvalidValueAction;
+      payload: SetPageInErrorPayload;
+    }
   >;
   /** default for inputs created by user */
   parentDynamicDispatch?: Dispatch<
     | {
-        action: ValidValueAction;
-        payload: {
-          dynamicIndexes: number[];
-          value: string;
-        };
-      }
+      action: ValidValueAction;
+      payload: {
+        dynamicIndexes: number[];
+        value: string;
+      };
+    }
     | {
-        action: InvalidValueAction;
-        payload: SetPageInErrorPayload;
-      }
+      action: InvalidValueAction;
+      payload: SetPageInErrorPayload;
+    }
   >;
   /** for product */
   productDispatchInfo?: {
@@ -84,13 +93,13 @@ type AccessibleTextAreaInputAttributes<
     productCategory: ProductCategory;
     productDispatch: Dispatch<
       | {
-          action: ValidValueAction;
-          payload: AdditionalFieldsPayload;
-        }
+        action: ValidValueAction;
+        payload: AdditionalFieldsPayload;
+      }
       | {
-          action: InvalidValueAction;
-          payload: SetPageInErrorPayload;
-        }
+        action: InvalidValueAction;
+        payload: SetPageInErrorPayload;
+      }
     >;
   };
   placeholder?: string;
@@ -109,15 +118,24 @@ type AccessibleTextAreaInputAttributes<
 
 type AccessibleTextAreaInputProps<
   ValidValueAction extends string = string,
-  InvalidValueAction extends string = string
+  InvalidValueAction extends string = string,
 > = {
-  attributes: AccessibleTextAreaInputAttributes<ValidValueAction, InvalidValueAction>;
+  attributes: AccessibleTextAreaInputAttributes<
+    ValidValueAction,
+    InvalidValueAction
+  >;
+  key?: string;
 };
 
 function AccessibleTextAreaInput<
   ValidValueAction extends string = string,
-  InvalidValueAction extends string = string
->({ attributes }: AccessibleTextAreaInputProps<ValidValueAction, InvalidValueAction>) {
+  InvalidValueAction extends string = string,
+>(
+  { attributes, key }: AccessibleTextAreaInputProps<
+    ValidValueAction,
+    InvalidValueAction
+  >,
+) {
   const {
     ariaAutoComplete = "none",
     autoComplete = "off",
@@ -176,30 +194,33 @@ function AccessibleTextAreaInput<
     generalColors: { greenColorShade, grayColorShade },
   } = returnThemeColors({ themeObject, colorsSwatches: COLORS_SWATCHES });
 
-  const rightIcon = rightSection ? (
-    rightSectionIcon ? (
-      rightSectionIcon
-    ) : (
-      <TbRefresh
-        aria-label={`Reset ${name} value to ${initialInputValue}`}
-        color={grayColorShade}
-        size={18}
-        onClick={rightSectionOnClick}
-      />
+  const rightIcon = rightSection
+    ? (
+      rightSectionIcon ? rightSectionIcon : (
+        <TbRefresh
+          aria-label={`Reset ${name} value to ${initialInputValue}`}
+          color={grayColorShade}
+          size={18}
+          onClick={rightSectionOnClick}
+        />
+      )
     )
-  ) : null;
+    : null;
 
-  const { full } = returnFullValidation({ name, stepperPages, validationFunctionsTable });
-  const isValueBufferValid =
-    typeof full === "function" ? full(valueBuffer) : full.test(valueBuffer);
+  const { full } = returnFullValidation({
+    name,
+    stepperPages,
+    validationFunctionsTable,
+  });
+  const isValueBufferValid = typeof full === "function"
+    ? full(valueBuffer)
+    : full.test(valueBuffer);
 
-  const leftIcon = isValueBufferValid ? (
-    icon ? (
-      icon
-    ) : (
-      <TbCheck color={greenColorShade} size={18} />
+  const leftIcon = isValueBufferValid
+    ? (
+      icon ? icon : <TbCheck color={greenColorShade} size={18} />
     )
-  ) : null;
+    : null;
 
   const validationTexts = returnValidationTexts({
     name,
@@ -229,7 +250,7 @@ function AccessibleTextAreaInput<
     });
 
   return (
-    <Container w="100%" key={name}>
+    <Container w="100%" key={`${name}-${key ?? ""}`}>
       <Popover
         opened={isPopoverOpened}
         position="bottom"
@@ -241,13 +262,11 @@ function AccessibleTextAreaInput<
         <Popover.Target>
           <Textarea
             aria-autocomplete={ariaAutoComplete}
-            aria-describedby={
-              isValueBufferValid
-                ? // id of validValueTextElement
-                  `${name}-valid`
-                : // id of invalidValueTextElement
-                  `${name}-invalid`
-            }
+            aria-describedby={isValueBufferValid
+              // id of validValueTextElement
+              ? `${name}-valid`
+              // id of invalidValueTextElement
+              : `${name}-invalid`}
             aria-invalid={!isValueBufferValid}
             aria-label={name}
             aria-required={required}
@@ -346,13 +365,17 @@ function AccessibleTextAreaInput<
           />
         </Popover.Target>
 
-        {isPopoverOpened && valueBuffer.length ? (
-          <Popover.Dropdown>
-            <Stack>
-              {isValueBufferValid ? validValueTextElement : invalidValueTextElement}
-            </Stack>
-          </Popover.Dropdown>
-        ) : null}
+        {isPopoverOpened && valueBuffer.length
+          ? (
+            <Popover.Dropdown>
+              <Stack>
+                {isValueBufferValid
+                  ? validValueTextElement
+                  : invalidValueTextElement}
+              </Stack>
+            </Popover.Dropdown>
+          )
+          : null}
       </Popover>
     </Container>
   );

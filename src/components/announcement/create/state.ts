@@ -1,4 +1,4 @@
-import { AnnouncementState } from "./types";
+import type { AnnouncementState } from "./types";
 
 const initialAnnouncementState: AnnouncementState = {
   title: "",
