@@ -1,5 +1,5 @@
-import { Alert, Button, Title } from '@mantine/core';
-import { useNavigate } from 'react-router-dom';
+import { Alert, Button, Title } from "@mantine/core";
+import { useNavigate } from "react-router-dom";
 
 function NotFound() {
   const navigate = useNavigate();
@@ -13,7 +13,7 @@ function NotFound() {
         color="red"
         size="lg"
         radius="lg"
-        onClick={() => navigate('/home')}
+        onClick={() => navigate("/home")}
       >
         Go to home
       </Button>

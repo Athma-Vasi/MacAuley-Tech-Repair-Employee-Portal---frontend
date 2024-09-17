@@ -1,16 +1,15 @@
 import { Loader } from "@mantine/core";
 import { Suspense } from "react";
 import { ErrorBoundary } from "react-error-boundary";
-
-import ErrorFallback1 from "../errorFallback1/ErrorFallback1";
+import ErrorFallback from "./ErrorFallback";
 
 function ErrorSuspenseHOC<P extends Record<string | symbol | number, unknown>>(
-  Component: React.ComponentType<P>
+  Component: React.ComponentType<P>,
 ) {
   return function ErrorSuspenseHOC(props: P) {
     return (
       <ErrorBoundary
-        FallbackComponent={ErrorFallback1}
+        FallbackComponent={ErrorFallback}
         onReset={(details) => {
           console.group("onReset triggered");
           console.log({ details });

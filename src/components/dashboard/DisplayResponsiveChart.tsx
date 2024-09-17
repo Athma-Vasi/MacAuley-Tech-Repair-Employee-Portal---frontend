@@ -9,6 +9,7 @@ import {
   ResponsiveLineChart,
   ResponsivePieChart,
 } from "../charts";
+import ErrorSuspenseHOC from "../error/ErrorSuspenseHOC";
 import {
   MONTHS,
   PERCENTAGE_METRICS_SET,
@@ -138,4 +139,8 @@ function DisplayResponsiveChart() {
   );
 }
 
-export default DisplayResponsiveChart;
+function ResponsiveChartWrapper() {
+  return ErrorSuspenseHOC(DisplayResponsiveChart)({});
+}
+
+export default ResponsiveChartWrapper;

@@ -1,13 +1,31 @@
 import "./index.css";
 
 import { MantineProvider } from "@mantine/core";
-import { lazy, Suspense } from "react";
-import { ErrorBoundary } from "react-error-boundary";
+import { lazy } from "react";
 import { Route, Routes } from "react-router-dom";
 
+import CreateAnnouncementWrapper from "./components/announcement/create";
+import DisplayAnnouncementWrapper from "./components/announcement/display/announcement";
+import CommentWrapper from "./components/comment";
 import CustomFonts from "./components/customFonts/CustomFonts";
+import CustomerWrapper from "./components/customer";
+import DashboardWrapper from "./components/dashboard";
+import ResponsiveChartWrapper from "./components/dashboard/DisplayResponsiveChart";
 import DevTesting from "./components/devTesting/DevTesting";
-import ErrorFallback from "./components/errorFallback/ErrorFallback";
+import DirectoryWrapper from "./components/directory";
+import DisplayEventsWrapper from "./components/event";
+import CreateEventWrapper from "./components/event/create";
+import DisplayExpenseClaimsWrapper from "./components/expenseClaim";
+import CreateExpenseClaimWrapper from "./components/expenseClaim/create";
+import HomeWrapper from "./components/home";
+import LoginWrapper from "./components/login";
+import NotFoundWrapper from "./components/notFound";
+import ProductWrapper from "./components/product";
+import RegisterWrapper from "./components/register";
+import RepairTicketWrapper from "./components/repairTicket";
+import ResourceWrapper from "./components/resource";
+import CreateSurveyWrapper from "./components/survey/create";
+import DisplaySurveysWrapper from "./components/survey/display";
 import { useGlobalState } from "./hooks/useGlobalState";
 
 const PublicLayout = lazy(() =>
@@ -38,10 +56,6 @@ const CreateCustomer = lazy(() => import("./components/customer/Customer"));
 
 const DisplayComment = lazy(() =>
   import("./components/comment/DisplayComment")
-);
-
-const DisplayFileUpload = lazy(
-  () => import("./components/fileUploads/DisplayFileUploads"),
 );
 
 const CreateProduct = lazy(() => import("./components/product/CreateProduct"));
@@ -84,9 +98,9 @@ const DisplayEvents = lazy(() => import("./components/event/DisplayEvents"));
 
 const EventCreator = lazy(() => import("./components/event/create/Event"));
 
-const DisplaySurveys = lazy(() =>
-  import("./components/survey/display/DisplaySurveys")
-);
+// const DisplaySurveys = lazy(() =>
+//   import("./components/survey/display/DisplaySurveys")
+// );
 
 const SurveyBuilder = lazy(() => import("./components/survey/create/Survey"));
 
@@ -100,510 +114,47 @@ function App() {
   const {
     globalState: {
       themeObject,
-      errorState: { errorCallback, errorMessage, isError },
     },
   } = useGlobalState();
 
   // @desc   the public facing page
   // @route  /
   // @access public
-  const rootIndexWrapper = (
-    <ErrorBoundary
-      fallback={
-        <ErrorFallback
-          isError={isError}
-          errorCallback={errorCallback}
-          errorMessage={errorMessage}
-        />
-      }
-    >
-      <Suspense fallback={<div>Generic Loading message...</div>}>
-        <PublicLayout />
-      </Suspense>
-    </ErrorBoundary>
-  );
-
-  // @desc   the login page
-  // @route  /login
-  // @access public
-  const loginElement = (
-    <ErrorBoundary
-      fallback={
-        <ErrorFallback
-          isError={isError}
-          errorCallback={errorCallback}
-          errorMessage={errorMessage}
-        />
-      }
-    >
-      <Suspense fallback={<div>Generic Loading message...</div>}>
-        <Login />
-      </Suspense>
-    </ErrorBoundary>
-  );
-
-  // @desc   the register page
-  // @route  /register
-  // @access public
-  const registerElement = (
-    <ErrorBoundary
-      fallback={
-        <ErrorFallback
-          isError={isError}
-          errorCallback={errorCallback}
-          errorMessage={errorMessage}
-        />
-      }
-    >
-      <Suspense fallback={<div>Generic Loading message...</div>}>
-        <Register />
-      </Suspense>
-    </ErrorBoundary>
-  );
-
-  // @desc   the parent component for the entire app (logged in users only)
-  // @route  /home
-  // @access private
-  const homeIndexWrapper = (
-    <ErrorBoundary
-      fallback={
-        <ErrorFallback
-          isError={isError}
-          errorCallback={errorCallback}
-          errorMessage={errorMessage}
-        />
-      }
-    >
-      <Suspense fallback={<div>Generic Loading message...</div>}>
-        <PortalLayout />
-      </Suspense>
-    </ErrorBoundary>
-  );
-
-  // @desc   the home page (welcome page for logged in users)
-  // @route  /home
-  // @access private
-  const homeElement = (
-    <ErrorBoundary
-      fallback={
-        <ErrorFallback
-          isError={isError}
-          errorCallback={errorCallback}
-          errorMessage={errorMessage}
-        />
-      }
-    >
-      <Suspense fallback={<div>Generic Loading message...</div>}>
-        <Home />
-      </Suspense>
-    </ErrorBoundary>
-  );
-
-  // @desc   the dashboard page
-  // @route  /home/dashboard
-  // @access private
-  const dashboardElement = (
-    <ErrorBoundary
-      fallback={
-        <ErrorFallback
-          isError={isError}
-          errorCallback={errorCallback}
-          errorMessage={errorMessage}
-        />
-      }
-    >
-      <Suspense fallback={<div>Generic Loading message...</div>}>
-        <Dashboard />
-      </Suspense>
-    </ErrorBoundary>
-  );
-
-  // @desc   the responsive chart page
-  // @route  /home/dashboard/responsive-chart
-  // @access private
-  const displayResponsiveChartElement = (
-    <ErrorBoundary
-      fallback={
-        <ErrorFallback
-          isError={isError}
-          errorCallback={errorCallback}
-          errorMessage={errorMessage}
-        />
-      }
-    >
-      <Suspense fallback={<div>Generic Loading message...</div>}>
-        <DisplayResponsiveChart />
-      </Suspense>
-    </ErrorBoundary>
-  );
-
-  // @desc   customer page (index and display)
-  // @route  /home/customer (index) and /home/customer/display
-  // @access private
-  const displayCustomersElement = (
-    <ErrorBoundary
-      fallback={
-        <ErrorFallback
-          isError={isError}
-          errorCallback={errorCallback}
-          errorMessage={errorMessage}
-        />
-      }
-    >
-      <Suspense fallback={<div>Generic Loading message...</div>}>
-        <DisplayCustomer />
-      </Suspense>
-    </ErrorBoundary>
-  );
-
-  // @desc   create customer page
-  // @route  /home/customer/create
-  // @access private
-  const createCustomerElement = (
-    <ErrorBoundary
-      fallback={
-        <ErrorFallback
-          isError={isError}
-          errorCallback={errorCallback}
-          errorMessage={errorMessage}
-        />
-      }
-    >
-      <Suspense fallback={<div>Generic Loading message...</div>}>
-        <CreateCustomer />
-      </Suspense>
-    </ErrorBoundary>
-  );
-
-  // @desc   comment page (index and display)
-  // @route  /home/product/comment (index) and /home/product/comment/display
-  // @access private
-  const displayCommentsElement = (
-    <ErrorBoundary
-      fallback={
-        <ErrorFallback
-          isError={isError}
-          errorCallback={errorCallback}
-          errorMessage={errorMessage}
-        />
-      }
-    >
-      <Suspense fallback={<div>Generic Loading message...</div>}>
-        <DisplayComment />
-      </Suspense>
-    </ErrorBoundary>
-  );
-
-  // @desc   file upload page (index = display)
-  // @route  /home/file-upload (index) and /home/file-upload/display
-  // @access private
-  const displayFileUploadsElement = (
-    <ErrorBoundary
-      fallback={
-        <ErrorFallback
-          isError={isError}
-          errorCallback={errorCallback}
-          errorMessage={errorMessage}
-        />
-      }
-    >
-      <Suspense fallback={<div>Generic Loading message...</div>}>
-        <DisplayFileUpload />
-      </Suspense>
-    </ErrorBoundary>
-  );
-
-  // @desc   products page
-  // @route  /home/product/create
-  // @access private
-  const createProductElement = (
-    <ErrorBoundary
-      fallback={
-        <ErrorFallback
-          isError={isError}
-          errorCallback={errorCallback}
-          errorMessage={errorMessage}
-        />
-      }
-    >
-      <Suspense fallback={<div>Generic Loading message...</div>}>
-        <CreateProduct />
-      </Suspense>
-    </ErrorBoundary>
-  );
-
-  // @desc   repair-ticket page (create)
-  // @route  /home/repair-ticket/create
-  // @access private
-  const createRepairTicketElement = (
-    <ErrorBoundary
-      fallback={
-        <ErrorFallback
-          isError={isError}
-          errorCallback={errorCallback}
-          errorMessage={errorMessage}
-        />
-      }
-    >
-      <Suspense fallback={<div>Generic Loading message...</div>}>
-        <CreateRepairTicket />
-      </Suspense>
-    </ErrorBoundary>
-  );
-
-  // @desc   repair-ticket page (index and display)
-  // @route  /home/repair-ticket (index) and /home/repair-ticket/display
-  // @access private
-  const displayRepairTicketsElement = (
-    <ErrorBoundary
-      fallback={
-        <ErrorFallback
-          isError={isError}
-          errorCallback={errorCallback}
-          errorMessage={errorMessage}
-        />
-      }
-    >
-      <Suspense fallback={<div>Generic Loading message...</div>}>
-        <DisplayRepairTicket />
-      </Suspense>
-    </ErrorBoundary>
-  );
-
-  // @desc   expense-claim page (index and display)
-  // @route  /home/company/expense-claim (index) and /home/company/expense-claim/display
-  // @access private
-  const displayExpenseClaimsElement = (
-    <ErrorBoundary
-      fallback={
-        <ErrorFallback
-          isError={isError}
-          errorCallback={errorCallback}
-          errorMessage={errorMessage}
-        />
-      }
-    >
-      <Suspense fallback={<div>Generic Loading message...</div>}>
-        <DisplayExpenseClaims />
-      </Suspense>
-    </ErrorBoundary>
-  );
-
-  // @desc   expense-claim page (create)
-  // @route  /home/company/expense-claim/create
-  // @access private
-  const createExpenseClaimElement = (
-    <ErrorBoundary
-      fallback={
-        <ErrorFallback
-          isError={isError}
-          errorCallback={errorCallback}
-          errorMessage={errorMessage}
-        />
-      }
-    >
-      <Suspense fallback={<div>Generic Loading message...</div>}>
-        <CreateExpenseClaim />
-      </Suspense>
-    </ErrorBoundary>
-  );
-
-  // @desc   announcement page (index and display)
-  // @route  /home/outreach/announcement (index) and /home/outreach/announcement/display
-  // @access private
-  const displayAnnouncementsElement = (
-    <ErrorBoundary
-      fallback={
-        <ErrorFallback
-          isError={isError}
-          errorCallback={errorCallback}
-          errorMessage={errorMessage}
-        />
-      }
-    >
-      <Suspense fallback={<div>Generic Loading message...</div>}>
-        <DisplayAnnouncements />
-      </Suspense>
-    </ErrorBoundary>
-  );
-
-  // @desc   announcement page (create)
-  // @route  /home/outreach/announcement/create
-  // @access private
-  const createAnnouncementElement = (
-    <ErrorBoundary
-      fallback={
-        <ErrorFallback
-          isError={isError}
-          errorCallback={errorCallback}
-          errorMessage={errorMessage}
-        />
-      }
-    >
-      <Suspense fallback={<div>Generic Loading message...</div>}>
-        <CreateAnnouncement />
-      </Suspense>
-    </ErrorBoundary>
-  );
-
-  // @desc   announcement page (display single announcement)
-  // @route  /home/outreach/announcement/display/:announcementId
-  // @access private
-  const displayAnnouncementElement = (
-    <ErrorBoundary
-      fallback={
-        <ErrorFallback
-          isError={isError}
-          errorCallback={errorCallback}
-          errorMessage={errorMessage}
-        />
-      }
-    >
-      <Suspense fallback={<div>Generic Loading message...</div>}>
-        <DisplayAnnouncement />
-      </Suspense>
-    </ErrorBoundary>
-  );
-
-  // @desc   event-creator page (index and display)
-  // @route  /home/outreach/event-creator (index) and /home/outreach/event-creator/display
-  // @access private
-  const displayEventsElement = (
-    <ErrorBoundary
-      fallback={
-        <ErrorFallback
-          isError={isError}
-          errorCallback={errorCallback}
-          errorMessage={errorMessage}
-        />
-      }
-    >
-      <Suspense fallback={<div>Generic Loading message...</div>}>
-        <DisplayEvents />
-      </Suspense>
-    </ErrorBoundary>
-  );
-
-  // @desc   event-creator page (create)
-  // @route  /home/outreach/event-creator/create
-  // @access private
-  const eventCreatorElement = (
-    <ErrorBoundary
-      fallback={
-        <ErrorFallback
-          isError={isError}
-          errorCallback={errorCallback}
-          errorMessage={errorMessage}
-        />
-      }
-    >
-      <Suspense fallback={<div>Generic Loading message...</div>}>
-        <EventCreator />
-      </Suspense>
-    </ErrorBoundary>
-  );
-
-  // @desc   survey-builder page (index and display)
-  // @route  /home/outreach/survey-builder (index) and /home/outreach/survey-builder/display
-  // @access private
-  const displaySurveysElement = (
-    <ErrorBoundary
-      fallback={
-        <ErrorFallback
-          isError={isError}
-          errorCallback={errorCallback}
-          errorMessage={errorMessage}
-        />
-      }
-    >
-      <Suspense fallback={<div>Generic Loading message...</div>}>
-        <DisplaySurveys />
-      </Suspense>
-    </ErrorBoundary>
-  );
-
-  // @desc   survey-builder page (create)
-  // @route  /home/outreach/survey-builder/create
-  // @access private
-  const surveyBuilderElement = (
-    <ErrorBoundary
-      fallback={
-        <ErrorFallback
-          isError={isError}
-          errorCallback={errorCallback}
-          errorMessage={errorMessage}
-        />
-      }
-    >
-      <Suspense fallback={<div>Generic Loading message...</div>}>
-        <SurveyBuilder />
-      </Suspense>
-    </ErrorBoundary>
-  );
-
-  // @desc   the directory page
-  // @route  /home/directory
-  // @access private
-  const directoryElement = (
-    <ErrorBoundary
-      fallback={
-        <ErrorFallback
-          isError={isError}
-          errorCallback={errorCallback}
-          errorMessage={errorMessage}
-        />
-      }
-    >
-      <Suspense fallback={<div>Generic Loading message...</div>}>
-        <Directory />
-      </Suspense>
-    </ErrorBoundary>
-  );
-
-  const resourceElement = (
-    <ErrorBoundary
-      fallback={
-        <ErrorFallback
-          isError={isError}
-          errorCallback={errorCallback}
-          errorMessage={errorMessage}
-        />
-      }
-    >
-      <Suspense fallback={<div>Generic Loading message...</div>}>
-        <Resource />
-      </Suspense>
-    </ErrorBoundary>
-  );
-
-  // @desc   catch all page
-  // @route  *
-  // @access public
-  const notFoundElement = (
-    <ErrorBoundary
-      fallback={
-        <ErrorFallback
-          isError={isError}
-          errorCallback={errorCallback}
-          errorMessage={errorMessage}
-        />
-      }
-    >
-      <Suspense fallback={<div>Generic Loading message...</div>}>
-        <NotFound />
-      </Suspense>
-    </ErrorBoundary>
-  );
+  // const rootIndexWrapper = (
+  //   <ErrorSuspenseHOC
+  //   // <ErrorBoundary
+  //   //   fallback={
+  //   //     <ErrorFallback
+  //   //       isError={isError}
+  //   //       errorCallback={errorCallback}
+  //   //       errorMessage={errorMessage}
+  //   //     />
+  //   //   }
+  //   // >
+  //   //   <Suspense fallback={<div>Generic Loading message...</div>}>
+  //   //     <PublicLayout />
+  //   //   </Suspense>
+  //   // </ErrorBoundary>
+  // );
 
   return (
     <MantineProvider withGlobalStyles withNormalizeCSS theme={themeObject}>
       <CustomFonts />
       <Routes>
-        {/* these are public routes */}
-        <Route path="/" element={loginElement} />
-        {/* <Route index element={loginElement} /> */}
-        <Route path="login" element={loginElement} />
-        <Route path="register" element={registerElement} />
+        {
+          // @desc   the login page
+          // @route  /login
+          // @access public
+        }
+        <Route path="/" element={<LoginWrapper />} />
+        <Route index element={<LoginWrapper />} />
+        <Route path="login" element={<LoginWrapper />} />
+        {
+          // @desc   the register page
+          // @route  /register
+          // @access public
+        }
+        <Route path="register" element={<RegisterWrapper />} />
 
         {/* these are protected routes */}
         {/* all roles are allowed to view the protected home page */}
@@ -628,89 +179,139 @@ function App() {
         </Route>
       </Route> */
         }
+        {
+          // @desc   the parent component for the entire app (logged in users only)
+          // @route  /home
+          // @access private
+        }
+        <Route path="home" element={<HomeWrapper />}>
+          <Route index element={<HomeWrapper />} />
 
-        <Route path="home" element={homeIndexWrapper}>
-          <Route index element={homeElement} />
           {/* DEV TEST ROUTES */}
           <Route path="dev-testing" element={<DevTesting />} />
-          {/* <Route path="home" element={homeElement} /> */}
 
-          {/* dashboard */}
+          {
+            // @desc   the dashboard page
+            // @route  /home/dashboard
+            // @access private
+          }
           <Route path="dashboard">
-            <Route index element={dashboardElement} />
-            <Route path=":chartKind" element={displayResponsiveChartElement} />
+            <Route index element={<DashboardWrapper />} />
+            {
+              // @desc   the responsive chart page
+              // @route  /home/dashboard/responsive-chart
+              // @access private
+            }
+            <Route path=":chartKind" element={<ResponsiveChartWrapper />} />
           </Route>
 
-          {/* customer */}
+          {
+            // @desc   customer page (index and display)
+            // @route  /home/customer (index) and /home/customer/display
+            // @access private
+          }
           <Route path="customer">
-            <Route index element={displayCustomersElement} />
-            <Route path="create" element={createCustomerElement} />
-            <Route path="display" element={displayCustomersElement} />
+            <Route index element={<CustomerWrapper />} />
+            {/* <Route path="create" element={createCustomerElement} /> */}
+            <Route path="display" element={<CustomerWrapper />} />
           </Route>
 
-          {/* comment */}
+          {
+            // @desc   comment page (index and display)
+            // @route  /home/product/comment (index) and /home/product/comment/display
+            // @access private
+          }
           <Route path="comment">
-            <Route index element={displayCommentsElement} />
-            <Route path="display" element={displayCommentsElement} />
+            <Route index element={<CommentWrapper />} />
+            <Route path="display" element={<CommentWrapper />} />
           </Route>
 
-          {/* file upload */}
-          <Route path="file-upload">
-            <Route index element={displayFileUploadsElement} />
-            <Route path="display" element={displayFileUploadsElement} />
-          </Route>
-
-          {/* product */}
+          {
+            // @desc   products page
+            // @route  /home/product/create
+            // @access private
+          }
           <Route path="product">
-            <Route index element={createProductElement} />
-            <Route path="create" element={createProductElement} />
+            <Route index element={<ProductWrapper />} />
+            <Route path="create" element={<ProductWrapper />} />
             {/* <Route path="display" element={displayProductsElement} /> */}
           </Route>
 
-          {/* repair-ticket */}
+          {
+            // @desc   repair-ticket page (index and display)
+            // @route  /home/repair-ticket (index) and /home/repair-ticket/display
+            // @access private
+          }
           <Route path="repair-ticket">
-            <Route index element={displayRepairTicketsElement} />
-            <Route path="create" element={createRepairTicketElement} />
-            <Route path="display" element={displayRepairTicketsElement} />
+            <Route index element={<RepairTicketWrapper />} />
+            <Route path="create" element={<RepairTicketWrapper />} />
+            {/* <Route path="display" element={displayRepairTicketsElement} /> */}
           </Route>
 
           {/* actions */}
           <Route path="actions">
+            {
+              // @desc   announcement page (create)
+              // @route  /home/actions/announcement/create
+              // @access private
+            }
             <Route path="announcement">
-              <Route index element={createAnnouncementElement} />
-              <Route path="create" element={createAnnouncementElement} />
+              <Route index element={<CreateAnnouncementWrapper />} />
+              <Route path="create" element={<CreateAnnouncementWrapper />} />
               <Route
                 path=":announcementId"
-                element={displayAnnouncementElement}
+                element={<DisplayAnnouncementWrapper />}
               />
             </Route>
 
+            {
+              // @desc   event-creator page (index and display)
+              // @route  /home/actions/event (index) and /home/actions/event/display
+              // @access private
+            }
             <Route path="event">
-              <Route index element={displayEventsElement} />
-              <Route path="create" element={eventCreatorElement} />
+              <Route index element={<DisplayEventsWrapper />} />
+              <Route path="create" element={<CreateEventWrapper />} />
             </Route>
 
+            {
+              // @desc   expense-claim page (index and display)
+              // @route  /home/actions/expense-claim (index) and /home/actions/expense-claim/display
+              // @access private
+            }
             <Route path="expense-claim">
-              <Route index element={displayExpenseClaimsElement} />
-              <Route path="create" element={createExpenseClaimElement} />
+              <Route index element={<DisplayExpenseClaimsWrapper />} />
+              <Route path="create" element={<CreateExpenseClaimWrapper />} />
             </Route>
 
+            {
+              // @desc   survey-builder page (create)
+              // @route  /home/actions/survey-builder/create
+              // @access private
+            }
             <Route path="survey">
-              <Route index element={surveyBuilderElement} />
-              <Route path="create" element={surveyBuilderElement} />
-              <Route path="display" element={displaySurveysElement} />
+              <Route index element={<CreateSurveyWrapper />} />
+              <Route path="create" element={<CreateSurveyWrapper />} />
+              <Route path="display" element={<DisplaySurveysWrapper />} />
             </Route>
           </Route>
 
-          {/* directory */}
-          <Route path="directory" element={directoryElement} />
+          {
+            // @desc   the directory page
+            // @route  /home/directory
+            // @access private
+          }
+          <Route path="directory" element={<DirectoryWrapper />} />
 
-          {/* resource */}
-          <Route path="resource" element={resourceElement} />
+          <Route path="resource" element={<ResourceWrapper />} />
         </Route>
 
-        {/* catch all */}
-        <Route path="*" element={notFoundElement} />
+        {
+          // @desc   catch all page
+          // @route  *
+          // @access public
+        }
+        <Route path="*" element={<NotFoundWrapper />} />
       </Routes>
     </MantineProvider>
   );

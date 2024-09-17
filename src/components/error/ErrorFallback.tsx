@@ -8,11 +8,11 @@ import {
 } from "@mantine/core";
 import { InvalidTokenError } from "jwt-decode";
 import { TbExclamationMark } from "react-icons/tb";
-import { COLORS_SWATCHES } from "../../../constants/data";
-import { useGlobalState } from "../../../hooks";
-import { returnThemeColors } from "../../../utils";
+import { COLORS_SWATCHES } from "../../constants/data";
+import { useGlobalState } from "../../hooks";
+import { returnThemeColors } from "../../utils";
 
-function ErrorFallback1({
+function ErrorFallback({
   error,
   resetErrorBoundary,
 }: {
@@ -70,4 +70,4 @@ function ErrorFallback1({
   );
 }
 
-export default ErrorFallback1;
+export default ErrorFallback;

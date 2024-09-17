@@ -25,7 +25,6 @@ import { AccessibleButton } from "../../../accessibleInputs/AccessibleButton";
 import AccessibleImage from "../../../accessibleInputs/AccessibleImage";
 import { ResponsivePieChart } from "../../../charts";
 import type { PieChartData } from "../../../charts/responsivePieChart/types";
-import { Comment } from "../../../comment";
 import { CustomRating } from "../../../customRating/CustomRating";
 import { NotificationModal } from "../../../notificationModal";
 import { ANNOUNCEMENT_ROUTE_PATHS } from "../../constants";
@@ -34,6 +33,7 @@ import { displayAnnouncementAction } from "./actions";
 import { displayAnnouncementReducer } from "./reducers";
 import { initialDisplayAnnouncementState } from "./state";
 import { updateRatingResponse } from "./utils";
+import { Comment } from "../../../comment/Comment";
 
 function DisplayAnnouncement() {
   const [displayAnnouncementState, displayAnnouncementDispatch] = useReducer(

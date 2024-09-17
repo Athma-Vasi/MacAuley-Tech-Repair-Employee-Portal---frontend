@@ -16,11 +16,7 @@ import { TbCheck, TbExclamationCircle } from "react-icons/tb";
 import { COLORS_SWATCHES } from "../../../constants/data";
 import { useGlobalState } from "../../../hooks";
 import { logState, returnThemeColors } from "../../../utils";
-import {
-  displayOrientationLabel,
-  IMG_ORIENTATION_SLIDER_DATA,
-  IMG_QUALITY_SLIDER_DATA,
-} from "../../imageUpload/constants";
+
 import {
   AccessibleFileInput,
   type ModifiedFile,
@@ -35,6 +31,9 @@ import {
 } from "./actions";
 import {
   ALLOWED_FILE_EXTENSIONS_REGEX,
+  displayOrientationLabel,
+  IMG_ORIENTATION_SLIDER_DATA,
+  IMG_QUALITY_SLIDER_DATA,
   MAX_IMAGE_SIZE,
   MAX_IMAGES,
 } from "./constants";
