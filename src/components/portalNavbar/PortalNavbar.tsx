@@ -43,7 +43,7 @@ function PortalNavbar({ openedNavbar }: { openedNavbar: boolean }) {
         description: "Will navigate to home page",
         icon: <TbHome2 />,
         name: "home",
-        onChange: () => navigate("/home"),
+        onClick: () => navigate("/home"),
       }}
     />
   );
@@ -54,7 +54,7 @@ function PortalNavbar({ openedNavbar }: { openedNavbar: boolean }) {
         description: "Will navigate to dashboard page",
         icon: <TbChartDots2 />,
         name: "dashboard",
-        onChange: () => navigate("/home/dashboard"),
+        onClick: () => navigate("/home/dashboard"),
       }}
     />
   );
@@ -65,7 +65,7 @@ function PortalNavbar({ openedNavbar }: { openedNavbar: boolean }) {
         description: "Will navigate to customer page",
         icon: <TbUser />,
         name: "customer",
-        onChange: () => navigate("/home/customer"),
+        onClick: () => navigate("/home/customer"),
       }}
     />
   );
@@ -76,7 +76,7 @@ function PortalNavbar({ openedNavbar }: { openedNavbar: boolean }) {
         description: "Will navigate to comment page",
         icon: <TbBrandWechat />,
         name: "comment",
-        onChange: () => navigate("/home/comment"),
+        onClick: () => navigate("/home/comment"),
       }}
     />
   );
@@ -87,7 +87,7 @@ function PortalNavbar({ openedNavbar }: { openedNavbar: boolean }) {
   //       description: "Will navigate to file upload page",
   //       icon: <TbBookUpload />,
   //       name: "fileUpload",
-  //       onChange: () => navigate("/home/file-upload"),
+  //       onClick: () => navigate("/home/file-upload"),
   //     }}
   //   />
   // );
@@ -98,7 +98,7 @@ function PortalNavbar({ openedNavbar }: { openedNavbar: boolean }) {
         description: "Will navigate to product page",
         icon: <TbAffiliate />,
         name: "product",
-        onChange: () => navigate("/home/product"),
+        onClick: () => navigate("/home/product"),
       }}
     />
   );
@@ -109,7 +109,7 @@ function PortalNavbar({ openedNavbar }: { openedNavbar: boolean }) {
         description: "Will navigate to repair page",
         icon: <TbTool />,
         name: "repair",
-        onChange: () => navigate("/home/repair-ticket"),
+        onClick: () => navigate("/home/repair-ticket"),
       }}
     />
   );
@@ -120,7 +120,7 @@ function PortalNavbar({ openedNavbar }: { openedNavbar: boolean }) {
         description: "Will navigate to expense claim page",
         icon: <TbReceipt />,
         name: "expenseClaim",
-        onChange: () => navigate("/home/actions/expense-claim"),
+        onClick: () => navigate("/home/actions/expense-claim"),
       }}
     />
   );
@@ -131,7 +131,7 @@ function PortalNavbar({ openedNavbar }: { openedNavbar: boolean }) {
         description: "Will navigate to announcement page",
         icon: <TbSpeakerphone />,
         name: "announcement",
-        onChange: () => navigate("/home/actions/announcement"),
+        onClick: () => navigate("/home/actions/announcement"),
       }}
     />
   );
@@ -142,7 +142,7 @@ function PortalNavbar({ openedNavbar }: { openedNavbar: boolean }) {
         description: "Will navigate to survey page",
         icon: <TbChartInfographic />,
         name: "survey",
-        onChange: () => navigate("/home/actions/survey"),
+        onClick: () => navigate("/home/actions/survey"),
       }}
     />
   );
@@ -153,7 +153,7 @@ function PortalNavbar({ openedNavbar }: { openedNavbar: boolean }) {
         description: "Will navigate to event page",
         icon: <TbCalendarEvent />,
         name: "event",
-        onChange: () => navigate("/home/actions/event"),
+        onClick: () => navigate("/home/actions/event"),
       }}
     />
   );
@@ -164,7 +164,7 @@ function PortalNavbar({ openedNavbar }: { openedNavbar: boolean }) {
         description: "Will navigate to directory page",
         icon: <TbDatabase />,
         name: "directory",
-        onChange: () => navigate("/home/directory"),
+        onClick: () => navigate("/home/directory"),
       }}
     />
   );
@@ -175,7 +175,7 @@ function PortalNavbar({ openedNavbar }: { openedNavbar: boolean }) {
         description: "Will navigate to dev testing page",
         icon: <TbTestPipe />,
         name: "devTesting",
-        onChange: () => navigate("/home/dev-testing"),
+        onClick: () => navigate("/home/dev-testing"),
       }}
     />
   );
@@ -186,7 +186,7 @@ function PortalNavbar({ openedNavbar }: { openedNavbar: boolean }) {
         description: "Will navigate to resource page",
         icon: <TbSchema />,
         name: "resource",
-        onChange: () => navigate("/home/resource"),
+        onClick: () => navigate("/home/resource"),
       }}
     />
   );
@@ -201,7 +201,7 @@ function PortalNavbar({ openedNavbar }: { openedNavbar: boolean }) {
       // style={width <= 1024 ? { zIndex: 5 } : {}}
     >
       <ScrollArea styles={() => scrollBarStyle} offsetScrollbars>
-        <Stack>
+        <Stack w={300} style={{ outline: "solid" }}>
           {homeNavLink}
           {dashboardNavLink}
           {customerNavLink}

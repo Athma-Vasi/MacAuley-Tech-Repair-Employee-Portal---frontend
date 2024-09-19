@@ -38,6 +38,10 @@ function PortalHeader({ openedHeader, setOpenedHeader }: PortalHeaderProps) {
     appThemeColors: { backgroundColor },
   } = returnThemeColors({ themeObject, colorsSwatches: COLORS_SWATCHES });
 
+  if (username === undefined) {
+    return null;
+  }
+
   return (
     <Header height={{ base: 50, md: 70 }} p="md" bg={backgroundColor}>
       <Flex justify="space-between" align="center" h="100%">

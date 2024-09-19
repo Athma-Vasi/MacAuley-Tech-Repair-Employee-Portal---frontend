@@ -568,7 +568,7 @@ function UserAvatar() {
         description: "Select color scheme, primary color, and font family",
         icon: <TbColorFilter />,
         name: "appearance",
-        onChange: () => {
+        onClick: () => {
           userAvatarDispatch({
             type: userAvatarAction.setIsAppearanceNavLinkActive,
             payload: !isAppearanceNavLinkActive,
@@ -585,7 +585,7 @@ function UserAvatar() {
         description: "View profile information",
         icon: <TbUserCircle />,
         name: "profile",
-        onChange: () => {
+        onClick: () => {
           userAvatarDispatch({
             type: userAvatarAction.setIsProfileNavLinkActive,
             payload: !isProfileNavLinkActive,
@@ -602,7 +602,7 @@ function UserAvatar() {
         description: "Sign out",
         icon: <TbLogout />,
         name: "logout",
-        onChange: () => {
+        onClick: () => {
           userAvatarDispatch({
             type: userAvatarAction.setTriggerLogoutSubmit,
             payload: true,

@@ -20,6 +20,7 @@ import CreateExpenseClaimWrapper from "./components/expenseClaim/create";
 import HomeWrapper from "./components/home";
 import LoginWrapper from "./components/login";
 import NotFoundWrapper from "./components/notFound";
+import PortalLayoutWrapper from "./components/portalLayout";
 import ProductWrapper from "./components/product";
 import RegisterWrapper from "./components/register";
 import RepairTicketWrapper from "./components/repairTicket";
@@ -184,7 +185,7 @@ function App() {
           // @route  /home
           // @access private
         }
-        <Route path="home" element={<HomeWrapper />}>
+        <Route path="home" element={<PortalLayoutWrapper />}>
           <Route index element={<HomeWrapper />} />
 
           {/* DEV TEST ROUTES */}

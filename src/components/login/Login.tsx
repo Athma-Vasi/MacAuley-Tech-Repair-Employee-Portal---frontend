@@ -1,4 +1,13 @@
-import { Flex, Group, Stack, Text, Title } from "@mantine/core";
+import {
+  Center,
+  Flex,
+  Group,
+  PasswordInput,
+  Stack,
+  Text,
+  TextInput,
+  Title,
+} from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useEffect, useReducer, useRef } from "react";
 import { useErrorBoundary } from "react-error-boundary";
@@ -15,11 +24,9 @@ import {
   returnThemeColors,
 } from "../../utils";
 import { AccessibleButton } from "../accessibleInputs/AccessibleButton";
-import { AccessiblePasswordInput } from "../accessibleInputs/AccessiblePasswordInput";
-import { AccessibleTextInput } from "../accessibleInputs/text/AccessibleTextInput";
 import { NotificationModal } from "../notificationModal";
+import { useStyles } from "../styles";
 import { loginAction } from "./actions";
-import { LOGIN_ROUTE_PATHS, returnLoginStepperPages } from "./constants";
 import { loginReducer } from "./reducers";
 import { initialLoginState } from "./state";
 
@@ -52,6 +59,8 @@ function Login() {
     },
   ] = useDisclosure(false);
 
+  const { classes } = useStyles({});
+
   const usernameRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
     usernameRef.current?.focus();
@@ -80,17 +89,34 @@ function Login() {
 
       const loginResult = await fetchRequestPOSTSafe({
         closeSubmitFormModal,
+        customUrl: "http://localhost:5500/auth/login",
         dispatch: loginDispatch,
         fetchAbortController,
         isComponentMounted,
         isSubmittingAction: loginAction.setIsSubmitting,
         isSuccessfulAction: loginAction.setIsSuccessful,
-        roleResourceRoutePaths: LOGIN_ROUTE_PATHS,
         openSubmitFormModal,
         roles: ["Employee"], // public route, no roles required
         schema,
         triggerFormSubmitAction: loginAction.setTriggerFormSubmit,
       });
+
+      // const response = await fetch("http://localhost:5500/auth/login", {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
+      //   credentials: "include",
+
+      //   body: JSON.stringify({ schema }),
+      // });
+
+      // const data = await response.json();
+
+      // console.group("loginFormSubmit");
+      // console.log("response", response);
+      // console.log("data", data);
+      // console.groupEnd();
 
       if (loginResult.err) {
         showBoundary(loginResult.val.data);
@@ -169,33 +195,33 @@ function Login() {
     return successfulState;
   }
 
-  const loginStepperPages = returnLoginStepperPages();
-
   const usernameTextInput = (
-    <AccessibleTextInput
-      attributes={{
-        invalidValueAction: loginAction.setPageInError,
-        name: "username",
-        parentDispatch: loginDispatch,
-        required: true,
-        stepperPages: loginStepperPages,
-        value: username,
-        validValueAction: loginAction.setUsername,
+    <TextInput
+      label="Username"
+      placeholder="Enter your username"
+      value={username}
+      onChange={(event) => {
+        loginDispatch({
+          action: loginAction.setUsername,
+          payload: event.currentTarget.value,
+        });
       }}
+      required
     />
   );
 
   const passwordTextInput = (
-    <AccessiblePasswordInput
-      attributes={{
-        invalidValueAction: loginAction.setPageInError,
-        name: "password",
-        parentDispatch: loginDispatch,
-        required: true,
-        stepperPages: loginStepperPages,
-        value: password,
-        validValueAction: loginAction.setPassword,
+    <PasswordInput
+      label="Password"
+      placeholder="Enter your password"
+      value={password}
+      onChange={(event) => {
+        loginDispatch({
+          action: loginAction.setPassword,
+          payload: event.currentTarget.value,
+        });
       }}
+      required
     />
   );
 
@@ -224,7 +250,7 @@ function Login() {
 
   const displayTitle = (
     <Stack>
-      <Flex align="center" justify="center">
+      <Center>
         <Title order={3} color="dark" style={{ letterSpacing: "0.30rem" }}>
           MACAULEY
         </Title>
@@ -234,32 +260,36 @@ function Login() {
         <Title order={3} color="green">
           REPAIR
         </Title>
-      </Flex>
+      </Center>
 
-      <Text size="lg" color="dark">
-        Employee Portal
-      </Text>
+      <Center>
+        <Text size="lg" color="dark">
+          Employee Portal
+        </Text>
+      </Center>
     </Stack>
   );
 
   const displayInputs = (
-    <Stack w="100%">
+    <Stack>
       {usernameTextInput}
       {passwordTextInput}
     </Stack>
   );
 
   const displayLoginButton = (
-    <Group w="100%" position="right">
+    <Group position="right">
       {loginButton}
     </Group>
   );
 
   const displayLinkToRegister = (
-    <Flex align="center" justify="center" columnGap="sm" w="100%">
+    <Flex align="center" justify="center" columnGap="sm">
       <Text color="dark">Don&apos;t have an account?</Text>
-      <Text color={themeColorShade}>
-        <Link to="/register">Create one!</Link>
+      <Text>
+        <Link to="/register" style={{ color: themeColorShade }}>
+          Create one!
+        </Link>
       </Text>
     </Flex>
   );
@@ -277,32 +307,46 @@ function Login() {
     />
   );
 
-  const displayLoginComponent = (
-    <Flex
-      direction="column"
-      align="center"
-      justify="center"
-      w={width < 480 ? 350 : width <= 1024 ? 480 : 640}
-    >
-      {displaySubmitSuccessNotificationModal}
-      {displayTitle}
-      {displayInputs}
-      {displayLoginButton}
-      {displayLinkToRegister}
-    </Flex>
+  // const displayLoginComponent = (
+  //   <Flex
+  //     direction="column"
+  //     align="center"
+  //     justify="center"
+  //     w={width < 480 ? 350 : width <= 1024 ? 480 : 640}
+  //   >
+  //     {displaySubmitSuccessNotificationModal}
+  //     {displayTitle}
+  //     {displayInputs}
+  //     {displayLoginButton}
+  //     {displayLinkToRegister}
+  //   </Flex>
+  // );
+
+  // return (
+  //   <Flex
+  //     bg={backgroundColor}
+  //     w="100%"
+  //     h="100vh"
+  //     align="center"
+  //     justify="center"
+  //   >
+  //     {displayLoginComponent}
+  //   </Flex>
+  // );
+
+  const login = (
+    <div className={classes.wrapper}>
+      <Stack>
+        {displaySubmitSuccessNotificationModal}
+        {displayTitle}
+        {displayInputs}
+        {displayLoginButton}
+        {displayLinkToRegister}
+      </Stack>
+    </div>
   );
 
-  return (
-    <Flex
-      bg={backgroundColor}
-      w="100%"
-      h="100vh"
-      align="center"
-      justify="center"
-    >
-      {displayLoginComponent}
-    </Flex>
-  );
+  return login;
 }
 
 export default Login;

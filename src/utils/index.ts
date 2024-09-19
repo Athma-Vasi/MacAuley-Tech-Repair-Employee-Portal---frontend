@@ -2796,7 +2796,7 @@ async function fetchRequestPOSTSafe<
     isSuccessfulAction: IsSuccessfulAction;
     openSubmitFormModal: () => void;
     requestBody?: string | FormData;
-    roleResourceRoutePaths: RoleResourceRoutePaths;
+    roleResourceRoutePaths?: RoleResourceRoutePaths;
     roles: UserRoles;
     schema?: Record<string, unknown>;
     triggerFormSubmitAction: TriggerFormSubmitAction;
@@ -2815,7 +2815,7 @@ async function fetchRequestPOSTSafe<
     ? "admin"
     : "employee";
   const url = customUrl ??
-    urlBuilder({ path: roleResourceRoutePaths[userRole] });
+    urlBuilder({ path: roleResourceRoutePaths?.[userRole] ?? "" });
 
   const body = requestBody ??
     JSON.stringify({ schema: schema ?? {} });
@@ -2829,6 +2829,11 @@ async function fetchRequestPOSTSafe<
     method: "POST",
     signal: fetchAbortController.signal,
   };
+
+  console.group("fetchRequestPOSTSafe");
+  console.log("url", url.toString());
+  console.log("requestInit", requestInit);
+  console.groupEnd();
 
   try {
     const response: Response = await fetch(url.toString(), requestInit);

@@ -20,6 +20,7 @@ const loginReducersMap = new Map<
     [loginAction.setPageInError, loginReducer_setPageInError],
     [loginAction.setPassword, loginReducer_setPassword],
     [loginAction.setTriggerFormSubmit, loginReducer_setTriggerFormSubmit],
+    [loginAction.setUsername, loginReducer_setUsername],
 ]);
 
 function loginReducer_setIsLoading(
@@ -83,6 +84,16 @@ function loginReducer_setTriggerFormSubmit(
     return {
         ...state,
         triggerFormSubmit: dispatch.payload as boolean,
+    };
+}
+
+function loginReducer_setUsername(
+    state: LoginState,
+    dispatch: LoginDispatch,
+): LoginState {
+    return {
+        ...state,
+        username: dispatch.payload as string,
     };
 }
 

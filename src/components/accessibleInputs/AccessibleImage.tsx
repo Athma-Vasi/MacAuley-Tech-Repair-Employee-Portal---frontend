@@ -50,7 +50,7 @@ function AccessibleImage({ attributes, key }: AccessibleImageProps) {
     } = useGlobalState();
 
     const [loadingOverlayVisible, { toggle: toggleLoadingOverlay }] =
-        useDisclosure(false);
+        useDisclosure(true);
     const [isImageLoading, setIsImageLoading] = useState(true);
     const [isImageLoadFailed, setIsImageLoadFailed] = useState(false);
 

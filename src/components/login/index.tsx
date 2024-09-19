@@ -1,8 +1,8 @@
+import { lazy } from "react";
 import ErrorSuspenseHOC from "../error/ErrorSuspenseHOC";
-import Login from "./Login";
 
 function LoginWrapper() {
-    return ErrorSuspenseHOC(Login)({});
+    return ErrorSuspenseHOC(lazy(() => import("./Login")))({});
 }
 
 export default LoginWrapper;

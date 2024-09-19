@@ -1,7 +1,5 @@
-import { faCheck, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Flex, Grid, Group, Highlight, Text } from "@mantine/core";
-import { TbCheck, TbExclamationCircle } from "react-icons/tb";
+import { TbCheck, TbExclamationCircle, TbInfoCircle } from "react-icons/tb";
 
 import { COLORS_SWATCHES } from "../../constants/data";
 import type { ThemeObject } from "../../context/globalProvider/types";
@@ -178,7 +176,7 @@ function createAccessibleCheckboxSelectionsTextElements({
   });
 
   const selectedIcon = theme === "default"
-    ? <FontAwesomeIcon icon={faCheck} color={greenColorShade} />
+    ? <TbCheck color={greenColorShade} />
     : null;
 
   const stringifiedValue = Array.isArray(value)
@@ -202,7 +200,7 @@ function createAccessibleCheckboxSelectionsTextElements({
   );
 
   const deselectedIcon = theme === "default"
-    ? <FontAwesomeIcon icon={faInfoCircle} color={redColorShade} />
+    ? <TbInfoCircle color={redColorShade} />
     : null;
 
   const deselectedText = "No selection made.";
@@ -244,9 +242,7 @@ function createAccessibleRadioScreenreaderTextElements({
     colorsSwatches: COLORS_SWATCHES,
   });
 
-  const icon = theme === "default"
-    ? <FontAwesomeIcon icon={faCheck} color={greenColorShade} />
-    : null;
+  const icon = theme === "default" ? <TbCheck color={greenColorShade} /> : null;
 
   const screenreaderTextElement = (
     <Text
@@ -298,7 +294,7 @@ function createAccessibleButtonScreenreaderTextElements({
   });
 
   const enabledIcon = theme === "default"
-    ? <FontAwesomeIcon icon={faCheck} color={greenColorShade} />
+    ? <TbCheck color={greenColorShade} />
     : null;
 
   const defaultEnabledText =
@@ -318,7 +314,7 @@ function createAccessibleButtonScreenreaderTextElements({
   );
 
   const disabledIcon = theme === "default"
-    ? <FontAwesomeIcon icon={faInfoCircle} color={redColorShade} />
+    ? <TbInfoCircle color={redColorShade} />
     : null;
 
   const defaultDisabledText =
@@ -466,9 +462,7 @@ function createAccessibleSliderScreenreaderTextElements({
     colorsSwatches: COLORS_SWATCHES,
   });
 
-  const icon = theme === "default"
-    ? <FontAwesomeIcon icon={faCheck} color={greenColorShade} />
-    : null;
+  const icon = theme === "default" ? <TbCheck color={greenColorShade} /> : null;
 
   const screenreaderTextElement = (
     <Text
@@ -513,7 +507,7 @@ function createAccessibleSwitchOnOffTextElements({
   });
 
   const switchOnIcon = theme === "default"
-    ? <FontAwesomeIcon icon={faCheck} color={greenColorShade} />
+    ? <TbCheck color={greenColorShade} />
     : null;
 
   const switchOnText = switchOnDescription ?? `${name} is on.`;
@@ -531,7 +525,7 @@ function createAccessibleSwitchOnOffTextElements({
   );
 
   const switchOffIcon = theme === "default"
-    ? <FontAwesomeIcon icon={faInfoCircle} color={redColorShade} />
+    ? <TbInfoCircle color={redColorShade} />
     : null;
 
   const switchOffText = switchOffDescription ?? `${name} is off.`;

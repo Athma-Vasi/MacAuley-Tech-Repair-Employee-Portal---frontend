@@ -25,7 +25,8 @@ type AccessibleNavLinkAttributes = {
     label?: ReactNode;
     name: string;
     noWrap?: boolean;
-    onChange: (opened: boolean) => void;
+    onChange?: (opened: boolean) => void;
+    onClick: () => void;
     opened?: boolean;
     rightSection?: ReactNode;
     variant?: Variants<"light" | "filled" | "subtle">;
@@ -54,6 +55,7 @@ function AccessibleNavLink({ attributes }: AccessibleNavLinkProps) {
         name,
         noWrap = false,
         onChange,
+        onClick,
         opened = false,
         rightSection = null,
         variant = "light",
@@ -73,7 +75,7 @@ function AccessibleNavLink({ attributes }: AccessibleNavLinkProps) {
             childrenOffset={childrenOffset}
             color={color}
             defaultOpened={defaultOpened}
-            description={description}
+            // description={description}
             disableRightSectionRotation={disableRightSectionRotation}
             disabled={disabled}
             icon={icon}
@@ -81,6 +83,7 @@ function AccessibleNavLink({ attributes }: AccessibleNavLinkProps) {
             name={name}
             noWrap={noWrap}
             onChange={onChange}
+            onClick={onClick}
             opened={opened}
             rightSection={rightSection}
             variant={variant}
@@ -90,7 +93,7 @@ function AccessibleNavLink({ attributes }: AccessibleNavLinkProps) {
     );
 
     return (
-        <Container w={100} key={`${name}-${index}`}>
+        <Container key={`${name}-${index}`}>
             {navLink}
             <Box
                 style={
