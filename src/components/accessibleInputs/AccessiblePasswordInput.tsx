@@ -1,19 +1,29 @@
 import {
   Container,
-  MantineSize,
+  type MantineSize,
   PasswordInput,
   Popover,
   Stack,
   Text,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { ChangeEvent, Dispatch, ReactNode, RefObject, useState } from "react";
+import {
+  type ChangeEvent,
+  type Dispatch,
+  type ReactNode,
+  type RefObject,
+  useState,
+} from "react";
 import { TbCheck } from "react-icons/tb";
 
-import { COLORS_SWATCHES } from "../../constants/data";
+import {
+  COLORS_SWATCHES,
+  INPUT_MAX_WIDTH,
+  INPUT_MIN_WIDTH,
+} from "../../constants/data";
 import { VALIDATION_FUNCTIONS_TABLE } from "../../constants/validations";
 import { useGlobalState } from "../../hooks";
-import {
+import type {
   SetPageInErrorPayload,
   StepperPage,
   ValidationFunctionsTable,
@@ -27,7 +37,7 @@ import {
 
 type AccessiblePasswordInputAttributes<
   ValidValueAction extends string = string,
-  InvalidValueAction extends string = string
+  InvalidValueAction extends string = string,
 > = {
   disabled?: boolean;
   icon?: ReactNode;
@@ -44,13 +54,13 @@ type AccessiblePasswordInputAttributes<
   page?: number;
   parentDispatch: Dispatch<
     | {
-        action: ValidValueAction;
-        payload: string;
-      }
+      action: ValidValueAction;
+      payload: string;
+    }
     | {
-        action: InvalidValueAction;
-        payload: SetPageInErrorPayload;
-      }
+      action: InvalidValueAction;
+      payload: SetPageInErrorPayload;
+    }
   >;
   passwordValue?: string;
   placeholder?: string;
@@ -66,15 +76,23 @@ type AccessiblePasswordInputAttributes<
 
 type AccessiblePasswordInputProps<
   ValidValueAction extends string = string,
-  InvalidValueAction extends string = string
+  InvalidValueAction extends string = string,
 > = {
-  attributes: AccessiblePasswordInputAttributes<ValidValueAction, InvalidValueAction>;
+  attributes: AccessiblePasswordInputAttributes<
+    ValidValueAction,
+    InvalidValueAction
+  >;
 };
 
 function AccessiblePasswordInput<
   ValidValueAction extends string = string,
-  InvalidValueAction extends string = string
->({ attributes }: AccessiblePasswordInputProps<ValidValueAction, InvalidValueAction>) {
+  InvalidValueAction extends string = string,
+>(
+  { attributes }: AccessiblePasswordInputProps<
+    ValidValueAction,
+    InvalidValueAction
+  >,
+) {
   const {
     disabled = false,
     icon = null,
@@ -118,17 +136,20 @@ function AccessiblePasswordInput<
     generalColors: { greenColorShade },
   } = returnThemeColors({ themeObject, colorsSwatches: COLORS_SWATCHES });
 
-  const { full } = returnFullValidation({ name, stepperPages, validationFunctionsTable });
-  const isValueBufferValid =
-    typeof full === "function" ? full(valueBuffer) : full.test(valueBuffer);
+  const { full } = returnFullValidation({
+    name,
+    stepperPages,
+    validationFunctionsTable,
+  });
+  const isValueBufferValid = typeof full === "function"
+    ? full(valueBuffer)
+    : full.test(valueBuffer);
 
-  const leftIcon = isValueBufferValid ? (
-    icon ? (
-      icon
-    ) : (
-      <TbCheck color={greenColorShade} size={18} />
+  const leftIcon = isValueBufferValid
+    ? (
+      icon ? icon : <TbCheck color={greenColorShade} size={18} />
     )
-  ) : null;
+    : null;
 
   const validationTexts = returnValidationTexts({
     name,
@@ -147,10 +168,8 @@ function AccessiblePasswordInput<
       valueBuffer,
     });
 
-  const inputWidth = 330;
-
   return (
-    <Container w={350}>
+    <Container style={{ minWidth: INPUT_MIN_WIDTH, maxWidth: INPUT_MAX_WIDTH }}>
       <Popover
         opened={isPopoverOpened}
         position="bottom"
@@ -161,13 +180,11 @@ function AccessiblePasswordInput<
       >
         <Popover.Target>
           <PasswordInput
-            aria-describedby={
-              isValueBufferValid
-                ? // id of validValueTextElement
-                  `${name}-valid`
-                : // id of invalidValueTextElement
-                  `${name}-invalid`
-            }
+            aria-describedby={isValueBufferValid
+              // id of validValueTextElement
+              ? `${name}-valid`
+              // id of invalidValueTextElement
+              : `${name}-invalid`}
             aria-invalid={!isValueBufferValid}
             aria-label={name}
             aria-required={required}
@@ -214,18 +231,21 @@ function AccessiblePasswordInput<
             required={required}
             size={size}
             value={valueBuffer}
-            w={inputWidth}
             withAsterisk={withAsterisk}
           />
         </Popover.Target>
 
-        {isPopoverOpened && valueBuffer.length ? (
-          <Popover.Dropdown>
-            <Stack>
-              {isValueBufferValid ? validValueTextElement : invalidValueTextElement}
-            </Stack>
-          </Popover.Dropdown>
-        ) : null}
+        {isPopoverOpened && valueBuffer.length
+          ? (
+            <Popover.Dropdown>
+              <Stack>
+                {isValueBufferValid
+                  ? validValueTextElement
+                  : invalidValueTextElement}
+              </Stack>
+            </Popover.Dropdown>
+          )
+          : null}
       </Popover>
     </Container>
   );

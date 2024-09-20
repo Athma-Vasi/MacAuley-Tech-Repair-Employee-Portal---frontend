@@ -220,12 +220,17 @@ function Announcement() {
       validationKey: "textAreaInput",
     });
 
+    console.group(`paragraph ${index + 1}`);
+    console.log(paragraph);
+    console.groupEnd();
+
     const paragraphTextAreaInput = (
       <AccessibleTextAreaInput
         attributes={{
           dynamicIndexes: [index],
           invalidValueAction: announcementAction.setPageInError,
           name: `paragraph ${index + 1}`,
+          page: 1,
           parentDynamicDispatch: announcementDispatch,
           stepperPages: ANNOUNCEMENT_STEPPER_PAGES,
           validValueAction: announcementAction.setParagraph,
@@ -402,6 +407,7 @@ function Announcement() {
         pageElements: [firstPage, articlePage],
         parentDispatch: announcementDispatch,
         stepperPages: ANNOUNCEMENT_STEPPER_PAGES,
+        stepsInError: pagesInError,
         submitButton,
       }}
     />

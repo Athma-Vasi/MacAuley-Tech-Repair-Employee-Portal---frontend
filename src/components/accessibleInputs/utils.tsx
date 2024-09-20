@@ -766,11 +766,11 @@ function returnValidationTexts({
       const validation = validationFunctionsTable[validationKey ?? "allowAll"];
       const { partials } = validation;
 
-      console.group("returnValidationTexts");
-      console.log("inputName", inputName);
-      console.log("validationKey", validationKey);
-      console.log("validation", validation);
-      console.groupEnd();
+      // console.group("returnValidationTexts");
+      // console.log("inputName", inputName);
+      // console.log("validationKey", validationKey);
+      // console.log("validation", validation);
+      // console.groupEnd();
 
       const partialInvalidText = partials.length
         ? partials

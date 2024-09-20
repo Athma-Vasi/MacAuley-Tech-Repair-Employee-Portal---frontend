@@ -1,5 +1,6 @@
-import { type MantineSize, NativeSelect } from "@mantine/core";
+import { Container, type MantineSize, NativeSelect } from "@mantine/core";
 
+import { INPUT_MAX_WIDTH, INPUT_MIN_WIDTH } from "../../constants/data";
 import type { CheckboxRadioSelectData } from "../../types";
 import { splitCamelCase } from "../../utils";
 import type { SetFilterInputValuesDispatchData } from "../query/QueryFilter";
@@ -62,47 +63,54 @@ function AccessibleSelectInput<
   const label = attributes.label ?? splitCamelCase(name);
 
   return (
-    <NativeSelect
-      aria-describedby={describedBy}
-      aria-label={`${description}. Currently selected ${value}`}
-      aria-required={required}
-      data={data}
-      disabled={disabled}
-      label={label}
-      name={name}
-      onChange={(event: React.ChangeEvent<HTMLSelectElement>) => {
-        parentDispatch?.({
-          action: validValueAction,
-          payload: event.currentTarget.value as Payload,
-        });
-
-        if (setFilterInputValuesDispatchData) {
-          const {
-            fieldNamesOperatorsTypesMap,
-            searchFieldSelectInputData,
-            setFilterInputValuesDispatch,
-            selectInputsDataMap,
-          } = setFilterInputValuesDispatchData;
-
-          setFilterInputValuesDispatch({
+    <Container
+      style={{
+        minWidth: INPUT_MIN_WIDTH,
+        maxWidth: INPUT_MAX_WIDTH,
+      }}
+    >
+      <NativeSelect
+        aria-describedby={describedBy}
+        aria-label={`${description}. Currently selected ${value}`}
+        aria-required={required}
+        data={data}
+        disabled={disabled}
+        label={label}
+        name={name}
+        onChange={(event: React.ChangeEvent<HTMLSelectElement>) => {
+          parentDispatch?.({
             action: validValueAction,
-            payload: {
+            payload: event.currentTarget.value as Payload,
+          });
+
+          if (setFilterInputValuesDispatchData) {
+            const {
               fieldNamesOperatorsTypesMap,
               searchFieldSelectInputData,
+              setFilterInputValuesDispatch,
               selectInputsDataMap,
-              value: event.currentTarget.value,
-            },
-          });
-        }
+            } = setFilterInputValuesDispatchData;
 
-        onChange?.(event);
-      }}
-      ref={ref}
-      required={required}
-      size={size}
-      value={value}
-      withAsterisk={withAsterisk}
-    />
+            setFilterInputValuesDispatch({
+              action: validValueAction,
+              payload: {
+                fieldNamesOperatorsTypesMap,
+                searchFieldSelectInputData,
+                selectInputsDataMap,
+                value: event.currentTarget.value,
+              },
+            });
+          }
+
+          onChange?.(event);
+        }}
+        ref={ref}
+        required={required}
+        size={size}
+        value={value}
+        withAsterisk={withAsterisk}
+      />
+    </Container>
   );
 }
 

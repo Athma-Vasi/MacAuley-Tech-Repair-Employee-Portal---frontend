@@ -1,7 +1,6 @@
 import {
   Center,
   Flex,
-  Group,
   PasswordInput,
   Stack,
   Text,
@@ -101,23 +100,6 @@ function Login() {
         triggerFormSubmitAction: loginAction.setTriggerFormSubmit,
       });
 
-      // const response = await fetch("http://localhost:5500/auth/login", {
-      //   method: "POST",
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //   },
-      //   credentials: "include",
-
-      //   body: JSON.stringify({ schema }),
-      // });
-
-      // const data = await response.json();
-
-      // console.group("loginFormSubmit");
-      // console.log("response", response);
-      // console.log("data", data);
-      // console.groupEnd();
-
       if (loginResult.err) {
         showBoundary(loginResult.val.data);
         return;
@@ -174,26 +156,6 @@ function Login() {
       fetchAbortController.abort();
     };
   }, [triggerFormSubmit]);
-
-  if (isSubmitting) {
-    const submittingState = (
-      <Stack>
-        <Text size="md">Submitting benefit! Please wait...</Text>
-      </Stack>
-    );
-
-    return submittingState;
-  }
-
-  if (isSuccessful) {
-    const successfulState = (
-      <Stack>
-        <Text size="md">ExpenseClaim submitted successfully!</Text>
-      </Stack>
-    );
-
-    return successfulState;
-  }
 
   const usernameTextInput = (
     <TextInput
@@ -278,9 +240,9 @@ function Login() {
   );
 
   const displayLoginButton = (
-    <Group position="right">
+    <Center>
       {loginButton}
-    </Group>
+    </Center>
   );
 
   const displayLinkToRegister = (
@@ -306,33 +268,6 @@ function Login() {
       withCloseButton={false}
     />
   );
-
-  // const displayLoginComponent = (
-  //   <Flex
-  //     direction="column"
-  //     align="center"
-  //     justify="center"
-  //     w={width < 480 ? 350 : width <= 1024 ? 480 : 640}
-  //   >
-  //     {displaySubmitSuccessNotificationModal}
-  //     {displayTitle}
-  //     {displayInputs}
-  //     {displayLoginButton}
-  //     {displayLinkToRegister}
-  //   </Flex>
-  // );
-
-  // return (
-  //   <Flex
-  //     bg={backgroundColor}
-  //     w="100%"
-  //     h="100vh"
-  //     align="center"
-  //     justify="center"
-  //   >
-  //     {displayLoginComponent}
-  //   </Flex>
-  // );
 
   const login = (
     <div className={classes.wrapper}>

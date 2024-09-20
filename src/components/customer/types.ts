@@ -56,125 +56,43 @@ type CustomerDocument = CustomerSchema & {
   __v: number;
 };
 
-// ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
-//  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-//    CREATE CUSTOMER FORM STATE
-//  ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
-// ▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
-
 type CustomerState = {
   username: string;
-  isUsernameFocused: boolean;
-  isUsernameValid: boolean;
   isUsernameExists: boolean;
-
   password: string;
-  isPasswordFocused: boolean;
-  isPasswordValid: boolean;
-
   confirmPassword: string;
-  isConfirmPasswordFocused: boolean;
-  isConfirmPasswordValid: boolean;
-
   email: string;
-  isEmailFocused: boolean;
-  isEmailValid: boolean;
   isEmailExists: boolean;
-
   firstName: string;
-  isFirstNameFocused: boolean;
-  isFirstNameValid: boolean;
-
   middleName: string;
-  isMiddleNameFocused: boolean;
-  isMiddleNameValid: boolean;
-
   lastName: string;
-  isLastNameFocused: boolean;
-  isLastNameValid: boolean;
-
   preferredName: string;
-  isPreferredNameFocused: boolean;
-  isPreferredNameValid: boolean;
-
   preferredPronouns: PreferredPronouns;
-
   profilePictureUrl: string;
-  isProfilePictureUrlFocused: boolean;
-  isProfilePictureUrlValid: boolean;
-
   dateOfBirth: string;
-  isDateOfBirthFocused: boolean;
-  isDateOfBirthValid: boolean;
-
   contactNumber: PhoneNumber | string;
-  isContactNumberFocused: boolean;
-  isContactNumberValid: boolean;
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    ADDRESS
-  // ╰─────────────────────────────────────────────────────────────────╯
   addressLine: string;
-  isAddressLineFocused: boolean;
-  isAddressLineValid: boolean;
-
   city: string;
-  isCityFocused: boolean;
-  isCityValid: boolean;
-
   province: Province;
   state: StatesUS;
-
   postalCode: PostalCode;
-  isPostalCodeFocused: boolean;
-  isPostalCodeValid: boolean;
-
   country: Country;
-
-  // ╭─────────────────────────────────────────────────────────────────╮
-  //    PAYMENT INFORMATION
-  // ╰─────────────────────────────────────────────────────────────────╯
+  isPrefersReducedMotion: boolean;
+  // billing
   cardholderName: string;
-  isCardholderNameFocused: boolean;
-  isCardholderNameValid: boolean;
-
   cardNumber: string;
-  isCardNumberFocused: boolean;
-  isCardNumberValid: boolean;
-
   expirationDate: string;
-  isExpirationDateFocused: boolean;
-  isExpirationDateValid: boolean;
-
   cvv: string;
-  isCvvFocused: boolean;
-  isCvvValid: boolean;
-
   isBillingAddressSameAsShippingAddress: boolean;
-
   billingAddressLine: string;
-  isBillingAddressLineFocused: boolean;
-  isBillingAddressLineValid: boolean;
-
   billingCity: string;
-  isBillingCityFocused: boolean;
-  isBillingCityValid: boolean;
-
   billingProvince: Province;
   billingState: StatesUS;
-
   billingPostalCode: PostalCode;
-  isBillingPostalCodeFocused: boolean;
-  isBillingPostalCodeValid: boolean;
-
   billingCountry: Country;
 
-  isPrefersReducedMotion: boolean;
-
   triggerFormSubmit: boolean;
-  currentStepperPosition: number;
-  stepsInError: Set<number>;
-
+  pagesInError: Set<number>;
   isSubmitting: boolean;
   submitMessage: string;
   isSuccessful: boolean;

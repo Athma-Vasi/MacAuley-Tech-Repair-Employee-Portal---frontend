@@ -1,7 +1,12 @@
 import { Grid, Group, Spoiler, Stack, Text, Title } from "@mantine/core";
 import type { ReactNode } from "react";
 
-import { COLORS_SWATCHES, PROPERTY_DESCRIPTOR } from "../../constants/data";
+import {
+  COLORS_SWATCHES,
+  INPUT_MAX_WIDTH,
+  INPUT_MIN_WIDTH,
+  PROPERTY_DESCRIPTOR,
+} from "../../constants/data";
 import { VALIDATION_FUNCTIONS_TABLE } from "../../constants/validations";
 import { useGlobalState } from "../../hooks";
 import type { StepperPage } from "../../types";
@@ -143,8 +148,8 @@ function FormReviewStep(
 
   const displayFormReview = (
     <Stack
-      w="100%"
-      style={{ border: borderColor, borderRadius: 4 }}
+      style={{ minWidth: INPUT_MIN_WIDTH, maxWidth: INPUT_MAX_WIDTH }}
+      // style={{ border: borderColor, borderRadius: 4 }}
     >
       {displayTitle}
       {displayFormReviewStack}

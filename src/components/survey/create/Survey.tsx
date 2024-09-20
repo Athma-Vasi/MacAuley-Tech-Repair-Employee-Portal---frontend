@@ -241,6 +241,7 @@ function Survey() {
                 name: `responseOption ${pageIndex} ${
                   INDEX_ALPHABET_TABLE[optionIndex] ?? optionIndex + 1
                 }`,
+                page: optionIndex,
                 parentDynamicDispatch: surveyDispatch,
                 stepperPages,
                 validValueAction: surveyAction.setResponseOptions,
@@ -456,6 +457,7 @@ function Survey() {
         pageElements: [firstPage, ...questionPages],
         parentDispatch: surveyDispatch,
         stepperPages,
+        stepsInError: pagesInError,
         submitButton,
       }}
     />

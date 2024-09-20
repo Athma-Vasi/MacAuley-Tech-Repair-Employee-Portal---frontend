@@ -1,21 +1,20 @@
 import { Group, Stack, Text } from "@mantine/core";
 
-import { COLORS_SWATCHES } from "../../constants/data";
-import { useGlobalState } from "../../hooks";
-import { addCommaSeparator, returnThemeColors } from "../../utils";
+import { COLORS_SWATCHES } from "../../../constants/data";
+import { useGlobalState } from "../../../hooks";
+import { addCommaSeparator, returnThemeColors } from "../../../utils";
 import {
   ResponsiveBarChart,
   ResponsiveCalendarChart,
   ResponsiveLineChart,
   ResponsivePieChart,
-} from "../charts";
-import ErrorSuspenseHOC from "../error/ErrorSuspenseHOC";
+} from "../../charts";
 import {
   MONTHS,
   PERCENTAGE_METRICS_SET,
   UNITLESS_METRICS_SET,
   YEARS_SET,
-} from "./constants";
+} from "../constants";
 
 function DisplayResponsiveChart() {
   const {
@@ -139,8 +138,4 @@ function DisplayResponsiveChart() {
   );
 }
 
-function ResponsiveChartWrapper() {
-  return ErrorSuspenseHOC(DisplayResponsiveChart)({});
-}
-
-export default ResponsiveChartWrapper;
+export default DisplayResponsiveChart;

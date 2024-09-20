@@ -1,9 +1,9 @@
 import { Stack } from "@mantine/core";
 
-import { StepperPage } from "../../types";
+import type { StepperPage } from "../../types";
 import { AccessiblePasswordInput } from "../accessibleInputs/AccessiblePasswordInput";
 import { AccessibleTextInput } from "../accessibleInputs/text/AccessibleTextInput";
-import { RegisterAction } from "./types";
+import type { RegisterAction } from "./types";
 
 type RegisterAuthenticationProps = {
   confirmPassword: string;
@@ -25,10 +25,7 @@ function RegisterAuthentication({
   username,
 }: RegisterAuthenticationProps) {
   const confirmPasswordTextInput = (
-    <AccessiblePasswordInput<
-      RegisterAction["setConfirmPassword"],
-      RegisterAction["setPageInError"]
-    >
+    <AccessiblePasswordInput
       attributes={{
         stepperPages,
         invalidValueAction: parentAction.setPageInError,
@@ -57,10 +54,7 @@ function RegisterAuthentication({
   );
 
   const passwordTextInput = (
-    <AccessiblePasswordInput<
-      RegisterAction["setPassword"],
-      RegisterAction["setPageInError"]
-    >
+    <AccessiblePasswordInput
       attributes={{
         stepperPages,
         invalidValueAction: parentAction.setPageInError,

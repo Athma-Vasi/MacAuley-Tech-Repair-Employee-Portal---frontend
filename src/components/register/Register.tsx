@@ -1,10 +1,11 @@
-import { Container, Stack, Text } from "@mantine/core";
+import { Stack, Text } from "@mantine/core";
 import { useEffect, useReducer, useRef } from "react";
 import { useErrorBoundary } from "react-error-boundary";
 
 import { logState } from "../../utils";
 import { AccessibleButton } from "../accessibleInputs/AccessibleButton";
 import { AccessibleStepper } from "../accessibleInputs/AccessibleStepper";
+import { useStyles } from "../styles";
 import { RegisterAdditional } from "./RegisterAdditional";
 import { RegisterAddress } from "./RegisterAddress";
 import { RegisterAuthentication } from "./RegisterAuthentication";
@@ -54,8 +55,9 @@ function Register() {
 
   const { showBoundary } = useErrorBoundary();
 
+  const { classes } = useStyles({});
+
   const fetchAbortControllerRef = useRef<AbortController | null>(null);
-  const preFetchAbortControllerRef = useRef<AbortController | null>(null);
   const isComponentMountedRef = useRef(false);
 
   useEffect(() => {
@@ -63,32 +65,27 @@ function Register() {
     fetchAbortControllerRef.current = new AbortController();
     const fetchAbortController = fetchAbortControllerRef.current;
 
-    preFetchAbortControllerRef.current?.abort();
-    preFetchAbortControllerRef.current = new AbortController();
-    const preFetchAbortController = preFetchAbortControllerRef.current;
-
     isComponentMountedRef.current = true;
     let isComponentMounted = isComponentMountedRef.current;
 
     if (triggerFormSubmit) {
       // const userSchema: UserSchema = {
       //   active: true,
-      //   address:
-      //     country === "Canada"
-      //       ? {
-      //           addressLine,
-      //           city,
-      //           country,
-      //           postalCode,
-      //           province,
-      //         }
-      //       : {
-      //           addressLine,
-      //           city,
-      //           country,
-      //           postalCode,
-      //           state,
-      //         },
+      //   address: country === "Canada"
+      //     ? {
+      //       addressLine,
+      //       city,
+      //       country,
+      //       postalCode,
+      //       province,
+      //     }
+      //     : {
+      //       addressLine,
+      //       city,
+      //       country,
+      //       postalCode,
+      //       state,
+      //     },
       //   completedSurveys: [],
       //   contactNumber,
       //   dateOfBirth,
@@ -106,12 +103,13 @@ function Register() {
       //   password,
       //   preferredName,
       //   preferredPronouns,
-      //   profilePictureFormData: profilePictureFormData ?? new FormData(),
+      //   profilePictureFormData: profilePictureFormData ?? [new FormData()],
       //   roles: ["Employee"],
       //   startDate,
       //   storeLocation,
       //   username,
       // };
+
       // formSubmitPOST({
       //   dispatch: registerDispatch,
       //   fetchAbortController,
@@ -133,10 +131,8 @@ function Register() {
 
     return () => {
       isComponentMountedRef.current = false;
-      preFetchAbortController?.abort();
       fetchAbortController?.abort();
     };
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [triggerFormSubmit]);
 
@@ -258,6 +254,7 @@ function Register() {
         ],
         parentDispatch: registerDispatch,
         stepperPages: registerStepperPages,
+        stepsInError: pagesInError,
         submitButton,
       }}
     />
@@ -268,7 +265,7 @@ function Register() {
     groupLabel: "Register State",
   });
 
-  return <Container w={700}>{stepper}</Container>;
+  return <div>{stepper}</div>;
 }
 
 export default Register;

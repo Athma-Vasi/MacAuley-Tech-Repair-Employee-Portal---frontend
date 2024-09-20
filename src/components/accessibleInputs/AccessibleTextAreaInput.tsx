@@ -14,6 +14,7 @@ import {
   type FocusEvent,
   type KeyboardEvent,
   type ReactNode,
+  useEffect,
   useState,
 } from "react";
 import { TbCheck, TbRefresh } from "react-icons/tb";
@@ -124,14 +125,14 @@ type AccessibleTextAreaInputProps<
     ValidValueAction,
     InvalidValueAction
   >;
-  key?: string;
+  uniqueId?: string;
 };
 
 function AccessibleTextAreaInput<
   ValidValueAction extends string = string,
   InvalidValueAction extends string = string,
 >(
-  { attributes, key }: AccessibleTextAreaInputProps<
+  { attributes, uniqueId }: AccessibleTextAreaInputProps<
     ValidValueAction,
     InvalidValueAction
   >,
@@ -181,10 +182,10 @@ function AccessibleTextAreaInput<
   const [isPopoverOpened, { open: openPopover, close: closePopover }] =
     useDisclosure(false);
 
-  // // required because valueBuffer still has stale value on dynamic inputs
-  // useEffect(() => {
-  //   dynamicIndexes === undefined ? void 0 : setValueBuffer(value);
-  // }, [dynamicIndexes, value]);
+  // required because valueBuffer still has stale value on dynamic inputs
+  useEffect(() => {
+    dynamicIndexes === undefined ? void 0 : setValueBuffer(value);
+  }, [dynamicIndexes, value]);
 
   const {
     globalState: { themeObject },
@@ -229,15 +230,15 @@ function AccessibleTextAreaInput<
     valueBuffer,
   });
 
-  console.group(`AccessibleTextAreaInput: ${name}`);
-  console.log("name:", name);
-  console.log("stepperPages:", stepperPages);
-  console.log("validationFunctionsTable:", validationFunctionsTable);
-  console.log("fullValidation:", full);
-  console.log("valueBuffer:", valueBuffer);
-  console.log("isValueBufferValid:", isValueBufferValid);
-  console.log("validationTexts:", validationTexts);
-  console.groupEnd();
+  // console.group(`AccessibleTextAreaInput: ${name}`);
+  // console.log("name:", name);
+  // console.log("stepperPages:", stepperPages);
+  // console.log("validationFunctionsTable:", validationFunctionsTable);
+  // console.log("fullValidation:", full);
+  // console.log("valueBuffer:", valueBuffer);
+  // console.log("isValueBufferValid:", isValueBufferValid);
+  // console.log("validationTexts:", validationTexts);
+  // console.groupEnd();
 
   const { invalidValueTextElement, validValueTextElement } =
     createAccessibleValueValidationTextElements({
@@ -250,7 +251,7 @@ function AccessibleTextAreaInput<
     });
 
   return (
-    <Container w="100%" key={`${name}-${key ?? ""}`}>
+    <Container w="100%" key={`${name}-${uniqueId ?? ""}`}>
       <Popover
         opened={isPopoverOpened}
         position="bottom"

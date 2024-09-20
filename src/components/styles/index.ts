@@ -1,4 +1,5 @@
 import { createStyles, type CSSObject, type MantineTheme } from "@mantine/core";
+import { INPUT_MAX_WIDTH, INPUT_MIN_WIDTH } from "../../constants/data";
 import { useGlobalState } from "../../hooks";
 
 interface Variations {
@@ -29,14 +30,20 @@ const useStyles = createStyles((
             color: theme.colorScheme === "dark"
                 ? theme.colors.dark[0]
                 : theme.colors.gray[9],
+
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "flex-start",
+
             fontFamily: theme.fontFamily,
             fontSize: theme.fontSizes.lg,
-            height: "100vh",
+            // height: "100vh",
             lineHeight: theme.lineHeight,
-            margin: "0 auto",
+            // margin: "0 auto",
             padding: theme.spacing.xl,
-            maxWidth: 960,
-            minWidth: 320,
+            maxWidth: INPUT_MAX_WIDTH,
+            minWidth: INPUT_MIN_WIDTH,
 
             "&:hover": {
                 backgroundColor: theme.colorScheme === "dark"

@@ -1,13 +1,22 @@
-import { Group, MantineSize, Stack, Stepper, Text, Title } from "@mantine/core";
-import { ReactNode, useState } from "react";
+import {
+  Group,
+  type MantineSize,
+  Space,
+  Stack,
+  Stepper,
+  Text,
+  Title,
+} from "@mantine/core";
+import { type ReactNode, useState } from "react";
 import { TbCheck, TbX } from "react-icons/tb";
 
 import { COLORS_SWATCHES } from "../../constants/data";
 import { VALIDATION_FUNCTIONS_TABLE } from "../../constants/validations";
 import { useGlobalState } from "../../hooks";
-import { SetPageInErrorPayload, StepperPage } from "../../types";
+import type { SetPageInErrorPayload, StepperPage } from "../../types";
 import { returnThemeColors } from "../../utils";
 import { FormReviewStep } from "../formReview/FormReview";
+import { useStyles } from "../styles";
 import { createAccessibleButtons } from "./utils";
 
 type AccessibleStepperAttributes<InvalidValueAction extends string = string> = {
@@ -58,10 +67,9 @@ function AccessibleStepper<InvalidValueAction extends string = string>({
     globalState: { themeObject },
   } = useGlobalState();
 
+  const { classes } = useStyles({});
+
   const [activeStep, setActiveStep] = useState(0);
-  // const [stepsInError, setStepsInError] = useState<boolean[]>(
-  //   stepsInError ?? returnStepsInError(componentState, stepperPages)
-  // );
 
   const maxStep = stepperPages.length;
 
@@ -75,7 +83,6 @@ function AccessibleStepper<InvalidValueAction extends string = string>({
       kind: "previous",
       name: "Back",
       onClick: (event: React.MouseEvent<HTMLButtonElement>) => {
-        // setStepsInError(returnStepsInError(componentState, stepperPages));
         setActiveStep(activeStep <= maxStep ? activeStep - 1 : activeStep);
         verifyEmptyInputs({
           componentState,
@@ -91,7 +98,9 @@ function AccessibleStepper<InvalidValueAction extends string = string>({
         stepperPages[activeStep + 1]?.description ?? "the end"
       }`,
       disabledScreenreaderText: "You are on the last step",
-      disabled: displaySubmitPage ? activeStep === maxStep : activeStep === maxStep - 1,
+      disabled: displaySubmitPage
+        ? activeStep === maxStep
+        : activeStep === maxStep - 1,
       kind: "next",
       name: "Next",
       onClick: (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -116,19 +125,31 @@ function AccessibleStepper<InvalidValueAction extends string = string>({
   }`;
 
   const {
-    generalColors: { grayColorShade, redColorShade, textColor, greenColorShade },
+    generalColors: {
+      grayColorShade,
+      redColorShade,
+      textColor,
+      greenColorShade,
+    },
   } = returnThemeColors({
     colorsSwatches: COLORS_SWATCHES,
     themeObject,
   });
 
-  const formReviewPage = displayReviewPage ? (
-    <FormReviewStep componentState={componentState} stepperPages={stepperPages} />
-  ) : (
-    void 0
-  );
+  const formReviewPage = displayReviewPage
+    ? (
+      <FormReviewStep
+        componentState={componentState}
+        stepperPages={stepperPages}
+      />
+    )
+    : (
+      void 0
+    );
 
-  const pages = formReviewPage ? [...pageElements, formReviewPage] : pageElements;
+  const pages = formReviewPage
+    ? [...pageElements, formReviewPage]
+    : pageElements;
 
   const stepperSteps = pages.map((elements, pageIndex) => {
     const page = stepperPages[pageIndex];
@@ -147,13 +168,11 @@ function AccessibleStepper<InvalidValueAction extends string = string>({
       </Text>
     );
 
-    const completedIcon = page.preventErrorStateDisplay ? (
-      <Text color="white">{`${pageIndex + 1}`}</Text>
-    ) : stepsInError.has(pageIndex) ? (
-      <TbX size={26} />
-    ) : (
-      <TbCheck size={26} />
-    );
+    const completedIcon = page.preventErrorStateDisplay
+      ? <Text color="white">{`${pageIndex + 1}`}</Text>
+      : stepsInError.has(pageIndex)
+      ? <TbX size={26} />
+      : <TbCheck size={26} />;
 
     const stepColor = page.preventErrorStateDisplay
       ? grayColorShade
@@ -167,7 +186,7 @@ function AccessibleStepper<InvalidValueAction extends string = string>({
         color={stepColor}
         completedIcon={completedIcon}
         description={description}
-        key={`step-${pageIndex}`}
+        key={`step-${pageIndex.toString()}`}
       >
         {elements ?? null}
       </Stepper.Step>
@@ -175,27 +194,37 @@ function AccessibleStepper<InvalidValueAction extends string = string>({
   });
 
   const stepper = (
-    <Stepper active={activeStep} allowNextStepsSelect={allowNextStepsSelect} size={size}>
+    <Stepper
+      active={activeStep}
+      allowNextStepsSelect={allowNextStepsSelect}
+      breakpoint={"sm"}
+      size={size}
+    >
       {stepperSteps}
 
-      {displaySubmitPage ? (
-        <Stepper.Completed>
-          <Text>Stepper completed</Text>
-          {submitButton}
-        </Stepper.Completed>
-      ) : null}
+      <Space h="sm" />
+      {displaySubmitPage
+        ? (
+          <Stepper.Completed>
+            <Text>Stepper completed</Text>
+            {submitButton}
+          </Stepper.Completed>
+        )
+        : null}
     </Stepper>
   );
 
   return (
-    <Stack>
-      {title ? <Title order={4}>{title}</Title> : null}
-      {stepper}
-      <Group w="100%" position="apart">
-        {backButton}
-        {nextButton}
-      </Group>
-    </Stack>
+    <div className={classes.wrapper}>
+      <Stack>
+        {title ? <Title order={4}>{title}</Title> : null}
+        {stepper}
+        <Group w="100%" position="apart">
+          {backButton}
+          {nextButton}
+        </Group>
+      </Stack>
+    </div>
   );
 }
 
@@ -243,7 +272,7 @@ function verifyEmptyInputs<InvalidValueAction extends string = string>({
 
 function returnStepsInError(
   componentState: Record<string, unknown>,
-  stepperPages: StepperPage[]
+  stepperPages: StepperPage[],
 ): boolean[] {
   return stepperPages.reduce<boolean[]>(
     (stepsAcc, page, index) => {
@@ -263,11 +292,15 @@ function returnStepsInError(
 
           const { validationKey } = child;
 
-          const value =
-            typeof stateValue === "string" ? stateValue : stateValue?.toString() ?? "";
+          const value = typeof stateValue === "string"
+            ? stateValue
+            : stateValue?.toString() ?? "";
 
-          const { full } = VALIDATION_FUNCTIONS_TABLE[validationKey ?? "allowAll"];
-          const isStepValid = typeof full === "function" ? full(value) : full.test(value);
+          const { full } =
+            VALIDATION_FUNCTIONS_TABLE[validationKey ?? "allowAll"];
+          const isStepValid = typeof full === "function"
+            ? full(value)
+            : full.test(value);
 
           if (!isStepValid) {
             stepsAcc[index] = true;
@@ -277,7 +310,7 @@ function returnStepsInError(
 
       return stepsAcc;
     },
-    stepperPages.map(() => false)
+    stepperPages.map(() => false),
   );
 }
 

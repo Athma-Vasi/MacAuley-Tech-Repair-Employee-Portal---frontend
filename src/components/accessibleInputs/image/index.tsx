@@ -13,7 +13,11 @@ import { useEffect, useReducer, useRef } from "react";
 import { useErrorBoundary } from "react-error-boundary";
 import { TbCheck, TbExclamationCircle } from "react-icons/tb";
 
-import { COLORS_SWATCHES } from "../../../constants/data";
+import {
+  COLORS_SWATCHES,
+  INPUT_MAX_WIDTH,
+  INPUT_MIN_WIDTH,
+} from "../../../constants/data";
 import { useGlobalState } from "../../../hooks";
 import { logState, returnThemeColors } from "../../../utils";
 
@@ -627,7 +631,7 @@ function AccessibleImageInput<
   const loadingOverlay = <LoadingOverlay visible={isLoading} />;
 
   return (
-    <Stack w={700}>
+    <Stack style={{ minWidth: INPUT_MIN_WIDTH, maxWidth: INPUT_MAX_WIDTH }}>
       {loadingOverlay}
       {fileInput}
       {fileBlobCards}

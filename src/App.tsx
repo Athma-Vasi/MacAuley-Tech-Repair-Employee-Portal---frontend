@@ -10,7 +10,7 @@ import CommentWrapper from "./components/comment";
 import CustomFonts from "./components/customFonts/CustomFonts";
 import CustomerWrapper from "./components/customer";
 import DashboardWrapper from "./components/dashboard";
-import ResponsiveChartWrapper from "./components/dashboard/DisplayResponsiveChart";
+import ResponsiveChartWrapper from "./components/dashboard/display/DisplayResponsiveChart";
 import DevTesting from "./components/devTesting/DevTesting";
 import DirectoryWrapper from "./components/directory";
 import DisplayEventsWrapper from "./components/event";
@@ -28,88 +28,6 @@ import ResourceWrapper from "./components/resource";
 import CreateSurveyWrapper from "./components/survey/create";
 import DisplaySurveysWrapper from "./components/survey/display";
 import { useGlobalState } from "./hooks/useGlobalState";
-
-const PublicLayout = lazy(() =>
-  import("./components/publicLayout/PublicLayout")
-);
-
-const Login = lazy(() => import("./components/login/Login"));
-
-const Register = lazy(() => import("./components/register/Register"));
-
-const PortalLayout = lazy(() =>
-  import("./components/portalLayout/PortalLayout")
-);
-
-const Home = lazy(() => import("./components/home/Home"));
-
-const Dashboard = lazy(() => import("./components/dashboard/Dashboard"));
-
-const DisplayResponsiveChart = lazy(
-  () => import("./components/dashboard/DisplayResponsiveChart"),
-);
-
-const DisplayCustomer = lazy(() =>
-  import("./components/customer/DisplayCustomer")
-);
-
-const CreateCustomer = lazy(() => import("./components/customer/Customer"));
-
-const DisplayComment = lazy(() =>
-  import("./components/comment/DisplayComment")
-);
-
-const CreateProduct = lazy(() => import("./components/product/CreateProduct"));
-
-const CreateRepairTicket = lazy(
-  () => import("./components/repairTicket/create/CreateRepairTicket"),
-);
-
-const DisplayRepairTicket = lazy(
-  () => import("./components/repairTicket/display/DisplayRepairTickets"),
-);
-
-const DisplayExpenseClaims = lazy(
-  () => import("./components/expenseClaim/DisplayExpenseClaims"),
-);
-
-const CreateExpenseClaim = lazy(
-  () => import("./components/expenseClaim/create/ExpenseClaim"),
-);
-
-const DisplayAnnouncements = lazy(
-  () =>
-    import(
-      "./components/announcement/display/announcements/DisplayAnnouncements"
-    ),
-);
-
-const CreateAnnouncement = lazy(
-  () => import("./components/announcement/create/Announcement"),
-);
-
-const DisplayAnnouncement = lazy(
-  () =>
-    import(
-      "./components/announcement/display/announcement/DisplayAnnouncement"
-    ),
-);
-
-const DisplayEvents = lazy(() => import("./components/event/DisplayEvents"));
-
-const EventCreator = lazy(() => import("./components/event/create/Event"));
-
-// const DisplaySurveys = lazy(() =>
-//   import("./components/survey/display/DisplaySurveys")
-// );
-
-const SurveyBuilder = lazy(() => import("./components/survey/create/Survey"));
-
-const Directory = lazy(() => import("./components/directory/Directory"));
-
-const Resource = lazy(() => import("./components/resource/Resource"));
-
-const NotFound = lazy(() => import("./components/notFound/NotFound"));
 
 function App() {
   const {
@@ -213,8 +131,8 @@ function App() {
           }
           <Route path="customer">
             <Route index element={<CustomerWrapper />} />
-            {/* <Route path="create" element={createCustomerElement} /> */}
-            <Route path="display" element={<CustomerWrapper />} />
+            <Route path="create" element={<CustomerWrapper />} />
+            {/* <Route path="display" element={<CustomerWrapper />} /> */}
           </Route>
 
           {

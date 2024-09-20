@@ -1144,20 +1144,34 @@ const VALIDATION_FUNCTIONS_TABLE: ValidationFunctionsTable = {
        * - (?<![-_.]) ensures that the username does not end with a hyphen, underscore, or period.
        * - ^ and $ ensure that the entire string matches the regex.
        */
-      return /^(?=.{3,20}$)(?![-_.])(?!.*[-_.]{2})[a-zA-Z0-9-_.]+(?<![-_.])$/
-        .test(value);
+      // return /^(?!.{3,20}$)(?![-_.])(?!.*[-_.]{2})[a-zA-Z0-9-_.]+(?<![-_.])$/
+      //   .test(value);
+
+      return /^(?!.{3,20}$)(?!.*[^a-zA-Z0-9-_.])[a-zA-Z0-9-_.]+(?<![-_.])$/
+        .test(
+          value,
+        );
     },
 
     partials: [
-      [/^.{3,20}$/i, "Must be between 3 and 20 characters."],
-      [/^(?![-_.])/, "Cannot start with a hyphen, underscore, or period."],
+      // [/^.{3,20}$/i, "Must be between 3 and 20 characters."],
       [
-        /^(?!.*[-_.]{2})/,
-        "Cannot contain two hyphens, underscores, or periods in a row.",
+        /^(?!.{3,20}$)/,
+        "Cannot be less than 3 characters or more than 20 characters.",
       ],
+      // [/^(?![-_.])/, "Cannot start with a hyphen, underscore, or period."],
+      // [/^[^_.-].*/, "Cannot start with a hyphen, underscore, or period."],
+      // [
+      //   /^(?!.*[-_.]{2})/,
+      //   "Cannot contain two hyphens, underscores, or periods in a row.",
+      // ],
+      // [
+      //   /^[a-zA-Z0-9-_.]+$/,
+      //   "Can only contain alphanumeric characters, hyphens, underscores, and periods.",
+      // ],
       [
-        /^[a-zA-Z0-9-_.]+$/,
-        "Can only contain alphanumeric characters, hyphens, underscores, and periods.",
+        /^(?!.*[^a-zA-Z0-9-_.])$/,
+        "Cannot contain characters other than alphanumeric, hyphens, underscores, and periods.",
       ],
       [/^(?<![-_.])$/, "Cannot end with a hyphen, underscore, or period."],
     ],
