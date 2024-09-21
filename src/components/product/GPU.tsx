@@ -1,14 +1,14 @@
 import { Stack } from "@mantine/core";
 
-import { StepperPage } from "../../types";
+import type { StepperPage } from "../../types";
 import { AccessibleSelectInput } from "../accessibleInputs/AccessibleSelectInput";
 import { AccessibleTextInput } from "../accessibleInputs/text/AccessibleTextInput";
-import { ProductCategory } from "../dashboard/types";
-import { CreateProductAction } from "./actions";
+import type { ProductCategory } from "../dashboard/types";
 import { AdditionalFields } from "./AdditionalFields";
+import type { CreateProductAction } from "./actions";
 import { MEMORY_UNIT_DATA } from "./constants";
-import { CreateProductDispatch } from "./dispatch";
-import { MemoryUnit } from "./types";
+import type { CreateProductDispatch } from "./dispatch";
+import type { MemoryUnit } from "./types";
 
 type GPUProps = {
   gpuBoostClock: string;
@@ -18,7 +18,6 @@ type GPUProps = {
   gpuMemoryCapacityUnit: MemoryUnit;
   gpuTdp: string;
   additionalFields: Array<[string, string]>;
-  additionalFieldsFormData: FormData;
   parentAction: CreateProductAction;
   parentDispatch: React.Dispatch<CreateProductDispatch>;
   productCategory: ProductCategory;
@@ -33,7 +32,6 @@ function GPU({
   gpuMemoryCapacityUnit,
   gpuTdp,
   additionalFields,
-  additionalFieldsFormData,
   parentAction,
   parentDispatch,
   productCategory,
@@ -114,7 +112,6 @@ function GPU({
   const additionalFieldsAndImage = (
     <AdditionalFields
       additionalFields={additionalFields}
-      additionalFieldsFormData={additionalFieldsFormData}
       page={5}
       parentAction={parentAction}
       parentDispatch={parentDispatch}

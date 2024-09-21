@@ -1,17 +1,16 @@
 import { Stack } from "@mantine/core";
 
-import { StepperPage } from "../../types";
+import type { StepperPage } from "../../types";
 import { AccessibleSelectInput } from "../accessibleInputs/AccessibleSelectInput";
 import { AccessibleTextInput } from "../accessibleInputs/text/AccessibleTextInput";
-import { ProductCategory } from "../dashboard/types";
-import { CreateProductAction } from "./actions";
+import type { ProductCategory } from "../dashboard/types";
 import { AdditionalFields } from "./AdditionalFields";
+import type { CreateProductAction } from "./actions";
 import { SPEAKER_INTERFACE_DATA, SPEAKER_TYPE_DATA } from "./constants";
-import { CreateProductDispatch } from "./dispatch";
-import { SpeakerInterface, SpeakerType } from "./types";
+import type { CreateProductDispatch } from "./dispatch";
+import type { SpeakerInterface, SpeakerType } from "./types";
 
 type SpeakerProps = {
-  additionalFieldsFormData: FormData;
   parentAction: CreateProductAction;
   parentDispatch: React.Dispatch<CreateProductDispatch>;
   productCategory: ProductCategory;
@@ -25,7 +24,6 @@ type SpeakerProps = {
 };
 
 function Speaker({
-  additionalFieldsFormData,
   parentAction,
   parentDispatch,
   productCategory,
@@ -100,7 +98,6 @@ function Speaker({
   const additionalFieldsAndImage = (
     <AdditionalFields
       additionalFields={additionalFields}
-      additionalFieldsFormData={additionalFieldsFormData}
       page={13}
       parentAction={parentAction}
       parentDispatch={parentDispatch}

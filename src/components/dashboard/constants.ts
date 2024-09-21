@@ -33,6 +33,7 @@ const PRODUCT_CATEGORIES: ProductCategory[] = [
   "Accessory",
   "Central Processing Unit (CPU)",
   "Computer Case",
+  "Desktop Computer",
   "Graphics Processing Unit (GPU)",
   "Headphone",
   "Keyboard",
@@ -45,6 +46,13 @@ const PRODUCT_CATEGORIES: ProductCategory[] = [
   "Speaker",
   "Storage",
   "Webcam",
+];
+
+const PRODUCT_CATEGORIES_DATA: CheckboxRadioSelectData<ProductCategory> = [
+  ...PRODUCT_CATEGORIES.map((category) => ({
+    label: category,
+    value: category,
+  })),
 ];
 
 const REPAIR_CATEGORIES: RepairCategory[] = [
@@ -150,6 +158,7 @@ export {
   MONTHS,
   PERCENTAGE_METRICS_SET,
   PRODUCT_CATEGORIES,
+  PRODUCT_CATEGORIES_DATA,
   PRODUCT_METRICS_DATA,
   REPAIR_CATEGORIES,
   REPAIR_METRICS_DATA,

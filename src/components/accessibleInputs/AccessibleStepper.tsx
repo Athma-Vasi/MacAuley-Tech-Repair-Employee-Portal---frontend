@@ -151,10 +151,10 @@ function AccessibleStepper<InvalidValueAction extends string = string>({
     ? [...pageElements, formReviewPage]
     : pageElements;
 
-  const stepperSteps = pages.map((elements, pageIndex) => {
+  const stepperSteps = pages.map(function pageMapper(elements, pageIndex) {
     const page = stepperPages[pageIndex];
 
-    const descriptionColor = page.preventErrorStateDisplay
+    const descriptionColor = page?.preventErrorStateDisplay
       ? textColor
       : stepsInError.has(pageIndex)
       ? redColorShade
@@ -162,19 +162,19 @@ function AccessibleStepper<InvalidValueAction extends string = string>({
 
     const description = (
       <Text color={descriptionColor}>
-        {page.kind === "review"
-          ? page.description ?? "Review your changes"
-          : page.description}
+        {page?.kind === "review"
+          ? page?.description ?? "Review your changes"
+          : page?.description}
       </Text>
     );
 
-    const completedIcon = page.preventErrorStateDisplay
+    const completedIcon = page?.preventErrorStateDisplay
       ? <Text color="white">{`${pageIndex + 1}`}</Text>
       : stepsInError.has(pageIndex)
       ? <TbX size={26} />
       : <TbCheck size={26} />;
 
-    const stepColor = page.preventErrorStateDisplay
+    const stepColor = page?.preventErrorStateDisplay
       ? grayColorShade
       : stepsInError.has(pageIndex)
       ? redColorShade

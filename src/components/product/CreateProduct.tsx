@@ -1,14 +1,14 @@
+import { Container, Stack } from "@mantine/core";
 import { useReducer } from "react";
-import { createProductReducer } from "./reducers";
-import { createProductAction, initialCreateProductState } from "./state";
-import { Accessory } from "./Accessory";
-import { Container } from "@mantine/core";
-import { AccessibleStepper } from "../accessibleInputs/AccessibleStepper";
-import { AccessibleButton } from "../accessibleInputs/AccessibleButton";
 import { logState } from "../../utils";
-import { ProductPageOne } from "./ProductPageOne";
-import { Case } from "./Case";
+import { AccessibleButton } from "../accessibleInputs/AccessibleButton";
+import { AccessibleCheckboxInputGroup } from "../accessibleInputs/AccessibleCheckboxInput";
+import { AccessibleSelectInput } from "../accessibleInputs/AccessibleSelectInput";
+import { AccessibleStepper } from "../accessibleInputs/AccessibleStepper";
+import { PRODUCT_CATEGORIES_DATA } from "../dashboard/constants";
+import { Accessory } from "./Accessory";
 import { CPU } from "./CPU";
+import { Case } from "./Case";
 import { Display } from "./Display";
 import { GPU } from "./GPU";
 import { Headphone } from "./Headphone";
@@ -17,15 +17,22 @@ import { Microphone } from "./Microphone";
 import { Motherboard } from "./Motherboard";
 import { Mouse } from "./Mouse";
 import { PSU } from "./PSU";
+import { ProductPageOne } from "./ProductPageOne";
 import { RAM } from "./RAM";
 import { Speaker } from "./Speaker";
 import { Storage } from "./Storage";
 import { Webcam } from "./Webcam";
+import { createProductReducer } from "./reducers";
+import { createProductAction, initialCreateProductState } from "./state";
+import {
+  createPagesForStepper,
+  returnCreateProductPageElements,
+} from "./utils";
 
 function CreateProduct() {
   const [createProductState, createProductDispatch] = useReducer(
     createProductReducer,
-    initialCreateProductState
+    initialCreateProductState,
   );
 
   const {
@@ -46,13 +53,15 @@ function CreateProduct() {
     dimensionHeightUnit,
     additionalComments,
 
+    additionalFieldsMap,
+    // additionalFieldsFormDataMap,
+    desktopComponents,
+    productCategory,
+    stepperPages,
+
     accessoryType,
     accessoryColor,
     accessoryInterface,
-
-    additionalFieldsMap,
-    additionalFieldsFormDataMap,
-    stepperPages,
 
     cpuSocket,
     cpuFrequency,
@@ -185,15 +194,40 @@ function CreateProduct() {
     />
   );
 
+  const productCategorySelectInput = (
+    <AccessibleSelectInput
+      attributes={{
+        data: PRODUCT_CATEGORIES_DATA,
+        name: "productCategory",
+        parentDispatch: createProductDispatch,
+        validValueAction: createProductAction.setProductCategory,
+        value: productCategory,
+      }}
+    />
+  );
+
+  const desktopComponentsCheckboxInput = (
+    <AccessibleCheckboxInputGroup
+      attributes={{
+        label: "Desktop Components Exclusion",
+        inputData: PRODUCT_CATEGORIES_DATA.filter((category) =>
+          category.label !== "Desktop Computer"
+        ),
+        name: "desktopComponents",
+        parentDispatch: createProductDispatch,
+        validValueAction: createProductAction.setDesktopComponents,
+        value: desktopComponents,
+        disabledValuesSet: new Set(),
+      }}
+    />
+  );
+
   const accessoryPage = (
     <Accessory
       accessoryColor={accessoryColor}
       accessoryInterface={accessoryInterface}
       accessoryType={accessoryType}
       additionalFields={additionalFieldsMap.get("Accessory") ?? []}
-      additionalFieldsFormData={
-        additionalFieldsFormDataMap.get("Accessory") ?? new FormData()
-      }
       parentAction={createProductAction}
       parentDispatch={createProductDispatch}
       productCategory="Accessory"
@@ -204,9 +238,6 @@ function CreateProduct() {
   const casePage = (
     <Case
       additionalFields={additionalFieldsMap.get("Computer Case") ?? []}
-      additionalFieldsFormData={
-        additionalFieldsFormDataMap.get("Computer Case") ?? new FormData()
-      }
       caseColor={caseColor}
       caseSidePanel={caseSidePanel}
       caseType={caseType}
@@ -219,10 +250,9 @@ function CreateProduct() {
 
   const cpuPage = (
     <CPU
-      additionalFields={additionalFieldsMap.get("Central Processing Unit (CPU)") ?? []}
-      additionalFieldsFormData={
-        additionalFieldsFormDataMap.get("Central Processing Unit (CPU)") ?? new FormData()
-      }
+      additionalFields={additionalFieldsMap.get(
+        "Central Processing Unit (CPU)",
+      ) ?? []}
       cpuCores={cpuCores}
       cpuFrequency={cpuFrequency}
       cpuL1CacheCapacity={cpuL1CacheCapacity}
@@ -243,9 +273,6 @@ function CreateProduct() {
   const displayPage = (
     <Display
       additionalFields={additionalFieldsMap.get("Display") ?? []}
-      additionalFieldsFormData={
-        additionalFieldsFormDataMap.get("Display") ?? new FormData()
-      }
       displayAspectRatio={displayAspectRatio}
       displayPanelType={displayPanelType}
       displayRefreshRate={displayRefreshRate}
@@ -262,11 +289,9 @@ function CreateProduct() {
 
   const gpuPage = (
     <GPU
-      additionalFields={additionalFieldsMap.get("Graphics Processing Unit (GPU)") ?? []}
-      additionalFieldsFormData={
-        additionalFieldsFormDataMap.get("Graphics Processing Unit (GPU)") ??
-        new FormData()
-      }
+      additionalFields={additionalFieldsMap.get(
+        "Graphics Processing Unit (GPU)",
+      ) ?? []}
       gpuBoostClock={gpuBoostClock}
       gpuChipset={gpuChipset}
       gpuCoreClock={gpuCoreClock}
@@ -283,9 +308,6 @@ function CreateProduct() {
   const headphonePage = (
     <Headphone
       additionalFields={additionalFieldsMap.get("Headphone") ?? []}
-      additionalFieldsFormData={
-        additionalFieldsFormDataMap.get("Headphone") ?? new FormData()
-      }
       headphoneColor={headphoneColor}
       headphoneDriver={headphoneDriver}
       headphoneFrequencyResponse={headphoneFrequencyResponse}
@@ -302,9 +324,6 @@ function CreateProduct() {
   const keyboardPage = (
     <Keyboard
       additionalFields={additionalFieldsMap.get("Keyboard") ?? []}
-      additionalFieldsFormData={
-        additionalFieldsFormDataMap.get("Keyboard") ?? new FormData()
-      }
       keyboardBacklight={keyboardBacklight}
       keyboardInterface={keyboardInterface}
       keyboardLayout={keyboardLayout}
@@ -319,9 +338,6 @@ function CreateProduct() {
   const microphonePage = (
     <Microphone
       additionalFields={additionalFieldsMap.get("Microphone") ?? []}
-      additionalFieldsFormData={
-        additionalFieldsFormDataMap.get("Microphone") ?? new FormData()
-      }
       microphoneColor={microphoneColor}
       microphoneFrequencyResponse={microphoneFrequencyResponse}
       microphoneInterface={microphoneInterface}
@@ -337,9 +353,6 @@ function CreateProduct() {
   const motherboardPage = (
     <Motherboard
       additionalFields={additionalFieldsMap.get("Motherboard") ?? []}
-      additionalFieldsFormData={
-        additionalFieldsFormDataMap.get("Motherboard") ?? new FormData()
-      }
       motherboardChipset={motherboardChipset}
       motherboardFormFactor={motherboardFormFactor}
       motherboardMemoryMaxCapacity={motherboardMemoryMaxCapacity}
@@ -362,9 +375,6 @@ function CreateProduct() {
   const mousePage = (
     <Mouse
       additionalFields={additionalFieldsMap.get("Mouse") ?? []}
-      additionalFieldsFormData={
-        additionalFieldsFormDataMap.get("Mouse") ?? new FormData()
-      }
       mouseButtons={mouseButtons}
       mouseColor={mouseColor}
       mouseDpi={mouseDpi}
@@ -379,10 +389,8 @@ function CreateProduct() {
 
   const psuPage = (
     <PSU
-      additionalFields={additionalFieldsMap.get("Power Supply Unit (PSU)") ?? []}
-      additionalFieldsFormData={
-        additionalFieldsFormDataMap.get("Power Supply Unit (PSU)") ?? new FormData()
-      }
+      additionalFields={additionalFieldsMap.get("Power Supply Unit (PSU)") ??
+        []}
       psuEfficiency={psuEfficiency}
       psuFormFactor={psuFormFactor}
       psuModularity={psuModularity}
@@ -397,9 +405,6 @@ function CreateProduct() {
   const ramPage = (
     <RAM
       additionalFields={additionalFieldsMap.get("Memory (RAM)") ?? []}
-      additionalFieldsFormData={
-        additionalFieldsFormDataMap.get("Memory (RAM)") ?? new FormData()
-      }
       ramColor={ramColor}
       ramDataRate={ramDataRate}
       ramModulesCapacity={ramModulesCapacity}
@@ -418,9 +423,6 @@ function CreateProduct() {
   const speakerPage = (
     <Speaker
       additionalFields={additionalFieldsMap.get("Speaker") ?? []}
-      additionalFieldsFormData={
-        additionalFieldsFormDataMap.get("Speaker") ?? new FormData()
-      }
       speakerColor={speakerColor}
       speakerFrequencyResponse={speakerFrequencyResponse}
       speakerInterface={speakerInterface}
@@ -436,9 +438,6 @@ function CreateProduct() {
   const storagePage = (
     <Storage
       additionalFields={additionalFieldsMap.get("Storage") ?? []}
-      additionalFieldsFormData={
-        additionalFieldsFormDataMap.get("Storage") ?? new FormData()
-      }
       storageCacheCapacity={storageCacheCapacity}
       storageCacheCapacityUnit={storageCacheCapacityUnit}
       storageCapacity={storageCapacity}
@@ -456,9 +455,6 @@ function CreateProduct() {
   const webcamPage = (
     <Webcam
       additionalFields={additionalFieldsMap.get("Webcam") ?? []}
-      additionalFieldsFormData={
-        additionalFieldsFormDataMap.get("Webcam") ?? new FormData()
-      }
       webcamColor={webcamColor}
       webcamFrameRate={webcamFrameRate}
       webcamInterface={webcamInterface}
@@ -469,6 +465,15 @@ function CreateProduct() {
       productCategory="Webcam"
       stepperPages={stepperPages}
     />
+  );
+
+  const productCategoryPage = (
+    <Stack>
+      {productCategorySelectInput}
+      {productCategory === "Desktop Computer"
+        ? desktopComponentsCheckboxInput
+        : null}
+    </Stack>
   );
 
   const submitButton = (
@@ -489,31 +494,43 @@ function CreateProduct() {
     />
   );
 
+  const pageElements = returnCreateProductPageElements({
+    accessoryPage,
+    casePage,
+    cpuPage,
+    desktopComponents,
+    displayPage,
+    firstPage,
+    gpuPage,
+    headphonePage,
+    keyboardPage,
+    microphonePage,
+    motherboardPage,
+    mousePage,
+    productCategory,
+    productCategoryPage,
+    psuPage,
+    ramPage,
+    speakerPage,
+    storagePage,
+    webcamPage,
+  });
+
   const stepper = (
     <AccessibleStepper
       attributes={{
         componentState: createProductState,
         invalidValueAction: createProductAction.setPageInError,
-        pageElements: [
-          firstPage,
-          accessoryPage,
-          casePage,
-          cpuPage,
-          displayPage,
-          gpuPage,
-          headphonePage,
-          keyboardPage,
-          microphonePage,
-          motherboardPage,
-          mousePage,
-          psuPage,
-          ramPage,
-          speakerPage,
-          storagePage,
-          webcamPage,
-        ],
+        pageElements: productCategory === "Desktop Computer"
+          ? pageElements.slice(0, -2)
+          : pageElements,
         parentDispatch: createProductDispatch,
-        stepperPages,
+        stepperPages: createPagesForStepper({
+          desktopComponents,
+          productCategory,
+          stepperPages,
+        }),
+        stepsInError: pagesInError,
         submitButton,
       }}
     />
@@ -530,7 +547,7 @@ function CreateProduct() {
 export default CreateProduct;
 
 /**
- * 
+ *
  * // ▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
   //  ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
   //     CREATE PRODUCT HOOKS
@@ -555,7 +572,7 @@ export default CreateProduct;
     },
   ] = useDisclosure(false);
 
- * 
+ *
  *  const location = useLocation();
 
   // because page 2 of the stepper component is displayed based on productCategory, and by default it will display 'Accessory'. The productCategory is set based on the location.pathname.
@@ -3136,7 +3153,7 @@ export default CreateProduct;
 
   const displayCreateProductFormPage2 = (
     <FormLayoutWrapper>
-      
+
       {displaySelectedProductCategoryInputs}
     </FormLayoutWrapper>
   );

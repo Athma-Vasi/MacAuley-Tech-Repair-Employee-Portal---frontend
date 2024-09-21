@@ -1,22 +1,21 @@
 import { Stack } from "@mantine/core";
 
-import { StepperPage } from "../../types";
+import type { StepperPage } from "../../types";
 import { AccessibleSelectInput } from "../accessibleInputs/AccessibleSelectInput";
 import { AccessibleTextInput } from "../accessibleInputs/text/AccessibleTextInput";
-import { ProductCategory } from "../dashboard/types";
-import { CreateProductAction } from "./actions";
+import type { ProductCategory } from "../dashboard/types";
 import { AdditionalFields } from "./AdditionalFields";
+import type { CreateProductAction } from "./actions";
 import {
   MEMORY_TYPE_DATA,
   MEMORY_UNIT_DATA,
   MOTHERBOARD_FORM_FACTOR_DATA,
 } from "./constants";
-import { CreateProductDispatch } from "./dispatch";
-import { MemoryType, MemoryUnit, MotherboardFormFactor } from "./types";
+import type { CreateProductDispatch } from "./dispatch";
+import type { MemoryType, MemoryUnit, MotherboardFormFactor } from "./types";
 
 type MotherboardProps = {
   additionalFields: Array<[string, string]>;
-  additionalFieldsFormData: FormData;
   motherboardChipset: string;
   motherboardFormFactor: MotherboardFormFactor;
   motherboardM2Slots: string;
@@ -37,7 +36,6 @@ type MotherboardProps = {
 
 function Motherboard({
   additionalFields,
-  additionalFieldsFormData,
   motherboardChipset,
   motherboardFormFactor,
   motherboardM2Slots,
@@ -202,7 +200,6 @@ function Motherboard({
   const additionalFieldsAndImage = (
     <AdditionalFields
       additionalFields={additionalFields}
-      additionalFieldsFormData={additionalFieldsFormData}
       page={9}
       parentAction={parentAction}
       parentDispatch={parentDispatch}

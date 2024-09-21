@@ -1,22 +1,25 @@
 import { Stack } from "@mantine/core";
 
-import { StepperPage } from "../../types";
+import type { StepperPage } from "../../types";
 import { AccessibleSelectInput } from "../accessibleInputs/AccessibleSelectInput";
 import { AccessibleTextInput } from "../accessibleInputs/text/AccessibleTextInput";
-import { ProductCategory } from "../dashboard/types";
-import { CreateProductAction } from "./actions";
+import type { ProductCategory } from "../dashboard/types";
 import { AdditionalFields } from "./AdditionalFields";
+import type { CreateProductAction } from "./actions";
 import {
   MICROPHONE_INTERFACE_DATA,
   MICROPHONE_POLAR_PATTERN_DATA,
   MICROPHONE_TYPE_DATA,
 } from "./constants";
-import { CreateProductDispatch } from "./dispatch";
-import { MicrophoneInterface, MicrophonePolarPattern, MicrophoneType } from "./types";
+import type { CreateProductDispatch } from "./dispatch";
+import type {
+  MicrophoneInterface,
+  MicrophonePolarPattern,
+  MicrophoneType,
+} from "./types";
 
 type MicrophoneProps = {
   additionalFields: Array<[string, string]>;
-  additionalFieldsFormData: FormData;
   microphoneColor: string;
   microphoneFrequencyResponse: string;
   microphoneInterface: MicrophoneInterface;
@@ -30,7 +33,6 @@ type MicrophoneProps = {
 
 function Microphone({
   additionalFields,
-  additionalFieldsFormData,
   microphoneColor,
   microphoneFrequencyResponse,
   microphoneInterface,
@@ -104,7 +106,6 @@ function Microphone({
   const additionalFieldsAndImage = (
     <AdditionalFields
       additionalFields={additionalFields}
-      additionalFieldsFormData={additionalFieldsFormData}
       page={8}
       parentAction={parentAction}
       parentDispatch={parentDispatch}

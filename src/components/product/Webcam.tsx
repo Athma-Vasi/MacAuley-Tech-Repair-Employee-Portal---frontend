@@ -1,19 +1,19 @@
 import { Stack } from "@mantine/core";
 
-import { StepperPage } from "../../types";
+import type { StepperPage } from "../../types";
 import { AccessibleSelectInput } from "../accessibleInputs/AccessibleSelectInput";
 import { AccessibleTextInput } from "../accessibleInputs/text/AccessibleTextInput";
-import { ProductCategory } from "../dashboard/types";
-import { CreateProductAction } from "./actions";
+import type { ProductCategory } from "../dashboard/types";
 import { AdditionalFields } from "./AdditionalFields";
+import type { CreateProductAction } from "./actions";
 import {
   WEBCAM_FRAME_RATE_DATA,
   WEBCAM_INTERFACE_DATA,
   WEBCAM_MICROPHONE_DATA,
   WEBCAM_RESOLUTION_DATA,
 } from "./constants";
-import { CreateProductDispatch } from "./dispatch";
-import {
+import type { CreateProductDispatch } from "./dispatch";
+import type {
   WebcamFrameRate,
   WebcamInterface,
   WebcamMicrophone,
@@ -22,7 +22,6 @@ import {
 
 type WebcamProps = {
   additionalFields: Array<[string, string]>;
-  additionalFieldsFormData: FormData;
   parentAction: CreateProductAction;
   parentDispatch: React.Dispatch<CreateProductDispatch>;
   productCategory: ProductCategory;
@@ -36,7 +35,6 @@ type WebcamProps = {
 
 function Webcam({
   additionalFields,
-  additionalFieldsFormData,
   parentAction,
   parentDispatch,
   productCategory,
@@ -110,7 +108,6 @@ function Webcam({
   const additionalFieldsAndImage = (
     <AdditionalFields
       additionalFields={additionalFields}
-      additionalFieldsFormData={additionalFieldsFormData}
       page={15}
       parentAction={parentAction}
       parentDispatch={parentDispatch}

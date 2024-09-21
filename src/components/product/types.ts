@@ -1,5 +1,5 @@
-import { Currency, FileUploadDocument, StepperPage } from "../../types";
-import { ProductCategory } from "../dashboard/types";
+import type { Currency, FileUploadDocument, StepperPage } from "../../types";
+import type { ProductCategory } from "../dashboard/types";
 
 type ProductAvailability =
   | "In Stock"
@@ -52,10 +52,11 @@ type PeripheralsInterface = "USB" | "Bluetooth" | "PS/2" | "Wi-Fi" | "Other";
 
 type MobileOs = "Android" | "iOS" | "Windows" | "Linux" | "Other";
 
-type ProductServerResponse<Doc extends Record<string, any> = Record<string, any>> =
-  Doc & {
-    fileUploads: FileUploadDocument[];
-  };
+type ProductServerResponse<
+  Doc extends Record<string, any> = Record<string, any>,
+> = Doc & {
+  fileUploads: FileUploadDocument[];
+};
 
 type ProductCategoryPage1Specifications = {
   sku: string[];
@@ -137,8 +138,10 @@ type AccessoryDocument = AccessorySchema & {
   __v: number;
 };
 
-type AccessoryRequestBody = ProductCategoryPage1Specifications &
-  AccessorySpecifications & {
+type AccessoryRequestBody =
+  & ProductCategoryPage1Specifications
+  & AccessorySpecifications
+  & {
     additionalFields: {
       [key: string]: string;
     };
@@ -167,8 +170,10 @@ type CpuDocument = CpuSchema & {
   __v: number;
 };
 
-type CpuRequestBody = ProductCategoryPage1Specifications &
-  CpuSpecifications & {
+type CpuRequestBody =
+  & ProductCategoryPage1Specifications
+  & CpuSpecifications
+  & {
     additionalFields: {
       [key: string]: string;
     };
@@ -200,28 +205,32 @@ type ComputerCaseDocument = ComputerCaseSchema & {
   __v: number;
 };
 
-type ComputerCaseRequestBody = ProductCategoryPage1Specifications &
-  CaseSpecifications & {
+type ComputerCaseRequestBody =
+  & ProductCategoryPage1Specifications
+  & CaseSpecifications
+  & {
     additionalFields: {
       [key: string]: string;
     };
     uploadedFilesIds: string[];
   };
 
-type DesktopComputerSpecifications = CaseSpecifications &
-  CpuSpecifications &
-  DisplaySpecifications &
-  GpuSpecifications &
-  KeyboardSpecifications &
-  MotherboardSpecifications &
-  MouseSpecifications &
-  PsuSpecifications &
-  RamSpecifications &
-  SpeakerSpecifications &
-  StorageSpecifications;
+type DesktopComputerSpecifications =
+  & CaseSpecifications
+  & CpuSpecifications
+  & DisplaySpecifications
+  & GpuSpecifications
+  & KeyboardSpecifications
+  & MotherboardSpecifications
+  & MouseSpecifications
+  & PsuSpecifications
+  & RamSpecifications
+  & SpeakerSpecifications
+  & StorageSpecifications;
 
-type DesktopComputerSchema = ProductCategorySpecifications &
-  DesktopComputerSpecifications;
+type DesktopComputerSchema =
+  & ProductCategorySpecifications
+  & DesktopComputerSpecifications;
 
 type DesktopComputerDocument = DesktopComputerSchema & {
   _id: string;
@@ -230,8 +239,10 @@ type DesktopComputerDocument = DesktopComputerSchema & {
   __v: number;
 };
 
-type DesktopComputerRequestBody = ProductCategoryPage1Specifications &
-  DesktopComputerSpecifications & {
+type DesktopComputerRequestBody =
+  & ProductCategoryPage1Specifications
+  & DesktopComputerSpecifications
+  & {
     additionalFields: {
       [key: string]: string;
     };
@@ -259,8 +270,10 @@ type DisplayDocument = DisplaySchema & {
   __v: number;
 };
 
-type DisplayRequestBody = ProductCategoryPage1Specifications &
-  DisplaySpecifications & {
+type DisplayRequestBody =
+  & ProductCategoryPage1Specifications
+  & DisplaySpecifications
+  & {
     additionalFields: {
       [key: string]: string;
     };
@@ -285,8 +298,10 @@ type GpuDocument = GpuSchema & {
   __v: number;
 };
 
-type GpuRequestBody = ProductCategoryPage1Specifications &
-  GpuSpecifications & {
+type GpuRequestBody =
+  & ProductCategoryPage1Specifications
+  & GpuSpecifications
+  & {
     additionalFields: {
       [key: string]: string;
     };
@@ -294,7 +309,13 @@ type GpuRequestBody = ProductCategoryPage1Specifications &
   };
 
 type HeadphoneType = "Over-ear" | "On-ear" | "In-ear" | "Other";
-type HeadphoneInterface = "USB" | "Bluetooth" | "3.5 mm" | "2.5 mm" | "MMCX" | "Other";
+type HeadphoneInterface =
+  | "USB"
+  | "Bluetooth"
+  | "3.5 mm"
+  | "2.5 mm"
+  | "MMCX"
+  | "Other";
 
 type HeadphoneSpecifications = {
   headphoneType: HeadphoneType;
@@ -314,8 +335,10 @@ type HeadphoneDocument = HeadphoneSchema & {
   __v: number;
 };
 
-type HeadphoneRequestBody = ProductCategoryPage1Specifications &
-  HeadphoneSpecifications & {
+type HeadphoneRequestBody =
+  & ProductCategoryPage1Specifications
+  & HeadphoneSpecifications
+  & {
     additionalFields: {
       [key: string]: string;
     };
@@ -358,19 +381,22 @@ type KeyboardDocument = KeyboardSchema & {
   __v: number;
 };
 
-type KeyboardRequestBody = ProductCategoryPage1Specifications &
-  KeyboardSpecifications & {
+type KeyboardRequestBody =
+  & ProductCategoryPage1Specifications
+  & KeyboardSpecifications
+  & {
     additionalFields: {
       [key: string]: string;
     };
     uploadedFilesIds: string[];
   };
 
-type LaptopSpecifications = CpuSpecifications &
-  DisplaySpecifications &
-  GpuSpecifications &
-  RamSpecifications &
-  StorageSpecifications;
+type LaptopSpecifications =
+  & CpuSpecifications
+  & DisplaySpecifications
+  & GpuSpecifications
+  & RamSpecifications
+  & StorageSpecifications;
 
 type LaptopSchema = ProductCategorySpecifications & LaptopSpecifications;
 
@@ -381,8 +407,10 @@ type LaptopDocument = LaptopSchema & {
   __v: number;
 };
 
-type LaptopRequestBody = ProductCategoryPage1Specifications &
-  LaptopSpecifications & {
+type LaptopRequestBody =
+  & ProductCategoryPage1Specifications
+  & LaptopSpecifications
+  & {
     additionalFields: {
       [key: string]: string;
     };
@@ -409,15 +437,23 @@ type RamDocument = RamSchema & {
   __v: number;
 };
 
-type RamRequestBody = ProductCategoryPage1Specifications &
-  RamSpecifications & {
+type RamRequestBody =
+  & ProductCategoryPage1Specifications
+  & RamSpecifications
+  & {
     additionalFields: {
       [key: string]: string;
     };
     uploadedFilesIds: string[];
   };
 
-type MicrophoneType = "Condenser" | "Dynamic" | "Ribbon" | "USB" | "Wireless" | "Other";
+type MicrophoneType =
+  | "Condenser"
+  | "Dynamic"
+  | "Ribbon"
+  | "USB"
+  | "Wireless"
+  | "Other";
 type MicrophonePolarPattern =
   | "Cardioid"
   | "Supercardioid"
@@ -435,7 +471,9 @@ type MicrophoneSpecifications = {
   microphoneInterface: MicrophoneInterface;
 };
 
-type MicrophoneSchema = ProductCategorySpecifications & MicrophoneSpecifications;
+type MicrophoneSchema =
+  & ProductCategorySpecifications
+  & MicrophoneSpecifications;
 
 type MicrophoneDocument = MicrophoneSchema & {
   _id: string;
@@ -444,15 +482,22 @@ type MicrophoneDocument = MicrophoneSchema & {
   __v: number;
 };
 
-type MicrophoneRequestBody = ProductCategoryPage1Specifications &
-  MicrophoneSpecifications & {
+type MicrophoneRequestBody =
+  & ProductCategoryPage1Specifications
+  & MicrophoneSpecifications
+  & {
     additionalFields: {
       [key: string]: string;
     };
     uploadedFilesIds: string[];
   };
 
-type MotherboardFormFactor = "ATX" | "Micro ATX" | "Mini ITX" | "E-ATX" | "XL-ATX";
+type MotherboardFormFactor =
+  | "ATX"
+  | "Micro ATX"
+  | "Mini ITX"
+  | "E-ATX"
+  | "XL-ATX";
 
 type MotherboardSpecifications = {
   motherboardSocket: string;
@@ -469,7 +514,9 @@ type MotherboardSpecifications = {
   motherboardPcie5Slots: number;
 };
 
-type MotherboardSchema = ProductCategorySpecifications & MotherboardSpecifications;
+type MotherboardSchema =
+  & ProductCategorySpecifications
+  & MotherboardSpecifications;
 
 type MotherboardDocument = MotherboardSchema & {
   _id: string;
@@ -478,8 +525,10 @@ type MotherboardDocument = MotherboardSchema & {
   __v: number;
 };
 
-type MotherboardRequestBody = ProductCategoryPage1Specifications &
-  MotherboardSpecifications & {
+type MotherboardRequestBody =
+  & ProductCategoryPage1Specifications
+  & MotherboardSpecifications
+  & {
     additionalFields: {
       [key: string]: string;
     };
@@ -505,8 +554,10 @@ type MouseDocument = MouseSchema & {
   __v: number;
 };
 
-type MouseRequestBody = ProductCategoryPage1Specifications &
-  MouseSpecifications & {
+type MouseRequestBody =
+  & ProductCategoryPage1Specifications
+  & MouseSpecifications
+  & {
     additionalFields: {
       [key: string]: string;
     };
@@ -539,8 +590,10 @@ type PsuDocument = PsuSchema & {
   __v: number;
 };
 
-type PsuRequestBody = ProductCategoryPage1Specifications &
-  PsuSpecifications & {
+type PsuRequestBody =
+  & ProductCategoryPage1Specifications
+  & PsuSpecifications
+  & {
     additionalFields: {
       [key: string]: string;
     };
@@ -561,7 +614,9 @@ type SmartphoneSpecifications = {
   smartphoneColor: string;
 };
 
-type SmartphoneSchema = ProductCategorySpecifications & SmartphoneSpecifications;
+type SmartphoneSchema =
+  & ProductCategorySpecifications
+  & SmartphoneSpecifications;
 
 type SmartphoneDocument = SmartphoneSchema & {
   _id: string;
@@ -570,8 +625,10 @@ type SmartphoneDocument = SmartphoneSchema & {
   __v: number;
 };
 
-type SmartphoneRequestBody = ProductCategoryPage1Specifications &
-  SmartphoneSpecifications & {
+type SmartphoneRequestBody =
+  & ProductCategoryPage1Specifications
+  & SmartphoneSpecifications
+  & {
     additionalFields: {
       [key: string]: string;
     };
@@ -606,8 +663,10 @@ type SpeakerDocument = SpeakerSchema & {
   __v: number;
 };
 
-type SpeakerRequestBody = ProductCategoryPage1Specifications &
-  SpeakerSpecifications & {
+type SpeakerRequestBody =
+  & ProductCategoryPage1Specifications
+  & SpeakerSpecifications
+  & {
     additionalFields: {
       [key: string]: string;
     };
@@ -654,8 +713,10 @@ type StorageDocument = StorageSchema & {
   __v: number;
 };
 
-type StorageRequestBody = ProductCategoryPage1Specifications &
-  StorageSpecifications & {
+type StorageRequestBody =
+  & ProductCategoryPage1Specifications
+  & StorageSpecifications
+  & {
     additionalFields: {
       [key: string]: string;
     };
@@ -685,8 +746,10 @@ type TabletDocument = TabletSchema & {
   __v: number;
 };
 
-type TabletRequestBody = ProductCategoryPage1Specifications &
-  TabletSpecifications & {
+type TabletRequestBody =
+  & ProductCategoryPage1Specifications
+  & TabletSpecifications
+  & {
     additionalFields: {
       [key: string]: string;
     };
@@ -715,8 +778,10 @@ type WebcamDocument = WebcamSchema & {
   __v: number;
 };
 
-type WebcamRequestBody = ProductCategoryPage1Specifications &
-  WebcamSpecifications & {
+type WebcamRequestBody =
+  & ProductCategoryPage1Specifications
+  & WebcamSpecifications
+  & {
     additionalFields: {
       [key: string]: string;
     };
@@ -728,7 +793,7 @@ type AdditionalFieldsMap = Map<
   Array<[string, string]> // Array<[fieldName, fieldValue]>
 >;
 
-type AdditionalFieldsFormDataMap = Map<ProductCategory, FormData>;
+// type AdditionalFieldsFormDataMap = Map<ProductCategory, FormData>;
 
 type CreateProductState = {
   accessoryColor: string;
@@ -736,7 +801,7 @@ type CreateProductState = {
   accessoryType: string;
   additionalComments: string;
   additionalFieldsMap: AdditionalFieldsMap;
-  additionalFieldsFormDataMap: AdditionalFieldsFormDataMap;
+  // additionalFieldsFormDataMap: AdditionalFieldsFormDataMap;
   availability: ProductAvailability;
   brand: string;
   caseColor: string;
@@ -754,6 +819,7 @@ type CreateProductState = {
   cpuWattage: string;
   currency: Currency;
   description: string;
+  desktopComponents: Array<ProductCategory>;
   dimensionHeight: string;
   dimensionHeightUnit: DimensionUnit;
   dimensionLength: string;
@@ -810,6 +876,7 @@ type CreateProductState = {
   mouseSensor: MouseSensor;
   pagesInError: Set<number>;
   price: string;
+  productCategory: ProductCategory;
   psuEfficiency: PsuEfficiency;
   psuFormFactor: PsuFormFactor;
   psuModularity: PsuModularity;

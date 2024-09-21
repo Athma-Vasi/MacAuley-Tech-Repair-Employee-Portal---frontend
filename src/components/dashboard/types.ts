@@ -110,6 +110,7 @@ type ProductCategory =
   | "Accessory"
   | "Central Processing Unit (CPU)"
   | "Computer Case"
+  | "Desktop Computer"
   | "Display"
   | "Graphics Processing Unit (GPU)"
   | "Headphone"

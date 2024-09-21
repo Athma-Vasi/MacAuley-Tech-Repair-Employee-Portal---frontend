@@ -1,18 +1,17 @@
 import { Stack } from "@mantine/core";
 
-import { StepperPage } from "../../types";
+import type { StepperPage } from "../../types";
 import { AccessibleSelectInput } from "../accessibleInputs/AccessibleSelectInput";
 import { AccessibleTextInput } from "../accessibleInputs/text/AccessibleTextInput";
-import { ProductCategory } from "../dashboard/types";
-import { CreateProductAction } from "./actions";
+import type { ProductCategory } from "../dashboard/types";
 import { AdditionalFields } from "./AdditionalFields";
+import type { CreateProductAction } from "./actions";
 import { CASE_SIDE_PANEL_DATA, CASE_TYPE_DATA } from "./constants";
-import { CreateProductDispatch } from "./dispatch";
-import { CaseSidePanel, CaseType } from "./types";
+import type { CreateProductDispatch } from "./dispatch";
+import type { CaseSidePanel, CaseType } from "./types";
 
 type CaseProps = {
   additionalFields: Array<[string, string]>;
-  additionalFieldsFormData: FormData;
   caseColor: string;
   caseSidePanel: CaseSidePanel;
   caseType: CaseType;
@@ -24,7 +23,6 @@ type CaseProps = {
 
 function Case({
   additionalFields,
-  additionalFieldsFormData,
   caseColor,
   caseSidePanel,
   caseType,
@@ -72,7 +70,6 @@ function Case({
   const additionalFieldsAndImage = (
     <AdditionalFields
       additionalFields={additionalFields}
-      additionalFieldsFormData={additionalFieldsFormData}
       page={2}
       parentAction={parentAction}
       parentDispatch={parentDispatch}

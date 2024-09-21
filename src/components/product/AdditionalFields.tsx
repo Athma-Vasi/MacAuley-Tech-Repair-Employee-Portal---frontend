@@ -1,17 +1,18 @@
 import { Group, Stack } from "@mantine/core";
 
-import { StepperChild, StepperPage } from "../../types";
+import type { StepperChild, StepperPage } from "../../types";
 import { AccessibleButton } from "../accessibleInputs/AccessibleButton";
 import { AccessibleTextAreaInput } from "../accessibleInputs/AccessibleTextAreaInput";
-import { AccessibleImageInput } from "../accessibleInputs/image";
-import { ProductCategory } from "../dashboard/types";
-import { CreateProductAction } from "./actions";
-import { MAX_ADDITIONAL_FIELDS_AMOUNT, PRODUCT_CATEGORY_PAGE_TABLE } from "./constants";
-import { CreateProductDispatch } from "./dispatch";
+import type { ProductCategory } from "../dashboard/types";
+import type { CreateProductAction } from "./actions";
+import {
+  MAX_ADDITIONAL_FIELDS_AMOUNT,
+  PRODUCT_CATEGORY_PAGE_TABLE,
+} from "./constants";
+import type { CreateProductDispatch } from "./dispatch";
 
 type AdditionalFieldsProps = {
   additionalFields: Array<[string, string]>;
-  additionalFieldsFormData: FormData;
   page: number;
   parentDispatch: React.Dispatch<CreateProductDispatch>;
   productCategory: ProductCategory;
@@ -25,7 +26,6 @@ function AdditionalFields({
   page,
   parentAction,
   parentDispatch,
-  additionalFieldsFormData,
   productCategory,
 }: AdditionalFieldsProps) {
   const addAdditionalFieldButton = (
@@ -33,12 +33,12 @@ function AdditionalFields({
       attributes={{
         disabled: additionalFields.length === MAX_ADDITIONAL_FIELDS_AMOUNT,
         disabledScreenreaderText: "Maximum additional fields amount reached",
-        enabledScreenreaderText: `Add an additional field`,
+        enabledScreenreaderText: "Add an additional field",
         kind: "add",
         onClick: (
           _event:
             | React.MouseEvent<HTMLButtonElement, MouseEvent>
-            | React.PointerEvent<HTMLButtonElement>
+            | React.PointerEvent<HTMLButtonElement>,
         ) => {
           parentDispatch({
             action: parentAction.modifyAdditionalFieldsMap,
@@ -128,7 +128,7 @@ function AdditionalFields({
           onClick: (
             _event:
               | React.MouseEvent<HTMLButtonElement, MouseEvent>
-              | React.PointerEvent<HTMLButtonElement>
+              | React.PointerEvent<HTMLButtonElement>,
           ) => {
             parentDispatch({
               action: parentAction.modifyAdditionalFieldsMap,
@@ -149,14 +149,16 @@ function AdditionalFields({
         attributes={{
           disabled: additionalFields.length === MAX_ADDITIONAL_FIELDS_AMOUNT,
           disabledScreenreaderText: "Maximum additional fields amount reached",
-          enabledScreenreaderText: `Insert additional field before ${index + 1}`,
+          enabledScreenreaderText: `Insert additional field before ${
+            index + 1
+          }`,
           index,
           kind: "insert",
           setIconAsLabel: true,
           onClick: (
             _event:
               | React.MouseEvent<HTMLButtonElement, MouseEvent>
-              | React.PointerEvent<HTMLButtonElement>
+              | React.PointerEvent<HTMLButtonElement>,
           ) => {
             parentDispatch({
               action: parentAction.modifyAdditionalFieldsMap,
@@ -178,14 +180,14 @@ function AdditionalFields({
           disabledScreenreaderText: `Additional field ${
             index + 1
           } is already at the bottom`,
-          enabledScreenreaderText: `Slide additional field down`,
+          enabledScreenreaderText: "Slide additional field down",
           index,
           kind: "down",
           setIconAsLabel: true,
           onClick: (
             _event:
               | React.MouseEvent<HTMLButtonElement, MouseEvent>
-              | React.PointerEvent<HTMLButtonElement>
+              | React.PointerEvent<HTMLButtonElement>,
           ) => {
             parentDispatch({
               action: parentAction.modifyAdditionalFieldsMap,
@@ -204,15 +206,17 @@ function AdditionalFields({
       <AccessibleButton
         attributes={{
           disabled: index === 0,
-          disabledScreenreaderText: `Additional field ${index + 1} is already at the top`,
-          enabledScreenreaderText: `Slide additional field up`,
+          disabledScreenreaderText: `Additional field ${
+            index + 1
+          } is already at the top`,
+          enabledScreenreaderText: "Slide additional field up",
           index,
           kind: "up",
           setIconAsLabel: true,
           onClick: (
             _event:
               | React.MouseEvent<HTMLButtonElement, MouseEvent>
-              | React.PointerEvent<HTMLButtonElement>
+              | React.PointerEvent<HTMLButtonElement>,
           ) => {
             parentDispatch({
               action: parentAction.modifyAdditionalFieldsMap,
@@ -228,7 +232,7 @@ function AdditionalFields({
     );
 
     return (
-      <Stack key={`${productCategory}-${index}`}>
+      <Stack key={`${productCategory}-${index.toString()}`}>
         <Group>
           {fieldNameTextAreaInput}
           {fieldValueTextAreaInput}
@@ -243,22 +247,22 @@ function AdditionalFields({
     );
   });
 
-  const imageInput = (
-    <AccessibleImageInput
-      attributes={{
-        invalidValueAction: parentAction.setPageInError,
-        page,
-        productCategory,
-        productCategoryDispatch: parentDispatch,
-        storageKey: "additionalFields",
-        validValueAction: parentAction.setAdditionalFieldsFormDataMap,
-      }}
-    />
-  );
+  // const imageInput = (
+  //   <AccessibleImageInput
+  //     attributes={{
+  //       invalidValueAction: parentAction.setPageInError,
+  //       page,
+  //       productCategory,
+  //       productCategoryDispatch: parentDispatch,
+  //       storageKey: "additionalFields",
+  //       validValueAction: parentAction.setAdditionalFieldsFormDataMap,
+  //     }}
+  //   />
+  // );
 
   return (
     <Stack>
-      {imageInput}
+      {/* {imageInput} */}
       {addAdditionalFieldButton}
       {additionalTextInputs}
     </Stack>

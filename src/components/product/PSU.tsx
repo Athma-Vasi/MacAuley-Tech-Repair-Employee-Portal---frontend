@@ -1,22 +1,21 @@
 import { Stack } from "@mantine/core";
 
-import { StepperPage } from "../../types";
+import type { StepperPage } from "../../types";
 import { AccessibleSelectInput } from "../accessibleInputs/AccessibleSelectInput";
 import { AccessibleTextInput } from "../accessibleInputs/text/AccessibleTextInput";
-import { ProductCategory } from "../dashboard/types";
-import { CreateProductAction } from "./actions";
+import type { ProductCategory } from "../dashboard/types";
 import { AdditionalFields } from "./AdditionalFields";
+import type { CreateProductAction } from "./actions";
 import {
   PSU_EFFICIENCY_RATING_DATA,
   PSU_FORM_FACTOR_DATA,
   PSU_MODULARITY_DATA,
 } from "./constants";
-import { CreateProductDispatch } from "./dispatch";
-import { PsuEfficiency, PsuFormFactor, PsuModularity } from "./types";
+import type { CreateProductDispatch } from "./dispatch";
+import type { PsuEfficiency, PsuFormFactor, PsuModularity } from "./types";
 
 type PSUProps = {
   additionalFields: Array<[string, string]>;
-  additionalFieldsFormData: FormData;
   parentAction: CreateProductAction;
   parentDispatch: React.Dispatch<CreateProductDispatch>;
   productCategory: ProductCategory;
@@ -29,7 +28,6 @@ type PSUProps = {
 
 function PSU({
   additionalFields,
-  additionalFieldsFormData,
   parentAction,
   parentDispatch,
   productCategory,
@@ -90,7 +88,6 @@ function PSU({
   const additionalFieldsAndImage = (
     <AdditionalFields
       additionalFields={additionalFields}
-      additionalFieldsFormData={additionalFieldsFormData}
       page={11}
       parentAction={parentAction}
       parentDispatch={parentDispatch}

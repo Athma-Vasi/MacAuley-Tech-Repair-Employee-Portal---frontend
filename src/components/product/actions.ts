@@ -5,7 +5,7 @@ type CreateProductAction = {
   setAccessoryInterface: "setAccessoryInterface";
   setAccessoryType: "setAccessoryType";
   setAdditionalComments: "setAdditionalComments";
-  setAdditionalFieldsFormDataMap: "setAdditionalFieldsFormDataMap";
+  // setAdditionalFieldsFormDataMap: "setAdditionalFieldsFormDataMap";
   setAvailability: "setAvailability";
   setBrand: "setBrand";
   setCaseColor: "setCaseColor";
@@ -23,6 +23,7 @@ type CreateProductAction = {
   setCpuWattage: "setCpuWattage";
   setCurrency: "setCurrency";
   setDescription: "setDescription";
+  setDesktopComponents: "setDesktopComponents";
   setDimensionHeight: "setDimensionHeight";
   setDimensionHeightUnit: "setDimensionHeightUnit";
   setDimensionLength: "setDimensionLength";
@@ -79,6 +80,7 @@ type CreateProductAction = {
   setMouseSensor: "setMouseSensor";
   setPageInError: "setPageInError";
   setPrice: "setPrice";
+  setProductCategory: "setProductCategory";
   setPsuEfficiency: "setPsuEfficiency";
   setPsuFormFactor: "setPsuFormFactor";
   setPsuModularity: "setPsuModularity";
@@ -121,7 +123,7 @@ const createProductAction: CreateProductAction = {
   setAccessoryInterface: "setAccessoryInterface",
   setAccessoryType: "setAccessoryType",
   setAdditionalComments: "setAdditionalComments",
-  setAdditionalFieldsFormDataMap: "setAdditionalFieldsFormDataMap",
+  // setAdditionalFieldsFormDataMap: "setAdditionalFieldsFormDataMap",
   setAvailability: "setAvailability",
   setBrand: "setBrand",
   setCaseColor: "setCaseColor",
@@ -139,6 +141,7 @@ const createProductAction: CreateProductAction = {
   setCpuWattage: "setCpuWattage",
   setCurrency: "setCurrency",
   setDescription: "setDescription",
+  setDesktopComponents: "setDesktopComponents",
   setDimensionHeight: "setDimensionHeight",
   setDimensionHeightUnit: "setDimensionHeightUnit",
   setDimensionLength: "setDimensionLength",
@@ -195,6 +198,7 @@ const createProductAction: CreateProductAction = {
   setMouseSensor: "setMouseSensor",
   setPageInError: "setPageInError",
   setPrice: "setPrice",
+  setProductCategory: "setProductCategory",
   setPsuEfficiency: "setPsuEfficiency",
   setPsuFormFactor: "setPsuFormFactor",
   setPsuModularity: "setPsuModularity",

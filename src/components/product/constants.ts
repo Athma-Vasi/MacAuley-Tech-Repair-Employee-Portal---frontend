@@ -721,7 +721,11 @@ function createProductStepperPages(): StepperPage[] {
       description: "General product information",
     },
 
-    // second page ...
+    {
+      children: [],
+      description: "Product Category",
+    },
+
     {
       children: [
         accessoryType,
@@ -1080,18 +1084,19 @@ const PRODUCT_CATEGORY_PAGE_TABLE: Record<ProductCategory, number> = {
   Accessory: 1,
   "Central Processing Unit (CPU)": 2,
   "Computer Case": 3,
-  Display: 4,
-  "Graphics Processing Unit (GPU)": 5,
-  Headphone: 6,
-  Keyboard: 7,
-  "Memory (RAM)": 8,
-  "Power Supply Unit (PSU)": 9,
-  Speaker: 10,
-  Microphone: 11,
-  Motherboard: 12,
-  Mouse: 13,
-  Storage: 14,
-  Webcam: 15,
+  "Desktop Computer": 4,
+  Display: 5,
+  "Graphics Processing Unit (GPU)": 6,
+  Headphone: 7,
+  Keyboard: 8,
+  "Memory (RAM)": 9,
+  "Power Supply Unit (PSU)": 10,
+  Speaker: 11,
+  Microphone: 12,
+  Motherboard: 13,
+  Mouse: 14,
+  Storage: 15,
+  Webcam: 16,
 };
 
 const WEIGHT_UNIT_SELECT_INPUT_DATA: CheckboxRadioSelectData<WeightUnit> = [
@@ -1412,6 +1417,7 @@ const PRODUCT_CATEGORY_ROUTE_NAME_OBJ: Record<ProductCategory, string> = {
   Accessory: "accessory",
   "Central Processing Unit (CPU)": "cpu",
   "Computer Case": "computer-case",
+  "Desktop Computer": "desktop-computer",
   Display: "display",
   "Graphics Processing Unit (GPU)": "gpu",
   Headphone: "headphone",

@@ -1,6 +1,11 @@
-import { Currency, SetPageInErrorPayload, StepperChild } from "../../types";
-import { CreateProductAction } from "./actions";
-import {
+import type {
+  Currency,
+  SetPageInErrorPayload,
+  StepperChild,
+} from "../../types";
+import type { ProductCategory } from "../dashboard/types";
+import type { CreateProductAction } from "./actions";
+import type {
   AdditionalFieldsDelete,
   AdditionalFieldsFormDataPayload,
   AdditionalFieldsInsert,
@@ -11,7 +16,7 @@ import {
   CreateProductDispatch,
 } from "./dispatch";
 import { createProductAction } from "./state";
-import {
+import type {
   CaseSidePanel,
   CaseType,
   CreateProductState,
@@ -48,7 +53,7 @@ import {
 
 function createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   const reducer = createProductReducersMap.get(dispatch.action);
   return reducer ? reducer(state, dispatch) : state;
@@ -56,7 +61,10 @@ function createProductReducer(
 
 const createProductReducersMap = new Map<
   CreateProductAction[keyof CreateProductAction],
-  (state: CreateProductState, dispatch: CreateProductDispatch) => CreateProductState
+  (
+    state: CreateProductState,
+    dispatch: CreateProductDispatch,
+  ) => CreateProductState
 >([
   [createProductAction.setBrand, setBrand_createProductReducer],
   [createProductAction.setModel, setModel_createProductReducer],
@@ -67,49 +75,79 @@ const createProductReducersMap = new Map<
   [createProductAction.setQuantity, setQuantity_createProductReducer],
   [createProductAction.setWeight, setWeight_createProductReducer],
   [createProductAction.setWeightUnit, setWeightUnit_createProductReducer],
-  [createProductAction.setDimensionHeight, setDimensionHeight_createProductReducer],
+  [
+    createProductAction.setDimensionHeight,
+    setDimensionHeight_createProductReducer,
+  ],
   [
     createProductAction.setDimensionHeightUnit,
     setDimensionHeightUnit_createProductReducer,
   ],
-  [createProductAction.setDimensionWidth, setDimensionWidth_createProductReducer],
-  [createProductAction.setDimensionWidthUnit, setDimensionWidthUnit_createProductReducer],
-  [createProductAction.setDimensionLength, setDimensionLength_createProductReducer],
+  [
+    createProductAction.setDimensionWidth,
+    setDimensionWidth_createProductReducer,
+  ],
+  [
+    createProductAction.setDimensionWidthUnit,
+    setDimensionWidthUnit_createProductReducer,
+  ],
+  [
+    createProductAction.setDimensionLength,
+    setDimensionLength_createProductReducer,
+  ],
   [
     createProductAction.setDimensionLengthUnit,
     setDimensionLengthUnit_createProductReducer,
   ],
-  [createProductAction.setAdditionalComments, setAdditionalComments_createProductReducer],
+  [
+    createProductAction.setAdditionalComments,
+    setAdditionalComments_createProductReducer,
+  ],
 
   // page 2
   [createProductAction.addStepperChild, addStepperChild_createProductReducer],
-  [
-    createProductAction.modifyAdditionalFieldsMap,
-    modifyAdditionalFieldsMap_createProductReducer,
-  ],
-  [
-    createProductAction.setAdditionalFieldsFormDataMap,
-    setAdditionalFieldsFormDataMap_createProductReducer,
-  ],
+  // [
+  //   createProductAction.modifyAdditionalFieldsMap,
+  //   modifyAdditionalFieldsMap_createProductReducer,
+  // ],
+  // [
+  //   createProductAction.setAdditionalFieldsFormDataMap,
+  //   setAdditionalFieldsFormDataMap_createProductReducer,
+  // ],
 
   [createProductAction.setAccessoryType, setAccessoryType_createProductReducer],
-  [createProductAction.setAccessoryColor, setAccessoryColor_createProductReducer],
-  [createProductAction.setAccessoryInterface, setAccessoryInterface_createProductReducer],
+  [
+    createProductAction.setAccessoryColor,
+    setAccessoryColor_createProductReducer,
+  ],
+  [
+    createProductAction.setAccessoryInterface,
+    setAccessoryInterface_createProductReducer,
+  ],
 
   [createProductAction.setCpuSocket, setCpuSocket_createProductReducer],
   [createProductAction.setCpuFrequency, setCpuFrequency_createProductReducer],
   [createProductAction.setCpuCores, setCpuCores_createProductReducer],
-  [createProductAction.setCpuL1CacheCapacity, setCpuL1CacheCapacity_createProductReducer],
+  [
+    createProductAction.setCpuL1CacheCapacity,
+    setCpuL1CacheCapacity_createProductReducer,
+  ],
   [
     createProductAction.setCpuL1CacheCapacityUnit,
     setCpuL1CacheCapacityUnit_createProductReducer,
   ],
-  [createProductAction.setCpuL2CacheCapacity, setCpuL2CacheCapacity_createProductReducer],
+  [
+    createProductAction.setCpuL2CacheCapacity,
+    setCpuL2CacheCapacity_createProductReducer,
+  ],
   [
     createProductAction.setCpuL2CacheCapacityUnit,
     setCpuL2CacheCapacityUnit_createProductReducer,
   ],
-  [createProductAction.setCpuL3CacheCapacity, setCpuL3CacheCapacity_createProductReducer],
+  [
+    createProductAction.setCpuL3CacheCapacity,
+    setCpuL3CacheCapacity_createProductReducer,
+  ],
   [
     createProductAction.setCpuL3CacheCapacityUnit,
     setCpuL3CacheCapacityUnit_createProductReducer,
@@ -129,16 +167,28 @@ const createProductReducersMap = new Map<
     createProductAction.setDisplayResolutionVertical,
     setDisplayResolutionVertical_createProductReducer,
   ],
-  [createProductAction.setDisplayRefreshRate, setDisplayRefreshRate_createProductReducer],
-  [createProductAction.setDisplayPanelType, setDisplayPanelType_createProductReducer],
+  [
+    createProductAction.setDisplayRefreshRate,
+    setDisplayRefreshRate_createProductReducer,
+  ],
+  [
+    createProductAction.setDisplayPanelType,
+    setDisplayPanelType_createProductReducer,
+  ],
   [
     createProductAction.setDisplayResponseTime,
     setDisplayResponseTime_createProductReducer,
   ],
-  [createProductAction.setDisplayAspectRatio, setDisplayAspectRatio_createProductReducer],
+  [
+    createProductAction.setDisplayAspectRatio,
+    setDisplayAspectRatio_createProductReducer,
+  ],
 
   [createProductAction.setGpuChipset, setGpuChipset_createProductReducer],
-  [createProductAction.setGpuMemoryCapacity, setGpuMemoryCapacity_createProductReducer],
+  [
+    createProductAction.setGpuMemoryCapacity,
+    setGpuMemoryCapacity_createProductReducer,
+  ],
   [
     createProductAction.setGpuMemoryCapacityUnit,
     setGpuMemoryCapacityUnit_createProductReducer,
@@ -148,21 +198,48 @@ const createProductReducersMap = new Map<
   [createProductAction.setGpuTdp, setGpuTdp_createProductReducer],
 
   [createProductAction.setHeadphoneType, setHeadphoneType_createProductReducer],
-  [createProductAction.setHeadphoneDriver, setHeadphoneDriver_createProductReducer],
+  [
+    createProductAction.setHeadphoneDriver,
+    setHeadphoneDriver_createProductReducer,
+  ],
   [
     createProductAction.setHeadphoneFrequencyResponse,
     setHeadphoneFrequencyResponse_createProductReducer,
   ],
-  [createProductAction.setHeadphoneImpedance, setHeadphoneImpedance_createProductReducer],
-  [createProductAction.setHeadphoneColor, setHeadphoneColor_createProductReducer],
-  [createProductAction.setHeadphoneInterface, setHeadphoneInterface_createProductReducer],
+  [
+    createProductAction.setHeadphoneImpedance,
+    setHeadphoneImpedance_createProductReducer,
+  ],
+  [
+    createProductAction.setHeadphoneColor,
+    setHeadphoneColor_createProductReducer,
+  ],
+  [
+    createProductAction.setHeadphoneInterface,
+    setHeadphoneInterface_createProductReducer,
+  ],
 
-  [createProductAction.setKeyboardSwitch, setKeyboardSwitch_createProductReducer],
-  [createProductAction.setKeyboardLayout, setKeyboardLayout_createProductReducer],
-  [createProductAction.setKeyboardBacklight, setKeyboardBacklight_createProductReducer],
-  [createProductAction.setKeyboardInterface, setKeyboardInterface_createProductReducer],
+  [
+    createProductAction.setKeyboardSwitch,
+    setKeyboardSwitch_createProductReducer,
+  ],
+  [
+    createProductAction.setKeyboardLayout,
+    setKeyboardLayout_createProductReducer,
+  ],
+  [
+    createProductAction.setKeyboardBacklight,
+    setKeyboardBacklight_createProductReducer,
+  ],
+  [
+    createProductAction.setKeyboardInterface,
+    setKeyboardInterface_createProductReducer,
+  ],
 
-  [createProductAction.setMicrophoneType, setMicrophoneType_createProductReducer],
+  [
+    createProductAction.setMicrophoneType,
+    setMicrophoneType_createProductReducer,
+  ],
   [
     createProductAction.setMicrophonePolarPattern,
     setMicrophonePolarPattern_createProductReducer,
@@ -171,14 +248,23 @@ const createProductReducersMap = new Map<
     createProductAction.setMicrophoneInterface,
     setMicrophoneInterface_createProductReducer,
   ],
-  [createProductAction.setMicrophoneColor, setMicrophoneColor_createProductReducer],
+  [
+    createProductAction.setMicrophoneColor,
+    setMicrophoneColor_createProductReducer,
+  ],
   [
     createProductAction.setMicrophoneFrequencyResponse,
     setMicrophoneFrequencyResponse_createProductReducer,
   ],
 
-  [createProductAction.setMotherboardSocket, setMotherboardSocket_createProductReducer],
-  [createProductAction.setMotherboardChipset, setMotherboardChipset_createProductReducer],
+  [
+    createProductAction.setMotherboardSocket,
+    setMotherboardSocket_createProductReducer,
+  ],
+  [
+    createProductAction.setMotherboardChipset,
+    setMotherboardChipset_createProductReducer,
+  ],
   [
     createProductAction.setMotherboardFormFactor,
     setMotherboardFormFactor_createProductReducer,
@@ -203,7 +289,10 @@ const createProductReducersMap = new Map<
     createProductAction.setMotherboardSataPorts,
     setMotherboardSataPorts_createProductReducer,
   ],
-  [createProductAction.setMotherboardM2Slots, setMotherboardM2Slots_createProductReducer],
+  [
+    createProductAction.setMotherboardM2Slots,
+    setMotherboardM2Slots_createProductReducer,
+  ],
   [
     createProductAction.setMotherboardPcie3Slots,
     setMotherboardPcie3Slots_createProductReducer,
@@ -221,7 +310,10 @@ const createProductReducersMap = new Map<
   [createProductAction.setMouseDpi, setMouseDpi_createProductReducer],
   [createProductAction.setMouseButtons, setMouseButtons_createProductReducer],
   [createProductAction.setMouseColor, setMouseColor_createProductReducer],
-  [createProductAction.setMouseInterface, setMouseInterface_createProductReducer],
+  [
+    createProductAction.setMouseInterface,
+    setMouseInterface_createProductReducer,
+  ],
 
   [createProductAction.setPsuWattage, setPsuWattage_createProductReducer],
   [createProductAction.setPsuEfficiency, setPsuEfficiency_createProductReducer],
@@ -229,8 +321,14 @@ const createProductReducersMap = new Map<
   [createProductAction.setPsuModularity, setPsuModularity_createProductReducer],
 
   [createProductAction.setRamDataRate, setRamDataRate_createProductReducer],
-  [createProductAction.setRamModulesQuantity, setRamModulesQuantity_createProductReducer],
-  [createProductAction.setRamModulesCapacity, setRamModulesCapacity_createProductReducer],
+  [
+    createProductAction.setRamModulesQuantity,
+    setRamModulesQuantity_createProductReducer,
+  ],
+  [
+    createProductAction.setRamModulesCapacity,
+    setRamModulesCapacity_createProductReducer,
+  ],
   [
     createProductAction.setRamModulesCapacityUnit,
     setRamModulesCapacityUnit_createProductReducer,
@@ -250,10 +348,16 @@ const createProductReducersMap = new Map<
     setSpeakerFrequencyResponse_createProductReducer,
   ],
   [createProductAction.setSpeakerColor, setSpeakerColor_createProductReducer],
-  [createProductAction.setSpeakerInterface, setSpeakerInterface_createProductReducer],
+  [
+    createProductAction.setSpeakerInterface,
+    setSpeakerInterface_createProductReducer,
+  ],
 
   [createProductAction.setStorageType, setStorageType_createProductReducer],
-  [createProductAction.setStorageCapacity, setStorageCapacity_createProductReducer],
+  [
+    createProductAction.setStorageCapacity,
+    setStorageCapacity_createProductReducer,
+  ],
   [
     createProductAction.setStorageCapacityUnit,
     setStorageCapacityUnit_createProductReducer,
@@ -266,24 +370,53 @@ const createProductReducersMap = new Map<
     createProductAction.setStorageCacheCapacityUnit,
     setStorageCacheCapacityUnit_createProductReducer,
   ],
-  [createProductAction.setStorageFormFactor, setStorageFormFactor_createProductReducer],
-  [createProductAction.setStorageInterface, setStorageInterface_createProductReducer],
+  [
+    createProductAction.setStorageFormFactor,
+    setStorageFormFactor_createProductReducer,
+  ],
+  [
+    createProductAction.setStorageInterface,
+    setStorageInterface_createProductReducer,
+  ],
 
-  [createProductAction.setWebcamResolution, setWebcamResolution_createProductReducer],
-  [createProductAction.setWebcamInterface, setWebcamInterface_createProductReducer],
-  [createProductAction.setWebcamMicrophone, setWebcamMicrophone_createProductReducer],
-  [createProductAction.setWebcamFrameRate, setWebcamFrameRate_createProductReducer],
+  [
+    createProductAction.setWebcamResolution,
+    setWebcamResolution_createProductReducer,
+  ],
+  [
+    createProductAction.setWebcamInterface,
+    setWebcamInterface_createProductReducer,
+  ],
+  [
+    createProductAction.setWebcamMicrophone,
+    setWebcamMicrophone_createProductReducer,
+  ],
+  [
+    createProductAction.setWebcamFrameRate,
+    setWebcamFrameRate_createProductReducer,
+  ],
   [createProductAction.setWebcamColor, setWebcamColor_createProductReducer],
 
-  [createProductAction.setTriggerFormSubmit, setTriggerFormSubmit_createProductReducer],
+  [
+    createProductAction.setTriggerFormSubmit,
+    setTriggerFormSubmit_createProductReducer,
+  ],
   [createProductAction.setPageInError, setPageInError_createProductReducer],
   [createProductAction.setIsSubmitting, setIsSubmitting_createProductReducer],
   [createProductAction.setIsSuccessful, setIsSuccessful_createProductReducer],
+  [
+    createProductAction.setProductCategory,
+    setProductCategory_createProductReducer,
+  ],
+  [
+    createProductAction.setDesktopComponents,
+    setDesktopComponents_createProductReducer,
+  ],
 ]);
 
 function setBrand_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -293,7 +426,7 @@ function setBrand_createProductReducer(
 
 function setModel_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -303,7 +436,7 @@ function setModel_createProductReducer(
 
 function setDescription_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -313,7 +446,7 @@ function setDescription_createProductReducer(
 
 function setPrice_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -323,7 +456,7 @@ function setPrice_createProductReducer(
 
 function setCurrency_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -333,7 +466,7 @@ function setCurrency_createProductReducer(
 
 function setAvailability_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -343,7 +476,7 @@ function setAvailability_createProductReducer(
 
 function setQuantity_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -353,7 +486,7 @@ function setQuantity_createProductReducer(
 
 function setWeight_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -363,7 +496,7 @@ function setWeight_createProductReducer(
 
 function setWeightUnit_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -373,7 +506,7 @@ function setWeightUnit_createProductReducer(
 
 function setDimensionHeight_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -383,7 +516,7 @@ function setDimensionHeight_createProductReducer(
 
 function setDimensionHeightUnit_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -393,7 +526,7 @@ function setDimensionHeightUnit_createProductReducer(
 
 function setDimensionWidth_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -403,7 +536,7 @@ function setDimensionWidth_createProductReducer(
 
 function setDimensionWidthUnit_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -413,7 +546,7 @@ function setDimensionWidthUnit_createProductReducer(
 
 function setDimensionLength_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -423,7 +556,7 @@ function setDimensionLength_createProductReducer(
 
 function setDimensionLengthUnit_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -433,7 +566,7 @@ function setDimensionLengthUnit_createProductReducer(
 
 function setAdditionalComments_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -443,7 +576,7 @@ function setAdditionalComments_createProductReducer(
 
 function setAccessoryType_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -453,7 +586,7 @@ function setAccessoryType_createProductReducer(
 
 function setAccessoryColor_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -463,7 +596,7 @@ function setAccessoryColor_createProductReducer(
 
 function setAccessoryInterface_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -473,12 +606,13 @@ function setAccessoryInterface_createProductReducer(
 
 function modifyAdditionalFieldsMap_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
-  const { operation, productCategory } = dispatch.payload as AdditionalFieldsPayload;
+  const { operation, productCategory } = dispatch
+    .payload as AdditionalFieldsPayload;
   const clonedAdditionalFieldsMap = new Map(state.additionalFieldsMap);
   const additionalFields = structuredClone(
-    clonedAdditionalFieldsMap.get(productCategory)
+    clonedAdditionalFieldsMap.get(productCategory),
   );
 
   if (!additionalFields) {
@@ -495,7 +629,7 @@ function modifyAdditionalFieldsMap_createProductReducer(
       additionalFields.push(["", ""]);
       const additionalFieldsMap = clonedAdditionalFieldsMap.set(
         productCategory,
-        additionalFields
+        additionalFields,
       );
 
       return {
@@ -512,7 +646,7 @@ function modifyAdditionalFieldsMap_createProductReducer(
       additionalFields.splice(inputIndex, 1);
       const additionalFieldsMap = clonedAdditionalFieldsMap.set(
         productCategory,
-        additionalFields
+        additionalFields,
       );
 
       return {
@@ -529,7 +663,7 @@ function modifyAdditionalFieldsMap_createProductReducer(
       additionalFields.splice(inputIndex, 0, ["", ""]);
       const additionalFieldsMap = clonedAdditionalFieldsMap.set(
         productCategory,
-        additionalFields
+        additionalFields,
       );
 
       return {
@@ -546,11 +680,15 @@ function modifyAdditionalFieldsMap_createProductReducer(
       } = dispatch.payload as AdditionalFieldsUpdate;
 
       const tuple = additionalFields[inputIndex];
-      kind === "fieldName" ? (tuple[0] = value) : (tuple[1] = value);
+      if (kind === "fieldName") {
+        tuple[0] = value;
+      } else {
+        tuple[1] = value;
+      }
 
       const additionalFieldsMap = clonedAdditionalFieldsMap.set(
         productCategory,
-        additionalFields
+        additionalFields,
       );
 
       return {
@@ -575,7 +713,7 @@ function modifyAdditionalFieldsMap_createProductReducer(
 
       const additionalFieldsMap = clonedAdditionalFieldsMap.set(
         productCategory,
-        additionalFields
+        additionalFields,
       );
 
       return {
@@ -600,7 +738,7 @@ function modifyAdditionalFieldsMap_createProductReducer(
 
       const additionalFieldsMap = clonedAdditionalFieldsMap.set(
         productCategory,
-        additionalFields
+        additionalFields,
       );
 
       return {
@@ -614,24 +752,25 @@ function modifyAdditionalFieldsMap_createProductReducer(
   }
 }
 
-function setAdditionalFieldsFormDataMap_createProductReducer(
-  state: CreateProductState,
-  dispatch: CreateProductDispatch
-): CreateProductState {
-  const { productCategory, value } = dispatch.payload as AdditionalFieldsFormDataPayload;
+// function setAdditionalFieldsFormDataMap_createProductReducer(
+//   state: CreateProductState,
+//   dispatch: CreateProductDispatch,
+// ): CreateProductState {
+//   const { productCategory, value } = dispatch
+//     .payload as AdditionalFieldsFormDataPayload;
 
-  return {
-    ...state,
-    additionalFieldsFormDataMap: state.additionalFieldsFormDataMap.set(
-      productCategory,
-      value
-    ),
-  };
-}
+//   return {
+//     ...state,
+//     additionalFieldsFormDataMap: state.additionalFieldsFormDataMap.set(
+//       productCategory,
+//       value,
+//     ),
+//   };
+// }
 
 function addStepperChild_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   const {
     dynamicIndexes: [pageIndex],
@@ -652,7 +791,7 @@ function addStepperChild_createProductReducer(
 
 function setCpuSocket_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -662,7 +801,7 @@ function setCpuSocket_createProductReducer(
 
 function setCpuFrequency_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -672,7 +811,7 @@ function setCpuFrequency_createProductReducer(
 
 function setCpuCores_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -682,7 +821,7 @@ function setCpuCores_createProductReducer(
 
 function setCpuL1CacheCapacity_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -692,7 +831,7 @@ function setCpuL1CacheCapacity_createProductReducer(
 
 function setCpuL1CacheCapacityUnit_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -702,7 +841,7 @@ function setCpuL1CacheCapacityUnit_createProductReducer(
 
 function setCpuL2CacheCapacity_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -712,7 +851,7 @@ function setCpuL2CacheCapacity_createProductReducer(
 
 function setCpuL2CacheCapacityUnit_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -722,7 +861,7 @@ function setCpuL2CacheCapacityUnit_createProductReducer(
 
 function setCpuL3CacheCapacity_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -732,7 +871,7 @@ function setCpuL3CacheCapacity_createProductReducer(
 
 function setCpuL3CacheCapacityUnit_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -742,7 +881,7 @@ function setCpuL3CacheCapacityUnit_createProductReducer(
 
 function setCpuWattage_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -752,7 +891,7 @@ function setCpuWattage_createProductReducer(
 
 function setCaseType_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -762,7 +901,7 @@ function setCaseType_createProductReducer(
 
 function setCaseColor_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -772,7 +911,7 @@ function setCaseColor_createProductReducer(
 
 function setCaseSidePanel_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -782,7 +921,7 @@ function setCaseSidePanel_createProductReducer(
 
 function setDisplaySize_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -792,7 +931,7 @@ function setDisplaySize_createProductReducer(
 
 function setDisplayResolutionHorizontal_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -802,7 +941,7 @@ function setDisplayResolutionHorizontal_createProductReducer(
 
 function setDisplayResolutionVertical_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -812,7 +951,7 @@ function setDisplayResolutionVertical_createProductReducer(
 
 function setDisplayRefreshRate_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -822,7 +961,7 @@ function setDisplayRefreshRate_createProductReducer(
 
 function setDisplayPanelType_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -832,7 +971,7 @@ function setDisplayPanelType_createProductReducer(
 
 function setDisplayResponseTime_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -842,7 +981,7 @@ function setDisplayResponseTime_createProductReducer(
 
 function setDisplayAspectRatio_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -852,7 +991,7 @@ function setDisplayAspectRatio_createProductReducer(
 
 function setGpuChipset_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -862,7 +1001,7 @@ function setGpuChipset_createProductReducer(
 
 function setGpuMemoryCapacity_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -872,7 +1011,7 @@ function setGpuMemoryCapacity_createProductReducer(
 
 function setGpuMemoryCapacityUnit_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -882,7 +1021,7 @@ function setGpuMemoryCapacityUnit_createProductReducer(
 
 function setGpuCoreClock_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -892,7 +1031,7 @@ function setGpuCoreClock_createProductReducer(
 
 function setGpuBoostClock_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -902,7 +1041,7 @@ function setGpuBoostClock_createProductReducer(
 
 function setGpuTdp_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -912,7 +1051,7 @@ function setGpuTdp_createProductReducer(
 
 function setHeadphoneType_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -922,7 +1061,7 @@ function setHeadphoneType_createProductReducer(
 
 function setHeadphoneDriver_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -932,7 +1071,7 @@ function setHeadphoneDriver_createProductReducer(
 
 function setHeadphoneFrequencyResponse_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -942,7 +1081,7 @@ function setHeadphoneFrequencyResponse_createProductReducer(
 
 function setHeadphoneImpedance_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -952,7 +1091,7 @@ function setHeadphoneImpedance_createProductReducer(
 
 function setHeadphoneColor_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -962,7 +1101,7 @@ function setHeadphoneColor_createProductReducer(
 
 function setHeadphoneInterface_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -972,7 +1111,7 @@ function setHeadphoneInterface_createProductReducer(
 
 function setKeyboardSwitch_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -982,7 +1121,7 @@ function setKeyboardSwitch_createProductReducer(
 
 function setKeyboardLayout_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -992,7 +1131,7 @@ function setKeyboardLayout_createProductReducer(
 
 function setKeyboardBacklight_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -1002,7 +1141,7 @@ function setKeyboardBacklight_createProductReducer(
 
 function setKeyboardInterface_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -1012,7 +1151,7 @@ function setKeyboardInterface_createProductReducer(
 
 function setRamDataRate_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -1022,7 +1161,7 @@ function setRamDataRate_createProductReducer(
 
 function setRamModulesQuantity_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -1032,7 +1171,7 @@ function setRamModulesQuantity_createProductReducer(
 
 function setRamModulesCapacity_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -1042,7 +1181,7 @@ function setRamModulesCapacity_createProductReducer(
 
 function setRamModulesCapacityUnit_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -1052,7 +1191,7 @@ function setRamModulesCapacityUnit_createProductReducer(
 
 function setRamType_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -1062,7 +1201,7 @@ function setRamType_createProductReducer(
 
 function setRamColor_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -1072,7 +1211,7 @@ function setRamColor_createProductReducer(
 
 function setRamVoltage_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -1082,7 +1221,7 @@ function setRamVoltage_createProductReducer(
 
 function setRamTiming_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -1092,7 +1231,7 @@ function setRamTiming_createProductReducer(
 
 function setMicrophoneType_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -1102,7 +1241,7 @@ function setMicrophoneType_createProductReducer(
 
 function setMicrophonePolarPattern_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -1112,7 +1251,7 @@ function setMicrophonePolarPattern_createProductReducer(
 
 function setMicrophoneFrequencyResponse_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -1122,7 +1261,7 @@ function setMicrophoneFrequencyResponse_createProductReducer(
 
 function setMicrophoneInterface_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -1132,7 +1271,7 @@ function setMicrophoneInterface_createProductReducer(
 
 function setMicrophoneColor_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -1142,7 +1281,7 @@ function setMicrophoneColor_createProductReducer(
 
 function setMotherboardSocket_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -1152,7 +1291,7 @@ function setMotherboardSocket_createProductReducer(
 
 function setMotherboardChipset_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -1162,7 +1301,7 @@ function setMotherboardChipset_createProductReducer(
 
 function setMotherboardFormFactor_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -1172,7 +1311,7 @@ function setMotherboardFormFactor_createProductReducer(
 
 function setMotherboardMemoryMaxCapacity_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -1182,7 +1321,7 @@ function setMotherboardMemoryMaxCapacity_createProductReducer(
 
 function setMotherboardMemoryMaxCapacityUnit_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -1192,7 +1331,7 @@ function setMotherboardMemoryMaxCapacityUnit_createProductReducer(
 
 function setMotherboardMemorySlots_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -1202,7 +1341,7 @@ function setMotherboardMemorySlots_createProductReducer(
 
 function setMotherboardMemoryType_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -1212,7 +1351,7 @@ function setMotherboardMemoryType_createProductReducer(
 
 function setMotherboardSataPorts_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -1222,7 +1361,7 @@ function setMotherboardSataPorts_createProductReducer(
 
 function setMotherboardM2Slots_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -1232,7 +1371,7 @@ function setMotherboardM2Slots_createProductReducer(
 
 function setMotherboardPcie3Slots_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -1242,7 +1381,7 @@ function setMotherboardPcie3Slots_createProductReducer(
 
 function setMotherboardPcie4Slots_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -1252,7 +1391,7 @@ function setMotherboardPcie4Slots_createProductReducer(
 
 function setMotherboardPcie5Slots_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -1262,7 +1401,7 @@ function setMotherboardPcie5Slots_createProductReducer(
 
 function setMouseSensor_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -1272,7 +1411,7 @@ function setMouseSensor_createProductReducer(
 
 function setMouseDpi_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -1282,7 +1421,7 @@ function setMouseDpi_createProductReducer(
 
 function setMouseButtons_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -1292,7 +1431,7 @@ function setMouseButtons_createProductReducer(
 
 function setMouseColor_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -1302,7 +1441,7 @@ function setMouseColor_createProductReducer(
 
 function setMouseInterface_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -1312,7 +1451,7 @@ function setMouseInterface_createProductReducer(
 
 function setPsuWattage_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -1322,7 +1461,7 @@ function setPsuWattage_createProductReducer(
 
 function setPsuEfficiency_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -1332,7 +1471,7 @@ function setPsuEfficiency_createProductReducer(
 
 function setPsuFormFactor_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -1342,7 +1481,7 @@ function setPsuFormFactor_createProductReducer(
 
 function setPsuModularity_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -1352,7 +1491,7 @@ function setPsuModularity_createProductReducer(
 
 function setSpeakerType_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -1362,7 +1501,7 @@ function setSpeakerType_createProductReducer(
 
 function setSpeakerTotalWattage_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -1372,7 +1511,7 @@ function setSpeakerTotalWattage_createProductReducer(
 
 function setSpeakerFrequencyResponse_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -1382,7 +1521,7 @@ function setSpeakerFrequencyResponse_createProductReducer(
 
 function setSpeakerColor_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -1392,7 +1531,7 @@ function setSpeakerColor_createProductReducer(
 
 function setSpeakerInterface_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -1402,7 +1541,7 @@ function setSpeakerInterface_createProductReducer(
 
 function setStorageType_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -1412,7 +1551,7 @@ function setStorageType_createProductReducer(
 
 function setStorageCapacity_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -1422,7 +1561,7 @@ function setStorageCapacity_createProductReducer(
 
 function setStorageCapacityUnit_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -1432,7 +1571,7 @@ function setStorageCapacityUnit_createProductReducer(
 
 function setStorageCacheCapacity_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -1442,7 +1581,7 @@ function setStorageCacheCapacity_createProductReducer(
 
 function setStorageCacheCapacityUnit_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -1452,7 +1591,7 @@ function setStorageCacheCapacityUnit_createProductReducer(
 
 function setStorageFormFactor_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -1462,7 +1601,7 @@ function setStorageFormFactor_createProductReducer(
 
 function setStorageInterface_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -1472,7 +1611,7 @@ function setStorageInterface_createProductReducer(
 
 function setWebcamResolution_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -1482,7 +1621,7 @@ function setWebcamResolution_createProductReducer(
 
 function setWebcamInterface_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -1492,7 +1631,7 @@ function setWebcamInterface_createProductReducer(
 
 function setWebcamMicrophone_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -1502,7 +1641,7 @@ function setWebcamMicrophone_createProductReducer(
 
 function setWebcamFrameRate_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -1512,7 +1651,7 @@ function setWebcamFrameRate_createProductReducer(
 
 function setWebcamColor_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -1522,7 +1661,7 @@ function setWebcamColor_createProductReducer(
 
 function setTriggerFormSubmit_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -1532,7 +1671,7 @@ function setTriggerFormSubmit_createProductReducer(
 
 function setPageInError_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   const { kind, page } = dispatch.payload as SetPageInErrorPayload;
   const pagesInError = new Set(state.pagesInError);
@@ -1546,7 +1685,7 @@ function setPageInError_createProductReducer(
 
 function setIsSubmitting_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
@@ -1556,11 +1695,31 @@ function setIsSubmitting_createProductReducer(
 
 function setIsSuccessful_createProductReducer(
   state: CreateProductState,
-  dispatch: CreateProductDispatch
+  dispatch: CreateProductDispatch,
 ): CreateProductState {
   return {
     ...state,
     isSuccessful: dispatch.payload as boolean,
+  };
+}
+
+function setProductCategory_createProductReducer(
+  state: CreateProductState,
+  dispatch: CreateProductDispatch,
+): CreateProductState {
+  return {
+    ...state,
+    productCategory: dispatch.payload as ProductCategory,
+  };
+}
+
+function setDesktopComponents_createProductReducer(
+  state: CreateProductState,
+  dispatch: CreateProductDispatch,
+): CreateProductState {
+  return {
+    ...state,
+    desktopComponents: dispatch.payload as ProductCategory[],
   };
 }
 

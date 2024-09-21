@@ -6,11 +6,11 @@ import {
   standardDeviation,
 } from "simple-statistics";
 
-import { StoreLocation } from "../../types";
+import type { StoreLocation } from "../../types";
 import { splitCamelCase, toFixedFloat } from "../../utils";
-import { BarChartData } from "../charts/responsiveBarChart/types";
+import type { BarChartData } from "../charts/responsiveBarChart/types";
 import { DAYS_PER_MONTH, MONTHS } from "./constants";
-import {
+import type {
   BusinessMetric,
   BusinessMetricStoreLocation,
   CustomerDailyMetric,
@@ -1797,7 +1797,8 @@ async function createRandomCustomerMetrics({
     (
       totalCustomersAcc,
       yearlyCustomersMetric,
-    ) => (totalCustomersAcc += yearlyCustomersMetric.customers.total),
+      // was changed from +=
+    ) => (totalCustomersAcc + yearlyCustomersMetric.customers.total),
     0,
   );
 
@@ -3304,6 +3305,7 @@ function createProductCategoryUnitsRevenueTuple({
   const spread: Record<ProductCategory, [number, number]> = {
     "Central Processing Unit (CPU)": [150, 400],
     "Computer Case": [50, 150],
+    "Desktop Computer": [700, 2500],
     Display: [150, 750],
     "Graphics Processing Unit (GPU)": [150, 900],
     "Memory (RAM)": [50, 300],
@@ -3428,7 +3430,7 @@ function returnChartTitleNavigateLinks({
 
   const barChartHeading = calendarView === "Daily"
     ? `${yAxisBarChartPrefix} vs. ${xAxisVariable} for ${
-      months?.[parseInt(month) - 1] ?? ""
+      months?.[Number.parseInt(month) - 1] ?? ""
     }, ${year} at ${storeLocation}`
     : calendarView === "Monthly"
     ? `${yAxisBarChartPrefix} vs. ${xAxisVariable} for ${year} at ${storeLocation}`
@@ -3436,7 +3438,7 @@ function returnChartTitleNavigateLinks({
 
   const calendarChartHeading = calendarView === "Daily"
     ? `${yAxisCalendarChartPrefix} vs. ${xAxisVariable} for ${
-      months?.[parseInt(month) - 1]
+      months?.[Number.parseInt(month) - 1]
     }, ${year} at ${storeLocation}`
     : calendarView === "Monthly"
     ? `${yAxisCalendarChartPrefix} vs. ${xAxisVariable} for ${year} at ${storeLocation}`
@@ -3444,7 +3446,7 @@ function returnChartTitleNavigateLinks({
 
   const lineChartHeading = calendarView === "Daily"
     ? `${yAxisLineChartPrefix} vs. ${xAxisVariable} for ${
-      months?.[parseInt(month) - 1] ?? ""
+      months?.[Number.parseInt(month) - 1] ?? ""
     }, ${year} at ${storeLocation}`
     : calendarView === "Monthly"
     ? `${yAxisLineChartPrefix} vs. ${xAxisVariable} for ${year} at ${storeLocation}`
@@ -3452,11 +3454,11 @@ function returnChartTitleNavigateLinks({
 
   const pieChartHeading = calendarView === "Daily"
     ? `${yAxisPieChartPrefix} for ${day}, ${
-      months?.[parseInt(month) - 1] ?? ""
+      months?.[Number.parseInt(month) - 1] ?? ""
     }, ${year} at ${storeLocation}`
     : calendarView === "Monthly"
     ? `${yAxisPieChartPrefix} for ${
-      months?.[parseInt(month) - 1] ?? ""
+      months?.[Number.parseInt(month) - 1] ?? ""
     }, ${year} at ${storeLocation}`
     : `${yAxisPieChartPrefix} for ${year} at ${storeLocation}`;
 
@@ -3647,7 +3649,7 @@ function splitSelectedCalendarDate({
 
   return {
     selectedDate: date.toString().padStart(2, "0"),
-    selectedMonth: months[parseInt(month) - 1],
+    selectedMonth: months[Number.parseInt(month) - 1],
     selectedYear: year,
   };
 }

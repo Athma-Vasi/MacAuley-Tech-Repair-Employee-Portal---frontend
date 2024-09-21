@@ -1,14 +1,17 @@
-import { Checkbox, MantineSize, Text } from "@mantine/core";
-import { ChangeEvent, ReactNode, RefObject } from "react";
+import { Checkbox, type MantineSize, Text } from "@mantine/core";
+import type { ChangeEvent, ReactNode, RefObject } from "react";
 
 import { useGlobalState } from "../../hooks";
-import { CheckboxRadioSelectData, SetPageInErrorPayload } from "../../types";
+import type {
+  CheckboxRadioSelectData,
+  SetPageInErrorPayload,
+} from "../../types";
 import { splitCamelCase } from "../../utils";
 import { createAccessibleCheckboxSelectionsTextElements } from "./utils";
 
 type AccessibleCheckboxInputSingleAttributes<
   ValidValueAction extends string = string,
-  InvalidValueAction extends string = string
+  InvalidValueAction extends string = string,
 > = {
   checked: boolean;
   disabled?: boolean;
@@ -18,13 +21,13 @@ type AccessibleCheckboxInputSingleAttributes<
   onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
   parentDispatch: React.Dispatch<
     | {
-        action: ValidValueAction;
-        payload: boolean;
-      }
+      action: ValidValueAction;
+      payload: boolean;
+    }
     | {
-        action: InvalidValueAction;
-        payload: SetPageInErrorPayload;
-      }
+      action: InvalidValueAction;
+      payload: SetPageInErrorPayload;
+    }
   >;
   ref?: RefObject<HTMLInputElement> | null;
   required?: boolean;
@@ -37,7 +40,7 @@ type AccessibleCheckboxInputSingleAttributes<
 
 type AccessibleCheckboxInputSingleProps<
   ValidValueAction extends string = string,
-  InvalidValueAction extends string = string
+  InvalidValueAction extends string = string,
 > = {
   attributes: AccessibleCheckboxInputSingleAttributes<
     ValidValueAction,
@@ -47,7 +50,7 @@ type AccessibleCheckboxInputSingleProps<
 
 function AccessibleCheckboxInputSingle<
   ValidValueAction extends string = string,
-  InvalidValueAction extends string = string
+  InvalidValueAction extends string = string,
 >({
   attributes,
 }: AccessibleCheckboxInputSingleProps<ValidValueAction, InvalidValueAction>) {
@@ -66,7 +69,7 @@ function AccessibleCheckboxInputSingle<
     value,
   } = attributes;
 
-  const key = attributes.key ?? name + " - key";
+  const key = attributes.key ?? `${name} - key`;
   const label = (
     <Text color={disabled ? "gray" : void 0}>
       {attributes.label ?? splitCamelCase(name)}
@@ -88,13 +91,11 @@ function AccessibleCheckboxInputSingle<
 
   return (
     <Checkbox
-      aria-describedby={
-        checked
-          ? // id of selectedTextElement
-            `${name}-selected`
-          : // id of deselectedTextElement
-            `${name}-deselected`
-      }
+      aria-describedby={checked
+        // id of selectedTextElement
+        ? `${name}-selected`
+        // id of deselectedTextElement
+        : `${name}-deselected`}
       aria-label={name}
       aria-required={required}
       checked={checked}
@@ -131,7 +132,7 @@ function AccessibleCheckboxInputSingle<
 
 type AccessibleCheckboxInputGroupAttributes<
   ValidValueAction extends string = string,
-  Payload extends string = string
+  Payload extends string = string,
 > = {
   /**
    * Set of values that should be disabled. Used by QueryBuilder component to disable values from projection exclusion if they have already been queued for inclusion (by Filter, Sort, or Search).
@@ -156,20 +157,22 @@ type AccessibleCheckboxInputGroupAttributes<
 
 type AccessibleCheckboxInputGroupProps<
   ValidValueAction extends string = string,
-  Payload extends string = string
+  Payload extends string = string,
 > = {
   attributes: AccessibleCheckboxInputGroupAttributes<ValidValueAction, Payload>;
 };
 
 function AccessibleCheckboxInputGroup<
   ValidValueAction extends string = string,
-  Payload extends string = string
->({ attributes }: AccessibleCheckboxInputGroupProps<ValidValueAction, Payload>) {
+  Payload extends string = string,
+>(
+  { attributes }: AccessibleCheckboxInputGroupProps<ValidValueAction, Payload>,
+) {
   const {
     disabledValuesSet = new Set(),
     inputData,
     name,
-    key = name + " - key",
+    key = `${name} - key`,
     onChange,
     parentDispatch,
     ref = null,
@@ -196,16 +199,16 @@ function AccessibleCheckboxInputGroup<
 
   return (
     <Checkbox.Group
-      aria-describedby={
-        value.length > 0
-          ? // id of selectedTextElement
-            `${name}-selected`
-          : // id of deselectedTextElement
-            `${name}-deselected`
-      }
+      aria-describedby={value.length > 0
+        // id of selectedTextElement
+        ? `${name}-selected`
+        // id of deselectedTextElement
+        : `${name}-deselected`}
       aria-label={name}
       aria-required={required}
-      description={value.length > 0 ? selectedTextElement : deselectedTextElement}
+      description={value.length > 0
+        ? selectedTextElement
+        : deselectedTextElement}
       key={key}
       label={label}
       onChange={(value: Payload[]) => {
@@ -222,9 +225,11 @@ function AccessibleCheckboxInputGroup<
       value={value}
       withAsterisk={withAsterisk}
     >
-      {inputData?.map(({ value, label }) => (
+      {inputData?.map(({ value, label }, idx) => (
         <Checkbox
-          disabled={disabledValuesSet.has(value) || disabledValuesSet.has(label)}
+          disabled={disabledValuesSet.has(value) ||
+            disabledValuesSet.has(label)}
+          key={`${value}-${idx.toString()}`}
           label={<Text>{label}</Text>}
           name={value}
           value={value}

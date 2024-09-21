@@ -1,23 +1,27 @@
 import { Stack } from "@mantine/core";
 
-import { StepperPage } from "../../types";
+import type { StepperPage } from "../../types";
 import { AccessibleSelectInput } from "../accessibleInputs/AccessibleSelectInput";
 import { AccessibleTextInput } from "../accessibleInputs/text/AccessibleTextInput";
-import { ProductCategory } from "../dashboard/types";
-import { CreateProductAction } from "./actions";
+import type { ProductCategory } from "../dashboard/types";
 import { AdditionalFields } from "./AdditionalFields";
+import type { CreateProductAction } from "./actions";
 import {
   MEMORY_UNIT_DATA,
   STORAGE_FORM_FACTOR_DATA,
   STORAGE_INTERFACE_DATA,
   STORAGE_TYPE_DATA,
 } from "./constants";
-import { CreateProductDispatch } from "./dispatch";
-import { MemoryUnit, StorageFormFactor, StorageInterface, StorageType } from "./types";
+import type { CreateProductDispatch } from "./dispatch";
+import type {
+  MemoryUnit,
+  StorageFormFactor,
+  StorageInterface,
+  StorageType,
+} from "./types";
 
 type StorageProps = {
   additionalFields: Array<[string, string]>;
-  additionalFieldsFormData: FormData;
   parentAction: CreateProductAction;
   parentDispatch: React.Dispatch<CreateProductDispatch>;
   productCategory: ProductCategory;
@@ -33,7 +37,6 @@ type StorageProps = {
 
 function Storage({
   additionalFields,
-  additionalFieldsFormData,
   parentAction,
   parentDispatch,
   productCategory,
@@ -133,7 +136,6 @@ function Storage({
   const additionalFieldsAndImage = (
     <AdditionalFields
       additionalFields={additionalFields}
-      additionalFieldsFormData={additionalFieldsFormData}
       page={14}
       parentAction={parentAction}
       parentDispatch={parentDispatch}

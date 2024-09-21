@@ -1,9 +1,12 @@
-import { ProductCategory } from "../dashboard/types";
+import type { ProductCategory } from "../dashboard/types";
 import { createProductAction } from "./actions";
 import { createProductStepperPages } from "./constants";
-import { CreateProductState } from "./types";
+import type { CreateProductState } from "./types";
 
-const initialAdditionalFieldsMap = new Map<ProductCategory, Array<[string, string]>>([
+const initialAdditionalFieldsMap = new Map<
+  ProductCategory,
+  Array<[string, string]>
+>([
   ["Accessory", [["", ""]]],
   ["Computer Case", [["", ""]]],
   ["Central Processing Unit (CPU)", [["", ""]]],
@@ -27,7 +30,7 @@ const initialCreateProductState: CreateProductState = {
   accessoryType: "",
   additionalComments: "",
   additionalFieldsMap: initialAdditionalFieldsMap,
-  additionalFieldsFormDataMap: new Map(),
+  // additionalFieldsFormDataMap: new Map(),
   availability: "In Stock",
   brand: "",
   caseColor: "",
@@ -45,6 +48,7 @@ const initialCreateProductState: CreateProductState = {
   cpuWattage: "",
   currency: "CAD",
   description: "",
+  desktopComponents: [],
   dimensionHeight: "",
   dimensionHeightUnit: "cm",
   dimensionLength: "",
@@ -101,6 +105,7 @@ const initialCreateProductState: CreateProductState = {
   mouseSensor: "Optical",
   pagesInError: new Set(),
   price: "",
+  productCategory: "Accessory",
   psuEfficiency: "80+ Bronze",
   psuFormFactor: "ATX",
   psuModularity: "Full",
