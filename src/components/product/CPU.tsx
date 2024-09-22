@@ -49,6 +49,7 @@ function CPU({
     <AccessibleTextInput
       attributes={{
         invalidValueAction: parentAction.setPageInError,
+        label: "Cores",
         name: "cpuCores",
         parentDispatch,
         stepperPages,
@@ -62,6 +63,7 @@ function CPU({
     <AccessibleTextInput
       attributes={{
         invalidValueAction: parentAction.setPageInError,
+        label: "Frequency (GHz)",
         name: "cpuFrequency",
         parentDispatch,
         stepperPages,
@@ -75,6 +77,7 @@ function CPU({
     <AccessibleTextInput
       attributes={{
         invalidValueAction: parentAction.setPageInError,
+        label: "L1 Cache Capacity",
         name: "cpuL1CacheCapacity",
         parentDispatch,
         stepperPages,
@@ -88,6 +91,7 @@ function CPU({
     <AccessibleSelectInput
       attributes={{
         data: MEMORY_UNIT_DATA,
+        label: "L1 Cache Capacity Unit",
         name: "cpuL1CacheCapacityUnit",
         parentDispatch,
         validValueAction: parentAction.setCpuL1CacheCapacityUnit,
@@ -100,6 +104,7 @@ function CPU({
     <AccessibleTextInput
       attributes={{
         invalidValueAction: parentAction.setPageInError,
+        label: "L2 Cache Capacity",
         name: "cpuL2CacheCapacity",
         parentDispatch,
         stepperPages,
@@ -113,6 +118,7 @@ function CPU({
     <AccessibleSelectInput
       attributes={{
         data: MEMORY_UNIT_DATA,
+        label: "L2 Cache Capacity Unit",
         name: "cpuL2CacheCapacityUnit",
         parentDispatch,
         validValueAction: parentAction.setCpuL2CacheCapacityUnit,
@@ -125,6 +131,7 @@ function CPU({
     <AccessibleTextInput
       attributes={{
         invalidValueAction: parentAction.setPageInError,
+        label: "L3 Cache Capacity",
         name: "cpuL3CacheCapacity",
         parentDispatch,
         stepperPages,
@@ -138,6 +145,7 @@ function CPU({
     <AccessibleSelectInput
       attributes={{
         data: MEMORY_UNIT_DATA,
+        label: "L3 Cache Capacity Unit",
         name: "cpuL3CacheCapacityUnit",
         parentDispatch,
         validValueAction: parentAction.setCpuL3CacheCapacityUnit,
@@ -150,6 +158,7 @@ function CPU({
     <AccessibleTextInput
       attributes={{
         invalidValueAction: parentAction.setPageInError,
+        label: "Socket",
         name: "cpuSocket",
         parentDispatch,
         stepperPages,
@@ -163,6 +172,7 @@ function CPU({
     <AccessibleTextInput
       attributes={{
         invalidValueAction: parentAction.setPageInError,
+        label: "Wattage",
         name: "cpuWattage",
         parentDispatch,
         stepperPages,

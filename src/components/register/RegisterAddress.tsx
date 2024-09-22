@@ -1,7 +1,7 @@
 import { Stack } from "@mantine/core";
 
 import { COUNTRIES_DATA, PROVINCES, STATES_US } from "../../constants/data";
-import {
+import type {
   Country,
   PhoneNumber,
   PostalCode,
@@ -11,7 +11,7 @@ import {
 } from "../../types";
 import { AccessibleSelectInput } from "../accessibleInputs/AccessibleSelectInput";
 import { AccessibleTextInput } from "../accessibleInputs/text/AccessibleTextInput";
-import { RegisterAction } from "./actions";
+import type { RegisterAction } from "./actions";
 
 type RegisterAddressProps = {
   contactNumber: PhoneNumber;
@@ -92,8 +92,8 @@ function RegisterAddress({
     />
   );
 
-  const provinceOrStateSelectInput =
-    country === "Canada" ? (
+  const provinceOrStateSelectInput = country === "Canada"
+    ? (
       <AccessibleSelectInput<RegisterAction["setProvince"], Province>
         attributes={{
           data: PROVINCES,
@@ -103,7 +103,8 @@ function RegisterAddress({
           value: province,
         }}
       />
-    ) : (
+    )
+    : (
       <AccessibleSelectInput<RegisterAction["setState"], StatesUS>
         attributes={{
           data: STATES_US,

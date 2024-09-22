@@ -27,18 +27,13 @@ type ValidationKey =
   | "inclusion"
   | "largeInteger"
   | "mediumInteger"
-  | "mobileCamera"
   | "money"
   | "name"
   | "objectKey"
   | "password"
   | "phoneNumber"
-  | "planDescription"
-  | "planName"
   | "postalCodeCanada"
   | "postalCodeUS"
-  | "printerMakeModel"
-  | "printerSerial"
   | "privacyConsent"
   | "ramTiming"
   | "ramVoltage"
@@ -71,10 +66,10 @@ const VALIDATION_FUNCTIONS_TABLE: ValidationFunctionsTable = {
 
     partials: [
       [
-        /^[a-zA-Z0-9\s-]{2,30}$/,
+        /^[a-zA-Z0-9\s.,'-]+$/,
         "Must contain only letters, numbers, spaces, periods, commas, hyphens, and apostrophes.",
       ],
-      [/^.{2,30}$/, "Must be between 2 and 30 characters length."],
+      [/^.{2,30}/, "Must be between 2 and 30 characters length."],
     ],
   },
 
@@ -95,7 +90,7 @@ const VALIDATION_FUNCTIONS_TABLE: ValidationFunctionsTable = {
     },
 
     partials: [
-      [/^(?=.{2,75}$)/, "Must be between 2 and 75 characters length"],
+      [/^.{2,75}/, "Must be between 2 and 75 characters length."],
       [
         /^[A-Za-z0-9\s.,#-]+$/,
         "Must contain only letters, numbers, spaces, and special characters: . , # -",
@@ -118,7 +113,7 @@ const VALIDATION_FUNCTIONS_TABLE: ValidationFunctionsTable = {
 
     partials: [
       [
-        /^[a-zA-Z0-9\s-]{2,30}$/,
+        /^[a-zA-Z0-9\s.,'-]+$/,
         "Must contain only letters, numbers, spaces, periods, commas, hyphens, and apostrophes.",
       ],
       [/^.{2,30}$/, "Must be between 2 and 30 characters length."],
@@ -139,7 +134,7 @@ const VALIDATION_FUNCTIONS_TABLE: ValidationFunctionsTable = {
 
     partials: [
       [
-        /^[A-Za-z\s.\-']$/,
+        /^[A-Za-z\s.\-']+$/,
         "Must contain only letters, spaces, periods, hyphens, and apostrophes.",
       ],
       [/^.{2,75}$/, "Must be between 2 and 75 characters length."],
@@ -160,8 +155,8 @@ const VALIDATION_FUNCTIONS_TABLE: ValidationFunctionsTable = {
 
     partials: [
       [
-        /^[a-zA-Z0-9#()%,.\s-]{2,30}$/,
-        "Must contain only letters, numbers, spaces, periods, commas, hyphens, and apostrophes. Ex: #e0e0e0 or rgb(224, 224, 224) or hsla(0, 0%, 88%, 0.5)",
+        /^[a-zA-Z0-9#()%,.\s-]+$/,
+        "Must contain only valid hexadecimal, rgb(), rgba(), hsl() or hsla(). Ex: #e0e0e0 or rgb(224, 224, 224) or hsla(0, 0%, 88%, 0.5)",
       ],
       [/^.{2,30}$/, "Must be between 2 and 30 characters length."],
     ],
@@ -204,7 +199,7 @@ const VALIDATION_FUNCTIONS_TABLE: ValidationFunctionsTable = {
 
     partials: [
       [
-        /^[a-zA-Z0-9\s.,'()-]{2,30}$/,
+        /^[a-zA-Z0-9\s.,'()-]+$/,
         "Must contain only letters, numbers, spaces, periods, commas, hyphens, and apostrophes.",
       ],
       [/^.{2,30}$/, "Must be between 2 and 30 characters length."],
@@ -504,7 +499,7 @@ const VALIDATION_FUNCTIONS_TABLE: ValidationFunctionsTable = {
 
     partials: [
       [
-        /^[A-Za-z0-9\w\s.,!?():;"'-]$/,
+        /^[A-Za-z0-9\w\s.,!?():;"'-]+$/,
         "Must contain only letters, numbers, spaces, periods, commas, exclamation marks, question marks, parentheses, colons, semicolons, double quotation marks, single quotation marks, or hyphens.",
       ],
       [/^.{1,100}$/, "Must be between 1 and 100 characters length."],
@@ -560,7 +555,7 @@ const VALIDATION_FUNCTIONS_TABLE: ValidationFunctionsTable = {
 
     partials: [
       [
-        /^[A-Za-z\s.\-']$/,
+        /^[A-Za-z\s.\-']+$/,
         "Must contain only letters, spaces, periods, hyphens, and apostrophes.",
       ],
       [/^.{2,75}$/, "Must be between 2 and 75 characters length."],
@@ -581,7 +576,7 @@ const VALIDATION_FUNCTIONS_TABLE: ValidationFunctionsTable = {
 
     partials: [
       [
-        /^[A-Za-z0-9\w\s.,!?():;"'-]$/,
+        /^[A-Za-z0-9\w\s.,!?():;"'-]+$/,
         "Must contain only letters, numbers, spaces, periods, commas, exclamation marks, question marks, parentheses, colons, semicolons, double quotation marks, single quotation marks, or hyphens.",
       ],
       [/^.{1,100}$/, "Must be between 1 and 100 characters length."],
@@ -602,7 +597,8 @@ const VALIDATION_FUNCTIONS_TABLE: ValidationFunctionsTable = {
 
     partials: [
       [/^(?!^$|^0*$)/, "Must not be empty or consist entirely of zeroes."],
-      [/^[0-9]{1,6}$/, "Must contain only numbers."],
+      [/^[0-9]+$/, "Must contain only numbers."],
+      [/^.{1,6}$/, "Must be between 1 and 6 characters length."],
     ],
   },
 
@@ -620,30 +616,8 @@ const VALIDATION_FUNCTIONS_TABLE: ValidationFunctionsTable = {
 
     partials: [
       [/^(?!^$|^0*$)/, "Must not be empty or consist entirely of zeroes."],
-      [/^[0-9]{1,4}$/, "Must contain only numbers."],
-    ],
-  },
-
-  mobileCamera: {
-    full: function mobileCameraValidation(value: string) {
-      /**
-       * - /^([0-9]{1,3} MP)(?:, ([0-9]{1,3} MP)){1,12}$/
-       * - [0-9] matches any digit between 0 and 9.
-       * - {1,3} matches the preceding token between 1 and 3 times.
-       * - matches the character MP literally.
-       * - (?:, ([0-9]{1,3} MP)) matches the characters , and a space literally, followed by a group of 1 to 3 digits, followed by the character MP literally.
-       * - {1,12} matches the preceding token between 1 and 12 times.
-       * - ^ and $ ensure that the entire string matches the regex.
-       * - ex: '12 MP, 12 MP, 12 MP' or '12 MP'
-       */
-      return /^([0-9]{1,3} MP)(?:, ([0-9]{1,3} MP)){0,12}$/.test(value);
-    },
-
-    partials: [
-      [
-        /^([0-9]{1,3} MP)(?:, ([0-9]{1,3} MP)){0,12}$/,
-        "Must be a valid mobile camera resolution in the format 0 MP, 00 MP, etc.",
-      ],
+      [/^[0-9]+$/, "Must contain only numbers."],
+      [/^.{1,4}$/, "Must be between 1 and 4 characters length."],
     ],
   },
 
@@ -681,7 +655,7 @@ const VALIDATION_FUNCTIONS_TABLE: ValidationFunctionsTable = {
 
     partials: [
       [
-        /^[A-Za-z\s.\-']$/,
+        /^[A-Za-z\s.\-']+$/,
         "Must contain only letters, spaces, periods, hyphens, and apostrophes.",
       ],
       [/^.{2,30}$/, "Must be between 2 and 30 characters length."],
@@ -702,13 +676,12 @@ const VALIDATION_FUNCTIONS_TABLE: ValidationFunctionsTable = {
     },
 
     partials: [
-      [/^\d/, "Must not start with a digit."],
-      [/["']/, "Must not contain quotes."],
-      [/[ ]/, "Must not contain spaces."],
-      [/\\/, "Must not contain backslashes."],
+      [/^(?!\d)/, "Must not start with a digit."],
+      [/^(?!.*['"]).*$/, "Must not contain quotes."],
+      [/^(?!.*[ ]).*$/, "Must not contain spaces."],
+      [/^(?!.*\\).*$/, "Must not contain backslashes."],
       [
-        // /^.{0,0}$|^.{76,}$/,
-        /^.{76,}$/,
+        /^.{1,75}$/,
         "Must be between 1 and 75 characters length.",
       ],
     ],
@@ -741,68 +714,13 @@ const VALIDATION_FUNCTIONS_TABLE: ValidationFunctionsTable = {
     ],
   },
 
-  planDescription: {
-    full: function planDescriptionValidation(value: string) {
-      /**
-       * - (?=.*[A-Za-z0-9]) ensures that there is at least one alphanumeric character, preventing the input from consisting entirely of whitespace.
-       * - [\w\s.,!?():;"'-] matches any word characters (\w includes alphanumeric characters and underscores), whitespace, and a range of allowed punctuation marks commonly used in grammar and punctuation: ., ,, !, ?, (, ), :, ;, ", ', -. The hyphen is placed at the end of the list to prevent it from being interpreted as a range of characters.
-       * - {1,300} ensures that the text is between 1 and 300 characters long.
-       * - ^ and $ ensure that the entire string matches the regex.
-       * - i makes the regex case-insensitive.
-       */
-      return /^(?=.*[A-Za-z0-9])[\w\s.,!?():;"'-]{1,300}$/i.test(value);
-    },
-    partials: [
-      [
-        /^(?=.*[A-Za-z0-9])/,
-        "Must contain at least one alphanumeric character.",
-      ],
-      [
-        /^[\w\s.,!?():;"'-]+$/,
-        "Must contain only letters, numbers, spaces, and special characters.",
-      ],
-      [
-        /[\w\s.,!?():;"'-]{1,300}$/,
-        "Must be between 1 and 300 characters length.",
-      ],
-    ],
-  },
-
-  planName: {
-    full: function planNameValidation(value: string) {
-      /**
-       * - /^(?=.*[A-Za-z0-9])[\w\s.,!?():;"'-]{1,50}$/i
-       * - (?=.*[A-Za-z0-9]) is a positive lookahead assertion that requires the presence of at least one alphanumeric character. This ensures that the string contains at least one letter or digit.
-       * - [\w\s.,!?():;"'-]{1,50} matches any word character, whitespace, or punctuation character between 1 and 50 times. This ensures that the string contains between 1 and 50 word characters, whitespace, or punctuation characters.
-       * - The ^ and $ anchors ensure that the entire string is matched.
-       * - The i flag makes the regex case insensitive.
-       */
-      return /^(?=.*[A-Za-z0-9])[\w\s.,!?():;"'-]{1,50}$/i.test(value);
-    },
-
-    partials: [
-      [
-        /^(?=.*[A-Za-z0-9])/,
-        "Must contain at least one alphanumeric character.",
-      ],
-      [
-        /^[\w\s.,!?():;"'-]+$/,
-        "Must contain only letters, numbers, spaces, and special characters.",
-      ],
-      [
-        /[\w\s.,!?():;"'-]{1,50}$/,
-        "Must be between 1 and 50 characters length.",
-      ],
-    ],
-  },
-
   phoneNumber: {
     full: function phoneNumberValidation(value: string) {
       return /^\d{10,15}$/.test(value);
     },
 
     partials: [
-      [/^\d{10,15}$/, "Must be a valid phone number."],
+      [/\d+$/, "Must contain only numbers."],
       [/^.{10,15}$/, "Must be between 10 and 15 characters length."],
     ],
   },
@@ -818,12 +736,10 @@ const VALIDATION_FUNCTIONS_TABLE: ValidationFunctionsTable = {
     },
 
     partials: [
-      [/^[A-Za-z]\d[A-Za-z]$/, "Must be in the format A1A."],
       [
         /^[A-Za-z]\d[A-Za-z][ ]?\d[A-Za-z]\d$/,
         "Must be in the format A1A 1A1.",
       ],
-      [/^[A-Za-z0-9]+$/, "Must only contain letters and numbers."],
     ],
   },
 
@@ -837,51 +753,12 @@ const VALIDATION_FUNCTIONS_TABLE: ValidationFunctionsTable = {
     },
 
     partials: [
-      [/^\d{5}$/, "Must be a valid US zip code of five digits."],
+      // [/^\d{5}$/, "Must be a valid US zip code of five digits."],
       [
-        /^\d{5}[-]\d{4}$/,
-        "Must be a valid US zip code of the ZIP+4 format with five digits, a hyphen, and four additional digits.",
+        /^\d{5}(?:[-]\d{4})?$/,
+        "Must be a valid US zip code of the ZIP+4 format with five digits or five digits plus a hyphen, and four additional digits.",
       ],
       [/^[0-9-]+$/, "Must only contain numbers and a hyphen."],
-    ],
-  },
-
-  printerMakeModel: {
-    full: function printerMakeModelValidation(value: string) {
-      /**
-       * - ^[A-Za-z0-9\s.,'()-]{1,50}$/i
-       * - [A-Za-z0-9\s.,'()-] matches any letter, digit, whitespace, period, comma, single quotation mark, hyphen, or parentheses.
-       * - {1,50} ensures that the text is between 1 and 50 characters long.
-       * - ^ and $ ensure that the entire string matches the regex.
-       * - i makes the regex case-insensitive.
-       */
-      return /^[a-zA-Z0-9\s.,'()-]{1,50}$/i.test(value);
-    },
-
-    partials: [
-      [/^.{1,50}$/, "Must be between 1 and 50 characters long."],
-      [
-        /^[a-zA-Z0-9\s.,'()-]+$/,
-        "Only letters, digits, whitespace, period, comma, single quotation mark, hyphen, and parentheses are allowed.",
-      ],
-    ],
-  },
-
-  printerSerial: {
-    full: function printerSerialValidation(value: string) {
-      /**
-       * - ^[A-Za-z0-9\s.,'()-]{1,50}$/i
-       * - [A-Za-z0-9\s.,'()-] matches any letter, digit, whitespace, period, comma, single quotation mark, hyphen, or parentheses.
-       * - {1,50} ensures that the text is between 1 and 50 characters long.
-       * - ^ and $ ensure that the entire string matches the regex.
-       * - i makes the regex case-insensitive.
-       */
-      return /^[a-zA-Z0-9]{1,50}$/i.test(value);
-    },
-
-    partials: [
-      [/^.{1,50}$/, "Must be between 1 and 50 characters long."],
-      [/^[a-zA-Z0-9]+$/, "Must contain only letters and numbers."],
     ],
   },
 
@@ -933,15 +810,12 @@ const VALIDATION_FUNCTIONS_TABLE: ValidationFunctionsTable = {
 
     partials: [
       [
-        /^[0-9]{1}[.]{1}[0-9]{1,2}$/,
-        "Must only contain numbers and a period in the format 0.0 or 0.00.",
+        /^[0-9]{1}[.]{1}[0-9]{1,3}$/,
+        "Must only contain numbers and a period in the format 0.0 - 0.000.",
       ],
-      [/^.{4}$/, "Must be 4 characters length."],
+      [/^.{1,5}$/, "Must be 3 to 5 characters length."],
+      [/^[0-9]+[.]?[0-9]+?$/, "Must contain only numbers and a period."],
       [/^[0-9]+[.][0-9]+$/, "Must not be empty or have zero value."],
-      [
-        /^[0-9]{1}[.]{1}[0-9]{1,2}$/,
-        "Must only have single digit before decimal and two digits after decimal.",
-      ],
     ],
   },
 
@@ -959,7 +833,7 @@ const VALIDATION_FUNCTIONS_TABLE: ValidationFunctionsTable = {
     },
 
     partials: [
-      // [/^(?=.*[A-Za-z0-9])/, "Must contain at least one alphanumeric character."],
+      [/[A-Za-z0-9]+$/, "Must contain only letters and numbers."],
       [
         /^[\w\s.,!?():;"'-]+$/,
         "Can only contain letters, numbers, spaces, and special characters: . , ! ? ( ) : ; \" ' -",
@@ -989,7 +863,8 @@ const VALIDATION_FUNCTIONS_TABLE: ValidationFunctionsTable = {
 
     partials: [
       [/^(?!^$|^0*$)/, "Must not be empty or consist entirely of zeroes."],
-      [/^[0-9]{1,2}$/, "Must contain only numbers."],
+      [/^[0-9]+$/, "Must contain only numbers."],
+      [/^.{1,2}$/, "Must be between 1 and 2 characters length."],
     ],
   },
 
@@ -1006,6 +881,10 @@ const VALIDATION_FUNCTIONS_TABLE: ValidationFunctionsTable = {
     },
 
     partials: [
+      [
+        /^(?=.*[A-Za-z0-9])/,
+        "Must contain at least one alphanumeric character.",
+      ],
       [
         /^[A-Za-z0-9\s.,#-]+$/,
         "Must contain only letters, numbers, spaces, and special characters: . , # -",
@@ -1156,26 +1035,24 @@ const VALIDATION_FUNCTIONS_TABLE: ValidationFunctionsTable = {
     },
 
     partials: [
-      // [/^.{3,20}$/i, "Must be between 3 and 20 characters."],
       [
-        /^(?!.{3,20}$)/,
-        "Cannot be less than 3 characters or more than 20 characters.",
+        /^.{3,20}$/,
+        "Must be between 3 and 20 characters.",
       ],
-      // [/^(?![-_.])/, "Cannot start with a hyphen, underscore, or period."],
-      // [/^[^_.-].*/, "Cannot start with a hyphen, underscore, or period."],
-      // [
-      //   /^(?!.*[-_.]{2})/,
-      //   "Cannot contain two hyphens, underscores, or periods in a row.",
-      // ],
-      // [
-      //   /^[a-zA-Z0-9-_.]+$/,
-      //   "Can only contain alphanumeric characters, hyphens, underscores, and periods.",
-      // ],
+      [/^(?![-])/, "Cannot start with a hyphen."],
+      [/^(?![_])/, "Cannot start with an underscore."],
+      [/^(?![.])/, "Cannot start with a period."],
+      [/^(?!.*[-]{2})/, "Cannot contain two hyphens in a row."],
+      [/^(?!.*[_]{2})/, "Cannot contain two underscores in a row."],
+      [/^(?!.*[.]{2})/, "Cannot contain two periods in a row."],
       [
-        /^(?!.*[^a-zA-Z0-9-_.])$/,
-        "Cannot contain characters other than alphanumeric, hyphens, underscores, and periods.",
+        /^[a-zA-Z0-9-_.]+$/,
+        "Can only contain alphanumeric characters, hyphens, underscores, and periods.",
       ],
-      [/^(?<![-_.])$/, "Cannot end with a hyphen, underscore, or period."],
+      // [/^(?<![-_.])$/, "Cannot end with a hyphen, underscore, or period."],
+      // [/^(?!.*[-]).*$/, "Cannot end with a hyphen."],
+      // [/^(?!.*[_]).*$/, "Cannot end with an underscore."],
+      // [/^(?!.*[.]).*$/, "Cannot end with a period."],
     ],
   },
 

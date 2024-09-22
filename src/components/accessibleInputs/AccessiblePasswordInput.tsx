@@ -31,7 +31,7 @@ import type {
 import { returnThemeColors, splitCamelCase } from "../../utils";
 import {
   createAccessibleValueValidationTextElements,
-  returnFullValidation,
+  returnPartialValidations,
   returnValidationTexts,
 } from "./utils";
 
@@ -136,14 +136,26 @@ function AccessiblePasswordInput<
     generalColors: { greenColorShade },
   } = returnThemeColors({ themeObject, colorsSwatches: COLORS_SWATCHES });
 
-  const { full } = returnFullValidation({
+  // const { full } = returnFullValidation({
+  //   name,
+  //   stepperPages,
+  //   validationFunctionsTable,
+  // });
+  // const isValueBufferValid = typeof full === "function"
+  //   ? full(valueBuffer)
+  //   : full.test(valueBuffer);
+
+  const { partials } = returnPartialValidations({
     name,
     stepperPages,
     validationFunctionsTable,
   });
-  const isValueBufferValid = typeof full === "function"
-    ? full(valueBuffer)
-    : full.test(valueBuffer);
+
+  const isValueBufferValid = partials.every(([regexOrFunc, _validationText]) =>
+    typeof regexOrFunc === "function"
+      ? regexOrFunc(valueBuffer)
+      : regexOrFunc.test(valueBuffer)
+  );
 
   const leftIcon = isValueBufferValid
     ? (
@@ -158,7 +170,7 @@ function AccessiblePasswordInput<
     valueBuffer,
   });
 
-  const { validValueTextElement, invalidValueTextElement } =
+  const { invalidValueTextElement } =
     createAccessibleValueValidationTextElements({
       isPopoverOpened,
       isValueBufferValid,
@@ -235,13 +247,11 @@ function AccessiblePasswordInput<
           />
         </Popover.Target>
 
-        {isPopoverOpened && valueBuffer.length
+        {isPopoverOpened && valueBuffer.length && !isValueBufferValid
           ? (
             <Popover.Dropdown>
               <Stack>
-                {isValueBufferValid
-                  ? validValueTextElement
-                  : invalidValueTextElement}
+                {invalidValueTextElement}
               </Stack>
             </Popover.Dropdown>
           )

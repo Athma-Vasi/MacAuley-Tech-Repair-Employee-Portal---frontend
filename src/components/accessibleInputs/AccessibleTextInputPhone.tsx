@@ -1,7 +1,7 @@
 import {
   Container,
   Group,
-  MantineSize,
+  type MantineSize,
   Popover,
   Stack,
   Text,
@@ -9,13 +9,18 @@ import {
   Tooltip,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { ChangeEvent, Dispatch, ReactNode, useState } from "react";
-import { TbCheck, TbRefresh } from "react-icons/tb";
+import {
+  type ChangeEvent,
+  type Dispatch,
+  type ReactNode,
+  useState,
+} from "react";
+import { TbCheck, TbExclamationCircle, TbRefresh } from "react-icons/tb";
 
 import { COLORS_SWATCHES } from "../../constants/data";
 import { VALIDATION_FUNCTIONS_TABLE } from "../../constants/validations";
 import { useGlobalState } from "../../hooks";
-import {
+import type {
   SetPageInErrorPayload,
   StepperPage,
   ValidationFunctionsTable,
@@ -23,13 +28,13 @@ import {
 import { returnThemeColors, splitCamelCase } from "../../utils";
 import {
   createAccessibleValueValidationTextElements,
-  returnFullValidation,
+  returnPartialValidations,
   returnValidationTexts,
 } from "./utils";
 
 type AccessibleTextInputPhoneAttributes<
   ValidValueAction extends string = string,
-  InvalidValueAction extends string = string
+  InvalidValueAction extends string = string,
 > = {
   ariaRequired?: boolean;
   autoComplete?: "on" | "off";
@@ -49,13 +54,13 @@ type AccessibleTextInputPhoneAttributes<
   page?: number;
   parentDispatch: Dispatch<
     | {
-        action: ValidValueAction;
-        payload: string;
-      }
+      action: ValidValueAction;
+      payload: string;
+    }
     | {
-        action: InvalidValueAction;
-        payload: SetPageInErrorPayload;
-      }
+      action: InvalidValueAction;
+      payload: SetPageInErrorPayload;
+    }
   >;
   placeholder?: string;
   ref?: React.RefObject<HTMLInputElement>;
@@ -73,15 +78,23 @@ type AccessibleTextInputPhoneAttributes<
 
 type AccessibleTextInputPhoneProps<
   ValidValueAction extends string = string,
-  InvalidValueAction extends string = string
+  InvalidValueAction extends string = string,
 > = {
-  attributes: AccessibleTextInputPhoneAttributes<ValidValueAction, InvalidValueAction>;
+  attributes: AccessibleTextInputPhoneAttributes<
+    ValidValueAction,
+    InvalidValueAction
+  >;
 };
 
 function AccessibleTextInputPhone<
   ValidValueAction extends string = string,
-  InvalidValueAction extends string = string
->({ attributes }: AccessibleTextInputPhoneProps<ValidValueAction, InvalidValueAction>) {
+  InvalidValueAction extends string = string,
+>(
+  { attributes }: AccessibleTextInputPhoneProps<
+    ValidValueAction,
+    InvalidValueAction
+  >,
+) {
   const {
     ariaRequired = false,
     autoComplete = "off",
@@ -127,20 +140,36 @@ function AccessibleTextInputPhone<
   } = useGlobalState();
 
   const {
-    generalColors: { greenColorShade, iconGray },
+    generalColors: { greenColorShade, iconGray, redColorShade },
   } = returnThemeColors({ colorsSwatches: COLORS_SWATCHES, themeObject });
 
-  const { full } = returnFullValidation({ name, stepperPages, validationFunctionsTable });
-  const isValueBufferValid =
-    typeof full === "function" ? full(valueBuffer) : full.test(valueBuffer);
+  // const { full } = returnFullValidation({
+  //   name,
+  //   stepperPages,
+  //   validationFunctionsTable,
+  // });
+  // const isValueBufferValid = typeof full === "function"
+  //   ? full(valueBuffer)
+  //   : full.test(valueBuffer);
 
-  const leftIcon = isValueBufferValid ? (
-    icon ? (
-      icon
-    ) : (
-      <TbCheck color={greenColorShade} size={18} />
-    )
-  ) : null;
+  const { partials } = returnPartialValidations({
+    name,
+    stepperPages,
+    validationFunctionsTable,
+  });
+
+  const isValueBufferValid = partials.every(([regexOrFunc, _validationText]) =>
+    typeof regexOrFunc === "function"
+      ? regexOrFunc(valueBuffer)
+      : regexOrFunc.test(valueBuffer)
+  );
+
+  const leftIcon = icon ??
+    (isValueBufferValid
+      ? <TbCheck color={greenColorShade} size={18} />
+      : value.length === 0
+      ? null
+      : <TbExclamationCircle color={redColorShade} size={18} />);
 
   const validationTexts = returnValidationTexts({
     name,
@@ -149,24 +178,28 @@ function AccessibleTextInputPhone<
     valueBuffer,
   });
 
-  const rightIcon = rightSection ? (
-    rightSectionIcon ? (
-      rightSectionIcon
-    ) : (
-      <Tooltip label={`Reset ${splitCamelCase(name)} to ${initialInputValue}`}>
-        <Group style={{ cursor: "pointer" }}>
-          <TbRefresh
-            aria-label={`Reset ${splitCamelCase(name)} value to ${initialInputValue}`}
-            color={iconGray}
-            size={18}
-            onClick={rightSectionOnClick}
-          />
-        </Group>
-      </Tooltip>
+  const rightIcon = rightSection
+    ? (
+      rightSectionIcon ? rightSectionIcon : (
+        <Tooltip
+          label={`Reset ${splitCamelCase(name)} to ${initialInputValue}`}
+        >
+          <Group style={{ cursor: "pointer" }}>
+            <TbRefresh
+              aria-label={`Reset ${
+                splitCamelCase(name)
+              } value to ${initialInputValue}`}
+              color={iconGray}
+              size={18}
+              onClick={rightSectionOnClick}
+            />
+          </Group>
+        </Tooltip>
+      )
     )
-  ) : null;
+    : null;
 
-  const { validValueTextElement, invalidValueTextElement } =
+  const { invalidValueTextElement } =
     createAccessibleValueValidationTextElements({
       isPopoverOpened,
       isValueBufferValid,
@@ -188,13 +221,11 @@ function AccessibleTextInputPhone<
       >
         <Popover.Target>
           <TextInput
-            aria-describedby={
-              isValueBufferValid
-                ? // id of validValueTextElement
-                  `${name}-valid`
-                : // id of invalidValueTextElement
-                  `${name}-invalid`
-            }
+            aria-describedby={isValueBufferValid
+              // id of validValueTextElement
+              ? `${name}-valid`
+              // id of invalidValueTextElement
+              : `${name}-invalid`}
             aria-invalid={!isValueBufferValid}
             aria-label={name}
             aria-required={ariaRequired}
@@ -257,13 +288,15 @@ function AccessibleTextInputPhone<
           />
         </Popover.Target>
 
-        {isPopoverOpened && valueBuffer.length ? (
-          <Popover.Dropdown>
-            <Stack>
-              {isValueBufferValid ? validValueTextElement : invalidValueTextElement}
-            </Stack>
-          </Popover.Dropdown>
-        ) : null}
+        {isPopoverOpened && valueBuffer.length && !isValueBufferValid
+          ? (
+            <Popover.Dropdown>
+              <Stack>
+                {invalidValueTextElement}
+              </Stack>
+            </Popover.Dropdown>
+          )
+          : null}
       </Popover>
     </Container>
   );

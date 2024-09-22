@@ -17,7 +17,7 @@ import {
   useEffect,
   useState,
 } from "react";
-import { TbCheck, TbRefresh } from "react-icons/tb";
+import { TbCheck, TbExclamationCircle, TbRefresh } from "react-icons/tb";
 
 import {
   COLORS_SWATCHES,
@@ -196,7 +196,7 @@ function AccessibleTextAreaInput<
   } = useGlobalState();
 
   const {
-    generalColors: { greenColorShade, grayColorShade },
+    generalColors: { greenColorShade, grayColorShade, redColorShade },
   } = returnThemeColors({ themeObject, colorsSwatches: COLORS_SWATCHES });
 
   const rightIcon = rightSection
@@ -229,15 +229,16 @@ function AccessibleTextAreaInput<
 
   const isValueBufferValid = partials.every(([regexOrFunc, _validationText]) =>
     typeof regexOrFunc === "function"
-      ? !regexOrFunc(valueBuffer)
-      : !regexOrFunc.test(valueBuffer)
+      ? regexOrFunc(valueBuffer)
+      : regexOrFunc.test(valueBuffer)
   );
 
-  const leftIcon = isValueBufferValid
-    ? (
-      icon ? icon : <TbCheck color={greenColorShade} size={18} />
-    )
-    : null;
+  const leftIcon = icon ??
+    (isValueBufferValid
+      ? <TbCheck color={greenColorShade} size={18} />
+      : value.length === 0
+      ? null
+      : <TbExclamationCircle color={redColorShade} size={18} />);
 
   const validationTexts = returnValidationTexts({
     name,
@@ -256,7 +257,7 @@ function AccessibleTextAreaInput<
   console.log("validationTexts:", validationTexts);
   console.groupEnd();
 
-  const { invalidValueTextElement, validValueTextElement } =
+  const { invalidValueTextElement } =
     createAccessibleValueValidationTextElements({
       isPopoverOpened,
       isValueBufferValid,
@@ -386,13 +387,11 @@ function AccessibleTextAreaInput<
           />
         </Popover.Target>
 
-        {isPopoverOpened && valueBuffer.length
+        {isPopoverOpened && valueBuffer.length && !isValueBufferValid
           ? (
             <Popover.Dropdown>
               <Stack>
-                {isValueBufferValid
-                  ? validValueTextElement
-                  : invalidValueTextElement}
+                {invalidValueTextElement}
               </Stack>
             </Popover.Dropdown>
           )

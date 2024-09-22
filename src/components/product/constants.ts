@@ -324,7 +324,7 @@ function createProductStepperPages(): StepperPage[] {
   const headphoneImpedance: StepperChild = {
     inputType: "text",
     name: "headphoneImpedance",
-    validationKey: "smallInteger",
+    validationKey: "mediumInteger",
   };
 
   const headphoneInterface: StepperChild = {

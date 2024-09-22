@@ -1,5 +1,5 @@
-import { Flex, Grid, Group, Highlight, Space, Text } from "@mantine/core";
-import { TbCheck, TbExclamationCircle, TbInfoCircle } from "react-icons/tb";
+import { Flex, Highlight, Space, Text } from "@mantine/core";
+import { TbCheck, TbInfoCircle } from "react-icons/tb";
 
 import { COLORS_SWATCHES } from "../../constants/data";
 import type { ThemeObject } from "../../context/globalProvider/types";
@@ -78,11 +78,10 @@ function createAccessibleValueValidationTextElements({
   valueBuffer,
   validationTexts: { valueInvalidText, valueValidText },
 }: CreateAccessibleValueValidationTextElements): {
-  validValueTextElement: React.JSX.Element;
   invalidValueTextElement: React.JSX.Element;
 } {
   const {
-    generalColors: { redColorShade, greenColorShade },
+    generalColors: { redColorShade },
   } = returnThemeColors({ themeObject, colorsSwatches: COLORS_SWATCHES });
 
   const invalidValueTextElement = (
@@ -96,7 +95,8 @@ function createAccessibleValueValidationTextElements({
       w="100%"
       aria-live="polite"
     >
-      <Grid columns={14}>
+      {
+        /* <Grid columns={14}>
         <Grid.Col span={2}>
           <Group position="center">
             <TbExclamationCircle color={redColorShade} size={22} />
@@ -104,41 +104,43 @@ function createAccessibleValueValidationTextElements({
         </Grid.Col>
         <Grid.Col span={12}>
           <Group position="right">
-            <Text>{valueInvalidText}</Text>
+            <Text >{valueInvalidText}</Text>
           </Group>
         </Grid.Col>
-      </Grid>
+      </Grid> */
+      }
+      <Text color={redColorShade}>{valueInvalidText}</Text>
     </Text>
   );
 
-  const validValueTextElement = (
-    <Text
-      id={`${name}-valid`}
-      style={{
-        display: isPopoverOpened && valueBuffer && isValueBufferValid
-          ? "block"
-          : "none",
-      }}
-      color={greenColorShade}
-      w="100%"
-      aria-live="polite"
-    >
-      <Grid columns={14}>
-        <Grid.Col span={2}>
-          <Group position="center">
-            <TbCheck color={greenColorShade} size={22} />
-          </Group>
-        </Grid.Col>
-        <Grid.Col span={12}>
-          <Group position="left">
-            <Text size="sm">{valueValidText}</Text>
-          </Group>
-        </Grid.Col>
-      </Grid>
-    </Text>
-  );
+  // const validValueTextElement = (
+  //   <Text
+  //     id={`${name}-valid`}
+  //     style={{
+  //       display: isPopoverOpened && valueBuffer && isValueBufferValid
+  //         ? "block"
+  //         : "none",
+  //     }}
+  //     color={greenColorShade}
+  //     w="100%"
+  //     aria-live="polite"
+  //   >
+  //     <Grid columns={14}>
+  //       <Grid.Col span={2}>
+  //         <Group position="center">
+  //           <TbCheck color={greenColorShade} size={22} />
+  //         </Group>
+  //       </Grid.Col>
+  //       <Grid.Col span={12}>
+  //         <Group position="left">
+  //           <Text size="sm">{valueValidText}</Text>
+  //         </Group>
+  //       </Grid.Col>
+  //     </Grid>
+  //   </Text>
+  // );
 
-  return { validValueTextElement, invalidValueTextElement };
+  return { invalidValueTextElement };
 }
 
 type CreateAccessibleCheckboxSelectionsTextElements = {
@@ -776,7 +778,7 @@ function returnValidationTexts({
         ? partials
           .map(([regexOrFunc, errorMessage]) => {
             if (typeof regexOrFunc === "function") {
-              return regexOrFunc(valueBuffer) ? errorMessage : "";
+              return regexOrFunc(valueBuffer) ? "" : errorMessage;
             }
 
             console.log("regexOrFunc", regexOrFunc);
@@ -787,7 +789,7 @@ function returnValidationTexts({
             );
             console.log("errorMessage", errorMessage);
 
-            return regexOrFunc.test(valueBuffer) ? errorMessage : "";
+            return regexOrFunc.test(valueBuffer) ? "" : errorMessage;
           })
           .join(" ")
         : "";

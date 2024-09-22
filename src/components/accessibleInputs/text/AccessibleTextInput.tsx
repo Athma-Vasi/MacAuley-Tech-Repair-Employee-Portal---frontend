@@ -18,7 +18,7 @@ import {
   useEffect,
   useState,
 } from "react";
-import { TbCheck, TbRefresh } from "react-icons/tb";
+import { TbCheck, TbExclamationCircle, TbRefresh } from "react-icons/tb";
 
 import {
   COLORS_SWATCHES,
@@ -36,7 +36,7 @@ import { returnThemeColors, splitCamelCase } from "../../../utils";
 import type { SetFilterInputValuesDispatchData } from "../../query/QueryFilter";
 import {
   createAccessibleValueValidationTextElements,
-  returnFullValidation,
+  returnPartialValidations,
   returnValidationTexts,
 } from "../utils";
 
@@ -177,7 +177,7 @@ function AccessibleTextInput<
   } = useGlobalState();
 
   const {
-    generalColors: { greenColorShade, grayColorShade },
+    generalColors: { greenColorShade, grayColorShade, redColorShade },
   } = returnThemeColors({ themeObject, colorsSwatches: COLORS_SWATCHES });
 
   const rightIcon = rightSection
@@ -199,20 +199,33 @@ function AccessibleTextInput<
     )
     : null;
 
-  const { full } = returnFullValidation({
+  // const { full } = returnFullValidation({
+  //   name,
+  //   stepperPages,
+  //   validationFunctionsTable,
+  // });
+  // const isValueBufferValid = typeof full === "function"
+  //   ? full(valueBuffer)
+  //   : full.test(valueBuffer);
+
+  const { partials } = returnPartialValidations({
     name,
     stepperPages,
     validationFunctionsTable,
   });
-  const isValueBufferValid = typeof full === "function"
-    ? full(valueBuffer)
-    : full.test(valueBuffer);
 
-  const leftIcon = isValueBufferValid
-    ? (
-      icon ? icon : <TbCheck color={greenColorShade} size={18} />
-    )
-    : null;
+  const isValueBufferValid = partials.every(([regexOrFunc, _validationText]) =>
+    typeof regexOrFunc === "function"
+      ? regexOrFunc(valueBuffer)
+      : regexOrFunc.test(valueBuffer)
+  );
+
+  const leftIcon = icon ??
+    (isValueBufferValid
+      ? <TbCheck color={greenColorShade} size={18} />
+      : value.length === 0
+      ? null
+      : <TbExclamationCircle color={redColorShade} size={18} />);
 
   const validationTexts = returnValidationTexts({
     name,
@@ -221,7 +234,7 @@ function AccessibleTextInput<
     valueBuffer,
   });
 
-  const { invalidValueTextElement, validValueTextElement } =
+  const { invalidValueTextElement } =
     createAccessibleValueValidationTextElements({
       isPopoverOpened,
       isValueBufferValid,
@@ -230,6 +243,16 @@ function AccessibleTextInput<
       validationTexts,
       valueBuffer,
     });
+
+  console.group(`AccessibleTextInput: ${name}`);
+  console.log("name:", name);
+  console.log("stepperPages:", stepperPages);
+  console.log("validationFunctionsTable:", validationFunctionsTable);
+  console.log("partials:", partials);
+  console.log("valueBuffer:", valueBuffer);
+  console.log("isValueBufferValid:", isValueBufferValid);
+  console.log("validationTexts:", validationTexts);
+  console.groupEnd();
 
   return (
     <Container
@@ -349,13 +372,11 @@ function AccessibleTextInput<
           />
         </Popover.Target>
 
-        {isPopoverOpened && valueBuffer.length
+        {isPopoverOpened && valueBuffer.length && !isValueBufferValid
           ? (
             <Popover.Dropdown>
               <Stack>
-                {isValueBufferValid
-                  ? validValueTextElement
-                  : invalidValueTextElement}
+                {invalidValueTextElement}
               </Stack>
             </Popover.Dropdown>
           )

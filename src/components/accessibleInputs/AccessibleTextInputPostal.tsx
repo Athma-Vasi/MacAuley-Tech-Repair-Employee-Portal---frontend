@@ -1,7 +1,7 @@
 import {
   Container,
   Group,
-  MantineSize,
+  type MantineSize,
   Popover,
   Stack,
   Text,
@@ -9,13 +9,18 @@ import {
   Tooltip,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { ChangeEvent, Dispatch, ReactNode, useState } from "react";
+import {
+  type ChangeEvent,
+  type Dispatch,
+  type ReactNode,
+  useState,
+} from "react";
 import { TbCheck, TbRefresh } from "react-icons/tb";
 
 import { COLORS_SWATCHES } from "../../constants/data";
 import { VALIDATION_FUNCTIONS_TABLE } from "../../constants/validations";
 import { useGlobalState } from "../../hooks";
-import {
+import type {
   Country,
   SetPageInErrorPayload,
   StepperPage,
@@ -30,7 +35,7 @@ import {
 
 type AccessibleTextInputPostalAttributes<
   ValidValueAction extends string = string,
-  InvalidValueAction extends string = string
+  InvalidValueAction extends string = string,
 > = {
   autoComplete?: "on" | "off";
   country: Country;
@@ -49,13 +54,13 @@ type AccessibleTextInputPostalAttributes<
   page?: number;
   parentDispatch: Dispatch<
     | {
-        action: ValidValueAction;
-        payload: string;
-      }
+      action: ValidValueAction;
+      payload: string;
+    }
     | {
-        action: InvalidValueAction;
-        payload: SetPageInErrorPayload;
-      }
+      action: InvalidValueAction;
+      payload: SetPageInErrorPayload;
+    }
   >;
   placeholder?: string;
   ref?: React.RefObject<HTMLInputElement>;
@@ -74,15 +79,23 @@ type AccessibleTextInputPostalAttributes<
 
 type AccessibleTextInputPostalProps<
   ValidValueAction extends string = string,
-  InvalidValueAction extends string = string
+  InvalidValueAction extends string = string,
 > = {
-  attributes: AccessibleTextInputPostalAttributes<ValidValueAction, InvalidValueAction>;
+  attributes: AccessibleTextInputPostalAttributes<
+    ValidValueAction,
+    InvalidValueAction
+  >;
 };
 
 function AccessibleTextInputPostal<
   ValidValueAction extends string = string,
-  InvalidValueAction extends string = string
->({ attributes }: AccessibleTextInputPostalProps<ValidValueAction, InvalidValueAction>) {
+  InvalidValueAction extends string = string,
+>(
+  { attributes }: AccessibleTextInputPostalProps<
+    ValidValueAction,
+    InvalidValueAction
+  >,
+) {
   const {
     autoComplete = "off",
     country,
@@ -131,17 +144,20 @@ function AccessibleTextInputPostal<
     generalColors: { greenColorShade, iconGray },
   } = returnThemeColors({ colorsSwatches: COLORS_SWATCHES, themeObject });
 
-  const { full } = returnFullValidation({ name, stepperPages, validationFunctionsTable });
-  const isValueBufferValid =
-    typeof full === "function" ? full(valueBuffer) : full.test(valueBuffer);
+  const { full } = returnFullValidation({
+    name,
+    stepperPages,
+    validationFunctionsTable,
+  });
+  const isValueBufferValid = typeof full === "function"
+    ? full(valueBuffer)
+    : full.test(valueBuffer);
 
-  const leftIcon = isValueBufferValid ? (
-    icon ? (
-      icon
-    ) : (
-      <TbCheck color={greenColorShade} size={18} />
+  const leftIcon = isValueBufferValid
+    ? (
+      icon ? icon : <TbCheck color={greenColorShade} size={18} />
     )
-  ) : null;
+    : null;
 
   const validationTexts = returnValidationTexts({
     name,
@@ -150,24 +166,28 @@ function AccessibleTextInputPostal<
     valueBuffer,
   });
 
-  const rightIcon = rightSection ? (
-    rightSectionIcon ? (
-      rightSectionIcon
-    ) : (
-      <Tooltip label={`Reset ${splitCamelCase(name)} to ${initialInputValue}`}>
-        <Group style={{ cursor: "pointer" }}>
-          <TbRefresh
-            aria-label={`Reset ${splitCamelCase(name)} value to ${initialInputValue}`}
-            color={iconGray}
-            size={18}
-            onClick={rightSectionOnClick}
-          />
-        </Group>
-      </Tooltip>
+  const rightIcon = rightSection
+    ? (
+      rightSectionIcon ? rightSectionIcon : (
+        <Tooltip
+          label={`Reset ${splitCamelCase(name)} to ${initialInputValue}`}
+        >
+          <Group style={{ cursor: "pointer" }}>
+            <TbRefresh
+              aria-label={`Reset ${
+                splitCamelCase(name)
+              } value to ${initialInputValue}`}
+              color={iconGray}
+              size={18}
+              onClick={rightSectionOnClick}
+            />
+          </Group>
+        </Tooltip>
+      )
     )
-  ) : null;
+    : null;
 
-  const { validValueTextElement, invalidValueTextElement } =
+  const { invalidValueTextElement } =
     createAccessibleValueValidationTextElements({
       isPopoverOpened,
       isValueBufferValid,
@@ -189,13 +209,11 @@ function AccessibleTextInputPostal<
       >
         <Popover.Target>
           <TextInput
-            aria-describedby={
-              isValueBufferValid
-                ? // id of validValueTextElement
-                  `${name}-valid`
-                : // id of invalidValueTextElement
-                  `${name}-invalid`
-            }
+            aria-describedby={isValueBufferValid
+              // id of validValueTextElement
+              ? `${name}-valid`
+              // id of invalidValueTextElement
+              : `${name}-invalid`}
             aria-invalid={!isValueBufferValid}
             aria-label={name}
             aria-required={required}
@@ -240,7 +258,9 @@ function AccessibleTextInputPostal<
 
               if (country === "United States") {
                 if (length === 6) {
-                  setValueBuffer(`${valueBuffer.slice(0, 5)}-${valueBuffer.slice(5)}`);
+                  setValueBuffer(
+                    `${valueBuffer.slice(0, 5)}-${valueBuffer.slice(5)}`,
+                  );
                 }
               }
 
@@ -262,13 +282,15 @@ function AccessibleTextInputPostal<
           />
         </Popover.Target>
 
-        {isPopoverOpened && valueBuffer.length ? (
-          <Popover.Dropdown>
-            <Stack>
-              {isValueBufferValid ? validValueTextElement : invalidValueTextElement}
-            </Stack>
-          </Popover.Dropdown>
-        ) : null}
+        {isPopoverOpened && valueBuffer.length && !isValueBufferValid
+          ? (
+            <Popover.Dropdown>
+              <Stack>
+                {invalidValueTextElement}
+              </Stack>
+            </Popover.Dropdown>
+          )
+          : null}
       </Popover>
     </Container>
   );

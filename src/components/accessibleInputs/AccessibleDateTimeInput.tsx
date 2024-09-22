@@ -1,18 +1,31 @@
-import { Container, MantineSize, Popover, Stack, Text, TextInput } from "@mantine/core";
+import {
+  Container,
+  type MantineSize,
+  Popover,
+  Stack,
+  Text,
+  TextInput,
+} from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
-import { ChangeEvent, Dispatch, ReactNode, RefObject, useState } from "react";
+import {
+  type ChangeEvent,
+  type Dispatch,
+  type ReactNode,
+  type RefObject,
+  useState,
+} from "react";
 import { TbCheck } from "react-icons/tb";
 
 import { COLORS_SWATCHES } from "../../constants/data";
 import { VALIDATION_FUNCTIONS_TABLE } from "../../constants/validations";
 import { useGlobalState } from "../../hooks";
-import {
+import type {
   SetPageInErrorPayload,
   StepperPage,
   ValidationFunctionsTable,
 } from "../../types";
 import { returnThemeColors, splitCamelCase } from "../../utils";
-import { SetFilterInputValuesDispatchData } from "../query/QueryFilter";
+import type { SetFilterInputValuesDispatchData } from "../query/QueryFilter";
 import {
   createAccessibleValueValidationTextElements,
   returnFullValidation,
@@ -21,7 +34,7 @@ import {
 
 type AccessibleDateTimeInputAttributes<
   ValidValueAction extends string = string,
-  InvalidValueAction extends string = string
+  InvalidValueAction extends string = string,
 > = {
   ariaAutoComplete?: "both" | "list" | "none" | "inline";
   autoComplete?: "on" | "off";
@@ -44,13 +57,13 @@ type AccessibleDateTimeInputAttributes<
   page?: number;
   parentDispatch?: Dispatch<
     | {
-        action: ValidValueAction;
-        payload: string;
-      }
+      action: ValidValueAction;
+      payload: string;
+    }
     | {
-        action: InvalidValueAction;
-        payload: SetPageInErrorPayload;
-      }
+      action: InvalidValueAction;
+      payload: SetPageInErrorPayload;
+    }
   >;
   placeholder?: string;
   setFilterInputValuesDispatchData?: SetFilterInputValuesDispatchData<
@@ -69,15 +82,23 @@ type AccessibleDateTimeInputAttributes<
 
 type AccessibleDateTimeInputProps<
   ValidValueAction extends string = string,
-  InvalidValueAction extends string = string
+  InvalidValueAction extends string = string,
 > = {
-  attributes: AccessibleDateTimeInputAttributes<ValidValueAction, InvalidValueAction>;
+  attributes: AccessibleDateTimeInputAttributes<
+    ValidValueAction,
+    InvalidValueAction
+  >;
 };
 
 function AccessibleDateTimeInput<
   ValidValueAction extends string = string,
-  InvalidValueAction extends string = string
->({ attributes }: AccessibleDateTimeInputProps<ValidValueAction, InvalidValueAction>) {
+  InvalidValueAction extends string = string,
+>(
+  { attributes }: AccessibleDateTimeInputProps<
+    ValidValueAction,
+    InvalidValueAction
+  >,
+) {
   const {
     ariaAutoComplete = "none",
     autoComplete = "off",
@@ -127,17 +148,20 @@ function AccessibleDateTimeInput<
     generalColors: { greenColorShade },
   } = returnThemeColors({ colorsSwatches: COLORS_SWATCHES, themeObject });
 
-  const { full } = returnFullValidation({ name, stepperPages, validationFunctionsTable });
-  const isValueBufferValid =
-    typeof full === "function" ? full(valueBuffer) : full.test(valueBuffer);
+  const { full } = returnFullValidation({
+    name,
+    stepperPages,
+    validationFunctionsTable,
+  });
+  const isValueBufferValid = typeof full === "function"
+    ? full(valueBuffer)
+    : full.test(valueBuffer);
 
-  const leftIcon = isValueBufferValid ? (
-    icon ? (
-      icon
-    ) : (
-      <TbCheck color={greenColorShade} size={18} />
+  const leftIcon = isValueBufferValid
+    ? (
+      icon ? icon : <TbCheck color={greenColorShade} size={18} />
     )
-  ) : null;
+    : null;
 
   const validationTexts = returnValidationTexts({
     name,
@@ -154,7 +178,7 @@ function AccessibleDateTimeInput<
   console.log("validationTexts:", validationTexts);
   console.groupEnd();
 
-  const { validValueTextElement, invalidValueTextElement } =
+  const { invalidValueTextElement } =
     createAccessibleValueValidationTextElements({
       isPopoverOpened,
       isValueBufferValid,
@@ -176,23 +200,21 @@ function AccessibleDateTimeInput<
       : " from 1900 to 2024"
   }`;
 
-  const min_ =
-    dateKind === "full date"
-      ? new Date(1900, 0, 1).toISOString().split("T")[0]
-      : dateKind === "date near past"
-      ? new Date(2020, 0, 1).toISOString().split("T")[0]
-      : dateKind === "date near future"
-      ? new Date().toISOString().split("T")[0]
-      : min;
+  const min_ = dateKind === "full date"
+    ? new Date(1900, 0, 1).toISOString().split("T")[0]
+    : dateKind === "date near past"
+    ? new Date(2020, 0, 1).toISOString().split("T")[0]
+    : dateKind === "date near future"
+    ? new Date().toISOString().split("T")[0]
+    : min;
 
-  const max_ =
-    dateKind === "full date"
-      ? new Date(2024, 11, 31).toISOString().split("T")[0]
-      : dateKind === "date near past"
-      ? new Date().toISOString().split("T")[0]
-      : dateKind === "date near future"
-      ? new Date(2026, 11, 31).toISOString().split("T")[0]
-      : max;
+  const max_ = dateKind === "full date"
+    ? new Date(2024, 11, 31).toISOString().split("T")[0]
+    : dateKind === "date near past"
+    ? new Date().toISOString().split("T")[0]
+    : dateKind === "date near future"
+    ? new Date(2026, 11, 31).toISOString().split("T")[0]
+    : max;
 
   return (
     <Container w={350}>
@@ -207,13 +229,11 @@ function AccessibleDateTimeInput<
         <Popover.Target>
           <TextInput
             aria-autocomplete={ariaAutoComplete}
-            aria-describedby={
-              isValueBufferValid
-                ? // id of validValueTextElement
-                  `${name}-valid`
-                : // id of invalidValueTextElement
-                  `${name}-invalid`
-            }
+            aria-describedby={isValueBufferValid
+              // id of validValueTextElement
+              ? `${name}-valid`
+              // id of invalidValueTextElement
+              : `${name}-invalid`}
             aria-invalid={!isValueBufferValid}
             aria-label={ariaLabel}
             aria-required={required}
@@ -223,9 +243,17 @@ function AccessibleDateTimeInput<
             icon={leftIcon}
             label={label}
             max={max_}
-            maxLength={inputKind === "date" ? 10 : inputKind === "time" ? 5 : maxLength}
+            maxLength={inputKind === "date"
+              ? 10
+              : inputKind === "time"
+              ? 5
+              : maxLength}
             min={min_}
-            minLength={inputKind === "date" ? 10 : inputKind === "time" ? 5 : minLength}
+            minLength={inputKind === "date"
+              ? 10
+              : inputKind === "time"
+              ? 5
+              : minLength}
             name={name}
             onBlur={() => {
               parentDispatch?.({
@@ -289,13 +317,15 @@ function AccessibleDateTimeInput<
           />
         </Popover.Target>
 
-        {isPopoverOpened && valueBuffer.length ? (
-          <Popover.Dropdown>
-            <Stack>
-              {isValueBufferValid ? validValueTextElement : invalidValueTextElement}
-            </Stack>
-          </Popover.Dropdown>
-        ) : null}
+        {isPopoverOpened && valueBuffer.length && !isValueBufferValid
+          ? (
+            <Popover.Dropdown>
+              <Stack>
+                {invalidValueTextElement}
+              </Stack>
+            </Popover.Dropdown>
+          )
+          : null}
       </Popover>
     </Container>
   );
