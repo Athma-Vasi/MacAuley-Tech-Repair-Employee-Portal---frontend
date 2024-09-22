@@ -14,7 +14,7 @@ import {
   type RefObject,
   useState,
 } from "react";
-import { TbCheck } from "react-icons/tb";
+import { TbCheck, TbExclamationCircle } from "react-icons/tb";
 
 import { COLORS_SWATCHES } from "../../constants/data";
 import { VALIDATION_FUNCTIONS_TABLE } from "../../constants/validations";
@@ -28,7 +28,7 @@ import { returnThemeColors, splitCamelCase } from "../../utils";
 import type { SetFilterInputValuesDispatchData } from "../query/QueryFilter";
 import {
   createAccessibleValueValidationTextElements,
-  returnFullValidation,
+  returnPartialValidations,
   returnValidationTexts,
 } from "./utils";
 
@@ -145,23 +145,27 @@ function AccessibleDateTimeInput<
   } = useGlobalState();
 
   const {
-    generalColors: { greenColorShade },
+    generalColors: { greenColorShade, redColorShade },
   } = returnThemeColors({ colorsSwatches: COLORS_SWATCHES, themeObject });
 
-  const { full } = returnFullValidation({
+  const { partials } = returnPartialValidations({
     name,
     stepperPages,
     validationFunctionsTable,
   });
-  const isValueBufferValid = typeof full === "function"
-    ? full(valueBuffer)
-    : full.test(valueBuffer);
 
-  const leftIcon = isValueBufferValid
-    ? (
-      icon ? icon : <TbCheck color={greenColorShade} size={18} />
-    )
-    : null;
+  const isValueBufferValid = partials.every(([regexOrFunc, _validationText]) =>
+    typeof regexOrFunc === "function"
+      ? regexOrFunc(valueBuffer)
+      : regexOrFunc.test(valueBuffer)
+  );
+
+  const leftIcon = icon ??
+    (isValueBufferValid
+      ? <TbCheck color={greenColorShade} size={18} />
+      : value.length === 0
+      ? null
+      : <TbExclamationCircle color={redColorShade} size={18} />);
 
   const validationTexts = returnValidationTexts({
     name,
@@ -173,7 +177,7 @@ function AccessibleDateTimeInput<
   console.group("AccessibleDateTimeInput");
   console.log("name:", name);
   console.log("valueBuffer:", valueBuffer);
-  console.log("fullValidation", full);
+  console.log("partials:", partials);
   console.log("stepperPages", stepperPages);
   console.log("validationTexts:", validationTexts);
   console.groupEnd();

@@ -136,15 +136,6 @@ function AccessiblePasswordInput<
     generalColors: { greenColorShade },
   } = returnThemeColors({ themeObject, colorsSwatches: COLORS_SWATCHES });
 
-  // const { full } = returnFullValidation({
-  //   name,
-  //   stepperPages,
-  //   validationFunctionsTable,
-  // });
-  // const isValueBufferValid = typeof full === "function"
-  //   ? full(valueBuffer)
-  //   : full.test(valueBuffer);
-
   const { partials } = returnPartialValidations({
     name,
     stepperPages,

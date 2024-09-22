@@ -187,11 +187,16 @@ function returnFormReviews<
       let isValueValid = true;
 
       if (validationKey) {
-        const validation =
+        const partials =
           VALIDATION_FUNCTIONS_TABLE[validationKey ?? "allowAll"];
-        isValueValid = typeof validation.full === "function"
-          ? validation.full(value?.toString() ?? "")
-          : validation.full.test(value?.toString() ?? "");
+        // isValueValid = typeof validation.full === "function"
+        //   ? validation.full(value?.toString() ?? "")
+        //   : validation.full.test(value?.toString() ?? "");
+        isValueValid = partials.every(([regexOrFunc, _validationText]) =>
+          typeof regexOrFunc === "function"
+            ? regexOrFunc(value?.toString() ?? "")
+            : regexOrFunc.test(value?.toString() ?? "")
+        );
       }
 
       return {

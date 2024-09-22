@@ -2,7 +2,7 @@ import {
   Container,
   Flex,
   Group,
-  MantineSize,
+  type MantineSize,
   Popover,
   Stack,
   Text,
@@ -11,20 +11,20 @@ import {
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import {
-  ChangeEvent,
-  Dispatch,
-  KeyboardEvent,
-  ReactNode,
-  RefObject,
+  type ChangeEvent,
+  type Dispatch,
+  type KeyboardEvent,
+  type ReactNode,
+  type RefObject,
   useState,
 } from "react";
-import { TbCheck, TbRefresh } from "react-icons/tb";
+import { TbCheck, TbExclamationCircle, TbRefresh } from "react-icons/tb";
 
 import { Trie } from "../../../classes/trie";
 import { COLORS_SWATCHES } from "../../../constants/data";
 import { VALIDATION_FUNCTIONS_TABLE } from "../../../constants/validations";
 import { useGlobalState } from "../../../hooks";
-import {
+import type {
   SetPageInErrorPayload,
   StepperPage,
   ValidationFunctionsTable,
@@ -32,13 +32,13 @@ import {
 import { returnThemeColors, splitCamelCase } from "../../../utils";
 import {
   createAccessibleValueValidationTextElements,
-  returnFullValidation,
+  returnPartialValidations,
   returnValidationTexts,
 } from "../utils";
 
 type AccessibleSearchInputAttributes<
   ValidValueAction extends string = string,
-  InvalidValueAction extends string = string
+  InvalidValueAction extends string = string,
 > = {
   ariaAutoComplete?: "both" | "list" | "none" | "inline";
   autoComplete?: "on" | "off";
@@ -57,13 +57,13 @@ type AccessibleSearchInputAttributes<
   onKeyDown?: (event: KeyboardEvent<HTMLInputElement>) => void;
   parentDispatch: Dispatch<
     | {
-        action: ValidValueAction;
-        payload: string;
-      }
+      action: ValidValueAction;
+      payload: string;
+    }
     | {
-        action: InvalidValueAction;
-        payload: SetPageInErrorPayload;
-      }
+      action: InvalidValueAction;
+      payload: SetPageInErrorPayload;
+    }
   >;
 
   /** stepper page location of input. default 0 = first page = step 0 */
@@ -84,15 +84,24 @@ type AccessibleSearchInputAttributes<
 
 type AccessibleSearchInputProps<
   ValidValueAction extends string = string,
-  InvalidValueAction extends string = string
+  InvalidValueAction extends string = string,
 > = {
-  attributes: AccessibleSearchInputAttributes<ValidValueAction, InvalidValueAction>;
+  attributes: AccessibleSearchInputAttributes<
+    ValidValueAction,
+    InvalidValueAction
+  >;
+  uniqueId?: string;
 };
 
 function AccessibleSearchInput<
   ValidValueAction extends string = string,
-  InvalidValueAction extends string = string
->({ attributes }: AccessibleSearchInputProps<ValidValueAction, InvalidValueAction>) {
+  InvalidValueAction extends string = string,
+>(
+  { attributes, uniqueId }: AccessibleSearchInputProps<
+    ValidValueAction,
+    InvalidValueAction
+  >,
+) {
   const {
     ariaAutoComplete = "none",
     autoComplete = "off",
@@ -141,37 +150,51 @@ function AccessibleSearchInput<
   } = useGlobalState();
 
   const {
-    generalColors: { greenColorShade, grayColorShade, themeColorShades },
+    generalColors: {
+      greenColorShade,
+      grayColorShade,
+      themeColorShades,
+      redColorShade,
+    },
   } = returnThemeColors({ themeObject, colorsSwatches: COLORS_SWATCHES });
 
-  const rightIcon = rightSection ? (
-    rightSectionIcon ? (
+  const rightIcon = rightSection
+    ? (
       rightSectionIcon
-    ) : (
-      <Tooltip label={`Reset ${name} to ${initialInputValue}`}>
-        <Group style={{ cursor: "pointer" }}>
-          <TbRefresh
-            aria-label={`Reset ${name} value to ${initialInputValue}`}
-            color={grayColorShade}
-            size={18}
-            onClick={rightSectionOnClick}
-          />
-        </Group>
-      </Tooltip>
+        ? rightSectionIcon
+        : (
+          <Tooltip label={`Reset ${name} to ${initialInputValue}`}>
+            <Group style={{ cursor: "pointer" }}>
+              <TbRefresh
+                aria-label={`Reset ${name} value to ${initialInputValue}`}
+                color={grayColorShade}
+                size={18}
+                onClick={rightSectionOnClick}
+              />
+            </Group>
+          </Tooltip>
+        )
     )
-  ) : null;
+    : null;
 
-  const { full } = returnFullValidation({ name, stepperPages, validationFunctionsTable });
-  const isValueBufferValid =
-    typeof full === "function" ? full(valueBuffer) : full.test(valueBuffer);
+  const { partials } = returnPartialValidations({
+    name,
+    stepperPages,
+    validationFunctionsTable,
+  });
 
-  const leftIcon = isValueBufferValid ? (
-    icon ? (
-      icon
-    ) : (
-      <TbCheck color={greenColorShade} size={18} />
-    )
-  ) : null;
+  const isValueBufferValid = partials.every(([regexOrFunc, _validationText]) =>
+    typeof regexOrFunc === "function"
+      ? regexOrFunc(valueBuffer)
+      : regexOrFunc.test(valueBuffer)
+  );
+
+  const leftIcon = icon ??
+    (isValueBufferValid
+      ? <TbCheck color={greenColorShade} size={18} />
+      : value.length === 0
+      ? null
+      : <TbExclamationCircle color={redColorShade} size={18} />);
 
   const validationTexts = returnValidationTexts({
     name,
@@ -180,54 +203,61 @@ function AccessibleSearchInput<
     valueBuffer,
   });
 
-  const { invalidValueTextElement } = createAccessibleValueValidationTextElements({
-    isPopoverOpened,
-    isValueBufferValid,
-    name,
-    themeObject,
-    validationTexts,
-    valueBuffer,
-  });
+  const { invalidValueTextElement } =
+    createAccessibleValueValidationTextElements({
+      isPopoverOpened,
+      isValueBufferValid,
+      name,
+      themeObject,
+      validationTexts,
+      valueBuffer,
+    });
 
-  const dropdown = trieResults.length ? (
-    <Flex direction="column" mah={500} pr={2} style={{ overflow: "auto" }}>
-      {trieResults.map((result) => (
-        <Text
-          aria-live="polite"
-          onClick={(event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-            setValueBuffer(event.currentTarget.innerText);
-            parentDispatch({
-              action: validValueAction,
-              payload: event.currentTarget.innerText,
-            });
-            closePopover();
-          }}
-          onKeyDown={(event: React.KeyboardEvent<HTMLDivElement>) => {
-            if (event.key === "ArrowDown") {
-              console.log("down");
-            }
-          }}
-          onMouseEnter={(event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-            event.currentTarget.style.backgroundColor = themeColorShades?.[1] ?? "";
-          }}
-          onMouseLeave={(event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-            event.currentTarget.style.backgroundColor = "transparent";
-          }}
-          p={8}
-          style={{
-            cursor: "pointer",
-            borderRadius: 4,
-            transition: "background-color 0.1s ease-in-out",
-          }}
-          tabIndex={0}
-        >
-          {result}
-        </Text>
-      ))}
-    </Flex>
-  ) : (
-    <Text aria-live="polite">No results found</Text>
-  );
+  const dropdown = trieResults.length
+    ? (
+      <Flex direction="column" mah={500} pr={2} style={{ overflow: "auto" }}>
+        {trieResults.map((result, idx) => (
+          <Text
+            aria-live="polite"
+            key={`${name}-${result}-${uniqueId}-${idx.toString()}`}
+            onClick={(event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+              setValueBuffer(event.currentTarget.innerText);
+              parentDispatch({
+                action: validValueAction,
+                payload: event.currentTarget.innerText,
+              });
+              closePopover();
+            }}
+            onKeyDown={(event: React.KeyboardEvent<HTMLDivElement>) => {
+              if (event.key === "ArrowDown") {
+                console.log("down");
+              }
+            }}
+            onMouseEnter={(
+              event: React.MouseEvent<HTMLDivElement, MouseEvent>,
+            ) => {
+              event.currentTarget.style.backgroundColor =
+                themeColorShades?.[1] ?? "";
+            }}
+            onMouseLeave={(
+              event: React.MouseEvent<HTMLDivElement, MouseEvent>,
+            ) => {
+              event.currentTarget.style.backgroundColor = "transparent";
+            }}
+            p={8}
+            style={{
+              cursor: "pointer",
+              borderRadius: 4,
+              transition: "background-color 0.1s ease-in-out",
+            }}
+            tabIndex={0}
+          >
+            {result}
+          </Text>
+        ))}
+      </Flex>
+    )
+    : <Text aria-live="polite">No results found</Text>;
 
   return (
     <Container w={350}>
@@ -299,11 +329,15 @@ function AccessibleSearchInput<
           />
         </Popover.Target>
 
-        {isPopoverOpened && valueBuffer.length ? (
-          <Popover.Dropdown>
-            <Stack>{isValueBufferValid ? dropdown : invalidValueTextElement}</Stack>
-          </Popover.Dropdown>
-        ) : null}
+        {isPopoverOpened && valueBuffer.length
+          ? (
+            <Popover.Dropdown>
+              <Stack>
+                {isValueBufferValid ? dropdown : invalidValueTextElement}
+              </Stack>
+            </Popover.Dropdown>
+          )
+          : null}
       </Popover>
     </Container>
   );

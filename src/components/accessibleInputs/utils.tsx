@@ -765,13 +765,12 @@ function returnValidationTexts({
         return;
       }
 
-      const validation = validationFunctionsTable[validationKey ?? "allowAll"];
-      const { partials } = validation;
+      const partials = validationFunctionsTable[validationKey ?? "allowAll"];
 
       console.group("returnValidationTexts");
       console.log("inputName", inputName);
       console.log("validationKey", validationKey);
-      console.log("validation", validation);
+      console.log("partials", partials);
       console.groupEnd();
 
       const partialInvalidText = partials.length
@@ -814,10 +813,10 @@ function returnPartialValidations({
   name: string;
   stepperPages: StepperPage[];
   validationFunctionsTable: ValidationFunctionsTable;
-}): { partials: Validation["partials"] } {
+}): { partials: Validation } {
   const initial = { partials: [] };
 
-  return stepperPages.reduce<{ partials: Validation["partials"] }>(
+  return stepperPages.reduce<{ partials: Validation }>(
     (regexAcc, page) => {
       const { children, kind } = page;
 
@@ -832,9 +831,8 @@ function returnPartialValidations({
           return;
         }
 
-        const validation =
-          validationFunctionsTable[validationKey ?? "allowAll"];
-        const { partials } = validation;
+        const partials = validationFunctionsTable[validationKey ?? "allowAll"];
+
         regexAcc.partials = partials;
       });
 
@@ -842,40 +840,6 @@ function returnPartialValidations({
     },
     initial,
   );
-}
-
-function returnFullValidation({
-  name,
-  stepperPages,
-  validationFunctionsTable,
-}: {
-  name: string;
-  stepperPages: StepperPage[];
-  validationFunctionsTable: ValidationFunctionsTable;
-}): { full: Validation["full"] } {
-  const initial = { full: /(?:)/ };
-
-  return stepperPages.reduce<{ full: Validation["full"] }>((regexAcc, page) => {
-    const { children, kind } = page;
-
-    if (kind && kind === "review") {
-      return regexAcc;
-    }
-
-    children.forEach((child) => {
-      const { name: inputName, validationKey } = child;
-
-      if (inputName !== name) {
-        return;
-      }
-
-      const validation = validationFunctionsTable[validationKey ?? "allowAll"];
-      const { full } = validation;
-      regexAcc.full = full;
-    });
-
-    return regexAcc;
-  }, initial);
 }
 
 function returnHighlightedText({
@@ -966,7 +930,6 @@ export {
   createAccessibleTextInputsPhone,
   createAccessibleTextInputsPostal,
   createAccessibleValueValidationTextElements,
-  returnFullValidation,
   returnHighlightedText,
   returnPartialValidations,
   returnValidationTexts,

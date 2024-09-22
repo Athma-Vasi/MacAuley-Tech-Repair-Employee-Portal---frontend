@@ -11,7 +11,6 @@ import { type ReactNode, useState } from "react";
 import { TbCheck, TbX } from "react-icons/tb";
 
 import { COLORS_SWATCHES } from "../../constants/data";
-import { VALIDATION_FUNCTIONS_TABLE } from "../../constants/validations";
 import { useGlobalState } from "../../hooks";
 import type { SetPageInErrorPayload, StepperPage } from "../../types";
 import { returnThemeColors } from "../../utils";
@@ -268,50 +267,6 @@ function verifyEmptyInputs<InvalidValueAction extends string = string>({
       });
     });
   });
-}
-
-function returnStepsInError(
-  componentState: Record<string, unknown>,
-  stepperPages: StepperPage[],
-): boolean[] {
-  return stepperPages.reduce<boolean[]>(
-    (stepsAcc, page, index) => {
-      const { children, kind } = page;
-
-      if (kind && kind === "review") {
-        return stepsAcc;
-      }
-
-      children.forEach((child) => {
-        const { name: childName } = child;
-
-        Object.entries(componentState).forEach(([stateKey, stateValue]) => {
-          if (childName !== stateKey) {
-            return;
-          }
-
-          const { validationKey } = child;
-
-          const value = typeof stateValue === "string"
-            ? stateValue
-            : stateValue?.toString() ?? "";
-
-          const { full } =
-            VALIDATION_FUNCTIONS_TABLE[validationKey ?? "allowAll"];
-          const isStepValid = typeof full === "function"
-            ? full(value)
-            : full.test(value);
-
-          if (!isStepValid) {
-            stepsAcc[index] = true;
-          }
-        });
-      });
-
-      return stepsAcc;
-    },
-    stepperPages.map(() => false),
-  );
 }
 
 export { AccessibleStepper };

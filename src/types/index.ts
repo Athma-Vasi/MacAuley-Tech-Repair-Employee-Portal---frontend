@@ -225,12 +225,8 @@ type StepperChild = {
 
 type ValidationFunctionsTable = Record<ValidationKey, Validation>;
 
-type Validation = {
-  /** must be a superset of partials. input error state is determined by full test */
-  full: RegExp | ((value: string) => boolean);
-  /** must be subset(s) of full. input popover error messages are determined by partials tests */
-  partials: [RegExp | ((value: string) => boolean), string][];
-};
+/** input popover error messages are determined by partials tests */
+type Validation = [RegExp | ((value: string) => boolean), string][];
 
 type StepperPage = {
   kind?: "form" | "review";
